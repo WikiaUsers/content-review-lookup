@@ -1,0 +1,1 @@
+importScript('MediaWiki:Chat.js/announce.js');

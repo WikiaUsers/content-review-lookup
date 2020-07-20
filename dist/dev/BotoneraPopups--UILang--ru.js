@@ -1,0 +1,45 @@
+/*<source lang="javascript">*/
+if (!window.BotoneraPopups) {
+	window.BotoneraPopups = {};
+}
+window.BotoneraPopups.uilang = $.extend(window.BotoneraPopups.uilang, {
+	close: '[x]',
+	change: 'Изменить',
+	ns0: 'Статья',
+	talk: 'Обсуждение',
+	actions: 'Действия',
+	edit: 'Править |',
+	newsec: '+',
+	hist: 'История |',
+	'delete': 'Удалить |',
+	protect: 'Защитить',
+	purge: 'Обновить',
+	user: 'Участник',
+	contribs: 'Вклад |',
+	block: 'Заблокировать',
+	userlogs: 'Журналы |',
+	blocks: 'Блокировки',
+	article: 'Страница',
+	links: 'Ссылки |',
+	search: 'Поиск |',
+	prefix: 'Префикс |',
+	move: 'Переименовать |',
+	logs: 'Журналы |',
+	undelete: 'Восстановить',
+	curdiff: 'Текущая правка',
+	diff: 'Правка',
+	diffcur: 'Текущая',
+	diffedit: '(править)',
+	diffprev: '&larr; Пред.',
+	diffnext: '&rarr; След.',
+	rollback: 'Откат',
+	hiderb: 'Скрыть',
+	nodiff: 'Без предпросмотра',
+	rbmsg: 'Причина',
+	opt: 'Настройки',
+	previewfe: 'Предпросмотр |',
+	diffnoprev: 'Без предпросмотра',
+	rbreason: 'Причина отката',
+	changeprompt: 'Изменить целевую страницу'
+});
+/*</source>*/

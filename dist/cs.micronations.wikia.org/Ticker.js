@@ -1,0 +1,1 @@
+<iframe src="http://b.lxo.cz/api/index.php" style="width:100%;"></iframe>

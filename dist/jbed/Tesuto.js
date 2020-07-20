@@ -1,0 +1,1 @@
+<script type="text/javascript">if(5 == 5 && 6 == 6) console.log(true);</script>

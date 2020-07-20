@@ -1,0 +1,1 @@
+#REDIRECT [[MediaWiki:Jquery-ui/jquery.effects.js]]

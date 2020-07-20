@@ -1,0 +1,1 @@
+/* Ícones de Rede Social */ var SocialMediaButtonsNamespaces = [0, 6, 14, 500]; var SocialMediaButtons = { position: 'top', colorScheme: 'color', buttonSize: '25px' }; importScriptPage('SocialIcons/code.js','dev');

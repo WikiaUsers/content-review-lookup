@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:ChatNotifications/code.js', 'dev');

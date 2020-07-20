@@ -1,0 +1,1 @@
+$('').appendTo('#mw-content-text');

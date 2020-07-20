@@ -1,0 +1,1 @@
+importScriptPage ('Snow.js', 'MediaWiki');

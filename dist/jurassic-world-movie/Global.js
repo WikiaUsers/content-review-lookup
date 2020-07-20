@@ -1,0 +1,1 @@
+importScriptPage('Translator/Translator.js', 'dev');

@@ -1,0 +1,1 @@
+#REDIRECT [[MediaWiki:Script/TongWen/tongwen-st.js]]

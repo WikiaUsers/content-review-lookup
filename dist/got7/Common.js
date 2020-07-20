@@ -1,0 +1,93 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
+// LockForums config
+window.LockForums = {
+    expiryDays: 14,
+    lockMessageWalls: true,
+    expiryMessage: 'This thread has been archived due to inactivity.'
+};
+ 
+// ArchiveBoards config
+window.ArchiveBoards = {
+    post: true,
+    threads: false,
+    boards: ['Wikia Updates']
+};
+
+// Add [[ Category: Images]] @ images aytomatically
+ 
+if(wgPageName == 'Special:Upload' || wgPageName == 'Special:MultipleUpload') {
+$('#wpUploadDescription').val('[[Category:Images]]');
+};
+ 
+// TZclock config
+window.TZclockSimpleFormat = true;
+ 
+// Rollback config
+window.RollbackWikiDisable = true;
+ 
+// AjaxRC config
+window.ajaxRefresh = 30000;
+window.ajaxPages = ['Blog:Recent_posts'];
+window.ajaxSpecialPages = ['WikiActivity', 'Recentchanges', 'Watchlist', 'Log'];
+
+// Usertags
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+        stan: { u: 'I GOT7'}
+	},
+	oasisPlaceBefore: ''
+};
+
+UserTagsJS.modules.stan = {
+	days: 5, // Must have been on the Wiki for 5 days
+	edits: 5, // And have at least 5 edits to remove the tag
+	namespace: 0 // Edits must be made to articles to count
+};
+ 
+ 
+// Rail WAM
+window.railWAM = {
+    logPage:"Project:WAM Log"
+};
+ 
+// MessageWallUserTags
+window.MessageWallUserTags = {
+    tagColor: '#FF2D54',
+    txtSize: '10px',
+    glow: true,
+    glowSize: '12px',
+    glowColor: '#f77',
+    users: {
+        'TheYandereOtaku': 'Administrator',
+        'Jiaer': 'Administrator',
+        'PandaLuver26': 'Content Moderator'
+    }
+};
+
+// Delete multiple file
+        'u:dev:MediaWiki:MultipleFileDelete/code.js',
+
+
+// Allows for the embedding of videos from vlive.tv (Base Code - KockaAdmiralac)
+
+mw.hook('wikipage.content').add(function($content) {
+    var current = 0;
+    $content.find('.Vlive:not(.loaded)').each(function() {
+        var el = document.getElementsByClassName("Vlive")[current];
+        var video_id = "https://www.vlive.tv/embed/" + el.getAttribute("data-id") + "?autoPlay=false";
+        var $this = $(this);
+        $this.html(
+            $('<iframe>', {
+                border: 0,
+                frameborder: 0,
+                height: el.getAttribute("data-height"),
+                scrolling: 'no',
+                src: video_id,
+                width: el.getAttribute("data-width"),
+                allow: "fullscreen",
+            })
+        ).addClass('loaded');
+        current += 1;
+    });
+});

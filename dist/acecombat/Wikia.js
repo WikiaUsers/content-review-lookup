@@ -1,0 +1,1 @@
+/* These codes are run on every page load for users on the Wikia skin. */

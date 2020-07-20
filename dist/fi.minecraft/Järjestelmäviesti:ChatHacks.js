@@ -1,0 +1,1 @@
+#OHJAUS [[Käyttäjä:Lukkipoika/ChatHacks.js]]

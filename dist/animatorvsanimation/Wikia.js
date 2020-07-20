@@ -1,0 +1,1 @@
+window.BackToTopText = "Fly like The Chosen One";

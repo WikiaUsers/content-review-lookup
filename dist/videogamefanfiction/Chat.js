@@ -1,0 +1,1 @@
+$('.Write textarea').attr( 'placeholder', 'Click here to chat!' );

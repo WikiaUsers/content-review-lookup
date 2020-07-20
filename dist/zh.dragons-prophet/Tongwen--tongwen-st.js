@@ -1,0 +1,1 @@
+#重定向 [[MediaWiki:TongWen/tongwen-st.js]]

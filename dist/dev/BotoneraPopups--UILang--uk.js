@@ -1,0 +1,45 @@
+/*<source lang="javascript">*/
+if (!window.BotoneraPopups) {
+	window.BotoneraPopups = {};
+}
+window.BotoneraPopups.uilang = $.extend(window.BotoneraPopups.uilang, {
+	close: '[x]',
+	change: 'Змінити',
+	ns0: 'Стаття',
+	talk: 'Обговорення',
+	actions: 'Дії',
+	edit: 'Редагувати |',
+	newsec: '+',
+	hist: 'Історія |',
+	'delete': 'Видалити |',
+	protect: 'Захистити',
+	purge: 'Оновити',
+	user: 'Користувач',
+	contribs: 'Внесок |',
+	block: 'Заблокувати',
+	userlogs: 'Журнали |',
+	blocks: 'Блокування',
+	article: 'Сторінка',
+	links: 'Посилання |',
+	search: 'Пошук |',
+	prefix: 'Префікс |',
+	move: 'Перейменувати |',
+	logs: 'Журнали |',
+	undelete: 'Відновити',
+	curdiff: 'Поточне редагування',
+	diff: 'Редагування',
+	diffcur: 'Поточне',
+	diffedit: '(редагувати)',
+	diffprev: '&larr; Поп.',
+	diffnext: '&rarr; Наст.',
+	rollback: 'Скасування',
+	hiderb: 'Сховати',
+	nodiff: 'Без попереднього перегляду',
+	rbmsg: 'Причина',
+	opt: 'Налаштування',
+	previewfe: 'Попередній перегляд |',
+	diffnoprev: 'Без попереднього перегляду',
+	rbreason: 'Причина скасування',
+	changeprompt: 'Змінити цільову сторінку'
+});
+/*</source>*/

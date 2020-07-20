@@ -1,0 +1,1 @@
+#PATRZ [[MediaWiki:Common.js/dodajLicencję.js]]

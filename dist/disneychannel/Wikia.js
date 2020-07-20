@@ -1,0 +1,1 @@
+$.getScript("https://raw.github.com/sactage/wikia-js-snippets/master/RollbackMods.js");

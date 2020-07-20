@@ -1,0 +1,2 @@
+//Spoiler Warning
+$('.WikiaRail').append('<section class="module"><h2>Welcome to FanonLand Wiki!</h2><p>We would like to remind all users to follow the rules, and that content related to GoAnimate, Bitstrips and Plotagon is prohibited on the wiki, along with use of uncensored profanity. Also, please check out our main wiki, Creation Wiki!</section>');

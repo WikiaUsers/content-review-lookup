@@ -1,0 +1,416 @@
+/* Il codice JavaScript inserito qui viene caricato da ciascuna pagina, per tutti gli utenti. */
+
+
+/* <pre> */
+
+/* Any JavaScript here will be loaded for all users on every page load. */
+
+importScriptPage('ShowHide/code.js', 'dev');
+
+/**** Remove Main Page title ****/
+
+if(document.title.indexOf("Main Page - ") == 0) {
+   document.write('<style type="text/css">/*<![CDATA[*/ #lastmod, #siteSub, #contentSub, h1.firstHeading { display: none !important; } /*]]>*/</style>');
+}
+
+// portal switch
+var pspans;
+var cTab = 1;
+function doPortals() {
+  tabs = document.getElementById("mptabs");
+  if (tabs) {
+    pspans = tabs.getElementsByTagName("span");
+    for (x=0;x<pspans.length;x++) {
+      if (pspans[x].className == "activetab" || pspans[x].className == "inactivetab") {
+        pspans[x].parentNode.onclick = switchTab.bind(pspans[x].parentNode,x/2);
+        if (pspans[x].parentNode.tagName.toLowerCase() == "a") { 
+          pspans[x].parentNode.setAttribute("href", "javascript:;"); 
+        } else {
+          pspans[x].parentNode.style.cursor = "pointer";
+        }
+        if (pspans[x].className == "activetab") cTab = (x/2)+1;
+      }
+    }
+  }
+}
+
+function switchTab(x) {
+  pspans[2*(cTab-1)].className = "inactivetab";
+  document.getElementById("portal"+cTab).style.display = "none";
+  cTab = x+1;
+  pspans[2*x].className = "activetab";
+  document.getElementById("portal"+cTab).style.display = "";
+}
+
+if (wgCanonicalNamespace == "Portal") addOnloadHook(doPortals);
+
+//Tooltip Code
+
+var $tfb;
+
+// hides the tooltip
+function hideTip() {
+  $tfb.html("").removeClass("tooltip-ready").addClass("hidden").css("visibility","hidden"); 
+}
+
+// displays the tooltip
+function displayTip(e) {
+  $tfb.not(":empty").removeClass("hidden").addClass("tooltip-ready");
+  moveTip(e);
+  $tfb.not(":empty").css("visibility","visible");
+}
+
+// moves the tooltip
+function moveTip(e) {
+  var newTop = e.clientY + ((e.clientY > ($(window).height()/2)) ? -($tfb.not(".hidden").innerHeight()+20):20);
+  var newLeft = e.clientX + ((e.clientX > ($(window).width()/2)) ? -($tfb.not(".hidden").innerWidth()+20):20);
+  $tfb.not(".hidden").css({"position":"fixed","top":newTop + "px","left":newLeft + "px"});
+}
+
+// AJAX tooltips
+function showTip(e) {
+  $t=$(this);
+  $p=$t.parent();
+  if ($p.hasClass("selflink")==false) {
+    $t.removeAttr("title");
+    $p.removeAttr("title");
+    $tfb.load("/wiki/"+$t.data("tt").replace(/ /g,"_").replace(/\?/g,"%3F")+"?action=render div.tooltip-content",function () {
+      if ($tfb.html() == "") $tfb.html('<div class="tooltip-content"><b>Error</b><br />This target either has no tooltip<br />or was not intended to have one.</div>');
+      $tfb.find(".tooltip-content").css("display","");
+      displayTip(e);
+    });
+  }
+}
+
+function bindTT() {
+  $t=$(this);
+  $p=$t.parent();
+  if ($p.hasClass("selflink") == false) $t.data("tt", $p.attr("title").replace(" (page does not exist)","").replace("?","%3F")).mouseover(showTip).mouseout(hideTip).mousemove(moveTip);
+}
+
+// check to see if it is active then do it
+$(function() {
+  $("#WikiaMainContent, #bodyContent").mouseover(hideTip);
+  $("#WikiaMainContent, #bodyContent").append('<div id="tfb" class="htt"></div>');
+  $tfb = $("#tfb");
+  $("#WikiaMainContent span.ajaxttlink, #bodyContent span.ajaxttlink").each(bindTT);
+});
+
+
+/* collapsible tables */
+
+var autoCollapse = 2;
+var collapseCaption = "hide";
+var expandCaption = "show";
+ 
+function collapseTable(i) {
+  var Button = $("#collapseButton" + i);
+  var Table = $("#collapsibleTable" + i);
+  if (Table.length<1 || Button.length<1) return false;
+  if (Button.text() == collapseCaption) {
+    Table.find("tr").not(":has('#collapseButton"+i+"')").hide();
+    setCookie("hideTable-" + wgArticleId + "-" + i,1,30);
+    Button.text(expandCaption);
+  } else {
+    Table.find("tr").not(":has('#collapseButton"+i+"')").show();
+    setCookie("hideTable-" + wgArticleId + "-" + i,0,30);  
+    Button.text(collapseCaption);
+  }
+}
+ 
+function createCollapseButtons() {
+  var tch = $("table.collapsible tr th");
+  tch.each(function (i) {
+    $(this).closest("table").attr("id", "collapsibleTable" + i);
+    $(this).prepend('<span style="float:right; font-weight:normal; text-align:right; width:6em">[<a href="javascript:collapseTable('+i+');" style="color:'+$(this).css("color")+';" id="collapseButton'+i+'">'+collapseCaption+'</a>]</span>');
+    if ($(this).closest("table").hasClass("collapsed") || (getCookie("hideTable-" + wgArticleId + "-" + i) == 1) || (tch.length >= autoCollapse && $(this).closest("table").hasClass("autocollapse"))) collapseTable(i);
+  });
+}
+
+var nbh = '['+collapseCaption+']';
+var nbs = '['+expandCaption+']';
+
+function toggleNavigationBar(i) {
+  var NavToggle = $("#NavToggle" + i);
+  var NavFrame = $("#NavFrame" + i);
+  if (NavFrame.length<1 || NavToggle.length<1) return false; 
+  ncd=(NavToggle.text()==nbh)?'none':'block';
+  NavFrame.children(".NavPic,.NavContent").css("display",ncd);
+  nct=(NavToggle.text()==nbh)?nbs:nbh;
+  NavToggle.text(nct);
+}
+ 
+// adds show/hide-button to navigation bars
+function createNavigationBarToggleButton() {
+  $("div.NavFrame").each(function (i) {
+    NavToggleText = ($(this).children(".NavPic:visible,.NavContent:visible").length>0)?nbh:nbs;
+    $(this).children(".NavHead").append('<a href="javascript:toggleNavigationBar('+i+');" id="NavToggle'+i+'" class="NavToggle">'+NavToggleText+'</a>');
+    $(this).attr("id","NavFrame"+i);
+  });
+}
+
+/* ######################################################################## */
+/* ### TITLE ICONS (Template:Games)                                     ### */
+/* ### ---------------------------------------------------------------- ### */
+/* ### Description: Add icons to article title                          ### */
+/* ### Credit:      User:Porter21                                       ### */
+/* ######################################################################## */
+ 
+$(function addTitleIcons () {
+   if (skin == 'monobook' || skin == 'oasis') {
+      var insertTarget;
+ 
+      switch (skin) {
+         case 'monobook':
+            insertTarget = $('#firstHeading');
+            break;
+         case 'oasis':
+
+            if (wgAction != 'submit' && wgNamespaceNumber != 112 && $('#titleicons').length > 0) {
+               if ($('#WikiaPageHeader h2').length == 0) {
+                  $('<h2>&nbsp;</h2>').appendTo('#WikiaPageHeader');
+               }
+               insertTarget = $('#WikiaPageHeader h2');
+            }
+            break;
+      }
+ 
+      if (insertTarget) {
+         $('#titleicons').css('display', 'block').prependTo(insertTarget);
+         $('#titleicons-more').append('<img width="0" height="0" class="titleicons-chevron" src="' + wgBlankImgUrl + '">');
+ 
+         $('#titleicons').hover(
+             function () {
+                $(this).addClass('titleicons-hover');
+             }, function () {
+                $(this).removeClass('titleicons-hover');
+             });
+      }
+   }
+});
+
+/*
+ * ADVANCED AJAX AUTO-REFRESHING ARTICLES
+ * Code courtesy of "pcj" of Wowpedia.
+ */
+var indicator = 'https://images.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif';
+if (!window.ajaxPages) ajaxPages = new Array("Special:RecentChanges");
+if (!window.ajaxCallAgain) ajaxCallAgain = [];
+var ajaxTimer;
+var ajaxRefresh = 60000;
+var refreshText = 'AJAX';
+
+if( typeof AjaxRCRefreshText == "string" ) refreshText = AjaxRCRefreshText;
+
+var refreshHover = 'Enable auto-refreshing page loads';
+
+if( typeof AjaxRCRefreshHoverText == "string" ) refreshHover = AjaxRCRefreshHoverText;
+
+var doRefresh = true;
+
+function setCookie(c_name,value,expiredays) {
+  var exdate=new Date()
+  exdate.setDate(exdate.getDate()+expiredays)
+  document.cookie=c_name+ "=" +escape(value) + ((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
+}
+ 
+function getCookie(c_name) {
+  if (document.cookie.length>0) {
+    c_start=document.cookie.indexOf(c_name + "=")
+    if (c_start!=-1) { 
+      c_start=c_start + c_name.length+1 
+      c_end=document.cookie.indexOf(";",c_start)
+      if (c_end==-1) c_end=document.cookie.length
+      return unescape(document.cookie.substring(c_start,c_end))
+    } 
+  }
+  return ""
+}
+ 
+function preloadAJAXRL() {
+  ajaxRLCookie = (getCookie("ajaxload-"+wgPageName)=="on") ? true:false;
+  appTo = ($("#WikiaPageHeader h2").length)?$("#WikiaPageHeader h2"):$(".firstHeading");
+  appTo.append('&nbsp;<span style="margin-left: 20px; font-size: xx-small; line-height: 100%;" id="ajaxRefresh"><span style="border-bottom: 1px dotted; cursor: help;" id="ajaxToggleText" title="' + refreshHover + '">' + refreshText + ':</span><input type="checkbox" style="margin-bottom: 0;" id="ajaxToggle"><span style="display: none;" id="ajaxLoadProgress"><img src="' + indicator + '" style="vertical-align: baseline;" border="0" alt="Refreshing page" /></span></span>');
+  $("#ajaxLoadProgress").ajaxSend(function (event, xhr, settings){
+    if (location.href == settings.url) $(this).show();
+  }).ajaxComplete (function (event, xhr, settings){
+  if (location.href == settings.url) {$(this).hide(); for(i in ajaxCallAgain){ajaxCallAgain[i]()};}
+  });
+  $("#ajaxToggle").click(toggleAjaxReload);
+  $("#ajaxToggle").attr("checked", ajaxRLCookie);
+  if (getCookie("ajaxload-"+wgPageName)=="on") loadPageData();
+}
+ 
+function toggleAjaxReload() {
+  if ($("#ajaxToggle").attr("checked") == true) {
+    setCookie("ajaxload-"+wgPageName, "on", 30);
+    doRefresh = true;
+    loadPageData();
+  } else {
+    setCookie("ajaxload-"+wgPageName, "off", 30);
+    doRefresh = false;
+    clearTimeout(ajaxTimer);
+  }
+}
+
+function loadPageData() {
+  var cC = ($("#WikiaArticle").length)?"#WikiaArticle":"#bodyContent";
+  $(cC).load(location.href + " " + cC + " > *", function (data) { 
+    if (doRefresh) ajaxTimer = setTimeout("loadPageData();", ajaxRefresh);
+  });
+}
+
+$(function () { 
+  for (x in ajaxPages) {
+    if (wgPageName == ajaxPages[x] && $("#ajaxToggle").length==0) preloadAJAXRL();
+  }
+});
+
+
+
+// **************************************************
+// Experimental javascript countdown timer (Splarka)
+// Version 0.0.3
+// **************************************************
+//
+// Usage example:
+//  <span class="countdown" style="display:none;">
+//  Only <span class="countdowndate">January 01 2007 00:00:00 PST</span> until New years.
+//  </span>
+//  <span class="nocountdown">Javascript disabled.</span>
+
+function updatetimer(i) {
+  var now = new Date();
+  var then = timers[i].eventdate;
+  var diff = count=Math.floor((then.getTime()-now.getTime())/1000);
+
+  // catch bad date strings
+  if(isNaN(diff)) { 
+    timers[i].firstChild.nodeValue = '** ' + timers[i].eventdate + ' **' ;
+    return;
+  }
+
+  // determine plus/minus
+  if(diff<0) {
+    diff = -diff;
+    var tpm = 'T plus ';
+  } else {
+    var tpm = 'T minus ';
+  }
+
+  // calcuate the diff
+  var left = (diff%60) + ' seconds';
+    diff=Math.floor(diff/60);
+  if(diff > 0) left = (diff%60) + ' minutes ' + left;
+    diff=Math.floor(diff/60);
+  if(diff > 0) left = (diff%24) + ' hours ' + left;
+    diff=Math.floor(diff/24);
+  if(diff > 0) left = diff + ' days ' + left
+  timers[i].firstChild.nodeValue = tpm + left;
+
+  // a setInterval() is more efficient, but calling setTimeout()
+  // makes errors break the script rather than infinitely recurse
+  timeouts[i] = setTimeout('updatetimer(' + i + ')',1000);
+}
+
+function checktimers() {
+  //hide 'nocountdown' and show 'countdown'
+  var nocountdowns = getElementsByClassName(document, 'span', 'nocountdown');
+  for(var i in nocountdowns) nocountdowns[i].style.display = 'none'
+  var countdowns = getElementsByClassName(document, 'span', 'countdown');
+  for(var i in countdowns) countdowns[i].style.display = 'inline'
+
+  //set up global objects timers and timeouts.
+  timers = getElementsByClassName(document, 'span', 'countdowndate');  //global
+  timeouts = new Array(); // generic holder for the timeouts, global
+  if(timers.length == 0) return;
+  for(var i in timers) {
+    timers[i].eventdate = new Date(timers[i].firstChild.nodeValue);
+    updatetimer(i);  //start it up
+  }
+}
+addOnloadHook(checktimers);
+
+// **************************************************
+//  - end -  Experimental javascript countdown timer
+// **************************************************
+
+function FlagChange() {
+  var flag = document.getElementById("flag");
+  var value = flag.options[flag.selectedIndex].value;
+  switch (value) {
+    case 'Us':
+      $('.clanflag').html('<img width="30" height="30" src="https://images.wikia.nocookie.net/__cb20090721172936/burnoutparadise/images/thumb/2/2f/Us.png/30px-Us.png" alt="Us.png">');
+      break;
+    case 'It':
+      $('.clanflag').html('<img width="30" height="30" src="https://images.wikia.nocookie.net/__cb20090721185125/burnoutparadise/images/thumb/d/dd/It.png/30px-It.png" alt="It.png">');
+      break;
+    case 'De':
+      $('.clanflag').html('<img width="30" height="30" src="https://images.wikia.nocookie.net/__cb20090721185109/burnoutparadise/images/thumb/8/8f/De.png/30px-De.png" alt="De.png">');
+      break;
+    case 'Gb':
+      $('.clanflag').html('<img width="30" height="30" src="https://images.wikia.nocookie.net/__cb20090721180341/burnoutparadise/images/thumb/c/ce/Gb.png/30px-Gb.png" alt="Gb.png">');
+      break;
+    case 'Jp':
+      $('.clanflag').html('<img width="30" height="30" src="https://images.wikia.nocookie.net/__cb20090721181008/burnoutparadise/images/thumb/e/e1/Jp.png/30px-Jp.png" alt="Jp.png">');
+      break;
+    case 'Hk':
+      $('.clanflag').html('<img width="30" height="30" src="https://images.wikia.nocookie.net/__cb20090914155748/burnoutparadise/images/thumb/5/5a/Hk.png/30px-Hk.png" alt="Hk.png">');
+      break;
+    case 'Fr':
+      $('.clanflag').html('<img width="30" height="30" src="https://images.wikia.nocookie.net/__cb20090721191261/burnoutparadise/images/thumb/4/4b/Fr.png/30px-Fr.png" alt="Fr.png">');
+      break;
+    case 'Au':
+      $('.clanflag').html('<img width="30" height="30" src="https://images.wikia.nocookie.net/__cb20091230012061/burnoutparadise/images/thumb/e/e6/Au.png/30px-Au.png" alt="Au.png">');
+      break;
+    case 'Ph':
+      $('.clanflag').html('<img width="30" height="30" src="https://images.wikia.nocookie.net/__cb20100118114223/burnoutparadise/images/thumb/a/a4/Ph.png/30px-Ph.png" alt="Ph.png">');
+      break;
+    case 'Swe':
+      $('.clanflag').html('<img width="38" height="38" src="https://images.wikia.nocookie.net/__cb20100202200729/burnoutparadise/images/7/77/Swe.png" alt="Swe.png">');
+      break;
+    case 'Ie':
+      $('.clanflag').html('<img width="38" height="38" src="https://images.wikia.nocookie.net/__cb20090929195231/burnoutparadise/images/2/23/Ie.png" alt="Ie.png">');
+      break;
+    case 'Ca':
+      $('.clanflag').html('<img width="38" height="38" src="https://images.wikia.nocookie.net/__cb20090916013613/burnoutparadise/images/4/42/Ca.png" alt="Ca.png">');
+      break;
+    case 'Au':
+      $('.clanflag').html('<img width="38" height="38" src="https://images.wikia.nocookie.net/__cb20091230012061/burnoutparadise/images/e/e6/Au.png" alt="Au.png">');
+      break;
+  }
+  return true;
+}
+
+
+$(function() {
+  if (wgPageName == 'Burnout_Wiki:Clan_card_maker') {
+    $('.wikitable button').css('marginLeft','10px');
+    $('.border').keyup(function() { $('.'+this.name).css('border','2px solid ' + this.value); });
+    $('.color').keyup(function() { $('.'+this.name).css('color',this.value); });
+    $('.background').keyup(function() { $('.'+this.name).css('background',this.value); });
+    $('.reset').click(function() { var p = $(this).prev(); p.val(p.attr('default')).keyup(); });
+    $('.textfield').keyup(function() { $('.' + this.name).html(this.value); });
+    $('.userinfo').html('<a title="User:' + wgUserName +'" href="/index.php?title=User:' + wgUserName + '"><span style="color: white;" class="text">' + wgUserName + '</span></a> <small><small><small>(<a title="User talk:' + wgUserName + '" href="/index.php?title=User_talk:' + wgUserName + '"><span style="color: white;" class="text">Talk</span></a> - <a title="Special:Contributions/' + wgUserName + '" href="/wiki/Special:Contributions/' + wgUserName + '"><span style="color: white;" class="text">Contribs</span></a>)</small></small></small>');
+    $("input[name='console']").change(function(){
+      if ($("input[name='console']:checked").val() == 'PSN') {
+        $('.consoleicon').html('<img width="30" height="29" alt="150px-PSN logo color trans.png" src="https://images.wikia.nocookie.net/__cb20090624140420/burnoutparadise/images/thumb/2/28/150px-PSN_logo_color_trans.png/30px-150px-PSN_logo_color_trans.png">');
+      } else if ($("input[name='console']:checked").val() == 'xbox') {
+        $('.consoleicon').html('<img width="30" height="30" alt="Xbox-logo.png" src="https://images.wikia.nocookie.net/__cb20090904231519/burnoutparadise/images/thumb/6/6d/Xbox-logo.png/30px-Xbox-logo.png">');
+      }
+    });
+  }
+});
+
+CardMaker = {};
+CardMaker.generate = function() {
+  var mainBorder = '\|bordermain = '+document.getElementsByName('mborder')[0].value;
+  var mainBackground = '\n\|backgroundmain = '+document.getElementsByName('mbackground')[0].value;
+  var intBorder = '\n\|border = '+document.getElementsByName('intborder')[0].value;
+  var intBackground = '\n\|background = '+document.getElementsByName('intbackground')[0].value;
+  var skillsBorder = '\n\|border2 = '+document.getElementsByName('skillsborder')[0].value;
+  var text = '\n\|textmain = '+document.getElementsByName('text')[0].value;
+  var text2 = '\n\|text = '+document.getElementsByName('text2')[0].value;
+ 
+  document.getElementById("card_code").value='\{\{clan card\n\|username = '+wgUserName+'\n'+mainBorder+mainBackground+intBorder+intBackground+skillsBorder+text+text2+'\n\}\}';
+}

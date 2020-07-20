@@ -1,0 +1,3 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
+/** Playlist from http://playlist.me **/
+document.body.innerHTML = '<script type=\"text/javascript\" src=\"http://playlist.me/w/script.js\" data-config=\"{\'skin\':\'skins/orange/skin.css\',\'volume\':50,\'autoplay\':false,\'shuffle\':false,\'repeat\':1,\'placement\':\'bottom\',\'showplaylist\':false,\'playlist\':\'https://www.youtube.com/playlist?list=PL_4jz9Fh8zFfiApt7Utj_eDgjLRGA28Q2\'}\" ></script><noscript><a href=\"http://playlist.me/skins/\">SCM player skins</a></noscript>' + document.body.innerHTML;

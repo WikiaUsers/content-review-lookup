@@ -1,0 +1,1 @@
+#REDIRECCIÓN [[MediaWiki:Common.js/Konami.js]]

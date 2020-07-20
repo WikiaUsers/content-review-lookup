@@ -1,0 +1,3 @@
+/* 이 자바스크립트 설정은 모든 문서, 모든 사용자에게 적용됩니다. */
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-50204199-1', 'wikia.com');ga('send', 'pageview');

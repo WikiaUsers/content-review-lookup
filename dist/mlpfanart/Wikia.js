@@ -1,0 +1,1 @@
+//Please use MediaWiki:Common.js instead

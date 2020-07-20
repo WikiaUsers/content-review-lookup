@@ -1,0 +1,1 @@
+#REDIRECT [[MediaWiki:Common.js/Usernamereplace.js]]

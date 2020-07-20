@@ -1,0 +1,1 @@
+importScriptPage("MediaWiki:Lia.js","lmbtest");

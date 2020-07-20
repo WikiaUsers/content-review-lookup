@@ -1,0 +1,45 @@
+/*<source lang="javascript">*/
+if (!window.BotoneraPopups) {
+	window.BotoneraPopups = {};
+}
+window.BotoneraPopups.uilang = $.extend(window.BotoneraPopups.uilang, {
+	close: '[x]',
+	change: 'Değiştir',
+	ns0: 'Sayfa',
+	talk: 'Tartışma',
+	actions: 'Eylemler',
+	edit: 'Düzenle',
+	newsec: '+',
+	hist: 'Geçmiş',
+	'delete': 'Sil',
+	protect: 'Koruma al',
+	purge: 'Arındır',
+	user: 'Kullanıcı',
+	contribs: 'Katkılar',
+	block: 'Engelle',
+	userlogs: 'Günlükler',
+	blocks: 'Engellemeler',
+	article: 'Sayfa',
+	links: 'Bağlantılar',
+	search: 'Ara',
+	prefix: 'Önek',
+	move: 'Taşı',
+	logs: 'Günlükler',
+	undelete: 'Geri al',
+	curdiff: 'Şu anki farklı',
+	diff: 'Fark',
+	diffcur: 'Şu anki',
+	diffedit: '(düzenle)',
+	diffprev: '&larr; Önceki',
+	diffnext: '&rarr; Sonraki',
+	rollback: 'Geri al',
+	hiderb: 'RC\'yi gizle',
+	nodiff: 'Fark olmadan',
+	rbmsg: 'Sebep',
+	opt: 'Seçenekler',
+	previewfe: 'Düzenlemede önizleme',
+	diffnoprev: 'Farkı olmadan Önizleme',
+	rbreason: 'Geri alma özeti',
+	changeprompt: 'Hedef sayfayı değiştir'
+});
+/*</source>*/

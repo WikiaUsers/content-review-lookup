@@ -1,0 +1,10 @@
+$(function(){
+    if(mw.config.get('wgCanonicalSpecialPageName')!=='Chat'){return;}
+    importArticles({
+        type:'script',
+        article:['Buyerbot.js',
+            'Buyerbot/list.js',
+            'Buyerbot/date.js',
+            'Buyerbot/command.js']
+    });
+});

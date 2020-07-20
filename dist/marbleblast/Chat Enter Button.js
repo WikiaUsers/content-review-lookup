@@ -1,0 +1,4 @@
+/* Created by ShermanTheMythran */
+importStylesheetPage('User:ShermanTheMythran/chat.css','legomessageboards');
+
+function sendMessage(){inputValue=$('#Write textarea').val();if(inputValue!=''){mainRoom.socket.send(new models.ChatEntry({roomId:this.roomId,name:wgUserName,text:inputValue}).xport());$('#Write textarea').val('');$('#Write input[type="submit"]').attr('disabled','disabled');console.log('Message sent!');};};$('#Write input[type="submit"]').show().attr({'value':'Send','disabled':'disabled'}).on('click',sendMessage);$('#Write textarea').keyup(function(){if($('#Write textarea').val().length==0){$('#Write input[type="submit"]').attr('disabled','disabled');}else{$('#Write input[type="submit"]').removeAttr('disabled');};});

@@ -1,0 +1,1 @@
+{"Xur":True, "Iron Banner": False, "Salvage": True}

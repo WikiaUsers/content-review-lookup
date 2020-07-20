@@ -1,0 +1,1 @@
+/* Jedes JavaScript hier wird für alle Oasis Benutzer für jede Seite geladen. */

@@ -1,0 +1,1 @@
+importScript("http://de.wikipedia.org/w/index.php?title=Benutzer:PDD/markAdmins.js&action=raw&ctype=text/javascript&smaxage=21600&maxage=86400Benutzer:PDD/markAdmins.js"); // [[Benutzer:PDD/markAdmins.js]]

@@ -1,0 +1,1 @@
+/*okoń pomocy*/

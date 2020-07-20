@@ -1,0 +1,1 @@
+window.WikiaNotificationexpiry = 10;

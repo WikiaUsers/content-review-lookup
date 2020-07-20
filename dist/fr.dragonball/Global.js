@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:BackToTopButton/code.js', 'dev');

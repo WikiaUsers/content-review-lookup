@@ -1,0 +1,1 @@
+importScriptPage('MarkForDeletion/code.js', 'dev');

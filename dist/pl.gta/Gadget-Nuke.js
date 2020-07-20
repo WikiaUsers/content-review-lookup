@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:Nuke/code.js', 'dev');

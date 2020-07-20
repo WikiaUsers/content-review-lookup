@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:FixAdminKick/code.js','dev');

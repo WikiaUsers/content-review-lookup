@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:Translator/Translator.js', 'dev');

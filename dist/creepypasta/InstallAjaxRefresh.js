@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:AjaxRefresh.js');   //Ajax Refresh

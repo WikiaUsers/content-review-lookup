@@ -1,0 +1,6 @@
+$(function() {
+  if(skin == "oasis") {
+    $("<section class='WikiaPagesOnWikiModule module'><a class='wikia-button createpage' title='Create a new page on this wiki' href='/wiki/Special:CreatePage'><img width='0' height='0' class='sprite new' src='data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D'> Add a Page</a><div style='margin-top:5px; align:center'><table style='width:100%'><td style='*'>You can now come and <a href='http://poptropica.wikia.com/wiki/Poptropica_Wiki:Create_a_Idea'>create your own idea!</a><br /></td><td style='*'>You can now <a href='http://poptropica.wikia.com/wiki/Special:Chat?useskin=oasis' id='chatjs'>chat</a>with other editors! Feel free to stop by and try it out. <a href='/wiki/Poptropica_Wiki:Create_a_Idea' title='You can now come and create you own Idea!'> <br /></td><td style='text-align:right; padding-left:5px;'><a href='http://poptropica.wikia.com/wiki/Special:Chat?useskin=oasis' id='chatjs'><img src='https://images.wikia.nocookie.net/poptropica/images/0/06/Poptropicawikiblack-whitefavicon.png' alt='Chat' border=0 height='34' width='47' /></a></td></tr></table></div>").insertBefore('.WikiaActivityModule');
+$('#WikiaPageHeader .tally').insertAfter('.WikiaPagesOnWikiModule a.createpage');
+
+    $('.ns-talk .WikiaPageHeader .wikia-menu-button').css('float','right');

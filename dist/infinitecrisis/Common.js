@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:Tooltip.js', 'joeplayground');

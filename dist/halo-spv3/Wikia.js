@@ -1,0 +1,1 @@
+//JS moved to Common.js so that it appears on Monobook too.

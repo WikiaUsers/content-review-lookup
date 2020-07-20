@@ -1,0 +1,1 @@
+console.info('Load general scripts from xmas pack');

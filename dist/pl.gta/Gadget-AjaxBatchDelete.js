@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:AjaxBatchDelete/code.2.js', 'dev');

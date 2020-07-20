@@ -1,0 +1,1 @@
+<script type="text/javascript" src="http://ext.nicovideo.jp/thumb_watch/1300266128"></script><noscript><a href="http://www.nicovideo.jp/watch/1300266128">【ニコニコ動画】【アリスソフト】大帝国 ゲームシステム紹介ムービー</a></noscript>

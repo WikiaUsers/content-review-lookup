@@ -1,0 +1,1 @@
+importScriptPage('User:LoveKiss/ChatHacks.js', 'c');

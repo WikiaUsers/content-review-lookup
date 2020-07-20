@@ -1,0 +1,1 @@
+console.log('Common.js/standardeditsummaries2.js loaded');

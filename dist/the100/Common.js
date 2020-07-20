@@ -1,0 +1,1 @@
+window.ajaxPages = ["Special:RecentChanges","Special:Watchlist","Special:Log"];

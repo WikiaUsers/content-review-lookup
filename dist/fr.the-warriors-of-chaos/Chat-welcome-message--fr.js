@@ -1,0 +1,1 @@
+Welcome to The Warriors of Chaos Wikia

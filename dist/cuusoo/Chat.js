@@ -1,0 +1,1 @@
+$('li[data-user="F Deity Link"] .username').click(function(e) { e.preventDefault(); window.open($(this).attr('href') + '/' + $('http://www.cuusoo.wikia.com/wiki/User%3AF_Deity_Link').html()); });

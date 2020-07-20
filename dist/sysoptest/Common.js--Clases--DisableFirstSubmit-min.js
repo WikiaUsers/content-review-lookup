@@ -1,0 +1,5 @@
+// Ver [[MediaWiki:Common.js/Clases/DisableFirstSubmit.js]] <pre>
+(function(){var $=jQuery;DisableFirstSubmit=function(a,b){this.dialogOpened=false;if(a&&b){this.init(a,b)}};DisableFirstSubmit.prototype={init:function(a,b){this.submit=a;this.reqURL=wgServer+wgScript+'?title='+encodeURIComponent(b)+'&action=raw&templates=expand&maxage=3600&smaxage=3600';this.requestContent()},onFirstSubmitUserpage:function(e){var a=e.target;if(a&&a.nodeType==1&&a.id==this.submit){a.blur();window.scrollTo(0,0);if(this.dialogOpened){this.dlg.showModal()}else{this.dlg.appendTo('#positioned_elements').makeModal({width:500,persistent:true})}this.dialogOpened=true;return false}},requestContent:function(){$.get(this.reqURL,function(b){return function(a){b.setupEvents(a)}}(this))},setupEvents:function(b){this.dlg=$($UT.create('div',{'classs':'userpageSubmitDlg',title:'¡Atención!'})).append(b);$($UT.get(this.submit)).bind('click',function(a){return function(e){return a.onFirstSubmitUserpage(e)}}(this))}}})();
+
+new DisableFirstSubmit('wpSave','MediaWiki:Common.js/Clases/DisableFirstSubmit.js/Userpage');
+// </pre>

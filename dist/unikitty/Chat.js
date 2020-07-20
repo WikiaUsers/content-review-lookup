@@ -1,0 +1,1 @@
+dev:MediaWiki:EmoticonsWindow/code.js

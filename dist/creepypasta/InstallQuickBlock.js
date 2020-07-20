@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:QuickBlock.js');   //Quick Block

@@ -1,0 +1,1 @@
+#WEITERLEITUNG [[MediaWiki:Common.js/Angriffsstrategien.js]]

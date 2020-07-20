@@ -1,0 +1,1 @@
+if (wgUserName != null) $("span.insertusername").html(wgUserName);

@@ -1,0 +1,1 @@
+/* Umieszczony tutaj kod JavaScript NIE ZADZIAŁA, nie baw się bo coś zniszczysz. Pozdrawiam - RebelRat */

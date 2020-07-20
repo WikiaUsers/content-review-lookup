@@ -1,0 +1,1 @@
+console.log('Log from https://rikitiki.wikia.com/wiki/MediaWiki:Alert.js (QATestsStaff)');

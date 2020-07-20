@@ -1,0 +1,10 @@
+console.log('Niko : 9');
+console.log('Niko : 8');
+console.log('Niko : 7');
+console.log('Niko : 6');
+console.log('Niko : 5');
+console.log('Niko : 4');
+console.log('Niko : 3');
+console.log('Niko : 2');
+console.log('Niko : 1');
+console.log('Niko : 0');

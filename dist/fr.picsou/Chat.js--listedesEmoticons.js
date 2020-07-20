@@ -1,0 +1,1 @@
+#REDIRECTION [[MediaWiki:Chat.js/listaEmoticons.js]]

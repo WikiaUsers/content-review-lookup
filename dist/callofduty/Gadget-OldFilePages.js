@@ -1,0 +1,1 @@
+importScriptURI("https://raw.github.com/sactage/wikia-js-snippets/master/OldFilePages.js");

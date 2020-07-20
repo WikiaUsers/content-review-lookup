@@ -1,0 +1,1 @@
+highlight = { selectAll: true, chatmoderator: 'COLOR PARA MODERADORES DEL CHAT', rollback: 'REVERSORES', sysop: 'ADMINISTRADORES' bureaucrat: 'BURÓCRATAS'  }; importArticles({ type: 'script', articles: [ 'u:dev:HighlightUsers/code.js' ] });

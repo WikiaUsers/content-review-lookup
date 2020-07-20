@@ -1,0 +1,20 @@
+importArticles({
+    type: "script",
+    articles: [
+        "w:c:dev:Countdown/code.js"
+    ]
+});/* Any JavaScript here will be loaded for all users on every page load. */
+
+/** == Collapsible tables == **/
+/* importScriptPage('Project:JS/collapse.js', 'keroro'); */
+importScriptPage('Project:JS/ShowHideHC.js', 'keroro');
+
+
+/** == Hiding == **/
+importScriptPage('Project:JS/hide.js', 'keroro');
+
+
+/** == Tabber == **/
+importScriptPage('Project:JS/tabber.js', 'keroro');
+
+(end);

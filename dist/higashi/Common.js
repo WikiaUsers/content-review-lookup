@@ -1,0 +1,319 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
+// impart('MediaWiki:Snow.js');
+// Shortcut for importArticle
+function impart(article) {
+    importArticle({ type: 'script', article: article });
+}
+
+jQuery.fx.interval = 80;
+
+window.railWAM = {
+     logPage:'Template:WAM Log',
+     loadOnPage:'Special:WikiActivity',
+     loadOnNamespace:[-1],
+     lang:'vi'
+};
+
+window.DragDropUploader = true;
+
+window.mbLoadingOpacity = 1;
+
+window.ajaxCallAgain = window.ajaxCallAgain || [];
+window.ajaxCallAgain.push(function() {
+    $('.rc-conntent, .activityfeed')
+        .find('a')
+        .each(function() {
+            if ($(this).attr('href') !== '#') {
+                $(this).attr('target', '_blank');
+            }
+        });
+});
+
+window.ajaxPages = ["Special:NewPages", "Special:ListFiles", "Higashi_New_Pages", "Higashi_Real-Time_Feed"];
+window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Watchlist", "Log", "Images", "Videos"];
+window.AjaxRCRefreshText = "Auto-refresh";
+window.AjaxRCRefreshHoverText = "Tự động làm mới trang sau mỗi 60 giây";
+window.ajaxIndicator = "https://images.wikia.nocookie.net/__cb20100617113123/dev/images/6/6a/Snake_throbber.gif";
+
+window.PurgeButtonText = 'Làm mới trang';
+
+window.nullEditDelay = 1000;
+
+window.lastEdited = {
+    avatar: true,
+    avatarsize: 25,
+    size: false,
+    diff: true,
+    comment: false,
+    time: 'timeago',
+    lang: 'vi',
+    namespaces: {
+        include: [],
+        exclude: []
+    },
+    pages: []
+};
+
+window.ThreadIndicator = {
+    padlockTitle: "Thớt này đã bị khóa",
+    highlightTitle: "Thớt nổi bật! Xem ngay!"
+};
+// General code
+importArticles({
+    type: 'script',
+    articles: [
+        'u:higashi:MediaWiki:CategoryTOC.js',
+        'u:higashi:MediaWiki:Common.js/Skin_Switch_Button.js',
+        'u:higashi:MediaWiki:DeadVideos.js',
+        'u:higashi:MediaWiki:Forum.js',
+        'u:higashi:MediaWiki:GA.js',
+        'u:higashi:MediaWiki:MaintenanceReport.js',
+        'u:higashi:MediaWiki:New_Tab.js',
+        'u:higashi:MediaWiki:Nhac.js',
+        'u:higashi:MediaWiki:Other.js',
+        'u:higashi:MediaWiki:PowerPageMaker.js',
+        'u:higashi:MediaWiki:Reddit_Widget.js',
+        'u:higashi:MediaWiki:StarRatings/code.js',
+        'u:higashi:MediaWiki:StarRatings/stats.js',
+        'u:higashi:MediaWiki:StarRatings/ui.js',
+        'u:shigashi:MediaWiki:TopAndDownButtons2.js',
+        'u:higashi:MediaWiki:Nav_Poppup_Viet.js',
+        'u:higashi:MediaWiki:Navigation_popups.js',
+        'u:higashi:MediaWiki:CatNav.js',
+        'u:higashi:MediaWiki:Vertical_Tab.js',
+        'u:higashi:MediaWiki:Tabber.js'
+    ]
+});
+// Time Circles
+$(function() {
+    if (document.getElementsByClassName("countdown")[0] !== null) {
+        impart('MediaWiki:TimeCircles.js');
+    }
+});
+// For specific pages
+if (mediaWiki.config.get('wgPageName') === 'Higashi_Patrol') {
+    importStylesheet('User:Kenkyouta118/HigashiPatrol.css');
+    //impart('User:Kenkyouta118/HigashiPatrol.js');
+}
+if (mediaWiki.config.get('wgPageName') === 'Higashi_Real-Time_Feed') {
+    impart('MediaWiki:Rss.js');
+}
+if (mediaWiki.config.get('wgPageName') === 'Higashi_Statistics') {
+    impart('MediaWiki:WikiStats.js');
+}
+if (mediaWiki.config.get('wgPageName') === 'BakaTsuki:Recent_Changes') {
+    impart('u:dev:RecentChangesMultiple/code.2.js');
+}
+if (mediaWiki.config.get('wgPageName') === 'Higashi_Light_Novel') {
+    impart('MediaWiki:Mainpage.js');
+}
+// Cài đặt bộ gõ [[Wikipedia:Gõ tiếng Việt|AVIM]] từ Wikipedia tiếng Việt
+// Sửa đổi để chạy trên Wikia bởi Kenkyouta118
+if ((mediaWiki.config.get('wgPageName') !== 'Higashi_Light_Novel') && (mediaWiki.config.get('wgNamespaceNumber') === 0 || mediaWiki.config.get('wgNamespaceNumber') === 14 || mediaWiki.config.get('wgNamespaceNumber') === 500 || mediaWiki.config.get('wgNamespaceNumber') === 1202 || mediaWiki.config.get('wgNamespaceNumber') === 1200 || mediaWiki.config.get('wgNamespaceNumber') === 1201 || mediaWiki.config.get('wgNamespaceNumber') === 2000)) {
+    impart('MediaWiki:AVIM.js');
+    impart('MediaWiki:AVIM_portlet.js');
+}
+if (typeof wgIsEditPage != "undefined" || mw.util.getParamValue('action') == "edit" || mw.util.getParamValue('action') == "submit" || wgPageName == "Special:CreateBlogPage") {
+    impart('MediaWiki:StdTemplates.js');
+    impart('u:kangaroopower:MediaWiki:Scope.js/dev.js');
+}
+if ($("#mw-upload-form").size() || mw.util.getParamValue('DragDrop')) {
+    impart('MediaWiki:Common.js/DragDropUploader.js');
+}
+if (mw.config.get('wgNamespaceNumber') === 0 || mw.config.get('wgNamespaceNumber') === 500) {
+    impart('MediaWiki:Ebook.js');
+}
+// Tạm sửa cho MediaWiki:Group-sysop, hiện không load được
+if (mw.config.get("wgUserGroups").indexOf('sysop') > -1) {
+    impart('MediaWiki:Group-sysop.js');
+}
+
+// CUSTOM EDIT BUTTONS
+// This is based on the original code on Wikipedia:Tools/Editing tools
+// To disable this script, add <code>mwCustomEditButtons = [];<code>
+//   to [[Special:Mypage/common.js]]
+ 
+if (mwCustomEditButtons) {
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette2.wikia.nocookie.net/sonako/images/c/c8/Button_redirect.png',
+        'speedTip': 'Đổi hướng',
+        'tagOpen': '#REDIRECT [[',
+        'tagClose': ']]',
+        'sampleText': 'Tên trang để đổi hướng đến'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette2.wikia.nocookie.net/sonako/images/e/e9/Button_headline2.png',
+        'speedTip': 'Đề mục cấp 3',
+        'tagOpen': '=== ',
+        'tagClose': ' ===',
+        'sampleText': 'Chèn chữ'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette3.wikia.nocookie.net/sonako/images/b/b4/Button_category03.png',
+        'speedTip': 'Chèn Category',
+        'tagOpen': '[[Category:',
+        'tagClose': ']]',
+        'sampleText': 'Thể loại'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette2.wikia.nocookie.net/sonako/images/e/ea/Button_align_left.png',
+        'speedTip': 'Căn trái chữ',
+        'tagOpen': '<div style="text-align: left; direction: ltr; margin-left: 1em;">\n',
+        'tagClose': '\n<\/div>',
+        'sampleText': 'Chèn chữ'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette2.wikia.nocookie.net/sonako/images/5/5f/Button_center.png',
+        'speedTip': 'Center',
+        'tagOpen': '<center>',
+        'tagClose': '</center>',
+        'sampleText': 'Căn giữa chữ'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette4.wikia.nocookie.net/sonako/images/a/a5/Button_align_right.png',
+        'speedTip': 'Căn phải chữ',
+        'tagOpen': '<div style="text-align: right; direction: ltr; margin-left: 1em;">\n',
+        'tagClose': '\n<\/div>',
+        'sampleText': 'Chèn chữ'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette2.wikia.nocookie.net/sonako/images/1/13/Button_enter.png',
+        'speedTip': 'Cách dòng',
+        'tagOpen': '<br />',
+        'tagClose': '',
+        'sampleText': ''
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette1.wikia.nocookie.net/sonako/images/e/e1/Button_smiley.png',
+        'speedTip': 'Cách dòng hoàn toàn',
+        'tagOpen': '<br style="clear: both;" />',
+        'tagClose': '',
+        'sampleText': ''
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette3.wikia.nocookie.net/sonako/images/0/0d/Button_hr.png',
+        'speedTip': 'Vạch 1 đường ngang',
+        'tagOpen': '<hr />',
+        'tagClose': '',
+        'sampleText': ''
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette3.wikia.nocookie.net/sonako/images/1/12/Button_gallery.png',
+        'speedTip': 'Chèn gallery',
+        'tagOpen': '\n<gallery>\n',
+        'tagClose': '\n</gallery>',
+        'sampleText': 'File:Example.jpg|Caption1\nFile:Example.jpg|Caption2'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+		'imageFile': '//vignette4.wikia.nocookie.net/sonako/images/6/60/Button_insert_table.png',
+		'speedTip': 'Chèn bảng',
+		'tagOpen': '{| class="wikitable"\n|',
+		'tagClose': '\n|}',
+		'sampleText': '-\n! đầu 1\n! đầu 2\n! đầu 3\n|-\n| hàng 1, ô 1\n| hàng 1, ô 2\n| hàng 1, ô 3\n|-\n| hàng 2, ô 1\n| hàng 2, ô 2\n| hàng 2, ô 3'
+    };	
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette1.wikia.nocookie.net/sonako/images/3/31/HighlightButton.png',
+        'speedTip': 'Bôi vàng nền chữ',
+        'tagOpen': '<span style="background:yellow">',
+        'tagClose': '</span>',
+        'sampleText': 'Chữ được bôi vàng'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette3.wikia.nocookie.net/sonako/images/c/c9/Button_strike.png',
+        'speedTip': 'Gạch ngang',
+        'tagOpen': '<s>',
+        'tagClose': '</s>',
+        'sampleText': 'Chữ bị gạch'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette2.wikia.nocookie.net/sonako/images/f/fd/Button_underline.png',
+        'speedTip': 'Gạch dưới',
+        'tagOpen': '<u>',
+        'tagClose': '</u>',
+        'sampleText': 'Chữ gạch dưới'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette1.wikia.nocookie.net/sonako/images/2/23/Button_code.png',
+        'speedTip': 'Code',
+        'tagOpen': '<code>',
+        'tagClose': '</code>',
+        'sampleText': 'Code text'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette2.wikia.nocookie.net/sonako/images/8/80/Button_upper_letter.png',
+        'speedTip': 'Chữ mũ',
+        'tagOpen': '<sup>',
+        'tagClose': '</sup>',
+        'sampleText': 'Chữ mũ'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette1.wikia.nocookie.net/sonako/images/7/70/Button_lower_letter.png',
+        'speedTip': 'Chữ nhỏ dưới',
+        'tagOpen': '<sub>',
+        'tagClose': '</sub>',
+        'sampleText': 'Chữ nhỏ dưới'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette1.wikia.nocookie.net/sonako/images/f/fd/Button_blockquote.png',
+        'speedTip': 'Chèn đoạn văn trích dẫn',
+        'tagOpen': '<blockquote>\n',
+        'tagClose': '\n</blockquote>',
+        'sampleText': 'Đoạn trích dẫn'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette3.wikia.nocookie.net/sonako/images/7/72/Button_span_2.png',
+        'speedTip': 'Span',
+        'tagOpen': '<span>',
+        'tagClose': '</span>',
+        'sampleText': 'Span Text'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette1.wikia.nocookie.net/sonako/images/d/d4/Button_div.png',
+        'speedTip': 'Div',
+        'tagOpen': '<div>',
+        'tagClose': '</div>',
+        'sampleText': 'Div Text'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette4.wikia.nocookie.net/sonako/images/7/74/Button_comment.png',
+        'speedTip': 'Chèn chú thích ẩn',
+        'tagOpen': '<!-- ',
+        'tagClose': ' -->',
+        'sampleText': 'Chú thích'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette4.wikia.nocookie.net/sonako/images/5/56/Button_big.png',
+        'speedTip': 'Chữ to',
+        'tagOpen': '<big>',
+        'tagClose': '</big>',
+        'sampleText': 'Chèn chữ'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette3.wikia.nocookie.net/sonako/images/5/58/Button_small.png',
+        'speedTip': 'Chữ nhỏ',
+        'tagOpen': '<small>',
+        'tagClose': '</small>',
+        'sampleText': 'Chèn chữ'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette4.wikia.nocookie.net/sonako/images/1/11/Btn_toolbar_liste.png',
+        'speedTip': 'Danh sách kiểu chấm',
+        'tagOpen': '\n* ',
+        'tagClose': '\n* Số 1\n* Số 2',
+        'sampleText': 'Tên danh sách'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette2.wikia.nocookie.net/sonako/images/8/88/Btn_toolbar_enum.png',
+        'speedTip': 'Danh sách kiểu số',
+        'tagOpen': '\n# ',
+        'tagClose': '\n# Số 1\n# Số 2',
+        'sampleText': 'Tên danh sách'
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        'imageFile': '//vignette1.wikia.nocookie.net/sonako/images/d/d3/Button_definition_list.png',
+        'speedTip': 'Danh sách kiểu định nghĩa',
+        'tagOpen': '\n; ',
+        'tagClose': '\n: Số 1\n: Số 2',
+        'sampleText': 'Tên danh sách'
+    };
+}

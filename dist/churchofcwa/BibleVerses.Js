@@ -1,0 +1,1 @@
+#REDIRECT [[MediaWiki:BibleVerses.js]]

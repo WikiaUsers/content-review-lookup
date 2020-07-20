@@ -1,0 +1,1 @@
+window.BackToTopText = "Scroll to top"

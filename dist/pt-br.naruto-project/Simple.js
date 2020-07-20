@@ -1,0 +1,1 @@
+/* Qualquer JavaScript aqui colocado afetará os usuários do skin Simples */

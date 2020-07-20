@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:NoLightBox.js');   //Kills Lightbox

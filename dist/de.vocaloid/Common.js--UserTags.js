@@ -1,0 +1,14 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
+ 
+/* http://dev.wikia.com/wiki/UserTags */
+/* User profile header custom tags */
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		sysop: { link:'Project:Administrators' },
+		rollback: { link:'Project:Rollback' }
+	}
+};
+window.UserTagsJS.modules.inactive = 30;
+window.UserTagsJS.modules.mwGroups = ['rollback', 'sysop', 'bot', 'bot-global'];
+importArticle({type:'script', article:'w:c:dev:UserTags/code.min.js'});

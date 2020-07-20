@@ -1,0 +1,2 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
+$(function() { $.get(mw.util.wikiScript('api'), { action: 'parse', page: 'Crystal_Prism_Wiki:Rules', format: 'json' }, function(data) { $('.WikiaRail').append('<section class="module module-custom">' + data.parse.text['*'] + '</section>'); }); });

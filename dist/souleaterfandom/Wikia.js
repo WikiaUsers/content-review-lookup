@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:MultipleFileDelete/code.js', 'dev');

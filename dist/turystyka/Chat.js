@@ -1,0 +1,1 @@
+importScriptPage('User:Wedkarski/chatpack.js', 'wedkarski');

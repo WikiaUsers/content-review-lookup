@@ -1,0 +1,1 @@
+$("a.pph-button[data-tracking='edit-dropdown'] + ul.pph-dropdown").prepend($('<li><a id="ca-purge" href="?action=purge">Purge</a></li>'));

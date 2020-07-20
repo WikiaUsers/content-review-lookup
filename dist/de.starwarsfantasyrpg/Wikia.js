@@ -1,0 +1,51 @@
+// <pre>
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+// ================================================================================
+/** CSS einbinden */
+ function addCSS(title) {
+     document.write(
+                '<style type="text/css">/*<![CDATA[*/ @import "/index.php?title=' + 
+                encodeURIComponent(title) + '&action=raw&ctype=text/css"; /*]]>*/</style>');
+ }
+ 
+ /** JS einbinden */
+ function addJS(title) {
+     document.write(
+                '<scr'+'ipt type="text/javascript" src="/index.php?title=' +
+                encodeURIComponent(title) + '&action=raw&ctype=text/javascript"></scr'+'ipt>');
+ }
+
+ // Import [[MediaWiki:Onlyifuploading.js]] 
+ 
+ if ( wgCanonicalSpecialPageName == "Upload" ) {
+      document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Onlyifuploading.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
+ }
+
+
+//-------------------------------------------------------------------------------------
+//Fügt Vorlage:Dateiinfo auf Spezial:Hochladen ein....Zum Testen
+ 
+function setSpecialUploadTemplate() {
+  if (wgPageName=="Spezial:Hochladen") {
+    var editbox=document.getElementById("wpUploadDescription");
+    if (editbox.value == '') {
+      editbox.value = "{"+"{Dateiinfo\n"
+                 + "|Beschreibung=\n"
+                 + "|Lizenz=\n"
+                 + "|Quelle=\n"
+                 + "|Künstler=\n"
+                 + "|Kategorien=\n"
+                 + "}"+"}";
+    }
+  }
+} 
+addOnloadHook(setSpecialUploadTemplate);
+ 
+hookEvent( 'load', function() {
+//currentFocused ist eine Variable von [[MediaWiki:Edittools]], siehe /w/skins/common/edit.js
+currentFocused=document.getElementById("wpUploadDescription");
+});
+
+
+
+//<pre>

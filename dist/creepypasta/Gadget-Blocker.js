@@ -1,0 +1,1 @@
+importScriptPage('MessageBlocker/code.js', 'dev');

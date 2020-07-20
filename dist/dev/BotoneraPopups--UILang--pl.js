@@ -1,0 +1,45 @@
+/*<source lang="javascript">*/
+if (!window.BotoneraPopups) {
+	window.BotoneraPopups = {};
+}
+window.BotoneraPopups.uilang = $.extend(window.BotoneraPopups.uilang, {
+	close: '[x]',
+	change: 'Zmień',
+	ns0: 'Artykuł',
+	talk: 'Dyskusja',
+	actions: 'Działania',
+	edit: 'Edytuj',
+	newsec: '+',
+	hist: 'Historia',
+	'delete': 'Usuń',
+	protect: 'Zabezpiecz',
+	purge: 'Odśwież',
+	user: 'Użytkownik',
+	contribs: 'Wkład',
+	block: 'Blokada',
+	userlogs: 'Rejestry',
+	blocks: 'Blokady',
+	article: 'Artykuł',
+	links: 'Linki',
+	search: 'Szukaj',
+	prefix: 'Prefix',
+	move: 'Przenieś',
+	logs: 'Rejestry',
+	undelete: 'Odtwórz',
+	curdiff: 'Aktualny różn.',
+	diff: 'Różn.',
+	diffcur: 'Aktualna',
+	diffedit: '(edytuj)',
+	diffprev: '&larr; Poprzedni',
+	diffnext: '&rarr; Następny',
+	rollback: 'Rollback',
+	hiderb: 'Ukryj RC',
+	nodiff: 'Bez różn.',
+	rbmsg: 'Powód',
+	opt: 'Opcje',
+	previewfe: 'Podgląd',
+	diffnoprev: 'Różn. bez podglądu',
+	rbreason: 'Powód cofnięcia',
+	changeprompt: 'Zmień stronę docelową'
+});
+/*</source>*/

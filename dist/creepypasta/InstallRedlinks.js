@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:Redlinks.js');   //Redlinks Fixer

@@ -1,0 +1,1 @@
+#перенаправление [[MediaWiki:Common.js/LastEdited.js]]

@@ -1,0 +1,5 @@
+(function ($, mw) {
+    
+    
+    
+}(jQuery, mediaWiki));

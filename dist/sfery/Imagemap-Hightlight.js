@@ -1,0 +1,1 @@
+mw.loader.load('//he.wikipedia.org/w/index.php?title=Mediawiki:Scripts/Imagemap-Highlight.js&action=raw&ctype=text/javascript');

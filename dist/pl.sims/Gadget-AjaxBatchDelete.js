@@ -1,0 +1,1 @@
+importScriptPage ( 'AjaxBatchDelete/code.js', 'dev' ) ;

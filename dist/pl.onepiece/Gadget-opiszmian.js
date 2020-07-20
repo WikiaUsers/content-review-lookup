@@ -1,0 +1,1 @@
+importArticle({ type: 'script', article: 'u:pl.tes:MediaWiki:Summaries.js' });

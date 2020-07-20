@@ -1,0 +1,1 @@
+$("a").attr("href",function(i,n){return window.location.hostname===this.hostname?n+"?useskin=wikiamobile":void 0});

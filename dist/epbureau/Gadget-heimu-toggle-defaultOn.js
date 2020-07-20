@@ -1,0 +1,1 @@
+if (mw.config.get('AnnToolsHeimuToggleDefaultOn')) $('#heimu_toggle').click(); else mw.config.set('AnnToolsHeimuToggleDefaultOn', true);

@@ -1,0 +1,1 @@
+mw.loader.load('https://pl.wikipedia.org/w/index.php?title=MediaWiki:Gadget-edithysteria.js&action=raw&ctype=text/javascript');

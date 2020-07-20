@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:Wikia.js', 'ajanswers');

@@ -1,0 +1,1 @@
+importScriptPage('User:' + mw.config.get("wgUserName") + '', 'c');

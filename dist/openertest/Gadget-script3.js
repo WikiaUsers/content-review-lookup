@@ -1,0 +1,1 @@
+console.log('Gadget3: 1');

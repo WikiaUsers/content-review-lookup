@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:ChatHacks.js','dev');

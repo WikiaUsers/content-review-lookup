@@ -1,0 +1,4 @@
+ajaxPages = ["Specjalna:WikiActivity","Specjalna:Ostatnie_zmiany","Specjalna:WikiActivity/watchlist","Specjalna:Rejestr","Forum:Strona_główna","Specjalna:Nowe_pliki","Kategoria:Do_poprawy","Kategoria:Do_skategoryzowania","Kategoria:Zalążek_artykułu","Specjalna:Statystyka","Specjalna:Potrzebne_strony","Specjalna:Potrzebne_szablony","MediaWiki:Wikia.css","Special:DoubleRedirects","MediaWiki:Common.js","Specjalna:Aktywność_na_wiki","MediaWiki:Common.js/chatango.js"];
+AjaxRCRefreshText = 'Auto-odświeżanie';
+AjaxRCRefreshHoverText = 'Automatycznie aktualizuje zawartość tej strony';
+importScriptPage('AjaxRC/code.js', 'dev');

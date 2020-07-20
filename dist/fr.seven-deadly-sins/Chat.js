@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:ChatOptions/fr/code.js', 'dev');

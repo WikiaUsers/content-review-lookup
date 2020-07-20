@@ -1,0 +1,1 @@
+whb=document.createElement("div");whb.id="WikiHeaderBackground2";whb.style.height=document.getElementById("WikiHeader").offsetHeight+"px";whb.style.width=document.getElementById("WikiaPage").clientWidth+"px";document.getElementById("WikiaPageBackground").appendChild(whb);

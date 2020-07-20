@@ -1,0 +1,1 @@
+importScriptPage('PowerPageMaker/code.js', 'dev');

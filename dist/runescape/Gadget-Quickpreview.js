@@ -1,0 +1,1 @@
+importScript('User:Quarenon/quickpreview.js');

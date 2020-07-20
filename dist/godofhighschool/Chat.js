@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:Emoticons.js', 'kocka');// Adds a window with all emoticons listed

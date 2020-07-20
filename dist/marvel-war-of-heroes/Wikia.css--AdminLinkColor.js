@@ -1,0 +1,1 @@
+#REDIRECT [[MediaWiki:Wikia.css/AdminLinkColor.css]]

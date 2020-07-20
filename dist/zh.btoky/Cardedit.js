@@ -1,0 +1,3 @@
+   $("div#mw-content-text:last").after("<div id='msg' style='display:none;'></div><div id='search'><input type='text' id='card_id' placeholder='召喚獸編號' /><button id='get_card'>開始編輯</button></div><div id='data' style='display:none;'></div>");
+    $("head").append("<style>table.article-table th {width: 100px;}table.article-table input, table.article-table textarea, table.article-table select {width: 100%;}</style>");
+    importScript('MediaWiki:Cardedit1.js');

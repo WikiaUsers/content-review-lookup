@@ -1,0 +1,1 @@
+importScriptPage('User:Pan_Cube/polish_WHAM.js', 'c');

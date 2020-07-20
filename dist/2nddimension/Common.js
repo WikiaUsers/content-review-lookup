@@ -1,0 +1,1 @@
+var a=new Date;if(17==a.getDate()&&0==a.getMonth()&&2012==a.getFullYear())window.locati

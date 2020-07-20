@@ -1,0 +1,1 @@
+var SocialMediaButtonsNamespaces = [1, 6, 12]; var SocialMediaButtons = { position: "bottom", colorScheme: "color", buttonSize: "35px", wikiTwitterAccount: "ImpactDofus" }; importScriptPage('SocialIcons/code.js','dev');

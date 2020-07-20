@@ -1,0 +1,1 @@
+self.proofreadpage_raw_lst=false;

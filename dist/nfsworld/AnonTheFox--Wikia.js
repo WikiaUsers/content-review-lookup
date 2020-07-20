@@ -1,0 +1,1 @@
+importScriptPage('SearchGoButton/code.js', 'dev');

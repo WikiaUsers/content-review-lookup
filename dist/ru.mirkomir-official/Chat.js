@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:AnonymousChatAnnouncements/code.js','dev');

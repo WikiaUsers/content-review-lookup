@@ -1,0 +1,1 @@
+importScriptPage('ShowHide/code.js', 'dev'); var ShowHideConfig = {  autoCollapse: 3 es: { show: "mostrar", hide: "ocultar", showAll: "mostrar todo", hideAll: "ocultar todo" } };

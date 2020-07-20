@@ -1,0 +1,1 @@
+$("[class^=mw-customtoggle-]").click(function(){$(this).html($("#"+$(this).attr("class").replace($(this).attr("class").split(/^mw-customtoggle-\S*/)[1],"").replace("toggle","collapsible")+".mw-collapsed").length>0?function(a,b){return b.replace("Hide","Show")}:function(a,b){return b.replace("Show","Hide")})});

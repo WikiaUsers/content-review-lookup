@@ -1,0 +1,1 @@
+/* Please see (and use!) MediaWiki:Wikia.js */

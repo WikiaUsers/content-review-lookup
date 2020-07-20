@@ -1,0 +1,3 @@
+SpoilerAlert = {
+  'class': "Spoiler",
+}

@@ -1,0 +1,1 @@
+importScriptPage('CollapsibleInfobox/code.js', 'dev');

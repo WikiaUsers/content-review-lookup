@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:InterWiki.js', 'internal-community');

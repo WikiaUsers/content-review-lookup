@@ -1,0 +1,14 @@
+/* Allows for editing user talk archive pages on wikis with Message Wall enabled */
+
+if (
+	window.EditUserTalkArchiveLoaded ||
+	!/sysop|vstf|staff|helper|wiki-manager|content-team-member|content-volunteer/.test(mw.config.get('wgUserGroups').join())
+) {
+	return;
+}
+if (mw.config.get('wgNamespaceNumber') === 1200 && mw.config.get('wgTitle').endsWith("/User talk archive")) {
+	var uta_link = mw.util.getUrl("User_talk:") + wgTitle.replace("/User talk archive", "");
+	$(".page-header__contribution-buttons").append("<div class='wds-button-group'><a href='" + uta_link + "?action=edit' class='wds-button' id='ca-edit' data-tracking='ca-edit' accesskey='e'><svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 18 18' class='wds-icon wds-icon-small' id='wds-icons-pencil-small'><defs><path id='pencil-small' d='M14 8.586L9.414 4 11 2.414 15.586 7 14 8.586zM6.586 16H2v-4.586l6-6L12.586 10l-6 6zm11.121-9.707l-6-6a.999.999 0 0 0-1.414 0l-9.999 10a.99.99 0 0 0-.217.325A.991.991 0 0 0 0 11v6a1 1 0 0 0 1 1h6c.13 0 .26-.026.382-.077a.99.99 0 0 0 .326-.217l9.999-9.999a.999.999 0 0 0 0-1.414z'></path></defs><use fill-rule='evenodd' xlink:href='#pencil-small'></use></svg><span>Edit</span></a><div class='wds-dropdown'><div class='wds-button wds-dropdown__toggle'><svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 12 12' class='wds-icon wds-icon-tiny wds-dropdown__toggle-chevron' id='wds-icons-dropdown-tiny'><defs><path id='dropdown-tiny-a' d='M6.0001895,8.80004571 C5.79538755,8.80004571 5.5905856,8.72164496 5.43458411,8.56564348 L2.23455364,5.365613 C2.00575146,5.13681083 1.93695081,4.79280755 2.06095199,4.4936047 C2.18415316,4.19440185 2.47695595,4 2.80015903,4 L9.20021997,4 C9.52342305,4 9.81542583,4.19440185 9.93942701,4.4936047 C10.0634282,4.79280755 9.99462754,5.13681083 9.76582536,5.365613 L6.56579489,8.56564348 C6.4097934,8.72164496 6.20499145,8.80004571 6.0001895,8.80004571 Z'></path></defs><use fill-rule='evenodd' xlink:href='#dropdown-tiny-a'></use></svg></div><div class='wds-dropdown__content wds-is-not-scrollable wds-is-right-aligned'><ul class='wds-list wds-is-linked'><li><a id='ca-history' href='" + uta_link + "?action=history' data-tracking='ca-history-dropdown'>History</a></li><li><a id='ca-protect' href='" + uta_link + "?action=protect' data-tracking='ca-protect-dropdown'>Protect</a></li><li><a id='ca-delete' href='" + uta_link + "?action=delete' data-tracking='ca-delete-dropdown'>Delete</a></li><li><a href='" + uta_link + "?action=watch'>Follow</a></li></ul></div></div></div>");
+}
+
+window.EditUserTalkArchiveLoaded = true;

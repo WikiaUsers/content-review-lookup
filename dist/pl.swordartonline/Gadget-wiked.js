@@ -1,0 +1,1 @@
+importArticles({type:"script",articles:["u:pl.elderscrolls:MediaWiki:Gadget-wiked.js"]});

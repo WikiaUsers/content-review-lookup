@@ -1,0 +1,1 @@
+var proofreadpage_show_headers=true;

@@ -1,0 +1,9 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
+
+/* 
+////////////////////////////////////////////////////////////////
+// THE BELOW CODE HELPS MAKE THE NAVIGATION TEMPLATE COLLAPSIBLE
+////////////////////////////////////////////////////////////////
+*/
+ 
+importScriptPage('ShowHide/code.js', 'dev');

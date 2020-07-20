@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:Rollback+Vandalism.js');   //Rollback + Vandalism

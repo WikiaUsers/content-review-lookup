@@ -1,0 +1,4 @@
+/* O código Javascript colocado aqui será carregado para todos os utilizadores em cada carregamento de página */
+
+// Navegação no menú de usuário 
+function subeEnlacesUtiles(){$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Especial:Contribuições/'+ encodeURIComponent(wgUserName) +'">Contribuições</a></li>');$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Blog_de_Usuário:'+ encodeURIComponent(wgUserName) +'" title="Minhas entradas de blog">Entradas de Blog</a></li>');$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Utilizador:'+ encodeURIComponent(wgUserName) +'/wikia.css" title="Sua aparência pessoal">Minha Aparência</a></li>');$('.WikiaHeader nav ul li:first-child');}addOnloadHook(subeEnlacesUtiles);

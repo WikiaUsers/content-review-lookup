@@ -1,0 +1,3 @@
+$('#ChatHeader').append('<form style="display:inline-block;position:absolute;top:7px;right:190px;z-index:9001;" method="get" action="Служебная:Search?title=Служебная:Search" class="WikiaSearch" id="WikiaSearch" target="_blank"><input type="text" accesskey="f" autocomplete="off" placeholder="    " name="search"><input type="hidden" value="0" name="fulltext"><button class="secondary">Поиск</button></form>');
+ 
+$('.ChatHeader form.WikiaSearch').submit(function() {setTimeout("$('form.WikiaSearch input[name=\"search\"]').attr('value', '')", 500)});

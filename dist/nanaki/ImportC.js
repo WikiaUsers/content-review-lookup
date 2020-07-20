@@ -1,0 +1,1 @@
+$('#import-test-c').css('color', 'green').text('YES');

@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:ShowHide/code.js', 'dev');

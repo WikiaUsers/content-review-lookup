@@ -1,0 +1,1 @@
+#перенаправление [[MediaWiki:Kopcap94/CD.js]]

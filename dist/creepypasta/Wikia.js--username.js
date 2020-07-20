@@ -1,0 +1,1 @@
+$("span.insertusername").html(wgUserName);

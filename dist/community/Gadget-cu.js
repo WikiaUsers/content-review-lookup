@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:QuickCU.js', 'internal-community');

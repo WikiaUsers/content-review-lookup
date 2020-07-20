@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:ChatAnnouncements/code.js','dev');

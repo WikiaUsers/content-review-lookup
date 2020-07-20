@@ -1,0 +1,1 @@
+$('head').append('<link rel="stylesheet" type="text/css" href="http://pl.gta.wikia.com/load.php?debug=false&lang=en&mode=articles&articles=u:dev:MediaWiki:PseudoMonobook.css&only=styles" />');

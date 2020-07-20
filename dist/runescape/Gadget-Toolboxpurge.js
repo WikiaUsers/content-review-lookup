@@ -1,0 +1,1 @@
+importScript('User:Quarenon/purge.js');

@@ -1,0 +1,2 @@
+// sets the .3dPetModel class with an iframe pointing towards our api which will display 3d view
+$(".3dPetModel").replaceWith("<iframe src='http://ps2-wiki-api.glitch.me/render-pet?petName=" + $(".3dPetModel").attr("data-name") + "' width='310' height='310'/>");

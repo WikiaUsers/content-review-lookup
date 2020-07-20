@@ -1,0 +1,1 @@
+$('.WikiaRail').append('<section class="module">

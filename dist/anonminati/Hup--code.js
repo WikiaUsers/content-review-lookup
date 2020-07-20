@@ -1,0 +1,1 @@
+mainRoom.chats.privates[mainRoom.activeRoom].viewDiscussion.chatDiv.empty()

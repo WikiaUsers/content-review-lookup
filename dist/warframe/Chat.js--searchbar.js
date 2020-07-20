@@ -1,0 +1,5 @@
+//Credit to the Call of Duty Wikia for base code, however provided non functional. 
+//Trying out fixes for our local wikia
+$('#ChatHeader').append('<form style="display:inline-block;position:absolute;top:7px;right:190px;z-index:9001;" method="get" action="http://warframe.wikia.com/wiki/Special:Search?title=Special:Search" class="WikiaSearch" id="WikiaSearch" target="_blank"><input type="text" accesskey="f" autocomplete="off" placeholder="Quick search" name="search"><input type="hidden" value="0" name="fulltext"><button class="secondary"><img height="14px" class="sprite search" src="https://images.wikia.nocookie.net/__cb20150716180026/warframe/images/b/b6/Chat_Search_icon.png"></button></form>');
+ 
+$('.ChatHeader form.WikiaSearch').submit(function() {setTimeout("$('form.WikiaSearch input[name=\"search\"]').attr('value', '')", 500)});

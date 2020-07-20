@@ -1,0 +1,1 @@
+importScriptPage("CategoryRenameAuto-update/code.js", "dev");

@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:ReferencePopups/code.js', 'dev');

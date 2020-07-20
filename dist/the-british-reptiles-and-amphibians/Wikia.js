@@ -1,0 +1,2 @@
+// flag counter? yeah!
+$(".WikiaRail").append('<a href="http://info.flagcounter.com/YL68"><img src="http://s05.flagcounter.com/count/YL68/bg_02D602/txt_000063/border_FF0000/columns_4/maxflags_250/viewers_0/labels_0/pageviews_1/flags_1/" alt="Free counters!" border="0"></a></a><br><a href="http://flagcounter.com/">Free counters</a>. Created on October 25 \'2013. <small><i style="font-style:italic">This flag counter is neither endorsed nor supported by Wikia.</i></small></div>')

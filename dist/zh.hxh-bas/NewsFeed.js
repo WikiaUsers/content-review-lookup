@@ -1,0 +1,2 @@
+/* This is a JS for iframe to show the NewFeed on the Frontpage */
+$("#iframeloader-newfeed").replaceWith('<iframe src="http://hxh-ball.channel.or.jp/hnt/info/information/" width="380" height ="300" allowtransparency="yes">');

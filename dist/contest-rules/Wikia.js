@@ -1,0 +1,4 @@
+/* Rage sweepstakes form */
+if ( mw.config.get('wgArticleId') === 83 ) {
+    $('body').append("<a class='typeform-share button' href='https://brettbates.typeform.com/to/C1RhZK' data-mode='popup' data-auto-open=true data-hide-headers=true data-submit-close-delay=15 ata-hide-footer=true target='_blank'></a><script> (function() { var qs,js,q,s,d=document, gi=d.getElementById, ce=d.createElement, gt=d.getElementsByTagName, id='typef_orm_share', b='https://embed.typeform.com/'; if(!gi.call(d,id)){ js=ce.call(d,'script'); js.id=id; js.src=b+'embed.js'; q=gt.call(d,'script')[0]; q.parentNode.insertBefore(js,q) } })() </script>");
+}

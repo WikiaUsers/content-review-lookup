@@ -1,0 +1,71 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
+function(global) {
+
+    var addEvent = null,
+       getWidth = null,
+        setFontSize = null,
+        setLineHeight = null,
+       flowtype = null
+   ;
+    if ( global.$ && global.$.css ) {
+        addEvent = function(element, eventName, callback) { $( element ).bind( eventName, callback ); };
+        getWidth = function(element) { return $(element).width(); };
+        setFontSize = function(element, size) { $(element).css('font-size', size); };
+        setLineHeight = function(element, height) { $(element).css('line-height', height); };
+    } else {
+        addEvent = function(element, eventName, callback) {
+            if ( element.addEventListener ) {
+               element.addEventListener( eventName, callback, false );
+           } else if ( element.attachEvent ) {
+               element.attachEvent( 'on'+eventName, callback );
+            } else {
+                element['on'+eventName] = callback;
+           }
+        };
+        getWidth = function(element) { return element.clientWidth; };
+        setFontSize = function(element, size) { element.style.fontSize = size; };
+        setLineHeight = function(element, height) { element.style.lineHeight = height; };
+    }
+    flowtype = function(element, options) {
+        options = options || {};
+       // Establish default settings/variables
+        // ====================================
+        options.maximum   = options.maximum   || 9999;
+        options.minimum   = options.minimum   || 1;
+       options.maxFont   = options.maxFont   || 9999;
+        options.minFont   = options.minFont   || 1;
+       options.fontRatio = options.fontRatio || 35;
+        options.lineRatio = options.lineRatio || 1.45;
+       // Do the magic math
+        // =================
+       changes = function(el) {
+            var elw = getWidth(el),
+                width = elw > options.maximum ? options.maximum : elw < options.minimum ? options.minimum : elw,
+                fontBase = width / options.fontRatio,
+               fontSize = fontBase > options.maxFont ? options.maxFont : fontBase < options.minFont ? options.minFont : fontBase
+           ;
+           setFontSize(el, fontSize + 'px');
+            setLineHeight(el, fontSize * options.lineRatio + 'px');
+       };
+       // Make the magic visible
+        // ======================
+        if ( global.$ && global.$.fn ) {
+           return this.each(function() {
+               // Context for resize callback
+               var that = this;
+                // Attach the update method the DOM element
+                element[0].updateFlowType = function(){changes(that);};
+               // Make changes upon resize
+                $(window).resize(function(){changes(that);});
+                // Set changes on load
+               changes(this);
+            });
+       } else {
+            // Attach the update method the DOM element
+           element.updateFlowType = function(){changes(element);};
+           // Make changes upon resize
+           addEvent( global, 'resize', element.updateFlowType );
+            // Set changes on load
+            element.updateFlowType();
+        }
+    };

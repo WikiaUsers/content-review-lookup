@@ -1,0 +1,1 @@
+$(function() { $('.ChatModule').before('Animal Crossing Enciclopedia'); });

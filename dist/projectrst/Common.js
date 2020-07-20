@@ -1,0 +1,2 @@
+/*Stuff*/
+window.BackToTopModern = true;

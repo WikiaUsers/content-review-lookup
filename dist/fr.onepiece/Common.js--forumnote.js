@@ -1,0 +1,3 @@
+$(function() {
+  $('.boards').prepend("<div class=warn3><div id=wh><center>Bienvenue sur le forum du wiki One Piece.<br>Avant de poster, nous vous invitons à lire les <a href='http://fr.onepiece.wikia.com/wiki/One_Piece_Encyclop%C3%A9die:R%C3%A8gles/R%C3%A8glement_Forum'><strong>Règles.</strong></a> <br/> On serait vraiment <strong><i>super-content</i></strong> si vous vous crééiez un compte utilisateur,<br/>cela vous permettra d'être connu de la communauté, et d'être reconnu. <a href='http://fr.onepiece.wikia.com/wiki/Special:Signup'><strong>Inscrivez-vous !</center></strong></a></p></div>");
+});

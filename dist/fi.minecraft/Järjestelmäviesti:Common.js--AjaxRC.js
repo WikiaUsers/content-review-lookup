@@ -1,0 +1,33 @@
+/*<source lang="javascript">*/<br />/*<br />* ADVANCED AJAX AUTO-REFRESHING ARTICLES<br />* Code originally by "pcj" of Wowpedia<br />* Maintenance, cleanup, style and bug fixes by Grunny (http://community.wikia.com/wiki/User:Grunny) and Kangaroopower (http://community.wikia.com/wiki/User:Kangaroopower)<br />*/<br />( function ( $, mw, window ) {<br /> 'use strict';
+
+ var    ajaxIndicator = window.ajaxIndicator || 'https://images.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif',<br />     ajaxTimer,<br />     refreshText = typeof window.AjaxRCRefreshText === 'string' ? window.AjaxRCRefreshText : 'AJAX',<br />     refreshHover = typeof window.AjaxRCRefreshHoverText === 'string' ? window.AjaxRCRefreshHoverText : 'Enable auto-refreshing page loads',<br />     ajRefresh = window.ajaxRefresh || 60000,<br />     ajPages = window.ajaxPages || [ 'Special:RecentChanges' ];
+
+
+ function storage( setTo ) {<br />     if ( localStorage.getItem( 'AjaxRC-refresh' ) === null ) {<br />         localStorage.setItem( 'AjaxRC-refresh', true );<br />     }<br />     if ( setTo === false ) {<br />         localStorage.setItem( 'AjaxRC-refresh', false );<br />     } else if ( setTo === true ) {<br />         localStorage.setItem( 'AjaxRC-refresh', true );<br />     }<br />     return JSON.parse( localStorage.getItem( 'AjaxRC-refresh' ) );<br /> }
+
+
+ /**<br />  * Main function to start the Auto-refresh process<br />  */<br /> function preloadAJAXRL() {<br />     var    $appTo = ( $( '#WikiaPageHeader' ).length ) ? $( '#WikiaPageHeader' ) : ( $( '#AdminDashboardHeader' ).length ? $( '#AdminDashboardHeader > h1' ) : $( '.firstHeading' ) );<br />     $appTo.append( '&nbsp;<span style="font-size: xx-small; line-height: 100%;" id="ajaxRefresh"><span style="border-bottom: 1px dotted; cursor: help;" id="ajaxToggleText" title="' + refreshHover + '">' + refreshText + ':</span><input type="checkbox" style="margin-bottom: 0;" id="ajaxToggle"><span style="display: none;" id="ajaxLoadProgress"><img src="' + ajaxIndicator + '" style="vertical-align: baseline; float: none;" border="0" alt="Refreshing page" /></span></span>' );<br />     $( document ).ajaxSend( function ( event, xhr, settings ) {<br />         if ( location.href === settings.url ) {<br />             $( '#ajaxLoadProgress' ).show();<br />         }<br />     } ).ajaxComplete ( function ( event, xhr, settings ) {<br />         var    $collapsibleElements = $( '#mw-content-text' ).find( '.mw-collapsible' ),<br />             ajCallAgain = window.ajaxCallAgain || [];<br />         if ( location.href === settings.url ) {<br />             $( '#ajaxLoadProgress' ).hide();<br />             for ( var i = 0; i < ajCallAgain.length; i++ ) {<br />                 ajCallAgain[i]();<br />             }<br />             if ( $collapsibleElements.length ) {<br />                 $collapsibleElements.makeCollapsible();<br />             }<br />             if ( mw.config.get( 'wgNamespaceNumber' ) === -1 && mw.config.get( 'wgCanonicalSpecialPageName' ) === 'Recentchanges' ) {<br />                 mw.special.recentchanges.init();<br />                 if ( $( '.mw-recentchanges-table' ).find( '.WikiaDropdown' ).length ) {<br />                     RecentChangesLocal.init();<br />                 }<br />             }<br />             if ( mw.config.get( 'wgNamespaceNumber' ) === -1 && mw.config.get( 'wgCanonicalSpecialPageName' ) === 'WikiActivity' ) {<br />                 window.WikiActivity.init();<br />             }<br />         }<br />     } );<br />     $( '#ajaxToggle' ).click( toggleAjaxReload );<br />     $( '#ajaxToggle' ).attr( 'checked', storage());<br />     if ( storage() ) {<br />         loadPageData();<br />     }<br /> }
+
+ /**<br />  * Turn refresh on and off by toggling the checkbox<br />  */<br /> function toggleAjaxReload() {<br />     if ( $( '#ajaxToggle' ).prop( 'checked' ) === true ) {<br />         storage( true );<br />         loadPageData();<br />     } else {<br />         storage( false );<br />         clearTimeout( ajaxTimer );<br />     }<br /> }
+
+ /**<br />  * Does the actual refresh<br />  */<br /> function loadPageData() {<br />     var $temp = $( '<div>' );<br />     $temp.load( location.href + " #mw-content-text", function () {<br />         var $newContent = $temp.children( '#mw-content-text' );<br />         if ( $newContent.length ) {<br />             $( '#mw-content-text' ).replaceWith( $newContent );<br />         }<br />         ajaxTimer = setTimeout( loadPageData, ajRefresh );<br />     } );<br /> }
+
+ /**<br />  * Load the script on specific pages<br />  * Should we make it load only on view or just not on edit....<br />  */<br /> $( function () {<br />     if ( $.inArray( mw.config.get( 'wgPageName' ), ajPages ) !== -1 && $( '#ajaxToggle' ).length === 0 && mw.config.get( 'wgAction' ) !== 'edit' ) {<br />         preloadAJAXRL();<br />     }<br /> } );
+
+ /**<br />  * Temp Hack: copy the RC filter JS since it can't be accessed<br />  */<br /> var RecentChangesLocal = {<br />     init: function() {<br />         this.$table = $('.mw-recentchanges-table');<br />         this.$dropdown = this.$table.find('.WikiaDropdown');<br />         this.$submit = this.$table.find('input[type="submit"]');<br />         this.$submit.on('click.RecentChangesDropdown', $.proxy(this.saveFilters, this));<br />         this.$submit.removeAttr('disabled'); //FF clean
+
+         this.dropdown = new Wikia.MultiSelectDropdown(this.$dropdown);<br />         this.dropdown.on('change', $.proxy(this.onChange, this));
+
+     },
+
+     saveFilters: function(event) {<br />         var self = this;
+
+         event.preventDefault();
+
+         self.dropdown.disable();<br />         self.$submit.attr('disabled', 'disabled');
+
+         if(self.dropdown.getSelectedValues().length == 0) {<br />             self.dropdown.doSelectAll(true);<br />         }
+
+         $.nirvana.sendRequest({<br />             controller: 'RecentChangesController',<br />             method: 'saveFilters',<br />             data: {<br />                 filters: self.dropdown.getSelectedValues()<br />             },<br />             type: 'POST',<br />             format: 'json',<br />             callback: function(data) {<br />                 window.location.reload();<br />             }<br />         });<br />     }<br /> };<br />}( jQuery, mediaWiki, this ) );
+
+/*</source>*/

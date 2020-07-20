@@ -1,0 +1,1 @@
+$('.inputbox-force-source form').each(function() { $('<input type="hidden" name="useeditor" value="source">').appendTo(this); });

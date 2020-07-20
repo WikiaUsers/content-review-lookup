@@ -1,0 +1,1 @@
+$("#instagram").append("<iframe src='http://snapwidget.com/in/?u=anVzdGluYmllYmVyfGlufDEyNXwzfDN8fG5vfDV8ZmFkZU91dHxvblN0YXJ0fG5vfG5v&ve=171215' title='Instagram Widget' class='snapwidget-widget' allowTransparency='true' frameborder='0' scrolling='no' style='border:none; overflow:hidden; width:390px; height:390px'></iframe>");

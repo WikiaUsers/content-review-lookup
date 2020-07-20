@@ -1,0 +1,2 @@
+// This code has been deliberately retired. Please see the documentation.
+console.warn('[Notiplus] This code has been deliberately retired. Please see the documentation (https://dev.wikia.com/wiki/Notiplus).');

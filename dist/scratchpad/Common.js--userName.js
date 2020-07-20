@@ -1,0 +1,1 @@
+#REDIRECT [[w:c:admintools:MediaWiki:Common.js/userName.js]]

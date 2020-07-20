@@ -1,0 +1,2 @@
+$('.chat-join').append($('<nav class="wikia-menu-button" style="padding:1px 4px;"><a style="color:#fff;border-color:transparent;padding:0;" href="/wiki/Special:Chat">'+$(".chat-join > button").html()+'</a></nav>'));
+$(".chat-join > button").remove();

@@ -1,0 +1,1 @@
+importScriptPage('WallGreetingButton/code.js', 'dev');

@@ -1,0 +1,1 @@
+$('ul.tools li:first-child').after('<li><a href="http://lego.answers.wikia.com/">Ask a question about LEGO!</a></li>');

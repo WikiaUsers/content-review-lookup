@@ -1,0 +1,9 @@
+importArticles({
+    type:'script',
+    articles:[
+        'u:dev:BlogLink/code.js',
+        'u:dev:ChainQuotes.js',
+        'u:dev:PreferenceLinks.js',
+        'u:dev:QuickDiff/code.js',
+    ],
+});/**/

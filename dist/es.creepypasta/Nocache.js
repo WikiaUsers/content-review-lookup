@@ -1,0 +1,1 @@
+$('#WikiaRail').prepend ('<ul id="WikiaNotifications" class="WikiaNotifications"><li><div data-type="2"><a href="http://es.creepypasta.wikia.com/wiki/Usuario_Blog:Freeshh/Categor%C3%ADa_NRHT:_Con_ventana_de_Aviso">Novedades adicionales<br>actualizadas</a>.</div></li></ul>');

@@ -1,0 +1,1 @@
+var SocialMediaButtons = {  position: "top", colorScheme: "Dark", buttonSize: "50px", wikiTwitterAccount: "wikia_es" }; importScriptPage('SocialIcons/code.js','dev');

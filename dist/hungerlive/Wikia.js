@@ -1,0 +1,1 @@
+$("body.ChatWindow .Chat .message img").attr("width","60px").attr("height","60px");

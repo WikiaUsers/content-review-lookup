@@ -1,0 +1,1 @@
+window.i = window.i || 0; //Required for SignatureCheck to work properly

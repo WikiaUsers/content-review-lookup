@@ -1,0 +1,1 @@
+$('#import-test-b').css('color', 'green').text('YES');!@#

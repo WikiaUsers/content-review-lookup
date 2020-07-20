@@ -1,0 +1,12 @@
+/* <pre> */
+/* Create a section on the WikiaRail to display stuff. */
+if ( wgNamespaceNumber != undefined && !window.policyModule ) {
+        addOnloadHook( addPolicyModule );
+}
+ 
+var policyModule = true;
+ 
+function addPolicyModule () {
+    $('<section class="PolicyModule module"><h1 style="margin-bottom: 0px !important;">Terraria Wiki Policy Overview</h1><br /><div style="font-size: 1.1em;"><a href="/wiki/Terraria_Wiki:Video_Policy" title="Terraria Wiki:Video Policy"><b>Video Policy</b></a><br /><img src="http://upload.wikimedia.org/wikipedia/commons/c/ce/Nutshell.png" style="width: 1.1em; height=1.1em;" title="This policy in a nutshell."> <b>All</b> videos must be individually submitted for review and accepted <b>before</b> being added to the wiki. <a href="/wiki/Terraria_Wiki:Proposed_Videos" title="Terraria Wiki:Proposed Videos">Click here</a> to submit a video.<br /><br /><a href="/wiki/Terraria_Wiki:Image_Policy" title="Terraria Wiki:Image Policy"><b>Image Policy</b></a><br /><img src="http://upload.wikimedia.org/wikipedia/commons/c/ce/Nutshell.png" style="width: 1.1em; height=1.1em;" title="This policy in a nutshell."> Don&#39;t upload non-Terraria images.<br /><br /><a href="/wiki/Terraria_Wiki:Editing_Policy" title="Terraria Wiki:Editing Policy"><b>Editing Policy</b></a><br /><img src="http://upload.wikimedia.org/wikipedia/commons/c/ce/Nutshell.png" style="width: 1.1em; height=1.1em;" title="This policy in a nutshell."> Don&#39;t <a href="/wiki/Help:Vandalism" title="Help:Vandalism">vandalize</a>, spam or use profanity. Try to follow our <a href="/wiki/Terraria_Wiki:Advanced_Editing_Policy" title="Terraria Wiki:Manual of Style">Manual of Style</a>.<br /><br /><a href="/wiki/Terraria_Wiki:Blocking_Policy" title="Terraria Wiki:Blocking Policy"><b>Blocking Policy</b></a><br /><img src="http://upload.wikimedia.org/wikipedia/commons/c/ce/Nutshell.png" style="width: 1.1em; height=1.1em;" title="This policy in a nutshell."> Edit in <a href="http://en.wikipedia.org/wiki/Wikipedia:Assume_good_faith" title="Wikipedia:Assume good faith">good faith</a>, be courteous to others and respect Terraria Wiki policies, otherwise you may be blocked from editing.<br /><br /><a href="/wiki/Forum:Admin_Noticeboard" title="Forum:Admin Noticeboard" class="more">Contact an administrator &gt;</a><a href="/wiki/Terraria_Wiki:Policy" title="Terraria Wiki:Policy" style="float: left; font-size: 10px; font-weight: bold;">&lt; All policies</a></div></section>').insertBefore('.WikiaActivityModule');
+}
+/* </pre> */

@@ -1,0 +1,1 @@
+importScript('User:The_last_username_left/Sandbox/vandalwatch.js');

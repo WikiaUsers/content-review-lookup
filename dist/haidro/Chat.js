@@ -1,0 +1,1 @@
+createAlias('me', 32, '* '+wgUserName);

@@ -1,0 +1,1 @@
+document.getElementById('tes_div').innerHTML = '<b>this will appear bold</b>';

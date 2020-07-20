@@ -1,0 +1,2 @@
+<script type="text/javascript" charset="utf-8" src="http://static.polldaddy.com/p/6943842.js"></script>
+				<noscript><a href="http://polldaddy.com/poll/6943842/">【多选】你认为近期谁是冰与火之歌维基的MVP？</a></noscript>

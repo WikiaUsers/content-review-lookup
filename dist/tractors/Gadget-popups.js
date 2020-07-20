@@ -1,0 +1,2 @@
+// [[File:Wikipedia_Gadget-popups.js]] Pop-ups imported from enWP
+mw.loader.load( '//en.wikipedia.org/w/index.php?title=MediaWiki:Gadget-popups.js&action=raw&ctype=text/javascript&smaxage=21600&maxage=86400' );

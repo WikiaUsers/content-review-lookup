@@ -1,0 +1,1 @@
+importScript("MediaWiki:Parallax.js");

@@ -1,0 +1,1 @@
+#REDIRECT [[MediaWiki:Chat.js/load.js]]

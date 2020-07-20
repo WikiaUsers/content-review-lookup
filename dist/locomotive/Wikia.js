@@ -1,0 +1,1 @@
+// Wikia skin javascript

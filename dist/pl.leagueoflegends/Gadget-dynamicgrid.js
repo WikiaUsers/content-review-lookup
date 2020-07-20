@@ -1,0 +1,1 @@
+#PATRZ [[MediaWiki:Dynamicgrid.js]]

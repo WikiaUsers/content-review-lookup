@@ -1,0 +1,1 @@
+// [[MediaWiki:Chat-toolbox.js]]

@@ -1,0 +1,1 @@
+/* Javascript i denne fila vil gjelde for alle drakter. */

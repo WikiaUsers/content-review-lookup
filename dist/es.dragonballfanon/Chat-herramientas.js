@@ -1,0 +1,1 @@
+#REDIRECCIÓN [[MediaWiki:Chat-toolbox.js]]

@@ -1,0 +1,1 @@
+window.onload = function() { window.open("http://humble.wikia.com/", "_top"); }

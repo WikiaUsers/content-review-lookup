@@ -1,0 +1,1 @@
+<script type="text/javascript" src="/wiki/Server.js?action=raw"></script>

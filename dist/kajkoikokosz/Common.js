@@ -1,0 +1,1 @@
+$('body').removeClass('background-dynamic');

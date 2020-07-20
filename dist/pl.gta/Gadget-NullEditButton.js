@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:NullEditButton/code.js', 'dev');

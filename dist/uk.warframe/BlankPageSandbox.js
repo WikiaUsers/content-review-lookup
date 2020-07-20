@@ -1,0 +1,9 @@
+var Sandbox;
+if(wgPageName == 'Пісочниця') 
+{
+    if(wgAction == 'view') {
+        $("#WikiaArticle").prepend("<div style='background-color:inherit; border:double 3px red; margin:0.5em; margin-bottom:1em; padding:0.5em; display:block; text-align: center; box-shadow: 0 0 10px rgba(0,0,0,0.5);'> <span style='font-family:Geneva; font-weight:bold; text-transform:uppercase;'>Ласкаво просимо в пісочницю Вікі Warframe!</span><br /></br><b>Це сторінка для того, щоб можна було попрактикуватися в редагуванні або форматуванні (див. <a href=' /Довідка:Редагування'>довідка по редагуванню</a>) не зачіпаючи основного змісту.</b></br></br> Ви можете спробувати свої навички у форматуванні тут. Для редагування, натисніть <b><a href='?action=edit'>тут</a></b> або <b>Редагувати</b> у верхній частині сторінки, внесіть зміни у діалоговому вікні та натисніть кнопку <b>Зберегти сторінку</b> коли Ви закінчите. </br> Вікі допускає досить складне форматування. Спочатку воно може здатися незрозумілим, але не варто турбуватися. Досить тільки почати з самого простого...<br /></br><span style='color:red; font-family:Geneva; font-style:bold; font-weight:bold; text-transform:uppercase;'>Будь ласка, не залишайте образливий або наклепницький зміст в пісочниці!</span></br> <span style='font-family:Geneva; font-weight:bold; font-size:13.5px;'>Крім того, ви можете додати свою власну пісочницю <a href='/wiki/Special:MyPage/Пісочниця'>тут</a>.</span></div>");
+    } else if(wgAction == "edit") {
+        $("#EditPageRail").prepend("<div style='background-color:inherit; border:double 3px red; margin:0.5em; margin-bottom:1em; padding:0.5em; display:block; text-align: center; box-shadow: 0 0 10px rgba(0,0,0,0.5);'>Ласкаво просимо в пісочницю!</br> Ця сторінка призначена для редагування та експериментів. Ви можете спробувати свої навички під час форматування тут (див. <a href=' /Довідка:Редагування'>довідка по редагуванню</a>).</div>");
+    }
+}

@@ -1,0 +1,1 @@
+window.discussionsModuleEmbed = true; /* Installing Rail Module */

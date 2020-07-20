@@ -1,0 +1,51 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
+importScriptPage('MediaWiki:Tooltip.js', 'joeplayground');
+
+var tooltips_config = {
+    waitForImages: true,
+    noCSS: true,
+};
+
+var tooltips_list = [
+    {
+        classname: 'unit-tooltip',
+        parse: '{'+'{<#unit#>|rank=<#rank#>|size=<#size#>|upgrade=<#upgrade#>|upgrades=<#upgrades#>|upgraded=<#upgraded#>|race=<#race#>|tt=<#tt#>|show=no}}',
+        //onShow: function() { if ((this).getElementsByClassName('template-unit')[0]) {Unit = (this).getElementsByClassName('template-unit')[0]; console.info("Onshow var =",Unit); processunit (Unit);} },
+    }, {
+        classname: 'spell-tooltip',
+        parse: '{'+'{<#spell#>|magnitude=<#magnitude#>|tt=<#tt#>}}',
+    }, {
+        classname: 'ability-tooltip',
+        parse: '{'+'{<#ability#>|<#magnitude#>|duration=<#duration#>|tt=<#tt#>|show=no}}',
+    }, {
+        classname: 'structure-tooltip',
+        parse: '{'+'{<#structure#>}}',
+    }, {
+        classname: 'building-tooltip',
+        parse: '{'+'{<#building#>}}',
+    }, {
+        classname: 'damageability-tooltip',
+        parse: '{'+'{<#ability#>|physical=<#physical#>|spirit=<#spirit#>|blight=<#blight#>|fire=<#fire#>|frost=<#frost#>|shock=<#shock#>|tt=<#tt#>|show=no}}',
+        onShow: function(handle) { a = handle; writeloc = (this).getElementsByClassName('writedamage')[0]; damagesource = a.parentElement; unitloc = damagesource.parentElement.parentElement; damageCalc (writeloc, damagesource, unitloc); },
+    }, {
+        classname: 'protection-tooltip',
+        parse: '{'+'{Prottable|<#magnitude#>|<#element#>}}',
+    }, {
+        classname: 'weakness-tooltip',
+        parse: '{'+'{Weaktable|<#magnitude#>|<#element#>}}',
+    }
+];
+
+/* Auto Refresh */
+AjaxRCRefreshText = 'Auto-Refresh';
+AjaxRCRefreshHoverText = 'Automatically refresh the page';
+ajaxPages = ["Special:RecentChanges","Special:WikiActivity"];
+
+window.ajaxPages = ["Some Frequently Updated Page"];
+window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Watchlist", "Log", "Contributions"];
+window.ajaxIndicator = 'https://images.wikia.nocookie.net/software/images/a/a9/Indicator.gif';
+window.ajaxRefresh = 30000;
+$.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
+    'ajaxrc-refresh-text': 'AJAX',
+    'ajaxrc-refresh-hover': 'Enable page auto-refresh',
+}}}}});

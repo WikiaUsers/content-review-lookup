@@ -1,0 +1,6 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
+// ***********************
+// Code from unknown source - Modified by User:Mythrun
+// ***********************
+var t = '<div id="appswiki_legal"><div style="clear:both"></div><br><center><div style="border:5px black;color:black;background-image: -ms-radial-gradient(center, ellipse cover, #DCDCDC 0%, #FFFFFF 100%);background-image: -moz-radial-gradient(center, ellipse cover, #DCDCDC 0%, #FFFFFF 100%);background-image: -o-radial-gradient(center, ellipse cover, #DCDCDC 0%, #FFFFFF 100%);background-image: -webkit-gradient(radial, center center, 0, center center, 510, color-stop(0, #DCDCDC), color-stop(1, #FFFFFF));background-image: -webkit-radial-gradient(center, ellipse cover, #DCDCDC 0%, #FFFFFF 100%);background-image: radial-gradient(center, ellipse cover, #DCDCDC 0%, #FFFFFF 100%);">Apple&reg;, iOS&reg;, Android&reg;, and other registered trademarked names are are held respectively by their rightful owners.<br>Apps Wiki is a community developed site, and is not run by any of these corporations.<br>Advertisements and Spotlights do <u>NOT</u> necessarily represent the views of Apps Wiki.</div></center></div>';
+document.getElementById('WikiaArticle').innerHTML += t;
