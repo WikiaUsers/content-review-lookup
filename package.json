@@ -1,0 +1,31 @@
+{
+    "name": "content-review-lookup",
+    "description": "Global JavaScript lookup for Fandom",
+    "version": "1.0.0",
+    "keywords": [
+        "wikia",
+        "fandom",
+        "security"
+    ],
+    "license": "GPL-3.0-or-later",
+    "author": {
+        "name": "KockaAdmiralac",
+        "url": "https://kocka.tech",
+        "email": "git@kocka.tech"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/WikiaUsers/content-review-lookup.git"
+    },
+    "scripts": {
+        "start": "node main.js"
+    },
+    "dependencies": {
+        "cli-progress": ">=3.8.2",
+        "got": ">=11.5.1",
+        "tough-cookie": ">=4.0.0"
+    },
+    "devDependencies": {
+        "eslint": ">=7.5.0"
+    }
+}
