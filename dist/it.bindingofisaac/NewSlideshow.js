@@ -31,5 +31,5 @@ function mySlider() {
     s[i-1].style.display= "block";
     $(window).trigger('scroll');
     document.getElementById("numero").innerHTML = i+"/"+s.length;
-    setTimeout(mySlider, 3000); // Cambia immagine ogni 3 secondi
+    setTimeout(mySlider, 5000); // Cambia immagine ogni 5 secondi
 }

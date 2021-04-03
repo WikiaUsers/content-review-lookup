@@ -57,7 +57,8 @@
     ]);
     var editApi = {
         action: 'edit',
-        token: mw.user.tokens.get('editToken'),
+        summary: 'Null edit (this edit should not be visible)',
+        notminor: true,
         prependtext: ''
     };
     var i18n;
@@ -108,11 +109,16 @@
         var query = {
             title: page
         };
+        var editReq = editApi.post(query);
 
-        editApi.post(query).always(function (d) {
-            var error = (d.error && d.error.code) || 'unknownerror';
+        editReq.always(function (result, resultIfRejected) {
+            if (editReq.state() === 'rejected') {
+                result = resultIfRejected;
+            }
 
-            if (d.edit && d.edit.result === 'Success') {
+            var error = (result.error && result.error.code) || 'unknown';
+
+            if (result.edit && result.edit.result === 'Success') {
                 return;
             }
 
@@ -193,10 +199,15 @@
         }
 
         function collect(more) {
-            queryApi.get(more).always(function (d) {
-                var error = (d.error && d.error.code) || 'unknownerror';
-                var data = d.query && d.query[query.list];
-                var continueData = d['query-continue'];
+            var queryReq = queryApi.get(more);
+            queryReq.always(function (result, resultIfRejected) {
+                if (queryReq.state() === 'rejected') {
+                    result = resultIfRejected;
+                }
+
+                var error = (result.error && result.error.code) || 'unknown';
+                var data = result.query && result.query[query.list];
+                var continueData = result['query-continue'];
 
                 if (data) {
                     data.forEach(function (entry) {
@@ -208,7 +219,7 @@
                 }
 
                 if (continueData && stopAddPages === null) {
-                    stopAddPages = !confirm(i18n('confirm-big-request', d.limits[query.list]).parse());
+                    stopAddPages = !confirm(i18n('confirm-big-request', result.limits[query.list]).parse());
                 }
 
                 if (continueData && !stopAddPages) {
@@ -381,24 +392,21 @@
         if (config.wgCanonicalSpecialPageName === 'Allpages') {
             addPagesProcess(
                 'namespace',
-                $('#namespace > option[selected]').val()
+                $('form [name="namespace"]').val()
             );
         }
 
         if (config.wgCanonicalSpecialPageName === 'Prefixindex') {
-            // `$('#nsfrom').attr('value')` is simpler, but it's bugged in jQuery < 1.9 and returns property instead
-            var prefixInput = document.getElementById('nsfrom');
-            var prefixNs = $('#namespace > option[selected]').val();
+            var prefix = $('form [name="prefix"]').val();
+            var prefixNs = $('form [name="namespace"]').val();
             var page = '';
 
-            if (prefixInput) {
-                if (prefixNs !== '0') {
-                    page += config.wgFormattedNamespaces[prefixNs] + ':';
-                }
-
-                page += prefixInput.getAttribute('value');
-                addPagesProcess('prefix', page);
+            if (prefixNs !== '0') {
+                page += config.wgFormattedNamespaces[prefixNs] + ':';
             }
+
+            page += prefix;
+            addPagesProcess('prefix', page);
         }
     }
 
@@ -441,8 +449,12 @@
             }]
         });
 
-        mw.loader.using('mediawiki.api').then(function () {
+        mw.loader.using([
+            'mediawiki.api',
+            'mediawiki.user'
+        ]).then(function () {
             if (!(editApi instanceof mw.Api)) {
+                editApi.token = mw.user.tokens.get('csrfToken') || mw.user.tokens.get('editToken');
                 editApi = new mw.Api({parameters: editApi});
             }
 

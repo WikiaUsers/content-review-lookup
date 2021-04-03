@@ -5,11 +5,11 @@
  * Original author unknown
  * Rewritten and improved by Rail <rail01@protonmail.com>
  */
-;( function( mw, Banner, window ) {
+;( function( mw, window ) {
     'use strict';
 
     // Meta-site configuration
-    var conf = mw.config.get( [
+    const conf = mw.config.get( [
         'wgCanonicalSpecialPageName',
         'wgUserGroups'
     ] );
@@ -30,16 +30,16 @@
     ];
 
     // List of mandatory excluded groups
-    var mandatoryExcludedGroups = [
+    const mandatoryExcludedGroups = [
         'staff',
         'util',
         'helper',
-        'vstf',
         'vanguard',
         'content-volunteer',
         'content-team-member',
         'wiki-manager',
-        'bot-global'
+        'bot-global',
+        'soap'
     ];
 
     // Don't run for users in excluded groups
@@ -56,15 +56,17 @@
      */
     function init( i18n ) {
         // Get required elements from ids
-        var form = document.getElementById( 'mw-upload-form' );
-        var license = document.getElementById( 'wpLicense' );
+        const form = document.getElementById( 'mw-upload-form' );
+        const license = document.getElementById( 'wpLicense' );
 
-        /**
-         * Clean i18n messages
-         * @param {*} key
-         */
-        function msg( key ) {
-            return i18n.msg( key ).escape();
+        // Clean, UCP-compatible banners
+        function notify( key, type ) {
+            var msg = i18n.msg( key ).escape();
+
+            mw.loader.using( 'mediawiki.notification', function() {
+                mw.notification.notify( msg );
+            } );
+            
         }
 
         // Prepare variable for delivery state
@@ -89,10 +91,7 @@
                     event.preventDefault();
 
                     // Show warning message
-                    new Banner(
-                        msg( 'warning-text' ),
-                        'warn'
-                    ).show();
+                    notify( 'warning-text', 'warn' );
 
                     // Mark message as delivered
                     isMessageDelivered = true;
@@ -102,10 +101,7 @@
                 event.preventDefault();
 
                 // Show rejection message
-                new Banner(
-                    msg( 'rejected-text' ),
-                    'error'
-                ).show();
+                notify( 'rejected-text', 'error' );
             }
         } );
 
@@ -123,4 +119,4 @@
         type: 'script',
         article: 'u:dev:MediaWiki:I18n-js/code.js'
     } );
-} )( mediaWiki, BannerNotification, this );
+} )( mediaWiki, this );

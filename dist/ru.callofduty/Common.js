@@ -461,3 +461,11 @@ window.SignatureCheckJS = {
 		forumheader: 'Forumheader'
 };
 ((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;
+
+/*ToolTips*/
+window.tooltips_config = {
+    noCSS: true
+};
+
+/*OggPlayer*/
+var oggPlayerButtonOnly = true;

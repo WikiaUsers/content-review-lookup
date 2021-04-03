@@ -5,7 +5,8 @@
  * @author Slyst
  */
  
-(function() {
+mw.loader.using('mediawiki.util').then(function() {
+    'use strict';
     // Scoping and double runs
     if (
         mw.config.get('wgCanonicalSpecialPageName') !== 'Contributions' ||
@@ -16,17 +17,18 @@
  
     var QuickLogs = {
         /// The name of the user whose contributions you're looking at
-        user: $('#UserProfileMasthead h1[itemprop="name"]').text(),
-        /// The wikia user ID of the user you're looking at
+        user: mw.config.get('profileUserName') || $('#UserProfileMasthead h1[itemprop="name"]').text(),
+        /// The Fandom user ID of the user you're looking at
         /// Only is defined when the current user is a chat moderator or above,
         /// but that's fine because you only need it in those cases
         userId: $('.chat-change-ban').data('user-id'),
         /// Plain object holding mediawiki config values (and stylepath :P)
         cfg: mw.config.get([
+            'stylepath',
+            'wgCityId',
             'wgMonthNames',
             'wgUserGroups',
-            'wgUserName',
-            'stylepath'
+            'wgUserName'
         ]),
         /// Reference to #quicklogs-ul
         ul: null,
@@ -39,9 +41,11 @@
         /// Whether Abuse Filter is enabled in the current wiki
         abuseFilter: false,
         /// Whether the current user can checkUser, this is defined at runtime by checking if there was a CU link before loading
-        checkUser: $('#contentSub [title="Special:CheckUser"]').exists(),
+        checkUser: $('#contentSub [title="Special:CheckUser"], .mw-contributions-user-tools [title="Special:CheckUser"]').length,
         /// Whether chat exists on the wiki
-        chat: $('.chat-ban-log').exists(),
+        chat: $('.chat-ban-log').length,
+        /// Whether the current wiki is a UCP wiki
+        isUCP: mw.config.get('wgVersion') !== '1.19.24',
         /// Internal variable for handling preloading
         _loads: 0,
         /// Called each time a resource is fetched
@@ -72,11 +76,11 @@
                 'bureaucrat',
                 'sysop',
                 'helper',
-                'vstf',
                 'staff',
                 'global-discussions-moderator',
                 'content-team-member',
                 'wiki-manager',
+                'soap'
             ]);
         },
         /// Returns whether the user can view deleted contributions
@@ -91,12 +95,12 @@
                     'sysop',
                     'helper',
                     'staff',
-                    'vstf',
                     'content-team-member',
                     'wiki-manager',
+                    'soap'
                ]);
         },
-        /// Returns whether the user has any roles that could be self-removed, or a helper/staff/vstf
+        /// Returns whether the user has any roles that could be self-removed, or a helper/staff/soap
         hasNotableRoles: function() {
             return this.hasRights([
                 'bureaucrat',
@@ -111,7 +115,7 @@
                 'vanguard',
                 'helper',
                 'staff',
-                'vstf'
+                'soap'
             ]);
         },
         /// Returns an anchor element with the supplied href and text, optionally striked-through
@@ -160,7 +164,7 @@
             this.ul.innerHTML = '';
             this.header.textContent = this.i18n.msg('loading').plain();
             dev.ui({
-                type: 'img',
+                type: this.isUCP ? 'div' : 'img',
                 style: {
                     display: 'block',
                     margin: '0 auto'
@@ -168,6 +172,7 @@
                 attr: {
                     src: this.cfg.stylepath + '/common/images/ajax.gif'
                 },
+                classes: ['mw-ajax-loader'],
                 parent: this.ul
             });
         },
@@ -210,22 +215,33 @@
         loadDeletedContribs: function(logType, log) {
             this.startLoading();
             this.setSelectedLog(logType);
-            this.api.get({
-                action: 'query',
-                list: 'deletedrevs',
-                druser: this.user,
-                drlimit: 'max',
-                drprop: 'parsedcomment'
-            })
-            .then(this.displayLogs.bind(this, logType, log));
+            var $promise;
+            if (this.isUCP) {
+                $promise = this.api.get({
+                    action: 'query',
+                    list: 'alldeletedrevisions',
+                    adruser: this.user,
+                    adrlimit: 'max',
+                    adrprop: 'parsedcomment|timestamp'
+                });
+            } else {
+                $promise = this.api.get({
+                    action: 'query',
+                    list: 'deletedrevs',
+                    druser: this.user,
+                    drlimit: 'max',
+                    drprop: 'parsedcomment'
+                });
+            }
+            $promise.then(this.displayLogs.bind(this, logType, log));
         },
         /// Displays any kind of log event
         displayLogs: function(logType, log, data) {
-            var le = data.query && data.query.logevents || data.query.abuselog || data.query.deletedrevs,
-            children = [];
+            var le = data.query && data.query.logevents || data.query.abuselog || data.query.deletedrevs || data.query.alldeletedrevisions,
+                children = [];
             
             if (this.ul.className != 'displaying-' + logType) return;
- 
+
             if (data.error) {
                 children.push({
                     type: 'li',
@@ -248,7 +264,7 @@
                         });
                     }
                 }
-                if (data['query-continue']) {
+                if (this.isUCP ? data.rawcontinue : data['query-continue']) {
                     children.push({
                         type: 'li',
                         children: [
@@ -291,7 +307,7 @@
                 ev.action = 'move';
             }
  
-            if (ev.action == 'patrol' && ev.patrol.auto) {
+            if (ev.action == 'patrol' && 'auto' in (ev.patrol || ev.params)) {
                 ev.action += '-auto';
             }
  
@@ -299,12 +315,20 @@
                 ev.action = 'abuse';
             }
  
+            if (ev.revisions) {
+                ev.action = 'deletedcontribs';
+            }
+ 
+            if (ev.type === 'newusers' && ev.action === 'create') {
+                ev.action = 'newusers';
+            }
+ 
             if (!this.hasMessage('format-' + ev.action)) {
                 console.log('Missing format for ' + ev.action + '. Consider reporting this on w:dev:Talk:QuickLogs');
                 return '';
             }
- 
-            var date = this.date(ev.timestamp || ev.revisions[0].timestamp),
+
+            var date = this.date(ev.timestamp),
             userLinks = this.userLinks(ev.user, true),
             target = dev.ui({
                 type: 'a',
@@ -320,43 +344,66 @@
                 },
                 text: ev.title
             }).outerHTML,
-            newTitle = !ev.move ? '' : dev.ui({
+            newTitle = !(ev.move || ev.params && ev.params.target_title) ? '' : dev.ui({
                 type: 'a',
                 attr: {
-                    href: mw.util.getUrl(ev.move.new_title)
+                    href: mw.util.getUrl(ev.params ? ev.params.target_title : ev.move.new_title)
                 },
-                text: ev.move.new_title
+                text: ev.params ? ev.params.target_title : ev.move.new_title
             }).outerHTML,
-            revision = !ev.patrol ? '' : dev.ui({
+            revision = !(ev.patrol || ev.params && ev.params.curid) ? '' : dev.ui({
                 type: 'a',
                 attr: {
-                    href: '/?diff=' + ev.patrol.cur
+                    href: mw.util.getUrl('', {
+                        diff: ev.params ? ev.params.curid : ev.patrol.cur
+                    })
                 },
-                text: ev.patrol.cur.toString()
+                text: (ev.params ? ev.params.curid : ev.patrol.cur).toString()
             }).outerHTML,
             comment = !ev.parsedcomment ? '' : dev.ui({
                 type: 'span',
                 classes: ['comment'],
                 html: '(' + ev.parsedcomment + ')'
             }).outerHTML,
-            list = !ev.filter ? '' : dev.ui({
-                type: 'ul',
-                children: [
-                    {
-                        type: 'li',
-                        text: this.i18n.msg('action', ev.action).plain()
-                    },
-                    {
-                        type: 'li',
-                        text: this.i18n.msg('actions-taken', ev.result).plain()
-                    },
-                    {
-                        type: 'li',
-                        text: this.i18n.msg('description', ev.filter).plain()
-                    }
-                ]
-            }).outerHTML,
-            rights = ev.rights ? this.parseRights(ev.rights) : {},
+            list = !ev.filter ?
+                !ev.revisions ?
+                    '' :
+                    dev.ui({
+                        type: 'ul',
+                        children: ev.revisions.map(function(rev) {
+                            console.log(rev.timestamp);
+                            return {
+                                type: 'li',
+                                html: this.parse('edited', {
+                                    comment: rev.parsedcomment ? dev.ui({
+                                        type: 'span',
+                                        classes: ['comment'],
+                                        html: '(' + rev.parsedcomment + ')'
+                                    }).outerHTML : '',
+                                    date: this.date(rev.timestamp),
+                                    page: page
+                                })
+                            };
+                        }, this)
+                    }).outerHTML :
+                dev.ui({
+                    type: 'ul',
+                    children: [
+                        {
+                            type: 'li',
+                            text: this.i18n.msg('action', ev.action).plain()
+                        },
+                        {
+                            type: 'li',
+                            text: this.i18n.msg('actions-taken', ev.result).plain()
+                        },
+                        {
+                            type: 'li',
+                            text: this.i18n.msg('description', ev.filter).plain()
+                        }
+                    ]
+                }).outerHTML,
+            rights = (ev.rights || ev.params && ev.params.oldgroups) ? this.parseRights(ev.rights || ev.params) : {},
             oldrights = rights.oldstr,
             newrights = rights.newstr,
             before = ev[1],
@@ -364,9 +411,9 @@
             expiry = ev.action.indexOf('chatban') === 0 && ev[2] ? ev[2] : '',
             ends = ev.action.indexOf('chatban') === 0 && ev[3] ? this.date(ev[3] * 1000) : '',
             duration = ev.block && ev.block.duration ? ev.block.duration : '',
-            flags = ev.block && ev.block.flags ? ' (' + ev.block.flags.replace(/,/g, ', ') + ') ' : '';
+            flags = ((ev.block && ev.block.flags) || (ev.params && ev.params.flags)) ? ' (' + (ev.block ? ev.block.flags.replace(/,/g, ', ') : ev.params.flags.join(', ')) + ') ' : '';
             
-            if (ev.block || ev.type == 'chatban') {
+            if (ev.type === 'block' || ev.type == 'chatban') {
                 target = page;
             }
  
@@ -399,8 +446,8 @@
         },
         /// Returns an object with old and new user rights strings, with changed groups highlighted
         parseRights: function(rights) {
-            var oldarr = rights.old.split(', '),
-            newarr = rights['new'].split(', ');
+            var oldarr = rights.oldgroups || rights.old.split(', '),
+                newarr = rights.newgroups || rights['new'].split(', ');
  
             return {
                 oldstr: oldarr.map(function(group) {
@@ -435,7 +482,7 @@
         /// Generates a link to {user}'s userpage
         /// If subpages is true then there will be additional talk, contribs, and block (if admin) links.
         userLinks: function(user, subpages) {
-            nodes = [
+            var nodes = [
                 {
                     type: 'a',
                     attr: {
@@ -594,7 +641,7 @@
                 this.makeLink(mw.util.getUrl('User:' + this.user), this.user),
                 ' ('
             ],
-            contentSub = document.getElementById('contentSub'),
+            contentSub = document.getElementById('contentSub') || document.getElementsByClassName('mw-contributions-user-tools')[0],
             logType,
             log;
  
@@ -739,47 +786,27 @@
             });
             return promise;
         },
-        /// Fork from WgMessageWallsExist because such script does not provide suitable bindings
-        checkWall: function() {
-            var promise = $.Deferred(),
-            stupidWikis = ['177'];
-            if (stupidWikis.indexOf(wgCityId) !== -1) return promise.resolve(true);
-            $.nirvana.getJson('WikiFeaturesSpecialController', 'index').done(function(d) {
-                var disabled =
-                    d.features.filter(function (t) {
-                        return t.name === 'wgEnableWallExt' && t.enabled;
-                    }).length === 0;
- 
-                if (disabled) {
-                    promise.resolve(false);
-                } else {
-                    promise.resolve(true);
-                }
-            }).error(function() {
-                var wall = '.wds-global-navigation__dropdown-link[data-tracking-label="account.message-wall"]';
- 
-                if (document.querySelector(wall) === null) {
-                    promise.resolve(false);
-                } else {
-                    promise.resolve(true);
-                }
-            });
-            return promise;
-        },
         i18n: function(i18n) {
             i18n.loadMessages('QuickLogs').then($.proxy(QuickLogs.cbI18n, QuickLogs));
+        },
+        wallsExist: function(wgMessageWallsExist) {
+            wgMessageWallsExist
+                .then($.proxy(QuickLogs.cbWalls, QuickLogs, true))
+                ['catch']($.proxy(QuickLogs.cbWalls, QuickLogs, false));
         },
         cbI18n: function(i18nd) {
             this.i18n = i18nd;
             this.preload();
         },
-        cbData: function(af, wall) {
-            this.abuseFilter = af;
+        cbWalls: function(wall) {
             this.walls = wall;
             if (this.logTypes.wall) {
                 this.logTypes.wall.key = wall ? 'wall' : 'talk';
                 this.logTypes.wall.href = mw.util.getUrl((wall ? 'Message Wall:' : 'User talk:') + this.user);
             }
+        },
+        cbAF: function(af) {
+            this.abuseFilter = af;
             this.preload();
         }
     };
@@ -853,32 +880,32 @@
     mw.hook('QuickLogs.loaded').fire(QuickLogs);
  
     // Loading necessary resources
-    importArticles(
-        {
-            type: 'script',
-            articles: [
-                'u:dev:MediaWiki:I18n-js/code.js',
-                'u:dev:MediaWiki:UI-js/code.js'
-            ]
-        },
-        {
-            type: 'style',
-            articles: [
-                'u:dev:MediaWiki:QuickLogs.css'
-            ]
-        }
-    );
+    importArticles({
+        type: 'script',
+        articles: [
+            'u:dev:MediaWiki:I18n-js/code.js',
+            'u:dev:MediaWiki:UI-js/code.js',
+            'u:dev:MediaWiki:WgMessageWallsExist.js'
+        ]
+    });
+    importArticle({
+        type: 'style',
+        article: 'u:dev:MediaWiki:QuickLogs.css'
+    });
  
     mw.hook('dev.ui').add(QuickLogs.preload.bind(QuickLogs));
     mw.hook('dev.i18n').add(QuickLogs.i18n.bind(QuickLogs));
+    mw.hook('dev.enablewallext').add(QuickLogs.wallsExist.bind(QuickLogs));
     $.when(
         QuickLogs.checkAF(),
-        QuickLogs.checkWall(),
         mw.loader.using([
             'mediawiki.api',
-            'mediawiki.user',
-            'mediawiki.util'
+            'mediawiki.user'
         ])
-    ).then($.proxy(QuickLogs.cbData, QuickLogs));
-    require(['wikia.ui.factory'], $.proxy(QuickLogs.preloadModal, QuickLogs));
-})();
+    ).then($.proxy(QuickLogs.cbAF, QuickLogs));
+    if (!QuickLogs.isUCP) {
+        // Only create modal when not on the UCP
+        // which is okay because Chat does not exist on the UCP
+        require(['wikia.ui.factory'], $.proxy(QuickLogs.preloadModal, QuickLogs));
+    }
+});

@@ -74,7 +74,7 @@ function loadFunc() {
 		return;
 	}
 
-	window.pageName = wgPageName;
+	window.pageName = mw.config.get('wgPageName');
 	window.storagePresent = (typeof(localStorage) != 'undefined');
 
 	// DEPRECATED
@@ -83,7 +83,7 @@ function loadFunc() {
 	}
 
 	// Upload form - need to run before adding hide buttons
-	if ( wgCanonicalSpecialPageName === 'Upload' ) {
+	if ( mw.config.get('wgCanonicalSpecialPageName') === 'Upload' ) {
 		setupUploadForm();
 	}
 
@@ -104,8 +104,6 @@ function loadFunc() {
 	substUsername();
 	substUsernameTOC();
 	rewriteTitle();
-	showEras('title-eraicons');
-	showEras('title-shortcut');
 	rewriteHover();
 	// replaceSearchIcon(); this is now called from MediaWiki:Monobook.js
 	fixSearch();
@@ -198,6 +196,10 @@ function fillPreloads() {
 				templateName = 'Template:' + templateName + '/preload';
 				templateName = templateName.replace( ' ', '_' );
 				$.get( wgScript, { title: templateName, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+					if ($('.CodeMirror').length > 0) {
+						WikiEditorCodeMirror.doc.replaceSelection(data);
+						return;
+					}
 					insertAtCursor( document.getElementById( 'wpTextbox1' ), data );
 				} );
 			}
@@ -220,6 +222,10 @@ function doCustomPreload() {
 	var value = $( '#lf-preload-pagename > input' ).val();
 	value = value.replace( ' ', '_' );
 	$.get( wgScript, { title: value, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+		if ($('.CodeMirror').length > 0) {
+			WikiEditorCodeMirror.doc.replaceSelection(data);
+			return;
+		}
 		insertAtCursor( document.getElementById( 'wpTextbox1' ), data );
 	} );
 }
@@ -237,32 +243,8 @@ function rewriteTitle() {
 	}
 
 	var newTitle = $('#title-meta').html();
-	if( skin == "oasis" ) {
-		$('header.WikiaPageHeader > h1').html('<div id="title-meta" style="display: inline;">' + newTitle + '</div>');
-		$('header.WikiaPageHeader > h1').attr('style','text-align:' + $('#title-align').html() + ';');
-	} else {
-		$('.firstHeading').html('<div id="title-meta" style="display: inline;">' + newTitle + '</div>');
-		$('.firstHeading').attr('style','text-align:' + $('#title-align').html() + ';');
-	}
-}
-
-function showEras(className) {
-	if( skin == 'oasis' ) {
-		return;
-	}
-
-	if( typeof( SKIP_ERAS ) != 'undefined' && SKIP_ERAS )
-		return;
-
-	var titleDiv = document.getElementById( className );
-
-	if( titleDiv == null || titleDiv == undefined )
-		return;
-
-	var cloneNode = titleDiv.cloneNode(true);
-	var firstHeading = getFirstHeading();
-	firstHeading.insertBefore(cloneNode, firstHeading.childNodes[0]);
-	cloneNode.style.display = "block";
+	$('header.WikiaPageHeader > h1').html('<div id="title-meta" style="display: inline;">' + newTitle + '</div>');
+	$('header.WikiaPageHeader > h1').attr('style','text-align:' + $('#title-align').html() + ';');
 }
 // END JavaScript title rewrite
 
@@ -582,7 +564,7 @@ ClassTester.prototype.isMatch = function(element)
     end getElementsByClass
 */
 
-function insertAtCursor(myField, myValue) {
+window.insertAtCursor = function(myField, myValue) {
 	//IE support
 	if (document.selection)
 	{
@@ -695,7 +677,7 @@ function addfaicon() {
 		li.title = "This article is rated as featured article.";
 	}
 }
-addOnloadHook(addfaicon);
+$(addfaicon);
 
 /* Magic edit intro. Copied from Wikipedia's MediaWiki:Common.js
  * modified for use in both Monaco and Monobook skins by Sikon
@@ -704,42 +686,15 @@ addOnloadHook(addfaicon);
  */
 function addEditIntro(name) {
 	// Top link
-	if( skin == 'oasis' ) {
-		$('#ca-edit').attr('href', $('#ca-edit').attr('href') + '&editintro=' + name);
-		$('span.editsection > a').each( function () {
-			$(this).attr('href', $(this).attr('href') + '&editintro=' + name);
-		} );
-	} else {
-		var el = document.getElementById('ca-edit');
-
-		if( typeof(el.href) == 'undefined' ) {
-			el = el.getElementsByTagName('a')[0];
-		}
-
-		if (el)
-			el.href += '&editintro=' + name;
-
-		// Section links
-		var spans = document.getElementsByTagName('span');
-		for ( var i = 0; i < spans.length; i++ ) {
-			el = null;
-
-			if (spans[i].className == 'editsection') {
-				el = spans[i].getElementsByTagName('a')[0];
-				if (el)
-					el.href += '&editintro=' + name;
-			} else if (spans[i].className == 'editsection-upper') {
-				el = spans[i].getElementsByTagName('a')[0];
-				if (el)
-					el.href += '&editintro=' + name;
-			}
-		}
-	}
+	$('#ca-edit').attr('href', $('#ca-edit').attr('href') + '&editintro=' + name);
+	$('span.mw-editsection > a').each( function () {
+		$(this).attr('href', $(this).attr('href') + '&editintro=' + name);
+	} );
 }
 
 $( function () {
-	if ( wgNamespaceNumber === 0 ) {
-		var cats = document.getElementById( 'catlinks' );
+	if ( mw.config.get( 'wgNamespaceNumber' ) === 0 ) {
+		var cats = document.getElementById( 'articleCategories' );
 		if ( !cats ) {
 			return;
 		}
@@ -763,35 +718,15 @@ $( function () {
 			} else if ( cats[i].title === 'Category:Canon articles with Legends counterparts' ) {
 				addEditIntro( 'Template:Canon_editintro' );
 				break;
-			} else if ( wgPageName === 'Template:DYK editintro' ) {
+			} else if ( mw.config.get( 'wgPageName' ) === 'Template:DYK editintro' ) {
 				addEditIntro( 'Template:Good_editintro' );
 				break;
 			}
 		}
-	} else if ( wgPageName === 'Template:DidYouKnow' ) {
+	} else if ( mw.config.get( 'wgPageName' ) === 'Template:DidYouKnow' ) {
 		addEditIntro( 'Template:DYK_editintro' );
 	}
 } );
-
-// [[Main Page]] JS transform. Originally from [[Wikipedia:MediaWiki:Monobook.js]]/[[Wikipedia:MediaWiki:Common.js]] and may be further modified for local use.
-function mainPageRenameNamespaceTab() {
-	try {
-		var Node = document.getElementById( 'ca-nstab-main' ).firstChild;
-		if ( Node.textContent ) {      // Per DOM Level 3
-			Node.textContent = 'Main Page';
-		} else if ( Node.innerText ) { // IE doesn't handle .textContent
-			Node.innerText = 'Main Page';
-		} else {                       // Fallback
-			Node.replaceChild( Node.firstChild, document.createTextNode( 'Main Page' ) ); 
-		}
-	} catch(e) {
-		// bailing out!
-	}
-}
-
-if ( wgTitle == 'Main Page' && ( wgNamespaceNumber == 0 || wgNamespaceNumber == 1 ) ) {
-	addOnloadHook( mainPageRenameNamespaceTab );
-} 
  
 /** Archive edit tab disabling *************************************
  * Disables the edit tab on old forum topic pages to stop noobs bumping old topics.
@@ -811,44 +746,20 @@ function disableOldForumEdit() {
 		return;
 	}
 
-	if( skin == 'oasis' ) {
-		if( wgNamespaceNumber == 2 || wgNamespaceNumber == 3 ) {
-			$("#WikiaUserPagesHeader .wikia-menu-button li a:first").html('Archived').removeAttr('href').attr('style', 'color: darkgray;');
-			$('span.editsection').remove();
-			return;
-		} else {
-			$("#WikiaPageHeader .wikia-menu-button a:first").html('Archived').removeAttr('href').attr('style', 'color: darkgray;');
-			$('span.editsection').remove();
-			return;
-		}
-	}
-
-	if( !document.getElementById('ca-edit') ) {
+	if( wgNamespaceNumber == 2 || wgNamespaceNumber == 3 ) {
+		$("#WikiaUserPagesHeader .wikia-menu-button li a:first").html('Archived').removeAttr('href').attr('style', 'color: darkgray;');
+		$('span.editsection').remove();
 		return;
-	}
-
-	if( skin == 'monaco' ) {
-		editLink = document.getElementById('ca-edit');
-	} else if( skin == 'monobook' ) {
-		editLink = document.getElementById('ca-edit').firstChild;
 	} else {
+		$("#WikiaPageHeader .wikia-menu-button a:first").html('Archived').removeAttr('href').attr('style', 'color: darkgray;');
+		$('span.editsection').remove();
 		return;
 	}
-
-	editLink.removeAttribute('href', 0);
-	editLink.removeAttribute('title', 0);
-	editLink.style.color = 'gray';
-	editLink.innerHTML = 'Archived';
-
-	$('span.editsection-upper').remove();
-	$('span.editsection').remove();
-
-	appendCSS( '#control_addsection, #ca-addsection { display: none !important; }' );
 }
-addOnloadHook( disableOldForumEdit );
+$( disableOldForumEdit );
 
 //Removes the "Featured on:" line on File pages -- By Grunny
-addOnloadHook( function (){
+$( function (){
 	if ( wgNamespaceNumber == 6 && $('#file').length != 0 ) {
 		$('#file').html($('#file').html().replace(/Featured on\:(.*?)\<br\>/, ''));
 	}
@@ -994,3 +905,37 @@ $(document).ready( function () {
 
 /* Disable rollback script */
 window.RollbackWikiDisable = true;
+
+/**
+ * fillEditSummaries for VisualEditor, based on Grunny's jQuery version of Sikon's original version
+ * @author 01miki10
+ */
+
+function fillEditSummariesVisualEditor() {
+	mw.hook( 've.activationComplete' ).add(function () {
+
+		$.get( mw.config.get( 'wgScript' ), { title: 'Template:Stdsummaries', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+			var	$summaryOptionsList,
+				$summaryLabel = $( '.ve-ui-summaryPanel' ),
+				$summaryInput = $( '.ve-ui-summaryPanel-summaryInputField > input' ),
+				lines = data.split( '\n' ),
+				$wrapper = $( '<div>').addClass( 'edit-widemode-hide' ).text( 'Standard summaries: ' );
+
+			$summaryOptionsList = $( '<select />' ).attr( 'id', 'stdEditSummaries' ).change( function() {
+				var editSummary = $( this ).val();
+				if ( editSummary !== '' ) {
+					$summaryInput.val( editSummary );
+				}
+			} );
+
+			for ( var i = 0; i < lines.length; i++ ) {
+				var editSummaryText = ( lines[i].indexOf( '-- ' ) === 0 ) ? lines[i].substring(3) : '';
+				$summaryOptionsList.append( $( '<option>' ).val( editSummaryText ).text( lines[i] ) );
+			}
+
+			$summaryLabel.prepend( $wrapper.append( $summaryOptionsList ) );
+		} );
+	} );
+}
+
+$( fillEditSummariesVisualEditor );

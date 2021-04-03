@@ -23,6 +23,10 @@ window.UserTagsJS = {
             u: 'Leader',
             link: 'Category:Bureaucrats'
         },
+        Series_Creator:{
+            u: 'Series Creator',
+            link: 'Category:Bureaucrats'
+        },
         rollback: {
             link: 'Category:Wiki Staff'
         },
@@ -57,8 +61,12 @@ window.UserTagsJS = {
     }
 };
 UserTagsJS.modules.custom = {
-    'Acme Gamer': ['Leader'], 'Kindnessaj': ['Leader']
+    'Acme Gamer': ['Leader'], 'Kindnessaj': ['Leader'], 'Camila2929': ['Series Creator'] 
 };
+UserTagsJS.modules.userfilter = {
+    'Acme Gamer': ['inactive'], 'Kindnessaj': ['inactive'], 'Camila2929': ['inactive'] 
+};
+
 UserTagsJS.modules.newuser = {
     days: 7,
     edits: 10,
@@ -500,16 +508,10 @@ importArticles({
 	type:'script',
 	articles: [
         'MediaWiki:Common.js/redditWidget.js',      // Adds reddit widget to id="reddit-widget"
+        'u:dev:MediaWiki:AdminDashboard JS-Button/code.js' //Adds JS-Code for Admin Dashboard
 	]
 });
 
-//JS-Code for Admin Dashboard
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:AdminDashboard JS-Button/code.js',
-    ]	
-});
 
 /** Extra toolbar options ******************************************************
 *

@@ -12,7 +12,7 @@ function addMastheadTags() {
     rights["Nitrodax"]               = ["Inactive"],
     rights["TheGoldenPatrik"]        = ["Inactive"],
     rights["Fazbear2475"]            = ["Private"],
-    rights["Blitzcomet1213"]         = ["Retired", "Corporal","Non-commissioned Officer"],
+    rights["Ther 'Vadam"]            = ["Retired", "Corporal","Non-commissioned Officer"],
     rights["Clonetrooper3434"]       = ["Inactive"],
     rights["Keplers"]                = ["Inactive"],
     rights["TreshersliderOfficial"]  = ["Inactive"],

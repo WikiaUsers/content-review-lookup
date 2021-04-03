@@ -24,7 +24,7 @@ function errorHandler() {
 }
 
 function editQuestionSelect(q_id) {
-	if (mw.user.anonymous()) {
+	if (mw.config.values.wgUserName === null) {
 		alert('請先登入Wikia');
 		return false;
 	}
@@ -144,7 +144,7 @@ function editQuestionSelect(q_id) {
 }
 
 function editQuestionSort(q_id) {
-	if (mw.user.anonymous()) {
+	if (mw.config.values.wgUserName === null) {
 		alert('請先登入Wikia');
 		return false;
 	}
@@ -266,7 +266,7 @@ function editQuestionSort(q_id) {
 }
 
 function editQuestionDaily(q_id) {
-	if (mw.user.anonymous()) {
+	if (mw.config.values.wgUserName === null) {
 		alert('請先登入Wikia');
 		return false;
 	}

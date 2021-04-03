@@ -26,7 +26,7 @@ $(function() {
       };
     for (var cat in colors) {
         if (cats.indexOf(cat) !== -1) {
-            mw.util.addCSS('#WikiaArticle {' +
+            mw.util.addCSS('.WikiaArticle {' +
               'border: 0px solid ' + colors[cat] + ';' + 
               'background-color: transparent;' + //fallback
               'background-color: ' + colors[cat].replace('rgb', 'rgba').replace(')', ', 0.1)') + ';' + 

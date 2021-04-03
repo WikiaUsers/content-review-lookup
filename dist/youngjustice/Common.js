@@ -1,12 +1,17 @@
+/* To replace the now dead "welcome bot" */
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2: '{{sub'+'st:New user}}',
+        3: false
+    },
+    summary: 'Script: Creating user profile'
+};
+
 /* Auto-refreshing recent changes */
-window.ajaxSpecialPages = [
-    'WikiActivity',
-    'Recentchanges',
-    'Log',
-    'Contributions'
-];
-window.AjaxRCRefreshText = 'Auto-refresh';
-window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
+ajaxPages = ["Special:RecentChanges","Special:Watchlist","Special:Log","Special:Contributions"];
+AjaxRCRefreshText = 'Auto-refresh';
+AjaxRCRefreshHoverText = 'Automatically refresh the page';
+importScriptPage('MediaWiki:AjaxRC/code.js', 'dev');
 
 /* Standard edit summaries */
 window.dev = window.dev || {};
@@ -14,7 +19,7 @@ window.dev.editSummaries = {
 	select: 'User:Thailog/EditSummaries'
 };
 
-/* Custom buttons */
+/* Custom buttons 
 if (mwCustomEditButtons) {
     mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile": "https://images.wikia.nocookie.net/youngjustice/images/5/57/CIT_Button.png",
@@ -56,12 +61,4 @@ if (mwCustomEditButtons) {
         "sampleText": "MONTH-DAY"
     }
 
-}
-
-window.BackToTopModern = true;
-window.railWAM = {
-    logPage:"Project:WAM Log",
-    autoLogForUsers:"Thailot",
-    botUsers:"Thailot",
-    showLogAlert:false,
-};
+}*/

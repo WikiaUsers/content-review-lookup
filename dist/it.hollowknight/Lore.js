@@ -18,10 +18,21 @@
         'Vespa',
         'Boon',
         'Regno del Sogno',
-        'Gruppi di Nidosacro',
         'Esseri Superiori',
         'Antica Civiltà',
         'Ellina',
+        'Api',
+        'Folli',
+        'Maranidi',
+        'La Compagnia di Grimm',
+        'Cercatori di Dei',
+        'Sciamani Lumaca',
+        'Studiosi del Sacrario delle Anime',
+        'Tribù dei Funghi',
+        'Tribù delle Falene',
+        'Tribù dei Muschiosi',
+        'Tribù delle Mantidi',
+        'Tribù dei Ragni',
         'Lore'
  
     ];

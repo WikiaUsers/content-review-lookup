@@ -1,3 +1,9 @@
+window.DiscordBannerSettings = {
+    bannerStyle: '2',
+    inviteLink: 'Bctxk5d',
+    prependToRail: true
+};
+
 /***User Tags***/
 window.UserTagsJS = {
 	modules: {},
@@ -40,17 +46,3 @@ UserTagsJS.modules.newuser = {
 		return days < 4 && edits < 10;
 	}
 };
-
-/* Replaces {{Visitor}} with the name of the user browsing the page. */
-function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
-    $("span.insertusername").html(wgUserName);
- }
- addOnloadHook(UserNameReplace);
- 
- /* Prepend ARM to top of siderail */
-window.DiscordBannerSettings = {
-    bannerStyle: '2',
-    inviteLink: 'Bctxk5d',
-    prependToRail: true
-}

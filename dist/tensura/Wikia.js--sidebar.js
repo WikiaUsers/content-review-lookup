@@ -23,7 +23,7 @@
                             .append(
                                 'The Tensei Shitara Slime Datta Ken Wiki has an Official Discord Server! Click the button below to join and chat with fellow fans live, or click ',
                                 $('<a>')
-                                    .attr('href', mw.util.wikiGetlink('Tensei Shitara Slime Datta Ken Wikia:Discord_Policy'))
+                                    .attr('href', mw.util.getUrl('Tensei Shitara Slime Datta Ken Wikia:Discord_Policy'))
                                     .text('here'),
                                 ' to read our chat rules.'
                             ),

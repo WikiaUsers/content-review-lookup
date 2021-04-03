@@ -1,46 +1,46 @@
 function User(identifier) {
     console.log(identifier);
     this.id = identifier ? (isNaN(identifier) ? 0 : identifier) : 0;
-    this.name = identifier ? (isNaN(identifier) ? identifier : '') : wgUserName;
-    this.groups = identifier ? (isNaN(identifier) ? wgUserGroups : ['none']) : ['none'];
+    this.name = identifier ? (isNaN(identifier) ? identifier : '') : mw.config.get('wgUserName');
+    this.groups = identifier ? (isNaN(identifier) ? mw.config.get('wgUserGroups') : ['none']) : ['none'];
     var that = this;
 
     if(!identifier) {
         console.log('getting id from username');
-        getUserId(wgUserName, function(data) {
-            if(data.query.allusers[0].name == wgUserName) {
+        getUserId(mw.config.get('wgUserName'), function(data) {
+            if(data.query.allusers[0].name == mw.config.get('wgUserName')) {
                 that.id = data.query.allusers[0].id;
                 that.setID(that.id);
-                console.log('ID is',that.id,data.query.allusers[0].id);
-                getUserDetail(data.query.allusers[0].name,function(detail) {
+                console.log('ID is', that.id,data.query.allusers[0].id);
+                getUserDetail(data.query.allusers[0].name, function(detail) {
                     that.editcount = new Intl.NumberFormat().format(detail.query.users[0].editcount);
                 });
             }
             else {
-                console.log('User not found',data.query.allusers[0].name,'is not',wgUserName);
+                console.log('User not found' ,data.query.allusers[0].name, 'is not', mw.config.get('wgUserName'));
             }
         });
     }
     else if(identifier && isNaN(that.identifier)) {
         console.log('getting id');
-        console.log(typeof identifier,':',identifier);
+        console.log(typeof identifier, ':', identifier);
         getUserId(identifier, function(data) {
             if(data.query.allusers[0].name == identifier) {
-                console.log('that3',that);
+                console.log('that3', that);
                 that.id = data.query.allusers[0].id;
                 that.setID(that.id);
-                console.log('ID is',that.id,data.query.allusers[0].id);
-                getUserDetail(data.query.allusers[0].name,function(detail) {
+                console.log('ID is', that.id,data.query.allusers[0].id);
+                getUserDetail(data.query.allusers[0].name, function(detail) {
                     that.editcount = new Intl.NumberFormat().format(detail.query.users[0].editcount);
                 });
             }
             else {
-                console.log('User not found',data.query.allusers[0].name,'is not',that.identifier);
+                console.log('User not found', data.query.allusers[0].name, 'is not', that.identifier);
             }
         });
     }
     else {
-        console.log('Not possible',identifier);
+        console.log('Not possible', identifier);
     }
 }
 User.prototype = {
@@ -67,25 +67,23 @@ console.log(different);*/
 }; */
 
 function getUserGroup(group, callback) {
-    $.getJSON('/api.php?action=query&list=allusers&format=json&augroup=' + group).done(callback).error(function (error) {
-        console.log('Somethink went wrong',error);
-    });
+    $.getJSON('/api.php?action=query&list=allusers&format=json&augroup=' + group).done(callback).error(apiError);
 }
 
 function getUserId(name,callback) {
-    $.getJSON('/api.php?action=query&list=allusers&aufrom=' + encodeURIComponent(name) + '&format=json').done(callback).error(function (error) {
-        console.log('Somethink went wrong',error);
-    }).always(function(response) {
+    $.getJSON('/api.php?action=query&list=allusers&aufrom=' + encodeURIComponent(name) + '&format=json').done(callback).error(apiError).always(function(response) {
         return response;
     });
 }
 
 function getUserName(id, callback) {
-    $.getJSON('/api/v1/User/Details?ids=' + id).done(callback).error(function (error) {
-        console.log('Somethink went wrong',error);
-    }).always(function(response) {
+    $.getJSON('/api/v1/User/Details?ids=' + id).done(callback).error(apiError).always(function(response) {
         return response;
     });
+}
+
+function apiError(error) {
+    console.log('Somethink went wrong', error);
 }
 
 /*var username = 'Harry granger';
@@ -111,8 +109,8 @@ function getUserDetail(name, callback) {
    Requires copying Template:USERNAME. */
  
 function UserNameReplace() {
-    if (typeof (disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
-    $("span.insertusername").text(wgUserName);
+    if (typeof (disableUsernameReplace) != 'undefined' && disableUsernameReplace || mw.config.get('wgUserName') === null) return;
+    $("span.insertusername").text(mw.config.get('wgUserName'));
 }
 substUsername = UserNameReplace;
 addOnloadHook(UserNameReplace);
@@ -124,9 +122,9 @@ addOnloadHook(UserNameReplace);
    Requires copying Template:EDITCOUNT. */
 
 function editCountReplace() {
-    if (typeof (disableeditCountReplace) != 'undefined' && disableeditCountReplace || wgUserName === null) return;
+    if (typeof (disableeditCountReplace) != 'undefined' && disableeditCountReplace || mw.config.get('wgUserName') === null) return;
     $("span.inserteditcount").html(User.editcount);
 }
-addOnloadHook(editCountReplace);
+$(document).ready(editCountReplace);
 
 /* End of the {{EDITCOUNT}} replacement */

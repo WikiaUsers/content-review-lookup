@@ -7,6 +7,9 @@
  var result = [];
  
 function formautorequest(request) {
+    if (mw.config.get('wgVersion') !== '1.19.24') {
+        return;
+    }
     //Display the form
         $(request.id).html(request.form);
         $(request.id).after('<input type="button" id="autorequestform-submit" value="Submit"/> &nbsp; <span id="LoadingGif44" style="text-align:center;display:none;"><img src="https://images.wikia.nocookie.net/common/skins/common/images/ajax.gif" /></span>');

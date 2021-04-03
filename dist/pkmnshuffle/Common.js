@@ -46,7 +46,7 @@ importArticles({
 /* ##               TOOLTIPS                  ## */
 /* ############################################# */
 
-var tooltips_list = [
+window.tooltips_list = [
     {
         classname: 'pokemon-tooltip',
         parse: '{' + '{#ifeq:{' + '{Pokémon Data/Dex|name=<#pokemon#>}}|???|{' + '{#ifeq:{' + '{Pokémon Data/Dex With Modifier|name=<#pokemon#>}}|???|{' + '{#ifexist:Template:Pokémon Tooltip/<#pokemon#>|{' + '{Pokémon Tooltip/<#pokemon#>}}|<div align="center" style="width:128px"><#pokemon#><br>[[File:<#pokemon#>.png|64px]]</div>}}|{' + '{Pokémon Tooltip v2|pokemon=<#pokemon#>|modifier=<#modifier#>}}}}|{' + '{Pokémon Tooltip v2|pokemon=<#pokemon#>|modifier=<#modifier#>}}}}',
@@ -76,14 +76,10 @@ var tooltips_list = [
         classname: 'type-tooltip',
         parse: '{' + '{Type Tooltip|type=<#type#>}}',
         delay: 250,
-    },
-    {
-        classname: 'pokemon-tooltip has-redlinks',
-        delay:250,
     }
 ];
 
-var tooltips_config = {
+window.tooltips_config = {
     offsetX: 10,
     offsetY: 10,
     waitForImages: false,

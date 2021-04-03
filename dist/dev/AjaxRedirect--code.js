@@ -2,12 +2,10 @@
  * AjaxRedirect
  * @description Redirects the current page quickly.
  * @author Ozuzanna
+ * <nowiki>
  */
 
-mw.loader.using([
-    'mediawiki.api',
-    'mediawiki.user'
-], function() {
+(function() {
     var config = mw.config.get([
         'wgCanonicalNamespace',
         'wgCanonicalSpecialPageName',
@@ -24,17 +22,28 @@ mw.loader.using([
     }
 
     window.AjaxRedirectLoaded = true;
+    var isUCP = mw.config.get('wgVersion') !== '1.19.24';
 
     function respHandler(res) {
         if (res === true) {
             console.log(i18n.msg('success').plain());
-            new BannerNotification(i18n.msg('success').escape(), 'confirm').show();
+            if (isUCP) {
+                mw.notify(i18n.msg('success').plain());
+            } else {
+                new BannerNotification(i18n.msg('success').escape(), 'confirm').show();
+            }
             setTimeout(function() {
                 window.location.reload();
             }, 3000);
         } else {
             console.log(i18n.msg('fail').plain());
-            new BannerNotification(i18n.msg('fail').escape(), 'error').show();
+            if (isUCP) {
+                mw.notify(i18n.msg('fail').plain(), {
+                    type: 'error'
+                });
+            } else {
+                new BannerNotification(i18n.msg('fail').escape(), 'error').show();
+            }
         }
     }
 
@@ -79,11 +88,17 @@ mw.loader.using([
     }
 
     mw.hook('dev.i18n').add(function(lib) {
-        lib.loadMessages('AjaxRedirect').then(init);
+        $.when(
+            lib.loadMessages('AjaxRedirect'),
+            mw.loader.using([
+                'mediawiki.api',
+                'mediawiki.user'
+            ].concat(isUCP ? ['mediawiki.notify'] : []))
+        ).then(init);
     });
 
     importArticle({
         type: 'script',
-        article: 'u:dev:I18n-js/code.js'
+        article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
-});
+})();

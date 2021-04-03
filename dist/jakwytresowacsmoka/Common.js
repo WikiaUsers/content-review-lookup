@@ -94,12 +94,6 @@ var options = {
 	'{{cc-by-3.0}}': 'Licencja CC BY-SA 3.0 (ikonki tylko techniczne!)'
 };
 
-// {{USERNAME}}
-// Autorzy: Originally by [[wikia:User:Splarka|Splarka]], then by [[User:Spang|Spang]], this (jQuery) version by [[wikia:User:Joeyaa]], written to be backwards compatible
-if (wgUserName != 'null') {
-	$('.insertusername').html(wgUserName);
-}
-
 // Automatyczne odświeżanie 
 window.ajaxPages = 
 ["Special:RecentChanges","Specjalna:Ostatnie_zmiany","Specjalna:Aktywność_na_wiki","Special:WikiActivity"];

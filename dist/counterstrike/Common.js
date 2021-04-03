@@ -341,6 +341,8 @@ UserTagsJS.modules.custom = {
 	'Irv1n3': ['sysop', 'bureaucrat'],
 	'Mroosa': ['sysop'],
 	'TheNeXusCore': ['sysop', 'bureaucrat'],
+	'Yong_feng': ['sysop', 'bureaucrat'],
+	'HEADSHOTDEALER': ['sysop'],
 };
 
 UserTagsJS.modules.userfilter = {
@@ -362,10 +364,11 @@ window.MessageWallUserTags = {
         'ConTraZ_VII': 'Admin',
         'Irv1n3': 'Inactive Bureaucrat',
         'TheNeXusCore': 'Bureaucrat',
-        'Yong_feng': 'Retired Bureaucrat',
+        'Yong_feng': 'Bureaucrat',
         'Wuzh': 'Bureaucrat',
         'Elite_Abyssal': 'Bureaucrat',
         'GameZone1': 'Admin',
+        'HEADSHOTDEALER': 'Admin',
     }
 };
 

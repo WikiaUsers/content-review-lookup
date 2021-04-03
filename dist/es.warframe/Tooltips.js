@@ -14,6 +14,8 @@ var tooltips = {
     waitForImages: false,
     noCSS: false,
     
+    flip: false,
+    
     init: function() {
         if($(document.body).hasClass('mw-special-InfoboxBuilder')) return;
         if(location.search.search(/ttdebug=(1|[Tt]rue)/) != -1 || (typeof tooltips_debug != 'undefined' && tooltips_debug)) tooltips.debug = true;
@@ -41,10 +43,26 @@ var tooltips = {
         if(!content.length) content = $('#mw-content-text');
         
         if(!tooltips.noCSS) {
-            $(importArticle({
+            var cssImport = importArticle({
                 type: 'style',
                 article: 'u:dev:MediaWiki:Tooltips.css'
-            })).prependTo('head');
+            });
+            if (Array.isArray(cssImport)) {
+                // MW 1.19
+                $(cssImport).prependTo('head');
+            } else {
+                // UCP
+                cssImport.then(function () {
+                    var expectedSource = mw.loader.moduleRegistry['u:dev:MediaWiki:Tooltips.css'].style.css[0];
+                    for (var node = document.querySelector('head > meta[name="ResourceLoaderDynamicStyles"]').previousElementSibling; node.tagName === 'STYLE'; node = node.previousElementSibling) {
+                        if (node.textContent === '\n' + expectedSource) {
+                            document.head.prepend(node);
+                            return;
+                        }
+                    }
+                    throw new Error('WTF? Failed to find RL-inserted style!');
+                });
+            }
         }
         
         if($('#tooltip-wrapper').length === 0) $('<div id="tooltip-wrapper" class="WikiaArticle"></div>').appendTo(document.body);
@@ -290,24 +308,45 @@ var tooltips = {
     wrapperPosition: function(mouseX, mouseY) {
         var tipH = parseInt($("#tooltip-wrapper").css('padding-top')) + parseInt($("#tooltip-wrapper").css('padding-bottom'));
         var tipW = 0;
+        var barH = $('#WikiaBarWrapper').height();
        
         $("#tooltip-wrapper").find('.main-tooltip').each( function(){ if(typeof $(this).data('outerheight') != 'undefined') tipH += $(this).data('outerheight'); });
         $("#tooltip-wrapper").find('.main-tooltip').each( function(){ if(typeof $(this).data('outerwidth') != 'undefined') tipW = Math.max(tipW, $(this).data('outerwidth') + parseInt($("#tooltip-wrapper").css('padding-left')) + parseInt($("#tooltip-wrapper").css('padding-right'))); });
         
-        var coordX = tooltips.offsetX+mouseX;
-        var coordY = tooltips.offsetY+mouseY;
+        var spaceTop = mouseY - tooltips.offsetY;
+        var spaceLeft = mouseX - tooltips.offsetX;
+        var spaceRight = $(window).width() - mouseX - tooltips.offsetX;
+        var spaceBottom = $(window).height() - barH - mouseY - tooltips.offsetY;
         
-        var toRight = $(window).width()-coordX;
+        var coordX = mouseX + tooltips.offsetX;
+        var coordY = mouseY + tooltips.offsetY;
         
+        if(spaceRight < tipW && spaceBottom < tipH) {
+            if(spaceLeft >= tipW && tooltips.flip != 'h') {
+                coordX = mouseX - tipW - tooltips.offsetX;
+                tooltips.flip = 'v';
+            } else if(spaceTop >= tipH) {
+                coordY = mouseY - tipH - tooltips.offsetY;
+                tooltips.flip = 'h';
+            } else {
+                coordX = mouseX - tipW - tooltips.offsetX;
+                coordY = mouseY - tipH - tooltips.offsetY;
+                tooltips.flip = 'vh';
+            }
+        } else {
+            tooltips.flip = false;
+        }
         if ($("#tooltip-wrapper").css('position') == 'fixed') {
             coordX = coordX-$(window).scrollLeft();
             coordY = coordY-$(window).scrollTop();
-            coordY = Math.min(coordY, $(window).height()-tipH-$('#WikiaBarWrapper').height());
+            
+            coordX = Math.min(coordX, $(window).width() - tipW);
+            coordY = Math.min(coordY, $(window).height() - tipH - barH);
         } else {
-            coordY = Math.min(coordY, $(window).height()-tipH-$('#WikiaBarWrapper').height()+$(window).scrollTop());
+            coordX = Math.min(coordX, $(window).width() - tipW);
+            coordY = Math.min(coordY, $(window).height() - tipH - barH + $(window).scrollTop());
         }
-        if(toRight >= tipW) $("#tooltip-wrapper").css({left: coordX + 'px', top: coordY + 'px'});
-        else $("#tooltip-wrapper").css({left: coordX-tipW-tooltips.offsetX*2 + 'px', top: coordY + 'px'});
+        $("#tooltip-wrapper").css({left: coordX + 'px', top: coordY + 'px'});
     },
     handlers: {
         mouseOver: function(e) {

@@ -1,1 +1,0 @@
-#перенаправление [[MediaWiki:Common.js]]

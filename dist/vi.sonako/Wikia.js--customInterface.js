@@ -1,14 +1,3 @@
-// RelatedPagesModule
-$(function() {
-    var readmore = "#RelatedPagesModuleWrapper > .RelatedPagesModule";
-    $("body").on("DOMNodeInserted", readmore, function() {
-        importArticles({
-            type: "style",
-            articles: "MediaWiki:Read_more.css"
-        });
-    });
-}());
-
 /* Chèn cho các trang riêng (Vô hiệu hóa)
 if ( mediaWiki.config.get( 'wgCanonicalSpecialPageName' ) === 'WikiActivity') {
    impart('MediaWiki:Sakura.js');
@@ -18,6 +7,10 @@ if (mediaWiki.config.get('wgNamespaceNumber') === 0 || mediaWiki.config.get('wgN
    impart('MediaWiki:Snow.js');
 } 
 */
+// Shortcut for importArticle
+function impart(article) {
+    importArticle({ type: 'script', article: article });
+}
 
 $(function() {
     /* Bug Animation*/

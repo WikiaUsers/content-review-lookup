@@ -1,8 +1,6 @@
 importArticles({
 	type: 'script',
 	articles: [
-        "u:dev:FloatingToc/code.js", /* Floating TOC */
-        "u:scripts:Content/SpoilersToggle.js", /* Spoilers by User:Tierre; from Dragon Age Wiki @ w:c:dragonage:Help:Spoilers */
         "MediaWiki:Common.js/slider.js" /* "Slider" header for main page */
 	]
 });

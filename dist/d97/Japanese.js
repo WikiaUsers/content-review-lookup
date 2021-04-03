@@ -1,1 +1,0 @@
-#REDIRECT [[User:Dragonfree97/Japanese.js]]

@@ -13,4 +13,4 @@ function fixSearch() {
  	if( button )
 		button.name = 'go';
 }
-addOnloadHook( loadFunc );
+$( loadFunc );

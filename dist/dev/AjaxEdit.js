@@ -5,7 +5,7 @@
  * @description     Edit without opening the editor.
  * @protect         <nowiki>
  */
-require([
+if (mw.config.get('wgVersion') === '1.19.24') require([
     'wikia.window',
     'jquery',
     'mw',

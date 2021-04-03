@@ -41,14 +41,14 @@
   });
 
 /* Custom Tooltips for use with dev:Tooltips.js */
-var tooltips_list = [
+window.tooltips_list = [
     {   classname: 'item-infobox',
         parse: '{'+'{Инфобокс/Предмет|Название=<#item#>|Короткий=1}}'},
     {   classname: 'tech-infobox',
         parse: '{'+'{Инфобокс/Технология|Название=<#tech#>|Короткий=1}}'},
         ]
  
-var tooltips_config = {
+window.tooltips_config = {
     offsetX: 20,
     offsetY: 20,
     waitForImages: true,

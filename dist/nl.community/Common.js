@@ -50,7 +50,7 @@ document.createStyleSheet(sheetURL);
 DOCHEAD.appendChild(styleElem);
 }
 
-document.write('<script type="text/javascript" src="' + '/index.php?title=MediaWiki:Functions.js&action=raw&ctype=text/javascript&smaxage=18000"></script>');
+//document.write('<script type="text/javascript" src="' + '/index.php?title=MediaWiki:Functions.js&action=raw&ctype=text/javascript&smaxage=18000"></script>');
 
 // BEGIN Dynamic Navigation Bars (experimental) Script taken from Wikipedia.
 // Test if an element has a certain class
@@ -140,7 +140,7 @@ if (hasClass(NavigationBoxes[i], "collapsed") || (getCookie("hideTable-" + wgArt
 }
 }
 
-addOnloadHook(createCollapseButtons);
+$(createCollapseButtons);
 
 
 // Dynamic Navigation Bars
@@ -196,10 +196,8 @@ NavFrame.setAttribute('id', 'NavFrame' + indexNavigationBar);
 }
 }
  
-addOnloadHook( createNavigationBarToggleButton );
+$( createNavigationBarToggleButton );
 
-// tooltips
-if (getCookie("wiki-tiploader") != "no") document.write('<scr'+'ipt type="text/javascript" src="http://www.wowwiki.com/index.php?title=MediaWiki:Tooltips.js&action=raw&ctype=text/javascript&dontcountme=s&smaxage=18000"></scr'+'ipt>');
 
 // edit summaries
 // function fillEditSummaries() {
@@ -217,7 +215,7 @@ if (getCookie("wiki-tiploader") != "no") document.write('<scr'+'ipt type="text/j
 // if (value != "") document.getElementById("wpSummary").value = value;
 // }
 // 
-// addOnloadHook(fillEditSummaries);
+// $(fillEditSummaries);
 
 // extract a URL parameter from the current URL
 // From wikipedia:User:Lupin/autoedit.js
@@ -267,7 +265,7 @@ tableRows[j].className = newClassName + (j%2 == 0?"alt":"");
 }
 }
 
-addOnloadHook(changeTS);
+$(changeTS);
 
 
  // 2.- Edit Menu
@@ -365,7 +363,7 @@ addOnloadHook(changeTS);
     newSummary += canned;
     document.forms.editform.wpSummary.value = newSummary;
  }
-  addOnloadHook(editsummInitialize);
+  $(editsummInitialize);
 
 /*
 $("#wikilist-dpl li a").each(function() {

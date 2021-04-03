@@ -16,11 +16,11 @@
                 text: settings.msgDelete,
             });
         
-        if (['Unusedimages', 'UnusedVideos'].indexOf(cfg.wgCanonicalSpecialPageName) > -1 && ($targets = $('#mw-content-text .gallerybox')).length) {
+        if (['Unusedimages', 'UnusedVideos'].indexOf(cfg.wgCanonicalSpecialPageName) > -1 && ($targets = $('#mw-content-text .wikia-gallery-item, #mw-content-text .gallerybox')).length) {
             var $buttonX = $('<a>', {
                 target: settings.target,
                 class: 'ffd-buttonx',
-                style: 'float:right;position:relative;top:0;color:red;font-weight:900;margin-right:5px',
+                style: 'float:right;position:relative;top:0;color:red;font-weight:900;margin-right:5px;z-index:1;text-shadow:#000 0 0 1px,#000 0 0 1px',
                 text: 'X',
                 title: settings.msgDelete,
             });

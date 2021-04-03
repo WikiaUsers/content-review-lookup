@@ -1,17 +1,4 @@
-/* Skinviewer: loading fix */
-$(window).load(function() {
-    $('.lazyimg-wrapper img').trigger("onload");
-});
- 
-/* Skinviewer: Skinselektor onclick */
-mw.hook('wikipage.content').add(function(elem) {
-    $(document).on("click", "span.show", function () {
-        $(".content-wrapper > div").hide();
-        $('#item-' + this.id).fadeIn();
-    });
-});
-
-/* Frontpage - News autoslider */
+/* General-purpose Image-based Tabber (Example: [[Kled/LoL]])*/
 $(window).load(function() {
     if (mw.config.get('wgPageName') === 'League_of_Legends_Wiki') {
         var sInterval;
@@ -36,3 +23,21 @@ $(window).load(function() {
         });
     }
 });
+
+/* SkinViewer */
+$(document).on("click", "span.show", function () {
+    if (!$('#item-' + this.id).is($('.skinviewer-active-tab'))) {
+        $(".skinviewer-active-tab").removeClass('skinviewer-active-tab');
+        $(".skinviewer-tab-container > div").hide();
+        $('#item-' + this.id).addClass('skinviewer-active-tab');
+        $('#item-' + this.id).fadeIn();
+    }
+});
+
+/* loading fix for SkinViewer */
+(function() {
+    $('.lazyimg-wrapper img.lazyload').each(function() {
+    	$(this).removeClass('lazyload');
+    	$(this).attr('src', $(this).attr('data-src'));
+    });
+}());

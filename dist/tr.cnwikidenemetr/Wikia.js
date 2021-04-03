@@ -559,6 +559,19 @@ mw.hook('wikipage.content').add(function($content) {
                         allowfullscreen: true
                     })
                 );
+                
+                break;
+            case 'blogger':
+                $this.html(
+                    $('<iframe>', {
+                        src: id + 'blogspot.com',
+                        css: {
+                            width: '800px',
+                            height: '800px',
+                            allowfullscreen: true
+                    })
+                );
+                
                 break;
             case 'logo':
                 $this.html(

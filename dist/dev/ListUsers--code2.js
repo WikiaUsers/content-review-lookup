@@ -274,7 +274,6 @@ require(["mw", "wikia.window"], function (mw, wk) {
                 "staff",
                 "helper",
                 "voldev",
-                "vstf",
                 "vanguard",
                 "council",
                 "checkuser",
@@ -284,7 +283,11 @@ require(["mw", "wikia.window"], function (mw, wk) {
                 "content-moderator",
                 "threadmoderator",
                 "chatmoderator",
-                "rollback"
+                "rollback",
+                "content-volunteer",
+                "wiki-manager",
+                "content-team-member",
+                "soap"
             ];
 
             if (window.listUsers && window.listUsers.customgroups) {

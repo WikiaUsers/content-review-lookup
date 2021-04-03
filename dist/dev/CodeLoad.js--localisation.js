@@ -1,11 +1,35 @@
 /*jslint browser, long */
-/*global require, importArticle */
+/*global mediaWiki, importArticle, codeLoad */
 
-require(["mw", "fosl.codeload"], function (mw, cl) {
+(function (mw, cl) {
     "use strict";
 
+    // messages present in [[MediaWiki:Custom-CodeLoad/i18n.json]]
+    var msgKeys = [
+        "clear-cache",
+        "clear-cache-success",
+        "close",
+        "done",
+        "edit-summary",
+        "entry",
+        "group-other",
+        "heading",
+        "intro",
+        "intro-sysop",
+        "no-definitions",
+        "preferences",
+        "preferences-with-title",
+        "reset",
+        "reset-tooltip",
+        "save",
+        "save-anon",
+        "save-fail",
+        "save-success",
+        "save-tooltip",
+        "user-page-info"
+    ];
+
     function main(i18n) {
-        var msgKeys = Object.keys(i18n._messages.en);
         var msg = {};
 
         // collect all i18n-js translations so we can use them with mw.messages
@@ -32,7 +56,7 @@ require(["mw", "fosl.codeload"], function (mw, cl) {
     if (!(window.dev && window.dev.i18n && window.dev.i18n.loadMessages)) {
         importArticle({
             type: "script",
-            article: "u:dev:I18n-js/code.js"
+            article: "u:dev:MediaWiki:I18n-js/code.js"
         });
     }
-});
+}(mediaWiki, codeLoad));

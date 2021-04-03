@@ -5,28 +5,30 @@
 // ====================
 
 $(function() {
-        if (skin == 'oasis'){
-            var $label = $('#edit_enhancements_toolbar #wpSummaryLabel');
-	    if (!$label.size()) {
+	var $label;
+	var skin = mw.config.get('skin');
+    if (skin == 'oasis'){
+        $label = $('#edit_enhancements_toolbar #wpSummaryLabel');
+	    if (!$label.length) {
 	    	    return;
 	    }
-        }
+    }
 
-        if (skin == 'monobook'){
-	    var $label = $('.editOptions #wpSummaryLabel');
-	    if (!$label.size()) {
+    if (skin == 'monobook'){
+	    $label = $('.editOptions #wpSummaryLabel');
+	    if (!$label.length) {
 	    	    return;
 	    }
-        }
+    }
 
 	$combo = $('<select />').attr('id', 'stdSummaries').change(function() {
 		var val = $(this).val();
-		if (val != '') {
+		if (val !== '') {
 			$('#wpSummaryEnhanced,#wpSummary').val(val);
 		}
 	});
  
-        $label.prepend('<br />').prepend($combo).prepend('Summaries: ');
+    $label.prepend('<br />').prepend($combo).prepend('Summaries: ');
 
 	$.ajax({
 		'dataType': 'text',
@@ -35,19 +37,19 @@ $(function() {
 			'action': 'raw',
 			'ctype': 'text/plain'
 		},
-		'url': wgScript,
+		'url': mw.config.get('wgScript'),
 		'success': function(data) {
 			var lines = data.split("\n");
 			for (var i in lines) {
-				var val = (lines[i].indexOf('-- ') == 0) ? lines[i].substring(3) : '';
-				var text = (lines[i].indexOf('-- ') == 0) ? '&nbsp;&nbsp;' + lines[i].substring(3) : lines[i];
-				var disable = (lines[i].indexOf('-- ') == 0 || lines[i].indexOf('(') == 0) ? '' : 'disabled';
+				var val = (lines[i].indexOf('-- ') === 0) ? lines[i].substring(3) : '';
+				var text = (lines[i].indexOf('-- ') === 0) ? '&nbsp;&nbsp;' + lines[i].substring(3) : lines[i];
+				var disable = (lines[i].indexOf('-- ') === 0 || lines[i].indexOf('(') === 0) ? '' : 'disabled';
 				var $opt = '<option value="' + val + '" ' + disable + '>' + text + '</option>';
 				$combo.append($opt);
 			}
 		}
 	});
-})
+});
 
 // ========================
 // Grafischer Editor (RTE)
@@ -55,13 +57,13 @@ $(function() {
  
 $(function() {
 	var $label = $('.module_content #wpSummaryLabel');
-	if (!$label.size()) {
+	if (!$label.length) {
 		return;
 	}
  
 	$combo = $('<select />').attr('id', 'stdSummaries').change(function() {
 		var val = $(this).val();
-		if (val != '') {
+		if (val !== '') {
 			$('#wpSummaryEnhanced,#wpSummary').val(val);
 		}
 	});
@@ -75,13 +77,13 @@ $(function() {
 			'action': 'raw',
 			'ctype': 'text/plain'
 		},
-		'url': wgScript,
+		'url': mw.config.get('wgScript'),
 		'success': function(data) {
 			var lines = data.split("\n");
 			for (var i in lines) {
-				var val = (lines[i].indexOf('-- ') == 0) ? lines[i].substring(3) : '';
-				var text = (lines[i].indexOf('-- ') == 0) ? '&nbsp;&nbsp;' + lines[i].substring(3) : lines[i];
-				var disable = (lines[i].indexOf('-- ') == 0 || lines[i].indexOf('(') == 0) ? '' : 'disabled';
+				var val = (lines[i].indexOf('-- ') === 0) ? lines[i].substring(3) : '';
+				var text = (lines[i].indexOf('-- ') === 0) ? '&nbsp;&nbsp;' + lines[i].substring(3) : lines[i];
+				var disable = (lines[i].indexOf('-- ') === 0 || lines[i].indexOf('(') === 0) ? '' : 'disabled';
 				var $opt = '<option value="' + val + '" ' + disable + '>' + text + '</option>';
 				$combo.append($opt);
 			}

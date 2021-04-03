@@ -348,14 +348,14 @@ function stageData(){
     });
 }
 
-var tooltips_config = {
+window.tooltips_config = {
     waitForImages: true,
 }
- 
-var tooltips_list = [
+
+window.tooltips_list = [
     {
         classname: 'basic-tooltip',
-        onHide: function(handle) { $(this).html($(handle).html()) },
+        onHide: function(handle) { $(this).html($(handle).html()); },
     },{
         classname: 'ability-tooltip',
         parse: '{'+'{<#ability#>|<#magnitude#>|duration=<#duration#>|tt=<#tt#>|show=no}}',
@@ -363,14 +363,7 @@ var tooltips_list = [
         classname: 'imgsrc-tooltip',
         parse: '['+'[File:<#imgsrc#>i.png|link=<#link#>]]',
     }
-]
-
-importArticles({
-    type: 'script',
-    articles: [
-        "u:dev:Tooltips/code.js"
-    ]
-});
+];
 
 function gacha(){
 	if ($("#resultList").length){
@@ -447,11 +440,12 @@ $(function() {
         });
     }
 });
+
 window.texttip = function(){
     var tt = $('.tt-text'),tl;
     tt.removeAttr('title').on('mouseenter touchstart',function(){
-        var o = $(this).offset(), w = document.body.clientWidth, b = $(this).hasClass('bottom'), l = $(this).hasClass('line');
-        var p = b ? {top: o.top+$(this).outerHeight()+5} : {bottom: document.body.clientHeight-o.top-$(this).outerHeight()};
+        var o = $(this).offset(), w = document.documentElement.clientWidth, b = $(this).hasClass('bottom'), l = $(this).hasClass('line');
+        var p = b ? {top: o.top+$(this).outerHeight()+5} : {bottom: document.documentElement.clientHeight-o.top-$(this).outerHeight()};
         if(o.left<w/2) p.left = b ? o.left : o.left+$(this).outerWidth()+5;
         else p.right = b ? w-o.left-$(this).outerWidth() : w-o.left+5;
         tl = l ?'tt-tip-stage':'tt-tip';

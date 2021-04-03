@@ -28,7 +28,7 @@
 //      Using the gallery, could display the story arc as well.
 //todo: Another idea: Configurable list of additional pages to run the script on
 //for testing: window.sessionStorage.removeItem('linkPopupStorage');$('#mw-content-text a').off('mouseover').off('mouseout');
-$(function() {
+mw.loader.using('mediawiki.util').then(function() {
     //These lists need to be updated manually
     var names = {}, cacheEnabled = (window.linkImagePopupCachingDisabled ? false : true), pendingPages = {},
       categories = ['Alicorn ponies', 'Antagonists', 'Background characters', 'Crystal Ponies',

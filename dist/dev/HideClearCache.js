@@ -3,6 +3,14 @@
         return;
     }
     window.HideClearCacheLoaded = true;
+    
+    function click () {
+        //Hide "show more"
+        $(this).parent().hide();
+        
+        //Show the rest of the message
+        $('#mw-clearyourcache > ul').fadeIn('slow');
+    }
 
     function init (i18n) {
         //Hide most of the message
@@ -11,10 +19,10 @@
         //Add the show text
         $('#mw-clearyourcache > p').append(
             $('<span>', {
-                id: 'showmore',
                 append: [
                     '[',
                     $('<a>', {
+                        click: click,
                         style: 'cursor: pointer;',
                         text: i18n.msg('show').escape()
                     }),
@@ -22,15 +30,6 @@
                 ]
             })
         );
-
-        //When the show text is clicked...
-        $('#mw-clearyourcache > p > #showmore > a').click(function () {
-            //...remove the show text...
-            $('#mw-clearyourcache > p > #showmore').remove();
-    
-            //...and show the rest of the message
-            $('#mw-clearyourcache > ul').fadeIn('slow');
-        });
     }
 
     mw.hook('dev.i18n').add(function (i18n) {

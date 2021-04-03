@@ -27,7 +27,7 @@ importArticles({
     ]
 });
 
-var tooltips_list = [
+window.tooltips_list = [
     {
         classname: 'unit-tooltip',
         parse: '{'+'{Unit-Tooltip|<#param#>}}',
@@ -42,8 +42,7 @@ var tooltips_list = [
         parse: '{'+'{Common-Tooltip|<#param#>}}',
     }
 ];
-
-var tooltips_config = {
+window.tooltips_config = {
     offsetX: 20,
     offsetY: 20,
     waitForImages: true

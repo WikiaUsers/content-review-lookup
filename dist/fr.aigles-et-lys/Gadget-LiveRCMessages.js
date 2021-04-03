@@ -1,0 +1,45 @@
+
+/* ** Messages système ** */
+
+lrcMediawikiMessages["abusefilter-log-name"] = 'Journal des filtrages';
+lrcMediawikiMessages["blocklogpage"] = 'Journal des blocages';
+lrcMediawikiMessages["centralauth-log-name"] = 'Journal des comptes globaux';
+lrcMediawikiMessages["centralauth-rightslog-name"] = 'Journal des droits globaux';
+lrcMediawikiMessages["dellogpage"] = 'Journal des suppressions de page';
+lrcMediawikiMessages["disambiguationspage"] = 'Administrateurs, merci de maintenir à jour cette page en incluant des liens vers tous les modèles d\'homonymie ainsi que les redirections vers ces modèles.Cette liste est utilisée par [[Special:Disambiguations]] qui affiche les articles liés vers les pages d\'homonymie. La liste sera également utilisée par des bots.* [[Modèle:Bandeau standard pour page d\'homonymie]]* [[Modèle:Arrondissements homonymes]]* [[Modèle:Batailles homonymes]]* [[Modèle:Cantons homonymes]]* [[Modèle:Communes françaises homonymes]]* [[Modèle:Édifices religieux homonymes]]* [[Modèle:Films homonymes]]* [[Modèle:Gouvernements homonymes]]* [[Modèle:Guerres homonymes]]* [[Modèle:Homonymie]]* [[Modèle:Homonymie bateau]]* [[Modèle:Homonymie de clubs sportifs]]* [[Modèle:Homonymie de comtés]]* [[Modèle:Homonymie édifice religieux]]* [[Modèle:Homonymie de monument]]* [[Modèle:Homonymie de nom romain]]* [[Modèle:Homonymie de parti politique]]* [[Modèle:Homonymie  de route]]* [[Modèle:Homonymie d\'établissements scolaires ou universitaires]]* [[Modèle:Homonymie d\'îles]]* [[Modèle:Homonymie dynastique]]* [[Modèle:Homonymie vidéoludique]]* [[Modèle:Internationalisation]]* [[Modèle:Isomérie]]* [[Modèle:Paronymie]]* [[Modèle:Patronyme]]* [[Modèle:Patronymie]]* [[Modèle:Patronyme basque]]* [[Modèle:Patronyme italien]]* [[Modèle:Personnes homonymes]]* [[Modèle:Saints homonymes]]* [[Modèle:Titres homonymes]]* [[Modèle:Toponymie]]* [[Modèle:Unités homonymes]]* [[Modèle:Villes homonymes]]';
+lrcMediawikiMessages["globalblocking-logpage"] = 'Journal des blocages globaux';
+lrcMediawikiMessages["hide"] = 'Masquer';
+lrcMediawikiMessages["importlogpage"] = 'Journal des importations';
+lrcMediawikiMessages["log"] = 'Journaux d’opérations';
+lrcMediawikiMessages["mergelog"] = 'Journal des fusions';
+lrcMediawikiMessages["movelogpage"] = 'Journal des renommages';
+lrcMediawikiMessages["mycontris"] = 'Contributions';
+lrcMediawikiMessages["newuserlogpage"] = 'Journal des créations de comptes utilisateur';
+lrcMediawikiMessages["protect-unchain-permissions"] = 'Déverrouiller davantage d’options de protection';
+lrcMediawikiMessages["protectlogpage"] = 'Journal des protections';
+lrcMediawikiMessages["red-link-title"] = '$1 (page inexistante)';
+lrcMediawikiMessages["renameuserlogpage"] = 'Journal des changements de noms d’utilisateurs';
+lrcMediawikiMessages["revertpage"] = 'Révocation des modifications de [[Special:Contributions/$2|$2]] (retour à la dernière version de [[User:$1|$1]])';
+lrcMediawikiMessages["review-logpage"] = 'Journal des relectures';
+lrcMediawikiMessages["rightslog"] = 'Journal des modifications de droits d’utilisateurs';
+lrcMediawikiMessages["uploadlogpage"] = 'Journal d\'import de fichiers';
+lrcMediawikiMessages["whatlinkshere-filters"] = 'Filtres';
+lrcMediawikiMessages["whatlinkshere-hideimages"] = '$1 les fichiers liés';
+lrcMediawikiMessages["whatlinkshere-hidelinks"] = '$1 les liens';
+lrcMediawikiMessages["whatlinkshere-hideredirs"] = '$1 les redirections';
+lrcMediawikiMessages["whatlinkshere-hidetrans"] = '$1 les inclusions';
+lrcMediawikiMessages["deletereason-dropdown"] = '*Motifs de suppression les plus courants** Page vide** [[Aigles et Lys:Bac à sable|Bac à sable]], test de débutant** [[Aigles et Lys:Vandalisme|Vandalisme]]** [[Aigles et Lys:Travaux inédits|Travail inédit]]** [[Aigles et Lys:Aigles et Lys est une encyclopédie|Contenu non encyclopédique]]** [[Aigles et Lys:Pages soupçonnées de violation de copyright|Violation de copyright]]** [[Aide:Republication|Copie de site web sans autorisation explicite]]** {{#ifexist:{{TALKPAGENAME}}/Suppression|[[{{TALKPAGENAME}}/Suppression|Décision PàS]]|[[Aigles et Lys:Pages à supprimer|Décision PàS]]}}** Simple définition ([[Wiktionnaire]])** Traduction automatique, texte incompréhensible** [[Aigles et Lys:Critères d\'admissibilité des articles|Ne répond pas aux critères d\'admissibilité de Aigles et Lys]]** Auto-promo, publicité ou spam, [[Aigles et Lys:Vérifiabilité|contenu non vérifiable]]** Redirection cassée, inutile ou non pertinente** [[Aigles et Lys:Vérifiabilité|Contenu non vérifiable]]*Motifs plus spécifiques** Catégorie vide ou remplacée** Page de discussion orpheline** Modèle obsolète** Fichier sur Commons** [[Aigles et Lys:Demande de purge d\'historique|Purge d\'historique]]** [[Aigles et Lys:Demande de fusion d\'historiques|Fusion d\'historiques]]** Page blanchie par son auteur** À la demande de son auteur';
+lrcMediawikiMessages["ipbreason-dropdown"] = '* Motifs de blocage les plus fréquents** [[Aigles et Lys:Vandalisme|Vandalisme]]** Insertion d\'informations fausses** Suppression de contenu sans justification** Insertion répétée de [[Aigles et Lys:Liens externes|liens externes]] publicitaires (spam)** Insertion de contenu sans aucun sens** Création répétée d\'articles non encyclopédiques** Tentative d\'intimidation ou harcèlement** Abus d\'utilisation de comptes multiples ([[Aigles et Lys:Faux-nez|faux-nez]])** [[Aigles et Lys:Nom d\'utilisateur|Nom d\'utilisateur]] d\'une marque, entreprise, association ou personne morale** [[Aigles et Lys:Nom d\'utilisateur|Nom d\'utilisateur]] inacceptable, injurieux ou diffamant** Décision du [[Aigles et Lys:Comité d\'arbitrage|Comité d\'arbitrage]]** [[Aigles et Lys:Pas d\'attaque personnelle|Attaques personnelles et insultes]]** Compte créé pour vandaliser** Insertion répétée de [[Aigles et Lys:Droit d\'auteur|texte sous copyright non libre]]* Motifs déclenchant un message spécial de blocage** [[Aigles et Lys:Proxy ouvert|Proxy ouvert]]** Vandalisme d\'IP partagée';
+lrcMediawikiMessages["protect-dropdown"] = '*Motifs de protection les plus courants** [[Aigles et Lys:Vandalisme|Vandalisme excessif]]** [[Aigles et Lys:Spam|Spam excessif]]** [[Aigles et Lys:Guerre d\'édition|Guerre d\'édition]]** Modèle très utilisé** Page protégée à la création** Utilisateur bloqué indéfiniment** Élection, arbitrage ou vote clos** Page cible d\'utilisateur banni';
+lrcMediawikiMessages["pagecategorieslink"] = 'Catégorie:Accueil';
+lrcMediawikiMessages["categories"] = 'Liste des catégories';
+lrcMediawikiMessages["pagecategories"] = 'Catégorie{{PLURAL:$1||s}}';
+lrcMediawikiMessages["abusefilter-action-block"] = 'Bloquer';
+lrcMediawikiMessages["abusefilter-action-blockautopromote"] = 'Bloquer la promotion automatique';
+lrcMediawikiMessages["abusefilter-action-degroup"] = 'Exclure des groupes';
+lrcMediawikiMessages["abusefilter-action-disallow"] = 'Interdire la modification';
+lrcMediawikiMessages["abusefilter-action-rangeblock"] = 'Bloquer la plage';
+lrcMediawikiMessages["abusefilter-action-tag"] = 'Baliser';
+lrcMediawikiMessages["abusefilter-action-throttle"] = 'Limiter les modifications';
+lrcMediawikiMessages["abusefilter-action-warn"] = 'Avertir l’utilisateur';
+lrcMediawikiMessages["indexOf"] = '';

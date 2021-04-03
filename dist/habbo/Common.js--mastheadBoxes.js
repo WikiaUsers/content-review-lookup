@@ -2,7 +2,7 @@ var rights = {},
     icons = {},
     user = wgTitle;
 
-rights["Ownslo"]           = ["CSS", "Developer", "Owner"],
+rights["Ownslo"]           = ["CSS"],
 rights["Michaelcong"]      = ["Owner", "Management"],
 rights["ADDNAMEHERE"]      = ["Management", "News Reporter", "Events Host"];
 

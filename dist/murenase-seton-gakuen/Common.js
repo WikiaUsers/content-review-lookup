@@ -14,7 +14,7 @@ window.MessageWallUserTags = {
         'Emily Herald': 'FOUNDER/ADMIN',
         'Aisukuriimu': 'ADMIN',
         'Unok': 'CONTENT TEAM MEMBER',
-        'Jadium': 'WIKI MANAGER',
+        //'Jadium': 'WIKI MANAGER',//No longer a Wiki Manager
         'LightningKnight355': 'MODERATOR',
         'SageM': 'MODERATOR',
     }

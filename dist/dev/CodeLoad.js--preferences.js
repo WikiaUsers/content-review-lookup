@@ -1,15 +1,7 @@
-// Used files: [[File:Icon-gear-black.png]] [[File:Icon-gear-white.png]]
 /*jslint browser, long */
-/*global require */
+/*global alert, jQuery, mediaWiki, codeLoad */
 
-require([
-    "jquery",
-    "mw",
-    "fosl.codeload",
-    "wikia.ui.factory",
-    "BannerNotification",
-    "wikia.window"
-], function ($, mw, cl, uiFactory, Banner, context) {
+(function ($, mw, cl) {
     "use strict";
 
     var definitonKeys = Object.keys(cl.definitions);
@@ -21,22 +13,36 @@ require([
     var definitionGroups = {};
     var definitionPrefs = {};
 
-    var banner = new Banner();
-    var gearIconUrl = $(document.body).hasClass("oasis-dark-theme")
-        ? "//images.wikia.nocookie.net/dev/images/2/25/Icon-gear-white.png"
-        : "//images.wikia.nocookie.net/dev/images/a/af/Icon-gear-black.png";
-    var uiModalFactory;
+    // cog icon from Font Awesome Free 5.14.0 by @fontawesome - https://fontawesome.com
+    // licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+    var $cogIcon = $("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path d='M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z' fill='currentcolor'/></svg>");
+    var modal = new mw.libs.QDmodal("codeload-modal");
 
-    function showPrefsModal(event) {
-        if (!uiModalFactory) {
-            uiFactory.init("modal").then(function (uiModal) {
-                uiModalFactory = uiModal;
-                showPrefsModal(event);
-            });
-            return;
+    function notify(msg, options) {
+        if (window.BannerNotification && !notify.banner) {
+            notify.banner = new window.BannerNotification();
+            notify.typeMap = {
+                success: "confirm",
+                error: "error"
+            };
         }
 
-        var id = event.target.dataset.id;
+        if (mw.notification) {
+            mw.notification.notify(msg, options);
+        } else if (notify.banner) {
+            notify.banner.hide();
+            notify.banner.setContent(msg);
+            if (options.type) {
+                notify.banner.setType(notify.typeMap[options.type]);
+            }
+            notify.banner.show();
+        } else {
+            alert(msg);
+        }
+    }
+
+    function showPrefsModal(event) {
+        var id = event.currentTarget.dataset.id;
 
         var content = "<table><tbody>";
         Object.keys(definitionPrefs[id]).forEach(function (prefName) {
@@ -70,64 +76,48 @@ require([
         });
         content += "</tbody></table>";
 
-        var modalVars = {
-            closeText: mw.message("codeload-close").escaped(),
+        function onModalDone() {
+            modal.$content.find("input").each(function (ignore, element) {
+                var prefValue = null;
+
+                switch (element.type) {
+                case "checkbox":
+                    prefValue = element.checked;
+                    break;
+                case "number":
+                    prefValue = parseFloat(element.value);
+                    if (isNaN(prefValue)) {
+                        prefValue = null;
+                    }
+                    break;
+                case "text":
+                    prefValue = element.value;
+                    break;
+                }
+
+                if (prefValue === null) {
+                    // unrecognised pref type or invalid pref value
+                    return;
+                }
+
+                definitionPrefs[id][element.dataset.pref] = prefValue;
+            });
+
+            modal.hide();
+        }
+
+        modal.show({
             content: content,
-            id: "codeload-modal",
-            size: "medium",
             title: typeof cl.definitions[id].title === "string"
                 ? mw.message("codeload-preferences-with-title", cl.definitions[id].title).escaped()
                 : mw.message("codeload-preferences").escaped(),
             buttons: [{
-                vars: {
-                    value: mw.message("codeload-done").escaped(),
-                    classes: ["", ""],
-                    data: [{
-                        key: "event",
-                        value: "done"
-                    }]
-                }
+                text: mw.message("codeload-done").escaped(),
+                handler: onModalDone
             }, {
-                vars: {
-                    value: mw.message("codeload-close").escaped(),
-                    data: [{
-                        key: "event",
-                        value: "close"
-                    }]
-                }
+                text: mw.message("codeload-close").escaped(),
+                handler: modal.hide.bind(modal)
             }]
-        };
-
-        uiModalFactory.createComponent({vars: modalVars}, function (modal) {
-            modal.bind("done", function () {
-                modal.$content.find("input").each(function (ignore, element) {
-                    var prefValue = null;
-
-                    switch (element.type) {
-                    case "checkbox":
-                        prefValue = element.checked;
-                        break;
-                    case "number":
-                        prefValue = parseFloat(element.value);
-                        if (isNaN(prefValue)) {
-                            prefValue = null;
-                        }
-                        break;
-                    case "text":
-                        prefValue = element.value;
-                        break;
-                    }
-
-                    if (prefValue === null) {
-                        // unrecognised pref type or invalid pref value
-                        return;
-                    }
-
-                    definitionPrefs[id][element.dataset.pref] = prefValue;
-                });
-                modal.trigger("close");
-            });
-            modal.show();
         });
     }
 
@@ -156,21 +146,14 @@ require([
         // if user is anon, skip saving to prefs page: they won't have one
         // also skip if shift key is held: useful for temporary script testing
         if (mw.config.get("wgUserName") === null || event.shiftKey) {
-            banner.hide();
-
             if (cl.localStorageIsUsable) {
                 // prefs have been saved to local storage, so show success msg
-                banner
-                    .setContent(mw.message("codeload-save-success").escaped())
-                    .setType("confirm");
+                notify(mw.message("codeload-save-success").escaped(), {type: "success"});
             } else {
                 // need an account to save prefs w/o local storage
-                banner
-                    .setContent(mw.message("codeload-save-anon").escaped())
-                    .setType("notify");
+                notify(mw.message("codeload-save-anon").escaped(), {type: "error"});
             }
 
-            banner.show();
             return;
         }
 
@@ -184,24 +167,16 @@ require([
                 summary: mw.message("codeload-edit-summary").plain(),
                 text: JSON.stringify(newPrefs, null, 4),
                 title: cl.userDataPage,
-                token: mw.user.tokens.get("editToken")
+                token: mw.user.tokens.get("csrfToken") || mw.user.tokens.get("editToken")
             },
             dataType: "json",
             type: "POST"
         }).always(function (data) {
-            banner.hide();
-
             if (data.edit && data.edit.result === "Success") {
-                banner
-                    .setContent(mw.message("codeload-save-success").escaped())
-                    .setType("confirm");
+                notify(mw.message("codeload-save-success").escaped(), {type: "success"});
             } else {
-                banner
-                    .setContent(mw.message("codeload-save-fail").escaped())
-                    .setType("error");
+                notify(mw.message("codeload-save-fail").escaped(), {type: "error"});
             }
-
-            banner.show();
         });
     }
 
@@ -273,15 +248,15 @@ require([
         if (Object.keys(prefs).length) {
             definitionPrefs[id] = prefs;
 
+            var titleElement = document.createElementNS("http://www.w3.org/2000/svg", "title");
+            titleElement.textContent = typeof cl.definitions[id].title === "string"
+                ? mw.message("codeload-preferences-with-title", cl.definitions[id].title).plain()
+                : mw.message("codeload-preferences").plain();
+
             $entry.append(
-                $("<img>")
-                    .attr({
-                        "data-id": id,
-                        src: gearIconUrl,
-                        title: typeof cl.definitions[id].title === "string"
-                            ? mw.message("codeload-preferences-with-title", cl.definitions[id].title).escaped()
-                            : mw.message("codeload-preferences").escaped()
-                    })
+                $cogIcon.clone()
+                    .attr("data-id", id)
+                    .append(titleElement)
                     .click(showPrefsModal)
             );
         }
@@ -317,17 +292,15 @@ require([
         docTitle[0] = mw.message("codeload-heading").escaped();
         document.title = docTitle.join(" | ");
 
+        // preserve the notifications element before emptying content
+        var $mwNotifArea = $content.find("#mw-notification-area");
+
         // set content title + blank content space
         $(".page-header__title, #firstHeading").msg("codeload-heading");
         $content.empty();
 
-        // style
-        // (temporary: they should already be imported by main script, but
-        //   main script may not be current due to caching)
-        context.importArticles({
-            type: "style",
-            articles: ["u:dev:MediaWiki:CodeLoad.js/preferences.css"]
-        });
+        // restore notifications element
+        $content.append($mwNotifArea);
 
         // assemble the main elements
         var $intro = $("<header>").msg("codeload-intro");
@@ -335,17 +308,18 @@ require([
         var $buttons = $("<footer>").append(
             $("<span>")
                 .attr({
-                    "class": "button",
-                    "id": "codeload-save",
-                    "title": mw.message("codeload-save-tooltip").escaped()
+                    "class": "wds-button",
+                    id: "codeload-save",
+                    title: mw.message("codeload-save-tooltip").escaped()
                 })
                 .click(setPrefs)
                 .msg("codeload-save"),
             " ",
             $("<a>")
                 .attr({
-                    "href": "#",
-                    "title": mw.message("codeload-reset-tooltip").escaped()
+                    "class": "wds-button wds-is-secondary",
+                    href: "#",
+                    title: mw.message("codeload-reset-tooltip").escaped()
                 })
                 .click(resetPrefs)
                 .msg("codeload-reset")
@@ -376,10 +350,16 @@ require([
         $content.append($intro, $definitions, $buttons);
     }
 
+    var mwModules = ["mediawiki.util", "mediawiki.jqueryMsg"];
+
+    if (mw.loader.getState("mediawiki.notification")) {
+        mwModules.push("mediawiki.notification");
+    }
+
     $.when(
         cl.messagesReady,
-        mw.loader.using(["mediawiki.util", "mediawiki.jqueryMsg"])
+        mw.loader.using(mwModules)
     ).done(function () {
         $(main);
     });
-});
+}(jQuery, mediaWiki, codeLoad));

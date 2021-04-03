@@ -43,8 +43,8 @@
 })();
  
 var background = [
-    '#06030c url(https://i.imgur.com/P70lwvZ.png) 50% -30px/cover no-repeat fixed',
-    'url("https://i.imgur.com/P70lwvZ.png") 0 0 / cover no-repeat fixed rgb(6, 3, 12)'
+    '#06030c url(https://i.imgur.com/LazBjIF.png) 50% -30px/cover no-repeat fixed',
+    'url("https://i.imgur.com/LazBjIF.png") 0 0 / cover no-repeat fixed rgb(6, 3, 12)'
 	];
  
 var final = background[Math.floor(Math.random() * background.length)];

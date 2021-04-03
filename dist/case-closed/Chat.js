@@ -1,0 +1,1 @@
+alert(" Hello! Welcome to the Case Closed Wiki where Javascript, jQuery, HTML and CSS is interactive!");

@@ -12,6 +12,9 @@ var AjaxRCRefreshHoverText = 'Automatically refresh the page';
 var ajaxRefresh = 30000;
 
 window.BackToTopModern = true;
+window.railWAM = {
+    logPage:"Project:WAM Log"
+};
  
 /* Import Scripts */
 importArticles({
@@ -25,6 +28,7 @@ importArticles({
         'u:dev:MediaWiki:DiscussionsRailModule/code.js',
         'u:dev:MediaWiki:User Avatar Finder/code.js',
         'u:dev:MediaWiki:SourceEditButton.js',
+        'u:dev:MediaWiki:RailWAM/code.js',
         'u:dev:MediaWiki:ReferencePopups/code.js',
     ]
 });

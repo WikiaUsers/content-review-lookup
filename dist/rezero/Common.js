@@ -1,3 +1,4 @@
+/* <nowiki> */
 /* importScriptPages-start */
 
 PurgeButtonText = 'Purge';
@@ -24,7 +25,7 @@ AjaxRCRefreshHoverText = 'Automatically refresh the page';
 ajaxPages = ["Special:RecentChanges","Special:WikiActivity"]; 
 importScriptPage('AjaxRC/code.js', 'dev'); 
 
-/* Replaces {{USERNAME}} with the name of the user browsing the page.
+/* Replaces Template:USERNAME with the name of the user browsing the page.
    Requires copying Template:USERNAME. */
 
 function UserNameReplace() {
@@ -33,7 +34,7 @@ function UserNameReplace() {
 }
 addOnloadHook(UserNameReplace);
 
-/* End of the {{USERNAME}} replacement */
+/* End of the Template:USERNAME replacement */
 
 /* FileLinksAutoUpdate */
 if (wgPageName.indexOf("Special:MovePage/File:") != -1 || (wgCanonicalNamespace == "File" && Storage)){

@@ -3,11 +3,16 @@
 /***********************************************************************/
 // User Tags
 $.get(
-    mw.util.wikiScript('load'),
-    {mode:'articles', articles:'MediaWiki:Custom-user-tags.json', only:'styles'},
+    mw.util.wikiScript('api'),
+    {
+        format: 'json',
+        action: 'parse',
+        page: 'MediaWiki:Custom-user-tags.json',
+        prop: 'wikitext'
+    },
     function (d) {
         window.UserTagsJS = JSON.parse(
-            d.replace(/\/\*.*\*\//g, '')
+            d.parse.wikitext["*"]
         );
     }
 );

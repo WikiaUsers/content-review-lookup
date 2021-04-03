@@ -32,10 +32,10 @@ function showEnTitle()
 $( function eraIconsOasis() {
     if ( $( '.wds-community-header' ).length ) {
         $( '#PageHeader' ).prepend(
-            $( '#title-eraicons' ).attr( 'style', 'position: absolute; right: 0px;' )
+            $( '#title-eraicons' ).attr( 'style', 'position: absolute;' )
         );
     } else {
-    	$( '.WikiaPageHeader' ).append( $( '#title-eraicons' ) );
+    	$( '.PageHeader' ).append( $( '#title-eraicons' ) );
     	$( '#title-eraicons' ).css( { 'position' : 'absolute', 'right' : '0', 'bottom' : '-2em' } ).show();
     }
 } );

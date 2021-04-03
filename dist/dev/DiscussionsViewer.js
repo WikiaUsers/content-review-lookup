@@ -10,20 +10,24 @@
     'wgMonthNames',
     'wgUserGroups',
     'wgServer',
-    'wgScriptPath'
+    'wgScriptPath',
+    'profileUserId'
   ]);
   if (
     config.wgCanonicalSpecialPageName !== 'Contributions' ||
-    window.dpv ||
-    !$('.discussion-details').exists()
+    window.dpv
   ) {
     return;
   }
   var dpv = {};
+  var preloads = 3;
 
-  importArticle({
+  importArticles({
     type: 'script',
-    article: 'u:dev:MediaWiki:I18n-js/code.js'
+    articles: [
+    	'u:dev:MediaWiki:I18n-js/code.js',
+    	'u:dev:MediaWiki:ShowCustomModal.js'
+    ]
   });
 
   importArticle({
@@ -31,37 +35,37 @@
     article: "u:dev:MediaWiki:DiscussionsViewer.css"
   });
 
-  dpv.preload = function(i18n) {
-    $.when(
-      i18n.loadMessages('DiscussionsViewer'),
-      dpv.id()
-    ).then(dpv.init);
+  dpv.preload = function() {
+	if (--preloads === 0) {
+      window.dev.i18n.loadMessages('DiscussionsViewer').done(dpv.init);
+	}
   };
 
-  dpv.id = function() {
-    return $.nirvana.getJson('UserProfilePage', 'renderUserIdentityBox', {
-      title: 'User:' + $('.masthead-info hgroup h1').text()
-    });
-  };
-
-  dpv.init = function(i18n, data) {
+  dpv.init = function(i18n) {
     dpv.i18n = i18n;
-    if (!data || !data[0] || !data[0].user || !data[0].user.id || data[1] !== 'success') {
-        return;
-    }
-    dpv.id = data[0].user.id;
-    $('.selected').attr("data-id", "contribs").after(
-      $('<li>').append(
-        $('<a>', {
-          id: 'dpv',
-          text: dpv.i18n.msg('viewPosts').plain()
-        })
-      ).click(dpv.click)
-    );
+    
+    var interval = setInterval(function () {
+    	if (!$('.user-profile-navigation').length) {
+    		return;
+    	}
+    	clearInterval(interval);
+    	
+    	$('.user-profile-navigation').append(
+    		$('<li>', {
+    			class: 'user-profile-navigation__link false',
+    			append: $('<a>', {
+    				id: 'dpv',
+    				text: dpv.i18n.msg('viewPosts').plain(),
+    				href: '#',
+    				click: dpv.click
+    			})
+    		})
+    	);
+    }, 100);
   };
 
   dpv.click = function() {
-    $.showCustomModal('', '<div id="dpv-view-posts"></div>', {
+    window.dev.showCustomModal('', '<div id="dpv-view-posts"></div>', {
       id: 'dpv-view-post',
       width: 600,
       buttons: []
@@ -108,7 +112,7 @@
   dpv.getPosts = function() {
 
     $.ajax({
-      url: 'https://services.fandom.com/discussion/' + config.wgCityId + '/users/' + dpv.id + '/posts?responseGroup=full&limit=100&viewableOnly=false',
+      url: 'https://services.fandom.com/discussion/' + config.wgCityId + '/users/' + config.profileUserId + '/posts?responseGroup=full&limit=100&viewableOnly=false',
       type: 'GET',
       xhrFields: {
         withCredentials: true
@@ -188,4 +192,6 @@
   window.dpv = dpv;
 
   mw.hook('dev.i18n').add(dpv.preload);
+  mw.hook('dev.showCustomModal').add(dpv.preload);
+  mw.loader.using('mediawiki.template.mustache').then(dpv.preload);
 })();

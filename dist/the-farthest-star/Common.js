@@ -5,12 +5,14 @@
  */
  
 $(function() {
-	if( $( '.wds-community-header' ).length ) {
+    if ( mw.config.get( 'wgVersion' ) !== '1.19.24' && $( '#articletype' ).length ) {
+        $( '.page-header__contribution > div' ).first().append( $( '#articletype' ).show() );
+    } else if ( $( '.wds-community-header' ).length ) {
 		$( '#PageHeader' ).prepend(
 		$( '#articletype' ).attr( 'style', 'position: absolute; right: 10px' )
 	);
 	} else {
-		$( '.WikiaPageHeader' ).append( $( '#icons' ) );
+		$( '.WikiaPageHeader' ).append( $( '#articletype' ) );
 		$( '#articletype' ).css( { 'position' : 'absolute', 'right' : '5.1em', 'bottom' : '-2em' } ).show();
 }
 });

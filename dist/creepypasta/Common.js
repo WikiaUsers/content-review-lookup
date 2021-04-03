@@ -1,44 +1,4 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* Replaces {{USERNAME}} with the name of the user browsing the page.
-   Requires copying Template:USERNAME. */
-
-function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
-    $("span.insertusername").html(wgUserName);
- }
- addOnloadHook(UserNameReplace);
-
-/* End of the {{USERNAME}} replacement */
-
-/* Array of articles to import */
-
-var imports = [
-    'MediaWiki:Countdown.js' // Adds a countdown function using span class (http://dev.wikia.com/wiki/Countdown)
-];
-
-/* End articles to import */
-
-/* Redirects people visiting [[Project:WW]] and [[Project:WS]] to a random Writer's Workshop
-   & Writer's Showcase thread, respectively */
-   
-var wgTitle = mw.config.get('wgTitle'),
-    wgNamespaceNumber = mw.config.get('wgNamespaceNumber');
-if ((wgTitle == "WW" || wgTitle == "WS") && wgNamespaceNumber == 4) {
-    imports[imports.length] = 'MediaWiki:WWWS.js';
-}
-
-/* End of the Writer's Workshop & Writer's Showcase redirect function */
-
-/* Import selected articles */
-
-importArticles({
-    type: "script",
-    articles: imports
-});
-
-/* End imports */
-
-/* Added by Psychobilly2422 - Cleric requested, pls no kill me */
 
 // Auto-refresh
 window.ajaxPages = [
@@ -46,7 +6,35 @@ window.ajaxPages = [
     "Special:Watchlist",
     "Special:Log",
     "Special:Contributions",
-    "Special:WikiActivity"
+    
 ];
+
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
+
+/* Creates additional tabs in Recent changes feed. Special thanks to Sophie for creating this array. */
+mw.loader.using('mediawiki.util').then(function () {
+	if (!$('.activity-tabs').length) {
+	    return;
+	}
+
+    function buildTab (text, page) {
+		return $('<li>', {
+			class: 'wds-tabs__tab',
+			append: $('<div>', {
+				class: 'wds-tabs__tab-label',
+				append: $('<a>', {
+					text: text,
+					href: mw.util.getUrl(page),
+				})
+			})
+		});
+	}
+	
+	$('.activity-tabs').append([
+		buildTab('New Stories', 'Project:New Stories'),
+		buildTab('Writers\' Showcase', 'Project: Writers\' Showcase'),
+		buildTab('Wiki Blog', 'Blog: Recent posts'),
+		buildTab('Writers\' Workshop', 'Forum:Writers\' Workshop')		
+	]);
+});

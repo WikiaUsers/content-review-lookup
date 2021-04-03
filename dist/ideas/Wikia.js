@@ -28,5 +28,6 @@ importArticles({
         'u:dev:NewMessageCount.js',
         'u:dev:PrivateMessageAlert/code.js',
         'u:kocka:MediaWiki:Emoticons.js',
+        'u:dev:MediaWiki:LastEdited/code.js',
     ]
 });

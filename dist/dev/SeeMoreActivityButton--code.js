@@ -5,12 +5,12 @@
  * Version:     1.6
  * Description: Adds an activity button to Wiki Activity module
  */
-require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
+(function() {
     'use strict';
     // Variables, double-run protection
     var $rail = $('#WikiaRail');
     if (
-        !$rail.exists() ||
+        $rail.length === 0 ||
         window.SeeMoreActivityButtonLoaded
     ) {
         return;
@@ -43,25 +43,14 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
      */
     function preload() {
         $.when(
-            loadLib('i18n', 'u:dev:I18n-js/code.js').then(function () {
+            loadLib('i18n', 'u:dev:MediaWiki:I18n-js/code.js').then(function () {
                 return window.dev.i18n.loadMessages('SeeMoreActivityButton');
             }),
-            loadLib('wds', 'u:dev:WDSIcons/code.js'),
+            loadLib('wds', 'u:dev:MediaWiki:WDSIcons/code.js'),
             mw.loader.using('mediawiki.api')
-        ).done(function (i18n, _1, _2) {
-            init(i18n);
+        ).done(function (i18n) {
+            window.dev.seeMoreActivity = new SeeMoreActivity(i18n);
         });
-    }
-
-    /**
-     * Script preloader
-     * @function            init
-     * @param               {Object} i18n I18n-js message object.
-     * @private
-     */
-    function init(i18n) {
-        i18n.useUserLang();
-        window.dev.seeMoreActivity = new SeeMoreActivity(i18n);
     }
 
     /**
@@ -73,12 +62,13 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
     function SeeMoreActivity(i18n) {
         // Internal configuration for script.
         this.i18n = i18n.msg('see-more').plain();
+        this.isUCP = mw.config.get('wgVersion') !== '1.19.24';
         this.icon = {
             diff: window.dev.wds.icon('magnifying-glass-tiny'),
             btn:  window.dev.wds.icon('menu-control-small')
         };
         this.conf = {
-            rc:  window.SeeMoreActivityButtonRC || false,
+            rc:  window.SeeMoreActivityButtonRC || this.isUCP,
             old: window.SeeMoreActivityButtonOld || false
         };
 
@@ -117,7 +107,7 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         }
 
         // Rail callback.
-        if ($rail.hasClass('loaded')) {
+        if ($rail.hasClass('loaded') || $rail.hasClass('is-ready')) {
             this._execute();
         } else {
             $rail.on(
@@ -134,7 +124,7 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
      */
     SeeMoreActivity.prototype._execute = function() {
         var $activity = $rail.children('#wikia-recent-activity');
-        if (!$activity.exists()) {
+        if ($activity.length === 0) {
             return;
         }
         // Button addition.
@@ -184,4 +174,4 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
     // Import libraries.
     preload();
 
-});
+})();

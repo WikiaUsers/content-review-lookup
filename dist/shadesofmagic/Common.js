@@ -70,21 +70,6 @@ window.MessageWallUserTags = {
         "TerriaNight" : "MONARCH • REGENT",
     }
 };
-// Load forum changes only in the forum namespace.
-if (({1201: 1, 2000: 1})[mw.config.get('wgNamespaceNumber')] === 1 || mw.config.get('wgCanonicalSpecialPageName') === 'Forum') {
-    importScriptPage("MediaWiki:Common.js/Forum.js");
-}
-
-AjaxRCRefreshText = 'Auto-refresh';
-AjaxRCRefreshHoverText = 'Automatically refresh the page';
-ajaxPages = ["Special:RecentChanges","Special:WikiActivity"];
-
-// LockOldBlogs
-window.LockOldBlogs = {
-    expiryDays: 180,
-    expiryMessage: "This blog is considered inactive and archived because it hasn\'t been commented on in 6 months and there is no longer an ongoing discussion in the comments section.",
-};
- // - end -  LockOldBlogs
 
 window.SpoilerAlertJS = {
     question: 'This area contains spoilers. Are you sure you want to read it?',
@@ -92,3 +77,25 @@ window.SpoilerAlertJS = {
     no: 'No',
     fadeDelay: 1600
 };
+
+/* Toggle spoiler button text */
+$(function () {
+    var button = $('.mw-customtoggle-ShowSpoiler');
+    if (!button.length) {
+        return;
+    }
+
+    function toggleText () {
+        if ($(this).hasClass('shown')) {
+            $(this).removeClass('shown');
+            $(this).text('A Life Restored');
+        } else {
+            $(this).addClass('shown');
+            $(this).text('A Life Erased');
+        }
+    }
+
+    button.text('A Life Restored');
+
+	button.click(toggleText);
+});

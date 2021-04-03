@@ -12,7 +12,6 @@
  * dependency hasn't arrived yet it'll make sure those are loaded before this.
  */
 /*global mw, $, importStylesheet, importScript */
-/*jshint curly:false eqnull:true, strict:false, browser:true, */
  
 mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 /* Begin of mw.loader.using callback */

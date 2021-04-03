@@ -116,7 +116,7 @@ function createCollapseButtons()
         }
     }
 }
-addOnloadHook( createCollapseButtons );
+$( createCollapseButtons );
  
 /** Magic editintros ****************************************************
  *
@@ -135,7 +135,7 @@ function addEditIntro(name)
  
  
 if (wgNamespaceNumber == 0) {
-  addOnloadHook(function(){
+  $(function(){
     if (document.getElementById('disambigbox'))
       addEditIntro('Template:Disambig_editintro');
   });
@@ -260,7 +260,7 @@ var spoilers = true;
 function loadSpoilers() {
   if(spoilers) initSpoilers();
 }
-addOnloadHook(loadSpoilers);
+$(loadSpoilers);
  
  
  
@@ -315,13 +315,14 @@ window.onresize = windowResize;
  
 // displays the tooltip
 function displayTip() {
-  var tip = document.getElementById("simpletfb");
-  tip.style.position = "absolute";
-  tip.style.visibility = "hidden";
-  tip.style.display = "block";
-  tip.style.zIndex = "999";
+  $("#simpletfb").css({
+  	position: "absolute",
+  	visibility: "hidden",
+  	display: "block",
+  	zIndex: "999"
+  });
   moveTip();
-  tip.style.visibility = "visible";
+  $("#simpletfb").css("visibility", "visible");
 }
  
 // This function moves the tooltips when our mouse moves
@@ -333,49 +334,38 @@ function moveTip() {
   var showTTAtLeft  = mousePos.x > (winSize.x / 2);
   var newTop  = mousePos.y + (showTTAtTop  ? - (tip.clientHeight + 20) : 20);
   var newLeft = mousePos.x + (showTTAtLeft ? - (tip.clientWidth  + 20) : 20);
-  tip.style.position = 'fixed';
-  tip.style.top = newTop + "px";
-  tip.style.left = newLeft + "px";
+  $(tip).css({
+  	position: 'fixed',
+	top: newTop,
+	left: newLeft
+  });
 }
  
 // hides the tip
 function hideTip() {
-  var tip = document.getElementById("simpletfb");
-  if (typeof(tip.style) == "undefined") return false;
-  $(tip).html("");
-  tip.style.display = "none";
+  $("#simpletfb").html("").css("display", "none");
 }
  
 // quick tooltips
-function showTemplateTip(i) {
-  var Tip = document.getElementById("tttc" + i);
-  tooltip = ttHTMLStart + Tip.innerHTML + '</div>';
-  document.getElementById("simpletfb").innerHTML = tooltip;
+function showTemplateTip(event) {
+  $tooltipContent = $(this).next().length ? $(this).next() : $(this).parent().next();
+  tooltip = ttHTMLStart + $tooltipContent.html() + '</div>';
+  $("#simpletfb").html(tooltip);
   displayTip();
 }
  
-function performTooltips() {
-  var contentstart = document.getElementById("bodyContent") ? document.getElementById("bodyContent") : document.getElementById("WikiaArticle");
-  qttfdiv = document.createElement("div");
-  qttfdiv.setAttribute("id", "simpletfb");
-  contentstart.insertBefore(qttfdiv, contentstart.childNodes[0]);
-  var Spans = document.getElementsByTagName("span");
-  for (i=0;i<Spans.length;i++) {
-    if (hasClass(Spans[i], "ttlink")) {
-      Spans[i].nextSibling.setAttribute("id", "tttc" + i);
-      Spans[i].firstChild.setAttribute("title", "");
-      Spans[i].onmouseover = showTemplateTip.bind(Spans[i],i);
-      Spans[i].onmouseout = hideTip;
-      Spans[i].onmousemove = moveTip;
-    }
-  }
+function performTooltips($content) {
+  $("<div></div>").attr("id", "simpletfb").prependTo($content);
+  $("span.ttlink").each(function(i){
+  	$(this).parent().next().attr("id", "tttc" + i);
+  	$(this).children().first().attr("title", "");
+  	$(this).on("mouseover",  showTemplateTip)
+           .on("mouseout",  hideTip)
+  	       .on("mousemove",  moveTip);
+  });
 }
  
-var tooltips = true;
-function loadTooltips() {
-if (tooltips) performTooltips();
-}
-addOnloadHook(loadTooltips);
+mw.hook('wikipage.content').add(performTooltips);
  
  
  
@@ -431,7 +421,7 @@ function disableOldForumEdit() {
 	$('span.editsection-upper').remove();
  
 }
-addOnloadHook( disableOldForumEdit );
+$( disableOldForumEdit );
 }
  
 /******************************/
@@ -440,7 +430,7 @@ addOnloadHook( disableOldForumEdit );
 function ChangeRedirectImage() {
 	$('.redirectMsg img').attr('src', 'https://images.wikia.nocookie.net/__cb20100902033555/dragonage/images/b/b5/Redirectltr.png');
 }
-addOnloadHook(ChangeRedirectImage);
+$(ChangeRedirectImage);
  
  
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -508,7 +498,7 @@ addOnloadHook(ChangeRedirectImage);
      updatetimer(i);  //start it up
    }
  }
- addOnloadHook(checktimers);
+ $(checktimers);
  
  // **************************************************
  //  - end -  Experimental javascript countdown timer

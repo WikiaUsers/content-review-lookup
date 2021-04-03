@@ -16,8 +16,12 @@
     function initClocks() {
         var $rail = $('#WikiaRail');
  
-        if ($rail.length === 0)
-            return;
+        if ($rail.length === 0){
+            $rail = $('#MainPageClocks');
+            if($rail.length === 0){
+                return;
+            }
+        }
  
         var htmlClocksContainer = '<section id="wiki-custom-clockModule" class="module">';
         for (i = 0; i < clocksModuleLabels.length; ++i) {

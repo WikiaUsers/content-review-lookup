@@ -11,7 +11,8 @@
     var admins = [
         {name: "Areades", color:"#81BEF7"},
         {name: "Aldan_Tanneo", color:"#387C44"},
-        {name: "Delwynn_Ier", color:"#900000"}
+        {name: "Delwynn_Ier", color:"#900000"},
+        {name: "Eirienlaurë", color:"#32cadb"}
     ];
  
     var border_mod = "2px solid ";//+color

@@ -1,7 +1,12 @@
 /* Qualquer JavaScript aqui será carregado para todos os usuários em cada carga de página. */
 
-importScriptPage('ReferencePopups/code.js', 'dev');
-((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;
+((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = false;
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ReferencePopups/code.js',
+    ]
+});
  
 
 /*
@@ -60,12 +65,12 @@ $(fBox);
 function createPage(){
 	var createPageLink = document.getElementById('dynamic-links-write-article-icon');
 	if (createPageLink != null){
-		createPageLink.href = "/wiki/Banco_de_Dados_DC:Criar_uma_Nova_Página";
+		createPageLink.href = "/wiki/Wiki_DC_Comics:Criar_uma_Nova_Página";
                 createPageLink.onclick = "";
 	}
 	createPageLink = document.getElementById('dynamic-links-write-article-link');
 	if (createPageLink != null){
-		createPageLink.href = "/wiki/Banco_de_Dados_DC:Criar_uma_Nova_Página";
+		createPageLink.href = "/wiki/Wiki_DC_Comics:Criar_uma_Nova_Página";
                 createPageLink.onclick = "";
 	}
 }

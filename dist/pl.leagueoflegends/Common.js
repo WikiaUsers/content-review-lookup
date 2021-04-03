@@ -134,13 +134,13 @@ PFD_discourageEditorFileUpload = true
 PFD_requireLicense = true
 
 /* Config for [[w:c:dev:Tooltips]] */
-var tooltips_config = {
+window.tooltips_config = {
     offsetX: 15,
     offsetY: 15,
     waitForImages: true,
     events: ['RotationModule'],
 }
-var tooltips_list = [
+window.tooltips_list = [
     {
         classname: 'character-icon',
         parse: '{'+'{Tooltip/Bohater|<#character#>|<#skin#>}}',

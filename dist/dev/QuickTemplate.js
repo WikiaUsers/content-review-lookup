@@ -1,1 +1,0 @@
-#REDIRECT [[MediaWiki:QuickTemplate/code.js]]

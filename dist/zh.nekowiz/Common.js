@@ -1,10 +1,10 @@
 /* 此处的JavaScript将加载于所有用户每一个页面。 */
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:FloatingToc/code.js'
-    ]
-});
+// importArticles({
+//     type: 'script',
+//     articles: [
+//         'u:dev:FloatingToc/code.js'
+//     ]
+// });
 
 $(function() {
     /*
@@ -128,159 +128,28 @@ texttip();
 
 
 // Pages need to import script
-wgPageName === '題庫/搜尋' && importScript('MediaWiki:Search.js');
-wgPageName === '題庫搜尋器' && importScript('MediaWiki:Search.js');
-wgPageName === '卡片資料/編輯' && importScript('MediaWiki:Cardedit.js');
-wgPageName === '題庫/新增/四選一' && importScript('MediaWiki:create4select.js');
-wgPageName === '題庫/新增/排序' && importScript('MediaWiki:createorder.js');
-wgPageName === '題庫/新增/每日' && importScript('MediaWiki:createdaily.js');
-wgPageName === '進化素材紀錄器' && importScript('MediaWiki:LoadCardFromWiki.js');
-wgPageName === '進化素材紀錄器' && importScript('MediaWiki:CardEvo.js');
-wgPageName === '進化素材紀錄器' && importScript('MediaWiki:Taffy-min.js');
-wgPageName === '代表搜尋器' && importScript('MediaWiki:LeaderRegister.js');
-wgPageName === '代表搜尋器' && importScript('MediaWiki:LeaderFinder.js');
-wgPageName === '問答RPG_魔法使與黑貓維茲_維基' && importScript('MediaWiki:LeaderRandom.js');
+console.log(mw.config.values.wgPageName);
+window.scriptMap = {
+	'題庫/搜尋': ['MediaWiki:Search.js'],
+	'題庫搜尋器': ['MediaWiki:Search.js'],
+	'卡片資料/編輯': ['MediaWiki:Cardedit.js'],
+	'題庫/新增/四選一': ['MediaWiki:create4select.js'],
+	'題庫/新增/排序': ['MediaWiki:createorder.js'],
+	'題庫/新增/每日': ['MediaWiki:createdaily.js'],
+	'進化素材紀錄器': ['MediaWiki:LoadCardFromWiki.js', 'MediaWiki:CardEvo.js', 'MediaWiki:Taffy-min.js'],
+	'代表搜尋器': ['MediaWiki:LeaderRegister.js', 'MediaWiki:LeaderFinder.js'],
+	'問答RPG_魔法使與黑貓維茲_維基': ['MediaWiki:LeaderRandom.js']
+};
+// Use timeout to check importScript is exist after some time
+setTimeout(function () {
+window.scriptMap[mw.config.values.wgPageName].forEach(function (script) {
+    importScript(script);
+});
+}, 100);
 
 
 // Page contains some keywords
 
-wgPageName.indexOf('任務') && importScript('MediaWiki:WizDialog.js');
-
-//Tabs
-
-function tabs() {
-    var defaultStyle = {
-        purple: {
-            labelColor: " ", //anti check
-            labelBackgroundColor: "#9070c0",
-            labelBorderColor: "#b090e0 #7050a0 #9070c0 #b090e0",
-            labelPadding: ".2em .3em .2em .3em",
-            textBorderColor: "#9070c0",
-            textBackgroundColor: "#f0edf5",
-            textPadding: "1em",
-        },
-        green: {
-            labelColor: " ",
-            labelBackgroundColor: "#75c045",
-            labelBorderColor: "#90d060 #60b030 #75c045 #90d060",
-            labelPadding: ".2em .3em .2em .3em",
-            textBorderColor: "#75c045 #60b030 #60b030 #75c045",
-            textBackgroundColor: "#f5fffa",
-            textPadding: "1em",
-        },
-        red: {
-            labelColor: " ",
-            labelBackgroundColor: "#FF0000",
-            labelBorderColor: "#FF8888 #CC0000 #FF0000 #FF8888",
-            labelPadding: ".2em .3em .2em .3em",
-            textBorderColor: "#FF0000 #CC0000 #CC0000 #FF0000",
-            textBackgroundColor: "#fffafa",
-            textPadding: "1em",
-        },
-        blue: {
-            labelColor: " ",
-            labelBackgroundColor: "#5b8dd6",
-            labelBorderColor: "#88abde #3379de #5b8dd6 #88abde",
-            labelPadding: ".2em .3em .2em .3em",
-            textBackgroundColor: "#f0f8ff",
-            textBorderColor: "#5b8dd6 #3379de #3379de #5b8dd6",
-            textPadding: "1em",
-        },
-        yellow: {
-            labelColor: " ",
-            labelBackgroundColor: "#ffe147",
-            labelBorderColor: "#ffe977 #ffd813 #ffe147 #ffe977",
-            labelPadding: ".2em .3em .2em .3em",
-            textBackgroundColor: "#fffce8",
-            textBorderColor: "#ffe147 #ffd813 #ffd813 #ffe147",
-            textPadding: "1em",
-        },
-        orange: {
-            labelColor: " ",
-            labelBackgroundColor: "#ff9d42",
-            labelBorderColor: "#ffac5d #ff820e #ff9d42 #ffac5d",
-            labelPadding: ".2em .3em .2em .3em",
-            textBackgroundColor: "#ffeedd",
-            textBorderColor: "#ff9d42 #ff820e #ff820e #ff9d42",
-            textPadding: "1em",
-        },
-        black: {
-            labelColor: " ",
-            labelBackgroundColor: "#7f7f7f",
-            labelBorderColor: "#999999 #4c4c4c #7f7f7f #999999",
-            labelPadding: ".2em .3em .2em .3em",
-            textBackgroundColor: "#e5e5e5",
-            textBorderColor: "#7f7f7f #4c4c4c #4c4c4c #7f7f7f",
-            textPadding: "1em",
-        },
-    };
-    $("body").addClass("tab");
-    // A Class
-    function StyleSheet() { }
-    StyleSheet.prototype.getOwnPropertyNamesLength = function getOwnPropertyNamesLength() {
-        return Object.getOwnPropertyNames(this).length;
-    };
-    String.prototype.toLowerFirstCase = function toLowerFirstCase() {
-        return this[0].toLowerCase() + this.substring(1);
-    };
-    $(".Tabs").each(function () {
-        if ($(this).children(".TabLabel")[0]) { return true; }
-        var self = $(this),
-            classList = Array.from(this.classList).filter(function (n) { return n in defaultStyle; }),
-            data = $.extend({
-                labelPadding: null,
-                labelBorderColor: null,
-                labelColor: null,
-                labelBackgroundColor: $("#content").css("background-color"),
-                textPadding: null,
-                textBorderColor: null,
-                textBackgroundColor: null,
-                defaultTab: 1,
-            }, classList[0] ? defaultStyle[classList[0]] || {} : {}, this.dataset || {}),
-            tabLabel = self.append('<div class="TabLabel"></div>').children(".TabLabel"),
-            tabContent = self.append('<div class="TabContent"></div>').children(".TabContent"),
-            labelPadding = data.labelPadding,
-            labelColor = data.labelColor,
-            styleSheet = {
-                label: new StyleSheet(),
-                text: new StyleSheet(),
-            },
-            defaultTab = parseInt(data.defaultTab);
-        self.children(".Tab").each(function () {
-            if ($(this).children(".TabLabelText").text().replace(/\s/g, "").length || $(this).children(".TabLabelText").children().length) {
-                $(this).children(".TabLabelText").appendTo(tabLabel);
-                $(this).children(".TabContentText").appendTo(self.children(".TabContent"));
-            }
-            $(this).remove();
-        });
-        if (isNaN(defaultTab) || defaultTab <= 0 || defaultTab > tabLabel.children(".TabLabelText").length) { defaultTab = 1; }
-        tabLabel.children(".TabLabelText").on("click", function () {
-            var label = $(this);
-            label.addClass("selected").siblings().removeClass("selected").css({
-                "border-color": "#aaa",
-                "background-color": "inherit",
-            });
-            tabContent.children(".TabContentText").eq(tabLabel.children(".TabLabelText").index(label)).addClass("selected").siblings().removeClass("selected").removeAttr("style");
-            if (styleSheet.label.getOwnPropertyNamesLength()) { label.css(styleSheet.label); }
-            if (label.is(":visible")) { tabLabel.height(label.outerHeight(true)); }
-            else { tabLabel.removeAttr("style"); }
-        }).eq(defaultTab - 1).click();
-        if (labelPadding) { tabLabel.children(".TabLabelText").css("padding", labelPadding); }
-        ["labelBorderColor", "labelBackgroundColor", "textPadding", "textBorderColor", "textBackgroundColor"].forEach(function (n) {
-            var target = /^label/.test(n) ? "label" : "text",
-                key = n.replace(target, "").toLowerFirstCase();
-            styleSheet[target][key] = data[n];
-        });
-        if (labelColor) { styleSheet.label.borderTopColor = labelColor; }
-        else if (styleSheet.label.borderColor) { styleSheet.label.borderTopColor = "green"; }
-        tabLabel.find(".selected").click();
-        if (styleSheet.text.getOwnPropertyNamesLength()) { tabContent.css(styleSheet.text); }
-        if (data.autoWidth === "yes") { self.css("display", "inline-block"); }
-    });
+if (mw.config.values.wgPageName.indexOf('任務') >= 0) {
+	importScript('MediaWiki:WizDialog.js');
 }
-
-// Tabs执行
-if ($(".Tabs")[0]) { tabs(); }
-
-/* tabs功能引自萌娘百科(https://zh.moegirl.org)，文字内容默認使用《知識共享 署名-非商業性使用-相同方式共享 3.0》協議。
-/* 閱讀更多：https://zh.moegirl.org/MediaWiki:Common.js */

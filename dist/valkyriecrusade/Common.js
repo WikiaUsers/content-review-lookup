@@ -126,4 +126,4 @@ function jstzFormatDate(date, format, utc) {
     return format;
 }
 
-addOnloadHook(jstzConvertAll);
+$(jstzConvertAll);

@@ -20,7 +20,7 @@
         section,
         wgPageName = mw.config.get('wgPageName'),
         isEdited = false,
-        i18n = {},
+        i18n,
         options = $.extend({
             separator: ' | '
         }, window.AjaxEditSection);
@@ -31,10 +31,8 @@
      * @param   {Object} i18nLoaded
      * @return  {void}
      */
-    function preload(i18nLoaded) {
-        i18n = i18nLoaded._messages.en;
-        for(var i in i18n)
-            i18n[i] = i18nLoaded.msg(i).plain();
+    function preload(i18nData) {
+        i18n = i18nData.msg;
         init($sections);
     }
 
@@ -51,8 +49,8 @@
 
             $(this).append([options.separator,
                 $('<a>', {
-                    text: i18n.buttonText,
-                    title: i18n.buttonTitle,
+                    text: i18n('buttonText').plain(),
+                    title: i18n('buttonTitle').plain(),
                     css: { cursor: 'pointer' },
                     click: edit
                 })
@@ -98,7 +96,7 @@
             }),
             lbl_minor = $('<label>', {
                 'for': CHK_MINOR_ID,
-                text: i18n.minor
+                text: i18n('minor').plain()
             }),
             chk_minor = $('<input>', {
                 type: 'checkbox',
@@ -112,14 +110,14 @@
                 append: [
                     $('<a>', {
                         'class': 'button',
-                        text: i18n.backButton,
-                        title: i18n.backTitle,
+                        text: i18n('backButton').plain(),
+                        title: i18n('backTitle').plain(),
                         click: back
                     }),
                     $('<a>', {
                         'class': 'button',
-                        text: i18n.publishButton,
-                        title: i18n.publishTitle,
+                        text: i18n('publishButton').plain(),
+                        title: i18n('publishTitle').plain(),
                         click: publish
                     }),
                 ]
@@ -130,7 +128,7 @@
             append: [
                 lbl_minor,
                 chk_minor,
-                i18n.summary,
+                i18n('summary').escape(),
                 summary,
                 buttons,
                 text
@@ -154,8 +152,8 @@
             token: mw.user.tokens.get('editToken'),
         }).done(function(d) {
             var notif = d.error
-                ? new BannerNotification(i18n.error, 'error')
-                : new BannerNotification(i18n.success, 'confirm');
+                ? new BannerNotification(i18n('error').escape(), 'error')
+                : new BannerNotification(i18n('success').escape(), 'confirm');
             isEdited = true;
             refresh();
             notif.show();
@@ -192,7 +190,7 @@
     }
 
     importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });
-    mw.hook('dev.i18n').add(function(i18n) {
-        i18n.loadMessages('AjaxEditSection').done(preload);
+    mw.hook('dev.i18n').add(function(i18njs) {
+        i18njs.loadMessages('AjaxEditSection').done(preload);
     });
 })();

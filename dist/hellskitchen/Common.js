@@ -1,38 +1,25 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 /* User profile header custom tags */
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		bureaucrat: { u:'Executive Chef', link:'Project:Wiki_Staff' },
-		sysop: { u:'Head Chef', link:'Project:Wiki_Staff' },
-		rollback: { u:'Sous Chef', link:'Project:Wiki_Staff' },
-		threadmoderator: { u:'Black Jacket', link:'Project:Wiki_Staff' },
-		bot: { u: 'Bot', link: 'Special:ListUsers/bot' },
-		inactive: { u: 'Inactive' },
-		blocked: { u: 'Ejected', link: 'Special:BlockList' },
-		'wiki-manager': { u: 'Wiki Manager', link: 'Help:Wiki_Managers' },
-		'vstf': { u: 'VSTF', link: 'Help:VSTF' },
-		chatmoderator: {u: 'Verified', link: 'Project:Verified' },
-	}
-};
-UserTagsJS.modules.autoconfirmed = true;
-UserTagsJS.modules.newuser = true;
-UserTagsJS.modules.inactive = 30; 
-UserTagsJS.modules.mwGroups = ['bureaucrat','threadmoderator','bot','sysop','rollback','blocked','wiki-manager','vstf','chatmoderator',]; 
-UserTagsJS.modules.metafilter = {
-	sysop: ['bureaucrat'], 
-};
-window.highlightUsersConfig = {
-    colors: {
-        // 'group-name': 'color',
-        'bureaucrat': '#db3737',
-        'sysop': '#db3737',
+
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2: '{{Remove this to start creating your userpage}}',
+        3: false
     },
-    styles: {
-        // 'group-name': 'styles',
-        'staff': 'font-weight: bold;'
-    }
+    summary: 'Script: Creating userpage on first edit'
 };
-if (wgUserName != 'null') {
-	$('.insertusername').html(wgUserName);
-}
+
+mw.loader.using('mediawiki.api').then(function(){
+	if (document.querySelector(".community-page-rail")) {
+		const api = new mw.Api();
+		api.get({
+			action:'parse',
+			page:'Template:CommunityRail',
+		}).done( function ( data ) {
+			mw.hook('wikipage.content').fire($(".community-page-rail").prepend(data.parse.text['*']));
+		});
+	}
+});
+window.MastheadRightsBadgeSettings = {
+    iconSize: '60px',
+};

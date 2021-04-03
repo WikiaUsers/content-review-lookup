@@ -1,12 +1,38 @@
 //UserTags config
 window.UserTagsJS = {
+    tags: {
+        discordmod: 'Discord Mod'
+    },
     modules: {
         inactive: 60,
         userage: true,
         mwGroups: true,
-        autoconfirmed: true
+        autoconfirmed: true,
+        custom: {
+            'Navid 1600': ['discordmod'],
+            'Iudexkoo': ['discordmod']
+        }
+    }
+};
+
+//DiscussionsActivity config
+window.rdaSubtitleLinksPages = {
+    RecentChanges: {
+        links: ['DiscussionsRC'],
     },
-    oasisPlaceBefore: '> h1'
+    DiscussionsRC: {
+        title: 'Recent Discussions changes',
+        links: ['RecentChanges'],
+    },
+    WikiActivity: {
+        links: ['WikiActivity/watchlist', 'RecentChanges', 'DiscussionsActivity', 'DiscussionsRC']
+    },
+    DiscussionsActivity: {
+        links: ['WikiActivity']
+    },
+    'WikiActivity/watchlist': {
+        links: ['WikiActivity', 'RecentChanges', 'DiscussionsActivity', 'DiscussionsRC']
+    }
 };
 
 //LockForums config
@@ -27,8 +53,8 @@ window.useIncludedStylesheet = true;
 
 //AjaxRC config
 window.ajaxRefresh = 30000;
-window.ajaxPages = ['Blog:Recent_posts'];
-window.ajaxSpecialPages = ['WikiActivity', 'Recentchanges', 'Watchlist', 'Log'];
+window.ajaxPages = ['Blog:Recent_posts', 'Special:DiscussionsRC', 'Special:WikiActivity'];
+window.ajaxSpecialPages = ['Recentchanges', 'SocialActivity', 'Log'];
 
 //Add border color to infoboxes
 $('.portable-infobox').each(function () {
@@ -36,4 +62,24 @@ $('.portable-infobox').each(function () {
     if (cls) {
         $(this).css('border-color', '#' + cls[1]);
     }
+});
+
+//Add username alt attribute to masthead profile so highlight css works there
+$(function () {
+    if (!mw.config.get('profileUserName')) {
+        return;
+    }
+
+    if ($('#userProfileApp .user-identity-avatar__image').length) {
+    	$('#userProfileApp .user-identity-avatar__image').attr('alt', mw.config.get('profileUserName'));
+    	return;
+    }
+
+    var interval = setInterval(function () {
+        if (!$('#userProfileApp .user-identity-avatar__image').length) {
+            return;
+        }
+        clearInterval(interval);
+        $('#userProfileApp .user-identity-avatar__image').attr('alt', mw.config.get('profileUserName'));
+    }, 100);
 });

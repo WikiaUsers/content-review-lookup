@@ -46,10 +46,12 @@ window.railWAM = {
 
 //******* bugfixes start *******
 //*******
+/* в юцп проблемы не видно
 //отключение ссылок в recentchanges, иногда посылающих на #
 if (wgCanonicalSpecialPageName === 'Recentchanges') {
     $('body').on('click', '.mw-enhanced-rc .mw-collapsible-toggle a', function(e){e.preventDefault()});
 }
+*/
 //******
 //правильные формы мн числа для количества "страниц" в заголовке
 $(function() {
@@ -58,7 +60,7 @@ $(function() {
         $('.wds-community-header__counter-label').text(
             mw.language.convertPlural(
                 $('.wds-community-header__counter-value').text(),
-                ['страница', 'страниц', 'страницы']
+                ['страница', 'страницы', 'страниц']
             )
         );
     });

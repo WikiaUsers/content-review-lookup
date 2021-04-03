@@ -7,7 +7,7 @@
 (function() {
     'use strict';
     if (
-        !/(sysop|staff|helper|vstf|global-discussions-moderator|wiki-manager)/.test(mw.config.get('wgUserGroups')) ||
+        !/(sysop|staff|helper|soap|global-discussions-moderator|wiki-manager)/.test(mw.config.get('wgUserGroups')) ||
         window.MassBlockLoaded
     ) {
         return;
@@ -30,6 +30,7 @@
             ]
         }
     );
+    var isLegacy = mw.config.get('wgVersion') === '1.19.24';
     var MassBlock = {
         _loading: 0,
         paused: true,
@@ -75,12 +76,15 @@
                             this.inputField('auto', 'autoblock', 'checkbox', {
                                 checked: ''
                             }),
+                            this.inputField('noCreate', 'noCreate', 'checkbox', {
+                                checked: ''
+                            }),
                             this.inputField('watch', 'watch', 'checkbox', {
                                 checked: ''
                             }),
-                            this.inputField('iw', 'ignoreWarnings', 'checkbox', {
+                            this.inputField('iw', 'ignoreWarnings', 'checkbox', $.extend({
                                 checked: ''
-                            }),
+                            }, isLegacy ? { disabled: '' } : null)),
                             {
                                 type: 'p',
                                 text: this.msg('instructions')
@@ -151,11 +155,11 @@
             $('#t-bb').click($.proxy(this.click, this));
         },
         click: function() {
-            if (this.deleteModal) {
-                this.deleteModal.show();
+            if (this.blockModal) {
+                this.blockModal.show();
                 return;
             }
-            this.deleteModal = new window.dev.modal.Modal({
+            this.blockModal = new window.dev.modal.Modal({
                 content: this.form,
                 id: 'form-mass-block',
                 size: 'medium',
@@ -190,30 +194,39 @@
                     start: $.proxy(this.start, this)
                 }
             });
-            this.deleteModal.create();
-            this.deleteModal.show();
+            this.blockModal.create();
+            this.blockModal.show();
         },
 		addGroupContents: function() {
             var group = prompt(this.i18n.msg('groupPrompt').escape());
+            if (!group) {
+                return;
+            }
             this.api.get({
                 action: 'query',
-                list: 'groupmembers',
+                list: 'allusers|groupmembers',
+                augroup: group,
+                aulimit: 'max',
                 gmgroups: group,
                 gmlimit: 'max',
                 format: 'json'
             })
             .done($.proxy(function(d) {
                 if (!d.error) {
-                    d.users.forEach(function(user) {
-                        $('#text-mass-block').append(user.name + '\n');
+                    (d.users || d.query.allusers).forEach(function(user) {
+                        $('#text-mass-block').val($('#text-mass-block').val() + user.name + '\n');
                     });
                 }
                 else {
                     $('#text-error-output').append(this.i18n.msg('groupError').escape() + ' ' + group +' : '+ d.error.code +'<br/>');
                 }
             }, this))
-            .fail($.proxy(function() {
-                $('#text-error-output').append(this.i18n.msg('groupError').escape() + ' ' + group +'!<br/>');
+            .fail($.proxy(function(code) {
+                if (isLegacy) {
+                    $('#text-error-output').append(this.i18n.msg('groupError').escape() + ' ' + group +'!<br/>');
+                } else {
+                    $('#text-error-output').append(this.i18n.msg('groupError').escape() + ' ' + group +' : '+ code +'<br/>');
+                }
             }, this));
         },
         pause: function() {
@@ -269,25 +282,30 @@
             if (!$('#block-rstrtp').prop('checked')) {
                 params.allowusertalk = true;
             }
-            // TODO: This doesn't actually work for some reason
-            // Wikia bug?
+            if ($('#block-noCreate').prop('checked')) {
+                params.nocreate = true;
+            }
+            // TODO: This won't work on 1.19 unless T34434 is backported.
             if ($('#block-iw').prop('checked')) {
                 params.reblock = true;
             }
             this.api.post(params).done($.proxy(function(d) { 
                 if (d.error) {
-                    this.blockFail(d.error.code)();
+                    this.blockFail(d.error.code, name)();
                 } else {
                     console.log(this.i18n.msg('blockDone', name).plain());
                 }
-            }, this)).fail(this.blockFail(this.msg('ajaxError')));        
+            }, this)).fail(this.blockFail(this.msg('ajaxError'), name));        
             setTimeout(
                 $.proxy(this.process, this),
                 window.massBlockDelay || 1000
             );
         },
-        blockFail: function(error) {
-            return $.proxy(function() {
+        blockFail: function(error, name) {
+            return $.proxy(function(code) {
+                if (!isLegacy) {
+                    error = code;
+                }
                 var msg = this.i18n.msg('blockFail', name, error);
                 console.error(msg.plain());
                 $('#text-error-output').append('<br />', msg.escape());

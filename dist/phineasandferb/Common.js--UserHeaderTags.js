@@ -25,5 +25,3 @@ window.UserTagsJS = {
 		inactive: { u: 'Inactive' }
 	}
 };
-
-importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});

@@ -1,14 +1,5 @@
 /* Umieszczony tutaj kod JavaScript zostanie załadowany przez każdego użytkownika, podczas każdego ładowania strony. */
-
 /* IMPORT */
-importArticles({
-    type: "script",
-    articles: [
-/*       'w:c:pl.sailormoon:MediaWiki:Common.js/ajax.js', */  /* Automatyczne odświeżanie */
-      'w:c:dev:ReferencePopups/code.js', /* Wyskakujące przypisy */
-    ]
-});
- 
 /* Komunikat o niewybraniu licencji do przesłanego pliku */
 function emptyLicenseAlert(form) {
         var msg = "Licencja pliku nie została wybrana. Możesz spróbować ponownie ale pamiętaj, że pliki bez licencji są usuwane."

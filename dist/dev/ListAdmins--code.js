@@ -15,13 +15,16 @@ mw.hook('wikipage.content').add(function ($content) {
     }
     $.getJSON(mw.util.wikiScript('api'), {
         action: 'query',
-        list: 'groupmembers',
+        list: 'allusers|groupmembers',
+        augroup: 'sysop',
+        aulimit: 'max',
         gmgroups: 'sysop',
+        gmlimit: 'max',
         format: 'json'
     }, function (data) {
         if (!data.error) {
             var el = $('<ul>');
-            data.users.forEach(function(u) {
+            (data.users || data.query && data.query.allusers).forEach(function(u) {
                 el.append(
                     $('<li>')
                         .append(

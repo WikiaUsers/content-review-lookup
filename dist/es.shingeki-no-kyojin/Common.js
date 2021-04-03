@@ -112,3 +112,7 @@ $(window).load(function() {
         }
     }
 });
+
+// Para la plantilla ImageMapHighlight
+
+window.imagemap.hightlightfill = 'rgba(255, 255, 255)';

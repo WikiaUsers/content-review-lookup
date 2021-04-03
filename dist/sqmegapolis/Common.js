@@ -1,5 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* All script imports in MediaWiki:ImportJS */
+
 /* Inactive Configuration */
 window.InactiveUsers = {
     months: 2,

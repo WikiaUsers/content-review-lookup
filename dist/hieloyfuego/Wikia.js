@@ -1,16 +1,7 @@
-var SocialMediaButtonsNamespaces = [0, 6, 14, 500];
-var SocialMediaButtons = { 
-	position: "bottom",
-	colorScheme: "color",
-	buttonSize: "35px",
-	wikiTwitterAccount: "wikia_es"
-};
-importScriptPage('SocialIcons/code.js','dev');
-
 /* Prueba para enlaces interlanguage */
 $(function(){
      if ($('#Interlinks').length ) {
-            $('#WikiaRail').append('<section class="InterModule module" id="InterModule"><h2>Otros idiomas</h2><ul>' + $('#Interlinks').html() + '</ul></section>');
+            $('#WikiaRail').append('<section class="InterModule rail-module" id="InterModule"><h2>Otros idiomas</h2><ul>' + $('#Interlinks').html() + '</ul></section>');
      }
 });
  

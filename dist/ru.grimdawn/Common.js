@@ -1,30 +1,7 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
 
-
-
-/* Скрипт добавляющий кнопку Показать/Скрыть для таблиц и Div */
-/* Инфо: http://dev.wikia.com/wiki/ShowHide */
-importScriptPage('MediaWiki:ShowHide/code.js', 'dev');
-
-
-importArticles({
-	type: 'script',
-	articles: [
-		// Adds a Clock above Contribute Button
-		'u:dev:DisplayClock/code.js',
-		// Extends Navigation to Level 4 & 5
-        'u:dev:ExtendedNavigation/code.js',
-        /* Adds Purge Button under Edit */
-        'u:dev:PurgeButton/code.js',
-        /* A Script for Collapsible Tables and Divs */
-        'u:dev:ShowHide/code.js',
-        /* Adds Back to Top Button to Oasis Footer*/
-        'u:dev:BackToTopButton/code.js'
-	]
-});
- 
-/* Renames Purge Button */
-PurgeButtonText = 'Обновить (Сбросить cookies)';
+//Стиль кнопки назад (Back to top)
+window.BackToTopModern = true;
 
 /*************************************************/
 /* Prevents tooltips from going off side of page */
@@ -61,8 +38,26 @@ $( '#mw-content-text' ).on( 'mouseenter', '.tooltipskill', function() {
 } );
 
 
+/*************************************************/
+/* Adds show-hide style */
+/*************************************************/
+var coll = document.getElementsByClassName("show_hide");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content_show_hide = this.nextElementSibling;
+    if (content_show_hide.style.display === "block") {
+      content_show_hide.style.display = "none";
+    } else {
+      content_show_hide.style.display = "block";
+    }
+  });
+}
+
 // AJAX-обновление некоторых страниц(выбор страниц)
-var ajaxPages = [
+/*var ajaxPages = [
     "Служебная:Watchlist",
     "Служебная:Contributions",
     "Служебная:WikiActivity",
@@ -70,9 +65,9 @@ var ajaxPages = [
 ];
 var AjaxRCRefreshText = 'автообновление страницы'; //Отображаемое название
  
-var PurgeButtonText = 'Обновить'; //Отображаемое название
+var PurgeButtonText = 'Обновить'; //Отображаемое название*/
  
 /*Показ IP анонимов в комментариях*/
-window.RevealAnonIP = {
+/*window.RevealAnonIP = {
     permissions: ['rollback', 'sysop', 'bureaucrat']
-};
+};*/

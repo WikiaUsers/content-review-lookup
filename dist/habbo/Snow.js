@@ -1,1 +1,0 @@
-#REDIRECT [[MediaWiki:Common.js/snow2.js]]

@@ -45,3 +45,14 @@ $(function() {
         );
     });
 } ( jQuery );
+
+// Принудительная загрузка изображений в инфобоксах в обход lzy
+!function( $ ) {
+    if ( $( '.infBlock' ).length < 2 ) return;
+    
+    $( '.infBlock img' ).each( function() {
+        $( this )
+          .attr( 'src', $( this ).attr( 'data-src' ) )
+          .attr( 'class', 'lzyPlcHld lzyTrns lzyLoaded' );
+    });
+}( jQuery );

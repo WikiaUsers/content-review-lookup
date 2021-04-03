@@ -1,1 +1,8 @@
-importScriptPage( 'AjaxUndo/code.js', 'dev' );
+mw.loader.using('ext.fandom.ContentReview.legacyLoaders.js').then(function() {
+	importArticles({
+	    type: 'script',
+	    articles: [
+	        'u:dev:MediaWiki:AjaxUndo/code.js',
+	    ]
+	});
+});

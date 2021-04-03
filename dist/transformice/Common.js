@@ -87,7 +87,7 @@ window.lastEdited = {
 importArticles({
 	type: 'script',
 	articles: [
-		'u:dev:Less/code.2.js',
+		'u:dev:MediaWiki:Less/code.2.js',
 		'MediaWiki:Common.js/cellTemplate.js',
 		'u:dev:MediaWiki:LastEdited/code.js',
 		'u:dev:MediaWiki:WallGreetingButton/code.js',

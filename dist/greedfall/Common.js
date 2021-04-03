@@ -1,0 +1,1 @@
+mw.loader.load('/index.php?title=MediaWiki:2colmainpage.js&action=raw&ctype=text/javascript');

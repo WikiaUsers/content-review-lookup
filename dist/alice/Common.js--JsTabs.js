@@ -3,7 +3,7 @@
  * By: [[User:KettleMeetPot]]
  */
 
-$(document).ready(function JsTabs() {
+$(function JsTabs() {
   if ( $('#JsTabsContainer').length > 0 ) {
     var Sid = $('.JsTab.selected').html();
     if ( Sid.length < 1 ) {

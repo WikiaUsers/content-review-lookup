@@ -1,1 +1,0 @@
-#REDIRECT [[MediaWiki:Chat-edit-count]]

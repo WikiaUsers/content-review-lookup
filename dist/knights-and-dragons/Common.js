@@ -17,31 +17,6 @@ window.UserTagsJS = {
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'rollback', 'chatmoderator', 'blocked', 'inactive', 'founder'];
 
-/* Refresh every 20 seconds */
-window.chatReloadTime = 20000;
-
-/* Importing all articles and scripts */
-importArticles({
-    type: "script",
-    articles: [
-        "w:c:dev:BackToTopButton/code.js",
-        "w:c:dev:ChatOptions/code.js",
-        "w:c:dev:FixWantedFiles/code.js",
-        "w:c:dev:ListAdmins/code.js",
-        "w:c:dev:AjaxRC/code.js",
-        "w:c:dev:InactiveUsers/code.js",
-        "w:c:dev:DupImageList/code.js",
-        "w:c:dev:LockOldBlogs/code.js",
-        "w:c:dev:VisualSpellCheck/code.js",
-        "w:c:dev:Countdown/code.js",
-        "w:c:dev:WallGreetingButton/code.js",
-        "w:c:dev:UserTags/code.js",
-        "w:c:dev:User_Rights_Reasons_Dropdown/code.js",
-        "w:c:dev:TopEditors/code.js",
-    ]
-});
-
-
 
 /* Any JavaScript here will be loaded for all users on every page load. */
  
@@ -213,6 +188,6 @@ function owwsitesearch(f){
 }
  
  
-addOnloadHook(toggleInit);
+$(toggleInit);
  
 // </syntax>

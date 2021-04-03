@@ -42,6 +42,9 @@ window.UserTagsJS = {
 
 // CategoryCSS
 window.categoryCSS = {
-    "Embersky Jungle": "MediaWiki:Embersky_Jungle.css",
-    "Cliffside District": "Mediawiki:Cliffside_District"
+    "World 1": "MediaWiki:World1.css",
+    "World 2": "Mediawiki:World2.css",
+    "World 3": "Mediawiki:World3.css",
+    "World 4": "Mediawiki:World4.css",
+    "World 5": "Mediawiki:World5.css"
 };

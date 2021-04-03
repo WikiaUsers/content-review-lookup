@@ -1,22 +1,19 @@
 /**
  * Name:        Modal
- * Version:     v1.0
+ * Version:     v2.2
  * Author:      KockaAdmiralac
- * Description: Abstracts modal logic for native FANDOM modals.
+ * Description: Abstracts modal logic for native Fandom modals and OOUI.
  */
 /* eslint {"max-statements": "off"} */
-require([
-    'wikia.window',
-    'mw',
-    'jquery',
-    'wikia.ui.factory'
-], function(window, mw, $, uiFactory) {
+(function() {
     'use strict';
     window.dev = window.dev || {};
     // Double-load protection.
     if (window.dev.modal) {
         return;
     }
+    // Whether the wiki is on UCP.
+    var isUCP = mw.config.get('wgVersion') !== '1.19.24';
 
     /**
      * Module exports.
@@ -33,7 +30,9 @@ require([
         'small',
         'medium',
         'large',
-        'content-size'
+        'larger',
+        'content-size',
+        'full'
     ];
 
     /**
@@ -54,7 +53,14 @@ require([
      * @param {UIComponent} modal Modal component creator
      */
     function init(modal) {
-        module._modal = modal;
+        if (isUCP) {
+            module._windowManager = new OO.ui.WindowManager({
+                classes: ['modal-js-window']
+            });
+            $(document.body).append(module._windowManager.$element);
+        } else {
+            module._modal = modal;
+        }
         mw.hook('dev.modal').fire(module);
     }
 
@@ -64,9 +70,16 @@ require([
      * @param {Object} options Button options
      */
     function ModalButton(options) {
-        this.setType(options.type);
+        if (!isUCP) {
+            this.setType(options.type);
+        }
         this.primary = Boolean(options.primary);
-        this.normal = options.normal !== false;
+        this.safe = Boolean(options.close || options.safe);
+        this.back = Boolean(options.back);
+        this.close = Boolean(options.close);
+        if (!isUCP) {
+            this.normal = options.normal !== false;
+        }
         this.setText(options.text || options.value)
             .setEvent(options.event)
             .setClasses(options.classes)
@@ -88,10 +101,10 @@ require([
      */
     ModalButton.prototype.setClasses = function(classes) {
         this.classes = classes instanceof Array ? classes : [];
-        if (this.normal) {
+        if (this.normal && !isUCP) {
             this.classes.push('normal');
         }
-        if (this.primary) {
+        if (this.primary && !isUCP) {
             this.classes.push('primary');
         }
         return this;
@@ -126,10 +139,10 @@ require([
      * @throws {Error} If not validly specified when the button is a link
      */
     ModalButton.prototype.setHref = function(href) {
-        if (this.type === 'link') {
+        if (this.type === 'link' || isUCP) {
             if (typeof href === 'string') {
                 this.href = href;
-            } else {
+            } else if (!isUCP) {
                 throw new Error('`href` parameter required!');
             }
         }
@@ -186,9 +199,11 @@ require([
      * @returns {ModalButton} Current instance
      */
     ModalButton.prototype.setType = function(type) {
-        this.type = BUTTON_TYPES.indexOf(type) === -1 ?
-            'button' :
-            type;
+        if (!isUCP) {
+            this.type = BUTTON_TYPES.indexOf(type) === -1 ?
+                'button' :
+                type;
+        }
         return this;
     };
 
@@ -200,7 +215,7 @@ require([
      */
     ModalButton.prototype.setSprite = function(sprite) {
         if (
-            (this.type === 'link' || this.type === 'button') &&
+            (this.type === 'link' || this.type === 'button' || isUCP) &&
             typeof sprite === 'string'
         ) {
             this.sprite = sprite;
@@ -214,7 +229,10 @@ require([
      * @returns {ModalButton} Current instance
      */
     ModalButton.prototype.setTarget = function(target) {
-        if (this.type === 'link' && typeof target === 'string') {
+        if (
+            (this.type === 'link' || isUCP) &&
+            typeof target === 'string'
+        ) {
             this.target = target;
         }
         return this;
@@ -227,10 +245,10 @@ require([
      * @throws {Error} If not validly specified when the button is a link
      */
     ModalButton.prototype.setTitle = function(title) {
-        if (this.type === 'link') {
+        if (this.type === 'link' || isUCP) {
             if (typeof title === 'string') {
                 this.title = title;
-            } else {
+            } else if (!isUCP) {
                 throw new Error('`title` parameter required!');
             }
         }
@@ -242,6 +260,25 @@ require([
      * @returns {Object} Mustache variables for rendering the button
      */
     ModalButton.prototype.create = function() {
+        if (isUCP) {
+            var flags = [];
+            ['primary', 'safe', 'back', 'close'].forEach(function(flag) {
+                if (this[flag]) {
+                    flags.push(flag);
+                }
+            }, this);
+            return {
+                action: this.event,
+                classes: this.classes,
+                disabled: this.disabled,
+                flags: flags,
+                href: this.href,
+                icon: this.sprite,
+                id: this.id,
+                label: this.text,
+                title: this.title
+            };
+        }
         return {
             type: this.type,
             vars: {
@@ -289,17 +326,19 @@ require([
      * @param {Object} options Alternative link options
      */
     function AltLink(options) {
-        if (typeof options.id === 'string') {
-            this.id = options.id;
-        }
-        if (typeof options.href === 'string') {
-            this.href = options.href;
-        }
-        if (typeof options.title === 'string') {
-            this.title = options.title;
-        }
-        if (typeof options.text === 'string') {
-            this.text = options.text;
+        if (!isUCP) {
+            if (typeof options.id === 'string') {
+                this.id = options.id;
+            }
+            if (typeof options.href === 'string') {
+                this.href = options.href;
+            }
+            if (typeof options.title === 'string') {
+                this.title = options.title;
+            }
+            if (typeof options.text === 'string') {
+                this.text = options.text;
+            }
         }
     }
 
@@ -334,26 +373,28 @@ require([
         this.setSize(options.size)
             .setContent(options.content)
             .setTitle(options.title, options.isHTML)
+            .setCloseTitle(options.closeTitle)
             .setButtons(options.buttons)
             .setEvents(options.events)
             .setClass(options.class || options.classes)
             .setClose(options.close)
             .setCloseEscape(options.closeEscape)
-            .setCloseTitle(options.closeTitle)
             .setAltLink(options.altLink);
         module.modals[this.id] = this;
     }
 
     /**
-     * Sets the modal's alternative link.
+     * Sets the modal's alternative link on legacy Fandom.
      * @param {Object|AltLink} options Alternative link or its configuration
      * @returns {Modal} Current instance
      */
     Modal.prototype.setAltLink = function(options) {
-        if (typeof options === 'object') {
-            this.altLink = new AltLink(options);
-        } else if (options instanceof AltLink) {
-            this.altLink = options;
+        if (!isUCP) {
+            if (typeof options === 'object') {
+                this.altLink = new AltLink(options);
+            } else if (options instanceof AltLink) {
+                this.altLink = options;
+            }
         }
         return this;
     };
@@ -369,6 +410,13 @@ require([
                 .map(createButton)
                 .filter(Boolean) :
             [];
+        if (isUCP) {
+            this.buttons.push(new ModalButton({
+                close: true,
+                text: this.closeTitle,
+                title: this.closeTitle
+            }));
+        }
         return this;
     };
 
@@ -424,7 +472,9 @@ require([
     Modal.prototype.setCloseTitle = function(title) {
         this.closeTitle = typeof title === 'string' ?
             title :
-            mw.config.get('wgMessages').close || 'close';
+                isUCP ?
+                    mw.message('ooui-dialog-message-reject').plain() :
+                    mw.config.get('wgMessages').close || 'close';
         return this;
     };
 
@@ -435,18 +485,43 @@ require([
      * @throws {Error} If not validly specified
      */
     Modal.prototype.setContent = function(content) {
-        if (typeof content === 'string') {
+        if (
+            typeof content === 'string' ||
+            isUCP &&
+            typeof content === 'object' &&
+            content instanceof OO.ui.Layout
+        ) {
             this.content = content;
+        } else if (content instanceof Node) {
+            if (isUCP) {
+                this.content = content;
+            } else {
+                this.content = content.outerHTML;
+            }
         } else if (
             typeof content === 'object' &&
             typeof window.dev.ui === 'function'
         ) {
-            this.content = window.dev.ui(content).outerHTML;
+            if (isUCP) {
+                this.content = window.dev.ui(content);
+            } else {
+                this.content = window.dev.ui(content).outerHTML;
+            }
         } else {
             throw new Error('Modal content not specified!');
         }
         if (this._modal) {
-            this._modal.setContent(content);
+            if (isUCP) {
+                if (isUCP && this.content instanceof OO.ui.Layout) {
+                    this._modal.content.$element.remove();
+                    this._modal.content = this.content;
+                    this._modal.$body.append(this.content.$element);
+                } else {
+                    this._modal.content.$element.html(this.content);
+                }
+            } else {
+                this._modal.setContent(this.content);
+            }
         }
         return this;
     };
@@ -504,8 +579,17 @@ require([
     Modal.prototype.setSize = function(size) {
         if (MODAL_SIZES.indexOf(size) === -1) {
             this.size = 'medium';
+        } else if (isUCP && size === 'content-size') {
+            this.size = 'full';
+        } else if (!isUCP && size === 'full') {
+            this.size = 'content-size';
+        } else if (!isUCP && size === 'larger') {
+            this.size = 'large';
         } else {
             this.size = size;
+        }
+        if (isUCP && this._modal) {
+            this._modal.setSize(this.size);
         }
         return this;
     };
@@ -522,7 +606,13 @@ require([
             'Modal';
         this.titleIsHTML = Boolean(isHTML);
         if (this._modal && !isHTML) {
-            this._modal.setTitle(title);
+            if (isUCP) {
+                this._modal.$head
+                    .find('.oo-ui-processDialog-title')
+                    .text(title);
+            } else {
+                this._modal.setTitle(title);
+            }
         }
         return this;
     };
@@ -533,24 +623,86 @@ require([
      */
     Modal.prototype.create = function() {
         this._loading = new $.Deferred();
-        var component = {
-            vars: {
-                altLink: this.altLink,
-                buttons: this.buttons.map(buttonComponent),
+        if (isUCP) {
+            var OOUIModal = function(config) {
+                this._modal = config.modal;
+                delete config.modal;
+                OOUIModal.super.call(this, config);
+            };
+            OO.inheritClass(OOUIModal, OO.ui.ProcessDialog);
+            var superclass = OOUIModal.super.prototype;
+            OOUIModal.static.name = this.id;
+            OOUIModal.static.title = this.title;
+            OOUIModal.static.actions = this.buttons.map(buttonComponent);
+            OOUIModal.prototype.initialize = function() {
+                superclass.initialize.apply(this, arguments);
+                if (this._modal.content instanceof OO.ui.Layout) {
+                    this.content = this._modal.content;
+                } else {
+                    this.content = new OO.ui.PanelLayout({
+                        expanded: false,
+                        padded: false
+                    });
+                }
+                this.content.$element.append(this._modal.content);
+                this.$body.append(this.content.$element);
+            };
+            OOUIModal.prototype.getActionProcess = function(action) {
+                var handlers = this._modal.events[action];
+                if (action === 'close') {
+                    return new OO.ui.Process($.proxy(function() {
+                        this.close();
+                    }, this));
+                }
+                if (this._modal.events[action]) {
+                    return new OO.ui.Process($.proxy(function() {
+                        handlers.forEach(function(handle) {
+                            handle();
+                        }, this);
+                    }, this));
+                }
+                return superclass.getActionProcess.call(this, action);
+            };
+            this._modal = new OOUIModal({
                 classes: this.classes,
-                closeText: this.closeTitle,
-                content: this.content,
-                escapeToClose: this.closeEscape,
                 id: this.id,
-                size: this.size,
-                title: this.title
-            },
-            confirmCloseModal: $.proxy(this._close, this)
-        };
-        if (this.titleIsHTML) {
-            component.vars.htmlTitle = this.title;
+                modal: this,
+                size: this.size
+            });
+            module._windowManager.addWindows([this._modal]);
+            /*
+             * Close modal when clicked outside of the modal
+             * (by [[User:Noreplyz]] for [[WHAM]]).
+             */
+            this._modal.$frame.parent().click($.proxy(function(event) {
+                if ($(event.target).attr('id') === this.id) {
+                    this._modal.close();
+                }
+            }, this));
+            this._loading.resolve(this);
+        } else {
+            var component = {
+                vars: {
+                    altLink: this.altLink,
+                    buttons: this.buttons.map(buttonComponent),
+                    classes: this.classes,
+                    closeText: this.closeTitle,
+                    content: this.content,
+                    escapeToClose: this.closeEscape,
+                    id: this.id,
+                    size: this.size,
+                    title: this.title
+                },
+                confirmCloseModal: $.proxy(this._close, this)
+            };
+            if (this.titleIsHTML) {
+                component.vars.htmlTitle = this.title;
+            }
+            module._modal.createComponent(
+                component,
+                $.proxy(this._created, this)
+            );
         }
-        module._modal.createComponent(component, $.proxy(this._created, this));
         return this._loading;
     };
 
@@ -562,14 +714,16 @@ require([
     Modal.prototype._close = function() {
         this._modal = null;
         this.create();
-        // This is a hack around the bug with scrollbar not restoring
-        // upon closing the modal. Fandom's modal that should
-        // automatically do this assumes that, when the .modal-blackout
-        // class is present in the document, a modal is still showing
-        // and the scrollbar needs not be removed. However, due to Modal's
-        // caching behavior, this is no longer true and we have to
-        // supply our own implementation of the code that restores the
-        // scrollbar, as seen below.
+        /*
+         * This is a hack around the bug with scrollbar not restoring
+         * upon closing the modal. Fandom's modal that should
+         * automatically do this assumes that, when the .modal-blackout
+         * class is present in the document, a modal is still showing
+         * and the scrollbar needs not be removed. However, due to Modal's
+         * caching behavior, this is no longer true and we have to
+         * supply our own implementation of the code that restores the
+         * scrollbar, as seen below.
+         */
         if ($('body').children('.modal-blackout.visible').length) {
             $('body').removeClass('with-blackout');
             $('.WikiaSiteWrapper')
@@ -599,10 +753,34 @@ require([
     };
 
     /**
+     * Shows the modal.
+     */
+    Modal.prototype.show = function() {
+        this.wScrollTop = $(window).scrollTop();
+        if (this._modal) {
+            if (isUCP) {
+                module._windowManager.openWindow(this._modal);
+            } else {
+                this._modal.show();
+            }
+        } else if (this._loading) {
+            this._loading.then($.proxy(function() {
+                this._modal.show();
+            }, this));
+        } else {
+            throw new Error('Modal not created!');
+        }
+    };
+
+    /**
      * Proxy certain methods to the modal component.
      */
-    ['show', 'activate', 'deactivate'].forEach(function(method) {
+    ['activate', 'deactivate'].forEach(function(method) {
         Modal.prototype[method] = function() {
+            if (isUCP) {
+                // Not supported on UCP yet.
+                return;
+            }
             if (method === 'show') {
                 this.wScrollTop = $(window).scrollTop();
             }
@@ -623,7 +801,11 @@ require([
      */
     Modal.prototype.close = function() {
         if (this._modal) {
-            this._modal.trigger('close');
+            if (isUCP) {
+                this._modal.close();
+            } else {
+                this._modal.trigger('close');
+            }
         } else {
             throw new Error('Modal not created!');
         }
@@ -647,5 +829,11 @@ require([
         };
     }
     // Begin initialization.
-    uiFactory.init(['modal']).then(init);
-});
+    if (isUCP) {
+        mw.loader.using(['oojs-ui-windows']).then(init);
+    } else {
+        require(['wikia.ui.factory'], function(uiFactory) {
+            uiFactory.init(['modal']).then(init);
+        });
+    }
+})();

@@ -337,7 +337,7 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
                 'discussions-moderator',
                 'staff',
                 'helper',
-                'vstf',
+                'soap',
                 'wiki-manager'
             ];
         // Dispatch mod conditionals to function

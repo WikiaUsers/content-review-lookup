@@ -1,118 +1,213 @@
-//JSRT DO NOT APPROVE - testing on UCP, currently does not work
 (function () {
+    if (!window.DiscussionTemplates) {
+        window.DiscussionTemplates = {};
+    }
     if (
-        !window.DiscussionTemplates ||
         window.DiscussionTemplates.loaded ||
-        !window.DiscussionTemplates.wiki ||
-        !window.DiscussionTemplates.templates ||
-        typeof window.DiscussionTemplates.templates !== 'object' ||
         mw.config.get('wgNamespaceNumber') !== 1200 ||
         mw.config.get('wgVersion') === '1.19.24'
     ) {
         return;
     }
-    $.extend(true, window.DiscussionTemplates, {
-        loaded: true
-    });
-    var preloads = 4;
-    var wikiList = window.DiscussionTemplates.wikiList || {
-        'de': 'https://community.fandom.com/de',
-        'es': 'https://comunidad.fandom.com',
-        'fi': 'https://yhteiso.fandom.com',
-        'fr': 'https://communaute.fandom.com/fr',
-        'it': 'https://community.fandom.com/it',
-        'ja': 'https://community.fandom.com/ja',
-        'ko': 'https://community.fandom.com/ko',
-        'nl': 'https://community.fandom.com/nl',
-        'pl': 'https://spolecznosc.fandom.com',
-        'pt': 'https://comunidade.fandom.com',
-        'ru': 'https://community.fandom.com/ru',
-        'vi': 'https://community.fandom.com/vi',
-        'zh': 'https://community.fandom.com/zh'
+    
+    if (Array.isArray(window.DiscussionTemplates.allowedGroups)) {
+        var allowedGroups = new Set(window.DiscussionTemplates.allowedGroups);
+        mw.config.get('wgUserGroups').some(function (userGroup) {
+            return allowedGroups.has(userGroup);
+        });
+    }
+    
+    window.DiscussionTemplates.loaded = true;
+    var i18n;
+    var preloads = 5;
+    var selected = {
+        template: null,
+        wiki: null,
+        text: null
     };
+    var modal;
 
     function selectTemplate () {
-        var selected = $('#form-discussion-template #modal-select-template option:selected').text();
-        var template = window.DiscussionTemplates.templates[selected];
-        var get = $.get(window.DiscussionTemplates.wiki + '/wiki/' + template + '?action=raw').done(function (d) {
-            return d.replace(/<noinclude>[\s\S]*<\/noinclude>/g, '');
+    	if (!selected.template && !selected.text) {
+    		return alert(i18n.msg('nothing-given').plain());
+    	}
+        var trimRegex = new RegExp('<br><\/p><p><br><\/p>$');
+        var params = {
+            action: 'parse',
+            disablelimitreport: true,
+            prop: 'text',
+            wrapoutputclass: null, //I don't know if this is a bug or not, but it gets rid of the wrapping div
+            format: 'json'
+        };
+        if (selected.text) {
+            params.text = selected.text;
+            params.contentmodel = 'wikitext';
+        } else {
+            params.page = window.DiscussionTemplates.templates[selected.template].name;
+		}
+        new mw.Api().get(params).done(function (d) {
+            var content = d.parse.text['*'].replace(/\n<\/p>/g, '</p><p><br></p>').replace(/<p><br \/>/g, '<p><br></p><p>').replace(/href="\/wiki/g, 'href="' + mw.config.get('wgServer') + mw.config.get('wgScriptPath') + '/wiki');
+            if (trimRegex.test(content)) {
+                content = content.replace(trimRegex, '</p>');
+            }
+            content = content.replace(/<p>(.*)<\/p>/g, function (_, text) {
+                return '<p>' + text.trim() + '</p>';
+            });
+            if (content.includes('$WIKI') && window.DiscussionTemplates.wikiList) {
+                var link = $('<a>', {
+                    text: window.DiscussionTemplates.wikiList[selected.wiki],
+                    href: window.DiscussionTemplates.wikiList[selected.wiki]
+                }).prop('outerHTML');
+                content = content.replace(/\$WIKI/g, link);
+            }
+            if (content.includes('$USER')) {
+                content = content.replace(/\$USER/g, mw.html.escape(mw.config.get('profileUserName')));
+            }
+            $('.message-wall-app > div > .EditorForm .rich-text-editor__content > div').html(function () {
+                if ($(this).html()) {
+                    return '<p>' + $(this).html() + '<br><br></p>' + content;
+                }
+                return content;
+            });
+            if (selected.text) {
+                alert(i18n.msg('title-not-supported-nocopy').plain());
+            } else {
+                alert(i18n.msg('title-not-supported').plain());
+                navigator.clipboard.writeText(window.DiscussionTemplates.templates[selected.template].title);
+            }
+            modal.close();
         });
-        if (get.includes('WIKI')) {
-            var wiki = $('#form-discussion-template #modal-select-lang option:selected').text();
-            get = get.replace(/WIKI/g, wikiList[wiki]);
-        }
-        $('.rich-text-editor__content p').text(get);
-        modal.closeModal();
     }
 
     function formHTML () {
-        window.dev.ui({
-            type: 'div',
-            children: [{
-                type: 'span',
-                text: i18n.msg('select-template-info')
-            }, {
-                type: 'select',
-                attr: {
-                    id: 'modal-select-template'
-                }
-            }, {
-                type: 'span',
-                text: i18n.msg('select-lang-info')
-            }, {
-                type: 'select',
-                attr: {
-                    id: 'modal-select-lang'
-                }
-            }]
+        var layout = new OO.ui.PanelLayout({
+            padded: true
         });
+        var list = {
+            templates: [],
+            wikis: []
+        };
+        if (window.DiscussionTemplates.templates) {
+	        Object.keys(window.DiscussionTemplates.templates).forEach(function (i) {
+	            list.templates.push(
+	                new OO.ui.MenuOptionWidget({
+	                    data: window.DiscussionTemplates.templates[i].name,
+	                    label: i
+	                })
+	            );
+	        });
+        }
+        if (window.DiscussionTemplates.wikiList) {
+	        Object.keys(window.DiscussionTemplates.wikiList).forEach(function (i) {
+	            list.wikis.push(
+	                new OO.ui.MenuOptionWidget({
+	                    data: window.DiscussionTemplates.wikiList[i],
+	                    label: i
+	                })
+	            );
+	        });
+        }
+
+		if (window.DiscussionTemplates.templates) {
+	        var templateLabel = new OO.ui.LabelWidget({
+	            label: i18n.msg('select-template-info').plain()
+	        });
+	        var templatesDropDown = new OO.ui.DropdownWidget({
+	            label: i18n.msg('default').plain(),
+	            menu: {
+	                items: list.templates
+	            }
+	        });
+	        var templateSelected = function (option) {
+	            selected.template = option.label;
+	        };
+	        templatesDropDown.getMenu().on('select', templateSelected);
+	        layout.$element.append([templateLabel.$element, '<br>', templatesDropDown.$element, '<br><br><hr/><br>']);
+		}
+
+        var textareaLabel = new OO.ui.LabelWidget({
+           label: i18n.msg('textarea-info').plain()
+        });
+        var textarea = new OO.ui.TextInputWidget();
+        textarea.on('change', function (value) {
+            selected.text = value;
+        });
+        layout.$element.append([textareaLabel.$element, '<br>', textarea.$element]);
+
+        if (window.DiscussionTemplates.wikiList) {
+            var wikiLabel = new OO.ui.LabelWidget({
+                label: i18n.msg('select-lang-info').plain()
+            });
+            var wikisDropDown = new OO.ui.DropdownWidget({
+                label: i18n.msg('default').plain(),
+                menu: {
+                    items: list.wikis
+                }
+            });
+            var wikiSelected = function (option) {
+                selected.wiki = option.label;
+            };
+            wikisDropDown.getMenu().on('select', wikiSelected);
+    
+            layout.$element.append(['<br><hr/><br>', wikiLabel.$element, '<br>', wikisDropDown.$element]);
+        }
+
+        return layout;
     }
 
-    function click (i18nData) {
-        var i18n = i18nData;
-        var modal = new window.dev.modal.Modal({
-            content: formHTML(),
-            id: 'form-discussion-template',
-            size: 'small',
-            title: i18n.msg('title').plain(),
-            buttons: [{
-                event: 'onClick',
-                text: i18n.msg('button').plain(),
-                primary: true
-            }],
-            events: {
-                onClick: selectTemplate
-            }
-        });
-        modal.create();
-        $('#form-discussion-template #modal-select-template').append('<input disabled selected>' + i18n.msg('default').plain() + '</input>');
-        Object.keys(window.DiscussionTemplates.templates).forEach(function (i) {
-            $('#form-discussion-template #modal-select-template').append('<input>' + i + '</input>');
-        });
-        $('#form-discussion-template #modal-select-lang').append('<input disabled selected>' + i18n.msg('default').plain() + '</input>');
-        Object.keys(wikiList).forEach(function (i) {
-            $('#form-discussion-template #modal-select-lang').append('<input>' + i + '</input>');
-        });
+    function click () {
+        if (!modal) {
+            modal = new window.dev.modal.Modal({
+                content: formHTML(),
+                id: 'form-discussion-template',
+                size: 'medium',
+                closeEscape: true,
+                title: i18n.msg('title').plain(),
+                buttons: [{
+                    event: 'onClick',
+                    text: i18n.msg('button').plain(),
+                    primary: true
+                }],
+                events: {
+                    onClick: selectTemplate
+                }
+            });
+            modal.create();
+        }
+        mw.util.addCSS('\
+            #form-discussion-template .oo-ui-layout {\
+                min-height: 300px;\
+            }\
+            #form-discussion-template .oo-ui-dropdownWidget {\
+                padding-top: 5px;\
+            }\
+            #form-discussion-template .oo-ui-selectWidget {\
+                width: 100% !important;\
+            }\
+        ');
         modal.show();
     }
 
-    function init () {
-        $('#MessageWall .WriteMessageButton').on('click', function () {
-            function addButtons () {
-                var $o = $('.rich-text-editor__toolbar__icon-group');
-                if ($o.length === 0) {
+    function init (i18nData) {
+        i18n = i18nData;
+        $('#MessageWall').on('click', '.message-wall-app > div > div[class^="FormEntryPoint_form-entry-point__"]', function () {
+            if ($('#add-discussion-template').length) {
+                return;
+            }
+            $(function addButtons () {
+                var $o = $('.message-wall-app > div > .EditorForm__actions');
+                if (!$o.length) {
                     setTimeout(addButtons, 250);
                 } else {
-                    $('.rich-text-editor__toolbar__icon-group').append(
-                        $('<div>', {
+                    $o.append(
+                        $('<button>', {
                             click: click,
                             id: 'add-discussion-template',
-                            class: 'rich-text-editor__toolbar__icon-wrapper'
-                        }).append(window.dev.wds.icon('bubble'))
+                            class: 'wds-button wds-is-secondary wds-is-text'
+                        }).append(window.dev.wds.icon('bubble-small'))
                     );
                 }
-            }
-            addButtons();
+            });
         });
     }
 
@@ -122,16 +217,16 @@
         }
     }
 
-    mw.hook('dev.ui').add(preload);
     mw.hook('dev.wds').add(preload);
     mw.hook('dev.i18n').add(preload);
     mw.hook('dev.modal').add(preload);
+    mw.loader.using('mediawiki.api').then(preload);
+    mw.loader.using('mediawiki.util').then(preload);
 
     importArticles({
         type: 'script',
         articles: [
             'u:dev:MediaWiki:Modal.js',
-            'u:dev:MediaWiki:UI-js/code.js',
             'u:dev:MediaWiki:I18n-js/code.js',
             'u:dev:MediaWiki:WDSIcons/code.js'
         ]

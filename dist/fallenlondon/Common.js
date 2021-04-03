@@ -7,7 +7,7 @@ importArticles({
 });
 // Dynamic Templates
 $(function() {
-	if ($('#WikiaArticle .jcConfig,#bodyContent .jcConfig').length) {
+	if ($('.jcConfig').length) {
 		importScript('MediaWiki:Common.js/calc.js');
 		importStylesheet('MediaWiki:Common.css/calc.css');
 	}

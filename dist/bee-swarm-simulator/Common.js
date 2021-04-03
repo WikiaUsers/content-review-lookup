@@ -73,7 +73,3 @@ importArticles({
         'u:dev:Quiz/code.js'
     ]
 });
-
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};

@@ -3,8 +3,8 @@ window.UserTagsJS = {
 	tags: {
 		// groupname: { u:'Displayname', link:'TOS-Page', order:number }
 		// status
-		blocked: {u:'Jailed', order: 1/0},
-		inactive: {u:'in Graveyard', order: 1/0},
+		blocked: {u:'Jailed', link:'https://town-of-salem.fandom.com/wiki/MediaWiki%3AForum-policies-and-faq', order: 1/0},
+		inactive: {u:'in the Graveyard', order: 1/0},
 		townieofthemonth: { u:'Townie of the Month', order: -1 },
 		notautoconfirmed: { u:'Amnesiac', order:0 },
 		// ranks
@@ -65,10 +65,15 @@ importArticles({
          "MediaWiki:Common.js/Imports.js", /* Auto-refresh, Inactive users, AdvancedOasis, Anons */ 
          "MediaWiki:Common.js/blocklock.js", /* Lock blogs that haven't been commented on for more than 30 days */
          "w:dev:ExternalImageLoader/code.js", /* Allows usage of ExternalImageLoader */
- 
-    ]
+ ]
 });
 
-window.railWAM = {
-    logPage:"Project:WAM Log"
+window.LockForums = {
+    expiryDays: 60,
+    expiryMessage: "This thread has been automatically archived because its most recent response is over <expiryDays> days old.",
+    warningDays: 20,
+    warningMessage: "This thread is now <actualDays> days old. To stay courteous with your fellow Townies, please make sure you need to respond to this thread, otherwise, please take your discussion to another thread. This thread will automatically become archived when it turns <expiryDays> old.",
+    banners: true,
+    warningPopup: true,
+    warningPopupMessage: "By posting on this thread you may be sending unnecessary emails to those who are still following this thread. Are you sure you want to do this?",
 };

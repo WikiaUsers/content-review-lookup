@@ -72,7 +72,6 @@ UserTagsJS.modules.metafilter = {
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refreshes the page when new edits occur.';
 window.ajaxPages = [
-    "Special:RecentChanges",
     "Special:WikiActivity",
     "Special:Log",
     "Special:Images",

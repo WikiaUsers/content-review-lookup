@@ -8,7 +8,7 @@
 // maybe I should allow sorting by highest duration within groups...
 // should probably do something about group names if possible (e.g. sysop -> administrator) when desired
 // should go through the data structure for cleanup instead of going through the HTML after it's done
-
+mw.loader.using('mediawiki.util').then(function() {
 $('.rightsrecord').each(function(thisidx) {
     var $urr = $(this),
       mode = $urr.attr('data-urr-mode') === 'users' ? 'users' : 'rights',
@@ -292,4 +292,5 @@ $('.rightsrecord').each(function(thisidx) {
 
     //One line to call them all
     getData(start, putResults);
+});
 });

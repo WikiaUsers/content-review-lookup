@@ -14,8 +14,8 @@ window.UserTagsJS =
 		patroller:		{ order: 5, link:'Ikariam:Patroller' },    
 		rollback:		{ order: 6, link:'Ikariam:Rollback' },
 		bannedfromchat:	{ order: 7 },
-		bot:			{ order: 0 },
-		'bot-global':	{ order: 0, link: 'Ikariam:Bots' },
+		bot:			{ order: 80 },
+		'bot-global':	{ order: 80, link: 'Ikariam:Bots' },
 		
 		// CUSTOM Tags
 		
@@ -33,19 +33,18 @@ window.UserTagsJS =
 
 UserTagsJS.modules.autoconfirmed = true;
 UserTagsJS.modules.newuser = true;
-UserTagsJS.modules.inactive = 30; // Inactive if no edits in 30 days
-UserTagsJS.modules.mwGroups = ['founder', 'bureaucrat', 'chatmoderator', 'patroller', 'rollback', 'sysop', 'bannedfromchat', 'bot', 'bot-global']; // Add FANDOM groups
+UserTagsJS.modules.inactive = 30;                            // Inactive if no edits in 30 days
+UserTagsJS.modules.mwGroups = ['founder', 'bureaucrat', 'chatmoderator', 'patroller', 'rollback', 'sysop', 'bannedfromchat', 'bot', 'bot-global'];                  // Add FANDOM groups
 
 UserTagsJS.modules.metafilter =
 {
-	sysop: ['bureaucrat', 'founder'], // Remove administrator group from bureaucrats/founders
-	bureaucrat: ['founder'], // Remove bureaucrat group from founders
-	chatmoderator: ['sysop', 'bureaucrat'] // Remove chatmoderator group from admins/bureacrats
+	sysop: ['bureaucrat', 'founder'],                        // Remove administrator group from bureaucrats/founders
+	bureaucrat: ['founder'],                                 // Remove bureaucrat group from founders
+	chatmoderator: ['sysop', 'bureaucrat']                   // Remove chatmoderator group from admins/bureacrats
 };
 
 UserTagsJS.modules.userfilter =
 { // Removes tags - They are never seen on the person
-	'Jrooksjr': ['inactive']
 };
 
 UserTagsJS.modules.implode =
@@ -53,9 +52,9 @@ UserTagsJS.modules.implode =
 	'mini-sysop': ['patroller', 'rollback', 'chatmoderator'] // Remove patroller, rollback and chatmoderator, if ALL 3 exist, and replace with 'mini-sysop'
 };
 
-UserTagsJS.modules.explode =
-{ // Expands tags - Adds additional tag if certain tags exist
-	'vandal-patrol': ['patroller', 'rollback'] // Add 'vandal-patrol' to everyone who has BOTH patroller and rollback
+UserTagsJS.modules.explode =                                 // Expands tags - Adds additional tag if certain tags exist
+{ 
+	'vandal-patrol': ['patroller', 'rollback']               // Add 'vandal-patrol' to everyone who has BOTH patroller and rollback
 };
 
 // Add custom groups to users

@@ -2,11 +2,18 @@
  * Creates simple non-intrusive pop-up notifications.
  * @author Arashiryuu0
  * @module Toasts
- * @version 1.0.2
+ * @version 1.0.3
  */
-'use strict';
+
+// jshint browser: true, devel: true, jquery: true
+// jshint strict: true, freeze: true, eqeqeq: true, futurehostile: true
+// jshint newcap: true, noarg: true, quotmark: single, shadow: outer
+// jshint latedef: true, undef: true, unused: true
+/* globals mw */
 
 ;(function () {
+    'use strict';
+    
     var toString = Object.prototype.toString;
     
     if (window.dev && window.dev.toasts) return;
@@ -20,6 +27,20 @@
     
     function isObject (item) {
         return toString.call(item) === '[object Object]';
+    }
+    
+    function deepFreeze (object, exclude) {
+        if (exclude && exclude(object)) return;
+        if (typeof object === 'object' && object !== null) {
+            var props = Object.getOwnPropertyNames(object);
+            var len = props.length;
+            for (var i = 0; i < len; i++) {
+                var key = props[i];
+                deepFreeze(object[key], exclude);
+            }
+            Object.freeze(object);
+        }
+        return object;
     }
     
     var helpers = {
@@ -193,12 +214,12 @@
         value: 'Toasts'
     });
     
-    Object.freeze(Toasts);
+    deepFreeze(Toasts);
     
     window.dev = window.dev || {};
     window.dev.toasts = Toasts;
     
-    window.mw.hook('dev.toasts').fire(window.dev.toasts);
+    mw.hook('dev.toasts').fire(window.dev.toasts);
 })();
 
 /*@end@*/

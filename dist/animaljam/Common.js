@@ -43,6 +43,7 @@ $('.details span[title]').each(function(){
 }); */
 
 //Custom Edit buttons- Credit to the Club Penguin Wiki
+/*
 if (mwCustomEditButtons) {
 		
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -98,6 +99,7 @@ if (mwCustomEditButtons) {
 		"tagOpen": "{|class=\"wikitable sortable\"\n! scope=\"col\"| Catalog\n! scope=\"col\"| Available from\n! scope=\"col\"| Available until\n|-\n|catalog goes here\n|starting date\n|ending date\n|}",
 	};
 }
+*/
 /** Collapsible tables - Credit to AT Wiki
  *  Maintainers: User:R. Koot
  */
@@ -134,6 +136,7 @@ function collapseTable( tableIndex )
     }
 }
  
+/*
 function createCollapseButtons()
 {
     var tableIndex = 0;
@@ -143,7 +146,7 @@ function createCollapseButtons()
     for ( var i = 0; i < Tables.length; i++ ) {
         if ( hasClass( Tables[i], "collapsible" ) ) {
  
-            /* only add button and increment count if there is a header row to work with */
+            //only add button and increment count if there is a header row to work with
             var HeaderRow = Tables[i].getElementsByTagName( "tr" )[0];
             if (!HeaderRow) continue;
             var Header = HeaderRow.getElementsByTagName( "th" )[0];
@@ -189,3 +192,5 @@ function createCollapseButtons()
 }
  
 addOnloadHook( createCollapseButtons );
+
+*/

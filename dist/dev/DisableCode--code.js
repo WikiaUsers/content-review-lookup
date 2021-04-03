@@ -1,199 +1,236 @@
 /**
- * DisableCode/code.js
- * @file Allows users to disable custom user or site CSS/JS for testing
- * @author Eizen <dev.wikia.com/wiki/User_talk:Eizen>
- * @external "mediawiki.util"
- * @external "I18n-js"
- * @external "jQuery"
- * @external "wikia.window"
- * @external "mw"
+ * <nowiki>
+ * DisableCode
+ * @file DisableCode is a JavaScript userscript that adds a number of buttons to
+ * the user's "My Tools" menu that permit the addition/removal of query strings
+ * in the URL. These query strings are used to deactivate various user/site
+ * JavaScript/CSS code for testing purposes.
+ * @author Eizen <dev.wikia.com/eizen>
+ * @author Parkour2906 <dev.fandom.com/User:Parkour2906>
  */
 
-/*jslint browser, this:true */
-/*global mw, jQuery, window, require, wk */
+;(function (module, window, $, mw) {
+  "use strict";
 
-require(["mw", "wikia.window", "jquery"], function (mw, wk, jQuery) {
-    "use strict";
+  // Respect prior double-load protection convention
+  if (!window || !$ || !mw || module.isLoaded || window.isDisableCodeLoaded) {
+    return;
+  }
+  module.isLoaded = window.isDisableCodeLoaded = true;
 
-    if (window.isDisableCodeLoaded || jQuery("#disableCode").exists()) {
-        return;
-    }
-    window.isDisableCodeLoaded = true;
-
-    if (!window.dev || !window.dev.i18n) {
-        wk.importArticle({
-            type: "script",
-            article: "u:dev:MediaWiki:I18n-js/code.js"
-        });
-    }
-    var $i18n;
+  // Namespace protected properties
+  Object.defineProperties(this, {
 
     /**
-     * @class DisableCode
-     * @classdesc The main DisableCode object literal
+     * @description The <code>Selectors</code> pseudo-enum is used to store the
+     * <code>string</code> names of custom selectors applied to the script's
+     * generated HTML elements and extant selectors of element already existing
+     * on the page for targetting purposes.
+     *
+     * @readonly
+     * @enum {Object}
      */
-    var DisableCode = {
+    Selectors: {
+      enumerable: true,
+      writable: false,
+      configurable: false,
+      value: Object.freeze({
+        CLASS_OVERFLOW: "overflow",
+        CLASS_LIST: "disableCode-li",
+        CLASS_LINK: "disableCode-a",
+        ID_BAR: "WikiaBar",
+        ID_MY_TOOLS: "my-tools-menu",
+        ID_LIST: "disableCode",
+        ID_LINK_PREFIX: "disableCode-",
+      })
+    },
 
-        /**
-         * @method constructItem
-         * @description Method creates list items to be appended to the proper
-         *              container element. If the item is the reset button, the
-         *              <code>href</code> attribute is set to the current value
-         *              of <code>window.location.href</code> minus any included
-         *              <code>DisableCode.parameters</code> values. Probably
-         *              should use legitimate click events in a future rewrite.
-         * @param {String} $text
-         * @param {String} $param
-         * @returns {String}
-         */
-        constructItem: function ($text, $param) {
-            var $href = window.location.href;
-            var $search = (window.location.search)
-                ? "&"
-                : "?";
+    /**
+     * @description The <code>Params</code> pseudo-enum is used to store
+     * individual <code>Object</code>s related to each of the types of query
+     * strings available for insertion into the URL. These include strings for
+     * activation/deactivation of user CSS and JavaScipt and a catchall
+     * "safemode" setting that deactivates all custom code on the viewed wiki.
+     *
+     * @readonly
+     * @enum {Object}
+     */
+    Params: {
+      enumerable: true,
+      writable: false,
+      configurable: false,
+      value: Object.freeze({
+        SAFE_MODE: Object.freeze({
+          QUERY: "safemode",
+          VALUE: 1,
+          MESSAGE: "safemode"
+        }),
+        USERJS: Object.freeze({
+          QUERY: "useuserjs",
+          VALUE: 0,
+          MESSAGE: "userJS"
+        }),
+        USERCSS: Object.freeze({
+          QUERY: "useusercss",
+          VALUE: 0,
+          MESSAGE: "userCSS"
+        })
+      })
+    },
 
-            if ($text === $i18n.msg("reset").plain()) {
-                this.parameters.forEach(function ($selected) {
-                    if ($href.indexOf($selected.param) !== -1) {
-                        var $pStart = $href.indexOf($selected.param);
-                        var $pSlice = $href.slice(
-                                $pStart - 1,
-                                $pStart + $selected.param.length + 2
-                            );
+    /**
+     * @description The <code>Utility</code> pseudo-enum is a catchall enum used
+     * store various values that see use in the script. These include the
+     * name of the script in <code>string</code> form, the I18n-js messages
+     * cache value, and the name of the hook that is fired at the end of the
+     * script initialization.
+     *
+     * @readonly
+     * @enum {Object}
+     */
+    Utility: {
+      enumerable: true,
+      writable: false,
+      configurable: false,
+      value: Object.freeze({
+        SCRIPT: "DisableCode",
+        CACHE_VERSION: 2,
+        HOOK_NAME: "dev.disableCode"
+      }),
+    },
+  });
 
-                        $href = $href.replace(/#.*/, "").replace($pSlice, "");
-                    }
-                });
-            } else {
-                $href = $href.replace(/#.*/, "") + $search + $param + "=" + 0;
-            }
+  /**
+   * @description As the name implies, the <code>assembleLink</code> method is
+   * used to construct a simple custom link element for inclusion into the
+   * containing list element in the "My Tools" dropdown menu. It applies a
+   * number of custom selectors and attaches the desired href location before
+   * determining the display text by means of I18n-js.
+   *
+   * @function
+   * @param {string} message - The name of the I18n-js message to display
+   * @param {string} href - The link location to which the button points
+   * @returns {string} - The assembled <code>string</code> HTML output
+   */
+  this.assembleLink = function (message, href) {
+    return mw.html.element("a", {
+      "id": this.Selectors.ID_LINK_PREFIX + message.toLowerCase(),
+      "class": this.Selectors.CLASS_LINK,
+      "href": href,
+      "title": this.i18n.msg(message).plain()
+    }, this.i18n.msg(message).plain());
+  };
 
-            return mw.html.element("li", {
-                "class": "overflow disableCode-li",
-            }, new mw.html.Raw(
-                mw.html.element("a", {
-                    "class": "disableCode-a",
-                    "href": $href,
-                    "title": $text
-                }, $text)
-            ));
-        },
+  /**
+   * @description The <code>defineResetLocation</code> method is used to remove
+   * any vestigial query strings added by this script from the URL. The
+   * resultant target URL is the href of the "reset" button's link element. The
+   * idea of using regex for this part was initially developed by Parkour2906,
+   * with Eizen simplifying the regex slightly.
+   *
+   * @function
+   * @returns {string} - The href to which the "reset" button will point
+   */
+  this.defineResetLocation = function () {
+    return this.config.wgArticlePath.replace("$1", this.config.wgPageName +
+      window.location.search.replace(
+        new RegExp("([?&])" + Object.values(this.Params).map(function (entry) {
+          return entry.QUERY + "[^&]*(?:&|$)";
+        }).join("|"), "gmi"), "$1"
+      )
+    );
+  };
 
-        /**
-         * @method assembleContainer
-         * @description Method injects some menu-specific CSS to style the menu
-         *              properly and also assembles the massive
-         *              <code>String</code> of HTML that forms the "My Tools"-
-         *              esque menu frame. Probably should be simplified and
-         *              cleaned up at some point.
-         * @returns {String}
-         */
-        assembleContainer: function () {
-            mw.util.addCSS(
-                "#disableCode-menu {" +
-                    "left: 10px;" +
-                    "right: auto;" +
-                    "display: none;" +
-                "}"
-            );
+  /**
+   * @description The <code>init</code> function serves as the beating heart of
+   * the script, serving to configure i18n data, define the script-global
+   * scope's own properties, build and add the list container element to the
+   * "My Tools" menu, fire the hook, and establish an <code>exports</code>
+   * property for the <code>module</code>.
+   * <br />
+   * <br />
+   * In the script's original implementation, a custom "My Tools" clone was
+   * added to the toolbar. However, Parkour2906 scrapped this (admittedly
+   * janky) approach in favor of adding the various buttons to one sole overflow
+   * list element that would constitute a single entry in the "My Tools" menu,
+   * a design choice retained by Eizen.
+   *
+   * @function
+   * @param {Object} paramLang - i18n <code>Object</code> belonging to I18n-js
+   * @returns {void}
+   */
+  this.init = function (paramLang) {
 
-            return mw.html.element("li", {
-                "class": "mytools menu",
-                "id": "disableCode"
-            }, new mw.html.Raw(
-                mw.html.element("span", {
-                    "class": "arrow-icon-ctr",
-                }, new mw.html.Raw(
-                    mw.html.element("span", {
-                        "class": "arrow-icon arrow-icon-single"
-                    })
-                )) +
-                mw.html.element("a", {
-                    "id": "disableCode-a",
-                    "href": "#",
-                    "title": $i18n.msg("title").plain()
-                }, $i18n.msg("title").plain()) +
-                mw.html.element("ul", {
-                    "id": "disableCode-menu",
-                    "class": "tools-menu",
-                })
-            ));
-        },
+    // Declarations
+    var content, target, search;
 
-        /**
-         * @name main
-         * @description This method handles the assembly of a container element,
-         *              the construction of menu list members, and the menu
-         *              display toggle handler. It adds the constructed elements
-         *              to the new menu once assembled.
-         * @return void
-         */
-        main: function () {
-            var that = this;
-            var $assembledItems = [];
-            var $container = this.assembleContainer();
+    // Add i18n data as local property
+    (this.i18n = paramLang).useContentLang();
 
-            // Add menu frame to toolbar
-            jQuery(".toolbar .tools").prepend($container);
+    // Cache globals as object property
+    this.config = mw.config.get([
+      "wgArticlePath",
+      "wgPageName"
+    ]);
 
-            // Click handler
-            jQuery("#disableCode-a").click(function () {
-                jQuery("#disableCode-menu").slideToggle("fast");
-            });
+    // Definitions
+    target = "#" + this.Selectors.ID_BAR + " #" + this.Selectors.ID_MY_TOOLS;
+    search = (window.location.search.length) ? "&" : "?";
 
-            // Construct and add parameter elements to nascent menu frame
-            this.parameters.forEach(function ($item) {
-                jQuery("#disableCode-menu").append(
-                    that.constructItem($item.title, $item.param)
-                );
-            });
-        },
+    // Build tools list element and populate with buttons
+    content = mw.html.element("li", {
+      "id": this.Selectors.ID_LIST,
+      "class": [
+        this.Selectors.CLASS_OVERFLOW,
+        this.Selectors.CLASS_LIST
+      ].join(" ")
+    }, new mw.html.Raw(
+      this.assembleLink("reset", this.defineResetLocation()) +
+      Object.values(this.Params).map(function (entry) {
+        return this.assembleLink(
+          entry.MESSAGE,
+          this.config.wgArticlePath.replace("$1", this.config.wgPageName +
+            window.location.search + search + entry.QUERY + "=" + entry.VALUE)
+        );
+      }.bind(this)).join("")
+    ));
 
-        /**
-         * @method init
-         * @description Initializing method of the program, this function
-         *              defines the class's parameters array that contains the
-         *              <code>String</code> representations of the URL query
-         *              params and their names in the menu. It calls
-         *              <code>DisableCode.main</code>.
-         * @param {JSON} $lang
-         * @returns {void}
-         */
-        init: function ($lang) {
-            $lang.useUserLang();
-            $i18n = $lang;
+    // Add to "My Tools" menu
+    $(target).prepend(content);
 
-            this.parameters = [
-                {
-                    param: "reset-parameters",
-                    title: $i18n.msg("reset").plain()
-                },
-                {
-                    param: "useuserjs",
-                    title: $i18n.msg("userJS").plain()
-                },
-                {
-                    param: "useusercss",
-                    title: $i18n.msg("userCSS").plain()
-                },
-                {
-                    param: "usesitejs",
-                    title: $i18n.msg("siteJS").plain()
-                },
-                {
-                    param: "usesitecss",
-                    title: $i18n.msg("siteCSS").plain()
-                }
-            ];
-
-            this.main();
-        }
-    };
-
-    mw.hook("dev.i18n").add(function ($i18n) {
-        jQuery.when(
-            $i18n.loadMessages("DisableCode"),
-            mw.loader.using("mediawiki.util")
-        ).done(jQuery.proxy(DisableCode.init, DisableCode));
+    // Expose public methods for external debugging
+    Object.defineProperty(module, "exports", {
+      enumerable: true,
+      writable: false,
+      configurable: false,
+      value: Object.freeze({
+        observeScript: window.console.dir.bind(this, this),
+      })
     });
-});
+
+    // Attach hook once complete
+    mw.hook(this.Utility.HOOK_NAME).fire(module);
+  };
+
+  // Attach hook listener, load script's messages, then pass to init
+  mw.hook("dev.i18n").add(function (i18n) {
+    $.when(
+      i18n.loadMessages(this.Utility.SCRIPT, {
+        cacheVersion: this.Utility.CACHE_VERSION,
+      }),
+      $.ready
+    )
+    .done(this.init.bind(this))
+    .fail(window.console.error.bind(null, this.Utility.SCRIPT));
+  }.bind(this));
+
+  // Import I18n-js if not already loaded
+  if (!window.dev || !window.dev.i18n) {
+    window.importArticle({
+      type: "script",
+      article: "u:dev:MediaWiki:I18n-js/code.js"
+    });
+  }
+
+}.call(Object.create(null), (this.dev = this.dev || {}).disableCode =
+  this.dev.disableCode || {}, this, this.jQuery, this.mediaWiki));

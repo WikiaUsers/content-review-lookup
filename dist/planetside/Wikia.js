@@ -15,7 +15,6 @@ var SocialMediaButtons = {
 	colorScheme: "color",
 	buttonSize: "default"
 };
-importScriptPage('SocialIcons/code.js','dev');
 
 /* End social media buttons */
  
@@ -683,10 +682,6 @@ $('select[name="loadoutPrimaryWeapon"]').html(loadoutPrimarySelect);
 
  
 /* Begin Census on hover infobox */
- 
-// Additional UserRights Icons in profile mastheads
-importScript('MediaWiki:Wikia.js/userRightsIcons.js');
-// END Additional UserRights Icons in profile mastheads
  
 /**
  * Sets the cookie

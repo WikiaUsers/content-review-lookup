@@ -155,7 +155,6 @@ importArticles({
         'MediaWiki:MPC.js',
         'u:dev:MediaWiki:AjaxRC/code.js',
         'u:dev:MediaWiki:CacheCheck/code.js',
-        'u:dev:MediaWiki:DiscordIntegrator/code.js',
         'u:dev:MediaWiki:DisplayClock/code.js',
         'u:dev:MediaWiki:DisableBotMessageWalls/code.js',
         'u:dev:MediaWiki:LockOldBlogs/code.js',

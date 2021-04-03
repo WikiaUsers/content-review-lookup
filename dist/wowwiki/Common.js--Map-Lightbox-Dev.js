@@ -1,1 +1,0 @@
-#REDIRECT [[MediaWiki:MapLightbox/code.js]]

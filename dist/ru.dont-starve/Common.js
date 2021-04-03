@@ -1,102 +1,3 @@
-/* Тот самый */
-/** Collapsible tables *********************************************************
- *
- *  Description: Allows tables to be collapsed, showing only the header. See
- *                         https://www.mediawiki.org/wiki/Manual:Collapsible_tables.
- *  Maintainers: [[en:User:R. Koot]]
- */
- 
-var autoCollapse = 2;
-var collapseCaption = 'hide';
-var expandCaption = 'show';
- 
-function collapseTable( tableIndex ) {
-        var Button = document.getElementById( 'collapseButton' + tableIndex );
-        var Table = document.getElementById( 'collapsibleTable' + tableIndex );
- 
-        if ( !Table || !Button ) {
-                return false;
-        }
- 
-        var Rows = Table.rows;
- 
-        if ( Button.firstChild.data == collapseCaption ) {
-                for ( var i = 1; i < Rows.length; i++ ) {
-                        Rows[i].style.display = 'none';
-                }
-                Button.firstChild.data = expandCaption;
-        } else {
-                for ( var i = 1; i < Rows.length; i++ ) {
-                        Rows[i].style.display = Rows[0].style.display;
-                }
-                Button.firstChild.data = collapseCaption;
-        }
-}
- 
-function createCollapseButtons() {
-        var tableIndex = 0;
-        var NavigationBoxes = new Object();
-        var Tables = document.getElementsByTagName( 'table' );
- 
-        for ( var i = 0; i < Tables.length; i++ ) {
-                if ( hasClass( Tables[i], 'collapsible' ) ) {
- 
-                        /* only add button and increment count if there is a header row to work with */
-                        var HeaderRow = Tables[i].getElementsByTagName( 'tr' )[0];
-                        if ( !HeaderRow ) {
-                                continue;
-                        }
-                        var Header = HeaderRow.getElementsByTagName( 'th' )[0];
-                        if ( !Header ) {
-                                continue;
-                        }
- 
-                        NavigationBoxes[tableIndex] = Tables[i];
-                        Tables[i].setAttribute( 'id', 'collapsibleTable' + tableIndex );
- 
-                        var Button = document.createElement( 'span' );
-                        var ButtonLink = document.createElement( 'a' );
-                        var ButtonText = document.createTextNode( collapseCaption );
- 
-                        Button.className = 'collapseButton'; // Styles are declared in [[MediaWiki:Common.css]]
- 
-                        ButtonLink.style.color = Header.style.color;
-                        ButtonLink.setAttribute( 'id', 'collapseButton' + tableIndex );
-                        ButtonLink.setAttribute( 'href', "javascript:collapseTable(" + tableIndex + ");" );
-                        ButtonLink.appendChild( ButtonText );
- 
-                        Button.appendChild( document.createTextNode( '[' ) );
-                        Button.appendChild( ButtonLink );
-                        Button.appendChild( document.createTextNode( ']' ) );
- 
-                        Header.insertBefore( Button, Header.childNodes[0] );
-                        tableIndex++;
-                }
-        }
- 
-        for ( var i = 0;  i < tableIndex; i++ ) {
-                if ( hasClass( NavigationBoxes[i], 'collapsed' ) || ( tableIndex >= autoCollapse && hasClass( NavigationBoxes[i], 'autocollapse' ) ) ) {
-                        collapseTable( i );
-                } else if ( hasClass( NavigationBoxes[i], 'innercollapse' ) ) {
-                        var element = NavigationBoxes[i];
-                        while ( element = element.parentNode ) {
-                                if ( hasClass( element, 'outercollapse' ) ) {
-                                        collapseTable( i );
-                                        break;
-                                }
-                        }
-                }
-        }
-}
- 
-addOnloadHook( createCollapseButtons );
- 
-/** Test if an element has a certain class **************************************
- *
- * Description: Uses regular expressions and caching for better performance.
- * Maintainers: [[User:Mike Dillon]], [[User:R. Koot]], [[User:SG]]
- */
- 
 var hasClass = ( function() {
         var reCache = {};
         return function( element, className ) {
@@ -104,260 +5,26 @@ var hasClass = ( function() {
         };
 })();
 
-importScriptPage('MediaWiki:AjaxRC/code.js', 'dev'); // AJAX-обновление некоторых страниц
-var ajaxPages = ["Служебная:Watchlist","Служебная:Contributions","Служебная:WikiActivity","Служебная:RecentChanges"]; // AJAX-обновление некоторых страниц(выбор страниц)
-var AjaxRCRefreshText = 'автообновление страницы'; //Отображаемое название
-
-importScriptPage('MediaWiki:Common.js/BackToTopButton.js', 'ru.terraria'); //Кнонпка Вверх
-
-//rights
-importScript("MediaWiki:Common.js/masthead.js");
-
-
-// Импорт скрипт для 3+ ряда в навигационном меню
-importArticles({ 
-    type: 'script', 
-    articles: [ 
-        'u:dev:ExtendedNavigation/code.js' 
-    ]
-});
-
-addOnloadHook(function(){ //безымянная функция
-	ll=1; //Русский
-	var d=function(s,e){ //вызывает метод параметра
-		if(!e)e=document;
-		return e.getElementsByClassName(s);
-	};
-	var t=function(s,e){
-		return e.getElementsByTagName(s);
-	};
-
-	switchLang=function(l){ //процедура смены языка
-		var c=['mrus','meng']; //массив
-		if(l===undefined)l=1-ll; //инверсия для неопределённого параметра
-
-		ll=l; //флаг-язык
-		if(ll){
-			c[2]=c[1];
-			c[1]=c[0];
-			c[0]=c[2];
-		}
-		for(j=0;j<2;j++){ //скрыть элементы и показать другие элементы
-		 a=d(c[j]);
-		 if(a) for(i=0;i<a.length;i++) a[i].style.display=(j?"":"none"); 
-		}
-		return false;
-	};
-	a=d('mswitch'); 
-	if(a) for(l=0;l<a.length;l++) {
-		x=t('a',a[l]); //все ссылки
-		if(x) for(var j=0;j<x.length;j++) { 
-			y=x[j];
-			y.onclick=function() { return switchLang();};
-			y.href='javascript:void(0)'; //отключить ссылку
-			y.style.color="#FFF"; 
-		}
-	}
-	switchLang(ll); //инициализация
-	return true; 
-});
-
-/* тест код от star по убийству визуального редактора - <!-- see talk page reviewers -->
- 
-//Уничтожает обнаружение визуального редактора в зародыше.
-function break_ve_lib(caller)
-{
-         if (mw && mw.libs && mw.libs.ve && !mw.libs.ve.canCreatePageUsingVEBroken)
-         {
-                 mw.libs.ve.canCreatePageUsingVE = function(){return false};
-                 console.log("mw.libs updated by "+caller);
-                 mw.libs.ve.canCreatePageUsingVEBroken = true;
-         }
-}
- 
-//Дополнительная подстраховка
-function break_CreatePage_bool_fn(caller)
-{
-        if (CreatePage !== undefined && !CreatePage.canUseVisualEditorBroken)
-        {
-                window.CreatePage.canUseVisualEditor = function () { return false; }
-                is_page_tuned = true;
-                console.log("CreatePage.canUseVisualEditor broken by "+caller)
-                CreatePage.canUseVisualEditorBroken = true;
-        }
-}
- 
-//Модифицирует ссылки, чтобы избежать визуального редактора (Opera Presto).
-function ClearAllLinks(caller)
-{
-        var list = document.getElementsByTagName("A");
-        for(var i=0;i<list.length;i++)
-        {
-                var a = list[i]
-                a.href=a.href.replace("veaction","action")
-        }
-        //Тихая функция работает постоянно (пока таймер жив). Упорство и труд всё перетрут!
-}
- 
-//Проверяет адрес страницы. И если он на визуальном редакторе, то уходит на обычный.
-function CheckForRedirect(caller)
-{
-        var found_veaction = window.location.href.indexOf("veaction=edit")
-        if (found_veaction !== -1 && window.kill_ve_timer)
-        {
-                if (window.kill_ve_timer) clearInterval(window.kill_ve_timer);
-                window.kill_ve_timer = undefined;
-                console.log("Redirect to page without VE by "+caller)
-                window.location.href = window.location.href.substring(0,found_veaction) + "action=edit"
-                //Отсекает всё, включая #
-        }
-}
- 
-//Не всегда клик срабатывает. Поэтому делаем еще один контрольный клик с отсрочкой по времени.
-function ClickItAgain(source,sec)
-{
-        setTimeout(function()
-        {
-                console.log("Clicked again after "+sec+" seconds.");
-                source.onclick();
-        },sec*1000);
-}
- 
-//Обновляет кнопки. Отключает кнопку Visual Editor и автоматически переходит на Source Editor
-function UpdateThatDamnButtons(caller, source, visual)
-{
-        if (!visual.already_disabled)
-        {
-                //Отключаем кнопку Visual Editor
-                //visual.onclick = function(){return false};
-                //visual.onkeydown = function(){return false};
-                //visual.onfocus = function(){return false};
-               
-                //И переходим на редактор кода.
-                save_source_button_to_click = source;
-                for (var i=1;i<=5;i++)
-                {
-                        ClickItAgain(source,i) //Кликаем 5 раз в течение первых 5 секунд.
-                }
-                //ClickItAgain(source,15)
-                //ClickItAgain(source,20)
-                //ClickItAgain(source,30)
-                //ClickItAgain(source,60)
-                //ClickItAgain(source,100)
-                source.onclick();
-               
-                console.log("Buttons disabled and locked by "+caller);
-                visual.already_disabled = true;
-        }
-}
- 
-//Ищет кнопки по id
-function CheckVisualButtonsById(caller)
-{
-        if (window.CKEDITOR && window.CKEDITOR.tools && window.CKEDITOR.tools.callFunction && !window.damn_buttons_are_disabled)
-        {
-                var source = document.getElementById("cke_21");
-                var visual = document.getElementById("cke_22");
-                if (source && visual)
-                {
-                        UpdateThatDamnButtons(caller + "(found by id)", source, visual);
-                        window.damn_buttons_are_disabled = true;
-                }
-        }
-}
- 
-//Ищет кнопки по href (что-нибудь, да сработает, даже в случае редизайна викии)/
-function CheckVisualButtonsByHref(caller)
-{
-        if (window.CKEDITOR && window.CKEDITOR.tools && window.CKEDITOR.tools.callFunction && !window.damn_buttons_are_disabled)
-        {
-                var source = false;
-                var visual = false;
-                var list = document.getElementsByTagName("A");
-                for(var i=0;i<list.length;i++)
-                {
-                        var a = list[i];
-                        if (a.href == "javascript:void('Source')")
-                        {
-                                source = a;
-                                if (source && visual) break;
-                        }
-                        if (a.href == "javascript:void('Visual')")
-                        {
-                                visual = a;
-                                if (source && visual) break;
-                        }
-                }
-                if (source && visual)
-                {
-                        UpdateThatDamnButtons(caller + "(found by href)", source, visual);
-                        window.damn_buttons_are_disabled = true;
-                }
-        }
-}
- 
-//Пробует всеми способами заблочить визуальный редактор.
-//В будущем можно добавить еще способов, понадежнее.
-function TryAllHookMathodsAtOnce(caller)
-{
-        break_ve_lib(caller);
-        break_CreatePage_bool_fn(caller);
-        ClearAllLinks(caller);
-        CheckForRedirect(caller);
-        CheckVisualButtonsById(caller);
-        CheckVisualButtonsByHref(caller);
-}
- 
- 
-//Пробуем запустить всё это как можно скорее.
-TryAllHookMathodsAtOnce("raw");
- 
-//Если что-то тормознулось, то пробуем повеситься на загрузчик.
-addOnloadHook(function(){
-        TryAllHookMathodsAtOnce("OnloadHook");
-})
- 
- 
-//Ну и на последом запускаем таймер. Чисто для уверенности, что испробовали всё.
-kill_ve_timer_seconds = 70;
-kill_ve_timer_delay = 400;
-kill_ve_timer = setInterval(function(){
-        TryAllHookMathodsAtOnce("Timer");
-        kill_ve_timer_seconds = kill_ve_timer_seconds - kill_ve_timer_delay * 0.001;
-        //console.log("...elapsed time "+kill_ve_timer_seconds);
-        if (kill_ve_timer_seconds<0)
-        {
-                clearInterval(kill_ve_timer);
-        }
-}, kill_ve_timer_delay)
-*/
-
 /* Для шаблона - "Твоёимя" */
-$(function UserNameReplace() {
-    if(typeof(disableUsernameReplace) !== 'undefined' && disableUsernameReplace || wgUserName === null) return;
-    $("span.yourname").html(wgUserName);
+$(function UserNameReplace() {    
+    if(typeof(disableUsernameReplace) !== 'undefined' && disableUsernameReplace || mw.config.values.wgUserName === null) return;    $("span.yourname").text(mw.config.values.wgUserName); 
 });
-
 /* Отступы в title */
 function replaceTitle() {
-    if ($('#replaceMe').length != 0) {
-        var n = $('#replaceMe').attr("title").replace(/&#10/g,"\n") //Заменяем &#10 на отступ
-        $('#replaceMe').attr("title", n) //Присваеваем новый title
-        $('#replaceMe').attr('id', '') //Удаляем id дабы передти к следующему элементу
-        setTimeout(replaceTitle,300) //Небольшая задержка, чтобы таблица успела прогрузиться
+    if ($('#replaceMe').length !== 0) {
+        var n = $('#replaceMe').attr("title").replace(/&#10/g,"\n"); //Заменяем &#10 на отступ
+        $('#replaceMe').attr("title", n); //Присваеваем новый title
+        $('#replaceMe').attr('id', ''); //Удаляем id дабы передти к следующему элементу
+        setTimeout(replaceTitle,300); //Небольшая задержка, чтобы таблица успела прогрузиться
     }
 }
-replaceTitle()
-
-
-
+replaceTitle();
 $(function(){
     importArticles({
         type: "script",
         articles: ["u:pad.wikia.com:MediaWiki:FilterTable.js"]
     });
 });
-
 /* костыль для отображения иконки в цитатах  */
 $(function() {
     $(".DSWHoverTabContainer img.lzy").each(function() {
@@ -367,3 +34,242 @@ $(function() {
         }
     });
 });
+
+/* Приход циклопа */
+var cyclopeIsGone = null;
+window.cyclopeGone = function(){
+  cyclopeIsGone = true;
+  $("#gone").removeClass("buttona");
+  $("#gone").addClass("buttonb");
+  $("#ngone").removeClass("buttonb");
+  $("#ngone").addClass("buttona");
+};
+ 
+window.cyclopeNotGone = function(){
+  cyclopeIsGone = false;
+  $("#ngone").removeClass("buttona");
+  $("#ngone").addClass("buttonb");
+  $("#gone").removeClass("buttonb");
+  $("#gone").addClass("buttona");
+};
+ 
+window.cyclopecalculater = function(){
+if(cyclopeIsGone !== null){
+var userDayscyclope = $("#dayscyclope").val();
+if(!isNaN(userDayscyclope)){
+if(userDayscyclope === "" || userDayscyclope < 31){
+  userDayscyclope = 31;
+}
+var cyclopeArrive1;
+var differencecyc;
+var minWinter = 21;
+var maxWinter = 35;
+var daymultiplier = Math.floor((userDayscyclope - minWinter)/70);
+var minWinteruser = minWinter + 70*daymultiplier;
+var maxWinteruser = maxWinter + 70*daymultiplier;
+if(cyclopeIsGone === true){
+  cyclopeArrive1 = Math.floor(maxWinteruser + 57.8);
+}else if(cyclopeIsGone === false){
+  differencecyc = userDayscyclope - minWinteruser + 1;
+  if((differencecyc + 16.8) < 30){
+  cyclopeArrive1 = Math.floor(differencecyc + 56.8 + maxWinteruser);
+  }else if(differencecyc > 14 && differencecyc <=15){
+  cyclopeArrive1 = Math.floor(maxWinteruser + 127.8);
+  }else if(differencecyc > 15){
+    cyclopeArrive1 = Math.floor(maxWinteruser + 57.8);
+  }
+}
+if((cyclopeIsGone === false) && (differencecyc == 14 )){
+  cyclopeArrive1 = Math.floor(differencecyc + 56.8 + maxWinteruser);
+  cyclopeArrive2 = Math.floor(maxWinteruser + 126.8);
+  $("#resultcyclope").html("<p>Циклоп придёт на: " + cyclopeArrive1 + " либо на " + cyclopeArrive2 + " день. </p>");
+}else{
+$("#resultcyclope").html("<p>Циклоп придёт на: " + cyclopeArrive1 + " день. </p>");
+}
+}else{
+$("#resultcyclope").html("<p>Привет. Я съел булочку.</p>");
+}
+}else{
+$("#resultcyclope").html("<p>Выберите условие!</p>");
+}
+};
+$('<input id="gone" class="buttona" onclick="cyclopeGone()" type="button" value="Ушёл">').appendTo( "#cyclopecalc" );
+$('<input id="ngone" class="buttona" onclick="cyclopeNotGone()" type="button" value="Убит">').appendTo( "#cyclopecalc" );
+$('<p><input type="text" placeholder="31" size="5" maxlength="8" required id="dayscyclope" value=""> день</input> ').appendTo( "#cyclopecalc" );
+$('<input id="cyclopecalculate" class="buttona" onclick="cyclopecalculater()" type="button" name="button" value="Рассчитать">').appendTo( "#cyclopecalc" );
+/* Cookbook */
+window.sortveggie = function(){
+  $(".cbmeat").addClass("recipearrow");
+  $(".cbother").addClass("recipearrow");
+  $(".cbveggie").removeClass("recipearrow");
+  $("#buttonveggie2").removeClass("button");
+  $("#buttonveggie2").addClass("buttoncb");
+  $("#buttonmeat2, #buttonall2, #buttonother2").removeClass("buttoncb");
+  $("#buttonmeat2, #buttonall2, #buttonother2").addClass("button");
+};
+window.sortmeat = function(){
+  $(".cbmeat").removeClass("recipearrow");
+  $(".cbveggie").addClass("recipearrow");
+  $(".cbother").addClass("recipearrow");
+  $("#buttonmeat2").removeClass("button");
+  $("#buttonmeat2").addClass("buttoncb");
+  $("#buttonveggie2, #buttonall2, #buttonother2").removeClass("buttoncb");
+  $("#buttonveggie2, #buttonall2, #buttonother2").addClass("button");
+};
+window.sortall = function(){
+  $(".cbmeat").removeClass("recipearrow");
+  $(".cbveggie").removeClass("recipearrow");
+  $(".cbother").removeClass("recipearrow");
+  $("#buttonall2").removeClass("button");
+  $("#buttonall2").addClass("buttoncb");
+  $("#buttonveggie2, #buttonmeat2, #buttonother2").removeClass("buttoncb");
+  $("#buttonveggie2, #buttonmeat2, #buttonother2").addClass("button");
+};
+ 
+window.sortother = function(){
+  $(".cbmeat").addClass("recipearrow");
+  $(".cbveggie").addClass("recipearrow");
+  $(".cbother").removeClass("recipearrow");
+  $("#buttonother2").removeClass("button");
+  $("#buttonother2").addClass("buttoncb");
+  $("#buttonall2, #buttonveggie2, #buttonmeat2").removeClass("buttoncb");
+  $("#buttonall2, #buttonveggie2, #buttonmeat2").addClass("button");
+  };
+ 
+  $('#buttonmeat, #buttonveggie, #buttonother, #buttonall').click(function() {
+       $(function() {
+    $(".cookbook .sn img.lzy").each(function() {
+        var dataSrc = $(this).attr('data-src');
+        if (dataSrc) {
+            $(this).attr('src', dataSrc);
+        }
+    });
+  });
+ 
+    $(function() {
+    $(".cookbook .sy img.lzy").each(function() {
+        var dataSrc = $(this).attr('data-src');
+        if (dataSrc) {
+            $(this).attr('src', dataSrc);
+        }
+    });
+  });
+});
+ 
+$('<input id="buttonmeat2" class="button" onclick="sortmeat()" type="button" value="Мясное">').appendTo( "#buttonmeat" );
+$('<input id="buttonveggie2" class="button" onclick="sortveggie()" type="button" value="Растительное">').appendTo( "#buttonveggie" );
+$('<input id="buttonother2" class="button" onclick="sortother()" type="button" value="Другое">').appendTo( "#buttonother" );
+$('<input id="buttonall2" class="button" onclick="sortall()" type="button" value="Всё">').appendTo( "#buttonall" );
+
+/*Изменяет цвет у рамок в ответаx администраторов*/
+/*I'm not sure if it's possible not to clear the interval*/
+setInterval(function () {
+	$('.wds-avatar a[href$="Arhhhat"]').closest('.Reply, .Reply_body__3woA9').addClass('Arhhhat');
+	$('.wds-avatar a[href$="FruitShakeSB"]').closest('.Reply, .Reply_body__3woA9').addClass('FruitShakeSB');
+	$('.wds-avatar a[href$="TheZhab"]').closest('.Reply, .Reply_body__3woA9').addClass('TheZhab');
+}, 500 );
+
+/*Окончание в слове страницы до фикса на UCP*/
+
+$(function changePageCounterEndingRus(){
+	if($('.wds-community-header__counter-label').length !== 0){
+	var pageCount = (($('.wds-community-header__counter-value').text())%100);
+	if(((pageCount >= 0) && (pageCount <= 10)) || ((pageCount >= 20) && (pageCount <= 99))){
+	 if((pageCount%10 === 0) || ((pageCount%10 >= 5) && (pageCount%10 <= 9))){
+	 	$('.wds-community-header__counter-label').text('Страниц');
+	 }else if((pageCount%10 >= 2) && (pageCount%10 <=4)){
+	 	$('.wds-community-header__counter-label').text('Страницы');
+	 }else if(pageCount%10 == 1){
+	 	$('.wds-community-header__counter-label').text('Страница');
+	 }
+	}else{
+		$('.wds-community-header__counter-label').text('Страниц');
+	}
+	}
+});
+
+/*Связывание табберов и вкладок инфобокса*/
+
+window.tabberLinkInfobox = function(title){
+var childrenLi = $('.pi-section-label a[data-title='+title+']').parent();
+childrenLi.parent().addClass('pi-section-active');
+childrenLi.parent().siblings('.pi-section-tab').removeClass('pi-section-active');
+var divContent = $('.pi-section-content[data-title='+title+']');
+divContent.addClass('pi-section-active');
+divContent.siblings('.pi-section-content').removeClass('pi-section-active');
+}
+
+$(function(){
+
+if ($('ul').is('.pi-section-navigation')){
+if(($('.pi-section-navigation').length) === 1){
+$('.pi-section-label').each(function(){
+var title = ($(this).html()).trim();
+$(this).text('');
+
+$('<a/>', 
+{
+href : ('#' + title),
+text: title,
+}
+).appendTo(this);
+
+$('.pi-section-content[data-ref='+ $(this).parent().attr('data-ref') +']').attr('data-title',title);
+$(this).children('a').attr('data-title',title);
+});
+
+tabberInfoboxInterval = setInterval(tabberInfobox,50);
+}
+}
+});
+function tabberInfobox(){
+if(($('.tabbernav > li > a[data-title]').length)!== 0){
+$('.tabbernav > li > a').each(function(){
+var title = $(this).attr('data-title');
+$(this).attr('onclick', 'tabberLinkInfobox("'+title+'")');
+});
+clearInterval(tabberInfoboxInterval);
+}
+}
+
+/*Страница администрации*/
+$(function(){
+$('.dsadmin, .dsmoder').click(function(){
+	$(this).css({"display": "none"});
+	$(this).css({"animation": "flipInY 0.3s"});
+	$(this).siblings('.dsadmindescr, .dsmoderdescr').css({"display": "inline-block"});
+	$(this).siblings('.dsadmindescr, .dsmoderdescr').css({"animation": "flipInY 0.3s"});
+	$('.dsadmindescr, .dsmoderdescr').not($(this).siblings('.dsadmindescr, .dsmoderdescr')).css({"display": "none"});
+	$('.dsadmin, .dsmoder').not($(this)).css({"display": "inline-block"});
+	$('.dsadmin, .dsmoder').not($(this)).css({"animation": "flipInY 0.3s"});
+});
+
+$('.dsadmindescr, .dsmoderdescr').click(function(){
+	$(this).css({"display": "none"});
+	$(this).css({"animation": "flipInY 0.3s"});
+	$(this).siblings('.dsadmin, .dsmoder').css({"display": "inline-block"});
+	$(this).siblings('.dsadmin, .dsmoder').css({"animation": "flipInY 0.3s"});
+});
+});
+
+/*Описание к стене аккаунта корректировок перевода*/
+$(function(){
+	function translatedescription(){
+	    switch ( mw.config.get('wgPageName') ) {
+        case 'Стена_обсуждения:Корректировка_перевода':
+                    $('<div id="translate"></div>').prependTo("#MessageWall");
+                    $('#translate').load('https://dont-starve.fandom.com/ru/wiki/Шаблон:Корректировка_перевода .translatedescrip');
+        break;
+	    }
+	}
+$(translatedescription);
+});
+
+/*Настройки ImprovedTabbers*/
+window.ImprovedTabbers = {
+        HideHeaderTitle: true,
+        HideContentTitle: true,
+        HumanReadableAnchor: true,
+        SynchroInfoboxes: false,
+        SynchroTabbers: true,
+};

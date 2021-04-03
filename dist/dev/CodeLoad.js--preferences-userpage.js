@@ -1,23 +1,39 @@
 /*jslint browser */
-/*global require */
+/*global alert, jQuery, mediaWiki, codeLoad */
 
-require([
-    "jquery",
-    "mw",
-    "fosl.codeload",
-    "BannerNotification"
-], function ($, mw, cl, Banner) {
+(function ($, mw, cl) {
     "use strict";
 
-    var banner = new Banner(
-        mw.message("codeload-clear-cache-success").escaped(),
-        "confirm"
-    );
+    function notify(msg, options) {
+        if (window.BannerNotification && !notify.banner) {
+            notify.banner = new window.BannerNotification();
+            notify.typeMap = {
+                success: "confirm",
+                error: "error"
+            };
+        }
+
+        if (mw.notification) {
+            mw.notification.notify(msg, options);
+        } else if (notify.banner) {
+            notify.banner.hide();
+            notify.banner.setContent(msg);
+            if (options.type) {
+                notify.banner.setType(notify.typeMap[options.type]);
+            }
+            notify.banner.show();
+        } else {
+            alert(msg);
+        }
+    }
 
     // clear prefs cache in local storage
     function clearCache() {
         localStorage.removeItem(cl.userDataKey);
-        banner.hide().show();
+        notify(
+            mw.message("codeload-clear-cache-success").escaped(),
+            {type: "success"}
+        );
     }
 
     function main() {
@@ -53,4 +69,4 @@ require([
     ).done(function () {
         $(main);
     });
-});
+}(jQuery, mediaWiki, codeLoad));

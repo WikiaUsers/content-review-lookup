@@ -4,38 +4,21 @@
 /* Interface Modifications */
 /***************************/
 
-/* Template:USERNAME Substitution + Special:Editcount User Page Tab */
+/* Template:USERNAME Substitution */
 $(function() {
     $('.InsertUsername').text(wgUserName);
-    $('<li data-id="editcount"><a href="' + 'http://geometry-dash.wikia.com/wiki/Special:Editcount/' + wgTitle + '">Edit-Count</a></li>').appendTo('.WikiaUserPagesHeader .tabs-container .tabs');
 });
 
 /***************************/
 /** Import Configuration ***/
 /***************************/
 
-/* HighlightUsers */
-window.highlightUsersConfig = {
-    colors: {
-        'bot': '#3A3A3A',
-        'bot-global': '#3A3A3A',
-        'staff': '#00D6D6',
-        'vstf': '#00D6D6'
-    },
-    styles: {
-        'bot': 'font-weight: bold;',
-        'bot-global': 'font-weight: bold;',
-        'staff': 'font-weight: bold;',
-        'vstf': 'font-weight: bold;'
-    }
-};
-
 /* StandardEditSummary */
 window.dev = window.dev || {};
 window.dev.editSummaries = {
     css: '#edit-summaries',
     select: [
-        '(click to browse)',
+        'select',
         '1. General editing', [
             'Updated information',
             'Corrected spelling/grammar',

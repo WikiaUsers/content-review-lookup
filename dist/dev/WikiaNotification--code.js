@@ -1,8 +1,45 @@
-require(['jquery', 'mw'], function ($, mw) {
+(function ($, mw) {
+    if (window.WikiaNotificationLoaded) {
+        return;
+    }
+ 
     var storageKey = 'ls-wikianotifications';
  
     function log(error) {
         console.log('WikiaNotifications error: ' + error);
+    }
+ 
+    function getNotificationScope() {
+        return (new mw.Api()).get({
+            action: 'parse',
+            disablepp: '',
+            page: 'MediaWiki:Custom-WikiaNotifications-scope',
+            prop: 'wikitext',
+            format: 'json'
+        }).then(function (res) {
+            var dfd = $.Deferred();
+ 
+            var valid = ['all', 'anons', 'users'];
+            var scope = 'users';
+ 
+            if (res.error && res.error.code != 'missingtitle') {
+                return dfd.rejectWith(this, [res.error.info]);
+            } else if (!res.error) {
+                scope = res.parse.wikitext['*'].trim();
+            }
+ 
+            if (!valid.includes(scope)) {
+                scope = 'users';
+            }
+ 
+            return dfd.resolveWith(this, [scope]);
+        }).catch(function(code, res) {
+        	var dfd = $.Deferred();
+        	if (code == 'missingtitle') {
+        		return dfd.resolveWith(this, ['users']);
+        	}
+        	return dfd.rejectWith(this, [res.error.info]);
+        });
     }
  
     function getNotificationData() {
@@ -18,7 +55,7 @@ require(['jquery', 'mw'], function ($, mw) {
             }
  
             var text = res.parse.text['*'].trim();
-            text = (text || '').replace(/<script>[\s\S]*?<\/script>/igm, '').replace(/<!\-\-[\s\S]*?\-\->/igm, '');
+            text = (text || '').replace(/<script>[\s\S]*?<\/script>/igm, '').replace(/<!\-\-[\s\S]*?\-\->/igm, '').replace('<div class="mw-parser-output"></div>', '');
             if (!text.length || !text.trim().length) {
                 return dfd.rejectWith(this, ['empty content']);
             }
@@ -40,39 +77,41 @@ require(['jquery', 'mw'], function ($, mw) {
             return;
         }
  
-        var $notif = $('<li/>')
-            .attr('class', 'custom')
-            .append(
-                $('<div>')
-                .attr('data-type', '2')
-                .html(notification.contents)
-                .append(
-                    $('<a>')
-                    .addClass('sprite close-notification')
-                )
-            );
-            
-            if (hasNotifications) {
-                $notificationArea.append($notif);
-            } 
-            else {
-                $('body').addClass('notifications')
-                    .append($('<ul id="WikiaNotifications" class="WikiaNotifications"></ul>')
-                        .append($notif));
-            }
- 
-        $('.sprite.close-notification').on('click', function () {
-            $notif.hide();
-            notifsData[mw.config.get('wgCityId')] = notification.version;
-            window.localStorage.setItem(storageKey, JSON.stringify(notifsData));
+        mw.loader.using('mediawiki.notify').then(function () {
+            var text = $('<span>', {
+               html: notification.contents 
+            });
+
+            mw.notify(text, {
+               autoHide: false,
+               tag: 'WikiaNotification'
+            });
+
+            $('body').on('click', '.mw-notification-tag-WikiaNotification', function () {
+                notifsData[mw.config.get('wgCityId')] = notification.version;
+                window.localStorage.setItem(storageKey, JSON.stringify(notifsData));
+            });
         });
+ 
+        window.WikiaNotificationLoaded = true;
     }
  
-    mw.loader.using('mediawiki.api', function() {
-        if (mw.config.get('wgUserName')) {
-            $(function() {
-                getNotificationData().then(showNotificationIfNotViewed).fail(log);
-            });
-        }
+    importArticle({
+        type: 'style',
+        article: 'u:dev:MediaWiki:WikiaNotification.css'
     });
-});
+ 
+    mw.loader.using('mediawiki.api', function() {
+        getNotificationScope().then(function(scope) {
+            var isAnon = !mw.config.get('wgUserName');
+ 
+            scope = scope === 'all' || scope === 'anons' && isAnon || scope === 'users' && !isAnon;
+ 
+            if (scope) {
+                $(function() {
+                    getNotificationData().then(showNotificationIfNotViewed).fail(log);
+                });
+            }
+        }).fail(log);
+    });
+}(jQuery, mediaWiki));

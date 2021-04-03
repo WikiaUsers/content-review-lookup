@@ -338,4 +338,19 @@ mw.loader.using( [ 'mediawiki.util' ] ).done( function () {
 
 	/* End of mw.loader.using callback */
 } );
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassRename/code.js',
+    ]
+});
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassEdit/code.js',
+    ]
+});
+
 /* DO NOT ADD CODE BELOW THIS LINE */

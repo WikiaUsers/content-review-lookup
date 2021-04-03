@@ -44,3 +44,10 @@ $(function() {
 
 	$('.wds-community-header__wordmark img').attr('src', images[Math.floor(Math.random() * images.length)]);
 });
+
+// Discord
+window.DiscordBannerSettings = {
+    bannerStyle: '2',
+    inviteLink: '7hjtr6k', // https://dev.fandom.com/wiki/DiscordBanner
+    prependToRail: false
+};

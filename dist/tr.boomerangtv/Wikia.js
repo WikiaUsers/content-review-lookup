@@ -421,12 +421,33 @@ mw.hook('wikipage.content').add(function($content) {
                     })
                 );
                 break;
+            case 'mixdrop':
+                $this.html(
+                    $('<iframe>', {
+                        src: 'https://mixdrop.co/e/' + id,
+                        css: css,
+                        frameboder: 0,
+                        allowfullscreen: true
+                    })
+                );
+                break;
             case 'web.tv':
                 $this.html(
                     $('<iframe>', {
-                        src: 'https://fandomcntr.web.tv/embed/' + id,
-                         frameborder: 0,
-                        css: css
+                       src: 'https://fandomcntr.web.tv/embed/' + id,
+                       frameborder: 0,
+                       css: css,
+                       allowfullscreen: true
+                    })
+                );
+                break;
+            case 'streamtape':
+                $this.html(
+                    $('<iframe>', {
+                       src: 'https://streamtape.com/e/' + id,
+                       frameborder: 0,
+                       css: css,
+                       allowfullscreen: true
                     })
                 );
                 break;
@@ -480,11 +501,51 @@ mw.hook('wikipage.content').add(function($content) {
             case 'CanlıTVPLUS':
                 $this.html(
                     $('<iframe>', {
-                        src: 'https://canlitv.fan/kanallar.php?kanal=' + id,
+                        src: 'https://canlitv.vin/kanallar.php?kanal=' + id,
                         css: css,
                         frameborder: 0,
                         height: 480,
                         width: 640
+                    })
+                );
+              break;
+            case 'm3u8':
+                $this.html(
+                    $('<iframe>', {
+                        src: 'https://hlstester.com/embed/?url=' + id,
+                        css: css,
+                        height: 480,
+                        width: 640
+                    })
+                    
+                );
+              break;
+            case 'one':
+                $this.html(
+                    $('<iframe>', {
+                        src: 'https://onedrive.live.com/embed?cid=' + id,
+                        css: css,
+                        frameborder: 0
+                    })
+                );
+              break;
+            case 'CanlıTV':
+                $this.html(
+                    $('<iframe>', {
+                        src: 'https://www.ecanlitvizle.live/embed.php?kanal=' + id,
+                        frameborder: 0,
+                        scrolling: 'no',
+                        height: 480,
+                        width: 640
+                    })
+                );
+              break;
+            case 'Oyun':
+                $this.html(
+                    $('<iframe>', {
+                        src: 'https://' + id,
+                         frameborder: 0,
+                        css: css
                     })
                 );
                 break;
@@ -495,12 +556,32 @@ mw.hook('wikipage.content').add(function($content) {
                         css: css,
                         frameborder: 0
                     })
+
+                );
+                break;
+            case 'myvi':
+                $this.html(
+                    $('<iframe>', {
+                        src: 'https://myvi.ru/player/embed/html/' + id,
+                        css: css,
+                        frameborder: 0
+                    })
                 );
                 break;
             case 'funnyordie':
                 $this.html(
                     $('<iframe>', {
                         src: 'https://www.funnyordie.com/embed/' + id,
+                        css: css,
+                        frameborder: 0,
+                        allowfullscreen: true
+                    })
+                );
+                break;
+            case 'sendvid':
+                $this.html(
+                    $('<iframe>', {
+                        src: 'https://sendvid.com/embed/' + id,
                         css: css,
                         frameborder: 0,
                         allowfullscreen: true

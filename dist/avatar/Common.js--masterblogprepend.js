@@ -1,18 +1,18 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 /* Sticky mechanism */
 function appendedblogs () {
-  if ( wgPageName == "Blog:Avatar_News" ) {
+  if ( mw.config.get('wgPageName') == "Blog:Avatar_News" ) {
     /* Stickied blogs */
     /* End blogs */
   }
 }
-addOnloadHook(appendedblogs);
+$(appendedblogs);
 
 function masterblog () {
-  if ( wgPageName == "Blog:Avatar_News"  && $.inArray("sysop", wgUserGroups) != -1 ) {
+  if ( mw.config.get('wgPageName') == "Blog:Avatar_News"  && $.inArray("sysop", mw.config.get('wgUserGroups')) != -1 ) {
     $("#WikiaMainContentContainer .read-more").after('<a href="javascript:void(0)" style="float:right" class="wikia-button stickyBlog"><img height="16" src="https://images.wikia.nocookie.net/avatar/images/4/46/128px-Padlock-silver.svg.png" width="20" style="margin-left:-5px"> Sticky blog</a>');
     $(".paginator-page,.paginator-next").click(function() {
-      setTimeout(function(){masterblog();},2000)
+      setTimeout(masterblog,2000);
     });
     $(".stickyBlog").click(function() {
       var blog = $(this).parent().parent().html();
@@ -43,5 +43,5 @@ function masterblog () {
     });
   }
 }
-addOnloadHook(masterblog);
+$(masterblog);
 /* Script end */

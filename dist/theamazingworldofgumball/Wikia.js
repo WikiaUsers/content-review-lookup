@@ -336,10 +336,10 @@ setInterval(function () {
             $(this).addClass('chat-mod');
         }
         
-        if ($user.match(/|Blue Pant.|Gameuser10/g)) {
+        if ($user.match(/|Blue Pant.|SomnoticAgama/g)) {
             $(this).addClass('patroller');
         }
-        if ($user.match(/202nd Skywalker/g)) {
+        if ($user.match(/202nd Skywalker|Gameuser10/g)) {
             $(this).addClass('admin');
         }
         if ($user.match(/Villicus/g)) {
@@ -360,8 +360,9 @@ window.MessageWallUserTags = {
         'Klonoamiyumi': 'Bureaucrat',
         'PhoenixKenny': 'Bureaucrat',
         '202nd_Skywalker': 'Administrator',
+        'Gameuser10': 'Administrator',
         'Blue_Pant.': 'Patroller',
-        'Gameuser10': 'Patroller',
+        'SomnoticAgama': 'Patroller',
         'Villicus': 'Bot',
         'MarvinDarwin': 'Chat Moderator',
         'Fenton127': 'Chat Moderator'

@@ -8,11 +8,6 @@
 //todo: maybe should verify that all links for each pony identifier are the same
 //      (would need new data structure to track them in parse), include presence of quotes
 $(function() {
-    // So I can test during development without having to save every edit
-    if (mw.util.getParamValue('testing') && !window.ponyDesign) {
-        return;
-    }
-    
     var designs = { 'manes': {}, 'tails': {}, 'eyes': {}, 'marks': {} };
     // Format: { manes: { style: { pony: { link, species, age, tags: { freq, sets }}}}}
     

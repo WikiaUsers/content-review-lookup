@@ -3,7 +3,7 @@
  * @description Syntax highlighting with language autodetection.
  * @see         https://highlightjs.org/
  */
-; (function (hljs, window, $, mw) {
+;(function (hljs, window, $, mw) {
     if (hljs.highlight) return;
 
     // Convenience variables for build-in objects
@@ -710,7 +710,7 @@
             events[name].then(resolve);
             importArticles({
                 type: 'script',
-                article: 'u:dev:Highlight-js/languages/' + name + '.js'
+                article: 'u:dev:MediaWiki:Highlight-js/languages/' + name + '.js'
             });
         });
         return !list.length ? event.resolve(hljs) : event;
@@ -730,14 +730,15 @@
         }
 
         list.forEach(function(name) {
-            scripts.push('u:dev:Highlight-js/languages/' + name + '.js');
+            var canon = hljs.canonicalName(name);
+            scripts.push('u:dev:MediaWiki:Highlight-js/languages/' + canon + '.js');
             events[name] = events[name] || $.Deferred();
             events[name].then(resolve);
         });
 
         importArticles({
             type: 'script',
-            article: scripts.join('|')
+            articles: scripts
         });
         return event;
     };
@@ -773,7 +774,8 @@
      * Theme import & management methods.
      */
     hljs.useTheme = function(name) {
-        var dist = 'u:dev:MediaWiki:Highlight-js/styles/';
+        var dist = 'https://dev.fandom.com/wiki/MediaWiki:Highlight-js/styles/';
+        var query = '?action=raw&ctype=text/css';
         if (typeof name !== 'string') {
             $('link' + attr()).prop('disabled', true);
             return;
@@ -784,21 +786,21 @@
         function attr(opts) {
             var ret = dist;
             if (typeof opts == 'object' && opts.res) {
-                ret = ret + opts.res + '.css';
+                ret += opts.res + '.css';
             }
-            ret = '[href*="' + window.encodeURIComponent(ret) + '"]';
+            ret = '[href*="' + ret + '"]';
             if (typeof opts == 'object' && opts.not === true) {
                 ret = ':not(' + ret + ')';
             }
             return ret;
         }
 
-        importArticle({
-            type: 'style',
-            article: dist + name + '.css'
-        });
         var conf = { res: name };
-
+        
+        if (!$('link' + attr(conf)).length) {
+            $('head').append($('<link/>', { href: dist + name + '.css' + query, rel: 'stylesheet' }));
+        }
+        
         var $style = $('link' + attr(conf));
         $style.prop('disabled', false);
 
@@ -973,4 +975,4 @@
     // Loads the JSON registry from Dev Wiki.
     mw.loader.using('mediawiki.api').then($.proxy(hljs.registry.init, hljs.registry));
 
-}(((window.dev = window.dev || {}).highlight = window.dev.highlight || {}), window, jQuery, mediaWiki));
+})(((window.dev = window.dev || {}).highlight = window.dev.highlight || {}), window, jQuery, mediaWiki);

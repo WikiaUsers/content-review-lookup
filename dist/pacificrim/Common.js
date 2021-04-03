@@ -1,8 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-//test
-$('ul.tools li:first-child').after('<li><a href="http://pacific-rim-answers.wikia.com/wiki/Pacific_Rim_Answers_Wiki">Ask a question about Pacific Rim</a></li>');
-
 /* Snow */	
 //importScriptPage('MediaWiki:Snow.js'); //remove those two slashes during the holidays
 
@@ -24,14 +21,6 @@ InactiveUsers = { months: 2 };
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:AjaxRC/code.js',
-        'u:dev:FastDelete/code.js',
-        'u:dev:DupImageList/code.js',
-        'u:dev:InactiveUsers/code.js',
-        'u:dev:Standard_Edit_Summary/code.js',     // Summary filler - From Dev wiki
-        'u:dev:SkinSwitchButton/code.js',          // Adds button to switch to Monobook
-        'u:dev:EditIntroButton/code.js',           // Add "Edit Intro" Button/Tab
-        'u:dev:PurgeButton/code.js',               // Adds PURGE button for both skins
         'MediaWiki:Common.js/CEB.js',              // Custom edit buttons
         'MediaWiki:Common.js/extraRollbacks.js',   // Extra Rollback Buttons
         'MediaWiki:Common.js/ajaxRollback.js'      // AjaxRollback - works with Extra Rollback Buttons

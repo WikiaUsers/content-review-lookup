@@ -3,14 +3,12 @@
  * @module                  MastheadRightsBadge
  * @description             Adds WDS avatar badges to user profiles.
  * @author                  Americhino
- * @version                 0.9.5
+ * @version                 1.0.1
  * @license                 CC-BY-SA 3.0
  *
  * Forked to add support for Rollbacks, Bureaucrats, and Wiki Managers
  * Also removes round avatars
  */
-var mw = window.mw;
-var $ = window.jQuery;
 // User config variables
 var config = window.MastheadRightsBadgeSettings || {};
 var iconSize = config.iconSize || '50px';
@@ -25,13 +23,13 @@ function getMessages(msg) {
             meta: 'allmessages',
             ammessages: msg.join("|"),
         }).done(function (d) {
-            if(d.error) reject(d);
+            if(d.fail) reject(d);
             var r = {};
             d.query.allmessages.forEach(function(e) {
                 r[e.name] = e["*"];
             });
             resolve(r);
-        }).error(reject);
+        }).fail(reject);
     });
 }
  
@@ -45,7 +43,7 @@ getMessages([
     "user-identity-box-group-wiki-manager",
     "user-identity-box-group-staff",
     "user-identity-box-group-helper",
-    "user-identity-box-group-vstf",
+    "user-identity-box-group-soap",
     "user-identity-box-group-global-discussions-moderator",
 ]).then(function(m) {
     //
@@ -54,27 +52,27 @@ getMessages([
         'sysop': m["user-identity-box-group-sysop"],
         'content-moderator': m["user-identity-box-group-content-moderator"],
         'threadmoderator': m["user-identity-box-group-threadmoderator"],
-        'chatmoderator': m["user-identity-box-group-chatmoderator"],
         'rollback': m["user-identity-box-group-rollback"],
+        'chatmoderator': m["user-identity-box-group-chatmoderator"],
         'wiki-manager': m["user-identity-box-group-wiki-manager"],
         'staff': m["user-identity-box-group-staff"],
         'helper': m["user-identity-box-group-helper"],
-        'vstf': m["user-identity-box-group-vstf"],
+        'soap': m["user-identity-box-group-soap"],
         'global-discussions-moderator': m["user-identity-box-group-global-discussions-moderator"]
     };
     // Z-Index variable: user group hierachy
     var groupPriority = {
-        'bureaucrat': '10080',
-        'sysop': '10070',
-        'content-moderator': '10060',
-        'threadmoderator': '10050',
-        'chatmoderator': '10040',
-        'rollback': '10035',
-        'wiki-manager': '10031',
-        'staff': '10030',
-        'helper': '10020',
-        'vstf': '10010',
-        'global-discussions-moderator': '10000',
+        'bureaucrat': '396',
+        'sysop': '395',
+        'content-moderator': '394',
+        'threadmoderator': '393',
+        'rollback': '392',
+        'chatmoderator': '391',
+        'staff': '390.4',
+        'wiki-manager': '390.3',
+        'helper': '390.2',
+        'soap': '390.1',
+        'global-discussions-moderator': '390',
     };
     // Fetch MediaWiki API for user group badges
     api.get({
@@ -90,19 +88,39 @@ getMessages([
         'bureaucrat': 'admin',
         'sysop': 'admin',
         'content-moderator': 'content-moderator',
+        'rollback': 'content-moderator',
         'threadmoderator': 'discussion-moderator',
         'chatmoderator': 'discussion-moderator',
-        'rollback': 'content-moderator',
         'wiki-manager': 'staff',
         'staff': 'staff',
         'helper': 'helper',
-        'vstf': 'vstf',
+        'soap': 'soap',
         'global-discussions-moderator': 'global-discussions-moderator',
     };
     // Create badge
     groups.forEach(function (group) {
         mw.hook('dev.wds').add(function(wds) {
             if (!g[group]) return;
+            if ($('.user-identity-box').length) {
+                if ($('.mastrightsbadge').length) return;
+            $('.user-identity-box .user-identity-avatar').prepend(
+                $('<div>', {
+                    'class': 'mastrightsbadge ' + 'mastrightsbadge-' + group,
+                    'title': title[group],
+                    css: {
+                        height: iconSize,
+                        position: 'absolute',
+                        left: '0',
+                        top: '0',
+                        width: iconSize,
+                        zIndex: groupPriority[group],
+                    }
+                }).append(
+                    $(window.dev.wds.badge(g[group]))
+                )
+                );
+            } else {
+                if ($('.mastrightsbadge').length) return;
             $('.UserProfileMasthead .masthead-avatar').prepend(
                 $('<div>', {
                     'class': 'mastrightsbadge ' + 'mastrightsbadge-' + group,
@@ -119,6 +137,7 @@ getMessages([
                     $(window.dev.wds.badge(g[group]))
                 )
                 );
+            }
             });
         });
     });
@@ -127,7 +146,7 @@ getMessages([
 window.importArticles(
     {
         type: 'script',
-        articles: ['u:dev:WDSIcons/code.js']
+        articles: ['u:dev:MediaWiki:WDSIcons/code.js']
     },
     {
         type: 'style',

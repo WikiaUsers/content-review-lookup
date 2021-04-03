@@ -11,6 +11,19 @@
 //  </span>
 //  <span class="nocountdown">Javascript disabled.</span>
 
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:Tooltips/code.js',
+        'u:dev:MediaWiki:UserTags/code.js',
+        'u:dev:MediaWiki:Countdown/code.js'
+    ]
+});
+
+window.railWAM = {
+    logPage:"Project:WAM Log"
+};
+
 function updatetimer(i) {
   var now = new Date();
   var then = timers[i].eventdate;
@@ -71,7 +84,3 @@ $(".openchat a").click(function() {
    window.open('/wiki/Special:Chat', 'wikiachat', 'width=600,height=600,menubar=no,status=no,location=no,toolbar=no,scrollbars=no,resizable=yes');
    return false;
 });
-
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};

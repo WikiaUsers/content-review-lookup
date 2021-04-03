@@ -17,5 +17,6 @@ importArticles({
     type: 'script',
     articles: [
         'u:dev:AjaxRC/code.js',
+        'u:dev:MediaWiki:DupImageList/code.js',
     ]
 });

@@ -11,7 +11,7 @@ var rightRailModules = {
 		loadOnNamespaces: [0],
 		locales: {
 			image: {
-				"en": "//images.wikia.nocookie.net/czech-prey-out/images/e/e7/VoteNow.jpg"
+				"en": "//images.wikia.nocookie.net/czech-prey-out/images/2/24/VoteNowFinal.jpg/revision/latest?cb=20200721162633"
 			},
 			altText: {
 				"en": "Register to vote!"

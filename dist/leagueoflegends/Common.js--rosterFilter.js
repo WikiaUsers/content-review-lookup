@@ -13,16 +13,14 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             ['Published','Published'],
             ['Outdated','Outdated'],
             ['Retired','Retired'],
-            ['Adopted','Adopted'],
-            ['Unspecified','Unspecified']
+            ['Unspecified','N/A']
         ],
         'type': ['- Type -',
             ['Quality','Balance changes'],
             ['Rework','Gameplay update'],
             ['Relaunch','Champion relaunch'],
-            ['Original','Original character'],
-            ['Ported','Imported character'],
-            ['Unspecified','Unspecified']
+            ['Original','New champion'],
+            ['Unspecified','N/A']
         ],
         'class': ['- Class -',
             ['Fighter','Fighter'],
@@ -39,12 +37,15 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             ['Disruptor','• Disruptor'],
             ['Enchanter','• Enchanter'],
             ['Warden','• Warden'],
-            ['Unspecified','Unspecified']
+            ['Unspecified','N/A']
         ],
-        'range': ['- Range -',
-            ['Melee','Melee'],
-            ['Ranged','Ranged'],
-            ['Unspecified','Unspecified']
+        'theme': ['- Thematic Direction -',
+            ['Current','Current theme'],
+            ['Revisited','Revisited theme'],
+            ['Blended','Blended theme'],
+            ['Novel','Novel theme'],
+            ['Imported','Imported theme'],
+            ['Unspecified','N/A']
         ]
     };
 /* End of mw.loader.using callback */

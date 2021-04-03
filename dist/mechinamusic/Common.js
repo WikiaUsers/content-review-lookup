@@ -136,6 +136,23 @@ var Telesterion_album = {
  title: "Telesterion by Mechina" 
 };
 
+var Siege = {
+	'Siege_(album)': { isAlbum: true, track: "tracklist=false/artwork=small" },
+	'King_Breeder': { isAlbum: false, track: "track=4017951045" },
+	'The_Worst_In_Us': { isAlbum: false, track: "track=847433222" },
+	'Shock_Doctrine': { isAlbum: false, track: "track=1194933560" },
+	'Purity_Storm': { isAlbum: false, track: "track=1052110055" },
+	'Siege': { isAlbum: false, track: "track=655254211" },
+	'Claw_at_the_Dirt': { isAlbum: false, track: "track=1789164177" },
+	'Blood_Feud_Erotica': { isAlbum: false, track: "track=3422089498" },
+	'Freedom_Forgone': { isAlbum: false, track: "track=2737830402" },
+};
+var Siege_album = {
+ id: "1152799763",
+ href: "//mechinamusic.bandcamp.com/album/siege",
+ title: "Siege by Mechina"
+}
+
 var Singles = {
 	'Andromeda': { iframe: '<iframe style="border: 0; width: 435px; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/track=584807909/size=small/bgcol=333333/linkcol=0f91ff/transparent=true/" seamless><a href="//mechinamusic.bandcamp.com/track/andromeda-2016">Andromeda [2016] by Mechina</a></iframe>' },
 	'Cepheus': { iframe: '<iframe style="border: 0; width: 435px; height: 42px;" src="http://bandcamp.com/EmbeddedPlayer/track=1591316019/size=small/bgcol=333333/linkcol=0f91ff/transparent=true/" seamless><a href="//mechinamusic.bandcamp.com/track/cepheus-ii-i">Cepheus [II.I] by Mechina</a></iframe>' },
@@ -249,6 +266,19 @@ switch (pageName) {
 	    embed = Telesterion[pageName];
         album = Telesterion_album;
         break;
+        
+    case 'Siege_(album)':
+    case 'King_Breeder':
+    case 'The_Worst_In_Us':
+    case 'Shock_Doctrine':
+    case 'Purity_Storm':
+    case 'Siege':
+    case 'Claw_at_the_Dirt':
+    case 'Blood_Feud_Erotica':
+    case 'Freedom_Forgone':
+    	embed = Siege[pageName];
+    	album = Siege_album;
+    	break;
  
 	case 'Assembly_Of_Tyrants':
 	case 'Tyrannical_Resurrection':

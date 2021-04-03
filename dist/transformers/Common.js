@@ -4,12 +4,6 @@ window.railWAM = {
     logPage:"Project:WAM Log"
 };
 
-window.AddRailModule = [
-    {page: 'Template:RailModule/Forums', prepend: true},
-    'Template:RailModule/Twitter',
-    'Template:RailModule/Video',
-];
-
 importArticles({
     type: 'script',
     articles: [

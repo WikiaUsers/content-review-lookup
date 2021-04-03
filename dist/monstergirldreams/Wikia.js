@@ -1,4 +1,1 @@
-window.AddRailModule = [
-    {page: 'Template:Links', maxAge: 69, prepend: true},
-];
-importScriptPage('AddRailModule/code.js','dev');
+window.AddRailModule = [{prepend: true,  maxAge: 69}];

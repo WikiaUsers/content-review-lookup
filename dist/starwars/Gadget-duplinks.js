@@ -19,7 +19,7 @@ $( function($) {
         e.preventDefault();
         // create a separate div surrounding the lead
         // first get the element immediately surrounding the article text. Unfortunately, MW doesn't seem to provide a non-fragile way for that.
-        var content = ".mw-content-ltr";
+        var content = ".mw-parser-output";
         $(content).prepend(document.createElement('div'));
         var lead = $(content).children()[0];
         $(lead).attr('id', 'lead');

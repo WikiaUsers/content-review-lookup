@@ -22,7 +22,7 @@
         'La Tribu des Mantes',
         'La Tribu des Moussues',
         'La Tribu des Papillons de Nuit',
-        'Le Nid',
+        'La Tribu des Araignées',
         'Le Roi Pâle',
         'Pharloom',
         'Les Shamans Escargot',
@@ -35,7 +35,11 @@
         'Entité du Vide',
         'Unn',
         'Tisserands',
-        'Wyrms'
+        'Wyrms',
+        'Le Seigneur Fou',
+        'Hallownest',
+        'Histoire d’Hallownest',
+        'Sceaux',
  
     ];
  

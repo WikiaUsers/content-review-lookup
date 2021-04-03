@@ -46,7 +46,7 @@ fn.getFileUrls = function(filelist, output, offset, cb) {
 		output = Array.isArray(output) ? output : [];
 		var b = JSON.parse(a.responseText),
 			c,
-			pageid
+			pageid,
 			i;
 		console.warn(b);
 		for (pageid in b.query.pages) {

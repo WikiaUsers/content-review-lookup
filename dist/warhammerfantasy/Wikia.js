@@ -1,9 +1,11 @@
+/*
 importArticles({
     type: "script",
     articles: [
         "w:c:comunidad:MediaWiki:Parallax.js"
     ]
 });
+*/
 
 jQuery(document).ready(function($) {
 	$(".contbtn").mouseleave(function(){

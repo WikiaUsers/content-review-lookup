@@ -1,16 +1,16 @@
-/*Sidebar*/
- 
-$(function() {
-    var newSection = '<section id="activities" class="module"><h2>' +
+/* Blog rail module */
+ $(function() {
+    var newSection = '<section class="rail-module" id="blog-module"><h2 class="has-icon">' +
       '' + '</h2>' + '</section>';
     $('#WikiaRail').append(newSection);
-    $.getJSON('/api.php?action=parse&text=<bloglist summary="true" summarylength=20 timestamp="true" count=2 ><type>bloglist</type><order>date</order><category>Blog posts</category></bloglist>&format=json', function(data) {
-        var code = data.parse.text['*'];
-        $('section#activities').append(code);
+    $.getJSON('/api.php?action=parse&text=<bloglist summary="true" summarylength="10" timestamp="false" count="1"><type>bloglist</type><order>date</order><category>Blog posts</category></bloglist>&format=json', function(data) {
+	    var code = data.parse.text['*'];
+	    $('section#blog-module').append(code);
     });
+    $(".rail-module .blog-listing__comment-count").css("float", "right");
+    $(".rail-module .more").css("float", "right");
 });
- 
- 
+
 /* Apester Polls */
 $(function(){
    var spans = document.getElementsByTagName("span");

@@ -13,12 +13,11 @@
     window.loadedShowUserGroups = true;
 
     var inUserNamespace = [2, 3, 1200].indexOf(mw.config.get("wgNamespaceNumber")) !== -1;
-    var isOasis = mw.config.get("skin") === "oasis" &&  mw.config.get("wgVersion") === "1.19.24";
-    var langEnd = document.dir === "rtl" ? "left" : "right";
+    var isOasis119 = mw.config.get("skin") === "oasis" && mw.config.get("wgVersion") === "1.19.24";
 
     function addGroupsToPage(data, i18n) {
         var groups = data[0].query.users[0].groups;
-        var $content = isOasis ? $("<li>") : $("<span>");
+        var $content = isOasis119 ? $("<li>") : $("<div>");
 
         if (!groups) {
             // likely a not-existing or invalid username
@@ -37,21 +36,15 @@
         // stringify
         groups = groups.join(", ") || i18n.msg("nogroups").plain();
 
-        // add styling for non-Oasis skins
-        if (!isOasis) {
-            mw.util.addCSS(
-                ".ShowUserGroups {"
-                    + "font-size: small;"
-                    + "float:" + langEnd
-                + " }"
-                + ".ShowUserGroups-label {"
-                    + "font-weight: bold;"
-                + "}"
-                + ".mw-indicators + .firstHeading > .ShowUserGroups {"
-                    + "padding-" + langEnd + ": 0.5em;"
-                + "}"
-            );
-        }
+        // add styling
+        mw.util.addCSS(
+            ".ShowUserGroups {"
+                + "font-size: small;"
+            + " }"
+            + ".ShowUserGroups-label {"
+                + "font-weight: bold;"
+            + "}"
+        );
 
         // add groups + label to newly created element, then add to DOM
         $content
@@ -62,14 +55,19 @@
                     .addClass("ShowUserGroups-label")
                     .text(i18n.msg("label").plain())
             );
-        $(".masthead-info > .details > ul, #firstHeading").eq(0).append($content);
+
+        if (isOasis119) {
+            $(".masthead-info > .details > ul").append($content);
+        } else {
+            $("#firstHeading").eq(0).after($content);
+        }
     }
 
     function getUserNameFromPage() {
         var userName;
 
-        if (isOasis) {
-            // for oasis skin, run on all pages with the user masthead
+        if (isOasis119) {
+            // for oasis 1.19 skin, run on all pages with the user masthead
             userName = $(".masthead-info > hgroup > h1").text();
         } else if (inUserNamespace) {
             // wgRelevantUserName available in MW 1.23+ - fallback to wgTitle when unavailable
@@ -107,7 +105,7 @@
         });
 
         if (!(window.dev && window.dev.i18n && window.dev.i18n.loadMessages)) {
-            mw.loader.load("https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js");
+            mw.loader.load("https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:I18n-js/code.js&only=scripts");
         }
     }
 

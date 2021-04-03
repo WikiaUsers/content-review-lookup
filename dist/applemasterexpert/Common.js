@@ -12,7 +12,7 @@ $('.firstHeading').css('font-style','italic');
 window.highlightUsersConfig = {
     colors: {
         // 'group-name': 'color',
-        'sysop': '#99ff00',
+        'sysop': '#24e327',
         'staff': '#da0da0',
         'helper': '#bf6240',
         'vstf': '#f77f77',

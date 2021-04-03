@@ -184,6 +184,32 @@ window.ajaxPages = [
     wait();
 })();
 
+
+/*** Iframe hook ***/
+ 
+function _createIframes() {
+	var tempNode = document.getElementById('iframe');
+	if (!tempNode) return false;
+ 
+	var url = tempNode.title;
+ 
+	var contentNode = tempNode.parentNode;
+	contentNode.removeChild(tempNode);
+ 
+	var iframe = document.createElement('iframe');
+	iframe.setAttribute('width','100%');
+	iframe.setAttribute('height','600');
+        iframe.setAttribute('frameBorder','0');
+	iframe.style.border = 'none';
+	iframe.setAttribute('src',url);
+ 
+	contentNode.appendChild(iframe);
+	return false;
+}
+ 
+addOnloadHook(_createIframes());
+ 
+
 /**
  * Utility
  */

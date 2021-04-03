@@ -59,15 +59,15 @@ $(".prefixindex-custom").each(function() {
 		return new Array(t + 1).join(s);
 	}
 	// list() from wiki2html, http://remysharp.com/2008/04/01/wiki-to-html-using-javascript/
-    function list(str) {
-        return str.replace(/(?:(?:(?:^|\n)[\*#].*)+)/g, function (m) {  // (?=[\*#])
-            var type = m.match(/(^|\n)#/) ? 'ol' : 'ul';
-            // strip first layer of list
-            m = m.replace(/(^|\n)[\*#][ ]{0,1}/g, "$1");
-            m = list(m);
-            return '<' + type + '><li>' + m.replace(/^\n/, '').split(/\n/).join('</li><li>') + '</li></' + type + '>';
-        });
-    }
+	function list(str) {
+		return str.replace(/(?:(?:(?:^|\n)[\*#].*)+)/g, function (m) {  // (?=[\*#])
+			var type = m.match(/(^|\n)#/) ? 'ol' : 'ul';
+			// strip first layer of list
+			m = m.replace(/(^|\n)[\*#][ ]{0,1}/g, "$1");
+			m = list(m);
+			return '<' + type + '><li>' + m.replace(/^\n/, '').split(/\n/).join('</li><li>') + '</li></' + type + '>';
+		});
+	}
 	if ($(this).next().attr("id") == "mw-prefixindex-list-table" && $(this).next()[0].nodeName.toLowerCase() == "table") {
 		var a = $(this).next().find("a"), // links
 			b = [], // raw output
@@ -148,11 +148,11 @@ $(".prefixindex-custom").each(function() {
 // Affiche plusieurs titres sur les pages utilisateur.
 
 window.UserTagsJS = {
-        modules: {},
-        tags: {
-                sysop: { u: 'Professeur', link:'Project:Administrateurs' },
-                rollback: { m: 'Préfet', f: 'Préfète', u: 'Préfet' },
-                prefetenchef: { m: 'Préfet-en-chef', f: 'Préfète-en-chef', u: 'Préfet-en-chef', order:1 }
+		modules: {},
+		tags: {
+			sysop: { u: 'Professeur', link:'Project:Administrateurs' },
+			rollback: { m: 'Préfet', f: 'Préfète', u: 'Préfet' },
+			prefetenchef: { m: 'Préfet-en-chef', f: 'Préfète-en-chef', u: 'Préfet-en-chef', order:1 }
 	},
 };
 UserTagsJS.modules.autoconfirmed = true;
@@ -168,22 +168,22 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'bannedfromchat', 'rollbac
 // Requiers de copier {{USERNAME}}.
 
 function substUsername() {
-        $('.insertusername').html('<a href=\"/wiki/Modèle:USERNAME\" style=\"color: #d5d4d4\">' + wgUserName + '</a>');
-        $('.insertusername:hover').css('text-decoration', 'none');
+	$('.insertusername').html('<a href=\"/wiki/Modèle:USERNAME\" style=\"color: #d5d4d4\">' + mw.config.get('wgUserName') + '</a>');
+	$('.insertusername:hover').css('text-decoration', 'none');
 }
 
- function substUsernameTOC() {
-        var toc = document.getElementById('toc');
-        var userpage = document.getElementById('pt-userpage');
+function substUsernameTOC() {
+	var toc = document.getElementById('toc');
+	var userpage = document.getElementById('pt-userpage');
 
-        if( !userpage || !toc )
-                return;
+	if( !userpage || !toc )
+		return;
 
-        var username = userpage.firstChild.firstChild.nodeValue;
-        var elements = getElementsByClass('toctext', toc, 'span');
+	var username = userpage.firstChild.firstChild.nodeValue;
+	var elements = getElementsByClass('toctext', toc, 'span');
 
-        for( var i = 0; i < elements.length; i++ )
-                elements[i].firstChild.nodeValue = elements  [i].firstChild.nodeValue.replace('<insert name here>', username);
+	for( var i = 0; i < elements.length; i++ )
+		elements[i].firstChild.nodeValue = elements  [i].firstChild.nodeValue.replace('<insert name here>', username);
 }
 $(function() { $('.insertusername').html(wgUserName); });
 
@@ -222,96 +222,88 @@ var NavigationBarShowDefault = 0;
 //     indexNavigationBar: the index of navigation bar to be toggled
 function toggleNavigationBar(indexNavigationBar)
 {
-    var NavToggle = document.getElementById("NavToggle" + indexNavigationBar);
-    var NavFrame = document.getElementById("NavFrame" + indexNavigationBar);
+	var NavToggle = document.getElementById("NavToggle" + indexNavigationBar);
+	var NavFrame = document.getElementById("NavFrame" + indexNavigationBar);
+	var NavChild;
  
-    if (!NavFrame || !NavToggle) {
-        return false;
-    }
+	if (!NavFrame || !NavToggle) {
+		return false;
+	}
  
-    // if shown now
-    if (NavToggle.firstChild.data == NavigationBarHide) {
-        for (
-                var NavChild = NavFrame.firstChild;
-                NavChild != null;
-                NavChild = NavChild.nextSibling
-            ) {
-            if (NavChild.className == 'NavPic') {
-                NavChild.style.display = 'none';
-            }
-            if (NavChild.className == 'NavContent') {
-                NavChild.style.display = 'none';
-            }
-            if (NavChild.className == 'NavToggle') {
-                NavChild.firstChild.data = NavigationBarShow;
-            }
-        }
+	// if shown now
+	if (NavToggle.firstChild.data == NavigationBarHide) {
+		for ( NavChild = NavFrame.firstChild; NavChild != null; NavChild = NavChild.nextSibling ) {
+			if (NavChild.className == 'NavPic') {
+				NavChild.style.display = 'none';
+			}
+			if (NavChild.className == 'NavContent') {
+				NavChild.style.display = 'none';
+			}
+			if (NavChild.className == 'NavToggle') {
+				NavChild.firstChild.data = NavigationBarShow;
+			}
+		}
  
-    // if hidden now
-    } else if (NavToggle.firstChild.data == NavigationBarShow) {
-        for (
-                var NavChild = NavFrame.firstChild;
-                NavChild != null;
-                NavChild = NavChild.nextSibling
-            ) {
-            if (NavChild.className == 'NavPic') {
-                NavChild.style.display = 'block';
-            }
-            if (NavChild.className == 'NavContent') {
-                NavChild.style.display = 'block';
-            }
-            if (NavChild.className == 'NavToggle') {
-                NavChild.firstChild.data = NavigationBarHide;
-            }
-        }
-    }
+	// if hidden now
+	} else if (NavToggle.firstChild.data == NavigationBarShow) {
+		for ( NavChild = NavFrame.firstChild; NavChild != null; NavChild = NavChild.nextSibling ) {
+			if (NavChild.className == 'NavPic') {
+				NavChild.style.display = 'block';
+			}
+			if (NavChild.className == 'NavContent') {
+				NavChild.style.display = 'block';
+			}
+			if (NavChild.className == 'NavToggle') {
+				NavChild.firstChild.data = NavigationBarHide;
+			}
+		}
+	}
 }
  
 // adds show/hide-button to navigation bars
-function createNavigationBarToggleButton()
-{
-    var indexNavigationBar = 0;
-    // iterate over all <div>-elements
-    for(
-            var i=0; 
-            NavFrame = document.getElementsByTagName("div")[i]; 
-            i++
-        ) {
-        // if found a navigation bar
-        if (NavFrame.className == "NavFrame") {
+function createNavigationBarToggleButton() {
+	var indexNavigationBar = 0,
+		NavFrame;
+	// iterate over all <div>-elements
+	for( var i = 0, divElt = document.getElementsByTagName("div"); i < divElt.length; i++ ) {
+		NavFrame = divElt[i];
+		
+		// if found a navigation bar
+		if (NavFrame.className == "NavFrame") {
  
-            indexNavigationBar++;
-            var NavToggle = document.createElement("a");
-            NavToggle.className = 'NavToggle';
-            NavToggle.setAttribute('id', 'NavToggle' + indexNavigationBar);
-            NavToggle.setAttribute('href', 'javascript:toggleNavigationBar(' + indexNavigationBar + ');');
+			indexNavigationBar++;
+			var NavToggle = document.createElement("a");
+			NavToggle.className = 'NavToggle';
+			NavToggle.setAttribute('id', 'NavToggle' + indexNavigationBar);
+			NavToggle.setAttribute('href', 'javascript:toggleNavigationBar(' + indexNavigationBar + ');');
  
-            var NavToggleText = document.createTextNode(NavigationBarHide);
-            NavToggle.appendChild(NavToggleText);
+			var NavToggleText = document.createTextNode(NavigationBarHide);
+			NavToggle.appendChild(NavToggleText);
  
-            // add NavToggle-Button as first div-element 
-            // in <div class="NavFrame">
-            NavFrame.insertBefore(
-                NavToggle,
-                NavFrame.firstChild
-            );
-            NavFrame.setAttribute('id', 'NavFrame' + indexNavigationBar);
-        }
-    }
-    // if more Navigation Bars found than Default: hide all
-    if (NavigationBarShowDefault < indexNavigationBar) {
-        for(
-                var i=1; 
-                i<=indexNavigationBar; 
-                i++
-        ) {
-            toggleNavigationBar(i);
-        }
-    }
+			// add NavToggle-Button as first div-element 
+			// in <div class="NavFrame">
+			NavFrame.insertBefore(
+				NavToggle,
+				NavFrame.firstChild
+			);
+			NavFrame.setAttribute('id', 'NavFrame' + indexNavigationBar);
+		}
+	}
+	// if more Navigation Bars found than Default: hide all
+	if (NavigationBarShowDefault < indexNavigationBar) {
+		for( var j = 1; j <= indexNavigationBar; j++ ) {
+			toggleNavigationBar(j);
+		}
+	}
  
 }
- 
-addOnloadHook ( createNavigationBarToggleButton );
+
+if (document.readyState === 'loading') {
+	$(createNavigationBarToggleButton);
+} else {
+	createNavigationBarToggleButton();
+}
+
  
 // END Dynamic Navigation Bars
 // ============================================================
@@ -337,92 +329,97 @@ function collapseTable( tableIndex ) {
   var Rows = Table.getElementsByTagName( "tr" ); 
  
   if ( Button.firstChild.data == collapseCaption ) {
-    for ( var i = 1; i < Rows.length; i++ ) {
-      Rows[i].style.display = "none";
-    }
-    Button.firstChild.data = expandCaption;
+	for ( var i = 1; i < Rows.length; i++ ) {
+		Rows[i].style.display = "none";
+	}
+	Button.firstChild.data = expandCaption;
   } else {
-    for ( var i = 1; i < Rows.length; i++ ) {
-      Rows[i].style.display = Rows[0].style.display;
-    }
-    Button.firstChild.data = collapseCaption;
+	for ( var i = 1; i < Rows.length; i++ ) {
+		Rows[i].style.display = Rows[0].style.display;
+	}
+	Button.firstChild.data = collapseCaption;
   }
 }
  
 function createCollapseButtons() {
-  var tableIndex = 0;
-  var NavigationBoxes = new Object();
-  var Tables = document.getElementsByTagName( "table" );
+	var tableIndex = 0;
+	var NavigationBoxes = new Object();
+	var Tables = document.getElementsByTagName( "table" );
  
-  for ( var i = 0; i < Tables.length; i++ ) {
-    if ( hasClass( Tables[i], "collapsible" ) ) {
-      NavigationBoxes[ tableIndex ] = Tables[i];
-      Tables[i].setAttribute( "id", "collapsibleTable" + tableIndex );
+	for ( var i = 0; i < Tables.length; i++ ) {
+		if ( hasClass( Tables[i], "collapsible" ) ) {
+			NavigationBoxes[ tableIndex ] = Tables[i];
+			Tables[i].setAttribute( "id", "collapsibleTable" + tableIndex );
  
-      var Button     = document.createElement( "span" );
-      var ButtonLink = document.createElement( "a" );
-      var ButtonText = document.createTextNode( collapseCaption );
+			var Button     = document.createElement( "span" );
+			var ButtonLink = document.createElement( "a" );
+			var ButtonText = document.createTextNode( collapseCaption );
  
-      Button.style.styleFloat = "right";
-      Button.style.cssFloat = "right";
-      Button.style.fontWeight = "normal";
-      Button.style.textAlign = "right";
-      Button.style.width = "7em";
+			Button.style.styleFloat = "right";
+			Button.style.cssFloat = "right";
+			Button.style.fontWeight = "normal";
+			Button.style.textAlign = "right";
+			Button.style.width = "7em";
  
-      ButtonLink.setAttribute( "id", "collapseButton" + tableIndex );
-      ButtonLink.setAttribute( "href", "javascript:collapseTable(" + tableIndex + ");" );
-      ButtonLink.appendChild( ButtonText );
+			ButtonLink.setAttribute( "id", "collapseButton" + tableIndex );
+			ButtonLink.setAttribute( "href", "javascript:collapseTable(" + tableIndex + ");" );
+			ButtonLink.appendChild( ButtonText );
  
-      Button.appendChild( ButtonLink );
+			Button.appendChild( ButtonLink );
  
-      var Header = Tables[i].getElementsByTagName( "tr" )[0].getElementsByTagName( "th" )[0];
-      /* only add button and increment count if there is a header row to work with */
-      if (Header) {
-        Header.insertBefore( Button, Header.childNodes[0] );
-        tableIndex++;
-      }
-    }
-  }
+			var Header = Tables[i].getElementsByTagName( "tr" )[0].getElementsByTagName( "th" )[0];
+			/* only add button and increment count if there is a header row to work with */
+			if (Header) {
+				Header.insertBefore( Button, Header.childNodes[0] );
+				tableIndex++;
+	  		}
+		}
+	}
  
-  for (var i = 0; i < tableIndex; i++) {
-    if ( hasClass( NavigationBoxes[i], "collapsed" ) || ( tableIndex >= autoCollapse && hasClass( NavigationBoxes[i], "autocollapse" ) ) ) collapseTable( i );
-  }
+	for (var j = 0; j < tableIndex; j++) {
+		if ( hasClass( NavigationBoxes[j], "collapsed" ) || ( tableIndex >= autoCollapse && hasClass( NavigationBoxes[i], "autocollapse" ) ) ) collapseTable( j );
+  	}
 }
-addOnloadHook(createCollapseButtons);
+
+if (document.readyState === 'loading') {
+    $(createCollapseButtons);
+} else {
+    createCollapseButtons();
+}
 
 /* Substitute Template:Information into upload page */
 $(function() {
-	if (wgPageName != 'Spécial:Téléverser') { return; }
-	$('#wpUploadDescription').text("==Description==\r\n{{Fichier\r\n|Description=\r\n|Date=\r\n|Auteur=\r\n|Source=\r\n|Licence=\r\n|Et plus=\r\n}}");
+	if (mw.config.get('wgPageName') != 'Spécial:Téléverser') { return; }
+	$('#wpUploadDescription').text("{{Fichier\r\n|Description=\r\n|Date=\r\n|Auteur=\r\n|Source=\r\n|Licence=\r\n|Et plus=\r\n}}");
 	$('.mw-htmlform-field-HTMLTextAreaField .mw-input').append('<img src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Button_bold.png" alt="Tèxte en gras" title="Tèxte en gras" id="button-bold" style="width: 23px; height: 22px;"><img src="https://upload.wikimedia.org/wikipedia/commons/1/1d/Button_italic.png" alt="Tèxte en italica" title="Tèxte en italica" id="button-italic" style="width: 23px; height: 22px;"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c0/Button_link.png" alt="Ligam intèrne" title="Ligam intèrne" id="button-link" style="width: 23px; height: 22px;">');
-    $('#button-italic').click(function() {
-        richEditor("\'\'", "\'\'");
-    });
-    $('#button-bold').click(function() {
-        richEditor("\'\'\'", "\'\'\'");
-    });
-    $('#button-link').click(function() {
-        richEditor("[[", "]]");
-    });
+	$('#button-italic').click(function() {
+		richEditor("\'\'", "\'\'");
+	});
+	$('#button-bold').click(function() {
+		richEditor("\'\'\'", "\'\'\'");
+	});
+	$('#button-link').click(function() {
+		richEditor("[[", "]]");
+	});
 
-    function richEditor(primier, segond) {
-        var textarea = document.getElementById("wpUploadDescription");
-        if ('selectionStart' in textarea) {
-            if (textarea.selectionStart != textarea.selectionEnd) {
-                var newText = textarea.value.substring (0, textarea.selectionStart) + 
-                    primier + textarea.value.substring  (textarea.selectionStart, textarea.selectionEnd) + segond +
-                    textarea.value.substring (textarea.selectionEnd);
-                textarea.value = newText;
-            }
-        }
-        else {
-            var textRange = document.selection.createRange ();
-            var rangeParent = textRange.parentElement ();
-            if (rangeParent === textarea) {
-                textRange.text = primier + textRange.text + segond;
-            }
-        }
-    }
+	function richEditor(primier, segond) {
+		var textarea = document.getElementById("wpUploadDescription");
+		if ('selectionStart' in textarea) {
+			if (textarea.selectionStart != textarea.selectionEnd) {
+				var newText = textarea.value.substring (0, textarea.selectionStart) + 
+								primier + textarea.value.substring  (textarea.selectionStart, textarea.selectionEnd) + segond +
+								textarea.value.substring (textarea.selectionEnd);
+				textarea.value = newText;
+			}
+		}
+		else {
+			var textRange = document.selection.createRange ();
+			var rangeParent = textRange.parentElement ();
+			if (rangeParent === textarea) {
+				textRange.text = primier + textRange.text + segond;
+			}
+		}
+	}
 });
 
 
@@ -432,7 +429,7 @@ $(function() {
 //
 //=================================================================================================
 
-'u:dev:TwitterWidget/code.js'
+//'u:dev:TwitterWidget/code.js'
 
 //=================================================================================================
 //
@@ -440,49 +437,49 @@ $(function() {
 //
 //=================================================================================================
 
-var ug = wgUserGroups.join(' ');
+var ug = mw.config.get('wgUserGroups').join(' ');
 if (ug.indexOf('staff') + ug.indexOf('helper') + ug.indexOf('vstf') + ug.indexOf('sysop') > -4) {
-    $("div.mam").addClass("mamadmin");
-    $("div.mam").click(function(){ 
-        $( this ).toggleClass("mamadmin2"); 
-    }); 
+	$("div.mam").addClass("mamadmin");
+	$("div.mam").click(function(){ 
+		$( this ).toggleClass("mamadmin2"); 
+	}); 
 }
 
 if (mw.config.get("wgPageName") === "Utilisateur:Hulothe") {
-    var avatar = document.getElementsByClassName("avatar")[1];
-    avatar.setAttribute("src", "https://images.wikia.nocookie.net/__cb20140821143758/harrypotter/fr/images/1/19/Avatar_Hulothe.png");
+	var avatar = document.getElementsByClassName("avatar")[1];
+	avatar.setAttribute("src", "https://images.wikia.nocookie.net/__cb20140821143758/harrypotter/fr/images/1/19/Avatar_Hulothe.png");
 }
 
 /* Modifs Hulothe activité récente */
-$( document ).ready(function() {
-    $('.rcoptions a:nth-child(19)').before('<span><a class="rc-rmv-btn" style="text-decoration: none; color: #6b979c">Afficher</a><a class="rc-rmv-btn" style="display: none; text-decoration: none; color: #6b979c">Masquer</a> les modifs d\'Hulothe • </span>');
-    $( "a.rc-rmv-btn" ).hover(function() {
-        $( this ).css({ "text-decoration": "underline", "cursor": "pointer" });
-    });
-    $( '.rc-rmv-btn' ).click(function() {
-        $( ".rc-rmvd" ).toggle();
-        $( ".rc-rmv-btn" ).toggle();
-    });
-    $( "div.rc-conntent table.mw-enhanced-rc" ).each(function() {
-        var mdfHltRc = $( this ).find( "tbody tr td a.mw-userlink" );
-        var mdfHltRct = mdfHltRc.text();
-        if(mdfHltRct.match( 'Hulothe' )) {
-            $( this ).hide();
-            $( this ).addClass( 'rc-rmvd' );
-        }
-    });
+$(document).ready(function() {
+	$('.rcoptions a:nth-child(19)').before('<span><a class="rc-rmv-btn" style="text-decoration: none; color: #6b979c">Afficher</a><a class="rc-rmv-btn" style="display: none; text-decoration: none; color: #6b979c">Masquer</a> les modifs d\'Hulothe • </span>');
+	$("a.rc-rmv-btn").hover(function() {
+		$(this).css({ "text-decoration": "underline", "cursor": "pointer" });
+	});
+	$('.rc-rmv-btn').click(function() {
+		$(".rc-rmvd").toggle();
+		$(".rc-rmv-btn").toggle();
+	});
+	$("div.rc-conntent table.mw-enhanced-rc").each(function() {
+		var mdfHltRc = $( this ).find( "tbody tr td a.mw-userlink" );
+		var mdfHltRct = mdfHltRc.text();
+		if(mdfHltRct.match( 'Hulothe' )) {
+			$(this).hide();
+			$(this).addClass( 'rc-rmvd' );
+		}
+	});
 });
 
 $( ".accueil-parts .partbox" ).hover(
-    function() {
-        $( this ).addClass( "partboxsel" );
-        $( ".partboxselp" ).css('background', '').css('opacity', '0.5');
-        $( ".partinfo" ).html( $( this ).find( "span:last" ).text() );
-    }, function() {
-      $( ".partinfo" ).html( "Venez parcourir les couloirs de Poudlard avec la communauté de la Pensine&nbsp;!" );
-      $( this ).removeClass( "partboxsel" );
-      $( ".partboxselp" ).css('background', 'rgba( 255, 0, 0, 0.1)').css('opacity', '1');
-    }
+	function() {
+		$( this ).addClass( "partboxsel" );
+		$( ".partboxselp" ).css('background', '').css('opacity', '0.5');
+		$( ".partinfo" ).html( $( this ).find( "span:last" ).text() );
+	}, function() {
+		$( ".partinfo" ).html( "Venez parcourir les couloirs de Poudlard avec la communauté de la Pensine&nbsp;!" );
+		$( this ).removeClass( "partboxsel" );
+		$( ".partboxselp" ).css('background', 'rgba( 255, 0, 0, 0.1)').css('opacity', '1');
+	}
 );
 
 //=================================================================================================
@@ -494,19 +491,49 @@ $( ".accueil-parts .partbox" ).hover(
 importArticles({
 	type: 'script',
 	articles: [
-		'u:dev:ReferencePopups/code.js',
-		'u:dev:DynamicImages/code.js',
-		'u:dev:ExtendedNavigation/code.js',
-		'u:dev:UserTags/code.js',
-//		'MediaWiki:Common.js/Snow.js',
-//		'u:c:MediaWiki:Snow.js',
-		'u:dev:Standard_Edit_Summary/code.js',
-                'w:c:dev:TopEditors/code.js',
-                'u:dev:EditcountTag/code.js',
-                'u:dev:ListUsers/code.js',
-                'MediaWiki:userRightsIcons.js',
-                'u:dev:FileUsageAuto-update/code.js',
-                'w:c:dev:MediaWiki:Countdown/code.js',
-                'u:w:MediaWiki:Snow.js'
-    ]
+		'u:dev:MediaWiki:ReferencePopups/code.js',
+		'u:dev:MediaWiki:DynamicImages/code.js',
+		'u:dev:MediaWiki:ExtendedNavigation/code.js',
+		'u:dev:MediaWiki:UserTags/code.js',
+		'u:dev:MediaWiki:Standard_Edit_Summary/code.js',
+		'u:dev:MediaWiki:TopEditors/code.js',
+		'u:dev:MediaWiki:EditcountTag/code.js',
+		'u:dev:MediaWiki:ListUsers/code.js',
+		'MediaWiki:userRightsIcons.js',
+		'u:dev:MediaWiki:FileUsageAuto-update/code.js',
+		'u:dev:MediaWiki:Countdown/code.js',
+	]
+});
+
+//=================================================================================================
+//                                         BOUTON "Aller en haut/bas"
+//=================================================================================================
+$(function() {
+	$('#WikiaBar').before('<div id="TopBottom"/>');
+	$(window).on('scroll', function() {
+		if (window.pageYOffset === 0) {
+			$('#TopBottom').closest('div').fadeIn();
+		}
+	});
+	$('#TopBottom').on('click', function() {
+		iPosition = $(window).scrollTop();
+ 
+		if (iPosition === 0) {
+			$(document).scrollTop($( document ).height());
+		}
+		else{
+			$(document).scrollTop('iPosition');
+		}		
+    });
+});
+
+$(document).scroll(function() {
+	iPosition = $(window).scrollTop();
+ 
+	if (iPosition > 0) {
+		$('#TopBottom').addClass('Bottom');
+	}
+	else{
+		$('#TopBottom').removeClass('Bottom');
+	}
 });

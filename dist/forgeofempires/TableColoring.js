@@ -12,177 +12,92 @@ $(function() {
         }
     });
 });
+function mapStringToAge(string) {
+  switch (string) {
+    case 'NA':
+    case 'No Age':
+      return "ColorNA";
+    case 'SA':
+    case 'Stone Age':
+      return "ColorSA";
+    case 'BA':
+    case 'Bronze Age':
+      return "ColorBA";
+    case 'IA':
+    case 'Iron Age':
+      return "ColorIA";
+    case 'EMA':
+    case 'Early Middle Ages':
+      return "ColorEMA";
+    case 'HMA':
+    case 'High Middle Ages':
+      return "ColorHMA";
+    case 'LMA':
+    case 'Late Middle Ages':
+      return "ColorLMA";
+    case 'CA':
+    case 'Colonial Age':
+      return "ColorCA";
+    case 'INA':
+    case 'Industrial Age':
+      return "ColorINA";
+    case 'PE':
+    case 'Progressive Era':
+      return "ColorPE";
+    case 'ME':
+    case 'Modern Era':
+      return "ColorME";
+    case 'PME':
+    case 'Postmodern Era':
+      return "ColorPME";
+    case 'CE':
+    case 'Contemporary Era':
+      return "ColorCE";
+    case 'TE':
+    case 'Tomorrow Era':
+      return "ColorTE";
+    case 'FE':
+    case 'Future Era':
+      return "ColorFE";
+    case 'AF':
+    case 'Arctic Future':
+      return "ColorAF";
+    case 'OF':
+    case 'Oceanic Future':
+      return "ColorOF";
+    case 'VF':
+    case 'Virtual Future':
+      return "ColorVF";
+    case 'SAM':
+    case 'Space Age Mars':
+      return "ColorSAM";
+    case 'SAAB':
+    case 'Space Age Asteroid Belt':
+      return "ColorSAAB";
+    case 'SAV':
+	case 'Space Age Venus':
+	  return "ColorSAV";
+  }
+  return undefined;
+}
+
 /* Auto background coloring according to age */
 $(function() {
   $('.AgeTable td:first-child').each(function(index) {
-    switch (($(this).text() || '').trim()) {
-       case 'NA':
-       case 'No Age':
-         $(this).addClass("ColorNA");
-         break;
-      case 'SA':
-       case 'Stone Age':
-         $(this).addClass("ColorSA");
-         break;
-        case 'BA':
-       case 'Bronze Age':
-         $(this).addClass("ColorBA");
-         break;
-       case 'IA':
-       case 'Iron Age':
-         $(this).addClass("ColorIA");
-         break;
-       case 'EMA':
-       case 'Early Middle Ages':
-         $(this).addClass("ColorEMA");
-         break;
-       case 'HMA':
-       case 'High Middle Ages':
-         $(this).addClass("ColorHMA");
-         break;
-       case 'LMA':
-       case 'Late Middle Ages':
-         $(this).addClass("ColorLMA");
-         break;
-       case 'CA':
-       case 'Colonial Age':
-         $(this).addClass("ColorCA");
-         break;
-       case 'INA':
-       case 'Industrial Age':
-         $(this).addClass("ColorINA");
-         break;
-       case 'PE':
-       case 'Progressive Era':
-         $(this).addClass("ColorPE");
-         break;
-       case 'ME':
-       case 'Modern Era':
-         $(this).addClass("ColorME");
-         break;
-       case 'PME':
-       case 'Postmodern Era':
-         $(this).addClass("ColorPME");
-         break;
-       case 'CE':
-       case 'Contemporary Era':
-         $(this).addClass("ColorCE");
-         break;
-       case 'TE':
-       case 'Tomorrow Era':
-         $(this).addClass("ColorTE");
-         break;
-       case 'FE':
-       case 'Future Era':
-         $(this).addClass("ColorFE");
-         break;
-       case 'AF':
-       case 'Arctic Future':
-         $(this).addClass("ColorAF");
-         break;
-       case 'OF':
-       case 'Oceanic Future':
-         $(this).addClass("ColorOF");
-         break;
-       case 'VF':
-       case 'Virtual Future':
-         $(this).addClass("ColorVF");
-         break;
-       case 'SAM':
-       case 'Space Age Mars':
-         $(this).addClass("ColorSAM");
-         break;
-       case 'SAAB':
-       case 'Space Age Asteroid Belt':
-         $(this).addClass("ColorSAAB");
-         break;
+    var $element = $(this)
+    var age = mapStringToAge($element.text().trim() || '');
+    if(age) {
+      $element.addClass(age);
     }
   });
 });
- 
+
 $(function() {
   $('.AgeTable th').each(function(index) {
-    switch (($(this).text() || '').trim()) {
-       case 'NA':
-       case 'No Age':
-         $(this).addClass("ColorNA");
-         break;
-      case 'SA':
-       case 'Stone Age':
-         $(this).addClass("ColorSA");
-         break;
-        case 'BA':
-       case 'Bronze Age':
-         $(this).addClass("ColorBA");
-         break;
-       case 'IA':
-       case 'Iron Age':
-         $(this).addClass("ColorIA");
-         break;
-       case 'EMA':
-       case 'Early Middle Ages':
-         $(this).addClass("ColorEMA");
-         break;
-       case 'HMA':
-       case 'High Middle Ages':
-         $(this).addClass("ColorHMA");
-         break;
-       case 'LMA':
-       case 'Late Middle Ages':
-         $(this).addClass("ColorLMA");
-         break;
-       case 'CA':
-       case 'Colonial Age':
-         $(this).addClass("ColorCA");
-         break;
-       case 'INA':
-       case 'Industrial Age':
-         $(this).addClass("ColorINA");
-         break;
-       case 'PE':
-       case 'Progressive Era':
-         $(this).addClass("ColorPE");
-         break;
-       case 'ME':
-       case 'Modern Era':
-         $(this).addClass("ColorME");
-         break;
-       case 'PME':
-       case 'Postmodern Era':
-         $(this).addClass("ColorPME");
-         break;
-       case 'CE':
-       case 'Contemporary Era':
-         $(this).addClass("ColorCE");
-         break;
-       case 'TE':
-       case 'Tomorrow Era':
-         $(this).addClass("ColorTE");
-         break;
-       case 'FE':
-       case 'Future Era':
-         $(this).addClass("ColorFE");
-         break;
-       case 'AF':
-       case 'Arctic Future':
-         $(this).addClass("ColorAF");
-         break;
-       case 'OF':
-       case 'Oceanic Future':
-         $(this).addClass("ColorOF");
-         break;
-       case 'VF':
-       case 'Virtual Future':
-         $(this).addClass("ColorVF");
-         break;
-       case 'SAM':
-       case 'Space Age Mars':
-         $(this).addClass("ColorSAM");
-         break;
-       case 'SAAB':
-       case 'Space Age Asteroid Belt':
-         $(this).addClass("ColorSAAB");
-         break;
+    var $element = $(this)
+    var age = mapStringToAge($element.text().trim() || '');
+    if(age) {
+      $element.addClass(age);
     }
   });
 });

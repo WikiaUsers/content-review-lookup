@@ -2,8 +2,8 @@
 
 //TODO: Organise names, maybe collect all names in an array to reduce code redundancy
 
-  //***************************************************\\
- //***Admin, mod, and Temp Mod Post Colours for Forums and Message Walls***\\
+ //***************************************************\\
+//***Admin, mod, and Temp Mod Post Colours for Forums and Message Walls***\\
 //*******************************************************\\
 (function() {
     var border_admin = "6px double ";//+color
@@ -17,12 +17,12 @@
         {name: "Quipp", color:"#00CCFF"},
         {name: "SamwiseFilmore", color:"#D07130"},
         {name: "Glaerdir", color:"#F962A5"},
-        {name: "Thorin_Stonehelm", color:"#0078FF"},
-        {name: "EpicSpacePanda", color:"#0EC79F"},
+        {name: "ESP_LOTR", color:"#0EC79F"},
+        {name: "Gruk", color:"#a82a43"},
         {name: "MilkMC", color:"#3333FF"},
         {name: "CaptCaptain", color:"#00CCFF"}          // FB mod, same colour as Quipp!!
     ];
-    
+
     var border_mod = "2px solid ";//+color
     var background_mod = "rgba(214, 188, 136, 0.85) url('https://images.wikia.nocookie.net/__cb20141205133613/lotrminecraftmod/images/d/d1/Mod.png') bottom center no-repeat";
     var mods = [
@@ -43,23 +43,25 @@
         {name: "Gorbag12", color:"#000000"},
         {name: "Dinopizzagamer", color:"#8FBC8F"},
         {name: "Catfishperson", color:"#13A005"},
+        {name: "Aidansebastian", color:"#007E25"},
         {name: "Rayn_Turammarth", color:"#00AF9B"},
-        {name: "Adaneth_Mirim%C3%AB", color:"#9370DB"}
+        {name: "Adaneth_Mirim%C3%AB", color:"#9370DB"},
+        {name: "Thorin_Stonehelm", color:"#0078FF"},
+        {name: "Rocket_Engineer", color:"#b5b3ff"}
     ];
-    
+
     var background_tempmod = "rgba(205, 192, 176, 0.66) url('https://vignette.wikia.nocookie.net/lotrminecraftmod/images/b/b2/Temp_mod_tag_3.png/revision/latest?cb=20150605193955') bottom center no-repeat";
     var tempmods = [
         {name:"TomtheBom"},
-        {name:"Rocket_Engineer"},
         {name:"GimliBurper"}
     ];
-    
+
     function get_filter(profile) {
         return eval("(function() {return $(this).has(\"a[href$=':"+profile.name+"']\").length;})");
     }
-    
+
     var avatars = $('.speech-bubble-avatar');
-    
+
     (function(){
         var mevans = {name: "LOTRMod", color:"#B55A15"};
         avatars.filter(get_filter(mevans)).next().css({
@@ -69,7 +71,7 @@
         });
         avatars.filter(get_filter(mevans)).next().addClass('admin');
     })();
-    
+
     var i;
     for (i in admins) {
         var admin = admins[i];
@@ -102,7 +104,7 @@
 // OTHER CODE //
 
 /* Makes all quotes collapsible by default, excluding the first line.
- */
+*/
 var quote = $('.quote:not(.customquote)');
 quote.addClass("mw-collapsible mw-collapsed");
 quote.each(function() {
@@ -116,33 +118,33 @@ quote.each(function() {
 });
 
 /* Username replace feature
- * Inserts viewing user's name into <span class="insertusername"></span>
- * Put text inside the spans to be viewed by logged out users
- * Originally by [[wikia:User:Splarka|Splarka]], then by [[User:Spang|Spang]],
- * This (jQuery) version by [[wikia:User:Joeyaa]], written to be backwards compatible
- */
- 
-if (wgUserName) {
-    $(".insertusername").text(wgUserName);
-}
+* Inserts viewing user's name into <span class="insertusername"></span>
+* Put text inside the spans to be viewed by logged out users
+* Originally by [[wikia:User:Splarka|Splarka]], then by [[User:Spang|Spang]],
+* This (jQuery) version by [[wikia:User:Joeyaa]], written to be backwards compatible
+*/
 
+if (mw.config.get("wgUserName")) {
+   $(".insertusername").text(mw.config.get("wgUserName"));
+}
+/* Ajax-refresh button config options */
+window.ajaxSpecialPages = ["Contributions","Log","WikiActivity","AbuseLog"];
+window.ajaxRefresh = 30000;
+$.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
+   'ajaxrc-refresh-text': 'Auto-refresh',
+   'ajaxrc-refresh-hover': 'Automatically refresh the page',
+}}}}});
 // EXTERNAL SCRIPTS
 importArticles({
-    type: "script",
-    articles: [
-        // File Deletion
-        "u:dev:ListFiles/code.js",
-        "u:dev:AjaxBatchDelete/code.2.js",
-        // AJAX Recent Changes Refresh
-        "w:c:dev:AjaxRC/code.js"
-    ]
+   type: "script",
+   articles: [
+       // File Deletion
+       "u:dev:MediaWiki:ListFiles/code.js",
+       "u:dev:MediaWiki:AjaxBatchDelete.js",
+       // AJAX Recent Changes Refresh
+       "u:dev:MediaWiki:AjaxRC.js"
+   ]
 });
-
-/* Ajax-refresh button config options */
-ajaxPages = ["Special:Contributions","Special:Log","Special:RecentChanges","Special:WikiActivity","Special:Watchlist","Special:AbuseLog"];
-window.ajaxRefresh = 30000;
-window.AjaxRCRefreshText = 'Auto-refresh';
-window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 
 // Pre-sorted tables
 // Any sortable table with the class "sorted" will be presorted by
@@ -171,9 +173,12 @@ if(mw.config.get('wgPageName') == 'Servers'){
     }
 }
 
-/* This script adds "&format=original" to the end of Wikia image addresses in articles to load the original PNG/JPG etc. forms instead of the WEBP versions.  Excludes avatars & sprites such as the edit pencil, and only applies to article content. */
+/* This script adds "&format=original" to the end of Wikia image addresses in articles 
+ * to load the original PNG/JPG etc. forms instead of the WEBP versions.  Excludes 
+ * avatars & sprites such as the edit pencil, and only applies to article content. */
+
 //Infobox images
-$(".pi-image-thumbnail").each(function(){ 
+$(".pi-image-thumbnail").each(function(){
     var srcsetvar = $(this).attr("srcset");
     var srcarray = srcsetvar.split(" ");
     $(this).attr("srcset", srcarray[0]+"&format=original");
@@ -189,25 +194,25 @@ $(".WikiaArticle img:not('.avatar, .sprite, .forum-user-avatar, .wds-avatar__ima
         }
     }
 }).each(function() {
-  if(this.complete) { //imágenes en caché
+  if(this.complete) { //cached images
       $(this).trigger("load");
   }
 });
- 
+
 
   //********************************************\\
- //** Worldmap (Template:MiddleEarthMap) [WIP] **\\
+//** Worldmap (Template:MiddleEarthMap) [WIP] **\\
 //************************************************\\
 
 var maps = document.getElementsByClassName("worldmap");
 for (var i = 0; i < maps.length; i++) {
     var map = maps[i];
-    
+
 /* Doesn't work due to missing CORS for image server :-(
 
 getPixel = function(x, y) {
-    var p = canvas.context.getImageData(x, y, 1, 1).data; 
-    var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);  
+    var p = canvas.context.getImageData(x, y, 1, 1).data;
+    var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6); 
     return hex;
 }
 
@@ -234,7 +239,7 @@ rgbToHex = function(r, g, b) {
 alert("debug:" + GetPixel(10, 10));
 alert("sucess");
 */
-    
+
     // The current background-position; usually negative
     map.offX = -500;
     map.offY = -500;
@@ -246,11 +251,11 @@ alert("sucess");
     map.newY = 0;
     // The current zoom level. Higher zoom level means bigger map
     map.zoom = 1.0;
-    
+
     var MAX_ZOOM = 4.0;
     var MIN_ZOOM = 0.2;
     var ZOOM_SPEED = 0.1;
-    
+
     // Called when the mouse cursor is pressed down inside the map
     var dragStart = function(e) {
         e.preventDefault();

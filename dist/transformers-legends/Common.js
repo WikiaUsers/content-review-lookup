@@ -1,5 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-
+/*
 $(function(){
     importArticles({
       type: "script",
@@ -13,10 +13,15 @@ $(function(){
     ]
     });
 });
-
+*/
 window.AddRailModule = [
     {
-        page: "Template:Poll module",
+        page: "Template:RailModulePrepend",
+        prepend: true,
+        maxAge: 0
+    },
+    {
+        page: "Template:RailModuleAppend",
         maxAge: 0
     }
 ];

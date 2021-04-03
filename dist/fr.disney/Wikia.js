@@ -1,8 +1,3 @@
-/* Mise en forme du titre (h1) */
-function title(newTitle) {
-    $(".page-header__title").html(newTitle.html());
-}
-
 /* Mise au pluriel des labels */
 function plural(singular, plural) {
     var data = $("[data-source=" + singular + "]");
@@ -181,11 +176,6 @@ function disneylandParis() {
 }
     
 $(document).ready(function(){
-    /* Titre */
-    if ($('#new-title').length) {
-        title($('#new-title'));
-    }
-    
     /* Infobox Personnage */
     if ($('.pi-theme-personnage').length) {
         character();

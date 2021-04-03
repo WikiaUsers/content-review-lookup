@@ -6,34 +6,52 @@
  */
 (function () {
     if (
-        !/sysop|staff|helper|vstf|global-discussions-moderator|wiki-manager/.test(mw.config.get('wgUserGroups').join()) ||
-        !$('#UserProfileMasthead').exists() ||
+        !/sysop|staff|helper|global-discussions-moderator|wiki-manager|soap/.test(mw.config.get('wgUserGroups').join()) ||
+        $('#UserProfileMasthead, #userProfileApp').length === 0 ||
         window.AddBlockUserTagLoaded
     ) {
         return;
     }
     window.AddBlockUserTagLoaded = true;
     /**
+     * @method findContainer
+     * @description Finds the tag container to append the button to
+     * @returns {$.Deferred} Promise to be resolved when the container is found
+     */
+    function findContainer() {
+        var promise = $.Deferred(),
+            interval = setInterval(function() {
+                var $element = $('#userProfileApp .user-identity-header__attributes, #UserProfileMasthead hgroup');
+                if ($element.length) {
+                    clearInterval(interval);
+                    promise.resolve($element);
+                }
+            }, 300);
+        return promise;
+    }
+    /**
      * @method button
      * @description Creates the button
      * @param {String} text - The button text
      * @returns {void}
      */
-    function button (text) {
-        $('.UserProfileMasthead hgroup').append(
+    function button (text, $container) {
+        var username = mw.config.get('profileUserName') ||
+                       $('.masthead-info h1').text();
+        $container.append(
             $('<a>', {
-                css: {
+                'class': 'tag user-identity-header__tag',
+                'css': {
                     float: 'right',
                     color: 'inherit',
                     marginTop: '15px',
-                    marginRight: '-15px',
-                    textTransform: 'uppercase'
+                    marginRight: '-15px'
                 },
-                href:
+                'href':
                     mw.util.getUrl(
-                        'Special:Block/' + $('.masthead-info h1').text()
+                        'Special:Block/' + username
                     ),
-                text: text
+                'text': text
             })
         );
     }
@@ -44,7 +62,8 @@
      * @returns {void}
      */
     function init (fetch) {
-        fetch('block').then(button);
+        $.when(fetch('block'), findContainer())
+            .then(button);
     }
     mw.hook('dev.fetch').add(init);
     importArticle({

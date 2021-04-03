@@ -59,17 +59,24 @@ window.UserTagsJS = {
 		'deputy-miniadmin': { u:'Deputy Mini-Admin', order:-1/0 },
 		'deputy-admin': { u:'Deputy Admin', order:-1/0 },
 		'deputy-bureaucrat': { u:'Deputy Bureaucrat', order:-1/0 },
+		//Councils
+		'cotp': { u:'Councilor (COTP)', order:5 },
+		'coa': { u:'Councilor (COA)', order:5 },
+		'coj': { u:'Justice (COJ)', order:5 },
+		'coj-presider1': { u:'Chief Justice', order:4 },
+		'coj-presider2': { u:'Vice Chief Justice', order:4 },
+		'coj-aux': { u:'Auxiliary Justice', order:4 },
 		//Chairmen
-		'hc-sc': { u:'Historical Cmte (Sr Chmn)', order:2 },
-		'hc-jc': { u:'Historical Cmte (Jr Chmn)', order:2 },
-		'vc-sc': { u:'Volunteer Cmte (Sr Chmn)', order:2 },
-		'vc-jc': { u:'Volunteer Cmte (Jr Chmn)', order:2 },
-		'ec-sc': { u:'Events Cmte (Sr Chmn)', order:2 },
-		'ec-jc': { u:'Events Cmte (Jr Chmn)', order:2 },
+		'hc-sc': { u:'Historical Cmte (Sr Chmn)', order:9 },
+		'hc-jc': { u:'Historical Cmte (Jr Chmn)', order:9 },
+		'vc-sc': { u:'Volunteer Cmte (Sr Chmn)', order:9 },
+		'vc-jc': { u:'Volunteer Cmte (Jr Chmn)', order:9 },
+		'ec-sc': { u:'Events Cmte (Sr Chmn)', order:9 },
+		'ec-jc': { u:'Events Cmte (Jr Chmn)', order:9 },
 		//Committees
-		'hc-member': { u:'Historical Cmte', order:3 },
-		'vc-member': { u:'Volunteer Cmte', order:3 },
-		'ec-member': { u:'Events Cmte', order:3 },
+		'hc-member': { u:'Historical Cmte', order:10 },
+		'vc-member': { u:'Volunteer Cmte', order:10 },
+		'ec-member': { u:'Events Cmte', order:10 },
 		//Former
 		'former-intern': { u:'Former Intern', order:-1/0 },
 		'former-helper': { u:'Former Helper', order:-1/0 },
@@ -98,15 +105,17 @@ UserTagsJS.modules.custom = {
 	'KawaiiKunWolf': ['head', 'ec-sc', 'vc-jc', 'hc-member'],
 	'A random student': ['hc-jc', 'ec-member'],
 	/* Rollbacks */
-	'GalaxE': ['head'],
+	'GalaxE': [],
 	'Tsuzuro Yamazaki': ['ec-jc', 'hc-member'],
 	/* Chat Mods */
 	'AoiRyugokuTSFG1': ['head', 'ec-member' ],
 	/* Helpers and Intern */
-	'Shadow Bonnie202': ['helpers', 'head', 'ec-member' ],
+	'SeiShii': ['helpers', 'head', 'ec-member'],
+	'MrCheeseTiger1234': ['helpers', 'deputy', 'ec-member'],
 	'Littleslinky': ['helpers'],
-	'MrCheeseTiger1234': ['helpers', 'ec-member'],
-	InternName: ['intern'],
+	'RedLightningStrike': ['helpers', 'ec-member'],
+	'S0ul245Official': ['helpers'],
+	'Vacant': ['intern'],
 	
 	//Former Staff
 	/* Former Bureaucrats */
@@ -133,9 +142,9 @@ UserTagsJS.modules.custom = {
 	'LunathuThePotato': ['former-helper'],
 	'Ariariariari :P': ['former-helper'],
 	'XyoKiwii': ['former-helper'],
-	'SeiShii': ['former-helper', 'ec-member'],
 	'BrianBanana': ['former-helper', 'ec-member'],
 	'Takriiiia': ['former-helper'],
+	'Shadow Bonnie202': ['former-helper'],
 	/* Former Interns */
 	'EmotionlessKuu': ['former-intern'],
 	'SonrisitasPF': ['former-intern'],
@@ -147,6 +156,7 @@ UserTagsJS.modules.custom = {
 	'MeGUMMYsaikoBEAR': ['former-intern'],
 	'EchoPrince': ['former-intern'],
 	'Erin Hideko': ['former-intern'],
+	'Ekoa Daiki': ['former-intern'],
 };
 //Remove tag if has any of the blacklisted tags
 UserTagsJS.modules.metafilter = {
@@ -184,6 +194,9 @@ UserTagsJS.modules.metafilter = {
 	'deputy-chatmod': ['bureaucrat', 'sysop', 'miniadmin', 'threadmoderator', 'interim'],
 	'deputy-rollback': ['bureaucrat', 'sysop', 'miniadmin', 'content-moderator', 'interim'],
 	'deputy-helper': ['bureaucrat', 'sysop', 'miniadmin', 'content-moderator', 'threadmoderator', 'rollback', 'chatmoderator', 'interim'],
+	//Councils
+	'coj-presider1': ['coj', 'coj-presider2'],
+	'coj-presider2': ['coj', 'coj-presider1'],
 };
 //Add tag if all whitelisted tags are present, remove whitelisted tags
 UserTagsJS.modules.implode = {
@@ -340,6 +353,9 @@ window.dplforumBoards = [
   },
   { boardName: 'applications',
     boardDescription: 'Apply for staff here.'
+  },
+  { boardName: 'judicial',
+    boardDescription: 'Submit cases to the Council of Justice here.'
   },
   //Defaults
   { boardName: 'help-desk',

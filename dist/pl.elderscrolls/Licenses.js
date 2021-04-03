@@ -1,21 +1,32 @@
-/*
- * QLicense.js,
- * [originally] by User:Cakemix, decoded and formatted,
- * decoded, formatted, and shortened by Monchoman45,
- * translated by MarkosBoss.
- * fixed by Vuh
- */
-if(wgNamespaceNumber == 6) {
-	function QLicenseUI() {
-		window.qapi = new APIQuery;
+if (6 == wgNamespaceNumber) {
+	function LicenseTESW() {
 		var e = "";
-		for(i in LicenseOptions) e += '<option value="' + i + '" style="text-align:center">' + LicenseOptions[i] + "</option>";
-		var n = '<p style="text-align:center"><select id="QLicenseSelect">' + e + '</select>&nbsp;<a class="wikia-button" style="margin:0 1em;cursor:pointer" id="aSubmit">Dodaj licencję</a>';
-		document.getElementById("ESWLicensed") ? n += '&nbsp;<span style="color:red;font-weight:bold;text-align:center">Posiada licencję!</span></p>' : n += '&nbsp;<span style="color:green;font-weight:bold;text-align:center">Nie posiada licencji!</span></p>', $(".fullMedia").append(n), document.getElementById("aSubmit").onclick = function(e) {
-			qapi.send(new qapi.Query(qapi, "POST", "action=edit&title=" + wgPageName + "&appendtext=== Licencja ==\n" + document.getElementById("QLicenseSelect").value + "&summary=Dodano licencję", function(e) {
-				"Success" == e.edit.result ? window.location = wgServer + "/index.php?title=" + wgPageName + "&action=purge" : alert("Wystąpił błąd.")
-			})), this.innerHTML = '<img src="/wiki/Loader-square.gif" style="vertical-align:baseline" border="0" />'
+		for (i in LicenseOptions) e += '<option value="' + i + '" style="text-align:center">' + LicenseOptions[i] + "</option>";
+		var n = '<p style="text-align:center;"><select id="TESWLicenseSelect">' + e + '</select>&nbsp;<a class="wikia-button" id="aSubmit">Dodaj licencję</a> (jeżeli nie istnieje)';
+		document.getElementById("ESWLicensed") ? n += '&nbsp;<span style="color:red;font-weight:bold">Posiada licencję!</span></p>' : n += '&nbsp;<span style="color:green; font-weight:bold">Nie posiada licencji!</span></p>', $(".fullMedia").append(n), document.getElementById("aSubmit").onclick = function(e) {
+			$.ajax({
+				url: mw.util.wikiScript("api"),
+				type: "POST",
+				async: !0,
+				data: {
+					action: "edit",
+					title: wgPageName,
+					summary: "Dodano licencję",
+					text: "== Licencja ==\n" + document.getElementById("TESWLicenseSelect").value,
+					minor: !0,
+					bot: !0,
+					token: mediaWiki.user.tokens.get("editToken"),
+					format: "json"
+				},
+				contentType: "application/x-www-form-urlencoded",
+				error: function() {
+					alert("Wystąpił błąd.")
+				},
+				success: function(e) {
+					window.location.reload()
+				}
+			}), this.innerHTML = '<img src="https://vignette.wikia.nocookie.net/elderscrolls/images/8/8b/Loader-square.gif/revision/latest?cb=20150427024725&path-prefix=pl" border="0" />'
 		}
 	}
-	addOnloadHook(QLicenseUI);
+	addOnloadHook(LicenseTESW)
 }

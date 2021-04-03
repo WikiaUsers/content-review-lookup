@@ -1,10 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 /* Main page */
-/** Poll text **/
-$(function() {
-    $(".ajax-poll .total").parent().addClass("pollText");
-});
 
 /**************************************************************/
 /* sliders using jquery by User:Tierrie in Dragon Age Wiki */
@@ -26,7 +22,7 @@ mw.loader.using(['jquery.ui.tabs'], function() {
             return false;
         });
         $('#portal_prev').click(function() { // bind click event to link
-            $tabs.tabs('select', ($tabs.tabs('option', 'selected') == 0) ? ($tabs.tabs('length') - 1) : $tabs.tabs('option', 'selected') - 1); // switch to previous tab
+            $tabs.tabs('select', ($tabs.tabs('option', 'selected') === 0) ? ($tabs.tabs('length') - 1) : $tabs.tabs('option', 'selected') - 1); // switch to previous tab
             return false;
         });
     });
@@ -46,7 +42,7 @@ mw.loader.using(['jquery.ui.tabs'], function() {
 function updatetimer(i) {
     var now = new Date();
     var then = timers[i].eventdate;
-    var diff = count = Math.floor((then.getTime() - now.getTime()) / 1000);
+    var diff = Math.floor((then.getTime() - now.getTime()) / 1000);
 
     // catch bad date strings
     if (isNaN(diff)) {
@@ -55,11 +51,12 @@ function updatetimer(i) {
     }
 
     // determine plus/minus
+    var tpm;
     if (diff < 0) {
         diff = -diff;
-        var tpm = 'T plus ';
+        tpm = 'T plus ';
     } else {
-        var tpm = 'T minus ';
+        tpm = 'T minus ';
     }
 
     // calcuate the diff
@@ -69,7 +66,7 @@ function updatetimer(i) {
     diff = Math.floor(diff / 60);
     if (diff > 0) left = (diff % 24) + ' hours ' + left;
     diff = Math.floor(diff / 24);
-    if (diff > 0) left = diff + ' days ' + left
+    if (diff > 0) left = diff + ' days ' + left;
     timers[i].firstChild.nodeValue = tpm + left;
 
     // a setInterval() is more efficient, but calling setTimeout()
@@ -80,14 +77,14 @@ function updatetimer(i) {
 function checktimers() {
     //hide 'nocountdown' and show 'countdown'
     var nocountdowns = getElementsByClassName(document, 'span', 'nocountdown');
-    for (var i in nocountdowns) nocountdowns[i].style.display = 'none'
+    for (var i in nocountdowns) nocountdowns[i].style.display = 'none';
     var countdowns = getElementsByClassName(document, 'span', 'countdown');
-    for (var i in countdowns) countdowns[i].style.display = 'inline'
+    for (var i in countdowns) countdowns[i].style.display = 'inline';
 
     //set up global objects timers and timeouts.
     timers = getElementsByClassName(document, 'span', 'countdowndate'); //global
-    timeouts = new Array(); // generic holder for the timeouts, global
-    if (timers.length == 0) return;
+    timeouts = []; // generic holder for the timeouts, global
+    if (timers.length === 0) return;
     for (var i in timers) {
         timers[i].eventdate = new Date(timers[i].firstChild.nodeValue);
         updatetimer(i); //start it up
@@ -99,57 +96,6 @@ addOnloadHook(checktimers);
 //  - end -  Experimental javascript countdown timer
 // **************************************************
 
-/*
- * ADVANCED AJAX AUTO-REFRESHING ARTICLES
- * Code originally by "pcj" of Wowpedia
- * Maintenance, cleanup, style and bug fixes by Grunny (http://community.wikia.com/wiki/User:Grunny)
- */
-window.AjaxRCRefreshText = 'Auto-Refresh',
-    window.AjaxRCRefreshHoverText = 'Enable auto-refreshing of this page',
-
-    /**
-     * Temp Hack: copy the RC filter JS since it can't be accessed
-     * @source <https://github.com/Wikia/app/blob/dev/extensions/wikia/RecentChanges/js/RecentChanges.js>
-     */
-    RecentChangesLocal = {
-        init: function() {
-            this.$table = $('.mw-recentchanges-table');
-            this.$dropdown = this.$table.find('.WikiaDropdown');
-            this.$submit = this.$table.find('input[type="submit"]');
-            this.$submit.on('click.RecentChangesDropdown', $.proxy(this.saveFilters, this));
-            this.$submit.removeAttr('disabled'); //FF clean
-            this.dropdown = new Wikia.MultiSelectDropdown(this.$dropdown);
-            this.dropdown.on('change', $.proxy(this.onChange, this));
-
-        },
-
-        saveFilters: function(event) {
-            var self = this;
-
-            event.preventDefault();
-
-            self.dropdown.disable();
-            self.$submit.attr('disabled', 'disabled');
-
-            if (self.dropdown.getSelectedValues().length === 0) {
-                self.dropdown.doSelectAll(true);
-            }
-
-            $.nirvana.sendRequest({
-                controller: 'RecentChangesController',
-                method: 'saveFilters',
-                data: {
-                    filters: self.dropdown.getSelectedValues()
-                },
-                type: 'POST',
-                format: 'json',
-                callback: function(data) {
-                    window.location.reload();
-                }
-            });
-        }
-    };
-
 /* tabber: changing the tab displayed by default for certain pages */
 /* (source: http://community.wikia.com/wiki/Forum:Extension:Tabber_-_Setting_the_default_tab_displayed) */
 
@@ -158,7 +104,7 @@ if (mw.config.get('wgPageName') === 'Human_Vanguard' || mw.config.get('wgPageNam
         $('.tabberlive')[0].tabber.tabShow(1);
         $(window).off('load.tabberhack');
     });
-};
+}
 
 /**
  * Helper script for the .hlist class in [[MediaWiki:Common.css]] and [[MediaWiki:Wikia.css]]

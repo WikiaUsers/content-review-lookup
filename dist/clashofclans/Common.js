@@ -10,8 +10,21 @@
                     'from localStorage to re-enable site-wide JavaScript.');
         return;
     }
- 
- 
+
+	/*Remove Edit Wall Greeting Button if not your greeting (feels a bit obstructive)*/
+	$(function() {
+	var interval = setInterval(function() {
+		  if ($('.MessageWallButtons').length) {
+		      clearInterval(interval);
+			var username = mw.config.get('wgUserName');
+			var page = mw.config.get('wgTitle');
+			if (page != username) {
+				$('.MessageWallButtons').remove();
+			}
+	   }
+	}, 10);
+	});
+
     // Customize tags on user profiles
     window.UserTagsJS = {
         modules: {},
@@ -89,17 +102,6 @@
             }
         };
     }
-    
-
-    window.LockForums = {
-        expiryDays:    90,  // Number of days until forum is locked to new replies
-        expiryMessage: 'Forums are automatically locked when the most recent post is older than <expiryDays> days.',
-        warningDays:   14,   // Number of days until a warning is given to potential replies
-        ignoreDeletes: true, // Ignore deleted messages when calculating age of last post
-        warningPopup:  true, // Pop up a warning dialog that must be confirmed for posts on older forums
-        banners:       true, // Add a banner to the top of aged forums
-    };
-    
 
     /* Articles are interwiki links so that other wikis can use them. */
     articles = [
@@ -108,21 +110,15 @@
         'u:dev:Countdown/code.js',
         'u:dev:SpoilerAlert/code.js',
         'u:dev:TopEditors/code.js',
-        'u:dev:WallGreetingButton/code.js',
-        'u:dev:ExtendedNavigation/code.js',
-        'u:dev:LockForums/code.js',
-        'u:dev:LockOldBlogs/code.js',
         'w:c:clashofclans:MediaWiki:Common.js/RGBColor.js',
         'w:c:clashofclans:MediaWiki:Common.js/Usernames.js',
         'u:dev:UserTags/code.js',
         'w:c:clashofclans:MediaWiki:Common.js/Sliders.js',
         'w:c:clashofclans:MediaWiki:Common.js/GemCalculators.js',
         'w:c:clashofclans:MediaWiki:Common.js/Experience.js',
-        'w:c:clashofclans:MediaWiki:Common.js/AchievementInfo.js',
         'w:c:clashofclans:MediaWiki:Common.js/Tabber2.js',
         'w:c:clashofclans:MediaWiki:Common.js/ImageHover.js',
         'w:c:clashofclans:MediaWiki:Common.js/CumulativeCosts.js',
-        'w:c:clashofclans:MediaWiki:Common.js/UnitComparator.js',
         'w:c:clashofclans:MediaWiki:Common.js/ModeToggle.js',
         'w:c:clashofclans:MediaWiki:Common.js/PageVerify.js',
         'w:c:clashofclans:MediaWiki:Common.js/GorillaMan.js',
@@ -130,6 +126,8 @@
         'w:c:clashofclans:MediaWiki:Common.js/BadgeGenerator.js',
         'w:c:clashofclans:MediaWiki:Common.js/Protection.js',
         'w:c:clashofclans:MediaWiki:Common.js/AvailableBuildings.js',
+        'w:c:clashofclans:MediaWiki:Common.js/GoldPass.js',
+        'w:c:clashofclans:MediaWiki:Common.js/HeroSkins.js'
     ];
     // Use Wikia's importArticles() function to load JavaScript files
     window.importArticles({

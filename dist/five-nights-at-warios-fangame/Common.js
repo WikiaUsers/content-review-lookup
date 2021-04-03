@@ -9,7 +9,7 @@
 // RevealAnonIP
  
 window.RevealAnonIP = {
-    permissions : ['rollback', 'sysop', 'bureaucrat']
+    permissions : ['rollback', 'sysop', 'bureaucrat', 'administrator']
 };
  
 // DynamicImages Config

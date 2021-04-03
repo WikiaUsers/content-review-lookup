@@ -18,18 +18,15 @@
         'wgFormattedNamespaces',
         'wgNamespaceNumber'
     ]),
-    $module = $('div.module_content:first');
+    $module = $('div#wpSummaryLabel'), // UCP source editors
+    $moduleOld = $('div.module_content:first'); // Old Non-UCP Source Editor
 
     // Run conditions
-    if (
-        mwc.wgAction !== 'edit' || 
-        !$module.exists() ||
-        mwc.wgNamespaceNumber === 8 // MediaWiki:
-    ) {
-        console.log('[PreloadTemplates]: container not found or page is not supported.');
+    if (mwc.wgNamespaceNumber === 8) {
+        console.log('[PreloadTemplates]: page is not supported.');
         return;
     }
-    console.log('[PreloadTemplates]: version 1.04 - 08/11/2017.');
+    console.log('[PreloadTemplates]: version 1.05 - 11/2020.');
 
     // =================
     //   Configuration
@@ -48,7 +45,7 @@
         return i18n.msg(message).plain();
     }
 
-    // Parse MediaWiki code to allow the use of incudeoonly and noninclude tags in the preload page
+    // Parse MediaWiki code to allow the use of includeonly and noninclude tags in the preload page
     function parseMW(source){
         return source.replace(/<includeonly>(\n)?|(\n)?<\/includeonly>|\s*<noinclude>[^]*?<\/noinclude>/g, '');
     }
@@ -65,7 +62,7 @@
             myField.focus();
             window.sel = document.selection.createRange();
             window.sel.text = myValue;
-        } else if (myField.selectionStart || myField.selectionStart === 0) {
+        } else if ( myField.selectionStart || myField.selectionStart === 0 ) {
             // MOZILLA/NETSCAPE support
             var startPos = myField.selectionStart,
                 endPos = myField.selectionEnd;
@@ -102,7 +99,14 @@
             // Insert syntax
             var cke = document.getElementsByClassName('cke_source'),
                 textbox = document.getElementById('wpTextbox1');
-            if (cke.length) {
+            if (window.ve && ve.init && ve.init.target && ve.init.target.active) {
+                // UCP Visual Editor (Source mode)
+                ve.init.target
+                    .getSurface()
+                    .getModel().
+                    getFragment()
+                    .insertContent(preloadDataParsed);
+            } else if (cke.length) {
                 // Visual editor
                 insertAtCursor(cke[0], preloadDataParsed);
             } else if (textbox) {
@@ -115,23 +119,34 @@
         });
     }
 
+    function appendModule() {
+        var $moduleNew = $('.ve-ui-summaryPanel-summaryInputField');
+        // Appending HTML to editor
+        if ( $module.length ) { 
+            $module.after($main);          // UCP source editors
+        } else if ( $moduleOld.length ) { 
+            $moduleOld.append($main);       // Old Non-UCP Source Editor
+        } else if ( $moduleNew.length ) {
+            $moduleNew.append($main);
+        }
+    }
+
+	// Add selector to editor
     function preInit(i18nData) {
         i18n = i18nData;
-        i18n.useUserLang();
         $main = $('<div>', { id: 'preload-templates' });
-        $main.append($('<h3>', {
+        $main.append($('<span>', {
             text: msg('preload')
         }));
         $help = $('<div>', {
             id: 'pt-help'
         }).append($('<a>', {
-            'class': 'tooltip-icon',
             target: '_blank',
-            href: '//dev.wikia.com/wiki/PreloadTemplates',
+            href: 'https://dev.fandom.com/wiki/PreloadTemplates',
             title: msg('devWiki'),
             text: '?'
         }));
-        $module.append($main);
+        appendModule();
     }
 
     function listHTML(parsed) {
@@ -193,7 +208,7 @@
             return;
         }
 
-        // Append template list and messageges
+        // Append template list and messages
         $main.append(
             $('<select>', {
                 id: 'pt-list',
@@ -228,8 +243,12 @@
     });
 
     mw.hook('dev.i18n').add(function(i18no) {
-        i18no.loadMessages('PreloadTemplates').then(function(i18nData) {
+        $.when(
+            i18no.loadMessages('PreloadTemplates'),
+            mw.loader.using('mediawiki.util')
+        ).then(function(i18nData) {
             preInit(i18nData);
+            mw.hook('ve.activationComplete').add(appendModule);
             $.get(mw.util.wikiScript(), {
                 title: config.list,
                 action: 'raw',

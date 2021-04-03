@@ -5,13 +5,9 @@
  * @description     Adds wiki-specific ContribsButtons styling.
  */
 (function() {
-    var config = mw.config.get([
-        'wgCanonicalSpecialPageName',
-        'wgSassParams'
-    ]);
     if (
         window.ContribsButtonsLoaded ||
-        config.wgCanonicalSpecialPageName !== 'Contributions'
+        mw.config.get('wgCanonicalSpecialPageName') !== 'Contributions'
     ) {
         return;
     }
@@ -26,22 +22,26 @@
          * @returns {void}
          */
         addCSS: function () {
-            var color = config.wgSassParams['color-buttons'];
+            var color = window.dev.colors.fandom.menu;
             mw.util.addCSS(
-'body.mw-special-Contributions #VSTFReportButtons .VSTFReportButton,\
-body.mw-special-Contributions #contentSub:not(.contentSub) a,\
-body.mw-special-Contributions #contentSub #contentSubSub a {\
+'body.mw-special-Contributions #SOAPReportButtons .SOAPReportButton,\
+body.mw-special-Contributions #contentSub a,\
+body.mw-special-Contributions .mw-contributions-user-tools > .mw-changeslist-links span,\
+body.mw-special-Contributions .quicklogs__content-sub:not(#quicklogs-container) > a {\
     background:' + color + ';\
 }\
-body.mw-special-Contributions #VSTFReportButtons .VSTFReportButton:active,\
-body.mw-special-Contributions #VSTFReportButtons .VSTFReportButton:focus,\
-body.mw-special-Contributions #VSTFReportButtons .VSTFReportButton:hover,\
-body.mw-special-Contributions #contentSub:not(.contentSub) a:active,\
-body.mw-special-Contributions #contentSub:not(.contentSub) a:focus,\
-body.mw-special-Contributions #contentSub:not(.contentSub) a:hover,\
-body.mw-special-Contributions #contentSub #contentSubSub a:active,\
-body.mw-special-Contributions #contentSub #contentSubSub a:focus,\
-body.mw-special-Contributions #contentSub #contentSubSub a:hover {\
+body.mw-special-Contributions #SOAPReportButtons .SOAPReportButton:active,\
+body.mw-special-Contributions #SOAPReportButtons .SOAPReportButton:focus,\
+body.mw-special-Contributions #SOAPReportButtons .SOAPReportButton:hover,\
+body.mw-special-Contributions #contentSub a:active,\
+body.mw-special-Contributions #contentSub a:focus,\
+body.mw-special-Contributions #contentSub a:hover,\
+body.mw-special-Contributions .mw-contributions-user-tools > .mw-changeslist-links span:active,\
+body.mw-special-Contributions .mw-contributions-user-tools > .mw-changeslist-links span:focus,\
+body.mw-special-Contributions .mw-contributions-user-tools > .mw-changeslist-links span:hover,\
+body.mw-special-Contributions .quicklogs__content-sub:not(#quicklogs-container) > a:active,\
+body.mw-special-Contributions .quicklogs__content-sub:not(#quicklogs-container) > a:focus,\
+body.mw-special-Contributions .quicklogs__content-sub:not(#quicklogs-container) > a:hover {\
     background:' + window.dev.colors.parse(color).lighten(12) + ';\
 }'
             );

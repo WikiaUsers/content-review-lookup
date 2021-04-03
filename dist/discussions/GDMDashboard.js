@@ -5,7 +5,7 @@
  * @author Noreplyz
  */
 
-;(function (window, $, mw, Mustache) {
+;(function (window, $) {
     if (window.GDMDashboardLoaded) return;
     if ($('#gdm-dashboard').length === 0) return;
     var groups = mw.config.get('wgUserGroups');
@@ -19,7 +19,8 @@
 
     /* Pages */
     GDMD.PAGES = {
-        OVERVIEW: 'Data:Overview/'
+        OVERVIEW: 'Data:Overview/',
+        IGNORE: 'Data:Dashboard/ignore'
     };
     GDMD.MONTHS = [
         'January',
@@ -77,9 +78,9 @@
                 '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 12 12" class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron" id="wds-icons-dropdown-tiny"><defs><path id="dropdown-tiny-a" d="M6.0001895,8.80004571 C5.79538755,8.80004571 5.5905856,8.72164496 5.43458411,8.56564348 L2.23455364,5.365613 C2.00575146,5.13681083 1.93695081,4.79280755 2.06095199,4.4936047 C2.18415316,4.19440185 2.47695595,4 2.80015903,4 L9.20021997,4 C9.52342305,4 9.81542583,4.19440185 9.93942701,4.4936047 C10.0634282,4.79280755 9.99462754,5.13681083 9.76582536,5.365613 L6.56579489,8.56564348 C6.4097934,8.72164496 6.20499145,8.80004571 6.0001895,8.80004571 Z"></path></defs><use fill-rule="evenodd" xlink:href="#dropdown-tiny-a"></use></svg>' +
             '</div>' +
             '<div class="wds-dropdown__content wds-is-left-aligned wds-is-right-aligned">' +
-                '<ul class="wds-list wds-is-linked">' +
-                    '<li><a><label class="filter-language" data-cat="all"><input type="checkbox" checked/>all</label></a></li>' +
-                    '{{#languages}}<li><a><label class="filter-language" data-cat="{{.}}"><input type="checkbox" />{{.}}</label></a></li>{{/languages}}' +
+                '<ul class="wds-list wds-is-linked" style="margin:0;">' +
+                    '<li><label class="filter-language" data-cat="all"><input type="checkbox" checked/>all</label></li>' +
+                    '{{#languages}}<li><label class="filter-language" data-cat="{{.}}"><input type="checkbox" />{{.}}</label></li>{{/languages}}' +
                 '</ul>' +
             '</div>' +
         '</div>' +
@@ -89,9 +90,9 @@
                 '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 12 12" class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron" id="wds-icons-dropdown-tiny"><defs><path id="dropdown-tiny-a" d="M6.0001895,8.80004571 C5.79538755,8.80004571 5.5905856,8.72164496 5.43458411,8.56564348 L2.23455364,5.365613 C2.00575146,5.13681083 1.93695081,4.79280755 2.06095199,4.4936047 C2.18415316,4.19440185 2.47695595,4 2.80015903,4 L9.20021997,4 C9.52342305,4 9.81542583,4.19440185 9.93942701,4.4936047 C10.0634282,4.79280755 9.99462754,5.13681083 9.76582536,5.365613 L6.56579489,8.56564348 C6.4097934,8.72164496 6.20499145,8.80004571 6.0001895,8.80004571 Z"></path></defs><use fill-rule="evenodd" xlink:href="#dropdown-tiny-a"></use></svg>' +
             '</div>' +
             '<div class="wds-dropdown__content wds-is-left-aligned">' +
-                '<ul class="wds-list wds-is-linked">' +
-                    '<li><a><label class="filter-hub" data-cat="all"><input type="checkbox" checked />All</label></a></li>' +
-                    '{{#hubs}}<li><a><label class="filter-hub" data-cat="{{.}}"><input type="checkbox" />{{.}}</label></a></li>{{/hubs}}' +
+                '<ul class="wds-list wds-is-linked" style="margin:0;">' +
+                    '<li><label class="filter-hub" data-cat="all"><input type="checkbox" checked />All</label></li>' +
+                    '{{#hubs}}<li><label class="filter-hub" data-cat="{{.}}"><input type="checkbox" />{{.}}</label></li>{{/hubs}}' +
                 '</ul>' +
             '</div>' +
         '</div>';
@@ -336,7 +337,7 @@
                     'badge:global-discussions-moderator': 0,
                     'badge:staff': 0,
                     'badge:helper': 0
-                }
+                };
                 actions[0].users.forEach(function(user) {
                     totalCount += parseInt(user.totalCount);
                     if (user.userInfo.badgePermission == '') return;
@@ -362,17 +363,26 @@
         var month = new Date().getUTCMonth();
         $.when(GDMD.getPageContents(GDMD.PAGES.OVERVIEW + year + ' ' + GDMD.MONTHS[month])).then(function(content) {
             var badDatePromise = $.Deferred().resolve(content);
+            var ignoreWikisPromise = GDMD.getPageContents(GDMD.PAGES.IGNORE);
             if (content === null) {
                 month = month === 0 ? 11 : month - 1;
                 if (month == 11) year -= 1;
                 badDatePromise = GDMD.getPageContents(GDMD.PAGES.OVERVIEW + year + ' ' + GDMD.MONTHS[month]);
             }
-            $.when(badDatePromise).then(function (content) {
+            $.when(badDatePromise, ignoreWikisPromise).then(function (content, ignoreContent) {
+            	// Obtain wikis to ignore
+            	ignoreContent = ignoreContent.split('\n').filter(function(line) {
+            		return line[0] === '*';
+            	});
+            	ignoreContent = ignoreContent.map(function(line) {
+            		return line.slice(1).trim();
+            	});
+            	// Obtain list of wikis
                 var wikis = content.split('\n');
                 var hubs = [];
                 wikis.forEach(function (wiki, i) {
                     var logComponents = wiki.split('|');
-                    if (!logComponents[0].startsWith('*')) {
+                    if (!logComponents[0].startsWith('*') || ignoreContent.indexOf(logComponents[1]) >= 0) {
                         wikis[i] = {
                             exists: false
                         };
@@ -464,8 +474,13 @@
             if (e.keyCode === 13) {
                 $('#gdm-dashboard-search-button').click();
             }
-        })
+        });
     };
-    GDMD.init();
 
-})(window, jQuery, mediaWiki, window.Mustache);
+    mw.loader.using(['mediawiki.template.mustache', 'mediawiki.api'], function() {
+        GDMD.init();
+    });
+
+    window.GDMD = GDMD;
+
+})(window, jQuery);

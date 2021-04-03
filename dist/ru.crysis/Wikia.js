@@ -1,4 +1,3 @@
-importScriptPage('AjaxPatrol/code.js', 'dev' );
 ;(function($,mw) {
 
     var namespace = mw.config.get('wgNamespaceNumber');

@@ -50,9 +50,9 @@ window.lessOpts.push( {
 importArticles({
 	type: 'script',
 	articles: [
-		'u:dev:Less/code.2.js',
-		'u:dev:WallGreetingButton/code.js',
-		'u:dev:LastEdited/code.js',
+		'u:dev:MediaWiki:Less/code.2.js',
+		'u:dev:MediaWiki:WallGreetingButton/code.js',
+		'u:dev:MediaWiki:LastEdited/code.js',
 	]
 });
 

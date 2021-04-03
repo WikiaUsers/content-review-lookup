@@ -145,7 +145,7 @@
         var
             i;
 
-        data.each(function (i, e) {
+        data.each(function (_, e) {
             var
                 text = $(e).text()
                     .replace(/#.*?(\n|$)/g, '$1') // remove all comments
@@ -157,7 +157,7 @@
             // process tokens, sanitizing them along the way
             if ((text.length === 3) || (text.length === 13)) {
                 // basic zone definition
-                c = clock[i] = {
+                clock.push({
                     e: $(e),
                     name: text[0]           // location description
                         .replace(/_/g, ' '),  // translate spaces
@@ -166,7 +166,8 @@
                     ),
                     zone: text[2]           // zone designator
                         .replace(/_/g, ' '),  // translate spaces
-                };
+                });
+                c = clock[clock.length - 1];
                 if (text.length === 13) {
                     // daylight time rules
                     c.year = 1; // truthy, but purposefully wrong
@@ -201,18 +202,9 @@
                 }
             } else {
                 // error
-                clock[i] = null;
                 $(e).empty().text('Incorrect number of data for clock');
             }
         });
-        i = 0;
-        while (i < clock.length) {
-            if (clock[i]) {
-                ++i; // no error yet, keep
-            } else {
-                clock.splice(i, 1); // error, discard
-            }
-        }
     }
 
     // handle timer event
@@ -265,9 +257,9 @@
 
     // main routine
     // look for signature classes, init, and run
-    $(function () {
+    function init($content) {
         var
-            data = $('.js-tzclock'),
+            data = $content.find('.js-tzclock:not(.loaded)'),
             dom = String.prototype.concat(
                 '<div class="js-tzclock-wrap">',
                     '<div class="js-tzclock-lctn"></div>',
@@ -277,6 +269,7 @@
             e, i;
 
         if (data.length) {
+            data.addClass('loaded');
             getConfig(data);
             if (clock.length) {
                 // init formats with names
@@ -289,5 +282,11 @@
                 setTimeout(onTick);
             }
         }
+    }
+
+    // hook into dynamic content changes
+    mw.loader.using('mediawiki.util').then(function() {
+        init(mw.util.$content);
     });
+    mw.hook('wikipage.content').add(init);
 }(jQuery));

@@ -224,7 +224,7 @@ if (wgUserName != 'null') {
  
 // Automatical refreshing
 window.ajaxPages = 
-["Special:RecentChanges","Specjalna:Ostatnie_zmiany","Specjalna:Aktywność_na_wiki","Special:WikiActivity"];
-window.AjaxRCRefreshText = 'Automatyczne odświeżanie';
-window.AjaxRCRefreshHoverText = 'Włącza automatyczne odświeżanie strony';
+["Special:RecentChanges","Special:WikiActivity"];
+window.AjaxRCRefreshText = 'Automatical refreshing';
+window.AjaxRCRefreshHoverText = 'Turns on automatical refreshing';
 importScriptPage('AjaxRC/code.js', 'dev');

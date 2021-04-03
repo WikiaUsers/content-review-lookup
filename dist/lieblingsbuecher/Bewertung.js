@@ -49,10 +49,10 @@ function SetBewertung(ListenElement){
     // Erstens: Die Seite existiert nicht. Dann wird sie angelegt und mit den übergebenen Werten gefüllt
     if (xmlhttp.readyState==4 && (xmlhttp.status==404 || xmlhttp.status==410)) {
           NeueBewertung = "<noinclude>{{Bewertung/Hinweis}}</noinclude> {{#switch: {{{Name}}}\n";
-          NeueBewertung += "  |"+Name+" = {{#switch: {{{Zeige|}}} |Wert = "+Wert+" |Anzahl = 1 |Durchschnitt = "+Wert+"}}\n"
+          NeueBewertung += "  |"+Name+" = {{#switch: {{{Zeige|}}} |Wert = "+Wert+" |Anzahl = 1 |Durchschnitt = "+Wert+"}}\n";
           NeueBewertung += "}}<noinclude>\n";
-          NeueBewertung += "{{Bewertung/Darstellung|Name="+Name+"|Inhalt=\n"
-          NeueBewertung += "{{Bewertung/User|"+wgUserName+"|"+Wert+"}}\n";
+          NeueBewertung += "{{Bewertung/Darstellung|Name="+Name+"|Inhalt=\n";
+          NeueBewertung += "{{Bewertung/User|"+ mw.config.get('wgUserName') + "|" + Wert + "}}\n";
           NeueBewertung += "}}</noinclude>";
           AjaxWritePage(NeueBewertung, ListenElement);
           Wertungsbreite = ListenElement.parentNode.offsetWidth
@@ -103,15 +103,15 @@ function SetBewertung(ListenElement){
       if(RestAjax.search(Name) < 0){
           //Dies ist die erste Bewertung von {{{Name}}}
           NeueBewertung += RestAjax.substring(0, RestAjax.search("</noinclude>"));
-          NeueBewertung += "\n{{Bewertung/Darstellung|Name="+Name+"|Inhalt=\n"
-          NeueBewertung += "{{Bewertung/User|"+wgUserName+"|"+Wert+"}}\n";
+          NeueBewertung += "\n{{Bewertung/Darstellung|Name="+Name+"|Inhalt=\n";
+          NeueBewertung += "{{Bewertung/User|" + mw.config.get('wgUserName') + "|" + Wert + "}}\n";
           NeueBewertung += "}}</noinclude>";
       } else {
           NeueBewertung += RestAjax.substring(0, RestAjax.search(Name));
           RestAjax       = RestAjax.substring(RestAjax.search(Name));
           NeueBewertung += RestAjax.substring(0, RestAjax.search(/\n/g)+1);
           RestAjax       = RestAjax.substring(RestAjax.search(/\n/g)+1);
-          NeueBewertung += "{{Bewertung/User|"+wgUserName+"|"+Wert+"}}\n";
+          NeueBewertung += "{{Bewertung/User|" + mw.config.get('wgUserName') + "|" + Wert + "}}\n";
           NeueBewertung += RestAjax;
       }
       AjaxWritePage(NeueBewertung, ListenElement);   // Hier wird die Seite geschrieben
@@ -124,13 +124,13 @@ function SetBewertung(ListenElement){
           ListenElement.parentNode.childNodes[0].style.backgroundColor= ""; // Standardfarbe herstellen für Schutz (grün)
       Keksdose(BewertungID, Wert); // Cookie setzen, damit er nicht nochmal bewerten kann + sich erinnert, was er bewertet hat
     }
-  }
+  };
   ListenElement.parentNode.classList.add("bewertet"); // diese Bewertung als "bewertet" markieren (löst einige CSS-Funktionen aus)
   ListenElement.parentNode.childNodes[0].textContent = "Bitte warten..."; // Info für Benutzer, was er gewählt hat.
   ListenElement.parentNode.childNodes[0].style.backgroundColor= "#04075A"; // Schutz bekommt andere Farbe um "Warten" deutlich zu machen.
   // Ajax-Seite auslesen. Es ist die Seite, auf die später die Bewertung eingetragen wird (Artikel/Bewertung)
   var wiki_url = mw.util.getUrl(
-      wgPageName.replace(' ', '_') + '/Bewertung', // Falls der Name Leerzeichen enthält, werden diese durch Unterstriche ersetzt
+      mw.config.get('wgPageName').replace(' ', '_') + '/Bewertung', // Falls der Name Leerzeichen enthält, werden diese durch Unterstriche ersetzt
       { action: 'raw' } //action=raw gibt den vollen Seiteninhalt inkl. NOINCLUDE
     );
   //Ajax-Anfrage senden
@@ -152,16 +152,16 @@ function AjaxWritePage(Bewertung, ListenElement) {
     title:   Artikel+"/Bewertung",       // Seitenname
     text:    Bewertung,                     // Neuer Seiteninhalt
     token:   p.edittoken,                   // Hier wird das Wikia-Token von vorher benötigt, da Wikia sonst nicht reagiert (Antispam)
-    summary: wgUserName + " bewertet "+Name+" mit "+Wert+".", //Zusammenfassung, die später auch in der Historie angezeigt wird
+    summary: mw.config.get('wgUserName') + " bewertet " + Name + " mit " + Wert + ".", //Zusammenfassung, die später auch in der Historie angezeigt wird
     minor:   true,
   });
 
   var xmlhttp;
   if (window.XMLHttpRequest){ xmlhttp=new XMLHttpRequest(); }
                        else { xmlhttp=new ActiveXObject("Microsoft.XMLHTTP"); }
-    xmlhttp.onreadystatechange=function()  { }
+    xmlhttp.onreadystatechange=function()  { };
     var wiki_url = mw.util.getUrl(
-      wgPageName.replace(' ', '_'), // Falls der Name Leerzeichen enthält, werden diese durch Unterstriche ersetzt
+      mw.config.get('wgPageName').replace(' ', '_'), // Falls der Name Leerzeichen enthält, werden diese durch Unterstriche ersetzt
       { action: 'purge' } //action=raw gibt den vollen Seiteninhalt inkl. NOINCLUDE
     );
   //Ajax-Anfrage senden

@@ -6,15 +6,6 @@ window.railWAM = {
     logPage:"Project:WAM Log"
 };
 
-/* see w:c:dev:AjaxRC for info & attribution */
-window.AjaxRCRefreshText = 'Auto-Refresh';
-window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
-window.ajaxPages = [
-    "Special:RecentChanges",
-    "Special:WikiActivity",
-    "Special:WikiActivity/watchlist",
-];
-
 // Configuration for Mass Managament Tools
 window.MassCategorizationGroups = ['sysop', 'content-moderator'];
 window.MassRedirectGroups = ['sysop', 'content-moderator'];

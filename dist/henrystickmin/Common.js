@@ -118,7 +118,7 @@ function updatetimer(i) {
     }
   }
  
-  addOnloadHook(checktimers);
+ // addOnloadHook(checktimers);
  
 // *******************************************
 // Adds a button to clear Deletion reasons

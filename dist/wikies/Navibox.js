@@ -1,14 +1,18 @@
-// Создаёт списки участников со статусами
-// http://ru.siegenax.wikia.com/wiki/MediaWiki:Kopcap94/WikiStats.js/another.js
-// http://ru.wikies.wikia.com/wiki/Участник:Fngplg/common.js?oldid=155828
+// Создаёт списки участников со статусами (Kopcap94, Fngplg, Rendann)
 !function( $, mw ) {
     var f = {},
         pn = mw.config.get( 'wgPageName' ).replace( /_/g, ' ' ),
         template = {
+            excluded: [
+                '*',
+                'bot',
+                'user',
+                'autoconfirmed',
+                'chatmoderator'
+            ],
             standart: [
                 'Администраторы',
                 'Откатчики',
-                'Модераторы чата',
                 'Модераторы обсуждений',
                 'Модераторы контента'
             ],
@@ -17,7 +21,6 @@
                 'sysop',
                 'content-moderator',
                 'threadmoderator',
-                'chatmoderator',
                 'rollback'
             ],
             fill: {
@@ -25,13 +28,11 @@
                 'sysop': [],
                 'content-moderator': [],
                 'threadmoderator': [],
-                'chatmoderator': [],
                 'rollback': []
             },
             def: {
                 'sysop': 'Администраторы',
                 'rollback': 'Откатчики',
-                'chatmoderator': 'Модераторы чата',
                 'threadmoderator': 'Модераторы обсуждений',
                 'content-moderator': 'Модераторы контента'
             },
@@ -81,21 +82,25 @@
             type: 'GET',
             data: {
                 action :'query',
-                list: 'groupmembers',
-                gmlimit: '50',
+                list: 'allusers',
+                aulimit: '50',
                 format: 'json',
-                gmgroups: g
+				auwitheditsonly: 'true',
+                auprop: 'groups',
+                augroup: g
             },
             success: function( d ) {
-                $.each( d.users, function( i, user ) {
-                    if ( user.id === '0' ) {
+                $.each( d.query.allusers, function( i, user ) {
+                    if ( user.userid === '0' ) {
                         return false;
                     }
- 
+
                     wikies[ id ].allusers.push( user.name );
  
                     $.each( user.groups, function( i, group ) {
-                        wikies[ id ].fill[ group ].push( user.name );
+                        if (wikies[ id ].excluded.indexOf( group ) === -1) {
+                            wikies[ id ].fill[ group ].push( user.name );
+                        }
                     });
                 });
  
@@ -153,7 +158,7 @@
     };
  
     f.setRedLinks = function( w, $c, wikies ) {
-        $.get( wgScriptPath + '/api.php', {
+        $.get( mw.config.get( 'wgScriptPath' ) + '/api.php', {
             action: 'query',
             prop: 'info',
             titles: wikies[ w ].allusers.join( '|' ),

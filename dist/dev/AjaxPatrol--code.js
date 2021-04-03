@@ -3,6 +3,7 @@
  *
  * @author Grunny
  *
+ * Used files: [[File:Facebook throbber.gif]]
  */
 
 (function () {

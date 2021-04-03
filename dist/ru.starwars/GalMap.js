@@ -21,10 +21,10 @@ function ShowMap( sHash )
     $("#GalaxyMap").remove();
     $("#GalaxyMapShell").remove();
  
-    // описк 1й картинки за элементом #ThumbMapLegends и добавление атрибута onClick с передачей параметра на вывод карты ЛЕГЕНД
-    $('#ThumbMapLegends img:first').attr('onClick', 'ShowMap( \'((обл=ЛЕГЕНДЫ))\' )'); 
-    // описк 1й картинки за элементом #ThumbMapCanon и добавление атрибута onClick с передачей параметра на вывод карты КАНОНА
-    $('#ThumbMapCanon img:first').attr('onClick', 'ShowMap( \'((обл=КАНОН))\' )'); 
+    // поиск 1й картинки за элементом #ThumbMapLegends и добавление атрибута onClick с передачей параметра на вывод карты ЛЕГЕНД
+    $('#ThumbMapLegends img:first-child ').attr('onClick', 'ShowMap( \'((обл=ЛЕГЕНДЫ))\' )'); 
+    // поиск 1й картинки за элементом #ThumbMapCanon и добавление атрибута onClick с передачей параметра на вывод карты КАНОНА
+    $('#ThumbMapCanon img:first-child ').attr('onClick', 'ShowMap( \'((обл=КАНОН))\' )'); 
  
     // если функция была вызвана без парамерта, ничего выводить не нужно -- выход
     if (sHash.length === 0) 

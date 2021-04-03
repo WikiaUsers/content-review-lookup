@@ -1,9 +1,9 @@
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:CodeQuickLinks/code.js',
-        'u:dev:PortableCSSPad/code.js',
-        'u:dev:RevealAnonIP/usercode.js',
-        'u:dev:WHAM/code.2.js',
+        'u:dev:MediaWiki:CodeQuickLinks/code.js',
+        'u:dev:MediaWiki:PortableCSSPad/code.js',
+        'u:dev:MediaWiki:RevealAnonIP/usercode.js',
+        'u:dev:MediaWiki:WHAM/code.2.js',
     ],
 });/**/

@@ -1,24 +1,13 @@
 function timeStamp_DrTerror_js() {
-  /* Обновленный виджет Доктора Ти */
+  /* Обновлённый виджет внутриигровых ежедневных событий */
   return '2016.11.03 19:38 (UTC-5)';
-}
-
-/* Время из учета DST */
-Date.prototype.stdTimezoneOffset = function() {
-  var jan = new Date(this.getFullYear(), 0, 1);
-  var jul = new Date(this.getFullYear(), 6, 1);
-  return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
-}
-
-Date.prototype.dst = function() {
-  return this.getTimezoneOffset() < this.stdTimezoneOffset();
 }
 
 /* Тело виджета */
 function createCountdownWidget() {
 
   function timeDiff(time1, time2) {
-    // Время считается в миллисекундах но приводится к норме
+    // Время считается в миллисекундах, но приводится к норме
     var diff = Math.floor(Math.abs(time1 - time2) / (1000 * 60));
     var divisors = [24 * 60, 60, 1];
     var abbrevs = ['Д', 'Ч', 'М'];
@@ -50,26 +39,12 @@ function createCountdownWidget() {
     var divTextMiddle = $(w).find('div#events-text-middle').get(0);
     var divTextBottom = $(w).find('div#events-text-bottom').get(0);
 
-    // Ивенты начинаются в один и тот же день
-    var eventCycleStart = new Date(now.getFullYear(), now.getMonth(),
-                                   now.getDate(), 6, 0, 0, 0);
+    var utcCutOffHour = 8;
+    var todayCutOff = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), utcCutOffHour, 0, 0, 0));
+    var tomorrowCutOff = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, utcCutOffHour, 0, 0, 0));
+    var eventCycleEnd = todayCutOff.getTime() < now.getTime() ? tomorrowCutOff : todayCutOff;
 
-    if (now.getHours() < 6 || now.getHours() == 12) {
-      // Заканчивается в этот день
-      var eventCycleEnd = new Date(now.getFullYear(), now.getMonth(),
-                                   now.getDate(), 3, 0, 0, 0);
-    }
-    else {
-      // Заканчивается в следующий
-      var eventCycleEnd = new Date(now.getFullYear(), now.getMonth(),
-                                   now.getDate() + 1, 3, 0, 0, 0);
-    }
-
-    // Корректировка на смену времени
-    eventCycleStart.setHours( eventCycleStart.getHours() - now.dst());
-    eventCycleEnd.setHours( eventCycleEnd.getHours() - now.dst());
-
-    // Определение текущего и следующего ивента
+    // Определение текущего и следующего события
     var nextEvent = '';
     var event = '';
     
@@ -124,16 +99,8 @@ function createCountdownWidget() {
       nextEvent = 'volcano';
     }
     */
-    var remaining = '';
+    var remaining = timeDiff(now, eventCycleEnd);
     var tilNextEvent = '';
-
-    if (now.getHours() >= 6 || now.getHours() < 3) {
-      // Текущий ивент
-      remaining = timeDiff(now,eventCycleEnd);
-    } else {
-      // Нет ивентов
-      tilNextEvent = timeDiff(now,eventCycleStart);
-    }
     
     if (nextEvent === 'gearheart') {
     divTextBottom.innerHTML = 'Следующее событие: Военная фабрика';
@@ -153,13 +120,6 @@ function createCountdownWidget() {
 
     if (remaining) {
       divTextMiddle.innerHTML = 'ОСТАЛОСЬ ' + remaining;
-    }
-    else {
-      $(w).find("div#events-div-image").get(0).className = 'events-' +
-                                                    nextEvent;
-      $(w).find("img#events-image").get(0).className = 'events-' +
-                                                    nextEvent;
-      divTextMiddle.innerHTML =  'ОСТАЛОСЬ ' + tilNextEvent;
     }
   }
 
@@ -183,13 +143,13 @@ function createCountdownWidget() {
     imgImage.width="90px";
     imgImage.height="50px";
 
-    // Активный ивент
+    // Активное событие
     var divTextTop = document.createElement('div');
     divTextTop.id = 'events-text-top';
     // Таймер
     var divTextMiddle = document.createElement('div');
     divTextMiddle.id = 'events-text-middle';
-    // Следующий ивент
+    // Следующее событие
     var divTextBottom = document.createElement('div');
     divTextBottom.id = 'events-text-bottom';
     // Смена таймера
@@ -197,14 +157,14 @@ function createCountdownWidget() {
     divChangeBox.id = 'countdown-switch-box';
     var divChangeText = document.createElement('div');
     divChangeText.id = 'countdown-switch-text';
-    divChangeText.innerHTML = 'Сменить на таймер Интела';
+    divChangeText.innerHTML = 'Сменить на таймер интела';
 
-    // Вычисление выводимой информации для смены ивента
+    // Вычисление выводимой информации для смены события
     var now = new Date();
     now.setSeconds(0);
     now.setMilliseconds(0);
-    // Старт ивента с понедельника
-    var eventCycleType = now.getDay() - 1;
+    // Старт события с понедельника
+    var eventCycleType = now.getUTCDay() - 1;
     if (eventCycleType < 0) {
         eventCycleType = 6;
     }
@@ -212,7 +172,7 @@ function createCountdownWidget() {
     // Старый код
     */
 
-    // Определяет какое изображение использовать
+    // Определяет, какое изображение использовать
     if (eventCycleType === 3) {
       imgImage.src = "https://vignette.wikia.nocookie.net/boombeach/images/1/14/Colonel_Gearheart.png/revision/latest?cb=20150506115021";
     }
@@ -222,47 +182,42 @@ function createCountdownWidget() {
     else {
       imgImage.src = "https://vignette.wikia.nocookie.net/boombeach/images/0/03/Terrorc.png/revision/latest?cb=20150506231414";
     }
-    if (!(now.getHours() >= 6 || now.getHours() < 3)) {
-      widget.className = 'events-none';
-      widgetFront.className = 'events-none';
-      divImage.className = 'events-none';
-      divTextTop.innerHTML = 'НЕТ АКТИВНЫХ СОБЫТИЙ';
-    } else if (eventCycleType === 3) {
-      // Якоря классов
+    if (eventCycleType === 3) {
+      // Установка классовых имён
       widget.className = 'events-gearheart';
       widgetFront.className = 'events-gearheart';
       divImage.className = 'events-gearheart';
       imgImage.className = 'events-gearheart';
-      // Название ивентов
-      divTextTop.innerHTML = 'ВОЕННАЯ ФАБРИКА АКТИВНА';
+      // Название события
+      divTextTop.innerHTML = 'ВОЕННАЯ ФАБРИКА ГИРХАРТ';
     } else if (eventCycleType === 0 || eventCycleType === 4) {
-      // Якоря классов
+      // Установка классовых имён
       widget.className = 'events-hammerman';
       widgetFront.className = 'events-hammerman';
       divImage.className = 'events-hammerman';
       imgImage.className = 'events-hammerman';
       if (eventCycleType === 0) {
-        // Название ивентов
-        divTextTop.innerHTML = 'ФЛОТ ХАММЕРМАНА АКТИВЕН';
+        // Название события
+        divTextTop.innerHTML = 'ФЛОТ ЛЕЙТЕНАНТА ХАММЕРМАНА';
       } else {
-        // Название ивентов
-        divTextTop.innerHTML = 'ИМИТАЦИЯ ХАММЕРМАНА АКТИВНА';
+        // Название события
+        divTextTop.innerHTML = 'ИМИТАЦИЯ ЛЕЙТЕНАНТА ХАММЕРМАНА';
       }
     } else {
-      // Якоря классов
+      // Установка классовых имён
       widget.className = 'events-terror';
       widgetFront.className = 'events-terror';
       divImage.className = 'events-terror';
       imgImage.className = 'events-terror';
-      // Название ивентов
+      // Название события
       if (eventCycleType === 1 || eventCycleType === 5) {
-        divTextTop.innerHTML = 'ТРОПИЧЕСКИЙ ОСТРОВ АКТИВЕН';
+        divTextTop.innerHTML = 'ТРОПИЧЕСКИЙ ОСТРОВ ДОКТОРА ТИ';
       } else {
-        divTextTop.innerHTML = 'ВУЛКАНИЧЕСКИЙ ОСТРОВ АКТИВЕН';
+        divTextTop.innerHTML = 'ВУЛКАНИЧЕСКИЙ ОСТРОВ ДОКТОРА ТИ';
       }
     }
 
-    // Проявляет счетчик
+    // Проявляет счётчик
     divChangeBox.addEventListener("click", createCountdownWidget);
 
     // Дочерние элементы
@@ -275,13 +230,13 @@ function createCountdownWidget() {
     divImage.appendChild(imgImage);
     divChangeBox.appendChild(divChangeText);
 
-    // Вычислиение показываемой информации
+    // Вычисление показываемой информации
     updateEventsWidget(widget, now, eventCycleType);
     // Построение виджета
     return widget;
   }
 
-  // Таймер для Интела
+  // Таймер для интела
   function createIntelWidget() {
     var widget = document.getElementById('events-box-back');
     if (widget !== null) {
@@ -304,19 +259,19 @@ function createCountdownWidget() {
     // Ссылка на картинку
     imgImage.src = 'https://vignette.wikia.nocookie.net/boombeach/images/0/05/Intel_75px.png/revision/latest?cb=20151230203622';
 
-    // Текущий ивент
+    // Текущий отсчёт
     var divTextTop = document.createElement('div');
     divTextTop.id = 'intel-text-top';
-    divTextTop.innerHTML = 'СЛЕДУЮЩИЙ СБРОС ИНТЕЛА';
+    divTextTop.innerHTML = 'СЛЕДУЮЩИЙ СБРОС ИНТЕЛА ЧЕРЕЗ';
     // Оставшееся время
     var divTextMiddle = document.createElement('div');
     divTextMiddle.id = 'intel-text-remaining';
-    // Вычесление времени
+    // Вычисление времени
     var now = new Date();
     var resetTime = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(),
                          now.getUTCDate(), 0, 0, 0, 0));
     // Сброс в воскресенье
-    resetTime.setDate( resetTime.getDate() + (7 - resetTime.getUTCDay()) );
+    resetTime.setDate( resetTime.getUTCDate() + (7 - resetTime.getUTCDay()) );
     divTextMiddle.innerHTML = timeDiff( now, resetTime );
 
     // Смена таймера
@@ -342,7 +297,7 @@ function createCountdownWidget() {
     return widget;
   }
 
-  // Определяет текущий виджет
+  // Определение текущего виджета
   function getCurrentWidget() {
     if (document.getElementById('events-box-back') !== null) {
       return 'events';
@@ -353,9 +308,9 @@ function createCountdownWidget() {
   }
 
   var widget = null;
-  // Оба ивента будут показаны одновременно
+  // Оба события будут показаны одновременно
   if (getCurrentWidget() === 'events') {
-    // Create the widget
+    // Создание виджета
     widget = createIntelWidget();
   }
   else {
@@ -372,7 +327,7 @@ function createCountdownWidget() {
     divBefore = divAd.nextSibling;
   }
   if (divParent === null) {
-    // Постановка сразу после строки поиска в разрешенную рельсу
+    // Постановка сразу после строки поиска в разрешённую рельсу
     var divRail = document.getElementById('WikiaRail');
     var divAfter = null;
 
@@ -385,7 +340,7 @@ function createCountdownWidget() {
       divBefore = divAfter.nextSibling;
     }
     else if (divRail !== null) {
-      // Постановка в любую разрешенную рельсу если нет строки поиска
+      // Постановка в любую разрешённую рельсу, если нет строки поиска
       divParent = divRail;
       divBefore = divRail.firstChild;
     }
@@ -399,7 +354,7 @@ function createCountdownWidget() {
   return divParent.insertBefore(widget, divBefore);
 }
 
-/* Не работает где то еще */
+/* Не работает где-то ещё, кроме Fandom'а */
 addOnloadHook(createCountdownWidget);
 
 //window.onload = createCountdownWidget();

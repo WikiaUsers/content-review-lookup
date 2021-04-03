@@ -346,24 +346,11 @@ $(function() {
     
     // Find our base information for all maps. The data will be served as JSON.
     // Unfortunately, I couldn't find an endpoint that gives the raw page data.
-    $.get("/wiki/Template:MapData", function(data_string) {
-        var dom = $(data_string);
-        var domJSONString = dom.find(".mw-content-text>p").text();
-		var data = null;
-		try {
-            data = JSON.parse(domJSONString);
-		} catch (ex) {
-            $(".minimap").each(function() {
-                var ph_map = $(this);
-                ph_map.attr("data-fail-reason", "Minimap could not load due to malformed data. Please retry soon.");
-                ph_map.addClass("fail");
-            });
-            setTimeout(function() {
-                JSON.parse(domJSONString); // Throw the exception either way, so we can find the cause.
-            }, 0);
-            return;
-		}
-		
+
+    $.get(
+		mw.config.get(['wgScript']).wgScript,
+		{ title: mw.util.wikiUrlencode('Template:MapData'), action: 'raw', ctype: 'application/json' }
+	).done(function(data) {
 		var loadMinimap = function(ph_map, loadData) {
             // Gets the user-submitted data for this minimap.
             var height = loadData.height;
@@ -874,5 +861,11 @@ $(function() {
             }
             
         });
-    });
+    }).fail(function(err) {
+		$(".minimap").each(function() {
+            var ph_map = $(this);
+            ph_map.attr("data-fail-reason", "Minimap could not load due to malformed data. Please retry soon.");
+            ph_map.addClass("fail");
+        });
+	});
 });

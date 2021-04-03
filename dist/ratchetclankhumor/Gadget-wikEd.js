@@ -36,9 +36,7 @@ The code has to be saved as UTF-8 in your editor to preserve Unicode characters 
 // ---- START wikEd INSTALLATION CODE ----
 
 // install [[User:Cacycle/wikEd]] in-browser text editor
-document.write('<script type="text/javascript" src="'
-+ 'http://en.wikipedia.org/w/index.php?title=User:Cacycle/wikEd.js'
-+ '&action=raw&ctype=text/javascript"></script>');
+mw.loader.load('https://en.wikipedia.org/w/index.php?title=User:Cacycle/wikEd.js&action=raw&ctype=text/javascript');
 
 // ---- END wikEd INSTALLATION CODE ----
 

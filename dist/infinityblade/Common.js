@@ -38,15 +38,6 @@ if (isStaff) {
 importScript('MediaWiki:Common.js/ajaxRefresh.js');
 // END of ajax auto-refresh
 
-/* Automatically fills the summary field in upload form with imagebox, by Xiao Qiao */
- 
-if ( wgCanonicalSpecialPageName == "Upload" ) {
-	document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Imagebox.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
-}
- 
-if ( wgCanonicalSpecialPageName == "MultipleUpload" ) {
-	document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Imagebox.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
-}
 /* Username replace feature
  * Inserts viewing user's name into <span class="insertusername"></span>
  * Put text inside the spans to be viewed by logged out users

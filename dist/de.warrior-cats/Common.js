@@ -1,20 +1,5 @@
 /* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
-// Import [[MediaWiki:Onlyifuploading.js]] 
-if ( wgCanonicalSpecialPageName == "Upload" ) {
-      document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Onlyifuploading.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
-}
-
-window.SpoilerAlert = {
-    pages: ["Rauchklang"],
-    question: 'Diese Seite enthält Spoiler. Möchten Sie sie trotzdem ansehen?',
-    yes: 'Aber ja doch',
-    no: 'Nein, noch nicht',
-    isSpoiler: function () {
-        return Boolean($('#spoiler').length);
-    }
-};
-
 window.ajaxPages = [
     "Spezial:Letzte_Änderungen",
     "Spezial:WikiActivity",
@@ -26,7 +11,8 @@ window.ajaxPages = [
     "Spezial:Neue_Seiten",
     "Spezial:Dateien",
     "Spezial:Videos",
-    "Spezial:WikiActivity/watchlist"
+    "Spezial:WikiActivity/watchlist",
+    "Spezial:MultipleActivity"
 ];
 window.AjaxRCRefreshText = 'Auto-Aktualisierung';
 window.ShowHideConfig = { 

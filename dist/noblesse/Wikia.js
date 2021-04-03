@@ -1,3 +1,9 @@
+window.DiscordBannerSettings = {
+    bannerStyle: '2',
+    inviteLink: '2Gnnvas',
+    prependToRail: true
+};
+
 /***User Tags***/
 window.UserTagsJS = {
 	modules: {},
@@ -19,7 +25,8 @@ window.MessageWallUserTags = {
         'Shishkabunny': 'Founder',
         'Sebastian Clarke': 'Bureaucrat • Administrator',
         'Marion0Ame': 'Administrator',
-        'Foggywizard': 'Administrator'
+        'Foggywizard': 'Administrator',
+        'Joan Black': 'Administrator'
     }
 };
  
@@ -58,19 +65,3 @@ importArticles({
         "MediaWiki:Common.js/Toggler.js"
     ]
 });
-
-/* Replaces {{Visitor}} with the name of the user browsing the page. */
- 
-function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
-    $("span.insertusername").html(wgUserName);
- }
- addOnloadHook(UserNameReplace);
- 
-/* End of the {{Visitor}} replacement */
-
-window.DiscordBannerSettings = {
-    bannerStyle: '2',
-    inviteLink: '2Gnnvas',
-    prependToRail: true
-}

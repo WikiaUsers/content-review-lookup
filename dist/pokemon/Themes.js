@@ -1,11 +1,16 @@
 $('aside.portable-infobox.type-pokemon').has('.pi-item[data-source="type"] img').each(function() {
-    var type = $(this).find('.pi-item[data-source="type"] img').first().next().html().match(/alt="([^"]+)"/)[1];
+    var $second = $(this).find('.pi-item[data-source="type"] img').eq(1);
+    var attr    = $second.attr("data-image-name");
+    if ($second.length === 0 || !attr) return;
+
+    var type = attr.match(/Type (.*).gif/);
+
     if (type) {
-        $(this).addClass('pi-theme-secondary-' + type);
+        $(this).addClass('pi-theme-secondary-' + type[1]);
     }
 });
 
-(function() {
+mw.loader.using('mediawiki.util').then(function () {
     var InfoboxTypeThemes = {
         updateInfoboxTypes: function(infobox, types) {
             if (!types.length) return; // fail silently if none are found
@@ -32,7 +37,7 @@ $('aside.portable-infobox.type-pokemon').has('.pi-item[data-source="type"] img')
         },
         getInfoboxTypes: function(infobox) {
             var activeSection = infobox.querySelector('.pi-section-contents > .pi-section-active');
-            var anchors = activeSection.querySelectorAll('.pi-data[data-item-name="type"] .pi-data-value a.image');
+            var anchors = activeSection.querySelectorAll('.pi-data[data-item-name="type"] .pi-data-value a');
             var types = [];
 
             for (var i = 0; i < anchors.length; i++) {
@@ -70,17 +75,17 @@ $('aside.portable-infobox.type-pokemon').has('.pi-item[data-source="type"] img')
             }
         },
         onContent: function($content, initial) {
-            var content = $content.get(0),
-            mwContent = mw.util.$content.get(0);
-            if (!initial & content === mwContent) return;
+            var content = $content.get(0);//,
+            //mwContent = mw.util.$content.get(0);
+            //if (!initial & content === mwContent) return;
 
             this.findPanels(content);
         },
         init: function() {
-            this.onContent(mw.util.$content, true);
+            //this.onContent(mw.util.$content, true);
             mw.hook('wikipage.content').add(this.onContent.bind(this));
         }
     };
 
     InfoboxTypeThemes.init();
-})();
+});

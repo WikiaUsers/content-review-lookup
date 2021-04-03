@@ -37,7 +37,7 @@
 
     // turns off the lightbox for both images and videos
     function killLightboxEntirely() {
-        window.wgEnableLightboxExt = false;
+        mw.config.set('wgEnableLightboxExt',false);
         $("#WikiaArticle, #RelatedVideosRL, #LatestPhotosModule, #WikiaArticleComments").off('.lightbox');
     }
 

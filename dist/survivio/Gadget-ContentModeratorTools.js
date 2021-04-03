@@ -1,14 +1,8 @@
-/* MassEdit */
-
-/* MassProtect */
-
-/* WHAM */
-
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MassEdit/code.js',
-        'u:dev:MassProtect/code.js',
-        'u:dev:WHAM/code.2.js',
+        'u:dev:MediaWiki:MassEdit/code.js',
+        'u:dev:MediaWiki:MassProtect/code.js',
+        'u:dev:MediaWiki:WHAM/code.2.js',
     ],
 });/**/

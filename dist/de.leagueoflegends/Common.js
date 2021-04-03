@@ -2,33 +2,43 @@
 
 // Über [[Mediawiki:ImportJS]] sind weitere Skripte eingebunden!
 
-// Vorlage:USERNAME
 /* Replaces {{USERNAME}} with the name of the user browsing the page. */
-function UserNameReplace() {
+(function() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
     $("span.insertusername").text(wgUserName);
- }
- addOnloadHook(UserNameReplace);
+}());
 
 /* Config for [[MediaWiki:Common.js/gridfiltering.js]] */
 gridContainer = '#champion-grid';
 gridFilters = {
-	'name': 'search',
-	'role': [ '- Rolle -',
-		['Magier','Magier'],
-		['Tank','Tank'],
-		['Schütze','Schütze'],
-		['Unterstützer','Unterstützer'],
-		['Kämpfer','Kämpfer'],
-		['Assassine','Assassine'],
-	],
+	'search': 'search',
+    'role': ['- Rolle -',
+        ['Beherrscher','Beherrscher'],
+        ['Unterbrecher','• Unterbrecher'],
+        ['Verzauberer','• Verzauberer'],
+        ['Kämpfer','Kämpfer'],
+        ['Moloch','• Moloch'],
+        ['Stürmer','• Stürmer'],
+        ['Magier','Magier'],
+        ['Artillerie','• Artillerie'],
+        ['Burst','• Burst'],
+        ['Kampfmagier','• Kampfmagier'],
+        ['Schlächter','Schlächter'],
+        ['Assassine','• Assassine'],
+        ['Plänkler','• Plänkler'],
+        ['Schütze','Schütze'],
+        ['Tank','Tank'],
+        ['Vorkämpfer','• Vorkämpfer'],
+        ['Wächter','• Wächter'],
+        ['Spezialist','Spezialist'],
+    ],
 	'type': [ '- Angriffstyp -',
-		['Nahkämpfer','Nahkämpfer'],
-		['Fernkämpfer','Fernkämpfer'],
+		['Nahkampf','Nahkämpfer'],
+		['Fernkampf','Fernkämpfer'],
 	],
 };
 
-var tooltips_list = [
+window.tooltips_list = [
     {
         classname: 'character-icon',
         parse: '{'+'{Tooltip/Champion|<#character#>|<#skin#>|<#variant#>}}',
@@ -39,7 +49,7 @@ var tooltips_list = [
     },
     {
         classname: 'item-icon',
-        parse: '{'+'{Tooltip/Gegenstand|<#item#>|<#variant#>}}',
+        parse: '{'+'{Tooltip/Gegenstand|item=<#item#>|variant=<#variant#>|enchantment=<#enchantment#>}}',
     },
     {
         classname: 'spell-icon',
@@ -83,12 +93,14 @@ var tooltips_list = [
     }
 ];
  
-var tooltips_config = {
+window.tooltips_config = {
     offsetX: 15,
     offsetY: 15,
     waitForImages: true,
     noCSS: true,
 };
+
+window.AddRailModule = [{prepend: true}];
 
 /* Flip Text */
 (function() {
@@ -105,9 +117,12 @@ var tooltips_config = {
 }());
 
 /* Skinviewer: loading fix */
-$(window).load(function() {
-    $('.lazyimg-wrapper img').trigger("onload");
-});
+(function() {
+    $('.lazyimg-wrapper img.lazyload').each(function() {
+    	$(this).removeClass('lazyload');
+    	$(this).attr('src', $(this).attr('data-src'));
+    });
+}());
 
 /* Skinviewer: Skinselektor onclick ([[Vorlage:Champion_info/Skins]]) */
 $(document).on("click", "span.show", function () {
@@ -116,16 +131,12 @@ $(document).on("click", "span.show", function () {
         $(".skinviewer-tab-container > div").hide();
         $('#item-' + this.id).addClass('skinviewer-active-tab');
         $('#item-' + this.id).fadeIn();
-        $('.lazyimg-wrapper img').trigger("onload");
-        $(window).scroll(); //backup lazyimg fix
     }
 });
 
 /* Champion Attribute: hover-Effekte ([[Vorlage:Champion_Attributsübersicht]]) */
 $('.champion_attribut area').hover(function(){
     $('#attribut_' + $(this).attr('href').substring($(this).attr('href').lastIndexOf("#") + 1)).show();
-    $('.lazyimg-wrapper img').trigger("onload");
-    $(window).scroll(); //backup lazyimg fix
 }, function(){
     $('#attribut_' + $(this).attr('href').substring($(this).attr('href').lastIndexOf("#") + 1)).hide();
 });
@@ -175,29 +186,27 @@ $(function() {
     /* customtabber-nav click handler */
     $("[data-ctabcontrol]").click(function(e) {
         e.preventDefault();
-        $('.lazyimg-wrapper img').trigger("onload");
         var group = $(this).data('ctabgroup');
         var contr = $(this).data('ctabcontrol');
         $('.ct-nav-active[data-ctabgroup="'+ group +'"]').removeClass('ct-nav-active');
         $(this).addClass('ct-nav-active');
         $('.ct-active[data-ctabgroup="'+ group +'"]').css('display', 'none').removeClass('ct-active');
         $('[data-ctabcontent="'+ contr +'"]').css('display', 'block').addClass('ct-active');
-        $(window).scroll(); //backup lazyimg fix
         window.location.hash = contr;
-        //if ($(this).parent().get(0).tagName == 'TH') {
-            //$('.page-header__main')[0].scrollIntoView();
-        //}
     });
     var hash = decodeURI(window.location.hash.replace(/\.28/gi, "%28").replace(/\.29/gi, "%29").replace(/\.7E/gi, "%7E")).substr(1).replace(/_/gi, " ");
-    if (hash.startsWith("tab-Skins~")) {
-        $('[data-ctabcontrol="tab-Skins"]').click();
-        $('span.show > span[title="'+ hash.substring(10) +'"]').parent().click();
-    } else if ($('[data-ctabcontent="'+hash+'"]')[0] && $('[data-ctabcontrol="'+hash+'"]')[0]) {
+    if ($('[data-ctabcontent="'+hash+'"]')[0] && $('[data-ctabcontrol="'+hash+'"]')[0]) {
         $('[data-ctabcontrol="'+hash+'"]').click();
     }
 });
 
 /* mw-tabber link handler */
-$(window).load(function() {
-    $('.tabbernav a[title="'+decodeURI(window.location.hash.replace(/\.28/gi, "%28").replace(/\.29/gi, "%29")).substr(1).replace(/_/gi, " ")+'"]').click();
+window.addEventListener('load', function() {
+	var hash = decodeURI(window.location.hash.replace(/\.28/gi, "%28").replace(/\.29/gi, "%29").replace(/\.7E/gi, "%7E")).substr(1).replace(/_/gi, " ");
+	if (hash.startsWith("Kosmetisch~")) {
+        $('.tabbernav a[data-hash="Kosmetisch"]').click();
+        $('span.show > span[title="'+ hash.substring(11) +'"]').parent().click();
+    } else {
+    	$('.tabbernav a[data-hash="'+hash+'"]').click();
+    }
 });

@@ -14,7 +14,7 @@ $(function() {
  var checkUser = "<a href=\" http://callofduty.wikia.com/index.php?title=COD:CHKUSERS\"><span style=\" color:white;\">Check User</span></a>";
  var bot = "<a href=\" http://callofduty.wikia.com/wiki/Special:ListUsers?group=bot\"><span style=\" color:white;\">Bot</span></a>";
  var URL = "<span style='color:black;background-color:white;'>Wolf Goddess</span>";
- var vstf = "<a href=\" http://community.wikia.com/wiki/Help%3ASpamTaskForce\"><span style=\" color:white;\">VSTF</span></a>";
+ var vstf = "<a href=\" http://community.wikia.com/wiki/Help%3ASpamTaskForce\"><span style=\" color:white;\">SOAP</span></a>";
  var councilor = "<a href=\" http://community.wikia.com/wiki/Help:Community_Council\"><span style=\" color:white;\">Councilor</span></a>";
  var retired = "<span style=\" color:white;\">Retired</span>";
 
@@ -22,12 +22,12 @@ $(function() {
  
    // BUREAUCRATS
  
- rights["Azuris"]                               = [bcrat,checkUser],
+ rights["Azuris"]                               = [bcrat],
  rights["Bovell"]                               = [bcrat],
  rights["Callofduty4"]                          = [bcrat,vstf,checkUser],
  rights["Chiafriend12"]                         = [bcrat],
  rights["Conqueror of all Zombies"]             = [bcrat],
- rights["Crazy sam10"]                          = [bcrat],
+ rights["Crazy sam10"]                          = [bcrat,checkUser],
  rights["Creepydude"]                           = [bcrat],
  rights["Darkman 4"]                            = [bcrat],
  rights["KATANAGOD"]                            = [bcrat,checkUser],
@@ -35,6 +35,7 @@ $(function() {
  rights["SaintofLosAngelesXD(m)"]               = [bcrat],
  rights["Son of the Witch-King"]                = [bcrat],
  rights["WHISKEY35"]                            = [bcrat],
+ rights["YellowLucario"]                        = [bcrat],
  
    // ADMINS
  
@@ -57,11 +58,13 @@ $(function() {
  rights["Joe Copp"]                             = [sysop],
  rights["Joeyaa"]                               = [sysop],
  rights["Juan Jose Rodriguez"]                  = [sysop],
+ rights["Kalinine"]                             = [sysop],
  rights["Laagone"]                              = [sysop],
  rights["Legos-Rule-15"]                        = [sysop],
  rights["Madnessfan34537"]                      = [sysop],
  rights["N7"]                                   = [sysop],
  rights["Poketape"]                             = [sysop],
+ rights["Prof. Sugarcube"]                      = [sysop],
  rights["Raven's wing"]                         = [sysop],
  rights["Redskin-26"]                           = [sysop],
  rights["RisingSun2013"]                        = [sysop],
@@ -70,7 +73,7 @@ $(function() {
  rights["Ukimies"]                              = [sysop],
  rights["Ultimate94ninja"]                      = [sysop],
  rights["WouldYouKindly"]                       = [sysop],
- rights["YellowLucario"]                        = [sysop],
+
  
    // BOTS
  
@@ -100,7 +103,6 @@ $(function() {
  rights["LazarouDave"]                          = [custodian],
  rights["Louis Bancroft"]                       = [custodian],
  rights["Phillycj"]                             = [retired],
- rights["Prof. Sugarcube"]                      = [custodian]
  rights["RansomTime"]                           = [chatModerator,vstf],
  rights["Sgt.Sandwich"]                         = [blogPatrol],
  rights["Smilular"]                             = [chatModerator],

@@ -1,30 +1,29 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		jshelper: { u: 'JavaScript', order: 100 },
-		csshelper: { u: 'CSS', order: 101 },
-		templatehelper: { u: 'Templates', order: 102 },
-		cofounder: { u: 'Co-Founder', order:0 }
-        }
-};
-UserTagsJS.modules.inactive = 30;
-UserTagsJS.modules.newuser = true;
-UserTagsJS.modules.autoconfirmed = true;
-// NOTE: bannedfromchat displays in Oasis but is not a user-identity group so must be checked manually
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'chatmoderator', 'patroller', 'rollback', 'sysop', 'bannedfromchat', 'bot', 'bot-global'];
-UserTagsJS.modules.metafilter = {
-	sysop: ['founder'],
-	bureaucrat: ['founder'],
-	chatmoderator: ['sysop', 'bureaucrat']
-};
+/**
+ * Add a css class to user tags based on the tag's text
+ */
+(function () {
+    // Don't run on pages w/o a masthead
+    if (!$('#userProfileApp').length) return;
 
-$(function() {
-    mw.hook('DiscordIntegrator.added').add(function() {
-        $('.DiscordIntegratorModule').insertAfter('.ChatModule');
-    });
-});
+    // Wait until the masthead loads
+    const interval = setInterval(function () {
+        if ($('#userProfileApp').length) {
+            clearInterval(interval);
+            // Get all the tags
+            const userTags = document.querySelectorAll('.user-identity-header__tag');
+
+            // For each tag add a class equal to
+            // 'user-identity-header__tag--' + lowercased tag text
+            userTags.forEach(function (tag) {
+                tag.classList.add(
+                    'user-identity-header__tag--' + tag.textContent.toLowerCase().replace(' ', '-')
+                );
+            });
+        }
+    }, 1000);
+})();
 
 // our config is stored in an array
 window.lessOpts = window.lessOpts || [];

@@ -1,26 +1,21 @@
-window.dplforumBoards = [
-  {
-    boardName: 'news-announcements',
-    boardDescription: 'Announcements, newsletters, and more from the moderator team.'
-  },
-  {
-    boardName: 'general-discussion',
-    boardDescription: 'Got a question about the fanon tribes? Need help navigating the wiki? Want to share something exciting? This is the spot!'
-  },
-  {
-    boardName: 'roleplay',
-    boardDescription: 'Come here to RP with everyone!'
-  },
-  {
-    boardName: 'contests-requests-games',
-    boardDescription: 'This is the place where you can create new exciting events, games to play with your friends, or threads for art requests!'
-  },
-  {
-    boardName: 'promotions-demotions',
-    boardDescription: 'Looking to get someone promoted or demoted? This is where it all happens. Look at Help:Promotion and Help:Demotion for details.'
-  },
-  {
-    boardName: 'wiki-improvement',
-    boardDescription: 'Have a suggestion for improving the wiki? See here!'
-  }
-];
+(function () {
+	const username = mw.config.get("wgUserName");
+	if (!username) return;
+
+	const buildBlogLink = function buildLink(span) {
+		const link = document.createElement("a");
+		link.href = "/wiki/User blog:" + username;
+		link.title = span.textContent;
+		link.textContent = span.textContent;
+
+		return link;
+	};
+
+	mw.hook("wikipage.content").add(function ($content) {
+		const blogLinks = $content.find(".user-blog-link");
+
+		for (var i = 0; i < blogLinks.length; i++) {
+			blogLinks[i].replaceWith(buildBlogLink(blogLinks[i]));
+		}
+	});
+})();

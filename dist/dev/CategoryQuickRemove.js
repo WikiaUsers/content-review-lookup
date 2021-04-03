@@ -1,5 +1,6 @@
 !function (cfg) {
-    var mwc = mw.config.get(['wgIsArticle', 'wgCategories', 'wgScript', 'wgScriptPath', 'wgPageName', 'wgFormattedNamespaces', 'wgUserLanguage']);
+    var urlVars = new URLSearchParams(location.search),
+        mwc = mw.config.get(['wgIsArticle', 'wgCategories', 'wgScript', 'wgScriptPath', 'wgPageName', 'wgFormattedNamespaces', 'wgUserLanguage']);
     if (!mwc.wgIsArticle || (mwc.wgCategories && mwc.wgCategories.length === 0)) return;
     var $cats = $('#articleCategories'),
         msgs = {
@@ -185,7 +186,7 @@
         if (!window.dev || !window.dev.i18nbeta) importArticle({type: 'script', article: 'u:dev:I18n-js/beta.js'});
     }// i18nLoad
     
-    cfg.debug = cfg.debug || $.getUrlVar('debug');
+    cfg.debug = cfg.debug || urlVars.get('debug') || urlVars.get('debug1');
     // unexpected behavior in the debug mode is expected and totally by design
     cfg.loaded = cfg.debug ? false : cfg.loaded;
     if (cfg.loaded || !$cats.length) return;

@@ -146,6 +146,7 @@ function setupModule(data) {
 })();
 
 /***************Tooltip***********************/
+/*
 // hides the tooltip
 function hideTip() {
 $tfb.html("").removeClass("tooltip-ready").addClass("hidden").css("visibility","hidden"); 
@@ -194,7 +195,7 @@ $tfb = $("#tfb");
 $("#bodyContent span.ajaxttlink").each(bindTT);
 }); 
 
-/* Simple tooltips */
+// Simple tooltips //
 importScriptPage('MediaWiki:Tooltip.js', 'joeplayground');
  
 function addMastheadTags() {
@@ -212,6 +213,7 @@ function addMastheadTags() {
       }
     } 
 }; 
+*/
 /*********************Tooltip end************************************/
 
 /* Автообновление вики-активности */

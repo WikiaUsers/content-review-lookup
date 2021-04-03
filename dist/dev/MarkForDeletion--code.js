@@ -18,19 +18,20 @@
         'wgNamespaceNumber',
         'wgPageName',
         'wgUserGroups',
-        'wgUserName'
+        'wgUserName',
+        'wgVersion'
     ]);
     if (
         config.wgAction !== 'view' ||
         config.wgNamespaceNumber === -1 ||
         config.wgUserName === null ||
-        /content-moderator|sysop|vstf|helper|staff|content-volunteer|wiki-manager|content-team-member/.test(config.wgUserGroups.join('|')) ||
+        /content-moderator|sysop|helper|staff|content-volunteer|wiki-manager|content-team-member|soap/.test(config.wgUserGroups.join('|')) ||
         window.MarkForDeletionLoaded
     ) {
         return;
     }
     window.MarkForDeletionLoaded = true;
-    var i18n;
+    var i18n, isUCP = config.wgVersion !== '1.19.24';
  
     function setDeleteNotice(deleteReason) {
         var params = {
@@ -51,23 +52,39 @@
             data: params,
             success: function (d) {
                 if (d && d.error && d.error.code) {
-                    new BannerNotification(i18n.msg('error').plain() + ': ' + d.error.code, 'error').show();
+                    if (isUCP) {
+                        mw.loader.using('mediawiki.notify').then(function () {
+                            mw.notify(i18n.msg('error').plain() + ': ' + d.error.code);
+                        });
+                    } else {
+                        new BannerNotification(
+                            i18n.msg('error').escape() + ': ' + d.error.code, 'error'
+                        ).show();
+                    }
                 } else {
                     window.location.reload();
                 }
             },
-            error: function () {
-                new BannerNotification(i18n.msg('error').plain(), 'error').show();
+            error: function (code) {
+                if (isUCP) {
+                    mw.loader.using('mediawiki.notify').then(function () {
+                        mw.notify(i18n.msg('error').plain() + ': ' + (code || 'http'));
+                    });
+                } else {
+                    new BannerNotification(i18n.msg('error').escape(), 'error').show();
+                }
             }
         });
     }
  
-    function click() {
+    function click(event) {
+        event.preventDefault();
         var promptedDeleteReason = i18n.inContentLang().msg('spam').plain();
         if (window.MarkForDeletion && typeof window.MarkForDeletion.promptedDeleteReason === 'string') {
             promptedDeleteReason = window.MarkForDeletion.promptedDeleteReason;
         }
  
+        // TODO: Switch to [[mw:OOUI/Windows/Simple messages]] after UCP Phase 1.
         var deleteReason = window.prompt(i18n.msg('prompt').plain(), promptedDeleteReason);
  
         if (typeof deleteReason === 'string' && deleteReason.length > 0) {
@@ -79,10 +96,8 @@
         i18n = i18na;
         var $button = $('<li>').append(
             $('<a>', {
-                css: {
-                    cursor: 'pointer'
-                },
                 click: click,
+                href: '#',
                 id: 'mark-for-deletion-link',
                 text: i18n.msg('buttonTitle').plain()
             })

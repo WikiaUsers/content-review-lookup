@@ -1,4 +1,4 @@
-(function() {
+(function(mw, $) {
     var config = mw.config.get([
         'wgNamespaceNumber',
         'wgCityId',
@@ -98,5 +98,8 @@
 				}).click(addAnnouncement).appendTo(mw.util.$content);
         });
     });
-    importArticle({ type:'script', article: 'u:dev:I18n-js/code.js' });
-})();
+    importArticle({
+    	type:'script',
+    	article: 'u:dev:MediaWiki:I18n-js/code.js'
+    });
+})(window.mediaWiki, window.jQuery);

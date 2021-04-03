@@ -5,6 +5,8 @@
  * @Author Sophiedp (rewrite)
 */
 
-$('.wds-global-navigation .wds-global-navigation__user-menu .wds-avatar__image').click(function () {
-    window.location.href = mw.util.getUrl('Special:MyPage');
-}).css('cursor', 'pointer');
+mw.loader.using('mediawiki.util').then(function () {
+    $('.wds-global-navigation .wds-global-navigation__user-menu .wds-avatar__image').click(function () {
+        location.href = mw.util.getUrl('Special:MyPage');
+    }).css('cursor', 'pointer');
+});

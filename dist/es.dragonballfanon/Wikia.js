@@ -1,75 +1,8 @@
-// Import Script
-importArticles({
-  type: 'script',
-  articles: [
-    'MediaWiki:FloatingToc.js',
-    'MediaWiki:Wikia.js/displayTimer.js'
-  ]
-});
-
-// Ajax RC
-window.AjaxRCRefreshText = 'Actividad automatizada';
-window.AjaxRCRefreshHoverText = 'Con la casilla marcada esta página se actualizará automáticamente';
-window.ajaxPages = [
-  "Especial:CambiosRecientes",
-  "Especial:WikiActivity",
-  "Especial:PáginasNuevas",
-  "Especial:Seguimiento"
-];
-
-// Discord Chat
-$('.discord').append('<iframe src="https://discordapp.com/widget?id=718614626669035674&theme=dark" width="300" height="500" allowtransparency="true" frameborder="0"></iframe>');
-
-$(function() {
-  $('.WikiHeader > nav li:first-child > .subnav-2 > li:last-child').after('<li><a href="http://es.dragonballfanon.wikia.com/wiki/Dragon_Ball_Fanon_Wiki:Discord" class="subnav-2a">Discord</a></li>');
-});
-
 //Etiqueta para usuarios inactivos por más de 1 mes
 InactiveUsers = { 
     months: 1,
     text: 'Descansando'
 };
-importScriptPage('InactiveUsers/code.js', 'dev');
-
-// Actualizar página
-PurgeButtonText = 'Actualizar';
-
-// Iconos - Tomado de Dragon Ball Universe Wiki
-
-$(document).ready(function() {
-	if (skin == "oasis" || skin == "wikia") {
-		$('.WikiaPageHeader').append($('#iconos'));
-		$('#iconos').css({'position' : 'absolute', 'right' : '-15px', 'bottom' : '17px', 'display' : 'flex'});
-	}
-});
-
-// Tooltips Icons
-$("#iconos a").tooltip();
-
-// Mostrar div del creador del artículo (Agradecimiento: Ben10 Fanon)
-$(function() {
-  if ($("body").hasClass("ns-0")) {
-    if (mw.config.get('wgIsMainPage')) {
-      return;
-    }
-    $.ajax({
-      'dataType': 'xml',
-      'url': '/api.php?action=query&prop=revisions&titles=' + wgPageName + '&rvprop=user&rvlimit=1&rvdir=newer&format=xml',
-      success: function(xml) {
-        $(xml).find('page').each(function() {
-          var $entrada = $(this);
-          var usuario = $entrada.find('rev').attr('user');
-
-          if (usuario !== undefined) {
-            $(".WikiaPageHeader").addClass("cargado");
-            $(".WikiaPageHeader h1").after("<h2 class='divcreadorarticulo'>Autor: <a id='creador-userlink' class='creadordelarticulo' href='/wiki/Usuario:" + usuario + "'><span itemprop='author' itemscope itemtype='http://schema.org/Person'>" + usuario + "</span></a> (<a id='creador-murolink' href='/wiki/Muro:" + usuario + "'>muro</a> | <a id='creador-contriblink' href='/wiki/Especial:Contribuciones/" + usuario + "'>contribuciones</a> | <a id='creador-registrolink' href='/wiki/Especial:Registro?user=" + usuario + "'>registro</a></span>)</h2>");
-            $('<style type="text/css">.SpeechBubble[data-user="' + usuario + '"] .edited-by:after { color: #FFF; position: absolute; top: 58px; left: -78px; content: "@Autor"; font-weight: bold; background: #333; padding: 2px 9.5px; border-radius: 3px; z-index: 20; } .SpeechBubble[data-user="' + usuario + '"] blockquote { background:#333 !important; } .SpeechBubble[data-user="' + usuario + '"] .speech-bubble-message:after { border-color:transparent #333 transparent transparent; }</style>').appendTo('head');
-          }
-        });
-      }
-    });
-  }
-});
 
 // Slider Gallery
 
@@ -186,3 +119,11 @@ $(document).ready(function() {
 });
 
 speed = 600 // Velocidad
+
+//WikiActivity
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WikiActivity.js',
+    ]
+});

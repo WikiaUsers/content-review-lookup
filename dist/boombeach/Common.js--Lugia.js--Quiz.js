@@ -3,7 +3,7 @@
 //startQuiz()-finds quiz divs, appends form, basic controls, and elements.
 //checkQuiz()-Extract answers, questions, and correct answers.
 //showQuiz()-Display all questions along with their answers.
-//finalQ()-Compare answers, display answers, and remove submit button.
+//LugiaQuizFinalQ()-Compare answers, display answers, and remove submit button.
 
 /*Instructions:
 To use this without adding the 20-6 limitation you can manually insert it by adding the following attributes to a div.
@@ -126,7 +126,7 @@ function startQuiz(){
 		subm.setAttribute("type","button");
 		subm.setAttribute("value","Submit Answers");
 		subm.setAttribute("class","subm");
-		subm.setAttribute("onClick","finalQ("+i+",this.form);");
+		subm.setAttribute("onClick","LugiaQuizFinalQ("+i+",this.form);");
 		d[i].appendChild(form);
 		var out=document.createElement("span");
 		out.setAttribute("class","out");
@@ -137,7 +137,7 @@ function startQuiz(){
 	}
 }
  
-function finalQ(id,form){
+window.LugiaQuizFinalQ = function(id,form){
 	var J=new Array();
 	var a=0;
 	var d=document.getElementsByClassName("_set_");
@@ -179,4 +179,7 @@ function finalQ(id,form){
 		}
 	}
 }
-addOnloadHook(startQuiz);
+
+$(document).ready(function() {
+    startQuiz();
+});

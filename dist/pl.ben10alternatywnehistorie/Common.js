@@ -11,31 +11,6 @@ importArticles({
 // WIDOCZNOŚĆ IP DLA ADMINISTRACJI
 window.RevealAnonIP = {permissions:['sysop','bureaucrat']};
 
-// Komunikat
-function setCookie() {
-  document.cookie = "PlHelpThread=closed; expires=0; path=/"; 
-}
- 
-function getCookie(name)
-  {
- var re = new RegExp(name + "=([^;]+)");
- var value = re.exec(document.cookie);
- return (value != null) ? unescape(value[1]) : null;
-  }
- 
-var notifNotClosed = getCookie("PlHelpThread") != "closed";
- 
-      if (notifNotClosed) {
- 
-var message = 'Alternatywa na medal!<br/>Głosowanie trwa od 1. do 15. dnia miesiąca!<br/><a href="http://pl.ben10alternatywnehistorie.wikia.com/wiki/Ben_10_Alternatywne_Historie_Wiki:Alternatywa_na_medal#G.C5.82osowanie" class="plainlinks">Zagłosuj już teraz!</a>';
- 
-if($('.WikiaNotifications').length > 0) { 
-          $('<li><div id="helpTheWiki" style=""><a class="sprite close-notification" onclick="setCookie()"></a>' + message + '</div></li>').prependTo('#WikiaNotifications');
-       } else {
-        $('<ul id="WikiaNotifications" class="WikiaNotifications"><li><div style="" id="helpTheWiki"><a class="sprite close-notification" onclick="setCookie()"></a>' + message + '</div></li></ul>').prependTo('.WikiaBarWrapper');
-       }
-}
-
 // FUNKCJA TOGGLE
 var togglers = new Array();
 var allClasses = new Object(); // associative map of class names to page elements

@@ -1,1 +1,0 @@
-#REDIRECCIÓN [[MediaWiki:Slider.js]]

@@ -1,3 +1,4 @@
+
 /*jslint browser: true, devel: true, plusplus: true, white: true, indent: 2 */
 /*global $, wgUserName, wgUserGroups */
 (function () {
@@ -40,10 +41,12 @@
     'Barbarian Brutetamer': {'Book': 'Book (Grey)'},
     'Blightwalker': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Blue Djinn': {'Book': 'Book (Blue)'},
+    'Bony Sea Devil': {'Rod': 'Rod (Creature Product)'},
     'Brachiodemon': {'Head': 'Head (Brachiodemon)'},
     'Bragrumol': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Brain Squid': {'Inkwell': 'Inkwell (Black)'},
     'Chopper': {'Dung Ball': 'Dung Ball (Quest)'},
+    'Cloak of Terror': {'Crown': 'Crown (Plant)'},
     'Crazed Summer Rearguard': {'Egg With Dream Essence': 'Egg with Dream Essence'},
     'Crazed Summer Vanguard': {'Egg With Dream Essence': 'Egg with Dream Essence'},
     'Crazed Winter Rearguard': {'Egg With Dream Essence': 'Egg with Dream Essence', 'Ice Flower': 'Ice Flower (Item)'},
@@ -53,6 +56,7 @@
     'Dharalion': {'Parchment': 'Parchment (Rewritable)'},
     'Diremaw': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Dragon Lord': {'Book': 'Book (Gemmed)'},
+    'Elvira Hammerthrust': {'Bag With Stolen Gold': 'Bag with Stolen Gold'},
     'Enlightened of the Cult': {'Book': 'Book (Orange)', 'Music Sheet': 'Music Sheet (Fourth Verse)'},
     'Falcon Knight': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Falcon Paladin': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
@@ -72,6 +76,7 @@
     'Hive Overseer': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Ink Blob': {'Inkwell': 'Inkwell (Black)', 'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Insane Siren': {'Egg With Dream Essence': 'Egg with Dream Essence'},
+    'Jesse the Wicked': {'Bag With Stolen Gold': 'Bag with Stolen Gold'},
     'Juggernaut': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Killer Caiman': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Kollos': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
@@ -80,6 +85,7 @@
     'Maw': {'Dung Ball': 'Dung Ball (Quest)'},
     'Mean Lost Soul': {'Lost Soul': 'Lost Soul (Item)'},
     'Mindmasher': {'Dung Ball': 'Dung Ball (Quest)'},
+    'Mornenion': {'Bag With Stolen Gold': 'Bag with Stolen Gold'},
     'Novice of the Cult': {'Book': 'Book (Orange)', 'Music Sheet': 'Music Sheet (First Verse)'},
     'Ogre Savage': {'Jalapeño Pepper': 'Jalapeno Pepper', 'Jalapeńo Pepper': 'Jalapeno Pepper', 'Jalape\uFFFDo Pepper': 'Jalapeno Pepper'},
     'Orc Shaman': {'Book': 'Book (Grey)'},
@@ -92,12 +98,15 @@
     'Prince Drazzak': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Rage Squid': {'Inkwell': 'Inkwell (Black)'},
     'Renegade Quara Pincher': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
+    'Robby the Reckless': {'Bag With Stolen Gold': 'Bag with Stolen Gold'},
+    'Rotten Golem': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Rotspit': {'Dung Ball': 'Dung Ball (Quest)'},
     'Seacrest Serpent': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Shadowpelt': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Shadowstalker': {'Dung Ball': 'Dung Ball (Quest)'},
     'Shark': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Soul-Broken Harbinger': {'Egg With Dream Essence': 'Egg with Dream Essence', 'Ice Flower': 'Ice Flower (Item)'},
+    'Sorcerer\'s Apparition': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Spidris': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Spidris Elite': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Squid Warden': {'Inkwell': 'Inkwell (Black)'},
@@ -108,15 +117,18 @@
     'The Dread Maiden': {'Amber': 'Amber (Item)', 'Amber With A Bug': 'Amber with a Bug', 'Amber With A Dragonfly': 'Amber with a Dragonfly', 'Dark Bell': 'Dark Bell (Silver)'},
     'The Count of the Core': {'Chitinous Mouth': 'Chitinous Mouth (Count of the Core)'},
     'The Enraged Thorn Knight': {'Part of a Rune': 'Part of a Rune (One)'},
-    
     'The False God': {'Blood of the Mountain': 'Blood of the Mountain (Item)'},
     'The Fear Feaster': {'Amber': 'Amber (Item)', 'Amber With A Dragonfly': 'Amber with a Dragonfly'},
     'The Many': {'Egg of the Many': 'Egg of The Many'},
-    'The Pale Worm': {'Amber': 'Amber (Item)', 'Amber With A Bug': 'Amber with a Bug'},
+    'The Pale Worm': {'Amber': 'Amber (Item)', 'Amber With A Bug': 'Amber with a Bug', 'Amber With A Dragonfly': 'Amber with a Dragonfly'},
     'The Percht Queen': {'Icicle': 'Icicle (Percht)', 'Fly Agaric': 'Fly Agaric (Item)'},
     'The Sandking': {'Heart of the Mountain': 'Heart of the Mountain (Item)'},
+    'The Scourge of Oblivion': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'The Unwelcome': {'Amber': 'Amber (Item)', 'Amber With A Dragonfly': 'Amber with a Dragonfly'},
-    'Thieving Squirrel': {'Flask With Beaver Bait': 'Flask with Beaver Bait'}
+    'Thieving Squirrel': {'Flask With Beaver Bait': 'Flask with Beaver Bait'},
+    'Usurper Archer': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
+    'Usurper Warlock': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
+    'Vibrant Phantom': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'}
   },
 
   //singular exceptions
@@ -138,6 +150,7 @@
     'Bunches of *': 'Bunch of ',
     'Cookies': 'Cookie',
     'Flasks of *': 'Flask of ',
+    'Clusters of *': 'Cluster of ',
     'Gooey Masses' : 'Gooey Mass',
     'Haunches of *': 'Haunch of ',
     'Huge Chunks *': 'Huge Chunk ',
@@ -677,7 +690,7 @@
     }
   },
   upload_to_wikia = function (div_id) {
-    var $tmp, tmp, off_cont, off_tmp, parser_text, user_modified = false, creature, token, basetimestamp, page_text, new_page_text, summary,
+    var $tmp, tmp, off_cont, off_tmp, parser_text, user_modified = false, creature, token = mw.user.tokens.get('editToken'), basetimestamp, page_text, new_page_text, summary,
     ta_multi_version_no_ok_wrong = 0, ta_version_ok = false, cvtext, vdata,
     request_st, request_end = function (msg, is_error) {
       if (is_error === undefined) { is_error = true; }
@@ -690,7 +703,7 @@
       var errort = 'There was a problem uploading statistics for ' + creature.replace(/_/g, ' ') + ', try again.',
       captcha = '';
       page_text = $.trim(page_text);
-      parser_text = parser_text.slice(parser_text.search('{' + '{'), parser_text.search('}' + '}') + 2); //take only the Template part
+      parser_text = (parser_text.match(/\{\{[\s\S]*?\}\}/g) || []).join('\n'); //take only the Template(s) part
       new_page_text = lootparser_add(page_text, parser_text);
       if (new_page_text === false) { request_end(errort); }
       else {
@@ -698,11 +711,18 @@
         new_page_text = new_page_text[0];
         request_st = $.now();
         $.ajax({
-          url: '/api.php', type: 'POST', dataType: 'json',
+          url: '/api.php',
+          type: 'POST',
+          dataType: 'json',
           data : {
-            action: 'edit', title: 'Loot_Statistics:' + lootparser_pagename(creature, true, false), format: 'json',
-            summary: summary, text: new_page_text,
-            token: token, basetimestamp: basetimestamp, minor: 'minor'
+            action: 'edit',
+            title: 'Loot_Statistics:' + lootparser_pagename(creature, true, false),
+            format: 'json',
+            summary: summary,
+            text: new_page_text,
+            token: token,
+            basetimestamp: basetimestamp,
+            minor: 'minor'
           },
           error: function () { request_end(errort); },
           success: function (obj) {
@@ -746,8 +766,11 @@
       $.ajax({
         url: '/api.php', type: 'GET', dataType: 'json',
         data : {
-          action: 'query', titles: 'Loot_Statistics:' + lootparser_pagename(creature, true, false), format: 'json',
-          rvprop: 'content', prop: 'info|revisions', intoken: 'edit'
+          action: 'query',
+          titles: 'Loot_Statistics:' + lootparser_pagename(creature, true, false),
+          format: 'json',
+          rvprop: 'content',
+          prop: 'info|revisions'
         },
         error: function () { request_end(errort); },
         success: function (obj) {
@@ -772,17 +795,20 @@
       var errort = 'There was a problem getting current statistics for ' + creature.replace(/_/g, ' ') + ', try again.';
       request_st = $.now();
       $.ajax({
-        url: '/api.php', type: 'GET', dataType: 'json',
+        url: '/api.php',
+        type: 'GET',
+        dataType: 'json',
         data : {
-          action: 'query', titles: 'Loot_Statistics:' + lootparser_pagename(creature, true, false), format: 'json',
-          prop: 'info|revisions', intoken: 'edit'
+          action: 'query',
+          titles: 'Loot_Statistics:' + lootparser_pagename(creature, true, false),
+          format: 'json',
+          prop: 'info|revisions'
         },
         error: function () { request_end(errort); },
         success: function (obj) {
           var x;
           if (obj) {
             for (x in obj.query.pages) { if (obj.query.pages.hasOwnProperty(x)) {
-              token = obj.query.pages[x].edittoken;
               if (obj.query.pages[x].missing !== undefined) {
                 basetimestamp = '';
                 page_text = '';
@@ -1048,22 +1074,29 @@
     $.ajax({
       url: '/api.php', type: 'GET', dataType: 'json',
       data : {
-        action: 'query', titles: page_name, format: 'json',
-        prop: 'info', intoken: 'edit'
+        action: 'query',
+        titles: page_name,
+        format: 'json',
+        prop: 'info'
       },
       error: request_error, success: function (obj) {
-        var xe, token;
+        var xe, token = mw.user.tokens.get('editToken');
         if (obj) {
           for (xe in obj.query.pages) { if (obj.query.pages.hasOwnProperty(xe)) {
-            token = obj.query.pages[xe].edittoken;
             break;
           } }
           $.ajax({
-            url: '/api.php', type: 'POST', dataType: 'json',
+            url: '/api.php',
+            type: 'POST',
+            dataType: 'json',
             data : {
-              action: 'edit', title: page_name, format: 'json',
-              section: 'new', text: $('#' + id_prefix + '_t').val(),
-              token: token, minor: 'minor'
+              action: 'edit',
+              title: page_name,
+              format: 'json',
+              section: 'new',
+              text: $('#' + id_prefix + '_t').val(),
+              token: token,
+              minor: 'minor'
             },
             error: request_error, success: function (obj) {
               if (
@@ -1160,11 +1193,11 @@
     '</textarea></td>' +
     '<td style="vertical-align: bottom; text-align: center;">' +
     (
-      (wgUserName !== null && wgUserName !== '') ?
+      (mw.config.get('wgUserName') !== null && mw.config.get('wgUserName') !== '') ?
       '<div>' +
       '<span>' +
       (
-        ($.inArray('autoconfirmed', wgUserGroups) !== -1) ?
+        ($.inArray('autoconfirmed', mw.config.get('wgUserGroups')) !== -1) ?
         '<input type="checkbox" value="1" checked="checked" id="' + id_prefix + '_c" /><span> Include in "Upload All"</span>' +
         '<br />or<br />' :
         ''
@@ -1234,11 +1267,11 @@
       in_tmp += '</textarea></td>' +
       '<td style="vertical-align: bottom; text-align: center;">' +
       (
-        (wgUserName !== null && wgUserName !== '') ?
+        (mw.config.get('wgUserName') !== null && mw.config.get('wgUserName') !== '') ?
         '<div>' +
         '<span>' +
         (
-          ($.inArray('autoconfirmed', wgUserGroups) !== -1) ?
+          ($.inArray('autoconfirmed', mw.config.get('wgUserGroups')) !== -1) ?
           '<input type="checkbox" value="1" checked="checked" id="lootparser_loot_combined_c' + id_inc + '" /><span> Include in "Upload All"</span>' +
           '<br />or<br />' :
           ''
@@ -1450,7 +1483,7 @@
       lootparser_loot_process_contents_html(got_stats, got_stats_rc, monsters_list);
       //upload all
       if (got_stats || got_stats_rc || got_kills || got_kills_rc) {
-        if (wgUserName !== null && wgUserName !== '' && $.inArray('autoconfirmed', wgUserGroups) !== -1) {
+        if (mw.config.get('wgUserName') !== null && mw.config.get('wgUserName') !== '' && $.inArray('autoconfirmed', mw.config.get('wgUserGroups')) !== -1) {
           lootparser_loot_process_uploadall_html();
         }
       }

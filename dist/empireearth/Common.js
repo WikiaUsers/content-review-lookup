@@ -45,14 +45,14 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
     "imageFile": "https://vignette.wikia.nocookie.net/empireearth/images/8/8c/Button_building.png",
     "speedTip": "Building Infobox",
     "tagOpen": "\{\{Building Infobox \r|Name           = ",
-    "tagClose": "\r|Image          = \r|Game           = \r|Epoch          = \r|Type           = \r|RPS            = \r|HP             = \r|Attack         = \r|Range          = \r|LOS            = \r|Cost           = \r|Build Time     = \r|Upgrades from  = \r|Upgrades to    = \r\}\}",
+    "tagClose": "\r|Image          = \r|Game1          = \r|Game2          = \r|Epoch          = \r|Type           = \r|RPS            = \r|HP             = \r|Attack         = \r|Range          = \r|LOS            = \r|Cost           = \r|Build Time     = \r|Upgrades from  = \r|Upgrades to    = \r\}\}",
     "sampleText": ""
 };
 mwCustomEditButtons[mwCustomEditButtons.length] = {
     "imageFile": "https://vignette.wikia.nocookie.net/empireearth/images/c/c6/Button_unit.png",
     "speedTip": "Unit Infobox",
     "tagOpen": "\{\{Unit Infobox \r|Name           = ",
-    "tagClose": "\r|Image          = \r|Games          = \r|Epoch          = \r|Trained At     = \r|Built At       = \r|Type           =  \r|Attack Type    = \r\r|HP             = \r|Attack         =  \r|Armor          = \r|Arrow          = \r|Pierce         = \r|Shock          = \r|Area Effect    = \r|Gun            = \r|Laser          = \r|Transport      = \r|Speed          = \r|Power/Mana     = \r|Range          = \r\r|LOS            = \r|Cost           = \r|Pop Count      = \r|Build Time     =  \r|Upgrades From  = \r|Upgrades To    = \r\}\}",
+    "tagClose": "\r|Image          = \r|Game1          = \r|Game2          = \r|Epoch          = \r|Trained At     = \r|Built At       = \r|Type           = \r|Attack Type    = \r\r|HP             = \r|Attack         = \r|Armor          = \r|Arrow          = \r|Pierce         = \r|Shock          = \r|Area Effect    = \r|Gun            = \r|Laser          = \r|Transport      = \r|Speed          = \r|Power/Mana     = \r|Range          = \r\r|LOS            = \r|Cost           = \r|Pop Count      = \r|Build Time     = \r|Upgrades From  = \r|Upgrades To    = \r\}\}",
     "sampleText": ""
 };
 mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -66,7 +66,7 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
     "imageFile": "https://vignette.wikia.nocookie.net/empireearth/images/5/5f/Button_epoch.png",
     "speedTip": "Epoch Infobox",
     "tagOpen": "\{\{Epoch Infobox \r|Name           = ",
-    "tagClose": "\r|Icon           = \r|Image          = \r|Caption        = \r|Game           = \r|Time Period    = \r|PrevEpoch      = \r|NextEpoch      = \r|Resources      = \r\}\}",
+    "tagClose": "\r|Icon           = \r|Image          = \r|Caption        = \r|Game1          = \r|Game2          = \r|Time Period    = \r|PrevEpoch      = \r|NextEpoch      = \r|Resources      = \r\}\}",
     "sampleText": ""
 };
 }

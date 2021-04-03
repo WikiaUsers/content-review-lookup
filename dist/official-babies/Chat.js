@@ -1,0 +1,1 @@
+$2 has entered the Dictator House!

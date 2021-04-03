@@ -29,7 +29,7 @@ require([
     }
     // User groups that allow for admin functions
     var ADMIN_GROUPS = Object.freeze([
-        "staff", "helper", "wiki-manager", "content-team-member", "vstf", "sysop"
+        "staff", "helper", "wiki-manager", "content-team-member", "sysop", "soap"
     ]);
     // The user's rights
     var USER_GROUPS = mw.config.get("wgUserGroups");
@@ -400,7 +400,7 @@ require(["wikia.window", "jquery", "mw", "ext.wikia.design-system.loading-spinne
 
                     this.ui.set({
                         type: "new",
-                        content: i18n.get("notfound"),
+                        content: i18n.get("notfound").escape(),
                         image: this.DEFAULT_IMAGE
                     }).addButtons(this.buttons);
                     return this;
@@ -419,7 +419,7 @@ require(["wikia.window", "jquery", "mw", "ext.wikia.design-system.loading-spinne
                     this.new = true;
                     this.ui.set({
                         type: "missing",
-                        content: i18n.get("missing"),
+                        content: i18n.get("missing").escape(),
                         image: this.DEFAULT_IMAGE
                     }).addButtons(this.buttons);
                     return this;
@@ -755,43 +755,11 @@ require(["wikia.window", "jquery", "mw", "ext.wikia.design-system.loading-spinne
     };
 
     var i18n = AP.i18n = {
-        messages: {},
-        get: function(msg, type){
-            if (!has.call(i18n.messages, msg)) return null;
-
-            var inst = i18n.messages[msg];
-            if (typeof type !== "string") type = "_default";
-            if (!has.call(inst, type)) type = "_default";
-
-            if (typeof inst[type] === "function") type = "_default";
-            return inst[type] || null;
-        },
-        replace: function(msg){
-            var args = slice.call(arguments, 1);
-            if (!has.call(i18n.messages, msg)) return null;
-
-            var inst = i18n.messages[msg];
-            if (!has.call(inst, "replace")) return i18n.get(msg);
-            return inst.replace.apply(inst, args);
-        },
         load: function(){
 			mw.hook("dev.i18n").add(function(i18no){
 				i18no.loadMessages("ArticlePreview").then(function(_i18n){
-					var msgs = _i18n._messages["en"];
-					Object.keys(msgs).forEach(function(name){
-						AP.i18n.messages[name] = {};
-						AP.i18n.messages[name].plain = _i18n.msg(name).plain();
-						AP.i18n.messages[name].escape = _i18n.msg(name).escape();
-						AP.i18n.messages[name].parse = _i18n.msg(name).parse();
-						AP.i18n.messages[name].replace = function(){
-							var args = slice.call(arguments);
-							return _i18n.msg.apply(_i18n, [name].concat(args)).escape();
-						};
-						AP.i18n.messages[name]._default = "escape";
-						AP.i18n.init.resolve();
-					});
-				}, function(){
-					AP.i18n.init.reject();
+					AP.i18n.get = _i18n.msg;
+					AP.i18n.init.resolve();
 				});
 			});
 		},

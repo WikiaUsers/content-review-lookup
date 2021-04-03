@@ -9,11 +9,13 @@
     if ($('.mw-rollback-link').length || window.RollbackWikiDisable) {
         return;
     }
+    var isUCP;
     var Rollback = $.extend(window.Rollback, {
         config: mw.config.get([
             'wgAction',
             'wgCanonicalSpecialPageName',
-            'wgPageName'
+            'wgPageName',
+            'wgVersion'
         ]),
         _preload: 2,
         getPageType: function() {
@@ -157,7 +159,7 @@
                 rvprop: 'user|ids',
                 titles: title
             }).done(this.getRevisionIdCallback.bind(this, target)).fail(
-                this.outputError.bind(this, 'revisionError', undefined)
+                this.outputError.bind(this, 'revisionFail')
             );
         },
         getRevisionIdCallback: function(target, data) {
@@ -228,34 +230,43 @@
                 title: page,
                 token: mw.user.tokens.get('editToken')
             }).done(this.performRollbackCallback).fail(
-                this.outputError.bind(this, 'editFail', undefined)
+                this.outputError.bind(this, 'editFail')
             );
         },
         performRollbackCallback: function(data) {
             if (data.error) {
                 this.outputError('editFail', data.error.code);
             } else {
-                new BannerNotification(
-                    this.i18n.msg('success').escape(),
-                    'confirm'
-                ).show();
+                var msg = this.i18n.msg('success');
+                if (isUCP) {
+                    mw.notify(msg.plain());
+                } else {
+                    new BannerNotification(msg.escape(), 'confirm').show();
+                }
             }
         },
         outputError: function(message, code) {
-            new BannerNotification(
-                this.i18n.msg(
-                    message,
-                    code || this.i18n.msg('ajaxError').plain()
-                ).escape(),
-                'error'
-            ).show();
+            var msg = this.i18n.msg(
+                message,
+                (typeof code !== 'string' || code === 'http') ?
+                    this.i18n.msg('ajaxError').plain() :
+                    code
+            );
+            if (isUCP) {
+                mw.notify(msg.plain(), {
+                    type: 'error'
+                });
+            } else {
+                new BannerNotification(msg.escape(), 'error').show();
+            }
         }
     });
+    isUCP = Rollback.config.wgVersion !== '1.19.24';
     mw.loader.using([
         'mediawiki.api',
         'mediawiki.user',
         'mediawiki.util',
-        'ext.bannerNotifications'
+        isUCP ? 'mediawiki.notification' : 'ext.bannerNotifications'
     ], Rollback.preload.bind(Rollback));
     mw.hook('dev.i18n').add(Rollback.preload.bind(Rollback));
     importArticle({

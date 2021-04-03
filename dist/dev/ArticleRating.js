@@ -86,7 +86,7 @@ mw.loader.using([
         current = 0,
         imports = 3,
         icon,
-        i18n = {},
+        i18n,
         ratingInfo = {};
         ratingInfo[config.wgArticleId] = {},
         ratingInfo[config.wgArticleId][userId] = 0,
@@ -117,10 +117,6 @@ mw.loader.using([
         if(--imports > 0)
             return;
         icon = window.dev.wds.icon;
-        window.dev.i18n.loadMessages('ArticleRating').done(function(i18nLoaded) {
-            i18n = i18nLoaded._messages.en;
-            for(var i in i18n) i18n[i] = i18nLoaded.msg(i).escape();
-        });
         var colors = window.dev.colors,
             pageColor = colors.parse(colors.wikia.page),
             isBright = pageColor.isBright(),
@@ -132,7 +128,10 @@ mw.loader.using([
             bar: isBright ? pageColor.lighten(-5) : pageColor.lighten(10),
             inner: isBright ? pageColor.lighten(-20) : pageColor.lighten(5)
         }));
-        preload();
+        window.dev.i18n.loadMessages('ArticleRating').done(function(i18nData) {
+            i18n = i18nData.msg;
+            preload();
+        });
     }
 
     /**
@@ -141,13 +140,13 @@ mw.loader.using([
      * @returns     {void}
      */
     function preload() {
-        options.title = options.title || i18n.title;
+        options.title = options.title || i18n('title').plain();
         options.values = options.values || [
-            i18n.worst,
-            i18n.bad,
-            i18n.average,
-            i18n.good,
-            i18n.great
+            i18n('worst').plain(),
+            i18n('bad').plain(),
+            i18n('average').plain(),
+            i18n('good').plain(),
+            i18n('great').plain()
         ];
     
         api.get({
@@ -224,7 +223,7 @@ mw.loader.using([
                 $('<div>', {
                     id: selectors.my,
                     css: { textAlign: 'center' },
-                    text: i18n.myrating + ': ',
+                    text: i18n('myrating').plain() + ': ',
                     append: $('<b>', { text: '-' })
                 }),
                 $('<div>',{ id: selectors.info,
@@ -234,14 +233,14 @@ mw.loader.using([
                         $('<div>', {
                             append: [
                                 $('<div>', {
-                                    text: i18n.avgrating
+                                    text: i18n('avgrating').plain()
                                 }),
                                 $('<div>', {
                                     id: selectors.avg,
                                     append: $('<b>')
                                 }),
                                 $('<div>', {
-                                    text: i18n.totalrating + ': ',
+                                    text: i18n('totalrating').plain() + ': ',
                                     id: selectors.total,
                                     append: $('<b>')
                                 })
@@ -256,22 +255,22 @@ mw.loader.using([
                                 'class': 'wds-button wds-is-secondary',
                                 css: { margin: 'auto' },
                                 href: mw.util.getUrl('Special:ArticleRating'),
-                                text: i18n.insights
+                                text: i18n('insights').plain()
                             })
                         })
                     ]
                 }),
                 $('<div>', { id: selectors.footer,
                     append: [
-                        $('<div>', { text: i18n.poweredby + ' ArticleRating'}),
+                        $('<div>', { text: i18n('poweredby').plain().replace("$1", "ArticleRating")}),
                         $('<a>', {
                             href: '//dev.fandom.com/wiki/ArticleRating',
-                            text: i18n.doc
+                            text: i18n('doc').plain()
                         }),
                         ' | ',
                         $('<a>', {
                             href: '//dev.fandom.com/wiki/Talk:ArticleRating',
-                            text: i18n.report
+                            text: i18n('report').plain()
                         })
                     ]
                 })
@@ -285,7 +284,9 @@ mw.loader.using([
                 module.insertBefore('#WikiaAdInContentPlaceHolder');
                 break;
             default:
-                module.prependTo('#WikiaRail');
+                mw.user.anonymous()
+                    ? module.insertAfter('#top-right-boxad-wrapper')
+                    : module.prependTo('#WikiaRail');
                 break;
         }
 

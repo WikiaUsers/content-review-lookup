@@ -27,13 +27,8 @@ UserTagsJS.modules.metafilter = {
 };
  
 UserTagsJS.modules.custom = {
-	'HatQueen1107': ['csshelper'],
+	'HatQueen1107': ['csshelper']
 };
- 
-$(function() {
-    mw.hook('DiscordIntegrator.added').add(function() {
-        $('.DiscordIntegratorModule').insertAfter('.ChatModule');
-});
  
 // Ajax auto-refresh
 window.ajaxPages = [

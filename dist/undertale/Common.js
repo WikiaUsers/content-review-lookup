@@ -1,33 +1,16 @@
 /**
- * Script configuration
- */
-$.extend(window, {
-    // AbuseLogRC
-    abuseLogRC_users: [
-        'Jacky720'
-    ],
-    abuseLogRC_collapsible: true,
-    abuseLogRC_entries: 5,
-    // AjaxRC
-    AjaxRCRefreshText: 'Auto-Refresh',
-    AjaxRCRefreshHoverText: 'Automatically refresh the page',
-    ajaxSpecialPages: [
-        'Recentchanges',
-        'WikiActivity',
-        'Log',
-        'AbuseLog'
-    ]
-});
-
-/**
  * Loading UserTags from a page with JSON
  */
-$.get(mw.util.wikiScript('load'), {
-    mode: 'articles',
-    articles: 'MediaWiki:Custom-user-tags',
-    only: 'styles'
-}, function(d) {
-    window.UserTagsJS = JSON.parse(d.replace(/\/\*.*\*\//g, ''));
+mw.loader.using('mediawiki.api').then(function() {
+    new mw.Api().get({
+        action: 'query',
+        titles: 'MediaWiki:Custom-user-tags.json',
+        prop: 'revisions',
+        rvprop: 'content',
+        rvslots: 'main'
+    }).then(function(data) {
+        window.UserTagsJS = JSON.parse(data.query.pages[210341].revisions[0].slots.main['*']);
+    });
 });
 
 /**
@@ -37,7 +20,7 @@ $.get(mw.util.wikiScript('load'), {
     // AddRailModule configuration
     var ns = mw.config.get('wgNamespaceNumber');
     window.AddRailModule = (
-        !$.storage.get('spoiler-warning') &&
+        !localStorage.getItem('spoiler-warning') &&
         [0, 6, 14].indexOf(mw.config.get('wgNamespaceNumber')) !== -1
     ) ? [
         {
@@ -46,29 +29,13 @@ $.get(mw.util.wikiScript('load'), {
         }
     ] : [];
 
-    // Apparently, Vignette is screwing up our GIF images in infoboxes and file pages
-    // Interestingly, when these GIFs are scaled down, the issue doesn't happen
-    // This fixes the image issue in infoboxes
-    // For content review: you can test the script on [[Mettaton]] page to see
-    // the difference
-    $('.pi-image-collection img').each(function() {
-        var $this = $(this),
-            url = new mw.Uri($this.attr('src'));
-        $this.removeAttr('srcset');
-        if (url.path.indexOf('scale-to-width-down') === -1) {
-            url.path += '/scale-to-width-down/' + $this.attr('width');
-        }
-        url.query.cb = Number(url.query.cb) + 1;
-        $this.attr('src', url.toString());
-    });
-
     // Move spoiler warning to the top, but below ads
     // Set a listener to remove the module when dismissed
     mw.hook('AddRailModule.module').add(function(module) {
         if (module === 'int:custom-spoiler-warning') {
             var $module = $('#WikiaRail .railModule');
             $module.find('#spoiler-warning-button').click(function() {
-                $.storage.set('spoiler-warning', true);
+                localStorage.setItem('spoiler-warning', '1');
                 $module.slideToggle();
             });
         }

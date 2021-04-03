@@ -34,8 +34,3 @@ $(function() {
         }
     }
 });
-
-/* WAM */
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};

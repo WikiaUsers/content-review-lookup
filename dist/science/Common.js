@@ -35,7 +35,7 @@ if (mwCustomEditButtons.length) {
 	};
 }
 
-/* USER TAGS */
+/* USER TAGS 
 window.UserTagsJS = {
 	modules: {},
 	tags: {
@@ -51,7 +51,7 @@ UserTagsJS.modules.prefCoding = true;
 
 UserTagsJS.modules.custom = {
 	'Drakenkaul': ['a', 'b']
-};
+};*/
 
 //OGGFILES CODE
 window.oggPlayerButtonOnly = false;

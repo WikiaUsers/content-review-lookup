@@ -9,10 +9,15 @@ importArticles({
     type: "script",
     articles: [
         "MediaWiki:Common.js/PersistentHeaders.js", /* Scrolling table headers ~Flightmare*/
-        "u:dev:RevealAnonIP/code.js",
+        "u:dev:MediaWiki:RevealAnonIP/code.js",
         "MediaWiki:Common.js/collapse.js" /*Collapsibles ~HaLo2FrEeEk*/
     ]
 });
+
+/* Prevent ProfileTags from overwriting default tags (December 2020) */
+(window.dev = window.dev || {}).profileTags = {
+	noHideTags: true
+};
 
 /* Standard Edit Summary code */
 window.dev = window.dev || {};

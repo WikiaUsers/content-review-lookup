@@ -39,7 +39,7 @@ $('.wds-community-header__wiki-buttons .createpage')
                             callback: function() {
                                 UploadPhotos.showDialog();
                             }
-                        })
+                        });
                     })
                 ),
                 $('<li />').html(
@@ -59,28 +59,28 @@ $('.wds-community-header__wiki-buttons .createpage')
                                             id: 'mw-editbutton-vet'
                                         }
                                     });
-                                })
+                                });
                             }
                         });
                     })
                 )
             )
         )
-    )
+    );
  
-$.nirvana.sendRequest({
+/*$.nirvana.sendRequest({
     controller: 'UploadPhotos',
 	method: 'Index',
 	format: 'html',
-	cb:0,
+	cb: 0,
     title: 'Spezial:Bilder',
     uselang: 'de'
-})
+});*/
  
 function loadAssets(options) {
     if (typeof window['loaded' + options.name] == 'undefined') {
         if(options.hasOwnProperty('scripts') && options.scripts.length && $.type(options.scripts) == 'array') {
-            options.scripts = options.scripts.join(',')
+            options.scripts = options.scripts.join(',');
         }
         params = {};
         ['scripts', 'styles', 'sassParams', 'templates', 'messages', 'mustache'].forEach(function(type) {

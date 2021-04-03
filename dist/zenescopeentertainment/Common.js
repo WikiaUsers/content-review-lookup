@@ -440,91 +440,91 @@ if (mwCustomEditButtons) {
    mwCustomEditButtons[8] = {
      "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/2/29/Character_Button.png",
      "speedTip": "Insert character template",
-     "tagOpen": "\{\{Marvel Database:Character Template\r| Image                   = ",
+     "tagOpen": "\{\{Character Template\r| Image                   = ",
      "tagClose": "\r| RealName                = \r| CurrentAlias            = \r| Aliases                 = \r| Identity                = \r| Alignment               = \r| Affiliation             = \r| Relatives               = \r| Universe                = \r| BaseOfOperations        = \r\r| Gender                  = \r| Height                  = \r| Weight                  = \r| Eyes                    = \r| Hair                    = \r| UnusualFeatures         = \r\r| Citizenship             = \r| MaritalStatus           = \r| Occupation              = \r| Education               = \r\r| Origin                  = \r| PlaceOfBirth            = \r| Creators                = \r| First                   = \r\r| HistoryText             = \r\r| Powers                  = \r| Abilities               = \r| Strength                = \r| Weaknesses              = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Marvel                  = \r| Wikipedia               = \r| Links                   = \r\}\}",
      "sampleText": ""};
 
    mwCustomEditButtons[9] = {
      "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/3/3a/Comic_Button.png",
      "speedTip": "Insert comic template",
-     "tagOpen": "\{\{Marvel Database:Comic Template\r| Image               = ",
+     "tagOpen": "\{\{Comic Template\r| Image               = ",
      "tagClose": "\r| Month               = \r| Year                = \r\r| Editor-in-Chief     = \r| CoverArtist1        = \r\r| Quotation           = \r| Speaker             = \r\r| StoryTitle1         = \r| Writer1_1           = \r| Penciler1_1         = \r| Inker1_1            = \r| Colourist1_1        = \r| Letterer1_1         = \r| Editor1_1           = \r| Synopsis1           = \r\r| Appearing1          = \r'''Featured Characters:'''\r* <br/>\r'''Supporting Characters:'''\r* <br/>\r'''Adversaries:'''\r* <br/>\r'''Other Characters:'''\r* <br/>\r'''Locations:'''\r* <br/>\r'''Items:'''\r* <br/>\r'''Vehicles:'''\r* <br/>\r\r| Notes               = \r| Trivia              = \r| Recommended         = \r| Links               = \r\}\}",
      "sampleText": ""}
 
    mwCustomEditButtons[10] = {
      "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/8/88/Comic_List.png",
      "speedTip": "Insert Comic Volume template",
-     "tagOpen": "\{\{Marvel Database:Volume Template\r| IssueList               = \r<gallery position=\"center\" captionalign=\"center\">\r",
+     "tagOpen": "\{\{Volume Template\r| IssueList               = \r<gallery position=\"center\" captionalign=\"center\">\r",
      "tagClose": "\r\r</gallery>\r\r| SeeAlso                 =  \r\r\}\}",
      "sampleText": ""};
 
    mwCustomEditButtons[11] = {
      "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/5/5d/Team_Button.png",
      "speedTip": "Insert team template",
-     "tagOpen": "{{Marvel Database:Team Template\r| Image                   = ",
+     "tagOpen": "{{Team Template\r| Image                   = ",
      "tagClose": "\r| OfficialName            = \r| Aliases                 = \r\r| Status                  = \r| Alignment               = \r| Identity                = \r| Universe                = \r| BaseOfOperations        = \r\r| TeamLeaders             = \r| CurrentMembers          = \r| FormerMembers           = \r| Allies                  = \r| Enemies                 = \r\r| Origin                  = \r| PlaceOfFormation        = \r| PlaceOfDefunction       = \r| Creators                = \r| First                   = \r| Last                    = \r\r| HistoryText             = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r\}\}",
      "sampleText": ""}
 
    mwCustomEditButtons[12] = {
      "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/f/f2/Location_Button.png",
      "speedTip": "Insert location template",
-     "tagOpen": "\{\{Marvel Database:Location Template\r| Image                   = ",
+     "tagOpen": "\{\{Location Template\r| Image                   = ",
      "tagClose": "\r| OfficialName            = \r| Aliases                 = \r\r| Galaxy                  = \r| StarSystem              = \r| Planet                  = \r| Country                 = \r| City                    = \r| State                   = \r| Province                = \r| Locale                  = \r\r| Dimensions              = \r| Population              = \r| First                   = \r\r| HistoryText             = \r\r| PointsOfInterest        = \r| Residents               = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r\}\}",
      "sampleText": ""}
 
    mwCustomEditButtons[13] = {
      "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/2/20/Vehicle_Button.png",
      "speedTip": "Insert vehicle template",
-     "tagOpen": "\{\{Marvel Database: Vehicle Template\r| Image                   = ",
+     "tagOpen": "\{\{Vehicle Template\r| Image                   = ",
      "tagClose": "\r| OfficialName            = \r| Title                   = \r| Nicknames               = \r| Universe                = \r| Status                  = \r| CurrentModel            = \r| CurrentOwner            = \r| TransportMethod         = \r| Dimensions              = \r| Creators                = \r| Origin                  = \r| First                   = \r\r| HistoryText             = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r\}\}",
      "sampleText": ""};
 
    mwCustomEditButtons[14] = {
      "imageFile": " https://images.wikia.nocookie.net/marveldatabase/images/0/02/Eyetem_Button.png",
      "speedTip": "Insert item template",
-     "tagOpen": "\{\{Marvel Database: Item Template\r| Image                   = ",
+     "tagOpen": "\{\{Item Template\r| Image                   = ",
      "tagClose": "\r| OfficialName            = \r| Aliases                 = \r| Model                   = \r| Version                 = \r\r| Universe                = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r| Origin                  = \r\r| Dimensions              = \r| Weight                  = \r| First                   = \r\r| HistoryText             = \r\r| CurrentOwner            = \r| PreviousOwners          = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r\}\}",
      "sampleText": ""};
 
    mwCustomEditButtons[15] = {
      "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/5/5a/Images_Button.png",
      "speedTip": "Insert gallery template",
-     "tagOpen": "\{\{Marvel Database:Gallery Template\r| GalleryType             = \r| GalleryData             = \r<gallery position=\"center\" captionalign=\"center\"> \r",
+     "tagOpen": "\{\{Gallery Template\r| GalleryType             = \r| GalleryData             = \r<gallery position=\"center\" captionalign=\"center\"> \r",
      "tagClose": "\r</gallery>\r| SeeAlso                 = \r\}\}",
      "sampleText": ""}
 
    mwCustomEditButtons[16] = {
      "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/d/dc/Image_Button.png",
      "speedTip": "Insert image template",
-     "tagOpen": "{{Marvel Database:Image Template\r| License                 = ",
+     "tagOpen": "{{Image Template\r| License                 = ",
      "tagClose": "\r| ImageType               = \r| Description             = \r| GalleryDescription      = \r\r| Source                  = \r| Permission              = \r| Issue                   = \r\r| Universe                = \r| Subject1                = \r| Subject2                = \r| Subject3                = \r| Subject4                = \r| Subject5                = \r\r| CoverArtist1            = \r| Penciler1               = \r| Inker1                  = \r| Colourist1              = \r| Letterer1               = \r\r| Notes                   = \r| Trivia                  = \r\}\}",
      "sampleText": ""}
 
    mwCustomEditButtons[17] = {
      "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/2/2c/Race_Button.png",
      "speedTip": "Insert race template",
-     "tagOpen": "\{\{Marvel Database:Race Template\r| Image                   = ",
+     "tagOpen": "\{\{Race Template\r| Image                   = ",
      "tagClose": "\r| Name                    = \r| Aliases                 = \r| Identity                = \r| Affiliation             = \r| Universe                = \r| BaseOfOperations        = \r\r| BodyType                = \r| AvgHeight               = \r| AvgWeight               = \r| Eyes                    = \r| Hair                    = \r| Skin                    = \r| NumberOfLimbs           = \r| NumberOfFingers         = \r| NumberOfToes            = \r| SpecialAdaptations      = \r| UnusualFeatures         = \r\r| Origin                  = \r| GalaxyOfOrigin          = \r| StarSystemOfOrigin      = \r| HomePlanet              = \r| PlaceOfBirth            = \r| Creators                = \r| First                   = \r\r| HistoryText             = \r\r| Habitat                 = \r| Gravity                 = \r| Atmosphere              = \r| Population              = \r\r| Powers                  = \r| Abilities               = \r| AvgStrength             = \r| Weaknesses              = \r\r| GovernmentType          = \r| TechnologyLevel         = \r| CulturalTraits          = \r| Representatives         = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r\}\}",
      "sampleText": ""};
 
    mwCustomEditButtons[18] = {
      "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/1/12/Reality_Button.png",
      "speedTip": "Insert reality template",
-     "tagOpen": "\{\{Marvel Database:Reality Template\r| Image                   = ",
+     "tagOpen": "\{\{Reality Template\r| Image                   = ",
      "tagClose": "\r| EarthNumber             = \r| Title                   = \r| Aliases                 = \r| Status                  = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| Residents               = \r| Notes                   = \r| Trivia                  = \r| Links                   = \r\}\}",
      "sampleText": ""};
 
    mwCustomEditButtons[19] = {
      "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/e/ee/Episode_Button.png",
      "speedTip": "Insert episode template",
-     "tagOpen": "\{\{Marvel Database:Episode Template\r| Image               = ",
+     "tagOpen": "\{\{Episode Template\r| Image               = ",
      "tagClose": "\r| Month               = \r| Year                = \r\r| Director            = \r| Producer1_1         = \r| Writer1_1           = \r\r| Quotation           = \r| Speaker             = \r\r| EpisodeTitle        = \r| Synopsis            = \r\r| Appearing           = \r'''Featured Characters:'''\r* <br/>\r'''Supporting Characters:'''\r* <br/>\r'''Adversaries:'''\r* <br/>\r'''Other Characters:'''\r* <br/>\r'''Locations:'''\r* <br/>\r'''Items:'''\r* <br/>\r'''Vehicles:'''\r* <br/>\r\r| Notes               = \r| Trivia              = \r| Recommended         = \r| Links               = \r\}\}",
      "sampleText": ""};
 
    mwCustomEditButtons[20] = {
      "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/3/3e/Staff_Button.png",
      "speedTip": "Insert marvel staff template",
-     "tagOpen": "\{\{Marvel Database:Staff Template\r| Image                   = ",
+     "tagOpen": "\{\{Staff Template\r| Image                   = ",
      "tagClose": "\r| RealName                = \r| Pseudonyms              = \r| Employers               = \r| Titles                  = \r\r| Gender                  = \r| YearOfBirth             = \r| MonthOfBirth            = \r| DayOfBirth              = \r| CityOfBirth             = \r| StateOfBirth            = \r| CountryOfBirth          = \r| Creations               = \r| First                   = \r\r| PersonalHistory         = \r| ProfessionalHistory     = \r\r| Notes                   = \r| Trivia                  = \r| OfficialWebsite         = \r| Links                   = \r\}\}",
      "sampleText": ""};
 }

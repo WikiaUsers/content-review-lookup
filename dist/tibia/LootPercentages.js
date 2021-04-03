@@ -166,11 +166,11 @@
       $('#loot_perc_loot').html($('#loot_perc_loot').html().replace(/[\s]?\((?:(?:semi-|very |extremely )?rare)\)|(?:[\s]?\((?:un)?common)\)[\s]?/g, ''))
       .prepend('<img id="loot_perc_load" src="https://images.wikia.nocookie.net/tibia/en/images/8/87/Ajax_Load_Image.gif" alt="Loading %s" />');
       $.ajax({
-        url: '/index.php?title=Loot_Statistics:' + wgTitle + '&action=raw',
+        url: '/index.php?title=Loot_Statistics:' + mw.config.get('wgTitle') + '&action=raw',
         dataType: 'text',
         timeout: 15000,
         success: function (text) {
-          loot_perc_loaded(text, $.trim(wgTitle.replace(/\(Creature\)/, '')));
+          loot_perc_loaded(text, $.trim(mw.config.get('wgTitle').replace(/\(Creature\)/, '')));
         },
         error: function () {
           loot_perc_loaded(false);
@@ -213,7 +213,7 @@
   },
   droppedby_perc_get_data = function (text, cname, item) {
     if (item === undefined) {
-      item = wgTitle;
+      item = mw.config.get('wgTitle');
     }
     var
     get_it = function (version) {

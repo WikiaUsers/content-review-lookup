@@ -81,3 +81,44 @@ addOnloadHook(checktimers);
 var WikiaNotificationMessage = "The World of Magic: Maze of Forest is now live! Please check the <a href='/wiki/Thread:67333'>Update Notes</a> for more information!";
 var WikiaNotificationexpiry = 20;
 importScriptPage('WikiaNotification/code.js', 'dev');
+
+
+
+// *************************************************************************
+//   Anyone who dares to use messy code below this line gets spammed daily
+// *************************************************************************
+
+
+
+// *************************************************************************
+//                           Custom User Tags
+// *************************************************************************
+
+
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		newstar: { u: 'Newstar', order: 100 },
+		wadangka: { u: 'Wadangka', order: 101 },
+		bigmama: { u: 'Bigmama', order: 102 },
+		korea: { u: 'Korea', order:119 },
+		kooii: { u: 'Kooii', order : 120 },
+		turtlez: { u: 'Turtle Z', order : 104 },
+		devilang: { u: 'Devilang', order : 105 },
+		caligo: { u: 'Caligo', order : 106 },
+		darlene: { u: 'Darlene', order: 98 },
+		barslaf: { u: 'Barslaf', order : 99 },
+		sprites: { u: 'Sprites' },
+	}
+};
+
+UserTagsJS.modules.custom = {
+    'Filletofishhies': ['sprites']
+};
+
+UserTagsJS.modules.metafilter = {
+	'sysop': ['bureaucrat', 'bot'],
+	'content-moderator': ['bureaucrat', 'sysop', 'bot']
+};
+
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'bot', 'content-moderator'];

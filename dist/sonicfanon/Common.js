@@ -35,7 +35,8 @@ function LoadUserTags() {
     		vandal_patrol: { u:'Vandal Patrol', link:'Sonic_Fanon_Wiki:Staff#Vandal_Patrol' },
     		patroller: { u:'Patroller', link:'Sonic_Fanon_Wiki:Staff#Vandal_Patrol' },
     		rollback: { u:'Rollback', link:'Sonic_Fanon_Wiki:Staff#Vandal_Patrol' },
-    		master_of_adoptions: { u:'Master of Adoptions', link:'Character_Adoption' }
+    		master_of_adoptions: { u:'Master of Adoptions', link:'Character_Adoption' },
+    		revamp_team: { u:'Revamp Team', link:'Sonic_Fanon_Wiki:Revamp_Project'}
     	}
     };
     $.get(mw.util.wikiScript(), { //Load Custom UserTags from MediaWiki:ProfileTags (code modified from ProfileTags)

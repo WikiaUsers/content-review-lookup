@@ -1,6 +1,7 @@
 /* TopEditors script by Bobogoobo
  * Please see for full documentation: https://dev.wikia.com/wiki/TopEditors
  */
+mw.loader.using('mediawiki.util').then(function() {
 $('.topeditors').each(function() {
     //Variables and retrieving settings
     var myDate = new Date(), end = myDate.toJSON(), start = '', 
@@ -8,7 +9,7 @@ $('.topeditors').each(function() {
       namespace = ($te.attr('data-te-namespace') || ''),
       type = ($te.attr('data-te-type') || 'edit|new'),
       show = ($te.attr('data-te-show') || ''),
-      user = $te.attr('data-te-user') ? '&rcuser=' + $te.attr('data-te-user') : '',
+      user = ($te.attr('data-te-user') || undefined),
       limit = (Number($te.attr('data-te-limit')) || 25),
       dateoffset = (Number($te.attr('data-te-offset')) || 7),
       exclude = ($te.attr('data-te-exclude') ? JSON.parse($te.attr('data-te-exclude')) : '');
@@ -17,16 +18,17 @@ $('.topeditors').each(function() {
     start = myDate.toJSON();
     
     //Get and parse API data
-    function requestLoop(strt, callback) {
+    function requestLoop(strt, cont, callback) {
         $.getJSON(mw.util.wikiScript('api'), {
             action: 'query',
             list: 'recentchanges',
+            rccontinue: cont,
             rcstart: strt,
             rcend: end,
             rcnamespace: namespace,
             rcshow: show,
             rctype: type,
-            rcuser: user || undefined,
+            rcuser: user,
             rcdir: 'newer',
             rcprop: 'user',
             rclimit: 'max',
@@ -44,15 +46,16 @@ $('.topeditors').each(function() {
                     userlist[username] = 1;
                 }
             }
-            start = data['query-continue']; // JS needs hyphenated values in bracket notation
-            if (start !== undefined) {
-                requestLoop(start.recentchanges.rcstart, callback);
+            if (data['query-continue']) {
+                requestLoop(data['query-continue'].recentchanges.rcstart, undefined, callback);
+            } else if (data['continue']) {
+                requestLoop(undefined, data['continue'].rccontinue, callback);
             } else {
                 callback();
             }
         });
     }
-    requestLoop(start, function() {
+    requestLoop(start, undefined, function() {
 
     //Create list in necessary structure and sort
     var userslist = [];
@@ -86,4 +89,5 @@ $('.topeditors').each(function() {
     }
     user ? $te.html(html) : $te.html('<ol>' + html + '</ol>');
     });
+});
 });

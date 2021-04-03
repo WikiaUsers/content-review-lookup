@@ -1,4 +1,4 @@
-if (wgCanonicalSpecialPageName == "Recentchanges"){
+if (mw.config.get('wgCanonicalSpecialPageName') == "Recentchanges"){
     $(".mw-rc-openarrow").each(function(){$(this).click();});
 
     window.ajaxCallAgain = window.ajaxCallAgain || [];

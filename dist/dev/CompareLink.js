@@ -2,11 +2,10 @@
  * Convert the "Compare selected versions" button to a link
  * (Based on [[wikipedia:User:Mattflaschen/Compare_link.js]])
  * @source: https://www.mediawiki.org/wiki/Snippets/Compare_link
- * @rev: 2-wikia2
+ * @rev: 2-wikia3
  * @see: [[mw:bugzilla:16165]]
  *
  * Copyright 2006-2013 Matthew Flaschen ([[mw:User:Mattflaschen]]), [[mw:User:He7d3r]]
- * Tidied + tweaked for Wikia support by [[wikicities:c:dev:User:OneTwoThreeFall]]
  *
  * In addition to the GFDL and CC-BY-SA:
  *
@@ -30,15 +29,15 @@
  *
  */
 
-/*jslint browser, multivar, single */
+/*jslint browser, single */
 /*global jQuery, mediaWiki */
 
 (function ($, mw) {
     'use strict';
 
     function fixCompare() {
-        var $histForm = $('#mw-history-compare'),
-            $buttons = $histForm.find('input.historysubmit');
+        var $histForm = $('#mw-history-compare');
+        var $buttons = $histForm.find('input.historysubmit');
 
         if (!$buttons.length) {
             // Buttons don't exist, so do nothing
@@ -47,21 +46,25 @@
 
         var $compareLink = $('<a></a>', {
             'accesskey': $buttons.attr('accesskey'),
-            'class': 'compare-link button',
+            'class': 'compare-link mw-ui-button wds-button',
             'text': $buttons.val(),
             'title': $buttons.attr('title')
         });
+
+        if (mw.config.get('wgVersion') === '1.19.24') {
+            $compareLink.removeClass('wds-button').addClass('button');
+        }
 
         $buttons
             .after($compareLink)
             .remove();
 
         var updateCompare = function () {
-            var $radio = $histForm.find('input[type=radio]:checked'),
-                genLink = '?' + $.param({
-                    diff: $radio.eq(0).val(),
-                    oldid: $radio.eq(1).val()
-                });
+            var $radio = $histForm.find('input[type=radio]:checked');
+            var genLink = '?' + $.param({
+                diff: $radio.eq(0).val(),
+                oldid: $radio.eq(1).val()
+            });
             $('.compare-link').attr('href', genLink);
         };
         updateCompare();

@@ -1,18 +1,20 @@
 // ---
 // @name         User Avatar Finder
-// @version      1.4
+// @version      1.5
 // @description  Finds and adds the avatar image of a user into a template
-// @author       Static Whisper
+// @author       Tsukinyama
 // ---
-(function() {
+mw.loader.using(['jquery.client', 'mediawiki.util']).then(function() {
     'use strict';
+
     var cache = {};
     function addAvatar($content) {
         $content.find('.UserAvatarFetch:not(.loaded)').each(function() {
             var $this = $(this),
                 username = $this.find('.avi-thisUsername').text(),
                 avatar = cache[username],
-                size = Number($this.find('.avi-thisSize').text());
+                size = Number($this.find('.avi-thisSize').text()),
+                link = $this.find('.avi-thisLink').text();
             if (!avatar) {
                 return;
             }
@@ -24,16 +26,42 @@
                 }
                 avatar = avatar.replace(/\/scale-to-width-down\/\d+/, '/scale-to-width-down/' + size);
             }
-            $this.html($('<img>', {
+
+            var img = $('<img>', {
                 src: avatar,
                 alt: username,
                 style: 'vertical-align: initial; width: ' + size + 'px; height: ' + size + 'px;'
-            })).addClass('loaded');
+            });
+
+            // https://stackoverflow.com/a/43467144
+            function isValidHttpUrl(string) {
+                var url;
+
+                try {
+                    url = new URL(string);
+                } catch (_) {
+                    return false;
+                }
+
+                return url.protocol === 'http:' || url.protocol === 'https:';
+            }
+
+            if (link) {
+                var linkElement = $('<a>', {
+                    href: isValidHttpUrl(link) ? link : mw.util.getUrl(link)
+                }).append(img);
+
+                $this.html(linkElement);
+            } else {
+                $this.html(img);
+            }
+
+            $this.addClass('loaded');
         });
     }
 
-    function findAvatars($content, original) {
-        if (!$content || ($content.is(mw.util.$content) && !original)) {
+    function findAvatars($content) {
+        if (!$content) {
             return;
         }
 
@@ -59,6 +87,7 @@
         }
     }
 
-    findAvatars(mw.util.$content, true);
-    mw.hook('wikipage.content').add(findAvatars);
-})();
+    mw.hook('wikipage.content').add(function(content) {
+        findAvatars(content);
+    });
+});

@@ -102,11 +102,11 @@ $(function() {
     if (welcome < 4) {
         $.get(mw.util.wikiScript('api'), {
             action: 'parse',
-            page: 'Template:Sidebar',
+            page: 'Template:WelcomeModule',
             disablepp: '',
             format: 'json'
         }, function(data) {
-            $('#WikiaRail').append(
+            $('#WikiaRail').prepend(
                 $('<section>')
                     .addClass('module')
                     .addClass('welcome-module')
@@ -131,4 +131,20 @@ $(function() {
             });
         });
     }
+});
+
+/* username */
+importArticles({
+    type: "script",
+    articles: [
+        "u:dev:MediaWiki:InputUsername/code.js"
+    ]
+});
+
+/*YouTube*/
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:YoutubePlayer/code.js'
+    ]
 });

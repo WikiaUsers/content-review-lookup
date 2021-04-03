@@ -1,26 +1,22 @@
 /* Il codice JavaScript inserito qui viene caricato da tutti gli utenti ad ogni visualizzazione di pagina. */
 
-/*RailWAM from dev.fandom.com  */
-window.railWAM = {
-    logPage: "Project:WAM Log",
-    lang: "it",
-    showLogAlert: false,
-    autoLogForUsers: "Daeron_del_Doriath",
+/* Automated Profile Template 
+Script from dev wiki to automatically create new user pages
+Needed to replace the welcome tool currently missing in UCP 
+see: https://community.fandom.com/f/p/4400000000002024105
+*/
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2:'{{sub'+'st:MediaWiki:Welcome-user-page}}',
+        3:false,
+        1202:false
+    },
+    summary:'Creata nuova user page'
 };
 
-/*Rail discussion feed from dev.fandom.com*/
-window.discussionsModuleConfig = {
-	size : 5,
-	mostrecent : false,
-	/*catid: */ 
-};
-
-/*in standard pages appended after wiki activity module; in wiki activity page appended right before insigths module */
-mw.hook('discussionsModule.added').add(function($module) {
-    // Module addition
-    if ($('.insights-module').exists()) {
-        $module.insertBefore('.insights-module');
-    } else {
-        $module.appendTo('#WikiaRail');
-    }
+importArticles({ 
+	type: 'script', 
+	articles: [ 
+		'u:dev:MediaWiki:AutoCreateUserPages.js', 
+	]
 });

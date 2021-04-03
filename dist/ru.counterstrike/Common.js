@@ -2,80 +2,26 @@
 
 var auto_comment = 0;
 
-if (document.URL.indexOf("action=edit") > 0 || document.URL.indexOf("action=submit") > 0)
-{
-       if (wgCanonicalNamespace != "Special")
-       {
-               document.write('<script type="text/javascript" src="/index.php' +
-               '?title=MediaWiki:Onlyifediting.js&action=raw' +
-               '&ctype=text/javascript&dontcountme=s"></script>');
-       }
-}
-
-
 /*Для шаблона "Ник*/
  
 if (wgUserName != 'null') {
-    $('.insertusername').html(wgUserName);
+    $('.insertusername').text(wgUserName);
 }
  
-//A script that adds a "Back To Top" option in the footer of the Oasis theme.
-//Created by Noemon from Dead Space Wiki, translate from ru.elderscrolls.wikia
- 
-function hideFade () {
-	// hide #backtotop first
-	$( "#backtotop" ).hide ();
-	// fade in #backtotop
-	$( function () {
-		$( window ).scroll( function () {
-			if ( $( this ).scrollTop () > ButtonStart ) {
-				$( '#backtotop' ).fadeIn ();
-			} else {
-				$( '#backtotop' ).fadeOut ();
-			}
-		});
-	});
-}
- 
-function goToTop (){
-	// scroll body to 0px on click
-	$( 'body,html' ).animate ({
-		scrollTop: 0
-	}, ScrollSpeed );
-	return false;
-}
- 
-function addBackToTop () {
-	if( skin == 'oasis' ) {
-		$('<li id="backtotop" style="position: absolute; right:20px; top:0px; border:none;"><button type="button" value="Наверх" onClick="goToTop();">Наверх</button></li>').appendTo('#WikiaBarWrapper .toolbar > .tools');	
-		hideFade ();
-	}	
-}
- 
-var ButtonStart = 800;
-var ScrollSpeed = 600;
- 
-if( !window.BackToTop  ) {
-	$( document ).ready( function () { 
-		addBackToTop (); 
-	});
-}
-var BackToTop = true; // prevent duplication
-
-
 function addWikifButton() {
-        var toolbar = document.getElementById('toolbar')
-        if (!toolbar) return
-        var i = document.createElement('img')
-        i.src = 'http://upload.wikimedia.org/wikisource/ru/d/d1/Button-wikifikator.png'
-        i.alt = i.title = 'викификатор'
-        i.onclick = Wikify
-        i.style.cursor = 'pointer'
-        toolbar.appendChild(i)
+        var toolbar = document.getElementById('toolbar');
+        if (!toolbar) return;
+        var i = document.createElement('img');
+        i.src = 'http://upload.wikimedia.org/wikisource/ru/d/d1/Button-wikifikator.png';
+        i.alt = i.title = 'викификатор';
+        i.onclick = Wikify;
+        i.style.cursor = 'pointer';
+        toolbar.appendChild(i);
 }
+
 if (wgAction == 'edit' || wgAction == 'submit') {
-        importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Wikificator.js&action=raw&ctype=text/javascript')
-        addOnloadHook(addWikifButton)
+        importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Wikificator.js&action=raw&ctype=text/javascript');
+        $(addWikifButton);
 }
 
 // ============================================================

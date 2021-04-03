@@ -1,13 +1,13 @@
 /** <nowiki>
  *
  * @module                  LangSelect
- * @description             Amends UX of {{LangSelect}}.
+ * @description             Amends UX of Template:LangSelect.
  * @author                  Speedit
- * @version                 1.7.0
+ * @version                 1.7.1
  * @license                 CC-BY-SA 3.0
  *
  */
-require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
+mw.loader.using('mediawiki.util').then(function () {
     'use strict';
 
     // Variable caching and script scoping
@@ -17,23 +17,23 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         $tn = $('.transclude-notice'),
         $int = $('.WikiaArticleInterlang ul'),
         conf = mw.config.get([
-            'wgIsArticle',
             'wgAction',
+            'wgArticlePath',
+            'wgContentLanguage',
+            'wgFormattedNamespaces',
+            'wgIsArticle',
             'wgNamespaceNumber',
             'wgRelevantPageName',
-            'wgVisualEditorPreferred',
-            'wgUserLanguage',
-            'wgContentLanguage',
-            'wgFormattedNamespaces'
+            'wgUserLanguage'
         ]);
     if (
         window.dev.langSelect ||
         !conf.wgIsArticle ||
         conf.wgAction !== 'view' ||
-        !$ld.exists() ||
+        !$ld.length ||
         (
             conf.wgNamespaceNumber === 10 &&
-            mw.util.$content.find('.template-documentation').exists()
+            mw.util.$content.find('.template-documentation').length
         )
     ) {
         return;
@@ -62,7 +62,7 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         var $links = $ph.find('.wds-list a[href]');
         $.extend(this, $ld.data());
         this.userlangExists = Boolean(this.userlangExists);
-        this.path = $tn.exists()
+        this.path = $tn.length
             ? new mw.Uri($tn.children('.text').attr('href')).path
             : window.location.pathname;
         this.parent = this.path.replace(new RegExp('/' + this.lang + '$'), '');
@@ -70,7 +70,7 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         $int.find('a[data-tracking="' + this.lang + '"]')
             .parent().addClass('selected');
         // LangSelect modifications.
-        if ($tn.exists()) {
+        if ($tn.length) {
             // Link overrides.
             $(this.elements)
                 .each(this._edit.bind(this));
@@ -87,7 +87,7 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         }
         // Page header modifications.
         if (
-            $ph.exists() &&
+            $ph.length &&
             Array.prototype.slice.call($links)
                 .every(this._isLocalInterwiki)
         ) {
@@ -121,12 +121,8 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         ['edit', 'history'].forEach(function(a) {
             uri[a] = new mw.Uri(mw.util.getUrl(conf.wgRelevantPageName));
         });
-        uri.edit.extend(
-            conf.wgVisualEditorPreferred ?
-                { 'veaction': 'edit' } :
-                { 'action':   'edit' }
-        );
-        uri.history.extend({ 'action': 'history' });
+        uri.edit.extend({ action: 'edit' });
+        uri.history.extend({ action: 'history' });
         // Create buttons.
         $.each(uri, this._addBaseButton.bind(this));
     };
@@ -199,7 +195,7 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         // Fetch interlanguage & page header link.
         var selc = 'a[data-tracking="top-' + opts.lang + '"]';
         // Check if the link exists.
-        if (!$ph.find(selc).exists()) {
+        if (!$ph.find(selc).length) {
             this._linkGenerator(opts);
         }
         var $phEl = $ph.find('.wds-list ' + selc),
@@ -292,7 +288,7 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
      */
     LangSelect.prototype._talk = function(_, h) {
         var uri = new mw.Uri(h),
-            pageRgx = new RegExp(wgArticlePath.replace('$1','([\\s\\S]+)'));
+            pageRgx = new RegExp(conf.wgArticlePath.replace('$1','([\\s\\S]+)'));
         uri.path = uri.path.replace(conf.wgRelevantPageName, this.parent.match(pageRgx)[1]);
         return uri.toString();
     };

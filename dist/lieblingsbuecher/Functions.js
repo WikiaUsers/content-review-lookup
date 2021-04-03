@@ -12,23 +12,25 @@ function importArticlesCallback() {
         page = arguments[0][i].page;
         type = arguments[0][i].type;
         callback = arguments[0][i].callback;
-        importArticleCallback(page,type,callback);
+        importArticleCallback(page, type, callback);
     }
 }
  
 function isUserpage() {
-    return ($.inArray(wgNamespaceNumber,[2,3,1200,500]) !== -1 || (wgCanonicalSpecialPageName && $.inArray(wgCanonicalSpecialPageName,['Contributions','Following']) != -1));
+	var config = mw.config.get(['wgNamespaceNumber', 'wgCanonicalSpecialPageName']);
+    return ($.inArray(config.wgNamespaceNumber, [2, 3, 1200, 500]) !== -1 || (config.wgCanonicalSpecialPageName && $.inArray(config.wgCanonicalSpecialPageName, ['Contributions', 'Following']) != -1));
 }
  
 function getUserByPage() {
-    if($.inArray(wgNamespaceNumber,[2,1200,500]) != -1) {
-        return /:(.*)/.exec(wgPageName)[1].replace('_',' ');
+	var config = mw.config.get(['wgNamespaceNumber', 'wgCanonicalSpecialPageName', 'wgPageName', 'wgUserName']);
+    if($.inArray(config.wgNamespaceNumber,[2,1200,500]) != -1) {
+        return /:(.*)/.exec(config.wgPageName)[1].replace('_',' ');
     }
-    else if(wgCanonicalSpecialPageName == 'Contributions') {
-        return /\/(.*)/.exec(wgPageName)[1].replace('_',' ');
+    else if(config.wgCanonicalSpecialPageName == 'Contributions') {
+        return /\/(.*)/.exec(config.wgPageName)[1].replace('_',' ');
     }
-    else if(wgCanonicalSpecialPageName == 'Following') {
-        return wgUserName;
+    else if(config.wgCanonicalSpecialPageName == 'Following') {
+        return config.wgUserName;
     }
 }
  

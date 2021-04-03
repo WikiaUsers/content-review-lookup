@@ -44,3 +44,16 @@ importArticles({
     article: 'u:zh.pad.wikia.com:MediaWiki:CountDown.css'
 });
 /* Koniec */
+
+/* dev:ArticleRating.js */
+window.ArticleRating = {
+  starStroke: '#fff',
+  excludeCats: ['Kategoria:Bohaterowie', 'Kategoria:Galerie', 'Kategoria:Miejsca', 'Kategoria:Organizacje', 'Kategoria:Piosenki', 'Kategoria:Serialowi bohaterowie', 'Kategoria:Przedmioty i wynalazki', 'Kategoria:Strona główna'],
+}
+/* Koniec */
+
+/* Discord */
+window.AddRailModule = [
+    {page: 'Szablon:RailDiscord', prepend: true},
+    {page: 'Szablon:RailModule'}
+];

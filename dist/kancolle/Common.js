@@ -1,38 +1,17 @@
-console.log("KanColle Wiki Script 020");
-
-window.RevealAnonIP = {
-    permissions : ['user']
-};
+window.RevealAnonIP = { permissions : ['user'] };
 
 mw.loader.load('https://apis.google.com/js/platform.js');
 
 importArticles({
-    type: "script",
-    articles: [
-        "w:c:dev:BackToTopButton/code.js",
-        "w:c:dev:RevealAnonIP/code.js",
-        "w:c:dev:Countdown/code.js",
-        "u:dev:OggPlayer.js",
-        "MediaWiki:SidebarBox_021.js",
-        "MediaWiki:FleetReporting.js",
-        "MediaWiki:CommentWarning.js",
-        "MediaWiki:DetailToggle.js",
-        "MediaWiki:TwitterTimeline.js",
-        //"MediaWiki:TabviewArticleComments.js",
-        "MediaWiki:EnableTalkButton.js",
-    ]
-}, {
-    type: "style",
-    articles: [
-        "MediaWiki:ClosedThreads.css"
-    ]
-});
-
-importArticles({
-    type: "script",
-    articles: [
-        "MediaWiki:Utils.js",
-        "MediaWiki:CommentQuote.js"
-    ],
-    debug: true,
+  type: 'script',
+  articles: [
+    'u:dev:MediaWiki:Countdown/code.js',
+    'u:dev:MediaWiki:DiscordIntegrator/code.js',
+    'MediaWiki:OggPlayer.js',
+    // 'u:dev:MediaWiki:BackToTopButton/code.js',
+    // 'u:dev:MediaWiki:ReferencePopups/code.js',
+    // 'u:dev:MediaWiki:ReferencePopups/code.configure.js',
+    // 'u:dev:MediaWiki:ReferencePopups/custom.js',
+    // 'u:dev:MediaWiki:RevealAnonIP/code.js',
+  ]
 });

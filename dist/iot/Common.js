@@ -1,0 +1,3 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
+
+<script id="sid0010000015571007185">(function() {function async_load(){s.id="cid0010000015571007185";s.src='http://st.chatango.com/js/gz/emb.js';s.style.cssText="width:500px;height:455px;";s.async=true;s.text='{"handle":"soniot","styles":{"b":100,"v":0,"w":0}}';var ss = document.getElementsByTagName('script');for (var i=0, l=ss.length; i < l; i++){if (ss[i].id=='sid0010000015571007185'){ss[i].id +='_';ss[i].parentNode.insertBefore(s, ss[i]);break;}}}var s=document.createElement('script');if (s.async==undefined){if (window.addEventListener) {addEventListener('load',async_load,false);}else if (window.attachEvent) {attachEvent('onload',async_load);}}else {async_load();}})();</script>

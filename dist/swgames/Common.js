@@ -1,9 +1,5 @@
 /* <pre><nowiki> */
-
-document.write('<script type="text/javascript" src="' 
-    + '/index.php?title=MediaWiki:Functions.js&action=raw&ctype=text/javascript"></script>');
     
-
 // onload stuff
 var firstRun = true;
 

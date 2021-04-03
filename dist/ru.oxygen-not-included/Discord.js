@@ -36,15 +36,15 @@ function setupModule(data) {
                     '</td>' +
                       '<td style="vertical-align:middle; width:90px;">' +
                         '<center>' +
-                            '<img alt="Discord" src="https://vignette.wikia.nocookie.net/oxygen-not-included/images/9/9b/Discord_ONI_Logo.png/revision/latest?cb=20181021132657&path-prefix=ru" class="discord-icon">' +
+                            '<img alt="Discord" src="https://static.wikia.nocookie.net/oxygen-not-included/images/9/9b/Discord_ONI_Logo.png/revision/latest?cb=20210124145908&path-prefix=ru" class="discord-icon">' +
                             '<span>В сети: <span id="discord-counter">?</span></span>' +
-                            '<button class="discord-joined">Войти в чат</button>' +
+                            '<button class="discord-joined">Войти</button>' +
                         '</center>' +
                       '</td>' +
                 '</tr>' +
                 '<tr>' +
                     '<td colspan="2">' +
-                        '<div style=" font-size=90%; width:100%; box-shadow:0 0 1px 1px white; "></div>' +
+                        '<div style="width:100%; border-top: 2px solid #fff; margin-bottom: 4px;"></div>' +
                         '<h4>Пользователи онлайн <div class="discord-chevron" style="float: right"></div></h4>' +
                     '</td>' +
                 '</tr>' +

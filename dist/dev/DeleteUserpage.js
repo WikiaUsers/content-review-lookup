@@ -14,8 +14,8 @@
     var msgs;
     var preloads = 2;
     var ucp = mw.config.get('wgVersion') !== '1.19.24';
-    var user = ucp ? $('#userProfileApp .user-identity-header__attributes > h1').text() : $('.UserProfileMasthead .masthead-info h1').text();
-    var userpage = mw.util.getUrl('User:' + user).split('/').pop();
+    var user = ucp ? mw.config.get('profileUserName') : $('.UserProfileMasthead .masthead-info h1').text();
+    var userpage = mw.config.get('wgFormattedNamespaces')[2] + ':' + user;
     var selector = ucp ? $('.mw-contributions-user-tools > .mw-changeslist-links > span:last-child') : $('#contentSub > a:last-child');
     var config = $.extend({}, window.DeleteUserpage);
     
@@ -25,7 +25,7 @@
             expiry: config.expiry || 'infinite',
             protections: 'create=' + (config.level || 'sysop'),
             title: userpage,
-            reason: config.protectReason || config.deleteReason || config.reason || '',
+            reason: config.protectReason || config.reason || '',
             token: mw.user.tokens.get('editToken'),
             format: 'json'
         }).done(function () {

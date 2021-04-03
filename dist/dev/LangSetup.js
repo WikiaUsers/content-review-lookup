@@ -2,8 +2,8 @@
  * Name:        LangSetup
  * Description: Creates MediaWiki:Lang/xx pages required for
  *              [[Template:LangSelect]] to work
- * Version:     v1.0a
- * Author:      KockaAdmiralac <1405223@gmail.com>
+ * Version:     v1.1
+ * Author:      KockaAdmiralac <wikia@kocka.tech>
  */
 (function(window, $, mw) {
     'use strict';
@@ -14,10 +14,17 @@
     var api, languages,
         contentLang = mw.config.get('wgContentLanguage'),
         token = mw.user.tokens.get('editToken'),
-        notCustom = /vstf|helper|util/.test(mw.config.get('wgUserGroups').join('|'));
+        notCustom = /soap|helper|content-team-member|wiki-manager|staff|util/.test(mw.config.get('wgUserGroups').join('|')),
+        // [[MediaWiki:Custom-language-code-sorting]]
+        languageCodeSortingId = 14830,
+        modal;
     importArticle({
         type: 'style',
         article: 'u:dev:MediaWiki:LangSetup.css'
+    });
+    importArticle({
+        type: 'script',
+        article: 'u:dev:MediaWiki:Modal.js'
     });
     function log(text) {
         $('.langsetup-log').append('<br />' + text);
@@ -54,55 +61,65 @@
         }
     }
     function click() {
-        $.showCustomModal(
-            'Install LangSelect',
-            $('<div>', {
+        modal.show();
+    }
+    function init(d, modalLib) {
+        if (!d || d[1] !== 'success') {
+            console.error('[LangSetup] Failed to retrieve language code data');
+            return;
+        }
+        var data = d[0].query.pages[languageCodeSortingId].revisions[0]['*'];
+        languages = JSON.parse(data.replace(/\/\*.*\*\//g, ''));
+        api = new mw.Api();
+        modal = new modalLib.Modal({
+            buttons: [
+                {
+                    id: 'langsetup-execute',
+                    event: 'execute',
+                    primary: true,
+                    text: 'Execute'
+                }
+            ],
+            content: $('<div>', {
                 'class': 'langsetup-log',
                 text: 'Click on the "Execute" button to start creating MediaWiki pages required for LangSelect to work. Results will be logged here.'
             }).prop('outerHTML'),
-            {
-                id: 'langselect-modal',
-                width: 500,
-                buttons: [
-                    {
-                        id: 'langselect-execute',
-                        message: 'Execute',
-                        defaultButton: true,
-                        handler: createPage
-                    },
-                    {
-                        id: 'langselect-close',
-                        message: 'Close',
-                        handler: function() {
-                            $('#langselect-modal').closeModal();
-                        }
-                    }
-                ]
-            }
-        );
-    }
-    function init(d) {
-        if (!d || d[1] !== 'success') {
-            console.error('[LangSelect] Failed to retrieve language code data');
-            return;
-        }
-        languages = JSON.parse(d[0].replace(/\/\*.*\*\//g, ''));
-        api = new mw.Api();
+            events: {
+                execute: createPage
+            },
+            id: 'langsetup-modal',
+            size: 'large',
+            title: 'Install LangSelect'
+        });
+        modal.create();
         $('#my-tools-menu').append(
             $('<li>').append(
                 $('<a>', {
-                    'class': 'langselect-link',
+                    'class': 'langsetup-link',
                     text: 'Install LangSelect'  
                 }).click(click).wrap('<li>')
             )
         );
     }
+    function modalLoaded() {
+        var $promise = $.Deferred();
+        mw.hook('dev.modal').add($promise.resolve);
+        return $promise;
+    }
     $.when(
-        $.get(mw.util.wikiScript('load'), {
-            mode: 'articles',
-            articles: 'u:dev:MediaWiki:Custom-language-code-sorting',
-            only: 'styles'
+        $.ajax({
+            type: 'GET',
+            url: 'https://dev.fandom.com/api.php',
+            data: {
+                action: 'query',
+                format: 'json',
+                pageids: languageCodeSortingId,
+                prop: 'revisions',
+                rvprop: 'content'
+            },
+            dataType: 'jsonp'
         }),
+        modalLoaded(),
         mw.loader.using('mediawiki.api')
     ).then(init);
 })(this, jQuery, mediaWiki);

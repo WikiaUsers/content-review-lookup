@@ -64,12 +64,12 @@ function setupModule(data) {
         '<table>' +
             '<tbody>' +
                 '<tr>' +
-                    '<td style="vertical-align:middle; width:100%;">' +
+                    '<td style="vertical-align:middle; width:auto;">' +
                         '<p class="chat-name">' +
-                            'Join the AtomRPG Wiki\'s <a href="https://ru.wikipedia.org/wiki/Discord" target="_blank">Discord</a> Server' +
+                            'Join the ATOM RPG Wiki\'s <a href="https://en.wikipedia.org/wiki/Discord_(software)" target="_blank">Discord</a> Server' +
                         '</p>' +
                     '</td>' +
-                      '<td style="vertical-align:middle; width:90px;">' +
+                      '<td style="vertical-align:middle; width:100px;">' +
                         '<center>' +
                             '<img alt="Atom RPG" src="https://vignette.wikia.nocookie.net/atom-rpg/images/f/fc/Atom_512.png/revision/latest/scale-to-width-down/480?cb=20180728074149&path-prefix=ru" class="discord-server-icon">' +
                             '<span>Online: <span id="discord-counter">?</span></span>' +
@@ -127,3 +127,13 @@ function setupModule(data) {
 }
  
 })();
+
+/* Wikificator */
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:Wikificator.js',
+		'u:dev:MediaWiki:RecentChangesMultiple/code.2.js',
+    ]
+});

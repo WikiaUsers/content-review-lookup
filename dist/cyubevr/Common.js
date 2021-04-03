@@ -1,0 +1,4 @@
+$("#iframeloader-cyubeVRSteam").replaceWith(' <iframe src="https://store.steampowered.com/widget/619500/" frameborder="0" width="646" height="190"></iframe> ');
+$("#iframeloader-cyubeVRDiscord").replaceWith(' <iframe src="https://ptb.discord.com/widget?id=402361733638914048&theme=dark" width="280" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe> ');
+$("#iframeloader-cyubeVRTrelloPage").replaceWith(' <iframe src="https://trello.com/b/Rorsbris.html" frameBorder="0" width="800" height="800"></iframe> ');
+console.log("Embedded CyubeVR Steam");

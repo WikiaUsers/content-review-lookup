@@ -1,4 +1,94 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+
+// Marioalexsan's functions
+
+// overview functions are supposed to be used for Module:Map
+
+function overviewDragging(e) {
+  target = e.currentTarget;
+  pos    = target.querySelector('.overview-map-pos');
+  parent = target.parentNode;
+
+  // Pray to all gods that this thing grabs the map image first
+  image  = target.querySelector('img');
+  
+  e.preventDefault();
+
+  // get the previous mouse position
+  prevMousePosX = target.getAttribute('data-startX');
+  prevMousePosY = target.getAttribute('data-startY');
+  
+  // calculate mouse movement
+  deltaMousePosX = e.clientX - prevMousePosX;
+  deltaMousePosY = e.clientY - prevMousePosY;
+
+  // calculate the new position for the <span> element
+  newSpanPosX = parseInt(pos.style.left, 10) + deltaMousePosX;
+  newSpanPosY = parseInt(pos.style.top, 10) + deltaMousePosY;
+  
+  // calculate safe area in which the <span> can reside
+  // safe area prevents the image from moving outside of the container partially or completely
+  safeX = parent.clientWidth - image.clientWidth;
+  safeY = parent.clientHeight - image.clientHeight;
+
+  /*
+  console.log('safeX = ' + safeX);
+  console.log('safeY = ' + safeY);
+  */
+
+  // limit span position to safe area to avoid moving the image out
+  // bottom right point is by default (0, 0), top left is specified by safe area
+
+  if( newSpanPosX < safeX ){
+      newSpanPosX = safeX;
+  }
+  else if (newSpanPosX > 0){
+      newSpanPosX = 0;
+  }
+  
+  if( newSpanPosY < safeY ){
+      newSpanPosY = safeY;
+  }
+  else if (newSpanPosY > 0){
+      newSpanPosY = 0;
+  }
+  
+  // set the new position for <span>
+  pos.style.left = newSpanPosX + "px";
+  pos.style.top = newSpanPosY + "px";
+
+  // save mouse pointer location for next event  
+  target.setAttribute('data-startX', e.clientX);
+  target.setAttribute('data-startY', e.clientY);
+}
+
+function overviewDragStop(e) {
+  target = e.currentTarget;
+  
+  // stop moving when mouse button is released, or if cursor exits the <div>'s area
+  target.onmouseup = null;
+  target.onmousemove = null;
+  target.onmouseleave = null;
+}
+            
+function overviewDragStart(e) {
+  target = e.currentTarget;
+  
+  e.preventDefault();
+
+  // save the mouse position for first mousemove event
+  target.setAttribute('data-startX', e.clientX);
+  target.setAttribute('data-startY', e.clientY);
+  
+  // set mouse move and mouse up event handlers
+  target.onmousemove  = overviewDragging;
+
+  target.onmouseup    = overviewDragStop;
+  target.onmouseleave = overviewDragStop;
+}
+
+// Rokker84's functions
+
 var currentX = 0,
     currentY = 0;
 
@@ -58,6 +148,7 @@ function hidetip()
 
 window.onload = function()
 {
+  // Rokker84's edits
   i = document.createElement('DIV');
   i.id = "tooltipbox"
   i.innerHTML = "tooltip"
@@ -79,4 +170,16 @@ window.onload = function()
 
   ttip = document.getElementById('tooltipbox');
   this.addEventListener('mousemove', mouse_monitor);
+
+
+  /* Marioalexsan's edits
+   * Code for handling Module:Map behavior
+   * Assigns a mousedown event handler to all <div> elements with the CSS class "overlay-map"
+   * The CSS class itself is assigned in the Lua module
+  */
+
+  mapCollection = document.getElementsByClassName('overview-map');
+  Array.from(mapCollection).forEach(function(elem){
+    elem.onmousedown = overviewDragStart;
+  });
 }

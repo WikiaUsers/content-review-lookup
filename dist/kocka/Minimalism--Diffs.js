@@ -1,11 +1,10 @@
 /**
  * Name:        Minimalism - Diffs.js
- * Author:      KockaAdmiralac <1405223@gmail.com>
- * Version:     v1.0
+ * Author:      KockaAdmiralac <wikia@kocka.tech>
  * Description: Removes + and - diff markers from diff pages
  *              Has QuickDiff support
  */
-(function() {
+mw.loader.using('mediawiki.util').then(function() {
     function usefulDiff($content) {
         $content.find('.diff-marker').remove();
         $content
@@ -21,7 +20,8 @@
         }
     }, 2000);
     mw.hook('wikipage.content').add(usefulDiff);
+    mw.hook('wikipage.diff').add(usefulDiff);
     mw.hook('quickdiff.ready').add(function(modal) {
         usefulDiff(modal.$content);
     });
-})();
+});

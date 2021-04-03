@@ -3,179 +3,112 @@
  * Description:  Allows to massively patrol edits
  * Author:       Rendann
  * Support:      Aenn, BertH, Your Own Waifu
+ * Files used:   [[File:Facebook throbber.gif]]
  * Scripts used:
  * https://dev.wikia.com/wiki/MediaWiki:AjaxPatrol/code.js
  */
-(function( $, mw ) {
-    'use strict';
- 
-    if (window.MassPatrolLoaded) {
-        return;
-    }
-    window.MassPatrolLoaded = true;
-    importArticle({
-        type: 'script',
-        article: 'u:dev:MediaWiki:I18n-js/code.js'
-    });
-    var i18n;
- 
-    var MP = {
-        _state: 0,
- 
-        defines: $.extend({
-            CONSECUTIVE_DIFF: 0,
-            NON_CONSECUTIVE_DIFF: 1,
-            SPECIAL_NEW_PAGES: 2
-        }),
-        config: mw.config.get([
-            'wgPageName',
-            'wgArticleId',
-            'wgUserGroups',
-            'wgNamespaceNumber'
-        ])
-    };
- 
-    var MPFunctions = {
-        init: function(i18nData) {
-            i18n = i18nData;
-            if ( $('.patrollink').exists() ) {
-                MP._state = MP.defines.CONSECUTIVE_DIFF;
-            // most probably diff with multiple non-consecutive versions
-            } else if ( document.URL.match(/.+\/index\.php\?title=.+&diff=\d+&oldid=\d+/) && MPFunctions.isAllowedTo() ) {
-                MP._state = MP.defines.NON_CONSECUTIVE_DIFF;
-            // special NewPages page
-            } else if ( MP.config.wgPageName.match(/.+\:NewPages/) && MPFunctions.isAllowedTo() ) {
-                MP._state = MP.defines.SPECIAL_NEW_PAGES;
-            } else {
-                return;
-            }
- 
-            MPFunctions.addLink();
-        },
- 
-        fetchData: function(ns) {
-            if (MPFunctions.isSpecialNewPages()) {
-                ns = '';
-            }
- 
-            $.get(mw.util.wikiScript('api'), {
-                action: 'query',
-                list: 'recentchanges',
-                rctoken: 'patrol',
-                rcshow: '!patrolled',
-                rctype: 'edit|new',
-                rclimit: 1000,
-                rcnamespace: ns,
-                format: 'json'
-                }, function (d) {
-                    if (MPFunctions.isSpecialNewPages()) {
-                        MPFunctions.processSpecial(d, d.query.recentchanges[0].patroltoken);
-                    } else {
-                        MPFunctions.processDiff(d, d.query.recentchanges[0].patroltoken);
-                    }
-            });
-        },
- 
-        processDiff: function(data, token) {
-            var k = 0;
- 
-            for ( var i = 0; i < Object.keys(data.query.recentchanges).length; i++ ) {
-                if ( data.query.recentchanges[i].pageid === MP.config.wgArticleId ) {
-                    MPFunctions.patrolPage( data.query.recentchanges[i].rcid, token );
-                    k += 1;
-                }
-            }
- 
-            MPFunctions.result(k);
-        },
- 
-        processSpecial: function(data, token) {
-                var titles = [];
-                var k = 0;
- 
-                $('.not-patrolled').each(function() {
-                    titles.push( $(this).find('.mw-newpages-pagename').attr('title') );
-                    $(this).removeClass('not-patrolled');
-                });
- 
-                if (titles.length <= 0) {
-                    MPFunctions.result(0);
-                    return;
-                }
- 
-                for ( var i = 0; i < Object.keys(data.query.recentchanges).length; i++ ) {
-                    if ( titles.indexOf(data.query.recentchanges[i].title) > -1 ) {
-                        MPFunctions.patrolPage( data.query.recentchanges[i].rcid, token );
-                        k += 1;
-                    }
-                }
- 
-                MPFunctions.result(k);
-        },
- 
-        patrolPage: function(rcid, token) {
-            $.post(mw.util.wikiScript('api'), {
-                action: 'patrol',
-                token: token,
-                rcid: rcid
-                }, function () {
-            });
-        },
- 
-        addLink: function() {
-            if ( MPFunctions.isConsecutiveDiff() ) {
-                $('.patrollink').after( '&nbsp;[<a class="masspatrol">' + i18n.msg('patrol').escape() + '</a>]' );
-            } else if ( MPFunctions.isNonConsecutiveDiff() ) {
-                $('.diff-multi').append( '&nbsp;[<a class="masspatrol">' + i18n.msg('patrol').escape() + '</a>]' );
-            } else {
-                $('.mw-submit').append( '&nbsp;[<a class="masspatrol">' + i18n.msg('patrol').escape() + '</a>]' );
-            }
- 
-            $( '.masspatrol' ).on('click', function () {
-                $('.masspatrol').html('<img src="//images.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif"' +
-                                      'style="vertical-align: baseline;" border="0" alt=' + i18n.msg('patrolling').escape() + '/>');
-                MPFunctions.fetchData(MP.config.wgNamespaceNumber);
-            });
-        },
- 
-        result: function(k) {
-            var msg;
- 
-            if (k > 0) {
-                msg = i18n.msg('patrolled').plain().replace('$1', k);
-            } else if (k <= 0) {
-                msg = i18n.msg('patrolledNothing').plain();
-            }
- 
-            $('.patrollink').empty();
-            $('.masspatrol').css('color', 'grey').text(msg);
-        },
- 
-        isAllowedTo: function() {
-            if (
-                /sysop|content-moderator|vstf|staff|helper/.test(
-                    MP.config.wgUserGroups.join()
-                )
-            ) {
-                return true;
-            } else {
-                return false;
-            }
-        },
- 
-        isConsecutiveDiff: function() {
-            return MP._state === MP.defines.CONSECUTIVE_DIFF;
-        },
- 
-        isNonConsecutiveDiff: function() {
-            return MP._state === MP.defines.NON_CONSECUTIVE_DIFF;
-        },
- 
-        isSpecialNewPages: function() {
-            return MP._state === MP.defines.SPECIAL_NEW_PAGES;
-        }
-    };
-    mw.hook('dev.i18n').add(function(i18n) {
-		i18n.loadMessages('MassPatrol').then(MPFunctions.init);
+(function (window, $, mw) {
+	'use strict';
+	//Load Protection
+	if (window.MassPatrolLoaded) return;
+	window.MassPatrolLoaded = true;
+
+	//Load I18n-js
+	importArticle({type:'script',article:'u:dev:MediaWiki:I18n-js/code.js'});
+	//Prepare PageCfg
+	var pageConfig = mw.config.get(["wgScriptPath","wgDiffOldId","wgDiffNewId","wgPageName","wgAction"]);
+
+	function init(i18n) {
+		var MassPatrol = {
+			rcids:[],
+			patroltoken:"",
+			total:0,
+			init: function () {
+				//Not on Diff page or History Page
+				if (pageConfig.wgDiffNewId===null && pageConfig.wgAction!=='history') return;
+
+				//Load API
+				$.get(pageConfig.wgScriptPath+"/api.php",{
+					format:"json",
+					action:"query",
+					list:"recentchanges",
+					rcprop:"ids|patrolled",
+					rcdir:"newer",
+					rclimit:"max",
+					rctitle:pageConfig.wgPageName,
+					meta:"tokens",
+					type:"patrol"
+				},MassPatrol.apiLoad);
+			},
+			apiLoad: function(data) {
+				//Grab RC into array
+				var rcArray = data.query.recentchanges;
+				//If history page, fork off
+				if (pageConfig.wgAction==='history')
+					return MassPatrol.history(rcArray.filter(function(e){
+						return "unpatrolled" in e;
+					}));
+
+				//Bulk of Mass Patrol Code
+				MassPatrol.patroltoken = data.query.tokens.patroltoken;
+				var curr_patrol = false;
+				var capture = false;
+				for (var i = 0; i < rcArray.length; i++) {
+					var each = rcArray[i];
+					if (capture && each.unpatrolled==="") //Capturing starts, and unpatrolled
+						MassPatrol.rcids.push(each.rcid);
+					if (each.revid == pageConfig.wgDiffOldId)
+						capture = true; //Start Capture
+					if (each.revid == pageConfig.wgDiffNewId)
+						break; //End Early
+				}
+
+				//Set max patrol length (for end counter: will be shift-ing this array)
+				MassPatrol.total = MassPatrol.rcids.length;
+
+				//Build HTML For Mass Patrol Button
+				var button = $('<span>', {
+					id: 'massPatrol'
+				}).append('[',$('<a>',{
+					href:'#',
+					text:i18n.msg('patrol').plain(),
+					click:function(event){
+						event.preventDefault();
+						$(this).replaceWith('<img src="//images.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif"' +
+							'style="vertical-align: baseline;" border="0" alt=' + i18n.msg('patrolling').escape() + '/>');
+						MassPatrol.patrolRecursive();
+					}
+				}),']');
+
+				//Can Patrol, and Has more than 1 Patrol, apply built HTML
+				if (MassPatrol.patroltoken.length>2 && MassPatrol.total > 1)
+					$("#mw-diff-ntitle4").append(' ',button);
+			},
+			history:function(data){
+				var unpatrolled = $('<abbr>',{
+					class:"unpatrolled",
+					title:"This edit has not yet been patrolled",
+					text:"\xa0!\xa0"
+				});
+				var obj = $('li[data-mw-revid]').filter(function(i,obj){
+					return data.find(function(e){
+					    return e.revid == $(obj).data('mw-revid');
+					});
+				}).prepend(unpatrolled);
+			},
+			patrolRecursive: function() {
+				if (MassPatrol.rcids.length === 0)
+					return $("#massPatrol").text("["+i18n.msg('patrolled',MassPatrol.total).plain()+"]");
+				$.post(pageConfig.wgScriptPath+"/api.php?format=json&action=patrol",{
+					rcid:MassPatrol.rcids.shift(),
+					token:MassPatrol.patroltoken
+				},MassPatrol.patrolRecursive);
+			}
+		};
+		MassPatrol.init();
+	}
+	//Add Hook when finish loading I18n-js
+	mw.hook('dev.i18n').add(function(i18n) {
+		i18n.loadMessages('MassPatrol').then(init);
 	});
-})(jQuery, mediaWiki);
+})(this,jQuery, mediaWiki);

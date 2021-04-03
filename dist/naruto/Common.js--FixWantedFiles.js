@@ -10,7 +10,7 @@ mediaWiki.loader.using('mediawiki.util', function() {
 function fixUploadLinks() {
 	var $ = jQuery, mw = mediaWiki
 	  , decodeURI = window.decodeURIComponent
-	  , upload = mw.util.wikiGetlink('Special:Upload') + '?wpDestFile='
+	  , upload = mw.util.getUrl('Special:Upload') + '?wpDestFile='
 	  ;
 	// Sets an anchor to a new destination
 	// Requires link node (DOM, not jQuery), file name (Url encoded),

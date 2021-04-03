@@ -18,7 +18,7 @@
     }
     window.QQXLoaded = true;
     function init(i18n) {
-        $(window.WikiaBar.wikiaBarWrapperObj.find('.tools')).append(
+        $('#WikiaBarWrapper .tools').append(
             $('<li>', {
                 id: 'ca-lang-qqx'
             }).append(

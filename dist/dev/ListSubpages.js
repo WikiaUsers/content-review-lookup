@@ -98,25 +98,27 @@
         load(i18n.msg('done').plain());
     }
 
-    if (mw.config.get('wgCanonicalSpecialPageName') === 'Blankpage' && mw.util.getParamValue('blankspecial') === 'listsubpages') {
-        mw.hook('dev.i18n').add(function (i18n) {
-            i18n.loadMessages('ListSubpages').then(main);
-        });
-    } else {
-        mw.hook('dev.placement').add(function (placement) {
-            placement.script('ListSubpages');
-            $(placement.element('tools'))[placement.type('prepend')](
-                $('<li>').append(
-                    $('<a>', {
-                        text: 'ListSubpages',
-                        href: mw.util.getUrl('Special:BlankPage', {
-                            blankspecial: 'listsubpages'
+    mw.loader.using('mediawiki.util').then(function () {
+        if (mw.config.get('wgCanonicalSpecialPageName') === 'Blankpage' && mw.util.getParamValue('blankspecial') === 'listsubpages') {
+            mw.hook('dev.i18n').add(function (i18n) {
+                i18n.loadMessages('ListSubpages').then(main);
+            });
+        } else {
+            mw.hook('dev.placement').add(function (placement) {
+                placement.script('ListSubpages');
+                $(placement.element('tools'))[placement.type('prepend')](
+                    $('<li>').append(
+                        $('<a>', {
+                            text: 'ListSubpages',
+                            href: mw.util.getUrl('Special:BlankPage', {
+                                blankspecial: 'listsubpages'
+                            })
                         })
-                    })
-                )
-            );
-        });
-    }
+                    )
+                );
+            });
+        }
+    });
 
     importArticle({
         type: 'script',

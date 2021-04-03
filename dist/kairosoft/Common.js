@@ -25,7 +25,7 @@ if((tNode = $("#gamenavlinks [href*='/wiki/Friend_IDs_(']")).length || (tNode = 
 //##############################################################
 /* ==Format Friend IDs== (B00)*/
 // Adds friend id to icon the the link in the GameNav (need to get link styling + one link click)
-$("#mw-content-text .friend-id-list li").each(function(li){
+$("#mw-content-text .friend-id-list li, #mw-content-text .friend-id-list ~ ul li").each(function(li){
 	var html = $(this).text().trim();
 	var friendIDLineData = html.match(/^(\d{0,3}[ \-,.]?\d{3}[ -,.]?\d{3}[ -,.]?\d{3}) ?-? ?(.*)*/);
 	if(friendIDLineData) {

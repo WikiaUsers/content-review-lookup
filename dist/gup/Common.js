@@ -1,14 +1,14 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
  
 /* Auto-refesh WikiActivity // Girls und Panzer Wiki (En) */
-
+/* Commenting out to see if cause of JS issues
 window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Watchlist", "Log", "Contributions"];
 window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/gup/images/0/06/Gup.gif';
 window.ajaxRefresh = 10000;
 window.AjaxRCRefreshText = 'Auto refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 importScriptPage('AjaxRC/code.js', 'dev');
-
+*/
 
 
 /*==================================================*/
@@ -123,7 +123,7 @@ $("#CL-Cell14").click(function(){
     $("#CL-Main").hide();
     $("#CL-Page14").show();
     $(window).scroll();
-    CL_PageNum=14;
+    CL_PageNum=14; // Investigate this error
 });
 $("#CL-Cell15").click(function(){
     $("#CL-Main").hide();
@@ -371,6 +371,67 @@ $(".TL-Next").click(function(){
         default:$("#TL-Main").show();TL_PageNum=0;break;
     }
     $(window).scroll();
+});
+
+/*==================================================*/
+
+/********************************************/
+/* Visibility Control and Click Events for  */
+/* paging navigation of MLLSD Volumes       */
+/* Utilised in Template:MLLSD-Paginator     */
+/********************************************/
+
+// Hides and shows appropriate number of page links
+// Makes use of page url
+// Upper limit of 99 pages
+function mllsdPagination(){
+    $(".MLLSD_Page").hide();
+    $(".MLLSD_Dropdown").hide();
+    $(".MLLSD_Tag").hide();
+    const range = 2;
+    const url = window.location.pathname.split('_');
+    const num = parseInt(url[url.length - 1]);
+    var MLLSD_page = Number.isInteger(num) ? num : 0;
+    $("#v0").show();
+    $("#v14").show();
+    if(MLLSD_page <= (range+1)){
+        $("#mllsd_prev").hide();
+        MLLSD_page = range + 1;
+    }else{
+        for(var i=1; i < MLLSD_page-range; i++){
+            const id = i;
+            $("#p"+id).show();
+        }
+    }
+    if(MLLSD_page >= (14 - range - 1)){
+        $("#mllsd_next").hide();
+        MLLSD_page = 14 - range - 1;
+    }else{
+        for(var j=13; j > MLLSD_page+range; j--){
+            const id = j;
+            $("#n"+id).show();
+        }
+    }
+    $("#v"+MLLSD_page).show();
+    for(var k=0; k < range; k++){
+        for(var n=0; n<2; n++){
+            const id = MLLSD_page + (2*n-1)*(k+1);
+            $("#v"+id).show();
+        }
+    }
+}
+
+// Functions for drop down lists of otherwise hidden page links
+$("#mllsd_prev_ellipsis").click(function(){
+    $("#MLLSD_Drop_Prev").toggle();
+});
+
+$("#mllsd_next_ellipsis").click(function (){
+    $("#MLLSD_Drop_Next").toggle();
+});
+
+$(document).ready(function(){
+    mllsdPagination();
 });
 
 /*==================================================*/

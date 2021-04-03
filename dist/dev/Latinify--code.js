@@ -2,7 +2,7 @@
  * Name:        Latinify
  * Description: Latinifies contents of articles
  * Version:     1.0
- * Author:      KockaAdmiralac <1405223@gmail.com>
+ * Author:      KockaAdmiralac <wikia@kocka.tech>
  */
 (function() {
 
@@ -13,8 +13,10 @@
     var $buttons = $('.page-header__contribution-buttons .wds-list'),
         cache = {},
         i18n = {},
-        maps, map;
-    if (!$buttons.exists()) {
+        maps, map,
+        // [[MediaWiki:Custom-transliteration]]
+        transliterationPageId = 15528;
+    if ($buttons.length === 0) {
         return;
     }
 
@@ -24,13 +26,20 @@
      */
     function init(i18nd) {
         $.extend(i18n, i18nd);
-        $.get(mw.util.wikiScript('load'), {
-            mode: 'articles',
-            articles: 'u:dev:MediaWiki:Custom-transliteration',
-            only: 'styles',
-            t: $.now()
-        }, function(d) {
-            maps = JSON.parse(d.replace(/\/\*.+\*\//, ''));
+        $.ajax({
+            type: 'GET',
+            url: 'https://dev.fandom.com/api.php',
+            data: {
+                action: 'query',
+                format: 'json',
+                pageids: transliterationPageId,
+                prop: 'revisions',
+                rvprop: 'content'
+            },
+            dataType: 'jsonp'
+        }).then(function(data) {
+            var d = data.query.pages[transliterationPageId].revisions[0]['*'];
+            maps = JSON.parse(d.replace(/\/\*.+\*\//g, ''));
             map = maps[config.wgContentLanguage];
             if (!map) {
                 return;
@@ -129,6 +138,9 @@
     mw.hook('dev.i18n').add(function(i18no) {
         i18no.loadMessages('Latinify').done(init);
     });
-    importArticle({ type: 'script', article: 'u:dev:I18n-js/code.js' });
+    importArticle({
+        type: 'script',
+        article: 'u:dev:MediaWiki:I18n-js/code.js'
+    });
 
 })();

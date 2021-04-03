@@ -78,6 +78,7 @@ if (typeof CRA === "undefined"){
 		},
 		
 		start: function(type){
+			
 			CRA.rand = Math.floor( Math.random()*1000 );
 			/* Checks if function has already started */
 			if (CRA.started === true){
@@ -515,6 +516,20 @@ if (typeof CRA === "undefined"){
 		initialize: function(){
 			window.CRAoptions = window.CRAoptions || {};
 			
+			/* Polyfill in getUrlVar which is currently missing from jQuery and prevents this script from working. */
+			if (typeof $.getUrlVar === "undefined") {
+				$.getUrlVar = function getUrlVar (variable) {
+					var queryVariables = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+					for (var i = 0, count = queryVariables.length; i < count; ++i) {
+						var queryVariable = queryVariables [i].split('=');
+						if (queryVariable[0] === variable) {
+							return queryVariable[1];
+						}
+					}
+					return null;
+				};
+			}
+			
 			if (typeof CRA.supportedLanguages.indexOf(mediaWiki.config.get('wgContentLanguage')) == -1){
 				if (mw.config.get('wgAction') == 'view' && mw.config.get('wgNamespaceNumber') == 14) {
 					$('.page-header__contribution-buttons .wds-list').append(
@@ -538,15 +553,17 @@ if (typeof CRA === "undefined"){
 					var userLang = mediaWiki.config.get('wgUserLanguage');
 				}
 				
-				if (mw.config.get('wgCanonicalSpecialPageName') === 'Blankpage' && $.getUrlVar('blankspecial') === 'categoryrename')
-					$('#WikiaArticle').html('<div style="text-align: center; margin-top: 40px;"><img style="margin-bottom: 7px;" src="https://images.wikia.nocookie.net/common/skins/common/progress-wheel.gif" /><span style="font-weight: bold; font-size: 20px; padding-left: 10px;">Loading language "' + mediaWiki.config.get('wgContentLanguage') + '"...</span></div>');
-				
+				if (mw.config.get('wgCanonicalSpecialPageName') === 'Blankpage' && $.getUrlVar('blankspecial') === 'categoryrename'){
+					$('.WikiaArticle#content').html('<div style="text-align: center; margin-top: 40px;"><img style="margin-bottom: 7px;" src="https://images.wikia.nocookie.net/common/skins/common/progress-wheel.gif" /><span style="font-weight: bold; font-size: 20px; padding-left: 10px;">Loading language "' + mediaWiki.config.get('wgContentLanguage') + '"...</span></div>');
+				}
 				$.ajax({
 					url: "https://dev.fandom.com/wiki/CategoryRenameAuto-update/" + mediaWiki.config.get('wgContentLanguage') + ".js?action=raw&ctype=text/javascript",
 					dataType: "script",
 					cache: true,
 					success: function(){
-						if (console) mw.log('CategoryRenameAuto-update: Loaded language pack ' + mediaWiki.config.get('wgContentLanguage'));
+						if (console) {
+							mw.log('CategoryRenameAuto-update: Loaded language pack ' + mediaWiki.config.get('wgContentLanguage'));
+						}
 						CRA.lang = CRA.i18n[mediaWiki.config.get('wgContentLanguage')];
 						
 						if (userLang != mediaWiki.config.get('wgContentLanguage')){
@@ -555,7 +572,9 @@ if (typeof CRA === "undefined"){
 								dataType: "script",
 								cache: true,
 								success: function(){
-									if (console) mw.log('CategoryRenameAuto-update: Loaded secondary language pack ' + userLang);
+									if (console) {
+										mw.log('CategoryRenameAuto-update: Loaded secondary language pack ' + userLang);
+									}
 									CRA.userLang = CRA.i18n[userLang];
 									CRA.makeUI();
 								}
@@ -603,7 +622,7 @@ if (typeof CRA === "undefined"){
 			/* Reason box */		+ '<tr><td class="mw-label">' + CRA.userLang.reason + ':</td><td class="mw-input"><textarea name="wpReason" id="wpReason" cols="60" rows="2" maxlength="255"></textarea></td></tr>'
 			/* Buttons and misc */		+ '<tr><td>&#160;</td><td class="mw-submit"><div id="CRANamespaceToggle" style="margin: 5px 5px 5px 0px;"><label><input type="checkbox" id="CRANamespaceToggleCheck" onchange="CRA.updateNamespaceSelection()" ' + localStorage[wgUserName + "_CRANamespaceSelection"] + '>' + CRA.userLang.includeLinks + '</label></div><label><input type="radio" name="options" value="redirect" id="CRARedirectRadio">' + CRA.userLang.leaveRedir + '</label><br /><label><input type="radio" name="options" value="delete" id="CRADeleteRadio">' + CRA.userLang.deleteOldCat + '</label><br /><label><input type="radio" name="options" value="replace" id="CRAReplaceRadio">' + CRA.userLang.replaceOldContents + ':</label> <input type="text" size="15" id="CRAReplaceText"><br /><label><input type="radio" name="options" value="nothing" id="CRANothingRadio">' + CRA.userLang.doNothing + '</label></td></tr><tr><td>&#160;</td><td class="mw-submit"><a style="margin-left: 0px;" class="wikia-button" onclick="CRA.start()">' + CRA.userLang.rename + '</a><span id="liveLoader" style="display:none"><img src="https://images.wikia.nocookie.net/common/skins/common/progress-wheel.gif" /></span><span id="CRAStatus" style="font-weight: bold"></span></td></tr>'
 			/* Error box */			+ '<tr><td class="mw-label">' + CRA.userLang.failedItems + ':</td><td class="mw-input"><div id="CRAFailedLog" style="width: 798px; margin: 5px auto 0px auto; background-color: #ffbfbf; height: 150px; border: 1px solid black; font-weight: bold; overflow: scroll; color: #3a3a3a;">' + CRA.userLang.failedDescription + '</div></td></tr>';
-						$('#WikiaArticle').html(form);
+						$('.WikiaArticle#content').html(form);
 					};
 					
 					document.title = CRA.userLang.pageTitle;

@@ -1,3 +1,5 @@
+/* This script no longer work after the UCP migration */
+
 /* This script was created by user:452 for the Saints Row Wiki: http://saintsrow.wikia.com */
 
 /* Any JavaScript here will be loaded for all users on every page load. */

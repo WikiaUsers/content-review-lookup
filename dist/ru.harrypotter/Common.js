@@ -1,50 +1,49 @@
 // <syntaxhighlight lang="javascript">
 
 // ============================================================
-// Начало: Логотип вики
+// Начало: Кнопка «Наверх»
 // ============================================================
 
-$('.wds-community-header__wordmark[data-tracking="wordmark-image"] a, .wds-community-header__sitename[data-tracking="sitename"] a').attr('href', 'http://ru.harrypotter.wikia.com/wiki/Портал:Старт');
+$(function() {
+	$('#WikiaBar').before('<div id="TopBottom"/>');
+	$(window).on('scroll', function() {
+		if (window.pageYOffset === 0) {
+			$('#TopBottom').closest('div').fadeIn();
+		}
+	});
+	$('#TopBottom').on('click', function() {
+		iPosition = $(window).scrollTop();
+ 
+		if (iPosition === 0) {
+			// прокручиваем документ на всю его высоту
+			$(document).scrollTop($( document ).height());
+		}
+		else{
+			// прокручиваем документ в самый верх
+			$(document).scrollTop('iPosition');
+		}		
+    });
+});
+
+$(document).scroll(function() {
+	iPosition = $(window).scrollTop();
+ 
+	if (iPosition > 0) {
+		$('#TopBottom').addClass('Bottom');
+	}
+	else{
+		$('#TopBottom').removeClass('Bottom');
+	}
+});
 
 // ============================================================
-// Конец: Логотип вики
-// ============================================================
-
-// ============================================================
-// Начало: Ссылка на сообщения участника в Обсуждениях
-// ============================================================
-
-var user = $('#UserProfileMasthead h1').text();
-$.getJSON(mw.util.wikiScript('api'), {
-        action: 'query',
-        list: 'users',
-        ususers: user,
-        format: 'json'
-    }).done(function (data) {
-$('#discussionAllPostsByUser').attr('href', mw.config.get('wgScriptPath') + '/d/u/' + data.query.users[0].userid)});
-
-// ============================================================
-// Конец: Ссылка на сообщения участника в Обсуждениях
-// ============================================================
-
-// ============================================================
-// Начало: Дополнительные кнопки на панели инструментов
+// Конец: Кнопка «Наверх»
 // ============================================================
 
 // ============================================================
 // Начало: «Викификатор»
 // ============================================================
 
-function addWikifButton() {
-    var toolbar = document.getElementById('toolbar');
-    if (!toolbar) return;
-    var i = document.createElement('img');
-    i.src = 'http://upload.wikimedia.org/wikisource/ru/d/d1/Button-wikifikator.png';
-    i.alt = i.title = 'викификатор';
-    i.onclick = Wikify;
-    i.style.cursor = 'pointer';
-    toolbar.appendChild(i);
-}
 if (wgAction == 'edit' || wgAction == 'submit') {
         importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Wikificator.js&action=raw&ctype=text/javascript');
         addOnloadHook(addWikifButton);
@@ -54,121 +53,11 @@ if (wgAction == 'edit' || wgAction == 'submit') {
 // Конец: «Викификатор»
 // ============================================================
 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://upload.wikimedia.org/wikipedia/commons/a/a4/H-line_icon.png",
-        "speedTip": "Длинное тире",
-        "tagOpen": "—",
-        "tagClose": "",
-        "sampleText": ""
-	};
- 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Button_Link_DifferentName.png",
-        "speedTip": "Внутренняя ссылка",
-        "tagOpen": "[[|",
-        "tagClose": "]]",
-        "sampleText": ""
-	};
- 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Button_plantilla.png",
-        "speedTip": "Шаблон",
-        "tagOpen": "{{",
-        "tagClose": "}}",
-        "sampleText": ""
-	};
- 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://upload.wikimedia.org/wikipedia/commons/7/71/TableCell.png",
-        "speedTip": "Разделитель",
-        "tagOpen": "|",
-        "tagClose": "",
-        "sampleText": ""
-	};
- 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://upload.wikimedia.org/wikipedia/commons/2/26/Button_latinas.png",
-        "speedTip": "Кавычки",
-        "tagOpen": "«",
-        "tagClose": "»",
-        "sampleText": ""
-	};
- 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://upload.wikimedia.org/wikipedia/commons/4/4d/Button_quotes.png",
-        "speedTip": "Кавычки",
-        "tagOpen": "&quot;",
-        "tagClose": "&quot;",
-        "sampleText": ""
-	};
- 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://upload.wikimedia.org/wikipedia/commons/e/eb/EN.png",
-		"speedTip": "+en",
-		"tagOpen": "[[en:",
-		"tagClose": "]]",
-		"sampleText": ""
-	};
- 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Button_FR.png",
-		"speedTip": "+fr",
-		"tagOpen": "[[fr:",
-		"tagClose": "]]",
-		"sampleText": ""
-	};
- 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://upload.wikimedia.org/wikipedia/commons/b/bf/PL.png",
-		"speedTip": "+pl",
-		"tagOpen": "[[pl:",
-		"tagClose": "]]",
-		"sampleText": ""
-	};
- 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://upload.wikimedia.org/wikipedia/commons/d/da/П.png",
-		"speedTip": "Шаблон:Персонаж",
-		"tagOpen": "{{Персонаж\r|изображение=\r|имя=\r|стиль=",
-		"tagClose": "\r|пол=\r|вид=\r|глаза=\r|волосы=\r|кожа=\r|рост=\r|способности=\r|родился=\r|родилась=\r|умер=\r|умерла=\r|семейное положение=\r|супруг=\r|супруга=\r|семья=\r|кровь=\r|титулы=\r|прозвища=\r|палочка=\r|боггарт=\r|патронус=\r|анимаг=\r|работа=\r|деятельность=\r|школа=\r|факультет=\r|лояльность=\r|подпись=\r|появление=\r|первое упоминание=\r|последнее появление=\r|последнее упоминание=\r|причина=\r|актёр=\r|актриса=\r|актёры=\r|актрисы=\r|дубляж=\r|галерея=\r}}",
-		"sampleText": ""
-	};
- 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://upload.wikimedia.org/wikipedia/commons/9/9b/К.png",
-		"speedTip": "Шаблон:Карточка персоналии",
-		"tagOpen": "{{Карточка персоналии\r|Изображение=\r|Имя=",
-		"tagClose": "\r|Имя при рождении=\r|Дата рождения=\r|Место рождения=\r|Дата смерти=\r|Место смерти=\r|Гражданство=\r|Место жительства=\r|Пол=\r|Рост=\r|Семейное положение=\r|Семья=\r|Псевдоним=\r|Сайт=\r|Профессия=\r|Активные годы=\r|Роль в ГП=\r|Роль в ФТ=\r|Дубляж в ГП=\r|Дубляж в ФТ=\r|Известные роли=\r|Награды=\r|Подпись=\r|Галерея=\r}}",
-		"sampleText": ""
-	};
- 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://upload.wikimedia.org/wikipedia/commons/7/79/Button_include.png",
-		"speedTip": "{{Imgcat}}",
-		"tagOpen": "{{Imgcat",
-		"tagClose": "}}",
-		"sampleText": ""
-	};
- 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Button_referencesR.png",
-		"speedTip": "{{Сноска}}",
-		"tagOpen": "<ref>{{Сноска||",
-		"tagClose": "|}}</ref>",
-		"sampleText": ""
-	};
-
-
-// ============================================================
-// Конец: Дополнительные кнопки на панели инструментов
-// ============================================================
-
-
 // ============================================================
 // Начало: Конфиг для w:c:dev:InactiveUsers
 // ============================================================
 
-InactiveUsers = {
+window.InactiveUsers = {
 	months: 3,
 	text: 'МАГЛ'
 };
@@ -694,48 +583,6 @@ console.log('MainPage loaded');
 
 // ============================================================
 // Конец: Переключатель «Форум – Обсуждения»
-// ============================================================
-
-
-// ============================================================
-// Начало: Кнопка «Наверх»
-// ============================================================
-
-$(document).ready(function() {
-	$('#WikiaBar').before('<div id="TopBottom"/>');
-	$(window).on('scroll', function() {
-		if (window.pageYOffset === 0) {
-			$('#TopBottom').closest('div').fadeIn();
-		}
-	});
-	$('#TopBottom').on('click', function() {
-		iPosition = $(window).scrollTop();
- 
-		if (iPosition === 0) {
-			// прокручиваем документ на всю его высоту
-			$(document).scrollTop($( document ).height());
-		}
-		else{
-			// прокручиваем документ в самый верх
-			$(document).scrollTop('iPosition');
-		}		
-    });
-});
-
-$(document).scroll(function()
-{
-	iPosition = $(window).scrollTop();
- 
-	if (iPosition > 0) {
-		$('#TopBottom').addClass('Bottom');
-	}
-	else{
-		$('#TopBottom').removeClass('Bottom');
-	}
-});
-
-// ============================================================
-// Конец: Кнопка «Наверх»
 // ============================================================
 
 //</syntaxhighlight>

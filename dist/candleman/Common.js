@@ -7,18 +7,35 @@ window.MessageWallUserTags = {
     glowSize: '15px',
     glowColor: '#f77',
     users: {
-        'Botuczy': 'Founder',
+        'Botuczy': 'Wiki founder',
         'TalkingOddlySpooky': 'Bureaucrat',
         'MysticStars1201': 'Bureaucrat',
         'Limefong X': 'Bureaucrat',
         'Kelliegeorgiashadowsmith': 'Administrator',
-        'TwoBrainsAreBetterThanOne': 'Administrator',
-        'Random Pesron': 'Administrator',
-        'User': 'Content Moderator',
-        'Littleblaze1': 'Discuss Moderator',
-        'TheEarthisround12': 'Discuss Moderator',
-        '0fflinejoe': 'Chat Moderator',
-        'EverestMachine 4001': 'Rollback',
+        'Agency Pikachu': 'Administrator',
+        'Baghead11': 'Administrator',
+        'Random Pesron': 'Content Moderator',
+        'TheEarthisround12': 'Content Moderator',
+        'EverestMachine 4001': 'Content Moderator',
+        'The Krusty Krab': 'Discussion Moderator',
         'BOT-tuczy': 'Bot'
     }
 };
+
+/* Recent Activity */
+window.rwaOptions = {
+    limit : 50,
+    namespaces : [ 0, 1, 2, 3, 4, 5, 6, 7, 110, 111, 500, 501, 828, 829 ],
+    autoInit : true,
+    themeName : "main",
+    showBotEdits : true,
+    loadModule : false,
+    customRendering : { },
+    headerLink : true,
+    refresh : true,
+    refreshDelay : 5 * 60 * 1000,
+    timeout : 10 * 1000
+};
+
+const s = new WAStorage(k);
+const v = s.get( "test" );

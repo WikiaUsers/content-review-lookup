@@ -1,7 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 // 12:24, July 31, 2013 (UTC)
-// @Original Author: UltimateSupreme (http://naruto.wikia.com/wiki/User:UltimateSupreme)
-// @Modified By: SimAnt (http://gundam.wikia.com/wiki/User:SimAnt), FortressMaximus
+// @Original Author: UltimateSupreme (https://naruto.wikia.com/wiki/User:UltimateSupreme)
+// @Modified By: SimAnt
 // <source lang = javascript>
 if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	$(function ($) {
@@ -56,7 +56,4 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 			return true;
 		}
 	});
-}
-if(mw.config.get('wgCanonicalSpecialPageName')=="MultipleUpload" && !mw.config.get('isCurrentWikiAdmin')) {
-    window.location='./Special:Upload';
 }

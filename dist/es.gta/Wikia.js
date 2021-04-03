@@ -18,23 +18,23 @@ $(function () {
  var d = new Date();
  if (d.getHours() < 6) {
   document.body.className += ' BG4';
-  document.getElementById('WikiaPage').className += ' BG4-page';
+  document.getElementsByClassName('WikiaPage').className += ' BG4-page';
  } 
  else if (d.getHours() < 10) {
   document.body.className += ' BG3';
-  document.getElementById('WikiaPage').className += ' BG3-page';
+  document.getElementsByClassName('WikiaPage').className += ' BG3-page';
  } 
  else if (d.getHours() < 17) {
   document.body.className += ' BG1';
-  document.getElementById('WikiaPage').className += ' BG1-page';
+  document.getElementsByClassName('WikiaPage').className += ' BG1-page';
  } 
  else if (d.getHours() < 21) {
   document.body.className += ' BG2';
-  document.getElementById('WikiaPage').className += ' BG2-page';
+  document.getElementsByClassName('WikiaPage').className += ' BG2-page';
  } 
  else if (d.getHours() < 24) {
   document.body.className += ' BG4';
-  document.getElementById('WikiaPage').className += ' BG4-page';
+  document.getElementsByClassName('WikiaPage').className += ' BG4-page';
  } 
 });
 
@@ -65,8 +65,9 @@ window.UserTagsJS = {
 		    '': ['monthuser'], 
 		    'Fabrix199': ['yearuser'],
 		    'Alansanchez412': ['asistente'],
+		    'Alexis21155': ['asistente'],
 		    'Bloomdanix': ['asistente'],
-		    'GTAAAF': ['asistente'],
+		    'GhostRiley2000': ['asistente'],
             'GuidoM1995': ['asistente'],
             'Marco_Antonio_Guti%C3%A9rrez_Udaondo': ['asistente'],
             'Marco Antonio Gutiérrez Udaondo': ['asistente']
@@ -94,9 +95,6 @@ window.UserTagsJS = {
 		bureaucrat: { 
 			title:'El Dictador Benevolente', 
 			link:'project:Administración#Burócrata' 
-		},
-		chatmoderator: { 
-			f:'Moderadora del chat' 
 		},
 		sysop: { 
 			f:'Administradora', 

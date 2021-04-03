@@ -16,16 +16,21 @@
             'Game series': {
                 'Resident Evil images': 'Resident Evil',
                 'Street Fighter images': 'Street Fighter',
+                'Strider images': 'Strider',
                 'Monster Hunter images': 'Monster Hunter',
                 'Devil May Cry images': 'Devil May Cry',
                 'Mega Man images': 'Mega Man',
                 'Darkstalkers images': 'Darkstalkers',
+                'Darkstalkers images': 'Darkstalkers',
+                'Ōkami images': 'Ōkami',
+                'Sengoku BASARA images': 'Sengoku BASARA',
                 'Unknown series': 'I don’t know',
                 'Full illustrations': 'Full card illustration'
             },    
             'Other': {
                 'Full illustrations': 'Full card illustration',
                 'Screenshots': 'Screenshot of TEPPEN',
+                'Player Icon images': 'Player Icon',
                 'Real world images': 'Image of the real world',
                 'Animated images': 'Animated image',
                 'User images': 'Image for my userpage',

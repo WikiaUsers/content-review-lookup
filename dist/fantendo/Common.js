@@ -3,11 +3,10 @@
 /* Replaces {{USERNAME}} with the name of the user browsing the page.
    Requires copying Template:USERNAME. */
 
-importScriptPage('MediaWiki:Global.js', 'c');
 
 $(function UserNameReplace() {
     if (typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
-    $("span.insertusername").html(wgUserName);
+    $("span.insertusername").text(wgUserName);
 });
 
 /* End of the {{USERNAME}} replacement */
@@ -340,4 +339,5 @@ InactiveUsers = {
     text: 'Inactive',
     gone: ['Ziegs', 'Qyzxf', 'Star Warrior Terra', 'AngelicCrystalFae', 'Fire Scyther']
 };
+
 importScriptPage('InactiveUsers/code.js', 'dev');

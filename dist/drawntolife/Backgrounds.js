@@ -133,6 +133,21 @@ if ($.inArray("Watersong", mw.config.get('wgCategories')) > -1) {
     });
 }
 
+
+// ------------ TwoRealms
+if ($.inArray("Drawn to Life: Two Realms", mw.config.get('wgCategories')) > -1) {
+ 
+    $(function () {
+ 
+        "use strict";
+ 
+    $('.skin-oasis').css('background', 'url(https://vignette.wikia.nocookie.net/drawntolife/images/e/e5/SteamBackdrop.jpg/revision/latest?cb=20201105173515) top center no-repeat fixed')
+ 
+    $('.skin-oasis').css('background-size', 'cover')
+ 
+    });
+}
+
 //////////////////// Community ///////////////////////////
 
 /* Watersong */

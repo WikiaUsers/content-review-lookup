@@ -112,7 +112,34 @@ function verifyUploadForm(){
 /*
     END OF UPLOAD FORM CUSTOMISATIONS
 */
- 
+
+
+/*
+    Add a checkbox option to Upload log page (Special), to show new versions only
+*/
+function filterNewVersion(){
+    // Check to ensure its the correct page
+    if ( window.location.search.indexOf('type=upload') > -1 && (location.pathname.split('/').slice(-1)[0] == "Special:Log" || window.location.search.indexOf('title=Special%3ALog') > -1) ) {
+        
+        //Add a checkbox
+        $('#mw-content-text form fieldset').append('Show uploaded new versions only: <input type="checkbox" id="checkFilterNewVersion">');
+        
+        //Call toggleUploadVisbility function when the checkbox is changed
+        $('#checkFilterNewVersion').change(toggleUploadVisbility);
+    }
+}
+
+/*
+    Function to toggle visibility, used by filterNewVersion function above
+*/
+function toggleUploadVisbility(){
+    if($(this).is(':checked') ) {
+        $('li.mw-logline-upload:not(:contains("uploaded a new version"))').hide(); 
+    } else {
+        $('li.mw-logline-upload:not(:contains("uploaded a new version"))').show(); 
+    }
+}
+
 // onload stuff
 var firstRun = true;
  
@@ -125,6 +152,7 @@ function loadFunc() {
     substUsername();
     smallPageHeaderTitle();
     setupUploadForm();
+    filterNewVersion();
 }
 
 /* run loadFunc */

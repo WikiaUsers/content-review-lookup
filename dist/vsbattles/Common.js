@@ -1,3 +1,5 @@
+// 08:16, February 13, 2021 (UTC)
+
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 window.AutoEditDropdownConfig = {
@@ -101,10 +103,6 @@ window.UserTagsJS = {
             u: 'Retired Calc Group',
             order: 23
         },
-        guru: {
-            u: 'Guru',
-            order: 40
-        },
         'js-helper': {
             u: 'JS Helper',
             order: 51
@@ -132,6 +130,10 @@ window.UserTagsJS = {
         consultant: {
             u: 'Consultant',
             order: 100
+        },
+        'former-consultant': {
+            u: 'Retired Consultant',
+            order: 101
         },
         'former-image-helper': {
             u: 'Retired Image Helper',
@@ -180,7 +182,7 @@ UserTagsJS.modules.mwGroups = [
 ];
 UserTagsJS.modules.custom = {
     'Kavpeny': ['former-bureaucrat'],
-    'DarkLK': ['former-bureaucrat', 'guru', 'consultant'],
+    'DarkLK': ['former-bureaucrat', 'former-consultant'],
     'A6colute': ['former-sysop'],
     'KamiYasha': ['former-sysop'],
     'Spinosaurus75DinosaurFan': ['calc'],
@@ -188,13 +190,13 @@ UserTagsJS.modules.custom = {
     'AidenBrooks999': ['former-calc', 'former-threadmoderator'],
     'Thebluedash': ['former-calc', 'former-threadmoderator'],
     'Antoniofer': ['former-calc'],
-    'Amelia Lonelyheart': ['former-calc', 'former-human-resources'],
+    'Amelia Lonelyheart': ['former-calc', 'former-human-resources', 'image-helper'],
     'The real cal howard': ['former-calc'],
     'ArbitraryNumbers': ['former-calc', 'former-threadmoderator'],
     'Golden Void': ['former-calc', 'former-threadmoderator'],
     'Liger686': ['former-calc', 'former-threadmoderator'],
-    'Kepekley23': ['calc'],
-    'TataHakai': ['calc'],
+    'Kepekley23': ['former-sysop', 'former-calc'],
+    'TataHakai': ['former-calc'],
     'Zanybrainy2000': ['former-calc'],
     'RavenSupreme': ['former-calc'],
     'Therefir': ['calc'],
@@ -219,7 +221,7 @@ UserTagsJS.modules.custom = {
     'Dekoshu': ['former-content-moderator'],
     'The Living Tribunal1': ['former-content-moderator', 'former-calc'],
     'Basilisk1995': ['former-content-moderator'],
-    'Colonel Krukov': ['former-content-moderator', 'former-chatmoderator', 'image-helper'],
+    'Colonel Krukov': ['former-chatmoderator', 'image-helper'],
     'Illuminati478': ['former-threadmoderator', 'former-calc'],
     'Unclechairman': ['former-threadmoderator'],
     'SwordSlayer99': ['former-threadmoderator'],
@@ -236,7 +238,7 @@ UserTagsJS.modules.custom = {
     'DMUA': ['calc'],
     'Crimson Azoth': ['former-calc', 'former-threadmoderator'],
     'Ugarik': ['calc'],
-    'AlexSoloVaAlFuturo': ['calc'],
+    'AlexSoloVaAlFuturo': ['former-calc'],
     'Damage3245': ['calc'],
     'ClassicGameGuys': ['former-calc'],
     'Lina Shields': ['former-calc', 'former-sysop'],
@@ -261,15 +263,12 @@ UserTagsJS.modules.custom = {
     'Aeyu': ['former-threadmoderator'],
     'PaChi2': ['former-threadmoderator'],
     'Sandman31': ['former-threadmoderator'],
-    'LordGriffin1000': ['former-threadmoderator'],
-    'JustSomeWeirdo': ['former-threadmoderator'],
-    'Hop Hoppington-Hoppenhiemer': ['former-threadmoderator'],
     'Sayo Yasuda': ['former-chatmoderator'],
     'Skalt711': ['image-helper'],
     'The Divine Phoenix': ['image-helper'],
-    'Andytrenom': ['sysop', 'human-resources'],
-    'Dargoo Faust': ['sysop', 'human-resources', 'calc'],
-    'Wokistan': ['sysop', 'human-resources'],
+    'Andytrenom': ['human-resources'],
+    'Dargoo Faust': ['former-sysop', 'former-calc', 'former-human-resources'],
+    'Wokistan': ['human-resources', 'calc'],
     'Matthew Schroeder': ['former-sysop'],
     'First Witch': ['former-chatmoderator'],
     'Azathoth the Abyssal Idiot': ['former-bureaucrat'],
@@ -284,7 +283,18 @@ UserTagsJS.modules.custom = {
     'Dark649': ['former-sysop'],
     'Ricsi-viragosi': ['former-threadmoderator'],
     'Zaratthustra': ['image-helper'],
-    'The Foolish Omniscient Guy': ['former-image-helper']
+    'The Foolish Omniscient Guy': ['former-image-helper'],
+    'ShiroyashaGinSan': ['former-threadmoderator'],
+    'Crazylatin77': ['former-content-moderator'],
+    'EvilMegaCookie': ['former-chatmoderator'],
+    'TISSG7Redgrave': ['former-chatmoderator'],
+    'RebubleUselet': ['former-chatmoderator'],
+    'Crzer07': ['former-content-moderator'],
+    'Ultima Reality': ['consultant'],
+    'AKM sama': ['human-resources'],
+    'Monarch Laciel': ['former-sysop'],
+    'Super Saiyan God Julian': ['former-threadmoderator'],
+    'Steven Pogi Paitao': ['former-content-moderator']
 };
 
 UserTagsJS.modules.metafilter = {

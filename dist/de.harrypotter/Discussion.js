@@ -1,7 +1,7 @@
 /* "Wer beteiligte sich an der Diskussion?" direkt im Diskussionsfaden */
 isHistory = mw.Uri().query.hasOwnProperty('action') ? (mw.Uri().query.action == 'history' ? true : false) : false; 
-if(wgNamespaceNumber == 1201 && !isHistory) {
-    $.get('/wiki/' + wgPageName + '?action=history',function(data) {
+if(mw.config.get('wgNamespaceNumber') == 1201 && !isHistory) {
+    $.get(mw.util.getUrl(mw.config.get('wgPageName')) + '?action=history', function(data) {
         $('.WikiaRail.loaded#WikiaRail').prepend(
             $($.parseHTML(data)).find('.module.WallHistoryRail')
         );
@@ -26,7 +26,7 @@ if(wgNamespaceNumber == 1201 && !isHistory) {
                 .text($('.SpeechBubble.message').length + ' Antworten')
         ).after(
             $('<a />').attr({
-                'href': '/wiki/' + wgPageName + '?action=history',
+                'href': mw.util.getUrl(mw.config.get('wgPageName')) + '?action=history',
                 'title': 'Versionsgeschichte'
             }).css({
                 'margin-top': '10px',
@@ -39,7 +39,7 @@ if(wgNamespaceNumber == 1201 && !isHistory) {
 }
 
 /* Kommentare und Diskussion gleichzeitig erhalten */
-if (wgNamespaceNumber == 0) {
+if (mw.config.get('wgNamespaceNumber') == 0) {
     var $oldComments = $('.wikia-button.comments.secondary[data-id="comment"]');
     $oldComments.replaceWith(
         $('<nav>').addClass('wikia-menu-button').append(
@@ -90,10 +90,10 @@ if (wgNamespaceNumber == 0) {
                     $('<li>').append(
                         $('<a>')
                             .attr({
-                                accesskey:'d',
-                                'data-id':'discussion',
-                                id:'ca-discuss',
-                                href:'/wiki/Diskussion:' + encodeURIComponent(wgPageName)
+                                accesskey: 'd',
+                                'data-id': 'discussion',
+                                id: 'ca-discuss',
+                                href: mw.util.getUrl('Diskussion:' + mw.config.get('wgPageName'))
                             })
                             .addClass('comments secondary')
                             .append(
@@ -112,7 +112,7 @@ if (wgNamespaceNumber == 0) {
                 $('<a />')
                     .addClass('comments secondary')
                     .attr({
-                        href: '/wiki/Thema:' + encodeURIComponent(wgPageName),
+                        href: mw.util.getUrl('Thema:' + mw.config.get('wgPageName')),
                         title: 'Diskussionen zu diesem Thema'
                     })
                     .text('Diskussionen zu diesem Thema')

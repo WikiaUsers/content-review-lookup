@@ -22,6 +22,7 @@ importArticles({
     type: "script",
     articles: [
       "MediaWiki:Common.js/ajax.js", /* Automatyczne odświeżanie */
+      'w:c:dev:ReferencePopups/code.js', /* Wyskakujące przypisy */
     ]
 });
 
@@ -37,17 +38,6 @@ function emptyLicenseAlert(form) {
         return true;
 }
 $('#mw-upload-form').submit(function(e) {return emptyLicenseAlert(this);});
-
- /* Komunikat */
- /*var WikiaNotificationMessage = '18 września 2015 roku bedzie miał swoją premierę musical „Un Nouveau Voyage”.';
- var expiry = 12; 
- 
- importArticles({ 
-     type: "script", 
-     articles: [ 
-         "u:dev:WikiaNotification/code.js" 
-     ] 
- }); */
 
 /* Blokada starych blogów i wątków */
 window.LockForums = {

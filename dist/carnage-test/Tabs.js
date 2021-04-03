@@ -1,10 +1,9 @@
-;(function(mw, $){
-    var _config = mw.config.get([
-            'wgPageName',
-            'wgArticlePath',
-            'wgUserGroups',
-            'wgServer',
-            'wgCanonicalNamespace',
-            'wgNamespaceNumber'
-        ]);
-})(this.mediaWiki, this.jQuery);
+/**
+ * Tabs
+ * 
+ * Author: Ultimate Dark Carnage
+ **/
+( function( window, $, mw ) { 
+    "use strict";
+    
+} )( window, jQuery, mediaWiki );

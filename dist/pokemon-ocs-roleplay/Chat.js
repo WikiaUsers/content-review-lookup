@@ -10,6 +10,9 @@ importArticles({
         'u:shining-armor:MediaWiki:ChatTags/code.js',
         'u:kocka:MediaWiki:Emoticons/code.js',
         'u:dev:MediaWiki:ExtendedPrivateMessaging/code.js',
-        'u:dev:MediaWiki:IsTyping.js'
+        'u:dev:MediaWiki:IsTyping.js',
+         'u:dev:MediaWiki:!announcement/code.js',
+         'u:dev:MediaWiki:ChatAnnouncements/code.js',
+         'u:shining-armor:MediaWiki:ChatTags/code.js'
     ]
 });

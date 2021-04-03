@@ -6,45 +6,71 @@
  * @Description     Mass add/remove usergroups from listed users
  * @Protect         <nowiki>
  */
-mw.loader.using('mediawiki.api', function () {
+ 
+/* jshint
+	esversion: 5, forin: true, 
+	immed: true, indent: 4, 
+	newcap: true, undef: true,
+	unused: true,
+	browser: true, jquery: true,
+	onevar: true, eqeqeq: true,
+	multistr: true, maxerr: 999999,
+	-W082, -W084
+*/
+/* global mw, importArticles, importArticle */
+
+mw.loader.using([
+    'mediawiki.api',
+    'mediawiki.user'
+], function () {
     'use strict';
+    
     var config = mw.config.get([
         'wgUserGroups',
-        'wgUserName'
+        'wgUserName',
+        'wgVersion'
     ]);
+    
     if (
         window.MassUserRightsLoaded ||
-        !/sysop|bureaucrat|staff|helper|wiki-manager/.test(config.wgUserGroups.join())
+        !/sysop|bureaucrat|staff|helper|wiki-manager|util/.test(config.wgUserGroups.join())
     ) {
         return;
     }
+
     window.MassUserRightsLoaded = true;
     var i18n,
-    placement,
-    rightsModal,
-    preloads = 3,
-    Api = new mw.Api(),
-    paused = true,
-    groups = [
-        'bureaucrat',
-        'chatmoderator',
-        'content-moderator',
-        'sysop',
-        'threadmoderator',
-    ],
-    messages = {},
-	customGroups = window.massUserRightsCustom;
+	    placement,
+	    rightsModal,
+	    preloads = 3,
+	    Api = new mw.Api(),
+	    paused = true,
+	    groups = [
+	        'bureaucrat',
+	        'sysop',
+	        'content-moderator',
+	        'threadmoderator',
+	        'rollback',
+	    ],
+	    messages = {},
+		customGroups = window.massUserRightsCustom,
+		isUCP = config.wgVersion !== '1.19.24';
+		
 	// Message fetch by KockaAdmiralac
 	Api.get({
         action: 'query',
         meta: 'allmessages',
         ammessages: groups.map(function(msg) {
-            return 'user-identity-box-group-' + msg;
+            return (isUCP ?
+            'userprofile-global-tag-' :
+            'user-identity-box-group-'
+        ) + msg;
         }).join('|')
     }).then(function(d) {
         d.query.allmessages.forEach(function(msg, i) {
-        messages[groups[i]] = msg['*'];
-    });
+	        messages[groups[i]] = msg['*'];
+	    });
+	    
         /**
          * @method generateElement
          * @description Creates an option element
@@ -57,6 +83,7 @@ mw.loader.using('mediawiki.api', function () {
                 text: isI18n ? i18n.msg(type).plain() : messages[type]
             });
         }
+        
         /**
          * @method formHtml
          * @description Creates the modal HTML
@@ -88,12 +115,11 @@ mw.loader.using('mediawiki.api', function () {
                         $('<select>', {
                             id: 'user-rights-type'
                         }).append(
-                            generateElement('chatmoderator'),
-                            generateElement('threadmoderator'),
-                            generateElement('rollback', true),
-                            generateElement('content-moderator'),
+                            generateElement('bureaucrat'),
                             generateElement('sysop'),
-                            generateElement('bureaucrat')
+                            generateElement('content-moderator'),
+                            generateElement('threadmoderator'),
+                            generateElement('rollback', true)
                         )        
                     ),
                     $('<p>', {
@@ -119,6 +145,7 @@ mw.loader.using('mediawiki.api', function () {
                 )
             ).prop('outerHTML');
         }
+        
         /**
          * @method preload
          * @description Preloads the script and the hooks
@@ -129,6 +156,7 @@ mw.loader.using('mediawiki.api', function () {
                 window.dev.i18n.loadMessages('MassUserRights').then(init);
             }
         }
+        
         /**
          * @method init
          * @description Initiates the script
@@ -149,6 +177,7 @@ mw.loader.using('mediawiki.api', function () {
                 )
             );
         }
+        
         /**
          * @method click
          * @description Opens the MassUserRights modal
@@ -197,31 +226,36 @@ mw.loader.using('mediawiki.api', function () {
             rightsModal.create().then(show);
             rightsModal.show();
 		}
+		
 		/**
 		 * @method show
 		 * @description Handles some aspects of the modal
 		 */
 		function show () {
 		    // Removes options admins can't use
-			if (!/bureaucrat|staff|helper|wiki-manager/.test(config.wgUserGroups.join())) {
-				$('#user-rights-type option[value="rollback"],#user-rights-type option[value="sysop"],#user-rights-type option[value="bureaucrat"]').remove();
+			if (!/bureaucrat|staff|helper|wiki-manager|util/.test(config.wgUserGroups.join())) {
+				$('#user-rights-type option[value="rollback"],#user-rights-type option[value="sysop"],#user-rights-type option[value="content-moderator"],#user-rights-type option[value="bureaucrat"]').remove();
             }
             // Support for custom groups
 			if (customGroups) {
-				$.each(customGroups, function(i,v)  {
+				$.each(customGroups, function(i,v) {
+					var split = v.split('|');
+					
 					if (
-                        document.domain.split('.')[0] === v.split('|')[0]
+                        document.domain.split('.')[0] === split[0]
+                        && (typeof(split)[3] === 'string' ? split[3].split(/\s*,\s*/).some(function(v) { return !!~config.wgUserGroups.indexOf(v) }) : true)
                     ) {
 						$('#user-rights-type').append(
                             $('<option>', {
-                                value: v.split('|')[1],
-                                text: v.split('|')[2]
+                                value: split[1],
+                                text: split[2]
                             })
                         );	
                     }
 				});
 			}
 		}
+		
 		/**
 		 * @method pause
 		 * @description Pauses the operation
@@ -231,6 +265,7 @@ mw.loader.using('mediawiki.api', function () {
             document.getElementById('mur-pause').setAttribute('disabled', '');
             document.getElementById('mur-start').removeAttribute('disabled');
         }
+        
         /**
          * @method start
          * @description Starts the operation
@@ -241,6 +276,7 @@ mw.loader.using('mediawiki.api', function () {
             document.getElementById('mur-pause').removeAttribute('disabled');
             process();
         }
+        
 		/**
 		 * @method process
 		 * @description Analyzes the inputted data
@@ -267,6 +303,7 @@ mw.loader.using('mediawiki.api', function () {
 			pages = pages.slice(1,pages.length);
 			txt.value = pages.join('\n');
 		}
+		
 		/**
 		 * @method addGroupContents
 		 * @description Inputs users from a certain usergroup
@@ -278,15 +315,17 @@ mw.loader.using('mediawiki.api', function () {
             }
             Api.get({
                 action: 'query',
-                list: 'groupmembers',
+                list: 'allusers|groupmembers',
+                augroup: group,
+                aulimit: 'max',
                 gmgroups: group,
                 gmlimit: 'max',
                 format: 'json'
             })
             .done(function(d) {
                 if (!d.error) {
-                    d.users.forEach(function(user) {
-                        $('#text-mass-user-rights').append(user.name + '\n');
+                    (d.users || d.query.allusers).forEach(function(user) {
+                        $('#text-mass-user-rights').val($('#text-mass-user-rights').val() + user.name + '\n');
                     });
                 }
                 else {
@@ -297,6 +336,7 @@ mw.loader.using('mediawiki.api', function () {
                 sendError(i18n.msg('groupError').escape() + ' ' + group +'!');
             });
         }
+        
         /**
          * @method changeRights
          * @description Performs the action
@@ -307,7 +347,9 @@ mw.loader.using('mediawiki.api', function () {
                 action: 'query',
                 list: 'users',
                 ustoken: 'userrights',
-                ususers: config.wgUserName
+                ususers: user,
+                meta: 'tokens',
+                type: 'userrights'
             }).done(function(d) {
                 if (!d.error) {
                     var params = {
@@ -316,9 +358,11 @@ mw.loader.using('mediawiki.api', function () {
                         add: $('#user-rights-type').val(),
                         reason: $('#user-rights-reason').val(),
                         bot: true,
-                        token: d.query.users[0].userrightstoken
+                        token: d.query.tokens ?
+                            d.query.tokens.userrightstoken :
+                            d.query.users[0].userrightstoken
                     };
-                    params[$('#user-rights-mode').val() == 1 ? 'remove' : 'add'] = $('#user-rights-type').val();
+                    params[$('#user-rights-mode').val() === 1 ? 'remove' : 'add'] = $('#user-rights-type').val();
                     Api.post(params).done(function(d2) { 
                         if (!d2.error) {
                             console.log(i18n.msg('success', user).plain());
@@ -327,16 +371,17 @@ mw.loader.using('mediawiki.api', function () {
 							sendError(i18n.msg('fail1', user, d2.error.code).escape());
 						}
 					})
-					.fail(function() {
-						sendError(i18n.msg('fail2', user).escape());
+					.fail(function(code) {
+						sendError(i18n.msg('fail1', user, code).escape());
 					});
 				}
 				else {
-					sendError(i18n.msg('fail3', user, d.error).escape());
+					sendError(i18n.msg('fail3', user, d.error.code).escape());
 				}
 			});
 			setTimeout(process, window.massUserRightsDelay || 1000);
 		}
+		
 		/**
 		 * @method sendError
 		 * @description Handles error notices
@@ -346,22 +391,21 @@ mw.loader.using('mediawiki.api', function () {
             console.log(error);
             $('#text-error-output').append(error + '<br/>');
         }
+        
         mw.hook('dev.i18n').add(preload);
         mw.hook('dev.modal').add(preload);
         mw.hook('dev.placement').add(preload);
-        importArticles(
-            {
-                type: 'script',
-                articles: [
-                    'u:dev:MediaWiki:I18n-js/code.js',
-                    'u:dev:MediaWiki:Modal.js',
-                    'u:dev:MediaWiki:Placement.js'
-                ]
-            },
-            {
-                type: 'style',
-                articles: ['u:dev:MediaWiki:MassUserRights.css']
-            }
-        );
+        importArticles({
+            type: 'script',
+            articles: [
+                'u:dev:MediaWiki:I18n-js/code.js',
+                'u:dev:MediaWiki:Modal.js',
+                'u:dev:MediaWiki:Placement.js'
+            ]
+        });
+        importArticle({
+            type: 'style',
+            articles: ['u:dev:MediaWiki:MassUserRights.css']
+        });
     });
 });

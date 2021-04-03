@@ -13,6 +13,7 @@ $(function() {
         window.open(new mw.Uri('https://translate.google.com/translate').extend({
             hl: config.wgUserLanguage,
             sl: config.wgPageContentLanguage,
+			tl: config.wgUserLanguage,
             u: location.href
         }).toString());
     }

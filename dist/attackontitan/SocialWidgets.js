@@ -1,18 +1,18 @@
 /**
  * @name SocialWidgets
  * @author Manuel de la Fuente (https://manuelfte.com)
- * @version 1.1.22
+ * @version 1.2.7
  * @license CC-BY-SA-3.0
  * @description Inserts widgets for social networks at the top of the sidebar
  */
 /* eslint-env jquery */
-$(window).load(function () {
+(function () {
   'use strict';
 
-  console.log('SocialWidgets v1.1.22');
+  console.log('SocialWidgets v1.2.7');
 
   var cfg = window.mw.config.get([
-    'wgIsMainpage',
+    'wgIsMainPage',
     'wgPageName'
   ]);
 
@@ -26,17 +26,16 @@ $(window).load(function () {
         '<iframe style="border: 0; height: ' + height + 'px; margin: 0; overflow: hidden; width: ' + width + 'px;" src="https://www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2FAttackOnTitanWiki&amp;height=' + height + '&amp;show_faces=false&amp;small_header=true&amp;stream=true&amp;width=' + width + '" scrolling="yes"></iframe>' +
       '</p>';
   };
-  var getInstagram = function (width) {
-    return '<p id="sw-instagram">' +
-        '<iframe scrolling="no" style="border: none; height: 80px; overflow: hidden; width: ' + width + 'px;" src="data:text/html;charset=utf-8,&lt;html&gt;&lt;body style=&quot;margin: 0;&quot;&gt;&lt;a href=&quot;https://instawidget.net/v/user/attackontitanwiki&quot; id=&quot;link-c91a2877988927980b42557dd8987350de1515c8eba6a70a65fabbbbd0fa36c7&quot;&gt;Follow @attackontitanwiki on Instagram&lt;/a&gt;&lt;script src=&quot;https://instawidget.net/js/instawidget.js?u=c91a2877988927980b42557dd8987350de1515c8eba6a70a65fabbbbd0fa36c7&amp;width=' + width + 'px&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;"></iframe>' +
-      '</p>';
-  };
+  var instagram =
+    '<p id="sw-instagram">' +
+      '<span id="instabutton"></span>' +
+    '</p>';
 
   /* Inserts the module in the corresponding places */
-  if (cfg.wgIsMainpage !== true) { // If it's not the homepage
+  if (cfg.wgIsMainPage !== true) { // If it's not the homepage
     var facebook;
     /* Changes the widgets if the page contains spoilers */
-    if ($.inArray('Spoilers', window.mw.config.get('wgCategories')) > -1 || cfg.wgPageName === 'Special:WikiActivity') {
+    if ($.inArray('Spoilers', window.mw.config.get('wgCategories')) > -1) {
       twitter =
         '<p id="sw-twitter-2">' +
           '<a class="twitter-timeline" data-width="270" data-height="200" data-lang="en" data-chrome="noheader|nofooter" href="https://twitter.com/AoTWiki">Tweets by @AoTWiki</a>' +
@@ -55,22 +54,21 @@ $(window).load(function () {
         '<div>' +
             twitter +
             facebook +
-            getInstagram(270) +
+            instagram +
         '</div>' +
       '</section>';
-    if ($('#TOP_RIGHT_BOXAD').length) { // Checks if there are ads
-      $('#TOP_RIGHT_BOXAD').after(sidebarModule, $('#wikia-recent-activity')); // Inserts module and Recent Wiki Activity (if there is) below ads
-    } else if (cfg.wgPageName === 'Special:WikiActivity') { // If there are no ads, checks if it's Special:WikiActivity
-      $('#WikiaRail').prepend(sidebarModule, $('.CommunityCornerModule')); // Inserts module and Community Corner at the top of the sidebar
+    if ($('#ad-container').length) { // Checks if there are ads
+      $('#ad-container').after(sidebarModule, $('#wikia-recent-activity')); // Inserts module and Recent Wiki Activity (if there is) below ads
     } else { // If there are no ads and it isn't Special:WikiActivity
       $('#WikiaRail').prepend(sidebarModule, $('#wikia-recent-activity')); // Inserts module at the top of the sidebar
     }
   } else { // If it's the homepage
     /* Builds homepage module */
-    var homeModule = twitter + getFacebook(290, 290) + getInstagram(290);
+    var homeModule = twitter + getFacebook(290, 290) + instagram;
     $('#home-social-widgets').html(homeModule); // Inserts homepage module
   }
 
-  /* Twitter SDK */
+  /* Twitter SDK and InstaButton */
   window.mw.loader.load('//platform.twitter.com/widgets.js');
-});
+  window.importArticle({ type: 'script', article: 'MediaWiki:InstaButton.js' });
+})();

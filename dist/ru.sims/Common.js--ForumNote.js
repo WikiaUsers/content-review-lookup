@@ -1,3 +1,0 @@
-$(function() {
-  $('.boards').prepend("<div style='background-color: #3571C3; border: 1px solid #E0E0E0; text-align:center; color:white; text-shadow: #555 1px 1px 3px; padding:2px;'>Добро пожаловать на форум The Sims Wiki<br>Это идеальное место, чтобы начать обсуждение, задать вопросы и пообщаться с сообществом вики.<br>Если это ваш первый визит на форум The Sims Wiki, пожалуйста, нажмите на кнопку «Правила Форума и Справка» выше, чтобы ознакомиться с работой этого форума и его правилами.</div>");
-});

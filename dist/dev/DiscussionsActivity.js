@@ -3,7 +3,7 @@
  * @author Manuel de la Fuente (https://manuelfte.com)
  * - Based on DiscussionsFeed (https://dev.fandom.com/wiki/DiscussionsFeed)
  *   by Flightmare (https://elderscrolls.fandom.com/wiki/User:Flightmare)
- * @version 0.9.7.1
+ * @version 0.9.9
  * @license CC-BY-SA-3.0
  * @description Creates a special page for latest Discussions messages
  * @todo Link to load more
@@ -16,21 +16,23 @@
   if ( window.DiscussionsActivityLoaded ) return;
   window.DiscussionsActivityLoaded = true;
 
-  console.log('DiscussionsActivity v0.9.7.1');
+  console.log('DiscussionsActivity v0.9.9');
 
   var config = window.mw.config.get([
     'wgCanonicalNamespace',
-    'wgCityId',
     'wgScriptPath',
+    'wgServer',
     'wgTitle',
     'wgUserGroups',
-    'wgUserName'
+    'wgUserName',
+    'wgVersion'
   ]);
   var i18n;
   var isMod;
   var canBlock;
   var wallsEnabled = false;
   var timeout;
+  var isUCP = config.wgVersion !== '1.19.24';
   /**
    * Escapes special characters
    */
@@ -365,7 +367,7 @@
         loadingElement.classList.remove('rda-loading');
       }
     };
-    request.open('GET', 'https://services.fandom.com/discussion/' + config.wgCityId + '/posts?limit=50&viewableOnly=' + viewableOnly, true);
+    request.open('GET', config.wgServer + config.wgScriptPath + '/wikia.php?controller=DiscussionPost&method=getPosts&limit=50&containerType=FORUM&viewableOnly=' + viewableOnly, true);
     request.setRequestHeader('Accept', 'application/hal+json');
     request.withCredentials = true;
     request.send();
@@ -448,18 +450,18 @@
       // If Discussions were loaded correctly
       case 200:
         // Detects the background color to request the proper copy of the styles of Wiki Activity
-        var background = document.getElementById('WikiaPageBackground');
-        var rgb = window.getComputedStyle(background).backgroundColor.match(/\d+/g);
-        var hex = '';
-        rgb.forEach(function (i) {
-          hex += parseInt(i, 10).toString(16).padStart(2, i);
-        });
+        var background = isUCP ? document.getElementsByClassName('WikiaPageContentWrapper')[0] : document.getElementById('WikiaPageBackground');
+        var rgb = window.getComputedStyle(background).backgroundColor.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+        function toHex(i) {
+          return parseInt(i, 10).toString(16).padStart(2, i);
+        }
+        var hex = toHex(rgb[1]) + toHex(rgb[2]) + toHex(rgb[3]);
         // Requests the CSS and inserts it in the page
         var title = document.getElementsByTagName('title')[0];
         var style = '<link rel="stylesheet" type="text/css" href="https://slot1-images.wikia.nocookie.net/__am/1515674256/sasses/color-page%3D%2523' + hex + '%26skins/extensions/wikia/MyHome/oasis.scss,extensions/wikia/Wall/css/WallWikiActivity.scss" />';
         title.insertAdjacentHTML('afterend', style);
         // Gets user perms
-        var blockers = ['sysop', 'staff', 'helper', 'vstf', 'global-discussions-moderator'];
+        var blockers = ['sysop', 'staff', 'wiki-manager', 'helper', 'soap', 'global-discussions-moderator'];
         canBlock = blockers.some(function (role) { return config.wgUserGroups.indexOf(role) > -1; });
         isMod = Boolean(canBlock || config.wgUserGroups.indexOf('threadmoderator') > -1);
         // Calls the next steps once the following task is complete
@@ -501,7 +503,7 @@
    * Inserts links in header subtitle in certain pages
    */
   function insertLinks () {
-    var pages = {
+    var defaultPages = {
       RecentChanges: {
         title: i18n('recent_changes').escape(),
         links: ['WikiActivity', 'DiscussionsActivity']
@@ -519,6 +521,12 @@
         links: ['RecentChanges', 'WikiActivity', 'DiscussionsActivity']
       }
     };
+    var pages = typeof window.rdaSubtitleLinksPages === 'object'
+      ? Object.fromEntries(Object.entries(window.rdaSubtitleLinksPages).map(function (entry) {
+        var title = entry[0], config = entry[1];
+        return [title, Object.assign({}, defaultPages[title], config)];
+      }))
+      : defaultPages;
     // Terminates the function if the current page is not in the list
     if (Object.keys(pages).every(function (p) { return 'Special:' + p !== config.wgCanonicalNamespace + ':' + config.wgTitle; })) {
       return;
@@ -566,5 +574,19 @@
       isDiscussionsEnabled();
     });
   });
-  window.importArticles({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' }, { type: 'style', article: 'u:dev:MediaWiki:DiscussionsActivity.css' });
+  if (isUCP) {
+    mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js');
+    mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=styles&articles=MediaWiki:DiscussionsActivity.css', 'text/css');
+  } else {
+    window.importArticles(
+      {
+        type: 'script',
+        article: 'u:dev:MediaWiki:I18n-js/code.js'
+      },
+      {
+        type: 'style',
+        article: 'u:dev:MediaWiki:DiscussionsActivity.css'
+      }
+    );
+  }
 })();

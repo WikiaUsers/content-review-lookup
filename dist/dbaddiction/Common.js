@@ -4,18 +4,17 @@ importArticles({
     type: "script",
     articles: [
         'u:dev:LastEdited/code.js',
-        'u:dev:ExtendedNavigation/code.js',
-        'u:dev:MediaWiki:AjaxBatchDelete/code.2.js',
-        'u:dev:MediaWiki:ReferencePopups/code.js',
-        'w:c:dev:ReferencePopups/code.js',
+	    'u:dev:MediaWiki:AjaxBatchDelete.js',
         'MediaWiki:Common.js/gridfiltering.js',
         'MediaWiki:Common.js/gridfixer.js',
     ]
 });
 
+/*
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
+*/
 
 
 gridContainer = '#champion-grid';

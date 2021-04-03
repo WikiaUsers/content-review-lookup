@@ -1,25 +1,40 @@
 /*
  * Request filling system using popups by Gguigui1, Hulothe, Wyz and Fubuki風吹.
- * Modifed by Megakott for http://ru.youtube.wikia.com
+ * Modifed by Megakott for https://youtube.fandom.com/ru
  */
-function showRequestModal(title, form, type) {
-	$.showCustomModal(title, form, {
-		id: 'requestForm',
-		width: 600,
-		buttons: [{
-			id: 'submitButton',
-			message: 'OK',
-			defaultButton: true
-		}, {
-			message: 'Отмена',
-			handler: function () {
-				$('#requestForm').closeModal();
-			}
-		}]
-	});
-	if (!type) {
-		$('#addMore').hide();
+
+var modal_f = null;
+var modal_f_start = null;
+
+function showRequestModal(title, form, type, func) {
+	modal_f_start = func;
+	if (modal_f === null) {
+	    modal_f = new window.dev.modal.Modal({
+	        content: form,
+	        id: 'requestForm',
+	        size: 'medium',
+	        title: title,
+	        buttons: [
+	            {
+	                id: 'submitButton',
+	                text: 'OK',
+	                primary: true,
+	                event: 'modal_f_start'
+	            }
+	        ],
+	        events: {
+	            modal_f_start: modal_f_start
+	        }
+	    });
+		modal_f.create();
+	} else {
+		modal_f.setTitle(title);
+		modal_f.setContent(form);
 	}
+    if (!type) {
+        $('#addMore').hide();
+    }
+    modal_f.show();
 }
 
 function checkAndSubmitFormData(submitData, type, summaryData) {
@@ -32,10 +47,10 @@ function checkAndSubmitFormData(submitData, type, summaryData) {
         }
     });
     if (allFieldsAreSet) {
-        $('#requestForm').closeModal();
+        modal_f.hide();
         // NOTE: There's a reason behind not just using "secion=new" option to create a new request
         $.ajax({
-            url: '/wiki/'+mw.config.get('wgPageName'),
+            url: '/ru/wiki/'+mw.config.get('wgPageName'),
             type: 'GET',
             data: {
                 action: 'raw',
@@ -43,7 +58,6 @@ function checkAndSubmitFormData(submitData, type, summaryData) {
                 allinone: 1
             },
             dataType: 'text',
-
             success: function (text) {
                 if (text) {
                     $.ajax({
@@ -58,71 +72,23 @@ function checkAndSubmitFormData(submitData, type, summaryData) {
                             format: 'json'
                         },
                         dataType: 'json',
-
                         success: function (data) {
                             if (data && data.edit && data.edit.result == 'Success') {
-                                $.showCustomModal('Успех', '<div>Номинация успешно выставлена.</div>', {
-                                    id: 'RequestSuccess',
-                                    width: 300,
-                                    buttons: [{
-                                        message: 'ОК',
-                                        defaultButton: true,
-                                        handler: function () {
-                                            $('#RequestSuccess').closeModal();
-                                            window.location.reload();
-                                        }
-                                    }]
-                                });
+								window.location.reload();
                             } else {
-                                $.showCustomModal('Ошибка', '<div>Произошла ошибка. Пожалуйста, попробуйте снова.</div>', {
-                                    id: 'RequestFailure',
-                                    width: 300,
-                                    buttons: [{
-                                        message: 'ОК',
-                                        defaultButton: true,
-                                        handler: function () {
-                                            $('#RequestFailure').closeModal();
-                                            showRequestModal();
-                                        }
-                                    }, {
-                                        message: 'Отмена',
-                                        handler: function () {
-                                            $('#RequestFailure').closeModal();
-                                        }
-                                    }]
-
-                                });
+                                alert('Произошла ошибка. Пожалуйста, попробуйте снова.');
                             }
                         }
                     });
                 } else {
-                    $.showCustomModal('Ошибка', '<div>Во время отправки запроса произошла ошибка. Пожалуйста, попробуйте снова.</div>', {
-                        id: 'RequestFailure',
-                        width: 300,
-                        buttons: [{
-                            message: 'ОК',
-                            defaultButton: true,
-                            handler: function () {
-                                $('#RequestFailure').closeModal();
-                                showRequestModal();
-                            }
-                        }, {
-                            message: 'Отмена',
-                            handler: function () {
-                                $('#RequestFailure').closeModal();
-                            }
-                        }]
-
-                    });
+                    alert('Во время отправки запроса произошла ошибка. Пожалуйста, попробуйте снова.');
                 }
             }
         });
-
     } else {
         return false;
     }
 }
-
 $(function () {
     // making sure that user will click "Оставить запрос" button instead of edit button
     if ($('#request').length && mw.config.get('wgUserGroups').indexOf('sysop') === -1) {
@@ -155,11 +121,9 @@ $(function () {
                     '</p>' +
                   '</fieldset>' +
                 '</form>';
-
-            showRequestModal('Добавить номинацию на удаление:', requestForm, false);
-            $('#submitButton').click(function () {
+            showRequestModal('Добавить номинацию на удаление:', requestForm, false, function () {
                 var pagename = $('#Name').val().toString();
-				var reason = $('#Reason').val().toString();
+var reason = $('#Reason').val().toString();
                 var requestSubmitData = '== [[:' + pagename + ']] ==\n' + reason + ' ~~\~~\n\n';
                 // We need to escape some '~' since MediaWiki wikitext parser replaces it with user signature and breaks the code
                 var requestSummary = 'новая номинация на удаление';
@@ -201,12 +165,10 @@ $(function () {
                     '</p>' +
                   '</fieldset>' +
                 '</form>';
-
-            showRequestModal('Добавить номинацию на переименование:', requestForm, false);
-            $('#submitButton').click(function () {
+            showRequestModal('Добавить номинацию на переименование:', requestForm, false, function () {
                 var oldname = $('#Name').val().toString();
                 var newname = $('#Newname').val().toString();
-				var reason = $('#Reason').val().toString();
+var reason = $('#Reason').val().toString();
                 var requestSubmitData = '== [[:' + oldname + ']] → [[:' + newname + ']] ==\n' + reason + ' ~~\~~\n\n';
                 // We need to escape some '~' since MediaWiki wikitext parser replaces it with user signature and breaks the code
                 var requestSummary = 'новая номинация на переименование';
@@ -240,16 +202,14 @@ $(function () {
                     '</p>' +
                   '</fieldset>' +
                 '</form>';
-
-            showRequestModal('Добавить номинацию на восстановление:', requestForm, false);
-            $('#submitButton').click(function () {
-                var pagename = $('#Name').val().toString();
+            showRequestModal('Добавить номинацию на восстановление:', requestForm, false, function() {
+				var pagename = $('#Name').val().toString();
 				var reason = $('#Reason').val().toString();
                 var requestSubmitData = '== [[:' + pagename + ']] ==\n' + reason + ' ~~\~~\n\n';
                 // We need to escape some '~' since MediaWiki wikitext parser replaces it with user signature and breaks the code
                 var requestSummary = 'новая номинация на восстановление';
                 checkAndSubmitFormData(requestSubmitData, false, requestSummary);
-            });
+			});
         });
         break;
     default:

@@ -1,5 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+window.rwaOptions;
+
 var MessageBlock = {
   title : 'Blocked',
   message : 'You have been blocked for $2 because you have committed the following offence(s): $1',

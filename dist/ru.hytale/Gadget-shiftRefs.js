@@ -1,0 +1,1 @@
+mw.loader.load('//ru.wikipedia.org/w/index.php?title=MediaWiki:Gadget-shiftrefs.js&action=raw&ctype=text/javascript');

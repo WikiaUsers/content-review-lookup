@@ -88,14 +88,12 @@ window.UserTagsJS = {
         chatmoderator: { u:'Chat Mod'},
         rollback: { u:'Rollback'},
         sysop: {u:'The Player'},
-        mothra: {u:'Mothra'},
         founder: {u:'founder'}
 	}
 };
  
 UserTagsJS.modules.custom = {
         'Psychobilly2422': ['majora'],
-        'Iskaldur': ['mothra'],
         'Schmidkalkan': ['kek'],
         'Shruk': ['owner'],
         'Cperry19': ['founder']

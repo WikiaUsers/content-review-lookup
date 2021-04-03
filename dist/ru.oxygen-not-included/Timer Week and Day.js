@@ -61,4 +61,4 @@ function updatetimer(i) {
      updatetimer(i);
    }
  }
- addOnloadHook(checktimers);
+$(checktimers);

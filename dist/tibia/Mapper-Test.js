@@ -331,14 +331,14 @@ $(window).load(function() {
 
           $('#minimap_vl').appendTo($('#minimap_imgdiv')).css({
             'left':(tleft+256)+'px',
-            'top':(ttop+(wgPageName != 'Mapper' ? parseInt((384-parseInt(384*(pars[5] / parss[5]), 10))/2, 10) : 0))+'px',
-            'height':(wgPageName != 'Mapper' ? parseInt(384*(pars[5] / parss[5]), 10) : 384)+'px'
+            'top':(ttop+(mw.config.get('wgPageName') != 'Mapper' ? parseInt((384-parseInt(384*(pars[5] / parss[5]), 10))/2, 10) : 0))+'px',
+            'height':(mw.config.get('wgPageName') != 'Mapper' ? parseInt(384*(pars[5] / parss[5]), 10) : 384)+'px'
           });
 
           $('#minimap_hl').appendTo($('#minimap_imgdiv')).css({
-            'left':(tleft+(wgPageName != 'Mapper' ? parseInt((512-parseInt(512*(pars[5] / parss[5]), 10))/2, 10) : 0))+'px',
+            'left':(tleft+(mw.config.get('wgPageName') != 'Mapper' ? parseInt((512-parseInt(512*(pars[5] / parss[5]), 10))/2, 10) : 0))+'px',
             'top':(ttop+192)+'px',
-            'width':(wgPageName != 'Mapper' ? parseInt(512*(pars[5] / parss[5]), 10) : 512)+'px'
+            'width':(mw.config.get('wgPageName') != 'Mapper' ? parseInt(512*(pars[5] / parss[5]), 10) : 512)+'px'
           });
         }
         else {
@@ -431,9 +431,9 @@ $(window).load(function() {
     minimap_load = function(url) {
       minimap_map_sdata = minimap_get_coords(url); minimap_map_data = minimap_get_coords(url);
       var pars = minimap_get_coords(url);
-      var tid = 'minimap_w' + (wgPageName == 'Mapper' ? 'f' : 'p');
+      var tid = 'minimap_w' + (mw.config.get('wgPageName') == 'Mapper' ? 'f' : 'p');
       minimap_change_src();// bypass image cache if the user opts to
-      if (wgPageName != 'Mapper') {
+      if (mw.config.get('wgPageName') != 'Mapper') {
         if (!$('#minimap_blackout').size()) { $('body').append(
           '<div id="minimap_blackout" class="minimap_blackout" onclick="$(\'.minimap_wp, #minimap_blackout\').css(\'display\', \'none\').html(\'&nbsp;\'); return false;">&nbsp;</div>');
         }
@@ -442,7 +442,7 @@ $(window).load(function() {
         $('#minimap_wp').css('display', 'block');
       }
       var tmp =
-      (wgPageName != 'Mapper' ?
+      (mw.config.get('wgPageName') != 'Mapper' ?
       '<div style=\'text-align:center;background:#eeeeee;color:#0038d8;font-weight:bold;height:19px;padding-top: 2px\'>TibiaWiki Map</div>'+
         '<div class="minimap_wx" onclick="$(\'.minimap_wp, #minimap_blackout\').css(\'display\', \'none\').html(\'&nbsp;\'); return false;">X</div>'
       : '<div style="border-bottom-color:#aaaaaa;border-bottom-style:solid;border-bottom-width:1px;"><font size="+1">Mapper</font></div><br />')+
@@ -470,7 +470,7 @@ $(window).load(function() {
           '</div>'+
         '</div></div>'+
       '</div>'+
-      '<div style="'+(wgPageName != 'Mapper' ? 'background-color:#EEEEEE;' : '')+'">'+
+      '<div style="'+(mw.config.get('wgPageName') != 'Mapper' ? 'background-color:#EEEEEE;' : '')+'">'+
       '<table border="0"><tr><td style="vertical-align:top;width:46px;">'+
       '<div style="margin:2px;line-height:10px;"><input type="button" onclick="minimap_pos_b(\'ns\', -30);" class="starn btns" value="" /><br />'+
       '<input type="button" onclick="minimap_pos_b(\'we\', -30);" class="starw btns" value="" />'+
@@ -494,7 +494,7 @@ $(window).load(function() {
       '</td></tr><td>&nbsp;</td><td>&nbsp;</td><td colspan="2">'+
       '<input type="checkbox" value="1" '+(minimap_read_cookie('minimap_hres') == '1' ? 'checked="checked" ' : '')+'id="minimap_hres_enabled" onclick="minimap_write_cookie(\'minimap_hres\', (this.checked ? 1 : 0)); minimap_pos();" />Load high resolution images &nbsp;'+
       '<input type="checkbox" value="0" '+(!preload_image ? 'disabled=disabled' : '')+'onclick="mapper_preload_files(this);" /> Preload images &nbsp;'+
-      (wgPageName == 'Mapper' ?
+      (mw.config.get('wgPageName') == 'Mapper' ?
       '<input type="checkbox" value="1" '+(window.location.search.indexOf('coords=') !== -1 ? '' : 'checked="checked" ')+'id="minimap_editor_mode" onclick="minimap_pos();" />Editor mode &nbsp;'+
       '<input type="checkbox" value="1" '+(minimap_read_cookie('minimap_fresh') == '1' ? 'checked="checked" ' : '')+'onclick="minimap_write_cookie(\'minimap_fresh\', this.checked ? 1 : 0); minimap_change_src(); " />Force-reload images'+
       '</td></tr></table><table border="0" style="width:512px;overflow:auto"><tr>'+
@@ -556,24 +556,24 @@ $(window).load(function() {
         '</td><td><input id= "minimap_tcode2" readonly="readonly" type="text" value="" size="45" onclick="this.select()" />'
       : '')+
       '</td></tr></table></div>'+
-      (wgPageName != 'Mapper' ?
+      (mw.config.get('wgPageName') != 'Mapper' ?
         '<div onclick="window.open(minimap_data_to_url(0)); $(\'.minimap_wx\').click(); return false;" class="minimap_wl" title="Expand on TibiaWiki"></div>'
       : '')+
       '';
       $('#'+tid).html(tmp);
       $('#mapper_list').change(function(){minimap_mapper_list_click();});
-      if (wgPageName != 'Mapper') { minimap_center_div(); }
+      if (mw.config.get('wgPageName') != 'Mapper') { minimap_center_div(); }
       $('#minimap_img').load(function() {
         $('#minimap_loading').css('display', 'none'); $('#minimap_maindiv').css('display', 'block');
       });
       minimap_pos();
       minimap_dragstart();
-      if (wgPageName == 'Mapper') { try { $('#mapper_loading').hide(); } catch(er) { } }
+      if (mw.config.get('wgPageName') == 'Mapper') { try { $('#mapper_loading').hide(); } catch(er) { } }
     };
 
     $('a[href*="'+minimap_mapper_page+'"]').click(function() { minimap_load($(this).attr('href')); return false; });
 
-    if (wgPageName == 'Mapper') { minimap_load(window.location.search.substring(1)); }
+    if (mw.config.get('wgPageName') == 'Mapper') { minimap_load(window.location.search.substring(1)); }
     else{ $(window).resize(function(){ minimap_center_div(); }); }
 
 });

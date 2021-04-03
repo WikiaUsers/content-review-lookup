@@ -1,0 +1,1 @@
+$("table.cargoTable").addClass("wikitable");

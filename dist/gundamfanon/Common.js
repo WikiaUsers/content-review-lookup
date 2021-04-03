@@ -1,5 +1,5 @@
 /* Link to GFW Answers */
-$('ul.tools li:first-child').after('<li><a href="http://gundamfanon.wikia.com/wiki/Gundam_Fanon:About">Got a question about the Gundam Fanon Wiki?</a></li>');
+$('ul.tools li:first-child').after('<li><a href="https://gundamfanon.fandom.com/wiki/Gundam_Fanon_Wiki:About">Got a question about the Gundam Fanon Wiki?</a></li>');
 
 /* UserTags */
 window.UserTagsJS = {
@@ -62,3 +62,8 @@ if (mw.config.get("wgUserGroups").indexOf('sysop') > -1) {
 var ajaxPages = ["Special:RecentChanges","Special:Watchlist","Special:Log","Special:Contributions","Special:WikiActivity","Blog:Recent_posts"];
  
 var AjaxRCRefreshText = 'Auto-refresh';
+
+/* WikiActivity */
+window.rwaOptions = {
+    headerLink : true,
+};

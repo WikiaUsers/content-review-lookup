@@ -1,30 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/* Promobox */
-window.onload = function(){
-    document.getElementById('close').onclick = function(){
-        this.parentNode.parentNode.parentNode
-        .removeChild(this.parentNode.parentNode);
-        return false;
-    };
-};
-
-/* Photo feed Instagram */
-var username = 'justinbieber';
-$.ajax({ 
-    type: 'GET', 
-    dataType: 'json',
-    url: 'http://cors-anywhere.herokuapp.com/https://www.instagram.com/' + username + '/media',
-    success: function (data) {
-        $.each(data.items, function(idx, el) {
-            var thumb = el.images.thumbnail.url;
-            var link = 'https://www.instagram.com/p/' + el.code;
-            $('#instagram-widget').append('<a href="' + link + '"><img src="' + thumb + '"/></a>');
-            return idx < 8;
-        })
-    }
-});
-
 /* YouTube subscribe button */
 importScriptURI('//apis.google.com/js/platform.js');
 

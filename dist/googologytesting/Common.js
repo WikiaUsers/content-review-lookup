@@ -4,9 +4,9 @@ var oldDefine = define;
 define = function(id, dependencies, definition, defMock) {
     console.log(id);
     oldDefine(id, dependencies, definition, defMock);
-}
+};
  
-importScriptURI("https://www.jdoodle.com/assets/jdoodle-pym.min.js");
+// importScriptURI("https://www.jdoodle.com/assets/jdoodle-pym.min.js");
  
 if (mwCustomEditButtons) {
     mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -17,7 +17,7 @@ if (mwCustomEditButtons) {
         "sampleText": "Insert comment here"
     };
  
-mwCustomEditButtons[mwCustomEditButtons.length] = {
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile": "https://images.wikia.nocookie.net/central/images/a/a0/Button_references_alt.png",
         "speedTip": "Insert a list of references",
         "tagOpen": "=== Sources ===\n<references />",
@@ -25,7 +25,7 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
         "sampleText": ""
     };
  
-mwCustomEditButtons[mwCustomEditButtons.length] = {
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile": "https://images.wikia.nocookie.net/central/images/1/16/Button_reflink_alternate.png",
         "speedTip": "Insert a reference",
         "tagOpen": "<ref>",
@@ -51,18 +51,19 @@ var findMath = function(cssSelector, setupFunc) {
             setupFunc(mathFindingInterval);
         }
     }
-}
+};
  
 var waitForProcessing = function() {
     var interval;
     interval = setInterval(function() {
-        if (ArticleComments.processing == false) {
+        if (ArticleComments.processing === false) {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub, "WikiaArticleComments"]);
             clearInterval(interval);
         }
     }, 500);
-}
- 
+};
+
+// This will break under UCP
 addOnloadHook(function () {
     importScriptURI("http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML");
     if (wgAction == "edit" && wgCanonicalNamespace != "Thread" && wgCanonicalNamespace != "Board") {
@@ -76,7 +77,7 @@ addOnloadHook(function () {
                         $(window).unbind("EditPagePreviewClosed");
                     });
                 });
-            }
+            };
         });
     }
     if (typeof ArticleComments !== "undefined") {
@@ -84,17 +85,17 @@ addOnloadHook(function () {
         ArticleComments.init = function() {
             ArticleComments.oldInit();
             MathJax.Hub.Queue(["Typeset", MathJax.Hub, "WikiaArticleComments"]);
-        }
+        };
         ArticleComments.oldSaveEdit = ArticleComments.saveEdit;
         ArticleComments.saveEdit = function(e) {
             ArticleComments.oldSaveEdit(e);
             waitForProcessing();
-        }
+        };
         ArticleComments.oldPostComment = ArticleComments.postComment;
         ArticleComments.postComment = function(e) {
             ArticleComments.oldPostComment(e);
             waitForProcessing();
-        }
+        };
     }
     if (typeof MiniEditor !== "undefined" && typeof MiniEditor.Wall !== "undefined") {
         Wall.MessageForm.prototype.oldShowPreviewModal = Wall.MessageForm.prototype.showPreviewModal;

@@ -14,7 +14,7 @@
 				}
 			}
 			if (color) {
-				$PI.css('border', '1px solid #' + color);
+				$PI.css('border', '0px solid #' + color);
 				$PI.find('h2').css('background-color', '#' + color);
 			}
 		});

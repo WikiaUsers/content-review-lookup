@@ -13,7 +13,7 @@
         token = mw.user.tokens.get("editToken");
     if (
         window.QuickManagementLoaded ||
-        !/content-moderator|content-volunteer|sysop|vstf|staff|helper|global-discussions-moderator|content-team-member|wiki-manager/.test(config.wgUserGroups.join()) ||
+        !/content-moderator|content-volunteer|sysop|staff|helper|global-discussions-moderator|content-team-member|wiki-manager|soap/.test(config.wgUserGroups.join()) ||
         config.wgCanonicalSpecialPageName !== "Contributions"
         ) {
         return;

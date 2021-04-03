@@ -13,9 +13,7 @@ mw.hook('wikipage.content').add(function($content) {
 
         uri.path += id;
         uri.query = {
-            autoplay: window.YoutubePlayerDisableAutoplay ?
-                '0' :
-                String(data.autoplay || '').trim(),
+            autoplay: 0,
             loop: loop,
             playlist: loop === '1' ? id : '',
             start: String(data.start || '').trim(),

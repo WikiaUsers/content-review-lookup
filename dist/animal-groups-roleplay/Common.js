@@ -24,9 +24,9 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
     'AJCW Archive': ['archive'],
     'Azaalea': ['art'],
-    'Mugsey': ['art'],
     'Aerolitee': ['art'],
     'Agensive': ['art'],
+    'Pastelfeathers': ['art'],
 };
 
 

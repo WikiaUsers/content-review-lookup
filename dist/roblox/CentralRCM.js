@@ -1,7 +1,7 @@
 /* Roblox wikis Recent Changes log */
 // <nowiki>
 
-(function($, mw) {
+mw.loader.using(["mediawiki.api"], function(require) {
     var config = mw.config.get([
         "wgCanonicalNamespace",
         "wgTitle",
@@ -17,6 +17,17 @@
             location.replace(config.wgServer + "/wiki/Special:BlankPage/CentralRecentChanges");
         else if (config.wgTitle == "BlankPage/CentralRecentChanges")
         {
+            var api = new mw.Api({
+                ajax: {
+                    url: 'https://community.fandom.com/api.php',
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    dataType: "JSONP",
+                    crossDomain: true 
+                }
+            });
+    
             document.title = "Interwiki Recent Changes | " + config.wgSitename;
             $("#PageHeader h1").text("Recent changes – Roblox wikis");
             history.replaceState({}, '', "/wiki/Special:CentralRecentChanges");
@@ -26,24 +37,25 @@
             var $wikis = $("<ul>").appendTo($div).hide();
             
             /* Use wikis inducted into the Roblox wikis footer */
-            $.get(mw.util.wikiScript('load'), {
-                mode: 'articles',
-                articles: 'u:c:template:RobloxWikis',
-                only: 'styles'
-            }, function(data) {
-                data += "[[w:c:roblox|"; // Roblox Wikia is included on footer slightly differently
-                
-                var subdomain = /\[\[w:c:([^|]+?)\|/gi, m;
-                
-                while (m = subdomain.exec(data))
-                    $("<li>")
-                        .appendTo($wikis)
-                        .text(m[1] + ".wikia.com"); // .text() sanitization
-            });
+            api.get({
+                action: "parse",
+                prop: "wikitext",
+                formatversion: "2",
+                page: "Template:RobloxWikis"
+            }).then(function(data) {
+                if (data.parse) {
+                    var wikitext = data.parse.wikitext + "[[w:c:roblox|"; // Roblox Wikia is included on footer slightly differently
+                    var subdomain = /\[\[w:c:([^|]+?)\|/gi, m;
+                    
+                    while (m = subdomain.exec(wikitext))
+                        $("<li>")
+                            .appendTo($wikis)
+                            .text(m[1] + ".wikia.com"); // .text() sanitization
             
-            /* Use fewfre's RecentChangesMultiple */
-            importArticles({ articles:["u:dev:RecentChangesMultiple/code.2.js"], type:"script" });
+                    /* Use fewfre's RecentChangesMultiple */
+                    importArticles({ articles:["u:dev:MediaWiki:RecentChangesMultiple/code.2.js"], type:"script" });
+                }
+            });
         }
     }
-    
-})(jQuery, mediaWiki);
+});

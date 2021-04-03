@@ -31,12 +31,6 @@ $(document).ready(function() {
  
 // Insert username - from runsescape.wikia.com
 $(function() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
-    $("span.insertusername").text(wgUserName);
+    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || mw.config.get('wgUserName') == null) return;
+    $("span.insertusername").text(mw.config.get('wgUserName'));
 });
-
-// ******************
-// Collapsible tables
-// ******************
- 
-importScriptPage('ShowHide/code.js', 'dev');

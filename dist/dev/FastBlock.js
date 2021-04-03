@@ -4,28 +4,26 @@
  * @author          TheGoldenPatrik1
  * @description     Adds fully customizable buttons to quickly block users.
  */
-require([
-    'wikia.window',
-    'jquery',
-    'mw',
-    'BannerNotification'
-], function (window, $, mw, BannerNotification) {
+(function () {
     'use strict';
     var buttons = window.FastBlock,
-        $masthead = $('#UserProfileMasthead'),
-        $user = $masthead.find('.masthead-info h1').text(),
+        $masthead = $('#UserProfileMasthead, #userProfileApp'),
         config = mw.config.get([
+            'profileUserName',
             'wgUserGroups',
-            'wgUserName'
+            'wgUserName',
+            'wgVersion'
         ]),
-        i18n;
+        $user = config.profileUserName || $masthead.find('.masthead-info h1').text(),
+        i18n,
+        isUCP = config.wgVersion !== '1.19.24';
     if (
         window.FastBlockLoaded ||
         !buttons ||
         !Array.isArray(buttons) ||
         buttons.length === 0 ||
-        !$masthead.exists() ||
-        !/sysop|staff|helper|vstf|global-discussions-moderator|wiki-manager/.test(config.wgUserGroups) ||
+        !$user ||
+        !/sysop|staff|helper|global-discussions-moderator|wiki-manager|soap/.test(config.wgUserGroups) ||
         $user === config.wgUserName
     ) {
         return;
@@ -36,17 +34,26 @@ require([
      * @classdesc Main FastBlock class
      */
     var Main = {
+        findContainer: function () {
+            var promise = $.Deferred(),
+                interval = setInterval(function() {
+                    var $element = $('#userProfileApp .user-identity-box__info, #UserProfileMasthead .masthead-info-lower');
+                    if ($element.length) {
+                        clearInterval(interval);
+                        promise.resolve($element);
+                    }
+                }, 300);
+            return promise;
+        },
         /**
          * @method init
          * @description Creates the buttons
          * @param {Object} i18nData - I18n-js data
          * @returns {void}
          */
-        init: function (i18nData) {
+        init: function (i18nData, $container) {
             i18n = i18nData;
-            $masthead.find('.masthead-info-lower').append(
-                $('<br/>')
-            );
+            $container.append($('<br/>'));
             buttons.forEach(function (b) {
                 if (!b.expiry || !b.reason || !b.label) {
                     console.warn('FastBlock: please specify an expiry, reason, and label.');
@@ -57,7 +64,7 @@ require([
                         b[k] = v.trim();
                     }
                 });
-                $masthead.find('.masthead-info-lower').append(
+                $container.append(
                     $('<a>', {
                         'title': i18n.msg('title', b.expiry, b.reason).plain(),
                         'data': {
@@ -87,7 +94,6 @@ require([
                 return;
             }
             var data = $(this).data();
-            console.log(data);
             Main.blockUser(data);
         },
         /**
@@ -109,7 +115,7 @@ require([
             }).done(function (d) {
                 if (d.error) {
                     Main.notif(
-                        i18n.msg('error', d.error.code).plain(),
+                        i18n.msg('error', d.error.code).escape(),
                         'error'
                     );
                 } else {
@@ -118,6 +124,11 @@ require([
                         'confirm'
                     );
                 }
+            }).fail(function(code) {
+                Main.notif(
+                    i18n.msg('error', code || 'http').escape(),
+                    'error'
+                );
             });
         },
         /**
@@ -128,20 +139,33 @@ require([
          * @returns {void}
          */
         notif: function (text, type) {
-            new BannerNotification(
-                text,
-                type
-            ).show();
+            if (isUCP) {
+                mw.notify($('<span>', {
+                    html: text
+                }), {
+                    type: type
+                });
+            } else {
+                new BannerNotification(
+                    text,
+                    type
+                ).show();
+            }
         }
     };
     mw.hook('dev.i18n').add(function (lib) {
         $.when(
             lib.loadMessages('FastBlock'),
+            Main.findContainer(),
             mw.loader.using([
                 'mediawiki.api',
                 'mediawiki.user',
                 'mediawiki.util'
-            ])
+            ].concat(isUCP ? ['mediawiki.notify'] : []))
         ).then(Main.init);
     });
-});
+    importArticle({
+        type: 'script',
+        article: 'u:dev:MediaWiki:I18n-js/code.js'
+    });
+})();

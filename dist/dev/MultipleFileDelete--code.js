@@ -36,7 +36,7 @@
 
     // load protections
     if (!pageType() // not from list
-        || !/vstf|staff|helper|sysop|content-moderator|content-team-member|content-volunteer|wiki-manager/.test(ug.join()) //not in group
+        || !/staff|helper|sysop|content-moderator|content-team-member|content-volunteer|wiki-manager|soap/.test(ug.join()) //not in group
         || window.mfdLoaded // double loading
         // exclude page(s)
         || (window.mfdExclude && (window.mfdExclude === page || window.mfdExclude.indexOf(page) >= 0))

@@ -56,3 +56,10 @@ creepypasta.init = function() {
 $(function() {
     creepypasta.init();
 });
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WikiActivity.js',
+    ]
+    });

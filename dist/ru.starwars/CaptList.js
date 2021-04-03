@@ -10,7 +10,7 @@ function ShowContenter()
     $("#Contenter, #ContenterText").remove();
  
     // ищем заголовки и их текст
-    oHeaders2 = $("#WikiaArticle H2 span.mw-headline");
+    oHeaders2 = $("#WikiaMainContentContainer H2 span.mw-headline");
  
     // если заголовков нет, выходим
     if ( oHeaders2.length ===0 )

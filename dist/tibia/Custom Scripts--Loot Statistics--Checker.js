@@ -10,6 +10,15 @@
     lootparser_versions_ex =
       {'8.6': {
         'changed': {
+// Changes made on September 01, 2020
+'Rotten Golem': '12.50.10135',
+'Branchy Crawler': '12.50.10135',
+'Mould Phantom': '12.50.10135',
+// Changes made on July 28, 2020
+'Ancient Lion Knight': '12.10.10043', //Now uses RC instead of regular
+'Cobra Assassin': '12.40.10043',
+'Cobra Scout': '12.40.10043',
+'Cobra Vizier': '12.40.10043',
 // Changes made on March 24, 2020
 // Documented here: https://www.tibia.com/forum/?action=announcement&announcementid=98 (+ post #38897080)
 'Cave Devourer': '12.31.9618',
@@ -26,8 +35,8 @@
 'Priestess of the Wild Sun': '12.31.9580',
 'Burning Gladiator': '12.31.9580',
 'Crypt Warden': '12.31.9580',
-'Cobra Assassin': '12.31.9580',
-'Cobra Scout': '12.31.9580',
+//'Cobra Assassin': '12.31.9580',
+//'Cobra Scout': '12.31.9580',
 // Changes made on February 04, 2020
 'Plaguesmith': '12.31.9471',
 'Grimeleech': '12.31.9471',
@@ -270,6 +279,14 @@
 'Worker Golem': '9.1'
         },
         'new': {
+//'Bellicose Orger': '12.20.9066',
+'Cow': '12.20.9066',
+'Fat Porker': '12.20.9066',
+'Loricate Orger': '12.20.9066',
+'Orger': '12.20.9066',
+'Orger Treasure': '12.20.9066',
+'Roast Pork': '12.20.9066',
+'Spawn of the Schnitzel': '12.20.9066',
 'Scarlett Etzel': '12.20',
 'Urmahlullu the Weakened': '12.20',
 'Lamassu': '12.20',

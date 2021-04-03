@@ -1,77 +1,65 @@
-
-//=================================================================================================
-//
-//                                             USERNAME
-//
-//=================================================================================================
- 
-// Remplace <insert name here> avec le nom de l'utilisateur qui parcours la page.
-// Requiers de copier {{USERNAME}}.
- 
-function substUsername() {
-        $('.insertusername').html('<a href=\"/wiki/Modèle:USERNAME\" style=\"color: #d5d4d4\">' + wgUserName + '</a>');
-        $('.insertusername:hover').css('text-decoration', 'none');
-}
- 
- function substUsernameTOC() {
-        var toc = document.getElementById('toc');
-        var userpage = document.getElementById('pt-userpage');
- 
-        if( !userpage || !toc )
-                return;
- 
-        var username = userpage.firstChild.firstChild.nodeValue;
-        var elements = getElementsByClass('toctext', toc, 'span');
- 
-        for( var i = 0; i < elements.length; i++ )
-                elements[i].firstChild.nodeValue = elements  [i].firstChild.nodeValue.replace('<insert name here>', username);
-}
-$(function() { $('.insertusername').html(wgUserName); });
-
-
 //=================================================================================================
 //
 //                                             USERTAG
 //
 //=================================================================================================
 
+//ajout des groupes custom
+// window.UserTagsJS = {
+//	modules: {},
+//	tags: {
+//		// groupe: { tag associé }
+//		dieu: { u:'Divinité', m:'Dieu', f:'Déesse' order:'1/10' },
+//		css: { u:'Codeur CSS', order:'2/0' },
+//		modeles: { u:'Codeur modèles', order:'-1/0' },
+//		codeur: { u:'Codeur Général', f:'Codeuse Générale' },
+//		bureaucrat: { u:'Super tag de chef', link:'Centre des communautés:Bureaucrates' },
+//		inactive: { u: 'N\'édite plus, RIP' }
+//	}
+// };
+
+//Ajout des groupes custom
+//UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'rollback', 'bannedfromchat'];
+//UserTagsJS.modules.custom = {
+//	'Oeil de Givre': ['dieu', 'codeur', 'inactive'], // ajoute "Divinité" plus "Codeur CSS"
+//};
+
+//UserTagsJS.modules.inactive = 50; // 50 jours
+//UserTagsJS.modules.newuser = {
+//	days: 5, // est présent depuis moins de 5 jours
+//	edits: 10, // à fait moins de 10 édits
+//	namespace: 0 // Les édits doivent être faits sur des articles
+//};
+
+//===========================================================================
+//=================================================
+//                             COMPTE À REBOURS
+//===============================================================================
+//============================================================================
+// pour utiliser, insérer <span class="countdown">20xx-xx-xxT14:00:00+02:00</span>
+// où 20xx-xx-xx est la date (an, mois, jour), ce qui suit T est l'heure et
+//+00:00 est le décalage horaire
+$(function(){
+	importArticles({
+		type: "script",
+		articles: ["u:zh.pad.wikia.com:MediaWiki:CountDown.js"]
+	}, {
+		type: "style",
+		articles: ["u:zh.pad.wikia.com:MediaWiki:CountDown.css"]
+	});
+});
+
+// Usertag? //
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-window:UserTagsJS =    {  
-	modules: {},
-	tags: {
-		// new groups 
-		'dieu': { u:'Divinité', m:'Dieu', f:'Déesse' },
-		'css': { u:'Codeur CSS', f:'Codeuse CSS' },
-		'modeles': { u:'Membre modèle', f:'Codeuse Modèle' },
-		'html': { u:'Codeur html', f:'Codeuse html' }
-	}
-    }
+		jshelper: { u: 'Codeur JavaScript', order: 100 },
+		csshelper: { u: 'Codeur CSS', order: 101 },
+		templatehelper: { u: 'Codeur', order: 102 },
+		bureaucrat: { order: 1 }
 	}
 };
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		bureaucrat: { u:'Co-fondatrice' },
-		chatmoderator: { u: 'Modérateur des kicks' },
-		founder: {u:'Fondatrice grumpy'	}
-	}
-
-
+UserTagsJS.modules.custom = {
+	'Oeil de Givre': ['templatehelper'] // NOTE: order of list here does NOT matter
 };
-UserTagsJS.modules.autoconfirmed = true;
-UserTagsJS.modules.newuser = true;
-UserTagsJS.modules.inactive = 31; // Inactif au bout de 31 jours sans modifications 
-UserTagsJS.modules.mwGroups = ['bureaucrat']; // Ajoute le groupe bureaucrat aux bureaucrates
-UserTagsJS.modules.mwGroups = ['discussionmoderator']; // Ajoute le groupe bureaucrat aux bureaucrates
-UserTagsJS.modules.metafilter = {
-	sysop: ['bureaucrat'], // Retire le groupe administrateur aux bureaucates
-	grandmaitreducustom: ['dieu'], // retire le groupe grandmaitreducustom aux "dieu"
-	bureaucrat: ['fondatrice grumpy']
-};
-UserTagsJS.modules.userfilter = {
-	'Wyz': ['inactive'] // Wyz n'est jamais inactif, même s'il devrait l'être 
-}
-	
-importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];

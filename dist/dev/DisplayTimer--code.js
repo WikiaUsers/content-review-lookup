@@ -1,9 +1,7 @@
-// ============================================================
-// displayTimer
-// ============================================================
+/* [[DisplayTimer]] - adds a UTC display clock with purge + null edit function */
 
 /*jslint browser, single, long */
-/*global $, mw, importArticle */
+/*global $, mw */
 
 $(function () {
     'use strict';
@@ -15,10 +13,13 @@ $(function () {
 
     // default English messages - i18n-js will load other languages async
     var msg = {
-        nulledit: 'Null editing the page…',
-        nulleditfail: 'Null edit failed',
-        nulleditsuccess: 'Null edit successful',
-        tooltip: 'Purge the server cache for this page \nShift + Click: Null edit this page'
+        purge: 'Clearing server cache for the page…',
+        purgefail: 'Clearing server cache failed',
+        purgesuccess: 'Clearing server cache successful',
+        nulledit: 'Editing the page…',
+        nulleditfail: 'Edit failed',
+        nulleditsuccess: 'Edit successful',
+        tooltip: 'Clear the server cache for this page \nShift + Click: Edit this page without making any changes'
     };
 
 
@@ -34,7 +35,6 @@ $(function () {
     }
 
     function nullEditPage() {
-        clearInterval(updateDateInterval);
         $node.text(msg.nulledit);
         $.post(mw.util.wikiScript('api'), {
             action: 'edit',
@@ -52,25 +52,54 @@ $(function () {
         });
     }
 
-    if (mw.config.get('wgIsArticle')) {
-        $node.click(function (event) {
-            // Null edit when shift key is held
-            if (event.shiftKey) {
-                event.preventDefault();
-                mw.loader.using('mediawiki.util', nullEditPage);
+    function purgePage() {
+        $node.text(msg.purge);
+        $.post(mw.util.wikiScript('api'), {
+            titles: mw.config.get('wgPageName'),
+            action: 'purge',
+            format: 'json'
+        }).always(function (data) {
+            if (data.purge && data.purge[0].purged === '') {
+                $node.text(msg.purgesuccess);
+                location.reload(true);
+            } else {
+                $node.text(msg.purgefail);
             }
         });
     }
 
+    $node.on('click', function (event) {
+        event.preventDefault();
+
+        if (!mw.config.get('wgIsArticle')) {
+            // can't purge/edit if we're not on an article page
+            return;
+        }
+
+        clearInterval(updateDateInterval);
+
+        if (event.shiftKey) {
+            mw.loader.using('mediawiki.util', nullEditPage);
+        } else {
+            mw.loader.using('mediawiki.util', purgePage);
+        }
+    });
+
     if (mw.config.get('skin') === 'oasis') {
-        var oasisCSS = document.dir === 'rtl'
-            ? {float: 'left', borderLeft: 0, textAlign: 'left'}
-            : {float: 'right', borderRight: 0, textAlign: 'right'};
-        oasisCSS.flexGrow = 1;
+        var oasisCSS = {
+            border: 0,
+            marginInlineStart: 'auto',
+            order: 1
+        };
+
+        // for oasis 1.19
+        oasisCSS.float = document.dir === 'rtl' ? 'left' : 'right';
+
         $parent.css(oasisCSS).appendTo('.toolbar > .tools');
     } else {
         $parent.css('text-transform', 'none').prependTo('#p-personal ul');
     }
+
     updateDate();
     updateDateInterval = setInterval(updateDate, 1000);
     $parent = null;

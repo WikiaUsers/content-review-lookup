@@ -1,0 +1,2 @@
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.noimage = "https://vignette.wikia.nocookie.net/uonia/images/e/ee/2999524-200.png/revision/latest?cb=20201219025556&format=original";

@@ -8,3 +8,10 @@ $(function() {
     var news = olds + adds;
     $(".tabs-container > ul.tabs").html(news);
 });
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WikiActivity.js',
+    ]
+    });

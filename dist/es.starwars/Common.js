@@ -1,80 +1,65 @@
-/* <pre><nowiki> */
-
-/* Función para cargar la plantilla información en Descripción de archivo */
-function preloadUploadDesc() {
-    if (wgPageName.toLowerCase() != 'especial:subirarchivo') {
-        return;
-    }
- 
-    document.getElementById('wpUploadDescription').appendChild(document.createTextNode("{{Información\r| atencion= \r| descripcion= \r| fuente= \r| autor= \r| retoques= \r| licencia= \r| otras versiones= \r}}"));
- 
-}
-addOnloadHook(preloadUploadDesc);
-
 // onload stuff
 var firstRun = true;
- 
+
 function loadFunc() {
 	if( firstRun ) {
 		firstRun = false;
 	} else {
 		return;
 	}
- 
+
 	window.pageName = wgPageName;
 	window.storagePresent = (typeof(localStorage) != 'undefined');
- 
+
 	// DEPRECATED
 	if( document.getElementById('infoboxinternal') != null && document.getElementById('infoboxend') != null ) {
 		document.getElementById('infoboxend').innerHTML = '<a id="infoboxtoggle" href="javascript:infoboxToggle()">[Ocultar]</a>';
 	}
- 
+
 	// Upload form - need to run before adding hide buttons
 	if ( wgCanonicalSpecialPageName === 'Upload' ) {
 		setupUploadForm();
 	}
- 
+
 	addHideButtons();
- 
+
 	if( document.getElementById('mp3-navlink') !== null ) {
 		document.getElementById('mp3-navlink').onclick = onArticleNavClick;
 		document.getElementById('mp3-navlink').getElementsByTagName('a')[0].href = 'javascript:void(0)';
 	}
- 
+
 	if( window.storagePresent ) {
 		initVisibility();
 	}
- 
+
 	fillEditSummaries();
 	fillPreloads();
- 
+
 	substUsername();
 	substUsernameTOC();
 	rewriteTitle();
-	showEras('title-eraicons');
-	showEras('title-shortcut');
 	rewriteHover();
 	// replaceSearchIcon(); this is now called from MediaWiki:Monobook.js
 	fixSearch();
 	hideContentSub();
- 
+
 	var body = document.getElementsByTagName('body')[0];
 	var bodyClass = body.className;
- 
+
 	if( !bodyClass || (bodyClass.indexOf('page-') === -1) ) {
 		var page = window.pageName.replace(/\W/g, '_');
 		body.className += ' page-' + page;
 	}
- 
+
 	if( typeof(onPageLoad) != "undefined" ) {
 		onPageLoad();
 	}
 }
- 
+
 function infoboxToggle() {
 	var page = window.pageName.replace(/\W/g, '_');
 	var nowShown;
- 
+
 	if(document.getElementById('infoboxtoggle').innerHTML == '[Ocultar]') {
 		document.getElementById('infoboxinternal').style.display = 'none';
 		document.getElementById('infoboxtoggle').innerHTML = '[Mostrar]';
@@ -84,71 +69,128 @@ function infoboxToggle() {
 		document.getElementById('infoboxtoggle').innerHTML = '[Ocultar]';
 		nowShown = true;
 	}
- 
+
 	if(window.storagePresent) {
 		localStorage.setItem('infoboxshow-' + page, nowShown);
 	}
 }
 
+/**
+ * jQuery version of Sikon's fillEditSummaries
+ * @author Grunny
+ */
+function fillEditSummaries() {
+
+	if ( !$( '#wpSummaryLabel' ).length ) {
+		return;
+	}
+
+	$.get( mw.config.get( 'wgScript' ), { title: 'Template:Stdsummaries', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+		var	$summaryOptionsList,
+			$summaryLabel = $( '#wpSummaryLabel' ),
+			lines = data.split( '\n' ),
+			$wrapper = $( '<div>').addClass( 'edit-widemode-hide' ).text( 'Standard summaries: ' );
+
+		$summaryOptionsList = $( '<select />' ).attr( 'id', 'stdEditSummaries' ).change( function() {
+			var editSummary = $( this ).val();
+			if ( editSummary !== '' ) {
+				$( '#wpSummary' ).val( editSummary );
+			}
+		} );
+
+		for ( var i = 0; i < lines.length; i++ ) {
+			var editSummaryText = ( lines[i].indexOf( '-- ' ) === 0 ) ? lines[i].substring(3) : '';
+			$summaryOptionsList.append( $( '<option>' ).val( editSummaryText ).text( lines[i] ) );
+		}
+
+		$summaryLabel.prepend( $wrapper.append( $summaryOptionsList ) );
+	} );
+
+}
+
+/**
+ * jQuery version of Sikon's fillPreloads
+ * @author Grunny
+ */
+function fillPreloads() {
+
+	if( !$( '#lf-preload' ).length ) {
+		return;
+	}
+
+	$( '#lf-preload' ).attr( 'style', 'display: block' );
+
+	$.get( wgScript, { title: 'Template:Stdpreloads', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+		var	$preloadOptionsList,
+			lines = data.split( '\n' );
+
+		$preloadOptionsList = $( '<select />' ).attr( 'id', 'stdSummaries' ).change( function() {
+			var templateName = $( this ).val();
+			if ( templateName !== '' ) {
+				templateName = 'Template:' + templateName + '/preload';
+				templateName = templateName.replace( ' ', '_' );
+				$.get( wgScript, { title: templateName, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+					insertAtCursor( document.getElementById( 'wpTextbox1' ), data );
+				} );
+			}
+		} );
+
+		for ( var i = 0; i < lines.length; i++ ) {
+			var templateText = ( lines[i].indexOf( '-- ' ) === 0 ) ? lines[i].substring(3) : '';
+			$preloadOptionsList.append( $( '<option>' ).val( templateText ).text( lines[i] ) );
+		}
+
+		$( '#lf-preload-cbox' ).html( $preloadOptionsList );
+	} );
+
+	$( '#lf-preload-pagename' ).html( '<input type="text" class="textbox" />' );
+	$( '#lf-preload-button' ).html( '<input type="button" class="button" value="Insert" onclick="doCustomPreload()" />' );
+
+}
+
+function doCustomPreload() {
+	var value = $( '#lf-preload-pagename > input' ).val();
+	value = value.replace( ' ', '_' );
+	$.get( wgScript, { title: value, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+		insertAtCursor( document.getElementById( 'wpTextbox1' ), data );
+	} );
+}
+
 // ============================================================
 // BEGIN JavaScript title rewrite -- jQuery version and new wikia skin fixes by Grunny
- 
+
 function rewriteTitle() {
 	if( typeof( window.SKIP_TITLE_REWRITE ) != 'undefined' && window.SKIP_TITLE_REWRITE ) {
 		return;
 	}
- 
+
 	if( $('#title-meta').length == 0 ) {
 		return;
 	}
- 
+
 	var newTitle = $('#title-meta').html();
-	if( skin == "oasis" ) {
-		$('header.WikiaPageHeader > h1').html('<div id="title-meta" style="display: inline;">' + newTitle + '</div>');
-		$('header.WikiaPageHeader > h1').attr('style','text-align:' + $('#title-align').html() + ';');
-	} else {
-		$('.firstHeading').html('<div id="title-meta" style="display: inline;">' + newTitle + '</div>');
-		$('.firstHeading').attr('style','text-align:' + $('#title-align').html() + ';');
-	}
-}
- 
-function showEras(className) {
-	if( skin == 'oasis' ) {
-		return;
-	}
- 
-	if( typeof( SKIP_ERAS ) != 'undefined' && SKIP_ERAS )
-		return;
- 
-	var titleDiv = document.getElementById( className );
- 
-	if( titleDiv == null || titleDiv == undefined )
-		return;
- 
-	var cloneNode = titleDiv.cloneNode(true);
-	var firstHeading = getFirstHeading();
-	firstHeading.insertBefore(cloneNode, firstHeading.childNodes[0]);
-	cloneNode.style.display = "block";
+	$('header.WikiaPageHeader > h1').html('<div id="title-meta" style="display: inline;">' + newTitle + '</div>');
+	$('header.WikiaPageHeader > h1').attr('style','text-align:' + $('#title-align').html() + ';');
 }
 // END JavaScript title rewrite
 
 function initVisibility() {
-	var page = window.wgPageName.replace(/\W/g,'_');
+	var page = window.pageName.replace(/\W/g,'_');
 	var show = localStorage.getItem('infoboxshow-' + page);
- 
+
 	if( show == 'false' ) {
 		infoboxToggle();
 	}
- 
+
 	var hidables = getElementsByClass('hidable');
- 
+
 	for(var i = 0; i < hidables.length; i++) {
 		show = localStorage.getItem('hidableshow-' + i  + '_' + page);
- 
+
 		if( show == 'false' ) {
 			var content = getElementsByClass('hidable-content', hidables[i]);
 			var button = getElementsByClass('hidable-button', hidables[i]);
- 
+
 			if( content != null && content.length > 0 &&
 				button != null && button.length > 0 && content[0].style.display != 'none' )
 			{
@@ -157,7 +199,7 @@ function initVisibility() {
 		} else if( show == 'true' ) {
 			var content = getElementsByClass('hidable-content', hidables[i]);
 			var button = getElementsByClass('hidable-button', hidables[i]);
- 
+
 			if( content != null && content.length > 0 &&
 				button != null && button.length > 0 && content[0].style.display == 'none' )
 			{
@@ -166,43 +208,43 @@ function initVisibility() {
 		}
 	}
 }
- 
+
 function onArticleNavClick() {
 	var div = document.getElementById('mp3-nav');
- 
+
 	if( div.style.display == 'block' )
 		div.style.display = 'none';
 	else
 		div.style.display = 'block';
 }
- 
+
 function addHideButtons() {
 	var hidables = getElementsByClass('hidable');
- 
+
 	for( var i = 0; i < hidables.length; i++ ) {
 		var box = hidables[i];
 		var button = getElementsByClass('hidable-button', box, 'span');
- 
+
 		if( button != null && button.length > 0 ) {
 			button = button[0];
- 
+
 			button.onclick = toggleHidable;
 			button.appendChild( document.createTextNode('[Ocultar]') );
- 
+
 			if( new ClassTester('start-hidden').isMatch(box) )
 				button.onclick('bypass');
 		}
 	}
 }
- 
+
 function toggleHidable(bypassStorage) {
 	var parent = getParentByClass('hidable', this);
 	var content = getElementsByClass('hidable-content', parent);
 	var nowShown;
- 
+
 	if( content != null && content.length > 0 ) {
 		content = content[0];
- 
+
 		if( content.style.display == 'none' ) {
 			content.style.display = content.oldDisplayStyle;
 			this.firstChild.nodeValue = '[Ocultar]';
@@ -213,27 +255,29 @@ function toggleHidable(bypassStorage) {
 			this.firstChild.nodeValue = '[Mostrar]';
 			nowShown = false;
 		}
- 
-		if( ( typeof(localStorage) != 'undefined' ) && ( typeof( bypassStorage ) == 'undefined' || bypassStorage != 'bypass' ) ) {
-			var page = window.wgPageName.replace(/\W/g, '_');
+
+		if( window.storagePresent && ( typeof( bypassStorage ) == 'undefined' || bypassStorage != 'bypass' ) ) {
+			var page = window.pageName.replace(/\W/g, '_');
 			var items = getElementsByClass('hidable');
 			var item = -1;
- 
+
 			for( var i = 0; i < items.length; i++ ) {
 				if( items[i] == parent ) {
 					item = i;
 					break;
 				}
 			}
- 
+
 			if( item == -1 ) {
 				return;
 			}
- 
+
 			localStorage.setItem('hidableshow-' + item + '_' + page, nowShown);
 		}
 	}
 }
+
+
 
 /*
     Sustituye {{USERNAME}} con el nombre del usuario que visita la página.
@@ -243,7 +287,7 @@ function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
     $("span.insertusername").html(wgUserName);
  }
- addOnloadHook(UserNameReplace);
+$(UserNameReplace);
  
 /* Fin de la sustitución de {{USERNAME}} */
 
@@ -254,37 +298,10 @@ function UserNameReplace() {
  */
 function addEditIntro(name) {
 	// Top link
-	if( skin == 'oasis' ) {
-		$('#ca-edit').attr('href', $('#ca-edit').attr('href') + '&editintro=' + name);
-		$('span.editsection > a').each( function () {
-			$(this).attr('href', $(this).attr('href') + '&editintro=' + name);
-		} );
-	} else {
-		var el = document.getElementById('ca-edit');
- 
-		if( typeof(el.href) == 'undefined' ) {
-			el = el.getElementsByTagName('a')[0];
-		}
- 
-		if (el)
-			el.href += '&editintro=' + name;
- 
-		// Section links
-		var spans = document.getElementsByTagName('span');
-		for ( var i = 0; i < spans.length; i++ ) {
-			el = null;
- 
-			if (spans[i].className == 'editsection') {
-				el = spans[i].getElementsByTagName('a')[0];
-				if (el)
-					el.href += '&editintro=' + name;
-			} else if (spans[i].className == 'editsection-upper') {
-				el = spans[i].getElementsByTagName('a')[0];
-				if (el)
-					el.href += '&editintro=' + name;
-			}
-		}
-	}
+	$('#ca-edit').attr('href', $('#ca-edit').attr('href') + '&editintro=' + name);
+	$('span.editsection > a').each( function () {
+		$(this).attr('href', $(this).attr('href') + '&editintro=' + name);
+	} );
 }
 
 $( function () {
@@ -337,37 +354,17 @@ function disableOldForumEdit() {
         return;
     }
 
-    if (skin == 'oasis') {
-        $("#WikiaPageHeader .wikia-menu-button li a:first").html('Archivado').removeAttr('href');
-        $('#WikiaPageHeader .wikia-button').html('Archivado').removeAttr('href');
-        return;
-    }
-
-    if (!document.getElementById('ca-edit')) {
-        return;
-    }
-    var editLink = null;
-    if (skin == 'monaco') {
-        editLink = document.getElementById('ca-edit');
-    } else if (skin == 'monobook') {
-        editLink = document.getElementById('ca-edit').firstChild;
-    } else {
-        return;
-    }
-
-
-    editLink.removeAttribute('href', 0);
-    editLink.removeAttribute('title', 0);
-    editLink.style.color = 'gray';
-    editLink.innerHTML = 'Archivado';
-
-    $('span.editsection-upper').remove();
-
+	if( wgNamespaceNumber == 2 || wgNamespaceNumber == 3 ) {
+		$("#WikiaUserPagesHeader .wikia-menu-button li a:first").html('Archivado').removeAttr('href').attr('style', 'color: darkgray;');
+		$('span.editsection').remove();
+		return;
+	} else {
+		$("#WikiaPageHeader .wikia-menu-button a:first").html('Archivado').removeAttr('href').attr('style', 'color: darkgray;');
+		$('span.editsection').remove();
+		return;
+	}
 }
-
-if (wgNamespaceNumber == 110) {
-    addOnloadHook(disableOldForumEdit);
-}
+$( disableOldForumEdit );
 
 /* bloqueo de comentarios para los blogs que no hayan sido comentados en más de 30 días.
    por: [[User:Joeyaa|Joey Ahmadi]]
@@ -520,8 +517,47 @@ function getParentByClass(className, element) {
 	return null;
 }
 
-//addOnloadHook(loadFunc);
-initVisibility();
-addHideButtons();
+/**
+ * fillEditSummaries para VisualEditor, basado en la versión de jQuery de Grunny, de  la original de Sikon
+ * Autor: 01miki10 (en Wookieepedia)
+ */
 
-// </nowiki></pre>
+function fillEditSummariesVisualEditor() {
+	mw.hook( 've.activationComplete' ).add(function () {
+
+		$.get( mw.config.get( 'wgScript' ), { title: 'Template:Stdsummaries', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+			var	$summaryOptionsList,
+				$summaryLabel = $( '.ve-ui-summaryPanel' ),
+				$summaryInput = $( '.ve-ui-summaryPanel-summaryInputField > input' ),
+				lines = data.split( '\n' ),
+				$wrapper = $( '<div>').addClass( 'edit-widemode-hide' ).text( 'Descripciones estándar: ' );
+
+			$summaryOptionsList = $( '<select />' ).attr( 'id', 'stdEditSummaries' ).change( function() {
+				var editSummary = $( this ).val();
+				if ( editSummary !== '' ) {
+					$summaryInput.val( editSummary );
+				}
+			} );
+
+			for ( var i = 0; i < lines.length; i++ ) {
+				var editSummaryText = ( lines[i].indexOf( '-- ' ) === 0 ) ? lines[i].substring(3) : '';
+				$summaryOptionsList.append( $( '<option>' ).val( editSummaryText ).text( lines[i] ) );
+			}
+
+			$summaryLabel.prepend( $wrapper.append( $summaryOptionsList ) );
+		} );
+	} );
+}
+
+$( fillEditSummariesVisualEditor );
+
+/* Función para cargar la plantilla información en Descripción de archivo */
+function preloadUploadDesc() {
+    if (wgPageName.toLowerCase() != 'especial:subirarchivo') {
+        return;
+    }
+ 
+    document.getElementById('wpUploadDescription').appendChild(document.createTextNode("{{Información\r| atencion= \r| descripcion= \r| fuente= \r| autor= \r| retoques= \r| licencia= \r| otras versiones= \r}}"));
+ 
+}
+$(preloadUploadDesc);

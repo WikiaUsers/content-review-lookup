@@ -21,8 +21,8 @@ $(function() {
         /* Thong bao Module */
         /* For Others pages */
         if ((mw.config.get('wgAction') === 'view') &&  (mw.config.get('wgCategories').length > 0 && mw.config.get('wgCategories').indexOf('Active Projects') > -1 || mw.config.get('wgCategories').indexOf('Idle Projects') > -1 || mw.config.get('wgCategories').indexOf('Stalled Projects') > -1 || mw.config.get('wgCategories').indexOf('Inactive Projects') > -1 || mw.config.get('wgCategories').indexOf('Hoàn thành') > -1 || mw.config.get('wgCategories').indexOf('Teaser') > -1 || mw.config.get('wgCategories').indexOf('Original Light Novel') > -1)) {
-            if ($('#WikiaRail.loaded').length && !$("#ThongBaoModule").length) { // Only add it ''once''
-                var newSection = '<section id="ThongBaoModule" class="ThongBaoModule module"></section>';
+            if ($('#WikiaRail.is-ready').length && !$("#ThongBaoModule").length) { // Only add it ''once''
+                var newSection = '<section id="ThongBaoModule" class="ThongBaoModule rail-module"></section>';
                 $('#WikiaRail>section:first-of-type').after(newSection);
                 $.getJSON('/api.php?action=parse&text={{Thongbao}}&format=json', function(data) {
                     var code = data.parse.text['*'];
@@ -30,22 +30,6 @@ $(function() {
                     // Embed The Facebook Widget to sidebar. Because ?action=render only pull some text and therefore the default embed code for FB by Wikia doesn't work
                     document.getElementById('fbbox').innerHTML = '<iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FSonakoWiki%2F&tabs=timeline%2C%20messages&width=292&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=952193671491839" width="292" height="500" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe>';
                     $('#ThongBaoModule a').attr('target', '_blank').attr('title', 'Mở link sang Tab mới.');
-                    tabberAutomatic();
-                });
-            }
-        }
-        /* For Wiki Activity page only */
-        if (mediaWiki.config.get('wgCanonicalSpecialPageName') === 'WikiActivity') {
-            if ($('#WikiaRail.loaded').length && !$("#ThongBaoModule").length) { // Only add it ''once''
-                var newSection = '<section id="ThongBaoModule" class="ThongBaoModule module"></section>';
-                $('#WikiaRail>section:first-of-type').after(newSection);
-                $.getJSON('/api.php?action=parse&text={{Thongbao-RC}}&format=json', function(data) {
-                    var code = data.parse.text['*'];
-                    $('section#ThongBaoModule').html(code);
-                    // Embed The Facebook Widget to sidebar. Because ?action=render only pull some text and therefore the default embed code for FB by Wikia doesn't work
-                    document.getElementById('fbbox').innerHTML = '<iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FSonakoWiki%2F&tabs=timeline%2C%20messages&width=292&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=952193671491839" width="292" height="500" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe>';
-                    $('#ThongBaoModule a').attr('target', '_blank').attr('title', 'Mở link sang Tab mới.');
-                    impart('u:dev:MediaWiki:TopEditors/code.js');
                     tabberAutomatic();
                 });
             }

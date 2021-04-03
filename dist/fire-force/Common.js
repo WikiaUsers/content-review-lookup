@@ -96,20 +96,15 @@ window.RevealAnonIP = {
 window.archiveListTemplate = 'ArchiveList';
 window.archivePageTemplate = 'ArchivePage';
 
-// ArchiveBoards
-window.ArchiveBoards = {
-    boards: ["Forum Archives"]
-};
-
 // MessageWallUserTags
 window.MessageWallUserTags = {
     tagColor: 'red',
     glow: false,
     users: {
-        "Grimmjay"          : "Founder",
-        "GouenjiShuuya'123" : "Bureaucrat",
-        "SuperSajuuk"       : "Sysop • Coder",
-        "Sarutobii2"        : "Sysop"
+        "GouenjiShuuya'123" : "Founder • Bureaucrat",
+        "SuperSajuuk"       : "Admin • Coder",
+        "Sarutobii2"        : "Admin",
+        "Damage3245"        : "Admin"
     }
 };
 // This imports various scripts that help the wiki.
@@ -119,7 +114,6 @@ importArticles({
 	articles: [
 		"u:dev:ListFiles/code.js",
 		"u:dev:ArchiveTool/code.js",
-                "u:dev:ArchiveBoards/code.js",
                 "u:dev:DiscordIntegrator/code.js",
 		"u:dev:RevealAnonIP/code.js",
 		"u:dev:NullEditButton/code.js",

@@ -1,12 +1,3 @@
-/* EN title */
-(function() {
-    var $ent = $('#enTitle'),
-        $header = $('.page-header__main');
-    if ($ent.exists() && $header.exists() && !mw.config.get('wgIsMainPage')) {
-        $header.append($ent.clone().css('display', 'block'));
-    }
-})();
-
 /**
  * Collapsible tables
  */
@@ -61,20 +52,6 @@ $( function () {
 		}
 	} );
 } );
-
-/**
- * HotCat module
- */
-
-mw.hook( 'wikipage.collapsibleContent' ).add( mwCollapsibleSetup );
-
-importArticles({
-    type: 'script',
-    article: 'u:starwars:MediaWiki:HotCat.js',
-}, {
-    type: 'style',
-    article: 'u:starwars:MediaWiki:HotCat.css'
-});
 
 /**
  * mw-collapsible support (for autocollapsing)

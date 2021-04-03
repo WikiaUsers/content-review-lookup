@@ -9,24 +9,19 @@ $( function () {
     // Administrators and medics's list
     var admins = [
         {
-            name: 'Cholewka',
-            roles: [ 'uzdrowiciel' ],
-            link: ':Cholewka'
-        },
-        {
             name: 'Iikanakari',
-            roles: [ 'przywódca', 'medyk' ],
+            roles: [ 'uzdrowiciel' ],
             link: ':Iikanakari'
         },
         {
             name: 'Srebrna Pełnia',
-            roles: [ 'przywódca', 'medyk' ],
+            roles: [ 'uzdrowiciel', 'medyk' ],
             link: ':Srebrna_Pe%C5%82nia'
         },
         {
-            name: 'Prezuska',
-            roles: [ 'medyk' ],
-            link: ':Prezuska'
+            name: 'Brzoza the drzewokrzew',
+            roles: ['przywódca', 'medyk' ],
+            link: ':Brzoza_the_drzewokrzew'
         }
     ];
     
@@ -34,7 +29,8 @@ $( function () {
     var definitions = {
         'uzdrowiciel': 'biurokratą',
         'przywódca': 'administratorem',
-        'medyk': 'medykiem'
+        'medyk': 'medykiem',
+        'zastępca': 'moderatorem'
     };
     
     // Iterate for all admins

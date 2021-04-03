@@ -26,7 +26,8 @@ require([
      * Configuration data
      */
     ftd.config = {
-        siteId: mw.config.get('wgCityId')
+        siteId: mw.config.get('wgCityId'),
+        baseUrl: mw.config.get('wgServer') + mw.config.get('wgScriptPath')
     };
 
     // Helper variables for form template
@@ -83,7 +84,7 @@ require([
      */
     ftd.postContent = function (category, title, content) {
         return $.ajax({
-            url: 'https://services.fandom.com/discussion/' + ftd.config.siteId + '/forums/' + category + '/threads',
+            url: ftd.config.baseUrl + '/wikia.php?controller=DiscussionThread&method=create&forumId=' + category,
             type: 'POST',
             crossDomain: true,
             xhrFields: {

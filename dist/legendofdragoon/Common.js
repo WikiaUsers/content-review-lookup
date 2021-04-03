@@ -96,7 +96,7 @@ var hasClass = (function () {
          }
      }
  }
- addOnloadHook( createCollapseButtons );
+ $( createCollapseButtons );
 
  /** Dynamic Navigation Bars (experimental) *************************************
   *
@@ -208,7 +208,7 @@ var hasClass = (function () {
      }
    
   } 
-  addOnloadHook( createNavigationBarToggleButton );
+  $( createNavigationBarToggleButton );
 
 importScriptPage('AjaxRC/code.js', 'dev');
 
@@ -225,7 +225,7 @@ importScriptPage('AjaxRC/code.js', 'dev');
         $(this).text(wgUserName);
     });
  }
- addOnloadHook(UserNameReplace);
+ $(UserNameReplace);
 
 function ts_makeSortable(table){
 	var firstRow;
@@ -764,7 +764,7 @@ function tabberAutomaticOnLoad(tabberArgs)
   }*/
  
 //Use the wiki onload
-addOnloadHook(function() {
+$(function() {
       tabberAutomatic(tabberArgs);
     })
  
@@ -808,4 +808,4 @@ function fixSearch() {
 		button.name = 'go';
 }
  
-addOnloadHook( loadFunc );
+$( loadFunc );

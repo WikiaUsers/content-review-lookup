@@ -11,3 +11,9 @@ $(document).ready(function(){
 
 // prevents existing tags from being hidden
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
+
+window.DiscordBannerSettings = {
+    bannerStyle: '2',
+    inviteLink: 'xkSFpVP',
+    prependToRail: true
+};

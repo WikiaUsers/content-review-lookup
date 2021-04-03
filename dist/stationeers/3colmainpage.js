@@ -1,0 +1,1 @@
+/* #REDIRECT */mw.loader.load("//stationeers.gamepedia.com/index.php?title=MediaWiki:Common.js\u0026action=raw\u0026ctype=text/javascript");

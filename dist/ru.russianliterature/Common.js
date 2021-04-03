@@ -1,9 +1,17 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:SyntaxHighlight.js',
+    ]
+});
+
 /* Чтобы был виден участникам их собственный ник */
  
 $(function() {
 	if ( !wgUserName ) return;
-	$('.insertusername').html(wgUserName);
+	$('.insertusername').text(wgUserName);
 });
 
 /* Для плашки неактивным */

@@ -1,0 +1,1 @@
+mw.loader.load("//static-azeroth.cursecdn.com/current/js/syndication/tt.js");

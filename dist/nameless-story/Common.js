@@ -7,19 +7,12 @@ $(function FairUseRationale() {
 
 // Configuration for [[w:c:dev:AddRailModule]]
 window.AddRailModule = [{
-    //{{DiscordRailModule}}
+    //Discord Rail Module
     page: 'Template:DiscordRailModule',
     prepend: true,
     maxAge: 86400,
 }, {
-    //{{IdeasRailModule}}
-    page: 'Template:IdeasRailModule',
+    //Spoiler Rail Module
+    page: 'Template:SpoilerRailModule',
     maxAge: 86400,
 }];
-
-// Template:Icons
-if ($(".page-header__languages").exists()) {
-    $("#icons").addClass("wds-dropdown").insertAfter(".page-header__languages");
-} else {
-    $("#PageHeader").append($("#icons"));
-}

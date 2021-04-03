@@ -11,7 +11,7 @@
         Api;
     if (
         !buttons ||
-        mw.config.get('wgCityId') === '65099'
+        Number(mw.config.get('wgCityId')) === 65099
     ) {
         return;
     }
@@ -66,7 +66,6 @@
          */
         click: function () {
             var data = $(this).data();
-            console.log(data);
             Main.createPage(data.target, data.summary, data.content);
         },
         /**

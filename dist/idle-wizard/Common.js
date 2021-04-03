@@ -1,7 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 // Tooltips (http://dev.wikia.com/wiki/Tooltips#Configuration)
-var tooltips_list = [
+window.tooltips_list = [
     {
         classname: 'spell-tooltip',
         parse: '{' + '{DisplaySpellTooltip|<#name#>}}'

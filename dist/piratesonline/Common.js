@@ -21,19 +21,12 @@ importArticles({
     type: "script",
     articles: [
         'w:c:dev:LockOldBlogs/code.js',
-        'w:c:dev:AutoEditDropdown/code.js',
-        'w:dev:WallGreetingButton/code.js',
-        'u:dev:Standard_Edit_Summary/code.js',
         'u:dev:UserTags/code.js',
-        'MediaWiki:Common.js/CEB.js',
         'MediaWiki:Common.js/slider.js',
         'w:c:dev:MediaWiki:Countdown/code.js',
-        'u:dev:User_Rights_Reasons_Dropdown/code.js',
-        'u:dev:MiniComplete/code.js',
-        'u:dev:CleanWantedFiles/code.js',
-        'u:dev:MessageBlock/code.js',
-        'u:dev:RedirectManagement/code.js',
-        'u:dev:ResponsiveSlider/code.js',
+        'u:dev:MediaWiki:MessageBlock/code.js',
+        'u:dev:MediaWiki:RedirectManagement/code.js',
+        'u:dev:MediaWiki:ResponsiveSlider/code.js',
     ]
 });
 

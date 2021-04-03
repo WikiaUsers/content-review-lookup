@@ -47,13 +47,6 @@ importScriptPage('SocialIcons/code.js','dev');
 //</pre>
 
 //================================================================================
-//*** Lädt die [[Vorlage:Dateiinfo]] beim Hochladen direkt im Beschreibungsfeld.
-
-if ( wgCanonicalSpecialPageName == "Upload" ) {
-      document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Onlyifuploading.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
-}
-
-//================================================================================
 //*** http://dev.wikia.com/wiki/ShowHide
 
 var ShowHideConfig = { 

@@ -13,10 +13,24 @@ var tooltips_config = {
 };
  
 /*Story Render Themes*/
-console.log('Script version 1.0.0 is running!');
-console.log('Contact XinChun93 on Twitter if there are any questions or concerns!');
-console.log('https://github.com/yaycupcake/enstars-wiki-js');
+console.log("Script version 1.1.0 is running!");
+console.log("Contact XinChun93 on Twitter if there are any questions or concerns!");
+console.log("https://github.com/yaycupcake/enstars-wiki-js");
 var d = document;
+var fontPref = "1em";
+if (localStorage.getItem("fP")) {
+    fontPref = localStorage.getItem("fP");
+}
+ 
+function toggleFontSize() {
+    if (fontPref === "1em") {
+        fontPref = "1.2em";
+    } else {
+        fontPref = "1em";
+    }
+    localStorage.setItem("fP",fontPref);
+}
+ 
 var activator = d.createElement("button");
 activator.classList.add("activator");
 activator.style.height = "75px";
@@ -26,6 +40,17 @@ activator.setAttribute("id", "themeJump");
 var activatorJumpLink = d.createElement("a");
 activatorJumpLink.href = "#flytabs_0-content-wrapper";
 activatorJumpLink.appendChild(activator);
+ 
+var fontToggler = d.createElement("button");
+fontToggler.classList.add("font-toggler");
+fontToggler.textContent = "Change Font Size, current is " + fontPref;
+fontToggler.addEventListener("click",toggleFontSize);
+fontToggler.style.height = "24px";
+fontToggler.style.color = "white";
+fontToggler.style.background = "#1d3dc7";
+fontToggler.style.width = "100%";
+fontToggler.style.borderRadius = "0px";
+
 var jumpToTop = d.createElement("button");
 jumpToTop.classList.add("jumpToTop");
 jumpToTop.style.height = "75px";
@@ -40,11 +65,12 @@ jumpToTop.style.width = "100%";
 var tabBar = d.querySelector(".newStoryTable #flytabs_0");
 if (tabBar) {
   tabBar.insertAdjacentElement("beforebegin", activatorJumpLink);
+//   tabBar.insertAdjacentElement("beforebegin", fontToggler);
   tabBar.insertAdjacentElement("afterend", jumpToTopLink);
 }
  
 function activateTheme() {
-   var charArray = [
+  var charArray = [
     "Kohaku Oukawa",
     "Aira Shiratori",
     "Tomoya Mashiro",
@@ -139,6 +165,8 @@ function activateTheme() {
       }
       parentTd.style.verticalAlign = "top";
       parentTd.style.paddingTop = "1em";
+      parentTd.style.fontSize = fontPref;
+      parentTd.style.lineHeight = "1.2em";
       // console.log("showing contents")
       var dialogueBox = d.createElement("div");
       dialogueBox.classList.add("dialigue-box");
@@ -204,6 +232,6 @@ function activateTheme() {
     }
   }
 }
- 
+
 /* Back to Top Arrow (Main code in MediaWiki:ImportJS) */
 window.BackToTopModern = true;

@@ -1,6 +1,6 @@
 window.railWAM = {
     autoLogForUsers: [
-        "UpnCbs06"
+        "Paramount1106"
     ],
     logPage: "Project:WAM Log",
     showLogAlert: false,

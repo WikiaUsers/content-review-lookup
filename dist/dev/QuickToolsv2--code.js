@@ -182,7 +182,7 @@ $(function (window, $, mw) {
         $('.thispage').each(function () {
             $(this).html($(this).html() + " (this page)");
         });
-        if (usergroups.indexOf('content-moderator') + usergroups.indexOf('sysop') + usergroups.indexOf('helper') + usergroups.indexOf('VSTF') + usergroups.indexOf('staff') + usergroups.indexOf('util') + usergroups.indexOf('bureaucrat') == -7) {
+        if (usergroups.indexOf('content-moderator') + usergroups.indexOf('sysop') + usergroups.indexOf('helper') + usergroups.indexOf('soap') + usergroups.indexOf('staff') + usergroups.indexOf('util') + usergroups.indexOf('bureaucrat') + wgUserGroups.indexOf('wiki-manager') == -8) {
             $('.bureaucrat').fadeOut(500, function() {
 				$('.bureaucrat').remove();
 			});

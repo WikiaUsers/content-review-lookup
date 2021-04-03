@@ -1,10 +1,10 @@
 /**
  * Name:        AFProtected
- * Version:     v1.0
- * Author:      KockaAdmiralac <1405223@gmail.com>
+ * Version:     v1.1
+ * Author:      KockaAdmiralac <wikia@kocka.tech>
  * Description: Shows a warning on pages protected by AbuseFilter.
  */
-require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
+(function () {
     var AFProtected = {
         config: mw.config.get([
             'wgAction',
@@ -22,15 +22,13 @@ require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
                    !(
                        p.lastIndexOf('.js') === p.length - 3 &&
                        p !== 'MediaWiki:Common.js' &&
-                       p !== 'MediaWiki:Wikia.js' &&
-                       p !== 'MediaWiki:Chat.js'
+                       p !== 'MediaWiki:Wikia.js'
                    ) &&
                    // a whitelisted CSS,
                    !(
                        p.lastIndexOf('.css') === p.length - 4 &&
                        p !== 'MediaWiki:Common.css' &&
-                       p !== 'MediaWiki:Wikia.css' &&
-                       p !== 'MediaWiki:Chat.css'
+                       p !== 'MediaWiki:Wikia.css'
                    ) &&
                    // a whitelisted Custom-
                    (
@@ -41,7 +39,7 @@ require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
                    p.indexOf('MediaWiki:Gadget-') !== 0 &&
                    // and the user isn't in a whitelisted user group.
                    !this.config.wgUserGroups.join().match(
-                       /content-moderator|sysop|helper|vstf|staff/
+                       /content-moderator|sysop|content-team-member|helper|soap|staff|wiki-manager/
                    );
         },
         init: function() {
@@ -59,19 +57,7 @@ require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
             }
         },
         initEdit: function() {
-            if (!$('#EditPageIntro').exists()) {
-                $('.editpage-notices-html').after(
-                    $('<div>', {
-                        'class': 'editpage-intro',
-                        'id': 'EditPageIntro'
-                    }).append(
-                        $('<div>', {
-                            'class': 'editpage-intro-wrapper'
-                        })
-                    )
-                );
-            }
-            $('.editpage-intro-wrapper').append(
+            $('#mw-content-text').prepend(
                 $('<div>', {
                     'class': 'permissions-errors'
                 }).load(
@@ -80,11 +66,10 @@ require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
                     })
                 )
             );
-            $('#wpTextbox1').attr('readonly', '');
-            $('#EditPageRail, #EditPageToolbar').remove();
+            $('#editform .editOptions').remove();
         },
         initView: function() {
-            if (!$('#ca-edit').exists()) {
+            if (!$('#ca-edit').length) {
                 return;
             }
             if (!window.dev || !window.dev.wds) {
@@ -122,4 +107,4 @@ require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
         }
     };
     AFProtected.init();
-});
+})();

@@ -4,18 +4,13 @@
 * @version     2.1
 * @description Adds quick buttons for all template types.
 */
-require([
-    'wikia.window',
-    'jquery',
-    'mw',
-    'wikia.nirvana',
-    'BannerNotification'
-], function (window, $, mw, nirvana, BannerNotification) {
+(function() {
     'use strict';
     var config = mw.config.get([
-        'wgNamespaceNumber',
+        'wgArticleId',
         'wgContentLanguage',
-        'wgArticleId'
+        'wgNamespaceNumber',
+        'wgVersion'
     ]);
     if (
         config.wgNamespaceNumber !== 10 ||
@@ -30,6 +25,7 @@ require([
      * @classdesc Main TemplateTypeButtons class
      */
     var Main = {};
+    Main.isUCP = config.wgVersion !== '1.19.24';
     /**
      * @type {Array}.{String}
      * @description System messages to get
@@ -78,10 +74,13 @@ require([
      */
     Main.buttons = function (i18n) {
         $.each(this.types, function (k, v) {
+            console.log(k, v);
             $('<span>', {
-                'class': 'button temptype-button',
+                'class': (Main.isUCP ? 'wds-button' : 'button') + ' temptype-button',
                 'data-id': v,
-                'text': i18n()[k]
+                'text': Main.isUCP ?
+                    mw.message(Main.messages[k]).plain() :
+                    i18n()[k]
             }).insertAfter('#PageHeader');
         });
         $('.temptype-button').click(function () {
@@ -90,21 +89,28 @@ require([
                 $('.template-classification-type-label').text() !==
                 that.text()
             ) {
-                nirvana.postJson(
-                    'TemplateClassificationApi',
-                    'classifyTemplate',
-                    {
-                        pageId: config.wgArticleId,
-                        type: that.data().id,
-                        editToken: mw.user.tokens.get('editToken')
-                    },
-                    function () {
+                $.post(mw.util.wikiScript('wikia') + '?' + $.param({
+                    controller: Main.isUCP ?
+                        'Fandom\\TemplateClassification\\Api\\ClassificationController' :
+                        'TemplateClassificationApi',
+                    method: 'classifyTemplate',
+                    format: 'json'
+                }), {
+                    articleId: config.wgArticleId,
+                    pageId: config.wgArticleId,
+                    type: that.data().id,
+                    editToken: mw.user.tokens.get('editToken'),
+                    token: mw.user.tokens.get('csrfToken')
+                }, function (d) {
+                    if (Main.isUCP) {
+                        mw.notify(d.status);
+                    } else {
                         new BannerNotification(
                             i18n(14),
                             'confirm'
                         ).show();
                     }
-                );
+                });
             }
         });
     };
@@ -129,10 +135,14 @@ require([
         );
     };
     mw.loader.using('mediawiki.user').then(
-        $.proxy(Main.preload, Main)
+        Main.isUCP ?
+            $.proxy(Main.buttons, Main) :
+            $.proxy(Main.preload, Main)
     );
-    importArticle({
-        type: 'script',
-        article: 'u:dev:MediaWiki:Fetch.js'
-    });
-});
+    if (!Main.isUCP) {
+        importArticle({
+            type: 'script',
+            article: 'u:dev:MediaWiki:Fetch.js'
+        });
+    }
+})();

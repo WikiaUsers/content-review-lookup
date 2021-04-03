@@ -5,7 +5,7 @@ window.RevealAnonIP = {
 };
 
 //Config pour le message d'alerte des pages explicites
-SpoilerAlert = {
+ExplicitAlert = {
     categories: "Articles ayant un contenu explicite",
 };
 
@@ -18,57 +18,43 @@ PFD_templates = [{
 
 /* Magic edit intro. Copied from Wikipedia's MediaWiki:Common.js
  * Code par Emperor Jarjarkine pour pouvoir avoir les introductions  
+ * Decembre 2020 : MAJ UCP par Fujimaru-kun + Partie de code prise à CategoriesSort de Celdrøn
  */
 function addEditIntro(name) {
-    // Top link
-    if (skin == 'oasis') {
-        $('a[data-id="edit"]').attr('href', $('a[data-id="edit"]').attr('href') + '&editintro=' + name);
-        $('span.editsection > a').each(function () {
+    	// Top link
+        $('#ca-edit').attr('href', $('#ca-edit').attr('href') + '&editintro=' + name);
+        
+        //Section links
+        $('span.mw-editsection > a').each(function () {
             $(this).attr('href', $(this).attr('href') + '&editintro=' + name);
         });
-    } else {
-        var el = document.getElementById('ca-edit');
-
-        if (typeof (el.href) == 'undefined') {
-            el = el.getElementsByTagName('a')[0];
-        }
-
-        if (el)
-            el.href += '&editintro=' + name;
-
-        // Section links
-        var spans = document.getElementsByTagName('span');
-        for (var i = 0; i < spans.length; i++) {
-            el = null;
-
-            if (spans[i].className == 'editsection') {
-                el = spans[i].getElementsByTagName('a')[0];
-                if (el)
-                    el.href += '&editintro=' + name;
-            } else if (spans[i].className == 'editsection-upper') {
-                el = spans[i].getElementsByTagName('a')[0];
-                if (el)
-                    el.href += '&editintro=' + name;
-            }
-        }
-    }
 }
+
 
 $(function () {
     if (wgNamespaceNumber === 0) {
-        var cats = document.getElementsByClassName('categories')[0] || document.getElementById('catlinks');
-        if (!cats) {
-            return;
+        var categories = $('.categories')[0],            
+			categList = [];
+        
+		function Category(name, element) {
+			this.name = name;
+			this.element = element;
         }
-        cats = cats.getElementsByTagName('a');
-        for (var i = 0; i < cats.length; i++) {
-            if (cats[i].title === 'Catégorie:Articles Vedette') {
+        
+        //Fill an array with the category's name and the DOM element
+		Array.from($(categories).children('li.category.normal')).forEach(function(category){
+			categList.push( new Category( category.innerText, category ) );
+		});
+		
+		
+        for (var i = 0; i < categList.length; i++) {
+            if (categList[i].name === 'Articles Vedette') {
                 addEditIntro('Modèle:AV_editintro');
                 break;
-            } else if (cats[i].title === 'Catégorie:Articles de Qualité') {
+            } else if (categList[i].name === 'Articles de Qualité') {
                 addEditIntro('Modèle:AQ_editintro');
                 break;
-            } else if (cats[i].title === 'Catégorie:Articles de Rang S') {
+            } else if (categList[i].name === 'Articles de Rang S') {
                 addEditIntro('Modèle:ARS_editintro');
             }
         }

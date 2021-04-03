@@ -5,73 +5,94 @@
 /* ######################################################################## */
 
 /* ######################################################################## */
+/* ### SHARED CODE                                                      ### */
+/* ### ---------------------------------------------------------------- ### */
+/* ### Description: Used by multiple modules                            ### */
+/* ### Credit:      various                                             ### */
+/* ######################################################################## */
+
+/**
+ * Removes lazy loading from all images contained in `lazyIcon`.
+ * 
+ * By User:Sakaratte. 
+ */
+function removeLazyLoad(lazyIcon) {
+    var lazyIconImages = lazyIcon.getElementsByTagName("img");
+    for (var i = 0; i < lazyIconImages.length; i++) {
+        var iconSrc = lazyIconImages[i].getAttribute("data-src");
+        if (iconSrc !== null)
+            lazyIconImages[i].setAttribute("src", iconSrc);
+        lazyIconImages[i].className = "";
+    }
+}
+
+/* ######################################################################## */
 /* ### TITLE ICONS (Template:Games)                                     ### */
 /* ### ---------------------------------------------------------------- ### */
 /* ### Description: Add icons to article title                          ### */
 /* ### Credit:      User:Porter21                                       ### */
 /* ######################################################################## */
 
-function addTitleIcons () {
-   var iconBar = $('#va-titleicons');
-   var previewBar = $('#va-titleicons-preview');
+$(function() {
+    if (window.wgIsMainpage)
+        return;
+    if (wgNamespaceNumber !== 0 && wgNamespaceNumber !== 4 && wgNamespaceNumber !== 110 && wgNamespaceNumber !== 502)
+        return;
+    if (skin !== "oasis" && skin !== "wikia")
+        return;
 
-   if (skin != 'monobook' && skin != 'oasis' && skin != 'wikia') {
-      return;
-   }
+    var wrapper = $("#va-titleicons-wrapper");
+    var iconBar = $("#va-titleicons");
+    var previewBar = $("#va-titleicons-preview");
+    if (wrapper.length === 0 || iconBar.length === 0 || $("a", previewBar).length === 0)
+        return;
 
-   if (iconBar.length > 0 && $('a', previewBar).length > 0) {
-      if (skin == 'oasis' || skin == 'wikia') {
-         var articleDiv = $('#WikiaArticle');
-
-         if (articleDiv.length > 0) {
-            iconBar.css('display', 'block').prependTo(articleDiv);
-         }
-      } else if (skin == 'monobook') {
-         var firstHeading = $('#firstHeading').css('position', 'relative');
-
-         if (firstHeading.length > 0) {
-            iconBar.css('display', 'block').appendTo(firstHeading.css('padding-right', previewBar.width() + 25));
-         }
-      }
-
-      $('#va-titleicons-more').append('<img width="0" height="0" class="va-titleicons-chevron" src="https://images.wikia.nocookie.net/common/skins/common/blank.gif">');
-
-      iconBar.hover(
-         function () {
-            $(this).addClass('va-titleicons-hover');
-         }, function () {
-            $(this).removeClass('va-titleicons-hover');
-         });
-   }
-}
-
-/* Games template fix to remove Lazy load by User:Sakaratte                 */
-function rmvLzyLoad(lazyIcon) {
-    var lazyIconCleanse = lazyIcon.getElementsByTagName("img");
-    for (i = 0; i < lazyIconCleanse.length; i++)
-        {
-            var iconSrc = lazyIconCleanse[i].getAttribute("data-src");
-            if (iconSrc !== null) /*Does nothing if there is no data-src */ { 
-            lazyIconCleanse[i].setAttribute("src", iconSrc);
-        }
-            lazyIconCleanse[i].className="";
+    var articleDiv = $(".WikiaArticle");
+    if (articleDiv.length > 0) {
+        iconBar.css("display", "block");
+        wrapper.prependTo(articleDiv);
     }
-}
- 
-var gamesCheck = document.getElementById("va-titleicons");
- 
-if (gamesCheck !== null)
-{
-    var lazyIconSmall = document.getElementById("va-titleicons-preview");
-    var lazyIconLarge = document.getElementById("va-titleicons-fullsize");
-    rmvLzyLoad(lazyIconSmall);
-    rmvLzyLoad(lazyIconLarge);
-}
- 
-var lzyHelip = document.getElementById("np-collapsed");
-    if (lzyHelip !== null) {
-        rmvLzyLoad(lzyHelip);
-    }
+
+    $("#va-titleicons-more").append("<img width='0' height='0' class='va-titleicons-chevron' src='https://images.wikia.nocookie.net/common/skins/common/blank.gif'>");
+
+    iconBar.hover(
+        function() { $(this).addClass("va-titleicons-hover"); },
+        function() { $(this).removeClass("va-titleicons-hover"); }
+    );
+    
+    removeLazyLoad(document.getElementById("va-titleicons-preview"));
+    removeLazyLoad(document.getElementById("va-titleicons-fullsize"));
+});
+
+/* ############################################################################# */
+/* ### TICKER                                                                ### */
+/* ### --------------------------------------------------------------------  ### */
+/* ### Description: Displays a ticker, as in [[Template:Ticker]]             ### */
+/* ### Credit:      unknown                                                  ### */
+/* ###              User:FDekker                                             ### */
+/* ############################################################################# */
+$(function() {
+    var step = 10;  // How many pixels to move text each tick
+
+    $(".ticker").each(function(_, ticker) {
+        ticker = $(ticker);
+        ticker.css("display", "block");
+
+        var wrapper = $(".tickerWrapper", ticker);
+        wrapper.css("left", (step + ticker.width()) + "px");
+
+        var text = $(".tickerText", ticker);
+        var textWidth = text.outerWidth();
+
+        setInterval(function() {
+            var offset =
+                (wrapper.position().left > -(textWidth + step))
+                    ? (wrapper.position().left - step) + "px"  // Move left
+                    : (ticker.width() + step) + "px";  // Reset
+            wrapper.css("left", offset);
+        }, 200);
+    });
+});
 
 /* ######################################################################## */
 /* ### SHOW/HIDE                                                        ### */

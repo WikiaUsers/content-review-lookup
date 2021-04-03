@@ -1,1 +1,0 @@
-#REDIRECT [[MediaWiki:Common.js/disablecomments2.js]]

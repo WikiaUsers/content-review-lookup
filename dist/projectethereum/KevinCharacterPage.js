@@ -1,10 +1,11 @@
 $(function() {
     var edenUI = {
-        sanitize: function(str) {
-            return mw.html.escape(str);
-        },
         verifyBackgroundImage: function(url) {
             return new Promise(function(resolve, reject) {
+                if (!(/^https:\/\/vignette.wikia.nocookie.net\/[A-Za-z0-9-]+\/images\/.+$/.test(url))) {
+                    reject();
+                }
+                
                 var img = new Image();
                 img.src = url;
                 img.onload = function() {
@@ -15,19 +16,7 @@ $(function() {
                 };
             });
         },
-        verifyCSSValue: function(property, value) {
-            property = value;
-            return property == value;
-        },
         attr: function($this) {
-            var id;
-            
-            do {
-                id = Math.random().toString(36).substring(2, 5);
-            } while (id.charAt(0).match(/[a-z]/i) === null || $("#" + id).length);
-            
-            $($this).attr("id", id);
-            
             $($this).find(".misc-links a").attr({
                 "target": "_blank"
             });
@@ -39,34 +28,24 @@ $(function() {
             $($this).find(".polaroid-image").attr("tabindex", "-1");
             $($this).find(".blank-polaroid").attr("tabindex", "-1");
             $($this).find(".polaroid-caption > div").attr("tabindex", "-1");
-            
-            $($this).find("img").each(function() {
-                ImgLzy.load(this);
-            });
         },
         events: function() {
-            $("body").on("click", ".eden-ui .navigation-basic-info", function() {
-                $(this).closest(".eden-ui").find(".main-content").scrollTop(450);
-            });
-            
-            $("body").on("click", ".eden-ui .navigation-history", function() {
-                $(this).closest(".eden-ui").find(".main-content").scrollTop(900);
-            });   
-            
-            $("body").on("click", ".eden-ui .navigation-personality", function() {
-                $(this).closest(".eden-ui").find(".main-content").scrollTop(1350);
-            });
-            
-            $("body").on("click", ".eden-ui .navigation-appearance", function() {
-                $(this).closest(".eden-ui").find(".main-content").scrollTop(1800);
-            });
-            
-            $("body").on("click", ".eden-ui .navigation-relationships", function() {
-                $(this).closest(".eden-ui").find(".main-content").scrollTop(2250);
-            });
-            
-            $("body").on("click", ".eden-ui .navigation-home", function() {
-                $(this).closest(".eden-ui").find(".main-content").scrollTop(0);
+			$.fn.extend({
+    			smoothScroll: function(scrollDistance) {
+					if (CSS.supports("scroll-behavior", "smooth")) {
+						this.scrollTop(scrollDistance);
+					} else {
+						this.animate({
+							scrollTop: scrollDistance
+						}, 500);
+					}
+				}
+			});
+			
+			$("body").on("click", ".eden-ui .navigation-block", function() {
+				const scrollDistance = (($(this).index(".navigation-block") + 1) % 6) * 450;
+				
+                $(this).closest(".eden-ui").find(".main-content").smoothScroll(scrollDistance);
             });
             
             $("body").on("click", ".eden-ui .previous", function() {
@@ -90,99 +69,21 @@ $(function() {
             });
         },
         graphics: function($this) {
-            var background = edenUI.sanitize($($this).find("div[data-background]").eq(0).data("background")),
-                accentBackground = edenUI.sanitize($($this).find("div[data-accent-background]").eq(0).data("accent-background")),
-                accentBackgroundSecondary = edenUI.sanitize($($this).find("div[data-accent-background-secondary]").eq(0).data("accent-background-secondary")),
-                mainColor = edenUI.sanitize($($this).find("div[data-main-color]").eq(0).data("main-color")),
-                accentColor = edenUI.sanitize($($this).find("div[data-accent-color]").eq(0).data("accent-color")),
-                hoverMainColor = edenUI.sanitize($($this).find("div[data-hover-main-color]").eq(0).data("hover-main-color")),
-                hoverBorderColor = edenUI.sanitize($($this).find("div[data-hover-accent-color]").eq(0).data("hover-accent-color")),
-                hoverLinkColor = edenUI.sanitize($($this).find("div[data-hover-accent-color]").eq(1).data("hover-accent-color")),
-                imageOnePosition = edenUI.sanitize($($this).find("div[data-image-position]").eq(0).data("image-position")),
-                imageTwoPosition = edenUI.sanitize($($this).find("div[data-image-position]").eq(1).data("image-position")),
-                imageThreePosition = edenUI.sanitize($($this).find("div[data-image-position]").eq(2).data("image-position"));
+            var background = mw.html.escape($($this).data("background")),
+                accentBackground = mw.html.escape($($this).data("accent-background")),
+                accentBackgroundSecondary = mw.html.escape($($this).data("accent-background-secondary"));
             
             edenUI.verifyBackgroundImage(background).then(function() {
-                $($this).find("div[data-background]").each(function() {
-                    $(this).css("background-image", "url('" + background + "')"); 
-                });
+                $($this).css("--main-background-image", "url('" + background + "')");
             }, function() {});
             
             edenUI.verifyBackgroundImage(accentBackground).then(function() {
-                $($this).find("div[data-accent-background]").each(function() {
-                    $(this).css("background-image", "url('" + accentBackground + "')"); 
-                });
+                $($this).css("--accent-background-image", "url('" + accentBackground + "')");
             }, function() {});
             
             edenUI.verifyBackgroundImage(accentBackgroundSecondary).then(function() {
-                $($this).find("div[data-accent-background-secondary]").each(function() {
-                    $(this).css("background-image", "url('" + accentBackgroundSecondary + "')"); 
-                });
+                $($this).css("--accent-background-image-secondary", "url('" + accentBackgroundSecondary + "')");
             }, function() {});
-            
-            if (edenUI.verifyCSSValue(new Option().style.color, hoverBorderColor)) {
-                mw.util.addCSS(" \
-                    .eden-ui#" + $($this).attr("id") + " .navigation-block:not(.navigation-home):hover { \
-                        border-left: 5px solid " + hoverBorderColor + "; \
-                    } \
-                ");
-            }
-            
-            if (edenUI.verifyCSSValue(new Option().style.color, hoverMainColor)) {
-                mw.util.addCSS(" \
-                    .eden-ui#" + $($this).attr("id") + " .navigation-block:not(.navigation-home):hover { \
-                        background-color: " + hoverMainColor + "; \
-                    } \
-                ");
-            }
-            
-            if (edenUI.verifyCSSValue(new Option().style.color, mainColor)) {
-                mw.util.addCSS(" \
-                    .eden-ui#" + $($this).attr("id") + " .navigation-home:hover { \
-                        color: " + $($this).children(".navigation").data("main-color") + "; \
-                    } \
-                ");
-            }
-            
-            if (edenUI.verifyCSSValue(new Option().style.color, accentColor)) {
-                mw.util.addCSS(" \
-                    .eden-ui#" + $($this).attr("id") + " .misc-links a > span:before { \
-                        color: " + accentColor + " !important; \
-                    } \
-                ");
-            }
-            
-            if (edenUI.verifyCSSValue(new Option().style.color, hoverLinkColor)) {
-                mw.util.addCSS(" \
-                    .eden-ui#" + $($this).attr("id") + " .misc-links a > span:hover:before { \
-                        color: " + hoverLinkColor + " !important; \
-                    } \
-                ");
-            }
-            
-            if (edenUI.verifyCSSValue(new Option().style.objectPosition, imageOnePosition)) {
-                var imageOne = $($this).find(".polaroid-image").eq(0).find("img");
-                
-                if (imageOne.length) {
-                    imageOne.css("object-position", imageOnePosition);
-                }
-            }
-            
-            if (edenUI.verifyCSSValue(new Option().style.objectPosition, imageTwoPosition)) {
-                var imageTwo = $($this).find(".polaroid-image").eq(1).find("img");
-                
-                if (imageTwo.length) {
-                    imageTwo.css("object-position", imageTwoPosition);
-                }
-            }
-            
-            if (edenUI.verifyCSSValue(new Option().style.objectPosition, imageThreePosition)) {
-                var imageThree = $($this).find(".polaroid-image").eq(2).find("img");
-                
-                if (imageThree.length) {
-                    imageThree.css("object-position", imageThreePosition);
-                }
-            }
         },
         init: function() {
             $(".eden-ui").each(function() {
@@ -191,11 +92,9 @@ $(function() {
             });
         }
     };
-    
-    edenUI.init();
+
     edenUI.events();
-    
-    $(window).on("EditPageAfterRenderPreview", function() {
-        edenUI.init();
-	});
+
+	mw.hook("wikipage.content").add(edenUI.init);
+	mw.hook("ve.activationComplete").add(edenUI.init);
 });

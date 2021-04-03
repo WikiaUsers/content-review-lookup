@@ -2,7 +2,7 @@
  * Quick Delete
  * Deletes all the pages in a specific category
  *
- * @author: [[w:User:Fubuki風吹]]
+ * @author: [[w:User:.jun]]
  */
 (function ($, mw) {
     'use strict';
@@ -20,7 +20,7 @@
     if (
         window.QuickDeleteLoaded ||
         [14].indexOf(config.wgNamespaceNumber) === -1 ||
-        !/sysop|content-moderator|content-volunteer|vstf|staff|helper|wiki-manager|content-team-member/.test(config.wgUserGroups.join())
+        !/sysop|content-moderator|content-volunteer|staff|helper|wiki-manager|content-team-member|soap/.test(config.wgUserGroups.join())
     ) {
         return;
     }

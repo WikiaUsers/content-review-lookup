@@ -6,19 +6,19 @@ $(function(){
 		if(!url.match(/(jpg|gif|png)/i)){
 			return;
 		}
- 
+
+		$('body').addClass('modal-open');
 		$('body').append('<div id="ovray"><div id="imagebox"><img src="' + url + '" id="img" /></div></div>');
 		$('#ovray').fadeIn(0,function(){
 			var img = new Image();
 			img.src = url;
-			var width  = img.width / 2;
-			var height = img.height / 2;
-			$('#imagebox').fadeIn().css({margin:"-"+ height + "px 0 0 -" + width +"px"});
+			$('#imagebox').fadeIn();
 		});
  
 		$('#ovray').on('click', function() {
-			$(this).fadeOut(100, function(){
+			$(this).fadeOut(0, function(){
 				$(this).remove();
+				$('body').removeClass('modal-open');
 			});
 		});
         return false;

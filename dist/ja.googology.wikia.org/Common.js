@@ -1,109 +1,67 @@
-var oldDefine = define;
-define = function(id, dependencies, definition, defMock) {
-    console.log(id);
-    oldDefine(id, dependencies, definition, defMock);
-}
+// デバッグのためのログを出力する。
+console.log("Running MediaWiki:Common.js...");
 
-importScriptURI("https://www.jdoodle.com/assets/jdoodle-pym.min.js");
+// MathJax を読み込む。
+//
+// MathJax が読み込まれる条件は三つある。それらは以下の通りである。
+//
+// * 名前空間が Special ではない。
+// * 名前空間が MediaWiki ではない。
+// * 記事の本体が表示されている。つまり、表示されているのが履歴に類するものではない。
+if ((mw.config.get('wgCanonicalNamespace') !== "Special") && (mw.config.get('wgCanonicalNamespace') !== "MediaWiki") && mw.config.get('wgIsArticle')) {
+  // デバッグのためのログを出力する。
+  console.log("Applying MathJax...");
 
-if (mwCustomEditButtons) {
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/central/images/7/74/Button_comment.png",
-        "speedTip": "Insert a comment visible only by editors",
-        "tagOpen": "<!-- ",
-        "tagClose": " -->",
-        "sampleText": "Insert comment here"
-    };
+  var script_1 = document.createElement('script');
+  script_1.src = "https://polyfill.io/v3/polyfill.min.js?features=es6";
+  document.head.appendChild(script_1);
 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/central/images/a/a0/Button_references_alt.png",
-        "speedTip": "Insert a list of references",
-        "tagOpen": "=== Sources ===\n<references />",
-        "tagClose": "",
-        "sampleText": ""
-    };
+  var script_2 = document.createElement('script');
+  script_2.id = "MathJax-script";
+  script_2.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+  script_2.async = true;
+  document.head.appendChild(script_2);
 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/central/images/1/16/Button_reflink_alternate.png",
-        "speedTip": "Insert a reference",
-        "tagOpen": "<ref>",
-        "tagClose": "</ref>",
-        "sampleText": "Insert reference"
-    };
-}
-
-var findMath = function(cssSelector, setupFunc) {
-    var mathFindingInterval;
-    if (mathFindingInterval == undefined) {
-        mathFindingInterval = setInterval(function() {
-            var $math = $(cssSelector)[0];
-            if (typeof $math != "undefined" && $math.children.length) {
-                try {
-                    MathJax.Hub.Queue(["Typeset", MathJax.Hub, $math]);
-                    clearInterval(mathFindingInterval);
-                } catch (err) {
-                }
+  // コメント欄にMathJaxを適用
+  (function() {
+    'use strict';
+    // Modified a sample from https://docs.mathjax.org/en/latest/web/typeset.html
+    function typeset(nodes) {
+        MathJax.startup.promise = MathJax.startup.promise
+            .then(function() {return MathJax.typesetPromise(nodes);})
+            .catch(function(err) {console.log('Typeset failed: ' + err.message);});
+        return MathJax.startup.promise;
+    }
+    new MutationObserver(function(mutations) {
+        if (typeof MathJax === "undefined") return;
+        /* global MathJax:false */
+        var nodes = [];
+        for (var i = 0; i < mutations.length; ++i) {
+			var mutation = mutations[i];
+            for (var j = 0; j < mutation.addedNodes.length; ++j) {
+				var node = mutation.addedNodes[j];
+                if (!node.querySelectorAll) continue;
+                nodes = nodes.concat(node.querySelectorAll(".entity-content"));
             }
-        }, 500);
-        if (typeof setupFunc !== "undefined") {
-            setupFunc(mathFindingInterval);
         }
-    }
+        if (nodes.length > 0) typeset(nodes);
+    }).observe(document.querySelector("#articleComments"), {
+        childList: true,
+        subtree: true
+    });
+  })();
 }
 
-var waitForProcessing = function() {
-    var interval;
-    interval = setInterval(function() {
-        if (ArticleComments.processing == false) {
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, "WikiaArticleComments"]);
-            clearInterval(interval);
-        }
-    }, 500);
-}
+// hide-on-oasis-skin クラスについての特殊な処理を行う。
+//
+// スキンが Oasis であるならば hide-on-oasis-skin クラスを持つ HTML 要素の CSS の display プロパティの値を none にセットする。
+if (mw.config.get('skin') === "oasis") {
+	// デバッグのためのログを出力する。
+	console.log("Processing 'hide-on-oasis-skin' class");
 
-addOnloadHook(function () {
-    importScriptURI("http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML");
-    if (wgAction == "edit" && wgCanonicalNamespace != "Thread" && wgCanonicalNamespace != "Board") {
-        require(['wikia.preview'], function(context, m) {
-            context.oldRenderPreview = context.renderPreview;
-            context.renderPreview = function(options) {
-                context.oldRenderPreview(options);
-                findMath('.ArticlePreview > .ArticlePreviewInner > .WikiaArticle', function(interval) {
-                    $(window).bind("EditPagePreviewClosed", function(interval) {
-                        clearInterval(interval);
-                        $(window).unbind("EditPagePreviewClosed");
-                    });
-                });
-            }
-        });
-    }
-    if (typeof ArticleComments !== "undefined") {
-        ArticleComments.oldInit = ArticleComments.init;
-        ArticleComments.init = function() {
-            ArticleComments.oldInit();
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, "WikiaArticleComments"]);
-        }
-        ArticleComments.oldSaveEdit = ArticleComments.saveEdit;
-        ArticleComments.saveEdit = function(e) {
-            ArticleComments.oldSaveEdit(e);
-            waitForProcessing();
-        }
-        ArticleComments.oldPostComment = ArticleComments.postComment;
-        ArticleComments.postComment = function(e) {
-            ArticleComments.oldPostComment(e);
-            waitForProcessing();
-        }
-    }
-    if (typeof MiniEditor !== "undefined" && typeof MiniEditor.Wall !== "undefined") {
-        Wall.MessageForm.prototype.oldShowPreviewModal = Wall.MessageForm.prototype.showPreviewModal;
-        Wall.MessageForm.prototype.showPreviewModal = function(format, metatitle, body, width, publishCallback) {
-            Wall.MessageForm.prototype.oldShowPreviewModal(format, metatitle, body, width, publishCallback);
-            findMath('#WallPreviewModal .WallPreview > .WikiaArticle');
-        };
-        MiniEditor.Wall.EditMessageForm.prototype.oldAfterClose = MiniEditor.Wall.EditMessageForm.prototype.afterClose;
-        MiniEditor.Wall.EditMessageForm.prototype.afterClose = function(bubble) {
-            MiniEditor.Wall.EditMessageForm.prototype.oldAfterClose(bubble);
-            findMath('.Wall.Thread');
-        };
-    }
-});
+	var elements = document.getElementsByClassName('hide-on-oasis-skin');
+
+	for (var i = 0; i < elements.length; i++) {
+		elements[i].style.display = 'none';
+	}
+}

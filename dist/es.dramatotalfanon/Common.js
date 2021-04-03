@@ -42,13 +42,28 @@ $(function(){
   $(".firstHeading,#WikiaUserPagesHeader h1,#WikiaPageHeader h1").html(newTitle);
 });
 
+/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
  
-/* Refrescar actividad */
-window.ajaxPages = [
-    "Especial:WikiActivity",
-    "Especial:CambiosRecientes"
-    ];
+// Importes
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:AddRailModule/code.js',
+        'u:dev:MediaWiki:YouTubeModal/code.js',
+        'u:dev:AjaxRC/code.js',
+    ]
+});
  
-window.ajaxRefresh = 20000;
-window.AjaxRCRefreshText = 'Refrescar actividad';
-window.AjaxRCRefreshHoverText = 'Los cambios más recientes serán vistos sin la necesidad de refrescar la página manualmente';
+/***** Actualizar los cambios recientes de la wikiactividad *****/
+AjaxRCRefreshText = 'Act. automát.';
+AjaxRCRefreshHoverText = 'Los cambios más recientes serán vistos sin la necesidad de refrescar la página manualmente';
+ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
+importScriptPage('AjaxRC/code.js', 'dev');
+;
+ 
+/* Cambio de título */
+$(function(){
+  var newTitle = $("#title-meta").html();
+  if (!newTitle) return;
+  $(".firstHeading,#WikiaUserPagesHeader h1,#WikiaPageHeader h1").html(newTitle);
+});

@@ -1,1 +1,0 @@
-#REDIRECCIÓN [[MediaWiki:Wikia.js/ratings.js]]

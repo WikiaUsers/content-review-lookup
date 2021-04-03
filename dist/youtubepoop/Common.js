@@ -31,7 +31,6 @@ UserTagsJS.modules.custom = {
     'Southparklover': ['founder'],
     'ElderPrinceShroob': ['msysop', 'canonmoderator'],
     'Bramble.exe': ['canonmoderator'],
-    'Edd Shwartz':['canonmoderator']
 };
  
 //*** Tags New Accounts
@@ -64,7 +63,7 @@ UserTagsJS.modules.userfilter = {
     'Dragonballgtgoku': ['rollback', 'chatmoderator', 'threadmoderator'],
     'Alfonso720': ['rollback', 'chatmoderator', 'threadmoderator'],
     'ElderPrinceShroob': ['rollback', 'chatmoderator', 'threadmoderator'],
-    'WeegeeBotOver9000': ['sysop']
+    'MorshuuBot': ['sysop']
 };
 
 //************************************************
@@ -79,7 +78,6 @@ window.MessageWallUserTags = {
     users: {
         'AwesomeSeaCucumber': 'Admin',
         'ElderPrinceShroob': 'Mini Admin',
-        'Edd Shwartz': 'Admin',
         'Bramble.exe': 'Admin',
         'Alfonso720': 'Admin',
         'Tekonoshi': 'Admin'

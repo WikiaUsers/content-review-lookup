@@ -5,7 +5,7 @@
         text: '{{int:Custom-Wiki Manager}}',
         format: 'json'
     }).done(function(d) {
-        var wikiManager = d.parse.text['*'].split('\n')[0].replace('<p>', '');
+        var wikiManager = d.parse.text['*'].split('\n')[0].replace(/<.*>/g, '');
         if (wikiManager.indexOf('Custom-Wiki Manager') > -1) {
             return;
         } else {

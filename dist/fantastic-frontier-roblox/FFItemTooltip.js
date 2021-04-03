@@ -1,4 +1,4 @@
-$(function() {
+mw.hook("wikipage.content").add(function($content) {
     // This element is placed at the bottom of the page. It serves as a tooltip for showing article info on hover.
     var tooltip = $("<div id=\"item-tooltip\"></div>");
     
@@ -90,7 +90,7 @@ $(function() {
             tooltip.find(".it-header img").attr("src", data.find(".pi-image img").attr("src"));
             if (data.find(".pi-image .pi-caption").length > 0)
                 tooltip.append($("<div class=\"it-infobox it-desc\"></div>").text(data.find(".pi-image .pi-caption").text()));
-            var dsec = data.find("section, >.pi-data");
+            var dsec = data.find("section, >.pi-data:not([data-source='sketchfab_link'])");
             for (var i = 0; i < dsec.length; i++) {
                 var csec = $(dsec[i]);
                 var sec = $("<div class=\"it-infobox\"></div>");
@@ -98,7 +98,7 @@ $(function() {
                     var ibTitle = csec.find(".pi-header"); // Collapsible sections can have titles.
                     if (ibTitle.length > 0)
                         tooltip.append($("<div class=\"it-infobox-title\"></div>").text(ibTitle.text()));
-                    generateSection(sec, csec.find(".pi-data"));
+                    generateSection(sec, csec.find(".pi-data:not([data-source='sketchfab_link'])"));
                 } else
                     generateSection(sec, csec);
                 tooltip.append(sec);
@@ -191,6 +191,7 @@ $(function() {
                 } else {
                     // No infobox, so we'll mark this article as not having a tooltip.
                     cache[article] = false;
+					if (hovered_article == article) tooltip.hide();
                 }
             };
             
@@ -209,21 +210,17 @@ $(function() {
         }
     }
     
-    // Assigns hover-logic for an element to display tooltips.
-    function setupElement(elem) {
-        var article = elem.is("div") ? elem.attr("data-article") : elem.attr("href").substr(6); // Trim away /wiki/.
-        elem.hover(function() {
-            updateTooltip(article);
-        }, function() {
-            tooltip.hide();
-            hovered_article = null;
-        });
-    }
-    
     // Hook up tooltips to wiki links.
-    $("#WikiaArticle a[href^='/wiki/'], #WikiaArticle .tooltip-linker").each(function() {
-        setupElement($(this));
-    });
+	// Edit: If elements are loaded in after article load, we catch those too.
+	$('#content').on('mouseenter', "*:not(.mw-editsection)>a[href^='/wiki/'], .tooltip-linker", function() {
+		var elem = $(this);
+		var article = elem.is("div") ? elem.attr("data-article") : elem.attr("href").substr(6); // Trim away /wiki/.
+		updateTooltip(article);
+	});
+	$('#content').on('mouseleave', "*:not(.mw-editsection)>a[href^='/wiki/'], .tooltip-linker", function() {
+		tooltip.hide();
+        hovered_article = null;
+	});
     
     // Initialize.
     tooltip.hide();

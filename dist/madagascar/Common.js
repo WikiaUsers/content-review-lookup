@@ -16,7 +16,6 @@ function substUsername()
 importArticles({
     type: "script",
     articles: [
-        "w:c:dev:InputUsername/code.js",
         "u:avatar:MediaWiki:Common.js/icons.js" /* Add icons to page header bottom border */
     ]
 });

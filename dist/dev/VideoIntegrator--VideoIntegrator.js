@@ -29,14 +29,14 @@ mw.hook('wikipage.content').add(function($content) {
                         frameboder: 0,
                         css: css
                     })
-                );
+                 );
                 break;
-            case 'playerim':
+            case 'myvi':
                 $this.html(
                     $('<iframe>', {
-                        src: 'https://vod02.cdn.web.tv/' + id + '.mp4.urlset/playlist-f3-v1-a1.m3u8',
-                         frameborder: 0,
-                        css: css
+                        src: 'https://myvi.ru/player/embed/html/' + id,
+                        css: css,
+                        frameborder: 0
                     })
                 );
                     break;
@@ -143,7 +143,7 @@ mw.hook('wikipage.content').add(function($content) {
             case 'TwitchStream':
                 $this.html(
                     $('<iframe>', {
-                        src: 'https://player.twitch.tv/?channel=' + id,
+                        src: 'https://player.twitch.tv/?channel=' + id + '&parent=' + window.location.hostname,
                         css: css,
                         frameborder: 0,
                         scrolling: 'no',

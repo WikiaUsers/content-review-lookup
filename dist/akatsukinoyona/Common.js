@@ -7,9 +7,12 @@ importArticles({
         'u:dev:MediaWiki:RailWAM/code.js',
         'u:dev:MediaWiki:ReferencePopups/code.js',
         'u:dev:MediaWiki:Tooltips.js',
+		'u:dev:MediaWiki:GalleryCaptions/code.js',
     ]
 });
-
+window.railWAM = {
+    logPage:"Project:WAM Log"
+};
 /* Auto Refresh */
 AjaxRCRefreshText = 'Auto-refresh';
 AjaxRCRefreshHoverText = 'Automatically refresh the page';

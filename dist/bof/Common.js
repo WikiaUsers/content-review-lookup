@@ -96,7 +96,7 @@ var hasClass = (function () {
          }
      }
  }
- addOnloadHook( createCollapseButtons );
+ $( createCollapseButtons );
  
  /** Dynamic Navigation Bars (experimental) *************************************
   *
@@ -208,7 +208,7 @@ var hasClass = (function () {
      }
  
   } 
-  addOnloadHook( createNavigationBarToggleButton );
+  $( createNavigationBarToggleButton );
  
 importScriptPage('AjaxRC/code.js', 'dev');
  
@@ -225,7 +225,7 @@ importScriptPage('AjaxRC/code.js', 'dev');
         $(this).text(wgUserName);
     });
  }
- addOnloadHook(UserNameReplace);
+ $(UserNameReplace);
  
 function ts_makeSortable(table){
 	var firstRow;
@@ -262,7 +262,7 @@ function onloadhookcustom() {
     replace.innerHTML='<form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----"><input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>';
   }
 }
-addOnloadHook(onloadhookcustom)
+$(onloadhookcustom)
  
 /*
 ==================================================
@@ -772,7 +772,7 @@ function tabberAutomaticOnLoad(tabberArgs)
   }*/
  
 //Use the wiki onload
-addOnloadHook(function() {
+$(function() {
       tabberAutomatic(tabberArgs);
     })
  
@@ -816,7 +816,7 @@ function fixSearch() {
 		button.name = 'go';
 }
  
-addOnloadHook( loadFunc );
+$( loadFunc );
  
 // **************************************************
 // Experimental javascript countdown timer (Splarka)
@@ -875,7 +875,7 @@ function checktimers() {
     updatetimer(i);  //start it up
   }
 }
-addOnloadHook(checktimers)
+$(checktimers)
  
 // **************************************************
 //  - end -  Experimental javascript countdown timer

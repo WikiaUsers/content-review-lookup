@@ -31,4 +31,7 @@ if (mwCustomEditButtons) {
      "tagClose": "\}\}",
      "sampleText": "your reason here"};
 }
+window.railWAM = {
+    logPage:"Project:WAM Log"
+};
 // END

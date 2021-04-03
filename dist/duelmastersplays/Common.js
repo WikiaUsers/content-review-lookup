@@ -1,244 +1,256 @@
-// ============================================================
-// BEGIN Dynamic Navigation Bars (experimantal)
-// This script is from Wikipedia. For author attribution, please see http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
+window.tooltips_config = {
+    offsetX: 8,
+    offsetY: 8,
+    waitForImages: false,
+    events: ['CustomEvent'],
+    noCSS: true,
+}
 
+//=============== Card Database Test / Advanced Card Search ==================
+function searchJavaScript() {
+	function createRegEx(str){
+		var result = ".*";
+		var i, char, char2;
+		for(i = 0; i<str.length; i++){
+			char = str[i].toUpperCase();
+			result += "[" + char;
+			char2 = str[i].toLowerCase();
+			if(char !== char2) result += char2;
+			result+="]";
+		}
+		result+=".*";
+		return result;
+	}
+	function updateContent(elem) {
+		var categories = [];
+		var exCategories = [];
+        var matchTitles = null;
+		//Get Categories
+		///InputBox Categories
+		var inputboxes = elem.querySelectorAll('input[class="searchbox"]');
+		inputboxes.forEach(function (inputBox) {
+			if (inputBox.value !== "") {
+				if(inputBox.id === "matchName-input"){
+					matchTitles = inputBox.value;
+				}else if(inputBox.id.endsWith('-excludedInput')){
+					exCategories.push(inputBox.value);
+				}else{
+					categories.push(inputBox.value);
+				}
+			}
+		});
+		///CheckBox Categories
+		var checkboxes = elem.querySelectorAll('input[type="checkbox"]');
+		checkboxes.forEach(function(checkbox) {
+			if (checkbox.checked) {
+				categories.push(checkbox.getAttribute('data-cat'));
+			}
+		});
+        
+        var set = 'Any';
+        var selectboxes = elem.querySelectorAll('select[class="selectbox"]');
+        
+		selectboxes.forEach(function (inputBox) {
+			if (inputBox.value !== "" && inputBox.value!== 'Any') {
+            	if(inputBox.name === 'ExpansionSet'){
+            		set = inputBox.value;
+				}else if(inputBox.id.endsWith('-excludedInput')){
+					exCategories.push(inputBox.value);
+				}else{
+					categories.push(inputBox.value);
+				}
+			}
+		});
+		
+		if(categories.length === 0 && matchTitles === null && set === 'Any'){
+			document.getElementById('content-container').innerHTML = "No search parameters specified.";
+			return;
+		} 
+		//Make Changes
+		var text = '{{#dpl:uses = Template:Cardtable';
+		if(matchTitles !== null) text += '|titleregexp =' + createRegEx(matchTitles);
+		if(categories.length > 0) text += '|category = ' + categories.join('|category = ');
+		if(exCategories.length > 0) text += '|notcategory = ' + exCategories.join('|notcategory = ');
+		if(set !== "Any" && set !== null) text += '|linksfrom=' + set;
+		text += '|allowcachedresults = true';
+		text += '|count = 100';
+		text += '|noresultsheader = No cards match the search criteria.';
+		text += '}}';
+		console.log(text);
+		new mw.Api().get({
+			action: 'parse',
+			text: text,
+			contentmodel: 'wikitext',
+		}).then(function(data) {
+			console.log(data);
+			document.getElementById('content-container').innerHTML = data.parse.text['*'];
+		});
+	}
+	
+	function addInput(elem, container, cat) {
+		var input = document.createElement("input");
+		if(cat.startsWith("Excluded")) input.id = cat + "-excludedInput";
+        else input.id = cat + "-input";
+		input.className = "searchbox";
+		
+		var label = document.createElement("label");
+		label.setAttribute("for", input.id);
+		
+		container.appendChild(label);
+		container.appendChild(input);
+        container.setAttribute("class", "paddedCardSearchDiv");
+	}
+	
+	function addCheckBox(elem, container, cat) {
+		container.setAttribute("class", "paddedCardSearchDiv");
+		var subcats = container.getAttribute("data-subcats");
+		if (subcats === null) return;
+		subcats = subcats.split(",");
+		
+		var containerLabel = document.createElement("label");
+		containerLabel.id = cat + "Label";
+		containerLabel.setAttribute("for", container.id);
+		container.appendChild(containerLabel);
+		
+		for (var i = 0; i < subcats.length; i++) {
+			var checkbox = document.createElement("input");
+			checkbox.type = 'checkbox';
+			checkbox.id = cat + "-" + subcats[i].replace(/\W/g, '');
+			checkbox.setAttribute("data-cat", subcats[i]);
+            checkbox.setAttribute("style", "display:none");
+			
+			var label = document.createElement("label");
+			label.setAttribute("for", checkbox.id);
+            label.setAttribute("class", "checkBoxCardSearchLabel");
+			label.textContent = subcats[i].trim();            
+			
+			container.appendChild(checkbox);
+			container.appendChild(label);
+            container.appendChild (document.createTextNode (" "));
+		}
+	}
+	
+	function addList(elem, container, cat) {
+		container.setAttribute("class", "paddedCardSearchDiv");
+		var datalist = document.createElement("datalist");
+		datalist.id = cat + "-datalist";
+		var subcats = container.getAttribute("data-subcats");
+		if (subcats === null) return;
+        subcats = subcats.split(",");
+		for (var i = 0; i < subcats.length; i++) {
+			var option = document.createElement("option");
+			option.value = subcats[i].trim();
+            datalist.appendChild(option);
+        }
+		
+		var dropdown = document.createElement("input");
+		dropdown.setAttribute("list", cat + "-datalist");
+        dropdown.id = cat.replace(/\W/g, "") + "-input";
+        dropdown.name = cat;
+		dropdown.className = "searchbox";
 
-/* Test if an element has a certain class **************************************
- *
- * Description: Uses regular expressions and caching for better performance.
- * Maintainers: User:Mike Dillon, User:R. Koot, User:SG
- */
+        var label = document.createElement("label");
+        label.setAttribute("for", dropdown.id);
 
-var hasClass = (function () {
-    var reCache = {};
-    return function (element, className) {
-        return (reCache[className] ? reCache[className] : (reCache[className] = new RegExp("(?:\\s|^)" + className + "(?:\\s|$)"))).test(element.className);
-    };
-})();
+        //dropdown.addEventListener("input", updateContent.bind(this, elem));
 
- /** Collapsible tables *********************************************************
-  *
-  *  Description: Allows tables to be collapsed, showing only the header. See
-  *               [[Wikipedia:NavFrame]].
-  *  Maintainers: [[User:R. Koot]]
-  */
- 
- var autoCollapse = 2;
- var collapseCaption = "hide";
- var expandCaption = "show";
- 
- function collapseTable( tableIndex )
- {
-     var Button = document.getElementById( "collapseButton" + tableIndex );
-     var Table = document.getElementById( "collapsibleTable" + tableIndex );
- 
-     if ( !Table || !Button ) {
-         return false;
-     }
- 
-     var Rows = Table.getElementsByTagName( "tr" ); 
- 
-     if ( Button.firstChild.data == collapseCaption ) {
-         for ( var i = 1; i < Rows.length; i++ ) {
-             Rows[i].style.display = "none";
-         }
-         Button.firstChild.data = expandCaption;
-     } else {
-         for ( var i = 1; i < Rows.length; i++ ) {
-             Rows[i].style.display = Rows[0].style.display;
-         }
-         Button.firstChild.data = collapseCaption;
-     }
- }
- 
- function createCollapseButtons()
- {
-     var tableIndex = 0;
-     var NavigationBoxes = new Object();
-     var Tables = document.getElementsByTagName( "table" );
- 
-     for ( var i = 0; i < Tables.length; i++ ) {
-         if ( hasClass( Tables[i], "collapsible" ) ) {
-             NavigationBoxes[ tableIndex ] = Tables[i];
-             Tables[i].setAttribute( "id", "collapsibleTable" + tableIndex );
- 
-             var Button     = document.createElement( "span" );
-             var ButtonLink = document.createElement( "a" );
-             var ButtonText = document.createTextNode( collapseCaption );
- 
-             Button.style.styleFloat = "right";
-             Button.style.cssFloat = "right";
-             Button.style.fontWeight = "normal";
-             Button.style.textAlign = "right";
-             Button.style.width = "6em";
- 
-             ButtonLink.setAttribute( "id", "collapseButton" + tableIndex );
-             ButtonLink.setAttribute( "href", "javascript:collapseTable(" + tableIndex + ");" );
-             ButtonLink.appendChild( ButtonText );
- 
-             Button.appendChild( document.createTextNode( "[" ) );
-             Button.appendChild( ButtonLink );
-             Button.appendChild( document.createTextNode( "]" ) );
- 
-             var Header = Tables[i].getElementsByTagName( "tr" )[0].getElementsByTagName( "th" )[0];
-             /* only add button and increment count if there is a header row to work with */
-             if (Header) {
-                 Header.insertBefore( Button, Header.childNodes[0] );
-                 tableIndex++;
-             }
-         }
-     }
- 
-     for ( var i = 0;  i < tableIndex; i++ ) {
-         if ( hasClass( NavigationBoxes[i], "collapsed" ) || ( tableIndex >= autoCollapse && hasClass( NavigationBoxes[i], "autocollapse" ) ) ) {
-             collapseTable( i );
-         }
-     }
- }
- addOnloadHook( createCollapseButtons );
+		container.appendChild(label);
+		container.appendChild(datalist);
+        container.appendChild(dropdown);
+	}
+	
+	function addSelectList(elem, container, cat) {
+		container.setAttribute("class", "paddedCardSearchDiv");
+		
+        var dropdown = document.createElement("select");
+        dropdown.id = cat.replace(/\W/g, "") + "-input";
+        dropdown.name = cat;
+		dropdown.className = "selectbox";
+        
+		var subcats = container.getAttribute("data-subcats");
+		if (subcats === null) return;
+        subcats = subcats.split(",");
+        
+        var option = document.createElement("option");
+        option.value = "Any";
+		option.textContent = "Any";
+        dropdown.appendChild(option);
+        
+		for (var i = 0; i < subcats.length; i++) {
+			option = document.createElement("option");
+			option.value = subcats[i].trim();
+			option.textContent = subcats[i].trim();
+            dropdown.appendChild(option);
+        }
+        
+        
 
- /** Dynamic Navigation Bars (experimental) *************************************
-  *
-  *  Description: See [[Wikipedia:NavFrame]].
-  *  Maintainers: UNMAINTAINED
-  */
- 
-  // set up the words in your language
-  var NavigationBarHide = '[' + collapseCaption + ']';
-  var NavigationBarShow = '[' + expandCaption + ']';
-  
-  // set up max count of Navigation Bars on page,
-  // if there are more, all will be hidden
-  // NavigationBarShowDefault = 0; // all bars will be hidden
-  // NavigationBarShowDefault = 1; // on pages with more than 1 bar all bars will be hidden
-  var NavigationBarShowDefault = autoCollapse;
-  
-  
-  // shows and hides content and picture (if available) of navigation bars
-  // Parameters:
-  //     indexNavigationBar: the index of navigation bar to be toggled
-  function toggleNavigationBar(indexNavigationBar)
-  {
-     var NavToggle = document.getElementById("NavToggle" + indexNavigationBar);
-     var NavFrame = document.getElementById("NavFrame" + indexNavigationBar);
-  
-     if (!NavFrame || !NavToggle) {
-         return false;
-     }
-  
-     // if shown now
-     if (NavToggle.firstChild.data == NavigationBarHide) {
-         for (
-                 var NavChild = NavFrame.firstChild;
-                 NavChild != null;
-                 NavChild = NavChild.nextSibling
-             ) {
-             if ( hasClass( NavChild, 'NavPic' ) ) {
-                 NavChild.style.display = 'none';
-             }
-             if ( hasClass( NavChild, 'NavContent') ) {
-                 NavChild.style.display = 'none';
-             }
-         }
-     NavToggle.firstChild.data = NavigationBarShow;
-  
-     // if hidden now
-     } else if (NavToggle.firstChild.data == NavigationBarShow) {
-         for (
-                 var NavChild = NavFrame.firstChild;
-                 NavChild != null;
-                 NavChild = NavChild.nextSibling
-             ) {
-             if (hasClass(NavChild, 'NavPic')) {
-                 NavChild.style.display = 'block';
-             }
-             if (hasClass(NavChild, 'NavContent')) {
-                 NavChild.style.display = 'block';
-             }
-         }
-     NavToggle.firstChild.data = NavigationBarHide;
-     }
-  }
-  
-  // adds show/hide-button to navigation bars
-  function createNavigationBarToggleButton()
-  {
-     var indexNavigationBar = 0;
-     // iterate over all < div >-elements 
-     var divs = document.getElementsByTagName("div");
-     for(
-             var i=0; 
-             NavFrame = divs[i]; 
-             i++
-         ) {
-         // if found a navigation bar
-         if (hasClass(NavFrame, "NavFrame")) {
-  
-             indexNavigationBar++;
-             var NavToggle = document.createElement("a");
-             NavToggle.className = 'NavToggle';
-             NavToggle.setAttribute('id', 'NavToggle' + indexNavigationBar);
-             NavToggle.setAttribute('href', 'javascript:toggleNavigationBar(' + indexNavigationBar + ');');
-             
-             var NavToggleText = document.createTextNode(NavigationBarHide);
-             NavToggle.appendChild(NavToggleText);
-             // Find the NavHead and attach the toggle link (Must be this complicated because Moz's firstChild handling is borked)
-             for(
-               var j=0; 
-               j < NavFrame.childNodes.length; 
-               j++
-             ) {
-               if (hasClass(NavFrame.childNodes[j], "NavHead")) {
-                 NavFrame.childNodes[j].appendChild(NavToggle);
-               }
-             }
-             NavFrame.setAttribute('id', 'NavFrame' + indexNavigationBar);
-         }
-     }
-     // if more Navigation Bars found than Default: hide all
-     if (NavigationBarShowDefault < indexNavigationBar) {
-         for(
-                 var i=1; 
-                 i<=indexNavigationBar; 
-                 i++
-         ) {
-             toggleNavigationBar(i);
-         }
-     }
-   
-  } 
-  addOnloadHook( createNavigationBarToggleButton );
+        var label = document.createElement("label");
+        label.setAttribute("for", dropdown.id);
 
-importScriptPage('MediaWiki:Tooltip.js', 'joeplayground');
-
-importArticles({
-    type: "script",
-    articles: [
-        "w:c:dev:MediaWiki:Countdown/code.js"
-    ]
-});
-
-importArticle({
-    type: 'script',
-    article: 'u:dev:NullEditButton/code.js'
-});
-
-importArticles({
-    type: "script",
-    articles: [
-        // ...
-        'u:dev:MediaWiki:DiscordIntegrator/code.js'
-        // ...
-    ]
-});
-
-importArticles({
-    type: 'script',
-    articles: [
-        // ...
-        'w:c:dev:ReferencePopups/custom.js',
-        // ...
-    ]
-});
-
-T
+		container.appendChild(label);
+        container.appendChild(dropdown);
+	}
+	
+	function addItems(elem) {
+		//Lists
+		var cContainer = document.getElementById("typeContainer");
+		addSelectList.bind(this, elem, cContainer, "Type")();
+		cContainer = document.getElementById("costContainer");
+		addSelectList.bind(this, elem, cContainer, "Cost")();
+		cContainer = document.getElementById("rarityContainer");
+		addSelectList.bind(this, elem, cContainer, "Rarity")();
+		
+		//CheckBoxes
+		
+		cContainer = document.getElementById("keywordsContainer");
+		addCheckBox.bind(this, elem, cContainer, "Keywords")();
+		cContainer = document.getElementById("civsContainer");
+		addCheckBox.bind(this, elem, cContainer, "Civilizations")();
+        cContainer = document.getElementById("miscAbilitiesContainer");
+		addCheckBox.bind(this, elem, cContainer, "miscAbilities")();
+		
+		//Other
+        cContainer = document.getElementById("matchNameContainer");
+		addInput.bind(this, elem, cContainer, "matchName")();
+		
+		cContainer = document.getElementById("raceContainer");
+		addInput.bind(this, elem, cContainer, "Race1")();
+		cContainer = document.getElementById("race2Container");
+		addInput.bind(this, elem, cContainer, "Race2")();
+        
+        cContainer = document.getElementById("setContainer");
+		addSelectList.bind(this, elem, cContainer, "ExpansionSet")();
+		
+		//upto 5 additional category inputs can be added
+		var i;
+		for (i = 1; i <= 5; i++) {
+		cContainer = document.getElementById("additionalCat"+i+"Container");
+		if(cContainer===null) break;
+		addInput.bind(this, elem, cContainer, "Included"+i)();
+		}
+		
+		//upto 5 additional EXCLUDED category inputs can be added
+		for (i = 1; i <= 5; i++) {
+		cContainer = document.getElementById("excludedCat"+i+"Container");
+		if(cContainer===null) break;
+		addInput.bind(this, elem, cContainer, "Excluded"+i)();
+		}
+		
+		var searchButton = document.createElement("button");
+		searchButton.type = "button";
+		searchButton.innerHTML = "Search";
+		searchButton.addEventListener("click", updateContent.bind(this, elem));
+		
+		document.getElementById("filters").appendChild(searchButton);
+	}
+	
+	var divBox = document.getElementById("search-in-cats");
+	addItems(divBox);	
+}
+switch (mw.config.get('wgPageName')) {
+	case "User:NotoroX/CardSearchV2": //test page
+	case "Advanced_Card_Search":
+		searchJavaScript();
+}
+//======================= End of card data search code =============================

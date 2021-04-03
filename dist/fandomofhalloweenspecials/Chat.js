@@ -35,7 +35,7 @@ window.EmoticonsWindowConfig = {
  
 /* Chat topic */
 //Remember to escape single quotes in the topic using \' to prevent this from breaking
-var chatTopic = 'Welcome to the Miraculous Ladybug Wiki chat.<br>Please read <a href="Miraculous_Ladybug_Wiki:Chatroom Policy" target="_blank">the rules</a> before chatting.';
+var chatTopic = 'Welcome to the Fandom of Halloween Specials Wiki chat.<br>Please read <a href="Fandom_of_Halloween_Specials_Wiki:Chatroom Policy" target="_blank">the rules</a> before chatting.';
 $(function() {
     $('#ChatHeader .public.wordmark').prepend('<div class="chattopic">'+chatTopic+'</div>');
 });

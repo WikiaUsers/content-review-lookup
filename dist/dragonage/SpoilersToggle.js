@@ -77,6 +77,8 @@ mw.loader.using(['jquery.cookie']).then(function() {
         }
     }
 
-    toggleSpoilers(mw.util.$content, true);
-    mw.hook('wikipage.content').add(toggleSpoilers);
+    $(function() {
+        toggleSpoilers(mw.util.$content, true);
+        mw.hook('wikipage.content').add(toggleSpoilers);
+    });
 });

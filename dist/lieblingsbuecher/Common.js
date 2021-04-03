@@ -13,7 +13,7 @@ importArticles({
         "MediaWiki:TabberTech.js",
         "MediaWiki:Bewertung.js",
         "MediaWiki:Functions.js",
-        "w:c:de.harry-grangers-test:UserContribs.js",
+        "w:c:de.harry-grangers-test:MediaWiki:UserContribs.js",
         "w:c:de.harry-grangers-test:MediaWiki:Summaries.js"
     ]
 });
@@ -34,9 +34,9 @@ importScriptPage('WikiaNotification/code.js', 'dev');
  }*/
 
 /* KONFIGURATION MASTHEAD-BP-ZÄHLER */
-config = {
+var config = {
     newpages_created: "BuchPorträts erstellt"
-}
+};
 
 
 /* ANPASSUNG "MITMACHEN"-ROLL-UP */
@@ -45,27 +45,27 @@ config = {
  * @param wp - die gewünschte Position des neuen Eintrags
  * @param ne - das einzufügende Element
  */
-function eintrageinfügen(wp, ne) {
+function eintrageinfuegen(wp, ne) {
     var mitmachen = $('#WikiHeader > .buttons > nav > .WikiaMenuElement > li');
     if (mitmachen.length >= wp) {
-        mitmachen.slice(wp-1, wp).before(ne)
+        mitmachen.slice(wp-1, wp).before(ne);
     } else {
-        mitmachen.parent().append(ne)
+        mitmachen.parent().append(ne);
     }
 }
 
 $(function() {
-  eintrageinfügen(2, '<li><a href=' + mw.util.wikiGetlink('Community:BuchPorträt erstellen') + '">BuchPorträt erstellen</a></li>');
+  eintrageinfuegen(2, '<li><a href=' + mw.util.getUrl('Community:BuchPorträt erstellen') + '">BuchPorträt erstellen</a></li>');
 });
 
 /* Anpassbare Seitentitel */
 function titleRewrite() {
     var neuerTitel = $('#neuer_Titel');
-    if (neuerTitel.length == 0) {
+    if (!neuerTitel.length) {
         return;
     }
     var alterTitel = $('.WikiaPageHeader > h1');
-    if (alterTitel.length == 0) {
+    if (!alterTitel.length) {
         alterTitel = $('#firstHeading');
         neuerTitel.addClass('firstHeading');
         neuerTitel.attr('id', 'firstHeading');
@@ -83,7 +83,7 @@ $(function() {
 function UserNameReplace() {
   if ( typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace )
     return;
-  $('span.insertusername').text(wgUserName);
+  $('span.insertusername').text(mw.config.get('wgUserName'));
 }
 $(UserNameReplace);
 
@@ -168,30 +168,30 @@ if( typeof ToggleFading == "number" ) {
 
 /* BUCH DES MONATS / LATEST COMMENTS / "ICH LESE GERADE" */
  
-addOnloadHook(function () {
+$(document).ready(function () {
     importArticlesCallback([
         {
             page: 'w:c:de.harry-grangers-test:MediaWiki:Sidebar.js',
             type: 'scripts',
             callback: function() {
-    //Buch des Monats
-    curdate = new Date();
-    curmonth = curdate.getMonth();
-    curyear = curdate.getFullYear();
-    monthNames = wgMonthNames.slice(0); // clone
-    monthNames.shift(); // remove unnecessary empty string as first item
-    bdmNextMonth = monthNames[(curmonth + 1) % 12];
-    bdmYear = curmonth == 11 ? curyear + 1 : curyear;
-    bdmDescription = $('<div />').addClass('description').append(
-        'Wähle das ',
-        $('<b />').text('Buch des Monats'),
-        ' für ' + bdmNextMonth + '!'
-    );
-    bdmButton = $('<a />')
-                    .addClass('button')
-                    .text('Abstimmen')
-                    .attr('href', mw.util.wikiGetlink('Buch des Monats: Abstimmung für ' + bdmNextMonth + '_' + bdmYear));
-    createSidebarModule('',bdmDescription.wrapAll('<div>').parent().html() + bdmButton.wrapAll('<div>').parent().html(),'BdM',true);/*
+			    //Buch des Monats
+			    curdate = new Date();
+			    curmonth = curdate.getMonth();
+			    curyear = curdate.getFullYear();
+			    monthNames = mw.config.get('wgMonthNames').slice(0); // clone
+			    monthNames.shift(); // remove unnecessary empty string as first item
+			    bdmNextMonth = monthNames[(curmonth + 1) % 12];
+			    bdmYear = curmonth == 11 ? curyear + 1 : curyear;
+			    bdmDescription = $('<div />').addClass('description').append(
+			        'Wähle das ',
+			        $('<b />').text('Buch des Monats'),
+			        ' für ' + bdmNextMonth + '!'
+			    );
+			    bdmButton = $('<a />')
+			                    .addClass('button')
+			                    .text('Abstimmen')
+			                    .attr('href', mw.util.wikiGetlink('Buch des Monats: Abstimmung für ' + bdmNextMonth + '_' + bdmYear));
+			    createSidebarModule('', bdmDescription.wrapAll('<div>').parent().html() + bdmButton.wrapAll('<div>').parent().html(), 'BdM', true);/*
 
                 //Latest Comments
                 if(!isUserpage()) {
@@ -207,7 +207,8 @@ addOnloadHook(function () {
                     createSidebarModule(
                         'Ich lese gerade',
                         $('<div />').addClass('book').html(currentBook .find('[data-book]').html()),
-                        'current-book');
+                        'current-book'
+                    );
                 }
             }
         }

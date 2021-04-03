@@ -1,140 +1,177 @@
 /**
  * Any JavaScript here will be loaded for all users on every page load.
  */
-'use strict';
-
+ 
+// jshint browser: true, devel: true, jquery: true
+// jshint strict: true, freeze: true, eqeqeq: true, futurehostile: true
+// jshint newcap: true, noarg: true, quotmark: single, shadow: outer
+// jshint latedef: true, undef: true, unused: true
+/* globals mw */
+ 
 /**
- * UserTags
- * Setup for UserTags imported module.
+ * Initialization IIFE.
+ * @returns {void}
  */
-window.UserTagsJS = {
-    modules: {},
-    tags: {
-        'bureaucrat': {
-            u: 'Old Hunter'
-        },
-        'sysop': {
-            u: 'Old Hunter'
-        },
-        'threadmoderator': {
-            u: 'Blood Minister'
-        },
-        'chatmoderator': {
-            u: 'Blood Minister'
-        },
-        'content-moderator': {
-            u: 'Hunter'
-        },
-        'autoconfirmed': {
-            u: 'Paleblood'
-        },
-        'bot': { 
-            u: 'Little One' 
-        },
-        'bot-global': { 
-            u: 'Little One' 
-        },
-        'inactive': { 
-            u: 'Blood Drunk' 
-        }
-    }
-};
-/**
- * Tooltips
- * Tooltip setup for own tooltip module.
- */
-window.tagList = {
-    'Old Hunter': 'Wiki Administration',
-    'Blood Minister': 'Wiki Moderator',
-    'Hunter': 'Wiki Content Moderator',
-    'Paleblood': 'Auto-confirmed User',
-    'Little One': 'Bot',
-    'Blood Drunk': 'Inactive User',
-    'Staff': 'Fandom Staff'
-};
-/**
- * Auto Refresh
- * Setup for auto-refresh imported module.
- */
-window.AjaxRCRefreshText = 'Auto-refresh';
-window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
-window.ajaxPages = [
-    'Special:RecentChanges',
-    'Special:WikiActivity', 
-    'Special:AllPages', 
-    'Special:UncategorizedPages'
-];
-/**
- * RevealAnonIP
- * Setup for the RevealAnonIP module
- * - Changes "A Fandom Contributor" to their IP address.
- */
-window.RevealAnonIP = {
-    permissions: ['bureaucrat', 'sysop', 'staff', 'helper']
-};
-/**
- * AddRailModule
- * Setup for AddRailModule
- * - Allows easy custom additions to the siderail.
- */
-window.AddRailModule = [
-    {
-        page: 'Template:DiscussionsRailModule',
-        prepend: true,
-        maxAge: 86400
-    }
-];
-/** 
- * PageEditInfo
- * Setup for PageEditInfo submodules.
- */
-/**
- * PageCreator
- * Setup for PageCreator imported module.
- */
-window.pageCreatorConfig = {
-    namespaces: 'all',
-    useAvatar: false,
-    useTimestamp: true,
-    useUTC: true,
-    useTimeago: true
-};
-/**
- * LastEdited
- * Setup for LastEdited imported module.
- */
-window.lastEdited = {
-    avatar: false,
-    avatarsize: 20,
-    size: false,
-    diff: true,
-    comment: false,
-    newpage: false,
-    time: 'timeago',
-    timezone: 'UTC',
-    lang: 'en-us',
-    namespaces: {
-        exclude: []
-    },
-    pages: []
-};
-/**
- * Avoids polluting the global scope, only runs when everything is ready.
- */
-window.addOnloadHook(function () {
-    var mw = window.mw;
-    var $ = window.jQuery;
-    
-    mw.hook('DOMTools').add(function (DOMTools) {
+;(function () {
+	'use strict';
+	/**
+ 	 * UserTags
+ 	 * Setup for UserTags imported module.
+ 	 */
+	window.UserTagsJS = {
+    	modules: {},
+    	tags: {
+        	'bureaucrat': {
+            	u: 'Old Hunter'
+        	},
+        	'sysop': {
+            	u: 'Old Hunter'
+        	},
+        	'threadmoderator': {
+            	u: 'Blood Minister'
+        	},
+        	'chatmoderator': {
+            	u: 'Blood Minister'
+        	},
+        	'content-moderator': {
+            	u: 'Hunter'
+        	},
+        	'autoconfirmed': {
+            	u: 'Paleblood'
+        	},
+        	'bot': { 
+            	u: 'Little One' 
+        	},
+        	'bot-global': { 
+            	u: 'Little One' 
+        	},
+        	'inactive': { 
+            	u: 'Blood Drunk' 
+        	}
+    	}
+	};
+	/**
+ 	 * Tooltips
+ 	 * Tooltip setup for own tooltip module.
+ 	 */
+	window.tagList = {
+    	'Old Hunter': 'Wiki Administration',
+    	'Blood Minister': 'Wiki Moderator',
+    	'Hunter': 'Wiki Content Moderator',
+    	'Paleblood': 'Auto-confirmed User',
+    	'Little One': 'Bot',
+    	'Blood Drunk': 'Inactive User',
+    	'Staff': 'Fandom Staff'
+	};
+	/**
+ 	 * Auto Refresh
+ 	 * Setup for auto-refresh imported module.
+ 	 */
+	window.AjaxRCRefreshText = 'Auto-refresh';
+	window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
+	window.ajaxPages = [
+    	'Special:RecentChanges',
+    	'Special:WikiActivity', 
+    	'Special:AllPages', 
+    	'Special:UncategorizedPages'
+	];
+	/**
+ 	 * RevealAnonIP
+ 	 * Setup for the RevealAnonIP module
+ 	 * - Changes "A Fandom Contributor" to their IP address.
+ 	 */
+	window.RevealAnonIP = {
+    	permissions: ['bureaucrat', 'sysop', 'staff', 'helper']
+	};
+	/**
+ 	 * AddRailModule
+ 	 * Setup for AddRailModule
+ 	 * - Allows easy custom additions to the siderail.
+ 	 */
+	window.AddRailModule = [
+    	{
+        	page: 'Template:DiscussionsRailModule',
+        	prepend: true,
+        	maxAge: 86400
+    	}
+	];
+	/** 
+ 	 * PageEditInfo
+ 	 * Setup for PageEditInfo submodules.
+ 	 */
+	/**
+ 	 * PageCreator
+ 	 * Setup for PageCreator imported module.
+ 	 */
+	window.pageCreatorConfig = {
+    	namespaces: 'all',
+    	useAvatar: false,
+    	useTimestamp: true,
+    	useUTC: true,
+    	useTimeago: true
+	};
+	/**
+ 	 * LastEdited
+ 	 * Setup for LastEdited imported module.
+ 	 */
+	window.lastEdited = {
+    	avatar: false,
+    	avatarsize: 20,
+    	size: false,
+    	diff: true,
+    	comment: false,
+    	newpage: false,
+    	time: 'timeago',
+    	timezone: 'UTC',
+    	lang: 'en-us',
+    	namespaces: {
+        	exclude: []
+    	},
+    	pages: []
+	};
+	/**
+	 * Wiki scripting.
+	 */
+	/**
+	 * Cache of fired events.
+	 * @private
+	 */
+	var fired = new mw.Map();
+	/**
+	 * Hook function to be fired once page is ready.
+	 */
+	function ready (DOMTools) {
+		if (fired.exists('DOMTools')) return;
         /**
          * Script for collapsible tables.
          */
         ;(function () {
-            var tables = DOMTools.queryAll('table.collapsible'),
-                len = tables.length, i;
+            var tables = DOMTools.queryAll('table.collapsible');
             /**
              * Setup functions
              */
+			function collapseText (table) {
+                return DOMTools.hasClass(table, 'collapsed') ? 'show' : 'hide';
+            }
+			
+			function collapseTable (e, t) {
+                var $elems = $(t.querySelector('td').parentElement);
+                if (t.classList.contains('collapsed')) {
+                    $elems.show('fast');
+                    DOMTools.removeClass(t, 'collapsed');
+                    DOMTools.text(e, collapseText(t));
+                } else {
+                    $elems.hide('fast');
+                    DOMTools.addClass(t, 'collapsed');
+                    DOMTools.text(e, collapseText(t));
+                }
+            }
+            
+            function handleTable (link, table, event) {
+                event.preventDefault();
+                collapseTable(link, table);
+            }
+			
             function appendCollapseLink (table) {
                 if (!table) return;
                 
@@ -145,7 +182,6 @@ window.addOnloadHook(function () {
                 var hs = collapseText(table),
                     link = DOMTools.parseHTML('<a href="#">' + hs + '</a>'),
                     fn = handleTable.bind(null, link, table);
-
                 DOMTools.on(link, 'click.collapseLink', fn);
                 
                 var el = DOMTools.parseHTML('<span class="collapseLink"></span>');
@@ -159,28 +195,6 @@ window.addOnloadHook(function () {
                 
                 if (DOMTools.hasClass(table, 'collapsed')) {
                     DOMTools.css(DOMTools.query('td', table).parentElement, 'display', 'none');
-                }
-            }
-            
-            function collapseText (table) {
-                return DOMTools.hasClass(table, 'collapsed') ? 'show' : 'hide';
-            }
-            
-            function handleTable (link, table, event) {
-                event.preventDefault();
-                collapseTable(link, table);
-            }
-             
-            function collapseTable (e, t) {
-                var $elems = $(t.querySelector('td').parentElement);
-                if (t.classList.contains('collapsed')) {
-                    $elems.show('fast');
-                    DOMTools.removeClass(t, 'collapsed');
-                    DOMTools.text(e, collapseText(t));
-                } else {
-                    $elems.hide('fast');
-                    DOMTools.addClass(t, 'collapsed');
-                    DOMTools.text(e, collapseText(t));
                 }
             }
             /**
@@ -219,7 +233,7 @@ window.addOnloadHook(function () {
                     xhr.send();
                 }
                 
-                return new Promise(cb);
+                return new Promise(cb); // jshint ignore: line
             }
             
             function appendToGlobalCount (data) {
@@ -232,7 +246,7 @@ window.addOnloadHook(function () {
                     target = DOMTools.query('.globaledit-label', base),
                     clone;
                 
-                if (!target) return Promise.reject(new Error('Unable to find label.'));
+                if (!target) return Promise.reject(new Error('Unable to find label.')); // jshint ignore: line
                 
                 clone = target.cloneNode(true);
                 DOMTools.text(clone, 'global edits since account creation');
@@ -241,7 +255,7 @@ window.addOnloadHook(function () {
                     document.createTextNode(date)
                 ]);
                 target.replaceWith(clone);
-                return Promise.resolve(clone);
+                return Promise.resolve(clone); // jshint ignore: line
             }
             
             function removeLinkedCSS () {
@@ -255,16 +269,18 @@ window.addOnloadHook(function () {
                 
                 try {
                     link.parentElement.removeChild(link);
-                    return Promise.resolve(true);
+                    return Promise.resolve(true); // jshint ignore: line
                 } catch(e) {
-                    return Promise.reject(e);
+                    return Promise.reject(e); // jshint ignore: line
                 }
             }
             
             function init (GlobalEditcount) {
+				if (fired.exists('GlobalEditcount')) return;
                 getData(GlobalEditcount.user)
                     .then(appendToGlobalCount, console.error)
                     .then(removeLinkedCSS, console.error);
+				fired.set('GlobalEditcount', true);
             }
             
             mw.hook('GlobalEditcount.loaded').add(init);
@@ -327,19 +343,37 @@ window.addOnloadHook(function () {
             DOMTools.appendTo(document.head, script);
         })();
         /**
-         * Highlight-js
+         * Highlight-js and hljs
          */
         ;(function () {
             var operations = {
-                addLines: function (ln) {
-                    ln.process();
+                addLines: function (hljs) {
+                	return function (ln) {
+						if (fired.exists('highlightjs')) return hljs;
+						ln.process();
+						operations.highlightBlocks(hljs);
+						fired.set('highlightjs', true);
+					};
+                },
+                highlightBlocks: function (hljs) {
+                	var blocks = DOMTools.queryAll('code:not(.no-language) pre');
+                	if (!blocks.length) return hljs;
+                	blocks.forEach(function (block) {
+					    hljs.highlightBlock(block);
+                	});
+                	return hljs;
                 },
                 initHighlights: function (hljs) {
-                    hljs.initHighlighting();
-                    mw.hook('dev.CodeblockLineNumbers').add(operations.addLines);
+                	mw.hook('wikipage.content').add(function ($content) {
+                		if (!$content) $content = $('body');
+                		operations.highlightBlocks(hljs);
+                	});
+                    mw.hook('dev.CodeblockLineNumbers').add(operations.addLines(hljs));
+					fired.set('highlightjs-init', true);
                     return hljs;
                 },
                 init: function (hljs) {
+					if (fired.exists('highlightjs-init')) return;
                     hljs.useTheme('atom-one-dark');
                     hljs.loadAllLanguages()
                         .then(operations.initHighlights, console.error)
@@ -348,23 +382,54 @@ window.addOnloadHook(function () {
                 },
                 addButtonListeners: function (hljs) {
                     var buttons = DOMTools.queryAll('.codeblock-theme-button'),
-                        bound;
+                        fn;
+                        
                     if (!buttons.length) return;
                     buttons.forEach(function (button) {
-                        bound = operations.buttonListener.bind(button, hljs);
-                        DOMTools.on(button, 'click.CodeBtnTheme', bound);
+                        fn = operations.buttonListener(button, hljs);
+                        DOMTools.on(button, 'click.CodeBtnTheme', fn);
                     });
                 },
-                buttonListener: function (hljs, e) {
-                    var theme = this.getAttribute('data-theme');
-                    if (!theme) return;
-                    hljs.useTheme(theme);
+                buttonListener: function (button, hljs) {
+					return function () {
+                    	var theme = button.getAttribute('data-theme');
+                    	if (!theme) return;
+                    	hljs.useTheme(theme);
+					};
                 }
             };
             
             mw.hook('dev.highlight').add(operations.init);
         })();
-    });
-});
-
+        ;(function () {
+        	var url = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/highlight.min.js';
+        	if (window.hljs || document.querySelector('[href="' + url + '"]')) return;
+        	$
+        	.getScript(url)
+        	.then(function () {
+        		mw.hook('wikipage.content').add(function ($content) {
+        			if (!$content) $content = $('body');
+        			$content.find('.mw-highlight pre').each(function (index, element) {
+        				window.hljs.highlightBlock(element);
+        			});
+        		});
+        	}, console.error);
+        })();
+		fired.set('DOMTools', true);
+    }
+	/**
+	 * Wait for page ready and prepare hook.
+	 */
+	function wait () {
+		if (document.readyState !== 'complete') return setTimeout(wait, 1000);
+		/**
+ 		 * DOMTools own module hook.
+ 		 * Module source: https://bloodborne.fandom.com/wiki/MediaWiki:DOMTools.js
+ 		 */
+    	mw.hook('DOMTools').add(ready);
+	}
+	
+	wait();
+})();
+ 
 /*@end@*/

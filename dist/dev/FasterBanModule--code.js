@@ -11,7 +11,7 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         'wgCanonicalSpecialPageName'
     ]);
     if (
-        !/(chatmoderator|sysop|threadmoderator|staff|helper|vstf)/
+        !/(chatmoderator|sysop|threadmoderator|staff|wiki-manager|helper|soap)/
             .test(config.wgUserGroups) ||
         config.wgCanonicalSpecialPageName !== 'Chat' ||
         window.fasterBanLoaded

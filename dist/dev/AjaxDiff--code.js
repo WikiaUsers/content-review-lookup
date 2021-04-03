@@ -25,7 +25,7 @@
         selector,
         parent,
         loadingGif = 'https://slot1-images.wikia.nocookie.net/__cb1557858431190/common/skins/common/images/ajax.gif',
-        powergroups = /staff|vstf|helper|sysop|wiki-manager/;
+        powergroups = /staff|soap|helper|sysop|wiki-manager/;
 
     // switch selector for special page
     switch (specialPage) {
@@ -58,7 +58,7 @@
         createModal();
         $.get(url).done(function(data) {
             if (data.error)
-                return alert(lng.errorapi + ': ' + data.error.info);
+                return alert(lng('errorapi').plain() + ': ' + data.error.info);
             var content = (type === 'diff')
                 ? $(data).find('.diff').html()
                 : $(data).find('.mw-content-text').html();
@@ -77,18 +77,18 @@
             return;
         }
 
-        var title = lng.loading,
+        var title = lng('loading').plain(),
             id = 'modal-loading',
             container = $('<center>'),
             btns = [
             {
-                message: lng.cancelbutton,
+                message: lng('cancelbutton').escape(),
                 handler: function() {
                     $('#' + id).closeModal();
                 }
             }, {
                 id: 'previewpagebutton',
-                message: lng.previewbutton,
+                message: lng('previewbutton').escape(),
                 defaultButton: false,
                 handler: function() {
                     var pagelink = $('#mw-diff-ntitle1 > strong > a').attr('href');
@@ -96,14 +96,14 @@
                 }
             }, {
                 id: 'blockbutton',
-                message: lng.blockbutton,
+                message: lng('blockbutton').escape(),
                 defaultButton: true,
                 handler: function() {
                     blockuser($('#mw-diff-ntitle2 > .mw-userlink').text());
                 }
             }];
         if (type === 'diff') {
-            title = lng.diffpreview + ': ' + pageTitle;
+            title = lng('diffpreview').plain() + ': ' + pageTitle;
             id = 'modal-diff';
             container = $('<div>', {
                 'class': 'diff',
@@ -111,7 +111,7 @@
                 css: {'max-height': $(window).height() - 250 }
             });
         } else if (type === 'preview') {
-            title = lng.pageviewver + ': ' + pageTitle;
+            title = lng('pageviewver').plain() + ': ' + pageTitle;
             id = 'modal-preview';
             btns = [btns[0]];
             container = $('<div>', {
@@ -124,7 +124,7 @@
         }
         container.html(content || $('<img>').attr('src', loadingGif));
 
-        $.showCustomModal(title, container, {
+        $.showCustomModal(mw.html.escape(title), container, {
             id: id,
             width: $('#WikiaPage').width(),
             buttons: btns
@@ -152,7 +152,7 @@
         if (!powergroups.test(mw.config.get('wgUserGroups').join()))
             $block.remove();
         else
-            $block.text(lng.blockbutton + ': ' + $('#mw-diff-ntitle2 > .mw-userlink').text());
+            $block.text(lng('blockbutton').plain() + ': ' + $('#mw-diff-ntitle2 > .mw-userlink').text());
         $('#up, #down').remove();
         $('#modal-diff .modalToolbar').prepend([$up, $down]);
         $('#mw-diff-otitle4 > a').click(navDiff);
@@ -163,17 +163,17 @@
     function modifyModal(content) {
         var $block = $('#blockbutton');
         $('#DiffView').html(content);
-        $('#modal-diff > h1').text(lng.diffpreview + ': ' + pageTitle);
+        $('#modal-diff > h1').text(lng('diffpreview').plain() + ': ' + pageTitle);
         $('#mw-diff-otitle4 > a').click(navDiff);
         $('#mw-diff-ntitle4 > a').click(navDiff);
         if($block.length)
-            $block.text(lng.blockbutton + ': ' + $('#mw-diff-ntitle2 > .mw-userlink').text());
+            $block.text(lng('blockbutton').plain() + ': ' + $('#mw-diff-ntitle2 > .mw-userlink').text());
     }
 
     function doRollback(e) {
         e.preventDefault();
         $.post($(this).attr('href'));
-        alert(lng.rollbacksuccess);
+        alert(lng('rollbacksuccess').plain());
         $(this).parent().remove();
     }
 
@@ -203,13 +203,13 @@
             return false;
 
         if (!expiry)
-            expiry = prompt(lng.expiry, AjaxDiff.expiry);
+            expiry = prompt(lng('expiry').plain(), AjaxDiff.expiry);
 
         if (!reason)
-            reason = prompt(lng.reason, AjaxDiff.reason);
+            reason = prompt(lng('reason').plain(), AjaxDiff.reason);
 
         if (!user || !expiry) {
-            alert(lng.emptyvariables);
+            alert(lng('emptyvariables').plain());
             return false;
         }
         $.get(mw.util.wikiScript('api'), {
@@ -231,10 +231,10 @@
                 token: data.query.pages[Object.keys(pages)[0]].blocktoken
             }, function(data) {
                 if (data.error) {
-                    alert(lng.errorapi + " : " + data.error.info);
+                    alert(lng('errorapi').plain() + " : " + data.error.info);
                     return false;
                 } else {
-                    alert(lng.success);
+                    alert(lng('success').plain());
                     $('#blockbutton').attr('disabled', true);
                 }
             });
@@ -253,14 +253,11 @@
         article: 'u:dev:MediaWiki:AjaxDiff.css'
     });
 
-    mw.hook('dev.i18n').add(function (i18n) {
-        i18n.loadMessages('AjaxDiff').done(function(i18n) {
-            lng = i18n._messages.en;
-            for(var i in lng) {
-                lng[i] = i18n.msg(i).plain();
-            }
+    mw.hook('dev.i18n').add(function (i18njs) {
+        i18njs.loadMessages('AjaxDiff').done(function(i18n) {
+            lng = i18n.msg;
             AjaxDiff.expiry = AjaxDiff.expiry || '3 days';
-            AjaxDiff.reason = AjaxDiff.reason || lng.vandalism;
+            AjaxDiff.reason = AjaxDiff.reason || lng('vandalism').plain();
             init();
         });
     });

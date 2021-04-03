@@ -14,7 +14,7 @@
                 twttr.widgets.load();
             }
         } else {
-            if ($('#twitter-wjs').exists()) {
+            if ($('#twitter-wjs').length) {
                 return;
             }
             var $script = $('<script>', {

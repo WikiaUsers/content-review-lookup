@@ -1,0 +1,3 @@
+window.NoLicenseWarning = {
+    forceLicense: true,
+};

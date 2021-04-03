@@ -1,14 +1,4 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* Replaces {{USERNAME}} with the name of the user browsing the page.
-   Requires copying Template:USERNAME. */
- 
-function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
-    $("span.insertusername").html(wgUserName);
- }
- addOnloadHook(UserNameReplace);
- 
-/* End of the {{USERNAME}} replacement */
 
 /* Auto updating recent changes opt-in
  * See w:c:dev:AjaxRC for info & attribution 
@@ -17,7 +7,7 @@ function UserNameReplace() {
 AjaxRCRefreshText = 'Auto-refresh';
 AjaxRCRefreshHoverText = 'Automatically refresh the page';
 ajaxPages = ["Special:RecentChanges","Special:WikiActivity"];
- 
+ /*
 importArticles({
     type: 'script',
     articles: [
@@ -25,37 +15,13 @@ importArticles({
         'u:kocka:MediaWiki:AjaxCommentDelete/code.js',
         // ...
     ]
-});
-
-importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:YoutubePlayer/code.js'
-    ]
-});
-
+});*/
 batchDeleteDelay = 1000;
-importScriptPage('MediaWiki:AjaxBatchDelete/code.2.js', 'dev');
 
 massRenameDelay = 1000; // Optional
 massRenameSummary = 'automatic'; // Optional
-importScriptPage('MediaWiki:MassRename/code.js', 'dev');
-
-if (mw.config.get("wgUserGroups").indexOf('sysop') > -1) {
-  massRenameDelay = 1000;
-  massRenameSummary = 'automatic';
-  importScriptPage('MediaWiki:MassRename/code.js', 'dev');
-}
 
 massCategorizationDelay = 1000;
-importScriptPage('MediaWiki:MassCategorization/code.js', 'dev');
-
-if (mw.config.get("wgUserGroups").indexOf('sysop') > -1) {
-  massCategorizationDelay = 1000;
-  importScriptPage('MediaWiki:MassCategorization/code.js', 'dev');
-}
 
 window.LockOldBlogs = {
     expiryDays: 60,
@@ -64,22 +30,6 @@ window.LockOldBlogs = {
 };
  
  
-importArticles({
-    type: "script",
-    articles: [
-        "u:dev:MediaWiki:LockOldBlogs/code.js"
-    ]
-});
-
-importArticles({
-    type: "script",
-    articles: [
-        "w:c:dev:MediaWiki:Countdown/code.js"
-    ]
-});
-
-importScriptPage('DiscussionsLink/code.js', 'dev');
-
 /**
 * @author: Flightmare (http://elderscrolls.wikia.com/wiki/User:Flightmare)
 * @version: 1.0
@@ -138,38 +88,7 @@ function createDProfiles() {
     }
 }
 
-addOnloadHook(createDProfiles);
-
-importArticles({
-    type: 'script',
-    articles: [
-        // ...
-        'w:c:dev:ReferencePopups/code.js',
-        // ...
-    ]
-});
-
-importScriptPage("PageRenameAuto-update/code.js", "dev");
-
-importArticles({
-    type: "script",
-    articles: [
-        "u:dev:AjaxDelete/code.js"
-    ]
-});
-
-importArticles({
-    type: 'script',
-    articles: [
-        // ...
-        'u:kocka:MediaWiki:AjaxThreadDelete/code.js',
-        // ...
-    ]
-});
-
-importScriptPage( 'MediaWiki:AjaxRename/code.js', 'dev' );
-
-importScriptPage('MediaWiki:AjaxUndo/code.js', 'dev');
+$(createDProfiles);
 
 mw.loader.using( ['jquery.ui.tabs'], function() {
     $(function() {

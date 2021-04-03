@@ -4,8 +4,9 @@
 // todo: find dynacat w\ images > add chck agnst 2nd img
 (function($, ci) {
     // debug
+    var urlVars = new URLSearchParams(location.search);
     ci.debug = ci.debug !== undefined ? ci.debug : false;
-    ci.debug = $.getUrlVar('debug') || ci.debug;
+    ci.debug = urlVars.get('debug') || urlVars.get('debug1') || ci.debug;
     // restrict to ns:14 (category)
     ci.restrict = ci.restrict !== undefined ? ci.restrict : true;
     // dbl run or wrong conditions

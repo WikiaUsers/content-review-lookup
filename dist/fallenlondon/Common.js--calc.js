@@ -56,7 +56,7 @@ $('.jcConfig').each(function() {
 	$form = $('<form />').attr({'action': '#', 'id': 'jcForm' + formId}).submit(function() {
 		function dispResult(response) {
 			$('#' + formId + ' .jcSubmit input').val('Submit').removeAttr('disabled');
-			$('#bodyContent #' + resultId + ',#WikiaArticle #' + resultId).empty().removeClass('jcError').html(response.parse.text['*']);
+			$('#' + resultId).empty().removeClass('jcError').html(response.parse.text['*']);
 			$( 'table.sortable' ).tablesorter()
 		}
 
@@ -190,7 +190,7 @@ $('.jcConfig').each(function() {
 	$table.append($tr);
 
 	$form.append($table);
-	$('#bodyContent #' + formId + ',#WikiaArticle #' + formId).empty().append($form);
+	$('#' + formId).empty().append($form);
 
 	// Enable suggest on article fields
 	for (var i in acInputs) {

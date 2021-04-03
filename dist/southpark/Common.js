@@ -33,15 +33,16 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
 	'Forsbern': ['fired'],
 	'VadimZ': ['fired'],
-	'Jamesb1':['leadbcrat'],
 	'Tomius':['founder'],
 	'HighJewElfKing':['seniorbcrat'],
 	'Cryptar':['sysop'],
 	'LuigiMaster123':['sysop'],
 	'Technical58CZ':['sysop'],
-	'SilasGreaves12':['assistantbcrat'],
+	'SilasGreaves12':['leadbcrat'],
 	'1212DragonGirl':['discordmod'],
 	'Airborn56':['discordmod'],
+	'Trisolaris':['sysop'],
+	'HerbiMetal':['sysop']
 };
 
 

@@ -1,167 +1,282 @@
+/* Scripts importados via [[MediaWiki:ImportJS]]
+Mediawiki:Common.js/DynamicStats.js
+Mediawiki:Common.js/gridfiltering.js
+Mediawiki:Common.js/itemGridfiltering.js
+Mediawiki:Common.js/avatarGridfiltering.js
+Mediawiki:Common.js/esportsGridfiltering.js
+Mediawiki:Common.js/levelselect.js
+Mediawiki:Common.js/StatWheel.js
+Mediawiki:Common.js/StickyHeader.js
+Mediawiki:Common.js/DynamicFontSize.js
+Mediawiki:Common.js/Banner.js
+Mediawiki:Common.js/rosterFilter.js
+Mediawiki:Common.js/CustomTab.js
+dev:DiscordModule/code.js
+dev:InputUsername/code.js
+dev:OggPlayer.js
+dev:RCStats.js
+dev:Tooltips.js
+dev:TabViewEditLinks/code.js
+dev:WikiManager_Nameplate.js
+*/
+
 mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
-/* Begin of mw.loader.using callback */
+/* Início do mw.loader.using retorno de chamada */
 
-/**
- * @source www.mediawiki.org/wiki/Snippets/Load_JS_and_CSS_by_URL
- * @rev 5
- */
-// CSS
-var extraCSS = mw.util.getParamValue( 'withCSS' );
-if ( extraCSS ) {
-	if ( extraCSS.match( /^MediaWiki:[^&<>=%#]*\.css$/ ) ) {
-		importStylesheet( extraCSS );
-	} else {
-		alert( 'Only pages from the MediaWiki namespace are allowed.' );
-		//mw.notify( 'Only pages from the MediaWiki namespace are allowed.', { title: 'Invalid withCSS value' } );
-	}
-}
- 
-// JS
-var extraJS = mw.util.getParamValue( 'withJS' );
-if ( extraJS ) {
-	if ( extraJS.match( /^MediaWiki:[^&<>=%#]*\.js$/ ) ) {
-		importScript( extraJS );
-	} else {
-		alert( 'Only pages from the MediaWiki namespace are allowed.' );
-		//mw.notify( 'Only pages from the MediaWiki namespace are allowed.', { title: 'Invalid withJS value' } );
-	}
-}
-
-// From http://dragonage.wikia.com/wiki/MediaWiki:Common.js
-// Wikia's own WikiaScriptLoader isn't automatically included in other skins such as monobook.
-// Presumably this is because they no longer support them. This checks to see if WikiaScriptLoader 
-// function reference has been declared, and if it has not, it creates it. Backwards compatibility
-// for everybody! - Blame User:Tierrie @ DA Wiki if this works. Blame someone else if it breaks.
-if(typeof WikiaScriptLoader === 'undefined') {
-  var WikiaScriptLoader=WikiaScriptLoader?WikiaScriptLoader:function(){var b=navigator.userAgent.toLowerCase();this.useDOMInjection=b.indexOf("opera")!=-1||b.indexOf("firefox")!=-1&&b.indexOf("/4.0b")==-1;this.isIE=b.indexOf("opera")==-1&&b.indexOf("msie")!=-1;this.headNode=document.getElementsByTagName("HEAD")[0]}; WikiaScriptLoader.prototype={loadScript:function(b,c){this.useDOMInjection?this.loadScriptDOMInjection(b,c):this.loadScriptDocumentWrite(b,c)},loadScriptDOMInjection:function(b,c){var a=document.createElement("script");a.type="text/javascript";a.src=b;var d=function(){a.onloadDone=true;typeof c=="function"&&c()};a.onloadDone=false;a.onload=d;a.onreadystatechange=function(){a.readyState=="loaded"&&!a.onloadDone&&d()};this.headNode.appendChild(a)},loadScriptDocumentWrite:function(b,c){document.write('<script src="'+ b+'" type="text/javascript"><\/script>');var a=function(){typeof c=="function"&&c()};typeof c=="function"&&this.addHandler(window,"load",a)},loadScriptAjax:function(b,c){var a=this,d=this.getXHRObject();d.onreadystatechange=function(){if(d.readyState==4){var e=d.responseText;if(a.isIE)eval(e);else{var f=document.createElement("script");f.type="text/javascript";f.text=e;a.headNode.appendChild(f)}typeof c=="function"&&c()}};d.open("GET",b,true);d.send("")},loadCSS:function(b,c){var a=document.createElement("link"); a.rel="stylesheet";a.type="text/css";a.media=c||"";a.href=b;this.headNode.appendChild(a)},addHandler:function(b,c,a){if(window.addEventListener)window.addEventListener(c,a,false);else window.attachEvent&&window.attachEvent("on"+c,a)},getXHRObject:function(){var b=false;try{b=new XMLHttpRequest}catch(c){for(var a=["Msxml2.XMLHTTP.6.0","Msxml2.XMLHTTP.3.0","Msxml2.XMLHTTP","Microsoft.XMLHTTP"],d=a.length,e=0;e<d;e++){try{b=new ActiveXObject(a[e])}catch(f){continue}break}}return b}};window.wsl=new WikiaScriptLoader;
-}
-
-/* Auto updating recent changes opt-in
- * See w:c:dev:AjaxRC for info & attribution 
- */
-AjaxRCRefreshText = 'Auto-refresh';
-AjaxRCRefreshHoverText = 'Automatically refresh the page';
-ajaxPages = ["Special:RecentChanges","Special:WikiActivity"];
-
-importArticles({
- type:'script',
- articles:[
-  'MediaWiki:common.js/levelselect.js',         //Levelselect on Champion pages
-  'MediaWiki:common.js/tabviewenhancements.js', //TabView enhancements
-  'u:dev:AjaxBatchDelete/code.js',
-  'u:dev:AjaxRC/code.js',
-  'u:dev:CollapsibleInfobox/code.js',
-  'u:dev:ExternalImageLoader/code.js',
-  'u:dev:OggPlayer.js',
-  'u:dev:RevealAnonIP/code.js',                 //Reveal Anonymous User IP
-  'u:dev:ShowHide/code.js',
-  'u:dev:Tooltips.js'
- ]
+    /* Config para [[MediaWiki:Common.js/gridfiltering.js]] */
+    gridContainer = '#champion-grid';
+    gridFilters = {
+        'search': 'search',
+        'jogo': ['- Jogo -',
+            ['LOL','League of Legends'],
+            ['TFT','Teamfight Tactics'],
+            ['TFT1','• Setor 1 - Guerras das Facções'],
+            ['TFT2','• Setor 2 - A Ascensão dos Elementos'],
+            ['TFT3','• Set 3 - Galáxias'],
+            ['LOR','Legends of Runeterra'],
+            ['WR','Wild Rift']
+        ],
+        'função': ['- Função -',
+            ['Suporte','Suporte'],
+            ['Disruptor','• Disruptor'],
+            ['Encantador','• Encantador'],
+            ['Lutador','Lutador'],
+            ['Investidor','• Investidor'],
+            ['Colosso','• Colosso'],
+            ['Mago','Mago'],
+            ['Artilharia','• Artilharia'],
+            ['Mago de Batalha','• Mago de Batalha'],
+            ['Obliterador','• Obliterador'],
+            ['Atirador','Atirador'],
+            ['Retalhador','Retalhador'],
+            ['Assassino','• Assassino'],
+            ['Duelista','• Duelista'],
+            ['Especialista','Especialista'],
+            ['Tanque','Tanque'],
+            ['Vanguarda','• Vanguarda'],
+            ['Protetor','• Protetor']
+        ],
+        'tipo': ['- Tipodeataque -',
+            ['Corpo a corpo','Corpo a corpo'],
+            ['À distância','À distância']
+        ]
+    };
+    
+    /* Config para [[MediaWiki:Common.js/itemGridfiltering.js]] */
+    itemGridContainer = '#item-grid';
+    itemGridFilters = {
+        'pesquisa': 'pesquisa',
+        'modos' : ['- Modos de Jogo - ',
+            ['Clássico 5v5', '• Clássico 5v5'],
+            ['ARAM', '• ARAM'],
+            ['FGM', '• FGM Exclusivo']
+        ]
+    };
+    
+    /* Config para [[MediaWiki:Common.js/avatarGridfiltering.js]] */
+    avatarGridContainer = '#avatar-grid';
+    avatarGridFilters = {
+        'search': 'search',
+        'disponibilidade': ['- Disponibilidade -',
+            ['Disponível','• Disponível'],
+            ['Legado','• Legado'],
+            ['Indisponível','• Indisponível'],
+            ['Temporário','• Temporário'],
+            ['Desbloqueado','• Criação de Conta'],
+            ['Não Lançado','• Não Lançado']
+        ],
+        'pesquisa': ['- Pesquisa -',
+            ['Loja','• Loja do Cliente'],
+            ['Riot','• Distribuição da Riot'],
+            ['Missões','• Missões'],
+            ['Pacote','• Pacotes'],
+            ['Código','• Código de Redenção'],
+            ['Criação de Conta','• Criação de Conta'],
+            ['Loja de Mercadorias','• Loja de Mercadorias']
+        ],
+        'lançamento': ['- Ano -',
+            ['2020lançamento', '• 2020'],
+            ['2019lançamento', '• 2019'],
+            ['2018lançamento', '• 2018'],
+            ['2017lançamento', '• 2017'],
+            ['2016lançamento', '• 2016'],
+            ['2015lançamento', '• 2015'],
+            ['2014lançamento', '• 2014'],
+            ['2013lançamento', '• 2013'],
+            ['2012lançamento', '• 2012'],
+            ['2011lançamento', '• 2011'],
+            ['2010lançamento', '• 2010'],
+            ['2009lançamento', '• 2009']
+        ]
+    };
+    
+    /* Config para [[MediaWiki:Common.js/esportsGridfiltering.js]] */
+    esportsGridContainer = '#esports-grid';
+    esportsGridFilters = {
+        'search': 'search',
+        'região': ['- Região -',
+            ['INT','Equipe Internacional'],
+            ['NA','América do Norte'],
+                ['US','• América do Norte'],
+            ['EU','Europa'],
+                ['DK','• Dinamarca'],
+                ['DE','• Alemanha'],
+                ['FR','• França'],
+                ['LT','• Lituânia'],
+                ['ES','• Espanha'],
+                ['SW','• Suécia'],
+                ['UA','• Ucrânia'],
+                ['UK','• Reino Unido'],
+            ['BR','Brasil'],
+            ['CN','China'],
+            ['KR','Coréia do Sul'],
+            ['LAN','América Latina do Norte'],
+                ['CO','• ColÔmbia'],
+                ['CR','• Costa Rica'],
+                ['MX','• México'],
+                ['PE','• Peru'],
+            ['LAS','América Latina do Sul'],
+                ['AR','• Argentina'],
+                ['CL','• Chile'],
+            ['OCE','Oceania'],
+                ['AU','• Austrália'],
+            ['JP','Japão'],
+            ['RU','Rússia'],
+            ['SEA','Sudeste da Ásia'],
+                ['ID','• Indonésia'],
+                ['HK','• Hong Kong'],
+                ['MY','• Malásia'],
+                ['PH','• Filipinas'],
+                ['SG','• Cingapura'],
+                ['TH','• Tailândia'],
+                ['TW','• Taiwan'],
+                ['VN','• Vietnã'],
+            ['TR','Turquia']
+        ],
+        'competição': ['- Competição -',
+            ['Internacional','Internacional'],
+                ['MSI','• Mid-Season Invitational'],
+                ['Worlds','• World Championship'],
+                ['All-Star','• All-Stars'],
+                ['Rift Rivals','• Rift Rivals'],
+            ['Regional','Regional'],
+                ['NALCS','• NA Championship Series'],
+                ['EULCS','• EU Championship Series'],
+                ['CBLOL','• CBLoL - Campeonato Brasileiro'],
+                ['CLS','• CLS - Copa Latinoamérica Sur'],
+                ['CNC','• CNC - Circuito Nacional Chile'],
+                ['GPL','• GPL - Garena Premier League'],
+                ['LAN','• LAN - Latin America Cup'],
+                ['LCK','• LCK - Champions Korea'],
+                ['LCL','• LCL - Continental League (RU)'],
+                ['LJL','• LJL - Japan League'],
+                ['LMS','• LMS - Master Series (SEA)'],
+                ['LPL','• LPL - Pro League (China)'],
+                ['LLN','• LLN - Liga Latinoamérica Norte'],
+                ['OPL','• OPL - Oceanic Pro League'],
+                ['TCL','• TCL - Turkey Champions League'],
+                ['VCS','• VCS - Vietnam Championship Series'],
+            ['Especial','Especial'],
+                ['OGN','• OGN Invitational (KR)'],
+                ['SLTV','• SLTV Star Series (RU)'],
+        ]
+    };
+    
+/* Fim do mw.loader.using retorno da chamada */
 });
 
-/***********************************************************/
-/* Sliders using jquery by User:Tierrie in Dragon Age Wiki */
-/***********************************************************/
-//wsl.loadScript("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js");
-//wsl.loadScript("http://dragonage.wikia.com/index.php?title=MediaWiki:Jquery-ui.min.js&action=raw&ctype=text/javascript");
-mw.loader.using( ['jquery.ui.tabs'], function() {
-$(function() {
-  var $tabs = $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100} } );
-  $("[class^=portal_sliderlink]").click(function() { // bind click event to link
-    $tabs.tabs('select', this.className.replace("portal_sliderlink_", ""));
-    return false;
-  });
-  $('#portal_next').click(function() {
-    $tabs.tabs('select', ($tabs.tabs('option', 'selected') == ($tabs.tabs('length'))-1) ? 0 : $tabs.tabs('option', 'selected') + 1 ); // switch to next tab
-    return false;
-  });
-  $('#portal_prev').click(function() { // bind click event to link
-    $tabs.tabs('select', ($tabs.tabs('option', 'selected') == 0) ? ($tabs.tabs('length')-1) : $tabs.tabs('option', 'selected') - 1 ); // switch to previous tab
-    return false;
-  });
-});
-} );
-
-/** Username replace function ([[Template:USERNAME]]) 
-  * Inserts user name into <span class="insertusername"></span>
-  * Originally by User:Splarka
-  * New version by User:Spang
-  * Fixed with JS provided by User:Grunny, thanks!
-  */
-$(function() {
-	if(typeof(disableUsernameReplace) !== 'undefined' && disableUsernameReplace || mw.config.get('wgUserName') === null) return;
-	$("span.insertusername").text(mw.config.get('wgUserName'));
-});
-
-/* End of mw.loader.using callback */
-} );
-
-/* Loads MathJax (http://mathjax.org) */
-(function () {
-  var script = document.createElement("script");
-  script.type = "text/javascript";
-  script.src  = "http://cdn.mathjax.org/mathjax/latest/MathJax.js";
- 
-  var config = 'MathJax.Hub.Config({' +
-                 'extensions: ["tex2jax.js"],' +
-                 'jax: ["input/TeX","output/HTML-CSS"]' +
-               '});' +
-               'MathJax.Hub.Startup.onload();';
- 
-  if (window.opera) {script.innerHTML = config}
-               else {script.text = config}
- 
-  document.getElementsByTagName("head")[0].appendChild(script);
-})();
-
-/* Custom Tooltips for use with the Tooltips/code.js */
+/* Dicas de ferramentas personalizadas para uso com o Dicas de ferramentas/code.js */
 var tooltips_list = [
-    {
-        classname: 'character_icon',
-        parse: '{'+'{Tooltip/Champion|<#character#>|<#skin#>}}',
-    },
-    {
-        classname: 'cc-tooltip', 
-        parse: '{'+'{Crowd_control_info|<#type#>}}',
-    },
-    {
-        classname: 'skin-icon', 
-        parse: '{'+'{Tooltip/Skin|<#param#>}}',
-    },
-    {
-        classname: 'skinloading-icon', 
-        parse: '{'+'{Tooltip/Skin/Loading|<#param#>}}',
-    },
-    {
-        classname: 'item-icon', 
-        parse: '{'+'{Tooltip/Item|<#param#>}}',
-    },
-    {
-        classname: 'spell-icon', 
-        parse: '{'+'{Tooltip/Spell|<#param#>}}',
-    },
-    {
-        classname: 'passive-progression', 
-        parse: '{'+'{Tooltip/Progression|<#size#>|<#values#>|<#levels#>|type=<#type#>|formula=<#formula#>}}',
-    },
-    {
-        classname: 'tooltip-sandbox', 
-        parse: '{'+'{Tooltip/Sandbox|<#v1#>|<#v2#>|<#v3#>|<#v4#>|<#v5#>|<#v6#>}}',
-    }
+    {   classname: 'ability-icon',
+        parse: '{'+'{Dicas de ferramentas/Habilidade|champion=<#champion#>|ability=<#ability#>}}'},
+    {   classname: 'buff-icon', 
+        parse: '{'+'{Dicas de ferramentas/Buff|<#param#>}}'},
+    {   classname: 'champion-icon',
+        parse: '{'+'{Dicas de ferramentas/Campeão|champion=<#champion#>|skin=<#skin#>|variant=<#variant#>}}'},
+    {   classname: 'glossary',
+        parse: '{'+'{Dicas de ferramentas/Glossário|<#param#>}}'},
+    {   classname: 'item-icon', 
+        parse: '{'+'{Dicas de ferramentas/Item|<#param#>}}'},
+    {   classname: 'mastery-icon', 
+        parse: '{'+'{Dicas de ferramentas/Maestria|<#param#>}}'},
+    {   classname: 'pp-tooltip',
+        parse: '{'+'{Dicas de ferramentas/Pp|<#size#>|<#values#>|values1=<#values1#>|values2=<#values2#>|label1=<#label1#>|label2=<#label2#>|displayformula=<#displayformula#>|useformula=<#useformula#>|key1=<#key1#>|key2=<#key2#>|start1=<#start1#>|start2=<#start2#>|end1=<#end1#>|end2=<#end2#>|round1=<#round1#>|round2=<#round2#>}}'},
+    {   classname: 'pp-tooltip2',
+        parse: '{'+'{Dicas de ferramentas/Pp2|bot_values=<#bot_values#>|top_values=<#top_values#>|start=<#start#>|finish=<#finish#>|bot_label=<#bot_label#>|top_label=<#top_label#>|displayformula=<#displayformula#>|useformula=<#useformula#>|bot_key=<#bot_key#>|top_key=<#top_key#>|bot_round=<#bot_round#>|top_round=<#top_round#>|top_fill=<#top_fill#>}}'},
+    {   classname: 'rune-icon', 
+        parse: '{'+'{Dicas de ferramentas/Runa|<#param#>}}'},
+    {   classname: 'skin-icon', 
+        parse: '{'+'{Dicas de ferramentas/Skin|champion=<#champion#>|skin=<#skin#>|variant=<#variant#>}}'},
+    {   classname: 'skinloading-icon', 
+        parse: '{'+'{Dicas de ferramentas/Skin/Carregamento|champion=<#champion#>|skin=<#skin#>|variant=<#variant#>}}'},
+    {   classname: 'chroma-icon', 
+        parse: '{'+'{Dicas de ferramentas/Croma|champion=<#champion#>|skin=<#skin#>|chromas=<#chromas#>}}'},
+    {   classname: 'avatar-icon', 
+        parse: '{'+'{Dicas de ferramentas/Ícone|<#param#>}}'},
+    {   classname: 'esports-icon', 
+        parse: '{'+'{Dicas de ferramentas/Ícone|<#param#>}}'},
+    {   classname: 'ward-icon', 
+        parse: '{'+'{Dicas de ferramentas/Sentinela|<#param#>}}'},
+    {   classname: 'spell-icon', 
+        parse: '{'+'{Dicas de ferramentas/Feitiço|<#param#>}}'},
+    {   classname: 'sandbox-tooltip', 
+        parse: '{'+'{Dicas de ferramentas/Sandbox|<#v0#>|<#v1#>|<#v2#>|<#v3#>|<#v4#>|<#v5#>|<#v6#>|<#v7#>|<#v8#>|<#v9#>|<#v10#>|<#v11#>|<#v12#>}}'},
+    {   classname: 'tft-icon', 
+        parse: '{'+'{Dicas de ferramentas/TFT|<#param#>|set=<#set#>|type=<#type#>}}'},
+    {   classname: 'rp-icon', 
+        parse: '{'+'{Dicas de ferramentas/RP|<#param#>}}'},
+    {   classname: 'lor-tooltip', 
+        parse: '{'+'{Dicas de ferramentas/LOR|<#param#>}}'}
 ];
  
 var tooltips_config = {
     offsetX: 20,
     offsetY: 20,
-    waitForImages: true
+    waitForImages: true,
+    noCSS: true
 };
 
-/*** Flip Text ***/
-$( document ).ready(function() {
-  $(".flipText2").hide();
-  $(".flipText1, .flipText2").click(function() {
-        $(".flipText1, .flipText2").toggle();
-  });
+/* Flip Text */
+(function() {
+    function addHook() {
+        $(".flipText1").show();
+        $(".flipText2").hide();
+        $(".flipText1, .flipText2").off();
+        $(".flipText1, .flipText2").click(function(e) {
+           $(e.target).closest('span#container.container').children().toggle();
+        });
+    }
+    $(addHook);
+    mw.hook('wikipage.content').add(addHook);
+}());
+
+/* Toggleable skill tabs */
+mw.hook('wikipage.content').add(function(elem) {
+    $(elem).find('.skill-tabs:not(.made-skill-tabs)').each(function() {
+        var tabs = $(this).addClass('made-skill-tabs');
+        var dts = $(this).find('> dt');
+        if(dts.length === 2) tabs.addClass('toggle-tabs');
+        dts.each(function(i) {
+            var dt = $(this);
+            if(i > 0) {
+                dt.addClass('hidden-tab').find('+ dd').addClass('hidden-tab');
+                dt.prepend($('<span class="prev-tab" title="Click to cycle through the information.">«</span>').mousedown(function(e) {
+                    e.preventDefault();
+                }).click(function() {
+                    dts.addClass('hidden-tab').find('+ dd').addClass('hidden-tab');
+                    $(dts[i-1]).removeClass('hidden-tab').find('+ dd').removeClass('hidden-tab');
+                }));
+            }
+            if(i < dts.length-1) {
+                dt.append($('<span class="next-tab" title="Click to cycle through the information.">»</span>').mousedown(function(e) {
+                    e.preventDefault();
+                }).click(function() {
+                    dts.addClass('hidden-tab').find('+ dd').addClass('hidden-tab');
+                    $(dts[i+1]).removeClass('hidden-tab').find('+ dd').removeClass('hidden-tab');
+                }));
+            }
+        });
+    });
 });
 
 /* DO NOT ADD CODE BELOW THIS LINE */

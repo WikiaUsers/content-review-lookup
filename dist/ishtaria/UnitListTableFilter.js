@@ -6,13 +6,15 @@ function filterTable() {
 			if (!$(this).hasClass("unfilterable")) {
 				cols=[];
 				$(this).closest("table").find("tr td:nth-child("+(i+1)+")").each(function() {
-					if ($(this).hasClass("female")) {
-						cols.push("female");
-					} else if ($(this).hasClass("male")) {
-						cols.push("male");
-					} else {
-						cols.push($(this).text());
-					}
+if ($(this).hasClass("female")) {
+ cols.push("female");
+} else if ($(this).hasClass("male")) {
+ cols.push("male");
+} else if ($(this).hasClass("beast")) {
+ cols.push("beast");
+} else {
+ cols.push($(this).text());
+}
 				});
 				cols = arrayUnique(cols);
 				l=0;

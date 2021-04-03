@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:Chat.js','lmbw');

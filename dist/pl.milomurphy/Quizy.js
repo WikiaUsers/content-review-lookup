@@ -143,11 +143,19 @@ chatags.tags = {
                  }
                  return s;
              },
+    'qz':   function (s,t) {
+                 if (t.charAt(0) === '/') {
+                     s = s.replace('[/qz]', '');
+                 } else {
+                     s = s.replace('[qz]', '<table style="width: 600px; color: white; border-spacing: 0px !important; font-family: Comic Sans Ms; box-shadow: 5px -5px 5px grey;"><tr><td colspan="4" style="background: darkolivegreen; font-size: 30px; border-bottom: 10px solid darkolivegreen; border-top: 10px solid darkolivegreen; line-height: 35px;"><center>');
+                 }
+                 return s;
+             },
     'q':    function (s,t) {
                  if (t.charAt(0) === '/') {
                      s = s.replace('[/q]', '');
                  } else {
-                     s = s.replace('[q]', '<table style="width: 600px; color: white; border-spacing: 0px !important; font-family: Comic Sans Ms; box-shadow: 5px -5px 5px grey;"><tr><td colspan="4" style="background: darkolivegreen; font-size: 30px; border-bottom: 8px solid darkolivegreen; border-top: 16px solid darkolivegreen;">');
+                     s = s.replace('[q]', '<table style="width: 600px; color: white; border-spacing: 0px !important; font-family: Comic Sans Ms; box-shadow: 5px -5px 5px grey;"><tr><td colspan="4" style="background: darkolivegreen; font-size: 30px; border-bottom: 5px solid darkolivegreen; border-top: 10px solid darkolivegreen; line-height: 35px;"><center>');
                  }
                  return s;
              },
@@ -155,7 +163,7 @@ chatags.tags = {
                  if (t.charAt(0) === '/') {
                      s = s.replace('[/oap]', '');
                  } else {
-                     s = s.replace('[oap]', '</center></td></tr><tr><td style="background: olive; width:10px; border: 8px solid darkolivegreen; border-right: none; font-size: 20px; height: 36px; border-top: 8px solid darkolivegreen; border-bottom: 4px solid darkolivegreen; width: 40px; text-align: center;">A.</td><td style="background: olivedrab; border: 8px solid darkolivegreen; font-size: 15px; border-left: none; height: 36px; border-top: 8px solid darkolivegreen; border-bottom: 4px solid darkolivegreen; border-right: 4px solid darkolivegreen; width: 244px;">');
+                     s = s.replace('[oap]', '</center></td></tr><tr><td style="background: olive; width:10px; border: 8px solid darkolivegreen; border-right: none; font-size: 20px; height: 36px; border-top: 8px solid darkolivegreen; border-bottom: 4px solid darkolivegreen; width: 40px; text-align: center;">A.</td><td style="background: olivedrab; border: 8px solid darkolivegreen; font-size: 15px; border-left: none; height: 36px; border-top: 8px solid darkolivegreen; border-bottom: 4px solid darkolivegreen; border-right: 4px solid darkolivegreen; width: 244px;"><font color="olive">.</font>');
                  }
                  return s;
              },
@@ -163,7 +171,7 @@ chatags.tags = {
                  if (t.charAt(0) === '/') {
                      s = s.replace('[/obp]', '');
                  } else {
-                     s = s.replace('[obp]', '</td><td style="background: olive; width:10px; border: 8px solid darkolivegreen; border-right: none; font-size: 20px; height: 36px; border-top: 8px solid darkolivegreen; border-bottom: 4px solid darkolivegreen; width: 40px; text-align: center; border-left: 4px solid darkolivegreen;">B.</td><td style="background: olivedrab; border: 8px solid darkolivegreen; font-size: 15px; border-left: none; height: 36px; border-top: 8px solid darkolivegreen; border-bottom: 4px solid darkolivegreen;">');
+                     s = s.replace('[obp]', '</td><td style="background: olive; width:10px; border: 8px solid darkolivegreen; border-right: none; font-size: 20px; height: 36px; border-top: 8px solid darkolivegreen; border-bottom: 4px solid darkolivegreen; width: 40px; text-align: center; border-left: 4px solid darkolivegreen;">B.</td><td style="background: olivedrab; border: 8px solid darkolivegreen; font-size: 15px; border-left: none; height: 36px; border-top: 8px solid darkolivegreen; border-bottom: 4px solid darkolivegreen;"><font color="olive">.</font>');
                  }
                  return s;
              },
@@ -171,7 +179,7 @@ chatags.tags = {
                  if (t.charAt(0) === '/') {
                      s = s.replace('[/ocp]', '');
                  } else {
-                     s = s.replace('[ocp]', '</td></tr><tr><td style="background: olive; width:10px; border: 8px solid darkolivegreen; border-right: none; font-size: 20px; height: 36px; border-top: 4px solid darkolivegreen; width: 40px; text-align: center;">C.</td><td style="background: olivedrab; border: 8px solid darkolivegreen; font-size: 15px; border-left: none; height: 36px; border-top: 4px solid darkolivegreen; border-right: 4px solid darkolivegreen; width: 244px;">');
+                     s = s.replace('[ocp]', '</td></tr><tr><td style="background: olive; width:10px; border: 8px solid darkolivegreen; border-right: none; font-size: 20px; height: 36px; border-top: 4px solid darkolivegreen; width: 40px; text-align: center;">C.</td><td style="background: olivedrab; border: 8px solid darkolivegreen; font-size: 15px; border-left: none; height: 36px; border-top: 4px solid darkolivegreen; border-right: 4px solid darkolivegreen; width: 244px;"><font color="olive">.</font>');
                  }
                  return s;
              },
@@ -179,7 +187,7 @@ chatags.tags = {
                  if (t.charAt(0) === '/') {
                      s = s.replace('[/odp]', '');
                  } else {
-                     s = s.replace('[odp]', '</td><td style="background: olive; width:10px; border: 8px solid darkolivegreen; border-right: none; font-size: 20px; height: 36px; border-top: 4px solid darkolivegreen; width: 40px; text-align: center; border-left: 4px solid darkolivegreen;">D.</td><td style="background: olivedrab; border: 8px solid darkolivegreen; font-size: 15px; border-left: none; height: 36px; border-top: 4px solid darkolivegreen;">');
+                     s = s.replace('[odp]', '</td><td style="background: olive; width:10px; border: 8px solid darkolivegreen; border-right: none; font-size: 20px; height: 36px; border-top: 4px solid darkolivegreen; width: 40px; text-align: center; border-left: 4px solid darkolivegreen;">D.</td><td style="background: olivedrab; border: 8px solid darkolivegreen; font-size: 15px; border-left: none; height: 36px; border-top: 4px solid darkolivegreen;"><font color="olive">.</font>');
                  }
                  return s;
              },
@@ -235,7 +243,7 @@ chatags.tags = {
                  if (t.charAt(0) === '/') {
                      s = s.replace('[/stop]', '');
                  } else {
-                     s = s.replace('[stop]', '<div style="padding: 1em; border:4px solid white; border-radius:10px; background: red; width: 600px; box-shadow: 5px -5px 5px grey;"><font color="white"><bold><big><big><big><big><center>STOP! Czas minął!</center></big></big></big></big></bold></font></div>');
+                     s = s.replace('[stop]', '<div style="padding: 1em; border:4px solid white; background: red; box-shadow: 5px -5px 5px grey; width: 300px; line-height: 25px"><font color="white"><bold><big><big><big><big><center>STOP!<br>Czas minął!</center></big></big></big></big></bold></font></div>');
                  }
                  return s;
              },
@@ -286,7 +294,7 @@ chatags.tags = {
                  if (t.charAt(0) === '/') {
                      s = s.replace('[/w]', '</center></td></tr>');
                  } else {
-                     s = s.replace('[w]', '<table border="0" cellpadding="1" cellspacing="1" class="article-table" style="width: 400px; border: 8px solid darkolivegreen; color: white; font-family: Comic Sans Ms; border-spacing: 0px !important; box-shadow: 5px -5px 5px grey;"><tr><td colspan="2" style="background: darkolivegreen; font-size: 30px; border-bottom: 8px solid darkolivegreen; border-top: 8px solid darkolivegreen;">');
+                     s = s.replace('[w]', '<table border="0" cellpadding="1" cellspacing="1" class="article-table" style="width: 400px; border: 8px solid darkolivegreen; color: white; font-family: Comic Sans Ms; border-spacing: 0px !important; box-shadow: 5px -5px 5px grey;"><tr><td colspan="2" style="background: darkolivegreen; font-size: 30px; border-top: 10px solid darkolivegreen;">');
                  }
                  return s;
              },
@@ -302,7 +310,7 @@ chatags.tags = {
                  if (t.charAt(0) === '/') {
                      s = s.replace('[/k2]', '</td></tr>');
                  } else {
-                     s = s.replace('[k2]', '</td><td style="background: olivedrab; border-top: 4px solid darkolivegreen; border-bottom: 4px solid darkolivegreen; font-size: 15px; border-left: none; height: 36px;">');
+                     s = s.replace('[k2]', '</td><td style="background: olivedrab; border-top: 4px solid darkolivegreen; border-bottom: 4px solid darkolivegreen; font-size: 15px; border-left: none; height: 36px;"><font color="olive">.</font>');
                  }
                  return s;
              },
@@ -310,7 +318,7 @@ chatags.tags = {
                  if (t.charAt(0) === '/') {
                      s = s.replace('[/pa]', '');
                  } else {
-                     s = s.replace('[pa]', '<table border="0" cellpadding="1" cellspacing="1" class="article-table" style="width: 400px; border: 8px solid darkolivegreen; color: white; font-family: Comic Sans Ms; border-spacing: 0px; box-shadow: 5px -5px 5px grey;"><tr><td style="background: darkolivegreen; border: 8px solid darkolivegreen; font-size: 30px;"><center>Poprawna odpowiedź:</center></td><td style="background: olive; width:10px; font-size: 20px; width: 33px; text-align: center">A.</td></tr><tr>');
+                     s = s.replace('[pa]', '<table border="0" cellpadding="1" cellspacing="1" class="article-table" style="width: 400px; border: 8px solid darkolivegreen; color: white; font-family: Comic Sans Ms; border-spacing: 0px; box-shadow: 5px -5px 5px grey;"><tr><td style="background: darkolivegreen; border: 10px solid darkolivegreen; font-size: 30px;"><center>Poprawna odpowiedź:</center></td><td style="background: olive; width:10px; font-size: 20px; width: 33px; text-align: center">A.</td></tr><tr>');
                  }
                  return s;
              },
@@ -318,7 +326,7 @@ chatags.tags = {
                  if (t.charAt(0) === '/') {
                      s = s.replace('[/pb]', '');
                  } else {
-                     s = s.replace('[pb]', '<table border="0" cellpadding="1" cellspacing="1" class="article-table" style="width: 400px; border: 8px solid darkolivegreen; color: white; font-family: Comic Sans Ms; border-spacing: 0px; box-shadow: 5px -5px 5px grey;"><tr><td style="background: darkolivegreen; border: 8px solid darkolivegreen; font-size: 30px;"><center>Poprawna odpowiedź:</center></td><td style="background: olive; width:10px; font-size: 20px; width: 33px; text-align: center">B.</td></tr><tr>');
+                     s = s.replace('[pb]', '<table border="0" cellpadding="1" cellspacing="1" class="article-table" style="width: 400px; border: 8px solid darkolivegreen; color: white; font-family: Comic Sans Ms; border-spacing: 0px; box-shadow: 5px -5px 5px grey;"><tr><td style="background: darkolivegreen; border: 10px solid darkolivegreen; font-size: 30px;"><center>Poprawna odpowiedź:</center></td><td style="background: olive; width:10px; font-size: 20px; width: 33px; text-align: center">B.</td></tr><tr>');
                  }
                  return s;
              },
@@ -326,7 +334,7 @@ chatags.tags = {
                  if (t.charAt(0) === '/') {
                      s = s.replace('[/pc]', '');
                  } else {
-                     s = s.replace('[pc]', '<table border="0" cellpadding="1" cellspacing="1" class="article-table" style="width: 400px; border: 8px solid darkolivegreen; color: white; font-family: Comic Sans Ms; border-spacing: 0px; box-shadow: 5px -5px 5px grey;"><tr><td style="background: darkolivegreen; border: 8px solid darkolivegreen; font-size: 30px;"><center>Poprawna odpowiedź:</center></td><td style="background: olive; width:10px; font-size: 20px; width: 33px; text-align: center">C.</td></tr><tr>');
+                     s = s.replace('[pc]', '<table border="0" cellpadding="1" cellspacing="1" class="article-table" style="width: 400px; border: 8px solid darkolivegreen; color: white; font-family: Comic Sans Ms; border-spacing: 0px; box-shadow: 5px -5px 5px grey;"><tr><td style="background: darkolivegreen; border: 10px solid darkolivegreen; font-size: 30px;"><center>Poprawna odpowiedź:</center></td><td style="background: olive; width:10px; font-size: 20px; width: 33px; text-align: center">C.</td></tr><tr>');
                  }
                  return s;
              },
@@ -334,7 +342,7 @@ chatags.tags = {
                  if (t.charAt(0) === '/') {
                      s = s.replace('[/pd]', '');
                  } else {
-                     s = s.replace('[pd]', '<table border="0" cellpadding="1" cellspacing="1" class="article-table" style="width: 400px; border: 8px solid darkolivegreen; color: white; font-family: Comic Sans Ms; border-spacing: 0px; box-shadow: 5px -5px 5px grey;"><tr><td style="background: darkolivegreen; border: 8px solid darkolivegreen; font-size: 30px;"><center>Poprawna odpowiedź:</center></td><td style="background: olive; width:10px; font-size: 20px; width: 33px; text-align: center">D.</td></tr><tr>');
+                     s = s.replace('[pd]', '<table border="0" cellpadding="1" cellspacing="1" class="article-table" style="width: 400px; border: 8px solid darkolivegreen; color: white; font-family: Comic Sans Ms; border-spacing: 0px; box-shadow: 5px -5px 5px grey;"><tr><td style="background: darkolivegreen; border: 10px solid darkolivegreen; font-size: 30px;"><center>Poprawna odpowiedź:</center></td><td style="background: olive; width:10px; font-size: 20px; width: 33px; text-align: center">D.</td></tr><tr>');
                  }
                  return s;
              },
@@ -342,7 +350,7 @@ chatags.tags = {
                  if (t.charAt(0) === '/') {
                      s = s.replace('[/po]', '');
                  } else {
-                     s = s.replace('[po]', '<table border="0" cellpadding="1" cellspacing="1" class="article-table" style="width: 400px; border: 8px solid darkolivegreen; color: white; font-family: Comic Sans Ms; border-spacing: 0px; box-shadow: 5px -5px 5px grey;"><tr><td style="background: darkolivegreen; font-size: 30px; border-top: 8px solid darkolivegreen; border-bottom: 8px solid darkolivegreen;"><center>Poprawna odpowiedź:</center></td></tr><tr><td style="background: olive; font-size: 20px; text-align: center; height: 36px">');
+                     s = s.replace('[po]', '<table border="0" cellpadding="1" cellspacing="1" class="article-table" style="width: 400px; border: 8px solid darkolivegreen; color: white; font-family: Comic Sans Ms; border-spacing: 0px; box-shadow: 5px -5px 5px grey;"><tr><td style="background: darkolivegreen; font-size: 30px; border-top: 10px solid darkolivegreen; border-bottom: 20px solid darkolivegreen;"><center>Poprawna odpowiedź:</center></td></tr><tr><td style="background: olive; font-size: 20px; text-align: center; height: 36px; line-height: 25px; border-top: 2px solid olive; border-bottom: 4px solid olive; border-left: 5px solid olive; border-right: 5px solid olive;">');
                  }
                  return s;
              },

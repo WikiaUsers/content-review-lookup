@@ -1,5 +1,6 @@
 window.NoKickHigherUps = true;
 //window.ModPing = "http://kocka.dilfa.com/uploads/wikia/ping.mp3";
+/* R.I.P Chat */
 
 importArticles({
     type: 'script',

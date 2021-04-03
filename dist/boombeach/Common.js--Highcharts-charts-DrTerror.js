@@ -177,4 +177,5 @@ $(document).ready(function() {
         TerrorLootChartTropical(RRBonus);
         TerrorLootChartVolcano(RRBonus);
     });
+
 });

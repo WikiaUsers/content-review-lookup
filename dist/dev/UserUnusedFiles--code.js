@@ -4,7 +4,10 @@
  * Description: Lists unused files for a user in Special:UserUnusedFiles.
  */
  ;(function(mw, $) {
-   if (mw.config.get('wgPageName') !== 'Special:UserUnusedFiles') return;
+   if (
+      mw.config.get('wgTitle') !== 'UserUnusedFiles' ||
+      mw.config.get('wgNamespaceNumber') !== -1
+   ) return;
 
    if (!window.dev || !window.dev.i18n) {
       importArticle({
@@ -14,7 +17,7 @@
    }
    
    var filemanage = {
- 
+      isUCP: mw.config.get('wgVersion') !== '1.19.24',
       init: function(i18n) { 
          $(document).prop('title', i18n.msg('heading').escape());
          $('#PageHeader h1').text(i18n.msg('heading').escape());
@@ -29,7 +32,7 @@
  
          $('#fm-getUsages').click(function() {
             $('#file-userusage-wrap').empty();
-            filemanage.getFileList(0, $('#fm-username').val());
+            filemanage.getFileList(filemanage.isUCP ? 'now' : 0, $('#fm-username').val());
          });
  
          $('#fm-username').keypress(function (e) {
@@ -50,7 +53,7 @@
       getFileList: function(time, user) {
          // grab list of latest images
          return $.ajax({
-            url: '/api.php',
+            url: mw.util.wikiScript('api'),
             type: 'GET',
             format: 'json',
             data: {
@@ -69,7 +72,7 @@
                if ($.inArray(fileObs[i].title, uniqueFileList) == -1) {
                   uniqueFileList.push(fileObs[i].title);
                   $.ajax({
-                     url: '/api.php',
+                     url: mw.util.wikiScript('api'),
                      type: 'GET',
                      format: 'json',
                      data: {
@@ -86,19 +89,22 @@
                   });
                }
             });
- 
-            if (typeof files["query-continue"] !== "undefined") {
-               filemanage.getFileList(files["query-continue"]["logevents"]["lestart"], user);
+            var continueParam = filemanage.isUCP ? "rawcontinue" : "query-continue";
+            if (typeof files[continueParam] !== "undefined") {
+               filemanage.getFileList(files[continueParam].logevents.lestart, user);
             }
          });
       }
    };
 
 
-mw.hook("dev.i18n").add(function (i18n) {
-    i18n.loadMessages("UserUnusedFiles").done(function(i18n) {
-        filemanage.init(i18n);
-    });
-});
+   mw.hook("dev.i18n").add(function (i18n) {
+      $.when(
+         i18n.loadMessages("UserUnusedFiles"),
+         mw.loader.using("mediawiki.util")
+      ).done(function(i18n) {
+         filemanage.init(i18n);
+      });
+   });
  
 })(this.mediaWiki, this.jQuery);

@@ -1,0 +1,1 @@
+mw.loader.load( 'https://minecraft-ru.gamepedia.com/index.php?title=MediaWiki:Gadget-interwikiTranslate.js&action=raw&ctype=text/javascript' );

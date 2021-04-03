@@ -11,8 +11,9 @@
     window.AnchoredRollbackLoaded = true;
     
     var config = mw.config.get([
+            'stylepath',
             'wgUserGroups',
-            'stylepath'
+            'wgVersion'
         ]),
         isBot = config.wgUserGroups.indexOf('bot') !== -1 ||
                 window.anchoredRollbackBot,
@@ -36,19 +37,27 @@
             href += '&bot=1';
         }
 
-        $this.html(
-            $('<img>', {
-                src: config.stylepath + '/common/images/ajax.gif'
-            })
-        );
+        if (config.wgVersion === '1.19.24') {
+            $this.html(
+                $('<img>', {
+                    src: config.stylepath + '/common/images/ajax.gif'
+                })
+            );
+        } else {
+            $this.addClass('mw-ajax-loader');
+        }
 
         $.ajax(href.toString(), {
             dataType: 'text'
         }).done(function() {
-            $this.css({
-                'color': 'gray',
-                'text-decoration': 'line-through'
-            }).removeAttr('href title').text(msg);
+            $this
+                .css({
+                    'color': 'gray',
+                    'text-decoration': 'line-through'
+                })
+                .removeAttr('href title')
+                .text(msg)
+                .removeClass('mw-ajax-loader');
         });
     }
 

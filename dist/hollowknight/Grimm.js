@@ -24,8 +24,7 @@
         'Unbreakable Greed',
         'Path of Pain',
         'Seal of Binding',
-        'Nightmare King Grimm',
-        'The Nightmare’s Heart'
+        'Nightmare King Grimm'
     ];
  
     if ( a.indexOf( p ) !== -1 ) {

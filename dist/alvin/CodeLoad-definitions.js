@@ -1,19 +1,4 @@
 codeLoad.definitions = {
-    "ajaxrc": {
-        "title": "AjaxRC",
-        "description": "Auto-refreshes multiple Special pages including WikiActivity and RecentChanges",
-        "group": "tools",
-        "articles": [
-            "dev:AjaxRC/code.js"
-        ],
-        "preferences": {
-            "requiresGlobalPrefs": true,
-            "enabled": true,
-            "ajaxRefresh": 30000,
-            "AjaxRCRefreshText": "Auto-refresh",
-            "AjaxRCRefreshHoverText": "Automatically refresh the page"
-        }
-    },
     "backtotop": {
         "title": "Back to Top Button",
         "description": "Adds a back to top button on the bottom toolbar",
@@ -44,7 +29,7 @@ codeLoad.definitions = {
         "description": "Adds clocks that countdown to specific events and releases",
         "group": "content",
         "articles": [
-            "Wikia.js/countdownclock.js"
+            "dev:Countdown/code.js"
         ],
         "preferences": {
             "enabled": true
@@ -59,17 +44,6 @@ codeLoad.definitions = {
         ],
         "preferences": {
             "enabled": false
-        }
-    },
-    "greeting": {
-        "title": "Message Wall Greeting Button",
-        "description": "Adds a button to a user's message wall greeting and wall history on message wall",
-        "group": "tools",
-        "articles": [
-            "dev:WallGreetingButton/code.js"
-        ],
-        "preferences": {
-            "enabled": true
         }
     },
     "header": {
@@ -94,28 +68,18 @@ codeLoad.definitions = {
             "enabled": true
         }
     },
-    "references": {
-        "title": "Reference Popups",
-        "description": "Adds a floating citation box on hover of a reference number",
-        "group": "extras",
-        "articles": [
-            "dev:ReferencePopups/code.js"
-        ],
-        "preferences": {
-            "enabled": true
-        }
-    },
-    "search": {
-        "title": "Search Suggest",
-        "description": "Adds additional page options below local search based on the search query",
-        "group": "extras",
-        "articles": [
-            "dev:SearchSuggest/code.js"
-        ],
-        "preferences": {
-            "enabled": true
-        }
-    },
+//	  AWAITING SUPPORT
+//    "references": {
+//        "title": "Reference Popups",
+//        "description": "Adds a floating citation box on hover of a reference number",
+//        "group": "extras",
+//        "articles": [
+//            "dev:ReferencePopups/code.js"
+//        ],
+//        "preferences": {
+//            "enabled": true
+//        }
+//    },
     "snow": {
         "title": "Snow",
         "description": "Creates a gentle winter snowfall in the wiki's background",
@@ -133,17 +97,6 @@ codeLoad.definitions = {
             "usePositionFixed": true
         }
     },
-    "spoiler": {
-        "title": "Spoiler",
-        "description": "Adds a spoiler notice on pages that may contain spoilers",
-        "group": "extras",
-        "articles": [
-            "Wikia.js/spoiler-alert.js"
-        ],
-        "preferences": {
-            "enabled": true
-        }
-    }
 };
 
 codeLoad.groups = {
@@ -154,9 +107,6 @@ codeLoad.groups = {
 };
 
 codeLoad.prefDescriptions = {
-    "ajaxRefresh": "Refresh interval (milliseconds)",
-    "AjaxRCRefreshText": "Refresh text",
-    "AjaxRCRefreshHoverText": "Refresh text on hover",
     "format": "Display formatting",
     "flakesMax": "Max flakes made",
     "flakesMaxActive": "Max flakes falling",

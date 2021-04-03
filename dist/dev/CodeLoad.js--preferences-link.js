@@ -1,7 +1,7 @@
 /*jslint browser, long */
-/*global require */
+/*global jQuery, mediaWiki, require */
 
-require(["jquery", "mw", require.optional("PageActions")], function ($, mw, pageActions) {
+(function ($, mw) {
     "use strict";
 
     // should match 'heading' message in [[MediaWiki:Custom-CodeLoad/i18n.json]]
@@ -9,14 +9,25 @@ require(["jquery", "mw", require.optional("PageActions")], function ($, mw, page
     var msg = {
         ar: "تفضيلات البرنامج النصي",
         be: "Налады скрыпту",
+        bg: "Предпочитания за скриптове",
         ca: "Preferències de script",
+        el: "Προτιμήσεις σεναρίου",
         en: "Script preferences",
         es: "Preferencias de script",
+        fi: "Skriptiasetukset",
         fr: "Préférences du script",
+        hi: "स्क्रिप्ट प्राथमिकताएँ",
+        hr: "Postavke skripte",
+        ja: "スクリプト設定",
+        ka: "სკრიპტის პარამეტრები",
+        ko: "스크립트 설정",
         pl: "Preferencje skryptów",
+        "pt-br": "Preferências de script",
         ru: "Настройки скрипта",
-        tr: "Betik tercihleri",
-        uk: "Налаштування скрипта"
+        tr: "Komut dosya tercihleri",
+        uk: "Налаштування скрипта",
+        "zh-hans": "脚本首选项",
+        "zh-hant": "腳本首選項"
     };
     // use user language, with English as fallback
     msg = msg[mw.config.get("wgUserLanguage")] || msg.en;
@@ -27,22 +38,24 @@ require(["jquery", "mw", require.optional("PageActions")], function ($, mw, page
         // append to 'My Tools' menu in Oasis, 'Toolbox' portlet in MonoBook
         $("#my-tools-menu, #p-tb > .pBody > ul").append(
             $("<li>").append(
-                $("<a>")
-                    .attr({
-                        href: prefsUrl,
-                        title: msg
-                    })
-                    .text(msg)
+                $("<a>").attr({
+                    href: prefsUrl,
+                    title: msg
+                }).text(msg)
             )
         );
 
         // add to shortcuts
-        if (pageActions) {
-            pageActions.add({
-                id: "special:CodeLoadPrefs",
-                caption: msg,
-                href: prefsUrl,
-                category: mw.message("global-shortcuts-category-current-wikia").escaped()
+        if (window.require) {
+            require([require.optional("PageActions")], function (pageActions) {
+                if (pageActions) {
+                    pageActions.add({
+                        id: "special:CodeLoadPrefs",
+                        caption: msg,
+                        href: prefsUrl,
+                        category: mw.message("global-shortcuts-category-current-wikia").escaped()
+                    });
+                }
             });
         }
     }
@@ -50,4 +63,4 @@ require(["jquery", "mw", require.optional("PageActions")], function ($, mw, page
     mw.loader.using("mediawiki.util", function () {
         $(main);
     });
-});
+}(jQuery, mediaWiki));

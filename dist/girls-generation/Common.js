@@ -8,12 +8,6 @@ $(function UserNameReplace() {
 });
 /* End of the {{USERNAME}} replacement */
  
-// Ajax auto-refresh
-window.ajaxPages = [
-    'Special:RecentChanges',
-    'Special:WikiActivity'
-];
-
 // *************************************************
 // Pagetitle rewrite
 //

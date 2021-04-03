@@ -11,7 +11,8 @@ mw.loader.using([
     'use strict';
     var config = mw.config.get([
         'wgUserName',
-        'wgUserLanguage'
+        'wgUserLanguage',
+        'wgVersion'
     ]);
     if (
         window.PreferenceLinksLoaded ||
@@ -20,6 +21,7 @@ mw.loader.using([
         return;
     }
     window.PreferenceLinksLoaded = true;
+    var isUCP = config.wgVersion !== '1.19.24';
     /**
      * @class PreferenceLinks
      * @classdesc Main PreferenceLinks class
@@ -33,7 +35,7 @@ mw.loader.using([
         'prefs-personal',
         'prefs-emailv2',
         'prefs-editing',
-        'prefs-under-the-hood',
+        isUCP ? 'prefs-rendering' : 'prefs-under-the-hood',
         'prefs-auth-prefstext',
         'prefs-gadgets',
         'global-navigation-user-my-preferences'
@@ -46,7 +48,7 @@ mw.loader.using([
         'personal',
         'emailv2',
         'editing',
-        'under-the-hood',
+        isUCP ? 'rendering' : 'under-the-hood',
         'auth-prefstext',
         'gadgets'
     ];

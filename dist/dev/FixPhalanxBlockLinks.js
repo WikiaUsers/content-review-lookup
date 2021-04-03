@@ -4,6 +4,7 @@
     }
     window.FixPhalanxBlockLinksLoaded = true;
     var ucp = mw.config.get('wgVersion') !== '1.19.24';
+    var preloads = 2;
 
     function handler (data) {
         if (!data.query.userinfo.rights.includes('block')) {
@@ -38,7 +39,7 @@
     }
 
     function init () {
-        var user = ucp ? $('#userProfileApp .user-identity-header > h1').text() : $('.UserProfileMasthead .masthead-info h1').text();
+        var user = ucp ? mw.config.get('profileUserName') : $('.UserProfileMasthead .masthead-info h1').text();
 
         new mw.Api().get({
             action: 'query',
@@ -54,5 +55,12 @@
         }).done(handler);
     }
 
-    mw.loader.using('mediawiki.api').then(init);
+    function preload () {
+        if (--preloads === 0) {
+            init();
+        }
+    }
+
+    mw.loader.using('mediawiki.api').then(preload);
+    mw.loader.using('mediawiki.util').then(preload);
 })();

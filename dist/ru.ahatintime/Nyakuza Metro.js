@@ -8,7 +8,7 @@
     if ( a.indexOf( p ) !== -1 ) {
         importArticle({
             type: 'style',
-            article: 'MediaWiki:Nyakuza Metro.css'
+            article: 'MediaWiki:Nyakuza_Metro.css'
         });
     }
 }( jQuery, mediaWiki );

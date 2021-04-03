@@ -5,7 +5,7 @@ var tooltips_list = [
     },
     {
         classname: 'arcane-tooltip', 
-        parse: '{'+'{Tooltip/Arcane|<#param#>|<#name#>}}',
+        parse: '{'+'{Tooltip/Arcano|<#param#>|<#name#>}}',
     },
     {
         classname: 'damagetype-tooltip', 

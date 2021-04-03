@@ -15,4 +15,7 @@ function addProtectionBanner() {
       });
    }
 }
-addOnloadHook(addProtectionBanner);
+
+$(document).ready(function() {
+   addProtectionBanner();
+});

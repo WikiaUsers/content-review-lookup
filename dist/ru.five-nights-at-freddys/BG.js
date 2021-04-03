@@ -34,7 +34,7 @@ if (mw.config.get("wgCanonicalNamespace") == "") {
         } else if (BGcategories[ct] == "Ultimate Custom Night") {
             BGbackground = BG('UCN BG.png');
             break;
-        } else if (BGcategories[ct] == "Five Nights at Freddy's VR: Help Wanted") {
+        } else if (BGcategories[ct] == "Five Nights at Freddy's: Help Wanted") {
             BGbackground = BG('FNaF HW BG.jpg');
             break;
         } else if (BGcategories[ct] == "Freddy in Space 2") {
@@ -43,7 +43,7 @@ if (mw.config.get("wgCanonicalNamespace") == "") {
         } else if (BGcategories[ct] == "Five Nights at Freddy's AR: Special Delivery") {
             BGbackground = BG('FNaF AR BG.jpg');
             break;
-        } else if (BGcategories[ct] == ("Книги" || "Персонажи книг")) {
+        } else if ((BGcategories[ct] == "Книги") || (BGcategories[ct] == "Персонажи книг")) {
             BGbackground = BG('FNaF Books BG.png');
             break;
         }

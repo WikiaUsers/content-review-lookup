@@ -1,4 +1,4 @@
-/* Tabber */
+// Tabber
 var Tabs = {
     switchDuration: 400,
     selectorDuration: 200,
@@ -370,19 +370,17 @@ var Tabs = {
 };
 Tabs.init();
 
-/* Desplegado al hacer hover */
+// Desplegado al hacer hover
 window.AutoEditDropdownConfig = {
     expandedAreaContribute: true,
     expandedAreaEdit: true
 };
  
-/* Refrescar automáticamente WikiActivity y CambiosRecientes */
-window.AjaxRCRefreshText = 'Act. automát.';
-window.AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente';
-window.ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
- 
-/* Etiqueta de usuarios inactivos */
+// Etiqueta de usuarios inactivos
 InactiveUsers = { text: 'Descansando' };
+
+// Recargar página
+window.PurgeButtonText = 'Recargar';
  
 /* Nombre de usuario (idea original de Inciclopedia, modificado por Ciencia Al Poder) */
 $(function UserNameReplace(){
@@ -395,21 +393,12 @@ $(function UserNameReplace(){
     }
 });
  
-/* Reescribir título */
+// Reescribir título
 $(function(){
   var newTitle = $("#title-meta").html();
   if (!newTitle) return;
   $(".firstHeading,#WikiaUserPagesHeader h1,#WikiaPageHeader h1").html(newTitle);
 });
-
-// Recargar página
-PurgeButtonText = 'Recargar';
- 
-/* Bloquear foros */
-window.LockForums = {
-    expiryDays: 45,
-    expiryMessage: "Este foro se considera archivado ya que no se ha respondido en 45 días.",
-};
 
 
 // Tags

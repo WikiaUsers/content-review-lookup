@@ -178,10 +178,13 @@ if (mediaWiki.config.get("wgPageName") === "Category%3ADiorama_Photos") {
 } );
 
 //Pagewide collapse/expand collapsibles
-
 $(function() {
 //collapse all
     $('#collapse-global-hide').html('<a class="wikia-button" onclick="$(\'.mw-collapsible-content\').css(\'display\', \'none\') ; $(\'.mw-collapsible-toggle\').removeClass(\'mw-collapsible-toggle-expanded\').addClass(\'mw-collapsible-toggle-collapsed\')">Collapse All</a>');
 //expand all
     $('#collapse-global-show').html('<a class="wikia-button" onclick="$(\'.mw-collapsible-content\').css(\'display\', \'\') ; $(\'.mw-collapsible-toggle\').removeClass(\'mw-collapsible-toggle-collapsed\').addClass(\'mw-collapsible-toggle-expanded\')">Expand All</a>');
 });
+
+// Temporary fix for Slideshow Gallery not being able to be clicked on and activate Lightbox
+$(".wikia-slideshow-images-wrapper img.thumbimage").wrap("<a class='image lightbox'></a>");
+$(".wikia-slideshow-images-wrapper a.wikia-slideshow-image" ).remove();

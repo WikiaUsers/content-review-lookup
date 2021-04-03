@@ -32,7 +32,7 @@ mw.hook('wikipage.content').add(function() {
 /***Параметры карты
  
 ***/
-        var imageUrl = 'https://images.wikia.nocookie.net/hollowknight/ru/images/f/f9/MapHKInteractive.png';
+        var imageUrl = 'https://hollowknight.fandom.com/ru/wiki/special:Filepath/MapHKInteractive.png';
         var bounds = [[0, 0], [2800, 4200]];
         var map = L.map('map1', {
             crs: L.CRS.Simple,
@@ -833,9 +833,9 @@ mw.hook('wikipage.content').add(function() {
  
     importArticles({
         type: 'script',
-        article: 'Map.js' 
+        article: 'MediaWiki:Map.js' 
     }, { 
         type: 'style',
-        article: 'MediaWIki:Map.css'
+        article: 'MediaWiki:Map.css'
     });
 });

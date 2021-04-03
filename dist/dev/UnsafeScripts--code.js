@@ -12,7 +12,7 @@
  */
 /* global mediaWiki */
 /* jshint jquery:true, browser:true, smarttabs:true */
-require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
+(function() {
 	'use strict';
  
     // Scope limiting and double-run protection
@@ -20,7 +20,11 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         window.unsafeScriptsLoaded ||
         [2, 8].indexOf(mw.config.get('wgNamespaceNumber')) === -1 ||
         mw.config.get('wgAction') === 'edit' ||
-        new mw.Title(wgPageName).getExtension() !== 'js' // JS only
+        // JS only
+        !(
+            mw.config.get('wgPageContentModel') === 'javascript' ||
+            new mw.Title(wgPageName).getExtension() === 'js'
+        )
     ) {
         return;
     }
@@ -170,4 +174,4 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
 
-});
+})();

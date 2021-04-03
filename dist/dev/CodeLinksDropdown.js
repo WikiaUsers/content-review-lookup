@@ -12,10 +12,16 @@ $('.wds-global-navigation__user-menu .wds-dropdown__content').addClass('wds-is-n
 mw.hook('dev.i18n').add(function (lib) {
     lib.loadMessages('CodeLinksDropdown').then(function (i18n) {
         var config = mw.config.get([
-            'wgFormattedNamespaces',
-            'wgUserName',
-            'wgScriptPath'
-        ]);
+                'wgFormattedNamespaces',
+                'wgUserName',
+                'wgVersion'
+            ]),
+            isUCP = config.wgVersion !== "1.19.24",
+            rootUrl = isUCP ? 'ucp' : 'community',
+            namespacePath = mw.util.getUrl(config.wgFormattedNamespaces[2] + ':'),
+            username = config.wgUserName,
+            usernamePath = namespacePath + username;
+            
         $('.wds-global-navigation__user-menu > .wds-dropdown__content > ul.wds-list > li:nth-child(2)').after(
             '<li class="wds-is-stickied-to-parent wds-dropdown-level-2">'+
                 '<a href="#" class="wds-dropdown-level-2__toggle" data-id="codelinks">' +
@@ -27,30 +33,30 @@ mw.hook('dev.i18n').add(function (lib) {
                 '</a>' +
                     '<div class="wds-is-not-scrollable wds-dropdown-level-2__content codelinks-menu">' +
                         '<ul class="wds-list wds-is-linked">' +
-                            '<li>'+
-                                '<a href="https://community.fandom.com/wiki/User:' + config.wgUserName + '/global.js" target="_blank">Global.js</a>' +
+                            '<li>' +
+                                '<a href="https://' + rootUrl + '.fandom.com/wiki/User:' + username + '/global.js" target="_blank">Global.js</a>' +
                             '</li>' +
-                            '<li>'+
-                                '<a href="https://community.fandom.com/wiki/User:' + config.wgUserName + '/global.css" target="_blank">Global.css</a>' +
+                            '<li>' +
+                                '<a href="https://' + rootUrl + '.fandom.com/wiki/User:' + username + '/global.css" target="_blank">Global.css</a>' +
                             '</li>' +
-                            '<li>'+
-                                '<a href="' + config.wgScriptPath + '/wiki/' + config.wgFormattedNamespaces[2] +':' + config.wgUserName + '/common.js" target="_blank">Common.js</a>' +
+                            '<li>' +
+                                '<a href="' + usernamePath + '/common.js" target="_blank">Common.js</a>' +
                             '</li>' +
-                            '<li>'+
-                                '<a href="' + config.wgScriptPath + '/wiki/' + config.wgFormattedNamespaces[2] +':' + config.wgUserName + '/wikia.js" target="_blank">Wikia.js</a>' +
+                            '<li>' +
+                                '<a href="' + usernamePath + '/wikia.js" target="_blank">Wikia.js</a>' +
                             '</li>' +
-                            '<li>'+
-                                '<a href="' + config.wgScriptPath + '/wiki/' + config.wgFormattedNamespaces[2] +':' + config.wgUserName + '/chat.js" target="_blank">Chat.js</a>' +
+                            (isUCP ? '' : '<li>' +
+                                '<a href="' + usernamePath + '/chat.js" target="_blank">Chat.js</a>' +
+                            '</li>') +
+                            '<li>' +
+                                '<a href="' + usernamePath + '/common.css" target="_blank">Common.css</a>' +
                             '</li>' +
-                            '<li>'+
-                                '<a href="' + config.wgScriptPath + '/wiki/' + config.wgFormattedNamespaces[2] +':' + config.wgUserName + '/common.css" target="_blank">Common.css</a>' +
+                            '<li>' +
+                                '<a href="' + usernamePath + '/wikia.css" target="_blank">Wikia.css</a>' +
                             '</li>' +
-                            '<li>'+
-                                '<a href="' + config.wgScriptPath + '/wiki/' + config.wgFormattedNamespaces[2] +':' + config.wgUserName + '/wikia.css" target="_blank">Wikia.css</a>' +
-                            '</li>' +
-                            '<li>'+
-                                '<a href="' + config.wgScriptPath + '/wiki/' + config.wgFormattedNamespaces[2] +':' + config.wgUserName + '/chat.css" target="_blank">Chat.css</a>' +
-                            '</li>' +
+                            (isUCP ? '' : '<li>' +
+                                '<a href="' + usernamePath + '/chat.css" target="_blank">Chat.css</a>' +
+                            '</li>') +
                     '</ul>' +
                 '</div>' +
             '</li>'
@@ -60,9 +66,5 @@ mw.hook('dev.i18n').add(function (lib) {
 
 importArticle({
     type: 'script',
-    article: 'u:dev:I18n-js/code.js'
+    article: 'u:dev:MediaWiki:I18n-js/code.js'
 });
-
-$('.wds-dropdown-level-2 .wds-dropdown-level-2__content .wds-list.wds-is-linked>li#quick-cup').remove();
-$('.wds-dropdown-level-2 .wds-dropdown-level-2__content .wds-list.wds-is-linked>li>a[data-id="contributions"]').remove();
-$('.wds-dropdown-level-2 .wds-dropdown-level-2__content .wds-list.wds-is-linked>li#MySandbox>a').remove();

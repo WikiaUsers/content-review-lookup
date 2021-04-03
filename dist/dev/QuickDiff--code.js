@@ -13,7 +13,7 @@
     window.quickDiffLoaded = true;
 
 
-    var diffStylesModule = "mediawiki.action.history.diff";
+    var diffStylesModule = ["mediawiki.diff.styles"];
     var i18n;
     var modal;
     var special = {};
@@ -39,10 +39,11 @@
 
         $.getJSON(mw.util.wikiScript("api"), {
             action: "parse",
+            contentmodel: "wikitext",
             format: "json",
             prop: "text",
             text: "<span class='diff'>[[Special:Diff/]]</span><span class='compare'>[[Special:ComparePages]]</span>",
-            disablepp: "" // note: deprecated in MW 1.26, but needed for older versions
+            disablelimitreport: ""
         }).done(function (data) {
             var $parsed = $(data.parse.text["*"]);
 
@@ -72,9 +73,8 @@
         var currTitle = modal.$content.find("#mw-diff-ntitle1 a").attr("title");
 
         // collect action links (edit, undo, rollback, patrol) from the diff
-        // TODO: remove "mw-rev-head-action" once Wikia 1.19 is gone
         var $actions = modal.$content.find(".diff-ntitle").find(
-            ".mw-rev-head-action, .mw-diff-edit, .mw-diff-undo, .mw-rollback-link, .patrollink, .mw-diff-tool"
+            ".mw-diff-edit, .mw-diff-undo, .mw-rollback-link, .patrollink, .mw-diff-tool"
         ).clone();
 
         // remove text nodes (the brackets around each link)
@@ -126,6 +126,7 @@
             delete url.query.bot;
 
             var data = {
+            	url: url,
                 buttons: [{
                     text: i18n("link").plain(),
                     href: url.toString(),
@@ -154,8 +155,25 @@
                 data.content = i18n("error", url.toString()).escape();
             }
 
+            // if a diff, fire the standard MW hook
+            if ($diff.is("table.diff[data-mw='interface']")) {
+                mw.hook("wikipage.diff").fire($diff);
+            }
+
             modal.show(data);
         });
+    }
+
+    function keydownHandler(event) {
+        if (!modal.visible) {
+            return;
+        }
+
+        if (event.key === "ArrowLeft") {
+            modal.$content.find("#differences-prevlink").trigger("click");
+        } else if (event.key === "ArrowRight") {
+            modal.$content.find("#differences-nextlink").trigger("click");
+        }
     }
 
     function linkClickHandler(event) {
@@ -199,19 +217,25 @@
     }
 
     function init() {
+        var $body = $(document.body);
         modal = new mw.libs.QDmodal("quickdiff-modal");
 
         // full screen modal
-        mw.util.addCSS("#quickdiff-modal { height: 100%; width: 100% }");
+        var css = "#quickdiff-modal { height: 100%; width: 100% }";
+        // always show modal footer for UI consistency
+        css += "#quickdiff-modal > footer { display: flex }";
+        mw.util.addCSS(css);
 
-        // diff styles module was renamed in MW 1.28
-        if (mw.loader.getState("mediawiki.diff.styles")) {
-            diffStylesModule = "mediawiki.diff.styles";
+        if (mw.config.get("skin") === "oasis" && mw.loader.getState("skin.oasis.diff.css")) {
+            diffStylesModule.push("skin.oasis.diff.css");
         }
 
         // attach to body for compatibility with ajax-loaded content
         // also, one attached event handler is better than hundreds!
-        $(document.body).on("click.quickdiff", "a[href]", linkClickHandler);
+        $body.on("click.quickdiff", "a[href]", linkClickHandler);
+
+        // listen for left/right arrow keys, to move between prev/next diff
+        $body.on("keydown.quickdiff", keydownHandler);
 
         initSpecialPageStrings();
     }
@@ -224,20 +248,20 @@
             mw.loader.using(["mediawiki.Uri", "mediawiki.util"])
         ];
 
-        if (!(mw.libs.QDmodal && mw.libs.QDmodal.version >= 20200530)) {
+        if (!(mw.libs.QDmodal && mw.libs.QDmodal.version >= 20201108)) {
             waitFor.push($.ajax({
                 cache: true,
                 dataType: "script",
-                url: devLoadUrl + "QDmodal.js&cb=20200530"
+                url: devLoadUrl + "QDmodal.js&cb=20201108"
             }));
         }
 
         if (!(window.dev && dev.i18n && dev.i18n.loadMessages)) {
-            mw.loader.load(devLoadUrl + "I18n-js/code.js");
+            mw.loader.load(devLoadUrl + "I18n-js/code.js&*");
         }
 
         mw.hook("dev.i18n").add(function (i18njs) {
-            i18njs.loadMessages("QuickDiff", {cacheVersion: 1}).done(function (i18nData) {
+            i18njs.loadMessages("QuickDiff").done(function (i18nData) {
                 i18n = i18nData.msg;
                 i18nMsgs.resolve();
             });

@@ -15,13 +15,7 @@
                 encodeURIComponent(title) + '&action=raw&ctype=text/javascript"></scr'+'ipt>');
  }
 
- // Import [[MediaWiki:Onlyifuploading.js]] 
  
- if ( wgCanonicalSpecialPageName == "Upload" ) {
-      document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Onlyifuploading.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
- }
-
-
 //-------------------------------------------------------------------------------------
 //Fügt Vorlage:Dateiinfo auf Spezial:Hochladen ein....Zum Testen
  

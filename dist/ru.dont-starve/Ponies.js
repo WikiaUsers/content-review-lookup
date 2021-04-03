@@ -1,1 +1,0 @@
-#перенаправление [[MediaWiki:BrowserPonies.js]]

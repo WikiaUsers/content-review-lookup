@@ -219,25 +219,6 @@
                 target.innerHTML = str;
             }
         },
-        submit: function(e) {
-            if (!upload.current.length) {
-                e.preventDefault();
-                var list = document.getElementById('category-list'),
-                    br = document.createElement('br'),
-                    span = document.createElement('span');
-                span.classList.add('upload-warning');
-                span.innerHTML = 'Please categorize the file!';
-                list.appendChild(br);
-                list.appendChild(span);
-                return false;
-            }
-            var cats = '';
-            for (var i = 0; i < upload.current.length; i++) {
-                cats += '[[Category:' + upload.current[i] + ']]\n';
-            }
-            var desc = document.getElementById('wpUploadDescription');
-            desc.value = desc.value ? desc.value + '\n\n' + cats : cats;
-        },
         init: function() {
             upload.addCSS();
             upload.build();

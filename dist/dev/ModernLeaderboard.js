@@ -3,7 +3,7 @@
  * @description     Modern leaderboard theme.
  * @authors         Americhino
  * @usingcodeby     Robyn Grayson (RevertOldGlobalNav)
- * @version         0.9.3
+ * @version         0.9.4
  * @license         CC-BY-SA 3.0
  * @notes           Configurable JS version of ModernLeaderboard.
  *

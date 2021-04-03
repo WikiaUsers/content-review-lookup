@@ -32,6 +32,7 @@ Ganz unten befindet sich ein Button/Schaltfläche. Klickt man darauf, springt ma
 http://dev.fandom.com/wiki/BackToTopButton
 */
         'w:c:dev:BackToTopButton/code.js', 
+        'w:c:dev:DiscordChat.js', 
 
 /* TOOLTIP-TEXT DER LINKS
 Bewegt man mit der Maus auf einen Link, erscheint der Linkinhalt in einer Textbox. Bewegt man die Maus weg, verschwindet die Textbox. Referenz: 
@@ -71,6 +72,8 @@ window.ArticleRating = {
     values: ['Verdorbene Himbeere', 'Mangelhaft', 'Ganz okay', 'Hervorragend', 'Meisterwerk'],
     location: 'top-rail'
 }
+
+window.BackToTopModern = true;
 
 
 

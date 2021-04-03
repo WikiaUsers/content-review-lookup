@@ -89,7 +89,7 @@ function myLeaderToJson() {
 	};
 }
 function checkMyLeader() {
-	if (mw.user.anonymous()) {
+	if (mw.config.values.wgUserName === null) {
 		alert('請先登入Wikia');
 		return false;
 	}
@@ -212,7 +212,7 @@ function saveLeaderData(leaderData) {
 	});
 }
 function loadMyLeader() {
-	if (mw.user.anonymous()) {
+	if (mw.config.values.wgUserName === null) {
 		$("#leaderRegisterForm").hide();
 		$("div.noLoginMsg").fadeIn(1000);
 		return false;

@@ -40,3 +40,21 @@ function npCollapsible (helipName, collapseName) {
         document.getElementById(helipName).innerHTML = expandCaption;
     }
 }
+
+/* ##################################################################################### */
+/* ### Create New Page Target Fix                                                    ### */
+/* ### --------------------------------------------------------------------          ### */
+/* ### Description: Prevents article layout template preloading in a new window.     ### */
+/* ###                                                                               ### */
+/* ###                                                                               ### */
+/* ### Credit:      User:Sakaratte                                                   ### */
+/* ##################################################################################### */
+ 
+
+var customNewArticle = document.getElementById('custom-new-article-text');
+if (customNewArticle !== null) {
+	var articleLinks = customNewArticle.getElementsByTagName('a');
+	var i; for (i=0; i < articleLinks.length; i++) {
+		articleLinks[i].removeAttribute('target');
+	}
+}

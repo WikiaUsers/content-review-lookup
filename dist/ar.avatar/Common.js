@@ -29,8 +29,8 @@ window.dev.editSummaries = {
 if ((wgAction == 'submit' || wgAction == 'edit') && mwCustomEditButtons) {
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/marvel_dc/images/2/29/Character_Button.png",
-		"speedTip": "Insert character infobox template",
-		"tagOpen": "\{\{Character infobox\r| nation         = ",
+		"speedTip": "إدراج قالب الشخصيات",
+		"tagOpen": "\{\{قالب الشخصيات\r| الأمة         = ",
 		"tagClose": "\r| الصورة          = \r| اسماء بديلة      = \r| الجنسية    = \r| الأصل العرقي      = \r| العمر            = \r| تاريخ الميلاد          = \r| تاريخ الوفاة          = \r| النوع         = \r| الطول         = \r| لون العين           = \r| لون الشعر           = \r| لون البشرة      = \r| نوع البشرة       = \r| زوج/ة   = \r| الحلفاء         = \r| الأعداء        = \r| السلاح المفضل         = \r| أساليب القتال  = \r| مهنة     = \r| منصب       = \r| فترة لحكم          = \r| سبقه           = \r| تبعه        = \r| لانتماء    = \r| أول ظهور     = \r| آخر ظهور = \r| مؤدي الصوت          = \r| مؤدي الشخصية          = \r| المزيد           = \r\}\}",
 		"sampleText": ""};
  

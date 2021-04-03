@@ -21,10 +21,10 @@ $('.grid-filtering-monsters .grid-filter-select-species').html(
     '<option value="Lynien">Lynien</option>'+
     '<option value="Drake ailé">Drake ailé</option>'+
     '<option value="Neopteron">Neopteron</option>'+
-    '<option value="Carapacéon">Carapacéon</option>'+
+    '<option value="Carapaceon">Carapaceon</option>'+
     '<option value="Temnoceran">Temnoceran</option>'+
     '<option value="Amphibien">Amphibien</option>'+
-    '<option value="Léviathan">Léviathan</option>'+
+    '<option value="Leviathan">Leviathan</option>'+
     '<option value="Bête à crocs">Bête à crocs</option>'+
     '<option value="Wyverne volante">Wyverne volante</option>'+
     '<option value="Wyverne rapace">Wyverne rapace</option>'+

@@ -1,9 +1,10 @@
 /* Sliders using jquery
+ * In addition, disabling lazy loading of images on the mainpage for slider
  * By: [[User:Tierrie]], with modifications by [[User:Thailog]] and [[User:KettleMeetPot]]
  */
 
-$(document).ready(function() {
-  if ( wgPageName == "Kung_Fu_Panda_Wiki") {
+$(function() {
+  if ( mw.config.get('wgPageName') == "Kung_Fu_Panda_Wiki") {
     mw.loader.using( ['jquery.ui.tabs'], function() {
       var $tabs = $("#portal_slider").tabs({ fx: [{opacity:'toggle', duration:200},{height:'toggle', duration:'normal'}, ] } );
       $("[class^=portal_sliderlink]").click(function() { // bind click event to link
@@ -22,6 +23,11 @@ $(document).ready(function() {
         } } );
         return false;
       });
+    });
+    //data-src to img-src to mitigate lag on certain images
+    $( "#portal_slider img" ).each(function(i,e) {
+        dataSRC = $(e).attr("data-src");
+        $(e).attr("src", dataSRC);
     });
     }
 });

@@ -60,7 +60,6 @@
      * - HOOK: The name of the <code>mw.hook</code> event
      * - ARTICLE: The location of the script or stylesheet on the Dev wiki
      * - TYPE: Either "script" for JS scripts or "style" for CSS stylesheets
-     * - MODULE: Name of the temporary ResourceLoader module used to async load
      * </pre>
      *
      * @readonly
@@ -113,6 +112,12 @@
         ID_MODULE_WRAPPER: "cql-module",
         ID_LISTING_USERFILES: "cql-listing-user",
         ID_LISTING_SITEFILES: "cql-listing-site",
+
+        // Ad slot <div /> containers
+        ID_AD_BOXAD: "top_boxad",
+        ID_AD_BOXAD_WRAPPER: "top-boxad-wrapper",
+        ID_AD_BOXAD_RIGHT: "top-right-boxad-wrapper",
+        ID_AD_TABOOLA: "NATIVE_TABOOLA_RAIL",
 
         // General purpose id/class selectors
         ID_WIKIA_RAIL: "WikiaRail",
@@ -239,7 +244,6 @@
       writable: false,
       configurable: false,
       value: Object.freeze([
-        "wgArticlePath",
         "wgFormattedNamespaces",
         "wgLoadScript",
         "wgVersion",
@@ -572,12 +576,12 @@
   this.buildDefaultFiles = function () {
 
     // Declarations
-    var assembledFiles, fileNames, prefix, suffixes, prefixes, communityServer,
-      divisions;
+    var assembledFiles, fileNames, prefix, suffixes, prefixes, divisions,
+      ccPrefix;
 
     // Definitions
     assembledFiles = {};
-    communityServer = "https://community.fandom.com";
+    ccPrefix = "w:Special:MyPage/";
 
     // Define prefixes using wgFormattedNamespaces
     $.each(prefixes = {mw: 8, sp: -1}, function (paramName, paramId) {
@@ -615,8 +619,8 @@
         suffixes.forEach(function (paramSuffix) {
           assembledFiles.userFiles.push({
             name: paramFile + paramSuffix,
-            href: communityServer + this.globals.wgArticlePath.replace("$1",
-              prefixes.my + paramFile.toLowerCase() + paramSuffix)
+            href: mw.util.getUrl(ccPrefix + paramFile.toLowerCase() +
+              paramSuffix)
           });
         }.bind(this));
       } else {
@@ -654,7 +658,7 @@
   this.main = function () {
 
     // Declarations
-    var userLinks, assembledFiles, railModule;
+    var userLinks, assembledFiles, railModule, $adSlot;
 
     // Definitions/aliases
     userLinks = this.config.linkSet;
@@ -672,8 +676,25 @@
       }
     }
 
+    // Place module after last extant ad slot
+    $adSlot = $([
+      "ID_AD_BOXAD",
+      "ID_AD_BOXAD_WRAPPER",
+      "ID_AD_BOXAD_RIGHT",
+      "ID_AD_TABOOLA",
+    ].map(function (paramAdSelector) {
+      return "#" + this.Selectors[paramAdSelector];
+    }.bind(this)).join(", ")).last();
+
+    // Assemble string HTML module
     railModule = this.buildRailModule(assembledFiles);
-    $("#" + this.Selectors.ID_WIKIA_RAIL).prepend(railModule);
+
+    // Prepend to rail only if ad slot is not found
+    if ($adSlot.length) {
+      $adSlot.after(railModule);
+    } else {
+      $("#" + this.Selectors.ID_WIKIA_RAIL).prepend(railModule);
+    }
   };
 
   /****************************************************************************/
@@ -842,6 +863,7 @@
         return (current.HOOK)
           ? mw.hook(current.HOOK).add(paramDeferred.notify)
           : $(article).on("load", paramDeferred.notify);
+
       }
 
       // Build url with REST params
@@ -859,7 +881,7 @@
         window.console.log(moduleName);
       }
 
-      // Define temp local modules to sidestep mw.loader.load's lack of callback
+      // Define local modules to sidestep mw.loader.load's lack of callback
       try {
         mw.loader.implement.apply(null, $.merge([moduleName],
           (current.TYPE === "script")

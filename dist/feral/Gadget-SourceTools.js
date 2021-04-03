@@ -1,11 +1,11 @@
 importArticles({
     type:'script',
     articles:[
-        'u:dev:AjaxEdit.js',
-        'u:dev:DisableInfoboxBuilder.js',
-        'u:dev:FindAndReplace/code.js',
-        'u:dev:MassNullEdit/code.js',
-        'u:dev:NullEditButton/code.js',
-        'u:dev:View Source/code.js',
+        'u:dev:MediaWiki:AjaxEdit.js',
+        'u:dev:MediaWiki:DisableInfoboxBuilder.js',
+        'u:dev:MediaWiki:FindAndReplace/code.js',
+        'u:dev:MediaWiki:MassNullEdit/code.js',
+        'u:dev:MediaWiki:NullEditButton/code.js',
+        'u:dev:MediaWiki:View Source/code.js',
     ],
 });/**/

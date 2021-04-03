@@ -18,3 +18,24 @@ importArticles({
         'u:dev:AjaxRC/code.js',
     ]
 });
+/*************************************************************************/
+
+
+
+/* Automated Profile Template */
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2:'{{sub'+'st:MediaWiki:Welcome-user-page}}',
+        3:false,
+        1202:false
+    },
+    summary:'Automated new user page'
+};
+
+importArticles({ 
+    type: 'script', 
+    articles: [ 
+        'u:dev:MediaWiki:AutoCreateUserPages.js', 
+    ]
+});
+/*************************************************************************/

@@ -1,0 +1,1 @@
+importScriptURI("http://i.thottbot.com/power.js");

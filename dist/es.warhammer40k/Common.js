@@ -60,27 +60,16 @@ function checktimers() {
     updatetimer(i);  //start it up
   }
 }
-addOnloadHook(checktimers);
+$(checktimers);
 
 /* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
-
-// 1. AutoRefreshing RecentChanges and WikiActivity
- 
-AjaxRCRefreshText = 'Act. automát.';
-AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente';
-ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
-importScriptPage('AjaxRC/code.js', 'dev');
-
-importScriptPage('AjaxRC/code.js', 'dev');
-importScriptPage('BackToTopButton/code.js', 'dev');
-
  
 /* Show/Hide Config */
 var ShowHideConfig = { 
     brackets: '[]'
 };
 importScriptPage('ShowHide/code.js', 'dev');
-importScriptPage('CollapsibleInfobox/code.js', 'dev'); //for examples on [[CollapsibleInfobox]]
+
 /* Fin */
  
  
@@ -94,7 +83,7 @@ function UserNameReplace(){
     }
   }
 } 
-addOnloadHook(UserNameReplace);
+$(UserNameReplace);
 /* Fin */
  
  
@@ -149,35 +138,7 @@ var BackToTop = true; // prevent duplication
 // **************************************************
 //  Fin - BackToTopButton
 // **************************************************
-  
-importScriptPage('Countdown/code.js', 'dev');
  
-/* chat */
-importScript('MediaWiki:Chat.js');
-
-
-
-importArticles({
-    type: 'script',
-    articles: [
-        'w:dev:WallGreetingButton/code.js'
-    ]
-});
- 
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:FloatingToc/code.js'
-    ]
-});
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:SearchSuggest/code.js'
-    ]
-});
-
 
 // BOTONES DE EDICIÓN PERSONALIZADOS
 // Esto esta basado en el código original: Wikipedia:Tools/Editing tools
@@ -303,23 +264,6 @@ function UserNameReplace() {
   };
 };
 
-// Para cambiar la descripción del Chat
-importScript('MediaWiki:Chat-headline');
- 
-function changeChatDesc() {
-try {
-if ($('section.ChatModule').size() > 0 && $('p.chat-name').html() != chatDesc){
-$('p.chat-name').html(''+chatDesc+'');
-setTimeout("changeChatDesc()", 200);
-}
- 
-}catch (err){
-setTimeout("changeChatDesc()", 200);
-}
-};
- 
-$(document).ready(function (){changeChatDesc()});
 
 // Para notificación de alianza con otras wikias
 var WikiaNotificationexpiry = 10;
-importScriptPage('WikiaNotification/code.js', 'dev');

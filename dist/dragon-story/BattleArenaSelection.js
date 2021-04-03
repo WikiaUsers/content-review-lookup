@@ -12,7 +12,7 @@ $(document).ready(function() {
 
 function addArenaCalculatorForm() {
 	var	$calculator_element = $("#BattleArenaSelection"),
-		calculator_form_html = '<div id="DSBattleArenaCalculator"></div><div id="content_messages"></div><form style="display:none" id="form_opponent"><b>Opponent dragon:</b> <select id="select_opponent"></select><br><br><b>Opponent level:</b> <select id="select_opponent_level"></select><br><br><input type="button" onclick="calculateScoreButtonClicked(this.id)" value="Find Best Matches (Low Lvl.)" id="calculateScoreButtonLowLevel"/> <input type="button" onclick="calculateScoreButtonClicked(this.id)" value="Find Best Matches (High Lvl.)" id="calculateScoreButtonHighLevel"/> <br><br><b>Remember: The percentages reflect your chance of winning, which is the chance of scoring at least 1 critical hit in 3 attacks. A critical hit might but <u>will not necessarily</u> knock out an opponent immediately.</b><br></form><br><div id="content_scores"></div>';
+		calculator_form_html = '<div id="DSBattleArenaCalculator"></div><div id="content_messages"></div><form style="display:all" id="form_opponent"><b>Opponent dragon:</b> <select id="select_opponent"></select><br><br><b>Opponent level:</b> <select id="select_opponent_level"></select><br><br><input type="button" value="Find Best Matches (Low Lvl.)" id="calculateScoreButtonLowLevel"/> <input type="button" value="Find Best Matches (High Lvl.)" id="calculateScoreButtonHighLevel"/> <br><br><b>Remember: The percentages reflect your chance of winning, which is the chance of scoring at least 1 critical hit in 3 attacks. A critical hit might but <u>will not necessarily</u> knock out an opponent immediately.</b><br></form><br><div id="content_scores"></div>';
 
 	$calculator_element.html(calculator_form_html);
 }
@@ -33,7 +33,9 @@ function addArenaCalculatorForm() {
 	var low_level_button_name = "Find Best Matches (Levels " + window.arena_data.LOW_USER_DRAGON_MIN + " - " + window.arena_data.LOW_USER_DRAGON_MAX + ")";
 
 	document.getElementById(window.arena_data.HIGH_LEVEL_BUTTON_ID).value = high_level_button_name;
+	document.getElementById("calculateScoreButtonHighLevel").onclick = function() {calculateScoreButtonClicked("calculateScoreButtonHighLevel")};
 	document.getElementById(window.arena_data.LOW_LEVEL_BUTTON_ID).value = low_level_button_name;
+	document.getElementById("calculateScoreButtonLowLevel").onclick = function() {calculateScoreButtonClicked("calculateScoreButtonLowLevel")};
  }
  
  function setArenaMenuOptions()
@@ -50,18 +52,18 @@ function addArenaCalculatorForm() {
         names.push(name);
     }        
     
-    for (var index in names)
+    for (var index2 in names)
     {
         var option = document.createElement("option");
-        option.text = names[index];
+        option.text = names[index2];
         opponent_dragon_menu.add(option);
     }
     
     for (var i = window.arena_data.OPPONENT_MAX_LEVEL; i >= window.arena_data.OPPONENT_MIN_LEVEL; i--)
     {
-        var option = document.createElement("option");
-        option.text = i;
-        opponent_level_menu.add(option);
+        var option2 = document.createElement("option");
+        option2.text = i;
+        opponent_level_menu.add(option2);
     }
     
     document.getElementById("form_opponent").style.display = "inline";
@@ -301,8 +303,8 @@ function basListContainsElements(list, required_elements)
     {            
         var split_num = parseInt(values.length / 2);
         var remainder = values.length % 2;
-        var left = new Array();
-        var right = new Array();
+        var left  = [];
+        var right = [];
         
         for (var i = 0; i < split_num; i++)
         {
@@ -470,50 +472,50 @@ function renderDragonScores(handler, dragon_scores_list, min_level, max_level)
 
 HtmlOutput.prototype.toUrl = function (link, text, title) {
     return "<a title=\"" + title + "\" href=\"" +  link + "\">" + text + "</a>";
-}
+};
 
 HtmlOutput.prototype.renderArenaDragonLink = function (breed_name) {    
     return this.toUrl(window.arena_data.site_page_source + breed_name + " Dragon", breed_name, breed_name + " Dragon");
-}
+};
 
 HtmlOutput.prototype.wrapBorderedTable = function (content)
 {    
     var table_style = "background-color:#CCCCCC; border-collapse: collapse;";
     return "<table border=\"1\" cellPadding=\"10\" style=\"" + table_style + "\">"+content+"</table>";
-}
+};
 
 HtmlOutput.prototype.wrapHeader = function (header, color, span, width)
 {
     var header_style = "width:" + width + "px; height:50px; background-color:" + color + "; text-align: center;";
     return "<th style=\""+header_style+"\" colspan=\"" + span + "\">"+header+"</th>";
-}
+};
 
 HtmlOutput.prototype.wrapCell = function (cell, align)
 {
     var cell_style = "text-align:" + align + ";";
     
     return "<td style=\"" +cell_style+"\">"+cell+"</td>";
-}
+};
 
 HtmlOutput.prototype.wrapRow = function (row)
 {
-    return "<tr>"+row+"</tr>"
-}
+    return "<tr>"+row+"</tr>";
+};
 
 HtmlOutput.prototype.joinRows = function (rows)
 {
     return rows.join('');
-}
+};
 
 HtmlOutput.prototype.joinCells = function (cells)
 {
     return cells.join('');
-}
+};
 
 HtmlOutput.prototype.output = function (value)
 {   
     document.getElementById(this.outputElementId).innerHTML = value;
-}
+};
 
  /*
   * Custom data structures

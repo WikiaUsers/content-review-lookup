@@ -14,7 +14,7 @@
         'Carmelita',
         'Lace',
         'Sharpe',
-        'Hornet',
+        'Hornet (Silksong)',
         'Huntress'
     ];
  

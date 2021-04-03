@@ -1,7 +1,7 @@
 /* MediaWiki:Gadget-site-lib.js */
 window.wgUXS = function (wg, hans, hant, cn, tw, hk, sg, zh, mo, my) {
     var ret = {
-        'zh': zh || hant || hans || tw || cn || hk || sg || mo || my,
+        'zh': zh || hans || hant || cn || tw || hk || sg || mo || my,
         'zh-hans': hans || cn || sg || my,
         'zh-hant': hant || tw || hk || mo,
         'zh-cn': cn || hans || sg || my,
@@ -45,14 +45,17 @@ window.UserTagsJS = {
         'helper': { link: 'Project:国际团队' },
         'staff': { link: 'Project:员工团队' },
         'sysop': { link: 'Project:社区中心团队' },
-        'vstf': { link: 'Help:VSTF' }
+        'vstf': { link: 'Help:VSTF' },
+        'content-moderator': { link: 'Project:PVT' },
 
 /* The CPT project has been archived
         'cpt': { link: 'Project:中文预备志愿者小组', u:'CPT Member' },
         'cpt-consultant': { link: 'Project:中文预备志愿者小组', u:'CPT Consultant' },
         'cpt-clerk': { link: 'Project:中文预备志愿者小组', u:'CPT Clerk' }
 */
-
+    // But now we've got PVT-ZH!
+    	'pvt': { link: 'Project:PVT', u: 'PVT' },
+    	'pvt-zh': { link: 'Project:PVT', u: 'PVT-ZH' }
     }
 };
 UserTagsJS.modules.autoconfirmed = false;
@@ -73,6 +76,17 @@ UserTagsJS.modules.metafilter = {
 	'cpt': ['cpt-consultant', 'cpt-clerk']
 };
 */
+// But again, we've got PVT-ZH!
+UserTagsJS.modules.custom = {
+    'Winston Sung': ['pvt', 'pvt-zh'],
+    '机智的小鱼君': ['pvt', 'pvt-zh'],
+    '铁桶': ['pvt', 'pvt-zh'],
+    'Lakejason0': ['pvt', 'pvt-zh'],
+    'Dianliang233': ['pvt', 'pvt-zh']
+};
+UserTagsJS.modules.metafilter = {
+	'pvt': ['pvt-zh']
+};
 
 /* Fix country names chosen by United Nations for the Special:Analytics page */
 $(".analytics_table").each(function() {
@@ -148,6 +162,9 @@ $('.wds-community-header__wordmark').html(
     })
   )
 );
+
+/* Discussion Icon */
+$('header li:nth-child(5) .wds-dropdown__toggle > a').prepend('<svg class="wds-icon-tiny wds-icon" id="wds-icons-comment-tiny" viewBox="0 0 12 12"><path id="comment-tiny" d="M4.5 2c-.668 0-1.293.26-1.757.731A2.459 2.459 0 0 0 2 4.5c0 1.235.92 2.297 2.141 2.47A1 1 0 0 1 5 7.96v.626l1.293-1.293A.997.997 0 0 1 7 7h.5c.668 0 1.293-.26 1.757-.731.483-.476.743-1.1.743-1.769C10 3.122 8.878 2 7.5 2h-3zM4 12a1 1 0 0 1-1-1V8.739A4.52 4.52 0 0 1 0 4.5c0-1.208.472-2.339 1.329-3.183A4.424 4.424 0 0 1 4.5 0h3C9.981 0 12 2.019 12 4.5a4.432 4.432 0 0 1-1.329 3.183A4.424 4.424 0 0 1 7.5 9h-.086l-2.707 2.707A1 1 0 0 1 4 12z"></path></svg>') // too lazy to jQuery-ize this
 
 ////////////////////////////////
 // END

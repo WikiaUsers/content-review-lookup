@@ -103,7 +103,7 @@ function verifySummary(){
 	return true;
 }
 
-addOnloadHook(function() {
+$(function() {
 	if ( wgCanonicalSpecialPageName === 'Upload' ) {
 		setupUploadForm();
 		addHideButtons();

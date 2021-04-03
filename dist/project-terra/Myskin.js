@@ -1,2 +1,0 @@
-/* Any JavaScript here will be loaded for users using the Myskin skin */
-document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Common.js' + '&action=raw&ctype=text/javascript"></script>');

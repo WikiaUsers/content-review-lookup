@@ -1,5 +1,5 @@
 /**
- * LESS GUI for Wikia wikis
+ * LESS GUI for Fandom wikis
  *
  * Adds support for using LESS on MediaWiki and an interface for compiling LESS to CSS
  *
@@ -15,7 +15,7 @@
  * @link <https://dev.fandom.com/wiki/Less> Documentation
  *
  * @notes <https://phabricator.wikimedia.org/T56864> native support for this
- * @todo Add support for less files across wikia
+ * @todo Add support for less files across fandom
  *       @example @import 'u:dev:MediaWiki:Foo.less';
  *       only support url syntax rather than w:c:foo...
  *       will require looking up files through api
@@ -108,7 +108,7 @@
                     });
                 });
 
-                importArticles({type: 'script', articles: ['u:dev:I18n-js/code.js']});
+                importArticles({type: 'script', articles: ['u:dev:MediaWiki:I18n-js/code.js']});
             },
 
             /**
@@ -162,7 +162,7 @@
                 var profile = $.client.profile(),
                     run = false,
                     // usergroups that can edit mediawiki pages
-                    allowed = ['sysop', 'vanguard', 'vstf', 'helper', 'staff']
+                    allowed = ['sysop', 'vanguard', 'content-volunteer', 'soap', 'helper', 'content-team-member', 'wiki-manager', 'staff']
                         .concat(config.allowed),
                     ns,
                     mwi,
@@ -346,7 +346,7 @@
                         'dev.less',
                         [
                             '/load.php?debug=' + conf.debug +
-                            '&lang=en&mode=articles&articles=u:dev:Less/less.js&only=scripts'
+                            '&lang=en&mode=articles&articles=u:dev:MediaWiki:Less/less.js&only=scripts'
                         ],
                         // objects for styles and messages
                         // mw.loader doesn't handle these being undefined
@@ -360,7 +360,7 @@
                         'dev.colors',
                         [
                             '/load.php?debug=' + conf.debug +
-                            '&lang=en&mode=articles&articles=u:dev:Colors/code.js&only=scripts'
+                            '&lang=en&mode=articles&articles=u:dev:MediaWiki:Colors/code.js&only=scripts'
                         ],
                         // objects for styles and messages
                         // mw.loader doesn't handle these being undefined

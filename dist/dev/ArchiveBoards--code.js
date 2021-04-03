@@ -24,13 +24,14 @@
     window.ArchiveBoards.loaded = true;
     var config = window.ArchiveBoards;
     var i18n, groups;
+    console.log("This wiki is using ArchiveBoards, which will soon become an obsolete wiki-wide script and is now deprecated. It will only continue to operate as long as Special:Forum remains: once the wiki has been converted to use Discussions, this script will cease to function and should be removed from your wiki.");
 
     // Default usergroups. We cannot allow these ones to be overwritten.
-    // If overwritten, this will violate Wikia TOU on customisation.
+    // If overwritten, this will violate Fandom TOU on customisation.
     var groupDefaults = [
         "threadmoderator",
         "sysop",
-        "vstf",
+        "soap",
         "helper",
         "wiki-manager",
         "staff"
@@ -134,8 +135,8 @@
         // Add the notice.
         constructNotice("ClosedBoard").insertBefore("h4.related-topics-heading");
 
-        // Remove the buttons based on the array. Default is to exclude admins/Wikia Staff/VSTF.
-        // Exclusion means local sysops and Wikia Staff can reopen threads that were accidentally
+        // Remove the buttons based on the array. Default is to exclude admins/Fandom Staff/SOAP.
+        // Exclusion means local sysops and Fandom Staff can reopen threads that were accidentally
         // "closed" due to the script.
         if (!isAllowed(groups)) {
             $("div.buttonswrapper").remove();

@@ -5,3 +5,11 @@ $.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
     'ajaxrc-refresh-text': 'Rafraîchissement auto',
     'ajaxrc-refresh-hover': 'Rafraîchir automatiquement la page'
 }}}}});
+
+// Plugin GlobalEdit
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:GlobalEditcount/code.js',
+    ]
+});

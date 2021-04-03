@@ -3,26 +3,44 @@
  * Description: Adds a preview dialog for trying out your infobox markup with existing articles.
  * Author: Pogodaanton
  */
-require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
-  'use strict';
+(function (window) {
+  "use strict";
   window.dev = window.dev || {};
-  var conf = mw.config.get([
-    'wgNamespaceNumber',
-    'wgIsEditPage'
-  ]);
 
   if (
-    typeof window.dev.infoboxEditorPreview !== 'undefined' ||
-    conf.wgNamespaceNumber !== 10 ||
-    !conf.wgIsEditPage ||
-    $('.template-classification-type-text').attr('data-type') !== 'infobox' ||
-    typeof window.ace === 'undefined'
+    typeof window.dev.infoboxEditorPreview !== "undefined" ||
+    mw.config.get("wgNamespaceNumber") !== 10
   ) {
     return;
   }
 
-  window.importArticle({
-    type: 'script',
-    article: 'u:dev:MediaWiki:InfoboxEditorPreview/main.js'
+  /**
+   * LEGACY
+   */
+  if (mw.config.get("wgVersion") === "1.19.24") {
+    if (
+      !mw.config.get("wgIsEditPage") ||
+      $(".template-classification-type-text").attr("data-type") !== "infobox" ||
+      typeof window.ace === "undefined"
+    ) {
+      return;
+    }
+
+    window.importArticle({
+      type: "script",
+      article: "u:dev:MediaWiki:InfoboxEditorPreview/main.js",
+    });
+    return;
+  }
+
+  /**
+   * UCP
+   */
+  if (!mw.config.get("wgIsPortableInfoboxTemplate")) return;
+  mw.loader.using("ext.visualEditor.desktopArticleTarget.init").then(function () {
+    window.importArticle({
+      type: "script",
+      article: "u:dev:MediaWiki:InfoboxEditorPreview/ucp.js",
+    });
   });
-});
+})(window);

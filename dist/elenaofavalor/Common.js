@@ -17,8 +17,7 @@ window.MessageWallUserTags = {
     users: {
         'Bionicforce': 'Bureaucrat',
         'Andi Cruz': 'Bureaucrat',
-        'Americhino': 'Bureaucrat',
-        'Kyurem147': 'Administrator',
+        'Kyurem147': 'Content Moderator',
         }
 };
 

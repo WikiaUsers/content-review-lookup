@@ -475,11 +475,11 @@ dev.StarRatings.ui.thumb = function($this, callbacks) {
 	.append($thumbUp, $bar, $thumbDown)
 	.css('display', 'inline-block');
 	$thumbUp
-	.prop('title', 'Dislike')
+	.prop('title', 'Like')
 	.click($.proxy(callbacks.submit, callbacks, 10))
 	.mouseenter($.proxy($thumbDown.css, $thumbUp, 'color', '#0B0')).mouseleave($.proxy($thumbUp.css, $thumbUp, 'color', ''));
 	$thumbDown
-	.prop('title', 'Like')
+	.prop('title', 'Dislike')
 	.click($.proxy(callbacks.submit, callbacks, 0))
 	.mouseenter($.proxy($thumbDown.css, $thumbDown, 'color', 'red')).mouseleave($.proxy($thumbDown.css, $thumbDown, 'color', ''));
 	return {

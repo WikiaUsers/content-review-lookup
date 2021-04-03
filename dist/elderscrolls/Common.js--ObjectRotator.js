@@ -1,13 +1,13 @@
 /**
-* @author: Flightmare (http://elderscrolls.wikia.com/wiki/User:Flightmare)
+* @author: Flightmare (http://elderscrolls.fandom.com/wiki/User:Flightmare)
 * @version: 1.0
 * @license: CC-BY-SA 3.0
 * @description: Replaces the infobox image with a 3D model viewer for every page added to [[Category:3D Enabled]]. Requires an image named {{PAGENAME}}_3D.png.
 */
 $(document).ready(function() {
     if(wgCategories.indexOf("3D Enabled") > -1) {
-        $("img.pi-image-thumbnail").first().replaceWith("<div id=\"object-rotator\"><img src=\"http://elderscrolls.wikia.com/wiki/Special:FilePath/3Ddef.png?width=214px\" style=\"position: absolute; bottom: 0; left: 0; opacity: 0.1\" /></div>");
-        $("#object-rotator").css("background-image", "url(\"http://elderscrolls.wikia.com/wiki/Special:FilePath/" + wgPageName + "_3D.png\")");
+        $("img.pi-image-thumbnail").first().replaceWith("<div id=\"object-rotator\"><img src=\"http://elderscrolls.fandom.com/wiki/Special:FilePath/3Ddef.png?width=214px\" style=\"position: absolute; bottom: 0; left: 0; opacity: 0.1\" /></div>");
+        $("#object-rotator").css("background-image", "url(\"http://elderscrolls.fandom.com/wiki/Special:FilePath/" + wgPageName + "_3D.png\")");
 
         //Mouse event listener (movement + mouse 1 down)
         $("#object-rotator").on("mousemove", function(e) {

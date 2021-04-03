@@ -1,1 +1,0 @@
-#REDIRECT [[MediaWiki:Monobook.js/collapsiblesidebarportlets.js]]

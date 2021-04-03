@@ -4,9 +4,8 @@
 ----first number represents description; blank = no description, 2 = has desc----
 ----second number represents number of effects
 */
- 
-var tooltips_debug = false;
-var tooltips_list = [
+
+window.tooltips_list = [
         {
         classname: 'item-tooltip',
         parse: '{' + '{Template:Item tip|1=<#name#>|2=<#color#>|3=<#text#>|4=<#text2#>|o=<#obtain#>|o1=<#obtain1#>|o1a=<#a#>|o1b=<#b#>|o1c=<#c#>|o1d=<#d#>|o2=<#obtain2#>}}',
@@ -16,5 +15,8 @@ var tooltips_list = [
     },  {
         classname: 'character-tooltip',
         parse: '{' + '{Template:Character tip|1=<#name#>|2=<#class#>|3=<#rarity#>|4=<#faction#>|5=<#left#>|6=<#top#>|width=<#width#>}}'
+    },	{
+        classname: 'collection-tooltip',
+        parse: '{' + '{Template:Collection tip|1=<#name#>|2=<#text1#>|3=<#text2#>|e=<#event#>|q=<#quality#>|c=<#condition#>|n=<#note#>}}',
     },
 ];

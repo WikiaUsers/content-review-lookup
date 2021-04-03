@@ -91,6 +91,7 @@ window.DisplayClockJS = '%2I:%2M:%2S %p %2d %{Января;Февраля;Мар
 
 /*Скрипт альтернативного виджета дискорда*/
 /*Автор скрипта: Сибирский Смотритель*/
+/*
 (function () {
 if (!mw.config.get('wgUserName'))
     return;
@@ -182,7 +183,7 @@ function setupModule(data) {
 }
  
 })();
-
+*/
 /*Неактивные пользователи - более 1 месяца */
 //Inactive users
 InactiveUsers = { 

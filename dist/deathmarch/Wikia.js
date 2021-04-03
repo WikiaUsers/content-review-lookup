@@ -22,3 +22,9 @@ window.NoLicenseWarning = {
 /* Upload InPage */
 window.needsLicense = true;
 /*******************************************************************************/
+
+
+
+/* Back to Top Button */
+window.BackToTopModern = true;
+/*******************************************************************************/

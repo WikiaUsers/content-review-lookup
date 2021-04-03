@@ -1,9 +1,8 @@
 // Add Section Button (modified version of Grunny's EditIntroButton)
 // Adds a button to the Edit Dropdown that creates a new section for the user to edit, much like on talk pages.
-require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
-    var ns = mw.config.get('wgNamespaceNumber');
+(function () {
     if (
-        ns === -1 ||
+        mw.config.get('wgNamespaceNumber') === -1 ||
         window.AddSectionButtonLoaded
     ) {
         return;
@@ -47,5 +46,4 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
     }
 
     mw.loader.using('mediawiki.util').then(fetchText);
-
-});
+})();

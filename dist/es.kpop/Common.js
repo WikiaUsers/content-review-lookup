@@ -212,7 +212,8 @@ window.railWAM = {
     logPage:"Project:WAM Log"
 };
 
-/*Add Usertags for Users*/
-UserTagsJS.modules.custom = {
-	'니나': ['exo-l']
+window.LockOldBlogs = {
+    expiryDays: 20,
+    expiryMessage: "Este blog se considera archivado porque no ha sido editado desde hace <expiryDays> días, por favor no lo edites!",
+    nonexpiryCategory: "Blogs nunca archivados"
 };

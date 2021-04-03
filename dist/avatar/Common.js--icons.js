@@ -3,7 +3,9 @@
  */
 
 $(function() {
-	if( $( '.wds-community-header' ).length ) {
+    if ( mw.config.get( 'wgVersion' ) !== '1.19.24' && $( '#title-eraicons' ).length ) {
+        $( '.page-header__contribution > div' ).first().append( $( '#title-eraicons' ).show() );
+    } else if ( $( '.wds-community-header' ).length ) {
 		$( '#PageHeader' ).prepend(
 		$( '#icons' ).attr( 'style', 'position: absolute; right: 65px;' )
 	);

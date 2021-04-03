@@ -728,6 +728,7 @@ function owwsitesearch(f){
         f.base.value+'++'+f.qfront.value
 }
  
+dev:DiscordIntegrator/code.js
  
 addOnloadHook(toggleInit);
  

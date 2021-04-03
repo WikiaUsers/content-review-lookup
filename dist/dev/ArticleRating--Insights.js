@@ -17,7 +17,7 @@ function(window, mw, $) {
          *  {number} imports
          *  {string} storage
          *  {constructor} api
-         *  {object} i18n
+         *  {method} i18n
          *  {object} colors
          *  {object} icons
          *  {method} icon
@@ -51,7 +51,7 @@ function(window, mw, $) {
      * @desc        Preloads data and i18n
      * @returns     {void}
      */
-    ARInsights.preload = function(i18nLoaded) {
+    ARInsights.preload = function(i18nData) {
         this.api.get({
             action: 'parse',
             text: '{{' + this.storage + '}}',
@@ -83,10 +83,7 @@ function(window, mw, $) {
                     avg: Object.values(rates[i]).reduce(sum) / total
                 };
             }
-            this.i18n = i18nLoaded._messages.en;
-            for(i in this.i18n) {
-                this.i18n[i] = i18nLoaded.msg(i).escape();
-            }
+            this.i18n = i18nData.msg;
             this.init();
         }, this));
     },
@@ -123,23 +120,23 @@ function(window, mw, $) {
 
         // modify blank page
         var title = $('title').text();
-        $('title').text(title.replace(title.split('|')[0], this.i18n.insights + ' '));
-        $('.page-header__title').text('ArticleRating: ' + this.i18n.insights);
+        $('title').text(title.replace(title.split('|')[0], this.i18n('insights').plain() + ' '));
+        $('.page-header__title').text('ArticleRating: ' + this.i18n('insights').plain());
         $content
         .html('<svg class="wds-spinner wds-spinner__block" width="66" height="66" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg"><g transform="translate(33, 33)"><circle class="wds-spinner__stroke" fill="none" stroke-width="3" stroke-dasharray="188.49555921538757" stroke-dashoffset="188.49555921538757" stroke-linecap="round" r="30"></circle></g></svg>')
         .after(
             $('<div>', {
                 id: 'rating-footer',
                 append: [
-                    $('<div>', { text: this.i18n.poweredby + ' ArticleRating'}),
+                    $('<div>', { text: this.i18n('poweredby').plain() + ' ArticleRating'}),
                     $('<a>', {
                         href: '//dev.fandom.com/wiki/ArticleRating',
-                        text: this.i18n.doc
+                        text: this.i18n('doc').plain()
                     }),
                     ' | ',
                     $('<a>', {
                         href: '//dev.fandom.com/wiki/Talk:ArticleRating',
-                        text: this.i18n.report
+                        text: this.i18n('report').plain()
                     })
                 ]
             })
@@ -299,19 +296,19 @@ function(window, mw, $) {
                                 'class': 'sortable',
                                 width: '50%',
                                 click: $.proxy(function(e) { this.sort(0, e) }, this),
-                                text: this.i18n.article
+                                text: this.i18n('article').plain()
                             }),
                             $('<th>', {
                                 'class': 'sortable',
                                 width: '35%',
                                 click: $.proxy(function(e) { this.sort(1, e) }, this),
-                                text: this.i18n.avgrating
+                                text: this.i18n('avgrating').plain()
                             }),
                             $('<th>', {
                                 'class': 'sortable',
                                 width: '15%',
                                 click: $.proxy(function(e) { this.sort(2, e) }, this),
-                                text: this.i18n.totalrating
+                                text: this.i18n('totalrating').plain()
                             }),
                             $('<th>')
                         ])
@@ -326,7 +323,7 @@ function(window, mw, $) {
         .append($('<div>', {
             'class': 'rating-details',
             append: [
-                $('<div>', { 'class': 'head', text: this.i18n.details }),
+                $('<div>', { 'class': 'head', text: this.i18n('details').plain() }),
                 $('<div>', { id: 'rating-details', append: this.bars() })
             ]
         }));
@@ -349,7 +346,7 @@ function(window, mw, $) {
                 }),
                 $('<div>', {
                     'class': 'rating-title',
-                    text: this.i18n[t]
+                    text: this.i18n(t).plain()
                 }),
                 $('<a>', {
                     'class': 'rating-link',
@@ -359,8 +356,8 @@ function(window, mw, $) {
                 $('<div>', {
                     'class': 'rating-foot',
                     text: t === 'most'
-                        ? this.i18n.totalrating + ': ' + d.rates
-                        : this.i18n.avgrating + ': ' + d.avg.toFixed(1)
+                        ? this.i18n('totalrating').plain() + ': ' + d.rates
+                        : this.i18n('avgrating').plain() + ': ' + d.avg.toFixed(1)
                 })
             ]
         });

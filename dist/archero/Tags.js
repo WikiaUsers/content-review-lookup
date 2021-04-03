@@ -259,7 +259,7 @@ UserTagsJS.modules.mwGroups      = [
 /* Custom Tags */
 UserTagsJS.modules.custom = {
     /** Staff Ranks **/
-    'Tigerashark14'          : ['st','cofounder'],
+    'Tigerashark14'          : ['st','founder'],
     'Cdkey7708'     : ['founder'],//ST exempt
     
 };//End CT*/

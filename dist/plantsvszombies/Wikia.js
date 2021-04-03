@@ -6,28 +6,33 @@ window.ajaxPages = [
     'Special:Watchlist',
     'Special:Log',
     'Special:Contributions',
-    'Special:WikiActivity'
+    'Special:WikiActivity',
+    'Special:BlockList',
+    'Special:Statistics'
 ];
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 
-/* Lock Forums script settings */
+/* NOTE: this script has been disabled temporarily due to migration to Discussions
+
+// Lock Forums script settings
+
 window.LockForums = {
     lockMessageWalls: false,
     expiryDays: 60,
-    expiryMessage: "This thread has not been commented on in <expiryDays>. Therefore, it has been locked indefinitely to prevent necrobumping. If you have a valid reason to comment on this thread, contact a wiki admin to unlock it.",
+    expiryMessage: "This thread has not been commented on in <expiryDays> days. Therefore, it has been locked indefinitely to prevent necrobumping. If you have a valid reason to comment on this thread, contact a wiki admin to unlock it.",
     warningDays: 30,
-    warningMessage: "This thread has not been commented on in <warningDays>. Please only comment if absolutely necessary.",
+    warningMessage: "This thread has not been commented on in <warningDays> days. Please only comment if absolutely necessary.",
     disableOn: ["1184513", "1166044", "1054671"], // Add the ID numbers of threads that shouldn't be locked here in an array.
-    banners: true,
+    banners: false,
     expiryBannerMessage: "Vampy [7 GRAND UMP] is gonna get you if you post on this thread. Continue and face the fiery consequences.",
     expiryBannerStyle: {'border': '2px solid #f66', 'background-color': 'whitesmoke', 'margin': '0.8em 0px', 'padding': '0.5em 12px', 'color': 'black'},
-    warningBannerMessage: "Vampy [7 GRAND UMP] is gonna get you if you post on this thread.",
+    warningBannerMessage: "Vampy [7 GRAND UMP] is gonna get you if you post on this thread. And maybe TULO.",
     warningBannerStyle: {'border': '2px solid #f66', 'background-color': 'whitesmoke', 'margin': '0.8em 0px', 'padding': '0.5em 12px', 'color': 'black'},
     warningPopup: true,
     warningPopupMessage: "You are about to necrobump a thread that hasn't been posted on in <warningDays>! Continue and face the fiery consequences?",
     boxHeight: 50
-};
+}; */
 
 /* Special Pages config script - Add special pages to the wiki here */
 window.pageNames = [
@@ -45,12 +50,12 @@ window.pageNames = [
 window.pageData = [
 
    'PvZ3 Wiki Event Coming Soon',
-   'Rollbacks: <br></br> Moderators: <br><br/> Administrators: <br><br/> Bureaucrats: <br><br/>',
+   'This is a partial list of users elegible to be staff, intended for staff use. Note that this does not guarantee a successful promotion application and screening process. <br></br> Rollbacks: <br></br> Discussion Moderators: <br><s>Sharksurcool</s></br> Moderators: <br>None<br/> Administrators: <br>CWJ-D, GamesterD<br/> Bureaucrats: <br>None<br/>',
    'Coming Soon!',
    'See art here from [[User:LettuceBirb|Lettuce]], MS, and more!',
    'Lettuce\'s Gijinks is open for business! He sells Glowy Specs™',
    'TZM\'s lair. Yeah, he hides it well. More coming soon.',
-   'I\'m blue da ba de ba duh da ba. Also, welcome to my hidden messy sanctuary. <center>[[File:1z148ow th.gif]]</center> <br> [[File:Rei Ayanami Toast.gif]]',
+   '<h1 class="page-header__title">PrismastebanZ\'s Hidden Messy Sanctuary</h1>' + 'I\'m blue da ba de ba duh da ba. Also, welcome to my hidden messy sanctuary.' + '<div class="mq-wrapper"><span><wikitext>[[File:Rei Ayanami Toast.gif]] [[File:1z148ow th.gif]] [[File:Rei Ayanami Toast.gif]]</span></div></wikitext>' + '<wikitext>{{PrismaZ/SideImages}}</wikitext>' + '<poll>Have you found this page yet?<br>Yes<br>No</poll>',
    'DATAFORLASTPAGEINABOVELIST'
 
 ];
@@ -71,29 +76,29 @@ window.pagePurpose = [
 
 /* Mass block */
 
-if (mw.config.get('wgUserGroups').indexOf('sysop') > -1) {
-    window.massBlockDelay = 1000;
-    importArticles({
-        type: 'script',
-        articles: [
-            'u:dev:ViewRemoved/code.js'
-        ]
-    });
-}
+//if (mw.config.get('wgUserGroups').indexOf('sysop') > -1) {
+//    window.massBlockDelay = 1000;
+//    importArticles({
+//        type: 'script',
+//        articles: [
+//            'u:dev:ViewRemoved/code.js'
+//        ]
+//    });
+//}
 
-window.chatBlockReason = 'ToU violation';
-window.chatBlockExpiry = '3 months';
+//window.chatBlockReason = 'ToU violation';
+//window.chatBlockExpiry = '3 months';
 
-window.ArchiveToolConfig = {
-    archiveListTemplate: 'Archives',
-    archivePageTemplate: 'Archivepage',
-    archiveSubpage: 'Archive',
-    userLang: true
-};
+//window.ArchiveToolConfig = {
+//    archiveListTemplate: 'Archives',
+//    archivePageTemplate: 'Archivepage',
+//    archiveSubpage: 'Archive',
+//    userLang: true
+//};
 
 // http://dev.wikia.com/wiki/RevealAnonIP
 window.RevealAnonIP = {
-    permissions: ['rollback', 'sysop', 'bureaucrat', 'staff']
+    permissions: ['rollback', 'sysop', 'bureaucrat', 'bot', 'staff']
 };
 
 function updatetimer(i) {
@@ -115,7 +120,7 @@ function updatetimer(i) {
         var tpm = ' ';
     }
 
-    // calcuate the diff
+    // calculate the diff
     var left = (diff % 60) + ' seconds';
     diff = Math.floor(diff / 60);
     if (diff > 0) left = (diff % 60) + ' minutes ' + left;
@@ -190,7 +195,9 @@ $('.wds-global-navigation__search-input').on('keyup', function(){
 			ump: "User:7 GRAND UMP",
 			game: "User:GamesterD",
 			gd: "User:GamesterD",
-			lb: "User:LettuceBirb",
+			lb: "User:GloweySpecs",
+			lettuce: "User:GloweySpecs",
+			glow: "User:GloweySpecs",
 			bp: "User:Ballistic Planet",
 			drek: "User:Drek'TharSuperSword",
 			jack: "User:Jackninja5DipperGravityFalls",
@@ -207,9 +214,13 @@ $('.wds-global-navigation__search-input').on('keyup', function(){
 			kostya: "User:Sapfling",
 			sap: "User:Sapfling",
 			shark: "User:Sharksurcool",
+			slav: "User:Mr slav",
+			eek: "User:Eek-ondchips",
+			impy: "User:DreamyImpy",
 			
 			//Usernames inaccessible via QWERTY keyboard
 			cnguy: "User:棚客",
+		    gwaine:	'Ḡwẵine Ḹٍٍkƨ Ĺiĸe Ͼềлȑềd',
 			
 			//Misc User Stuff
 			msg: "Message Wall:",
@@ -233,6 +244,7 @@ $('.wds-global-navigation__search-input').on('keyup', function(){
 			//Admin shortcuts
 			ban: "Special:Block",
 			block: "Special:Block",
+			blocked: "Special:BlockList",
 			act: "Special:WikiActivity",
 			recent: "Special:Recentchanges",
 			dash: "Special:AdminDashboard",
@@ -251,11 +263,13 @@ $('.wds-global-navigation__search-input').on('keyup', function(){
 			pvzas: "Plants vs. Zombies: All Stars",
 			pvzo: "Plants vs. Zombies Online",
 			pvza: "Plants vs. Zombies Adventures",
+			gwe: "Plants vs. Zombies: Great Wall Edition",
 			pvzgwe: "Plants vs. Zombies: Great Wall Edition",
 			pvzjttw: "Plants vs. Zombies: Journey to the West",
 			jttw: "Plants vs. Zombies: Journey to the West",
 			pvzse: "Plants vs. Zombies Social Edition",
-			pvziise: "Plants vs. Zombies 2 Social Edition"
+			pvziise: "Plants vs. Zombies 2 Social Edition",
+			pvzar: "Plants vs. Zombies AR Trading Cards"
 			
 		};
 		if (namespaces.hasOwnProperty(m[1])) {

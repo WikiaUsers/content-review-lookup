@@ -8,13 +8,17 @@
  * @license                 CC-BY-SA 3.0
  * 
  */
-require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
+(function() {
     'use strict';
 
     // Global scoping & double run protection
     var $rail = $('#WikiaRail');
     window.dev = window.dev || {};
-    if (window.dev.railcm || !$rail.exists()) {
+    if (
+        window.dev.railcm ||
+        !$rail.exists() ||
+        mw.config.get('wgVersion') !== '1.19.24'
+    ) {
         return;
     }
     window.dev.railcm = true;
@@ -239,4 +243,4 @@ require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
     // Script bootloader
     mw.hook('dev.wds').add(init);
 
-});
+})();

@@ -2,8 +2,7 @@
 importArticle({
  type: "script",
  articles: [
-  "MediaWiki:Common.js/displayTimer.js",
-  "MediaWiki:Snow.js"
+  "MediaWiki:Common.js/displayTimer.js"
 ],
 });
 

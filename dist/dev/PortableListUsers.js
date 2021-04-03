@@ -6,13 +6,7 @@
  * @description     Alternative to Special:ListUsers.
  * @protect         <nowiki>
  */
-require([
-    'wikia.window',
-    'jquery',
-    'mw',
-    'wikia.browserDetect',
-    'ext.wikia.design-system.loading-spinner'
-], function (window, $, mw, browserDetect, Spinner) {
+(function () {
     'use strict';
     if (window.PortableListUsersLoaded) {
         return;
@@ -33,31 +27,31 @@ require([
      * @description User groups
      */
     LU.users = {
-        'authenticated': {},
+        //'authenticated': {},
         'bot': {},
-        'bot-global': {},
+        //'bot-global': {},
         'bureaucrat': {},
         'chatmoderator': {},
         'content-moderator': {},
-        'content-reviewer': {},
-        'content-team-member': {},
-        'content-volunteer': {},
-        'council': {},
-        'fandom-editor': {},
-        'global-discussions-moderator': {},
-        'helper': {},
-        'request-to-be-forgotten-admin': {},
-        'restricted-login': {},
-        'restricted-login-exempt': {},
-        'reviewer': {},
-        'staff': {},
+        //'content-reviewer': {},
+        //'content-team-member': {},
+        //'content-volunteer': {},
+        //'council': {},
+        //'fandom-editor': {},
+        //'global-discussions-moderator': {},
+        //'helper': {},
+        //'imagereviewer': {},
+        //'request-to-be-forgotten-admin': {},
+        //'restricted-login': {},
+        //'restricted-login-exempt': {},
+        //'soap': {},
+        //'staff': {},
         'sysop': {},
         'threadmoderator': {},
-        'util': {},
-        'vanguard': {},
-        'voldev': {},
-        'vstf': {},
-        'wiki-manager': {}
+        //'util': {},
+        //'vanguard': {},
+        //'voldev': {},
+        //'wiki-manager': {}
     };
     /**
      * @type {Object}.{Object}
@@ -84,11 +78,11 @@ require([
         },
         window.PortableListUsers
     );
-    /**
-     * @type {Boolean}
-     * @description Shortcut for mobile or not
-     */
-    LU.mobile = browserDetect.isMobile();
+    LU.mobileModules = mw.loader
+        .getModuleNames()
+        .filter(function(module) {
+            return module.indexOf('isTouchScreen') === 0;
+        });
     /**
      * @method preload
      * @description Preloads the script
@@ -110,6 +104,10 @@ require([
      */
     LU.init = function (i18n) {
         this.i18n = i18n.msg;
+        if (this.mobileModules.length === 1) {
+            this.mobile = mw.loader.require(LU.mobileModules[0])
+                .isTouchScreen();
+        }
         window.dev.placement.loader.util({
             script: 'PortableListUsers',
             element: 'tools',
@@ -132,15 +130,10 @@ require([
     LU.click = function () {
         if (this.modal) {
             this.modal.show();
-            this.createContent();
         } else {
             $('<div>', {
                 'id': 'lu-throbber',
-                'html':
-                    new Spinner(38, 2).html
-                    .replace('wds-block', 'wds-spinner__block')
-                    .replace('wds-path', 'wds-spinner__stroke')
-                    .replace('stroke-width=""', 'stroke-width="3"')
+                'html': '<svg class="wds-spinner wds-spinner__block" width="78" height="78" viewBox="0 0 78 78" xmlns="http://www.w3.org/2000/svg"><g transform="translate(39, 39)"><circle class="wds-spinner__stroke" fill="none" stroke-width="3"stroke-dasharray="238.76104167282426" stroke-dashoffset="238.76104167282426"stroke-linecap="round" r="38"></circle></g></svg>'
             }).appendTo(document.body);
             this.$.spinner = $('#lu-throbber');
             this.getUsers();
@@ -181,7 +174,9 @@ require([
         }
         this.api.get({
             action: 'query',
-            list: 'groupmembers',
+            list: 'allusers|groupmembers',
+            augroup: obj,
+            aulimit: 'max',
             gmgroups: obj,
             gmlimit: 'max'
         }).done(
@@ -227,7 +222,7 @@ require([
             if (d.error) {
                 return;
             }
-            $.each(d.users, $.proxy(function (k, v) {
+            $.each(d.users || d.query.allusers, $.proxy(function (k, v) {
                 obj[v.name] = v.name;
             }, this));
         }
@@ -315,13 +310,7 @@ require([
             ).prop('outerHTML'),
             id: 'list-users',
             size: 'large',
-            title: this.i18n('title').plain(),
-            buttons: [
-                {
-                    text: this.i18n('close').plain(),
-                    event: 'close'
-                }
-            ]
+            title: this.i18n('title').plain()
         });
         this.modal.create().then(
             $.proxy(this.createContent, this)
@@ -405,7 +394,7 @@ require([
             ).plain()
         );
         $('img#lu-avatar').each(function () {
-            $(this).error(function () {
+            $(this).on('error', function () {
                 $(this).attr(
                     'src',
                     'https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest'
@@ -455,14 +444,7 @@ require([
                         (editcount === '0' ? 'N/A' : timestamp),
                         'last-edited'
                     ),
-                    this.createItem(
-                        editcount ?
-                        this.createLink(
-                            editcount, 'Special:EditCount/' + user
-                        )  :
-                        editcount,
-                        'editcount'
-                    ),
+                    this.createItem(editcount, 'editcount'),
                     this.createItem(gender, 'gender'),
                     this.createItem(
                         registration ?
@@ -595,10 +577,16 @@ require([
         }
         return formattedTime;
     };
-    mw.loader.using([
+    var packages = [
         'mediawiki.api',
         'mediawiki.util'
-    ]).then(
+    ];
+    if (LU.mobileModules.length === 1) {
+        packages.push(LU.mobileModules[0]);
+    } else {
+        LU.mobile = false;
+    }
+    mw.loader.using(packages).then(
         $.proxy(LU.preload, LU)
     );
     mw.hook('dev.i18n').add(
@@ -610,18 +598,16 @@ require([
     mw.hook('dev.placement').add(
         $.proxy(LU.preload, LU)
     );
-    importArticles(
-        {
-            type: 'script',
-            articles: [
-                'u:dev:MediaWiki:I18n-js/code.js',
-                'u:dev:MediaWiki:Modal.js',
-                'u:dev:MediaWiki:Placement.js'
-            ]
-        },
-        {
-            type: 'style',
-            articles: ['u:dev:MediaWiki:PortableListUsers.css']
-        }
-    );
-});
+    importArticles({
+        type: 'script',
+        articles: [
+            'u:dev:MediaWiki:I18n-js/code.js',
+            'u:dev:MediaWiki:Modal.js',
+            'u:dev:MediaWiki:Placement.js'
+        ]
+    });
+    importArticle({
+        type: 'style',
+        article: 'u:dev:MediaWiki:PortableListUsers.css'
+    });
+})();

@@ -1,0 +1,1 @@
+/* Tout JavaScript placé ici sera chargé pour les utilisateurs utilisant l'apparence Hydra */

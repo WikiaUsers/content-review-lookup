@@ -38,7 +38,7 @@ window.ajaxPages = new Array(
 window.ajaxRefresh = 30000;
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
-window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/dev/images/b/ba/Snake_throbber_dark-bg.gif/revision/latest?cb=20140519203615';
+window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/deathbattlefanon/images/d/de/Ajax-loader.gif/revision/latest?cb=20200828094018';
 
 //=============================================
 // Test if an element has a certain class.
@@ -61,30 +61,32 @@ window.i = window.i || 0;
  
 window.SignatureCheckJS = {
 	preamble: 'Hold up a sec...',
-	noSignature: 'Please sign your post with three or four consecutive tildes (~~~ or ~~~~) or, if applicable, your custom signature template. It is important and required that you do so.',
-	noForumHeader: 'There is no forum header on this forum page. You may not create forum pages without the header or remove it from existing posts since they will not actually show up in the forum list.',
+	noSignature: 'Please sign your post with three or four consecutive tildes (~~' + 
+				  '~~) or, if applicable, your custom signature template. It is important and required that you do so.',
+	noForumHeader: 'There is no forum header on this forum page. You may not create forum pages without the header or \
+					remove it from existing posts since they will not actually show up in the forum list.',
 	epilogue: 'Please correct your message. Proceeding regardless will incur a warning or other action by the admins.',
 	forumheader: 'Forumheader',
-	checkSignature: true, // Enable the signature check function
-        extraNamespaces: [{    // Enable signature checking on other namespaces and subpages can be omitted
+	checkSignature: true,  // Enable the signature check function
+    extraNamespaces: [{    // Enable signature checking on other namespaces and subpages can be omitted
                         namespace: 5,
                         patterns: ['/Archive'],
-                    },{
+                    }, {
                         namespace: 9,
                         patterns: ['/Archive'],
-                    },{
+                    }, {
                         namespace: 11,
                         patterns: ['/Archive'],
-                    },{
+                    }, {
                         namespace: 13,
                         patterns: ['/Archive'],
-                    },{
+                    }, {
                         namespace: 15,
                         patterns: ['/Archive']
-                    },{
+                    }, {
                         namespace: 7,
                         patterns: ['/Archive']
-                    },{
+                    }, {
                         namespace: 110,
                         patterns: ['/Archive']
                     }

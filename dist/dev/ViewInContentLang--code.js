@@ -27,9 +27,9 @@ $(function() {
     mw.hook('dev.i18n').add(function(i18no) {
         i18no.loadMessages('ViewInContentLang').then(function(i18n) {
             $(
-                $(place).exists() ?
-                place :
-                '.toolbar ul.tools'
+                ($(place).length === 0) ?
+                '.toolbar ul.tools' :
+                place
             ).append(
                 $('<li>', {
                     id: 'ca-language'

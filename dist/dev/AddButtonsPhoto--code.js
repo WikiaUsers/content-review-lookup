@@ -1,11 +1,11 @@
 /**
  * Name:        AddButtonsPhoto
  * Author(s):   Shodai Tsuchi
- *              KockaAdmiralac <1405223@gmail.com>
+ *              KockaAdmiralac <wikia@kocka.tech>
  * Version:     v1.2
  * Description: Adds buttons to add photos in a quick and easy way.
  */
-require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
+(function() {
     if (window.AddButtonsPhotoLoaded) {
         return;
     }
@@ -19,8 +19,7 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
             this.i18n = i18n;
             $('.page-header__contribution-buttons').append(
                 $.map({
-                    'photo': 'Upload',
-                    'multiple': 'MultipleUpload'
+                    'photo': 'Upload'
                 }, $.proxy(this.map, this))
             );
             mw.hook('AddButtonsPhoto.loaded').fire();
@@ -41,4 +40,4 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         type: 'script',
         article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
-});
+})();

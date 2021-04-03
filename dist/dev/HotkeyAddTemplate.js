@@ -16,7 +16,7 @@ var api = new mw.Api(), i18n;
  * main function
  * check for main (0), Template: (6) and File: (10) namespaces 
  */
-$(function addTemplate() {
+(function addTemplate() {
     if (wgNamespaceNumber !== 0 && 6 && 10) {
         return;
     }
@@ -26,7 +26,7 @@ $(function addTemplate() {
      * default value for prompt is Stub
      * hotkey for prepending is Alt + T
      */
-    var prependTemplate = function () {
+    function prependTemplate() {
         var templateName = prompt(i18n.msg('template-name').plain(), 'Stub');
         if (templateName === null) {
             return;
@@ -44,14 +44,14 @@ $(function addTemplate() {
                 location.reload();
             }
         });
-    };
+    }
 
     /**
      * code for appending template
      * default value for prompt is Reflist
      * hotkey for appending is Alt + A
      */
-    var appendTemplate = function () {
+    function appendTemplate() {
         var templateName = prompt(i18n.msg('template-name').plain(), 'Reflist');
         if (templateName === null) {
             return;
@@ -69,17 +69,19 @@ $(function addTemplate() {
                 location.reload();
             }
         });
-    };
+    }
 
     /**
      * adds event listener for when users happen to click Alt and T/A at the same time
      */
     document.addEventListener('keyup', function (e) {
-        if (e.altKey && e.keyCode === 84 /*T*/) {
+        //when key T is pressed
+        if (e.altKey && e.keyCode === 84) {
             e.preventDefault(),
                 prependTemplate();
         }
-        if (e.altKey && e.keyCode === 65 /*A*/) {
+        // when key A is pressed
+        if (e.altKey && e.keyCode === 65) {
             e.preventDefault(),
                 appendTemplate();
         }
@@ -90,7 +92,7 @@ $(function addTemplate() {
         $.when(
             i18no.loadMessages('HotkeyAddTemplate'),
             mw.loader.using('mediawiki.api')
-        ).then(addTemplate);
+        ).then(addTemplate());
     });
 
     //import i18n

@@ -1,6 +1,6 @@
 // Button for adding a video
 // Made by User:JustLeafy
-require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
+(function () {
     if (window.AddButtonVideo) {
         return;
     }
@@ -24,4 +24,4 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         type: 'script',
         article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
-});
+})();

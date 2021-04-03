@@ -56,6 +56,12 @@ UserTagsJS.modules.implode = {
     function addTag() {
         var users = {
             'Demotivator': 'Admin',
+            'Unok': 'Admin',
+            'Damage3245': 'Admin',
+            'KaiserofTheAzure': 'Pseudo-Admin',
+            'TheSonOfTokuda': 'Mod',
+            'Batmanity': 'Mod',
+            'N2Devil': 'Mod',
         };
  
         for (var name in users) {

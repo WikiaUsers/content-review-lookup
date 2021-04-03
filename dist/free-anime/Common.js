@@ -1,11 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-// AutoEditDropdown config - http://dev.wikia.com/wiki/AutoEditDropdown
-window.AutoEditDropdownConfig = {
-    expandedAreaContribute: true,
-    expandedAreaEdit: false
-};
-
 window.MessageWallUserTags = {
     tagColor: '#50C5D6',
     glow: false,
@@ -26,11 +20,6 @@ $(function preloadUploadDesc() {
     document.getElementById('wpUploadDescription').appendChild(document.createTextNode("{{Fair Use Rationale\r| Description       = \r| Source            = \r| Portion           = \r| Purpose           = \r| Resolution        = \r| Replaceable       = \r| Other Information = \r}}"));
 
 });
-
-// Import [[MediaWiki:Onlyifuploading.js]] 
-if (wgCanonicalSpecialPageName == "Upload") {
-    document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Onlyifuploading.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
-}
 
 var ShowHideConfig = {
     autoCollapse: 3,

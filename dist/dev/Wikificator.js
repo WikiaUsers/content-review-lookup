@@ -1,25 +1,26 @@
 (function($, wikificator) {
-    // add wikify-ru button
+    // add wikify button
     // src: https://ru.wikipedia.org/wiki/MediaWiki:Gadget-wikificator.js
     // @2018.08.14
     // ported by user:fngplg
     // <nowiki>
+    var urlVars = new URLSearchParams(location.search);
     var p = {},
         hidden = [],
         circuitbreaker = 0,// break init() loop (site-wide hook(lng1) + user hook(lng2))
-        lang = mw.config.get('wgContentLanguage');// use rules by content;
+        lang = mw.config.get( 'wgContentLanguage' );// use rules by content;
             
-    p.isUcp = parseFloat(mw.config.get('wgVersion')) > 1.19;
-    p.debug = p.isUcp || mw.config.get('debug');// ucp have problems with debug mode, so...
+    p.isUcp = parseFloat( mw.config.get( 'wgVersion' ) ) > 1.19;
+    p.debug = p.isUcp || mw.config.get( 'debug' ) || urlVars.get('debug1');// ucp have problems with debug mode, so...
     // these ((())) are made for reasons
-    if (((wikificator && wikificator.loaded === true) || (!wikificator.forced && (!p.isUcp && $.inArray(mw.config.get( 'wgAction' ), ['edit', 'submit']) === -1)))) return;
+    if ((( wikificator && wikificator.loaded === true ) || ( !wikificator.forced && ( !p.isUcp && $.inArray( mw.config.get( 'wgAction' ), [ 'edit', 'submit' ] ) === -1) ) ) ) return;
 
     wikificator.loaded = true;
     p.loaded = true;
 
     function processLink( link, left, right ) {
-        var rlink1 = p.cache[lang].processLink1 || (p.cache[lang].processLink1 = new RegExp('^(?:' + p.t.category + '|' + p.t.file + ') ?:')),
-            rlink2 = p.cache[lang].processLink2 || (p.cache[lang].processLink2 = new RegExp('^[' + p.t.rlcl  + ']*$'));
+        var rlink1 = p.cache[ lang ].processLink1 || ( p.cache[ lang ].processLink1 = new RegExp( '^(?:' + p.t.category + '|' + p.t.file + ') ?:' ) ),
+            rlink2 = p.cache[ lang ].processLink2 || ( p.cache[ lang ].processLink2 = new RegExp( '^[' + p.t.rlcl  + ']*$' ) );
 
         left = $.trim( left.replace( /[ _\u00A0]+/g, ' ' ) );
         if ( left.match( rlink1 ) ) {
@@ -37,6 +38,7 @@
         }
     }
     function unhide( s, num ) {
+        p.log( 'unhide',  { num: num, s: s } );
         return hidden[ num - 1 ];
     }
 
@@ -142,7 +144,7 @@
                     {
                         reg: '\\{\\{(?:подст|subst):(?:[уУ]дар(?:ение)?|\')\\}\\}',
                         m: 'g',
-                        exp: (p.translations.ru || p.translations.ru).u0301,
+                        exp: ( p.translations.ru || p.translations.ru ).u0301,
                     },{
                         reg: '( |\\n|\\r)+\\{\\{(·|•|\\*)\\}\\}',
                         m: 'g', // before {{·/•/*}}, usually in templates
@@ -175,7 +177,7 @@
                         reg: '(\\| *Координаты (?:истока|устья) *= *)(\\d+(?:\\.\\d+)?)[,/] ?(\\d+(?:\\.\\d+)?(?=\\s))',
                         m: 'g',
                         exp: function ( s, m1, m2, m3 ) {
-                            return m1 + ( +parseFloat( m2 ).toFixed( 4 )) + '/' + ( +parseFloat( m3 ).toFixed( 4 ) );
+                            return m1 + ( +parseFloat( m2 ).toFixed( 4 ) ) + '/' + ( +parseFloat( m3 ).toFixed( 4 ) );
                         },
                     },{
                         reg: '<noinclude>\\s*(\\{\\{[dD]ocpage\\}\\})\\s*<\\/noinclude>',
@@ -228,7 +230,7 @@
                     },{
                         reg: '(\\[\\[[12]?\\d{3}\\]\\]) ?(гг?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.ru || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '(\\(|\\s)(\\[\\[[IVX]{1,5}\\]\\])[\\u00A0 ]?(-{1,3}|–|—) ?(\\[\\[[IVX]{1,5}\\]\\])(\\W)',
                         m: 'g',
@@ -236,39 +238,39 @@
                     },{
                         reg: '(\\[\\[[IVX]{1,5}\\]\\]) ?(вв?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.ru || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '\\[\\[(\\d+)\\]\\]\\sгод',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.ru || p.translations.ru).u00A0 + 'год]]',
+                        exp: '[[$1' + ( p.translations.ru || p.translations.ru ).u00A0 + 'год]]',
                     },{
                         reg: '\\[\\[(\\d+)\\sгод\\|\\1\\]\\]\\sгод',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.ru || p.translations.ru).u00A0 + 'год]]',
+                        exp: '[[$1' + ( p.translations.ru || p.translations.ru ).u00A0 + 'год]]',
                     },{
                         reg: '\\[\\[(\\d+)\\sгод\\|\\1\\sгод([а-я]{0,3})\\]\\]',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.ru || p.translations.ru).u00A0 + 'год]]$2',
+                        exp: '[[$1' + ( p.translations.ru || p.translations.ru ).u00A0 + 'год]]$2',
                     },{
                         reg: '\\[\\[((\\d+)(?: (?:год )?в [\\wa-яёА-ЯЁ ]+\\|\\2)?)\\]\\][\\u00A0 ](год[а-яё]*)',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.ru || p.translations.ru).u00A0 + '$3]]',
+                        exp: '[[$1' + ( p.translations.ru || p.translations.ru ).u00A0 + '$3]]',
                     },{
                         reg: '\\[\\[([XVI]+)\\]\\]\\sвек',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.ru || p.translations.ru).u00A0 + 'век]]',
+                        exp: '[[$1' + ( p.translations.ru || p.translations.ru ).u00A0 + 'век]]',
                     },{
                         reg: '\\[\\[([XVI]+)\\sвек\\|\\1\\]\\]\\sвек',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.ru || p.translations.ru).u00A0 + 'век]]',
+                        exp: '[[$1' + ( p.translations.ru || p.translations.ru ).u00A0 + 'век]]',
                     },{
                         reg: '\\[\\[([XVI]+)\\sвек\\|\\1\\sвек([а-я]{0,3})\\]\\]',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.ru || p.translations.ru).u00A0 + 'век]]$2',
+                        exp: '[[$1' + ( p.translations.ru || p.translations.ru ).u00A0 + 'век]]$2',
                     },{
                         reg: '\\[\\[(([XVI]+) век\\|\\2)\\]\\][\\u00A0 ]век',
                         m: 'g',
-                        exp: '[[$2' + (p.translations.ru || p.translations.ru).u00A0 + 'век]]',
+                        exp: '[[$2' + ( p.translations.ru || p.translations.ru ).u00A0 + 'век]]',
                     },{
                         // Nice links
                         reg: '(\\[\\[[^|[\\]]*)[\\u00AD\\u200E\\u200F]+([^\\[\\]]*\\]\\])',
@@ -375,19 +377,19 @@
                     },{
                         reg: '(\\s)кв\\.\\s*(дм|см|мм|мкм|нм|км|м)(\\s)',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + '$2²$3',
+                        exp: '$1' + ( p.translations.ru || p.translations.ru ).u00A0 + '$2²$3',
                     },{
                         reg: '(\\s)куб\\.\\s*(дм|см|мм|мкм|нм|км|м)(\\s)',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + '$2³$3',
+                        exp: '$1' + ( p.translations.ru || p.translations.ru ).u00A0 + '$2³$3',
                     },{
                         reg: '((?:^|[\\s"])\\d+(?:[\\.,]\\d+)?)\\s*[xх]\\s*(\\d+(?:[\\.,]\\d+)?)\\s*([мm]{1,2}(?:[\\s"\\.,;?!]|$))',
                         m: 'g',
-                        exp: '$1×$2' + (p.translations.ru || p.translations.ru).u00A0 + '$3',
+                        exp: '$1×$2' + ( p.translations.ru || p.translations.ru ).u00A0 + '$3',
                     },{
                         reg: '\\s+×\\s+',
                         m: 'g',
-                        exp: (p.translations.ru || p.translations.ru).u00A0 + '×' + (p.translations.ru || p.translations.ru).u00A0,
+                        exp: ( p.translations.ru || p.translations.ru ).u00A0 + '×' + ( p.translations.ru || p.translations.ru ).u00A0,
                     },{
                         reg: '([\\wа-яА-ЯёЁ])\'(?=[\\wа-яА-ЯёЁ])',
                         m: 'g',
@@ -458,7 +460,7 @@
                     },{
                         reg: '([12]?\\d{3}) ?(гг?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.ru || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '(\\(|\\s)([IVX]{1,5})[\\u00A0 ]?(-{1,3}|—) ?([IVX]{1,5})(?![\\w\\-])',
                         m: 'g',
@@ -466,7 +468,7 @@
                     },{
                         reg: '([IVX]{1,5}) ?(вв?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.ru || p.translations.ru).u00A0 + '$2',
                     },{
                         // Reductions
                         reg: '(Т|т)\\.\\s?е\\.',
@@ -483,67 +485,67 @@
                     },{
                         reg: '(И|и)\\sт\\.\\s?д\\.',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + 'т.' + (p.translations.ru || p.translations.ru).u00A0 + 'д.',
+                        exp: '$1' + ( p.translations.ru || p.translations.ru ).u00A0 + 'т.' + ( p.translations.ru || p.translations.ru ).u00A0 + 'д.',
                     },{
                         reg: '(И|и)\\sт\\.\\s?п\\.',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + 'т.' + (p.translations.ru || p.translations.ru).u00A0 + 'п.',
+                        exp: '$1' + ( p.translations.ru || p.translations.ru ).u00A0 + 'т.' + ( p.translations.ru || p.translations.ru ).u00A0 + 'п.',
                     },{
                         reg: '(Т|т)\\.\\s?н\\.',
                         m: 'g',
-                        exp: '$1.' + (p.translations.ru || p.translations.ru).u00A0 + 'н.',
+                        exp: '$1.' + ( p.translations.ru || p.translations.ru ).u00A0 + 'н.',
                     },{
                         reg: '(И|и)\\.\\s?о\\.',
                         m: 'g',
-                        exp: '$1.' + (p.translations.ru || p.translations.ru).u00A0 + 'о.',
+                        exp: '$1.' + ( p.translations.ru || p.translations.ru ).u00A0 + 'о.',
                     },{
                         reg: 'с\\.\\s?ш\\.',
                         m: 'g',
-                        exp: 'с.' + (p.translations.ru || p.translations.ru).u00A0 + 'ш.',
+                        exp: 'с.' + ( p.translations.ru || p.translations.ru ).u00A0 + 'ш.',
                     },{
                         reg: 'ю\\.\\s?ш\\.',
                         m: 'g',
-                        exp: 'ю.' + (p.translations.ru || p.translations.ru).u00A0 + 'ш.',
+                        exp: 'ю.' + ( p.translations.ru || p.translations.ru ).u00A0 + 'ш.',
                     },{
                         reg: 'в\\.\\s?д\\.',
                         m: 'g',
-                        exp: 'в.' + (p.translations.ru || p.translations.ru).u00A0 + 'д.',
+                        exp: 'в.' + ( p.translations.ru || p.translations.ru ).u00A0 + 'д.',
                     },{
                         reg: 'з\\.\\s?д\\.',
                         m: 'g',
-                        exp: 'з.' + (p.translations.ru || p.translations.ru).u00A0 + 'д.',
+                        exp: 'з.' + ( p.translations.ru || p.translations.ru ).u00A0 + 'д.',
                     },{
                         reg: 'л\\.\\s?с\\.',
                         m: 'g',
-                        exp: 'л.' + (p.translations.ru || p.translations.ru).u00A0 + 'с.',
+                        exp: 'л.' + ( p.translations.ru || p.translations.ru ).u00A0 + 'с.',
                     },{
                         reg: 'а\\.\\s?е\\.\\s?м\\.',
                         m: 'g',
-                        exp: 'а.' + (p.translations.ru || p.translations.ru).u00A0 + 'е.' + (p.translations.ru || p.translations.ru).u00A0 + 'м.',
+                        exp: 'а.' + ( p.translations.ru || p.translations.ru ).u00A0 + 'е.' + ( p.translations.ru || p.translations.ru ).u00A0 + 'м.',
                     },{
                         reg: 'а\\.\\s?е\\.',
                         m: 'g',
-                        exp: 'а.' + (p.translations.ru || p.translations.ru).u00A0 + 'е.',
+                        exp: 'а.' + ( p.translations.ru || p.translations.ru ).u00A0 + 'е.',
                     },{
                         reg: 'мм\\sрт\\.\\s?ст\\.',
                         m: 'g',
-                        exp: 'мм' + (p.translations.ru || p.translations.ru).u00A0 + 'рт.' + (p.translations.ru || p.translations.ru).u00A0 + 'ст.',
+                        exp: 'мм' + ( p.translations.ru || p.translations.ru ).u00A0 + 'рт.' + ( p.translations.ru || p.translations.ru ).u00A0 + 'ст.',
                     },{
                         reg: 'н\\.\\s?э(\\.|(?=\\s))',
                         m: 'g',
-                        exp: 'н.' + (p.translations.ru || p.translations.ru).u00A0 + 'э.',
+                        exp: 'н.' + ( p.translations.ru || p.translations.ru ).u00A0 + 'э.',
                     },{
                         reg: '(Д|д)(о|\\.)\\sн\\.\\s?э\\.',
                         m: 'g',
-                        exp: '$1о' + (p.translations.ru || p.translations.ru).u00A0 + 'н.' + (p.translations.ru || p.translations.ru).u00A0 + 'э.',
+                        exp: '$1о' + ( p.translations.ru || p.translations.ru ).u00A0 + 'н.' + ( p.translations.ru || p.translations.ru ).u00A0 + 'э.',
                     },{
                         reg: '(\\d)[\\u00A0 ]?(млн|млрд|трлн|(?:м|с|д|к)?м|[км]г)\\.?(?=[,;.]| "?[а-яё\\-])',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.ru || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '(\\d)[\\u00A0 ](тыс)([^\\.А-Яа-яЁё])',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + '$2.$3',
+                        exp: '$1' + ( p.translations.ru || p.translations.ru ).u00A0 + '$2.$3',
                     },{
                         reg: 'ISBN:\\s?(?=[\\d\\-]{8,17})',
                         m: '',
@@ -556,11 +558,11 @@
                     },{
                         reg: '(\\S)[\\u00A0 \\t](-{1,3}|—)[\\u00A0 \\t](\\S)',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + '— $3',
+                        exp: '$1' + ( p.translations.ru || p.translations.ru ).u00A0 + '— $3',
                     },{
                         reg: '([А-ЯЁ]\\.) ?([А-ЯЁ]\\.) ?([А-ЯЁ][а-яё])',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + '$2' + (p.translations.ru || p.translations.ru).u00A0 + '$3',
+                        exp: '$1' + ( p.translations.ru || p.translations.ru ).u00A0 + '$2' + ( p.translations.ru || p.translations.ru ).u00A0 + '$3',
                     },{
                         reg: '([А-ЯЁ]\\.)([А-ЯЁ]\\.)',
                         m: 'g',
@@ -584,7 +586,7 @@
                     },{
                         reg: '([^%\\/\\wА-Яа-яЁё]\\d+?(?:[\\.,]\\d+?)?) ?([%‰])(?!-[А-Яа-яЁё])',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + '$2',//5 %
+                        exp: '$1' + ( p.translations.ru || p.translations.ru ).u00A0 + '$2',//5 %
                     },{
                         reg: '(\\d) ([%‰])(?=-[А-Яа-яЁё])',
                         m: 'g',
@@ -592,7 +594,7 @@
                     },{
                         reg: '([№§])(\\s*)(\\d)',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + '$3',
+                        exp: '$1' + ( p.translations.ru || p.translations.ru ).u00A0 + '$3',
                     },{
                         // inside ()
                         reg: '\\( +',
@@ -606,7 +608,7 @@
                         // Temperature
                         reg: '([\\s\\d=≈≠≤≥<>—("\'|])([+±−\\-]?\\d+?(?:[.,]\\d+?)?)(([ °\\^*]| [°\\^*])(C|F))(?=[\\s"\').,;!?|\\x01])',
                         m: 'gm',
-                        exp: '$1$2' + (p.translations.ru || p.translations.ru).u00A0 + '°$5',// '
+                        exp: '$1$2' + ( p.translations.ru || p.translations.ru ).u00A0 + '°$5',// '
                     },{
                         // Dot → comma in numbers
                         reg: '(\\s\\d+)\\.(\\d+[\\u00A0 ]*[%‰°×])',
@@ -636,8 +638,8 @@
                     },
                 ],
             },// regexps for r()
-            u00A0: (p.translations.ru || p.translations.ru).u00A0,
-            u0301: (p.translations.ru || p.translations.ru).u0301,
+            u00A0: ( p.translations.ru || p.translations.ru ).u00A0,
+            u0301: ( p.translations.ru || p.translations.ru ).u0301,
         },//ru
         en: {
             category: 'Category',
@@ -655,7 +657,7 @@
                     {
                         reg: '\\{\\{(?:подст|subst):(?:[уУ]дар(?:ение)?|\')\\}\\}',
                         m: 'g',
-                        exp: (p.translations.en || p.translations.ru).u0301,
+                        exp: ( p.translations.en || p.translations.ru ).u0301,
                     },{
                         reg: '( |\\n|\\r)+\\{\\{(·|•|\\*)\\}\\}',
                         m: 'g', // before {{·/•/*}}, usually in templates
@@ -724,7 +726,7 @@
                     },{
                         reg: '(\\[\\[[12]?\\d{3}\\]\\]) ?(гг?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.en || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.en || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '(\\(|\\s)(\\[\\[[IVX]{1,5}\\]\\])[\\u00A0 ]?(-{1,3}|–|—) ?(\\[\\[[IVX]{1,5}\\]\\])(\\W)',
                         m: 'g',
@@ -732,39 +734,39 @@
                     },{
                         reg: '(\\[\\[[IVX]{1,5}\\]\\]) ?(вв?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.en || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.en || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '\\[\\[(\\d+)\\]\\]\\sгод',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.en || p.translations.ru).u00A0 + 'год]]',
+                        exp: '[[$1' + ( p.translations.en || p.translations.ru ).u00A0 + 'год]]',
                     },{
                         reg: '\\[\\[(\\d+)\\sгод\\|\\1\\]\\]\\sгод',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.en || p.translations.ru).u00A0 + 'год]]',
+                        exp: '[[$1' + ( p.translations.en || p.translations.ru ).u00A0 + 'год]]',
                     },{
                         reg: '\\[\\[(\\d+)\\sгод\\|\\1\\sгод([а-я]{0,3})\\]\\]',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.en || p.translations.ru).u00A0 + 'год]]$2',
+                        exp: '[[$1' + ( p.translations.en || p.translations.ru ).u00A0 + 'год]]$2',
                     },{
                         reg: '\\[\\[((\\d+)(?: (?:год )?в [\\wa-яёА-ЯЁ ]+\\|\\2)?)\\]\\][\\u00A0 ](год[а-яё]*)',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.en || p.translations.ru).u00A0 + '$3]]',
+                        exp: '[[$1' + ( p.translations.en || p.translations.ru ).u00A0 + '$3]]',
                     },{
                         reg: '\\[\\[([XVI]+)\\]\\]\\sвек',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.en || p.translations.ru).u00A0 + 'век]]',
+                        exp: '[[$1' + ( p.translations.en || p.translations.ru ).u00A0 + 'век]]',
                     },{
                         reg: '\\[\\[([XVI]+)\\sвек\\|\\1\\]\\]\\sвек',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.en || p.translations.ru).u00A0 + 'век]]',
+                        exp: '[[$1' + ( p.translations.en || p.translations.ru ).u00A0 + 'век]]',
                     },{
                         reg: '\\[\\[([XVI]+)\\sвек\\|\\1\\sвек([а-я]{0,3})\\]\\]',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.en || p.translations.ru).u00A0 + 'век]]$2',
+                        exp: '[[$1' + ( p.translations.en || p.translations.ru ).u00A0 + 'век]]$2',
                     },{
                         reg: '\\[\\[(([XVI]+) век\\|\\2)\\]\\][\\u00A0 ]век',
                         m: 'g',
-                        exp: '[[$2' + (p.translations.en || p.translations.ru).u00A0 + 'век]]',
+                        exp: '[[$2' + ( p.translations.en || p.translations.ru ).u00A0 + 'век]]',
                     },{
                         // Nice links
                         reg: '(\\[\\[[^|[\\]]*)[\\u00AD\\u200E\\u200F]+([^\\[\\]]*\\]\\])',
@@ -871,19 +873,19 @@
                     },/*{
                         reg: '(\\s)кв\\.\\s*(дм|см|мм|мкм|нм|км|м)(\\s)',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + '$2²$3',
+                        exp: '$1' + ( p.translations.ru || p.translations.ru).u00A0 + '$2²$3',
                     },{
                         reg: '(\\s)куб\\.\\s*(дм|см|мм|мкм|нм|км|м)(\\s)',
                         m: 'g',
-                        exp: '$1' + (p.translations.ru || p.translations.ru).u00A0 + '$2³$3',
+                        exp: '$1' + ( p.translations.ru || p.translations.ru).u00A0 + '$2³$3',
                     },*/{
                         reg: '((?:^|[\\s"])\\d+(?:[\\.,]\\d+)?)\\s*[xх]\\s*(\\d+(?:[\\.,]\\d+)?)\\s*([мm]{1,2}(?:[\\s"\\.,;?!]|$))',
                         m: 'g',
-                        exp: '$1×$2' + (p.translations.en || p.translations.ru).u00A0 + '$3',
+                        exp: '$1×$2' + ( p.translations.en || p.translations.ru ).u00A0 + '$3',
                     },{
                         reg: '\\s+×\\s+',
                         m: 'g',
-                        exp: (p.translations.en || p.translations.ru).u00A0 + '×' + (p.translations.en || p.translations.ru).u00A0,
+                        exp: ( p.translations.en || p.translations.ru ).u00A0 + '×' + ( p.translations.en || p.translations.ru ).u00A0,
                     },{
                         // Headings
                         reg: '^(=+)[ \\t\\f\\v]*(.*?)[ \\t\\f\\v]*=+$',
@@ -946,7 +948,7 @@
                     },{
                         reg: '([12]?\\d{3}) ?(гг?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.en || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.en || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '(\\(|\\s)([IVX]{1,5})[\\u00A0 ]?(-{1,3}|—) ?([IVX]{1,5})(?![\\w\\-])',
                         m: 'g',
@@ -954,7 +956,7 @@
                     },{
                         reg: '([IVX]{1,5}) ?(вв?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.en || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.en || p.translations.ru ).u00A0 + '$2',
                     },{
                         // Reductions
                         reg: '(Т|т)\\.\\s?е\\.',
@@ -972,11 +974,11 @@
                     },{
                         reg: '(\\S)[\\u00A0 \\t](-{1,3}|—)[\\u00A0 \\t](\\S)',
                         m: 'g',
-                        exp: '$1' + (p.translations.en || p.translations.ru).u00A0 + '— $3',
+                        exp: '$1' + ( p.translations.en || p.translations.ru ).u00A0 + '— $3',
                     },{
                         reg: '([A-Z]\\.) ?([A-Z]\\.) ?([A-Z][a-z])',
                         m: 'g',
-                        exp: '$1' + (p.translations.en || p.translations.ru).u00A0 + '$2' + (p.translations.en || p.translations.ru).u00A0 + '$3',
+                        exp: '$1' + ( p.translations.en || p.translations.ru ).u00A0 + '$2' + ( p.translations.en || p.translations.ru ).u00A0 + '$3',
                     },{
                         reg: '([A-Z]\\.)([A-Z]\\.)',
                         m: 'g',
@@ -1000,7 +1002,7 @@
                     },{
                         reg: '([^%\\/\\wA-Za-z]\\d+?(?:[\\.,]\\d+?)?) ?([%‰])(?!-[A-Za-z])',
                         m: 'g',
-                        exp: '$1' + (p.translations.en || p.translations.ru).u00A0 + '$2',//5 %
+                        exp: '$1' + ( p.translations.en || p.translations.ru ).u00A0 + '$2',//5 %
                     },{
                         reg: '(\\d) ([%‰])(?=-[A-Za-z])',
                         m: 'g',
@@ -1008,7 +1010,7 @@
                     },{
                         reg: '([№§])(\\s*)(\\d)',
                         m: 'g',
-                        exp: '$1' + (p.translations.en || p.translations.ru).u00A0 + '$3',
+                        exp: '$1' + ( p.translations.en || p.translations.ru ).u00A0 + '$3',
                     },{
                         // inside ()
                         reg: '\\( +',
@@ -1022,7 +1024,7 @@
                         // Temperature
                         reg: '([\\s\\d=≈≠≤≥<>—("\'|])([+±−\\-]?\\d+?(?:[.,]\\d+?)?)(([ °\\^*]| [°\\^*])(C|F))(?=[\\s"\').,;!?|\\x01])',
                         m: 'gm',
-                        exp: '$1$2' + (p.translations.en || p.translations.ru).u00A0 + '°$5',// '
+                        exp: '$1$2' + ( p.translations.en || p.translations.ru ).u00A0 + '°$5',// '
                     },{
                         // Dot → comma in numbers
                         reg: '(\\s\\d+)\\.(\\d+[\\u00A0 ]*[%‰°×])',
@@ -1052,8 +1054,8 @@
                     },
                 ],
             },// regexps for r()
-            u00A0: (p.translations.en || p.translations.ru).u00A0,
-            u0301: (p.translations.en || p.translations.ru).u0301,
+            u00A0: ( p.translations.en || p.translations.ru ).u00A0,
+            u0301: ( p.translations.en || p.translations.ru ).u0301,
         },//en
         uk: {
             category: 'Категорія',
@@ -1105,7 +1107,7 @@
                     {
                         reg: '\\{\\{(?:подст|subst):(?:[нН]а(?:голос)?|\')\\}\\}',
                         m: 'g',
-                        exp: (p.translations.uk || p.translations.ru).u0301,
+                        exp: ( p.translations.uk || p.translations.ru ).u0301,
                     },{
                         reg: '( |\\n|\\r)+\\{\\{(·|•|\\*)\\}\\}',
                         m: 'g', // before {{·/•/*}}, usually in templates
@@ -1138,7 +1140,7 @@
                         reg: '(\\| *Координати (?:витоку|гирла) *= *)(\\d+(?:\\.\\d+)?)[,/] ?(\\d+(?:\\.\\d+)?(?=\\s))',
                         m: 'g',
                         exp: function ( s, m1, m2, m3 ) {
-                            return m1 + ( +parseFloat( m2 ).toFixed( 4 )) + '/' + ( +parseFloat( m3 ).toFixed( 4 ) );
+                            return m1 + ( +parseFloat( m2 ).toFixed( 4 ) ) + '/' + ( +parseFloat( m3 ).toFixed( 4 ) );
                         },
                     },{
                         reg: '<noinclude>\\s*(\\{\\{[dD]ocpage\\}\\})\\s*<\\/noinclude>',
@@ -1191,7 +1193,7 @@
                     },{
                         reg: '(\\[\\[[12]?\\d{3}\\]\\]) ?(рр?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.uk || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.uk || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '(\\(|\\s)(\\[\\[[IVX]{1,5}\\]\\])[\\u00A0 ]?(-{1,3}|–|—) ?(\\[\\[[IVX]{1,5}\\]\\])(\\W)',
                         m: 'g',
@@ -1199,39 +1201,39 @@
                     },{
                         reg: '(\\[\\[[IVX]{1,5}\\]\\]) ?(ст?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.uk || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.uk || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '\\[\\[(\\d+)\\]\\]\\sрік',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.uk || p.translations.ru).u00A0 + 'рік]]',
+                        exp: '[[$1' + ( p.translations.uk || p.translations.ru ).u00A0 + 'рік]]',
                     },{
                         reg: '\\[\\[(\\d+)\\sрік\\|\\1\\]\\]\\sрік',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.uk || p.translations.ru).u00A0 + 'рік]]',
+                        exp: '[[$1' + ( p.translations.uk || p.translations.ru ).u00A0 + 'рік]]',
                     },{
                         reg: '\\[\\[(\\d+)\\sрік\\|\\1\\sрік([а-я]{0,3})\\]\\]',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.uk || p.translations.ru).u00A0 + 'рік]]$2',
+                        exp: '[[$1' + ( p.translations.uk || p.translations.ru ).u00A0 + 'рік]]$2',
                     },{
                         reg: '\\[\\[((\\d+)(?: (?:рік )?в [\\wa-яеА-ЯЕ ]+\\|\\2)?)\\]\\][\\u00A0 ](рік[а-яе]*)',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.uk || p.translations.ru).u00A0 + '$3]]',
+                        exp: '[[$1' + ( p.translations.uk || p.translations.ru ).u00A0 + '$3]]',
                     },{
                         reg: '\\[\\[([XVI]+)\\]\\]\\sстоліття',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.uk || p.translations.ru).u00A0 + 'століття]]',
+                        exp: '[[$1' + ( p.translations.uk || p.translations.ru ).u00A0 + 'століття]]',
                     },{
                         reg: '\\[\\[([XVI]+)\\sстоліття\\|\\1\\]\\]\\sстоліття',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.uk || p.translations.ru).u00A0 + 'століття]]',
+                        exp: '[[$1' + ( p.translations.uk || p.translations.ru ).u00A0 + 'століття]]',
                     },{
                         reg: '\\[\\[([XVI]+)\\sстоліття\\|\\1\\sстоліття([а-я]{0,3})\\]\\]',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.uk || p.translations.ru).u00A0 + 'століття]]$2',
+                        exp: '[[$1' + ( p.translations.uk || p.translations.ru ).u00A0 + 'століття]]$2',
                     },{
                         reg: '\\[\\[(([XVI]+) століття\\|\\2)\\]\\][\\u00A0 ]століття',
                         m: 'g',
-                        exp: '[[$2' + (p.translations.uk || p.translations.ru).u00A0 + 'століття]]',
+                        exp: '[[$2' + ( p.translations.uk || p.translations.ru ).u00A0 + 'століття]]',
                     },{
                         // Nice links
                         reg: '(\\[\\[[^|[\\]]*)[\\u00AD\\u200E\\u200F]+([^\\[\\]]*\\]\\])',
@@ -1338,19 +1340,19 @@
                     },{
                         reg: '(\\s)кв\\.\\s*(дм|см|мм|мкм|нм|км|м)(\\s)',
                         m: 'g',
-                        exp: '$1' + (p.translations.uk || p.translations.ru).u00A0 + '$2²$3',
+                        exp: '$1' + ( p.translations.uk || p.translations.ru ).u00A0 + '$2²$3',
                     },{
                         reg: '(\\s)куб\\.\\s*(дм|см|мм|мкм|нм|км|м)(\\s)',
                         m: 'g',
-                        exp: '$1' + (p.translations.uk || p.translations.ru).u00A0 + '$2³$3',
+                        exp: '$1' + ( p.translations.uk || p.translations.ru ).u00A0 + '$2³$3',
                     },{
                         reg: '((?:^|[\\s"])\\d+(?:[\\.,]\\d+)?)\\s*[xх]\\s*(\\d+(?:[\\.,]\\d+)?)\\s*([мm]{1,2}(?:[\\s"\\.,;?!]|$))',
                         m: 'g',
-                        exp: '$1×$2' + (p.translations.uk || p.translations.ru).u00A0 + '$3',
+                        exp: '$1×$2' + ( p.translations.uk || p.translations.ru ).u00A0 + '$3',
                     },{
                         reg: '\\s+×\\s+',
                         m: 'g',
-                        exp: (p.translations.uk || p.translations.ru).u00A0 + '×' + (p.translations.uk || p.translations.ru).u00A0,
+                        exp: ( p.translations.uk || p.translations.ru ).u00A0 + '×' + ( p.translations.uk || p.translations.ru ).u00A0,
                     },{
                         reg: '([\\wа-яА-ЯеЕ])\'(?=[\\wа-яА-ЯеЕ])',
                         m: 'g',
@@ -1421,7 +1423,7 @@
                     },{
                         reg: '([12]?\\d{3}) ?(рр?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.uk || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.uk || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '(\\(|\\s)([IVX]{1,5})[\\u00A0 ]?(-{1,3}|—) ?([IVX]{1,5})(?![\\w\\-])',
                         m: 'g',
@@ -1429,7 +1431,7 @@
                     },{
                         reg: '([IVX]{1,5}) ?(ст?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.uk || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.uk || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '(Т|т)\\.\\s?к\\.',
                         m: 'g',
@@ -1449,63 +1451,63 @@
                     },{
                         reg: '(І|і)\\sт\\.\\s?п\\.',
                         m: 'g',
-                        exp: '$1' + (p.translations.uk || p.translations.ru).u00A0 + 'т.' + (p.translations.uk || p.translations.ru).u00A0 + 'п.',
+                        exp: '$1' + ( p.translations.uk || p.translations.ru ).u00A0 + 'т.' + ( p.translations.uk || p.translations.ru ).u00A0 + 'п.',
                     },{
                         reg: '(Т|т)\\.\\s?з\\.',
                         m: 'g',
-                        exp: '$1.' + (p.translations.uk || p.translations.ru).u00A0 + 'з.',
+                        exp: '$1.' + ( p.translations.uk || p.translations.ru ).u00A0 + 'з.',
                     },{
                         reg: '(В|в)\\.\\s?о\\.',
                         m: 'g',
-                        exp: '$1.' + (p.translations.uk || p.translations.ru).u00A0 + 'о.',
+                        exp: '$1.' + ( p.translations.uk || p.translations.ru ).u00A0 + 'о.',
                     },{
                         reg: 'пн\\.\\s?ш\\.',
                         m: 'g',
-                        exp: 'пн.' + (p.translations.uk || p.translations.ru).u00A0 + 'ш.',
+                        exp: 'пн.' + ( p.translations.uk || p.translations.ru ).u00A0 + 'ш.',
                     },{
                         reg: 'пд\\.\\s?ш\\.',
                         m: 'g',
-                        exp: 'пд.' + (p.translations.uk || p.translations.ru).u00A0 + 'ш.',
+                        exp: 'пд.' + ( p.translations.uk || p.translations.ru ).u00A0 + 'ш.',
                     },{
                         reg: 'сх\\.\\s?д\\.',
                         m: 'g',
-                        exp: 'сх.' + (p.translations.uk || p.translations.ru).u00A0 + 'д.',
+                        exp: 'сх.' + ( p.translations.uk || p.translations.ru ).u00A0 + 'д.',
                     },{
                         reg: 'зх\\.\\s?д\\.',
                         m: 'g',
-                        exp: 'зх.' + (p.translations.uk || p.translations.ru).u00A0 + 'д.',
+                        exp: 'зх.' + ( p.translations.uk || p.translations.ru ).u00A0 + 'д.',
                     },{
                         reg: 'к\\.\\s?с\\.',
                         m: 'g',
-                        exp: 'к.' + (p.translations.uk || p.translations.ru).u00A0 + 'с.',
+                        exp: 'к.' + ( p.translations.uk || p.translations.ru ).u00A0 + 'с.',
                     },{
                         reg: 'а\\.\\s?о\\.\\s?м\\.',
                         m: 'g',
-                        exp: 'а.' + (p.translations.uk || p.translations.ru).u00A0 + 'о.' + (p.translations.uk || p.translations.ru).u00A0 + 'м.',
+                        exp: 'а.' + ( p.translations.uk || p.translations.ru ).u00A0 + 'о.' + ( p.translations.uk || p.translations.ru ).u00A0 + 'м.',
                     },{
                         reg: 'а\\.\\s?о\\.',
                         m: 'g',
-                        exp: 'а.' + (p.translations.uk || p.translations.ru).u00A0 + 'о.',
+                        exp: 'а.' + ( p.translations.uk || p.translations.ru ).u00A0 + 'о.',
                     },{
                         reg: 'мм\\sрт\\.\\s?ст\\.',
                         m: 'g',
-                        exp: 'мм' + (p.translations.uk || p.translations.ru).u00A0 + 'рт.' + (p.translations.uk || p.translations.ru).u00A0 + 'ст.',
+                        exp: 'мм' + ( p.translations.uk || p.translations.ru ).u00A0 + 'рт.' + ( p.translations.uk || p.translations.ru ).u00A0 + 'ст.',
                     },{
                         reg: 'н\\.\\s?е(\\.|(?=\\s))',
                         m: 'g',
-                        exp: 'н.' + (p.translations.uk || p.translations.ru).u00A0 + 'е.',
+                        exp: 'н.' + ( p.translations.uk || p.translations.ru ).u00A0 + 'е.',
                     },{
                         reg: '(Д|д)(о|\\.)\\sн\\.\\s?е\\.',
                         m: 'g',
-                        exp: '$1о' + (p.translations.uk || p.translations.ru).u00A0 + 'н.' + (p.translations.uk || p.translations.ru).u00A0 + 'е.',
+                        exp: '$1о' + ( p.translations.uk || p.translations.ru ).u00A0 + 'н.' + ( p.translations.uk || p.translations.ru ).u00A0 + 'е.',
                     },{
                         reg: '(\\d)[\\u00A0 ]?(млн|млрд|трлн|(?:м|с|д|к)?м|[км]г)\\.?(?=[,;.]| "?[а-яе\\-])',
                         m: 'g',
-                        exp: '$1' + (p.translations.uk || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.uk || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '(\\d)[\\u00A0 ](тис)([^\\.А-Яа-яЕе])',
                         m: 'g',
-                        exp: '$1' + (p.translations.uk || p.translations.ru).u00A0 + '$2.$3',
+                        exp: '$1' + ( p.translations.uk || p.translations.ru ).u00A0 + '$2.$3',
                     },{
                         reg: 'ISBN:\\s?(?=[\\d\\-]{8,17})',
                         m: '',
@@ -1518,11 +1520,11 @@
                     },{
                         reg: '(\\S)[\\u00A0 \\t](-{1,3}|—)[\\u00A0 \\t](\\S)',
                         m: 'g',
-                        exp: '$1' + (p.translations.uk || p.translations.ru).u00A0 + '— $3',
+                        exp: '$1' + ( p.translations.uk || p.translations.ru ).u00A0 + '— $3',
                     },{
                         reg: '([А-ЯЕ]\\.) ?([А-ЯЕ]\\.) ?([А-ЯЕ][а-яе])',
                         m: 'g',
-                        exp: '$1' + (p.translations.uk || p.translations.ru).u00A0 + '$2' + (p.translations.uk || p.translations.ru).u00A0 + '$3',
+                        exp: '$1' + ( p.translations.uk || p.translations.ru ).u00A0 + '$2' + ( p.translations.uk || p.translations.ru ).u00A0 + '$3',
                     },{
                         reg: '([А-ЯЕ]\\.)([А-ЯЕ]\\.)',
                         m: 'g',
@@ -1546,7 +1548,7 @@
                     },{
                         reg: '([^%\\/\\wА-Яа-яЕе]\\d+?(?:[\\.,]\\d+?)?) ?([%‰])(?!-[А-Яа-яЕе])',
                         m: 'g',
-                        exp: '$1' + (p.translations.uk || p.translations.ru).u00A0 + '$2',//5 %
+                        exp: '$1' + ( p.translations.uk || p.translations.ru ).u00A0 + '$2',//5 %
                     },{
                         reg: '(\\d) ([%‰])(?=-[А-Яа-яЕе])',
                         m: 'g',
@@ -1554,7 +1556,7 @@
                     },{
                         reg: '([№§])(\\s*)(\\d)',
                         m: 'g',
-                        exp: '$1' + (p.translations.uk || p.translations.ru).u00A0 + '$3',
+                        exp: '$1' + ( p.translations.uk || p.translations.ru ).u00A0 + '$3',
                     },{
                         // inside ()
                         reg: '\\( +',
@@ -1568,7 +1570,7 @@
                         // Temperature
                         reg: '([\\s\\d=≈≠≤≥<>—("\'|])([+±−\\-]?\\d+?(?:[.,]\\d+?)?)(([ °\\^*]| [°\\^*])(C|F))(?=[\\s"\').,;!?|\\x01])',
                         m: 'gm',
-                        exp: '$1$2' + (p.translations.uk || p.translations.ru).u00A0 + '°$5',// '
+                        exp: '$1$2' + ( p.translations.uk || p.translations.ru ).u00A0 + '°$5',// '
                     },{
                         // Dot → comma in numbers
                         reg: '(\\s\\d+)\\.(\\d+[\\u00A0 ]*[%‰°×])',
@@ -1598,8 +1600,8 @@
                     },
                 ],
             },// regexps for r()
-            u00A0: (p.translations.uk || p.translations.ru).u00A0,
-            u0301: (p.translations.uk || p.translations.ru).u0301,
+            u00A0: ( p.translations.uk || p.translations.ru ).u00A0,
+            u0301: ( p.translations.uk || p.translations.ru ).u0301,
         },//uk
         be: {
             category: 'Катэгорыя',
@@ -1651,7 +1653,7 @@
                     {
                         reg: '\\{\\{(?:подст|subst):(?:[нН]а(?:ціск)?|\')\\}\\}',
                         m: 'g',
-                        exp: (p.translations.be || p.translations.ru).u0301,
+                        exp: ( p.translations.be || p.translations.ru ).u0301,
                     },{
                         reg: '( |\\n|\\r)+\\{\\{(·|•|\\*)\\}\\}',
                         m: 'g', // before {{·/•/*}}, usually in templates
@@ -1684,7 +1686,7 @@
                         reg: '(\\| *Каардынаты (?:вытоку|утокі) *= *)(\\d+(?:\\.\\d+)?)[,/] ?(\\d+(?:\\.\\d+)?(?=\\s))',
                         m: 'g',
                         exp: function ( s, m1, m2, m3 ) {
-                            return m1 + ( +parseFloat( m2 ).toFixed( 4 )) + '/' + ( +parseFloat( m3 ).toFixed( 4 ) );
+                            return m1 + ( +parseFloat( m2 ).toFixed( 4 ) ) + '/' + ( +parseFloat( m3 ).toFixed( 4 ) );
                         },
                     },{
                         reg: '<noinclude>\\s*(\\{\\{[dD]ocpage\\}\\})\\s*<\\/noinclude>',
@@ -1737,7 +1739,7 @@
                     },{
                         reg: '(\\[\\[[12]?\\d{3}\\]\\]) ?(гг?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.be || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.be || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '(\\(|\\s)(\\[\\[[IVX]{1,5}\\]\\])[\\u00A0 ]?(-{1,3}|–|—) ?(\\[\\[[IVX]{1,5}\\]\\])(\\W)',
                         m: 'g',
@@ -1745,39 +1747,39 @@
                     },{
                         reg: '(\\[\\[[IVX]{1,5}\\]\\]) ?(стст?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.be || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.be || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '\\[\\[(\\d+)\\]\\]\\sгод',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.be || p.translations.ru).u00A0 + 'год]]',
+                        exp: '[[$1' + ( p.translations.be || p.translations.ru ).u00A0 + 'год]]',
                     },{
                         reg: '\\[\\[(\\d+)\\sгод\\|\\1\\]\\]\\sгод',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.be || p.translations.ru).u00A0 + 'год]]',
+                        exp: '[[$1' + ( p.translations.be || p.translations.ru ).u00A0 + 'год]]',
                     },{
                         reg: '\\[\\[(\\d+)\\sгод\\|\\1\\sгод([а-я]{0,3})\\]\\]',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.be || p.translations.ru).u00A0 + 'год]]$2',
+                        exp: '[[$1' + ( p.translations.be || p.translations.ru ).u00A0 + 'год]]$2',
                     },{
                         reg: '\\[\\[((\\d+)(?: (?:год )?в [\\wa-яёА-ЯЁ ]+\\|\\2)?)\\]\\][\\u00A0 ](год[а-яё]*)',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.be || p.translations.ru).u00A0 + '$3]]',
+                        exp: '[[$1' + ( p.translations.be || p.translations.ru ).u00A0 + '$3]]',
                     },{
                         reg: '\\[\\[([XVI]+)\\]\\]\\sстагоддзе',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.be || p.translations.ru).u00A0 + 'стагоддзе]]',
+                        exp: '[[$1' + ( p.translations.be || p.translations.ru ).u00A0 + 'стагоддзе]]',
                     },{
                         reg: '\\[\\[([XVI]+)\\sстагоддзе\\|\\1\\]\\]\\sстагоддзе',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.be || p.translations.ru).u00A0 + 'стагоддзе]]',
+                        exp: '[[$1' + ( p.translations.be || p.translations.ru ).u00A0 + 'стагоддзе]]',
                     },{
                         reg: '\\[\\[([XVI]+)\\sстагоддзе\\|\\1\\sстагоддзе([а-я]{0,3})\\]\\]',
                         m: 'g',
-                        exp: '[[$1' + (p.translations.be || p.translations.ru).u00A0 + 'стагоддзе]]$2',
+                        exp: '[[$1' + ( p.translations.be || p.translations.ru ).u00A0 + 'стагоддзе]]$2',
                     },{
                         reg: '\\[\\[(([XVI]+) стагоддзе\\|\\2)\\]\\][\\u00A0 ]стагоддзе',
                         m: 'g',
-                        exp: '[[$2' + (p.translations.be || p.translations.ru).u00A0 + 'стагоддзе]]',
+                        exp: '[[$2' + ( p.translations.be || p.translations.ru ).u00A0 + 'стагоддзе]]',
                     },{
                         // Nice links
                         reg: '(\\[\\[[^|[\\]]*)[\\u00AD\\u200E\\u200F]+([^\\[\\]]*\\]\\])',
@@ -1884,19 +1886,19 @@
                     },{
                         reg: '(\\s)кв\\.\\s*(дм|см|мм|мкм|нм|км|м)(\\s)',
                         m: 'g',
-                        exp: '$1' + (p.translations.be || p.translations.ru).u00A0 + '$2²$3',
+                        exp: '$1' + ( p.translations.be || p.translations.ru ).u00A0 + '$2²$3',
                     },{
                         reg: '(\\s)куб\\.\\s*(дм|см|мм|мкм|нм|км|м)(\\s)',
                         m: 'g',
-                        exp: '$1' + (p.translations.be || p.translations.ru).u00A0 + '$2³$3',
+                        exp: '$1' + ( p.translations.be || p.translations.ru ).u00A0 + '$2³$3',
                     },{
                         reg: '((?:^|[\\s"])\\d+(?:[\\.,]\\d+)?)\\s*[xх]\\s*(\\d+(?:[\\.,]\\d+)?)\\s*([мm]{1,2}(?:[\\s"\\.,;?!]|$))',
                         m: 'g',
-                        exp: '$1×$2' + (p.translations.be || p.translations.ru).u00A0 + '$3',
+                        exp: '$1×$2' + ( p.translations.be || p.translations.ru ).u00A0 + '$3',
                     },{
                         reg: '\\s+×\\s+',
                         m: 'g',
-                        exp: (p.translations.be || p.translations.ru).u00A0 + '×' + (p.translations.be || p.translations.ru).u00A0,
+                        exp: ( p.translations.be || p.translations.ru ).u00A0 + '×' + ( p.translations.be || p.translations.ru ).u00A0,
                     },{
                         reg: '([\\wа-яА-ЯёЁ])\'(?=[\\wа-яА-ЯёЁ])',
                         m: 'g',
@@ -1967,7 +1969,7 @@
                     },{
                         reg: '([12]?\\d{3}) ?(гг?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.be || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.be || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '(\\(|\\s)([IVX]{1,5})[\\u00A0 ]?(-{1,3}|—) ?([IVX]{1,5})(?![\\w\\-])',
                         m: 'g',
@@ -1975,7 +1977,7 @@
                     },{
                         reg: '([IVX]{1,5}) ?(стст?\\.)',
                         m: 'g',
-                        exp: '$1' + (p.translations.be || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.be || p.translations.ru ).u00A0 + '$2',
                     },{
                         // Reductions
                         reg: '(Г|г)\\.\\s?з\\.',
@@ -1992,67 +1994,67 @@
                     },{
                         reg: '(І|і)\\sг\\.\\s?д\\.',
                         m: 'g',
-                        exp: '$1' + (p.translations.be || p.translations.ru).u00A0 + 'г.' + (p.translations.be || p.translations.ru).u00A0 + 'д.',
+                        exp: '$1' + ( p.translations.be || p.translations.ru ).u00A0 + 'г.' + ( p.translations.be || p.translations.ru ).u00A0 + 'д.',
                     },{
                         reg: '(І|і)\\sт\\.\\s?п\\.',
                         m: 'g',
-                        exp: '$1' + (p.translations.be || p.translations.ru).u00A0+ 'да' + 'т.' + (p.translations.be || p.translations.ru).u00A0 + 'п.',
+                        exp: '$1' + ( p.translations.be || p.translations.ru ).u00A0+ 'да' + 'т.' + ( p.translations.be || p.translations.ru ).u00A0 + 'п.',
                     },{
                         reg: '(Т|т)\\.\\s?зв\\.',
                         m: 'g',
-                        exp: '$1.' + (p.translations.be || p.translations.ru).u00A0 + 'зв.',
+                        exp: '$1.' + ( p.translations.be || p.translations.ru ).u00A0 + 'зв.',
                     },{
                         reg: '(В|в)\\.\\s?а\\.',
                         m: 'g',
-                        exp: '$1.' + (p.translations.be || p.translations.ru).u00A0 + 'а.',
+                        exp: '$1.' + ( p.translations.be || p.translations.ru ).u00A0 + 'а.',
                     },{
                         reg: 'пн\\.\\s?ш\\.',
                         m: 'g',
-                        exp: 'пн.' + (p.translations.be || p.translations.ru).u00A0 + 'ш.',
+                        exp: 'пн.' + ( p.translations.be || p.translations.ru ).u00A0 + 'ш.',
                     },{
                         reg: 'пд\\.\\s?ш\\.',
                         m: 'g',
-                        exp: 'пд.' + (p.translations.be || p.translations.ru).u00A0 + 'ш.',
+                        exp: 'пд.' + ( p.translations.be || p.translations.ru ).u00A0 + 'ш.',
                     },{
                         reg: 'у\\.\\s?д\\.',
                         m: 'g',
-                        exp: 'у.' + (p.translations.be || p.translations.ru).u00A0 + 'д.',
+                        exp: 'у.' + ( p.translations.be || p.translations.ru ).u00A0 + 'д.',
                     },{
                         reg: 'з\\.\\s?д\\.',
                         m: 'g',
-                        exp: 'з.' + (p.translations.be || p.translations.ru).u00A0 + 'д.',
+                        exp: 'з.' + ( p.translations.be || p.translations.ru ).u00A0 + 'д.',
                     },{
                         reg: 'к\\.\\s?с\\.',
                         m: 'g',
-                        exp: 'к.' + (p.translations.be || p.translations.ru).u00A0 + 'с.',
+                        exp: 'к.' + ( p.translations.be || p.translations.ru ).u00A0 + 'с.',
                     },{
                         reg: 'а\\.\\s?а\\.\\s?м\\.',
                         m: 'g',
-                        exp: 'а.' + (p.translations.be || p.translations.ru).u00A0 + 'а.' + (p.translations.be || p.translations.ru).u00A0 + 'м.',
+                        exp: 'а.' + ( p.translations.be || p.translations.ru ).u00A0 + 'а.' + ( p.translations.be || p.translations.ru ).u00A0 + 'м.',
                     },{
                         reg: 'а\\.\\s?а\\.',
                         m: 'g',
-                        exp: 'а.' + (p.translations.be || p.translations.ru).u00A0 + 'а.',
+                        exp: 'а.' + ( p.translations.be || p.translations.ru ).u00A0 + 'а.',
                     },{
                         reg: 'мм\\sрт\\.\\s?сл\\.',
                         m: 'g',
-                        exp: 'мм' + (p.translations.be || p.translations.ru).u00A0 + 'рт.' + (p.translations.be || p.translations.ru).u00A0 + 'сл.',
+                        exp: 'мм' + ( p.translations.be || p.translations.ru ).u00A0 + 'рт.' + ( p.translations.be || p.translations.ru ).u00A0 + 'сл.',
                     },{
                         reg: 'н\\.\\s?э(\\.|(?=\\s))',
                         m: 'g',
-                        exp: 'н.' + (p.translations.be || p.translations.ru).u00A0 + 'э.',
+                        exp: 'н.' + ( p.translations.be || p.translations.ru ).u00A0 + 'э.',
                     },{
                         reg: '(Д|д)(а|\\.)\\sн\\.\\s?э\\.',
                         m: 'g',
-                        exp: '$1а' + (p.translations.be || p.translations.ru).u00A0 + 'н.' + (p.translations.be || p.translations.ru).u00A0 + 'э.',
+                        exp: '$1а' + ( p.translations.be || p.translations.ru ).u00A0 + 'н.' + ( p.translations.be || p.translations.ru ).u00A0 + 'э.',
                     },{
                         reg: '(\\d)[\\u00A0 ]?(млн|млрд|трлн|(?:м|с|д|к)?м|[км]г)\\.?(?=[,;.]| "?[а-яё\\-])',
                         m: 'g',
-                        exp: '$1' + (p.translations.be || p.translations.ru).u00A0 + '$2',
+                        exp: '$1' + ( p.translations.be || p.translations.ru ).u00A0 + '$2',
                     },{
                         reg: '(\\d)[\\u00A0 ](тыс)([^\\.А-Яа-яЁё])',
                         m: 'g',
-                        exp: '$1' + (p.translations.be || p.translations.ru).u00A0 + '$2.$3',
+                        exp: '$1' + ( p.translations.be || p.translations.ru ).u00A0 + '$2.$3',
                     },{
                         reg: 'ISBN:\\s?(?=[\\d\\-]{8,17})',
                         m: '',
@@ -2065,11 +2067,11 @@
                     },{
                         reg: '(\\S)[\\u00A0 \\t](-{1,3}|—)[\\u00A0 \\t](\\S)',
                         m: 'g',
-                        exp: '$1' + (p.translations.be || p.translations.ru).u00A0 + '— $3',
+                        exp: '$1' + ( p.translations.be || p.translations.ru ).u00A0 + '— $3',
                     },{
                         reg: '([А-ЯЁ]\\.) ?([А-ЯЁ]\\.) ?([А-ЯЁ][а-яё])',
                         m: 'g',
-                        exp: '$1' + (p.translations.be || p.translations.ru).u00A0 + '$2' + (p.translations.be || p.translations.ru).u00A0 + '$3',
+                        exp: '$1' + ( p.translations.be || p.translations.ru ).u00A0 + '$2' + ( p.translations.be || p.translations.ru ).u00A0 + '$3',
                     },{
                         reg: '([А-ЯЁ]\\.)([А-ЯЁ]\\.)',
                         m: 'g',
@@ -2093,7 +2095,7 @@
                     },{
                         reg: '([^%\\/\\wА-Яа-яЁё]\\d+?(?:[\\.,]\\d+?)?) ?([%‰])(?!-[А-Яа-яЁё])',
                         m: 'g',
-                        exp: '$1' + (p.translations.be || p.translations.ru).u00A0 + '$2',//5 %
+                        exp: '$1' + ( p.translations.be || p.translations.ru ).u00A0 + '$2',//5 %
                     },{
                         reg: '(\\d) ([%‰])(?=-[А-Яа-яЁё])',
                         m: 'g',
@@ -2101,7 +2103,7 @@
                     },{
                         reg: '([№§])(\\s*)(\\d)',
                         m: 'g',
-                        exp: '$1' + (p.translations.be || p.translations.ru).u00A0 + '$3',
+                        exp: '$1' + ( p.translations.be || p.translations.ru ).u00A0 + '$3',
                     },{
                         // inside ()
                         reg: '\\( +',
@@ -2115,7 +2117,7 @@
                         // Temperature
                         reg: '([\\s\\d=≈≠≤≥<>—("\'|])([+±−\\-]?\\d+?(?:[.,]\\d+?)?)(([ °\\^*]| [°\\^*])(C|F))(?=[\\s"\').,;!?|\\x01])',
                         m: 'gm',
-                        exp: '$1$2' + (p.translations.be || p.translations.ru).u00A0 + '°$5',// '
+                        exp: '$1$2' + ( p.translations.be || p.translations.ru ).u00A0 + '°$5',// '
                     },{
                         // Dot → comma in numbers
                         reg: '(\\s\\d+)\\.(\\d+[\\u00A0 ]*[%‰°×])',
@@ -2145,8 +2147,8 @@
                     },
                 ],
             },// regexps for r()
-            u00A0: (p.translations.be || p.translations.ru).u00A0,
-            u0301: (p.translations.be || p.translations.ru).u0301,
+            u00A0: ( p.translations.be || p.translations.ru ).u00A0,
+            u0301: ( p.translations.be || p.translations.ru ).u0301,
         },//be
         // language list - stop
     };// translations
@@ -2157,19 +2159,19 @@
         return lang;
     };// getLang
     
-    function setLang (language) {
+    function setLang ( language ) {
         // too cool to be global
-        if (language === lang) return;
+        if ( language === lang ) return;
         // () = current lang
         language = language || lang;
         lang = language;
-        if (p[language]) {
-            p.t = $.extend({}, p[language]);
+        if ( p[ language ] ) {
+            p.t = $.extend( {}, p[ language ] );
             return;
         }
-        p.t = $.extend({}, p.translations.qqx, p.translations.ru, p.translations[language] || p.translations.en);
-        p[language] = $.extend({}, p.t);// store lang
-        p.cache[language] = {
+        p.t = $.extend( {}, p.translations.qqx, p.translations.ru, p.translations[ language ] || p.translations.en );
+        p[ language ] = $.extend( {}, p.t );// store lang
+        p.cache[ language ] = {
             tags: [],
         };
     }// setLang
@@ -2193,6 +2195,13 @@
     p.isVeActive = function isVeActive () {
         return p.isUcp && window.ve && ve.init && ve.init.target && ve.init.target.active;
     };// isVeActive
+    
+    p.isOldVeActive = function isOldVeActive () {
+        // new ve doesn't have data().origtext
+        var wikiEditor = $('#wpTextbox1').wikiEditor ? $('#wpTextbox1').wikiEditor() : null,
+            weData = wikiEditor ? wikiEditor.data() : null;
+        return weData && weData.hasOwnProperty('origtext');
+    };// isOldVeActive
 
     p.activateSourceMode = function activateSourceMode () {
         // returns $.Deferred that resolved with ve surface
@@ -2201,11 +2210,11 @@
         function asmHelper () {
             mw.hook( 've.wikitextInteractive' ).remove( asmHelper );
             p.surface = ve.init.target.getSurface();
-            //window.createVEWikificatorTool();
+            //p.createVEWikificatorTool();
             promise.resolve( p.surface );
         }// asmHelper
         
-        if ( p.isVeActive ) {
+        if ( p.isVeActive() ) {
             if ( p.surface.getMode() === 'source' ) {
                 // refresh surface data. just in case
                 p.surface = ve.init.target.getSurface();
@@ -2222,7 +2231,7 @@
     };// activateSourceMode
     
     p.setContents = function ( t ) {
-        if ( !p.isVeActive ) return;
+        if ( !p.isVeActive() ) return;
         var dm = p.surface.getModel(),
             fragment = dm.getLinearFragment( 
                 new ve.Range( 1, dm.getDocument().getLength() ) 
@@ -2253,7 +2262,17 @@
                 inputOrText :
                 '#wpTextbox1'
             );
+            
+            // if new ve
+            if ( p.isVeActive() ) {
+                text = p.surface.model.documentModel.data.getSourceText().trim();
+            } else if ( p.isOldVeActive() ) {
+                text = $input.val();
+            } else {                
+                text = $input.val();
+            }
         }
+        p.log( 'input', { i: $input, t: text } );
 
 
         // FUNCTIONS
@@ -2269,31 +2288,31 @@
         }
 
         function hideTag( tag ) {
-            var rtag = p.cache[lang].tags[tag];
-            if (!rtag) {
+            var rtag = p.cache[ lang ].tags[ tag ];
+            if ( !rtag) {
                 rtag = new RegExp( '<' + tag + '( [^>]+)?>[\\s\\S]+?<\\/' + tag + '>', 'gi' );
-                p.cache[lang].tags[tag] = rtag;
+                p.cache[ lang ].tags[ tag ] = rtag;
             }
             hide( rtag );
         }
 
         function hideTags( tags ) {
-            if (!tags) return;
-            if (typeof(tags) === 'string') tags = tags.split(',');
-            if (!tags.forEach) return;
-            p.log('hidetags', tags);
-            tags.forEach(function(v) {
-                hideTag(v.trim());
+            if ( !tags) return;
+            if ( typeof( tags ) === 'string' ) tags = tags.split( ',' );
+            if ( !tags.forEach ) return;
+            p.log( 'hidetags', tags );
+            tags.forEach(function( v ) {
+                hideTag( v.trim() );
             });
         }
         
-        function router(fn, obj, stage) {
+        function router( fn, obj, stage ) {
             // r/hide calls dispatcher
             // fn: method (r/hide); obj: rr/rhide; stage: 'stagex'
-            p.log('rtr', fn.name, stage, obj[stage]);
-            if (obj[stage] && obj[stage].length) {
-                obj[stage].forEach(function(v) {
-                    fn(v.reg, v.exp);
+            p.log( 'rtr', fn.name, stage, obj[ stage ]);
+            if ( obj[ stage ] && obj[ stage ].length ) {
+                obj[ stage ].forEach(function( v ) {
+                    fn( v.reg, v.exp );
                 });
             }
         }
@@ -2338,6 +2357,7 @@
         }
         
         function processText() {
+            p.log( 'processText', { text: txt } );
             var i,
                 u = p.t.u00A0;//'\u00A0'; // non-breaking space
             if ( mw.config.get( 'wgNamespaceNumber' ) % 2 || mw.config.get( 'wgNamespaceNumber' ) === 4 ) { // is talk page
@@ -2360,37 +2380,37 @@
 
             hideTemplates();
             //rhide stage 1
-            router(hide, p.t.rhide, 'stage1');
+            router( hide, p.t.rhide, 'stage1' );
 
             //keep untranslated
             hideTag( 'gallery' );
 
             //rr stage 2
-            router(r, p.t.rr, 'stage2');// spaces at EOL
+            router( r, p.t.rr, 'stage2' );// spaces at EOL
             txt = '\n' + txt + '\n';
 
 
             //rr stage 3
             // LINKS
-            router(r, p.t.rr, 'stage3');
+            router( r, p.t.rr, 'stage3' );
 
             //rhide stage 2
-            router(hide, p.t.rhide, 'stage2');// only link part
+            router( hide, p.t.rhide, 'stage2' );// only link part
 
             //rr stage 4
             // TAGS
-            router(r, p.t.rr, 'stage4');
+            router( r, p.t.rr, 'stage4' );
 
             //rhide stage 3
-            router(hide, p.t.rhide, 'stage3');
+            router( hide, p.t.rhide, 'stage3' );
 
             //rr stage 5
-            router(r, p.t.rr, 'stage5');// double spaces
+            router( r, p.t.rr, 'stage5' );// double spaces
 
             // Entities etc. → Unicode chars
             if ( mw.config.get( 'wgNamespaceNumber' ) !== 10 ) {
                 //rr stage 6
-                router(r, p.t.rr, 'stage6');
+                router( r, p.t.rr, 'stage6' );
             }
 
             //rr stage 7
@@ -2401,49 +2421,65 @@
             // Insert/delete spaces
             // Temperature
             // Dot → comma in numbers
-            router(r, p.t.rr, 'stage7');
+            router( r, p.t.rr, 'stage7' );
 
             // Plugins
             for ( i in window.wfPlugins ) {
                 if ( window.wfPlugins.hasOwnProperty( i ) ) {
-                    window.wfPlugins[i]( txt, r );
+                    window.wfPlugins[ i ]( txt, r );
                 }
             }
 
             // "" → «»
             for ( i = 1; i <= 2; i++ ) {
                 //rr stage 8
-                router(r, p.t.rr, 'stage8');// "
+                router( r, p.t.rr, 'stage8' );// "
             }
             while ( /«[^»]*«/.test( txt ) ) {
                 //rr stage 9
-                router(r, p.t.rr, 'stage9');
+                router( r, p.t.rr, 'stage9' );
             }
 
             while ( txt.match( /\x01\d+\x02/ ) ) {
                 //rr stage 10
-                router(r, p.t.rr, 'stage10');
+                router( r, p.t.rr, 'stage10' );
             }
 
             txt = txt.substr( 1, txt.length - 2 ); // compensation for "txt = '\n' + txt + '\n';"
         }
 
-        function setContents (txt) {
-            p.log( 'setContents', p.isUcp, { txt: txt} );
-            if (!txt) return;
+        function setContents ( txt ) {
+            p.log( 'setContents', p.isUcp, { txt: txt } );
+            var start, end;
+            if ( !txt ) return;
             if ( p.isUcp ) {
-                var dm = p.surface.getModel(),
-                    fragment = dm.getLinearFragment( 
-                        new ve.Range( 1, dm.getDocument().getLength() ) 
-                    );
-                fragment.insertHtml(txt);
-            } else {
-                if ($input.selectionStart !== undefined) {
-                    var start = $input.selectionStart,
-                        end = $input.selectionEnd;
-                    $input.val($input.val().slice(0, start) + txt + $input.val().slice(end));
+                // is new ve
+                if ( p.isVeActive() ) {
+                    var dm = p.surface.getModel(),
+                        fragment = dm.getLinearFragment(
+                            new ve.Range( 1, dm.getDocument().getLength() )
+                        );
+                    //fragment.insertHtml( txt );
+                    fragment.insertContent( txt );
                 } else {
-                    $input.val(txt);
+                    // old ve
+                    $input = $( '#wpTextbox1' );
+                    if ( $input.selectionStart !== undefined ) {
+                        start = $input.selectionStart;
+                        end = $input.selectionEnd;
+                        $input.val( $input.val().slice( 0, start ) + txt + $input.val().slice( end ) );
+                    } else {
+                        $input.val( txt );
+                    }
+                }
+            } else {
+                $input = $( '#wpTextbox1' );
+                if ( $input.selectionStart !== undefined ) {
+                    start = $input.selectionStart;
+                    end = $input.selectionEnd;
+                    $input.val( $input.val().slice( 0, start ) + txt + $input.val().slice( end ) );
+                } else {
+                    $input.val( txt );
                 }
             }
         }// setContents
@@ -2451,27 +2487,63 @@
         function processAllText() {
             if ( p.isUcp ) {
                 txt = text;
+                // old ve
+                if ( p.isOldVeActive() ) {//(ve && ve.init && !ve.init.target) {
+                    $input = $( '#wpTextbox1' );
+                    txt = $input.length ?
+                        $input.textSelection( 'getContents' ) ||
+                        $input.val() :
+                        text;
+                } else {
+                    // 2017 wikitext editor adds an empty line to the end with every text replacement
+                    // Remove the .trim when [[phab:T198010]] is fixed.
+                    //txt = p.surface.model.documentModel.data.getSourceText().trim();
+                    $input = $( '#wpTextbox1' );
+                    txt = $input.length ?
+                        $input.textSelection( 'getContents' ) ||
+                        p.surface.model.documentModel.data.getSourceText().trim() :
+                        text;
+                }
             } else {
-                txt = $input.length ? $input.textSelection( 'getContents' ) : text;
+                txt = $input.length ?
+                    $input.textSelection( 'getContents' ) ||
+                    $input.val() :
+                    text;
             }
             p.log( 'processAllText', p.isUcp, { txt: txt } );
-            if ( txt && txt.length ) processText();
+            if ( txt && txt.length ) {
+                p.log( 'processAllText.pt' );
+                processText();
+            }
             if ( $input && $input.length ) {
+                p.log( 'input&input.len', p.isVeActive(), p.isOldVeActive() );
+                //txt = $input.text();
+                /*
+                if ( p.isVeActive() ) {
+                    // 2017 wikitext editor adds an empty line to the end with every text replacement
+                    // Remove the .trim when [[phab:T198010]] is fixed.
+                    txt = p.surface.mode.documentModel.data.getSourceText().trim();
+                }
+                // here is no "else" intentionally. might be fixed later, when ucp will work
+                if ( p.isOldVeActive ) {
+                    txt = $input.val();
+                }*/
                 r( /^[\n\r]+/, '' );
                 // 2017 wikitext editor adds an empty line to the end with every text replacement
                 // Remove the following block when [[phab:T198010]] is fixed.
-                if ( p.isVeActive ) {
+                if ( p.isVeActive() ) {
                     r( /[\n\r]+$/, '' );
                 }
                 //$input.textSelection( 'setContents', txt );
-                setContents(txt);
+                setContents( txt );
                 if ( caretPosition ) {
                     $input.textSelection( 'setSelection', {
-                        start: caretPosition[0] > txt.length ? txt.length : caretPosition[0]
+                        start: caretPosition[ 0 ] > txt.length ? txt.length : caretPosition[ 0 ]
                     } );
                 }
             } else {
                 text = txt;
+                setContents( txt );
             }
             if ( window.auto_comment &&
                 //window.insertSummary &&
@@ -2486,7 +2558,7 @@
 
         // MAIN CODE
 
-        p.log('input', $input);
+        p.log( 'input', $input );
         if ( $input && $input.length ) {
             $input.focus();
             
@@ -2494,11 +2566,12 @@
             if ( caretPosition ) {
                 textScroll = ( $CodeMirrorVscrollbar.length ? $CodeMirrorVscrollbar : $input )
                     .scrollTop();
-                if ( caretPosition[0] === caretPosition[1] ) {
+                if ( caretPosition[ 0 ] === caretPosition[ 1 ] ) {
                     processAllText();
                 } else {
                     txt = $input.textSelection( 'getSelection' );
                     processText();
+                    //p.log('processText result', txt);
                     // replaceSelection doesn't work with MediaWiki 1.30 in case this gadget is loaded
                     // from other wiki
                     $input.textSelection( 'encapsulateSelection', {
@@ -2507,8 +2580,8 @@
                     } );
                     // In CodeMirror, the selection isn't preserved, so we do it explicitly
                     $input.textSelection( 'setSelection', {
-                        start: caretPosition[0],
-                        end: caretPosition[0] + txt.length
+                        start: caretPosition[ 0 ],
+                        end: caretPosition[ 0 ] + txt.length
                     } );
                 }
                 ( $CodeMirrorVscrollbar.length ? $CodeMirrorVscrollbar : $input )
@@ -2529,7 +2602,7 @@
 
     /* Toolbar buttons */
 
-    var addOldToolbarButton = function () {
+    p.addOldToolbarButton = function () {
         var $toolbar = $( '#gadget-toolbar' );
         if ( !$toolbar.length ) {
             $toolbar = $( '#toolbar' );
@@ -2540,24 +2613,24 @@
             .attr( 'title', p.t.wikificatorx )
             .css( {
                 'width': '69px',
-                'backgroundImage': 'url(//upload.wikimedia.org/wikipedia/commons/3/38/Button_wikify.png)'
+                'backgroundImage': 'url(https://upload.wikimedia.org/wikipedia/commons/3/38/Button_wikify.png)'
             } )
             .appendTo( $toolbar )
-            .on( 'click', p.wikify );
+            .on( 'click', p.click );
     };
 
-    var addNewToolbarButton = function () {
+    p.addNewToolbarButton = function () {
         $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
             'section': 'main',
-            'group': mw.config.get( 'wgServerName' ) === 'ru.wikipedia.org' ? 'gadgets' : 'insert',
+            'group': 'insert',//mw.config.get( 'wgServerName' ) === 'ru.wikipedia.org' ? 'gadgets' : 'insert',
             'tools': {
                 'wikif': {
                     label: p.t.wikificatorx,
                     type: 'button',
-                    icon: '//upload.wikimedia.org/wikipedia/commons/0/06/Wikify-toolbutton.png',
+                    icon: 'https://upload.wikimedia.org/wikipedia/commons/0/06/Wikify-toolbutton.png',
                     action: {
                         type: 'callback',
-                        execute: p.wikify
+                        execute: p.click
                     }
                 }
             }
@@ -2565,7 +2638,9 @@
 
         mw.hook( 'wikieditor.toolbar.wikificator' ).fire();
     };
+
 /*
+    // add toolbar button
     if ( $.inArray( mw.config.get( 'wgAction' ), [ 'edit', 'submit' ] ) !== -1 ) {
         mw.loader.using( [ 'user.options', 'jquery.textSelection' ], function () {
             if ( mw.user.options.get( 'usebetatoolbar' ) === 1 ) {
@@ -2573,24 +2648,24 @@
                     mw.loader.using( 'ext.wikiEditor' ),
                     $.ready
                 ).then( function () {
-                    if ( mw.config.get( 'wgServerName' ) === 'ru.wikipedia.org' ) {
-                        mw.hook( 'wikieditor.toolbar.gadgetsgroup' ).add( addNewToolbarButton );
-                    } else {
-                        addNewToolbarButton();
-                    }
+                    //if ( mw.config.get( 'wgServerName' ) === 'ru.wikipedia.org' ) {
+                        //mw.hook( 'wikieditor.toolbar.gadgetsgroup' ).add( p.addNewToolbarButton );
+                    //} else {
+                        p.addNewToolbarButton();
+                    //}
                 } );
             } else {
                 mw.loader.using( 'mediawiki.toolbar', function () {
-                    $( addOldToolbarButton );
+                    $( p.addOldToolbarButton );
                 });
             }
         } );
     }
 */
-
+    
     /* VisualEditor code */
 
-    window.createVEWikificatorTool = function () {
+    p.createVEWikificatorTool = function () {
         // Create and register a command
         function WikifyCommand() {
             WikifyCommand.parent.call( this, 'wikificator' );
@@ -2600,13 +2675,14 @@
         // Forbid the command from being executed in the visual mode
         WikifyCommand.prototype.isExecutable = function () {
             var surface = ve.init.target.getSurface();
+            p.surface = surface;
             return surface && surface.getMode() === 'source';
         };
 
         WikifyCommand.prototype.execute = function ( surface ) {
             // p.wikify();
             var t = p.wikify( surface.getModel().getHtml().trim() );
-            p.setContents( t );
+            setContents( t );
             return true;
         };
 
@@ -2640,13 +2716,32 @@
 
     p.click = function ( e ) {
         if ( p.isUcp ) {
-            if ( !p.isVeActive ) return;
-            p.activateSourceMode().done( function ( surface ) {
+            // is old ve
+            if ( p.isOldVeActive() ) {
+                var t = p.wikify( $( '#wpTextbox1' ) );
+                //setContents( t );
+            } else {
+                if ( !p.isVeActive() ) return;
                 // 2017 wikitext editor adds an empty line to the end with every text replacement
                 // Remove the .trim when [[phab:T198010]] is fixed.
-                var t = p.wikify( surface.getModel().getHtml().trim() );
-                p.setContents ( t );
-            });
+                //var t = p.wikify( p.surface.model.documentModel.data.getSourceText().trim() );
+                var t = p.wikify( $( '#wpTextbox1' ) );
+                /* check for source mode done by createVEWikificatorTool
+                p.surface = surface;
+                if ( !p.surface || p.surface.getMode() !== 'source' ) {
+                    p.activateSourceMode().done( function ( surface ) {
+                        // 2017 wikitext editor adds an empty line to the end with every text replacement
+                        // Remove the .trim when [[phab:T198010]] is fixed.
+                        p.surface = surface;
+                        var t = p.wikify( surface.model.documentModel.data.getSourceText().trim() );
+                        //p.setContents ( t );
+                        //p.wikify();
+                    });
+                } else {
+                    p.wikify();
+                }
+                */
+            }// if old ve
         } else {
             p.wikify();
         }
@@ -2670,7 +2765,7 @@
         }
         language = language || lang;
         // are we already here
-        if ( $('#wikify-' + language).length ) return;
+        if ( $( '#wikify-' + language ).length ) return;
 
         // select new lang
         setLang( language );
@@ -2684,8 +2779,8 @@
         function rcreate( obj ) {
             // create regexps for obj
             for ( var stage in obj ) {
-                if (!obj[stage].length) continue;
-                obj[stage] = obj[stage].map( rmap );
+                if ( !obj[ stage ].length ) continue;
+                obj[ stage ] = obj[ stage ].map( rmap );
             }
         }
         
@@ -2695,14 +2790,14 @@
 
         // add multiple buttons (per-lang)? onclick('#id-'+lang)
         $( '.wikify' ).remove();
-        var $button = $('<li>', {
+        var $button = $( '<li>', {
             id: 'wikify-' + language,
             class: 'wikify wikify-' + language,
             title: p.t.wikificator
-        });
-        $button.append($('<img>', {
-            src: '//upload.wikimedia.org/wikipedia/commons/0/06/Wikify-toolbutton.png'
-        }));
+        } );
+        $button.append( $( '<img>', {
+            src: 'https://upload.wikimedia.org/wikipedia/commons/0/06/Wikify-toolbutton.png'
+        } ) );
         $( '#WikiaBarWrapper .toolbar .tools' ).append( $button );
         //$button.on('click', p.click);
         // will fire on each init
@@ -2713,13 +2808,24 @@
     //p.init();
     if ( p.isUcp ) {
         //'ve.wikitextInteractive': source
+        // try to set old ve button
+        mw.loader.using( 'ext.wikiEditor' ).then( function () {
+            try {
+                p.log( 'trying to add old ve button');
+                p.addNewToolbarButton();
+            } catch ( ex ) {
+                p.log( 'old ve button error', ex );
+            }
+            p.init();
+        } );
+        // w8 4 new ve
         mw.hook( 've.activationComplete' ).add( function () {
             p.surface = ve.init.target.getSurface();
-            window.createVEWikificatorTool();
+            p.createVEWikificatorTool();
             p.init();
         });
     } else {
         p.init();
     }
 
-})( jQuery, window.wikificator = ( window.wikificator || {} ) );
+} )( jQuery, window.wikificator = ( window.wikificator || {} ) );

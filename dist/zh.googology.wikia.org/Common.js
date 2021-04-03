@@ -1,22 +1,70 @@
-var enableMathJax = (wgCanonicalNamespace !== "Special") && (wgCanonicalNamespace !== "MediaWiki");
+// The code is applied in order to display mathematical formulae. 
+// This is copied from MediaWiki:Common.js in Japanese Googology Wiki.
 
-enableMathJax = enableMathJax || (wgCanonicalSpecialPageName === "Undelete");
- 
-addOnloadHook(function () {
-    if (enableMathJax) {
-        importScriptURI("http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML,Safe");
+// Output a log for debugging.
+console.log("Running MediaWiki:Common.js...");
+
+// Loading MathJax.
+//
+// MathJax will be loaded in the following three cases:
+//
+// * The namespace is not Special.
+// * The namespace is not MediaWiki.
+// * The displayed page is an article in the current version, which is not a difference page or a history page.
+if ((mw.config.get('wgCanonicalNamespace') !== "Special") && (mw.config.get('wgCanonicalNamespace') !== "MediaWiki") && mw.config.get('wgIsArticle')) {
+  // Output a log for debugging.
+  console.log("Applying MathJax...");
+
+  var script_1 = document.createElement('script');
+  script_1.src = "https://polyfill.io/v3/polyfill.min.js?features=es6";
+  document.head.appendChild(script_1);
+
+  var script_2 = document.createElement('script');
+  script_2.id = "MathJax-script";
+  script_2.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+  script_2.async = true;
+  document.head.appendChild(script_2);
+
+  // Function to apply MathJax to comments.
+  (function() {
+    'use strict';
+    // Modified a sample from https://docs.mathjax.org/en/latest/web/typeset.html
+    function typeset(nodes) {
+        MathJax.startup.promise = MathJax.startup.promise
+            .then(function() {return MathJax.typesetPromise(nodes);})
+            .catch(function(err) {console.log('Typeset failed: ' + err.message);});
+        return MathJax.startup.promise;
     }
-});
- 
- 
-addOnloadHook(function () {
-    if (~'Cloudy176 FB100Z LittlePeng9'.split(' ').indexOf(wgUserName) && !SteveUrkelCovenant) {
-        document.body.style.backgroundImage = 'url("http://netdna.tvovermind.com/wp-content/uploads/2012/11/steve-urkel-gif-15.gif")';
-    }
-});
- 
-addOnloadHook(function () {
-    var name = 'googol giggol grangol gongulus triakulus bongulus googocci greagol golapulus colossol tridecal'.split(' ');
-    name = name[Math.floor(name.length * Math.random())] + '...';
-    $('#chatbox-ctr').append('<iframe src="http://webchat.freenode.net?nick=' + name + '&channels=%23%23googology&prompt=1&uio=MTE9MTEzcf" width="100%" height="400"></iframe>');
-});
+    new MutationObserver(function(mutations) {
+        if (typeof MathJax === "undefined") return;
+        /* global MathJax:false */
+        var nodes = [];
+        for (var i = 0; i < mutations.length; ++i) {
+			var mutation = mutations[i];
+            for (var j = 0; j < mutation.addedNodes.length; ++j) {
+				var node = mutation.addedNodes[j];
+                if (!node.querySelectorAll) continue;
+                nodes = nodes.concat(node.querySelectorAll(".entity-content"));
+            }
+        }
+        if (nodes.length > 0) typeset(nodes);
+    }).observe(document.querySelector("#articleComments"), {
+        childList: true,
+        subtree: true
+    });
+  })();
+}
+
+// Special process for hide-on-oasis-skin class.
+//
+// If the skin is Oasis, then set the value of the display property of CSS of HTML element with hide-on-oasis-skin class as none.
+if (mw.config.get('skin') === "oasis") {
+	// Output a log for debugging.
+	console.log("Processing 'hide-on-oasis-skin' class");
+
+	var elements = document.getElementsByClassName('hide-on-oasis-skin');
+
+	for (var i = 0; i < elements.length; i++) {
+		elements[i].style.display = 'none';
+	}
+}

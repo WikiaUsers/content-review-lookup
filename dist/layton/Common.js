@@ -1,22 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* See also: [[MediaWiki:Wikia.js]] and [[MediaWiki:Monobook.js]] */
-
-/* Imports - Start */
-((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).defaults = { animate: false };
-
-window.AjaxRCRefreshText = 'Auto-update';
-window.AjaxRCRefreshHoverText = 'Automatically update with new changes';
-
-importArticles({
-    type: 'script',
-    articles: [
-        'w:dev:ReferencePopups/code.js',
-        'w:dev:InactiveUsers/code.js',
-        'w:dev:Countdown/code.js',
-        'w:dev:AjaxRC/code.js',
-    ]
-});
-/* Imports - End */
+/* See also: [[MediaWiki:Wikia.js]] */
 
 /* Main Code - Start */
 $(document).ready(function(){

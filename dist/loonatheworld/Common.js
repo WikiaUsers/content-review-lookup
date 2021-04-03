@@ -4,11 +4,11 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: { stan: { u: 'Orbit'},
-            newuser: { u: 'LOOΠΔTION'}
+            newuser: { u: 'LOOΠΔTION'},
+			gender: { m: 'Male', f:'Female', u: 'No Gender Set', order: -1/0, link:'https://en.wikipedia.org/wiki/Gender' }
 	},
 	oasisPlaceBefore: ''
 };
-
 UserTagsJS.modules.newuser = {
 	days: 10, // Must have been on the Wiki for 10 days
 	edits: 15, // And have at least 15 edits to remove the tag
@@ -16,8 +16,11 @@ UserTagsJS.modules.newuser = {
 };
 
 UserTagsJS.modules.stan = {
-	days: 60, // Must have been on the Wiki for 10 days
-	edits: 500, // And have at least 15 edits to remove the tag
+	days: 60, // Must have been on the Wiki for 60 days
+	computation: function(edits) {
+		// And have at least 1000 edits
+		return edits > 1000 ;
+	},
 	namespace: 0 // Edits must be made to articles to count
 };
 

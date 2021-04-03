@@ -1,10 +1,17 @@
-/* Medals script v1.0.4
+/* Medals script v1.0.5
 *  @author: Kopcap94
+*  @update for UCP: HumansCanWinElves
 *  @support: Wildream
 *  @testers: Fwy, White torch
 */
 
 ;(function($,mw) {
+	importArticle({
+    	type: 'script',
+    	article: 'u:dev:MediaWiki:ShowCustomModal.js'
+	});
+	var showCustomModal;
+	
     var namespace = mw.config.get('wgNamespaceNumber');
     
     if (namespace !== 2 && namespace !== 1200 && namespace !== 500 && 
@@ -13,7 +20,20 @@
     }
     
     medalFunctions = {
-        
+
+// Forked from w:c:dev:MediaWiki:QuickPurge.js
+    	quickPurge: function() {
+	    	new mw.Api().post({
+	    		action: 'purge',
+	    		titles: mw.config.get('wgPageName'),
+	    	}).always(function() {
+	        	if (typeof(res) !== "object") {
+	        		console.warn('API Error in purging the Medals page \"' + mw.config.get('wgPageName') + '\":', res);
+	        	}
+	        });
+	        window.location.reload();
+	    },
+
 // Default settings
         medalDefaultSettings: function() {
             default_cfg = JSON.stringify({dataUser:{}, dataMedal: {}, module_title: 'User\'s reward', module_more: 'Show more', module_count_info: 'Amounts of this achievement', module_info: '', module_info_title: '', border: { top_left: 'https://images.wikia.nocookie.net/siegenax/ru/images/1/13/Medal_Border_corner.png', top_right: 'https://images.wikia.nocookie.net/siegenax/ru/images/d/de/Medal_Border_corner_right.png' }});
@@ -57,15 +77,15 @@
                             '<button onclick="medalFunctions.appendMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 4px; margin:0 6px 0 0; float:right;" title="Submit changes">✓</button>' +
                             '<button onclick="medalFunctions.deleteMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 0 0 3px; margin:0 5px 0 0; float:right;">' + medalDeleteImg + '</button>' +
                             'Medal name : ' + 
-                            '<input class="MedalListName" style="float:right; width:334px; margin-right:5px;" data-prev="undefined"/>' +
+                            '<input class="MedalListName" style="float:right; width:324px; margin-right:5px;" data-prev="undefined"/>' +
                         '</div>' +
                         '<div style="margin-top:5px;">' +
                             'Title : ' +
-                            '<input class="MedalListTitle" style="float:right; width:385px; margin-right:5px;" />' +
+                            '<input class="MedalListTitle" style="float:right; width:380px; margin-right:5px;" />' +
                         '</div>' +
                         '<div style="margin-top:5px;">' +
                             'Image link : ' +
-                            '<input class="MedalListLinkImage" style="float:right; width:385px;  margin-right:5px;" />' +
+                            '<input class="MedalListLinkImage" style="float:right; width:380px;  margin-right:5px;" />' +
                         '</div>' +
                     '</div>' +
                 '</div>'
@@ -167,7 +187,7 @@
                 var medals = [];
                 
                 $(this).find('.medalCollectBox').each(function() {
-                    if ($(this).find('input[type="checkbox"]').attr('checked') !== 'checked') {
+                    if (!$(this).find('input[type="checkbox"]').prop('checked')) {
                         return;
                     }
                     
@@ -216,7 +236,7 @@
                 },
                 success: function(d) {
                     if (d.edit.result == 'Success') {
-                        location.href += (location.href.indexOf('?') > -1) ? '&action=purge' : '?action=purge';
+                        medalFunctions.quickPurge();
                     }
                 }
             });
@@ -345,7 +365,7 @@
             });
  
             $('.MedalMore').click(function() {
-                $.showCustomModal( mw.html.escape(MedalSettings.module_title + ' ' + user), medalModalForm, {width: 400});
+                showCustomModal( mw.html.escape(MedalSettings.module_title + ' ' + user), medalModalForm, {width: 400});
             });
         },
         
@@ -356,7 +376,7 @@
                 group_list.indexOf('content-moderator') == -1 &&
                 group_list.indexOf('helper') == -1 &&
                 group_list.indexOf('staff') == -1 &&
-                group_list.indexOf('vstf') == -1) {
+                group_list.indexOf('soap') == -1) {
                 // No rights - nothing to do here :P
                 return;
             }
@@ -375,7 +395,7 @@
         
             $('#mw-content-text').prepend('<div style="width:100%; text-align:center; padding:20px;"><button id="MedalSettings">Access settings</button></div>');
     
-            // Creating from
+            // Creating form
             medalModalForm.append(
                 '<div style="padding-bottom:5px; border-bottom:solid 1px #36759c; margin-top:-5px;">' +
                     '<div style="text-align:center;">' +
@@ -430,15 +450,15 @@
                                 '<button onclick="medalFunctions.appendMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 4px; margin:0 6px 0 0; float:right;">✓</button>' +
                                 '<button onclick="medalFunctions.deleteMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 0 0 3px; margin:0 5px 0 0; float:right;">' + medalDeleteImg + '</button>' +
                                 'Medal name : ' + 
-                                $('<input class="MedalListName" style="float:right; width:334px; margin-right:5px;" />').attr('value', k).attr('data-prev', k).prop('outerHTML') +
+                                $('<input class="MedalListName" style="float:right; width:324px; margin-right:5px;" />').attr('value', k).attr('data-prev', k).prop('outerHTML') +
                             '</div>' +
                             '<div style="margin-top:5px;">' +
                                 'Title : ' +
-                                $('<input class="MedalListTitle" style="float:right; width:385px; margin-right:5px;" />').attr('value', v.title).prop('outerHTML') +
+                                $('<input class="MedalListTitle" style="float:right; width:380px; margin-right:5px;" />').attr('value', v.title).prop('outerHTML') +
                             '</div>' +
                             '<div style="margin-top:5px;">' +
                                 'Image link : ' +
-                                $('<input class="MedalListLinkImage" style="float:right; width:385px;  margin-right:5px;" />').attr('value', v.image_url).prop('outerHTML') +
+                                $('<input class="MedalListLinkImage" style="float:right; width:380px;  margin-right:5px;" />').attr('value', v.image_url).prop('outerHTML') +
                             '</div>' +
                         '</div>' +
                     '</div>'
@@ -491,7 +511,7 @@
         
             // Modal window
             $('#MedalSettings').click(function() {
-                $.showCustomModal('Settings', medalModalFormCompleted, {
+                showCustomModal('Settings', medalModalFormCompleted, {
                     id: 'ModalSettingsWindow',
                     width: 600,
                     height: 450,
@@ -519,7 +539,9 @@
         },
         
 // Launch function
-        init: function() {
+        init: function(modalScript) {
+        	showCustomModal = modalScript;
+        	
             $.ajax({
                 url: mw.util.wikiScript(),
                 type: 'GET',
@@ -560,6 +582,6 @@
     };
     
     // LAUNCH!
-    $(medalFunctions.init);
+    mw.hook('dev.showCustomModal').add(medalFunctions.init);
     
 })(this.jQuery,this.mediaWiki);

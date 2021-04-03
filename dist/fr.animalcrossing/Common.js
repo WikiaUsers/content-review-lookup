@@ -1,48 +1,25 @@
 /* Tout JavaScript ici sera chargé avec chaque page accédée par n’importe quel utilisateur. */
 
-
-
-//======= Only if editing ? ===========
- // Import [[MediaWiki:Onlyifuploading.js]] 
- 
- if ( wgCanonicalSpecialPageName == "Upload" ) {
-      document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Onlyifuploading.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
- }
-
- // ============================================================
- // BEGIN import Onlyifediting-functions
- // SEE ALSO [[MediaWiki:Onlyifediting.js]]
- 
- if (document.URL.indexOf("action=edit") > 0 || document.URL.indexOf("action=submit") > 0) {
-     document.write('<script type="text/javascript" src="/wiki/index.php?title=MediaWiki:Onlyifediting.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
- }
- 
-// END import Onlyifediting-functions
-// ============================================================
-
-
-
-
 //======= User Tags ===========
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		// FORMAT= groupe: { tag associé }
-		parrain: { u:'Parrain' },
-		filleul: { u:'Filleul' }
-	}
-};
+//window.UserTagsJS = {
+//	modules: {},
+//	tags: {
+//		FORMAT= groupe: { tag associé }
+//		parrain: { u:'Parrain' },
+//		filleul: { u:'Filleul' }
+//	}
+//};
 
-UserTagsJS.modules.custom = {
-	'Yukitwane': ['parrain'],
-    'Bichoune0612': ['parrain'],
-	'La Pieuvre': ['parrain']
-};
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'rollback', 'bannedfromchat'];
-UserTagsJS.modules.inactive = {
-	days: 365,
-	zeroIsInactive: true  // 0 modifications est considéré comme inactif
-};
+//UserTagsJS.modules.custom = {
+//	'Yukitwane': ['parrain'],
+//    'Bichoune0612': ['parrain'],
+//	'La Pieuvre': ['parrain']
+//};
+//UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'rollback', 'bannedfromchat'];
+//UserTagsJS.modules.inactive = {
+//	days: 365,
+//	zeroIsInactive: true  // 0 modifications est considéré comme inactif
+//};
 // END User Tags
 // ============================================================
 
@@ -402,56 +379,4 @@ var questions = [
 })(jQuery);
 
 // END Quiz
-// ============================================================
-
-
-
-
-//======= Import JS ===========
-//======= User Tags et Afficher le compteur individuel de modifications sur les profils ===========
-importArticles({
-    type: "script",
-    articles: [
-        "w:c:dev:UserTags/code.js",
-        "w:c:dev:EditcountTag/code.js"
-    ]
-});
-
-// END import JS
-// ============================================================
-
-// ======= Import JS Statuts =======
-importScriptPage('Mediawiki:Status/code.js','dev');
-
-// END Import JS Statuts
-// ============================================================
-
-// ======= Import JS Statuts =======
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:WorkingMoreUsersCount.js'
-    ]
-});
-
-// END Import JS Statuts
-// ============================================================
-
-// ======= Compte à rebours =======
-importArticles({
-    type: "script",
-    articles: [
-        "w:c:dev:MediaWiki:Countdown/code.js"
-    ]
-});
-
-// END Compte à rebours
-// ============================================================
-
-// ======= RailWAM =======
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
-
-// END RailWAM
 // ============================================================

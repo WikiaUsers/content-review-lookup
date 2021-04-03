@@ -5,6 +5,156 @@
 // Twitter Follow Button
 ////////////////////////////////////////////////////////////////////
 */
+mw.loader.using("mediawiki.api", function() {
+    var config = mw.config.get([
+        'wgArticlePath',
+        'wgServer'
+    ]);
+    if ($('.bloglist').length + $('.blogimage').length + $('.blogtime').length === 0) {
+        return;
+    }
+    console.log('hm');
+    var Bloglist = {
+        init: function() {
+            mw.loader.using('mediawiki.api').then($.proxy(function() {
+                this.api = new mw.Api();
+                this.api.get({
+                    action: 'query',
+                    list: 'categorymembers',
+                    cmtitle: 'Category:News posts',
+                    cmsort: 'timestamp',
+                    cmdir: 'desc',
+                    cmlimit: 10
+                }).done($.proxy(function(d) {
+                    if(!d.error) {
+                        this.data = {};
+                        this.fetchData(d.query.categorymembers.map(function(el) {
+                            return el.title;
+                        }));
+                    }
+                }, this));
+            }, this));
+            ['list', 'image', 'time'].forEach(this.initElement, this);
+        },
+        initElement: function(t) {
+            t = 'blog' + t;
+            this[t] = {};
+            $('.' + t).each($.proxy(function(_, el) {
+                el = $(el);
+                this[t][el.text()] = el;
+            }, this));
+            console.log(this);
+        },
+        fetchData: function(d) {
+            this.api.get({
+                action: 'query',
+                titles: d.join('|'),
+                prop: 'images|revisions',
+                rvprop: 'timestamp',
+                imlimit: 500
+            }).done($.proxy(function(d) {
+                console.log(d);
+                if(!d.error) {
+                    this.processData(d.query.pages);
+                }
+            }, this));
+        },
+        processData: function(d) {
+            var i = 0;
+            $.each(d, $.proxy(function(k, v) {
+                ++i;
+                if(this.bloglist[i]) {
+                    this.bloglist[i].html(mw.html.element('a', {
+                        href: config.wgArticlePath.replace('$1', v.title)
+                    }, v.title.split(':').splice(1).join(':')));
+                }
+                if(this.blogimage[i] && v.images && v.images.length > 0) {
+                    this.blogimage[i].html(mw.html.element('img', {
+                        src: config.wgArticlePath.replace('$1', 'Special:FilePath/' + v.images[0].title)
+                    }));
+                }
+                if(this.blogtime[i]) {
+                    this.blogtime[i].text(new Date(v.revisions[0].timestamp).toLocaleString());
+                }
+            }, this));
+        }
+    };
+    $($.proxy(Bloglist.init, Bloglist));
+});
+
+mw.loader.using("mediawiki.api", function() {
+ 
+    var content = document.getElementById('bigimage').textContent;
+    var blogNumber = Number(content) - 1;
+ 
+    function getData(number, callback) {
+        new mw.Api().get({
+            action: 'query',
+            list: 'categorymembers',
+            cmtitle: 'Category:News_posts',
+            cmsort: 'timestamp',
+            cmdir: 'desc',
+            cmlimit: 10,
+            format: 'json'
+        }).done(function(d) {
+            if(!d.error) {
+                callback(d);
+            }
+        });
+    }
+ 
+    function getImageData(b, callback) {
+        new mw.Api().get({
+            action: 'query',
+            titles: b,
+            prop: 'images',
+            format: 'json'
+        }).done(function(d) {
+            if(!d.error) {
+                callback(d);
+            }
+        });
+    }
+ 
+    function getImageInfoData(s, callback) {
+        new mw.Api().get({
+            action: 'query',
+            titles: s,
+            prop: 'imageinfo',
+            iiprop: 'url',
+            format: 'json'
+        }).done(function(d) {
+            if(!d.error) {
+                callback(d);
+            }
+        });
+    }
+ 
+    function processData(result) {
+        var data = result.query.categorymembers;
+        var blog = data[blogNumber].title;
+        getImageData(blog, processImageData);
+    }
+ 
+    function processImageData(result) {
+        var data = result.query.pages;
+        var pageId = Object.keys(data);
+        var desired = data[pageId].images[0].title;
+        getImageInfoData(desired, processImageInfoData);
+    }
+ 
+    function processImageInfoData(result) {
+        var data = result.query.pages;
+        var pageId = Object.keys(data);
+        var iiUrl = data[pageId].imageinfo[0].url;
+        $('#bigimage').html('<img src="' + iiUrl + '" style="max-height: 700px; max-width: 700px;">' + '</img>');
+    }
+ 
+    getData(blogNumber, processData);
+});
+
+
+
 $(function addTwitterButton() {
    $('#twitter-button').append('<a href="http://twitter.com/redwallwiki" class="twitter-follow-button" data-show-count="true" data-show-screen-name="false">Follow @Redwallwiki</a><script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>');
 });
@@ -480,152 +630,4 @@ $(function fill_amazon() {
 
 $(function addFollowButton() {
    $('#follow-button').append('<a href="http://twitter.com/redwallwiki" class="twitter-follow-button" data-show-count="true">Follow @redwallwiki</a><script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>');
-});
-
-mw.loader.using("mediawiki.api", function() {
-    var config = mw.config.get([
-        'wgArticlePath',
-        'wgServer'
-    ]);
-    if ($('.bloglist').length + $('.blogimage').length + $('.blogtime').length === 0) {
-        return;
-    }
-    console.log('hm');
-    var Bloglist = {
-        init: function() {
-            mw.loader.using('mediawiki.api').then($.proxy(function() {
-                this.api = new mw.Api();
-                this.api.get({
-                    action: 'query',
-                    list: 'categorymembers',
-                    cmtitle: 'Category:News posts',
-                    cmsort: 'timestamp',
-                    cmdir: 'desc',
-                    cmlimit: 10
-                }).done($.proxy(function(d) {
-                    if(!d.error) {
-                        this.data = {};
-                        this.fetchData(d.query.categorymembers.map(function(el) {
-                            return el.title;
-                        }));
-                    }
-                }, this));
-            }, this));
-            ['list', 'image', 'time'].forEach(this.initElement, this);
-        },
-        initElement: function(t) {
-            t = 'blog' + t;
-            this[t] = {};
-            $('.' + t).each($.proxy(function(_, el) {
-                el = $(el);
-                this[t][el.text()] = el;
-            }, this));
-            console.log(this);
-        },
-        fetchData: function(d) {
-            this.api.get({
-                action: 'query',
-                titles: d.join('|'),
-                prop: 'images|revisions',
-                rvprop: 'timestamp',
-                imlimit: 500
-            }).done($.proxy(function(d) {
-                console.log(d);
-                if(!d.error) {
-                    this.processData(d.query.pages);
-                }
-            }, this));
-        },
-        processData: function(d) {
-            var i = 0;
-            $.each(d, $.proxy(function(k, v) {
-                ++i;
-                if(this.bloglist[i]) {
-                    this.bloglist[i].html(mw.html.element('a', {
-                        href: config.wgArticlePath.replace('$1', v.title)
-                    }, v.title.split(':').splice(1).join(':')));
-                }
-                if(this.blogimage[i] && v.images && v.images.length > 0) {
-                    this.blogimage[i].html(mw.html.element('img', {
-                        src: config.wgArticlePath.replace('$1', 'Special:FilePath/' + v.images[0].title)
-                    }));
-                }
-                if(this.blogtime[i]) {
-                    this.blogtime[i].text(new Date(v.revisions[0].timestamp).toLocaleString());
-                }
-            }, this));
-        }
-    };
-    $($.proxy(Bloglist.init, Bloglist));
-});
-
-mw.loader.using("mediawiki.api", function() {
- 
-    var content = document.getElementById('bigimage').textContent;
-    var blogNumber = Number(content) - 1;
- 
-    function getData(number, callback) {
-        new mw.Api().get({
-            action: 'query',
-            list: 'categorymembers',
-            cmtitle: 'Category:News_posts',
-            cmsort: 'timestamp',
-            cmdir: 'desc',
-            cmlimit: 10,
-            format: 'json'
-        }).done(function(d) {
-            if(!d.error) {
-                callback(d);
-            }
-        });
-    }
- 
-    function getImageData(b, callback) {
-        new mw.Api().get({
-            action: 'query',
-            titles: b,
-            prop: 'images',
-            format: 'json'
-        }).done(function(d) {
-            if(!d.error) {
-                callback(d);
-            }
-        });
-    }
- 
-    function getImageInfoData(s, callback) {
-        new mw.Api().get({
-            action: 'query',
-            titles: s,
-            prop: 'imageinfo',
-            iiprop: 'url',
-            format: 'json'
-        }).done(function(d) {
-            if(!d.error) {
-                callback(d);
-            }
-        });
-    }
- 
-    function processData(result) {
-        var data = result.query.categorymembers;
-        var blog = data[blogNumber].title;
-        getImageData(blog, processImageData);
-    }
- 
-    function processImageData(result) {
-        var data = result.query.pages;
-        var pageId = Object.keys(data);
-        var desired = data[pageId].images[0].title;
-        getImageInfoData(desired, processImageInfoData);
-    }
- 
-    function processImageInfoData(result) {
-        var data = result.query.pages;
-        var pageId = Object.keys(data);
-        var iiUrl = data[pageId].imageinfo[0].url;
-        $('#bigimage').html('<img src="' + iiUrl + '" style="max-height: 700px; max-width: 700px;">' + '</img>');
-    }
- 
-    getData(blogNumber, processData);
 });

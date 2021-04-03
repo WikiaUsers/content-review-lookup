@@ -3,10 +3,10 @@
  * @description Redirect listed multiple pages to the stated page
  * @author      Ozuzanna
  */
-(function ($, mw) {
+mw.loader.using([ 'mediawiki.api', 'jquery', 'wikia.window' ]).then(function() {
     if (
         window.MassRedirect1Loaded ||
-        !/sysop|content-moderator|bot|bot-global|staff|vstf|helper|global-discussions-moderator|content-volunteer|wiki-manager|content-team-member/.test(mw.config.get('wgUserGroups').join())
+        !/sysop|content-moderator|bot|bot-global|staff|soap|helper|global-discussions-moderator|content-volunteer|wiki-manager|content-team-member/.test(mw.config.get('wgUserGroups').join())
     ) {
         return;
     }
@@ -160,4 +160,4 @@
         console.log(message);
         $('#text-error-output').append(message + '<br/>');
     }
-})(this.jQuery, this.mediaWiki);
+});

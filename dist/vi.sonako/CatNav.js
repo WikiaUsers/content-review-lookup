@@ -2,22 +2,14 @@
 	allow a category navigation based on a list of categories (instead of the usual single category navigation)
 */
 
+
 $(function() {
     /* ================================== *\
     	# wiki links to [[Special:CatNav]]
     \* ================================== */
-    switch (mw.config.get("skin")) {
-        // oasis
-        case "wikia":
-        case "oasis":
-            $("#my-tools-menu").append('<li><a target="_blank" href="/wiki/Special:CatNav">Tìm Kiếm Nâng Cao</a></li>');
-            break;
-            // oasis
-        case "monobook":
-        case "vector":
-            $("#p-tb ul").append('<li id="t-s-catnav"><a target="_blank" href="/wiki/Special:CatNav">Tìm Kiếm Nâng Cao</a></li>');
-            break;
-    }
+
+     $("#my-tools-menu").append('<li><a target="_blank" href="/wiki/Special:CatNav">Tìm Kiếm Nâng Cao</a></li>');
+
 
     /* ================================== *\
     	# core objects
@@ -50,191 +42,6 @@ $(function() {
         },
         _g: window.CatNav // global modifiers
     };
-
-    /* css */
-    catnav.data.markup.css = '#catnav {\n' +
-        '\twidth: 100%;\n' +
-        '\tmargin: 0;\n' +
-        '\tpadding: 0;\n' +
-        '}\n' +
-        '#catnav-container {\n' +
-        '\tdisplay: flex;\n' +
-        '\tflex-wrap: wrap;\n' +
-        '\tmargin: 10px auto 20px auto;\n' +
-        '\tmargin: 10px 50px 20px 50px;\n' +
-        '}\n' +
-        '#catnav-container .catnav-item {\n' +
-        '\tdisplay: inline-block;\n' +
-        '\twidth: 140px;\n' +
-        '\theight: 140px;\n' +
-        '\tmargin: 3px;\n' +
-        '\tpadding: 2px;\n' +
-        '\tposition: relative;\n' +
-        '\toverflow: hidden;\n' +
-        '\tborder: 2px solid navy;\n' +
-        '\tborder-radius: 10px;\n' +
-        '}\n' +
-        '#catnav-container .catnav-item .catnav-item-label {\n' +
-        '\tmax-width: 120px;\n' +
-        '\theight: 18px;\n' +
-        '\tpadding: 0 4px;\n' +
-        '\tposition: absolute;\n' +
-        '\tbottom: 0;\n' +
-        '\tright: 0;\n' +
-        '\toverflow: hidden;\n' +
-        '\tbackground: #006cb0;\n' +
-        '\tborder-top-left-radius: 7px;\n' +
-        '\tcolor: #fff;\n' +
-        '\tfont-size: 14px;\n' +
-        '\tline-height: 18px;\n' +
-        '}\n' +
-        '#catnav-container img {\n' +
-        '\tborder-radius: 7px;\n' +
-        '}\n' +
-        '#catnav-container .catnav-item-noimage {\n' +
-        '\tborder-color: #c00;\n' +
-        '}\n' +
-        '#catnav-container .catnav-item-noimage .catnav-item-label {\n' +
-        '\tbackground: #c00;\n' +
-        '}\n' +
-        '#catnav-resultscounter {\n' +
-        '\ttext-align: center;\n' +
-        '\tfont-weight: bold;\n' +
-        '\tfont-size: larger;\n' +
-        '}\n' +
-        '#catnav-pagenav {\n' +
-        '\tpadding: 3px 7px;\n' +
-        '\ttext-align: center;\n' +
-        '\tfont-size: 18px;\n' +
-        '\tline-height: 18px;\n' +
-        '}\n' +
-        '#catnav-pagenav a:not(.catnav-pagenav-selected) {\n' +
-        '\tcolor: #a6d1ec;\n' +
-        '\ttext-shadow: 1px 1px 0 navy;\n' +
-        '}\n' +
-        '#catnav-pagenav a ~ a {\n' +
-        '\tmargin-left: 10px;\n' +
-        '}\n' +
-        '#catnav-pagenav a.catnav-pagenav-selected {\n' +
-        '\tcolor: black;\n' +
-        '\tcursor: pointer;\n' +
-        '\tfont-weight: bold;\n' +
-        '}\n' +
-        '#catnav textarea {\n' +
-        '\twidth: 100%;\n' +
-        '\twidth: calc(100% - 6px);\n' +
-        '\theight: 100px;\n' +
-        '\tresize: none;\n' +
-        '}\n' +
-        '#catnav table {\n' +
-        '\twidth: 100%;\n' +
-        '\tmargin: 0;\n' +
-        '\tpadding: 0;\n' +
-        '}\n' +
-        '#catnav #catnav-rows {\n' +
-        '\twidth: 30px;\n' +
-        '}\n' +
-        '#catnav th {\n' +
-        '\twidth: 50%;\n' +
-        '}\n' +
-        '#catnav label {\n' +
-        '\tfont-size: smaller;\n' +
-        '}\n' +
-        '#catnav #catnav-noneerror {\n' +
-        '\tcolor: #c00;\n' +
-        '\tfont-weight: bold;\n' +
-        '}\n' +
-        '#catnav .catnav-gui-group {\n' +
-        '\tpadding: 3px 7px;\n' +
-        '\tborder: 1px solid ' + mw.config.get("wgSassParams")["color-body"] + ';\n' +
-        '\tborder-radius: 7px;\n' +
-        '}\n' +
-        '#catnav .catnav-gui-group + .catnav-gui-group {\n' +
-        '\tmargin-top: 5px;\n' +
-        '}\n' +
-        '#catnav .catnav-commoncats {\n' +
-        '\tpadding: 4px 8px;\n' +
-        '\tbackground: repeating-linear-gradient(-30deg, #f4e3d7 0, #f4e3d7 10px, #ffccaa 10px, #ffccaa 20px);\n' +
-        '\tborder: 3px solid #f4e3d7;\n' +
-        '\tborder-radius: 10px;\n' +
-        '}\n' +
-        '#catnav #catnav-commoncats-wrapper {\n' +
-        '\tpadding: 2px 7px;\n' +
-        '\tbackground: rgba(250, 250, 250, 0.6);\n' +
-        '}\n' +
-        '#catnav #catnav-commoncats-container {\n' +
-        '\tmax-height: 300px;\n' +
-        '\toverflow-y: scroll;\n' +
-        '\tbackground: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 26px, rgba(0, 0, 0, 0.03) 26px, rgba(0, 0, 0, 0.03) 52px);\n' +
-        '\tbackground-attachment: local;\n' +
-        '}\n' +
-        '#catnav .catnav-commoncats-item {\n' +
-        '\tdisplay: inline-block;\n' +
-        '\twidth: 25%;\n' +
-        '\tborder-radius: 3px;\n' +
-        '\tcursor: pointer;\n' +
-        '}\n' +
-        '#catnav .catnav-commoncats-item:hover {\n' +
-        '\tbackground: rgba(0, 0, 0, 0.15);\n' +
-        '}\n' +
-        '#catnav .catnav-commoncats-item-delete {\n' +
-        '\tmargin-left: 4px;\n' +
-        '\tcursor: pointer;\n' +
-        '}\n' +
-        '#catnav .catnav-commoncats-global {\n' +
-        '\theight: 16px;\n' +
-        '\tline-height: 16px;\n' +
-        '\tfont-size: smaller;\n' +
-        '}\n' +
-        '#catnav #catnav-loading {\n' +
-        '\tdisplay: none;\n' +
-        '\tcolor: #999;\n' +
-        '}\n' +
-        '#catnav-export-modal {\n' +
-        '\tdisplay: none;\n' +
-        '\twidth: 100%;\n' +
-        '\theight: 100%;\n' +
-        '\tposition: fixed;\n' +
-        '\ttop: 0;\n' +
-        '\tleft: 0;\n' +
-        '\tz-index: 1000;\n' +
-        '\tjustify-content: center;\n' +
-        '\talign-items: center;\n' +
-        '\tbackground: linear-gradient(to right, rgba(255, 245, 245, 0.75), rgba(255, 255, 245, 0.75), rgba(245, 255, 245, 0.75), rgba(245, 255, 255, 0.75), rgba(245, 245, 255, 0.75), rgba(255, 245, 255, 0.75), rgba(255, 245, 245, 0.75));\n' +
-        '}\n' +
-        '#catnav-export-modal-content {\n' +
-        '\twidth: 400px;\n' +
-        '\tbackground: linear-gradient(#eeeef6, #fafafa 10px);\n' +
-        '\tpadding: 5px;\n' +
-        '\tborder: 1px solid #ddd;\n' +
-        '}\n' +
-        '#catnav-export-modal-content p {\n' +
-        '\tmargin: 0 0 0 10px;\n' +
-        '\tpadding: 3px 0;\n' +
-        '}\n' +
-        '#catnav-export-modal-content textarea {\n' +
-        '\twidth: 390px;\n' +
-        '\theight: 194px;\n' +
-        '\tpadding: 2px 4px;\n' +
-        '\tbackground: #fafafa;\n' +
-        '\tborder: 1px solid #ddd;\n' +
-        '\tresize: none;\n' +
-        '}\n' +
-        '#catnav-export-modal-content h3 {\n' +
-        '\tmargin-bottom: 5px;\n' +
-        '\tpadding-left: 5px;\n' +
-        '\tborder-bottom: 1px solid #ddd;\n' +
-        '\tline-height: 1.8em;\n' +
-        '\tfont-weight: bold;\n' +
-        '}\n' +
-        '#catnav-export-modal-close {\n' +
-        '\tdisplay: inline-block;\n' +
-        '\twidth: 20px;\n' +
-        '\theight: 20px;\n' +
-        '\tfloat: right;\n' +
-        '\tbackground: url(\'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Emblem-unreadable.svg/20px-Emblem-unreadable.svg.png\');\n' +
-        '\tcursor: pointer;\n' +
-        '}';
 
     /* html */
     catnav.data.markup.html = '<nav id="catnav">\n' +
@@ -1191,15 +998,18 @@ $(function() {
 
     // check if the page is [[Special:CatNav]]
     if (mw.config.get("wgNamespaceNumber") === -1 && mw.config.get("wgTitle") == "CatNav") {
-        /* css */
-        mw.util.addCSS(catnav.data.markup.css);
+		/* css */
+		importArticle({
+			type: 'style',
+			article: 'u:dev:MediaWiki:CatNav.css'
+		});
         // redefine results counter
         mw.util.addCSS(
 			'#catnav-resultscounter {\n' +
-				'\tcolor: ' + catnav.fn.contrastfy(mw.config.get("wgSassParams")["color-page"]) + ';\n' +
+				'\tcolor: ' + catnav.fn.contrastfy(getComputedStyle(document.querySelector("section#WikiaPageBackground") || document.querySelector(".WikiaPageContentWrapper")).backgroundColor) + ';\n' +
 			'}' +
 			'#catnav .catnav-gui-group {\n' +
-				'\tborder: 1px solid ' + (mw.config.get("wgSassParams") instanceof Object ? mw.config.get("wgSassParams")["color-body"] : "#f6f6f6") + ';\n' +
+				'\tborder: 1px solid ' + getComputedStyle(document.body).backgroundColor + ';\n' +
             '}\n'
 		);
 
@@ -1227,7 +1037,7 @@ $(function() {
         // init
         catnav.fn.init();
 
-        // provide global access
+        // provide global access`
         CatNav.init = catnav.fn.init;
     } else {
         // this is not [[Special:CatNav]]

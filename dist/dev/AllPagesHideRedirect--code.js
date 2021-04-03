@@ -17,20 +17,42 @@
         },
         init: function(i18n) {
             this.i18n = i18n;
-            this.$button = $('<a>', {
-                // WDS buttons look horribly out of place currently
-                'class': 'button',
-                // 'class': 'wds-button',
-                click: $.proxy(this.click, this),
-                href: '#',
-                id: 'AllPagesHideRedirectButton',
-                text: this.getMsg()
-            });
+            if ($('.mw-htmlform-submit-buttons').length) {
+                this.$label = $('<span>', {
+                    'class': 'oo-ui-labelElement-label',
+                    text: this.getMsg()
+                });
+                this.$button = $('<span>', {
+                    'class': [
+                        'oo-ui-buttonElement',
+                        'oo-ui-buttonElement-framed',
+                        'oo-ui-flaggedElement-primary',
+                        'oo-ui-flaggedElement-progressive',
+                        'oo-ui-labelElement',
+                        'oo-ui-widget-enabled'
+                    ].join(' '),
+                    click: $.proxy(this.click, this),
+                    id: 'AllPagesHideRedirectButton'
+                }).append(
+                    $('<button>', {
+                        'class': 'oo-ui-buttonElement-button',
+                        tabindex: '0'
+                    }).append(this.$label)
+                );
+            } else {
+                this.$label = this.$button = $('<a>', {
+                    'class': 'button',
+                    click: $.proxy(this.click, this),
+                    href: '#',
+                    id: 'AllPagesHideRedirectButton',
+                    text: this.getMsg()
+                });
+            }
             this.$css = $('<style>', {
                 id: 'AllPagesHideRedirectCSS',
                 text: this.getCSS()
             }).appendTo('head');
-            $('.mw-input').last().append(this.$button);
+            $('.mw-input, .mw-htmlform-submit-buttons').last().append(this.$button);
             mw.hook('AllPagesHideRedirect.loaded').fire();
         },
         getCSS: function() {
@@ -41,10 +63,11 @@
         getMsg: function() {
             return this.i18n.msg(this.shown ? 'hide' : 'show').plain();
         },
-        click: function() {
+        click: function(event) {
+            event.preventDefault();
             this.shown = !this.shown;
             this.$css.text(this.getCSS());
-            this.$button.text(this.getMsg());
+            this.$label.text(this.getMsg());
         }
     };
     importArticle({

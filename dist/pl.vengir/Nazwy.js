@@ -1,1 +1,0 @@
-#PATRZ [[MediaWiki:Niespodzianka.js]]

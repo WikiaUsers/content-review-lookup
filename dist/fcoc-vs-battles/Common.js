@@ -1,3 +1,5 @@
+// 22:01, January 20, 2021 (UTC)
+
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 /* AjaxRC */
@@ -133,7 +135,8 @@ UserTagsJS.modules.custom = {
     'BlitzStrike': ['former-threadmoderator'],
     'LeonRaidenYun': ['former-sysop'],
     'Fllflourine': ['former-content-moderator'],
-    'CrossverseCrisis': ['former-bureaucrat']
+    'CrossverseCrisis': ['former-bureaucrat'],
+    'ExoSaiyan9000': ['former-sysop']
 };
 
 UserTagsJS.modules.metafilter = {

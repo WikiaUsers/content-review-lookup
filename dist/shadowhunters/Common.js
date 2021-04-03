@@ -53,7 +53,7 @@ window.UserTagsJS = {
 // -end - User tags
 
 // Spoiler and Not Final Alert
-window.SpoilerAlert = {
+window.SpoilerAlertJS = {
     question: 'This page contains spoilers. Are you sure you want to proceed?',
     yes: 'Yes',
     no: 'No',

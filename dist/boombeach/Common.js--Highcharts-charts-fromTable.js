@@ -3,6 +3,7 @@ This file is used to create Highcharts charts on pages
 without having to make a new JS function for each one.
 NOTE: Each table ID can only be used once per page.
 */
+
 $(document).ready(function() {
     var ColumnChartFromTableTitle = $('#ColumnChartFromTableTitle').text();
     var ColumnChartFromTableYLabel = $('#ColumnChartFromTableYLabel').text();

@@ -8,8 +8,8 @@ importScriptPage('Content/SpoilersToggle.js', 'scripts');
  
 // BEGIN Dynamic Navigation Bars (experimantal)
 // This script is from Wikipedia. For author attribution, please see http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
- 
- 
+  
+
 /** Collapsible tables *********************************************************
  *
  *  Description: Allows tables to be collapsed, showing only the header. See
@@ -180,6 +180,16 @@ $(function createNavigationBarToggleButton() {
     }
 });
  
+// Fair Use/Source addon for image uploading. Copied from https://community.fandom.com/wiki/User_blog:Godisme/Fair_Use_and_Image_Licensing
+$(function preloadUploadDesc() {
+	if (wgPageName.toLowerCase() != 'special:upload') {
+		return;
+}
+ 
+	document.getElementById('wpUploadDescription').appendChild(document.createTextNode("{{Fair use rationale\r| Description       = \r| Source            = \r| Portion           = \r| Purpose           = \r| Resolution        = \r| Replaceability    = \r| Other Information = \r}}"));
+	
+});
+
 // *******
 // Auto-Refreshing RecentChanges, Logs, Contributions, and WikiActivity (Courtesy of Sactage)
 // *******
@@ -371,3 +381,13 @@ window.AjaxRCRefreshText = 'AutoRefresh';
 		}
 	}
 })();
+//********************************************************************
+// Added Multiple Upload Functionality, credit to Gamepedia wiki
+//********************************************************************
+
+mw.loader.load('https://help.gamepedia.com/index.php?title=MediaWiki:Gadget-multiupload.js&action=raw&ctype=text/javascript');
+
+//**************************************************************************
+// Script by Frietjes to help get rid of the Duplicate Arguments categories
+//**************************************************************************
+mw.loader.load('//en.wikipedia.org/w/index.php?title=User:Frietjes/findargdups.js&action=raw&ctype=text/javascript');

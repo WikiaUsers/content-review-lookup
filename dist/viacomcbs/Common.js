@@ -1,7 +1,3 @@
-window.railWAM = {
-    logPage: "Project:WAM Log",
-    autoLogForUsers: [
-        "CBSBot",
-        "Monstermon"
-        ]
+window.rwaOptions = {
+	headerLink: true
 };

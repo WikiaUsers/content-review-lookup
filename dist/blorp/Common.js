@@ -11,6 +11,6 @@ $(function(){
 	});
 	importArticles({
 		type: "script",
-		articles: ["u:themightyquest.wikia.com:MediaWiki:Tooltip.js"]
+		articles: ["u:octopathtraveler.fandom.com:MediaWiki:Tooltip.js"]
 	});
 });

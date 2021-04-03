@@ -616,6 +616,13 @@ var snowStorm = (new function(window, document) {
 	};
 
 	this.init = function() {
+		if (!mw.config.get('wgVersion').startsWith('1.19.')) {
+			document.querySelectorAll('.WikiaSiteWrapper, .wds-global-footer').forEach(function (container) {
+				container.style.position = 'relative';
+				container.style.zIndex = storm.zIndex + 1;
+			});
+		}
+
 		var i;
 		for(i = 0; i < storm.meltFrameCount; i++) {
 			storm.meltFrames.push(1 - (i / storm.meltFrameCount));

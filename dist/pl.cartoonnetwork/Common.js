@@ -1,21 +1,4 @@
-/* Import */
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:BackToTopButton/code.js', // "Back to top" button
-        'u:dev:Toggler.js',
-        // Standard Edit Summaries
-        'MediaWiki:Common.js/standardeditsummaries.js',
-        // Opisy grup userów w profilu użytkownika 
-        'MediaWiki:Common.js/userRightsIcons.js',
-        'MediaWiki:Quiz.js',
-        'u:dev:Standard_Edit_Summary/code.js',
-        'u:dev:EditIntroButton/code.js',
-        'u:dev:PurgeButton/code.js',
-        'w:c:dev:ReferencePopups/code.js',
-
-    ]
-});
+window.UsernameReplaceSelector = '.insertusername';
 
 function emptyLicenseAlert(form) {
     var msg = "Licencja pliku nie została wybrana.";
@@ -126,7 +109,7 @@ function createCollapseButtons() {
     }
 }
 
-addOnloadHook(createCollapseButtons);
+$(document).ready(createCollapseButtons);
 
 /** Dynamic Navigation Bars (experimental) *************************************
  *
@@ -222,7 +205,7 @@ function createNavigationBarToggleButton() {
     }
 }
 
-addOnloadHook(createNavigationBarToggleButton);
+$(document).ready(createNavigationBarToggleButton);
 
 // **************************************************
 // Experimental javascript countdown timer (Splarka)
@@ -291,7 +274,7 @@ function checktimers() {
         updatetimer(i); //start it up
     }
 }
-addOnloadHook(checktimers);
+$(document).ready(checktimers);
 
 // **************************************************
 //  - end -  Experimental javascript countdown timer
@@ -313,19 +296,4 @@ function catprefix() {
         }
     }
 }
-addOnloadHook(catprefix);
-
-// **************************************************
-//  - end -  Hide namespaces in categories
-// **************************************************
-
-/* Username replace feature
- * Inserts viewing user's name into <span class="insertusername"></span>
- * Put text inside the spans to be viewed by logged out users
- * Originally by [[wikia:User:Splarka|Splarka]], then by [[User:Spang|Spang]],
- * This (jQuery) version by [[wikia:User:Joeyaa]], written to be backwards compatible
- */
-
-if (wgUserName != 'null') {
-    $('.insertusername').html(wgUserName);
-}
+$(document).ready(catprefix);

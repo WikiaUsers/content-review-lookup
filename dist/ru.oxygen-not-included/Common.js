@@ -9,10 +9,6 @@ window.AddRailModule = ['Шаблон:Блоги'];
 // отключаем Rollback
 window.RollbackWikiDisable = true;
 
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
-
 //Разворачивание по клику
 $('.oni-colapsible-button').click(function() {
     $(this).parent().find('.oni-colapsible-body').slideToggle();
@@ -57,20 +53,10 @@ $('.oni-database > .database-list li').click(function() {
     $(this).parents('.oni-database').find('.database-monitor > div[value="' + title + '"]').show();
 });
 
-//Редактор страниц v2.0
-    //Переключение ширины редактора
-$('#cke_toolbar_source_1').append('<label for="full_edit_page"><input type="checkbox" id="full_edit_page">Широкая страница редактора</label>');
-$('#EditPageToolbar').on('change', '#full_edit_page', function() {
-    if ($('#full_edit_page').prop('checked')) $('#WikiaPage').addClass('full-width');
-    else $('#WikiaPage').removeClass('full-width');
-});
-    //Табуляция
-$('textarea[name=wpTextbox1]').attr('onkeydown', `if (event.keyCode === 9)
-    {
-        var v = this.value,
-            s = this.selectionStart,
-            e = this.selectionEnd;
-        this.value = v.substring(0, s) + '    ' + v.substring(e);
-        this.selectionStart = this.selectionEnd = s + 4;
-        return false;
-    }`);
+// Цвета админов в комментариях, код взят с Don't Starve вики
+setInterval(function () {
+	$('.wds-avatar a[href$="TESERACT"]').closest('.Reply, .Reply_body__3woA9').addClass('TESERACT');
+	$('.wds-avatar a[href$="Ksarfax"]').closest('.Reply, .Reply_body__3woA9').addClass('Ksarfax');
+	$('.wds-avatar a[href$="FruitShakeSB"]').closest('.Reply, .Reply_body__3woA9').addClass('FruitShakeSB');
+	$('.wds-avatar a[href$="%D0%9D%D0%B8%D0%B2%D0%B0%D0%BB%D1%8C"]').closest('.Reply, .Reply_body__3woA9').addClass('Nival');
+}, 500 );

@@ -1,4 +1,4 @@
 // ******************
 // Collapsible tables
 // ******************
-importScriptPage('ShowHide/code.js', 'dev');
+//importScriptPage('ShowHide/code.js', 'dev');

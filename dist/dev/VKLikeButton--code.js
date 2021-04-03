@@ -3,7 +3,8 @@
 // <div id="vk_like"></div>
 // data-type: mini/full/button/vertical
 (function() {
-    var debug = $.getUrlVar('debug') || window.vklikedebug;
+    var urlVars = new URLSearchParams(location.search);
+    var debug = urlVars.get('debug') || urlVars.get('debug1') || window.vklikedebug;
     var log = function () { if (debug) return console.log.apply(this, arguments) };
     
     function addButton ($content) {

@@ -1,0 +1,1 @@
+$("#p-Partners").addClass("persistent");

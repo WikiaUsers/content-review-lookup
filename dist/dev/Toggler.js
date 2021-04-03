@@ -142,4 +142,6 @@ function toggleInit() {
         createTogglerLink(togglerElems[i], i);
 }
 
-addOnloadHook(toggleInit);
+window.toggler = toggler;
+
+$(toggleInit);

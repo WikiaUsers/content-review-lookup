@@ -6,6 +6,7 @@ $('body').on('keydown.gks', function (e) {
     switch (document.activeElement.tagName) {
         case 'INPUT':
         case 'TEXTAREA':
+        case 'DIV': // UCP editor - might be better to check for body class .action-edit
             return;        
     }
             location.replace(mw.util.getUrl(mw.config.get('wgPageName'), {action: 'history'}));

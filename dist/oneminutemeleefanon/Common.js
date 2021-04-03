@@ -6,13 +6,126 @@
 
 // Load core from JSON page
 
-$.get(mw.util.wikiScript('load'), {
+/*$.get(mw.util.wikiScript('load'), {
     mode: 'articles',
     articles: 'MediaWiki:Custom-UserTags',
     only: 'styles'
 }, function(d) {
     window.UserTagsJS = JSON.parse(d.replace(/\/\*.*\*\//g, ''));
-});
+});*/
+
+// -------------------
+
+window.UserTagsJS = {
+
+   "modules": {
+
+      "isblocked": true,
+      "autoconfirmed": true,
+
+      "mwGroups": [
+
+         "bannedfromchat",
+         "bot",
+         "checkuser",
+         "rollback",
+         "util"
+
+      ],
+
+      "inactive": {
+         "days": 80,
+         "zeroIsInactive": false
+      },
+
+      "implode": {
+
+         "moderator": [
+            "content-moderator",
+            "threadmoderator",
+            "chatmoderator"
+         ]
+
+      },
+
+      "explode": {
+
+         "sysop": ["bureaucrat"]
+
+      },
+
+      "metafilter": {
+
+         "bureaucrat": "headburo"
+
+      },
+
+      "newuser": {
+         "days": 7,
+         "edits": 15
+      },
+
+      "custom": {
+
+         "Blipeddeeblah": [
+            "founder",
+            "exsysop"
+         ],
+
+         "Withersoul 235": [
+            "headburo",
+            "coder"
+         ],
+
+         "SleepyDragonSushi": ["exsysop"],
+         "BonBooker": ["exsysop"],
+         "Awesome Rowlet and Epic Popplio": ["exsysop"],
+         "Desert Croc": ["exsysop"],
+         "RAYquazaman": ["exsysop"],
+         "John1Thousand": ["exsysop"],
+         "Sharaku Jr.": ["exsysop"],
+         "ImagoDesattrolante": ["exdmod"]
+
+      }
+
+   },
+
+   "tags": {
+      "headburo": {
+         "u": "Head Bureaucrat",
+         "order": 1
+      },
+
+      "bureaucrat":  {"order": 2},
+      "sysop":       {"u": "Administrator", "order": 3},
+
+      "moderator": {
+
+         "u": "Moderator",
+         "order": 4
+
+      },
+
+      "content-moderator":   {"order": 5},
+      "rollback":            {"order": 6},
+      "threadmoderator":     {"order": 7},
+      "chatmoderator":       {"order": 8},
+      "blocked":             {"u": "Banned"},
+
+      "coder":{
+
+         "u": "Wiki Coder",
+         "order": 9
+
+      },
+
+      "exsysop": {"u": "Former Admin"},
+      "exdmod": {"u":"Former Discussions Moderator"}
+
+   }
+
+};
+
 
 // Special tag text for permabanned users
 
@@ -96,7 +209,7 @@ window.MassRenameRevertGroups = [
 window.ajaxRefresh = 30000;
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page over time';
-window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/dev/images/b/ba/Snake_throbber_dark-bg.gif/revision/latest?cb=20140519203615';
+window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/deathbattlefanon/images/d/de/Ajax-loader.gif/revision/latest?cb=20200828094018';
 window.ajaxPages = Array(
     "Special:WikiActivity",
     "Special:WikiActivity/watchlist",

@@ -39,52 +39,49 @@ $( function () {
 		}
 	} );
 } );
- 
 
-/* Actualisation automatique - [[w:c:dev:AjaxRC]] */
-window.AjaxRCRefreshText = 'Actualisation automatique';
-window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
-window.ajaxPages = ["Spécial:Modifications_récentes","Spécial:WikiActivity"];
+/* Stuff for add HideButton/Hide stuff */
 
-/* Replaces {{USERNAME}} with the name of the user browsing the page.
-   Requires copying [[Template:USERNAME]]. */
- 
 $(function() {
-    if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) return;
-    $('span.insertusername').html(mw.config.get('wgUserName'));
+    window.storagePresent = (typeof(localStorage) != 'undefined');
+    window.pageName = wgPageName;
+    
+    addHideButtons();
+    
+    if( window.storagePresent ) {
+		initVisibility();
+	}
 });
- 
-/* End of the {{USERNAME}} replacement */
 
 /* @author Grunny */
 function addHideButtons() {
-	var hidables = getElementsByClass('hidable', null, null);
- 
-	for( var i = 0; i < hidables.length; i++ ) {
-		var box = hidables[i];
-		//var button = box.getElementsByClassName('hidable-button')
-		var button = getElementsByClass('hidable-button', box, 'span');
- 
-		if( button != null && button.length > 0 ) {
-			button = button[0];
- 
-			button.onclick = toggleHidable;
-			button.appendChild( document.createTextNode('[masquer]') );
- 
-            var regex = new RegExp("(^|\\s)" + 'start-hidden' + "(\\s|$)")
-			if( isMatch(regex ,'start-hidden', box) )
-				button.onclick('bypass');
-		}
-	}
+    var hidables = document.querySelectorAll('.hidable');
+
+    if (hidables !== null){
+    	for( var i = 0; i < hidables.length; i++ ) {
+    		var box = hidables[i];
+    		var button = box.querySelector('span.hidable-button');
+     
+    		if( button !== null ) {
+    			button.onclick = toggleHidable;
+    			button.appendChild( document.createTextNode('[masquer]') );
+    
+                var regex = new RegExp("(^|\\s)" + 'start-hidden' + "(\\s|$)")
+    			if( isMatch(regex ,'start-hidden', box) )
+    				button.onclick('bypass');
+    		}
+    	}
+    }
 }
  
 /* @author Grunny */
 function toggleHidable(bypassStorage) {
-	var parent = getParentByClass('hidable', this);
-	var content = getElementsByClass('hidable-content', parent, null);
+	var parent = this.closest('.hidable');
+	
+	var content = parent.querySelectorAll('.hidable-content');
 	var nowShown;
  
-	if( content != null && content.length > 0 ) {
+	if( content !== null && content.length > 0 ) {
 		content = content[0];
  
 		if( content.style.display == 'none' ) {
@@ -100,7 +97,7 @@ function toggleHidable(bypassStorage) {
  
 		if( window.storagePresent && ( typeof( bypassStorage ) == 'undefined' || bypassStorage != 'bypass' ) ) {
 			var page = window.pageName.replace(/\W/g, '_');
-			var items = getElementsByClass('hidable', null, null);
+			var items = document.querySelectorAll('.hidable');
 			var item = -1;
  
 			for( var i = 0; i < items.length; i++ ) {
@@ -127,28 +124,45 @@ function initVisibility() {
 		infoboxToggle();
 	}
  
-	var hidables = getElementsByClass('hidable', null, null);
+    var hidables = document.querySelector('.hidable');
 
-	for(var i = 0; i < hidables.length; i++) {
-		show = localStorage.getItem('hidableshow-' + i  + '_' + page);
-		
-		var content = getElementsByClass('hidable-content', hidables[i], null);
-		var button = getElementsByClass('hidable-button', hidables[i], null);
- 
-		if( show == 'false' ) {
-
-			if( content != null && content.length > 0 &&
-				button != null && button.length > 0 && content[0].style.display != 'none' )
-			{
-				button[0].onclick('bypass');
-			}
-		} else if( show == 'true' ) {
-
-			if( content != null && content.length > 0 &&
-				button != null && button.length > 0 && content[0].style.display == 'none' )
-			{
-				button[0].onclick('bypass');
-			}
-		}
-	}
+    if (hidables !== null){
+        for(var i = 0; i < hidables.length; i++) {
+            var box = hidables[i];
+    		show = localStorage.getItem('hidableshow-' + i  + '_' + page);
+    		
+    		var content = box.querySelector('.hidable-content');
+    		var button = box.querySelector('.hidable-button');
+    
+    		if( show == 'false' ) {
+    			if( content !== null &&	button !== null && content[0].style.display != 'none' )	{
+    				button[0].onclick('bypass');
+    			}
+    		} else if( show == 'true' ) {
+    			if( content !== null && button !== null && content[0].style.display == 'none' )	{
+    				button[0].onclick('bypass');
+    			}
+    		}
+    	}
+    }
 }
+
+function isMatch(regex, className, element) {
+	return regex.test(element.className);
+}
+ 
+
+/* Actualisation automatique - [[w:c:dev:AjaxRC]] */
+/*window.AjaxRCRefreshText = 'Actualisation automatique';
+window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
+window.ajaxPages = ["Spécial:Modifications_récentes","Spécial:WikiActivity"];*/
+
+/* Replaces {{USERNAME}} with the name of the user browsing the page.
+   Requires copying [[Template:USERNAME]]. */
+ 
+$(function() {
+    if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) return;
+    $('span.insertusername').html(mw.config.get('wgUserName'));
+});
+ 
+/* End of the {{USERNAME}} replacement */

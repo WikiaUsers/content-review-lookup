@@ -60,7 +60,7 @@ $('#slider1').click(function(){
 		$('#slider2caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider1caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider2arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider1').removeClass('closed').addClass('animated').animate({ width: "625px" }, "normal", "linear", function() {
+		$('#slider1').removeClass('closed').addClass('animated').animate({ width: "88%" }, "normal", "linear", function() {
 			$('#slider1').removeClass('animated').dequeue();
 			$('#slider1').addClass('opened').addClass('linked');
 			$('#slider2').removeClass('linked');
@@ -72,14 +72,14 @@ $('#slider1').click(function(){
 		$('#slider3caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider1caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider3arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider1').removeClass('closed').addClass('animated').animate({ width: "625px" }, "normal", "linear", function() {
+		$('#slider1').removeClass('closed').addClass('animated').animate({ width: "88%" }, "normal", "linear", function() {
 			$('#slider1').removeClass('animated').dequeue();
 			$('#slider1').addClass('opened').addClass('linked');
 			$('#slider2').removeClass('linked');
 			$('#slider3').removeClass('linked');
 			$('#slider4').removeClass('linked');
 		});
-		$('#slider2').removeClass('closed').addClass('animated').animate({ width: "650px" }, "normal", "linear", function() {
+		$('#slider2').removeClass('closed').addClass('animated').animate({ width: "92%" }, "normal", "linear", function() {
 			$('#slider2').removeClass('animated').dequeue();
 			$('#slider2').addClass('opened');
 		});
@@ -88,18 +88,18 @@ $('#slider1').click(function(){
 		$('#slider4caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider1caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider4arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider1').removeClass('closed').addClass('animated').animate({ width: "625px" }, "normal", "linear", function() {
+		$('#slider1').removeClass('closed').addClass('animated').animate({ width: "88%" }, "normal", "linear", function() {
 			$('#slider1').removeClass('animated').dequeue();
 			$('#slider1').addClass('opened').addClass('linked'); b
 			$('#slider2').removeClass('linked');
 			$('#slider3').removeClass('linked');
 			$('#slider4').removeClass('linked');
 		});
-		$('#slider2').removeClass('closed').addClass('animated').animate({ width: "650px" }, "normal", "linear", function() {
+		$('#slider2').removeClass('closed').addClass('animated').animate({ width: "92%" }, "normal", "linear", function() {
 			$('#slider2').removeClass('animated').dequeue();
 			$('#slider2').addClass('opened');
 		});
-		$('#slider3').removeClass('closed').addClass('animated').animate({ width: "675px" }, "normal", "linear", function() {
+		$('#slider3').removeClass('closed').addClass('animated').animate({ width: "96%" }, "normal", "linear", function() {
 			$('#slider3').removeClass('animated').dequeue();
 			$('#slider3').addClass('opened');
 		});
@@ -120,7 +120,7 @@ $('#slider2').click(function(){
 		$('#slider1caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider2caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider1arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider1').removeClass('opened').addClass('animated').animate({ width: "25px" }, "normal", "linear", function() {
+		$('#slider1').removeClass('opened').addClass('animated').animate({ width: "4%" }, "normal", "linear", function() {
 			$('#slider1').removeClass('animated').dequeue();
 			$('#slider1').addClass('closed').removeClass('linked');
 			$('#slider2').addClass('linked');
@@ -132,7 +132,7 @@ $('#slider2').click(function(){
 		$('#slider3caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider2caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider3arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider2').removeClass('closed').addClass('animated').animate({ width: "650px" }, "normal", "linear", function() {
+		$('#slider2').removeClass('closed').addClass('animated').animate({ width: "92%" }, "normal", "linear", function() {
 			$('#slider2').removeClass('animated').dequeue();
 			$('#slider2').addClass('opened').addClass('linked');
 			$('#slider1').removeClass('linked');
@@ -144,14 +144,14 @@ $('#slider2').click(function(){
 		$('#slider4caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider2caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider4arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider2').removeClass('closed').addClass('animated').animate({ width: "650px" }, "normal", "linear", function() {
+		$('#slider2').removeClass('closed').addClass('animated').animate({ width: "92%" }, "normal", "linear", function() {
 			$('#slider2').removeClass('animated').dequeue();
 			$('#slider2').addClass('opened').addClass('linked');
 			$('#slider1').removeClass('linked');
 			$('#slider3').removeClass('linked');
 			$('#slider4').removeClass('linked');
 		});
-		$('#slider3').removeClass('closed').addClass('animated').animate({ width: "675px" }, "normal", "linear", function() {
+		$('#slider3').removeClass('closed').addClass('animated').animate({ width: "96%" }, "normal", "linear", function() {
 			$('#slider3').removeClass('animated').dequeue();
 			$('#slider3').addClass('opened');
 		});
@@ -172,14 +172,14 @@ $('#slider3').click(function(){
 		$('#slider1caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider3caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider1arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider1').removeClass('opened').addClass('animated').animate({ width: "25px" }, "normal", "linear", function() {
+		$('#slider1').removeClass('opened').addClass('animated').animate({ width: "4%" }, "normal", "linear", function() {
 			$('#slider1').removeClass('animated').dequeue();
 			$('#slider1').addClass('closed').removeClass('linked');
 			$('#slider3').addClass('linked');
 			$('#slider2').removeClass('linked');
 			$('#slider4').removeClass('linked');
 		});
-		$('#slider2').removeClass('opened').addClass('animated').animate({ width: "50px" }, "normal", "linear", function() {
+		$('#slider2').removeClass('opened').addClass('animated').animate({ width: "8%" }, "normal", "linear", function() {
 			$('#slider2').removeClass('animated').dequeue();
 			$('#slider2').addClass('closed');
 		});
@@ -188,7 +188,7 @@ $('#slider3').click(function(){
 		$('#slider2caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider3caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider2arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider2').removeClass('opened').addClass('animated').animate({ width: "50px" }, "normal", "linear", function() {
+		$('#slider2').removeClass('opened').addClass('animated').animate({ width: "8%" }, "normal", "linear", function() {
 			$('#slider2').removeClass('animated').dequeue();
 			$('#slider2').addClass('closed').removeClass('linked');
 			$('#slider3').addClass('linked');
@@ -199,7 +199,7 @@ $('#slider3').click(function(){
 		$('#slider4caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider3caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider4arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider3').removeClass('closed').addClass('animated').animate({ width: "675px" }, "normal", "linear", function() {
+		$('#slider3').removeClass('closed').addClass('animated').animate({ width: "96%" }, "normal", "linear", function() {
 			$('#slider3').removeClass('animated').dequeue();
 			$('#slider3').addClass('opened').addClass('linked');
 			$('#slider1').removeClass('linked');
@@ -223,18 +223,18 @@ $('#slider4').click(function(){
 		$('#slider1caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider4caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider1arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider1').removeClass('opened').addClass('animated').animate({ width: "25px" }, "normal", "linear", function() {
+		$('#slider1').removeClass('opened').addClass('animated').animate({ width: "4%" }, "normal", "linear", function() {
 			$('#slider1').removeClass('animated').dequeue();
 			$('#slider1').addClass('closed').removeClass('linked');
 			$('#slider4').addClass('linked');
 			$('#slider2').removeClass('linked');
 			$('#slider3').removeClass('linked');
 		});
-		$('#slider2').removeClass('opened').addClass('animated').animate({ width: "50px" }, "normal", "linear", function() {
+		$('#slider2').removeClass('opened').addClass('animated').animate({ width: "8%" }, "normal", "linear", function() {
 			$('#slider2').removeClass('animated').dequeue();
 			$('#slider2').addClass('closed');
 		});
-		$('#slider3').removeClass('opened').addClass('animated').animate({ width: "75px" }, "normal", "linear", function() {
+		$('#slider3').removeClass('opened').addClass('animated').animate({ width: "12%" }, "normal", "linear", function() {
 			$('#slider3').removeClass('animated').dequeue();
 			$('#slider3').addClass('closed');
 		});
@@ -243,14 +243,14 @@ $('#slider4').click(function(){
 		$('#slider2caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider4caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider2arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider2').removeClass('opened').addClass('animated').animate({ width: "50px" }, "normal", "linear", function() {
+		$('#slider2').removeClass('opened').addClass('animated').animate({ width: "6%" }, "normal", "linear", function() {
 			$('#slider2').removeClass('animated').dequeue();
 			$('#slider2').addClass('closed').removeClass('linked');
 			$('#slider4').addClass('linked');
 			$('#slider1').removeClass('linked');
 			$('#slider3').removeClass('linked');
 		});
-		$('#slider3').removeClass('opened').addClass('animated').animate({ width: "75px" }, "normal", "linear", function() {
+		$('#slider3').removeClass('opened').addClass('animated').animate({ width: "12%" }, "normal", "linear", function() {
 			$('#slider3').removeClass('animated').dequeue();
 			$('#slider3').addClass('closed');
 		});
@@ -259,7 +259,7 @@ $('#slider4').click(function(){
 		$('#slider3caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider4caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider3arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider3').removeClass('opened').addClass('animated').animate({ width: "75px" }, "normal", "linear", function() {
+		$('#slider3').removeClass('opened').addClass('animated').animate({ width: "12%" }, "normal", "linear", function() {
 			$('#slider3').removeClass('animated').dequeue();
 			$('#slider3').addClass('closed').removeClass('linked');
 			$('#slider4').addClass('linked');
@@ -278,7 +278,7 @@ function autoScroll() {
 		$('#slider1caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider2caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider1arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider1').removeClass('opened').addClass('animated').animate({ width: "25px" }, "normal", "linear", function() {
+		$('#slider1').removeClass('opened').addClass('animated').animate({ width: "4%" }, "normal", "linear", function() {
 			$('#slider1').addClass('closed').removeClass('linked').removeClass('animated').dequeue();
 			$('#slider2').addClass('linked');
 			$('#slider3').removeClass('linked');
@@ -289,7 +289,7 @@ function autoScroll() {
 		$('#slider2caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider3caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider2arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider2').removeClass('opened').addClass('animated').animate({ width: "50px" }, "normal", "linear", function() {
+		$('#slider2').removeClass('opened').addClass('animated').animate({ width: "8%" }, "normal", "linear", function() {
 			$('#slider2').addClass('closed').removeClass('linked').removeClass('animated').dequeue();
 			$('#slider3').addClass('linked');
 			$('#slider4').removeClass('linked');
@@ -300,7 +300,7 @@ function autoScroll() {
 		$('#slider3caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider4caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider3arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider3').removeClass('opened').addClass('animated').animate({ width: "75px" }, "normal", "linear", function() {
+		$('#slider3').removeClass('opened').addClass('animated').animate({ width: "12%" }, "normal", "linear", function() {
 			$('#slider3').addClass('closed').removeClass('linked').removeClass('animated').dequeue();
 			$('#slider4').addClass('linked');
 			$('#slider2').removeClass('linked');
@@ -311,21 +311,21 @@ function autoScroll() {
 		$('#slider4caption').css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 200);
 		$('#slider1caption').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider4arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
-		$('#slider4').removeClass('opened').addClass('animated').animate({ width: "698px" }, "normal", "linear", function() {
+		$('#slider4').removeClass('opened').addClass('animated').animate({ width: "100%" }, "normal", "linear", function() {
 			$('#slider4').removeClass('linked').removeClass('animated').dequeue();
 			$('#slider1').addClass('linked');
 			$('#slider2').removeClass('linked');
 			$('#slider3').removeClass('linked');
 		});
-		$('#slider3').removeClass('closed').addClass('animated').animate({ width: "675px" }, "normal", "linear", function() {
+		$('#slider3').removeClass('closed').addClass('animated').animate({ width: "96%" }, "normal", "linear", function() {
 			$('#slider3').removeClass('animated').dequeue();
 			$('#slider3').addClass('opened');
 		});
-		$('#slider2').removeClass('closed').addClass('animated').animate({ width: "650px" }, "normal", "linear", function() {
+		$('#slider2').removeClass('closed').addClass('animated').animate({ width: "92%" }, "normal", "linear", function() {
 			$('#slider2').removeClass('animated').dequeue();
 			$('#slider2').addClass('opened');
 		});
-		$('#slider1').removeClass('closed').addClass('animated').animate({ width: "625px" }, "normal", "linear", function() {
+		$('#slider1').removeClass('closed').addClass('animated').animate({ width: "88%" }, "normal", "linear", function() {
 			$('#slider1').removeClass('animated').dequeue();
 			$('#slider1').addClass('opened');
 		});
@@ -359,6 +359,42 @@ window.railWAM = {
 /* 
  ####################################
  # Рейтинг WAM — конец
+ ####################################
+*/
+
+
+/* 
+ ####################################
+ # Заглавная страница/Меню — начало
+ ####################################
+*/
+
+/****************************************/
+/* sliders using jquery by User:Tierrie */
+/****************************************/
+//wsl.loadScript("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js");
+ 
+mw.loader.using( ['jquery.ui.tabs'], function() {
+$(function() {
+  var $tabs = $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100} } );
+  $("[class^=portal_sliderlink]").click(function() { // bind click event to link
+    $tabs.tabs('select', this.className.replace("portal_sliderlink_", ""));
+    return false;
+  });
+  $('#portal_next').click(function() {
+    $tabs.tabs('select', ($tabs.tabs('option', 'selected') == ($tabs.tabs('length'))-1) ? 0 : $tabs.tabs('option', 'selected') + 1 ); // switch to next tab
+    return false;
+  });
+  $('#portal_prev').click(function() { // bind click event to link
+    $tabs.tabs('select', ($tabs.tabs('option', 'selected') == 0) ? ($tabs.tabs('length')-1) : $tabs.tabs('option', 'selected') - 1 ); // switch to previous tab
+    return false;
+  });
+});
+} );
+
+/* 
+ ####################################
+ # Заглавная страница/Меню — конец
  ####################################
 */
 

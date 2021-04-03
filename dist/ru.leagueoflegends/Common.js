@@ -59,9 +59,14 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
     };
 /* End of mw.loader.using callback */
 });
+
+/**
+ * Добавляет сообщение о закрытии Вики на Рельс 
+*/
+window.AddRailModule = [{prepend: true}];
  
 /* Custom Tooltips for use with the Tooltips/code.js */
-var tooltips_list = [
+window.tooltips_list = [
     {   classname: 'ability-icon',
         parse: '{'+'{Tooltip/Ability|champion=<#champion#>|ability=<#ability#>}}'},
     {   classname: 'buff-icon', 
@@ -108,7 +113,7 @@ var tooltips_list = [
         parse: '{'+'{Tooltip/Sandbox|<#v1#>|<#v2#>|<#v3#>|<#v4#>|<#v5#>|<#v6#>|v7=<#v7#>|v8=<#v8#>|v9=<#v9#>|v10=<#v10#>|v11=<#v11#>|v12=<#v12#>}}'}
 ];
  
-var tooltips_config = {
+window.tooltips_config = {
     offsetX: 20,
     offsetY: 20,
     waitForImages: true,

@@ -4,11 +4,10 @@
 **/
 (function() {
     'use strict';
-    var results, details, i18n;
+    var results, i18n, isUCP = mw.config.get('wgVersion') !== '1.19.24';
 
     function searchMap(article) {
-        var detail = details[article.id],
-            description = detail.abstract;
+        var description = article.abstract;
         if (description.indexOf(article.title) === 0) {
             description = description.slice(article.title.length);
         } else {
@@ -28,7 +27,7 @@
                     title: article.title
                 }).append(
                     $('<img>', {
-                        src: detail.thumbnail
+                        src: article.thumbnail
                     })
                 )
             ),
@@ -63,7 +62,7 @@
             namespace = (data.namespace || '0').split(',').map(Number),
             res = results.filter(function(r) {
                 return namespace.indexOf(r.ns) !== -1 &&
-                       (!isSearch || details[r.id].thumbnail);
+                       (!isSearch || r.thumbnail);
             }).slice(0, limit);
         if (isSearch) {
             $this.html(
@@ -88,24 +87,9 @@
         }
     }
 
-    function load() {
-        var promise = $.Deferred();
-        $.get('/api/v1/Articles/Top', function(res) {
-            results = res.items;
-            $.get('/api/v1/Articles/Details', {
-                ids: results.map(function(article) {
-                         return article.id;
-                     }).join(',')
-            }, function(deets) {
-                details = deets.items;
-                promise.resolve();
-            });
-        });
-        return promise;
-    }
-
-    function init(i18nd) {
+    function init(i18nd, data) {
         i18n = i18nd;
+        results = data[0].items;
         mw.hook('wikipage.content').add(function($content) {
             $content
                 .find('#top-articles:not(.loaded), .TopArticles:not(.loaded)')
@@ -116,7 +100,9 @@
     mw.hook('dev.i18n').add(function(i18no) {
         $.when(
             i18no.loadMessages('TopArticles'),
-            load()
+            $.get(mw.config.get('wgScriptPath') + '/api/v1/Articles/Top', {
+                expand: 1
+            })
         ).then(init);
     });
 

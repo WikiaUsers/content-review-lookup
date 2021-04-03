@@ -329,7 +329,7 @@ window.ajaxPages = [
     'Special:Watchlist',
     'Special:Statistics',
     'Special:ListFiles',
-    'Forum:The Impala'
+    'Forum:The Impala',
     'Category:Speedy_deletion_candidates',
     'Category:Speedy_move_candidates'
 ];

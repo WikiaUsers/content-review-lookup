@@ -1,3 +1,13 @@
+// dev:AutoCreateUserPages.js
+window.AutoCreateUserPagesConfig = {
+            content: {
+             2: '{{sub'+'st:newuser}}',
+             3: '{{sub'+'st:welcome}}',
+             1202: false
+},
+            summary: 'Script: Creating profile and talkpage on first edit'
+};
+
 // onload stuff
 var firstRun = true;
 
@@ -252,11 +262,11 @@ if (mwCustomEditButtons) {
      "sampleText": "Insert comment here"};
 }
 
+/**** UploadInFile ****/
+window.needsLicense = true;
+
 // AjaxRC
 window.ajaxPages = ["Special:WikiActivity","Special:Log","Special:RecentChanges"];
 window.ajaxIndicator = 'https://images.wikia.nocookie.net/__cb20100609110347/software/images/a/a9/Indicator.gif';
 window.AjaxRCRefreshText = 'Auto Refresh';
 window.AjaxRCRefreshHoverText = 'Silently refreshes the contents of this page every 60 seconds without requiring a full reload';
-
-/**** UploadInFile ****/
-window.needsLicense = true;

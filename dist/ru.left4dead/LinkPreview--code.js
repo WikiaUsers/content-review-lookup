@@ -5,7 +5,8 @@
 /* classes: main: npage-preview, image not found: npage-preview-noimage */
 /* img: <img>, text: <div> */
 (function wrapper ($) {
-    var Settings = window.pPreview || {};
+    var Settings = window.pPreview || {},
+        mwc = mw.config.get(['wgScriptPath', 'wgSassParams', 'wgArticlePath']);
     Settings.debug = $.getUrlVar('debug') || (Settings.debug !== undefined ? Settings.debug : false);
 
     // killswitch
@@ -24,7 +25,7 @@
     var loc = {lefts: 5, tops: 5}; //left: x, top: y, lefts: left-shift, clientx
     var currentEl = {}; //{href, ?data}
     //var api = new mw.Api();
-    var apiUri = new mw.Uri({path: window.wgScriptPath + '/api.php'});
+    var apiUri = new mw.Uri({path: mwc.wgScriptPath + '/api.php'});
     //exports
     Settings.wrapper = wrapper;
     Settings.context = this;
@@ -152,7 +153,7 @@
         //run once
         //dump sass params
         var sasses = '';
-        $.each(window.wgSassParams, function(k, v) {
+        $.each(mwc.wgSassParams, function(k, v) {
             sasses = sasses + '--sass-' + k + ':' + v + ';\n';
         });//each sassparam
         if (sasses.length) {
@@ -325,7 +326,7 @@
             try {
                 h.truepath = decodeURIComponent(h.pathname.replace(Settings.RegExp.wiki, ''));
                 h.interwiki = h.path.split('/wiki/')[0];
-                h.islocal = window.wgArticlePath.split('/wiki/')[0] === h.interwiki;
+                h.islocal = mwc.wgArticlePath.split('/wiki/')[0] === h.interwiki;
             }
             catch (e) {
                 h = undefined;

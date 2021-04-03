@@ -1,4 +1,4 @@
-/* Saints Row Wiki Maps, by 452. v1.09
+/* Saints Row Wiki Maps, by 452. v1.0.10
 Created in response to Wikia Maps being abandoned with no updates or fixes in over 6 months.
 Of course, the irony is that hardly anyone uses this, and I have gone years between updates because of it.
 The difference is that I am one person, not a multi-million dollar corporation.
@@ -60,6 +60,7 @@ Road map for v1.0:
  * v0.34 Save all dirty data: Done! (2015-09-22)
 
 Known issues:
+ * Originally, the map was recentered when clicking a pin, but I've changed this so it only recenters when clicking the map.  However, this now means that the pin info flipcheck is performed before the image is loaded, sometimes resulting in the top of the pin info being outside the top of the screen.  To-do: attach a load event to the image.
  * 1 feature delayed: map creation interface to be implemented later (see below)
  * Deleting categories probably does weird things with CatOrder
  * Detect escape key to cancel any current action
@@ -77,17 +78,19 @@ Known issues:
 
 
 Solved issues:
- * v1.01 Pin icons now update when default category icon is changed - fixed to loop through all pins in that category to check if they use the default pin and update.
- * v1.02 Map now resizes when browser is resized - fixed to recalculate width of scrolling div.
- * v1.03 Pins in corners info obscured - fixed with padding div
- * v1.04 fixed save order, wipe dirty array on save
- * v1.05 fixed defaults overwriting changes, fixed cursor, positioning issue
- * v1.06 fixed new pin positioning issue, coloured errors
- * v1.07 parentheses added to valid characters, new edittoken obtained when old one expires
- * v1.08 removed zoom controls in Firefox, because Firefox sucks. (See "Known issues")
- * v1.09 warn when leaving without saving
+ * v1.0.1 Pin icons now update when default category icon is changed - fixed to loop through all pins in that category to check if they use the default pin and update.
+ * v1.0.2 Map now resizes when browser is resized - fixed to recalculate width of scrolling div.
+ * v1.0.3 Pins in corners info obscured - fixed with padding div
+ * v1.0.4 fixed save order, wipe dirty array on save
+ * v1.0.5 fixed defaults overwriting changes, fixed cursor, positioning issue
+ * v1.0.6 fixed new pin positioning issue, coloured errors
+ * v1.0.7 parentheses added to valid characters, new edittoken obtained when old one expires
+ * v1.0.8 removed zoom controls in Firefox, because Firefox sucks. (See "Known issues")
+ * v1.0.9 warn when leaving without saving
+ * v1.0.10 Resize height on resize, centers correctly after resize, doesn't recenter on pin click, scrolls to map top on click
 
 * Fixed: When you display a cat hidden by default, then open and close the cat editor, the cat list reset the cat to hidden.  Bug originally introduced in v0.28/29.  Cause was renaming poorly named variables, and a missed variable rename.  
+
 
 v2.0 will include most suggestions I've made to Wikia, which are general usability improvements.
 
@@ -133,10 +136,10 @@ function createContainer() {
     .append(
         $("<div>", { id:"Progress", title:"Loading status" })
     ).append(
-      $("<div>", {
+      $("<button>", {
         id:"SaveButton",
         title:"Save changes",
-        class:"wikia-menu-button MapControls",
+        class:"MapControls",
         html:"Save"
       }).hover( function() {
         $("#MapInfo").html("Click to save");
@@ -201,10 +204,10 @@ function createContainer() {
         });
       })
     ).append(
-      $("<div>", {
+      $("<button>", {
         id:"ZoomOut",
         title:"Zoom Out",
-        class:"wikia-menu-button MapControls",
+        class:"MapControls",
         html:" Z- "
       }).hover( function() {
         $("#MapInfo").html("Click to zoom out")
@@ -220,10 +223,10 @@ function createContainer() {
         class:"MapControls",
       })
     ).append(
-      $("<div>", {
+      $("<button>", {
         id:"ZoomIn",
         title:"Zoom In",
-        class:"wikia-menu-button MapControls",
+        class:"MapControls",
         html:" Z+ "
       }).hover( function() {
         $("#MapInfo").html("Click to zoom in")
@@ -233,10 +236,10 @@ function createContainer() {
         zoom(1);
       })
     ).append(
-      $("<div>", {
+      $("<button>", {
         id:"NewPin",
         title:"New Pin",
-        class:"wikia-menu-button MapControls",
+        class:"MapControls",
         html:$("<img>", { src:"https://vignette.wikia.nocookie.net/saintsrow/images/5/5e/Ui_map_marker.png" })
       }).hover( function() {
         if ($("#ClickLayer").size()) $("#MapInfo").html("Click to cancel new pin placement");
@@ -325,6 +328,7 @@ function createContainer() {
   );
 }
 function reCenter() {
+  $(window).scrollTop($("#SRWmap").offset().top-60);
   $("#MapScroll").scrollLeft(SRW.Map.padding+Math.round(SRW.Map.centerX*getZoom())-(SRW.Map.viewWidth/2));
   $("#MapScroll").scrollTop(SRW.Map.padding+Math.round(SRW.Map.centerY*getZoom())-(SRW.Map.viewHeight/2));
 }
@@ -338,16 +342,16 @@ function updateZoom() {
   if (SRW.Map.zoomLevel == 0) $("#ZoomOut").addClass("noCursor"); else $("#ZoomOut").removeClass("noCursor");
   if (SRW.Map.zoomLevel == SRW.Map.zoomLevels) $("#ZoomIn").addClass("noCursor"); else $("#ZoomIn").removeClass("noCursor");
 }
-function zoom(which, noCenter) {
+function zoom(crement, noCenter) {
   if(!noCenter) SRW.Map.setCenter();
   if (navigator.userAgent.indexOf("Firefox") != -1) {  //temp fix because firefox sucks
-    which = SRW.Map.zoomLevels; 
+    crement = 0; 
     $("#ZoomIn").remove();
     $("#ZoomOut").remove();
     $("#ZoomLevel").remove();
   }
 
-  SRW.Map.zoomLevel += which;
+  SRW.Map.zoomLevel += crement;
   if (SRW.Map.zoomLevel < 0) SRW.Map.zoomLevel = 0;
   if (SRW.Map.zoomLevel > SRW.Map.zoomLevels) SRW.Map.zoomLevel = SRW.Map.zoomLevels;
   $("#MapZoom").css("zoom", getZoom());
@@ -375,7 +379,8 @@ function dirty(what, which, where) {
   SRW.Map.dirty[what][which][where] = (SRW[what][which][where]+"").split("/saintsrow/images/").pop();
 }
 
-function Map(params) {
+function SRWMap(params) {
+
   //Map|name|5/55/Stilwater_SR1.png|3000|3406
   vars = ["name", "image", "width", "height", "small", "viewWidth", "viewHeight", "centerX", "centerY", "full"];
   for(i in vars) this[vars[i]] = "";
@@ -400,7 +405,7 @@ function Map(params) {
     this.setval("height", params, 1);
 
     this.image = this.filePrefix+this.image;
-    this.small = this.image+"/revision/latest/scale-to-width-down/"+$(".WikiaArticle").width();
+    this.small = this.image+"/revision/latest/scale-to-width-down/"+Math.floor($(".WikiaArticle").width());
     this.centerX=this.width/2;
     this.centerY=this.height/2
     this.clean();
@@ -534,9 +539,9 @@ function editCats() {
   $("#MapScroll").append(
     $("<div>", {id:"CatEditBox"})
     .append(
-      $("<div>", {
+      $("<button>", {
         id:"CatEditClose",
-        class:"PinButton wikia-menu-button",
+        class:"PinButton",
         title:"Close category editor",
         html:"close"
       }).bind("click", function(){
@@ -554,9 +559,9 @@ function editCats() {
     )
     .append($("<div>", {id:"CatEditList", style:"max-height:"+Math.floor($("#MapScroll").height()*0.80)+"px" }) )
     .append(
-      $("<div>", {
+      $("<button>", {
         id:"CatEditNew",
-        class:"PinButton wikia-menu-button",
+        class:"PinButton",
         title:"New Category",
         html:"new"
       }).bind("click", function() {
@@ -571,9 +576,9 @@ function editCats() {
       })
     )
     .append(
-      $("<div>", {
+      $("<button>", {
         id:"CatEditDone",
-        class:"PinButton wikia-menu-button",
+        class:"PinButton",
         title:"Validate changes",
         html:"validate"
       }).bind("click", function() {
@@ -727,7 +732,7 @@ function showEditCat(CatID) {
     .append(
       $("<div>", {
         id:"del"+CatID,
-        class:"DelButton PinButton wikia-menu-button",
+        class:"DelButton PinButton ",
         title:"Delete category",
         html:"X"
       }).attr("for",CatID)
@@ -792,9 +797,9 @@ function showCats(expand) {
     .append($("<label>").attr("for","CatBoxTitle").attr("title","Click to display categories") )
     .append($("<input>", { type:"checkbox", id:"CatBoxTitle" }).prop("checked", expand) )
     .append(
-      $("<div>", {
+      $("<button>", {
         id:"CatEdit",
-        class:"PinButton wikia-menu-button",
+        class:"PinButton",
         title:"Edit categories",
         html:"edit"
       }).hover( function() {
@@ -868,8 +873,8 @@ function pinclick(target) {
     return;
   }
   $("#PinInfo").remove();
-  SRW.Map.setCenter($(target).position().left, $(target).position().top, 1);
-  reCenter();
+//  SRW.Map.setCenter($(target).position().left, $(target).position().top, 1);
+//  reCenter();
 
   pin = SRW.Pins[$(target).attr("id")];
 
@@ -904,9 +909,9 @@ function pinclick(target) {
         })
       ).append(
         $("<div>").append(
-          $("<div>", {
+          $("<button>", {
             id:"PinEdit",
-            class:"PinButton wikia-menu-button",
+            class:"PinButton",
             html:"edit"
           }).attr("for", pin.ID)
           .bind('click', function() {
@@ -956,9 +961,9 @@ function pinclick(target) {
               )
 
             ).append(
-              $("<div>", {
+              $("<button>", {
                 id:"PinEditDone",
-                class:"PinButton wikia-menu-button",
+                class:"PinButton",
                 title:"Validate changes",
                 html:"validate"
               }).bind("click", function() {
@@ -1141,9 +1146,9 @@ function pinclick(target) {
                 $("#PinEdit").removeClass("pending");
               })
             ).append(
-              $("<div>", {
+              $("<button>", {
                 id:"PinEditDelete",
-                class:"PinButton wikia-menu-button",
+                class:"PinButton",
                 title:"Delete pin",
                 html:"delete pin"
               }).attr("for",pin.ID)
@@ -1171,10 +1176,11 @@ function pinclick(target) {
               )
             }
             $("#option"+SRW.Pins[pin.ID].cats[0]).prop("selected", true);
+            flipCheck();
           })
         )
-//          .append( $("<div>", { id:"PinClone", class:"PinButton wikia-menu-button", html:"clone" }) )
-//          .append( $("<div>", { id:"PinMove",  class:"PinButton wikia-menu-button", html:"move"  }) )
+//          .append( $("<button>", { id:"PinClone", class:"PinButton", html:"clone" }) )
+//          .append( $("<button>", { id:"PinMove",  class:"PinButton", html:"move"  }) )
       )
     )
   );
@@ -1220,7 +1226,7 @@ function parseData(data) {
 
     if (params.ID == "Map") {
 
-      SRW.Map = new Map(params);
+      SRW.Map = new SRWMap(params);
 
     } else if (params.ID.substr(0,3) == "Cat") {
 
@@ -1266,8 +1272,8 @@ function loadData() {
 }
 function readyStateChanged() {
   if (document.readyState == "complete") {
-    SRW.Map.load("full");
-    console.log("readyState = complete");
+    if (!$("#MapFull").length) SRW.Map.load("full");
+    console.log("SRWMaps - readyState = complete");
   }
 }
 function afterInit() {
@@ -1294,7 +1300,7 @@ function afterInit() {
 
 $(function() {
   SRW = {Map:{}, Cats:{}, Pins:{}, CatOrder:[]};
-  console.log("script init 1.09");
+  console.log("script init 1.0.10");
   $(".page-header h1").html($(".page-header h1").html().replace("Saints Row Wiki:Maps/","Map:"))
   if (wgPageName == $("#SRWmap").attr("title")) $("#WikiaArticle").css("margin",0);
 
@@ -1308,9 +1314,17 @@ $(function() {
   createContainer();
   loadData();
 
-  $( window ).resize(function() {
-    $("#MapScroll").width($(".WikiaArticle").width()).height($(".WikiaArticle").width()*3/4);
+  $(window).on("resize", function() {
+    $("#MapScroll").width(Math.round($(".WikiaArticle").width()))
+//    $("#MapScroll").height(Math.round($(".WikiaArticle").width()*3/4));
+//    if ($("#MapScroll").height() > $(window).height() - 150) 
+    $("#MapScroll").height(Math.round($(window).height()- 120));
+
+    SRW.Map.viewWidth  = $("#MapScroll").prop("clientWidth");
+    SRW.Map.viewHeight = $("#MapScroll").prop("clientHeight");
+    zoom(0); //getzoom() changes when resized
+
     $("#CatEditList").css({"max-height":Math.floor($("#MapScroll").height()*0.80)+"px" });
   });
-  window.onbeforeunload = function() {  if(  $("#SRWmap").hasClass("dirty")) return ''; }
+  $(window).on("beforeunload", function() {  if(  $("#SRWmap").hasClass("dirty")) return ''; });
 });

@@ -1,10 +1,10 @@
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:RevealAnonIP/usercode.js',
-        'u:dev:ShowUserGroups.js',
-        'u:dev:UserAccountAge/code2.js',
-        'u:dev:ViewRemoved/code.js',
-        'u:dev:WHAM/code.2.js',
+        'u:dev:MediaWiki:RevealAnonIP/usercode.js',
+        'u:dev:MediaWiki:ShowUserGroups.js',
+        'u:dev:MediaWiki:UserAccountAge/code2.js',
+        'u:dev:MediaWiki:ViewRemoved/code.js',
+        'u:dev:MediaWiki:WHAM/code.2.js',
     ],
 });/**/

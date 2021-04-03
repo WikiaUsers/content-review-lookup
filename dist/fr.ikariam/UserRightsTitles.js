@@ -1,1 +1,0 @@
-#REDIRECTION [[MediaWiki:TitresDroitsUtilisateur.js]]

@@ -12,10 +12,14 @@
  * @todo V4+: Inline modules, comma decimal separator, scheduled WAM logging, condense timeLeft fxn, graph stats
  */
 
-require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
+(function (window, $, mw) {
     
     'use strict';
-    
+
+    // Don't run on the UCP (yet)
+    if (mw.config.get('wgVersion') !== '1.19.24')
+        return;
+
     // Import CSS
     window.importArticle(
         {
@@ -4032,4 +4036,4 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         
     });
         
-});
+})(window, jQuery, mediaWiki);

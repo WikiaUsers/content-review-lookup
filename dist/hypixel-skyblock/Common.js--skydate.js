@@ -31,7 +31,7 @@
 				$(this).html(event.strftime('%-d days %H:%M:%S'));
 			}
 			else if(curDate >= date && curDate <= endDate) {
-				$(this).html("ACTIVE");
+				$(this).html("<span class='skydate-countdown-active'>ACTIVE</span>");
 			}
 			else if(curDate > endDate) {
 				// Restart
@@ -45,8 +45,44 @@
 			}
 			})
 			.on('finish.countdown', function(){
-				$(this).html("ACTIVE");
+				$(this).html("<span class='skydate-countdown-active'>ACTIVE</span>");
 			})
+		});
+		$(".skydate-clock").each(function(){
+			var clockCont = $(this).show(); // Hidden by default to show awkward text before script runs, so make sure to show it
+			// Fields
+			var cont = {
+				h24:".hour24", h12:".hour12",
+				min:".minute", minAct:".minute-actual",
+				ampm:".ampm", 
+				day:".day", dayOrd:".day-ordinal",
+				season:".season", month:".month",
+				year:".year",
+			};
+			Object.keys(cont).forEach(function(key){ cont[key] = clockCont.find(cont[key]); });
+			
+			// Update function
+			const setCurrentDate = function(){
+				var skyDate = new SkyDate();
+				
+				// Time
+				cont["h24"].html( skyDate.hour.toString().padStart(2, '0') );
+				cont["h12"].html( (skyDate.hour%12===0 ? 12 : skyDate.hour%12).toString().padStart(2, '0') );
+				// In-game skyblock time only shows minutes rounded to the 10th place
+				cont["min"].html( (Math.floor(skyDate.minute/10)*10).toString().padStart(2, '0') );
+				cont["minAct"].html( skyDate.minute.toString().padStart(2, '0') );
+				cont["ampm"].html( skyDate.getAmPm() );
+				
+				// Date
+				cont["day"].html(skyDate.day);
+				cont["dayOrd"].html(skyDate.getDayAsOrdinal());
+				cont["season"].html(skyDate.getMonthName());
+				cont["month"].html(skyDate.month+1);
+				cont["year"].html(skyDate.year);
+			};
+			
+			setCurrentDate();
+			setInterval(setCurrentDate, 500); // Updates every 0.5 seconds since skyblock minutes are actually shorter than irl seconds
 		});
 	}
 
@@ -56,10 +92,10 @@
 	const MILLISECOND_TO_MONTH_MULTI = 1 / (1000 * 60 * 60 * 24 * DAYS_IN_SKY_MONTH);
 	const MILLISECOND_TO_YEAR_MULTI = 1 / (1000 * 60 * 60 * 24 * DAYS_IN_SKY_MONTH * 12);
 	const COMPARE_BASE = {
-		IRL_DATE: new Date("20 Dec 2019 18:55:00 GMT"), // Sky Date: Late Spring 2, Year 38, 00:00 (12:00 am)
-		SKY_YEAR: 38,
-		SKY_MONTH: 2,
-		SKY_DAY: 2,
+		IRL_DATE: new Date(1560275700000), // Sky Date: Spring 1, Year 1, 00:00 (12:00 am)
+		SKY_YEAR: 1,
+		SKY_MONTH: 0,
+		SKY_DAY: 1,
 		SKY_HOUR: 0,
 		SKY_MINUTE: 0,
 	};
@@ -127,7 +163,8 @@
 			var leftovers = skyblockMinuteBetween; var divBy = 60*24*DAYS_IN_SKY_MONTH*12;
 			this.year = COMPARE_BASE.SKY_YEAR + Math.floor(leftovers / divBy);
 			leftovers = leftovers % divBy; divBy = 60*24*DAYS_IN_SKY_MONTH;
-			this.month = COMPARE_BASE.SKY_MONTH + Math.floor(leftovers / divBy);
+			this.month = (COMPARE_BASE.SKY_MONTH + Math.floor(leftovers / divBy));
+			if(this.month==12) { this.month = 0; this.year++; }
 			leftovers = leftovers % divBy; divBy = 60*24;
 			this.day = COMPARE_BASE.SKY_DAY + Math.floor(leftovers / divBy);
 			leftovers = leftovers % divBy; divBy = 60;
@@ -191,6 +228,14 @@
 		
 		SkyDate.prototype.getMonthName = function() {
 			return SkyDate.getFullMonthName(this.month);
+		}
+		
+		SkyDate.prototype.getDayAsOrdinal = function() {
+			return this._toOrdinal(this.day);
+		}
+		
+		SkyDate.prototype.getAmPm = function() {
+			return this.hour < 12 ? "am" : "pm";
 		}
 		
 		SkyDate.prototype._toOrdinal = function(num) {

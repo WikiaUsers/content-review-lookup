@@ -1,19 +1,21 @@
 //<nowiki> - Attempting to cancel parsing
 //User Page Tabs
+/*
 mediaWiki.loader.using('mediawiki.util', function() {
     "use strict";
     jQuery(function($) {
-        var $tabs = $('#WikiaUserPagesHeader ul.tabs');
+        var $tabs = $('#userProfileApp ul.user-profile-navigation');
         if (!$tabs.length) return;
         var newTabs = {
             'Sandbox': '/Sandbox',
-    };
-        var name = $('#UserProfileMasthead .masthead-info hgroup > h1');
+        };
+        var name = $('#userProfileApp .user-identity-header h1');
         if (!name.length) return;
         name = name.text();
         var tabs = document.createDocumentFragment(), li, a;
         for (var tab in newTabs) {
             li = document.createElement('li');
+			li.classList.add("user-profile-navigation__link","false");
             a = document.createElement('a');
             a.title = 'User:' + name + newTabs[tab];
             a.href = mw.util.wikiGetlink(a.title);
@@ -24,7 +26,7 @@ mediaWiki.loader.using('mediawiki.util', function() {
         $tabs.append(tabs);
     });
 });
-
+*/
 if (mw.config.get('wgCanonicalNamespace') == 'Thread') {
 	if ($('.msg-title > a').text().indexOf('[Vote]') > -1) {
 		var s= $('<div class="votebutton"><input type="button" value="Support" onclick="vote(1)"/></div>');

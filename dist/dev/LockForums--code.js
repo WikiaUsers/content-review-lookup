@@ -5,7 +5,7 @@
  * @author [[User:Spottra]]
  * @author [[User:DarthKitty]]
  */
-require(['jquery', 'mw'], function ($, mw) {
+;(function ($, mw) {
     'use strict';
 
     // Set up default config options if custom ones haven't been supplied.
@@ -171,4 +171,4 @@ require(['jquery', 'mw'], function ($, mw) {
             $thread.before($banner);
         }
     });
-});
+})(window.jQuery, window.mediaWiki);

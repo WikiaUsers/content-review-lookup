@@ -1,8 +1,11 @@
 /* Неактивные участники спустя 3 месяца */
 window.InactiveUsers = {
     months: 3,
-    text: 'НЕАКТИВЕН'
+    text: 'Неактивен'
 };
+
+/* Кнопка «Наверх» */
+window.BackToTopModern = true;
 
 /* Слайдер */
 mw.loader.using( ['jquery.ui.tabs'], function() {
@@ -23,6 +26,26 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
             return false;
         });
     });
+});
+
+/* Иконки */
+$(function() {
+    if ( mw.config.get( 'wgVersion' ) !== '1.19.24' && $( '#title-eraicons' ).length ) {
+        $( '.page-header__contribution > div' ).first().append( $( '#title-eraicons' ).show() );
+    } else if ( $( '.wds-community-header' ).length ) {
+		$( '#PageHeader' ).prepend(
+		$( '#icons' ).attr( 'style', 'position: absolute; right: 70px;' )
+	);
+	} else {
+		$( '.WikiaPageHeader' ).append( $( '#icons' ) );
+		$( '#icons' ).css( { 'position' : 'absolute', 'right' : '5.1em', 'bottom' : '-2em' } ).show();
+}
+});
+
+/* Делает активной последнюю вкладку панели */
+$(document).ready(function () {
+    $('.pi-theme-lastpanel .pi-section-tab.pi-section-active, .pi-theme-lastpanel .pi-section-content.pi-section-active').removeClass('pi-section-active')
+    $('.pi-theme-lastpanel .pi-section-tab:last-child, .pi-theme-lastpanel .pi-section-content:last-child').addClass('pi-section-active')
 });
 
 /* Добавление кнопки викификатора */

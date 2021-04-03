@@ -1,25 +1,38 @@
-$(function() {
 
-function addAllOfTheThings(u, t) {
-  var icons = new iconList(u, t);
-  var tags = new tagList(u, t);
+if (typeof debug452 == "function") debug452("start of usericons");
+
+window.UserIconsInit = function(source) {
+  if (typeof debug452 == "function") debug452("UserIconsInit - from "+source);
+  if ($(".withUserIcons").length) { // Only add it ''once''
+    if (typeof debug452 == "function") debug452("UserIconsInit - already added");
+    $('.WikiaPage').off('DOMNodeInserted');
+    return;  
+  }
+  var currentuser = $('.user-identity-header h1').html(); //get current userpage
+  var icontarget = ".user-identity-header__actions";
+  var tagtarget = ".user-identity-header__attributes";
+
+  if (typeof currentuser  == "undefined" || !$(icontarget).length || !$(tagtarget).length ) return; //Run on user pages only
+  $("#userProfileApp").addClass("withUserIcons");
+  if (typeof debug452 == "function") debug452("UserIconsInit continue - from "+source); 
+
+  var icons = new iconList(currentuser, icontarget);
+  var tags = new tagList(currentuser, tagtarget);
 
 /*** Add icons. ***/
   icons.add("452", "UltorSpray", "creating this usericon system");
-  icons.add("Erewon", "Photo", "uploading 900+ screenshots in one month");
   icons.add("GlitchBot", "Cid", "being a bot");
   icons.add("TheMoonLightman", "Gold", "adding mission references to character pages");
   icons.add("TheMoonLightman", "Gold", "adding screenshots of all secret areas");
   icons.add("TheMoonLightman", "Photo", "creating vehicle gallery of one of every vehicle from the same angle in Saints Row IV");
   icons.add("TheMoonLightman", "Satchel", "figuring out how to get 10 Satchel Charges");
-  icons.add("Danthepest", "Photo", "being DanTheAwesomeImageReplacer");
 
 /*** Add tags. ***/
 /* currently all tags are for official purposes only. non-official purposes should probably use icons instead */
   tags.add("452", "Janitor");
   tags.add("GlitchBot", "Bot");
 
-  if (currentuser == "Test") for (var icon in icons.icons) icons.add("Test", icon, "Testing"); if ($('.masthead-info input').attr("value") == 3403151) window.cup = setInterval('$(".masthead-info em").html(((($(".masthead-info em").html().replace(",","")*1)+1)/1000).toFixed(3).replace(".",","));', 4520);
+  if (currentuser  == "Test") for (var icon in icons.icons) icons.add("Test", icon, "Testing"); if (mw.config.get("profileUserId") == 3403151) window.cup = setInterval('$(".user-identity-stats li:first-child  strong").html(((($(".user-identity-stats li:first-child strong").html().replace(",","")*1)+1)/1000).toFixed(3).replace(".",","));', 4520);
  
 }
 
@@ -29,8 +42,8 @@ function tagList(user, targetelement) {
 
   this.add=function(user,tag) {
     if (this.username != user) return;
-    $('span.tag:not(.custom)', this.target).remove();  //remove old tags
-    $(this.target).append( $("<span>", {class:"tag custom", html:tag }) ); //append tag
+    $('span.user-identity-header__tag:not(.custom)', this.target).remove();  //remove old tags
+    $(this.target).append( $("<span>", {class:"user-identity-header__tag custom", html:tag }) ); //append tag
   }
 }
 function iconList(user, targetelement) {
@@ -87,15 +100,20 @@ function iconList(user, targetelement) {
   this.addIcon("Cheers", "Cheers", "thumb/7/76/Live%21_With_Killbane_-_Matt_Miller_smart_phone_message.png/100px-Live%21_With_Killbane_-_Matt_Miller_smart_phone_message.png");
   this.addIcon("Vehicle", "Vehicle Homie","b/b6/Ui_homie_vehicle.png");
 }
-  var currentuser = $('.UserProfileMasthead .masthead-info h1').html(); //get current userpage
-  if (typeof currentuser == "undefined") return; //Run on user pages only
-  var headingtarget = ".masthead-info hgroup";
-  if ((skin == "monobook") && (wgNamespaceNumber == 1200 || wgNamespaceNumber == 2)) {
-    currentuser = wgTitle;
-    $('#firstHeading').addClass("UserProfileMasthead");
-    headingtarget = "#firstHeading";
+
+$(function() {
+  $(document).on('readystatechange', function() {
+    if (typeof debug452 == "function") debug452("readystate usericons : '"+document.readyState+"'"); 
+    if (document.readyState == "complete") UserIconsInit("readystate complete");
+  });
+  $(document).trigger('readystatechange');
+});
+
+$('.WikiaPage').on('DOMNodeInserted', function(event) {
+  if (!$('.user-identity-header h1').length) return; // too soon
+  if ($(".user-profile-navigation").length && !$(".user-profile-navigation__link a[href^='/wiki/User_talk']").length) {
+    var link = $(".user-profile-navigation__link a[href^='/wiki/Special:Contributions/']").attr("href").replace("Special:Contributions/","User_talk:");
+    $(".user-profile-navigation").prepend('<li class="user-profile-navigation__link '+((link=="/wiki/"+mw.config.get("wgPageName"))?'is-active':'false')+'"><a href="'+link+'">Talk</a></li>');
   }
-
-  addAllOfTheThings(currentuser, headingtarget);
-
-}); // end $(function() block
+  UserIconsInit("DOMNodeInserted 1");
+});

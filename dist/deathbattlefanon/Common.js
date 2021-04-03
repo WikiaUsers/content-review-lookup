@@ -10,6 +10,15 @@ $('.speech-bubble-message').each(function() {
     );
 });
 
+// =======================
+// Recent Wiki Activity
+// =======================
+
+window.rwaOptions = {
+	autoInit: true,
+	limit: 100 
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////// START CODES TAKEN FROM ONETWOTHREEFALL'S GLOBAL JS ///////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -281,7 +290,7 @@ window.ajaxPages = new Array(
 window.ajaxRefresh = 30000;
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
-window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/dev/images/b/ba/Snake_throbber_dark-bg.gif/revision/latest?cb=20140519203615';
+window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/deathbattlefanon/images/d/de/Ajax-loader.gif/revision/latest?cb=20200828094018';
 
 //========================================================================
 // Allows text to be hidden in other text and revealed with a click

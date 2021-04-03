@@ -23,8 +23,7 @@ $(function() {
 
 /* Message Wall Posts Tags */
 var messageWallUserTags = {
-    'Miyanlove': 'Admin',
-    'Remiaw': 'Admin'
+    'The Cat Master': 'Admin'
  
 };
 window.messageWallTagColor = 'Black';

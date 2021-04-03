@@ -14,3 +14,17 @@ importArticles({
         "w:c:dev:Countdown/code.js"
     ]
 });
+
+/* WAM Score */
+window.railWAM = {
+    logPage:"Project:WAM Log"
+};
+
+//*Category Rename */
+importArticles({
+	type: "script",
+	articles: [
+        "u:dev:MediaWiki:CategoryRenameAuto-update/code.js",
+    ]
+	
+});

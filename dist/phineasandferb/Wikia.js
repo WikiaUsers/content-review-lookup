@@ -13,8 +13,50 @@ var hasClass = (function () {
     };
 })();
  
-/// Title Rewrite ///
+/*** DEV SCRIPTS ***/ 
+// Configuration for NoLicenseWarning
+window.NoLicenseWarning = {
+    forceLicense: true,
+    excludedGroups: [
+        'sysop',
+        'bureaucrat'
+    ]
+}; 
 
+// Configuration for LockForums
+window.LockForums = {
+    expiryDays: 60,
+    lockMessageWalls: true,
+    expiryMessage: 'This thread has been automatically archived. Its most recent message is <actualDays> days old.',
+};
+window.dev = window.dev || {};
+window.dev.i18n = window.dev.i18n || {};
+window.dev.i18n.overrides = window.dev.i18n.overrides || {};
+window.dev.i18n.overrides['NoLicenseWarning'] = window.dev.i18n.overrides['NoLicenseWarning'] || {};
+window.dev.i18n.overrides['NoLicenseWarning']['warning-text'] = "You must select a license when uploading a file.";
+window.dev.i18n.overrides['NoLicenseWarning']['rejected-text'] = "You can't upload a file without selecting a license! Please select one and resend the form.";
+
+//Configuration for SignatureCheck
+window.i = window.i || 0; 
+
+//Configuration for Discussions Rail Module
+    mw.hook('discussionsModule.added').add(function($module) {
+        // Module addition
+        if ($('#WikiaAdInContentPlaceHolder.rail-sticky-module').exists()) {
+            $module.insertBefore('#WikiaAdInContentPlaceHolder.rail-sticky-module');
+        } else {
+            $module.insertBefore('.FollowedPagesModule');
+        }
+    });
+
+//Configuration for AjaxRC
+AjaxRCRefreshText = 'Auto-refresh';
+AjaxRCRefreshHoverText = 'Auto-refreshes the page.';
+ajaxPages = ["Special:RecentChanges", "Special:WikiActivity", "Special:Log"];
+
+/*** END DEV SCRIPTS ***/ 
+    
+// Title Rewrite 
 function showEras(className)
 {
     if(typeof(SKIP_ERAS) != 'undefined' && SKIP_ERAS)
@@ -33,7 +75,6 @@ function showEras(className)
 // END JavaScript title rewrite
 
 /*Keep favicon as correct PF logo instead of reverting to Wikia logo*/
-
 document.write('<link REL="shortcut icon" HREF="/images/6/64/Favicon.ico" />')
 
 // Chat statement
@@ -76,3 +117,10 @@ $( function () {
             }
     }
 } );
+
+//Icons
+if ($('.page-header__languages').exists()) {
+    $('#icons').addClass('wds-dropdown').insertAfter('.page-header__languages');
+} else {
+    $('#PageHeader').append($('#icons'));
+}

@@ -1,19 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/** CSS einbinden */
- function addCSS(title) {
-     document.write(
-                '<style type="text/css">/*<![CDATA[*/ @import "/index.php?title=' + 
-                encodeURIComponent(title) + '&action=raw&ctype=text/css"; /*]]>*/</style>');
- }
- 
- /** JS einbinden */
- function addJS(title) {
-     document.write(
-                '<scr'+'ipt type="text/javascript" src="/index.php?title=' +
-                encodeURIComponent(title) + '&action=raw&ctype=text/javascript"></scr'+'ipt>');
- }
- 
  // anzeigen & verbergen
  function einaus (inhalt, einblenden, ausblenden) {
     var thisLevel  = document.getElementById(inhalt);

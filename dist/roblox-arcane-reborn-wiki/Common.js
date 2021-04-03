@@ -45,14 +45,3 @@ UserTagsJS.modules.mwGroups = [
 ];
 
 window.BackToTopModern = true;
-//Imported JavaScript Articles
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:AdminDashboard JS-Button/code.js',
-        'u:dev:MediaWiki:BackToTopButton/code.js',
-        'u:dev:MediaWiki:MoreSocialLinks.js',
-        'u:dev:MediaWiki:EditcountTab.js',
-        'u:dev:MediaWiki:MassEdit/code.js',
-    ]
-});

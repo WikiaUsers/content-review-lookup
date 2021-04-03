@@ -703,3 +703,33 @@ $("#iframeloader-E20-Clips-S3-52").replaceWith('<iframe width="640" height="360"
 $("#iframeloader-E20-Clips-S3-53").replaceWith('<iframe width="640" height="360" frameborder="0" src="http://www.bbc.co.uk/programmes/p00l8kzg/player"></iframe>');
 
 $("#iframeloader-Quiz").replaceWith('<iframe width="640" height="715" frameborder="0" src="http://www.poll-maker.com/Q1ZGZ3B"></iframe>');
+
+var quizName = "Quiz";
+var quizLang = "en";
+var resultsTextArray = [ 
+    "Bad luck: You may have been distracted by Frank Butchers Spinning Bow Tie. Feel free to try again.",
+    "Very nearly: You might need to start taking notes. Close but no cigar.",
+    "Super fan: Are you sure you haven't lived in Walford your whole life?" 
+];
+var questions = [
+    ["When did the first episode broadcast?",
+    "19 February 1985",
+    "18 February 1985",
+    "20 February 1985",
+    "11 February 1985"], 
+ 
+    ["Who was the first character seen on screen",
+    "Den Watts",
+    "Reg Cox",
+    "Ali Osman"],
+ 
+    ["Who has had the most Duff Duffs?",
+    "Ian Beale",
+    "Phil Mitchell"]
+];
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:Quiz/code.js'
+    ]
+});

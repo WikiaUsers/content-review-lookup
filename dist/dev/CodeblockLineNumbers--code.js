@@ -4,29 +4,43 @@
  * @name CodeblockLineNumbers
  * @author Arashiryuu0
  */
-require(['mw'], function(mw) {
+
+// jshint browser: true, devel: true, jquery: true
+// jshint strict: true, freeze: true, eqeqeq: true, futurehostile: true
+// jshint newcap: true, noarg: true, quotmark: single, shadow: outer
+// jshint latedef: true, undef: true, unused: true
+/* globals mw */
+
+;(function () {
+    'use strict';
+    
     if (window.dev && window.dev.CodeblockLineNumbers) return;
     
-    var codeblocks = ['de1', 'hljs', 'theme-solarized-light', 'theme-solarized-dark'],
+    var codeblocks = [
+        ['de1', 'hljs'],
+        ['theme-solarized-light', 'theme-solarized-dark'],
+        ['.mw-highlight pre', 'code pre']
+    ],
         slice = Array.prototype.slice,
-        ourblocks = slice.call(document.querySelectorAll('pre'));
+        ourblocks = slice.call(document.querySelectorAll('pre')),
+        version = mw.config.get('wgVersion');
         
     if (!ourblocks.length) return;
     
-    importArticles({
+    window.importArticles({
         type: 'style',
         articles: ['u:dev:MediaWiki:CodeblockLineNumbers.css']
     });
     
-    function noOl(codeblock) {
+    function noOl (codeblock) {
         return !codeblock.querySelector('ol');
     }
     
-    function mapLine(line) {
+    function mapLine (line) {
         if (!!line) return '<li>' + line + '</li>';
     }
     
-    function addLines(codeblock) {
+    function addLines (codeblock) {
         codeblock.innerHTML = codeblock.innerHTML
             .split('\n')
             .map(mapLine)
@@ -35,30 +49,40 @@ require(['mw'], function(mw) {
         return codeblock;
     }
     
-    function ourFilter(codeblock) {
-        var bool = false;
+    function ourFilter (codeblock) {
+        var hasId = function () {
+            return codeblocks[1].includes(codeblock.getAttribute('id'));
+        };
+        var hasClass = function () {
+            return codeblocks[0].some(function (name) {
+                return codeblock.classList && codeblock.classList.contains(name);
+            });
+        };
+        var ucpBlock = function () {
+            return codeblocks[2].some(function (selector) {
+                return codeblock.matches(selector);
+            });
+        };
+        
         
         if (codeblock.tagName === 'PRE' && codeblock.parentElement.tagName !== 'PRE') {
-            if (codeblocks.includes(codeblock.getAttribute('id'))) {
-                bool = true;
-                return bool;
-            }
-            
-            bool = codeblock.classList
-                ? codeblocks.includes(codeblock.classList[0])
-                : false;
+            return hasId() || hasClass() || ucpBlock();
         }
         
-        return bool;
+        return false;
     }
     
-    function combineFilters(f1, f2) {
-        return function(codeblock) {
-            return f1(codeblock) && f2(codeblock);
+    function combineFilters () {
+        var filters = slice.call(arguments);
+        return function (codeblock) {
+            var callback = function (filter) {
+                return filter(codeblock);
+            };
+            return filters.every(callback);
         };
-    } 
+    }
     
-    function wrapInner(parent, wrapper) {
+    function wrapInner (parent, wrapper) {
         if (typeof wrapper === 'string') wrapper = document.createElement(wrapper);
         
         parent.appendChild(wrapper);
@@ -66,68 +90,57 @@ require(['mw'], function(mw) {
         while (parent.firstChild !== wrapper) wrapper.appendChild(parent.firstChild);
     }
     
-    function isCommentStart(child) {
+    function isCommentStart (child) {
         return child.textContent.trim().startsWith('/*');
     }
     
-    function isInlineComment(child) {
+    function isInlineComment (child) {
         var classes = ['coMULTI', 'hljs-comment'],
-            hasClass = classes.includes(child.className) || child.firstElementChild 
-                ? classes.includes(child.firstElementChild.className)
-                : false,
+            hasClass = function () {
+                var a = Boolean(child.className) && classes.includes(child.className),
+                    b = Boolean(child.firstElementChild) 
+                        && classes.includes(child.firstElementChild.className);
+                return a || b;
+            },
             starts = child.textContent.trim().startsWith('/*'),
             ends = child.textContent.trim().endsWith('*/');
-        
-        return hasClass && starts && ends;
+        return (hasClass() && starts && ends) || starts && ends;
     }
     
-    function getEndIndex(i, child, ind) {
-        var greater = ind > i,
-            starts = child.textContent.trim().startsWith('*/');
-        
-        return greater && starts;
+    function getEndIndex (i) {
+        return function (child, ind) {
+            var greater = ind > i,
+                trimmed = child.textContent.trim(),
+                ends = trimmed[0] === '*' && trimmed.endsWith('*/');
+            
+            return Boolean(greater && ends);
+        };
     }
     
-    function mapSlicedChildren(child) {
+    function mapSlicedChildren (child) {
         return child.cloneNode(true);
     }
     
-    function createUL() {
+    function createUL () {
         var ul = document.createElement('ul');
         ul.classList.add('no-list');
         return ul;
     }
     
-    function parseComments(codeblock) {
-        var groups = [],
-            children = slice.call(codeblock.children),
-            sliced, bound;
-        
-        for (var i = 0, len = children.length; i < len; i++) {
-            var start = 0, end = 0, child = children[i];
-            if (!isCommentStart(child) || isInlineComment(child)) continue; 
-            
-            start = i;
-            end = children.findIndex(getEndIndex.bind(null, start));
-            sliced = children.slice(start, end + 1).map(mapSlicedChildren);
-            
-            groups.push({
-                start: start,
-                end: end,
-                parent: createUL(),
-                children: sliced
-            });
-        }
-        
-        if (!groups.length) return;
-        
-        for (i = groups.length - 1, len = 0; i >= len; i--) {
-            addCommentGroup(codeblock, groups[i]);
-        }
+    function remove (t) {
+        t.parentElement.removeChild(t);
     }
     
-    function addCommentGroup(codeblock, group) {
-        var children, filtered, bound, add, end, pe, cn;
+    function filterSliced (group) {
+        return function (children, index) {
+            var a = index >= group.start || index <= group.end,
+                b = children.tagName !== 'UL';
+            return a && b;
+        };
+    }
+    
+    function addCommentGroup (codeblock, group) {
+        var children, filtered, fn, end, pe, cn;
         
         pe = codeblock.parentElement;
         cn = pe.className === 'de1' || pe.getAttribute('id');
@@ -145,43 +158,112 @@ require(['mw'], function(mw) {
             end.insertAdjacentElement('afterend', group.parent);
         }
         
+        fn = filterSliced(group);
         children = slice.call(codeblock.children);
-        bound = filterSliced.bind(null, group);
-        filtered = children.slice(group.start, group.end + 1).filter(bound);
+        filtered = children.slice(group.start, group.end + 1).filter(fn);
         
         for (i = 0, len = filtered.length; i < len; i++) {
             remove(filtered[i]);
         }
     }
     
-    function processCodeblocks() {
-        var filtered = ourblocks.filter(combineFilters(noOl, ourFilter)),
-            len = filtered.length, ol, i;
+    function parseComments (codeblock) {
+        var groups = [],
+            children = slice.call(codeblock.children),
+            sliced;
         
-        if (!len) return;
-        
-        for (i = 0; i < len; i++) {
-            ol = document.createElement('ol');
-            ol.setAttribute('class', 'lineNumbers');
+        for (var i = 0, len = children.length; i < len; i++) {
+            var start = 0, end = 0, child = children[i];
+            if (!isCommentStart(child) || isInlineComment(child)) continue;
             
-            wrapInner(addLines(filtered[i]), ol);
-            parseComments(ol);
+            start = i;
+            end = children.findIndex(getEndIndex(start));
+            sliced = children.slice(start, end + 1).map(mapSlicedChildren);
+            
+            groups.push({
+                start: start,
+                end: end,
+                parent: createUL(),
+                children: sliced
+            });
+        }
+        
+        if (!groups.length) return;
+        
+        for (i = groups.length - 1, len = 0; i >= len; i--) {
+            addCommentGroup(codeblock, groups[i]);
         }
     }
     
-    function remove(t) {
-        t.parentElement.removeChild(t);
+    function match (block, selector) {
+        return block.matches(selector);
     }
     
-    function filterSliced(group, children, index) {
-        return (index >= group.start || index <= group.end) && children.tagName !== 'UL';
+    function processCodeblock (block) {
+        if (block.querySelector('ol.lineNumbers')) return;
+        
+        var ol = document.createElement('ol'),
+            matched = match(block, codeblocks[2][1]);
+            
+        ol.setAttribute('class', 'lineNumbers');
+        wrapInner(addLines(block), ol);
+        
+        if (matched || !mw.user.getRights) parseComments(ol);
     }
+    
+    function processCodeblocks () {
+        var filtered = ourblocks.filter(combineFilters(noOl, ourFilter)),
+            len = filtered.length;
+            
+        if (!len) return;
+        
+        for (var i = 0; i < len; i++) processCodeblock(filtered[i]);
+    }
+    
+    var defaults = {
+        ready: true
+    };
+    
+    var obj = {
+        processBlock: processCodeblock,
+        process: processCodeblocks,
+        settings: Object.assign({}, defaults, window.CodeblockLinesConfig)
+    };
+    
+    Object.defineProperty(obj, Symbol.toStringTag, {
+        configurable: false,
+        writable: false,
+        value: 'CodeblockLineNumbers'
+    });
+    
+    Object.freeze(obj);
     
     window.dev = window.dev || {};
-    window.dev.CodeblockLineNumbers = { process: processCodeblocks };
+    window.dev.CodeblockLineNumbers = obj;
     
-    window.dev.CodeblockLineNumbers.process();
-    mw.hook('dev.CodeblockLineNumbers').fire(window.dev.CodeblockLineNumbers);
-});
+    function fire () {
+        var lines = window.dev.CodeblockLineNumbers;
+        var settings = lines.settings;
+        
+        if (typeof settings.delay === 'number' && !Number.isNaN(settings.delay) && settings.delay >= 0) {
+            setTimeout(lines.process, settings.delay);
+        } else if (typeof settings.loadAction === 'function') {
+            settings.loadAction(lines);
+        } else if (settings.ready) {
+            lines.process();
+        }
+        
+        mw.hook('dev.CodeblockLineNumbers').fire(lines);
+    }
+    
+    function ready () {
+        if (document.readyState !== 'complete') return setTimeout(ready, 1000);
+        setTimeout(fire, 1);
+    }
+    
+    version === '1.19.24'
+        ? window.addOnloadHook(fire)
+        : ready();
+})();
 
 /*@end@*/

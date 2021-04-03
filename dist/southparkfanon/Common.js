@@ -110,7 +110,7 @@ var hasClass = (function () {
 //************************************************
 var DisableArchiveEditConfig = { 
    archiveSubpage: 'Archive',
-   disableCompletely: True,
+   disableCompletely: true,
    textColor: '#D9D9D9',
    userLang: true
 };

@@ -8,9 +8,9 @@
 
 ;(function($, mw, window) {
     'use strict';
-    
+
     mw.loader.using(['mediawiki.api', 'mediawiki.user']).then(function() {
-        var config = mw.config.get([
+        const config = mw.config.get([
             'wgCanonicalSpecialPageName',
             'wgFormattedNamespaces',
             'wgPageName',
@@ -20,14 +20,14 @@
         ]);
         if (
             config.wgCanonicalSpecialPageName !== 'Contributions' ||
-            !/rollback|content-moderator|threadmoderator|sysop|vstf|staff|helper|global-discussions-moderator|wiki-manager|content-team-member/.test(config.wgUserGroups.join()) ||
+            !/rollback|content-moderator|threadmoderator|sysop|soap|staff|helper|global-discussions-moderator|wiki-manager|content-team-member/.test(config.wgUserGroups.join()) ||
             window.WHAMLoaded
         ) {
             return;
         }
         window.WHAMLoaded = true;
-        var isUCP = config.wgVersion !== '1.19.24';
-        
+        const isUCP = config.wgVersion !== '1.19.24';
+
         if (!window.dev || !window.dev.i18n) {
             if (isUCP) {
                 mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js');
@@ -47,15 +47,17 @@
                 article: 'u:dev:MediaWiki:WHAM.css'
             });
         }
-        var username = config.wgPageName.split('/')[1],
-            token = mw.user.tokens.get( isUCP ? 'csrfToken' : 'editToken'),
-            delay = window.WHAMDelay || 100,
-            deleteReason,
+
+        const username = config.wgPageName.split('/')[1],
+              token = mw.user.tokens.get(isUCP ? 'csrfToken' : 'editToken'),
+              delay = window.WHAMDelay || 100,
+              progress = '//images.wikia.nocookie.net/common/skins/common/progress-wheel.gif',
+              Api = new mw.Api();
+
+        var deleteReason,
             duration,
             blockReason,
-            Api = new mw.Api(),
             i18n,
-            progress = '//images.wikia.nocookie.net/common/skins/common/progress-wheel.gif',
             $button,
             windowManager,
             dialog;
@@ -87,14 +89,14 @@
         }
 
         function doRollback() {
-            var $links = $('.mw-rollback-link a'),
+            const $links = $('.mw-rollback-link a'),
                 len = $links.length;
             if (len === 0) {
                 $('#status-wham').text(i18n.msg('do-rollback-done').plain());
                 if (isUCP) dialog.updateSize();
             }
             $links.each(function(i) {
-                var href = new mw.Uri($(this).attr('href')).extend({
+                const href = new mw.Uri($(this).attr('href')).extend({
                     bot: 1
                 }).toString();
                 setTimeout(function() {
@@ -129,7 +131,7 @@
             var deleteArray = [];
 
             $('#mw-content-text ul li').each(function() {
-                var $children = $(this).children('a'),
+                const $children = $(this).children('a'),
                     title = $children.first().attr('title'),
                     uri = new mw.Uri($children.eq(1).attr('href'));
                 if (
@@ -148,7 +150,7 @@
             });
 
             $('li .newpage ~ a').each(function() {
-                var title = new mw.Title($(this).attr('title'));
+                const title = new mw.Title($(this).attr('title'));
                 if (
                     title.namespace === 1200 ||
                     title.namespace === 1201 &&
@@ -209,7 +211,7 @@
                         i18n.msg('do-block-fail', username, d.error.code).plain()
                     );
                 } else {
-                    console.log(i18n.msg('do-block-success', username).plain());
+                    alert(i18n.msg('do-block-success', username).plain());
                 }
             }).fail(function() {
                 alert(
@@ -227,8 +229,11 @@
                 action: 'query',
                 list: 'users',
                 ustoken: 'userrights',
-                ususers: config.wgUserName
+                ususers: config.wgUserName,
+                usprop: 'groups'
             }).done(function(data) {
+                const resp = data.query.users[0];
+
                 var params = {
                     action: 'userrights',
                     user: config.wgUserName,
@@ -237,18 +242,29 @@
                         .msg('default-delete-reason')
                         .plain(),
                     bot: true,
-                    token: data.query.users[0].userrightstoken
+                    token: resp.userrightstoken
                 };
                 params[
-                    config.wgUserGroups.indexOf('bot') === -1 ?
+                    resp.groups.indexOf('bot') === -1 ?
                         'add' :
                         'remove'
                 ] = 'bot';
                 Api.post(params).done(function(d) {
                     if (d.error) {
-                        console.log(i18n.msg('bot-me-fail', d.error.code).plain());
+                        alert(i18n.msg('bot-me-fail', d.error.code).plain());
                     } else {
-                        console.log(i18n.msg('bot-me-done').plain());
+                        alert(i18n.msg('bot-me-done').plain());
+
+                        // Change button label
+                        if (params.hasOwnProperty('add')) {
+                            $('#wham-bot').text(
+                                i18n.msg('unbot-me').plain()
+                            );
+                        } else {
+                            $('#wham-bot').text(
+                                i18n.msg('bot-me').plain()
+                            );
+                        }
                     }
                 });
             });
@@ -289,7 +305,7 @@
             var $this = $(this),
             uncheck = $this.text() === i18n.msg('selective-delete-uncheck').plain();
             $('.selectiveDel').each(function() {
-                var chkObj = $(this);
+                const chkObj = $(this);
                 if (uncheck) {
                     chkObj.removeAttr('checked');
                 } else {
@@ -315,7 +331,7 @@
             if ($('#btn-wham-del').length && $('#btn-wham-check').length) {
                 return;
             }
-            var $chk = $('<input>', {
+            const $chk = $('<input>', {
                 'class': 'selectiveDel',
                 'type': 'checkbox'
             });
@@ -343,7 +359,7 @@
             });
 
             $('#mw-content-text ul li').each(function() {
-                var $children = $(this).children('a'),
+                const $children = $(this).children('a'),
                     title = $children.first().attr('title'),
                     uri = new mw.Uri($children.eq(1).attr('href'));
                 if (
@@ -366,7 +382,7 @@
             doBlock();
             if (duration || blockReason) {
                 doDelete();
-                if ($('.tabs li:first-child a:not(.new)').length) {
+                if ($('.tabs li:first-child a:not(.new), .mw-contributions-user-tools > a:not(.new)').length) {
                     if (confirm(i18n.msg('userpage-delete-confirm').plain())) {
                         apiDelete(config.wgFormattedNamespaces[2] + ':' + username, window.WHAMDeleteReason || i18n.inContentLang().msg('default-delete-reason').plain());
                     }
@@ -377,14 +393,18 @@
             }
         }
 
+        function canFlagBot() {
+            return /soap|staff|helper|wiki-manager/.test(config.wgUserGroups.join());
+        }
+
         function click() {
-            var self = ((username === config.wgUserName) ? true : false);
-            var $self_warn_html = $('<p>', {
-                html: i18n.msg('self-use-warn').parse(),
-                id: 'wham-self-use-warn',
-                class: 'error'
-            });
-            
+            const self = ((username === config.wgUserName) ? true : false),
+                  $self_warn_html = $('<p>', {
+                    html: i18n.msg('self-use-warn').parse(),
+                    id: 'wham-self-use-warn',
+                    class: 'error'
+                  });
+
             if (isUCP && !windowManager) {
                 function WHAMDialog(config) {
                     WHAMDialog.super.call(this, config);
@@ -401,8 +421,7 @@
                     { label: i18n.msg('close-wham').escape(), flags: ['safe', 'close'] }
                 ];
 
-                if (window.WHAMBotMe === true ||
-                    /vstf|staff|helper|wiki-manager/.test(config.wgUserGroups.join())) {
+                if (window.WHAMBotMe === true || canFlagBot()) {
                         WHAMDialog.static.actions.push({
                             label: i18n.msg(
                                 config.wgUserGroups.indexOf('bot') === -1 ?
@@ -451,7 +470,7 @@
                 dialog = new WHAMDialog({
                     size: 'medium'
                 });
-                
+
                 // Add window and open
                 windowManager.addWindows([dialog]);
                 windowManager.openWindow(dialog);
@@ -512,11 +531,8 @@
             }
 
             // Bot button
-            if (
-                window.WHAMBotMe === true ||
-                /vstf|staff|helper|wiki-manager/.test(config.wgUserGroups.join())
-            ) {
-                var form = $('#form-main .modalToolbar .wikia-button:nth-child(5)');
+            if (window.WHAMBotMe === true || canFlagBot()) {
+                const form = $('#form-main .modalToolbar .wikia-button:nth-child(5)');
                 $('#form-main .modalToolbar .wikia-button:nth-child(5)').after(
                     $('<a>', {
                         'id': 'wham-bot',
@@ -529,6 +545,9 @@
                     }).click(doBot)
                 );
             }
+
+            // Fire the hook to allow customization
+            mw.hook('dev.wham').fire();
         }
 
         function qlIntegration(QuickLogs) {

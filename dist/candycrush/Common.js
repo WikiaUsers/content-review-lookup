@@ -1,50 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-// MessageWallUserTags
-window.MessageWallUserTags = {
-    tagColor: '#000000',
-    txtSize: '14px',
-    glow: true,
-    glowSize: '14px',
-    glowColor: '#FFFFFF',
-    users: {
-        'Lefty8899': 'Founder • Bureaucrat',
-        'Cinnabar_The_Evil_Gem_Chemist_55555555555555555550' : 'Founder • Bureaucrat',
-        '3primetime3': 'Bureaucrat',
-        'DoCheonGong': 'Bureaucrat',
-        'Wildoneshelper': 'Bureaucrat',
-        '--MULLIGANACEOUS--': 'Administrator',
-        'Carlsaga07': 'Administrator',
-        'CC-8589934592': 'Administrator',
-        'Cheekian': 'Administrator',
-        'Courtemanche437': 'Administrator',
-        'HM100': 'Administrator',
-        'Johnny.crush': 'Administrator',
-        'Marisa1980': 'Administrator',
-        'Not real name': 'Administrator',
-        'PowerCrusher04': 'Administrator',
-        'S256': 'Administrator',
-        'Timhung005': 'Administrator',
-        'JMDaGood': 'Content moderator',
-        'Overloadxyz': 'Content moderator • Discussions moderator',
-        'TokihikoH11': 'Content moderator • Discussions moderator',
-        'Bookworm200': 'Discussions moderator',
-        'Groinpull2016': 'Discussions moderator',
-        'MazMac1': 'Discussions moderator',
-        'JoannaTheGal9395': 'Rollback',
-        'Tasty_Sugar_Track': 'Rollback',
-        'YellowMonica': 'Rollback',
-        '--MULLIGANACEOUS2--': 'Bot',
-        'AIDCG': 'Bot',
-        'AITH11': 'Bot',
-        'Botex Botssentials': 'Bot',
-        'Bureaucrat Bot': 'Bot',
-        'Imamadbot': 'Bot',
-        'Mossy\'s FanClub Bot No.1359': 'Bot',
-        'Skytown\'s Bot': 'Bot',
-        'Wildonesbot': 'Bot'
-    }
-};
 
 // UserTags
 window.UserTagsJS = {
@@ -55,10 +10,9 @@ UserTagsJS.modules.inactive = 90;
 UserTagsJS.modules.newuser = true;
 UserTagsJS.modules.autoconfirmed = true;
 // NOTE: bannedfromchat displays in Oasis but is not a user-identity group so must be checked manually
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'chatmoderator', 'threadmoderator', 'patroller', 'content-moderator', 'rollback', 'sysop', 'bannedfromchat', 'blocked', 'bot', 'bot-global', 'staff', 'vstf', 'helper'];
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'threadmoderator', 'patroller', 'content-moderator', 'rollback', 'sysop', 'blocked', 'bot', 'bot-global', 'staff', 'vstf', 'helper'];
 UserTagsJS.modules.metafilter = {
 	sysop: ['bot'],
-	chatmoderator: ['threadmoderator', 'sysop', 'bureaucrat', 'vstf', 'bot'],
 	threadmoderator: ['sysop', 'bureaucrat', 'bot'],
 	rollback: ['content-moderator', 'sysop', 'bureaucrat', 'founder', 'bot'],
 	'content-moderator': ['sysop', 'bureaucrat', 'founder', 'bot'],
@@ -112,7 +66,7 @@ var Start = 800;
 
 // RevealAnonIP
 window.RevealAnonIP = {
-    permissions : ['threadmoderator', 'rollback', 'content-moderator', 'sysop', 'bureaucrat', 'staff', 'vstf', 'helper']
+    permissions : ['threadmoderator', 'rollback', 'content-moderator', 'sysop', 'bureaucrat', 'staff', 'soap', 'helper']
 };
 
 function updatetimer(i) {

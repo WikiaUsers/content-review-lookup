@@ -1,10 +1,3 @@
-var SocialMediaButtons = { 
-	position: 'top',
-	colorScheme: 'black',
-	buttonSize: '20px'
-};
-importScriptPage('SocialIcons/code.js','dev');
-
 // Personnalisation de la bordure et des titres de l'infobox
 (function() {
 	var changeColors = function() {

@@ -15,5 +15,5 @@ importScriptPage('RevealAnonIP/code.js', 'dev');
 
 /* Menções legais no final da página */
 $(function(){
-     $('#WikiaPage .WikiaPageContentWrapper').append('<div style="text-align:center; font-size:x-small; line-height:175%; padding:5px;">Este site não é recomendado ou afiliado com a Electronic Arts ou seus licenciadores.<br />Todas as marcas pertencem a seus respectivos proprietários.<br /></div>');
+     $('#WikiaPage .WikiaPageContentWrapper').append('<div style="width:100%; font-size:x-small; text-align:center; padding:5px;">Este site não é recomendado ou afiliado com a Electronic Arts ou seus licenciadores.<br>Todas as marcas pertencem a seus respectivos proprietários.</div>');
 });

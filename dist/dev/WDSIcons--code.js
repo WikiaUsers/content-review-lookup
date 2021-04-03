@@ -79,8 +79,8 @@
      * @type        {String}
      * @private
      */
-    var spriteUri = mw.config.get('wgScriptPath') + '/extensions/wikia/DesignSystem/node_modules/design-system/dist/svg/sprite.svg?t=' +
-                    Date.now();
+    var spriteUri = mw.config.get('wgScriptPath') + '/resources-ucp/dist/svg/sprite.svg?t=' +
+                    new Date().toISOString().slice(0,10);
 
     /**
      * Initialiser to fetch and prepare WDS sprite.
@@ -101,7 +101,7 @@
                 .removeAttr('style')
                 .attr({
                     'id': 'dev-wds-sprite',
-                    'class': 'wds-hidden-svg',
+                    'style': 'position: absolute; height: 0px; width: 0px; overflow: hidden;',
                 });
             // Restriction to valid assets.
             $sprite.children([
@@ -125,10 +125,12 @@
             // Sprite embedding.
             $sprite.prependTo(document.body);
             // Sprite caching.
-            localStorage.wdsIconsCache = JSON.stringify({
-                'age': new Date().getTime(),
-                'data': { 'rootElement': $sprite.prop('outerHTML') }
-            });
+            try {
+                localStorage.wdsIconsCache = JSON.stringify({
+                    'age': new Date().getTime(),
+                    'data': { 'rootElement': $sprite.prop('outerHTML') }
+                });
+            } catch (e) {}
             // Globally expose library.
             window.dev.wds = {
                 registry: registry,

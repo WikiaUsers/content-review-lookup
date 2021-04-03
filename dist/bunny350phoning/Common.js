@@ -16,18 +16,4 @@ $(function() {
     $('span.insertusername').html(mw.config.get('wgUserName'));
 });
 
-/* Auto updating recent changes opt-in
-  * See w:c:dev:AjaxRC for info & attribution 
-  */
- 
- AjaxRCRefreshText = 'Automatic update';
- AjaxRCRefreshHoverText = 'Automatic update recent changes, If enabled: The changes will automactilly update at 30 seconds';
- ajaxPages = ["Special:RecentChanges","Special:WikiActivity","Special:UncategorizedPages","Special:AllPages","Bunny_350_Wiki:Administrators"];
- importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:AjaxRC/code.js',
-        ]
-    });
-
 /* DO NOT ADD CODE BELOW THIS LINE */

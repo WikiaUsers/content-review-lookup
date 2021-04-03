@@ -6,16 +6,8 @@ importArticles({
     articles: [
         'u:dev:AddRailModule/code.js',
         'u:dev:MediaWiki:YouTubeModal/code.js',
-        'u:dev:AjaxRC/code.js',
     ]
 });
-
-/***** Actualizar los cambios recientes de la wikiactividad *****/
-AjaxRCRefreshText = 'Act. automát.';
-AjaxRCRefreshHoverText = 'Los cambios más recientes serán vistos sin la necesidad de refrescar la página manualmente';
-ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
-importScriptPage('AjaxRC/code.js', 'dev');
-;
 
 /* Cambio de título */
 $(function(){

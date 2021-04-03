@@ -39,7 +39,7 @@
             this.$tooltip.text('');
         },
         hook: function(i18n) {
-            i18n.loadMessages('AdminDashboard JS-Button')
+            i18n.loadMessages('AdminDashboard_JS-Button')
                 .then($.proxy(this.init, this));
         }
     };

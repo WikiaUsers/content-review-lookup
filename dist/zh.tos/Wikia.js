@@ -1,9 +1,10 @@
+/*
 importArticles({
     type: "style",
     article: "u:dev:ExtendedNavigation/code.css"
 });
 
-/*
+
 $(function() {
   if ($('#WikiaRail').length) { 
     $('#WikiaRail').bind('DOMNodeInserted.module', function(event) { //fires after lazy-loading takes place.
@@ -16,6 +17,6 @@ $(function() {
   }
 });
 */
-
+(window.dev || {}).profileTags = { noHideTags: true };
 window.BackToTopText = "回到頂端";
 window.PurgeButtonText = "重新整理";

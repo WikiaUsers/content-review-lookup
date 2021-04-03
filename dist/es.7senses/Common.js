@@ -11,25 +11,7 @@ $(function UserNameReplace() {
     }
 });
 
-/* ShowHide */
-var ShowHideConfig = {
-    linkBefore: true
-};
-
-/*RailWam*/
-window.railWAM = {
-    logPage: "Project:WAM Log"
-};
-
-/*Usertags from Dev Wiki*/
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		fatex: { u:'Fate X'},
-	}
-};
-
-/*Add Usertags for Users*/
-UserTagsJS.modules.custom = {
-	'Sombra386': ['fatex']
-};
+/* Arreglo de invitacion en Discord banner */
+window.DiscordBannerSettings = {
+  inviteLink: 'https://discord.gg/FYcrnTmq4r'
+}

@@ -15,7 +15,6 @@ window.ajaxCallAgain = ($.isArray(window.ajaxCallAgain) && window.ajaxCallAgain)
 importArticles({
     type: 'script',
     articles: [
-        'u:c:User:ToaMeiko/chat-global.js',
         'u:dev:ListFiles/code.js',
         'u:dev:AjaxBatchDelete/code.js',
         'u:dev:WallGreetingButton/code.js',

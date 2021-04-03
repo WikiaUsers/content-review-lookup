@@ -1,12 +1,15 @@
 //from https://dev.wikia.com/wiki/SearchSuggest
 
+
+if (typeof debug452 == "function") debug452("start of SearchSuggest");
+
 $(function () {
   var MAX_RESULTS = 10;
 
-  if (!$('#suggestions').size() && window.wgTransactionContext.type == "special_page/Search") {
-    $('.SearchInput').append('<p id="suggestions" style="font-size: 80%; font-weight: normal; margin: 10px 40px 0 160px;"></p>');
+  if (!$('#suggestions').length && mw.config.get('wgCanonicalSpecialPageName') === 'Search') {
+    $('.unified-search__input').append('<p id="suggestions" style="font-size: 80%; font-weight: normal; margin: 10px 40px 0 160px;"></p>');
 
-    $.getJSON('/api.php?action=opensearch&search=' + encodeURIComponent($('#search-v2-input').val()))
+    $.getJSON('/api.php?action=opensearch&search=' + encodeURIComponent($('.unified-search__input__query').val()))
     .done(function (data) {
       if ($.isArray(data[1]) && data[1].length) {
         var terms = data[1].slice(0, MAX_RESULTS);

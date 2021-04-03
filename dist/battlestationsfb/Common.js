@@ -1,0 +1,1 @@
+<div id="JRChatReplace">Enable JavaScript to see the IRC chat interface.</div>

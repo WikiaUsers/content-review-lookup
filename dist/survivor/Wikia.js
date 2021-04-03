@@ -6,15 +6,6 @@ window.AutoEditDropdownConfig = {
 
 window.DisplayClockJS = '%2I:%2M:%2S %p, %B %2d, %Y (UTC)';
 
-importArticles({
-    type: 'script',
-    articles: [
-        'w:c:dev:AutoEditDropdown/code.js',
-		'w:c:dev:DisplayClock/code.js',
-		'w:c:dev:ExtendedNavigation/code.js',
-        'w:c:dev:FixMultipleUpload/code.js'
-    ]
-});
 
 // Augmentation for CSS plural.
 // Everything is plural by default, need to tag nodes which shouldn't be.

@@ -1,5 +1,6 @@
 //adds simple filter to special:wantedpages
 $(function() {
+    var urlVars = new URLSearchParams(location.search);
     var mwc = mw.config.get(['wgUserLanguage', 'wgFormattedNamespaces', 'wgCanonicalSpecialPageName']);
     if (mwc.wgCanonicalSpecialPageName !== 'Wantedpages' || $('.wp-filter').length) return;
     var r = /(.*?):/;
@@ -90,7 +91,7 @@ $(function() {
     }//onChange
     
     mw.util.addCSS(styles);
-    strings = $.extend(true, {}, strings.en, strings[mwc.wgUserLanguage], strings[$.getUrlVar('uselang')]);
+    strings = $.extend(true, {}, strings.en, strings[mwc.wgUserLanguage], strings[urlVars.get('uselang')]);
     
     //add ns data
     $('.special .new, .special .newcategory').each(function() {

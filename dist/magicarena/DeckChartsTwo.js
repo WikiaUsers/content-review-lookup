@@ -1,7 +1,7 @@
 // ==========================================================================
 // Start: Deck Charts
 // Renders charts on deck articles
-// Version 1.5.1
+// Version 2.0.0
 // Author: Aspallar
 //
 // ** Please dont edit this code directly in the wikia.
@@ -9,10 +9,10 @@
 // <nowiki>
 window.magicArena = window.magicArena || {};
 window.magicArena.charts = window.magicArena.charts || (function ($) {
-    /*globals google, mw, _ */
+    /*globals google, mw, magicArena */
     'use strict';
 
-    if (document.getElementById('mdw-deckcharts') === null || $('#mdw-disabled-js').attr('data-deckcharts-1-5-1'))
+    if (document.getElementById('mdw-deckcharts') === null || $('#mdw-disabled-js').attr('data-deckcharts-2-0-0'))
         return null;
 
     var colorPieChartId = 'mdw-cardsbycolor-chart',
@@ -526,7 +526,7 @@ window.magicArena.charts = window.magicArena.charts || (function ($) {
         $('.mdw-charts-more-button').click(function () {
             $('#mdw-misc-stats-contents').toggle(500);
         });
-        $(window).resize(_.debounce(drawAllCharts, 150));
+        $(window).resize(magicArena.utils.debounce(drawAllCharts, 150));
     }
 
     function changeMoreSpansToButtons() {

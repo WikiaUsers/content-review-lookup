@@ -127,35 +127,67 @@ function UserNameReplace() {
 
 addOnloadHook(UserNameReplace);
 
-// 1. Borrado rápido
+// Ajax RC
+window.AjaxRCRefreshText = 'Actividad automatizada';
+window.AjaxRCRefreshHoverText = 'Con la casilla marcada esta página se actualizará automáticamente';
+window.ajaxPages = [
+    "Especial:CambiosRecientes",
+    "Especial:WikiActivity",
+    "Especial:PáginasNuevas",
+    "Especial:Seguimiento"
+];
+ 
+// Mostrar IP de anónimos para usuarios con ciertos permisos
+window.RevealAnonIP = {
+    permissions : ['rollback', 'sysop', 'content-moderator']
+};
+
+// Borrado rápido
 var fdButtons = [];
 fdButtons[fdButtons.length] = {
-  'summary': 'VANDALISMO',
-  'accesskey': '1',
-  'label': 'V'};
+    'summary': '...',
+    'accesskey': '1',
+    'label': 'Otra razón'
+};
 fdButtons[fdButtons.length] = {
-  'summary': 'BASURA (SPAM)',
-  'accesskey': '2',
-  'label': 'S'};
+    'summary': 'El contenido de este artículo no se relacionaba al tema de la comunidad',
+    'accesskey': '1',
+    'label': 'Sin relación'
+};
 fdButtons[fdButtons.length] = {
-  'summary': 'REDIRECCIÓN ROTA',
-  'accesskey': '3',
-  'label': 'R'};
+    'summary': 'El artículo era considerado spam',
+    'accesskey': '2',
+    'label': 'Spam'
+};
 fdButtons[fdButtons.length] = {
-  'summary': 'Violación de Copyright',
-  'accesskey': '4',
-  'label': 'Y'};
+    'summary': 'Su creación fue un acto vandálico',
+    'accesskey': '3',
+    'label': 'Vandalismo'
+};
 fdButtons[fdButtons.length] = {
-  'summary': 'A petición del mismo autor',
-  'accesskey': '5',
-  'label': 'A'};
+    'summary': 'El contenido no era preciso, y podía tratarse de simples especulaciones',
+    'accesskey': '4',
+    'label': 'Mentiras'
+};
 fdButtons[fdButtons.length] = {
-  'summary': 'Artículo demasiado corto (Infraesbozo)',
-  'accesskey': '6',
-  'label': 'E'};
+    'summary': 'El contenido era fanon. Para publicar fan-fics véase [[w:c:es.stargatefanart|la comunidad fanon]]',
+    'accesskey': '5',
+    'label': 'Fanon'
+};
 fdButtons[fdButtons.length] = {
-  'summary': 'Innecesario',
-  'accesskey': '7',
-  'label': 'I'};
-
-importScriptPage('MediaWiki:Common.js/borradoRápido.js');
+    'summary': 'El artículo era excesivamente corto. Puedes crear este artículo siempre y cuando tenga la información suficiente.',
+    'accesskey': '6',
+    'label': 'Infra-esbozo'
+};
+fdButtons[fdButtons.length] = {
+    'summary': 'El contenido de este artículo es repetido.',
+    'accesskey': '1',
+    'label': 'Artículo repetido'
+};
+fdButtons[fdButtons.length] = {
+    'summary': 'El contenido es irrelevante para el wiki.',
+    'accesskey': '1',
+    'label': 'Irrelevante'
+};
+ 
+importArticle({type: 'script', article: 'w:c:pintorsmeargle:MediaWiki:Common.js/borradoRápido.js'});

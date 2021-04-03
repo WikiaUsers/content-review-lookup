@@ -1,0 +1,1 @@
+console.log("article_id = " + mw.config.get('wgArticleId'));

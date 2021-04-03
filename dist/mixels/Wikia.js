@@ -20,3 +20,19 @@ $(".analytics_table").each(function() {
         .replace('Viet Nam',                                                    'Vietnam')
     );
 });
+
+/* Legacy Wiki Activity (TEST) */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WikiActivity.js',
+    ]
+    });
+
+/* Additional multiple activity page */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MultipleActivity.js',
+    ]
+});

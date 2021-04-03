@@ -1,12 +1,3 @@
-/* Template Tools, Version 0.5alpha, licensed under BY-NC-SA 2.0 only. 
- * An alternate GDFL licensed version is available elsewhere. */
-
-/* This should be loaded from [[MediaWiki:common.js]]
- * Modules currently installed:
- *     [[MediaWiki:SkillTools.js]]
- *  <pre>  */
-document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:SkillTools.js&action=raw&ctype=text/javascript"></script>');
-
 /* </pre>
 == templateToolsInit() ==
 <pre> */

@@ -70,3 +70,12 @@ importArticles({
         'u:dev:MediaWiki:MassRename/code.js',
     ]
 });
+
+if(mw.config.get('wgUserName')) {
+    window.DiscordIntegratorConfig = {
+        siderail: {
+            title: "Discord",
+            id: "761725116773564427"
+        }
+    };
+}

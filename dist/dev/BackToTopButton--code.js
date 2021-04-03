@@ -4,7 +4,7 @@
 // Used files: [[File:BackToTopArrow_white.png]] [[File:BlackToTopArrow.png]]
 (function(window, $, mw) {
     'use strict';
-
+ 
     var buttonStart = typeof window.BackToTopStart === 'number' ?
             window.BackToTopStart :
             window.innerHeight,
@@ -15,54 +15,56 @@
             window.BackToTopFade :
             600,
         $button,
-        cc = mw.config.get('wgSassParams')['color-community-header'],
+        cc = $('.wds-community-header').css('background-color'),
         theme;
-
+ 
     // Double-run protection
     if (window.BackToTopLoaded) {
         return;
     }
     window.BackToTopLoaded = true;
-
+ 
     function init() {
-        $button.children('div').hide();
-        $(window).scroll($.throttle(100, function() {
+        var $buttonChildren = $button.children('button, img, div');
+
+        $buttonChildren.hide();
+        $(window).scroll(throttle(100, function() {
             if ($(this).scrollTop() > buttonStart) {
                 switch (fadeSpeed) {
                     case 0:
-                        $button.children('div').show();
+                        $buttonChildren.show();
                         break;
                     default:
-                        $button.children('div').fadeIn(fadeSpeed);
+                        $buttonChildren.fadeIn(fadeSpeed);
                         break;
                 }
             } else {
                 switch (fadeSpeed) {
                     case 0:
-                        $button.children('div').hide();
+                        $buttonChildren.hide();
                         break;
                     default:
-                        $button.children('div').fadeOut(fadeSpeed);
+                        $buttonChildren.fadeOut(fadeSpeed);
                         break;
                 }
             }
         }));
         mw.hook('dev.BackToTopButton').fire($button);
     }
-
+ 
     function click() {
         $('body, html').animate({
             scrollTop: 0
         }, scrollSpeed);
         return false;
     }
-
+ 
     function modernPreload(l) {
         if (++_loaded == l) {
             modernInit(window.dev.wds, window.dev.colors);
         }
     }
-
+ 
     function modernInit(wds, colors) {
         cc    = colors.parse(cc);
         theme = cc.isBright() ? '#000000' : '#ffffff';
@@ -81,17 +83,52 @@
             click: click
         }).appendTo(document.body);
         $.proxy(modernReposition, $button.children('div'))();
-        $(window).on('resize', $.throttle(100, $.proxy(modernReposition, $button.children('div'))));
+        $(window).on('resize', throttle(100, $.proxy(modernReposition, $button.children('div'))));
         init();
     }
-
+    
+    /* $.throttle source code */
+    function throttle (delay, no_trailing, callback, debounce_mode) {
+        var timeout_id, last_exec = 0;
+        if (typeof no_trailing !== 'boolean') {
+            debounce_mode = callback;
+            callback = no_trailing;
+            no_trailing = undefined;
+        }
+        function wrapper() {
+            var that = this
+              , elapsed = +new Date() - last_exec
+              , args = arguments;
+            function exec() {
+                last_exec = +new Date();
+                callback.apply(that, args);
+            }
+            ;function clear() {
+                timeout_id = undefined;
+            }
+            ;if (debounce_mode && !timeout_id) {
+                exec();
+            }
+            timeout_id && clearTimeout(timeout_id);
+            if (debounce_mode === undefined && elapsed > delay) {
+                exec();
+            } else if (no_trailing !== true) {
+                timeout_id = setTimeout(debounce_mode ? clear : exec, debounce_mode === undefined ? delay - elapsed : delay);
+            }
+        }
+        ;if ($.guid) {
+            wrapper.guid = callback.guid = callback.guid || $.guid++;
+        }
+        return wrapper;
+    };
+ 
     function modernReposition() {
         this.css({
             'right':$(window).width()/100*5,
             'bottom':$('#WikiaBar #WikiaBarWrapper').height()+8
         });
     }
-
+ 
     function arrowInit() {
         $button = $('<li>', {
             click: click,
@@ -107,7 +144,7 @@
         ).appendTo('#WikiaBarWrapper .toolbar > .tools');
         init();
     }
-
+ 
     function oldInit(i18n) {
         $button = $('<li>', {
             click: click,
@@ -118,22 +155,23 @@
                     height: '20px'
                 },
                 type: 'button',
+                class: (mw.config.get('wgVerion') !== '1.19.24' ? 'wds-button' : 'button'),
                 text: (typeof window.BackToTopText === 'string' && window.BackToTopText) || i18n.msg('backToTop').plain()
             })
         ).appendTo('#WikiaBarWrapper .toolbar > .tools');
         init();
     }
-
+ 
     if (window.BackToTopModern) {
         var _loaded = 0;
         [
             {
                 h: 'wds',
-                s: 'u:dev:WDSIcons/code.js'
+                s: 'u:dev:MediaWiki:WDSIcons/code.js'
             },
             {
                 h:'colors',
-                s: 'u:dev:Colors/code.js'
+                s: 'u:dev:MediaWiki:Colors/code.js'
             }
         ].forEach(function(lib, i, a) {
             importArticle({

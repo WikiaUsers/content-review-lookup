@@ -1,1 +1,0 @@
-#REDIRECT [[MediaWiki:Chat.js/ChatHacks.js]]

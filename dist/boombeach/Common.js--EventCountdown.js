@@ -1,14 +1,42 @@
-function timeStamp_DrTerror_js() {
-  /* Updated again for the new event cycle */
-  /* Note: The terror offsets are no longer used,
-   * but are kept as parameters, so the code isn't
-   * broken. */
-  return '2016.11.03 19:38 (UTC-5)';
-}
+// Visible text used (placed here for translation purposes)
+var text = {
+	intervalAbbreviations: ['D', 'H', 'M'],
+	remaining: 'REMAINING',
+	nextEvent: {
+		drt: 'Next Event: TROPICAL DR. T',
+		volcano: 'Next Event: VOLCANO DR. T',
+		gearheart: 'Next Event: WAR FACTORY',
+		hammerman: 'Next Event: HAMMERMAN\'S FLEET',
+		imitation: 'Next Event: IMITATION GAME'
+	},
+	activeEvent: {
+		drt: 'TROPICAL DR. T ACTIVE',
+		volcano: 'VOLCANO DR. T ACTIVE',
+		gearheart: 'WAR FACTORY ACTIVE',
+		hammerman: 'HAMMERMAN\'S FLEET ACTIVE',
+		imitation: 'IMITATION GAME ACTIVE'
+	},
+	intel: {
+		nextResetIn: 'NEXT INTEL RESET IN'
+	},
+	switchButton: {
+		toIntel: 'Switch to Intel Countdown',
+		toEvent: 'Switch to Event Countdown'
+	}
+};
+
+// Images used
+var img = {
+	drt: 'https://vignette.wikia.nocookie.net/boombeach/images/0/03/Terrorc.png/revision/latest?cb=20150506231414',
+	hammerman: 'https://vignette.wikia.nocookie.net/boombeach/images/c/c3/Hammerman.png/revision/latest?cb=20150213181715',
+	gearheart: 'https://vignette.wikia.nocookie.net/boombeach/images/1/14/Colonel_Gearheart.png/revision/latest?cb=20150506115021',
+	intel: 'https://vignette.wikia.nocookie.net/boombeach/images/0/05/Intel_75px.png/revision/latest?cb=20151230203622'
+};
 
 
 /* Create Event Widget */
 function createCountdownWidget() {
+  var utcCutOffHour = 8;
 
   function timeDiff(time1, time2) {
     // Time comes in milliseconds, but we just want the difference in days, hours,
@@ -16,7 +44,7 @@ function createCountdownWidget() {
     // And don't care which one is higher
     var diff = Math.floor(Math.abs(time1 - time2) / (1000 * 60));
     var divisors = [24 * 60, 60, 1];
-    var abbrevs = ['D', 'H', 'M'];
+    var abbrevs = text.intervalAbbreviations.slice();
 
     for (i = 0; i < divisors.length; i++) {
       var remainder = diff - Math.floor( diff / divisors[i]) * divisors[i];
@@ -47,7 +75,6 @@ function createCountdownWidget() {
 
     
     // Determine time of the end of today's event
-    var utcCutOffHour = 8;
     var todayCutOff = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), utcCutOffHour, 0, 0, 0));
     var tomorrowCutOff = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, utcCutOffHour, 0, 0, 0));
     var eventCycleEnd = todayCutOff.getTime() < now.getTime() ? tomorrowCutOff : todayCutOff;
@@ -86,27 +113,14 @@ function createCountdownWidget() {
       nextEvent = 'hammerman';
     }
 
+	if (nextEvent in text.nextEvent) {
+		divTextBottom.innerHTML = text.nextEvent[nextEvent];
+	}
+	
     var remaining = timeDiff(now, eventCycleEnd);
-    var tilNextEvent = '';
-    
-    if (nextEvent === 'gearheart') {
-    divTextBottom.innerHTML = 'Next Event: WAR FACTORY';
-    }
-    else if (nextEvent === 'hammerman') {
-    divTextBottom.innerHTML = 'Next Event: HAMMERMAN\'S FLEET';
-    }
-    else if (nextEvent === 'drt') {
-    divTextBottom.innerHTML = 'Next Event: TROPICAL DR. T';
-    }
-    else if (nextEvent === 'volcano') {
-    divTextBottom.innerHTML = 'Next Event: VOLCANO DR. T';
-    }
-    else if (nextEvent === 'imitation') {
-    divTextBottom.innerHTML = 'Next Event: IMITATION GAME';
-    }
 
     if (remaining) {
-      divTextMiddle.innerHTML = remaining + ' REMAINING';
+      divTextMiddle.innerHTML = remaining + ' ' + text.remaining;
     }
   }
 
@@ -120,11 +134,10 @@ function createCountdownWidget() {
     // Front of box
     var widgetFront = document.createElement('div');
     widgetFront.id = 'events-box-front';
-    // Image - Use an div to help
+    // Image - Use a div to help
     var divImage = document.createElement('div');
     divImage.id = 'events-div-image';
     var imgImage = document.createElement('img');
-    // Actual image - couldn't get content to work on my computer
     imgImage.id = 'events-image';
     // Image default dimensions
     imgImage.width="90px";
@@ -144,28 +157,29 @@ function createCountdownWidget() {
     divChangeBox.id = 'countdown-switch-box';
     var divChangeText = document.createElement('div');
     divChangeText.id = 'countdown-switch-text';
-    divChangeText.innerHTML = 'Switch to Intel Countdown';
+    divChangeText.innerHTML = text.switchButton.toIntel;
 
     // Calculate which event information to show
-    var now = new Date();
-    now.setSeconds(0);
-    now.setMilliseconds(0);
+    var eventDay = new Date();
+    eventDay.setUTCHours(eventDay.getUTCHours() - utcCutOffHour);
+    eventDay.setUTCSeconds(0);
+    eventDay.setUTCMilliseconds(0);
     // Event cycle starts on Monday now; getUTCDay() returns day of week
     // from Sunday (as 0)
-    var eventCycleType = now.getUTCDay() - 1;
+    var eventCycleType = eventDay.getUTCDay() - 1;
     if (eventCycleType < 0) {
         eventCycleType = 6;
     }
 
     // Determine image to use
     if (eventCycleType === 3) {
-      imgImage.src = "https://vignette.wikia.nocookie.net/boombeach/images/1/14/Colonel_Gearheart.png/revision/latest?cb=20150506115021";
+      imgImage.src = img.gearheart;
     }
     else if (eventCycleType === 0 || eventCycleType == 4) {
-      imgImage.src = "https://vignette.wikia.nocookie.net/boombeach/images/c/c3/Hammerman.png/revision/latest?cb=20150213181715";
+      imgImage.src = img.hammerman;
     }
     else {
-      imgImage.src = "https://vignette.wikia.nocookie.net/boombeach/images/0/03/Terrorc.png/revision/latest?cb=20150506231414";
+      imgImage.src = img.drt;
     }
     if (eventCycleType === 3) {
       // Set class names
@@ -174,7 +188,7 @@ function createCountdownWidget() {
       divImage.className = 'events-gearheart';
       imgImage.className = 'events-gearheart';
       // Event Name
-      divTextTop.innerHTML = 'WAR FACTORY ACTIVE';
+      divTextTop.innerHTML = text.activeEvent.gearheart;
     } else if (eventCycleType === 0 || eventCycleType === 4) {
       // Set class names
       widget.className = 'events-hammerman';
@@ -183,10 +197,10 @@ function createCountdownWidget() {
       imgImage.className = 'events-hammerman';
       if (eventCycleType === 0) {
         // Event Name
-        divTextTop.innerHTML = 'HAMMERMAN\'S FLEET ACTIVE';
+        divTextTop.innerHTML = text.activeEvent.hammerman;
       } else {
         // Event Name
-        divTextTop.innerHTML = 'IMITATION GAME ACTIVE';
+        divTextTop.innerHTML = text.activeEvent.imitation;
       }
     } else {
       // Set class names
@@ -196,9 +210,9 @@ function createCountdownWidget() {
       imgImage.className = 'events-terror';
       // Event Name
       if (eventCycleType === 1 || eventCycleType === 5) {
-        divTextTop.innerHTML = 'TROPICAL DR. T ACTIVE';
+        divTextTop.innerHTML = text.activeEvent.drt;
       } else {
-        divTextTop.innerHTML = 'VOLCANO DR. T ACTIVE';
+        divTextTop.innerHTML = text.activeEvent.volcano;
       }
     }
 
@@ -216,6 +230,9 @@ function createCountdownWidget() {
     divChangeBox.appendChild(divChangeText);
 
     // Calculate which widget we should show
+    var now = new Date();
+    now.setUTCSeconds(0);
+    now.setUTCMilliseconds(0);
     updateEventsWidget(widget, now, eventCycleType);
     // Return the created widget
     return widget;
@@ -236,18 +253,17 @@ function createCountdownWidget() {
     var divImage = document.createElement('div');
     divImage.id = 'events-div-image';
     var imgImage = document.createElement('img');
-    // Actual image - couldn't get content to work on my computer
     imgImage.id = 'intel-image';
     // Image default dimensions
     imgImage.width="75px";
     imgImage.height="75px";
     // Image url
-    imgImage.src = 'https://vignette.wikia.nocookie.net/boombeach/images/0/05/Intel_75px.png/revision/latest?cb=20151230203622';
+    imgImage.src = img.intel;
 
     // Current Event
     var divTextTop = document.createElement('div');
     divTextTop.id = 'intel-text-top';
-    divTextTop.innerHTML = 'NEXT INTEL RESET IN';
+    divTextTop.innerHTML = text.intel.nextResetIn;
     // Time Left
     var divTextMiddle = document.createElement('div');
     divTextMiddle.id = 'intel-text-remaining';
@@ -256,7 +272,7 @@ function createCountdownWidget() {
     var resetTime = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(),
                          now.getUTCDate(), 0, 0, 0, 0));
     // It resets midnight Sunday
-    resetTime.setDate( resetTime.getUTCDate() + (7 - resetTime.getUTCDay()) );
+    resetTime.setUTCDate( resetTime.getUTCDate() + (7 - resetTime.getUTCDay()) );
     divTextMiddle.innerHTML = timeDiff( now, resetTime );
 
     // Change countdown
@@ -264,7 +280,7 @@ function createCountdownWidget() {
     divChangeBox.id = 'countdown-switch-box';
     var divChangeText = document.createElement('div');
     divChangeText.id = 'countdown-switch-text';
-    divChangeText.innerHTML = 'Switch to Event Countdown';
+    divChangeText.innerHTML = text.switchButton.toEvent;
 
     // Register onclick event
     divChangeBox.addEventListener("click", createCountdownWidget);
@@ -342,7 +358,4 @@ function createCountdownWidget() {
   return divParent.insertBefore(widget, divBefore);
 }
 
-/* Doesn't work when not on Fandom */
-addOnloadHook(createCountdownWidget);
-
-//window.onload = createCountdownWidget();
+window.onload = createCountdownWidget();

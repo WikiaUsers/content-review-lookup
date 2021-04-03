@@ -1,5 +1,5 @@
 // RemoveTracking by Agent Zuri
-require( ['wikia.window'], function( window ) {
+(function() {
     'use strict';
 
     // Prevent double-loading
@@ -31,4 +31,4 @@ require( ['wikia.window'], function( window ) {
             tracker.removeAttribute( 'data-tracking-label' );
         } );
     }
-} );
+})();

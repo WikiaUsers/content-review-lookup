@@ -5,14 +5,13 @@ importArticles({
 }, {
 	type: 'style',
 	article: 'u:zh.pad.wikia.com:MediaWiki:CountDown.css'
-});
-
-importArticles({
+}, {
     type: 'script',
     articles: [
         'u:dev:MediaWiki:NullEditButton/code.js',
     ]
 });
+
 
 /* SpoilerAlert */
 window.SpoilerAlert = {
@@ -21,6 +20,41 @@ window.SpoilerAlert = {
     no: 'Non, pas maintenant',
     fadeDelay: 1600
 };
+
+/* CustomEditButtons */
+if (mwCustomEditButtons.length) {
+	mwCustomEditButtons[mwCustomEditButtons.length] = {
+		"imageFile": "//images.wikia.com/central/images/c/c8/Button_redirect.png",
+		"speedTip": "Redirection",
+		"tagOpen": "#REDIRECT [" + "[",
+		"tagClose": "]]",
+		"sampleText": "Insérer le texte"
+	};
+ 
+	mwCustomEditButtons[mwCustomEditButtons.length] = {
+		"imageFile": "//images.wikia.com/central/images/c/c9/Button_strike.png",
+		"speedTip": "Barré",
+		"tagOpen": "<s>",
+		"tagClose": "</s>",
+		"sampleText": "Texte barré"
+	};
+ 
+	mwCustomEditButtons[mwCustomEditButtons.length] = {
+		"imageFile": "//images.wikia.com/central/images/1/13/Button_enter.png",
+		"speedTip": "Retour à la ligne",
+		"tagOpen": "<br />",
+		"tagClose": "",
+		"sampleText": ""
+	};
+ 
+	mwCustomEditButtons[mwCustomEditButtons.length] = {
+		"imageFile": "//images.wikia.com/central/images/7/74/Button_comment.png",
+		"speedTip": "Commentaire visible uniquement aux contributeurs",
+		"tagOpen": "<!-- ",
+		"tagClose": " -->",
+		"sampleText": "Insérer ici le commentaire"
+	};
+}
 
 /* UserTags */
 window.UserTagsJS = {
@@ -59,3 +93,5 @@ UserTagsJS.modules.metafilter = {
 	'threadmoderator': ['sysop']
 };
 UserTagsJS.modules.stopblocked = false;
+
+importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});

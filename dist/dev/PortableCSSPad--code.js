@@ -125,7 +125,7 @@
 			left: 0,
 			top: 0,
 			stylesheetURL: '/load.php?mode=articles&articles=u:dev:MediaWiki:PortableCSSPad/stylesheet.css&only=styles',
-			prettyDiffURL: '//mathmagician.wikia.com/load.php?mode=articles&articles=MediaWiki:Prettydiff.js&only=scripts'
+			prettyDiffURL: 'https://mathmagician.fandom.com/load.php?mode=articles&articles=MediaWiki:Prettydiff.js&only=scripts'
 		}, opt);
 
 		// insert prettydiff, stylesheet and live-style tag into the document
@@ -133,7 +133,7 @@
 		$(document.head).append('<script id="PortableCSSPad-pretty-diff-script" type="text/javascript" src="' + options.prettyDiffURL + '"></script><link rel="stylesheet" type="text/css" href="' + options.stylesheetURL + '" /><style id="PortableCSSPad-live-style" type="text/css"></style>');
 
 		// HTML base for the whole pad
-		var padHTML = '<div id="PortableCSSPad-container" class="PortableCSSPad-pad-disabled"><div id="PortableCSSPad-menu"><a id="PortableCSSPad-title" title="w:c:dev:PortableCSSPad" href="https://dev.wikia.com/wiki/PortableCSSPad">PortableCSSPad</a><div id="PortableCSSPad-buttons"><div id="PortableCSSPad-important-button" class="PortableCSSPad-button" title="Adds !important to all CSS properties"></div><div id="PortableCSSPad-unimportant-button" class="PortableCSSPad-button" title="Removes !important from all CSS properties"></div><div id="PortableCSSPad-beautify-button" class="PortableCSSPad-button" title="Beautifies (nicely formats) all CSS in the textarea"></div><div id="PortableCSSPad-minify-button" class="PortableCSSPad-button" title="Minifies (removes comments and whitespace) CSS to reduce file size"></div><div class="PortableCSSPad-vertical-bar"></div><div id="PortableCSSPad-validate-button" class="PortableCSSPad-button" title="Opens the W3C CSS3 validation service in a new tab, you can copy/paste the contents of the textarea into the new tab to validate the CSS"></div><div class="PortableCSSPad-vertical-bar"></div><div id="PortableCSSPad-onoff-button" class="PortableCSSPad-button" title="Toggles the live-update feature on and off. While off, CSS rules in the pad are ignored"></div><div id="PortableCSSPad-close-button" class="PortableCSSPad-button" title="Closes the pad"></div></div></div><textarea id="PortableCSSPad-textarea" placeholder="Type or copy/paste CSS into this box to test it out on this page"></textarea></div>';
+		var padHTML = '<div id="PortableCSSPad-container" class="PortableCSSPad-pad-disabled"><div id="PortableCSSPad-menu"><a id="PortableCSSPad-title" title="w:c:dev:PortableCSSPad" href="https://dev.fandom.com/wiki/PortableCSSPad">PortableCSSPad</a><div id="PortableCSSPad-buttons"><div id="PortableCSSPad-important-button" class="PortableCSSPad-button" title="Adds !important to all CSS properties"></div><div id="PortableCSSPad-unimportant-button" class="PortableCSSPad-button" title="Removes !important from all CSS properties"></div><div id="PortableCSSPad-beautify-button" class="PortableCSSPad-button" title="Beautifies (nicely formats) all CSS in the textarea"></div><div id="PortableCSSPad-minify-button" class="PortableCSSPad-button" title="Minifies (removes comments and whitespace) CSS to reduce file size"></div><div class="PortableCSSPad-vertical-bar"></div><div id="PortableCSSPad-validate-button" class="PortableCSSPad-button" title="Opens the W3C CSS3 validation service in a new tab, you can copy/paste the contents of the textarea into the new tab to validate the CSS"></div><div class="PortableCSSPad-vertical-bar"></div><div id="PortableCSSPad-onoff-button" class="PortableCSSPad-button" title="Toggles the live-update feature on and off. While off, CSS rules in the pad are ignored"></div><div id="PortableCSSPad-close-button" class="PortableCSSPad-button" title="Closes the pad"></div></div></div><textarea id="PortableCSSPad-textarea" placeholder="Type or copy/paste CSS into this box to test it out on this page"></textarea></div>';
 
 		// insert HTML base into document
 		$('#PortableCSSPad-container').remove();
@@ -341,21 +341,16 @@
 
 
 	/**
-	 * PortableCSSPad loader, specific to Wikia.com wikis
+	 * PortableCSSPad loader, specific to fandom.com and wikia.org wikis
 	 */
 	$(function ($) {
-		var WikiaBar = window.WikiaBar,
-			$link = $('<a id="PortableCSSPad-wikialoader-link" style="cursor: pointer;">PortableCSSPad</a>'),
+		var $link = $('<a id="PortableCSSPad-wikialoader-link" style="cursor: pointer;">PortableCSSPad</a>'),
 			$listItem = $('<li></li>').append($link);
 
 		$('#PortableCSSPad-wikialoader-link').parent().remove();
 
-			// unbind click tracking on toolbar
-			WikiaBar.wikiaBarWrapperObj.off('click', WikiaBar.clickTrackingHandler);
-			WikiaBar.wikiaBarCollapseWrapperObj.off('click', WikiaBar.clickTrackingHandler);
-
 			// add link to toolbar
-			WikiaBar.wikiaBarWrapperObj.find('.tools').append($listItem);
+			$('#WikiaBar .toolbar .tools').append($listItem);
 
 		// attach init handler to $link
 		$link = $('#PortableCSSPad-wikialoader-link');

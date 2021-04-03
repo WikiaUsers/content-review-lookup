@@ -1,4 +1,72 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+ 
+(function ($, mw, store) {
+    "use strict";
+    var articles;
+ 
+    if (store && store.getItem('commonjs')) {
+        console.log('You have chosen to disable site-wide JavaScript ' +
+                    'in MediaWiki:Common.js. Please remove \'commonjs\' ' +
+                    'from localStorage to re-enable site-wide JavaScript.');
+        return;
+    }
+
+    // Customize tags on user profiles
+    window.UserTagsJS = {
+        modules: {},
+        tags: {
+            heroicuser:  { u: 'Most Heroic Contributor' },
+            imageeditor: { u: 'Image Editor' },
+            retiredstaff: { u: 'Retired Staff', title: 'This former staff member is inactive.' },
+            inactive: { u: 'Retired Clasher', title: 'This user is inactive.' }
+        }
+    };
+    
+    UserTagsJS.modules.inactive      = 30;
+    UserTagsJS.modules.newuser       = true;
+    UserTagsJS.modules.autoconfirmed = true;
+    UserTagsJS.modules.mwGroups = [
+        'bureaucrat',
+        'sysop',
+        'chatmoderator',
+        'threadmoderator',
+        'rollback',
+        'patroller',
+        'bannedfromchat',
+        'bot',
+        'bot-global',
+    ];
+    
+    UserTagsJS.modules.metafilter = {
+        bureaucrat:      ['founder'],
+        sysop:           ['founder', 'bureaucrat'],
+        chatmoderator:   ['founder', 'bureaucrat', 'sysop'],
+        threadmoderator: ['founder', 'bureaucrat', 'sysop', 'chatmoderator'],
+        rollback:        ['founder', 'bureaucrat', 'sysop', 'chatmoderator', 'threadmoderator'],
+        inactive:        ['retiredstaff']
+    };
+    
+    UserTagsJS.modules.custom = {
+        'Default': ['imageeditor'],
+        
+        'Flotiliya': ['sysop'],
+        'Simon Pikalov': ['sysop'],
+    };
+    
+
+    if (typeof(window.SpoilerAlert) === 'undefined') {
+        window.SpoilerAlert = {
+            question: 'Chief! This page contains sneak peeks. Are you sure you ' +
+                      'want to enter?',
+            yes: 'Yes, please',
+            no: 'No, let it be a surprise',
+            isSpoiler: function () {
+                return (-1 !== wgCategories.indexOf('Spoiler') &&
+                    Boolean($('.spoiler').length));
+            }
+        };
+    }
+    
 
     window.LockForums = {
         expiryDays:    90,  // Number of days until forum is locked to new replies
@@ -8,19 +76,60 @@
         warningPopup:  true, // Pop up a warning dialog that must be confirmed for posts on older forums
         banners:       true, // Add a banner to the top of aged forums
     };
-
-importScript("MediaWiki:Common.js/Usernames.js");
-importScript("MediaWiki:Common.js/ModeToggle.js");
-
-// Rail WAM
-window.railWAM = {
-    logPage:"Project:WAM Log",
-    lang: 'ru',
     
-};
 
-// Change Random Page button to only go to pages in the mainspace
-    $('.wds-dropdown a[data-tracking=explore-random], ul.tools li a[data-name=random]').attr("href", "/ru/wiki/Special:Random/main");
+    /* Articles are interwiki links so that other wikis can use them. */
+    articles = [
+        'w:c:spottra:MediaWiki:Common.js/Numeral.js', // Defines num.format('<fmt>')
+        'w:c:spottra:MediaWiki:Common.js/AjaxGallery.js',
+        'u:dev:Countdown/code.js',
+        'u:dev:SpoilerAlert/code.js',
+        'u:dev:TopEditors/code.js',
+        'u:dev:WallGreetingButton/code.js',
+        'u:dev:ExtendedNavigation/code.js',
+        'u:dev:LockForums/code.js',
+        'u:dev:LockOldBlogs/code.js',
+        'MediaWiki:Common.js/RGBColor.js',
+        'MediaWiki:Common.js/Usernames.js',
+        'u:dev:UserTags/code.js',
+        'MediaWiki:Common.js/Sliders.js',
+        'MediaWiki:Common.js/GemCalculators.js',
+        'MediaWiki:Common.js/Experience.js',
+        'MediaWiki:Common.js/Tabber2.js',
+        'MediaWiki:Common.js/ImageHover.js',
+        'MediaWiki:Common.js/CumulativeCosts.js',
+        'MediaWiki:Common.js/ModeToggle.js',
+        'MediaWiki:Common.js/PageVerify.js',
+        'MediaWiki:Common.js/GorillaMan.js',
+        'MediaWiki:Common.js/Lugia.js',
+        'MediaWiki:Common.js/BadgeGenerator.js',
+        'MediaWiki:Common.js/Protection.js',
+        'MediaWiki:Common.js/AvailableBuildings.js',
+        'MediaWiki:Common.js/GoldPass.js',
+        'MediaWiki:Common.js/QuickDiff.js'
+        //for global "w:c:clashofclans:"
+    ];
+    // Use Wikia's importArticles() function to load JavaScript files
+    window.importArticles({
+        type: 'script',
+        articles: articles
+    });
+    console.log('Site-wide JavaScript in MediaWiki:Common.js will load the ' +
+                'following JavaScript files:\n   ' + articles.join('\n   '));
+
+}(jQuery, mediaWiki, window.localStorage));
+
+
+$(document).ready(function() {
+
+    // Change Random Page button to only go to pages in the mainspace
+    $('.wds-dropdown a[data-tracking=explore-random], ul.tools li a[data-name=random]').attr("href", "/wiki/Special:Random/main");
+
+    // Clash Royale and Brawl Stars topic interwiki links
+    $("#BrawlStarsLink, #ClashRoyaleLink").prependTo(".page-header__contribution > div:first-child").css({"display": "inline-block"});
+
+});
+
 
 /** Collapsible tables *********************************************************
  *
@@ -117,7 +226,8 @@ function createCollapseButtons() {
    }
 }
 
-addOnloadHook(createCollapseButtons);
+$(createCollapseButtons);
+
  
 /** Test if an element has a certain class ********************************
  *
@@ -139,3 +249,10 @@ function hasClassTest(element, className) {
    // return element.className.indexOf(className) != -1;
    return hasClass(element, className);
 }
+
+//замена текста "введите тут имя" на имя 
+function UserNameReplace() {
+    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
+    $("span.insertusername").html(wgUserName);
+ }
+$(UserNameReplace);

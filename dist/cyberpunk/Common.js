@@ -1,16 +1,22 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-/********************************************************************************/
-/* sliders using jquery by Dragon Age wiki User:Tierrie . All credit goes to him*/
-/********************************************************************************/
 
-//wsl.loadScript("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js");
-//wsl.loadScript("http://dragonage.wikia.com/index.php?title=MediaWiki:Jquery-ui.min.js&action=raw&ctype=text/javascript");
+/* Any JavaScript here will be loaded for all users on every page load. */
+
+/****************************************/
+/* sliders using jquery by User:Tierrie */
+/****************************************/
+mw.loader.using( ['jquery.cookie']);
  
+/****************************************/
+/* sliders using jquery by User:Tierrie */
+/****************************************/
 mw.loader.using( ['jquery.ui.tabs'], function() {
-$(document).ready(function() {
+  $( "[class^=portal_vtab]" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+  $( "[class^=portal_vtab] li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+ 
   var $tabs = $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100} } );
-  $("[class^=portal_sliderlink]").click(function() { // bind click event to link
-    $tabs.tabs('select', this.className.replace("portal_sliderlink_", ""));
+  $("[class*=portal_sliderlink]").click(function() { // bind click event to link
+    $tabs.tabs('select', this.className.match(/portal_sliderlink-(\d+)/)[1]);
+    console.log("Sliding to " + this.className.match(/portal_sliderlink-(\d+)/)[1]);
     return false;
   });
   $('#portal_next').click(function() {
@@ -22,4 +28,6 @@ $(document).ready(function() {
     return false;
   });
 });
-} );
+
+/* lockdown for reference popup configuration */
+((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;

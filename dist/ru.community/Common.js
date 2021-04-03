@@ -27,24 +27,24 @@ $('.centralhelpbox').click(function(){
                     format: 'json'
                 },
                 avatar: {
-                    controller: 'UserProfilePage',
-                    method: 'getLightboxData',
+                    controller: 'UserProfile',
+                    method: 'getUserData',
                     tab: 'avatar',
                     format: 'json'
                 }
             };
  
-        $.get( '/api.php', data_obj.id, function( d ) {
+        $.get( '/ru/api.php', data_obj.id, function( d ) {
             data_obj.avatar.userId = d.query.users[ 0 ].userid;
  
-            $.post( '/wikia.php', data_obj.avatar, function ( t ) {
+            $.post( '/ru/wikia.php', data_obj.avatar, function ( t ) {
                 $( '<img />', {
-                    src: $( t.body ).find( 'img.avatar' ).attr( 'src' ),
+                    src: t.userData.avatar,
                     width: '55px',
                     height: '55px',
                     style: 'cursor: pointer;'
                 })
-                .click( function() { window.open( '/wiki/User:' + data_obj.id.ususers, '_blank' )})
+                .click( function() { window.open( '/ru/wiki/User:' + data_obj.id.ususers, '_blank' )})
                 .appendTo( $this_elem );
             });
         });
@@ -66,57 +66,49 @@ $('.centralhelpbox').click(function(){
   * * wiki-infobox-articles
   *
   */
-mw.hook('wikipage.content').add(function ($content) {
-if ($content.find('.wiki-infobox-input').length) {
-        var arr, lang,
-            mwc = mw.config.get('wgWikiaBaseDomainRegex'),
-            wiki = $content.find('.wiki-infobox-input').first().text(),
-            baseDomain = (/\.(fandom\.com|wikia\.org|wikia\.com)/.exec(wiki) || wiki)[1],
-            rwiki = new RegExp('^(.*?)\.' + mwc.wgWikiaBaseDomainRegex, 'i');
-        // retarget baseDomain
-        baseDomain = baseDomain.split(new RegExp(mwc.wgWikiaBaseDomainRegex)).length > 1 ? baseDomain.replace('wikia.com', 'fandom.com') : 'fandom.com';
-        // strip head and tail
-        wiki = wiki.replace(/^https?:\/\/|^\/\/|\/wiki.*$/g, '');
-        // lang.wiki/lang
-        wiki = wiki.replace(rwiki, '$1');
-        // test fandom/lang
-        arr = wiki.split('/');
-        lang = arr[1] || '';
-        // test lang.wikia
-        arr = wiki.split('.');
-        lang = (!lang && arr.length > 1) ? arr[0] : lang;
-        // make '/lang'
-        lang = lang ? '/' + lang : lang;
-        wiki = 'https://' + arr.pop().replace(/\/.*/, '') + '.' + baseDomain + lang;
-        $.ajax({
-            url: wiki + '/api.php',
-            data: {
-                action: 'query',
-                meta: 'siteinfo',
-                siprop: 'wikidesc',
-                format: 'json'
-            },
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
-            type: 'GET',
-            success: function (data) {
-                var cityId = data.query.wikidesc.id;
-                $.ajax({
-                    url: 'https://community.fandom.com/api/v1/Wikis/Details/',
-                    data: {
-                        ids: cityId
-                    },
-                    dataType: 'json',
-                    type: 'GET',
-                    success: function (wikiinfo) {
-                        $content.find('.wiki-infobox-wordmark').html(
-                            $('<img>', {src: wikiinfo.items[cityId].wordmark}).get(0).outerHTML
-                        );
-                        $content.find('.wiki-infobox-articles').text(wikiinfo.items[cityId].stats.articles);
-                    }
-                });
-            }
-        });
-    }
-});
+!function( $, mw ) {
+	if ( $('.wiki-infobox-input').length === 0 ) return;
+
+	var wiki = $( '.wiki-infobox-input a' ).attr( 'href' ).replace( /\/?wiki\/?/, '' );
+
+    $.ajax({
+        url: wiki + '/api.php',
+        data: {
+            action: 'query',
+            meta: 'siteinfo',
+            siprop: 'variables',
+            titles: 'File:Wiki-wordmark.png',
+            prop: 'imageinfo',
+            iiprop: 'url',
+            format: 'json'
+        },
+        dataType: 'jsonp',
+        jsonp: 'callback',
+        crossDomain: true,
+        type: 'GET',
+        success: function (data) {
+            var cityId = 0,
+            	wm = data.query.pages[ Object.keys( data.query.pages )[ 0 ] ].imageinfo[ 0 ].url;
+
+			$('.wiki-infobox-wordmark').html( $('<img />', {src: wm}).get(0).outerHTML );
+
+            $.each( data.query.variables, function( i, v ) {
+            	if ( v.id === "wgCityId" ) cityId = v[ '*' ];
+            });
+
+			if ( cityId === 0 ) return;
+
+            $.ajax({
+                url: 'https://community.fandom.com/api/v1/Wikis/Details/',
+                data: {
+                    ids: cityId
+                },
+                dataType: 'json',
+                type: 'GET',
+                success: function (wikiinfo) {
+                    $('.wiki-infobox-articles').text(wikiinfo.items[cityId].stats.articles);
+                }
+            });
+        }
+    });
+}( this.jQuery, this.mediaWiki );

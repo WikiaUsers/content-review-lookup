@@ -97,7 +97,7 @@ function ttMouseOver() {
 // check to see if it is active then do it
 $( function() {
 	if(skin=='oasis') {
-		article = "#WikiaArticle";
+		article = "#content";
 	} else {
 		article = "#bodyContent";
 	}

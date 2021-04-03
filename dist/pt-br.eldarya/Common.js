@@ -1,5 +1,41 @@
 /* Códigos JavaScript colocados aqui serão carregados por todos aqueles que acessarem alguma página desta wiki */
 
+$(document).ready(function(){
+
+var d = new Date();
+
+var n = d.getHours();
+
+if (n > 17 || n < 6)
+
+  // If time is after 7PM or before 6AM, apply night theme to ‘body’
+
+  document.body.style.backgroundImage = "url('<nowiki>https://i.imgur.com/w28SHSM.jpg'</nowiki>)";
+
+else
+
+  // Else use ‘day’ theme
+
+  document.body.style.backgroundImage = "url('<nowiki>https://i.imgur.com/M7ZsPeH.jpg'</nowiki>)";
+
+});
+
+// prevents existing tags from being hidden
+
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };
+
+// Discord Banner
+
+window.DiscordBannerSettings = {
+
+    bannerStyle: '2',
+
+    inviteLink: 'xkSFpVP',
+
+    prependToRail: true
+
+};
+
 /* Tooltips */
 var tooltips_config = {
     offsetX: 5,
@@ -7,7 +43,7 @@ var tooltips_config = {
     waitForImages: false,
     events: ['CustomEvent'],
     noCSS: true,
-}
+};
 
 /* Alerta de Spoiler */
 window.SpoilerAlertJS = {
@@ -46,11 +82,12 @@ window.MessageWallUserTags = {
         'username': 'usergroup',
         'KouHime': 'Fundadora',
         'Calaglinn': 'Administradora',
-        'Leoliver': 'Moderador',
+        'Leoliver': 'Administrador',
         'Ocllinsy': 'Moderadora',
         'Yukinan': 'Moderadora',
         'SugarBoy3': 'Reversor',
-        'SykiMin': 'Miss Wiki'
+		'HimoryWoods': 'Moderador',
+		'FunnyWolfie': 'Moderadora'
     }
 };
 

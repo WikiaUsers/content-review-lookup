@@ -64,7 +64,7 @@ importScriptPage('ExternalImageLoader/code.js', 'dev');
  
  AjaxRCRefreshText = 'Auto-Refresh';
  AjaxRCRefreshHoverText = 'Automatically refresh the page';
- ajaxPages = ["Special:RecentChanges","Special:WikiActivity","Special:UncategorizedPages","Special:AllPages"];
+ ajaxPages = ["Special:WikiActivity","Special:UncategorizedPages","Special:AllPages"];
  importScriptPage('AjaxRC/code.js', 'dev');
 
 

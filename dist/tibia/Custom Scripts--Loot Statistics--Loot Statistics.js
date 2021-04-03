@@ -267,6 +267,14 @@ lootparser_versions_ex =
 'Witch': '9.1',
 'Worker Golem': '9.1',
 /*new*/
+//'Bellicose Orger': '12.20.9066',
+'Cow': '12.20.9066',
+'Fat Porker': '12.20.9066',
+'Loricate Orger': '12.20.9066',
+'Orger': '12.20.9066',
+'Orger Treasure': '12.20.9066',
+'Roast Pork': '12.20.9066',
+'Spawn of the Schnitzel': '12.20.9066',
 'Scarlett Etzel': '12.20',
 'Urmahlullu the Weakened': '12.20',
 'Lamassu': '12.20',
@@ -316,9 +324,9 @@ lootparser_versions_ex =
 'Maxxenius': '12.00',
 'Plagueroot': '12.00',
 'The Nightmare Beast': '12.00',
-'Cave Devourer': '12.00',
+//'Cave Devourer': '12.00',
 'Chasm Spawn': '12.00',
-'Tunnel Tyrant': '12.00',
+//'Tunnel Tyrant': '12.00',
 //'Dawnfire Asura': '10.8',
 'Ekatrix': '10.8',
 'Elder Forest Fury': '10.8',
@@ -378,26 +386,26 @@ lootparser_versions_ex =
 'Tremor Worm': '10.7',
 'Unstable Tunnel': '10.7',
 'Weakened Glooth Horror': '10.7',
-'Brittle Skeleton': '10.55',
-'Crazed Dwarf': '10.55',
-'Dawn Scorpion': '10.55',
-'Dawnfly': '10.55',
-'Juvenile Cyclops': '10.55',
-'Lesser Fire Devil': '10.55',
-'Meadow Strider': '10.55',
-'Minotaur Bruiser': '10.55',
-'Minotaur Occultist': '10.55',
-'Minotaur Poacher': '10.55',
-'Mountain Troll': '10.55',
-'Muglex Clan Assassin': '10.55',
-'Muglex Clan Footman': '10.55',
-'Muglex Clan Scavenger': '10.55',
+//'Brittle Skeleton': '10.55',
+//'Crazed Dwarf': '10.55',
+//'Dawn Scorpion': '10.55',
+//'Dawnfly': '10.55',
+//'Juvenile Cyclops': '10.55',
+//'Lesser Fire Devil': '10.55',
+//'Meadow Strider': '10.55',
+//'Minotaur Bruiser': '10.55',
+//'Minotaur Occultist': '10.55',
+//'Minotaur Poacher': '10.55',
+//'Mountain Troll': '10.55',
+//'Muglex Clan Assassin': '10.55',
+//'Muglex Clan Footman': '10.55',
+//'Muglex Clan Scavenger': '10.55',
 'Sacred Snake': '10.55',
 'Salamander Trainer': '10.55',
-'Scar Tribe Shaman': '10.55',
-'Scar Tribe Warrior': '10.55',
-'Troll-Trained Salamander': '10.55',
-'Woodling': '10.55',
+//'Scar Tribe Shaman': '10.55',
+//'Scar Tribe Warrior': '10.55',
+//'Troll-Trained Salamander': '10.55',
+//'Woodling': '10.55',
 'Blood Beast': '10.5',
 'Bullwark': '10.5',
 'Death Priest Shargon': '10.5',
@@ -1478,7 +1486,7 @@ loot_tem[Monster_Name][Item_Name][min/max/total/times] = val
     );
 
     if (got_stats || killed) {
-      if (wgUserName !== null && wgUserName !== '' && $.inArray('autoconfirmed', wgUserGroups) !== -1) {
+      if (mw.config.get('wgUserName') !== null && mw.config.get('wgUserName') !== '' && $.inArray('autoconfirmed', mw.config.get('wgUserGroups')) !== -1) {
         $('#lootparser_upload_all_td').append(
           $('<input />', {'type': 'button', 'value': 'Upload All', 'id': 'lootparser_upload_all'})
           .css({'margin-right': '10px'}),
@@ -1497,10 +1505,10 @@ loot_tem[Monster_Name][Item_Name][min/max/total/times] = val
       ins_tmp +
       '</textarea></td>' +
       '<td style="vertical-align: bottom; text-align: center;">' +
-      ((wgUserName !== null && wgUserName !== '') ?
+      ((mw.config.get('wgUserName') !== null && mw.config.get('wgUserName') !== '') ?
         '<div>' +
         '<span>' +
-        (($.inArray('autoconfirmed', wgUserGroups) !== -1) ?
+        (($.inArray('autoconfirmed', mw.config.get('wgUserGroups')) !== -1) ?
           '<input type="checkbox" value="1" checked="checked" id="lootparser_stats_c" /><span> Include in "Upload All"</span>' +
           '<br />or<br />' :
           ''
@@ -1595,10 +1603,10 @@ loot_tem[Monster_Name][Item_Name][min/max/total/times] = val
         in_tmp += (lootparser_use_loot2 ? lootparser_array_to_wiki2(loot_tem[k1]) : lootparser_array_to_wiki1(loot_tem[k1]));
         in_tmp += '</textarea></td>' +
         '<td style="vertical-align: bottom; text-align: center;">' +
-        ((wgUserName !== null && wgUserName !== '') ?
+        ((mw.config.get('wgUserName') !== null && mw.config.get('wgUserName') !== '') ?
           '<div>' +
           '<span>' +
-          (($.inArray('autoconfirmed', wgUserGroups) !== -1) ?
+          (($.inArray('autoconfirmed', mw.config.get('wgUserGroups')) !== -1) ?
             '<input type="checkbox" value="1" checked="checked" id="lootparser_loot_combined_c' + id_inc + '" /><span> Include in "Upload All"</span>' +
             '<br />or<br />' :
             ''
@@ -1778,4 +1786,3 @@ $('#lootparser_loot_img').hide();
 $('#lootparser_loot').show();
 }());
 //</pre>
-[[Category:Loot Statistics]]

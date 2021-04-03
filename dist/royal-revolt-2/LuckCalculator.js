@@ -19,7 +19,7 @@ if ($('#luckCalculatorDiv').length) {
 }
         
 /* Calculates the results for the luck calculator */
-$(".luckPerk").live("change", function() {
+$(".luckPerk").on("change", function() {
     var items = [];
     var luck = 1;
     var elements = document.getElementsByClassName("luckPerk");

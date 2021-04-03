@@ -1,69 +1,52 @@
-/** <nowiki>
- * 
- * @description             JavaScript and JSON Ace editor.
- * @module                  dev.codeeditor.js
- * @namespace               window.dev
+/*
+ * @description             Used to be a JSON and .javascript editor, now directly loads CodeEditor or tells the user to migrate to .js
  * @author                  Sophiedp
- * @author                  Speedit
+ * @author                  Speedit (legacy)
  * @license                 CC-BY-SA 3.0
- * @todo                    Add error linting when there are JSON errors on VSTF Wiki.
- */
-require(['wikia.window', 'jquery', 'mw', 'wikia.browserDetect'], function (window, $, mw, browserDetect) {
-    'use strict';
- 
-    // Script variables.
-    var MODE_JS = 'javascript',
-        MODE_JSON = 'json',
-        PAGE_EXT = new mw.Title(wgPageName).getExtension() || 'mediawiki',
-        EXT_JS,
-        EXT_JSON;
-
-    window.dev = window.dev || {};
-    if (
-        !mw.config.get('wgIsEditPage') ||
-        browserDetect.isMobile() ||
-        $(document.body).hasClass('codeeditor') ||
-        [MODE_JS, MODE_JSON].indexOf(PAGE_EXT) === -1 ||
-        window.dev.codeEditorJS
-    ) {
-        return;
-    }
-    window.dev.codeEditorJS = true;
-
-    // VSTF Wiki support variables.
-    // @notes JSON on the VSTF Wiki uses multi line opening comments.
-    var VSTF = window.wgDBname === 'vstf',
-        VSTF_EXT_RGX;
-
-    // Generates a custom path regexp for VSTF Wiki JS(ON)? files.
-    function vstfExtRgx() {
-        return new RegExp(
-            '\\.' + '(' +
-            EXT_JS + '|' +
-            EXT_JSON + ')' + '$'
-        , 'gi');
-    }
-
-    // Script bootloader.
-    // @notes 
-    mw.hook('dev.codeeditor.library').add(function(codeEditor) {
-        EXT_JS = codeEditor.modelist.modes
-            [MODE_JS].extensions;
-        EXT_JSON = codeEditor.modelist.modes
-            [MODE_JSON].extensions;
-        codeEditor.config({
-            mode: VSTF
-                ? MODE_JS
-                : [MODE_JS, MODE_JSON],
-            auto: !VSTF,
-            rgx: VSTF ? vstfExtRgx() : {}
+*/
+(function () {
+    if (mw.config.get('wgVersion') === '1.19.24') {
+        var ext = new mw.Title(mw.config.get('wgPageName'));
+        if (ext === 'javascript' || ext === 'json') {
+            importArticle({
+                type: 'script',
+                articles: 'u:dev:MediaWiki:CodeEditor.js'
+            });
+        }
+    } else {
+        mw.loader.using(['mediawiki.util', 'mediawiki.notify']).then(function () {
+            var page = mw.config.get('wgPageName');
+            var ext = new mw.Title(page).getExtension();
+            if (
+                ext !== 'javascript' ||
+                mw.config.get('wgArticleId') === 0 ||
+                mw.config.get('wgPageContentModel') === 'javascript'
+            ) {
+                return;
+            }
+            
+            var text = 'Please $1 to .js and $2 to JavaScript.';
+            var link1 = $('<a>', {
+                text: 'move the page',
+                href: mw.util.getUrl('Special:MovePage/' + page, {
+                    'wpNewTitle': page.split('.')[0] + '.js'
+                })
+            });
+            var link2 = $('<a>', {
+                text: 'change the content model',
+                href: mw.util.getUrl('Special:ChangeContentModel', {
+                    pagetitle: page,
+                    model: 'javascript'
+                })
+            });
+            var span = $('<span>', {
+                html: text.replace('$1', link1.prop('outerHTML')).replace('$2', link2.prop('outerHTML'))
+            });
+    
+            mw.notify(span, {
+                title: 'JavascriptEditor',
+                autoHide: false
+            });
         });
-    });
-
-    // Library import.
-    importArticle({
-        type: 'script',
-        article: 'u:dev:MediaWiki:CodeEditor/library.js'
-    });
-
-});
+    }
+})();

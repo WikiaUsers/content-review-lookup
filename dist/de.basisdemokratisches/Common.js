@@ -10,3 +10,7 @@ importArticles({
         'u:dev:MediaWiki:DiscussionsRailModule/code.js',
     ]
 });
+[
+        'u:dev:MediaWiki:WikiActivity.js',
+    ]
+});

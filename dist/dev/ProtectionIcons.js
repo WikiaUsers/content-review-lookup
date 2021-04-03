@@ -35,9 +35,11 @@
             $.getJSON(mw.util.wikiScript('api'), {
                 format: 'json',
                 action: 'query',
+                titles: config.wgPageName,
                 prop: 'info',
                 inprop: 'protection',
-                titles: config.wgPageName
+                meta: 'siteinfo',
+                siprop: 'general',
             }, function (d) {
                 if (!d.error) {
                    that.handleJSON(d);
@@ -51,7 +53,8 @@
          * @returns {void}
          */
         handleJSON: function (results) {
-            var data,
+            var now,
+                data,
                 protection,
                 protections,
                 createSysop,
@@ -62,11 +65,17 @@
                 moveAutoconfirmed,
                 uploadSysop,
                 uploadAutoconfirmed;
+            now = new Date(results.query.general.time);
             data = results.query.pages;
             createSysop = createAutoconfirmed = editSysop = editAutoconfirmed = moveSysop = moveAutoconfirmed = uploadSysop = uploadAutoconfirmed = false;
             protections = data[Object.keys(data)[0]].protection;
             for (var i = 0; protections && i < protections.length; i++) {
                 protection = protections[i];
+                if (protection.expiry && new Date(protection.expiry) < now) {
+                    // If `protection.expiry` is `infinite`/`indefinite`/`infinity`/`never`,
+                    // then the constructed date will be invalid, and the comparison will fail.
+                    continue;
+                }
                 switch (protection.type) {
                     case ('create'):
                         if (protection.level === 'sysop') {
@@ -99,7 +108,7 @@
                 }
             }
             var $editElement = $(
-                    $('.UserProfileActionButton').exists()
+                    $('.UserProfileActionButton').length
                     ? '.UserProfileActionButton'
                     : '.page-header__contribution-buttons'
                 ),
@@ -116,7 +125,7 @@
                 );
             }
             if (
-                $moveElement.exists() &&
+                $moveElement.length &&
                 (moveSysop || moveAutoconfirmed)
             ) {
                 $moveElement.append(
@@ -124,7 +133,7 @@
                 );
             }
             if (
-                $replaceElement.exists() &&
+                $replaceElement.length &&
                 (uploadSysop || uploadAutoconfirmed)
             ) {
                 $replaceElement.append(
@@ -194,21 +203,17 @@
             $.when(this.i18nIsLoaded, this.wdsIsLoaded).done(
                 $.proxy(Main.getJSON, Main)
             );
-            importArticles(
-                {
-                    type: 'style',
-                    articles: [
-                        'u:dev:MediaWiki:ProtectionIcons.css'
-                    ]
-                },
-                {
-                    type: 'script',
-                    articles: [
-                        'u:dev:MediaWiki:I18n-js/code.js',
-                        'u:dev:MediaWiki:WDSIcons/code.js'
-                    ]
-                }
-            );
+            importArticle({
+                type: 'style',
+                article: 'u:dev:MediaWiki:ProtectionIcons.css'
+            });
+            importArticles({
+                type: 'script',
+                articles: [
+                    'u:dev:MediaWiki:I18n-js/code.js',
+                    'u:dev:MediaWiki:WDSIcons/code.js'
+                ]
+            });
         }
     };
     Main.init();

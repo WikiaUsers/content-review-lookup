@@ -3,8 +3,8 @@
  * By: [[User:Tierrie]], with modifications by [[User:Thailog]] and [[User:KettleMeetPot]]
  */
 
-$(document).ready(function() {
-  if ( wgPageName == "Avatar_Wiki") {
+$(function() {
+  if ( mw.config.get('wgPageName') == "Avatar_Wiki") {
     mw.loader.using( ['jquery.ui.tabs'], function() {
       var $tabs = $("#portal_slider").tabs({ fx: [{opacity:'toggle', duration:200},{height:'toggle', duration:'normal'}, ] } );
       $("[class^=portal_sliderlink]").click(function() { // bind click event to link

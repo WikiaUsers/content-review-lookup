@@ -1,5 +1,5 @@
 /* Этот код работает у всех и везде. */
-console.log("Common.js v0.4");
+console.log("If does this even load, you know, that everything is fine.");
 
 
 //создать объект опций для dev:CategoryIcon/code.js
@@ -114,7 +114,7 @@ window.fng.cicon.scale = '/scale-to-width-down/48';
 
 //Меняем цвета имён пользователей
 (function(){
-    var ADMINS = {Some14u:1,Sphingidae:1,};
+    var ADMINS = {Some14u:1, Sphingidae:1, JumpingTheShark:1, TreeIsLife:1};
     var BUREAUCRATS = {MarisFrance:1,};
     var BASE_URL = '.fandom.com/ru/wiki/';
     var PAGES = [ // [url part, ignore ip, ignore current page]

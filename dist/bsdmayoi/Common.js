@@ -1,4 +1,13 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+window.AddRailModule = [
+    {page: 'Template:RailModule', prepend: true},
+];
+window.DiscordBannerSettings = {
+    bannerStyle: '3',
+    inviteLink: '4uDXqna',
+    prependToRail: true,
+    noRail: false,
+};
 
 (function(mw, $) {
   // Return list of elements whose data-value matches the active filters.
@@ -23,8 +32,11 @@
     });
 
     var filteredList = characterList;
-    var filterKeys = [
-        'rarity', 'affinity', 'type', 'org', 'name', 'gender', 'global'];
+    var filterGroupElements = $("div[class*='filter-group-']");
+    var filterGroupClassPattern = /filter-group-([a-z-]+)/;
+    var filterKeys = filterGroupElements.map(function() {
+      return this.className.match(filterGroupClassPattern)[1];
+    }).get();
     filterKeys.forEach(function(key) {
         var activeFilters =
             $('.filter-group-' + key + ' > .active').toArray();

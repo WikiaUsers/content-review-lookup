@@ -1,0 +1,1 @@
+{{:MediaWiki:Common.js/Code.js}}

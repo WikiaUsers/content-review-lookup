@@ -1,13 +1,4 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
-
-window.AjaxCommentDeleteConfig = {
-    fastDelete: "housekeeping"
-};
-
 switch (mw.config.get('wgPageName')) {
     case 'Luck':
         $(function(){
@@ -19,15 +10,20 @@ switch (mw.config.get('wgPageName')) {
             importScriptPage('MediaWiki:ConquestCalculator.js');
         });
         break;
+    case 'List_of_Items':
+        $(function(){
+            importScriptPage('MediaWiki:TableCounter.js');
+        });
+        break;
 }
 /* ******** Javascript for tooltips below ******* */
 
-var tooltips_list = [{
+window.tooltips_list = [{
         classname: 'item-tooltip',
         parse: '{{DataItem <#item#>|TooltipItem}}'
 }];
 
-var tooltips_config = {
+window.tooltips_config = {
     offsetX: 8,
     offsetY: 8,
     waitForImages: true,

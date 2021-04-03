@@ -28,8 +28,8 @@ $.getJSON("https://discordapp.com/api/guilds/498179496864645151/widget.json", fu
     function populateAdmins() {
         return [
           'JG Online',
-          'Gurren Lagann',
-          'UltraWorlds'
+          'fyr02',
+          'The Minmus Derp'
         ];
     }
 
@@ -171,7 +171,7 @@ $.getJSON("https://discordapp.com/api/guilds/498179496864645151/widget.json", fu
         var $railModuleTitle = $("<h2></h2>").addClass("has-icon").appendTo($railModuleSection);
 
         $railModuleTitle.append(drawDiscordLogo("#ADABBB"));
-        $railModuleTitle.append("CWP Discord");
+        $railModuleTitle.append("WBH Discord");
         $widgetContainerRail.appendTo($railModuleSection);
 
         var $ads = $("#top-right-boxad-wrapper, #NATIVE_TABOOLA_RAIL").last();
@@ -194,7 +194,7 @@ $.getJSON("https://discordapp.com/api/guilds/498179496864645151/widget.json", fu
         var $containerTitle = $("<h2></h2>").addClass("title has-icon").appendTo($containerTitleSection);
 
         $containerTitle.append(drawDiscordLogo());
-        $containerTitle.append("CWP Discord");
+        $containerTitle.append("WBH Discord");
         $container.append($widgetContainer);
     });
 

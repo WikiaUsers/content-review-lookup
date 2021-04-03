@@ -1,5 +1,5 @@
 
-$('頁面名稱：<input type="text" id="page_name" disabled="disabled" /><table style="width: 100%" id="report_content"><tr><td>錯誤內容</td><td>正確內容</td></tr><tr><td><textarea></textarea></td><td><textarea></textarea></td></tr><tr><td></td><td style="text-align: right"><input type="button" value="預覽" id="preview" /><input type="submit" value="送出" /></td></tr></table><div id="preview_area"></div>').appendTo('#mw-content-text');
+$('<input type="text" id="page_name" disabled="disabled" /><table style="width: 100%" id="report_content"><tr><td>錯誤內容</td><td>正確內容</td></tr><tr><td><textarea></textarea></td><td><textarea></textarea></td></tr><tr><td></td><td style="text-align: right"><input type="button" value="預覽" id="preview" /><input type="submit" value="送出" /></td></tr></table><div id="preview_area"></div>').appendTo('#report_question');
 
 function submit(input, text) {
 	$(input).attr('disabled', true);

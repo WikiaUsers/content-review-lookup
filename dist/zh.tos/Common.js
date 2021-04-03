@@ -3,16 +3,16 @@ $.multimap = function(f){
     return $.map(a[0],function(d,i){
         return f.apply(this,$.map(a,function(e){return e[i];}).concat([i]));
     });
-}
+};
 
 $(function(){
     var x = document.createElement('x');
-    x.style.cssText = 'pointer-events:auto;'
+    x.style.cssText = 'pointer-events:auto;';
     if(x.style.pointerEvents === 'auto') importStylesheet('MediaWiki:Frames1pe.css');
     else importStylesheet('MediaWiki:Frames1.css');
     if($('#monsterCalc').length) monsterCalc();
-    if(wgUserGroups.indexOf('sysop') == -1) $('.admin').remove();
-    if(wgUserName === null) $('#WikiaArticleComments').on('DOMSubtreeModified',function(){
+    if(mw.config.values.wgUserGroups.indexOf('sysop') == -1) $('.admin').remove();
+    if(mw.config.values.wgUserName === null) $('#WikiaArticleComments').on('DOMSubtreeModified',function(){
         $('#article-comments-minieditor-newpost').replaceWith('<p>請登陸以發表留言</p><br/>');
         $('.article-comm-reply').remove();
     });
@@ -25,9 +25,9 @@ $(function(){
     staminaSlider();
     dataSlider();
     stageData();
-    setInterval(function(){$('.eventTimerFlash').css({visibility:new Date().getSeconds()%2?'hidden':'visible'})},1000);
+    setInterval(function(){$('.eventTimerFlash').css({visibility:new Date().getSeconds()%2?'hidden':'visible'});},1000);
     $('#eventsButton').on('click',function(){eventsSwitch(1000);});
-    if ((typeof wgIsMainpage !== 'undefined') && (wgIsMainpage)) MainPage();
+    if (mw.config.values.wgPageName == '神魔之塔_繁中維基') MainPage();
 });
 
 function events(){
@@ -91,7 +91,7 @@ function slideshow(){
 
     var s = function(el,j){
         clearTimeout(el.data('tv'));
-        var i = el.data('slideshowIndex')
+        var i = el.data('slideshowIndex');
         if(j===undefined) j = (i+1) % (el.children().length-1);
         el.queue(function(n){$(this).children().eq(i).fadeOut(1000,n);})
             .queue(function(n){$(this).children().eq(j).fadeIn(1000,n);});
@@ -170,9 +170,9 @@ function moveModule(){
         $("#WikiaRail").append($(".move"));
         $(".move").show();
         $(".move:hidden").remove();
-	}else{
-		$(".move").show();
-	}
+    }else{
+        $(".move").show();
+    }
 }
  
 function staminaSlider(){
@@ -252,7 +252,7 @@ function staminaSlider(){
     $('#staminaSliderETA').on('click',function(){
         var d = $(this).parent();
         $('.sliderText').eq(-1).css({top: d.position().top+d.height()+3}).show();
-        $(document).one('mousedown',function(){$('.sliderText').eq(-1).hide();})
+        $(document).one('mousedown',function(){$('.sliderText').eq(-1).hide();});
     });
 }
 
@@ -274,7 +274,7 @@ function dataSlider(){
 
     $('<input>').addClass('input').css({width:25}).val(L).on('keyup',function(){
         var n = $('th.dataSliderInput input'), v = n.map(function(){return $(this).val();}).get(), i = n.index(this);
-        v[i] = Math[i?'min':'max'].apply(this,v)
+        v[i] = Math[i?'min':'max'].apply(this,v);
         $('#dataSlider').trigger('slide',[v[i],1-i]).data('control').set(v);
     }).appendTo('th.dataSliderInput');
 
@@ -282,7 +282,7 @@ function dataSlider(){
         var y = Math.floor(y), Y = y-1, sy = $.multimap(function(b,m){return Math.floor(b*1+(m-b)*Math.pow(y/L,c));},s0,sM).concat([Math.ceil(t.data('exptype')*500000*Math.pow(Y,2)/9604),e[0]*1+e[1]*Y,s[0]*1+s[1]*Y]);
         d.find('tr').eq(4-2*i).find('input').val(y);
         d.find('tr').eq(4-2*i).find('td').each(function(j){$(this).text(sy[j]);});
-        var f = function(){return $(this).text();}, x = $.multimap(function(a,b){return a*1-b*1},d.find('tr').eq(2).find('td').map(f).get(),d.find('tr').eq(4).find('td').map(f).get());
+        var f = function(){return $(this).text();},x = $.multimap(function(a,b){return a*1-b*1;},d.find('tr').eq(2).find('td').map(f).get(),d.find('tr').eq(4).find('td').map(f).get());
         d.find('tr').eq(3).find('td').each(function(j){$(this).text('+'+x[j]);});
     }).trigger('slide',[1,0]);
 }
@@ -304,22 +304,23 @@ function monsterCalc(){
     });
     var id = location.search.match(/id=(\d{3,4})/)[1];
     $.get(mw.util.wikiScript('api'), {
-		format: 'json',
-		action: 'expandtemplates',
-		text: '{{Template:' + id + '|calc}}'
-	}, function (d) {
+        format: 'json',
+        action: 'expandtemplates',
+        text: '{{Template:' + id + '|calc}}'
+    }, function (d) {
         function c(s1,s2,max,idx,x){return Math.floor(s1+(s2-s1)*Math.pow(x/max,idx));}
         function e(c,x){return Math.ceil(c*i*i/9604);}
         var u = d.expandtemplates['*'].split(','), t = u.map(parseFloat), n = 0, d = (u[8]=='獸類'?2/3:(u[8]=='神族'||u[8]=='妖精類'?1.5:1));
         $.get(mw.util.wikiScript('api'), {
-		format: 'json',
-		action: 'parse',
-		text: '{{MonsterIcon|' + id + '|40}} <span style="font-size:1.7em; font-weight: bold">[[' + u[0] + ']]</span>'
-	}, function (h) {
-	$('#monsterCalc').before(h.parse.text['*']);})
+        format: 'json',
+        action: 'parse',
+        text: '{{MonsterIcon|' + id + '|40}} <span style="font-size:1.7em; font-weight: bold">[[' + u[0] + ']]</span>'
+    }, function (h) {
+    $('#monsterCalc').before(h.parse.text['*']);});
         for(i=1; i<=t[1]; i++){
             var x = n, n = e(t[9]*500000,i);
-            $('<tr>').append($('<th>').text(i),$('<td>').text(c(t[2],t[5],t[1],d,i)),$('<td>').text(c(t[3],t[6],t[1],d,i)),$('<td>').text(c(t[4],t[7]*1,t[1],d,i)),$('<td>').text(n-x),$('<td>').text(x),$('<td>').text(t[10]+t[11]*(i-1)),$('<td>').text(t[12]+t[13]*(i-1))).appendTo('#monsterCalc')
+
+$('<tr>').append($('<th>').text(i),$('<td>').text(c(t[2],t[5],t[1],d,i)),$('<td>').text(c(t[3],t[6],t[1],d,i)),$('<td>').text(c(t[4],t[7]*1,t[1],d,i)),$('<td>').text(n-x),$('<td>').text(x),$('<td>').text(t[10]+t[11]*(i-1)),$('<td>').text(t[12]+t[13]*(i-1))).appendTo('#monsterCalc');
         }
     },'json');
 }
@@ -347,6 +348,13 @@ function stageData(){
         $(this).attr('rowSpan',t.length+1);
         t.each(function(){$(this).children().eq(0).remove();});
     });
+    $('.stageData td.stageRowDesk.stage2').each(function(){
+        var t = $(this).parent().nextUntil(':not(tr:has(td.stageRowES), tr:has(td.span2))');
+        if(t.length == 0) return true;
+        var x = t.children('td.stageRowDesk.span2')  
+        $(this).attr('rowSpan',x.length+1);
+        t.each(function(){$(this).children('td.stageRowDesk.span2').eq(0).remove();});
+    });
 
     $('.stageDataDropPlus').mouseenter(function(){
         $(this).hide();
@@ -360,14 +368,14 @@ function stageData(){
     });
 }
 
-var tooltips_config = {
+window.tooltips_config = {
     waitForImages: true,
 }
- 
-var tooltips_list = [
+
+window.tooltips_list = [
     {
         classname: 'basic-tooltip',
-        onHide: function(handle) { $(this).html($(handle).html()) },
+        onHide: function(handle) { $(this).html($(handle).html()); },
     },{
         classname: 'ability-tooltip',
         parse: '{'+'{<#ability#>|<#magnitude#>|duration=<#duration#>|tt=<#tt#>|show=no}}',
@@ -375,65 +383,57 @@ var tooltips_list = [
         classname: 'imgsrc-tooltip',
         parse: '['+'[File:<#imgsrc#>i.png|link=<#link#>]]',
     }
-]
-
-importArticles({
-    type: 'script',
-    articles: [
-        "u:dev:Tooltips/code.js"
-    ]
-});
+];
 
 function gacha(){
-	if ($("#resultList").length){
-		disableSelection(document.body);
-		$("#resultList").isotope({itemSelector:".filterIcon",layoutMode:"fitRows"});
-		var palList=[];
-		$("#gachaList .d-pal").each(function(i){
-			if ($(this).hasClass("r-1")) v=15; else if ($(this).hasClass("r-2")) v=3; else if ($(this).hasClass("r-3")) v=1; else v=1;
-			if ($(this).parent().attr("id")!="gachaList") v*=3;
-			for (j=0; j<v; j++) palList.push(i);
-		});
-		var palCount=palList.length;
-		$(".gachaButton#pal").click(function(){
-			i=$($("#gachaList .d-pal")[palList[Math.floor(Math.random()*palCount)]]).clone();
-			$("#resultList").prepend(i.hide().fadeIn("slow",function(){$(this).find(".eggCover").delay(1000).fadeOut(800)})).isotope("reloadItems").isotope({sortBy:"original-order"});
-		});
+    if ($("#resultList").length){
+        disableSelection(document.body);
+        $("#resultList").isotope({itemSelector:".filterIcon",layoutMode:"fitRows"});
+        var palList=[];
+        $("#gachaList .d-pal").each(function(i){
+            if ($(this).hasClass("r-1")) v=15; else if ($(this).hasClass("r-2")) v=3; else if ($(this).hasClass("r-3")) v=1; else v=1;
+            if ($(this).parent().attr("id")!="gachaList") v*=3;
+            for (j=0; j<v; j++) palList.push(i);
+        });
+        var palCount=palList.length;
+        $(".gachaButton#pal").click(function(){
+            i=$($("#gachaList .d-pal")[palList[Math.floor(Math.random()*palCount)]]).clone();
+            $("#resultList").prepend(i.hide().fadeIn("slow",function(){$(this).find(".eggCover").delay(1000).fadeOut(800);})).isotope("reloadItems").isotope({sortBy:"original-order"});
+        });
  
-		var rareList=[];
-		$("#gachaList .d-rare").each(function(i){
-			if ($(this).parent().attr("id")=="gachaList") v=1; else v=3;
-			if ($(this).hasClass("r-3")) v*=12; else if ($(this).hasClass("r-4")) v*=3; else if ($(this).hasClass("r-5")) v*=1; else v=1;
-			for (j=0; j<v; j++) rareList.push(i);
-		});
-		var rareCount=rareList.length;
-		$(".gachaButton#rare").click(function(){
-			i=$($("#gachaList .d-rare")[rareList[Math.floor(Math.random()*rareCount)]]).clone();
-			$("#resultList").prepend(i.hide().fadeIn("slow",function(){$(this).find(".eggCover").delay(1000).fadeOut(800)})).isotope("reloadItems").isotope({sortBy:"original-order"});
-		});
-		$("#clearGacha").click(function(){
-			$("#resultList").isotope("remove", $("#resultList>.filterIcon"));
-		});
-	}
+        var rareList=[];
+        $("#gachaList .d-rare").each(function(i){
+            if ($(this).parent().attr("id")=="gachaList") v=1; else v=3;
+            if ($(this).hasClass("r-3")) v*=12; else if ($(this).hasClass("r-4")) v*=3; else if ($(this).hasClass("r-5")) v*=1; else v=1;
+            for (j=0; j<v; j++) rareList.push(i);
+        });
+        var rareCount=rareList.length;
+        $(".gachaButton#rare").click(function(){
+            i=$($("#gachaList .d-rare")[rareList[Math.floor(Math.random()*rareCount)]]).clone();
+            $("#resultList").prepend(i.hide().fadeIn("slow",function(){$(this).find(".eggCover").delay(1000).fadeOut(800);})).isotope("reloadItems").isotope({sortBy:"original-order"});
+        });
+        $("#clearGacha").click(function(){
+            $("#resultList").isotope("remove", $("#resultList>.filterIcon"));
+        });
+    }
 }
 
 function MainPage() {
-	var a=$("#main_page_center").find("img");
-	a.css("cursor","pointer").css("margin","5px 0").click(function() {
-		var aname=$(this).attr('data-image-name').replace(/(.*)i\.png/ig,'$1');
-		$.get(mw.util.wikiScript('api'),
-			{
-				action: 'parse',
-				format: 'json',
-				text: decodeURI('%7B%7B' + aname + '%7D%7D')
-			},
-			function (data) {
-				$('#main_page_right').children().remove();
-				$(data.parse.text['*']).appendTo('#main_page_right');
-			}, 'json');
-		a.fadeTo(0,0.5);
-		$(this).fadeTo(0,1);
-	}).not(":eq(0)").fadeTo(0,0.5);
+    var a=$("#main_page_center").find("img");
+    a.css("cursor","pointer").css("margin","5px 0").click(function() {
+        var aname=$(this).attr('data-image-name').replace(/(.*)i\.png/ig,'$1');
+        new mw.Api().get({
+            action: 'parse',
+            format: 'json',
+            text: decodeURI('%7B%7B' + aname + '%7D%7D')
+            }).done(function (data) {
+                console.log('data=' + data);
+                $('#main_page_right').children().remove();
+                $(data.parse.text['*']).appendTo('#main_page_right');
+            }, 'json');
+        a.fadeTo(0,0.5);
+        $(this).fadeTo(0,1);
+    }).not(":eq(0)").fadeTo(0,0.5);
 }
 
 ( function ( $, mw ) {
@@ -488,7 +488,7 @@ function MainPage() {
 } ( jQuery, mediaWiki ) );
 
 $(function() {
-    $("#WikiaArticleComments").before("<div style='font-weight:bold; font-size:12pt; background: rgba(0,0,0,0.5); border-radius: 5px; padding: 5px; text-shadow: 1px 1px 0px rgba(155,155,155,0.5);'><img style='vertical-align:middle' src='https://images.wikia.nocookie.net/__cb20131122002606/tos/zh/images/thumb/c/c7/Attention.png/45px-Attention.png'> 嚴禁發佈<span style='color: yellow'>徵友</span>及<span style='color: yellow'>招生</span>訊息。發佈<span style='color:#FF44AA;'>通關攻略文</span>請使用<a href='javascript:void(0)' onclick=window.open().location.href='https://tos.fandom.com/zh/wiki/%E5%A1%AB%E5%AF%AB%E9%80%9A%E9%97%9C%E6%94%BB%E7%95%A5'>填寫通關攻略</a>頁面，違反<a href='javascript:void(0)' onclick=window.open().location.href='https://tos.fandom.com/zh/wiki/Tower_of_Saviors_%E7%BB%B4%E5%9F%BA:%E7%94%A8%E6%88%B6%E5%AE%88%E5%89%87#.E8.A8.8E.E8.AB.96.E5.AE.88.E5.89.87'>用戶守則</a>將會受到封禁帳號處分。</div>");
+    $(".license-description").append("<div style='font-weight:bold; font-size:12pt; background: rgba(0,0,0,0.5); border-radius: 5px; padding: 5px; text-shadow: 1px 1px 0px rgba(155,155,155,0.5);'><img style='vertical-align:middle' src='https://images.wikia.nocookie.net/__cb20131122002606/tos/zh/images/thumb/c/c7/Attention.png/45px-Attention.png'> 嚴禁發佈<span style='color: yellow'>徵友</span>及<span style='color: yellow'>招生</span>訊息。違反<a href='javascript:void(0)' onclick=window.open().location.href='https://tos.fandom.com/zh/wiki/Tower_of_Saviors_%E7%BB%B4%E5%9F%BA:%E7%94%A8%E6%88%B6%E5%AE%88%E5%89%87#.E8.A8.8E.E8.AB.96.E5.AE.88.E5.89.87'>用戶守則</a>將會封禁帳號處分。</div>");
     $('.skill_toggle').add($('.toggleBtn')).click(function(){
       tmp1 = $(this).parent().parent().parent().parent().find('.note').not(':hidden');
       tmp2 = $(this).parent().parent().parent().parent().find('.note:hidden');
@@ -506,8 +506,8 @@ window.fng.cp.lang = $.extend(true, {}, window.fng.cp.lang, {
 window.texttip = function(){
     var tt = $('.tt-text'),tl;
     tt.removeAttr('title').on('mouseenter touchstart',function(){
-        var o = $(this).offset(), w = document.body.clientWidth, b = $(this).hasClass('bottom'), l = $(this).hasClass('line');
-        var p = b ? {top: o.top+$(this).outerHeight()+5} : {bottom: document.body.clientHeight-o.top-$(this).outerHeight()};
+        var o = $(this).offset(), w = document.documentElement.clientWidth, b = $(this).hasClass('bottom'), l = $(this).hasClass('line');
+        var p = b ? {top: o.top+$(this).outerHeight()+5} : {bottom: document.documentElement.clientHeight-o.top-$(this).outerHeight()};
         if(o.left<w/2) p.left = b ? o.left : o.left+$(this).outerWidth()+5;
         else p.right = b ? w-o.left-$(this).outerWidth() : w-o.left+5;
         tl = l ?'tt-tip-stage':'tt-tip';
@@ -517,13 +517,42 @@ window.texttip = function(){
     tt.children('a').removeAttr('title');
 };
 texttip();
+
 // Pages need to import script
-wgPageName === '填寫通關攻略' && importScript('MediaWiki:NewTeam.js');
-wgPageName === '召喚獸搜尋器' && importScript('MediaWiki:PetSearch.js');
-wgPageName === '龍刻搜尋器' && importScript('MediaWiki:CraftSearch.js');
-wgPageName === 'Tower_of_Saviors_維基:回報' && importScript('MediaWiki:Report.js');
-wgPageName === '龍刻圖鑒' && importScript('MediaWiki:Galleryfilter2.js');
-wgPageName === '龍刻武裝圖鑒' && importScript('MediaWiki:Galleryfilter2.js');
-wgPageName === '眾神的考驗' && importScript('MediaWiki:ThePantheonsOrdeal.js');
-wgPageName === '神魔之塔 繁中維基主頁' && importScript('MediaWiki:MobilePage.js');
+window.scriptMap = {
+    '填寫通關攻略': ['MediaWiki:NewTeam.js'],
+    '召喚獸搜尋器': ['MediaWiki:PetSearch1.js'],
+    '召喚獸搜尋器test': ['MediaWiki:PetSearch1.js'],
+    '龍刻搜尋器': ['MediaWiki:CraftSearch.js'],
+    'Tower_of_Saviors_維基:回報': ['MediaWiki:Report.js'],
+    '龍刻圖鑒': ['MediaWiki:Galleryfilter2.js'],
+    '龍刻武裝圖鑒': ['MediaWiki:Galleryfilter2.js'],
+    '眾神的考驗': ['MediaWiki:ThePantheonsOrdeal.js'],
+    '神魔之塔 繁中維基主頁': ['MediaWiki:MobilePage.js']
+};
+// Use timeout to check importScript is exist after some time
+setTimeout(function () {
+window.scriptMap[mw.config.values.wgPageName].forEach(function (script) {
+    importScript(script);
+});
+}, 100);
+setTimeout(function () {
+if (mw.config.get("wgCategories").indexOf("召喚獸") >= 0) {
+	importScript("MediaWiki:PetGallery.js");
+	}
+}, 100);
+/*
+if (mw.config.values.wgCategories.indexOf('召喚獸') >= 0) {
+    importScript('MediaWiki:PetGallery.js');
+}
+wgPageName === '填寫通關攻略' && importScript('MediaWiki:NewTeam.js'),
+wgPageName === '召喚獸搜尋器' && importScript('MediaWiki:PetSearch.js'),
+wgPageName === '召喚獸搜尋器test' && importScript('MediaWiki:PetSearch1.js'),
+wgPageName === '龍刻搜尋器' && importScript('MediaWiki:CraftSearch.js'),
+wgPageName === 'Tower_of_Saviors_維基:回報' && importScript('MediaWiki:Report.js'),
+wgPageName === '龍刻圖鑒' && importScript('MediaWiki:Galleryfilter2.js'),
+wgPageName === '龍刻武裝圖鑒' && importScript('MediaWiki:Galleryfilter2.js'),
+wgPageName === '眾神的考驗' && importScript('MediaWiki:ThePantheonsOrdeal.js'),
+wgPageName === '神魔之塔 繁中維基主頁' && importScript('MediaWiki:MobilePage.js'),
 $.inArray('召喚獸', wgCategories) !== -1 && importScript('MediaWiki:PetGallery.js');
+*/

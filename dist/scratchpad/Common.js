@@ -1,4 +1,4 @@
-// 21:26, March 20, 2017 (UTC)
+// 18:14, September 10, 2020 (UTC)
 // <source lang="JavaScript">
 
 // Test if an Element has a Certain Class
@@ -250,5 +250,14 @@ importScriptPage('MediaWiki:Common.js/CEB.js', 'admintools');
 // zIndex = 100;
 // importScriptPage('MediaWiki:SnowStorm.js', 'dev');
 // END Add snow
+
+// Add Bureaucrat promotion warning message
+!function() {
+    if (wgCanonicalSpecialPageName !== 'Userrights') return;
+    $('#mw-content-text').on('change', '#wpGroup-bureaucrat', function() {
+    if ($('#wpGroup-bureaucrat').attr('checked') && !confirm('Do you truly want to appoint a bureaucrat?')) $('#wpGroup-bureaucrat').attr('checked', null);
+    });
+}();
+// END Bureaucrat promotion warning message
 
 // </source>

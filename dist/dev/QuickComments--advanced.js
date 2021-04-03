@@ -2,7 +2,7 @@
     if (
         wgCanonicalSpecialPageName !== "WikiActivity" ||
         $('#advanced-comments').length > 0 ||
-        !/sysop|vstf|staff|helper|content-moderator|wiki-manager|content-team-member/.test(mw.config.get('wgUserGroups').join())
+        !/sysop|staff|helper|content-moderator|wiki-manager|content-team-member|soap/.test(mw.config.get('wgUserGroups').join())
     ) {
         return;
     }

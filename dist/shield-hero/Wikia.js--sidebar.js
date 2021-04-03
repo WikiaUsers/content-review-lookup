@@ -12,10 +12,10 @@
             .addClass('rsw-custom-module rail-module')
             .append(
                 $('<a>')
-                                        .attr('href', 'https://discord.gg/ZvzTBB4')
+                    .attr('href', 'https://discord.gg/ZvzTBB4')
                     .append(
                         $('<img>')
-                            .attr('src', 'https://vignette.wikia.nocookie.net/the-rising-of-the-shield-hero/images/5/52/Shield_Discord_Banner.png/revision/latest/scale-to-width-down/258?cb=20190302071313')
+                            .attr('src', 'https://vignette.wikia.nocookie.net/the-rising-of-the-shield-hero/images/5/52/Shield_Discord_Banner.png')
                     ),
                 $('<div>')
                     .append(
@@ -23,7 +23,7 @@
                             .append(
                                 'The Rising of the Shield Hero Wiki has an Official Discord Server! Click the button below to join and chat with fellow fans live, or click ',
                                 $('<a>')
-                                    .attr('href', mw.util.wikiGetlink('The Rising of the Shield Hero Wiki:Discord_Policy'))
+                                    .attr('href', mw.util.getUrl('The Rising of the Shield Hero Wiki:Discord_Policy'))
                                     .text('here'),
                                 ' to read our chat rules.'
                             ),

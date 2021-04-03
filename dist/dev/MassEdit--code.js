@@ -1,16 +1,17 @@
 /**
  * <nowiki>
- * MassEdit.js
+ * MassEdit
  * @file Essentially "bot software lite"; task automation and bulk editing tool
  * @author Eizen <dev.wikia.com/wiki/User_talk:Eizen>
  * @license CC-BY-SA 3.0
  * @external "ext.wikia.LinkSuggest"
  * @external "mediawiki.user"
  * @external "mediawiki.util"
+ * @external "Colors"
  * @external "I18n-js"
- * @external "Modal.js"
- * @external "Placement.js"
- * @external "WgMessageWallsExist.js"
+ * @external "Modal"
+ * @external "Placement"
+ * @external "WgMessageWallsExist"
  */
 
 /**
@@ -155,6 +156,13 @@
         // Preview classes
         CLASS_PREVIEW_BUTTON: "massedit-preview-button",
 
+        // UCP OO-UI classes
+        CLASS_OOUI_FRAME: "oo-ui-window-frame",
+        CLASS_OOUI_HEAD: "oo-ui-window-head",
+        CLASS_OOUI_BODY: "oo-ui-window-body",
+        CLASS_OOUI_FOOT: "oo-ui-window-foot",
+        CLASS_OOUI_LABEL: "oo-ui-labelElement-label",
+
         // Modal footer classes
         CLASS_MODAL_CONTAINER: "massedit-modal-container",
         CLASS_MODAL_BUTTON: "massedit-modal-button",
@@ -201,7 +209,7 @@
           "bot",
           "bot-global",
           "staff",
-          "vstf",
+          "soap",
           "helper",
           "vanguard",
           "wiki-manager",
@@ -346,6 +354,114 @@
     },
 
     /**
+     * @description The <code>Buttons</code> pseudo-enum stores all seven config
+     * <code>object</code>s used to assemble <code>ModalButton</code> instances
+     * during the Modal creation process. Prior to UCP update 3, this data was
+     * stored in a static fashion within <code>main.buildModal</code>. However,
+     * due to the need to maintain a static default <code>disabled</code> flag
+     * for use in toggling buttons elements within the body of
+     * <code>main.toggleModalComponentsDisable</code>, the associated config
+     * objects were removed from the <code>buildModal</code> method and provided
+     * their own dedicated pseudo-enum. The modal builder function now uses this
+     * data to dynamically assemble the buttons and modal in an automatic
+     * fashion.
+     * <br />
+     * <br />
+     * The key for each <code>Buttons</code> object entry is as follows:
+     * <pre>
+     * - HANDLER: Click handler function, a property of MassEdit instance
+     * - TEXT: <code>i18n</code> message name for button text
+     * - EVENT: Name of related click event (should be same as object key name)
+     * - PRIMARY: <code>boolean</code> flag for primary styling
+     * - DISABLED: <code>boolean</code> flag for default disabled behavior
+     * - ID: Name of <code>Selectors</code> key related to element id
+     * - CLASSES: Array of <code>Selectors</code> keys for class selectors
+     * </pre>
+     *
+     * @readonly
+     * @enum {object}
+     */
+    Buttons: {
+      enumerable: true,
+      writable: false,
+      configurable: false,
+      value: Object.freeze({
+        SUBMIT: Object.freeze({
+          HANDLER: "handleSubmit",
+          TEXT: "buttonSubmit",
+          EVENT: "submit",
+          PRIMARY: true,
+          DISABLED: false,
+          ID: "ID_MODAL_SUBMIT",
+          CLASSES: Object.freeze([
+            "CLASS_MODAL_BUTTON",
+            "CLASS_MODAL_OPTION",
+          ])
+        }),
+        TOGGLE: Object.freeze({
+          HANDLER: "handleToggle",
+          TEXT: "buttonPause",
+          EVENT: "toggle",
+          PRIMARY: true,
+          DISABLED: true,
+          ID: "ID_MODAL_TOGGLE",
+          CLASSES: Object.freeze([
+            "CLASS_MODAL_BUTTON",
+            "CLASS_MODAL_TIMER",
+          ])
+        }),
+        CANCEL: Object.freeze({
+          HANDLER: "handleCancel",
+          TEXT: "buttonCancel",
+          EVENT: "cancel",
+          PRIMARY: true,
+          DISABLED: true,
+          ID: "ID_MODAL_CANCEL",
+          CLASSES: Object.freeze([
+            "CLASS_MODAL_BUTTON",
+            "CLASS_MODAL_TIMER",
+          ])
+        }),
+        PREVIEW: Object.freeze({
+          HANDLER: "handlePreviewing",
+          TEXT: "buttonPreview",
+          EVENT: "preview",
+          PRIMARY: true,
+          DISABLED: true,
+          ID: "ID_MODAL_PREVIEW",
+          CLASSES: Object.freeze([
+            "CLASS_MODAL_BUTTON",
+          ])
+        }),
+        CLOSE: Object.freeze({
+          TEXT: "buttonClose",
+          EVENT: "close",
+          PRIMARY: false,
+          DISABLED: false,
+          ID: "ID_MODAL_CLOSE",
+          CLASSES: Object.freeze([
+            "CLASS_MODAL_BUTTON",
+            "CLASS_MODAL_LEFT",
+            "CLASS_MODAL_OPTION"
+          ])
+        }),
+        CLEAR: Object.freeze({
+          HANDLER: "handleClear",
+          TEXT: "buttonClear",
+          EVENT: "clear",
+          PRIMARY: false,
+          DISABLED: false,
+          ID: "ID_MODAL_CLEAR",
+          CLASSES: Object.freeze([
+            "CLASS_MODAL_BUTTON",
+            "CLASS_MODAL_LEFT",
+            "CLASS_MODAL_OPTION"
+          ])
+        }),
+      }),
+    },
+
+    /**
      * @description This pseudo-enum replaces the previous pair of
      * <code>boolean</code> constants housed in the script-global execution
      * context, namely <code>DEBUG</code> and <code>TESTING</code>. This enum
@@ -367,7 +483,6 @@
         TESTING: false,
       }),
     },
-
 
     /**
      * @description The <code>Utility</code> pseudo-enum of the
@@ -398,9 +513,11 @@
       value: Object.freeze({
         LS_KEY: "MassEdit-cache-scenes",
         FIRST_SCENE: "REPLACE",
+        MAX_USERS: 500,
         MAX_SUMMARY_CHARS: 800,
         FADE_INTERVAL: 1000,
         DELAY: 35000,
+        BOTTOM_PADDING: 15,
       }),
     },
   });
@@ -438,7 +555,6 @@
      * - HOOK: The name of the <code>mw.hook</code> event
      * - ARTICLE: The location of the script or stylesheet on the Dev wiki
      * - TYPE: Either "script" for JS scripts or "style" for CSS stylesheets
-     * - MODULE: Name of the temporary ResourceLoader module used to async load
      * </pre>
      *
      * @readonly
@@ -450,6 +566,12 @@
       configurable: false,
       value: Object.freeze({
         ARTICLES: Object.freeze([
+          Object.freeze({
+            DEV: "colors",
+            HOOK: "dev.colors",
+            ARTICLE: "u:dev:MediaWiki:Colors/code.js",
+            TYPE: "script",
+          }),
           Object.freeze({
             DEV: "i18n",
             HOOK: "dev.i18n",
@@ -680,9 +802,9 @@
     (this.flags = this.flags || {})[paramFlagName] =
       this.flags[paramFlagName] || this.Flags[paramFlagName];
 
-    // Toggle via bitwise then type coerce back to boolean before redefining
+    // Toggle via bitwise then type cast back to boolean before redefining
     window.console.log(paramFlagName + ":",
-      this.flags[paramFlagName] = !!(this.flags[paramFlagName] ^= 1));
+      this.flags[paramFlagName] = Boolean(this.flags[paramFlagName] ^ 1));
   };
 
   /**
@@ -806,7 +928,9 @@
 
     // Apply localStorage data to this.modal.scenes and local scenes variable
     try {
-      scenes = this.modal.scenes = $.storage.get(this.Utility.LS_KEY) || {};
+      scenes = this.modal.scenes = ((this.info.isUCP)
+        ? JSON.parse(mw.storage.get(this.Utility.LS_KEY))
+        : $.storage.get(this.Utility.LS_KEY)) || {};
     } catch (paramError) {
       if (this.flags.debug) {
         window.console.error(paramError);
@@ -831,7 +955,9 @@
 
       // Add to localStorage
       try {
-        $.storage.set(this.Utility.LS_KEY, scenes);
+        (this.info.isUCP)
+          ? mw.storage.set(this.Utility.LS_KEY, JSON.stringify(scenes))
+          : $.storage.set(this.Utility.LS_KEY, scenes);
       } catch (paramError) {}
 
       // Make sure new scenes are added to both localStorage and modal.scenes
@@ -1093,20 +1219,29 @@
   /****************************************************************************/
 
   /**
-   * @description As the name of the method implies, this Nirvana function is
-   * used to return data related to the user indicated by the parameter
-   * <code>string</code>. It's perhaps important to note that the method will
-   * return data about the user making the request if improper title characters
-   * are used in the query, making it important to check <code>string</code>s
-   * with <code>mw.Title.newFromText</code> or <code>wgLegalTitleChars</code>
-   * prior to invocation.
+   * @description Prior to UCP update 2, this method employed the Nirvana
+   * controller <code>UserProfilePage.renderUserIdentityBox</code> to check a
+   * single username for the status of its user account. With subsequent
+   * reworking of the calling method <code>main.getExtantUsernames</code> to
+   * query usernames in bulk groups of 500, this method was adjusted and
+   * UCPified to use API:Users and pass pipe-delimited lists of users to limit
+   * the number of total calls needed to start the actual messaging process.
    *
-   * @param {string} paramUsername - A <code>string</code> username
+   * @param {string} paramUsers - A pipe-delimited list of usernames to query
    * @returns {object} - <code>$.Deferred</code> resolved promise
    */
-  main.getUsernameData = function (paramUsername) {
-    return $.nirvana.getJson("UserProfilePage", "renderUserIdentityBox", {
-      title: paramUsername,
+  main.getUsernameData = function (paramUsers) {
+    return $.ajax({
+      type: "GET",
+      url: mw.util.wikiScript("api"),
+      data: {
+        action: "query",
+        list: "users",
+        ususers: (this.isThisAn("Array", paramUsers))
+          ? paramUsers.join("|")
+          : paramUsers,
+        format: "json",
+      }
     });
   };
 
@@ -1119,17 +1254,26 @@
    * main submission handler <code>main.handleSubmit</code>'s assorted
    * <code>$.prototype.Deferred</code> handlers if message walls are enabled
    * on-wiki.
+   * <br />
+   * <br />
+   * Due to the deprecation of the old Message Walls and the loss of their
+   * associated Nirvana controllers and methods, the Message Wall posting and
+   * previewing functions now return rejected <code>$.Deferred</code> promises
+   * and error codes until such time as a means of external posting to the new
+   * UCP Message Walls is found.
    *
    * @param {object} paramConfig - <code>object</code> with varying properties
    * @returns {object} - <code>$.Deferred</code> resolved promise
    */
   main.postMessageWallThread = function (paramConfig) {
-    return $.nirvana.postJson("WallExternal", "postNewMessage",
-      $.extend(false, {
-        token: mw.user.tokens.get("editToken"),
-        pagenamespace: 1200,
-      }, paramConfig)
-    );
+    return (this.info.isUCP)
+      ? new $.Deferred().reject({error: {code: "ucpmessagewall"}}).promise()
+      : $.nirvana.postJson("WallExternal", "postNewMessage",
+          $.extend(false, {
+            token: mw.user.tokens.get("editToken"),
+            pagenamespace: 1200,
+          }, paramConfig)
+        );
   };
 
   /**
@@ -1166,14 +1310,23 @@
    * invoking handler <code>main.handlePreviewing</code> with the parsed
    * contents of the message in question on successful preview operations or the
    * associated error on failed operations.
+   * <br />
+   * <br />
+   * Due to the deprecation of the old Message Walls and the loss of their
+   * associated Nirvana controllers and methods, the Message Wall posting and
+   * previewing functions now return rejected <code>$.Deferred</code> promises
+   * and error codes until such time as a means of external posting to the new
+   * UCP Message Walls is found.
    *
    * @param {string} paramBody - Content of the message
    * @returns {object} - <code>$.Deferred</code> object
    */
   main.previewMessageWallThread = function (paramBody) {
-    return $.nirvana.postJson("WallExternal", "preview", {
-      body: paramBody,
-    });
+    return (this.info.isUCP)
+      ? new $.Deferred().reject({error: {code: "ucpmessagewall"}}).promise()
+      : $.nirvana.postJson("WallExternal", "preview", {
+          body: paramBody,
+        });
   };
 
   /**
@@ -1203,6 +1356,34 @@
   };
 
   /**
+   * @description In lieu of the custom preview handlers
+   * <code>main.previewMessageWallThread</code> and
+   * <code>main.previewTalkPageTopic</code> used on legacy wikis to parse and
+   * display wikitext message content intended for user talk pages or old-style
+   * Message Walls, a general-purpose wikitext parse method is used to handle
+   * such tasks on UCP wikis. For now, this approach should work as expected, as
+   * wikitext still serves as the default content type for user talk pages,
+   * though not for new-style Message Walls.
+   *
+   * @param {string} paramText - Wikitext content to be parsed
+   * @returns {object} - <code>$.Deferred</code> object
+   */
+  main.parseWikitextContent = function (paramText) {
+    return $.ajax({
+      type: "GET",
+      url: mw.util.wikiScript("api"),
+      data: {
+        action: "parse",
+        title: "API",
+        text: paramText,
+        contentmodel: "wikitext",
+        preview: true,
+        format: "json"
+      }
+    });
+  };
+
+  /**
    * @description This function queries the API for member pages of a specific
    * namespace, the id of which is included as a property of the parameter
    * <code>object</code>. This argument is merged with the default
@@ -1220,11 +1401,11 @@
       type: "GET",
       url: mw.util.wikiScript("api"),
       data: $.extend(false, {
-        token: mw.user.tokens.get("editToken"),
         action: "query",
         list: "allpages",
         apnamespace: "*",
-        aplimit: "max",
+        aplimit: (this.flags.debug) ? 5 : "max",
+        rawcontinue: true,
         format: "json",
       }, paramConfig)
     });
@@ -1248,13 +1429,13 @@
       type: "GET",
       url: mw.util.wikiScript("api"),
       data: $.extend(false, {
-        token: mw.user.tokens.get("editToken"),
         action: "query",
         list: "categorymembers",
         cmnamespace: "*",
         cmprop: "title",
         cmdir: "desc",
-        cmlimit: "max",
+        cmlimit: (this.flags.debug) ? 5 : "max",
+        rawcontinue: true,
         format: "json",
       }, paramConfig)
     });
@@ -1281,7 +1462,8 @@
         action: "query",
         list: "embeddedin",
         einamespace: "*",
-        eilimit: "max",
+        eilimit: (this.flags.debug) ? 5 : "max",
+        rawcontinue: true,
         format: "json",
       }, paramConfig)
     });
@@ -1304,9 +1486,10 @@
       data: {
         action: "query",
         prop: "info|revisions",
-        intoken: "edit",
         titles: paramPage,
+        inprop: "protection",
         rvprop: "content|timestamp",
+        //rvslots: "*",
         rvlimit: "1",
         indexpageids: "true",
         format: "json"
@@ -1412,6 +1595,7 @@
       ) {
         results.push(entry);
       } else {
+        // Error: Use of some characters is prohibited by wgLegalTitleChars
         return $deferred.reject("logErrorSecurity");
       }
     }
@@ -1435,6 +1619,15 @@
    * the user in question exists but does not contribute to the wiki in on
    * which the script is being used. In such cases, perhaps the username will be
    * removed.
+   * <br />
+   * <br />
+   * As of UCP update 2, the mechanism by which usernames are checked to ensure
+   * they belong to extant user accounts has changed. Previously, each username
+   * was checked via the <code>UserProfilePage.renderUserIdentityBox</code>
+   * Nirvana controller individually, resulting in as many API queries as
+   * intended message recipients. This was eventually replaced in favor of bulk
+   * queries to API:Users in groups of 500, thus expediting the validation
+   * process and rendering the approach more efficient overall.
    *
    * @param {Array<string>} paramEntries - Array of usernames to check
    * @returns {object} - $.Deferred promise object
@@ -1442,14 +1635,14 @@
   main.getExtantUsernames = function (paramEntries) {
 
     // Declarations
-    var counter, names, entries, $getUser, $getUsers, $addUser, $returnUsers,
-      wallPrefix, userPrefix;
+    var i, n, counter, entries, groups, $getData, $getUsers, $addUsers,
+      $returnUsers, wallPrefix, userData, user;
 
-    // Definitions
-    $addUser = new $.Deferred();
+    // Deferred definitions
+    $addUsers = new $.Deferred();
     $returnUsers = new $.Deferred();
 
-    // Iterator counter
+    // Group iterator counter
     counter = 0;
 
     // Message Wall or User talk
@@ -1459,76 +1652,118 @@
         : 3
     ] + ":";
 
-    // "User talk:"
-    userPrefix = this.globals.wgFormattedNamespaces[3] + ":";
-
     // Array of extant usernames with prefix
-    names = [];
     entries = [];
 
     // Get wellformed, formatted usernames
     $getUsers = this.getValidatedEntries(paramEntries, "recipients");
 
-    // Once acquired, apply to names array or pass along rejection message
-    $getUsers.then(function (paramResults) {
-      names = paramResults;
-    }, $returnUsers.reject.bind($));
+    /**
+     * @description Upon the acquisition of validated usernames containing only
+     * permissible characters, the associated <code>then</code> callbacks are
+     * invoked, either rejecting <code>$returnUsers</code> or continuing with
+     * the sorting and querying process if successful. If names have been
+     * returned, they are divided into groups of 500 that are individually
+     * provided to <code>main.getUsernameData</code> due to the absence of any
+     * sort of API:Users continuation option (<code>uscontinue</code>, etc.)
+     * <br />
+     * <br />
+     * This replaces the much less efficient method previously employed, in
+     * which the <code>UserProfilePage.renderUserIdentityBox</code> Nirvana
+     * controller was queried for each individual username to determine if the
+     * account exists. In the new approach, usernames are queried and checked in
+     * bulk, resulting in a more efficent system.
+     */
+    $getUsers.then(function (paramNames) {
 
-    // Log paramResults
-    if (this.flags.debug) {
-      window.console.log(names);
-    }
+      // API:Users has no "uscontinue" property for continuing queries over 500
+      groups = paramNames.map(function (paramEntry, paramIndex) {
+        return (paramIndex % this.Utility.MAX_USERS === 0)
+          ? paramNames.slice(paramIndex, paramIndex + this.Utility.MAX_USERS)
+          : null;
+      }.bind(this)).filter(function (paramEntry) {
+        return paramEntry;
+      });
 
-    // Indicate checking is in progress
-    $returnUsers.notify("logStatusCheckingUsernames");
-
-    // Iterate over provided list of usernames
-    this.timer = this.setDynamicTimeout(function () {
-      if (counter === names.length) {
-
-        if (entries.length) {
-          // Return Quicksorted entries
-          return $returnUsers.resolve(this.sort(entries)).promise();
-        } else {
-          // Error: No wellformed pages exist to edit
-          return $returnUsers.reject("logErrorNoWellformedUsernames").promise();
-        }
+      // Log paramResults
+      if (this.flags.debug) {
+        window.console.log(paramEntries, paramNames, groups);
       }
 
-      // Acquire member pages of cat or ns
-      $getUser = $.when(this.getUsernameData(userPrefix + names[counter]));
+      // Iterate over provided groups of usernames
+      this.timer = this.setDynamicTimeout(function () {
+        if (counter === groups.length) {
+          return $addUsers.resolve(entries);
+        }
 
-      // Once acquired, add pages to array
-      $getUser.always($addUser.notify);
+        // Indicate checking is in progress
+        $returnUsers.notify("logStatusCheckingUsernames");
 
-    }.bind(this), this.config.interval);
+        // Acquire user data
+        $getData = $.when(this.getUsernameData(groups[counter++].join("|")));
+
+        // Once acquired, add pages to array
+        $getData.always($addUsers.notify);
+
+      }.bind(this), this.config.interval);
+    }.bind(this), $returnUsers.reject.bind(null));
 
     /**
-     * @description For each username of <code>paramEntries</code> that is
-     * checked, the <code>$.Deferred</code>'s <code>progress</code> handler is
-     * invoked to check the status of the username and determine if the related
-     * account actually exists. The status is then displayed to the user by
-     * means of a status log message passed to <code>handleSubmit</code> via
-     * <code>$returnUsers.notify</code>.
+     * @description The <code>progress</code> callback is notified and invoked
+     * for each group of 500 usernames. The individual user data objects are
+     * checked to determine if they possess the <code>missing</code> property
+     * (indicating a nonexistent or malformed account) or the
+     * <code>userid</code> property (possessed by all extant accounts). A status
+     * message is logged for each username depending on its status, though this
+     * may need some adjustment in the future.
      */
-    $addUser.progress(function (paramResults, paramStatus, paramXHR) {
+    $addUsers.progress(function (paramResults, paramStatus, paramXHR) {
       if (this.flags.debug) {
         window.console.log(paramResults, paramStatus, paramXHR);
       }
 
       if (paramStatus !== "success" || paramXHR.status !== 200) {
-        $returnUsers.notify("logErrorNoUserData", names[counter++]);
+        // Error: Unable to acquire user data for user $1
+        $returnUsers.notify("logErrorNoUserData", user.name);
         return this.timer.iterate();
       }
 
-      if (paramResults.user && paramResults.user.edits !== -1) {
-        $returnUsers.notify("logSuccessUserExists", names[counter]);
-        entries.push(wallPrefix + names[counter++]);
-      } else {
-        $returnUsers.notify("logErrorNoSuchPage", names[counter++]);
+      // Array of user data objects
+      userData = paramResults.query.users;
+
+      // Iterate over all usernames and post status log entries for each
+      for (i = 0, n = userData.length; i < n; i++) {
+        user = userData[i];
+
+        if (user.hasOwnProperty("userid") && !user.hasOwnProperty("missing")) {
+          // Success: Username $1 is valid
+          $returnUsers.notify("logSuccessUserExists", user.name);
+          entries.push(wallPrefix + user.name);
+        } else {
+          // Error: Unable to acquire user data for user $1
+          $returnUsers.notify("logErrorNoUserData", user.name);
+        }
       }
 
       return this.timer.iterate();
+    }.bind(this));
+
+    /**
+     * @description Once all usernames have been checked for their extant status
+     * in groups of 500, the <code>done</code> callback of the resolved
+     * <code>$addUsers</code> <code>$.Deferred</code> checks if there are any
+     * wellformed, extant usernames able to be messaged. If there are, this list
+     * is returned via resolved promise. Otherwise, an error i18n property name
+     * is returned via rejected promise.
+     */
+    $addUsers.done(function () {
+      if (entries.length) {
+        // Return Quicksorted entries
+        return $returnUsers.resolve(this.sort(entries)).promise();
+      } else {
+        // Error: No wellformed pages exist to edit
+        return $returnUsers.reject("logErrorNoWellformedUsernames").promise();
+      }
     }.bind(this));
 
     return $returnUsers.promise();
@@ -1588,7 +1823,7 @@
       namespaces: {
         query: "allpages",
         handler: "getNamespaceMembers",
-        continuer: "apfrom",
+        continuer: (this.info.isUCP) ? "apcontinue" : "apfrom",
         target: "apnamespace",
       },
       templates: {
@@ -1943,98 +2178,147 @@
    * the contents of multiple files. due to the use of a <code>Selectors</code>
    * object collating all ids and classes evidenced in the modal in a single
    * place.
+   * <br />
+   * <br />
+   * As of UCP update 2, the previous <code>mw.util.addCSS</code> approach has
+   * been augmented and adjusted via the inclusion of the external dependency
+   * <code>Colors.js</code> and its related methods used to inject wiki-specific
+   * default styling depending on the site theme. This allows for a more unified
+   * appearance across wikis and ensures that the modal looks more or less the
+   * same when viewed on legacy wikis and UCP wikis alike.
    *
    * @returns {void}
    */
   main.injectModalStyles = function () {
-    mw.util.addCSS(
-      "." + this.Selectors.CLASS_CONTENT_CONTAINER + " {" +
+
+    // Declarations
+    var selectors, colors, stringCSS, customColors;
+
+    // Temporary aliases
+    selectors = this.Selectors;
+    colors = window.dev.colors;
+
+    // Custom colors to augment dev.colors.wikia defaults
+    customColors = {
+      logColor: "#757575", // Common ::placeholder text color in shadow DOM
+      textfieldBackground: "#FFFFFF",
+      textfieldColor: "#000000",
+      modalBorder: (this.info.isUCP)
+        ? "var(--theme-border-color)"         // UCP has dedicated 2nd border
+        : colors.parse(colors.wikia.border)   // Just use Colors' border styling
+    };
+
+    // String CSS using default wikia colors and customs
+    stringCSS =
+      "." + selectors.CLASS_CONTENT_CONTAINER + " {" +
         "margin: auto !important;" +
         "position: relative !important;" +
         "width: 96% !important;" +
       "}" +
 
-      "." + this.Selectors.CLASS_CONTENT_SELECT + "," +
-      "." + this.Selectors.CLASS_CONTENT_TEXTAREA + "," +
-      "." + this.Selectors.CLASS_CONTENT_INPUT + " {" +
+      "." + selectors.CLASS_OOUI_BODY + " " +
+      "." + selectors.CLASS_CONTENT_CONTAINER + " {" +
+        "padding-bottom: " + this.Utility.BOTTOM_PADDING + "px !important;" +
+      "}" +
+
+      "#" + selectors.ID_CONTENT_LOG + "," +
+      "." + selectors.CLASS_CONTENT_SELECT + "," +
+      "." + selectors.CLASS_CONTENT_TEXTAREA + "," +
+      "." + selectors.CLASS_CONTENT_INPUT + " {" +
         "width: 99.6% !important;" +
         "padding: 0 !important;" +
         "resize: none !important;" +
+        "background-color: $textfieldBackground !important;" +
+        "color: $textfieldColor !important;" +
+        "border: 1px solid !important;" +
+        "border-color: $modalBorder !important;" +
       "}" +
 
-      "." + this.Selectors.CLASS_CONTENT_TEXTAREA + " {" +
+      // Status log and textareas have monospace font and same height
+      "#" + selectors.ID_CONTENT_LOG + "," +
+      "." + selectors.CLASS_CONTENT_TEXTAREA + " {" +
+        "font-family: monospace !important;" +
         "height: 45px !important;" +
       "}" +
 
-      "#" + this.Selectors.ID_CONTENT_MESSAGE + " " +
-      "." + this.Selectors.CLASS_CONTENT_TEXTAREA + "," +
-      "#" + this.Selectors.ID_CONTENT_LIST + " " +
-      "." + this.Selectors.CLASS_CONTENT_TEXTAREA + " {" +
+      // Message and List scenes have taller textareas
+      "#" + selectors.ID_CONTENT_MESSAGE + " " +
+      "." + selectors.CLASS_CONTENT_TEXTAREA + "," +
+      "#" + selectors.ID_CONTENT_LIST + " " +
+      "." + selectors.CLASS_CONTENT_TEXTAREA + " {" +
         "height: 85px !important;" +
       "}" +
 
-      "#" + this.Selectors.ID_CONTENT_ADD + " " +
-      "." + this.Selectors.CLASS_CONTENT_TEXTAREA + " {" +
+      // Append/prepend textareas are the tallest
+      "#" + selectors.ID_CONTENT_ADD + " " +
+      "." + selectors.CLASS_CONTENT_TEXTAREA + " {" +
         "height: 65px !important;" +
       "}" +
 
-      "#" + this.Selectors.ID_CONTENT_LOG + " {" +
-        "height: 45px !important;" +
-        "width: 99.6% !important;" +
-        "border: 1px solid !important;" +
-        "font-family: monospace !important;" +
-        "background: #FFFFFF !important;" +
-        "color: #AEAEAE !important;" +
+      // Set placeholder color for status log messages
+      "#" + selectors.ID_CONTENT_LOG + " {" +
+        "color: $logColor !important;" +
         "overflow: auto !important;" +
-        "padding: 0 !important;" +
       "}" +
 
-      "." + this.Selectors.CLASS_MODAL_BUTTON + "{" +
+      "." + selectors.CLASS_MODAL_BUTTON + " {" +
+        "float: right !important;" +
         "margin-left: 5px !important;" +
         "font-size: 8pt !important;" +
       "}" +
 
-      "." + this.Selectors.CLASS_MODAL_LEFT + "{" +
+      "span." + selectors.CLASS_MODAL_BUTTON + "[disabled] {" +
+        "display: none;" +
+      "}" +
+
+      "." + selectors.CLASS_MODAL_LEFT + " {" +
         "float: left !important;" +
         "margin-left: 0px !important;" +
         "margin-right: 5px !important;" +
       "}" +
 
-      "#" + this.Selectors.ID_PREVIEW_CONTAINER + "{" +
-        "border: 1px solid currentColor !important;" +
+      "." + selectors.CLASS_OOUI_BODY + " " +
+      "#" + selectors.ID_PREVIEW_CONTAINER + " {" +
+        "margin: 20px !important;" +
+      "}" +
+
+      "#" + selectors.ID_PREVIEW_CONTAINER + " {" +
+        "border: 1px solid $modalBorder;" +
         "padding: 10px !important;" +
         "overflow: auto !important;" +
         "min-height: 250px !important;" +
       "}" +
 
-      "#" + this.Selectors.ID_PREVIEW_BODY + " .pagetitle {" +
+      "#" + selectors.ID_PREVIEW_BODY + " .pagetitle {" +
         "display: none !important;" +
       "}" +
 
-      "#" + this.Selectors.ID_PREVIEW_TITLE + " h2 {" +
+      "#" + selectors.ID_PREVIEW_TITLE + " h2 {" +
         "display: inline-block !important;" +
       "}" +
 
-      "#" + this.Selectors.ID_PREVIEW_CLOSE + "{" +
+      "#" + selectors.ID_PREVIEW_CLOSE + " {" +
         "display: inline-block !important;" +
         "float: right !important;" +
       "}" +
 
-      "." + this.Selectors.CLASS_PREVIEW_BUTTON + "{" +
+      "." + selectors.CLASS_PREVIEW_BUTTON + " {" +
         "border: none !important;" +
         "background: none !important;" +
-        "color: currentColor !important;" +
+        "color: $link !important;" +
         "cursor: pointer !important;" +
       "}" +
 
-      "." + this.Selectors.CLASS_PREVIEW_BUTTON + ":hover," +
-      "." + this.Selectors.CLASS_PREVIEW_BUTTON + ":focus," +
-      "." + this.Selectors.CLASS_PREVIEW_BUTTON + ":active {" +
+      "." + selectors.CLASS_PREVIEW_BUTTON + ":hover," +
+      "." + selectors.CLASS_PREVIEW_BUTTON + ":focus," +
+      "." + selectors.CLASS_PREVIEW_BUTTON + ":active {" +
         "outline: none !important;" +
         "background: none !important;" +
         "text-decoration: underline !important;" +
-      "}"
-    );
+      "}";
+
+    // Append new stylesheet to the head and return
+    return colors.css(stringCSS, customColors);
   };
 
   /**
@@ -2084,7 +2368,7 @@
     $("#" + this.Selectors.ID_CONTENT_FORM)[0].reset();
 
     // Re-enable modal buttons and fieldset
-    this.toggleModalComponentsDisable(false);
+    this.toggleModalComponentsDisable("partial", false);
   };
 
   /**
@@ -2097,44 +2381,70 @@
    * operation, and vice versa. Likewise, the preview button is only displayed
    * when the messaging scene is being viewed, and only when the editing
    * operation is not running.
+   * <br />
+   * <br />
+   * As of UCP update 2, this function received several significant overhauls.
+   * The accepted version iterates through <code>this.modal.modal<code>'s
+   * <code>buttons</code> array and sets the current disabled/enabled status of
+   * the button using XOR exclusive disjunction between the
+   * <code>paramDisable</code> flag and the initial baseline via of the button
+   * specified in <code>button.disabled</code>. The preview button remains
+   * disabled unless the scene is the messaging scene as before.
+   * <br />
+   * <br />
+   * As of UCP update 3, a few minor changes were made to this method, most
+   * notable of which was the removal of an "all" + "false" option, in which all
+   * buttons may be simultaneously enabled. This behavior should never manifest,
+   * so in all "all" cases, the buttons will now bulk-disable for use in scene
+   * transition. Also, given the removal of <code>ModalButton</code> config data
+   * to a separate pseudo-enum, the use of a static default <code>boolean</code>
+   * for disabled status now allows for better XOR comparisons in "partial"
+   * use cases.
    *
-   * @param {boolean} paramValue - Whether or not the form/fieldset is disabled
+   * @param {string} paramOption - Either "all" or "partial"
+   * @param {boolean} paramDisable - Whether to disable the select elements
    * @returns {void}
    */
-  main.toggleModalComponentsDisable = function (paramValue) {
+  main.toggleModalComponentsDisable = function (paramOption, paramDisable) {
+    if ($.inArray(paramOption, ["all", "partial"]) === -1) {
+      return;
+    }
+
+    // Sanitize boolean argument; "all"s should always bulk-disable
+    paramDisable =
+      (paramOption === "all" || typeof paramDisable !== "boolean") ||
+      paramDisable;
+
+    // Debug sanitized input
+    if (this.flags.debug) {
+      window.console.log(paramOption, paramDisable);
+    }
 
     // Declarations
-    var i, n, groupSet, current, $scene, isMessaging;
+    var i, n, $scene, isMessaging, buttons, button, $fieldset, isAll,
+      defaultDisable;
 
     // Definitions
     $scene = $("#" + this.Selectors.ID_CONTENT_SCENE)[0];
+    $fieldset = $("#" + this.Selectors.ID_CONTENT_FIELDSET);
     isMessaging = ($scene.value === "message" && $scene.selectedIndex === 2);
+    isAll = paramOption === "all";
+    buttons = this.modal.modal.buttons;
 
-    // Elements to disable/enable
-    groupSet = [
-      {
-        target: "#" + this.Selectors.ID_CONTENT_FIELDSET,
-        value: paramValue,
-      },
-      {
-        target: "." + this.Selectors.CLASS_MODAL_OPTION,
-        value: paramValue,
-      },
-      {
-        target: "." + this.Selectors.CLASS_MODAL_TIMER,
-        value: !paramValue,
-      },
-      {
-        target: "#" + this.Selectors.ID_MODAL_PREVIEW,
-        value: !isMessaging || paramValue,
-      },
-    ];
+    // Use each button's disabled prop as default baseline to compare against
+    for (i = 0, n = buttons.length; i < n; i++) {
+      button = buttons[i];
+      defaultDisable = this.Buttons[button.event.toUpperCase()].DISABLED;
 
-    for (i = 0, n = groupSet.length; i < n; i++) {
-      current = groupSet[i];
-
-      $(current.target).prop("disabled", current.value);
+      // Disabled if "all" or if behavior is expected for "partial"
+      button.setDisabled(isAll || (button.event === "preview")
+        ? (!isMessaging || paramDisable)
+        : Boolean(paramDisable ^ defaultDisable)); // Toggle mechanism
+      $("#" + button.id).attr("disabled", button.disabled);
     }
+
+    // Fieldset is disabled independently of buttons
+    $fieldset.attr("disabled", isAll || paramDisable);
   };
 
   // Preview methods
@@ -2172,7 +2482,7 @@
           $(container).remove();
           $messaging.show();
         }.bind(this),
-      after: this.toggleModalComponentsDisable.bind(this, false)
+      after: this.toggleModalComponentsDisable.bind(this, "partial", false)
     }));
   };
 
@@ -2230,14 +2540,19 @@
 
     // Declarations
     var $scene, previewScene, contents, $byline, $messaging, $modal,
-      isMessaging;
+      isMessaging, modalBodyTarget;
 
     // Definitions
     $scene = $("#" + this.Selectors.ID_CONTENT_SCENE)[0];
+    isMessaging = ($scene.value === "message" && $scene.selectedIndex === 2);
     $byline = $("#" + this.Selectors.ID_CONTENT_BYLINE).val();
     $messaging = $("#" + this.Selectors.ID_CONTENT_MESSAGE);
-    $modal = $("#" + this.Selectors.ID_MODAL_CONTAINER + " > section");
-    isMessaging = ($scene.value === "message" && $scene.selectedIndex === 2);
+
+    // Modal targets
+    modalBodyTarget = (this.info.isUCP)
+      ? " ." + this.Selectors.CLASS_OOUI_BODY
+      : " > section";
+    $modal = $("#" + this.Selectors.ID_MODAL_CONTAINER + modalBodyTarget);
 
     // Ensure messaging scene is shown
     if (!isMessaging || !this.modal.modal) {
@@ -2269,32 +2584,61 @@
    * provided their appropriate listeners. This function handles the disabling
    * of various components based on the actions performed and invokes
    * <code>jQuery.prototype.linksuggest</code> for various elements that may
-   * have wikitext link content on each scene change.
+   * have wikitext link content on each scene change. As of UCP update 2, the
+   * handler also handles the enabling of the handler attached to the scene-
+   * selection dropdown that mediates scene changing.
    *
    * @returns {void}
    */
   main.attachModalEvents = function () {
 
     // Declarations
-    var i, n, field, elements;
+    var i, n, element, elements, height;
 
-    // Define elements to linksuggest
+    // Definitions
+    height = 0;
     elements = [
-      "ID_CONTENT_TARGET",    // Target replacement content
-      "ID_CONTENT_CONTENT",   // New content to be added
-      "ID_CONTENT_SUMMARY",   // Edit summary
-      "ID_CONTENT_BODY",      // Message body
-    ];
+      [
+        "ID_CONTENT_TARGET",        // Target replacement content
+        "ID_CONTENT_CONTENT",       // New content to be added
+        "ID_CONTENT_SUMMARY",       // Edit summary
+        "ID_CONTENT_BODY",          // Message body
+      ],
+      [
+        "CLASS_OOUI_HEAD",          // UCP modal header
+        "CLASS_OOUI_FOOT",          // UCP modal footer
+        "CLASS_CONTENT_CONTAINER",  // Inner modal body content
+      ]
+    ][+this.info.isUCP];
 
-    // Apply linksuggest to each element on focus event
-    for (i = 0, n = elements.length; i < n; i++) {
-      field = "#" + this.Selectors[elements[i]];
+    // Apply linksuggest to each element on focus event if legacy wiki
+    if (!this.info.isUCP) {
+      for (i = 0, n = elements.length; i < n; i++) {
+        element = "#" + this.Selectors[elements[i]];
 
-      $(document).on("focus", field, $.prototype.linksuggest.bind($(field)));
+        $(document).on("focus", element,
+          $.prototype.linksuggest.bind($(element)));
+      }
+
+    // Dynamically adjust modal height on UCP wikis (hacky)
+    } else {
+      for (i = 0, n = elements.length; i < n; i++) {
+        element = "." + this.Selectors[elements[i]];
+        height += $(element).height();
+      }
+
+      $("." + this.Selectors.CLASS_OOUI_FRAME).height(height +
+        (this.Utility.BOTTOM_PADDING * 2));
+    }
+
+    // Apply listener to scene-selection dropdown prior to init end
+    if (!this.modal.isReady) {
+      $(document).on("change", "#" + this.Selectors.ID_CONTENT_SCENE,
+        this.handleClear.bind(this, true));
     }
 
     // Disable certain components
-    this.toggleModalComponentsDisable(false);
+    this.toggleModalComponentsDisable("partial", false);
   };
 
   /**
@@ -2441,87 +2785,52 @@
    * CSS styling prior to creation of the modal, though for the purposes of
    * ensuring single responsibility for all functions, the styling was moved
    * into a separate function, namely <code>injectModalStyles</code>.
+   * <br />
+   * <br />
+   * As of UCP update 3, this method has been refactored significantly. All
+   * <code>ModalButton</code> config objects have been moved to a dedicated
+   * <code>main</code> pseudo-enum, <code>Buttons</code>, leaving this function
+   * to handle the automatic generation of buttons and associated click events
+   * on a dynamic basis. This replaces the previous approach, in which the new
+   * <code>Modal</code> instance was created from static data stored within the
+   * function itself.
    *
    * @returns {object} - A new <code>Modal</code> instance
    */
   main.buildModal = function () {
-    return new window.dev.modal.Modal({
+
+    // Declaration
+    var modal;
+
+    // Base Modal config object definition
+    modal = {
       content: this.buildModalScene(this.Scenes[this.Utility.FIRST_SCENE].NAME),
       id: this.Selectors.ID_MODAL_CONTAINER,
-      size: "medium",
+      size: this.info.isUCP ? "large" : "medium",
       title: this.i18n.msg("buttonScript").escape(),
-      events: {
-        submit: this.handleSubmit.bind(this),
-        toggle: this.handleToggle.bind(this),
-        preview: this.handlePreviewing.bind(this),
-        clear: this.handleClear.bind(this),
-        cancel: this.handleCancel.bind(this),
-      },
-      buttons: [
-        {
-          text: this.i18n.msg("buttonSubmit").escape(),
-          event: "submit",
-          primary: true,
-          id: this.Selectors.ID_MODAL_SUBMIT,
-          classes: [
-            this.Selectors.CLASS_MODAL_BUTTON,
-            this.Selectors.CLASS_MODAL_OPTION,
-          ],
-        },
-        {
-          text: this.i18n.msg("buttonPause").escape(),
-          event: "toggle",
-          primary: true,
-          disabled: true,
-          id: this.Selectors.ID_MODAL_TOGGLE,
-          classes: [
-            this.Selectors.CLASS_MODAL_BUTTON,
-            this.Selectors.CLASS_MODAL_TIMER,
-          ],
-        },
-        {
-          text: this.i18n.msg("buttonCancel").escape(),
-          event: "cancel",
-          primary: true,
-          disabled: true,
-          id: this.Selectors.ID_MODAL_CANCEL,
-          classes: [
-            this.Selectors.CLASS_MODAL_BUTTON,
-            this.Selectors.CLASS_MODAL_TIMER,
-          ],
-        },
-        {
-          text: this.i18n.msg("buttonPreview").escape(),
-          event: "preview",
-          primary: true,
-          disabled: true,
-          id: this.Selectors.ID_MODAL_PREVIEW,
-          classes: [
-            this.Selectors.CLASS_MODAL_BUTTON,
-          ],
-        },
-        {
-          text: this.i18n.msg("buttonClose").escape(),
-          event: "close",
-          id: this.Selectors.ID_MODAL_CLOSE,
-          classes: [
-            this.Selectors.CLASS_MODAL_BUTTON,
-            this.Selectors.CLASS_MODAL_LEFT,
-            this.Selectors.CLASS_MODAL_OPTION,
-          ],
-        },
-        {
-          text: this.i18n.msg("buttonClear").escape(),
-          event: "clear",
-          id: this.Selectors.ID_MODAL_CLEAR,
-          classes: [
-            this.Selectors.CLASS_MODAL_BUTTON,
-            this.Selectors.CLASS_MODAL_LEFT,
-            this.Selectors.CLASS_MODAL_OPTION,
-          ],
-        },
-      ],
-    });
+    };
+
+    // Auto-generate button config objects from Buttons pseudo-enum
+    modal.buttons = Object.values(this.Buttons).map(function (paramButton) {
+      if (paramButton.hasOwnProperty("HANDLER")) {
+        (modal.events = modal.events || {})[paramButton.EVENT] =
+          this[paramButton.HANDLER].bind(this);
+      }
+
+      return {
+        text: this.i18n.msg(paramButton.TEXT).escape(),
+        event: paramButton.EVENT,
+        primary: paramButton.PRIMARY && !this.info.isUCP,
+        //disabled: paramButton.DISABLED,
+        id: this.Selectors[paramButton.ID],
+        classes: paramButton.CLASSES.map(function (paramClass) {
+          return this.Selectors[paramClass];
+        }.bind(this)),
+      };
+    }.bind(this));
+
+    // Return new Modal instance
+    return new window.dev.modal.Modal(modal);
   };
 
   /**
@@ -2552,24 +2861,25 @@
     // Construct new Modal instance
     this.modal.modal = this.buildModal();
 
-    // Create, then apply all relevant listeners
-    this.modal.modal.create().then(function () {
-
-      // Apply initial linksuggest
-      this.attachModalEvents();
-
-      // Change scene depending on user needs
-      $(document).on("change", "#" + this.Selectors.ID_CONTENT_SCENE,
-        this.handleClear.bind(this, true));
-
-      // Once events are set, display the modal
-      this.modal.modal.show();
-    }.bind(this));
-
-    // Log modal instance variable
-    if (this.flags.debug) {
-      window.console.log("this.modal: ", this.modal);
+    // Remove duplicative close button on UCP wikis
+    if (this.info.isUCP) {
+      this.modal.modal.buttons.pop();
     }
+
+    // Create, then apply all relevant listeners and events
+    this.modal.modal.create()
+      .then(this.modal.modal.show.bind(this.modal.modal))
+      .then(this.attachModalEvents.bind(this))
+      .then(function () {
+
+        // Indicate that modal initialization is complete
+        this.modal.isReady = true;
+
+        // Log modal instance variable
+        if (this.flags.debug) {
+          window.console.log("this.modal: ", this.modal);
+        }
+      }.bind(this));
   };
 
   /****************************************************************************/
@@ -2670,8 +2980,7 @@
 
     // Is not in the proper rights group
     } else if (!isListing && !this.hasRights(isMessaging)) {
-      this.resetModal();
-      this.addModalLogEntry("logErrorUserRights");
+      this.resetModal("logErrorUserRights");
       return;
 
     // Is either append/prepend with no content input included
@@ -2713,7 +3022,7 @@
           ? "logStatusMessaging"
           : "logStatusGenerating"
     );
-    this.toggleModalComponentsDisable(true);
+    this.toggleModalComponentsDisable("partial", true);
 
     // Find-and-replace specific variable definitions
     if (isReplace) {
@@ -2780,7 +3089,7 @@
       new $.Deferred(function ($paramInner) {
         (!isMessaging || this.info.hasMessageWalls != null)
           ? $paramInner.resolve().promise()
-          : window.wgMessageWallsExist.then(
+          : mw.config.get("wgMessageWallsExist").then(
               function () {
                 return $paramInner.resolve(true).promise();
               }.bind(this),
@@ -2847,9 +3156,9 @@
           $getNextPage.resolve();
           $postPages.resolve("logSuccessEditingComplete");
         } else {
-          $getPageContent = (!isReplace)
-            ? new $.Deferred().resolve({}).promise()
-            : this.getPageContent(pages[counter]);
+          $getPageContent = (isReplace || isAddition)
+            ? this.getPageContent(pages[counter])
+            : new $.Deferred().resolve({}).promise();
 
           // Grab data, extend parameters, then edit the page
           $getPageContent.always($postPages.notify);
@@ -2900,24 +3209,8 @@
         window.console.log("$postPages results: ", paramResults);
       }
 
-      // Addition parameters
-      if (isAddition) {
-        config = {
-          handler: "postPageContent",
-          parameters: {
-            title: pages[counter],
-            token: mw.user.tokens.get("editToken"),
-            summary: $summary,
-          }
-        };
-
-        if (!this.flags.testing) {
-          // "appendtext" or "prependtext"
-          config.parameters[$action.value.toLowerCase() + "text"] = $content;
-        }
-
-      // Find-and-replace parameters
-      } else if (isReplace) {
+      // Reduce some code repetition via consolidation of shared code
+      if (isAddition || isReplace) {
 
         // Make sure returned results have a "query" property
         if (
@@ -2928,8 +3221,43 @@
           return this.timer.iterate();
         }
 
+        // Default config parameters
+        config = {
+          handler: "postPageContent",
+          parameters: {
+            title: pages[counter],
+            token: mw.user.tokens.get("editToken"),
+            summary: $summary,
+          }
+        };
+
+        // Definitions
         pageIndex = Object.keys(paramResults.query.pages)[0];
         data = paramResults.query.pages[pageIndex];
+
+        // Only add undoc'ed param if commenting is enabled
+        /*
+        if (
+          this.info.isUCP &&
+          $.inArray("comment", data.protection.map(function (paramProtection) {
+            return paramProtection.type;
+          })) === -1
+        ) {
+          config.parameters.wpIsCommentingEnabled = null;
+        }
+        */
+      }
+
+      // Addition-specific parameters
+      if (isAddition) {
+
+        // "appendtext" or "prependtext"
+        if (!this.flags.testing) {
+          config.parameters[$action.value.toLowerCase() + "text"] = $content;
+        }
+
+      // Find-and-replace parameters
+      } else if (isReplace) {
 
         // Shim to handle ArticleComments that do not have revision history
         if (
@@ -2946,17 +3274,8 @@
           return this.timer.iterate();
         }
 
-        config = {
-          handler: "postPageContent",
-          parameters: {
-            title: pages[counter],
-            text: data.revisions[0]["*"],
-            basetimestamp: data.revisions[0].timestamp,
-            startimestamp: data.starttimestamp,
-            token: data.edittoken,
-            summary: $summary,
-          }
-        };
+        // isReplace-specific parameter
+        config.parameters.text = data.revisions[0]["*"];
 
         // Replace instances of chosen text with inputted new text
         newText = replaceOccurrences(config.parameters.text);
@@ -3090,7 +3409,7 @@
     }
 
     // Declarations
-    var $scene, $byline, $body, isMessaging, $previewMessage;
+    var $scene, $byline, $body, isMessaging, $previewMessage, contents;
 
     // Definitions
     $scene = $("#" + this.Selectors.ID_CONTENT_SCENE)[0];
@@ -3127,7 +3446,7 @@
       new $.Deferred(function ($paramInner) {
         (this.info.hasMessageWalls != null)
           ? $paramInner.resolve(this.info.hasMessageWalls).promise()
-          : window.wgMessageWallsExist.then(
+          : mw.config.get("wgMessageWallsExist").then(
               function () {
                 return $paramInner.resolve(true).promise();
               }.bind(this),
@@ -3142,9 +3461,12 @@
             this.info.hasMessageWalls = paramHasWalls;
           }
 
-          return this[(paramHasWalls)
-            ? "previewMessageWallThread"
-            : "previewTalkPageTopic"
+          // Use general-purpose parser for UCP wikis
+          return this[(this.info.isUCP)
+            ? "parseWikitextContent"
+            : (paramHasWalls)
+              ? "previewMessageWallThread"
+              : "previewTalkPageTopic"
           ]($body);
         }.bind(this)
       ).then(
@@ -3166,10 +3488,14 @@
         window.console.log("$previewMessage results: ", paramResults);
       }
 
+      // The string HTML for display as preview modal body
+      contents = (this.info.isUCP)
+        ? paramResults.parse.text["*"]
+        : paramResults[(this.info.hasMessageWalls) ? "body" : "html"];
+
       // Bypass handleClear's default functionality via the functions object
       this.handleClear({
-        before: this.displayPreview.bind(this, paramResults[
-          (this.info.hasMessageWalls) ? "body" : "html"]),
+        before: this.displayPreview.bind(this, contents),
         after: this.attachPreviewEvents.bind(this),
       });
     }.bind(this));
@@ -3205,10 +3531,11 @@
     }
 
     // Declarations
-    var $toggle, config;
+    var toggle, config;
 
     // Definitions
-    $toggle = $("#" + this.Selectors.ID_MODAL_TOGGLE);
+    toggle = "#" + this.Selectors.ID_MODAL_TOGGLE +
+      ((this.info.isUCP) ? " ." + this.Selectors.CLASS_OOUI_LABEL : "");
     config = [
       {
         message: "logTimerPaused",
@@ -3226,7 +3553,7 @@
     this.addModalLogEntry(config.message);
 
     // Change the text of the button
-    $toggle.text(this.i18n.msg(config.text).escape());
+    $(toggle).text(this.i18n.msg(config.text).escape());
 
     // Either resume or pause the setDynamicTimeout
     this.timer[config.method]();
@@ -3286,13 +3613,18 @@
     }
 
     // Declarations
-    var $scene, functions, visible, hidden, isTransitioning;
+    var $scene, functions, visible, hidden, isTransitioning, modalBodyTarget;
 
     // Whether the function is being used to reset or scene transition
     isTransitioning = (typeof paramInput !== "boolean") ? false : paramInput;
 
     // Scene dropdown element
     $scene = $("#" + this.Selectors.ID_CONTENT_SCENE)[0];
+
+    // Part of the modal containing the content body
+    modalBodyTarget = (this.info.isUCP)
+      ? " ." + this.Selectors.CLASS_OOUI_BODY
+      : " > section";
 
     // $.prototype.animate objects
     visible = {opacity: 1};
@@ -3308,7 +3640,7 @@
       : [
           { // Standard form clear
             before: this.resetModal.bind(this),
-            after: this.addModalLogEntry.bind(this, "logSuccessReset")
+            after: this.addModalLogEntry.bind(this, "logSuccessReset"),
           },
           { // Scene transition
             before: this.modal.modal.setContent.bind(this.modal.modal,
@@ -3317,11 +3649,11 @@
           }
         ][+isTransitioning];
 
-    // Disable all modal buttons for duration of fade and reset
-    $("." + this.Selectors.CLASS_MODAL_BUTTON).prop("disabled", true);
+    // Disable/hide all modal buttons for duration of fade and reset
+    this.toggleModalComponentsDisable("all");
 
     // Fade out on modal and reset content before fade-in
-    $("#" + this.Selectors.ID_MODAL_CONTAINER + " > section")
+    $("#" + this.Selectors.ID_MODAL_CONTAINER + modalBodyTarget)
       .animate(hidden, this.Utility.FADE_INTERVAL, functions.before)
       .animate(visible, this.Utility.FADE_INTERVAL, functions.after);
   };
@@ -3695,7 +4027,23 @@
      * latest version of cached <code>i18n</code> messages and resolving itself
      * to pass program execution on to <code>init.main</code>.
      */
-    paramDeferred.notify().progress(function () {
+    paramDeferred.notify().progress(function (paramResponse) {
+
+      // Examine returned contents from mw.hooks
+      if (paramResponse != null) {
+        // Wrap in Promise to gracefully handle WgMessageWallsExist rejections
+        window.Promise.resolve(paramResponse).then(function (paramResponse) {
+          if (debug) {
+            window.console.log("paramResponse, mw.hook", paramResponse);
+          }
+        }, function (paramError) {
+          if (debug) {
+            window.console.warn("paramError, mw.hook", paramError);
+          }
+        });
+      }
+
+      // Check if loading is complete
       if (counter === numArticles) {
         // Resolve helper $.Deferred instance
         $loadNext.resolve();
@@ -3748,8 +4096,8 @@
         return mw.hook(current.HOOK).add(paramDeferred.notify);
       }
 
-      // Use standard importArticle approach if legacy wiki
-      if (!this.info.isUCP) {
+      // Try importArticles with pseudo-RL module fallback
+      try {
         article = window.importArticle({
           type: current.TYPE,
           article: current.ARTICLE,
@@ -3764,42 +4112,47 @@
         return (current.HOOK)
           ? mw.hook(current.HOOK).add(paramDeferred.notify)
           : $(article).on("load", paramDeferred.notify);
-      }
 
-      // Build url with REST params
-      server = "https://dev.fandom.com";
-      params = "?" + $.param({
-        mode: "articles",
-        only: current.TYPE + "s",
-        articles: current.ARTICLE,
-      });
-      resource = server + this.globals.wgLoadScript + params;
-      moduleName = this.generateModuleName(current.TYPE, current.ARTICLE);
-
-      // Ensure wellformed module name
-      if (debug) {
-        window.console.log(moduleName);
-      }
-
-      // Define temp local modules to sidestep mw.loader.load's lack of callback
-      try {
-        mw.loader.implement.apply(null, $.merge([moduleName],
-          (current.TYPE === "script")
-            ? [[resource]]
-            : [null, {"url": {"all": [resource]}}]
-        ));
       } catch (paramError) {
         if (debug) {
-          window.console.error(paramError);
+          window.console.error(this.Utility.SCRIPT, paramError);
         }
-      }
 
-      // Load script/stylesheet once temporary module has been defined
-      mw.loader.using(moduleName)
-        .then((current.HOOK)
-          ? mw.hook(current.HOOK).add(paramDeferred.notify)
-          : paramDeferred.notify)
-        .fail(paramDeferred.reject);
+        // Build url with REST params
+        server = "https://dev.fandom.com";
+        params = "?" + $.param({
+          mode: "articles",
+          only: current.TYPE + "s",
+          articles: current.ARTICLE,
+        });
+        resource = server + this.globals.wgLoadScript + params;
+        moduleName = this.generateModuleName(current.TYPE, current.ARTICLE);
+
+        // Ensure wellformed module name
+        if (debug) {
+          window.console.log(moduleName);
+        }
+
+        // Define local modules to sidestep mw.loader.load's lack of callback
+        try {
+          mw.loader.implement.apply(null, $.merge([moduleName],
+            (current.TYPE === "script")
+              ? [[resource]]
+              : [null, {"url": {"all": [resource]}}]
+          ));
+        } catch (paramError) {
+          if (debug) {
+            window.console.error(paramError);
+          }
+        }
+
+        // Load script/stylesheet once temporary module has been defined
+        mw.loader.using(moduleName)
+          .then((current.HOOK)
+            ? mw.hook(current.HOOK).add(paramDeferred.notify)
+            : paramDeferred.notify)
+          .fail(paramDeferred.reject);
+      }
     }.bind(this));
   };
 

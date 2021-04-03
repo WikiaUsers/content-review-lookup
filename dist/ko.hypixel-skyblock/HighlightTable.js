@@ -11,13 +11,13 @@
  * Version 2.0: pengLocations v2.1, Granular cookie     - Saftzie
  * Version 2.1: Made compatible with jquery.tablesorter - Cqm
  */
- 
+
 ;(function ($, mw) {
- 
+
     'use strict';
- 
+
     function highlightTable() {
- 
+
         // requires CSS classes named in lightOnClass and mouseOverClass
         var wgPageName = mw.config.get('wgPageName'),
             cookiePrefix = 'lightTable',
@@ -32,7 +32,7 @@
             columns,
             tables,
             cookie;
- 
+
         // hash a string into a 32-bit hex string, msb first
         function crc32c(s) {
             var polynomial = 0x04C11DB7, // Castagnoli polynomial
@@ -41,10 +41,10 @@
                 i,
                 j,
                 k;
- 
+
             // guarantee 8-bit chars
             s = window.unescape(window.encodeURI(s));
- 
+
             // calculate the crc for all 8-bit data
             // bit-wise operations discard anything left of bit 31
             for (i = 0; i < 256; i += 1) {
@@ -54,13 +54,13 @@
                 }
                 table[i] = k;
             }
- 
+
             // the actual calculation
             retVal = 0;
             for (i = 0; i < s.length; i += 1) {
                 retVal = (retVal << 8) ^ table[(retVal >>> 24) ^ s.charCodeAt(i)];
             }
- 
+
             // make negative numbers unsigned
             if (retVal < 0) {
                 retVal += 4294967296;
@@ -68,10 +68,10 @@
             // 32-bit hex string, padded on the left
             retVal = '0000000' + retVal.toString(16).toUpperCase();
             retVal = retVal.substr(retVal.length - 8);
- 
+
             return retVal;
         }
- 
+
         // change the row bg color based on mouse events
         function setHighlight(el, val) {
             $(el).removeClass(mouseOverClass).removeClass(lightOnClass);
@@ -85,7 +85,7 @@
             default: // same as case 0, light off
             }
         }
- 
+
         // load the cookie and parse it for the page
         // cookie info is saved in 1 of 16 browser cookies, based on page name hash
         // global cookie[][] supports multiple tables and multiple pages
@@ -99,7 +99,7 @@
                 i,
                 j,
                 k;
- 
+
             cookie = [];
             if ($.cookie(cookieName) !== null) {
                 pageCookies = $.cookie(cookieName).split(pageSeparator);
@@ -128,13 +128,13 @@
                     }
                 }
             }
- 
+
             // initialize the cookie array of arrays, if needed
             while (cookie.length < numTables) {
                 cookie.push([]);
             }
         }
- 
+
         // save/update the cookie for page reloads
         // cookie info is saved in 1 of 16 browser cookies, based on page name hash
         // global cookie[][] supports multiple tables and multiple pages
@@ -149,7 +149,7 @@
                 j,
                 k,
                 updated;
- 
+
             // create the cookie for the tables on the current page
             // use Base64url to compress 6 rows to 1 character
             tableCookies = hashPageName;
@@ -165,7 +165,7 @@
                     tableCookies += base64url.charAt(k);
                 }
             }
- 
+
             updated = 0;
             pageCookies = [];
             if ($.cookie(cookieName) !== null) {
@@ -184,90 +184,93 @@
             if (updated === 0) {
                 pageCookies.push(tableCookies);
             }
- 
+
             // set path to / so it works for /wiki/, /index.php, etc
             $.cookie(cookieName, pageCookies.join(pageSeparator), {
                 expires: 7,
                 path: '/'
             });
         }
- 
-        tables = $('table.' + tableClass);
-        // don't bother doing anything unless there's really something to do
-        if (tables.length > 0) {
-            // hash the page name to an 8-char hex string
-            hashPageName = crc32c(wgPageName);
-            loadCookie(tables.length);
- 
-            tables.each(function (iTable) {
-                rows[iTable] = $(this).find('tr:has(td)'); // data rows
- 
-                // init or trim the cookie array of rows, if needed
-                while (cookie[iTable].length < rows[iTable].length) {
-                    cookie[iTable].push(0);
-                }
-                while (cookie[iTable].length > rows[iTable].length) {
-                    cookie[iTable].pop();
-                }
- 
-                // don't rely on headers to find # of columns
-                // count them dynamically
-                columns = 1;
- 
-                rows[iTable].each(function (iRow) {
-                    // update column count as we go
-                    // a smarter approach would count colspans, but this is good for now
-                    columns = Math.max(columns, $(this).children('th,td').length);
- 
-                    // initialize highlighting based on the cookie
-                    setHighlight(this, cookie[iTable][iRow]);
- 
-                    // set mouse events
-                    $(this).mouseover(function () {
-                        setHighlight(this, 2);
-                    }).mouseout(function () {
+        
+        // This hook forces it to apply script even in TabViews
+		mw.hook('wikipage.content').add(function(pSection){
+            tables = $(pSection[0]).find('table.' + tableClass);
+            // don't bother doing anything unless there's really something to do
+            if (tables.length > 0) {
+                // hash the page name to an 8-char hex string
+                hashPageName = crc32c(wgPageName);
+                loadCookie(tables.length);
+    
+                tables.each(function (iTable) {
+                    rows[iTable] = $(this).find('tr:has(td)'); // data rows
+    
+                    // init or trim the cookie array of rows, if needed
+                    while (cookie[iTable].length < rows[iTable].length) {
+                        cookie[iTable].push(0);
+                    }
+                    while (cookie[iTable].length > rows[iTable].length) {
+                        cookie[iTable].pop();
+                    }
+    
+                    // don't rely on headers to find # of columns
+                    // count them dynamically
+                    columns = 1;
+    
+                    rows[iTable].each(function (iRow) {
+                        // update column count as we go
+                        // a smarter approach would count colspans, but this is good for now
+                        columns = Math.max(columns, $(this).children('th,td').length);
+    
+                        // initialize highlighting based on the cookie
                         setHighlight(this, cookie[iTable][iRow]);
-                    }).click(function (e) {
-                        // don't toggle highlight when clicking links
-                        if ((e.target.tagName !== 'A') && (e.target.tagName !== 'IMG')) {
-                            cookie[iTable][iRow] = 1 - cookie[iTable][iRow];
+    
+                        // set mouse events
+                        $(this).mouseover(function () {
+                            setHighlight(this, 2);
+                        }).mouseout(function () {
                             setHighlight(this, cookie[iTable][iRow]);
-                            saveCookie();
-                        }
+                        }).click(function (e) {
+                            // don't toggle highlight when clicking links
+                            if ((e.target.tagName !== 'A') && (e.target.tagName !== 'IMG')) {
+                                cookie[iTable][iRow] = 1 - cookie[iTable][iRow];
+                                setHighlight(this, cookie[iTable][iRow]);
+                                saveCookie();
+                            }
+                        });
                     });
+    
+                    // add a button for reset
+                    $(this).append(
+                        $('<tfoot/>')
+                            .append(
+                                $('<tr/>')
+                                    .append(
+                                        $('<th/>')
+                                            .attr('colspan', columns)
+                                            .append(
+                                                $('<input>')
+                                                    .attr({
+                                                        'type': 'button',
+                                                        'value': 'Reset'
+                                                    })
+                                                    .click(function () {
+                                                        rows[iTable].each(function (iRow) {
+                                                            cookie[iTable][iRow] = 0;
+                                                            setHighlight(this, 0);
+                                                        });
+                                                        saveCookie();
+                                                    })
+                                            )
+                                    )
+                            )
+                        );
                 });
- 
-                // add a button for reset
-                $(this).append(
-                    $('<tfoot/>')
-                        .append(
-                            $('<tr/>')
-                                .append(
-                                    $('<th/>')
-                                        .attr('colspan', columns)
-                                        .append(
-                                            $('<input>')
-                                                .attr({
-                                                    'type': 'button',
-                                                    'value': 'Reset'
-                                                })
-                                                .click(function () {
-                                                    rows[iTable].each(function (iRow) {
-                                                        cookie[iTable][iRow] = 0;
-                                                        setHighlight(this, 0);
-                                                    });
-                                                    saveCookie();
-                                                })
-                                        )
-                                )
-                        )
-                    );
-            });
-        }
+            }
+        });
     }
- 
+
     $(highlightTable);
- 
+
 }(this.jQuery, this.mediaWiki));
- 
+
 /* </pre> */

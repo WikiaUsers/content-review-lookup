@@ -1,4 +1,4 @@
-// cronómetro de cuenta regresiva.
+// cronómetro de cuenta regresiva. (UCP)
 function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit, dateFormat, dateLabels, separators) {
      const oneYear = 31536000000,
          oneMonth = oneYear / 12,

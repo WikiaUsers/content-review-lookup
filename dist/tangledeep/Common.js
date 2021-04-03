@@ -1,14 +1,14 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 /* configuration section for tooltips */
-var tooltips_config = {
+window.tooltips_config = {
     offsetX: 20,
     offsetY: 20,
     waitForImages: true,
     noCSS: true,
 };
 
-var tooltips_list = [
+window.tooltips_list = [
     {
         classname: 'item-tooltip',
         parse: '{'+'{Tooltip/Item|<#item#>}}'

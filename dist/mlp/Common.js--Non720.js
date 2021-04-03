@@ -86,7 +86,7 @@ $(function() {
             }
             pending -= 1;
             if (pending === 0) {
-                mw.util.jsMessage('Non-720p listing completed.');
+                console.log('Non-720p listing completed.');
             }
         }
 

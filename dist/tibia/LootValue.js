@@ -56,7 +56,7 @@
             },
             error: function () {
                 console.log("Error");
-                off = $('#loot_val_text').offset();
+                var off = $('#loot_val_text').offset();
                 $('body:first').append(
                     $('<div>There are no loot statistics <br /> to calculate the value</div>').attr('id', 'loot_val_not_enough')
                     .css({
@@ -108,7 +108,7 @@
         $('<a id="loot_val_text" href="#"">(Load average value)</a>')
         .css({fontSize: '75%', verticalAlign: 'bottom', marginLeft: '0.5em'})
         .click(function () {
-            loot_val_get_data(wgTitle);
+            loot_val_get_data(mw.config.get('wgTitle'));
             return false;
         })
     ).after(

@@ -36,6 +36,9 @@ $(function() {
                             '<li>' +
                                 '<a href="/wiki/Special:MultipleUpload" data-tracking="multiple-upload">' + i18n.msg('multiupload').escape() + '</a>' +
                             '</li>' +
+                            '<li>' +
+                                '<a href="/wiki/Special:RecentChanges" data-tracking="recent-changes">' + i18n.msg('Recent changes').escape() + '</a>' +
+                            '</li>' +
                         '</ul>' +
                     '</div>' +
                 '</div>'

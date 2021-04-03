@@ -32,6 +32,26 @@ abuseLogRC_users = new Array(
     "Cletus16"
 );
 
+//========================
+// Article rating module
+//========================
+
+window.ArticleRating = {
+  title: {
+    'Category:What-If? Combatants': 'Rate this combatant page',
+    'Category:Official Death Battle Combatants': 'Rate this combatant page',
+    'Category:What-If? Death Battles': 'Rate this battle',
+    'Category:What-If? Death Battles that came true': 'Rate this battle',
+  },
+  values: ['Much room for improvement', 'Meh', 'Average', 'Good', 'Marvelous'],
+  starSize: [24, 24],
+  starColor: ['#ccc', '#ffba01'],
+  starStroke: '#000',
+  exclude: ['Blacklist'],
+  excludeCats: ['Site maintenance', 'Community', 'Site administration'],
+  location: 'top-rail'
+};
+
 //=====================
 // Cancel Edit button
 //=====================
@@ -79,8 +99,13 @@ $(function() {
     $(".tabs-container > ul.tabs").html(news);
 });
 
-//==========
-// RailWAM
-//==========
 
-window.railWAM = {logPage:"Project:WAM Log"};
+//========================================
+// WikiActivity link in activity module
+// By Wither
+//========================================
+
+!function() {
+    var rwaLink = String("<a class='RWA_Link' href='/wiki/Special:WikiActivity'>More activity</a>");
+    $(".WikiaRail .activity-module").append(rwaLink);
+} ();

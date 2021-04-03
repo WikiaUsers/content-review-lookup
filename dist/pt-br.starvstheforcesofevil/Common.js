@@ -1,0 +1,1 @@
+import "/load.php?mode=articles&articles=u:dev:MediaWiki:RecentChangesModern.css&only=styles";

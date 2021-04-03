@@ -1,32 +1,30 @@
 /**
  * @name            BotManagement
- * @version         v1.2
+ * @version         v1.3
  * @author          TheGoldenPatrik1
  * @description     Adds tools for users who can flag themselves as bots.
  */
-require([
-    'wikia.window',
-    'jquery',
-    'mw',
-    'BannerNotification'
-], function (window, $, mw, BannerNotification) {
+(function () {
     var config = mw.config.get([
         'wgUserGroups',
-        'wgUserName'
+        'wgUserName',
+        'wgVersion'
     ]);
     if (
-        !/bot|vstf|bureaucrat|sysop|staff|helper|wiki-manager/.test(config.wgUserGroups.join()) ||
+        !/bot|soap|bureaucrat|sysop|staff|helper|wiki-manager/.test(config.wgUserGroups.join()) ||
         window.BotManagementLoaded
     ) {
         return;
     }
     window.BotManagementLoaded = true;
     var isBot = config.wgUserGroups.indexOf('bot') !== -1;
+    var isUCP = config.wgVersion !== '1.19.24';
     var options = $.extend(
         {
             notif: true,
             remove: window.BotManagementRemove,
-            add: window.BotManagementAdd
+            add: window.BotManagementAdd,
+            expire: window.BotManagementExpire
         },
         window.BotManagement
     );
@@ -148,9 +146,12 @@ require([
                 token: d.query.users[0].userrightstoken
             };
             params[isBot ? 'remove' : 'add'] = 'bot';
+            if (isUCP) {
+                params.expiry = (options.expire || 'infinite');
+            }
             this.api.post(params).done(
                 $.proxy(this.done, this)
-            );
+            ).fail($.proxy(this.fail, this));
         },
         /**
          * @method done
@@ -160,12 +161,27 @@ require([
          */
         done: function (d) {
             if (d.error) {
-                new BannerNotification(
-                    i18n.msg('error').escape(),
-                    'error'
-                ).show();
+                this.fail();
             } else {
                 window.location.reload(true);
+            }
+        },
+        /**
+         * @method fail
+         * @description Handles .fail
+         * @param {JSON} d - Data from .fail
+         * @returns {void}
+         */
+        fail: function () {
+            if (isUCP) {
+                mw.notify(this.i18n.msg('error').plain(), {
+                    type: 'error'
+                });
+            } else {
+                new BannerNotification(
+                    this.i18n.msg('error').escape(),
+                    'error'
+                ).show();
             }
         },
         /**
@@ -174,39 +190,45 @@ require([
          * @returns {void}
          */
         notif: function () {
-            var $notificationArea = $('#WikiaNotifications'),
-                hasNotifications = $notificationArea.length ? 1 : 0,
-                notif =
-                $('<li>', {
-                    'class': 'custom-botmessage'
-                }).append(
-                    $('<div>').append(
-                        $('<p>', {
-                            'text': this.i18n.msg('notifText').plain()
-                        }).append(
-                            $('<a>', {
-                                'href': '#',
-                                'text': this.i18n.msg('notifLink').plain(),
-                                'click': $.proxy(this.click, this)
-                            })
-                        )
-                    )
-                );
-           if (hasNotifications) {
-                $notificationArea.append(notif);
+            var $notif = $('<p>', {
+                'text': this.i18n.msg('notifText').plain()
+            }).append(
+                $('<a>', {
+                    'href': '#',
+                    'text': this.i18n.msg('notifLink').plain(),
+                    'click': $.proxy(this.click, this)
+                })
+            );
+            if (isUCP) {
+                mw.notify($notif, {
+                    autoHide: false
+                });
             } else {
-                $('body')
-                .addClass('notifications')
-                .append(
-                    $('<ul>', {
-                        'id': 'WikiaNotifications',
-                        'class': 'WikiaNotifications'
-                   }).append(notif)
-                );
+                var $notificationArea = $('#WikiaNotifications'),
+                    hasNotifications = $notificationArea.length ? 1 : 0,
+                    notif =
+                    $('<li>', {
+                        'class': 'custom-botmessage'
+                    }).append($('<div>').append($notif));
+                if (hasNotifications) {
+                    $notificationArea.append(notif);
+                } else {
+                    $('body')
+                    .addClass('notifications')
+                    .append(
+                        $('<ul>', {
+                            'id': 'WikiaNotifications',
+                            'class': 'WikiaNotifications'
+                       }).append(notif)
+                    );
+                }
             }
         }
     };
-    mw.loader.using('mediawiki.api').then(
+    mw.loader.using(isUCP ? [
+        'mediawiki.api',
+        'mediawiki.notify'
+    ] : 'mediawiki.api').then(
         $.proxy(Main.hooks, Main)
     );
-});
+})();

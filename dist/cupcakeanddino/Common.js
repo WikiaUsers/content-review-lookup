@@ -13,3 +13,13 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
 	'Hairypoppins': ['discordfounder', 'discordadmin']
 };
+
+window.railWAM = {
+    logPage:"Project:WAM log"
+};
+
+window.DiscordBannerSettings = {
+    bannerStyle: '2',
+    inviteLink: 'RGMtZWk',
+    prependToRail: false
+};

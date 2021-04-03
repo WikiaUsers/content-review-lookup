@@ -59,7 +59,9 @@ function doCustomPreloadOasis() {
 
 // Copied from http://avatar.wikia.com/wiki/MediaWiki:Common.js/icons.js
 $( function eraIconsOasis() {
-    if ( $( '.wds-community-header' ).length ) {
+    if ( mw.config.get( 'wgVersion' ) !== '1.19.24' && $( '#title-eraicons' ).length ) {
+        $( '.page-header__contribution > div' ).first().append( $( '#title-eraicons' ).show() );
+    } else if ( $( '.wds-community-header' ).length ) {
         $( '#PageHeader' ).prepend(
             $( '#title-eraicons' ).attr( 'style', 'position: absolute; right: 0px;' )
         );
@@ -71,7 +73,7 @@ $( function eraIconsOasis() {
 
 // Add clickable skin to Instant Expert: The Force Awakens page (temporary)
 if(mw.config.get('wgPageName') === "Instant_Expert:The_Force_Awakens") {
-    var targetURL = 'http://ow.ly/W5KxR';
+    var targetURL = '';
     $('body').prepend('<a href="' + targetURL + '"><div class="clickable-skin"></div></a>');
     $('.clickable-skin').css({
         'height': '100%',

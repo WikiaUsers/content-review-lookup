@@ -1,7 +1,3 @@
-//Custom user rights icons on userpages
-importScript('MediaWiki:Wikia.js/userRightsIcons.js');
-
-
 // Namespaces in header
 $(function NamespacesInHeader() {
 	if(wgCanonicalNamespace != '' && wgCanonicalNamespace != 'Talk') {

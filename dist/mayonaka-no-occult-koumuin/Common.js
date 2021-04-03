@@ -63,7 +63,6 @@ if (mw.config.get('wgUserGroups').indexOf('sysop') > -1) {
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:ArticlePreview/code.js',
         'u:dev:MediaWiki:ReferencePopups/code.js',
         'u:dev:MediaWiki:ReferencePopups/custom.js',
         'u:dev:MediaWiki:SearchSuggest/code.js',

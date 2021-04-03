@@ -8,26 +8,60 @@ window.DiscordChat = {
   ready: false,
   messages: {},
   data: null,
-  init: function () {
+  init: function (modal, i18n) {
     window.DiscordChat.ready = true;
-    var mwconfig = mw.config.get(['wgUserLanguage']);
     var api = new mw.Api();
-    api.get({
-      action: 'query',
-      meta: 'allmessages',
-      ammessages: ['chat-live2', 'chat-join-the-chat', 'awc-metrics-close', 'chat-entry-point-guidelines', 'Custom-DiscordChat-id'].join('|'),
-      amlang: mwconfig.wgUserLanguage
-    }).done(function (data) {
-      if (data.error) {
+    $.when(
+      api.get({
+        action: 'query',
+        meta: 'allmessages',
+        ammessages: ['chat-live2', 'chat-join-the-chat', 'chat-entry-point-guidelines', 'Custom-DiscordChat-id'].join('|'),
+        amlang: mw.config.get('wgUserLanguage'),
+        uselang: 'content', // T97096
+        maxage: 300,
+        smaxage: 300
+      }),
+      i18n.loadMessages('DiscordChat')
+    ).then(function (data, i18n) {
+      if (data[0].error) {
         return;
       }
 
-      data.query.allmessages.forEach(function (message) {
+      data[0].query.allmessages.forEach(function (message) {
         if (message['*']) {
-          window.DiscordChat.messages[message.name] = _.escape(message['*']);
+          window.DiscordChat.messages[message.name] = mw.html.escape(message['*']);
+        } else if (i18n.msg(message.name).exists) {
+          window.DiscordChat.messages[message.name] = i18n.msg(message.name).escape();
         }
       });
-      
+
+      window.DiscordChat.usersModal = new modal.Modal({
+        buttons: [
+          {
+            event: 'open',
+            text: window.DiscordChat.messages['chat-join-the-chat']
+          }
+        ],
+        content: '',
+        context: window.DiscordChat,
+        events: {
+          open: function() {
+            window.open(window.DiscordChat.data.instant_invite, '_blank');
+          }
+        },
+        id: 'show-discord-users',
+        size: 'small',
+        title: ''
+      });
+      window.DiscordChat.userModal = new modal.Modal({
+        content: '',
+        id: 'show-discord-user',
+        size: 'small',
+        title: ''
+      });
+      window.DiscordChat.userModal.create();
+      window.DiscordChat.usersModal.create();
+
       if (window.DiscordChat.messages['chat-entry-point-guidelines']) {
         api.get({
           action: 'parse',
@@ -43,7 +77,7 @@ window.DiscordChat = {
       $.get('https://discord.com/api/guilds/' + window.DiscordChat.messages['Custom-DiscordChat-id'] + '/widget.json', function (data) {
         window.DiscordChat.data = data;
         if ($('#WikiaRail').length) {
-          if ($('#WikiaRail').hasClass('loaded')) {
+          if ($('#WikiaRail').hasClass('loaded') || $('#WikiaRail').hasClass('is-ready')) {
             window.DiscordChat.rail();
           } else {
             $('#WikiaRail').on('afterLoad.rail', window.DiscordChat.rail);
@@ -61,7 +95,7 @@ window.DiscordChat = {
 
     while (appendedAvatars < 5 && i < members.length) {
       if (!members[i].bot) {
-        avatarContainer.append('<a href="#showDiscordUser" data-discorduser="' + encodeURI(_.escape(members[i].username + '#' + members[i].discriminator)) + '" class="wds-avatar chatter"><img class="wds-avatar__image" src="' + members[i].avatar_url + '"></a>');
+        avatarContainer.append('<a href="#showDiscordUser" data-discorduser="' + encodeURI(mw.html.escape(members[i].username)) + '" class="wds-avatar chatter"><img class="wds-avatar__image" src="' + members[i].avatar_url + '"></a>');
         appendedAvatars++;
       }
       i++;
@@ -82,16 +116,16 @@ window.DiscordChat = {
                     '</section>');
     $ads = $('#top-right-boxad-wrapper, #NATIVE_TABOOLA_RAIL').last(),
     $jsrt = $('.content-review-module');
-    if ($ads.exists()) {
+    if ($ads.length) {
         $ads.after(element);
-    } else if ($jsrt.exists()) {
+    } else if ($jsrt.length) {
         $jsrt.after(element);
     } else {
         $('#WikiaRail').prepend(element);
     }
     $('.chat-module:not(.DiscordChat)').css('display', 'none');
     
-    /* fix wikia bug where avatars overlap edit menu */
+    /* fix wikia bug where avatars overlap edit menu on legacy and ILL dropdown on UCP */
     mw.util.addCSS('#WikiaRail .DiscordChat .wds-avatar-stack { z-index: 0; }');
 
     $('a[href="#showDiscordUser"][data-discorduser]').click(function (event) {
@@ -110,78 +144,27 @@ window.DiscordChat = {
     var usersContent = '<ul style="list-style: initial; font-size: 14px;">';
     var members = window.DiscordChat.data.members;
     for (var i = 0; i < members.length; i++) {
-      usersContent += '<li><span style="-moz-user-select: none; user-select: none; cursor: pointer;" onclick="window.DiscordChat.showDiscordUser(\'' + _.escape(members[i].username + '#' + members[i].discriminator) + '\');"><img style="width: 0.75em; height: 0.75em;" src="' + members[i].avatar_url + '"> ' + _.escape(members[i].nick || members[i].username) + '</span></li>';
+      usersContent += '<li><span style="-moz-user-select: none; user-select: none; cursor: pointer;" onclick="window.DiscordChat.showDiscordUser(\'' + mw.html.escape(members[i].username) + '\');"><img style="width: 0.75em; height: 0.75em;" src="' + members[i].avatar_url + '"> ' + mw.html.escape(members[i].nick || members[i].username) + '</span></li>';
     }
     usersContent += '</ul>';
-    require(['wikia.ui.factory'], function (ui) {
-      ui.init(['modal']).then(function (uimodal) {
-        var modalconfig = {
-          type: 'default',
-          vars: {
-            id: 'show-discord-users',
-            size: 'small',
-            title: _.escape(window.DiscordChat.data.name) + ' – ' + window.DiscordChat.data.members.length,
-            content: usersContent,
-            buttons: [{
-              vars: {
-                value: window.DiscordChat.messages['awc-metrics-close'],
-                data: [{
-                  key: 'event',
-                  value: 'close'
-                }]
-              }
-            }, {
-              type: 'link',
-              vars: {
-                value: window.DiscordChat.messages['chat-join-the-chat'],
-                href: window.DiscordChat.data.instant_invite,
-                title: ''
-              }
-            }]
-          }
-        };
-
-        uimodal.createComponent(modalconfig, function (modal) {
-          modal.show();
-        });
-      });
-    });
+    window.DiscordChat.usersModal
+      .setTitle(mw.html.escape(window.DiscordChat.data.name) + ' – ' + window.DiscordChat.data.members.length)
+      .setContent(usersContent)
+      .show();
   },
   showDiscordUser: function (tag) {
     var members = window.DiscordChat.data.members;
     var mi = null;
     for (var i = 0; i < members.length; i++) {
-      if (members[i].username + '#' + members[i].discriminator === tag) {
+      if (members[i].username === tag) {
         mi = i;
         break;
       }
     }
-    require(['wikia.ui.factory'], function (ui) {
-      ui.init(['modal']).then(function (uimodal) {
-        var modalconfig = {
-          type: 'default',
-          vars: {
-            id: 'show-discord-user',
-            size: 'small',
-            title: _.escape(members[mi].nick || members[mi].username) + (members[mi].bot ? '&nbsp;[BOT]' : ''),
-            content: '<center><div style="position: relative; width: 128px; height: 128px;"><img width="128" height="128" style="border-radius: 50%;" src="' + members[mi].avatar_url + '"><div style="position: absolute; width: 32px; height: 32px; border-radius: 50%; right: 0; bottom: 0; background-color: ' + (members[mi].status === 'online' ? 'lawngreen' : (members[mi].status === 'idle' ? 'gold' : 'firebrick')) + ';"></div></div><br>' + _.escape(tag) + '</center>',
-            buttons: [{
-              vars: {
-                value: window.DiscordChat.messages['awc-metrics-close'],
-                data: [{
-                  key: 'event',
-                  value: 'close'
-                }]
-              }
-            }]
-          }
-        };
-
-        uimodal.createComponent(modalconfig, function (modal) {
-          modal.show();
-        });
-      });
-    });
+    window.DiscordChat.userModal
+      .setContent('<center><div style="position: relative; width: 128px; height: 128px;"><img width="128" height="128" style="border-radius: 50%;" src="' + members[mi].avatar_url + '"><div style="position: absolute; width: 32px; height: 32px; border-radius: 50%; right: 0; bottom: 0; background-color: ' + (members[mi].status === 'online' ? 'lawngreen' : (members[mi].status === 'idle' ? 'gold' : 'firebrick')) + ';"></div></div><br>' + mw.html.escape(tag) + '</center>')
+      .setTitle(mw.html.escape(members[mi].nick || members[mi].username) + (members[mi].bot ? '&nbsp;[BOT]' : ''))
+      .show();
   },
   shuffle: function (a) {
     var j, x, i;
@@ -195,9 +178,24 @@ window.DiscordChat = {
 };
 
 mw.loader.using('mediawiki.api', function () {
-  $(function () {
-    if (window.DiscordChat && !window.DiscordChat.ready) {
-      window.DiscordChat.init();
-    }
+  mw.hook('dev.modal').add(function(modal) {
+    mw.hook('dev.i18n').add(function(i18n) {
+      if (window.DiscordChat && !window.DiscordChat.ready) {
+        window.DiscordChat.init(modal, i18n);
+      }
+    });
   });
+});
+
+importArticles({
+  type: 'script',
+  articles: [
+    'u:dev:MediaWiki:Modal.js',
+    'u:dev:MediaWiki:I18n-js/code.js'
+  ]
+}, {
+  type: 'style',
+  articles: [
+    'u:dev:MediaWiki:DiscordChat.css'
+  ]
 });

@@ -1,20 +1,21 @@
 /**<nowiki>
- * VerifyUser - add Discord handle automatically to user profiles on Fandom.
+ * VerifyUser - add Discord username and tag automatically to user profiles on Fandom.
  * To efficiently perform verification, provide a link in the form
  * https://community.fandom.com/wiki/Special:VerifyUser/<wiki-username>?user=<discord-username>&tag=<discord-tag>
  * 
  * @author Noreplyz
  */
-;(function(window, $, mw, Mustache) {
+mw.loader.using(['mediawiki.util', (mw.config.get('wgVersion') === '1.19.24' ? 'mediawiki' : 'mediawiki.template.mustache')]).then(function () {
     var templates = {}, verifyUser = {}, config = mw.config.get([
         'wgPageName',
         'wgTitle',
         'wgUserId',
         'wgUserName',
-        'wgNamespaceNumber'
+        'wgNamespaceNumber',
+        'wgCanonicalSpecialPageName'
     ]);
     
-    if (config.wgNamespaceNumber !== -1 || !config.wgTitle.match(/VerifyUser.*/)) return;
+    if (config.wgNamespaceNumber !== -1 || !config.wgTitle.match(/VerifyUser.*/) || config.wgCanonicalSpecialPageName !== null) return;
 
     /**
      * Trims URL and other fluff from a username
@@ -47,8 +48,8 @@
             '{{/usernameCompare}}' +
             '{{#i18n}}verify-instructions{{/i18n}}<br/><br/>' + 
             '<input placeholder="discord#0000" value="{{discordHandle}}" style="padding:8px; width:350px;font-family:\'Rubik\';font-size:20px" id="verify-input"/> ' +
-            '<div class="wds-button" type="submit" style="vertical-align:bottom;cursor:pointer;line-height:inherit;" id="verify"><span>{{#i18n}}button-verify{{/i18n}}</span></div>' +
-            '<br/><br/><small>{{#i18n}}verify-notice{{/i18n}}</small>' +
+            '<div class="wds-button wds-is-disabled" type="submit" style="vertical-align:bottom;cursor:pointer;line-height:inherit;" id="verify"><span>{{#i18n}}button-verify{{/i18n}}</span></div>' +
+            '<br/><span style="visibility: hidden; color: red;" id="verify-input-invalid">{{#i18n}}verify-invalid{{/i18n}}</span><br/><small>{{#i18n}}verify-notice{{/i18n}}</small>' +
         '{{/username}}' + 
         '{{^username}}' + 
             '{{#i18n}}verify-login{{/i18n}} <a href="https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification" class="external">{{#i18n}}verify-gamepedia{{/i18n}}</a><br/><br/>' + 
@@ -67,7 +68,7 @@
     
     templates.error =
         '<div style="color:#ee1a41;font-weight:bold">' +
-            '{{#i18n}}general-error{{/i18n}} <br/>' +
+            '{{#i18n}}error-general{{/i18n}} <br/>' +
             '{{error}}' +
         '</div>';
     
@@ -118,6 +119,7 @@
                 providedUsername = pagename.indexOf('/') > -1 ? pagename.replace(/^.*\//g, '') : '',
                 userid = config.wgUserId,
                 command = '!verify';
+            (window.dev = window.dev || {}).VerifyUser = window.dev.VerifyUser || {};
 
             if (mw.util.getParamValue('user') && mw.util.getParamValue('tag')) {
                 discordHandle = mw.util.getParamValue('user') + '#' + mw.util.getParamValue('tag');
@@ -128,34 +130,61 @@
                 command = '!wiki verify';
             } else if (customCommand) {
                 command = customCommand;
+            } else if (window.dev.VerifyUser.command) {
+            	command = window.dev.VerifyUser.command;
             }
-            verifyUser.customChannel = mw.util.getParamValue('ch');
+            
+            var customChannel = mw.util.getParamValue('ch');
+            if (customChannel) {
+            	verifyUser.customChannel = customChannel;
+            } else if (window.dev.VerifyUser.channel) {
+            	verifyUser.customChannel = window.dev.VerifyUser.channel;
+            }
             
             // Place the form into the main content section of the page
-            $('#mw-content-text').replaceWith(Mustache.render(templates.main, {
+            $('#mw-content-text').empty().append(Mustache.render(templates.main, {
                 username: username,
                 backlink: encodeURIComponent(window.location),
                 usernameCompare: cleanUser(providedUsername) === cleanUser(username) || cleanUser(providedUsername) === '',
                 discordHandle: discordHandle,
                 i18n: verifyUser.toi18n
             }));
-            
+
+            // Display warning and disable submit button if Discord tag is invalid
+            $('#verify-input').on('keypress keydown keyup', function() {
+			    if (!$(this).val().match(/^.{3,32}#[0-9]{4}$/)) {
+			        $('#verify-input-invalid').css('visibility', 'visible');
+			        $('#verify').addClass('wds-is-disabled');
+			    } else {
+			        $('#verify-input-invalid').css('visibility', 'hidden');
+			        $('#verify').removeClass('wds-is-disabled');
+			    }
+			});
+			
+            if (discordHandle !== '') {
+            	// Manually trigger the validation if handle is autofilled
+            	$('#verify-input').trigger('keyup');
+            }
+
             // On click of verify, set Discord handle
             $('#verify').on('click', function () {
                 verifyUser._setDiscordHandle(userid, $('#verify-input').val()).done(function (data) {
-                    verifyUser._clearProfileCache(); // async, but no need to check if it actually goes through
-                    $('#WikiaArticle').empty().append(Mustache.render(templates.complete, {
+                    if (mw.config.get('wgVersion') === '1.19.24') {
+                        // async, but no need to check if it actually goes through
+                        verifyUser._clearProfileCache();
+                    }
+                    $('#mw-content-text').empty().append(Mustache.render(templates.complete, {
                         username: username,
                         command: command,
                         i18n: verifyUser.toi18n
                     }));
                 }).fail(function (e) {
-                    $('#WikiaArticle').empty().append(Mustache.render(templates.error, {
+                    $('#mw-content-text').empty().append(Mustache.render(templates.error, {
                         error: JSON.parse(e.responseText).title,
                         i18n: verifyUser.toi18n
                     }));
                 });
-                $('#WikiaArticle').empty().append(i18n.msg('loading').plain());
+                $('#mw-content-text').empty().append(i18n.msg('loading').plain());
             });
             
             // On Enter keypress, perform verification
@@ -173,4 +202,4 @@
     });
     mw.hook('dev.i18n').add(verifyUser.init);
 
-})(window, jQuery, mediaWiki, Mustache);
+});

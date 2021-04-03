@@ -43,10 +43,26 @@ var tooltips = {
         if(!content.length) content = $('#mw-content-text');
         
         if(!tooltips.noCSS) {
-            $(importArticle({
+            var cssImport = importArticle({
                 type: 'style',
                 article: 'u:dev:MediaWiki:Tooltips.css'
-            })).prependTo('head');
+            });
+            if (Array.isArray(cssImport)) {
+                // MW 1.19
+                $(cssImport).prependTo('head');
+            } else {
+                // UCP
+                cssImport.then(function () {
+                    var expectedSource = mw.loader.moduleRegistry['u:dev:MediaWiki:Tooltips.css'].style.css[0];
+                    for (var node = document.querySelector('head > meta[name="ResourceLoaderDynamicStyles"]').previousElementSibling; node.tagName === 'STYLE'; node = node.previousElementSibling) {
+                        if (node.textContent === '\n' + expectedSource) {
+                            document.head.prepend(node);
+                            return;
+                        }
+                    }
+                    throw new Error('WTF? Failed to find RL-inserted style!');
+                });
+            }
         }
         
         if($('#tooltip-wrapper').length === 0) $('<div id="tooltip-wrapper" class="WikiaArticle"></div>').appendTo(document.body);

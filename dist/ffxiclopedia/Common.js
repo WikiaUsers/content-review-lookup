@@ -36,7 +36,7 @@ function dismissWatchlistMessage() {
   watchlistMessage.style.display = "none";
 }
 
-addOnloadHook( addDismissButton );
+$( addDismissButton );
 
 /** Collapsible tables *********************************************************
  *
@@ -120,7 +120,7 @@ function createCollapseButtons() {
   }
 }
 
-addOnloadHook( createCollapseButtons );
+$( createCollapseButtons );
 
 /** Dynamic Navigation Bars (experimental) *************************************
  *
@@ -206,7 +206,7 @@ function createNavigationBarToggleButton() {
   }
 }
 
-addOnloadHook( createNavigationBarToggleButton );
+$( createNavigationBarToggleButton );
 
 
 /* Test if an element has a certain class **************************************
@@ -269,185 +269,32 @@ function updatetimer(i) {
 
 function checktimers() {
   //hide 'nocountdown' and show 'countdown'
-  var nocountdowns = getElementsByClassName(document, 'span', 'nocountdown');
-  for(var i in nocountdowns) nocountdowns[i].style.display = 'none'
-  var countdowns = getElementsByClassName(document, 'span', 'countdown');
-  for(var i in countdowns) countdowns[i].style.display = 'inline'
+  var nocountdowns = document.getElementsByClassName(document, 'span', 'nocountdown');
+  for(var i = 0; i < nocountdowns.length; i++) nocountdowns.item(i).style.display = 'none'
+  var countdowns = document.getElementsByClassName(document, 'span', 'countdown');
+  for(var i = 0; i < countdowns.length; i++) countdowns.item(i).style.display = 'inline'
 
   //set up global objects timers and timeouts.
-  timers = getElementsByClassName(document, 'span', 'countdowndate');  //global
+  timers = document.getElementsByClassName(document, 'span', 'countdowndate');  //global
   timeouts = new Array(); // generic holder for the timeouts, global
-  if(timers.length == 0) return;
-  for(var i in timers) {
-    timers[i].eventdate = new Date(timers[i].firstChild.nodeValue);
+  for(var i = 0; i < timers.length; i++) {
+    timers.item(i).eventdate = new Date(timers.item(i).firstChild.nodeValue);
     updatetimer(i);  //start it up
   }
 }
-addOnloadHook(checktimers);
+$(checktimers);
 
 // Embed live blogs from Cover It Live (can be altered to embed anything really)
 function escapeString(str){
   return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 function GetLiveBlog(){
-  var blip_elements = getElementsByClassName(document.getElementById('bodyContent'),'div','live_blog');
+  var blip_elements = document.getElementsByClassName(document.getElementById('bodyContent'),'div','live_blog');
   for(var i = 0; i < blip_elements.length; i++){
-    blip_elements[i].innerHTML = "<iframe src='"+ escapeString(blip_elements[i].firstChild.href) +"' scrolling='no' height='550px' width='550px' frameBorder='0'></iframe>";
+    blip_elements.item(i).innerHTML = "<iframe src='"+ escapeString(blip_elements[i].firstChild.href) +"' scrolling='no' height='550px' width='550px' frameBorder='0'></iframe>";
   }
 }
 GetLiveBlog();
-
-// *********************************************************
-// Tooltips: Allows popups tooltips.
-// *********************************************************
-(function() { // Wrap the script in a closure to make the functions and variables private
-  var containerSelector = '.WikiaArticle'; // selector for the content area of the article
-  var inlineSelector = '.tooltip-source'; // selector for the inline element which controls the tooltip
-  var previewWrapperSelector = '.ArticlePreviewInner'; // selector for the article preview
-  var siteWrapperSelector = '.WikiaSiteWrapper'; // selector for the wrapper that's around the header and article
-  var lazyLoadedImageSelector = 'img.lzyPlcHld:not(.lzyLoaded)';
-
-  // Offset to position the tooltip slightly away from the mouse
-  var mouseOffset = {
-    top: 10,
-    bottom: 0,
-    left: 10,
-    right: 10
-  };
-
-  // Tooltip CSS; make the tooltip float over other content
-  var tooltipCSS = {
-    position: 'fixed',
-    'z-index': 1000
-  };
-
-  // Get the tooltip element from the inline element
-  function getTooltip(element) {
-    var inlineElement = $(element).closest(inlineSelector);
-    if (inlineElement.length === 0) {
-      return $();
-    }
-
-    // look for the unique id of the element if it exists
-    var uniqueTooltipID = inlineElement.attr('data-tooltip-id');
-    if (uniqueTooltipID) {
-      return $('[data-tooltip-id="' + uniqueTooltipID + '"]').not(inlineElement);
-    }
-
-    // find the element by id
-    tooltipID = inlineElement.attr('id') + '-tooltip';
-    var tooltipElement = $(document.getElementById(tooltipID)); // using getElementById removes the need to escape special characters
-
-    // generate a unique id and assign it to both
-    var uniqueTooltipID = tooltipID + '_' + Math.floor(Math.random() * 10e10);
-    inlineElement.attr('data-tooltip-id', uniqueTooltipID).attr('id', null);
-    tooltipElement.attr('data-tooltip-id', uniqueTooltipID).attr('id', null);
-
-    return tooltipElement;
-  }
-
-  function showTooltip(element) {
-    var tooltip = getTooltip(element);
-    tooltip.find(lazyLoadedImageSelector).trigger('onload'); // load any lazy loaded elements
-    tooltip.css(tooltipCSS);
-    relocateTooltip(tooltip);
-    tooltip.show();
-  }
-
-  // move the tooltip to a higher level so that it doesn't slide under other elements
-  function relocateTooltip(tooltip) {
-    var parent = tooltip.parent();
-    var previewWrapper = $(previewWrapperSelector);
-    if (previewWrapper.length > 0 && !parent.is(previewWrapperSelector)) {
-      return;
-    }
-
-    var siteWrapper = $(siteWrapperSelector);
-    if (siteWrapper.length > 0 && !parent.is(siteWrapperSelector)) {
-      tooltip.detach();
-      siteWrapper.append(tooltip);
-    }
-  }
-
-  function hideTooltip(element) {
-    var tooltip = getTooltip(element);
-    tooltip.hide();
-  }
-
-  function positionTooltip(element, tooltip, mouseX, mouseY) {
-    var contentArea = getContentArea();
-
-    // For deciding if we need to switch sides for the tooltip
-    var tooltipHeight = tooltip.outerHeight();
-    var tooltipWidth = tooltip.outerWidth();
-
-    // Position the tooltip in the standard position (bottom-right of cursor)
-    var positionY = mouseY + mouseOffset.top;
-    var positionX = mouseX + mouseOffset.left;
-
-    // Adjust the tooltip so that as much of it fits in the content area as possible
-    if ((positionY + tooltipHeight) > contentArea.bottom) {
-      var spaceAbove = (mouseY - contentArea.top);
-      var spaceBelow = (contentArea.bottom - mouseY);
-      if (spaceBelow < tooltipHeight) {
-        positionY -= (tooltipHeight - spaceBelow + mouseOffset.top);
-      }
-    }
-    if ((positionX + tooltipWidth) > contentArea.right) {
-      var spaceLeft = (mouseX - contentArea.left);
-      var spaceRight = (contentArea.right - mouseX);
-      if (spaceLeft > spaceRight) {
-        // Move the tooltip to the left of the element
-        positionX = mouseX - tooltipWidth - mouseOffset.right;
-      }
-    }
-
-    // Position the tooltip
-    tooltip.css({
-      left: positionX + 'px',
-      top: positionY + 'px'
-    });
-  }
-
-  // Get the bounds of the content area which the tooltip should stay within
-  function getContentArea() {
-    var container = $(containerSelector);
-    var containerPosition = container.offset();
-    var containerMargins = {
-      top: Number.parseFloat(container.css('margin-top')),
-      left: Number.parseFloat(container.css('margin-left'))
-    };
-    return {
-      top: containerPosition.top - containerMargins.top,
-      left: containerPosition.left - containerMargins.left,
-      bottom: Math.min(container.height(), $(window).height()),
-      right: containerPosition.left + container.width()
-    };
-  }
-
-  function attachEvents() {
-    // Attach events to the inline element
-    $(inlineSelector).each(function(index, inlineElement) {
-      $(inlineElement).mouseenter(function(event) {
-        showTooltip(event.target);
-      });
-      $(inlineElement).mouseleave(function(event) {
-        hideTooltip(event.target);
-      });
-      $(inlineElement).mousemove(function(event) {
-        positionTooltip(event.target, getTooltip(this), event.clientX, event.clientY);
-      });
-    });
-  }
-
-  $(document).ready(function() {
-    attachEvents();
-  });
-
-  $(window).on('EditPageAfterRenderPreview', function() {
-    attachEvents();
-  });
-})();
 
 // create collapsible header sections by including a collapse-sections tag
 (function(global) {

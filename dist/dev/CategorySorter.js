@@ -7,6 +7,7 @@
     var targets = [
             '#mw-normal-catlinks:first > ul:first > li',
             '#mw-hidden-catlinks:first > ul:first > li',
+            '#articleCategories .category',
         ];
     
     function sorter(a, b) {

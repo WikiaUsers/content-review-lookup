@@ -5,10 +5,11 @@
  * @author      TheGoldenPatrik1
  * @license     CC-BY-SA 3.0
  * @status      Stable
- * @version     1.6
+ * @version     1.7
  */
 mw.loader.using([
     'mediawiki.api',
+    'mediawiki.Title',
     'mediawiki.util',
     'mediawiki.user'
 ]).then(function () {
@@ -35,15 +36,15 @@ mw.loader.using([
             window.I18nLink
         );
     if (
-        !list.exists() ||
-        config.wgCityId !== '7931' ||
+        list.length === 0 ||
+        Number(config.wgCityId) !== 7931 ||
         (
             isLuaModule &&
             title[1] == 'i18n'
         ) ||
         $(
             '.pi-data-value a[href="/wiki/Help:System_messages"]'
-        ).exists() ||
+        ).length ||
         window.I18nLinkLoaded
     ) { 
         return; 
@@ -66,7 +67,7 @@ mw.loader.using([
                 text:
                     isLua ?
                     '-- <nowiki>\nreturn {}' :
-                    '/* <syntaxhighlight lang="javascript"> */',
+                    '{}',
                 token: mw.user.tokens.get('editToken'),
                 summary: 'Creating via [[I18nLink|Script]]'
             }).done(function (d) {
@@ -149,9 +150,7 @@ mw.loader.using([
             action: 'query',
             titles: titleText
         }).done(function (d) {
-            if (d.error) {
-                return;
-            } else {
+            if (!d.error) {
                 handleData(d);
             }
         });

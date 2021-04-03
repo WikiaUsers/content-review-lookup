@@ -34,6 +34,47 @@ window.PrivateMessageAlert = $.extend(window.PrivateMessageAlert, {
     alertWhileFocused: true,
     interval: 2000
 });
+/* Add Buttons */
+$(window).load(function addButtons() {
+    var $o = $('#Rail');
+    if ($o.length === 0) {
+        setTimeout(addButtons, 250);
+    } else if ([0, 1].indexOf($('.chat-button').length) != -1) {
+        var $div = $('<div>').css('display', 'none').attr('id', 'chatOptionsButton');
+        $o.prepend($div, dayNightButton());
+    }
+});
+ 
+/* Day/Night Switch Feature */
+function dayNightButton() {
+    var dayText = 'Day theme';
+    var nightText = 'Night theme';
+    var $dayNightButton = $('<div>').addClass('chat-button');
+    var $dayNightLink = $('<a>').addClass('wikia-button').text(dayText);
+    var $body = $('body');
+    $dayNightButton.html($dayNightLink);
+    $dayNightLink.click(function() {
+        $body.toggleClass('day');
+        $body.toggleClass('night');
+        $(this).text(function(index, text) {
+            return text === dayText ? nightText : dayText;
+        });
+    });
+    $body.addClass('night');
+    return $dayNightButton;
+}
+ 
+/* Emoticons config */
+window.EmoticonsWindowConfig = {
+    chatOptionsIntegration: true
+};
+ 
+/* Chat topic */
+//Remember to escape single quotes in the topic using \' to prevent this from breaking
+var chatTopic = 'Welcome to the Number 1 Miraculous Superfans Wiki chat.<br>Please read <a href="Number 1 Miraculous Superfans Wiki:Chatroom Policy" target="_blank">the rules</a> before chatting.';
+$(function() {
+    $('#ChatHeader .public.wordmark').prepend('<div class="chattopic">'+chatTopic+'</div>');
+});
 importArticles({
     type: 'script',
     articles: [

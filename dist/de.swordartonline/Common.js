@@ -7,13 +7,7 @@ var AjaxRCRefreshHoverText = 'Automatisch Seite aktualisieren';
 var ajaxRefresh = 300000;
  
 //Import Scripts
-importArticles({
-    type: 'script',
-    articles: [
-        'w:c:dev:AjaxRC/code.js', //Auto-Refresh
-        'w:c:dev:ReferencePopups/code.js' //Popup references
-    ]
-});
+// moved to MediaWiki:ImportJS
 //End Script Import
 
 importScriptPage('ShowHide/code.js', 'dev');

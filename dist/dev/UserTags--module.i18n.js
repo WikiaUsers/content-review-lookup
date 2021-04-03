@@ -108,6 +108,8 @@ UserTagsJS.extensions.i18n = {
 			nonuser: { u:'Aucune modification'}, 
 			newuser: { m:'Nouveau contributeur', f:'Nouvelle contributrice', u:'Nouveau contributeur' },
 			notautoconfirmed: { u:'Nouveau compte' },
+			sysop: { u: 'Administrateur', m: 'Administrateur', f:'Administratrice' },
+			checkuser: { u: 'CheckUser', order: 0 },
 			patroller: { m:'Patrouilleur', f:'Patrouilleuse', u:'Patrouilleur' },
             // Rollback is in English
 			'bot-global': { u: 'Robot global' }
@@ -130,7 +132,17 @@ UserTagsJS.extensions.i18n = {
 			inactive: {u: 'inactivo'}
 		},
 		hi: {
-			inactive: {u: 'निष्क्रिय'}
+			inactive: { u: 'अक्रिय', order: 1/0 }, // End
+			nonuser: { u: 'कभी सम्पादित नहीं किया है', order: 1e101 },
+			newuser: { u: 'नया सदस्य', order: 1e101 },
+			notautoconfirmed: { u: 'नया अकाउंट', order: 1e101 },
+			sysop: { u: 'एडमिनिस्ट्रेटर', order: 0 },
+			checkuser: { u: 'चेकयूज़र', order: 0 },
+			patroller: { u: 'पट्रोलर', order: 0 },
+			autopatrolled: { u: 'ऑटोपट्रोल किया गया है', order: 0 },
+			rollback: { u: 'रोलबैक', order: 0 },
+			autoconfirmed: { u: 'ऑटोकॉन्फ़र्म किया गया है', order: 0 },
+			'bot-global': { u: 'ग्लोबल बॉट', order: 0 }
 		},
 		hr: {
 			inactive: {u: 'neaktivan'}

@@ -60,8 +60,10 @@ $(function () {
     }
 });
 
-/* Auto-Atualização */
- 
-var ajaxPages = ["Especial:Mudanças_recentes", "Especial:Registro", "Especial:Contribuições", "Especial:WikiActivity"];
-var AjaxRCRefreshText = 'Auto-atualização';
-importScriptPage('AjaxRC/code.js', 'dev');
+//Special side boxes
+
+$(function(){
+    $('<section class="RandomModule module"></section>')
+    .appendTo('#WikiaRail')
+    .load('/index.php?title=Template:RandomModule&action=render');
+});

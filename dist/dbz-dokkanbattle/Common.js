@@ -13,7 +13,7 @@ window.ajaxPages = [
     "Special:AllPages"
 ];
  
-clocksModuleLabels = ["PST", "UTC", "JST"];
+clocksModuleLabels = ["Pacific<br>Pitcairn", "Europe<br>London", "Asia<br>Tokyo"];
 clocksModuleTimezones = ["Pacific/Pitcairn", "Europe/London", "Asia/Tokyo"];
 clocksModuleFormat = [
         {local : "en", format : "%H:%M:%S %a \n%m/%d/%Y"},

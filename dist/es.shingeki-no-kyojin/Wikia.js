@@ -1,0 +1,1 @@
+InactiveUsers = { text: 'inactivo' };

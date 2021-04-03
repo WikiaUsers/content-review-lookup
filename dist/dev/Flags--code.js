@@ -8,7 +8,7 @@
     var mwContentTextProcessed = false;
     mw.hook('wikipage.content').add(function helper($content) {
         // ensure that mw-content-text processed was
-        if ($content && $content.selector === '#mw-content-text') {
+        if ($content && $content.attr('id') === 'mw-content-text') {
             mwContentTextProcessed = true;
         } else if (!mwContentTextProcessed) {
             helper($('#mw-content-text'));

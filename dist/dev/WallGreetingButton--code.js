@@ -22,7 +22,7 @@ require([
         config.wgNamespaceNumber !== 1200 ||
         !(
             config.wgUserName === config.wgTitle ||
-            /sysop|threadmoderator|vstf|helper|staff/.test(groups)
+            /sysop|threadmoderator|soap|helper|content-team-member|wiki-manager|staff/.test(groups)
         ) ||
         config.wgAction !== 'edit' ||
         window.WallGreetingButtonLoaded
@@ -66,7 +66,7 @@ require([
                                     '<li><a id="ca-history" href="{{url}}?action=history">{{history}}</a></li>' +
                                     '<li><a accesskey="h" href="{{wallUrl}}?action=history">{{wallHistory}}</a></li>' +
                                     (
-                                        /sysop|content-moderator|vstf|helper|staff/.test(groups) ?
+                                        /sysop|content-moderator|soap|helper|content-team-member|wiki-manager|staff/.test(groups) ?
                                             '<li><a id="ca-delete" href="{{url}}?action=delete">{{delete}}</a></li>' + 
                                             (window.WallGreetingButtonProtect ?
                                                 '<li><a id="ca-protect" href="{{url}}?action=protect">{{protect}}</a></li>' :

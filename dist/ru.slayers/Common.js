@@ -2,7 +2,7 @@
 
 var xhrSummaries, xhrReasons;
 
-document.write("<scr" + "ipt type=\"text/javascript\" src=\"http://absurdopedia.wikia.com/index.php?title=MediaWiki:Wikifier.js&action=raw&ctype=text/javascript&dontcountme=s\"></script>");
+
 
 /* Импорт дополнительных скриптов. Взято с изменениями из рувики, автор Alex Smotrov */
  function importScript(page) {

@@ -7,13 +7,13 @@ importArticles({
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:FandomizedChat/code.2.js',
+        'u:dev:MediaWiki:IsTyping.js',
     ]
 });
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:IsTyping.js',
+        'u:dev:MediaWiki:Pings.js',
     ]
 });
 importArticles({
@@ -34,3 +34,41 @@ importArticles({
         'u:dev:MediaWiki:ChatLinkPreview.js',
     ]
 });
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MessageBlocker/code.js',
+    ]
+});
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:PingEveryone/code.js',
+    ]
+});
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:FaviconNotifier/code.js',
+    ]
+});
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ChatImages/code.js',
+    ]
+});
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ChatAwayButton/code.js',
+    ]
+});
+ 
+window.Pings = {
+    maxRecentPings: 0,
+    storage: {
+        pings: '',
+    }
+};
+window.chatAnnouncementsAnonymous = true;

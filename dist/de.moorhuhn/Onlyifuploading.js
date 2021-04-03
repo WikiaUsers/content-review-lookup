@@ -16,4 +16,4 @@
                    + "["+"[Kategorie:\n"
                    + "["+"[Kategorie:";
  }
- addOnloadHook(setSpecialUploadTemplate);
+ $(setSpecialUploadTemplate);

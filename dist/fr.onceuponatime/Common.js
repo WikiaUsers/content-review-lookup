@@ -25,7 +25,6 @@ window.MessageWallUserTags = {
         'Fan_de_Lost': 'Fondateur',
         'Rwo': 'Bureaucrate',
         'EvilWitch': 'Admin'
-
     }
 };
 
@@ -393,3 +392,63 @@ var quizName = "Quiz",
 	}
 })(jQuery);
 //fin du code quiz
+
+function initializeToggler(){
+    if (document.createTextNode) {
+        var togglingLinks = getElementsByClassName(document, 'span', 'togglerLink');
+        if (!togglingLinks || togglingLinks.length == 0) return;
+
+        for (var i=0; i<togglingLinks.length; i++){
+            
+        }
+    }
+}
+function showToggle(togglerID) {
+	if (document.createTextNode) {
+		// Uses DOM calls to avoid document.write + XHTML issues
+
+		var linkHolder = document.getElementById(togglerID);
+		if (!linkHolder) {
+			return;
+		}
+
+		var toggleLink = createElem('a', 
+                                            null, 
+                                            {'class':'internal utilitylink togglerlink_'+togglerID,
+                                             'href':'javascript:toggleToggler('+togglerID+')'});
+
+		var outerSpan = createElem('span', toggleLink, {'class':'toggler_'+togglerID});
+
+		linkHolder.appendChild(document.createTextNode(' '));
+		linkHolder.appendChild(outerSpan);
+
+		var cookiePos = document.cookie.indexOf("toggler_"+togglerID+"_state=");
+		if (cookiePos > -1 && document.cookie.charAt(cookiePos + 8) == 1) {
+			toggleToggler(togglerID);
+		}
+	}
+}
+
+function changeText(el, newText) {
+	// Safari work around
+	if (el.innerText) {
+		el.innerText = newText;
+	} else if (el.firstChild && el.firstChild.nodeValue) {
+		el.firstChild.nodeValue = newText;
+	}
+}
+
+function toggleToc() {
+	var toc = document.getElementById('toc').getElementsByTagName('ul')[0];
+	var toggleLink = document.getElementById('togglelink');
+
+	if (toc && toggleLink && toc.style.display == 'none') {
+		changeText(toggleLink, tocHideText);
+		toc.style.display = 'block';
+		document.cookie = "hidetoc=0";
+	} else {
+		changeText(toggleLink, tocShowText);
+		toc.style.display = 'none';
+		document.cookie = "hidetoc=1";
+	}
+}

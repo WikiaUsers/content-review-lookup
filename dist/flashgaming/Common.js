@@ -13,7 +13,8 @@ var allLvls = document.evaluate(
     document,
     null,
     XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
-    null);
+    null
+);
 
 for (var x = 0; x < allLvls.snapshotLength; x++) {
     var thisLvl = allLvls.snapshotItem(x);
@@ -37,8 +38,10 @@ if ($("#ca-edit").length || $("a[data-id='editprofile']").length) {
 	type: 'script',
 	articles: [
 	    'u:dev:MediaWiki:Ajax Rename/code.js',
-	    'u:dev:MediaWiki:EditIntroButton/code.js',
-]});}
+	    'u:dev:MediaWiki:EditIntroButton/code.js'
+	]
+  });
+}
 
 /* Create Dev Wiki namespace */
 
@@ -110,13 +113,16 @@ $('#WikiaMainContent',
 var hasClass = (function() {
     var reCache = {};
     return function(element, className) {
-        return (reCache[className] ? reCache[className] : (reCache[className] = 
-        new RegExp("(?:\\s|^)" + className + "(?:\\s|$)")))
-        .test(element.className);
-};})();
+        return (reCache[className] ? reCache[className]: (
+        	reCache[className] = new RegExp("(?:\\s|^)" + className + "(?:\\s|$)")
+        )).test(element.className);
+    };
+})();
 
+// ===============================================================================
 // Collapsible tables; allows tables to be collapsed, showing only the header.
 // See [[Wikipedia:NavFrame]]. Taken from Wikipedia's Common.js.
+// ===============================================================================
 
 var autoCollapse = 2;
 var collapseCaption = "hide";
@@ -133,15 +139,19 @@ function collapseTable(tableIndex) {
     var Rows = Table.rows;
 
     if (Button.firstChild.data == collapseCaption) {
-        for (var i = 1; i < Rows.length; i++) {
+    	
+        for (var i = 1; i < Rows.length; i++)
             Rows[i].style.display = "none";
-        }
+            
         Button.firstChild.data = expandCaption;
+        
     } else {
-        for (var i = 1; i < Rows.length; i++) {
+    	
+        for (var i = 1; i < Rows.length; i++)
             Rows[i].style.display = Rows[0].style.display;
-        }
+            
         Button.firstChild.data = collapseCaption;
+        
     }
 }
 
@@ -187,120 +197,129 @@ function createCollapseButtons() {
     }
 
     for (var i = 0; i < tableIndex; i++) {
-        if (hasClass(NavigationBoxes[i], "collapsed") || (tableIndex >= autoCollapse && hasClass(NavigationBoxes[i], "autocollapse"))) {
-            collapseTable(i);
-        }
+        if (
+        	hasClass(NavigationBoxes[i], "collapsed") || 
+        	(tableIndex >= autoCollapse && hasClass(NavigationBoxes[i], "autocollapse"))
+        ) collapseTable(i);
     }
 }
 
 addOnloadHook(createCollapseButtons);
 
+// =============================================
 // Dynamic Navigation Bars
 // Description: See [[Wikipedia:NavFrame]].
 // Taken from Wikipedia's Common.js.
+// ============================================
  
-  // set up the words in your language
-  var NavigationBarHide = '[' + collapseCaption + ']';
-  var NavigationBarShow = '[' + expandCaption + ']';
+// Set up the words in your language
+
+var NavigationBarHide = '[' + collapseCaption + ']';
+var NavigationBarShow = '[' + expandCaption   + ']';
  
-  // shows and hides content and picture (if available) of navigation bars
-  // Parameters:
-  //     indexNavigationBar: the index of navigation bar to be toggled
-  function toggleNavigationBar(indexNavigationBar)
-  {
-     var NavToggle = document.getElementById("NavToggle" + indexNavigationBar);
-     var NavFrame = document.getElementById("NavFrame" + indexNavigationBar);
- 
-     if (!NavFrame || !NavToggle) {
-         return false;
-     }
- 
-     // if shown now
-     if (NavToggle.firstChild.data == NavigationBarHide) {
-         for (
-                 var NavChild = NavFrame.firstChild;
-                 NavChild !== null;
-                 NavChild = NavChild.nextSibling
-             ) {
-             if ( hasClass( NavChild, 'NavPic' ) ) {
-                 NavChild.style.display = 'none';
-             }
-             if ( hasClass( NavChild, 'NavContent') ) {
-                 NavChild.style.display = 'none';
+// shows and hides content and picture (if available) of navigation bars
+// Parameters:
+// indexNavigationBar: the index of navigation bar to be toggled
+
+function toggleNavigationBar(indexNavigationBar) {
+	var NavToggle = document.getElementById("NavToggle" + indexNavigationBar);
+	var NavFrame  = document.getElementById("NavFrame"  + indexNavigationBar);
+}
+
+if (!NavFrame || !NavToggle) 
+     return false;
+
+// if Shown now
+
+if (NavToggle.firstChild.data == NavigationBarHide) {
+	for (
+         var NavChild = NavFrame.firstChild;
+         NavChild !== null;
+         NavChild = NavChild.nextSibling
+     ) {
+    	if (hasClass( NavChild, 'NavPic'))
+        	NavChild.style.display = 'none';
+
+    	if (hasClass( NavChild, 'NavContent')) 
+         NavChild.style.display = 'none';
+	}
+
+	NavToggle.firstChild.data = NavigationBarShow;
+
+} 
+
+// If hidden now
+
+else if (NavToggle.firstChild.data == NavigationBarShow) {
+	for (
+         var NavChild = NavFrame.firstChild;
+         NavChild !== null;
+         NavChild = NavChild.nextSibling
+     ) {
+    	if (hasClass(NavChild, 'NavPic')) 
+        	NavChild.style.display = 'block';
+         
+    	else if (hasClass(NavChild, 'NavContent')) 
+        	NavChild.style.display = 'block';
+	}
+	
+	NavToggle.firstChild.data = NavigationBarHide;
+}
+
+// adds show/hide-button to navigation bars
+
+function createNavigationBarToggleButton() {
+	var indexNavigationBar = 0;
+
+	// iterate over all < div >-elements 
+
+	var divs = document.getElementsByTagName("div");
+
+	for(var i = 0; i < divs.length;  i++) {
+    	NavFrame = divs[i];
+    	
+		// if found a navigation bar
+		
+		if (hasClass(NavFrame, "NavFrame")) {
+
+    		indexNavigationBar++;
+    		var NavToggle = document.createElement("a");
+    		NavToggle.className = 'NavToggle';
+    		NavToggle.setAttribute('id', 'NavToggle' + indexNavigationBar);
+    		NavToggle.setAttribute('href', 'javascript:toggleNavigationBar(' + indexNavigationBar + ');');
+
+    		var NavToggleText = document.createTextNode(NavigationBarHide);
+    		for (
+        		var NavChild = NavFrame.firstChild;
+        		NavChild !== null;
+        		NavChild = NavChild.nextSibling
+        	) {
+        	
+        	if (hasClass(NavChild, 'NavPic') || hasClass(NavChild, 'NavContent')) {
+             if (NavChild.style.display == 'none') {
+                 NavToggleText = document.createTextNode(NavigationBarShow);
+                 break;
              }
          }
-     NavToggle.firstChild.data = NavigationBarShow;
- 
-     // if hidden now
-     } else if (NavToggle.firstChild.data == NavigationBarShow) {
-         for (
-                 var NavChild = NavFrame.firstChild;
-                 NavChild !== null;
-                 NavChild = NavChild.nextSibling
-             ) {
-             if (hasClass(NavChild, 'NavPic')) {
-                 NavChild.style.display = 'block';
-             }
-             if (hasClass(NavChild, 'NavContent')) {
-                 NavChild.style.display = 'block';
-             }
-         }
-     NavToggle.firstChild.data = NavigationBarHide;
      }
+
+     NavToggle.appendChild(NavToggleText);
+     
+     // Find the NavHead and attach the toggle link (Must be this complicated because Moz's firstChild handling is borked)
+     
+     for (var j = 0; j < NavFrame.childNodes.length; j++) {
+     	
+       if (hasClass(NavFrame.childNodes[j], "NavHead"))
+         NavFrame.childNodes[j].appendChild(NavToggle);
+         
+     }
+     
+     NavFrame.setAttribute('id', 'NavFrame' + indexNavigationBar);
+	}
   }
- 
-  // adds show/hide-button to navigation bars
-  function createNavigationBarToggleButton()
-  {
-     var indexNavigationBar = 0;
-     // iterate over all < div >-elements 
-     var divs = document.getElementsByTagName("div");
-     for(
-             var i=0; 
-             i< divs.length; 
-             i++
-         ) {
-             NavFrame = divs[i];
-         // if found a navigation bar
-         if (hasClass(NavFrame, "NavFrame")) {
- 
-             indexNavigationBar++;
-             var NavToggle = document.createElement("a");
-             NavToggle.className = 'NavToggle';
-             NavToggle.setAttribute('id', 'NavToggle' + indexNavigationBar);
-             NavToggle.setAttribute('href', 'javascript:toggleNavigationBar(' + indexNavigationBar + ');');
- 
-             var NavToggleText = document.createTextNode(NavigationBarHide);
-             for (
-                  var NavChild = NavFrame.firstChild;
-                  NavChild !== null;
-                  NavChild = NavChild.nextSibling
-                 ) {
-                 if ( hasClass( NavChild, 'NavPic' ) || hasClass( NavChild, 'NavContent' ) ) {
-                     if (NavChild.style.display == 'none') {
-                         NavToggleText = document.createTextNode(NavigationBarShow);
-                         break;
-                     }
-                 }
-             }
- 
-             NavToggle.appendChild(NavToggleText);
-             // Find the NavHead and attach the toggle link (Must be this complicated because Moz's firstChild handling is borked)
-             for(
-               var j=0; 
-               j < NavFrame.childNodes.length; 
-               j++
-             ) {
-               if (hasClass(NavFrame.childNodes[j], "NavHead")) {
-                 NavFrame.childNodes[j].appendChild(NavToggle);
-               }
-             }
-             NavFrame.setAttribute('id', 'NavFrame' + indexNavigationBar);
-         }
-     }
-  }
- 
-  addOnloadHook( createNavigationBarToggleButton );
+}
+
+addOnloadHook(createNavigationBarToggleButton);
 
 //=========================================================
 // Makes {{Username}} display the username of the vistor
@@ -308,8 +327,11 @@ addOnloadHook(createCollapseButtons);
 //=========================================================
  
 $(function UserNameReplace() {
-    if (typeof(disableUsernameReplace) != 'undefined' && 
-    disableUsernameReplace || wgUserName === null) return;
+    if (
+    	typeof(disableUsernameReplace) != 'undefined' && 
+    	disableUsernameReplace || wgUserName === null
+    ) return;
+    
     $("span.insertusername").text(wgUserName);
 });
 
@@ -322,58 +344,81 @@ $(function UserNameReplace() {
 //  <span class="countdown" style="display:none;">
 //  Only <span class="countdowndate">January 01 2007 00:00:00 PST</span> until New years.
 //  </span>
-//  <span class="nocountdown">Javascript disabled.</span>
+//  <span class="nocountdown">JavaScript disabled.</span>
  
 function updatetimer(i) {
   var now = new Date();
   var then = timers[i].eventdate;
-  var diff = count=Math.floor((then.getTime()-now.getTime())/1000);
+  var diff = (count = Math.floor((then.getTime() - now.getTime()) / 1000));
  
-  // catch bad date strings
-  if(isNaN(diff)) { 
+  // Catch bad date strings
+  
+  if (isNaN(diff)) { 
     timers[i].firstChild.nodeValue = '** ' + timers[i].eventdate + ' **' ;
     return;
   }
  
   // determine plus/minus
-  if(diff<0) {
-    diff = -diff;
+  if (diff < 0) {
+    diff    = -diff;
     var tpm = 'T plus ';
-  } else {
-    var tpm = 'T minus ';
-  }
+  } else var tpm = 'T minus ';
  
   // calculate the diff
-  var left = (diff%60) + ' seconds';
-    diff=Math.floor(diff/60);
-  if(diff > 0) left = (diff%60) + ' minutes ' + left;
-    diff=Math.floor(diff/60);
-  if(diff > 0) left = (diff%24) + ' hours ' + left;
-    diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' days ' + left;
-  timers[i].firstChild.nodeValue = tpm + left;
+  
+  var left = (diff % 60) + ' seconds';
+  diff     = Math.floor(diff / 60);
+  
+  if (diff > 0) { 
+	left = (diff % 60) + ' minutes ' + left;
+	diff = Math.floor(diff/60);
+  }
+  
+  if (diff > 0) {
+    left = (diff % 24) + ' hours ' + left;
+    diff = Math.floor(diff / 24);
+  }
+  
+  if (diff > 0) {
+  	left = diff + ' days ' + left;
+	timers[i].firstChild.nodeValue = tpm + left;
+  }
  
   // a setInterval() is more efficient, but calling setTimeout()
   // makes errors break the script rather than infinitely recurse
-  timeouts[i] = setTimeout('updatetimer(' + i + ')',1000);
+  
+  timeouts[i] = setTimeout('updatetimer(' + i + ')', 1000);
+  
 }
  
 function checktimers() {
+	
   //hide 'nocountdown' and show 'countdown'
+  
   var nocountdowns = getElementsByClassName(document, 'span', 'nocountdown');
-  for(var i in nocountdowns) nocountdowns[i].style.display = 'none';
+  
+  for (var i in nocountdowns) 
+	nocountdowns[i].style.display = 'none';
+	
   var countdowns = getElementsByClassName(document, 'span', 'countdown');
-  for(var i in countdowns) countdowns[i].style.display = 'inline';
+  
+  for (var i in countdowns) 
+	countdowns[i].style.display = 'inline';
  
   //set up global objects timers and timeouts.
+  
   timers = getElementsByClassName(document, 'span', 'countdowndate');  //global
   timeouts = new Array(); // generic holder for the timeouts, global
-  if(timers.length === 0) return;
+  
+  if (timers.length === 0) 
+	return;
+	
   for(var i in timers) {
     timers[i].eventdate = new Date(timers[i].firstChild.nodeValue);
     updatetimer(i);  //start it up
   }
 }
+
 addOnloadHook(checktimers);
 
 //========================================================  
@@ -386,42 +431,11 @@ if (wgPageName == 'Help:Contents') {
     });
 }
 
-//==========================================================================
-// Opens chat in a window when clicked through a page link or the homepage
-//==========================================================================
-
-$(".openchat a").click(function () {
-    window.open('/wiki/Special:Chat', 'wikiachat', 'width=600,height=600,menubar=no,status=no,location=no,toolbar=no,scrollbars=no,resizable=yes');
-    return false;
-});
-
-/* Redirects "User:<username>/skin.js" or "User:<username>/skin.css" 
-to the skin page they are currently using, unless the 
-"skin.js" or "skin.css" subpage really exists. 
- 
-For example, heading to "User:<username>/skin.js" 
-while using the Oasis skin will redirect them to 
-"User:<username>/wikia.js", and going to 
-"User:<username>/skin.css" on the Monobook skin 
-will take them to "User:<username>/monobook.css". */
-
-if (mw.config.get('wgArticleId') === 0 && mw.config.get('wgNamespaceNumber') === 2) {
-    var titleParts = mw.config.get('wgPageName').split('/');
-    /* Make sure there was a part before and after the slash
-       and that the latter is 'skin.js' or 'skin.css' */
-    if (titleParts.length == 2) {
-        var userSkinPage = titleParts.shift() + '/' + mw.config.get('skin');
-        if (titleParts.slice(-1) == 'skin.js') {
-            window.location.href = mw.util.getUrl(userSkinPage + '.js');
-        } else if (titleParts.slice(-1) == 'skin.css') {
-            window.location.href = mw.util.getUrl(userSkinPage + '.css');
-        }
-    }
-}
-
 /* =============================================================================
 ******************************* User Tags **********************************
 ============================================================================ */
+
+// [Seemingly deprecated in UCP, currently nonfunctional]
 
 // Core Configuration
 
@@ -576,9 +590,9 @@ UserTagsJS.modules.stopblocked = false;
 ||||||||||||||||||||||||| Other Configurations |||||||||||||||||||||||||||||
 ****************************************************************************/
 
-//============================
+//======================
 // AJAX Auto-Refresh
-//============================
+//======================
 
 window.ajaxPages = [
     "Special:WikiActivity",
@@ -605,34 +619,16 @@ window.ajaxRefresh = 30000;
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page over time';
 window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/dev/images/b/ba/Snake_throbber_dark-bg.gif/revision/latest?cb=20140519203615';
- 
-if($(//If user is on any talk/Forum namespace or Message Wall
-   wgNamespaceNumber == 110 || 
-   wgNamespaceNumber == 111 ||
-   wgNamespaceNumber == 3 ||
-   wgNamespaceNumber == 1 ||
-   wgNamespaceNumber == 5 ||
-   wgNamespaceNumber == 7 ||
-   wgNamespaceNumber == 9 ||
-   wgNamespaceNumber == 11 ||
-   wgNamespaceNumber == 13 ||
-   wgNamespaceNumber == 15 ||
-   wgNamespaceNumber == 503 ||
-   wgNamespaceNumber == 829 ||
-   wgNamespaceNumber == 1200 ||
-   wgNamespaceNumber == 1201 ||
-   wgNamespaceNumber == 2000 ||
-   wgNamespaceNumber == 2001))
-{window.ajaxPages.push(wgPageName);}
 
-//------------------------------------------------------------
+// =========================================================
 // Check other flash game wikis for similar offenses / users
+// ==========================================================
 
 window.TBL_GROUP = "flashgames-en";
 
-//**************************************
+// =====================================
 // Spoiler Alert / Mature Content Code
-//**************************************
+// =====================================
 
 window.SpoilerAlertJS = {
     question: "Hola bruddah! There's several herds of hostile spoilers 'round these parts. Are you sure you want to face them? It's up to you. Choose carefully; there's no going back after this.",
@@ -642,19 +638,24 @@ window.SpoilerAlertJS = {
 };
 
 !function() {
-    var cats = mw.config.get('wgCategories'),
+    var cats   = mw.config.get('wgCategories'),
         mature = $.inArray('Mature content', cats) !== -1;
+        
     window.SpoilerAlert = {};
+    
     window.SpoilerAlert.isSpoiler = function() {
         return mature;
     };
+    
     back: true;
+    
     if (mature) {
         window.SpoilerAlert.question = 'Warning! This page is marked as mature. It thereby contains one or more of the following: Excessive gore, excessive physical/psychologcal abuse, very scary content, very excessive use of foul language, animal abuse, over-the-top dark humor or otherwise innapropriate content unsuited for younger or sensitive individuals. Are you sure you want to read it?';
         window.SpoilerAlert.yes = 'Yes, I am willing to take the risk';
         window.spoilerAlert.no = 'No, preferably not.';
         window.spoilerAlert.fadeDelay = 1260;
-}}());
+    }
+} ();
 
 //*********************************
 // Check IP of unregistered users
@@ -689,9 +690,8 @@ window.LIRoptions = {
 };
 
 if (wgPageName.indexOf('Special:MovePage/File:') !== -1 || 
-   (wgCanonicalNamespace === 'File' && Storage)) {
-    importScriptPage('FileUsageAuto-update/code.js', 'dev');
-}
+   (wgCanonicalNamespace === 'File' && Storage))
+		importScriptPage('FileUsageAuto-update/code.js', 'dev');
 
 //==================
 // Ajax Redirect
@@ -699,7 +699,7 @@ if (wgPageName.indexOf('Special:MovePage/File:') !== -1 ||
 
 if (mw.config.get("wgUserGroups").indexOf('sysop') > -1 ||
     mw.config.get("wgUserGroups").indexOf('content-moderator') > -1)
-   {importScriptPage('MediaWiki:AjaxRedirect/code.js', 'dev');}
+		importScriptPage('MediaWiki:AjaxRedirect/code.js', 'dev');
 
 //-----------------------------------------------------------------------------
 /* When used in tandem with code in Common.css and the FlipText and FlipContent 
@@ -717,12 +717,19 @@ $(".container").click(function() {
 //==============================================================
 
 (function($) {
-    if (wgCanonicalSpecialPageName !== 'Whatlinkshere') return;
+    if (wgCanonicalSpecialPageName !== 'Whatlinkshere') 
+    	return;
+    	
     var sorted_list, $list = $('#mw-whatlinkshere-list');
+    
     sorted_list = $list.children('li').sort(function (a, b) {
         return ($(a).find('a:first').attr('title') > $(b)
-        .find('a:first').attr('title')) ? 1 : -1;
-    }); $list.children('li').remove(); $list.append(sorted_list);
+        	.find('a:first').attr('title')) ? 1: -1;
+        	
+    }); 
+    
+    $list.children('li').remove(); $list.append(sorted_list);
+    
 })(jQuery);
 
 //=======================================================================
@@ -735,7 +742,7 @@ window.i = window.i || 0; //Necessary for SignatureCheck to work
 window.SignatureCheckJS = {
 	preamble: 'Hold up a sec...',
 	noSignature: 'Please sign your post with three or four consecutive tildes' + 
-	'~~~ or ~~~~ or, if applicable, your custom signature template. It is' + 
+	'[[User:Withersoul 235|<span style="font-size:16px;font-family:Arial Black;font-variant:small-caps;color:crimson;font-weight:bold;text-decoration:none;text-shadow:1px 0 0 black, 0 1px 0 black, 0 0 15px black;">Wither</span>]] or [[User:Withersoul 235|<span style="font-size:16px;font-family:Arial Black;font-variant:small-caps;color:crimson;font-weight:bold;text-decoration:none;text-shadow:1px 0 0 black, 0 1px 0 black, 0 0 15px black;">Wither</span>]] 18:42, 20 February 2021 (UTC) or, if applicable, your custom signature template. It is' + 
 	' important and required that you do so. It makes it easier to find out' + 
 	' who sent the message.',
 	noForumHeader: 'There is no forum header on this page. You may not create' + 
@@ -748,63 +755,18 @@ window.SignatureCheckJS = {
         extraNamespaces: [{    // Enable signature checking on other namespaces and subpages can be omitted
                         namespace: 9,
                         patterns: ['/Archive'],
-                    },{
+                    }, {
                         namespace: 11,
                         patterns: ['/Archive'],
-                    },{
+                    }, {
                         namespace: 13,
                         patterns: ['/Archive'],
-                    },{
+                    }, {
                         namespace: 15,
                         patterns: ['/Archive']
-                    },{
+                    }, {
                         namespace: 7,
                         patterns: ['/Archive']
                     }    
  
 ]};
-
-//====================================================================
-// Load ext.geshi.local to better support code syntax highlighting
-//====================================================================
- 
-!function ($, mw) {
-    if ([1200, 1201].indexOf(mw.config.get('wgNamespaceNumber')) !== -1 && 
-    $('.mw-geshi').length) {mw.loader.load('ext.geshi.local');}})
-(jQuery, mediaWiki);
-
-/********* ARCHIVE *********/
-
-/*// SVG Image Scaling Script Config
-
-window.dev.DynamicImages = {
-    svgGallery: true,
-    svgLightbox: true,
-    svgIncreaseSrc: 2
-};
-
-// Refresh Thread Script
-
-window.RefreshThreads = {
-    interval: 30000,
-    auto_add: true
-};
-
-//==============================
-// UploadInPage Configuration
-//==============================
-
-window.needsLicense = false;
-window.allowMultiUpload = true;
-window.maxFiles = 100;
-window.uploadDetails = true;
-
-//===================
-// Message Block
-//===================
-
-var MessageBlock = {
-  title : "You're Out.",
-  message : "You have been banned for $2 for the following reason: $1. If you feel eligible for a Repent Trial or think you should be unbanned, let an admin know or contact the FANDOM Staff. Have a nice day.",
-  autocheck : false
-};

@@ -1,39 +1,34 @@
 /************ stdTemplates ************/
 //Adapted from MediaWiki:Common.js/standardeditsummaries.js
 //This script is known to not work in Internet Explorer with the RTE enabled. 
- 
-function initStdTemplates(modeswitch) {
-        if (!$("#wpTextbox1").size()) return; //only run on edit pages.
-	if ($('#stdTemplates').size()) { //this is a redundant check
-		$('#EditPageToolbar').unbind('DOMNodeInserted.stdTemplates'); //unbind to avoid duplication
+
+if (typeof debug452 == "function") debug452("start of stdTemplates");	
+
+function initStdTemplates() {
+        if (!$("#wpTextbox1").length) return; //only run on edit pages.
+	if ($('#stdTemplates').length) { //this is a redundant check
 		return;
 	}
-	var $target = $("#cke_toolbar_source_1 .cke_toolbar_expand"); //#cke_toolbar_source_1 is important.
-        if (skin == "monobook") $target = $("#toolbar");
-	if (!$target.size()) { 
-		if (modeswitch) return; //abort if triggered by mode switch
-		//toolbar not found, RTE enabled, add listener
-		$('#EditPageToolbar').unbind('DOMNodeInserted.stdTemplates'); //unbind to avoid duplication
-		$('#EditPageToolbar').bind('DOMNodeInserted.stdTemplates', function(event) { //listen for mode switch
-			initStdTemplates(1);
+	window.insertTags = function (tagOpen, tagClose, sampleText, selectText) {
+		$("#wpTextbox1").textSelection('encapsulateSelection', {
+			'pre': tagOpen,
+			'peri': sampleText,
+			'post': tagClose
 		});
-		return;
-	} else { 
-		$('#EditPageToolbar').unbind('DOMNodeInserted.stdTemplates'); //unbind to avoid duplication
 	}
-	$selectTemplates = $('<select />')
+	$("#editToolbar").prepend($('<select />')
 		.attr('id', 'stdTemplates')
 		.attr('title', 'Click chọn bản mẫu')
 		.change(function() {
 			var lineparts = $(this).val()
-				.replace(/\+wgCurRevisionId\+/g, wgCurRevisionId)
-				.replace(/\+wgPageName\+/g, wgPageName)
+				.replace(/\+wgCurRevisionId\+/g, mw.config.get("wgCurRevisionId"))
+				.replace(/\+wgPageName\+/g, mw.config.get("wgPageName"))
 				.replace(/\\n/g, "\n")
 				.split("%");
 			if (lineparts.length == 1) 	insertTags(lineparts[0]);
 			else if (lineparts.length == 2) insertTags(lineparts[0], lineparts[1]);
 			else if (lineparts.length == 3)	insertTags(lineparts[0], lineparts[2], lineparts[1]);
- 
+
 			recentTemplates = localStorage.getItem('recentTemplates');
 			if (!recentTemplates) rTArray = new Array(); 
 			if (recentTemplates != null) rTArray = recentTemplates.split("\t");
@@ -43,36 +38,15 @@ function initStdTemplates(modeswitch) {
 			if (rTArray.length > 15) rTArray.pop();
 			recentTemplates = unique(rTArray).join("\t");
 			localStorage.setItem( 'recentTemplates', recentTemplates);
- 
+
 			if ($("#stdTemplates option").first().next().text() != "Chọn gần đây")
 			$("#stdTemplates option").first().after("<option value='' disabled=''>Chọn gần đây</option>");
 			$("#stdTemplates option").first().next().after('<option value="'+val+'">'+text+'</option>');
- 
+
 			$('#stdTemplates option:first-child').prop('selected', true); //reset selection (important)
-		});
- 
-	if (skin == "monobook") {
-	  $target.append($selectTemplates);
-	  /* No adjustments necessary. */
- 
-	} else {
-	  $target.before($selectTemplates);
- 
-	  if ($target.position().left == -10) {
-	    $("#stdTemplates").css({"margin-left":-5})
-	                      .css({"width": 22});
- 
-	    $("#stdTemplates").bind("hover", function(event) {
-	      $("#stdTemplates").css({"margin-left":-($("#stdTemplates").position().left - 20)})
-	                       .css({"width": ($("#stdTemplates").position().left - 3)});
-	      $("#stdTemplates").unbind("hover");
-	    });
- 
-	  } else {
-	    $("#stdTemplates").css({"margin-left":-($("#stdTemplates").position().left - 20)})
-	                    .css({"width": ($("#stdTemplates").position().left - 3)});
-	  }
-	}
+		})
+	);
+
 	function unique(list) {
 	  var result = [];
   	  $.each(list, function(i, e) {
@@ -82,6 +56,7 @@ function initStdTemplates(modeswitch) {
 	}
 	function loadStdTemplates() {
 	  StdTemplates = localStorage.getItem('StdTemplates22-1-26');
+	  localStorage.removeItem( 'StdTemplates' );
 	  if (StdTemplates) {
 		sTArray = StdTemplates.split("\t");
 		for (i in sTArray ) {
@@ -90,7 +65,7 @@ function initStdTemplates(modeswitch) {
 			var val     = ($delim == -1) ? sTArray[i] : sTArray[i].substring($delim+4);
 			var disable = ($delim == -1) ? 'disabled' : '';
 			var $opt = '<option name="'+tName+'" value="' + val + '" ' + disable + '>'+(disable?'':'&nbsp;&nbsp;') + tName + '</option>';
-			$selectTemplates.append($opt);
+			$("#stdTemplates").append($opt);
 		}
 		recentTemplates= localStorage.getItem('recentTemplates');
 		if (recentTemplates) {
@@ -111,9 +86,8 @@ function initStdTemplates(modeswitch) {
 			$("#stdTemplates option").first().after(recentTemplatesOptions);
 		}
 		$('#stdTemplates option:first-child').prop('selected', true); //reset selection
- 
+
 	  } else {
-		localStorage.removeItem( 'StdTemplates' );
 		$.ajax({
 		'dataType': 'text',
 		'data': {
@@ -121,7 +95,7 @@ function initStdTemplates(modeswitch) {
 			'action': 'raw',
 			'ctype': 'text/plain'
 		},
-		'url': wgScript,
+		'url': mw.config.get("wgScript"),
 		'success': function(data) {
 			var lines = data.split("\n"), ignore = { ':': 1, '*': 1,  '<': 1 };
 			sSArray = new Array(); 

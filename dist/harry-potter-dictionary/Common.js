@@ -1,5 +1,12 @@
-// <pre><nowiki>
-/* Any JavaScript here will be loaded for all users on every page load. */
+// dev:AutoCreateUserPages.js
+window.AutoCreateUserPagesConfig = {
+            content: {
+             2: '{{sub'+'st:newuser}}',
+             3: '{{sub'+'st:welcome}}',
+             1202: false
+},
+            summary: 'Script: Creating profile and talkpage on first edit'
+};
 
 // onload stuff
 var firstRun = true;
@@ -14,14 +21,10 @@ function loadFunc() {
 	window.pageName = wgPageName;
 	window.storagePresent = (typeof(globalStorage) != 'undefined');
 
-	addHideButtons();
-
 	fillPreloads();
-
 	substUsername();
 	substUsernameTOC();
 	rewriteTitle();
-	addAlternatingRowColors();
 
 	var body = document.getElementsByTagName('body')[0];
 	var bodyClass = body.className;
@@ -36,119 +39,72 @@ function loadFunc() {
 	}
 }
 
-function infoboxToggle() {
-	var page = window.pageName.replace(/\W/g, '_');
-	var nowShown;
+/**
+ * jQuery version of fillPreloads
+ * @author Grunny
+ */
+function fillPreloads() {
 
-	if(document.getElementById('infoboxtoggle').innerHTML == '[Hide]') {
-		document.getElementById('infoboxinternal').style.display = 'none';
-		document.getElementById('infoboxtoggle').innerHTML = '[Show]';
-		nowShown = false;
+	if( !$( '#lf-preload' ).length ) {
+		return;
+	}
+
+	$( '#lf-preload' ).attr( 'style', 'display: block' );
+
+	$.get( wgScript, { title: 'Template:Stdpreloads', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+		var	$preloadOptionsList,
+			lines = data.split( '\n' );
+
+		$preloadOptionsList = $( '<select />' ).attr( 'id', 'stdSummaries' ).change( function() {
+			var templateName = $( this ).val();
+			if ( templateName !== '' ) {
+				templateName = 'Template:' + templateName + '/preload';
+				templateName = templateName.replace( ' ', '_' );
+				$.get( wgScript, { title: templateName, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+					insertAtCursor( document.getElementById( 'wpTextbox1' ), data );
+				} );
+			}
+		} );
+
+		for ( var i = 0; i < lines.length; i++ ) {
+			var templateText = ( lines[i].indexOf( '-- ' ) === 0 ) ? lines[i].substring(3) : '';
+			$preloadOptionsList.append( $( '<option>' ).val( templateText ).text( lines[i] ) );
+		}
+
+		$( '#lf-preload-cbox' ).html( $preloadOptionsList );
+	} );
+
+	$( '#lf-preload-pagename' ).html( '<input type="text" class="textbox" />' );
+	$( '#lf-preload-button' ).html( '<input type="button" class="button" value="Insert" onclick="doCustomPreload()" />' );
+
+}
+
+function doCustomPreload() {
+	doPreload(document.getElementById('lf-preload-pagename').getElementsByTagName('input')[0].value);
+}
+
+/** Title rewrite ********************************************************
+ * Rewrites the page's title, used by Template:Title
+ * By Sikon
+ * jQuery version and new wikia skin fixes by Grunny
+ */
+
+function rewriteTitle() {
+	if( typeof( window.SKIP_TITLE_REWRITE ) != 'undefined' && window.SKIP_TITLE_REWRITE ) {
+		return;
+	}
+
+	if( $('#title-meta').length == 0 ) {
+		return;
+	}
+
+	var newTitle = $('#title-meta').html();
+	if( skin == "oasis" ) {
+		$('header.WikiaPageHeader > h1').html('<div id="title-meta" style="display: inline;">' + newTitle + '</div>');
+		$('header.WikiaPageHeader > h1').attr('style','text-align:' + $('#title-align').html() + ';');
 	} else {
-		document.getElementById('infoboxinternal').style.display = 'block';
-		document.getElementById('infoboxtoggle').innerHTML = '[Hide]';
-		nowShown = true;
-	}
-
-	if(window.storagePresent) {
-		var storage = globalStorage[window.location.hostname];
-		storage.setItem('infoboxshow-' + page, nowShown);
-	}
-}
-
-function addAlternatingRowColors() {
-	var infoboxes = getElementsByClass('infobox', document.getElementById('content'));
-
-	if( infoboxes.length == 0 )
-		return;
-
-	for( var k = 0; k < infoboxes.length; k++ ) {
-		var infobox = infoboxes[k];
-
-		var rows = infobox.getElementsByTagName('tr');
-		var changeColor = false;
-
-		for( var i = 0; i < rows.length; i++ ) {
-			if(rows[i].className.indexOf('infoboxstopalt') != -1)
-			break;
-
-			var ths = rows[i].getElementsByTagName('th');
-
-			if( ths.length > 0 ) {
-				continue;
-			}
-
-			if(changeColor)
-				rows[i].style.backgroundColor = '#f9f9f9';
-			changeColor = !changeColor;
-		}
-	}
-}
-
-function addHideButtons() {
-	if(typeof getElementsByClass != 'function') {
-		return;
-	}
-	var hidables = getElementsByClass('hidable');
-
-	for( var i = 0; i < hidables.length; i++ ) {
-		var box = hidables[i];
-		var button = getElementsByClass('hidable-button', box, 'span');
-
-		if( button != null && button.length > 0 ) {
-			button = button[0];
-
-			button.onclick = toggleHidable;
-			button.appendChild( document.createTextNode('[Hide]') );
-
-			if( new ClassTester('start-hidden').isMatch(box) )
-				button.onclick('bypass');
-		}
-	}
-}
-
-function toggleHidable(bypassStorage) {
-	if(typeof getElementsByClass != 'function') {
-		return;
-	}
-	
-	var parent = getParentByClass('hidable', this);
-	var content = getElementsByClass('hidable-content', parent);
-	var nowShown;
-
-	if( content != null && content.length > 0 ) {
-		content = content[0];
-
-		if( content.style.display == 'none' ) {
-			content.style.display = content.oldDisplayStyle;
-			this.firstChild.nodeValue = '[Hide]';
-			nowShown = true;
-		} else {
-			content.oldDisplayStyle = content.style.display;
-			content.style.display = 'none';
-			this.firstChild.nodeValue = '[Show]';
-			nowShown = false;
-		}
-
-		if( window.storagePresent && ( typeof( bypassStorage ) == 'undefined' || bypassStorage != 'bypass' ) ) {
-			var page = window.pageName.replace(/\W/g, '_');
-			var items = getElementsByClass('hidable');
-			var item = -1;
-
-			for( var i = 0; i < items.length; i++ ) {
-				if( items[i] == parent ) {
-					item = i;
-					break;
-				}
-			}
-
-			if( item == -1 ) {
-				return;
-			}
-
-			var storage = globalStorage[window.location.hostname];
-			storage.setItem('hidableshow-' + item + '_' + page, nowShown);
-		}
+		$('.firstHeading').html('<div id="title-meta" style="display: inline;">' + newTitle + '</div>');
+		$('.firstHeading').attr('style','text-align:' + $('#title-align').html() + ';');
 	}
 }
 
@@ -178,129 +134,7 @@ function substUsernameTOC() {
 		elements[i].firstChild.nodeValue = elements[i].firstChild.nodeValue.replace('<insert name here>', username);
 }
 
-/************************************************************
- * Functions.js stuff
- * Deprecated, most of these functions will be removed slowly
- ************************************************************/
-
-/*
-    Source: http://www.dustindiaz.com/getelementsbyclass/
-    getElementsByClass, which complements getElementById and getElementsByTagName, returns an array of all subelements of ''node'' that are tagged with a specific CSS class (''searchClass'') and are of the tag name ''tag''. If tag is null, it searches for any suitable elements regardless of the tag name.
-    Example: getElementsByClass('infobox', document.getElementById('content'), 'div') selects the same elements as the CSS declaration #content div.infobox
-*/
-function getElementsByClass(searchClass, node, tag)
-{
-	var classElements = new Array();
-
-	if(node == null)
-		node = document;
-
-	if(tag == null)
-		tag = '*';
-
-	var els = node.getElementsByTagName(tag);
-	var elsLen = els.length;
-	var tester = new ClassTester(searchClass);
-
-	for(i = 0, j = 0; i < elsLen; i++)
-	{
-		if(tester.isMatch(els[i]))
-		{
-			classElements[j] = els[i];
-			j++;
-		}
-	}
-    
-	return classElements;
-}
-
-function ClassTester(className)
-{
-	this.regex = new RegExp("(^|\\s)" + className + "(\\s|$)");
-}
-
-ClassTester.prototype.isMatch = function(element)
-{
-	return this.regex.test(element.className);
-}
-/*
-    end getElementsByClass
-*/
-
-function insertAtCursor(myField, myValue) {
-	//IE support
-	if (document.selection)
-	{
-		myField.focus();
-		sel = document.selection.createRange();
-		sel.text = myValue;
-	}
-	//MOZILLA/NETSCAPE support
-	else if(myField.selectionStart || myField.selectionStart == '0')
-	{
-		var startPos = myField.selectionStart;
-		var endPos = myField.selectionEnd;
-		myField.value = myField.value.substring(0, startPos)
-		+ myValue
-		+ myField.value.substring(endPos, myField.value.length);
-	}
-	else
-	{
-		myField.value += myValue;
-	}
-}
-
-function getFirstHeading() {
-	var elements = getElementsByClass('firstHeading', document.getElementById('content'), 'h1');
-	return (elements != null && elements.length > 0) ? elements[0] : null;
-}
-
-/*
-    Returns the element's nearest parent that has the specified CSS class.
-*/
-function getParentByClass(className, element) {
-	var tester = new ClassTester(className);
-	var node = element.parentNode;
-
-	while(node != null && node != document)
-	{
-		if(tester.isMatch(node))
-			return node;
-
-		node = node.parentNode;
-	}
-
-	return null;
-}
-
-/*
-    Performs dynamic hover class rewriting to work around the IE6 :hover bug
-    (needs CSS changes as well)
-*/
-function rewriteHover() {
-	var gbl = document.getElementById("hover-global");
-
-	if(gbl == null)
-		return;
-
-	var nodes = getElementsByClass("hoverable", gbl);
-
-	for (var i = 0; i < nodes.length; i++) {
-		nodes[i].onmouseover = function() {
-			this.className += " over";
-		}
-		nodes[i].onmouseout = function() {
-			this.className = this.className.replace(new RegExp(" over\\b"), "");
-		}
-	}
-}
-/************************************************************
- * End old Functions.js stuff
- * Deprecated, most of these functions will be removed slowly
- ************************************************************/
-
 $( loadFunc );
-
 
 /* Magic edit intro. Copied from Wikipedia's MediaWiki:Common.js
  * Modified by [[User:Grunny]] and [[User:Sikon]] for use in both Monobook and Monaco on Wikia
@@ -343,7 +177,7 @@ function addEditIntro(name) {
 	}
 }
 
-if (wgNamespaceNumber == 0) {
+if (wgNamespaceNumber === 0) {
 	addOnloadHook(function(){
 		var cats = document.getElementById('mw-normal-catlinks');
 		if (!cats)
@@ -379,60 +213,6 @@ if ( wgTitle == 'Main Page' && ( wgNamespaceNumber == 0 || wgNamespaceNumber == 
 	addOnloadHook( mainPageRenameNamespaceTab );
 }
 
-/** Archive edit tab disabling *************************************
- * Disables the edit tab on old forum topic pages to stop inexperienced users bumping old topics.
- * Page can still be edited by going via the edit tab on the history etc, or by 
- * typing the edit address manually.
- * By [[User:Spang|Spang]]
- * Monaco support by [[User:Uberfuzzy|]]
- * Oasis support by [[User:Uberfuzzy|]]
- * Removal of section edit buttons and new section tab on talk pages added by [[User:Grunny|Grunny]]
- * User:/User talk: support and styling in new skin by [[User:Grunny|Grunny]]
- */
-function disableOldForumEdit() {
-	if( typeof( enableOldForumEdit ) != 'undefined' && enableOldForumEdit ) {
-		return;
-	}
-	if( !document.getElementById('old-forum-warning') ) {
-		return;
-	}
-
-	if( skin == 'oasis' ) {
-		if( wgNamespaceNumber == 2 || wgNamespaceNumber == 3 ) {
-			$("#WikiaUserPagesHeader .wikia-menu-button li a:first").html('Archived').removeAttr('href').attr('style', 'color: darkgray;');
-			$('span.editsection').remove();
-			return;
-		} else {
-			$("#WikiaPageHeader .wikia-menu-button li a:first").html('Archived').removeAttr('href').attr('style', 'color: darkgray;');
-			$('span.editsection').remove();
-			return;
-		}
-	}
-
-	if( !document.getElementById('ca-edit') ) {
-		return;
-	}
-
-	if( skin == 'monaco' ) {
-		editLink = document.getElementById('ca-edit');
-	} else if( skin == 'monobook' ) {
-		editLink = document.getElementById('ca-edit').firstChild;
-	} else {
-		return;
-	}
-
-	editLink.removeAttribute('href', 0);
-	editLink.removeAttribute('title', 0);
-	editLink.style.color = 'gray';
-	editLink.innerHTML = 'Archived';
-
-	$('span.editsection-upper').remove();
-	$('span.editsection').remove();
-
-	appendCSS( '#control_addsection, #ca-addsection { display: none !important; }' );
-}
-addOnloadHook( disableOldForumEdit );
-
 //Removes the "Featured on:" line on File pages -- By Grunny
 addOnloadHook( function (){
 	if ( wgNamespaceNumber == 6 && $('#file').length != 0 ) {
@@ -451,23 +231,7 @@ $(document).ready(function() {
 
 });
 
-/* Temporary fix for the duration of the giveaway to let others use talk pages 
-$( function () {
-	if( wgTitle == 'Wizarding World Giveaway' || wgTitle == 'Deathly Hallows Premiere Event' ) {
-		return;
-	}
-	if( wgNamespaceNumber == 0 ) {
-		if( skin == 'oasis' ) {
-			$('ul.commentslikes > li.comments > a').text('Talk').attr('href','/wiki/Talk:'+ encodeURIComponent (wgPageName));
-			$('section#WikiaArticleComments').remove();
-		} else {
-			$('#p-cactions > .pBody > ul > #ca-nstab-main').after('<li id="ca-talk"><a accesskey="t" title="Discussion about the content page [t]" href="/wiki/Talk:'+ encodeURIComponent (wgPageName) +'">Discussion</a></li>');
-			$('div#article-comments-wrapper').remove();
-		}
-	}
-} ); */
-
-//edit buttons
+// Custom Edit Buttons
 if (mwCustomEditButtons) {
   mwCustomEditButtons[mwCustomEditButtons.length] = {
     "imageFile": "https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png",
@@ -498,6 +262,11 @@ if (mwCustomEditButtons) {
      "sampleText": "Insert comment here"};
 }
 
-/* Auto-refresh */ AjaxRCRefreshText = 'Auto-refresh'; AjaxRCRefreshHoverText = 'Automatically refresh this page'; ajaxPages = ["Special:RecentChanges","Special:WikiActivity"]; importScriptPage('AjaxRC/code.js', 'dev'); 
+/**** UploadInFile ****/
+window.needsLicense = true;
 
-//</nowiki> </pre>
+// AjaxRC
+window.ajaxPages = ["Special:WikiActivity","Special:Log","Special:RecentChanges"];
+window.ajaxIndicator = 'https://images.wikia.nocookie.net/__cb20100609110347/software/images/a/a9/Indicator.gif';
+window.AjaxRCRefreshText = 'Auto Refresh';
+window.AjaxRCRefreshHoverText = 'Silently refreshes the contents of this page every 60 seconds without requiring a full reload';

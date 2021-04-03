@@ -8,7 +8,7 @@ importArticles({
 /* Автовизначення ніку користувача */
 if (wgUserName !== null) $('span.insertusername').text(wgUserName);
 
-/* Додаткова статистика вікі-проектів */
+/* Додаткова статистика вікі-проєктів */
 // codename: wiu (wiki info util)
 // cache: [link = data]
 (function ($) {

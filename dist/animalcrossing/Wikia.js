@@ -1,8 +1,5 @@
-// if youre looking for profile tags it's at
-//          MediaWiki:ProfileTags
-// save yourself five minutes of struggle next time ye
-
-//Lots of imports over at MediaWiki:ImportJS
+// profile tags are located at MediaWiki:ProfileTags
+// imports are located at MediaWiki:ImportJS
 
 (function() { "use strict";
 
@@ -59,10 +56,5 @@ var seasonStyle = {
 mw.util.addCSS("a:hover { text-shadow: 0 0 1em "+seasonStyle[currentSeason].hover+", 0 0 0.2em "+seasonStyle[currentSeason].hover+"; color:white !important; } \
 a.topiclink:hover { text-shadow: 0 0 1em "+seasonStyle[currentSeason].hover+", 0 0 0.2em "+seasonStyle[currentSeason].hover+"; color:white !important; } \
 body.skin-oasis { background: #f1f1f1 url('"+seasonStyle[currentSeason].url+"') top left repeat; }");
-
-// Adds notice to the top of the sandbox page
-if (wgPageName == "Animal_Crossing_Wiki:Sandbox") {
-    $("#mw-content-text").prepend('<div style="border:dotted 2px darkgray; margin-top:0.5em; margin-bottom:1em; padding:0 0.5em 0 0.5em;"><p>This is the Sandbox. Here you can perform <b>test</b> edits. <b>Editing vandalism into this page is still vandalism.</b> This page will be cleared of all tests occasionally. Please contact <a href="/wiki/Message_Wall:HOAFanguying" title="Message Wall:HOAFanguying">HOAFanguying</a> if you have any queries.</p></div>');
-}
 
 })();

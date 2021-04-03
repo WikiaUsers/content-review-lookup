@@ -1,13 +1,7 @@
-/* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
-
-//AJAX-обновление некоторых страниц(выбор страниц)
-window.ajaxPages = [
-    "Служебная:Watchlist",
-    "Служебная:Contributions",
-    "Служебная:WikiActivity",
-    "Служебная:RecentChanges"
-];
-window.AjaxRCRefreshText = 'автообновление страницы'; //Отображаемое название
+importScriptPage('MediaWiki:AjaxRC/code.js', 'dev');
+var ajaxPages = ["Special:Watchlist", "Special:Contributions", "Special:WikiActivity", "Special:RecentChanges", "Служебная:Watchlist", "Служебная:Contributions", "Служебная:WikiActivity", "Служебная:RecentChanges"];
+var AjaxRCRefreshText = 'Автообновление страницы';
+var PurgeButtonText = 'Обновить';
 
 //Код для замены имени участника. 
 $(function UserNameReplace() {

@@ -6,7 +6,7 @@ function createSidebarModule(heading, body, myClass) {
         module.addClass(myClass);
     }
     if(arguments.length == 4 && arguments[3]) {
-        console.log('special sidebar item',arguments,module);
+        console.log('special sidebar item', arguments,module);
         module.addClass('sidebar-special-item');
         module.prepend(
             $('<div />').addClass('logo logo-fandom')
@@ -17,11 +17,11 @@ function createSidebarModule(heading, body, myClass) {
         var header = !!heading.length ? $('<h2 />').addClass(!!myClass.length ? myClass + '-heading' : 'heading').html(heading) : '';
         module.prepend(header);
     }
-    addOnloadHook(function() {
+    $(document).ready(function() {
         module.appendTo(
             $('.WikiaRail #WikiaRail')
         );
-        console.log('created sidebar module',module);
+        console.log('created sidebar module', module);
     });
 }
 mw.hook('dev.sidebar').fire();

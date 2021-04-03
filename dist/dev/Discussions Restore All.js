@@ -1,0 +1,109 @@
+(function($) {
+	"use strict";
+	if ((mw.config.get("wgCanonicalSpecialPageName") === "Contributions")) {
+		var username = mw.config.get("wgRelevantUserName");
+		if (username === null) {
+			// Do nothing if only on Special:Contributions and not a subpage
+			return;
+		}
+
+		mw.loader.using("mediawiki.user").then(function() {
+			if (!mw.user.getRights) { return $.Deferred().rejectWith(this, arguments).promise(); } // Disable for non-updated MediaWiki to avoid throwing errors
+			return mw.user.getRights();
+		}).then(function(rights) {
+			if (rights.indexOf("threads:delete") !== -1) {
+				//Only do anything if the user has undeletion rights and is on the contributions page
+				
+				var api = new mw.Api();
+				var optionalNotificationsSystemPromise = mw.loader.using("mediawiki.notify");
+
+				function errorMessageNotification(errorMessage) {
+					mw.log.error(errorMessage);
+					optionalNotificationsSystemPromise.then(function() {
+						mw.notify(errorMessage, { type: "error" });
+					});
+				}
+
+				api.get({
+					action: "query",
+					format: "json",
+					list: "users",
+					ususers: username
+				}).then(function(data) {
+					var userID = data.query.users[0].userid;
+					var rootDomain = (new mw.Uri(mw.config.get("wgServer")+"/")).host.split(".").slice(-2).join(".");
+					var LIMIT = 100;
+					
+					function undeleteSingle(ID, isThread) {
+						var requestUrl = "https://services."+rootDomain+"/discussion/"+mw.config.get("wgCityId")+"/"+(isThread ? "threads" : "posts")+"/"+ID+"/undelete";
+						return fetch(requestUrl, {
+							"credentials": "include",
+							"method": "PUT",
+						});
+					}
+
+					function loopThroughAllPosts(posts, i) {
+						if (i < posts.length) {
+							if (posts[i].isDeleted) {
+								return undeleteSingle(posts[i].id).catch(errorMessageNotification).finally(function() {
+									return loopThroughAllPosts(posts, i+1);
+								});
+							} else {
+								return loopThroughAllPosts(posts, i+1);
+							}
+						} else {
+							return Promise.resolve();
+						}
+					}
+
+					function _undeleteAll(page) {
+						return $.ajax("https://services."+rootDomain+"/discussion/"+mw.config.get("wgCityId")+"/users/"+userID+"/posts?responseGroup=full&viewableOnly=false&limit="+LIMIT+"&page="+page, {
+							async: true,
+							method: "GET",
+							xhrFields: {
+								withCredentials: true
+							}
+						}).then(function(resp) {
+							var posts = resp._embedded["doc:posts"];
+							
+							return loopThroughAllPosts(posts, 0).then(function() {
+								if (posts.length === LIMIT) {
+									return _undeleteAll(page+1);
+								}
+							});
+						});
+					}
+					
+					function undeleteAll() {
+						return _undeleteAll(0);
+					}
+					
+					var restorationButton = new OO.ui.ButtonWidget( {
+						label: "Restore all posts",
+						active: true,
+						icon: "restore",
+					} );
+
+					$( ".mw-contributions-user-tools" ).append( $( document.createElement("div") ).append( restorationButton.$element ) );
+
+					restorationButton.on("click", function() {
+						restorationButton.setDisabled(true);
+						optionalNotificationsSystemPromise.then(function() {
+							mw.notify("Restoration in progress...", { type: "info" });
+						});
+						return undeleteAll()
+							.then(function() {
+								optionalNotificationsSystemPromise.then(function() {
+									mw.notify("All posts restored.", { type: "success" });
+								});
+							})
+							.catch(errorMessageNotification)
+							.always(function() {
+							restorationButton.setDisabled(false);
+						});
+					});
+				}).catch(errorMessageNotification);
+			}
+		});
+	}
+})(jQuery);

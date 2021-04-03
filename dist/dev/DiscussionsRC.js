@@ -5,17 +5,22 @@
 // Work in progress!
 // <nowiki>
 
-;(function($, mw, Mustache) {
+;(function($, mw) {
    'use strict';
+    var isUCP = mw.config.get('wgVersion') !== '1.19.24';
 
    // Loads or checks for DiscussionsRC
    if (window.discRC) {
       return;
    }
-   if (mw.config.get('wgPageName') === wgFormattedNamespaces[-1] + ':DiscussionsRC') {
+   if (mw.config.get('wgPageName') === mw.config.get('wgFormattedNamespaces')[-1] + ':DiscussionsRC') {
       $('h1.page-header__title').text('DiscussionsRC');
       document.title = 'DiscussionsRC | ' + mw.config.get('wgSiteName') + ' | Fandom';
-      $('#WikiaArticle').empty().append($('<div/>', {id: 'discrc'}));
+      if (isUCP) {
+         $('#WikiaMainContent').empty().append($('<div/>', {id: 'discrc'}));
+      } else {
+         $('#WikiaArticle').empty().append($('<div/>', {id: 'discrc'}));
+      }
    }
    if (!$('#discrc').length) {
       return;
@@ -50,9 +55,9 @@
    };
 
    // Returns API request for list of posts from Discussions
-   dRCAPI.getPosts = function(cityId, limit, page, reported, viewableOnly) {
+   dRCAPI.getPosts = function(baseUrl, limit, page, reported, viewableOnly) {
       return $.ajax({
-         url: 'https://services.fandom.com/discussion/' + cityId + '/posts',
+         url: baseUrl + '/wikia.php?controller=DiscussionPost&method=getPosts',
          type: 'GET',
          format: 'json',
          crossDomain: 'true',
@@ -64,15 +69,16 @@
             page: page,
             responseGroup: 'small',
             reported: reported,
+            containerType: 'FORUM',
             viewableOnly: viewableOnly
          }
       });
    };
 
    // Returns API request for list of posts in a thread from Discussions
-   dRCAPI.getThread = function(cityId, threadId, page, limit, viewableOnly) {
+   dRCAPI.getThread = function(baseUrl, threadId, page, limit, viewableOnly) {
       return $.ajax({
-         url: 'https://services.fandom.com/discussion/' + cityId + '/threads/' + threadId,
+         url: baseUrl + '/wikia.php?controller=DiscussionThread&method=getThread&threadId=' + threadId,
          type: 'GET',
          format: 'json',
          crossDomain: 'true',
@@ -156,7 +162,7 @@
    discRC.generatePosts = function(wikis, page) {
       var promises = [];
       $.each(wikis, function(i, wiki) {
-         var promise = dRCAPI.getPosts(wiki.id, 100, page, false, true).done(function(data) {
+         var promise = dRCAPI.getPosts(wiki.baseUrl, 100, page, false, true).done(function(data) {
             if (data._embedded['doc:posts'].length > 0) {
                $.each(data._embedded['doc:posts'], function(i, post) {
                   var postDate = new Date(post.creationDate.epochSecond * 1000);
@@ -230,11 +236,13 @@
       $('#discrc').on('click', '.drc-view', function() {
          var cityId = $(this).attr('data-city');
          var wiki = discRC.wikis.filter(function(wiki) {
-            return wiki.id === cityId;
+            return wiki.id.toString() === cityId.toString();
          })[0];
+         console.log(wiki);
          var threadId = $(this).attr('data-thread');
          var replyId = $(this).attr('data-reply');
-         dRCAPI.getThread(cityId, threadId, 0, 100, false).then(function(thread) {
+         dRCAPI.getThread(wiki.baseUrl, threadId, 0, 100, false).then(function(thread) {
+            console.log('got threads');
             // Format the date
             var date = new Date(thread.creationDate.epochSecond * 1000);
             date = discRC.timePad(date.getHours()) + ':' + discRC.timePad(date.getMinutes()) + ', ' + date.getDate() + ' ' + wgMonthNames[date.getMonth() + 1] + ' ' + date.getFullYear();
@@ -243,7 +251,7 @@
                thread.createdBy.avatarUrl = 'https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest';
             }
             // Place into box
-            $('#drc-view-post-' + threadId).append(
+            $('#drc-view-post-content').empty().append(
                discRC.render(
                   discRC.templates.mainPost, {
                      post: thread,
@@ -253,6 +261,9 @@
                   }
                )
             );
+            if (isUCP) {
+               window.dev.modal.modals['drc-view-post']._modal.updateSize();
+            }
             if (!Object.prototype.hasOwnProperty.call(thread._embedded, 'doc:posts')) {
                return;
             }
@@ -265,7 +276,7 @@
                if (!post.createdBy.avatarUrl) {
                   post.createdBy.avatarUrl = 'https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest';
                }
-               $('#drc-view-post-' + threadId).append(
+               $('#drc-view-post-content').append(
                   discRC.render(discRC.templates.postReply, {
                      post: post,
                      wiki: wiki,
@@ -273,20 +284,37 @@
                      isHighlighted: (post.id === replyId)
                   })
                );
+               if (isUCP) {
+                  window.dev.modal.modals['drc-view-post']._modal.updateSize();
+               }
             });
-            var highlightedPost = document.querySelector('#drc-view-post-' + threadId + ' .drc-post-highlighted');
+            var highlightedPost = document.querySelector('#drc-view-post-content .drc-post-highlighted');
             if (highlightedPost !== null) {
                highlightedPost.scrollIntoView({block: 'center'});
             }
+         }, function(err) {
+            $('#drc-view-post-content').empty().append(
+               'Post not found'
+            );
          });
-         $.showCustomModal('', '<div id="drc-view-post-' + threadId + '"></div>' , {
-            id: 'drc-view-post',
-            width: 600,
-            buttons: [],
-            callback: function(wrapper) {
-               wrapper.find('button.close.wikia-chiclet-button > img').replaceWith('<svg class="wds-icon"><use xlink:href="#wds-icons-close"></use></svg>');
-            }
-         });
+         if (!discRC.modal) {
+            discRC.modal = new window.dev.modal.Modal({
+               title: 'DiscussionsRC',
+               content: '<div id="drc-view-post-content"></div>',
+               id: 'drc-view-post',
+               width: 600,
+               size: isUCP ? 'large' : 'medium',
+               buttons: isUCP ? [{text: 'Close', label: 'Close', flags: ['safe', 'close'] }] : [],
+               callback: function(wrapper) {
+                  wrapper.find('button.close.wikia-chiclet-button > img').replaceWith('<svg class="wds-icon"><use xlink:href="#wds-icons-close"></use></svg>');
+               }
+            });
+            discRC.modal.create();
+            discRC.modal.show();
+            console.log('showed');
+         } else {
+            discRC.modal.show();
+         }
       });
    };
 
@@ -378,8 +406,18 @@
          discRC.events();
       })
    };
-
-   discRC.init();
-
+   importArticle({
+       type: 'script',
+       article: 'u:dev:MediaWiki:Modal.js'
+   });
+   mw.hook('dev.modal').add(function() {
+      if (isUCP) {
+         mw.loader.using('mediawiki.template.mustache', function() {
+            discRC.init();
+         });
+      } else {
+         discRC.init();
+      }
+   });
    window.discRC = discRC;
-})(jQuery, mediaWiki, Mustache);
+})(jQuery, mediaWiki);

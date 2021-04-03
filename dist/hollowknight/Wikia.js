@@ -269,6 +269,14 @@ $("#FuriousGodsPlayer").replaceWith('<iframe style="border: 0; width: 100%; heig
 $("#PureVesselPlayer").replaceWith('<iframe style="border: 0; width: 100%; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/album=2141448418/size=small/bgcol=333333/linkcol=0f91ff/track=3088722229/transparent=true/" seamless><a href="http://christopherlarkin.bandcamp.com/album/hollow-knight-gods-nightmares">Hollow Knight: Gods &amp; Nightmares by Christopher Larkin</a></iframe>');
 
 
+/*-------------- Lace ----------------*/
+$("#LacePlayer").replaceWith('<iframe style="border: 0; width: 100%; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/album=3074030884/size=small/bgcol=ffffff/linkcol=0687f5/track=3278088052/transparent=true/" seamless><a href="https://christopherlarkin.bandcamp.com/album/hollow-knight-silksong-ost-sample">Hollow Knight: Silksong (OST Sample) by Christopher Larkin</a></iframe>');
+
+/*-------------- Bonebottom ----------------*/
+$("#BonebottomPlayer").replaceWith('<iframe style="border: 0; width: 100%; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/album=3074030884/size=small/bgcol=ffffff/linkcol=0687f5/track=979710051/transparent=true/" seamless><a href="https://christopherlarkin.bandcamp.com/album/hollow-knight-silksong-ost-sample">Hollow Knight: Silksong (OST Sample) by Christopher Larkin</a></iframe>');
+
+
+
 /* Allow direct link to tabber content (https://community.fandom.com/wiki/Thread:790781)*/
 //<tabber> extension req
 //v2.0, 2017, user:fngplg.

@@ -22,7 +22,7 @@
             refresh = window.rcmRefresh;
         }
  
-        $('#WikiaRecentActivity').html(rcModule);
+        $('#wikia-recent-activity').html(rcModule);
 
         updateRC();
  

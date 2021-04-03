@@ -7,7 +7,7 @@ ajax_load_bar.src = "http://images3.wikia.nocookie.net/tibia/en/images/d/de/Ajax
 
 var reward_container_statistics_string = '';
 var reward_container_statistics_obj = {};
-var reward_container_statistics_basetimestamp, reward_container_statistics_token;
+var reward_container_statistics_basetimestamp;
 var sysop = false;
 
 var reward_container_statistics_init;
@@ -141,7 +141,7 @@ var reward_container_statistics_upload = function () {
       data : {
         action: 'edit', title: 'TibiaWiki:Reward_Container_Statistics/Statistics', format: 'json',
         summary: 'merging', text: reward_container_statistics_string,
-        token: reward_container_statistics_token, basetimestamp: reward_container_statistics_basetimestamp, minor: 'minor'
+        token: mw.user.tokens.get('editToken'), basetimestamp: reward_container_statistics_basetimestamp, minor: 'minor'
       },
       error: function () { reward_container_statistics_end(errort, 2); },
       success: function (obj) {
@@ -222,7 +222,6 @@ var reward_container_statistics_load = function (from_teaxtarea) {
         var x;
         if (obj && obj.query && obj.query.pages) {
           for (x in obj.query.pages) { if (obj.query.pages.hasOwnProperty(x)) {
-            reward_container_statistics_token = obj.query.pages[x].edittoken;
             if (obj.query.pages[x].missing !== undefined) { reward_container_statistics_basetimestamp = ''; }
             else { reward_container_statistics_basetimestamp = obj.query.pages[x].revisions[0].timestamp; get_stats_contents(); }
             break;

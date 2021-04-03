@@ -2,7 +2,7 @@
     var p = mw.config.get( 'wgTitle' ), a;
  
     a = [
-        'User:Pauolo/sandbox'
+        'Main Page Test'
  
     ];
  

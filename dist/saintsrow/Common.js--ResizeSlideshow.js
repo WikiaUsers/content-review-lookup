@@ -1,16 +1,25 @@
-$(document).ready(function() {
-  $(".gallerytabber .wikia-slideshow").after($('<div>').addClass("center button").css({"display":"block","width": "10em"}).bind("click", function() { ResizeSlideshow(); }).html("Resize to fit"));
 
-  if (window.whenReady) {
-    window.whenReady.push("ResizeSlideshow");
-  } else {
-    document.onreadystatechange = function () {
-      if (document.readyState == "complete") ResizeSlideshow();
-    }
-  }
+if (typeof debug452 == "function") debug452("start of ResizeSlideshow");
+
+$(function() {
+  $(".gallerytabber .wikia-slideshow").after($('<button>').addClass("center button").css({"display":"block","width": "10em"}).on("click", function() { ResizeSlideshow(); }).html("Resize to fit"));
+
+  $(".wikia-slideshow").on("click", function(e){e.stopPropagation();});  /* The slideshow lightbox has been broken for over 3 months, this enables images in the slideshow to be clicked. */
+
+  $(document).on('readystatechange', function() {
+    debug452("readystate (ResizeSlideshow) : '"+document.readyState+"'"); 
+    if (document.readyState == "complete") initResizeSlideshow();
+  });
+  $(document).trigger('readystatechange');
 });
 
-function ResizeSlideshow() {
+window.initResizeSlideshow = function() {
+  $(window).on("resize", function() { ResizeSlideshow(); })
+  $(".wikia-slideshow-prev-next").on("click", function() { ResizeSlideshow(); });
+  ResizeSlideshow();
+}
+
+window.ResizeSlideshow = function() {
   $(".gallerytabber .wikia-slideshow-wrapper").each(function() {
     var aspectRatio = 3/4;  //the aspect ratio of the entire slideshow is always 4:3
 
@@ -19,49 +28,39 @@ function ResizeSlideshow() {
     } else {      //tabber not loaded yet - very rare.
       galleryWidth = $(".gallerytabber").width() - 12; // 2 * (5px padding + 1px border)
     }
-
+    if (galleryWidth <= 0) return; //rare
     galleryHeight = Math.floor(galleryWidth*aspectRatio);
+    galleryWidth = Math.floor(galleryWidth); //before now, galleryWidth is decimal.
+
     $(this).css("height", galleryHeight+"px");
     $(".wikia-slideshow-images", this).css({"height": galleryHeight+"px", "width": galleryWidth+"px"});
     $(".wikia-slideshow-sprite", this).css("top", Math.floor( galleryHeight  / 2 - 30)+"px"); //same formula used by the real script.
 
     $(".thumbimage", this).each(function() {
-      if ($(this).attr("src")) srcAttr = "src";
-      else if ($(this).attr("data-src")) srcAttr = "data-src";
+      var srcAttr = $(this).attr("src")?"src":"data-src";
+      var srcurl = $(this).attr(srcAttr);
 
-      if ($(this).attr(srcAttr).indexOf(escape($(this).attr("data-image-key")+"/")) == -1) return; //skip actual size.
-      if ($(this).attr(srcAttr).indexOf("latest/") == -1) return; //skip actual size for vignette images.
+      $(this).next("a").attr("href", "/wiki/File:"+encodeURIComponent($(this).attr("data-image-key"))); //add missing href to link.
 
-      var baseurl = $(this).attr(srcAttr).split(escape($(this).attr("data-image-key")))[0];
+      if (srcurl.indexOf(escape($(this).attr("data-image-key")+"/")) == -1) return; //skip actual size.
+      if (srcurl.indexOf("latest/") == -1) return; //skip actual size for vignette images.
 
-      if (baseurl.indexOf("vignette") == -1) { //imgX.wikia URLs
-        if (!$(this).attr("aspectRatio")) $(this).attr("aspectRatio", $(this).attr("height") / $(this).attr("width")); //store original aspect ratio
- 
-        if ($(this).attr("aspectRatio") > aspectRatio) { //if the image is taller than the aspect ratio allows.
-          $(this).attr("height", galleryHeight ); //set height to max
-          $(this).attr("width", Math.floor( galleryHeight / $(this).attr("aspectRatio") ) ); //calc width
-        } else {
-          $(this).attr("width", galleryWidth ); //set width to max
-          $(this).attr("height", Math.floor( galleryWidth * $(this).attr("aspectRatio") ) ); //calc height
-        }
-        var newurl = $(this).attr("data-image-key")+"/"+$(this).attr("width")+"px-"+$(this).attr("data-image-key");
+      var baseurl = srcurl.split(escape($(this).attr("data-image-key")))[0];
 
-      } else { //vignetteX.wikia URLs
+      //at this point, attr("width") is decimal.  height is fine.
 
-        $(this).attr("width", galleryWidth );
-        $(this).attr("height", galleryHeight );
-        //setting the width and height should be redundant at this point, but is safe because it is restricted by the max- styles
+      $(this).attr("width", galleryWidth );
+      $(this).attr("height", galleryHeight );
 
-        var newurl = $(this).attr("data-image-key")
+      var newurl = $(this).attr("data-image-key")
                      +"/revision/latest/thumbnail-down"
                      +"/width/"+galleryWidth
                      +"/height/"+galleryHeight;
 
-        //using "thumbnail-down" instead of "scale-to-width" prevents images from being bigger than the original
-      }
+      //using "thumbnail-down" instead of "scale-to-width" prevents images from being bigger than the original
 
-      $(this).attr(srcAttr, baseurl+escape(newurl));
-
+      if ($(this).attr("src") != baseurl+escape(newurl)) $(this).attr("src", baseurl+escape(newurl));
+      if ($(this).attr("data-src") != baseurl+escape(newurl)) $(this).attr("data-src", baseurl+escape(newurl));
     });
   });
 }

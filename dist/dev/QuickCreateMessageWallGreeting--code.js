@@ -7,23 +7,19 @@
  * @Notes           Adapted from QuickCreateUserPage
  * @Protect         <nowiki>
  */
-require([
-    'wikia.window',
-    'jquery',
-    'mw',
-    'BannerNotification'
-], function (window, $, mw, BannerNotification) {
+(function () {
     'use strict';
     // Config
     var config = mw.config.get([
         'wgFormattedNamespaces',
         'wgUserName',
-        'debug'
+        'wgVersion'
     ]);
     // Load Protection
     if (
         window.QuickCreateMessageWallGreetingLoaded ||
-        config.wgUserName === null
+        config.wgUserName === null ||
+        config.wgVersion !== '1.19.24'
     ) {
         return;
     }
@@ -59,8 +55,8 @@ require([
                         })
                     )
                 );
-            } else if (config.debug) {
-                console.log('[QuickCreateMessageWallGreeting] Message walls are not enabled on this wiki, exiting.');
+            } else {
+                mw.log('[QuickCreateMessageWallGreeting] Message walls are not enabled on this wiki, exiting.');
             }
         },
         /**
@@ -132,4 +128,4 @@ require([
         type: 'script',
         article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
-});
+})();

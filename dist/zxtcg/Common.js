@@ -11,13 +11,13 @@ importArticles({
 
 /* Allow direct link to Tabber */
 
-(function ($){
+(function ($) {
     var hash = window.location.hash.replace('#', '').replace(/_/g, ' ');
     if (hash === '') return;
-    $(function(){
+    $(function() {
         setTimeout(function() {
-            var currentTabber = $('.tabbernav > li > a[title="' + hash + '"]');
-            currentTabber.click();
+            var currentTabber = $('.tabbernav > li > a[title^="' + hash + '"]');
+            if (currentTabber.length) currentTabber.click();
         }, 100);
     });    
 })(jQuery);

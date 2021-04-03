@@ -34,7 +34,6 @@ UserTagsJS.modules.custom = {
     /* Admins */
     'TheChibiKing': [],
     'Jackboog21': [],
-    'FurryTrash23': [],
     /* Mini-Admins */
     'JDisbae': [],
     /* Content Mods */
@@ -47,8 +46,7 @@ UserTagsJS.modules.custom = {
     /* Chat Mods */
     'JohnDotto': [],
     'MistyMelissa': [],
-    'FalcoLombardi99': [],
-    'DevDiego': [],
+    'TudoBen': [],
 	
     //Former Staff
     /* Former Bureaucrats */
@@ -61,6 +59,7 @@ UserTagsJS.modules.custom = {
     'Blugo34': ['former-admin'],
     'ILoveHarley': ['former-admin'],
     'Stanley56': ['former-admin'],
+    'FurryTrash23': ['former-admin'],
     /* Former Mini-Admins */
     'ZodiacGiraffe': ['former-miniadmin'],
     /* Former Content Mods */
@@ -91,7 +90,7 @@ UserTagsJS.modules.implode = {
 	miniadmin: ['threadmoderator', 'content-moderator'],
 };
 //Prevents existing tags from being hidden
-(window.dev = window.dev || {}).profileTags = { noHideTags: true };
+//(window.dev = window.dev || {}).profileTags = { noHideTags: true };
 
 //MastHeadRightsBadge
 window.MastheadRightsBadgeSettings = {
@@ -121,7 +120,7 @@ if (mw.config.get('wgUserGroups').includes('rollback') ||
         type: 'script',
         articles: [
             'u:dev:MediaWiki:MarkForDeletion/code.js',
-            'u:dev:MediaWiki:CategoryRenameAuto-update/code.js',
+            //'u:dev:MediaWiki:CategoryRenameAuto-update/code.js',
         ]
     });
 }
@@ -135,8 +134,8 @@ if (mw.config.get('wgUserGroups').includes('rollback') ||
     importArticles({
         type: 'script',
         articles: [
-            'u:dev:MediaWiki:RCStats.js',
-            'u:dev:MediaWiki:RailWAM/code.js',
+            //'u:dev:MediaWiki:RCStats.js',
+            //'u:dev:MediaWiki:RailWAM/code.js',
         ]
     });
 }
@@ -180,9 +179,9 @@ $(function() {
 
 //AjaxRC
 window.ajaxSpecialPages = [
-    "Recentchanges", 
-    "WikiActivity", 
-    "Watchlist", 
+    //"Recentchanges", 
+    //"WikiActivity", 
+    //"Watchlist", 
     "Log", 
     "Contributions"
     ];
@@ -192,7 +191,7 @@ window.ajaxRefresh = 60000;
 window.BackToTopModern = true;
 
 //Refresh Live! Chat every 30 seconds
-window.chatReloadTime = 30000;
+//window.chatReloadTime = 30000;
 
 //DPLforums
 window.dplforumBoards = [

@@ -1,3 +1,4 @@
+/* <nowiki> */
 /* Any JavaScript here will be loaded for all users on every page load. */
 /* Block Message */
 window.MessageBlock = {
@@ -16,7 +17,7 @@ window.ajaxPages = [
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 
-/* Replaces {{USERNAME}} with the name of the user browsing the page. */
+/* Replaces Template:USERNAME with the name of the user browsing the page. */
 $(function() {
     if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) return;
     $('span.insertusername').text(mw.config.get('wgUserName'));
@@ -167,12 +168,12 @@ window.LockOldBlogs = {
             $(function() {
                 if ($.inArray("autoconfirmed", mw.config.get("wgUserGroups")) === -1)
                     return;
-
+                // <nowiki>
                 var Options = {
-                        '{{No license}}': 'Unlicensed image',
-                        '{{No rationale}}': 'No Fairuse info',
-                        '{{Unused}}': 'Unused image',
-                        '{{Poor filename}}': 'Poor name'
+                        '{\{No license}}': 'Unlicensed image',
+                        '{\{No rationale}}': 'No Fairuse info',
+                        '{\{Unused}}': 'Unused image',
+                        '{\{Poor filename}}': 'Poor name'
                     },
                     tempOptStr = '';
 

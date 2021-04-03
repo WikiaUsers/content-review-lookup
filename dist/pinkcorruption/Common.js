@@ -2,3 +2,10 @@
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:YouTubeModal/code.js',
+    ]
+});

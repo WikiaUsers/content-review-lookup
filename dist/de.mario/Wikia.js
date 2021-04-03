@@ -4,8 +4,8 @@ $(function() {
 /*Quelle: http://candybox.wikia.com/wiki/MediaWiki:Wikia.js */ 
     rights["Gameheld"]             = ["Admin", "Bürokrat", "Held der Games"],
     rights["GameBot"]              = ["Bot", "piep-piep!"],
-    rights["Yoshi 1-Up"]           = ["Chat-Moderator", "Suchti"],
-    rights["Wunderluma"]           = ["Chat-Moderator", "Luma-Liebhaber"],
+    rights["Yoshi 1-Up"]           = ["Suchti"],
+    rights["Wunderluma"]           = ["Luma-Liebhaber"],
     rights["General grievous36"]   = ["Bowser-Fan", "Wario-Hasser"],
     rights["Rieke Hain"]           = ["Gründer"],
     rights["Wikia"]                = ["Wikia-Bot"],

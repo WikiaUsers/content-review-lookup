@@ -3,7 +3,7 @@
  * Modified and fixed by [[User:Ultragustavo25]] and [[User:Doork]]
  */
 
-$(function () {
+mw.loader.using('mediawiki.util').then(function() {
     var user = mw.config.get('wgUserName'),
         i18n;
 

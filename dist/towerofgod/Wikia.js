@@ -38,5 +38,6 @@ importArticles({
         'u:dev:AjaxBatchDelete/code.js',
         'u:dev:DisplayClock/code.js',
 //      'l:MediaWiki:Snow.js',
+        'l:MediaWiki:Common.js/slider.js',
         'u:dev:SocialIcons/code.js' ]
 });

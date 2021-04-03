@@ -4,11 +4,7 @@
  * @author          TheGoldenPatrik1
  * @description     Adds a button to quickly switch languages.
  */
-require([
-    'wikia.window',
-    'jquery',
-    'mw'
-], function (window, $, mw) {
+(function () {
     if (window.LangSwitchLoaded) {
         return;
     }
@@ -84,4 +80,4 @@ require([
 		    'u:dev:MediaWiki:Placement.js'
         ]
 	});
-});
+})();

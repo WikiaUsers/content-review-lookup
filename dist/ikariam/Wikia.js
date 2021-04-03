@@ -9,7 +9,7 @@
 //  articles: [
 //    "MediaWiki:Common.js",
 //    "MediaWiki:FloatingToc/code.js"     // popout TOC. static as is used nearly all pages but portals, etc...
-    ]
+//    ]
 // });
 //
 // Import the scripts located in MediaWiki:Common.js

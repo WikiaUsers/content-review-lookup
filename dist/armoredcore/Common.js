@@ -13,13 +13,6 @@ var hasClass = (function () {
     };
 })();
 
-/** Summary filler **/
-importArticles({
-    type: "script",
-    articles: [
-        "MediaWiki:Common.js/editSummaries.js" /* Edit summaries */ ]
-});
-
 /** Collapsible tables *********************************************************
  *
  *  Description: Allows tables to be collapsed, showing only the header. See
@@ -123,37 +116,6 @@ window.ajaxPages = ["Special:RecentChanges","Special:Watchlist"];
 importScriptPage('AjaxRC/code.js', 'dev');
 importScriptPage('FastDelete/code.js', 'dev');
 
-var fdButtons = [];
-fdButtons[fdButtons.length] = {
-    'summary': 'Housekeeping',
-        'label': 'Housekeeping'
-};
-fdButtons[fdButtons.length] = {
-    'summary': 'Spam',
-        'label': 'Spam'
-};
-fdButtons[fdButtons.length] = {
-    'summary': 'Vandalism',
-        'label': 'Vandalism'
-};
-
-/*Keep favicon as correct AC logo instead of reverting to Wikia logo*/
-document.write('<link REL="shortcut icon" HREF="/images/6/64/Favicon.ico" />');
-
-/* Courtesy of the My Little Pony Friendship is Magic Wiki */
-
-/* IRClogin div */
-$(function () {
-    if ($('#IRClogin').length) {
-        if (typeof wgUserName == 'undefined') {
-            var nick = 'Wikian' + Math.floor(Math.random() * 100);
-        } else {
-            var nick = wgUserName.replace(/ /g, "_");
-        }
-        $('#IRClogin').html('<iframe src="http://webchat.freenode.net/?nick=' + nick + '&channels=armoredcore&prompt=true" width="660" height="400" style="border:0;"></iframe>');
-    }
-});
-
 // **************************************************
 // Experimental javascript countdown timer (Splarka)
 // Version 0.0.3
@@ -221,19 +183,6 @@ addOnloadHook(checktimers);
 //  - end -  Experimental javascript countdown timer
 // **************************************************
 
-
-/* Replaces {{USERNAME}} with the name of the user browsing the page.
-  Requires copying Template:USERNAME. */
-
-function UserNameReplace() {
-    if (typeof (disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
-    $("span.insertusername").html(wgUserName);
-}
-addOnloadHook(UserNameReplace);
-
-/* End of the {{USERNAME}} replacement */
-
-
 // ============================================================
 // BEGIN sliders using jquery by User:Tierrie
 // ============================================================
@@ -261,16 +210,6 @@ $(document).ready(function() {
 // ============================================================
 // END sliders using jquery by User:Tierrie
 // ============================================================
-
-/* Reference Popups */
-importArticles({
-    type: 'script',
-    articles: [
-        // ...
-        'w:c:dev:ReferencePopups/code.js',
-        // ...
-    ]
-});
 
 var togglers = new Array();
 var allClasses = new Object(); // associative map of class names to page elements

@@ -35,7 +35,9 @@
         'Void',
         'Void Entity',
         'Weavers',
-        'Wyrms'
+        'Wyrms',
+        
+        'User:The Godfriend'
         
     ];
  

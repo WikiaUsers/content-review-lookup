@@ -80,3 +80,10 @@ window.UserTagsJS = {
 	}
 };
 // -end - User tags
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WikiActivity.js',
+    ]
+});

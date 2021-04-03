@@ -26,6 +26,20 @@
 			formBlank: "Не",
 			formPop: "Так"
 		},
+		"bn": {
+			formTitle: "নতুন পৃষ্ঠ বানান",
+			formStart: "বানান",
+			formCancel: "বন্ধ করুন",
+			formPage: "Special:New_Page",
+			formMain: "মুখ্য",
+			formBlog: "ব্লগ",
+			formCat: "বিষয়শ্রেণী",
+			formMW: "মেডিয়াউইকি",
+			formTemp: "সাঁচা",
+			formCont: "পৃষ্ঠের কনটেন্ট",
+			formBlank: "খালি",
+			formPop: "ভর্তি"
+		},
 		"de": {
 			formTitle: "Erstelle eine neue Seite",
 			formStart: "Erstellen",
@@ -81,6 +95,20 @@
 			formCont: "Contenu de la page",
 			formBlank: "Vide",
 			formPop: "Complétée"
+		},
+		"hi": {
+			formTitle: "नया पृष्ठ बनाएँ",
+			formStart: "बनाएँ",
+			formCancel: "बंद करें",
+			formPage: "विशेष:New_Page",
+			formMain: "मुख्य",
+			formBlog: "ब्लॉग",
+			formCat: "श्रेणी",
+			formMW: "मीडियाविकि",
+			formTemp: "साँचा",
+			formCont: "पृष्ठ का कंटेंट",
+			formBlank: "खाली",
+			formPop: "भर्ती"
 		},
 		"lt": {
 			formTitle: "Sukurti naują puslapį",

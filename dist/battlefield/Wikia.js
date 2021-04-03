@@ -8,14 +8,7 @@ importScript('MediaWiki:Common.js/countdowntimer.js');
 importScript('MediaWiki:Common.js/stats.js');
 
 /* Clock */
-// importScript('MediaWiki:Common.js/Clock.js');
-
-/* change wiki activity to recent changes */
-function WikiActivity2RecentChanges() {
-	$('.wikia-button[data-id$="wikiactivity"]').replaceWith('<a data-id="recentchanges" class="wikia-button secondary" accesskey="g" title="Special:RecentChanges" href="/wiki/Special:RecentChanges"><img height="0" width="0" class="sprite activity" src="https://images.wikia.nocookie.net/common/skins/common/blank.gif">Recent Changes</a>');
-}
-   
-addOnloadHook(WikiActivity2RecentChanges);
+importScript('MediaWiki:Common.js/Clock.js');
 
 /* Test if an element has a certain class **************************************
  *
@@ -30,21 +23,20 @@ var hasClass = (function () {
     };
 })();
 
-// ******************
-// Collapsible tables
-// ******************
- 
-importScriptPage('ShowHide/code.js', 'dev');
-
 // *******
 // Auto-Refreshing RecentChanges, Logs, Contributions, and WikiActivity (Courtesy of Sactage)
 // *******
-var ajaxPages = ["Special:RecentChanges", "Special:Log", "Special:Contributions", "Special:WikiActivity"];
+var ajaxPages = [
+    "Special:RecentChanges",
+    "Special:Log",
+    "Special:Contributions",
+    "Special:WikiActivity"
+];
 var AjaxRCRefreshText = 'AutoRefresh';
 importScriptPage('AjaxRC/code.js', 'dev');
 
 //Username 
 var username = wgUserName; 
-if (username != null) { 
-$('#InputUsername').html(username); 
+if (username !== null) { 
+    $('#InputUsername').html(username); 
 }

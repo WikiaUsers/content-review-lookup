@@ -1,11 +1,4 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* Auto Refresh */
-AjaxRCRefreshText = 'Auto-refresh';
-AjaxRCRefreshHoverText = 'Automatically refresh the page';
-ajaxPages = ["Special:RecentChanges","Special:WikiActivity"];
-importScriptPage('AjaxRC/code.js', 'dev');
-
-importScriptPage('ShowHide/code.js', 'dev')
 
 // <syntax type="javascript">
  
@@ -182,15 +175,6 @@ addOnloadHook(toggleInit);
 function addPageBottom() {
         $("#WikiaRail").append('<div style="clear:both; border:1px solid transparent; border-radius:1em; overflow:hidden;" align="center"><img src="https://images.wikia.nocookie.net/pandorahearts/images/c/cd/Leo_sitting2.jpg" width="250"></div>');
 }
-
-importArticles({
-    type: 'script',
-    articles: [
-        // ...
-        'w:c:dev:ReferencePopups/code.js',
-        // ...
-    ]
-});
  
 $(addPageBottom);
 

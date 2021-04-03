@@ -6,10 +6,10 @@
         {
             type: 'script',
             articles: [
-                'u:bloodborne:JSHighlightFixes.js',
-                'u:bloodborne:ColorConverter.js',
-                'u:bloodborne:DOMTools.js',
-                'u:bloodborne:Tooltips.js'
+                'u:bloodborne:MediaWiki:JSHighlightFixes.js',
+                'u:bloodborne:MediaWiki:ColorConverter.js',
+                'u:bloodborne:MediaWiki:DOMTools.js',
+                'u:bloodborne:MediaWiki:Tooltips.js'
             ]
         },
         {
@@ -21,5 +21,12 @@
         }
     ];
     
-    importArticles.apply(this, imports);
+    function wait () {
+    	if (document.readyState !== 'complete') return setTimeout(wait, 1000);
+    	setTimeout(function () {
+    		importArticles.apply(this, imports);
+    	}, 0);
+    }
+    
+    wait();
 })();

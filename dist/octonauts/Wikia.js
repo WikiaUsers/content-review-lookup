@@ -8,3 +8,6 @@ $(".image-resize").each(function() {
 		});
 	}
 });
+
+var myNoti = new BannerNotification('<a href="https://octonauts.fandom.com/wiki/User_blog:Golfpecks256/The_Caves_of_Sac_Actun_Movie_has_Premiered!">🚨NEW MOVIE PREMIERE🚨 - English version now avaliable on Netflix. Let us know your thoughts!</a>', 'notify');
+myNoti.show();

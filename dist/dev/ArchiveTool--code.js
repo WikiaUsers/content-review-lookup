@@ -33,7 +33,8 @@
         'wgArticleId',
         'wgNamespaceNumber',
         'wgPageName',
-        'wgTitle'
+        'wgTitle',
+        'wgVersion'
     ]);
     if (
         // If the script has already loaded..
@@ -55,6 +56,7 @@
     }
     window.ArchiveToolLoaded = true;
     var ArchiveTool = {
+        isUCP: config.wgVersion !== '1.19.24',
         config: $.extend(true, {
             archiveListTemplate: window.archiveListTemplate || 'ArchiveList',
             archivePageTemplate: window.archivePageTemplate || 'ArchivePage',
@@ -78,12 +80,8 @@
                     '.UserProfileActionButton' :
                     '#PageHeader'
             ) + ' .wds-dropdown__content > ul';
-            if (config.wgNamespaceNumber === 3) {
-                controls = (
-                    $('#WikiaUserPagesHeader').length ?
-                    '.UserProfileActionButton' :
-                    '#WikiaPageHeader'
-                ) + ' > .wikia-menu-button > ul';
+            if (config.wgNamespaceNumber === 3 && $('#WikiaUserPagesHeader').length) {
+                controls = '.UserProfileActionButton > .wikia-menu-button > ul';
             }
             $('<li>', {
                 id: 'control_archive',
@@ -97,31 +95,48 @@
             ).appendTo(controls);
         },
         click: function() {
+            var regexEscape = $.escapeRE ?
+                // Legacy Fandom
+                $.escapeRE :
+                    mw.RegExp ?
+                        // MediaWiki 1.26+
+                        mw.RegExp.escape :
+                        // MediaWiki 1.34+
+                        mw.util.escapeRegExp;
             this.regex = new RegExp(
                 '\\{\\{' +
-                $.escapeRE(this.config.archiveListTemplate) +
+                regexEscape(this.config.archiveListTemplate) +
                 '\\}\\}'
             );
-            this.$container = $('#WikiaArticle')
+            this.$container = $('.WikiaArticle')
+                .first()
                 .addClass('archiving')
                 .empty();
-            this.$loading = $('<img>', {
-                'alt': this.i18n.msg('loading').plain(),
-                'class': 'ajax',
-                'src': config.stylepath + '/common/progress-wheel.gif'
-            }).appendTo(this.$container);
+            if (this.isUCP) {
+                this.$loading = $('<span>', {
+                    'class': 'ajax mw-ajax-loader'
+                });
+            } else {
+                this.$loading = $('<img>', {
+                    'alt': this.i18n.msg('loading').plain(),
+                    'class': 'ajax',
+                    'src': config.stylepath + '/common/progress-wheel.gif'
+                });
+            }
+            this.$loading.appendTo(this.$container);
             this.api.get({
                 action: 'query',
                 prop: 'revisions',
                 titles: config.wgPageName,
-                rvprop: 'timestamp|content'
+                rvprop: 'timestamp|content',
+                rvslots: 'main'
             }).done($.proxy(this.cbRevisions, this));
         },
         cbRevisions: function(q) {
             this.$loading.hide();
-            var lines = q.query.pages[config.wgArticleId]
-                .revisions[0]['*']
-                .split('\n'),
+            var rev = q.query.pages[config.wgArticleId].revisions[0],
+                content = rev['*'] ? rev['*'] : rev.slots.main['*'],
+                lines = content.split('\n'),
                 $table = $('<table>', {
                     mousedown: $.proxy(this.tableClick, this),
                     mouseup: $.proxy(this.tableUnclick, this)
@@ -174,29 +189,30 @@
                 }).appendTo(tr);
             });
             this.$body = $body;
+            var buttonClass = this.isUCP ? 'wds-button' : 'wikia-button';
             $('<div>', {
                 'class': 'buttons'
             }).append(
                 $('<a>', {
-                    'class': 'wikia-button secondary',
+                    'class': buttonClass + ' secondary',
                     'click': $.proxy(this.clickSelect, this),
                     'text': this.i18n.msg('select').plain()
                 }),
                 ' ',
                 $('<a>', {
-                    'class': 'wikia-button secondary',
+                    'class': buttonClass + ' secondary',
                     'click': $.proxy(this.clickDeselect, this),
                     'text': this.i18n.msg('deselect').plain()
                 }),
                 ' ',
                 $('<a>', {
-                    'class': 'wikia-button',
+                    'class': buttonClass,
                     'click': $.proxy(this.archive, this),
                     'text': this.i18n.msg('save').plain()
                 }),
                 ' ',
                 $('<a>', {
-                    'class': 'wikia-button',
+                    'class': buttonClass,
                     'click': $.proxy(this.clickAbort, this),
                     'text': this.i18n.msg('abort').plain()
                 })
@@ -330,7 +346,8 @@
                     .plain(),
                 minor: true,
                 createonly: true
-            }).done($.proxy(this.cbSaveArchive, this));
+            }).done($.proxy(this.cbSaveArchive, this))
+            .fail($.proxy(this.cbFailSave, this));
         },
         cbSaveArchive: function(q) {
             if (q.error && q.error.code === 'articleexists') {
@@ -344,6 +361,17 @@
             }
             this.$m.append(this.i18n.msg('done').escape());
             this.saveTalk();
+        },
+        cbFailSaveArchive: function(code) {
+            if (code === 'articleexists') {
+                this.$m.append(this.i18n.msg('failed').escape());
+                this.$container.append(
+                    $('<p>', {
+                        text: this.i18n.msg('exists').plain()
+                    })
+                );
+                this.abort();
+            }
         },
         saveTalk: function() {
             this.$m = $('<p>', {
@@ -359,7 +387,8 @@
                     .msg('summary-to', this.archiveTitle)
                     .plain(),
                 minor: true
-            }).done($.proxy(this.cbSaveTalk, this));
+            }).done($.proxy(this.cbSaveTalk, this))
+            .fail($.proxy(this.cbFailSaveTalk, this));
         },
         cbSaveTalk: function(q) {
             if (q.edit.result === 'Success') {
@@ -378,8 +407,16 @@
                 this.abort();
             }
         },
+        cbFailSaveTalk: function() {
+            this.$m.append(this.i18n.msg('failed').escape());
+            this.$container.append(
+                $('<p>', {
+                    text: this.i18n.msg('failed-delete').plain()
+                })
+            );
+            this.abort();
+        },
         abort: function() {
-            console.log(this);
             this.$loading.hide();
             this.$container.append(
                 $('<p>', {
@@ -392,14 +429,12 @@
         }
     };
     mw.hook('dev.i18n').add($.proxy(ArchiveTool.hook, ArchiveTool));
-    importArticles(
-        {
-            type: 'script',
-            article: 'u:dev:MediaWiki:I18n-js/code.js'
-        },
-        {
-            type: 'style',
-            article: 'u:dev:MediaWiki:ArchiveTool.css'
-        }
-    );
+    importArticle({
+        type: 'script',
+        article: 'u:dev:MediaWiki:I18n-js/code.js'
+    });
+    importArticle({
+        type: 'style',
+        article: 'u:dev:MediaWiki:ArchiveTool.css'
+    });
 })(jQuery);

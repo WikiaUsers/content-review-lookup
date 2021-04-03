@@ -1,7 +1,3 @@
-//Custom user rights icons on userpages
-importScript('MediaWiki:Wikia.js/userRightsIcons.js');
-
-
 // Namespaces in header
 $(function NamespacesInHeader() {
 	if(wgCanonicalNamespace != '' && wgCanonicalNamespace != 'Talk') {
@@ -75,8 +71,3 @@ if( !window.BackToTop  ) {
 	});
 }
 var BackToTop = true; // prevent duplication
-// ==============================
-// Snow!
-// ==============================
- 
-//importScriptPage('MediaWiki:Snow.js', 'community');

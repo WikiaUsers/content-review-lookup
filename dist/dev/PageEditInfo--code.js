@@ -1,15 +1,15 @@
 ;(function() {
-    //Make a function to prepend the items to the article
+    // Make a function to prepend the items to the article
     function prependContent ($el) {
-        $el.insertBefore('#WikiaArticle');
+        $el.insertBefore('.WikiaArticle');
     }
     
-    //Run said function
+    // Run said function
     mw.hook('PageCreator.render').add(prependContent);
     mw.hook('LastEdited.inserted').add(prependContent);
     
-    //Add some CSS
-    if (!$('.UserProfileActionButton').exists()) {
+    // Add some CSS
+    if (!$('.UserProfileActionButton').length) {
         mw.util.addCSS(
             '#page-creator,\
             .lastEdited {\

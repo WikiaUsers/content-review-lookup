@@ -815,7 +815,7 @@ function configureRefpopups(settings, onSave, onClose) {
             hoverDelay: userConfig.hoverDelay,
             animation: false,
             stickyHover: userConfig.stick,
-            contentBoxClass: 'WikiaArticle'
+            contentBoxClass: 'WikiaArticle mw-parser-output'
                 // Disabled. Attach to body so on top of everything.
                 // NOTE: May cause CSS malfunctions in the popup due to not being descended
                 //	from .WikiaPage.V2 or #WikiaMainContent

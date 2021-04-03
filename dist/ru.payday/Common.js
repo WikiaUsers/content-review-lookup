@@ -1,8 +1,19 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
 
-/****************************************/
-/* sliders using jquery by User:Tierrie */
-/****************************************/
+window.rwaOptions = {
+    limit : 50,
+    namespaces : [ 0, 1, 2, 3, 4, 5, 6, 7, 110, 111, 500, 501, 828, 829 ],
+    autoInit : true,
+    themeName : "main",
+    showBotEdits : false,
+    loadModule : false,
+    customRendering : { },
+    headerLink : false,
+    refresh : true,
+    refreshDelay : 300000,
+    timeout : 20000
+};
+
 mw.loader.using(['jquery.ui.tabs'], function() {
     $(function() {
         var $tabs = $("#portal_slider").tabs({
@@ -11,16 +22,16 @@ mw.loader.using(['jquery.ui.tabs'], function() {
                 duration: 100
             }
         });
-        $("[class^=portal_sliderlink]").click(function() { // bind click event to link
+        $("[class^=portal_sliderlink]").click(function() {
             $tabs.tabs('select', this.className.replace("portal_sliderlink_", ""));
             return false;
         });
         $('#portal_next').click(function() {
-            $tabs.tabs('select', ($tabs.tabs('option', 'selected') == ($tabs.tabs('length')) - 1) ? 0 : $tabs.tabs('option', 'selected') + 1); // switch to next tab
+            $tabs.tabs('select', ($tabs.tabs('option', 'selected') == ($tabs.tabs('length')) - 1) ? 0 : $tabs.tabs('option', 'selected') + 1); 
             return false;
         });
-        $('#portal_prev').click(function() { // bind click event to link
-            $tabs.tabs('select', ($tabs.tabs('option', 'selected') === 0) ? ($tabs.tabs('length') - 1) : $tabs.tabs('option', 'selected') - 1); // switch to previous tab
+        $('#portal_prev').click(function() { 
+            $tabs.tabs('select', ($tabs.tabs('option', 'selected') === 0) ? ($tabs.tabs('length') - 1) : $tabs.tabs('option', 'selected') - 1); 
             return false;
         });
 
@@ -38,11 +49,6 @@ $(function() {
     document.getElementById('bigOilInputs').style.display = '';
 });
 
-/* Test if an element has a certain class **************************************
- *
- * Description: Uses regular expressions and caching for better performance.
- * Maintainers: User:Mike Dillon, User:R. Koot, User:SG
- */
 
 var hasClass = (function() {
     var reCache = {};
@@ -64,7 +70,6 @@ function getElementsByClass(node, className, tagName) {
     return array;
 }
 
-/* Creates the method getElementsByClass, if unsupported from the browser */
 if (!document.getElementsByClass) document.getElementsByClass = function(className) {
     return getElementsByClass(document, className, '*');
 };
@@ -79,3 +84,12 @@ function getElementsByName(name, root) {
     }
     return r;
 }
+
+/*==================================================================================================
+Inactive User Statuses 
+==================================================================================================*/
+//Inactive users
+window.InactiveUsers = { 
+    months: 1,
+    text: 'НЕАКТИВЕН'
+};

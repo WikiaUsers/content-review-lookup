@@ -17,12 +17,20 @@ function impart(article) {
     importArticle({ type: 'script', article: article });
 }
 
+// Rather than waiting for mw.util to load, we'll make this a local function.
+// Source: https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/core/+/HEAD/resources/src/mediawiki.util/util.js
+function getParamValue(param, url) {
+	var re = new RegExp('^[^#]*[&?]' + param.replace(/([\\{}()|.?*+\-^$\[\]])/g, '\\$1') + '=([^&#]*)'),
+		m = re.exec(url !== undefined ? url : location.href);
+	if (m) {
+		return decodeURIComponent(m[1].replace(/\+/g, '%20'));
+	}
+	return null;
+}
+
 /////////////
 // IMPORTS //
 /////////////
-
-// http://dev.wikia.com/wiki/Language_Notification
-impart('w:c:dev:LWN/code.js');
 
 // http://dev.wikia.com/wiki/DupImageList
 if (mw.config.get('wgPageName') === "My_Little_Pony_Friendship_is_Magic_Wiki:Duplicate_images") {
@@ -47,13 +55,15 @@ if (
 //   All transcript lister by Bobogoobo - http://mlp.wikia.com/wiki/Special:BlankPage?blankspecial=transcripts
 //   Non-720p image lister by Bobogoobo - http://mlp.wikia.com/wiki/Special:BlankPage?blankspecial=non720
 //   Dead video lister by Bobogoobo - http://mlp.wikia.com/wiki/Special:BlankPage?blankspecial=deadvideos
-if (mw.config.get('wgPageName') === 'Special:BlankPage' && mw.util.getParamValue('blankspecial')) {
+if (mw.config.get('wgPageName') === 'Special:BlankPage' && getParamValue('blankspecial')) {
+	//Add class so that elements such as lists are displayed correctly 
+	$('#mw-content-text').addClass('mw-parser-output');
     impart('MediaWiki:Common.js/' + {
             'ponystats': 'PonyStats.js',
             'transcripts': 'Transcripts.js',
             'non720': 'Non720.js',
             'deadvideos': 'DeadVideos.js'
-        }[mw.util.getParamValue('blankspecial')]
+        }[getParamValue('blankspecial')]
     );
 }
 
@@ -66,7 +76,7 @@ if (mw.config.get('wgPageName') === 'Special:BlankPage' && mw.util.getParamValue
 if (
   !mw.config.get('wgCanonicalNamespace') &&
   !window.linkImagePopupDisabled &&
-  !mw.util.getParamValue('diff')
+  !getParamValue('diff')
 ) {
     impart('MediaWiki:Common.js/LinkImagePopup.js');
 }
@@ -75,8 +85,8 @@ if (
 // Used on [[Project:Pony Designs]] to aid in finding design matches among characters
 if (
   mw.config.get('wgPageName') === 'User:Bobogoobo/sandbox/PonyDesign' &&
-  !mw.util.getParamValue('action') &&
-  !mw.util.getParamValue('diff')
+  !getParamValue('action') &&
+  !getParamValue('diff')
 ) {
     impart('MediaWiki:Common.js/PonyDesigns.js');
 }
@@ -358,7 +368,7 @@ $('#VideoEmbedUrlSubmit').click(function() {
 
 // Auto-redirect on Special:Search for SXXEXX by Bobogoobo
 $(function() {
-    var search = mw.util.getParamValue('query');
+    var search = getParamValue('query');
     if (
       mw.config.get('wgPageName') === 'Special:Search' &&
       search.length <= 6 &&
@@ -391,7 +401,7 @@ $(function() {
 // To delete stored data: window.sessionStorage.removeItem('characterCategories')
 $(function() {
     if (mw.config.get('wgCanonicalSpecialPageName') !== 'Upload' ||
-      mw.util.getParamValue('wpForReUpload')) {
+      getParamValue('wpForReUpload')) {
         return;
     }
 
@@ -567,13 +577,13 @@ $(function() {
 $(function() {
     if (
       mw.config.get('wgPageName') !== 'List_of_ponies/fast' ||
-      mw.util.getParamValue('action') ||
-      mw.util.getParamValue('oldid')
+      getParamValue('action') ||
+      getParamValue('oldid')
     ) {
         return;
     }
 
-    var page = mw.util.getParamValue('loppage') || 'List_of_ponies',
+    var page = getParamValue('loppage') || 'List_of_ponies',
       fastpony = window.fastpony || [1, 9],
       ponycols = window.fastcolumns || ($.inArray(8, fastpony) > -1 ? 1 : 1);
         //change last 1 to 2 to enable multi-columns by default. Currently very slow.
@@ -713,7 +723,7 @@ $(function() {
 //   template include size limit is exceeded. By Bobogoobo
 // http://mlp.wikia.com/wiki/List_of_ponies/full
 $(function() {
-    if (mw.config.get('wgPageName') !== 'List_of_ponies/full' || mw.util.getParamValue('action')) {
+    if (mw.config.get('wgPageName') !== 'List_of_ponies/full' || getParamValue('action')) {
         return;
     }
 
@@ -758,9 +768,13 @@ $(function() {
               function(result) {
                 var replace = {'||style':'</td><td style', '||align':'</td><td align', '||':'</td><td>',
                   '|-':'</tr><tr>', '|id':'<td id', '|data-':'<td data-', '|<':'<td><', '\\n|(\\w)':'<td>$1', 
-                  '|':'>', '^(\\w*</td><td>)':'<td>$1'};
+                  '|':'>', '^(\\w*</td><td>)':'<td>$1', '"<td>':'">'};
 
-                result = result.parse.text['*'].substring(3, result.parse.text['*'].length - 4);
+                result = result.parse.text['*'];
+                result = result.substring(
+                    result.indexOf('<p>') + 3,
+                    result.lastIndexOf('</p>') - 1
+                ).trim();
                 $.each(replace, function(key, value) {
                     result = result.replace(new RegExp(key.replace(/([|-])/g, '\\$1'), 'g'), value);
                 });// remove p tag added by parse, parse the parse
@@ -890,8 +904,8 @@ $(function() {
 $(function () {
     if (
         mw.config.get('wgPageName') !== 'Friendship_is_Magic_animated_media' ||
-        mw.util.getParamValue('diff') ||
-        mw.util.getParamValue('action')
+        getParamValue('diff') ||
+        getParamValue('action')
     ) {
         return;
     }

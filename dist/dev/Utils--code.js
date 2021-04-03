@@ -29,15 +29,15 @@ function replaceURIChars(str) {
     .replace(/\r|\n|\r\n/gm,'%0A')
     .replace(/#/gm,'%23')
     .replace(/&/gm,'%26')
-    .replace(/?/gm,'%3F')
+    .replace(/\?/gm,'%3F');
 }
  
 function isEven(num) {
-    return num % 2 == 0;
+    return num % 2 === 0;
 }
  
 function isOdd(num) {
-    return num % 2 == 1;
+    return num % 2 === 1;
 }
 $.fn.extend({
     getOuterHTML : function() {
@@ -46,18 +46,18 @@ $.fn.extend({
 });
  
 function isUserpage() {
-    return ($.inArray(wgNamespaceNumber,[2,3,1200,500]) !== -1 || (wgCanonicalSpecialPageName && $.inArray(wgCanonicalSpecialPageName,['Contributions','Following']) != -1));
+    return ($.inArray(mw.config.get('wgNamespaceNumber'), [ 2, 3, 1200, 500 ]) !== -1 || (mw.config.get('wgCanonicalSpecialPageName') && $.inArray(mw.config.get('wgCanonicalSpecialPageName'), [ 'Contributions', 'Following' ]) != -1));
 }
  
 function getUserByPage() {
-    if($.inArray(wgNamespaceNumber,[2,1200,500]) != -1) {
-        return /:(.*)/.exec(wgPageName)[1].replace('_',' ');
+    if($.inArray(mw.config.get('wgNamespaceNumber'), [ 2, 1200, 500 ]) != -1) {
+        return /:(.*)/.exec(mw.config.get('wgPageName'))[1].replace('_',' ');
     }
-    else if(wgCanonicalSpecialPageName == 'Contributions') {
-        return /\/(.*)/.exec(wgPageName)[1].replace('_',' ');
+    else if(mw.config.get('wgCanonicalSpecialPageName') == 'Contributions') {
+        return /\/(.*)/.exec(mw.config.get('wgPageName'))[1].replace('_',' ');
     }
-    else if(wgCanonicalSpecialPageName == 'Following') {
-        return wgUserName;
+    else if(mw.config.get('wgCanonicalSpecialPageName') == 'Following') {
+        return mw.config.get('wgUserName');
     }
 }
  

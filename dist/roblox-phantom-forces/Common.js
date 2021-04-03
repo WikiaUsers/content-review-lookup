@@ -1,5 +1,5 @@
  /************              WELCOME TO COMMON.JS                   ************/
-/*                Maintained by Ivan Clemente and Godonan                    */
+/*               Maintained by Ivan Clemente and DuoDeca-S                   */
 
 // FANDOM DEV IMPORT
 // Note from Duo: I prefer to have the importArticle addons here as opposed to
@@ -27,46 +27,15 @@ $(function() {
     $('span.insertusername').html(mw.config.get('wgUserName'));
 });
 
-
-// PARALLAX ANIMATION
-
-// IVAN
-$(window).scroll(function() {
-    
-    var wScroll = $(this).scrollTop();
-    
-    $('.para-content-profile').css({
-        'transform': 'translate(0px, '+ wScroll /40 + '%)'
-    });
-    
-    $('.para-content-profile2').css({
-        'transform': 'translate(0px, -'+ wScroll /20 + '%)'
-    });
-    
-    $('.grass').css({
-        'transform': 'translate(0px, -'+ wScroll /16 + '%)'
-    });
-    
-    $('.flowers').css({
-        'transform': 'translate(0px, '+ wScroll /60 + '%)'
-    });
-    
-    $('.balloons').css({
-        'transform': 'translate(0px, -'+ wScroll /20 + '%)'
-    });
-});
-
-
 // BlockLog config
 TBL_GROUP = "roblox-en";
 
 
 // Message Wall and Forum User Tags
 
-//     Sysops and Bureaucrats, you may choose to have your own
+// Sysops and Bureaucrats, you may choose to have your own
 // custom tag, just make sure that it properly describes
 // your position of responsibility.
-//     If 
 window.MessageWallUserTags = {
     tagColor: 'white',
     txtSize: '10px',
@@ -74,7 +43,6 @@ window.MessageWallUserTags = {
     glowSize: '0px',
     glowColor: 'transparent',
     users: {
-        
 		// Wiki Founder
 		'TaigaTheWikiaEditor': 'Wiki Founder',
 		
@@ -92,13 +60,9 @@ window.MessageWallUserTags = {
 		'ScarL4life': 'Administrator',
 		'PhantomForcesUser': 'Administrator',
 		'M231 FPW': 'Administrator',
+		'ForbiddenExceed': 'Administrator',
 		
 		// Wiki Moderators
-		'Gggy': 'Moderator',
-		'EpixSnipexMLG360': 'Moderator',
-		'Xylven': 'Moderator',
-		'Youngtan': 'Moderator',
-		'ForbiddenExceed': 'Moderator',
 		
 		// Developers
 		'Litozinnamon': 'Developer',
@@ -109,12 +73,9 @@ window.MessageWallUserTags = {
 		'FlamingSwifferDuster': 'Contributor',
 		'Goofiershoes': 'Contributor',
 		'BiddinUp': 'Contributor',
+		'Poodros': 'Contributor',
 		
 		// StyLiS Staff
-		'RyanTheRobloxian': 'StyLiS Staff',
-		'MiinhThePig': 'StyLiS Staff',
-		'TruckerJj2': 'StyLiS Staff',
-		'Lionehh': 'StyLiS Staff',
 		'Savaughn08': 'StyLiS Staff',
     }
 };

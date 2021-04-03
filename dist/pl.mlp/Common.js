@@ -1,18 +1,13 @@
-// Blokada starych blogów i wątków
-window.LockForums = {
-    expiryDays: 30,
-    expiryMessage: "Nikt nie napisał tu żadnego postu od ponad 30 dni, więc dalsze komentowanie zostało automatycznie wyłączone, ponieważ ewentualne nowe wpisy zostałyby prawdopodobnie uznane za odkopywanie starych dyskusji. Jeśli masz coś ważnego do przekazania na dany temat, załóż nowy wątek.",
-    forumName: "Forum"
-};
+// Blokada starych blogów
 
-window.LockOldBlogs = {
+/*window.LockOldBlogs = {
     expiryDays: 30,
     expiryMessage: "Nikt nie skomentował tego blogu od ponad 30 dni. Nowy komentarz zostałby i tak prawdopodobnie uznany za odkopywanie starych dyskusji, więc możliwość komentowania została automatycznie wyłączona. Jeśli jesteś autorem bloga i chcesz, aby komentowanie zawsze było możliwe, dodaj kategorię „Blogi zawsze aktualne”.",
     nonexpiryCategory: "Blogi zawsze aktualne"
-};
+};*/
 
 //Przycisk „Edytuj wstęp”
-EditIntroButtonText = 'Edytuj wstęp';
+//EditIntroButtonText = 'Edytuj wstęp';
 
 //LinkPreview (http://dev.wikia.com/wiki/LinkPreview) missing image placeholder and disable for character images on the list of characters
 window.pPreview = $.extend(true, window.pPreview, {
@@ -24,15 +19,14 @@ window.pPreview = $.extend(true, window.pPreview, {
 
 
 //Import skryptów
-importArticles({
+/*importArticles({
     type: "script",
     articles: [
         "w:c:dev:LockOldBlogs/code.js",
-        "MediaWiki:Common.js/BlokForum.js",
         "w:c:dev:EditIntroButton/code.js",
         "w:c:dev:ReferencePopups/code.js"
     ]
-});
+});*/
 
 // *************************************************
 // Pagetitle rewrite
@@ -91,7 +85,7 @@ function createTwoDigitNumber(number) {
     return number;
 }
 
-addOnloadHook(startTime);
+$(document).ready;
 
 //Skrypt do obliczania poprawnej formy liczby mnogiej autorstwa Vengira, optymalizowany przez Dj mateooshkę, zrefaktoryzowany przez Haifischa
 function createPluralForm(number, single, plural1, plural2) {
@@ -146,18 +140,19 @@ if (wgUserName != null/* && span.insertusername != undefined*/) {
     $(".insertusername").html(wgUserName);
 }
 
-//Code for Template:Youtube2. Replaces specially marked YouTube links with embeeded videos. Intended as a successor to the outdated flash-based youtube tags.
-while ($(".youtube-placeholderlink").size() > 0) {
-    currentItem = $(".youtube-placeholderlink")[0];
-    embeedId = $(currentItem).attr("data-id");
-    $(currentItem).replaceWith('<iframe width="340" height="191" src="https://www.youtube.com/embed/'+embeedId+'"frameborder="0" allowfullscreen></iframe>');
-}
+//Code for Template:Youtube. Replaces specially marked YouTube links with embeeded videos. Intended as a successor to the outdated flash-based youtube tags. By Rail01
+document.querySelectorAll('.youtube-placeholderlink:not(.loaded)').forEach(function(el) {    
+    var id = el.dataset.id;
+    var url = 'https://youtube.com/embed/' + id;
 
-//Images changing on hover for the list of characters
-$(".characters-gallery").on("hover", function(){
-    $(this).find("img").attr("src", $(this).attr("data-focus"));
-});
- 
-$(".characters-gallery").on("mouseout", function(){
-    $(this).find("img").attr("src", $(this).attr("data-default"));
+    var iframe = document.createElement('iframe');
+    iframe.setAttribute('width', 340);
+    iframe.setAttribute('height', 191);
+    iframe.setAttribute('src', url);
+    iframe.setAttribute('frameborder', 0);
+    iframe.setAttribute('allowfullscreen', '');
+
+    el.innerHTML = '';
+    el.appendChild(iframe);
+    el.classList.add('loaded');
 });

@@ -113,7 +113,7 @@ function createSelectQuest() {
 }
 
 $(document).ready(function () {
-	if (mw.user.anonymous()) {
+	if (mw.config.values.wgUserName === null) {
 		alert('請先登入Wikia');
 		$(".create_select .addQuest").on("click", function () {
 			alert('請先登入Wikia');

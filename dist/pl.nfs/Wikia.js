@@ -1,21 +1,5 @@
 window.mwapi = new mw.Api();
 
-// Dodatkowa boczna sekcja
-$( function () {
-	var $module = $( '<section />', {
-		id: 'newmodule',
-		class: 'rail-module plainlinks'
-	} ).appendTo( '#WikiaRail' );
-
-	window.mwapi.get( {
-		action: 'parse',
-		text: '{{Boczna_sekcja}}'
-	} ).done( function( d ) {
-		if ( d.error ) return;
-		$module.append( d.parse.text['*'] );
-	} );
-} );
-
 // Interaktywne mapy
 $( function () {
 	var $map = $( '#imap-main' );

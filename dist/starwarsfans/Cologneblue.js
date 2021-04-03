@@ -1,1 +1,0 @@
-document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Common.js' + '&action=raw&ctype=text/javascript"></script>');

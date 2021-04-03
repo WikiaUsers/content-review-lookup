@@ -1,23 +1,4 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-
-window.MessageWallUserTags = {
-    tagColor: '#000',
-    glow: false,
-    users: {
-        'Utter_solitude': 'Admin',
-        'Applegirl': 'Admin',
-        'Bot_of_Solitude': 'Bot',
-        'Nightlily': 'Admin',
-        'Nick Branson': 'Admin',
-        'KyleBraxton': 'Admin',
-        'Schroeswald': 'Admin',
-        'Lola987': 'Image Mod',
-        'Eskaver': 'Discussions Mod',
-        'Matheus1234zx': 'Discussions Mod',
-
-    }
-};
-
 window.ajaxPages = [
     "Special:WikiActivity",
     "Special:RecentChanges",

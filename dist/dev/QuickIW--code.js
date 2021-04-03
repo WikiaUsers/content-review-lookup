@@ -11,30 +11,46 @@
     }
     window.QuickIWLoaded = true;
     var QuickIW = {
+        preloads: 2,
         page: mw.config.get('wgPageName'),
-        preload: function(i18n) {
-            $.when(
-                i18n.loadMessages('QuickIW'),
-                mw.loader.using(['mediawiki.api', 'mediawiki.user', 'mediawiki.util'])
-            ).then($.proxy(this.init, this));
+        isUCP: mw.config.get('wgVersion') !== '1.19.24',
+        preload: function() {
+            if (--this.preloads === 0) {
+                $.when(
+                    window.dev.i18n.loadMessages('QuickIW'),
+                    mw.loader.using([
+                        'mediawiki.api',
+                        'mediawiki.user',
+                        'mediawiki.util'
+                    ].concat(this.isUCP ? ['mediawiki.notify'] : []))
+                ).then($.proxy(this.init, this));
+            }
         },
         init: function(i18n) {
             this.i18n = i18n;
             this.api = new mw.Api();
+            this.modal = this.createModal();
             $('.page-header__contribution-buttons .wds-list, .UserProfileActionButton .WikiaMenuElement').append(
                 $('<li>').append(
                     $('<a>', {
                         click: $.proxy(this.click, this),
                         id: 'QuickIW',
+                        href: '#',
                         text: i18n.msg('interwiki').plain()
                     })
                 )
             );
         },
-        click: function() {
-            $.showCustomModal(
-                this.i18n.msg('interwiki').escape(),
-                $('<form>').append(
+        createModal: function() {
+            var modal = new window.dev.modal.Modal({
+                buttons: [
+                    {
+                        event: 'execute',
+                        primary: true,
+                        text: this.i18n.msg('add').plain()
+                    }
+                ],
+                content: $('<form>').append(
                     $('<div>').append(
                         $('<label>', {
                             'for': 'QuickIWLanguage',
@@ -74,16 +90,20 @@
                                 .plain()
                         )
                     )
-                ),
-                {
-                    id: 'QuickIWModal',
-                    buttons: [{
-                        defaultButton: true,
-                        message: this.i18n.msg('add').escape(),
-                        handler: $.proxy(this.edit, this)
-                    }]
-                }
-            );
+                ).prop('outerHTML'),
+                context: this,
+                events: {
+                    execute: this.edit
+                },
+                id: 'QuickIWModal',
+                title: this.i18n.msg('interwiki').plain()
+            });
+            modal.create();
+            return modal;
+        },
+        click: function(event) {
+            event.preventDefault();
+            this.modal.show();
         },
         edit: function() {
             var language = $('#QuickIWLanguage').val(),
@@ -111,9 +131,7 @@
                 this.editing = false;
                 this.error(d.error.code);
             } else {
-                window.location.href = mw.util.getUrl(this.page, {
-                    action: 'purge'
-                });
+                window.location.href = mw.util.getUrl(this.page);
             }
         },
         fail: function() {
@@ -121,21 +139,29 @@
             this.error(this.i18n.msg('ajax-error').plain());
         },
         error: function(text) {
-            new BannerNotification(
-                this.i18n.msg('error', text).escape(),
-                'error'
-            ).show();
+            if (this.isUCP) {
+                mw.notify(this.i18n.msg('error', text).plain(), {
+                    type: 'error'
+                });
+            } else {
+                new BannerNotification(
+                    this.i18n.msg('error', text).escape(),
+                    'error'
+                ).show();
+            }
         }
     };
-    if (!window.dev || !window.dev.i18n) {
-        importArticle({
-            type: 'script',
-            article: 'u:dev:MediaWiki:I18n-js/code.js'
-        });
-    }
+    importArticles({
+        type: 'script',
+        articles: [
+            'u:dev:MediaWiki:I18n-js/code.js',
+            'u:dev:MediaWiki:Modal.js'
+        ]
+    });
     importArticle({
         type: 'style',
         article: 'u:dev:MediaWiki:QuickIW.css'
     });
     mw.hook('dev.i18n').add($.proxy(QuickIW.preload, QuickIW));
+    mw.hook('dev.modal').add($.proxy(QuickIW.preload, QuickIW));
 }(jQuery, mediaWiki));

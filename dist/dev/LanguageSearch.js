@@ -3,19 +3,19 @@
  * @module                  LanguageSearch.js
  * @description             Language search filter for FANDOM.
  * @author                  Speedit
- * @version                 1.0.1
+ * @version                 1.0.2
  * @license                 CC-BY-SA 3.0
  * @notes                   Experimental.
  * 
  */
-require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
+(function($, mw) {
     'use strict';
 
     // Scope limiting & double-run protection.
     window.dev = window.dev || {};
     var $ph = $('.page-header__languages');
     if (
-        !$ph.exists() ||
+        !$ph.length ||
         window.dev.langSearch
     ) {
         return;
@@ -202,12 +202,12 @@ require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
     });
 
     // Script styling.
-    $(importArticle({
+    importArticle({
         type: 'style',
         article: 'u:dev:MediaWiki:LanguageSearch.css'
-    })).load($.proxy(langSearchInit, langSearchInit));
+    }).then($.proxy(langSearchInit, langSearchInit));
 
     // MediaWiki API module.
     mw.loader.using('mediawiki.api').then($.proxy(langSearchInit, langSearchInit));
 
-});
+})(jQuery, mediaWiki);

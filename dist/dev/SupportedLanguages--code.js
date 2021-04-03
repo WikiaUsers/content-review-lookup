@@ -1,8 +1,8 @@
 function init(i18nd) {
     i18n = i18nd;
-    $.ajax(wgScriptPath + '/api.php?' + $.param({
+    $.ajax(mw.config.get('wgScriptPath') + '/api.php?' + $.param({
         action: 'parse',
-        page: wgMainPageTitle,
+        page: mw.config.get('wgMainPageTitle'),
         format: 'json'
     })).then(function(res) {
         $('.page-header__main').append(
@@ -19,6 +19,6 @@ function i18nCallback(i18no) {
     ).then(init);
 }
 
-if (wgPageName.replace(/_/g, ' ') === wgMainPageTitle) {
+if (mw.config.get('wgPageName') === mw.config.get('wgMainPageTitle').replace(/ /g, '_')) {
     mw.hook('dev.i18n').add(i18nCallback);
 }

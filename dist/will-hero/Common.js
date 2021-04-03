@@ -4,6 +4,11 @@
 /** Import Configuration ***/
 /***************************/
 
+/* Template:USERNAME */
+$(function() {
+    $('.InsertUsername').text(wgUserName);
+});
+
 /* Wall Greeting Button */
 window.WallGreetingButtonProtect = true;
 window.WallGreetingButtonRaw = false;

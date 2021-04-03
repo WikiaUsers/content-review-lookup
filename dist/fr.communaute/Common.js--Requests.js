@@ -330,7 +330,6 @@ function isValidURL(url) {
 
 //Short url
 function shortUrl(url) {
-    //return url.replace('http://', '').replace(/\.wikia\.com(.*)/g, '');
     
     var sUrl = "";
   
@@ -338,7 +337,7 @@ function shortUrl(url) {
     url = url.replace(/https?:\/{2}/g, '').replace(/\/wiki\/(.*)/g, '');
   
     //Find parts: community name + language code
-    var linkParts = /([\w.-]*)\.(?:wikia|fandom)?(?:\.com\/?)(.{0,})/g.exec(url);
+    var linkParts = /([\w.-]*)\.(?:wikia|fandom)?(?:\.(?:com|org)\/?)([\w-]{0,})/g.exec(url);
   
     // No parts found, maybe already short form "fr.community"
     if ( !linkParts ) {
@@ -355,111 +354,118 @@ function shortUrl(url) {
 }
 
 function getURLPattern() {
-    return "^(([^:/?#]+):)?(/{2})?(.*)\\." + mw.config.values.wgWikiaBaseDomainRegex + "([^?#]*)(\\?([^#]*))?(#(.*))?";
+    //mw.config.values.wgWikiaBaseDomainRegex = "((wikia\\.(com|org)|fandom\\.com)|(wikia|fandom)-dev\\.(com|us|pl))"
+  	var fandomDomains = mw.config.values.wgWikiaBaseDomainRegex || "(wikia\\.(com|org)|fandom\\.com)";
+  
+    return "^(([^:/?#]+):)?(/{2})?(.*)\\." + fandomDomains + "([^?#]*)(\\?([^#]*))?(#(.*))?";
+
 }
- 
-//function to show the form to fill the request
-function modal(title, form, type) {
-  $.showCustomModal(title, form, {
-    id: type,
-    width: 500,
-    buttons:
-    [{
-        id: 'startButton',
-        message: 'Envoyer',
-        defaultButton: true,
-        handler: function () {
-          submit(type);
-        }
-    },
-    {
-        message: 'Annuler',
-        handler: function() {
-            $('#' + type).closeModal();
-        }
-    }]
-  });
-}
- 
-//setting form to display for each button 
-$('#interwiki').click(function() {
-  if (wgUserName === null) {
-    alert('Vous devez être connecté pour créer une demande de liens interwiki.');
-    window.location.href = wgServer + '/wiki/Special:UserLogin';
-    return false;
-  }
- 
-  var popup_interwiki =
-    '<form method="" name="" class="WikiaForm">' +
-    '  <fieldset>' +
-    '      <p style="padding:5px; border:1px solid grey;">' +
-    'Pour faire une nouvelle demande, remplissez les champs ci-dessous. Les champs marqués d\'une astérisque (<span style="color:red">*</span>) sont obligatoires.<br/>' + 
-    '       Par exemple, pour lier <b>harrypotter.fandom.com/fr</b> et <b>harrypotter.fandom.com</b>, remplissez la zone de texte "Liens interwikis" avec&nbsp;:<br /><code>harrypotter.fandom.com/fr -> harrypotter.fandom.com</code>. <br/>' + 
-    '       Pour faire plusieurs demandes simultanément, écrivez une demande par ligne. Par exemple, pour lier <b>harrypotter.fandom.com/fr</b> à <b>harrypotter.fandom.com</b> et <b>harrypotter.fandom.com/de</b>, ' + 
-    '       écrivez&nbsp;: <br/><code>harrypotter.fandom.com/fr -> harrypotter.fandom.com</code><br /><code>harrypotter.fandom.com/fr -> harrypotter.fandom.com/de</code><br />' + 
-    '       Cela génèrera un lien facile à utiliser par n\'importe quel <a title="Staff" class="extiw" href="http://community.wikia.com/wiki/Staff">membre du staff</a> ou ' + 
-    '       <a title="Assistants" href="/wiki/Aide:Assistants">Assistant</a> qui créera le lien entre les deux wikis très rapidement.<br></p><br /> '+
-    '       <p><b><span style="color:red">*</span>Nom du wiki&nbsp;:</b></p> <input type="text" style="align:center;height:20px; width:300px" id="Name" placeholder="Ex&nbsp;: Wiki Harry Potter"/>' +
-    '       <p><b><span style="color:red">*</span>Liens interwikis&nbsp;:</b></p>' +
-    '           <textarea style="width:500px; height:150px" id="Names" placeholder="Ex&nbsp;: wiki.fandom.com/fr -> wiki.fandom.com/es"></textarea>' +
-    '       <p><b>Description / Commentaires&nbsp;:</b></p> <input type="text" style="height:20px; width:400px" id="Comments" placeholder="Ex&nbsp;: Merci d\'avance&nbsp;!"/>' +
-    '   </fieldset>' +
-    '</form>';
- 
-  modal('Demande liens interwikis', popup_interwiki, 'interwikis');
-});
- 
-$('#spotlight').click(function() {
-  if (wgUserName === null) {
-    alert('Vous devez être connecté pour créer une demande de spotlight.');
-    window.location.href = wgServer + '/wiki/Special:UserLogin';
-    return false;
-  }
- 
-  var popup_spotlight =
-    '<form method="" name="" class="WikiaForm">' +
-    '  <fieldset>' +
-    '      <p style="padding:5px; border:1px solid grey;">' +
-    'Pour faire une nouvelle demande, remplissez les champs ci-dessous. Les champs marqués d\'une astérisque (<span style="color:red">*</span>) sont obligatoires.</p><br />' +
-    '     <p><b><span style="color:red">*</span>Nom du wiki&nbsp;:</b></p>' + 
-    '     <input type="text" style="align:center;height:20px; width:300px" id="Name" placeholder="Ex&nbsp;: Wiki Harry Potter"/>' +
-    '     <p><b><span style="color:red">*</span>Url du wiki&nbsp;:</b></p>' + 
-    '     http(s)://<input type="text" id="Link" style="align:center;height:20px; width:400px" placeholder="Ex&nbsp;: &quot;fr.harrypotter.wikia.com&quot; ou &quot;harrypotter.fandom.com/fr&quot;" oninput="isValidURL(this.value.trim())" ' + 
-    '   title="Saisissez une adresse en fandom.com ou wikia.com" pattern="' + getURLPattern() + '" />' +
-    '     <p><b><span style="color:red">*</span>Image pour le spotlight (format 16:9&nbsp;; ex&nbsp;: 640×360px)&nbsp;:</b><br/>' + 
-    '     <span style="font-size: 12px; font-style: italic;">(Veuillez vous assurer que l\'image ne comporte aucun texte)</span></p> <input type="file" style="height:23px; width:400px" id="Picture" onchange="controlPicture()"/>' +
-    '     <p id="message" style="color: red;"></p>' +
-    '  </fieldset>' +
-    '</form>';
- 
-  modal('Demande de spotlight', popup_spotlight, 'spotlights');
-});
- 
-$('#adoption').click(function() {
-  if (wgUserName === null) {
-    alert('Vous devez être connecté pour créer une demande d\'adoption.');
-    window.location.href = wgServer + '/wiki/Special:UserLogin';
-    return false;
-  }
- 
-  var popup_adoption =
-    '<form method="" name="" class="WikiaForm">' +
-    '  <fieldset>' +
-    '      <p style="padding:5px; border:1px solid grey;">' +
-    'Pour faire une nouvelle demande, remplissez les champs ci-dessous. Les champs marqués d\'une astérisque (<span style="color:red">*</span>) sont obligatoires.</p><br />' +
-    '      <p><b><span style="color:red">*</span>Nom du wiki à adopter&nbsp;:</b></p><input type="text" style="align:center;height:20px; width:300px" id="Name" placeholder="Ex&nbsp;: Wiki Harry Potter"/>' +
-    '      <p><b><span style="color:red">*</span>Url du wiki à adopter&nbsp;:</b></p>' + 
-    '     http(s)://<input type="text" id="Link" style="align:center;height:20px; width:400px" placeholder="Ex&nbsp;: &quot;fr.harrypotter.wikia.com&quot; ou &quot;harrypotter.fandom.com/fr&quot;" oninput="isValidURL(this.value.trim())" ' + 
-    '   title="Saisissez une adresse en fandom.com ou wikia.com" pattern="' + getURLPattern() + '" />' +
-    '      <p><b><span style="color:red">*</span>Nombre de modifications sur le wiki</b></p>' +
-    '          <input type="text" maxlength="6" style="align:center;height:20px; width:150px" id="Number" placeholder="Ex&nbsp;: 120"/>' +
-    '      <p><b><span style="color:red">*</span>Depuis combien de temps contribuez-vous sur le wiki&nbsp;:</b></p> <input type="text" style="height:20px; width:400px" id="Time" placeholder="Ex&nbsp;: 2 semaines"/>' +
-    '      <p><b><span style="color:red">*</span>Dans les pages spéciales → Spécial:Liste_des_utilisateurs/sysop quelle est la dernière fois qu\'un administrateur a effectué des modifications et qui était-ce&nbsp;?</b></p> <input type="text" style="height:20px; width:400px" id="Last" placeholder="Ex&nbsp;: Gguigui1 le 14 septembre 2013"/>' +
-    '      <p><b>Informations complémentaires&nbsp;:</b></p> <input type="text" style="height:20px; width:400px" id="Comments"/>' +
-    '  </fieldset>' +
-    '</form>';
- 
-  modal('Adoption de wiki', popup_adoption, 'adoptions');
+
+mw.hook('dev.showCustomModal').add(function(showCustomModal) {
+
+	//function to show the form to fill the request
+	function modal(title, form, type) {
+	  showCustomModal(title, form, {
+	    id: type,
+	    width: 500,
+	    buttons:
+	    [{
+	        id: 'startButton',
+	        message: 'Envoyer',
+	        defaultButton: true,
+	        handler: function () {
+	          submit(type);
+	        }
+	    },
+	    {
+	        message: 'Annuler',
+	        handler: function() {
+	            showCustomModal.closeModal($('#' + type));
+	        }
+	    }]
+	  });
+	}
+	 
+	//setting form to display for each button 
+	$('#interwiki').click(function() {
+	  if (wgUserName === null) {
+	    alert('Vous devez être connecté pour créer une demande de liens interwiki.');
+	    window.location.href = wgServer + '/wiki/Special:UserLogin';
+	    return false;
+	  }
+	 
+	  var popup_interwiki =
+	    '<form method="" name="" class="WikiaForm">' +
+	    '  <fieldset>' +
+	    '      <p style="padding:5px; border:1px solid grey;">' +
+	    'Pour faire une nouvelle demande, remplissez les champs ci-dessous. Les champs marqués d\'une astérisque (<span style="color:red">*</span>) sont obligatoires.<br/>' + 
+	    '       Par exemple, pour lier <b>harrypotter.fandom.com/fr</b> et <b>harrypotter.fandom.com</b>, remplissez la zone de texte "Liens interwikis" avec&nbsp;:<br /><code>harrypotter.fandom.com/fr -> harrypotter.fandom.com</code>. <br/>' + 
+	    '       Pour faire plusieurs demandes simultanément, écrivez une demande par ligne. Par exemple, pour lier <b>harrypotter.fandom.com/fr</b> à <b>harrypotter.fandom.com</b> et <b>harrypotter.fandom.com/de</b>, ' + 
+	    '       écrivez&nbsp;: <br/><code>harrypotter.fandom.com/fr -> harrypotter.fandom.com</code><br /><code>harrypotter.fandom.com/fr -> harrypotter.fandom.com/de</code><br />' + 
+	    '       Cela génèrera un lien facile à utiliser par n\'importe quel <a title="Staff" class="extiw" href="https://community.fandom.com/wiki/Staff">membre du staff</a> ou ' + 
+	    '       <a title="Assistants" href="/wiki/Aide:Assistants">Assistant</a> qui créera le lien entre les deux wikis très rapidement.<br></p><br /> '+
+	    '       <p><b><span style="color:red">*</span>Nom du wiki&nbsp;:</b></p> <input type="text" style="align:center;height:20px; width:300px" id="Name" placeholder="Ex&nbsp;: Wiki Harry Potter"/>' +
+	    '       <p><b><span style="color:red">*</span>Liens interwikis&nbsp;:</b></p>' +
+	    '           <textarea style="width:500px; height:150px" id="Names" placeholder="Ex&nbsp;: wiki.fandom.com/fr -> wiki.fandom.com/es"></textarea>' +
+	    '       <p><b>Description / Commentaires&nbsp;:</b></p> <input type="text" style="height:20px; width:400px" id="Comments" placeholder="Ex&nbsp;: Merci d\'avance&nbsp;!"/>' +
+	    '   </fieldset>' +
+	    '</form>';
+	 
+	  modal('Demande liens interwikis', popup_interwiki, 'interwikis');
+	});
+	 
+	$('#spotlight').click(function() {
+	  if (wgUserName === null) {
+	    alert('Vous devez être connecté pour créer une demande de spotlight.');
+	    window.location.href = wgServer + '/wiki/Special:UserLogin';
+	    return false;
+	  }
+	 
+	  var popup_spotlight =
+	    '<form method="" name="" class="WikiaForm">' +
+	    '  <fieldset>' +
+	    '      <p style="padding:5px; border:1px solid grey;">' +
+	    'Pour faire une nouvelle demande, remplissez les champs ci-dessous. Les champs marqués d\'une astérisque (<span style="color:red">*</span>) sont obligatoires.</p><br />' +
+	    '     <p><b><span style="color:red">*</span>Nom du wiki&nbsp;:</b></p>' + 
+	    '     <input type="text" style="align:center;height:20px; width:300px" id="Name" placeholder="Ex&nbsp;: Wiki Harry Potter"/>' +
+	    '     <p><b><span style="color:red">*</span>Url du wiki&nbsp;:</b></p>' + 
+	    '     https://<input type="text" id="Link" style="align:center;height:20px; width:400px" placeholder="Ex&nbsp;: &quot;harrypotter.fandom.com/fr&quot;" oninput="isValidURL(this.value.trim())" ' + 
+	    '   title="Saisissez une adresse en fandom.com" pattern="' + getURLPattern() + '" />' +
+	    '     <p><b><span style="color:red">*</span>Image pour le spotlight (format 16:9&nbsp;; ex&nbsp;: 640×360px)&nbsp;:</b><br/>' + 
+	    '     <span style="font-size: 12px; font-style: italic;">(Veuillez vous assurer que l\'image ne comporte aucun texte)</span></p> <input type="file" style="height:23px; width:400px" id="Picture" onchange="controlPicture()"/>' +
+	    '     <p id="message" style="color: red;"></p>' +
+	    '  </fieldset>' +
+	    '</form>';
+	 
+	  modal('Demande de spotlight', popup_spotlight, 'spotlights');
+	});
+	 
+	$('#adoption').click(function() {
+	  if (wgUserName === null) {
+	    alert('Vous devez être connecté pour créer une demande d\'adoption.');
+	    window.location.href = wgServer + '/wiki/Special:UserLogin';
+	    return false;
+	  }
+	 
+	  var popup_adoption =
+	    '<form method="" name="" class="WikiaForm">' +
+	    '  <fieldset>' +
+	    '      <p style="padding:5px; border:1px solid grey;">' +
+	    'Pour faire une nouvelle demande, remplissez les champs ci-dessous. Les champs marqués d\'une astérisque (<span style="color:red">*</span>) sont obligatoires.</p><br />' +
+	    '      <p><b><span style="color:red">*</span>Nom du wiki à adopter&nbsp;:</b></p><input type="text" style="align:center;height:20px; width:300px" id="Name" placeholder="Ex&nbsp;: Wiki Harry Potter"/>' +
+	    '      <p><b><span style="color:red">*</span>Url du wiki à adopter&nbsp;:</b></p>' + 
+	    '     https://<input type="text" id="Link" style="align:center;height:20px; width:400px" placeholder="Ex&nbsp;: &quot;harrypotter.fandom.com/fr&quot;" oninput="isValidURL(this.value.trim())" ' + 
+	    '   title="Saisissez une adresse en fandom.com ou wikia.org" pattern="' + getURLPattern() + '" />' +
+	    '      <p><b><span style="color:red">*</span>Nombre de modifications sur le wiki</b></p>' +
+	    '          <input type="text" maxlength="6" style="align:center;height:20px; width:150px" id="Number" placeholder="Ex&nbsp;: 120"/>' +
+	    '      <p><b><span style="color:red">*</span>Depuis combien de temps contribuez-vous sur le wiki&nbsp;:</b></p> <input type="text" style="height:20px; width:400px" id="Time" placeholder="Ex&nbsp;: 2 semaines"/>' +
+	    '      <p><b><span style="color:red">*</span>Dans les pages spéciales → Spécial:Liste_des_utilisateurs/sysop quelle est la dernière fois qu\'un administrateur a effectué des modifications et qui était-ce&nbsp;?</b></p> <input type="text" style="height:20px; width:400px" id="Last" placeholder="Ex&nbsp;: Gguigui1 le 14 septembre 2013"/>' +
+	    '      <p><b>Informations complémentaires&nbsp;:</b></p> <input type="text" style="height:20px; width:400px" id="Comments"/>' +
+	    '  </fieldset>' +
+	    '</form>';
+	 
+	  modal('Adoption de wiki', popup_adoption, 'adoptions');
+	});
 });
 
 function controlPicture(){

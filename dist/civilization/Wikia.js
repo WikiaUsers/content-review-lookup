@@ -7,7 +7,6 @@ var SocialMediaButtons = {
 	buttonSize: "default",
 	wikiTwitterAccount: "default"
 };
-importScriptPage('SocialIcons/code.js','dev');
 
 /* Community Choice Awards */
 if (wgPageName === 'User_blog:TheBlueRogue/Beyond_Earth_Community_Choice_Awards') {

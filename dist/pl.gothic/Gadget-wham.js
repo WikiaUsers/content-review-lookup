@@ -1,4 +1,4 @@
 importArticle ({
     type: 'script',
-    article: 'u:dev:WHAM/code.2.js'
+    article: 'u:dev:MediaWiki:WHAM/code.2.js'
 });

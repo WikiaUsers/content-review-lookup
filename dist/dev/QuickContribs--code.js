@@ -1,4 +1,17 @@
 (function ($, mw, QuickContribs) {
+    // Scoping and double runs
+    if (
+        mw.config.get('wgCanonicalSpecialPageName') !== 'WikiActivity' ||
+        (window.QuickContribs && window.QuickContribs.loaded)
+    ) {
+        return;
+    }
+    var cfg = mw.config.get([
+        'wgContentLanguage',
+        'wgUserLanguage',
+        'wgScriptPath',
+        'wgUserGroups',
+    ]);
     var i18n = {
         // English
         en: {
@@ -98,10 +111,11 @@
             modalname: 'Katkıları sil'
         },
     };
-    i18n = $.extend(i18n.en, i18n[mw.config.get('wgContentLanguage')], i18n[mw.config.get('wgUserLanguage')]);
+    i18n = $.extend(i18n.en, i18n[cfg.wgContentLanguage], i18n[cfg.wgUserLanguage]);
     QuickContribs = $.extend(QuickContribs, {});
     QuickContribs.expiry = QuickContribs.expiry || '2 weeks';
     QuickContribs.reason = QuickContribs.reason || 'Vandalism';
+    QuickContribs.loaded = true;
     var user = "";
     var contributions = "";
     var deletecontributions = "";
@@ -114,45 +128,44 @@
         if (number > -1) {
             user = $(this).attr('href').substr(number + 1);
         }
-        var isIPv4Address = mw.util.isIPv4Address;
-        var isIPv6Address = mw.util.isIPv6Address;
-        if (isIPv4Address(user) || isIPv6Address(user)) {
+        if (mw.util.isIPv4Address(user) || mw.util.isIPv6Address(user)) {
             console.log('IP');
         } else {
             console.log('User');
             user = $(this).html();
         }
         getcontributions(user);
-        QuickContribs(i18n.loading + ' <img src="https://images.wikia.nocookie.net/common/skins/common/progress-wheel.gif">', i18n.loading + ' <img src="https://images.wikia.nocookie.net/common/skins/common/progress-wheel.gif">');
+        showQuickContribsModal(i18n.loading + ' <img src="https://images.wikia.nocookie.net/common/skins/common/progress-wheel.gif">', i18n.loading + ' <img src="https://images.wikia.nocookie.net/common/skins/common/progress-wheel.gif">');
     });
 
     function blockuser(user, expiry, reason) {
         if (!expiry) {
-            var expiry = prompt(i18n.expiry, QuickContribs.expiry);
+            expiry = prompt(i18n.expiry, QuickContribs.expiry);
         }
         if (!reason) {
-            var reason = prompt(i18n.reason, QuickContribs.reason);
+            reason = prompt(i18n.reason, QuickContribs.reason);
         }
         if (!user || !expiry) {
             alert(i18n.emptyvariables);
             return false;
         }
-        var url = wgServer + wgScriptPath + '/api.php?action=query&prop=info&intoken=block&titles=User:' + user + '&format=json';
-        $.getJSON(url, function (data) {
-            var p;
-            for (var p in data.query.pages) {
-                break;
+        mw.loader.using(['mediawiki.api', 'mediawiki.api.edit'], function() {
+            var params = {
+                action: 'block',
+                user: user,
+                expiry: expiry,
+                reason: reason,
+                nocreate: '',
+                autoblock: '',
+                format: 'json',
             };
-            var token = data.query.pages[p].blocktoken;
-            var url = wgServer + wgScriptPath + '/api.php?action=block&user=' + user + '&expiry=' + expiry + '&reason=' + reason + '&nocreate&autoblock&format=json&token=' + encodeURIComponent(token);
-            $.post(url, function (data) {
-                if (data.error) {
-                    alert(i18n.errorapi + ' : ' + data.error.info);
-                    return false;
-                } else {
-                    alert(i18n.success);
-                    $('#blockbutton').addClass('disabled');
-                }
+            var api = new mw.Api();
+            api.postWithEditToken(params, function(data) {
+                alert(i18n.success);
+                $('#blockbutton').addClass('disabled');
+            }, function(code, result) {
+                alert(i18n.errorapi + ' : ' + result.info);
+                return false;
             });
         });
     }
@@ -160,7 +173,7 @@
     function getcontributions(user) {
         $.ajax({
             type: "GET",
-            url:  wgScriptPath + '/wiki/Special:DeletedContributions/' + user,
+            url:  cfg.wgScriptPath + '/wiki/Special:DeletedContributions/' + user,
             success: function (content) {
                 deletecontributions = $(content).find('#mw-content-text > ul').html();
             },
@@ -170,10 +183,10 @@
         });
         $.ajax({
             type: "GET",
-            url:  wgScriptPath + '/wiki/Special:Contributions/' + user,
+            url:  cfg.wgScriptPath + '/wiki/Special:Contributions/' + user,
             success: function (content) {
                 contributions = $(content).find('#mw-content-text > ul').html();
-                QuickContribs(deletecontributions, contributions);
+                showQuickContribsModal(deletecontributions, contributions);
             },
             error: function (data) {
                 alert(i18n.errorapi + ' : ' + data.error.info);
@@ -181,7 +194,7 @@
         });
     }
 
-    function QuickContribs(content, nextcontent) {
+    function showQuickContribsModal(content, nextcontent) {
         if ($('#quick-contributions').length === 0) {
             var ajaxform = '\
   <form method="" name="" class="WikiaForm "> \
@@ -225,7 +238,7 @@
         } else {
             $('#Contributions').html('<font size="4">' + i18n.nocontribs + '</font>');
         }
-        if (wgUserGroups.indexOf('sysop') + wgUserGroups.indexOf('bureaucrat') + wgUserGroups.indexOf('staff') + wgUserGroups.indexOf('VSTF') + wgUserGroups.indexOf('helper') == -5) {
+        if (cfg.wgUserGroups.indexOf('sysop') + cfg.wgUserGroups.indexOf('bureaucrat') + cfg.wgUserGroups.indexOf('staff') + cfg.wgUserGroups.indexOf('soap') + cfg.wgUserGroups.indexOf('helper') + wgUserGroups.indexOf('wiki-manager') == -6) {
             $('#blockbutton').attr("disabled", "true");
             $('#Deletecontributions').html('<font size="4">' + i18n.noright + '</font>');
         }

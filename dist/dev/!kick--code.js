@@ -2,7 +2,7 @@
  * !kick.js
  *
  * Allows use of !kick command in Special:Chat
- * @author: [[w:User:Slyst]]
+ * @author: [[w:User:.jun]]
  */
 (function() {
     var config = mw.config.get([
@@ -13,13 +13,13 @@
         'wiki-manager',
         'sysop',
         'helper',
-        'vstf',
+        'soap',
         'threadmoderator',
         'chatmoderator'
     ];
     if (
         config.wgCanonicalSpecialPageName !== 'Chat' ||
-        !/staff|helper|sysop|vstf|wiki-manager|threadmoderator|chatmoderator/.test(config.wgUserGroups.join())
+        !/staff|helper|sysop|wiki-manager|threadmoderator|chatmoderator|soap/.test(config.wgUserGroups.join())
     ) {
         return;
     }

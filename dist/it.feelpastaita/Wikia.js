@@ -1,1 +1,0 @@
-$('.username').text(mw.config.get('wgUserName'));

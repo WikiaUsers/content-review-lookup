@@ -438,30 +438,6 @@ function loadFunc() {
     rewriteTitle();
     showEras('title-eraicons');
     showEras('title-shortcut');
-
-    fillEditSummaries();
-    if (wgAction=="edit" || wgAction=="submit") fillPreloads();
-
-    var body = document.getElementsByTagName('body')[0];
-    var bodyClass = body.className;
-
-    if(!bodyClass || (bodyClass.indexOf('page-') == -1))     {
-        var page = window.pageName.replace(/\W/g, '_');
-        body.className += ' page-' + page;
-    }
-
-    if(typeof(onPageLoad) != "undefined")     {
-        onPageLoad();
-    }
-}
-
-function fillEditSummaries() {
-    var label = document.getElementById("wpSummaryLabel");
-    if (label == null) return;
-
-    label.innerHTML = '<div style="margin-bottom: 1px;">Özet seç: <select id="stdSummaries" onchange="onStdSummaryChange()"></select></div>' + label.innerHTML;
-
-    requestComboFill('stdSummaries', 'Template:Stdsummaries');
 }
 
 function onStdSummaryChange() {
@@ -488,7 +464,7 @@ function onPreloadChange() {
     doPreload(value);
 }
 
-addOnloadHook(loadFunc);
+$(loadFunc);
 
 // ============================================================
 // BEGIN JavaScript title rewrite

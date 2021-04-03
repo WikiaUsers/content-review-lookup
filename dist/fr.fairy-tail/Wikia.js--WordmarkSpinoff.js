@@ -40,6 +40,9 @@ $(document).ready(function(){
                         case 'La Grande Aventure de Happy':
                             $('.wds-community-header__wordmark img').attr('src', 'https://vignette.wikia.nocookie.net/fairy-tail/images/c/c3/Fairy_Tail_-_La_Grande_Aventure_de_Happy_Logo.png/revision/latest?cb=20190724113955&path-prefix=fr');
                             break;
+                        case '100 Years Quest':
+                            $('.wds-community-header__wordmark img').attr('src', 'https://vignette.wikia.nocookie.net/fairy-tail/images/c/cb/Logo_100YQ.png/revision/latest?cb=20200721160736&path-prefix=fr');
+                            break;
                         default:
                             found = false;
                     }

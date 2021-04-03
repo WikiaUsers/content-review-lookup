@@ -3,16 +3,15 @@
  * @file Adds links to user's blogs, contributions, and pseudo talk pages
  * @author Eizen <dev.fandom.com/wiki/User_talk:Eizen>
  *         Ursuul <dev.fandom.com/wiki/User_talk:Ursuul>
+ * @license CC-BY-SA 3.0
  * @external "mediawiki.util"
- * @external "jquery"
- * @external "wikia.window"
- * @external "mw"
+ * @external "I18n-js"
  */
 
-/*jslint browser, this:true */
-/*global mw, jQuery, window, require, wk */
+/* jshint -W030, undef: true, unused: true, eqnull: true, laxbreak: true,
+   bitwise: false */
 
-require(["jquery", "mw", "wikia.window"], function (jQuery, mw, wk) {
+;(function (window, $, mw) {
     "use strict";
 
     if (window.isBlogLinkLoaded) {
@@ -21,16 +20,24 @@ require(["jquery", "mw", "wikia.window"], function (jQuery, mw, wk) {
     window.isBlogLinkLoaded = true;
 
     if (!window.dev || !window.dev.i18n) {
-        importArticle({
+        window.importArticles({
             type: "script",
-            article: "u:dev:MediaWiki:I18n-js/code.js"
+            articles: ["u:dev:MediaWiki:I18n-js/code.js"]
         });
     }
-    
-    //Add class to preferences parent li so that the defualt placement can attach
-    jQuery('.wds-global-navigation__user-menu > div:nth-child(2) > ul > li > a[data-tracking-label="account.preferences"]').parent().addClass('account-preferences');
 
-    var $i18n;
+    //Add class to preferences parent li so that the defualt placement can attach
+    $('.wds-global-navigation__user-menu > div:nth-child(2) > ul > li > a[data-tracking-label="account.preferences"]').parent().addClass('account-preferences');
+
+    var $i18n, config, isUCP;
+
+    config = mw.config.get([
+        "wgCityId",
+        "wgUserName",
+        "wgVersion"
+    ]);
+
+    isUCP = window.parseFloat(config.wgVersion) > 1.19;
 
     /**
      * @class BlogLink
@@ -58,10 +65,10 @@ require(["jquery", "mw", "wikia.window"], function (jQuery, mw, wk) {
                 $text
             );
 
-            if (jQuery($target).exists()) {
-                jQuery($target).before($element);
+            if ($($target).length) {
+                $($target).before($element);
             } else {
-                jQuery(this.defaultPlacement).before($element);
+                $(this.defaultPlacement).before($element);
             }
         },
 
@@ -88,6 +95,23 @@ require(["jquery", "mw", "wikia.window"], function (jQuery, mw, wk) {
         },
 
         /**
+         * @method getFeaturesData
+         * @returns {object}
+         */
+        getFeaturesData: function () {
+            return (isUCP)
+                ? $.get(mw.util.wikiScript("wikia"), {
+                      controller: "Fandom\\AdminDashboard\\WikiFeatures",
+                      method: "wikiFeatures",
+                      format: "json",
+                  })
+                : $.nirvana.getJson(
+                      "WikiFeaturesSpecialController",
+                      "index"
+                  );
+        },
+
+        /**
          * @method checkForBlogs
          * @description Method retrives data regarding the activated features on
          *              the wiki in question and invokes the addLink method if
@@ -95,24 +119,28 @@ require(["jquery", "mw", "wikia.window"], function (jQuery, mw, wk) {
          * @returns {void}
          */
         checkForBlogs: function () {
-            var that = this;
-            jQuery.nirvana.getJson(
-                "WikiFeaturesSpecialController",
-                "index"
-            ).done(function ($data) {
+            this.getFeaturesData().then(function (paramData) {
                 if (
-                    !$data.error &&
-                    $data.features[1].name === "wgEnableBlogArticles" &&
-                    $data.features[1].enabled === true
+                    (
+                        isUCP && 
+                        !paramData.error &&
+                        paramData.features.wgEnableBlogArticles
+                    ) ||
+                    (
+                        !isUCP &&
+                        !paramData.error &&
+                        paramData.features[1].name === "wgEnableBlogArticles" &&
+                        paramData.features[1].enabled
+                    )
                 ) {
-                    that.addLink(
+                    this.addLink(
                         "blog",
-                        "User blog:" + wk.wgUserName,
+                        "User blog:" + config.wgUserName,
                         "blog",
                         "#bl-contributions"
                     );
                 }
-            });
+            }.bind(this), window.console.error);
         },
 
         /**
@@ -124,10 +152,11 @@ require(["jquery", "mw", "wikia.window"], function (jQuery, mw, wk) {
         main: function ($lang) {
             $lang.useUserLang();
             $i18n = $lang;
-            this.config = jQuery.extend(
+            this.config = $.extend(
                 {
                     talk: true,
-                    contribs: true
+                    contribs: true,
+                    activity: isUCP,
                 },
                 window.blogLinkConfig
             );
@@ -145,8 +174,18 @@ require(["jquery", "mw", "wikia.window"], function (jQuery, mw, wk) {
             if (this.config.contribs) {
                 this.addLink(
                     "contributions",
-                    "Special:Contributions/" + wk.wgUserName,
+                    "Special:Contributions/" + config.wgUserName,
                     "contribs",
+                    this.defaultPlacement
+                );
+            }
+
+            // Add UCP-exclusive link to UserProfileActivity
+            if (this.config.activity && isUCP) {
+                this.addLink(
+                    "activity",
+                    "Special:UserProfileActivity/" + config.wgUserName,
+                    "activity",
                     this.defaultPlacement
                 );
             }
@@ -154,10 +193,10 @@ require(["jquery", "mw", "wikia.window"], function (jQuery, mw, wk) {
             // Add PTP link only if the script is loaded on the wiki
             if (this.config.talk) {
                 mw.hook("pseudotalkpages.loaded").add(function () {
-                    jQuery.proxy(
+                    $.proxy(
                         BlogLink.addLink(
                             "talk",
-                            "User:" + wk.wgUserName + "/Talk",
+                            "User:" + config.wgUserName + "/Talk",
                             "talk",
                             "#bl-blog"
                         ),
@@ -167,12 +206,12 @@ require(["jquery", "mw", "wikia.window"], function (jQuery, mw, wk) {
             }
 
             // For whatever reason, En-CC has no WikiFeaturesSpecialController
-            if (wk.wgCityId !== "177") {
+            if (config.wgCityId !== "177") {
                 this.checkForBlogs();
             } else {
                 this.addLink(
                     "blog",
-                    "User blog:" + wk.wgUserName,
+                    "User blog:" + config.wgUserName,
                     "blog",
                     "#bl-contributions"
                 );
@@ -181,9 +220,9 @@ require(["jquery", "mw", "wikia.window"], function (jQuery, mw, wk) {
     };
 
     mw.hook("dev.i18n").add(function ($i18n) {
-        jQuery.when(
-            $i18n.loadMessages("BlogLink"),
+        $.when(
+            $i18n.loadMessages("BlogLink", {cacheVersion: 1}),
             mw.loader.using("mediawiki.util")
-        ).done(jQuery.proxy(BlogLink.main, BlogLink));
+        ).done($.proxy(BlogLink.main, BlogLink));
     });
-});
+}(this, this.jQuery, this.mediaWiki));

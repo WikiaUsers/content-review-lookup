@@ -1,4 +1,8 @@
 var tooltips_list = [
+	{
+        classname: 'tooltip', 
+        parse: '{'+'{Tooltip|<#param#>|<#param2#>}}',
+    },
     {
         classname: 'ability-tooltip', 
         parse: '{'+'{Tooltip/Ability|<#param#>|<#param2#>}}',

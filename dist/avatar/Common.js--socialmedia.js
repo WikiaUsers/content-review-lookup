@@ -13,7 +13,7 @@
 } (document,"script","twitter-wjs");
 
 $(function() {
-	if (wgCanonicalNamespace == 'User_blog') {
+	if (mw.config.get('wgCanonicalNamespace') == 'User_blog') {
 		$('#WikiaUserPagesHeader .author-details').prepend('<div style="float:right;"><fb:like show_faces="false" layout="box_count"></fb:like></div>');
 	}
 });

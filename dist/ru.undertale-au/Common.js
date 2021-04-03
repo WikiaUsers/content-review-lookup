@@ -86,3 +86,8 @@ $('.GamesArrowRight').click(function () {
     scroll = $('#GamesCarousel').scrollLeft();
     $('#GamesCarousel').animate({'scrollLeft': scroll+284},100);
 });
+
+/* railWAM */
+window.railWAM = {
+    logPage:"Project:WAM Log"
+};

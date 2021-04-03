@@ -1,1 +1,0 @@
-importScriptPage('MediaWiki:BlogReport.js', 'internal-community');

@@ -1,5 +1,6 @@
 // this file is from babel,
 // origin es+ code is in [[MediaWiki:PttHighlight.esn.js]]
+// 2020-09-02 script not work now, but work in test mode. it seem that i need to submit it again.
  
 void function () {
 "use strict";

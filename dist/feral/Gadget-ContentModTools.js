@@ -1,14 +1,14 @@
 importArticles({
     type:'script',
     articles:[
-        'u:dev:AjaxBatchDelete/code.2.js',
-        'u:dev:AjaxBatchUndelete.js',
-        'u:dev:AjaxThreadDelete/code.js',
-        'u:dev:AjaxUndo/code.js',
-        'u:dev:FastOldImageDelete.js',
-        'u:dev:FileLogs.js',
-        'u:dev:MassProtect/code.js',
-        'u:dev:MassRename/code.js',
-        'u:dev:MassRenameRevert/code.js',
+        'u:dev:MediaWiki:AjaxBatchDelete/code.2.js',
+        'u:dev:MediaWiki:AjaxBatchUndelete.js',
+        'u:dev:MediaWiki:AjaxThreadDelete/code.js',
+        'u:dev:MediaWiki:AjaxUndo/code.js',
+        'u:dev:MediaWiki:FastOldImageDelete.js',
+        'u:dev:MediaWiki:FileLogs.js',
+        'u:dev:MediaWiki:MassProtect/code.js',
+        'u:dev:MediaWiki:MassRename/code.js',
+        'u:dev:MediaWiki:MassRenameRevert/code.js',
     ],
 });/**/

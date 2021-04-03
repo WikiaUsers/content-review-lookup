@@ -18,7 +18,7 @@ mw.hook('wikipage.content').add(function ($content) {
             .map(function(v){return (v||'').trim()})
             .filter(Boolean),
         nickname = mw.config.get('wgTitle').replace( /^[^/]+\//, '' );
-    if ($content.find('.infobox-gender').length || $content.find('.infobox-registration-date').length) {
+    if ($content.find('.infobox-gender').length || $content.find('.infobox-registration-date').length || $content.find('.infobox-editcount')) {
         if ( mw.config.get( 'wgNamespaceNumber' ) !== 0 ) {
             $content.find( '.pi-title .user-link' ).html(
                 $( '<a />', {
@@ -40,7 +40,7 @@ mw.hook('wikipage.content').add(function ($content) {
                 action: 'query',
                 list: 'users',
                 ususers: names[0] || nickname,
-                usprop: 'registration|gender'
+                usprop: 'registration|gender|editcount'
             },
             dataType: 'json',
             type: 'POST',
@@ -64,14 +64,22 @@ mw.hook('wikipage.content').add(function ($content) {
                         } else {
                             $content.find('.infobox-registration-date').html(msg.nodata);
                         }
+
+                        if (data.query.users[0].editcount) {
+                            $content.find('.infobox-editcount').html(data.query.users[0].editcount);
+                        } else {
+                            $content.find('.infobox-editcount').html(msg.nodata);
+                        }
                     } catch (e) {
                         $content.find('.infobox-registration-date').html(msg.nodata);
+                        $content.find('.infobox-editcount').html(msg.nodata);
                     }
                 }
             },
             error: function () {
                 console.log(msg.reqfailed);
                 $content.find('.infobox-registration-date').html(msg.nodata);
+                $content.find('.infobox-editcount').html(msg.nodata)
             }
         });
     }// if ($content.find('.infobox-gender').length || $content.find('.infobox-registration-date').length)
@@ -97,70 +105,5 @@ mw.hook('wikipage.content').add(function ($content) {
         });
     }// if ($content.find('.infobox-avatar').length)
  
-    if ($content.find('.infobox-editcount').length) {
-        requests = names.map(function (nickname) {
-            var d = $.Deferred(),
-                isreject = false;
-            requestCount = requestCount + 1;
-            setTimeout(function () {
-                $.ajax({
-                    url: '/wiki/Special:EditCount/' + nickname,
-                    type: 'GET',
-                    success: function (data) {
-                        if (data) {
-                            //TODO: normal selector instead of this
-                            var count = 0,
-                                $data = $(data);
-                            // is user exists
-                            if ($data.find('.TablePager').length) {
-                                count = Number($data.find('.TablePager .ecrowright:eq(5)').text().replace(/\D/g, '')) || 0;
-                            } else {
-                                rejected = rejected + 1;
-                                isreject = true;
-                            }
-                            d.resolve({user: nickname, count: count, reject: isreject});
-                        }
-                    },
-                    error: function () {
-                        console.log(msg.reqfailed, nickname, this);
-                        rejected = rejected + 1;
-                        isreject = true;
-                        // it can't be .reject, cuz .when will fail
-                        d.resolve({user: nickname, count: 0, reject: isreject});
-                    }
-                });
-            }, Math.floor(requestCount / requestMax) * requestThreshold);
-            return d.promise();
-        });
-        $.when.apply($, requests).then(function () {
-            var names = [].slice.call(arguments);
-            var count = names.reduce(function (acc, v) {
-                    return acc + v.count;
-                }, 0);
-            count = count.toString();// defend count=0    
-            if (names.length === rejected) count = 0;// all requests failed are
-            $content.find('.infobox-editcount').html(count || msg.nodata);
- 
-        /* full multiple nicknames support
-            var $nicknames = $content.find('.infobox-nicknames'),
-                $newnames = $('<span>', {class: 'udu-nicknames'});
-            $.each(names, function () {
-                $newnames.append(
-                    $('<span>', {
-                        class: 'udu-nickname',
-                        //text: this.user + ' ',
-                        title: this.reject ? msg.usernotfound : this.count
-                    }).append($('<a>', {
-                            href: '/wiki/user:' + this.user,
-                            title: this.reject ? msg.usernotfound : this.count,
-                            text: this.user,
-                        })
-                    ).append($(msg.delimiter))
-                );
-            });
-            $newnames.find('.udu-delim:last').remove();
-            $nicknames.html($newnames);
-        */
-        });
-    }// if ($content.find('.infobox-editcount').length)
+    // if ($content.find('.infobox-editcount').length)
 });

@@ -2,7 +2,7 @@
 //        Variables for functions
 // =====================================
 // Ajax auto-refresh
-ajaxPages = ['Special:RecentChanges', 'Special:WikiActivity', 'Special:Watchlist', 'Special:Log', 'Special:Contributions', 'Special:NewFiles', 'Special:AbuseLog'];
+ajaxPages = ['Special:Log', 'Special:Contributions', 'Special:NewFiles', 'Special:AbuseLog'];
 AjaxRCRefreshText = 'Refresh';
 AjaxRCRefreshHoverText = 'Automatically refresh the page';
  
@@ -62,9 +62,10 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 });
 
 /* Code for custom edit buttons (ō, ū characters). */
+/*
 if (mwCustomEditButtons) {
  
-    /*** wrappers *****/
+    /*** wrappers ****
     mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile": "https://images.wikia.nocookie.net/central/images/8/8c/Button_RedX.png?1",
         "speedTip": "request delete",
@@ -89,7 +90,7 @@ if (mwCustomEditButtons) {
         "sampleText": ""
     };
 }
-
+*/
  
 // =====================================
 //                Imports

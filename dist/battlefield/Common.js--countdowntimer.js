@@ -71,7 +71,7 @@ function checktimers() {
     updatetimer(i);  //start it up
   }
 }
-addOnloadHook(checktimers);
+$(checktimers);
  
 // **************************************************
 //  - end -  Experimental javascript countdown timer

@@ -1,12 +1,10 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-
-/* Auto updating recent changes opt-in. See w:c:dev:AjaxRC for info & attribution */
-window.AjaxRCRefreshText = 'Auto-Refresh';
-window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
-window.ajaxPages = [
-    "Special:RecentChanges",
-    "Special:WikiActivity",
-    "Special:UncategorizedPages",
-    "Special:AllPages",
-    "Special:NewFiles"
-];
+PurgeButtonText = 'Reload'; //Refresh Button
+importScriptPage('PurgeButton/code.js', 'dev');//Refresh Button
+importArticles({
+    type: 'script',
+    articles: [
+        "w:c:dev:Countdown/code.js",
+        'u:dev:ExtendedNavigation/code.js',
+        "u:pad.wikia.com:MediaWiki:FilterTable.js",
+    ]
+});

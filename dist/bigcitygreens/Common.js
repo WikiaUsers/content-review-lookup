@@ -23,14 +23,14 @@ window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
  
 /* LockForums */
 window.LockForums = {
-    expiryDays: 15,
+    expiryDays: 10,
     lockMessageWalls: true,
     expiryMessage: 'This thread has been archived due to inactivity.'
 }; 
  
 /* LockOldBlogs */
 window.LockOldBlogs = {
-    expiryDays: 15,
+    expiryDays: 10,
     expiryMessage: "This blog hasn\'t been commented on for over 30 days. There is no need to comment."
 };
  
@@ -68,7 +68,7 @@ window.addEventListener('load', function() {
 			bktimestamp: new Date().getTime(),
 			bkusers: wgTitle
 		}).done(function(d) {
-			if (d.query.blocks[0] && d.query.blocks[0].expiry == 'infinity') {
+			if (d.query.blocks[0] && d.query.blocks[0].expiry == 'indefinite') {
 				blockTag.innerHTML = 'Shattered';
 			}
 		});
@@ -88,7 +88,7 @@ if (mw.config.get('skin') != 'oasis' ) { // if skin == monobook or skin == uncyc
 })();
 
 window.MessageWallUserTags = {
-    tagColor: 'lightgreen',
+    tagColor: 'green',
     txtSize: '15px',
     glow: true,
     glowSize: '7px',
@@ -102,3 +102,16 @@ window.MessageWallUserTags = {
         'User5': 'Custom Tag'
     }
 };
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ImageCategory/code.js',
+        'u:dev:MediaWiki:View Source/code.js',
+        'u:dev:MediaWiki:DisplayTimer/code.js',
+        'u:dev:MediaWiki:FileUsageAuto-update/code.js',
+        'u:dev:MediaWiki:Rollback/code.js',
+        'u:dev:MediaWiki:SeeMoreActivityButton/code.js',
+        'u:dev:MediaWiki:MassCategorization/code.js',
+    ]
+});

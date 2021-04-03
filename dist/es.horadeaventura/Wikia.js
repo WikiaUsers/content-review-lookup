@@ -32,6 +32,19 @@ $(document).ready(function() {
     refreshDate = window.setTimeout(addDate, 1000);
 });
 
+window.AddRailModule = [{
+    // {{RailModule}}
+    page: 'Template:RailModule',
+    prepend: true,
+    maxAge: 86400,
+}];
+ 
+mw.hook('wikipage.content').add(function ($elem) {
+    $elem.filter('section.railModule.rail-module')
+         .find('span.wds-button>a:only-child')
+         .attr('class', 'wds-button')
+         .unwrap();
+});
 // Etiqueta para usuarios inactivos por mas de 3 meses
 InactiveUsers = { text: 'Inactivo' };
 importScriptPage('InactiveUsers/code.js', 'dev');

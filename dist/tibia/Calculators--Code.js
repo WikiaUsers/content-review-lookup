@@ -1,7 +1,7 @@
 //<noinclude>{{protected|this page contains javascript and therefor VERY vulnerable to vandalism or hackers}}</noinclude>
 /*jslint devel: true, browser: true, white: true, indent: 2, plusplus: true, bitwise: true*/
 /*global $, wgUserName, mw */
-$(window).load(function() {
+$(function() {
     //__NOWYSIWYG__
     /*General*/
     'use strict';
@@ -900,90 +900,90 @@ $(window).load(function() {
             "paladin" : 1.4,
             "druid": 1.1,
             "sorcerer" : 1.1,
-            "none": 0
+            "none": 4
         },
         melee_vocs = {
-          "knight" : 1.1,
-          "paladin" : 1.2,
-          "druid": 1.8,
-          "sorcerer" : 2,
-          "none" : 2
+            "knight" : 1.1,
+            "paladin" : 1.2,
+            "druid": 1.8,
+            "sorcerer" : 2,
+            "none" : 2
+        },
+        fist_vocs = {
+            "knight" : 1.1,
+            "paladin" : 1.2,
+            "druid": 1.5,
+            "sorcerer" : 1.5,
+            "none" : 1.5
         },
         dist_vocs = {
-        "knight" : 1.2,
-        "paladin" : 1.05,
-        "druid": 1.8,
-        "sorcerer" : 1.8,
-        "none" : 1.8
+            "knight" : 1.4,
+            "paladin" : 1.1,
+            "druid": 1.8,
+            "sorcerer" : 2,
+            "none" : 2
+        },
+        shield_vocs = {
+            "knight" : 1.1,
+            "paladin" : 1.1,
+            "druid": 1.5,
+            "sorcerer" : 1.5,
+            "none" : 1.5
+        },
+        get_constants = function(voc, type) {
+            var A, y, minlevel = 10;
+            if (type == "magic") {
+                A = 1600;
+                y = magic_vocs[voc];
+                minlevel = 0;
+            } else if (type == "axe" || type == "sword" || type == "club") {
+                A = 50;
+                y = melee_vocs[voc];
+            } else if (type == "fist") {
+                A = 50;
+                y = fist_vocs[voc];
+            } else if (type == "shield") {
+                A = 100;
+                y = shield_vocs[voc];
+            } else if (type == "dist") {
+                A = 30;
+                y = dist_vocs[voc];
+            } else if (type == "fish") {
+                A = 20;
+                y = 1.1;
+            }
+            var constants = [A, y, minlevel];
+            return constants;
         },
         level_to_pts = function(level, voc, type) {
-          var minlevel = 10;
-          var A = 1;
-          var y = 1;
-          if (type == "magic") {
-            A = 1600;
-            y = magic_vocs[voc];
-            minlevel = 0;
-          } else if (type == "axe" || type == "sword" || type == "club" || type == "fist" || type == "shield") {
-            A = 50;
-            y = melee_vocs[voc];
-          } else if (type == "dist") {
-            A = 50;
-            y = dist_vocs[voc];
-          } else if (type == "fish") {
-            A = 20;
-            y = 1.1;
-          }
-          var points = A*((Math.pow(y, level - minlevel) - 1)/(y - 1));
+          var constants = get_constants(voc, type),
+          A = constants[0],
+          y = constants[1],
+          minlevel = constants[2],
+          points = A*((Math.pow(y, level - minlevel) - 1)/(y - 1));
           return Math.round(points);
         },
         current_pts = function(level, voc, pct_left, type) {
-          var curr_pts = level_to_pts(level, voc, type);
-          var next_pts = level_to_pts(level + 1, voc, type);
-          var dif = next_pts - curr_pts;
-          var advanced = ((100-pct_left)/100) * dif;
+          var curr_pts = level_to_pts(level, voc, type),
+          next_pts = level_to_pts(level + 1, voc, type),
+          dif = next_pts - curr_pts,
+          advanced = ((100-pct_left)/100) * dif;
           return Math.round((curr_pts + advanced));
         },
         pts_to_level = function(pts, voc, type) {
-          var minlevel = 10;
-          var A = 1;
-          var y = 1;
-          if (type == "magic") {
-            A = 1600;
-            y = magic_vocs[voc];
-            minlevel = 0;
-          } else if (type == "axe" || type == "sword" || type == "club" || type == "fist" || type == "shield") {
-            A = 50;
-            y = melee_vocs[voc];
-          } else if (type == "dist") {
-            A = 50;
-            y = dist_vocs[voc];
-          } else if (type == "fish") {
-            A = 20;
-            y = 1.1;
-          }
-          var skill = Math.floor(Math.log(pts * (y - 1)/A + 1)/Math.log(y)) + minlevel;
+          var constants = get_constants(voc, type),
+          A = constants[0],
+          y = constants[1],
+          minlevel = constants[2],
+          skill = Math.floor(Math.log(pts * (y - 1)/A + 1)/Math.log(y)) + minlevel;
           return skill;
         },
         pts_to_next_level = function(currlevel, voc, type) {
-          var minlevel = 10;
-          var A = 1;
-          var y = 1;
-          if (type == "magic") {
-            A = 1600;
-            y = magic_vocs[voc];
-            minlevel = 0;
-          } else if (type == "axe" || type == "sword" || type == "club" || type == "fist" || type == "shield") {
-            A = 50;
-            y = melee_vocs[voc];
-          } else if (type == "dist") {
-            A = 50;
-            y = dist_vocs[voc];
-          } else if (type == "fish") {
-            A = 20;
-            y = 1.1;
-          }
-          var pts = A * Math.pow(y, currlevel - minlevel);
+          var constants = get_constants(voc, type),
+          A = constants[0],
+          y = constants[1],
+          minlevel = constants[2],
+          pts = A * Math.pow(y, currlevel - minlevel);
           return pts;
         };
 
@@ -1003,7 +1003,7 @@ $(window).load(function() {
         '#calculator_statsr3 {top:30px;left:165px;}' +
         '#calculator_statsr4 {top:30px;left:23px;}' +
         '#calculator_looti1 {width:600px;}' +
-        '#calculator_exp {width:300px;}' +
+        '#calculator_exp {width:400px;}' +
         '#calculator_stats {width:300px;}' +
         '#calculator_reakskill {width:550px;}' +
         '#calculator_exerciseweapons {width:690px;}' +
@@ -1024,35 +1024,59 @@ $(window).load(function() {
     (function() {
         $('#calculator_exp')
             .append('Level: ')
-            .append('<input type="text" size="8" maxlength="4" id="calculator_expi1" value="1" />&nbsp;')
+            .append('<input type="text" size="8" maxlength="4" id="calculator_expi1" value="8" />&nbsp;')
             .append($('<input type="button" value="-" />').click(function() {
                 calculator_btn_m(this);
             })).append('&nbsp;')
             .append($('<input type="button" value="+" />').click(function() {
                 calculator_btn_p(this);
             }))
-            .append('<br /><br /><span id="calculator_expr1"></span>');
+            .append('<br /><br /><span id="calculator_expr1"></span>')
+            .append('<input type="checkbox" id="death_rh" name="death_rh">' + 
+                    '<label for="death_rh" style="font-size:0.7em">Retro Hardcore PvP</label><br/><br/>')
+            .append('<span id="calculator_expr2"></span>');
         $('#calculator_expi1').keyup(function() {
             if ($(this).val() === '') {
                 $(this).val(1).select();
             }
-            var exp, lvl = Math.abs(parseInt($(this).val(), 10) || 1);
+            var exp, nextexp, totalxploss, fivebloss, fiveblossp, sevenbloss, sevenblossp, lvl = Math.abs(parseInt($(this).val(), 10) || 1), prot = 0.08;
             $(this).val(lvl);
-            exp = String((50 * Math.pow(lvl - 1, 3) - 150 * Math.pow(lvl - 1, 2) + 400 * (lvl - 1)) / 3);
-            while ((/\d{4}/).test(exp)) {
-                exp = exp.replace(/(\d{3},|\d{3}$)/, ',$1');
+            exp = (50 * Math.pow(lvl - 1, 3) - 150 * Math.pow(lvl - 1, 2) + 400 * (lvl - 1)) / 3;
+            nextexp = String(((50 * Math.pow(lvl, 3) - 150 * Math.pow(lvl, 2) + 400 * (lvl)) / 3) - exp);
+            nextexp = nextexp.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            if ($('#death_rh').prop('checked')) {
+                prot = 0.0631;
             }
+            totalxploss = Math.round((lvl + 50) * (lvl * lvl - 5 * lvl + 8) / 2);
+            fivebloss = totalxploss * (1 - 0.3 - 5 * prot);
+            fiveblossp = Math.round(100 * 100 * fivebloss/exp)/100;
+            sevenbloss = totalxploss * (1 - 0.3 - 7 * prot);
+            sevenblossp = Math.round(100 * 100 * sevenbloss/exp)/100;
+            exp = String(exp).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            fivebloss = String(Math.round(fivebloss)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            sevenbloss = String(Math.round(sevenbloss)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            
             var min_share_lvl = Math.floor((lvl / 3) * 2);
             var max_share_lvl = Math.ceil((lvl / 2) * 3);
-            max_share_lvl += lvl % 2 == 0 ? 1 : 0;
+            max_share_lvl += lvl % 2 === 0 ? 1 : 0;
             // The share range is always calculated from the higher level rounding down.
             // For this reason, the max share level for even levels is underestimated. 
             // For example: a level 151 can share with a level 100 even though 100 * (3/2) = 150.
             $('#calculator_expr1').html(
-                'Experience for level ' + lvl + ': <b>' + exp + '</b><br/>' +
+                'Total level XP: <b>' + exp + '</b><br/>' +
+                'Next level XP: <b>' + nextexp + '</b><br/><br/>' +
+                'Death XP Loss (5 blessings): <b>' + fivebloss + ' (' + fiveblossp + '%)</b><br/>' +
+                'Death XP Loss (7 blessings): <b>' + sevenbloss + ' (' + sevenblossp + '%)</b><br/>' +
+                '<span style="font-size:0.7em">promoted characters with 100% to next level</span><br/>'
+            );
+            $('#calculator_expr2').html(
                 'Minimum level to share experience: <b>' + min_share_lvl + '</b><br/>' +
                 'Maximum level to share experience: <b>' + max_share_lvl + '</b>'
-                );
+            );
+        });
+        $('#death_rh').change(function () {
+            $('#calculator_expi1').keyup();
+            
         });
         $('#calculator_expi1').keyup();
     }());
@@ -1140,34 +1164,21 @@ $(window).load(function() {
         "fist" : 10, "club" : 10, "sword" : 10, "axe" : 10, "dist" : 10, "shield" : 10, "fish" : 10
         },
         next_pts = function(level, voc, type) {
-          var minlevel = 10;
-          var A = 1;
-          var y = 1;
-          if (type == "magic") {
-            A = 1600;
-            y = magic_vocs[voc];
-            minlevel = 0;
-          } else if (type == "axe" || type == "sword" || type == "club" || type == "fist" || type == "shield") {
-            A = 50;
-            y = melee_vocs[voc];
-          } else if (type == "dist") {
-            A = 50;
-            y = dist_vocs[voc];
-          } else if (type == "fish") {
-            A = 20;
-            y = 1.1;
-          }
-          var points = A*Math.pow(y, level - minlevel);
+          var constants = get_constants(voc, type),
+          A = constants[0],
+          y = constants[1],
+          minlevel = constants[2],
+          points = A*Math.pow(y, level - minlevel);
           return Math.round(points);
         },
         skill_wo_loyalty = function(points, loyalty) {
-          var bonus = loyalty_bonus(loyalty);
-          var pts = points / bonus;
+          var bonus = loyalty_bonus(loyalty),
+          pts = points / bonus;
           return Math.floor(pts);
         },
         calculator_realskill_update = function(changedskills = skilltypes) {
-            var voc = $('input[name="calculator_rs_vocation"]:checked').val();
-            var loyalty = parseInt($('#calculator_rs_loyalty_pts').val(), 10);
+            var voc = $('input[name="calculator_rs_vocation"]:checked').val(),
+            loyalty = parseInt($('#calculator_rs_loyalty_pts').val(), 10);
           
             for (let type of changedskills) {
                 var level = parseInt($('#calculator_rs_' + type + '_level').val(), 10);
@@ -1180,14 +1191,14 @@ $(window).load(function() {
                   pct_left = 1;
                 }
                 
-                var curr_pts = current_pts(level, voc, pct_left, type);
-                var real_pts = skill_wo_loyalty(curr_pts, loyalty);
-                var real_level = pts_to_level(real_pts, voc, type);
-                var real_curr_base = level_to_pts(real_level, voc, type);
-                var real_next_total = level_to_pts(real_level + 1, voc, type);
-                var real_next_pts = next_pts(real_level, voc, type);
-                var skill_left_pts = real_next_total - real_pts;
-                var real_pct = Math.ceil(100 * (skill_left_pts/real_next_pts));   
+                var curr_pts = current_pts(level, voc, pct_left, type),
+                real_pts = skill_wo_loyalty(curr_pts, loyalty),
+                real_level = pts_to_level(real_pts, voc, type),
+                real_curr_base = level_to_pts(real_level, voc, type),
+                real_next_total = level_to_pts(real_level + 1, voc, type),
+                real_next_pts = next_pts(real_level, voc, type),
+                skill_left_pts = real_next_total - real_pts,
+                real_pct = Math.ceil(100 * (skill_left_pts/real_next_pts));   
                 /*var bonus = loyalty_bonus(loyalty);
                 $('#calculator_rs_loyalty_bonus').html(Math.round((bonus - 1) * 100) + '%:');*/
                 $('#calculator_rs_' + type + '_bar1').width(100 - pct_left + "%");
@@ -1270,7 +1281,15 @@ $(window).load(function() {
             var mode = $('input[name=ew_mode]:checked').val();
             var event = $('input[name=ew_event]:checked').val() ? 2 : 1;
             var dummy = $('input[name=ew_dummy]:checked').val() ? 1.1 : 1;
-            var charges = 500; //$('input[name=ew_charges]:checked').val() == 'exercise' ? 500 : 100;
+            var weapon_type = 1;
+            if  ($('select[name=calculator_ew_wep_type]').val() == 'training') {
+            	weapon_type = 0.1;
+            } else if  ($('select[name=calculator_ew_wep_type]').val() == 'durable') {
+            	weapon_type = 3.6;
+            } else if  ($('select[name=calculator_ew_wep_type]').val() == 'lasting') {
+            	weapon_type = 28.8;
+            }
+            var charges = 500 * weapon_type;
             var add_pts = 0;
             var weappts = dummy * event * loyalty * 600 * charges; // 600 UMPs of 500 mana ea
             var weappct = Math.round(100 * 100 * weappts / pts_to_next_level(level, vocation, 'magic')) / 100;
@@ -1298,7 +1317,7 @@ $(window).load(function() {
                 nweapons = Math.ceil((trained_pts - curr_pts)/weappts);
                 var trained_level_real = pts_to_level(curr_pts + weappts * nweapons, vocation, 'magic');
                 if (trained_level_real > trained_level) {
-                     $('#calculator_ew_warning').html('One weapon will be sufficient to achieve a higher skill than the submitted value. The final skill will be ' + trained_level_real + '.');
+                     $('#calculator_ew_warning').html('The number of weapons will be sufficient to achieve a higher skill than the submitted value. The final skill will be ' + trained_level_real + '.');
                 }
                 $('#calculator_ew_nweapons').val(nweapons);
             }
@@ -1318,8 +1337,8 @@ $(window).load(function() {
                 
                 $('#calculator_ew_skill_left_trained').html(final_pct_left);
                 
-                $('#calculator_ew_weapcost_gold').val(nweapons * 262500/1000);
-                $('#calculator_ew_weapcost_coins').val(nweapons * 25);
+                $('#calculator_ew_weapcost_gold').val(nweapons * weapon_type * 262500/1000);
+                $('#calculator_ew_weapcost_coins').val(nweapons * weapon_type * 25);
                 
                 /* update summary of calculation */
                 $('#calculator_ew_skill_desc').html($('#calculator_ew_skill_level').val());
@@ -1351,8 +1370,9 @@ $(window).load(function() {
                 'Loyalty points:' +
                 '<input id="calculator_ew_loyalty_pts" type="number" value="0" min="0" max="10000" style="width:45px;">' +
                 'Loyalty bonus:' +
-                '<input id="calculator_ew_loyalty_bonus" type="number" value="0" min="0" max="50" step = "5">%<br/><br/>' +
+                '<input id="calculator_ew_loyalty_bonus" type="number" value="0" min="0" max="50" step = "5" style="width:45px;">%<br/><br/>' +
                 'Skill/Vocation: <select name="calculator_ew_voc_skill"><option value="magemagic" selected>Magic/Mage</option><option value="magemagic">Melee/Knight</option><option value="magemagic">Distance/Paladin</option><option value="magicpaladin">Magic/Paladin</option><option value="magicknight">Magic/Knight</option></select><br/><br/>' +
+                'Weapon Type: <select name="calculator_ew_wep_type"><option value="training">Training (50x, 1min40s)</option><option value="regular" selected>Regular (500x, 16min40s)</option><option value="durable">Durable (1,800x, 1h)</option><option value="lasting">Lasting (14,400x, 8h)</option></select><br/><br/>' +
                 '<input type="checkbox" name="ew_event" value="double">Double Skills Event' +
                 '<input type="checkbox" name="ew_dummy" value="expert">House Dummy<br/><br/>' +
                 /*'<input type="radio" name="ew_charges" value="exercise" checked>Exercise Weapon (500 charges)' +
@@ -1408,7 +1428,7 @@ $(window).load(function() {
                 $('#calculator_ew_loyalty_pts').val(360 * (parseInt($('#calculator_ew_loyalty_bonus').val(), 10)/ 5));
                 calculator_exerciseweapons_update();
         });
-        $('input[name=ew_mode], input[name=ew_dummy], input[name=ew_event], select[name=calculator_ew_voc_skill], #calculator_ew_skill_level, #calculator_ew_left, #calculator_ew_skill_trained, #calculator_ew_nweapons').on('keyup change', function() {
+        $('input[name=ew_mode], input[name=ew_dummy], input[name=ew_event], select[name=calculator_ew_voc_skill], select[name=calculator_ew_wep_type], #calculator_ew_skill_level, #calculator_ew_left, #calculator_ew_skill_trained, #calculator_ew_nweapons').on('keyup change', function() {
             calculator_exerciseweapons_update();
         });
         $('#calculator_ew_weapcost_gold').on('keyup change', function () {
@@ -1833,6 +1853,10 @@ $(window).load(function() {
             '  <input type="checkbox" value="1" id="calculator_armor_np" /> Show non <br />protective items' +
 
             '</td><td style="width:179px;">' +
+            '  <b>Defensive Imbuements:</b><br/>' +
+            '  Armor: <select style="width:85px;" id="calculator_armor_imbue_1" size="1" disabled><option value="none" selected="selected">None</option><option value="basic">Basic</option><option value="intricate">Intricate</option><option value="powerful">Powerful</option></select><br />' +
+            '  Shield: <select style="width:85px;" id="calculator_armor_imbue_2" size="1" disabled><option value="none" selected="selected">None</option><option value="basic">Basic</option><option value="intricate">Intricate</option><option value="powerful">Powerful</option></select><br /><br />' +
+            '  <hr />' +
             '  Required Level: <span id="calculator_armor_req_level">None</span><br />' +
             '  Needed Cap: <span id="calculator_armor_set_oz">0.00 oz</span><br />' +
             '  Total Armor: <span id="calculator_armor_set_arm">0</span><br />' +
@@ -1854,6 +1878,17 @@ $(window).load(function() {
                 'shield': 6,
                 'weapon': 7,
                 'belt': 8
+            },
+            calculator_armor_imbue_prot = {
+                'Physical': [0, 0, 0, 0],
+                'Fire': [0, 3, 8, 15],
+                'Earth': [0, 3, 8, 15],
+                'Energy': [0, 3, 8, 15],
+                'Ice': [0, 3, 8, 15],
+                'Holy': [0, 3, 8, 15],
+                'Death': [0, 2, 5, 10],
+                'Mana Drain': [0, 0, 0, 0],
+                'Life Drain': [0, 0, 0, 0],
             },
             calculator_armor_get_link_for_name = function(item, part) {
                 /* Filter out every image that doesn't match. We should be left with a jQuery object containing one element.
@@ -1980,6 +2015,7 @@ $(window).load(function() {
                 var x, $links = $(),
                     tmp, tmpa = [],
                     dmg_type = $('#calculator_armor_damage_type :selected').text(),
+                    imbue_prots = [],
                     min_val = [],
                     max_val = [],
                     calculate_damage = function(total_arm, damage, prot) {
@@ -2060,6 +2096,13 @@ $(window).load(function() {
                             }
                         }
                     }
+                    imbue_prots.push(calculator_armor_imbue_prot[dmg_type][$('#calculator_armor_imbue_1').prop('selectedIndex')],
+                    calculator_armor_imbue_prot[dmg_type][$('#calculator_armor_imbue_2').prop('selectedIndex')]);
+                    $.each(imbue_prots, function (i, v) {
+                        if (v > 0) {
+                            dmg_prot.push(v);
+                        }
+                    });
                     lvl = lvl || 'None';
                     oz = String(oz);
                     oz = oz + (oz.match(/\.\d\d/) ? '' : (oz.match(/\.\d/) ? '0' : '.00')) + ' oz';
@@ -2171,12 +2214,24 @@ $(window).load(function() {
                 return '<b>' + d.name + '</b>' + (arm_att_resist ? ' (' + arm_att_resist + ')' : '') + voc_lvl + (d.oz ? '<br />It weighs ' + oz + ' oz.' : '');
             };
         $('#calculator_armor_damage_type').change(function() {
+            var no_imbue = ['physical', 'manadrain', 'lifedrain'];
+            if (no_imbue.includes($(this).val())) {
+                $('#calculator_armor_imbue_1').val('none');
+                $('#calculator_armor_imbue_1').prop('disabled', 'true');
+                $('#calculator_armor_imbue_2').val('none');
+                $('#calculator_armor_imbue_2').prop('disabled', 'true');
+            } else {
+                $('#calculator_armor_imbue_1').removeAttr('disabled');
+                $('#calculator_armor_imbue_2').removeAttr('disabled');
+            }
             $('[name=calculator_armor_items_sort][value=' + $('#calculator_armor_damage_type').val() + ']').attr('checked', 'checked');
             $('#calculator_armor_damage_type_ind').text($('#calculator_armor_damage_type :selected').text());
             $('#calculator_armor_body_' + calculator_armor_parts_names[calculator_armor_current_part]).click();
             calculator_armor_calculate(false);
         });
-
+        $('#calculator_armor_imbue_1, #calculator_armor_imbue_2').change(function() {
+            calculator_armor_calculate(false);
+        });
         $('#calculator_armor_voc').change(function() {
             var need_clear = false;
             $.each(calculator_armor_parts_names, function(i, v) {
@@ -2417,6 +2472,86 @@ $(window).load(function() {
             })
         );
     }());
+    /* True Damage Taken */
+    (function() {
+    	$('#calculator_truedamage').css({backgroundColor: "white"});
+    	$('#calculator_truedamage').html(
+    		'<div style="float:left;padding: 0 1em;">' +
+    		'<span>Paste the <b>Input Analyzer</b> data here:</span><br/>' +
+    		'<span><small>(Make sure you have selected "Show Session Values")</small></span><br/>' +
+    		'<textarea id="calculator_td_input" rows="15" cols="30"></textarea></div>' +
+    		'<span><small>Check your elemental resistances with your set equipped in the Cyclopedia.<br/>' +
+    		'Go to Character &#8680; General Stats &#8680; Combat Stats.</small></span>' + 
+    		'<table id="calculator_td_resist"><tr>' +
+    		'<th>Element</th><th>Resistance (%)</th>' +
+    		'</tr><tr>' +
+    		'<td>Physical</td><td><input type="number" min="0" max = "100" value = "0"id="calculator_td_Physical_prot">%</td>' +
+    		'</tr><tr>' +
+    		'<td>Mana Drain</td><td><input type="number" min="0" max = "100" value = "0"id="calculator_td_ManaDrain_prot">%</td>' +
+    		'</tr><tr>' +
+    		'<td>Fire</td><td><input type="number" min="0" max = "100" value = "0"id="calculator_td_Fire_prot">%</td>' +
+    		'</tr><tr>' +
+    		'<td>Earth</td><td><input type="number" min="0" max = "100" value = "0"id="calculator_td_Earth_prot">%</td>' +
+    		'</tr><tr>' +
+    		'<td>Energy</td><td><input type="number" min="0" max = "100" value = "0"id="calculator_td_Energy_prot">%</td>' +
+    		'</tr><tr>' +
+    		'<td>Ice</td><td><input type="number" min="0" max = "100" value = "0"id="calculator_td_Ice_prot">%</td>' +
+    		'</tr><tr>' +
+    		'<td>Holy</td><td><input type="number" min="0" max = "100" value = "0"id="calculator_td_Holy_prot">%</td>' +
+    		'</tr><tr>' +
+    		'<td>Death</td><td><input type="number" min="0" max = "100" value = "0"id="calculator_td_Death_prot">%</td>' +
+    		'</tr><tr>' +
+    		'<td>Drowning</td><td><input type="number" min="0" max = "100" value = "0"id="calculator_td_Drowning_prot">%</td>' +
+    		'</tr><tr>' +
+    		'<td>Life Drain</td><td><input type="number" min="0" max = "100" value = "0"id="calculator_td_LifeDrain_prot">%</td>' +
+    		'</tr></table>' +
+    		'<div style="clear:both;"></div>' +
+    		'<input type="button" id="calculator_td_process" value="Process" /><br/>' +
+    		'<div id="calculator_td_output">' +
+    		'</div>' 
+		);
+		$('#calculator_td_resist').css({border: '1px solid black', borderSpacing: 0});
+		$('#calculator_td_process').click(function () {
+			var dmg_taken = {}, dmg_true = {};
+	    	var input = $('#calculator_td_input').val().split("\n").splice(4, 50);
+	    	while (input[0].substr(0, 6) != 'Damage') {
+	    		var elRegexp = /\s\s([a-zA-Z ]+)/;
+	    		var element = elRegexp.exec(input[0])[0].replaceAll(" ", "");
+	    		var valRegexp = /\d+,?\d+?,?\d?/;
+	    		var damage = parseInt(valRegexp.exec(input[0])[0].replaceAll(",", ""));
+	    		dmg_taken[element] = damage;
+	    		input.shift();
+	    	}
+	    	$.each(Object.keys(dmg_taken), function (i, v) {
+	    		var resist = 1 - parseInt($('#calculator_td_' + v + '_prot').val())/100;
+	    		dmg_true[v] = dmg_taken[v] / resist;
+	    		
+	    	});
+	    	var total_taken = Object.values(dmg_taken).reduce(function(x, y) { return x + y; }, 0),
+	    	total_true = Object.values(dmg_true).reduce(function(x, y) { return x + y; }, 0);
+	    	var rows = '';
+	    	$.each(Object.keys(dmg_taken), function (i, v) {
+	    		rows += '<tr>' + 
+		    		'<td>' + v + '</td>' +
+		    		'<td>' + dmg_taken[v] + ' (' + Math.round(10000*dmg_taken[v]/total_taken)/100 + '%)</td>' +
+		    		'<td>' + Math.round(dmg_true[v]) + ' (' + Math.round(10000*dmg_true[v]/total_true)/100 + '%)</td>' +
+		    		'</tr>';
+	    	});
+	    	var lastRow = '<tr>' + 
+		    	'<td><b>Total</b></td>' +
+		    	'<td><b>' + total_taken + '</b></td>' +
+		    	'<td><b>' + Math.round(total_true) + '</b></td>' +
+		    	'</tr>';
+	    	$('#calculator_td_output').html(
+	    		'<table class="wikitable"><tr>' +
+	    		'<th>Element</th><th>Damage Taken</th><th>True Damage</th></tr>' +
+	    		rows + 
+	    		lastRow +
+	    		'</table>'
+	    	);
+		});
+    }());
+    
     /*General*/
     $('#calculators_loading').hide();
     $('#calculators_container').show();

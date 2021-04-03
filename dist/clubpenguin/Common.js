@@ -7,72 +7,6 @@
 console.log("%cwhat up champ \u0028\u0020\u0361\u00b0\u0020\u035c\u0296\u0020\u0361\u00b0\u0029 lookin' for something? we hope you're having a good time \u0028\u0020\u0361\u007e\u0020\u035c\u0296\u0020\u0361\u00b0\u0029", "font-family: arial, calibri, sans, sans-serif;");
 
 
-/* ====================================================================== *\
-	# contribs links on anon's blog comments
-	# script by Joeyaa, [[w:user:Joeyaa]]
-\* ====================================================================== *
-
-$('.details span[title]').each(function(){
-	var t = $(this),
-	title = $(this).attr("title");
-	t.html('Unregistered user (IP: <a href="/wiki/Special:Contributions/' + title + '"  target="_blank" rel="nofollow">' + title + ')</a>');
-}); */
-
-
-/* ====================================================================== *\
-	# custom edit buttons
-\* ====================================================================== */
-
-if (mwCustomEditButtons) {
-	mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://images.wikia.nocookie.net/central/images/c/c9/Button_strike.png",
-		"speedTip": "Strike",
-		"tagOpen": "<s>",
-		"tagClose": "</s>",
-		"sampleText": "Strike-through text"};
-
-	mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAWCAMAAAAcqPc3AAAAAXNSR0IArs4c6QAAAk9QTFRFAAAAgAAAAIAAgIAAAACAgACAAICAwMDAwNzApsrwAAAAQ1l4SGB7a3uQdYijhpixkKO9k6bAl6rEmq3HnrHLo7bQqLvVrb/YsMPds8bgus3nvc/owdTuxNjzydz20uT91+f+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////QEBAQUFBQkJCQ0NDRERERUVFRkZGR0dHSEhISUlJSkpKS0tLTExMTU1NTk5OT09PUFBQUVFRUlJSU1NTVFRUVVVVVlZWV1dXWFhYWVlZWlpaW1tbXFxcXV1dXl5eX19fYGBgYWFhYmJiY2NjZGRkZWVlZmZmZ2dnaGhoaWlpampqa2trbGxsbW1tbm5ub29vcHBwcXFxcnJyc3NzdHR0dXV1dnZ2d3d3eHh4eXl5enp6e3t7fHx8fX19fn5+f39/gICAgYGBgoKCg4ODhISEhYWFhoaGh4eHiIiIiYmJioqKi4uLjIyMjY2Njo6Oj4+PkJCQkZGRkpKSk5OTlJSUlZWVlpaWl5eXmJiYmZmZmpqam5ubnJycnZ2dnp6en5+foKCgoaGhoqKio6OjpKSkpaWlpqamp6enqKioqampqqqqq6urrKysra2trq6ur6+vsLCwsbGxsrKys7OztLS0tbW1tra2t7e3uLi4ubm5urq6u7u7vLy8vb29vr6+v7+/wMDAwcHBwsLCw8PDxMTECL3QDwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB90GCQccCQrY7AcAAACHSURBVCjPfchZDsMgEATR+jfOhldsSLj/JdNJjIRHKE+IHhW5qSe/Whz52dKRU4Jk/ekxQrTU9x12S33bYLPUQ4Bgqa8rrJb6ssBiqc8zzJb6NMFUlEt9HGEsyqk+DMBwKKe6954TBa/+kFP/BPV7Tfm76rca/Fb9WuNY9UuLo3ddVz194vo3NB0oZdoKj8sAAAAASUVORK5CYII=",
-		"speedTip": "Redirect",// will affect <span class="ChatLogsList"></span> in subpages of [[
-		"tagOpen": "#REDIRECT [[",
-		"tagClose": "]]",
-		"sampleText": "Insert text"};
-
-	mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://images.wikia.nocookie.net/clubpenguin/images/3/31/HighlightButton.png",
-		"speedTip": "Highlight",
-		"tagOpen": "<span style='background:yellow'>",
-		"tagClose": "</span>",
-		"sampleText": "Highlighted text here."};
-
-	mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://images.wikia.nocookie.net/central/images/5/56/Button_big.png",
-		"speedTip": "Large Text",
-		"tagOpen": "<big>",
-		"tagClose": "</big>",
-		"sampleText": "Insert Text Here"};
-
-	mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://images.wikia.nocookie.net/central/images/5/58/Button_small.png",
-		"speedTip": "Small Text",
-		"tagOpen": "<small>",
-		"tagClose": "</small>",
-		"sampleText": "Insert Text Here"
-	};
-
-	mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://images.wikia.nocookie.net/central/images/f/fd/Button_underline.png",
-		"speedTip": "<u>Underline Selected Text</u>",
-		"tagOpen": "<u> ",
-		"tagClose": " </u>",
-		"sampleText": "Insert text to underline!"
-	};
-	mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAWCAYAAAArdgcFAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB90GCBEoGHtVh6UAAAAMaVRYdENvbW1lbnQAAAAAALyuspkAAAIYSURBVDjLtVW7ihRBFD13uvYxa2hmICIo4scIJgqCoOAPmAhGfoEYGGxiIisL/oCIoIEiGGhiZKDsKLg7jbrs4AxOd92HQVXPw77twqKVnOCcunWq7rkUmZnhP6w797YQBvuAmYGIXARwJO7j7jeEKI3xLjwaFytFr65qTKsai3j71k3cuHYFg8GgxTW4/eghrl+9jGdPn7gaM0MwSoct4mDnE0YHBxiPfyYvjmZv9yvK4R7KctihIQRmbXcj31DFIKJuw5oYqPoaMkNgjm6jAECUIcJuw8w0FxdXQ0QIIgwygxHN0LJ1ZYbEeombaVTzDdTXGBBULZ+GGc6dG1iXuQY139AMrgYwhLqOnW9elkMUYcV988lkkgyIIEZ2FIQgIl21sXn/7qGTmBrarkGE9OZd1s+eO4+NjWNu0S+fd7D/43t6c7cGchRzNmeYrV+4eAknT51e5jJubz3Am9cvoWpg0ZZGU/Ho7QUAMDNijC2OAGhOi6j4GjOEyJxanto8RwDCAo6xzRHBNMdV1NeAEIS5wzcgqnn62ndrhk3/oslp+WPjLAmak9DeOM+5uRoiQmARENJUNti4FxGIyBLX4Hz81deYITSNWVxFEVJWewRRcWPW6xVZW3RoCLT5+EXrm2NmqAhW19Y6h8dMUU0rrPf7Lv/81TuE0WjcWeDXNB46oVXt719dLxDevv/wzz/nlX7AmRPH8RuTxxRrcgmtcAAAAABJRU5ErkJggg==",
-		"speedTip": "History table",
-		"tagOpen": "{|class=\"wikitable sortable\"\n! scope=\"col\"| Catalog\n! scope=\"col\"| Available from\n! scope=\"col\"| Available until\n|-\n|catalog goes here\n|starting date\n|ending date\n|}",
-	};
-}
 
 
 /* ====================================================================== *\
@@ -104,65 +38,13 @@ $(function() {
 });
 
 
-
-/* ====================================================================== *\
-	# title rewrite - jquery version and new wikia skin fixes by Grunny
-\* ====================================================================== */
-// BEGIN JavaScript title rewrite
-
-function rewriteTitle() {
-	if (window.SKIP_TITLE_REWRITE) {
-		return;
-	}
-	if ($('#title-meta').length == 0) {
-		return;
-	}
-
-	var newTitle = $('#title-meta').html(),
-		align = $('#title-align').html().toLowerCase();
-	if (["left", "right", "center"].indexOf(align) == -1) { // only allow the common alignment options
-		align = "left";
-	}
-	if( skin == "oasis" ) {
-		$("#WikiaPageHeader .header-title h1")
-			.html(newTitle)
-			.css({
-				"text-align": align
-			});
-		$('header.WikiaPageHeader > h1').attr('style','text-align:' + $('#title-align').html() + ';');
-	} else {
-		$('.firstHeading').html('<div id="title-meta" style="display: inline;">' + newTitle + '</div>');
-		$('.firstHeading').attr('style','text-align:' + $('#title-align').html() + ';');
-	}
-}
-
-// END JavaScript title rewrite
-addOnloadHook(rewriteTitle);
-
-
-/* ====================================================================== *\
-	# interactive cp buttons
-\* ====================================================================== */
-
-function changeBgImage (image, id) {
-	var element = document.getElementById(id);
-	element.style.backgroundImage = "url("+image+")";
-}
-function changeBgImage (image, id) {
-	var element = document.getElementById(id);
-	element.style.backgroundImage = "url("+image+")";
-}
-
-
 /* ====================================================================== *\
 	# hide toc for [[template:hidetoc]]
 \* ====================================================================== */
 
 if ($(".hidetoc").length > 0) {
 	$(document).ready(function() {
-		$("#toc").addClass("tochidden");
-		$("#toc td > ul").css("display","none");
-		$("#toc .toctoggle a").text("show");
+		$("#toc .toctogglelabel").click();
 	});
 }
 
@@ -176,12 +58,6 @@ $(document).on("submit", function(e) {
 		$(e.target).find('[name="wpLicense"] [value=""]:not([disabled])').attr("value", "No license");
 	}
 });
-
-
-/* ====================================================================== *\
-	# auto-download an example logo for [[Club Penguin Wiki:Logo Design]]
-\* ====================================================================== */
-$("a#wiki-logo-blank").attr("download","example_logo.png");
 
 
 /* ====================================================================== *\
@@ -273,7 +149,7 @@ $(function() {
 		/* functions */
 		// load json
 		obj.fn.loadJSON = function(apfrom, cb) {
-			$.getJSON("/api.php?action=query&format=json&list=allpages&apnamespace=4&apprefix=Chat/Logs/&apfrom=" + encodeURIComponent(apfrom) + "&aplimit=5000&cb=" + new Date().getTime(), function(data) {
+			$.getJSON("/api.php?action=query&format=json&list=allpages&apnamespace=4&rawcontinue&apprefix=Chat/Logs/&apfrom=" + encodeURIComponent(apfrom) + "&aplimit=max&cb=" + new Date().getTime(), function(data) {
 				cb(data.query.allpages, data["query-continue"]);
 			});
 		}
@@ -321,7 +197,7 @@ $(function() {
 				// check if there are more requests that need to be done
 				if (queryContinue) {
 					// more requests needed
-					obj.fn.init(queryContinue.allpages.apfrom);
+					obj.fn.init(queryContinue.allpages.apcontinue);
 				} else {
 					// all done
 					obj.fn.processJSONData();
@@ -365,21 +241,13 @@ window.LockOldBlogs = {
 importArticles({
 	type: "script",
 	articles: [
-		"u:dev:PurgeButton/code.js",
 		"u:dev:AjaxRC/code.js",
-		"u:dev:ShowHide/code.js",
 		"u:dev:DisplayTimer/code.js",
 		"u:zh.pad:MediaWiki:CountDown.js",
 		"u:dev:DupImageList/code.js",
 		"u:dev:LockOldBlogs/code.js",
-		"MediaWiki:Common.js/closeThread.js",
-		"MediaWiki:Common.js/ThreadAdminBadges-load.js",
-		"u:dev:DynamicImages/code.js",
 		"MediaWiki:Common.js/chatLogView.js",
-		"MediaWiki:Common.js/licenseHelp.js",
 		"MediaWiki:Common.js/plok.js",
-		"MediaWiki:Common.js/dynamicvote.js", // was Roger's idea [insert lenny here cause it breaks tab characters in common.js]
-		"MediaWiki:Common.js/catnav.js",
 		mw.config.get("wgPageName") == "Club_Penguin_Island/Music" ? "MediaWiki:Common.js/cpi-music.js" : ""
 	]
 }, {
@@ -394,21 +262,15 @@ importArticles({
 	# add to [[Template:Expansion]] a link to the incompleted section
 \* ====================================================================== */
 
-$("#mw-content-text").find("h1,h2,h3,h4,h5,h6").each(function(i) {
-	if ($(this).next().hasClass("section-stub")) {
-		$(this).next().find(".mbox-text > .expand").html('<a href="/wiki/' + encodeURIComponent(mw.config.get("wgPageName")) + '?action=edit&section=' + (i + 1) + '">expanding it</a>');
+$("#mw-content-text").find(".mw-headline").each(function(i) {
+	var node = $(this).parent().next(),
+		a = $('<a />');
+	if ($(node).hasClass("section-stub")) {
+		$(a).attr("href", "/wiki/" + encodeURIComponent(mw.config.get("wgPageName")) + "?action=edit&section=" + (i + 1)).text("expanding it");
+		$(node).find(".expand").replaceWith(a);
 	}
 });
 
-
-/* ====================================================================== *\
-	# [[Special:CSS]] modifications for interfaceeditors and admins
-\* ====================================================================== */
-
-if (mw.config.get("wgCanonicalSpecialPageName") == "CSS" && (mw.config.get("wgUserGroups").indexOf("sysop") > -1 || mw.config.get("wgUserGroups").indexOf("interfaceeditor") > -1)) {
-	$(".css-editor-container .ace_indent-guide").css("opacity", "0.25");
-	$('a[accesskey="a"]').attr("target", "_blank"); // open history in a new ticket
-}
 
 
 /* ====================================================================== *\
@@ -662,7 +524,7 @@ if (mw.config.get("wgPageName") == "Color" && typeof window.SVGAElement !== "und
 		for (var pageid in a) {
 			var content = a[pageid].revisions[0]["*"];
 			$("table#color-table").after(
-				'<h3><span class="mw-headline" id="color_svg">Interactive Color Preview</span></h3>\n' +
+				'<h3><span id="color_svg">Interactive Color Preview</span></h3>\n' +
 				content
 			);
 			$("svg#colors-cp-interactive").css({
@@ -677,20 +539,6 @@ if (mw.config.get("wgPageName") == "Color" && typeof window.SVGAElement !== "und
 			});
 		}
 	});
-}
-
-
-/* ====================================================================== *\
-	# remove extra breaks from featured blog posts on the main page
-\* ====================================================================== */
-
-if (mw.config.get("wgPageName") == "Club_Penguin_Wiki") {
-	$(".WikiaBlogListingPost blockquote p").each(function() {
-		if ($(this).html() == "<br>") {
-			$(this).remove();
-		}
-	});
-	$(".WikiaBlogListingPost blockquote br + br").remove();
 }
 
 
@@ -1487,130 +1335,6 @@ $cp.pfarm.fn.addPageButtons = function(node, svg, layoutWidth) {
 	}
 }
 
-
-/* ====================================================================== *\
-	# generate auto-updated table for listing clothing items from all types
-\* ====================================================================== */
-
-if ($("#mw-content-text span#number-of-clothing").length > 0) {
-	$(function() {
-		function apply() {
-			var a = $cp.json.val.en["paper_items"],
-				b = {1: 0/* colors */, 2: 0/* head */, 3: 0/* face */, 4: 0/* neck */, 5: 0/* body */, 6: 0/* hand */, 7: 0/* feet */, 8: 0/* pin-flag */, 9: 0/* bg */, 10: 0/* award */};
-			for (var i = 0; i < a.length; i++) {
-				b[a[i].type]++;
-				if (i + 1 == a.length) {
-					var markup = '<table class="wikitable">' +
-									'\t<tbody>' +
-
-										'\t\t<tr>' +
-											'\t\t\t<th colspan="2">Number of Clothing Items</th>' +
-										'\t\t</tr>' +
-
-										'\t\t<tr>' +
-											'\t\t\t<th>Type</th>' +
-											'\t\t\t<th>Amount</th>' +
-										'\t\t</tr>' +
-
-										'\t\t<tr>' +
-											'\t\t\t<td>Head</td>' +
-											'\t\t\t<td>' + b[2] + '</td>' +
-										'\t\t</tr>' +
-
-										'\t\t<tr>' +
-											'\t\t\t<td>Face</td>' +
-											'\t\t\t<td>' + b[3] + '</td>' +
-										'\t\t</tr>' +
-
-										'\t\t<tr>' +
-											'\t\t\t<td>Neck</td>' +
-											'\t\t\t<td>' + b[4] + '</td>' +
-										'\t\t</tr>' +
-
-										'\t\t<tr>' +
-											'\t\t\t<td>Body</td>' +
-											'\t\t\t<td>' + b[5] + '</td>' +
-										'\t\t</tr>' +
-
-										'\t\t<tr>' +
-											'\t\t\t<td>Hand</td>' +
-											'\t\t\t<td>' + b[6] + '</td>' +
-										'\t\t</tr>' +
-
-										'\t\t<tr>' +
-											'\t\t\t<td>Feet</td>' +
-											'\t\t\t<td>' + b[7] + '</td>' +
-										'\t\t</tr>' +
-
-										'\t\t<tr>' +
-											'\t\t\t<td>Pins/Flags</td>' +
-											'\t\t\t<td>' + b[8] + '</td>' +
-										'\t\t</tr>' +
-
-										'\t\t<tr>' +
-											'\t\t\t<td>Awards</td>' +
-											'\t\t\t<td>' + b[10] + '</td>' +
-										'\t\t</tr>' +
-
-										'\t\t<tr>' +
-											'\t\t\t<td>Backgrounds</td>' +
-											'\t\t\t<td>' + b[9] + '</td>' +
-										'\t\t</tr>' +
-
-									'\t</tbody>' +
-								'</table>';
-					$("span#number-of-clothing").replaceWith(markup); // <span id="number-of-clothing"></span>
-				}
-			}
-		}
-		$cp.json.get({
-			file: "paper_items",
-			success: apply
-		});
-	});
-}
-
-/* ====================================================================== *\
-	# highlight comments of the blog post's author
-\* ====================================================================== */
-
-if (mw.config.get("wgNamespaceNumber") == 500) {
-	var authorUsername = wgTitle.split('/')[0];
-	appendCSS('\
-	.comments li[data-user="' + authorUsername + '"] blockquote { background: lightgray; }\
-	.comments li[data-user="' + authorUsername + '"] .speech-bubble-message { background: lightgray; }\
-	.comments li[data-user="' + authorUsername + '"] blockquote:after { border-color: transparent lightgray lightgray transparent !important; }\
-	');
-}
-
-
-/* ====================================================================== *\
-	# dynamically generate player card image
-\* ====================================================================== 
-
-(function() {
-	function foo() {
-		$("span.player-card-image").each(function() {
-			var a = $.parseJSON($(this).attr("data-search")),
-				b = Number(a.size) > 0 && Number(a.size) <= 600 ? Number(a.size) : 60;
-			if (a.id != "undefined") {
-				$(this).replaceWith(
-					'<img src="https://cdn.avatar.clubpenguin.com/%7B' + a.id + '%7D/cp?size=600&language=' + a.lang + '&photo=' + a.bg + '&flag=' + a.pin + '" width="' + b + '" height="' + b + '" />'
-				);
-			} else {
-				$(this).replaceWith('<span style="color: red; font-family: monospace, arial, calibri; font-weight: bold;">Thumb error</span>');
-			}
-		});
-	}
-	foo();
-	if (window.mediaWiki.config.get('skin') === 'oasis' && window.mediaWiki.config.get('wgAction') === 'edit') { // apply on editor by [[User:UltimateSupreme]]
-		$(window).on('EditPageAfterRenderPreview', function() {
-			foo();
-		});
-	}
-}());
-*/
-
 /* ====================================================================== *\
 	# remove video caption with file name if a caption was already specified
 \* ====================================================================== */
@@ -1652,63 +1376,6 @@ if (mw.config.get("wgArticleId") == 367219) {
 		}
 	});
 }
-
-
-/* ====================================================================== *\
-	# syntax for [[Template:ArticleTags]]
-\* ====================================================================== */
-
-$(function() {
-	if ($(".article-tags").length == 1 && mw.config.get("wgNamespaceNumber") == 0) {
-		function enc(s) {
-			return s.replace(/&<>/g, function(m) {
-				var a = {
-					"&": "amp",
-					"<": "lt",
-					">": "gt"
-				};
-				return "&" + a[m] + ";";
-			});
-		}
-		var data = {
-			faweek: {
-				image: "https://images.wikia.nocookie.net/clubpenguin/images/6/61/MiniFeature.png",
-				url: "https://clubpenguin.wikia.com/wiki/Club_Penguin_Wiki:Featured_Article_of_The_Week",
-				title: "This is a featured article."
-			},
-			fa: {
-				image: "https://images.wikia.nocookie.net/clubpenguin/images/thumb/0/04/7119_icon.png/20px-7119_icon.png",
-				url: "https://clubpenguin.wikia.com/wiki/Club_Penguin_Wiki:Featured_Article",
-				title: "This is a featured article."
-			},
-			fi: {
-				image: "https://images.wikia.nocookie.net/clubpenguin/images/thumb/2/29/Yellow_Hoodie.PNG/20px-Yellow_Hoodie.PNG",
-				url: "https://clubpenguin.wikia.com/wiki/Club_Penguin_Wiki:Item_of_the_Month",
-				title: "This article is about an item that was chosen to be the featured item."
-			}
-		};
-		var tags = $(".article-tags").attr("data-tags").split(","),
-			el = $('<div class="article-tags" style="margin-right: 10px; float: left;"></div>');
-		for (var i in tags) {
-			if (typeof data[tags[i]] === "object") {
-				var name = tags[i],
-				link = $('<a />');
-				$(link).attr({
-					href: data[name].url,
-					title: enc(data[name].title + "\u0020Click here for more information.")
-				});
-				$(link).html('<img src="' + data[name].image + '" />');
-				$(el).append(link);
-			}
-		}
-		mw.util.addCSS(
-			'.article-tags img {\n' +
-				'\tvertical-align: middle;\n' +
-			'}'
-		);
-		$("#WikiaPageHeader .tally:first").prepend(el);
-	}
-});
 
 
 /* ====================================================================== *\
@@ -2269,36 +1936,3 @@ $("span.pigfarm").each(function() {
 	});
 });
 } // end of if statement
-
-
-/* ====================================================================== *\
-	# prevent unneeded deep-thread quoting
-\* ====================================================================== */
-
-if (mw.config.get("wgNamespaceNumber") == 1201) {
-	$("button.quote-button").click(function(e) {
-		var content = $(this).parents().eq(3).find(".editarea .msg-body"); // main content area
-		if ($(content).find(".quote .quote .quote").length > 0) {
-			// at least 3 quotes are nested in one another - or deeper - long quote chain
-			if (!confirm("You are about to reply to a chain of replies. Doing so for the sake of spamming may be against the wiki rules. Do you wish to proceed?")) {
-				// user cancelled quoting
-				return false;
-			} else {
-				// enable preview button if the user proceeded
-				$("button.previewButton").removeAttr("disabled");
-			}
-		}
-	});
-}
-
-
-/* ====================================================================== *\
-	# clothing archive for cp items
-\* ====================================================================== */
-
-// imported separately as a result of a larg object in the script
-if (mw.config.get("wgArticleId") == 444649) {
-	$("#cpo-myitems-lifering-generator .button").click(function() {
-		importScript("MediaWiki:Common.js/itemArchive.js");
-	});
-}

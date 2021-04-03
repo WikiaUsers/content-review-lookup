@@ -2,7 +2,7 @@
     Easter egg planned for April Fools.
     Turns on text glitching for our fandom april fools-themed article (Kenneth's Paroxysm Flower Helmet), as well as the secret April Fools minigame.
 */
-$(function() {
+mw.hook("wikipage.content").add(function($content) {
     // Restrict to certain article. TO-DO: Edit to page-Kenneth_s_Paroxysm_Flower_Helmet.
     if ($("body").hasClass("page-Kenneth_s_Paroxysm_Flower_Helmet") || $("body").hasClass("page-User_As8D")) {
         setTimeout(function() {
@@ -19,7 +19,7 @@ $(function() {
                 
                 this.setText = function(newText) {
                     var oldText = this.el.innerText;
-                    var length = Math.max(oldText.length, newText.length);
+                    var length = Math.max((oldText || '').length, (newText || '').length);
                     var self = this;
                     var promise = new Promise(function(resolve) { self.resolve = resolve; });
                     this.queue = [];
@@ -100,8 +100,14 @@ $(function() {
             // Enable toggling on the secret minigame.
             $(".ffools-trigger").click(function() {
                 minigameActive = true;
-                $(".mw-content-text").empty();
-                var ifr = document.createElement("iframe"); // container for our easter egg minigame.
+				var spoilerContent = $('.ffa2019-hidden-content').html();
+                $("#mw-content-text").empty().html(spoilerContent);
+
+
+				// ** REMOVED section due to past communication with Code Approver on different scripts ** //
+				// Commented out code will not run, and this is left for legacy to the rest of the Fantastic Frontier wiki team who are interested in reading the code.
+				
+                /*var ifr = document.createElement("iframe"); // container for our easter egg minigame.
                 
                 // The iframe contains a minigame in which players collects items from the Fantastic Frontier game.
                 // Uses 3rd party code:
@@ -114,7 +120,7 @@ $(function() {
                 ifr.src = "https://uppah.net/ffw_afgame/";
                 ifr.width = 700;
                 ifr.height = 450;
-                $(".mw-content-text").append(ifr);
+                $(".mw-content-text").append(ifr);*/
             });
         }, 5000);
     }

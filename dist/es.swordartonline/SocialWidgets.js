@@ -18,9 +18,9 @@ $(window).load(function () {
  
   var generalModule =
     '<section class="module" id="discord-banner">' +
-      '<a href="https://discord.gg/nCcsnzf" title="¡Ingresa al servidor de Sword Art Online!">' +
+      '<a href="https://discord.gg/bdFMYJ2" title="¡Ingresa al servidor de Sword Art Online!">' +
         '<img src="https://vignette.wikia.nocookie.net/theworldendswithyoufannon/images/7/70/A.png/revision/latest?cb=20181007235711&path-prefix=es" alt="¡Ingresa al servidor de Sword Art Online Wiki!" />'  +
-        '<a href="https://discord.gg/nCcsnzf" class="btnwnms">ACEPTAR INVITACIÓN</a>' +
+        '<a href="https://discord.gg/bdFMYJ2" class="btnwnms">ACEPTAR INVITACIÓN</a>' +
       '</a>' +
     '</section>';
  

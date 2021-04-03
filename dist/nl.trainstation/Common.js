@@ -15,7 +15,7 @@ tabberOptions = {
   }
 };
 
-var tooltips_list = [
+window.tooltips_list = [
     {
         classname: 'info-tooltip',
         parse: '{'+'{InfoTip|<#info#>|<#type#>}}',

@@ -1,5 +1,11 @@
 /* <nowiki> */
 
+
+
+
+
+
+
 /* ######################################################################## */
 /* ### JavaScript here is loaded for all users and all skins.           ### */
 /* ######################################################################## */
@@ -11,15 +17,183 @@
 /* ### Credit:      User:Porter21                                       ### */
 /* ######################################################################## */
 
-
-
-importScript("MediaWiki:JqueryMousewheel.js");
+importArticles({
+    type: "script",
+    articles: [
+        "MediaWiki:JqueryMousewheel.js",
+        "MediaWiki:Three.js",
+        "MediaWiki:ModelViewer.js",
+        "MediaWiki:AssetLoader.js",
+        "MediaWiki:AssetLookup.js"
+        
+    ]
+});
+importArticles({
+	type:"style",
+	articles:[
+		"MediaWiki:Pannellum.css"
+		]
+});
+//importScript("MediaWiki:Panolens.js");
+/*importScript("MediaWiki:JqueryMousewheel.js");
 importScript("MediaWiki:Three.js");
+
 importScript("MediaWiki:ModelViewer.js");
 importScript("MediaWiki:AssetLoader.js");
 importScript("MediaWiki:AssetLookup.js");
-importScript("MediaWiki:Leaflet.js");
-importScript("MediaWiki:FalloutMapTest.js");
+importScript("MediaWiki:Panolens.js");
+*/
+
+var config = {
+	subtree: true,
+    attributes: true,
+    attributeFilter: ["src","class"],
+    childList: true,
+    characterData: true
+	};
+$( document ).ready(function() {
+    setInterval(function(){  
+    $("img").each(function (i, v){
+	    if($(v)[0].hasAttribute('src'))
+	    	{
+	    		if($(v).attr('src').indexOf("_360pano") >= 0)
+	    			{
+	    				if($(".360holder",$(v).parent().parent()).length==0)
+	    				{
+	       				$(v).parent().after('<br><div class="360holder" style="position:absolute; bottom:2px;left:2px;"><a class="image" style="position: relative;z-index:2;"><img src="https://static.wikia.nocookie.net/du-fallout/images/6/6f/Noun_360_2801746.png/revision/latest/scale-to-width-down/20?cb=20210327065349" style="width: 20px;height: 20px;z-index: 1;"></a></div>');
+	    				}
+	    					
+	    			}
+	    	}
+	    
+	});
+    }, 500);
+	
+});
+
+
+function procPano()
+{
+	var im=$("img",".media").attr("src");
+	
+	if(im.indexOf("_360pano_Thumb")!=-1)
+	{
+		var il=im.indexOf("scale-to-width-down");
+		var fi = im.substring(0,il);
+		fi=fi.replace("_Thumb","");
+		fi = fi.match(/\/([^\.\/]+\.jpg)/)[1];
+		
+		fi="https://du-fallout.fandom.com/wiki/Special:FilePath/"+fi;
+		$(".media",".lightboxContainer").empty();
+		/*var panorama = new PANOLENS.ImagePanorama( fi );
+		var viewer = new PANOLENS.Viewer({container:$(".media",".lightboxContainer")[0],controlBar:false});
+		viewer.container=$(".media",".lightboxContainer")[0];
+		viewer.add( panorama );*/
+		pannellum.viewer($(".media",".lightboxContainer")[0], {"type": "equirectangular", "panorama": fi,"autoLoad":true,"showControls":false,"orientationOnByDefault":true,"keyboardZoom":false,"mouseZoom":false});
+		console.log("found pano!");
+	}else
+	{
+		$("div",".media").remove();
+		$(".media").removeClass("pnlm-container");
+		console.log("no pano!");
+	}
+}
+
+$.getScript("https://du-fallout.fandom.com/wiki/MediaWiki:Three.js?action=raw",function(){$.getScript("https://du-fallout.fandom.com/wiki/MediaWiki:Pannellum.js?action=raw",function(){
+	
+	var observer = new MutationObserver(function(mutations) {
+	    mutations.forEach(function(mutation) {
+	        if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+	            // element added to DOM
+	            var hasClass = [].some.call(mutation.addedNodes, function(el) {
+	                return el.classList.contains('lightboxContainer')
+	            });
+	            if (hasClass) {
+	                // element has class `MyClass`
+	                
+	               
+	               if($(".WikiaLightbox",".lightboxContainer").length==0)
+	               {
+	            	observerb.observe(document.querySelector(".modalContent"), config);
+	               }
+	               else if($("img",".media").attr("src")==undefined)
+	               {
+	               		observerc.observe(document.querySelector(".media"), config);
+	               }
+	               else
+	               {
+	               	
+	               	procPano()
+	               }
+	            }
+	        }
+	    });
+	});
+	var observerb = new MutationObserver(function(mutations) {
+	    mutations.forEach(function(mutation) {
+	        if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+	            // element added to DOM
+	            var hasClass = [].some.call(mutation.addedNodes, function(el) {
+	                return el.classList.contains('WikiaLightbox')
+	            });
+	            if (hasClass) {
+	                // element has class `MyClass`
+	               //var img = $(".media",".lightboxContainer").children(0).attr("src");
+	               //console.log(img);
+	              
+	                if($("img",".media").attr("src")==undefined)
+	               {
+	               		observerc.observe(document.querySelector(".media"), config);
+	               }
+	               else
+	               {
+	               	procPano()
+	               }
+	            }
+	        }
+	    });
+	});
+	var observerc = new MutationObserver(function(mutations) {
+	    mutations.forEach(function(mutation) {
+	        if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+	            // element added to DOM
+	            
+	            if ($(".media",".lightboxContainer").children.length > 0) {
+	                // element has class `MyClass`
+	                
+	                
+	            	procPano()
+	               
+	            }
+	        }
+	    });
+	});
+	if($(".lightboxContainer").length==0)
+	{
+		observer.observe(document.body, config);
+	}else if($(".WikiaLightbox",".lightboxContainer").length==0)
+	{
+	observerb.observe(document.querySelector(".modalContent"), config);
+	}
+	else if($("img",".media").attr("src")==undefined)
+	{
+	   	observerc.observe(document.querySelector(".media"), config);
+	}
+	else
+	{
+		observerc.observe(document.querySelector(".media"), config);
+	   procPano()
+	}
+	
+	
+})})
+
+
+
+
+
+
+
 function addTitleIcons () {
    var iconBar = $('#va-titleicons');
    var previewBar = $('#va-titleicons-preview');

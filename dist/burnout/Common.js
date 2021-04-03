@@ -4,12 +4,6 @@
 
 importScriptPage('ShowHide/code.js', 'dev');
 
-/**** Remove Main Page title ****/
-
-if(document.title.indexOf("Main Page - ") == 0) {
-   document.write('<style type="text/css">/*<![CDATA[*/ #lastmod, #siteSub, #contentSub, h1.firstHeading { display: none !important; } /*]]>*/</style>');
-}
-
 // portal switch
 var pspans;
 var cTab = 1;

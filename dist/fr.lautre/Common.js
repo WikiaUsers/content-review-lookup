@@ -27,10 +27,19 @@ $(function() { $('.insertusername').text(wgUserName); });
 
 
 /// = Bouton JavaScript sur le Tableau de Bord Administrateur
+/// = Commande spéciale "!kick"
 
+window.absentMessage = '<user> est absent du tchat actuellement.';
 importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:AdminDashboard JS-Button/code.js',
+        'u:dev:MediaWiki:!kick/code.js',
     ]
 });
+
+/// = Personnalisation de "Nuke"
+
+window.nukeDeleteReason = "Nettoyage (vandalisme, spam...)";
+window.nukeDelay = 1000;
+window.nukeTitle = "Suppression massive de toutes les pages créées par cet utilisateur";

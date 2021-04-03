@@ -122,7 +122,7 @@
                 // find the continuation data, if it exists
                 // continue is a reserved word, so quote it
                 a = data['continue'] ||
-                    ((a = data['query-continue']) && a.usercontribs);
+                    ((a = (data['query-continue'] || data.rawcontinue)) && a.usercontribs);
                 if (a) {
                     // there's more data to get
                     getPages(a);

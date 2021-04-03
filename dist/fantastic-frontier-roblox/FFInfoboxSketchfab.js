@@ -38,27 +38,32 @@ $(document).ready(function() {
         console.log(model_link, model_link.indexOf('https://sketchfab.com/3d-models/'));
         if (model_link.indexOf('https://sketchfab.com/3d-models/') !== 0) { return; }
         
-        var imgBox = infobox.find('.pi-image');
+        // By default, use the first-found image collection for 3D model wrap (ex. armor sets)
+        var imgBox = infobox.find('.pi-image-collection');
+        // Fallback to the first single image (items, mobs, ...)
+        if (imgBox.length === 0) imgBox = infobox.find('.pi-image');
+        // Fallback if nothing applies - create our own blank image-holder.
         if (imgBox.length === 0) {
             imgBox = $('<figure class="pi-item pi-image"></figure>');
             if (infobox.find('.pi-title').length > 0) {
                 $(infobox.find('.pi-title')[0]).append(imgBox);
             }
         }
-        imgBox = $(imgBox[0]);
+        var _imgBox = $(imgBox[0]);
+        _imgBox.after('<div class="ff-infobox-sf-wrap"><div class="ff-infobox-sf-modes"><a class="ff-infobox-sf-2d">Image</a> / <a class="ff-infobox-sf-3d">3D</a></div><div class="ff-infobox-sf-display"><div class="sketchfab-embed-wrapper" style="display:none"><iframe height="300" title="" webkitallowfullscreen="true" width="300" frameborder="0" class="" src="' + model_link + '/embed" allowfullscreen="" onmousewheel="" allowvr="" allow="autoplay; fullscreen; vr" mozallowfullscreen="true"></iframe></div><div class="ff-infobox-sfimage"></div></div></div>');
+        var wrapper = infobox.find('.ff-infobox-sf-wrap');
+        wrapper.find('.ff-infobox-sfimage').append(imgBox);
         
-        imgBox.html('<div class="ff-infobox-sf-wrap"><div class="ff-infobox-sf-modes"><a class="ff-infobox-sf-2d">Image</a> / <a class="ff-infobox-sf-3d">3D</a></div><div class="ff-infobox-sf-display"><div class="sketchfab-embed-wrapper" style="display:none"><iframe height="300" title="" webkitallowfullscreen="true" width="300" frameborder="0" class="" src="' + model_link + '/embed" allowfullscreen="" onmousewheel="" allowvr="" allow="autoplay; fullscreen; vr" mozallowfullscreen="true"></iframe></div>' + imgBox.html() + '</div></div>');
-        
-        var modes = imgBox.find('.ff-infobox-sf-modes');
-        var display = imgBox.find('.ff-infobox-sf-display');
+        var modes = wrapper.find('.ff-infobox-sf-modes');
+        var display = wrapper.find('.ff-infobox-sf-display');
         
         modes.find('.ff-infobox-sf-2d').click(function() {
-            display.find('>a').css({display: ''});
+            display.find('.ff-infobox-sfimage').css({display: ''});
             display.find('.sketchfab-embed-wrapper').css({display: 'none'});
         });
         
         modes.find('.ff-infobox-sf-3d').click(function() {
-            display.find('>a').css({display: 'none'});
+            display.find('.ff-infobox-sfimage').css({display: 'none'});
             display.find('.sketchfab-embed-wrapper').css({display: ''});
         });
     });

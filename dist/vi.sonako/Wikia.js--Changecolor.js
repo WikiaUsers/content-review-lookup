@@ -6,7 +6,7 @@
    for conceptual design discussion
    ================== */
  
-(function (mw, $, window) {
+   (function (mw, $, window) {
  
     'use strict';
  
@@ -18,7 +18,7 @@
         stylesheet =
         $('<style type="text/css" id="alt-stylesheet">' + css + '">')
         .appendTo(window.document.head || 'head');
-        $.storage.set('altStylesheet', '1');
+        mw.storage.set('altStylesheet', true);
     }
  
     function loadStylesheet () {
@@ -45,7 +45,7 @@
         }
     }
  
-    if ($.storage.get('altStylesheet')) {
+    if (!!mw.storage.get('altStylesheet')) {
         loadStylesheet();
     }
  
@@ -53,16 +53,14 @@
         button =
  
         // this is the button:
-        $('<input type="button" value="Giao diện đêm" title="Giao diện đêm" class="color-changer">')
-        .insertBefore('body.MiniEditor #WikiaArticle')
-        //.prependTo('.grid-4')
-        //('.WikiaMainContent')
- 
+        $('<input>')
+        .attr({type: "button", value: "Giao diện đêm", title: "Giao diện đêm", class: "color-changer"})
+        .prependTo($(".page-header__contribution-buttons"))
         .click(function () {
             var stylesheet = $('#alt-stylesheet');
             if (stylesheet.length) {
                 stylesheet.remove();
-                $.storage.del('altStylesheet');
+                mw.storage.set('altStylesheet', false);
             } else {
                 loadStylesheet();
             }
@@ -76,4 +74,4 @@
         }
     });
  
-}(mediaWiki, jQuery, window));
+}(mw, $, window));

@@ -73,6 +73,10 @@ window.UserTagsJS = {
             link:  'Help:Volunteers and Helpers#Helpers',
             title: 'Help:Volunteers and Helpers'
         },
+        'soap': {
+            link:  'Help:SpamTaskForce',
+            title: 'Help:SpamTaskForce'
+        },
         'staff': {
             link:  'Help:Community Team',
             title: 'Help:Community Team'
@@ -84,10 +88,6 @@ window.UserTagsJS = {
         'voldev': {
             link:  'Help:Volunteer Developers',
             title: 'Help:Volunteer Developers'
-        },
-        'vstf': {
-            link:  'Help:SpamTaskForce',
-            title: 'Help:SpamTaskForce'
         },
         'wiki-manager': {
             link:  'Help:Wiki Managers',
@@ -184,10 +184,10 @@ UserTagsJS.modules.metafilter = {
         'bot',
         'chatmoderator',
         'helper',
+        'soap',
         'staff',
         'sysop',
         'threadmoderator',
-        'vstf',
         'wiki-manager'
     ],
     'bot': 'bot-global',

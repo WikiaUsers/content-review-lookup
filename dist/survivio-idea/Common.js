@@ -109,6 +109,7 @@ mw.hook('dev.i18n').add(function (i18n) {
 importArticle({
     type: 'script',
     articles: [
-        'u:dev:I18n-js/code.js'
+        'u:dev:I18n-js/code.js',
+        'u:dev:MediaWiki:RailWAM/code.js',
     ]
 });

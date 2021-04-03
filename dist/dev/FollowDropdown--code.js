@@ -8,16 +8,22 @@
  */
 (function() {
     var $list = $('.page-header__contribution-buttons .wds-list'),
-    config = mw.config.get([
-        'wgArticleId',
-        'wgNamespaceNumber',
-        'wgPageName',
-        'wgUserLanguage'
-    ]),
-    title,
-    $form;
+        config = mw.config.get([
+            'stylepath',
+            'wgArticleId',
+            'wgNamespaceNumber',
+            'wgPageName',
+            'wgUserLanguage',
+            'wgVersion'
+        ]),
+        title,
+        $link,
+        api,
+        messages,
+        unwatch,
+        isUCP = config.wgVersion !== '1.19.24';
     if (
-        !$list.exists() ||
+        $list.length === 0 ||
         config.wgArticleId === 0 ||
         window.FollowDropdownLoaded
     ) {
@@ -31,43 +37,59 @@
             value: value
         });
     }
+    function click(e) {
+        if (e.ctrlKey) {
+            return;
+        }
+        e.preventDefault();
+        var params = {
+            action: 'watch',
+            title: config.wgPageName,
+            token: mw.user.tokens.get('watchToken'),
+            unwatch: unwatch ? true : undefined
+        };
+        if (isUCP) {
+            params.titles = params.title;
+            delete params.title;
+        }
+        api.post(params).done(function(data) {
+            if (!data.error) {
+                unwatch = !unwatch;
+                var $newLink = createLink();
+                $link.replaceWith($newLink);
+                $link = $newLink;
+            }
+        });
+        if (isUCP) {
+            $link.html($('<span>', {
+                'class': 'mw-ajax-loader'
+            }));
+        } else {
+            $link.html($('<img>', {
+                src: config.stylepath + '/common/images/ajax.gif'
+            }));
+        }
+    }
+    function createLink() {
+        return $('<a>', {
+            click: click,
+            href: mw.util.getUrl(config.wgPageName, {
+                action: unwatch ? 'unwatch' : 'watch'
+            }),
+            text: messages[Number(!unwatch)]
+        });
+    }
     function apiCallback(d) {
         if (d.error) {
             return;
         }
         var el = d.watchlistraw[0], msg = d.query.allmessages;
-        if (el && el.title === title.getPrefixedText()) {
-            insert('unwatch', msg[0]['*']);
-        } else {
-            insert('watch', msg[1]['*']);
-        }
-        $form = $('<form>', {
-            action: mw.util.getUrl(config.wgPageName),
-            enctype: 'multipart/form-data',
-            id: 'FollowDropdownForm',
-            method: 'post'
-        }).append($.map({
-            action: 'watch',
-            title: config.wgPageName,
-            wpEditToken: mw.user.tokens.get('editToken')
-        }, mapInput)).appendTo(document.body);
-    }
-    function click(e) {
-        e.preventDefault();
-        $form.submit();
-    }
-    function insert(action, text) {
-        $list.append(
-            $('<li>').append(
-                $('<a>', {
-                    click: click,
-                    href: mw.util.getUrl(config.wgPageName, {
-                        action: action
-                    }),
-                    text: text
-                })
-            )
-        );
+        messages = msg.map(function(msg) {
+            return msg['*'];
+        });
+        unwatch = el && el.title === title.getPrefixedText();
+        $link = createLink();
+        $list.append($('<li>').append($link));
     }
     mw.loader.using([
         'mediawiki.api',
@@ -75,7 +97,8 @@
         'mediawiki.Title'
     ], function() {
         title = new mw.Title(config.wgPageName);
-        new mw.Api().get({
+        api = new mw.Api();
+        api.get({
             action: 'query',
             list: 'watchlistraw',
             meta: 'allmessages',

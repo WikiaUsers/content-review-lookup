@@ -1,11 +1,11 @@
-/**
- *
- * @submodule               UserStatus/dropdown
+/* @submodule               UserStatus/dropdown
  * @description             Dropdown menu to quickly change one's status.
  * @author                  Americhino
- * @version                 0.8.3
- * @license                 CC-BY-SA 3.0
- **/
+ * @version                 1.0.1
+ * @license                 CC-BY-SA 3.0 
+ * @notes                   See MediaWiki:UserStatus.js for the full script.
+ * @notes                   Incompatible on UCP wikis.
+ */
 var $user = mw.config.get('wgTitle').split('/');
 if (($user[1] ? $user[1] : $user[0]) === mw.config.get('wgUserName')) {
     mw.hook('dev.i18n').add(function (i18n) {
@@ -75,7 +75,7 @@ if (($user[1] ? $user[1] : $user[0]) === mw.config.get('wgUserName')) {
                     case 'StatusMenu-dnd':
                         content = 'dnd';
                         break;
-                    case 'StatusMenu-offline':
+                    case 'StatusMenu-unknown':
                         content = 'offline';
                         break;
                 }

@@ -1,7 +1,7 @@
 /**
  * Custom SpoilerAlert version
  * documentation at: http://dev.wikia.com/wiki/SpoilerAlert
- * @author Gguigui1 (original)
+ * @author Gguigui1 (original), Fujimaru-kun (edit)
  */
 $(function () {
     "use strict";
@@ -13,17 +13,17 @@ $(function () {
                 return n != wgArticleId; //set storage for reminding all the current reminding pages but not the current one
             });
             console.log(storage);
-            $.storage.set('SpoilerAlertJS', storage); // Remind choices
+            $.storage.set('ExplicitAlertJS', storage); // Remind choices
             location.reload(); //Reload the page
         });
     }
-    window.SpoilerAlert = (function ($, mw, SpoilerAlert) {
+    window.ExplicitAlert = (function ($, mw, ExplicitAlert) {
         var objects;
-        if (!SpoilerAlert) {
+        if (!ExplicitAlert) {
             return;
         }
-        var reminder = $.storage.get('SpoilerAlertJS');
-        if (reminder != null) {
+        var reminder = $.storage.get('ExplicitAlertJS');
+        if (reminder !== null) {
             if ($.inArray(wgArticleId, reminder) > -1) {
                 clearstorage(reminder);
                 return; // The choice has been remindered
@@ -31,26 +31,25 @@ $(function () {
         } else {
             reminder = [];
         }
-        SpoilerAlert = $.extend({
+        ExplicitAlert = $.extend({
             no: "Non",
             yes: "Oui",
             question: "Cette page comporte des éléments explicites susceptibles de choquer un jeune public ou une âme innocente. Êtes vous sûr de vouloir poursuivre ?"
-        }, SpoilerAlert);
-        console.log(SpoilerAlert);
-        if (SpoilerAlert.pages && $.isArray(SpoilerAlert.pages)) {
-            if ($.inArray(wgPageName, SpoilerAlert.pages) > -1) {
-                init(); // spoiler page
+        }, ExplicitAlert);
+        if (ExplicitAlert.pages && $.isArray(ExplicitAlert.pages)) {
+            if ($.inArray(wgPageName, ExplicitAlert.pages) > -1) {
+                init(); // explicit page
             }
-        } else if (SpoilerAlert.categories) {
-            if ($.inArray(SpoilerAlert.categories, wgCategories) > -1) {
-                init(); // spoiler page
+        } else if (ExplicitAlert.categories) {
+            if ($.inArray(ExplicitAlert.categories, wgCategories) > -1) {
+                init(); // explicit page
             }
-        } else if (SpoilerAlert.class) {
-            if ($('.' + SpoilerAlert.class).length > 0) {
-                init(); // spoiler page
+        } else if (ExplicitAlert.class) {
+            if ($('.' + ExplicitAlert.class).length > 0) {
+                init(); // explicit page
             }
         } else {
-            console.log('Not a spoiler page');
+            //console.log('Not a spoiler page');
             return false;
         }
 
@@ -58,15 +57,15 @@ $(function () {
             var dialog =
                 '<table id="dialog" border="0" cellpadding="20" style="background: white; border-radius: 4px; border: 4px solid red;">' +
                 '<tr>' +
-                '<td colspan="2" id="dialog-question" style="padding: 20px 30px; border-style: none; text-align: center; color: black">' + SpoilerAlert.question +
+                '<td colspan="2" id="dialog-question" style="padding: 20px 30px; border-style: none; text-align: center; color: black">' + ExplicitAlert.question +
                 '</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td style="padding: 0 30px 20px; text-align: center; border-style: none;">' +
-                '<button id="no">' + SpoilerAlert.no + '</button>' +
+                '<button id="no">' + ExplicitAlert.no + '</button>' +
                 '</td>' +
                 '<td style="padding: 0 30px 20px; text-align: center; border-style: none;">' +
-                '<button id="yes">' + SpoilerAlert.yes + '</button>' +
+                '<button id="yes">' + ExplicitAlert.yes + '</button>' +
                 '</td>' +
                 '</tr>' +
                 '</table>';
@@ -81,7 +80,7 @@ $(function () {
                 $(this).find('*').css('display', '');
             });
             $('#mw-content-text').hide(); //Reforced it
-            console.log('Set up spoiler information');
+            //console.log('Set up spoiler information');
             $('#WikiaArticle').prepend(dialog);
             var borders = getBackgroundColor() || "white";
             $('#dialog').css('background-color', borders);
@@ -94,7 +93,7 @@ $(function () {
             if ('transparent' !== color) return color;
             color = $('section.module', '#WikiaRail').css('background-color');
             if ('transparent' !== color) return color;
-            console.log('SpoilerAlert: Cannot determine color');
+            //console.log('SpoilerAlert: Cannot determine color');
             return color;
         }
         $('#no').click(function () {
@@ -106,7 +105,7 @@ $(function () {
         $('#yes').click(function () {
             $('#dialog').remove();
             reminder.push(wgArticleId);
-            $.storage.set('SpoilerAlertJS', reminder); // Remind choices
+            $.storage.set('ExplicitAlertJS', reminder); // Remind choices
             $('#WikiaArticle').find('*').fadeIn(2000);
             $('#WikiaArticle .hidden').each(function () {
                 $(this).css('display', 'none');
@@ -117,5 +116,5 @@ $(function () {
             position: 'absolute',
             left: Math.round(($('#WikiaArticle').width() - $('#dialog').width() - $('.home-top-right-ads').width()) / 2) + 'px'
         });
-    })(jQuery, this.mediaWiki, window.SpoilerAlert);
+    })(jQuery, this.mediaWiki, window.ExplicitAlert);
 });

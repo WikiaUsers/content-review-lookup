@@ -36,15 +36,29 @@
     }
 
     function ucpInit () {
-        mw.hook('ve.activationComplete').add(function () {
-            $('.ve-active.ve-not-available .WikiaSiteWrapper').css('width', '100%');
-            mw.util.addCSS('.ve-active.ve-not-available .oo-ui-toolbar.ve-ui-toolbar-floating { display: none; }');
-        });
+        if ((mw.config.get('wgAction') === 'edit' || mw.config.get('wgAction') === 'submit') && mw.config.get('wgPageContentModel') !== 'wikitext') {
+            mw.util.addCSS('.WikiaSiteWrapper { width: 100% !important; }');
+        }  else {
+            mw.hook('ve.activationComplete').add(function () {
+                if (mw.config.get('wgPageContentModel') !== 'wikitext') {
+                    $('body').addClass('ve-codeeditor');
+                    mw.util.addCSS('\
+                        .ve-codeeditor .WikiaSiteWrapper,\
+                        .ve-codeeditor .ve-ui-summaryPanel {\
+                            width: 100% !important;\
+                        }\
+                        .ve-codeeditor .oo-ui-toolbar {\
+                            display: none;\
+                        }\
+                    ');
+                }
+            });
+        }
     }
 
     if (editable) {
         if (ucp) {
-            ucpInit();
+            mw.loader.using('mediawiki.util').then(ucpInit);
         } else {
             legacyInit();
         }

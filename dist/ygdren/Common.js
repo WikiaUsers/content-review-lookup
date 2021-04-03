@@ -19,7 +19,7 @@
 }*/
 
 function update1() {
-    var currVal2, result, convfactor1, convfactor2;
+	var currVal2, result, convfactor1, convfactor2;
     
     console.log("Update 1 Called");
     
@@ -119,5 +119,10 @@ $(function () {
             '<div align="right"><small><span><i>Remaining:</i></span>' +
             '<input id="bankR" type="text" class="calc" style="height:26px;font-size:11px" readonly>' +
             '</div></small>';
+            
+        var script = document.createElement("script");
+		script.type="text/javascript";
+		script.innerHTML= update1.toString() + update2.toString() + calcBankFee.toString();
+		document.head.appendChild(script);
     }
 });

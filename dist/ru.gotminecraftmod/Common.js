@@ -18,7 +18,7 @@ $('.speech-bubble-avatar')
 
 $('.speech-bubble-avatar')
 .filter(function () {
-    return $(this).has('a[href$=":Tabulika"]').length;
+    return $(this).has('a[href$=":%C3%84lterer_D%C3%A4mon_der_Lust"]').length;
 }).next().css({
     background: "rgba(223, 219, 195, 1) url('https://img2.wikia.nocookie.net/__cb20200516143604/gotminecraftmod/ru/images/0/03/Admin1_120.png') bottom center no-repeat",
     padding: '10px',

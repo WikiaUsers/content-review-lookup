@@ -4,9 +4,9 @@
  * translation editor on [[Special:BlankPage/I18nEdit]]
  * 
  * @author KockaAdmiralac <wikia@kocka.tech>
- * @version 1.2
+ * @version 1.3
  */
-(function() {
+mw.loader.using('mediawiki.util').then(function() {
     var config = mw.config.get([
         'wgAction',
         'wgArticleId',
@@ -16,7 +16,7 @@
     if (
         !res ||
         config.wgAction !== 'view' ||
-        $.getUrlVar('diff') ||
+        mw.util.getParamValue('diff') ||
         config.wgArticleId === 0
     ) {
         return;
@@ -25,13 +25,13 @@
         new mw.Api().get({
             action: 'parse',
             text: '{{int:Custom-I18nEdit-notice|' + res[1] + '}}',
-            disablepp: true,
+            disablelimitreport: true,
             uselang: config.wgUserLanguage
         }).done(function(d) {
             if (!d.error) {
+            	$('#mw-clearyourcache').remove();
                 var $c = $('#mw-content-text'),
-                    $contents = $c.contents(),
-                    $pre;
+                    $contents = $c.contents();
                 for (var i = 0, len = $contents.length; i < len; ++i) {
                     var node = $contents[i];
                     node.remove();
@@ -40,12 +40,7 @@
                     }
                 }
                 $c.prepend(d.parse.text['*']);
-                $pre = $c.find('> .mw-geshi > .source-javascript > .de1');
-                if ($pre.find('> span').first().is('.sy0')) {
-                    $pre.find('> .sy0').first().remove();
-                }
-                $pre.html($pre.html().trim());
             }
         });
     });
-})();
+});

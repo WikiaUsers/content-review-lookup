@@ -1,6 +1,6 @@
-/* Due to not receiving an answer on the talk page for this custom JS, this comment has been added so it can be re-reviewed. Thanks in advance. */
+// Comment here because of caching issues when trying to use Test Mode to check the code.
 
-$(function() {
+mw.hook("wikipage.content").add(function($content) {
 var secretPages = ["Frail_Wooden_Sword","Guttermouth_Set","Kingrat"];
 
 for (var i = 0; i < secretPages.length; i++) {
@@ -33,7 +33,7 @@ for (var i = 0; i < secretPages.length; i++) {
 // We only apply the effect on the article 'Ratboy Secrets'.
 if (!$("body").hasClass("page-Ratboy_Secrets")) return;
 
-var article = $("#WikiaArticle");
+var article = $("#content");
 var trigger = document.createElement("div");
 trigger.className = "ffa2020-trigger";
 article.after(trigger);
@@ -54,7 +54,7 @@ function TextScramble(el, callback) {
 
     this.setText = function(newText) {
         var oldText = this.el.innerText;
-        var length = Math.max(oldText.length, newText.length);
+        var length = Math.max((oldText || '').length, (newText || '').length);
         var self = this;
         var promise = new Promise(function(resolve) { self.resolve = resolve; });
         this.queue = [];

@@ -4,7 +4,9 @@
  * @author: UltimateSupreme (https://dev.wikia.com/wiki/User:UltimateSupreme)
  * @doc: https://dev.wikia.com/wiki/NullEditButton
  * @License: CC-BY-SA - https://creativecommons.org/licenses/by-sa/3.0/
+ * Used files: [[File:Facebook throbber.gif]]
  */
+
 (function($, mw, window) {
     'use strict';
 
@@ -12,13 +14,14 @@
         i18n, $throbber,
         config = mw.config.get([
             'wgPageName',
-            'wgVersion'
+            'wgVersion',
+            'wgArticleId'
         ]),
         isUCP = config.wgVersion !== '1.19.24',
         $sel = $('.UserProfileActionButton .WikiaMenuElement, .page-header__contribution-buttons .wds-list').first(),
         spinnerHTML = '<svg class="wds-spinner wds-spinner__block" width="78" height="78" viewBox="0 0 78 78" xmlns="http://www.w3.org/2000/svg"><g transform="translate(39, 39)"><circle class="wds-spinner__stroke" fill="none" stroke-width=""stroke-dasharray="238.76104167282426" stroke-dashoffset="238.76104167282426"stroke-linecap="round" r="38"></circle></g></svg>';
 
-    if (!$sel.length || !$('#ca-edit').length || window.NullEditButtonLoaded) {
+    if (!$sel.length || !$('#ca-edit').length || config.wgArticleId === 0 || window.NullEditButtonLoaded) {
         return;
     }
     window.NullEditButtonLoaded = true;
@@ -81,7 +84,7 @@
         new mw.Api().post({
             action: 'edit',
             title: config.wgPageName,
-            token: mw.user.tokens.get(isUCP ? 'csrfToken' : 'editToken'),
+            token: mw.user.tokens.get('csrfToken') || mw.user.tokens.get('editToken'),
             prependtext: ''
         }).done(getPage).fail(onError);
         return false;
@@ -105,15 +108,11 @@
     }
 
     // Init
-    if (!window.dev || !window.dev.i18n) {
-        if (isUCP) {
-            mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js');
-        } else {
-            importArticle({
-                type: 'script',
-                article: 'u:dev:MediaWiki:I18n-js/code.js'
-            });
-        }
+    if (!(window.dev && dev.i18n && dev.i18n.loadMessages)) {
+        importArticle({
+            type: 'script',
+            article: 'u:dev:MediaWiki:I18n-js/code.js'
+        });
     }
     mw.hook('dev.i18n').add(function(i18no) {
         $.when(

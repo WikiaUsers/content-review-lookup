@@ -1,17 +1,21 @@
+/* To replace the now dead "welcome bot" */
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2: '{{sub'+'st:New user}}',
+        3: false
+    },
+    summary: 'Script: Creating user profile'
+};
+
 $(function STemplateUI() {
     $(".ogg_player .image").remove();
 });
 
 /* Auto-refreshing recent changes */
-window.ajaxPages = [
-    "Special:WikiActivity",
-    "Special:RecentChanges",
-    "Special:Watchlist",
-    "Special:Log",
-    "Special:Contributions"
-];
-window.AjaxRCRefreshText = 'Auto-refresh';
-window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
+ajaxPages = ["Special:RecentChanges","Special:Watchlist","Special:Log","Special:Contributions"];
+AjaxRCRefreshText = 'Auto-refresh';
+AjaxRCRefreshHoverText = 'Automatically refresh the page';
+importScriptPage('MediaWiki:AjaxRC/code.js', 'dev');
 
 /* Admin highlights */
 highlight = {

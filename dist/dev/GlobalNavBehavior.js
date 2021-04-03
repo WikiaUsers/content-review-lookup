@@ -6,7 +6,7 @@
  * 
  * @author User:Blaster Niceshot
  * 
- * @version 1.1
+ * @version 1.2
  */
 ;(function(window, $, mw) {
     
@@ -43,6 +43,7 @@
     
     // Add initial CSS
     gNav.css({
+        'position': 'absolute',
         'top': '0',
         'transition': 'top ' + globalNavBehavior.transitionDuration + 'ms ' + globalNavBehavior.transitionType,
     });
@@ -53,7 +54,7 @@
     }
     
     function hideGNav() {
-        gNav.css('top', '-55px');
+        gNav.css('top', '-' + gNav.outerHeight() + 'px');
     }
     
     // When user scrolls

@@ -1,7 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-importArticle({type:'script', article:'w:c:dev:Countdown/code.js'});
-
 if(wgPageName == "PlanetSide_2_Wiki") {
 	$(document).ready(function() {	
 		/** Hide chat button for logged out users **/
@@ -10,9 +8,6 @@ if(wgPageName == "PlanetSide_2_Wiki") {
 		}
 	});
 }
-
-//**Back to top**//
-importScriptPage('BackToTopButton/code.js', 'dev');
 
 /**********************************************************/
 /* Tooltip: Display Infobox when hover mouse over an item */
@@ -61,7 +56,7 @@ if ($p.hasClass("selflink") == false) $t.data("tt", $p.attr("title").replace(" (
  
 // check to see if it is active then do it
 $(function() {
-if(skin=='oasis') { var BC = '#WikiaArticle'; }
+if(mw.config.get('skin')=='oasis') { var BC = '.WikiaPage'; }
 else { var BC = '#bodyContent'; }
  
 $(BC).mouseover(hideTip); 

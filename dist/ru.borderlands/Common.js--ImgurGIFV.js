@@ -3,7 +3,8 @@
     var nthreshold = 1000; //ms. if el visible >= threshold then play
     var nh = []; //handlers. 1 per span
     var ntimer; //timer 4 comments
-    var nbDebug = $.getUrlVar('debug');
+	var urlVars = new URLSearchParams(location.search);
+    var nbDebug = urlVars.get('debug') || urlVars.get('debug1');
 
     var log = function () {
         log.a = [].slice.call(arguments);

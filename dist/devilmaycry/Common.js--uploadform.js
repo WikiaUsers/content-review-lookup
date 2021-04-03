@@ -76,7 +76,7 @@
                 'User images': 'Image for my userpage',
                 'Trophy and Achievement images': 'In-game Trophy or Achievement',
                 'Steam Trading Cards images': 'Steam Trading Cards',
-                'Wiki related images': 'Wiki related',
+                'Wiki images': 'Wiki related',
                 'Images': 'Does not fall in any other category'
             }
             

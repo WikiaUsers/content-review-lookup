@@ -1,20 +1,5 @@
 /* Размещённый здесь код JavaScript будет загружен всем пользователям при обращении к какой-либо странице */
 
-var auto_comment = 0;
- 
-if (document.URL.indexOf("action=edit") > 0 || document.URL.indexOf("action=submit") > 0)
-{
-       if (wgCanonicalNamespace != "Special")
-       {
-               document.write('<script type="text/javascript" src="/index.php' +
-               '?title=MediaWiki:Onlyifediting.js&action=raw' +
-               '&ctype=text/javascript&dontcountme=s"></script>');
-       }
-}
- 
-/*Импорт*/
- 
- 
 //Masthead entries
 importScript("MediaWiki:Common.js/masthead.js");
  
@@ -78,7 +63,7 @@ function insertSummary(text) {
 }
  
 //вызов функции вставки кнопок быстрого описания правки при загрузке страницы
-addOnloadHook(SummaryButtons)
+$(SummaryButtons)
  
 //A script that adds a "Back To Top" option in the footer of the Oasis theme.
 //I don't like scrolling back to top on long pages neither do you :)

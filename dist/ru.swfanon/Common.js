@@ -776,3 +776,66 @@ function hideContentSub(){
 		}
 	}
 }
+
+// если страница редактируется
+if (wgAction == 'edit' || wgAction == 'submit') 
+{
+	$.when( mw.loader.using( 'ext.wikiEditor' ), $.ready).then( SetToolbar );
+	
+    importScript('MediaWiki:Wikificator.js');
+    // добавление заголовка редактируемой статьи
+	$('#content').prepend('<h3 class="" style="text-align: center;padding: 5px 0 2px;margin: 0;margin-bottom: 5px;">'+wgTitle+'</h3>');
+}
+
+function SetToolbar() 
+{
+
+	$('#wikiEditor-section-main div.group-insert').prepend(
+		'<span onclick="InsertText(\'«\',\'»\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_angle_qoutation_marks"><a class="oo-ui-buttonElement-button" role="button" title="Кавычки-ёлочки" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon" ></span></a></span>'+
+		'<span onclick="InsertText(\'({{lang-en|\',\'}})\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_lang-en"><a class="oo-ui-buttonElement-button" role="button" title="Шаблон Lang-en" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon"></span></a></span>'+
+		'<span onclick="InsertText(\'—\',\'\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_dash"><a class="oo-ui-buttonElement-button" role="button" title="Тире" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon"></span></a></span>'+
+		'<span onclick="InsertText(\'[[\|\',\']]\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_square_brackets"><a class="oo-ui-buttonElement-button" role="button" title="Квадратные скобки с разделителем" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon"></span></a></span>'
+	  );
+	
+	$('#wikiEditor-section-main div.group-insert').append(
+		'<span onclick="InsertText(\'{{Цитата|\',\'||}}\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_quote"><a class="oo-ui-buttonElement-button" role="button" title="Шаблон цитаты" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon" ></span></a></span>'+
+		'<span onclick="InsertText(\'\\n{{Interlang\\n|en=\',\'\\n}}\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_interlang"><a class="oo-ui-buttonElement-button" role="button" title="Шаблон межъязыковых ссылок" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon" ></span></a></span>'
+	);
+	
+	// добавление кнопки "Подпись"
+	if ($('span.oo-ui-icon-signature').length===0 ) 
+	{
+	  $('#btn_square_brackets').after(
+	    '<span onclick="InsertText(\'--\~\~\~\~\',\'\')" class="tool oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement oo-ui-buttonWidget" aria-disabled="false" rel="signature"><a class="oo-ui-buttonElement-button" role="button" title="Подпись с отметкой времени" tabindex="0" aria-disabled="false" rel="nofollow"><span class="oo-ui-iconElement-icon oo-ui-icon-signature"></span><span class="oo-ui-labelElement-label"></span></a></span>'
+	  ); 
+	}
+	// добавление панели [Больше+]
+		$('#wikiEditor-section-main div.group-codemirror').prepend(
+			'<span onclick="ShowEditTools();" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_EditTools"><a class="oo-ui-buttonElement-button" role="button" title="Вставка вики-текста" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon"></span></a></span>'
+		); 
+		// добавление чёрной подложки для панели [Больше+]
+		$('div.mw-editTools').after('<div id="EditTools_LayerBG"></div>').addClass('EditTools_FadeIn');
+		// добавление заголовка на панель [Больше+]
+		$('#editpage-specialchars').prepend('<h2>Вставка вики-текста</h2>');
+		$('div.mw-editTools a, #EditTools_LayerBG').click(function()
+		{
+			$('div.mw-editTools, #EditTools_LayerBG').css('display', 'none');
+		})
+}
+
+
+// выполнение при готовности страницы
+$(document).ready(function()
+{ 
+	// добавление возможности закрыть предупреждающее окно при щелчке по нему
+    $('div.mw-editinginterface, div.mw-newarticletext, div.warningbox, div.mw-warning-with-logexcerpt').click(function()
+	{
+	  $(this).css('display', 'none');
+	});
+});	
+
+// функция вставки текста при щелчке по кнопке
+function InsertText( sPre, sPost){
+  $.wikiEditor.modules.toolbar.fn.doAction($('span.tool').data('context'), 
+	{type: 'encapsulate', options: {pre: sPre, post: sPost} });
+}

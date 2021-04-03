@@ -1,12 +1,12 @@
 // Tooltip configuration (https://dev.wikia.com/wiki/Tooltips)
-var tooltips_list = [
+window.tooltips_list = [
     {
         classname: 'card-image-tooltip',
         parse: '[[File:<#parameter#>.png|265px|link=]]',
         delay: 100
     }
 ]
-var tooltips_config = {
+window.tooltips_config = {
     offsetX: 8,
     offsetY: 8,
     waitForImages: true

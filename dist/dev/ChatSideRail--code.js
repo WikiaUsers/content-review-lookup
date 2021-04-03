@@ -1,5 +1,5 @@
 /* ChatRail thing by ChaoticShadow
-/* Special Thanks to: Slyst, Shining-Armor, RansomTime and others
+/* Special Thanks to: .jun, Shining-Armor, RansomTime and others
 /*
 /* Minimum Requirements to run this:
 /* - Potato PC
@@ -136,11 +136,11 @@ if(wgCanonicalSpecialPageName == 'Chat') {
     function switchMT() {
         murail.hide();
         uirail.hide();
-        if(userIsInGroup('sysop') || userIsInGroup('threadmoderator') || userIsInGroup('chatmoderator') || userIsInGroup('vstf') || userIsInGroup('helper') || userIsInGroup('wiki-manager') || userIsInGroup('staff')) {
+        if(userIsInGroup('sysop') || userIsInGroup('threadmoderator') || userIsInGroup('chatmoderator') || userIsInGroup('soap') || userIsInGroup('helper') || userIsInGroup('wiki-manager') || userIsInGroup('staff')) {
             mtrail.show();
         }
         else {
-            $.showCustomModal( 'Insuficient rights', 'Your current rights: ' + wgUserGroups.toString() + '<br />Only users with one or more of the following rights can use these functions (Kick, Ban, Autokick): sysop,threadmoderator,chatmoderator,staff,wiki-manager,helper,vstf');
+            $.showCustomModal( 'Insuficient rights', 'Your current rights: ' + wgUserGroups.toString() + '<br />Only users with one or more of the following rights can use these functions (Kick, Ban, Autokick): sysop,threadmoderator,chatmoderator,staff,wiki-manager,helper,soap');
         }
     }
  
@@ -365,7 +365,7 @@ if(wgCanonicalSpecialPageName == 'Chat') {
     murail.hide();
  
     /* Making sure regular users don't get kick/ban/autokick functions */
-    if(userIsInGroup('sysop') || if(userIsInGroup('threadmoderator') || if(userIsInGroup('chatmoderator') || if(userIsInGroup('vstf') || if(userIsInGroup('helper') || if(userIsInGroup('wiki-manager') || if(userIsInGroup('staff')) {
+    if(userIsInGroup('sysop') || if(userIsInGroup('threadmoderator') || if(userIsInGroup('chatmoderator') || if(userIsInGroup('soap') || if(userIsInGroup('helper') || if(userIsInGroup('wiki-manager') || if(userIsInGroup('staff')) {
         uirail.hide();
     }
     else {

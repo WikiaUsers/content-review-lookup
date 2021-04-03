@@ -1,89 +1,232 @@
-/* <source lang="javascript" style="tab-size: 4;"> */
+// Disable triggering of new browser tab when clicking URL links that point to internal wiki addresses (purge, edit, etc)
+$('a[href^="//terraria.gamepedia.com"]').removeAttr('target');
 
-/*jshint forin:true, noempty:true, eqeqeq:true, bitwise:true, strict:true, undef:true, unused:false, curly:true, browser:true, jquery:true */
-/*global mediaWiki */
+// Select links to new tabs for Template:ilnt and Template:elnt
+$('.linkNewTab a').each(function(){
+	$(this).attr('target','_blank');
+});
 
-/** 
- * This file manages all JavaScript loaded on the Terraria Wiki
- * 
- * If you have any questions, you can contact Mathmagician at
- * http://terraria.wikia.com/wiki/User_talk:Mathmagician
- * 
- * importArticles() is used to efficiently combine several JavaScript files
- * into one file, minify them, and make a single HTTP request.
- * 
- * For more information about how to use importArticles(),
- * see http://help.wikia.com/wiki/Help:Including_additional_JavaScript_and_CSS
- */
+// Implement border-collapse + border-radius workaround for "terraria"-class tables 
+/* (temporarily?) disabled, broke display for tables with percentage widths 
+$('.terraria:not(.outer)')
+	.removeClass('terraria')
+	.addClass('inner')
+	.wrap('<table class="terraria outer"></table>');
+*/
 
+// Disable creation of non-talk pages by anonymous IP editors and link to registration (also disabled by abuse filter but this provides warning before attempting edit)
+var wgPageName = mw.config.get( 'wgPageName' );
+var wgUserName = mw.config.get( 'wgUserName' );
 
-// Configuration settings for AjaxRC
-// http://dev.wikia.com/wiki/AjaxRC
-var ajaxPages = ['Special:RecentChanges', 'Special:WikiActivity', 'Special:Log', 'Special:Contributions', 'Special:AbuseLog', 'Special:NewPages'];
-var AjaxRCRefreshText = 'Auto-refresh';
-var ajaxIndicator = 'https://images.wikia.nocookie.net/__cb20100617113123/dev/images/6/6a/Snake_throbber.gif';
+var isTalk = false, isAnon = false;
+if (wgPageName.indexOf('talk:') > -1 || wgPageName.indexOf('Talk:') > -1) isTalk = true;
+if (wgUserName === null) isAnon = true;
 
-
-(function ($, mw, window, console) {
-	"use strict";
-	var articles, oasisArticles;
-
-
-	if (window.localStorage && window.localStorage.getItem('commonjs')) {
-		console.log('You have chosen to disable site-wide JavaScript in MediaWiki:Common.js. Please remove \'commonjs\' from localStorage to re-enable site-wide JavaScript.');
-		return;
-	}
-
-
-// Configuration settings for LockOldBlogs
-// http://dev.wikia.com/wiki/LockOldBlogs
-window.LockOldBlogs = {
-	expiryDays: 35,
-	expiryMessage: "This blog hasn\'t been commented on in at least five weeks, and is thus considered archived."
-};
-
-
-	// ***** BEGIN List of scripts to be loaded for ALL SKINS *****
-	// ***** The last entry in this array must not have a comma *****
-	articles = [
-		// Scripts stored locally on this wiki
-		'MediaWiki:Common.js/SnippetsAll.js',			// Tiny snippets of code for both skins
-		'MediaWiki:Common.js/StandardEditSummaries.js',		// Standard edit summaries (this version by Mathmagician)
-
-		// Scripts on the Wikia Developer's wiki
-		'u:dev:PurgeButton/code.js',				// Adds a purge (refresh) option to the edit button dropdown
-		'u:dev:ListFiles/code.js',				// Powerful utility script for generating lists of files
-		'u:dev:AjaxRC/code.js',					// Auto-refreshes Special:RecentChanges with Ajax
-		'u:dev:LockOldBlogs/code.js',				// Prevents commenting on old blogs
-	];
-	// ***** END List of scripts to be loaded for ALL SKINS *****
-
-
-	if (mw.config.get('skin') === 'oasis') {
-
-		// ***** BEGIN List of scripts to be loaded for the OASIS SKIN ONLY *****
-		// ***** The last entry in this array must not have a comma *****
-		oasisArticles = [
-			// Scripts stored locally on this wiki
-			'MediaWiki:Common.js/SnippetsOasis.js',		// Tiny snippets of code for just the Oasis skin
-			'MediaWiki:Common.js/Search.js',			// Makes it easier to search for mod content
-			'MediaWiki:Common.js/SubNav.js',			// Level 4 subnavs for the wiki navigation
-		];
-		// ***** END List of scripts to be loaded for the OASIS SKIN ONLY *****
-
-		// Add Oasis-only scripts to the articles array
-		for (var i = 0, length = oasisArticles.length; i < length; i++) {
-			articles[articles.length] = oasisArticles[i];
-		}
-	}
-
-
-	// Use Wikia's importArticles() function to load JavaScript files
-	window.importArticles({
-		type: 'script',
-		articles: articles
+if (isAnon == true){
+	$('a.new').each(function(){
+		var href = $(this).attr('href');
+		$(this).attr('href', href.replace(/&action=edit/g, '') );
 	});
-	console.log('Site-wide JavaScript in MediaWiki:Common.js will load the following JavaScript files:', articles);
-}(jQuery, mediaWiki, window, window.console));
+}
 
-/* </source> */
+if (isAnon == true && isTalk == false) {
+	var anonWarnText = 'Page creation by anonymous editors is currently disabled. <br/> To create this page, please <a href="http://terraria.gamepedia.com/Special:CreateAccount">register an account</a> first.';
+	$('body').append('<div class="anonWarnOverlay" style="display:none; background-color: #000; opacity: 0.4; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 500;"></div>');					
+	$('body').prepend('<div class="anonWarnBox" style="display:none; text-align:center; font-weight: bold; box-shadow: 7px 7px 5px #000; font-size: 0.9em; line-height: 1.5em; z-index: 501; opacity: 1; position: fixed; width: 50%; left: 25%; top: 30%; background: #F7F7F7; border: #222 ridge 1px; padding: 20px;">' + anonWarnText + '</div>');
+	
+	var newSelect = 'a.new, #ca-edit a:contains(Create), #ca-ve-edit a:contains(Create), a.external.text:contains(edit this page)';
+	$(newSelect).each(function(){
+		if ($(this).attr('title').search(/talk\:/gi) < 0) {
+			$(this).attr('href', '#').click(function(){
+				$('.anonWarnBox').show();
+				$('.anonWarnOverlay').show();
+			});
+		}
+	});
+    
+	$('.anonWarnOverlay').click(function(){
+		$('.anonWarnBox').hide();
+		$(this).hide();
+	});
+}
+
+// AJAX tables
+function addAjaxDisplayLink() {
+	$("table.ajax").each(function (i) {
+		var table = $(this).attr("id", "ajaxTable" + i);
+		table.find(".nojs-message").remove();
+		var headerLinks = $('<span style="float: right;">').appendTo(table.find('th').first());
+		var cell = table.find("td").first(), needLink = true;
+		cell.parent().show();
+		if (cell.hasClass("showLinkHere")) {
+			var old = cell.html(), rep = old.replace(/\[link\](.*?)\[\/link\]/, '<a href="javascript:;" class="ajax-load-link">$1</a>');
+			if (rep != old) {
+				cell.html(rep);
+				needLink = false;
+			}
+		}
+		if (needLink) headerLinks.html('[<a href="javascript:;" class="ajax-load-link">show data</a>]');
+		table.find(".ajax-load-link").parent().andSelf().filter('a').click(function(event) {
+			event.preventDefault();
+			var sourceTitle = table.data('ajax-source-page'), baseLink = mw.config.get('wgScript') + '?';
+			cell.text('Please wait, the content is being loaded...');
+			$.get(baseLink + $.param({ action: 'render', title: sourceTitle }), function (data) {
+				if (data) {
+					cell.html(data);
+					cell.find('.ajaxHide').remove();
+					cell.find('.terraria:not(.ajaxForceTerraria)').removeClass('terraria');
+					if (cell.find("table.sortable").length) {
+						mw.loader.using('jquery.tablesorter', function() {
+							cell.find("table.sortable").tablesorter();
+						});
+					}
+					headerLinks.text('[');
+					headerLinks.append($('<a>edit</a>').attr('href', baseLink + $.param({ action: 'edit', title: sourceTitle })));
+					headerLinks.append(document.createTextNode(']\u00A0['));
+					var shown = true;
+					$("<a href='javascript:;'>hide</a>").click(function() {
+						shown = !shown;
+						shown ? cell.show() : cell.hide();
+						$(this).text(shown ? "hide" : "show");
+					}).appendTo(headerLinks);
+					headerLinks.append(document.createTextNode(']'));
+				}
+			}).error(function() {
+				cell.text('Unable to load table; the source article for it might not exist.');
+			});
+		});
+	});
+}
+
+$(addAjaxDisplayLink);
+
+$.when( $.ready ).then(function() {
+	// Document is ready.
+	// desktop view for mobile screen.
+	$('#mw-panel').append('<div id="menu-toggle-button"></div>');
+	var $btn = $('#menu-toggle-button');
+	var $menu = $('#mw-panel .portal');
+	$btn.on('click', function(){
+		$('#mw-panel').toggleClass('on');
+	});
+});
+
+$(window).on('load', function(){
+	//main page header.
+	var $btn = $('#box-wikiheader #box-wikiheader-toggle-link');
+	if($btn.length){
+		var $box = $('#box-wikiheader');
+		$btn.css('display', 'inline-block');
+		if($box.innerHeight() > 180){
+			$box.addClass('collapsed');
+		}
+		$btn.on('click', function(){
+			$box.toggleClass('collapsed');
+		});
+	}
+	
+	// translation project banner
+	$btn = $('#indic-project #indic-project-flag');
+	if($btn.length){
+		var $text = $('#indic-project');
+		var $indic = $('#mw-indicator-translation-project');
+		$btn.css('display', 'inline');
+		$btn.on('click', function(){
+			$text.toggleClass('collapsed');
+			$indic.toggleClass('expanded');
+		});
+	}
+
+    //sidebar height fix.
+    //override left-sidebar resize handle.
+	var $sidebar = $('#mw-panel');
+	var $wrapper = $('#global-wrapper');
+	var $footer = $('#curse-footer');
+	$footer.css('margin-top', '0');
+	var $top = 0;
+	window.handleResizeEvents = function() {
+		var $sidebar_bottom = $sidebar.offset().top + $sidebar.outerHeight(true);
+		var $footer_top = $footer.offset().top;
+		if ($sidebar_bottom > $footer_top - $top){
+			$top = $sidebar_bottom - $wrapper.offset().top;
+			$wrapper.css('min-height', $top+'px');
+		}
+	};
+	window.handleResizeEvents();
+});
+
+// Hyperlink required modules in Module namespace
+// Author: RheingoldRiver
+$(function() {
+	if (mw.config.get('wgCanonicalNamespace') != 'Module') return;
+	$('.s1, .s2').each(function() {
+		var html = $(this).html();
+		var quote = html[0];
+		var quoteRE = new RegExp('^' + quote + '|' + quote + '$', 'g');
+		var name = html.replace(quoteRE,"");
+		if (name.startsWith("Module:")) {
+			var target = name.replace(/ /g,'%20');
+			var url = mw.config.get('wgServer') + '/' + target;
+			var str = quote + '<a href="' + url + '">' + name + '</a>' + quote;
+			$(this).html(str);
+		}
+	});
+});
+
+//npcinfobox
+$(document).ready(function (){
+	$('.infobox .modetabs .tab, .infotable.npc .modetabs .tab').on('click', function(){
+    	var $this = $(this);
+    	if($this.hasClass('current')){
+    		return;
+    	}
+    	$this.parent().children().removeClass('current');
+    	$this.addClass('current');
+    	$this.closest('.infobox, .infotable').removeClass('c-expert c-master c-normal').addClass($this.hasClass('normal')?'c-normal':($this.hasClass('expert')?'c-expert':'c-master'));
+    });
+});
+
+//spoiler
+$(document).ready(function (){
+	$('.spoiler-content').on('click', function(){
+    	$(this).toggleClass('show');
+    });
+});
+
+//l10n_data_table(template:l10n_subtemplate)
+$(document).ready(function (){
+	$('.l10n-data-table th.lang').on('click', function(){
+    	var $this = $(this);
+    	var lang = $this.attr('lang');
+    	if(lang=='en'){
+    		return;
+    	}
+    	$this.closest('table.l10n-data-table').find('td.'+lang).toggleClass('shrinked');
+    	$this.toggleClass('shrinked');
+    });
+	$('.l10n-data-table th.all-lang').on('click', function(){
+    	var $this = $(this);
+    	$this.toggleClass('shrinked');
+    	if($this.hasClass('shrinked')){
+    		$this.closest('table.l10n-data-table').find('td.l, th.lang').addClass('shrinked');
+    		$this.closest('table.l10n-data-table').find('td.en, th.en').removeClass('shrinked');
+    	}else{
+    		$this.closest('table.l10n-data-table').find('td.l, th.lang').removeClass('shrinked');
+    	}
+    });
+    //only expand current language 
+	$('.l10n-data-table').each(function(){
+		var $this = $(this);
+		var lang = $this.attr('lang');
+		if(lang == 'en'){
+			return;
+		}
+		var th = $this.find('th.lang.'+lang);
+		if (th.length){
+			$this.find('th.all-lang').trigger('click');
+			th.trigger('click');
+		}
+	});
+});
+
+mw.loader.load('/index.php?title=MediaWiki:HairDyeSliders.js&action=raw&ctype=text/javascript');

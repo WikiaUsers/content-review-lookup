@@ -116,19 +116,19 @@ var localizedMainPageTitles = {
     "首頁": 'zh-hant'
 };
 
-function importArticleCallback(page,type,callback) {
+function importArticleCallback(page, type, callback) {
     var v = Math.random() * 10; //don't get cached version (e.g. action=purge)
-    $.getScript('/load.php?mode=articles&articles=' + page + '&only=' + type + '&v=' + v).fail(function (response) {
+    return $.getScript('/load.php?mode=articles&articles=' + page + '&only=' + type + '&v=' + v).fail(function (response) {
         console.error(response);
     }).done(callback);
 }
  
 function importArticlesCallback() {
-    for(i = 0; i < arguments[0].length; i++) {
-        page = arguments[0][i].page;
-        type = arguments[0][i].type;
-        callback = arguments[0][i].callback;
-        importArticleCallback(page,type,callback);
+    for(var i = 0; i < arguments[0].length; i++) {
+        var page = arguments[0][i].page;
+        var type = arguments[0][i].type;
+        var callback = arguments[0][i].callback;
+        importArticleCallback(page, type, callback);
     }
 }
 
@@ -164,20 +164,20 @@ if(!!$('#mw-content-text .vertical-tabber').length) {
 }
 
 $('.fantasticbeasts-character').click(function() {
-   window.location.href = '/wiki/' + $(this).attr('data-article');
+   window.location.href = mw.util.getUrl($(this).attr('data-article'));
 });
 
 /* Better seeable background */ 
-addOnloadHook(function() {
+$(document).ready(function() {
     if(!!$('.WikiaPageContentWrapper:hover, .WikiaPageContentWrapper *:hover').length) {
         $('.WikiaPageBackground').removeClass('WikiaPageBackgroundOpacity');
     }
     else {
         $('.WikiaPageBackground').addClass('WikiaPageBackgroundOpacity');
     }
-    $('.WikiaPageContentWrapper').hover(function() {
+    $('.WikiaPageContentWrapper').on("mouseenter", function() {
         $('.WikiaPageBackground').removeClass('WikiaPageBackgroundOpacity');
-    },function() {
+    }).on("mouseleave", function() {
         $('.WikiaPageBackground').addClass('WikiaPageBackgroundOpacity');
     }); 
 });
@@ -190,24 +190,25 @@ importArticles({
     ]
 });
 
-addOnloadHook(function () {
+$(document).ready(function () {
     importArticlesCallback([{
         page: 'w:c:de.harry-grangers-test:MediaWiki:Sidebar.js',
         type: 'scripts',
         callback: function () {
-            addOnloadHook(function () {
+            $(document).ready(function () {
                 importArticlesCallback([{
                     page: 'w:c:de.harry-grangers-test:MediaWiki:WikiAPI.js',
                     type: 'scripts',
                     callback: function () {
-                        addOnloadHook(function() {
+                        $(document).ready(function() {
                             importArticlesCallback([{
                               page: 'w:c:de.harry-grangers-test:MediaWiki:UserAPI.js',
                               type: 'scripts',
                               callback: function () {
-                                  addOnloadHook(function() {
+                                  $(document).ready(function() {
                                       Wiki.prototype.init = function(callback) {
                                       that = this;
+                                      wgCityId = mw.config.get('wgCityId');
                                       getWikiData(wgCityId, function(data) {
                                         that.stats = data.items[wgCityId].stats;
                                         that.wam = data.items[wgCityId].wam_score;
@@ -224,13 +225,13 @@ addOnloadHook(function () {
                                     };
                                     wgWiki = new Wiki();
                                     wgWiki.init(function() {
-                                      console.log('insert adminlist',$('.adminlist'),wgWiki.stats.admins.users);
+                                      console.log('insert adminlist', $('.adminlist'), wgWiki.stats.admins.users);
                                       $('.adminlist').append($('<ul />'));
                                       for (var u in wgWiki.stats.admins.users) {
                                         $('.adminlist ul').append(
                                           $('<li />').append(
                                             $('<a />')
-                                            .attr('href','/wiki/Benutzer:' + wgWiki.stats.admins.users[u].name)
+                                            .attr('href', mw.util.getUrl('Benutzer:' + wgWiki.stats.admins.users[u].name))
                                             .text(wgWiki.stats.admins.users[u].name)
                                           )
                                         );
@@ -248,13 +249,13 @@ addOnloadHook(function () {
 });
 
 /* Fixes the forum header inside topic thread */
-addOnloadHook(function() {
-    contentHeader = $('.ContentHeader.Topic');
+$(document).ready(function() {
+    var contentHeader = $('.ContentHeader.Topic');
     contentHeader.detach();
     $('.BreadCrumbs').after(contentHeader);
     $('ul.ThreadList').before($('<h2 />').text('Bisherige Forenbeiträge zum Thema:'));
-    $('ul.ThreadList li.thread .thread-right').each(function(key,val) {
-        threadInfoContainer = $(val).closest($('ul.ThreadList li.thread'));
+    $('ul.ThreadList li.thread .thread-right').each(function(key, val) {
+        var threadInfoContainer = $(val).closest($('ul.ThreadList li.thread'));
         $(val).detach();
         threadInfoContainer.prepend($(val));
     });
@@ -262,7 +263,7 @@ addOnloadHook(function() {
 
 $('.page-Harry-Potter-Lexikon_Community_Portal .WikiaPageHeader').append(
     $('<a />').attr({
-        href: '/wiki/Project:Informationen zum Community Portal',
+        href: mw.util.getUrl('Project:Informationen zum Community Portal'),
         id: 'info',
         title: 'Informationen zum Community Portal'
     }).addClass('wikia-button secondary more-info-button').text('Info')
@@ -270,27 +271,27 @@ $('.page-Harry-Potter-Lexikon_Community_Portal .WikiaPageHeader').append(
 
 function rowGroup(groups) {
   for(var i in groups) {
-    console.log($('tr').find(groups[i]).first(),$('tr').find(groups[i]).last());
+    console.log($('tr').find(groups[i]).first(), $('tr').find(groups[i]).last());
     $('tr.' + groups[i]).first().before(
-      $('<tr />').addClass('caption').data('group',groups[i]).append(
+      $('<tr />').addClass('caption').data('group', groups[i]).append(
         $('<th />').attr('colspan','2').html(groups[i] + '<span style="float:right; padding-right:2px;"><img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" class="chevron"></span>')
       )
     );
-    $('tr.' + groups[i]).first().css('border-top','1px solid silver');
-    $('tr.' + groups[i]).last().css('border-bottom','1px solid silver');
-    $('.infobox-collapsable tr.caption').unbind().click(function() {
+    $('tr.' + groups[i]).first().css('border-top', '1px solid silver');
+    $('tr.' + groups[i]).last().css('border-bottom', '1px solid silver');
+    $('.infobox-collapsable tr.caption').off().click(function() {
       $('.infobox-collapsable').find('tr.' + $(this).data('group')).toggle();
       $(this).find('.chevron.rotate-180').length ? $(this).find('.chevron').removeClass('rotate-180') : $(this).find('.chevron').addClass('rotate-180');
-    })
+    });
   }
 }
 if($('.infobox-collapsable').length) {
     rowGroup(['general','look','trait']);
 }
 
-/*if(wgUserName === 'Agent Zuri') {
-    var index = wgUserGroups.indexOf('sysop');
-    wgUserGroups.splice(index, 1);
+/*if(mw.config.get('wgUserName') === 'Agent Zuri') {
+    var index = mw.config.get('wgUserGroups').indexOf('sysop');
+    mw.config.get('wgUserGroups').splice(index, 1);
 }*/
 
 importArticles({
@@ -333,7 +334,7 @@ for (var key in localizedMainPageTitles) {
 // Callback function used for tab text translation
 function setMainPageTabTextAPI(json) {
     var title = json.query.allmessages[0]['*'];
-    if (title) addOnloadHook(function () {
+    if (title) $(document).ready(function () {
         var tab = document.getElementById('ca-nstab-main');
         if (tab) tab = tab.getElementsByTagName('a')[0];
         while (tab && tab.firstChild) tab = tab.firstChild;
@@ -341,12 +342,12 @@ function setMainPageTabTextAPI(json) {
     });
 }
 
-if (wgNamespaceNumber < 2 && localizedMainPageTitles[wgTitle]) {
+if (mw.config.get('wgNamespaceNumber') < 2 && localizedMainPageTitles[mw.config.get('wgTitle')]) {
     // Replace the main page tab title with the [[MediaWiki:Mainpage-description]] message
-    importScriptURI(wgScriptPath + "/api.php?format=json&callback=setMainPageTabTextAPI&maxage=2592000&smaxage=2592000&action=query&meta=allmessages&ammessages=mainpage-description&amlang=" + wgUserLanguage);
+    importScriptURI(mw.config.get('wgScriptPath') + "/api.php?format=json&callback=setMainPageTabTextAPI&maxage=2592000&smaxage=2592000&action=query&meta=allmessages&ammessages=mainpage-description&amlang=" + mw.config.get('wgUserLanguage'));
 
     // Hide title when viewing the main page (but not when editing it or viewing the talk page)
-    if (wgNamespaceNumber === 0 && (wgAction == "view" || wgAction == "purge")) {
+    if (mw.config.get('wgNamespaceNumber') === 0 && (["view", "purge"].includes(mw.config.get('wgAction')))) {
         appendCSS("#firstHeading { display: none; }");
     }
 }
@@ -361,12 +362,12 @@ function suggestMainpageLang() {
         // now use reverse loop-up table to find the correct page (try up to first dash if full code is not found) 
         var page = localizedMainPageTitlesBack[lang] || localizedMainPageTitlesBack[lang.substr(0, lang.indexOf('-'))];
 
-        if (page && page !== wgTitle) {
+        if (page && page !== mw.config.get('wgTitle')) {
             mwb.innerHTML += '<br/><img src="http://bits.wikimedia.org/skins-1.5/common/images/redirectltr.png">' + '<span class="redirectText"><a href="/wiki/' + page + '">' + page + '</a></span>';
         }
     }
 }
-if (wgUserName === null) addOnloadHook(suggestMainpageLang);
+if (mw.config.get('wgUserName') === null) $(document).ready(suggestMainpageLang);
 
 // </source>
 
@@ -385,9 +386,9 @@ if (wgUserName === null) addOnloadHook(suggestMainpageLang);
 
 function UserNameReplace() {
     if (typeof (disableUsernameReplace) != 'undefined' && disableUsernameReplace) return;
-    $("span.insertusername").text(wgUserName || wgUserNameAnon);
+    $("span.insertusername").text(mw.config.get('wgUserName') || wgUserNameAnon);
 }
-addOnloadHook(UserNameReplace);
+$(document).ready(UserNameReplace);
 
 /* End of the {{BENUTZERNAME}} replacement */
 
@@ -469,13 +470,13 @@ function rewriteTitle() {
     var newTitle = $('#title-meta').html();
     if (skin == "oasis") {
         $('header div.header-column.header-title > h1').html(
-            $('<div />').attr('id',"title-meta").css("display","inline").html(newTitle)
+            $('<div />').attr('id', "title-meta").css("display", "inline").html(newTitle)
         );
         $('header div.header-column.header-title > h1').css('text-align', $('#title-align').html());
     }
     else {
         $('.firstHeading').html(
-            $('<div />').attr('id',"title-meta").css("display","inline").html(newTitle)
+            $('<div />').attr('id', "title-meta").css("display", "inline").html(newTitle)
         );
         $('.firstHeading').css('text-align', $('#title-align').html());
     }
@@ -491,7 +492,7 @@ function loadFunc() {
         return;
     }
 
-    window.pageName = wgPageName;
+    window.pageName = mw.config.get('wgPageName');
     window.storagePresent = (typeof (globalStorage) != 'undefined');
 
     addHideButtons();
@@ -564,7 +565,7 @@ function addAlternatingRowColors() {
     Requires copying Template:USERNAME.
 */
 function substUsername() {
-    $('.insertusername').text(wgUserName);
+    $('.insertusername').text(mw.config.get('wgUserName'));
 }
 
 function substUsernameTOC() {
@@ -703,7 +704,7 @@ $(loadFunc);
  */
 function addEditIntro(name) {
     // Top link
-    if (skin == 'oasis') {
+    if (mw.config.get('skin') == 'oasis') {
         $('a[data-id="edit"]').attr('href', $('a[data-id="edit"]').attr('href') + '&editintro=' + name);
         $('span.editsection > a').each(function () {
             $(this).attr('href', $(this).attr('href') + '&editintro=' + name);
@@ -733,8 +734,8 @@ function addEditIntro(name) {
     }
 }
 
-if (wgNamespaceNumber === 0) {
-    addOnloadHook(function () {
+if (mw.config.get('wgNamespaceNumber') === 0) {
+    $(document).ready(function () {
         var cats = document.getElementById('mw-normal-catlinks');
         if (!cats) return;
         cats = cats.getElementsByTagName('a');
@@ -764,8 +765,9 @@ function mainPageRenameNamespaceTab() {
     }
 }
 
-if (wgTitle == 'Main Page' && (wgNamespaceNumber === 0 || wgNamespaceNumber == 1)) {
-    addOnloadHook(mainPageRenameNamespaceTab);
+var config = mw.config.get(['wgCityId', 'wgNamespaceNumber']);
+if (config.wgTitle == 'Main_Page' && [0, 1].includes(config.wgNamespaceNumber)) {
+    $(document).ready(mainPageRenameNamespaceTab);
 }
 
 /** Archive edit tab disabling *************************************
@@ -786,8 +788,8 @@ function disableOldForumEdit() {
         return;
     }
 
-    if (skin == 'oasis') {
-        if (wgNamespaceNumber == 2 || wgNamespaceNumber == 3) {
+    if (mw.config.get('skin') == 'oasis') {
+        if (mw.config.get('wgNamespaceNumber') == 2 || mw.config.get('wgNamespaceNumber') == 3) {
             $("#WikiaUserPagesHeader .wikia-menu-button li a:first").html('Archived').removeAttr('href').attr('style', 'color: darkgray;');
             $('span.editsection').remove();
             return;
@@ -802,9 +804,9 @@ function disableOldForumEdit() {
         return;
     }
 
-    if (skin == 'monaco') {
+    if (mw.config.get('skin') == 'monaco') {
         editLink = document.getElementById('ca-edit');
-    } else if (skin == 'monobook') {
+    } else if (mw.config.get('skin') == 'monobook') {
         editLink = document.getElementById('ca-edit').firstChild;
     } else {
         return;
@@ -820,33 +822,33 @@ function disableOldForumEdit() {
 
     appendCSS('#control_addsection, #ca-addsection { display: none !important; }');
 }
-addOnloadHook(disableOldForumEdit);
+$(document).ready(disableOldForumEdit);
 
 //Removes the "Featured on:" line on File pages -- By Grunny
-addOnloadHook(function () {
-    if (wgNamespaceNumber == 6 && $('#file').length !== 0) {
+$(document).ready(function () {
+    if (mw.config.get('wgNamespaceNumber') == 6 && $('#file').length !== 0) {
         $('#file').html($('#file').html().replace(/Featured on\:(.*?)<br>/, ''));
     }
 });
 
 /* Temporary fix for the duration of the giveaway to let others use talk pages 
 $( function () {
-	if( wgTitle == 'Wizarding World Giveaway' || wgTitle == 'Deathly Hallows Premiere Event' ) {
+	if( ['Wizarding World Giveaway', 'Deathly Hallows Premiere Event'].includes(mw.config.get('wgTitle')) ) {
 		return;
 	}
-	if( wgNamespaceNumber == 0 ) {
-		if( skin == 'oasis' ) {
-			$('ul.commentslikes > li.comments > a').text('Talk').attr('href','/wiki/Talk:'+ encodeURIComponent (wgPageName));
+	if( mw.config.get('wgNamespaceNumber') == 0 ) {
+		if( mw.config.get('skin') == 'oasis' ) {
+			$('ul.commentslikes > li.comments > a').text('Talk').attr('href', mw.util.getUrl('Talk:'+ wgPageName));
 			$('section#WikiaArticleComments').remove();
 		} else {
-			$('#p-cactions > .pBody > ul > #ca-nstab-main').after('<li id="ca-talk"><a accesskey="t" title="Discussion about the content page [t]" href="/wiki/Talk:'+ encodeURIComponent (wgPageName) +'">Discussion</a></li>');
+			$('#p-cactions > .pBody > ul > #ca-nstab-main').after('<li id="ca-talk"><a accesskey="t" title="Discussion about the content page [t]" href="+ mw.util.getUrl('Talk:'+ wgPageName) +'">Discussion</a></li>');
 			$('div#article-comments-wrapper').remove();
 		}
 	}
 } ); */
 
 //edit buttons
-if (mwCustomEditButtons) {
+if (mwCustomEditButtons != null) {
     mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile": "https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png",
             "speedTip": "Redirect",
@@ -948,16 +950,16 @@ dragobject.initialize();
 
 /* Sachen, die nur Administratoren und Helfern angezeigt werden (sysop.js ist ausschließlich den Administratoren vorbehalten) */
 /*
-if (wgUserGroups) {
-    for (var g = 0; g < wgUserGroups.length; ++g) {
-        if (wgUserGroups[g] == "sysop") {
+if (mw.config.get('wgUserGroups')) {
+    for (var g = 0; g < mw.config.get('wgUserGroups').length; ++g) {
+        if (mw.config.get('wgUserGroups')[g] == "sysop") {
             importStylesheet("MediaWiki:Sysop.css");
             $(function () {
                 if (!window.disableSysopJS) {
                     importScript("MediaWiki:Sysop.js");
                 }
             });
-        } else if (wgUserGroups[g] == "helper") {
+        } else if (mw.config.get('wgUserGroups')[g] == "helper") {
             importStylesheet("MediaWiki:Sysop.css");
         }
     }
@@ -976,58 +978,57 @@ if (wgUserGroups) {
             $('.getPageContent').each(function () {
                 var self = this;
                 doChange = false;
-                $.ajax('/wiki/' + encodeURIComponent($(self).attr('data-page'))).done(function (data) {
+                $.ajax(mw.util.getUrl($(self).attr('data-page'))).done(function (data) {
                     $(self).replaceWith($(data).find('#mw-content-text'));
                     doChange = true;
                 });
-
             });
         }
     }).trigger('DOMNodeInserted');
 })();
 
 
-function getArticleId(title,callback){
+function getArticleId(title, callback){
     $.getJSON('/api/v1/Articles/Details?titles=' + encodeURIComponent(title)).done(callback);
 }
 
-function getArticleDescription(id,callback){
+function getArticleDescription(id, callback){
     $.getJSON('/api/v1/Articles/AsSimpleJson?id=' + id).done(callback);
 }
 
 /* Why can't wikia make their own code work? */
-addOnloadHook(function(){
+$(document).ready(function(){
     if(JSSnippets!==undefined){
         JSSnippets.init();
     }
 });
 
-addOnloadHook(function(){
+$(document).ready(function(){
     setTimeout(function(){ // ok, i guess i'm ready to die
         $('img.lzy').map(function(){
             this.src = $(this).attr('data-src');
         });
-    },3000);
+    }, 3000);
 });
 
 
 // belongs to
-addOnloadHook(function(){
+$(document).ready(function(){
     if ($('#article-belongs-to').length === 0) {
         return;
     }
     var $belongsTo = $('#article-belongs-to').detach();
-    if (skin == "oasis") {
+    if (mw.config.get('skin') == "oasis") {
         $('header div.header-column.header-title')
             .append(
                 $('<h2>').append($belongsTo)
             )
-            .css('text-align',$belongsTo.css('text-align'));
+            .css('text-align', $belongsTo.css('text-align'));
     } else {
         $('.secondHeading')
             .emtpy()
             .append($belongsTo)
-            .css('text-align',$belongsTo.css('text-align'));
+            .css('text-align', $belongsTo.css('text-align'));
     }
 });
 

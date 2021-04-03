@@ -5,7 +5,6 @@
  * @use Adds a dropdown with page tools to a page
 */
 ;(function($, mw, window) {
-    // 'use strict';
     //Global Variables
     var page_name = mw.html.escape(mw.config.get("wgPageName")),
         token = mw.user.tokens.values.editToken,
@@ -14,20 +13,33 @@
         namespace = mw.config.get("wgNamespaceNumber"),
         usergroups = mw.config.get("wgUserGroups"),
         url = window.location.pathname,
-        username = mw.html.escape($('.masthead-info h1').text());
+        username = mw.html.escape(mw.config.get("wgTitle")).replace(/(?:message[_ ]wall|contrib(?:utions|s)|user[_ ]talk|UserProfileActivity|user|user[_ ]blog)[:\/]?/gmi, ''),
+        query = {
+	        "action": "query",
+	        "format": "json",
+	        "meta": "allmessages",
+	        "ammessages": "user-identity-box-group-blocked",
+        },
+        api = new mw.Api();
     
-    //sub-variables
-    var CAN_DELETE = /sysop|content-moderator|vstf|staff|helper|content-volunteer|content-team-member|wiki-manager/.test(usergroups.join()),
-        CAN_BLOCK = /sysop|vstf|staff|helper|global-discussions-moderator|wiki-manager/.test(usergroups.join()),
-        IS_BLOCKED = $('.tag').text() === "Blocked";
+    function main() {
+    // open message api
+    api.post(query).done(function(data) {
+        
+    //constants
+    const CAN_DELETE = /sysop|content-moderator|soap|staff|helper|content-volunteer|content-team-member|wiki-manager/.test(usergroups.join()),
+         CAN_BLOCK = /sysop|soap|staff|helper|global-discussions-moderator|wiki-manager/.test(usergroups.join()),
+         IS_BLOCKED = $('.tag').text() === data.query.allmessages[0]["*"],
+         PAGE_PATHNAME = mw.config.get('wgArticlePath').replace('$1', ''),
+         IS_UCP = mw.config.get('wgVersion') !== "1.19.24";
     
-    if (namespace === -1 && !$('#UserProfileMasthead').length || window.moreDropdownloaded) {
+    if (namespace === -1 && !pagename.match("/") || window.moreDropdownloaded) {
         return;
     }
 
     window.moreDropdownloaded = true;
     
-   $('.page-header__contribution').prepend(
+    $('.page-header__contribution').prepend(
         "<div class=\"wds-dropdown\" style=\"padding-bottom: 12px;\" id=\"more-dropdown-button\">" + 
             "<div class=\"wds-dropdown__toggle\">" + 
                 "<span>More</span>" + 
@@ -41,11 +53,11 @@
             "</div>" + 
             "<div class=\"wds-dropdown__content wds-is-not-scrollable wds-is-right-aligned\">" + 
                 "<ul class=\"wds-list wds-is-linked\" id=\"more-dropdown\">" + 
-                    "<li id=\"md-subpages\"><a href=\"/wiki/Special:PrefixIndex/" + fullpage + "/\">Subpages</a></li>" +
-                    "<li id=\"md-purge\"><a href=\"/wiki/" + fullpage + "?action=purge\">Purge</a></li>" +
-                    "<li id=\"md-latest-diff\"><a href=\"/wiki/" + fullpage + "?diff=cur\">Latest Edit</a></li>" +
-                    "<li id=\"md-page-logs-dropdown\" class=\"wds-dropdown-level-2\">" + 
-                        "<a href=\"/wiki/Special:Log?page=" + fullpage + "\" class=\"wds-dropdown-level-2__toggle\">" + 
+                    "<li id=\"md-subpages\"><a href=\"" + PAGE_PATHNAME + "Special:PrefixIndex/" + fullpage + "/\">Subpages</a></li>" +
+                    "<li id=\"md-purge\"><a href=\"" + PAGE_PATHNAME + fullpage + "?action=purge\">Purge</a></li>" +
+                    "<li id=\"md-latest-diff\"><a href=\"" + PAGE_PATHNAME + fullpage + "?diff=cur\">Latest Edit</a></li>" +
+                    "<li id=\"md-page-logs-dropdown\" class=\"wds-is-sticked-to-parent wds-dropdown-level-2\">" + 
+                        "<a href=\"" + PAGE_PATHNAME + "Special:Log?page=" + fullpage + "\" class=\"wds-dropdown-level-2__toggle\">" + 
                             "<span>Page Logs</span>" + 
                             "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 12\" class=\"wds-icon wds-icon-tiny wds-dropdown-chevron\" id=\"wds-icons-menu-control-tiny\">" + 
                                 "<path d=\"M11.707 3.293a.999.999 0 0 0-1.414 0L6 7.586 1.707 3.293A.999.999 0 1 0 .293 4.707l5 5a.997.997 0 0 0 1.414 0l5-5a.999.999 0 0 0 0-1.414\" fill-rule=\"evenodd\"></path>" + 
@@ -53,22 +65,22 @@
                         "</a>" + 
                         "<div class=\"wds-is-not-scrollable wds-dropdown-level-2__content\">" + 
                             "<ul class=\"wds-list wds-is-linked\">" + 
-                                "<li><a href=\"/wiki/Special:Log/delete?page=" + fullpage + "\">Deletion Log</a></li>" + 
-                                "<li><a href=\"/wiki/Special:Log/move?page=" + fullpage + "\">Move Log</a></li>" + 
-                                "<li><a href=\"/wiki/Special:Log/protect?page=" + fullpage + "\">Protection Log</a></li>" + 
-                                "<li><a href=\"/wiki/Special:AbuseLog?wpSearchTitle=" + fullpage + "\">Filter Log</a></li>" + 
+                                "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/delete?page=" + fullpage + "\">Deletion Log</a></li>" + 
+                                "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/move?page=" + fullpage + "\">Move Log</a></li>" + 
+                                "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/protect?page=" + fullpage + "\">Protection Log</a></li>" + 
+                                "<li><a href=\"" + PAGE_PATHNAME + "Special:AbuseLog?wpSearchTitle=" + fullpage + "\">Filter Log</a></li>" + 
                             "</ul>" + 
                         "<div>" + 
                     "</li>" + 
-                    "<li id=\"md-whl\"><a href=\"/wiki/Special:WhatLinksHere/" + fullpage + "\">What links here</a></li>" +
-                    (CAN_DELETE?"<li id=\"md-del-revs\"><a href=\"/wiki/Special:Undelete/" + fullpage + "\">Del. Revisions</a></li>":"") +
+                    "<li id=\"md-whl\"><a href=\"" + PAGE_PATHNAME + "Special:WhatLinksHere/" + fullpage + "\">What links here</a></li>" +
+                    (CAN_DELETE?"<li id=\"md-del-revs\"><a href=\"" + PAGE_PATHNAME + "Special:Undelete/" + fullpage + "\">Del. Revisions</a></li>":"") +
                 "</ul>" + 
             "</div>" + 
         "</div>"
     );
     
 
-        $('.masthead-info').prepend(
+        $(IS_UCP?'user-identity-social__icon wds-dropdown':'.masthead-info').prepend(
             "<ul class=\"user-identity-box-edit\" style=\"bottom: 0;margin: 15px;\" id=\"more-dropdown-button\">" + 
                 "<li>" + 
                     "<div class=\"wds-dropdown\">" + 
@@ -84,10 +96,10 @@
                             "</div>" + 
                             "<div class=\"wds-dropdown__content wds-is-not-scrollable wds-is-right-aligned\">" + 
                                 "<ul class=\"wds-list wds-is-linked\" id=\"more-dropdown\">" + 
-                                    "<li id=\"md-subpages\"><a href=\"/wiki/Special:PrefixIndex/" + ((namespace === 3 || namespace === 2)?fullpage:"User:" + username) + "/\" title=\"View Subpages of this page\">Subpages</a></li>" + 
-                                    "<li id=\"md-purge\"><a href=\"/wiki/" + fullpage + "?action=purge\">Purge</a></li>" +
+                                    "<li id=\"md-subpages\"><a href=\"" + PAGE_PATHNAME + "Special:PrefixIndex/" + ((namespace === 3 || namespace === 2)?fullpage:"User:" + username) + "/\" title=\"View Subpages of this page\">Subpages</a></li>" + 
+                                    "<li id=\"md-purge\"><a href=\"" + PAGE_PATHNAME + fullpage + "?action=purge\">Purge</a></li>" +
                                     "<li id=\"md-page-logs-dropdown\" class=\"wds-dropdown-level-2\">" + 
-                                        "<a href=\"/wiki/Special:Log?page=User:" + username + "\" class=\"wds-dropdown-level-2__toggle\">" + 
+                                        "<a href=\"" + PAGE_PATHNAME + "Special:Log?page=User:" + username + "\" class=\"wds-dropdown-level-2__toggle\">" + 
                                             "<span>Page Logs</span>" + 
                                             "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 12\" class=\"wds-icon wds-icon-tiny wds-dropdown-chevron\" id=\"wds-icons-menu-control-tiny\">" + 
                                                 "<path d=\"M11.707 3.293a.999.999 0 0 0-1.414 0L6 7.586 1.707 3.293A.999.999 0 1 0 .293 4.707l5 5a.997.997 0 0 0 1.414 0l5-5a.999.999 0 0 0 0-1.414\" fill-rule=\"evenodd\"></path>" + 
@@ -95,17 +107,33 @@
                                         "</a>" + 
                                         "<div class=\"wds-is-not-scrollable wds-dropdown-level-2__content\">" + 
                                             "<ul class=\"wds-list wds-is-linked\">" + 
-                                                "<li><a href=\"/wiki/Special:AbuseLog?wpSearchTitle=" + username + "\">Filter Log</a></li>" + 
-                                                "<li><a href=\"/wiki/Special:Log/delete?page=User:" + username + "\">Deletion Log</a></li>" + 
-                                                "<li><a href=\"/wiki/Special:Log/move?page=User:" + username + "\">Move Log</a></li>" + 
-                                                "<li><a href=\"/wiki/Special:Log/protect?page=User:" + username + "\">Protection Log</a></li>" + 
-                                                "<li><a href=\"/wiki/Special:Log/rights?page=User:" + username + "\">User Rights Log</a></li>" + 
-                                                "<li><a href=\"/wiki/Special:Log/block?page=User:" + username + "\">Block Log</a></li>" +
+                                                "<li><a href=\"" + PAGE_PATHNAME + "Special:AbuseLog?wpSearchTitle=" + username + "\">Filter Log</a></li>" + 
+                                                "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/delete?page=User:" + username + "\">Deletion Log</a></li>" + 
+                                                "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/move?page=User:" + username + "\">Move Log</a></li>" + 
+                                                "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/protect?page=User:" + username + "\">Protection Log</a></li>" + 
+                                                "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/rights?page=User:" + username + "\">User Rights Log</a></li>" + 
+                                                "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/block?page=User:" + username + "\">Block Log</a></li>" +
                                         "</ul>" + 
                                     "<div>" + 
-                                "</li>" + 
-                                (CAN_BLOCK? "<li id=\"md-block\"><a href=\"/wiki/" + (IS_BLOCKED?"Special:Unblock/":"Special:Block/") + username + "\">" + (IS_BLOCKED?"Unblock User":"Block User") + "</a></li>" + (IS_BLOCKED?"<li id=\"md-reblock\"><a href=\"/wiki/Special:Block/" + username + "\">Change Block</a></li>":"") : "") + ((CAN_DELETE && window.NukeLoaded)?
-                                    "<li id=\"md-nuke\"><a href=\"/wiki/Special:BlankPage?blankspecial=nuke&nukeuser=" + username + "\">Nuke</a></li>": "") + 
+                                "</li>" +
+                                (CAN_BLOCK?(IS_BLOCKED?
+                                "<li id=\"md-page-block-ops-dropdown\" class=\"wds-is-sticked-to-parent wds-dropdown-level-2\">" + 
+                                    "<a href=\"" + PAGE_PATHNAME + "Special:Log/block?page=User:" + username + "\" class=\"wds-dropdown-level-2__toggle\">" +                                             
+                                    "<span>Block Tools</span>" + 
+                                        "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 12\" class=\"wds-icon wds-icon-tiny wds-dropdown-chevron\" id=\"wds-icons-menu-control-tiny\">" + 
+                                            "<path d=\"M11.707 3.293a.999.999 0 0 0-1.414 0L6 7.586 1.707 3.293A.999.999 0 1 0 .293 4.707l5 5a.997.997 0 0 0 1.414 0l5-5a.999.999 0 0 0 0-1.414\" fill-rule=\"evenodd\"></path>" + 
+                                        "</svg>" + 
+                                    "</a>" + 
+                                    "<div class=\"wds-is-not-scrollable wds-dropdown-level-2__content\">" + 
+                                        "<ul class=\"wds-list wds-is-linked\">" + 
+                                            "<li><a href=\"" + PAGE_PATHNAME + "Special:Unblock/" + username + "\">Unblock</a></li>" + 
+                                            "<li><a href=\"" + PAGE_PATHNAME + "Special:Block/" + username + "\">Change block</a></li>" + 
+                                            "<li><a href=\"" + PAGE_PATHNAME + "Special:BlockList?wpTarget=" + username + "\">View Block</a></li>" +
+                                        "</ul>" + 
+                                    "<div>" + 
+                                "</li>":"<li id=\"md-block\"><a href=\"" + PAGE_PATHNAME + "Special:Block/" + username + "\">Block</a></li>"):"")
+                                 + ((CAN_DELETE && window.NukeLoaded)?
+                                    "<li id=\"md-nuke\"><a href=\"" + PAGE_PATHNAME + "Special:BlankPage?blankspecial=nuke&nukeuser=" + username + "\">Nuke</a></li>": "") + 
                            "</ul>" + 
                         "</div>" + 
                     "</div>" +
@@ -113,7 +141,7 @@
             "</ul>"
         );
     
-    if ($('#UserProfileMasthead').length) {
+    if ($(IS_UCP?"#userProfileApp":'#UserProfileMasthead').length) {
         $('#more-dropdown-button').after(
         "<ul class=\"user-identity-box-edit\" style=\"bottom: 0;margin: 15px; right: 60px;\" id=\"user-more-dropdown-button\">" + 
                 "<li>" + 
@@ -131,7 +159,7 @@
                             "<div class=\"wds-dropdown__content wds-is-not-scrollable wds-is-right-aligned\">" + 
                                 "<ul class=\"wds-list wds-is-linked\" id=\"user-more-dropdown\">" + 
                                     "<li id=\"user-md-logs-dropdown\" class=\"wds-dropdown-level-2\">" + 
-                                        "<a href=\"/wiki/Special:Log/" + username + "\" class=\"wds-dropdown-level-2__toggle\">" + 
+                                        "<a href=\"" + PAGE_PATHNAME + "Special:Log/" + username + "\" class=\"wds-dropdown-level-2__toggle\">" + 
                                             "<span>Logs</span>" + 
                                             "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 12\" class=\"wds-icon wds-icon-tiny wds-dropdown-chevron\" id=\"wds-icons-menu-control-tiny\">" + 
                                                 "<path d=\"M11.707 3.293a.999.999 0 0 0-1.414 0L6 7.586 1.707 3.293A.999.999 0 1 0 .293 4.707l5 5a.997.997 0 0 0 1.414 0l5-5a.999.999 0 0 0 0-1.414\" fill-rule=\"evenodd\"></path>" + 
@@ -139,20 +167,20 @@
                                         "</a>" + 
                                         "<div class=\"wds-is-not-scrollable wds-dropdown-level-2__content\">" + 
                                             "<ul class=\"wds-list wds-is-linked\">" + 
-                                                "<li><a href=\"/wiki/Special:Log/" + username + "?type=abusefilter\">Filter Modification Log</a></li>" + 
-                                                "<li><a href=\"/wiki/Special:Log/" + username + "?type=delete\">Deletion Log</a></li>" + 
-                                                "<li><a href=\"/wiki/Special:Log/" + username + "?type=move\">Move Log</a></li>" + 
-                                                "<li><a href=\"/wiki/Special:Log/" + username + "?type=protect\">Protection Log</a></li>" + 
-                                                "<li><a href=\"/wiki/Special:Log/" + username + "?type=rights\">User Rights Log</a></li>" + 
-                                                "<li><a href=\"/wiki/Special:Log/" + username + "?type=block\">Block Log</a></li>" +
+                                                "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/" + username + "?type=abusefilter\">Filter Modification Log</a></li>" + 
+                                                "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/" + username + "?type=delete\">Deletion Log</a></li>" + 
+                                                "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/" + username + "?type=move\">Move Log</a></li>" + 
+                                                "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/" + username + "?type=protect\">Protection Log</a></li>" + 
+                                                "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/" + username + "?type=rights\">User Rights Log</a></li>" + 
+                                                "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/" + username + "?type=block\">Block Log</a></li>" +
                                         "</ul>" + 
                                     "<div>" + 
                                 "</li>" + 
-                                "<li id=\"user-md-contribs\"><a href=\"/wiki/Special:Contributions/" + username +"\">Contributions</a></li>" + 
-                                (CAN_DELETE?"<li id=\"user-md-del-contribs\"><a href=\"/wiki/Special:DeletedContributions/" + username + "\">Del. Contribs</a></li>":"") + 
-                                "<li id=\"user-md-uploads\"><a href=\"/wiki/Special:Log/" + username + "?type=upload\">Uploads</a></li>" + 
-                                "<li id=\"user-md-abuselog\"><a href=\"/wiki/Special:AbuseLog?wpSearchUser=" + username + "\">Abuse log</a></li>" + 
-                                "<li id=\"user-md-abusefilter-examine\"><a href=\"/wiki/Special:AbuseFilter/examine?wpSearchUser=" + username + "&submit=1\">Examine Edits</a></li>" + 
+                                "<li id=\"user-md-contribs\"><a href=\"" + PAGE_PATHNAME + "Special:Contributions/" + username +"\">Contributions</a></li>" + 
+                                (CAN_DELETE?"<li id=\"user-md-del-contribs\"><a href=\"" + "PAGE_PATHNAME + Special:DeletedContributions/" + username + "\">Del. Contribs</a></li>":"") + 
+                                "<li id=\"user-md-uploads\"><a href=\"" + PAGE_PATHNAME + "Special:Log/" + username + "?type=upload\">Uploads</a></li>" + 
+                                "<li id=\"user-md-abuselog\"><a href=\"" + PAGE_PATHNAME + "Special:AbuseLog?wpSearchUser=" + username + "\">Abuse log</a></li>" + 
+                                "<li id=\"user-md-abusefilter-examine\"><a href=\"" + PAGE_PATHNAME + "Special:AbuseFilter/examine?wpSearchUser=" + username + "&submit=1\">Examine Edits</a></li>" + 
                            "</ul>" + 
                         "</div>" + 
                     "</div>" +
@@ -160,6 +188,18 @@
             "</ul>"
         );
     }
+    });
     
+    }
+    
+    var inter = setInterval(function() {
+        if ($('.user-identity-box__info').length && (namespace === -1 || namespace === 2)) {
+            clearInterval(inter);
+            main();
+        } else {
+            clearInterval(inter);
+            main();
+        }
+    }, 50);
     
 })(jQuery, mediaWiki, window);

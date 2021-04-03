@@ -15,9 +15,9 @@ window.BackToTopModern = true;
 window.ArticleRating = {
   values: ['Kooky', 'Bad', 'Average', 'Good', 'Perfecto'],
   starSize: [28, 28],
-}
+};
 
-/* UserTags */
+/* UserTags 
 
 window.UserTagsJS = {
 	modules: {},
@@ -83,8 +83,8 @@ UserTagsJS.modules.metafilter = {
     'chatmoderator': ['bot', 'bot-global'],
     'rollback': ['bot', 'bot-global'],
 };
-
-/* LinkPreview */
+*/
+/* LinkPreview 
 
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 
@@ -95,55 +95,8 @@ window.pPreview.noimage = 'https://images.wikia.nocookie.net/wubbzy/images/2/29/
 window.pPreview.tlen = 200;
 
 window.pPreview.RegExp.iparents = ['.portable-infobox', 'img', '.avatar'];
+*/
 
-/* RailWAM */
-
-window.railWAM = {
-    logPage:"Project:WAM Log",
-    autoLogForUsers:"SuKanzoo, AndreMor, Thevideogameguy22, Super Robot 3000",
-    botUsers:"Super Robot 3000",
-};
-
-/* Quiz */
-var quizName = "Wow! Wow! Wubbzy! Quiz";
-var quizLang = "en";
-var resultsTextArray = [ 
-    "Hmmm... Too bad. You don't have much knowledge of the series. But don't worry, you can learn by watching the series or reading the wiki articles!",
-    "Wow, you do know about the series! Keep learning by reading some articles from the wiki.",
-    "Congratulations! You have achieved the maximum score. We love that you know about this series!!!! On behalf of the entire Wubbzypedia team!" 
-];
-var questions = [
-    ["Which is not a Jukebox Robot song?",
-    "Pet Party",
-    "The Wubbzy Wiggle",
-    "Robot Dance",
-    "Happy Hop"], 
- 
-    ["What's the name of Widget's cousin?",
-    "Ratchet",
-    "Hatchet",
-    "Gadget"],
- 
-    ["What causes a fleegle to multiply?",
-    "Bologna",
-    "Potato chips",
-    "Marshmallows"],
-    
-    ["What's the brand that created Wubbzy plushes in more than one size?",
-    "Nanco",
-    "Fisher-Price",
-    "Ty"],
-    
-    ["How do monsters count to 15?",
-    "With their fingers",
-    "With their eyes",
-    "With their spots"],
-    
-    ["Who sings the song Come Play With Me?",
-    "Mike Reagan",
-    "Bob Boyle",
-    "Brad Mossman"]
-];
 
 /* MessageBlock */
 
@@ -159,30 +112,40 @@ window.MassCategorizationGroups = ['sysop', 'content-moderator'];
 
 /* Other */
 
+if(!mw.storage.get('noti')) {
+	mw.notify($('<a href="https://discord.gg/fWP7a6J">https://discord.gg/fWP7a6J</a>'), { autoHide: false, tag: "discord", title: "Join our server at Discord" }).then(function() {
+		document.getElementsByClassName("mw-notification-tag-discord")[0].addEventListener("click", function() {
+			mw.storage.set("noti", "true");
+		});
+	});
+}
+     
+if(!mw.storage.get('noti2')) {
+    mw.notify($('<span>Please, if you are new by editing on this wiki, check the <a href="https://wubbzy.fandom.com/wiki/Help:Community_rules">rules</a> we have set for the comfort of the community and the reader</span>'), { autoHide: false, tag: "rules", title: "Community rules", type: "warn" }).then(function() {
+        document.getElementsByClassName("mw-notification-tag-rules")[0].addEventListener("click", function() {
+            mw.storage.set("noti2", "true");
+        });
+    });
+}
+
 if (mw.config.get("wgUserGroups").indexOf('sysop') > -1) {
-    importArticle({
-    type: 'script',
-    article: ['u:dev:MediaWiki:AddAnnouncement/code.js']
-});
+	try {
+		importArticle({
+			type: 'script',
+			article: 'u:dev:MediaWiki:AddAnnouncement/code.js'
+		});
+	} catch (err) {
+		console.log("AddAnnouncement error: " + err);
+	}
 }
 
 if (mw.config.get("wgUserGroups").indexOf('sysop', 'content-moderator') > -1) {
-    importArticle({
-    type: 'script',
-    article: ['MediaWiki:Group-sysop.js']
-});
-}
-
-/* WDS Notification */
-
-if (!$.storage.get('noti2')) {
-    new BannerNotification('Please, if you are new by editing on this wiki, check the <a href="https://wubbzy.fandom.com/wiki/Help:Community_guidelines">rules</a> we have set for the comfort of the community and the reader', 'warn').onClose(function () {
-        $.storage.set('noti2', true);
-    }).show();
-}
-
-if (!$.storage.get('noti')) {
-    new BannerNotification('Join our server at Discord, Wow Wow Discord: <a href="https://discord.gg/fWP7a6J">Here!</a>', 'notify').onClose(function () {
-        $.storage.set('noti', true);
-    }).show();
+	try {
+		importArticle({
+			type: 'script',
+			article: 'MediaWiki:Group-sysop.js'
+		});
+	} catch(err) {
+		console.log("Error when importing scripts for mods: " + err);
+	}
 }

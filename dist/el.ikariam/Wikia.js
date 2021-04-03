@@ -10,7 +10,7 @@ $(function changeTS() {
                     for (var k = 0; k < oldClasses.length; k++) {
                         if (oldClasses[k] !== "" && oldClasses[k] != "alt") newClassName += oldClasses[k] + " ";
                 }
-                tableRows[j].className = newClassName + (j%2 == 0?"alt":"");
+                tableRows[j].className = newClassName + (j%2 === 0?"alt":"");
             }
         }
     };
@@ -23,7 +23,7 @@ $(function() {
 
 // Make it so that when adding a new image you can not click "Upload" until you choose a license first.
 $(function requireImageLicense() {
-    if (wgPageName == "Special:Upload" && getParamValue("wpDestFile") == null) {
+    if (wgPageName == "Special:Upload" && getParamValue("wpDestFile") === null) {
         $("[name=wpUpload]").not("#wpUpload").attr("disabled","true");
         $("#wpLicense").change(function () {
             if ($("#wpLicense").val()) {
@@ -211,6 +211,93 @@ function FrmtNumToStr(inputNum,outputSign,precision)
 	}
 	else return inputNum;
 }
+function mul(p)
+{
+	p = parseInt(p);
+	switch(true)
+	{
+		case (p >= 1 && p <= 5):
+			return 3-0.25*p;
+		case (p >= 6 && p <= 10):
+			return 2.25-0.125*p;
+		case (p >= 11 && p <= 20):
+			return 0.875;
+		case (p >= 21 && p <= 30):
+			return 0.75;
+		case (p >= 31 && p <= 50):
+			return 0.5;
+		case (p >= 51 || p <= 0):
+			return 0;
+	}
+}
+function calc(rank,townhall,level,type)
+{
+	var rk = !isNaN(parseInt(rank))?parseInt(rank):0;
+	var tw = townhall?true:false;
+	var lv = !isNaN(parseInt(level))?parseInt(level):0;
+	var types = ['safe','resource','rsum'];
+	var tp = types.indexOf(type);
+	var cf = tp==-1?0:(tp<2?1:(tp==2?5:(tp==3?12:0)));
+	return ((tw?100:0)+lv*480)*(tp>=1?mul(rk):1)*(tp==2?5:1);
+}
+function translate(lang)
+{
+	var arr = ['citytitle','citynum','wlvls','safeqnty','safewoodqnty','safewineqnty','safemarbleqnty','safecrystalqnty','safesulfurqnty','safesumqnty','sum','townsum','levelsum','safesum','woodsum','winesum','marblesum','glasssum','sulfursum','resqntysum'];
+	$('#flags > img').each(function(x,i) { $(i).css({'cursor':'pointer','opacity':'1.0'}); });
+	$('[id="'+lang+'"]').css({'cursor':'default','opacity':'0.5'});
+	$('#rank').before(lg[lang].rnklbl+': ');
+	$('#rewardtable > thead > tr:first > th').contents().first().each(function(){$(this).replaceWith(lg[lang].rcvdres)});
+	$('#rank_v').text(FrmtNumToStr(mul($('#rank').val()),false,3).replace(/0+$/,'').replace(/[,.]$/,''));
+	$('#rewardtable > thead > tr:last > th:first').attr('title',lg[lang].citytitle).text(lg[lang].city);
+	$('#rewardtable > thead > tr:last > th').each(function(k,th)
+	{
+		$(th).attr('title',lg[lang][arr[k]]);
+		switch(k)
+		{
+			case 0:
+				$(th).text(lg[lang].city);
+				break;
+			case $('#rewardtable > thead > tr:last > th').length-1:
+				$(th).text(lg[lang].sum);
+				break;
+		}
+	});
+	$('#rewardtable > tfoot > tr > th').each(function(k,th)
+	{
+		switch(k)
+		{
+			case 0:
+				$(th).text(lg[lang].sum);
+				break;
+			default:
+				$(th).attr('title',lg[lang][arr[k+10]]);
+				break;
+		}
+	});
+	$('#townsum').text($('input[id^="town"]:checked').length);
+	var lsum = 0;
+	var sfsum = 0;
+	var ressum = 0;
+	$('input[id^="town"]:checked').each(function()
+	{
+		$(this).parents('tr').css('opacity','1.0').find('input[type="number"]').prop('disabled',false);
+		var lv = parseInt($(this).parents('tr').find('input[type="number"]').val());
+		lsum += lv;
+		sfsum += calc($('#rank').val(),true,lv,'safe');
+		$(this).parents('tr').find('td[id^="safe"]').text(FrmtNumToStr(calc($('#rank').val(),true,lv,'safe'),false,0));
+		$(this).parents('tr').find('td[id^="wood"],td[id^="wine"],td[id^="marble"],td[id^="glass"],td[id^="sulfur"]').text(FrmtNumToStr(calc($('#rank').val(),true,lv,'resource'),false,0));
+		ressum += calc($('#rank').val(),true,lv,'resource');
+		$(this).parents('tr').find('td[id^="citysum"]').text(FrmtNumToStr(calc($('#rank').val(),true,lv,'rsum'),false,0));
+	});
+	$('input[id^="town"]:not(:checked)').each(function()
+	{
+		$(this).parents('tr').css('opacity','0.5').find('input[type="number"]').prop('disabled',true).val(0).parents('tr').find('td:gt(2)').text('0');
+	});
+	$('#levelsum').text(FrmtNumToStr(lsum,false,0));
+	$('#safesum').text(FrmtNumToStr(sfsum,false,0));
+	$('#woodsum,#winesum,#marblesum,#glasssum,#sulfursum').text(FrmtNumToStr(ressum,false,0));
+	$('#sum').text(FrmtNumToStr(ressum*5,false,0));
+}
 function Tip(txt,tip,type)
 {
 	switch(type)
@@ -252,19 +339,19 @@ function Tips(q,r,s,a)
 			break;
 	}
 }
-function img(i,t,a,c,w,h,l)
+function img(i,t,a,c,w,h,l) // Όνομα εικόνας, Επεξήγηση, Εναλλακτικό κείμενο, κλάση, πλάτος, ύψος, σύνδεσμος
 {
 	var s = ' style="width:'+(w&&w!==''?w+'px':'auto')+';height:'+(h&&h!==''?h+'px':'auto')+'"';
 	var p = i&&i!==''?'<img src="https://ikariam.fandom.com/el/wiki/Special:Filepath/'+i+'"'+(t&&t!==''?' data-tooltip="'+t+'"':'')+(' alt="'+(a&&a!==''?a:i.replace('_',' '))+'"')+(c&&c!==''?' class="'+c+' ikariam-tooltip"':'')+' data-image-key="'+i+'" data-image-name="'+i.replace('_',' ')+'"'+s+'>':'';
 	return (l&&l!==''?'<a href="'+(l!==''?l:'/el/wiki/Special:Filepath/'+i)+'">':'')+p+(l&&l!==''?'</a>':'');
 }
-function icon(r,w,h)
+function icon(r,w,h) // εικόνα, πλάτος, ύψος
 {
 	var res = ['wood_small.gif','wine_small.gif','marble_small.gif','crystal_small.gif','sulphur_small.gif','ambrosia.png','gold_small.gif','icon_citizen.gif'];
 	var rel = ['ξύλο','κρασί','μάρμαρο','kρύσταλλο','Θείο','Αμβροσία','Χρυσός','Πολίτης'];
 	return img(res[r][0].toUpperCase()+res[r].slice(1),rel[r][0].toUpperCase()+rel[r].slice(1),rel[r][0].toUpperCase()+rel[r].slice(1),'image image-thumbnail link-internal',w?w:25,h?h:20,'/el/wiki/'+rel[r][0].toUpperCase()+rel[r].slice(1));
 }
-function lnk(u,t,i)
+function lnk(u,t,i) // url, Επεξήγηση, 
 {
 	return '<a href="https://ikariam.fandom.com/el/wiki/'+u+'" class="ikariam-tooltip" data-tooltip="'+(i?i:(t?t:u))+'">'+t+'</a>'; // (t?t:u)
 }
@@ -280,7 +367,7 @@ function shipsTableTip(level,base)
 function createTable(jsn)
 {
 	var rel = ['ξύλου','κρασιού','μαρμάρου','kρυστάλλου','Θείου'];
-	if(!jsn) { return false; }
+	if($.isEmptyObject(jsn)===true) { return false; }
 	var resources = jsn.resources;
 	var ps = $.isArray(jsn.range)?jsn.range:[1,jsn.hardcap];
 	ps[0] = ps[0]<=0?(jsn.name=='Δημαρχείο'?0:1):ps[0];
@@ -342,6 +429,28 @@ function createTable(jsn)
 			break;
 		case 'Πειρατικό Φρούριο':
 			rest += '<th rowspan="2">Εμβέλεια</th><th rowspan="2">Βασική<br>Δύναμη<br>πληρώματος</th>';
+			$('#rewardscalc').html('<form><label for="rank"><input type="number" id="rank" name="rank" min="1" max="50" value="1" step="1" style="width:35px"></label></form><table id="rewardtable" class="darktable zebra" style="display:inline;color:#000;font-weight:normal;font-size:11px;background-color:transparent;border:0px;overflow:auto"><thead><tr><th colspan="10" style="text-align:center">Υλικά που μπορούν να ληφθούν με την πειρατεία<div style="font-weight:normal">(<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAJCAYAAAD+WDajAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAEFJREFUeNpi/P//PwMIhOrzQhhAsPriZ0YQzYQugcxnQhaE6YABxhA9HhRdyICJAQ/AayzxOtFdzYRuFLIVAAEGANwqFwuukYKqAAAAAElFTkSuQmCC"> × <span id="rank_v">2,75</span> = '+icon(0,13,10)+'+<img src="data:image/gif;base64,R0lGODlhGgAUAPZ9AA8KCScZFjY2FjslJFMzM0VAG3pIC0xzC15KNzNedXNIR2tWQnRgTXtoVYdUD5dlFaNyHIteK61+IolSUp5cXYFuW4VzYYh2Y415ZI58abRqasV4dlyJD2ibEHOtEnuPNHSlILeLLYWrN8qfNIfIFbuXXZOBbZmHdbGafMGWQdStQuG8Tc6sbd++YKHKT+3KU+/QbPXVY+zPefPWeEWGpV2TrE+Ut2ees2OrzmqszXqyzW2y1G+53ny20nK323a63Hu/4X/A4aCQgKqbi7mihbSnmIyoqZmuq5OytqWxpa2zpL+0pLu+q8qvidW4jNy+lMS7oMS5q7vHvePGi/XahejIl+XHnebInO/anv7kg9jEqNbKrM3Cs8LKvtPKvOzPpenRrfXlvYzA15TD2ITD4onH5o3J5pPK5JvN5ZXN6JbQ7qLQ5qTT667Z7bTa7Lrd7Lvh8s3QwcnUzc/YztvSxOXayenj2crg5s7p9tLr99bu+PXw6Pz37wAAAAAAAAAAACH5BAUAAH0ALAAAAAAaABQAAAf/gH2Cg3ZCKIOIfU4HHCBOiYhLdg0ZF02QHYwgLpCCWl51CxcNFZBEHIxEnWBeXEN2GA0NiU4EAQUHHR2QdEtFXnsNJhlPg04UAxMbAh0cHom9dkV7CycnJn1XA8kbEwAfzh0kglZ2UXVeXnYIGRXYVxrdAQEEJBwdHs9WdF4ZGSdR1jGoMMvJAAIEAGygkAvfLi+9KDGwQAcBAgYM+kwgoEyBggFONnAgsatTJydOFDwaRISECEhVXpQwSRMSFRgwSlQxuSVOzTAxwoSAEKHTER9l5pjkIwNLFhgPHjiYIojJGSlGyASpkQTSlykzZsQYkcLACgOCkKQx08MHkARyZhLxwTJjxIoXD1ZAkOBAkJI3QH6MoaFDDaK5VFqEqPtAxQoHDwbdYIMjjRs8QLoMwtIiRYgYKiQ8SPFCtCAoZ3LsgIMGTh4eg6pMqTLjRQoJLFjAUIFWkA0xevq0WdOmx52ayDsFAgA7" style="width:auto;height:10px">)</div></th></tr><tr><th style="text-align:center" title="Αύξων αριθμός πόλης">Πόλη</th><th style="text-align:center" title="Επιλέξτε τον αριθμό των πόλεων που έχετε">'+img('Δημαρχείο.png','','','image',15,15,'Δημαρχείο')+'</th><th style="text-align:center" title="Ορίστε το σύνολο των επιπέδων των αποθηκών σας">'+img('Αποθήκη Εμπορευμάτων.png','','','image',15,15,'Αποθήκη Εμπορευμάτων')+'</th><th style="text-align:center" title="Ασφαλής ποσότητα υλικών ανά πόλη"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAJCAYAAAD+WDajAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAEFJREFUeNpi/P//PwMIhOrzQhhAsPriZ0YQzYQugcxnQhaE6YABxhA9HhRdyICJAQ/AayzxOtFdzYRuFLIVAAEGANwqFwuukYKqAAAAAElFTkSuQmCC" style="width:auto;height:15px"></th><th style="text-align:center" title="Ασφαλής ποσότητα ξύλου ανά πόλη">'+icon(0,20,15)+'</th><th style="text-align:center" title="Ασφαλής ποσότητα κρασιού ανά πόλη">'+icon(1,20,15)+'</th><th style="text-align:center" title="Ασφαλής ποσότητα μαρμάρου ανά πόλη">'+icon(2,20,15)+'</th><th style="text-align:center" title="Ασφαλής ποσότητα κρύσταλλου ανά πόλη">'+icon(3,20,15)+'</th><th style="text-align:center" title="Ασφαλής ποσότητα θείου ανά πόλη">'+icon(4,20,15)+'</th><th style="text-align:center" title="Συνολική ασφαλής ποσότητα υλικών ανά πόλη">Σύνολο</th></tr></thead><tbody></tbody><tfoot><tr><th style="text-align:center;width:40px">Σύνολο</th><th id="townsum" style="text-align:center" title="Συνολικός αριθμός πόλεων">0</th><th id="levelsum" style="text-align:center" title="Συνολικός αριθμός επιπέδων αποθηκών">0</th><th id="safesum" style="text-align:center" title="Συνολική ασφαλής ποσότητα υλικών">0</th><th id="woodsum" style="text-align:center" title="Συνολική ποσότητα ξύλου">0</th><th id="winesum" style="text-align:center" title="Συνολική ποσότητα κρασιού">0</th><th id="marblesum" style="text-align:center" title="Συνολική ποσότητα μαρμάρου">0</th><th id="glasssum" style="text-align:center" title="Συνολική ποσότητα κρύσταλλου">0</th><th id="sulfursum" style="text-align:center" title="Συνολική ποσότητα θείου">0</th><th id="sum" style="text-align:center" title="Συνολική ποσότητα υλικών">0</th></tr></tfoot></table>');
+			var res = ['wood','wine','marble','glass','sulfur'];
+			var bd = '';
+			for(var y=0;y<12;y++)
+			{
+				bd += '<tr style="opacity:0.5"><td>'+(y+1)+'</td><td style="text-align:center"><label for="town'+y+'"><input type="checkbox" id="town'+y+'" name="town'+y+'"></label></td><td><label for="level'+y+'"><input type="number" id="level'+y+'" name="level'+y+'" min="0" max="160" value="0" step="1" style="width:40px" disabled></label></td><td id="safe'+y+'" style="width:45px">0</td>';
+				$.each(res,function(k,r)
+				{
+					bd += '<td id="'+r+y+'" style="width:54px">0</td>';
+				});
+				bd += '<td id="citysum'+y+'" style="width:61px">0</td></tr>';
+			}
+			$('#rewardtable tbody').append(bd);
+			$('#rewardtable').find('th').css({'border':'1px solid black','text-align':'center','padding':'2px','font-weight':'bold'});
+			$('#rewardtable').find('td').css({'border':'1px solid black','text-align':'center','padding':'2px'});
+			$('#rewardtable').find('tr > td:nth-child(2)').css({'text-align':'left'});
+			translate(lang);
+			$('#rank,input[id^="town"],input[id^="level"]').on('change input',function()
+			{
+				$('#rank').parent().contents().first().each(function(){$(this).replaceWith('')});
+				translate(lang);
+			});
 			break;
 		case 'Πρεσβεία':
 			rest += '<th rowspan="2">'+lnk('Συνθήκες','Πόντοι<br>Διπλωματίας','Πόντοι Διπλωματίας')+'<br><cite name="diplomacy">Οι '+lnk('Συνθήκες','Πόντοι Διπλωματίας','Πόντοι Διπλωματίας')+' που είναι διαθέσιμοι από <b>όλες</b> σας τις πρεσβείες αθροίζονται.<br /></cite></th>';
@@ -378,8 +487,14 @@ function createTable(jsn)
 	var accum = {};
 	$.each(resources,function(rid,resource)
 	{
-		accum[rid] = [];
-		$.each(resource,function(id,rsr) { accum[rid][id] = id===0 ? rsr : (accum[rid][id-1]+rsr); });
+		if(rst.indexOf(rid)!=-1)
+		{
+			accum[rid] = [];
+			$.each(resource,function(id,rsr)
+			{
+				accum[rid][id] = id===0 ? rsr : (accum[rid][id-1]+rsr);
+			});
+		}
 	});
 	var excsum = 0;
 	var cnt = 0;
@@ -452,7 +567,7 @@ function createTable(jsn)
 				tr += '<td>'+FrmtNumToStr(resources.sci[y+parseInt(ps[0])-1])+'</td>';
 				break;
 			case 'Αλάνα':
-				var txt = '<table class="darktable zebra" style="text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><thead><tr><th rowspan="3">'+img('Minimum.gif','','','',20,20)+'</th><th colspan="12">Αποθηκευτικός χώρος</th></tr><tr><th colspan="6">Χωρίς '+icon(5,9,12)+'</th><th colspan="6">Με '+icon(5,9,12)+'</th></tr><tr><th>'+img('Town hall I.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th><th>+1 '+img('Warehouse l.png','','','',20,20)+'</th><th>+2 '+img('Warehouse l.png','','','',20,20)+'</th><th>+3 '+img('Warehouse l.png','','','',20,20)+'</th><th>+4 '+img('Warehouse l.png','','','',20,20)+'</th><th>'+img('Town hall I.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th><th>+1 '+img('Warehouse l.png','','','',20,20)+'</th><th>+2 '+img('Warehouse l.png','','','',20,20)+'</th><th>+3 '+img('Warehouse l.png','','','',20,20)+'</th><th>+4 '+img('Warehouse l.png','','','',20,20)+'</th></tr></thead><tbody>';
+				var txt = '<table class="darktable zebra" style="text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><thead><tr><th rowspan="3">'+img('Minimum.gif','','','',20,20)+'</th><th colspan="12">Αποθηκευτικός χώρος</th></tr><tr><th colspan="6">Χωρίς '+icon(5,9,12)+'</th><th colspan="6">Με '+icon(5,9,12)+'</th></tr><tr><th>'+img('Δημαρχείο.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th><th>+1 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+2 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+3 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+4 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>'+img('Δημαρχείο.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th><th>+1 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+2 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+3 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+4 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th></tr></thead><tbody>';
 				for(var q=0;q<40;q++)
 				{
 					txt += '<tr><td>'+FrmtNumToStr(q+1)+'</td><td>'+FrmtNumToStr(2500)+'</td>';
@@ -465,12 +580,12 @@ function createTable(jsn)
 					}
 					txt += na+'<td>'+FrmtNumToStr(5000)+'</td>'+wa+'</tr>';
 				}
-				txt += '</tbody><tfoot><tr><th rowspan="3">'+img('Minimum.gif','','','',20,20)+'</th><th>'+img('Town hall I.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th><th>+1 '+img('Warehouse l.png','','','',20,20)+'</th><th>+2 '+img('Warehouse l.png','','','',20,20)+'</th><th>+3 '+img('Warehouse l.png','','','',20,20)+'</th><th>+4 '+img('Warehouse l.png','','','',20,20)+'</th><th>'+img('Town hall I.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th><th>+1 '+img('Warehouse l.png','','','',20,20)+'</th><th>+2 '+img('Warehouse l.png','','','',20,20)+'</th><th>+3 '+img('Warehouse l.png','','','',20,20)+'</th><th>+4 '+img('Warehouse l.png','','','',20,20)+'</th></tr><tr><th colspan="6">Χωρίς '+icon(5,9,12)+'</th><th colspan="6">Με '+icon(5,9,12)+'</th></tr><tr><th colspan="12">Αποθηκευτικός χώρος</th></tr></tfoot></table>';
+				txt += '</tbody><tfoot><tr><th rowspan="3">'+img('Minimum.gif','','','',20,20)+'</th><th>'+img('Δημαρχείο.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th><th>+1 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+2 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+3 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+4 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>'+img('Δημαρχείο.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th><th>+1 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+2 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+3 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+4 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th></tr><tr><th colspan="6">Χωρίς '+icon(5,9,12)+'</th><th colspan="6">Με '+icon(5,9,12)+'</th></tr><tr><th colspan="12">Αποθηκευτικός χώρος</th></tr></tfoot></table>';
 				//<div class="ikariam-tooltip" data-tooltip=""></div>
 				tr += '<td style="vertical-align:bottom"><div class="ikariam-tooltip" data-tooltip="Η Αλάνα έχει διαθέσιμο αποθηκευτικό χώρο<br><b>'+FrmtNumToStr((y+parseInt(ps[0]))*32000)+'</b> μονάδες από μόνη της.<br>(Αυτό δεν περιλαμβάνει Αποθήκες)">'+FrmtNumToStr((y+parseInt(ps[0]))*32000)+'</div><div class="ikariam-tooltip" data-tooltip="Η Αλάνα έχει διαθέσιμο αποθηκευτικό χώρο<br><b>'+FrmtNumToStr((y+parseInt(ps[0]))*32000*2)+'</b> μονάδες με χρήση Αμβροσίας.<br>(Αυτό δεν περιλαμβάνει Αποθήκες)">'+FrmtNumToStr((y+parseInt(ps[0]))*32000*2)+' με '+icon(5,20,28)+'</div><br><div class="ikariam-tooltip" data-tooltip="Το Δημαρχείο προσθέτει <b>'+FrmtNumToStr(2500)+'</b> μονάδες χωρίς Αμβροσία<br>ή <b>'+FrmtNumToStr(2500*2)+'</b> μονάδες αν γίνει χρήση Αμβροσίας.">'+'+<b>'+FrmtNumToStr(2500)+'</b> λόγω '+lnk('Δημαρχείο','Δημαρχείου')+'<br>ή <b>'+FrmtNumToStr(2500*2)+'</b> με '+icon(5,20,28)+'</div><div class="ikariam-tooltip" style="background:#FDECB7;font-size:10px" data-tooltip="'+txt.replace(/"/g,'&quot;')+'">Περάστε το ποντίκι από εδώ αν έχετε '+lnk('Αποθήκη','Αποθήκες')+'</div></td>';
 				break;
 			case 'Αποθήκη':
-				var txt = '<table class="darktable zebra" style="text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><thead><tr><th rowspan="3">'+img('Minimum.gif','','','',20,20)+'</th><th colspan="12">Αποθηκευτικός χώρος</th></tr><tr><th colspan="6">Χωρίς '+icon(5,9,12)+'</th><th colspan="6">Με '+icon(5,9,12)+'</th></tr><tr><th>'+img('Town hall I.png','','','',20,20)+'</th><th>+1 '+img('Warehouse l.png','','','',20,20)+'</th><th>+2 '+img('Warehouse l.png','','','',20,20)+'</th><th>+3 '+img('Warehouse l.png','','','',20,20)+'</th><th>+4 '+img('Warehouse l.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th><th>'+img('Town hall I.png','','','',20,20)+'</th><th>+1 '+img('Warehouse l.png','','','',20,20)+'</th><th>+2 '+img('Warehouse l.png','','','',20,20)+'</th><th>+3 '+img('Warehouse l.png','','','',20,20)+'</th><th>+4 '+img('Warehouse l.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th></tr></thead><tbody>';
+				var txt = '<table class="darktable zebra" style="text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><thead><tr><th rowspan="3">'+img('Minimum.gif','','','',20,20)+'</th><th colspan="12">Αποθηκευτικός χώρος</th></tr><tr><th colspan="6">Χωρίς '+icon(5,9,12)+'</th><th colspan="6">Με '+icon(5,9,12)+'</th></tr><tr><th>'+img('Δημαρχείο.png','','','',20,20)+'</th><th>+1 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+2 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+3 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+4 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th><th>'+img('Δημαρχείο.png','','','',20,20)+'</th><th>+1 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+2 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+3 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+4 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th></tr></thead><tbody>';
 				for(var q=0;q<40;q++)
 				{
 					txt += '<tr><td>'+FrmtNumToStr(q+1)+'</td><td>'+FrmtNumToStr(2500)+'</td>';
@@ -483,8 +598,8 @@ function createTable(jsn)
 					}
 					txt += na+'<td>'+FrmtNumToStr(2500+(8000*(y+parseInt(ps[0])))*4+32000*(q+1))+'</td><td>'+FrmtNumToStr(5000)+'</td>'+wa+'<td>'+FrmtNumToStr((2500+(8000*(y+parseInt(ps[0])))*4+32000*(q+1))*2)+'</td></tr>';
 				}
-				txt += '</tbody><tfoot><tr><th rowspan="3">'+img('Minimum.gif','','','',20,20)+'</th><th>'+img('Town hall I.png','','','',20,20)+'</th><th>+1 '+img('Warehouse l.png','','','',20,20)+'</th><th>+2 '+img('Warehouse l.png','','','',20,20)+'</th><th>+3 '+img('Warehouse l.png','','','',20,20)+'</th><th>+4 '+img('Warehouse l.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th><th>'+img('Town hall I.png','','','',20,20)+'</th><th>+1 '+img('Warehouse l.png','','','',20,20)+'</th><th>+2 '+img('Warehouse l.png','','','',20,20)+'</th><th>+3 '+img('Warehouse l.png','','','',20,20)+'</th><th>+4 '+img('Warehouse l.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th></tr><tr><th colspan="6">Χωρίς '+icon(5,9,12)+'</th><th colspan="6">Με '+icon(5,9,12)+'</th></tr><tr><th colspan="12">Αποθηκευτικός χώρος</th></tr></tfoot></table>';
-				tr += '<td><div class="ikariam-tooltip" style="font-size:10px" data-tooltip="Για τους ΕΝΕΡΓΟΥΣ παίκτες, κάθε<br>μια από τις <b>4</b> Αποθήκες προστατεύει<br><b>'+FrmtNumToStr((y+parseInt(ps[0]))*8000*0.06)+'</b> μονάδες από κάθε πόρο και το<br>Δημαρχείο προσθέτει <b>'+FrmtNumToStr(2500*0.06)+'</b> για κάθε πόρο.">Ενεργός χρήστης<table class="darktable" style="border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><tbody><tr><td style="border:none !important;">'+img('Warehouse_l.png','','','',20,20)+'</td><td style="border:none !important;">:</td><td style="border:none !important;white-space:nowrap">'+FrmtNumToStr((y+parseInt(ps[0]))*8000*0.06)+' '+icon(0,10,10)+'+'+img('Luxury.gif','','','',10,10)+'</td></tr><tr style="border:none !important;"><td style="border:none !important;">'+img('Town hall I.png','','','',20,20)+'</td><td style="border:none !important;">:</td><td style="border:none !important;white-space:nowrap">'+FrmtNumToStr(2500*0.06)+' '+icon(0,10,10)+'+'+img('Luxury.gif','','','',10,10)+'</td></tr></table></div><hr><div class="ikariam-tooltip" style="font-size:10px" data-tooltip="Για τους ΑΝΕΝΕΡΓΟΥΣ παίκτες, κάθε<br>μια από τις <b>4</b> Αποθήκες προστατεύει<br><b>'+FrmtNumToStr((y+parseInt(ps[0]))*8000*0.01)+'</b> μονάδες από κάθε πόρο και το<br>Δημαρχείο προσθέτει <b>'+FrmtNumToStr(2500*0.01)+'</b> για κάθε πόρο.">'+lnk('Ανενεργός','Ανενεργός')+' χρήστης<table class="darktable" style="border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><tr style="border:none !important;"><td style="border:none !important;">'+img('Warehouse_l.png','','','',20,20)+'</td><td style="border:none !important;">:</td><td style="border:none !important;white-space:nowrap">'+FrmtNumToStr((y+parseInt(ps[0]))*8000*0.01)+' '+icon(0,10,10)+'+'+img('Luxury.gif','','','',10,10)+'</td></tr><tr style="border:none !important"><td style="border:none !important;">'+img('Town hall I.png','','','',20,20)+'</td><td style="border:none !important;">:</td><td style="border:none !important;white-space:nowrap">'+FrmtNumToStr(2500*0.01)+' '+icon(0,10,10)+'+'+img('Luxury.gif','','','',10,10)+'</td></tr></table></div></td><td style="vertical-align:bottom"><br><table class="darktable" style="border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><tbody><tr style="border:none !important;"><tr><td rowspan="2" style="border:none !important;">'+img('Warehouse_l.png','','','',20,20)+'</td><td rowspan="2" style="border:none !important;">:</td><td style="border:none !important;" class="ikariam-tooltip" data-tooltip="Η Αποθήκη έχει χώρο για <b>'+FrmtNumToStr((y+parseInt(ps[0]))*8000)+'</b> μονάδες από μόνη της.<br>(Αυτό δεν περιλαμβάνει τη Αλάνα)">'+FrmtNumToStr((y+parseInt(ps[0]))*8000)+' χωρίς '+icon(5,9,12)+'</td></tr><tr style="border:none !important;"><td style="border:none !important;" class="ikariam-tooltip" data-tooltip="Η Αποθήκη έχει χώρο για <b>'+FrmtNumToStr((y+parseInt(ps[0]))*8000*2)+'</b> μονάδες<br>από μόνη της με χρήση Αμβροσίας.<br>(Αυτό δεν περιλαμβάνει τη Αλάνα)">'+FrmtNumToStr((y+parseInt(ps[0]))*8000*2)+' με '+icon(5,9,12)+'</td></tr><tr style="border:none !important;"><td rowspan="2" style="border:none !important;">'+img('Town hall I.png','','','',20,20)+'</td><td rowspan="2" style="border:none !important;">:</td><td style="border:none !important;" class="ikariam-tooltip" data-tooltip="Το Δημαρχείο προσθέτει <b>'+FrmtNumToStr(2500)+'</b> μονάδες<br>στη συνολική χωρητικότητα">'+FrmtNumToStr(2500)+' χωρίς '+icon(5,9,12)+'</td></tr><tr style="border:none !important;"><td style="border:none !important;" class="ikariam-tooltip" data-tooltip="Το Δημαρχείο προσθέτει <b>'+FrmtNumToStr(2500*2)+'</b> μονάδες<br>στη συνολική χωρητικότητα με χρήση Αμβροσίας.">'+FrmtNumToStr(2500*2)+' με '+icon(5,9,12)+'</td></tr></table><br><br><div class="ikariam-tooltip" style="background:#FDECB7;font-size:10px" data-tooltip="'+txt.replace(/"/g,'&quot;')+'">Περάστε το ποντίκι από εδώ αν έχετε '+lnk('Αλάνα','Αλάνα')+'</div></td>';
+				txt += '</tbody><tfoot><tr><th rowspan="3">'+img('Minimum.gif','','','',20,20)+'</th><th>'+img('Δημαρχείο.png','','','',20,20)+'</th><th>+1 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+2 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+3 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+4 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th><th>'+img('Δημαρχείο.png','','','',20,20)+'</th><th>+1 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+2 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+3 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+4 '+img('Αποθήκη Εμπορευμάτων.png','','','',20,20)+'</th><th>+'+img('Αλάνα.png','','','',20,20)+'</th></tr><tr><th colspan="6">Χωρίς '+icon(5,9,12)+'</th><th colspan="6">Με '+icon(5,9,12)+'</th></tr><tr><th colspan="12">Αποθηκευτικός χώρος</th></tr></tfoot></table>';
+				tr += '<td><div class="ikariam-tooltip" style="font-size:10px" data-tooltip="Για τους ΕΝΕΡΓΟΥΣ παίκτες, κάθε<br>μια από τις <b>4</b> Αποθήκες προστατεύει<br><b>'+FrmtNumToStr((y+parseInt(ps[0]))*8000*0.06)+'</b> μονάδες από κάθε πόρο και το<br>Δημαρχείο προσθέτει <b>'+FrmtNumToStr(2500*0.06)+'</b> για κάθε πόρο.">Ενεργός χρήστης<table class="darktable" style="border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><tbody><tr><td style="border:none !important;">'+img('Warehouse_l.png','','','',20,20)+'</td><td style="border:none !important;">:</td><td style="border:none !important;white-space:nowrap">'+FrmtNumToStr((y+parseInt(ps[0]))*8000*0.06)+' '+icon(0,10,10)+'+'+img('Luxury.gif','','','',10,10)+'</td></tr><tr style="border:none !important;"><td style="border:none !important;">'+img('Δημαρχείο.png','','','',20,20)+'</td><td style="border:none !important;">:</td><td style="border:none !important;white-space:nowrap">'+FrmtNumToStr(2500*0.06)+' '+icon(0,10,10)+'+'+img('Luxury.gif','','','',10,10)+'</td></tr></table></div><hr><div class="ikariam-tooltip" style="font-size:10px" data-tooltip="Για τους ΑΝΕΝΕΡΓΟΥΣ παίκτες, κάθε<br>μια από τις <b>4</b> Αποθήκες προστατεύει<br><b>'+FrmtNumToStr((y+parseInt(ps[0]))*8000*0.01)+'</b> μονάδες από κάθε πόρο και το<br>Δημαρχείο προσθέτει <b>'+FrmtNumToStr(2500*0.01)+'</b> για κάθε πόρο.">'+lnk('Ανενεργός','Ανενεργός')+' χρήστης<table class="darktable" style="border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><tr style="border:none !important;"><td style="border:none !important;">'+img('Warehouse_l.png','','','',20,20)+'</td><td style="border:none !important;">:</td><td style="border:none !important;white-space:nowrap">'+FrmtNumToStr((y+parseInt(ps[0]))*8000*0.01)+' '+icon(0,10,10)+'+'+img('Luxury.gif','','','',10,10)+'</td></tr><tr style="border:none !important"><td style="border:none !important;">'+img('Δημαρχείο.png','','','',20,20)+'</td><td style="border:none !important;">:</td><td style="border:none !important;white-space:nowrap">'+FrmtNumToStr(2500*0.01)+' '+icon(0,10,10)+'+'+img('Luxury.gif','','','',10,10)+'</td></tr></table></div></td><td style="vertical-align:bottom"><br><table class="darktable" style="border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><tbody><tr style="border:none !important;"><tr><td rowspan="2" style="border:none !important;">'+img('Warehouse_l.png','','','',20,20)+'</td><td rowspan="2" style="border:none !important;">:</td><td style="border:none !important;" class="ikariam-tooltip" data-tooltip="Η Αποθήκη έχει χώρο για <b>'+FrmtNumToStr((y+parseInt(ps[0]))*8000)+'</b> μονάδες από μόνη της.<br>(Αυτό δεν περιλαμβάνει τη Αλάνα)">'+FrmtNumToStr((y+parseInt(ps[0]))*8000)+' χωρίς '+icon(5,9,12)+'</td></tr><tr style="border:none !important;"><td style="border:none !important;" class="ikariam-tooltip" data-tooltip="Η Αποθήκη έχει χώρο για <b>'+FrmtNumToStr((y+parseInt(ps[0]))*8000*2)+'</b> μονάδες<br>από μόνη της με χρήση Αμβροσίας.<br>(Αυτό δεν περιλαμβάνει τη Αλάνα)">'+FrmtNumToStr((y+parseInt(ps[0]))*8000*2)+' με '+icon(5,9,12)+'</td></tr><tr style="border:none !important;"><td rowspan="2" style="border:none !important;">'+img('Δημαρχείο.png','','','',20,20)+'</td><td rowspan="2" style="border:none !important;">:</td><td style="border:none !important;" class="ikariam-tooltip" data-tooltip="Το Δημαρχείο προσθέτει <b>'+FrmtNumToStr(2500)+'</b> μονάδες<br>στη συνολική χωρητικότητα">'+FrmtNumToStr(2500)+' χωρίς '+icon(5,9,12)+'</td></tr><tr style="border:none !important;"><td style="border:none !important;" class="ikariam-tooltip" data-tooltip="Το Δημαρχείο προσθέτει <b>'+FrmtNumToStr(2500*2)+'</b> μονάδες<br>στη συνολική χωρητικότητα με χρήση Αμβροσίας.">'+FrmtNumToStr(2500*2)+' με '+icon(5,9,12)+'</td></tr></table><br><br><div class="ikariam-tooltip" style="background:#FDECB7;font-size:10px" data-tooltip="'+txt.replace(/"/g,'&quot;')+'">Περάστε το ποντίκι από εδώ αν έχετε '+lnk('Αλάνα','Αλάνα')+'</div></td>';
 				break;
 			case 'Αρχείο Ναυτικών Χαρτών':
 				tr += '<td><table class="darktable" style="border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><thead><tr><td rowspan="2" style="border:none !important;">Απόσταση<br>(Νησιά)</td><td colspan="2" style="border:none !important;">Διάρκεια</td></tr><tr><td style="border:none !important;white-space:nowrap">Μείωση</td><td style="border:none !important;white-space:nowrap">Τελική</td></tr></thead><tbody><tr><td style="border:none !important;white-space:nowrap">5</td><td style="border:none !important;white-space:nowrap">'+BT(durs[y+parseInt(ps[0])-1][0])+'</td><td style="border:none !important;white-space:nowrap">'+BT(durs[y+parseInt(ps[0])-1][1])+'</td></tr><tr><td style="border:none !important;white-space:nowrap">20</td><td style="border:none !important;white-space:nowrap">'+BT(durs[y+parseInt(ps[0])-1][2])+'</td><td style="border:none !important;white-space:nowrap">'+BT(durs[y+parseInt(ps[0])-1][3])+'</td></tr><tr><td style="border:none !important;white-space:nowrap">50</td><td style="border:none !important;white-space:nowrap">'+BT(durs[y+parseInt(ps[0])-1][4])+'</td><td style="border:none !important;white-space:nowrap">'+BT(durs[y+parseInt(ps[0])-1][5])+'</td></tr></tbody></table></td>';
@@ -495,7 +610,7 @@ function createTable(jsn)
 				{
 					txt += '<tr><td>'+(z+1)+'</td><td>'+FrmtNumToStr(250+50*(y+parseInt(ps[0])+z+1))+'</td><td>'+(z+17)+'</td><td>'+FrmtNumToStr(250+50*(y+parseInt(ps[0])+z+17))+'</td><td>'+(z+33)+'</td><td>'+FrmtNumToStr(250+50*(y+parseInt(ps[0])+z+33))+'</td></tr>';
 				}
-				tr += '<td>'+lnk('Όριο Φρουράς',FrmtNumToStr(250+50*(y+parseInt(ps[0]))),('<u>Μαθηματικός τύπος</u><br><b><i>'+img('GarLimLand.gif','','','',20,22)+' = 250 + 50 &times; (Επίπεδο '+img('Town hall I.png','','','',20,20)+' + Επίπεδο '+img('Wall.png','','','',20,20)+')</i></b><br>Δημαρχείο <b>'+(y+parseInt(ps[0]))+'<sup>ου</sup></b> επιπέδου<br>Όριο Φρουράς χωρίς Τείχος: <b>'+FrmtNumToStr(250+50*(y+parseInt(ps[0])))+'</b> μονάδες<table class=&quot;darktable zebra&quot; style=&quot;text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto&quot;><thead><tr><th>'+img('Wall.png','','','',20,20)+'</th><th>'+img('GarLimLand.gif','','','',20,22)+'</th><th>'+img('Wall.png','','','',20,20)+'</th><th>'+img('GarLimLand.gif','','','',20,22)+'</th><th>'+img('Wall.png','','','',20,20)+'</th><th>'+img('GarLimLand.gif','','','',20,22)+'</th></tr></thead><tbody>'+txt+'</tbody></table>').replace(/"/g,'&quot;'))+'</td><td>'+FrmtNumToStr(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40)+'<table class="darktable zebra" style="text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><thead><tr><th></th><th class="ikariam-tooltip" data-tooltip="Κατασκευή Πηγαδιού:<br><b>+50</b> θέσεις στέγασης<br>μόνο στην πρωτεύουσα" style="color:blue">ΚΠ</th><th class="ikariam-tooltip" data-tooltip="Διακοπές:<br><b>+50</b> θέσεις στέγασης<br>σε όλες τις πόλεις"style="color:green">Δ</th><th class="ikariam-tooltip" data-tooltip="Ουτοπία:<br><b>+200</b> θέσεις στέγασης<br>μόνο στην πρωτεύουσα" style="color:orange">Ο</th></tr></thead><tbody><tr><th class="ikariam-tooltip" data-tooltip="Πρωτεύουσα">'+img('Palace l.png','','','',20,22,'/el/wiki/Πρωτεύουσα')+'</th><td>'+lnk('Έρευνα:Κατασκευή Πηγαδιού',FrmtNumToStr(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40+50),'Έρευνα:Κατασκευή Πηγαδιού')+'</td><td>'+lnk('Έρευνα:Διακοπές',FrmtNumToStr(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40+50+50),'Έρευνα:Διακοπές')+'</td><td>'+lnk('Έρευνα:Ουτοπία',FrmtNumToStr(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40+50+50+200),'Έρευνα:Ουτοπία')+'</td></tr><tr><th class="ikariam-tooltip" data-tooltip="Αποικία">'+img('Governors residence l.png','','','',20,22,'/el/wiki/Αποικία')+'</th><td>'+lnk('Έρευνα:Κατασκευή Πηγαδιού',FrmtNumToStr(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40),'Έρευνα:Κατασκευή Πηγαδιού')+'</td><td>'+lnk('Έρευνα:Διακοπές',FrmtNumToStr(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40+50),'Έρευνα:Διακοπές')+'</td><td>'+lnk('Έρευνα:Ουτοπία',FrmtNumToStr(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40+50),'Έρευνα:Ουτοπία')+'</td></tr></tbody></table><div class="ikariam-tooltip" data-tooltip="'+(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40)+'|ΟΜ|" style="text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;color:red">ΟΜ: +20 σε κάθε πόλη</div></td>'+((y+parseInt(ps[0]))==1||(y+parseInt(ps[0]))%4==0?'<td rowspan="'+((y+parseInt(ps[0]))==1?3:((y+parseInt(ps[0]))==36?5:(y+parseInt(ps[0]))==40?6:(y+parseInt(ps[0]))==48?1:4))+'">'+Math.floor((y+parseInt(ps[0]))/4+3)+'</td>':'');
+				tr += '<td>'+lnk('Όριο Φρουράς',FrmtNumToStr(250+50*(y+parseInt(ps[0]))),('<u>Μαθηματικός τύπος</u><br><b><i>'+img('GarLimLand.gif','','','',20,22)+' = 250 + 50 &times; (Επίπεδο '+img('Δημαρχείο.png','','','',20,20)+' + Επίπεδο '+img('Τείχη της πόλης.png','','','',20,20)+')</i></b><br>Δημαρχείο <b>'+(y+parseInt(ps[0]))+'<sup>ου</sup></b> επιπέδου<br>Όριο Φρουράς χωρίς Τείχος: <b>'+FrmtNumToStr(250+50*(y+parseInt(ps[0])))+'</b> μονάδες<table class=&quot;darktable zebra&quot; style=&quot;text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto&quot;><thead><tr><th>'+img('Τείχη της πόλης.png','','','',20,20)+'</th><th>'+img('GarLimLand.gif','','','',20,22)+'</th><th>'+img('Τείχη της πόλης.png','','','',20,20)+'</th><th>'+img('GarLimLand.gif','','','',20,22)+'</th><th>'+img('Τείχη της πόλης.png','','','',20,20)+'</th><th>'+img('GarLimLand.gif','','','',20,22)+'</th></tr></thead><tbody>'+txt+'</tbody></table>').replace(/"/g,'&quot;'))+'</td><td>'+FrmtNumToStr(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40)+'<table class="darktable zebra" style="text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><thead><tr><th></th><th class="ikariam-tooltip" data-tooltip="Κατασκευή Πηγαδιού:<br><b>+50</b> θέσεις στέγασης<br>μόνο στην πρωτεύουσα" style="color:blue">ΚΠ</th><th class="ikariam-tooltip" data-tooltip="Διακοπές:<br><b>+50</b> θέσεις στέγασης<br>σε όλες τις πόλεις"style="color:green">Δ</th><th class="ikariam-tooltip" data-tooltip="Ουτοπία:<br><b>+200</b> θέσεις στέγασης<br>μόνο στην πρωτεύουσα" style="color:orange">Ο</th></tr></thead><tbody><tr><th class="ikariam-tooltip" data-tooltip="Πρωτεύουσα">'+img('Παλάτι.png','','','',20,22,'/el/wiki/Πρωτεύουσα')+'</th><td>'+lnk('Έρευνα:Κατασκευή Πηγαδιού',FrmtNumToStr(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40+50),'Έρευνα:Κατασκευή Πηγαδιού')+'</td><td>'+lnk('Έρευνα:Διακοπές',FrmtNumToStr(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40+50+50),'Έρευνα:Διακοπές')+'</td><td>'+lnk('Έρευνα:Ουτοπία',FrmtNumToStr(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40+50+50+200),'Έρευνα:Ουτοπία')+'</td></tr><tr><th class="ikariam-tooltip" data-tooltip="Αποικία">'+img('Η Κατοικία του Κυβερνήτη.png','','','',20,22,'/el/wiki/Αποικία')+'</th><td>'+lnk('Έρευνα:Κατασκευή Πηγαδιού',FrmtNumToStr(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40),'Έρευνα:Κατασκευή Πηγαδιού')+'</td><td>'+lnk('Έρευνα:Διακοπές',FrmtNumToStr(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40+50),'Έρευνα:Διακοπές')+'</td><td>'+lnk('Έρευνα:Ουτοπία',FrmtNumToStr(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40+50),'Έρευνα:Ουτοπία')+'</td></tr></tbody></table><div class="ikariam-tooltip" data-tooltip="'+(Math.floor(10*Math.pow(y+parseInt(ps[0]),1.5))*2+40)+'|ΟΜ|" style="text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;color:red">ΟΜ: +20 σε κάθε πόλη</div></td>'+((y+parseInt(ps[0]))==1||(y+parseInt(ps[0]))%4==0?'<td rowspan="'+((y+parseInt(ps[0]))==1?3:((y+parseInt(ps[0]))==36?5:(y+parseInt(ps[0]))==40?6:(y+parseInt(ps[0]))==48?1:4))+'">'+Math.floor((y+parseInt(ps[0]))/4+3)+'</td>':'');
 				break;
 			case 'Θέση Εμπορικών Συναλλαγών':
 				tr += ((y+parseInt(ps[0]))%2==1?'<td rowspan="'+((y+parseInt(ps[0]))==39?1:2)+'">'+((y+parseInt(ps[0]))*0.5+0.5)+'</td>':'')+'<td>'+FrmtNumToStr(400*Math.pow(y+parseInt(ps[0]),2))+'</td>';
@@ -597,7 +712,7 @@ function createTable(jsn)
 				{
 					txt += '<tr><td>'+(z+1)+'</td><td>'+FrmtNumToStr(250+50*(y+parseInt(ps[0])+z+1))+'</td><td>'+(z+17)+'</td><td>'+FrmtNumToStr(250+50*(y+parseInt(ps[0])+z+17))+'</td><td>'+(z+33)+'</td><td>'+FrmtNumToStr(250+50*(y+parseInt(ps[0])+z+33))+'</td></tr>';
 				}
-				tr += '<td><table class="darktable zebra" style="text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto;white-space:nowrap"><tbody><tr><th style="text-align:left">'+img('GarLimLand.gif','Όριο Φρουράς','Όριο Φρουράς Ξηράς','image',20,22,'Όριο Φρουράς')+' '+lnk('Όριο Φρουράς','Όριο Φρουράς')+'</th><td>:</td><td>'+lnk('Όριο Φρουράς',FrmtNumToStr(300+50*(y+parseInt(ps[0]))),('<u>Μαθηματικός τύπος</u><br><b><i>'+img('GarLimLand.gif','','','',20,22)+' = 250 + 50 &times; (Επίπεδο '+img('Town hall I.png','','','',20,20)+' + Επίπεδο '+img('Wall.png','','','',20,20)+')</i></b><br>Τείχος <b>'+(y+parseInt(ps[0]))+'<sup>ου</sup></b> επιπέδου<table class=&quot;darktable zebra&quot; style=&quot;text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto&quot;><thead><tr><th>'+img('Town hall I.png','','','',20,20)+'</th><th>'+img('GarLimLand.gif','','','',20,22)+'</th><th>'+img('Town hall I.png','','','',20,20)+'</th><th>'+img('GarLimLand.gif','','','',20,22)+'</th><th>'+img('Town hall I.png','','','',20,20)+'</th><th>'+img('GarLimLand.gif','','','',20,22)+'</th></tr></thead><tbody>'+txt+'</tbody></table>').replace(/"/g,'&quot;'))+'</td></tr><tr><th>'+img('Unit_attack.gif','Πόντοι χτυπήματος','Πόντοι χτυπήματος','image',22,18,'Πόντοι χτυπήματος')+' Πόντοι χτυπήματος</th><td>:</td><td>'+FrmtNumToStr(100+50*(y+parseInt(ps[0])))+'</td></tr><tr><th style="text-align:left">'+img('Unit_defend.gif','Θωράκιση','Θωράκιση','image',20,20,'Θωράκιση')+' Θωράκιση</th><td>:</td><td>'+FrmtNumToStr(4*(y+parseInt(ps[0])))+'</td></tr><tr><th>Οπλισμός</th><td>:</td><td>'+((y+parseInt(ps[0]))<10?'Βαλλίστρες':(y+parseInt(ps[0]))<20?'Καταπέλτες':'Βόμβες')+'</td></tr><tr><th style="text-align:left">'+img('Sword-icon1.gif','Ζημιά οπλισμού','Ζημιά οπλισμού','image',16,16,'Ζημιά οπλισμού')+' Ζημιά οπλισμού</th><td>:</td><td>'+((y+parseInt(ps[0]))<10?10+2*(y+parseInt(ps[0])):(y+parseInt(ps[0]))<20?30+5*(y+parseInt(ps[0])):50+10*(y+parseInt(ps[0])))+'</td></tr><tr><th style="text-align:left">'+img('Accuracy.gif','Ακρίβεια','Ακρίβεια','image',20,20,'Ακρίβεια')+' Ακρίβεια</th><td>:</td><td>'+((y+parseInt(ps[0]))<10?30:(y+parseInt(ps[0]))<20?50:80)+' %</td></tr></tbody></table></td>';
+				tr += '<td><table class="darktable zebra" style="text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto;white-space:nowrap"><tbody><tr><th style="text-align:left">'+img('GarLimLand.gif','Όριο Φρουράς','Όριο Φρουράς Ξηράς','image',20,22,'Όριο Φρουράς')+' '+lnk('Όριο Φρουράς','Όριο Φρουράς')+'</th><td>:</td><td>'+lnk('Όριο Φρουράς',FrmtNumToStr(300+50*(y+parseInt(ps[0]))),('<u>Μαθηματικός τύπος</u><br><b><i>'+img('GarLimLand.gif','','','',20,22)+' = 250 + 50 &times; (Επίπεδο '+img('Δημαρχείο.png','','','',20,20)+' + Επίπεδο '+img('Τείχη της πόλης.png','','','',20,20)+')</i></b><br>Τείχος <b>'+(y+parseInt(ps[0]))+'<sup>ου</sup></b> επιπέδου<table class=&quot;darktable zebra&quot; style=&quot;text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto&quot;><thead><tr><th>'+img('Δημαρχείο.png','','','',20,20)+'</th><th>'+img('GarLimLand.gif','','','',20,22)+'</th><th>'+img('Δημαρχείο.png','','','',20,20)+'</th><th>'+img('GarLimLand.gif','','','',20,22)+'</th><th>'+img('Δημαρχείο.png','','','',20,20)+'</th><th>'+img('GarLimLand.gif','','','',20,22)+'</th></tr></thead><tbody>'+txt+'</tbody></table>').replace(/"/g,'&quot;'))+'</td></tr><tr><th>'+img('Unit_attack.gif','Πόντοι χτυπήματος','Πόντοι χτυπήματος','image',22,18,'Πόντοι χτυπήματος')+' Πόντοι χτυπήματος</th><td>:</td><td>'+FrmtNumToStr(100+50*(y+parseInt(ps[0])))+'</td></tr><tr><th style="text-align:left">'+img('Unit_defend.gif','Θωράκιση','Θωράκιση','image',20,20,'Θωράκιση')+' Θωράκιση</th><td>:</td><td>'+FrmtNumToStr(4*(y+parseInt(ps[0])))+'</td></tr><tr><th>Οπλισμός</th><td>:</td><td>'+((y+parseInt(ps[0]))<10?'Βαλλίστρες':(y+parseInt(ps[0]))<20?'Καταπέλτες':'Βόμβες')+'</td></tr><tr><th style="text-align:left">'+img('Sword-icon1.gif','Ζημιά οπλισμού','Ζημιά οπλισμού','image',16,16,'Ζημιά οπλισμού')+' Ζημιά οπλισμού</th><td>:</td><td>'+((y+parseInt(ps[0]))<10?10+2*(y+parseInt(ps[0])):(y+parseInt(ps[0]))<20?30+5*(y+parseInt(ps[0])):50+10*(y+parseInt(ps[0])))+'</td></tr><tr><th style="text-align:left">'+img('Accuracy.gif','Ακρίβεια','Ακρίβεια','image',20,20,'Ακρίβεια')+' Ακρίβεια</th><td>:</td><td>'+((y+parseInt(ps[0]))<10?30:(y+parseInt(ps[0]))<20?50:80)+' %</td></tr></tbody></table></td>';
 				break;
 			case 'Ξυλοκόπος':
 			case 'Λατομείο':
@@ -628,8 +743,229 @@ function createTable(jsn)
 	t += head+body+foot+'</table>';
 	return t;
 }
+var createForestMineTable = function(jsn)
+{
+	var res = '';
+	switch(jsn.name)
+	{
+		case 'Πριστήριο':
+			res = 'forest';
+			break;
+		case 'Αμπελώνες':
+		case 'Λατομείο':
+		case 'Ορυχείο κρυστάλλου':
+		case 'Ορυχείο θείου':
+			res = 'mine';
+			break;
+	}
+	var plus = {
+		'Πριστήριο':['Το Ατμοκίνητο πριόνι δίνει<br /><b>20 %</b> περισσότερη παραγωγή.','Ατμοκίνητο πριόνι','ΑτμοκίνητοΠριόνι'],
+		'Αμπελώνες':['Το Ατμοκίνητο Πιεστήριο κρασιού δίνει<br /><b>20 %</b> περισσότερη παραγωγή.','Ατμοκίνητο Πιεστήριο κρασιού','ΑτμοκίνητοΠιεστήριοΚρασιού'],
+		'Λατομείο':['Το Ατμοκίνητο Σφυρί δίνει<br /><b>20 %</b> περισσότερη παραγωγή.','Ατμοκίνητο Σφυρί','ΑτμοκίνητοΣφυρί'],
+		'Ορυχείο κρυστάλλου':['Το Ατμοκίνητο Τριπάνι κρύσταλλου δίνει<br /><b>20 %</b> περισσότερη παραγωγή.','Ατμοκίνητο Τριπάνι κρύσταλλου','ΑτμοκίνητοΤρυπάνιΚρύσταλλου'],
+		'Ορυχείο θείου':['Ο Ατμοκίνητος Τροχός Θείου με πτερύγια δίνει<br /><b>20 %</b> περισσότερη παραγωγή.','Ατμοκίνητος Τροχός Θείου με πτερύγια','ΑτμοκίνητοςΤροχόςΘείου']
+	};
+	var data = {
+		forest: {wood:jsn.wood,workers:jsn.workers,wambro:jsn.wambro,time:7200},
+		mine: {wood:jsn.wood,workers:jsn.workers,wambro:jsn.wambro,time:14400}
+	};
+	if(res!='')
+	{
+		$('#forestminetable-'+jsn.range[0]+'-'+jsn.range[1]).css({'width':jsn.tsize+'%','font-size':'100%'}).find('tbody').before('<thead></thead>').after('<tfoot></tfoot>');
+		var rows = '';
+		$('#forestminetable-'+jsn.range[0]+'-'+jsn.range[1]).find('tbody > tr').each(function(k,row)
+		{
+			if(k<3)
+			{
+				if(k===0) { $(row).find('th').text('Επίπεδα '+jsn.range[0]+' έως '+jsn.range[1]); }
+				$(row).detach().appendTo('#forestminetable-'+jsn.range[0]+'-'+jsn.range[1]+' > thead');
+			}
+			else if(k>$('#forestminetable-'+jsn.range[0]+'-'+jsn.range[1]).find('tbody > tr').length)
+			{
+				$(row).detach().appendTo('#forestminetable-'+jsn.range[0]+'-'+jsn.range[1]+' > tfoot');
+			}
+		});
+		var durs = [];
+		for(var a=0;a<60;a++)
+		{
+			durs[a] = a>0 ? Math.round(data[res].time*Math.pow(1.1,a+1)-data[res].time) : 0;
+		}
+		var accwood = [];
+		var accwrk = [];
+		var accambro = [];
+		var accdurs = [];
+		data[res].wood.reduce(function(a,b,i) { return accwood[i] = a+b; },0);
+		data[res].workers.reduce(function(a,b,i) { return accwrk[i] = a+b; },0);
+		data[res].wambro.reduce(function(a,b,i) { return accambro[i] = a+b; },0);
+		durs.reduce(function(a,b,i) { return accdurs[i] = a+b; },0);
+		var coef = [0,0,20,10,20,20,10,20,30,40,30,30,40,30,50,50];
+		var HH = ['',' με '+lnk('Χέρια Βοήθειας','Χέρια Βοήθειας','Χέρια Βοήθειας'),' με '+lnk('Χέρια Βοήθειας','Χέρια Βοήθειας','Χέρια Βοήθειας')+' και '+lnk('Τεχνοκρατία','Τεχνοκρατία','Τεχνοκρατία'),' με '+lnk('Χέρια Βοήθειας','Χέρια Βοήθειας','Χέρια Βοήθειας')+'<br> και '+lnk('Ξενοκρατία','Ξενοκρατία','Ξενοκρατία')+' από '+lnk('Τεχνοκρατία','Τεχνοκρατία','Τεχνοκρατία')];
+		var HHv = [0,12.5,15,13.75];
+		var dvtxt = [];
+		for(var n=jsn.range[0]-1;n<jsn.range[1];n++)
+		{
+			dvtxt[0] = '<table class="darktable zebra" style="text-align:center;line-height:1.0;border:none !important;background:#ffeecc;font-size:12px;color:#585858;font-weight:100;text-shadow:none;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><thead><tr><th class="ikariam-tooltip" data-tooltip="Ο αριθμός των πόλεων<br/>που βρίσκεται στο νησί">Πόλεις</th><th class="ikariam-tooltip" data-tooltip="Ο επιμερισμός του κόστους<br/>ανά πόλη που βρίσκεται στο νησί">Κόστος</th></tr></thead><tbody>';
+			dvtxt[1] = '<table class="darktable zebra" style="text-align:center;line-height:1.0;border:none !important;background:#ffeecc;font-size:12px;color:#585858;font-weight:100;text-shadow:none;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><thead><tr><th class="ikariam-tooltip" data-tooltip="Ο αριθμός των πόλεων<br/>που βρίσκεται στο νησί">Πόλεις</th><th class="ikariam-tooltip" data-tooltip="Ο επιμερισμός του αθροιστικού κόστους<br/>ανά πόλη που βρίσκεται στο νησί">Κόστος</th></tr></thead><tbody>';
+			dvtxt[2] = '<table class="darktable zebra" style="text-align:center;line-height:1.0;border:none !important;background:#ffeecc;font-size:12px;color:#585858;font-weight:100;text-shadow:none;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><thead><tr><td class="title3" style="font-size: 110%; white-space: nowrap;" colspan="2">'+FrmtNumToStr(data[res].wambro[n])+' '+icon(0)+' για 1 '+icon(5,16,22)+'</td></tr><tr><th class="ikariam-tooltip" data-tooltip="Ο αριθμός των πόλεων<br/>που βρίσκεται στο νησί">Πόλεις</th><th class="ikariam-tooltip" data-tooltip="Ο επιμερισμός του κόστους<br/>ανά πόλη που βρίσκεται στο νησί">Κόστος</th></tr></thead><tbody>';
+			dvtxt[3] = '<table class="darktable zebra" style="text-align:center;line-height:1.0;border:none !important;background:#ffeecc;font-size:12px;color:#585858;font-weight:100;text-shadow:none;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><thead><tr><td class="title3" style="font-size: 110%; white-space: nowrap;" colspan="2">'+FrmtNumToStr(data[res].wambro[n])+' '+icon(0)+' για 1 '+icon(5,16,22)+'</td></tr><tr><th class="ikariam-tooltip" data-tooltip="Ο αριθμός των πόλεων<br/>που βρίσκεται στο νησί">Πόλεις</th><th class="ikariam-tooltip" data-tooltip="Ο επιμερισμός του αθροιστικού κόστους<br/>ανά πόλη που βρίσκεται στο νησί">Κόστος</th></tr></thead><tbody>';
+			dvtxt[4] = '<table class="darktable zebra" style="text-align:center;line-height:1.0;border:none !important;background:#ffeecc;font-size:12px;color:#585858;font-weight:100;text-shadow:none;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><thead><tr><th class="ikariam-tooltip title3" rowspan="2" colspan="2" data-tooltip="Η μέγιστη βασική παραγωγή<br />χωρίς καμιά άλλη επίδραση">'+img('Πριστήριο.png','Πριστήριο','Πριστήριο','image',15,20,'Πριστήριο')+'</th><th class="title3">'+FrmtNumToStr(data[res].workers[n+1])+'</th><th class="ikariam-tooltip title3" colspan="16" data-tooltip="Όλοι οι δυνατοί συνδυασμοί<br />άθροισης των επιδράσεων">Συνδυασμοί</th></tr><tr><td>100 %</td><td>+</td><td>+</td><td>+</td><td>+</td><td>+</td><td>+</td><td>+</td><td>+</td><td>+</td><td>+</td><td>+</td><td>+</td><td>+</td><td>+</td><td>+</td><td>+</td></tr><tr><th class="ikariam-tooltip title3" colspan="2" data-tooltip="Το Κινηματοθέατρο δίνει<br /><b>20 %</b> περισσότερη παραγωγή για <b>12</b> ώρες.">'+img('Θέατρο προβολών.gif','Θέατρο προβολών','Θέατρο προβολών','image',23,20,'Θέατρο προβολών')+'</th><td>20 %</td><td></td><td></td><td>+</td><td></td><td></td><td>+</td><td></td><td></td><td>+</td><td>+</td><td></td><td>+</td><td>+</td><td></td><td>+</td><td>+</td></tr><tr><th class="ikariam-tooltip title3" colspan="2" data-tooltip="Ο Πύργος του Ήλιου δίνει<br /><b>10 %</b> περισσότερη παραγωγή<br />για το διάστημα που είναι ενεργοποιημένος.">'+img('Πύργος Ήλιου.png','Πύργος του Ήλιου','Πύργος του Ήλιου','image',11,20,'Πύργος του Ήλιου')+'</th><td>10 %</td><td></td><td></td><td></td><td>+</td><td></td><td></td><td>+</td><td></td><td>+</td><td></td><td>+</td><td>+</td><td></td><td>+</td><td>+</td><td>+</td></tr><tr><th class="ikariam-tooltip title3" colspan="2" data-tooltip="'+plus[jsn.name][0]+'">'+img(plus[jsn.name][2]+'34px.png',plus[jsn.name][1],plus[jsn.name][1],'image',20,20,plus[jsn.name][1])+'</th><td>20 %</td><td></td><td></td><td></td><td></td><td>+</td><td></td><td></td><td>+</td><td></td><td>+</td><td>+</td><td></td><td>+</td><td>+</td><td>+</td><td>+</td></tr><tr><th class="ikariam-tooltip title3" colspan="2" data-tooltip="Το κτήριο <b>Ξυλοκόπος</b> δίνει<br />έως <b>64 %</b> περισσότερη παραγωγή.">'+img('Ξυλοκόπος.png','Ξυλοκόπος','Ξυλοκόπος','image',25,20,'Ξυλοκόπος')+'</th><td></td><td></td><td>+</td><td></td><td></td><td></td><td>+</td><td>+</td><td>+</td><td></td><td></td><td></td><td>+</td><td>+</td><td>+</td><td></td><td>+</td></tr></thead><tbody><tr><th class="title3" rowspan="34">Ε<br>π<br>ί<br>π<br>ε<br>δ<br>α<br> <br>Α<br>υ<br>ξ<br>η<br>τ<br>ι<br>κ<br>ο<br>ύ<br> <br>Κ<br>τ<br>η<br>ρ<br>ί<br>ο<br>υ</th><td class="ikariam-tooltip title3" data-tooltip="Το επίπεδο του κτηρίου <b>Ξυλοκόπος</b>.">Επίπεδο</td><td class="ikariam-tooltip title3" data-tooltip="Το ποσοστό αύξησης της παραγωγής που προκαλεί<br />κάθε επίπεδο του κτηρίου <b>Ξυλοκόπος</b>.">(%)</td><td class="ikariam-tooltip title3" colspan="16" data-tooltip="Η τελική παραγωγή που προκύπτει<br />από τους αντίστοιχους συνδυασμούς.">Παραγωγή{0}</td></tr>';
+			for(var i=0;i<17;i++)
+			{
+				dvtxt[0] += '<tr class="ikariam-tooltip" data-tooltip="Με <b>'+(i+1)+'</b> '+(i+1==1?'πόλη':'πόλεις')+' επί της νήσου'+(i==16?', με τη χρήση Αμβροσίας':'')+', απαιτούνται από κάθε παίκτη:<br/><b>'+FrmtNumToStr(data[res].wood[n])+'</b> μονάδες ξύλου ÷ <b>'+(i+1)+'</b> '+(i+1==1?'πόλη':'πόλεις')+' επί της νήσου = <b>'+FrmtNumToStr(Math.ceil(data[res].wood[n]/(i+1)))+'</b> μονάδες ξύλου."><td>'+(i==16?' '+icon(5,16,22):'')+(i+1)+'</td><td>'+FrmtNumToStr(Math.ceil(data[res].wood[n]/(i+1)))+' '+icon(0)+'</td></tr>';
+				dvtxt[1] += '<tr class="ikariam-tooltip" data-tooltip="Με <b>'+(i+1)+'</b> '+(i+1==1?'πόλη':'πόλεις')+' επί της νήσου'+(i==16?', με τη χρήση Αμβροσίας':'')+', απαιτούνται από κάθε παίκτη:<br/><b>'+FrmtNumToStr(accwood[n])+'</b> μονάδες ξύλου ÷ <b>'+(i+1)+'</b> '+(i+1==1?'πόλη':'πόλεις')+' επί της νήσου = <b>'+FrmtNumToStr(Math.ceil(accwood[n]/(i+1)))+'</b> μονάδες ξύλου."><td>'+(i==16?' '+icon(5,16,22):'')+(i+1)+'</td><td>'+FrmtNumToStr(Math.ceil(accwood[n]/(i+1)))+' '+icon(0)+'</td></tr>';
+				dvtxt[2] += '<tr class="ikariam-tooltip" data-tooltip="Με <b>'+(i+1)+'</b> '+(i+1==1?'πόλη':'πόλεις')+' επί της νήσου'+(i==16?', με τη χρήση Αμβροσίας':'')+', απαιτούνται από κάθε παίκτη:<br/><b>'+FrmtNumToStr(data[res].wambro[n])+'</b> μονάδες ξύλου ÷ <b>'+(i+1)+'</b> '+(i+1==1?'πόλη':'πόλεις')+' επί της νήσου = <b>'+FrmtNumToStr(Math.ceil(data[res].wambro[n]/(i+1)))+'</b> μονάδες ξύλου."><td>'+(i==16?' '+icon(5,16,22):'')+(i+1)+'</td><td>'+FrmtNumToStr(Math.ceil(data[res].wambro[n]/(i+1)))+' '+icon(5,16,22)+'</td></tr>';
+				dvtxt[3] += '<tr class="ikariam-tooltip" data-tooltip="Με <b>'+(i+1)+'</b> '+(i+1==1?'πόλη':'πόλεις')+' επί της νήσου'+(i==16?', με τη χρήση Αμβροσίας':'')+', απαιτούνται από κάθε παίκτη:<br/><b>'+FrmtNumToStr(accambro[n])+'</b> μονάδες ξύλου ÷ <b>'+(i+1)+'</b> '+(i+1==1?'πόλη':'πόλεις')+' επί της νήσου = <b>'+FrmtNumToStr(Math.ceil(accambro[n]/(i+1)))+'</b> μονάδες ξύλου."><td>'+(i==16?' '+icon(5,16,22):'')+(i+1)+'</td><td>'+FrmtNumToStr(Math.ceil(accambro[n]/(i+1)))+' '+icon(5,16,22)+'</td></tr>';
+			}
+			dvtxt[0] += '</tbody></table>';
+			dvtxt[1] += '</tbody></table>';
+			dvtxt[2] += '</tbody></table>';
+			dvtxt[3] += '</tbody></table>';
+			for(var q=0;q<4;q++)
+			{
+				dvtxt[q+5] = prntf(dvtxt[4],[HH[q]]);
+				for(var y=0;y<33;y++)
+				{
+					dvtxt[q+5] += '<tr>';
+					dvtxt[q+5] += '<td class="ikariam-tooltip" data-tooltip="'+(y==0 ? 'Το κτήριο <b>Ξυλοκόπος</b> δεν έχει κατασκευαστεί.' : 'Το <b>'+y+'</b>ο επίπεδο του κτηρίου <b>Ξυλοκόπος</b>.')+'">'+y+'</td>';
+					dvtxt[q+5] += '<td class="ikariam-tooltip" data-tooltip="'+(y==0 ? 'Το κτήριο <b>Ξυλοκόπος</b> δεν αυξάνει την παραγωγή<br />επειδή δεν έχει κατασκευαστεί.' : 'Το κτήριο <b>Ξυλοκόπος</b><br>αυξάνει την παραγωγή<br />κατά <b>'+(y*2)+' %.')+'">'+(y*2)+'</b> %</td>';
+					for(var x=0;x<16;x++)
+					{
+						dvtxt[q+5] += '<td class="ikariam-tooltip" data-tooltip="<table class=&quot;darktable zebra&quot; style=&quot;text-align:center;line-height:1.0;border:none !important;background:#ffeecc;font-size:12px;color:#585858;font-weight:100;text-shadow:none;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto&quot;><tr><th colspan=&quot;3&quot;>Επίδραση</th></tr><tr><th>Είδος</th><th>Ποσοστό</th><th>Παραγωγή</th></tr><tr><td style=&quot;text-align:left&quot;>Βασική</td><td>100 %</td><td>'+FrmtNumToStr(data[res].workers[n+1])+'</td></tr>'+([2,5,8,9,11,12,14,15].indexOf(x)!=-1 ? '<tr><td style=&quot;text-align:left&quot;>Κινηματοθέατρο</td><td>20 %</td><td>'+FrmtNumToStr(data[res].workers[n+1]*20/100)+'</td></tr>' : '')+([3,6,8,10,11,13,14,15].indexOf(x)!=-1 ? '<tr><td style=&quot;text-align:left&quot;>Πύργος του Ήλιου</td><td>10 %</td><td>'+FrmtNumToStr(data[res].workers[n+1]*10/100)+'</td></tr>' : '')+([4,7,9,10,12,13,14,15].indexOf(x)!=-1 ? '<tr><td style=&quot;text-align:left&quot;>'+plus[jsn.name][1]+'</td><td>20 %</td><td>'+FrmtNumToStr(data[res].workers[n+1]*20/100)+'</td></tr>' : '')+([1,5,6,7,11,12,13,15].indexOf(x)!=-1 && y>0 ? '<tr><td style=&quot;text-align:left&quot;>Ξυλοκόπος</td><td>'+FrmtNumToStr(y*2)+' %</td><td>'+FrmtNumToStr(data[res].workers[n+1]*y*2/100)+'</td></tr>' : '')+(HHv[q]!=0 ? '<tr><td style=&quot;text-align:left&quot;>Χέρια Βοήθειας</td><td>12,5 %</td><td>'+FrmtNumToStr(data[res].workers[n+1]*12.5/100)+'</td></tr>' : '')+(HHv[q]==15 ? '<tr><td style=&quot;text-align:left&quot;>Τεχνοκρατία</td><td>2,5 %</td><td>'+FrmtNumToStr(data[res].workers[n+1]*2.5/100)+'</td></tr>' : '')+(HHv[q]==13.75 ? '<tr><td style=&quot;text-align:left&quot;>Ξενοκρατία</td><td>1,25 %</td><td>'+FrmtNumToStr(data[res].workers[n+1]*1.25/100)+'</td></tr>' : '')+(coef[x]+([1,5,6,7,11,12,13,15].indexOf(x)!=-1 ? y*2 : 0)+HHv[q]>0 ? '<tr><th>Σύνολο</th><th>'+FrmtNumToStr((100+coef[x]+([1,5,6,7,11,12,13,15].indexOf(x)!=-1 ? y*2 : 0)+HHv[q]))+' %</th><th>'+FrmtNumToStr(data[res].workers[n+1]*(100+coef[x]+([1,5,6,7,11,12,13,15].indexOf(x)!=-1 ? y*2 : 0)+HHv[q])/100)+'</th></tr>' : '')+'</table>">'+FrmtNumToStr(data[res].workers[n+1]*(100+coef[x]+(y*2)+HHv[q])/100)+'</td>';
+					}
+					dvtxt[q+5] += '</tr>';
+				}
+				dvtxt[q+5] += '</tbody></table>';
+			}
+			rows += '<tr><th>'+(n+1)+'</th><td>'+(n===0?'<span style="color:gray;">-</span>':'<table class=&quot;darktable zebra&quot; style=&quot;text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto&quot;><tr><td'+(data[res].wood[n] === 0 ? '' : ' colspan="2"')+'>'+icon(0)+'</td><td'+(data[res].wambro[n] === 0 ? '' : ' colspan="2"')+'>'+icon(5,16,22)+'</td></tr><tr><td class="'+(data[res].wood[n] === 0 && accwood === 0 ? 'ikariam-tooltip" data-tooltip="Δεν υπάρχει κόστος αγοράς για αυτό το επίπεδο!">'+FrmtNumToStr(data[res].wood[n]) : (data[res].wood[n] === 0 ? 'ikariam-tooltip" data-tooltip="Δεν υπάρχουν δεδομένα κόστους δωρεάς σε ξύλο!">'+FrmtNumToStr(data[res].wood[n]) : '">'+FrmtNumToStr(data[res].wood[n])))+'</td>'+(data[res].wood[n] === 0 ? '' : '<td class="expandcollapsetable"><span class="indicator"></span><div class="info-div" style="display:none;text-align:center;overflow:visible;background-color:transparent;border:0px;position:absolute;z-index:600">'+dvtxt[0]+'</div></td>')+'<td class="'+(data[res].wambro[n] === 0 && accambro[n] === 0 ? 'ikariam-tooltip" data-tooltip="Δεν υπάρχει δυνατότητα αγοράς ξύλου με Αμβροσία!">'+FrmtNumToStr(data[res].wambro[n]) : (data[res].wambro[n] === 0 ? 'ikariam-tooltip" data-tooltip="Δεν υπάρχουν δεδομένα κόστους Αμβροσίας!">'+FrmtNumToStr(data[res].wambro[n]) : '">'+FrmtNumToStr(data[res].wambro[n])))+'</td>'+(data[res].wambro[n] === 0 ? '' : '<td class="expandcollapsetable"><span class="indicator"></span><div class="info-div" style="display:none;text-align:center;overflow:visible;background-color:transparent;border:0px;position:absolute;z-index:600">'+dvtxt[2]+'</div></td>')+'</tr><tr><td class="'+(data[res].wood[n] === 0 && accwood === 0 ? 'ikariam-tooltip" data-tooltip="Δεν υπάρχει κόστος αγοράς για αυτό το επίπεδο!">('+FrmtNumToStr(accwood[n])+')' : (data[res].wood[n] === 0 ? 'ikariam-tooltip" data-tooltip="Δεν υπάρχουν δεδομένα κόστους δωρεάς σε ξύλο!">('+(data[res].wood[n] === 0 ? 0 : FrmtNumToStr(accwood[n]))+')' : '">('+FrmtNumToStr(accwood[n])+')'))+'</td>'+(data[res].wood[n] === 0 ? '' : '<td class="expandcollapsetable"><span class="indicator"></span><div class="info-div" style="display:none;text-align:center;overflow:visible;background-color:transparent;border:0px;position:absolute;z-index:600">'+dvtxt[1]+'</div></td>')+'<td class="'+(data[res].wambro[n] === 0 && accambro[n] === 0 ? 'ikariam-tooltip" data-tooltip="Δεν υπάρχει δυνατότητα αγοράς ξύλου με Αμβροσία!">('+(data[res].wambro[n] === 0 ? 0 : FrmtNumToStr(accambro[n]))+')' : (data[res].wambro[n] === 0 ? 'ikariam-tooltip" data-tooltip="Δεν υπάρχουν δεδομένα κόστους Αμβροσίας!">('+(data[res].wambro[n] === 0 ? 0 : FrmtNumToStr(accambro[n]))+')' : '">('+FrmtNumToStr(accambro[n])+')'))+'</td>'+(data[res].wambro[n] === 0 ? '' : '<td class="expandcollapsetable"><span class="indicator"></span><div class="info-div" style="display:none;text-align:center;overflow:visible;background-color:transparent;border:0px;position:absolute;z-index:600">'+dvtxt[3]+'</div></td>')+'</tr></table>')+'</td><td style="white-space:nowrap">'+(n===0?'<span style="color:gray;">-</span>':'<span class="ikariam-tooltip" data-tooltip="Ο πραγματικός χρόνος κτισίματος<br />(το πολίτευμα δεν έχει επιρροή)<br /><b>'+BT(durs[n],1)+'</b>">'+BT(durs[n])+'</span><br>(<span class="ikariam-tooltip" data-tooltip="Ο αθροιστικός χρόνος κτισίματος<br />(το πολίτευμα δεν έχει επιρροή)<br /><b>'+BT(accdurs[n],1)+'</b>">'+BT(accdurs[n])+'</span>)')+'</td><td style="white-space:nowrap"><div class="expandcollapsetable">'+FrmtNumToStr(data[res].workers[n+1])+'<span class="indicator" style="float:right"></span><div class="info-div" style="display:none;text-align:center;overflow:visible;background-color:transparent;border:0px;position:absolute;z-index:600">'+dvtxt[5]+'</div></div><div class="expandcollapsetable">('+FrmtNumToStr(data[res].workers[n+1]*1.125)+')<span class="indicator" style="float:right"></span><div class="info-div" style="display:none;text-align:center;overflow:visible;background-color:transparent;border:0px;position:absolute;z-index:600">'+dvtxt[6]+'</div></div><div class="expandcollapsetable">Με '+lnk('Τεχνοκρατία','Τεχνοκρατία','Τεχνοκρατία')+'<span class="indicator" style="float:right"></span><div class="info-div" style="display:none;text-align:center;overflow:visible;background-color:transparent;border:0px;position:absolute;z-index:600">'+dvtxt[7]+'</div></div><div class="expandcollapsetable">Με '+lnk('Ξενοκρατία','Ξενοκρατία','Ξενοκρατία')+'<span class="indicator" style="float:right"></span><div class="info-div" style="display:none;text-align:center;overflow:visible;background-color:transparent;border:0px;position:absolute;z-index:600">'+dvtxt[8]+'</div></div></td><td><div class="ikariam-tooltip" style="display:inline-block;margin:auto;text-align:right" data-tooltip="<table class=&quot;darktable zebra&quot; style=&quot;text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto&quot;><tr><th colspan=2>Εργάτες</th></tr><tr><th>Είδος</th><th>Ποσότητα</th></tr><tr><td style=text-align:left>Ειδικευμένοι</td><td style=text-align:right>'+FrmtNumToStr(data[res].workers[n+1])+'</td></tr><tr><td style=text-align:left>Ανειδίκευτοι</td><td style=text-align:right>'+FrmtNumToStr(data[res].workers[n+1]/2)+'</td></tr><tr><th>Σύνολο</th><th style=text-align:right>'+FrmtNumToStr(data[res].workers[n+1]*3/2)+'</th></tr></table>">'+FrmtNumToStr(data[res].workers[n+1])+'<br>'+FrmtNumToStr(data[res].workers[n+1]/2)+'<hr>'+FrmtNumToStr(data[res].workers[n+1]*3/2)+'</div></td></tr>';
+		}
+		$('#forestminetable-'+jsn.range[0]+'-'+jsn.range[1]).find('tbody').append(rows);
+	}
+}
+var lang = 'el';
+var lg = {
+	el: {
+		flag: 'R0lGODlhGgASAPcAAAR6rIS+1HyerEyGnMzi7LTW5GSuzGSWrCSKtOTy9LS+xGyKlJyyvAyCtFyOpHS21DSWvPT6/JzK3FSmzFSKpOTu9LTa7HSarCSOvOz2/MTGzAR+rIS+3HyirFSGnMzm7LTa5GSyzGyWrCSOtHSKlKS2vBSCtHy61PT2/MTKzAAAgAAAfDQc5OHj4xISEgAAAGcIawDj9AASgAAAfFQ0OOKHABLRAAB3ABiiYe4JbZEFAXwAAHBFAAUJAJKSAHx8AP9O+P8JAf+SAP98AG1cvQXm/JISc3wAABUkAAoAAIICAHwAAABIYQDkbRYSAQAAAGACAAMAAAAAAAAAAMgg/xbj/xsS/wAA/7gA/2Pg/xb9/wB/fwAFAQAQAACRAAB8AH7wAADiAAASAMAAAAAA9AAAAQAAAAAAAP/AmP/jAf8SAP8AAP8YCf/uAP+RAP98AABwFAAJAACSAAB8AADAvwDk/ACYcwB8AABvAAA+ABaSAAB8AMliEjk+nwCSgAB8fGQI+OIC9hIAGAAAAC/cAA7mAIISAHwAANsABwUAAIIAAHwAAMBOAHYAAFAAAAAAALgAAGMA8AEAGAAAAGwQAAAAAAAAAAAAAKDJAOE5ABIAAAAAADR8AADjAAASAMAAAJyDAPcqABKCAAB8ABgAGO4An5EAgHwAfHAA/wUA/5IA/3wA//8AEv8An/8AgP8AfG0AJQUBAJIAAHwAAErnJfYqAICCAHx8AACgAADj8BYSEgAAAADC/wAq/wCC/wB8/7gAAGMAABYAAAAAAAD4qAH25AAYEgAAAAC+vgA+OwCCTAB8AFf/iPb/5ID/Enz/AIykd+PkEBISTwAAALj3vGM+5BaCEgB8AAEMvgAUPgBPggAAfMDUUeIy5RJPEgAAAEYA2YoB/wEA/wAAfwWgLADj5QASEgAAAPAA+OEB9hIAGAAAAAMWvgA/PgCCggB8fNgB+OIA9hIAGAAAABgAye4wOZEAAHwAAHAAAAUAAJIAAHwAAP+I6f/kzv8SR/8AACwAAAAAGgASAAAITACvCLwSIcLAgwgTJiyosKFDhgMLSpxIEaJAiwQratw40aFCjgY9Pgx5ESTFgxhNnoxIUqRHjC5RqpxJU2XMmzhf1tzJU2LOn0CvBAQAOw==',
+		tho: '.',
+		dec: ',',
+		rnklbl: 'Επιλέξτε τη θέση που έχετε στην τρέχουσα κατάταξη πειρατείας',
+		rcvdres: 'Υλικά που μπορούν να ληφθούν με την πειρατεία',
+		city: 'Πόλη',
+		citytitle: 'Αύξων αριθμός πόλης',
+		citynum: 'Επιλέξτε τον αριθμό των πόλεων που έχετε',
+		wlvls: 'Ορίστε το σύνολο των επιπέδων των αποθηκών σας',
+		safeqnty: 'Ασφαλής ποσότητα υλικών ανά πόλη',
+		safewoodqnty: 'Ασφαλής ποσότητα ξύλου ανά πόλη',
+		safewineqnty: 'Ασφαλής ποσότητα κρασιού ανά πόλη',
+		safemarbleqnty: 'Ασφαλής ποσότητα μαρμάρου ανά πόλη',
+		safecrystalqnty: 'Ασφαλής ποσότητα κρύσταλλου ανά πόλη',
+		safesulfurqnty: 'Ασφαλής ποσότητα θείου ανά πόλη',
+		safesumqnty: 'Συνολική ασφαλής ποσότητα υλικών ανά πόλη',
+		sum: 'Σύνολο',
+		townsum: 'Συνολικός αριθμός πόλεων',
+		levelsum: 'Συνολικός αριθμός επιπέδων αποθηκών',
+		safesum: 'Συνολική ασφαλής ποσότητα υλικών',
+		woodsum: 'Συνολική ποσότητα ξύλου',
+		winesum: 'Συνολική ποσότητα κρασιού',
+		marblesum: 'Συνολική ποσότητα μαρμάρου',
+		glasssum: 'Συνολική ποσότητα κρύσταλλου',
+		sulfursum: 'Συνολική ποσότητα θείου',
+		resqntysum: 'Συνολική ποσότητα υλικών',
+	}
+};
 $(document).ready(function()
 {
+	var createtableinterv = setInterval(function()
+	{
+		$.ajax(
+		{
+			success: function()
+			{
+				var callbacks = $.Callbacks();
+				callbacks.empty();
+				var tab = $('[id^="flytabs_"] > ul > li.selected > a > span');
+				var tabs = $('[id^="flytabs_"] > ul.tabs > li').length;
+				if($(tab).length==0)
+				{
+					var div = $('[id^="jsjson-"]').html();
+				}
+				else if($(tab).length==1)
+				{
+					var div = $('#jsjson-'+$(tab).text()).html();
+				}
+				var jsn = div?JSON.parse(div.substr(div.indexOf('{'),div.lastIndexOf('}')-2)):{};
+				if($.isEmptyObject(jsn)===false)
+				{
+					if($('#forestminetable-'+jsn.range[0]+'-'+jsn.range[1]).length==1 && $('#forestminetable-'+jsn.range[0]+'-'+jsn.range[1]+' > thead').length==0)
+					{
+						callbacks.add(createForestMineTable);
+						callbacks.fire(jsn);
+						callbacks.remove(createForestMineTable);
+						$('#forestminetable-'+jsn.range[0]+'-'+jsn.range[1]+' .expandcollapsetable .indicator').click(function(e)
+						{
+							var target = e.target;
+							$(target).nextAll('div.info-div').slideToggle('fast','linear',function()
+							{
+								$(target).parent().toggleClass('active');
+							});
+						});
+						$('#forestminetable-'+jsn.range[0]+'-'+jsn.range[1]+' .ikariam-tooltip').hover(function(e)
+						{
+							var txt = '';
+							var attrs = $(this).attr('data-tooltip').split('|');
+							if(attrs.length==1)
+							{
+								txt = attrs[0];
+							}
+							else
+							{
+								switch(attrs[1])
+								{
+									case 'Τ':
+									case 'Γ':
+									case 'Α':
+									case 'ΟΜ':
+										txt = Tips(attrs[0],attrs[1],attrs[2],attrs[3]);
+										break;
+									case 'ΜΜ':
+										txt = attrs[0]+'<br>Κείμενο Μέγιστης Μείωσης<br>Άλλο κείμενο<br>'+attrs[2];
+										break;
+								}
+							}
+							$(this).removeAttr('title');
+							$('body').appendTo('body');
+							$('<div id="ikariam-tooltip-content" class="WikiaArticle" style="border:1px solid #F1D031;color:#444;background:#fbeecb;box-shadow:0 2px 2px #999;position:absolute;padding:2px;text-align:center;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;z-index:6000000;margin:0px;min-height:0px;overflow:hidden;font-size:14px;display:none"></div>').html(txt).appendTo('body');
+							$('#ikariam-tooltip-content').css('display','inline-block').fadeIn('fast');
+						},function()
+						{
+							$('#ikariam-tooltip-content').remove();
+						}).mousemove(function(e)
+						{
+							var o = 10;
+							var cX = e.pageX;
+							var cY = e.pageY;
+							var wW = $(window).width();
+							var wH = $(window).height();
+							var t = $('#ikariam-tooltip-content');
+							var tW = t.width()+parseInt(t.css('padding-left'))+parseInt(t.css('padding-right'));
+							var tH = t.height()+parseInt(t.css('padding-top'))+parseInt(t.css('padding-bottom'));
+							var tL = cX+o;
+							if(tL+tW>$(window).scrollLeft()+wW) { tL = $(window).scrollLeft()+wW-tW*2; }
+							else if(tL-tW<$(window).scrollLeft()) { tL = $(window).scrollLeft()+tW; }
+							var tT = cY+o;
+							if(tT+tH>$(window).scrollTop()+wH) { tT = $(window).scrollTop()+wH-tH; }
+							else if(tT-tH<$(window).scrollTop()) { tT = $(window).scrollTop(); }
+							$('#ikariam-tooltip-content').css({'top':tT+'px','left':tL+'px'})
+						});
+					}
+				}
+				if($('[id^="forestminetable-"]').length==tabs)
+				{
+					clearInterval(createtableinterv);
+					
+				}
+			}
+		});
+	},1000);
 	mw.hook('wikipage.content').add(function($content)
 	{
 		try
@@ -637,7 +973,7 @@ $(document).ready(function()
 			var txt = '';
 			var div = $content.find('#jsjson').html();
 			var jsn = div?JSON.parse(div.substr(div.indexOf('{'),div.lastIndexOf('}')-2)):{};
-			if(jsn)
+			if($.isEmptyObject(jsn)===false)
 			{
 				if(jsn.name==='')
 				{

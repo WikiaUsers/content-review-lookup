@@ -1,0 +1,1 @@
+Please read our [[Chat Policies]].  Thank You!

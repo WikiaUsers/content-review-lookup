@@ -77,3 +77,19 @@ var po = document.createElement('script'); po.type = 'text/javascript'; po.async
 po.src = 'https://apis.google.com/js/platform.js';
 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
 })();
+
+mw.hook('wikipage.content').add(function($content) {
+    $content.find('.EmulatorFrame:not(.loaded)').each(function() {
+        var $this = $(this);
+        $this.html(
+            $('<iframe>', {
+                border: 0,
+                frameborder: 0,
+                height: 400,
+                scrolling: 'no',
+                src: 'https://dozerfleetproductions.blogspot.com/',
+                width: 250
+            })
+        ).addClass('loaded');
+    });
+});

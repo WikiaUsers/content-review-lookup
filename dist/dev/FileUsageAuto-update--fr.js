@@ -99,6 +99,6 @@ LIR.i18n.fr= {
 	movePageInfo: [
 		'Script mis à jour',
 		/* date */
-		'Plus d\'informations à propos des mises à jour et fonctionnalités se trouvent <a href="//dev.wikia.com/wiki/FileUsageAuto-update">ici</a> (en anglais). Merci de reporter les bugs ou remplacements défectueux en détail sur la page de discussion.'
+		'Plus d\'informations à propos des mises à jour et fonctionnalités se trouvent <a href="//dev.fandom.com/wiki/FileUsageAuto-update">ici</a> (en anglais). Merci de reporter les bugs ou remplacements défectueux en détail sur la page de discussion.'
 	]
 };

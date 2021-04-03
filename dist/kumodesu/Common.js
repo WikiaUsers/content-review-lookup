@@ -6,11 +6,11 @@ window.UserTagsJS = {
     tags: {
         'bureaucrat': {
             u: 'Outer God',
-            link: 'Project:Bureaucrats'
+            link: 'Project:Administrators'
         },
         'sysop': {
             u: 'System Administrator',
-            link: 'Project:Sysops'
+            link: 'Project:Administrators'
         },
         'content-moderator': {
             u: 'Ruler',

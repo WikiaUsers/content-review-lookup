@@ -93,7 +93,7 @@
     function i18nCallback(i18no) {
         $.when(
             i18no.loadMessages('AddFileToArticle'),
-            mw.loader.using('jquery.autocomplete')
+            mw.loader.using('jquery.ui.autocomplete')
         ).then(init);
     }
     mw.hook('dev.i18n').add(i18nCallback);

@@ -1,3 +1,16 @@
+window.ajaxPages = [
+    "Special:WikiActivity",
+    "Special:RecentChanges",
+    "Special:Watchlist",
+    "Special:Log",
+    "Special:Contributions",
+    "Special:Images"
+];
+window.ajaxIndicator = ;
+window.ajaxRefresh = 30000;
+window.AjaxRCRefreshText = 'Update content';
+window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
+
 mediaWiki.loader.using('mediawiki.util', function() {
     "use strict";
     jQuery(function($) {

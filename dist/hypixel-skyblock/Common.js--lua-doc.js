@@ -1,4 +1,4 @@
-/**
+/** <nowiki>
  * Tuesday, July 14, 2020
  * @name: LuaDoc
  * @desc: Adds a documenation for lua modules for wikis that dont have UCP enabled.
@@ -8,17 +8,17 @@
  * @license: CC-BY-SA - https://creativecommons.org/licenses/by-sa/3.0/
  * @desc: Creates module documentation for lua modules for wikis that are not on MediaWiki 1.31
  */
-;(function($, mw, window) {
+mw.loader.using([ 'mediawiki.api', 'jquery', 'mediawiki.user' ]).then(function() {
     var token = mw.user.tokens.values.editToken,
         fullpagename = mw.config.get("wgPageName"),
         pagename = mw.html.escape(mw.config.get("wgTitle")),
         namespace = mw.config.get("wgNamespaceNumber"),
         api = new mw.Api(),
-        sitename = mw.config.get('wgSiteName')
+        sitename = mw.config.get('wgSiteName'),
         action = mw.config.get('wgAction');
     
     // Don't run script on any actions that dont show page titles
-    if(action != "view" || action != "history" || action != "delete" || action != "protect") {
+    if(action === "edit") {
         return;
     }
     
@@ -42,7 +42,8 @@
     }
     
     // Module:
-    if (namespace === 828) {
+    if (namespace === 828 && action === "view") {
+        // if viewing a module page then load the documentation template
         parse('{{LuaDocumentation|'+pagename+'}}')
         .done(function(docHTML){
             var $elem = $('pre.lua.source-lua, .noarticletext').first();
@@ -50,6 +51,7 @@
                 docHTML
                 +'<h2 id="module-code">Module Code</h2>'
             );
+            _addEventListeners();
         });
         
     }
@@ -59,7 +61,7 @@
         pageExists("Module:" + pagename.replace(/(\/doc)$/gmi, ''))
         .done(function(moduleExists) {
             document.title = "Module documentation for Module:" + pagename.replace(/(\/doc)$/gmi, '') + " | " + sitename + " | Fandom";
-            $('#PageHeader h1.page-header__title').text('Module Documentation:' + pagename);
+            $('#PageHeader h1.page-header__title').text('Module Documentation:' + pagename.replace(/(\/doc)$/gmi, ''));
             $('#talkpagesignbox').remove();
             $('.page-header__page-subtitle').text('');
             $('.page-header__page-subtitle').append(
@@ -71,6 +73,7 @@
             $('#ca-edit').remove();
             $('#ca-addsection').attr('href', '/wiki/' + fullpagename  + '?action=edit').attr('id', 'ca-edit');
             $('#ca-edit > span').text('Edit');
+            _addEventListeners();
             mw.log('Formatted Doc page');
         });
         
@@ -80,64 +83,66 @@
         return;
     }
     
-    // Button to reset the sandbox
-    $('#reset-sandbox.button').click(function() {
-        if (confirm('Are you sure you want to reset the sandbox module?')) {
-            api.post({
-                action: 'edit',
-                title: 'Module:Sandbox',
-                token: token,
-                minor: true,
-                bot: true,
-                summary: 'Reset the sandbox module (SandboxClearer)',
-                text: '-----------------------------------------------------------------------\n\
--- Here You can test your code.\n\
---\n\
--- NOTICE\n\
--- This is a Test Module. It will be peridoicly cleared.\n\
--- please dont use it while it is in use by another person.\n\
------------------------------------------------------------------------\n\
-\n\
--- Not in use: feel free to use\n\
-\n\
-',
-            }).done(function(data) {
-                if (!data.error) {
-                    new BannerNotification('Suessfully Cleared the sandbox module!', 'confirm').show();
-                    mw.log('Suessfully Cleared the sandbox module!');
-                } else {
-                    new BannerNotification('API Error in clearing the sandbox module: ' + data.error.code, 'error').show();
-                    console.warn('API Error in clearing the sandbox module:' + data.error.code);
-                }
-            });
-        }
-    });
+    function _addEventListeners() {
+        // Button to reset the sandbox
+        $('#reset-sandbox.button').click(function() {
+            if (confirm('Are you sure you want to reset the sandbox module?')) {
+                api.post({
+                    action: 'edit',
+                    title: 'Module:Sandbox',
+                    token: token,
+                    minor: true,
+                    bot: true,
+                    summary: 'Reset the sandbox module (SandboxClearer)',
+                    text: '-----------------------------------------------------------------------\n\
+    -- Here You can test your code.\n\
+    --\n\
+    -- NOTICE\n\
+    -- This is a Test Module. It will be peridoicly cleared.\n\
+    -- please dont use it while it is in use by another person.\n\
+    -----------------------------------------------------------------------\n\
+    \n\
+    -- Not in use: feel free to use\n\
+    \n\
+    ',
+                }).done(function(data) {
+                    if (!data.error) {
+                        new BannerNotification('Sucessfully Cleared the sandbox module!', 'confirm').show();
+                        mw.log('Sucessfully Cleared the sandbox module!');
+                    } else {
+                        new BannerNotification('API Error in clearing the sandbox module: ' + data.error.code, 'error').show();
+                        console.warn('API Error in clearing the sandbox module:' + data.error.code);
+                    }
+                });
+            }
+        });
+        
+        // Lua Sandbox Re-mirroring function
+        mw.util.addCSS('#re-mirror-sandbox:hover { text-decoration: underline; }');
+        $('#re-mirror-sandbox').click(function() {
+            if (confirm('Are you sure you want to clear the sandbox module?')) {
+                api.post({
+                    action: 'edit',
+                    title: 'Module:' + pagename + '/sandbox',
+                    token: token,
+                    minor: true,
+                    bot: true,
+                    summary: 'Reset the sandbox subpage (SandboxClearer)',
+                    text: '--{{subst:Module:' + pagename + '}}',
+     
+                }).done(function(data) {
+     
+                    if (!data.error) {
+                        new BannerNotification('Sucessfully Cleared the sandbox module!', 'confirm').show();
+                        mw.log('Sucessfully reset the sandbox module!');
+                    } else {
+                        new BannerNotification('API Error in clearing the sandbox module: ' + data.error.code, 'warn').show();
+                        console.warn('API Error in clearing the sandbox module: ' + data.error.code);
+                    }
+                });
+            }
+     
+        });
+    }
     
-    // Lua Sandbox Re-mirroring function
-    $('#re-mirror-sandbox').click(function() {
-        if (confirm('Are you sure you want to clear the sandbox module?')) {
-            api.post({
-                action: 'edit',
-                title: 'Module:' + pagename + '/sandbox',
-                token: token,
-                minor: true,
-                bot: true,
-                summary: 'Reset the sandbox subpage (SandboxClearer)',
-                text: '--{{subst:Module:' + pagename + '}}',
- 
-            }).done(function(data) {
- 
-                if (!data.error) {
-                    new BannerNotification('Suessfully Cleared the sandbox module!', 'confirm').show();
-                    mw.log('Suessfully reset the sandbox module!');
-                } else {
-                    new BannerNotification('API Error in clearing the sandbox module: ' + data.error.code, 'warn').show();
-                    console.warn('API Error in clearing the sandbox module: ' + data.error.code);
-                }
-            });
-        }
- 
-    });
- 
-    
-})(jQuery, mediaWiki, window);
+});

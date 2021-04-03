@@ -2,3 +2,5 @@
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
+
+TBL_GROUP = "robloxpiggy";

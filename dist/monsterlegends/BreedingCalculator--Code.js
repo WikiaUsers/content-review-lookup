@@ -1,5 +1,5 @@
-var monstersUns= {}
-var monsters ={}
+var monstersUns= {};
+var monsters ={};
   
 var singleCombos = {
 'Nature/Nature':['Treezard:50'],
@@ -52,7 +52,7 @@ var singleCombos = {
 'Light/Legendary':['Light_Spirit:50'],
 'Metal/Metal':['Metalsaur:50'],
 'Metal/Legendary':['Metalsaur:50']
-}
+};
 
 var dualCombos = {
 'Nature/Nature':['Treezard:25'],
@@ -89,7 +89,7 @@ var dualCombos = {
 'Thunder/Light':['Pelitwirl:17.5','Pulseprism:7.5'],
 'Thunder/Metal':['Lesaki:17.5','Garuda_M3:7.5'],
 'Thunder/Legendary':['Thunder_Eagle:25'],
-'Water/Water':['Mersnake:25'],
+'Water/Water':['Mersnake:17.5', 'Razfeesh:7.5'],
 'Water/Dark':['Fliploch:17.5','Razfeesh:7.5'],
 'Water/Magic':['Dolphchamp:15','Octocrush:7.5','Drop_Elemental:2.5'],
 'Water/Light':['Blesstle:17.5','Raane:7.5'],
@@ -110,7 +110,7 @@ var dualCombos = {
 'Metal/Metal':['Metalsaur:25'],
 'Metal/Legendary':['Metalsaur:25'],
 'Legendary/Legendary':['Firesaur:2.44','Treezard:2.44','Rockilla:2.44','Thunder_Eagle:2.44','Mersnake:2.44','Tyrannoking:2.44','Genie:2.44','Light_Spirit:2.44','Metalsaur:2.44','Fire_Lion:1','Turtle:1','Panda:1']
-}
+};
 
 var specCombos = {
 'Rhynex/Darknubis':['Nemestrinus:10'],
@@ -173,7 +173,7 @@ const raritylink = {
   'Epic':['<a href="https://monsterlegends.fandom.com/wiki/Category:Epic"><img src="https://vignette.wikia.nocookie.net/monsterlegends/images/d/d8/Ic-epic.png/revision/latest?cb=20200228123146" alt="Epic" width="40px"></a>'],
   'Legendary':['<a href="https://monsterlegends.fandom.com/wiki/Category:Legendary"><img src="https://vignette.wikia.nocookie.net/monsterlegends/images/7/78/Icono_Legendary.png/revision/latest?cb=20200228123216" alt="Legendary" width="40px"></a>'],
   'Mythic':['<a href="https://monsterlegends.fandom.com/wiki/Category:Mythic"><img src="https://vignette.wikia.nocookie.net/monsterlegends/images/0/01/Icono_Mythic.png/revision/latest?cb=20200228123259" alt="Mythic" width="40px"></a>']
-}
+};
 
 var element = {
   'All':[0],
@@ -207,7 +207,8 @@ var books ={
   'Villains':[17],
   'Elite':[18],
   'Race':[19],
-  'Quest':[20]
+  'Quest':[20],
+  'Cosmic Era':[21]
   };
 
 /*Breeding Calc*/
@@ -222,7 +223,7 @@ var books ={
   function get_monster_data(callback){
   	$.getJSON('/api.php?action=parse&page=Breeding_Calculator/monsterdata&format=json', function(data) {
       var fullString = data["parse"]["text"]["*"];
-      fullString = fullString.replace("<p>","");
+      fullString = fullString.replace('<div class="mw-parser-output"><p>','');
       fullString = fullString.split("</p>")[0];
       var fullArr = fullString.split("<br />");
       for (var monNum in fullArr){

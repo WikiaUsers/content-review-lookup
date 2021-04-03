@@ -1,5 +1,10 @@
 // Template: StatueStatsForm
+
 $(document).ready(function() {
+	/* Function to round a number to a certain digit. */
+	function roundNum(digit, num) {
+	    return Math.round((num) * Math.pow(10, digit)) * Math.pow(10, -digit);
+	}
     /* Create inputs */
     $("span#bonusInputBHHarness").html('<input type="text" value="0" id="bonusInputBH" class="bonusInput" style="text-align: right; width: 40px;"></input>');
     $("span#bonusInputDBDHarness").html('<input type="text" value="0" id="bonusInputDBD" class="bonusInput" style="text-align: right; width: 40px;"></input>');

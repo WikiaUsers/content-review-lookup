@@ -1,14 +1,4 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* Replaces {{USERNAME}} with the name of the user browsing the page.
-   Requires copying Template:USERNAME. */
- 
-function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
-    $("span.insertusername").html(wgUserName);
- }
- addOnloadHook(UserNameReplace);
- 
-/* End of the {{USERNAME}} replacement */
 /*Testing: Cursor changing while clicking*/
 function change() {
     document.body.style.cursor="url('https://vignette.wikia.nocookie.net/dreamworks-school-of-dragons/images/c/c1/Wiki_cursor_2.png/revision/latest?cb=20190707175219'), auto";

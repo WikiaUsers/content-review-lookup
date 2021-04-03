@@ -89,13 +89,14 @@
         );
 
         // Search: Add "go to search term" button
-        var searchVal = $('#search-v2-input').val();
+        var searchVal = $('#search-v2-input, .unified-search__input__query').val();
         if (mwconfig.wgCanonicalSpecialPageName === 'Search' && searchVal !== '') {
-            $('.search-tabs').append(
+            $('.search-tabs, .unified-search__profiles').append(
                 $('<li>', {
                     'class': 'normal'
                 }).append(
                     $('<a>', {
+                        'class': 'unified-search__profiles__profile',
                         href: mw.util.getUrl(searchVal),
                         text: i18n.msg('goToPage').plain(),
                         title: searchVal

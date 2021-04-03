@@ -1,68 +1,17 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-
-// Tags
-// ================================================================
-// Username tags additions/filters (Working as intended)
-// Don't mess with order without telling a Super Admin first, this
-// breaks very easy.
-// ================================================================
-
-window.UserTagsJS = {
-    modules: {},
-    tags: {
-		'bureaucrat-sysop': { u:'Super Admin', title:'Both an admin and a bureaucrat.' },
-		'half-sysop': { u: 'Half-Admin', title:'Both a chatmoderator and a rollback.' },
-		'founder': { u: 'Founder', title:'Founding Mother of Lalaloopsy Land.' },
-		'liberator': { u: 'Liberator', title:'The boy who led and saved Lalaloopsy Land.' }
-	}
+// WikiActivity Config
+window.rwaOptions = {
+    limit : 50,
+    namespaces : [ 0, 1, 2, 3, 4, 5, 500, 501 ],
+    autoInit : true,
+    themeName : "main",
+    showBotEdits : false,
+    loadModule : true,
+    customRendering : { },
+    headerLink : false,
+    refresh : false,
+    refreshDelay : 5 * 60 * 1000,
+    timeout : 10 * 1000
 };
-
-UserTagsJS.modules.implode = {
-    'bureaucrat-sysop': ['sysop', 'bureaucrat'],
-    'half-sysop': ['chatmoderator', 'content-moderator']
-};
-
-UserTagsJS.modules.mwGroups = [
-    'bureaucrat',
-    'chatmoderator',
-    'content-moderator',
-    'patroller',
-    'rollback',
-    'sysop',
-    'bannedfromchat',
-    'bot',
-    'bot-global',
-    'newuser'
-];
-UserTagsJS.modules.autoconfirmed = true;
-UserTagsJS.modules.inactive = {
-	months: 1,
-	namespaces: [0, 'Talk', 'User talk', 'Forum'],
-	zeroIsInactive: true // 0 article edits = inactive
-};
-UserTagsJS.modules.newuser = {
-	days: 3, // Must have been on the Wiki for 3 days
-	edits: 10, // And have at least 10 edits to remove the tag
-	namespace: 0 // Edits must be made to articles to count
-};
-
-UserTagsJS.modules.custom = {
-    'Thenaturals': ['founder'],
-    'RGL Victor The Great': ['liberator']
-};
-
- 
-window.MessageWallUserTags = {
-    tagColor: '#A0522D',
-    glow: false,
-    users: {
-        'username': 'usergroup',
-        'RGL_Victor_The_Great': 'Liberator',
-        'Thenaturals': 'Founder',
-    }
-};
-// MassCategorization Config
-window.MassCategorizationGroups = ['sysop', 'content-moderator'];
 
 //Auto Message Blocked
 var MessageBlock = {

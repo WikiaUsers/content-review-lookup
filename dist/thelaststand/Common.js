@@ -25,13 +25,6 @@ $(document).ready(function() {
 });
 /* End of EDPS calculator script */
 
-// AUTO-REFRESH RECENT CHANGES AND WIKI-ACTIVITY
- AjaxRCRefreshText = 'Auto-refresh';
- AjaxRCRefreshHoverText = 'Automatically refresh the page';
- ajaxPages = ["Special:RecentChanges", "Special:WikiActivity"];
- importScriptPage('MediaWiki:AjaxRC/code.js', 'dev');
-// END AUTO-REFRESH
-
 /* Username replace feature
  * Inserts viewing user's name into <span class="insertusername"></span>
  * Put text inside the spans to be viewed by logged out users
@@ -110,7 +103,7 @@ function checktimers() {
         updatetimer(i); //start it up
     }
 }
-addOnloadHook(checktimers);
+$(checktimers);
  
 // **************************************************
 //  - end -  Experimental javascript countdown timer
@@ -235,6 +228,6 @@ function createCollapseButtons() {
     }
 }
  
-addOnloadHook(createCollapseButtons);
+$(createCollapseButtons);
 
 // END Collapsible tables

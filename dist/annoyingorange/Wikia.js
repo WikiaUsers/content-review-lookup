@@ -180,3 +180,4 @@ $(function() {
         addMastheadTags();
     }
 });
+window.rwaOptions

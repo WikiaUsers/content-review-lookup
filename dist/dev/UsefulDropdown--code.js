@@ -1,7 +1,7 @@
 // <nowiki>
 $(function() {
             if (
-                wgNamespaceNumber !== 0 ||
+                mw.config.get('wgNamespaceNumber') !== 0 ||
                 window.UsefulDropdownLoaded
             ) {
                 return;

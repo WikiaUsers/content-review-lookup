@@ -1,3 +1,10 @@
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:SyntaxHighlight.js',
+    ]
+});
+
 //===================================
 // Переключатель стилей работающий с [[Шаблон:Версия]]
 // Стили записаны в MediaWiki:Styles.css

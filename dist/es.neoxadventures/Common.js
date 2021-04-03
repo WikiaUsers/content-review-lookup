@@ -252,3 +252,14 @@ importArticles({
         'u:dev:FloatingToc/code.js'
     ]
 });*/
+
+/************************************************/
+/***            Link Preview                     ***/
+/*** https://dev.fandom.com/wiki/LinkPreview     ***/
+/************************************************
+/***Desactivado por no funcional***/
+/*** window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.noimage = "https://vignette.wikia.nocookie.net/neoxadventures/images/f/fa/Logo_Blanco.png/revision/latest?cb=20180411164057&path-prefix=es";
+window.pPreview.tlen = 1000;
+window.pPreview.wholepage = true;
+***/

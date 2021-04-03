@@ -1,4 +1,4 @@
-require(['jquery', 'mw'], function($, mw) {
+(function() {
     'use strict';
     var stats = [
         'Health',
@@ -137,4 +137,4 @@ require(['jquery', 'mw'], function($, mw) {
         init(mw.util.$content);
         mw.hook('wikipage.content').add(init);
     });
-});
+})();

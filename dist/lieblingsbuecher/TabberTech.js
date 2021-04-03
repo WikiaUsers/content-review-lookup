@@ -1,13 +1,13 @@
 var findallURL = document.getElementById('WikiaMainContent').getElementsByTagName("a");
 for (var i=0; i < findallURL.length; i++) {
   if (findallURL[i].href.search('#') >= 0) {
-    findallURL[i].onclick = function(){ OpenTabber(this); }; 
+    findallURL[i].onclick = OpenTabber.bind(window, this); 
   }
 }
  
 function GetListOfSisterDivs(GesuchtesDiv) {
   var FamilyDiv = GesuchtesDiv.parentNode.getElementsByTagName('div');
-  var SisterDiv = new Array();
+  var SisterDiv = [];
   for (var i=0; i<FamilyDiv.length; i++) {
     if (FamilyDiv[i].parentNode == GesuchtesDiv.parentNode) {
       SisterDiv.push(FamilyDiv[i]);
@@ -33,7 +33,7 @@ function OpenTabber(LinkObjekt) {
     if (CurrentObject.className.search('tabbertab') >= 0) {
       // Ziel ist in einem Tabber (hier ist das TabberTab gefunden worden)
       var GesamtesTab = CurrentObject.parentNode.getElementsByTagName('div');
-      var GesamtesTab = GetListOfSisterDivs(CurrentObject);
+      GesamtesTab = GetListOfSisterDivs(CurrentObject);
       var TabID = 0;
       for (var i=0; i < GesamtesTab.length; i++) {
         if (GesamtesTab[i] == CurrentObject) {
@@ -55,4 +55,4 @@ function OpenTabber(LinkObjekt) {
   }
   return true;
 }
-addOnloadHook(OpenTabber);
+$(document).ready(OpenTabber);

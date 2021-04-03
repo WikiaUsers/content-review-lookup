@@ -7,19 +7,31 @@
 */
  
 !function (userSettings) {
-    /*global require module list*/
-    var moduleList = ['jquery', 'mw', 'wikia.ui.factory', 'BannerNotification', 'wikia.window', 'ext.wikia.design-system.loading-spinner'];
-    /* require callback */
-    function rcallback ($, mw, uiFactory, BannerNotification, window, Spinner) {
-        'use strict';
-        
-        var cfg = mw.config.get([
+mw.loader.using('mediawiki.util').done(function() {
+    var cfg = mw.config.get([
             'wgPageName',
             'wgUserLanguage',
             'wgUserName',
-            'wgUserGroups'
+            'wgUserGroups',
+            'wgVersion'
         ]);
-         
+    cfg.isUcp = parseFloat(cfg.wgVersion) > 1.19;
+    var loader = cfg.isUcp ? window.mw.loader.using : window.require;
+    
+    /*global require module list*/
+    var moduleList = [];
+    if (!cfg.isUcp) {
+        moduleList.push('wikia.ui.factory');
+        moduleList.push(require.optional('BannerNotification'));
+        moduleList.push(require.optional('ext.wikia.design-system.loading-spinner'));
+    } else {
+        // need some uifactory emulation. badly
+    }
+    /* require callback */
+    function rcallback (uiFactory, BannerNotification, Spinner) {
+        'use strict';
+        
+     
         if (
             (!$('#WikiaRail').length) &&
             !$('.discord-container').length &&
@@ -31,7 +43,19 @@
         if (!Spinner) {
             // spinner emulation
             Spinner = function(){return{html:''}};
-        }
+        }// if !spinner
+        
+        if (!BannerNotification) {
+            // bannernotification emulation
+            BannerNotification = function(msg, t) {
+                this.msg = msg;
+                this.t = t;
+            };// BannerNotification
+            
+            BannerNotification.prototype.show = function() {
+                alert(''.concat(this.t, '\n', this.msg));
+            };// BannerNotification.show
+        }// if !bannernotification
         
         var i18n = {
             // language list - start
@@ -135,6 +159,34 @@
                 successChange: 'Sauvegardé avec succès',
                 errorChange: 'Un erreur s\'est produite',
             },
+            hi: {
+                description: "[https://discord.com/ डिस्कॉर्ड] फैनडम के बाहर सार्वजानिक चर्चा के लिए एक मुक्त एप्लीकेशन है।" +
+                             "[[wikipedia:Discord (software)|विकिपीडिया पर और जानें]]",
+                online: "ऑनलाइन:",
+                join: "शामिल हों",
+                onlinelist: "सदस्य ऑनलाइन",
+                instruction: "सर्वर ID पाने के लिए आपको इस पथ पर जाना होगा (प्रबंधक अनुमति चाहिए):<br/>" +
+                             "Server settings > Widget > Server ID<br/>" +
+                             "और यहाँ आपको विजेट को सक्षम करना होगा और चुनना होगा कि आप सर्वर में आ रहे उपयोगकर्ताओं के लिए चैनल चुनना होगा अगर आप चाहते हैं कि वे आएँ।",
+                descriptionForm: "मोडल विवरण",
+                supportsWikitext: "विकिटेक्स्ट समर्थित है",
+                placeholder: "डिफ़ॉल्ट से डिस्कॉर्ड के बारे में जानकारी",
+                useSvg: "कस्टम तस्वीर का इस्तेमाल करें (CSS में बदलाव चाहिए)",
+                flags: "दूसरे पैरामीटर",
+                showGuideline: "कस्टम विवरण न दिखाएँ",
+                showForAnonym: "गुमनामों के लिए न दिखाएँ",
+                showServerName: "सर्वर का नाम न दिखाएँ",
+                railPosition: "रेल के नीचे का स्थान",
+                generateHTML: "HTML जनरेट करें",
+                saveSettings: "सेव करें",
+                reset: "रीसेट करें",
+                successChange: 'सफलतापूर्वक सेव किया गया',
+                errorChange: 'त्रुटि आई',
+                refresh: '"रिफ्रेश" बटन छिपाएँ',
+                refreshTitle: 'रिफ्रेश करें',
+                showRefresh: '"रिफ्रेश" बटन छिपाएँ',
+                refreshClass: '"रिफ्रेश" बटन के लिए अतिरिक्त क्लास'
+            },
             pl: {
                 description: "[https://discord.com/ Discord] jest aplikacją używaną do komunikacji poza Fandomem. " +
                              "[[wikipedia:pl:Discord|Dowiedz się więcej]] (Wikipedia)",
@@ -158,6 +210,34 @@
                 reset: "Wyczyść",
                 successChange: 'Pomyślnie zapisano',
                 errorChange: 'Wystąpił błąd'
+            },
+            'pt-br': {
+                description: "[https://discord.com/ Discord] é um aplicativo gratuito para discussões públicas fora do Fandom. " +
+                             "[[wikipedia:Discord (software)|Obtenha mais na Wikipédia]]",
+                online: "Online:",
+                join: "Juntar-se",
+                onlinelist: "Usuários online",
+                instruction: "Para obter o ID do servidor, você precisa seguir este caminho (precisa de direitos de administrador):<br/>" +
+                             "Configurações do servidor> Widget> ID do servidor<br/>" +
+                             "Também aqui você precisa ativar o widget e escolher o canal a ser convidado se quiser que os usuários venham ao seu servidor.",
+                descriptionForm: "Descrição do módulo",
+                supportsWikitext: "suporta wikitexto",
+                placeholder: "Informações sobre Discord por padrão",
+                useSvg: "Use imagem personalizada (alteração de CSS necessária)",
+                flags: "Outros parâmetros",
+                showGuideline: "Não mostrar descrição personalizada",
+                showForAnonym: "Não mostrar para anônimos",
+                showServerName: "Não mostrar o nome do servidor",
+                railPosition: "Posicione abaixo do rail",
+                generateHTML: "Gerar HTML",
+                saveSettings: "Salvar",
+                reset: "Redefinir",
+                successChange: 'Salvo com sucesso',
+                errorChange: 'Um erro ocorreu',
+                refresh: 'A',
+                refreshTitle: 'Atualizar',
+                showRefresh: 'Esconder o botão "Atualizar"',
+                refreshClass: 'Classes adicionais para o botão "Atualizar"'
             },
             ru: {
                 description: "[https://discord.com/ Discord] — бесплатное приложение для публичного общения вне Фэндома. " +
@@ -445,7 +525,7 @@
          
                 $module.find('.discord-online').click(function(e) {
                     e.preventDefault();
-                    uiFactory.init(['modal']).then(function(uiModal) {
+                    uiFactory && uiFactory.init(['modal']).then(function(uiModal) {
                         // add avatars
                         if (!avatarsLoaded) {
                             avatarsLoaded = true;
@@ -715,13 +795,15 @@
     /* require error handler */
     function rerrHandler(error) {
         console.warn('DiscordModule require error', error);
+        /*
         if (error === 'Module ext.wikia.design-system.loading-spinner is not defined.') {
             // try to restore after spinner error
             moduleList.splice(-1);
             require(moduleList, rcallback, rerrHandler);
         }
+        */
     }
     
     /*global require */
-    require(moduleList, rcallback, rerrHandler);
-}((window.dev = window.dev || {}).discordmodule = window.dev.discordmodule || {});
+    loader(moduleList, rcallback, rerrHandler);
+})}((window.dev = window.dev || {}).discordmodule = window.dev.discordmodule || {});

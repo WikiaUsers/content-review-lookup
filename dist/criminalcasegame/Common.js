@@ -9,7 +9,6 @@ importScriptPage('SocialIcons/code.js','dev');
  * Auto Refresh *
  ***************/
 window.ajaxPages = [
-    "Special:RecentChanges",
     "Special:Log",
     "Special:Contributions",
     "Special:WikiActivity"

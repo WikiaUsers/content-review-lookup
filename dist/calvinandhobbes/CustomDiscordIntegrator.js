@@ -9,63 +9,6 @@
  
 importStylesheet("MediaWiki:CustomDiscordIntegrator.css");
 $.getJSON("https://discordapp.com/api/guilds/247850834153439233/widget.json", function(json) {
-// Get user's ids
-    function getAdmins() {return [
-        /**
-         * Admins
-         * 
-         * This function populates an array with the 
-         * admin user ids and returns the array.
-         *
-         * Americhino                        221007596222545925
-         */
-        "221007596222545925"
-        ];
-    }
-    function getMods() {return [
-        /**
-         * Moderators
-         * 
-         * This function populates an array with the
-         * Moderator user ids and returns the array.
-         *
-         * Enracer                 404710363183972354
-         */
-        "404710363183972354"
-        ];
-    }
-    function getAffiliates() {return [
-        /**
-         * Affiliates
-         * 
-         * This function populates an array with the
-         * affiliate user ids and returns the array.
-         * 
-         * Cooljoe01        498504203912871938
-         * TeeJay87         369563789152223233
-         * Tim Kearns       508707631721086977
-         */
-        "498504203912871938",
-        "369563789152223233", 
-        "508707631721086977"
-    ]}
-    function getBots() {return [
-        /**
-         * Bots
-         * 
-         * This function populates an array with the
-         * bot user ids and returns the array.
-         * 
-         * Septapus         127296623779774464
-         * Tatsumaki        172002275412279296
-         * WikiaLinker      182146458097680385
-         * 💾❗             159133099806949376
-         */
-        "127296623779774464",
-        "172002275412279296", 
-        "182146458097680385", 
-        "159133099806949376"
-    ]}
     // Make some variables
     var $rail = $('#WikiaRail'); //Get the Wikia Rail.
     var $widgetContainer; //Container to hold the widget. This replaces the iframe.
@@ -122,50 +65,7 @@ $.getJSON("https://discordapp.com/api/guilds/247850834153439233/widget.json", fu
     // Create container to hold all users currently online.
     var $widgetBodyUsers = document.createElement("div");
     $($widgetBodyUsers).appendTo($widgetBodyContainer);
- 
-    // Create container for Alphas
-    var $adminOnlineContainer = document.createElement("div");
-    $($adminOnlineContainer).addClass("widget-role-container").appendTo
-    ($widgetBodyUsers);
- 
-    var $adminOnlineTitle = document.createElement("div");
-    $($adminOnlineTitle)
-        .addClass("widget-role-name-admin")
-        .text("Admins")
-        .appendTo($adminOnlineContainer);
-    // Do the same thing, but for mods and bots 
-    var $modsOnlineContainer = document.createElement("div");
-    $($modsOnlineContainer).addClass("widget-role-container")
-    .appendTo($widgetBodyUsers);
-    
-    var $modsOnlineTitle = document.createElement("div");
-    $($modsOnlineTitle)
-        .addClass("widget-role-name-mods")
-        .text("Mods")
-        .appendTo($modsOnlineContainer);
 
-    var $affiliatesOnlineContainer = document.createElement("div");
-    $($affiliatesOnlineContainer)
-        .addClass("widget-role-container")
-        .appendTo($widgetBodyUsers);
-        
-    var $affiliatesOnlineTitle = document.createElement("div");
-    $($affiliatesOnlineTitle)
-        .addClass("widget-role-name-affiliates")
-        .text("Affiliates")
-        .appendTo($affiliatesOnlineContainer);
-        
-    var $botsOnlineContainer = document.createElement("div");
-    $($botsOnlineContainer)
-        .addClass("widget-role-container")
-        .appendTo($widgetBodyUsers);
-        
-    var $botsOnlineTitle = document.createElement("div");
-    $($botsOnlineTitle)
-        .addClass("widget-role-name-bots")
-        .text("Bots")
-        .appendTo($botsOnlineContainer);
-        
     // Now for all other users
     var $usersOnlineContainer = document.createElement("div");
     $($usersOnlineContainer)
@@ -176,26 +76,15 @@ $.getJSON("https://discordapp.com/api/guilds/247850834153439233/widget.json", fu
         .addClass("widget-role-name-member")
         .text("Members")
         .appendTo($usersOnlineContainer);
- 
-    // Populate the staff and bots.
-    var admin = getAdmins();
-    var mod = getMods();
-    var bots = getBots();
- 
-    // Run through the JSON and add users.
+     // Run through the JSON and add users.
     for (var i = 0; i < membersOnline; i++) {
  
         var member = json.members[i];
         // Check whether the user is a staff member or a bot.
         // If yes, add the user to the relevant role section,
         // else add the user to the users section.
-        if (admin.includes(member.id)) {$(createWidgetMember(member))
-        .appendTo($adminOnlineContainer);} 
-        else if (mod.includes(member.id)) {$(createWidgetMember(member))
-        .appendTo($modsOnlineContainer);} 
-        else if (bots.includes(member.id)) {$(createWidgetMember(member))
-        .appendTo($botsOnlineContainer);}
-        else {$(createWidgetMember(member)).appendTo($usersOnlineContainer);}}
+        $(createWidgetMember(member)).appendTo($usersOnlineContainer);
+    }
  
     // Further design the widget
  

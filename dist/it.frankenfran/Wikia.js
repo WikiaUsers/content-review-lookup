@@ -1,8 +1,7 @@
-//=======================================
-//       Variabili per le funzioni
+//   Tratto parzialmente da https://onepiece.fandom.com/it
 //=======================================
 // Ajax auto-refresh
-ajaxPages = ["Speciale:UltimeModifiche", "Speciale:OsservatiSpeciali", "Speciale:WikiActivity", "Speciale:ImmaginiRecenti", "Speciale:Registri", "Speciale:AbuseLog"];
+ajaxPages = ["Speciale:UltimeModifiche", "Speciale:OsservatiSpeciali", "Speciale:ImmaginiRecenti", "Speciale:Registri", "Speciale:AbuseLog"];
 AjaxRCRefreshText = "Aggiornamento automatico";
 AjaxRCRefreshHoverText = "Abilita l'aggiornamento automatico della pagina";
 
@@ -12,20 +11,23 @@ window.DisplayClockJS = {
     hoverText: "Clicca per aggiornare la cache"
 };
 
-// User Tags
-window.UserTagsJS = {
-	modules: {},
-	tags: {}
+// Add custom groups to several users
+UserTagsJS.modules.custom = {
+    'KuroUrufu': ['helper', 'sysop'],
 };
-UserTagsJS.modules.inactive = 30;
-UserTagsJS.modules.newuser = true;
-UserTagsJS.modules.autoconfirmed = true;
-// NOTE: bannedfromchat displays in Oasis but is not a user-identity group so must be checked manually
-UserTagsJS.modules.mwGroups = ["bureaucrat", "chatmoderator", "patroller", "rollback", "sysop", "bannedfromchat", "bot", "bot-global", "staff", "helper", "vstf"];
+
+UserTagsJS.modules.inactive = 28; // Inactive if no edits in 28 days
+UserTagsJS.modules.autoconfirmed = true; // Switch on
+UserTagsJS.modules.newuser = {
+	days: 14, // Must have been on the Wiki for 14 days
+	edits: 100, // And have at least 100 edits to remove the tag
+	namespace: 0 // Edits must be made to articles to count
+};
+
+UserTagsJS.modules.mwGroups = ["bureaucrat", "patroller", "rollback", "sysop", "bot", "bot-global", "staff", "helper", "vstf"];
 UserTagsJS.modules.metafilter = {
 	sysop: ["bureaucrat", "founder"],
-	bureaucrat: ["founder"],
-	chatmoderator: ["sysop", "bureaucrat"]
+	bureaucrat: ["founder"]
 };
 
 // SignatureCheck
@@ -36,222 +38,122 @@ window.SignatureCheckJS = {
 	noForumheader: "Manca il template d'intestazione per le pagine forum. Senza quello, il forum non verrà elencato nella lista dei forum.\n",
 	noSignature: "Sembra che tu ti sia dimenticato di firmarti. Fallo digitando ~~" + "~~ o usando il tasto apposito.\nPer aiuto sulle firme, leggi Aiuto:Firma.\n",
  
-	// Other stuff
+	// Other
 	forumheader: "Forum", // The name of the Forumheader template, can be set to an empty string or false to disable
 	checkSignature: true // Enable the signature check function
 };
 
-// QuickDelete
-window.category = "Candidati per la rimozione";
-window.reason = "Manutenzione";
+// External links opened in a new window
+$(function() {
+   $('a.external:not([href$="wpForReUpload=1"]), a.extiw, .WikiaArticleInterlang a, #p-lang a')
+   .attr('target', '_blank');
+});
 
-// Preload Templates
-preloadTemplates_subpage = "case-by-case";
+// DPL lists links (show the current page)
+$(function() {
+    $('.navbar a[title="' + wgTitle + '"]').css({'color' : 'inherit', 'font-weight' : 'bold'});
+});
+
+// Installments Chronology
+$(function() {
+   var container = $('.crono-container').parent().width();
+   var current = $('.crono-container .selflink').parent().position();
+
+   // nullify if not findable
+   if (!current) return;
+   // max width
+   $('.crono-container').width(container);
+   // move scroll
+   $('.crono-container').scrollLeft(Math.round(current.left - container/2));
+});
+
+//// changes current page cell
+$(function() {
+	$('.crono-nav .selflink').parent().addClass('crono-selected');
+});
+
+// Characters Gallery (link to page)
+$(function() {
+    $(".galleria .wikia-gallery .gallery-image-wrapper")
+    .each(function () {
+        var $fileURL = $(this).find("img").attr("data-image-key");
+		var $fileName = $(this).find("img").attr("data-image-name");
+		var $fileLink = '<div class="immagine-info"><a href="/it/wiki/File:' + $fileURL + '" title="' + $fileName + '"><div class="immagine-info-icon"></div></a></div>';
+
+		$(this).append($fileLink);
+    });
+});
+
+// NavBar section (clear line)
+$(function() {
+    $('span#Navigazione').parent().css('clear', 'both');
+});
+
+// DropDown List (adds links)
+$(function () {
+    var $button = $('.wds-button-group .wds-dropdown .wds-list');
+    
+    $button.append(
+        '<li><a href="/it/wiki/' + mw.config.get("wgPageName") + '?useskin=mercury" title="Vedi nella skin Mobile">Vedi come su Mobile</a></li>' +
+        '<li><a href="/it/wiki/Speciale:PuntanoQui/' + mw.config.get("wgPageName") + '" title="Puntano qui">Puntano qui</a></li>' +
+        '<li><a href="/it/wiki/Speciale:Prefissi/' + mw.config.get("wgPageName") + '" title="Sottopagine">Sottopagine</a></li>'
+    );
+});
+
+// TabellaPersonaggi (prevents overlap)
+$(function () {
+    $( '.TabellaPersonaggi' ).wrap( '<div class="TabellaPersonaggi-container"></div>' );
+});
+
+// WikiaRail (changes buttons style)
+$(function () {
+    $("#WikiaRail .community-page-rail-module .wds-button, #WikiaRail .chat-module .wds-button, #WikiaRail .photo-module .photo-stats .wds-button").removeClass("wds-is-secondary");
+});
 
 // Preload File Description
-// <nowiki> -- per evitare che il codice MediaWiki di seguito agisca su questa pagina --
 PFD_discourageEditorFileUpload = true;
 PFD_templates = [
-    "Immagini generiche",
+    "Immagini da Franken Fran",
     {
-        label:   "Immagine sconosciuta",
-        desc:    "== Fonte ==\n{{Senza fonte}}\n\n== Licenza ==\n{{Senza licenza}}",
-        tip: "Per favore, aggiungi fonte, licenza e categoria o seleziona un altro modello nel menù qui sopra."
+        label:   "Immagine di personaggio",
+        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n{{Fair use}}\n\n[[Categoria:Immagini di personaggi]]",
+        tip: "Immagine che rappresenta un personaggio. Per favore, completa la fonte."
     },
     {
-        label:   "Immagine di curiosità",
-        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n[[Categoria:Immagini di curiosità]]",
-        altdesc: "== Fonte ==\nImmagine tratta dall'[[episodio #]].\n\n== Licenza ==\n{{Screenshot}}\n[[Categoria:Immagini di curiosità]]",
-        tip: "Immagine di una curiosità. Per favore, completa la fonte."
-    },
-    {
-        label:   "Immagine di servizio",
-        desc:    "== Fonte ==\nImmagine tratta da *.\n\n== Licenza ==\n{{Senza licenza}}\n[[Categoria:Immagini di servizio]]",
-        tip: "Immagine usata per il sito. Per favore, completa le informazioni."
-    },
-    "Immagini da One Piece",
-    {
-        label:   "Immagine di un personaggio",
-        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n[[Categoria:Immagini di personaggi]]",
-        altdesc: "== Fonte ==\nImmagine tratta dall'[[episodio #]].\n\n== Licenza ==\n{{Screenshot}}\n[[Categoria:Immagini di personaggi]]",
-        tip: "Immagine rappresentativa di un personaggio o usata per l\"aspettto. Per favore, completa la fonte."
-    },
-    {
-        label:   "Immagine della storia",
-        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n[[Categoria:Immagini della storia]]",
-        altdesc: "== Fonte ==\nImmagine tratta dall'[[episodio #]].\n\n== Licenza ==\n{{Screenshot}}\n[[Categoria:Immagini della storia]]",
-        tip: "Immagine usata per la sezione storia. Per favore, completa la fonte."
+        label:   "Immagine di gruppo",
+        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n{{Fair use}}\n\n[[Categoria:Immagini di gruppi]]",
+        tip: "Immagine che rappresenta un gruppo. Per favore, completa la fonte."
     },
     {
         label:   "Immagine di luogo",
-        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n[[Categoria:Immagini di luoghi]]",
-        altdesc: "== Fonte ==\nImmagine tratta dall'[[episodio #]].\n\n== Licenza ==\n{{Screenshot}}\n[[Categoria:Immagini di luoghi]]",
-        tip: "Immagine di un luogo. Per favore, completa la fonte."
-    },
-    {
-        label:   "Immagine di frutto del diavolo",
-        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n[[Categoria:Immagini di frutti del diavolo]]",
-        altdesc: "== Fonte ==\nImmagine tratta dall'[[episodio #]].\n\n== Licenza ==\n{{Screenshot}}\n[[Categoria:Immagini di frutti del diavolo]]",
-        tip: "Immagine usata per mostrare i poteri di un frutto del diavolo. Per favore, completa la fonte."
-    },
-    {
-        label:   "Immagine di azione",
-        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n[[Categoria:Immagini di azioni]]",
-        altdesc: "== Fonte ==\nImmagine tratta dall'[[episodio #]].\n\n== Licenza ==\n{{Screenshot}}\n[[Categoria:Immagini di azioni]]",
-        tip: "Immagine usata per mostrare una tecnica o abilità. Per favore, completa la fonte."
-    },
-    {
-        label:   "Immagine di arma o oggetto",
-        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n[[Categoria:Immagini di armi e oggetti]]",
-        altdesc: "== Fonte ==\nImmagine tratta dall'[[episodio #]].\n\n== Licenza ==\n{{Screenshot}}\n[[Categoria:Immagini di armi e oggetti]]",
-        tip: "Immagine di un\"arma o oggetto. Per favore, completa la fonte."
-    },
-    {
-        label:   "Immagine di veicolo",
-        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n[[Categoria:Immagini di veicoli]]",
-        altdesc: "== Fonte ==\nImmagine tratta dall'[[episodio #]].\n\n== Licenza ==\n{{Screenshot}}\n[[Categoria:Immagini di veicoli]]",
-        tip: "Immagine di un veicolo. Per favore, completa la fonte."
-    },
-    {
-        label:   "Immagine di nave",
-        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n[[Categoria:Immagini di navi]]",
-        altdesc: "== Fonte ==\nImmagine tratta dall'[[episodio #]].\n\n== Licenza ==\n{{Screenshot}}\n[[Categoria:Immagini di navi]]",
-        tip: "Immagine di una nave. Per favore, completa la fonte."
-    },
-    {
-        label:   "Immagine di taglia",
-        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n[[Categoria:Immagini di taglie]]",
-        altdesc: "== Fonte ==\nImmagine tratta dall'[[episodio #]].\n\n== Licenza ==\n{{Screenshot}}\n[[Categoria:Immagini di taglie]]",
-        tip: "Immagine di una taglia. Per favore, completa la fonte."
-    },
-    {
-        label:   "Immagine di un simbolo",
-        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n[[Categoria:Simboli]]",
-        altdesc: "== Fonte ==\nImmagine tratta dall'[[episodio #]].\n\n== Licenza ==\n{{Screenshot}}\n[[Categoria:Simboli]]",
-        tip: "Immagine di un simbolo come ad esempio un Jolly Roger. Per favore, completa la fonte."
+        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n{{Fair use}}\n\n[[Categoria:Immagini di luoghi]]",
+        tip: "Immagine che rappresenta un luogo. Per favore, completa la fonte."
     },
     {
         label:   "Primo piano",
-        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n[[Categoria:Primi piani]]",
-        altdesc: "== Fonte ==\nImmagine tratta dall'[[episodio #]].\n\n== Licenza ==\n{{Screenshot}}\n[[Categoria:Primi piani]]",
-        tip: "Immagine usata nei template galleria. Per favore, completa la fonte."
+        desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n{{Fair use}}\n\n[[Categoria:Ritratti]]",
+        tip: "Immagine usata in template galleria e infobox. Per favore, completa la fonte."
     },
-    "Cover",
+    "Manga",
     {
-        label:   "Cover capitolo generico",
-        desc:    "== Fonte ==\nCover del [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina}}\n[[Categoria:Cover]]",
-        tip: "Cover di un capitolo generico. Per favore, completa la fonte."
-    },
-    {
-        label:   "Cover capitolo di animali",
-        desc:    "== Fonte ==\nCover del [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina}}\n[[Categoria:Cover di animali]]",
-        tip: "Cover capitolo della serie degli animali. Per favore, completa la fonte."
+        label:   "Cover",
+        desc:    "== Fonte ==\nCover del [[capitolo #]].\n\n{{Fair use}}\n\n[[Categoria:Prime pagine]]",
+        tip: "Cover di un capitolo. Per favore, completa la fonte."
     },
     {
-        label:   "Cover capitolo di animali su richiesta",
-        desc:    "== Fonte ==\nCover del [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina}}\n[[Categoria:Cover di animali]]\n[[Categoria:Cover su richiesta]]",
-        tip: "Cover capitolo della serie degli animali su richiesta. Per favore, completa la fonte."
+        label:   "Cover volume",
+        desc:    "== Fonte ==\nCover del [[volume #]].\n\n{{Fair use}}\n\n[[Categoria:Cover di Volumi]]",
+        tip: "Cover di un volume. Per favore, completa la fonte."
+    },
+    "Altro",
+    {
+        label:   "Immagine di servizio",
+        desc:    "== Fonte ==\nImmagine tratta da *.\n\n{{Fair use}}\n\n[[Categoria:Immagini di servizio]]",
+        tip: "Immagine usata per il sito. Per favore, completa le informazioni."
     },
     {
-        label:   "Cover capitolo a colori",
-        desc:    "== Fonte ==\nCover del [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina}}\n[[Categoria:Cover a colori]]",
-        tip: "Cover capitolo a colori. Per favore, completa la fonte."
+        label:   "Immagine da un'altra wiki",
+        desc:    "== Fonte ==\nImmagine tratta da *.\n\n{{Fair use}}\n[[Categoria:Immagini di servizio]]\n\n[[Categoria:Immagini da altre wiki]]",
+        tip: "Immagine prese da altre wiki. Per favore, completa le informazioni."
     },
-    {
-        label:   "Cover volume originale",
-        desc:    "== Fonte ==\nCover del [[volume #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina}}\n[[Categoria:Cover volumi giapponesi]]",
-        tip: "Cover di un volume originale giapponese. Per favore, completa la fonte."
-    },
-    {
-        label:   "Cover volume Star Comics",
-        desc:    "== Fonte ==\nCover del [[volume #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina|1}}\n[[Categoria:Cover volumi Star Comics]]",
-        tip: "Cover di un volume italiano Star Comics. Per favore, completa la fonte."
-    },
-    {
-        label:   "Cover volume New Edition",
-        desc:    "== Fonte ==\nCover del [[volume #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina|1}}\n[[Categoria:Cover volumi New Edition]]",
-        tip: "Cover di un volume italiano Star Comics New Edition. Per favore, completa la fonte."
-    },
-    {
-        label:   "Cover volume edizione RCS",
-        desc:    "== Fonte ==\nCover del [[volume #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina|1}}\n[[Categoria:Cover volumi edizione RCS]]",
-        tip: "Cover di un volume italiano edizione Gazzetta-RCS. Per favore, completa la fonte."
-    },
-    {
-        label:   "Sottocopertina",
-        desc:    "== Fonte ==\nImmagine tratta dal [[volume #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina|1}}\n[[Categoria:Sottocopertine dei volumi]]",
-        tip: "Sottocopertina del volume. Per favore, completa la fonte."
-    },
-    "Anime",
-    {
-        label:   "Immagine profilo episodio",
-        desc:    "== Fonte ==\nImmagine tratta dall'[[episodio #]].\n\n== Licenza ==\n{{Screenshot}}\n{{Ordina}}\n[[Categoria:Immagini di episodi]]",
-        tip: "Immagine usata nei profili delle pagine degli episodi. Per favore, completa la fonte."
-    },
-    {
-        label:   "Immagine profilo film",
-        desc:    "== Fonte ==\nImmagine promozionale del [[film #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina}}\n[[Categoria:Immagini di film]]",
-        tip: "Immagine usata nei profili delle pagine dei film. Per favore, completa la fonte."
-    },
-    {
-        label:   "Immagine profilo sigla",
-        desc:    "== Fonte ==\nImmagine tratta da *.\n\n== Licenza ==\n{{Screenshot}}\n{{Ordina}}\n[[Categoria:Immagini di sigle]]",
-        tip: "Immagine usata nei profili delle sigle. Per favore, completa la fonte."
-    },
-    "Immagini dai volumi",
-    {
-        label:   "Immagine extra generica",
-        desc:    "== Fonte ==\nImmagine tratta dal [[volume #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina|1}}\n[[Categoria:Immagini extra dei volumi]]",
-        tip: "Immagine extra dal volume. Per favore, completa la fonte."
-    },
-    {
-        label:   "Illustrazione del volume",
-        desc:    "== Fonte ==\nImmagine tratta dal [[volume #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina|1}}\n[[Categoria:Illustrazioni dei volumi]]",
-        tip: "L'immagine illustrativa di apertura di un volume. Per favore, completa la fonte."
-    },
-    {
-        label:   "Nota dell'autore",
-        desc:    "== Fonte ==\nImmagine tratta dal [[volume #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina|1}}\n[[Categoria:Immagini delle note dell'autore]]",
-        tip: "L'immagine della nota dell'autore in un volume. Per favore, completa la fonte."
-    },
-    {
-        label:   "Immagine dalle SBS",
-        desc:    "== Fonte ==\nImmagine tratta dal [[volume #]].\n\n== Licenza ==\n{{Fair use}}\n[[Categoria:Immagini dalle SBS]]",
-        tip: "Immagine dalle SBS. Per favore, completa la fonte."
-    },
-    {
-        label:   "Intestazione delle SBS",
-        desc:    "== Fonte ==\nImmagine tratta dal [[volume #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina|1}}\n[[Categoria:Intestazioni delle SBS]]",
-        tip: "Intestazione delle SBS. Per favore, completa la fonte."
-    },
-    {
-        label:   "Immagine delle gallerie Usop",
-        desc:    "== Fonte ==\nImmagine tratta dal [[volume #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina|1}}\n[[Categoria:Immagini delle gallerie Usop]]",
-        tip: "Immagine delle gallerie Usop. Per favore, completa la fonte."
-    },
-    {
-        label:   "Intestazione delle gallerie Usop",
-        desc:    "== Fonte ==\nImmagine tratta dal [[volume #]].\n\n== Licenza ==\n{{Fair use}}\n{{Ordina|1}}\n[[Categoria:Intestazioni delle gallerie Usop]]",
-        tip: "Intestazione delle gallerie Usop. Per favore, completa la fonte."
-    }
 ];
-PFD_messages = {
-                    "it": {
-                            "basic-version": "Manga",
-                            "alternative-version": "Anime"
-                    },
-                    "en": {
-                            "basic-version": "Manga",
-                            "alternative-version": "Anime"
-                    }
-};
-// </nowiki>
-// END variabili
-
-//===================================
-//       Importazioni funzioni
-//===================================
-
-// Vedere "MediaWiki:ImportJS"
-
-// END Importazioni

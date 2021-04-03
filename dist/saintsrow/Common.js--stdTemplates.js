@@ -2,32 +2,34 @@
 //Adapted from MediaWiki:Common.js/standardeditsummaries.js
 //This script is known to not work in Internet Explorer with the RTE enabled. 
 
-function initStdTemplates(modeswitch) {
-        if (!$("#wpTextbox1").size()) return; //only run on edit pages.
-	if ($('#stdTemplates').size()) { //this is a redundant check
-		$('#EditPageToolbar').unbind('DOMNodeInserted.stdTemplates'); //unbind to avoid duplication
+window.debug452 = function(out, alert) { if (mw.config.get("wgUserName") == "452") { if (typeof out == "string") console.log(new Date().toJSON()+" "+out); else { console.log(new Date().toJSON()+" non-string to follow."); console.log(out); } if (typeof alert != "undefined") window.alert(out); } }
+
+debug452("start of stdTemplates");
+
+function initStdTemplates() {
+        if (!$("#wpTextbox1").length) return; //only run on edit pages.
+	if ($('#stdTemplates').length) { //this is a redundant check
 		return;
 	}
-	var $target = $("#cke_toolbar_source_1 .cke_toolbar_expand"); //#cke_toolbar_source_1 is important.
-        if (skin == "monobook") $target = $("#toolbar");
-	if (!$target.size()) { 
-		if (modeswitch) return; //abort if triggered by mode switch
-		//toolbar not found, RTE enabled, add listener
-		$('#EditPageToolbar').unbind('DOMNodeInserted.stdTemplates'); //unbind to avoid duplication
-		$('#EditPageToolbar').bind('DOMNodeInserted.stdTemplates', function(event) { //listen for mode switch
-			initStdTemplates(1);
+	window.insertTags = function (tagOpen, tagClose, sampleText, selectText) {
+		$("#wpTextbox1").textSelection('encapsulateSelection', {
+			'pre': tagOpen,
+			'peri': sampleText,
+			'post': tagClose
 		});
-		return;
-	} else { 
-		$('#EditPageToolbar').unbind('DOMNodeInserted.stdTemplates'); //unbind to avoid duplication
 	}
-	$selectTemplates = $('<select />')
+	if (!$("#editToolbar").length) {
+		debug452("#editToolbar missing");
+		$(".mw-editform").before("<div id='editToolbar'></div>");
+	}
+
+	$("#editToolbar").prepend($('<select />')
 		.attr('id', 'stdTemplates')
 		.attr('title', 'Click to select a template')
 		.change(function() {
 			var lineparts = $(this).val()
-				.replace(/\+wgCurRevisionId\+/g, wgCurRevisionId)
-				.replace(/\+wgPageName\+/g, wgPageName)
+				.replace(/\+wgCurRevisionId\+/g, mw.config.get("wgCurRevisionId"))
+				.replace(/\+wgPageName\+/g, mw.config.get("wgPageName"))
 				.replace(/\\n/g, "\n")
 				.split("%");
 			if (lineparts.length == 1) 	insertTags(lineparts[0]);
@@ -49,30 +51,9 @@ function initStdTemplates(modeswitch) {
 			$("#stdTemplates option").first().next().after('<option value="'+val+'">'+text+'</option>');
 
 			$('#stdTemplates option:first-child').prop('selected', true); //reset selection (important)
-		});
+		})
+	);
 
-	if (skin == "monobook") {
-	  $target.append($selectTemplates);
-	  /* No adjustments necessary. */
-
-	} else {
-	  $target.before($selectTemplates);
-
-	  if ($target.position().left == -10) {
-	    $("#stdTemplates").css({"margin-left":-5})
-	                      .css({"width": 22});
-
-	    $("#stdTemplates").bind("hover", function(event) {
-	      $("#stdTemplates").css({"margin-left":-($("#stdTemplates").position().left - 20)})
-	                       .css({"width": ($("#stdTemplates").position().left - 3)});
-	      $("#stdTemplates").unbind("hover");
-	    });
-
-	  } else {
-	    $("#stdTemplates").css({"margin-left":-($("#stdTemplates").position().left - 20)})
-	                    .css({"width": ($("#stdTemplates").position().left - 3)});
-	  }
-	}
 	function unique(list) {
 	  var result = [];
   	  $.each(list, function(i, e) {
@@ -81,7 +62,12 @@ function initStdTemplates(modeswitch) {
 	  return result;
 	}
 	function loadStdTemplates() {
-	  StdTemplates = localStorage.getItem('StdTemplates22-1-26');
+	  StdTemplates = localStorage.getItem('StdTemplates');
+	  StdTemplatesVersion = localStorage.getItem('StdTemplatesVersion');
+	  if (StdTemplatesVersion != 2) localStorage.removeItem('StdTemplates');
+	  localStorage.setItem('StdTemplatesVersion', 2);
+
+	  localStorage.removeItem('StdTemplates22-1-26'); //leave this until 2022
 	  if (StdTemplates) {
 		sTArray = StdTemplates.split("\t");
 		for (i in sTArray ) {
@@ -90,7 +76,7 @@ function initStdTemplates(modeswitch) {
 			var val     = ($delim == -1) ? sTArray[i] : sTArray[i].substring($delim+4);
 			var disable = ($delim == -1) ? 'disabled' : '';
 			var $opt = '<option name="'+tName+'" value="' + val + '" ' + disable + '>'+(disable?'':'&nbsp;&nbsp;') + tName + '</option>';
-			$selectTemplates.append($opt);
+			$("#stdTemplates").append($opt);
 		}
 		recentTemplates= localStorage.getItem('recentTemplates');
 		if (recentTemplates) {
@@ -113,7 +99,6 @@ function initStdTemplates(modeswitch) {
 		$('#stdTemplates option:first-child').prop('selected', true); //reset selection
 
 	  } else {
-		localStorage.removeItem( 'StdTemplates' );
 		$.ajax({
 		'dataType': 'text',
 		'data': {
@@ -121,7 +106,7 @@ function initStdTemplates(modeswitch) {
 			'action': 'raw',
 			'ctype': 'text/plain'
 		},
-		'url': wgScript,
+		'url': mw.config.get("wgScript"),
 		'success': function(data) {
 			var lines = data.split("\n"), ignore = { ':': 1, '*': 1,  '<': 1 };
 			sSArray = new Array(); 
@@ -130,7 +115,7 @@ function initStdTemplates(modeswitch) {
 				sSArray.push(lines[i]);
 			}
 			StdTemplates = sSArray.join("\t");
-			localStorage.setItem( 'StdTemplates22-1-26', StdTemplates);
+			localStorage.setItem( 'StdTemplates', StdTemplates);
 			loadStdTemplates();
 		}
 		});
@@ -138,6 +123,7 @@ function initStdTemplates(modeswitch) {
 	}
 	loadStdTemplates();
 }
+
 $(function() {
 	initStdTemplates();
 });

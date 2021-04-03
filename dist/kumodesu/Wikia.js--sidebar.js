@@ -23,7 +23,7 @@
                             .append(
                                 'The Kumo Desu Ga, Nani Ka? Wiki has an Official Discord Server! Click the button below to join and chat with fellow fans live, or click ',
                                 $('<a>')
-                                    .attr('href', mw.util.wikiGetlink('Kumo Desu Ga, Nani Ka? Wiki:Discord_Policy'))
+                                    .attr('href', mw.util.wikiGetlink('Project:Discord_Policy'))
                                     .text('here'),
                                 ' to read our chat rules.'
                             ),

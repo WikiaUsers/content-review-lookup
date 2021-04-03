@@ -88,3 +88,9 @@ window.UserTagsJS = {
 		rollback: { u:'Décurion' }
 	}
 }
+/*Blocage*/
+window.MessageBlock = {
+  title : 'Blocage ',
+  message : 'Bonjour, suite à un comportement inaproprié, vous avez été bloqué $2. Le motif de ce blocage est : "$1".',
+  autocheck : true
+};

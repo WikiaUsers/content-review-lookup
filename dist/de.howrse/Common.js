@@ -1,29 +1,11 @@
 /* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
-
- // Import [[MediaWiki:Onlyifuploading.js]] 
- 
+ /* Adds icons to page header bottom border - broken! 
  importArticles({
 	type: "script",
 	articles: [
-	    		"MediaWiki:Common.js/icons.js", /* Adds icons to page header bottom border */
+	    		"MediaWiki:Common.js/icons.js",  
 	]
-});
- if ( wgCanonicalSpecialPageName == "Upload" ) {
-      document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Onlyifuploading.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
- }
-
-importScriptPage('ShowHide/code.js', 'dev');
-
-var ShowHideConfig = { 
-    autoCollapse: 3, 
-    userLang: false, 
-    en: {
-	show: "anzeigen",
-	hide: "ausblenden",
-	showAll: "alle anzeigen",
-	hideAll: "alle ausblenden"
-    }
-};
+});*/
 
 var togglers = new Array();
 var allClasses = new Object(); // associative map of class names to page elements
@@ -153,5 +135,4 @@ function toggleInit() {
 function owwsitesearch(f) {
     f.q.value = 'site:http://openwetware.org/wiki/' + f.base.value + '++' + f.qfront.value
 }
-
-addOnloadHook(toggleInit);
+$(toggleInit);

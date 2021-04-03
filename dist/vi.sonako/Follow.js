@@ -7,17 +7,7 @@ For normal main page: Add current LN category to following list.
 (function initFollower() {
 
     // Add link
-    switch (mw.config.get("skin")) {
-        case "wikia":
-        // oasis
-        case "oasis":
-            $("#my-tools-menu").append('<li><a target="_blank" href="/wiki/Special:Follow">Theo dõi nâng cao</a></li>');
-            break;
-        case "monobook":
-        case "vector":
-            $("#p-tb ul").append('<li id="t-s-catnav"><a target="_blank" href="/wiki/Special:Follow">Theo dõi nâng cao</a></li>');
-            break;
-    }
+    $("#my-tools-menu").append('<li><a target="_blank" href="/wiki/Special:Follow">Theo dõi nâng cao</a></li>');
 
     // Core object
     var follower = {

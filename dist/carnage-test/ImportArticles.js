@@ -1,151 +1,116 @@
 /**
- * This is an updated version of the importArticles script.
+ * This is a temporary script used to allow you to
+ * import scripts and stylesheets easily.
  **/
 
-(function($, mw){
-    function ScriptLoader(scripts){
-        this.scripts = scripts;
-        this.baseURI = mw.config.get('wgLoadScript') + '?';
-        this.load = $.Deferred();
-        this.loaded = false;
-        this.cache = {};
-        this.config = {
-            debug: mw.config.get('debug'),
-            lang: mw.config.get('wgUserLanguage'),
-            mode: 'articles',
-            skin: mw.config.get('skin')
-        };
-        this.slice = [].slice;
-        this.loadIndex = 1;
-        this.loadedScripts = {};
-        return this;
-    }
-    
-    ScriptLoader.prototype.importJS = function(page, server){
-        var chars = { '%2F': '/', '%3A': ':' },
-            URI = '/index.php?title=' + encodeURIComponent(page.replace(/\s+/g, '_'));
-        for (var l in chars){
-            URI = URI.replace(l, chars[l]);
-        }
-        URI += '&action=raw&ctype=text/javascript';
-        if (typeof server == "string") {
-            if (server.indexOf('://') == -1 && server.substring(0, 2) !== '//'){
-                    URI = 'https://' + server + '.' + mw.config.get('wgWikiaBaseDomain') + URI;
-            } else {
-                URI = server + URI;
-            }
-        }
-        return $.proxy(this.importScript, this)(URI);
-    };
-    ScriptLoader.prototype.importCSS = function(page){
-        var chars = { '%2F': '/', '%3A': ':' },
-            URI = '/index.php?title=' + encodeURIComponent(page.replace(/\s+/g, '_'));
-        for (var l in chars){
-            URI = URI.replace(l, chars[l]);
-        }
-        URI += '&action=raw&ctype=text/css';
-        if (typeof server == "string") {
-            if (server.indexOf('://') == -1 && server.substring(0, 2) !== '//'){
-                    URI = 'https://' + server + '.' + mw.config.get('wgWikiaBaseDomain') + URI;
-            } else {
-                URI = server + URI;
-            }
-        }
-        return $.proxy(this.importStyle, this)(URI);
-    };
-    ScriptLoader.prototype.importScript = function(url){
-        url = maybeMakeProtocolRelative(forceReviewedContent(url));
-        if (this.loadedScripts[url]){
-            return null;
-        }
-        this.loadedScripts[url] = !0;
-        var s = document.createElement('script');
-        s.setAttribute('src', url);
-        s.setAttribute('type', 'text/javascript');
-        document.head.appendChild(s);
-        return s;
-    };
-    ScriptLoader.prototype.importStyle = function(url){
-        url = maybeMakeProtocolRelative(forceReviewedContent(url));
-        if (this.loadedScripts[url]){
-            return null;
-        }
-        this.loadedScripts[url] = !0;
-        var s = document.createElement('link');
-        s.setAttribute('rel', 'stylesheet');
-        s.setAttribute('href', url);
-        s.setAttribute('type', 'text/css');
-        document.head.appendChild(s);
-        return s;
-    }
-    ScriptLoader.prototype.progress = function(callback){
-        this.load.progress($.proxy(callback, this));
-    };
-    ScriptLoader.prototype.exec = function(){
-        if (typeof scripts !== 'undefined'){
-            if (typeof scripts === 'object'){
-                var i = 0, l, module, uri, name, method, type, ext, modules = this.scripts, obj = (!Array.isArray(scripts) ? scripts : {});
-                scripts = Array.isArray(scripts) ? scripts : Object.keys(scripts);
-                for (i, l = modules.length; i < l; i++){
-                    module = $.extend({}, defaults);
-                    name = modules[i];
-                    ext = name.split(name.indexOf('.'), name.length);
-                    type = ({
-                        '.css': 'style',
-                        '.js': 'script'
-                    })[ext] || '';
-                    module.articles = name;
-                    this.cache[name] = $.Deferred();
-                    if (!obj[name]) continue;
-                    if (typeof obj[name] === 'function'){
-                        obj[name].apply(this, []);
+( function( window, $, mw ) { 
+    "use strict";
+    // Create a loadedScripts object
+    const loadedScripts = { };
+    // Loading the WikiaURL script first
+    mw.loader.load( "https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:WikiaURL.js");
+    // Creating the importArticle script
+    function importArticle( ) { 
+        const base = window.location.origin + mw.config.get( "wgLoadScript" );
+        const defaults = Object.freeze( { 
+            debug : mw.config.get( "debug" ),
+            lang : mw.config.get( "wgUserLanguage" ),
+            mode : "articles",
+            skin : mw.config.get( "skin" )
+        } );
+        const loaded = { };
+        const state = { done: false };
+        const modules = Array.from( Array.isArray( arguments[ 0 ] ) ? 
+            arguments[ 0 ] : arguments );
+        const result = [ ];
+        const length = modules.length;
+        
+        return new Promise( function( resolve, reject ) {
+            mw.hook( "dev.url" ).add( function( WikiaURL ) {
+                Array.from( modules ).forEach( function( module, index ) { 
+                    const done = state.done = ( index === length - 1 );
+                    const options = Object.assign( { }, defaults, module );
+                    const type = module.type;
+                    options.articles = options.article || options.articles;
+                    delete options.article;
+                    
+                    if ( !options.articles || !options.articles.length ) return;
+                    if ( Array.isArray( options.articles ) ) {
+                        options.articles = options.articles.join( "|" );
                     }
-                    if (!module.articles){
-                        $.when(this.cache[name]).fail();
-                        this.cache[name].reject();
-                        continue;
-                    }
-                    $.when(this.cache[name]).done();
-                    if (mw.config.get('wgContentReviewExtEnabled')){
-                        if (module.articles.search(/mediawiki:/i) != -1){
-                            if (mw.config.get('wgContentReviewTestModeEnabled')){
-                                module.current = mw.confif.get('wgScriptsTimestamp');
+                    
+                    if ( mw.config.get( "wgContentReviewExtEnabled" ) ) {
+                        if ( /MediaWiki:/.test( module.articles ) ) {
+                            if ( mw.config.get( "wgContentReviewTestModeEnabled" ) ) {
+                                options.current = mw.config.get( "wgScriptsTimestamp" );
                             } else {
-                                module.reviewed = mw.config.get('wgReviewedScriptsTimestamp');
+                                options.reviewed = mw.config.get( "wgReviewedScriptsTimestamp" );
                             }
                         }
                     }
-                    method = ({
-                        'script': this.importJS,
-                        'style': this.importCSS
-                    })[type] || $.noop;
-                    if (!method){
-                        $.when(this.cache[name]).fail();
-                        this.cache[name].reject();
-                        continue;
-                    }
-                    module.only = module.type + s;
-                    delete module.type;
-                    uri = this.baseURI + $.param(module);
-                    if (this.loadedScripts[uri]) continue;
-                    this.loadedScripts[uri] = !0;
-                    $.when(this.cache[name]).done($.proxy(function(){
-                        var loaded = this.loadIndex,
-                            total = l,
-                            complete = (loaded === total);
-                        this.load.notify({
-                            loaded: loaded,
-                            total: total,
-                            complete: complete
-                        });
-                        this.loadIndex++;
-                    }, this));
-                    $(method.apply(this, [uri])).on('load', $.proxy(function(){
-                        this.cache[name].resolve();
-                    }, this));
-                }
-            }
-        }
-        return this;
-    };
-}(jQuery, mediaWiki));
+                    
+                    const importMethod = ( /scripts?/.test( type ) ? importScriptURL : ( /styles?/.test( type ) ?
+                            importStylesheetURL : null
+                        ) );
+                    
+                    if ( importMethod === null ) return;
+                    options.only = options.type.endsWith( "s" ) ? options.type : 
+                        options.type + "s";
+                    delete options.type;
+                    
+                    const url = new WikiaURL( base, options );
+                    if ( loaded[ String( url ) ] ) return;
+                    loaded[ String( url ) ] = true;
+                    result.push( importMethod( url ) );
+                    if ( done ) Promise.all( result ).then( resolve );
+                } );
+            } );
+        } );
+    }
+    
+    function importStylesheetURL( url, media ) {
+        return new Promise( function( resolve, reject ) { 
+            const env = document.createElement( "link" );
+            env.type = "text/css";
+            env.rel = "stylesheet";
+            env.href = url;
+            if ( media ) env.media = String( media );
+            env.addEventListener( "load", resolve );
+            document.head.appendChild( env );
+        } );
+    }
+    
+    function importScriptURL( url ) { 
+        return new Promise( function( resolve, reject ) {
+            if ( loadedScripts[ String( url ) ] ) resolve( null );
+            loadedScripts[ String( url ) ] = true;
+            const env = document.createElement( "script" );
+            env.setAttribute( "src", url );
+            env.setAttribute( "type", "text/javascript" );
+            env.addEventListener( "load", resolve );
+            document.head.appendChild( env );
+        } );
+    }
+    
+    function importStylesheet( page, media ) { 
+        const url = new WikiaURL( location.origin + mw.config.get( "wgScript" ), { 
+            action : "raw",
+            ctype : "text/css",
+            title : encodeURIComponent( page )
+        } );
+        return importStylesheetURL( url, media );
+    }
+    
+    function importScript( page ) {
+        const url = new WikiaURL( location.origin + mw.config.get( "wgScript" ), { 
+            title : encodeURIComponent( page ),
+            action : "raw",
+            ctype : "text/javascript"
+        } );
+        return importScriptURL( url );
+    }
+    
+    window.importArticle = window.importArticles = importArticle;
+    window.importStylesheet = importStylesheet;
+    window.importScript = importScript;
+} )( window, jQuery, mediaWiki );

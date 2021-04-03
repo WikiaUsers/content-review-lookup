@@ -195,7 +195,7 @@
         var result = false, m, radix = false, c = false;
         if (typeof str === 'string') {
             str = str.toLowerCase();
-            if ((m = str.match(/^(?:#([\da-f])([\da-f])([\da-f])|#([\da-f]{2})([\da-f]{2})([\da-f]{2})|rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*|rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(1|0\.\d+)\s*\))$/)) !== null) {
+            if ((m = str.match(/^(?:#([\da-f])([\da-f])([\da-f])|#([\da-f]{2})([\da-f]{2})([\da-f]{2})|rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*|rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(1|0\.?\d*)\s*\))$/)) !== null) {
                      if (m[1])  { c = m.slice(1,  4);  radix = 16; $.each(c, function (i,v) { c[i] += v; }); }
                 else if (m[4])  { c = m.slice(4,  7);  radix = 16; }
                 else if (m[7])  { c = m.slice(7, 10);  radix = 10; }
@@ -391,35 +391,53 @@
     }
     
     module.wikia = (function () {
-        var colors = {};
+        var colors = {},
+            sassParams =  mw.config.get('wgSassParams');
+
+        if (!sassParams) {
+            // If wgSassParams doesn't exist, fetch theme colors from the DOM.
+            var colorBody = module.parse($('body').css('background-color')).hex(),
+                computedBodyStyle = getComputedStyle(document.body);
+            sassParams = {
+                'color-body': colorBody,
+                'color-body-middle': colorBody,
+                'color-page': computedBodyStyle.getPropertyValue('--theme-article-background-color'),
+                'color-buttons': computedBodyStyle.getPropertyValue('--theme-accent-color'),
+                'color-community-header': module.parse($('.wds-community-header').css('background-color')).hex(),
+                'color-links': computedBodyStyle.getPropertyValue('--theme-link-color'),
+            };
+        }
+
         $.each({
-            'color-body': 'body',
-            'color-page': 'page',
-            'color-buttons': 'menu',
-            'color-community-header': 'header',
-            'color-links': 'link',
-            'color-body-middle': 'split'
-        }, function (i, color) {
-            colors[color] = window.sassParams[i];
+            body: 'color-body',
+            page: 'color-page',
+            menu: 'color-buttons',
+            header: 'color-community-header',
+            nav: 'color-community-header', //deprecated name
+            link: 'color-links',
+            split: 'color-body-middle',
+        }, function (prop, sassName) {
+            colors[prop] = sassParams[sassName];
         });
+
         var page = module.parse(colors.page),
             menu = module.parse(colors.menu),
             pageBright = page.isBright(),
             menuBright = menu.isBright();
+
         $.extend(colors, {
-            nav:       window.sassParams['color-community-header'],
-            contrast:  menuBright ? '#000000' : '#ffffff',
+            contrast:  menuBright ? '#000' : '#fff',
             text:      pageBright ? '#3a3a3a' : '#d5d4d4',
             border:    page.mix(pageBright ? 'black' : 'white', 80).hex(),
             gradient:  menu.lighten(menuBright ? -20 : 20).hex()
         });
-        $(function () {
-            $('body.mediawiki')
-                .addClass(menuBright ? 'menu-bright' : 'menu-dark')
-                .addClass(pageBright ? 'page-bright' : 'page-dark');
-        });
+
+        document.body.classList.add(menuBright ? 'menu-bright' : 'menu-dark');
+        document.body.classList.add(pageBright ? 'page-bright' : 'page-dark');
+
         return colors;
     }());
+    module.fandom = module.wikia;
     
     module.replace = function (styles, variables) {
         variables = (variables ? $.extend({}, module.wikia, variables) : module.wikia);
@@ -432,10 +450,10 @@
     };
 
     module.css = function (styles, variables) {
-        styles = module.replace(styles, variables);
-        $(function () {
-            $('head').append('<style type="text/css">' + styles + '</style>');
-        });
+        var el = document.createElement('style');
+        el.type = 'text/css';
+        el.textContent = module.replace(styles, variables);
+        document.head.appendChild(el);
     };
 
     mw.hook('dev.colors').fire(module);

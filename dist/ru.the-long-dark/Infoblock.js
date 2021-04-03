@@ -83,7 +83,7 @@
     } 
 
     // При наведении выдать новую вкладку
-    $('.info_switcher_item').on('hover', function() {
+    $('.info_switcher_item').hover(function() {
         var key =  $(this).attr('data-key');
         buildBody($(this), key);
     });

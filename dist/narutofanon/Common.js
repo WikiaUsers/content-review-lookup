@@ -131,8 +131,3 @@ if (mw.config.get('wgNamespaceNumber') === 1201) {
         $(this).closest('.buttons').prepend('<button class="secondary"><a href="#" accesskey="a" data-id="0" style="color:inherit; text-decoration:inherit;" class="edit-message">Edit</a></button>');
     });
 }
-
-/* Wam Module*/
-window.railWAM = {
-    logPage: "Project:WAM Log"
-};

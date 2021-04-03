@@ -1,87 +1,3 @@
-/** Extra toolbar options ******************************************************
-  *
-  *  Description: UNDOCUMENTED
-  *  Maintainers: [[User:MarkS]]?, [[User:Voice of All]], [[User:R. Koot]]
-  */
- 
- //This is a modified copy of a script by User:MarkS for extra features added by User:Voice of All.
- // This is based on the original code on Wikipedia:Tools/Editing tools
- // To disable this script, add <code>mwCustomEditButtons = [];<code> to [[Special:Mypage/monobook.js]]
- 
- if (mwCustomEditButtons) {
-   mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "http://upload.wikimedia.org/wikipedia/en/c/c8/Button_redirect.png",
-     "speedTip": "Redirect",
-     "tagOpen": "#REDIRECT [[",
-     "tagClose": "]]",
-     "sampleText": "Insert text"};
- 
-   mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "http://upload.wikimedia.org/wikipedia/en/c/c9/Button_strike.png",
-     "speedTip": "Strike",
-     "tagOpen": "<s>",
-     "tagClose": "</s>",
-     "sampleText": "Strike-through text"};
- 
-   mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "http://upload.wikimedia.org/wikipedia/en/1/13/Button_enter.png",
-     "speedTip": "Line break",
-     "tagOpen": "<br />",
-     "tagClose": "",
-     "sampleText": ""};
- 
-   mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "http://upload.wikimedia.org/wikipedia/en/8/80/Button_upper_letter.png",
-     "speedTip": "Superscript",
-     "tagOpen": "<sup>",
-     "tagClose": "</sup>",
-     "sampleText": "Superscript text"};
- 
-   mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "http://upload.wikimedia.org/wikipedia/en/7/70/Button_lower_letter.png",
-     "speedTip": "Subscript",
-     "tagOpen": "<sub>",
-     "tagClose": "</sub>",
-     "sampleText": "Subscript text"};
- 
-   mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "http://upload.wikimedia.org/wikipedia/en/5/58/Button_small.png",
-     "speedTip": "Small",
-     "tagOpen": "<small>",
-     "tagClose": "</small>",
-     "sampleText": "Small Text"};
- 
-   mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "http://upload.wikimedia.org/wikipedia/en/3/34/Button_hide_comment.png",
-     "speedTip": "Insert hidden Comment",
-     "tagOpen": "<!-- ",
-     "tagClose": " -->",
-     "sampleText": "Comment"};
- 
-   mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "http://upload.wikimedia.org/wikipedia/en/1/12/Button_gallery.png",
-     "speedTip": "Insert a picture gallery",
-     "tagOpen": "\n<gallery>\n",
-     "tagClose": "\n</gallery>",
-     "sampleText": "Image:Example.jpg|Caption1\nImage:Example.jpg|Caption2"};
- 
-   mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "http://upload.wikimedia.org/wikipedia/en/f/fd/Button_blockquote.png",
-     "speedTip": "Insert block of quoted text",
-     "tagOpen": "<blockquote>\n",
-     "tagClose": "\n</blockquote>",
-     "sampleText": "Block quote"};
- 
-   mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "http://upload.wikimedia.org/wikipedia/en/6/60/Button_insert_table.png",
-     "speedTip": "Insert a table",
-     "tagOpen": '{| class="wikitable"\n|-\n',
-     "tagClose": "\n|}",
-     "sampleText": "! header 1\n! header 2\n! header 3\n|-\n| row 1, cell 1\n| row 1, cell 2\n| row 1, cell 3\n|-\n| row 2, cell 1\n| row 2, cell 2\n| row 2, cell 3"};
-
-} 
-
-
 /** Collapsible tables *********************************************************
  *
  *  Description: Allows tables to be collapsed, showing only the header. See
@@ -89,11 +5,11 @@
  *  Maintainers: User:R. Koot
  */
 
-var autoCollapse = 2;
-var collapseCaption = "hide";
-var expandCaption = "show";
+window.autoCollapse = 2;
+window.collapseCaption = "hide";
+window.expandCaption = "show";
 
-function collapseTable( tableIndex )
+window.collapseTable = function( tableIndex )
 {
     var Button = document.getElementById( "collapseButton" + tableIndex );
     var Table = document.getElementById( "collapsibleTable" + tableIndex );
@@ -166,7 +82,7 @@ function createCollapseButtons()
     }
 }
 
-addOnloadHook( createCollapseButtons );
+$( createCollapseButtons );
 
 var hasClass = (function () {
    var reCache = {};
@@ -182,17 +98,17 @@ var hasClass = (function () {
 ** Required functions outside of ".ready" portion
 *******************************************************************************/
  
-function toggleAppearancesPane(eid) {
+window.toggleAppearancesPane = function(eid) {
 	e = document.getElementById(eid);
 	if (e) { e.className = (e.className == "hiddenlist") ? "visiblelist" : "hiddenlist"; }
 }
  
-function showAppearancesPane(eid) {
+window.showAppearancesPane = function(eid) {
 	e = document.getElementById(eid);
 	if (e) { e.className = "visiblelist"; }
 }
  
-function hideAppearancesPane(eid) {
+window.hideAppearancesPane = function(eid) {
 	e = document.getElementById(eid);
 	if (e) { e.className = "hiddenlist"; }
 }
@@ -306,7 +222,7 @@ function doAppearancesTrees() {
  
 }
  
-hookEvent("load", doAppearancesTrees);
+doAppearancesTrees();
  
 });
 
@@ -314,10 +230,10 @@ hookEvent("load", doAppearancesTrees);
 $( function IconsOasis() {
     if ( $( '.wds-community-header' ).length ) {
         $( '#PageHeader' ).prepend(
-            $( '#topicons' ).attr( 'style', 'position: absolute; right: 0px;' )
+            $( '#topicons' ).attr( 'style', 'position: absolute;' )
         );
     } else {
     	$( '.WikiaPageHeader' ).append( $( '#topicons' ) );
-    	$( '#topicons' ).css( { 'position' : 'absolute', 'right' : '0', 'bottom' : '-2em' } ).show();
+    	$( '#topicons' ).css( { 'position' : 'absolute', 'bottom' : '-2em' } ).show();
     }
 } );

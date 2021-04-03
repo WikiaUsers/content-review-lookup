@@ -1,18 +1,4 @@
 (function() { "use strict";
-    
-window.MessageWallUserTags = {
-    users: {
-        'Taliseth': 'Viscount'
-    },
-    tagColor: 'orange',
-};
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MessageWallUserTags/code.js',
-    ]
-});
 
 // Turnip price calculator
 

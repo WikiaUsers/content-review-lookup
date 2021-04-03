@@ -227,7 +227,7 @@ importArticles({
       "w:c:dev:ExtendedNavigation/code.js",
       "w:c:dev:AjaxRC/code.js",
       "w:c:dev:ShowHide/code.js",
-      "w:c:dev:FixWantedFiles/code.js" // http://dev.wikia.com/wiki/FixWantedFiles
+      "w:c:dev:FixWantedFiles/code.js", // http://dev.wikia.com/wiki/FixWantedFiles
       "w:c:dev:MediaWiki:Countdown/code.js"
     ]
 });

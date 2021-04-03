@@ -16,7 +16,7 @@
         !(/DoubleRedirects|BrokenRedirects/g.test(config.wgCanonicalSpecialPageName)) ||
         window.RedirectManagementLoaded ||
         (
-            !(/sysop|vstf|staff|helper|content-moderator|content-volunteer|content-team-member|wiki-manager/.test(config.wgUserGroups)) &&
+            !(/sysop|staff|helper|content-moderator|content-volunteer|content-team-member|wiki-manager|soap/.test(config.wgUserGroups)) &&
             config.wgCanonicalSpecialPageName === 'BrokenRedirects'
         )
     ) {
@@ -60,7 +60,8 @@
                     action: 'edit',
                     text: '#REDIRECT [[' + newpage + ']]',
                     summary: reason,
-                    minor: true
+                    minor: true,
+                    bot: true
                 } : {
                     action: 'delete',
                     reason: reason
@@ -110,7 +111,10 @@
             return this.i18n.msg(name).plain();
         }
     };
-    mw.loader.using('mediawiki.api', function() {
+    mw.loader.using([
+        'mediawiki.api',
+        'mediawiki.user'
+    ], function() {
         mw.hook('dev.i18n').add(function(i18no) {
             i18no.loadMessages('RedirectManagement').done(
                 $.proxy(RedirectManagement.init, RedirectManagement)

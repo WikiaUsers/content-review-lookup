@@ -5,12 +5,6 @@ window.dev.editSummaries = {
     css: '#stdSummaries { width: 264px }',
     select: 'MediaWiki:Standard Edit Summary'
 };
-importArticles({
-  type: 'script',
-  articles: [
-    'u:dev:Standard_Edit_Summary/code.js'
-  ]
-});
 
 /*Nombre de usuario - usado por Plantilla:NOMBREUSUARIO*/
 $(function() {

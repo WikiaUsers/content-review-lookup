@@ -7,12 +7,9 @@
 importArticles({
     type: 'script',
     articles: [
-        'MediaWiki:Common.js/forumnote.js',
-	'w:c:dev:SignatureCheck/code.js',
-        'u:dev:ExternalImageLoader/code.js',
-        'u:dev:PageMakerPro/code.js',
-        'w:c:dev:EditBoardDescription/code.js',
-        'u:pad.wikia.com:MediaWiki:FilterTable.js',
+        'u:dev:MediaWiki:BannerNotification.js',
+        'u:pad:MediaWiki:FilterTable.js',
+	'u:dev:SignatureCheck/code.js',
 	]
 });
 // FilterTable.js is from http://community.wikia.com/wiki/User_blog:Sammylau/Wikitable_Filterable:_The_Filter_for_Long_Tables

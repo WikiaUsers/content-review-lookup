@@ -1,3 +1,5 @@
+// Used files: [[File:Loading.gif]]
+
 (function () {
     if (window.PurgeButtonLoaded) {
         return;
@@ -12,9 +14,10 @@
         $(this).html($('<img>', {
             src: 'https://images.wikia.nocookie.net/dev/images/4/42/Loading.gif'
         }));
-        $.get(new mw.Uri().extend({
-            action: 'purge'
-        }), callback);
+        $.post(mw.util.wikiScript('api'), {
+            action: 'purge',
+            titles: mw.config.get('wgPageName')
+        }, callback);
     }
 
     function init(text) {
@@ -41,13 +44,15 @@
         i18no.loadMessages('PurgeButton').then(hook2);
     }
 
-    if (typeof window.PurgeButtonText === 'string') {
-        init(window.PurgeButtonText);
-    } else {
-        importArticle({
-            type: 'script',
-            article: 'u:dev:MediaWiki:I18n-js/code.js'
-        });
-        mw.hook('dev.i18n').add(hook1);
-    }
+    mw.loader.using('mediawiki.util').then(function() {
+        if (typeof window.PurgeButtonText === 'string') {
+            init(window.PurgeButtonText);
+        } else {
+            importArticle({
+                type: 'script',
+                article: 'u:dev:MediaWiki:I18n-js/code.js'
+            });
+            mw.hook('dev.i18n').add(hook1);
+        }
+    });
 })();

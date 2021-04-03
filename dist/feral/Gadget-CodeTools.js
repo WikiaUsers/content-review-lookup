@@ -1,8 +1,8 @@
 importArticles({
     type:'script',
     articles:[
-        'u:dev:CodeQuickLinks/code.js',
-        'u:dev:PortableCSSPad/code.js',
-        'u:dev:ToggleDebugMode/code.js',
+        'u:dev:MediaWiki:CodeQuickLinks/code.js',
+        'u:dev:MediaWiki:PortableCSSPad/code.js',
+        'u:dev:MediaWiki:ToggleDebugMode/code.js',
     ],
 });/**/

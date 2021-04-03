@@ -1,5 +1,5 @@
 /*************Вставка музыки с yandex********************/
-;(function ($, mw) {
+mw.loader.using('mediawiki.util').then(function () {
     'use strict';
  
     function yandexPlayer() {
@@ -25,5 +25,5 @@
     yandexHook(mw.util.$content);
     mw.hook('wikipage.content').add(yandexHook);
  
-}(jQuery, mediaWiki));
+});
 /*************Вставка музыки с yandex*end****************/

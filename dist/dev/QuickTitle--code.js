@@ -4,12 +4,12 @@ mw.loader.using([
      'mediawiki.api',
      'mediawiki.user'
 ]).then(function() {
- 
     var config = mw.config.get([
-            'wgIsArticle',
-            'wgPageName'
-        ]);
- 
+        'wgIsArticle',
+        'wgPageName',
+        'wgVersion'
+    ]);
+
     // Limiting the scope of the script
     if (
         !config.wgIsArticle ||
@@ -51,7 +51,7 @@ mw.loader.using([
                         $('<input>', {
                            'type': 'text',
                             'id': 'QuickTitleSummary',
-                            'value': i18n.msg('defaultSummary').plain() 
+                            'value': i18n.inContentLang().msg('defaultSummary').plain() 
                         }),
                         $('<br/>'),
                         $('<a>', {
@@ -68,9 +68,9 @@ mw.loader.using([
                     $('#QuickTitleField').focus();
                     $('#QuickTitleChange').click(function() {
                         var newTitle = $('#QuickTitleField').val().replace(/}}/ig, ""),
-                        displayTitle = "{{DISPLAYTITLE:" + newTitle + "}}",
-                        text,
-                        regex = /{{DISPLAYTITLE:.+?(?!(\r|\n))}}/ig;
+                            displayTitle = "{{DISPLAYTITLE:" + newTitle + "}}",
+                            text,
+                            regex = /{{DISPLAYTITLE:.+?(?!(\r|\n))}}/ig;
                         if(data.match(regex)) text = data.replace(regex, displayTitle);
                         new mw.Api().post($.extend({
                             action: 'edit',
@@ -78,14 +78,23 @@ mw.loader.using([
                             bot: true,
                             summary: $("#QuickTitleSummary").val(),
                             title: config.wgPageName,
-                            token: mw.user.tokens.get("editToken")
+                            token: mw.user.tokens.get("csrfToken") || mw.user.tokens.get("editToken")
                         }, text ? { "text": text } : { prependtext: displayTitle })).done(function(d) {
-                            if(d.error) new BannerNotification(i18n.msg('error').escape() + ": " + d.error.code, 'error').show();
-                            else {
+                            if (d.error) {
+                                new BannerNotification(i18n.msg('error', d.error.code).escape(), 'error').show();
+                            } else {
                                 titleLocation.text(newTitle);
                                 window.location.reload();
                             }
-                        }).fail(function() { new BannerNotification(i18n.msg('error').escape()).show(); });
+                        }).fail(function(code) {
+                            if (config.wgVersion === '1.19.24') {
+                                new BannerNotification(i18n.msg('error', code || 'http').escape()).show();
+                            } else {
+                                mw.notify(i18n.msg('error', code).plain(), {
+                                    type: 'error'
+                                });
+                            }
+                        });
                     });
                     $('#QuickTitleCancel').click(function() { setTimeout(function() { titleLocation.text(title); }, 100); });
                 });

@@ -1,10 +1,3 @@
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:SocialIcons/code.js'
-    ]
-});
-
 if(mw.config.get('wgUserName')) {
     window.DiscordIntegratorConfig = {
         siderail: {

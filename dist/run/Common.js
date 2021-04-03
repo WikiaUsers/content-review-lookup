@@ -28,3 +28,5 @@ window.LockForums = {
     warningBannerMessage: "<span style='color: maroon; font-weight: bold;'>Note:</span> This topic has been unedited for <actualDays> days. Do not add to it unless it really needs a response.",
     banners: true
 };
+
+window.MassCategorizationGroups = ['sysop', 'content-moderator', 'bot'];

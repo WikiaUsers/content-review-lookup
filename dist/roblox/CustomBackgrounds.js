@@ -3,6 +3,7 @@ const pages = {
     "Fast & Furious: Spy Racers": "https://vignette.wikia.nocookie.net/roblox/images/5/5c/FastAndFuriousBG.jpg/revision/latest?cb=20200129220701",
     "Egg Hunt 2020: Agents of E.G.G.": "https://vignette.wikia.nocookie.net/roblox/images/4/4f/Space.jpg/revision/latest",
     "Nimblz": "https://vignette.wikia.nocookie.net/roblox/images/8/8c/NimblzBG.png/revision/latest?cb=20200604053437",
+    "Roblox Developers Conference 2020": "https://vignette.wikia.nocookie.net/roblox/images/c/cb/RDC2020Background.png/revision/latest",
     
     // Wonder Woman
     "Wonder Woman: The Themyscira Experience": "https://vignette.wikia.nocookie.net/roblox/images/3/30/WonderwomanBG.png/revision/latest?cb=20200705034456",
@@ -30,6 +31,7 @@ const pages = {
     "Hustle Hat": "https://vignette.wikia.nocookie.net/roblox/images/9/95/BuildItPlayItBG.jpg/revision/latest",
     "Speedy Shades": "https://vignette.wikia.nocookie.net/roblox/images/9/95/BuildItPlayItBG.jpg/revision/latest",
     "Cardio Cans": "https://vignette.wikia.nocookie.net/roblox/images/9/95/BuildItPlayItBG.jpg/revision/latest",
+    "Kinetic Staff": "https://vignette.wikia.nocookie.net/roblox/images/9/95/BuildItPlayItBG.jpg/revision/latest",
 }
 
 var pageName = mw.config.get("wgTitle");

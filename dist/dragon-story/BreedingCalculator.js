@@ -19,6 +19,8 @@ function addBreedingCalculatorForm() {
 		
 	$calculator_element.html(calculator_form_html);
 	$calculator_pair_element.html(calculator_pair_form_html);
+	document.getElementById("breedingResultsButton").onclick = function() {breedButtonClicked()};
+	document.getElementById("potentialPairingsButton").onclick = function() {findParentsButtonClicked()};
 }
 
 function buildDataLists(){

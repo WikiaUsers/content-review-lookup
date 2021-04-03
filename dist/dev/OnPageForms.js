@@ -4,30 +4,28 @@
  * @author  KhangND
  */
 (function() {
-    if(mw.config.get('wgNamespaceNumber') !== 6 // not File namespace
-    || mw.config.get('wgUserName') === null // not user
-    || window.OnPageFormsLoaded) {
+    if (
+        mw.config.get('wgNamespaceNumber') !== 6 // not File namespace
+        || mw.config.get('wgUserName') === null // not user
+        || window.OnPageFormsLoaded
+    ) {
         return;
-    } window.OnPageFormsLoaded = true;
+    }
+    window.OnPageFormsLoaded = true;
 
     var $upload = $('#mw-imagepage-reupload-link a'),
         $delete = $('.filehistory a[href*="action=delete"]'),
-        $revert = $('.filehistory a[href*="action=revert"]'),
-        i18n = {};
+        $revert = $('.filehistory a[href*="action=revert"]');
 
     /**
      * @method      init
      * @description Initiates script with i18n
      * @return      {void}
      */
-    function init(i18nLoaded) {
-        i18n = i18nLoaded._messages.en;
-        for(var i in i18n)
-            i18n[i] = i18nLoaded.msg(i).escape();
-
+    function init(i18n) {
         var props = {
-            text: i18n.text,
-            title: i18n.title,
+            text: i18n.msg('text').plain(),
+            title: i18n.msg('title').plain(),
             css: { cursor: 'pointer' }
         };
         $upload.after([
@@ -113,7 +111,7 @@
     }
 
     importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });
-    mw.hook('dev.i18n').add(function(i18n) {
-        i18n.loadMessages('OnPageForms').done(init);
+    mw.hook('dev.i18n').add(function(i18njs) {
+        i18njs.loadMessages('OnPageForms').done(init);
     });
 })();

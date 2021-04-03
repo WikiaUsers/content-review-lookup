@@ -1,0 +1,1 @@
+// Skrypt .js dla wszystkich skórek

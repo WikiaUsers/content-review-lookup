@@ -90,7 +90,7 @@ function createCollapseButtons()
      }
 }
  
-addOnloadHook( createCollapseButtons );
+$( createCollapseButtons );
 /* Auto updating recent changes opt-in
   * See w:c:dev:AjaxRC for info & attribution 
   */
@@ -186,10 +186,9 @@ function checktimers() {
     updatetimer(i);  //start it up
   }
 }
-addOnloadHook(checktimers);
+$(checktimers);
  
 // **************************************************
 //  - end -  Experimental javascript countdown timer
 // **************************************************
 //
-/**

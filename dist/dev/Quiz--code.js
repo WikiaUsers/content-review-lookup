@@ -16,6 +16,12 @@
             resultsHeader: 'Results',
             noQuestionsHeader: 'No questions provided. Please add some in MediaWiki:Common.js.'
         },
+        bn: { // Bengali
+            nxtBtn: 'পরের',
+            rplBtn: 'আবার দেখুন',
+            resultsHeader: 'ফল',
+            noQuestionsHeader: 'কোনো প্রশ্ন দেওয়া হয়নি। অনুগ্রহ করে MediaWiki:Common.jsএ কিছু দেন।'
+        },
         de: { // Deutsch
             nxtBtn: 'Weiter',
             rplBtn: 'Wiederholen',
@@ -33,6 +39,12 @@
             rplBtn: 'Rejouer',
             resultsHeader: 'Résultats',
             noQuestionsHeader: 'Aucune question posée'
+        },
+        hi: { //Hindi
+        	nxtBtn: 'अगला',
+            rplBtn: 'फिर प्ले करें',
+            resultsHeader: 'अंजाम',
+            noQuestionsHeader: 'कोई सवाल नहीं दिया गया। कृपया मीडियाविकि:Common.js पर कुछ जोड़ें।'
         },
         pl: { // Polski
             nxtBtn: 'Dalej',
@@ -105,7 +117,7 @@
         if ($('#quizQ').length > 0) {
             importArticle({
                 type: 'style',
-                article: 'u:dev:MediaWiki:Quiz/code.css'
+                article: 'u:dev:MediaWiki:Quiz.css'
             });
             $('div#quizQ').append('<div id="quizBlockWrapper"></div><div id="quizBlock"><h3 id="quizName"></h3><div id="questionBlock"><h4 id="question"></h4><form id="questionForm" name="questionForm"></form></div><div id="nxtBtnWrapper"><h3 id="nxtBtn"></h3></div><div id="questionCounter"></div></div><div id="quizCountdown"><div id="quizhourglass"></div><div id="quiztimer"></div></div><div id="quizBackground"></div>');
             startCounter();

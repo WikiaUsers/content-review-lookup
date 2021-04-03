@@ -1,13 +1,19 @@
-/*******************************************************************************
-** BASIC JS STUFF
-*******************************************************************************/
+/**
+ * Primary JavaScript file (all skins)
+ * Updated on 2 Feb. 2021
+ */
+
+/*------------------------------------*\
+    SCRIPT IMPORTS
+\*------------------------------------*/
 
 /* Spoiler notification (import) */
+
 // This script must always be the very first executed
 importScriptPage('MediaWiki:Spoilers.js');
-//importScriptPage('MediaWiki:Spoiler.js');
 
 /* User tags (from Attack on Titan Wiki) */
+
 // Core configuration
 window.UserTagsJS = {
     modules: {},
@@ -66,6 +72,58 @@ UserTagsJS.modules.metafilter = {
 // Marks users as inactive if they haven't edited in a month or more
 UserTagsJS.modules.inactive = 30;
 
+/*------------------------------------*\
+    MISCELLANEOUS
+\*------------------------------------*/
+
+/* Insert page header icons */
+
+if($('#canon').length) {
+	$('#PageHeader').prepend('<div id="header-icons"></div>');
+	$('#header-icons').append($('#canon'));
+}
+
+/* Fix parser issues with tabbers */
+
+if($('.no-select').length) {
+	var tabs = []; // An array to hold the tabs' HTML
+	var lines = ''; // The lines in each tab
+	
+	// Fetch all of the tabs
+	$('.no-select .tabbertab').each(function(i) {
+		tabs[i] = $(this).html();
+	});
+	
+	// Create an empty array to hold the updated HTML
+	var new_html = new Array(tabs.length).fill('');
+	
+	// Loop through the tabs
+	$(tabs).each(function(i) {
+		// Split the tab into lines
+		lines = tabs[i].split('\n\n');
+		
+		// Loop through the lines
+		$(lines).each(function(k) {
+			// Check whether the line contains a div tag
+			if(lines[k].indexOf('div') === -1) {
+				// Remove the paragraph tags
+				lines[k] = lines[k].replace(/\<\/?p\>/g, '');
+				
+				// Add paragraph tags to the current line and concatenate it to the updated HTML
+				new_html[i] += '<p>' + lines[k] + '</p>';
+			} else {
+				// Concatenate the line to the updated HTML without making changes
+				new_html[i] += lines[k];
+			}
+		});
+	});
+	
+	// Update the HTML in the tabbers
+	$('.no-select .tabbertab').each(function(i) {
+		$(this).html(new_html[i]);
+	});
+}
+
 /*******************************************************************************
 ** "Hidden appearances section/interactive tree" script; by [[User:Bp]]
 ** Required functions outside of ".ready" portion
@@ -85,14 +143,6 @@ function hideAppearancesPane(eid) {
 	e = document.getElementById(eid);
 	if (e) { e.className = "hiddenlist"; }
 }
-
-/*******************************************************************************
-** Smallish changes
-*******************************************************************************/
- 
-//Replace REDIRECT arrow" with a custom one ([[User:Bp]])
-$('img[src$="redirectltr.png"]')
-  .attr('src', 'https://images.wikia.nocookie.net/memoryalpha/en/images/c/cb/MA_redirect_arrow.png');
  
 /*******************************************************************************
 ** "Hidden appearances section/interactive tree" script; by [[User:Bp]]
@@ -187,184 +237,6 @@ function doAppearancesTrees() {
 }
 
 hookEvent("load", doAppearancesTrees);
-
-/*******************************************************************************
-** "Interactive quotes" script; by [[User:Bp]]
-*******************************************************************************/
-
-function speakerLabel(text) {
-	var spkr = document.createElement('span');
-	spkr.innerHTML = text + ": ";
-	spkr.className = "speaker-label";
-	return spkr;
-}
-
-function explicitQuoteOn(event, e) {
-	var si = (e) ? e.firstChild : this.firstChild;
-	while(si) {
-		explicitQuoteOn(event, si);
-		if (si.className == "dialogue-inside") {
-			si.className = "dialogue-inside-highlight";
-		} else if (si.className == "quoteline") {
-			if (si.childNodes[0].className != "speaker-label") {
-				if (si.title !== '') {
-					si.insertBefore(speakerLabel(si.title), si.childNodes[0]);
-					si.title = '';
-				}
-			}
-			if (si.childNodes[0].className == "speaker-label") {
-				si.childNodes[0].style.display = "inline";
-			}
-		}
-		si = si = si.nextSibling;
-	}
-}
-
-function explicitQuoteOff(event, e) {
-	var si = (e) ? e.firstChild : this.firstChild;
-	while(si) {
-		explicitQuoteOff(event, si);
-		if (si.className == "dialogue-inside-highlight") {
-			si.className = "dialogue-inside";
-		} else if (si.className == "quoteline") {
-			if (si.childNodes[0].className == "speaker-label") {
-				si.childNodes[0].style.display = "none";
-			}
-		}
-		si = si = si.nextSibling;
-	}
-}
-
-var explicitQuotes = 0;
-
-function doQuotes() {
-	if (!explicitQuotes) { return; }
-
-	var dumbevent;
-	var divs = document.getElementsByTagName("div");
-	for (var i = 0; i < divs.length; i++) {
-		if (divs[i].className == 'dialogue') {
-			if (explicitQuotes == 1) {
-				divs[i].onmouseover = explicitQuoteOn;
-				divs[i].onmouseout = explicitQuoteOff;
-			} else {
-				explicitQuoteOn(dumbevent, divs[i]);
-			}
-		}
-	}
-}
-
-hookEvent("load", doQuotes);
-
-/*******************************************************************************
-** "Article-type positioning" script; based off [[User:Bp]] of Memory Alpha
-*******************************************************************************/
- 
-function moveArticleDiv() {
-  var fooel = document.getElementById('article-type');
-  if (fooel!==null) {
-    var artel = document.getElementById('article');
-    var wphel = document.getElementById('WikiaPageHeader');
-    var titel = document.getElementById('top');
-    fooel = fooel.parentNode.removeChild(fooel);
-    if (artel!==null) {
-      artel.parentNode.insertBefore(fooel,artel);
-    } else if (wphel!==null) {
-      wphel.parentNode.insertBefore(fooel,wphel);
-    } else {
-      //fall back to a position before H1 - useful for monobook skin
-      titel.parentNode.insertBefore(fooel,titel);
-    }
-  }
-}
- 
-hookEvent("load", moveArticleDiv);
-
-/*******************************************************************************
-** "Collapsible table" script; by [[???]]
-*******************************************************************************/
- 
-var autoCollapse = 2;
-var collapseCaption = "hide";
-var expandCaption = "show";
-
-var hasClass = (function () {
-	var reCache = {};
-	return function (element, className) {
-		return (reCache[className] ? reCache[className] : (reCache[className] = new RegExp("(?:\\s|^)" + className + "(?:\\s|$)"))).test(element.className);
-	};
-})();
-
-function collapseTable( tableIndex )
-{
-    var Button = document.getElementById( "collapseButton" + tableIndex );
-    var Table = document.getElementById( "collapsibleTable" + tableIndex );
- 
-    if ( !Table || !Button ) {
-        return false;
-    }
- 
-    var Rows = Table.rows;
- 
-    if ( Button.firstChild.data == collapseCaption ) {
-        for ( var i = 1; i < Rows.length; i++ ) {
-            Rows[i].style.display = "none";
-        }
-        Button.firstChild.data = expandCaption;
-    } else {
-        for ( var i = 1; i < Rows.length; i++ ) {
-            Rows[i].style.display = Rows[0].style.display;
-        }
-        Button.firstChild.data = collapseCaption;
-    }
-}
- 
-function createCollapseButtons()
-{
-    var tableIndex = 0;
-    var NavigationBoxes = new Object();
-    var Tables = document.getElementsByTagName( "table" );
- 
-    for ( var i = 0; i < Tables.length; i++ ) {
-        if ( hasClass( Tables[i], "collapsible" ) ) {
- 
-            /* only add button and increment count if there is a header row to work with */
-            var HeaderRow = Tables[i].getElementsByTagName( "tr" )[0];
-            if (!HeaderRow) continue;
-            var Header = HeaderRow.getElementsByTagName( "th" )[0];
-            if (!Header) continue;
- 
-            NavigationBoxes[ tableIndex ] = Tables[i];
-            Tables[i].setAttribute( "id", "collapsibleTable" + tableIndex );
- 
-            var Button     = document.createElement( "span" );
-            var ButtonLink = document.createElement( "a" );
-            var ButtonText = document.createTextNode( collapseCaption );
- 
-            Button.className = "collapseButton";  //Styles are declared in Common.css
- 
-            ButtonLink.style.color = Header.style.color;
-            ButtonLink.setAttribute( "id", "collapseButton" + tableIndex );
-            ButtonLink.setAttribute( "href", "javascript:collapseTable(" + tableIndex + ");" );
-            ButtonLink.appendChild( ButtonText );
- 
-            Button.appendChild( document.createTextNode( "[" ) );
-            Button.appendChild( ButtonLink );
-            Button.appendChild( document.createTextNode( "]" ) );
- 
-            Header.insertBefore( Button, Header.childNodes[0] );
-            tableIndex++;
-        }
-    }
- 
-    for ( var i = 0;  i < tableIndex; i++ ) {
-        if ( hasClass( NavigationBoxes[i], "collapsed" ) || ( tableIndex >= autoCollapse && hasClass( NavigationBoxes[i], "autocollapse" ) ) ) {
-            collapseTable( i );
-        } 
-    }
-}
- 
-addOnloadHook( createCollapseButtons );
 
 /* Snow import */
 

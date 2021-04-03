@@ -1,38 +1,27 @@
 /* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
- // Import [[MediaWiki:Onlyifuploading.js]] 
- 
- if ( wgCanonicalSpecialPageName == "Upload" ) {
-      document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Onlyifuploading.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
- }
-
-importScriptPage('ShowHide/code.js', 'dev');
-
-var ShowHideConfig = { 
+window.ShowHideConfig = { 
     autoCollapse: 3, 
     userLang: false, 
     en: {
-	show: "anzeigen",
-	hide: "ausblenden",
-	showAll: "alle anzeigen",
-	hideAll: "alle ausblenden"
+		show: "anzeigen",
+		hide: "ausblenden",
+		showAll: "alle anzeigen",
+		hideAll: "alle ausblenden"
     }
 };
  
 // Eigenes Script für Spoiler
 // http://de.naruto.wikia.com - by [[Benutzer:TrunX]]
 
-var SpoilerHide = "Spoiler verbergen";
-var SpoilerShow = "Spoiler anzeigen";
+window.SpoilerHide = "Spoiler verbergen";
+window.SpoilerShow = "Spoiler anzeigen";
 		
-function createSpoilerLink()
-{
+function createSpoilerLink() {
    var obj;
-   for(var i=0; i < document.getElementsByTagName("div").length; i++)
-   {
+   for(var i=0; i < document.getElementsByTagName("div").length; i++)    {
       obj = document.getElementsByTagName("div")[i];
-      if(obj.className == 'Head_Spoil')
-      {
+      if(obj.className == 'Head_Spoil') {
          obj.className = 'Head_Spoil';
          var SpoilerLink= document.createElement("a");
          SpoilerLink.setAttribute('id', 'cmdSpoil');
@@ -49,19 +38,16 @@ function createSpoilerLink()
       }
    }
 }
-function clickShowHide()
-{
+
+function clickShowHide() {
 	var SpoilerLink= document.getElementById('cmdSpoil');
 	if (!SpoilerLink) {
 		return false;
 	}
 	// Wenn Spoiler == Spoiler anzeigen
-	if(SpoilerLink.firstChild.data == SpoilerShow)
-	{
+	if(SpoilerLink.firstChild.data == SpoilerShow) {
 		SpoilerLink.firstChild.data = SpoilerHide;
-	}
-	else
-	{
+	} else {
 		SpoilerLink.firstChild.data = SpoilerShow;
 	}
 	SearchSpoilerClasses('span');
@@ -69,37 +55,30 @@ function clickShowHide()
 	SearchSpoilerClasses('tr');
 	SearchSpoilerClasses('td');
 }
-function SearchSpoilerClasses(tag)
-{
+
+function SearchSpoilerClasses(tag) {
 	var obj;
-	for(var i=0; i < document.getElementsByTagName(tag).length; i++)
-	{
+	for(var i=0; i < document.getElementsByTagName(tag).length; i++) {
 		obj= document.getElementsByTagName(tag)[i];
-		if(obj.className == 'Spoiler')
-		{
+		if(obj.className == 'Spoiler') {
 			obj.className = 'UnSpoiler';
-		}
-		else if(obj.className == 'UnSpoiler')
-		{
+		} else if(obj.className == 'UnSpoiler') {
 			obj.className = 'Spoiler';
 		}
 	}
 }
 
-addOnloadHook(createSpoilerLink);
+$(createSpoilerLink);
 
 // Für Toggeln
 // http://de.naruto.wikia.com - by [[Benutzer:TrunX]]
-function createToggle()
-{
+function createToggle() {
 	var obj;
 	var index = 1;
-	for(var i=0; i < document.getElementsByTagName("span").length; i++)
-	{
+	for(var i=0; i < document.getElementsByTagName("span").length; i++) {
 		obj = document.getElementsByTagName("span")[i];
 		var elemClasses = obj.className.split(' ');
-		if(elemClasses[0] == 'toToggle'|| elemClasses[0] == 'unToggle') // || elemClasses[1] == 'SB')
-		{
+		if(elemClasses[0] == 'toToggle'|| elemClasses[0] == 'unToggle') // || elemClasses[1] == 'SB') {
 			var SpoilerLink= document.createElement("a");
 			var attrVar;
 			SpoilerLink.setAttribute('id', obj.className);
@@ -113,8 +92,8 @@ function createToggle()
 		}
 	}
 }
-function ToggleClasses(Toggle)
-{
+
+function ToggleClasses(Toggle) {
 	var SpoilerLink= document.getElementById(Toggle);
 	if (!SpoilerLink) {
 		return false;
@@ -133,26 +112,22 @@ function ToggleClasses(Toggle)
 	// Funktionsaufruf um die Clicker zu ändern
 	TogglerClicker(Toggle);
 }
-function ToogleTag(Toggle,Tag)
-{
-	for(var i=0; i < document.getElementsByTagName(Tag).length; i++)
-	{
+
+function ToogleTag(Toggle,Tag) {
+	for(var i=0; i < document.getElementsByTagName(Tag).length; i++) {
 		var obj= document.getElementsByTagName(Tag)[i];
 		var elemClasses = obj.className.split(' ');
 		
-		for(var j=1; j < Toggle.length; j++)
-		{
+		for(var j=1; j < Toggle.length; j++) {
 			if(elemClasses[1] != Toggle[1])
 				break;
-			if(typeof elemClasses[j] == 'undefined')
-			{
+			if(typeof elemClasses[j] == 'undefined') {
 				elemClasses[0] = 'unToggle';
 				break;
 			}
 			if(elemClasses[j] == Toggle[j] && elemClasses.length <= Toggle.length)
 				elemClasses[0] = Toggle[0];
-			else
-			{
+			else {
 				elemClasses[0] = 'toToggle';
 				break;
 			}
@@ -160,18 +135,15 @@ function ToogleTag(Toggle,Tag)
 		obj.className = elemClasses.join(' ');
 	}
 }
-function TogglerClicker(Toggle)
-{
+
+function TogglerClicker(Toggle) {
 	var SpoilerLink;
-	for(var i=0; i < document.getElementsByTagName("span").length; i++)
-	{
+	for(var i=0; i < document.getElementsByTagName("span").length; i++) {
 		var elemClasses = document.getElementsByTagName("span")[i].className.split(' ');
-		if(elemClasses[0] == 'toToggle' || elemClasses[0] == 'unToggle')
-		{
+		if(elemClasses[0] == 'toToggle' || elemClasses[0] == 'unToggle') {
 			SpoilerLink= document.getElementById(elemClasses.join(' '));
 		
-			if(SpoilerLink == null)
-			{
+			if(SpoilerLink == null) {
 				if(elemClasses[0] == 'unToggle')
 					elemClasses[0] = 'toToggle'
 				else
@@ -179,19 +151,16 @@ function TogglerClicker(Toggle)
 				SpoilerLink= document.getElementById(elemClasses.join(' '));
 			}
 		
-			for(var j=1; j < Toggle.length; j++)
-			{
+			for(var j=1; j < Toggle.length; j++) {
 				if(elemClasses[1] != Toggle[1])
 					break;
-				if(typeof elemClasses[j] == 'undefined')
-				{
+				if(typeof elemClasses[j] == 'undefined') {
 					elemClasses[0] = Toggle[0];
 					break;
 				}
 				if(elemClasses[j] == Toggle[j] && elemClasses.length <= Toggle.length)
 					elemClasses[0] = Toggle[0];
-				else
-				{
+				else {
 					elemClasses[0] = 'unToggle';
 					break;
 				}
@@ -208,5 +177,4 @@ function TogglerClicker(Toggle)
 	}
 }
 
-
-addOnloadHook(createToggle);
+$(createToggle);

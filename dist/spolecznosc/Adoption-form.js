@@ -1,8 +1,4 @@
-require([
-    'jquery',
-    'mw',
-    'wikia.window'
-], function($, mw, window) {
+(function($, mw, window) {
     window.AdoptionForm = {
         namespaceNo: (mw.config.get('wgNamespaceNumber') === 112) ? ans = 112 : ans = 114,
         namespaceName: (mw.config.get('wgNamespaceNumber') === 112) ? ans = 'Projektowanie' : ans = 'Adopcja',
@@ -62,7 +58,7 @@ require([
 
                 var send = false,
                     disabled = false,
-                    box = form.find('.createboxForm'),
+                    box = form.find('.createbox'),
                     input = box.find('.createboxInput'),
                     button = box.find('.createboxButton');
 
@@ -99,4 +95,4 @@ require([
         .mouseout(function() {
             $('#wymagania').removeClass('accent');
         });
-});
+})(jQuery, mediaWiki, window);

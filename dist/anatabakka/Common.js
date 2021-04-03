@@ -1,19 +1,23 @@
 /* Scripts which are imported via [[MediaWiki:ImportJS]]
-Common.js/DynamicStats.js
-Common.js/gridfiltering.js
-Common.js/itemGridfiltering.js
-Common.js/avatarGridfiltering.js
-Common.js/esportsGridfiltering.js
-Common.js/levelselect.js
-Common.js/levelselect2.js
-Common.js/StatWheel.js
-Common.js/StickyHeader.js
-Common.js/DynamicFontSize.js
+Mediawiki:Common.js/DynamicStats.js
+Mediawiki:Common.js/gridfiltering.js
+Mediawiki:Common.js/itemGridfiltering.js
+Mediawiki:Common.js/avatarGridfiltering.js
+Mediawiki:Common.js/esportsGridfiltering.js
+Mediawiki:Common.js/levelselect.js
+Mediawiki:Common.js/StatWheel.js
+Mediawiki:Common.js/StickyHeader.js
+Mediawiki:Common.js/DynamicFontSize.js
+Mediawiki:Common.js/Banner.js
+Mediawiki:Common.js/rosterFilter.js
+Mediawiki:Common.js/CustomTab.js
 dev:DiscordModule/code.js
 dev:InputUsername/code.js
 dev:OggPlayer.js
 dev:RCStats.js
 dev:Tooltips.js
+dev:TabViewEditLinks/code.js
+dev:WikiManager_Nameplate.js
 */
 
 mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
@@ -23,6 +27,17 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
     gridContainer = '#champion-grid';
     gridFilters = {
         'search': 'search',
+        'game': ['- Game -',
+            ['LOL','League of Legends'],
+            ['TFT','Teamfight Tactics'],
+            ['TFT1','• Set 1 - Faction Wars'],
+            ['TFT2','• Set 2 - Rise of the Elements'],
+            ['TFT3','• Set 3 - Galaxies'],
+            ['TFT3.5','• Set 3.5 - Galaxies II'],
+            ['TFT4','• Set 4 - Fates'],
+            ['LOR','Legends of Runeterra'],
+            ['WR','Wild Rift']
+        ],
         'role': ['- Role -',
             ['Controller','Controller'],
             ['Catcher','• Catcher'],
@@ -55,7 +70,6 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
         'search': 'search',
         'modes' : ['- Game Modes - ',
             ['Classic 5v5', '• Classic 5v5'],
-            ['Classic 3v3', '• Classic 3v3'],
             ['ARAM', '• ARAM'],
             ['FGM', '• FGM Exclusive']
         ]
@@ -83,6 +97,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             ['Merch Store','• Merch Store']
         ],
         'release': ['- Year -',
+            ['2020release', '• 2020'],
             ['2019release', '• 2019'],
             ['2018release', '• 2018'],
             ['2017release', '• 2017'],
@@ -173,7 +188,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 });
 
 /* Custom Tooltips for use with the Tooltips/code.js */
-var tooltips_list = [
+window.tooltips_list = [
     {   classname: 'ability-icon',
         parse: '{'+'{Tooltip/Ability|champion=<#champion#>|ability=<#ability#>}}'},
     {   classname: 'buff-icon', 
@@ -189,7 +204,7 @@ var tooltips_list = [
     {   classname: 'pp-tooltip',
         parse: '{'+'{Tooltip/Pp|<#size#>|<#values#>|values1=<#values1#>|values2=<#values2#>|label1=<#label1#>|label2=<#label2#>|displayformula=<#displayformula#>|useformula=<#useformula#>|key1=<#key1#>|key2=<#key2#>|start1=<#start1#>|start2=<#start2#>|end1=<#end1#>|end2=<#end2#>|round1=<#round1#>|round2=<#round2#>}}'},
     {   classname: 'pp-tooltip2',
-        parse: '{'+'{User:AnataBakka/pp2|bot_values=<#bot_values#>|top_values=<#top_values#>|start=<#start#>|finish=<#finish#>|bot_label=<#bot_label#>|top_label=<#top_label#>|displayformula=<#displayformula#>|useformula=<#useformula#>|bot_key=<#bot_key#>|top_key=<#top_key#>|bot_round=<#bot_round#>|top_round=<#top_round#>|top_fill=<#top_fill#>}}'},
+        parse: '{'+'{Tooltip/Pp2|bot_values=<#bot_values#>|top_values=<#top_values#>|start=<#start#>|finish=<#finish#>|bot_label=<#bot_label#>|top_label=<#top_label#>|displayformula=<#displayformula#>|useformula=<#useformula#>|bot_key=<#bot_key#>|top_key=<#top_key#>|bot_round=<#bot_round#>|top_round=<#top_round#>|top_fill=<#top_fill#>}}'},
     {   classname: 'rune-icon', 
         parse: '{'+'{Tooltip/Rune|<#param#>}}'},
     {   classname: 'skin-icon', 
@@ -205,18 +220,18 @@ var tooltips_list = [
     {   classname: 'ward-icon', 
         parse: '{'+'{Tooltip/Ward|<#param#>}}'},
     {   classname: 'spell-icon', 
-        parse: '{'+'{Tooltip/Spell|<#param#>}}'},
-    {   classname: 'channel-tooltip', 
-        parse: '{'+'{Tooltip/Channel|<#param#>|interrupts=<#interrupts#>|damage=<#damage#>|disarm=<#disarm#>|root=<#root#>|nearsight=<#nearsight#>|silence=<#silence#>|death=<#death#>|attacking=<#attacking#>|casting=<#casting#>|abilities=<#abilities#>|items=<#items#>|consume=<#consume#>|moving=<#moving#>|spells=<#spells#>}}'},
+        parse: '{'+'{Tooltip/Spell|<#param#>|spell=<#spell#>|variant=<#variant#>}}'},
     {   classname: 'sandbox-tooltip', 
-        parse: '{'+'{Tooltip/Sandbox|<#v1#>|<#v2#>|<#v3#>|<#v4#>|<#v5#>|<#v6#>|v7=<#v7#>|v8=<#v8#>|v9=<#v9#>|v10=<#v10#>|v11=<#v11#>|v12=<#v12#>}}'},
+        parse: '{'+'{Tooltip/Sandbox|<#v0#>|<#v1#>|<#v2#>|<#v3#>|<#v4#>|<#v5#>|<#v6#>|<#v7#>|<#v8#>|<#v9#>|<#v10#>|<#v11#>|<#v12#>}}'},
     {   classname: 'tft-icon', 
-        parse: '{'+'{Tooltip/TFT|<#param#>|<#type#>}}'},
+        parse: '{'+'{Tooltip/TFT|<#param#>|set=<#set#>|type=<#type#>}}'},
     {   classname: 'rp-icon', 
-        parse: '{'+'{Tooltip/RP|<#param#>}}'}
+        parse: '{'+'{Tooltip/RP|<#param#>}}'},
+    {   classname: 'lor-tooltip', 
+        parse: '{'+'{Tooltip/LOR|<#param#>}}'}
 ];
  
-var tooltips_config = {
+window.tooltips_config = {
     offsetX: 20,
     offsetY: 20,
     waitForImages: true,
@@ -264,18 +279,6 @@ mw.hook('wikipage.content').add(function(elem) {
             }
         });
     });
-});
-
-/* Adding Teamfight Tactics namespaces to article count on "Special:BlankPage?blankspecial=rcstats" */
-mw.hook('rcstats.init').add(function () {
-  var oldHandler = window.rcstats.getPageType;
-  window.rcstats.getPageType = function (ns) {
-    if ([114, 115].includes(ns)) {
-      return 'article';
-    } else {
-      return oldHandler(ns);
-    }
-  };
 });
 
 /* DO NOT ADD CODE BELOW THIS LINE */

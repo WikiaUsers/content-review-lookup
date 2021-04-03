@@ -1,3 +1,10 @@
+function plural(n, one, few, many) {
+    // @see http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html
+    if (n % 10 === 1 && n % 100 !== 11) return one;
+    else if (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) return few;
+    else return many;
+}
+
 function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit, dateFormat, dateLabels, separators) {
      const oneYear = 31536000000,
          oneMonth = oneYear / 12,
@@ -245,115 +252,20 @@ function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit
              minuteunit2 = '',
              secondunit2 = '';
          if (dateLabels[k].innerHTML === 'full') {
-             if (yearsleft == '0') {
-                 yearunit = ' лет';
-             } else if (yearsleft == '1') {
-                 yearunit = ' год';
-             } else if (yearsleft < '5') {
-                 yearunit = ' года';
-             } else {
-                 yearunit = ' лет';    
-             }  // ----------------------------------------
-             if (monthsleft == '0') {
-                 monthunit = ' месяцев';
-             } else if (monthsleft == '1') {
-                 monthunit = ' месяц';
-             } else if (monthsleft < '5') {
-                 monthunit = ' месяца';
-             } else {
-                 monthunit = ' месяцев';    
-             }  // ----------------------------------------
-             if (daysleft == '0') {
-                 dayunit = ' дней';
-             } else if (daysleft == '1') {
-                 dayunit = ' день';
-             } else if (daysleft < '5') {
-                 dayunit = ' дня';
-             } else {
-                 dayunit = ' дней';    
-             }  // ----------------------------------------
-             if (hoursleft == '0') {
-                 hourunit = ' часов';
-             } else if (hoursleft == '1') {
-                 hourunit = ' час';
-             } else if (hoursleft < '5') {
-                 hourunit = ' часа';
-             } else {
-                 hourunit = ' часов';    
-             }  // ----------------------------------------
-             if (minutesleft == '0') {
-                 minuteunit = ' минут';
-             } else if (minutesleft == '1') {
-                 minuteunit = ' минута';
-             } else if (minutesleft < '5') {
-                 minuteunit = ' минуты';
-             } else {
-                 minuteunit = ' минут';    
-             }  // ----------------------------------------
-             if (secondsleft == '0') {
-                 secondunit = ' секунд';
-             } else if (secondsleft == '1') {
-                 secondunit = ' секунда';
-             } else if (secondsleft < '5') {
-                 secondunit = ' секунды';
-             } else {
-                 secondunit = ' секунд';    
-             }  // ---------событие------------------------
-             if (yearsleft2 == '0') {
-                 yearunit2 = ' лет';
-             } else if (yearsleft2 == '1') {
-                 yearunit2 = ' год';
-             } else if (yearsleft2 < '5') {
-                 yearunit2 = ' года';
-             } else {
-                 yearunit2 = ' лет';    
-             }  // ----------------------------------------
-             if (monthsleft2 == '0') {
-                 monthunit2 = ' месяцев';
-             } else if (monthsleft2 == '1') {
-                 monthunit2 = ' месяц';
-             } else if (monthsleft2 < '5') {
-                 monthunit2 = ' месяца';
-             } else {
-                 monthunit2 = ' месяцев';    
-             }  // ----------------------------------------
-             if (daysleft2 == '0') {
-                 dayunit2 = ' дней';
-             } else if (daysleft2 == '1') {
-                 dayunit2 = ' день';
-             } else if (daysleft2 < '5') {
-                 dayunit2 = ' дня';
-             } else {
-                 dayunit2 = ' дней';    
-             }  // ----------------------------------------
-             if (hoursleft2 == '0') {
-                 hourunit2 = ' часов';
-             } else if (hoursleft2 == '1') {
-                 hourunit2 = ' час';
-             } else if (hoursleft2 < '5') {
-                 hourunit2 = ' часа';
-             } else {
-                 hourunit2 = ' часов';    
-             }  // ----------------------------------------
-             if (minutesleft2 == '0') {
-                 minuteunit2 = ' минут';
-             } else if (minutesleft2 == '1') {
-                 minuteunit2 = ' минута';
-             } else if (minutesleft2 < '5') {
-                 minuteunit2 = ' минуты';
-             } else {
-                 minuteunit2 = ' минут';    
-             }  // ----------------------------------------
-             if (secondsleft2 == '0') {
-                 secondunit2 = ' секунд';
-             } else if (secondsleft2 == '1') {
-                 secondunit2 = ' секунда';
-             } else if (secondsleft2 < '5') {
-                 secondunit2 = ' секунды';
-             } else {
-                 secondunit2 = ' секунд';    
-             }
- 
+             yearunit = plural(yearsleft, 'год', 'года', 'лет');
+             monthunit = plural(monthsleft, 'месяц', 'месяца', 'месяцев');
+             dayunit = plural(daysleft, 'день', 'дня', 'дней');
+             hourunit = plural(hoursleft, 'час', 'часа', 'часов');
+             minuteunit = plural(minutesleft, 'минута', 'минуты', 'минут');
+             secondunit = plural(secondsleft, 'секунда', 'секунды', 'секунд');
+               // ---------событие------------------------
+             yearunit2 = plural(yearsleft2, 'год', 'года', 'лет');
+             monthunit2 = plural(monthsleft2, 'месяц', 'месяца', 'месяцев');
+             dayunit2 = plural(daysleft2, 'день', 'дня', 'дней');
+             hourunit2 = plural(hoursleft2, 'час', 'часа', 'часов');
+             minuteunit2 = plural(minutesleft2, 'минута', 'минуты', 'минут');
+             secondunit2 = plural(secondsleft2, 'секунда', 'секунды', 'секунд');
+
          } else if (dateLabels[k].innerHTML === 'single') {
              yearunit = 'г';
              monthunit = 'м';

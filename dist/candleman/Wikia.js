@@ -1,33 +1,57 @@
-/* Having fun with user tags */
+/* User Tags */
+UserTagsJS.modules.inactive = 7; // 7 days
+
 window.UserTagsJS = {
-    tags: {
-        bureaucrat: { link: 'Special:ListUsers/bureaucrat' },
-        sysop: { link: 'Special:ListUsers/sysop' },
-        contentmoderator: { link: 'Special:ListUsers/contentmoderator' },
-        threadmoderator: { link: 'Special:ListUsers/threadmoderator' },
-        chatmoderator: { link: 'Special:ListUsers/chatmoderator' },
-        rollback: { link: 'Special:ListUsers/rollback' },
-        bot: { link: 'Special:ListUsers/bot' }
-    },
-    modules: {
-        autoconfirmed: true,
-        inactive: {
-            days: 7,
-            namespaces: [0],
-            zeroIsInactive: true
-        },
-        mwGroups: [
-            'bannedfromchat',
-            'bureaucrat',
-            'sysop',
-            'contentmoderator',
-            'threadmoderator',
-            'chatmoderator',
-            'rollback'
-            'bot'
-        ],
-        newuser: true
-    }
+	modules: {},
+	tags: {
+		bureaucrat: { link:'Special:Listusers/bureaucrat' }
+	}
+};
+ 
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		sysop: { link:'Special:Listusers/sysop' }
+	}
+};
+ 
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		contentmoderator: { link:'Special:Listusers/contentmoderator' }
+	}
+};
+ 
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		threadmoderator: { link:'Special:Listusers/threadmoderator' }
+	}
+};
+ 
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		chatmoderator: { link:'Special:Listusers/chatmoderator' }
+	}
+};
+ 
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		rollback: { link:'Special:Listusers/rollback' }
+	}
+};
+ 
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		bot: { link:'Special:Listusers/bot' }
+	}
+};
+ 
+UserTagsJS.modules.newuser = {
+	days: 7, // Must have been on the Wiki for 7 days
 };
 /* Image category for all photos */
 if (mw.config.get('wgCanonicalSpecialPageName') === 'MultipleUpload' || mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {

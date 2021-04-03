@@ -8,6 +8,8 @@
  * @author Cqm
  *
  * @version 0.5
+ *
+ * Used files: [[File:Facebook throbber.gif]]
  */
 
 ;(function ($, mw) {
@@ -23,17 +25,11 @@
         'wgVersion'
     ]);
 
-    var isUCP = conf.wgVersion !== '1.19.24';
-
-    if (!window.dev || !window.dev.i18n) {
-        if (isUCP) {
-            mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js');
-        } else {
-            importArticle({
-                type: 'script',
-                article: 'u:dev:MediaWiki:I18n-js/code.js'
-            });
-        }
+    if (!(window.dev && dev.i18n && dev.i18n.loadMessages)) {
+        importArticle({
+            type: 'script',
+            article: 'u:dev:MediaWiki:I18n-js/code.js'
+        });
     }
 
     var i18n, api;
@@ -46,26 +42,47 @@
         var $this = $(this),
             url = $this.data().url,
             page = $this.data().page,
-            undoId = /&undo=([^&]*)/.exec(url)[1];
+            undoId = /&undo=([^&]*)/.exec(url)[1],
+            summaryPromise,
+            defaultSummary = window.AjaxUndoSummary || '';
 
-        $this.html(
-            $('<img>')
-                .attr({
-                    src: 'https://images.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif',
-                    alt: msg('undoing'),
-                    border: '0'
-                })
-                .css('vertical-align', 'baseline')
-        );
-        api.post({
-            action: 'edit',
-            title: page,
-            undo: undoId,
-            bot: '1',
-            minor: window.AjaxUndoMinor ? undefined : '1',
-            summary: window.AjaxUndoSummary,
-            token: mw.user.tokens.get(isUCP ? 'csrfToken' : 'editToken')
-        }).done(function (data) {
+        if (window.AjaxUndoPrompt) {
+            summaryPromise = OO.ui.prompt(msg('summaryprompt'), {
+                textInput: {
+                    value: defaultSummary
+                }
+            });
+        } else {
+            summaryPromise = $.Deferred();
+            summaryPromise.resolve(defaultSummary);
+        }
+
+        summaryPromise.then(function(summary) {
+            if (summary === null) {
+                return;
+            }
+            $this.html(
+                $('<img>')
+                    .attr({
+                        src: 'https://images.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif',
+                        alt: msg('undoing'),
+                        border: '0'
+                    })
+                    .css('vertical-align', 'baseline')
+            );
+            return api.post({
+                action: 'edit',
+                title: page,
+                undo: undoId,
+                bot: '1',
+                minor: window.AjaxUndoMinor ? undefined : '1',
+                summary: summary === '' ? undefined : summary,
+                token: mw.user.tokens.get('csrfToken') || mw.user.tokens.get('editToken')
+            });
+        }).then(function (data) {
+            if (!data) {
+                return;
+            }
             if (data.edit && data.edit.result === 'Success') {
                 $this.text( '(' + msg('undone') + ')' );
             } else {
@@ -94,14 +111,14 @@
                     )
             ),
             text: msg('buttontext'),
-            click: undoEdit
+            click: undoEdit,
+            title: msg('undotitle'),
         });
     }
 
     function init(i18nData) {
         i18n = i18nData;
         api = new mw.Api();
-        i18n.useUserLang();
         if (conf.wgAction === 'history' && $('.mw-history-undo > a').length) {
             $('.mw-history-undo > a').each(function () {
                 var $this = $(this),
@@ -133,7 +150,8 @@
                 'mediawiki.api',
                 'mediawiki.user',
                 'mediawiki.util',
-                'mediawiki.Uri'
+                'mediawiki.Uri',
+                'oojs-ui-windows'
             ])
         ).then(init);
     });

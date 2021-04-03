@@ -285,7 +285,6 @@ UserTagsJS.modules.userfilter = {
 UserTagsJS.modules.custom = {
     //staffers
     '.iNebula': ['discordmod'],
-    '~ Aritarius ~': ['discordmod'],
     'Patchfeather14': ['discordmod'],
     'Neon Skylite': ['discordmod'],
     'SnowedLightning': ['stoneteller'],

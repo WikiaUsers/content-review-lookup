@@ -11,7 +11,7 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/avatar/images/d/dc/Image_Button.png",
 		"speedTip": "Insert Imagebox template",
 		"tagOpen": "\{\{Imagebox\r| description = ",
-		"tagClose": "\r| season      = \r| episode     = \r| source      = \r| origin      = \r| cats        = \r\}\}",
+		"tagClose": "\r| season      = \r| episode     = \r| source      = \r| cats        = \r\}\}",
 		"sampleText": ""};
 
 //Reference Popups

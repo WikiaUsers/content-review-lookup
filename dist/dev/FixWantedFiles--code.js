@@ -22,7 +22,7 @@
     ]);
     
     function rewriteLinks () {
-        if (config.wgCanonicalSpecialPageName === 'WantedFiles') {
+        if (config.wgCanonicalSpecialPageName === 'Wantedfiles') {
             $(function () {
                 $('ol.special a.new').each(function() {
                     var $this = $(this),

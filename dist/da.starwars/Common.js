@@ -13,9 +13,6 @@ $(function() {
  
 /* End of the {{USERNAME}} replacement */
 
-document.write('<script type="text/javascript" src="' 
-    + '/index.php?title=MediaWiki:Functions.js&action=raw&ctype=text/javascript"></script>');
-    
 
 // onload stuff
 var firstRun = true;
@@ -491,24 +488,6 @@ function emptySearchDesc()
 {
     alert('No description exists for this search icon. Please contact the administrators to resolve this problem.');
 }
-
-// Reskin parser script from [[Uncyclopedia:MediaWiki:Uncyclopedia.js]]
-skinjs = {
-    "Logout": "Logout.js"
-}
-
-var re = RegExp("(.*) - Wookieepedia, the Star Wars Wiki");
-var matches = re.exec(document.title);
-
-var skinNamejs;
-
-if (matches) {
-    if (skinjs[matches[1]] != undefined) {
-        skinNamejs = (skinjs[matches[1]].length > 0) ? skinjs[matches[1]] : matches[1] + '.js';
-        document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Skin/' + skinNamejs + '&action=raw&ctype=text/javascript"></script>');
-    }
-}
-
-addOnloadHook(loadFunc);
+$(loadFunc);
 
 // </nowiki></pre>

@@ -5,7 +5,7 @@ $(function(){
 window.dev = window.dev || {};
 window.dev.FontAwesome = window.dev.FontAwesome || {};
 var FA = window.dev.FontAwesome;
-var version = 'v5.13.0';
+var version = 'v5.15.1';
  
 var array = ['all', 'v4-shims'];
 var add = '';

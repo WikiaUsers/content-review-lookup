@@ -1,0 +1,1 @@
+console.log("Wikia.js test mode");

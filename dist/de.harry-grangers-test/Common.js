@@ -9,6 +9,24 @@
  *
  * Maintainer(s): [[User:Ilmari Karonen]]
  */
+ 
+ /** Username replace function
+ * Inserts user name into 
+ * By Splarka
+ *
+ * Replaces {{BENUTZERNAME}} with the name of the user browsing the page.
+ * Requires copying Template:USERNAME.
+ */
+   
+   var wgUserNameAnon = 'Anonymous';
+
+function UserNameReplace() {
+    if (typeof (disableUsernameReplace) != 'undefined' && disableUsernameReplace) return;
+    $("span.insertusername").text(mw.config.get('wgUserName') || wgUserNameAnon);
+}
+$(document).ready(UserNameReplace);
+
+/* End of the {{BENUTZERNAME}} replacement */
 
 mw.hook("postEdit").add(function() {
     console.info("postEdit hook fired");

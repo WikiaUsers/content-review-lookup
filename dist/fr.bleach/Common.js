@@ -365,7 +365,7 @@ if (wgPageName.indexOf("Special:MovePage/File:") != -1 || (wgCanonicalNamespace 
 				return false;
 			});
 		});
- 
+	}
  
      	// Custom edit buttons
 	if (mw.toolbar) {

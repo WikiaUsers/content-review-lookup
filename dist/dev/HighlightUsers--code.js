@@ -1,9 +1,9 @@
 /**
  * 
  * @module                  HighlightUsers.js
- * @description             Dynamic user highlighting for FANDOM.
+ * @description             Dynamic user highlighting for Fandom.
  * @author                  Bobogoobo
- * @author                  Speedit
+ * @author                  MACH-59330
  * @version                 0.3.2
  * @license                 CC-BY-SA 3.0
  * 
@@ -65,6 +65,9 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
      * @this                window.dev.highlightUsers
      */
     HighlightUsers.prototype._call = function(l) {
+        // Fixes cache issue - "groupmembers" is hard cached serverside based on gmgroups; appending a timestamp as a url param doesn't fix it, nor does setting any headers I tried. While this is a bit hacky, this forces a uniq id into gmgroups, which forces it to fetch a unique set of data. Note: Script manually handles cache support, so this cache behavior is not wanted.
+        l += "|"+Date.now()
+        
         var query = {
                 action: 'query',
                 list: 'groupmembers',
@@ -196,7 +199,7 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
             'helper',
             'wiki-manager',
             'content-team-member',
-            'vstf',
+            'soap',
             'global-discussions-moderator',
             'voldev',
             'vanguard',

@@ -52,13 +52,13 @@ $(function() {
             disablepp: '',
             format: 'json'
         }, function(data) {
-            $('#WikiaRail').append(
+            $('#WikiaRail').prepend(
                 $('<section>')
-                    .addClass('module')
-                    .addClass('welcome-module')
+                    .addClass('rail-module')
+                    .attr('id', 'welcome-module')
                     .append(
                         $('<h2>')
-                            .addClass('activity-heading')
+                            .addClass('has-icon')
                             .text('Welcome to the (G)I-DLE Wiki!')
                     )
                     .append(
@@ -69,19 +69,20 @@ $(function() {
                             )
                             .append(
                                 $('<div>')
-                                    .addClass('buttons-container')
+                                    .addClass('wds-button-group')
                                     .append(
-                                        $('<button>')
-                                            .addClass('wikia-button')
+                                        $('<a>')
+                                            .attr('role', 'button')
+                                            .addClass('wds-button')
+                                            .addClass('wds-is-secondary')
                                             .attr('id', 'remove')
                                             .text('Don\'t show again')
                                     )
                                     .append(
-                                        $('<button>')
-                                            .addClass('wikia-button')
-                                            .addClass('talk')
-                                            .addClass('comments')
-                                            .addClass('secondary')
+                                        $('<a>')
+                                            .attr('role', 'button')
+                                            .addClass('wds-button')
+                                            .addClass('wds-is-secondary')
                                             .attr('id', 'cancel')
                                             .text('Cancel')
                                     )
@@ -89,15 +90,15 @@ $(function() {
                     )
             );
             if (!mw.config.get('wgUserName')) {
-                $('.welcome-module .anons').show();
+                $('#welcome-module .anons').show();
             }
-            $('.welcome-module #remove').on('click', function() {
+            $('#welcome-module #remove').on('click', function() {
                 localStorage.setItem('welcome-' + mw.config.get('wgDBname'), 4);
-                $('.welcome-module').fadeOut('slow');
+                $('#welcome-module').fadeOut('slow');
             });
-            $('.welcome-module #cancel').on('click', function() {
+            $('#welcome-module #cancel').on('click', function() {
                 localStorage.setItem('welcome-' + mw.config.get('wgDBname'), ++welcome);
-                $('.welcome-module').fadeOut('slow');
+                $('#welcome-module').fadeOut('slow');
             });
         });
     }

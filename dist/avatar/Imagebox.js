@@ -1,5 +1,5 @@
-$(document).ready(function() {
-    if ( wgCanonicalSpecialPageName == "Upload" || wgCanonicalSpecialPageName == "MultipleUpload") {
+$(function() {
+    if ( mw.config.get('wgCanonicalSpecialPageName') == "Upload" || mw.config.get('wgCanonicalSpecialPageName') == "MultipleUpload") {
 	    var value = "{"+"{Imagebox\n"
 		+ "| description = \n"
 		+ "| film        = \n"

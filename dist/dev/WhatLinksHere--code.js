@@ -1,7 +1,7 @@
 /**
  * Name:        WhatLinksHere
  * Version:     v1.1
- * Author:      KockaAdmiralac <1405223@gmail.com>
+ * Author:      KockaAdmiralac <wikia@kocka.tech>
  * Description: Adds a link to Special:WhatLinksHere below the edit dropdown
  */
 
@@ -10,7 +10,7 @@
 
     var $list = $('.page-header__contribution-buttons .wds-list, .UserProfileActionButton .WikiaMenuElement');
 
-    if (!$list.exists() || window.WhatLinksHereLoaded) {
+    if (!$list.length || window.WhatLinksHereLoaded) {
         return;
     }
     window.WhatLinksHereLoaded = true;
@@ -21,7 +21,10 @@
     ]);
 
     mw.hook('dev.fetch').add(function(fetch) {
-        fetch('whatlinkshere').then(function(text) {
+        $.when(
+            fetch('whatlinkshere'),
+            mw.loader.using('mediawiki.util')
+        ).then(function(text) {
             var url = mw.util.getUrl('Special:WhatLinksHere/' + config.wgPageName);
             $list.append(
                 $('<li>', {

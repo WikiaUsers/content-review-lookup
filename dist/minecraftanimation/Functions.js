@@ -92,16 +92,6 @@ if ($.inArray(mw.config.get('wgCanonicalSpecialPageName'),
  ===========================================================
 **/
 
-/** Highlight changed whitespace characters in diffs.
-    By UltimateSupreme, taken from their Global JS **/
-
-if ($.getUrlVar('diff')) {
-    $('.diffchange-inline').each(function() {
-        if (!(new RegExp('\\S+').test($(this).text()))) {
-            $(this).css('background-color', 'red')}
-    });
-}
-
 //==========================================================
 // Class testing scripts
 //==========================================================

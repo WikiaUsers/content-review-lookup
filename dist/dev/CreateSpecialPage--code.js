@@ -2,9 +2,9 @@
 /* created by Curiouscrab */
 // use "<item>TEXT</item>" tags where TEXT is the text you want to show in order to divide items into list (Special:Page/# shows certain number of items in list)
 // use "<l id="ITEM">TEXT</l>" tags where ITEM is whatever item you want and TEXT with the text you want to show (Special:Page/ITEM displays this)
-var pageNames;
-var pageData;
-var pagePurpose;
+var pageNames = window.pageNames || [];
+var pageData = window.pageData || [];
+var pagePurpose = window.pagePurpose || [];
 if(wgNamespaceNumber == wgNamespaceIds.special && pageNames.indexOf(wgPageName.split('/')[0].split(':')[1]) > -1) {
 	$.get(mw.util.wikiScript('api'), {
 		action: 'query',

@@ -34,14 +34,14 @@ function loadFunc() {
 		initVisibility();
 	}
 
-	fillEditSummaries();
-	fillPreloads();
+	// fillEditSummaries();
+	// fillPreloads();
 
 	substUsername();
 	substUsernameTOC();
-	rewriteTitle();
-	showEras('title-eraicons');
-	showEras('title-shortcut');
+	// rewriteTitle();
+	// showEras('title-eraicons');
+	// showEras('title-shortcut');
 	rewriteHover();
 	addAlternatingRowColors();
 	// replaceSearchIcon(); this is now called from MediaWiki:Monobook.js

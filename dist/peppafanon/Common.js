@@ -39,5 +39,5 @@ window.UserTagsJS = {
 	}
 };
 UserTagsJS.modules.custom = {
-	'Mateusz11113': ['uoty'] 
+	'ScribbledEggs': ['uoty'] 
 };

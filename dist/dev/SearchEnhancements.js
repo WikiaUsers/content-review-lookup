@@ -8,7 +8,7 @@
  *      TheGoldenPatrik1 (I18n-js and support for CSS)
  */
 
-(function() {
+mw.loader.using('mediawiki.util').then(function() {
     // Scoping
     var config = mw.config.get([
         'wgPageName',
@@ -16,9 +16,9 @@
         'wgCityId'
     ]);
     if (
-        config.wgCityId !== '7931' ||
+        config.wgCityId !== 7931 ||
         !(/^(List_of_JavaScript_enhancements|List_of_CSS_enhancements)$/g.test(config.wgPageName)) ||
-        $.getUrlVar('diff') ||
+        mw.util.getParamValue('diff') ||
         config.wgAction !== 'view' ||
         window.SearchEnhancementsLoaded
     )  {
@@ -28,7 +28,7 @@
  
     function init(i18nData) {
         i18n = i18nData;
-        $('#mw-content-text').prepend(
+        $('#mw-content-text .mw-parser-output').prepend(
             $('<input>', {
                 attr: {
                     type: 'text',
@@ -48,7 +48,7 @@
             this.parentElement.replaceChild(document.createTextNode(this.innerHTML), this);
         });
         $('.searchenhancements-hide, .searchenhancements-keep').removeClass('searchenhancements-hide searchenhancements-keep');
-        $('#mw-content-text').removeClass('remove-clutter');
+        $('#mw-content-text .mw-parser-output').removeClass('remove-clutter');
     }
  
     function show(d, t) {
@@ -60,7 +60,7 @@
     }
  
     function hide_clutter() {
-        $('#mw-content-text').addClass('remove-clutter');
+        $('#mw-content-text .mw-parser-output').addClass('remove-clutter');
     }
  
     function includes(text, sub) {
@@ -92,7 +92,7 @@
             t = dt[i],
             di = includes(d.textContent, value),
             ti = includes(t.textContent, value);
- 
+
             if (di || ti) {
                 show(d, t);
             } else {
@@ -105,14 +105,12 @@
 		i18n.loadMessages('SearchEnhancements').then(init);
 	});
  
-    importArticle(
-        {
-            type: 'style',
-            article: 'u:dev:MediaWiki:SearchEnhancements.css'
-        },
-        {
-            type: 'script',
-            article: 'u:dev:MediaWiki:I18n-js/code.js'
-        }
-    );
-})();
+    importArticle({
+        type: 'style',
+        article: 'u:dev:MediaWiki:SearchEnhancements.css'
+    });
+    importArticle({
+        type: 'script',
+        article: 'u:dev:MediaWiki:I18n-js/code.js'
+    });
+});

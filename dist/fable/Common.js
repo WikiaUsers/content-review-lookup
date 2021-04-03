@@ -1,40 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-// install [[User:Cacycle/wikEdDiff]] enhanced diff view using ajax
-document.write('<script type="text/javascript" src="'
-+ 'http://en.wikipedia.org/w/index.php?title=User:Cacycle/wikEdDiff.js'
-+ '&action=raw&ctype=text/javascript&dontcountme=s"></script>')
-
-/* Auto updating recent changes
- * See w:c:dev:AjaxRC for info & attribution 
- */
-
-importScriptPage('AjaxRC/code.js', 'dev');
-
-/** additional scripts (c) User:Poke, released under GFDL **/
-if ( wgIsArticle || window.location.href.indexOf( 'action=submit' ) > -1 )
-{
-  addScript( 'MediaWiki:CollapsibleTables.js' );
-  hookEvent( 'load', function()
-  {
-    new CollapsibleTables();
-});
-
-}
-/**** function addScript.js
- * by Patrick Westerhoff [poke]
- */
-function addScript ( pagename )
-{
-  var script  = document.createElement( 'script' );
-  pagename    = encodeURI( pagename.replace( ' ', '_' ) );
-  script.src  = '/index.php?title=' + pagename + '&action=raw&ctype=text/javascript';
-  script.type = 'text/javascript';
-  
-  document.getElementsByTagName( 'head' )[0].appendChild( script );
-}
-
-
 // **************************************************
 // Experimental javascript countdown timer (Splarka)
 // Version 0.0.3
@@ -96,81 +61,12 @@ function checktimers() {
     updatetimer(i);  //start it up
   }
 }
-addOnloadHook(checktimers);
+$(checktimers);
+
 
 // **************************************************
 //  - end -  Experimental javascript countdown timer
 // **************************************************
-
-/* Adds "purge" option to page controls
- * See w:c:dev:PurgeButton for info & attribution 
- */
-
-importScriptPage('PurgeButton/code.js', 'dev');
-
-/* DisableArchiveEdit
- * See w:c:dev:DisableArchiveEdit
- */
-
-var DisableArchiveEditConfig = { 
-   textColor: '#000000',
-};
-importScriptPage('DisableArchiveEdit/code.js', 'dev');
-
-/** Archive edit tab disabling *************************************
- * Disables the edit tab on old forum topic pages to stop new people bumping old topics.
- * Page can still be edited by going via the edit tab on the history etc, or by 
- * typing the edit address manually.
- * By [[User:Spang|Spang]]
- * Monaco support by [[User:Uberfuzzy|Uberfuzzy]]
- * Oasis support by [[User:Uberfuzzy|Uberfuzzy]]
- */
- 
-if(wgNamespaceNumber == 110) {
- 
-function disableOldForumEdit() {
-	if( typeof( enableOldForumEdit ) != 'undefined' && enableOldForumEdit )
-		return;
-	if( !document.getElementById('old-forum-warning') )
-		return;
- 
-	if( skin == 'oasis' )
-	{
-		$("#WikiaPageHeader .wikia-menu-button li a:first").html('Archived').removeAttr('href' );
-		$('#WikiaPageHeader .wikia-button').html('Archived').removeAttr('href');
-		return;
-	}
- 
-	if( !document.getElementById('ca-edit') )
-		return;
-	var editLink = null;
-	if( skin == 'monaco' )
-	{
-		editLink = document.getElementById('ca-edit');
-	}
-	else if( skin == 'monobook' )
-	{
-		editLink = document.getElementById('ca-edit').firstChild;
-	}
-	else
-	{
-		return;
-	}
- 
- 
-	editLink.removeAttribute('href', 0);
-	editLink.removeAttribute('title', 0);
-	editLink.style.color = '#D9D9D9';
-	editLink.innerHTML = 'Archived';
- 
-	$('span.editsection-upper').remove();
- 
-}
-addOnloadHook( disableOldForumEdit );
-}
-
-/** End of Archive edit tab disabling *
- */
 
 /*** UserTags by Lunarity
  * UserTags is a script that can add, remove, modify and rearrange the tags on User pages
@@ -216,6 +112,3 @@ UserTagsJS.modules.implode = {
 	'inactive-bureaucrat': ['bureaucrat', 'inactive'], // Combine Inactive Bureaucrats
 	'sysop-bot': ['bot', 'sysop'] // Combine Admin Bots
 };
-
-// Script import
-importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});

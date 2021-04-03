@@ -10,8 +10,8 @@
     thnx Nanaki for the help!
 */
 
-(function () {
-    var config, i18n,                                    // configuration
+mw.loader.using(['jquery.makeCollapsible'], function() {
+    var config, i18n, isUCP,                             // configuration
         refreshTimer, refreshCycle, itemSince, itemIds;  // state
 
     //
@@ -156,7 +156,7 @@
 
         // Define query
         var itemQuery;
-        if ( config.userRights.canViewAFLDetails ) {
+        if ( config.userRights.canViewAFLDetails && config.userInfo ) {
             itemQuery = {
                 'afllimit': config.entries,
                 'afldir': 'older',
@@ -204,15 +204,29 @@
                 itemSince = item.timestamp;
 
                 // Create item details if viewer has permission, checks with personal configuration and item is not an anon
-                var tableUserExtraLinks;
+                var tableUserExtraLinks = '';
 
-                if ( config.userRights.canViewAFLDetails && config.userInfo && (/(user)/.test(item.details.user_groups)) ) {
-                    var userAge = secondsToString(item.details.user_age);
+                // NB: UCP doesn't always give us the user's groups, so we'll heuristically assume that any username that _doesn't_ look like an IP address is probably a user.
+                if ( config.userRights.canViewAFLDetails && config.userInfo && ((isUCP && !mw.util.isIPAddress(item.user)) || /(user)/.test(item.details.user_groups)) ) {
+                    var userExtraLinks = [];
 
-                    // Create extra info
-                    tableUserExtraLinks = '<span class="abExtraLinks">(' + i18n.msg('globalEdits').escape() + '&nbsp;' + item.details.user_editcount + ' &bull; <span title="' + mw.msg('abusefilter-edit-builder-vars-user-age') + '">' + i18n.msg('age').escape() + '&nbsp;' + userAge + '</span>)' + '</span>';
-                } else {
-                    tableUserExtraLinks = '';
+                    if (item.details.user_editcount != null) {
+                        // NB: UCP wikis provide an inaccurate edit count.
+                        userExtraLinks.push(isUCP
+                            ? '<span title="' + i18n.msg('ucpGlobalEditsTooltip').escape() + '">' + i18n.msg('globalEdits').escape() + '&nbsp;&ge;&nbsp;' + item.details.user_editcount + '</span>'
+                            : i18n.msg('globalEdits').escape() + '&nbsp;' + item.details.user_editcount
+                        );
+                    }
+
+                    // UCP wikis no longer seem to provide this variable. Bug or intentional, who knows?
+                    if (item.details.user_age != null) {
+                        var userAge = secondsToString(item.details.user_age);
+                        userExtraLinks.push('<span title="' + mw.msg('abusefilter-edit-builder-vars-user-age') + '">' + i18n.msg('age').escape() + '&nbsp;' + userAge + '</span>');
+                    }
+
+                    if (userExtraLinks.length) {
+                        tableUserExtraLinks = '<span class="abExtraLinks">(' + userExtraLinks.join(' &bull; ') + ')</span>';
+                    }
                 }
 
                 // Create cells HTML
@@ -244,7 +258,7 @@
                             '<a href="' + mw.util.getUrl('User_talk:' + item.user) + '" target="_blank">' + mw.msg('talkpagelinktext') + '</a> &bull; ' +
                             '<a href="' + mw.util.getUrl('Special:Contributions/' + item.user) + '" target="_blank">' + mw.msg('contribslink') + '</a> &bull; ' +
                             '<a href="' + alUrl + '?wpSearchUser=' + item.user + '" title="' + mw.msg('abusefilter-log-linkoncontribs-text') + '" target="_blank">' + mw.msg('abusefilter-log-linkoncontribs') + '</a> &bull; ' +
-                            '<a href="//vstf.fandom.com/" target="_blank" title="' + i18n.msg('vstfTooltip').escape() + '">VSTF</a>' +
+                            '<a href="//soap.fandom.com/" target="_blank" title="' + i18n.msg('soapTooltip').escape() + '">SOAP</a>' +
                             (config.userRights.canBlock ? (' &bull; <a href="' + mw.util.getUrl('Special:Block/' + item.user) + '" target="_blank">' + mw.msg('blocklink') + '</a>') : '') +
                         '</td>';
 
@@ -252,10 +266,10 @@
                 var urgency = urgencyClass(now.getTime(), then.getTime()),
                     timeDiff = Math.floor( (now.getTime() - then.getTime()) / 1000 ), // debugging purpose
                     tableRow =
-                        '<tr class="abItemRow ' + urgency + '" data-time-ago="' + secondsToString(timeDiff , 'timestamp') + '">' +
+                        '<tr class="abItemRow abItemRowReport abItemRowFilter' + item.filter_id + ' ' + urgency + '" data-time-ago="' + secondsToString(timeDiff , 'timestamp') + '">' +
                             tableCellTime + tableCellPage + tableCellUser +
                         '</tr>' +
-                        '<tr class="abItemRow ' + urgency + '">' +
+                        '<tr class="abItemRow abItemRowDetails abItemRowFilter' + item.filter_id + ' ' + urgency + '">' +
                             tableCellFilter + tableCellTools +
                         '</tr>';
 
@@ -294,7 +308,7 @@
                         '<input type="button" id="abSetIntervalButton" value="' + i18n.msg('changeButton').escape() + '">' +
                         '<input type="button" id="abRefresh" title="' + i18n.msg('refreshButtonDesc').escape() + '" value="' + i18n.msg('refreshButton').escape() + '" style="margin-left:5px;">' +
                         '<div id="ab_update" style="float:right;">' +
-                            '<img src="' + config.stylepath + '/common/images/ajax.gif" width="16" height="16" alt="' + mw.msg('activityindicator-message') + '"/> ' +
+                            '<img src="https://images.wikia.com/skins/common/images/ajax.gif" width="16" height="16" alt="' + mw.msg('activityindicator-message') + '"/> ' +
                             '<span style="font-weight:bold;">' + i18n.msg('lastUpdate').escape() + '</span>&nbsp;<span id="abLastUpdate"></span>' +
                         '</div>' +
                     '</div>' +
@@ -304,7 +318,7 @@
                         i18n.msg('changeNumber').escape() +
                         '&nbsp;<input type="text" name="abEntriesNumber" id="abEntriesNumber" style="width:50px;">&nbsp;' +
                         '<input type="button" id="abSetEntriesButton" value="' + i18n.msg('changeButton').escape() + '">' +
-                        '<div class="abDocumentation" style="float:right; font-size:10px;"><a href="' + mw.util.getUrl('Special:AbuseLog') + '" target="_blank">' + mw.msg('abusefilter-log') + '</a> &bull; <a href="//dev.fandom.com' + mw.util.getUrl('AbuseLogRC') + '" target="_blank">' + i18n.msg('devLink').escape() + '</a></div>' +
+                        '<div class="abDocumentation" style="float:right; font-size:10px;"><a href="' + mw.util.getUrl('Special:AbuseLog') + '" target="_blank">' + mw.msg('abusefilter-log') + '</a> &bull; <a href="//dev.fandom.com/wiki/AbuseLogRC" target="_blank">' + i18n.msg('devLink').escape() + '</a></div>' +
                     '</div>' +
                 '</form>' +
                 '<div id="abErrorsLog" style="display:block;"><ul></ul></div>' +
@@ -341,7 +355,7 @@
                 updateIntervalTime(newTime);
             }
         );                                                      // refresh interval button
-        $('#abHeader th:first').click(changeOrder);                     // sorting options
+        $('#abHeader th:first').click(changeOrder);             // sorting options
 
         // Make table collapsible
         if ( config.collapsible ) {
@@ -523,12 +537,13 @@
         // Speculatively load all the MediaWiki configuration values we'll need
         mwConfig = mw.config.get([
            'debug',
-           'stylepath',
            'wgCanonicalSpecialPageName',
            'wgUserGroups',
            'wgUserLanguage',
            'wgUserName',
+           'wgVersion',
         ]);
+        isUCP = mwConfig.wgVersion !== '1.19.24';
         // Ensure we're on the right page
         if (mwConfig.wgCanonicalSpecialPageName !== 'Recentchanges') {
             if (mwConfig.debug) {
@@ -538,10 +553,10 @@
         }
         // Preliminary run conditions met
         window.abuseLogRCactive = true;
-        console.log('[AbuseLogRC]: version 1.06 - 07/02/2019.');
+        console.log('[AbuseLogRC]: version 1.07 - 26/10/2020.');
 
         // Check whether the user is permitted to view AbuseLogRC
-        showToGroups = ['sysop', 'helper', 'vstf', 'staff', 'wiki-manager', 'content-team-member'];
+        showToGroups = ['sysop', 'helper', 'staff', 'wiki-manager', 'content-team-member', 'soap'];
         $.each($.isArray(window.abuseLogRC_showTo) ? window.abuseLogRC_showTo : [
             (window.abuseLogRC_showTo === 'all') ? 'user' : window.abuseLogRC_showTo
         ], function (i, group) {
@@ -616,7 +631,6 @@
                 collapsible: (typeof abuseLogRC_collapsible === 'boolean') ? abuseLogRC_collapsible : true,
                 userInfo: (typeof abuseLogRC_userInfo === 'boolean') ? abuseLogRC_userInfo : true,
                 userRights: userRights,
-                stylepath: mwConfig.stylepath,
             };
             $.when(loadI18nMessages(), $.ready).done(function () {
                 // Initialize state
@@ -636,4 +650,4 @@
     //
 
     bootstrap();
-}());
+});

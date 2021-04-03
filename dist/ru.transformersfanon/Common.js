@@ -2,15 +2,3 @@
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
-
-/**
- * Auto Update *
- **/
- 
- importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:DiscordIntegrator/code.js'
-    ]
-});
-}

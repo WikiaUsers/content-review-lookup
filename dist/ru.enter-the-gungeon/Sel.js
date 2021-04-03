@@ -1,5 +1,5 @@
 //additional selector
-require( [ 'wikia.window', 'jquery', 'mw' ], function( window, $, mw ) {
+mw.loader.using('mediawiki.util').then(function() {
  
 function zselector( $content ) {
     var ActiveID = '';

@@ -1,11 +1,36 @@
+$('.page-header__contribution>div:first-child').append($('.eraicons').first());
 /* EN title */
 (function() {
-    var $ent = $('#enTitle'),
-        $header = $('.page-header__main');
-    if ($ent.exists() && $header.exists() && !mw.config.get('wgIsMainPage')) {
-        $header.append($ent.clone().css('display', 'block'));
+    var $ent = document.querySelector('#enTitle'),
+        $header = document.querySelector('.page-header__main');
+    if ($ent && $header && !mw.config.get('wgIsMainPage')) {
+        $ent.style.display = 'block';
+        $header.appendChild($ent);
     }
 })();
+
+/**
+ * Show/hide for media timeline -- Grunny
+ **/
+$( function () {
+    if( !$( '.timeline-toggles' ).length ) {
+        return;
+    }
+    $( '.timeline-toggles' ).find( 'td > a' ).click( function () {
+        var    hideBtnClass = $( this ).parent().attr( 'class' ),
+            $hideContent = $( 'tr.' + hideBtnClass );
+        if( !$hideContent.length ) {
+            return;
+        }
+        $hideContent.toggle();
+        if ( $( this ).text().indexOf( 'gizle' ) >= 1 ) {
+            $( this ).text( $( this ).text().replace( 'gizle', 'göster' ) );
+        } else {
+            $( this ).text( $( this ).text().replace( 'göster', 'gizle' ) );
+        }
+    } );
+} );
+
 /* show hide button */
 function initVisibility() {
 	var page = window.pageName.replace(/\W/g,'_');
@@ -47,7 +72,7 @@ function initVisibility() {
  
 //[[Özel:Yükle]]
  function remove_no_license_special_upload() {
-   if (wgPageName != "Özel:Yükle")
+   if (mw.config.get('wgPageName') != "Özel:Yükle")
      return;
    var license = document.getElementById("wpLicense");
    if (!license)
@@ -58,11 +83,11 @@ function initVisibility() {
    license.removeChild(options[0]);
  }
 
- addOnloadHook(remove_no_license_special_upload);
+ $(remove_no_license_special_upload);
 
 //[[Özel:Çoklu Yükleme]]
  function remove_no_license_special_multipleupload() {
-   if (wgPageName != "Özel:Çoklu Yükleme")
+   if (mw.config.get('wgPageName') != "Özel:Çoklu Yükleme")
      return;
    var license = document.getElementById("wpLicense");
    if (!license)
@@ -73,15 +98,7 @@ function initVisibility() {
    license.removeChild(options[0]);
  }
 
- addOnloadHook(remove_no_license_special_multipleupload);
-
-
-
- // Import [[MediaWiki:Onlyifuploading.js]] 
- 
- if ( wgCanonicalSpecialPageName == "Upload" ) {
-      document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Onlyifuploading.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
- }
+ $(remove_no_license_special_multipleupload);
 
 
 /*-------------------------------------------------------------------------------------*\
@@ -100,7 +117,7 @@ return new ActiveXObject("Microsoft.XMLHTTP"); //Internet Explorer
 //import script zum Auslagern grosser Scripte
 function importScript(page) {
 	// TODO: might want to introduce a utility function to match wfUrlencode() in PHP
-	var uri = wgScript + '?title=' +
+	var uri = mw.config.get('wgScript') + '?title=' +
 		encodeURIComponent(page.replace(/ /g,'_')).replace(/%2F/ig,'/').replace(/%3A/ig,':') +
 		'&action=raw&ctype=text/javascript';
 	return importScriptURI(uri);
@@ -214,7 +231,7 @@ importScript('MediaWiki:Functions.js');
      }
  }
  
- addOnloadHook( createCollapseButtons );
+ $( createCollapseButtons );
 
  /**
  * Dynamic Navigation Bars (experimental)
@@ -326,15 +343,15 @@ function replaceusername() {
   var spantags = document.getElementsByTagName("span");
   for (i=0; i<spantags.length; i++) {
     if (spantags[i].className=="insertusername") {
-      if (wgUserName==null) {
+      if (mw.config.get('wgUserName')==null) {
         spantags[i].innerHTML="...";
       } else {
-        spantags[i].innerHTML=wgUserName;
+        spantags[i].innerHTML=mw.config.get('wgUserName');
       }
     }
   }
 }
-addOnloadHook(replaceusername);
+$(replaceusername);
 
 //-------------------------------------------------------------------------------------
 
@@ -364,8 +381,8 @@ function addEditIntro(name) {
 	}
 }
 
-if (wgNamespaceNumber == 0) {
-	addOnloadHook(function(){
+if (mw.config.get('wgNamespaceNumber') == 0) {
+	$(function(){
 		var cats = document.getElementById('mw-normal-catlinks');
 		if (!cats)
 			return;
@@ -405,10 +422,10 @@ for (i=0; i<objects.length; i++) {
 	}
 }
 }
-addOnloadHook(updategallery);
+$(updategallery);
 
 $('a.wikia-button.upphotos').click(function () {
-   location.href = wgServer + '/wiki/Özel:Yükle'
+   location.href = mw.config.get('wgServer') + '/wiki/Özel:Yükle'
 });
 
 importScript('MediaWiki:Title.js');
@@ -423,7 +440,6 @@ $(function() {
  
 /* End of the {{USERNAME}} replacement */
 
-$('#PageHeader').append($('.eraicons').first());
 /* This script allows the numbers of articles on [[List of Star Wars Wikis in other languages]] to load automatically (current number) */
 (function() {
     var stats = ['articles', 'activeusers', 'admins', 'edits', 'images'],
@@ -485,3 +501,167 @@ $('#PageHeader').append($('.eraicons').first());
         });
     });
 })();
+
+/**
+ * jQuery version of Sikon's fillEditSummaries
+ * @author Grunny
+ */
+function fillEditSummaries() {
+
+	if ( !$( '#wpSummaryLabel' ).length ) {
+		return;
+	}
+
+	$.get( mw.config.get( 'wgScript' ), { title: 'Template:Stdsummaries', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+		var	$summaryOptionsList,
+			$summaryLabel = $( '#wpSummaryLabel' ),
+			lines = data.split( '\n' ),
+			$wrapper = $( '<div>').addClass( 'edit-widemode-hide' ).text( 'Standard summaries: ' );
+
+		$summaryOptionsList = $( '<select />' ).attr( 'id', 'stdEditSummaries' ).change( function() {
+			var editSummary = $( this ).val();
+			if ( editSummary !== '' ) {
+				$( '#wpSummary' ).val( editSummary );
+			}
+		} );
+
+		for ( var i = 0; i < lines.length; i++ ) {
+			var editSummaryText = ( lines[i].indexOf( '-- ' ) === 0 ) ? lines[i].substring(3) : '';
+			$summaryOptionsList.append( $( '<option>' ).val( editSummaryText ).text( lines[i] ) );
+		}
+
+		$summaryLabel.prepend( $wrapper.append( $summaryOptionsList ) );
+	} );
+
+}
+
+/**
+ * fillEditSummaries for VisualEditor, based on Grunny's jQuery version of Sikon's original version
+ * @author 01miki10
+ */
+
+function fillEditSummariesVisualEditor() {
+	mw.hook( 've.activationComplete' ).add(function () {
+
+		$.get( mw.config.get( 'wgScript' ), { title: 'Template:Stdsummaries', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+			var	$summaryOptionsList,
+				$summaryLabel = $( '.ve-ui-summaryPanel' ),
+				$summaryInput = $( '.ve-ui-summaryPanel-summaryInputField > input' ),
+				lines = data.split( '\n' ),
+				$wrapper = $( '<div>').addClass( 'edit-widemode-hide' ).text( 'Varsayılan özetler: ' );
+
+			$summaryOptionsList = $( '<select />' ).attr( 'id', 'stdEditSummaries' ).change( function() {
+				var editSummary = $( this ).val();
+				if ( editSummary !== '' ) {
+					$summaryInput.val( editSummary );
+				}
+			} );
+
+			for ( var i = 0; i < lines.length; i++ ) {
+				var editSummaryText = ( lines[i].indexOf( '-- ' ) === 0 ) ? lines[i].substring(3) : '';
+				$summaryOptionsList.append( $( '<option>' ).val( editSummaryText ).text( lines[i] ) );
+			}
+
+			$summaryLabel.prepend( $wrapper.append( $summaryOptionsList ) );
+		} );
+	} );
+}
+
+/**
+ * Hides the link to parent pages from subpages if {{HideContentSub}} is included
+ **/
+function hideContentSub() {
+	if ( mw.config.get( 'wgNamespaceNumber' ) === 0 || $( '#hideContentSub' ).length > 0 ) {	
+		if ($( '.page-header__page-subtitle' ).text().substring(0, 1) === "<") {
+            var	$wikiaHeader = $( '.page-header__page-subtitle' ),
+                $backToPageLink;
+            if ( mw.config.get( 'wgNamespaceNumber' ) % 2 === 1 ) {
+                // ugly hack to only leave back to page link on talk pages
+                $backToPageLink = $wikiaHeader.find( 'a[accesskey="c"]' );
+                $wikiaHeader.html( '' ).append( $backToPageLink );
+            } else {
+                $wikiaHeader.hide();
+            }
+        }
+	}
+}
+
+/**
+ * jQuery version of Sikon's fillPreloads
+ * @author Grunny
+ */
+function fillPreloads() {
+
+	if( !$( '#lf-preload' ).length ) {
+		return;
+	}
+
+	$( '#lf-preload' ).attr( 'style', 'display: block' );
+
+	$.get( wgScript, { title: 'Template:Stdpreloads', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+		var	$preloadOptionsList,
+			lines = data.split( '\n' );
+
+		$preloadOptionsList = $( '<select />' ).attr( 'id', 'stdSummaries' ).change( function() {
+			var templateName = $( this ).val();
+			if ( templateName !== '' ) {
+				templateName = 'Template:' + templateName + '/preload';
+				templateName = templateName.replace( ' ', '_' );
+				$.get( wgScript, { title: templateName, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+					data = data.replace(/<includeonly>(\n)?|(\n)?<\/includeonly>|\s*<noinclude>[^]*?<\/noinclude>/g, '');
+					insertAtCursor( document.getElementById( 'wpTextbox1' ), data );
+				} );
+			}
+		} );
+
+		for ( var i = 0; i < lines.length; i++ ) {
+			var templateText = ( lines[i].indexOf( '*' ) === 0 ) ? lines[i].substring(1) : '';
+			$preloadOptionsList.append( $( '<option>' ).val( templateText ).text( lines[i] ) );
+		}
+
+		$( '#lf-preload-cbox' ).html( $preloadOptionsList );
+	} );
+
+	$( '#lf-preload-pagename' ).html( '<input type="text" class="textbox" />' );
+	$( '#lf-preload-button' ).html( '<input type="button" class="button" value="Insert" onclick="doCustomPreload()" />' );
+
+}
+
+function doCustomPreload() {
+	var value = $( '#lf-preload-pagename > input' ).val();
+	value = value.replace( ' ', '_' );
+	$.get( wgScript, { title: value, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+		insertAtCursor( document.getElementById( 'wpTextbox1' ), data );
+	} );
+}
+
+function insertAtCursor(myField, myValue) {
+	//IE support
+	if (document.selection)
+	{
+		myField.focus();
+		sel = document.selection.createRange();
+		sel.text = myValue;
+	}
+	//MOZILLA/NETSCAPE support
+	else if(myField.selectionStart || myField.selectionStart == '0')
+	{
+		var startPos = myField.selectionStart;
+		var endPos = myField.selectionEnd;
+		myField.value = myField.value.substring(0, startPos)
+		+ myValue
+		+ myField.value.substring(endPos, myField.value.length);
+	}
+	else
+	{
+		myField.value += myValue;
+	}
+}
+
+/* Şablon:RailModule */
+window.AddRailModule = [{prepend: true}];
+/* Şablon:RailModule final */
+
+$( fillEditSummaries );
+$( fillEditSummariesVisualEditor );
+$( fillPreloads );

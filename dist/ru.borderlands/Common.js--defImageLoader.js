@@ -1,7 +1,8 @@
 (function ($) {
     //deferred image loader
     //maintainer user:fngplg
-    var nbDebug = $.getUrlVar('debug');
+	var urlVars = new URLSearchParams(location.search);
+    var nbDebug = urlVars.get('debug') || urlVars.get('debug1');
     var nbCollapseSiblings = true; //group logic
     var nmainClassName = 'ndeferred';
     var ncontentClassName = 'ndcontent';

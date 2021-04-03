@@ -1,8 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-// Duplicate image list
-importScriptPage('DupImageList/code.js', 'dev'); 
-
 /* --- Tooltips --- */
 // default setting to turn tooltips on
 var tooltipsOn = true;
@@ -117,117 +114,6 @@ $(function() {
 tooltipsInit($(article));
 });
 
-/* --- Calculate PXP --- */
-
-function xp_at_level(level)
-{
-    if (level < 2)
-        return 0;
-
-    if (level == 2)
-        return 1000;
-
-    if (level <= 126)
-        return Math.ceil((Math.pow((level + 5), 5) - Math.pow(6, 5)) / 9.0);
-
-    return Math.round((Math.pow((level + 5), 5) - Math.pow(6, 5)) / 9.0);
-}
-
-function xp_to_next_level(level)
-{
-    if (level < 0 || level > 274)
-        return 0;
-
-    return xp_at_level(level + 1) - xp_at_level(level);
-}
-
-function percent_xp_to_next_level(level, percent)
-{
-    return Math.floor(xp_to_next_level(level) * percent / 100.0);
-}
-
-function format_xp(mystring)
-{
-    var result;
-    var pos;
-
-    mystring += '';
-    if (mystring.length <= 3) {
-        result = mystring;
-    } else {
-        var count = 0;
-        result = "";
-        for (pos = mystring.length - 3; pos >= 0 && count < 20; pos -= 3, count++) {
-            if (result.length == 0)
-                result = mystring.substr(pos, 3);
-            else
-                result = mystring.substr(pos, 3) + "," + result;
-        }
-        if (pos > -3)
-            result = mystring.substr(0, 3+pos) + "," + result;
-    }
-
-    return result;
-}
-
-function calc_and_display_pxp(index)
-{
-    var level = parseInt(document.getElementById("pxp_level_input_" + index).value);
-    var percent = parseFloat(document.getElementById("pxp_percent_input_" + index).value);
-
-    document.getElementById("pxp_result_" + index).innerHTML = " = " + format_xp(percent_xp_to_next_level(level, percent));
-
-    return false;
-}
-
-function hasClass(element, className)
-{
-    return element.className.indexOf(className) != -1;
-}
-
-function createPXPCalculationForms()
-{
-    var paras = document.getElementsByTagName("p");
-    var offset = 0;
-
-    for (var index = 0; index < paras.length; index++) {
-        if (hasClass(paras[index], "calc-pxp")) {
-            var form = document.createElement("form");
-            var input1 = document.createElement("input");
-            var input2 = document.createElement("input");
-            var input3 = document.createElement("input");
-            var span = document.createElement("span");
-
-            form.setAttribute("onSubmit", "return calc_and_display_pxp(" + offset + ");");
-            input1.setAttribute("size", "6");
-            input1.setAttribute("value", "200");
-            input1.setAttribute("id", "pxp_level_input_" + offset);
-
-            input2.setAttribute("size", "6");
-            input2.setAttribute("value", "10");
-            input2.setAttribute("id", "pxp_percent_input_" + offset);
-
-            input3.setAttribute("type", "button");
-            input3.setAttribute("value", "Calculate PXP");
-            input3.setAttribute("onclick", "javascript:calc_and_display_pxp(" + offset + ");");
-
-            span.setAttribute("id", "pxp_result_" + offset);
-            span.innerHTML = "??? xp";
-
-            form.appendChild(document.createTextNode("Level: "));
-            form.appendChild(input1);
-            form.appendChild(document.createTextNode(" Percent: "));
-            form.appendChild(input2);
-            form.appendChild(input3);
-            form.appendChild(span);
-
-            paras[index].appendChild(form);
-            offset++;
-        }
-    }
-}
-
-addOnloadHook(createPXPCalculationForms);
 
 /** Collapsible tables *********************************************************
  *
@@ -318,7 +204,115 @@ function createCollapseButtons() {
                 }
         }
 }
- 
+
+
+/* --- Calculate PXP --- */
+
+function xp_at_level(level)
+{
+    if (level < 2)
+        return 0;
+
+    if (level == 2)
+        return 1000;
+
+    if (level <= 126)
+        return Math.ceil((Math.pow((level + 5), 5) - Math.pow(6, 5)) / 9.0);
+
+    return Math.round((Math.pow((level + 5), 5) - Math.pow(6, 5)) / 9.0);
+}
+
+function xp_to_next_level(level)
+{
+    if (level < 0 || level > 274)
+        return 0;
+
+    return xp_at_level(level + 1) - xp_at_level(level);
+}
+
+function percent_xp_to_next_level(level, percent)
+{
+    return Math.floor(xp_to_next_level(level) * percent / 100.0);
+}
+
+function format_xp(mystring)
+{
+    var result;
+    var pos;
+
+    mystring += '';
+    if (mystring.length <= 3) {
+        result = mystring;
+    } else {
+        var count = 0;
+        result = "";
+        for (pos = mystring.length - 3; pos >= 0 && count < 20; pos -= 3, count++) {
+            if (result.length == 0)
+                result = mystring.substr(pos, 3);
+            else
+                result = mystring.substr(pos, 3) + "," + result;
+        }
+        if (pos > -3)
+            result = mystring.substr(0, 3+pos) + "," + result;
+    }
+
+    return result;
+}
+
+function calc_and_display_pxp(index)
+{
+    var level = parseInt($('#pxp_level_input_' + index).val());
+    var percent = parseFloat($('#pxp_percent_input_' + index).val());
+
+    $('#pxp_result_' + index).html(' = ' + format_xp(percent_xp_to_next_level(level, percent)));
+
+    return false;
+}
+
+function createPXPCalculationForms()
+{
+    $('p.calc-pxp').each(function(offset) {
+        var form = $("<div>");
+        var input1 = $("<input>");
+        var input2 = $("<input>");
+        var input3 = $("<input>");
+        var span = $("<span>");
+        form.data('pxp-form',offset);
+
+        input1.attr("size", "6");
+        input1.val('200');
+        input1.attr("id", "pxp_level_input_" + offset);
+
+        input2.attr("size", "6");
+        input2.val("10");
+        input2.attr("id", "pxp_percent_input_" + offset);
+
+        input3.attr("type", "submit");
+        input3.val("Calculate PXP");
+
+        span.attr("id", "pxp_result_" + offset);
+        span.html("??? xp");
+
+        form.append("Level: ");
+        form.append(input1);
+        form.append(" Percent: ");
+        form.append(input2);
+        form.append(input3);
+        form.append(span);
+        form.find('input').on('change click keyup',function(event) {
+            var index = parseInt($(this).parent().data('pxp-form'));
+            var level = parseInt($('#pxp_level_input_' + index).val());
+            var percent = parseFloat($('#pxp_percent_input_' + index).val());
+
+            $('#pxp_result_' + index).html(' = ' + format_xp(percent_xp_to_next_level(level, percent)));
+        });
+        $(this).append(form);
+    });
+}
+
+$(createPXPCalculationForms);
+
+
 /** Test if an element has a certain class **************************************
  *
  * Description: Uses regular expressions and caching for better performance.

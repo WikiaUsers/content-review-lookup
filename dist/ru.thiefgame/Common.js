@@ -1,138 +1,5 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
 
-// WAM Log
-
-window.railWAM = {
-    logPage:"thiefgame4:WAM Log"
-};
-
-// Дополнительные кнопки панели редактирования
- 
-   if ( mwCustomEditButtons ) 
-     mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://vignette.wikia.nocookie.net/central/images/1/16/Button_reflink_alternate.png/revision/latest?cb=20080220213803",
-    "speedTip": "Добавить сноску",
-    "tagOpen": "<ref>",
-    "tagClose": "</ref>",
-    "sampleText": "Название сноски"
-};
- 
-  mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "https://vignette.wikia.nocookie.net/central/images/f/f2/Ref_name_button.png/revision/latest?cb=20131205151742",
-    "speedTip": "Повторная сноска",
-    "tagOpen": "<ref name=Название>",
-    "tagClose": "</ref>",
-    "sampleText": "Название повторной сноски"
-};
-
-     mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "https://vignette.wikia.nocookie.net/central/images/c/cb/Button_wikipedia.png/revision/latest?cb=20081020115941",
-    "speedTip": "Ссылка на статью в Википедии",
-    "tagOpen": "[[wikipedia:ru:|",
-    "tagClose": "]]",
-    "sampleText": ""
-};
- 
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/9/9e/Btn_toolbar_gallery.png",
-    "speedTip": "Добавить галерею",
-    "tagOpen": "<gallery>",
-    "tagClose": "</gallery>",
-    "sampleText":""
-}; 
- 
-     mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "https://vignette.wikia.nocookie.net/central/images/3/3b/Button_template_alt.png/revision/latest?cb=20070329065451",
-    "speedTip": "Добавить шаблон",
-    "tagOpen": "{{",
-    "tagClose": "}}",
-    "sampleText": "Название шаблона"
-};
- 
-     mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/0/05/Button_Anführung.png",
-    "speedTip": "Добавить цитату",
-    "tagOpen": "{{Цитата|",
-    "tagClose": "||}}",
-    "sampleText": ""
-};
- 
-
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/0/0e/Button_acute_accent.png",
-    "speedTip": "Ударение",
-    "tagOpen": "́",
-    "tagClose": "",
-    "sampleText": ""
-};
- 
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "https://vignette.wikia.nocookie.net/central/images/5/56/Button_big.png/revision/latest?cb=20081020113952",
-    "speedTip": "Крупный шрифт",
-    "tagOpen": "<big>",
-    "tagClose": "</big>",
-    "sampleText": ""
-};
- 
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "https://vignette.wikia.nocookie.net/central/images/5/58/Button_small.png/revision/latest?cb=20081020113836",
-    "speedTip": "Мелкий шрифт",
-    "tagOpen": "<small>",
-    "tagClose": "</small>",
-    "sampleText": ""
-};
- 
-  mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "https://vignette.wikia.nocookie.net/central/images/f/fd/Button_underline.png/revision/latest?cb=20081020114112",
-    "speedTip": "Подчёркнутый текст",
-    "tagOpen": "<u>",
-    "tagClose": "</u>",
-    "sampleText": ""
-};
- 
-  mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "https://vignette.wikia.nocookie.net/central/images/c/c9/Button_strike.png/revision/latest?cb=20070324060207",
-    "speedTip": "Зачёркнутый текст",
-    "tagOpen": "<s>",
-    "tagClose": "</s>",
-    "sampleText": ""
-};
- 
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "https://vignette.wikia.nocookie.net/central/images/d/d5/Button_noinclude.png/revision/latest?cb=20070329065148",
-    "speedTip": "Скрыть категорию шаблона в статьях",
-    "tagOpen": "<noinclude>",
-    "tagClose": "</noinclude>",
-    "sampleText": "На место этого текста, вставьте категорию"
-};
- 
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/1/13/Button_enter.png",
-    "speedTip": "Перенос строки",
-    "tagOpen": "<br>",
-    "tagClose": "",
-    "sampleText": ""
-};
- 
- 
- 
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "https://vignette.wikia.nocookie.net/central/images/7/74/Button_comment.png/revision/latest?cb=20070324060240",
-    "speedTip": "Скрытый комментарий",
-    "tagOpen": "<!--",
-    "tagClose": "-->",
-    "sampleText": "Добавьте комментарий"
-};
-
-
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "https://vignette.wikia.nocookie.net/thiefgame/images/1/1f/TH_KS_button.png/revision/latest?cb=20200206235505&path-prefix=ru",
-    "speedTip": "Шаблон красной строки",
-    "tagOpen": "{{КС|",
-    "tagClose": "}}",
-    "sampleText": ""
-};
-
 //  ================================
 //      Custom preload templates
 //  ================================
@@ -145,7 +12,7 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
     each syntax is loaded by default from the "/preload" subpage of the
     template.
 */
-
+/*
 (function() {
     'use strict';
     var mwc = mw.config.get([
@@ -254,9 +121,6 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
         i18n = i18nData;
         i18n.useUserLang();
         $main = $('<div>', { id: 'preload-templates' });
-        /*$main.append($('<h3>', {
-            text: msg('preload')
-        }));*/
         $help = $('<div>', {
             id: 'pt-help'
         }).append($('<a>', {
@@ -373,7 +237,7 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
         });
     });
 
-})();
+})();*/
 
 // Конец скрипта Custom preload templates
 /*-----------------------------------------*/
@@ -411,12 +275,12 @@ function setupModule(data) {
         '<table>' +
             '<tbody>' +
                 '<tr>' +
-                    '<td style="vertical-align:middle; width:100%;">' +
+                    '<td style="vertical-align:middle; width:auto;">' +
                         '<p class="chat-name">' +
                             'Хромой Буррик — чат нашей вики в мессенджере <a href="https://ru.wikipedia.org/wiki/Discord" target="_blank">Discord</a>' +
                         '</p>' +
                     '</td>' +
-                      '<td style="vertical-align:middle; width:90px;">' +
+                      '<td style="vertical-align:middle; width:100px;">' +
                         '<center>' +
                             '<img alt="thiefgame4-wiki" src="https://vignette.wikia.nocookie.net/thiefgame/images/5/55/G02.png/revision/latest?cb=20190217230734&format=original&path-prefix=ru" class="discord-server-icon">' +
                             '<span>В сети: <span id="discord-counter">?</span></span>' +
@@ -484,3 +348,6 @@ window.pPreview = $.extend(true, window.pPreview, {
 
     },
 });
+
+// prevents existing tags from being hidden
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };

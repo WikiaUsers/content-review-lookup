@@ -2,6 +2,7 @@ importArticles({
     type: "script",
     articles: [
         "MediaWiki:Wikia.js/Slider.js",
+        'u:dev:MediaWiki:SyntaxHighlight.js'
     ]
 });
 

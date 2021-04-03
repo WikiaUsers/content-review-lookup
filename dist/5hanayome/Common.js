@@ -59,10 +59,10 @@ window.BackToTopModern = true;
                 return;
  
             var Options = {
-                    '{{No license}}': 'Unlicensed image',
-                    '{{No rationale}}': 'No Fairuse info',
-                    '{{Unused}}': 'Unused image',
-                    '{{Poor filename}}': 'Poor name'
+                    '\{\{No license}}': 'Unlicensed image',
+                    '\{\{No rationale}}': 'No Fairuse info',
+                    '\{\{Unused}}': 'Unused image',
+                    '\{\{Poor filename}}': 'Poor name'
                 },
                 tempOptStr = '';
  
@@ -246,7 +246,7 @@ var oggPlayerButtonOnly = false;
 }(this.jQuery));
 
 /* Config for [[w:c:dev:PreloadFileDescription]] */
-PFD_template = '{{File information\n| description = \n| source = \n| portion = \n| purpose = \n| other info = \n}}';
+PFD_template = '\{\{File information\n| description = \n| source = \n| portion = \n| purpose = \n| other info = \n}}';
 importArticles({
     type: 'script',
     articles: [
@@ -394,7 +394,7 @@ $('#slider1').click(function(){
 		$('#slider4arrow').css({opacity: 0, visibility: "visible"}).animate({opacity: 1.0}, 500);
 		$('#slider1').removeClass('closed').addClass('animated').animate({ width: "595px" }, "normal", "linear", function() {
 			$('#slider1').removeClass('animated').dequeue();
-			$('#slider1').addClass('opened').addClass('linked'); b
+			$('#slider1').addClass('opened').addClass('linked');
 			$('#slider2').removeClass('linked');
 			$('#slider3').removeClass('linked');
 			$('#slider4').removeClass('linked');
@@ -638,7 +638,7 @@ function autoScroll() {
  
 //Turns off autoscroll on hover
 $('#sliderframe').on("mouseenter",function(){
-	scrolltimer = window.clearInterval(scrolltimer)
+	scrolltimer = window.clearInterval(scrolltimer);
 }).on("mouseleave",function(){
 	scrolltimer = window.setInterval(autoScroll, 6000);
 });

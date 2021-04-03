@@ -8,9 +8,9 @@ $(document).ready(function() {
 
     var list = nav.append('<ul class="WikiaMenuElement"></ul>');
 
-    list.append('<li></li>').append('<a href="/wiki/Awesomenauts_Wiki?action=history" accesskey="h" data-id="history" id="ca-history">PC</a>').click(pcClicked);
+    list.append('<li></li>').append('<a href="/Awesomenauts_Wiki?action=history" accesskey="h" data-id="history" id="ca-history">PC</a>').click(pcClicked);
 
-    list.append('<li></li>').append('<a href="/wiki/Special:MovePage/Awesomenauts_Wiki" accesskey="m" data-id="move" id="ca-move">Console</a>').click(consoleClicked);
+    list.append('<li></li>').append('<a href="/Special:MovePage/Awesomenauts_Wiki" accesskey="m" data-id="move" id="ca-move">Console</a>').click(consoleClicked);
 
     function pcClicked() {
         setCookie("WikiPlatform", "PC", 365);

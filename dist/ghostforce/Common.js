@@ -2,13 +2,6 @@
 AjaxRCRefreshText = 'Auto-refresh';
 ajaxSpecialPages = ["WikiActivity", "Recentchanges"];
  
-/* Spoiler alert */
-window.SpoilerAlert = {
-    isSpoiler: function () {
-        return -1 != $.inArray('Spoiler', wgCategories);
-    }
-};
- 
 /* User Tags */
 window.UserTagsJS = {
     tags: {
@@ -41,7 +34,9 @@ if (mw.config.get('wgCanonicalSpecialPageName') == 'WikiActivity' || mw.config.g
  * by: The 888th Avatar, adapted to new header by Thailog
  */
 $(function() {
-    if( $( '.wds-community-header' ).length ) {
+	if ( mw.config.get( 'wgVersion' ) !== '1.19.24' && $( '#title-eraicons' ).length ) {
+        $( '.page-header__contribution > div' ).first().append( $( '#title-eraicons' ).show() );
+    } else if( $( '.wds-community-header' ).length ) {
         $( '#PageHeader' ).prepend(
             $( '#icons' ).attr( 'style', 'position: absolute; right: 65px;' )
         );

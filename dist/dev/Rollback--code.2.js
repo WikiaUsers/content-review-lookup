@@ -1,4 +1,4 @@
 importArticle({
     type: 'script',
-    article: 'MediaWiki:Rollback/code.js'
+    article: 'u:dev:MediaWiki:Rollback/code.js'
 });

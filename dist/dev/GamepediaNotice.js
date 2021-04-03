@@ -1,10 +1,6 @@
-require([
-    'jquery',
-    'mw',
-    'wikia.window'
-], function( $, mw, window ) {
+(function() {
     // Double-loading prevention
-    if ( $('#gamepedia_notice').exists() || window.GamepediaNoticeLoaded ) return;
+    if ( $('#gamepedia_notice').length || window.GamepediaNoticeLoaded ) return;
     window.GamepediaNoticeLoaded = true;
 
     // Load CSS and dependencies
@@ -58,4 +54,4 @@ require([
     mw.hook('dev.i18n').add(function(i18n) {
         i18n.loadMessages('GamepediaNotice').then(init);
     });
-});
+})();

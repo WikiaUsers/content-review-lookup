@@ -18,3 +18,5 @@ $(function () {
 });
  
 /* </pre> */
+
+importScriptPage('ShowHide/code.js', 'dev');

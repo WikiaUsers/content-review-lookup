@@ -94,7 +94,7 @@
          * calling this method as a callback
          */
         preload: function() {
-            if (++this._loadCounter === 3) {
+            if (++this._loadCounter === 5) {
                 window.dev.i18n.loadMessages('I18nEdit').done($.proxy(this.init, this));
             }
         },
@@ -277,7 +277,7 @@
                 this.ui({
                     type: 'a',
                     attr: {
-                        href: mw.util.wikiGetlink('Special:BlankPage/I18nEdit')
+                        href: mw.util.getUrl('Special:BlankPage/I18nEdit')
                     },
                     text: this.msg('search-title')
                 }),
@@ -469,7 +469,7 @@
          */
         showLanguageModal: function(e) {
             e.preventDefault();
-            $.showCustomModal(this.escaped('add-new-language'), this.ui({
+            dev.showCustomModal(this.escaped('add-new-language'), this.ui({
                 type: 'div',
                 attr: {
                     'class': 'I18nEditModal'
@@ -518,7 +518,7 @@
                         id: 'I18nEditModalButtonClose',
                         message: this.escaped('close'),
                         handler: function() {
-                            $('#I18nEditNewLanguageModal').closeModal();
+                            dev.showCustomModal.closeModal($('#I18nEditNewLanguageModal'));
                         }
                     },
                     {
@@ -589,7 +589,7 @@
                 this.ui({
                     type: 'a',
                     attr: {
-                        href: mw.util.wikiGetlink('Special:BlankPage/I18nEdit')
+                        href: mw.util.getUrl('Special:BlankPage/I18nEdit')
                     },
                     text: this.msg('search-title')
                 }),
@@ -597,7 +597,7 @@
                 this.ui({
                     type: 'a',
                     attr: {
-                        href: mw.util.wikiGetlink('Special:BlankPage/I18nEdit/' + this.page.replace(/ /g, '_'))
+                        href: mw.util.getUrl('Special:BlankPage/I18nEdit/' + this.page.replace(/ /g, '_'))
                     },
                     text: this.page
                 }),
@@ -728,7 +728,7 @@
                 this.ui({
                     type: 'a',
                     attr: {
-                        href: mw.util.wikiGetlink('Special:BlankPage/I18nEdit')
+                        href: mw.util.getUrl('Special:BlankPage/I18nEdit')
                     },
                     text: this.msg('search-title')
                 }),
@@ -736,7 +736,7 @@
                 this.ui({
                     type: 'a',
                     attr: {
-                        href: mw.util.wikiGetlink('Special:BlankPage/I18nEdit/' + this.page.replace(/ /g, '_'))
+                        href: mw.util.getUrl('Special:BlankPage/I18nEdit/' + this.page.replace(/ /g, '_'))
                     },
                     text: this.page
                 }),
@@ -1032,14 +1032,14 @@
             this.api.postWithEditToken({
                 action: 'edit',
                 title: 'MediaWiki:Custom-' + this.page + '/i18n.json',
-                text: '/* <syntaxhighlight lang="javascript"> */\n' + JSON.stringify(messages, null, 4),
+                text: JSON.stringify(messages, null, 4),
                 summary: '[I18nEdit] ' + (
                     $('#I18nEditSummary').val() ||
                     this.i18n.msg('summary', this.lang).plain()
                 ),
                 minor: true,
                 bot: true
-            }).done($.proxy(this.cbSave, this));
+            }).then($.proxy(this.cbSave, this));
         },
         /**
          * Callback after the page has been saved
@@ -1047,10 +1047,10 @@
          */
         cbSave: function(d) {
             if(d.error) {
-                new BannerNotification(this.escaped('error') + ': ' + d.error.code, 'error').show();
+                new dev.banners.BannerNotification(this.escaped('error') + ': ' + d.error.code, 'error').show();
             } else {
                 this.storage.remove('I18nEdit/' + this.page);
-                new BannerNotification(this.escaped('success'), 'confirm').show();
+                new dev.banners.BannerNotification(this.escaped('success'), 'confirm').show();
                 setTimeout($.proxy(function() {
                     window.location.pathname = '/wiki/Special:Blankpage/I18nEdit/' + this.page;
                 }, this), 2000);
@@ -1093,7 +1093,9 @@
             type: 'script',
             articles: [
                 'u:dev:MediaWiki:I18n-js/code.js',
-                'u:dev:MediaWiki:UI-js/code.js'
+                'u:dev:MediaWiki:UI-js/code.js',
+                'u:dev:MediaWiki:BannerNotification.js',
+                'u:dev:MediaWiki:ShowCustomModal.js',
             ]
         },
         {
@@ -1106,5 +1108,7 @@
     // Run the main when scripts loads
     mw.hook('dev.ui').add($.proxy(I18nEdit.preload, I18nEdit));
     mw.hook('dev.i18n').add($.proxy(I18nEdit.preload, I18nEdit));
+    mw.hook('dev.banners').add($.proxy(I18nEdit.preload, I18nEdit));
+    mw.hook('dev.showCustomModal').add($.proxy(I18nEdit.preload, I18nEdit));
     mw.loader.using(['mediawiki.api.edit']).then($.proxy(I18nEdit.preload, I18nEdit));
 })();

@@ -2,7 +2,7 @@
  * !mods.js
  *
  * Ping all chat moderators present in chat
- * @author: [[w:User:Slyst]]
+ * @author: [[w:User:.jun]]
  */
 
 $(function() {
@@ -12,7 +12,7 @@ $(function() {
     ]);
     if (
         config.wgCanonicalSpecialPageName !== 'Chat' ||
-        !/(sysop|chatmoderator|helper|vstf|staff|threadmoderator|wiki-manager)/.test(config.wgUserGroups.join()) ||
+        !/(sysop|chatmoderator|helper|staff|threadmoderator|wiki-manager|soap)/.test(config.wgUserGroups.join()) ||
         !window.mainRoom ||
         window['!modsLoaded']
     ) {

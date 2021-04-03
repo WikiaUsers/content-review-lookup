@@ -47,7 +47,7 @@ window.ajaxPages = new Array(
 window.ajaxRefresh = 30000;
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page over time';
-window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/dev/images/b/ba/Snake_throbber_dark-bg.gif/revision/latest?cb=20140519203615';
+window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/deathbattlefanon/images/d/de/Ajax-loader.gif/revision/latest?cb=20200828094018';
 
 /****** Import new buttons in specific circumstances ******/
 //-------------------------------------------------------------
@@ -150,7 +150,7 @@ window.UserTagsJS = {
         // Add tags to users
        
         custom: {
-	        'Withersoul 235': ['founder', 'hbureaucrat', 'coder', 'ptbr'],
+	        'Withersoul 235': ['founder', 'hbureaucrat', 'coder'],
 	        'RedFurnace': ['exburo']
 	},
 	   
@@ -237,10 +237,10 @@ window.UserTagsJS = {
         ontrial: {
             u: 'On Repent Trial',
             link: 'Minecraft Animation Wiki:Repent Trials',
-            title: 'Ths user used to be banned, but is considered to be \
-            forgiven and allowed back into the community. They are \
-            therefore on a trial to prove that they are worthy of it \
-            and have truly changed for the better.'
+            title: 'Ths user used to be banned, but is considered to be' +
+            ' forgiven and allowed back into the community. They are' +
+            ' therefore on a trial to prove that they are worthy of it' +
+            ' and have truly changed for the better.'
         },
         
         'hbureaucrat': { 
@@ -250,8 +250,8 @@ window.UserTagsJS = {
         
        'coder': {
            u: 'Wiki Coder',
-           title: "This user manages the wiki's templates, CSS, Lua and \
-           JavaScript."
+           title: "This user manages the wiki's templates, CSS, Lua and" +
+           " JavaScript."
        },
        
        'tagalog': {
@@ -266,41 +266,41 @@ window.UserTagsJS = {
        
        'founder' : {
            u: 'Founder',
-           title: 'This user started the Minecraft Animation Wiki, \
-           all the way back in 2014.',
+           title: 'This user started the Minecraft Animation Wiki,' +
+           ' all the way back in 2014.',
            order: -1/0
        },
        
        'blocked': {
            u: 'Banned',
-           title: "This user misbehaved on this wiki, didn't follow its \
-           policies or is a sockpuppet of a user who did one of the \
-           aforementioned. They have therefore been kicked out and reduced \
-           to usage of a read-only mode.",
+           title: "This user misbehaved on this wiki, didn't follow its" + 
+           " policies or is a sockpuppet of a user who did one of the" +
+           " aforementioned. They have therefore been kicked out and reduced" + 
+           " to usage of a read-only mode.",
            order: -1/0
        },
        
        'bannedfromchat': {
            u: 'Chat-banned',
-           title: "This user misbehaved in this wiki's chatroom and didn't \
-           follow its rules. They are now denied access to it, but can \
-           still contribute to the wiki. This tag also appears when a user \
-           is blocked from the wiki in general without being chatbanned first.",
+           title: "This user misbehaved in this wiki's chatroom and didn't" +
+           " follow its rules. They are now denied access to it, but can" +
+           " still contribute to the wiki. This tag also appears when a user" +
+           " is blocked from the wiki in general without being chatbanned first.",
            order: 1
        },
        
        'moderator': {
            u: 'Moderator',
-           title: 'This user is a general moderator of the wiki.\
-           They have all the permissions of the Chat, Content and \
-           Discussions Moderator positions.',
+           title: 'This user is a general moderator of the wiki.' +
+           " They have all the permissions of the Chat, Content and" +
+           " Discussions Moderator positions.",
            order: 3
        },
        
        'exburo': {
            u: 'Former Bureaucrat',
-           title: 'This user has been a bureaucrat in the past, but has left, \
-                   resigned or was demoted.',
+           title: 'This user has been a bureaucrat in the past, but has left,' +
+                   ' resigned or was demoted.',
            order: 1
        },
        
@@ -335,7 +335,8 @@ UserTagsJS.modules.mwGroups = Array(
     
     'bannedfromchat',
     //'autoconfirmed',
-    'emailconfirmed'
+    'emailconfirmed',
+    'rollback'
 );
 
 //=======================

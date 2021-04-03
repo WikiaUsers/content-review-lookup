@@ -183,3 +183,73 @@ mw.hook("wikipage.content").add(function(content) {
         }
     }
 });
+
+/********************************** Monster List ******************************/
+// Ce code permet de filter les résultats sur une page de type "Liste des
+// monstre". Réalisé par [[Utilisateur:Hutskuchi|Hutskuchi]] et 
+// [[Utilisateur:Houmgaor|Houmgaor]]
+
+// Remarque : pour un bon fonctionnement du script, vous devez ajouter le 
+// code CSS associé
+var monsterList = {
+	main: $(function() {
+		// Filtre par espèce
+		$('.monster-filter-select').html(
+			'<select>\
+				<option value="Tout">Tout</option>\
+				<option value="Herbivore">Herbivore</option>\
+				<option value="Lynien">Lynien</option>\
+				<option value="Drake ailé">Drake ailé</option>\
+				<option value="Neopteron">Neopteron</option>\
+				<option value="Carapaceon">Carapaceon</option>\
+				<option value="Temnoceran">Temnoceran</option>\
+				<option value="Amphibien">Amphibien</option>\
+				<option value="Leviathan">Leviathan</option>\
+				<option value="Bête à crocs">Bête à crocs</option>\
+				<option value="Wyverne volante">Wyverne volante</option>\
+				<option value="Wyverne rapace">Wyverne rapace</option>\
+				<option value="Wyverne de terre">Wyverne de terre</option>\
+				<option value="Wyverne à crocs">Wyverne à crocs</option>\
+				<option value="Wyverne aquatique">Wyverne aquatique</option>\
+				<option value="Wyverne serpent">Wyverne serpent</option>\
+				<option value="Dragon ancien">Dragon ancien</option>\
+				<option value="Relique">Relique</option>\
+				<option value="???">???</option>\
+				<option value="Inclassable">Inclassable</option>\
+			</select>'
+		);
+		
+		// Filtre par nom
+		$('.monster-filter-search').html(
+			'<input type="search" name="q" placeholder="Rechercher..."></input>'
+		);
+		
+		// Add event hook
+		$('.monster-filter-search input').keyup(monsterList.listFiltering);
+		$('.monster-filter-select select').mouseup(monsterList.listFiltering);
+	}),
+	
+	// Filtrage des monstres
+	listFiltering: function () {
+		var filterSpecies, filterName, list, regex, i, name, species;
+	    filterSpecies = $('.monster-filter-select select').find(':selected').text();
+	    filterName = $('.monster-filter-search input').val().trim();
+	    list = $('.monster-list td');
+	    regex = new RegExp(filterName.toLowerCase(),"g");
+	    
+	    for (i = 0; i < list.length; i++) {
+	        name = $('a', list[i]).attr("title");
+	        species = $('span', list[i]).attr("title");
+	        
+	        if (name) {
+	            if (filterSpecies != species && filterSpecies != "Tout") {
+	            	$(list[i]).addClass('filtered');
+	            } else if (!(name.toLowerCase().match(regex))) {
+	            	$(list[i]).addClass('filtered');
+	            } else {
+	            	$(list[i]).removeClass('filtered');   
+	            }
+	        }
+	    }
+	},
+};

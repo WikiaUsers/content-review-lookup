@@ -4,6 +4,9 @@
  * Author:      KockaAdmiralac <1405223@gmail.com>
  * Version:     v1.2
  */
+
+// Used files: [[File:Circle throbber.gif]]
+
 (function() {
     'use strict';
     var config = mw.config.get([

@@ -3,7 +3,7 @@
  * ListUsers.js
  *
  * Enumerates all users in a certain group
- * @author: [[w:User:Fubuki風吹]]
+ * @author: [[w:User:.jun]]
  */
 
 $(function() {
@@ -34,7 +34,7 @@ $(function() {
         limit: 10,
         active: true
     }, window.listUsers),
-        gmgroups = ['bot', 'sysop', 'bureaucrat', 'staff', 'vstf', 'helper', 'rollback', 'chatmoderator'];
+        gmgroups = ['bot', 'sysop', 'bureaucrat', 'staff', 'soap', 'helper', 'rollback', 'chatmoderator'];
     function createList (group, au) {
         var html = '';
         for (var i in au) {
@@ -57,13 +57,15 @@ $(function() {
     function getUsers(group) {
         $.get(mw.util.wikiScript('api'), {
             action: 'query',
-            list: 'groupmembers',
+            list: 'allusers|groupmembers',
+            augroup: group,
+            aulimit: listUsers.limit,
             gmgroups: group,
             gmlimit: listUsers.limit,
             format: 'json'
         }, function(data) {
             $('.listusers#' + group).html('<ul></ul>');
-            var au = data.users;
+            var au = data.users || data.query && data.query.allusers;
             if (au[0].id == 0) {
                 $('.listusers#' + group).html('No users found in the ' + group + ' group.');
             } else {

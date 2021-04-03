@@ -5,7 +5,7 @@
  * @description     Switches WikiActivity and RC links.
  */
 (function () {
-    if (window.RCLinkLoaded) {
+    if (window.RCLinkLoaded || mw.config.get('wgVersion') !== '1.19.24') {
         return;
     }
     window.RCLinkLoaded = true;

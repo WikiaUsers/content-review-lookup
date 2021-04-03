@@ -14,7 +14,7 @@ function queryString(p) {
 }
 
 function customCharInsert() {
-    if (!window.wgCustomCharInsert || !wgUserName) {
+    if (!window.wgCustomCharInsert || !mw.config.get('wgUserName')) {
         return;
     }
     var spec = document.getElementById('specialchars');
@@ -36,7 +36,7 @@ function customCharInsert() {
     spec.appendChild(userp);
 }
 if (queryString('action') == 'edit' || queryString('action') == 'submit') {
-    addOnloadHook(customCharInsert);
+    $(customCharInsert);
 }
 
 function edittoolsTabs() {
@@ -61,7 +61,7 @@ function edittoolsTabs() {
     spec.insertBefore(sel, spec.firstChild.nextSibling);
 }
 if (queryString('action') == 'edit' || queryString('action') == 'submit') {
-    addOnloadHook(edittoolsTabs);
+    $(edittoolsTabs);
 }
 
 function chooseCharSubset(seld) {
@@ -71,17 +71,6 @@ function chooseCharSubset(seld) {
         sb[i].style.display = i == seld ? 'inline' : 'none';
     }
 }
-
-/* Code for demo widgets */
-addWidgets = function () {
-    var widgets = getElementsByClassName(document.getElementById('bodyContent'), 'div', 'wikia_widget');
-    for (var i = 0; i < widgets.length; i++) {
-        widgets[i].innerHTML = "<object classid='clsid:d27cdb6e-ae6d-11cf-96b8-444553540000' codebase='http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0' width='300' height='250' align='middle' id='wikia_widget'><param name='allowScriptAccess' value='always' /><param name='movie' value='https://images.wikia.nocookie.net/common/skins/common/flash_widgets/wikia_widget.swf' /><param name='quality' value='high' /> <param name='wmode' value='transparent' /><embed src='https://images.wikia.nocookie.net/common/skins/common/flash_widgets/wikia_widget.swf' FlashVars='backgroundColor=000000&backgroundImage=&borderColor=92947c&dropShadow=on&headerColor=92947c&headerAlpha=.05&headerBorderColor=000000&headline1=The Vault presents&headline1Color=CCCCCC&headline2=Most Wanted DLC Items&headline2Color=FFFFFF&clickURL=http://fallout.wikia.com&wikiURLColor=FFFFFF&wikiaLogoColor=FFFFFF&type=slideshow&slideshowImages=https://images.wikia.nocookie.net/fallout/images/8/8b/Widget_Auto-Axe.png,https://images.wikia.nocookie.net/fallout/images/f/ff/Widget_Gauss-Rifle.png,https://images.wikia.nocookie.net/fallout/images/6/6f/Widget_WidPower-Armor.png,https://images.wikia.nocookie.net/fallout/images/1/1c/Get_Shock-Sword.png&=Preview images in the widget&' quality='high' wmode='transparent' width='300' height='250' align='middle' allowScriptAccess='always' type='application/x-shockwave-flash' pluginspage='http://www.macromedia.com/go/getflashplayer' name='wikia_widget' /></object>";
-    }
-};
-
-addOnloadHook(addWidgets);
-/* End of code for demo widgets */
 
 /* Force Preview  JavaScript code - Start */
 // Code slightly modified from http://www.mediawiki.org/w/index.php?title=Manual:Force_preview&oldid=250009
@@ -204,7 +193,7 @@ $(function () {
 /* infobox sidebar toggle end */
 
 /* Color Transcripts */
-addOnloadHook(function () {
+$(function () {
     $('table.npc_chat_div_r div.m3, table.npc_chat_div div.m3').each(function () {
         $(this).html('<span>' + ($(this).html().replace(/<br \/>|<br\/>|<br>/gi, '</span><br /><span>').replace(/''player'':|<i>player<\/i>:|player:/gi, '</span><span class="pl">-:pL:-').replace(/-:pL:-/g, '<span class="i">Player</span>:').replace(/::/g, ':').replace(/\{/g, '<b>').replace(/\}/g, '</b>')) + '</span>');
     });
@@ -212,94 +201,142 @@ addOnloadHook(function () {
 /* End of Color Transcripts */
 
 /* Outfiter */
-if (wgPageName === 'Outfiter') {
-    importArticles({
-        type: 'script',
-        article: 'MediaWiki:Outfiter.js'
-    }, {
-        type: 'style',
-        article: 'MediaWiki:Outfiter.css'
-    });
-}
-/* End of Outfiter */
-
-/* template outfiter */
-if ($('div.outfiter_template').length) {
-    importArticles({
-        type: 'script',
-        article: 'MediaWiki:Outfiter/Template.js'
-    });
-}
-/* end of template outfiter */
-
-/* Mapper */
-if (wgPageName === 'Mapper' || $('a[href*="//tibia.wikia.com/wiki/Mapper"]').length || $('a[href*="//tibia.fandom.com/wiki/Mapper"]').length) {
-    importArticles({
-        type: 'script',
-        article: 'MediaWiki:Mapper.js'
-    });
-}
-
-/* End Mapper */
-
-/* Test Mapper */
-if (wgPageName === 'Mapper/Test' || $('a[href*="//tibia.wikia.com/wiki/Mapper/Test"]').length || $('a[href*="//tibia.fandom.com/wiki/Mapper/Test"]').length) {
-    importArticles({
-        type: 'script',
-        article: 'MediaWiki:Mapper-Test.js'
-    });
-}
-/* End of Test Mapper */
-
-/* Loot Statistics data + LootPercentages + LootValue */
-importArticles({
-    type: 'script',
-    articles: [
-        'MediaWiki:LootStatistics-Data.js',
-        'MediaWiki:LootPercentages.js',
-        'MediaWiki:LootValue.js',
-    ]
+$(function () {
+	if (mw.config.get('wgPageName') === 'Outfiter') {
+	    importArticles({
+	        type: 'script',
+	        article: 'MediaWiki:Outfiter.js'
+	    });
+	    importArticles({
+	        type: 'style',
+	        article: 'MediaWiki:Outfiter.css'
+	    });
+	}
+	/* End of Outfiter */
+	
+	/* template outfiter */
+	if ($('div.outfiter_template').length) {
+	    importArticles({
+	        type: 'script',
+	        article: 'MediaWiki:Outfiter/Template.js'
+	    });
+	}
+	/* end of template outfiter */
+	/* Mapper */
+	if (mw.config.get('wgPageName') === 'Mapper' || $('a[href*="//tibia.wikia.com/wiki/Mapper"]').length || $('a[href*="//tibia.fandom.com/wiki/Mapper"]').length) {
+	    importArticles({
+	        type: 'script',
+	        article: 'MediaWiki:Mapper.js'
+	    });
+	}
+	/* End Mapper */
+	/* Test Mapper */
+	if (mw.config.get('wgPageName') === 'Mapper/Test' || $('a[href*="//tibia.wikia.com/wiki/Mapper/Test"]').length || $('a[href*="//tibia.fandom.com/wiki/Mapper/Test"]').length) {
+	    importArticles({
+	        type: 'script',
+	        article: 'MediaWiki:Mapper-Test.js'
+	    });
+	}
+	/* End of Test Mapper */
+	/* Loot Statistics data + LootPercentages + LootValue */
+	importArticles({
+	    type: 'script',
+	    articles: 'MediaWiki:LootStatistics-Data.js'
+	});
+	importArticles({
+	    type: 'script',
+	    articles: 'MediaWiki:LootPercentages.js'
+	});
+	importArticles({
+	    type: 'script',
+	    articles: 'MediaWiki:LootValue.js'
+	});
+	/* End of Loot Statistics data + LootPercentages */
+	/* Loot Statistics */
+	if (mw.config.get('wgPageName') === 'Loot_Statistics') {
+	    importArticles({
+	        type: 'script',
+	        article: 'MediaWiki:LootStatistics.js'
+	    });
+	}
+	/* End of Loot Statistics */
+	/* Loot Statistics checker */
+	if (mw.config.get('wgPageName') === 'Loot_Statistics/Checker') {
+	    importArticles({
+	        type: 'script',
+	        article: 'MediaWiki:LootStatistics-Checker.js'
+	    });
+	}
+	/* End of Loot Statistics checker */
+	/* TibiaWiki:Creature_Statistics */
+	if (mw.config.get('wgPageName') === 'TibiaWiki:Creature_Statistics') {
+	    importArticles({
+	        type: 'script',
+	        article: 'MediaWiki:CreatureStatistics.js'
+	    });
+	}
+	/* TibiaWiki:Creature_Statistics End */
+	/* TibiaWiki:Reward_Container_Statistics */
+	if (mw.config.get('wgPageName') === 'TibiaWiki:Reward_Container_Statistics') {
+	    importArticles({
+	        type: 'script',
+	        article: 'MediaWiki:RewardContainerStatistics.js'
+	    });
+	}
+	/* TibiaWiki:Reward_Container_Statistics End */
+	
+	/* Calculators */
+	if (mw.config.get('wgPageName') === 'Calculators') {
+	    $(function () {
+	        importScriptPage('MediaWiki:Calculators/Code.js');
+	    });
+	}
+	/* End of Calculators */
+	/* Bestiary */
+	if (mw.config.get('wgPageName') === 'Bestiary/Simulator') {
+	    $(function () {
+	        importArticles({
+	            type: 'script',
+	            article: 'MediaWiki:Bestiary/Code.js'
+	        });
+	        importArticles({
+	            type: 'style',
+	            article: 'MediaWiki:Bestiary.css'
+	        });
+	    });
+	}
+	/* End of Bestiary */
+	/* Daily Status */
+	if (mw.config.get('wgPageName') === 'Daily_Status') {
+	    $(function () {
+	        importArticles({
+	            type: 'script',
+	            article: 'MediaWiki:DailyStatus.js'
+	        });
+	    });
+	}
+	/* End of Daily Status */
+	
+	/*
+	 * Lightbearer monitor script. Allows the monitoring of basin times.
+	 * 
+	 * Script is available at [[MediaWiki:Custom Scripts/Lightbearer_Basin_Monitor.js]].
+	 *
+	 * This runs only when [[TibiaWiki:Tools/Lightbearer_Basin_Monitor]] is being viewed.
+	 */
+    // Check currently viewed page.
+    if (mw.config.get('wgPageName') === "TibiaWiki:Tools/Lightbearer_Basin_Monitor") {
+        // Load the script, but only once the page has loaded.
+        importArticle({
+            type: 'script',
+            article: 'MediaWiki:Custom Scripts/Lightbearer_Basin_Monitor.js'
+        });
+    }
 });
-/* End of Loot Statistics data + LootPercentages */
 
-/* Loot Statistics */
-if (wgPageName === 'Loot_Statistics') {
-    importArticles({
-        type: 'script',
-        article: 'MediaWiki:LootStatistics.js'
-    });
-}
-/* End of Loot Statistics */
-
-/* Loot Statistics checker */
-if (wgPageName === 'Loot_Statistics/Checker') {
-    importArticles({
-        type: 'script',
-        article: 'MediaWiki:LootStatistics-Checker.js'
-    });
-}
-/* End of Loot Statistics checker */
-
-/* TibiaWiki:Creature_Statistics */
-if (wgPageName === 'TibiaWiki:Creature_Statistics') {
-    importArticles({
-        type: 'script',
-        article: 'MediaWiki:CreatureStatistics.js'
-    });
-}
-/* TibiaWiki:Creature_Statistics End */
-
-/* TibiaWiki:Reward_Container_Statistics */
-if (wgPageName === 'TibiaWiki:Reward_Container_Statistics') {
-    importArticles({
-        type: 'script',
-        article: 'MediaWiki:RewardContainerStatistics.js'
-    });
-}
-/* TibiaWiki:Reward_Container_Statistics End */
 
 /* NPC Chat Windows */
-addOnloadHook(function () {
+$(function () {
     $('.npc_chat_div .t3.npc_chat_can_grow, .npc_chat_div_r .t3.npc_chat_can_grow').append(
     $('<a href="#">Expand</a>').click(function () {
         $(this).closest('.npc_chat_div, .npc_chat_div_r').find('.m3').height('100%');
@@ -341,31 +378,10 @@ addOnloadHook(function () {
 });
 /* End of NPC Chat Windows */
 
-/* Calculators */
-if (wgPageName === 'Calculators') {
-    $(function () {
-        importScriptPage('MediaWiki:Calculators/Code.js');
-    });
-}
-/* End of Calculators */
-
-/* Bestiary */
-if (wgPageName === 'Bestiary/Simulator') {
-    $(function () {
-        importArticles({
-            type: 'script',
-            article: 'MediaWiki:Bestiary/Code.js'
-        }, {
-            type: 'style',
-            article: 'MediaWiki:Bestiary.css'
-        });
-    });
-}
-/* End of Bestiary */
 
 /* Quest transcript linker start */
 $(function () {
-    if ($.inArray('Quest Overview Pages', wgCategories) === -1 && $.inArray('Quest Spoiling Pages', wgCategories) === -1) {
+    if ($.inArray('Quest Overview Pages', mw.config.get('wgCategories')) === -1 && $.inArray('Quest Spoiling Pages', mw.config.get('wgCategories')) === -1) {
         return;
     }
     var
@@ -431,8 +447,8 @@ $(function () {
 });
 /* Quest transcript linker end */
 /* Updates toggle changes start */
-if (wgPageName === 'Major_Updates' || wgPageName === 'Winter_Updates' || wgPageName === 'Summer_Updates' || wgPageName === 'Spring_Updates' || wgPageName === 'Autumn_Updates' || wgPageName === 'Patch_Updates' || wgPageName === 'Minor_Updates') {
-    addOnloadHook(function () {
+if (mw.config.get('wgPageName') === 'Major_Updates' || mw.config.get('wgPageName') === 'Winter_Updates' || mw.config.get('wgPageName') === 'Summer_Updates' || mw.config.get('wgPageName') === 'Spring_Updates' || mw.config.get('wgPageName') === 'Autumn_Updates' || mw.config.get('wgPageName') === 'Patch_Updates' || mw.config.get('wgPageName') === 'Minor_Updates') {
+    $(function () {
         $('#Updates_Toggle_Changes td:nth-child(6),#Updates_Toggle_Changes th:nth-child(6)').hide();
         $('#Updates_Toggle_Changes').prepend(
             $('<button />', {
@@ -448,8 +464,8 @@ if (wgPageName === 'Major_Updates' || wgPageName === 'Winter_Updates' || wgPageN
 /* Updates toggle changes end */
 
 /* Achievements toggle spoilers start */
-if (wgPageName === 'Achievements') {
-    addOnloadHook(function () {
+if (mw.config.get('wgPageName') === 'Achievements') {
+    $(function () {
         var
         $table = $('#achievements_title_table'),
             $top_div = $('caption:first', $table),
@@ -474,8 +490,8 @@ if (wgPageName === 'Achievements') {
 (function () {
     "use strict";
     // button to display all spoilers on the Achievements page
-    if (wgPageName === 'Achievements') {
-        addOnloadHook(function () {
+    if (mw.config.get('wgPageName') === 'Achievements') {
+        $(function () {
             var ach_shown = false,
                 button = document.createElement('button');
             button.appendChild(document.createTextNode("Show/Hide all spoilers"));
@@ -498,8 +514,8 @@ function custom_spoiler() {
         $(".custom_spoiler_content").toggle('slow');
     });
 }
-if (wgAction === 'view' || wgAction === 'submit' || wgAction === 'purge') {
-    addOnloadHook(custom_spoiler);
+if (mw.config.get('wgAction') === 'view' || mw.config.get('wgAction') === 'submit' || mw.config.get('wgAction') === 'purge') {
+    $(custom_spoiler);
 }
 /* end of custom spoiler toggle */
 
@@ -509,7 +525,7 @@ if (wgAction === 'view' || wgAction === 'submit' || wgAction === 'purge') {
  *
 addOnloadHook(function () {
     var script;
-    if (wgPageName.indexOf('User:Sixorish/Abilities') === 0) {
+    if (mw.config.get('wgPageName').indexOf('User:Sixorish/Abilities') === 0) {
         // Load User:Sixorish/Abilities/Render.js
         script = document.createElement('script');
         script.src = '/wiki/User:Sixorish/Abilities/Render.js?action=raw&nocache=' + Math.round(Math.random() * 10000000);
@@ -517,26 +533,6 @@ addOnloadHook(function () {
     }
 });
  */
-
-/*
- * Lightbearer monitor script. Allows the monitoring of basin times.
- * 
- * Script is available at [[MediaWiki:Custom Scripts/Lightbearer_Basin_Monitor.js]].
- *
- * This runs only when [[TibiaWiki:Tools/Lightbearer_Basin_Monitor]] is being viewed.
- */
-(function () {
-    // Check currently viewed page.
-    if (mw.config.get("wgPageName") === "TibiaWiki:Tools/Lightbearer_Basin_Monitor") {
-        // Load the script, but only once the page has loaded.
-        addOnloadHook(function () {
-            importArticle({
-                type: 'script',
-                article: 'MediaWiki:Custom Scripts/Lightbearer_Basin_Monitor.js'
-            });
-        });
-    }
-}());
 
 /* Cookies */
 function setCookie(name, value, offset) {
@@ -584,7 +580,7 @@ function clearElement() {
     /* Data to be used by any script */
     var game;
     game = {};
-    game.worlds = ["Antica", "Assombra", "Astera", "Belluma", "Belobra", "Bona", "Calmera", "Carnera", "Celebra", "Celesta", "Concorda", "Cosera", "Damora", "Descubra", "Dibra", "Duna", "Emera", "Epoca", "Estela", "Faluna", "Ferobra", "Firmera", "Funera", "Furia", "Garnera", "Gentebra", "Gladera", "Harmonia", "Helera", "Honbra", "Impera", "Inabra", "Javibra", "Jonera", "Kalibra", "Kenora", "Lobera", "Luminera", "Lutabra", "Macabra", "Menera", "Mitigera", "Monza", "Nefera", "Noctera", "Nossobra", "Olera", "Ombra", "Pacembra", "Pacera", "Peloria", "Premia", "Pyra", "Quelibra", "Quintera", "Refugia", "Relania", "Relembra", "Secura", "Serdebra", "Serenebra", "Solidera", "Talera", "Torpera", "Tortura", "Unica", "Venebra", "Vita", "Vunira", "Wintera", "Xandebra", "Xylona", "Yonabra", "Ysolera", "Zenobra", "Zuna", "Zunera"];
+    game.worlds = ["Adra", "Antica", "Assombra", "Astera", "Belluma", "Belobra", "Bona", "Calmera", "Carnera", "Celebra", "Celesta", "Concorda", "Cosera", "Damora", "Descubra", "Dibra", "Duna", "Emera", "Epoca", "Estela", "Faluna", "Ferobra", "Firmera", "Funera", "Furia", "Garnera", "Gentebra", "Gladera", "Harmonia", "Helera", "Honbra", "Impera", "Inabra", "Javibra", "Jonera", "Kalibra", "Kenora", "Libertabra", "Lobera", "Luminera", "Lutabra", "Macabra", "Menera", "Mitigera", "Monza", "Nefera", "Noctera", "Nossobra", "Olera", "Ombra", "Pacembra", "Pacera", "Peloria", "Premia", "Pyra", "Quelibra", "Quintera", "Ragna", "Refugia", "Relania", "Relembra", "Secura", "Serdebra", "Serenebra", "Solidera", "Talera", "Torpera", "Tortura", "Unica", "Utobra", "Venebra", "Vita", "Vunira", "Wintera", "Wizera", "Xandebra", "Xylona", "Yonabra", "Ysolera", "Zenobra", "Zuna", "Zunera"];
     game.worldIds = (function (worlds) {
         // Map worlds to IDs
         var obj = {}, len = worlds.length;
@@ -608,7 +604,7 @@ function clearElement() {
 (function () {
     /* Settings */
     if (mw.config.get('wgPageName') === 'TibiaWiki:Settings') {
-        addOnloadHook(function () {
+        $(function () {
             var html = '', i, len, worlds;
             // Cookie: TW_gameworld
             // We want an alphabetical list, not chronological,
@@ -735,12 +731,14 @@ $(function () {
     }
 });
 
-/* Load /wiki/Creature_Ranks.css */
-importArticles({
-    type: 'style',
-    article: 'MediaWiki:CreatureRanks.css'
+$(function () {
+	/* Load /wiki/Creature_Ranks.css */
+	importArticles({
+	    type: 'style',
+	    article: 'MediaWiki:CreatureRanks.css'
+	});
+	/* end of Load /wiki/Creature_Ranks.css */
 });
-/* end of Load /wiki/Creature_Ranks.css */
 
 /* Sort creature resistance bars by their value (data-value) */
 $(function () {

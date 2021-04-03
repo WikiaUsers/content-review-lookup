@@ -33,7 +33,7 @@
 		$(document).on('keydown', 'textarea[name="message"]', function(e) {
 			var $value = $(this).val();
 			if (e.which === 13 && $value.substring(0, 6) === '!block') {
-				if (/sysop|helper|vstf|bureaucrat|global-discussion-moderator|wiki-manager/m.test(mw.config.get('wgUserGroups').join(' ')) === false) {
+				if (/sysop|helper|bureaucrat|global-discussion-moderator|wiki-manager|soap/m.test(mw.config.get('wgUserGroups').join(' ')) === false) {
 					$(this).val('');
 					mainRoom.model.chats.add(new models.InlineAlert({ text: i18n.msg('no-perms').plain() }));
 					return false;

@@ -1,23 +1,3 @@
-/* Biblioteka Ossus */
-var newElement = [
- '<section class="module">',
- '   <h1>Translation request</h1>',
- '   <p>I encourage all users who would like to make translations in their <a href="https:dev.wikia.com/wiki/Languages">languages</a> for scripts used across Fandom to visit <a href="https://dev.wikia.com/wiki/Category:Translated_scripts">this page</a> to find your language category.</p>',
- '   <div style="margin-top: -16px; padding: 0; width: 100%; background-color: transparent;">',
- '      <table style="text-align: center; margin: 0px auto; padding: 2px; font-size: 120%; background-color: rgba(250,250,250,.2);">',
- '         <tr style="line-height: 15px; text-align: center;">',
- '            <td>',
- '         <br clear="all"/>',
- '               <a style="float: left; margin-right: 20px;" href="http://www.ossus.pl" class="wikia-button">Biblioteka Ossus</a>',
- '            </td>',
- '         </tr>',
- '      </table>',
- '   </div>',
- '</section>'
- ].join('');
- 
-$('#WikiaRail').append(newElement);
-
 // add the original english title as a subtitle for the article, linking to Wookieepedia's corresponding page.
 function showEnTitle()
 {

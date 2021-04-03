@@ -3,4 +3,5 @@
 // Настройка RailWAM (https://dev.fandom.com/wiki/RailWAM/ru)
 window.railWAM = {
      logPage: 'User:Sapper117b/WAM Log',
+     autoLogForUsers: 'Sapper117b',
 };

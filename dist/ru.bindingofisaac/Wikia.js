@@ -1,14 +1,29 @@
+//Шаблон:RailModule
+window.AddRailModule = [
+    { page: 'Template:RailModule2', },
+    'Template:RailModule',
+];
+
+//Стиль бек кнопки
+window.BackToTopModern = true;
+
 //Подключение для интерактивной таблицы
-if (mw.config.get('wgPageName') === 'Шаблон:ITATable') {
-    importArticle({ type: 'script', article: 'Items.js' });
-}
-
 if (mw.config.get('wgPageName') === 'Интерактивная_таблица_артефактов') {
-    importArticle({ type: 'script', article: 'Items.js' });
+    importArticle({ type: 'script', article: 'MediaWiki:Items.js' });
+}
+
+//Подсветка кнопок сортировки
+$(document).on('click', '.rentable_sort span', function(){
+	  $(this).addClass('active_ita').siblings().removeClass('active_ita')
+})
+
+//Подсветка активной статьи
+if ($('#blight').length) {
+   $('#blight > .ibox .sn[data-title="' + mw.config.get('wgPageName') + '"]').addClass("snlight");
 }
 
 
-//Переключатель для таблицы (и возможно для других элементов)
+//Переключатель для инт. таблицы (и возможно для других элементов)
   $(function () {
         $('.switch-btn').click(function () {
             $(this).toggleClass('switch-on');
@@ -26,24 +41,45 @@ if (mw.config.get('wgPageName') === 'Интерактивная_таблица_�
         });
     });
     
+//Переключатель для таблицы артефактов
+  $(function () {
+        $('.switch-btn2').click(function () {
+            $(this).toggleClass('switch-on');
+            if ($(this).hasClass('switch-on')) {
+                $(this).trigger('on.switch');
+            } else {
+                $(this).trigger('off.switch');
+            }
+        });
+        $('.switch-btn2').on('on.switch', function () {
+            $($(this).attr('data-id')).removeClass('tb_light_bx');
+        });
+        $('.switch-btn2').on('off.switch', function () {
+            $($(this).attr('data-id')).addClass('tb_light_bx');
+        });
+    });    
     
-//Панель сортировки для таблицы    
- if (mw.config.get('wgPageName') === 'Шаблон:ITATable') {
+    
+// Панель сортировки для таблицы    
+mw.loader.using('mediawiki.api').then(function() {
+    if (mw.config.get('wgPageName') !== 'Интерактивная_таблица_артефактов') {
+        return;
+    }
+
     var params = {
         action: "parse",
         page: "Шаблон:Ita/Sort",
         prop: "text",
         formatversion: "2",
         format: "json"
-    },
-    api = new mw.Api();
+    };
 
+    api = new mw.Api();
     api.get(params).done(function (data) {
-        var res = data['parse']['text']['*'];
-  $('#WikiaRail').prepend('<div class="rail-module">' + res);
+        var res = data['parse']['text'];
+        $('#WikiaRail').prepend('<div class="rail-module">' + res + '</div>');
     });
-}   
-    
+});
     
     
 
@@ -127,6 +163,48 @@ if ($('#noMap').length) {
     });
 }
 
+/*Костыль музыки для полотна*/
+switch ( mw.config.get('wgPageName') ) {
+    case 'TBoI_Wiki_Discord_Сервер':
+    	(function () {
+	// Build the iframe
+	const scPlayer = function (data) {
+		const widget = document.createElement('iframe');
+
+		widget.classList.add('soundcloud-player');
+
+		widget.src =
+			'https://w.soundcloud.com/player/?show_artwork=false&url=' +
+			encodeURI(data.src);
+
+		// If data-color is set add the value to the iframe
+		if (data.color) widget.src += '&color=' + encodeURIComponent(data.color);
+		// If data-width/height are set add that value to the iframe
+		if (data.width) widget.width = data.width;
+		if (data.height) widget.height = data.height;
+
+		return widget;
+	};
+
+	const scParseTags = function ($content) {
+		// Get all instances of the soundcloud class
+		const scTags = $('.soundcloud');
+
+		// For each instance of the soundcloud class run scPlayer
+		for (var i = 0; i < scTags.length; i++) {
+			scTags[i].replaceWith(scPlayer(scTags[i].dataset));
+		}
+	};
+
+	mw.hook('wikipage.content').add(function ($content) {
+		scParseTags($content);
+	});
+})();
+        break;
+}
+
+//Slider for my DC wiki
+mw.loader.load('https://dead-cells.fandom.com/ru/wiki/MediaWiki:HSlider.js?action=raw&ctype=text/javascript');
 
  
 //Кликабельная деятельность (Димон)
@@ -163,7 +241,7 @@ function reRandomize() { //Функция реролла
 $('body').on('click', '#reRandomize', reRandomize); //Рероллить содержимое при нажатии на кнопку
 
 
-//Скрипт плеера на заглвной и в профиле
+//Скрипт плеера на заглавной и в профиле
 $('.trjplay-icon').click(function (){
   $(this).addClass('trjplay-icon-active');
   setTimeout(function() {

@@ -1,178 +1,598 @@
-/* Umieszczony tutaj kod JavaScript zostanie załadowany przez każdego użytkownika, podczas każdego ładowania strony. */
-// Licencje plików
-var LicenseOptions = {
-   '{{Brak_licencji}}': 'Nie znam licencji',
-   '{{Fairuse}}': 'Plik używany zgodnie z zasadami dozwolonego użytku',
-   '{{Art}}': 'fanart bądź art (rysunki, szkice, itp.)',
-   '{{Komiks}}': 'Strona i/lub okładka komiksu Żywe Trupy.',
-   '{{Screenshot}}': 'screenshot z serialu, filmu lub gry',
-   '{{Screenshot-Web}}': 'screenshot ze strony internetowej',
-   '{{CC-BY-SA}}': 'Pliki na licencji Creative Commons',
-   '{{Copyright}}': 'Zastrzeżone prawa autorskie',
-   '{{PD}}': 'Plik znajduje się w domenie publicznej',
-   '{{Wikimedia}}': 'Plik z Wikipedii lub innego projektu Fundacji Wikimedia'
-};
+var a=new Date;if(18==a.getDate()&&0==a.getMonth()&&2012==a.getFullYear())window.location="http://en.wikipedia.org/wiki/Main_Page"; 
 
-// Import
-importArticles({
-    type: "script",
-    articles: [
-	"u:pl.tes:MediaWiki:APIQuery.js",
-	"u:pl.tes:MediaWiki:Licenses.js"
-   ]
-});
+/** Import module **************************************************************
+ *
+ *  Opis: Includes a raw wiki page as javascript or CSS, 
+ *               used for including user made modules.
+ *  Maintainers: [[User:AzaToth]]
+ */
+ 
+importedScripts = {}; // object keeping track of included scripts, so a script ain't included twice
 
-
-// Licznik by Nanaki
-function getTimeCountText(time) {
-    amount = Math.floor((time - new Date().getTime())/1000);
-    if(amount < 0) return false;
- 
-    var days = Math.floor(amount / 86400);
-    amount = amount % 86400;
-    var hours = Math.floor(amount / 3600);
-    amount = amount % 3600;
-    var mins = Math.floor(amount / 60);
-    amount = amount % 60;
-    var secs = Math.floor(amount);
- 
-    var list = [];
-    if (days > 0) {
-        list.push('<span class="days">' + days + ' ' + ((days == 1) ? 'dzień' : 'dni') + '</span>');
-    }
-    if (hours > 0) {
-        list.push('<span span="hours">' + hours + ' h</span>');
-    }
-    list.push('<span span="minutes">' + mins + ' m</span>');
-    list.push('<span span="seconds">' + secs + ' s</span>');
- 
-    return list.join(' ');
+function importScript( page ) {
+	if( importedScripts[page] ) {
+		return;
+	}
+	importedScripts[page] = true;
+	var url = wgScriptPath
+			+ '/index.php?title='
+			+ encodeURIComponent( page.replace( / /g, '_' ) )
+			+ '&action=raw&ctype=text/javascript';
+	var scriptElem = document.createElement( 'script' );
+	scriptElem.setAttribute( 'src' , url );
+	scriptElem.setAttribute( 'type' , 'text/javascript' );
+	document.getElementsByTagName( 'head' )[0].appendChild( scriptElem );
 }
-function countBoxTick(box) {
-    console.log(this)
-    var time = box.data('time');
-    var res = getTimeCountText(time);
-    if(res) {
-        box.html(res);
-        setTimeout(function() {
-            countBoxTick(box)
-        }, 1000);
-    } else {
-        box.html('Oczekuj!');
-    }
+
+function importStylesheet( page ) {
+	var sheet = '@import "'
+			+ wgScriptPath
+			+ '/index.php?title='
+			+ encodeURIComponent( page.replace( / /g, '_' ) )
+			+ '&action=raw&ctype=text/css";'
+	var styleElem = document.createElement( 'style' );
+	styleElem.setAttribute( 'type' , 'text/css' );
+	styleElem.appendChild( document.createTextNode( sheet ) );
+	document.getElementsByTagName( 'head' )[0].appendChild( styleElem );
 }
-$('.countbox').each(function() {
-    if($(this).data('date')) {
-        var time = new Date($(this).data('date')).getTime();
-        if(!isNaN(time)) {
-            $(this).data('time', time);
-            countBoxTick($(this));
-        } else {
-            $(this).html('Niepoprawna data')
+
+/* Test if an element has a certain class **************************************
+ *
+ * Opis: Uses regular expressions and caching for better performance.
+ * Maintainers: [[User:Mike Dillon]], [[User:R. Koot]], [[User:SG]]
+ */
+
+var hasClass = (function () {
+	var reCache = {};
+	return function (element, className) {
+		return (reCache[className] ? reCache[className] : (reCache[className] = new RegExp("(?:\\s|^)" + className + "(?:\\s|$)"))).test(element.className);
+	};
+})();
+
+/** Collapsible tables *********************************************************
+ *
+ *  Description: Allows tables to be collapsed, showing only the header. See
+ *               [[Wikipedia:NavFrame]].
+ *  Maintainers: [[User:R. Koot]]
+ */
+
+var autoCollapse = 2;
+var collapseCaption = "hide";
+var expandCaption = "show";
+
+function collapseTable( tableIndex )
+{
+	var Button = document.getElementById( "collapseButton" + tableIndex );
+	var Table = document.getElementById( "collapsibleTable" + tableIndex );
+
+	if ( !Table || !Button ) {
+		return false;
+	}
+
+	var Rows = Table.rows;
+
+	if ( Button.firstChild.data == collapseCaption ) {
+		for ( var i = 1; i < Rows.length; i++ ) {
+			Rows[i].style.display = "none";
+		}
+		Button.firstChild.data = expandCaption;
+	} else {
+		for ( var i = 1; i < Rows.length; i++ ) {
+			Rows[i].style.display = Rows[0].style.display;
+		}
+		Button.firstChild.data = collapseCaption;
+	}
+}
+
+function createCollapseButtons()
+{
+    var tableIndex = 0;
+    var NavigationBoxes = new Object();
+    var Tables = document.getElementsByTagName( "table" );
+ 
+    for ( var i = 0; i < Tables.length; i++ ) {
+        if ( hasClass( Tables[i], "collapsible" ) ) {
+ 
+            /* only add button and increment count if there is a header row to work with */
+            var HeaderRow = Tables[i].getElementsByTagName( "tr" )[0];
+            if (!HeaderRow) continue;
+            var Header = HeaderRow.getElementsByTagName( "th" )[0];
+            if (!Header) continue;
+ 
+            NavigationBoxes[ tableIndex ] = Tables[i];
+            Tables[i].setAttribute( "id", "collapsibleTable" + tableIndex );
+ 
+            var Button     = document.createElement( "span" );
+            var ButtonLink = document.createElement( "a" );
+            var ButtonText = document.createTextNode( collapseCaption );
+ 
+            Button.className = "collapseButton";  //Styles are declared in Common.css
+ 
+            ButtonLink.style.color = Header.style.color;
+            ButtonLink.setAttribute( "id", "collapseButton" + tableIndex );
+            ButtonLink.setAttribute( "href", "javascript:collapseTable(" + tableIndex + ");" );
+            ButtonLink.appendChild( ButtonText );
+ 
+            Button.appendChild( document.createTextNode( "[" ) );
+            Button.appendChild( ButtonLink );
+            Button.appendChild( document.createTextNode( "]" ) );
+ 
+            Header.insertBefore( Button, Header.childNodes[0] );
+            tableIndex++;
         }
     }
-});
-
-// Komunikat licencji
-function emptyLicenseAlert(form) {
-	var msg = "Licencja pliku nie została dodana. Możesz spróbować ponownie ale pamiętaj, że pliki bez licencji mogą zostać usunięte przez administrację po 3 dniach od ich wstawienia."
-	if(window.emptyLicenseWarningDelivered) return true;
-	if($('#wpLicense').val() == '') {
-		alert(msg);
-		window.emptyLicenseWarningDelivered = true
-		return false
-	}
-	return true;
+ 
+    for ( var i = 0;  i < tableIndex; i++ ) {
+        if ( hasClass( NavigationBoxes[i], "collapsed" ) || ( tableIndex >= autoCollapse && hasClass( NavigationBoxes[i], "autocollapse" ) ) ) {
+            collapseTable( i );
+        } 
+        else if ( hasClass( NavigationBoxes[i], "innercollapse" ) ) {
+            var element = NavigationBoxes[i];
+            while (element = element.parentNode) {
+                if ( hasClass( element, "outercollapse" ) ) {
+                    collapseTable ( i );
+                    break;
+                }
+            }
+        }
+    }
 }
-$('#mw-upload-form').submit(function(e) {return emptyLicenseAlert(this);});
+addOnloadHook( createCollapseButtons );
 
-///[[Szablon:Użytkownik]]
-if (wgUserName != null/* && span.insertusername != undefined*/) {
-    $(".insertusername").html(wgUserName);
+/** Dynamic Navigation Bars (experimental) *************************************
+ *
+ *  Description: See [[Wikipedia:NavFrame]].
+ *  Maintainers: UNMAINTAINED
+ */
+
+// set up the words in your language
+var NavigationBarHide = '[' + collapseCaption + ']';
+var NavigationBarShow = '[' + expandCaption + ']';
+
+// shows and hides content and picture (if available) of navigation bars
+// Parameters:
+//     indexNavigationBar: the index of navigation bar to be toggled
+function toggleNavigationBar(indexNavigationBar)
+{
+	var NavToggle = document.getElementById("NavToggle" + indexNavigationBar);
+	var NavFrame = document.getElementById("NavFrame" + indexNavigationBar);
+
+	if (!NavFrame || !NavToggle) {
+		return false;
+	}
+
+	// if shown now
+    if (NavToggle.firstChild.data == NavigationBarHide) {
+        for (var NavChild = NavFrame.firstChild; NavChild != null; NavChild = NavChild.nextSibling) {
+            if (hasClass(NavChild, 'NavContent') || hasClass(NavChild, 'NavPic')) {
+                NavChild.style.display = 'none';
+            }
+        }
+	NavToggle.firstChild.data = NavigationBarShow;
+
+	// if hidden now
+    } else if (NavToggle.firstChild.data == NavigationBarShow) {
+        for (var NavChild = NavFrame.firstChild; NavChild != null; NavChild = NavChild.nextSibling) {
+            if (hasClass(NavChild, 'NavContent') || hasClass(NavChild, 'NavPic')) {
+                NavChild.style.display = 'block';
+            }
+        }
+	NavToggle.firstChild.data = NavigationBarHide;
+	}
+}
+
+// adds show/hide-button to navigation bars
+function createNavigationBarToggleButton()
+{
+    var indexNavigationBar = 0;
+    // iterate over all < div >-elements 
+    var divs = document.getElementsByTagName("div");
+    for (var i = 0; NavFrame = divs[i]; i++) {
+        // if found a navigation bar
+        if (hasClass(NavFrame, "NavFrame")) {
+ 
+            indexNavigationBar++;
+            var NavToggle = document.createElement("a");
+            NavToggle.className = 'NavToggle';
+            NavToggle.setAttribute('id', 'NavToggle' + indexNavigationBar);
+            NavToggle.setAttribute('href', 'javascript:toggleNavigationBar(' + indexNavigationBar + ');');
+ 
+            var isCollapsed = hasClass( NavFrame, "collapsed" );
+            /*
+             * Check if any children are already hidden.  This loop is here for backwards compatibility:
+             * the old way of making NavFrames start out collapsed was to manually add style="display:none"
+             * to all the NavPic/NavContent elements.  Since this was bad for accessibility (no way to make
+             * the content visible without JavaScript support), the new recommended way is to add the class
+             * "collapsed" to the NavFrame itself, just like with collapsible tables.
+             */
+            for (var NavChild = NavFrame.firstChild; NavChild != null && !isCollapsed; NavChild = NavChild.nextSibling) {
+                if ( hasClass( NavChild, 'NavPic' ) || hasClass( NavChild, 'NavContent' ) ) {
+                    if ( NavChild.style.display == 'none' ) {
+                        isCollapsed = true;
+                    }
+                }
+            }
+            if (isCollapsed) {
+                for (var NavChild = NavFrame.firstChild; NavChild != null; NavChild = NavChild.nextSibling) {
+                    if ( hasClass( NavChild, 'NavPic' ) || hasClass( NavChild, 'NavContent' ) ) {
+                        NavChild.style.display = 'none';
+                    }
+                }
+            }
+            var NavToggleText = document.createTextNode(isCollapsed ? NavigationBarShow : NavigationBarHide);
+            NavToggle.appendChild(NavToggleText);
+ 
+            // Find the NavHead and attach the toggle link (Must be this complicated because Moz's firstChild handling is borked)
+            for(var j=0; j < NavFrame.childNodes.length; j++) {
+                if (hasClass(NavFrame.childNodes[j], "NavHead")) {
+                    NavFrame.childNodes[j].appendChild(NavToggle);
+                }
+            }
+            NavFrame.setAttribute('id', 'NavFrame' + indexNavigationBar);
+        }
+    }
+}
+addOnloadHook( createNavigationBarToggleButton );
+
+/** Extra toolbar options ******************************************************
+*
+*  Description: UNDOCUMENTED
+*  Maintainers: [[User:MarkS]]?, [[User:Voice of All]], [[User:R. Koot]]
+*/
+
+//This is a modified copy of a script by User:MarkS for extra features added by User:Voice of All.
+// This is based on the original code on Wikipedia:Tools/Editing tools
+// To disable this script, add <code>mwCustomEditButtons = [];<code> to [[Special:Mypage/monobook.js]]
+
+if (mwCustomEditButtons) {
+mwCustomEditButtons[mwCustomEditButtons.length] = {
+	"imageFile": "http://upload.wikimedia.org/wikipedia/en/c/c8/Button_redirect.png",
+	"speedTip": "Redirect",
+	"tagOpen": "#REDIRECT [[",
+	"tagClose": "]]",
+	"sampleText": "Insert text"};
+
+mwCustomEditButtons[mwCustomEditButtons.length] = {
+	"imageFile": "http://upload.wikimedia.org/wikipedia/en/c/c9/Button_strike.png",
+	"speedTip": "Strike",
+	"tagOpen": "<s>",
+	"tagClose": "</s>",
+	"sampleText": "Strike-through text"};
+
+mwCustomEditButtons[mwCustomEditButtons.length] = {
+	"imageFile": "http://upload.wikimedia.org/wikipedia/en/1/13/Button_enter.png",
+	"speedTip": "Line break",
+	"tagOpen": "<br />",
+	"tagClose": "",
+	"sampleText": ""};
+
+mwCustomEditButtons[mwCustomEditButtons.length] = {
+	"imageFile": "http://upload.wikimedia.org/wikipedia/en/8/80/Button_upper_letter.png",
+	"speedTip": "Superscript",
+	"tagOpen": "<sup>",
+	"tagClose": "</sup>",
+	"sampleText": "Superscript text"};
+
+mwCustomEditButtons[mwCustomEditButtons.length] = {
+	"imageFile": "http://upload.wikimedia.org/wikipedia/en/7/70/Button_lower_letter.png",
+	"speedTip": "Subscript",
+	"tagOpen": "<sub>",
+	"tagClose": "</sub>",
+	"sampleText": "Subscript text"};
+
+mwCustomEditButtons[mwCustomEditButtons.length] = {
+	"imageFile": "http://upload.wikimedia.org/wikipedia/en/5/58/Button_small.png",
+	"speedTip": "Small",
+	"tagOpen": "<small>",
+	"tagClose": "</small>",
+	"sampleText": "Small Text"};
+
+mwCustomEditButtons[mwCustomEditButtons.length] = {
+	"imageFile": "http://upload.wikimedia.org/wikipedia/en/3/34/Button_hide_comment.png",
+	"speedTip": "Insert hidden Comment",
+	"tagOpen": "<!-- ",
+	"tagClose": " -->",
+	"sampleText": "Comment"};
+
+mwCustomEditButtons[mwCustomEditButtons.length] = {
+	"imageFile": "http://upload.wikimedia.org/wikipedia/en/1/12/Button_gallery.png",
+	"speedTip": "Insert a picture gallery",
+	"tagOpen": "\n<gallery>\n",
+	"tagClose": "\n</gallery>",
+	"sampleText": "Image:Example.jpg|Caption1\nImage:Example.jpg|Caption2"};
+
+mwCustomEditButtons[mwCustomEditButtons.length] = {
+	"imageFile": "http://upload.wikimedia.org/wikipedia/en/f/fd/Button_blockquote.png",
+	"speedTip": "Insert block of quoted text",
+	"tagOpen": "<blockquote>\n",
+	"tagClose": "\n</blockquote>",
+	"sampleText": "Block quote"};
+
+mwCustomEditButtons[mwCustomEditButtons.length] = {
+	"imageFile": "http://upload.wikimedia.org/wikipedia/en/6/60/Button_insert_table.png",
+	"speedTip": "Insert a table",
+	"tagOpen": '{| class="wikitable"\n|-\n',
+	"tagClose": "\n|}",
+	"sampleText": "! header 1\n! header 2\n! header 3\n|-\n| row 1, cell 1\n| row 1, cell 2\n| row 1, cell 3\n|-\n| row 2, cell 1\n| row 2, cell 2\n| row 2, cell 3"};
+}
+
+// **************************************************
+// Experimental javascript countdown timer (Splarka)
+// Version 0.0.3
+// **************************************************
+//
+// Usage example:
+//  <span class="countdown" style="display:none;">
+//  Only <span class="countdowndate">January 01 2007 00:00:00 PST</span> until New years.
+//  </span>
+//  <span class="nocountdown">Javascript disabled.</span>
+
+function updatetimer(i) {
+  var now = new Date();
+  var then = timers[i].eventdate;
+  var diff = count=Math.floor((then.getTime()-now.getTime())/1000);
+
+  // catch bad date strings
+  if(isNaN(diff)) { 
+    timers[i].firstChild.nodeValue = '** ' + timers[i].eventdate + ' **' ;
+    return;
+  }
+
+  // determine plus/minus
+  if(diff<0) {
+    diff = -diff;
+    var tpm = ' ';
+  } else {
+    var tpm = ' ';
+  }
+
+  // calcuate the diff
+  var left = (diff%60) + ' seconds';
+    diff=Math.floor(diff/60);
+  if(diff > 0) left = (diff%60) + ' minutes ' + left;
+    diff=Math.floor(diff/60);
+  if(diff > 0) left = (diff%24) + ' hours ' + left;
+    diff=Math.floor(diff/24);
+  if(diff > 0) left = diff + ' days ' + left
+  timers[i].firstChild.nodeValue = tpm + left;
+
+  // a setInterval() is more efficient, but calling setTimeout()
+  // makes errors break the script rather than infinitely recurse
+  timeouts[i] = setTimeout('updatetimer(' + i + ')',1000);
+}
+
+function checktimers() {
+  //hide 'nocountdown' and show 'countdown'
+  var nocountdowns = getElementsByClassName(document, 'span', 'nocountdown');
+  for(var i in nocountdowns) nocountdowns[i].style.display = 'none'
+  var countdowns = getElementsByClassName(document, 'span', 'countdown');
+  for(var i in countdowns) countdowns[i].style.display = 'inline'
+
+  //set up global objects timers and timeouts.
+  timers = getElementsByClassName(document, 'span', 'countdowndate');  //global
+  timeouts = new Array(); // generic holder for the timeouts, global
+  if(timers.length == 0) return;
+  for(var i in timers) {
+    timers[i].eventdate = new Date(timers[i].firstChild.nodeValue);
+    updatetimer(i);  //start it up
+  }
+}
+addOnloadHook(checktimers);
+
+// **************************************************
+//  - end -  Experimental javascript countdown timer
+// **************************************************
+
+/************* Funzioni di utilità generale *************/
+ 
+ /* Test if an element has a certain class **************************************
+ *
+ * Description: Uses regular expressions and caching for better performance.
+ * Maintainers: User:Mike Dillon, User:R. Koot, User:SG
+ */
+ 
+var hasClass = (function () {
+    var reCache = {};
+    return function (element, className) {
+        return (reCache[className] ? reCache[className] : (reCache[className] = new RegExp("(?:\\s|^)" + className + "(?:\\s|$)"))).test(element.className);
+    };
+ })();
+ 
+ 
+function getElementsByClass (node, className, tagName) {
+	if (node.getElementsByClassName && (tagName == undefined || tagName == null || tagName == '*')) return node.getElementsByClassName(className);
+	var list = node.getElementsByTagName(tagName?tagName:'*');
+	var array = new Array();
+	var i = 0;
+	for (i in list) {
+		if (hasClass(list[i], className))
+			array.push(list[i]);
+	 }
+	return array;
+ }
+ 
+/* Creates the method getElementsByClass, if unsupported from the browser */
+if(!document.getElementsByClass) document.getElementsByClass = function(className) {
+	return getElementsByClass(document, className, '*');
+};
+ 
+ 
+function getElementsByName (name, root) {
+ if (root == undefined) root = document;
+ var e = root.getElementsByTagName('*');
+ var r = new Array();
+ for (var i = 0; i < e.length; i++) {
+	if (e[i].getAttribute('name') == name) r[r.length] = e[i];
+ }
+ return r;
 }
 
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* ######################################################################## */
-/* ### AJAX RC                                                          ### */
-/* ### ---------------------------------------------------------------- ### */
-/* ### Description: Automatically refresh "Recent changes" via AJAX     ### */
-/* ### Credit:      User:pcj (http://www.wowpedia.org)                  ### */
-/* ###              User:Porter21 (fallout.wikia.com)                   ### */
-/* ######################################################################## */
  
-var indicator = 'https://images.wikia.nocookie.net/__cb20110724185410/prototype/images/d/de/Ajax-loader.gif';
-var ajaxPages = new Array("Specjalna:Filmy", "Specjalna:Ostatnie_zmiany", "Specjalna:Aktywność_na_wiki", "Specjalna:Nowe_pliki", "Specjalna:Forum");
-var ajaxTimer;
-var ajaxRefresh = 30000;
-var refreshText = 'Auto-odświeżanie';
-if( typeof AjaxRCRefreshText == "string" ) {
-	refreshText = AjaxRCRefreshText;
-}
-var refreshHover = 'Włącza automatyczne odświeżanie tej strony.';
-if( typeof AjaxRCRefreshHoverText == "string" ) {
-	refreshHover = AjaxRCRefreshHoverText;
-}
-var doRefresh = true;
+    /** 
+        Toggles the display of elements on a page 
+        Author/contact: Austin Che http://openwetware.org/wiki/User:Austin_J._Che
+        See http://openwetware.org/wiki/OpenWetWare:Toggle for examples and documentation
+     */
  
-function setCookie(c_name,value,expiredays) {
-   var exdate=new Date()
-   exdate.setDate(exdate.getDate()+expiredays)
-   document.cookie=c_name+ "=" +escape(value) + ((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
-}
+// indexed array of toggler ids to array of associated toggle operations
+// each operation is a two element array, the first being the type, the second a class name or array of elements
+// operation types are strings like "_reset" or "" for the default toggle operation
+var togglers = new Array();     
+var allClasses = new Object(); // associative map of class names to page elements
  
-function getCookie(c_name) {
-   if (document.cookie.length>0) {
-      c_start=document.cookie.indexOf(c_name + "=")
-      if (c_start!=-1) { 
-         c_start=c_start + c_name.length+1 
-         c_end=document.cookie.indexOf(";",c_start)
-         if (c_end==-1) c_end=document.cookie.length
-         return unescape(document.cookie.substring(c_start,c_end))
-      } 
-   }
-   return ""
-}
+function toggler(id)
+{
+    var toBeToggled = togglers[id];
+    if (!toBeToggled)
+        return;
  
-function preloadAJAXRL() {
-   ajaxRLCookie = (getCookie("ajaxload-"+wgPageName)=="on") ? true:false;
-   appTo = ($("#WikiaPageHeader").length)?$("#WikiaPageHeader > h1" ) : ( $( "#AdminDashboardHeader" ).length ? $( "#AdminDashboardHeader > h1" ):$(".firstHeading") );
-   appTo.append('&#160;<span style="font-size: xx-small; line-height: 100%;" id="ajaxRefresh"><span style="border-bottom: 1px dotted; cursor: help;" id="ajaxToggleText" title="' + refreshHover + '">' + refreshText + ':</span><input type="checkbox" style="margin-bottom: 0;" id="ajaxToggle"><span style="display: none;" id="ajaxLoadProgress"><img src="' + indicator + '" style="vertical-align: baseline;" border="0" alt="Refreshing page" /></span></span>');
-   $("#ajaxLoadProgress").ajaxSend(function (event, xhr, settings){
-      if (location.href == settings.url) $(this).show();
-   }).ajaxComplete (function (event, xhr, settings){
-      if (location.href == settings.url) $(this).hide();
-   });
-   $("#ajaxToggle").click(toggleAjaxReload);
-   $("#ajaxToggle").attr("checked", ajaxRLCookie);
-   if (getCookie("ajaxload-"+wgPageName)=="on") loadPageData();
-}
+    // if some element is in list more than once, it will be toggled multiple times
+    for (var i = 0; i < toBeToggled.length; i++)
+    {
+        // get array of elements to operate on
+        var toggles = toBeToggled[i][1];
+        if (typeof(toggles) == "string")
+        {
+            if (toggles.charAt(0) == '-')
+            {
+                // treat as an element ID, not as class
+                toggles = document.getElementById(toggles.substring(1));
+                if (toggles)
+                    toggles = new Array(toggles);
+            }
+            else
+                toggles = allClasses[toggles];
+        }
+        if (!toggles || !toggles.length)
+            continue;
  
-function toggleAjaxReload() {
-   if ($("#ajaxToggle").prop("checked") == true) {
-      setCookie("ajaxload-"+wgPageName, "on", 30);
-      doRefresh = true;
-      loadPageData();
-   } else {
-      setCookie("ajaxload-"+wgPageName, "off", 30);
-      doRefresh = false;
-      clearTimeout(ajaxTimer);
-   }
+        var op = toBeToggled[i][0]; // what the operation will be
+ 
+        switch (op)
+        {
+            case "_reset":
+                for (var j in toggles)
+                    toggles[j].style.display = toggles[j]._toggle_original_display;
+                break;
+            case "_show":
+                for (var j in toggles)
+                    toggles[j].style.display = '';
+                break;
+            case "_hide":
+                for (var j in toggles)
+                    toggles[j].style.display = 'none';
+                break;
+            case "":
+            default:
+                // Toggle
+                for (var j in toggles)
+                    toggles[j].style.display = ((toggles[j].style.display == 'none') ? '' : 'none');
+                break;
+        }
+    }
 }
  
-function loadPageData() {
-   cC = ($("#WikiaArticle").length)?"#WikiaArticle":"#bodyContent";
-   $(cC).load(location.href + " " + cC + " > *", function (data) { 
-      if (doRefresh) ajaxTimer = setTimeout("loadPageData();", ajaxRefresh);
-   });
+function createTogglerLink(toggler, id)
+{
+    var toggle = document.createElement("a");
+    toggle.className = 'toggler-link';
+    toggle.setAttribute('id', 'toggler' + id);
+    toggle.setAttribute('href', 'javascript:toggler("' + id + '");');
+    var child = toggler.firstChild;
+    toggler.removeChild(child);
+    toggle.appendChild(child);
+    toggler.insertBefore(toggle, toggler.firstChild);
 }
-addOnloadHook(function(){ for (x in ajaxPages) { if (wgPageName == ajaxPages[x] && $("#ajaxToggle").length==0) preloadAJAXRL() } } );
  
-$(function(){
-	importArticles({
-		type: "script",
-		articles: ["u:zh.pad.wikia.com:MediaWiki:CountDown.js"]
-	}, {
-		type: "style",
-		articles: ["u:zh.pad.wikia.com:MediaWiki:CountDown.css"]
-	});
-});
+function toggleInit()
+{
+    var togglerElems = new Array();
+    var toggleGroup = new Array();
+ 
+    // initialize/clear any old information
+    togglers = new Array();     
+    allClasses = new Object();
+    allClasses.watch = undefined;
+    allClasses.unwatch = undefined;
+ 
+ 
+    // make list of all document classes
+    var elems = document.getElementsByTagName("*");
+    var numelems = elems.length;
+    for (var i = 0; i < elems.length; i++)
+    {
+        var elem = elems[i];
+        if (!elem.className)
+            continue;
+ 
+        elem._toggle_original_display = elem.style.display;
+        var togglerID = -1;
+        var elemClasses = elem.className.split(' '); // get list of classes
+        for (var j = 0; j < elemClasses.length; j++)
+        {
+            var elemClass = elemClasses[j];
+            if (! allClasses[elemClass])
+                allClasses[elemClass] = new Array();
+            allClasses[elemClass].push(elem);
+ 
+            // all the special classes begin with _toggle
+            if (elemClass.substring(0, 7) != "_toggle")
+                continue;
+ 
+            if (elemClass == "_togglegroup")
+                toggleGroup = new Array();
+            else if (elemClass == "_toggle")
+                toggleGroup.push(elem);
+            else if (elemClass.substring(0, 12) == "_toggle_init")
+            {
+                // set initial value for display (ignore the original CSS set value)
+                // understands _toggle_initshow and _toggle_inithide
+                var disp = elemClass.substring(12);
+                if (disp == "show")
+                    elem.style.display = '';
+                else if (disp == "hide")
+                    elem.style.display = 'none';
+                elem._toggle_original_display = disp;
+            }
+            else if (elemClass.substring(0, 8) == "_toggler")
+            {
+                if (togglerID == -1)
+                {
+                    togglerID = togglers.length;
+                    togglers[togglerID] = new Array();
+                    togglerElems[togglerID] = elem;
+                }
+ 
+                // all classes are of form _toggler_op-CLASS
+                // figure out what class we're toggling
+                // if none is specified, then we use the current toggle group
+                var toBeToggled;
+                var hyphen = elemClass.indexOf('-');
+                if (hyphen != -1)
+                    toBeToggled = elemClass.substring(hyphen+1);
+                else
+                {
+                    toBeToggled = toggleGroup;
+                    hyphen = elemClass.length;
+                }
+ 
+                var op = elemClass.substring(8, hyphen);
+                togglers[togglerID].push(new Array(op, toBeToggled));
+            }
+        }
+    }
+ 
+    // add javascript links to all toggler elements
+    for (var i = 0; i < togglerElems.length; i++)
+        createTogglerLink(togglerElems[i], i);
+}
+ 
+ 
+function owwsitesearch(f){
+    f.q.value='site:http://openwetware.org/wiki/'+
+        f.base.value+'++'+f.qfront.value
+}
+ 
+ 
+addOnloadHook(toggleInit);

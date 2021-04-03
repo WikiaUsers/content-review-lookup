@@ -11,8 +11,6 @@ window.UserTagsJS = {
 	}
 };
 UserTagsJS.modules.custom = {
-	'WreckingBall2014': ['moderator'],
-	'Bibigon54': ['moderator'], 
 	'Ivan-kaleydoskop': ['moderator'], 
 	'Aignatov19': ['rollbacker']
 };

@@ -7,7 +7,3 @@ importScriptPage('Project:JS/ShowHideHC.js', 'keroro');
 
 /** == Hiding == **/
 importScriptPage('Project:JS/hide.js', 'keroro');
-
-
-/** == Tabber == **/
-importScriptPage('Project:JS/tabber.js', 'keroro');

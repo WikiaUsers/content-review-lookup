@@ -25,10 +25,10 @@
         'wgFormattedNamespaces',
         'wgPageName',
         'wgUserLanguage',
-        'wgVersion'
+        'wgVersion',
+        'wgPageContentModel'
     ]),
     
-    isUCP = config.wgVersion !== '1.19.24',
 
     parserFunctions = {
         '#expr': 'Help:Extension:ParserFunctions#.23expr',
@@ -300,16 +300,15 @@
 
     i18n, $content, $list, $source, $a, $toc, headers = [];
 
-    if (!window.dev || !window.dev.i18n) {
-        if (isUCP) {
-            mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=styles&articles=MediaWiki:View_Source.css', 'text/css');
-        } else {
-            importArticle({
-                type: 'style',
-                article: 'u:dev:MediaWiki:View_Source.css'
-            });
-        }
+    // Return if content model is not wikitext.
+    if (config.wgVersion !== '1.19.24' && config.wgPageContentModel !== 'wikitext') {
+        return;
     }
+
+    importArticle({
+        type: 'style',
+        article: 'u:dev:MediaWiki:View_Source.css'
+    });
 
     function addButton () {
         $a = $('<a>', {
@@ -425,7 +424,7 @@
 
     function createPseudoToc () {
         var $rail = $('#WikiaRail'), toc, $ads;
-        if (headers.length && $source.height() > $(window).height() && $rail[0] && $rail.filter('.loaded')[0]) {
+        if (headers.length && $source.height() > $(window).height() && $rail[0] && $rail.filter('.loaded, .is-ready')[0]) {
             toc = '<ul>';
             for (var i = 0; i < headers.length; i++) {
                 toc += '<li><a href="#h' + i + '">' + headers[i] + '</a></li>';
@@ -490,14 +489,10 @@
             window.dev.i18n.loadMessages('View Source').done(init);
         });
 
-        if (isUCP) {
-            mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js');
-        } else {
-            importArticle({
-                type: 'script',
-                article: 'u:dev:MediaWiki:I18n-js/code.js'
-            });
-        }
+        importArticle({
+            type: 'script',
+            article: 'u:dev:MediaWiki:I18n-js/code.js'
+        });
     }
 
 }((window.dev = window.dev || {}).viewSource = window.dev.viewSource || {}, mediaWiki, jQuery));

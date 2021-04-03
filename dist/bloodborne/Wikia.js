@@ -1,18 +1,30 @@
 /**
  * Imports
+ * @namespace Wikia.js
+ */
+ 
+// jshint browser: true, devel: true, jquery: true
+// jshint strict: true, freeze: true, eqeqeq: true, futurehostile: true
+// jshint newcap: true, noarg: true, quotmark: single, shadow: outer
+// jshint latedef: true, undef: true, unused: true
+/* global mw */
+ 
+/**
+ * @typedef Article
+ * @property {string} type - script article or style article.
+ * @property {string[]} articles - interwiki article links.
+ */
+ 
+/**
+ * Initialization IIFE.
  * @returns {void}
  */
 ;(function () {
+	'use strict';
     /**
-     * @type {any[]}
+     * @type {Article[]}
      */
     var articles = [
-        {
-            type: 'script',
-            articles: [
-                'u:admintools:MediaWiki:Wikia.js/accountNavigation.js'
-            ]
-        },
         {
             type: 'style',
             articles: [
@@ -31,5 +43,11 @@
         }
     ];
     
-    importArticles.apply(this, articles);
+    mw.hook('wikipage.content').add(function () {
+    	setTimeout(function () {
+    		window.importArticles.apply(null, articles);
+    	}, 0);
+    });
 })();
+ 
+/*@end@*/

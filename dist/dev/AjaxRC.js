@@ -40,7 +40,8 @@
 			'wgAction',
 			'wgCanonicalSpecialPageName',
 			'wgPageName',
-			'wgUserLanguage'
+			'wgUserLanguage',
+			'wgVersion'
 		]),
 		// use common file as it's very likely to be already cached by user
 		// used in oasis sidebar loading, preview modal, etc.
@@ -64,7 +65,28 @@
 		// so the callbacks for ajaxsend and ajaxcomplete won't fire
 		// just by comparing settings.url to location.href
 		href = location.href.replace(/#[\S]*/, ''),
-		i18n;
+		i18n,
+		isUCP = config.wgVersion !== '1.19.24';
+
+	/**
+	 * Fix for Unified Community Platform
+	 * Don't load on enchanced filter enabled Recentchanges and Watchlist as it causes issues with interface
+	 */
+	if (
+		isUCP &&
+		(
+			(
+				config.wgCanonicalSpecialPageName === 'Recentchanges' &&
+				!Number(mw.user.options.get('rcenhancedfilters-disable'))
+			) ||
+			(
+				config.wgCanonicalSpecialPageName === 'Watchlist' &&
+				!Number(mw.user.options.get('wlenhancedfilters-disable'))
+			)
+		)
+	) {
+		return;
+	}
 
 	/**
 	 * Get a localised message, if it exists as well as allowing it to be
@@ -309,7 +331,7 @@
 			disallowActions.indexOf(config.wgAction) === -1
 		) {
 			window.AjaxRCLoaded = true;
-			if ($('#mw-content-text .mw-collapsible').exists()) {
+			if ($('#mw-content-text .mw-collapsible').length) {
 				mw.loader.using('jquery.makeCollapsible', loadMessages);
 			} else {
 				loadMessages();

@@ -27,7 +27,7 @@ $(function() {
       // This part creates the link to the talk page in the dropdown.
       // Since the dropdown itself doesn't have an id, we select the edit
       // button by its id and work our way up from there before appending.
-      $("#ca-delete").parent().parent().append(
+      $("#ca-delete").parent().append(
         '<li>'
           + '<a '
             + 'id="ca-talk" '
@@ -41,9 +41,9 @@ $(function() {
     });
     
     /*** This section adds a "What Links Here?" link to the dropdown ***/
-    var linksHereLink = "/wiki/Special:WhatLinksHere?target=" + wgPageName;
+    var linksHereLink = "/wiki/Special:WhatLinksHere?target=" + mw.config.wgPageName;
       
-    $("#ca-delete").parent().parent().append(
+    $("#ca-delete").parent().append(
       '<li>'
         + '<a '
           + 'id="ca-links-here" '

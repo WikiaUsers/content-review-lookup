@@ -13,16 +13,18 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		// group: { associated tag data }
-        queen: { u:'Queen' }
+        queen: { u:'Queen' },
+        unbanned: { u:'Unbanned' }
 	}
 };
 
 UserTagsJS.modules.custom = {
 	'Ootwar': ['queen'], // Add Queen
+	"Nintendon't": ['unbanned'], // hopefully works
 };
  
 /* ********** Notimodule ********** */
-var notimoduleTitle = window.notimoduleTitle || 'Bulletin';
+var notimoduleTitle = window.notimoduleTitle || 'News';
 var notimodulePagename = window.notimodulePagename || 'Template:Notimodule';
  
 var request = new XMLHttpRequest();

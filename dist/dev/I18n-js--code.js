@@ -5,7 +5,7 @@
  * @author Cqm <https://dev.fandom.com/User:Cqm>
  * @author OneTwoThreeFall <https://dev.fandom.com/User:OneTwoThreeFall>
  *
- * @version 0.5.12
+ * @version 0.6.6
  *
  * @notes Also used by VSTF wiki for their reporting forms (with a non-dev i18n.json page)
  * @notes This is apparently a commonly used library for a number of scripts and also includes
@@ -57,6 +57,11 @@
          * Prefix used for localStorage keys that contain i18n-js cache data.
          */
         cachePrefix = 'i18n-cache-',
+
+        /*
+         * Has a fallback loop warning been shown?
+         */
+        warnedAboutFallbackLoop = false,
 
         /*
          * Cache of loaded I18n instances.
@@ -245,27 +250,57 @@
         };
 
     /*
+     * Log a warning message to the browser console if the language fallback chain is
+     * about to start a loop. Only logs once to prevent flooding the browser console.
+     *
+     * @param lang Language in use when loop was found.
+     * @param fallbackChain Array of languages involved in the loop.
+     */
+    function warnOnFallbackLoop(lang, fallbackChain) {
+        if (warnedAboutFallbackLoop) {
+            return;
+        }
+        warnedAboutFallbackLoop = true;
+
+        fallbackChain.push(lang);
+        console.error('[I18n-js] Language fallback loop found. Please leave a message at <https://dev.fandom.com/wiki/Talk:I18n-js> and include the following line: \nLanguage fallback chain:', fallbackChain.join(', '));
+    }
+
+    /*
      * Get a translation of a message from the messages object in the
      * requested language.
      *
      * @param messages The message object to look translations up in.
      * @param msgName The name of the message to get.
      * @param lang The language to get the message in.
+     * @param fallbackChain Array of languages that have already been checked.
+     *     Used to detect if the fallback chain is looping.
      *
-     * @return The requested translation or the name wrapped in < ... > if no
-     *     message could be found.
+     * @return The requested translation or `false` if no message could be found.
      */
-    function getMsg(messages, msgName, lang) {
+    function getMsg(messages, msgName, lang, fallbackChain) {
         if (messages[lang] && messages[lang][msgName]) {
             return messages[lang][msgName];
         }
 
         if (lang === 'en') {
-            return '<' + msgName + '>';
+            return false;
         }
 
+        if (!fallbackChain) {
+            fallbackChain = [];
+        }
+        fallbackChain.push(lang);
+
         lang = fallbacks[lang] || 'en';
-        return getMsg(messages, msgName, lang);
+
+        if (fallbackChain.indexOf(lang) !== -1) {
+            // about to enter an infinite loop - switch to English
+            warnOnFallbackLoop(lang, fallbackChain);
+            lang = 'en';
+        }
+
+        return getMsg(messages, msgName, lang, fallbackChain);
     }
 
     /*
@@ -454,17 +489,22 @@
         }
 
         var msgName = args.shift(),
-            noMsg = '<' + msgName + '>',
-            msg;
+            descriptiveMsgName = 'i18njs-' + name + '-' + msgName,
+            msg = getMsg(messages, msgName, lang),
+            msgExists = msg !== false;
 
-        if (conf.wgUserLanguage === 'qqx') {
+        if (!msgExists) {
+            // use name wrapped in < > for missing message, per MediaWiki convention
+            msg = '<' + descriptiveMsgName + '>';
+        }
+
+        if (conf.wgUserLanguage === 'qqx' && msgExists) {
             // https://www.mediawiki.org/wiki/Help:System_message#Finding_messages_and_documentation
-            msg = '(i18njs-' + name + '-' + msgName + ')';
+            msg = '(' + descriptiveMsgName + ')';
         } else if (overrides[name] && overrides[name][msgName]) {
             // if the message has been overridden, use that without checking the language
             msg = overrides[name][msgName];
-        } else {
-            msg = getMsg(messages, msgName, lang);
+            msgExists = true;
         }
 
         if (args.length) {
@@ -475,7 +515,7 @@
             /*
              * Boolean representing whether the message exists.
              */
-            exists: msg !== noMsg,
+            exists: msgExists,
 
             /*
              * Parse wikitext links in the message and return the result.
@@ -527,10 +567,11 @@
             /*
              * Set the default language.
              *
-             * @param lang The language code to use by default.
+             * @deprecated since v0.6 (2020-08-25), no longer supported.
              */
-            useLang: function (lang) {
-                defaultLang = lang;
+            useLang: function () {
+                console.warn('[I18n-js] “useLang()” is no longer supported by I18n-js (used in “' + name + '”) - using user language.');
+                this.useUserLang();
             },
 
             /*
@@ -541,6 +582,10 @@
              * @return The current object for use in chaining.
              */
             inLang: function (lang) {
+                if (!options.cacheAll) {
+                    console.warn('[I18n-js] “inLang()” is not supported without configuring `options.cacheAll` (used in “' + name + '”) - using user language.');
+                    lang = options.language;
+                }
                 tempLang = lang;
                 return this;
             },
@@ -597,9 +642,103 @@
 
             /*
              * For accessing the raw messages.
+             * Scripts should not rely on it or any of its properties existing.
              */
             _messages: messages
         };
+    }
+
+    /*
+     * Preprocess each message's fallback chain for the user and content languages.
+     * This allows us to save only those messages needed to the cache.
+     *
+     * @param name The name of the script the messages are for.
+     * @param messages The message object to look translations up in.
+     * @param options Options set by the loading script.
+     */
+    function optimiseMessages(name, messages, options) {
+        var existingLangs = cache[name] && cache[name]._messages._isOptimised,
+            langs = [options.language],
+            msgKeys = Object.keys(messages.en || {}),
+            optimised = {};
+
+        if (!msgKeys.length) {
+            // no English messages, don't bother optimising
+            return messages;
+        }
+
+        var addMsgsForLanguage = function (lang) {
+            if (optimised[lang]) {
+                // language already exists
+                return;
+            }
+
+            optimised[lang] = {};
+
+            msgKeys.forEach(function (msgName) {
+                var msg = getMsg(messages, msgName, lang);
+
+                if (msg !== false) {
+                    optimised[lang][msgName] = msg;
+                }
+            });
+        };
+
+        if (langs.indexOf(conf.wgContentLanguage) === -1) {
+            langs.push(conf.wgContentLanguage);
+        }
+
+        // if cache exists and is optimised, preserve existing languages
+        // this allows an optimised cache even when using different
+        // language wikis on same domain (i.e. sharing same cache)
+        if (existingLangs) {
+            existingLangs.forEach(function (lang) {
+                if (langs.indexOf(lang) === -1) {
+                    langs.push(lang);
+                }
+            });
+        }
+
+        langs.forEach(addMsgsForLanguage);
+
+        // `cacheAll` is an array of message names for which translations
+        // should not be optimised - save all translations of these messages
+        if (Array.isArray(options.cacheAll)) {
+            msgKeys = options.cacheAll;
+            Object.keys(messages).forEach(addMsgsForLanguage);
+        }
+
+        optimised._isOptimised = langs;
+
+        return optimised;
+    }
+
+    /*
+     * Check that the cache for a script exists and, if optimised, contains the necessary languages.
+     *
+     * @param name The name of the script to check for.
+     * @param options Options set by the loading script.
+     *
+     * @return Boolean whether the cache should be used.
+     */
+    function cacheIsSuitable(name, options) {
+        var messages = cache[name] && cache[name]._messages;
+
+        // nothing in cache
+        if (!messages) {
+            return false;
+        }
+
+        // optimised messages missing user or content language
+        // we'll need to load from server in this case
+        if (
+            messages._isOptimised &&
+            !(messages[options.language] && messages[conf.wgContentLanguage])
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     /*
@@ -703,12 +842,20 @@
             console.warn('[I18n-js] SyntaxError in messages: ' + msg);
         }
 
+        if (
+            options.useCache &&
+            !options.loadedFromCache &&
+            options.cacheAll !== true
+        ) {
+            json = optimiseMessages(name, json, options);
+        }
+
         obj = i18n(json, name, options);
 
         // cache the result in case it's used multiple times
         cache[name] = obj;
 
-        if (typeof options.cacheVersion === 'number') {
+        if (!options.loadedFromCache) {
             saveToCache(name, json, options.cacheVersion);
         }
 
@@ -733,7 +880,7 @@
 
         // cache exists, and its version is greater than or equal to requested version
         if (cacheContent && cacheVersion >= options.cacheVersion) {
-            delete options.cacheVersion;
+            options.loadedFromCache = true;
             parseMessagesToObject(name, cacheContent, options);
         }
     }
@@ -745,6 +892,7 @@
      *     used to get messages from
      *     https://dev.fandom.com/wiki/MediaWiki:Custom-name/i18n.json.
      * @param options Options set by the loading script:
+     *     cacheAll: Either an array of message names for which translations should not be optimised, or `true` to disable the optimised cache.
      *     cacheVersion: Minimum cache version requested by the loading script.
      *     language: Set a default language for the script to use, instead of wgUserLanguage.
      *     noCache: Never load i18n from cache (not recommended for general use).
@@ -760,22 +908,19 @@
 
         options = options || {};
         options.cacheVersion = Number(options.cacheVersion) || 0;
-        options.language = String(options.language) || conf.wgUserLanguage;
+        options.language = options.language || conf.wgUserLanguage;
         options.useCache = (options.noCache || conf.debug) !== true;
-
-        // if using the special 'qqx' language code, there's no need to load
-        // the messages, so resolve with an empty i18n object and return early
-        if (conf.wgUserLanguage === 'qqx') {
-            return deferred.resolve(i18n({}, name, options));
-        }
 
         if (options.useCache) {
             loadFromCache(name, options);
 
-            if (cache[name]) {
+            if (cacheIsSuitable(name, options)) {
                 return deferred.resolve(cache[name]);
             }
         }
+
+        // cache isn't suitable - loading from server
+        options.loadedFromCache = false;
 
         // allow custom i18n pages to be specified on other wikis
         // mainly for VSTF wiki to keep their own JSON file
@@ -799,7 +944,11 @@
             prop: 'revisions',
             rvprop: 'content',
             titles: page,
-            indexpageids: 1
+            indexpageids: 1,
+            origin: '*',
+            // Cache results for 5 minutes in CDN and browser
+            maxage: 300,
+            smaxage: 300
         };
 
         // site and user are dependencies so end-users can set overrides in their local JS
@@ -808,7 +957,6 @@
         mw.loader.using(['mediawiki.language', 'mediawiki.util'/*, 'site', 'user'*/], function () {
             $.ajax(apiEndpoint, {
                 data: params,
-                dataType: 'jsonp'
             }).always(function (data) {
                 var res = '',
                     revisionData = data.query && data.query.pages[data.query.pageids[0]].revisions;
@@ -828,13 +976,16 @@
     window.dev.i18n = $.extend(window.dev.i18n, {
         loadMessages: loadMessages,
 
-        // 'hidden' functions to allow testing
+        // 'hidden' functions to allow testing and debugging
+        // they may be changed or removed without warning
+        // scripts should not rely on these existing or their output being in any particular format
         _stripComments: stripComments,
         _saveToCache: saveToCache,
         _getMsg: getMsg,
         _handleArgs: handleArgs,
         _parse: parse,
-        _fallbacks: fallbacks
+        _fallbacks: fallbacks,
+        _cache: cache
     });
 
     // initialise overrides object

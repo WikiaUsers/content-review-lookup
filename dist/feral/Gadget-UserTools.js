@@ -1,9 +1,9 @@
 importArticles({
     type:'script',
     articles:[
-        'u:dev:BlogLink/code.js',
-        'u:dev:ChainQuotes.js',
-        'u:dev:PreferenceLinks.js',
-        'u:dev:QuickDiff/code.js',
+        'u:dev:MediaWiki:BlogLink/code.js',
+        'u:dev:MediaWiki:ChainQuotes.js',
+        'u:dev:MediaWiki:PreferenceLinks.js',
+        'u:dev:MediaWiki:QuickDiff/code.js',
     ],
 });/**/

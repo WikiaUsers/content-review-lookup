@@ -1,1 +1,0 @@
-#PATRZ [[MediaWiki:Wikia.js/facebook.js]]

@@ -4,42 +4,6 @@
 
 // This script is to be used only for a specific page: 
 if (wgPageName == "User:Jeiara/YUI") {
-//alert('you are on the test page');
-/* 1st Attempt
-document.write('<script type="text/javascript" src="' 
-    + '/index.php?title=MediaWiki:Carousel.js&action=raw&ctype=text/javascript"></script>');
-
-    var myCarousel = new CarouselJs('go');
-
-    YAHOO.util.Event.onDOMReady(myCarousel);
-*/
-
-/* 2nd Attempt
-alert('attempt2');
-    importScript('MediaWiki:Carousel.js');
-function loadFunc() {
-alert('doing load func');
-    new CarouselJs('go');
-alert('after creating new');
-}
-    addOnloadHook(loadFunc);
-*/
-
-
-
-/* 3rd Attempt
-init = function() {
-      importScript('MediaWiki:Carousel.js');
-      new CarouselJs('go');
-}
-
-YAHOO.util.Event.onDOMReady(init);
-*/
-
-
-
-
-/* 4th Attempt */
 
 function include(filename)
 {

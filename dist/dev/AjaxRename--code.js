@@ -9,7 +9,7 @@
     ]),
     $list = $('.page-header__contribution-buttons .wds-list');
  
-    if(!$list.find('#ca-move').exists() || window.AjaxRenameLoaded) {
+    if(!$list.find('#ca-move').length || window.AjaxRenameLoaded) {
         return;
     }
     window.AjaxRenameLoaded = true;

@@ -5,20 +5,26 @@ window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 
 /* Configure tooltips js module */
-var tooltips_config = {
+window.tooltips_config = {
     offsetX: 5,
     offsetY: 10,
     waitForImages: false,
 };
  
-var tooltips_list = [{
+window.tooltips_list = [{
     classname: 'popup-tooltip',
     parse: '{' + '{<#popup#>|tt=<#tt#>}}'
 }];
 /*! Configure tooltips js module */
 
 /* Configure Back to Top module */
-window.BackToTopModern = true;
+window.BackToTopModern = false;
 window.BackToTopSpeed = 300;
 window.BackToTopStart = 800;
 /*! Configure Back to Top js module */
+/* Any JavaScript here will be loaded for all users on every page load. */
+$(function() {
+    mw.hook('DiscordIntegrator.added').add(function($el) {
+        $el.appendTo('#WikiaRail');
+    });
+});

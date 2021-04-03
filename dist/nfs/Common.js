@@ -214,8 +214,8 @@ $(function() {
 // LinkPreview configuration
 // ============================================================
     window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
-    window.pPreview.defimage = 'https://vignette.wikia.nocookie.net/nfs/images/8/89/Wiki-wordmark.png/revision/latest?cb=20190814223717&path-prefix=en';
-    window.pPreview.noimage = 'https://vignette.wikia.nocookie.net/nfs/images/8/89/Wiki-wordmark.png/revision/latest?cb=20190814223717&path-prefix=en';
+    window.pPreview.defimage = 'https://static.wikia.nocookie.net/nfs/images/1/1c/Rap_sheet.jpg/revision/latest?cb=20120422091133&path-prefix=en';
+    window.pPreview.noimage = 'https://static.wikia.nocookie.net/nfs/images/1/1c/Rap_sheet.jpg/revision/latest?cb=20120422091133&path-prefix=en';
     window.pPreview.tlen = 500;
     window.pPreview.RegExp.iparents = ['.wikia-gallery'];
 
@@ -223,13 +223,12 @@ $(function() {
 // WAM rail
 // ============================================================
 window.railWAM = {
-    logPage:"Project:WAM Log"
+    logPage: 'Project:WAM Log',
+    appendAfter: '#wikia-recent-activity',
+    showLogAlert: 'false'
 };
 
 // ============================================================
-// RailWAM configuration
+// YoutubePlayer
 // ============================================================
-window.railWAM = {
-    appendAfter: '#wikia-recent-activity',
-    loadOnPage: 'Special:WikiActivity',
-};
+    window.YoutubePlayerDisableAutoplay = true;

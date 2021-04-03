@@ -169,7 +169,7 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
         data: {
             mode: 'articles',
             only: 'scripts',
-            articles: 'u:dev:Colors/code.js'
+            articles: 'u:dev:MediaWiki:Colors/code.js'
         },
         dataType: 'script',
         cache: true
@@ -518,6 +518,8 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
                     }
                 });
             }
+            // Show lazyloaded images
+            $(window).trigger('scroll');
 
             this.options.visible = true;
             this._trigger('open', event/*, arbitrary data object*/); // fires referencepopupopen
@@ -863,7 +865,6 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
                 $('<a href="#configure-refpopups" class="refpopups-configure-page" />')
                 .html('[' + module.messages.coreConfigureText + ']')
                 .click(onClickConfigure)
-                .appendTo(this)
                 );
         });
     }

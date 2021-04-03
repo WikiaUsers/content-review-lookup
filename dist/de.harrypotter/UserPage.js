@@ -1,13 +1,13 @@
-if($('.UserProfileMasthead').exists()) {
+if(!!$('.UserProfileMasthead').length) {
     var discussions = parseInt($('.UserProfileMasthead .discussion-details em').text(), 10);
     var wiki = parseInt($('.UserProfileMasthead .contributions-details em').text(), 10);
     
-    if(wiki <= 0 && $('.noarticletext').exists()) {
+    if(wiki <= 0 && !!$('.UserProfileMasthead').length) {
         $('.UserProfileMasthead .contributions-details').remove('');
         $('.UserProfileMasthead .discussion-details').css('border-top','none');
-        var url = '/api.php?' + $.param({
+        var url = mw.util.wikiScript('api') + '?' + $.param({
             action: 'parse',
-            title: wgTitle,
+            title: mw.config.get('wgTitle'),
             format: 'json'
         }) + '&text={{int:Custom-Noarticletext+NS+User+Discussions}}';
         $.getJSON(url, function(res) {

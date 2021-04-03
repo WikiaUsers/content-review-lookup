@@ -1,2 +1,2 @@
 window.BackToTopModern = true;
-window.BackToTopStart = 800;
+window.BackToTopStart  = 800;

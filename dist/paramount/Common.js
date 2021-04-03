@@ -1,5 +1,3 @@
-window.RailWAM = {
-    logPage:"Project:WAM Log",
-    autoLogForUsers: [
-        "UpnCbs06"]
+window.rwaOptions = {
+	headerLink: true
 };

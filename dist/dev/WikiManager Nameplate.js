@@ -1,10 +1,6 @@
 // v1.2 by Luqgreg
 // <nowiki>
-require( [
-    'wikia.window',
-    'jquery',
-    'mw'
-], function( window, $, mw ) {
+(function( window, $, mw ) {
     var config = mw.config.get( [
         'wgScriptPath',
         'wgCanonicalSpecialPageName'
@@ -114,4 +110,4 @@ require( [
         } ),
         mw.loader.using( [ 'mediawiki.api', 'mediawiki.util' ] )
     ).done( wikiManagerModule );
-} );
+} )( window, jQuery, mediaWiki );

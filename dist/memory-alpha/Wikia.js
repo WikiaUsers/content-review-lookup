@@ -1,3 +1,23 @@
+/* To replace the now dead "welcome bot" */
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2: '{{sub'+'st:newuser}}',
+        3: '{{sub'+'st:welcome}}',
+        1202: false
+    },
+    summary: 'Script: Creating user+talkpage on first edit'
+};
+
+/* Personalised MA copyright notice */
+$(function(){
+	$('.license-description').append('See <a href="https://memory-alpha.fandom.com/wiki/Memory_Alpha:Copyrights">Memory Alpha\'s Copyright</a> information for full details.');
+});
+
+/* MA rail module for Ten Forward posts */
+window.AddRailModule = [
+    'Template:Ten Forward rail module'
+];
+
 /* Re-add proper namespace prefix to titles where it has been removed "by design" */
 $('.ns-5 .page-header__title').prepend('Memory Alpha ');
 $('.ns-6 .page-header__title').prepend('File:');
@@ -10,16 +30,10 @@ $('.ns-13 .page-header__title').prepend('Help ');
 $('.ns-14 .page-header__title').prepend('Category:');
 $('.ns-15 .page-header__title').prepend('Category ');
 
-/* Disabling "breadcrumb" tiered links for subpages in main namespace.
-** Article titles there should be considered "flat", even if containing slashes.
-** See: [[Memory Alpha talk:Subpages]]. By: [[User:Bobogoobo]]. */
-/**
-$(function() {
-    var $h2 = $('.WikiaPageHeader h2'), ismain = (mw.config.get('wgNamespaceNumber') === 0);
-    if (ismain && $h2.children('a').length > 1) {
-        $h2.html($h2[0].innerHTML.substring($h2[0].innerHTML.indexOf('|') + 1));
-    } else if (ismain && $h2.text().indexOf('<') === 0) {
-        $h2.remove();
-    }
+/* Show 'Other Review Tools' in UCP RecentChanges by default
+mw.hook('wikipage.content').add(function() {
+	if (mw.cookie.get('rcfilters-toplinks-collapsed-state') === 'expanded') return;
+	mw.cookie.set('rcfilters-toplinks-collapsed-state', 'expanded');
+	$('.mw-recentchanges-toplinks .oo-ui-buttonElement-button').click();
 });
-**/
+*/

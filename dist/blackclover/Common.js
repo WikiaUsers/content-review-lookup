@@ -237,7 +237,7 @@ $(document).ready(function() {
 /* Add UTC clock above articles */
 importScript('MediaWiki:Common.js/displayTimer.js');
 
-/* Replaces {{Visitor}} with the name of the user browsing the page.
+/* Replaces Template:Visitor with the name of the user browsing the page.
    Requires copying Template:USERNAME. */
  
 function UserNameReplace() {

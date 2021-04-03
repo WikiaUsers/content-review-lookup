@@ -1,33 +1,5 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
 
-/*Плашки в профайл*/
-window.onload = function () {
-if (wgUserName !== 'null') {
-        $('.insertusername').html(wgUserName);
-    }
-}
-//by Rappy_4187
-$(function() {
- var rights = {};
-   //Moderators
- rights["CotilliontheRope"]            = ["МОДЕРАТОР ВИКИ"];
- rights["RidrichVi"]                   = ["МОДЕРАТОР ВИКИ"];
- rights["TreTreTre"]                   = ["МОДЕРАТОР ВИКИ"];
- //Master
- rights["Hronorog"]                    = ["ОСНОВАТЕЛЬ"];
-
-  if (typeof rights[wgTitle] != "undefined") { 
-       //remove old rights
-      $('.UserProfileMasthead .masthead-info span.tag').remove();
-      for( var i=0, len=rights[wgTitle].length; i < len; i++) {
-        // add new rights
-        $('<span class="tag">' + rights[wgTitle][i] +
-          '</span>').appendTo('.masthead-info hgroup');
-      }
-    }
-});
-
-/****************************************/
 /* sliders using jquery by User:Tierrie */
 /****************************************/
 //wsl.loadScript("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js");

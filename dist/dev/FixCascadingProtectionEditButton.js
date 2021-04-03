@@ -23,7 +23,7 @@
                 d.query.pages[config.wgArticleId].protection &&
                 d.query.pages[config.wgArticleId].protection.some(function (item) { return item.source; })
             ) {
-                $('#ca-edit, #ca-ve-edit').empty().append(dev.wds.icon('pencil-small'), '&nbsp;&nbsp;', document.createTextNode(msg));
+                $('.wds-button-group > #ca-edit, .wds-button-group > #ca-ve-edit').empty().append(dev.wds.icon('pencil-small'), '&nbsp;&nbsp;', document.createTextNode(msg));
             }
         });
     }

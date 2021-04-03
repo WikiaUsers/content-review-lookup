@@ -1,1 +1,0 @@
-#Redirect [[MediaWiki:Common.js/quiz.js]]

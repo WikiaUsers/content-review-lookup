@@ -1,33 +1,3 @@
- /*Special tool for the USERNAME template.*/
-/* Replaces {{USERNAME}} with the name of the user browsing the page.
- Requires copying Template:USERNAME. */
- // Insert username
-if (mw.config.get('wgAction') === 'view' && mw.user.name !== null) {
-    $('.insertusername').text(mw.user.name);
-}
-/* End of the {{USERNAME}} replacement */
-	
-importArticles({
-	type: 'script',
-	articles: [
-		// ...
-		'u:dev:DisplayClock/code.js',
-		'w:c:dev:UserTags/code.js',
-		// ...
-	]
-});
-
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		'dsfishlabse': { u: 'DS FISHLABS Employee', order:0, title:'This user works at Deep Silver FISHLABS.' },
-		'dsfishlabsd': { u: 'DS FISHLABS Developer' },
-	},
-};
-UserTagsJS.modules.custom = {
-	'Tobi.dsfl': ['dsfishlabse']
-};
-
 /* nemesis */
 $(function() {
 	mw.util.addCSS('@keyframes nemesis-modal-vertical{0%{transform:translate(0,-42px);}50%{transform: translate(0,42px);}100%{transform:translate(0,-42px);}}nav#nemesis-modal{position:fixed;top:120px;left:0;z-index:100000;}nav#nemesis-modal .nemesis-modal-vertical{animation: nemesis-modal-vertical 3s ease-in-out infinite;}nav#nemesis-modal .nemesis-modal-horizontal{position:absolute;}');

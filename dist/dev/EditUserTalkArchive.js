@@ -1,14 +1,51 @@
-/* Allows for editing user talk archive pages on wikis with Message Wall enabled */
-
-if (
-	window.EditUserTalkArchiveLoaded ||
-	!/sysop|vstf|staff|helper|wiki-manager|content-team-member|content-volunteer/.test(mw.config.get('wgUserGroups').join())
-) {
-	return;
-}
-if (mw.config.get('wgNamespaceNumber') === 1200 && mw.config.get('wgTitle').endsWith("/User talk archive")) {
-	var uta_link = mw.util.getUrl("User_talk:") + wgTitle.replace("/User talk archive", "");
-	$(".page-header__contribution-buttons").append("<div class='wds-button-group'><a href='" + uta_link + "?action=edit' class='wds-button' id='ca-edit' data-tracking='ca-edit' accesskey='e'><svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 18 18' class='wds-icon wds-icon-small' id='wds-icons-pencil-small'><defs><path id='pencil-small' d='M14 8.586L9.414 4 11 2.414 15.586 7 14 8.586zM6.586 16H2v-4.586l6-6L12.586 10l-6 6zm11.121-9.707l-6-6a.999.999 0 0 0-1.414 0l-9.999 10a.99.99 0 0 0-.217.325A.991.991 0 0 0 0 11v6a1 1 0 0 0 1 1h6c.13 0 .26-.026.382-.077a.99.99 0 0 0 .326-.217l9.999-9.999a.999.999 0 0 0 0-1.414z'></path></defs><use fill-rule='evenodd' xlink:href='#pencil-small'></use></svg><span>Edit</span></a><div class='wds-dropdown'><div class='wds-button wds-dropdown__toggle'><svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 12 12' class='wds-icon wds-icon-tiny wds-dropdown__toggle-chevron' id='wds-icons-dropdown-tiny'><defs><path id='dropdown-tiny-a' d='M6.0001895,8.80004571 C5.79538755,8.80004571 5.5905856,8.72164496 5.43458411,8.56564348 L2.23455364,5.365613 C2.00575146,5.13681083 1.93695081,4.79280755 2.06095199,4.4936047 C2.18415316,4.19440185 2.47695595,4 2.80015903,4 L9.20021997,4 C9.52342305,4 9.81542583,4.19440185 9.93942701,4.4936047 C10.0634282,4.79280755 9.99462754,5.13681083 9.76582536,5.365613 L6.56579489,8.56564348 C6.4097934,8.72164496 6.20499145,8.80004571 6.0001895,8.80004571 Z'></path></defs><use fill-rule='evenodd' xlink:href='#dropdown-tiny-a'></use></svg></div><div class='wds-dropdown__content wds-is-not-scrollable wds-is-right-aligned'><ul class='wds-list wds-is-linked'><li><a id='ca-history' href='" + uta_link + "?action=history' data-tracking='ca-history-dropdown'>History</a></li><li><a id='ca-protect' href='" + uta_link + "?action=protect' data-tracking='ca-protect-dropdown'>Protect</a></li><li><a id='ca-delete' href='" + uta_link + "?action=delete' data-tracking='ca-delete-dropdown'>Delete</a></li><li><a href='" + uta_link + "?action=watch'>Follow</a></li></ul></div></div></div>");
-}
-
-window.EditUserTalkArchiveLoaded = true;
+(function () {
+	/* only local and global staff and if script has not already run */
+	if (
+		window.EditUserTalkArchiveLoaded ||
+		!/sysop|staff|helper|wiki-manager|content-team-member|content-volunteer|soap/.test(mw.config.get("wgUserGroups").join())
+	) {
+		return;
+	}
+	
+	/* Prevent redirect when trying to edit user talk pages on wikis with Message Walls
+		and remove Add Topic button since user talk pages are not used on these wikis.
+		This works for subpages as well. */
+	if (mw.config.get("wgNamespaceNumber") === 3) {
+		if($(".page-header__page-subtitle a[title*='Message Wall']").length){
+			var relativeLink = mw.config.get("wgArticlePath").replace("$1", mw.config.get("wgPageName"));
+			$("#ca-addsection").remove();
+			$("#ca-edit")
+				.attr("href", relativeLink + "?action=edit&redirect=no")
+				.html("<span>" + $("#ca-edit").text() + "</span>")
+				.addClass("wds-button")
+				.prependTo(".page-header__contribution-buttons .wds-button-group");
+			$("#ca-history").attr("href", relativeLink + "?action=history&redirect=no");
+			$("#ca-protect").attr("href", relativeLink + "?action=protect&redirect=no");
+			$("#ca-delete").attr("href", relativeLink + "?action=delete&redirect=no");
+		}
+		
+		// Prepend icon to edit button if dev.wds properly imports
+		mw.hook("dev.wds").add(function(wds) {
+			$("#ca-edit").prepend(wds.icon("pencil-small"));
+		});
+	}
+	
+	/* Add button on Message Walls to user talk pages */
+	if (mw.config.get("wgNamespaceNumber") === 1200) {
+	    // Add button above Message Wall
+		var talkLink = mw.config.get("wgServer") + mw.config.get("wgArticlePath").replace("$1", "User_talk:" + mw.config.get("wgTitle"));
+		$("#MessageWall").before('<div id="euta_buttons" style="margin-bottom: 1em; text-align: right;"><a id="euta_button" class="wds-button wds-is-secondary" href="' + talkLink + '?redirect=no"><span>User Talk Archive</span></a></div>');
+		
+		// Prepend icon to button if dev.wds properly imports
+		mw.hook("dev.wds").add(function(wds) {
+			$("#euta_button").prepend(wds.icon("bubble-small"));
+		});
+	}
+	
+	/* Import WDS */
+	if (mw.config.get("wgNamespaceNumber") === 3 || mw.config.get("wgNamespaceNumber") === 1200) {
+		if(!window.dev.wds){ importArticle({ type: "script", article: "u:dev:MediaWiki:WDSIcons/code.js" }); }
+	}
+	
+	window.EditUserTalkArchiveLoaded = true;
+}());

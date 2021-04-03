@@ -1,3 +1,4 @@
+/* Content originally from roblox.fandom.com/wiki/Module:MediaWiki:Common.js */
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 /** Test if an element has a certain class **************************************

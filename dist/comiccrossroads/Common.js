@@ -3,6 +3,7 @@
 importArticles({
     type: "script",
     articles: [
+		'u:dev:MediaWiki:AjaxBatchDelete.js',
         'w:c:dev:Countdown/code.js',
         'w:c:dev:EditcountTag/code.js',
         'w:c:dev:WallGreetingButton/code.js',

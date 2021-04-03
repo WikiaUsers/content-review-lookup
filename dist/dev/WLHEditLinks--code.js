@@ -1,15 +1,17 @@
-require(['jquery', 'mw'], function ($, mw) {
+(function () {
     'use strict';
 
     var config = mw.config.get([
         'wgCanonicalSpecialPageName',
-        'wgNamespaceNumber'
+        'wgNamespaceNumber',
+        'wgVersion'
     ]);
     var isWhatLinksHere = config.wgCanonicalSpecialPageName === 'Whatlinkshere';
     var isFilePage = config.wgNamespaceNumber === 6;
     var i18n;
+    var isUCP = config.wgVersion !== '1.19.24';
 
-    if (window.WLHEditLinksLoaded || !(isWhatLinksHere || isFilePage)) {
+    if (window.WLHEditLinksLoaded || !(isWhatLinksHere || isFilePage) || isUCP) {
         return;
     }
 
@@ -88,4 +90,4 @@ require(['jquery', 'mw'], function ($, mw) {
             'u:dev:MediaWiki:I18n-js/code.js'
         ]
     });
-});
+})();

@@ -12,20 +12,6 @@ WebFontConfig = {
 	s.parentNode.insertBefore(wf, s);
 })();
  
-/*Search Enhancements - by ShermanTheMythran (special thanks to Lunarity)*/
-$('.Search .WikiaSearch input[name="search"]').attr('placeholder','Search this wiki');
-$('.Search .WikiaSearch input[name="search"]').attr('placeholder','Search this wiki');
-mediaWiki.loader.load('jquery.ui.core', null, true);
-mediaWiki.loader.using('jquery.ui.core', function() {
-	"use strict";
-	$('body').on('keypress.WikiaSearchHack', function(ev) {
-		if (ev.ctrlKey || ev.altKey || ev.metaKey || !ev.which || $(ev.target).is(':focusable')) { return; }
-		ev.preventDefault();
-		var $box = $('#WikiaSearch > input[type="text"]').focus();
-		$box.val($box.val() + (ev.key || String.fromCharCode(ev.charCode))); }
-	); }
-);
- 
 /*External Links - by ShermanTheMythran*/
 $('.links a, .wikis a, a.external, .WikiNav > ul > li:last-child > .subnav-2 > li:first-child > .subnav-2a, .WikiNav > ul > li:last-child > .subnav-2 > li > .subnav-3 > li > .subnav-3a').attr('target', '_blank');
  

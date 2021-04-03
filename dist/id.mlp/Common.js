@@ -48,7 +48,7 @@ if (
 //   All transcript lister by Bobogoobo - http://mlp.wikia.com/wiki/Special:BlankPage?blankspecial=transcripts
 //   Non-720p image lister by Bobogoobo - http://mlp.wikia.com/wiki/Special:BlankPage?blankspecial=non720
 //   Dead video lister by Bobogoobo - http://mlp.wikia.com/wiki/Special:BlankPage?blankspecial=deadvideos
-if (mw.config.get('wgPageName') === 'Special:BlankPage' && mw.util.getParamValue('blankspecial')) {
+if (mw.config.get('wgPageName') === 'Istimewa:Halaman_kosong' && mw.util.getParamValue('blankspecial')) {
     impart('MediaWiki:Common.js/' + {
             'ponystats': 'PonyStats.js',
             'transcripts': 'Transcripts.js',
@@ -120,7 +120,7 @@ if ($('.emote-template').length || $('#WikiaArticleComments').length) {
         }
 
         var emotes = '';
-        $.getJSON('/api.php?action=query&prop=revisions&titles=MediaWiki:Emoticons' + 
+        $.getJSON('/id/api.php?action=query&prop=revisions&titles=MediaWiki:Emoticons' + 
           '&rvprop=content&format=json', function(data) {
             emotes = data.query.pages['28113'].revisions[0]['*'];
             // 28113 is the wgArticleId of MediaWiki:Emoticons
@@ -370,7 +370,7 @@ $(function() {
         var s, e;
         s = search.toLowerCase().split('e')[0].substr(1);
         e = search.toLowerCase().split('e')[1];
-        $.getJSON('/api.php?action=edit&action=parse&text={{nameconvert|' + 
+        $.getJSON('/id/api.php?action=edit&action=parse&text={{mengubahnama|' + 
           s + '|' + e + '}}&format=json', function(data) {
             var episode = (data.parse.text['*'].match(/\>(.*)\n\</) || [0, 0])[1];
             if (episode && episode !== 'Akan diumumkan' && episode.indexOf('<span class="error">') === -1) {
@@ -398,11 +398,11 @@ $(function() {
 
     var $summary = $('#wpUploadDescription'), $filename = $('#wpDestFile'), eptest = /S\d+E\d+/i,
       charCats = [], charCatsEG = [], shortcuts = {'EG':{}}, pending = 0,
-      nicknames = {'Lyra Heartstrings':'Lyra', 'Princess Luna':'Nightmare Moon'}, //be careful
+      nicknames = {'Lyra Heartstrings':'Lyra', 'Putri Luna':'Nightmare Moon'}, //be careful
       ccStorage = window.sessionStorage.characterCategories;
 
     function nameCat(input) {
-        return input.substring(9).replace(' images', '');
+        return input.substring(9).replace('Gambar ', '');
         //return 'Mr. Fluffykins';
     }
 
@@ -458,7 +458,7 @@ $(function() {
     }
 
     if (typeof window.sessionStorage !== 'undefined' && !window.sessionStorage.characterCategories) {
-    $.getJSON('/api.php?action=query&list=categorymembers&cmtitle=Kategori:Gambar karakter' +
+    $.getJSON('/id/api.php?action=query&list=categorymembers&cmtitle=Kategori:Gambar karakter' +
       '&cmprop=title&cmlimit=max&format=json', function(data) { //will need update if we get over 500 of these
         pending += 1;
 
@@ -505,7 +505,7 @@ $(function() {
         }
 
         function fGet(title) {
-            $.getJSON('/api.php?action=query&list=categorymembers&cmtitle=' + title +
+            $.getJSON('/id/api.php?action=query&list=categorymembers&cmtitle=' + title +
               '&cmprop=title&cmtype=subcat&cmlimit=max&format=json', function(response) {
                 if (response.query.categorymembers.length) {
                     fEach(response);
@@ -530,7 +530,7 @@ $(function() {
         } else if (eptest.test(name)) { //episodes
             var match = name.match(eptest)[0].split(/e/i);
 
-            $.getJSON('/api.php?action=parse&text={{nameconvert|' + 
+            $.getJSON('/id/api.php?action=parse&text={{Mengubahnama|' + 
               match[0].substr(1) + '|' + match[1] + '}}&format=json', function(data) {
                 var episode = (data.parse.text['*'].match(/>(.*)\n</) || [0, 0])[1];
                 if (episode &&
@@ -599,7 +599,7 @@ $(function() {
         'src': 'https://images.wikia.nocookie.net/__cb62004/common/skins/common/progress-wheel.gif'
     }));
 
-    $.getJSON('/api.php?action=parse&page=' + page + '&prop=text&format=json', function(data) {
+    $.getJSON('/id/api.php?action=parse&page=' + page + '&prop=text&format=json', function(data) {
         if (data.error) {
             $('#mw-content-text').append($('<span />', {
                 'class': 'error',
@@ -722,7 +722,7 @@ $(function() {
 
     $('#mw-content-text').html('<p>Teks ini akan diganti ketika daftar selesai memuat.</p>');
 
-    $.getJSON('/api.php?action=query&prop=revisions&titles=Daftar poni&rvprop=content&rvlimit=1&format=json',
+    $.getJSON('/id/api.php?action=query&prop=revisions&titles=Daftar poni&rvprop=content&rvlimit=1&format=json',
       function(data) {
         var match, search = /#lst/g, headings;
 
@@ -732,7 +732,7 @@ $(function() {
         headings = code.substring(0, code.indexOf('|-', code.indexOf('|-') + 1));
         code = code.substring(headings.length - 1);
 
-        $.getJSON('/api.php?action=parse&prop=text&disablepp=true&format=json&text=' + encodeURIComponent(headings),
+        $.getJSON('/id/api.php?action=parse&prop=text&disablepp=true&format=json&text=' + encodeURIComponent(headings),
           function(result) {
             headings = result.parse.text['*'];
 
@@ -744,7 +744,7 @@ $(function() {
 
             $html = $('#mw-content-text table.listofponies');
 
-            $.getJSON('/api.php?action=parse&text={{lop legend}}&format=json&prop=text&disablepp=true', function(stuff) {
+            $.getJSON('/id/api.php?action=parse&text={{lop legend}}&format=json&prop=text&disablepp=true', function(stuff) {
                 $html.before($('<div>' + stuff.parse.text['*'] + '</div>').children('table'));
             });
 
@@ -752,7 +752,7 @@ $(function() {
         });
 
         function insertLists(index, callback) {
-            $.getJSON('/api.php?action=parse&prop=text&disablepp=true&format=json&text=' + templates[index],
+            $.getJSON('/id/api.php?action=parse&prop=text&disablepp=true&format=json&text=' + templates[index],
               function(result) {
                 var replace = {'||style':'</td><td style', '||align':'</td><td align', '||':'</td><td>',
                   '|-':'</tr><tr>', '|id':'<td id', '|data-':'<td data-', '|<':'<td><', '\\n|(\\w)':'<td>$1', 
@@ -855,7 +855,7 @@ $(function() {
                     }
                 }
             }
-            $.getJSON('/api.php?action=parse&format=json&prop=text&disablepp=true&text=' +
+            $.getJSON('/id/api.php?action=parse&format=json&prop=text&disablepp=true&text=' +
                 parseText.replace(/&/g, '%26'),
               function(data) {
                 var $newRow = $('#lyrics-row-' + safeTitle);

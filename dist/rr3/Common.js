@@ -100,16 +100,10 @@ function createCollapseButtons() {
                 }
         }
 }
-// Auto closing old threads 60 days old, see 
-// https://dev.wikia.com/wiki/Thread:17593 and
-// https://dev.wikia.com/wiki/LockForums
-window.LockForums = {
-    expiryDays: 60,
-    expiryMessage: "This forum has been automatically archived because its most recent comment is over <expiryDays> days old.",
-    warningDays: 30,
-    warningMessage: "This forum is now <actualDays> days old; out of courtesy to your fellow Wikians, please do not comment unless it is absolutely necessary. This forum will archive automatically when the last comment is <expiryDays> days old.",
-    banners: true,
-    warningPopup: true,
-    warningPopupMessage: "By posting on an old forum you may be filling up the e-mail boxes of many people who are still following this topic. Are you sure you want to do this?",
-    disableOn: ["153671", "337416", "31042", "90091", "94498", "287949", "295410", "340137", "354920", "354922"]
-};
+
+//Discord Integrator Location
+$(function() {
+    mw.hook('DiscordIntegrator.added').add(function($el) {
+        $el.appendTo('#WikiaRail');
+    });
+});

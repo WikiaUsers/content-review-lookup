@@ -99,3 +99,8 @@ window.UserTagsJS = {
 		chatmoderator: 'Chat Mod-Soul'
 	}
 };
+
+/* WikiActivity */
+window.rwaOptions = {
+    headerLink : true,
+};

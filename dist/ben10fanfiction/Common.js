@@ -18,7 +18,7 @@ var hasClass = (function () {
 importArticles({
     type: "script",
     articles: [
-        "w:c:dev:Countdown/code.js"
+        "w:c:dev:MediaWiki:Countdown/code.js"
     ]
 });
 

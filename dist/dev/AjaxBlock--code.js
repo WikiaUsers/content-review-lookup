@@ -1,362 +1,727 @@
 /*
  * AjaxBlock ([[w:c:dev:AjaxBlock]])
  *
- * @author: Dorumin
+ * @author: Dorumin (https://dev.fandom.com/wiki/User:Dorumin)
  * @scope: Personal use
  * @description: Allows user blocking without leaving the current page.
- * @update 04/05/16: Now detects block and unblock links that were added after window onload.
- * @update 22/05/16: Now supports unblocking IDs + a few minor changes.
- * @update 03/06/16: Now supports the incredibly rare and useless Special:Block?wpTarget=<user> links,
- *                   This script will not run if it was initialized already, or if you right click the link,
- *                   You now have retry, unblock, and re-block links on banner notifications,
- *                   Fixed bug while blocking IDs.
- * @update 01/09/17: Adding i18n, option group support, and some code clean-up.
+ * @update 2016-05-04 Doru: Now detects block and unblock links that were added after window onload.
+ * @update 2016-05-22 Doru: Now supports unblocking IDs + a few minor changes.
+ * @update 2016-06-03 Doru: Now supports the incredibly rare and useless Special:Block?wpTarget=<user> links,
+ *                          This script will not run if it was initialized already, or if you right click the link,
+ *                          You now have retry, unblock, and re-block links on banner notifications,
+ *                          Fixed bug while blocking IDs.
+ * @update 2017-09-01 Doru: Adding i18n, option group support, and some code clean-up.
+ * @update 2020-10-20 Thundercraft5: Adding UCP support, some new features, as well as general improvements.
+ *
+ * @update 2020-10-25 Doru: Rewrite, remove badly thought out features, remove QDModal in favor of Modal-js, fix bugs, implement new loader
  */
 
-$.when(
-    mw.loader.using('mediawiki.api'),
-    $.Deferred(function(def) {
-        importArticle({
-            type: 'script',
-            article: 'u:dev:MediaWiki:I18n-js/code.js'
-        });
-        mw.hook('dev.i18n').add(function(i18n) {
-            def.resolve(i18n);
-        });
-    })
-).then(function(x, lib) {
-    
-    // Libraries, not including jQuery because it's jQuery
-    if (!window._) {
-        console.log('Wikia stopped supporting underscorejs? Noooo');
-        return;
-    }
-    
-    // Double-runs
-    if (window.AjaxBlockInit) return;
-    window.AjaxBlockInit = true;
-    
-    // Running this as a normie? Ha
-    var rights = /^(sysop|vstf|staff|helper|global-discussions-moderator|wiki-manager)$/m,
-    wg = mw.config.get([
-        'wgUserGroups',
-        'wgNamespaceIds',
-        'wgCanonicalSpecialPageName',
-        'wgServer',
-        'wgArticlePath'
-    ]);
-    if (!rights.test(wg.wgUserGroups.join('\n'))) return;
-    
-    // Import styles
-    importArticle({
-        type: 'style',
-        article: 'u:dev:MediaWiki:AjaxBlock.css'
-    });
-    
-    // Declare constants
-    var Api = new mw.Api(),
-    config = window.AjaxBlock || {},
-    special_ns = Object.keys(wg.wgNamespaceIds).filter(function(key) {
-        return wg.wgNamespaceIds[key] == -1;
-    }),
-    promises = [
-        Api.get({ // For interlanguage block links
-            action: 'query',
-            meta: 'siteinfo',
-            siprop: 'specialpagealiases'
-        }),
-        Api.get({ // Get default expiry times and block reasons
-            action: 'query',
-            meta: 'allmessages',
-            ammessages: 'Ipboptions|Ipbreason-dropdown'
-        }),
-        lib.loadMessages('AjaxBlock') // i18n, yeah!
-    ];
-    config.check = config.check || {};
-    
-    // Declare methods
-    function parse_default_reasons(wikitext) {
-        wikitext = wikitext.replace(/\n\s*\n/g, '\n').trim(); // Remove the empty lines
-        var split = wikitext.split('\n'),
-        reasons = {},
-        section = null;
-        split.forEach(function(line) {
-            if (line.charAt(0) != '*') {
-                if (section && section.label && Object.keys(section).length - 1) {
-                    reasons[section.label] = section;
-                    delete reasons[section.label].label;
-                    section = {label: ''};
-                }
-                reasons[line] = line;
-            } else if (line.charAt(1) == '*') {
-                if (section && section.label) {
-                    if (line.slice(2) == 'label') return;
-                    section[line.slice(2)] = line.slice(2);
-                } else { // A ** list element without a * parent... what the hell mate
-                    reasons[line.slice(2)] = line.slice(2);
-                }
-            } else if (line.charAt(0) == '*') {
-                if (section && section.label && Object.keys(section).length - 1) {
-                    reasons[section.label] = section;
-                    delete reasons[section.label].label;
-                }
-                section = {
-                    label: line.slice(1)
-                };
+(function() {
+    if (window.AjaxBlock && window.AjaxBlock.loaded) return;
+
+    var ui;
+
+    window.AjaxBlock = $.extend({
+        loaded: true,
+
+        // Config options and defaults
+        expiryTimes: null,
+        blockReasons: null,
+        unblockReasons: null,
+        check: {
+            talk: false,
+            autoBlock: false,
+            override: true,
+            noCreate: true
+        },
+
+        // Globals
+        wg: mw.config.get([
+            'wgUserGroups',
+            'wgNamespaceIds',
+            'wgArticlePath'
+        ]),
+        isUCP: parseFloat(mw.config.get('wgVersion')) > 1.19,
+        currentModal: null,
+
+        // Resource management
+        loading: [
+            'css',
+            'api',
+            'banners',
+            'i18n',
+            'i18n-js',
+            'modal-js',
+            'dorui',
+            'expiry-times',
+            'block-reasons',
+            'aliases'
+        ],
+        onload: function(key, arg) {
+            switch (key) {
+                case 'i18n-js':
+                    arg.loadMessages('AjaxBlock').then(this.onload.bind(this, 'i18n'));
+                    break;
+                case 'i18n':
+                    this.i18n = arg;
+                    break;
+                case 'api':
+                    this.api = new mw.Api();
+                    this.ensureBlockSelects();
+                    this.loadSpecialPageAliases();
+                    break;
+                case 'dorui':
+                    ui = arg;
+                    break;
             }
-        });
-        if (section && section.label && Object.keys(section).length - 1) {
-            reasons[section.label] = section;
-            delete reasons[section.label].label;
-        }
-        return reasons;
-    }
-    
-    function parse_default_expiry_times(wikitext) {
-        var split = wikitext.split(','),
-        obj = {};
-        split.forEach(function(item) {
-            var s = item.split(':');
-            obj[s[1]] = s[0];
-        });
-        return obj;
-    }
-    
-    function build_select(obj, id, i18n) {
-        var $sel = $('<select>').attr('id', id);
-        $sel.append(
-            $('<option>', {
-                value: 'other',
-                text: i18n.msg('other').escape()
-            })
-        );
-        for (var i in obj) {
-            var item = obj[i];
-            if (typeof item == 'string') {
-                $sel.append(
-                    $('<option>')
-                        .attr('value', i)
-                        .text(item)
-                );
-            } else {
-                var $group = $('<optgroup>', {
-                    label: i
-                });
-                for (var j in item) {
-                    $group.append(
-                        $('<option>')
-                            .attr('value', j)
-                            .text(item[j])
-                    );
-                }
-                $sel.append($group);
+
+            var index = this.loading.indexOf(key);
+            if (index === -1) throw new Error('Unregistered dependency loaded: ' + key);
+
+            this.loading.splice(index, 1);
+
+            if (this.loading.length !== 0) return;
+
+            this.init();
+        },
+        canRun: function() {
+            return this.hasRights([
+                'sysop',
+                'staff',
+                'helper',
+                'global-discussions-moderator',
+                'wiki-manager',
+                'soap'
+            ]);
+        },
+        hasRights: function(rights) {
+            var len = rights.length;
+            while (len--) {
+                if (this.wg.wgUserGroups.indexOf(rights[len]) !== -1) return true;
             }
-        }
-        return $sel;
-    }
-    
-    function build_checkbox(id, label, checked) {
-        var $wrapper = $('<div>'),
-        $check = $('<input>').attr('type', 'checkbox').attr('id', id).prop('checked', checked),
-        $label = $('<label>').attr('for', id).text(label.escape());
-        $wrapper.append($check, $label);
-        return $wrapper;
-    }
-    
-    function show_modal(i18n, user, config, unblocking, expiry_times, block_reasons) {
-        var $content = $('<div>').attr('id', unblocking ? 'ajaxUnblockModalContent' : 'AjaxBlockModalContent');
-        if (unblocking) {
-            $content.append(
-                $('<div>', {
-                    class: 'AjaxBlockInlineInput',
-                    append: [
-                        i18n.msg('reason').escape(),
-                        $('<input>', {
-                            id: 'AjaxUnblockReasonInput'
-                        })
-                    ]
-                })
-            );
-        } else {
-            $content.append(
-                $('<div>', {
-                    class: 'AjaxBlockExpiryWrapper',
-                    append: [
-                        i18n.msg('expiry').escape(),
-                        build_select(expiry_times, 'AjaxBlockExpirySelect', i18n),
-                        $('<input>', {
-                            id: 'AjaxBlockExpiryInput'
-                        })
-                    ]
-                }),
-                $('<div>', {
-                    class: 'AjaxBlockReasonWrapper',
-                    append: [
-                        i18n.msg('reason').escape(),
-                        build_select(block_reasons, 'AjaxBlockReasonSelect', i18n),
-                        $('<input>', {
-                            id: 'AjaxBlockReasonInput'
-                        })
-                    ]
-                }),
-                $('<div>', {
-                    class: 'AjaxBlockCheckers',
-                    append: [
-                        build_checkbox('AjaxBlockDisableWall', i18n.msg('label-disable-wall'), config.check.talk),
-                        build_checkbox('AjaxBlockAutoBlock', i18n.msg('label-auto-block'), config.check.autoblock || config.check.autoBlock),
-                        build_checkbox('AjaxBlockOverrideBlock', i18n.msg('label-override'), config.check.override)
-                    ]
-                })
-            );
-        }
-        
-        var options = {
-            id: unblocking ? 'AjaxUnblockModal' : 'AjaxBlockModal'
-        };
-        if (unblocking) {
-            options.buttons = [{
-                id: 'AjaxUnblockButton',
-                defaultButton: true,
-                message: i18n.msg('unblock-button').escape(),
-                handler: function() {
-                    var config = {
-                        action: 'unblock',
-                        reason: $('#AjaxUnblockReasonInput').val() || '',
-                        token: mw.user.tokens.get('editToken')
-                    };
-                    if (user.charAt(0) == '#') {
-                        config.id = user.slice(1);
-                    } else {
-                        config.user = user;
-                    }
-                    Api.post(config).done(function(d) {
-                        $('#AjaxUnblockModal').closeModal();
-                        if (!d.error) {
-                            new BannerNotification(i18n.msg('success-unblock', user).escape(), 'confirm', $('.banner-notifications-placeholder')).show();
-                        } else {
-                            new BannerNotification(i18n.msg('error-unblock', user, d.error.code).escape(), 'error', $('.banner-notifications-placeholder')).show();
-                        }
-                        if (wg.wgCanonicalSpecialPageName == 'Contributions') {
-                            setTimeout(function() {
-                                window.location.reload(true);
-                            }, 2000);
-                        }
-                    });
-                }
-            }, {
-                id: 'AjaxUnblockCancel',
-                message: i18n.msg('cancel-button').escape(),
-                handler: function() {
-                    $('#AjaxUnblockModal').closeModal();
-                }
-            }];
-        } else {
-            options.buttons = [{
-                id: 'AjaxBlockButton',
-                defaultButton: true,
-                message: i18n.msg('block-button').escape(),
-                handler: function() {
-                    var $ex_sel = $('#AjaxBlockExpirySelect'),
-                    $ex_input = $('#AjaxBlockExpiryInput'),
-                    $r_sel = $('#AjaxBlockReasonSelect'),
-                    $r_input = $('#AjaxBlockReasonInput'),
-                    expiry = ($ex_sel.val() == 'other' ? $ex_input.val() : $ex_sel.val()).toLowerCase(),
-                    reason = 
-                        $r_sel.val() == 'other' ?
-                            $r_input.val() :
-                            $r_sel.val() + ($r_input.val().trim() ? ': ' + $r_input.val() : '');
-                    var query = {
-                        anononly: !$('#AjaxBlockAutoBlock').prop('checked'),
-                        action: 'block',
-                        user: user,
-                        expiry: expiry || 'never', // Don't look at me like that, the API defaults to never too
-                        reason: reason || '',
-                        token: mw.user.tokens.get('editToken')
-                    };
-                    if (!$('#AjaxBlockDisableWall').prop('checked')) {
-                        query.allowusertalk = true;
-                    }
-                    if ($('#AjaxBlockAutoBlock').prop('checked')) {
-                        query.autoblock = true;
-                    }
-                    if ($('#AjaxBlockOverrideBlock').prop('checked')) {
-                        query.reblock = true;
-                    }
-                    Api.post(query).done(function(d) {
-                        $('#AjaxBlockModal').closeModal();
-                        if (!d.error) {
-                            new BannerNotification(i18n.msg('success-block', user).escape(), 'confirm', $('.banner-notifications-placeholder')).show();
-                        } else {
-                            new BannerNotification(i18n.msg('error-block', user, d.error.code).escape(), 'error', $('.banner-notifications-placeholder')).show();
-                        }
-                        if (wg.wgCanonicalSpecialPageName == 'Contributions') {
-                            setTimeout(function() {
-                                window.location.reload(true);
-                            }, 2000);
-                        }
-                    });
-                }
-            }, {
-                id: 'AjaxBlockCancel',
-                message: i18n.msg('cancel-button').escape(),
-                handler: function() {
-                    $('#AjaxBlockModal').closeModal();
-                }
-            }];
-        }
-        $.showCustomModal(i18n.msg(unblocking ? 'unblock-title' : 'block-title', user).escape(), $content, options);
-    }
-    
-    // Await for the API requests to finish without actually using await
-    $.when.apply(this, promises).then(function(specials, mw_messages, i18n) {
-        // i18n, yeah!
-        i18n.useUserLang();
-        
-        // Parse mediawiki pages into usable stuff
-        var block_special = _.find(specials[0].query.specialpagealiases, function(val) {
-            return val.realname == 'Block';
-        }).aliases.map(function(alias) {
-            return alias.toLowerCase();
-        }),
-        unblock_special = _.find(specials[0].query.specialpagealiases, function(val) { // A little bit of code repetition, but eh
-            return val.realname == 'Unblock';
-        }).aliases.map(function(alias) {
-            return alias.toLowerCase();
-        }),
-        messages = mw_messages[0].query.allmessages,
-        expiry_times = config.expiryTimes || parse_default_expiry_times(messages[0]['*']),
-        block_reasons = config.blockReasons || parse_default_reasons(messages[1]['*']);
-        
-        // Bind to click events
-        $(document).on('click', 'a[href]', function(e) {
-            if (e.which != 1 || e.ctrlKey || e.shiftKey) return; // Left click with no special keys only
-            var $target = $(e.currentTarget),
-            href = $target.attr('href')
-                .replace(wg.wgServer, '')
-                .replace(wg.wgArticlePath.replace('$1', ''), ''),
-            is_special = special_ns.some(function(ns) { // Ever heard of Array.prototype.some? Me neither! Google it, it's been supported since IE9. Crazy, right?
-                return href.slice(0, ns.length + 1).toLowerCase() == ns + ':';
+
+            return false;
+        },
+        preload: function() {
+            // Styles
+            var imported = importArticle({
+                type: 'style',
+                article: 'u:dev:MediaWiki:AjaxBlock.css'
             });
-            
-            if (!is_special) return;
-            
-            var title = href.replace(/^[^:]+:|[\/?].*/g, ''),
-            blocking = block_special.indexOf(title.toLowerCase()) != -1,
-            unblocking = unblock_special.indexOf(title.toLowerCase()) != -1;
-            
-            if (!blocking && !unblocking) return; // Another special page
-            
-            var uri = new mw.Uri('/wiki/' + href),
-            match = href.match(/\/[^?]+/),
-            target = uri.query.wpTarget || (match && match[0].slice(1));
-                        
-            if (!target) return; // Just a regular Special:Block link with no target
-            
-            e.preventDefault(); // Block the default behavior
-            
-            target = decodeURIComponent(target).replace(/_/g, ' '); // Decode it
-            
-            show_modal(i18n, target, config, unblocking, expiry_times, block_reasons);
-        });
-    });
-});
+
+            if (this.isUCP) {
+                imported.then(this.onload.bind(this, 'css'));
+            } else {
+                if (imported.length === 0) {
+                    this.onload('css');
+                } else {
+                    imported[0].onload = this.onload.bind(this, 'css');
+                }
+            }
+
+            // Libraries
+            importArticles({
+                type: 'script',
+                articles: [
+                    'u:dev:MediaWiki:I18n-js/code.js',
+                    'u:dev:MediaWiki:Modal.js',
+                    'u:dev:MediaWiki:Dorui.js',
+                ]
+            });
+
+            mw.hook('dev.modal').add(this.onload.bind(this, 'modal-js'));
+            mw.hook('dev.i18n').add(this.onload.bind(this, 'i18n-js'));
+            mw.hook('doru.ui').add(this.onload.bind(this, 'dorui'));
+
+            // Loader modules
+            mw.loader.using('mediawiki.api').then(this.onload.bind(this, 'api'));
+
+            if (this.isUCP) {
+                this.onload('banners');
+            } else {
+                mw.loader.using('ext.bannerNotifications').then(this.onload.bind(this, 'banners'));
+            }
+        },
+        ensureBlockSelects: function() {
+            var pagesToLoad = [];
+
+            if (this.expiryTimes === null) {
+                pagesToLoad.push('Ipboptions');
+            } else {
+                this.onload('expiry-times');
+            }
+
+            if (this.blockReasons === null) {
+                pagesToLoad.push('Ipbreason-dropdown');
+            } else {
+                this.onload('block-reasons');
+            }
+
+            if (pagesToLoad.length === 0) return;
+
+            this.api.get({
+                action: 'query',
+                meta: 'allmessages',
+                ammessages: pagesToLoad.join('|')
+            }).then(function(data) {
+                data.query.allmessages.forEach(function(message) {
+                    var wikitext = message['*'];
+
+                    switch (message.name) {
+                        case 'Ipboptions':
+                            this.expiryTimes = this.parseExpiryTimes(wikitext);
+                            this.onload('expiry-times');
+                            break;
+                        case 'Ipbreason-dropdown':
+                            this.blockReasons = this.parseBlockReasons(wikitext);
+                            this.onload('block-reasons');
+                            break;
+                    }
+                }.bind(this));
+            }.bind(this));
+        },
+        parseExpiryTimes: function(wikitext) {
+            var expiryTimes = {};
+
+            wikitext.split(',').forEach(function(item) {
+                var pair = item.split(':');
+                var label = pair[0];
+                var value = pair[1];
+
+                expiryTimes[value] = label;
+            });
+
+            return expiryTimes;
+        },
+        parseBlockReasons: function(wikitext) {
+            var lines = wikitext.split('\n');
+            var reasons = {};
+            var currentGroup = null;
+
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+
+                if (line.trim() === '') continue;
+
+                var type = '';
+
+                if (line.charAt(0) === '*') {
+                    if (line.charAt(1) === '*') {
+                        type = 'sub';
+                    } else {
+                        type = 'group';
+                    }
+                } else {
+                    type = 'reason';
+                }
+
+                switch (type) {
+                    case 'reason':
+                        if (currentGroup !== null && !this.isEmptyObject(currentGroup.reasons)) {
+                            reasons[currentGroup.label] = currentGroup.reasons;
+                        }
+
+                        currentGroup = null;
+
+                        var value = line.trim();
+                        reasons[value] = value;
+                        break;
+                    case 'group':
+                        if (currentGroup !== null && !this.isEmptyObject(currentGroup.reasons)) {
+                            reasons[currentGroup.label] = currentGroup.reasons;
+                        }
+
+                        var label = line.slice(1).trim();
+
+                        currentGroup = {
+                            label: label,
+                            reasons: {}
+                        };
+                        break;
+                    case 'sub':
+                        var value = line.slice(2).trim();
+
+                        if (currentGroup !== null) {
+                            currentGroup.reasons[value] = value;
+                        } else {
+                            reasons[value] = value;
+                        }
+                        break;
+                }
+            }
+
+            if (currentGroup !== null && !this.isEmptyObject(currentGroup.reasons)) {
+                reasons[currentGroup.label] = currentGroup.reasons;
+            }
+
+            return reasons;
+        },
+        isEmptyObject: function(obj) {
+            for (var _ in obj) {
+                return false;
+            }
+
+            return true;
+        },
+        loadSpecialPageAliases: function() {
+            this.api.get({
+                action: 'query',
+                meta: 'siteinfo',
+                siprop: 'specialpagealiases'
+            }).then(function(data) {
+                this.blockAliases = this.getPageAliases(data.query.specialpagealiases, 'Block');
+                this.unblockAliases = this.getPageAliases(data.query.specialpagealiases, 'Unblock');
+
+                this.onload('aliases');
+            }.bind(this));
+        },
+        getPageAliases: function(aliases, name) {
+            return aliases.find(function(page) {
+                return page.realname === name;
+            }).aliases.map(function(alias) {
+                return alias.toLowerCase();
+            });
+        },
+        onDocumentClick: function(e) {
+            // Left click
+            if (e.which !== 1) return;
+
+            // Bail out of meta keys
+            if (e.ctrlKey || e.shiftKey) return;
+
+            // Only if a link was clicked
+            var anchor = e.target.closest('a[href]');
+            if (anchor === null) return;
+
+            var uri = new mw.Uri(anchor.href);
+            var target = this.getPageName(uri.path);
+            if (target === '') return;
+
+            var specialNamespace = this.specialNamespaceAliases.find(function(alias) {
+                return target.slice(0, alias.length + 1).toLowerCase() == alias + ':';
+            });
+            if (specialNamespace === undefined) return;
+
+            var title = target.slice(specialNamespace.length + 1);
+            var lowerTitle = title.toLowerCase();
+            var isBlocking = this.blockAliases.some(this.isRootPage.bind(this, lowerTitle));
+            var isUnblocking = this.unblockAliases.some(this.isRootPage.bind(this, lowerTitle));
+
+            if (!isBlocking && !isUnblocking) return;
+
+            var userTarget = this.getBlockTarget(uri, title);
+            // It was a regular Special:Block link, ignore it
+            if (!userTarget) return;
+
+            e.preventDefault();
+
+            if (isBlocking) {
+                this.showBlockModal(userTarget);
+            } else {
+                this.showUnblockModal(userTarget);
+            }
+        },
+        getPageName: function(path) {
+            var root = this.wg.wgArticlePath.replace('$1', '');
+            if (path.slice(0, root.length) !== root) return '';
+
+            return path.slice(root.length);
+        },
+        isRootPage: function(title, alias) {
+            // Special:Block
+            if (title === alias) return true;
+
+            // Special:Block/Something
+            if (title.slice(0, alias.length + 1) === alias + '/') return true;
+
+            return false;
+        },
+        getBlockTarget: function(uri, title) {
+            // wpTarget query parameter takes priority
+            if (uri.query.wpTarget) {
+                return uri.query.wpTarget;
+            }
+
+            var parts = title.split('/');
+
+            // Block link with no target
+            if (parts.length === 1) {
+                return undefined;
+            }
+
+            return decodeURIComponent(parts[1]).replace(/_/g, ' ');
+        },
+        buildSelectChildren: function(data) {
+            var children = [
+                ui.option({
+                    value: 'other',
+                    text: this.i18n.msg('other').plain()
+                })
+            ];
+
+            for (var key in data) {
+                var value = data[key];
+
+                if (typeof value === 'string') {
+                    children.push(
+                        ui.option({
+                            value: key,
+                            text: value
+                        })
+                    );
+                } else {
+                    var children = [];
+
+                    for (var subKey in value) {
+                        var subValue = value[subKey];
+
+                        children.push(
+                            ui.option({
+                                value: subKey,
+                                text: subValue
+                            })
+                        );
+                    }
+
+                    var group = ui.optgroup({
+                        label: key,
+                        children: children
+                    });
+
+                    children.push(group);
+                }
+            }
+
+            return children;
+        },
+        buildCheckbox: function(data) {
+            var attrs = {
+                type: 'checkbox',
+                id: data.id
+            };
+
+            if (data.checked) {
+                attrs.checked = 'checked';
+            }
+
+            return ui.div({
+                children: [
+                    ui.input({
+                        attrs: attrs
+                    }),
+                    ui.label({
+                        'for': data.id,
+                        text: data.label
+                    })
+                ]
+            });
+        },
+        showBlockModal: function(username) {
+            var modal = this.showModal({
+                id: 'BlockModal',
+                title: this.i18n.msg('block-title', username).plain(),
+                content: ui.div({
+                    id: 'AjaxBlockModalContent',
+                    children: [
+                        ui.div({
+                            id: 'AjaxBlockExpiryWrapper',
+                            children: [
+                                this.i18n.msg('expiry').plain(),
+                                ui.select({
+                                    id: 'AjaxBlockExpirySelect',
+                                    children: this.buildSelectChildren(this.expiryTimes)
+                                }),
+                                ui.input({
+                                    id: 'AjaxBlockExpiryInput'
+                                })
+                            ]
+                        }),
+                        ui.div({
+                            id: 'AjaxBlockReasonWrapper',
+                            children: [
+                                this.i18n.msg('reason').plain(),
+                                ui.select({
+                                    id: 'AjaxBlockReasonSelect',
+                                    children: this.buildSelectChildren(this.blockReasons)
+                                }),
+                                ui.input({
+                                    id: 'AjaxBlockReasonInput'
+                                })
+                            ]
+                        }),
+                        ui.div({
+                            id: 'AjaxBlockCheckers',
+                            children: [
+                                this.buildCheckbox({
+                                    id: 'AjaxBlockDisableWall',
+                                    checked: this.check.talk,
+                                    label: this.i18n.msg('label-disable-wall').plain()
+                                }),
+                                this.buildCheckbox({
+                                    id: 'AjaxBlockAutoBlock',
+                                    checked: this.check.autoblock || this.check.autoBlock,
+                                    label: this.i18n.msg('label-auto-block').plain()
+                                }),
+                                this.buildCheckbox({
+                                    id: 'AjaxBlockDisableAccount',
+                                    checked: this.check.nocreate || this.check.noCreate,
+                                    label: this.i18n.msg('label-no-create').plain()
+                                }),
+                                this.buildCheckbox({
+                                    id: 'AjaxBlockOverrideBlock',
+                                    checked: this.check.override,
+                                    label: this.i18n.msg('label-override').plain()
+                                })
+                            ]
+                        })
+                    ]
+                }),
+                buttons: [
+                    {
+                        event: 'block',
+                        primary: true,
+                        text: this.i18n.msg('block-button').plain()
+                    },
+                    {
+                        event: 'close',
+                        primary: false,
+                        text: this.i18n.msg('cancel-button').plain()
+                    }
+                ],
+                events: {
+                    block: function() {
+                        var state = this.getModalState(username);
+
+                        if (state.expiry === '') {
+                            this.notify({
+                                type: 'warn',
+                                text: this.i18n.msg('error-no-expiry').plain()
+                            });
+                            return;
+                        }
+
+                        this.block(state).then(function(data) {
+                            modal.close();
+
+                            if (data.error) {
+                                this.notify({
+                                    type: 'error',
+                                    text: this.i18n.msg('error-block', username, data.error.info).plain()
+                                });
+                            } else {
+                                this.notify({
+                                    type: 'confirm',
+                                    text: this.i18n.msg('success-block', username).plain()
+                                });
+                            }
+                        }.bind(this)).fail(function(code, data) {
+                            modal.close();
+
+                            var error = data.error && data.error.info || code;
+
+                            this.notify({
+                                type: 'error',
+                                text: this.i18n.msg('error-unblock', username, error).plain()
+                            });
+                        }.bind(this));
+                    }.bind(this)
+                }
+            });
+        },
+        showUnblockModal: function(username) {
+            var modal = this.showModal({
+                id: 'UnblockModal',
+                title: this.i18n.msg('unblock-title', username).plain(),
+                content: ui.div({
+                    id: 'AjaxUnblockModalContent',
+                    children: [
+                        ui.div({
+                            id: 'AjaxBlockReasonWrapper',
+                            children: [
+                                this.i18n.msg('reason').plain(),
+                                this.unblockReasons && ui.select({
+                                    id: 'AjaxUnblockReasonSelect',
+                                    children: this.buildSelectChildren(this.unblockReasons)
+                                }),
+                                ui.input({
+                                    id: 'AjaxUnblockReasonInput'
+                                })
+                            ]
+                        })
+                    ]
+                }),
+                buttons: [
+                    {
+                        event: 'unblock',
+                        primary: true,
+                        text: this.i18n.msg('unblock-button').plain()
+                    },
+                    {
+                        event: 'close',
+                        primary: false,
+                        text: this.i18n.msg('cancel-button').plain()
+                    }
+                ],
+                events: {
+                    unblock: function() {
+                        var state = this.getModalState(username);
+
+                        this.unblock(state).then(function(data) {
+                            modal.close();
+
+                            if (data.error) {
+                                this.notify({
+                                    type: 'error',
+                                    text: this.i18n.msg('error-unblock', username, data.error.info).plain()
+                                });
+                            } else {
+                                this.notify({
+                                    type: 'confirm',
+                                    text: this.i18n.msg('success-unblock', username).plain()
+                                });
+                            }
+                        }.bind(this)).fail(function(code, data) {
+                            modal.close();
+
+                            var error = data.error && data.error.info || code;
+
+                            this.notify({
+                                type: 'error',
+                                text: this.i18n.msg('error-unblock', username, error).plain()
+                            });
+                        }.bind(this));
+                    }.bind(this)
+                }
+            });
+        },
+        showModal: function(options) {
+            if (dev.modal.modals.hasOwnProperty(options.id)) {
+                dev.modal.modals[options.id]._modal.$element.closest('.modal-blackout, .oo-ui-window').remove();
+                delete dev.modal.modals[options.id];
+            }
+
+            var modal = new dev.modal.Modal({
+                id: options.id,
+                size: 'medium',
+                title: options.title,
+                content: options.content,
+                buttons: options.buttons,
+                events: options.events
+            });
+
+            this.currentModal = modal;
+
+            modal.create();
+            modal.show();
+
+            return modal;
+        },
+        getModalState: function(username) {
+            var $modal = this.currentModal._modal.$element;
+            var $reason = $modal.find('#AjaxBlockReasonWrapper');
+            var $expiry = $modal.find('#AjaxBlockExpiryWrapper');
+            var $checkboxes = $modal.find('input[type="checkbox"]');
+            var data = {
+                username: username,
+                checkboxes: {}
+            };
+
+            if ($reason.length) {
+                var $select = $reason.find('select');
+                var $input = $reason.find('input');
+
+                if ($select.length === 0 || $select.val() === 'other') {
+                    data.reason = $input.val();
+                } else {
+                    if ($input.val().trim() === '') {
+                        data.reason = $select.val();
+                    } else {
+                        data.reason = $select.val() + ': ' + $input.val().trim();
+                    }
+                }
+            }
+
+            if ($expiry.length) {
+                var $select = $expiry.find('select');
+                var $input = $expiry.find('input');
+                data.expiry = $select.val() === 'other'
+                    ? $input.val()
+                    : $select.val();
+            }
+
+            $checkboxes.each(function() {
+                data.checkboxes[this.id] = this.checked;
+            });
+
+            return data;
+        },
+        notify: function(data) {
+            if (this.isUCP) {
+                mw.notify(data.text, {
+                    type: data.type
+                });
+            } else {
+                new BannerNotification(data.text, data.type).show();
+            }
+        },
+        block: function(data) {
+            var query = {
+                action: 'block',
+                user: data.username,
+                expiry: data.expiry,
+                reason: data.reason,
+                token: mw.user.tokens.get('editToken'),
+            };
+
+            if (!data.checkboxes.AjaxBlockDisableWall) {
+                query.allowusertalk = true;
+            }
+
+            if (data.checkboxes.AjaxBlockAutoBlock) {
+                query.autoblock = true;
+            }
+
+            if (data.checkboxes.AjaxBlockOverrideBlock) {
+                query.reblock = true;
+            }
+
+            if (data.checkboxes.AjaxBlockDisableAccount) {
+                query.nocreate = true;
+            }
+
+            if (!data.checkboxes.AjaxBlockAutoBlock) {
+                query.anononly = true;
+            }
+
+            return this.api.post(query);
+        },
+        unblock: function(data) {
+            var query = {
+                action: 'unblock',
+                reason: data.reason,
+                token: mw.user.tokens.get('editToken')
+            };
+
+            if (data.username.charAt(0) == '#') {
+                query.id = data.username.slice(1);
+            } else {
+                query.user = data.username;
+            }
+
+            return this.api.post(query);
+        },
+
+        // Entrypoint
+        init: function() {
+            this.specialNamespaceAliases = Object.keys(this.wg.wgNamespaceIds).filter(function(key) {
+                return this.wg.wgNamespaceIds[key] === -1;
+            }.bind(this));
+
+            document.addEventListener('click', this.onDocumentClick.bind(this));
+        }
+    }, window.AjaxBlock);
+
+    if (!AjaxBlock.canRun()) return;
+
+    AjaxBlock.preload();
+})();

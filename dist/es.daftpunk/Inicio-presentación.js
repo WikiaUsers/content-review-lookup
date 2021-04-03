@@ -1,0 +1,54 @@
+<script> 
+document.getElementById('Inicio-presentacion_120').onclick=function(){
+	document.getElementById('Inicio-presentacion_210').style.display='none'; 
+	document.getElementById('Inicio-presentacion_220').style.display='table-row';
+	document.getElementById('Inicio-presentacion_120').style.backgroundColor='#615f5f';
+	document.getElementById('Inicio-presentacion_110').style.backgroundColor='#323232';
+	document.getElementById('Inicio-presentacion_120').onmouseover=function(){
+		document.getElementById('Inicio-presentacion_120').style.backgroundColor='#615f5f'; 
+	}
+	document.getElementById('Inicio-presentacion_120').onmouseout=function(){
+		document.getElementById('Inicio-presentacion_120').style.backgroundColor='#615f5f'; 
+	}
+	document.getElementById('Inicio-presentacion_110').onmouseover=function(){
+		document.getElementById('Inicio-presentacion_110').style.backgroundColor='#474646'; 
+	}
+	document.getElementById('Inicio-presentacion_110').onmouseout=function(){
+		document.getElementById('Inicio-presentacion_110').style.backgroundColor='#323232'; 
+	}
+}
+
+document.getElementById('Inicio-presentacion_110').onclick=function(){
+	document.getElementById('Inicio-presentacion_220').style.display='none'; 
+	document.getElementById('Inicio-presentacion_210').style.display='table-row';
+	document.getElementById('Inicio-presentacion_110').style.backgroundColor='#615f5f';
+	document.getElementById('Inicio-presentacion_120').style.backgroundColor='#323232';
+	document.getElementById('Inicio-presentacion_110').onmouseover=function(){
+		document.getElementById('Inicio-presentacion_110').style.backgroundColor='#615f5f'; 
+	}
+	document.getElementById('Inicio-presentacion_110').onmouseout=function(){
+		document.getElementById('Inicio-presentacion_110').style.backgroundColor='#615f5f'; 
+	}
+
+	document.getElementById('Inicio-presentacion_120').onmouseover=function(){
+		document.getElementById('Inicio-presentacion_120').style.backgroundColor='#474646'; 
+	}
+	document.getElementById('Inicio-presentacion_120').onmouseout=function(){
+		document.getElementById('Inicio-presentacion_120').style.backgroundColor='#323232'; 
+	}
+}
+
+document.getElementById('Inicio-presentacion_120').onmouseover=function(){
+	document.getElementById('Inicio-presentacion_120').style.backgroundColor='#474646'; 
+}
+document.getElementById('Inicio-presentacion_120').onmouseout=function(){
+	document.getElementById('Inicio-presentacion_120').style.backgroundColor='#323232'; 
+}
+
+document.getElementById('Inicio-presentacion_130').onmouseover=function(){
+	document.getElementById('Inicio-presentacion_130').style.backgroundColor='#474646'; 
+}
+document.getElementById('Inicio-presentacion_130').onmouseout=function(){
+	document.getElementById('Inicio-presentacion_130').style.backgroundColor='#323232'; 
+}
+</script>

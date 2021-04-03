@@ -1,0 +1,1 @@
+Bienvenido a ThunderCats Wiki, qué bueno que estés aquí, hay mucho por hacer.

@@ -196,7 +196,9 @@
                 })
             )
         );
-        WikiaFooterApp.init();
+        if (window.WikiaFooterApp) {
+            window.WikiaFooterApp.init();
+        }
     }
     /**
      * @method tools

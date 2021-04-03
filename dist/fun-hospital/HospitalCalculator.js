@@ -1,4 +1,3 @@
-
 var EPSILLON = 0.000001;
 var textMap = getLocalizedTextMap(mw.config.get('wgContentLanguage'));
 var allDataReader = new AllDataReader('Patient_Data');
@@ -10,9 +9,13 @@ if ($("#hospitalCalculatorSection").length || $("#simpleCalculatorSection").leng
     
     if ($("#hospitalCalculatorSection").length) {
         $("#hospitalCalculatorSection").html(getHospitalCalcFormText(challengeData.length, roomData));
+		$("#hospitalCalcFormButton").on('click', hospitalCalcAction);
+		$("#saveFormActionButton").on('click', saveFormAction);
+		$("#loadFormActionButton").on('click', loadFormAction);
     }
     if ($("#simpleCalculatorSection").length) {
         $("#simpleCalculatorSection").html(getSimpleCalcFormText());
+		$("#simpleCalcFormButton").on('click', simpleCalcAction);
     }
 }
 
@@ -23,7 +26,7 @@ if ($("#hospitalCalculatorSection").length || $("#simpleCalculatorSection").leng
 function getSimpleCalcFormText() {
     return '<form name="simpleCalcForm">' +
       '<p>' + textMap.hospitalLevel + ': <input type="number" min="0" name="level" /> ' +
-      '<button type="button" onclick="simpleCalcAction();">' + textMap.calculate + '</button>' +
+      '<button id="simpleCalcFormButton" type="button">' + textMap.calculate + '</button>' +
       '<input type="hidden" name="columnsAdded" value="0" /></p>' +
       '</form>';
 }
@@ -68,13 +71,13 @@ function getHospitalCalcFormText(heliLength, roomData) {
             '</tr>' +
             roomRowsText +
           '</tbody></table>' +
-          '<p><button type="button" onclick="hospitalCalcAction();">' + textMap.calculate + '</button></p>' +
+          '<p><button id="hospitalCalcFormButton" type="button">' + textMap.calculate + '</button></p>' +
         '</form>' +
         '<form name="formTextForm">' +
           '<p>' + textMap.formTextDescription + '</p>' +
           '<textarea id="hospitalCalculatorFormText" name="formText" />' +
-          '<p><button type="button" onclick="saveFormAction();">' + textMap.saveForm + '</button>' +
-          '<button type="button" onclick="loadFormAction();">' + textMap.loadForm + '</button></p>' +
+          '<p><button id="saveFormActionButton" type="button">' + textMap.saveForm + '</button>' +
+          '<button id="loadFormActionButton" type="button">' + textMap.loadForm + '</button></p>' +
         '</form>' +
         '<p id="hospitalCalcResult" />';
 }
@@ -99,12 +102,18 @@ function simpleCalcAction() {
             var patientName = $(cells[0]).text().trim();
             var patient = patientDataMap[patientName];
             
-            var tournamentCurePoint = getTournamentCurePoint(patient, hospitalLevel);
+			var tournamentCurePoint = '';
+			if (typeof patient !== 'undefined') {
+				tournamentCurePoint = getTournamentCurePoint(patient, hospitalLevel);
+			}
             
             var challengeCurePointTexts = [];
             for (var j = 0; j < challengeData.length; j++) {
                 var challenge = challengeData[j];
-                var challengeCurePoint = getChallengeCurePoint(patient, hospitalLevel, challenge);
+				var challengeCurePoint = NaN;
+				if (typeof challenge !== 'undefined' && typeof patient !== 'undefined') {
+					challengeCurePoint = getChallengeCurePoint(patient, hospitalLevel, challenge);
+				}
                 if (!isNaN(challengeCurePoint)) {
                     challengeCurePointTexts.push(getChallengeStageText(challenge.stage) + ': ' + challengeCurePoint);
                 }
@@ -198,8 +207,11 @@ function loadFormAction() {
         
         var roomData = allDataReader.roomData;
         for (var i = 0; i < roomData.length; i++) {
-            document.forms.hospitalCalculator["level_" + roomData[i].room].value = formInput.roomUserDataMap[roomData[i].room].level;
-            document.forms.hospitalCalculator["staff_" + roomData[i].room].value = formInput.roomUserDataMap[roomData[i].room].staffAbility;
+			var currFormRoom = formInput.roomUserDataMap[roomData[i].room];
+			if (typeof currFormRoom !== 'undefined') {
+				document.forms.hospitalCalculator["level_" + roomData[i].room].value = currFormRoom.level;
+				document.forms.hospitalCalculator["staff_" + roomData[i].room].value = currFormRoom.staffAbility;
+			}
         }
         
         alert(textMap.loadFormSuccess);
@@ -230,9 +242,9 @@ function getActualRoomPath(patient, calcMethod, useMaxAbility, hospitalLevel, ro
         var roomLevel = actualRoomUserDataMap[expectedRoomPath[i]].level;
         currentCurePoint = Math.min(expectedCurePoint, currentCurePoint
             + roomDataMap[expectedRoomPath[i]].roomAttrIncrease.ability[roomLevel]
-            + actualRoomUserDataMap[expectedRoomPath[i]].staffAbility);
-        currentMoney += Math.ceil(roomDataMap[expectedRoomPath[i]].basicMoney * patient.moneyCoeff - EPSILLON)
-            + roomDataMap[expectedRoomPath[i]].roomAttrIncrease.money[roomLevel];
+            + actualRoomUserDataMap[expectedRoomPath[i]].staffAbility * patient.curePointMultiplier);
+        currentMoney += (Math.ceil(roomDataMap[expectedRoomPath[i]].basicMoney * patient.moneyCoeff - EPSILLON)
+            + roomDataMap[expectedRoomPath[i]].roomAttrIncrease.money[roomLevel]) * patient.moneyMultiplier;
         currentExp += roomDataMap[expectedRoomPath[i]].basicExp
             + roomDataMap[expectedRoomPath[i]].roomAttrIncrease.exp[roomLevel];
         currentRoomPath.push(expectedRoomPath[i]);
@@ -433,7 +445,7 @@ function readTableResultData(accessorTag, resultMapper, data, context) {
 }
 
 function patientDataMapper(cells) {
-    var roomPathCells = cells.slice(6, cells.length);
+    var roomPathCells = cells.slice(8, cells.length);
     var roomPath = [];
     for(var j = 0; j < roomPathCells.length; j++) {
         var roomText = $(roomPathCells[j]).text().trim();
@@ -448,6 +460,8 @@ function patientDataMapper(cells) {
         Number($(cells[3]).text().trim()),
         Number($(cells[4]).text().trim()),
         Number($(cells[5]).text().trim()),
+        Number($(cells[6]).text().trim()),
+        Number($(cells[7]).text().trim()),
         roomPath
     );
     return patient;
@@ -494,7 +508,7 @@ function readRoomAttrIncreaseData(attrText, data) {
     for (var i = 0; i < tableData.length; i++) {
         var rowData = tableData[i];
         var cells = $(rowData).children();
-        if (cells[0].tagName.toLowerCase() === "td") {
+        if (cells[0].tagName.toLowerCase() === 'td') {
             var levelCells = cells.slice(1, cells.length);
             var increaseList = [];
             for(var j = 0; j < levelCells.length; j++) {
@@ -515,12 +529,14 @@ function readRoomAttrIncreaseData(attrText, data) {
 // Classes
 ///////////////////////////////////////////////////////////////////////////////////////
 
-function Patient(name, curePoint, minLevel, score, curePointCoeff, moneyCoeff, roomList) {
+function Patient(name, curePoint, minLevel, score, curePointCoeff, moneyCoeff, curePointMultiplier, moneyMultiplier, roomList) {
     this.name = name;
     this.curePoint = curePoint;
     this.minLevel = minLevel;
     this.curePointCoeff = curePointCoeff;
     this.moneyCoeff = moneyCoeff;
+    this.curePointMultiplier = curePointMultiplier;
+    this.moneyMultiplier = moneyMultiplier;
     this.roomList = roomList;
 }
 

@@ -1,1 +1,0 @@
-#REDIRECT [[MediaWiki:Wikia.js/userRightsIconsVaried.js]]

@@ -1,12 +1,3 @@
-//__NOTOC__ __NOWYSIWYG__ __NOEDITSECTION__ <source lang="javascript">
-//<nowiki>
-//  _________________________________________________________________________________________
-// |                                                                                         |
-// |                    === WARNING: GLOBAL GADGET FILE ===                                  |
-// |                  Changes to this page affect many users.                                |
-// |                      You probably shouldn't edit it.                                    |
-// |_________________________________________________________________________________________|
-//
 /**
  * InactiveUsers
  *
@@ -17,123 +8,119 @@
 //Original version from http://dev.wikia.com/wiki/InactiveUsers/code.js?oldid=6900
 //Modification to API query by User:Darth_Culator - added "&ucnamespace=0" to query URL to adapt to Wookieepedia userpage policy.
 //Modification to variables from "months: 3" to "months: 12" for same reason to simplify installation in Wookieepedia gadgets.
+//Adaptation to UCP by User:Antonio R. Castro
 
-window.InactiveUsers = function (my) {
-    
-    function restart () {
-        $(function () {
-            $('.inactive-user', '#UserProfileMasthead')
-            .add('.inactive-user', 'h1#firstHeading')
-            .remove();
-        });
-    }    
-    
-    function getSkinType () {
-        switch (skin) {
-            case 'uncyclopedia': case 'wowwiki': case 'lostbook': case 'monobook':
-                return 'monobook';
-            case 'oasis': case 'wikia':
-                return 'oasis';
-            default:
-                return false;
-        }
-    }
-    
-    function getUserName () {
-        switch (my.skinType) {
-            case 'monobook':
-                if (2 !== wgNamespaceNumber || -1 !== wgTitle.indexOf('/')) return false;
-                return wgTitle;
-            case 'oasis':
-                if (-1 < [2,3,500,501,1200].indexOf(wgNamespaceNumber) && -1 === wgTitle.indexOf('/')) {
-                    return wgTitle;
-                } else if (-1 === wgNamespaceNumber && -1 < ['Contributions','Following'].indexOf(wgCanonicalSpecialPageName)) {
-                    if ('/index.php' == location.pathname) {
-                        return $.getUrlVar('target') || false;
-                    }
-                    var lastPart = location.pathname.split('/').pop();
-                    if (lastPart.length && lastPart != wgPageName) {
-                        return decodeURIComponent(lastPart.replace(/_/g, ' '));
-                    }
-                    return wgUserName;
-                }
-                return false;
-            default:
-                return false;
-        }
-    }
-    
-    function getApiUrl () {
-        
-        function ISODateNDaysAgo (days) {
-            function pad (n) { return n < 10 ? '0' + n : n; }  
-            function ISODateString (d) {  
-                return    d.getUTCFullYear() + '-' +
-                      pad(d.getUTCMonth()+1) + '-' +
-                      pad(d.getUTCDate())    + 'T' +
-                      pad(d.getUTCHours())   + ':' +
-                      pad(d.getUTCMinutes()) + ':' +
-                      pad(d.getUTCSeconds()) + 'Z' ;
-            }
-            return ISODateString(new Date(Date.now() - days * 24 * 60 * 60 * 1000));
-        }
-
-        return '/api.php?action=query&list=usercontribs&ucnamespace=0&uclimit=1&ucprop=title|timestamp&format=json' +
-               '&ucuser='  + encodeURIComponent(my.userName) +
-               '&ucstart=' + ISODateNDaysAgo(0) +
-               '&ucend='   + ISODateNDaysAgo(30 * Math.max(1, parseInt(my.months, 10)));
-    }
-    
-    function labelAsInactive () {
-        switch (my.skinType) {
-            case 'oasis':
-                $(function () {
-                    $('hgroup', '#UserProfileMasthead').append(
-                        '<span class="group inactive-user">' + my.text +  '</span>'
-                    );
-                });
-                break;
-            case 'monobook':
-                $(function () {
-                    $('h1#firstHeading').append(
-                        ' <span class="inactive-user">[' + my.text +  ']</span>'
-                    );
-                })
-                break;
-        }
-    }
-    
-    my = $.extend({
-        text: 'inactive', gone: [], months: 12, debug: false
-    }, my);
-    
-    if (my.debug) restart();
-    
-    my.skinType = getSkinType();
-    my.userName = getUserName();
+(function (module, $, mw) {
+    'use strict';
  
-    if (!my.skinType || !my.userName) {
-        if (my.debug) console.log('InactiveUsers(abort): ', my);
+    if (
+        (
+            $('#UserProfileMasthead').length === 0 &&
+            $('#userProfileApp').length === 0
+        ) ||
+        window.InactiveUsersLoaded
+    ) {
         return;
     }
-    
-    if (-1 < my.gone.indexOf(my.userName)) {
-        if (my.debug) console.log('InactiveUsers(gone): ', my);
-        labelAsInactive();
-    } else {
-        my.apiUrl = getApiUrl ();
-        $.getJSON(my.apiUrl, function (result) {
-            my.reply = result;
-            if (result.query && result.query.usercontribs && !result.query.usercontribs.length) {
-                if (my.debug) console.log('InactiveUsers(query): ', my);
-                labelAsInactive();
-            }
-            if (my.debug) console.log('InactiveUsers(abort): ', my);
-        });
+    window.InactiveUsersLoaded = true;
+ 
+    // Polyfill for ECMAScript 5 function (so it works in older browsers)
+    if (!Date.prototype.toISOString) Date.prototype.toISOString = function() {
+        function pad(s) {
+            return (s += '').length < 2 ? '0' + s : s;
+        }
+        return this.getUTCFullYear()
+            + '-' + pad(this.getUTCMonth() + 1)
+            + '-' + pad(this.getUTCDate())
+            + 'T' + pad(this.getUTCHours())
+            + ':' + pad(this.getUTCMinutes())
+            + ':' + pad(this.getUTCSeconds())
+            + '.' + (this.getUTCMilliseconds() / 1000).toFixed(3).substr(-3)
+            + 'Z';
+    };
+ 
+    function isoDateNDaysAgo(days) {
+        return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
     }
-    
-    return my;
-
-} (window.InactiveUsers = window.InactiveUsers || {});
-
-//</source></nowiki>
+ 
+    function findContainer() {
+        var promise = $.Deferred(),
+            interval = setInterval(function() {
+                var $element = $('#userProfileApp .user-identity-header__attributes, #UserProfileMasthead hgroup');
+                if ($element.length) {
+                    clearInterval(interval);
+                    promise.resolve($element);
+                }
+            }, 300);
+        return promise;
+    }
+ 
+    module = $.extend({
+        text: 'inactive',
+        gone: [],
+        months: 12
+    }, module);
+ 
+    var user = $('#UserProfileMasthead h1[itemprop="name"]').text() ||
+               mw.config.get('profileUserName'),
+        $container;
+ 
+    $.when(
+        findContainer(),
+        mw.loader.using('mediawiki.api')
+    ).then(function($c) {
+        $container = $c;
+        return new mw.Api().get({
+            action: 'query',
+            list: 'usercontribs|users',
+            ucnamespace: 0,
+            uclimit: 1,
+            ucprop: 'title|timestamp',
+            ucuser: user,
+            ucstart: isoDateNDaysAgo(0),
+            ucend: isoDateNDaysAgo(30 * Math.max(parseInt(module.months, 10) || 1, 1)),
+            ususers: user,
+            usprop: 'gender'
+        });
+    }).done(function(result) {
+        if (
+            // The query is invalid
+            !result ||
+            !result.query ||
+            // The user doesn't exist
+            !result.query.users ||
+            !result.query.users[0] ||
+            !(
+                // The user hasn't contributed
+                (
+                    result.query.usercontribs &&
+                    !result.query.usercontribs.length
+                ) ||
+                // or is marked as gone
+                module.gone.indexOf(user) !== -1
+            )
+        ) {
+            return;
+        }
+        var gender = result.query.users[0].gender || 'unknown',
+            css = $container.find('.tag, .user-identity-header__tag').length ? {
+                marginLeft: '10px'
+            } : {},
+            text = typeof module.text === 'string' ?
+                module.text :
+                typeof module.text === 'object' ?
+                    typeof module.text[gender] === 'string' ?
+                        module.text[gender] :
+                        module.text.unknown :
+                    'inactive';
+        $container.append(
+            $('<span>', {
+                'class': 'tag user-identity-header__tag inactive-user',
+                'css': css,
+                'text': text
+            })
+        );
+        mw.hook('dev.inactiveusers').fire();
+    });
+ 
+} (window.InactiveUsers = window.InactiveUsers || {}, jQuery, mediaWiki));

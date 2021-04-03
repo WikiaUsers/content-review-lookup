@@ -27,7 +27,7 @@ var config = mw.config.get([
 '<li><a href="/wiki/MediaWiki:Wiki-navigation?action=edit" class="sysop-only">Edit wiki navigation</a></li>' +
 '</ul></div></div></div>');
  
-    if(wgUserGroups.indexOf('sysop') > -1 || wgUserGroups.indexOf('staff') > -1 || wgUserGroups.indexOf('helper') > -1) {
+    if(wgUserGroups.indexOf('sysop') > -1 || wgUserGroups.indexOf('staff') > -1 || wgUserGroups.indexOf('wiki-manager') > -1 || wgUserGroups.indexOf('helper') > -1) {
         return 0;
     } else {
         $('a.sysop-only').remove();

@@ -1,5 +1,27 @@
+// Configuration for NoLicenseWarning
+window.NoLicenseWarning = {
+    forceLicense: true,
+    excludedGroups: [
+        'bureaucrat'
+    ]
+}; 
 window.dev = window.dev || {};
 window.dev.i18n = window.dev.i18n || {};
 window.dev.i18n.overrides = window.dev.i18n.overrides || {};
 window.dev.i18n.overrides['NoLicenseWarning'] = window.dev.i18n.overrides['NoLicenseWarning'] || {};
-window.dev.i18n.overrides['NoLicenseWarning']['warning-text'] = 'Warning! You have not selected a license for the file. If you do not select a license, the file will be deleted.';
+window.dev.i18n.overrides['NoLicenseWarning']['warning-text'] = "You must select a license when uploading a file.";
+window.dev.i18n.overrides['NoLicenseWarning']['rejected-text'] = "You can't upload a file without selecting a license! Please select one and resend the form.";
+
+
+//Configuration for Discussions Rail Module
+window.discussionsModuleConfig = {
+	'size' : '5',
+};
+mw.hook('discussionsModule.added').add(function($module) {
+        // Module addition
+        if ($('#wikia-recent-activity').exists()) {
+            $module.insertBefore('#wikia-recent-activity');
+        } else {
+            $module.appendTo('#WikiaRail');
+        }
+    });

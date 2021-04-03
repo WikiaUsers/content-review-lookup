@@ -1,13 +1,16 @@
 /**
  * Name:        AutoCreateUserPages
- * Version:     v1.8
+ * Version:     v1.9
  * Author:      KockaAdmiralac <wikia@kocka.tech>
  * Description: Automatically creates a user's userpage, talkpage and
  *              message wall greeting with a specified template on
  *              wikis where they have at least one contribution.
  */
 (function() {
-    if (localStorage.getItem('AutoCreateUserPagesLoaded')) {
+    if (
+        localStorage.getItem('AutoCreateUserPagesLoaded') ||
+        !mw.config.get('wgUserName')
+    ) {
         return;
     }
     var AutoCreateUserPages = {
@@ -17,81 +20,132 @@
         }, window.AutoCreateUserPagesConfig),
         mwconfig: mw.config.get([
             'wgCityId',
+            'wgUserId',
             'wgUserName'
         ]),
         toCreate: 0,
         preload: function() {
             if (
             // You most likely don't want the script to be
-            // automaking your Community Central user page,
+            // auto-creating your Community Central user page,
             // especially since you're probably inserting a
-            // global template in the configuration
-            // This also prevents a 404 error since Community
-            // Central doesn't have WikiFeatures enabled.
-                this.mwconfig.wgCityId === '177' ||
+            // global template in the configuration.
+                this.mwconfig.wgCityId === 177 ||
             // When you try creating your userpage/talkpage
-            // on VSTF Wiki the abuse filter prevents you
+            // on the SOAP Wiki the abuse filter prevents you
             // so the script shouldn't run there
-                this.mwconfig.wgCityId === '65099'
+                this.mwconfig.wgCityId === 65099
             ) {
                 return;
             }
             this.namespaces = ['User'];
-            $.nirvana.getJson('WikiFeaturesSpecialController', 'index').done($.proxy(function(d) {
-                this.namespaces.push(d.features.filter(function(t) {
-                    return t.name === 'wgEnableWallExt' && t.enabled;
-                }).length === 0 ? 'User talk' : 'Message Wall Greeting');
-                mw.loader.using('mediawiki.api.edit').then($.proxy(this.init, this));
+            $.get(mw.util.wikiScript('wikia'), {
+                controller: 'UserProfile',
+                method: 'getUserData',
+                format: 'json',
+                userId: this.mwconfig.wgUserId
+            }).done($.proxy(function(data) {
+                if (data.userData.userTalkUrl) {
+                    this.namespaces.push('User talk');
+                }
+                this.init();
             }, this));
+        },
+        notify: function(msg, type) {
+            msg = msg || 'An unknown error occurred while executing AutoCreateUserPages.';
+            type = type || 'error';
+            mw.notify(msg, {
+                type: type
+            });
         },
         init: function() {
             this.api = new mw.Api();
-            this.api.get({
+            var deferreds = [this.api.get({
                 action: 'query',
                 list: 'usercontribs',
                 ucuser: this.mwconfig.wgUserName
-            }).done($.proxy(this.cbContribs, this));
+            })];
+            var socialActivity = {
+                controller: 'Fandom\\UserProfileActivity\\UserProfileActivity',
+                method: 'getData',
+                userId: this.mwconfig.wgUserId
+            };
+            deferreds = deferreds.concat([
+                $.get(mw.util.wikiScript('wikia'), $.extend({type: 'posts'}, socialActivity)),
+                $.get(mw.util.wikiScript('wikia'), $.extend({type: 'messages'}, socialActivity)),
+                $.get(mw.util.wikiScript('wikia'), $.extend({type: 'comments'}, socialActivity))
+            ]);
+            $.when.apply($, deferreds).done($.proxy(this.cbContribs, this)).fail($.proxy(this.cbContribsFail, this));
         },
-        cbContribs: function(d) {
-            if (d.error) {
-                // new BannerNotification('An error occurred while fetching user contributions: ' + d.error.code).show();
-            } else if (d.query.usercontribs.length !== 0) {
+        cbContribsFail: function (d) {
+            if (typeof d == 'string') {
+                this.notify('An error occurred while fetching user contributions: ' + d);
+            } else if (arguments.length === 3) {
+                this.notify('An error occurred while fetching user social activity.');
+            } else {
+                this.notify('An unknown error occurred while fetching user contributions and social activity.');
+            }
+        },
+        cbContribs: function(d, p, m, c) {
+            if (d[0].error) {
+                this.notify('An error occurred while fetching user contributions: ' + d[0].error.code);
+            } else if (
+                p[2].status !== 200 ||
+                m[2].status !== 200 ||
+                c[2].status !== 200
+            ) {
+                this.notify('An unexpected response occurred while fetching user social activity: '
+                    + p[2].status + ' ' + m[2].status + ' ' + c[2].status);
+            } else if (
+                d[0].query.usercontribs.length ||
+                (
+                    p[0].indexOf('<div class="Message">') != -1 ||
+                    m[0].indexOf('<div class="Message">') != -1 ||
+                    c[0].indexOf('<div class="Message">') != -1
+                )
+            ) {
                 this.api.get({
                     action: 'query',
                     prop: 'revisions',
                     titles: this.namespaces.map(function(el) { return el + ':' + this.mwconfig.wgUserName }, this).join('|')
-                }).done($.proxy(this.cbFetch, this));
+                }).done($.proxy(this.cbFetch, this)).fail($.proxy(this.cbFetchFail, this));
             } else {
-                console.log('[AutoCreateUserPage] Zero edit count, returning...');
+                console.info('[AutoCreateUserPages] Zero edit count and social activity, returning...');
+            }
+        },
+        cbFetchFail: function (d) {
+            if (typeof d == 'string') {
+                this.notify('An error occurred while fetching user page information: ' + d);
+            } else {
+                this.notify('An unknown error occurred while fetching user page information.');
             }
         },
         cbFetch: function(d) {
             if (d.error) {
-                new BannerNotification('An error occurred while fetching user page information: ' + d.error.code).show();
+                this.notify('An error occurred while fetching user page information: ' + d.error.code);
             } else {
-                $.each(d.query.pages, $.proxy(this.processPage, this));
+                var shouldCreate = $.map(d.query.pages, this.processPage.bind(this));
+                if (!shouldCreate.some(Boolean)) {
+                    console.info('[AutoCreateUserPages] No pages should be created, exiting...');
+                    localStorage.setItem('AutoCreateUserPagesLoaded', true);
+                }
             }
         },
-        processPage: function(k, v) {
+        processPage: function(v, k) {
             var content = this.config.content;
             if (typeof content === 'object') {
                 content = content[v.ns];
             }
-            // I was too tired of writing this all in one condition
-            // If somebody can optimize this please do
+            // The user can opt-out of creating their userpage in a specific namespace
+            // by setting the value to false.
             if (content === false) {
-                return;
+                return false;
             }
-            if (k === -1) {
-                return;
-            } else if (v.ns === 1202) {
-                if (v.missing !== '') {
-                    return;
-                }
-            } else if (v.missing !== '' && v.revisions[0].user !== 'FANDOM' && v.revisions[0].user !== 'Wikia') {
-                return;
+            if (v.missing !== '' && v.revisions[0].user !== 'FANDOM' && v.revisions[0].user !== 'Wikia') {
+                // Our userpage exists and the last revision wasn't by a bot.
+                return false;
             }
-            console.log('[AutoCreateUserPage] Creating', v.title, '...');
+            console.info('[AutoCreateUserPages] Creating', v.title, '...');
             ++this.toCreate;
             this.api.postWithEditToken({
                 action: 'edit',
@@ -101,14 +155,28 @@
                 minor: true,
                 bot: true
             }).done($.proxy(this.cbCreate, this));
+            return true;
         },
         cbCreate: function(d) {
             if (d.error) {
-                new BannerNotification('An error occurred while creating a user page: ' + d.error.code).show();
+                this.notify('An error occurred while creating a user page: ' + d.error.code);
             } else if (--this.toCreate === 0) {
+                if (this.config.notify) {
+                    mw.notify($('<span>', {
+                        html: typeof this.config.notify === 'string' ?
+                            this.config.notify
+                                .replace(/\$1/g, this.mwconfig.wgUserName)
+                                .replace(/\$2/g, mw.util.wikiUrlencode(this.mwconfig.wgUserName)) :
+                            'User pages successfully created!'
+                    }));
+                }
                 localStorage.setItem('AutoCreateUserPagesLoaded', true);
             }
         }
     };
-    AutoCreateUserPages.preload();
+    mw.loader.using([
+        'mediawiki.api.edit',
+        'mediawiki.util',
+        (mw.config.get('wgVersion') !== '1.19.24' ? 'mediawiki.notify' : 'mediawiki')
+    ]).then($.proxy(AutoCreateUserPages.preload, AutoCreateUserPages));
 })();

@@ -1,5 +1,5 @@
 /*
-if($.inArray('sysop',wgUserGroups) != -1) {
+if($.inArray('sysop', mw.config.get('wgUserGroups')) != -1) {
     function getUserDropdownLinks(callback) {
         $.get('/api.php?action=query&prop=revisions&rvlimit=1&rvprop=content&titles=MediaWiki:Custom-User-Dropdown&format=json&v=1.1').done(callback);
         $('#WikiaArticle').append(mw.message( 'Custom-User-Dropdown', 5 ).text());
@@ -28,15 +28,15 @@ if($.inArray('sysop',wgUserGroups) != -1) {
         
         //Edit Button
         $('.Wall.Thread ul.comments ul.replies li.SpeechBubble.message').each(function(key, val) {
-            /* Variablen */
-            answer = $(val).find('.speech-bubble-message .MiniEditorWrapper');
-            user = answer.find('.edited-by a').text();
-            msgContent = answer.find('.msg-body').html();
-            buttons = answer.find('.msg-toolbar .buttonswrapper .buttons');
-            console.log(key,user);
+            /* Variablen *//*
+            var answer = $(val).find('.speech-bubble-message .MiniEditorWrapper');
+            var user = answer.find('.edited-by a').text();
+            var msgContent = answer.find('.msg-body').html();
+            var buttons = answer.find('.msg-toolbar .buttonswrapper .buttons');
+            console.log(key, user);
             
-            /* Button erzeugen */
-            adminButton = $('<nav />').addClass('wikia-menu-button secondary combined edit-user').text('Benutzer').append(
+            /* Button erzeugen *//*
+            var adminButton = $('<nav />').addClass('wikia-menu-button secondary combined edit-user').text('Benutzer').append(
                 $('<span />').addClass('drop').append(
                     $('<img />').addClass('chevron').attr('src','data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D')
                 ),
@@ -47,9 +47,9 @@ if($.inArray('sysop',wgUserGroups) != -1) {
                 $(this).removeClass('active');  
             }).appendTo(buttons);
             
-            currentLinks = [];
-            for(n = 0; n < links.length; n++) {
-                currentLinks[n] = links[n].replace(/{{PAGENAME}}/g,user);
+            var currentLinks = [];
+            for(var n = 0; n < links.length; n++) {
+                currentLinks[n] = links[n].replace(/{{PAGENAME}}/g, user);
                 adminButton.find('ul.WikiaMenuElement').append(currentLinks[n]);
             }
         });

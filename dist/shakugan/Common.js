@@ -1,5 +1,15 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* List of imports */
+importArticles({
+    type: 'script',
+    articles: [
+        // ...
+        'u:dev:ReferencePopups/code.js', // Displays content of references on hover
+        'u:dev:BackToTopButton/code.js', // Adds "Back to top" button in pages
+        'u:dev:AutoEditDropdown/code.js', // Automatically opens edit menu on hover
+    ]
+});
 
 // **************************************************
 // Experimental javascript countdown timer (Splarka)
@@ -67,14 +77,3 @@ addOnloadHook(checktimers);
 // **************************************************
 //  - end -  Experimental javascript countdown timer
 // **************************************************
-
-/* List of imports */
-importArticles({
-    type: 'script',
-    articles: [
-        // ...
-        'u:dev:ReferencePopups/code.js', // Displays content of references on hover
-        'u:dev:BackToTopButton/code.js', // Adds "Back to top" button in pages
-        'u:dev:AutoEditDropdown/code.js', // Automatically opens edit menu on hover
-    ]
-});

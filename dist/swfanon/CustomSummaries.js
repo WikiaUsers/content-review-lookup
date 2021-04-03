@@ -45,7 +45,7 @@
 			if (list[Symbol.for('summaryListLoaded')] != 'yes') {
 				var xhr = new XMLHttpRequest();
 				xhr.onload = showStdSummaries.bind(xhr);
-				xhr.open('GET', config.get('wgServer') + '/index.php?action=raw&title=MediaWiki:Stdsummaries&ctype=text/css');
+				xhr.open('GET', config.get('wgServer') + '/index.php?action=raw&title=Template:Stdsummaries&ctype=text/css');
 				xhr.send();
 			} else {
 				list.style.display = 'block';
@@ -56,7 +56,7 @@
 			list[stateKey] = 'closed';
 		}
 	}
-	if (config.get('wgAction') === 'edit' && document.getElementById('EditPage').className.indexOf('sourcewidemode') != -1) {
+	if (config.get('wgAction') === 'edit') {
 		importArticle({ type: 'style', article: 'MediaWiki:CustomSummaries.css' });
 		var img = document.createElement('img');
 		img.id='custom-edit-summaries-button';

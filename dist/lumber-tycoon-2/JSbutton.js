@@ -1,11 +1,9 @@
 if (wgCanonicalSpecialPageName == 'AdminDashboard') { 
     $('section.wiki ul.controls').append('<li class="control" dashboard-tooltip="Customize your wiki with local JS."><a href="http://lumber-tycoon-2.wikia.com/wiki/Special:JSPages" class="set"><span class="representation"><div style="background: #0c77b6; top: 13px; width: 34px; position: absolute; height: 22px; left: 8px; border-radius: 3px"><span style="color: white; top: 25%; position: absolute; left: 25%">JS_</span></div></span>JS</a></li>');
 
-    $('section.wiki ul.controls').append('<li class="control" dashboard-tooltip="Modify Rewards"><a href="http://lumber-tycoon-2.wikia.com/wiki/Lumber_Tycoon_2_Wikia:Medals" class="set"><span class="representation"><img src="https://images.wikia.nocookie.net/lumber-tycoon-2/images/d/d4/IMG_387SS3.png" width="50" height="50"></span>Medals</a></li>');
+    $('section.wiki ul.controls').append('<li class="control" dashboard-tooltip="Modify Rewards"><a href="http://lumber-tycoon-2.wikia.com/wiki/Lumber_Tycoon_2_Wikia:Badges" class="set"><span class="representation"><img src="https://images.wikia.nocookie.net/lumber-tycoon-2/images/d/d4/IMG_387SS3.png" width="50" height="50"></span>Medals</a></li>');
     
      $('section.wiki ul.controls').append('<li class="control" dashboard-tooltip="Misc admin stuff"><a href="http://lumber-tycoon-2.wikia.com/wiki/Template:RailModule" class="set"><span class="representation"><img src="https://images.wikia.nocookie.net/lumber-tycoon-2/images/1/1c/Menuadmin.png" width="50" height="50"></span>Side Rail</a></li>');
-  
-    $('section.wiki ul.controls').append('<li class="control" dashboard-tooltip="Misc admin stuff"><a href="http://lumber-tycoon-2.wikia.com/wiki/Lumber_Tycoon_2_Wikia:Notiplus" class="set"><span class="representation"><img src="https://images.wikia.nocookie.net/lumber-tycoon-2/images/f/fd/Notiplus.png" width="50" height="50"></span>Notifications</a></li>');
     
      $('section.community ul.controls').append('<li class="control" dashboard-tooltip="Misc admin stuff"><a href="http://lumber-tycoon-2.wikia.com/wiki/Special:Log/newusers" class="set"><span class="representation"><div style="background: #fff900de; top: 13px; width: 40px; position: absolute;left: 5px; height: 22px; border-radius: 3px"><span style="color: black; top: 25%; position: absolute; left: 20%">New</span></div></span>New Users</a></li>');
 }

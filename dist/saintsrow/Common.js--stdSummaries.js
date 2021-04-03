@@ -5,13 +5,19 @@
 // Overhauled by user:452 for saintsrow.wikia.com
 // ============================================================
 
+
+if (typeof debug452 == "function") debug452("start of stdSummaries");
+
 $(function() {
 	if ($("label[for=wpSummary]").html() == "Subject/headline:") return;
-	if (!$('#wpSummary').size()) return;
-	$('#wpSummary').attr('tabindex', '3'); //set tabindex for summaries text area
-	$('#wpMinoredit').attr('tabindex', '4'); //set tabindex for minor edit checkbox
-	$('#wpSave').attr('tabindex', '5'); //set tabindex for publish button
-
+	if (!$('#wpSummary').length) { debug452("No #wpSummary"); return; }
+	$(document).on('readystatechange', function() {
+		debug452("stdSummaries: '"+$('#wpSummary').attr('tabindex')+"'=3? '"+$('#wpMinoredit').attr('tabindex')+"'=4?");
+		$('#wpSummary').attr('tabindex', '3'); //set tabindex for summaries text area
+		$('#wpMinoredit').attr('tabindex', '4'); //set tabindex for minor edit checkbox
+		debug452("stdSummaries: '"+$('#wpSummary').attr('tabindex')+"'=3? '"+$('#wpMinoredit').attr('tabindex')+"'=4?");
+	});
+	$(document).trigger('readystatechange');
 	$combo = $('<select />')
 	  .attr('id', 'stdSummaries')
 	  .attr('tabindex', '2')
@@ -23,21 +29,23 @@ $(function() {
 			$('#wpSummary').val($("#wpSummary").html()+$(this).val()); 
 		}
 	  });
-	$("#wpSummary").attr("placeholder", "Summarise your edit, or choose from this list"); 
+	$("#wpSummary").attr("placeholder", "Summarise your edit, or choose from the list below"); 
 
-	$('#wpSummary').after($combo);
-	$(".rail-auto-height").resize();
-	$('#wpSummary').addClass("hideRightBorder");
+	$('#wpSummaryLabel').after($combo);
 
 	function loadStdSummaries() {
 	  stdSummaries = localStorage.getItem('stdSummaries');
+	  stdSummariesVersion = localStorage.getItem('stdSummariesVersion');
+	  localStorage.setItem('stdSummariesVersion', 1);
+	  if (stdSummariesVersion != 1) localStorage.removeItem('stdSummaries');
+
 	  if (stdSummaries) {
 		sSArray = stdSummaries.split("\t");
 		for (i in sSArray ) {
 			var val = (sSArray[i].indexOf('-- ') == 0) ? sSArray[i].substring(3) : '';
 			var text = (sSArray[i].indexOf('-- ') == 0) ? '&nbsp;&nbsp;' + sSArray[i].substring(3) : sSArray[i];
 			var disable = (sSArray[i].indexOf('-- ') == 0 || sSArray[i].indexOf('(') == 0) ? '' : 'disabled';
-			var $opt = '<option value="' + mw.html.escape(val) + '" ' + mw.html.escape(disable) + '>' + mw.html.escape(text) + '</option>';
+			var $opt = '<option value="' + val + '" ' + disable + '>' + text + '</option>';
 			$combo.append($opt);
 		}
 		recentSummaries = localStorage.getItem('recentsummaries');
@@ -61,7 +69,7 @@ $(function() {
 			'action': 'raw',
 			'ctype': 'text/plain'
 		},
-		'url': wgScript,
+		'url': mw.config.get("wgScript"),
 		'success': function(data) {
 			var lines = data.split("\n"), ignore = { ':': 1, '*': 1,  '<': 1 };
 			sSArray = new Array(); 
@@ -86,7 +94,7 @@ $(function() {
 
 	loadStdSummaries();
 
-	$("form#editform").bind("submit", function( event ) {
+	$("form#editform").on("submit", function( event ) {
 		if(!$('#wpSummary').val().length) return;
 		recentSummaries = localStorage.getItem('recentsummaries');
 		if (!recentSummaries) rSArray = new Array(); 

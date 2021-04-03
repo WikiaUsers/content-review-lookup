@@ -19,31 +19,62 @@ importArticles({
 		"w:dev:SearchSuggest/code.js",
 		"w:dev:ShowHide/code.js",
 		"w:dev:VisualSpellCheck/code.js",
-                "w:dev:WallGreetingButton/code.js",
+        "w:dev:WallGreetingButton/code.js",
 		"MediaWiki:Common.js/displayclock.js",
 		"MediaWiki:Common.js/insertusername.js",
 	]
 });
 
-var tooltips_list = [
+window.tooltips_list = [
     {
         classname: 'custom-tooltip-text',
         text: "Parameter: <#parameter#><br/>This is just text and HTML - wikitext '''won't''' be parsed",
     }, {
+        classname: 'crew',
+        parse: '{'+'{crewtt|<#crew#>}}',
+        delay:300,    
+    }, {
+        classname: 'place',
+        parse: '{'+'{placett|<#place#>}}',
+        delay:300,
+    }, {
+        classname: 'other',
+        parse: '{'+'{othertt|<#other#>}}',
+        delay:300,
+    }, {
+        classname: 'type',
+        parse: '{'+'{typett|<#type#>}}',
+        delay:300,
+    }, {
+        classname: 'season',
+        parse: '{'+'{seastt|<#season#>}}',
+        delay:300,
+    }, {
+        classname: 'show',
+        parse: '{'+'{showtt|<#show#>}}',
+        delay:300,
+    }, {
         classname: 'actor',
         parse: '{'+'{actt|<#actor#>}}',
-        delay:500,
+        delay:300,
     }, {
         classname: 'episode',
         parse: '{'+'{eptt|<#episode#>}}',
-        delay:500,
+        delay:300,
     }, {
         classname: 'character',
         parse: '{'+'{chtt|<#character#>}}',
-        delay:500,
+        delay:300,
     }, {    
         classname: 'basic-tooltip',
         delay: 200,
         onHide: function(handle) { $(this).html($(handle).html()) },
     },
 ];
+
+window.tooltips_config = {
+    offsetX: 6,
+    offsetY: 8,
+    waitForImages: true,
+    noCSS: true,
+};

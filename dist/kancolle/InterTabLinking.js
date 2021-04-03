@@ -14,6 +14,7 @@
   }
 
   $(document).ready(function() {
+  	/*
     function loadMathJax() {
       $.getScript(location.protocol + "//kancolle.fandom.com/load.php?modules=ext.math.mathjax.enabler&*");
     }
@@ -27,6 +28,7 @@
         }
       }
     }
+    */
 
     function scrollTo(content, id) {
       if (!content || typeof id !== "string") {
@@ -80,13 +82,15 @@
     var current_tab;
 
     function switchToTab(tab, hash) {
+	  if (debug()) {
+    	console.log("switchToTab:", tab, hash);
+      }
       var tabs = $("ul.tabs li a span").filter(function() {
         return $(this).text() === tab.replace(/_/g, " ");
       });
       if (tabs[0]) {
-        $(tabs[0])
-          .parent()
-          .trigger("click");
+        $(tabs[0]).click();
+        $(tabs[0]).parent().parent().mousedown();
         current_tab = tab;
         switch_hash = hash;
         window.scrollTo(0, 0);
@@ -100,7 +104,7 @@
         console.log("InterTabLinking: processTabBody: MathJax:", window.MathJax && window.MathJax.version);
       }
 
-      renderMath(content);
+      // renderMath(content);
 
       if (hash) {
         if (tab) {
@@ -141,13 +145,13 @@
 
     function fixToc(content, toc) {
       function fixLinks() {
-        if (!toc.data("fixed")) {
+        if (!toc.attr("data-fixed")) {
           var links = toc.find("ol li a");
           if (links.length > 0) {
             if (debug()) {
               console.log("InterTabLinking: found links in TOC:", links.length);
             }
-            toc.data("fixed", "true");
+            toc.attr("data-fixed", "true");
             links.each(function() {
               var link = $(this);
               link.click(function(e) {
@@ -176,6 +180,7 @@
       });
     }
 
+	/*
     if (window.ArticleComments && window.ArticleComments.addHover) {
       var addHover = window.ArticleComments.addHover;
       window.ArticleComments.addHover = function () {
@@ -187,13 +192,38 @@
         return result;
       };
     }
+    */
 
-    $("[id^='flytabs'] li").each(function() {
+	function pollTab(tab, i) {
+		i = i || 0;
+		if (tab.find('.mw-parser-output')) {
+			setTimeout(function() {
+				mw.hook('wikipage.content').fire(tab);
+				// setTimeout(function() { tab.ready(); }, 500);
+			}, 1000);
+		} else if (i < 10) {
+			setTimeout(function() { pollTab(tab, i + 1); }, 1000);
+		}
+	}
+	
+	function fixTab(link, i) {
+		var tab = $(link.parent().parent().parent().find('.tabBody')[i]);
+        if (link.attr('data-loaded')) {
+        	return;
+        }
+        link.attr('data-loaded', 'true');
+        pollTab(tab);
+	}
+	
+	fixTab($($("[id^='flytabs'] li")[0]), 0);
+
+    $("[id^='flytabs'] li").each(function(i) {
       $(this).mousedown(function() {
         current_tab = $(this)
           .text()
           .replace(/ /g, "_");
         window.location.hash = formatHash($(this).text());
+		fixTab($(this), i);
       });
     });
 
@@ -205,37 +235,66 @@
       } else {
         worldLinksAdded = true;
       }
-      var world = $("#EventTemplate").data("world");
+      var world = $("#EventTemplate").attr("data-world");
       if (world) {
-        var tabs = $("#EventTemplate > div > ul");
+        var tabs = $("#EventTemplate > div > div > ul");
         for (var i = 1; i <= 7; ++i) {
           var a = $("<a>")
             .attr("onclick", "location.href='World_" + i + "'")
             .text(i);
           var li = $("<li>").css({"float": "right"}).append(a);
-          if (i === world) {
+          if (i === +world) {
             li.addClass("selected-pure");
           }
           tabs.prepend(li);
         }
       }
     }
+    
+    $.fn.fixTabber = function() {
+		return this.each(function() {
+			var $this = $(this),
+				tabContent = $this.children('.tabbertab'),
+				nav = $('<ul>').addClass('tabbernav');
+			tabContent.each(function() {
+				var anchor = $('<a>').text(this.title).attr('title', this.title).attr('href', '#');
+				$('<li>').append(anchor).appendTo(nav);
+				nav.append($('<wbr>'));
+			});
+			$this.prepend(nav);
+			function showContent(title) {
+				var content = tabContent.filter('[title="' + title + '"]');
+				if (content.length !== 1) return false;
+				tabContent.hide();
+				content.show();
+				nav.find('.tabberactive').removeClass('tabberactive');
+				nav.find('a[title="' + title + '"]').parent().addClass('tabberactive');
+				$(window).trigger('scroll');
+				return true;
+			}
+			showContent(tabContent.first().attr('title'));
+			nav.on('click', 'a', function(e) {
+				var title = $(this).attr('title');
+				e.preventDefault();
+				showContent( title );
+			});
+			$this.addClass('tabberlive');
+		});
+	};
 
     var contentHooks = 0;
 
     mw.hook("wikipage.content").add(function(content) {
       ++contentHooks;
-      if (contentHooks === 2) {
+      content = $(content);
+      console.log(contentHooks, content);
+      if (contentHooks === 1) {
         addWorldLinks();
       }
-      content = $(content);
-      if (content.attr("class") === "tabBody selected") {
-        content.ready(function() {
-          processTabBody(content);
-          content.find(".toc").each(function() {
-            fixToc(content, $(this));
-          });
-        });
+      if (content.attr("class") === "tabBody selected" || content.attr("class") === "tabBody") {
+		processTabBody(content);
+        content.find(".toc").each(function() { fixToc(content, $(this)); });
+        content.find(".tabber:not(.tabberlive)").fixTabber();
       }
     });
 

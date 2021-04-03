@@ -1,12 +1,14 @@
-/* Добавляет иконки на верх (хедер) страницы
- * автор: [[User:The 888th Avatar]], адаптировал к новому хедеру: [[User:Thailog]]
- */
-/* Оригинальный код: https://avatar.fandom.com/wiki/MediaWiki:Common.js/icons.js */
+/* Добавляет иконки на нижнюю границу хедера страницы
+ * автор: [[User:The 888th Avatar]]
+ * оригинальный код: https://avatar.fandom.com/wiki/MediaWiki:Common.js/icons.js
+*/
 
 $(function() {
-	if( $( '.wds-community-header' ).length ) {
+    if ( mw.config.get( 'wgVersion' ) !== '1.19.24' && $( '#title-eraicons' ).length ) {
+        $( '.page-header__contribution > div' ).first().append( $( '#title-eraicons' ).show() );
+    } else if ( $( '.wds-community-header' ).length ) {
 		$( '#PageHeader' ).prepend(
-		$( '#icons' ).attr( 'style', 'position: absolute; right: 65px; bottom: 55px;' )
+		$( '#icons' ).attr( 'style', 'position: absolute; right: 71px;' )
 	);
 	} else {
 		$( '.WikiaPageHeader' ).append( $( '#icons' ) );

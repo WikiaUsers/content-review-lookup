@@ -1,6 +1,5 @@
-/*global require */
 // Для AddRailModule
-require(['wikia.window'], function(window) {
+void(function(window) {
     var document = window.document;
     var i = 0;
     var loadAvatar = setInterval(function() {
@@ -10,7 +9,7 @@ require(['wikia.window'], function(window) {
         } else if (!avatars.length) {
             return;
         }
- 
+
         avatars.forEach(function(avatar) {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', '/api/v1/User/Details?ids=' + avatar.getAttribute('data-username') + '&size=150', true);
@@ -23,7 +22,9 @@ require(['wikia.window'], function(window) {
             xhr.send();
         });
     }, 250);
-});
+})(this || window);
+
+// Кнопка для юзербоксов
 void(function(window, $) {
 	var t = $('.b-slider-button');
 	t.click(function() {
@@ -37,9 +38,11 @@ void(function(window, $) {
 		}
 	});
 })(this || window, this && this.jQuery || window.jQuery);
+
+// Аватары юзербокса
 void(function(window) {
 	var document = window.document;
-	Array.prototype.slice.call(document.querySelectorAll('#mw-content-text > div.userbox[data-username]')).forEach(function(e) {
+	Array.prototype.slice.call(document.querySelectorAll('#mw-content-text div.userbox[data-username]')).forEach(function(e) {
 		var xhr = new window.XMLHttpRequest();
 		xhr.open('GET', '/api/v1/User/Details?ids=' + e.getAttribute('data-username') + '&size=150', true);
 		xhr.onload = function() {

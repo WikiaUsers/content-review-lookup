@@ -67,6 +67,3 @@ window.LockForums = {
 /* AjaxRC */
 window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Contributions"];
 window.ajaxRefresh = 20000;
-
-/* Adding RightRail Modules */
-window.AddRailModule = [{prepend: true}];

@@ -1,10 +1,3 @@
-var SocialMediaButtons = { 
-	position: 'top',
-	colorScheme: 'light',
-	buttonSize: '35px'
-};
-importScriptPage('SocialIcons/code.js','dev');
-
 /*--------------BandCamp Audio Embeds ----------------*/
 /*--------------ART BIG TRACKLIST Shovel Knight OST ---------------*/
 $("#ArtBigTrackListShovelKnightOST").replaceWith('<iframe style="border: 0; width: 300px; height: 736px;" src="https://bandcamp.com/EmbeddedPlayer/album=3358374625/size=large/bgcol=ffffff/linkcol=0687f5/transparent=true/" seamless><a href="http://virt.bandcamp.com/album/shovel-knight-original-soundtrack">Shovel Knight Original Soundtrack by Jake Kaufman</a></iframe>');

@@ -30,7 +30,7 @@ mw.loader.using("mediawiki.api", function () {
         purgePage: function ($page) {
             var $api = new mw.Api();
 
-            $api.get({
+            $api.post({
                 action: "purge",
                 titles: $page
             }).done(function ($data) {

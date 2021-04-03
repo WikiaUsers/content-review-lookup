@@ -100,14 +100,14 @@ if( typeof ToggleFading == "number" ) {
 	FadeSwitch = ToggleFading;
 }
 //</source>
-// Configure toottips js module //
-var tooltips_config = {
+// Configure tooltips js module //
+window.tooltips_config = {
     offsetX: 5,
     offsetY: 10,
     waitForImages: false,
 };
 
-var tooltips_list = [
+window.tooltips_list = [
     {
         classname: 'popup-tooltip',
         parse: '{'+'{<#popup#>|tt=<#tt#>}}'

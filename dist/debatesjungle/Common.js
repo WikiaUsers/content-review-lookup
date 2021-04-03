@@ -8,6 +8,7 @@ window.AutoEditDropdownConfig = {
 window.ajaxRefresh = 60000;
 window.ajaxPages = [
     'Special:WikiActivity',
+    'Special:DiscussionsActivity',
     'Special:RecentChanges',
     'Special:Contributions',
     'Special:Log',
@@ -184,7 +185,10 @@ UserTagsJS.modules.custom = {
     'LuckyEmile': ['former-bureaucrat'],
     'Elizhaa': ['human-resources'],
     'Sixo_Bullet': ['human-resources'],
-    'SoViewtiful': ['human-resources']
+    'SoViewtiful': ['human-resources'],
+    'PlozAlcachaz': ['former-content-moderator'],
+    'Varia29': ['former-sysop'],
+    'The Tetromino King': ['former-bureaucrat']
 };
 
 UserTagsJS.modules.metafilter = {
@@ -223,3 +227,18 @@ if (wgUserName !== null) $('span.insertusername').text(wgUserName);
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 window.pPreview.noimage = 'https://vignette.wikia.nocookie.net/debatesjungle/images/8/88/Blanko.png/revision/latest/scale-to-width-down/200?cb=20190107002413';
 window.pPreview.tlen = 1000;
+
+//==============================================================
+// Sorts content on Special:WhatLinksHere alphabetically
+//==============================================================
+ 
+(function($) {
+    if (wgCanonicalSpecialPageName !== 'Whatlinkshere') return;
+    var sorted_list,
+        $list = $('#mw-whatlinkshere-list');
+    sorted_list = $list.children('li').sort(function (a, b) {
+        return ($(a).find('a:first').attr('title') > 
+        $(b).find('a:first').attr('title')) ? 1 : -1;});
+    $list.children('li').remove();
+    $list.append(sorted_list);
+})(jQuery);

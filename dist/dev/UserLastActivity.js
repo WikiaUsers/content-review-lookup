@@ -71,11 +71,12 @@ implement decision
             }
         });
     }
-    var langs = mw.config.get([
+    var config = mw.config.get([
         "wgUserLanguage",
         "wgPageContentLanguage",
-        "wgContentLanguage"]
-    );
+        "wgContentLanguage",
+        "wgVersion"
+    ]);
     
 /*
 retrieve and set datetime format
@@ -101,12 +102,18 @@ implement
             users = names;
             return api;
         }
-/* request names for ids */
-        return api.get({
+/* construct request for names */
+        var names_req = {
             action: "query",
             list: "users",
-            usids: ids.join("|")
-        }).then(function (data) {
+        };
+        if (config.wgVersion === "1.19.24") {
+            names_req.usids = ids.join("|");
+        } else {
+            names_req.ususerids = ids.join("|");
+        }
+/* request names for ids */
+        return api.get(names_req).then(function (data) {
             if (data.query && data.query.users) {
 /* create list of names with ids as keys */
                 var id_names = data.query.users.reduce(function (accum, value) {
@@ -265,12 +272,12 @@ not and, therefore, will not get mistaken for the anonymous user.
             } else if (log_time) {
                 obj.dates[name] = new Date(log_time).toLocaleString();
             } else if (contrib || logevnt) {
-                if (no_activity[langs.wgUserLanguage]) {
-                    obj.dates[name] = no_activity[langs.wgUserLanguage];
-                } else if (no_activity[langs.wgPageContentLanguage]) {
-                    obj.dates[name] = no_activity[langs.wgPageContentLanguage];
-                } else if (no_activity[langs.wgContentLanguage]) {
-                    obj.dates[name] = no_activity[langs.wgContentLanguage];
+                if (no_activity[config.wgUserLanguage]) {
+                    obj.dates[name] = no_activity[config.wgUserLanguage];
+                } else if (no_activity[config.wgPageContentLanguage]) {
+                    obj.dates[name] = no_activity[config.wgPageContentLanguage];
+                } else if (no_activity[config.wgContentLanguage]) {
+                    obj.dates[name] = no_activity[config.wgContentLanguage];
                 } else {
                     obj.dates[name] = no_activity["en"];
                 }

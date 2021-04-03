@@ -1,30 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-importScriptPage('ShowHide/code.js', 'dev');
-
-// function may not be necessary depending on assets loaded with the page
-function getCookie(c_name)
-{
-var i,x,y,ARRcookies=document.cookie.split(";");
-for (i=0;i<ARRcookies.length;i++)
-{
-  x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
-  y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
-  x=x.replace(/^\s+|\s+$/g,"");
-  if (x==c_name)
-    {
-    return unescape(y);
-    }
-  }
-}
-
-  // tooltips
- if (getCookie("wiki-tiploader") != "no") {
-  document.write('<script type="text/javascript" src="http://wiki.ffxiclopedia.org/index.php?title=MediaWiki:Tooltips.js&action=raw&ctype=text/javascript&dontcountme=s&smaxage=54000"></script>');
- }
-
-// *
-
 var showSpoiler = new Array();
 
 // prototype functions
@@ -114,4 +89,4 @@ var spoilers = true;
 function loadSpoilers() {
   if(spoilers) initSpoilers();
 }
-addOnloadHook(loadSpoilers);
+$(loadSpoilers);

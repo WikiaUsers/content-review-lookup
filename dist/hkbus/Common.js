@@ -2,6 +2,49 @@
 所有用戶在加載任何頁面時，這裡的JavaScript都會加載，請管理員小心編輯
 */
 
+/* MediaWiki:Gadget-site-lib.js modified from Wikipedia-zh */
+window.wgUXS = function (wg, hans, hant, cn, tw, hk, sg, zh, mo, my) {
+    var ret = {
+        'zh': zh || hans || hant || cn || tw || hk || sg || mo || my,
+        'zh-hans': hans || cn || sg || my,
+        'zh-hant': hant || tw || hk || mo,
+        'zh-cn': cn || hans || sg || my,
+        'zh-sg': sg || hans || cn || my,
+        'zh-tw': tw || hant || hk || mo,
+        'zh-hk': hk || hant || mo || tw,
+        'zh-mo': mo || hant || hk || tw
+    }
+    return ret[wg] || zh || hant || hans || tw || cn || hk || sg || mo || my; // 保證每一語言有值
+}
+
+window.wgUXS = function (wg, hans, hant, cn, tw, hk, sg, zh, mo, my) {
+    var ret = {
+        'zh': zh || hans || hant || cn || tw || hk || sg || mo || my,
+        'zh-hans': hans || cn || sg || my,
+        'zh-hant': hant || tw || hk || mo,
+        'zh-cn': cn || hans || sg || my,
+        'zh-sg': sg || hans || cn || my,
+        'zh-tw': tw || hant || hk || mo,
+        'zh-hk': hk || hant || mo || tw,
+        'zh-mo': mo || hant || hk || tw
+    }
+    return ret[wg] || zh || hant || hans || tw || cn || hk || sg || mo || my; // 保證每一語言有值
+}
+ 
+window.wgULS = function (hans, hant, cn, tw, hk, sg, zh, mo, my) {
+    return wgUXS(mw.config.get('wgUserLanguage'), hans, hant, cn, tw, hk, sg, zh, mo, my);
+};
+ 
+window.wgUVS = function (hans, hant, cn, tw, hk, sg, zh, mo, my) {
+    return wgUXS(mw.config.get('wgUserVariant'), hans, hant, cn, tw, hk, sg, zh, mo, my);
+};
+ 
+window.importScriptCallback = function(page, ready) {
+    importScriptURICallback(mw.config.get('wgServer') + mw.config.get('wgScript') + '?title=' + mw.util.wikiUrlencode(page) + '&action=raw&ctype=text/javascript', ready);
+};
+ 
+window.importScriptURICallback = jQuery.getScript;
+
 /*
  * Description: Redirects from /User:UserName/skin.js or .css to the user's actual skin page
  * Maintainer: Cacycle
@@ -15,8 +58,6 @@ if (wgArticleId == 0 && wgUserName) {
   else if (norm == test + 'css') ext = 'css';
   if (ext != null) window.location.href = window.location.href.replace(/\/skin.(css|js)/i, '/' + skin + '.' + ext);
 }
-
-
 if (wgAction == "edit" || wgAction == "submit" || (wgCanonicalNamespace == "Special" && wgCanonicalSpecialPageName =="Upload")) //對應編輯頁面
 {
     importScript("MediaWiki:Common.js/edit.js")
@@ -28,8 +69,6 @@ else if (wgCanonicalNamespace == "Special" && wgCanonicalSpecialPageName =="Watc
 if( wgNamespaceNumber == 6 ) {
     importScript('MediaWiki:Common.js/file.js');
 }
-
-
 /** SysOP Javascript *******************************************************
   *
   *  Description: Allows for sysop-specific Javascript at [[MediaWiki:Sysop.js]].
@@ -46,97 +85,86 @@ function sysopFunctions() {
 }
  
 //addOnloadHook(sysopFunctions);
-
-
 //遍历
 function forEach(callback,array){
-	var i=0,j=array.length;
-	while(i<j){callback(array[i++]);}
+var i=0,j=array.length;
+while(i<j){callback(array[i++]);}
 }
 function applyEach(callback,array){
-	var i=0,j=array.length;
-	while(i<j){callback(array[i++]);}
+var i=0,j=array.length;
+while(i<j){callback(array[i++]);}
 }
-
 // 移動元素
 function elementMoveto(node, refNode, pos){//默認位置為refNode前
-	if(node && refNode){
-		var parent=refNode.parentNode;
-		if (pos && pos=='after') {refNode=refNode.nextSibling;}
-		try {
-			if(refNode){
-				parent.insertBefore(node, refNode);
-			}else{
-				parent.appendChild(node);
-			}
-		} catch (DOMException) {};
-	}
+if(node && refNode){
+var parent=refNode.parentNode;
+if (pos && pos=='after') {refNode=refNode.nextSibling;}
+try {
+if(refNode){
+parent.insertBefore(node, refNode);
+}else{
+parent.appendChild(node);
+}
+} catch (DOMException) {};
+}
 }
 // 創建元素
 function createElement(tag,children,props){
-	var element = document.createElement(tag);
-	if(!(children instanceof Array)){children=[children];}
-	for(var i=0;i<children.length;i++){
-		var child=children[i];
-		if(typeof child=='string'){child=document.createTextNode(child);}
-		if(child){element.appendChild(child);}
-	}
-	if(typeof props=='object'){
-		for(var k in props){
-			switch(k){
-			case 'styles':
-				var styles=props.styles;
-				for(var s in styles){element.style[s]=styles[s];}
-				break;
-			case 'events':
-				var events=props.events;
-				for(var e in events){ addHandler(element,e,events[e]); }
-				break;
-			case 'class':
-				element.className=props[k];break;
-			default:
-				element.setAttribute(k,props[k]);
-			}
-		}
-	}
-	return element;
+var element = document.createElement(tag);
+if(!(children instanceof Array)){children=[children];}
+for(var i=0;i<children.length;i++){
+var child=children[i];
+if(typeof child=='string'){child=document.createTextNode(child);}
+if(child){element.appendChild(child);}
 }
-
+if(typeof props=='object'){
+for(var k in props){
+switch(k){
+case 'styles':
+var styles=props.styles;
+for(var s in styles){element.style[s]=styles[s];}
+break;
+case 'events':
+var events=props.events;
+for(var e in events){ addHandler(element,e,events[e]); }
+break;
+case 'class':
+element.className=props[k];break;
+default:
+element.setAttribute(k,props[k]);
+}
+}
+}
+return element;
+}
 /* Scripts specific to Internet Explorer */
-
-
 if (navigator.appName == "Microsoft Internet Explorer"){
-	var oldWidth;
-	var docEl = document.documentElement;
-
-	function fixIEScroll(){
-		if (!oldWidth || docEl.clientWidth > oldWidth){
-			doFixIEScroll();
-		}else{
-			setTimeout(doFixIEScroll, 1);
-		}
-		oldWidth = docEl.clientWidth;
-	}
-
-	function doFixIEScroll() {
-		docEl.style.overflowX = (docEl.scrollWidth - docEl.clientWidth < 4) ? "hidden" : "";
-	}
-
+var oldWidth;
+var docEl = document.documentElement;
+function fixIEScroll(){
+if (!oldWidth || docEl.clientWidth > oldWidth){
+doFixIEScroll();
+}else{
+setTimeout(doFixIEScroll, 1);
+}
+oldWidth = docEl.clientWidth;
+}
+function doFixIEScroll() {
+docEl.style.overflowX = (docEl.scrollWidth - docEl.clientWidth < 4) ? "hidden" : "";
+}
     document.attachEvent("onreadystatechange", fixIEScroll);
     document.attachEvent("onresize", fixIEScroll);
-
     // IE overflow bug
     appendCSS('div.overflowbugx { overflow-x: scroll !important; overflow-y: hidden !important; } div.overflowbugy { overflow-y: scroll !important; overflow-x: hidden !important; }');
 }
-
 /* Test if an element has a certain class **************************************
  * Description: Uses regular expressions and caching for better performance.
  */
 var hasClass = (function () {
-	var reCache = {};
-	return function (element, className) {
-		return (reCache[className] ? reCache[className] : (reCache[className] = new RegExp("(?:\\s|^)" + className + "(?:\\s|$)"))).test(element.className);
-	};
+var reCache = {};
+return function (element, className) {
+return (reCache[className] ? reCache[className] : (reCache[className] = new RegExp("(?:\\s|^)" + className + "(?:\\s|$)"))).test(element.className);
+};
 })();
 
 
@@ -229,106 +257,107 @@ function createCollapseButtons()
     }
 }
  
-addOnloadHook( createCollapseButtons );
- 
- 
-/** Dynamic Navigation Bars (experimental) *************************************
+// addOnloadHook( createCollapseButtons );
+
+/**
+ * Dynamic Navigation Bars. See [[Wikipedia:NavFrame]]
+ * 
+ * Based on script from en.wikipedia.org, 2008-09-15.
  *
- *  Description: See [[Wikipedia:NavFrame]].
- *  Maintainers: UNMAINTAINED
+ * @source www.mediawiki.org/wiki/MediaWiki:Gadget-NavFrame.js
+ * @maintainer Helder.wiki, 2012–2013
+ * @maintainer Krinkle, 2013
+ * @maintainer Fantasticfears, 2013-2014
  */
- 
-// set up the words in your language
-var NavigationBarHide = '[' + collapseCaption + ']';
-var NavigationBarShow = '[' + expandCaption + ']';
- 
-// shows and hides content and picture (if available) of navigation bars
-// Parameters:
-//     indexNavigationBar: the index of navigation bar to be toggled
-function toggleNavigationBar(indexNavigationBar)
-{
-    var NavToggle = document.getElementById("NavToggle" + indexNavigationBar);
-    var NavFrame = document.getElementById("NavFrame" + indexNavigationBar);
- 
-    if (!NavFrame || !NavToggle) {
-        return false;
-    }
- 
-    // if shown now
-    if (NavToggle.firstChild.data == NavigationBarHide) {
-        for (var NavChild = NavFrame.firstChild; NavChild != null; NavChild = NavChild.nextSibling) {
-            if (hasClass(NavChild, 'NavContent') || hasClass(NavChild, 'NavPic')) {
-                NavChild.style.display = 'none';
-            }
-        }
-    NavToggle.firstChild.data = NavigationBarShow;
- 
-    // if hidden now
-    } else if (NavToggle.firstChild.data == NavigationBarShow) {
-        for (var NavChild = NavFrame.firstChild; NavChild != null; NavChild = NavChild.nextSibling) {
-            if (hasClass(NavChild, 'NavContent') || hasClass(NavChild, 'NavPic')) {
-                NavChild.style.display = 'block';
-            }
-        }
-        NavToggle.firstChild.data = NavigationBarHide;
-    }
-}
- 
-// adds show/hide-button to navigation bars
-function createNavigationBarToggleButton()
-{
-    var indexNavigationBar = 0;
-    // iterate over all < div >-elements 
-    var divs = document.getElementsByTagName("div");
-    for (var i = 0; NavFrame = divs[i]; i++) {
-        // if found a navigation bar
-        if (hasClass(NavFrame, "NavFrame")) {
- 
-            indexNavigationBar++;
-            var NavToggle = document.createElement("a");
-            NavToggle.className = 'NavToggle';
-            NavToggle.setAttribute('id', 'NavToggle' + indexNavigationBar);
-            NavToggle.setAttribute('href', 'javascript:toggleNavigationBar(' + indexNavigationBar + ');');
- 
-            var isCollapsed = hasClass( NavFrame, "collapsed" );
-            /*
-             * Check if any children are already hidden.  This loop is here for backwards compatibility:
-             * the old way of making NavFrames start out collapsed was to manually add style="display:none"
-             * to all the NavPic/NavContent elements.  Since this was bad for accessibility (no way to make
-             * the content visible without JavaScript support), the new recommended way is to add the class
-             * "collapsed" to the NavFrame itself, just like with collapsible tables.
-             */
-            for (var NavChild = NavFrame.firstChild; NavChild != null && !isCollapsed; NavChild = NavChild.nextSibling) {
-                if ( hasClass( NavChild, 'NavPic' ) || hasClass( NavChild, 'NavContent' ) ) {
-                    if ( NavChild.style.display == 'none' ) {
-                        isCollapsed = true;
-                    }
-                }
-            }
-            if (isCollapsed) {
-                for (var NavChild = NavFrame.firstChild; NavChild != null; NavChild = NavChild.nextSibling) {
-                    if ( hasClass( NavChild, 'NavPic' ) || hasClass( NavChild, 'NavContent' ) ) {
-                        NavChild.style.display = 'none';
-                    }
-                }
-            }
-            var NavToggleText = document.createTextNode(isCollapsed ? NavigationBarShow : NavigationBarHide);
-            NavToggle.appendChild(NavToggleText);
- 
-            // Find the NavHead and attach the toggle link (Must be this complicated because Moz's firstChild handling is borked)
-            for(var j=0; j < NavFrame.childNodes.length; j++) {
-                if (hasClass(NavFrame.childNodes[j], "NavHead")) {
-                    NavFrame.childNodes[j].appendChild(NavToggle);
-                }
-            }
-            NavFrame.setAttribute('id', 'NavFrame' + indexNavigationBar);
-        }
-    }
-}
- 
-addOnloadHook( createNavigationBarToggleButton );
+( function () {
 
+var collapseCaption = wgULS('隐藏', '隱藏');
+var expandCaption = wgULS('显示', '顯示');
 
+var navigationBarHide = collapseCaption + '▲';
+var navigationBarShow = expandCaption + '▼';
+ 
+/**
+ * Shows and hides content and picture (if available) of navigation bars.
+ *
+ * @param {number} indexNavigationBar The index of navigation bar to be toggled
+ * @param {jQuery.Event} e Event object
+ */
+function toggleNavigationBar( indexNavigationBar, e ) {
+        var toggle = $( '#NavToggle' + indexNavigationBar ),
+                frame = $( '#NavFrame' + indexNavigationBar ),
+                isFrameCollapsed;
+
+        if ( !frame || !toggle ) {
+                return false;
+        }
+
+    isFrameCollapsed = frame.hasClass( 'collapsed' );
+        if ( isFrameCollapsed ) {
+                frame.find( '> .NavPic, > .NavContent, > .toogleShow' ).each( function() {
+                        $( this ).css( 'display', 'block' );
+                });
+                frame.find( '> .toggleHide' ).each( function() {
+                        $( this ).css( 'display', 'none' );
+                });
+                toggle.text( navigationBarHide );
+                frame.removeClass( 'collapsed' );
+        } else {
+                frame.find( '> .NavPic, > .NavContent, > .toogleShow' ).each( function() {
+                        $( this ).css( 'display', 'none' );
+                });
+                frame.find( '> .toggleHide' ).each( function() {
+                        $( this ).css( 'display', 'block' );
+                });
+                toggle.text( navigationBarShow );
+                frame.addClass( 'collapsed' );
+        }
+}
+/**
+ * Adds show/hide-button to navigation bars.
+ *
+ * @param {jQuery} $content
+ */
+function createNavigationBarToggleButton( $content ) {
+        // Iterate over all (new) nav frames
+        $content.find( 'div.NavFrame' ).each( function( indexNavigationBar ) {
+                var frame = $( this ).attr( 'id', 'NavFrame' + indexNavigationBar );
+                // If found a navigation bar
+                var navToggle = $( '<span class="NavToggle" id="NavToggle' + indexNavigationBar + '"></span>' );
+                frame.find( '> .NavHead' ).each( function() {
+                        $( this ).on( 'click', $.proxy( toggleNavigationBar, null, indexNavigationBar ) );
+                    return false;
+        });
+                if ( frame.hasClass( 'collapsed' ) ) {
+                        frame.find( '> .NavPic, > .NavContent, > .toggleHide' ).each( function() {
+                                $( this ).css( 'display', 'none' );
+                        });
+                } else {
+                        frame.find( '> .toggleShow' ).each( function() {
+                                $( this ).css( 'display', 'none' );
+                        });
+                }
+
+                var showNavigationBarHide = true;
+                frame.find( '> .NavPic, > .NavContent' ).each( function() {
+                        if ( $( this ).css( 'display' ) === 'none' ) {
+                                showNavigationBarHide = false;
+                                return false;
+                        }
+                });
+
+                navToggle.text( showNavigationBarHide? navigationBarHide: navigationBarShow );
+
+                frame.find( '> .NavHead' ).each( function() {
+                        $( this ).append( navToggle );
+                        return false;
+                });
+        });
+}
+        mw.hook( 'wikipage.content' ).add( createNavigationBarToggleButton );
+}());
+
+/* #adminSkin
 addOnloadHook(function(){
     var opt = document.createElement("option");
     opt.text = "monobook";
@@ -337,15 +366,14 @@ addOnloadHook(function(){
     var placeholder = document.getElementById("adminSkin");
     if (!placeholder) return;
     placeholder.options.add(opt);
- 
 });
+*/
 
-//Reference Popups
+/* Reference Popups */
 importArticles({
     type: "script",
     articles: [
         "w:c:dev:ReferencePopups/code.js"
     ]
 });
-
 //</source>

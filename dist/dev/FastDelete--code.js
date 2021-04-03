@@ -5,110 +5,149 @@
  * @author Uberfuzzy
  * @author Grunny
  *
- * @version 2.6
+ * @version 2.7
  */
 ;(function($, mw, window) {
+    'use strict';
+
     window.dev = (window.dev || {});
- 
-    // Don't load twice...
-    if (window.dev.ajaxFastDelete !== undefined) {
-        return false;
+
+    const conf = mw.config.get([
+        'wgNamespaceNumber',
+        'wgPageName',
+        'wgArticleId',
+        'wgVersion'
+    ]);
+    const isUCP = conf.wgVersion !== '1.19.24';
+
+    // Loading restrictions
+    if (
+        window.dev.ajaxFastDelete !== undefined ||
+        !window.fdButtons ||
+        conf.wgNamespaceNumber === -1 ||
+        conf.wgArticleId === 0 ||
+        (conf.wgNamespaceNumber === 2 && isUCP && $('.noarticletext').length) ||
+        (conf.wgNamespaceNumber != 2 && isUCP && !$('#ca-delete').length) ||
+        (!isUCP && !$('#ca-delete').length) ||
+        !/sysop|staff|helper|wiki-manager|content-team-member|content-volunteer|content-moderator|soap/.test(mw.config.get('wgUserGroups').join())
+    ) {
+        return;
     }
- 
-    var conf = mw.config.get([
-            'wgNamespaceNumber',
-            'wgPageName',
-            'wgVersion'
-        ]),
-        isUCP = conf.wgVersion !== '1.19.24';
- 
+
+    // Main script function
     function init(i18n) {
-        var self = {
-            version: '2.6',
+        const self = {
+            version: '2.7',
             init: function() {
-                if (
-                    conf.wgNamespaceNumber === -1 ||
-                    !window.fdButtons ||
-                    (conf.wgNamespaceNumber === 2 && isUCP && $(".noarticletext").length) ||
-                    (conf.wgNamespaceNumber != 2 && isUCP && !$('#ca-delete').length) ||
-                    !isUCP && !$('#ca-delete').length
-                ) return;
-                var deleteButtons = '',
-                    $profile;
-                if (isUCP) {
-                    $profile = $('.ns-2 .page-header__contribution-buttons');
+                const $profile = $('.UserProfileActionButton');
+                const $blogs = $('.page-header__subtitle-blog-post');
+                const $title = $('.page-header__title');
+
+                // Map config object to get buttons' HTML
+                const deleteBtns = window.fdButtons.map(function(btn) {
+                    const btnClass = ((!isUCP && $profile.length)
+                        ? 'wikia-button'
+                        : 'wds-button'
+                    );
+
+                    return $('<a>', {
+                        class: btnClass,
+                        title: i18n.msg('delete-title', btn.summary).plain(),
+                        text: btn.label,
+                        'data-summary': btn.summary,
+                        'data-id': 'fastdelete',
+                    });
+                });
+
+                const buttonsWrapper = $('<span>', {
+                    id: 'FastDeleteBtns',
+                    html: deleteBtns
+                });
+
+                // Apply CSS
+                mw.util.addCSS(
+                    '#FastDeleteBtns > a { margin-left: 3px; }\
+                    .page-header__blog-post-details { margin-right: 5px; }'
+                );
+
+                // Place buttons
+                if (!isUCP && $profile.length) {
+                    $profile.append(buttonsWrapper);
+                } else if (!isUCP && $blogs.length) {
+                    $blogs.append(buttonsWrapper);
                 } else {
-                    $profile = $('.UserProfileActionButton');
+                    $title.append(buttonsWrapper);
                 }
-                var deleteBtns = window.fdButtons.map(function(b) {
-                    var sum = b.summary,
-                        cssBtns;
-                    if (isUCP) {
-                        cssBtns = 'wds-button';
-                    } else {
-                        cssBtns = $profile.length ? 'wikia-button' : 'wds-button';
-                    }
-                    return '<a class="' + cssBtns + '" title="' + i18n.msg('delete-title', sum).escape() + '" data-summary="' + sum + '" data-id="fastdelete">' + b.label + '</a>';
-                }).join('&nbsp;');
-                deleteButtons = '<span id="FastDeleteBtns">' + deleteBtns + '</span>';
- 
-                if ($profile.length) {
-                    $profile.append(deleteButtons);
-                } else if (!isUCP && $('.page-header__subtitle-blog-post').length) {
-                    $('.page-header__subtitle-blog-post').append(deleteButtons);
-                    $('.page-header__blog-post-details').css('margin-right', '5px');
-                } else {
-                    $('.page-header__title').append(deleteButtons);
-                    mw.util.addCSS('a[data-id="fastdelete"]:nth-child(1){margin-left:5px}');
-                    mw.util.addCSS('.page-header__title #FastDeleteBtns > a:not(:first-child) {margin-left: -5px;}');
-                }
- 
-                if ($('a[data-id="fastdelete"]').length) {
-                    $('a[data-id="fastdelete"]').click(function() {
-                        if (window.FastDeleteNoConfirm || confirm(i18n.msg('areyousure').plain()) === true) {
-                            self.deletePage($(this).attr('data-summary'));
+
+                // Handle click events
+                const btnElements = $('a[data-id="fastdelete"]');
+                if (btnElements.length) {
+                    btnElements.click(function() {
+                        const deleteReason = $(this).attr('data-summary');
+
+                        // Delete immediately if NoConfirm option is set
+                        if (!!window.FastDeleteNoConfirm) {
+                            self.deletePage(deleteReason);
                         } else {
-                            return;
+                            // Otherwise ask for confirmation first
+                            const isConfirmed = confirm(i18n.msg('areyousure', deleteReason).plain());
+                            if (isConfirmed) {
+                                self.deletePage(deleteReason);
+                            }
                         }
                     });
                 }
-                mw.hook('fastdelete.init').fire(deleteButtons);
+
+                // Fire the hook
+                mw.hook('fastdelete.init').fire(buttonsWrapper);
             },
             deletePage: function(deleteReason) {
-                (new mw.Api())
-                .post({
-                        action: 'delete',
-                        title: conf.wgPageName,
-                        reason: deleteReason,
-                        token: mw.user.tokens.get(isUCP ? 'csrfToken' : 'editToken')
-                    })
-                    .done(function(res) {
-                        location.reload();
-                    });
+                const token = mw.user.tokens.get(isUCP
+                    ? 'csrfToken'
+                    : 'editToken'
+                );
+                new mw.Api().post({
+                    action: 'delete',
+                    title: conf.wgPageName,
+                    reason: deleteReason,
+                    bot: true,
+                    token: token
+                }).done(function(res) {
+                    if (res.error) {
+                        return alert(
+                            i18n.msg('error-api', res.error.code, res.error.info).plain()
+                        );
+                    }
+                    console.log(i18n.msg('success', conf.wgPageName).plain());
+                    location.reload();
+                }).fail(function() {
+                    return alert(
+                        i18n.msg('error-ajax').plain()
+                    );
+                });
             }
         };
- 
+
+        // Export the script
         window.dev.ajaxFastDelete = self;
- 
-        mw.loader.using(['mediawiki.util', 'mediawiki.api'], function() {
-            $(self.init);
-        });
+
+        // Run init function with dependencies
+        mw.loader.using([
+            'mediawiki.util',
+            'mediawiki.api'
+        ]).then(self.init);
     }
- 
-    // i18n
+
+    // Load i18n messages
     mw.hook('dev.i18n').add(function(i18n) {
         i18n.loadMessages('FastDelete').then(init);
     });
- 
- 
-    if (!window.dev || !window.dev.i18n) {
-        if (isUCP) {
-            mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js');
-        } else {
-            importArticle({
-                type: 'script',
-                article: 'u:dev:MediaWiki:I18n-js/code.js'
-            });
-        }
+
+    // Load i18n-js lib
+    if (!window.dev.i18n) {
+        importArticle({
+            type: 'script',
+            article: 'u:dev:MediaWiki:I18n-js/code.js'
+        });
     }
 })(jQuery, mediaWiki, window);

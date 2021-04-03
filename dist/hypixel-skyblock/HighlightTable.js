@@ -191,79 +191,82 @@
                 path: '/'
             });
         }
-
-        tables = $('table.' + tableClass);
-        // don't bother doing anything unless there's really something to do
-        if (tables.length > 0) {
-            // hash the page name to an 8-char hex string
-            hashPageName = crc32c(wgPageName);
-            loadCookie(tables.length);
-
-            tables.each(function (iTable) {
-                rows[iTable] = $(this).find('tr:has(td)'); // data rows
-
-                // init or trim the cookie array of rows, if needed
-                while (cookie[iTable].length < rows[iTable].length) {
-                    cookie[iTable].push(0);
-                }
-                while (cookie[iTable].length > rows[iTable].length) {
-                    cookie[iTable].pop();
-                }
-
-                // don't rely on headers to find # of columns
-                // count them dynamically
-                columns = 1;
-
-                rows[iTable].each(function (iRow) {
-                    // update column count as we go
-                    // a smarter approach would count colspans, but this is good for now
-                    columns = Math.max(columns, $(this).children('th,td').length);
-
-                    // initialize highlighting based on the cookie
-                    setHighlight(this, cookie[iTable][iRow]);
-
-                    // set mouse events
-                    $(this).mouseover(function () {
-                        setHighlight(this, 2);
-                    }).mouseout(function () {
+        
+        // This hook forces it to apply script even in TabViews
+		mw.hook('wikipage.content').add(function(pSection){
+            tables = $(pSection[0]).find('table.' + tableClass);
+            // don't bother doing anything unless there's really something to do
+            if (tables.length > 0) {
+                // hash the page name to an 8-char hex string
+                hashPageName = crc32c(wgPageName);
+                loadCookie(tables.length);
+    
+                tables.each(function (iTable) {
+                    rows[iTable] = $(this).find('tr:has(td)'); // data rows
+    
+                    // init or trim the cookie array of rows, if needed
+                    while (cookie[iTable].length < rows[iTable].length) {
+                        cookie[iTable].push(0);
+                    }
+                    while (cookie[iTable].length > rows[iTable].length) {
+                        cookie[iTable].pop();
+                    }
+    
+                    // don't rely on headers to find # of columns
+                    // count them dynamically
+                    columns = 1;
+    
+                    rows[iTable].each(function (iRow) {
+                        // update column count as we go
+                        // a smarter approach would count colspans, but this is good for now
+                        columns = Math.max(columns, $(this).children('th,td').length);
+    
+                        // initialize highlighting based on the cookie
                         setHighlight(this, cookie[iTable][iRow]);
-                    }).click(function (e) {
-                        // don't toggle highlight when clicking links
-                        if ((e.target.tagName !== 'A') && (e.target.tagName !== 'IMG')) {
-                            cookie[iTable][iRow] = 1 - cookie[iTable][iRow];
+    
+                        // set mouse events
+                        $(this).mouseover(function () {
+                            setHighlight(this, 2);
+                        }).mouseout(function () {
                             setHighlight(this, cookie[iTable][iRow]);
-                            saveCookie();
-                        }
+                        }).click(function (e) {
+                            // don't toggle highlight when clicking links
+                            if ((e.target.tagName !== 'A') && (e.target.tagName !== 'IMG')) {
+                                cookie[iTable][iRow] = 1 - cookie[iTable][iRow];
+                                setHighlight(this, cookie[iTable][iRow]);
+                                saveCookie();
+                            }
+                        });
                     });
+    
+                    // add a button for reset
+                    $(this).append(
+                        $('<tfoot/>')
+                            .append(
+                                $('<tr/>')
+                                    .append(
+                                        $('<th/>')
+                                            .attr('colspan', columns)
+                                            .append(
+                                                $('<input>')
+                                                    .attr({
+                                                        'type': 'button',
+                                                        'value': 'Reset'
+                                                    })
+                                                    .click(function () {
+                                                        rows[iTable].each(function (iRow) {
+                                                            cookie[iTable][iRow] = 0;
+                                                            setHighlight(this, 0);
+                                                        });
+                                                        saveCookie();
+                                                    })
+                                            )
+                                    )
+                            )
+                        );
                 });
-
-                // add a button for reset
-                $(this).append(
-                    $('<tfoot/>')
-                        .append(
-                            $('<tr/>')
-                                .append(
-                                    $('<th/>')
-                                        .attr('colspan', columns)
-                                        .append(
-                                            $('<input>')
-                                                .attr({
-                                                    'type': 'button',
-                                                    'value': 'Reset'
-                                                })
-                                                .click(function () {
-                                                    rows[iTable].each(function (iRow) {
-                                                        cookie[iTable][iRow] = 0;
-                                                        setHighlight(this, 0);
-                                                    });
-                                                    saveCookie();
-                                                })
-                                        )
-                                )
-                        )
-                    );
-            });
-        }
+            }
+        });
     }
 
     $(highlightTable);

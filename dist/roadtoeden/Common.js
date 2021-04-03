@@ -1,0 +1,2 @@
+/* Any JavaScript here will be loaded for all users on every page load.                      */
+mw.loader.load('https://dev.fandom.com/wiki/MediaWiki:UploadMultipleFiles.js?action=raw&ctype=text/javascript');

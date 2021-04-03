@@ -5,17 +5,17 @@
  * useful framework so that other communities can use it to build their own article creation tool.
  * 
  * @author Thales César
- * @version 0.1.0
+ * @version 2.0.1
  * @description Page Creation Interface framework
- * @exports ICP
  */
 var ICP = (function($) {
   "use strict";
 
-  var ICPversion = '1.0.0';
+  var ICPversion = '2.0.1';
 
   /**
    * ICP framework class
+   * @exports ICP
    */
   var ICP = function() {
     this.version = ICPversion;
@@ -28,6 +28,7 @@ var ICP = (function($) {
     this.userActions = {};
     this.mwApi = null;
     this.VESurface = null;
+    this.anonMessage = true;
     this.sendFeedbackEnabled = false;
     this.closeFeedbackEnabled = false;
     this.wikitextAutoReset = true;
@@ -163,16 +164,13 @@ var ICP = (function($) {
 
   /**
    * ICP logic flow manager
-   * 
-   * @param {Function[]} steps ICP steps functions
-   * @param {Object} [options] ICP flow options
-   * @param {Boolean} [options.anon] Whether to confirm anons intention before proceeding
    */
-  ICP.prototype.controller = function(steps, options) {
-    options = options || {anon: true};
+  ICP.prototype.controller = function() {
+    var steps = this.getSteps();
     this.buildModal();
     this.buildProgressBar();
-    if (options.anon) steps.unshift(this.confirmAnon);
+    if (this.anonMessage) steps.unshift(this.confirmAnon);
+    mw.hook("dev.icp.init").fire();
     this._controller(steps);
   };
 
@@ -239,6 +237,7 @@ var ICP = (function($) {
    * 
    * @param {ICP} icp ICP instance
    * @param {Number} stepIndex Step index number
+   * @exports StepWikitext
    */
   var StepWikitext = function(icp, stepIndex) {
     this.icp = icp;
@@ -276,21 +275,25 @@ var ICP = (function($) {
    * Builds ICP's modal
    */
   ICP.prototype.buildModal = function() {
-    if (document.getElementById("blackout_CuratedContentToolModal") != "null")
+    if (document.getElementById("blackout_CuratedContentToolModal") != "null") {
       $("#blackout_CuratedContentToolModal").remove();
-    $(document.head).append('<link rel="stylesheet" href="https://slot1-images.wikia.nocookie.net/__am/7900017900012/sass/background-dynamic%3Dtrue%26background-image%3Dhttps%253A%252F%252Fvignette.wikia.nocookie.net%252Fpt.starwars%252Fimages%252F5%252F50%252FWiki-background%252Frevision%252Flatest%253Fcb%253D20180407180604%26background-image-height%3D820%26background-image-width%3D1920%26color-body%3D%2523ddedfd%26color-body-middle%3D%2523ddedfd%26color-buttons%3D%25232f8f9d%26color-community-header%3D%25232f8f9d%26color-header%3D%25232f8f9d%26color-links%3D%2523006cb0%26color-page%3D%2523ffffff%26oasisTypography%3D1%26page-opacity%3D100%26widthType%3D0/resources/wikia/ui_components/modal/css/modal_default.scss" />');
-    $('body').append('<div id="blackout_CuratedContentToolModal" class="modal-blackout visible">'
-      +'<div id="CuratedContentToolModal" class="modal medium no-scroll curated-content-tool-modal ">'
-        +'<header>'
-          +'<span class="close">Close</span>'
-            +'<img alt="Carregando" src="https://slot1-images.wikia.nocookie.net/__cb1591343180920/common/skins/common/images/ajax.gif" style="vertical-align: baseline; display: none; border: 0px;" />'
-            +'<h3 style="display: inline;"></h3>'
+      $("#ICPConfigModal").remove();
+    }
+    $('body').append('<div id="blackout_CuratedContentToolModal" class="wds-dialog__curtain curated-content-tool-modal__curtain" style="z-index:450">'
+      +'<div id="CuratedContentToolModal" class="wds-dialog__wrapper no-scroll curated-content-tool-modal"'
+          +' style="display: flex; flex-direction: column; max-width: 700px; width: 700px;">'
+        +'<header class="wds-dialog__title" style="display: flex; justify-content: space-between;">'
+          +'<h3 style="display: inline;"></h3>'
+          +'<svg class="wds-icon curated-content-tool-modal__close" style="cursor: pointer;"><use href="#wds-icons-close"></use></svg>'
+          +'<img alt="Carregando" src="https://slot1-images.wikia.nocookie.net/__cb1591343180920/common/skins/common/images/ajax.gif" style="vertical-align: baseline; display: none; border: 0px;" />'
         +'</header>'
         +'<nav></nav>'
-        +'<section></section>'
+        +'<section class="wds-dialog__content"></section>'
         +'<footer>'
-          +'<button id="configuracoesICP" class="secondary">Configurações</button>'
-          +'<span id="ICPVersion" style="display:none">'+ICPversion+'</span>'
+          +'<div class="wds-dialog__actions">'
+            +'<button id="configuracoesICP" class="wds-button wds-is-text create-page-dialog__button secondary">Configurações</button>'
+            +'<span id="ICPVersion" style="display:none">'+ICPversion+'</span>'
+          +'</div>'
         +'</footer>'
       +'</div>'
     +'</div>');
@@ -299,62 +302,83 @@ var ICP = (function($) {
 
   ICP.prototype._setModalButtonsCallbacks = function() {
     var instance = this;
-    $("#CuratedContentToolModal span.close").click(function() {
+    $("#CuratedContentToolModal header>svg").click(function() {
       //Many people seem to leave in the middle of the process, so let's ask them why
-      if (instance.closeFeedbackEnabled)
+      var minStepsLength = (instance.anonMessage) ? 1 : 0;
+      var shouldAskForCloseFeedback = instance.closeFeedbackEnabled && instance.userActions.stepsExecuted.length > minStepsLength;
+      if (shouldAskForCloseFeedback)
         instance.userActions.closeFeedback = prompt("Por favor, nos ajude a deixar essa ferramenta ainda melhor. Diga-nos o motivo de estar abandonando o processo no meio.") || false;
       instance._finish();
     });
 
+    this._buildConfigModal();
     $("#configuracoesICP").click(function () {
-      //Config modal
-      var configModal = "<form name='config_form'><p><label>Abrir Interface de Criação de Páginas sempre que iniciar nova página."+
-      "<input type='checkbox' name='default_action' checked /></label></p></form>"+
-      '<p><a href="https://starwars.fandom.com/pt/wiki/Utilizador:Thales_C%C3%A9sar/ICP" target="_blank">Sobre a ICP</a> - versão '+instance.version+' ('+ICPversion+')</p>';
-      var buttons = [
-        {
-          message: 'Resetar mudanças',
-          handler: function() {
-            $('#ModalSettingsWindow fieldset').replaceWith(configModal);
-          }
-        },{
-          message: 'Salvar',
-          handler: function() {
-            var formRes = $('form[name="config_form"]').serialize();
-            var settingsObj = {};
-            if (formRes.search("default_action") > -1)
-              settingsObj.default_action = 1;
-            else
-              settingsObj.default_action = 0;
-            localStorage.ICPsettings = JSON.stringify(settingsObj);
-            alert("Alterações salvas!");
-          }
-        }
-      ];
-      if (instance.sendFeedbackEnabled) { 
-        buttons.unshift({
-          message: 'Enviar feedback',
-          handler: function() {
-            var feedbackTxt = prompt("Envie um comentário sobre essa ferramenta para os administradores: ");
-            if (feedbackTxt) {
-              instance.userActions.msgFeedback = feedbackTxt;
-              instance.sendFeedback();
-              alert("Obrigado!");
-            }
-          }
-        });
-      }
-      $.showCustomModal('Configurações', configModal, {
-        id: 'ModalSettingsWindow',
-        width: 600,
-        height: 250,
-        buttons: buttons
-      });
-    });
-    $("#finalizarEdicao").click(function () {
-      this.finishEdit();
+      instance.windowManager.openWindow(instance.configModal);
     });
   };
+
+  ICP.prototype._buildConfigModal = function() {
+    var instance = this;
+    function ICPConfigModal(config) {
+      ICPConfigModal.super.call(this, config);
+    }
+    OO.inheritClass(ICPConfigModal, OO.ui.ProcessDialog);
+    
+    ICPConfigModal.static.name = 'ICPConfigDialog';
+    ICPConfigModal.static.title = 'Configurações';
+    ICPConfigModal.static.actions = [
+      {action: 'save', label: 'Save', flags: 'primary'},
+      {label: 'Cancel', flags: 'close'}
+    ];
+    if (this.sendFeedbackEnabled) ICPConfigModal.static.actions.push({label: 'Enviar feedback', action: 'feedback'});
+    
+    ICPConfigModal.prototype.initialize = function() {
+      ICPConfigModal.super.prototype.initialize.apply(this, arguments);
+      var configModal = "<form name='config_form'><p><label>Abrir Interface de Criação de Páginas sempre que iniciar nova página."+
+      "<input type='checkbox' name='default_action' checked /></label></p></form>"+
+      '<p><a href="https://starwars.fandom.com/pt/wiki/Star_Wars_Wiki%3AInterface_de_Cria%C3%A7%C3%A3o_de_P%C3%A1ginas" target="_blank">Sobre a ICP</a> - versão '+instance.version+' ('+ICPversion+')</p>';
+      this.content = new OO.ui.PanelLayout({padded: true, expanded: false});
+      this.content.$element.append(configModal);
+      this.$body.append(this.content.$element);
+    };
+
+    ICPConfigModal.prototype.getActionProcess = function(action) {
+      var dialog = this;
+      if (action) {
+        instance._handleConfigModalAction(action);
+        return new OO.ui.Process(function () {
+          dialog.close({action: action});
+        });
+      }
+      return ICPConfigModal.super.prototype.getActionProcess.call(this, action);
+    };
+    
+    this.windowManager = new OO.ui.WindowManager();
+    $(document.body).append(this.windowManager.$element);
+    
+    this.configModal = new ICPConfigModal({id: "ICPConfigModal", size: "larger"});
+    this.windowManager.addWindows([this.configModal]);
+  }
+
+  ICP.prototype._handleConfigModalAction = function(action) {
+    if (action == "save") {
+      var formRes = $('form[name="config_form"]').serialize();
+      var settingsObj = {};
+      if (formRes.search("default_action") > -1)
+        settingsObj.default_action = 1;
+      else
+        settingsObj.default_action = 0;
+      mw.storage.set("ICPsettings", JSON.stringify(settingsObj));
+      alert("Alterações salvas!");
+    } else if (action == "feedback") {
+      var feedbackTxt = prompt("Envie um comentário sobre essa ferramenta para os administradores: ");
+      if (feedbackTxt) {
+        instance.userActions.msgFeedback = feedbackTxt;
+        instance.sendFeedback();
+        alert("Obrigado!");
+      }
+    }
+  }
 
   ICP.prototype.buildProgressBar = function() {
     var instance = this;
@@ -457,6 +481,7 @@ var ICP = (function($) {
    * @param {String} title Infobox's title
    * @param {Object} [options] Options
    * @param {String} [options.infoboxClassList] Infobox class list
+   * @exports ModalInfobox
    */
   var ModalInfobox = function(content, title, options) {
     options = options || {};
@@ -570,7 +595,7 @@ var ICP = (function($) {
    * @param {String} size CSS width
    */
   ICP.prototype.resizeModal = function(size) {
-    $("#CuratedContentToolModal").css('width', size || "");
+    $("#CuratedContentToolModal").css('width', size || "700px");
   };
 
   /**
@@ -681,71 +706,77 @@ var ICP = (function($) {
   //Wrapping up
   ICP.prototype.finishEdit = function() {
     console.log(this.articleWikitext);
-    this.articleWikitext = this.articleWikitext.join("");
-    this.articleWikitext += "\n\n"+"<!-- Artigo gerado pelo ICP -->";
-    this.articleWikitext += "\n<!-- Gerado às "+new Date().toString()+"-->";
+    var articleWikitext = this.articleWikitext.join("");
+    articleWikitext += "\n\n"+"<!-- Artigo gerado pelo ICP -->";
+    articleWikitext += "\n<!-- Gerado às "+new Date().toString()+"-->";
     this._currentStepExit();
     var instance = this;
-    if (window.wgAction == "view") {
+    if (this.VESurface.mode == "visual") {
       //Visual Editor
-      instance.mwApi.post({
-        action: "visualeditor",
-        paction: "parsefragment",
-        page: this.articleName,
-        wikitext: this.articleWikitext
-      }).then(function(data) {
-        //For UCP, this may be replaced for https://doc.wikimedia.org/VisualEditor/master/#!/api/mw.libs.ve.targetLoader-method-requestParsoidData
-        instance._finish();
-        instance.VESurface.getView().focus();
-        var wikiDocument = new DOMParser().parseFromString(data.visualeditor.content, "text/html");
-        var VEDocument = ve.dm.converter.getModelFromDom(wikiDocument);
-        instance.VESurface.getModel().getFragment().insertDocument(VEDocument);
-        //For UCP's source mode, the following should be enough:
-        // instance.VESurface.getModel().getFragment().insertContent(instance.articleWikitext);
-        //FYI, VESurface.mode == "visual" is the way to check for the mode
-      });
+      //TODO ensure that mw.libs.ve is avaliable beforehand
       this.updateModalBody("<p>Carregando suas edições...</p>");
+      mw.libs.ve.targetLoader.requestParsoidData(this.articleTitle, {wikitext: articleWikitext}).then(function(data) {
+        try {
+          instance.VESurface.getView().focus();
+          var wikiDocument = new DOMParser().parseFromString(data.visualeditor.content, "text/html");
+          var VEDocument = ve.dm.converter.getModelFromDom(wikiDocument);
+          instance.VESurface.getModel().getFragment().insertDocument(VEDocument);
+          instance._finish();
+        } catch (e) {
+          instance.userActions.errors.push(e.toString());
+          instance._handleFinishEditError(articleWikitext);
+        }
+      }).fail(function() {
+        instance._handleFinishEditError(articleWikitext, true);
+      });
     } else {
       //Source editor and WYSIWYG editor
-      if ($("[id=wpTextbox1]").length > 1) //There may be two textareas with id=wpTextbox1 🤷
-        $('#wpTextbox1').attr('id', 'wpTextbox0');
-      var theTextarea = ($('#cke_contents_wpTextbox1 textarea')[0] || $('#wpTextbox1')[0]);
-
-      var hasStandardLayout = theTextarea.value.toLowerCase().search("\\[\\[file:placeholder") >= 0;
-      if (this.replaceArticleWikitext || (this.replaceFandomStandardLayout && hasStandardLayout))
-        theTextarea.value = this.articleWikitext;
-      else
-        theTextarea.value += this.articleWikitext;
       this._finish();
-      if (this.wysiwyg === true) this.changeSourceToWys();
+      this.VESurface.getView().focus();
+      this.VESurface.getModel().getFragment().insertContent(articleWikitext);
     }
   };
 
   ICP.prototype._finish = function() {
-    $("#blackout_CuratedContentToolModal").removeClass('visible');
+    $("#blackout_CuratedContentToolModal").remove();
     if (this.sendFeedbackEnabled) this.sendFeedback();
+    if (this.wysiwyg === true) this.changeSourceToWys();
   };
+
+  ICP.prototype._handleFinishEditError = function(articleWikitext, retryable) {
+    var instance = this;
+    var container = document.createElement("div");
+    var paragraph = document.createElement("p");
+    paragraph.innerText = "Houve um erro na inserção automática de suas contribuições no Editor Visual. ";
+    paragraph.innerText += "Para completar sua edição, copie o wikitexto a seguir e insira-no no modo fonte:";
+    container.appendChild(paragraph);
+
+    var textarea = document.createElement("textarea");
+    textarea.readOnly = true;
+    textarea.style.width = "100%";
+    textarea.style.height = "500px";
+    textarea.value = articleWikitext;
+    container.appendChild(textarea);
+
+    this.updateModalBody(container);
+    this.appendButtonToModalBody("OK").then(function() {
+      instance._finish();
+    });
+    if (retryable) {
+      this.appendButtonToModalBody("Tentar novamente").then(function() {
+        instance.finishEdit();
+      });
+    }
+  }
 
   ICP.prototype.encodeURL = function(txt) {
     return encodeURI(txt.replace(/ /g, "_"));
   };
 
-  ICP.prototype.changeWysToSource = function() {
-    this.userActions.editor = (mw.config.get("wgAction") == 'edit') ? "source" : "VE";
-    if (mw.config.get("wgAction") == 'edit' && window.CKEDITOR && window.CKEDITOR.instances.wpTextbox1.mode == "wysiwyg") {
-      window.CKEDITOR.tools.callFunction(56);
-      this.wysiwyg = true;
-      this.userActions.editor = "WYSIWYG";
-    }
-  };
-
-  ICP.prototype.changeSourceToWys = function() {
-    setTimeout(function() { window.CKEDITOR.tools.callFunction(59) }, 1500);
-  };
-
   ICP.prototype._collectInitialMetrics = function() {
     this.userActions.user = (mw.config.get("wgUserId") || false);
     this.userActions.page = mw.config.get("wgPageName");
+    this.userActions.editor = (mw.config.get("wgAction") == 'edit') ? "source" : "VE";
     this.userActions.date = new Date();
     this.userActions.whereFrom = document.location.href; //So that I know if they're coming from redlinks, Special:CreatePage or other flows
     this.userActions.version = [ICPversion, this.version];
@@ -754,14 +785,10 @@ var ICP = (function($) {
   };
 
   ICP.prototype._getICPSettings = function() {
-    var settings = {};
-    if (localStorage.ICPsettings) {
-      settings = JSON.parse(localStorage.ICPsettings);
-      this.userActions.ICPconfig = localStorage.ICPsettings;
-    } else {
-      settings.default_action = 1;
-      this.userActions.ICPconfig = false;
-    }
+    var defaultSettings = {default_action: 1};
+    var settingsRaw = (mw.storage && mw.storage.get("ICPsettings")) || JSON.stringify(defaultSettings);
+    var settings = JSON.parse(settingsRaw);
+    this.userActions.ICPconfig = settingsRaw;
     return settings;
   };
 
@@ -786,6 +813,7 @@ var ICP = (function($) {
     });
     mw.hook("ve.activationComplete").add(function() {
       instance.VESurface = window.ve.init.target.getSurface();
+      instance.userActions.editor = instance.VESurface.mode;
     });
     this._collectInitialMetrics();
     if (!(this.shouldOpenICP())) return;
@@ -804,18 +832,19 @@ var ICP = (function($) {
     }
 
     var ICPsettings = this._getICPSettings();
-    var SWWSteps = this.getSteps();
     if (ICPsettings.default_action === 0) {
       $("#WikiaBarWrapper ul.tools").append('<li id="ICP_opener"><a href="#">Int. Criação Página</a></li>');
-      $("#ICP_opener").click(function() {instance.controller(SWWSteps) });
+      $("#ICP_opener").click(function() {instance.controller() });
     } else {
       if (mw.config.get("wgAction") == 'edit')
-        this.controller(SWWSteps);
+        this.controller();
       if (mw.config.get("wgAction") == 'view')
         if (document.location.href.search("veaction=edit") >= 0)
-          this.controller(SWWSteps);
-        else
-          $("#ca-ve-edit").click(function() {instance.controller(SWWSteps) });
+          this.controller();
+        else {
+          $("#ca-ve-edit").click(function() {instance.controller() });
+          $("#ca-edit").click(function() {instance.controller() });
+        }
     }
   };
 
@@ -823,6 +852,7 @@ var ICP = (function($) {
    * Extends ICP subclass with its variables and functions
    * 
    * @param {ICP} module ICP subclass
+   * @exports extend
    */
   var extend = function(module) {
     module.prototype = $.extend({}, ICP.prototype, module.prototype);
@@ -841,7 +871,9 @@ var ICP = (function($) {
   };
 
   $(document).ready(function() {
-    mw.hook("dev.icp").fire(exports);
+    mw.loader.using(['oojs-ui-core', 'oojs-ui-windows']).done(function() {
+      mw.hook("dev.icp").fire(exports);
+    })
   });
   
   return exports;

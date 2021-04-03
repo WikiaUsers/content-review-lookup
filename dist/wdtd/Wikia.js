@@ -1,5 +1,3 @@
-importScriptPage('MediaWiki:Wikia.js/userRights.js', 'wdtd');
-
 /*---------------------- Framekiller ----------------------------------*/
 
 if (parent.frames.length > 0) {
@@ -15,24 +13,3 @@ if (parent.frames.length > 0) {
 /*--------------------------------------------------------------------*/
 $(".pi-image").css({'background':$(".infoboxcolors").data('imagebackgroundcolor')});
 $(".pi-data").css({'background':$(".infoboxcolors").data('databackgroundcolor'), 'color':$(".infoboxcolors").data('datafontcolor')});
-
-/* Auto-refreshing recent changes */
-window.ajaxPages = [
-    "Special:WikiActivity",
-    "Special:RecentChanges",
-    "Special:Watchlist",
-    "Special:Log",
-    "Special:Contributions"
-];
-window.AjaxRCRefreshText = 'Auto-refresh';
-window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
-
-/* Discord */
-// Disney Wiki Discord
-window.DiscordIntegratorConfig = {
-    siderail: {
-        title: "Discord Server",
-        id: "320924689260216321",
-        theme: "dark"
-    }
-};

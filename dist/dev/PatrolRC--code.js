@@ -51,6 +51,12 @@
                 list: 'recentchanges',
                 rctype: 'new|edit',
                 rclimit: 'max',
+                rcnamespace: $('li.dropdown-item.selected input')
+                    .get()
+                    .map(function(e) {
+                        return $(e).val();
+                    })
+                    .join('|'),
                 rctoken: 'patrol',
                 rcprop: 'patrolled|ids|title',
                 rcshow: '!patrolled'

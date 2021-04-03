@@ -6,7 +6,6 @@
 +function(a,b,c,d){function e(a){var b=a[p],c=typeof b,e=c==m;if(g(b)?(u=b,t=q,e=r):c==l&&v.push(b),e)return e;try{a[p]=d}catch(f){}try{delete a[p],a[p]=d}catch(f){}}function f(){t=q;var a=0,b=v;for(v=[];a<b.length;a++)try{b[a]()}catch(c){}}function g(a){try{if(a&&((a.name||a.displayName||"").toString().toLowerCase()==o||k!=typeof a.$$&&k!=typeof a.addStyle&&k!=typeof a.addScript))return q}catch(b){}return r}function h(){return t}function i(a){var b=typeof a,c=b==l,d=a===!0;if(c||"object"==b||d)if(d||g(a))f();else if(c)if(t)try{a()}catch(e){}else v.push(a)}function j(){return u=u||a[n]||b[n],!t&&!u&&z++<50?setTimeout(j,20):void f()}var k="undefined",l="function",m="boolean",n="wikiMod",o="wikimod",p="onWikiModReady",q=!0,r=!1,s=c.defineProperty,t=r,u,v=[],w,x,y=0,z=0;if(x=e(a)?a:d,x=e(b)?b:x,x&&typeof x[p]==m&&v.length){var A=v;for(v=[];y<A.length;y++)try{x[p]=A[y]}catch(B){}try{if(x[p]=f,x[p]!==f&&typeof x[p]==m)return j()}catch(B){}}if(!x){w={get:h,set:i,enumerable:q,configurable:r};try{s(a,p,w),k==typeof b[p]&&s(b,p,w)}catch(B){}}j()}(this,window,Object);
 */ 
 
-
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 /*** Background ***/
@@ -16,8 +15,6 @@ if( $('#drawabackground').length ) {
    champName = champName.replace(/[^a-zA-Z]/g, "");
    $ ('.WikiaPageBackground').after('<div class="backdrop ' + champName + '"><div class="backdropfade"></div></div>')
 }
-
-
 
 /* Custom Tooltips for use with the Tooltips/code.js */
 var tooltips_list = [
@@ -71,3 +68,92 @@ var tooltips_config = {
     waitForImages: true,
     noCSS: true
 };
+
+mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
+/* Begin of mw.loader.using callback */
+
+    /* Config for [[MediaWiki:Common.js/gridfiltering.js]] */
+    wowRosterGridContainer = '#wow-grid';
+    wowRosterGridFilters = {
+        'search': 'search',
+        'faction': ['- Faction -',
+            ['Alliance','Alliance'],
+            ['Horde','Horde']
+        ],
+        'gender': ['- Gender -',
+            ['Female','♀ Female'],
+            ['Male','♂ Male']
+        ],
+        'race': ['- Race -',
+            ['Blood Elf','Blood Elf'],
+            ['Dark Iron','Dark Iron Dwarf'],
+            ['Draenei','Draenei'],
+            ['Dwarf','Dwarf'],
+            ['Gnome','Gnome'],
+            ['Goblin','Goblin'],
+            ['Highmountain','Highmountain Tauren'],
+            ['Human','Human'],
+            ['Kul Tiran','Kul Tiran'],
+            ['Lightforged','Lightforged Draenei'],
+            ['Maghar','Mag\'har Orc'],
+            ['Mechagnome','Mechagnome'],
+            ['Night Elf','Night Elf'],
+            ['Nightborne','Nightborne Elf'],
+            ['Orc','Orc'],
+            ['Pandaren','Pandaren'],
+            ['Tauren','Tauren'],
+            ['Troll','Troll'],
+            ['Undead','Undead'],
+            ['Void Elf','Void Elf'],
+            ['Vulpera','Vulpera'],
+            ['Worgen','Worgen'],
+            ['Zandalari','Zandalari Troll']
+        ],
+        'class': ['- Class -',
+            ['DK','Death Knight'],
+            ['DH','Demon Hunter'],
+            ['DR','Druid'],
+            ['HU','Hunter'],
+            ['MA','Mage'],
+            ['MO','Monk'],
+            ['PA','Paladin'],
+            ['PR','Priest'],
+            ['RO','Rogue'],
+            ['SH','Shaman'],
+            ['TK','Tinker'],
+            ['WL','Warlock'],
+            ['WR','Warrior']
+        ],
+        'role': ['- Role -',
+            ['Healer','Healer'],
+            ['Melee','Melee DPS'],
+            ['Ranged','Ranged DPS'],
+            ['Tank','Tank'],
+        ],
+        'armour': ['- Armour -',
+            ['Cloth','Cloth'],
+            ['Leather','Leather'],
+            ['Mail','Mail'],
+            ['Plate','Plate'],
+        ],
+        'profession': ['- Profession -',
+            ['Gathering','-- Gathering --'],
+            ['Enchanting','Enchanting'],
+            ['Fishing','Fishing'],
+            ['Herbalism','Herbalism'],
+            ['Mining','Mining'],
+            ['Skinning','Skinning'],
+            ['Production','-- Production --'],
+            ['Alchemy','Alchemy'],
+            ['Blacksmithing','Blacksmithing'],
+            ['Cooking','Cooking'],
+            ['Engineering','Engineering'],
+            ['Inscription','Inscription'],
+            ['Jewelcrafting','Jewelcrafting'],
+            ['Leatherworking','Leatherworking'],
+            ['Tailoring','Tailoring']
+        ]
+    };
+    
+/* End of mw.loader.using callback */
+});

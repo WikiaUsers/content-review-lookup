@@ -6,6 +6,10 @@ function addMastheadTags() {
   var rights = {};
  
   // BEGIN List of Accounts Given Extra User Rights Icons
+  
+  // ROLLBACKS
+  
+  rights["Daniellewiki"]     = ["ROLLBACK"];
 
    // BUREAUCRATS
  

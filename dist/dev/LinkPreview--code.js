@@ -5,12 +5,13 @@
 /* classes: main: npage-preview, image not found: npage-preview-noimage */
 /* img: <img>, text: <div> */
 (function wrapper ($) {
+    var urlVars = new URLSearchParams(location.search);
     var Settings = window.pPreview || {},
         mwc = mw.config.get(['wgScriptPath', 'wgSassParams', 'wgArticlePath']);
-    Settings.debug = $.getUrlVar('debug') || (Settings.debug !== undefined ? Settings.debug : false);
+    Settings.debug = urlVars.get('debug') || urlVars.get('debug1') || (Settings.debug !== undefined ? Settings.debug : false);
 
     // killswitch
-    Settings.dontrun = $.getUrlVar('nolp');
+    Settings.dontrun = urlVars.get('nolp');
     if (Settings.dontrun) return;
 
     //default values
@@ -25,7 +26,7 @@
     var loc = {lefts: 5, tops: 5}; //left: x, top: y, lefts: left-shift, clientx
     var currentEl = {}; //{href, ?data}
     //var api = new mw.Api();
-    var apiUri = new mw.Uri({path: mwc.wgScriptPath + '/api.php'});
+    var apiUri;
     //exports
     Settings.wrapper = wrapper;
     Settings.context = this;
@@ -35,7 +36,7 @@
                 cacheof: ncacheOf, chkimagesrc: chkImageSrc, preprocess: preprocess,
                 elvalidate: elValidate};
 
-    mw.loader.using(['mediawiki.util'], init);
+    mw.loader.using(['mediawiki.util', 'mediawiki.Uri'], init);
 
     function log () {
         var a = [].slice.call(arguments);
@@ -94,6 +95,7 @@
         }
         Settings.version = '1.61';
         log('init vrsn:', Settings.version);
+        apiUri = new mw.Uri({path: mwc.wgScriptPath + '/api.php'});
         //use api.v1/article/details
         Settings.apid = Settings.apid !== undefined ? Settings.apid : false;
         //show preview delay, ms
@@ -116,7 +118,7 @@
         //container (#WikiaMainContent, #mw-content-text etc)
         Settings.dock = !!Settings.dock ? Settings.dock : Defaults.dock;
         //parse whole page. debug purposes mainly
-        Settings.wholepage = $.getUrlVar('wholepage') || (Settings.wholepage !== undefined ? Settings.wholepage : false);
+        Settings.wholepage = urlVars.get('wholepage') || (Settings.wholepage !== undefined ? Settings.wholepage : false);
         Settings.RegExp = Settings.RegExp || {}; //regexps
         //images 2 ignore
         Settings.RegExp.iimages = Settings.RegExp.iimages || [];

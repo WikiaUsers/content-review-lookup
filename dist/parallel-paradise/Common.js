@@ -1,11 +1,14 @@
-// Auto-refresh
-window.ajaxPages = [
-    "Special:WikiActivity",
-    "Special:RecentChanges",
-    "Special:Watchlist",
-    "Special:Log",
-    "Special:Contributions",
-    "Special:Images"
-];
-window.AjaxRCRefreshText = 'Auto-refresh';
-window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
+// WikiActivity Config
+window.rwaOptions = {
+    limit : 50,
+    namespaces : [ 0, 1, 2, 3, 4, 5, 500, 501 ],
+    autoInit : true,
+    themeName : "main",
+    showBotEdits : false,
+    loadModule : true,
+    customRendering : { },
+    headerLink : false,
+    refresh : false,
+    refreshDelay : 5 * 60 * 1000,
+    timeout : 10 * 1000
+};

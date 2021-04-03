@@ -1,1 +1,0 @@
-#REDIRECCIÓN [[MediaWiki:JQuery.qTip2.js]]

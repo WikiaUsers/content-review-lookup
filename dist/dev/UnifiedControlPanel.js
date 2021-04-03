@@ -3,6 +3,7 @@
     // fancy switches to do fancy actions
 
     // proxyfy the cfg
+    var urlVars = new URLSearchParams(location.search);
     var _trans = {
             get: function(obj, prop) {
                 // check whether msg is exists and return it
@@ -37,11 +38,16 @@
     cfg = new Proxy(cfg, _cfg);
 
     // clone urlvars in order to preserve it natural
-    var urlVars = cloneObject($.getUrlVars());
-    cfg.debug = cfg.debug || urlVars.debug;
+    var oUrlVars = {};
+    urlVars.forEach(function(value, key) {
+        oUrlVars[key] = value;
+    });
+    var urlVarsCloned = cloneObject(oUrlVars);
+    cfg.debug = cfg.debug || urlVarsCloned.debug || urlVarsCloned.debug1;
     if (cfg.loaded && !cfg.debug) return;
     cfg.loaded = !0;
     cfg.mwc = mw.config.get(['wgSassParams', 'wgUserLanguage']);
+    cfg.mwc.wgSassParams = cfg.mwc.wgSassParams || {};
 
     function log() {
         if (!cfg.debug) return;
@@ -81,7 +87,7 @@
         // globalActions: actions to check against data
         //  in order to convert data more precisely
         // returns actions = {action: data}
-        data = data || urlVars;
+        data = data || urlVarsCloned;
         if (!data || !Object.keys(data).length) return;
         var actions = {};
         Object.keys(data).forEach(function(key) {
@@ -110,7 +116,7 @@
             btnCancel_click();
         } else {
             // not attached yet
-            cfg.form.prependTo('#WikiaPage:first');
+            cfg.form.prependTo('.WikiaPage:first');
             // set size and position
             cfg.form.offset({
                 top: $(window).scrollTop() + ((($(window).height() - cfg.form.height()) / 2 > 0) ? ($(window).height() - cfg.form.height()) / 2 : 0),
@@ -267,8 +273,8 @@
         // some adjustments
         // set colors
         $form.css({
-            'background-color': cfg.mwc.wgSassParams['color-page'],
-            color: cfg.mwc.wgSassParams['color-links'],
+            'background-color': cfg.mwc.wgSassParams['color-page'] || 'silver',
+            color: cfg.mwc.wgSassParams['color-links'] || 'blue',
         });
         // add text click handlers
         $form.find('input[type="text"]').click(txt_click);
@@ -405,7 +411,7 @@
                 init();
             });
         });
-        if (!window.dev || !window.dev.i18nbeta) importArticle({type: 'script', article: 'u:dev:I18n-js/beta.js'});
+        if (!window.dev || !window.dev.i18nbeta) importArticle({type: 'script', article: 'u:dev:MediaWiki:I18n-js/beta.js'});
     }// i18nLoad
 
     cfg.init = init;// backup way; just in case

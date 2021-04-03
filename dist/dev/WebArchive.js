@@ -2,11 +2,7 @@
  * WebArchive
  * @author Rail01
  */
-require([
-    'jquery',
-    'mw',
-    'wikia.window'
-], function( $, mw, window ) {
+(function() {
     var config = mw.config.get([
         'wgArticleId',
         'wgUserGroups'
@@ -36,4 +32,4 @@ require([
         type: 'script',
         article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
-});
+})();

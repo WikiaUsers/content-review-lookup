@@ -1,5 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+window.ajaxSpecialPages = ["SocialActivity"];
+
 // Create the "dev" namespace if it doesn't exist already:
  
 window.dev = window.dev || {};
@@ -57,8 +59,6 @@ window.dev.editSummaries = {
     ]
 }; 
 
-window.ajaxSpecialPages = ['WikiActivity', 'Recentchanges'];
-
 /*spoiler hiding*/
 var myMainSpoilers = document.getElementsByClassName("mainSpoiler");
 if (myMainSpoilers.length > 0)
@@ -67,7 +67,7 @@ if (myMainSpoilers.length > 0)
     for(var j=0;j<mySpoilers.length;j++)
     {
         var mySpoiler = mySpoilers[j];
-        mySpoiler.classList.toggle("hidden"); 
+        mySpoiler.classList.toggle("hidden2"); 
         var newDiv = document.createElement("div");
         newDiv.classList.add("reSpoiler");
         var text = document.createTextNode("A spoiler is hidden here. Click the spoiler banner to show all spoilers on this page.");
@@ -86,12 +86,27 @@ function toggleSpoilers () {
     for(var i=0;i<mySpoilers.length;i++)
     {
     	var mySpoiler = mySpoilers[i];
-        mySpoiler.classList.toggle("hidden");  
+        mySpoiler.classList.toggle("hidden2");  
     }
     var myReSpoilers = document.getElementsByClassName("reSpoiler");
     for(var j=0;j<myReSpoilers.length;j++)
     {
     	var myReSpoiler = myReSpoilers[j];
-        myReSpoiler.classList.toggle("hidden");  
+        myReSpoiler.classList.toggle("hidden2");  
     }
+}
+
+/*Quests checking*/
+var myQuests = document.getElementsByClassName("Quest");
+for(var j=0;j<myQuests.length;j++)
+{
+    myQuests[j].addEventListener("click", function(){this.children[1].classList.toggle("hidden2");this.lastElementChild.classList.toggle("hidden2");});
+ 
+}
+
+/*Clear Previous Element*/
+var myClears = document.getElementsByClassName("clearprev");
+for(var j=0;j<myClears.length;j++)
+{
+    myClears[j].previousElementSibling.style.clear = "both";
 }

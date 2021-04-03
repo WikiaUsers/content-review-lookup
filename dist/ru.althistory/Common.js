@@ -65,10 +65,6 @@ UserTagsJS.modules.implode = {
 	otpusk: ['inactive'] // Remove new user replace with новичок
 };
 
-
-
-
-
 UserTagsJS.modules.mwGroups = ['bureaucrat']; // Add bureaucrat group to bureaucrats
 UserTagsJS.modules.metafilter = {
 	sysop: ['bureaucrat']
@@ -87,6 +83,27 @@ UserTagsJS.modules.explode = {
 	'vandal-patrol': ['patroller', 'rollback'] // Add 'vandal-patrol' to everyone who has BOTH patroller and rollback
 };
 */
+
+// WikiActivity
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WikiActivity.js',
+    ]
+});
+window.rwaOptions = {
+    limit : 50,
+    namespaces : [ 0, 1, 2, 3, 4, 5, 6, 7, 110, 111, 500, 501, 828, 829 ],
+    autoInit : true,
+    themeName : "main",
+    showBotEdits : false,
+    loadModule : false,
+    customRendering : { },
+    headerLink : false,
+    refresh : false,
+    refreshDelay : 5 * 60 * 1000,
+    timeout : 10 * 1000
+};
 
  
 $(function(){

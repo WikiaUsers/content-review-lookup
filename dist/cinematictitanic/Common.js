@@ -1,9 +1,4 @@
 /* <pre><nowiki> */
-
-document.write('<script type="text/javascript" src="' 
-    + '/index.php?title=MediaWiki:Functions.js&action=raw&ctype=text/javascript"></script>');
-    
-
 // onload stuff
 var firstRun = true;
 
@@ -483,26 +478,13 @@ function emptySearchDesc()
 skinjs = {
     "Logout": "Logout.js"
 }
-
-var re = RegExp("(.*) - Darthipedia, the Star Wars Humor Wiki");
-var matches = re.exec(document.title);
-
-var skinNamejs;
-
-if (matches) {
-    if (skinjs[matches[1]] != undefined) {
-        skinNamejs = (skinjs[matches[1]].length > 0) ? skinjs[matches[1]] : matches[1] + '.js';
-        document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Skin/' + skinNamejs + '&action=raw&ctype=text/javascript"></script>');
-    }
-}
-
-addOnloadHook(loadFunc);
+$(loadFunc);
 
 /** Username replace function (template:USERNAME) *******************************
  * Inserts user name into 
  * By Splarka
  */
-addOnloadHook(UserNameReplace);
+$(UserNameReplace);
 
 function UserNameReplace() {
 if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace) return;
@@ -513,95 +495,6 @@ if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace) retu
    }
 }
 /*<pre>*/
-/* Override Variables */
-var overrideNamespaces;
-var overrideGroups;
-
-function includeJS( page, onWikia, expand ) {
-	document.write('<script type="text/javascript" src="'
-			+ ( onWikia ? 'http://'+onWikia+'.wikia.com' : '' )
-			+ '/index.php?title=' + page
-			+ '&action=raw&ctype=text/javascript&dontcountme=s'+( expand == false ? '' : '&templates=expand' )+'"></script>');
-}
-function includeJSCode( code ) {
-	document.write('<script type="text/javascript">'
-			+ code
-			+ '</script>');
-}
-function includeCSS( page, onWikia, expand ) {
-	document.write('<style type="text/css">/*<![CDATA[*/@import "'
-			+ ( onWikia ? 'http://'+onWikia+'.wikia.com' : '' )
-			+ '/index.php?title=' + page
-			+ '&action=raw&ctype=text/css'+( expand == false ? '' : '&templates=expand' )
-			+ '";/*]]>*/</style>');
-}
-function includeCSSCode( code ) {
-	document.write('<style type="text/css">/*<![CDATA[*/'
-			+ code
-			+ '";/*]]>*/</style>');
-}
-
-/* Include Namespace and Group Information */
-includeJS( ( overrideNamespaces ? overrideNamespaces : 'MediaWiki:Namespaces.js' ) );
-includeJS( ( overrideGroups ? overrideGroups : 'MediaWiki:Groups.js' ) );
-
-if( skin == 'monobook' ) includeJS( 'MediaWiki:Searchswitch.js', 'novelas' );
-
-// **************************************************
-// Experimental javascript countdown timer (Splarka)
-// Version 0.0.3
-// **************************************************
-//
-// Usage example:
-//  <span class="countdown" style="display:none;">
-//  Only <span class="countdowndate">January 01 2007 00:00:00 PST</span> until New years.
-//  </span>
-//  <span class="nocountdown">Javascript disabled.</span>
-
-function updatetimer(i) {
-  var now = new Date();
-  var then = timers[i].eventdate;
-  var diff = count=Math.floor((then.getTime()-now.getTime())/1000);
-
-  // catch bad date strings
-  if(isNaN(diff)) { 
-    timers[i].firstChild.nodeValue = '** ' + timers[i].eventdate + ' **' ;
-    return;
-  }
-
-  // calcuate the diff
-  var left = (diff%60) + ' seconds';
-    diff=Math.floor(diff/60);
-  if(diff > 0) left = (diff%60) + ' minutes ' + left;
-    diff=Math.floor(diff/60);
-  if(diff > 0) left = (diff%24) + ' hours ' + left;
-    diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' days ' + left
-  timers[i].firstChild.nodeValue = left;
-
-  // a setInterval() is more efficient, but calling setTimeout()
-  // makes errors break the script rather than infinitely recurse
-  timeouts[i] = setTimeout('updatetimer(' + i + ')',1000);
-}
-
-function checktimers() {
-  //hide 'nocountdown' and show 'countdown'
-  var nocountdowns = getElementsByClassName(document, 'span', 'nocountdown');
-  for(var i=0;i<nocountdowns.length;i++) nocountdowns[i].style.display = 'none'
-  var countdowns = getElementsByClassName(document, 'span', 'countdown');
-  for(var i=0;i<countdowns.length;i++) countdowns[i].style.display = 'inline'
-
-  //set up global objects timers and timeouts.
-  timers = getElementsByClassName(document, 'span', 'countdowndate');  //global
-  timeouts = new Array(); // generic holder for the timeouts, global
-  if(timers.length == 0) return;
-  for(var i=0;i<timers.length;i++) {
-    timers[i].eventdate = new Date(timers[i].firstChild.nodeValue);
-    updatetimer(i);  //start it up
-  }
-}
-addOnloadHook(checktimers);
-
 /*</pre>*/
 
 

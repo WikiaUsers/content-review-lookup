@@ -1,31 +1,3 @@
-/* Спрятать кнопку X спустя Y секунд после создания комментария
-   Автор: fngplg */
-+function() {
-    if (mw.config.get('wgUserGroups').indexOf('sysop') > -1)
-        return;
-    function getDate(s) {
-        s = d.exec(s || '');
-        return new Date([].concat(s.slice(1, 4).join('-'), 'T', s.slice(4).join(':'), 'Z').join(''))
-    }
-    var re = /\-(\d*)\?/,
-    d = /(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/,
-    now = mw.config.get('wgNow');
-    mw.hook('wikipage.content').add(function ($content) {
-        $content.find('.comment .permalink').each(function () {
-            var $this = $(this),
-            date = re.exec($this.attr('href'));
-            if (!date || !date[1])
-                return;
-            date = getDate(date[1]);
-            if (!_.isDate(date))
-                return;
-            if ((now - date) > 604800000)
-                $this.parent().find('.buttons .article-comm-reply').remove()
-        })
-    })
-}
-();
-
 /* idTabs ~ Sean Catchpole - Version 2.2 - MIT/GPL */
 (function() {
     var dep = {

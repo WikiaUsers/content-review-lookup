@@ -360,7 +360,7 @@ function userNameReplace() {
     }
     $("span.insertusername").html(mw.config.get('wgUserName'));
 }
-addOnloadHook(userNameReplace);
+$(userNameReplace);
  
 // Add custom edit buttons
 if (mw.config.get('mwCustomEditButtons'))
@@ -617,26 +617,22 @@ $(window).load(function() {
     !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
 });
 
-function addThisButton() {
-$('#addthis-button').append('<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-58caffe0baa142cb"></script>');
-}
-$(addThisButton);
-
-importScript("MediaWiki:Reports.js");
-
-// Imports
-importArticles({
-    type: "script",
-    articles: ['u:cjrichards-and-applemasterexpert:MediaWiki:MessageWallBlock/code.js'
-         ]
-});
-
-window.LockForums = {
-    lockMessageWalls: true,
-    expiryDays: 30,
-    warningDays: 25,
-    banners: true,
-    warningPopup: true,
-    expiryBannerMessage: "This topic has been inactive for <actualDays> days, and has been <b>archived</b>.  New posts cannot be added to this thread.",
-    warningBannerMessage: "<span style='color: maroon; font-weight: bold;'>Note:</span> This topic has been inactive for <actualDays> days. It is considered <b>archived</b>.  Please do not add to it unless it <i>needs</i> a response.",
+//DiscussionsActivity config
+window.rdaSubtitleLinksPages = {
+    RecentChanges: {
+        links: ['DiscussionsRC'],
+    },
+    DiscussionsRC: {
+        title: 'Recent Discussions changes',
+        links: ['RecentChanges'],
+    },
+    WikiActivity: {
+        links: ['WikiActivity/watchlist', 'RecentChanges', 'DiscussionsActivity', 'DiscussionsRC']
+    },
+    DiscussionsActivity: {
+        links: ['WikiActivity']
+    },
+    'WikiActivity/watchlist': {
+        links: ['WikiActivity', 'RecentChanges', 'DiscussionsActivity', 'DiscussionsRC']
+    }
 };

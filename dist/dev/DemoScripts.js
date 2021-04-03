@@ -4,8 +4,9 @@
 ;(function ($, mw, cfg) {
     'use strict';
 
+    var urlVars = new URLSearchParams(location.search);
     // killswitch & dblrun protection
-    if ($.getUrlVar('nodemo') || cfg.loaded) return;
+    if (urlVars.get('nodemo') || cfg.loaded) return;
     cfg.loaded = true;
 
     var includes = {
@@ -29,6 +30,11 @@
             selector: '#js-doc',
             styles: 'MediaWiki:Documentation.css'
         },
+
+		ActivityFeedMimic: {
+			page: 'Template:ActivityFeed',
+			styles: 'MediaWiki:ActivityFeedMimic.css'
+		},
 
         BackToTopButton: {
             page: 'BackToTopButton',
@@ -76,6 +82,11 @@
             styles: 'MediaWiki:CSSForTheColorBlind.css'
         },
 
+        DataTables: {
+            selector: '.datatable',
+            scripts: 'MediaWiki:DataTables.js'
+        },
+
         DisambiguationManagement: {
             page: 'Special:Disambiguations',
             scripts: 'MediaWiki:DisambiguationManagement/code.js'
@@ -85,7 +96,7 @@
             page: 'DiscordBanner',
             scripts: 'MediaWiki:DiscordBanner.js',
             exec: function () {
-                console.log('[DemoScrts] We\'re on the DiscordBanner page, so I hid the Discord rail module.');
+                console.log('[DemoScripts] We\'re on the DiscordBanner page, so I hid the Discord rail module.');
                 mw.util.addCSS('#WikiaRail .discord-module { display: none; }');
             }
         },
@@ -110,6 +121,11 @@
             scripts: 'MediaWiki:EditcountTag/code.js'
         },
         
+        EmeraldGlobalNav: {
+            page: 'EmeraldGlobalNav',
+            styles: 'MediaWiki:EmeraldGlobalNav.css'
+        },
+        
         FadedDropdowns: {
             page: 'FadedDropdowns',
             styles: 'MediaWiki:FadedDropdowns.css'
@@ -128,6 +144,11 @@
                 window.dev.fastFileDelete.groups = '\\*';
             }
         },
+        
+        FatButton: {
+            page: 'FatButton',
+            styles: 'MediaWiki:FatButton.css'
+        },
 
         FileLogs: {
             page: 'File:QQX_Oasis.png',
@@ -142,11 +163,6 @@
         FloatingCommunityHeaderButtons: {
             page: 'FloatingCommunityHeaderButtons',
             styles: 'MediaWiki:FloatingCommunityHeaderButtons.css'
-        },
-
-        FontAwesome5: {
-            page: 'FontAwesome5',
-            styles: 'MediaWiki:FontAwesome5.css'
         },
 
         GlobalEditcount: {
@@ -251,6 +267,12 @@
             }
         },
         
+        MisspelledPage: {
+            // Cannot be moved to JSON, does not match base page name.
+            page: 'MisspelledPlge',
+            scripts: 'MediaWiki:MisspelledPage/code.js'
+        },
+        
         ModernModals: {
             page: 'ModernModals',
             styles: 'MediaWiki:ModernModals.css'
@@ -270,10 +292,20 @@
             page: 'User:KockaAdmiralac',
             scripts: 'MediaWiki:MoreSocialLinks.js'
         },
+        
+        MultipleActivity: {
+        	page: 'Special:MultipleActivity',
+        	scripts: 'MediaWiki:MultipleActivity.js'
+        },
 
         NavboxBuilder: {
             selector: '.navbox .navbox-table-wrapper',
             styles: 'MediaWiki:Global_Lua_Modules/NavboxBuilder.css'
+        },
+        
+        OrganizedNotifs: {
+            page: 'OrganizedNotifs',
+            styles: 'MediaWiki:OrganizedNotifs.css'
         },
         
         PortableNavbox: {
@@ -282,7 +314,7 @@
         },
  
         ProfileTags: {
-            page: 'User:Rappy_4187',
+            page: 'User:Rappy',
             scripts: 'MediaWiki:ProfileTags.js'
         },
 
@@ -309,7 +341,8 @@
         ReferencePopups: {
             page: 'ReferencePopups/demo',
             scripts: 'MediaWiki:ReferencePopups/custom.js',
-            styles: 'MediaWiki:ReferencePopups/demo.css'
+            styles: 'MediaWiki:ReferencePopups/demo.css',
+            subpages: false
         },
 
         RevertOldGlobalNav: {
@@ -488,14 +521,17 @@
         }
     }
 
-    $.get(mw.util.wikiScript('load'), {
-        mode: 'articles',
-        articles: 'MediaWiki:Custom-DemoScripts.json',
-        only: 'styles',
-        cb: Date.now()
+    $.get(mw.util.wikiScript('api'), {
+        action: 'query',
+        format: 'json',
+        titles: 'MediaWiki:Custom-DemoScripts.json',
+        prop: 'revisions',
+        rvprop: 'content',
+        rvslots: 'main',
+        indexpageids: 1
     }).always(function(data) {
-        if (data && !data.error) {
-            data = JSON.parse(data.replace(/\/\*.*\*\//g, ''));
+        if (typeof data === 'object') {
+            data = JSON.parse(data.query.pages[data.query.pageids[0]].revisions[0].slots.main['*']);
             $.each(data, function() {
                 this.restricted = 1;
             });

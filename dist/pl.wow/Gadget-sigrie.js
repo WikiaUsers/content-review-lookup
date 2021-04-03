@@ -1,0 +1,1 @@
+importScriptURI("http://db.mmo-champion.com/tt.js");

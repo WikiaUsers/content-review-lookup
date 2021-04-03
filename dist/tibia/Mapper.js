@@ -4,7 +4,7 @@ window.mapper = (function mapper(ns) {
   var minimap_mapper_page_match = '//tibia.fandom.com/wiki/Mapper',
     minimap_mapper_page_match_wikia = '//tibia.wikia.com/wiki/Mapper',
     //All images need to have this size:
-    //high resolution images(png) should be 4x in sizep
+    //high resolution images(png) should be 4x in size
     minimap_images_width = 2560,
     minimap_images_height = 2048,
 
@@ -115,8 +115,8 @@ window.mapper = (function mapper(ns) {
   function setup() {
 
     minimap_images[0] = [
-      'https://images2.wikia.nocookie.net/tibia/en/images/9/97/Minimap_Symbols.gif',
-      'https://images4.wikia.nocookie.net/tibia/en/images/6/6c/Minimap_Loading.gif'
+      'https://tibia.fandom.com/Special:Filepath?file=Minimap_Symbols.gif',
+      'https://tibia.fandom.com/Special:Filepath?file=Minimap_Loading.gif'
     ];
 
     minimap_images[1] = [
@@ -162,7 +162,7 @@ window.mapper = (function mapper(ns) {
     // For that, call $mapper_bind_links.
     mapper_bind_all_links();
 
-    if (wgPageName == 'Mapper') {
+    if (mw.config.get('wgPageName') == 'Mapper') {
       minimap_load(window.location.search.substring(1));
     } else {
       $(window).resize(function() {
@@ -458,14 +458,14 @@ window.mapper = (function mapper(ns) {
 
         $('#minimap_vl').appendTo($('#minimap_imgdiv')).css({
           'left': (tleft + 256) + 'px',
-          'top': (ttop + (wgPageName != 'Mapper' ? parseInt((384 - parseInt(384 * (pars[5] / parss[5]), 10)) / 2, 10) : 0)) + 'px',
-          'height': (wgPageName != 'Mapper' ? parseInt(384 * (pars[5] / parss[5]), 10) : 384) + 'px'
+          'top': (ttop + (mw.config.get('wgPageName') != 'Mapper' ? parseInt((384 - parseInt(384 * (pars[5] / parss[5]), 10)) / 2, 10) : 0)) + 'px',
+          'height': (mw.config.get('wgPageName') != 'Mapper' ? parseInt(384 * (pars[5] / parss[5]), 10) : 384) + 'px'
         });
 
         $('#minimap_hl').appendTo($('#minimap_imgdiv')).css({
-          'left': (tleft + (wgPageName != 'Mapper' ? parseInt((512 - parseInt(512 * (pars[5] / parss[5]), 10)) / 2, 10) : 0)) + 'px',
+          'left': (tleft + (mw.config.get('wgPageName') != 'Mapper' ? parseInt((512 - parseInt(512 * (pars[5] / parss[5]), 10)) / 2, 10) : 0)) + 'px',
           'top': (ttop + 192) + 'px',
-          'width': (wgPageName != 'Mapper' ? parseInt(512 * (pars[5] / parss[5]), 10) : 512) + 'px'
+          'width': (mw.config.get('wgPageName') != 'Mapper' ? parseInt(512 * (pars[5] / parss[5]), 10) : 512) + 'px'
         });
       } else {
         $('#minimap_vl').appendTo($('#minimap_imgdiv').parent()).css({
@@ -512,7 +512,6 @@ window.mapper = (function mapper(ns) {
               'position': 'absolute',
               'z-index': '2003',
               'overflow': 'hidden',
-              '': ''
             })
             .html('<div style="position:absolute;overflow:hidden;">' +
               '<a href=""><img src="' + minimap_images[0][0] + '" alt="" width="121" height="22" border="0" /></a>' +
@@ -622,9 +621,9 @@ window.mapper = (function mapper(ns) {
     minimap_map_sdata = minimap_get_coords(url);
     minimap_map_data = minimap_get_coords(url);
     var pars = minimap_get_coords(url);
-    var tid = 'minimap_w' + (wgPageName == 'Mapper' ? 'f' : 'p');
+    var tid = 'minimap_w' + (mw.config.get('wgPageName') == 'Mapper' ? 'f' : 'p');
     minimap_change_src(); // bypass image cache if the user opts to
-    if (wgPageName != 'Mapper') {
+    if (mw.config.get('wgPageName') != 'Mapper') {
       if (!$('#minimap_blackout').size()) {
         $('body').append(
           '<div id="minimap_blackout" class="minimap_blackout" onclick="$(\'.minimap_wp, #minimap_blackout\').css(\'display\', \'none\').html(\'&nbsp;\'); return false;">&nbsp;</div>');
@@ -636,7 +635,7 @@ window.mapper = (function mapper(ns) {
       $('#minimap_wp').css('display', 'block');
     }
     var tmp =
-      (wgPageName != 'Mapper' ?
+      (mw.config.get('wgPageName') != 'Mapper' ?
         '<div style=\'text-align:center;background:#eeeeee;color:#0038d8;font-weight:bold;height:19px;padding-top: 2px\'>TibiaWiki Map</div>' +
         '<div class="minimap_wx" onclick="$(\'.minimap_wp, #minimap_blackout\').css(\'display\', \'none\').html(\'&nbsp;\'); return false;">X</div>' :
         '<div style="border-bottom-color:#aaaaaa;border-bottom-style:solid;border-bottom-width:1px;"><font size="+1">Mapper</font></div><br />') +
@@ -665,7 +664,7 @@ window.mapper = (function mapper(ns) {
       '</div>' +
       '</div></div>' +
       '</div>' +
-      '<div style="' + (wgPageName != 'Mapper' ? 'background-color:#EEEEEE;' : '') + '">' +
+      '<div style="' + (mw.config.get('wgPageName') != 'Mapper' ? 'background-color:#EEEEEE;' : '') + '">' +
       '<table border="0"><tr><td style="vertical-align:top;width:46px;">' +
       '<div style="margin:2px;line-height:10px;"><input type="button" onclick="mapper.minimap_pos_b(\'ns\', -30);" class="starn btns" value="" /><br />' +
       '<input type="button" onclick="mapper.minimap_pos_b(\'we\', -30);" class="starw btns" value="" />' +
@@ -689,7 +688,7 @@ window.mapper = (function mapper(ns) {
       '</td></tr><td>&nbsp;</td><td>&nbsp;</td><td colspan="2">' +
       '<input type="checkbox" value="1" ' + (minimap_read_cookie('minimap_hres') == '1' ? 'checked="checked" ' : '') + 'id="minimap_hres_enabled" onclick="mapper.minimap_write_cookie(\'minimap_hres\', (this.checked ? 1 : 0)); mapper.minimap_pos();" />Load high resolution images &nbsp;' +
       '<input type="checkbox" value="0" ' + (!preload_image ? 'disabled=disabled' : '') + 'onclick="mapper.mapper_preload_files(this);" /> Preload images &nbsp;' +
-      (wgPageName == 'Mapper' ?
+      (mw.config.get('wgPageName') == 'Mapper' ?
         '<input type="checkbox" value="1" ' + (window.location.search.indexOf('coords=') !== -1 ? '' : 'checked="checked" ') + 'id="minimap_editor_mode" onclick="mapper.minimap_pos();" />Editor mode &nbsp;' +
         '<input type="checkbox" value="1" ' + (minimap_read_cookie('minimap_fresh') == '1' ? 'checked="checked" ' : '') + 'onclick="mapper.minimap_write_cookie(\'minimap_fresh\', this.checked ? 1 : 0); mapper.minimap_change_src(); " />Force-reload images' +
         '</td></tr></table><table border="0" style="width:512px;overflow:auto"><tr>' +
@@ -753,7 +752,7 @@ window.mapper = (function mapper(ns) {
         '</td><td><input id= "minimap_tcode2" readonly="readonly" type="text" value="" size="45" onclick="this.select()" />' :
         '') +
       '</td></tr></table></div>' +
-      (wgPageName != 'Mapper' ?
+      (mw.config.get('wgPageName') != 'Mapper' ?
         '<div onclick="window.open(mapper.minimap_data_to_url(0)); $(\'.minimap_wx\').click(); return false;" class="minimap_wl" title="Expand on TibiaWiki"></div>' :
         '') +
       '';
@@ -761,7 +760,7 @@ window.mapper = (function mapper(ns) {
     $('#mapper_list').change(function() {
       minimap_mapper_list_click();
     });
-    if (wgPageName != 'Mapper') {
+    if (mw.config.get('wgPageName') != 'Mapper') {
       minimap_center_div();
     }
     $('#minimap_img').load(function() {
@@ -770,7 +769,7 @@ window.mapper = (function mapper(ns) {
     });
     minimap_pos();
     minimap_dragstart();
-    if (wgPageName == 'Mapper') {
+    if (mw.config.get('wgPageName') == 'Mapper') {
       try {
         $('#mapper_loading').hide();
       } catch (er) {}
@@ -797,7 +796,7 @@ window.mapper = (function mapper(ns) {
   // Hooks
   $(document).mouseup(on_mouse_up);
   $(document).mousemove(on_mouse_move);
-  $(window).load(setup);
+  $(setup);
 
   // Exports
   $.extend(ns, {

@@ -112,13 +112,3 @@ importArticles({
        'u:dev:MediaWiki:YoutubePlayer/code.js'
     ]
 });
-
-/** Live subscriber counts **/
-
-!function() {
-   var Channel = jQuery(".LiveSubCount").attr("data-channel");
-   $(".LiveSubCount").replaceWith(
-      "<iframe src = 'https://grow.grin.co/live-youtube-subscriber-"
-      +"count/"+ Channel + "' height = '300' width = '350' scrolling = "+
-      "'no'></iframe>");
-}();

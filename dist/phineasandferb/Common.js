@@ -204,29 +204,49 @@ function checktimers() {
   }
 }
 addOnloadHook(checktimers);
+
+//YouTube player
+mw.hook('wikipage.content').add(function($content) {
+    $content.find('.youtubeplayer:not(.loaded)').each(function() {
+        var $this = $(this),
+            data = $this.data(),
+            uri = new mw.Uri('https://www.youtube.com/embed/'),
+            id = String(data.id || '').trim(),
+            loop = String(data.loop || '').trim();
+ 
+        if (id === '') {
+            console.warn('[YoutubePlayer] Video ID is not defined.');
+            return;
+        }
+ 
+        uri.path += id;
+        uri.query = {
+            autoplay: window.YoutubePlayerDisableAutoplay ?
+                '0' :
+                String(data.autoplay || '').trim(),
+            loop: loop,
+            playlist: loop === '1' ? id : '',
+            start: String(data.start || '').trim(),
+            list: String(data.list || '').trim()
+        };
+ 
+        $this.html(
+            $('<iframe>', {
+                width: String(data.width || '').trim(),
+                height: String(data.height || '').trim(),
+                src: uri.toString(),
+                allowfullscreen: 'true',
+                allow: 'fullscreen' + (loop ? '; autoplay' : '')
+            })
+        ).addClass('loaded');
+    });
+});
+
  
 // **************************************************
 //  - end -  Experimental javascript countdown timer
 // **************************************************
 
-
-/* Replaces {{USERNAME}} with the name of the user browsing the page.
-  Requires copying Template:USERNAME. */
-
-function UserNameReplace() {
-   if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
-   $("span.insertusername").html(wgUserName);
-}
-addOnloadHook(UserNameReplace);
-
-/* End of the {{USERNAME}} replacement */
-
-//LockForums config
-window.LockForums = {
-    expiryDays: 90,
-    lockMessageWalls: true,
-    expiryMessage: 'This thread has been archived due to inactivity.'
-};
 
 importArticles({
     type: "script",

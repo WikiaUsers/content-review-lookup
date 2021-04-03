@@ -4,12 +4,11 @@
  * © Peter Coester, 2012
  */
 /* jshint curly:false jquery:true browser:true */
-require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
+(function () {
     'use strict';
     var config = mw.config.get([
         'wgArticleId',
         'wgNamespaceNumber',
-        'wgSassParams',
         'wgScriptPath',
         'wgServer'
     ]), $element = $('#SpoilerAlert');
@@ -60,7 +59,7 @@ require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
                         height: $element.height() + 'px',
                         top: pos.top + 'px',
                         left: pos.left + 'px',
-                        'background-color': config.wgSassParams['color-page']
+                        'background-color': 'var(--theme-article-background-color)'
                     },
                     children: [
                         {
@@ -144,7 +143,7 @@ require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
             window.location.reload();
         }
     };
-    if (!window.dev || !window.dev.ui || !window.dev.i18n) {
+    if (!window.dev || !window.dev.ui || !window.dev.i18n || !window.dev.placement) {
         importArticles({
             type: 'script',
             articles: [
@@ -161,4 +160,4 @@ require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
     mw.hook('dev.ui').add($.proxy(SpoilerAlert.preload, SpoilerAlert));
     mw.hook('dev.i18n').add($.proxy(SpoilerAlert.preload, SpoilerAlert));
     mw.hook('dev.placement').add($.proxy(SpoilerAlert.preload, SpoilerAlert));
-});
+})();

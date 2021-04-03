@@ -5,10 +5,11 @@
     a = [
         'Silksong',
         'Hollow Knight: Silksong',
+        ':Catégorie:Hollow Knight: Silksong','Hollow Knight: Silksong',
         ':Catégorie:Zones de Pharloom','Zones de Pharloom',
-        'Deep Docks',
+        'Fond Osseux',
         'Greymoor',
-        'Moss Grotto',
+        'Grotte Moussue',
         'Bonebottom',
         ':Catégorie:Personnages non jouables (Silksong)','Personnages non jouables (Silksong)',
         'Ballow',
@@ -23,14 +24,13 @@
         'Carmelita',
         'Lace',
         'La Chasseresse',
-        'Moss Mother',
+        'Mère Moussue',
         'Sharpe l’Assassin d’Acier',
         ':Catégorie:Ennemis (Silksong)','Ennemis (Silksong)',
         'Crawbug',
         'Dustroach',
         'Mask Piece',
-        'Rosary',
-        'Rosaries',
+        'Chapelet',
         'Shell Shards',
         'Soie',
         'Tool Pouch',
@@ -44,6 +44,7 @@
         'Grindle',
         'Caravane',
         'Banc (Silksong)',
+        'Druide du Temple Moussu',
         
     ];
  

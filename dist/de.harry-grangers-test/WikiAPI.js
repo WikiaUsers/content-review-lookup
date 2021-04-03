@@ -9,14 +9,14 @@ var Hubs = {
 };
  
 function Wiki() {
-    this.id = wgCityId;
-    this.lang = wgContentLanguage;
+    this.id = mw.config.get('wgCityId');
+    this.lang = mw.config.get('wgContentLanguage');
     this.name = 'harry-grangers-test';
-    this.title = wgSitename;
+    this.title = mw.config.get('wgSitename');
     this.subject = 'Harry Potter';
-    this.hub = Hubs[wgWikiVertical];
+    this.hub = Hubs[mw.config.get('wgWikiVertical')];
     this.category = verticalName;
-    this.affinity = wgWikiCategories;
+    this.affinity = mw.config.get('wgWikiCategories');
 }
  
 var WAM = {
@@ -25,7 +25,7 @@ var WAM = {
 };
 
 /* Fetching the Main information */
-function getWikiData(id,callback) {
+function getWikiData(id, callback) {
     // Should use a workaround
     // $.getJSON('http://www.wikia.com/api/v1/Wikis/Details/?ids=' + id).done(callback);
     console.info("WikiData feature is currently not available because of cross origin problems");

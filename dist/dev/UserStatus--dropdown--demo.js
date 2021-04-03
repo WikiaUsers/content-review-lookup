@@ -1,126 +1,119 @@
-/**
- *
- * @submodule               UserStatus/dropdown/demo
+/* @submodule               UserStatus/dropdown/demo
  * @description             Dropdown menu to quickly change one's status.
  * @author                  Americhino
- * @version                 0.8.3
- * @license                 CC-BY-SA 3.0
- * @notes                   Only a demo for User:SapphireSonata.
+ * @version                 1.0.1
+ * @license                 CC-BY-SA 3.0 
+ * @notes                   Only a demo for User:SapphireSonata on Dev Wiki.
  *                          Please see the documentation for UserStatus.
  **/
 var $user = mw.config.get('wgTitle').split('/');
 // if (($user[1] ? $user[1] : $user[0]) === 'SapphireSonata') {
     mw.hook('dev.i18n').add(function (i18n) {
         i18n.loadMessages('UserStatus').done(function (i18n) {
-            var $statusLink = $('<div />')
-            .attr('id', 'StatusChangeWrapper').append(
-                $('<div />')
-                    .addClass('wds-dropdown')
-                    .attr('id', 'StatusChange').append (
-                        $('<a />')//.attr( 'title', i18n.msg('change-status').plain() )
-                            .attr('style', 'cursor: pointer; margin-top: 10px;' ).text(i18n.msg('status').plain())
-                            .attr('id', 'StatusToggle')
-                            .addClass('wds-button wds-is-secondary wds-dropdown__toggle').append(
-                                $('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12" class="wds-icon wds-icon-tiny wds-dropdown-chevron"><path d="M6.003 10.002a.997.997 0 0 1-.707-.293L.293 4.706a1 1 0 1 1 1.414-1.414l4.296 4.295 4.293-4.293A1 1 0 1 1 11.71 4.71l-5 5a.997.997 0 0 1-.707.293" fill-rule="evenodd"></path></svg>')
-                        )
-                    .after(
-                        $('<div>')
-                        .addClass('wds-is-not-scrollable wds-dropdown__content wds-is-left-aligned').append(
-                            $('<ul />')
-                                .addClass('wds-list wds-is-linked')
-                                .attr('id', 'StatusMenu')
-                                .append(
-                                $('<li>').append(
-                                    $('<a>')
-                                    .attr('target', '_blank')
-                                    .attr('style', 'cursor: pointer;')
-                                    .attr('id', 'StatusMenu-online')
-                                    .text(i18n.msg('online').plain())
-                                ).after(
-                                $('<li>').append(
-                                    $('<a>')
-                                    .attr('target', '_blank')
-                                    .attr('style', 'cursor: pointer;')
-                                    .attr('id', 'StatusMenu-away')
-                                    .text(i18n.msg('away').plain())
-                                )).after(
-                                $('<li>').append(
-                                    $('<a>')
-                                    .attr('target', '_blank')
-                                    .attr('style', 'cursor: pointer;')
-                                    .attr('id', 'StatusMenu-dnd')
-                                    .text(i18n.msg('dnd').plain())
-                                )).after(
-                                $('<li>').append(
-                                    $('<a>')
-                                    .attr('target', '_blank')
-                                    .attr('style', 'cursor: pointer;')
-                                    .attr('id', 'StatusMenu-unknown')
-                                    .text(i18n.msg('offline').plain())
-                                ))
-                            )
-                        )
-                    )
-                )
-            ); 
-            $('.UserProfileMasthead .masthead-info > .details').append($statusLink);
-            var content;
-            $('body').on('click', 'a[id^="StatusMenu-"]', function(e) {
-                e.preventDefault();
-                switch ($(e.target).attr('id')) {
-                    case 'StatusMenu-online':
-                        content = 'online';
-                        break;
-                    case 'StatusMenu-away':
-                        content = 'away';
-                        break;
-                    case 'StatusMenu-dnd':
-                        content = 'dnd';
-                        break;
-                    case 'StatusMenu-offline':
-                        content = 'offline';
-                        break;
-                }
-                $.ajax({
+            mw.loader.using('mediawiki.notify').then(function() {
+                var $statusLink = $('<div />')
+                            .addClass('wds-dropdown StatusChange')
+                            .attr('id', 'StatusChange').append(
+                                $('<div />')
+                                    .addClass('wds-dropdown__toggle StatusMenu-toggle').append(
+                                        $('<a />')//.attr( 'title', 'Change your status' ) //  No translation yet
+                                            .text(i18n.msg('status').plain())
+                                            .attr('id', 'StatusToggle')
+                                            .addClass('wds-button wds-is-secondary').append(
+                                                $('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12" class="wds-icon wds-icon-tiny wds-dropdown-chevron"><path d="M6.0001895,8.80004571 C5.79538755,8.80004571 5.5905856,8.72164496 5.43458411,8.56564348 L2.23455364,5.365613 C2.00575146,5.13681083 1.93695081,4.79280755 2.06095199,4.4936047 C2.18415316,4.19440185 2.47695595,4 2.80015903,4 L9.20021997,4 C9.52342305,4 9.81542583,4.19440185 9.93942701,4.4936047 C10.0634282,4.79280755 9.99462754,5.13681083 9.76582536,5.365613 L6.56579489,8.56564348 C6.4097934,8.72164496 6.20499145,8.80004571 6.0001895,8.80004571" fill-rule="evenodd"></path></svg>')
+                                        )
+                                )
+                        ); 
+                var $statusDropdown = $('<div />').addClass('wds-is-not-scrollable wds-dropdown__content').append(
+                                    $('<ul />')
+                                        .addClass('wds-list wds-is-linked')
+                                        .attr('id', 'StatusMenu') 
+                                        .append(
+                                            $('<li />').append(
+                                                $('<a />')
+                                                .attr('target', '_blank')
+                                                .attr('style', 'cursor: pointer;')
+                                                .attr('id', 'StatusMenu-online')
+                                                .text(i18n.msg('online').plain())
+                                            ))
+                                        .append(
+                                            $('<li />').append(
+                                                $('<a />')
+                                                .attr('target', '_blank')
+                                                .attr('style', 'cursor: pointer;')
+                                                .attr('id', 'StatusMenu-away')
+                                                .text(i18n.msg('away').plain())
+                                            ))
+                                        .append(
+                                            $('<li />').append(
+                                                $('<a />')
+                                                .attr('target', '_blank')
+                                                .attr('style', 'cursor: pointer;')
+                                                .attr('id', 'StatusMenu-dnd')
+                                                .text(i18n.msg('dnd').plain())
+                                            ))
+                                        .append(
+                                            $('<li />').append(
+                                                $('<a />')
+                                                .attr('target', '_blank')
+                                                .attr('style', 'cursor: pointer;')
+                                                .attr('id', 'StatusMenu-unknown')
+                                                .text(i18n.msg('offline').plain())
+                                        )
+                                    ) 
+                            );
+                $('.user-identity-header__actions').append($statusLink);
+                $statusLink.append($statusDropdown);
+                setTimeout(() => {$('body').on('click', '.wds-button modal-wrapper__cta-button', function(e) {$('.user-identity-header__actions').append($statusLink);$statusLink.append($statusDropdown)})}, 500) //attempted fix
+                $('body').on('click', 'a[id^="StatusMenu-"]', function(e) {
+                    e.preventDefault();
+                    var content;
+                    switch ($(e.target).attr('id')) {
+                        case 'StatusMenu-online':
+                            content = 'online';
+                            break;
+                        case 'StatusMenu-away':
+                            content = 'away';
+                            break;
+                        case 'StatusMenu-dnd':
+                            content = 'dnd';
+                            break;
+                        case 'StatusMenu-unknown':
+                            content = 'offline';
+                            break;
+                    }
+                    $.ajax({
                         type: 'POST',
                         url: mw.util.wikiScript('api'),
                         dataType: 'json',
                         data: {
                             action: 'edit',
                             title: wgFormattedNamespaces[2] + ':SapphireSonata/status',
-                            summary: i18n.msg('edit-status').plain() + ' (demo)',
+                            summary: '[UserStatus] ' + i18n.msg('edit-status').plain() + ' (demo)',
                             text: content,
                             format: 'json',
                             token: mw.user.tokens.get('editToken')
                         }
-                }).done(function (data) {
-					console.log(data);
-                    if (data.edit.result === 'Success') {
-                        new BannerNotification (i18n.msg('success').plain(), 'confirm').show();
-                    } else {
-                        new BannerNotification (i18n.msg('error').plain(), 'error').show();
-                    }
-                }).fail(function (data) {
-                    new BannerNotification (i18n.msg('error').plain(), 'error').show();
-                });
+                    }).done(function (data) {
+                        if (data.edit.result === 'Success') {
+                            mw.notify(i18n.msg('success').plain());
+                            console.log('[UserStatus] ' + i18n.msg('success').plain());
+                        } else {
+                            mw.notify(i18n.msg('error').plain());
+                            console.log('[UserStatus] ' + i18n.msg('error').plain());
+                        }
+                    }).fail(function (data) {
+                        mw.notify(i18n.msg('error').plain());
+                        console.log('[UserStatus] ' + i18n.msg('error').plain());
+                    });
+                });  
+                // Hardcoded Dev Wiki theme 
+                mw.util.addCSS('#StatusToggle { color: #404a57; border-color: #404a57; }'); 
             });
         });
     });
-    // Change dropdown button color if FANSUN exists
-    var FANSUN = '<link type="text/css" rel="stylesheet" href="//dev.wikia.com/index.php?title=MediaWiki:FANSUN.css&action=raw&ctype=text/css">';
-    if (FANSUN.length) {
-    	mw.util.addCSS('#StatusToggle { color: rgb(0, 183, 224); border-color: rgb(0, 183, 224); } ##StatusToggle .wds-dropdown-chevron { fill: rgb(0, 183, 224); }');
-    } else {
-    var buttonColor = mw.config.get('wgSassParams')['color-buttons']; 
-    mw.util.addCSS('#StatusToggle { color:' + buttonColor + '; border-color:' + buttonColor + '}');
-    }
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:i18n-js/code.js',
-    ],
-    type: 'style',
-    articles: [
-        'u:dev:MediaWiki:UserStatus.css',
-    ]
-});
+    window.importArticles({
+        type: 'script',
+        articles: ['u:dev:MediaWiki:I18n-js/code.js']
+    });
+// }

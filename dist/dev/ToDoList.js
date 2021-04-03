@@ -1,12 +1,12 @@
 /**
  * @title ToDoList
- * @version v1.0
+ * @version v2.0.1
  * @author DarkBarbarian
  * @description Lets you edit and view your local to do page without leaving the current page
- * The init and preload functions are inspired by https://dev.fandom.com/MediaWiki:AjaxBatchDelete/code.js
+ * The init and preload functions are inspired by https://dev.fandom.com/wiki/MediaWiki:AjaxBatchDelete.js?oldid=120334
  */
 
-require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
+mw.loader.using('mediawiki.api', function() {
     "use strict";
     
     if (window.toDoListLoaded) {
@@ -19,7 +19,8 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         placement,
         preloads = 3,
         toDoModal,
-        user = mw.config.get('wgUserName');
+        user = mw.config.get('wgUserName'),
+        isUCP = mw.config.get('wgVersion') !== '1.19.24';
         
     var toDoList = $.extend({
         page: 'User:' + user + '/To do',
@@ -49,8 +50,9 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
     }
     
     function notification(type, text) {
-        var notification = new BannerNotification(text, type, null, 3000);
-        notification.show();
+        mw.hook('dev.banners').add(function(BannerNotification) {
+            new BannerNotification(text, type, isUCP ? $('#toDoModal .oo-ui-window-head') : null, 3000).show();
+        });
     }
     
     function showToDoModal() {
@@ -108,6 +110,7 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
             action: 'query',
             titles: toDoList.page,
             prop: 'revisions',
+            rvslots: '*',
             rvprop: 'content'
         }).done(function(d) {
             if (!d.error) {
@@ -117,9 +120,14 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
                         notification('error', i18n.msg('pageDoesNotExist', toDoList.page).plain());
                         return;
                     }
+                    
+                    if (isUCP) {
+                        $('#toDoText')[0].value = data.pages[i].revisions[0].slots.main['*'];
+                    } else {
+                        var pageContent = data.pages[i].revisions[0];
+                        $('#toDoText')[0].value = pageContent[Object.keys(pageContent)[0]];
+                    }
                     notification('confirm', i18n.msg('retrievedContents').plain());
-                    var pageContent = data.pages[i].revisions[0];
-                    $('#toDoText')[0].value = pageContent[Object.keys(pageContent)[0]];
                     break;
                 }
             } else {
@@ -162,7 +170,8 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         articles: [
             'u:dev:MediaWiki:I18n-js/code.js',
             'u:dev:MediaWiki:Modal.js',
-            'u:dev:MediaWiki:Placement.js'
+            'u:dev:MediaWiki:Placement.js',
+            'u:dev:MediaWiki:BannerNotification.js'
         ]
     });
 });

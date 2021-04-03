@@ -226,8 +226,8 @@ $(window).load(function() {
                 $('#bestiary_loot_' + v).parent().hide();
             } else {
                 $('#bestiary_loot_' + v).parent().show();
-                var rows = Math.ceil(itemcounter[v] / 14);
-                var itemsleft = rows*14 - itemcounter[v];
+                var rows = Math.ceil(itemcounter[v] / 15);
+                var itemsleft = rows*15 - itemcounter[v];
                 for (i = 0; i < itemsleft; i++) {
                     $('#bestiary_loot_' + v).append('<div class="bestiary_loot_empty"></div>');
                 }

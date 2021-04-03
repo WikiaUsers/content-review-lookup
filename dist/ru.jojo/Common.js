@@ -12,3 +12,5 @@ importArticles({
 
 preloadTemplates_list =  "MediaWiki: Custom-PreloadTemplatesList" ; 
 preloadTemplates_subpage =  "case-by-case" ;
+
+window.pPreview.noimage = 'https://i.ytimg.com/vi/XlVOJg23QZ0/maxresdefault.jpg';

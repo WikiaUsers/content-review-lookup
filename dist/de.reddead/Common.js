@@ -1,11 +1,5 @@
 /* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
- // Import [[MediaWiki:Onlyifuploading.js]] 
- 
- if ( wgCanonicalSpecialPageName == "Upload" ) {
-      document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Onlyifuploading.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
- }
-
 // ============================================================
 // BEGIN collapsible tables
 // This script is from Wikipedia. For author attribution, please see http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
@@ -125,7 +119,7 @@ function createCollapseButtons()
     }
 }
 
-addOnloadHook( createCollapseButtons );
+//addOnloadHook( createCollapseButtons );
 
 // ============================================================
 // END collapsible tables

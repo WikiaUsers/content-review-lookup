@@ -1,56 +1,189 @@
 /*
-* Nuke
-* Reverse engineered Nuke extension
-* https://www.mediawiki.org/wiki/Extension:Nuke
-* @author Ozank Cx
+ * Nuke
+ * Reverse engineered Nuke extension
+ * https://www.mediawiki.org/wiki/Extension:Nuke
+ * @author Ozank Cx (https://dev.fandom.com/wiki/User:Ozank Cx)
+ * @author Thundercraft5 (https://dev.fandom.com/wiki/User:Thundercraft5)
+ */
+/* jshint
+	esversion: 6, forin: true, 
+	immed: true, indent: 4, 
+	latedef: true, newcap: true,
+	noarg: true, undef: true,
+	undef: true, unused: true,
+	browser: true, jquery: true,
+	onevar: true, eqeqeq: true,
+	multistr: true, maxerr: 999999,
+	-W082, -W084
 */
-
+/* global mw, BannerNotification */
 mw.loader.using(['jquery.client', 'mediawiki.util', 'mediawiki.api', 'mediawiki.user'], function() {
 
-var config = mw.config.get([
-        'wgUserGroups',
-        'stylepath',
-        'wgCanonicalSpecialPageName',
-        'wgFormattedNamespaces',
-        'wgMainpage',
-        'wgPageName',
-        'wgSiteName'
-    ]),
-    token = mw.user.tokens.get('editToken'),
-    api = new mw.Api(),
-    deleteDelay = window.nukeDelay || 1000;
+    var config = mw.config.get([
+            'wgUserGroups',
+            'stylepath',
+            'wgCanonicalSpecialPageName',
+            'wgFormattedNamespaces',
+            'wgMainpage',
+            'wgPageName',
+            'wgSiteName'
+        ]),
+        token = mw.user.tokens.get('editToken'),
+        api = new mw.Api(),
+        deleteDelay = window.nukeDelay || 1000,
+        ucp = mw.config.get('wgVersion') !== "1.19.24";
 
-if (
-    window.NukeLoaded ||
-    !/sysop|vstf|staff|helper|wiki-manager|content-volunteer|content-moderator|content-team-member/.test(config.wgUserGroups.join())
-) {
-    return;
-}
-window.NukeLoaded = true;
+    if (
+        window.NukeLoaded ||
+        !/sysop|staff|helper|wiki-manager|content-volunteer|content-moderator|content-team-member|soap/.test(config.wgUserGroups.join())
+    ) {
+        return;
+    }
+    window.NukeLoaded = true;
 
-var self = {
-    init: function() {
+    var self = {
+        init: function() {
+            $('#PageHeader h1.page-header__title').text('Nuke');
+            document.title = "Nuke | " + config.wgSiteName + " | Fandom";
+            mw.util.addCSS('.thumbnail-nuke { max-width: 250px; width: auto; height: 80px; }');
 
-        $('#PageHeader h1.page-header__title').text('Nuke');
-        document.title = "Nuke | " + config.wgSiteName + " | Fandom";
-        mw.util.addCSS('.thumbnail-nuke { max-width: 250px; width: auto; height: 80px; }');
+            if (mw.util.getParamValue('nukeuser')) {
+                this.loadUserUI()
+                    .done(function() {
+                        self.deletePages();
+                    });
+            } else {
+                this.loadMainUI()
+                    .done(function() {
+                        self.deletePages();
+                    });
+            }
+        },
+        
+        deletePages: function() {
+            $('.wikia-button.nuke-submit').click(function() {
+                if (!$('.nuke-query-result').length || $(this).attr('disabled')) return;
 
-        if (mw.util.getParamValue('nukeuser')) {
+                $('.nuke-submit, .nuke-check-all').attr('disabled', true);
+                $('#nuke-status').html('Deleting pages... please wait <img src="' + config.stylepath + '/common/progress-wheel.gif"/>');
+                $('.nuke-title-check:checked').each(function(i) {
+                    var title = $(this).parent().find('a').text();
+                    setTimeout(function() {
+                        api.post({
+                            action: 'delete',
+                            title: title,
+                            reason: $('#nuke-delete-reason').val() || '',
+                            bot: true,
+                            token: token,
+                            watchlist: 'nochange',
+                        })
+                        .done(function(d) {
+                            if (!d.error) {
+                                console.log('Deletion of ' + title + ' successful!');
+                                
+                                $('#nuke-protect').attr('checked') ? api.post({
+                                    action: 'protect',
+                                    protections: 'create=sysop',
+                                    expiry: 'infinite',
+                                    bot: true,
+                                    watchlist: 'nochange',
+                                    token: token,
+                                    title: title,
+                                    reason: $('#nuke-delete-reason').val() || '',
+                                }).done(function(data) {
+                                    if (!data.error) {
+                                        console.log('Protection of ' + title + ' successful!');
+                                    } else {
+                                        console.warn('Failed to protect ' + title + 'successful:', data.error.info);
+                                    }
+                                }) : undefined;
+                            } else {
+                                console.warn('Failed to delete ' + title + ': ' + d.error.info);
+                            }
+                        })
+                        .fail(function() {
+                            console.log('Failed to delete ' + title);
+                        });
+                        
+                        if (i === $('.nuke-title-check:checked').length - 1) {
+                            setTimeout(function() {
+                                console.log('Deletions All Done, redirecting...');
+                                
+                                location.replace(
+                                    !mw.util.getParamValue('nukeuser') 
+                                    
+                                    ? mw.util.getUrl(
+                                        'Special:BlankPage', 
+                                        $.extend({ blankspecial: 'nuke' }, self.parseUrlParams(location.search))
+                                    )
+                                    
+                                    : mw.util.getUrl(
+                                        mw.util.getParamValue('returnto') 
+                                        || ("Special:Contributions/" + mw.util.getParamValue('nukeuser')),
+                                        mw.util.getParamValue('returntoparams') ? self.parseUrlParams(mw.util.getParamValue('returntoparams')) : ''
+                                    )
+                                );
+                            }, 1000);
+                        }
+                    }, i * deleteDelay);
+                });
+            });
+        },
+        
+        loadUserUI: function() {
             var user = mw.util.getParamValue('nukeuser'),
-                deleteReason = mw.html.escape(window.nukeDeleteReason || "Mass removal of pages created by " + user.replace(/_/g,' '));
+                deleteReason = mw.html.escape(mw.util.getParamValue('nukereason') || window.nukeDeleteReason || "Mass removal of pages created by " + user.replace(/_/g, ' ')),
+                $promise = $.Deferred();
 
-            $('#mw-content-text p').html(
-                '<a href="' + mw.util.getUrl('Special:Blankpage', {blankspecial: 'nuke'}) + '">Switch to Nuke main form</a>' +
-                '<br/>' +
-                'The following pages were recently created by <a href="' + mw.util.getUrl('Special:Contributions/' + user) + '">' + mw.html.escape(user.replace(/_/g,' ')) + '</a>; put in a comment and hit the button to delete them.' +
-                '<br/>' +
-                'Reason for deletion: <input style="width: 400px" type="text" id="nuke-delete-reason" value="' + deleteReason + '"/>' +
-                '<br/>' +
-                '<a class="wikia-button nuke-submit">Delete selected</a>' +
-                '<div id="nuke-status"/>' +
-                '<ul id="nuke-query-results"></ul>' +
-                '<a class="wikia-button nuke-submit">Delete selected</a>'
-            );
+            $('#mw-content-text p').html($('<span>', { html: [
+                $('<a>', {
+                    href: mw.util.getUrl('Special:Blankpage', { blankspecial: 'nuke' }),
+                    html: "Switch to Nuke main form",
+                }),
+                 $('<br/>'),
+                $('<a>'),
+                'The following pages were recently created by ',
+                $('<a>', {
+                    href: mw.util.getUrl('Special:Contributions/' + user),
+                    html: mw.html.escape(user.replace(/_/g, ' '))
+                }),
+                '; put in a comment and hit the button to delete them.',
+                $('<br/>'),
+                'Reason for deletion: ',
+                $('<input>', {
+                    css: {
+                        width: "400px"
+                    },
+                    type: "text",
+                    id: "nuke-delete-reason",
+                    value: deleteReason,
+                }),
+                $('<br/>'),
+                $('<input>', {
+                    type: "checkbox",
+                    name: "nuke-protect",
+                    id: "nuke-protect",
+                    title: 'Check this box to protect deleted pages from re-creation',
+                }),
+                $('<label>', {
+                    html: "Protect deleted pages",
+                    'for': 'nuke-protect',
+                    id: "nuke-protect-label",
+                    title: 'Check this box to protect deleted pages from re-creation',
+                }),
+                $('<hr>', { css: { 'margin': '0 20px;' }}),
+                $(ucp ? "<button>" : '<a>', {
+                    class: "wikia-button nuke-submit",
+                    html: "Delete selected",
+                }),
+                $('<div>', { id: "nuke-status" }),
+                $('<ul>', { id: "nuke-query-results" }),
+                $(ucp ? "<button>" : '<a>', { 
+                    class: "wikia-button nuke-submit",
+                    html: "Delete selected",
+                }),
+            ]}));
+            
             $('#nuke-status').html('Getting pages... please wait <img src="' + config.stylepath + '/common/progress-wheel.gif"/>');
 
             api.get({
@@ -69,6 +202,7 @@ var self = {
                         images = [];
 
                     for (var i in usercontribs) {
+                    	if (!usercontribs.hasOwnProperty(i)) continue;
                         if (count >= maxLimit) break;
 
                         if (usercontribs[i].hasOwnProperty('new')) {
@@ -88,58 +222,231 @@ var self = {
                     if (!$('.nuke-query-result').length)
                         self.outputError("No user contributions found");
                     else {
-                        if (images.length > 0)
-                            self.displayImages(images);
+                        if (images.length > 0) self.displayImages(images);
+                        self.checkAll();
+                        $('.nuke-submit').html('Deleted Selected (' + $('.nuke-title-check:checked').length + ')');
                     }
-                }
-                else
+                    $promise.resolve();
+                } else { 
                     self.outputError("Failed to get user contributions: " + d.error.code);
+                }
             })
             .fail(function() {
                 self.outputError("Failed to get user contributions");
             });
             $('#nuke-status').empty();
-        }
-        else {
-            $('#mw-content-text p').html(
-                'This tool allows for mass deletions of pages recently added by a given user or an IP address.' +
-                '<br/>' +
-                'Input the username or IP address to get a list of pages to delete, or leave blank for all users.' +
-                '<br/>' +
-                'Username, IP address or blank: <input type="text" id="nuke-username"/>' +
-                '<br/>' +
-                'Pattern for the page name: <input type="text" id="nuke-match"/>' +
-                '<br/>' +
-                'Limit to namespace: <select id="nuke-namespace">' +
-                    '<option value="All">All</option>' +
-                    '<option value="0">Main</option>' +
-                    '<option value="1">Talk</option>' +
-                    '<option value="2">User</option>' +
-                    '<option value="3">User talk</option>' +
-                    '<option value="4">Project</option>' +
-                    '<option value="5">Project talk</option>' +
-                    '<option value="6">File</option>' +
-                    '<option value="7">File talk</option>' +
-                    '<option value="10">Template</option>' +
-                    '<option value="11">Template talk</option>' +
-                    '<option value="12">Help</option>' +
-                    '<option value="13">Help talk</option>' +
-                    '<option value="14">Category</option>' +
-                    '<option value="15">Category talk</option>' +
-                '</select>' +
-                '<br/>' +
-                'Maximum number of pages: <input type="text" id="nuke-max" value="500"/>' +
-                '<br/>' +
-                '<a class="wikia-button" id="nuke-rc">Go</a>' +
-                '<br/>' +
-                '<div id="nuke-status"/>' +
-                '<div id="nuke-query-results"/>'
-            );
 
+            return $promise;
+        },
+        loadMainUI: function() {
+            var $promise = $.Deferred();
+
+            $('#mw-content-text p').html($('<span>', { html: [
+                'This tool allows for mass deletions of pages recently added by a given user or an IP address.',
+                $('<br/>'), 
+                'Input the username or IP address to get a list of pages to delete, or leave blank for all users.',
+                $('<br/>'), 
+                'Username, IP address or blank: ',
+                $('<input>', {
+                    type: "text",
+                    id: "nuke-username",
+                }),
+                $('<br/>'), 
+                'Pattern for the page name: ',
+                $('<input>', {
+                    type: "text",
+                    id: "nuke-match",
+                    value: mw.util.getParamValue('nukepattern'),
+                }),
+                $('<br/>'), 
+                'Limit to namespace: ',
+                $('<select>', {
+                    id: "nuke-namespace",
+                    name: "nuke-namespace",
+                    html: [
+                        $('<option>', {
+                            value: "All",
+                            selected: "",
+                            html: "All",
+                        }),
+                        $('<option>', {
+                            value: 0,
+                            html: "(Main)",
+                        }),
+                        $('<option>', {
+                            value: 1,
+                            html: "Talk",
+                        }),
+                        $('<option>', {
+                            value: 2,
+                            html: "User",
+                        }),
+                        $('<option>', {
+                            value: 3,
+                            html: "User talk",
+                        }),
+                        $('<option>', {
+                            value: 4,
+                            html: 'Project',
+                        }),
+                        $('<option>', {
+                            value: 5,
+                            html: 'Project talk',
+                        }),
+                        $('<option>', {
+                            value: 6,
+                            html: "File",
+                        }),
+                        $('<option>', {
+                            value: 7,
+                            html: "File talk",
+                        }),
+                        $('<option>', {
+                            value: 8,
+                            html: "MediaWiki",
+                        }),
+                        $('<option>', {
+                            value: 9,
+                            html: "MediaWiki talk",
+                        }),
+                        $('<option>', {
+                            value: 10,
+                            html: "Template",
+                        }),
+                        $('<option>', {
+                            value: 11,
+                            html: "Template talk",
+                        }),
+                        $('<option>', {
+                            value: 12,
+                            html: "Help",
+                        }),
+                        $('<option>', {
+                            value: 13,
+                            html: "Help talk",
+                        }),
+                        $('<option>', {
+                            value: 14,
+                            html: "Category",
+                        }),
+                        $('<option>', {
+                            value: 15,
+                            html: "Category talk",
+                        }),
+                        $('<option>', {
+                            value: 110,
+                            html: "Forum",
+                        }),
+                        $('<option>', {
+                            value: 111,
+                            html: "Forum talk",
+                        }),
+                        $('<option>', {
+                            value: 500,
+                            html: "User blog",
+                        }),
+                        $('<option>', {
+                            value: 501,
+                            html: "User blog comment",
+                        }),
+                        $('<option>', {
+                            value: 502,
+                            html: "Blog",
+                        }),
+                        $('<option>', {
+                            value: 503,
+                            html: "Blog talk",
+                        }),
+                        $('<option>', {
+                            value: 828,
+                            html: "Module",
+                        }),
+                        $('<option>', {
+                            value: 829,
+                            html: "Module talk",
+                        }),
+                        $('<option>', {
+                            value: 1200,
+                            html: "Message Wall",
+                        }),
+                        $('<option>', {
+                            value: 1201,
+                            html: "Thread",
+                        }),
+                        $('<option>', {
+                            value: 1202,
+                            html: "Message Wall Greeting",
+                        }),
+                        $('<option>', {
+                            value: 2000,
+                            html: "Board",
+                        }),
+                        $('<option>', {
+                            value: 2001,
+                            html: "Board Thread",
+                        }),
+                        $('<option>', {
+                            value: 2002,
+                            html: "Topic",
+                        }),
+                    ]
+                }),
+                $('<br/>'), 
+                'Maximum number of pages: ',
+                $('<input>', {
+                    type: "text",
+                    id: "nuke-max",
+                    value: mw.util.getParamValue('nukelimit') || 500,
+                }),
+                $('<br/>'),
+                'Deletion Reason: ',
+                $('<input>', {
+                    type: "text",
+                    id: "nuke-delete-reason",
+                    value: mw.util.getParamValue('nukereason'),
+                }),
+                $('<br/>'), 
+                $('<input>', {
+                    type: "checkbox",
+                    name: "nuke-protect",
+                    id: "nuke-protect",
+                    title: 'Check this box to protect deleted pages from re-creation',
+                }),
+                $('<label>', {
+                    html: "Protect deleted pages",
+                    'for': 'nuke-protect',
+                    id: "nuke-protect-label",
+                    title: 'Check this box to protect deleted pages from re-creation',
+                }),
+                $('<div>', {
+                    html: $("<input>", {
+                        class: "wikia-button",
+                        id: "nuke-rc",
+                        name: "nuke-rc",
+                        value: 'Go',
+                        type: "submit",
+                    }),
+                    css: {
+                        'margin-top': '10px',
+                        'margin-bottom': "30px",
+                    },
+                }),
+                $('<div>', {
+                    id: "nuke-status"
+                }),
+                $('<hr>'),
+                $('<ul>', {
+                    id: "nuke-query-results",
+                }),
+            ]}));
+            
+            $('#nuke-namespace').val(mw.util.getParamValue('nukenamespace'));
+            
             $('#nuke-rc').click(function() {
-                if ($(this).attr('disabled')) return;
+                if ($('#nuke-rc').attr('disabled')) return;
 
-                $(this).attr('disabled','disabled');
+                $('#nuke-rc').attr('disabled', true);
+                $('.nuke-check-all').remove();
 
                 if ($('#nuke-username').val()) {
                     var locationParams = {
@@ -147,7 +454,7 @@ var self = {
                         nukeuser: $('#nuke-username').val()
                     };
 
-                    if ($('#nuke-namespace').val() != "All")
+                    if ($('#nuke-namespace').val() !== "All")
                         locationParams.nukenamespace = $('#nuke-namespace').val();
 
                     if ($.isNumeric($('#nuke-max').val()) && $('#nuke-max').val() > 0)
@@ -183,22 +490,23 @@ var self = {
                             RCTitles = [],
                             maxLimit = $('#nuke-max').val() || 5000,
                             count = 0,
-                            images = [];
+                                images = [];
 
                         for (var i in recentchanges) {
+                        	if (!recentchanges.hasOwnProperty(i)) continue;
                             if (count >= maxLimit) break;
 
                             if (
-                                $.inArray(recentchanges[i].title, RCTitles) === -1
-                                && (
-                                    $('#nuke-namespace').val() === "All"
-                                    || Number($('#nuke-namespace').val()) === recentchanges[i].ns
-                                )
-                                && (
-                                    recentchanges[i].type === "new"
-                                    || (
-                                        recentchanges[i].type === "log"
-                                        && recentchanges[i].ns === 6
+                                $.inArray(recentchanges[i].title, RCTitles) === -1 &&
+                                (
+                                    $('#nuke-namespace').val() === "All" ||
+                                    Number($('#nuke-namespace').val()) === recentchanges[i].ns
+                                ) &&
+                                (
+                                    recentchanges[i].type === "new" ||
+                                    (
+                                        recentchanges[i].type === "log" &&
+                                        recentchanges[i].ns === 6
                                     )
                                 )
                             ) {
@@ -216,142 +524,172 @@ var self = {
                                 }
                             }
                         }
-                        if (!$('.nuke-query-result').length)
+                        if (!$('.nuke-query-result').length) {
                             self.outputError("No recent changes found");
-                        else {
+                        } else {
                             $('#nuke-query-results')
-                                .before('<br/><a class="wikia-button nuke-submit">Delete selected</a>')
-                                .after('<a class="wikia-button nuke-submit">Delete selected</a>');
+                                .before($(ucp ? '<button>': '<a>', {
+                                    class: "wikia-button nuke-submit",
+                                    html: 'Delete selected (' + $('.nuke-title-check:checked').length + ')</a>',
+                                }))
+                                .after($(ucp ? '<button>' : '<a>', {
+                                    class: "wikia-button nuke-submit",
+                                    html: 'Delete selected (' + $('.nuke-title-check:checked').length + ')</a>',
+                                }));
+
                             $('#nuke-status').empty();
-                            if (images.length > 0)
-                                self.displayImages(images);
+                            $('.nuke-sumbit').remove();
+                            $('.nuke-check-all').remove();
+                            
+                            self.checkAll();
+
+                            if (images.length > 0) self.displayImages(images);
                         }
-                    }
-                    else
-                        self.outputError("Failed to get recent changes: " + d.error.code);
+                    } else self.outputError("Failed to get recent changes: " + d.error.code);
+
+                    $promise.resolve();
                 })
                 .fail(function() {
                     self.outputError("Failed to get recent changes");
                 });
+
                 $('#nuke-status').empty();
-                $(this).removeAttr('disabled');
+                $(this).attr('disabled', false);
             });
+            return $promise;
+        },
+        outputError: function(text) {
+            ucp ? mw.notification.notify(mw.html.escape(text), { type: "error" }) : new BannerNotification(mw.html.escape(text), 'error').show();
+        },
+        checkAll: function() {
+            $('.nuke-submit')
+                .after($(ucp ? "<button>" : '<a>', {
+                    class: "wikia-button nuke-check-all",
+                    'data-checked': true,
+                    html: "Uncheck All",
+                }));
+
+            $('.nuke-submit').html('Deleted Selected (' + $('.nuke-title-check:checked').length + ')');
+            
+            $('.nuke-check-all').click(function() {
+                var $selec = $('.nuke-check-all');
+                var checked = $(this).attr('data-checked') === "true";
+
+                if (checked) {
+                    $('.nuke-title-check').attr('checked', false);
+                    $selec
+                        .attr('data-checked', false)
+                        .html('Check All');  
+                        
+                } else {
+                    $('.nuke-title-check').attr('checked', true);
+                    $selec
+                        .attr('data-checked', true)
+                        .html('Uncheck All');                              
+                }
+            });
+
+            this.updateCount();
+        },
+        updateCount: function() {
+            $(document.body).on("click", '.nuke-query-result, .nuke-check-all', function() {
+                $('.nuke-submit').html('Delete Selected (' + $('.nuke-title-check:checked').length + ')');
+            });
+        },
+        displayImages: function(imgs) {
+            api.post({ //POST instead of GET for longer length
+                    action: 'query',
+                    prop: 'imageinfo',
+                    titles: imgs.join('|'),
+                    iiprop: 'url',
+                    iilimit: 'max'
+                })
+                .done(function(d) {
+                    if (!d.error) {
+                        for (var i in d.query.pages) {
+                            if (d.query.pages[i].missing !== "" && d.query.pages[i].imageinfo) {
+                                var href = mw.util.getUrl(d.query.pages[i].title);
+                                $('a[href="' + href + '"]').parent().children('.nuke-title-check').after(
+                                    '<a href="' + href + '">' +
+                                    '<img class="thumbnail-nuke" src="' + d.query.pages[i].imageinfo[0].url + '" />' +
+                                    '</a>'
+                                );
+                            }
+                        }
+                    } else
+                        self.outputError('Failed to display images: ' + d.error.code);
+                })
+                .fail(function() {
+                    self.outputError('Failed to display images');
+                });
+        },
+        parseUrlParams: function(s) {
+            var params = s.replace(/^(?:\?|%26)/, '').split(/(?:&|%26)/);
+            var o = {};    
+        
+            params.forEach(function(k) {
+                var tmp = k.match(/(.+?)=(.+)/i);
+                o[tmp[1]] = tmp[2];
+            });
+        
+            return o;
         }
+    };
 
-        $('.nuke-submit').click(function() {
-            if (!$('.nuke-query-result').length || $(this).attr('disabled')) return;
+    switch (config.wgCanonicalSpecialPageName) {
+        case "UserProfileActivity":
+        case "Contributions":
+            var usr = mw.util.getParamValue('target') || config.wgPageName.split('/')[1],
+                nukeTitle = window.nukeTitle || 'Special:Nuke',
+                url = mw.util.getUrl('Special:BlankPage', {
+                    blankspecial: 'nuke',
+                    nukeuser: usr,
+                });
 
-            $('.nuke-submit').attr('disabled','disabled');
-            $('#nuke-status').html('Deleting pages... please wait <img src="' + config.stylepath + '/common/progress-wheel.gif"/>');
-            $('.nuke-title-check:checked').each(function(i) {
-                var title = $(this).parent().find('a').text();
-                setTimeout(function() {
-                    api.post({
-                        action: 'delete',
-                        title: title,
-                        reason: $('#nuke-delete-reason').val() || '',
-                        bot: true,
-                        token: token
-                    })
-                    .done(function(d) {
-                        if (!d.error) {
-                            console.log('Deletion of ' + title + ' successful!');
-                        }
-                        else {
-                            console.log('Failed to delete ' + title + ': '+ d.error.code);
-                        }
-                    })
-                    .fail(function() {
-                        console.log('Failed to delete ' + title);
-                    });
-                    if (i === $('.nuke-title-check:checked').length - 1) {
-                        setTimeout(function() {
-                            location.replace(mw.util.getUrl(config.wgMainpage));
-                        }, 1000);
-                    }
-                }, i*deleteDelay);
-            });
-        });
-    },
-    outputError: function(text) {
-        new BannerNotification(mw.html.escape(text), 'error').show();
-    },
-    displayImages: function(imgs) {
-        api.post({ //POST instead of GET for longer length
-            action: 'query',
-            prop: 'imageinfo',
-            titles: imgs.join('|'),
-            iiprop: 'url',
-            iilimit: 'max'
-        })
-        .done(function(d) {
-            if (!d.error) {
-                for (var i in d.query.pages) {
-                    if (d.query.pages[i].missing !== "" && d.query.pages[i].imageinfo) {
-                        var href = mw.util.getUrl(d.query.pages[i].title);
-                        $('a[href="' + href + '"]').parent().children('.nuke-title-check').after(
-                            '<a href="' + href + '">' +
-                            '<img class="thumbnail-nuke" src="' + d.query.pages[i].imageinfo[0].url + '" />' +
-                            '</a>'
-                        );
+            if (usr) {
+                var el = $('<a title="' + nukeTitle + '" href="' + url + '">Nuke</a>');
+                
+                if (!window.QuickLogs) {
+                    if (config.wgCanonicalSpecialPageName === "UserProfileActivity") {
+                        $('.UserProfileActivityModeration__links > span:last-child').after($('<span>', { html: el }));
+                    } else {
+                        $([
+                            '#contentSub > a:last-child', // 1.19
+                            '.mw-contributions-user-tools > .mw-changeslist-links > span:last-child', // UCP
+                        ].join(',\n')).after(' | ', el);
                     }
                 }
-            }
-            else
-                self.outputError('Failed to display images: ' + d.error.code);
-        })
-        .fail(function() {
-            self.outputError('Failed to display images');
-        });
-    }
-};
-
-switch (config.wgCanonicalSpecialPageName) {
-    case "Contributions":
-        var usr = mw.util.getParamValue('target') || config.wgPageName.split('/')[1],
-            url = mw.util.getUrl('Special:BlankPage', {
-                blankspecial: 'nuke',
-                nukeuser: usr
-            });
-        if (window.nukeTitle) {
-            var nukeTitle = window.nukeTitle   
-        } else {
-            var nukeTitle = 'Special:Nuke'
-        };
-        if (usr) {
-            
-            if (!window.QuickLogs) {
-                $('#contentSub a:last-child').after(' | <a title="' + nukeTitle + '" href="' + url + '">Nuke</a>');
-            }
-            mw.hook('QuickLogs.loaded').add(function(ql) {
-                ql.addLink('nuke', {
-                    href: url,
-                    message: 'Nuke'
+                mw.hook('QuickLogs.loaded').add(function(ql) {
+                    ql.addLink('nuke', {
+                        href: url,
+                        message: 'Nuke'
+                    });
                 });
-            });
-        }
+            }
 
-    break;
+            break;
 
-    case "Specialpages":
-        if (!$('a[title="Special:Nuke"]').length)
-            $('.mw-specialpagerestricted a[title="Special:Undelete"]').after(
-                '<li class="mw-specialpagerestricted">' +
-                '<a title="Special:Nuke" href="' + mw.util.getUrl('Special:Blankpage', {blankspecial: 'nuke'}) + '">Mass delete</a>' +
-                '</li>'
-            );
-        else
-            $('.mw-specialpagerestricted a[title="Special:Nuke"]').after(
-                '<li class="mw-specialpagerestricted">' +
-                '<a title="Special:Nuke" href="' + mw.util.getUrl('Special:Blankpage', {blankspecial: 'nuke'}) + '">Mass delete (JavaScript)</a>' +
-                '</li>'
-            );
-    break;
+        case "Specialpages":
+            if (!$('a[title="Special:Nuke"]').length)
+                $('.mw-specialpagerestricted a[title="Special:Undelete"]').after(
+                    '<li class="mw-specialpagerestricted">' +
+                    '<a title="Special:Nuke" href="' + mw.util.getUrl('Special:Blankpage', { blankspecial: 'nuke' }) + '">Mass delete</a>' +
+                    '</li>'
+                );
+            else
+                $('.mw-specialpagerestricted a[title="Special:Nuke"]').after(
+                    '<li class="mw-specialpagerestricted">' +
+                    '<a title="Special:Nuke" href="' + mw.util.getUrl('Special:Blankpage', { blankspecial: 'nuke' }) + '">Mass delete (JavaScript)</a>' +
+                    '</li>'
+                );
+            break;
 
-    case "Blankpage":
-        if (mw.util.getParamValue('blankspecial') == "nuke")
-            self.init();
-    break;
-}
+        case "Blankpage":
+            if (mw.util.getParamValue('blankspecial') === "nuke")
+                self.init();
+            break;
+    }
 
+}).catch(function(e) {
+	console.warn('Error in loading Nuke: ' + e); 
 });

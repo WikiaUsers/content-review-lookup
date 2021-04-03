@@ -13,4 +13,4 @@ function Accordion() {
     });
   }
 }
-addOnloadHook(Accordion);
+$(Accordion);

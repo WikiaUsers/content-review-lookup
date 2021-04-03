@@ -7,6 +7,53 @@ var
     wmDontWikify = 'Пожалуйста, не обрабатывайте Викификатором реплики других участников. Вы уверены, что хотите продолжить?';
 
 // ---------------------------------------------------------------------------------
+$('#wpPreview').click(function() 
+{
+	$('#catlinks').detach();
+	
+	txt= String( $('#wpTextbox1').val().match(/\[\[\s?[кК]атегория:.*?\s?\]\]/g) );
+
+	$.post("https://starwars.fandom.com/ru/api.php", {
+    action: "parse", format: "json", formatversion: "2", prop: "categorieshtml", text: txt, pst: "true", preview: "true", sectionpreview: "true", disableeditsection: "true", useskin: "oasis", uselang: "ru"}).done(function(data) 
+	{
+		txt = data.parse.categorieshtml;
+		$('#wikiPreview').after(txt);
+	});
+});
+
+function CopyEngImgInfo() 
+{
+  sArticle= $('#wpUploadFile')[0].files[0].name;
+  
+  $.get( 'https://starwars.fandom.com/index.php', { title: 'file:'+sArticle, action: 'raw', ctype: 'text/plain' } )
+  .then( 
+        function( data )			
+        {			
+			$('#wpUploadDescriptionEng').html(data.replace(/\n/g, '<br />'));
+			
+			$('#wpUploadDescription').val(
+			data.replace(/\|attention=/g, '|внимание=').replace(/\|description=/g, '|описание=').replace(/\|source=/g, '|источник=').replace(/\|artist=/g, '|автор=').replace(/\|filespecs=/g, '|спецификация=').replace(/\|licensing=/g, '|лицензирование=').replace(/\|other versions=/g, '|другие версии=').replace(/\|cat artist=/g, '|кат художник=').replace(/\|cat licensee=/g, '|кат лицензиат=').replace(/\|cat subject=/g, '|кат субъект=').replace(/\|cat type=/g, '|кат тип=').replace(/\==.*\n/g, '').replace(/\{\{Information/g, '{{Информация')
+			);
+			
+			mw.notify( 'Описание файла удачно скопировано!' );
+        },
+        function()
+        {
+			 mw.notify( 'Файл '+sArticle+' на Wookieepedia не найден!', { title: 'Ошибка!', type: 'error' } );
+        }
+  );
+}
+
+function ShowEditTools()
+{
+  $('div.mw-editTools, #EditTools_LayerBG').fadeIn(150);
+}
+
+function InsertText( sPre, sPost){
+  $.wikiEditor.modules.toolbar.fn.doAction($('span.tool').data('context'), 
+	{type: 'encapsulate', options: {pre: sPre, post: sPost} });
+}
+
 function Wikify(sParam)
 {
     startPos= 0;     // начальная позиция выделенного текста
@@ -211,12 +258,14 @@ function Wikify(sParam)
         
       // автоперевод категорий
       case 'CATEG': 
+      	/*
             txtarea = $('#wpUploadDescription');
             // сброс позиций выделенного текста 
             startPos = 0;
             endPos = 0 ;
             // извлечение всего текста
             txt = $('#wpUploadDescription').val();
+            */
             // установка иного шаблона-источника 
             sPathAutoChange='Шаблон:Wikificator-source-categ'; 
             // установка фильтра на выборку таблицы по смене курсива на ёлочки
@@ -233,7 +282,7 @@ function Wikify(sParam)
         // загрузка  искомого текста автозамены в массив и экранирование прямой черты и квадратных скоб
         $(data).find(sFilter+' td:nth-child(1)').each( function()
         {
-            wmEnNS[i] = $(this).text().replace(/\[\[/g, "\\[\\[").replace(/\|/g, "\\|");
+            wmEnNS[i] = $(this).text().replace(/\[\[/g, "\\[\\[").replace(/\|/g, "\\|").replace(/ИЛИ/g, "|");
  
             i = i+1; 
         });

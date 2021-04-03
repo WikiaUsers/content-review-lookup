@@ -1,9 +1,13 @@
-require(['wikia.ui.factory'], function(ui) {
+(function() {
     'use strict';
-    importArticle({
+    importArticles({
         type: 'script',
-        article: 'u:dev:MediaWiki:I18n-js/code.js'
-    }, {
+        articles: [
+            'u:dev:MediaWiki:I18n-js/code.js',
+            'u:dev:MediaWiki:Modal.js'
+        ]
+    });
+    importArticle({
         type: 'style',
         article: 'u:dev:MediaWiki:LastEdited.css'
     });
@@ -15,15 +19,16 @@ require(['wikia.ui.factory'], function(ui) {
         // Cached mw.config values
         config: mw.config.get([
             'stylepath',
-            'skin',
             'wgAction',
             'wgArticleId',
             'wgFormattedNamespaces',
             'wgIsMainPage',
+            'wgMainPageTitle',
             'wgNamespaceNumber',
             'wgPageName',
             'wgUserGroups',
-            'wgUserName'
+            'wgUserName',
+            'wgVersion'
         ]),
         // Configuration options
         options: $.extend({
@@ -37,57 +42,76 @@ require(['wikia.ui.factory'], function(ui) {
             mainpage: true,
             time: 'timeago',
             position: {
-                 element: '',
-                 method: ''
+                element: '',
+                method: ''
             },
             namespaces: {
                 exclude: [-1, 1201, 2001]
             },
             pages: []
         }, window.lastEdited),
+        // The amount of dependencies to load
+        loaded: 2,
         // If the user can rollback edits
-        canRollback: /(bureaucrat|sysop|helper|vstf|staff|content-moderator|rollback|wiki-manager|content-team-member)/.test(mw.config.get('wgUserGroups').join(' ')),
+        canRollback: /(bureaucrat|sysop|helper|soap|staff|content-moderator|rollback|wiki-manager|content-team-member)/.test(mw.config.get('wgUserGroups').join(' ')),
         /**
          * Initializes everything
          */
         init: function() {
             window.lastEditedLoaded = true;
-            lastEdited.insert();
-
-            var i18nOptions = {};
-            if (lastEdited.options.lang) {
-                i18nOptions.language = lastEdited.options.lang;
-            }
-
-            mw.hook('dev.i18n').add(function(i18no) {
+            this.isUCP = this.config.wgVersion !== '1.19.24';
+            this.api = new mw.Api();
+            this.pageName = this.config.wgPageName.replace(/_/g, ' ');
+            this.insert();
+            var preload = $.proxy(this.preload, this);
+            mw.hook('dev.modal').add(preload);
+            mw.hook('dev.i18n').add(preload);
+        },
+        preload: function() {
+            if (--this.loaded === 0) {
+                var i18nOptions = {};
+                if (this.options.lang) {
+                    i18nOptions.language = this.options.lang;
+                }
                 $.when(
-                    lastEdited.fetch(),
-                    i18no.loadMessages('LastEdited', i18nOptions),
-                    ui.init(['modal']),
-                    mw.loader.using('mediawiki.action.history.diff')
-                ).then(lastEdited.render);
-            });
+                    this.fetch(),
+                    window.dev.i18n.loadMessages('LastEdited', i18nOptions),
+                    mw.loader.using(
+                        this.isUCP ?
+                            [
+                                'mediawiki.diff.styles',
+                                'skin.oasis.diff.css'
+                            ] :
+                            'mediawiki.action.history.diff'
+                    )
+                ).then($.proxy(this.render, this));
+            }
         },
         /**
          * Checks whether the script should run further or not
          * @return {Boolean} If the script should run further
          */
         shouldRun: function() {
-            var allowed = Object.keys(lastEdited.config.wgFormattedNamespaces).map(Number),
-                ns = lastEdited.options.namespaces;
+            var allowed = Object.keys(this.config.wgFormattedNamespaces).map(Number),
+                ns = this.options.namespaces;
             if (ns && ns.exclude instanceof Array) {
                 allowed = allowed.filter(function(elem) {
                     return ns.exclude.indexOf(elem) < 0;
                 });
             }
-            return !$.getUrlVar('diff') &&
-                   !$.getUrlVar('oldid') &&
-                   allowed.indexOf(lastEdited.config.wgNamespaceNumber) !== -1 &&
-                   lastEdited.options.pages.indexOf(lastEdited.config.wgPageName) === -1 &&
-                   (lastEdited.options.mainpage || !lastEdited.config.wgIsMainPage) &&
-                   lastEdited.config.wgAction === 'view' &&
+            return !mw.util.getParamValue('diff') &&
+                   !mw.util.getParamValue('oldid') &&
+                   allowed.indexOf(this.config.wgNamespaceNumber) !== -1 &&
+                   this.options.pages.indexOf(this.config.wgPageName) === -1 &&
+                   (
+                       // The script is allowed to run on the main page.
+                       this.options.mainpage ||
+                       // The current page is not the main page
+                       this.pageName !== this.config.wgMainPageTitle
+                    ) &&
+                   this.config.wgAction === 'view' &&
                    !window.lastEditedLoaded &&
-                   lastEdited.config.wgArticleId !== 0;
+                   this.config.wgArticleId !== 0;
         },
         /**
          * Inserts the placeholder for last edit information
@@ -97,26 +121,27 @@ require(['wikia.ui.factory'], function(ui) {
                 id: 'lastEdited',
                 'class': 'lastEdited'
             }).append(
-                $('<img>', {
-                    id: 'lastEdited-loading',
-                    src: lastEdited.config.stylepath + '/common/images/ajax.gif'
-                })
+                this.isUCP ?
+                    $('<span>', {
+                        'class': 'mw-ajax-loader',
+                        'id': 'lastEdited-loading'
+                    }) :
+                    $('<img>', {
+                        id: 'lastEdited-loading',
+                        src: this.config.stylepath + '/common/images/ajax.gif'
+                    })
             );
-            if (lastEdited.config.skin === 'oasis') {
-                var pos = lastEdited.options.position;
-                if (pos.element && pos.method) {
-                    var $el = $(pos.element),
-                        m = pos.method;
-                    if ($el.length && (m === 'append' || m === 'prepend')) {
-                        $el[m]($loader);
-                    }
-                } else {
-                    $loader.insertAfter('#PageHeader .page-header__title, .UserProfileActionButton');
+            var pos = this.options.position;
+            if (pos.element && pos.method) {
+                var $el = $(pos.element),
+                    m = pos.method;
+                if ($el.length && (m === 'append' || m === 'prepend')) {
+                    $el[m]($loader);
                 }
             } else {
-                $loader.insertBefore('#bodyContent');
+                $loader.insertAfter('#PageHeader .page-header__title, .UserProfileActionButton');
             }
-            lastEdited.$content = $loader;
+            this.$content = $loader;
             mw.hook('LastEdited.inserted').fire($loader);
         },
         /**
@@ -124,46 +149,49 @@ require(['wikia.ui.factory'], function(ui) {
          * @returns {jQuery.Deferred} A Promise-like object
          */
         fetch: function() {
-            var query = {
+            var tokentype = this.canRollback ? 'rollback' : undefined;
+            return this.api.get({
                 action: 'query',
-                titles: lastEdited.config.wgPageName,
+                titles: this.config.wgPageName,
+                meta: 'tokens',
                 prop: 'revisions',
                 rvprop: 'timestamp|user|userid|size|parsedcomment|flags',
-                rvlimit: 2,
+                // TODO: This has been deprecated.
                 rvdiffto: 'prev',
-                format: 'json'
-            };
-            if (lastEdited.canRollback) {
-                query.rvtoken = 'rollback';
-            }
-            return $.get(mw.util.wikiScript('api'), query);
+                rvlimit: 2,
+                rvtoken: tokentype,
+                type: tokentype
+            });
         },
         /**
          * Renders last edited information
          * @param {Object} data Edit information obtained from the API
-         * @param {Object} i18n I18N object generated by I18n-js
+         * @param {Object} i18n I18n object generated by I18n-js
          * @param {Object} modal Modal generator obtained from UI factory
          */
-        render: function(data, i18n, modal) {
-            data = data[0].query.pages[lastEdited.config.wgArticleId].revisions;
-            if (!data[1] && !lastEdited.options.newpage) {
-                lastEdited.$content.remove();
+        render: function(data, i18n) {
+            var diffData = data[0].query.pages[this.config.wgArticleId].revisions;
+            if (!diffData[1] && !this.options.newpage) {
+                this.$content.remove();
                 return;
             }
-            var prev = data[1];
-            data = data[0];
-            lastEdited.$content.html('');
+            var prev = diffData[1],
+                curr = diffData[0];
+            if (data[0].query.tokens) {
+                curr.rollbacktoken = data[0].query.tokens.rollbacktoken;
+            }
+            if (prev) {
+                this.createModal(i18n, curr);
+            }
+            this.$content.html('');
             ['UserTime', 'Diff', 'Minor', 'Comment', 'Size'].forEach(function(el) {
-                lastEdited.$content.append.apply(lastEdited.$content, lastEdited['render' + el](data, i18n, prev));
-            });
+                this.$content.append(this['render' + el](curr, i18n, prev));
+            }, this);
             // In case the user doesn't have an avatar
-            $('#lastEdited img').error(function() {
+            $('#lastEdited img').on('error', function() {
                 $(this).attr('src', 'https://images.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg');
             });
-            lastEdited._i18n = i18n;
-            lastEdited._data = data;
-            lastEdited._modal = modal;
-            mw.hook('LastEdited.render').fire(lastEdited.$content);
+            mw.hook('LastEdited.render').fire(this.$content);
         },
         /**
          * Returns HTML for a link to a page
@@ -183,19 +211,19 @@ require(['wikia.ui.factory'], function(ui) {
         renderUserTime: function(data, i18n) {
             // Build user links
             var user = data.user,
-            links = lastEdited.userLink('User:', user, user) +
+            links = this.userLink('User:', user, user) +
                     '<span class="mw-usertoollinks"> (' +
-                    lastEdited.userLink('User talk:', user, i18n.msg('talk').plain()) +
+                    this.userLink('User talk:', user, i18n.msg('talk').plain()) +
                     ' | ' +
-                    lastEdited.userLink('Special:Contributions/', user, i18n.msg('contribs').plain());
-            if (/(bureaucrat|sysop|helper|vstf|staff)/.test(lastEdited.config.wgUserGroups.join(' '))) {
-                links += ' | ' + lastEdited.userLink('Special:Block/', user, i18n.msg('block').plain());
+                    this.userLink('Special:Contributions/', user, i18n.msg('contribs').plain());
+            if (/(bureaucrat|sysop|helper|soap|staff)/.test(this.config.wgUserGroups.join(' '))) {
+                links += ' | ' + this.userLink('Special:Block/', user, i18n.msg('block').plain());
             }
-            if (lastEdited.options.avatar) {
+            if (this.options.avatar) {
                 links = mw.html.element('img', {
                     src: 'https://services.fandom.com/user-avatar/user/' + data.userid + '/avatar',
-                    width: lastEdited.options.avatarsize,
-                    height: lastEdited.options.avatarsize
+                    width: this.options.avatarsize,
+                    height: this.options.avatarsize
                 }) + ' ' + links;
             }
             links += ')</span>';
@@ -204,12 +232,12 @@ require(['wikia.ui.factory'], function(ui) {
                 'class': 'lastEdited-timeago',
                 title: data.timestamp
             });
-            if (lastEdited.options.time === 'timestamp') {
+            if (this.options.time === 'timestamp') {
                 var date = new Date(data.timestamp).toString();
-                if (lastEdited.options.timezone && lastEdited.options.timezone === 'UTC') {
+                if (this.options.timezone && this.options.timezone === 'UTC') {
                     date = new Date(data.timestamp).toUTCString();
                 }
-                if (lastEdited.options.timezone && lastEdited.options.timezone === 'locale') {
+                if (this.options.timezone && this.options.timezone === 'locale') {
                     date = new Date(data.timestamp).toLocaleString();
                     $time.text(date);
                 }
@@ -218,6 +246,26 @@ require(['wikia.ui.factory'], function(ui) {
                 }
             } else {
                 $time.timeago();
+                
+                if($time.html() == "") {
+                	// Custom fix since mediawiki's timeago (specifically $.timeago.inWords) doesn't seem to like values greater than 30 days?
+                	// this is the same exact function, but without that time check
+                	var customInWords = function(t) {
+						// if (t <= 2592e6) {
+							var e = false;
+							$.timeago.settings.allowFuture && (t < 0 && (e = !0), t = Math.abs(t));
+							var r = t / 1e3, a = r / 60, i = a / 60, n = i / 24, o = n / 365;
+							return r < 45 && u("second", Math.round(r)) || r < 90 && u("minute", 1) || a < 45 && u("minute", Math.round(a)) || a < 90 && u("hour", 1) || i < 24 && u("hour", Math.round(i)) || i < 48 && u("day", 1) || n < 30 && u("day", Math.floor(n)) || n < 60 && u("month", 1) || n < 365 && u("month", Math.floor(n / 30)) || o < 2 && u("year", 1) || u("year", Math.floor(o))
+						// }
+						function u(t, r) {
+							return mw.message(e ? "timeago-" + t + "-from-now" : "timeago-" + t, r).text()
+						}
+					};
+					
+					var myDate = $.timeago.parse(data.timestamp);
+					var timeDistance = new Date().getTime() - myDate.getTime();
+					$time.html( customInWords(timeDistance) );
+                }
             }
             return [
                 i18n.msg('lastEdited').escape()
@@ -232,19 +280,19 @@ require(['wikia.ui.factory'], function(ui) {
          * @returns {Array} Parts to append to last edited information
          */
         renderDiff: function(data, i18n) {
-            if (lastEdited.options.diff && data.diff.from) {
+            if (this.options.diff && data.diff.from) {
                 var link = $('<a>', {
                     id: 'lastEdited-diff-link',
                     href: '?diff=' + data.diff.to,
                     text: i18n.msg('diff').plain(),
                     title: 'Special:Diff/' + data.diff.to
                 });
-                if (lastEdited.options.diffModal) {
+                if (this.options.diffModal) {
                     link.attr('data-disable-quickdiff', '');
-                    link.click(function(e) {
+                    link.click($.proxy(function(e) {
                         e.preventDefault();
-                        lastEdited.generateModal(lastEdited._i18n, lastEdited._data, lastEdited._modal);
-                    });
+                        this.modal.show();
+                    }, this));
                 }
                 return [
                     ' (',
@@ -280,7 +328,7 @@ require(['wikia.ui.factory'], function(ui) {
          */
         renderComment: function(data, i18n) {
             var comment = data.parsedcomment;
-            if (lastEdited.options.comment && comment) {
+            if (this.options.comment && comment) {
                 return [
                     '<br />',
                     i18n.msg('comment').escape(),
@@ -298,7 +346,7 @@ require(['wikia.ui.factory'], function(ui) {
          * @returns {Array} Parts to append to last edited information
          */
         renderSize: function(data, i18n, prev) {
-            if (!lastEdited.options.size) {
+            if (!this.options.size) {
                 return [];
             }
             var arr = [
@@ -335,101 +383,73 @@ require(['wikia.ui.factory'], function(ui) {
          * @param {Object} i18n I18N object generated by I18n-js
          * @param {Object} modal Modal generator obtained from UI factory
          */
-        generateModal: function(i18n, data, modal) {
-            var config = {
-                vars: {
-                    id: 'lastEdited-diff',
-                    size: 'large',
-                    title: i18n.msg('changes').escape() + ': ' + lastEdited.config.wgPageName.replace(/_/g, ' '),
-                    content: '<div id="lastEdited-diff-changes" class="WikiaArticle diff">' +
-                                 '<table class="diff">' +
-                                     data.diff['*'] +
-                                 '</table>' +
-                             '</div>',
-                    buttons: [
-                        {
-                            vars: {
-                                value: i18n.msg('cancel').plain(),
-                                data: [{
-                                    key: 'event',
-                                    value: 'close'
-                                }]
-                            }
-                        },
-                        {
-                            vars: {
-                                value: i18n.msg('link').plain(),
-                                classes: ['normal', 'primary'],
-                                data: [{
-                                    key: 'event',
-                                    value: 'link'
-                                }]
-                            }
-                        },
-                        {
-                            vars: {
-                                value: i18n.msg('undo').plain(),
-                                classes: ['normal', 'primary'],
-                                data: [{
-                                    key: 'event',
-                                    value: 'undo'
-                                }]
-                            }
-                        }
-                    ]
+        createModal: function(i18n, data) {
+            var buttons = [
+                {
+                    event: 'link',
+                    text: i18n.msg('link').plain()
                 },
-                confirmCloseModal: function() {
-                    lastEdited.modal = null;
-                    return true;
+                {
+                    event: 'undo',
+                    text: i18n.msg('undo').plain()
                 }
-            };
-            if (lastEdited.canRollback && lastEdited.config.wgUserName !== data.user) {
-                config.vars.buttons.push({
-                    vars: {
-                        value: i18n.msg('rollback').plain(),
-                        classes: ['normal', 'primary'],
-                        data: [{
-                            key: 'event',
-                            value: 'rollback'
-                        }]
-                    }
+            ];
+            if (this.canRollback && this.config.wgUserName !== data.user) {
+                buttons.push({
+                    event: 'rollback',
+                    text: i18n.msg('rollback').plain()
                 });
             }
-            modal.createComponent(config, function(diffModal) {
-                diffModal.bind('link', function() {
-                    diffModal.trigger('close');
-                    window.open(mw.util.getUrl('', {
-                        diff: data.diff.to
-                    }), '_blank');
-                });
-                diffModal.bind('undo', function() {
-                    diffModal.trigger('close');
-                    window.open(mw.util.getUrl(lastEdited.config.wgPageName, {
-                        action: 'edit',
-                        undoafter: data.diff.from,
-                        undo: data.diff.to
-                    }),
-                    '_blank');
-                });
-                diffModal.bind('rollback', function() {
-                    $.post(mw.util.wikiScript('api'), {
-                        action: 'rollback',
-                        title: lastEdited.config.wgPageName,
-                        user: data.user,
-                        token: data.rollbacktoken,
-                        format: 'json'
-                    }).done(function(d) {
-                        if (!d.error) {
-                            window.location.reload();
-                        }
-                    });
-                });
-                lastEdited.modal = diffModal;
-                lastEdited.modal.show();
+            this.modal = new window.dev.modal.Modal({
+                buttons: buttons,
+                content: '<div id="lastEdited-diff-changes" class="WikiaArticle diff">' +
+                             '<table class="diff">' +
+                                 data.diff['*'] +
+                             '</table>' +
+                         '</div>',
+                context: this,
+                events: {
+                    link: function() {
+                        this.modal.close();
+                        window.open(mw.util.getUrl('', {
+                            diff: data.diff.to
+                        }), '_blank');
+                    },
+                    rollback: function() {
+                        this.api.post({
+                            action: 'rollback',
+                            title: this.config.wgPageName,
+                            user: data.user,
+                            token: data.rollbacktoken,
+                            format: 'json'
+                        }).done(function(d) {
+                            if (!d.error) {
+                                window.location.reload();
+                            }
+                        });
+                    },
+                    undo: function() {
+                        this.modal.close();
+                        window.open(mw.util.getUrl(this.config.wgPageName, {
+                            action: 'edit',
+                            undoafter: data.diff.from,
+                            undo: data.diff.to
+                        }), '_blank');
+                    }
+                },
+                id: 'lastEdited-diff',
+                size: 'full',
+                title: i18n.msg('changes').escape() + ': ' + this.pageName
             });
+            this.modal.create();
         }
     };
-    if (lastEdited.shouldRun()) {
-        $(lastEdited.init);
-    }
-});
+    mw.loader.using([
+        'mediawiki.api',
+        'mediawiki.util'
+    ]).then(function() {
+        if (lastEdited.shouldRun()) {
+            $($.proxy(lastEdited.init, lastEdited));
+        }
+    });
+})();

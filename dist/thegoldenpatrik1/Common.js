@@ -29,11 +29,6 @@ require([
     window.HighlightUpdaterLoaded = true;
     var HighlightUpdater = {
         groups: {
-            'content-volunteer': {
-                color: '#FF7000',
-                cssVar: 'convol',
-                name: 'Content Volunteers'
-            },
             'vanguard': {
                 color: '#1EAF7A',
                 cssVar: 'vanguard',
@@ -49,10 +44,10 @@ require([
                 cssVar: 'gdm',
                 name: 'Global Discussions Moderators'
             },
-            'vstf': {
+            'soap': {
                 color: '#FF7777',
-                cssVar: 'vstf',
-                name: 'VSTF'
+                cssVar: 'soap',
+                name: 'SOAP'
             },
             'helper': {
                 color: '#4C5F1D',
@@ -76,10 +71,26 @@ require([
             }
         },
         overrides: {
-            add: {},
+            add: {
+                'SOAP_Bot': ['soap']
+            },
             remove: {
+                'CT1000': ['soap'],
                 'Data-engineering-bot': ['global-discussions-moderator'],
-                'Noreports': ['global-discussions-moderator']
+                'DSlayful': [
+                    'staff',
+                    'helper',
+                    'soap'
+                ],
+                'Noreports': ['global-discussions-moderator'],
+                'Socvoluntary': ['soap'],
+                'Testludwikvs': ['soap'],
+                'Ucpnltest2': ['soap'],
+                'Ursuula': [
+                    'wiki-manager',
+                    'content-team-member'
+                ],
+                'Wiki-o-slay': ['soap']
             }
         },
         init: function () {

@@ -15,7 +15,7 @@
         ids = config.wgNamespaceIds;
     if (
         [ids.thread, ids.board, ids.board_thread].indexOf(n) === -1 ||
-        !/sysop|content-moderator|staff|vstf|helper|content-team-member|wiki-manager/.test(config.wgUserGroups.join('|'))
+        !/sysop|content-moderator|staff|helper|content-team-member|wiki-manager|soap/.test(config.wgUserGroups.join('|'))
     ) {
         return;
     }

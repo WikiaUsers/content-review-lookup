@@ -354,7 +354,7 @@ function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
     $("span.insertusername").html(wgUserName);
  }
- addOnloadHook(UserNameReplace);
+ $(UserNameReplace);
 
 /* Infobox Tab Names */
 $('span#tab-overview').append('Overview');

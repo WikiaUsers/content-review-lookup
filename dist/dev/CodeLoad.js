@@ -1,7 +1,7 @@
 /*jslint browser, long */
-/*global require, define, console */
+/*global jQuery, mediaWiki, importArticles, define, console */
 
-require(["jquery", "mw", "wikia.window"], function ($, mw, context) {
+(function ($, mw) {
     "use strict";
 
     var mwConfig = mw.config.get([
@@ -170,10 +170,12 @@ require(["jquery", "mw", "wikia.window"], function ($, mw, context) {
         ) {
             // page = Special:BlankPage?blankspecial=CodeLoadPrefs
             imports.push(
+                "u:dev:MediaWiki:I18n-js/code.js",
+                "u:dev:MediaWiki:QDmodal.js",
                 "u:dev:MediaWiki:CodeLoad.js/localisation.js",
                 "u:dev:MediaWiki:CodeLoad.js/preferences.js"
             );
-            context.importArticles({
+            importArticles({
                 type: "style",
                 articles: ["u:dev:MediaWiki:CodeLoad.js/preferences.css"]
             });
@@ -183,6 +185,7 @@ require(["jquery", "mw", "wikia.window"], function ($, mw, context) {
         ) {
             // page = User:Example/preferences-codeload.css
             imports.push(
+                "u:dev:MediaWiki:I18n-js/code.js",
                 "u:dev:MediaWiki:CodeLoad.js/localisation.js",
                 "u:dev:MediaWiki:CodeLoad.js/preferences-userpage.js"
             );
@@ -191,7 +194,7 @@ require(["jquery", "mw", "wikia.window"], function ($, mw, context) {
             imports.push("u:dev:MediaWiki:CodeLoad.js/loader.js");
         }
 
-        context.importArticles({
+        importArticles({
             type: "script",
             articles: imports
         });
@@ -199,15 +202,11 @@ require(["jquery", "mw", "wikia.window"], function ($, mw, context) {
 
     function init() {
         // make global
-        define("fosl.codeload", cl);
-        context.codeLoad = cl;
+        window.codeLoad = cl;
+        // TODO: remove once cached copies no longer rely on this
+        window.define && define("fosl.codeload", cl);
 
         var prefs = cl.localStorageIsUsable && localStorage.getItem(cl.userDataKey);
-
-        // ignore bugged cached prefs (missing JSON.stringify in 2018-09-25 change)
-        if (prefs === "[object Object]") {
-            prefs = null;
-        }
 
         if (prefs || mwConfig.wgUserName === null) {
             // prefs are cached in local storage, or user is anon so cannot have prefs page
@@ -219,5 +218,5 @@ require(["jquery", "mw", "wikia.window"], function ($, mw, context) {
         }
     }
 
-    mw.loader.using("mediawiki.util", init);
-});
+    mw.loader.using("mediawiki.util").done(init);
+}(jQuery, mediaWiki));

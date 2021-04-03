@@ -28,23 +28,23 @@ window.SignatureCheckJS = {
     ]
 };//End SC*/
 
-/* Lock Old Blogs */
-window.LockOldBlogs = {
+/** Lock Old Threads **/
+window.LockForums = {    
+    lockMessageWalls: true,
     expiryDays: 365,
-    expiryMessage: 'This blog hasn’t been commented on for over a year. There is no need to comment.'
-};//End LOB*/
+    expiryMessage: 'This thread is over a year old - there is no need to comment.'
+};/* End LOT*/
 
-/* Lock Old Threads */
-window.LockForums = {
-    expiryDays: 365,
-    expiryMessage: "This thread\'s last response was over a year ago - the discussion is archived and no further responses are needed.",
-    warningDays: 14,
-    warningMessage: "This thread is now <actualDays> days old and replying could be considered a necropost. Do not respond unless it is REALLY necessary.",
-    banners: true,
-    warningPopup: true,
-    warningPopupMessage: "By posting on an old thread you may be notifying many people who are still following this thread. Please do not do this unless absolutely necessary!",
-    disableOn: ["12345", "67890"]
-};/*End LOT*/
+/* Article Rating Config */
+window.ArticleRating = {
+  title: 'Rate This Article',
+  values: ['Awful', 'Below Average', 'Average', 'Good', 'Great'],
+  starSize: [24, 24],
+  starColor: ['#ccc', '#ffba01'],
+  starStroke: '#000',
+  exclude: ['Policy:Rules', 'Policy:Rules/Discord Rules', 'Policy:Code of Conduct', 'Policy:Accounts'],
+  location: 'top-rail'
+};/*End AR*/
 
 /* Skin Switch */
 window.oasisText = "Switch to Oasis";
@@ -102,6 +102,17 @@ function ShowUserGroups_sorter(a, b) {
  
     return sortA - sortB;
 }//End RSUG*/
+
+/*RailWAM*/
+window.railWAM = {
+    logPage:"Project:WAM Log"
+};
+
+/** WikiActivity **/
+window.rwaOptions = {
+	limit: 50,
+	autoInit: true 
+};/**/
 
 /***********************************************************************/
 /******************************* Imports *******************************/

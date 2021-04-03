@@ -1,11 +1,6 @@
 //=======================================
 //       Variabili per le funzioni
 //=======================================
-// Ajax auto-refresh
-ajaxPages = ["Speciale:UltimeModifiche", "Speciale:OsservatiSpeciali", "Speciale:WikiActivity", "Speciale:ImmaginiRecenti", "Speciale:Registri", "Speciale:AbuseLog"];
-AjaxRCRefreshText = "Aggiornamento automatico";
-AjaxRCRefreshHoverText = "Abilita l'aggiornamento automatico della pagina";
-
 // Display Clock
 window.DisplayClockJS = {
     format: "%d %B %Y, %2H:%2M:%2S (UTC)",
@@ -74,7 +69,7 @@ PFD_templates = [
         label:   "Immagine di un personaggio",
         desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n[[Categoria:Immagini di personaggi]]",
         altdesc: "== Fonte ==\nImmagine tratta dall'[[episodio #]].\n\n== Licenza ==\n{{Screenshot}}\n[[Categoria:Immagini di personaggi]]",
-        tip: "Immagine rappresentativa di un personaggio o usata per l\"aspettto. Per favore, completa la fonte."
+        tip: "Immagine rappresentativa di un personaggio o usata per l'aspettto. Per favore, completa la fonte."
     },
     {
         label:   "Immagine della storia",
@@ -104,7 +99,7 @@ PFD_templates = [
         label:   "Immagine di arma o oggetto",
         desc:    "== Fonte ==\nImmagine tratta dal [[capitolo #]].\n\n== Licenza ==\n{{Fair use}}\n[[Categoria:Immagini di armi e oggetti]]",
         altdesc: "== Fonte ==\nImmagine tratta dall'[[episodio #]].\n\n== Licenza ==\n{{Screenshot}}\n[[Categoria:Immagini di armi e oggetti]]",
-        tip: "Immagine di un\"arma o oggetto. Per favore, completa la fonte."
+        tip: "Immagine di un'arma o oggetto. Per favore, completa la fonte."
     },
     {
         label:   "Immagine di veicolo",

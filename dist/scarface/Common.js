@@ -1,85 +1,57 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+/*Imports - Full credits on imported pages*/
 
-var autoCollapse = 2;
-var collapseCaption = "hide";
-var expandCaption = "show";
+/* https://dev.wikia.com/wiki/RevealAnonIP This must be placed above all imports. */
+window.RevealAnonIP = {
+    permissions : ['user']
+};
+ 
+importArticles({
+    type: "script",
+    articles: [
+        "MediaWiki:Common.js/PersistentHeaders.js", /* Scrolling table headers*/
+        "u:dev:MediaWiki:RevealAnonIP/code.js",
+        "MediaWiki:Common.js/collapse.js" /*Collapsibles*/
+    ]
+});
 
-function collapseTable( tableIndex )
-{
-   var Button = document.getElementById( "collapseButton" + tableIndex );
-   var Table = document.getElementById( "collapsibleTable" + tableIndex );
+/* Prevent ProfileTags from overwriting default tags (December 2020) */
+(window.dev = window.dev || {}).profileTags = {
+	noHideTags: true
+};
 
-   if ( !Table || !Button ) {
-       return false;
-   }
+/* Standard Edit Summary code */
+window.dev = window.dev || {};
+window.dev.editSummaries = {
+    select: 'MediaWiki:Custom-Summaries'
+};
 
-   var Rows = Table.rows;
-
-   if ( Button.firstChild.data == collapseCaption ) {
-       for ( var i = 1; i < Rows.length; i++ ) {
-           Rows[i].style.display = "none";
-       }
-       Button.firstChild.data = expandCaption;
-   } else {
-       for ( var i = 1; i < Rows.length; i++ ) {
-           Rows[i].style.display = Rows[0].style.display;
-       }
-       Button.firstChild.data = collapseCaption;
-   }
-}
-
-function createCollapseButtons()
-{
-   var tableIndex = 0;
-   var NavigationBoxes = new Object();
-   var Tables = document.getElementsByTagName( "table" );
-
-   for ( var i = 0; i < Tables.length; i++ ) {
-       if ( hasClass( Tables[i], "collapsible" ) ) {
-
-           /* only add button and increment count if there is a header row to work with */
-           var HeaderRow = Tables[i].getElementsByTagName( "tr" )[0];
-           if (!HeaderRow) continue;
-           var Header = HeaderRow.getElementsByTagName( "th" )[0];
-           if (!Header) continue;
-
-           NavigationBoxes[ tableIndex ] = Tables[i];
-           Tables[i].setAttribute( "id", "collapsibleTable" + tableIndex );
-
-           var Button     = document.createElement( "span" );
-           var ButtonLink = document.createElement( "a" );
-           var ButtonText = document.createTextNode( collapseCaption );
-
-           Button.className = "collapseButton";  //Styles are declared in Common.css
-
-           ButtonLink.style.color = Header.style.color;
-           ButtonLink.setAttribute( "id", "collapseButton" + tableIndex );
-           ButtonLink.setAttribute( "href", "javascript:collapseTable(" + tableIndex + ");" );
-           ButtonLink.appendChild( ButtonText );
-
-           Button.appendChild( document.createTextNode( "[" ) );
-           Button.appendChild( ButtonLink );
-           Button.appendChild( document.createTextNode( "]" ) );
-
-           Header.insertBefore( Button, Header.childNodes[0] );
-           tableIndex++;
-       }
-   }
-
-   for ( var i = 0;  i < tableIndex; i++ ) {
-       if ( hasClass( NavigationBoxes[i], "collapsed" ) || ( tableIndex >= autoCollapse && hasClass( NavigationBoxes[i], "autocollapse" ) ) ) {
-           collapseTable( i );
-       } 
-       else if ( hasClass( NavigationBoxes[i], "innercollapse" ) ) {
-           var element = NavigationBoxes[i];
-           while (element = element.parentNode) {
-               if ( hasClass( element, "outercollapse" ) ) {
-                   collapseTable ( i );
-                   break;
-               }
-           }
-       }
-   }
-}
-
-addOnloadHook( createCollapseButtons );
+/* Portable Infobox subtheme overrides */
+(function( $ ) {
+	"use strict";
+	var title_text;
+	$( '.pi-theme-book .pi-header' ).each( function() {	
+		title_text = $( this ).text();
+		switch( title_text ) {
+	case '1929':
+                $( this ).addClass( '1929' );
+		break;
+	case '1932':
+		$( this ).addClass( '1932' );
+		break;
+	case '1983':
+		$( this ).addClass( '1983' );
+		break;
+	case 'TWIY':
+                $( this ).addClass( 'twiy' );
+                break;
+	case 'MPR':
+                $( this ).addClass( 'mpr' );
+                break;
+	case 'P2':
+                $( this ).addClass( 'p2' );
+                break;
+	default:
+		return;
+	}
+    });
+})( this.jQuery );

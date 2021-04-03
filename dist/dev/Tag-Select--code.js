@@ -1,26 +1,27 @@
 importArticle({
     type: "style",
-    article: "MediaWiki:Tag-Select/style.css"
+    article: "u:dev:MediaWiki:Tag-Select/style.css"
 });
  
 $.fn.tagSelect = function(tags, onSearch) {
-	var tags = tags.slice(); 
-	function navigation(e) {
-		var val = $(e.currentTarget).val();
-		var keyCode = e.keyCode || e.which;
-		if (e.keyCode == 9) {
+	tags = tags.slice();
+	
+	function navigation(evt) {
+		var val = $(evt.currentTarget).val();
+		var keyCode = evt.keyCode || evt.which;
+		if (evt.keyCode == 9) {
 			onSelect.call(this, val);
-			e.preventDefault();
-			e.stopPropagation();
+			evt.preventDefault();
+			evt.stopPropagation();
 			search.val('');
 			datalist.empty();
 		}
 	}
  
-	function searchFn(e) {
-		var val = $(e.currentTarget).val();
-		var keyCode = e.keyCode || e.which;
-		if (val.length < 3 || e.altKey) {
+	function searchFn(evt) {
+		var val = $(evt.currentTarget).val();
+		var keyCode = evt.keyCode || evt.which;
+		if (val.length < 3 || evt.altKey) {
 			return;
 		}
  
@@ -33,14 +34,14 @@ $.fn.tagSelect = function(tags, onSearch) {
 		datalist.empty().append(result.map(function(val) {
 			return $('<option />', { value: val });
 		}));
-		var e = $.Event("keydown");
-		e.which = 40;
-		e.altKey = true;
-		search.trigger(e);
+		var evt = $.Event("keydown");
+		evt.which = 40;
+		evt.altKey = true;
+		search.trigger(evt);
 	}
  
 	function onSelect(tag) {
-		tags.push(tag)
+		tags.push(tag);
 		addTag.call(this, tag);
 	}
  
@@ -51,8 +52,8 @@ $.fn.tagSelect = function(tags, onSearch) {
 	}
  
 	if (typeof tags !== 'undefined' && tags.length) {
-		for (tag of tags) {
-			addTag.call(this, tag);
+		for (var tag in tags) {
+			addTag.call(this, tags[tag]);
 		}
 	}
     var searchLi = $('<li />').appendTo($(this));
@@ -73,9 +74,9 @@ $.fn.tagSelect = function(tags, onSearch) {
 	return {
 		getTags: function() {
 			return tags;
-        }
+		}
 	};
-}
+};
  
 /*
 Example:

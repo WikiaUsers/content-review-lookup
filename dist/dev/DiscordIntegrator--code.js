@@ -1,9 +1,9 @@
 /**
  * Name:        DiscordIntegrator
- * Author:      KockaAdmiralac <1405223@gmail.com>
+ * Author:      KockaAdmiralac <wikia@kocka.tech>
  * Description: Allows intergration with Discord [https://discord.com]
  */
-(function() {
+(function(mw, $) {
     'use strict';
     var mconfig = mw.config.get([
         'wgUserLanguage',
@@ -58,6 +58,7 @@
                     return 'Custom-DiscordIntegrator-config-' + el;
                 }).join('|'),
                 amlang: mconfig.wgUserLanguage,
+                uselang: 'content', // T97096
                 smaxage: 300,
                 maxage: 300
             }).done($.proxy(function(d) {
@@ -100,8 +101,13 @@
         init: function() {
             if (this.config.id && $('#WikiaRail').length > 0) {
                 var clas = $('#WikiaRail').attr('class');
-                if (clas && clas.split(/\s+/).indexOf('loaded') === -1) {
-                    $('#WikiaRail').on('afterLoad.rail', $.proxy(this.insertToSiderail, this));
+                if (clas) {
+                    var classSplit = clas.split(/\s+/);
+                    if (classSplit.indexOf('loaded') === -1 && classSplit.indexOf('is-ready') === -1) {
+                        $('#WikiaRail').on('afterLoad.rail', $.proxy(this.insertToSiderail, this));
+                    } else {
+                        this.insertToSiderail();
+                    }
                 } else {
                     this.insertToSiderail();
                 }
@@ -118,7 +124,7 @@
                 el.append(
                     $('<h2>', {
                         'class': 'activity-heading',
-                        html: this.config.title
+                        html: this.config.title.trim()
                     })
                 );
             }
@@ -202,9 +208,13 @@
     mw.hook('dev.i18n').add($.proxy(DiscordIntegrator.hook, DiscordIntegrator));
 
     if (!window.dev || !window.dev.i18n) {
-        importArticle({
-            type: 'script',
-            article: 'u:dev:MediaWiki:I18n-js/code.js'
-        });
+        if (mw.config.get('wgVersion') === '1.19.24') {
+            importArticle({
+                type: 'script',
+                article: 'u:dev:MediaWiki:I18n-js/code.js'
+            });
+        } else {
+            mw.loader.load('https://dev.fandom.com/load.php?mode=articles&articles=u:dev:MediaWiki:I18n-js/code.js&only=scripts');
+        }
     }
-})();
+})(window.mediaWiki, window.jQuery);

@@ -62,14 +62,14 @@ window.UserTagsJS = {
 		//Chairmen
 		'hc-sc': { u:'Historical Cmte (Sr Chmn)', order:2 },
 		'hc-jc': { u:'Historical Cmte (Jr Chmn)', order:2 },
-		'vc-sc': { u:'Volunteer Cmte (Sr Chmn)', order:2 },
-		'vc-jc': { u:'Volunteer Cmte (Jr Chmn)', order:2 },
-		'ec-sc': { u:'Events Cmte (Sr Chmn)', order:2 },
-		'ec-jc': { u:'Events Cmte (Jr Chmn)', order:2 },
+		'vc-sc': { u:'Training Cmte (Sr Chmn)', order:2 },
+		'vc-jc': { u:'Training Cmte (Jr Chmn)', order:2 },
+		'ec-sc': { u:'Activities Cmte (Sr Chmn)', order:2 },
+		'ec-jc': { u:'Activities Cmte (Jr Chmn)', order:2 },
 		//Committees
 		'hc-member': { u:'Historical Cmte', order:3 },
-		'vc-member': { u:'Volunteer Cmte', order:3 },
-		'ec-member': { u:'Events Cmte', order:3 },
+		'vc-member': { u:'Training Cmte', order:3 },
+		'ec-member': { u:'Activities Cmte', order:3 },
 		//Former
 		'former-intern': { u:'Former Intern', order:-1/0 },
 		'former-helper': { u:'Former Helper', order:-1/0 },
@@ -93,21 +93,23 @@ UserTagsJS.modules.custom = {
 	'Jackboog21': ['head', 'hc-sc', 'vc-sc'],
 	/* Admins */
 	/* Mini-Admins */
+	'A random student': ['head', 'hc-jc', 'ec-member'],
 	/* Content Mods */
 	/* Discussion Mods */
 	'KawaiiKunWolf': ['head', 'ec-sc', 'vc-jc', 'hc-member'],
-	'A random student': ['hc-jc', 'ec-member'],
 	/* Rollbacks */
-	'GalaxE': ['head'],
+	'GalaxE': [],
 	'Tsuzuro Yamazaki': ['ec-jc', 'hc-member'],
 	/* Chat Mods */
-	'AoiRyugokuTSFG1': ['head', 'ec-member' ],
+	'AoiRyugokuTSFG1': ['ec-member' ],
 	/* Helpers and Intern */
-	'Shadow Bonnie202': ['helpers', 'head', 'ec-member' ],
+	'SeiShii': ['helpers', 'head', 'ec-member'],
+	'MrCheeseTiger1234': ['helpers', 'deputy', 'ec-member'],
 	'Littleslinky': ['helpers'],
-	'MrCheeseTiger1234': ['helpers', 'ec-member'],
 	'RedLightningStrike': ['helpers', 'ec-member'],
-	'SeiShii': ['intern', 'ec-member'],
+	'S0ul245Official': ['helpers'],
+	'GhoulGirls90': ['helpers'],
+	'PLACEHOLDER': ['intern'],
 	
 	//Former Staff
 	/* Former Bureaucrats */
@@ -134,9 +136,10 @@ UserTagsJS.modules.custom = {
 	'LunathuThePotato': ['former-helper'],
 	'Ariariariari :P': ['former-helper'],
 	'XyoKiwii': ['former-helper'],
-	//'SeiShii': ['former-helper', 'ec-member'],
 	'BrianBanana': ['former-helper', 'ec-member'],
 	'Takriiiia': ['former-helper'],
+	'Shadow Bonnie202': ['former-helper'],
+	'ThatNerdyGamerGirl': ['former-helper'],
 	/* Former Interns */
 	'EmotionlessKuu': ['former-intern'],
 	'SonrisitasPF': ['former-intern'],
@@ -148,6 +151,9 @@ UserTagsJS.modules.custom = {
 	'MeGUMMYsaikoBEAR': ['former-intern'],
 	'EchoPrince': ['former-intern'],
 	'Erin Hideko': ['former-intern'],
+	'Ekoa Daiki': ['former-intern'],
+	'Maven1010': ['former-intern'],
+	'AquaSniper37': ['former-intern'],
 };
 //Remove tag if has any of the blacklisted tags
 UserTagsJS.modules.metafilter = {
@@ -219,11 +225,29 @@ UserTagsJS.modules.implode = {
 };
 
 //Prevents existing tags from being hidden
-(window.dev = window.dev || {}).profileTags = { noHideTags: true };
+//(window.dev = window.dev || {}).profileTags = { noHideTags: true };
 
 //MastHeadRightsBadge
 window.MastheadRightsBadgeSettings = {
     iconSize: '25px',
+};
+
+window.MessageWallUserTags = {
+    users: {
+        'Jackboog21': 'Head Bureaucrat',
+        'A_random_student': 'Head Mini-Admin',
+        'KawaiiKunWolf': 'Head Discussion Mod',
+        'AoiRyugokuTSFG1': 'Discussion Mod',
+        'Tsuzuro_Yamazaki': 'Head Content Mod',
+        'GalaxE': 'Content Mod',
+        'SeiShii': 'Head Helper',
+        'MrCheeseTiger1234': 'Deputy Helper',
+        'Littleslinky': 'Helper',
+        'RedLightningStrike': 'Helper',
+        'S0ul245Official': 'Helper',
+        'GhoulGirls90': 'Helper',
+        'UltimateGamer899': 'Intern',
+    }
 };
 
 //TopicBlockList
@@ -255,7 +279,7 @@ if (mw.config.get('wgUserGroups').includes('rollback') ||
         type: 'script',
         articles: [
             'u:dev:MediaWiki:MarkForDeletion/code.js',
-            'u:dev:MediaWiki:CategoryRenameAuto-update/code.js',
+            //'u:dev:MediaWiki:CategoryRenameAuto-update/code.js', UCP status is unknown
         ]
     });
 }
@@ -271,13 +295,13 @@ if (mw.config.get('wgUserGroups').includes('threadmoderator') ||
     });
 }
 //Import for all Staff
-if (mw.config.get('wgUserName').includes('SeiShii') /*Intern*/ || 
+if (mw.config.get('wgUserName').includes('GhoulGirls90') /*Intern*/ || 
     mw.config.get('wgUserName').includes('VacantHelper1') /*Placeholder*/ || 
-    mw.config.get('wgUserName').includes('VacantHelper2') /*Placeholder*/ || 
-    mw.config.get('wgUserName').includes('VacantHelper3') /*Placeholder*/ || 
-    mw.config.get('wgUserName').includes('MrCheeseTiger123') /*Placeholder*/ || 
+    mw.config.get('wgUserName').includes('S0ul245Official') || 
+    mw.config.get('wgUserName').includes('RedLightningStrike')  || 
     mw.config.get('wgUserName').includes('Littleslinky') || 
-    mw.config.get('wgUserName').includes('Shadow Bonnie202') || 
+    mw.config.get('wgUserName').includes('MrCheeseTiger123') || 
+    mw.config.get('wgUserName').includes('SeiShii') || 
     mw.config.get('wgUserGroups').includes('rollback') ||
     mw.config.get('wgUserGroups').includes('chatmoderator') || 
     mw.config.get('wgUserGroups').includes('content-moderator') ||
@@ -287,27 +311,32 @@ if (mw.config.get('wgUserName').includes('SeiShii') /*Intern*/ ||
     importArticles({
         type: 'script',
         articles: [
-            'u:dev:MediaWiki:RCStats.js',
-            'u:dev:MediaWiki:RailWAM/code.js',
+            //'u:dev:MediaWiki:RCStats.js', UCP status is unknown
+            //'u:dev:MediaWiki:RailWAM/code.js', WAM is not on UCP
         ]
     });
 }
 
 //AjaxRC
 window.ajaxSpecialPages = [
-    "Recentchanges", 
-    "WikiActivity", 
-    "Watchlist", 
+    //"Recentchanges", 
+    //"WikiActivity", 
+    //"Watchlist", 
     "Log", 
     "Contributions"
     ];
 window.ajaxRefresh = 60000;
 
+//WikiActivity
+window.rwaOptions = {
+    refresh : true,
+};
+
 //BackToTopButton
 window.BackToTopModern = true;
 
 //Refresh Live! Chat every 30 seconds
-window.chatReloadTime = 30000;
+//window.chatReloadTime = 30000;
 
 //DPLforums
 window.dplforumBoards = [

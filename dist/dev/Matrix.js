@@ -1,22 +1,17 @@
 /**
  * Name:        Matrix
- * Version:     v1.0
- * Author:      KockaAdmiralac <1405223@gmail.com>
+ * Version:     v1.1
+ * Author:      KockaAdmiralac <wikia@kocka.tech>
  * Description: Makes a UserAcitivity-ish table on User:Username/matrix
  *              Runs only on English Community Central
  */
-require([
-    'wikia.window',
-    'jquery',
-    'mw',
-    'ext.wikia.design-system.loading-spinner'
-], function(window, $, mw, Spinner) {
+(function($, mw) {
     'use strict';
     var config = mw.config.get([
         'wgCityId',
         'wgUserName'
     ]);
-    if (config.wgCityId !== '177' || window.MatrixLoaded) {
+    if (config.wgCityId !== 177 || window.MatrixLoaded) {
         return;
     }
     window.MatrixLoaded = true;
@@ -24,14 +19,13 @@ require([
         config: window.MatrixConfig || {},
         init: function() {
             this.api = new mw.Api();
-            this.spinner = new Spinner(38, 2).html
-                .replace('wds-block', 'wds-spinner__block')
-                .replace('wds-path', 'wds-spinner__stroke');
+            // eslint-disable-next-line max-len
+            this.spinner = '<svg class="wds-spinner wds-spinner__block" width="78" height="78" viewBox="0 0 78 78" xmlns="http://www.w3.org/2000/svg"><g transform="translate(39, 39)"><circle class="wds-spinner__stroke" fill="none" stroke-width=""stroke-dasharray="238.76104167282426" stroke-dashoffset="238.76104167282426"stroke-linecap="round" r="38"></circle></g></svg>';
             $('#my-tools-menu').append(
                 $('<li>').append(
                     $('<a>', {
                         'class': 'custom',
-                        text: 'Publish user activity'
+                        'text': 'Publish user activity'
                     }).click($.proxy(this.click, this))
                 )
             );
@@ -39,35 +33,67 @@ require([
         click: function() {
             $('<div>', {
                 css: {
-                    background: 'rgba(255, 255, 255, 0.5)',
-                    position: 'fixed',
-                    height: '100%',
-                    width: '100%',
-                    left: '0',
-                    top: '0',
-                    'z-index': '1000000000',
+                    'background': 'rgba(255, 255, 255, 0.5)',
+                    'position': 'fixed',
+                    'height': '100%',
+                    'width': '100%',
+                    'left': '0',
+                    'top': '0',
+                    'z-index': '1000000000'
                 },
                 html: this.spinner,
                 id: 'matrix-spinner'
             }).appendTo(document.body);
-            $.nirvana.getJson('UserActivity\\Controller', 'index', {
-                cb: Date.now(),
-                uselang: 'en'
-            }, $.proxy(this.cbNirvana, this));
+            this.wikis = [];
+            this.getWikis();
+        },
+        getWikis: function(offset) {
+            $.get(mw.util.getUrl('Special:UserActivity', {
+                uselang: 'en',
+                offset: offset
+            }), $.proxy(this.cbWikis, this));
+        },
+        cbWikis: function(data) {
+            var $data = $(data),
+                nextHref = $data.find('.TablePager_nav')
+                    .first()
+                    .find('a')
+                    .eq(2)
+                    .attr('href');
+            $data.find('.user-activity__table-wrapper .mw-datatable > tbody > tr').each($.proxy(function(_, row) {
+                var $children = $(row).children(),
+                    $wiki = $children.eq(0);
+                this.wikis.push({
+                    editString: $children.eq(1).text().trim(),
+                    groups: $children.eq(3).text().trim(),
+                    lastEdit: $children.eq(2).text().trim(),
+                    title: $wiki.text().trim(),
+                    url: $wiki.find('a').attr('href').trim()
+                });
+            }, this));
+            if (nextHref) {
+                this.getWikis(new mw.Uri(nextHref).query.offset);
+            } else {
+                this.cbNirvana({
+                    items: this.wikis,
+                    total: this.wikis.length,
+                    totalReturned: this.wikis.length
+                });
+            }
         },
         cbNirvana: function(d) {
-            var urlRegex = /^https?:\/\/(.*)\.(?:wikia|fandom)\.(?:com|org)\/(?:([^\/]+)\/?)?$/,
+            var urlRegex = /^https?:\/\/(.*)\.(?:wikia|fandom|gamepedia)\.(?:com|org)\/(?:([^/]+)\/?)?$/,
                 str = '{{/header|' + d.total + '}}\n' +
-                      '{| width="100%" class="article-table sortable"\n' +
-                      '|- class="useractivity-header"\n' +
-                      '! id="title-header" | {{int:user-activity-table-title}}\n' +
-                      '! id="edits-header" data-sort-type="number" | # of edits\n' +
-                      '! id="last-edit-header" | {{int:user-activity-table-lastedit}}\n' +
-                      '! id="rights-header" | {{int:user-activity-table-rights}}\n' +
+                      '{| width="100%" class="mw-datatable sortable"\n' +
+                      '|-\n' +
+                      '! {{int:user-activity-table-title}}\n' +
+                      '! data-sort-type="number" | # of edits\n' +
+                      '! {{int:user-activity-table-lastedit}}\n' +
+                      '! {{int:user-activity-table-rights}}\n' +
                       d.items.filter(function(item) {
                           return !(config.private instanceof Array) ||
                                  config.private.indexOf(item.url) === -1;
-                      }).reverse().map(function(item) {
+                      }).map(function(item) {
                           var match = urlRegex.exec(item.url),
                               wiki = match[1];
                           if (match[2]) {
@@ -76,7 +102,8 @@ require([
                           urlRegex.lastIndex = 0;
                           return '|-\n' +
                                  '| \'\'\'[[w:c:' + wiki + '|' + item.title + ']]\'\'\'\n' +
-                                 '| [[w:c:' + wiki + ':Special:Contribs/' + config.wgUserName + '|' + item.editString + ']]\n' +
+                                 '| [[w:c:' + wiki + ':Special:Contribs/' + config.wgUserName +
+                                 '|' + item.editString + ']]\n' +
                                  '| ' + item.lastEdit + '\n' +
                                  '| ' + item.groups;
                       }).join('\n') +
@@ -85,7 +112,7 @@ require([
                 action: 'edit',
                 title: 'User:' + config.wgUserName + '/matrix',
                 text: str,
-                token: mw.user.tokens.get('editToken'),
+                token: mw.user.tokens.get('csrfToken'),
                 summary: 'Updating wiki list with Matrix.js',
                 minor: true,
                 bot: true
@@ -94,9 +121,15 @@ require([
         cbAPI: function(d) {
             $('#matrix-spinner').remove();
             if (!d.error && d.edit.result === 'Success') {
-                new BannerNotification('List of wikis successfully updated!', 'confirm').show();
+                mw.notify('List of wikis successfully updated!', {
+                    type: 'success'
+                });
             }
         }
     };
-    mw.loader.using(['mediawiki.api']).then($.proxy(Matrix.init, Matrix));
-});
+    mw.loader.using([
+        'mediawiki.api',
+        'mediawiki.notify',
+        'mediawiki.Uri'
+    ]).then($.proxy(Matrix.init, Matrix));
+})(jQuery, mediaWiki);

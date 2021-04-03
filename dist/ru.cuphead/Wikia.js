@@ -1,5 +1,3 @@
-importScriptPage('AjaxPatrol/code.js', 'dev' );
-
 /*Скрипт альтернативного виджета дискорда*/
 (function () {
  

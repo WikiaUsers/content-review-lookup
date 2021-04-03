@@ -1,0 +1,34 @@
+// Messages: https://among-us.fandom.com/wiki/Among_Us_Wiki:Staff_messages
+// Script: https://dev.fandom.com/wiki/DiscussionTemplates
+
+mw.loader.using('ext.fandom.ContentReview.legacyLoaders.js').then(function() {
+	window.DiscussionTemplates = {
+		templates: {},
+		/*wikiList: {
+	        en: 'https://among-us.fandom.com/'
+	    },*/
+		allowedGroups: ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator']
+	};
+	
+	$.getJSON('//among-us.fandom.com/wiki/MediaWiki:Gadget-message-template.json?action=raw&ctype=application/json', function(templateData) {
+		window.DiscussionTemplates.templates = templateData;
+	});
+	
+	// Message overrides
+	window.dev = window.dev || {};
+	window.dev.i18n = window.dev.i18n || {};
+	window.dev.i18n.overrides = window.dev.i18n.overrides || {};
+	window.dev.i18n.overrides['DiscussionTemplates'] = window.dev.i18n.overrides['DiscussionTemplates'] || {};
+	
+	window.dev.i18n.overrides['DiscussionTemplates']['title-not-supported'] = 'The title of this template has been copied into your clipboard, so please make sure to add it to the message.\n\n Also, don\'t forget to add the warning number (if applicable) and any links to where the problem happened.';
+	window.dev.i18n.overrides['DiscussionTemplates']['title-not-supported-nocopy'] = 'Don\'t forget to add the post title and warning number (if applicable). Also include any links to where the problem happened.';
+	window.dev.i18n.overrides['DiscussionTemplates']['title'] = 'Message Template';
+	
+	// Import
+	importArticles({
+		type: 'script',
+		articles: [
+			'u:dev:MediaWiki:DiscussionTemplates.js',
+		]
+	});
+});

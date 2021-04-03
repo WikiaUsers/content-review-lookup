@@ -1,6 +1,5 @@
-
-
 /* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
+
 // AutoEditDropdown config - http://dev.wikia.com/wiki/AutoEditDropdown
 window.AutoEditDropdownConfig = {
     expandedAreaContribute: true,
@@ -81,3 +80,9 @@ function checktimers() {
   }
 }
 addOnloadHook(checktimers);
+
+/* WAM*/
+
+window.railWAM = {
+    logPage:"Project:WAM Log"
+};

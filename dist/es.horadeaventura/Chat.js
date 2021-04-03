@@ -1,15 +1,18 @@
 /*Configuraciones*/
 var chatags = { images: true, videos: true }; // Habilitar img y yt
  
-importArticles( {
+/*Importes*/
+importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:ChatHacks.js',
-        "u:dev:ChatOptions/code.js",
-        'u:dev:ChatTags/code.js',
         'u:dev:MediaWiki:PrivateMessageAlert/code.js',
-        'u:dev:MediaWiki:!mods/code.js',
-        'u:dev:MediaWiki:!kick/code.js',
-        'u:kocka:MediaWiki:Emoticons.js',
-    ]
-} );
+        'u:dev:ChatTags/code.js',
+        'u:dev:NewMessageCount.js',
+        'u:dev:MediaWiki:EmoticonsWindow/code.js',
+        'u:dev:MediaWiki:EmoticonDragAndDrop.js',
+        'u:dev:MediaWiki:PingEveryone/code.js',
+        'u:dev:MediaWiki:IsTyping.js',
+        'u:dev:MediaWiki:ChatImages/code.js',
+        'u:dev:MediaWiki:ChatLinkPreview.js',
+        ]
+});

@@ -7,6 +7,6 @@ window.LockOldBlogs = {
 importArticles({
     type: "script",
     articles: [
-        "w:c:dev:LockOldBlogs/code.js"
+        "u:dev:MediaWiki:LockOldBlogs/code.js"
     ]
 });

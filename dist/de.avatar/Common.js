@@ -1,16 +1,27 @@
 /* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
-// Import [[MediaWiki:Onlyifuploading.js]] 
- if ( wgCanonicalSpecialPageName == "Upload" ) {
-      document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Onlyifuploading.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
- }
+/* Automatically fills the summary field in upload form with imagebox
+ * by: [[User:KettleMeetPot]] (taken from  [[w:c:Avatar|Avatar Wiki]]).
+ */
+
+$(function() {
+    if ( mw.config.get('wgCanonicalSpecialPageName') == "Upload" || mw.config.get('wgCanonicalSpecialPageName') == "MultipleUpload") {
+	    var value = "{"+"{Dateiinfo\n"
+		+ "| Beschreibung = \n"
+		+ "| Quelle       = \n"
+		+ "| Künstler     = \n"
+		+ "| Kategorien   = \n"
+		+ "}"+"}";
+		$('#wpUploadDescription').val(value);
+    }
+});
  
 /* Use EraIcon's default CSS */
 window.useIncludedStylesheet = true;
 
 //Wird für die Vorlage:USERNAME benötigt
-if (wgUserName != 'null') {
-	$('.insertusername').text(wgUserName);
+if (mw.config.get('wgUserName') != 'null') {
+	$('.insertusername').text(mw.config.get('wgUserName'));
 }
 
 /* Auto-refreshing recent changes */

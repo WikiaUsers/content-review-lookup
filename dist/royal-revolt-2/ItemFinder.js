@@ -55,25 +55,37 @@ function htmlHelpers(){
             element.html(html);
         }
     }
+    
+    /*
+        Sets the first content inside an element
+    */
+    function setFirst(elementId, html){
+        var element = $('#' + elementId);
+ 
+        if(element){
+            element.prepend(html);
+        }
+    }
  
     return {
         "getNumberValue":   getNumberValue,
         "getTextValue":     getTextValue,
         "setText":          setText,
-        "setHtml":          setHtml
+        "setHtml":          setHtml,
+        "setFirst":         setFirst
     };
 }
 
 function itemFinder(itemFinderId){
-    
+ 
     var htmlDOM = htmlHelpers();
-    
+ 
     function find(){
         return null;
     }
-    
+ 
     function draw(){
-        htmlDOM.setHtml(itemFinderId,'<div class="item-finder">\
+        htmlDOM.setFirst(itemFinderId,'<div class="item-finder-filters">\
 	<div class="item-finder-row">\
 		<select>\
 			<option value="All">- Item Rarity -</option>\
@@ -121,12 +133,12 @@ function itemFinder(itemFinderId){
 			</div>\
 		</div>');
     }
-    
+ 
     return {
         "draw":     draw,
 		"find":     find
 	};
 }
-
+ 
 var itemFinder = itemFinder('item-finder');
 itemFinder.draw();

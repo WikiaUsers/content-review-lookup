@@ -29,7 +29,7 @@ $(function() {
         'ElBosso'          : ['Wikia-Mitarbeiter'],
         'Wikia'            : ['Wikia-Bot']
     },
-        newrights = rights[wgTitle];
+        newrights = rights[mw.config.get('wgTitle')];
  
     if ( typeof newrights != 'undefined' ) {
         // remove old rights

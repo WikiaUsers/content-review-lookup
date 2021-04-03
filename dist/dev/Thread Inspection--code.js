@@ -61,6 +61,17 @@ ThreadInspection.i18n = {
         "editTitle": "編輯",
         "deleteText": "刪",
         "deleteTitle": "刪除"
+        
+    },
+	'pt-br': {
+		"reviewAll": "Revisar todas as mensagens",
+		"reviewTitle": "Revisar a mensagem atual",
+		"viewText": "v",
+		"viewTitle": "Visualizar",
+		"editText": "e",
+		"editTitle": "Editar",
+		"deleteText": "d",
+		"deleteTitle": "Excluir"
     },
 };
 

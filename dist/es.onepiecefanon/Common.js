@@ -166,3 +166,13 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
         return false;
     });
 });
+
+$(function() {
+    mw.hook('Discord.widget.rail').add(function(el) {
+        if ($('.chat-module').length) {
+            $(el).insertAfter('.chat-module');
+        } else if ($('.activity-module').length) {
+            $(el).insertAfter('.activity-module');
+        }
+    });
+});

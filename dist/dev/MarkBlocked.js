@@ -14,7 +14,6 @@
 		'wgArticlePath',
 		'wgDBname',
 		'wgNamespaceIds',
-		'wgNamespaceNumber',
 		'wgScript',
 		'wgServer',
 		'wgUserLanguage'
@@ -40,8 +39,6 @@
 		mwConfig.wgScript + '\\?title=([^#&]+)'
 	);
 
-	var currentNS = mwConfig.wgNamespaceNumber;
-
 	var userTitleRX, waitingCSS;
 
 
@@ -56,7 +53,8 @@
 			+ '([^\\/#]+)$', 'i' );
 
 		mw.util.addCSS(
-			'.mediawiki .user-blocked-temp {' + ( window.mbTempStyle || 'opacity: 0.7; text-decoration: line-through' ) + '}'
+			'.mediawiki .user-blocked-partial {'  + ( window.mbPartialStyle || 'opacity: 0.5' ) + '}'
+			+ '.mediawiki .user-blocked-temp {' + ( window.mbTempStyle || 'opacity: 0.7; text-decoration: line-through' ) + '}'
 			+ '.mediawiki .user-blocked-indef {' + ( window.mbIndefStyle || 'opacity: 0.4; font-style: italic; text-decoration: line-through' ) + '}'
 			+ '.mediawiki .user-blocked-tipbox {' + ( window.mbTipBoxStyle || 'font-size:85%; background:#FFFFF0; border:1px solid #FEA; padding:0 0.3em; color:#AAA' ) + '}'
 		);
@@ -118,7 +116,7 @@
 	function initTooltipMessage() {
 		var promise = $.Deferred();
 
-		if (mbTooltip) {
+		if ( mbTooltip ) {
 			return promise.resolve();
 		}
 
@@ -134,37 +132,6 @@
 		} );
 
 		return promise;
-	}
-
-
-	//--------AUX functions
-
-	//20081226220605 or 2008-01-26T06:34:19Z -> date
-	function parseTS( ts ) {
-		var m = ts.replace( /\D/g, '' ).match( /(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/ );
-		return new Date ( Date.UTC( m[ 1 ], m[ 2 ] - 1, m[ 3 ], m[ 4 ], m[ 5 ], m[ 6 ] ) );
-	}
-
-	function inHours( ms ) { //milliseconds -> "2:30" or 5,06d or 21d
-		var mm = Math.floor( ms / 60000 );
-		if ( !mm ) {
-			return Math.floor( ms / 1000 ) + 's';
-		}
-		var hh = Math.floor( mm / 60 );
-		mm = mm % 60;
-		var dd = Math.floor( hh / 24 );
-		hh = hh % 24;
-		if ( dd ) {
-			return dd + ( dd < 10 ? '.' + zz( hh ) : '' ) + 'd';
-		}
-		return hh + ':' + zz( mm );
-	}
-
-	function zz( v ) { // 6 -> '06'
-		if ( v <= 9 ) {
-			v = '0' + v;
-		}
-		return v;
 	}
 
 
@@ -235,8 +202,8 @@
 					list: 'blocks',
 					bklimit: 100,
 					bkusers: users.splice( 0, 50 ).join( '|' ),
-					bkprop: 'user|by|timestamp|expiry|reason'
-					//no need for 'id|flags'
+					bkprop: 'user|by|timestamp|expiry|reason|flags'
+					//no need for 'id'
 				},
 				markLinks
 			);
@@ -249,13 +216,14 @@
 		function markLinks( resp, status, xhr ) {
 
 			serverTime = new Date( xhr.getResponseHeader('Date') );
-			var list, blk, tip, links, lnk;
+			var list, blk, clss, blTime, tip, links, lnk, blPartial;
 			if ( !resp || !( list = resp.query ) || !( list = list.blocks ) ) {
 				return;
 			}
 
 			for ( var i = 0; i < list.length; i++ ) {
 				blk = list[ i ];
+				blPartial = '';
 				if ( /^in/.test( blk.expiry ) ) {
 					clss = 'user-blocked-indef';
 					blTime = blk.expiry;
@@ -263,7 +231,12 @@
 					clss = 'user-blocked-temp';
 					blTime = inHours ( parseTS( blk.expiry ) - parseTS( blk.timestamp ) );
 				}
-				tip = mbTooltip.replace( '$1', blTime )
+				if ('partial' in blk) {
+					clss = 'user-blocked-partial';
+					blPartial = ' partial';
+				} 
+				tip = mbTooltip//.replace( '$1', blPartial )
+					.replace( '$1', blTime )
 					.replace( '$2', blk.by )
 					.replace( '$3', blk.reason )
 					.replace( '$4', inHours ( serverTime - parseTS( blk.timestamp ) ) );
@@ -287,25 +260,49 @@
 	}// -- end of main function
 
 
-	mw.loader.using( 'mediawiki.util' ).done( function () {
-		//start on some pages
-		switch ( mwConfig.wgAction ) {
-			case 'edit':
-			case 'submit':
-			case 'delete':
-				break;
-			case 'view':
-				// stop in non-talk namespaces other than file namespace (for file history)
-				if ( currentNS % 2 === 0 && currentNS !== 4 ) {
-					break;
-				}
-				// otherwise continue with default
-			default: // 'history', 'purge'
+	//--------AUX functions
+
+	//20081226220605 or 2008-01-26T06:34:19Z -> date
+	function parseTS( ts ) {
+		var m = ts.replace( /\D/g, '' ).match( /(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/ );
+		return new Date ( Date.UTC( m[ 1 ], m[ 2 ] - 1, m[ 3 ], m[ 4 ], m[ 5 ], m[ 6 ] ) );
+	}
+
+	function inHours( ms ) { //milliseconds -> "2:30" or 5,06d or 21d
+		var mm = Math.floor( ms / 60000 );
+		if ( !mm ) {
+			return Math.floor( ms / 1000 ) + 's';
+		}
+		var hh = Math.floor( mm / 60 );
+		mm = mm % 60;
+		var dd = Math.floor( hh / 24 );
+		hh = hh % 24;
+		if ( dd ) {
+			return dd + ( dd < 10 ? '.' + zz( hh ) : '' ) + 'd';
+		}
+		return hh + ':' + zz( mm );
+	}
+
+	function zz( v ) { // 6 -> '06'
+		if ( v <= 9 ) {
+			v = '0' + v;
+		}
+		return v;
+	}
+
+
+	//start on some pages
+	switch ( mwConfig.wgAction ) {
+		case 'edit':
+		case 'submit':
+		case 'delete':
+			break;
+		default: // 'history', 'view'
 			$.when(
 				initSpecialContribsString(),
-				initTooltipMessage()
+				initTooltipMessage(),
+				mw.loader.using( 'mediawiki.util' )
 			).done( init );
-		}
-	} );
+	}
 
 }( jQuery, mediaWiki ) );

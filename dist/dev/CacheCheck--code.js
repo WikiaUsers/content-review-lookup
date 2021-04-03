@@ -21,7 +21,7 @@ mw.loader.using('mediawiki.util').done(function() {
     var removeIfFalse = false,
         skips = window.cacheSkip || [],
         skipLimit = Number(window.cacheSkipLimit) || 1000,
-        list = $('ol.special').length ? $('ol.special > li') : $('ul.gallery > li'),
+        list = $('ol.special').length ? $('ol.special > li') : $('ul.gallery > li, div.wikia-gallery-item'),
         isgallery = $('ol.special').length ? false : true,
         pending = $(list).length,
         qstr = mw.util.wikiScript('api') + '?action=query&format=json&',
@@ -51,9 +51,14 @@ mw.loader.using('mediawiki.util').done(function() {
         if (window.CacheCheckRemove) {
             $el.remove();
         } else {
-            var $gallery = $el.find('.gallerytext a:first');
+            var $gallery = $el.find('.gallerytext a:first, .gallery-image-wrapper a:first');
             if ($gallery.length) {
-                $gallery.wrap('<s></s>');
+                if ($gallery.find('img')) {
+                    // The link is actually on the image.
+                    $el.remove();
+                } else {
+                    $gallery.wrap('<s></s>');
+                }
             } else {
                 $el.wrapInner('<s></s>');
             }
@@ -71,7 +76,7 @@ mw.loader.using('mediawiki.util').done(function() {
         return;
     } else if (page === 'Specialpages') {
         pages.push('BrokenRedirects', 'DoubleRedirects');
-        $('#mw-content-text table:first .mw-specialpagecached').each(function() {
+        $('#mw-content-text table:first .mw-specialpagecached, #mw-specialpagesgroup-maintenance + .mw-specialpages-list li').each(function() {
             var $this = $(this),
                 exceptions = {
                     'Uncategorizedfiles': 'Uncategorizedimages', 
@@ -116,7 +121,7 @@ mw.loader.using('mediawiki.util').done(function() {
     // Foo is 0 or 1 for lonelypages section.
     function getQS($this, foo) {
         var qs = qstr,
-            select = isgallery ? '.gallerytext a:first' : 'a:first',
+            select = isgallery ? '.gallerytext a:first, .gallery-image-wrapper a:first' : 'a:first',
             url = $this.find(select).attr('href'),
             redlinkUrl = $this.find(select).data('uncrawlableUrl');
 
@@ -201,7 +206,15 @@ mw.loader.using('mediawiki.util').done(function() {
     }
 
     function init(i18nData) {
-        pathRegex = new RegExp('^' + $.escapeRE(mw.config.get('wgArticlePath').replace('$1', '')));
+        var regexEscape = $.escapeRE ?
+            // Legacy Fandom
+            $.escapeRE :
+                mw.RegExp ?
+                    // MediaWiki 1.26+
+                    mw.RegExp.escape :
+                    // MediaWiki 1.34+
+                    mw.util.escapeRegExp;
+        pathRegex = new RegExp('^' + regexEscape(mw.config.get('wgArticlePath').replace('$1', '')));
         i18n = i18nData.msg;
         $('.mw-spcontent').append(
             $('<p>', {
@@ -213,7 +226,7 @@ mw.loader.using('mediawiki.util').done(function() {
             var $this = $(this);
             if (isgallery) {
                 // Uncategorizedimages, Unusedimages, UnusedVideos
-                if ($this.find('img').exists()) {
+                if ($this.find('img').length) {
                     $.getJSON(getQS($this), function(data) {
                         data = getData(data);
                         if (data.length !== 0) {

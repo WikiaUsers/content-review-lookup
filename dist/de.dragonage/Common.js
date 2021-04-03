@@ -1,8 +1,3 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
-importScriptPage('MediaWiki:Common.js', 'dragonage');
-importScriptPage('Content/SpoilersToggle.js', 'scripts');
-
-
 // **************************************************
 // Experimental javascript countdown timer (Splarka)
 // Version 0.0.3

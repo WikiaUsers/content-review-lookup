@@ -349,6 +349,20 @@ if (wgNamespaceNumber === 0) {
   });
 }
 
+var tooltips_config = {
+    offsetX: 5,
+    offsetY: 10,
+    waitForImages: true,
+    events: ['CustomEvent'],
+    noCSS: true,
+}
+
+{
+    classname: 'custom-tooltip',
+    parse: '{'+'{Tooltip|<#name#>|<#value#>}}',   // '+' makes MediaWiki ignore the template on the page with settings
+    delay: 1,
+}
+
 /* End of mw.loader.using callback */
 } );
 /* DO NOT ADD CODE BELOW THIS LINE */

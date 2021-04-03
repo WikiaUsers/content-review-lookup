@@ -1,6 +1,9 @@
+/* Score WAM */
+
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
+
 
 /* ==========Drapeaux des liens interlangues========== */
 
@@ -23,15 +26,10 @@ $('.GamesArrowRight').click(function () {
     $('#GamesCarousel').animate({'scrollLeft': scroll+640},1000);
 });
 
+
 /* Message préventif de spoiler */
-SpoilerAlert = {
+window.SpoilerAlertJS = {
     question: 'Cette page est à 100% dans la zone spoil du manga. Voulez-vous vraiment la lire ?',
     yes: 'Oui',
-    no: 'Non, pas maintenant',
-    }
-    isSpoiler: function () {
-        return -1 !== wgCategories.indexOf('100% spoils');
-    }
-
+    no: 'Non, pas maintenant'
 };
-importScriptPage('SpoilerAlert/code.js', 'dev');

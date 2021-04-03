@@ -24,14 +24,14 @@
  / Bot flag function and Monobook support added by Grunny
  / Bot flag function will only work in MediaWiki 1.16
  / play nicely and report any bugs/feature requests to user:Joeyaa
- / This was designed for vstf/helpers/staff, so it currently assumes you have rights... will add check if requested
+ / This was designed for soap/helpers/staff, so it currently assumes you have rights... will add check if requested
  / feel free to pass around, just keep this notice
 */
 
 
 $(document).ready(function() {
 	var ug = wgUserGroups.join(' ');
-	if(ug.indexOf('staff') + ug.indexOf('helper') + ug.indexOf('vstf') + ug.indexOf('sysop') + ug.indexOf('rollback') > -5) {
+	if(ug.indexOf('staff') + ug.indexOf('helper') + ug.indexOf('soap') + ug.indexOf('sysop') + ug.indexOf('rollback') + ug.indexOf('content-moderator') + ug.indexOf('content-team-member') + ug.indexOf('wiki-manager') > -8) {
 		if(wgCanonicalSpecialPageName === "Contributions") {
 
 			/*! jQuery UI - v1.8.23 - 2012-08-15

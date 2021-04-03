@@ -5,6 +5,7 @@
 
  License: www.highcharts.com/license
 */
+
 (function(){function A(){var a,b=arguments,c,d={},e=function(a,b){var c,d;typeof a!=="object"&&(a={});for(d in b)b.hasOwnProperty(d)&&(c=b[d],a[d]=c&&typeof c==="object"&&Object.prototype.toString.call(c)!=="[object Array]"&&d!=="renderTo"&&typeof c.nodeType!=="number"?e(a[d]||{},c):b[d]);return a};b[0]===!0&&(d=b[1],b=Array.prototype.slice.call(b,2));c=b.length;for(a=0;a<c;a++)d=e(d,b[a]);return d}function F(a,b){return parseInt(a,b||10)}function Aa(a){return typeof a==="string"}function da(a){return a&&
 typeof a==="object"}function Fa(a){return Object.prototype.toString.call(a)==="[object Array]"}function qa(a){return typeof a==="number"}function Ba(a){return W.log(a)/W.LN10}function ia(a){return W.pow(10,a)}function ja(a,b){for(var c=a.length;c--;)if(a[c]===b){a.splice(c,1);break}}function s(a){return a!==v&&a!==null}function J(a,b,c){var d,e;if(Aa(b))s(c)?a.setAttribute(b,c):a&&a.getAttribute&&(e=a.getAttribute(b));else if(s(b)&&da(b))for(d in b)a.setAttribute(d,b[d]);return e}function ra(a){return Fa(a)?
 a:[a]}function L(a,b){if(xa&&!ca&&b&&b.opacity!==v)b.filter="alpha(opacity="+b.opacity*100+")";r(a.style,b)}function $(a,b,c,d,e){a=C.createElement(a);b&&r(a,b);e&&L(a,{padding:0,border:O,margin:0});c&&L(a,c);d&&d.appendChild(a);return a}function ka(a,b){var c=function(){return v};c.prototype=new a;r(c.prototype,b);return c}function Ga(a,b){return Array((b||2)+1-String(a).length).join(0)+a}function Va(a){return(bb&&bb(a)||mb||0)*6E4}function Ha(a,b){for(var c="{",d=!1,e,f,g,h,i,j=[];(c=a.indexOf(c))!==

@@ -3,7 +3,7 @@ mw.hook('wikipage.content').add(function($content) {
     // sorts gfeeds by date. probably
     function sortRss($c) {
         var $sorted,
-            $ul = $c.find('>ul')
+            $ul = $c.find('>ul');
             $lis = $ul.find('>li');
         if (!$c.length || !$lis.length) return;
         // prepare to sort
@@ -38,3 +38,23 @@ mw.hook('wikipage.content').add(function($content) {
     if (!$content.find('.wikiaRssPlaceholder').length) return;
     w84rss($content);
 });
+
+//Applying particular JavaScript files (on separate mediawiki pages) to particular pages
+switch (mw.config.get('wgPageName')) {
+    case 'User:Banan1996.1996/Scripts':
+        $(function () {
+			importScriptPage('MediaWiki:Calculators/OrnamentsAttractiveness.js');
+			importScriptPage('MediaWiki:Calculators/ExchangeRatios.js');
+		});
+        break;
+    case 'Exchange_Ratios':
+		$(function () {
+			importScriptPage('MediaWiki:Calculators/ExchangeRatios.js');
+		});
+        break;
+    case 'Ornaments':
+		$(function () {
+			importScriptPage('MediaWiki:Calculators/OrnamentsAttractiveness.js');
+		});
+        break;
+}

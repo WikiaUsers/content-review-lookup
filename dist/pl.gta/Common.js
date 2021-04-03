@@ -4,7 +4,7 @@ if (wgUserGroups.indexOf('sysop') != -1) importScriptPage('MediaWiki:Group-sysop
 if (wgUserGroups.indexOf('rollback') != -1) importScriptPage('MediaWiki:Group-rollback.js');
 
 /*** {{Punkt}} ***/
-addOnloadHook(function() {
+$(function() {
   $('div.punkcik').each(function() {
     var kolor   = $(this).attr('data-kolor');
     var link    = $(this).attr('data-link');
@@ -24,7 +24,7 @@ addOnloadHook(function() {
 });
 
 /*** {{YouTube}} - nasza nowa wersja ***/
-addOnloadHook(function() {
+$(function() {
   $('div.judup-film').each(function() {
     var id = $(this).attr('data-id');
     var width = ($(this).attr('data-width') || 640);
@@ -43,7 +43,7 @@ addOnloadHook(function() {
 });
 
 /*** Automatyczne uzupełnianie nicka w linkach do bramki IRC ***/
-addOnloadHook(function() {
+$(function() {
   var nick = mw.config.get('wgUserName').replace(/[\., ]/g, '_').substring(0,16);
   $(
     'div.irc a[href="https://webchat.freenode.net/#wikia-pl.gta"]'

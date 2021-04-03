@@ -1,4 +1,4 @@
-// 18:13, December 31, 2019 (UTC)
+// 17:57, October 12, 2020 (UTC)
 
 // JS for the StatusIndicator (ATW:SI)
 // From User:Rappy_4187 (Aion Wiki)
@@ -6,14 +6,19 @@
 // Simplified
 
 // Put StatusIndicator in ProfileMasthead
-$(function() {
-    // Support for Template:Statustop2
-    if ($('.status.helpcursor').length) {
-        switch (skin) {
-            case 'oasis':
-                $('<li id="mastheadstatus"><span>Status</span></li>').insertBefore('.masthead-info .details ul li:first');
-                $('.status.helpcursor').appendTo('.details li:first');
-                break;
-        }
+// Support for Template:Statustop2
+function init(){
+    if ($(".status.helpcursor").length) {
+        $(".status.helpcursor").appendTo($("ul.user-identity-social"));
     }
-});
+}
+
+// Message walls are now lazy loading on UCP
+var statusIndicator = setInterval(function() {
+    if ($("#userProfileApp").length) {
+    clearInterval(statusIndicator);
+    init();
+}
+    // 1000 = amount of seconds we'll be rechecking
+    // whether the masthead exists
+}, 1000);

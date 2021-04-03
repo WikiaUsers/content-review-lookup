@@ -23,3 +23,18 @@ window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Watchlist", "Log", 
 window.ajaxRefresh = 30000;
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
+
+window.MessageWallUserTags = {
+    tagColor: 'ghostwhite',
+    txtSize: '10px',
+    glow: true,
+    glowSize: '15px',
+    glowColor: '#1B1B1B',
+    users: {
+        'Disfigure': 'World Disaster • World Enemy • Ainz Ooal Gown',
+        'Nomad27': 'World Champion • World Savior • Ainz Ooal Gown',
+        'MDSiapno001': 'World Connector • World Searcher • Ainz Ooal Gown',
+        'Senatedude14': 'Player • God-kin • Ainz Ooal Gown',
+        'Grimraven': 'True Dragon Lord • True Vampire • Ainz Ooal Gown',
+    }
+};

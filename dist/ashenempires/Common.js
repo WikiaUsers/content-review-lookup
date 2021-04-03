@@ -5,7 +5,7 @@ importScript("MediaWiki:Tabber.js");
 /* sliders using jquery by User:Slayer21 */
 /****************************************/
 //wsl.loadScript("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js");
-wsl.loadScript("http://assassinscreed.wikia.com/index.php?title=MediaWiki:Jquery-ui.min.js&action=raw&ctype=text/javascript");
+wsl.loadScript("http://ashenempires.wikia.com/index.php?title=MediaWiki:Jquery-ui.min.js&action=raw&ctype=text/javascript");
 
 
 $(document).ready(function() {

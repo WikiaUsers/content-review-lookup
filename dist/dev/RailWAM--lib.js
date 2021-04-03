@@ -1,4 +1,4 @@
-/**
+/** 
  * RAILWAM LIBRARY
  * 
  * Provides WAM-related functions for use in RailWAM and other scripts.
@@ -258,7 +258,7 @@
             getMaxDate: function(callback) {
                 $.ajax( {
                     
-                    url:'https://railwam.herokuapp.com/api/v1/WAM/MinMaxWamIndexDate&cacheId=' + config.cacheId,
+                    url:'https://wamscore.herokuapp.com/api/v1/WAM/MinMaxWamIndexDate&cacheId=' + config.cacheId,
                     
                     dataType: 'json',
                     
@@ -604,7 +604,7 @@
                                                                         
                                                             $.ajax({
                                                                         
-                                                                url: 'https://railwam.herokuapp.com/api/v1/WAM/WAMIndex?wam_day=' + dateId +'&wam_previous_day=' + (dateId - 86400) + verticalIdParam + langParam + '&wiki_id=' + settings.wikiId + inURLParam + blacklistParam + '&sort_column=wam' + sortDirParam + offsetParam + '&limit=' + settings.wikis + '&fetch_admins=false&fetch_wiki_images=false',
+                                                                url: 'https://wamscore.herokuapp.com/api/v1/WAM/WAMIndex?wam_day=' + dateId +'&wam_previous_day=' + (dateId - 86400) + verticalIdParam + langParam + '&wiki_id=' + settings.wikiId + inURLParam + blacklistParam + '&sort_column=wam' + sortDirParam + offsetParam + '&limit=' + settings.wikis + '&fetch_admins=false&fetch_wiki_images=false',
                                                                 
                                                                 dataType: 'json',
                                                                 

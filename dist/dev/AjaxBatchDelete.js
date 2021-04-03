@@ -12,7 +12,7 @@ mw.loader.using('mediawiki.api', function() {
     
     if (
         window.AjaxBatchDeleteLoaded ||
-        !/sysop|vstf|staff|helper|wiki-manager|content-team-member|content-volunteer|content-moderator/.test(mw.config.get('wgUserGroups').join())
+        !/sysop|staff|helper|wiki-manager|content-team-member|content-volunteer|content-moderator|soap/.test(mw.config.get('wgUserGroups').join())
     ) {
         return;
     }
@@ -23,7 +23,8 @@ mw.loader.using('mediawiki.api', function() {
         placement,
         preloads = 3,
         deleteModal,
-        paused = true;
+        paused = true,
+        isUCP = mw.config.get('wgVersion') !== '1.19.24';
 
     function preload() {
         if (--preloads === 0) {
@@ -54,7 +55,7 @@ mw.loader.using('mediawiki.api', function() {
         deleteModal = new window.dev.modal.Modal({
             content: formHtml(),
             id: 'form-batch-delete',
-            size: 'medium',
+            size: isUCP ? 'large' : 'medium',
             title: i18n.msg('modalTitle').escape(),
             buttons: [
                 {
@@ -97,13 +98,13 @@ mw.loader.using('mediawiki.api', function() {
             $('<fieldset>').append(
                 $('<p>').append(
                     $('<label>', {
-                        'for': 'delete-reason',
+                        'for': 'ajax-delete-reason',
                         text: i18n.msg('inputReason').plain()
                     }),
                     $('<input>', {
                         type: 'text',
-                        name: 'delete-reason',
-                        id: 'delete-reason'
+                        name: 'ajax-delete-reason',
+                        id: 'ajax-delete-reason'
                     }),
                     $('<br>'),
                     $('<label>', {
@@ -139,7 +140,7 @@ mw.loader.using('mediawiki.api', function() {
     }
     
     function start() {
-        if (!document.getElementById('delete-reason').value) {
+        if (!document.getElementById('ajax-delete-reason').value) {
             alert(i18n.msg('stateReason').plain());
             return;
         }
@@ -162,7 +163,7 @@ mw.loader.using('mediawiki.api', function() {
             );
             pause();
         } else {
-            performAction(currentPage, document.getElementById('delete-reason').value);
+            performAction(currentPage, document.getElementById('ajax-delete-reason').value);
         }
         pages = pages.slice(1,pages.length);
         txt.value = pages.join('\n');
@@ -182,13 +183,26 @@ mw.loader.using('mediawiki.api', function() {
             if (!d.error) {
                 var data = d.query;
                 for (var i in data.categorymembers) {
-                    $('#text-mass-delete').append(data.categorymembers[i].title + '\n');
+                    if (isUCP) {
+                        $('#text-mass-delete').val(
+                            $('#text-mass-delete').val() +
+                            data.categorymembers[i].title +
+                            '\n'
+                        );
+                    } else {
+                        $('#text-mass-delete').append(data.categorymembers[i].title + '\n');
+                    }
                 }
             } else {
                 outputError('GetContents', category, d.error.code);
             }
-        }).fail(function() {
-            outputError('GetContents', category, i18n.msg('ajaxError').plain());
+        }).fail(function(code) {
+            // Handle AJAX errors on UCP
+            if (isUCP) {
+                outputError('GetContents', category, code);
+            } else {
+                outputError('GetContents', category, i18n.msg('ajaxError').plain());
+            }
         });
     }
  
@@ -233,31 +247,34 @@ mw.loader.using('mediawiki.api', function() {
                 console.log(i18n.msg('errorDelete', page, d.error.code).plain());
                 outputError('Delete', page, d.error.code);
             }
-        }).fail(function() {
-            console.log(i18n.msg('errorDelete', page, i18n.msg('ajaxError').plain()).plain());
-            outputError('Delete', page, i18n.msg('ajaxError').plain());
+        }).fail(function(code) {
+            if (isUCP) {
+                // TODO: Handle AJAX error on UCP.
+                console.log(i18n.msg('errorDelete', page, code).plain());
+                outputError('Delete', page, code);
+            } else {
+                console.log(i18n.msg('errorDelete', page, i18n.msg('ajaxError').plain()).plain());
+                outputError('Delete', page, i18n.msg('ajaxError').plain());
+            }
         });
         setTimeout(process, window.batchDeleteDelay || 1000);
-        $('.banner-notifications-placeholder').remove();
     }
  
     mw.hook('dev.i18n').add(preload);
     mw.hook('dev.modal').add(preload);
     mw.hook('dev.placement').add(preload);
  
-    importArticles(
-        {
-            type: 'script',
-            articles: [
-                'u:dev:MediaWiki:I18n-js/code.js',
-                'u:dev:MediaWiki:Modal.js',
-                'u:dev:MediaWiki:Placement.js'
-            ]
-        },
-        {
-            type: 'style',
-            articles: ['u:dev:MediaWiki:AjaxBatchDelete.css']
-        }
-    );
+    importArticles({
+        type: 'script',
+        articles: [
+            'u:dev:MediaWiki:I18n-js/code.js',
+            'u:dev:MediaWiki:Modal.js',
+            'u:dev:MediaWiki:Placement.js'
+        ]
+    });
+    importArticle({
+        type: 'style',
+        article: 'u:dev:MediaWiki:AjaxBatchDelete.css'
+    });
     
 });

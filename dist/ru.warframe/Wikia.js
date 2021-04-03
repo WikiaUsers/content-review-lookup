@@ -233,7 +233,7 @@ var Warframe = (function(window) {
 			this.Invoke.init();
 			this.Spoilers.init();
 			this.Tabbers.init();
-			this.ScrollTop.init();
+			/* this.ScrollTop.init(); */
 			this.AjaxAutoRefresh.init();
 			this.AjaxLivePad.init();
 			this.AjaxBatchDelete.init();
@@ -1324,7 +1324,7 @@ var Warframe = (function(window) {
 				});
 			}
 		},
-		ScrollTop: {
+		/*ScrollTop: {
 			getHTML: function() {
 				return '<div id="ScrollTop"><div><span class="fa ' + this.faUpIconClassName + '"></span><span>' + this.upText + '</span></div></div>';
 			},
@@ -1379,6 +1379,7 @@ var Warframe = (function(window) {
 				});
 			}
 		},
+		*/
 		Invoke: {
 			$defaultTarget: $mwContentText,
 			invokeSelector: '[data-invoke]',
@@ -1647,12 +1648,14 @@ var Warframe = (function(window) {
 			toggleButtonFAIcon: 'fas fa-eraser',
 			invalidCharsRegExp: /(\#|<|>|\[|\]|\{|\}|\|)/,
 			log: function(text) {
-				if ((this.$output.prop('scrollTop') - ((parseInt(this.$output.css('borderTopWidth'), 10) + parseInt(this.$output.css('borderBottomWidth'), 10)) || 0)) === this.$output.prop('scrollHeight') - this.$output.prop('offsetHeight')) {
+				
+				/*if ((this.$output.prop('scrollTop') - ((parseInt(this.$output.css('borderTopWidth'), 10) + parseInt(this.$output.css('borderBottomWidth'), 10)) || 0)) === this.$output.prop('scrollHeight') - this.$output.prop('offsetHeight')) {
 					this.$output.append(text);
 					this.$output.prop('scrollTop', this.$output.prop('scrollHeight'));
 				} else {
 					this.$output.append(text);
-				}
+				} */
+			 this.$output.append(text);
 			},
 			toggleButtonId: 'ABDToggleButton',
 			getButtonHTML: function() {
@@ -2052,12 +2055,14 @@ var Warframe = (function(window) {
 					}
 					return textboxVal.slice(0, that.$textbox.prop('selectionStart')) + templateText + textboxVal.slice(that.$textbox.prop('selectionEnd'));
 				}
-				if ((this.$textbox.prop('scrollTop') - ((parseInt(this.$textbox.css('borderTopWidth'), 10) + parseInt(this.$textbox.css('borderBottomWidth'), 10)) || 0)) === this.$textbox.prop('scrollHeight') - this.$textbox.prop('offsetHeight')) {
+				
+				/* if ((this.$textbox.prop('scrollTop') - ((parseInt(this.$textbox.css('borderTopWidth'), 10) + parseInt(this.$textbox.css('borderBottomWidth'), 10)) || 0)) === this.$textbox.prop('scrollHeight') - this.$textbox.prop('offsetHeight')) {
 					this.$textbox.val(insert());
 					this.$textbox.prop('scrollTop', this.$textbox.prop('scrollHeight'));
 				} else {
 					this.$textbox.val(insert());
-				}
+				}*/
+				this.$textbox.val(insert());
 			},
 			ckeTextboxId: 'cke_wpTextbox1',
 			checkForTextbox: function() {

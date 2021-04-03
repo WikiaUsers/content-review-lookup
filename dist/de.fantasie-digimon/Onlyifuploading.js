@@ -5,6 +5,7 @@
      if (!editbox)            return;
      if (editbox.value != '') return;
      editbox.value = "{"+"{Dateiinfo\n"
+                   + "|Sig = \n"
                    + "|Beschreibung = \n"
                    + "|Datum = \n"
                    + "|Autor = \n"

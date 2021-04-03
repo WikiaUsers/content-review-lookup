@@ -64,7 +64,14 @@
         }).done(function (response) {
             var tempContainer = document.createElement('div');
             tempContainer.innerHTML = response.parse.text['*'];
-            var $renderedMods = $(tempContainer).children().filter('div[id^="arm:"]');
+            var $tempContainer = $(tempContainer);
+            if ($tempContainer.children().length === 1) {
+                var $child = $($tempContainer.children()[0]);
+                if ($child.hasClass('mw-parser-output')) {
+                    $tempContainer = $child;
+                }
+            }
+            var $renderedMods = $tempContainer.children().filter('div[id^="arm:"]');
             $renderedMods.each(function (i, elem) {
                 if (mangledIdsToPage.hasOwnProperty(elem.id)) {
                     pagesToHTML[mangledIdsToPage[elem.id]] = elem.innerHTML;
@@ -229,7 +236,7 @@
         $rail = $('#WikiaRail');
         if (!$rail[0]) { return; }
         railLoaded = $.Deferred();
-        if ($rail.filter('.loaded')[0]) {
+        if ($rail.filter('.loaded, .is-ready')[0]) {
             railLoaded.resolve();
         } else {
             $rail.on('afterLoad.rail', function () { railLoaded.resolve(); });

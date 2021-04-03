@@ -18,7 +18,6 @@ importArticles({
         // ...
     ]
 });
-
 window.lastEdited = {
     avatar: false,
     size: true,
@@ -32,7 +31,6 @@ window.lastEdited = {
     },
     pages: []
 };
-
 importArticles({
     type: 'script',
     articles: [

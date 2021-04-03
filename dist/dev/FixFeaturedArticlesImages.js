@@ -1,18 +1,26 @@
 (function () {
-    if (window.FixFeaturedArticlesImagesLoaded) {
-        return;
-    }
-    window.FixFeaturedArticlesImagesLoaded = true;
-    function execute () {
-        $('#WikiaAdInContentPlaceHolder a:not(.rail-sponsored-content) img').each(function () {
-            $(this).attr('src', $(this).attr('src').replace(/\/smart\//, '/top-crop/'));
+    function editSrc (el) {
+        el.find('img').attr('src', function (_, src) {
+            return src.replace('/smart/', '/top-crop/');
+        });
+    }    
+
+    function main () {
+        var pageList = window.FixFeaturedArticlesImagesList;
+        $('#WikiaRail #WikiaAdInContentPlaceHolder a:not(.rail-sponsored-content)').each(function () {
+            if (typeof pageList === 'object') {
+                if (pageList.indexOf($(this).text().trim()) !== -1) {
+                    editSrc($(this));
+                }
+            } else {
+                editSrc($(this));
+            }
         });
     }
-    var interval = setInterval(function () {
-        if (!$('#WikiaAdInContentPlaceHolder a:not(.rail-sponsored-content) img').length) {
-            return;
-        }
-        clearInterval(interval);
-        execute();
-    }, 100);
+
+    if ($('#WikiaRail #WikiaAdInContentPlaceHolder').length) {
+        main();
+    } else {
+        $('#WikiaRail').on('afterLoad.rail', main);
+    }
 })();

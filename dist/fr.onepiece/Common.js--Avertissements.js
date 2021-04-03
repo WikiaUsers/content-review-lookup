@@ -1,3 +1,56 @@
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:DiscussionTemplates.js',
+    ]
+});
+
+window.DiscussionTemplates = {
+    templates: {
+        'Modifications pour les badges': {
+            name: 'Template:Avertissement/Badges',
+            title: 'Rappel - Modifications pour les badges'
+        },
+        'Vandalisme': {
+            name: 'Template:Avertissement/Vandalisme',
+            title: 'Avertissement - Vandalisme'
+        },
+        'Format image' : {
+            name: 'Template:Avertissement/ImageFormat',
+            title: 'Avertissement - Images de mauvais format'
+        },
+		'Images HS': {
+            name: 'Template:Avertissement/ImageHS',
+            title: 'Avertissement - Images Hors-Sujet'
+        },
+        'Nom Images': {
+            name: 'Template:Avertissement/ImageTitre',
+            title: 'Avertissement - Images mal nommées'
+        },
+        'Commentaires': {
+            name: 'Template:Avertissement/Commentaires',
+            title: 'Avertissement - Mauvais usage des commentaires'
+        },
+        'Catégories': {
+            name: 'Template:Avertissement/Catégories',
+            title: 'Rappel - Ajout de catégories'
+        },
+        'Blocage': {
+            name: 'Template:Avertissement/Blocage',
+            title: 'Sancton - Blocage du wiki'
+        },
+        'Messages Provoquants': {
+            name: 'Template:Avertissement/Provocations',
+            title: 'Avertissement - Messages provoquants'
+        },
+        'Messages HS': {
+            name: 'Template:Avertissement/MessagesHS',
+            title: 'Avertissement - Messages Hors-Sujet'
+        },
+    },
+};
+
+
 /***********************************************************************
  * Script basé sur celui de @Hulothe HP-fr wikia                  ******
  * Auteur: @Think D. Solucer
@@ -162,8 +215,7 @@
         {
             title: 'Spoilers foireux',
             body: '<p>Salut %USERNAME%,</p>' +
-                  '<p>Je suis l\'un des [[One Piece Encyclopédie:Liste des Administrateurs|Modérateurs de Discussions]]. Ce message constitue un avertissement en raison de ta volonté de poster des faux spoilers de manière répétitive. C\'est un comportement inacceptable.</p>' +
-                  '<p>La modération t\'invite (une nouvelle fois) à poster les sources de tes spoilers. Par ailleurs, si tu veux poster des hypothèses, un sous forum y est consacré.</p>' +
+                  '<p>Je suis l\'un des [[One Piece Encyclopédie:Liste des Administrateurs|Modérateurs de Discussions]]. Ce message constitue un avertissement en raison de ta volonté de poster des faux spoilers. Par ailleurs, si tu veux poster des hypothèses, un sous forum y est consacré.</p>' +
                   '<p>Cordialement,</p>',
             reason: 'Pour spoilers foireux'
         },

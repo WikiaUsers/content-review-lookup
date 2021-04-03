@@ -1,8 +1,8 @@
 /*
 * ChatModHover
 * @description relay what usergroup a user is in who have a star next to their name in chat when their name is hovered
-* Works for staff, wiki-managers, helpers, VSTF, admin, discussions moderator and chat moderator
-* Prioritizes local groups over global (e.g. chat moderator over VSTF) except staff
+* Works for staff, wiki-managers, helpers, SOAP, admin, discussions moderator and chat moderator
+* Prioritizes local groups over global (e.g. chat moderator over SOAP) except staff
 * @author Ozuzanna
 */
 
@@ -13,7 +13,7 @@ if (chatModHoverLoaded !== true) {
 var adminList = [],
 threadModList = [],
 chatModList = [],
-vstfList = [],
+soapList = [],
 helperList = [],
 wikiManagerList = [],
 chatModHoverLoaded = true;
@@ -46,7 +46,7 @@ getUserGroupList("threadmoderator",threadModList);
 getUserGroupList("sysop",adminList);
 getUserGroupList("wiki-manager",wikiManagerList);
 getUserGroupList("helper",helperList);
-getUserGroupList("vstf",vstfList);
+getUserGroupList("soap",soapList);
 
 function updateHovers() {
   $('.username').each(function() {
@@ -64,8 +64,8 @@ function updateHovers() {
       $(this).attr('title','This user is a wiki manager');     
     else if (helperList.indexOf($(this).text()) !== -1)
       $(this).attr('title','This user is a Fandom Helper');
-    else if (vstfList.indexOf($(this).text()) !== -1)
-      $(this).attr('title','This user is VSTF');
+    else if (soapList.indexOf($(this).text()) !== -1)
+      $(this).attr('title','This user is SOAP');
   });
   console.log('Chat moderator hovers updated');
 }

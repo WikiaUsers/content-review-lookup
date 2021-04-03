@@ -1,0 +1,1 @@
+window.UserTagsJS = { modules:{  mwGroups: ['bureaucrat', 'chatmoderator', 'patroller', 'rollback', 'sysop', 'bannedfromchat', 'bot', 'bot-global'], },  autoconfirmed: true, newuser: true, custom: { 'Elgamer': ['líder'], "Usuario:HuellasDelSur": ['líder'],  "Usuario:Darax'_Vax_Neema": ['inspector']} }, tags: { inspector: { u:'Inspectores', f:'Inspectoras'} } };

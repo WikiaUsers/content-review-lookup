@@ -44,3 +44,7 @@ importArticles({
     article: 'u:zh.pad.wikia.com:MediaWiki:CountDown.css'
 });
 /* Koniec */
+
+/* Test tło nocne */
+var bgrandom_nightmode = true,
+    bgrandom_nightmode_list = ["Tosuu.gif"];

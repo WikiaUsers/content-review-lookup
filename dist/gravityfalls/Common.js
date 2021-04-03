@@ -463,9 +463,7 @@ $(function () {
 importArticles({
     type: 'script',
     articles: [
-        // ...
-        'w:c:dev:ReferencePopups/code.js',
-        // ...
+        'u:dev:MediaWiki:ReferencePopups/code.js',
     ]
 });
 

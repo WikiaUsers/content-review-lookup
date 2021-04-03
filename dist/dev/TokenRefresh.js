@@ -23,16 +23,24 @@
                 action: 'query',
                 titles: '#',
                 prop: 'info',
-                intoken: 'edit|watch'
+                meta: 'tokens',
+                intoken: 'edit|watch',
+                type: 'csrf|edit|patrol|watch'
             }).done($.proxy(this.callback, this));
         },
         callback: function(d) {
-            var info = d.query.pages[-1],
-                edit = info.edittoken;
+            var info = d.query.pages ?
+                    d.query.pages[-1] :
+                    d.query.tokens,
+                edit = info.edittoken || info.csrftoken;
             if (edit) {
                 $('[name="wpEditToken"]').val(edit);
                 mw.user.tokens.set('editToken', edit);
+                mw.user.tokens.set('csrfToken', edit);
                 mw.user.tokens.set('watchToken', info.watchtoken);
+                if (info.patroltoken) {
+                    mw.user.tokens.set('patrolToken', info.patroltoken);
+                }
                 mw.log('[TokenRefresh] Tokens successfully refreshed!');
             } else {
                 console.error('[TokenRefresh] An error occurred while fetching tokens');

@@ -1,14 +1,9 @@
-// RailWAM Config
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
-
 //TopicBlockLog config
 TBL_WIKIS = [
-    "prodigy-legends",
+    "prodigy-fan-ideas",
     "community",
     "prodigy-game-fanon",
-    "prodigy-glitch"
+    "prodigy-glitch",
 ];
 
 // Auto Refresh Settings
@@ -17,7 +12,6 @@ var ajaxPages = [
     "Special:Watchlist",
     "Special:Log",
     "Special:Contributions",
-    "Special:WikiActivity"
 ];
 
 var AjaxRCRefreshText = 'Auto-refresh';
@@ -42,46 +36,27 @@ $.get(
     }
 );
 
-// Alts
-(function () {
-    var $masthead = $('#UserProfileMasthead');
-    if (!$masthead.exists()) {
-        return;
-    }
-    var $info = $masthead.find('.masthead-info hgroup'),
-        username = $info.find('h1').text(),
-        alts = {
-            'The Shadow of Prodigy': 'Sonic of Prodigy',
-        },
-        altOf = alts[username];
-    function addTag () {
-        if ($('.usergroup-blocked').exists()) {
-            return;
-        }
-        $info.find('.tag-container').remove();
-        $info.append(
-            $('<span>', {
-                'class': 'tag-container'
-            }).append(
-                $('<a>', {
-                    'text': 'Alt',
-                    'href': mw.util.getUrl('User:' + altOf),
-                    'title':
-                        'This user is a tolerated alt of ' + altOf + '.',
-                    'class': 'tag usergroup-alt alt-user'
-                })
-            )
-        );        
-    }
-    if (altOf) {
-        setTimeout(addTag, 1500);
-    }
-})();
+// RailModule
+window.AddRailModule = [
+    {page: 'Template:RailModule', prepend: true},
+    'Template:ChatModule'
+];
 
-// Imports
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:ListUsers/code.js',
-    ]
-});
+// Configuration for NoLicenseWarning
+window.NoLicenseWarning = {
+    forceLicense: true
+};
+
+// Configuration for TokenRefresh
+window.TokenRefreshInterval = 360000;
+
+// Configuration for UserStatus
+window.UserStatusSettings = {
+    colorBlindMode: 1,
+    lightTheme: 1,
+    statusIndicator: 0,
+    online: '#0078ff',
+    away: '#cc7',
+    dnd: 'crimson',
+    offline: 'darkgray',
+};

@@ -1,4 +1,3 @@
-/* <syntaxhighlight lang="javascript"> */
 window.ListingEdit = {
   init: function() {
       var listingCat, listingPages, lists, cats, inputWrap, inputBox, inputButton;

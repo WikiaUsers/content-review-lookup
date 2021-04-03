@@ -92,3 +92,12 @@ $(function() {
 });
  
 /* End of the {{USERNAME}} replacement */
+
+/* Spoiler Alert */
+window.SpoilerAlertJS = {
+    question: 'ส่วนนี้เปิดเผยเนื้อเรื่องบางส่วนของภาพยนตร์ คุณต้องการอ่านเนื้อหาส่วนนี้หรือไม่',
+    yes: 'ใช่',
+    no: 'ไม่',
+    fadeDelay: 500
+};
+/* End of the Spoiler Alert */

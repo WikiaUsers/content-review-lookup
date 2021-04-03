@@ -1,3 +1,15 @@
+$(document).ready(function() {
+    var decklist_items = ".decklist dl + ul";
+    
+    if(document.body.contains(document.querySelector(".decklist dl + ul"))){
+        decklist_items = document.querySelectorAll(decklist_items);
+        for(var i = 0; i < decklist_items.length; i++){
+            if(decklist_items[i].children.length < 3)
+                decklist_items[i].style.columnCount = decklist_items[i].children.length;
+        }
+    }
+});
+
 // Replace "Luster Dragon #2" with "Luster Dragon 2" etc. when searching
 $('#WikiaSearch input:first-of-type').on('change', function() {
     $('#WikiaSearch input:first-of-type').val($('#WikiaSearch input:first-of-type').val().replace(' #', ' '));
@@ -31,7 +43,7 @@ $(document).on('click', '#UploadPhotos input[type="submit"]', function()
         if (card_edition != 'undefined')
         {
             if (card_edition.indexOf('.') != -1)
-            {
+            {}
                 card_edition = card_edition.substring(0, card_edition.indexOf('.'));
             }
 
@@ -39,7 +51,6 @@ $(document).on('click', '#UploadPhotos input[type="submit"]', function()
         }
 
         selected_license.val(licensing);
-    }
 });
 
 $(document).ready(function() {

@@ -47,7 +47,7 @@ if ($p.hasClass("selflink") == false) $t.data("tt", $p.attr("title").replace(" (
 
 // check to see if it is active then do it
 $(function() {
-if(skin=='oasis') { var BC = '#WikiaArticle'; }
+if(mw.config.get('skin')=='oasis') { var BC = '.WikiaPage'; }
 else { var BC = '#bodyContent'; }
 
 $(BC).mouseover(hideTip); 

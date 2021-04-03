@@ -1,50 +1,50 @@
 /*
-  There are two ways to view MaintenanceReport: a div or a modal.
+  There are two ways to view MaintenanceReport: a div or a popup.
 
   *[[Special:MaintenanceReport]] to auto-start in a div
   *Add <div id='MaintenanceReport'></div> to any page to auto-start in a div
-  *Or, add <div id='MaintenanceReport' class="button">Maintenance Report</div>
-     to any page for a button which launches a modal popup.
+  *Or, add <button id='MaintenanceReport' class="button">Maintenance Report</button>
+   to any page for a button which launches a popup.
 */
-
 $(function() {
-	if ( (!$('#MaintenanceReport').size() && mw.config.get('wgCanonicalNamespace')+":"+mw.config.get('wgTitle') != "Special:MaintenanceReport")
+	$("#Recentchangestext").append(" &bull; <button id='MaintenanceReport' class='button'>Maintenance</button>");
+	if ( (!$('#MaintenanceReport').length && mw.config.get('wgCanonicalNamespace')+":"+mw.config.get('wgTitle') != "Special:MaintenanceReport")
 		|| typeof window.maintenanceReport != "undefined"
 	) return; //skip non-relevant pages and avoid duplicate instances.
 
 	window.maintenanceReport = {
 		"options": {
 			removeZero: 1,  //set to true to remove pages with zero results
-			addButton: false    //set to true to add a button instead of autostarting.
+			addButton: false  //set to true to add a button instead of autostarting.
 		},
 		"specials": ["Unusedcategories", "BrokenRedirects", "DoubleRedirects", "Deadendpages", "Lonelypages", "Uncategorizedcategories", "Uncategorizedpages", "Uncategorizedtemplates", "Wantedcategories", "Wantedfiles", "Wantedpages", "Wantedtemplates", "Unusedtemplates"],
 
-		"categories": ["Lonelypages", "DPL queries with no results", "DPL queries with errors", "Deletion proposals", "Merge proposals", "Dialogue template with one line", "Broken references", "Broken file links", "Template errors", "ParserFunction errors", "Template has invalid parameters", "Template is missing parameters", "References needing descriptions", "References needing names", "Cleanup", "Content requests", "Image requests", "Infobox needs information", "Reference requests", "Rating requests", "Translation requests", "Unconfirmed information"],
+		"categories": ["Lonelypages", "DPL queries with no results", "DPL queries with errors", "Deletion proposals", "Merge proposals", "Dialogue template with one line", "Broken references", "Broken file links", "Template errors", "ParserFunction errors", "Template has invalid parameters", "Template is missing parameters", "References needing names", "Cleanup", "Content requests", "Image requests", "Infobox needs information", "Reference requests", "Rating requests", "Translation requests", "Unconfirmed information", "Infobox needs caption", "Pages using duplicate arguments in template calls"],
 
-		"defaults": ["Unusedcategories", "BrokenRedirects", "DoubleRedirects", "Deadendpages", "Lonelypages", "Uncategorizedcategories", "Uncategorizedpages", "Uncategorizedtemplates", "Wantedcategories", "Wantedfiles", "Wantedpages", "Wantedtemplates", "Unusedtemplates", "DPL queries with no results", "DPL queries with errors", "Deletion proposals", "Merge proposals", "Dialogue template with one line", "Broken references", "Broken file links", "Template errors", "ParserFunction errors", "Template has invalid parameters", "References needing names"],
+		"defaults": ["Unusedcategories", "BrokenRedirects", "DoubleRedirects", "Deadendpages", "Lonelypages", "Uncategorizedcategories", "Uncategorizedpages", "Uncategorizedtemplates", "Wantedcategories", "Wantedfiles", "Wantedpages", "Wantedtemplates", "Unusedtemplates", "DPL queries with no results", "DPL queries with errors", "Deletion proposals", "Merge proposals", "Dialogue template with one line", "Broken references", "Broken file links", "Template errors", "ParserFunction errors", "Template has invalid parameters", "References needing names", "Infobox needs caption"],
 
 		"results": {}
 	};
 	if (mw.config.get('wgCanonicalNamespace')+":"+mw.config.get('wgTitle') == "Special:MaintenanceReport") {
 		$("title").html("Maintenance Report");
-		$("#PageHeader h1").html("Maintenance Report");
+		$("#WikiaPageHeader h1").html("Maintenance Report");
 		$("h1#firstHeading").html("Maintenance Report");
 		$("#mw-content-text").html($("<div>", {id:"MaintenanceReport" }) );
 	}
-	if (maintenanceReport.options.addButton) $('#MaintenanceReport').after($("<br>"), $("<div>", { id:"MaintenanceReport", class:"button", html:"Start Maintenance Report" })).remove();
-	if ($('#MaintenanceReport.button').size()) $('#MaintenanceReport.button').click(function() { MaintenanceReportInit(1) });
+	if (maintenanceReport.options.addButton) $('#MaintenanceReport').after($("<br>"), $("<button>", { id:"MaintenanceReport", class:"button", html:"Start Maintenance Report" })).remove();
+	if ($('#MaintenanceReport.button').length) $('#MaintenanceReport.button').click(function() { MaintenanceReportInit(1) });
 	else MaintenanceReportInit();
 
-    function showResult(message, result) {
+	function showResult(message, result) {
 		if (typeof window.MaintenanceReportNotify != "undefined") window.MaintenanceReportNotify.hide();
 		window.MaintenanceReportNotify = new BannerNotification(message, result).show();
-    }
+	}
 
 	function MaintenanceReportDisplay(andor) {
 		var output = new Array(), firstloop = 1;
 
 		$("#MaintenanceReport input[type=checkbox]").each(function(){
-			if($(this).attr("checked")) {
+			if($(this).prop("checked")) {
 				var temp = maintenanceReport.results[$(this).attr("id").substring(5)];
 				if (firstloop) {
 					firstloop = 0;
@@ -78,31 +78,34 @@ $(function() {
 				}))
 			)
 		});
+
 	}
 
-	function MaintenanceReportInit(modal) {
+	function MaintenanceReportInit(popup) {
 		var ajaxIndicator = window.ajaxIndicator || 'https://images.wikia.nocookie.net/common/skins/common/images/ajax.gif';
 
-		if(modal) {
+		if(popup) {
 			$("#MaintenanceReport").attr("id","");
-			$.showCustomModal('Maintenance Report', null, {
-				id: 'MaintenanceReportModal',
-				width: $(window).width() - 254,
-			});
-			$(".modalContent").remove();
-			$("#MaintenanceReportModal h1").css({"margin-bottom":0,"text-align":"left"}).append(" <span style='color:black;display: inline-block;' id='ajaxProgress'> <img src='" + ajaxIndicator + "' style='vertical-align: top;height: 21px;' border='0' alt='Updating page' /></span>");
-			$("#MaintenanceReportModal").append($("<div>", {id:"MaintenanceReport", class:"WikiaArticle"}));
-			$("#MaintenanceReportModal").css({
+
+			SRWpopup("MaintenanceReportPopup", "Maintenance Report", "");
+
+//				width: $(window).width() - 254,
+
+			$("#MaintenanceReportPopup .popupWrapper").css({ "margin-top":"50px", "width": "90%" });
+			$("#MaintenanceReportPopup h1").css({"margin-bottom":0,"text-align":"left"}).append(" <span style='color:black;display: inline-block;' id='ajaxProgress'> <img src='" + ajaxIndicator + "' style='vertical-align: top;height: 21px;' border='0' alt='Updating page' /></span>");
+			$("#MaintenanceReportPopup .popupContent").append($("<div>", {id:"MaintenanceReport", class:"WikiaArticle WikiaMainContent"}));
+/*			$("#MaintenanceReportPopup .popupContent").css({
 				"text-align":"center",
 				"overflow": "auto",
-							"top":"100px",
-							"min-height":"452px"
+				"top":"100px",
+				"min-height":"452px"
 			});
+*/
 		} else {
 			$("#MaintenanceReport").empty();
 		}
 		$("#MaintenanceReport").append("<div id='updateCountdown' left='0' style='text-align:center'></div>");
-		$("#MaintenanceReport").append("<table><tr><td style='vertical-align: top;'><div id='listPane' style='line-height: normal;float:left;text-align:left;min-width: 20em;border-right: 4px double blue;line-height:normal;'></div></td><td style='vertical-align: top;'><div id='resultsPane' style='float:right;text-align:left;'><ol></ol></div></td></tr></table>");
+		$("#MaintenanceReport").append("<table><tr><td style='vertical-align: top;'><div id='listPane' style='line-height: normal;float:left;text-align:left;min-width: 23em;border-right: 4px double blue;line-height:normal;'></div></td><td style='vertical-align: top;'><div id='resultsPane' style='float:right;text-align:left;'><ol></ol></div></td></tr></table>");
 		$("#listPane").append(
 			$("<button>", {
 				html:"Show Combined"
@@ -114,49 +117,66 @@ $(function() {
 				style:"float:right;"
 			}).click(function() { MaintenanceReportDisplay("and") })
 		);
-		for(var i in maintenanceReport.defaults) maintenanceReport.defaults[i] = maintenanceReport.defaults[i].replace(/ /g,"");
 
 		for(var i in maintenanceReport.specials) {
 			$("#listPane").append("<div><label for='checkS"+maintenanceReport.specials[i].replace(/ /g,"")+"' style='cursor: pointer;'><input type='checkbox' style='margin: 0 3px;' id='checkS"+maintenanceReport.specials[i].replace(/ /g,"")+"'>"+maintenanceReport.specials[i]+" (<a target='_blank' href='./Special:"+maintenanceReport.specials[i]+"'>Page</a>) <span style='float:right' class='loading'>Loading</span></label></div>");
 		}
 		if (localStorage.getItem('maintenanceReportCacheTime') > new Date().getTime()) {
 			loadCachedSpecials();
-
 			calcTimeLeft(localStorage.getItem('maintenanceReportCacheTime'));
-
 			$("#updateCountdown").prepend("Results cached. ");
 		} else {
 			loadServerSpecials();
 		}
 
+		for(var i in maintenanceReport.defaults) maintenanceReport.defaults[i] = maintenanceReport.defaults[i].replace(/ /g,"_");
+
 		for(var i in maintenanceReport.categories) {
+			maintenanceReport.categories[i] = maintenanceReport.categories[i].replace(/ /g,"_");
+
 			$("#listPane").append("<div><label for='checkC"+maintenanceReport.categories[i].replace(/ /g,"")+"' style='cursor: pointer;'><input type='checkbox' style='margin: 0 3px;' id='checkC"+maintenanceReport.categories[i].replace(/ /g,"")+"'>"+maintenanceReport.categories[i]+" (<a target='_blank' href='./Category:"+maintenanceReport.categories[i]+"'>Page</a>) <span style='float:right' class='loading'>Loading</span></label></div>");
 
 			$.getJSON('/api.php?action=query&format=json&list=categorymembers&cmlimit=5000&cmtitle=Category:'+maintenanceReport.categories[i]+'&requestid='+maintenanceReport.categories[i].replace(/ /g,""), function(results) {
-			  var formattedresults = new Array(), formatteddisplay = "";
+			  var unformattedresults = new Array(), formatteddisplay = "";
 			  $("#checkC"+results.requestid +" ~ span").html("("+Object.keys(results.query.categorymembers).length+")");
 			  $("#checkC"+results.requestid +" ~ span").removeClass("loading");
-			  if (!$("span.loading").size()) saveCachedSpecials();
+			  if (!$("span.loading").length) saveCachedSpecials();
 
 			  $(results.query.categorymembers).each(function(index, value) {
-				formattedresults.push(value.title);
+				unformattedresults.push(value.title);
 				if (maintenanceReport.defaults.indexOf(results.requestid) != -1) formatteddisplay += '<li><a href="./'+value.title+'">'+value.title+'</a></li>';
 			  });
-			if (formatteddisplay) $('#resultsPane').append("<h2><a href='./Category:"+results.requestid+"'>"+results.requestid+"</a></h2><ul>"+formatteddisplay+"</ul>");
-
-			  maintenanceReport.results["C"+results.requestid] = formattedresults;
-			  if (!formattedresults.length) {
+			  if (formatteddisplay) {
+				$('#resultsPane').append("<h2><a href='./Category:"+results.requestid+"'>"+results.requestid+"</a></h2><ul>"+formatteddisplay+"</ul>");
+				$("#checkC"+results.requestid).prop("checked", true);
+			  }
+			  maintenanceReport.results["C"+results.requestid] = unformattedresults;
+			  if (!unformattedresults.length) {
 				$("#checkC"+results.requestid).prop("disabled",true);
 				if (maintenanceReport.options.removeZero) $("#checkC"+results.requestid).parent().remove();
 			  }
+			  if ($("#MaintenanceReportPopup").length) $("#MaintenanceReportPopup")[0].adjustTop();
 			});
 		}
+		$("#MaintenanceReport input[type=checkbox]").click(function() {
+			$('#resultsPane').empty();
+			$("#MaintenanceReport input[type=checkbox]").each(function(){
+				var formatteddisplay = "";
+				if($(this).prop("checked")) {
+					$(maintenanceReport.results[$(this).attr("id").substring(5)]).each(function(index, value) {
+						formatteddisplay += '<li><a href="./'+value+'">'+value+'</a></li>';
+					});
+					if (formatteddisplay) $('#resultsPane').append("<h2><a href='./"+($(this).attr("id").substring(5,6)=="S"?"Special":"")+($(this).attr("id").substring(5,6)=="C"?"Category":"")+":"+$(this).attr("id").substring(6)+"'>"+$(this).attr("id").substring(6)+"</a></h2><ul>"+formatteddisplay+"</ul>");
+				}
+			});
+		})
+
 	}
 	function saveCachedSpecials() {
 		$("#ajaxProgress").remove();
 		if (localStorage.getItem('maintenanceReportCacheTime') > new Date().getTime()) return;
 
-		localStorage.setItem('maintenanceReportCacheTime', $("#updateCountdown").attr("reset"));
+		localStorage.setItem('maintenanceReportCacheTime', $("#updateCountdown").prop("reset"));
 
 		var tmp = [];
 		for (i in maintenanceReport.results) {
@@ -185,31 +205,34 @@ $(function() {
 	}
 	function calcTimeLeft(cacheReset) {
 		var diff = Math.floor((cacheReset - new Date().getTime())/1000);
-		var left = (diff%60) + 's';						diff=Math.floor(diff/60);
-		if(diff > 0) left = (diff%60) + 'm ' + left;	diff=Math.floor(diff/60);
-		if(diff > 0) left = (diff%24) + 'h ' + left;	diff=Math.floor(diff/24);
-		if(diff > 0) left = diff + ' days ' + left;
-		$("#updateCountdown").html("Time left until cache update: "+left);
+
+		var left = (diff%60) + 's';
+		diff=Math.floor(diff/60);
+		left = (diff%60) + 'm ' + left;	diff=Math.floor(diff/60);
+		left = (diff%24) + 'h ' + left;	diff=Math.floor(diff/24);
+		left = diff + ' days ' + left;
+
+		if (left.substring(0,1) == "-") $("#updateCountdown").html("The special page cache update is overdue.  Last reset: "+left);
+		else $("#updateCountdown").html("Time left until cache update: "+left);
 	}
 	function loadServerSpecials() {
 		for(var i in maintenanceReport.specials) {
 			$.getJSON('/api.php?action=query&format=json&list=querypage&qplimit=5000&qppage='+maintenanceReport.specials[i], function(result) {
-			  var formattedresults = new Array();
 			  var querypage = result.query.querypage;
 
 			  if (querypage.cachedtimestamp) {
-			    var cacheReset = new Date(new Date(querypage.cachedtimestamp).getTime()+(24*60*60000)).getTime();
+				var cacheReset = new Date(new Date(querypage.cachedtimestamp).getTime()+(24*60*60000)).getTime();
 
-				if (!$("#updateCountdown").attr("reset")) $("#updateCountdown").attr("reset", 0);
-				if ($("#updateCountdown").attr("reset") < cacheReset) {
-				  $("#updateCountdown").attr("reset", cacheReset);
+				if (!$("#updateCountdown").prop("reset")) $("#updateCountdown").prop("reset", 0);
+				if ($("#updateCountdown").prop("reset") < cacheReset) {
+				  $("#updateCountdown").prop("reset", cacheReset);
 				  calcTimeLeft(cacheReset);
 				}
 			  }
 			  maintenanceReport.results["S"+querypage.name] = [];
 			  $(querypage.results).each(function(index, value) {
 				if (querypage.name == "Unusedcategories")
-				  if (maintenanceReport.categories.indexOf("value.title") == -1) return;
+				  if (maintenanceReport.categories.indexOf(value.title.replace(/ /g,"_").replace(/Category:/g,"")) != -1) return;
 				maintenanceReport.results["S"+querypage.name].push(value.title);
 			  });
 			  displaySpecialPage("S"+querypage.name);
@@ -228,13 +251,16 @@ $(function() {
 					tmpTitle = maintenanceReport.results[PageName][i];
 					formatteddisplay += '<li><a href="./'+tmpTitle+'">'+tmpTitle+'</a></li>';
 				}
-				if (formatteddisplay) $("#resultsPane").append('<h2><a href="./Special:'+PageName.substring(1)+'">'+PageName.substring(1)+'</a></h2> <ol>'+formatteddisplay+'</ol>');
+				if (formatteddisplay) {
+					$("#resultsPane").append('<h2><a href="./Special:'+PageName.substring(1)+'">'+PageName.substring(1)+'</a></h2> <ol>'+formatteddisplay+'</ol>');
+					$("#check"+PageName).prop("checked", true);
+				}
 			}
 		}
 		$("#check"+PageName +" ~ span").html("("+maintenanceReport.results[PageName].length+")");
 		$("#check"+PageName +" ~ span").removeClass("loading");
 
-		if (!$("span.loading").size()) saveCachedSpecials();
+		if (!$("span.loading").length) saveCachedSpecials();
 	}
 
 });

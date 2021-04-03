@@ -1,6 +1,50 @@
 /* Center Template:Button */
 $(".nav-button").parent().css("text-align", "center");
 
+/* User profile header custom tags */
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		sysop: { link:'Project:Administrators' },
+		bot: { link:'Help:Bots' }
+	}
+};
+UserTagsJS.modules.inactive = 72;
+UserTagsJS.modules.mwGroups = ['sysop', 'bot', 'bot-global'];
+
+/* Auto updating recent changes opt-in
+ * See w:c:dev:AjaxRC for info & attribution 
+ */
+ 
+window.AjaxRCRefreshText = 'Auto-refresh';
+window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
+window.ajaxPages = ["Special:RecentChanges"];
+
+/* Reveal anon IPs */
+window.RevealAnonIP = {
+    permissions : ['sysop', 'bureaucrat']
+};
+
+/* Standard edit summaries */
+window.dev = window.dev || {};
+window.dev.editSummaries = {
+	select: 'MediaWiki:Stdsummaries',
+    css: '#stdSummaries { ... }'
+};
+
+/* Imagebox */
+/* destfile checker from http://starwars.wikia.com/wiki/MediaWiki:Common.js 
+   modified by Lia */
+
+$("#mw-upload-form").submit(function (event) {
+    var wpDestFile = $("#wpDestFile").val();
+
+    if ( wpDestFile.match(/(JPG|PNG|GIF|SVG|jpg\.jpg|png\.png|gif\.gif|svg\.svg)$/)) {
+        alert('Please do not use capitalized or duplicated file extensions in the filename.');
+        return false;
+    }
+});
+
 /* Tabber default snippet by Lunarity; infobox-tabber checker and inner tabber adjustments for JsTabs by Lia */
 if ($('#infobox-tabber') !== null) {
     $(window).on('load.tabberhack', function() {
@@ -29,7 +73,7 @@ if ($('#infobox-tabber') !== null) {
 
 /* Toggles a certain quote when a Tabber tab is clicked.
  Created by: [[User:LiaSakura]] */
-function TabberToggle() {
+$(function TabberToggle() {
     if ($('#infobox-tabber') !== null) {
         $('.tabbernav').click(function () {
             var tab = $('.tabbernav').find('.tabberactive a').attr("title");
@@ -50,7 +94,9 @@ function TabberToggle() {
         });
     }
 }
+);
 addOnloadHook(TabberToggle);
+
 
 /* CUSTOM EDIT BUTTONS */
 if (mwCustomEditButtons) {
@@ -74,13 +120,31 @@ if (mwCustomEditButtons) {
 
  /* From http://avatar.wikia.com/wiki/MediaWiki:Common.js/icons.js */
 $(function() {
-	if( $( '.wds-community-header' ).length ) {
-		$( '#PageHeader' ).prepend($( '#icons' ).css({'position':'absolute', 'right': '70px'}));
+	console.log("version:" + mw.config.get( 'wgVersion' ));
+	if ( mw.config.get( 'wgVersion' ) !== '1.19.24' && $( '#icons' ).length ) {
+		alert("yo");
+        $( '.page-header__contribution > div' ).first().append( $( '#icons' ).show() );
+    } else if( $( '.wds-community-header' ).length ) {
+		$( '#PageHeader' ).prepend(
+			$( '#icons' ).attr( 'style', 'position: absolute; right: 70px;')
+		);
 	} else {
+		alert("no");
 		$( '.WikiaPageHeader' ).append( $( '#icons' ) );
 		$( '#icons' ).css( { 'position' : 'absolute', 'right' : '0px'} ).show();
     }
 });
+
+/* For imagebox */	
+window.uploadText = "{{Imagebox\n"
+	+ "| description = \n"
+	+ "| series      = \n"
+	+ "| source      = \n"
+	+ "| author      = \n"
+	+ "| origin      = \n"
+	+ "| cats        = \n"
+	+ "| license     = \n"
+	+ "}}";
 
 /* Sprite icons */
 $(function() { 

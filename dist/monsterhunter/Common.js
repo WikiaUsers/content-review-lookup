@@ -253,7 +253,6 @@ window.UserTagsJS = {
 	}
 };
 UserTagsJS.modules.custom = {
-	'Dracosaurian': ['rollback',],
 	'Kogath': ['kogath',],
 };
 UserTagsJS.modules.mwGroups = ['bannedfromchat', 'blocked', 'bureaucrat', 'chatmoderator', 'content-moderator', 'helper', 'rollback', 'staff', 'sysop', 'threadmoderator', 'vanguard', 'vstf']

@@ -7,17 +7,10 @@ importArticles({
     ]
 });
 
-var infoboxArray = $('.pi-image-collection-tabs');
-for (i = 0; i < infoboxArray.length; i++) {
-    var tabArray = infoboxArray[i].getElementsByTagName('li');
-    for (j = 0; j < tabArray.length; j++) {
-        tabArray[j].innerHTML = '<a>' + tabArray[j].innerHTML + '</a>';
-        tabArray[j].insertAdjacentHTML('afterend', '<wbr>');
-    }
+if ($('#gallery-background').length) {
+    var galleryBackground = document.getElementById('gallery-background').innerHTML;
+    $('.pi-image').css('background-color', galleryBackground);
 }
-
-var galleryBackground = document.getElementById('gallery-background').innerHTML;
-$('.pi-image').css('background-color', galleryBackground);
 
 // Copied from http://avatar.wikia.com/wiki/MediaWiki:Common.js/icons.js
 $(function IconsOasis() {

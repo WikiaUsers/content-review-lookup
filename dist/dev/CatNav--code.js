@@ -4,6 +4,8 @@
 
 // Used files: [[File:CatNav delete.png]]
 
+// note: the 'section#WikiaPageBackground' selector in the bottom is used for non-ucp wikis. may be removed in the future once all wikis have been transfered to the unified community platform
+
 $(function() {
 	/* ================================== *\
 		# wiki links to [[Special:CatNav]]
@@ -879,10 +881,10 @@ $(function() {
 		// redefine results counter
 		mw.util.addCSS(
 			'#catnav-resultscounter {\n' +
-				'\tcolor: ' + catnav.fn.contrastfy(mw.config.get("wgSassParams")["color-page"]) + ';\n' +
+				'\tcolor: ' + catnav.fn.contrastfy(getComputedStyle(document.querySelector("section#WikiaPageBackground") || document.querySelector(".WikiaPageContentWrapper")).backgroundColor) + ';\n' +
 			'}' +
 			'#catnav .catnav-gui-group {\n' +
-				'\tborder: 1px solid ' + (mw.config.get("wgSassParams") instanceof Object ? mw.config.get("wgSassParams")["color-body"] : "#f6f6f6") + ';\n' +
+				'\tborder: 1px solid ' + getComputedStyle(document.body).backgroundColor + ';\n' +
             '}\n'
 		);
 		/* markup */

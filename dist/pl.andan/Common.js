@@ -26,3 +26,10 @@ importArticles({
     'u:c:MediaWiki:Snow.js'
   ]
 });
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:NewImages.js',
+    ]
+});

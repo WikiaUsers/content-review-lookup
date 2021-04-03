@@ -1,0 +1,1 @@
+/* Any JavaScript here will be loaded for users using the 2 column main page layout */

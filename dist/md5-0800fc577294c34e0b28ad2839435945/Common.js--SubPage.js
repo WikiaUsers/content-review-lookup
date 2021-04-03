@@ -1,0 +1,1 @@
+console.log('MediaWiki:Common.js/SubPage.js');

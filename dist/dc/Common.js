@@ -49,26 +49,6 @@ function fBox() {
 $(fBox);
 
 /*
-/////////////////////////////////////////////////////////////////////////////////
-// Changing the Link from Special:CreatePage to DC Database:Create a New Page
-/////////////////////////////////////////////////////////////////////////////////
-*/
-function createPage(){
-	var createPageLink = document.getElementById('dynamic-links-write-article-icon');
-	if (createPageLink !== null){
-		createPageLink.href = "/wiki/DC_Database:Create_a_New_Page";
-                createPageLink.onclick = "";
-	}
-	createPageLink = document.getElementById('dynamic-links-write-article-link');
-	if (createPageLink !== null){
-		createPageLink.href = "/wiki/DC_Database:Create_a_New_Page";
-                createPageLink.onclick = "";
-	}
-}
-
-addOnloadHook(createPage)
-
-/*
 ////////////////////////////////////////////////////////////////////////////////////
 // Rewrites the title of a given page.
 ////////////////////////////////////////////////////////////////////////////////////
@@ -772,4 +752,30 @@ $('#article-comm-submit').attr('disabled','disabled');
 $('.article-comm-reply').remove();
 }
 }
+});
+
+
+/* made by Sophiedp */ 
+mw.loader.using('mediawiki.util').then(function () {
+	if (!$('.activity-tabs').length) {
+	    return;
+	}
+
+    function buildTab (text, page) {
+		return $('<li>', {
+			class: 'wds-tabs__tab',
+			append: $('<div>', {
+				class: 'wds-tabs__tab-label',
+				append: $('<a>', {
+					text: text,
+					href: mw.util.getUrl(page),
+				})
+			})
+		});
+	}
+	
+	$('.activity-tabs').append([
+		buildTab('AbuseLog', 'Special:AbuseLog'),
+		buildTab('Discussions', 'Special:DiscussionsRC')
+	]);
 });

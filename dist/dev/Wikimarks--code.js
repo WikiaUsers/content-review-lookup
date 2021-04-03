@@ -11,10 +11,10 @@
  * - Supports wikitext as well as (most of) the old syntax
  *
  * New Wiki Nav Todos:
- * - Cleanup CSS when current wikinav is retired
  * - Test for touchscreens?
- * - Fix nav submenu alignment
- * - Fix for the new new navigation
+ *
+ * Used files:
+ * - [[File:Facebook throbber.gif]]
  */
 
 /*global importArticle */
@@ -67,9 +67,16 @@
      * Prepare the parsed HTML and attach to the DOM
      */
     function prepareHtml(html) {
+        var $parsed = $(html);
+
+        // remove the parser output wrapping element
+        if ($parsed.hasClass('mw-parser-output')) {
+            $parsed = $parsed.children();
+        }
+
         var $menu = $('<div>')
                 .addClass('wds-is-not-scrollable wds-dropdown__content')
-                .append(html);
+                .append($parsed);
 
         // add classes to elements
         $menu
@@ -144,7 +151,7 @@
 
 
         $menu.find('a')
-            // titles don't add annything to the links
+            // titles don't add anything to the links
             .removeAttr('title')
             // remove external link class for ease of reading the source html
             .removeClass('extiw');
@@ -165,6 +172,7 @@
     function parseWikimarks(data) {
         var params = {
             action: 'parse',
+            contentmodel: 'wikitext',
             prop: 'text',
             text: data
         };
@@ -195,8 +203,11 @@
 
         var invalidLink = false,
             parsed = [],
-            // handles /wiki/, index.php, api.php, wikia.php and /d (discussions)
-            relativeUrlRe = /\/(wiki\/|(?:index|api|wikia)\.php|d)/;
+            // handles:
+            // - /wiki/ (wiki pages)
+            // - index.php, api.php, and wikia.php (API)
+            // - /f and /d (discussions)
+            relativeUrlRe = /\/(wiki\/|(?:index|api|wikia)\.php|f|d)/;
 
         data.forEach(function (elem) {
             // ignore comments
@@ -323,14 +334,20 @@
      * Load the users wikimarks
      */
     function loadWikimarks(username) {
-        var load = mw.util.wikiScript('load'),
+        var load = 'https://dev.fandom.com/api.php',
             params = {
-                mode: 'articles',
-                only: 'styles',
-                debug: 'true',
-                // don't encode anything in the username here, $.get does it anyway
+                action: 'query',
+                format: 'json',
+                prop: 'revisions',
+                rvprop: 'content',
+                // don't encode anything in the username here, $.ajax does it anyway
                 // otherwise stuff gets encoded twice and no results are returned
-                articles: 'u:dev:User:' + (username || conf.wgUserName).replace(/ /g, '_') + '/Wikimarks'
+                titles: 'User:' + (username || conf.wgUserName).replace(/ /g, '_') + '/Wikimarks',
+                indexpageids: 1,
+                origin: '*',
+                // Cache results for 5 minutes in CDN and browser
+                maxage: 300,
+                smaxage: 300
             };
 
         if (username) {
@@ -339,14 +356,18 @@
 
         mw.log('params', params);
 
-        $.get(load, params).done(function (data) {
-            if (!data) {
-                // just in case there was an error in the api request
-                mw.log(this);
+        $.ajax(load, {
+            data: params
+        }).always(function (data) {
+            var res = '',
+                revisionData = data.query && data.query.pages[data.query.pageids[0]].revisions;
+
+            if (revisionData) {
+                res = revisionData[0]['*'];
             }
 
-            data = preprocessData(data);
-            parseWikimarks(data);
+            res = preprocessData(res);
+            parseWikimarks(res);
         });
     }
 
@@ -359,7 +380,7 @@
 
         $li.addClass('wds-tabs__tab wikimarks')
             .css({
-                backgroundImage: 'url("' + conf.stylepath + '/common/images/ajax.gif")',
+                backgroundImage: 'url("https://vignette.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif")',
                 backgroundPosition: 'center center',
                 backgroundRepeat: 'no-repeat',
             })
@@ -388,7 +409,6 @@
         // TODO: send in a ticket to get a class for this
         //       as it feels super fragile
         $('.wds-tabs__tab-label.wds-dropdown__toggle').last().hide();
-        $nav.find('.pph-local-nav-explore').hide();
         // add our new tab to the start of the nav
         $nav.prepend($li);
     }
@@ -406,8 +426,8 @@
             url: mw.config.get('wgLoadScript'),
             data: {
                 mode: 'articles',
-                only: 'scripts',
-                articles: 'u:dev:Colors/code.js'
+                articles: 'u:dev:MediaWiki:Colors/code.js',
+                only: 'scripts'
             },
             dataType: 'script',
             cache: true

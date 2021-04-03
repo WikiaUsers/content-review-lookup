@@ -9,6 +9,6 @@ importArticles({
     type: "script",
     articles: [
         "MediaWiki:NotabilityMove/code.js",
-        "u:dev:AbuseLogRC.js"
+        "u:dev:MediaWiki:AbuseLogRC.js"
     ]
 });

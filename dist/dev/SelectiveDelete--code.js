@@ -165,7 +165,7 @@
             i18n[config.wgUserLanguage.split("-")[0]],
             i18n[config.wgUserLanguage]
         ),
-        canDelete = /(sysop|content-moderator|staff|helper|vstf|wiki-manager|content-volunteer|content-team-member)/.test(config.wgUserGroups.join(" ")),
+        canDelete = /(sysop|content-moderator|staff|helper|wiki-manager|content-volunteer|content-team-member|soap)/.test(config.wgUserGroups.join(" ")),
         deletionDelay = window.selectiveDeleteDelay || 1000, // 1 sec default delay between deletions
         membersMax = window.selectiveDeleteMembersMax || 100, // 100 pages returned from API call
         modalHTML =

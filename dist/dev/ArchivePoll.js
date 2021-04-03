@@ -11,7 +11,7 @@
         return; // exit code
     } window.ArchivePollLoaded = true;
 
-    var i18n = {},
+    var i18n,
         config = $.extend({
             archive: 'Project:Archived Polls',
             preformat: true
@@ -25,15 +25,13 @@
         VOTE = '.pollAnswerVotes > span',
         TOTAL = '.total';
 
-    function init(i18nLoaded) {
-        i18n = i18nLoaded._messages.en;
-        for(var i in i18n)
-            i18n[i] = i18nLoaded.msg(i).escape();
+    function init(i18nData) {
+        i18n = i18nData;
 
         $polls.find('[type=submit]').after($('<input>', {
             id: 'ArchivePoll',
             type: 'submit',
-            value: i18n.button,
+            value: i18n.msg('button').plain(),
             click: retrieve
         }));
     }
@@ -78,13 +76,13 @@
         	action: 'edit',
         	title: archive || config.archive,
             token: mw.user.tokens.get('editToken'),
-            summary: config.summary || i18n.summary,
+            summary: config.summary || i18n.inContentLang().msg('summary').plain(),
             appendtext: '\n' + poll
         }).done(function(res){
             if(btn.length) {
                 btn.attr('disabled', false);
                 btn.before($('<span>', {
-                    text: res.error ? i18n.error : i18n.success
+                    text: res.error ? i18n.msg('error').plain() : i18n.msg('success').plain()
                 }));
                 setTimeout(function() {
                     btn.prev('span').remove();
@@ -92,8 +90,8 @@
             }
             else {
                 var noti = res.error
-                    ? new BannerNotification(i18n.error, 'error')
-                    : new BannerNotification(i18n.success, 'confirm');
+                    ? new BannerNotification(i18n.msg('error').escape(), 'error')
+                    : new BannerNotification(i18n.msg('success').escape(), 'confirm');
                 noti.show();
             }
         });
@@ -120,13 +118,13 @@
             value: config.archive
         });
         var content = $('<div>', {
-            append: [editor, i18n.archive + ': ', archivePage]
+            append: [editor, i18n.msg('archive').escape() + ': ', archivePage]
         });
-        $.showCustomModal(i18n.archive, content, {
+        $.showCustomModal(i18n.msg('archive').escape(), content, {
             width: 500,
             buttons: [{
                 id: 'btn-archive',
-                message: i18n.button,
+                message: i18n.msg('button').escape(),
                 defaultButton: true,
                 handler: function() {
                     archive(editor.val(), archivePage.val());
@@ -148,8 +146,8 @@
                 ? config.format
                 : '== $question =='
                 + '\n* $answer: $vote'
-                + '\n: ' + i18n.total + ': $total'
-                + '\n: ' + i18n.created + ': $date - $time';
+                + '\n: ' + i18n.inContentLang().msg('total').plain() + ': $total'
+                + '\n: ' + i18n.inContentLang().msg('created').plain() + ': $date - $time';
 
         for (var a in poll.vote) {
             answer += res.match(pttn);
@@ -166,9 +164,9 @@
     }
 
     importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });
-    mw.hook('dev.i18n').add(function(i18n) {
+    mw.hook('dev.i18n').add(function(i18njs) {
         $.when(
-            i18n.loadMessages('ArchivePoll'),
+            i18njs.loadMessages('ArchivePoll'),
             mw.loader.using('mediawiki.api')
         ).then(init);
     });

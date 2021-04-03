@@ -1,8 +1,7 @@
-/** 
- * __NOWYSIWYG__
- *
+/**
  * module (Info)Widgets
  * documentation at: https://dev.wikia.com/wiki/InfoWidgets
+ * used files: [[File:Facebook throbber.gif]]
  * © Peter Coester, 2012
  * 
  */
@@ -222,7 +221,7 @@ var Widgets = function () {
         for (var i = 0; i < titles.length && doublettes.length <= maxResults; i++) {
             if (-1 == $.inArray(titles[i], doublettes)) {
                 doublettes.push(titles[i]);
-                html += '<li><a href="/wiki/'+encodeURIComponent(titles[i])+'">'+titles[i]+'</a></li>';
+                html += '<li><a href="'+mw.util.getUrl(titles[i])+'">'+titles[i]+'</a></li>';
             }
         }
         return html.length ? '<ul>'+html+'</ul>' : '';

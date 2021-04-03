@@ -1,8 +1,8 @@
-// Konfiguracja dla AutoEditDropdown
-var	AutoEditDropdownConfig = {
-	expandedAreaContribute: true,
-	expandedAreaEdit: false
-};
-
 // Konfiguracja dla InactiveUsers
-InactiveUsers = { text: 'Nieaktywny' };
+window.InactiveUsers = {
+	text: {
+		female: 'Nieobecna',
+		male: 'Nieobecny',
+		unknown: 'Nieobecny(a)'
+	}
+};

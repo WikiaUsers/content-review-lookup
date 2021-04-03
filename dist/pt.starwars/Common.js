@@ -14,29 +14,6 @@ var hasClass = (function () {
 })();
  
 
-function insertAtCursor(myField, myValue) {
-	//IE support
-	if (document.selection)
-	{
-		myField.focus();
-		sel = document.selection.createRange();
-		sel.text = myValue;
-	}
-	//MOZILLA/NETSCAPE support
-	else if(myField.selectionStart || myField.selectionStart == '0')
-	{
-		var startPos = myField.selectionStart;
-		var endPos = myField.selectionEnd;
-		myField.value = myField.value.substring(0, startPos)
-		+ myValue
-		+ myField.value.substring(endPos, myField.value.length);
-	}
-	else
-	{
-		myField.value += myValue;
-	}
-}
-
 /** Collapsible tables *********************************************************
  *
  *  Description: Allows tables to be collapsed, showing only the header. See
@@ -121,12 +98,12 @@ function createCollapseButtons()
     }
 }
  
-addOnloadHook( createCollapseButtons );
+$( createCollapseButtons );
  
 function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
     $('.insertusername').text(wgUserName); }
- addOnloadHook(UserNameReplace);
+ $(UserNameReplace);
 
 /* Magic edit intro. Copied from Wikipedia's MediaWiki:Common.js
  * modified for use in both Monaco and Monobook skins by Sikon
@@ -184,80 +161,20 @@ function addEditIntro(name) {
  * By [[User:Spang|Spang]]
  * Monaco support by [[User:Uberfuzzy|Uberfuzzy]]
  * Oasis support by [[User:Uberfuzzy|Uberfuzzy]]
- * Adaptado por [[User:Thales César|Thales César]]
+ * Rewritten by [[User:Thales César|Thales César]]
  */
 
-if(document.getElementById('old-forum-warning')) {
- 
 function disableOldForumEdit() {
-	if( typeof( enableOldForumEdit ) != 'undefined' && enableOldForumEdit ) {
-		return;
+    if (!(document.getElementById('old-forum-warning'))) return;
+    
+    if (mw.config.get("skin") == 'oasis') {
+        $('#ca-edit').html('Arquivado').removeAttr('href');
+        return;
+    }
 }
-if(skin == 'oasis') {
-  $('#WikiaPageHeader .wikia-menu-button > a').html('Arquivado').removeAttr('href');
-  return;
- }
-	if( !document.getElementById('ca-edit') ) {
-		return;
-	}
-	var editLink = null;
-	if( skin == 'monaco' )
-	{
-		editLink = document.getElementById('ca-edit');
-	}
-	else if( skin == 'monobook' )
-	{
-		editLink = document.getElementById('ca-edit').firstChild;
-	}
-	else
-	{
-		return;
-	}
- 
- 
-	editLink.removeAttribute('href', 0);
-	editLink.removeAttribute('title', 0);
-	editLink.style.color = 'gray';
-	editLink.innerHTML = 'Arquivado';
- 
-	$('span.editsection-upper').remove();
- 
-}
-addOnloadHook( disableOldForumEdit );
-}
-
-function addAlternatingRowColors() {
-	var infoboxes = $(".infobox");//getElementsByClass('infobox', document.getElementById('content'));
- 
-	if( infoboxes.length == 0 )
-		return;
- 
-	for( var k = 0; k < infoboxes.length; k++ ) {
-		var infobox = infoboxes[k];
- 
-		var rows = infobox.getElementsByTagName('tr');
-		var changeColor = false;
- 
-		for( var i = 0; i < rows.length; i++ ) {
-			if(rows[i].className.indexOf('infoboxstopalt') != -1)
-			break;
- 
-			var ths = rows[i].getElementsByTagName('th');
- 
-			if( ths.length > 0 ) {
-				continue;
-			}
- 
-			if(changeColor)
-				rows[i].style.backgroundColor = '#f9f9f9';
-			changeColor = !changeColor;
-		}
-	}
-}
-addOnloadHook( addAlternatingRowColors );
+$(disableOldForumEdit);
 
 // BEGIN JavaScript title rewrite -- jQuery version and new wikia skin fixes by Grunny
- 
 function rewriteTitle() {
 	if( typeof( window.SKIP_TITLE_REWRITE ) != 'undefined' && window.SKIP_TITLE_REWRITE ) {
 		return;
@@ -268,7 +185,7 @@ function rewriteTitle() {
 	}
  
 	var newTitle = $('#title-meta').html();
-	if( skin == "oasis" ) {
+	if (mw.config.get("skin") == "oasis") {
 		$('h1.page-header__title').html('<div id="title-meta" style="display: inline;">' + newTitle + '</div>');
 		$('h1.page-header__title').attr('style','text-align:' + $('#title-align').html() + ';');
 	} else {
@@ -276,33 +193,16 @@ function rewriteTitle() {
 		$('.firstHeading').attr('style','text-align:' + $('#title-align').html() + ';');
 	}
 }
- 
-function showEras(className) {
-	if( skin == 'oasis' ) {
-		return;
-	}
- 
-	if( typeof( SKIP_ERAS ) != 'undefined' && SKIP_ERAS )
-		return;
- 
-	var titleDiv = document.getElementById( className );
- 
-	if( titleDiv == null || titleDiv == undefined )
-		return;
- 
-	var cloneNode = titleDiv.cloneNode(true);
-	var firstHeading = getFirstHeading();
-	firstHeading.insertBefore(cloneNode, firstHeading.childNodes[0]);
-	cloneNode.style.display = "block";
-}
+$(rewriteTitle);
 // END JavaScript title rewrite
+
 /*importScriptPage( 'AjaxRC/i18n.code.js', 'dev' );
 var ajaxRefresh = 30000;*/
 /* A(c)tualização automática - [[w:c:dev:AjaxRC]] */
 window.AjaxRCRefreshText = 'A(c)tualização automática';
 window.AjaxRCRefreshHoverText = 'A(c)tualização automática';
 window.ajaxPages = ["Especial:Mudanças_recentes","Especial:WikiActivity"];
-importScriptPage('AjaxRC/code.js', 'dev');
+// importScriptPage('AjaxRC/code.js', 'dev');
 
 /* ######################################################################
 
@@ -311,21 +211,22 @@ Por: [[User:Thales César|Thales César]], adaptado de http://community.wikia.co
 ** -----------
 */
 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://vignette.wikia.nocookie.net/pt.starwars/images/2/28/Button_wikilink.png/revision/latest?cb=20151229011915",
-		"speedTip": "Legends link",
-		"tagOpen": "{{"+"SUBST:L|",
-		"tagClose": "}}",
-		"sampleText": "Inserir link Legends"
-	};
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://vignette.wikia.nocookie.net/pt.starwars/images/2/29/Translate_button.png/revision/latest?cb=20160114145016",
-		"speedTip": "Tradução SWW",
-		"tagOpen": "{{TraduçãoSWW|",
-		"tagClose": "}}",
-		"sampleText": "Inserir termo para tradução"
-	};
-
+if (window.mwCustomEditButtons) {
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        "imageFile": "https://vignette.wikia.nocookie.net/pt.starwars/images/2/28/Button_wikilink.png/revision/latest?cb=20151229011915",
+        "speedTip": "Legends link",
+        "tagOpen": "{{"+"SUBST:L|",
+        "tagClose": "}}",
+        "sampleText": "Inserir link Legends"
+    };
+    mwCustomEditButtons[mwCustomEditButtons.length] = {
+        "imageFile": "https://vignette.wikia.nocookie.net/pt.starwars/images/2/29/Translate_button.png/revision/latest?cb=20160114145016",
+        "speedTip": "Tradução SWW",
+        "tagOpen": "{{TraduçãoSWW|",
+        "tagClose": "}}",
+        "sampleText": "Inserir termo para tradução"
+    };  
+}
 
 /* ######################################################################
 
@@ -333,43 +234,26 @@ jQuery para esconder e mostrar elementos
 Por: [[User:Thales César|Thales César]]
 ** -----------
 */
+function appTemplateHider() {
+    /* Para o {{App}} */
+    $("#hiderApp").click(function(){
+        $("#hidenApp").toggle("slow");
+        if ($("#hiderApp").html()=="[Mostrar]")
+            $("#hiderApp").html("[Esconder]")
+        else
+            $("#hiderApp").html("[Mostrar]")
+    });
+}
+$(appTemplateHider);
 
-$(document).ready(function(){
-    if (wgAction == "edit")
+function addLegendsLinkBtnAccessKey() {
+    if (mw.config.get("wgAction") == "edit") {
+        $("img[title='Legends link']").attr('accesskey', 'l');
         $("#mw-content-text").hover(function() { $("img[title='Legends link']").attr('accesskey', 'l'); });
-        
-	$("#hider").click(function(){
-		if ($("#hider").html()=="[Mostrar]")
-		{
-			$("#hider").html("[Esconder]")
-			$("#hiden").fadeIn("slow");
-		}
-		else
-		{
-			$("#hider").html("[Mostrar]")
-			$("#hiden").fadeOut("slow");
-		}
-	});
-	/* Para o {{App}} */
-	$("#hiderApp").click(function(){
-		$("#hidenApp").toggle("slow");
-		if ($("#hiderApp").html()=="[Mostrar]")
-			$("#hiderApp").html("[Esconder]")
-		else
-			$("#hiderApp").html("[Mostrar]")
-	});
-	rewriteTitle();
-	changeMainPageLink();
-	checkForClassChange();
-	
-	checkForMedals();
-    if (document.getElementById("MedalsLeaderboard"))
-        buildLeaderboard();
-	
-	if ($('#LegCanNav').length) {
-        $(".WikiaPageContentWrapper").prepend($("#LegCanNav"));
-	}
-});
+    }
+}
+$(addLegendsLinkBtnAccessKey);
+
 /* ######################################################################
 
 Inserir banners de parceiros na barra lateral, DEPOIS dos anúncios, quando existir as devidas predefinições. Verificar por parâmetro e, no caso do Star Wars Storyteller, inserir player do YouTube após clique do usuário.
@@ -378,7 +262,8 @@ Por: [[User:Thales César|Thales César]]
 */
 function checkForClassChange()
 {
-    if ($('#WikiaRail').hasClass('loaded'))
+    var className = (mw.config.get('wgVersion') == "1.19.24") ? 'loaded' : 'is-ready';
+    if ($('#WikiaRail').hasClass(className))
     {
         if (document.getElementById("temSWST"))
     	{
@@ -413,9 +298,10 @@ function checkForClassChange()
     else
         setTimeout(checkForClassChange, 500);
 }
+$(checkForClassChange);
 
 /* UI especial para Apêndice de Tradução */
-function AT_UI() {
+function ApendiceTraducaoUI() {
 	if (wgPageName != "Star_Wars_Wiki:Apêndice_de_Tradução")
 		return;
 	var ATclasses = [];
@@ -461,7 +347,7 @@ function AT_UI() {
 			$("#mw-content-text ul li").show();
 	});
 }
-addOnloadHook(AT_UI);
+$(ApendiceTraducaoUI);
 
 /* ######################################################################
 
@@ -470,23 +356,21 @@ Por [[User:Thales César]]
 ** -----------
 */
 function changeMainPageLink() {
-    if (wgNamespaceNumber==114 || wgNamespaceNumber==115)
-    {
+    if (mw.config.get("wgNamespaceNumber") == 114 || mw.config.get("wgNamespaceNumber") == 115) {
         $("a[accesskey=z]").attr("href", "/pt/wiki/Legends:Página_principal");
         $("div.page-header__main").append('<div class="page-header__page-subtitle">Artigo <span style="font-style:italic;">Legends</span></div>');
         $("title").text($("title").text().replace("Legends:", ""));
         if ($('#title-meta').length == 1)
             return;
         $("h1.page-header__title").text($("h1.page-header__title").text().replace("Legends:", ""));
-    }
-    else if(wgNamespaceNumber==0)
-    {
+    } else if (mw.config.get("wgNamespaceNumber") === 0) {
         var mundoReal = $("a[title='O assunto deste artigo existe ou é relevante no mundo real.']");
-        if (mundoReal.length==0)
+        if (mundoReal.length === 0)
             $("div.page-header__main").append('<div class="page-header__page-subtitle">Artigo canônico</div>');
     }
 
 }
+$(changeMainPageLink);
 
 /* ######################################################################
 
@@ -497,10 +381,16 @@ Por [[User:Thales César]]
 
 /* Construir leaderboard das medalhas */
 function buildLeaderboard() {
-	$.get("https://starwars.fandom.com/pt/load.php?mode=articles&articles=Star_Wars_Wiki:Medals|Star_Wars_Wiki:Medals/Pontos&only=styles&cb="+Math.ceil(new Date().getTime() / 1000), function(data) {
-			var tabelaDePontos = data.split("}{");
-			var obj = JSON.parse(tabelaDePontos[0]+'}');
-			tabelaDePontos = JSON.parse('{'+tabelaDePontos[1].split("\n")[0]);
+    if (!(document.getElementById("MedalsLeaderboard"))) return;
+
+    $.getJSON("https://starwars.fandom.com/pt/api.php?action=query&format=json&prop=revisions&titles=Star%20Wars%20Wiki%3AMedals%7CStar%20Wars%20Wiki%3AMedals%2FPontos&rvprop=content&cb="+Math.ceil(new Date().getTime() / 1000), function(data) {
+            try {
+                var obj = JSON.parse(data.query.pages["28678"].revisions[0]['*']);
+                var tabelaDePontos = JSON.parse( data.query.pages["28697"].revisions[0]['*']);
+            } catch (e) {
+                console.warn("Could not get medals data");
+                return;
+            }
 			var users = obj.dataUser;
 			var i = 0;
 			var medalha;
@@ -541,6 +431,7 @@ function buildLeaderboard() {
 		}
 	);
 }
+$(buildLeaderboard);
 
 /* Verificar se usuário ganhou nova medalha */
 function checkForMedals() {
@@ -573,10 +464,12 @@ function checkForMedals() {
 		}
 	});
 }
+$(checkForMedals);
 
 /* Mostrar notificação de nova medalha */
 function alertarMedalhas(txt, medalhaNome, img, medalhasAgora) {
-	$("#WikiaBar").append('<ul id="WikiaNotifications" class="WikiaNotifications">'+
+    // Doesnt work on UCP
+    $("#WikiaBar").append('<ul id="WikiaNotifications" class="WikiaNotifications">'+
 		'<li>'+
 			'<div data-type="3" class="WikiaBadgeNotification">'+
 				'<a class="sprite close-notification"></a>'+
@@ -593,6 +486,7 @@ function alertarMedalhas(txt, medalhaNome, img, medalhasAgora) {
 }
 
 function inserirSelecionarUniverso(e) {
+    // Doesnt work on UCP
 	if (e.target.id != "blackout_CreatePageModalDialog") return;
 	$("#CreatePageDialogChoose").before('<label><b>Qual universo?</b> <select name="universo" id="selecionarUniverso">'+
 	'<option value="canon">Cânon</option><option value="Legends">Legends</option></select></label>');
@@ -603,6 +497,7 @@ function inserirSelecionarUniverso(e) {
 			document.CreatePageForm.wpCreatepageDialogTitle.value = document.CreatePageForm.wpCreatepageDialogTitle.value.replace("Legends:", '');
 	});
 }
+$(function() { $("body").on('DOMNodeInserted', inserirSelecionarUniverso); });
 
 /**
  * Show/hide for media timeline -- Grunny
@@ -629,22 +524,8 @@ $( function () {
 
 /* Substitúi a Predefinição:Information no fomulário de upload */
 /* Copiado da wiki de Firefly, adaptado para a nossa predef */
-$(document).ready(function() {
-    
-    $("body").on('DOMNodeInserted', inserirSelecionarUniverso);
-    if (wgAction == "edit")
-        $("img[title='Legends link']").attr('accesskey', 'l');
- 
-	if (wgPageName != 'Especial:Carregar_imagem') {
-		return;
-	}
- 
-	$('#wpUploadDescription').text("==Sumário==\r\n{{Information\r\n|attention=\r\n|description=\r\n|artist=\r\n|description=\r\n|source=\r\n|artist=\r\n|filespecs=\r\n|licensing=\r\n|other versions=\r\n|cat artist=\r\n|cat licensee=\r\n|cat subject=\r\n|cat type=\r\n}}");
- 
-});
-
-PFD_templates = "{{Information\r\n|attention=\r\n|description=\r\n|artist=\r\n|description=\r\n|source=\r\n|artist=\r\n|filespecs=\r\n|licensing=\r\n|other versions=\r\n|cat artist=\r\n|cat licensee=\r\n|cat subject=\r\n|cat type=\r\n}}";
-
-/* Add ImageMapEdit functionality (thanks SpikeToronto) 
-importScriptURI('//tools.wmflabs.org/imagemapedit/ime.js');
-/* END Add ImageMapEdit functionality */
+function addInformationTemplate() {
+    if (mw.config.get("wgPageName") != 'Especial:Carregar_imagem') return;
+    $('#wpUploadDescription').text("==Sumário==\r\n{{Information\r\n|attention=\r\n|description=\r\n|artist=\r\n|description=\r\n|source=\r\n|artist=\r\n|filespecs=\r\n|licensing=\r\n|other versions=\r\n|cat artist=\r\n|cat licensee=\r\n|cat subject=\r\n|cat type=\r\n}}");
+}
+$(addInformationTemplate);

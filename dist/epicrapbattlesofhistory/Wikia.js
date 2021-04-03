@@ -7,7 +7,7 @@ function addMastheadTags() {
     rights["Mrpietcaptain"] = ["Ex-KGB", "Swagman"];
     rights["J1coupe"] = ["Wikia Star", "The Doctor", "DigiDestined", "King of Despair", "Ex-KGB"];
     rights["Meatholl"] = ["Ex-KGB"];
-    rights["Loygansono55"] = ["Commander of the Third Reich", "EpicLLOYG", "Edgar Allan Poe x Carl Grimes", "Kigt", "Froyg", "Ligy"];
+    rights["Loygansono55"] = ["EpicLLOYG"];
     rights["DudeWithASuit"] = ["Ex-KGB", "Dwassy G", "Leader of the DWAS ERA"];
     rights["Scrawland Scribblescratch"] = ["War Doctor", "Grandmaster"];
     rights["WonderPikachu12"] = ["Administrator", "Unbearable"];

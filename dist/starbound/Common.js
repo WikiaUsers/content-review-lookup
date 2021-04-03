@@ -14,7 +14,7 @@ importArticles({
 });
 // END REVEAL IP
 // Ajax auto-refresh
-var ajaxPages = ['Special:RecentChanges','Special:WikiActivity','Special:Log','Special:AbuseLog','Special:NewPages'];
+var ajaxPages = ['Special:WikiActivity','Special:Log','Special:AbuseLog','Special:NewPages'];
 var AjaxRCRefreshText = 'Auto-refresh';
 importScript('MediaWiki:Common.js/ajaxRefresh.js');
 // END of ajax auto-refresh

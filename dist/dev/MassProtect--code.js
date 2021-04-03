@@ -10,7 +10,7 @@ mw.loader.using([
     'mediawiki.user'
 ], function () {
     if (
-        !/sysop|content-moderator|content-volunteer|vstf|staff|vanguard|helper|wiki-manager|content-team-member/.test(mw.config.get('wgUserGroups').join()) ||
+        !/sysop|content-moderator|content-volunteer|staff|vanguard|helper|wiki-manager|content-team-member|soap/.test(mw.config.get('wgUserGroups').join()) ||
         window.MassProtectLoaded
     ) {
       return;
@@ -21,6 +21,7 @@ mw.loader.using([
         placement,
         preloads = 3,
         protectModal,
+        isUCP = mw.config.get('wgVersion') !== '1.19.24',
         paused = true;
     /**
      * @method generateElement
@@ -70,6 +71,7 @@ mw.loader.using([
                 generateElement('move'),
                 generateElement('upload'),
                 generateElement('create'),
+                isUCP ? generateElement('comment') : $('<br />'),
                 $('<hr/>'),
                 $('<p>', {
                     text: i18n.msg('expiry').plain(),
@@ -268,7 +270,7 @@ mw.loader.using([
         Api.post({
             action: 'protect',
             expiry: $('#protect-expiry').val() || $('#protect-expiry').attr('placeholder'),
-            protections: $('#protect-create').val() || [$('#protect-edit').val(), $('#protect-move').val(), $('#protect-upload').val()].filter(Boolean).join('|'),
+            protections: $('#protect-create').val() || [$('#protect-edit').val(), $('#protect-move').val(), $('#protect-upload').val(), $('#protect-comment').val()].filter(Boolean).join('|'),
             watchlist: 'preferences',
             title: page,
             reason: $('#protect-reason').val(),

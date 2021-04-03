@@ -1,7 +1,7 @@
-if(wgNamespaceNumber == -1 && wgTitle == 'Reprimand') {
-    $('.page-header h1').text(wgTitle);
+if(mw.config.get('wgNamespaceNumber') == -1 && mw.config.get('wgTitle') == 'Reprimand') {
+    $('.page-header h1').text(mw.config.get('wgTitle'));
     //default page get
-    params = {
+    var params = {
         action: 'query',
         prop: 'revisions',
         rvprop: 'content',
@@ -11,15 +11,15 @@ if(wgNamespaceNumber == -1 && wgTitle == 'Reprimand') {
     };
     
     //get URLs
-    mustacheParams = Object.assign({},params);
+    var mustacheParams = Object.assign({}, params);
     mustacheParams.titles = 'MediaWiki:Custom-SpecialReprimand.mustache';
-    mustacheURL = '/api.php?' + $.param(mustacheParams);
-    tomlParams =  Object.assign({},params);
+    var mustacheURL = '/api.php?' + $.param(mustacheParams);
+    var tomlParams =  Object.assign({}, params);
     tomlParams.titles = 'Harry-Potter-Lexikon:Diskussionen Verwarnungen/store.toml';
-    tomlURL = '/api.php?' + $.param(tomlParams);
+    var tomlURL = '/api.php?' + $.param(tomlParams);
     
     //toml functions
-    mustacheFunctions = {
+    var mustacheFunctions = {
         acutenessColor: function() {
             switch(this.count) {
                 case 0:
@@ -54,18 +54,18 @@ if(wgNamespaceNumber == -1 && wgTitle == 'Reprimand') {
         }
     };
     
-    $.get(tomlURL,function(data) {
-        dataset = data.query.pages[data.query.pageids[0]].revisions[0]['*'];
-        reprimands = TOML.parse(dataset);
-        reprimands = Object.assign(reprimands,mustacheFunctions);
-        $.get(mustacheURL,function(res) {
-            template = res.query.pages[res.query.pageids[0]].revisions[0]['*'];
+    $.get(tomlURL, function(data) {
+        var dataset = data.query.pages[data.query.pageids[0]].revisions[0]['*'];
+        var reprimands = TOML.parse(dataset);
+        reprimands = Object.assign(reprimands, mustacheFunctions);
+        $.get(mustacheURL, function(res) {
+            var template = res.query.pages[res.query.pageids[0]].revisions[0]['*'];
             Mustache.parse(template);
             console.log('dataset',reprimands);
             console.log('template',template);
-            console.log('output',$(Mustache.render(template,reprimands)).find('table'));
+            console.log('output',$(Mustache.render(template, reprimands)).find('table'));
             $(mw.util.$content).html(
-                $(Mustache.render(template,reprimands)).find('table')
+                $(Mustache.render(template, reprimands)).find('table')
             );
         });
     });

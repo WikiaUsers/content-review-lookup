@@ -6,3 +6,8 @@ importArticles({
         'u:ru.sociophobiatest:MediaWiki:IconAnimation.js',
     ]
 });
+
+/* Анимация стрелочки при клике */
+$('.arrow').on('click', function() {
+    $(this).toggleClass('clicked');
+});

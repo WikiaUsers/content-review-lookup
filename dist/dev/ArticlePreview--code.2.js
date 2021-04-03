@@ -140,7 +140,7 @@
                     id: 'preview-delete',
                     action: '$link?action=delete',
                     condition: Array.prototype.some.call(mwConfig.wgUserGroups, function(group){
-                        return ['sysop', 'bureaucrat', 'vstf', 'helper', 'staff', 'wiki-manager', 'content-team-member', 'content-volunteer'].indexOf(group) > -1;
+                        return ['sysop', 'bureaucrat', 'soap', 'helper', 'staff', 'wiki-manager', 'content-team-member', 'content-volunteer'].indexOf(group) > -1;
                     })
                 }
             }

@@ -3,6 +3,8 @@
  * Authors :
  ** 机智的小鱼君
  ** Laclale (proposed new method of filtering namespaces)
+ * Used files :
+ ** [[File:Loading.gif]]
  * Logs :
  ** 06:08, March 27, 2019 (UTC): Alpha release
  ** 07:00, March 27, 2019 (UTC): Fixed littile bug caused by Language Path
@@ -12,6 +14,7 @@
  ** 10:52, March 29, 2019 (UTC): Lac extended MercuryPreview's range
  ** 14:09, March 29, 2019 (UTC): New Namespace Filter
  **/
+
 require(['jquery', 'mw'], function($, mw) {
     var config = mw.config.get(['wgNamespaceNumber', 'wgPageName']);
  

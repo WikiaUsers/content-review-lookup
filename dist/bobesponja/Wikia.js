@@ -2,13 +2,15 @@
 window.highlightUsersConfig = {
     colors: {
         // 'group-name': 'color',
+        'staff': mw.config.get('wgSassParams')["color-links"],
         'sysop': '#ff0000',
-        'staff': '#da0da0',
-        'rollback': '#00bfff',
-        'bot': '#5f5ese',
-        'chatmoderator': '#01ff5f',
-        'threadmoderator': '#800080',
-        'bureaucrat': '#ffff00',
+        'helper': '#bf6240',
+        'soap': '#f77f77',
+        'threadmoderator': '#4286f4',
+        'content-moderator': '#23c8d2',
+        'rollback': '#1eaf7a',
+        'content-volunteer': '#ff7000',
+        'bureaucrat': '#ffff00'
     },
     styles: {
         // 'group-name': 'styles',
@@ -17,6 +19,8 @@ window.highlightUsersConfig = {
         'bureaucrat': 'font-weight: normal' ,
     }
 };
+
+// ... importArticles
 
 /* Botones sociales */
 var SocialMediaButtonsNamespaces = [0, 6, 14, 500];

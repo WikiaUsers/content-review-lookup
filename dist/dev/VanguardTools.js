@@ -7,7 +7,7 @@
  * @license                 CC-BY-SA 3.0
  * 
  */
-require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-system.loading-spinner'], function (window, $, mw, nirvana, Spinner) {
+(function () {
     'use strict';
 
     // Script variables and double run protection.
@@ -19,23 +19,32 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-syst
 
     // MediaWiki variables.
     VAN.mw = mw.config.get([
-        'wgMessages',
-        'wgCityId',
-        'wgDBname',
-        'wgServer',
-        'wgCanonicalNamespace',
-        'wgCanonicalSpecialPageName',
-        'wgTitle',
+        'debug',
+        'skin',
         'wgAction',
         'wgArticleId',
         'wgArticlePath',
+        'wgCanonicalNamespace',
+        'wgCanonicalSpecialPageName',
+        'wgCityId',
+        'wgDBname',
         'wgLoadScript',
-        'wgUserGroups'
+        'wgMessages',
+        'wgReviewedScriptsTimestamp',
+        'wgServer',
+        'wgTemplateClassificationDialogConfig',
+        'wgTitle',
+        'wgUserGroups',
+        'wgUserLanguage',
+        'wgVersion'
     ]);
+
+    // Whether the current wiki is on the UCP.
+    VAN.isUCP = VAN.mw.wgVersion !== '1.19.24';
 
     // User parrot status.
     VAN.parrot = VAN.mw.wgUserGroups.some(function(ug) {
-        return ['vanguard', 'staff', 'helper'].indexOf(ug) > -1;
+        return ['vanguard', 'staff', 'helper', 'wiki-manager'].indexOf(ug) > -1;
     });
 
     // Script configuration.
@@ -119,8 +128,9 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-syst
             });
         });
         // Import dependencies.
-        importArticle({ type: 'script', article: 'u:dev:I18n-js/code.js' });
-        importArticle({ type: 'script', article: 'u:dev:WDSIcons/code.js' });
+        importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });
+        importArticle({ type: 'script', article: 'u:dev:MediaWiki:WDSIcons/code.js' });
+        importArticle({ type: 'script', article: 'u:dev:MediaWiki:TVMH.js' });
     };
 
     // Redirect module for S:IB.
@@ -137,7 +147,10 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-syst
             // Template existence check.
             VAN.redirect.template =
                 mw.util.wikiUrlencode(VAN.mw.wgTitle.match(/\/([\s\S]+)$/)[1]);
-            nirvana.getJson('PortableInfoboxBuilderController', 'getTemplateExists', {
+            $.get(mw.util.wikiScript('wikia'), {
+                controller: 'PortableInfoboxBuilderController',
+                format: 'json',
+                method: 'getTemplateExists',
                 title: VAN.redirect.template
             }, VAN.redirect.builder);
         },
@@ -150,13 +163,13 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-syst
             if (navigator.serviceWorker) {
                 // Create notification service worker.
                 VAN.redirect.worker = navigator.serviceWorker.register(new mw.Uri(VAN.mw.wgLoadScript).extend({
-                    'debug': mw.config.get('debug'),
-                    'lang': mw.config.get('wgUserLanguage'),
+                    'debug': VAN.mw.debug,
+                    'lang': VAN.mw.wgUserLanguage,
                     'mode': 'articles',
-                    'skin': mw.config.get('skin'),
+                    'skin': VAN.mw.skin,
                     'missingCallback': 'importNotifications.importArticleMissing',
-                    'articles': mw.util.wikiUrlencode('u:dev:VanguardTools/service-worker.js'),
-                    'reviewed': mw.config.get('wgReviewedScriptsTimestamp'),
+                    'articles': 'u:dev:MediaWiki:VanguardTools/service-worker.js',
+                    'reviewed': VAN.mw.wgReviewedScriptsTimestamp,
                     'only': 'scripts'
                 }).getRelativePath());
                 // Create two-way message channel.
@@ -173,8 +186,12 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-syst
             navigator.serviceWorker.controller.postMessage({
                 command: 'van_send_notif',
                 i18n: {
-                    cancel: VAN.mw.wgMessages['cancel'],
-                    ok: VAN.mw.wgMessages['ok'],
+                    cancel: VAN.isUCP ?
+                        mw.message('ooui-dialog-message-reject').plain() :
+                        VAN.mw.wgMessages.cancel,
+                    ok: VAN.isUCP ?
+                        mw.message('ooui-dialog-message-accept').plain() :
+                        VAN.mw.wgMessages.ok,
                     source: VAN.i18n.msg('sourceredirect').plain()
                 }
             }, [VAN.redirect.mch.port2]);
@@ -194,23 +211,20 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-syst
                     left: '0',
                     top: '0',
                     'z-index': '1000000000'
-                }).html(function() {
-                    return new Spinner(38, 2).html
-                        .replace('wds-block', 'wds-spinner__block')
-                        .replace('wds-path', 'wds-spinner__stroke');
-                }).appendTo(document.body);
+                })
+                    .html('<svg class="wds-spinner wds-spinner__block" width="78" height="78" viewBox="0 0 78 78" xmlns="http://www.w3.org/2000/svg"><g transform="translate(39, 39)"><circle class="wds-spinner__stroke" fill="none" stroke-width=""stroke-dasharray="238.76104167282426" stroke-dashoffset="238.76104167282426"stroke-linecap="round" r="38"></circle></g></svg>')
+                    .appendTo(document.body);
             // Create infobox.
-            nirvana.sendRequest({
+            $.post(mw.util.wikiScript('wikia') + '?' + $.param({
                 controller: 'PortableInfoboxBuilderController',
-                method: 'publish',
-                data: {
-                    data: VAN.redirect.infobox(),
-                    title: VAN.redirect.template,
-                    oldTitle: VAN.redirect.template,
-                    token: mw.user.tokens.get('editToken')
-                },
-                callback: VAN.redirect.callback
-            });
+                format: 'json',
+                method: 'publish'
+            }), {
+                data: VAN.redirect.infobox(),
+                title: VAN.redirect.template,
+                oldTitle: VAN.redirect.template,
+                token: mw.user.tokens.get('editToken')
+            }, VAN.redirect.callback);
         },
         // Infobox data object.
         infobox: function() {
@@ -331,6 +345,7 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-syst
         },
         // Global navigation links.
         uri: {
+            // Remove after UCP Phase 1
             insights:        'Special:Insights/nonportableinfoboxes',
             infoboxes:       'Special:Templates?type=infobox',
             templates:       'Special:Templates',
@@ -338,8 +353,10 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-syst
             personalcss:     'Special:MyPage/common.css',
             themescss:       'MediaWiki:Themes.css?action=edit',
             admins:          'Special:ListUsers/sysop',
+            // Remove after UCP Phase 1
             wikifeatures:    'Special:WikiFeatures',
-            portabilitydash: 'Special:PortabilityDashboard?url=' + VAN.mw.wgServer.match(/\/\/([^.]+)/)[1]
+            portabilitydash: 'Special:PortabilityDashboard?url=' + VAN.mw.wgServer.match(/\/\/([^.]+)/)[1],
+            tvmh:            'Special:Blankpage/TVMH'
         },
         $executed: $.Deferred()
     };
@@ -364,33 +381,48 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-syst
                 $('<ul>')
             );
             $popout.appendTo(document.body);
-            nirvana.getJson(
-                'TemplateClassification',
-                'getTemplateClassificationEditForm',
-                function(d) {
+            if (VAN.isUCP) {
+                VAN.mw.wgTemplateClassificationDialogConfig
+                    .templateTypes
+                    .forEach(function(type) {
+                        VAN.template.labels[type] = mw.message(
+                            'template-classification-type-' + type
+                        ).plain();
+                });
+                VAN.template.populatePopout($popout);
+            } else {
+                $.get(mw.util.wikiScript('wikia'), {
+                    controller: 'TemplateClassification',
+                    format: 'json',
+                    method: 'getTemplateClassificationEditForm'
+                }, function(d) {
                     // Extract labels.
                     d.templateTypes.forEach(function(dt) {
                         VAN.template.labels[dt.type] = dt.name;
                     });
-                    // Ready the popout.
-                    $popout.children('ul').append(
-                        $.map(VAN.template.types, function(o, k) {
-                            return $('<li>').append(
-                                $('<kbd>', {
-                                    text: o.key
-                                }),
-                                $('<span>', {
-                                    text: VAN.template.labels[o.type]
-                                })
-                            );
+                    VAN.template.populatePopout($popout);
+                });
+            }
+        },
+        // After the labels have been fetched, populate popout.
+        populatePopout: function($popout) {
+            // Ready the popout.
+            $popout.children('ul').append(
+                $.map(VAN.template.types, function(o, k) {
+                    return $('<li>').append(
+                        $('<kbd>', {
+                            text: o.key
+                        }),
+                        $('<span>', {
+                            text: VAN.template.labels[o.type]
                         })
                     );
-                    $popout.show();
-                    // Delegate keyboard handler.
-                    $(document).keyup(VAN.template.shortcut);
-                    VAN.template.$executed.resolve();
-                }
+                })
             );
+            $popout.show();
+            // Delegate keyboard handler.
+            $(document).keyup(VAN.template.shortcut);
+            VAN.template.$executed.resolve();
         },
         // Shortcut keys.
         shortcut: function(e) {
@@ -402,23 +434,34 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-syst
             }
             VAN.template.type = VAN.template.types[e.which].type,
             VAN.template.label = VAN.template.labels[VAN.template.type];
-            nirvana.postJson(
-                'TemplateClassificationApi',
-                'classifyTemplate',
-                {
-                    pageId: mw.config.get('wgArticleId'),
-                    type: VAN.template.type,
-                    editToken: mw.user.tokens.values.editToken
-                },
-                VAN.template.success
-            );
+            $.post(mw.util.wikiScript('wikia') + '?' + $.param({
+                controller: VAN.isUCP ?
+                    'Fandom\\TemplateClassification\\Api\\ClassificationController' :
+                    'TemplateClassificationApi',
+                format: 'json',
+                method: 'classifyTemplate'
+            }), {
+                articleId: VAN.mw.wgArticleId,
+                editToken: mw.user.tokens.get('editToken'),
+                pageId: VAN.mw.wgArticleId,
+                token: mw.user.tokens.get('csrfToken'),
+                type: VAN.template.type
+            }, VAN.template.success);
         },
         // Callback for TemplateClassification controller.
         success: function() {
-            $('.template-classification-type-label').text(VAN.template.label);
+            $('.template-classification-type-label, .template-classification-entry-point__toggle a')
+                .text(VAN.template.label);
+            $('.template-classification-entry-point__wrapper')
+                .attr('data-type', VAN.template.type);
             var message = VAN.i18n.msg('templatetypechange', VAN.template.label).plain();
-                notification = new BannerNotification(message, 'confirm');
-            notification.show();
+            if (VAN.isUCP) {
+                mw.loader.using('mediawiki.notify').then(function () {
+                    mw.notify(message);
+                });
+            } else {
+                new BannerNotification(message, 'confirm').show();
+            }
         },
         // Template type map for keyboard shortkeys.
         types: {
@@ -446,8 +489,9 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-syst
         init: function() {
             if (
                 VAN.config.insights !== true ||
-                !$('.insights-nav-item.insights-icon-nonportableinfoboxes.active')
-                    .find('.insights-red-dot').exists()
+                $('.insights-nav-item.insights-icon-nonportableinfoboxes.active')
+                    .find('.insights-red-dot').length === 0 ||
+                VAN.isUCP
             ) {
                 VAN.insights.$executed.resolve();
                 return;
@@ -700,6 +744,10 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-syst
             }
 
             var draftUrl = draftAnchorHref.slice(0,draftAnchorHref.lastIndexOf('?'));
+            // Validate the random URL we took from the DOM is indeed the wiki's URL.
+            if (new mw.Uri().host === new mw.Uri(draftUrl).host) {
+                return;
+            }
             $.ajax(draftUrl + '?action=raw').done(function () {
                 draftDiv.children('h2').text(VAN.i18n.msg('showdraftheader').plain());
                 draftDiv.children('.templatedraft-module-subtitle').remove();
@@ -721,7 +769,7 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-syst
                 return;
             }
 
-            importArticle({ type: 'script', article: 'u:dev:ProtectionIcons.js' });
+            importArticle({ type: 'script', article: 'u:dev:MediaWiki:ProtectionIcons.js' });
 
             VAN.icons.$executed.resolve();
         },
@@ -736,8 +784,8 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-syst
                 return;
             }
 
-            importArticle({ type: 'script', article: 'u:dev:QuickCreateMessageWallGreeting/code.js' });
-            importArticle({ type: 'script', article: 'u:dev:QuickCreateUserPage/code.js' });
+            importArticle({ type: 'script', article: 'u:dev:MediaWiki:QuickCreateMessageWallGreeting/code.js' });
+            importArticle({ type: 'script', article: 'u:dev:MediaWiki:QuickCreateUserPage/code.js' });
 
             VAN.create.$executed.resolve();
         },
@@ -762,9 +810,9 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.nirvana', 'ext.wikia.design-syst
     mw.loader.using([
         'mediawiki.util',
         'mediawiki.api',
-        'jquery.tablesorter',
-        'ext.bannerNotifications'
+        'mediawiki.Uri',
+        'jquery.tablesorter'
     ]).then(VAN.init);
 
-});
+})();
 /** </nowiki> **/

@@ -421,10 +421,30 @@ mw.hook('wikipage.content').add(function($content) {
                     })
                 );
                 break;
+            case 'mixdrop':
+                $this.html(
+                    $('<iframe>', {
+                        src: 'https://mixdrop.co/e/' + id,
+                        css: css,
+                        frameboder: 0,
+                        allowfullscreen: true
+                    })
+                );
+                break;
             case 'web.tv':
                 $this.html(
                     $('<iframe>', {
                        src: 'https://fandomcntr.web.tv/embed/' + id,
+                       frameborder: 0,
+                       css: css,
+                       allowfullscreen: true
+                    })
+                );
+                break;
+            case 'streamtape':
+                $this.html(
+                    $('<iframe>', {
+                       src: 'https://streamtape.com/e/' + id,
                        frameborder: 0,
                        css: css,
                        allowfullscreen: true
@@ -533,6 +553,16 @@ mw.hook('wikipage.content').add(function($content) {
                 $this.html(
                     $('<iframe>', {
                         src: 'https://commons.wikimedia.org/wiki/File%3A' + id + '?embedplayer=yes',
+                        css: css,
+                        frameborder: 0
+                    })
+
+                );
+                break;
+            case 'myvi':
+                $this.html(
+                    $('<iframe>', {
+                        src: 'https://myvi.ru/player/embed/html/' + id,
                         css: css,
                         frameborder: 0
                     })

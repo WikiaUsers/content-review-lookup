@@ -1,0 +1,1 @@
+var chatTopic = 'Welcome to the Call of Duty Wiki chat. A list of emojis can be found [[MediaWiki:Emoticons|here.]

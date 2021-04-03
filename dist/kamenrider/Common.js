@@ -9,9 +9,11 @@ window.MessageWallUserTags = {
         'Guardianofthehall': 'ADMIN',
         'Digi': 'ADMIN',
         'Aldo_The_Fox': 'ADMIN',
-        'TotallyNotCrt': 'ADMIN',
         'Gokyr586': 'ADMIN',
         'Lord_Shaman': 'ADMIN',
+        'Yugioht42': 'ADMIN',
+        'Rgiacobbi1': 'ADMIN',
+        'RedLegend1': 'ADMIN',
     }
 };
  

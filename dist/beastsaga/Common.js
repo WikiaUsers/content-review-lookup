@@ -1,12 +1,10 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-var MessageBlock = {
+window.MessageBlock = {
   title : 'Blocked',
   message : 'You have been blocked for $2 because you have committed the following offence(s): $1',
   autocheck : true
 };
-
-addOnloadHook(createCollapseButtons);
 
 /** Magic editintros ****************************************************
  *
@@ -24,7 +22,7 @@ function addEditIntro(name) {
 
 
 if (wgNamespaceNumber == 0) {
-    addOnloadHook(function() {
+    $(function() {
         if (document.getElementById('disambigbox'))
             addEditIntro('Template:Disambig_editintro');
     });
@@ -33,9 +31,6 @@ if (wgNamespaceNumber == 0) {
 /****************************************/
 /* sliders using jquery by User:Tierrie */
 /****************************************/
-//wsl.loadScript("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js");
-//wsl.loadScript("https://dragonage.wikia.com/index.php?title=MediaWiki:Jquery-ui.min.js&action=raw&ctype=text/javascript");
-
 mw.loader.using(['jquery.ui.tabs'], function() {
     $(function() {
         var $tabs = $("#portal_slider").tabs({
@@ -62,20 +57,17 @@ mw.loader.using(['jquery.ui.tabs'], function() {
 /******************************/
 /* changes the redirect image */
 /******************************/
-function ChangeRedirectImage() {
+$(function ChangeRedirectImage() {
     $('.redirectMsg img').attr('src', 'https://images.wikia.nocookie.net/__cb20100902033555/dragonage/images/b/b5/Redirectltr.png');
-}
-addOnloadHook(ChangeRedirectImage);
+});
 
 //ArchiveTool configuration 
-
 var ArchiveToolConfig = {
     archiveListTemplate: 'ArchCat',
     archivePageTemplate: 'ArchPage',
     archiveSubpage: 'Archive',
     userLang: true
 };
-
 
 /////////////////
 // END OF CODE //

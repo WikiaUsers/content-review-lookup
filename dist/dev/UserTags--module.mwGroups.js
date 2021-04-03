@@ -5,7 +5,7 @@
 // MODULE: MediaWiki Groups
 // Creates tags based on selected MediaWiki user groups.
 // This module fetches its tag data from the server as well.
-// NOTE: This module is complicated by Wikia's weird server setup that doesn't respond to queries
+// NOTE: This module is complicated by Fandom's weird server setup that doesn't respond to queries
 //    coherently.
 // NOTE: We try to speed this up slightly by caching the tag data in localStorage
 // NOTE: As far as examples of modules go, this and newuser are the most complicated, try reading
@@ -19,7 +19,7 @@ UserTagsJS.extensions.mwGroups = (function($, document) {
         _groupRegex: /^group-(.+)-member$/,
         start: function(config, username, logger/*, lang*/) {
             // NOTE: bannedfromchat displays in Oasis but is not a user-identity group
-            var groups = ['bannedfromchat', 'blocked', 'bot', 'bureaucrat', 'chatmoderator', 'checkuser', 'content-moderator', 'council', 'helper', 'rollback', 'staff', 'sysop', 'threadmoderator', 'vanguard', 'vstf', 'global-discussions-moderator', 'content-volunteer'];
+            var groups = ['bannedfromchat', 'blocked', 'bot', 'bureaucrat', 'chatmoderator', 'checkuser', 'content-moderator', 'council', 'helper', 'rollback', 'staff', 'sysop', 'threadmoderator', 'vanguard', 'global-discussions-moderator', 'content-volunteer', 'wiki-manager', 'content-team-member', 'soap'];
             if (!$.isArray(config)) {
                 config = groups;
             } else if (window.UserTagsMergeMWGroups === true) {

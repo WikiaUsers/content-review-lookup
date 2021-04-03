@@ -306,7 +306,6 @@ window.UserTagsJS = {
 		captures: 'SpongeBob Captures Manager',
 		youtube: 'YouTube Manager',
 		socialmedia: 'Social Media Manager',
-		chatbotop: 'SpongeBobiaChatBot Operator',
 		instagram: 'Instagram Manager'
 	}
 };
@@ -316,10 +315,10 @@ UserTagsJS.modules.custom = {
     'Alex.sapre': ['skype'],
     'AMK152': ['adopter', 'skype', 'facebook'],
     'AW10': ['captures'],
+    'BSpongeSM02': ['usermonth'],
     'Golfpecks256': ['instagram'],
     'Haldir': ['founder'],
     'Spongebob456': ['skype', 'socialmedia'],
-    'TheKorraFanatic': ['chatbotop']
 };
 
 UserTagsJS.modules.inactive = 30;
@@ -369,32 +368,21 @@ window.MessageWallUserTags = {
         'Spongebob456': 'Bureaucrat • Administrator',
         'Figmeister': 'Bureaucrat • Administrator',
         
-        'Alex.sapre': 'Administrator',
         'Anthony2306': 'Administrator',
         'Kandy Katie': 'Administrator',
         'Koolkitty108': 'Administrator',
         'TheKorraFanatic': 'Administrator',
+        'Stryker305': 'Administrator',
+        'BSpongeSM02':  'Administrator',
     
         'DragonSpore18': 'Assistant',
         'The Smarter, Wiser King Dedede': 'Assistant',
-        'Scrooge200': 'Assistant',
 
-        'Chickenkrispies': 'Discussion Moderator',
         'Idroppedmypen': 'Discussion Moderator',
-        'MagicSponge123': 'Discussion Moderator',
-        'IloGaming4': 'Discussion Moderator',
         'SpongeTron D': 'Discussion Moderator',
-        'Qwertyxp2000 the second': 'Discussion Moderator',
-        
-        'Cmcgrath26': 'Chat Moderator',
-        'TheNerdyGirl05': 'Chat Moderator',
-        'Mavnol333': 'Chat Moderator',
-        'Doctor Patrick': 'Chat Moderator',
-        'EmilyHReturns': 'Chat Moderator • Rollback',
-        
-        'AFallenPower': 'Rollback',
+        'BookFandumb': 'Discussion Moderator',
+
         'FlyingDutchmen': 'Rollback',
-        'Plant Protecter': 'Rollback',
         'TheJasbre202': 'Rollback',
     }
 };

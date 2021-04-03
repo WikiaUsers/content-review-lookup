@@ -1,1 +1,0 @@
-#REDIRECT [[ShowHide/code.js]]

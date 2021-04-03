@@ -6,3 +6,9 @@ importArticles({
         "w:c:dev:MediaWiki:Countdown/code.js"
     ]
 });
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:DiscussionsActivity.js',
+    ]
+});

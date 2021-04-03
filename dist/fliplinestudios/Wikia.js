@@ -17,4 +17,11 @@ window.addEventListener('load', function() {
            }
         });
     }, 1000);
+
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WikiActivity.js',
+    ]
 });

@@ -9,7 +9,7 @@
             this.i18n = i18n;
             this.api = new mw.Api();
             this.$element = $('<a>', {
-                'class': $('.UserProfileActionButton .WikiaMenuElement').exists() ?
+                'class': $('.UserProfileActionButton .WikiaMenuElement').length ?
                     'wikia-menu-button' :
                     'wds-button wds-is-secondary',
                 click: $.proxy(this.click, this),
@@ -48,7 +48,13 @@
         },
         callback: function(d) {
             if (!d.error) {
-                new BannerNotification(this.i18n.msg('added').escape(), 'confirm').show();
+                if (mw.config.get('wgVersion') !== '1.19.24') {
+                    mw.loader.using('mediawiki.notify').then(function () {
+                        mw.notify(this.i18n.msg('added').escape());
+                    });
+                } else {
+                    new BannerNotification(this.i18n.msg('added').escape(), 'confirm').show();
+                }
             }
         },
         hook: function(i18n) {

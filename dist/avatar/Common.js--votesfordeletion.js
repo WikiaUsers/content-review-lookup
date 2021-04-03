@@ -8,7 +8,7 @@ var rawID;
  */
 
 function closeAppear() {
-  if ( wgPageName == "Avatar_Wiki:Votes_for_deletion" && $(".discussions").length > 0 && wgAction != "edit" ) {
+  if ( mw.config.get('wgPageName') == "Avatar_Wiki:Votes_for_deletion" && $(".discussions").length > 0 && mw.config.get('wgAction') != "edit" ) {
     var sAll = 0;
     var modeAll = 2;
     $(".discussions.cls-discuss").hide();
@@ -128,7 +128,7 @@ function closeAppear() {
       });
     }
   }
-  else if ( wgPageName == "Avatar_Wiki:Votes_for_deletion" ) {
+  else if ( mw.config.get('wgPageName') == "Avatar_Wiki:Votes_for_deletion" ) {
     $(".AJAXRefresh").html('<a href="javascript:void(0)">Refresh</a>');
     $(".AJAXRefresh").click(function() {
       $(".archive").html('<div style="text-align:center; padding:8px"><img src="https://images.wikia.nocookie.net/__cb61992/common/skins/common/images/ajax.gif"/></div>');
@@ -148,13 +148,13 @@ function closeAppear() {
     });
   }
 }
-addOnloadHook(closeAppear);
+$(closeAppear);
 
 /* For AJAX refresh checkbox
  * By: [[User:KettleMeetPot|KettleMeetPot]]
  */
 $(document).ready(function ajaxCheckbox() {
-  if ( wgPageName == "Avatar_Wiki:Votes_for_deletion" ) {
+  if ( mw.config.get('wgPageName') == "Avatar_Wiki:Votes_for_deletion" ) {
     var intervalID;
     $(".AJAXrefresher").html('<span style="font-size: xx-small; line-height: 100%;" id="ajaxRefresh"><span style="border-bottom: 1px dotted; cursor: help;" title="Automatically refresh the VfD listing">Auto-refresh:</span><input type="checkbox" style="margin-bottom: 0;" id="ajaxvfdToggle"></span>')
     $("#ajaxvfdToggle").click(function() {
@@ -202,7 +202,7 @@ $(document).ready(function ajaxCheckbox() {
  */
 
 function closeClick() {
-  if ( wgPageName == "Avatar_Wiki:Votes_for_deletion" && closeApprove == true) {
+  if ( mw.config.get('wgPageName') == "Avatar_Wiki:Votes_for_deletion" && closeApprove == true) {
     $(".cDiscuss").click(function() {
       rawID = $(this).attr("id").replace(/\.28/g, "(").replace(/\.29/g, ")").replace(/\.27/g, "'").replace(/\.2F/g, "/");
       var ID = rawID.replace(/_/g," ");
@@ -279,7 +279,7 @@ function closeClick() {
     });
   }
 }
-addOnloadHook(closeClick);
+$(closeClick);
 
 /* Immediate return to community discussion page after editing. 
  * Works via ensuring publish editform does not redirect to the listed action page.
@@ -287,7 +287,7 @@ addOnloadHook(closeClick);
  */
 
 $(document).ready(function actionSubmit() {
-  if ( wgPageName.slice(0,31) == "Avatar_Wiki:Votes_for_deletion/" && wgPageName.slice(31,38) != "Archive" && wgAction == "view" && window.opener === null) {
+  if ( mw.config.get('wgPageName').slice(0,31) == "Avatar_Wiki:Votes_for_deletion/" && mw.config.get('wgPageName').slice(31,38) != "Archive" && wgAction == "view" && window.opener === null) {
     window.location = "https://avatar.fandom.com/wiki/Avatar_Wiki:Votes_for_deletion?action=purge";
     //When publish is clicked, target location is then redirected
   }
@@ -298,7 +298,7 @@ $(document).ready(function actionSubmit() {
  */
 
 function archiveClick() {
-  if ( wgPageName == "Avatar_Wiki:Votes_for_deletion" && closeApprove == true ) {
+  if ( mw.config.get('wgPageName') == "Avatar_Wiki:Votes_for_deletion" && closeApprove == true ) {
     $(".sys-tool").click(function() {
       importArticles({
         type: "style",

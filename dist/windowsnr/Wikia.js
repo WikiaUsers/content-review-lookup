@@ -1,1 +1,0 @@
-importScriptPage('AjaxTemplate/code.js', 'dev');

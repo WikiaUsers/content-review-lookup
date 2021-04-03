@@ -284,3 +284,19 @@ $(function() {
 });
 
 }(window, jQuery, mediaWiki));
+
+
+/* Temporary fix for countdown templates */
+importArticles({
+    type: "script",
+    articles: [
+        "w:c:dev:MediaWiki:Countdown/code.js"
+    ]
+});
+
+/* Link Preview */
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.tlen = 1000;
+
+window.pPreview.RegExp.onlyinclude = ['.preview'];
+window.pPreview.RegExp.iclasses = ['.parenttab', '.box']

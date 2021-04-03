@@ -10,12 +10,13 @@ window.UserTagsJS = {
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		bureaucrat: { u:'Bureaucrat Tag', link:'Project:Bureaucrats' },
-		inactive: { u: 'Has not edited recently' }
+		bureaucrat: { u:'Burocrate', link:'Project:Amministratori#Strumenti_dei_burocrati' },
+		sysop: { u:'Amministratore', link:'Project:Amministratori#Strumenti_degli_amministratori' },
+		inactive: { u: 'Inattivo' }
 	}
 };
  
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'rollback', 'bannedfromchat', 'blocked'];
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'rollback', 'blocked'];
 UserTagsJS.modules.autoconfirmed = true;
 UserTagsJS.modules.newuser = false;
 UserTagsJS.modules.nonuser = true; // Switch on

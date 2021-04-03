@@ -4,30 +4,22 @@
  * Author:      KockaAdmiralac <1405523@gmail.com>
  * Description: Adds a button for updating [[MediaWiki:Highlight.css]].
  */
-require([
-    'wikia.window',
-    'jquery',
-    'mw',
-    'BannerNotification'
-], function(window, $, mw, BannerNotification) {
+(function () {
     'use strict';
     var config = mw.config.get([
         'wgArticleId',
-        'wgCityId'
+        'wgCityId',
+        'wgVersion'
     ]);
     if (
         config.wgArticleId !== 2160 ||
-        config.wgCityId !== '7931' ||
-        $('#ca-highlights').exists()
+        Number(config.wgCityId) !== 7931 ||
+        $('#ca-highlights').length
     ) {
         return;
     }
     var HighlightUpdater = {
         groups: {
-            'content-volunteer': {
-                color: '#ff7000',
-                cssVar: 'convol'
-            },
             'vanguard': {
                 color: '#1eaf7a',
                 cssVar: 'vanguard'
@@ -40,9 +32,9 @@ require([
                 color: '#4286f4',
                 cssVar: 'gdm'
             },
-            'vstf': {
+            'soap': {
                 color: '#ff7777',
-                cssVar: 'vstf'
+                cssVar: 'soap'
             },
             'helper': {
                 color: '#4c5f1d',
@@ -62,10 +54,26 @@ require([
             }
         },
         overrides: {
-            add: {},
+            add: {
+                'SOAP_Bot': ['soap']
+            },
             remove: {
+                'CT1000': ['soap'],
                 'Data-engineering-bot': ['global-discussions-moderator'],
-                'Noreports': ['global-discussions-moderator']
+                'DSlayful': [
+                    'staff',
+                    'helper',
+                    'soap'
+                ],
+                'Noreports': ['global-discussions-moderator'],
+                'Socvoluntary': ['soap'],
+                'Testludwikvs': ['soap'],
+                'Ucpnltest2': ['soap'],
+                'Ursuula': [
+                    'wiki-manager',
+                    'content-team-member'
+                ],
+                'Wiki-o-slay': ['soap']
             }
         },
         init: function() {
@@ -171,10 +179,16 @@ require([
             return selectors;
         },
         edited: function() {
-            new BannerNotification(
-                'Highlights successfully updated!',
-                'confirm'
-            ).show();
+            if (config.wgVersion === '1.19.24') {
+                new BannerNotification(
+                    'Highlights successfully updated!',
+                    'confirm'
+                ).show();
+            } else {
+                mw.loader.using('mw.notification').then(function () {
+                    mw.notify('Highlights successfully updated!');
+                });
+            }
             setTimeout(function() {
                 window.location.reload();
             }, 3000);
@@ -185,4 +199,4 @@ require([
         'mediawiki.user',
         'mediawiki.util'
     ]).then($.proxy(HighlightUpdater.init, HighlightUpdater));
-});
+})();
