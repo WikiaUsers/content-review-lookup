@@ -38,11 +38,11 @@ async function getJSPages(url, pages, gapcontinue, rvcontinue) {
     });
     const {error, query, warnings} = response;
     const c = response.continue;
+    const truncated = c && c.rvcontinue;
     if (error) {
         throw new Error(error.code);
     }
-    if (warnings && !c && !c.rvcontinue) {
-        // A truncation didn't happen but we got a warning.
+    if (warnings && !truncated) {
         console.warn();
         console.warn('API warning: ', warnings);
     }
@@ -53,8 +53,7 @@ async function getJSPages(url, pages, gapcontinue, rvcontinue) {
     for (const {title, revisions} of Object.values(query.pages)) {
         if (title.endsWith('.js')) {
             if (!revisions || !revisions[0]) {
-                if (!c && !c.rvcontinue) {
-                    // A truncation didn't happen but revisions are missing.
+                if (!truncated) {
                     console.warn();
                     console.warn('No revisions:', title, revisions, url);
                 }
