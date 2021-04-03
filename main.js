@@ -141,6 +141,9 @@ async function getWiki(url, attempt) {
         } else if (response && response.statusCode === 403) {
             // Internal wiki.
             errors.write(`Permission denied on ${url}.\n`);
+        } else if (response && response.statusCode === 404) {
+            // Nonexistent wiki.
+            errors.write(`Nonexistent wiki: ${url}.\n`);
         } else if (response && response.statusCode === 410) {
             // Closed wiki.
         } else if (response && response.statusCode >= 500) {
