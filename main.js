@@ -22,8 +22,9 @@ const errors = createWriteStream('errors.txt'),
  * @param {string} url Wiki URL
  * @param {Map<string, string>} pages Page name => content map to populate
  * @param {string} gapcontinue Parameter to continue with
+ * @param {string} rvcontinue Parameter to continue listing revisions with
  */
-async function getJSPages(url, pages, gapcontinue) {
+async function getJSPages(url, pages, gapcontinue, rvcontinue) {
     const response = await apiQuery(url, {
         gapcontinue,
         gapfilterredir: 'nonredirects',
@@ -31,14 +32,17 @@ async function getJSPages(url, pages, gapcontinue) {
         gapnamespace: 8,
         generator: 'allpages',
         prop: 'revisions',
+        rvcontinue,
         rvprop: 'content',
         rvslots: 'main'
     });
     const {error, query, warnings} = response;
+    const c = response.continue;
     if (error) {
         throw new Error(error.code);
     }
-    if (warnings) {
+    if (warnings && !c && !c.rvcontinue) {
+        // A truncation didn't happen but we got a warning.
         console.warn();
         console.warn('API warning: ', warnings);
     }
@@ -49,21 +53,24 @@ async function getJSPages(url, pages, gapcontinue) {
     for (const {title, revisions} of Object.values(query.pages)) {
         if (title.endsWith('.js')) {
             if (!revisions || !revisions[0]) {
-                console.warn();
-                console.warn('No revisions:', title, revisions, url);
+                if (!c && !c.rvcontinue) {
+                    // A truncation didn't happen but revisions are missing.
+                    console.warn();
+                    console.warn('No revisions:', title, revisions, url);
+                }
             } else if (revisions[0]['*']) {
                 // Legacy wiki.
                 pages.set(title, revisions[0]['*']);
             } else if (revisions[0].slots) {
                 pages.set(title, revisions[0].slots.main['*']);
             } else {
-                console.warn();
-                console.warn('No slots:', title, revisions, url);
+                // No content on page.
             }
         }
     }
-    if (response.continue) {
-        await getJSPages(url, pages, response.continue.gapcontinue);
+    if (c) {
+        const apcontinue = c.gapcontinue || gapcontinue;
+        await getJSPages(url, pages, apcontinue, c.rvcontinue);
     }
 }
 
@@ -128,8 +135,7 @@ async function getWiki(url, attempt) {
             // Nonexistent wiki.
         } else if (code === 'ERR_TLS_CERT_ALTNAME_INVALID') {
             // One of old.something.fandom.com wikis.
-        } else if (response && response.statusCode === 404) {
-            // Does not have content review enabled, skip.
+            errors.write(`SSL error: ${url}.\n`);
         } else if (message === 'readapidenied') {
             // Private wiki.
             errors.write(`Private wiki: ${url}.\n`);

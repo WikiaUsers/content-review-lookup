@@ -10,5 +10,6 @@ $ npm install
 ```
 To run the script that generates the `dist/` directory, run:
 ```
-$ npm run
+$ npm start
 ```
+You must have a `urls.json` file in the directory with an array of all wiki URLs on Fandom.
