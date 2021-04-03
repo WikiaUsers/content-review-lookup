@@ -3,51 +3,86 @@
  *
  * Looks up content in JavaScript pages globally.
  */
-'use strict';
-
-/**
- * Importing modules.
- */
-const fs = require('fs'),
-      path = require('path'),
-      progress = require('cli-progress'),
-      util = require('./util.js'),
-      config = require('./config.json'),
-      urls = require('./urls.json');
+import {apiQuery, readJSON} from './util.js';
+import {dirname, join} from 'path';
+import {mkdir, writeFile} from 'fs/promises';
+import {Bar} from 'cli-progress';
+import {createWriteStream} from 'fs';
+import sanitize from 'sanitize-filename';
 
 /**
  * Constants.
  */
-const results = fs.createWriteStream('results.txt'),
-      errors = fs.createWriteStream('errors.txt'),
-      WIKI_VALIDATION_REGEX = /^https?:\/\/([a-z0-9-.]+)\.(fandom\.com|wikia\.(?:com|org)|(?:wikia|fandom)-dev\.(?:com|us|pl))\/?([a-z-]*)/u;
+const errors = createWriteStream('errors.txt'),
+      WIKI_VALIDATION_REGEX = /^https?:\/\/([a-z0-9-.]+)\.(fandom\.com|wikia\.(?:com|org)|(?:wikia|fandom)-dev\.(?:com|us|pl)|gamepedia\.(?:com|io))\/?([a-z-]*)/u,
+      THREADS = 40;
 
-function getJS(url) {
-    return util.getJSON(`${url}/wikia.php`, {
-        controller: 'JSPagesSpecial',
-        format: 'json'
-    });
-}
-
-function getBatch(url, pages) {
-    return util.apiQuery(url, {
-        titles: pages.join('|'),
+/**
+ * Gets all JavaScript pages from a wiki's MediaWiki namespace.
+ * @param {string} url Wiki URL
+ * @param {Map<string, string>} pages Page name => content map to populate
+ * @param {string} gapcontinue Parameter to continue with
+ */
+async function getJSPages(url, pages, gapcontinue) {
+    const response = await apiQuery(url, {
+        gapcontinue,
+        gapfilterredir: 'nonredirects',
+        gaplimit: 50,
+        gapnamespace: 8,
+        generator: 'allpages',
         prop: 'revisions',
         rvprop: 'content',
-        indexpageids: true
-    })
+        rvslots: 'main'
+    });
+    const {error, query, warnings} = response;
+    if (error) {
+        throw new Error(error.code);
+    }
+    if (warnings) {
+        console.warn();
+        console.warn('API warning: ', warnings);
+    }
+    if (!query) {
+        // No pages.
+        return;
+    }
+    for (const {title, revisions} of Object.values(query.pages)) {
+        if (title.endsWith('.js')) {
+            if (!revisions || !revisions[0]) {
+                console.warn();
+                console.warn('No revisions:', title, revisions, url);
+            } else if (revisions[0]['*']) {
+                // Legacy wiki.
+                pages.set(title, revisions[0]['*']);
+            } else if (revisions[0].slots) {
+                pages.set(title, revisions[0].slots.main['*']);
+            } else {
+                console.warn();
+                console.warn('No slots:', title, revisions, url);
+            }
+        }
+    }
+    if (response.continue) {
+        await getJSPages(url, pages, response.continue.gapcontinue);
+    }
 }
 
+/**
+ * Processes a JS page's content.
+ * @param {string} url Wiki URL
+ * @param {string} page Page title
+ * @param {string} content Page content
+ */
 async function processContent(url, page, content) {
     const wikiRes = WIKI_VALIDATION_REGEX.exec(url);
     if (wikiRes) {
         wikiRes.shift();
-        const subdomain = wikiRes.shift(),
-              domain = wikiRes.shift(),
-              language = wikiRes.shift(),
-              pagename = page
-                .replace(/^MediaWiki:/, '')
-                .replace(/\//g, '--');
+        const subdomain = wikiRes.shift();
+        const domain = wikiRes.shift();
+        const language = wikiRes.shift();
+        const pagename = page
+            .replace(/^[^:]+:/u, '')
+            .replace(/\//gu, '--');
         let folder = subdomain;
         if (domain !== 'fandom.com') {
             folder += `.${domain}`;
@@ -55,97 +90,94 @@ async function processContent(url, page, content) {
         if (language) {
             folder = `${language}.${folder}`;
         }
-        const file = path.join(`dist/${folder}`, pagename);
+        const file = join(`dist/${folder}`, sanitize(pagename, {
+            replacement: '_'
+        }));
         try {
-            await fs.promises.mkdir(path.dirname(file), {
+            await mkdir(dirname(file), {
                 recursive: true
             });
-            await fs.promises.writeFile(file, content);
+            await writeFile(file, content, {
+                flag: 'wx'
+            });
         } catch (error) {
-            console.error(
-                'An error occurred while creating a file for',
-                page, 'on', url, error
-            );
+            console.error('File creation error for', page, 'on', url, error);
+            errors.write(`File creation error for ${page} on ${url}: ${JSON.stringify(error)}\n`);
         }
     } else {
         console.error('Failed to parse wiki URL:', url);
-    }
-    for (const pattern in config.patterns) {
-        if (config.patterns[pattern].exec(content)) {
-            results.write(`${pattern}: ${url}/wiki/${util.encode(page)}\n`);
-        }
+        errors.write(`Failed to parse wiki URL: ${url}.\n`);
     }
 }
 
-async function getWiki(url) {
+/**
+ * Gets all JS pages from a wiki and processes them.
+ * @param {string} url Wiki URL
+ * @param {number} attempt Current amount of attempts on server error
+ */
+async function getWiki(url, attempt) {
     try {
-        const pages = Object
-                .values((await getJS(url)).jsPages)
-                .map(value => value.pageName);
-        while (pages.length) {
-            const d = await getBatch(url, pages.splice(0, 50));
-            if (d.error || !d || !d.query || !d.query.pages) {
-                if (typeof d === 'string') {
-                    // Nonexistent wiki.
-                } else if (d.error && d.error.code === 'readapidenied') {
-                    // Private wiki.
-                } else {
-                    errors.write(`API error: ${url}: ${JSON.stringify(d)}.\n`);
-                }
-            } else {
-                await Promise.all(
-                    d.query.pageids
-                        .map(id => d.query.pages[id])
-                        .filter(page => page.revisions && page.revisions.length)
-                        .map(page => processContent(url, page.title, page.revisions[0]['*']))
-                    );
-            }
+        const pages = new Map();
+        await getJSPages(url, pages);
+        for (const [title, content] of pages.entries()) {
+            await processContent(url, title, content);
         }
-    } catch (e) {
-        if (e.code === 'ENOTFOUND' || e.name === 'ParseError') {
+    } catch (error) {
+        const {code, message, name, response} = error;
+        if (code === 'ENOTFOUND' || name === 'ParseError') {
             // Nonexistent wiki.
-        } else if (e.code === 'ERR_TLS_CERT_ALTNAME_INVALID') {
+        } else if (code === 'ERR_TLS_CERT_ALTNAME_INVALID') {
             // One of old.something.fandom.com wikis.
-        } else if (e.response && e.response.statusCode === 404) {
+        } else if (response && response.statusCode === 404) {
             // Does not have content review enabled, skip.
-        } else if (e.response && e.response.statusCode === 403) {
-            // Internal wiki. Or maybe login issue?
+        } else if (message === 'readapidenied') {
+            // Private wiki.
+            errors.write(`Private wiki: ${url}.\n`);
+        } else if (response && response.statusCode === 403) {
+            // Internal wiki.
             errors.write(`Permission denied on ${url}.\n`);
-        } else if (e.response && e.response.statusCode === 410) {
+        } else if (response && response.statusCode === 410) {
             // Closed wiki.
-        } else if (e.response && e.response.statusCode >= 500) {
+        } else if (response && response.statusCode >= 500) {
             // Fandom oof'd.
-            console.error(url, e);
-            errors.write(`${e.response.statusCode} on ${url}: ${JSON.stringify(e)}\n`);
-        } else if (e.response && e.response.statusCode) {
+            if (attempt === 10) {
+                console.error(url, error);
+                errors.write(`${response.statusCode} on ${url}: ${JSON.stringify(error)}\n`);
+            } else {
+                await getWiki(url, attempt + 1);
+            }
+        } else if (response && response.statusCode) {
             // wat.
-            console.error(e);
-            errors.write(`Error code ${e.response.statusCode}: ${url}.\n`);
+            console.error(url, error);
+            errors.write(`Error code ${response.statusCode}: ${url}.\n`);
         } else {
-            console.error('Unusual error:', e);
+            console.error('Unusual error on', url, error);
+            errors.write(`Unusal error on ${url}: ${JSON.stringify(error)}\n`);
         }
     }
 }
 
+/**
+ * Main function.
+ */
 async function run() {
-    for (const pattern in config.patterns) {
-        config.patterns[pattern] = new RegExp(config.patterns[pattern], 'iu');
-    }
-    await util.logIn(config.username, config.password);
-    const allUrls = urls.length,
-          bar = new progress.Bar({
-              barsize: 25,
-              clearOnComplete: true,
-              format: '[{bar}] {percentage}% ({value}: {eta}s)',
-              stopOnComplete: true,
-              stream: process.stdout
-          });
+    const urls = await readJSON('urls.json');
+    const allUrls = urls.length;
+    const bar = new Bar({
+        barsize: 40,
+        clearOnComplete: true,
+        format: '[{bar}] {percentage}% ({value}: {eta}s)',
+        stopOnComplete: true,
+        stream: process.stdout
+    });
     bar.start(allUrls, 0);
     while (urls.length) {
-        await Promise.all(urls.splice(0, config.threads).map(getWiki));
+        await Promise.all(urls.splice(0, THREADS)
+            .map(url => getWiki(url, 1)));
         bar.update(allUrls - urls.length);
     }
     bar.stop();
+    errors.close();
 }
 
 run();

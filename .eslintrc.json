@@ -6,8 +6,10 @@
     "globals": {
         "main": false
     },
+    "ignorePatterns": ["dist/**/*.js"],
     "parserOptions": {
-        "ecmaVersion": 2018
+        "ecmaVersion": 2018,
+        "sourceType": "module"
     },
     "plugins": [
         "jsdoc",
@@ -406,7 +408,7 @@
             }
         ],*/
         "jsdoc/implements-on-classes": "error",
-        "jsdoc/match-description": "error",
+        // "jsdoc/match-description": "error",
         "jsdoc/newline-after-description": [
             "error",
             "never"
@@ -458,7 +460,7 @@
         "node/no-unpublished-bin": "error",
         "node/no-unpublished-require": "error",
         "node/no-unsupported-features/es-builtins": "error",
-        "node/no-unsupported-features/es-syntax": "error",
+        // "node/no-unsupported-features/es-syntax": "error",
         "node/no-unsupported-features/node-builtins": "error",
         "node/process-exit-as-throw": "error",
         "node/shebang": "error",
