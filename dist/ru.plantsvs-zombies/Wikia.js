@@ -1,5 +1,5 @@
 /*Скрипт альтернативного виджета дискорда*/
-(function () {
+$(function () {
  
 if ( $('#WikiaRail').length )
     initDiscordModule();
@@ -87,4 +87,4 @@ function setupModule(data) {
     console.log("Discord module has currently loaded");
 }
  
-})();
+});

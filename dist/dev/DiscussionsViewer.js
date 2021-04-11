@@ -195,3 +195,4 @@
   mw.hook('dev.showCustomModal').add(dpv.preload);
   mw.loader.using('mediawiki.template.mustache').then(dpv.preload);
 })();
+//</pre>

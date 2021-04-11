@@ -382,6 +382,6 @@ if ( mw.config.get( 'wgPageName' ).indexOf( 'Spezial:Verschieben/' ) != -1
 
 // Avoid redirecting for links in categories
 $( '.ns-14 .redirect-in-category .mw-redirect' ).each(function( i, e ){
-    var link = $( e ).attr( 'href' ).replace( /^\//, '' );
-    $( e ).attr( 'href', '/index.php?title=' + link + '&redirect=no' );
+    var link = $( e ).attr( 'href' );
+    $( e ).attr( 'href', link + ( link.includes('?') ? '&' : '?' ) + 'redirect=no' );
 });

@@ -16,7 +16,7 @@
  */
 
 /*jshint jquery:true, browser:true, devel:true, camelcase:true, curly:false, undef:true, bitwise:true, eqeqeq:true, forin:true, immed:true, latedef:true, newcap:true, noarg:true, unused:true, regexp:true, strict:true, trailing:false */
-/*global mediaWiki:true*/
+/*global mediaWiki:true, importArticle:true*/
 
 ;(function (module, mw, $, undefined) {
 	'use strict';
@@ -61,17 +61,17 @@
 				.append(
 					$('<img>', {
 						'class': "sprite edit-pencil"
-						,'src': "data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D"
+						,'src': mw.config.get("wgBlankImgUrl")
 					})
 				)
-				.append(i18n.msg('text').plain())
+				.append(i18n.msg('text').escape())
 			)
 		);
 	}
 	
 	function hook(i18nData) {
-        i18n = i18nData;
-        $tabs.each(doEach);
+		i18n = i18nData;
+		$tabs.each(doEach);
 		$tabs.addClass('tvel_handled');
 	}
 
@@ -82,12 +82,12 @@
 
 		if ($tabs.length) {
 			mw.hook('dev.i18n').add(function(i18no) {
-                i18no.loadMessages('TabViewEditLinks').then(hook);
-            });
-            importArticle({
-                type: 'script',
-                article: 'u:dev:MediaWiki:I18n-js/code.js'
-            });
+				i18no.loadMessages('TabViewEditLinks').then(hook);
+			});
+			importArticle({
+				type: 'script',
+				article: 'u:dev:MediaWiki:I18n-js/code.js'
+			});
 		}
 	}
 

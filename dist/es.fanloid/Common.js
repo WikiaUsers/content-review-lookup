@@ -26,3 +26,17 @@ window.UserTagsJS = {
 	tags: {},
 	oasisPlaceBefore: ''
 };
+
+window.rwaOptions = {
+    limit : 150,
+    namespaces : [ 0, 1, 2, 3, 4, 5, 6, 7, 110, 111, 500, 501, 828, 829 ],
+    autoInit : true,
+    themeName : "main",
+    showBotEdits : false,
+    loadModule : false,
+    customRendering : { },
+    headerLink : false,
+    refresh : false,
+    refreshDelay : 0,
+    timeout : 0
+};

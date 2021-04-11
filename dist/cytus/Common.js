@@ -42,7 +42,7 @@ $(document).ready(function() {
 /* April fools
 Randomizes all the text and buttons on the Main Page
 */
-if (mw.config.get("wgPageName") == "Cytus_Wiki" && mw.config.get("wgAction") == "view" && (new Date()).toUTCString().includes("1 Apr")) {
+if (mw.config.get("wgPageName") == "Cytus_Wiki" && mw.config.get("wgAction") == "view" && ((new Date()).toUTCString().includes("1 Apr") && !((new Date()).toUTCString().includes("11 Apr") || (new Date()).toUTCString().includes("21 Apr") || (new Date()).toUTCString().includes("31 Apr")))) {
 	$(document).ready(function() {
 		$(".WikiaPage span:not(:has(*)), .WikiaPage div:not(:has(*)), .WikiaPage a:not(:has(*)), .WikiaPage p:not(:has(*)), .WikiaPage h1:not(:has(*)), .WikiaPage b:not(:has(*)), .WikiaPage h2:not(:has(*)), .WikiaPage h3:not(:has(*)), .WikiaPage i:not(:has(*)), .WikiaPage u:not(:has(*)), #mw-content-text, button, .license-description").each(function() {
 		    var text = $(this).html();

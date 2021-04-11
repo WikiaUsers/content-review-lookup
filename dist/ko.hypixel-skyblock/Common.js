@@ -31,6 +31,8 @@ See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
 $('a[title="Message Wall"]').html('wall');
 $('a.external.text').removeAttr('target');
 
+var wgArticlePath = mw.config.get('wgArticlePath').replace('$1', '');
+
 // Add custom "focusable" class
 $('.focusable').attr('tabindex', 0);
 
@@ -55,7 +57,7 @@ var inter = setInterval(function() {
 
     function changeCommentLinks() { // jshint ignore:line
         $('span[class^="EntityHeader_header-details"] > div[class^="wds-avatar EntityHeader_avatar"] > a').each(function() {
-            var user = $(this).attr('href').replace(/\/wiki\/(User:|Special:Contributions\/)/gi, ''),
+            var user = decodeURIComponent($(this).attr('href')).replace(new RegExp(wgArticlePath + "((User|사용자):|(Special:Contributions|특수:기여)\\/)"), ''),
                 $link = $(this).parent().parent().children('a:last-of-type:not(.mw-user-anon-link)'),
                 $this = $(this);
 			
@@ -63,22 +65,22 @@ var inter = setInterval(function() {
             if (!canBlock && mw.util.isIPAddress(user, true)) return;
 
             $link
-                .attr('href', '/wiki/Special:Contributions/' + user)
+                .attr('href', wgArticlePath + 'Special:Contributions/' + user)
                 .html(user);
 
-            $this.attr('href', '/wiki/Special:Contributions/' + user);
+            $this.attr('href', wgArticlePath + 'Special:Contributions/' + user);
 
             $link.after(
                 '&nbsp;(',
                 $('<a>', {
-                    href: "/wiki/Message_wall:" + user,
+                    href: wgArticlePath + "Message_wall:" + user,
                     html: "wall",
                     title: "Message_wall:" + user,
                     class: "mw-user-anon-link",
                 }),
                 canBlock ? '&nbsp;<b>&bull;</b>&nbsp;' : "",
                 canBlock ? $('<a>', {
-                    href: "/wiki/Special:Block/" + user,
+                    href: wgArticlePath + "Special:Block/" + user,
                     html: "block",
                     title: "Special:Block/" + user,
                     class: "mw-user-anon-link",
@@ -236,15 +238,15 @@ $("div[class^='mw-customtoggle-'],div[class*=' mw-customtoggle-']").on("click", 
 
 /* Arbitrator Icon */
 $.when(
-    $.getJSON("/wiki/MediaWiki:Custom-ArbitratorsList.json?action=raw&ctype=text/json"),
-    $.getJSON("/wiki/MediaWiki:Gadget-StaffColorsUpdater.js/staff-colors.json?action=raw&ctype=text/json")
+    $.getJSON(wgArticlePath + "MediaWiki:Custom-ArbitratorsList.json?action=raw&ctype=text/json"),
+    $.getJSON(wgArticlePath + "MediaWiki:Gadget-StaffColorsUpdater.js/staff-colors.json?action=raw&ctype=text/json")
 ).then(function() {
 	var json = arguments[0][0];
 	var selector = arguments[1][0].selectors.ICONS;
 	
     json.forEach(function(user) {
         $(selector.replace(/\$1/, user).replace(/::before/, '').replace(/,$/, '')).after($('<a>', {
-            href: "/wiki/Project:Arbitration Committe",
+            href: wgArticlePath + "Project:Arbitration Committe",
             title: "This User is an Arbitrator",
             html: $('<img>', {
                 src: "https://static.wikia.nocookie.net/hypixel-skyblock/images/4/41/Scale_of_justice.png/revision/latest/scale-to-width-down/16",
@@ -281,7 +283,7 @@ $('#mw-content-text > .mw-parser-output').find('.pageStyles').each(function() {
 var count = 0;
 var inter = setInterval(function() {
 	if (count > 12000) return;
-	if (mw.config.get('profileUserId') && $('#userProfileApp').length) $('#userProfileApp .user-identity-stats a[href*="/wiki/Special:UserProfileActivity/"]').attr('href', '/f/u/' + mw.config.get('profileUserId')), clearInterval(inter);
+	if (mw.config.get('profileUserId') && $('#userProfileApp').length) $('#userProfileApp .user-identity-stats a[href*="' + wgArticlePath + "Special:UserProfileActivity/\"]").attr('href', '/f/u/' + mw.config.get('profileUserId')), clearInterval(inter);
 }, 5);	
 
 // Script to respond to ANI reports
@@ -366,18 +368,6 @@ if (mw.config.get('wgPageName').match(/^HSW:(.+)$/i) && mw.config.get('wgAction'
 	window.location.replace(mw.util.getUrl('Project:' + mw.config.get('wgPageName').match(/^HSW:(.+)$/i)[1]));
 }
 
-if (mw.config.get('wgPageName').match(/^MD:(.+)$/i) && mw.config.get('wgAction') === 'view') {
-	window.location.replace(mw.util.getUrl('Module_talk:' + mw.config.get('wgPageName').match(/^MD:(.+)$/i)[1]) + '/doc');
-}
-
-/* global ace */
-// Enable wrapping in Filter editors
-if (mw.config.get('wgPageName').match(/^Special:AbuseFilter\/\d+$/)) {
-    ace.edit('wpAceFilterEditor').setOptions({
-        wrapBehavioursEnabled: true,
-    });
-}
-
 //##############################################################
 /* ==importArticle pre-script actions== (X00)*/
 // The code in this section is for a script imported below
@@ -436,7 +426,7 @@ window.UserTagsJS = {
 	oasisPlaceBefore: ''
 };
 
-UserTagsJS.modules.custom = {
+window.UserTagsJS.modules.custom = {
 	// Old Wiki Staff
 	'IcyOfficial': ['oldstaff', 'mod', 'discord'],
 	'4hrue2kd83f': ['oldstaff', 'discord'],
@@ -520,7 +510,7 @@ window.importScripts = function(pages) {
 		match = match || v;
 	
 		$.ajax({
-			url: 'https://' + (Array.isArray(match) ? match[0] : wiki) + '.fandom.com/wiki/' + (Array.isArray(match) ? match[1] : match) + '?action=raw&ctype=text/javascript',
+			url: 'https://' + (Array.isArray(match) ? match[0] : wiki) + '.fandom.com' + wgArticlePath + (Array.isArray(match) ? match[1] : match) + '?action=raw&ctype=text/javascript',
 			dataType: "script",
 			cache: true,
 		}).then(function() {

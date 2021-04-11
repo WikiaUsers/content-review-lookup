@@ -6,4 +6,8 @@ $(function() {
 			 $("." + Class).addClass("active");
 		}
 	});
+	//Prevent images from lazyloading for a better transition between steps
+	$('.Walkthrough img.lazyload').attr('src', function(){
+			return $(this).attr('data-src');
+		}).addClass('ls-is-cached lazyloaded').removeClass('lazyload');
 });

@@ -1,6 +1,9 @@
 function timer(){
-$('<span style="font-weight:bold;" id="chance2"></span>').prependTo('.cookpotcell');
-$('<span style="position: relative;"><img class="hiddeningredientcookpot" id="result2"></span>').prependTo('.cookpotcell');
+for (var i = 4; i > 1; i = i - 1){
+  $('<span style="font-weight:bold;" id="chance' + i +'"></span>').prependTo('.cookpotcell');
+  $('<span style="position: relative;"><img class="hiddeningredientcookpot" id="result' + i +'"></span>').prependTo('.cookpotcell');	
+}
+
 $('<span style="font-weight:bold;" id="chance1"></span>').prependTo('.cookpotcell');
 $('<span style="position: relative;"><img class="ingredientcookpot" id="result1"></span>').prependTo('.cookpotcell');
 $('<span style="position: relative;"><img id="arrowcookpot" class="cookpotarrow" src = "https://vignette.wikia.nocookie.net/dont-starve/images/d/d2/Crock_Pot.png/revision/latest?cb=20130110150334&path-prefix=ru"></span>').prependTo('.cookpotcell');
@@ -30,16 +33,15 @@ $(this).attr('id',id);
 $(this).removeAttr('href');
 $(this).removeClass('image-thumbnail image');
 });
-$('#description > a,#description2 > a').each(function(){
+$('#description > a, #description2 > a, #description3 > a, #description4 > a').each(function(){
 var src = $(this).children('img').attr('data-src');
 $(this).children('img').attr('src',src);
 });
 }
 var cookpot = [];
-var cookpotResult;
 var dlc = "DS";
 var warly = false;
-var mode = "None"
+var mode = "None";
 var cookpotTimer;
 setTimeout(timer,1000);
 window.cookpotDeleteResult = function(){
@@ -47,16 +49,18 @@ window.cookpotDeleteResult = function(){
     $('#result1').attr('src',' ');
     $('#arrowcookpot').attr('src',"https://vignette.wikia.nocookie.net/dont-starve/images/d/d2/Crock_Pot.png/revision/latest?cb=20130110150334&path-prefix=ru");
     $('#chance1').text(' ');
-    $('#description').css({"display":"none"});
-    if(($('#result2').css('display'))!== 'none'){
-    $('#chance2').text(' ');
-    $('#description2').css({"display":"none"});
-    $('#result2').removeClass('ingredientcookpot');
-    $('#result2').addClass('hiddeningredientcookpot');
-    $('#result2').attr('src',' ');
+    $('#description1').css({"display":"none"});
+    for(var i = 4; i > 1 ; --i){
+    if(($('#result' + i).css('display'))!== 'none'){
+      $('#chance' + i).text(' ');
+      $('#description' + i).css({"display":"none"});
+      $('#result' + i).removeClass('ingredientcookpot');
+      $('#result' + i).addClass('hiddeningredientcookpot');
+      $('#result' + i).attr('src',' ');
+    }
     }
     clearInterval(cookpotTimer);
-    for(var k = 0;k < 10; k++){
+    for(var k = 0;k < 15; k++){
     delete cookpotResult[k];
     }
     }
@@ -79,16 +83,16 @@ window.cookpotDeleteAll = function(){
  
 window.cookpotAdd = function(title,src){//Добавляет ингридиент в казан, если слот пустой то он добавляет в него, если слот был удалён, также добавляет в него
  if(event.ctrlKey !== true){
-  if(cookpot[0] == undefined){
+  if(cookpot[0] === undefined){
     cookpot[0] = title;
     $('#cookpot1').attr('src',src);
-  }else if(cookpot[1] == undefined){
+  }else if(cookpot[1] === undefined){
     cookpot[1] = title;
     $('#cookpot2').attr('src',src);
-  }else if(cookpot[2] == undefined){
+  }else if(cookpot[2] === undefined){
     cookpot[2] = title;
     $('#cookpot3').attr('src',src);
-  }else if(cookpot[3] == undefined){
+  }else if(cookpot[3] === undefined){
     cookpot[3] = title;
     $('#cookpot4').attr('src',src);
   }
@@ -102,7 +106,7 @@ window.cookpotAdd = function(title,src){//Добавляет ингридиен�
     cookpotResult = data.expandtemplates['*'];
     return cookpotResult;
     } );
-    if(($('#result1').attr('src') == ' ') || ($('#result1').attr('src') == undefined)){
+    if(($('#result1').attr('src') == ' ') || ($('#result1').attr('src') === undefined)){
     src = $('#cookpotatwork').children('img').attr('data-src');
     $('#arrowcookpot').attr('src', src);
     }
@@ -115,39 +119,34 @@ window.showResult = function(){
     function returnResult(){
         if((cookpotResult !== undefined) && (cookpotResult[0] !== undefined)){
           clearInterval(cookpotTimer);
-          if((cookpotResult.length !== 10) && (cookpotResult !== undefined)){
+          if((cookpotResult.length !== 20) && (cookpotResult !== undefined)){
           cookpotResult = cookpotResult.split(', ');
           }
-          if (cookpotResult[5] !== '0'){
-          var src = $('#' + cookpotResult[0]).children('img').attr('data-src');
-          $('#result1').attr('src',src);
-          src = $('#' + cookpotResult[5]).children('img').attr('data-src');
-          $('#result2').attr('src',src);
-          $('#result2').removeClass('hiddeningredientcookpot');
-          $('#result2').addClass('ingredientcookpot');
-          $('#arrowcookpot').attr('src',"https://vignette.wikia.nocookie.net/dont-starve/images/d/d2/Crock_Pot.png/revision/latest?cb=20130110150334&path-prefix=ru");
-          $('#chance1,#chance2').text('50%');
-          $('#name1').text(cookpotResult[1]);
-          $('#health1').text(' ' + cookpotResult[2] + ' ');
-          $('#hunger1').text(' ' + cookpotResult[3] + ' ');
-          $('#sanity1').text(' ' + cookpotResult[4] + ' ');
-          $('#name2').text(cookpotResult[6]);
-          $('#health2').text(' ' + cookpotResult[7] + ' ');
-          $('#hunger2').text(' ' + cookpotResult[8] + ' ');
-          $('#sanity2').text(' ' + cookpotResult[9] + ' ');
-          $('#description').css({"display":""});
-          $('#description2').css({"display":""});
-          }else{
-          var src = $('#' + cookpotResult[0]).children('img').attr('data-src');
-          $('#result1').attr('src',src);      
-          $('#arrowcookpot').attr('src',"https://vignette.wikia.nocookie.net/dont-starve/images/d/d2/Crock_Pot.png/revision/latest?cb=20130110150334&path-prefix=ru");
-          $('#name1').text(cookpotResult[1]);
-          $('#health1').text(' ' + cookpotResult[2] + ' ');
-          $('#hunger1').text(' ' + cookpotResult[3] + ' ');
-          $('#sanity1').text(' ' + cookpotResult[4] + ' ');
-          $('#description').css({"display":""});
+          for(var i = 0; i <= 15; i = i + 5){
+          if (cookpotResult[i] !== '0'){
+          var src = $('#' + cookpotResult[i]).children('img').attr('data-src');
+          var id = (i / 5 + 1);
+          $('#result' + id).attr('src',src);
+          if(i !== 0){
+          $('#result' + id).removeClass('hiddeningredientcookpot');
+          $('#result' + id).addClass('ingredientcookpot');
           }
-      }
+          $('#arrowcookpot').attr('src',"https://vignette.wikia.nocookie.net/dont-starve/images/d/d2/Crock_Pot.png/revision/latest?cb=20130110150334&path-prefix=ru");
+          $('#name' + id).text(cookpotResult[i + 1]);
+          $('#health' + id).text(' ' + cookpotResult[i + 2] + ' ');
+          $('#hunger' + id).text(' ' + cookpotResult[i + 3] + ' ');
+          $('#sanity' + id).text(' ' + cookpotResult[i + 4] + ' ');
+          $('#description' + id).css({"display":""});
+          }
+          if(cookpotResult[15] !== '0'){
+          	$('#chance1, #chance2, #chance3, #chance4').text('25%');
+          }else if(cookpotResult[10] !== '0'){
+          	$('#chance1, #chance2, #chance3').text('33%');
+          }else if(cookpotResult[5] !== '0'){
+          	$('#chance1, #chance2').text('50%');
+          }
+          }
+    }
     }
     return returnResult();
 };
@@ -270,7 +269,7 @@ $('.cookpot > div > p > span > a > img').on('click', function() {
     window.open(href, '_blank').focus();
 }
 });
- 
+
 intervalCookpotResult = setInterval(timerCookpotResult,1000);
 function timerCookpotResult(){
 if(($('#result1').attr('src') !== undefined)){
@@ -292,6 +291,24 @@ $('#result2').on('click', function() {
     }
 }
 });
+$('#result3').on('click', function() {
+    if(event.ctrlKey == true){
+    if(mode = "None"){
+    var href = cookpotResult[11];
+    window.open(href, '_blank');
+    }else{
+    }
+}
+});
+$('#result4').on('click', function() {
+    if(event.ctrlKey == true){
+    if(mode = "None"){
+    var href = cookpotResult[16];
+    window.open(href, '_blank');
+    }else{
+    }
+}
+});
 $('#name1').on('click', function() {
     if(mode = "None"){
     var href = cookpotResult[1];
@@ -302,6 +319,20 @@ $('#name1').on('click', function() {
 $('#name2').on('click', function() {
     if(mode = "None"){
     var href = cookpotResult[6];
+    window.open(href, '_blank');
+    }else{
+    }
+});
+$('#name3').on('click', function() {
+    if(mode = "None"){
+    var href = cookpotResult[11];
+    window.open(href, '_blank');
+    }else{
+    }
+});
+$('#name4').on('click', function() {
+    if(mode = "None"){
+    var href = cookpotResult[16];
     window.open(href, '_blank');
     }else{
     }

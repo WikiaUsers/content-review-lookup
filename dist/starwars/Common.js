@@ -733,26 +733,28 @@ $( function () {
  * Page can still be edited by going via the edit tab on the history etc, or by 
  * typing the edit address manually.
  * By [[User:Spang|Spang]]
- * Monaco support by [[User:Uberfuzzy|]]
- * Oasis support by [[User:Uberfuzzy|]]
+ * Monaco support by [[User:Uberfuzzy|Uberfuzzy]]
+ * Oasis support by [[User:Uberfuzzy|Uberfuzzy]]
  * Removal of section edit buttons and new section tab on talk pages added by [[User:Grunny|Grunny]]
  * User:/User talk: support and styling in new skin by [[User:Grunny|Grunny]]
+ * UCP support by [[User:01miki10]]
  */
 function disableOldForumEdit() {
-	if( typeof( enableOldForumEdit ) != 'undefined' && enableOldForumEdit ) {
+	if ( typeof( enableOldForumEdit ) != 'undefined' && enableOldForumEdit ) {
 		return;
 	}
-	if( !document.getElementById('old-forum-warning') ) {
+	if ( !document.getElementById( 'old-forum-warning' ) ) {
 		return;
 	}
 
-	if( wgNamespaceNumber == 2 || wgNamespaceNumber == 3 ) {
-		$("#WikiaUserPagesHeader .wikia-menu-button li a:first").html('Archived').removeAttr('href').attr('style', 'color: darkgray;');
-		$('span.editsection').remove();
+	if ( $( '#PageHeader #ca-addsection' ).length ) {
+		$( '#PageHeader #ca-addsection' ).html( 'Archived' ).removeAttr( 'href' );
+		$( '#PageHeader #ca-edit' ).remove();
+		$( 'span.mw-editsection' ).remove();
 		return;
 	} else {
-		$("#WikiaPageHeader .wikia-menu-button a:first").html('Archived').removeAttr('href').attr('style', 'color: darkgray;');
-		$('span.editsection').remove();
+		$( '#PageHeader #ca-edit' ).html( 'Archived' ).removeAttr( 'href' );
+		$( 'span.mw-editsection' ).remove();
 		return;
 	}
 }

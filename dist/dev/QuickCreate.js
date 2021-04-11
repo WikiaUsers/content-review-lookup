@@ -1,6 +1,6 @@
 $('.wds-community-header__wiki-buttons .createpage')
     .off()
-    .wrap($('<div />', {
+    .wrap($('<div>', {
         class: 'wds-dropdown'
     }))
     .addClass('wds-dropdown__toggle')
@@ -9,24 +9,24 @@ $('.wds-community-header__wiki-buttons .createpage')
     .css('border-right', 'none')
     .append('<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#wds-icons-dropdown-tiny"></use></svg>')
     .after(
-        $('<div />', {
+        $('<div>', {
             class: 'wds-dropdown__content'
         }).append(
-            $('<ul />', {
+            $('<ul>', {
                 class: 'wds-list wds-is-linked'
             }).append(
-                $('<li />').html(
-                    $('<a />', {
+                $('<li>').html(
+                    $('<a>', {
                         href: '/wiki/Special:CreateBlogPage'
                     }).text('Blog')
                 ),
-                $('<li />').html(
-                    $('<a />', {
+                $('<li>').html(
+                    $('<a>', {
                         href: '/wiki/Special:CreatePage'
                     }).text('Article')
                 ),
-                $('<li />').html(
-                    $('<a />', {
+                $('<li>').html(
+                    $('<a>', {
                         href: '/wiki/Special:Upload'
                     }).text('Image').click(function(e) {
                         e.preventDefault();
@@ -42,8 +42,8 @@ $('.wds-community-header__wiki-buttons .createpage')
                         });
                     })
                 ),
-                $('<li />').html(
-                    $('<a />', {
+                $('<li>').html(
+                    $('<a>', {
                         href: '/wiki/Special:Videos'
                     }).text('Video').click(function(e) {
                         e.preventDefault();
@@ -92,13 +92,13 @@ function loadAssets(options) {
             if (res.hasOwnProperty('scripts') && res.scripts.length || res.hasOwnProperty('styles') && res.styles.length) {
                 if (res.hasOwnProperty('scripts') && res.scripts.length) {
                     res.scripts.forEach(function(script) {
-                        $(document.body).append($('<script />', {
+                        $(document.body).append($('<script>', {
                             id: 'user-loaded-scripts'
                         }).text(script));
                     });
                 }
                 if (res.hasOwnProperty('styles') && res.styles.length) {
-                    $(document.body).append($('<style />', {
+                    $(document.body).append($('<style>', {
                         id: 'user-loaded-styles'
                     }).text(res.styles));
                 }

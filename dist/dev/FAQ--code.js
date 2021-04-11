@@ -69,10 +69,10 @@ function init() {
 function displayFAQ(faqs) {
     mw.util.$content.empty();
 	faqs.forEach(function(faq, idx) {
-		var el = $('<div />', { class: 'faq', id: idx }).append(
-            $('<div />', { class: 'question' }).append(
-                $('<span />', { text: faq.question, class: 'question-text' }),
-                $('<span />', {
+		var el = $('<div>', { class: 'faq', id: idx }).append(
+            $('<div>', { class: 'question' }).append(
+                $('<span>', { text: faq.question, class: 'question-text' }),
+                $('<span>', {
                     html: '<svg id="wds-icons-pencil" viewBox="0 0 24 24" width="20px" height="20px"><g fill-rule="evenodd"><path id="pencil-a" d="M2 15.164l8.625-8.625 6.836 6.836L8.836 22H2v-6.836zm16.875-3.203l-6.836-6.836 2.711-2.71 6.836 6.835-2.711 2.711zm4.832-3.418l-8.25-8.25a.999.999 0 0 0-1.414 0L.294 14.043A1 1 0 0 0 0 14.75V23a1 1 0 0 0 1 1h8.25a1 1 0 0 0 .708-.294L23.707 9.957a.999.999 0 0 0 0-1.414z"></path></g></svg>',
 					class: 'js-edit-question',
                     on: {
@@ -83,7 +83,7 @@ function displayFAQ(faqs) {
                         }
                     }
                 }).css('float', 'right'),
-                $('<span />', {
+                $('<span>', {
                     html: '<svg id="wds-icon-link" viewBox="0 0 24 24" width="20px" height="20px"><g fill-rule="evenodd"><path id="link-a" d="M13.109 9.47a.999.999 0 0 0 0 1.414 5.28 5.28 0 0 1 0 7.458L12 19.45a5.28 5.28 0 0 1-7.459 0 5.28 5.28 0 0 1 0-7.458.999.999 0 1 0-1.414-1.414c-2.836 2.836-2.836 7.45 0 10.287a7.255 7.255 0 0 0 5.144 2.126 7.255 7.255 0 0 0 5.143-2.126l1.109-1.11a7.222 7.222 0 0 0 2.13-5.142c0-1.944-.756-3.77-2.13-5.144a.999.999 0 0 0-1.414 0m7.757-6.343C18.03.29 13.416.29 10.579 3.126L9.47 4.236a7.224 7.224 0 0 0-2.13 5.143c0 1.943.756 3.769 2.13 5.144a.996.996 0 0 0 .707.292 1 1 0 0 0 .707-1.707 5.28 5.28 0 0 1 0-7.458l1.11-1.109a5.28 5.28 0 0 1 7.458 0 5.28 5.28 0 0 1 0 7.458.999.999 0 1 0 1.414 1.414c2.836-2.836 2.836-7.45 0-10.286"></path></g></svg>',
 					class: 'js-link-question',
                     on: {
@@ -111,7 +111,7 @@ function displayFAQ(faqs) {
                 	'margin-top': '5px',
                 	'margin-right': '5px'
             	}),
-                $('<span />', {
+                $('<span>', {
                     html: '<svg id="wds-icons-trash" viewBox="0 0 24 24" width="20px" height="20px"><g fill-rule="evenodd"><path id="trash-a" d="M16 19a1 1 0 0 0 1-1v-7a1 1 0 1 0-2 0v7a1 1 0 0 0 1 1m-4 0a1 1 0 0 0 1-1v-7a1 1 0 1 0-2 0v7a1 1 0 0 0 1 1m-4 0a1 1 0 0 0 1-1v-7a1 1 0 1 0-2 0v7a1 1 0 0 0 1 1M7 2h10a1 1 0 1 0 0-2H7a1 1 0 1 0 0 2M5 22h14V7H5v15zM22 5H2a1 1 0 1 0 0 2h1v16a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V7h1a1 1 0 1 0 0-2z"></path></g></svg>',
 					class: 'js-delete-question',
                     on: {
@@ -125,19 +125,19 @@ function displayFAQ(faqs) {
                     }
                 }).css({ 'float': 'right', 'margin-right': '5px' })
             ),
-            $('<div />', { class: 'answer' }).append($('<p />'))
+            $('<div>', { class: 'answer' }).append($('<p>'))
         ).appendTo(mw.util.$content);
 		if(faq.hasOwnProperty('related')) {
 			var answer = el.find('.answer');
 			el.find('.answer').append(
-				$('<hr />'),
-				$('<ul />', { class: 'related' })
+				$('<hr>'),
+				$('<ul>', { class: 'related' })
 			);
 			if(faq.related.hasOwnProperty('articles')) {
 				faq.related.articles.forEach(function(article) {
                     answer.find('.related').append(
-						$('<li />').append(
-							$('<a />', {href: mw.util.getUrl(article)}).text(article)
+						$('<li>').append(
+							$('<a>', {href: mw.util.getUrl(article)}).text(article)
 						)
                     );
                 });
@@ -145,8 +145,8 @@ function displayFAQ(faqs) {
 			if(faq.related.hasOwnProperty('discussions')) {
 				faq.related.discussions.forEach(function(discussion) {
                     answer.find('.related').append(
-						$('<li />').append(
-							$('<a />', {
+						$('<li>').append(
+							$('<a>', {
 							    href: mw.config.get('wgScriptPath') + '/d/p/' + discussion.p
 							}).text(discussion.title)
 						)
@@ -156,8 +156,8 @@ function displayFAQ(faqs) {
 			if(faq.related.hasOwnProperty('external')) {
 				faq.related.external.forEach(function(external) {
                     answer.find('.related').append(
-						$('<li />').append(
-							$('<a />', { href: external.url }).text(external.title)
+						$('<li>').append(
+							$('<a>', { href: external.url }).text(external.title)
 						)
                     );
                 });
@@ -191,30 +191,30 @@ function editQuestion(id) {
     getQuestions().then(function(questions) {
     	var question = _.find(questions, { id: id });
 		var isNew = typeof question === 'undefined';
-		var form = $('<form />').appendTo($('<div />')).append(
-			$('<div />').append(
-				$('<label />', {
+		var form = $('<form>').appendTo($('<div>')).append(
+			$('<div>').append(
+				$('<label>', {
 				    for: 'question',
 				    text: faqI18n.msg('question').plain()
 				}),
-				$('<label />', {
+				$('<label>', {
 				    for: 'answer',
 				    text: faqI18n.msg('answer').plain()
 				}),
-				$('<label />', {
+				$('<label>', {
 				    for: 'related-articles',
 				    text: faqI18n.msg('related-articles').plain()
 				}),
-				$('<label />', {
+				$('<label>', {
 				    for: 'keywords',
 				    text: faqI18n.msg('keywords').plain()
 				})
 			),
-			$('<div />') .append(
-				$('<input />', { type: 'text', name: 'question', value: isNew ? '' : question.question }),
-				$('<textarea />', { name: 'answer', text: isNew ? '' : question.answer }),
-				$('<ul />', { class: 'tag-select', name: 'related-articles' }),
-				$('<ul />', { class: 'tag-select', name: 'keywords' })
+			$('<div>') .append(
+				$('<input>', { type: 'text', name: 'question', value: isNew ? '' : question.question }),
+				$('<textarea>', { name: 'answer', text: isNew ? '' : question.answer }),
+				$('<ul>', { class: 'tag-select', name: 'related-articles' }),
+				$('<ul>', { class: 'tag-select', name: 'keywords' })
 			)
 		);
 		

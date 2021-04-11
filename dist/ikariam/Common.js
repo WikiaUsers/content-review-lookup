@@ -53,56 +53,10 @@ var tooltips_list =
 	},
 ];
 
-// Global Tooltip customization
-$(document).ready(function()
-{
-	mw.hook('wikipage.content').add(function($content)
-	{
-		$('[title], .ikariam-tooltip').hover(function(e)
-		{
-			var txt = '';
-			var title = $(this).attr('title');
-			if(title&&title!=='')
-			{
-				if(!$(this).hasClass('ikariam-tooltip')){$(this).addClass('ikariam-tooltip');}
-				$(this).attr('data-tooltip',title);
-			}
-			var dtip = $(this).attr('data-tooltip');
-			txt = dtip&&dtip!==''?dtip:'';
-			if($(this).parents('.tabber').length === 0)
-			{
-				$(this).removeAttr('title');
-			}
-			$('<div id="ikariam-tooltip-content" class="WikiaArticle" style="border:1px solid #F1D031;color:#444;background:#fbeecb;box-shadow:0 2px 2px #999;position:absolute;padding:2px;text-align:center;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;z-index:6000000;margin:0px;min-height:0px;overflow:hidden;font-size:14px;display:none"></div>').html(txt).appendTo('body');
-			$('#ikariam-tooltip-content').css('display','inline-block').fadeIn('fast');
-		},function()
-		{
-			$('#ikariam-tooltip-content').remove();
-		}).mousemove(function(e)
-		{
-			var o = 10;
-			var cX = e.pageX;
-			var cY = e.pageY;
-			var wW = $(window).width();
-			var wH = $(window).height();
-			var t = $('#ikariam-tooltip-content');
-			var tW = t.width()+parseInt(t.css('padding-left'))+parseInt(t.css('padding-right'));
-			var tH = t.height()+parseInt(t.css('padding-top'))+parseInt(t.css('padding-bottom'));
-			var tL = cX+o;
-			if(tL+tW>$(window).scrollLeft()+wW) { tL = $(window).scrollLeft()+wW-tW*2; }
-			else if(tL-tW<$(window).scrollLeft()) { tL = $(window).scrollLeft()+tW; }
-			var tT = cY+o;
-			if(tT+tH>$(window).scrollTop()+wH) { tT = $(window).scrollTop()+wH-tH; }
-			else if(tT-tH<$(window).scrollTop()) { tT = $(window).scrollTop(); }
-			$('#ikariam-tooltip-content').css({'top':tT+'px','left':tL+'px'});
-		});
-	});
-});
+//
+// "Hidden appearances section/interactive tree" script; by User:Bp
+//
 
-/*******************************************************************************
-** "Hidden appearances section/interactive tree" script; by [[User:Bp]]
-** Required functions outside of ".ready" portion
-*******************************************************************************/
 function toggleAppearancesPane(eid)
 {
 	e = document.getElementById(eid);
@@ -111,6 +65,7 @@ function toggleAppearancesPane(eid)
 		e.className = e.className == 'hiddenlist' ? 'visiblelist' : 'hiddenlist';
 	}
 }
+
 function showAppearancesPane(eid)
 {
 	e = document.getElementById(eid);
@@ -119,6 +74,7 @@ function showAppearancesPane(eid)
 		e.className = 'visiblelist';
 	}
 }
+
 function hideAppearancesPane(eid)
 {
 	e = document.getElementById(eid);
@@ -127,6 +83,7 @@ function hideAppearancesPane(eid)
 		e.className = 'hiddenlist';
 	}
 }
+
 $(document).ready(function()
 {
 	var tree = 0;
@@ -143,6 +100,7 @@ $(document).ready(function()
 		b.className = cls;
 		return b;
 	}
+	
 	function recursiveCountAndMark(e,depth,nocount)
 	{
 		var si = e.firstChild;
@@ -197,6 +155,7 @@ $(document).ready(function()
 		}
 		return total;
 	}
+	
 	function doAppearancesTrees()
 	{
 		if(!interactiveTrees)
@@ -225,8 +184,14 @@ $(document).ready(function()
 			}
 		}
 	}
+	
 	hookEvent('load',doAppearancesTrees);
 });
+
+//
+// Tool-tips script by User:Panos78
+//
+
 function NumToStr(inputNum,outputSign,precision)
 {
 	var tho = lg[lang].tho;
@@ -236,18 +201,21 @@ function NumToStr(inputNum,outputSign,precision)
 	var sgn = num===0?'':Math.sign(inputNum)==-1?'-':'+';
 	return (outputSign || sgn=='-' ? sgn : '')+(precision===undefined && num===0 ? '' : parseInt(p[0]).toString().replace(/\B(?=(\d{3})+(?!\d))/g,tho))+(precision!==undefined && precision>0 ? dec+parseFloat(p[1]!==undefined ? '0.'+p[1]: 0).toFixed(precision).split('.')[1] : '');
 }
+
 function img(i,t,a,c,w,h,l)
 {
 	var s = ' style="width:'+(w&&w!==''?w+'px':'auto')+';height:'+(h&&h!==''?h+'px':'auto')+'"';
 	var p = i&&i!==''?'<img src="https://ikariam.fandom.com/el/wiki/Special:Filepath/'+i+'"'+(t&&t!==''?' data-tooltip="'+t+'"':'')+(' alt="'+(a&&a!==''?a:i.replace('_',' '))+'"')+(c&&c!==''?' class="'+c+' ikariam-tooltip"':'')+' data-image-key="'+i+'" data-image-name="'+i.replace('_',' ')+'"'+s+'>':'';
 	return (l&&l!==''?'<a href="'+(l!==''?l:'/el/wiki/Special:Filepath/'+i)+'">':'')+p+(l&&l!==''?'</a>':'');
 }
+
 function icon(r,w,h)
 {
 	var res = ['wood_small.gif','wine_small.gif','marble_small.gif','crystal_small.gif','sulphur_small.gif','ambrosia.png','gold_small.gif','icon_citizen.gif'];
 	var rel = ['ξύλο','κρασί','μάρμαρο','kρύσταλλο','Θείο','Αμβροσία','Χρυσός','Πολίτης'];
 	return img(res[r][0].toUpperCase()+res[r].slice(1),rel[r][0].toUpperCase()+rel[r].slice(1),rel[r][0].toUpperCase()+rel[r].slice(1),'image image-thumbnail link-internal',w?w:25,h?h:20,'/el/wiki/'+rel[r][0].toUpperCase()+rel[r].slice(1));
 }
+
 function mul(p)
 {
 	p = parseInt(p);
@@ -267,6 +235,7 @@ function mul(p)
 			return 0;
 	}
 }
+
 function calc(rank,townhall,level,type)
 {
 	var rk = !isNaN(parseInt(rank))?parseInt(rank):0;
@@ -277,6 +246,7 @@ function calc(rank,townhall,level,type)
 	var cf = tp==-1?0:(tp<2?1:(tp==2?5:(tp==3?12:0)));
 	return ((tw?100:0)+lv*480)*(tp>=1?mul(rk):1)*(tp==2?5:1);
 }
+
 function translate(lang)
 {
 	var arr = ['citytitle','citynum','wlvls','safeqnty','safewoodqnty','safewineqnty','safemarbleqnty','safecrystalqnty','safesulfurqnty','safesumqnty','sum','townsum','levelsum','safesum','woodsum','winesum','marblesum','glasssum','sulfursum','resqntysum'];
@@ -299,6 +269,7 @@ function translate(lang)
 				break;
 		}
 	});
+	
 	$('#rewardtable > tfoot > tr > th').each(function(k,th)
 	{
 		switch(k)
@@ -311,6 +282,7 @@ function translate(lang)
 				break;
 		}
 	});
+	
 	$('#townsum').text($('input[id^="town"]:checked').length);
 	var lsum = 0;
 	var sfsum = 0;
@@ -326,10 +298,12 @@ function translate(lang)
 		ressum += calc($('#rank').val(),true,lv,'resource');
 		$(this).parents('tr').find('td[id^="citysum"]').text(NumToStr(calc($('#rank').val(),true,lv,'rsum'),false,0));
 	});
+	
 	$('input[id^="town"]:not(:checked)').each(function()
 	{
 		$(this).parents('tr').css('opacity','0.5').find('input[type="number"]').prop('disabled',true).val(0).parents('tr').find('td:gt(2)').text('0');
 	});
+	
 	$('#levelsum').text(NumToStr(lsum,false,0));
 	$('#safesum').text(NumToStr(sfsum,false,0));
 	$('#woodsum,#winesum,#marblesum,#glasssum,#sulfursum').text(NumToStr(ressum,false,0));

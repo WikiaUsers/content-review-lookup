@@ -11,19 +11,25 @@
         return;
     }
 
-	/*Remove Edit Wall Greeting Button if not your greeting (feels a bit obstructive)*/
+	/*Remove Edit Wall Greeting button unless it's your own or if you're staff*/
 	$(function() {
-	var interval = setInterval(function() {
-		  if ($('.MessageWallButtons').length) {
-		      clearInterval(interval);
-			var username = mw.config.get('wgUserName');
-			var page = mw.config.get('wgTitle');
-			if (page != username) {
-				$('.MessageWallButtons').remove();
+		if (mw.config.get('wgCanonicalNamespace') == "Message_Wall") {
+		var rights = mw.config.get('wgUserGroups');
+		 if (!rights.includes("sysop", "bureaucrat", "content-moderator", "threadmoderator", "rollback")) {
+		       var interval = setInterval(function() {
+				 if ($('.MessageWallButtons').length) {
+		   			clearInterval(interval);
+					var username = mw.config.get('wgUserName');
+					var page = mw.config.get('wgTitle');
+						if (page != username) {
+							$('.MessageWallButtons').remove();
+							}
+					  }
+				}, 10);
 			}
-	   }
-	}, 10);
+		}
 	});
+
 
     // Customize tags on user profiles
     window.UserTagsJS = {
@@ -112,7 +118,6 @@
         'u:dev:TopEditors/code.js',
         'w:c:clashofclans:MediaWiki:Common.js/RGBColor.js',
         'w:c:clashofclans:MediaWiki:Common.js/Usernames.js',
-        'u:dev:UserTags/code.js',
         'w:c:clashofclans:MediaWiki:Common.js/Sliders.js',
         'w:c:clashofclans:MediaWiki:Common.js/GemCalculators.js',
         'w:c:clashofclans:MediaWiki:Common.js/Experience.js',

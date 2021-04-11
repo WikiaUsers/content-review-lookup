@@ -6,16 +6,16 @@
  * @source www.mediawiki.org/wiki/MediaWiki:Gadget-NavFrame.js
  * @maintainer Helder.wiki, 2012–2013
  * @maintainer Krinkle, 2013
- * @maintainer Fantasticfears, 2013-2014
  */
 ( function () {
 
-var collapseCaption = wgULS('隐藏', '隱藏');
-var expandCaption = wgULS('显示', '顯示');
+// Set up the words in your language
+var collapseCaption = '顯示';
+var expandCaption = '隱藏';
 
-var navigationBarHide = collapseCaption + '▲';
+var navigationBarHide = collapseCaption  + '▲';
 var navigationBarShow = expandCaption + '▼';
- 
+
 /**
  * Shows and hides content and picture (if available) of navigation bars.
  *
@@ -23,34 +23,35 @@ var navigationBarShow = expandCaption + '▼';
  * @param {jQuery.Event} e Event object
  */
 function toggleNavigationBar( indexNavigationBar, e ) {
-        var toggle = $( '#NavToggle' + indexNavigationBar ),
-                frame = $( '#NavFrame' + indexNavigationBar ),
-                isFrameCollapsed;
+	var navChild,
+		navToggle = document.getElementById( 'NavToggle' + indexNavigationBar ),
+		navFrame = document.getElementById( 'NavFrame' + indexNavigationBar );
 
-        if ( !frame || !toggle ) {
-                return false;
-        }
+	// Prevent browser from jumping to href "#"
+	e.preventDefault();
 
-	isFrameCollapsed = frame.hasClass( 'collapsed' );
-        if ( isFrameCollapsed ) {
-                frame.find( '> .NavPic, > .NavContent, > .toogleShow' ).each( function() {
-                        $( this ).css( 'display', 'block' );
-                });
-                frame.find( '> .toggleHide' ).each( function() {
-                        $( this ).css( 'display', 'none' );
-                });
-                toggle.text( navigationBarHide );
-                frame.removeClass( 'collapsed' );
-        } else {
-                frame.find( '> .NavPic, > .NavContent, > .toogleShow' ).each( function() {
-                        $( this ).css( 'display', 'none' );
-                });
-                frame.find( '> .toggleHide' ).each( function() {
-                        $( this ).css( 'display', 'block' );
-                });
-                toggle.text( navigationBarShow );
-                frame.addClass( 'collapsed' );
-        }
+	if ( !navFrame || !navToggle ) {
+		return false;
+	}
+
+	// If shown now
+	if ( navToggle.firstChild.data === navigationBarHide ) {
+		for ( navChild = navFrame.firstChild; navChild !== null; navChild = navChild.nextSibling ) {
+			if ( $( navChild ).hasClass( 'NavContent' ) || $( navChild ).hasClass( 'NavPic' ) ) {
+				navChild.style.display = 'none';
+			}
+		}
+		navToggle.firstChild.data = navigationBarShow;
+
+	// If hidden now
+	} else if ( navToggle.firstChild.data === navigationBarShow ) {
+		for ( navChild = navFrame.firstChild; navChild !== null; navChild = navChild.nextSibling ) {
+			if ( $( navChild ).hasClass( 'NavContent' ) || $( navChild ).hasClass( 'NavPic' ) ) {
+				navChild.style.display = 'block';
+			}
+		}
+		navToggle.firstChild.data = navigationBarHide;
+	}
 }
 
 /**
@@ -59,42 +60,48 @@ function toggleNavigationBar( indexNavigationBar, e ) {
  * @param {jQuery} $content
  */
 function createNavigationBarToggleButton( $content ) {
-        // Iterate over all (new) nav frames
-        $content.find( 'div.NavFrame' ).each( function( indexNavigationBar ) {
-                var frame = $( this ).attr( 'id', 'NavFrame' + indexNavigationBar );
-                // If found a navigation bar
-                var navToggle = $( '<span class="NavToggle" id="NavToggle' + indexNavigationBar + '"></span>' );
-                frame.find( '> .NavHead' ).each( function() {
-                        $( this ).on( 'click', $.proxy( toggleNavigationBar, null, indexNavigationBar ) );
-                	return false;
-		});
-                if ( frame.hasClass( 'collapsed' ) ) {
-                        frame.find( '> .NavPic, > .NavContent, > .toggleHide' ).each( function() {
-                                $( this ).css( 'display', 'none' );
-                        });
-                } else {
-                        frame.find( '> .toggleShow' ).each( function() {
-                                $( this ).css( 'display', 'none' );
-                        });
-                }
+	var i, j, navChild, navToggle, navToggleText, isCollapsed,
+		indexNavigationBar = 0;
+	// iterate over all < div >-elements
+	var $divs = $content.find( 'div.NavFrame' );
+	$divs.each( function ( i, navFrame ) {
+		indexNavigationBar++;
+		navToggle = document.createElement( 'a' );
+		navToggle.className = 'NavToggle';
+		navToggle.setAttribute( 'id', 'NavToggle' + indexNavigationBar );
+		navToggle.setAttribute( 'href', '#' );
+		$( navToggle ).on( 'click', $.proxy( toggleNavigationBar, null, indexNavigationBar ) );
 
-                var showNavigationBarHide = true;
-                frame.find( '> .NavPic, > .NavContent' ).each( function() {
-                        if ( $( this ).css( 'display' ) === 'none' ) {
-                                showNavigationBarHide = false;
-                                return false;
-                        }
-                });
+		isCollapsed = $( navFrame ).hasClass( 'collapsed' );
+		// backwards compatibility for old technique where the collapsed class was not yet used
+		for ( navChild = navFrame.firstChild; navChild !== null && !isCollapsed; navChild = navChild.nextSibling ) {
+			if ( $( navChild ).hasClass( 'NavPic' ) || $( navChild ).hasClass( 'NavContent' ) ) {
+				if ( navChild.style.display === 'none' ) {
+					isCollapsed = true;
+				}
+			}
+		}
+		if ( isCollapsed ) {
+			for ( navChild = navFrame.firstChild; navChild !== null; navChild = navChild.nextSibling ) {
+				if ( $( navChild ).hasClass( 'NavPic' ) || $( navChild ).hasClass( 'NavContent' ) ) {
+					navChild.style.display = 'none';
+				}
+			}
+		}
+		navToggleText = document.createTextNode( isCollapsed ? navigationBarShow : navigationBarHide );
+		navToggle.appendChild( navToggleText );
 
-                navToggle.text( showNavigationBarHide? navigationBarHide: navigationBarShow );
-
-                frame.find( '> .NavHead' ).each( function() {
-                        $( this ).append( navToggle );
-                        return false;
-                });
-        });
+		// Find the NavHead and attach the toggle link (Must be this complicated because Moz's firstChild handling is borked)
+		for ( j = 0; j < navFrame.childNodes.length; j++ ) {
+			if ( $( navFrame.childNodes[j] ).hasClass( 'NavHead' ) ) {
+				navToggle.style.color = navFrame.childNodes[j].style.color;
+				navFrame.childNodes[j].appendChild( navToggle );
+			}
+		}
+		navFrame.setAttribute( 'id', 'NavFrame' + indexNavigationBar );
+	} );
 }
 
-        mw.hook( 'wikipage.content' ).add( createNavigationBarToggleButton );
+mw.hook( 'wikipage.content' ).add( createNavigationBarToggleButton );
 
 }());

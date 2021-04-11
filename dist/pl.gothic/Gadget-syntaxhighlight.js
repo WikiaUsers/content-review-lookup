@@ -40,6 +40,6 @@ syntaxHighlighterSiteConfig = {
 };
 
 // Załaduj skrypt
-if ( mw.config.get( 'wgAction' ) === 'edit' || mw.config.get( 'wgAction' ) === 'submit' ) {
+if ( ['edit', 'submit'].indexOf( mw.config.get( 'wgAction' ) ) !== -1 ) {
 	mw.loader.load( 'https://www.mediawiki.org/wiki/MediaWiki:Gadget-DotsSyntaxHighlighter.js?action=raw&ctype=text/javascript' );
 }

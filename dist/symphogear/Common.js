@@ -43,3 +43,9 @@ $(function() {
 	});
 });
 // END of Template:Tabs
+
+/* AddRailModule on top */
+window.AddRailModule = [
+    {page: 'Template:RailModule', prepend: true},
+    {page: 'Template:Events', prepend: true},
+];

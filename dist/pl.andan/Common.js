@@ -2,11 +2,11 @@
 
 $(function () {
   var bgs1 = [
-    'https://vignette.wikia.nocookie.net/anuria/pl/images/a/ac/Cropromiar-niestandardowybyimperiumtapet.jpg',
+    'https://vignette.wikia.nocookie.net/anuria/pl/images/1/1b/Tapeta-hiacyntowce-pod-drzewami-w-slonecznym-lesie-hallerbos.jpg',
     'link'
   ];
   var bgs2 = [
-    'https://vignette.wikia.nocookie.net/anuria/pl/images/7/7f/Noc-zima-drzewa-gory-ksiezycbynapulpit.jpeg',
+    'https://vignette.wikia.nocookie.net/anuria/pl//images/9/9a/Tapeta-pelnia-ksiezyca-nad-lasem.jpg',
     'link'
   ];
 

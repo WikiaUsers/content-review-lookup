@@ -263,20 +263,7 @@ $(document).ready(function() {
 });
 
 /* Any JavaScript here will be loaded for all users on every page load. */
-/*Usertags from Dev Wiki*/
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		miyeonbiased: { u:'Miyeon Biased'},
-		minniebiased: { u:'Minnie Biased'},
-		shuhuabiased: { u:'Shuhua Biased'},
-		soojinbiased: { u:'Soojin Biased'},
-		soyeonbiased: { u: 'Soyeon Biased'},
-		yuqibiased: { u:'Yuqi Biased'},
-		maknae: { u:'Maknae'},
-	}
-};
- 
+
 
  
 /*Template:Username*/
@@ -365,3 +352,10 @@ importArticles({
         "w:c:dev:MediaWiki:Countdown/code.js"
     ]
 });
+
+window.SpoilerAlertJS = {
+    question: 'This information contains serious, controversial or triggering content. Do you wish to read?'
+    yes: 'Yes',
+    no: 'No',
+    fadeDelay: 1600
+};

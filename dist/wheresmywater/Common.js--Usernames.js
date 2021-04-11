@@ -97,16 +97,30 @@ if ($('#userProfileApp .user-identity-box__wrapper').length) {
 		$('.user-identity-header__tag.discussionsmoderator').text('Discussions Moderator');
 		$('.user-identity-header__tag.administrator').text('Administrator');
 			
-	$('#userProfileApp .user-identity-header > .user-identity-header__attributes h1').filter(function () {
-    if (rollbacks.includes($.trim($(this).text()))) {
-       $('#userProfileApp .user-identity-header > .user-identity-header__attributes').append(
-		            $('<span>', {
-		                'class': 'user-identity-header__tag rollback',
-		                'text': "Rollback"
-		            })
-		            );
-    	}
-    if (formerstaff.includes($.trim($(this).text()))) {
+		mw.loader.using('mediawiki.api').then(function() {
+	    var api = new mw.Api();
+	    api.get({
+	        action: 'query',
+	        list: 'allusers',
+	        augroup: 'rollback'
+	    }).done(function(data) {
+	        var users = data.query.allusers;
+	        	(users).forEach(function(u) {
+	      			if ($('.user-identity-header__tag.discussionsmoderator').length === 0) {
+					    clearInterval(interval);
+						if (u.name.includes(mw.config.get('profileUserName'))) {
+	   					$('#userProfileApp .user-identity-header > .user-identity-header__attributes').append(
+					            $('<span>', {
+					                'class': 'user-identity-header__tag rollback',
+					                'text': "Rollback"
+			        			})
+			        		);
+	  					}
+	      			}
+	            });
+	    });
+	});
+    if (formerstaff.includes(mw.config.get('profileUserName'))) {
        $('#userProfileApp .user-identity-header > .user-identity-header__attributes').append(
 		            $('<span>', {
 		                'class': 'user-identity-header__tag formerstaff',
@@ -114,8 +128,7 @@ if ($('#userProfileApp .user-identity-box__wrapper').length) {
 		            })
 		            );
 			   	}
-			});
-		}
+			}
 		}, 100 );
 	});
 });
@@ -151,22 +164,8 @@ $('.mw-contributions-user-tools a[href*="Special:AbuseLog"]').each(function(){
 });
 $(function () {
 	var username = mw.config.get('wgUserName');
-	var user = mw.config.get('wgTitle');
-	var target = mw.util.getParamValue('target');
-    var parts = user.split("/");
-if (
-            wgCanonicalSpecialPageName === 'Contributions' ||
-            wgCanonicalSpecialPageName === 'UserProfileActivity'
-        ){if (target) {
-                user = decodeURIComponent(target).replace(/_/g, ' ');
-            }else if (parts.length > 1 && parts[1] !== '') {
-                user = parts[1];}else {
-                	user = username;
-                	if (user === null) {
-                		user = '';
-                	}
-                }
-}	if (!$('#userProfileApp, #MessageWall, #articleComments').length || !user && !username) {
+	var user = mw.config.get('profileUserName');
+	if (!$('#userProfileApp, #MessageWall, #articleComments').length || !user && !username) {
         return;
     }
     

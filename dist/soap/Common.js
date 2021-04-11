@@ -21,3 +21,10 @@ function onloadhookcustom() {
 
 if (window.addEventListener) window.addEventListener("load",onloadhookcustom,false);
 else if (window.attachEvent) window.attachEvent("onload",onloadhookcustom);
+
+/* Auto open modal via ?openmodal=1 */
+mw.hook('soap.reports').add(function(button) {
+    if (mw.util.getParamValue('openmodal')) {
+        button.click();
+    }
+});

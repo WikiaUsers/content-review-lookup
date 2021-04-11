@@ -27,7 +27,7 @@ function hideFade () {
 	});
 }
  
-function goToTop (){
+window.goToTop =  function (){
 	// scroll body to 0px on click
 	$( 'body,html' ).animate ({
 		scrollTop: 0
@@ -65,7 +65,7 @@ function addWikifButton() {
 }
 if (wgAction == 'edit' || wgAction == 'submit') {
         importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Wikificator.js&action=raw&ctype=text/javascript')
-        addOnloadHook(addWikifButton)
+        $(addWikifButton)
 }
 
  // *****************************************************
@@ -135,15 +135,15 @@ if (wgAction == 'edit' || wgAction == 'submit') {
    timeouts[i] = setTimeout('updatetimer(' + i + ')',1000);
  }
  
- function checktimers() {
+/* function checktimers() {
    //hide 'nocountdown' and show 'countdown'
-   var nocountdowns = getElementsByClassName(document, 'span', 'nocountdown');
+   var nocountdowns = document.getElementsByClassName('nocountdown');
    for(var i in nocountdowns) nocountdowns[i].style.display = 'none'
-   var countdowns = getElementsByClassName(document, 'span', 'countdown');
+   var countdowns = document.getElementsByClassName('countdown');
    for(var i in countdowns) countdowns[i].style.display = 'inline'
  
    //set up global objects timers and timeouts.
-   timers = getElementsByClassName(document, 'span', 'countdowndate');  //global
+   timers = document.getElementsByClassName('countdowndate');  //global
    timeouts = new Array(); // generic holder for the timeouts, global
    if(timers.length == 0) return;
    for(var i in timers) {
@@ -151,7 +151,7 @@ if (wgAction == 'edit' || wgAction == 'submit') {
      updatetimer(i);  //start it up
    }
  }
- addOnloadHook(checktimers);
+ $(checktimers);*/
 
 
  // **************************************************
@@ -167,11 +167,3 @@ if (wgUserName !== 'null') {
         $('.insertusername').html(wgUserName);
     }
 }
-
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:Nuke/code.js',
-    ]
-});

@@ -1,3 +1,4 @@
+/* <nowiki> */
 mw.loader.using(['mediawiki.api','mediawiki.base','mediawiki.util']).then(function() {
   if (mw.config.get('wgCanonicalSpecialPageName') !== 'Upload') return;
   var a = new mw.Api();
@@ -52,3 +53,4 @@ mw.loader.using(['mediawiki.api','mediawiki.base','mediawiki.util']).then(functi
     console.error('Error getting system messages:',data);
   });
 });
+/* </nowiki> */

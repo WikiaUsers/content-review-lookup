@@ -1,6 +1,7 @@
 /**
  * @name TabViewMigrationHelper
  * @author Luqgreg
+ * <nowiki>
  */
 ( function () {
 	if (
@@ -1129,3 +1130,4 @@
 
 	mw.loader.using( [ 'mediawiki.api', 'mediawiki.util' ] ).then( TVMH.init.bind( TVMH ) );
 } )();
+/* </nowiki> */

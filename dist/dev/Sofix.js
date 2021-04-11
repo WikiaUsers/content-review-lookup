@@ -12,7 +12,7 @@ function main () { //TODO: Figure out some way to do this that's not a bunch of 
 
     //Add tab title for social activity pages
     if (mw.config.get('wgCanonicalSpecialPageName') === 'UserProfileActivity') {
-        document.title = 'Social Activity for ' + mw.config.get('wgUserName') + ' ' + document.title;
+        document.title = 'Social Activity for ' + mw.config.get('profileUserName') + ' ' + document.title;
     }
 
     //Add "delete" option to edit dropdown on user pages

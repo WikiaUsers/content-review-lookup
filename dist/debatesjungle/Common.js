@@ -242,3 +242,43 @@ window.pPreview.tlen = 1000;
     $list.children('li').remove();
     $list.append(sorted_list);
 })(jQuery);
+
+//==============================================================
+// Personalized imports
+//==============================================================
+// Import scripts if user has one of the following ranks:
+/* Rollback, Content Moderator, Admin, Bureaucrat, Content Volunteer,
+VSTF, FANDOM Helper, FANDOM Staff */
+/* For more info on those groups; refer to 
+https://community.wikia.com/wiki/Help%3AUser_rights */
+
+if(wgUserGroups.includes('rollback') || 
+   wgUserGroups.includes('content-moderator') ||
+   wgUserGroups.includes('sysop') ||
+   wgUserGroups.includes('bureaucrat') ||
+   wgUserGroups.includes('content-volunteer') ||
+   wgUserGroups.includes('vstf') ||
+   wgUserGroups.includes('helper') ||
+   wgUserGroups.includes('staff')){
+      importArticles({
+            type: 'script',
+            articles: [
+            'u:dev:MediaWiki:AjaxRename/ucp.js'
+        ]
+    });
+}
+
+if(wgUserGroups.includes('sysop') ||
+   wgUserGroups.includes('bureaucrat') ||
+   wgUserGroups.includes('content-volunteer') ||
+   wgUserGroups.includes('vstf') ||
+   wgUserGroups.includes('helper') ||
+   wgUserGroups.includes('staff')){
+      importArticles({
+            type: 'script',
+            articles: [
+            'u:dev:MediaWiki:WHAM/code.2.js',
+            'u:dev:MediaWiki:AjaxUserRights.js'
+        ]
+    });
+}

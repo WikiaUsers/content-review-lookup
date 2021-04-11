@@ -59,6 +59,13 @@ $.when( $.ready ).then(function() {
    });
 });
 
+const images = document.querySelectorAll("#content img");
+const regex = new RegExp(/cb=\d+/);
+
+images.forEach(function(image) {
+    image.setAttribute("src", image.src.replace(regex, "format=original"));
+});
+
 $(window).on('load', function(){
 
    //main page header.

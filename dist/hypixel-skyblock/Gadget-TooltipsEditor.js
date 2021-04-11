@@ -173,7 +173,7 @@ $.when(
 			question: "=mw.text.jsonEncode(p)",
 			content: tooltips,
 		}).then(function(d) {
-			var json = JSON.parse(d['return']);
+			var json = JSON.parse(d['return'].replaceAll('\\\\', '\\'.repeat(4)));
 			var editor = $('#TooltipsEditor > section');
 			data = json;
 			
@@ -213,7 +213,7 @@ $.when(
 					'o': 'italic',
 				};
 				var escapes = {
-					regex: /\\(ench?a?n?t?m?e?n?t?|ra?r?i?t?y?|poti?o?n|sta?t?)\{(?:.+?)\}|\\(?:[rntvb\/]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{1,4}|u\{[0-9a-fA-F]{1,6}\}|[0-2][0-7]{0,2}|3[0-7][0-7]?|[4-7][0-7].)/,
+					regex: /\\(ench?a?n?t?m?e?n?t?|ra?r?i?t?y?|poti?o?n|sta?t?)\{(?:.+?)\}|\\(?:[rntvb]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{1,4}|u\{[0-9a-fA-F]{1,6}\}|[0-2][0-7]{0,2}|3[0-7][0-7]?|[4-7][0-7].)/,
 					token: 'backescape.code',
 				};
 				

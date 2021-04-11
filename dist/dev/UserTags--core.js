@@ -421,7 +421,7 @@ dev.UserTags.SledgeAJAX = (function(Object, $, mw, Logger) {
                         // Anons get wikicontent, logged in get user preference
                         //amlang: mw.config.get('wgContentLanguage'),
                         ammessages: specials.usermessage.msgs.join('|')
-                    }, $.getUrlVar('uselang') ? {amlang: $.getUrlVar('uselang')} : null
+                    }, mw.util.getParamValue('uselang') ? {amlang: mw.util.getParamValue('uselang')} : null
                 ),
                 dfd: specials.usermessage.deferred
             };
@@ -506,7 +506,7 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
     var timingStart = Date.now(), timingAjax, timingDom, timingModules;
 
     // Extract the debug flag into a global
-    var debugOn = $.getUrlVar('debug') || !!settings.debug;
+    var debugOn = mw.util.getParamValue('debug') || !!settings.debug;
 
     //
     // Global Logger
@@ -1194,7 +1194,7 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
 
             var $masthead = $(
                 siteSkin === 'oasis'
-                ? '#UserProfileMasthead > .masthead-info > hgroup'
+                ? '#userProfileApp > .user-identity-box__wrapper > .user-identity-box > .user-identity-box__info > .user-identity-header > .user-identity-header__attributes'
                 : '#firstHeading'
             );
             if (!$masthead.length) { // This shouldn't happen
@@ -1383,7 +1383,7 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
                 }
                 if (tags[i].title) node.title = tags[i].title;
 
-                node.className = 'tag';
+                node.className = 'user-identity-header__tag';
                 if (tags[i].name) {
                     cssClass = this._canonicaliseCSS(tags[i].name);
                     // -user suffix is legacy from UserBadges
@@ -1430,53 +1430,15 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
             'authenticated', // Official PR accounts of companies
         ],
         _storageKey: 'UserTags-OasisTagsModule-TagDataCache',
-        //bannedfromchat fix prepare
-        getbannedfromchat: function() {
-            var promise = $.Deferred();
-            $.getJSON('/api.php', {
-                action: 'query',
-                meta: 'allmessages',
-                amenableparser: 1,
-                amparam: this._username,
-                amlang: ($.getUrlVar('uselang') || mw.config.get('wgUserLanguage') || mw.config.get('wgContentLanguage')),
-                ammessages: 'user-identity-box-banned-from-chat',
-                format: 'json'
-            })
-            .done(function(data) {
-                if (data.error) {
-                    promise.reject(data);
-                    return this;
-                }
-                data = data.query.allmessages[0];
-                if (data && data.missing === undefined) {
-                    promise.resolve(data['*']);
-                } else {
-                    promise.reject(data);
-                }
-            })
-            .fail(function(data) {
-                promise.reject(data);
-                return this;
-            });
-            return promise.promise();
-        },
-        //bannedfromchat fix prepare end
-        //
         // We fetch the Oasis identity stuff in Monobook as well, because we can and users
         // tend to have trouble understanding why "it doesn't work"
         start: function(config, username, logger/*, lang*/) {
             this._logger = logger;
             this._blackTags = { groups: [], tags: {} };
             this._scrapedTags = {};
-            //bannedfromchat fix
-            var _this = this;
-            this.getbannedfromchat().done(function(text) {
-                _this.getbannedfromchattext = text;
-            });
-            //bannedfromchat fix end
 
             // Don't query if we have fresh cache
-            var cache = $.storage && $.storage.get(this._storageKey);
+            var cache = mw.storage && mw.storage.get(this._storageKey) && JSON.parse(mw.storage.get(this._storageKey));
             if (cache && cache.expiry > Date.now()) {
                 this._cached = cache.data;
                 return (this._promise = $.Deferred()).promise();
@@ -1485,7 +1447,7 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
             return {
                 ajax: {
                     meta: 'allmessages',
-                    amprefix: 'user-identity-box-group-',
+                    amprefix: 'userprofile-global-tag-',
                     amenableparser: '1',
                     amargs: username
                 }
@@ -1496,7 +1458,7 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
         onDOMReady: function($masthead) {
             if (siteSkin === 'oasis') {
                 var self = this;
-                $masthead.find('.tag').each(function(index) {
+                $masthead.find('.user-identity-header__tag').each(function(index) {
                     var $this = $(this), text = $this.html();
                     if (!self._scrapedTags.hasOwnProperty(text)) {
                         self._scrapedTags[text] = index;
@@ -1509,27 +1471,16 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
                 this._promise.resolve(this.generate({ query: { allmessages: this._cached } }, true));
             } catch (e) {
                 this._logger.err('Implosion whilst processing cached tag data:', e, e.stack);
-                $.storage.del(this._storageKey);
+                mw.storage.remove(this._storageKey);
                 this._promise.resolve(this.generateFailed());
             }
         },
         // AJAX done, figure out what the scraped tags are and build the blacklist
         generate: function(json, fromCache) {
             json = json.query.allmessages;
-            var regex = /^user-identity-box-group-(.+)$/,
+            var regex = /^userprofile-global-tag-(.+)$/,
                 groups = [], tagData = {}, blackTags = this._blackTags,
                 group, group0, rawtext, text, tag, $node = $(document.createElement('div'));
-            //bannedfromchat fix start
-            if (this.getbannedfromchattext) {
-                var jsoncopy = [];
-                $.extend(true, jsoncopy, json);
-                jsoncopy.push({
-                    name: 'user-identity-box-group-bannedfromchat',
-                    '*': this.getbannedfromchattext
-                });
-                json = jsoncopy;//unfreezed version
-            }
-            //bannedfromchat fix end
             for (var i = 0, len = json.length ; i < len ; ++i) {
                 group0 = regex.exec(json[i].name);
                 if (!group0) continue;
@@ -1567,10 +1518,10 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
                 }
             }
             // Cache data for reuse to avoid multiple queries for the same thing
-            if (!fromCache && $.storage) {
-                $.storage.set(this._storageKey, {
+            if (!fromCache && mw.storage) {
+                mw.storage.set(this._storageKey, {
                     expiry: Date.now() + 36e5, // +1hr
-                    data: json
+                    data: JSON.stringify(json)
                 });
             }
             return {

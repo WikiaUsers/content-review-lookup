@@ -20,5 +20,25 @@ window.fdButtons = [
     {
         summary: 'Spam',
         label: 'Spam'
+    },
+
+    {
+        summary: 'Off-Topic (not related to Between page). Please, make this on Discussions.',
+        label: 'Off-Topic'
     }
 ];
+
+// PurgeButton label
+
+window.PurgeButtonText = 'Purge this page';
+
+// AjaxRC  Config
+
+window.ajaxPages = ["Between Wiki:Appeal unblock requests"];
+window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Watchlist", "Log", "Contributions"];
+window.ajaxIndicator = 'https://images.wikia.nocookie.net/software/images/a/a9/Indicator.gif';
+window.ajaxRefresh = 30000;
+$.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
+    'ajaxrc-refresh-text': 'AJAX',
+    'ajaxrc-refresh-hover': 'Enable page auto-refresh',
+}}}}});

@@ -23,6 +23,7 @@ window.UserTagsJS = {
                 critic:              {u:'Critic'},
                 support:             {u:'Supporter'},
                 systematicsafeguard: {u:'Systematic Safeguard'},
+                test:                {u:'Test'}
         },
         oasisPlaceBefore: ''
 };
@@ -38,16 +39,17 @@ UserTagsJS.modules.metafilter = {
 UserTagsJS.modules.mwGroups = ['founder', 'bot', 'support', 'critic', 'systematicsafeguard'];
 //Adds custom usertags
 UserTagsJS.modules.custom = {
-        'CyberGuy23':           ['founder'],
-        'Anonymoustyd':         ['bureaucrat'],
-        'Logo12':               ['sysop'],
-        'Mr.OAH':               ['chatmod'],
-        'Doue':                 ['rollback'],
-        'Kamarin':              ['chatmod','rollback'],
-        'Derpinator9001':       ['rollback'],
-        'Thaswordster':         ['critic','sysop','support'],
-        'Love Robin':           ['systematicsafeguard'],
-        'LoverofAllThingsCute': ['threadmoderator', 'critic']
+        'CyberGuy23':            ['founder'],
+        'Anonymoustyd':          ['bureaucrat'],
+        'Logo12':                ['sysop'],
+        'Mr.OAH':                ['chatmod'],
+        'Doue':                  ['rollback'],
+        'Kamarin':               ['chatmod','rollback'],
+        'Derpinator9001':        ['rollback'],
+        'Thaswordster':          ['critic','sysop','support'],
+        'Love Robin':            ['systematicsafeguard'],
+        'LoverofAllThingsCute':  ['threadmoderator', 'critic'],
+        'Convicted Tomatophile': ['test']
 };
 // End of UserTags
 // Replaces {{USERNAME}} with the name of the user browsing the page

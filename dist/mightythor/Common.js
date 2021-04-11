@@ -369,8 +369,8 @@ icon: 'https://upload.wikimedia.org/wikipedia/commons/7/79/Button_bombe.png',
 action: {
 type: 'encapsulate',
 options: {
-pre: "{{Marvel Database: Item Template\r| Image                   = ",
-post: "\r| OfficialName            = \r| Aliases                 = \r| Model                   = \r| Version                 = \r\r| Universe                = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r| Origin                  = \r\r| Dimensions              = \r| Weight                  = \r| Creators                = \r| First                   = \r\r| HistoryText             = \r\r| CurrentOwner            = \r| PreviousOwners          = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+pre: "{{Marvel Database:Item Template\r| Image                   = ",
+post: "\r| OfficialName            = \r| Aliases                 = \r| Type                    = \r| Material                = \r| Model                   = \r| Version                 = \r\r| Universe                = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r| Origin                  = \r\r| Dimensions              = \r| Weight                  = \r| Creators                = \r| First                   = \r\r| HistoryText             = \r\r| CurrentOwner            = \r| PreviousOwners          = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 }
 }
 }
@@ -464,7 +464,7 @@ icon: 'https://images.wikia.nocookie.net/marveldatabase/images/8/88/Comic_List.p
 action: {
 type: 'encapsulate',
 options: {
-pre: "{{Marvel Database:Volume Template\r| volume_logo             = \r| PreviousVol             = \r| NextVol                 = \r| publisher               = \r| format                  = \r| type                    = \r| genres                  = \r| featured                = \r\r| SeeAlso                 = \r| MarvelUnlimited     = \r| Comixology          = \r\r",
+pre: "{{Marvel Database:Volume Template\r| volume_logo             = \r| PreviousVol             = \r| NextVol                 = \r| publisher               = Marvel\r| main_volume             = \r| status                  = Active; Canceled; Finished; Announced\r| format                  = Limited Series; Ongoing Series; One Shot; Annual; Handbook; TPB\r| type                    = Solo; Team; Team-Up; Event; Adaptation\r| genres                  = Superhero\r| featured                = \r\r| SeeAlso                 = \r| MarvelUnlimited     = \r| Comixology          = \r\r",
 post: "}}"
 }
 }

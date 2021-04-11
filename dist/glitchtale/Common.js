@@ -61,10 +61,10 @@ window.UserTagsJS = {
     }
 };
 UserTagsJS.modules.custom = {
-    'Acme Gamer': ['Leader'], 'Kindnessaj': ['Leader'], 'Camila2929': ['Series Creator'] 
+    'Acme Gamer': ['Leader'], 'Kindnessaj': ['Leader']
 };
 UserTagsJS.modules.userfilter = {
-    'Acme Gamer': ['inactive'], 'Kindnessaj': ['inactive'], 'Camila2929': ['inactive'] 
+    'Acme Gamer': ['inactive'], 'Kindnessaj': ['inactive']
 };
 
 UserTagsJS.modules.newuser = {
@@ -610,3 +610,44 @@ window.DiscordBannerSettings = {
     noRail: false,
     prependToRail: true
 };
+
+
+// (Sleep/Delay) Function
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+//Custom User Tags
+function newwe(){
+	var value = document.querySelector("#userProfileApp > div > section > div.user-identity-box__info > div > div.user-identity-header__attributes"); //> span:nth-child(4)
+
+		//Creating a new Span Element
+		var spanTag = document.createElement("span");
+		spanTag.classList.add("user-identity-header__tag");
+		//Creating a new Paragraph Element
+		var pTag = document.createElement("p");
+
+		//New Text Element Called Leader
+		var text = document.createTextNode("Leader");
+
+		//Appending Text to Paragraph
+		pTag.appendChild(text);
+
+		//Appending  Paragraph to Div as a child element
+		spanTag.appendChild(pTag);
+
+		//Tadaa, you got the answer ^^
+		value.appendChild(spanTag);
+}
+	
+switch (mw.config.values.profileUserName) {
+    case 'Kindnessaj':
+        // JS here will be applied to Kindnessaj-chan's Page
+		sleep(5500).then(() => { newwe(); });
+        break;
+    case 'Acme Gamer':
+        // JS here will be applied to Acme's Page
+		sleep(5500).then(() => { newwe(); });
+        break;
+}

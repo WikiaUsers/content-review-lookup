@@ -17,7 +17,7 @@ var gm = document.getElementById("generator_main"),
 		fields: "key_name, min, max, description"
 	},
 	datas = {},
-	img_url = location.protocol + "//" + window.location.hostname + "/index.php?title=Special:Redirect&wptype=file&wpvalue=",
+	img_url = mw.config.values.wgServer + mw.config.values.wgScript + "?title=Special:Redirect&wptype=file&wpvalue=",
 	org_json,
 	types = { // type, SaveFileName, min, max
 		"name": ["text", "peonName"],
@@ -98,6 +98,8 @@ var gm = document.getElementById("generator_main"),
 		"skin": "hair",
 	},
 	color_change_temp = {},
+	d_options,
+	f_options,
 	u_options,
 	o_options,
 	s_options,
@@ -150,7 +152,7 @@ w.add_row = function (ele) {
 		} else if (label === "value") {
 			inp = document.createElement("input");
 			inp.setAttribute("type", "number");
-			set_attributes(inp, ["min", data.min, "max", data.max, "value", data.min]);
+			set_attributes(inp, ["min", data.min || 0, "max", data.max || null, "value", data.min || 0]);
 		} else if (label == "description") {
 			cell.innerText = data.description;
 		} else if (label === "name") {
@@ -270,10 +272,15 @@ w.clear_all = function() {
 	clear_table(document.getElementById("discovered_list"));
 	clear_table(document.getElementById("statuseffect_list"));
 	clear_table(document.getElementById("upgrade_string"));
-	clear_table(document.getElementById("pickupHistory_list"));
 	clear_table(document.getElementById("killHistory_list"));
+	clear_table(document.getElementById("pickupHistory_list"));
+	clear_table(document.getElementById("dropHistory_list"));
+	clear_table(document.getElementById("foundCount_list"));
+	clear_table(document.getElementById("killCount_list"));
 };
 var upgrade_string_regex = /([a-z0-9_]+):(\d)+,/gm;
+var found_count_regex = /([a-z0-9]+):([0-9]+),*/gm;
+var kill_count_regex = found_count_regex;
 function create_load() {
 	var lbtn = document.getElementById("sg_load"),
 		input = document.createElement('input'),
@@ -304,42 +311,27 @@ function create_load() {
 				org_json = loaded;
 				w.clear_all();
 				loaded.peonColor = Math.max(0, loaded.peonColor || 0);
-				
-				console.log("Before: " + loaded.peonColor);
 				loaded.peonColor -= Math.floor(loaded.peonColor / portrait.max_range) * portrait.max_range;
-				console.log("After: " + loaded.peonColor);
-				
 				tmp = Math.ceil(loaded.peonColor / portrait.eye_range);
-				console.log("Eyes " + tmp);
 				if (tmp > color_change_temp.eyes.options.length) {tmp = 1;}
 				color_change_temp.eyes.options[tmp - 1].selected = true;
 				loaded.peonColor -= (tmp - 1) * portrait.eye_range;
-				
 				tmp = Math.ceil(loaded.peonColor / portrait.skin_range);
-				console.log("Skin " + tmp);
 				if (tmp > color_change_temp.skin.options.length) {tmp = 1;}
 				color_change_temp.skin.options[tmp - 1].selected = true;
 				loaded.peonColor -= (tmp - 1) * portrait.skin_range;
-				
 				color_change_temp.clothes.options[Math.min(loaded.peonColor, color_change_temp.clothes.options.length - 1)].selected = true;
-				console.log("Clothes " + (loaded.peonColor + 1));
-				
-				console.log((color_change_temp.clothes.selectedIndex + 1) + " - " + (color_change_temp.skin.selectedIndex + 1) + " - " + (color_change_temp.eyes.selectedIndex + 1));
-				
 				color_change_temp.eyes.onchange();
 				color_change_temp.skin.onchange();
 				color_change_temp.clothes.onchange();
-				
 				check_peasant(loaded);
 				check_peasant(loaded.autoSaveData);
-				
 				if (loaded.peonID === types.gender[5]) {
 					document.getElementById("sg_peasant_gender").children[0].options[1].selected = true;
 				} else {
 					document.getElementById("sg_peasant_gender").children[0].options[0].selected = true;
 				}
 				w.gender_changed();
-				
 				var ustable = document.getElementById("upgrade_string").rows;
 				while ((res = upgrade_string_regex.exec(loaded.upgradeString)) !== null) {
 					if (res.index === upgrade_string_regex.lastIndex) {
@@ -349,8 +341,27 @@ function create_load() {
 						ustable[ustable.length-2].cells[1].children[0].value = res[2];
 					}
 				}
+				var fctable = document.getElementById("foundCount_list").rows;
+				while ((res = found_count_regex.exec(loaded.foundCountString)) !== null) {
+					if (res.index === found_count_regex.lastIndex) {
+						found_count_regex.lastIndex++;
+					}
+					if (add_guid("foundCount_list", res[1])) {
+						fctable[fctable.length-2].cells[2].children[0].value = res[2];
+					}
+				}
+				var kctable = document.getElementById("killCount_list").rows;
+				while ((res = kill_count_regex.exec(loaded.killCountString)) !== null) {
+					if (res.index === kill_count_regex.lastIndex) {
+						kill_count_regex.lastIndex++;
+					}
+					if (add_guid("killCount_list", res[1])) {
+						kctable[fctable.length-2].cells[2].children[0].value = res[2];
+					}
+				}
 				add_data(loaded.unlocked, "unlocked_list");
 				add_data(loaded.discovered, "discovered_list");
+				add_data(loaded.autoSaveData.dropHistory, "dropHistory_list");
 				add_data(loaded.autoSaveData.pickupHistory, "pickupHistory_list");
 				add_data(loaded.autoSaveData.killHistory, "killHistory_list");
 				var se_list = document.getElementById("statuseffect_list").rows;
@@ -394,12 +405,23 @@ function download(filename, text) {
 	element.click();
 	gm.removeChild(element);
 }
+function add_index_string(ele, col) { // destination, element, column
+	var a = "";
+	for (var i = 2; i<ele.rows.length - 1; i++) {
+		a += ele.rows[i].getAttribute("sg_data");
+		a += ":" + get_field_value(ele.rows[i].cells[col].children[0]);
+		a += ";";
+	}
+	return a;
+}
 w.create_save = function(to_console) {
 	var save_file = {};
 	save_file.version = 0;
 	save_file.unlocked = [];
 	save_file.discovered = [];
 	save_file.upgradeString = "";
+	save_file.foundCount = "";
+	save_file.killCount = "";
 	save_file.autoSaveData = {};
 	save_file.autoSaveData.statusEffects = [];
 	save_file.autoSaveData.familiarXP = [];
@@ -408,7 +430,7 @@ w.create_save = function(to_console) {
 	save_file.autoSaveData.pickupHistory = [];
 	add_list_guids(save_file.unlocked, "unlocked_list");
 	add_list_guids(save_file.discovered, "discovered_list");
-	// add_list_guids(save_file.autoSaveData.dropHistory);
+	add_list_guids(save_file.autoSaveData.dropHistory, "dropHistory_list");
 	add_list_guids(save_file.autoSaveData.killHistory, "killHistory_list");
 	add_list_guids(save_file.autoSaveData.pickupHistory, "pickupHistory_list");
 	save_file.peonID = document.getElementById("sg_portrait_male").style.display === "unset" && types.gender[3] || types.gender[5];
@@ -434,12 +456,9 @@ w.create_save = function(to_console) {
 			save_file.autoSaveData.familiarXP.push(to_add);
 		}
 	}
-	ele = document.getElementById("upgrade_string");
-	for (i=2; i<ele.rows.length - 1; i++) {
-		save_file.upgradeString += ele.rows[i].getAttribute("sg_data");
-		save_file.upgradeString += get_field_value(ele.rows[i].cells[1].children[0]);
-		save_file.upgradeString += ";";
-	}
+	save_file.upgradeString = add_index_string(document.getElementById("upgrade_string"), 1);
+	save_file.foundCount = add_index_string(document.getElementById("foundCount_list"), 2);
+	save_file.killCount = add_index_string(document.getElementById("killCount_list"), 2);
 	for (i=0; types.length; i++) {
 		ele = document.getElementById("sg_peasant_" + types[i][1]);
 		if (ele) {
@@ -533,8 +552,15 @@ function add_item_option(data, entry_no) {
 		o_options.appendChild(el.cloneNode());
 	}
 	var t = (d.title.type || "").toLowerCase();
+	if (t === "potion" || d.title.FName) {
+		d_options.appendChild(el.cloneNode());
+	}
 	if (t === "blessing" || d.title.FName || t === "potion" || t === "relic") {
 		u_options.appendChild(el.cloneNode());
+		f_options.appendChild(el.cloneNode());
+	}
+	if (t === "upgrade") {
+		f_options.appendChild(el.cloneNode());
 	}
 	if (d.title.BName) {
 		k_options.appendChild(el.cloneNode());
@@ -558,7 +584,7 @@ function add_item_option(data, entry_no) {
 		sel_.innerText = d.title.FName;
 		sel_.selected = d.title.FName === "Canary";
 		set_attributes(sel_, ["value", d.title.FName, "fam_uuid", guid]);
-		document.getElementById("familiar_select").appendChild(sel_);		
+		document.getElementById("familiar_select").appendChild(sel_);
 	}
 }
 $(document).ready(function ($) {
@@ -577,11 +603,12 @@ $(document).ready(function ($) {
 			j,
 			target,
 			label;
-		u_options=add_optionstable("data_unlocked", ["unlocked_list"]);
+		d_options=add_optionstable("data_dropHistory", ["dropHistory_list"]);
+		f_options=add_optionstable("data_foundCount", ["foundCount_list"]);
+		k_options=add_optionstable("data_killHistory", ["killHistory_list", "killCount_list"]);
 		o_options=add_optionstable("data_other", ["discovered_list", "pickupHistory_list"]);
 		s_options=add_optionstable("data_effect", ["statuseffect_list"]);
-		k_options=add_optionstable("data_killHistory", ["killHistory_list"]);
-		
+		u_options=add_optionstable("data_unlocked", ["unlocked_list"]);
 		api.get(Object.assign(params_items, params_base)).done(function (d) {
 			var item_data = d.cargoquery,
 				fsel = document.createElement("select");
@@ -597,7 +624,7 @@ $(document).ready(function ($) {
 		}).fail(function(a, b, c) {
 			console.log("Loading of Items failed! Reason: " + (b || "") + " Error: " + (c || ""));
 		});
-		
+
 		for (i = 1; i < rows.length; i++) {
 				target = rows[i].cells[1];
 				label = rows[i].cells[0].innerText.toLowerCase();

@@ -10,6 +10,7 @@
  *
  * @todo Load the code from https://www.mediawiki.org/wiki/MediaWiki:Gadget-DotsSyntaxHighlighter.js and only apply custom config here
  * @change – minor performance improvements
+ * <nowiki>
  */
 
 //Syntax highlighter with various advantages
@@ -35,8 +36,8 @@ mw.loader.using("jquery.client", function() {
     window.UCP = window.UCP || {};
     window.UCP.syntaxHighlight = window.UCP.syntaxHighlight || {};
 
-    // @change – don't run on 1.19 wikis and prevent double loading
-    if (mw.config.get("wgVersion") === "1.19.24" || window.UCP.syntaxHighlight.loaded) {
+    // @change – prevent double loading
+    if (window.UCP.syntaxHighlight.loaded) {
         return;
     }
     window.UCP.syntaxHighlight.loaded = true;
@@ -806,3 +807,4 @@ mw.loader.using("jquery.client", function() {
         }
     }
 });
+/* </nowiki> */

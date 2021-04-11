@@ -34,6 +34,31 @@ $('a.external.text').removeAttr('target');
 // Add custom "focusable" class
 $('.focusable').attr('tabindex', 0);
 
+
+/* Script to make page-specific styling (see [[Project:Page Styles]]) */
+$('#mw-content-text > .mw-parser-output').find('.pageStyles').each(function() {
+	var $this = $(this);
+	var css = $this.text();
+	var id = $this.attr('id');
+	
+	/* For security purposes, DO NOT REMOVE! */
+	function validateCSS(css) {
+		return css
+			.replaceAll(/([\t ]*)[a-z0-9\-]+\s*:.*url\(["']?(.*?)["']?\)[^;}]*;?[\t ]*/gi, '$1/* url() is not allowed */') // url()
+			.replaceAll(/([\t ]*)[a-z0-9\-]+\s*:.*expression\(["']?(.*?)["']?\)[^;}]*;?[\t ]*/gi, '$1/* expression() is not allowed */') // expression()
+			.replaceAll(/([\t ]*)@import.*/gi, "$1/* @import is not allowed */") // @import
+			.replaceAll(/([\t ]*)[a-z0-9\-]+\s*:[ \t]*["']?javascript:([^;\n]*)?;?[\t ]*/gi, '$1/* javascript: is not allowed */') // javascript:
+			.replaceAll(/^([\t ]*)@font-face\s*{[^\0]*?}/gi, "$1/* @font-face is not allowed */"); // @font-face
+	}
+	
+	$('<style>', {
+		text: validateCSS(css),
+		type: "text/css",
+		class: $this.attr('class') && $this.attr('class').replaceAll(/^pageStyles\s*|pageStyles\s*$/g, ""),
+		id: id,
+	}).appendTo('head');
+});
+
 // Add comment guidelines notice (wiki/fandom staff/users with > 100 edits exempt)
 if (!/bureaucrat|content-moderator|threadmoderator|rollback|sysop|util|staff|helper|global-discussions-moderator|wiki-manager|soap/.test(mw.config.get('wgUserGroups').join('\n')) && mw.config.get('wgEditCount') < 100) {
 	mw.loader.using([ 'mediawiki.api' ]).then(function() {
@@ -273,30 +298,6 @@ $.when(
     });
 }).catch(console.warn);
 
-/* Script to make page-specific styling */
-$('#mw-content-text > .mw-parser-output').find('.pageStyles').each(function() {
-	var $this = $(this);
-	var css = $this.text();
-	var id = $this.attr('id');
-	
-	/* For security purposes, DO NOT REMOVE! */
-	function validateCSS(css) {
-		return css
-			.replaceAll(/([\t ]*)[a-z0-9\-]+\s*:.*url\(["']?(.*?)["']?\)[^;}]*;?[\t ]*/gi, '$1/* url() is not allowed */') // url()
-			.replaceAll(/([\t ]*)[a-z0-9\-]+\s*:.*expression\(["']?(.*?)["']?\)[^;}]*;?[\t ]*/gi, '$1/* expression() is not allowed */') // expression()
-			.replaceAll(/([\t ]*)@import.*/gi, "$1/* @import is not allowed */") // @import
-			.replaceAll(/([\t ]*)[a-z0-9\-]+\s*:[ \t]*["']?javascript:([^;\n]*)?;?[\t ]*/gi, '$1/* javascript: is not allowed */') // javascript:
-			.replaceAll(/^([\t ]*)@font-face\s*{[^\0]*?}/gi, "$1/* @font-face is not allowed */"); // @font-face
-	}
-	
-	$('<style>', {
-		text: validateCSS(css),
-		type: "text/css",
-		class: $this.attr('class') && $this.attr('class').replaceAll(/^pageStyles\s*|pageStyles\s*$/g, ""),
-		id: id,
-	}).appendTo('head');
-});
-
 // Change profile links
 var count = 0;
 var inter = setInterval(function() {
@@ -382,21 +383,9 @@ if (mw.config.get('wgPageName').match(/^S:(.+)$/i)) {
 	window.location.replace(mw.util.getUrl('Special:' + mw.config.get('wgPageName').match(/^S:(.+)$/i)[1]));
 }
 
-if (mw.config.get('wgPageName').match(/^HSW:(.+)$/i) && mw.config.get('wgAction') === 'view') {
-	window.location.replace(mw.util.getUrl('Project:' + mw.config.get('wgPageName').match(/^HSW:(.+)$/i)[1]));
-}
-
-if (mw.config.get('wgPageName').match(/^MD:(.+)$/i) && mw.config.get('wgAction') === 'view') {
-	window.location.replace(mw.util.getUrl('Module_talk:' + mw.config.get('wgPageName').match(/^MD:(.+)$/i)[1]) + '/doc');
-}
-
-/* global ace */
-// Enable wrapping in Filter editors
-if (mw.config.get('wgPageName').match(/^Special:AbuseFilter\/\d+$/)) {
-    ace.edit('wpAceFilterEditor').setOptions({
-        wrapBehavioursEnabled: true,
-    });
-}
+// if (mw.config.get('wgPageName').match(/^HSW:(.+)$/i) && mw.config.get('wgAction') === 'view') {
+// 	window.location.replace(mw.util.getUrl('Project:' + mw.config.get('wgPageName').match(/^HSW:(.+)$/i)[1]));
+// }
 
 //##############################################################
 /* ==importArticle pre-script actions== (X00)*/

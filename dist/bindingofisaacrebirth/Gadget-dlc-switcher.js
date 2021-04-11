@@ -40,10 +40,6 @@ var dlcSwitcher = {
 	},
 
 	/**
-	 * 
-	 */
-	textBreakers: [ ',', '.', 'and', 'or' ],
-	/**
 	 * The HTML block elements that should be skipped when an adjacent element
 	 * is removed.
 	 */
@@ -57,7 +53,7 @@ var dlcSwitcher = {
 	 * The HTML inline elements that should also be removed when an adjacent
 	 * element is removed.
 	 */
-	ornamentInlineElements: '.plat',
+	ornamentInlineElements: '.plat, .mw-collapsible-toggle',
 	/**
 	 * The HTML tables where table cells can be removed when empty instead of
 	 * being cleared.
@@ -78,6 +74,14 @@ var dlcSwitcher = {
 	tupleElements: {
 		'.gallerytext': '.gallerybox'
 	},
+	/**
+	 * The HTML elements independent from the above section.
+	 */
+	sectionBreakers: '.nav-start',
+	/**
+	 * The HTML <a> elements which redirect to articles from the main namespace.
+	 */
+	specialArticleTitles: 'Binding_of_Isaac:_Rebirth_Wiki|Special:Random',
 
 	/**
 	 * The page global DLC filter.
@@ -95,11 +99,18 @@ var dlcSwitcher = {
 	preProcessors: {
 		':header': /** @this HTMLElement */ function () {
 			var $this = $( this );
-			if ( !$this.children( '.mw-headline' ).text().match( 'Synergies|Interactions' ) ) {
+			if (
+				!$this
+					.children( '.mw-headline' )
+					.text()
+					.match( 'Synergies|Interactions' )
+			) {
 				return;
 			}
 			$this
-				.nextUntil( dlcSwitcher.higherHeaders[ $this.prop( 'nodeName' ) ] )
+				.nextUntil(
+					dlcSwitcher.higherHeaders[ $this.prop( 'nodeName' ) ]
+				)
 				.filter( 'ul' )
 				.children( 'li' )
 				.addClass( 'dlc-switcher-item-list' );
@@ -110,7 +121,8 @@ var dlcSwitcher = {
 	 * @type {{ [ k: string ]: (this: HTMLElement) => void }}
 	 */
 	postProcessors: {
-		'.nav-category:not( .nav-list-vertical )': /** @this HTMLElement */ function () {
+		'.nav-category:not( .nav-list-vertical )': /** @this HTMLElement */
+		function () {
 			var $row = $( this ).children().first().next(), $next = $row.next();
 			while ( $next.length ) {
 				if ( $next.prop( 'nodeName' ) === 'P' ) {
@@ -145,15 +157,20 @@ var dlcSwitcher = {
 	postponed: [],
 
 	/**
-	 * 
+	 * Initializes the gadget on a page.
 	 */
 	init: function () {
-		console.log( 'DLC Switcher v0.10' );
+		console.log( 'DLC Switcher v0.12.1' );
 
-		if ( !$( 'body.mediawiki' ).hasClass( 'ns-0' ) && !$( 'body.mediawiki' ).hasClass( 'page-User_Derugon_Sandbox_DLC_switcher' ) ) {
+		// Only use the gadget on articles (and test user page).
+		if (
+			!$( 'body.mediawiki' ).hasClass( 'ns-0' ) &&
+			!$( 'body.mediawiki' ).hasClass( 'page-User_Derugon_Sandbox_DLC_switcher' )
+		) {
 			return;
 		}
 
+		// Initializes some JQuery elements.
 		dlcSwitcher.$contentText = $( '#mw-content-text' );
 		dlcSwitcher.$parserOutput = dlcSwitcher.$contentText
 			.find( '.mw-parser-output' );
@@ -164,21 +181,24 @@ var dlcSwitcher = {
 			'<li class="dlc-switcher-item" id="dlc-switcher-item-3" title="Hide content unavailable with Repentance"></li>'
 		);
 
-		var $contextBox = dlcSwitcher.$parserOutput.find( '.context-box' ).first();
-
+		// Checks if the entire page is limited to some versions.
 		dlcSwitcher.pageFilter = Math.pow( 2, dlcSwitcher.$items.length ) - 1;
+		var $contextBox = dlcSwitcher.$parserOutput.find( '.context-box' ).first();
 		if ( $contextBox.length && !$contextBox.prevAll( ':header' ).length ) {
 			dlcSwitcher.pageFilter = dlcUtil.getDlcFilter(
 				$contextBox.children( 'img.dlc' ).get( 0 )
 			);
 		}
 
+		// Generates the DLC switcher form and puts it on the page.
 		dlcSwitcher.$items.each( dlcSwitcher.initItem );
-
 		var $ul = $( '<ul id="dlc-switcher">' ).append( dlcSwitcher.$items );
 		if ( $( 'body.rootpage-Binding_of_Isaac_Rebirth_Wiki' ).length ) {
 			$( '#mf-welcome' )
-				.append( '<p>Use one of the following filters to hide the wiki content unrelated to your game version:</p><br>' )
+				.append(
+					'<p>Use one of the following filters to hide the wiki ' +
+					'content unrelated to your game version:</p><br>'
+				)
 				.after( $ul.addClass( 'dlc-switcher-block' ) );
 		} else {
 			$ul.appendTo( '#firstHeading' );
@@ -201,6 +221,8 @@ var dlcSwitcher = {
 		}
 		dlcUtil.selectedFilter = Math.pow( 2, dlcSwitcher.selectedIndex );
 
+		// Sets the DLC icon removal function according to the previously
+		// retrieved global article DLC.
 		dlcUtil.update = function ( $elem ) {
 			var processors = Object.entries( dlcSwitcher.preProcessors );
 			for ( var i = 0; i < processors.length; ++i ) {
@@ -233,10 +255,7 @@ var dlcSwitcher = {
 
 		// Adds a corresponding "dlcfilter" URL parameter to links where none
 		// is used.
-		// TODO: Prevent replacement of external links.
-		// TODO: Also edit internal interface links.
-		dlcSwitcher.$parserOutput
-			.find( ':not( .mw-editsection, .dlc-switcher-item ) > a[ href ]' )
+		$( ":not( .mw-editsection, .dlc-switcher-item ) > a[ href ^= '/wiki/' ]" )
 			.prop( 'href', dlcSwitcher.updateHrefDlcFilter );
 	},
 
@@ -259,7 +278,7 @@ var dlcSwitcher = {
 	},
 
 	/**
-	 * Removes a DLC image and its related content if the DLC filter does not
+	 * Removes a DLC icon and its related content if the DLC filter does not
 	 * match the image one.
 	 * @this {HTMLImageElement}
 	 */
@@ -278,94 +297,43 @@ var dlcSwitcher = {
 			return;
 		}
 
+		// Handles context boxes.
 		if ( $parent.hasClass( 'context-box' ) ) {
 			var $header = $parent.prevAll( ':header' ).first();
-
 			if ( $header.length ) {
-				// Removes a section:
-				//   …<h2>……</h2>……<@ class="context-box">{{dlc}}</@>……<h2>…
-				//    |-----------------------------------------------|
 				dlcSwitcher.recRemoveElement( $header );
 				return;
 			}
-
-			// Removes a DLC context box:
-			//   …<@ class="context-box">{{dlc}}</@>…
-			//    |--------------------------------|
 			dlcSwitcher.recRemoveElement( $parent );
 			return;
 		}
 
-		if ( dlcSwitcher.getNextText( $this ) === '' ) {
-			var $next = $this.next();
-			while ( $next.is( dlcSwitcher.ornamentInlineElements ) ) {
-				$next = $next.next();
-			}
-
-			if ( !$next.length ) {
-				// Removes a container:
-				//   …<@>……{{dlc}}</@>…
-				//    |--------------|
-				dlcSwitcher.recRemoveElement( $parent );
-				return;
-			}
-
-			if ( $next.is( 'br' ) ) {
-				// Removes a line:
-				//   …<br>……{{dlc}}<br>…
-				//    |-----------|
-				dlcSwitcher.removePrevNodeUntil( $next.get( 0 ), 'BR' );
-				return;
-			}
-		}
-
+		// Handles list items.
 		if ( $parent.is( 'li' ) ) {
-			if ( $parent.hasClass( 'dlc-switcher-item-list' ) ) {
-				dlcSwitcher.processItemList( $this );
+			if ( $parent.hasClass( 'dlc-switcher-item-list' ) && dlcSwitcher.handleItemList( $this ) ) {
 				return;
 			}
-
-			var $ul = $this.nextAll( 'ul' );
-			if ( $ul.length && !$this.get( 0 ).previousSibling ) {
-				dlcSwitcher.removeNextNodeUntil( $this.get( 0 ), 'UL' );
-				dlcSwitcher.postponed.push( [ dlcSwitcher.prependFirstListItem, $ul ] );
+			if ( !$this.get( 0 ).previousSibling ) {
+				dlcSwitcher.recRemoveElement( $parent );
 				return;
 			}
 		}
 
-		if ( dlcSwitcher.getPreviousText( $this ) === '' ) {
-			var $prev = $this.prev();
-			while ( $prev.is( dlcSwitcher.ornamentInlineElements ) ) {
-				$prev = $prev.prev();
-			}
-
-			if ( !$prev.length ) {
-				// Removes a container:
-				//   …<@>{{dlc}}……</@>…
-				//    |--------------|
-				dlcSwitcher.recRemoveElement( $parent );
-				return;
-			}
-
-			if ( $prev.is( 'br' ) ) {
-				// Removes a line:
-				//   …<br>{{dlc}}……<br>…
-				//    |-----------|
-				dlcSwitcher.removeNextNodeUntil( $prev.get( 0 ), 'BR' );
-				return;
-			}
-
-			// TODO: Use this.removeNextNodeUntil( ..., '#text' )
+		// Handles generic block/inline cases.
+		if ( dlcSwitcher.handleText( $this ) ) {
+			return;
 		}
 
 		mw.log.warn( 'unmatched dlc' );
 	},
 
 	/**
-	 * 
-	 * @param {JQuery} $elem 
+	 * Removes a DLC icon and its related content in an HTML list element using
+	 * items as a key.
+	 * @param {JQuery} $elem The JQuery DLC icon element.
+	 * @returns True if the DLC icon has been handled properly, false otherwise.
 	 */
-	processItemList: function ( $elem ) {
+	handleItemList: function ( $elem ) {
 		/** @type {ChildNode} */
 		var elem = $elem.get( 0 );
 		var next = elem.nextSibling;
@@ -384,27 +352,27 @@ var dlcSwitcher = {
 				var prev = elem.previousSibling;
 				if ( !prev ) {
 					dlcSwitcher.recRemoveElement( $li );
-					return;
+					return true;
 				}
 				prev.textContent = prev.textContent
 					.substring( 0, prev.textContent.lastIndexOf( '/' ) )
 					.trim();
 				elem.remove();
-				return;
+				return true;
 			}
 			next.textContent = next.textContent
 				.substr( next.textContent.indexOf( '/' ) + 1 )
 				.trim();
 			elem.remove();
-			return;
+			return true;
 		}
 		var prev = elem.previousSibling;
 		if (
 			!prev ||
 			prev.nodeType !== Node.TEXT_NODE ||
-			next.textContent.trim()
+			prev.textContent.trim()
 		) {
-			// TODO? Is this even possible?
+			return false; // Is this even possible?
 		}
 		elem.remove();
 		while (
@@ -422,11 +390,12 @@ var dlcSwitcher = {
 			elem.remove();
 		}
 		dlcSwitcher.postponed.push( [ dlcSwitcher.prependFirstListItem, $ul ] );
+		return true;
 	},
 
 	/**
-	 * 
-	 * @param {JQuery} $ul 
+	 * Prepends the first item of a list element to the list element itself.
+	 * @param {JQuery} $ul The JQuery list element.
 	 */
 	prependFirstListItem: function ( $ul ) {
 		var $li = $ul.children( ':first-of-type' );
@@ -435,9 +404,72 @@ var dlcSwitcher = {
 	},
 
 	/**
+	 * Removes a DLC icon and its related content in an HTML list element using
+	 * items as a key.
+	 * @param {JQuery} $elem The JQuery DLC icon element.
+	 * @returns True if the DLC icon has been handled properly, false otherwise.
+	 */
+	handleText: function ( $elem ) {
+		if ( dlcSwitcher.getNextText( $elem ) === '' ) {
+			// TODO: Rework this part, and maybe remove it as it seems to follow
+			// some unintuitive rules.
+			var $parent = $elem.parent();
+			var $next   = $elem.next();
+			while ( $next.is( dlcSwitcher.ornamentInlineElements ) ) {
+				$next = $next.next();
+			}
+			if ( !$next.length ) {
+				dlcSwitcher.recRemoveElement( $parent );
+				return true;
+			}
+			if ( $next.is( 'br' ) ) {
+				dlcSwitcher.removePrevNodeUntil( $next.get( 0 ), 'BR' );
+				return true;
+			}
+		}
+
+		var prevText = dlcSwitcher.getPreviousText( $elem );
+		var $parent  = $elem.parent();
+		var $prev    = $elem.prev();
+		while ( $prev.is( dlcSwitcher.ornamentInlineElements ) ) {
+			$elem = $prev;
+			$prev = $prev.prev();
+		}
+		if (
+			prevText && !prevText.endsWith( '.' ) ||
+			!prevText && $prev.length && !$prev.is( 'br' )
+		) {
+			return false;
+		}
+		/** @type {ChildNode} */
+		var elem = $elem.get( 0 ),
+			next = elem,
+			text = '';
+		do {
+			text = elem.textContent.trimEnd();
+			next = elem.nextSibling;
+			elem.remove();
+			elem = next;
+			if ( !elem ) {
+				if ( !$prev.length && !prevText ) {
+					dlcSwitcher.recRemoveElement( $parent );
+				}
+				return true;
+			}
+			if ( elem.nodeName === 'BR' ) {
+				elem.remove();
+				return true;
+			}
+			if ( text.endsWith( '.' ) && elem instanceof HTMLElement && elem.classList.contains( 'dlc' ) ) {
+				return true;
+			}
+		} while ( true );
+	},
+
+	/**
 	 * Recursively removes an element: also removes its containers and previous
 	 * headers if they are empty after the element being removed.
-	 * @param {JQuery} $elem The element to remove.
+	 * @param {JQuery} $elem The JQuery element to remove.
 	 */
 	recRemoveElement: function ( $elem ) {
 		var $parent = $elem.parent(),
@@ -460,51 +492,8 @@ var dlcSwitcher = {
 			$temp = $elem.next();
 		}
 
-		if ( $elem.is( 'td' ) ) {
-			var $siblings = $parent.children(),
-				$tbody    = $parent.parent(),
-				$table    = $tbody.parent(),
-				index     = $siblings.index( $elem );
-
-			if ( $table.is( '.nav-list-vertical' ) ) {
-				// Removes a table column.
-				$elem.remove();
-				$parent
-					.nextAll()
-					.children( ':nth-of-type( ' + ( index + 1 ) + ' )' )
-					.remove();
-				return;
-			}
-
-			if ( $table.is( dlcSwitcher.tablesMainColumn[ index ] ) ) {
-				if ( $tbody.children().length === 1 ) {
-					// Removes a table:
-					//   …<table>……<tbody><tr>……<td>……</td>……</tr></tbody>……</table>…
-					//    |--------------------------------------------------------|
-					dlcSwitcher.recRemoveElement( $table );
-					return;
-				}
-
-				// Removes a table row:
-				//   …<tr>……<td>……</td>……</tr>…
-				//    |----------------------|
-				$parent.remove();
-				return;
-			}
-
-			if ( $tbody.parent( dlcSwitcher.listTables ).length ) {
-				// Removes a table cell:
-				//   …<td>……</td>…
-				//    |---------|
-				$elem.remove();
-				return;
-			}
-
-			// Clears a table cell:
-			//   …<td>………</td>…
-			//        |-|
-			$elem.empty();
-			return;
+		if ( $elem.is( 'th, td' ) ) {
+			dlcSwitcher.removeTableCell( $elem );
 		}
 
 		if ( $elem.hasClass( 'mw-headline' ) ) {
@@ -522,7 +511,8 @@ var dlcSwitcher = {
 			$temp = $elem;
 			$elem = $elem.next();
 			$elem.nextUntil(
-				dlcSwitcher.higherHeaders[ $temp.prop( 'nodeName' ) ]
+				dlcSwitcher.higherHeaders[ $temp.prop( 'nodeName' ) ] + ', ' +
+				dlcSwitcher.sectionBreakers
 			).remove();
 		}
 
@@ -536,9 +526,10 @@ var dlcSwitcher = {
 	},
 
 	/**
-	 * 
+	 * Indicates if the element on which this function has been called is
+	 * matched by the selector in the first element of a pair.
 	 * @this {JQuery}
-	 * @param {string[]} pair
+	 * @param {string[]} pair The pair, the first element being a selector.
 	 */
 	isElementFirst: function ( pair ) {
 		return this.is( pair[ 0 ] );
@@ -549,7 +540,7 @@ var dlcSwitcher = {
 	 * checks ALL children elements against the selector, making sure they all
 	 * match.
 	 * @param {JQuery} $elem 
-	 * @param {string} selector 
+	 * @param {string} selector The selector.
 	 */
 	recIs: function ( $elem, selector ) {
 		if ( !$elem.length ) {
@@ -570,6 +561,59 @@ var dlcSwitcher = {
 	},
 
 	/**
+	 * Handles the remoal of a table cell, from clearing it to removing the
+	 * entire table depending to the situation.
+	 * @param {JQuery} $cell The JQuery <th/td> element.
+	 */
+	removeTableCell: function ( $cell ) {
+		var $row      = $cell.parent(),
+			$siblings = $row.children(),
+			$tbody    = $row.parent(),
+			$table    = $tbody.parent(),
+			index     = $siblings.index( $cell );
+
+		if ( $table.hasClass( 'nav-list-vertical' ) ) {
+			$cell.remove();
+			$row
+				.nextAll()
+				.children( ':nth-of-type( ' + ( index + 1 ) + ' )' )
+				.remove();
+			return;
+		}
+
+		if ( $tbody.is( 'thead' ) && $cell.is( 'th' ) ) {
+			// TODO: fix with mw-collapsible & sortable
+			var hasNext = $cell.next().length;
+			$cell.remove();
+			$tbody
+				.nextAll()
+				.children()
+				.nextAll()
+				.addBack()
+				.children( ':nth-of-type( ' + ( index + 1 ) + ' )' )
+				.remove();
+			if ( !hasNext ) {
+				$table
+					.removeClass( 'mw-collapsible mw-made-collapsible' )
+					.makeCollapsible();
+			}
+			return;
+		}
+
+		if ( $table.is( dlcSwitcher.tablesMainColumn[ index ] ) ) {
+			if ( $tbody.children().length === 1 ) {
+				dlcSwitcher.recRemoveElement( $table );
+				return;
+			}
+			$row.remove();
+		} else if ( $tbody.parent( dlcSwitcher.listTables ).length ) {
+			$cell.remove();
+		} else {
+			$cell.empty();
+		}
+	},
+
+	/**
 	 * Removes the previous header of an element if the section would be empty
 	 * after removing the said element. Also updates the table of contents.
 	 * @param {JQuery} $elem The JQuery element.
@@ -586,7 +630,7 @@ var dlcSwitcher = {
 		};
 
 		// Stops if the next element is not a header.
-		while ( !$elem.is( ':header' ) ) {
+		while ( !$elem.is( ':header, ' + dlcSwitcher.sectionBreakers ) ) {
 			if ( !$elem.is( dlcSwitcher.ghostBlockElements ) ) {
 				return;
 			}
@@ -595,6 +639,7 @@ var dlcSwitcher = {
 
 		// Stops if the next header has a lower level.
 		if (
+			!$elem.is( ':header' ) &&
 			$header.prop( 'nodeName' )
 				.localeCompare( $elem.prop( 'nodeName' ) ) === -1
 		) {
@@ -606,25 +651,23 @@ var dlcSwitcher = {
 		if ( !dlcSwitcher.$toc ) {
 			dlcSwitcher.$toc = dlcSwitcher.$parserOutput.find( '#toc' );
 		}
-		if ( !dlcSwitcher.$toc.length ) {
-			return;
-		}
-		var $tocElement   = dlcSwitcher.$toc.find(
-				'[href="#' + $header.find( '.mw-headline' ).prop( 'id' ) + '"]'
-			),
-			$tocParent    = $tocElement.parent(),
-			tocNumber     = $tocElement.children( '.tocnumber' ).text(),
-			lastDotPos    = tocNumber.lastIndexOf( '.', 1 ) + 1,
-			lastTocNumber = +tocNumber.substring( lastDotPos );
-		$tocParent.nextAll().each( function () {
-			$( this ).find( '.tocnumber' ).text( function ( _, text ) {
-				return text.substring( 0, lastDotPos ) + lastTocNumber +
-					text.substring( tocNumber.length );
+		if ( dlcSwitcher.$toc.length ) {
+			var $tocElement   = dlcSwitcher.$toc.find(
+					'[href="#' + $header.find( '.mw-headline' ).prop( 'id' ) + '"]'
+				),
+				$tocParent    = $tocElement.parent(),
+				tocNumber     = $tocElement.children( '.tocnumber' ).text(),
+				lastDotPos    = tocNumber.lastIndexOf( '.', 1 ) + 1,
+				lastTocNumber = +tocNumber.substring( lastDotPos );
+			$tocParent.nextAll().each( function () {
+				$( this ).find( '.tocnumber' ).text( function ( _, text ) {
+					return text.substring( 0, lastDotPos ) + lastTocNumber +
+						text.substring( tocNumber.length );
+				} );
+				++lastTocNumber;
 			} );
-			++lastTocNumber;
-		} );
-
-		$tocParent.remove();
+			$tocParent.remove();
+		}
 		$header.remove();
 		dlcSwitcher.checkHeader( $elem );
 	},
@@ -691,7 +734,12 @@ var dlcSwitcher = {
 	 */
 	updateHrefDlcFilter: function ( _, href ) {
 		var url = new URL( href );
-		if ( !url.searchParams.has( 'dlcfilter' ) ) {
+		//url.pathname.substr( 6 ).match( '^/wiki/[^:/]+(/.*)$' )
+		if (
+			url.pathname.match( '^/wiki/(?:[^:/]+(?:/.*)?|' +
+				dlcSwitcher.specialArticleTitles + ')$' ) &&
+			!url.searchParams.has( 'dlcfilter' )
+		) {
 			url.searchParams.append( 'dlcfilter',
 				dlcSwitcher.selectedIndex.toString()
 			);

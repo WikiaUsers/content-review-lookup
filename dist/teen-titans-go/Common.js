@@ -35,6 +35,7 @@ window.LockOldBlogs = {
  
 //**End lock blog posts**// 
 
+
 if (wgUserName != 'null') {
 	$('.insertusername').html(wgUserName);
 }
@@ -56,11 +57,11 @@ window.lastEdited = {
 //**End LastEdited**//
 
 //**AjaxRC**//
-window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Watchlist", "Log", "Contributions"];
+window.ajaxSpecialPages = ["Recentchanges", "SocialActivity", "WikiActivity", "Watchlist", "Log", "Contributions"];
 window.ajaxRefresh = 30000;
 window.AjaxRCRefreshText = 'Auto-refresh';
 
-//**AjaxRC**//
+//**End AjaxRC**//
 
 //**MessageBlock**//
 var MessageBlock = {
@@ -69,23 +70,23 @@ var MessageBlock = {
   autocheck : false
 };
 
-//**MessageBlock**//
+//**End MessageBlock**//
 
 importArticles({
     type: "script",
     articles: [
-        'u:dev:MediaWiki:LastEdited/code.js',           //**last edited- UCP OK**//
-        'u:dev:MediaWiki:AjaxRC/code.js',               //**Auto-refresh- UCP OK**//
-        'u:dev:MediaWiki:Countdown/code.js',            //**Creates countdown clock- UCP OK**//
-        'u:dev:MediaWiki:BackToTopButton/code.js',      //**Back to top of page- UCP OK**//
-        'u:dev:MediaWiki:MassProtect/code.js',          //**Mass protect articles- UCP OK**//
-        'u:dev:MediaWiki:ListFiles/code.js'             //**List files- UCP OK**//
-        'u:dev:MediaWiki:WallGreeting.js',              //**NEW WallGreeting in beta- UCP OK**//
-        'u:dev:MediaWiki:MessageBlock/code.js',         //**Send message to blocked user- UCP OK**//
-        'u:dev:MediaWiki:MassProtect/code.js',          //**Mass protect articles- UCP OK**//
-        'u:dev:MediaWiki:ReferencePopups/code.js',      //**References popup- UCP Partial**//
-        'u:dev:MediaWiki:UserTags/code.js',             //**Custom usertags- UCP Broken**//
-        'u:dev:MediaWiki:LockOldBlogs/code.js',         //**Lock blog posts- UCP Broken**//
-        'u:dev:MediaWiki:Standard_Edit_Summary/code.js',     //**Standard edit summaries- Broken**//
+        'u:dev:MediaWiki:Countdown/code.js',            //**Creates countdown clock**//
+        'u:dev:MediaWiki:UserTags/code.js',             //**Custom usertags**//
+        'u:dev:MediaWiki:LockOldBlogs/code.js',         //**Lock blog posts**//
+        'u:dev:MediaWiki:Standard_Edit_Summary/code.js',  //**Standard edit summaries**//
+        'u:dev:MediaWiki:MessageBlock/code.js',
+        'u:dev:MediaWiki:ViewRemoved/code.js',
+        'u:dev:MediaWiki:WallGreetingButton/code.js', 
+        'u:dev:MediaWiki:LastEdited/code.js',
+        'u:dev:MediaWiki:MassProtect/code.js',             //**Mass protect articles**//
+        'u:dev:MediaWiki:ReferencePopups/code.js',         //**References popup**//
+        'u:dev:MediaWiki:BackToTopButton/code.js',         //**Back to top of page**//
+        'u:dev:MediaWiki:AjaxRC/code.js',                  //**Auto-refresh**//
+        'u:dev:MediaWiki:ListFiles/code.js'                //**List files**//
     ]
 });

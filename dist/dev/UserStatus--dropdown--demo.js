@@ -11,12 +11,12 @@ var $user = mw.config.get('wgTitle').split('/');
     mw.hook('dev.i18n').add(function (i18n) {
         i18n.loadMessages('UserStatus').done(function (i18n) {
             mw.loader.using('mediawiki.notify').then(function() {
-                var $statusLink = $('<div />')
+                var $statusLink = $('<div>')
                             .addClass('wds-dropdown StatusChange')
                             .attr('id', 'StatusChange').append(
-                                $('<div />')
+                                $('<div>')
                                     .addClass('wds-dropdown__toggle StatusMenu-toggle').append(
-                                        $('<a />')//.attr( 'title', 'Change your status' ) //  No translation yet
+                                        $('<a>')//.attr( 'title', 'Change your status' ) //  No translation yet
                                             .text(i18n.msg('status').plain())
                                             .attr('id', 'StatusToggle')
                                             .addClass('wds-button wds-is-secondary').append(
@@ -24,37 +24,37 @@ var $user = mw.config.get('wgTitle').split('/');
                                         )
                                 )
                         ); 
-                var $statusDropdown = $('<div />').addClass('wds-is-not-scrollable wds-dropdown__content').append(
-                                    $('<ul />')
+                var $statusDropdown = $('<div>').addClass('wds-is-not-scrollable wds-dropdown__content').append(
+                                    $('<ul>')
                                         .addClass('wds-list wds-is-linked')
                                         .attr('id', 'StatusMenu') 
                                         .append(
-                                            $('<li />').append(
-                                                $('<a />')
+                                            $('<li>').append(
+                                                $('<a>')
                                                 .attr('target', '_blank')
                                                 .attr('style', 'cursor: pointer;')
                                                 .attr('id', 'StatusMenu-online')
                                                 .text(i18n.msg('online').plain())
                                             ))
                                         .append(
-                                            $('<li />').append(
-                                                $('<a />')
+                                            $('<li>').append(
+                                                $('<a>')
                                                 .attr('target', '_blank')
                                                 .attr('style', 'cursor: pointer;')
                                                 .attr('id', 'StatusMenu-away')
                                                 .text(i18n.msg('away').plain())
                                             ))
                                         .append(
-                                            $('<li />').append(
-                                                $('<a />')
+                                            $('<li>').append(
+                                                $('<a>')
                                                 .attr('target', '_blank')
                                                 .attr('style', 'cursor: pointer;')
                                                 .attr('id', 'StatusMenu-dnd')
                                                 .text(i18n.msg('dnd').plain())
                                             ))
                                         .append(
-                                            $('<li />').append(
-                                                $('<a />')
+                                            $('<li>').append(
+                                                $('<a>')
                                                 .attr('target', '_blank')
                                                 .attr('style', 'cursor: pointer;')
                                                 .attr('id', 'StatusMenu-unknown')

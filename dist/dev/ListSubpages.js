@@ -43,7 +43,7 @@
 
     function load (msg) {
         $.ajax({
-            url: 'https://community.fandom.com/wikia.php?controller=UserActivity%5C&method=index&format=jsonp',
+            url: 'https://appcommunitycentral.fandom.com/wikia.php?controller=UserActivity%5C&method=index&format=jsonp',
             dataType: 'jsonp'
         }).done(function (d) {
             parallelIter(d.items, 5, function(item) {

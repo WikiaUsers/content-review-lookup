@@ -28,6 +28,15 @@ window.ajaxRefresh = 30000;
 window.AjaxRCRefreshText = 'Update content';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
  
+  /* MassCategorization tool */
+ importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassCategorization/code.js',
+    ]
+});
+window.MassCategorizationGroups = ['sysop'];
+ 
 /* LockForums */
 window.LockForums = {
     expiryDays: 30,

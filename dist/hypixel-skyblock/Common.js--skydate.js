@@ -22,7 +22,7 @@
 			
 			// console.log( "SkyDate: ", skyDate, date, date.getYear() );
 			//cont.html( `Sky Date: ${skyDate.toString()}<br />Real Date: ${date}<br />Countdown:`);
-			var countdownDiv = $("<span />").appendTo(cont);
+			var countdownDiv = $("<span>").appendTo(cont);
 				
 			countdownDiv.countdown(date, { elapse:true })
 			.on('update.countdown', function(event) {

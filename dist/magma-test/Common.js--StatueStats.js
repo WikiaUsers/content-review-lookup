@@ -11,7 +11,8 @@ $(document).ready(function() {
 	$("span#heroAbilityHarness").html('<div id="heroAbilityInput">Toggle Hero Ability? <input type="checkbox" name="heroAbilityBoost" id="heroAbilityBoost"></input></div>');
 	$("span#rageSpellHarness").html('<div id="rageSpellInput">Rage Spell Level: <select name="rageSpellLevel" id="rageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> </select></div>');
 	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Haste Spell Level: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
-	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> </select></div>');
+	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> </select></div>');
+	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Life Aura Level: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option> <option value="12">12</option> <option value="13">13</option> <option value="14">14</option> <option value="15">15</option> <option value="16">16</option> <option value="17">17</option> <option value="18">18</option> <option value="19">19</option> <option value="20">20</option> <option value="21">21</option> <option value="22">22</option> <option value="23">23</option> <option value="24">24</option> <option value="25">25</option> <option value="26">26</option> <option value="27">27</option> <option value="28">28</option> <option value="29">29</option> <option value="30">30</option> <option value="31">31</option> <option value="32">32</option> <option value="33">33</option> <option value="34">34</option> <option value="35">35</option> <option value="36">36</option> <option value="37">37</option> <option value="38">38</option> <option value="39">39</option> <option value="40">40</option></select></div>');
     /* Get the initial cell values, remove commas, and 
        set the cell's title attribute to its original value. */
@@ -574,19 +575,30 @@ $(document).ready(function() {
 	  // Two lookup arrays for the GW's life aura ability
 	  var auraPercentIncrease = [0,200,211,222,233,244,256,268,281,295,310,326,343,361,380,400,420,440,460,480,500,520,540,560,580,600,620,640,660,680,700,720,740,760,780,800,820,840,860,880,900];
 	  var auraMaxHPIncrease = [0,70,76,82,88,94,101,108,116,125,135,146,158,171,185,200,215,230,245,260,275,290,305,320,335,350,365,380,395,410,425,440,455,470,485,500,515,530,545,560,575];
+	  // And a lookup for poison attack rate decrease (used for AltDPS)
+	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68]
 		$(".AttackSpeed").each(function() {
 			var initialSpeed = $(this).attr("title") * 1;
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
+			if (isNaN(poisonSpellLevel) === true) {
+		    	poisonSpellLevel = 0;
+		    }
+			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
+			if (isNaN(THpoisonSpellLevel) === true) {
+		    	THpoisonSpellLevel = 0;
+		    }
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			// Try to prevent floating-point errors from making weird behaviour
 			var attackFreq = 1000 / (initialSpeed * 1000);
 			// Now it's the attack frequency we want to modify, so modify away!
 		    // Expand this part later to add support for poison, etc.
-			var poisonMultiplier = 1;
-			if (poisonSpellLevel > 0) {
-				poisonMultiplier = (14 - poisonSpellLevel)/20;
+
+			var poisonMultiplier = (100 - poisonASMultiplier[poisonSpellLevel])/100;
+			var THpoisonMultiplier = 1;
+			if (THpoisonSpellLevel > 0) {
+				THpoisonMultiplier = (15 - THpoisonSpellLevel)/20;
 			}
-			attackFreq *= poisonMultiplier;
+			attackFreq *= Math.min(poisonMultiplier,THpoisonMultiplier);
 			var freezeMultiplier = 1;
 			if (freezeCheckBox != null) {
 				if (freezeCheckBox.checked === true) {
@@ -623,7 +635,7 @@ $(document).ready(function() {
 			if (initialSpeed == displaySpeed) {
 				$(this).removeClass("StatModified");
 				$(this).removeClass("StatPoisoned");
-			} else if (poisonSpellLevel > 0) {
+			} else if (poisonSpellLevel > 0 || THpoisonSpellLevel > 0) {
 				$(this).addClass("StatPoisoned");
 				$(this).removeClass("StatModified");
 			} else {
@@ -709,8 +721,15 @@ $(document).ready(function() {
                 $(this).addClass("StatModified");
             }
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
+			if (isNaN(poisonSpellLevel) === true) {
+		    	poisonSpellLevel = 0;
+		    }
+			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
+			if (isNaN(THpoisonSpellLevel) === true) {
+		    	THpoisonSpellLevel = 0;
+		    }
 			var freezeCheckBox = document.getElementById("freezeBoost");
-			if (poisonSpellLevel > 0) {
+			if (poisonSpellLevel > 0 || THpoisonSpellLevel > 0) {
 				$(this).addClass("StatPoisoned");
 			} else {
 				$(this).removeClass("StatPoisoned");
@@ -737,8 +756,15 @@ $(document).ready(function() {
                 $(this).addClass("StatModified");
             }
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
+			if (isNaN(poisonSpellLevel) === true) {
+		    	poisonSpellLevel = 0;
+		    }
+			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
+			if (isNaN(THpoisonSpellLevel) === true) {
+		    	THpoisonSpellLevel = 0;
+		    }
             var freezeCheckBox = document.getElementById("freezeBoost");
-            if (poisonSpellLevel > 0) {
+            if (poisonSpellLevel > 0 || THpoisonSpellLevel > 0) {
                 $(this).addClass("StatPoisoned");
             } else {
                 $(this).removeClass("StatPoisoned");
@@ -757,6 +783,13 @@ $(document).ready(function() {
 			var initialDPS = $(this).attr("title") * 1;
 			var rageSpellLevel = $("#rageSpellLevel").val() * 1;
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
+			if (isNaN(poisonSpellLevel) === true) {
+		    	poisonSpellLevel = 0;
+		    }
+			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
+			if (isNaN(THpoisonSpellLevel) === true) {
+		    	THpoisonSpellLevel = 0;
+		    }
 			// Currently this class won't support abilities. It's because there's currently no instance where this is needed
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			// First calculate buffed DPS by rage
@@ -775,11 +808,12 @@ $(document).ready(function() {
 			var buffedDPS = Math.max(rageDPS);
 			
 			// Now poison and freeze work on attack frequency but since DPS is proportional to attack frequency, they can be applied here all the same
-			var poisonMultiplier = 1;
-			if (poisonSpellLevel > 0) {
-				poisonMultiplier = (14 - poisonSpellLevel)/20;
+			var poisonMultiplier = (100 - poisonASMultiplier[poisonSpellLevel])/100;
+			var THpoisonMultiplier = 1;
+			if (THpoisonSpellLevel > 0) {
+				THpoisonMultiplier = (15 - THpoisonSpellLevel)/20;
 			}
-			buffedDPS *= poisonMultiplier;
+			buffedDPS *= Math.min(poisonMultiplier,THpoisonMultiplier);
 			
 			var freezeMultiplier = 1;
 			if (freezeCheckBox != null) {
@@ -795,7 +829,7 @@ $(document).ready(function() {
             } else {
                 $(this).addClass("StatModified");
 			}
-			if (poisonSpellLevel > 0) {
+			if (poisonSpellLevel > 0 || THpoisonSpellLevel > 0) {
                 $(this).addClass("StatPoisoned");
             } else {
                 $(this).removeClass("StatPoisoned");
@@ -829,6 +863,13 @@ $(document).ready(function() {
 			var rageSpellLevel = $("#rageSpellLevel").val() * 1;
 			var hasteSpellLevel = $("#hasteSpellLevel").val() * 1;
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
+			if (isNaN(poisonSpellLevel) === true) {
+		    	poisonSpellLevel = 0;
+		    }
+			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
+			if (isNaN(THpoisonSpellLevel) === true) {
+		    	THpoisonSpellLevel = 0;
+		    }
 			var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
 			var normalAbilityCheckBox = document.getElementById("normalAbilityBoost");
 			var freezeCheckBox = document.getElementById("freezeBoost");
@@ -881,12 +922,14 @@ $(document).ready(function() {
 			
 			// That's all the speed buffs. Now on to the speed de-buffs (which thankfully don't conflict)
 			// However, poison's speed decrease isn't linear. So we have to rely on a small lookup
-			var poisonSpeedDebuff = [0,26,30,34,38,40,42,44];
+			var poisonSpeedDebuff = [0,26,30,34,38,40,42,44,46];
+			// Also a small lookup for TH poison
+			var THpoisonSpeedDebuff = [0,30,35,40,45,50];
 			
-			if (poisonSpellLevel > 0) {
-				minSpeed = minSpeed * (100 - poisonSpeedDebuff[poisonSpellLevel]) /100;
-				maxSpeed = maxSpeed * (100 - poisonSpeedDebuff[poisonSpellLevel]) /100;
-			}
+			var poisonDebuff = Math.max(poisonSpeedDebuff[poisonSpellLevel],THpoisonSpeedDebuff[THpoisonSpellLevel]);
+			
+			minSpeed = minSpeed * (100 - poisonDebuff) /100;
+			maxSpeed = maxSpeed * (100 - poisonDebuff) /100;
 			
 			if (freezeCheckBox != null) {
 				if (freezeCheckBox.checked === true) {
@@ -908,7 +951,7 @@ $(document).ready(function() {
             } else {
                 $(this).addClass("StatModified");
             }
-			if (poisonSpellLevel > 0) {
+			if (poisonSpellLevel > 0 || THpoisonSpellLevel > 0) {
                 $(this).addClass("StatPoisoned");
             } else {
                 $(this).removeClass("StatPoisoned");

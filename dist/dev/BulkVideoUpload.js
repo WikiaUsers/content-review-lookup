@@ -7,6 +7,7 @@
 (function(window, $, mw) {
     'use strict';
     var placement,
+        i18n,
         preloads = 2,
         videoUploadModal,
         paused = true,
@@ -15,17 +16,18 @@
     function preload() {
         if (--preloads === 0) {
             placement = window.dev.placement.loader;
-            init();
+            window.dev.i18n.loadMessages('BulkVideoUpload').then(init);
         }
     }
 
-    function init() {
+    function init(i18nData) {
+        i18n = i18nData;
         placement.script('BulkVideoUpload');
         $(placement.element('tools'))[placement.type('prepend')](
             $('<li>').append(
                 $('<a>', {
                     id: 't-bvu',
-                    text: 'Bulk Video Upload',
+                    text: i18n.msg('title').escape(),
                     click: click
                 })
             )
@@ -41,28 +43,24 @@
             content: formHtml(),
             id: 'form-bulk-video-upload',
             size: isUCP ? 'large' : 'medium',
-            title: 'Ajax Bulk Video Upload',
+            title: i18n.msg('title').escape(),
             buttons: [{
                     id: 'bvu-start',
-                    text: 'Initiate',
+                    text: i18n.msg('start').escape(),
                     primary: true,
                     event: 'start'
                 },
                 {
                     id: 'bvu-pause',
-                    text: 'Pause',
+                    text: i18n.msg('pause').escape(),
                     primary: true,
                     event: 'pause',
                     disabled: true
                 },
                 {
-                    text: 'Add YouTube Playlist',
+                    text: i18n.msg('addPlaylistYT').escape(),
                     primary: true,
                     event: 'addPlaylist'
-                },
-                {
-                    text: 'Close',
-                    event: 'close'
                 }
             ],
             events: {
@@ -81,13 +79,13 @@
         }).append(
             $('<fieldset>').append(
                 $('<p>', {
-                    text: 'Put the URL of every video you want to upload on a separate line:'
+                    text: i18n.msg('inputDescription').plain()
                 }),
                 $('<textarea>', {
                     id: 'text-bulk-video-upload'
                 }),
                 $('<p>', {
-                    text: 'Any errors encountered will appear below:'
+                    text: i18n.msg('errorDescription').plain()
                 }),
                 $('<div>', {
                     id: 'text-error-output'
@@ -118,7 +116,7 @@
             currentURL = urls[0];
         if (!currentURL) {
             $('#text-error-output').append(
-                'Finished! Nothing left to do, or next line is blank.<br />'
+                i18n.msg('finished').escape() + '<br />'
             );
             pause();
         } else {
@@ -129,12 +127,12 @@
     }
 
     function addPlaylist() {
-        var playlist = prompt('Please enter a valid YouTube playlist ID:');
+        var playlist = prompt(i18n.msg('addPlaylistPromptYT').plain());
         if (!playlist) {
             return;
         }
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=1000&key=AIzaSyCwjY2VjQJWUKuqdyFV0yLWL4fGpYyZv7I&playlistId=' + playlist, true);
+        xhr.open('GET', 'https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=1000&key=AIzaSyCwjY2VjQJWUKuqdyFV0yLWL4fGpYyZv7I&playlistId=' + playlist + '&hl=' + mw.config.get('wgUserLanguage'), true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4) {
                 var res = JSON.parse(xhr.responseText);
@@ -169,13 +167,13 @@
 
     function outputError(error) {
         console.error('ERROR: ' + error);
-        $('#text-error-output').append('ERROR: ' + error, '<br />');
+        $('#text-error-output').append(i18n.msg('errorOutput').escape() + ' ' + error, '<br />');
     }
 
     function performAction(url) {
         var token = mw.user.tokens.get('editToken');
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', mw.config.get('wgScriptPath') + '/wikia.php?controller=Fandom\\Video\\IngestionController&method=uploadVideo', true);
+        xhr.open('POST', mw.config.get('wgScriptPath') + '/wikia.php?controller=Fandom\\Video\\IngestionController&method=uploadVideo&uselang=' + mw.config.get('wgUserLanguage'), true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4) {
@@ -196,12 +194,14 @@
         setTimeout(process, window.bulkVideoUploadDelay || 1000);
     }
 
+	mw.hook('dev.i18n').add(preload);
     mw.hook('dev.modal').add(preload);
     mw.hook('dev.placement').add(preload);
 
     importArticles({
         type: 'script',
         articles: [
+            'u:dev:MediaWiki:I18n-js/code.js',
             'u:dev:MediaWiki:Modal.js',
             'u:dev:MediaWiki:Placement.js'
         ]

@@ -15,7 +15,7 @@ window.NoLicenseWarning = {
 // MessageBlock config
 window.MessageBlock = {
 	title : 'Blocked',
-	message : 'You have received a $2 block for the reason: \'$1\'. Unless otherwise stated, you may appeal your block on my, or another admin\'s, message wall at Community Central.',
+	message : 'You have received a $2 block for the reason: \'$1\'. Unless otherwise stated and your block is not less than two weeks, you may appeal your block on my, or another admin\'s, message wall at Community Central.',
 	autocheck : true
 };
 

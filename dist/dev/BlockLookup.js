@@ -251,11 +251,11 @@
 				// Load all imports
 				$.when.apply($, this.imports.otherOnloadPromises.concat(mw.loader.using(this.imports.await))).then(function(userRights) {
 					this.i18n.loadMessages('BlockLookup', { language: this.lang })
-						.then(this.init.bind(this, userRights), console.warn)
+						.then(this.init.bind(this, userRights), this.warn)
 						.catch(function(e) {
-							console.warn(e);
+							this.warn(e);
 						});
-				}.bind(this), console.warn);
+				}.bind(this), this.warn);
 			}
 		},
 
@@ -1611,7 +1611,7 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 					this.togglePending();
 					$(this.prevFocused).focus();
 					this.hook['result-success'].fire(arr);
-				}.bind(this)).catch(console.warn);
+				}.bind(this)).catch(this.warn);
 				
 			}.bind(this)).catch(function(code, error) {
 				this.warn.call(this, 'API Error in fetching lookup data:', error.error.info, '(' + code + ')');

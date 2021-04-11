@@ -5,7 +5,7 @@ if (mw.config.get( 'wgCanonicalSpecialPageName' ) == 'Contributions') {
 
 	var wgRelevantUserName = mw.config.get( 'wgRelevantUserName' );
 
-	if (typeof wgRelevantUserName !== 'undefined' && !isNaN(wgRelevantUserName.substr(0,1))){
+	if (typeof wgRelevantUserName !== 'undefined' && !isNaN(wgRelevantUserName.substr(0,1)) && mw.config.get("profileUserId") === "0"){
 		var torLinkTitle = 'Проверить, использует ли IP-адрес узел TOR';
 		var mapLinkTitle = 'Отобразить координаты в Google';
 		var torLink = '<span class="ipInfoSubLink">(<a target="_blank" title="' + torLinkTitle +

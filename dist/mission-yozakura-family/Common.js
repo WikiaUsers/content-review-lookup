@@ -5,3 +5,9 @@ window.DiscordBannerSettings = {
     inviteLink: 'M2YNP8H',
     prependToRail: true
 };
+importArticles({
+    type: "script",
+    articles: [
+        "w:c:dev:MediaWiki:Countdown/code.js"
+    ]
+});

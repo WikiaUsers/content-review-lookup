@@ -14,7 +14,7 @@ mw.loader.using(['mediawiki.util', (mw.config.get('wgVersion') === '1.19.24' ? '
         'wgNamespaceNumber',
         'wgCanonicalSpecialPageName'
     ]);
-    
+
     if (config.wgNamespaceNumber !== -1 || !config.wgTitle.match(/VerifyUser.*/) || config.wgCanonicalSpecialPageName !== null) return;
 
     /**
@@ -58,20 +58,20 @@ mw.loader.using(['mediawiki.util', (mw.config.get('wgVersion') === '1.19.24' ? '
             '</a>' +
         '{{/username}}' +
         '</div>';
-    
+
     // Template shown after a Discord handle is submitted
     templates.complete =
         '<div style="text-align:center;line-height:180%;font-family:\'Rubik\';">' +
         '{{#i18n}}verify-complete{{/i18n}}<br/><br/>' +
         '<input value="{{command}} {{username}}" onClick="this.select();" style="padding:8px; width:350px;font-family:\'Rubik\';font-size:20px" readonly/> ' +
         '</div>';
-    
+
     templates.error =
         '<div style="color:#ee1a41;font-weight:bold">' +
             '{{#i18n}}error-general{{/i18n}} <br/>' +
             '{{error}}' +
         '</div>';
-    
+
     verifyUser.servicesHost = 'https://services.fandom.com/';
 
     verifyUser._setDiscordHandle = function (userid, discordHandle) {
@@ -131,16 +131,16 @@ mw.loader.using(['mediawiki.util', (mw.config.get('wgVersion') === '1.19.24' ? '
             } else if (customCommand) {
                 command = customCommand;
             } else if (window.dev.VerifyUser.command) {
-            	command = window.dev.VerifyUser.command;
+                command = window.dev.VerifyUser.command;
             }
-            
+
             var customChannel = mw.util.getParamValue('ch');
             if (customChannel) {
-            	verifyUser.customChannel = customChannel;
+                verifyUser.customChannel = customChannel;
             } else if (window.dev.VerifyUser.channel) {
-            	verifyUser.customChannel = window.dev.VerifyUser.channel;
+                verifyUser.customChannel = window.dev.VerifyUser.channel;
             }
-            
+
             // Place the form into the main content section of the page
             $('#mw-content-text').empty().append(Mustache.render(templates.main, {
                 username: username,
@@ -152,18 +152,18 @@ mw.loader.using(['mediawiki.util', (mw.config.get('wgVersion') === '1.19.24' ? '
 
             // Display warning and disable submit button if Discord tag is invalid
             $('#verify-input').on('keypress keydown keyup', function() {
-			    if (!$(this).val().match(/^.{3,32}#[0-9]{4}$/)) {
-			        $('#verify-input-invalid').css('visibility', 'visible');
-			        $('#verify').addClass('wds-is-disabled');
-			    } else {
-			        $('#verify-input-invalid').css('visibility', 'hidden');
-			        $('#verify').removeClass('wds-is-disabled');
-			    }
-			});
-			
+                if (!$(this).val().match(/^.{3,32}#[0-9]{4}$/)) {
+                    $('#verify-input-invalid').css('visibility', 'visible');
+                    $('#verify').addClass('wds-is-disabled');
+                } else {
+                    $('#verify-input-invalid').css('visibility', 'hidden');
+                    $('#verify').removeClass('wds-is-disabled');
+                }
+            });
+
             if (discordHandle !== '') {
-            	// Manually trigger the validation if handle is autofilled
-            	$('#verify-input').trigger('keyup');
+                // Manually trigger the validation if handle is autofilled
+                $('#verify-input').trigger('keyup');
             }
 
             // On click of verify, set Discord handle
@@ -184,9 +184,9 @@ mw.loader.using(['mediawiki.util', (mw.config.get('wgVersion') === '1.19.24' ? '
                         i18n: verifyUser.toi18n
                     }));
                 });
-                $('#mw-content-text').empty().append(i18n.msg('loading').plain());
+                $('#mw-content-text').text(i18n.msg('loading').plain());
             });
-            
+
             // On Enter keypress, perform verification
             $('#verify-input').keypress(function (e) {
                 if (e.which === 13) {
@@ -203,3 +203,4 @@ mw.loader.using(['mediawiki.util', (mw.config.get('wgVersion') === '1.19.24' ? '
     mw.hook('dev.i18n').add(verifyUser.init);
 
 });
+/*</nowiki>*/

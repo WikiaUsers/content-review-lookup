@@ -5,7 +5,7 @@
 ;( function( mw, window ) {
     'use strict';
 
-    if ( !document.getElementsByClassName( 'wds-community-header__wiki-buttons' )[0] || window.analyticsButtonLoaded ) {
+    if ( !document.getElementsByClassName( 'wds-community-header__wiki-buttons' )[0] || window.analyticsButtonLoaded || !/sysop|staff|helper|wiki-manager|content-team-member/.test(mw.config.get( 'wgUserGroups' ).join()) ) {
         return;
     }
 
@@ -13,9 +13,6 @@
         mw.hook( 'dev.ui' ).add( function( ui ) {
             const button = ui( {
                 type: 'a',
-                condition: /sysop|staff|helper|wiki-manager|content-team-member/.test(
-                    mw.config.get( 'wgUserGroups' ).join()
-                ),
                 attr: {
                     id: 'analytics-header-button',
                     class: 'wds-button wds-is-secondary',

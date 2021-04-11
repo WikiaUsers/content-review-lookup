@@ -16,6 +16,23 @@ window.ajaxPages = [
 // back to top button
 window.BackToTopModern = true;
 
+
+// background parallax animation | turn down velocity to make it more subtle
+var velocity = 0.05;
+
+function update(){ 
+    var pos = $(window).scrollTop(); 
+    $('body.background-image').each(function() { 
+        var $element = $(this);
+        // subtract some from the height b/c of the padding
+        var height = $(window).height();
+        $(this).css('backgroundPosition', '50% ' + Math.round((height - pos) * velocity) + 'px'); 
+    }); 
+}
+
+update()
+$(window).bind('scroll', update);
+
 // Code below was made by Smallketchup82 for the animation of templates with links. On clicking the link, check if tab is focused. If not, check every 100 miliseconds if the tab is focused, if it is focused, add the class which runs the CSS transition.
 var el = document.querySelector('.TemplateRevision.UnderlineStyle');
 var elstyle = document.querySelector('.UnderlineStyle .noexternal .header1 span:after');

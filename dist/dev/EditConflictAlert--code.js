@@ -23,7 +23,7 @@ mw.loader.using('ext.bannerNotifications').then(function() {
         {1201: 1, 1200: 1, 2002: 1}[config.wgNamespaceNumber] ||
         config.wgArticleId === 0 ||
         window.EditConflictAlertInit
-    )  {
+    ) {
         return;
     }
     window.EditConflictAlertInit = true;

@@ -61,6 +61,7 @@ function fillEditSummaries() {
 		$summaryLabel.prepend( $wrapper.append( $summaryOptionsList ) );
 	} );
 }
+$(fillEditSummaries);
 
 /* User profile header custom tags */
 window.UserTagsJS = {

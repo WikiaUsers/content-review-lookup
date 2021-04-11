@@ -32,9 +32,15 @@
 	var $feed = $('.social-activity-feed'),
 	    $origFeed,
 	    $lists,
-	    tree = {},
-	    threads = {},
-	    keys = [],
+	    tree = {
+	    	__keys: []
+	    },
+	    keys = tree.__keys,
+	    threads = {
+	    	merged: {
+	    		__keys: []
+	    	}
+	    },
 	    groupThreadsActive, groupAllActive,
 	    i18n;
 
@@ -140,8 +146,9 @@
 	    	    thread = myData.thread,
 	    	    date = myData.date,
 	    	    // A pointer to browse through the tree
-	    	    a  = tree[date];
-        	
+	    	    a;
+	    	    
+    	    a  = tree[date];
         	if (a) {
         		a = a[place];
 	        	if (a) {
@@ -157,46 +164,48 @@
 	        			}
 	        		} else {
 	        			a = tree[date][place];
-	        			a[subplace] = {
+	        			(a[subplace] = {
 	        				__keys: [thread]
-	        			};
-	        			a[subplace][thread] = [this];
+	        			})[thread] = [this];
 	        			a.__keys.push(subplace);
 	        		}
 	        	} else {
 	        		a = tree[date];
-	        		a[place] = {
+	        		((a[place] = {
 	        			__keys: [subplace]
-	        		};
-	        		a[place][subplace] = {
+	        		})[subplace] = {
 	        			__keys: [thread]
-	        		};
-	        		a[place][subplace][thread] = [this];
+	        		})[thread] = [this];
 	        		a.__keys.push(place);
 	        	}
         	} else {
         		a = tree;
-        		a[date] = {
+        		(((a[date] = {
         			__keys: [place]
-        		};
-        		a[date][place] = {
+        		})[place] = {
         			__keys: [subplace]
-        		};
-        		a[date][place][subplace] = {
+        		})[subplace] = {
         			__keys: [thread]
-        		};
-        		a[date][place][subplace][thread] = [this];
+        		})[thread] = [this];
         		keys.push(date);
         	}
         	
-        	a = threads[place + '__' + subplace + '__' + thread];
+        	a = threads[date];
+        	if (a) {
+        		a.push(tree[date][place][subplace][thread]);
+        	} else {
+        		threads[date] = [ tree[date][place][subplace][thread] ];
+        	}
+        	
+        	a = threads.merged[place + '__' + subplace + '__' + thread];
         	if (a) {
         		if (!a.indexOf(date)) {
         			a.push(date);
         		}
         	} else {
-        		threads[place + '__' + subplace + '__' + thread] = [date];
+        		threads.merged[place + '__' + subplace + '__' + thread] = [date];
         	}
+        	threads.merged.__keys.push(place + '__' + subplace + '__' + thread);
         });
 	}
 
@@ -351,54 +360,39 @@
 				data.prefix,
 				$('<a>').attr('href', data.on_href).text(data.on + data.suffix)
 			]
-		);
+		); 
 	}
     
     function groupThreads() {
-        if (groupThreadsActive || groupAllActive) {
-        	$feed.before($feed = $origFeed.clone(true)).remove();
-        	$lists = $feed.find('.social-activity-list');
-        	groupAllActive = false;
+    	var mergeDates = $('#social-activity-filters__merge-dates-checkbox')
+    		    .prop('checked'),
+    	    i, i1, i2, i3, keys1, keys2, keys3,
+            date, place, subplace, thread,
+            dateUl, placeUl, subplaceUl,
+            a, b;
+
+        // Resetting the feed if it was previously altered
+        // If not - keeping a backup for future reset
+        if ($origFeed) {
+        	$feed.before($feed = $origFeed.clone()).remove();
+        	if (groupAllActive) {
+        		groupAllActive = false;
+        		$feed.removeClass('social-activity-feed-group-all');
+        	}
         } else {
-            fixBug();
+        	$origFeed = $feed.clone();
         }
-        
+    	
         groupThreadsActive = true;
 	    $feed.addClass('social-activity-feed-grouped');
+	    
+	    for (i = 0; i < keys.length; i++) {
+	    	date = keys[i];
+	    	for (i1 = 0; i1 < threads[date].length; i1++) {
+	    		
+	    	}
+	    }
 
-	    $lists.each(function() {
-	        var threads = {},
-	    	      $list = $(this),
-	    	      $listE = $list.children('li[data-content-type]');
-	            
-	        var keys = [],
-	            key;
-	        
-	        $listE.each(function() {
-	        	var myData = extractData(this),
-	        	    threadKey = myData.place + '_' +
-	        	                myData.subplace + '_' +
-	        	                myData.thread;
-	        	                
-	        	if (tree[threadKey]) {
-	        		threads[threadKey].push(this);
-	        	} else {
-	        		threads[threadKey] = [this];
-	        		// Needed to keep track on the order of threads, since
-	        		// object keys won't necessarily keep the order.
-	        		keys.push(threadKey);
-	        	}
-	        });
-	        
-	        keys.forEach(function(key) {
-	        	$('<li class="social-activity-thread">')
-	        	    .appendTo($list)
-	        	    .append(
-	        	    	makeHeader(threads[key][0]),
-	        	    	$('<ul>').append(threads[key])
-	        	    );
-	        });
-	    });
 	    makeCollapsibles();
     }
 	    
@@ -633,7 +627,7 @@
 	        	Merge all dates \
 	        </form>'),
 	        
-	        '{{subst:RepSubst|&nbsp;2021 Mar 31, 20:52:13&nbsp;}}'.split('&nbsp;')[1] // Embedding saving timestamp
+	        '{{subst:RepSubst|&nbsp;2021 Apr 08, 00:21:12&nbsp;}}'.split('&nbsp;')[1] // Embedding saving timestamp
 	    );
     }
     

@@ -44,9 +44,9 @@ if (wgNamespaceNumber > -1) {
 	if (document.getElementById('ca-ve-edit')) { // only if the preference to use it is set (an "edit source" nav tab exists)
 		edittopHTML = '<span class="mw-editsection">' +
     	'<span class="mw-editsection-bracket">[ </span>' +
-    	'<a href="/index.php?title=' + wgPageName + '&amp;veaction=edit&amp;section=0" title="' + l10n('title') + '">' + l10n('edit') + '</a>' +
+    	'<a href="?veaction=edit&amp;section=0" title="' + l10n('title') + '">' + l10n('edit') + '</a>' +
     	'<span class="mw-editsection-bracket"> | </span>' +
-    	'<a href="/index.php?title=' + wgPageName + '&amp;action=edit&amp;section=0" title="' + l10n('title') + '">' + l10n('edit_source') + '</a>' +
+    	'<a href="?action=edit&amp;section=0" title="' + l10n('title') + '">' + l10n('edit_source') + '</a>' +
     	'<span class="mw-editsection-bracket"> ]</span>' +
 		'</span>';
 	}
@@ -55,7 +55,7 @@ if (wgNamespaceNumber > -1) {
     else {
     	edittopHTML = '<span class="mw-editsection">' +
     	'<span class="mw-editsection-bracket">[ </span>' +
-		'<a href="/index.php?title=' + wgPageName + '&amp;action=edit&amp;section=0" title="' + l10n('title') + '">' + l10n('edit') + '</a>' +
+		'<a href="?action=edit&amp;section=0" title="' + l10n('title') + '">' + l10n('edit') + '</a>' +
     	'<span class="mw-editsection-bracket"> ]</span>' +
 		'</span>';
     }

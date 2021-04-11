@@ -12,23 +12,24 @@
 /*jslint browser, this:true */
 /*global mw, jQuery, window, require, wk, ui */
 
-require(["mw", "wikia.window", "wikia.ui.factory"], function (mw, wk, ui) {
+(function () {
     "use strict";
 
     if (
         window.isUsernameAvailabilityLoaded ||
-        jQuery("#usernameavailability-a").exists()
+        jQuery("#usernameavailability-a").length !== 0
     ) {
         return;
     }
     window.isUsernameAvailabilityLoaded = true;
     
-    if (!window.dev || !window.dev.i18n) {
-        wk.importArticle({
-            type: "script",
-            article: "u:dev:MediaWiki:I18n-js/code.js"
-        });
-    }
+    importArticles({
+        type: "script",
+        articles: [
+            "u:dev:MediaWiki:I18n-js/code.js",
+            "u:dev:MediaWiki:ShowCustomModal.js"
+        ]
+    });
 
     var $i18n;
 
@@ -90,47 +91,17 @@ require(["mw", "wikia.window", "wikia.ui.factory"], function (mw, wk, ui) {
                 "}"
             );
 
-            ui.init(["modal"]).then(function (modal) {
-                var config = {
-                    vars: {
-                        id: "ua-modal",
-                        size: "small",
-                        title: $i18n.msg("itemTitle").escape(),
-                        content: $modalHTML,
-                        buttons: [{
-                            vars: {
-                                value: $i18n.msg("modalCancel").escape(),
-                                classes: [
-                                    "normal",
-                                    "primary"
-                                ],
-                                data: [{
-                                    key: "event",
-                                    value: "cancel"
-                                }]
-                            }
-                        }, {
-                            vars: {
-                                value: $i18n.msg("modalSearch").escape(),
-                                classes: [
-                                    "normal",
-                                    "primary"
-                                ],
-                                data: [{
-                                    key: "event",
-                                    value: "search"
-                                }]
-                            }
-                        }]
+            var $modal = dev.showCustomModal($i18n.msg("itemTitle").escape(), {
+                id: "ua-modal",
+                content: $modalHTML,
+                buttons: [{
+                    message: $i18n.msg("modalCancel").escape(),
+                    handler: function() {
+                        dev.showCustomModal.closeModal($modal);
                     }
-                };
-
-                modal.createComponent(config, function (uaModal) {
-                    uaModal.bind("cancel", function () {
-                        uaModal.trigger("close");
-                    });
-
-                    uaModal.bind("search", function () {
+                }, {
+                    message: $i18n.msg("modalSearch").escape(),
+                    handler: function() {
                         var $value = jQuery("#ua-input-value").val();
 
                         if (mw.Title.newFromText($value)) {
@@ -142,10 +113,8 @@ require(["mw", "wikia.window", "wikia.ui.factory"], function (mw, wk, ui) {
                         }
 
                         jQuery("#ua-input-value").val();
-                    });
-
-                    uaModal.show();
-                });
+                    },
+                }]
             });
         },
 
@@ -158,12 +127,43 @@ require(["mw", "wikia.window", "wikia.ui.factory"], function (mw, wk, ui) {
          * @returns {void}
          */
         getData: function ($username, callback) {
-            jQuery.nirvana.getJson("UserProfilePage", "renderUserIdentityBox", {
-                title: "User:" + $username
-            }).done(function ($data) {
-                if ($data && $data.user) {
-                    callback($data.user);
+            var server = mw.config.get('wgServer');
+
+            jQuery.ajax({
+                url: server + '/wikia.php',
+                data: {
+                    controller: 'UserApiController',
+                    method: 'getUsersByName',
+                    query: $username
                 }
+            }).then(function(data) {
+                // we only care about the first user
+                if (data.users.length === 0) {
+                    callback($username, null);
+                    return;
+                }
+
+                var user = data.users[0];
+
+                if (user.name.toLowerCase() !== $username.toLowerCase()) {
+                    // wrong user
+                    callback($username, null);
+                    return;
+                }
+
+                // fetch registration date
+                // user.name is the source of truth from this point on
+                jQuery.ajax({
+                    url: server + '/wikia.php',
+                    data: {
+                        controller: 'UserProfile',
+                        method: 'getUserData',
+                        userId: user.id,
+                        format: 'json'
+                    }
+                }).then(function(data) {
+                    callback(user.name, data.userData);
+                });
             });
         },
 
@@ -179,23 +179,23 @@ require(["mw", "wikia.window", "wikia.ui.factory"], function (mw, wk, ui) {
          * @param {string} $user
          * @returns {void}
          */
-        handleData: function ($user) {
+        handleData: function (username, userData) {
             var $registration;
             var $userPageLink = mw.html.element("a", {
                 target: "_blank",
                 href: mw.util.getUrl(
-                    "User:" + mw.util.wikiUrlencode($user.name)
+                    "User:" + mw.util.wikiUrlencode(username)
                 )
-            }, $user.name);
+            }, username);
 
-            if ($user.registration) {
-                $registration = "&nbsp;(" + $user.registration + ")";
+            if (userData && userData.registration) {
+                $registration = "&nbsp;(" + userData.registration + ")";
             } else {
                 $registration = "";
             }
 
             jQuery("#ua-log").prepend(
-                $i18n.msg("modal" + ($user.edits === -1
+                $i18n.msg("modal" + (userData === null
                     ? "Unclaimed"
                     : "Exists"), $userPageLink).plain() +
                 $registration + "<br />"
@@ -235,10 +235,13 @@ require(["mw", "wikia.window", "wikia.ui.factory"], function (mw, wk, ui) {
         }
     };
 
-    mw.hook("dev.i18n").add(function ($i18n) {
-        jQuery.when(
-            $i18n.loadMessages("UsernameAvailability"),
-            mw.loader.using("mediawiki.util")
-        ).done(jQuery.proxy(UsernameAvailability.init, UsernameAvailability));
+    // some more sophisticated dep management would be in order
+    mw.hook("dev.showCustomModal").add(function() {
+        mw.hook("dev.i18n").add(function($i18n) {
+            jQuery.when(
+                $i18n.loadMessages("UsernameAvailability"),
+                mw.loader.using("mediawiki.util")
+            ).done(jQuery.proxy(UsernameAvailability.init, UsernameAvailability));
+        });
     });
-});
+})();

@@ -1,4 +1,4 @@
-mw.loader.using('mediawiki.api').then(
+mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(
     function () {
         /* Load i18n messages */
         mw.hook('dev.i18n').add(
@@ -103,7 +103,7 @@ mw.loader.using('mediawiki.api').then(
                                 fontSize: "14px"
                             });
 
-                            rdp_header_link.href = encodeURI(mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/f/t/" + mw.config.get("wgPageName"));
+                            rdp_header_link.href = mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/f/t/" + encodeURIComponent(mw.config.get("wgPageName").replace(/_/g, ' '));
                             rdp_header_link.innerHTML = i18n.msg('headerLink', mw.config.get("wgPageName").replace(/_/g, " ")).plain();
 
                             rdp_header_linkWrapper.appendChild(rdp_header_link);
@@ -155,8 +155,14 @@ mw.loader.using('mediawiki.api').then(
                             );
 
                             $.ajax({
-                                url: mw.config.get("wgServicesExternalDomain") + "discussion/" + mw.config.get("wgCityId") + "/threads?tag=" + mw.config.get("wgPageName").replace(/_/g, "+"),
-                                type: "GET"
+                                url: mw.util.wikiScript('wikia'),
+                                type: "GET",
+                                data: {
+                                    controller: 'DiscussionThread',
+                                    method: 'getThreads',
+                                    tag: mw.config.get("wgPageName").replace(/_/g, ' '),
+                                    format: 'json'
+                                }
                             }).done(
                                 function (data) {
                                     var rdp_threads = data._embedded.threads;
@@ -326,7 +332,7 @@ mw.loader.using('mediawiki.api').then(
                                             lineHeight: "30px"
                                         });
 
-                                        rdp_viewMore_link.href = mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/f/t/" + mw.config.get("wgPageName");
+                                        rdp_viewMore_link.href = mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/f/t/" + encodeURIComponent(mw.config.get("wgPageName").replace(/_/g, ' '));
                                         rdp_viewMore_link.innerHTML = i18n.msg('viewMoreLink').plain() + " (" + rdp_threads_stack + ")";
 
                                         if (rdp_threads_stack !== 0) {

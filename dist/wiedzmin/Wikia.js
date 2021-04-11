@@ -11,7 +11,7 @@ $(document).ready(function(){
 		zIndex:310,
 		}).appendTo('body');
 	//Zawartość
-	$('<div class="fb-like-box" data-href="https://www.facebook.com/wiedzminskawiki/" data-width="195" data-height="400" data-show-faces="true" data-stream="false" data-header="false"></div>').css({marginTop:"10px", marginLeft:"47px"}).appendTo("#FacebookWnd");
+	$('<div class="fb-page" data-href="https://www.facebook.com/wiedzminskawiki/" data-tabs="timeline" data-width="195" data-height="360" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/wiedzminskawiki/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/wiedzminskawiki/">Wiedźmin Wiki</a></blockquote></div>').css({marginTop:"10px", marginLeft:"47px"}).appendTo("#FacebookWnd");
 	$("#FacebookWnd").click(function(){
 		toggleFacebookWnd();
 	});

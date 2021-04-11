@@ -9,9 +9,16 @@ window.SpoilerAlertJS = {
 };
 importScriptPage('SpoilerAlert/code.js', 'dev');
 
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WikiActivity.js',
+        'u:dev:MediaWiki:AddUserRightsTag/code.js',
+        'u:dev:MediaWiki:AddBlockUserTag/code.js',
+        'u:dev:MediaWiki:AjaxRename/code.js',
+        'u:dev:MediaWiki:DiscussionsFeed.js',
+    ]
+});
 
 // Pop-ups em Referências
 importScriptPage('ReferencePopups/code.js', 'dev');
@@ -80,10 +87,3 @@ window.UserTagsJS = {
 	}
 };
 // -end - User tags
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:WikiActivity.js',
-    ]
-});

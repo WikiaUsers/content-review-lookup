@@ -565,7 +565,7 @@ if ( $('#WikiaRail').length )
  
 function initDiscordModule() {
     console.log("Getting data...");
-    var discordJSON = "https://discordapp.com/api/guilds/457637511376797717/widget.json";
+    var discordJSON = "https://discordapp.com/api/guilds/283707094509682688/widget.json";
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
         if (request.readyState == 4 && request.status == 200) {

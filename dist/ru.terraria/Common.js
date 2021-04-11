@@ -1,3 +1,6 @@
+// Disable triggering of new browser tab when clicking URL links that point to internal wiki addresses (purge, edit, etc)
+$('a[href^="//terraria.gamepedia.com"]').removeAttr('target');
+
 // Select links to new tabs for Template:ilnt and Template:elnt
 $('.linkNewTab a').each(function(){
 	$(this).attr('target','_blank');
@@ -27,7 +30,7 @@ if (isAnon == true){
 }
 
 if (isAnon == true && isTalk == false) {
-	var anonWarnText = 'Создание страниц анонимными участниками в настоящее время недоступно. <br/> Чтобы создать эту страницу, для начала <a href="http://terraria-ru.gamepedia.com/Служебная:Создать_учётную_запись">зарегистрируйтесь</a>.';
+	var anonWarnText = 'Создание страниц анонимными участниками в настоящее время недоступно. <br/> Чтобы создать эту страницу, для начала <a href="https://terraria.fandom.com/ru/wiki/Служебная:Создать_учётную_запись">зарегистрируйтесь</a>.';
 	$('body').append('<div class="anonWarnOverlay" style="display:none; background-color: #000; opacity: 0.4; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 500;"></div>');					
 	$('body').prepend('<div class="anonWarnBox" style="display:none; text-align:center; font-weight: bold; box-shadow: 7px 7px 5px #000; font-size: 0.9em; line-height: 1.5em; z-index: 501; opacity: 1; position: fixed; width: 50%; left: 25%; top: 30%; background: #F7F7F7; border: #222 ridge 1px; padding: 20px;">' + anonWarnText + '</div>');
 	
@@ -71,7 +74,7 @@ function addAjaxDisplayLink() {
 				if (data) {
 					cell.html(data);
 					cell.find('.ajaxHide').remove();
-					cell.find('.terraria').removeClass('terraria');
+					cell.find('.terraria:not(.ajaxForceTerraria)').removeClass('terraria');
 					if (cell.find("table.sortable").length) {
 						mw.loader.using('jquery.tablesorter', function() {
 							cell.find("table.sortable").tablesorter();
@@ -89,13 +92,14 @@ function addAjaxDisplayLink() {
 					headerLinks.append(document.createTextNode(']'));
 				}
 			}).error(function() {
-				cell.text('Невозможно загрузить содержимое; возможно, целевая страница не существует');
+				cell.text('Невозможно загрузить содержимое; возможно, целевая страница не существует.');
 			});
 		});
 	});
 }
 
 $(addAjaxDisplayLink);
+
 $.when( $.ready ).then(function() {
 	// Document is ready.
 	// desktop view for mobile screen.
@@ -159,7 +163,7 @@ $(function() {
 
 //npcinfobox
 $(document).ready(function (){
-	$('.infobox.npc .modetabs .tab, .infotable.npc .modetabs .tab').on('click', function(){
+	$('.infobox .modetabs .tab, .infotable.npc .modetabs .tab').on('click', function(){
     	var $this = $(this);
     	if($this.hasClass('current')){
     		return;
@@ -170,6 +174,50 @@ $(document).ready(function (){
     });
 });
 
+//spoiler
+$(document).ready(function (){
+	$('.spoiler-content').on('click', function(){
+    	$(this).toggleClass('show');
+    });
+});
+
+//l10n_data_table(template:l10n_subtemplate)
+$(document).ready(function (){
+	$('.l10n-data-table th.lang').on('click', function(){
+    	var $this = $(this);
+    	var lang = $this.attr('lang');
+    	if(lang=='en'){
+    		return;
+    	}
+    	$this.closest('table.l10n-data-table').find('td.'+lang).toggleClass('shrinked');
+    	$this.toggleClass('shrinked');
+    });
+	$('.l10n-data-table th.all-lang').on('click', function(){
+    	var $this = $(this);
+    	$this.toggleClass('shrinked');
+    	if($this.hasClass('shrinked')){
+    		$this.closest('table.l10n-data-table').find('td.l, th.lang').addClass('shrinked');
+    		$this.closest('table.l10n-data-table').find('td.en, th.en').removeClass('shrinked');
+    	}else{
+    		$this.closest('table.l10n-data-table').find('td.l, th.lang').removeClass('shrinked');
+    	}
+    });
+    //only expand current language 
+	$('.l10n-data-table').each(function(){
+		var $this = $(this);
+		var lang = $this.attr('lang');
+		if(lang == 'en'){
+			return;
+		}
+		var th = $this.find('th.lang.'+lang);
+		if (th.length){
+			$this.find('th.all-lang').trigger('click');
+			th.trigger('click');
+		}
+	});
+});
+
+mw.loader.load('/index.php?title=MediaWiki:HairDyeSliders.js&action=raw&ctype=text/javascript');
 
 // Добавляет Викификатор
 if ( mw.config.get( 'wgAction' ) == 'edit' || mw.config.get( 'wgAction' ) == 'submit' ) {

@@ -258,7 +258,7 @@
 
             $( '<div class="pm-carousel-container">' +
                     '<div class="pm-carousel-control pm-carousel-left wds-is-disabled wds-is-secondary wds-button wds-is-squished"><</div>' +
-                    '<ul class="pm-carousel" />'+
+                    '<ul class="pm-carousel"></ul>'+
                     '<div class="pm-carousel-control pm-carousel-right wds-is-secondary wds-button wds-is-squished">></div>' +
                '</div>'
             ).insertAfter( '.photo-stats' );

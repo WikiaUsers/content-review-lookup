@@ -30,7 +30,7 @@ mw.loader.using(['jquery.client', 'mediawiki.util']).then(function() {
             var img = $('<img>', {
                 src: avatar,
                 alt: username,
-                style: 'vertical-align: initial; width: ' + size + 'px; height: ' + size + 'px;'
+                style: 'vertical-align: initial; width: ' + size + 'px; height: ' + size + 'px; object-fit: cover;'
             });
 
             // https://stackoverflow.com/a/43467144

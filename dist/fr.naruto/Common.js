@@ -102,6 +102,8 @@
 		}
 	};
 	
+	// scriptList.push('u:dev:MediaWiki:UserTags/code.js');
+	
 	// Bouton Null Edit
 	// Charge le bouton Actualiser si la page ne peut être modifiée
 	if ($("#ca-edit").length || $("a[data-id='editprofile']").length) {

@@ -97,69 +97,6 @@ $('<input id="gone" class="buttona" onclick="cyclopeGone()" type="button" value=
 $('<input id="ngone" class="buttona" onclick="cyclopeNotGone()" type="button" value="Убит">').appendTo( "#cyclopecalc" );
 $('<p><input type="text" placeholder="31" size="5" maxlength="8" required id="dayscyclope" value=""> день</input> ').appendTo( "#cyclopecalc" );
 $('<input id="cyclopecalculate" class="buttona" onclick="cyclopecalculater()" type="button" name="button" value="Рассчитать">').appendTo( "#cyclopecalc" );
-/* Cookbook */
-window.sortveggie = function(){
-  $(".cbmeat").addClass("recipearrow");
-  $(".cbother").addClass("recipearrow");
-  $(".cbveggie").removeClass("recipearrow");
-  $("#buttonveggie2").removeClass("button");
-  $("#buttonveggie2").addClass("buttoncb");
-  $("#buttonmeat2, #buttonall2, #buttonother2").removeClass("buttoncb");
-  $("#buttonmeat2, #buttonall2, #buttonother2").addClass("button");
-};
-window.sortmeat = function(){
-  $(".cbmeat").removeClass("recipearrow");
-  $(".cbveggie").addClass("recipearrow");
-  $(".cbother").addClass("recipearrow");
-  $("#buttonmeat2").removeClass("button");
-  $("#buttonmeat2").addClass("buttoncb");
-  $("#buttonveggie2, #buttonall2, #buttonother2").removeClass("buttoncb");
-  $("#buttonveggie2, #buttonall2, #buttonother2").addClass("button");
-};
-window.sortall = function(){
-  $(".cbmeat").removeClass("recipearrow");
-  $(".cbveggie").removeClass("recipearrow");
-  $(".cbother").removeClass("recipearrow");
-  $("#buttonall2").removeClass("button");
-  $("#buttonall2").addClass("buttoncb");
-  $("#buttonveggie2, #buttonmeat2, #buttonother2").removeClass("buttoncb");
-  $("#buttonveggie2, #buttonmeat2, #buttonother2").addClass("button");
-};
- 
-window.sortother = function(){
-  $(".cbmeat").addClass("recipearrow");
-  $(".cbveggie").addClass("recipearrow");
-  $(".cbother").removeClass("recipearrow");
-  $("#buttonother2").removeClass("button");
-  $("#buttonother2").addClass("buttoncb");
-  $("#buttonall2, #buttonveggie2, #buttonmeat2").removeClass("buttoncb");
-  $("#buttonall2, #buttonveggie2, #buttonmeat2").addClass("button");
-  };
- 
-  $('#buttonmeat, #buttonveggie, #buttonother, #buttonall').click(function() {
-       $(function() {
-    $(".cookbook .sn img.lzy").each(function() {
-        var dataSrc = $(this).attr('data-src');
-        if (dataSrc) {
-            $(this).attr('src', dataSrc);
-        }
-    });
-  });
- 
-    $(function() {
-    $(".cookbook .sy img.lzy").each(function() {
-        var dataSrc = $(this).attr('data-src');
-        if (dataSrc) {
-            $(this).attr('src', dataSrc);
-        }
-    });
-  });
-});
- 
-$('<input id="buttonmeat2" class="button" onclick="sortmeat()" type="button" value="Мясное">').appendTo( "#buttonmeat" );
-$('<input id="buttonveggie2" class="button" onclick="sortveggie()" type="button" value="Растительное">').appendTo( "#buttonveggie" );
-$('<input id="buttonother2" class="button" onclick="sortother()" type="button" value="Другое">').appendTo( "#buttonother" );
-$('<input id="buttonall2" class="button" onclick="sortall()" type="button" value="Всё">').appendTo( "#buttonall" );
 
 /*Изменяет цвет у рамок в ответаx администраторов*/
 /*I'm not sure if it's possible not to clear the interval*/
@@ -273,3 +210,122 @@ window.ImprovedTabbers = {
         SynchroInfoboxes: false,
         SynchroTabbers: true,
 };
+
+/*Поваренная книга в окне*/
+$(function(){
+var modal;
+
+mw.hook('dev.modal').add(function(modal) {
+var modal = new window.dev.modal.Modal({
+	buttons: [
+        {
+            classes: ['cookbook_edit'],
+            event: 'cbedit',
+            id: 'cookbook_edit',
+            primary: true,
+            text: 'Править'
+        },
+        {
+            classes: ['cookbook_sup'],
+            event: 'cbsup',
+            id: 'cookbook_sup',
+            primary: true,
+            text: 'Сообщить об ошибке'
+        }
+    ],
+	title: 'Поваренная книга',
+    content: '<div id="cbook_content"></div>',
+    events: {
+        cbedit: function() {
+            var href = 'https://dont-starve.fandom.com/ru/wiki/Шаблон:CBcontent?action=edit';
+            window.open(href, '_blank');
+        },
+        cbsup: function() {
+            var href = 'https://dont-starve.fandom.com/ru/wiki/Стена_обсуждения:Arhhhat';
+            window.open(href, '_blank');
+        }
+    },
+    id: 'cbook',
+    size: 'content-size',
+    closeTitle: 'Закрыть'
+});
+modal.create();
+
+$('#cbook_show').click(function() {
+modal.show();
+});
+$('#cbook_content').load('https://dont-starve.fandom.com/ru/wiki/Шаблон:CBcontent .cookbook', function() {
+importScriptPage( 'MediaWiki:Cookbook.js');
+importArticle({
+    type: 'script',
+    article: 'u:dev:MediaWiki:Selector.js'
+});
+});
+});
+});
+
+/*Шаблон:Настройки*/
+$(function(){
+$('.toggleright').click(function() {
+        if (!$('.toggleright, .toggleleft').hasClass('setting_2') && $('.setting1').css('display') != "none") {
+            $('.toggleright, .toggleleft').addClass('setting_2');
+            $('.setting1').css({"display": "none"});
+            $('.setting2').css({"display": ""});
+            $('.toggleleft').css({"background": "url('https://static.wikia.nocookie.net/dont-starve/images/c/c5/Toggle_left.png/revision/latest?cb=20210409102851&path-prefix=ru')"});
+        }  else if ($('.toggleright, .toggleleft').hasClass('setting_2')) {
+                $('.toggleright, .toggleleft').addClass('setting_3');
+                $('.toggleright, .toggleleft').removeClass('setting_2');
+                $('.setting2').css({"display": "none"});
+                $('.setting3').css({"display": ""});
+                $('.settingchange').css({"background": "none"});
+        }  else if ($('.toggleright, .toggleleft').hasClass('setting_3')) {
+                $('.toggleright, .toggleleft').addClass('setting_4');
+                $('.toggleright, .toggleleft').removeClass('setting_3');
+                $('.setting3').css({"display": "none"});
+                $('.setting4').css({"display": ""});
+                $('.settingchange').css({"background": "url('https://static.wikia.nocookie.net/dont-starve/images/4/47/Setting_back.png/revision/latest?cb=20210409103812&path-prefix=ru')"});
+        }  else if ($('.toggleright, .toggleleft').hasClass('setting_4')) {
+                $('.toggleright, .toggleleft').addClass('setting_5');
+                $('.toggleright, .toggleleft').removeClass('setting_4');
+                $('.setting4').css({"display": "none"});
+                $('.setting5').css({"display": ""});
+                $('.toggleright').css({"background": "url('https://static.wikia.nocookie.net/dont-starve/images/e/e3/Toggle_right_clear.png/revision/latest?cb=20210409103145&path-prefix=ru')"});
+        }
+});
+    
+$('.toggleleft').click(function() {
+        if ($('.toggleright, .toggleleft').hasClass('setting_2') && $('.setting2').css('display') != "none" ) {
+            $('.toggleright, .toggleleft').removeClass('setting_2');
+            $('.setting2').css({"display": "none"});
+            $('.setting1').css({"display": ""});
+            $('.toggleleft').css({"background": "url('https://static.wikia.nocookie.net/dont-starve/images/0/06/Toggle_left_clear.png/revision/latest?cb=20210409103155&path-prefix=ru')"});
+        }  else if ($('.toggleright, .toggleleft').hasClass('setting_3')) {
+                $('.toggleright, .toggleleft').addClass('setting_2');
+                $('.toggleright, .toggleleft').removeClass('setting_3');
+                $('.setting3').css({"display": "none"});
+                $('.setting2').css({"display": ""});
+                $('.settingchange').css({"background": "url('https://static.wikia.nocookie.net/dont-starve/images/4/47/Setting_back.png/revision/latest?cb=20210409103812&path-prefix=ru')"});
+        }  else if ($('.toggleright, .toggleleft').hasClass('setting_4')) {
+                $('.toggleright, .toggleleft').addClass('setting_3');
+                $('.toggleright, .toggleleft').removeClass('setting_4');
+                $('.setting4').css({"display": "none"});
+                $('.setting3').css({"display": ""});
+                $('.settingchange').css({"background": "none"});
+        }  else if ($('.toggleright, .toggleleft').hasClass('setting_5')) {
+                $('.toggleright, .toggleleft').addClass('setting_4');
+                $('.toggleright, .toggleleft').removeClass('setting_5');
+                $('.setting5').css({"display": "none"});
+                $('.setting4').css({"display": ""});
+                $('.toggleright').css({"background": "url('https://static.wikia.nocookie.net/dont-starve/images/9/95/Toggle_right.png/revision/latest?cb=20210409103058&path-prefix=ru')"});
+        }
+});
+$('#settingselect').click(function() {
+        $('.toggleright, .toggleleft').removeClass('setting_2 setting_4 setting_5');
+        $('.toggleright, .toggleleft').addClass('setting_3');
+        $('.setting3').css({"display": ""});
+        $('.setting3').siblings().css({"display": "none"});
+        $('.toggleright').css({"background": "url('https://static.wikia.nocookie.net/dont-starve/images/9/95/Toggle_right.png/revision/latest?cb=20210409103058&path-prefix=ru')"});
+        $('.toggleleft').css({"background": "url('https://static.wikia.nocookie.net/dont-starve/images/c/c5/Toggle_left.png/revision/latest?cb=20210409102851&path-prefix=ru')"});
+        $('.settingchange').css({"background": "none"});
+});
+});

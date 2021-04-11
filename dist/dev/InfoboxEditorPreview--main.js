@@ -2,6 +2,7 @@
  * Name: InfoboxEditorPreview
  * Description: Adds a preview dialog for trying out your infobox markup with existing articles.
  * Author: Pogodaanton
+ * <nowiki>
  */
 require(['wikia.window', 'jquery', 'mw', 'wikia.mustache', 'wikia.ace.editor', 'wikia.nirvana'], function (window, $, mw, mustache, editarea, nirvana) {
   window.dev = window.dev || {};
@@ -53,8 +54,8 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.mustache', 'wikia.ace.editor', '
   InfoboxEditorPreview.prototype.getAlgorithms = function () {
     if (typeof this.i18n === 'undefined') throw new Error('[InfoboxEditorPreview] i18n-js has not been loaded yet!');
     return [
-      { key: 'accurate', title: this.i18n.msg('algaccurate').plain() },
-      { key: 'fast', title: this.i18n.msg('algfast').plain() }
+      { key: 'accurate', title: this.i18n.msg('algaccurate').escape() },
+      { key: 'fast', title: this.i18n.msg('algfast').escape() }
     ];
   };
 
@@ -110,7 +111,7 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.mustache', 'wikia.ace.editor', '
 
     for (var i = 0; i < arguments.length; i++) console.error(arguments[i]);
 
-    this.$ipInner.html('<p class="pi-error-info">' + this.i18n.msg('errorpi').plain() + '</br>' + msg + '</p>');
+    this.$ipInner.html('<p class="pi-error-info">' + this.i18n.msg('errorpi').escape() + '</br>' + msg + '</p>');
     this.$throbber.stopThrobbing();
   };
 
@@ -231,7 +232,7 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.mustache', 'wikia.ace.editor', '
 
     if (typeof e !== 'undefined') e.preventDefault();
 
-    $.showCustomModal(this.i18n.msg('dialogtitle').plain(), '<div class="ip-container"><div id="ipEditor"></div><div class="ip-inner"></div></div>', {
+    $.showCustomModal(this.i18n.msg('dialogtitle').escape(), '<div class="ip-container"><div id="ipEditor"></div><div class="ip-inner"></div></div>', {
       id: 'InfoboxPreviewDialog',
       width: self.getPreviewDialogWidth(),
       buttons: [{
@@ -312,7 +313,7 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.mustache', 'wikia.ace.editor', '
                 title: self.i18n.msg('parsedisclaimer').plain()
               })
               .tooltip({ placement: 'bottom' })
-              .html(parseIcon + '<span>' + self.i18n.msg('parse').plain() + '</span>')
+              .html(parseIcon + '<span>' + self.i18n.msg('parse').escape() + '</span>')
               .on('click', self.parseInvocationToInfobox.bind(self))
               .appendTo('form .wds-button-group');
 
@@ -323,7 +324,7 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.mustache', 'wikia.ace.editor', '
                 class: 'wds-button wds-is-secondary',
                 href: '#'
               })
-              .html(refreshIcon + '<span>' + self.i18n.msg('reload').plain() + '</span>')
+              .html(refreshIcon + '<span>' + self.i18n.msg('reload').escape() + '</span>')
               .on('click', self.startAutoconversion.bind(self))
               .appendTo('form .wds-button-group');
 
@@ -337,7 +338,7 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.mustache', 'wikia.ace.editor', '
             // self.parsePageWikitextToInfobox.apply(self);
           })
           .fail(function (err) {
-            self.setInfoboxError(self.i18n.msg('errorlinklist').plain(), err);
+            self.setInfoboxError(self.i18n.msg('errorlinklist').escape(), err);
           });
       }
     });
@@ -373,7 +374,7 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.mustache', 'wikia.ace.editor', '
 
         try {
           if (!embedding) {
-            self.setInfoboxError(self.i18n.msg('errorinvocation').plain(), embedding);
+            self.setInfoboxError(self.i18n.msg('errorinvocation').escape(), embedding);
             return;
           }
 
@@ -401,7 +402,7 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.mustache', 'wikia.ace.editor', '
 
         try {
           if (!embedding || !invocation) {
-            self.setInfoboxError(self.i18n.msg('errorinvocation').plain(), embedding, invocation);
+            self.setInfoboxError(self.i18n.msg('errorinvocation').escape(), embedding, invocation);
             return;
           }
 
@@ -553,7 +554,7 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.mustache', 'wikia.ace.editor', '
         }
       }
     } catch (e) {
-      this.setInfoboxError(this.i18n.msg('errorinvocation').plain());
+      this.setInfoboxError(this.i18n.msg('errorinvocation').escape());
       return;
     }
 
@@ -587,7 +588,7 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.mustache', 'wikia.ace.editor', '
       this.setInfoboxError('Code: ' + data.error.code || msg);
       return;
     } else if (typeof data.infobox.text['*'] === 'undefined') {
-      this.setInfoboxError(this.i18n.msg('errorresponse').plain());
+      this.setInfoboxError(this.i18n.msg('errorresponse').escape());
       return;
     }
 
@@ -598,3 +599,4 @@ require(['wikia.window', 'jquery', 'mw', 'wikia.mustache', 'wikia.ace.editor', '
 
   window.dev.infoboxEditorPreview = new InfoboxEditorPreview();
 });
+/* </nowiki> */

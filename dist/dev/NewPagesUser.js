@@ -46,9 +46,9 @@
                                 t.substr(17, 8).replace(/^0/, '&nbsp;') + ': ',
                             '</span>',
                             '<a href="',
-                                mw.config.get('wgArticlePath').replace('$1', encodeURI(a[i].title.replace(/\s/g, '_'))),
-                                '?redirect=no">',
-                                a[i].title,
+                                mw.util.getUrl(a[i].title, {redirect: 'no'}),
+                                '">',
+                                mw.html.escape(a[i].title),
                              '</a><br/>'
                         );
                     }
@@ -59,7 +59,7 @@
                     getParents();
                     return;
                 }
-                $('#' + PREFIX + '-list').append(i18n.msg('statDone').plain());
+                $('#' + PREFIX + '-list').append(i18n.msg('statDone').escape());
             } else if (data.error) {
                 $('#' + PREFIX + '-list').append(
                     data.error.code + ': ' + data.error.info
@@ -106,7 +106,7 @@
             count = 1;
         }
         $('#' + PREFIX + '-list').empty()
-            .append(i18n.msg('statQuery', count).plain());
+            .append(i18n.msg('statQuery', count).escape());
         $.post(urlAPI, o, function(data) {
             var a, i;
 
@@ -137,7 +137,7 @@
                 }
                 if (a.length === 0) {
                     $('#' + PREFIX + '-list').empty()
-                        .append(i18n.msg('statNone', user).plain());
+                        .append(i18n.msg('statNone', user).escape());
                     // re-enable Go for error exit
                     $('#' + PREFIX + '-go').prop('disabled', false);
                     return;
@@ -163,12 +163,12 @@
     function makeControls() {
         var fieldset = $(String.prototype.concat(
             '<fieldset>',
-                '<legend>' + i18n.msg('legendTop').plain() + '</legend>',
+                '<legend>' + i18n.msg('legendTop').escape() + '</legend>',
                 '<table><tbody>',
                     '<tr>',
                         '<td class="mw-label" style="vertical-align: middle;">',
                             '<label for="' + PREFIX + '-user">',
-                                i18n.msg('labelUser').plain() + ':',
+                                i18n.msg('labelUser').escape() + ':',
                             '</label>',
                         '</td>',
                         '<td class="mw-input">',
@@ -176,26 +176,26 @@
                                 '-user" type="text" size="20" maxlength="85"/>',
                             ' ',
                             '<input id="' + PREFIX,
-                                '-go" type="button" value="' + i18n.msg('inputGo').plain() + '"/>',
+                                '-go" type="button" value="' + i18n.msg('inputGo').escape() + '"/>',
                         '</td>',
                     '</tr>',
                     '<tr>',
                         '<td colspan="2">',
                             '<fieldset>',
-                                '<legend>' + i18n.msg('legendSub').plain() + '</legend>',
+                                '<legend>' + i18n.msg('legendSub').escape() + '</legend>',
                                 '<small><table><tbody id="' + PREFIX + '-nspaces">',
                                     '<tr>',
                                         '<td colspan="4" class="mw-label">',
                                             '<input id="' + PREFIX,
-                                                '-nsall" type="button" value="' + i18n.msg('inputAll').plain(),
+                                                '-nsall" type="button" value="' + i18n.msg('inputAll').escape(),
                                                 '"/>',
                                             ' ',
                                             '<input id="' + PREFIX,
-                                                '-nsnone" type="button" value="' + i18n.msg('inputNone').plain(),
+                                                '-nsnone" type="button" value="' + i18n.msg('inputNone').escape(),
                                                 '"/>',
                                             ' ',
                                             '<input id="' + PREFIX,
-                                                '-nsflip" type="button" value="' + i18n.msg('inputFlip').plain(),
+                                                '-nsflip" type="button" value="' + i18n.msg('inputFlip').escape(),
                                                 '"/>',
                                         '</td>',
                                     '</tr>',
@@ -221,7 +221,7 @@
                         '<input type="checkbox" id="' + PREFIX + '-ns-' + ns[i].id,
                             '" checked="" style="vertical-align: middle;"/>',
                         '<label for="' + PREFIX + '-ns-' + ns[i].id + '">',
-                            ns[i].name,
+                            mw.html.escape(ns[i].name),
                         '</label>',
                     '</td>'
                 );
@@ -243,7 +243,7 @@
                 .replace(/^\s+/, '').replace(/\s+$/, '');
             if (user === '') {
                 $('#' + PREFIX + '-list').empty()
-                    .append(i18n.msg('errUser').plain());
+                    .append(i18n.msg('errUser').escape());
                 // re-enable for error exit
                 this.disabled = false;
                 return;
@@ -254,7 +254,7 @@
             }
             if (!any) {
                 $('#' + PREFIX + '-list').empty()
-                    .append(i18n.msg('errNamespace').plain());
+                    .append(i18n.msg('errNamespace').escape());
                 // re-enable for error exit
                 this.disabled = false;
                 return;

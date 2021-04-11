@@ -24,6 +24,11 @@ $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
 	// Slideshows
 	loadSlideshows( $( '.mw-parser-output' ), 2500 );
 	slideshows.init( $( '.mw-parser-output' ) );
+
+	// Collection pages
+	$( 'div.collection' ).on( 'scroll', function () {
+		$( 'div.collection' ).scrollLeft( $( this ).scrollLeft() );
+	} );
 } );
 
 // TODO: Remove

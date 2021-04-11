@@ -32,7 +32,7 @@ $.fn.tagSelect = function(tags, onSearch) {
  
 	function onResult(result) {
 		datalist.empty().append(result.map(function(val) {
-			return $('<option />', { value: val });
+			return $('<option>', { value: val });
 		}));
 		var evt = $.Event("keydown");
 		evt.which = 40;
@@ -46,8 +46,8 @@ $.fn.tagSelect = function(tags, onSearch) {
 	}
  
 	function addTag(tag) {
-		$('<li />').append(
-			$('<span />', { class: 'tag', text: tag })
+		$('<li>').append(
+			$('<span>', { class: 'tag', text: tag })
 		).prependTo($(this));
 	}
  
@@ -56,9 +56,9 @@ $.fn.tagSelect = function(tags, onSearch) {
 			addTag.call(this, tags[tag]);
 		}
 	}
-    var searchLi = $('<li />').appendTo($(this));
+    var searchLi = $('<li>').appendTo($(this));
 	var listID = _.uniqueId('tag-select-results_');
-    var search = $('<input />', {
+    var search = $('<input>', {
         type: 'text',
         list: listID,
         on: {
@@ -67,7 +67,7 @@ $.fn.tagSelect = function(tags, onSearch) {
         }
     }).appendTo(searchLi);
  
-    var datalist = $('<datalist />', {
+    var datalist = $('<datalist>', {
         id: listID
     }).appendTo(searchLi);
  

@@ -8,9 +8,7 @@
 mw.loader.using('mediawiki.api', function() {
 	var conf = mw.config.get([
 		'wgNamespaceNumber',
-		'wgPageName',
-		'wgScriptPath',
-		'wgServer'
+		'wgPageName'
 	]),
 		api = new mw.Api(),
 		token = mw.user.tokens.get('editToken'),
@@ -178,7 +176,7 @@ mw.loader.using('mediawiki.api', function() {
 									message: 'Manuelle Bearbeitung',
 									defaultButton: false,
 									handler: function() {
-										window.location.href = conf.wgServer + conf.wgScriptPath + '/' + (isVersionsgeschichte ? conf.wgPageName : (conf.wgPageName + '/Versionsgeschichte')) + '?action=edit';
+										window.location.href = mw.util.getUrl(isVersionsgeschichte ? null : (conf.wgPageName + '/Versionsgeschichte'),{action: 'edit'});
 									}
 								}
 							]

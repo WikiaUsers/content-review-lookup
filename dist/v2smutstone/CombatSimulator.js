@@ -8,8 +8,9 @@ $(document).ready(function(){
 	// CONFIGURATION
 
 	/**
-	 * URL location of the game webpack content, which is used if the executeSmutstoneConfJs(webpackJsonp) 
-	 * function in Smutstone.conf.js is not available.
+	 * URL location of the game webpack content, which is used if the 
+	 * executeSmutstoneConfJs(webpackJsonp) function in MediaWiki:Smutstone.conf.js 
+	 * is not available.
 	 */
 	// const confJsUrl = 'https://cdn.smutstone.com/s2/f1b9b009.conf.js';
 	const confJsUrl = $('#smutstoneConfJs a').prop('href');
@@ -41,6 +42,7 @@ $(document).ready(function(){
         '<button id="combat">Combat</button>\n' +
         '<br/>\n' +
         '<div id="hero"><label for="deckHero">Hero:</label><div id="deckHero"></div></div>\n' +
+        '<div id="artifacts" style="display:none"><label for="artifacts">Artifacts:</label><div></div></div>\n' +
         '<div id="enemy"><label for="deckHero">Enemy:</label><div id="deckEnemy"></div><div class="desc">Description</div></div>\n' +
         '<div id="bestArtifactPanel">\n' +
         '<button id="bestArtifactDistribution">Optimize artifacts</button>\n' +
@@ -57,7 +59,7 @@ $(document).ready(function(){
         '<select id="unsupportedEffects">\n' +
         '  <option selected="true">Unsupported</option>\n' +
         '</select>\n' +
-        '<input id="test" type="checkbox">Debug</input>\n' +
+        '<label style="display: none"><input id="test" type="checkbox">Debug</input></label>\n' +
         '<input id="darkTheme" type="checkbox">Dark</input>\n';
 
 	function enableDarkTheme(enabled) {
@@ -98,8 +100,8 @@ $(document).ready(function(){
 			    dropdown.append($('<option></option>').attr('value', JSON.stringify(deck)).text(name));
 	    	}
 	    });
-	    // PNF decks
-	    [1, 2, 3].forEach(function(cset) {
+	    // PNF decks and other cardSets
+	    webpack.cardSets.map(function(s) { return s.id }).forEach(function(cset) {
 	    	const deck = battleCards
 	    		.filter(function(c) { return c.cset == cset })
 	    		.sort(function(a, b) { return b.attack * b.hp - a.attack * a.hp })
@@ -146,6 +148,21 @@ $(document).ready(function(){
 		    dropdown.append($('<option></option>').attr('value', value).text(mission.displayName));
 	    }
     }
+
+	function populateArtifacts(artifacts) {
+		$('#artifacts div').empty();
+		const ul = $('<ul/>');
+    	$('#artifacts div').append(ul);
+		artifacts.forEach(function(a) {
+			const artifact = Object.assign({}, a, webpack.artifact[a.id]);
+			const li = $('<li/>');
+			ul.append(li);
+			li.append($('<div/>').addClass(type).addClass(['', 'fire', 'earth', 'ice', 'light', 'dark'][artifact.color || 0])
+				.append($('<img/>', { src: 'https://cdn.smutstone.com/s2/' + artifact.icons._1x, title: items.join('\n') })));
+			
+		});
+
+	}
 
     function populateSupportedEffects() {
     	const appendDivider = function(dropdown) {
@@ -368,7 +385,7 @@ $(document).ready(function(){
 	        });
 	        return e.exports;
 	    };
-		const webpackIndex = unpackExport(resourceContent[14]);
+		const webpackIndex = unpackExport(resourceContent[13]);
 		for (const key in this.index) {
 		    const value = webpackIndex.get(key);
 		    this[key] = value;
@@ -1412,12 +1429,14 @@ $(document).ready(function(){
     // MAIN
     
     function initialize() {
-    	$('#darkTheme').checked = localStorage.getItem('v2smutstone_darkTheme')
-		enableDarkTheme($('#darkTheme').checked)
+    	$('#darkTheme').prop('checked', localStorage.getItem('v2smutstone_darkTheme') !== "false")
+		enableDarkTheme($('#darkTheme').prop('checked'))
     	enableDialog(true);
+    	
 	    const user = parseUserData($('#userData').val());
 	    populateDecks(user, { user: user });
 	    populateLocations();
+	    //populateArtifacts(user.hero.artifacts.items);
   	    populateSupportedEffects();
   	    update();
   	    

@@ -6,7 +6,7 @@
 -------
  About
 -------
-- Adds classes to some user tags and modifies the text of some, to "filter" some and add one
+- Adds classes to some user tags and modifies the text of some, to "filter" some and add some
 - Adds classes to comments of desired users, so they can be styled with css
 - Changes some avatar and link attributes in Message Walls and Article Comments for the QOL
 
@@ -110,9 +110,35 @@ if ($('#userProfileApp .user-identity-box__wrapper').length) {
 		if ($('.user-identity-header__tag.bureaucrat').length > 0) { 
 				$('.user-identity-header__tag.administrator').remove();
 			}
+		if ($('.user-identity-header__tag.imageeditor').length > 0) { 
+				$('.user-identity-header__tag.administrator').remove();
+			}
 		$('.user-identity-header__tag.discussionsmoderator').text('Discussions Moderator');
 		$('.user-identity-header__tag.administrator').text('Administrator');
-			
+	
+	mw.loader.using('mediawiki.api').then(function() {
+	    var api = new mw.Api();
+	    api.get({
+	        action: 'query',
+	        list: 'allusers',
+	        augroup: 'rollback'
+	    }).done(function(data) {
+	        var users = data.query.allusers;
+	        	(users).forEach(function(u) {
+	      			if ($('.user-identity-header__tag.discussionsmoderator').length === 0) {
+					    clearInterval(interval);
+						if (u.name.includes(mw.config.get('profileUserName'))) {
+	   					$('#userProfileApp .user-identity-header > .user-identity-header__attributes').append(
+					            $('<span>', {
+					                'class': 'user-identity-header__tag rollback',
+					                'text': "Rollback"
+			        			})
+			        		);
+	  					}
+	      			}
+	            });
+	    });
+	});
 	$('#userProfileApp .user-identity-header > .user-identity-header__attributes h1').filter(function () {
     if (imageeditors.includes($.trim($(this).text()))) {
        $('#userProfileApp .user-identity-header > .user-identity-header__attributes').append(
@@ -167,22 +193,8 @@ $('.mw-contributions-user-tools a[href*="Special:AbuseLog"], .UserProfileActivit
 });
 $(function () {
 	var username = mw.config.get('wgUserName');
-	var user = mw.config.get('wgTitle');
-	var target = mw.util.getParamValue('target');
-    var parts = user.split("/");
-if (
-            wgCanonicalSpecialPageName === 'Contributions' ||
-            wgCanonicalSpecialPageName === 'UserProfileActivity'
-        ){if (target) {
-                user = decodeURIComponent(target).replace(/_/g, ' ');
-            }else if (parts.length > 1 && parts[1] !== '') {
-                user = parts[1];}else {
-                	user = username;
-                	if (user === null) {
-                		user = '';
-                	}
-                }
-}	if (!$('#userProfileApp, #MessageWall, #articleComments').length || !user && !username) {
+	var user = mw.config.get('profileUserName');
+	if (!$('#userProfileApp, #MessageWall, #articleComments').length || !user && !username) {
         return;
     }
     

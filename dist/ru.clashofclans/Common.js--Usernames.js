@@ -27,7 +27,6 @@
 - Spottra: original version used on Legacy
 - E12Dragon: current UCP compatible version
 */
-
 /**********************/
 /*      Comments      */
 /**********************/
@@ -45,43 +44,64 @@ var interval = setInterval(function () {
 	$('.wds-avatar a[href$="Test"]').parents(elements).addClass("rollback");
 }, 100 );
 /**************************/
+/*    Баннер Бюрократов   */
+/**************************/
+var interval = setInterval(function () {
+	if ($('.user-identity-header__attributes:contains("Flotiliya") h1').length > 0) {
+		$(".user-identity-header__attributes:not(:has(.user-identity-header__tag.tag-bureaucrat2))").append(
+            $('<span>', {
+                'class': 'user-identity-header__tag tag-bureaucrat2',
+                'text': "Бюрократ"
+            })
+        );
+	}
+	if ($('.user-identity-header__attributes:contains(" ") span').length > 0) {
+		$('.tag-container').remove();
+	}
+	$('.tag-container').filter(function() {
+		return $(this).text() === ' ';
+	}).remove();
+}, 100 );
+/**************************/
 /*    Баннер Откатчиков   */
 /**************************/
 var interval = setInterval(function () {
 	if ($('.user-identity-header__attributes:contains("Test") h1').length > 0) {
 		$(".user-identity-header__attributes:not(:has(.user-identity-header__tag.tag-rollback))").append(
-	            $('<span>', {
-	                'class': 'user-identity-header__tag tag-rollback',
-	                'text': "Откатчик"
-	            })
-	            );
+            $('<span>', {
+                'class': 'user-identity-header__tag tag-rollback',
+                'text': "Откатчик"
+            })
+        );
 	}
 }, 100 );
 /*------------------Nothing Beyond this point has fields to edit------------------*/
 var interval = setInterval(function () {
     $(document).ready(function () { 
-    $('.user-identity-header__tag:contains("Бюрократ")').addClass("tag-bureaucrat");
+    $('.user-identity-header__tag:contains("бюрократ")').addClass("tag-bureaucrat2");
     $('.user-identity-header__tag:contains("Администратор")').addClass("tag-administrator");
     $('.user-identity-header__tag:contains("Модератор")').text("Модератор").addClass("tag-contentmoderator");
     $('.user-identity-header__tag:contains("Младший модератор")').text("Младший модератор").addClass("tag-discussionsmoderator");
-    	if ($('.user-identity-header__tag.tag-bureaucrat').length > 0) { 
-			$('.user-identity-header__tag.tag-administrator').remove();
-		}
+	if ($('.user-identity-header__tag.tag-bureaucrat2').length > 0) { 
+		$('.user-identity-header__tag.tag-administrator').remove();
+		$('.user-identity-header__tag.usergroup-bureaucrat.bureaucrat-user').remove();
+	}
     });
 }, 100 );
 /***************************************************/
 /*    Для Бюрократов со статусом Администратора    */
 /***************************************************/
 var interval = setInterval(function () {
-            if ($('.user-identity-header__attributes:contains("Flotiliya") h1').length > 0) {            
-                $(".user-identity-header__attributes:not(:has(.user-identity-header__tag.tag-administrator2))").append(
-	            $('<span>', {
-	                'class': 'user-identity-header__tag tag-administrator2',
-	                'text': "Админиcтратор"
-	            })
-	            );
+    if ($('.user-identity-header__attributes:contains("Flotiliya") h1').length > 0) {            
+        $(".user-identity-header__attributes:not(:has(.user-identity-header__tag.tag-administrator2))").append(
+	        $('<span>', {
+                'class': 'user-identity-header__tag tag-administrator2',
+                'text': "Админиcтратор"
+            })
+        );
 	}
 }, 100 );
+
 $(function() {
 var interval = setInterval(function () {
 	var site = mw.config.get('wgServer');

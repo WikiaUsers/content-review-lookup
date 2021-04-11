@@ -33,22 +33,14 @@ window.UserTagsJS = {
 		'headpro-admin': { u:'Head Admin Pro tempore', order:1 },
 		//Interim Heads
 		interim: { u:'Interim Head', order:-1/0 },
-		'headint-helper': { u:'Interim Head Helper', order:-1/0 },
-		'headint-rollback': { u:'Interim Head Rollback', order:-1/0 },
-		'headint-chatmod': { u:'Interim Head Chat Mod', order:-1/0 },
-		'headint-contentmod': { u:'Interim Head Content Mod', order:-1/0 },
-		'headint-discussionmod': { u:'Interim Head Discussion Mod', order:-1/0 },
-		'headint-miniadmin': { u:'Interim Head Mini-Admin', order:-1/0 },
-		'headint-admin': { u:'Interim Head Admin', order:-1/0 },
-		'headint-bureaucrat': { u:'Interim Head Bureaucrat', order:-1/0 },
-		//Head Pro tempore elect
-		'headpro-elect-helper': { u:'Head Helper Pro tempore elect', order:1 },
-		'headpro-elect-rollback': { u:'Head Rollback Pro tempore elect', order:1 },
-		'headpro-elect-chatmod': { u:'Head Chat Mod Pro tempore elect', order:1 },
-		'headpro-elect-contentmod': { u:'Head Content Mod Pro tempore elect', order:1 },
-		'headpro-elect-discussionmod': { u:'Head Discussion Mod Pro tempore elect', order:1 },
-		'headpro-elect-miniadmin': { u:'Head Mini-Admin Pro tempore elect', order:1 },
-		'headpro-elect-admin': { u:'Head Admin Pro tempore elect', order:1 },
+		'headint-helper': { u:'Acting Head Helper', order:-1/0 },
+		'headint-rollback': { u:'Acting Head Rollback', order:-1/0 },
+		'headint-chatmod': { u:'Acting Head Chat Mod', order:-1/0 },
+		'headint-contentmod': { u:'Acting Head Content Mod', order:-1/0 },
+		'headint-discussionmod': { u:'Acting Head Discussion Mod', order:-1/0 },
+		'headint-miniadmin': { u:'Acting Head Mini-Admin', order:-1/0 },
+		'headint-admin': { u:'Acting Head Admin', order:-1/0 },
+		'headint-bureaucrat': { u:'Acting Head Bureaucrat', order:-1/0 },
 		//Deputies
 		deputy: { u:'Deputy', order:-1/0 },
 		'deputy-helper': { u:'Deputy Helper', order:-1/0 },
@@ -95,16 +87,15 @@ UserTagsJS.modules.custom = {
 	/* Mini-Admins */
 	'A random student': ['head', 'hc-jc', 'ec-member'],
 	/* Content Mods */
+	'GalaxE': [],
+	'Tsuzuro Yamazaki': ['ec-jc', 'hc-member', 'head'],
 	/* Discussion Mods */
 	'KawaiiKunWolf': ['head', 'ec-sc', 'vc-jc', 'hc-member'],
-	/* Rollbacks */
-	'GalaxE': [],
-	'Tsuzuro Yamazaki': ['ec-jc', 'hc-member'],
-	/* Chat Mods */
 	'AoiRyugokuTSFG1': ['ec-member' ],
+	/* Rollbacks */
+	/* Chat Mods */
+	'SeiShii': ['chatmoderator', 'head', 'ec-member'],
 	/* Helpers and Intern */
-	'SeiShii': ['helpers', 'head', 'ec-member'],
-	'MrCheeseTiger1234': ['helpers', 'deputy', 'ec-member'],
 	'Littleslinky': ['helpers'],
 	'RedLightningStrike': ['helpers', 'ec-member'],
 	'S0ul245Official': ['helpers'],
@@ -140,6 +131,7 @@ UserTagsJS.modules.custom = {
 	'Takriiiia': ['former-helper'],
 	'Shadow Bonnie202': ['former-helper'],
 	'ThatNerdyGamerGirl': ['former-helper'],
+	'MrCheeseTiger1234': ['former-helper', 'ec-member'],
 	/* Former Interns */
 	'EmotionlessKuu': ['former-intern'],
 	'SonrisitasPF': ['former-intern'],
@@ -240,13 +232,12 @@ window.MessageWallUserTags = {
         'AoiRyugokuTSFG1': 'Discussion Mod',
         'Tsuzuro_Yamazaki': 'Head Content Mod',
         'GalaxE': 'Content Mod',
-        'SeiShii': 'Head Helper',
-        'MrCheeseTiger1234': 'Deputy Helper',
+        'SeiShii': 'Head Chat Mod',
         'Littleslinky': 'Helper',
         'RedLightningStrike': 'Helper',
         'S0ul245Official': 'Helper',
         'GhoulGirls90': 'Helper',
-        'UltimateGamer899': 'Intern',
+        'Vacant': 'Intern',
     }
 };
 

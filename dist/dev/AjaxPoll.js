@@ -15,9 +15,7 @@
         });
     }
 
-    var wikiId = mw.config.get("wgCityId");
     var isAnon = mw.config.get("wgUserId") === null;
-    var api = "https://services.fandom.com/discussion/" + wikiId + "/threads/";
     var getMsg = null;
 
     var AjaxPoll = {
@@ -37,7 +35,12 @@
 
             if (!threadId) return;
 
-            $.getJSON(api + threadId)
+            $.getJSON(mw.util.wikiScript("wikia"), {
+                controller: "DiscussionThread",
+                method: "getThread",
+                format: "json",
+                threadId: threadId
+            })
                 .then(function (data) {
                     return data.funnel === "POLL"
                         ? $.extend(data.poll, { created: data.creationDate.epochSecond * 1000 })
@@ -51,8 +54,7 @@
             $(this).empty();
 
             var $poll = $("<form>", {
-                action: mw.config.get("wgScriptPath") +
-                        "/wikia.php?controller=DiscussionPoll&method=castVote",
+                action: mw.util.wikiScript("wikia") + "?controller=DiscussionPoll&method=castVote",
                 submit: $.proxy(AjaxPoll.submit, this),
                 appendTo: this,
             });
@@ -146,5 +148,7 @@
         },
     };
 
-    mw.hook("wikipage.content").add(AjaxPoll.init);
+    mw.loader.using("mediawiki.util").then(function() {
+        mw.hook("wikipage.content").add(AjaxPoll.init);
+    });
 })();

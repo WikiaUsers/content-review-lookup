@@ -1,4 +1,4 @@
-//<syntaxhighlight lang="javascript">
+//<pre>
 /*
  * Script: RecentChangesMultiple
  * Author: Fewfre
@@ -5572,4 +5572,4 @@ var RC_TYPE;
 exports["default"] = RC_TYPE;
 
 },{}]},{},[18]);
-//</syntaxhighlight>
+//</pre>

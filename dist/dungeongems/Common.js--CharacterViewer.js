@@ -1257,15 +1257,15 @@ Database.prototype.load = function() {
 function ImageManager() {
 	// Initialize image cache with the common icons
 	this.imageCache = {
-		'ATK_Icon.png':	    'https://images.wikia.nocookie.net/__cb20141227012456/dungeongems/images/3/3e/ATK_Icon.png',
-		'Dark_Icon.png':    'https://images.wikia.nocookie.net/__cb20141121224747/dungeongems/images/e/e9/Dark_Icon.png',
-		'Fire_Icon.png':    'https://images.wikia.nocookie.net/__cb20141121224731/dungeongems/images/c/c8/Fire_Icon.png',
-		'HP_Icon.png':      'https://images.wikia.nocookie.net/__cb20141122100150/dungeongems/images/2/25/HP_Icon.png',
-		'Light_Icon.png':   'https://images.wikia.nocookie.net/__cb20141121224717/dungeongems/images/9/95/Light_Icon.png',
-		'Placeholder.png':  'https://images.wikia.nocookie.net/__cb20141230162608/dungeongems/images/4/47/Placeholder.png',
-		'REC_Icon.png':     'https://images.wikia.nocookie.net/__cb20141122100208/dungeongems/images/1/15/REC_Icon.png',
-		'Water_Icon.png':   'https://images.wikia.nocookie.net/__cb20141121224235/dungeongems/images/7/70/Water_Icon.png',
-		'Wood_Icon.png':    'https://images.wikia.nocookie.net/__cb20141121224617/dungeongems/images/2/23/Wood_Icon.png'
+		'ATK_Icon.png':	    'https://static.wikia.nocookie.net/dungeongems/images/3/3e/ATK_Icon.png',
+		'Dark_Icon.png':    'https://static.wikia.nocookie.net/dungeongems/images/e/e9/Dark_Icon.png',
+		'Fire_Icon.png':    'https://static.wikia.nocookie.net/dungeongems/images/c/c8/Fire_Icon.png',
+		'HP_Icon.png':      'https://static.wikia.nocookie.net/dungeongems/images/2/25/HP_Icon.png',
+		'Light_Icon.png':   'https://static.wikia.nocookie.net/dungeongems/images/9/95/Light_Icon.png',
+		'Placeholder.png':  'https://static.wikia.nocookie.net/dungeongems/images/4/47/Placeholder.png',
+		'REC_Icon.png':     'https://static.wikia.nocookie.net/dungeongems/images/1/15/REC_Icon.png',
+		'Water_Icon.png':   'https://static.wikia.nocookie.net/dungeongems/images/7/70/Water_Icon.png',
+		'Wood_Icon.png':    'https://static.wikia.nocookie.net/dungeongems/images/2/23/Wood_Icon.png'
 	};
 }
 
@@ -1273,7 +1273,7 @@ ImageManager.prototype.findImageLocation = function(responseText) {
 	var imageLink = null;
 	try {
 		var posImageLink = responseText.indexOf("fullImageLink");		// Wikia specific class name identifying the fullImageLink 
-		posImageLink = responseText.indexOf("http", posImageLink);		// Start of http address that comes after
+		posImageLink = responseText.indexOf("https", posImageLink);		// Start of http address that comes after
 		var endImageLink = responseText.indexOf('"', posImageLink);		// Matching closing quote
 		imageLink = responseText.substring(posImageLink, endImageLink);
 	} finally {
@@ -1294,7 +1294,7 @@ ImageManager.prototype.loadImage = function(image, id) {
 	}
 	
 	try {
-		var uri = "http://dungeongems.wikia.com/wiki/File:" + image;
+		var uri = "https://dungeongems.fandom.com/wiki/File:" + image;
 
 		var xmlHttp = new XMLHttpRequest();
 		xmlHttp.image = image;
@@ -2016,7 +2016,7 @@ table.tablesorter {
 table.tablesorter thead tr th, table.tablesorter tfoot tr th {
 }
 table.tablesorter thead tr .header {
-	background-image: url(https://images.wikia.nocookie.net/__cb20150111123146/dungeongems/images/e/e8/Sort_none.gif);
+	background-image: url(https://static.wikia.nocookie.net/dungeongems/images/e/e8/Sort_none.gif);
 	background-repeat: no-repeat;
 	background-position: center right;
 	cursor: pointer;
@@ -2027,11 +2027,11 @@ table.tablesorter tbody tr.odd td {
 	background-color:#F0F0F6;
 }
 table.tablesorter thead tr .headerSortUp {
-	background-image: url(https://images.wikia.nocookie.net/__cb20150111123126/dungeongems/images/5/5b/Sort_up.gif);
+	background-image: url(https://static.wikia.nocookie.net/dungeongems/images/5/5b/Sort_up.gif);
 	background-repeat: no-repeat;
 }
 table.tablesorter thead tr .headerSortDown {
-	background-image: url(https://images.wikia.nocookie.net/__cb20150111123137/dungeongems/images/7/7a/Sort_down.gif);
+	background-image: url(https://static.wikia.nocookie.net/dungeongems/images/7/7a/Sort_down.gif);
 	background-repeat: no-repeat;
 }
 table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {

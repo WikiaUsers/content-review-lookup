@@ -80,6 +80,7 @@
     'Juggernaut': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Killer Caiman': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Kollos': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
+    'Last Lore Keeper': {'Key To Knowledge': 'Key to Knowledge'},
     'Lumbering Carnivor': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Many Faces': {'Head': 'Head (Many Faces)'},
     'Maw': {'Dung Ball': 'Dung Ball (Quest)'},

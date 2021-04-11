@@ -1,8 +1,14 @@
+//Block log
+TBL_GROUP = "roblox-en";
+
+/*
+var font = document.createElement("font");
+font.src = "https://fonts.gstatic.com/s/nunito/v16/XRXV3I6Li01BKofIOOaBTMnFcQIG.woff2";
+document.body.appendChild(font);*/
+
 /*******************/
 /****CUSTOM TAGS****/ 
-/*******************/
-
-window.UserTagsJS = {
+/*window.UserTagsJS = {
 	modules: {},
 	tags: {
 		cow: { u:'Cow', order:-1/0},
@@ -20,13 +26,14 @@ window.UserTagsJS = {
 		content-moderator: { u: 'Pilot', link:'PTFS Wiki Staff', order:-1 },
  
  */
+ /*
 	},
 	oasisPlaceBefore: ''
 };
 
  UserTagsJS.modules.mwGroups = [ // ability to CSS these tags
     'cow', 'phantom', 'robloxredarrows', 'morkie', 'gamedev', 'southwest', 'politic', 'bureaucrat', 'sysop', 'threadmoderator', 'chatmoderator', 'rollback', "content-moderator", /*'autoconfirmed', 'notautoconfirmed', 'inactive','blocked',
-    'founder',*/];
+    'founder',];
     
 UserTagsJS.modules.custom = {
 	'TheOriginalCows': ['cow'], 
@@ -44,12 +51,6 @@ UserTagsJS.modules.metafilter = { // Remove lower-rank tags from higher-rank use
 	'rollback': ['chatmoderator', 'threadmoderator',"content-moderator", 'sysop', 'bureaucrat', 'founder', 'gamedev'],
 	'autoconfirmed': ['townieofthemonth', 'rollback', 'chatmoderator', 'threadmoderator', "content-moderator", 'sysop', 'bureaucrat', 'founder', 'gamedev'],
 };
-
-/*******************/
-/****BLOCK LOG****/ 
-/*******************/
-TBL_GROUP = "roblox-en";
-
 /*me fix dis
 function fetchNumPlayersInGame(placeUrl) {
 

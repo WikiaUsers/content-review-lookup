@@ -106,19 +106,3 @@ window.SpoilerAlertJS = {
     no: 'No',
     fadeDelay: 1600
 };
-
-window.MessageWallUserTags = {
-    tagColor: '#00e5ff',
-    txtSize: '10px',
-    glow: true,
-    glowSize: '30px',
-    glowColor: '#00d5ff',
-    users: {
-        'username': 'usergroup',
-        'DrakonchikUA': 'Bureaucrat',
-        'Woods234': 'Bureaucrat',
-        'Fryingegg8': 'Bureaucrat',
-        'Dorkfishie': 'Content Moderator',
-        'MattapoisettPatton27': 'Thread Moderator',
-    }
-};

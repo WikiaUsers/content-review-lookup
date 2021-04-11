@@ -6,7 +6,7 @@ function init(i18nd) {
         format: 'json'
     })).then(function(res) {
         $('.page-header__main').append(
-            $('<div />', {
+            $('<div>', {
                 text: i18n.msg('availableInLangs', res.parse.langlinks.length).parse()
             }).css({ color: '#666' })
         );

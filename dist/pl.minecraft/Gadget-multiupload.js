@@ -128,7 +128,7 @@ mw.loader.using([
 		getlicence: function() {
 			$.ajax({
 				type: 'GET',
-				url: wgServer + '/api.php?action=query&meta=allmessages&ammessages=Licenses&format=json&amlang=pl',
+				url: wgServer + '/pl/api.php?action=query&meta=allmessages&ammessages=Licenses&format=json&amlang=pl',
 				success: function(data) {
 					var content = data.query.allmessages[0]['*'];
 					MultiUpload.updatelicensebutton(content);
