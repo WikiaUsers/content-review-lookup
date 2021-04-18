@@ -7,9 +7,8 @@
 (function() {
     window.PurgeD = {
         key: 'PurgeD-cache-key',
-        ttl: 1000 * 60 * 15,
+        ttl: 1000 * 60 * 10,
         wg: mw.config.get([
-            'wgCityId',
             'wgUserGroups',
             'wgServer'
         ]),
@@ -43,12 +42,14 @@
 
 
             this.fetch().then(function(r) {
-                if (r._embedded.threads.length) {
-                    r._embedded.threads.forEach(function(thread) {
-                        var xhr = new XMLHttpRequest();
-                        xhr.open('PUT', 'https://services.fandom.com/discussion/' + this.wg.wgCityId + '/threads/' + thread.id + '/delete', true);
-                        xhr.withCredentials = true;
-                        xhr.send();
+                if (r._embedded.threads && r._embedded.threads.length) {
+                    r._embedded.threads.forEach(function(thread, i) {
+                        setTimeout(function() {
+                            var xhr = new XMLHttpRequest();
+                            xhr.open('PUT', this.wg.wgServer + '/wikia.php?controller=DiscussionThread&method=delete&threadId=' + thread.id, true);
+                            xhr.withCredentials = true;
+                            xhr.send();
+                        }.bind(this), i * 2000);
                     }.bind(this));
                 }
             }.bind(this));
@@ -57,7 +58,7 @@
             return new Promise(function(res) {
                 var xhr = new XMLHttpRequest();
 
-                xhr.open('GET', 'https://services.fandom.com/discussion/' + this.wg.wgCityId + '/threads?sortKey=creation_date&limit=50', true);
+                xhr.open('GET', this.wg.wgServer + '/wikia.php?controller=DiscussionThread&method=getThreads&sortKey=trending&limit=100&responseGroup=small&viewableOnly=true', true);
 
                 xhr.onload = function() {
                     res(JSON.parse(xhr.response));

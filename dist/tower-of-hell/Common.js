@@ -1,18 +1,21 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/**/
-/* sliders using jquery by User:Tierrie /
-/**/
+
+window.BackToTopModern = true;
+
+/****************************************/
+/* sliders using jquery by User:Tierrie */
+/****************************************/
 mw.loader.using( ['jquery.cookie']);
  
-/**/
-/ sliders using jquery by User:Tierrie /
-/**/
+/****************************************/
+/* sliders using jquery by User:Tierrie */
+/****************************************/
 mw.loader.using( ['jquery.ui.tabs'], function() {
   $( "[class^=portal_vtab]" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
   $( "[class^=portal_vtab] li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
  
   var $tabs = $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100} } );
-  $("[class=portal_sliderlink]").click(function() { // bind click event to link
+  $("[class*=portal_sliderlink]").click(function() { // bind click event to link
     $tabs.tabs('select', this.className.match(/portal_sliderlink-(\d+)/)[1]);
     console.log("Sliding to " + this.className.match(/portal_sliderlink-(\d+)/)[1]);
     return false;

@@ -641,16 +641,16 @@
                     }).then(function(res) {
                         this.removeStatus(currentStep, this.i18n.msg('status-published-waiting', title).plain());
 
-                        if (res.error) {
-                            this.logError(this.i18n('error-publishing', title).plain() + ': ' + d.error.code);
+                        if (res.error && res.error.code) {
+                            this.logError(this.i18n.msg('error-publishing', title).plain() + ': ' + res.error.code);
                         }
                     }.bind(this)).fail(function(code) {
                         this.removeStatus(currentStep, this.i18n.msg('status-failed-publish-waiting', title).plain());
 
                         if (typeof code === 'string') {
-                            this.logError(this.i18n('error-publishing', title).plain() + ': ' + d.error.code);
+                            this.logError(this.i18n.msg('error-publishing', title).plain() + ': ' + code);
                         } else {
-                            this.logError(this.i18n('error-publishing', title).plain());
+                            this.logError(this.i18n.msg('error-publishing', title).plain());
                         }
                     }.bind(this));
                 } else {

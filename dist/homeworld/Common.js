@@ -1,5 +1,5 @@
 //
-// Last Modified: 8th January 2015, 23:10
+// Last Modified: 17th April 2021, 17:27
 // This is the wiki-wide javascript file.
 // Anything below will be loaded on all wiki-styles.
 //
@@ -14,30 +14,27 @@
 (function (window, $, mw) {
 	"use strict";
   
-	// Fix images on threads (image line breaks and looks messy)
-	$(".msg-body img").unwrap();
-
-        // This code snippet is for all sysop-only tools.
-        // Anything here will only load if the user has
-        // the sysop flag.
-        if($.inArray("sysop", wgUserGroups) !=-1) {
-            mw.util.addPortletLink("AccountNavigation", "/wiki/Special:AdminDashboard", "Dashboard", "p-dashboard");
-            mw.util.addPortletLink("AccountNavigation", "/wiki/Special:UserRights", "Manage Rights", "p-userrights");
-            importScriptPage('AjaxBatchDelete/code.js', 'dev');
-            importScriptPage('CacheCheck/code.js', 'dev');
-        }
+	// This code snippet is for all sysop-only tools.
+	// Anything here will only load if the user has
+	// the sysop flag.
+	if($.inArray("sysop", mw.config.get('wgUserGroups')) !=-1) {
+		mw.util.addPortletLink("AccountNavigation", "/wiki/Special:AdminDashboard", "Dashboard", "p-dashboard");
+		mw.util.addPortletLink("AccountNavigation", "/wiki/Special:UserRights", "Manage Rights", "p-userrights");
+		importArticles({
+			type: "script",
+			articles: [
+				"u:dev:MediaWiki:AjaxBatchDelete/code.js",
+				"u:dev:MediaWiki:CacheCheck/code.js"
+			]
+		});
+	}
 }(window, jQuery, mediaWiki));
 
 // AjaxRC
-window.ajaxPages = ["Special:WikiActivity","Special:Log","Special:RecentChanges"];
+window.ajaxSpecialPages = ["Log", "RecentChanges"];
 window.ajaxIndicator = 'https://images.wikia.nocookie.net/__cb20100609110347/software/images/a/a9/Indicator.gif';
 window.AjaxRCRefreshText = 'Auto Refresh';
 window.AjaxRCRefreshHoverText = 'Silently refreshes the contents of this page every 60 seconds without requiring a full reload';
-
-// RevealAnonIP
-window.RevealAnonIP = {
-    permissions : ['user']
-};
 
 // ArchiveTool
 window.archiveListTemplate = 'ArchiveList';
@@ -48,13 +45,12 @@ window.archivePageTemplate = 'ArchivePage';
 importArticles({
 	type: "script",
 	articles: [
-                "u:dev:ListFiles/code.js",
-                "u:dev:ArchiveTool/code.js",
-                "u:dev:RevealAnonIP/code.js",
-                "u:dev:NullEditButton/code.js",
-                "u:dev:ReferencePopups/code.js",
-                "u:dev:User:UltimateSupreme/AjaxRollback.js",
-                "u:dev:AjaxRC/code.js",
-                "MediaWiki:Common.js/FixUploader.js"
+		"u:dev:MediaWiki:ListFiles/code.js",
+		"u:dev:MediaWiki:ArchiveTool/code.js",
+		"u:dev:MediaWiki:NullEditButton/code.js",
+		"u:dev:MediaWiki:ReferencePopups/code.js",
+		"u:dev:MediaWiki:AnchoredRollback/code.js",
+		"u:dev:MediaWiki:AjaxRC/code.js",
+		"MediaWiki:Common.js/FixUploader.js"
 	]
 });

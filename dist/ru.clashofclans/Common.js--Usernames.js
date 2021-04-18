@@ -78,7 +78,7 @@ var interval = setInterval(function () {
 /*------------------Nothing Beyond this point has fields to edit------------------*/
 var interval = setInterval(function () {
     $(document).ready(function () { 
-    $('.user-identity-header__tag:contains("бюрократ")').addClass("tag-bureaucrat2");
+    $('.user-identity-header__tag:contains("Бюрократ")').addClass("tag-bureaucrat2");
     $('.user-identity-header__tag:contains("Администратор")').addClass("tag-administrator");
     $('.user-identity-header__tag:contains("Модератор")').text("Модератор").addClass("tag-contentmoderator");
     $('.user-identity-header__tag:contains("Младший модератор")').text("Младший модератор").addClass("tag-discussionsmoderator");

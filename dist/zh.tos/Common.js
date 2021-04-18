@@ -528,6 +528,7 @@ window.scriptMap = {
     '龍刻圖鑒': ['MediaWiki:Galleryfilter2.js'],
     '龍刻武裝圖鑒': ['MediaWiki:Galleryfilter2.js'],
     '眾神的考驗': ['MediaWiki:ThePantheonsOrdeal.js'],
+    '主動技列表test':['MediaWiki:askillselect.js'],
     '神魔之塔 繁中維基主頁': ['MediaWiki:MobilePage.js']
 };
 // Use timeout to check importScript is exist after some time

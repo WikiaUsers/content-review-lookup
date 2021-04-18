@@ -2,9 +2,15 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		founder: { u:'05', order:1, title:'Wiki Founder'},
-		bureaucrat: { u:'A-Class', order:1, title:'Bureacrat'},
-		admin: { u:'B-Class', order:2, title:'Administrator'},
-		threadmoderator: { u:'C-Class', order:3, title:'Moderator'}
-	}
+		'founder': { u:'05', order:1, title:'Wiki Founder'},
+		'bureaucrat': { u:'A-Class', order:2, title:'Bureacrat'},
+		'sysop': { u:'B-Class', order:3, title:'Administrator'},
+		'threadmoderator': { u:'C-Class', order:4, title:'Thread Moderator'}
+		
+	},
+	oasisPlaceBefore: '',
+};
+// Input Credentials
+function InputCredentials() { 
+	document.getElementByID("CredOutput").style.display = "block";
 }

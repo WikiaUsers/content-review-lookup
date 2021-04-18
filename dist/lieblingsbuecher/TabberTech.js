@@ -1,8 +1,11 @@
-var findallURL = document.getElementById('WikiaMainContent').getElementsByTagName("a");
-for (var i=0; i < findallURL.length; i++) {
-  if (findallURL[i].href.search('#') >= 0) {
-    findallURL[i].onclick = OpenTabber.bind(window, this); 
-  }
+function tabberTechInit() {
+	var findallURL = document.getElementById('WikiaMainContent').getElementsByTagName("a");
+	for (var i=0; i < findallURL.length; i++) {
+	  if (findallURL[i].href.search('#') >= 0) {
+	    findallURL[i].onclick = OpenTabber.bind(window, this); 
+	  }
+	}
+	OpenTabber();
 }
  
 function GetListOfSisterDivs(GesuchtesDiv) {
@@ -22,6 +25,8 @@ function OpenTabber(LinkObjekt) {
   if (!LinkObjekt)          Sprungmarke = window.location.hash.slice(1);
   else if (LinkObjekt.href) Sprungmarke = LinkObjekt.href.slice(LinkObjekt.href.search('#')*1+1);
   else                      Sprungmarke = window.location.hash.slice(1);
+  
+  if (!Sprungmarke.length) return;
  
   var CurrentObject = document.getElementsByName(Sprungmarke)[0];
   if (!CurrentObject) CurrentObject = document.getElementById(Sprungmarke);
@@ -55,4 +60,4 @@ function OpenTabber(LinkObjekt) {
   }
   return true;
 }
-$(document).ready(OpenTabber);
+$(document).ready(tabberTechInit);

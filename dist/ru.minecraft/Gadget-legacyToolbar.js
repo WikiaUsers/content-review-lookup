@@ -300,8 +300,9 @@ mw.toolbar.addButton( {
     imageId: "mw-editbutton-hr"
 } );
 
-if ( mw.user.options.get( 'gadget-extra-toolbar-buttons' ) == 1 ) {
+	console.log('MediaWiki:Gadget-legacyToolbar.js — working');
+if ( mw.user.options.get( 'gadget-extra-toolbar-buttons' ) == "1" ) {
 				mw.loader.load('/ru/index.php?title=MediaWiki:Gadget-extra-toolbar-buttons.js&action=raw&ctype=text/javascript');
-				console.log('MediaWiki:Common.js — extra-toolbar-buttons enabled');
+				console.log('MediaWiki:Gadget-legacyToolbar.js — extra-toolbar-buttons enabled');
 			}
-			else { console.log('MediaWiki:Common.js — extra-toolbar-buttons not enabled'); }
+			else { console.log('MediaWiki:Gadget-legacyToolbar.js — extra-toolbar-buttons not enabled'); }

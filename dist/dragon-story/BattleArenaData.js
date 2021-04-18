@@ -3148,6 +3148,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"daybreak": {
+				"name": "Daybreak",
+				"colors": [
+					"rainbow",
+					"red"
+				],
+				"rarity": "common"
+			},
 			"daycast": {
 				"name": "Daycast",
 				"colors": [
@@ -4742,6 +4750,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"friendly": {
+				"name": "Friendly",
+				"colors": [
+					"rainbow",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"frightlady": {
 				"name": "Fright Lady",
 				"colors": [
@@ -5263,6 +5279,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"diamond"
 				],
 				"rarity": "ultra"
+			},
+			"glint": {
+				"name": "Glint",
+				"colors": [
+					"rainbow",
+					"white"
+				],
+				"rarity": "unbreedable"
 			},
 			"glitter": {
 				"name": "Glitter",
@@ -10311,6 +10335,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"world",
 					"red",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"playmate": {
+				"name": "Playmate",
+				"colors": [
+					"rainbow",
+					"black",
+					"green"
 				],
 				"rarity": "unbreedable"
 			},

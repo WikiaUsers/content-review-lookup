@@ -83,7 +83,6 @@ window.AjaxBlock = {
 	},
 	
 	extras: {
-		rangeblock: true,
 		refAbuseLog: true,
 	}
 };

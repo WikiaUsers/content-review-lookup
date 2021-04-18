@@ -1,1 +1,1 @@
-window.ajaxSpecialPages = ['SocialActivity', 'Contributions'];
+window.ajaxSpecialPages = ['Contributions'];

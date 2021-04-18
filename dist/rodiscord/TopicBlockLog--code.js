@@ -1,4 +1,4 @@
-
+// Content originally from roblox.fandom.com/wiki/MediaWiki:TopicBlockLog/code.js
 // TopicBlockLog (test)
 //    Creates an interwiki block report from wikis of similar topic.
 //    This allows an administrator to more easily identify editors who may be

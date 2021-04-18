@@ -55,3 +55,20 @@ PFD_templates = [{
 ];
  
 PFD_discourageEditorFileUpload = true;
+
+/* подложка карты*/
+if ($('#noMap').length) {
+$('body').append('<div style="display: none; background: rgba(30, 36, 49, 0);" id="forMap">'+$('#noMap').wrap('<div/>').parent().html()+'</div>'); //Строит карту
+ 
+$('#forMap').on('click', function(e){ //Скрывает карту при нажатии на пустое место
+    if(e.target.id == "forMap"){
+        $('#forMap #noMap').attr({"style":"font-size: 14px; line-height: 25px; display: none"});
+        $('#forMap').attr({"style":"display:none"});
+    }
+});
+ 
+$('#showMap').on('click', function(e){ //отображает карту при нажатии на кнопку
+    $('#forMap #noMap').attr({"style":"font-size: 14px; line-height: 25px; display:block"});
+    $('#forMap').attr({"style":"display:block"});
+});
+}

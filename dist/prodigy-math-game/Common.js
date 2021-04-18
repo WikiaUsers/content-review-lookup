@@ -36,12 +36,6 @@ $.get(
     }
 );
 
-// RailModule
-window.AddRailModule = [
-    {page: 'Template:RailModule', prepend: true},
-    'Template:ChatModule'
-];
-
 // Configuration for NoLicenseWarning
 window.NoLicenseWarning = {
     forceLicense: true

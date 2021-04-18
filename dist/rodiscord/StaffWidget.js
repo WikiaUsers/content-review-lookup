@@ -1,4 +1,4 @@
-
+/* Content originally from roblox.fandom.com/wiki/MediaWiki:StaffWidget.js */
 const api = new mw.Api();
 var c = "";
 

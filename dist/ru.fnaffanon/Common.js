@@ -8,3 +8,15 @@ var interval = setInterval(function() {
         $posts.has('div[title="Deleted"]').hide();
     }
 }, 100);
+
+/* Скрипт FastDelete */
+window.fdButtons = [
+    {
+        summary: 'Вандализм',
+        label: 'Вандал'
+    },
+    {
+        summary: 'Мусор',
+        label: 'Мусор'
+    }
+];

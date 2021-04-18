@@ -1,10 +1,3 @@
-/*** MessageBlock Config ***/
-var MessageBlock = {
-	title : 'Block Notice',
-	message : 'You have been blocked for $2 for the following reason: <br /><br /> <div style="border: 1px solid; padding: 0.5em"> Violation of [[Rules and Guidelines]]: $1'
-}
-
-
 /*** Adding a user account age tag ***/
 importArticles({
     type: 'script',
@@ -12,3 +5,17 @@ importArticles({
         'u:dev:MediaWiki:UserAccountAge/code2.js',
     ]
 });
+
+/*** Discussion Templates Config ***/
+window.DiscussionTemplates = {
+    templates: {
+        'block-message': {
+            name: 'Template:Block Message',
+            title: 'Block Notice'
+          }
+        },
+    allowedGroups: ['sysop']
+};
+
+/*** Modern Back To Top Button Config ***/
+window.BackToTopModern = true;

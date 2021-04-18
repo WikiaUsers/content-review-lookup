@@ -23,7 +23,7 @@ const l10n = (function() {
 
 // this table defines the switching that is to be performed, depending on the current skin
 const switchTable = {
-	"hydra": "hydradark",
+	"hydra": "hydradark", // if current skin is "hydra", then switch to "hydradark"
 	"hydradark": "hydra"
 };
 
@@ -39,7 +39,7 @@ function apiSetSkinOption(skinname) {
 	};
 }
 
-// i18n: load the localized skin names of all skin defined in the table
+// i18n: load the localized skin names of all skins defined in the table
 var skinnames_messages = {}; // set, to prevent duplicates
 for (const skinname in switchTable) {
 	skinnames_messages['skinname-' + skinname] = true; // add to set
@@ -54,7 +54,6 @@ $(document).ready(function() {
 		new mw.Api().get(apiGetOptions).done(function(data) {
 			const currentSkin = data.query.userinfo.options.skin;
 			
-			console.log("Current skin name:", currentSkin);
 			if (switchTable[currentSkin] === undefined) {
 				// the name of the current skin is not registered in our table, so we can't handle it
 				return;
@@ -70,7 +69,7 @@ $(document).ready(function() {
 			// create button in the dropdown menu
 			$(mw.util.addPortletLink('p-cactions', 'javascript:;', buttonlabel, 'ca-switch-skin', hovertext)).click(function() {
 				
-				// switch skin
+				// upon clicking the button: switch skin
 				new mw.Api().postWithToken('csrf', apiSetSkinOption(targetSkin)).done(function(data) {
 					location.reload();
 				}).fail(function(code, data) {

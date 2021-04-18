@@ -1,6 +1,6 @@
 var activityWidget = $('#wikia-recent-activity > ul.activity-items');
 if (!!activityWidget.length) {
-    $.getJSON(wgScriptPath + '/api/v1/Activity/LatestActivity?limit=5&namespaces=0&allowDuplicates=false').then(function(activity) {
+    $.getJSON(mw.config.get('wgScriptPath') + '/api/v1/Activity/LatestActivity?limit=5&namespaces=0&allowDuplicates=false').then(function(activity) {
     	var api = new mw.Api();
     	var articles = activity.items.map(function(item) {
     		return item.article;

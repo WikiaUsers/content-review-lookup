@@ -1,3 +1,4 @@
+if (mw.config.get( 'wgCanonicalSpecialPageName' ) == 'RecentChanges') {
 
 	var $pages = $('.mw-changeslist .special li');
 	

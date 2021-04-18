@@ -427,6 +427,12 @@
             styles: 'MediaWiki:TZclock.css'
         },
 
+        UCX: {
+            page: 'UCX',
+            scripts: 'MediaWiki:UCX.js',
+            styles: 'MediaWiki:UCX.css'
+        },
+
         UnhideUserMasthead: {
             page: 'Special:Contributions/UnhideUserMastheadTest',
             scripts: 'MediaWiki:UnhideUserMasthead/code.js'

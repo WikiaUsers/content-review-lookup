@@ -93,7 +93,7 @@ $(function() {
 		var name = html.replace(quoteRE,"");
 		if (name.startsWith("Модуль:")) {
 			var target = name.replace(/ /g,'%20');
-			var url = mw.config.get('wgServer') + '/' + target;
+			var url = mw.util.getUrl(target);
 			var str = quote + '<a href="' + url + '">' + name + '</a>' + quote;
 			$(this).html(str);
 		}

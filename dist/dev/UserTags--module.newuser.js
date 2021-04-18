@@ -85,7 +85,7 @@ UserTagsJS.extensions.newuser = (function($, mw, Date) {
 			};
 		},
 		_onDomReady: function(username, $) {
-			var $node = $('#UserProfileMasthead .masthead-info .contributions-details > a > em');
+			var $node = $('#userProfileApp .user-identity-stats > li:first-chid > a > strong');
 			if ($node.length) {
 				var num = $node.text().replace(/[^\d]/g, '');
 				if (num) {

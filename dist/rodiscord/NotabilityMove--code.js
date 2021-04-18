@@ -1,4 +1,4 @@
-
+// Content originally from roblox.fandom.com/wiki/MediaWiki:NotabilityMove/code.js
 /*
 * NotabilityMove v1.1 (rev 6/13/2017)
 * @description Allows for quick moving of pages deemed non-notable.

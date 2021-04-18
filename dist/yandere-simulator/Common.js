@@ -237,7 +237,8 @@ window.MessageWallUserTags = {
         'RedLightningStrike': 'Helper',
         'S0ul245Official': 'Helper',
         'GhoulGirls90': 'Helper',
-        'Vacant': 'Intern',
+        'UltimateGamer899': 'Helper',
+        'Thekoolgal11': 'Intern',
     }
 };
 

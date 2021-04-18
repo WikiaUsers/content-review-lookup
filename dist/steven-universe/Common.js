@@ -10,7 +10,8 @@ window.UserTagsJS = {
         autoconfirmed: true,
         custom: {
             'Navid 1600': ['discordmod'],
-            'Iudexkoo': ['discordmod']
+            'Iudexkoo': ['discordmod'],
+            'CrystalMomSquad': ['discordmod']
         }
     }
 };
@@ -33,13 +34,6 @@ window.rdaSubtitleLinksPages = {
     'WikiActivity/watchlist': {
         links: ['WikiActivity', 'RecentChanges', 'DiscussionsActivity', 'DiscussionsRC']
     }
-};
-
-//LockForums config
-window.LockForums = {
-    expiryDays: 14,
-    lockMessageWalls: true,
-    expiryMessage: 'This thread has been archived due to inactivity.'
 };
 
 //TZclock config

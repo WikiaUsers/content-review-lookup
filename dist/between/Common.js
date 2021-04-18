@@ -42,3 +42,9 @@ $.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
     'ajaxrc-refresh-text': 'AJAX',
     'ajaxrc-refresh-hover': 'Enable page auto-refresh',
 }}}}});
+
+// Label for ''CustomGalleryButton'' - if you want to edit this, please first warn to all users to the wiki - to prevent drastic changes.
+
+window.galleryButtonIconHidden = false;
+window.galleryButtonText = 'Add or remove an image/video to this gallery';
+window.galleryButtonIcon = 'https://imgur.com/tko9tP1.png';

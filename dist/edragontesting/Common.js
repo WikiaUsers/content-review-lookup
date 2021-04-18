@@ -5,9 +5,10 @@ importArticles({
 		"MediaWiki:Common.js/Masthead.js",
 		"MediaWiki:Common.js/HeroSkins.js",
 		"MediaWiki:Common.js/Walkthrough.js",
+		"u:dev:UserTags/code.js",
     ]
 });
-/*
+
 window.UserTagsJS = {
 	modules: {},
 	tags: {
@@ -21,14 +22,24 @@ window.UserTagsJS = {
 	}
 };
 
+UserTagsJS.modules.metafilter = {
+        bureaucrat:      	 ['founder'],
+        sysop:          	 ['founder', 'bureaucrat'],
+        'content-moderator': ['founder', 'bureaucrat', 'sysop'],
+        threadmoderator:	 ['founder', 'bureaucrat', 'sysop'],
+        rollback:       	 ['founder', 'bureaucrat', 'sysop', 'content-moderator', 'threadmoderator'],
+        inactive:       	 ['retiredstaff']
+    };
+
 UserTagsJS.modules.custom = {
-	'WMWBot': ['threadmoderator', 'content-moderator'], // Add featured
+	'WMWBot': ['threadmoderator', 'content-moderator'],
+	'E12Dragon': ['imageeditor'],
 };
 
 UserTagsJS.modules.implode = {
 	'moderator': ['content-moderator', 'threadmoderator'],
 };
-*/
+
 /*
 $(function () {
 var bureaucrats = [

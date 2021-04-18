@@ -7,7 +7,7 @@
 			return;
 		}
 
-		mw.loader.using("mediawiki.user").then(function() {
+		mw.loader.using(["mediawiki.user", "mediawiki.util"]).then(function() {
 			if (!mw.user.getRights) { return $.Deferred().rejectWith(this, arguments).promise(); } // Disable for non-updated MediaWiki to avoid throwing errors
 			return mw.user.getRights();
 		}).then(function(rights) {
@@ -31,11 +31,10 @@
 					ususers: username
 				}).then(function(data) {
 					var userID = data.query.users[0].userid;
-					var rootDomain = (new mw.Uri(mw.config.get("wgServer")+"/")).host.split(".").slice(-2).join(".");
 					var LIMIT = 100;
 					
 					function undeleteSingle(ID, isThread) {
-						var requestUrl = "https://services."+rootDomain+"/discussion/"+mw.config.get("wgCityId")+"/"+(isThread ? "threads" : "posts")+"/"+ID+"/undelete";
+						var requestUrl = mw.util.wikiScript("wikia") + "?controller=Discussion"+(isThread ? "Thread" : "Post")+"&method=undelete&"+(isThread ? "thread" : "post")+"Id="+ID;
 						return fetch(requestUrl, {
 							"credentials": "include",
 							"method": "PUT",
@@ -57,7 +56,7 @@
 					}
 
 					function _undeleteAll(page) {
-						return $.ajax("https://services."+rootDomain+"/discussion/"+mw.config.get("wgCityId")+"/users/"+userID+"/posts?responseGroup=full&viewableOnly=false&limit="+LIMIT+"&page="+page, {
+						return $.ajax(mw.util.wikiScript("wikia") + "?controller=DiscussionContribution&method=getPosts&userId="+userID+"&responseGroup=full&viewableOnly=false&limit="+LIMIT+"&page="+page, {
 							async: true,
 							method: "GET",
 							xhrFields: {

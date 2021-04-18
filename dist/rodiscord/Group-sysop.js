@@ -1,4 +1,4 @@
-
+/* Content originally from roblox.fandom.com/wiki/MediaWiki:Group-sysop.js */
 /* Any JavaScript here will be loaded for sysops only */
 // <nowiki>
 

@@ -9,8 +9,11 @@ importArticles({
 window.quizName = "Wie gut kennt ihr euch mit die Abenteuer des Robin Hood aus?";
 window.quizLang = "de";
 window.resultsTextArray = [ 
+    "Wo haben wir dich denn ausgegraben? Keine einzige richtige Antwort. Na, da müssen wir dir ja noch viel zum Spiel erzählen!",
+    "Das ist wohl noch verbesserungswürdig! Sieh dir die Seiten dieses Wikis noch einmal genau an!",
     "Das ist wohl noch verbesserungswürdig! Sieh dir die Seiten dieses Wikis noch einmal genau an!",
     "Gar nicht mal so schlecht! Falls du noch besser abschneiden möchtest, solltest du noch einmal die Wiki Seiten durchforsten!",
+    "Gar nicht mal so schlecht! Möchtest du noch besser informiert sein? Dann schau dir die Seiten dieses Wikis an.",
     "Wow, du hast alle Fragen richtig beantwortet! Du kannst dich von nun an Robin Hood nennen!" 
 ];
 window.questions = [
@@ -26,15 +29,21 @@ window.questions = [
     "Würfelspiel",
     "Pen and Paper"],
 
-    ["Wann kommt das Spiel raus?",
-    "wahrscheinlich März 2021 (aber auf jeden Fall im Frühjahr)",
-    "wahrscheinlich August 2021 (aber auf jeden Fall im Sommer)",
-    "wahrscheinlich November 2021 (aber auf jeden Fall im Herbst)",
-    "wahrscheinlich Februar 2021 (aber auf jeden Fall im Winter)"],
+    ["Wann ist das Spiel rausgekommen?",
+    "März 2021",
+    "Februar 2021",
+    "April 2021",
+    "Januar 2021"],
+
+    ["Was für ein besonderes Special gab es für Kunden die beim Fachhändler das Spiel gekauft haben?",
+    "1 Zusatzabenteuer (Originalqualität)",
+    "1 Mini-Erweiterung (Originalqualität)",
+    "1 Solovariante (Originalqualität)",
+    "3 Soloabenteuer (Originalqualität)"],
     
     ["Für wie viele Spieler ist die Abenteuer des Robin Hood?",
-    "für 2-4",
-    "für 2-5",
     "für 1-4",
+    "für 2-5",
+    "für 2-4",
     "für 1-5"]
 ];

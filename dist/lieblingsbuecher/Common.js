@@ -5,28 +5,15 @@ Die Abschnitte bitte mit Überschriften in GROSSBUCHSTABEN gliedern,
 Unterüberschriften normal. Vielen Dank!
 -----------------------------------------------------------------------------*/
 
-/* IMPORTE */
-
-importArticles({
-    type: "script",
-    articles: [
-        "MediaWiki:TabberTech.js",
-        "MediaWiki:Bewertung.js",
-        "MediaWiki:Functions.js",
-        "w:c:de.harry-grangers-test:MediaWiki:UserContribs.js",
-        "w:c:de.harry-grangers-test:MediaWiki:Summaries.js"
-    ]
-});
-
 /* WIKIANOTIFICATION (WIKI-WEITE BENACHRICHTIGUNGSBOX) */
-var WikiaNotificationMessage = 'Unser Buch des Monats für Dezember 2016: <u><a href="' + mw.util.wikiGetlink('Noahs_Kuss ... und plötzlich ist alles anders') + '">„Noahs Kuss ... und plötzlich ist alles anders“ von David Levithan</a></u>';
+var WikiaNotificationMessage = 'Unser Buch des Monats für Dezember 2016: <u><a href="' + mw.util.getUrl('Noahs_Kuss ... und plötzlich ist alles anders') + '">„Noahs Kuss ... und plötzlich ist alles anders“ von David Levithan</a></u>';
 var WikiaNotificationexpiry = 10;
 importScriptPage('WikiaNotification/code.js', 'dev');
 
 /*
  // Import [[MediaWiki:Onlyifuploading.js]] 
  
- if ( wgCanonicalSpecialPageName == "Upload" ) {
+ if ( mw.config.get('wgCanonicalSpecialPageName') == "Upload" ) {
     $('<script />', {
         type: 'text/javascript',
         src: '/index.php?title=MediaWiki:Onlyifuploading.js&action=raw&ctype=text/javascript&dontcountme=s'
@@ -96,23 +83,9 @@ function hideFade () {
 	$( function () {
 		$( window ).scroll( function () {
 			if ( $( this ).scrollTop () > ButtonStart ) {
-				switch(FadeSwitch) {
-					case 0:				
-						$( '#backtotop' ).show ();
-						break;
-					default:
-						$( '#backtotop' ).fadeIn ();
-						break;
-				}
+				$( '#backtotop' )[FadeSwitch ? 'fadeIn' : 'show']();
 			} else {
-				switch(FadeSwitch) {
-					case 0:				
-						$( '#backtotop' ).hide ();
-						break;
-					default:
-						$( '#backtotop' ).fadeOut ();
-						break;
-				}					
+				$( '#backtotop' )[FadeSwitch ? 'fadeOut' : 'hide']();					
 			}
 		});
 	});
@@ -127,7 +100,7 @@ function goToTop (){
 }
  
 function addBackToTop () {
-	if( skin == 'oasis' ) {
+	if( mw.config.get('skin') == 'oasis' ) {
 		$('<li />', {
 		    id: 'backtotop',
 		    css: {
@@ -168,49 +141,41 @@ if( typeof ToggleFading == "number" ) {
 
 /* BUCH DES MONATS / LATEST COMMENTS / "ICH LESE GERADE" */
  
-$(document).ready(function () {
-    importArticlesCallback([
-        {
-            page: 'w:c:de.harry-grangers-test:MediaWiki:Sidebar.js',
-            type: 'scripts',
-            callback: function() {
-			    //Buch des Monats
-			    curdate = new Date();
-			    curmonth = curdate.getMonth();
-			    curyear = curdate.getFullYear();
-			    monthNames = mw.config.get('wgMonthNames').slice(0); // clone
-			    monthNames.shift(); // remove unnecessary empty string as first item
-			    bdmNextMonth = monthNames[(curmonth + 1) % 12];
-			    bdmYear = curmonth == 11 ? curyear + 1 : curyear;
-			    bdmDescription = $('<div />').addClass('description').append(
-			        'Wähle das ',
-			        $('<b />').text('Buch des Monats'),
-			        ' für ' + bdmNextMonth + '!'
-			    );
-			    bdmButton = $('<a />')
-			                    .addClass('button')
-			                    .text('Abstimmen')
-			                    .attr('href', mw.util.wikiGetlink('Buch des Monats: Abstimmung für ' + bdmNextMonth + '_' + bdmYear));
-			    createSidebarModule('', bdmDescription.wrapAll('<div>').parent().html() + bdmButton.wrapAll('<div>').parent().html(), 'BdM', true);/*
+mw.hook('dev.sidebar').add(function () {
+    //Buch des Monats
+    curdate = new Date();
+    curmonth = curdate.getMonth();
+    curyear = curdate.getFullYear();
+    monthNames = mw.config.get('wgMonthNames').slice(0); // clone
+    monthNames.shift(); // remove unnecessary empty string as first item
+    bdmNextMonth = monthNames[(curmonth + 1) % 12];
+    bdmYear = curmonth == 11 ? curyear + 1 : curyear;
+    bdmDescription = $('<div />').addClass('description').append(
+        'Wähle das ',
+        $('<b />').text('Buch des Monats'),
+        ' für ' + bdmNextMonth + '!'
+    );
+    bdmButton = $('<a />')
+                    .addClass('button')
+                    .text('Abstimmen')
+                    .attr('href', mw.util.getUrl('Buch des Monats: Abstimmung für ' + bdmNextMonth + '_' + bdmYear));
+    createSidebarModule('', bdmDescription.wrapAll('<div>').parent().html() + bdmButton.wrapAll('<div>').parent().html(), 'BdM', true);/*
 
-                //Latest Comments
-                if(!isUserpage()) {
-                    getActivityComments(function(comments) {
-                        latestCommentsBox(comments);
-                    });
-                }*/
- 
-                //Aktuelles Buch
-                if(isUserpage() && !!$('#currentBook').length) {
-                    var currentBook = $('#currentBook');
-                    $('#currentBook').detach();
-                    createSidebarModule(
-                        'Ich lese gerade',
-                        $('<div />').addClass('book').html(currentBook .find('[data-book]').html()),
-                        'current-book'
-                    );
-                }
-            }
-        }
-    ]);
+    //Latest Comments
+    if(!isUserpage()) {
+        getActivityComments(function(comments) {
+            latestCommentsBox(comments);
+        });
+    }*/
+
+    //Aktuelles Buch
+    if(isUserpage() && !!$('#currentBook').length) {
+        var currentBook = $('#currentBook');
+        $('#currentBook').detach();
+        createSidebarModule(
+            'Ich lese gerade',
+            $('<div />').addClass('book').html(currentBook .find('[data-book]').html()),
+            'current-book'
+        );
+    }
 });

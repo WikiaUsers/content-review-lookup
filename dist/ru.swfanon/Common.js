@@ -777,19 +777,34 @@ function hideContentSub(){
 	}
 }
 
+// выполнение при готовности страницы
+$(document).ready(function()
+{ 
+	// добавление возможности закрыть предупреждающее окно при щелчке по нему
+    $('div.mw-editinginterface, div.mw-newarticletext, div.warningbox, div.mw-warning-with-logexcerpt').click(function()
+	{
+	  $(this).css('display', 'none');
+	});
+});	
+
 // если страница редактируется
 if (wgAction == 'edit' || wgAction == 'submit') 
 {
 	$.when( mw.loader.using( 'ext.wikiEditor' ), $.ready).then( SetToolbar );
-	
-    importScript('MediaWiki:Wikificator.js');
+
     // добавление заголовка редактируемой статьи
 	$('#content').prepend('<h3 class="" style="text-align: center;padding: 5px 0 2px;margin: 0;margin-bottom: 5px;">'+wgTitle+'</h3>');
 }
 
 function SetToolbar() 
 {
-
+	// кнопка-образец, где Т1 -- любой текст, вставляемый ДО курсора; Т2 -- после курсора; Т3 -- уникальный ID кнопки; Т4 -- всплывающая подсказка кнопки
+    /*
+	$('#wikiEditor-section-main div.group-insert').prepend(
+	'<span onclick="InsertText(\'Т1\',\'Т2\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="Т3"><a class="oo-ui-buttonElement-button" role="button" title="Т4" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon" ></span></a></span>'
+	);
+    */	
+	  
 	$('#wikiEditor-section-main div.group-insert').prepend(
 		'<span onclick="InsertText(\'«\',\'»\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_angle_qoutation_marks"><a class="oo-ui-buttonElement-button" role="button" title="Кавычки-ёлочки" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon" ></span></a></span>'+
 		'<span onclick="InsertText(\'({{lang-en|\',\'}})\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_lang-en"><a class="oo-ui-buttonElement-button" role="button" title="Шаблон Lang-en" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon"></span></a></span>'+
@@ -823,19 +838,14 @@ function SetToolbar()
 		})
 }
 
-
-// выполнение при готовности страницы
-$(document).ready(function()
-{ 
-	// добавление возможности закрыть предупреждающее окно при щелчке по нему
-    $('div.mw-editinginterface, div.mw-newarticletext, div.warningbox, div.mw-warning-with-logexcerpt').click(function()
-	{
-	  $(this).css('display', 'none');
-	});
-});	
-
 // функция вставки текста при щелчке по кнопке
-function InsertText( sPre, sPost){
-  $.wikiEditor.modules.toolbar.fn.doAction($('span.tool').data('context'), 
-	{type: 'encapsulate', options: {pre: sPre, post: sPost} });
+function InsertText( sPre, sPost)
+{
+  $.wikiEditor.modules.toolbar.fn.doAction($('span.tool').data('context'), {type: 'encapsulate', options: {pre: sPre, post: sPost} });
+}
+
+// закрытие панели [Больше+]
+function ShowEditTools()
+{
+  $('div.mw-editTools, #EditTools_LayerBG').fadeIn(150);
 }

@@ -27,12 +27,12 @@ importArticles({
         'u:dev:AjaxRC/code.js',
         'u:dev:AllPagesHideRedirect/code.js',
         'u:dev:AutoEditDropdown/code.js',
-        'u:dev:BackToTopButton/code.js',
+        'u:dev:MediaWiki:BackToTopButton/code.js',
         'u:dev:Countdown/code.js',
         'u:dev:ExternalImageLoader/code.js',
         'u:dev:ListFiles/code.js', // ListFiles from Dev Wiki
         'u:dev:PurgeButton/code.js',
-        'u:dev:ReferencePopups/code.js',
+        'u:dev:MediaWiki:ReferencePopups/code.js',
         'u:dev:SignatureCheck/code.js',
         'u:dev:ShowHide/code.js',
     ]

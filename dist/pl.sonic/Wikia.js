@@ -15,6 +15,7 @@ themes = document.getElementsByClassName("komunikat")[0].classList.item(1);
     for(j; j < len2; j++) {
         tabela[j].className += " "+themes+""; 
         }
+    document.getElementsByClassName("karta")[0].className += " "+themes+""; 	
     }
-    document.getElementsByClassName("karta")[0].className += " "+themes+""; 
+    
 });

@@ -16,7 +16,7 @@ var $editTab = $( '#ca-edit' );
 if ( !$editTab.length ) {
 	$editTab = $( '#ca-viewsource' );
 }
-var $spriteEditLink = $( '<a>' ).text( 'Edit sprite' ).attr( 'href',
+var $spriteEditLink = $( '<a>' ).text( 'Modifica sprite' ).attr( 'href',
 	mw.util.getUrl( editPage, { spriteaction: 'edit' } )
 );
 var $spriteEditTab = $( '<li>' ).attr( 'id', 'ca-spriteedit' ).append(

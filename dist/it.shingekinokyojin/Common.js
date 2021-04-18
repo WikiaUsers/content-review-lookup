@@ -163,7 +163,7 @@ function owwsitesearch(f) {
 addOnloadHook(toggleInit);
 
 // <syntax>
-/* Replaces {{USERNAME}} with the name of the user browsing the page.
+/* Replaces USERNAME with the name of the user browsing the page.
    Requires copying Template:USERNAME.
 
 function UserNameReplace() {
@@ -172,7 +172,7 @@ function UserNameReplace() {
 }
 addOnloadHook(UserNameReplace);
 */
-/* End of the {{USERNAME}} replacement */
+/* End of the USERNAME replacement */
 
 // BEGIN JavaScript title rewrite -- jQuery version and new wikia skin fixes by Grunny
 /*

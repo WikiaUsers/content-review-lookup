@@ -14,10 +14,12 @@
         elem: 0,
         categories: {
             'Game series': {
+                'Ace Attorney images': 'Ace Attorney',
                 'Resident Evil images': 'Resident Evil',
                 'Street Fighter images': 'Street Fighter',
                 'Strider images': 'Strider',
                 'Monster Hunter images': 'Monster Hunter',
+                'Dead Rising images': 'Dead Rising',
                 'Devil May Cry images': 'Devil May Cry',
                 'Mega Man images': 'Mega Man',
                 'Darkstalkers images': 'Darkstalkers',

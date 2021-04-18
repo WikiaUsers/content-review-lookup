@@ -1,1 +1,0 @@
-Welcome to Lord Canos's and Tydogg99's wiki. If you feel like dying make fun of one of us or an admin. Please read our rules.

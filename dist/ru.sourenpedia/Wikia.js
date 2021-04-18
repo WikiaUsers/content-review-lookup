@@ -82,3 +82,9 @@ importArticles({
         'u:dev:MediaWiki:ToDoList.js',
     ]
 });
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ModernLeaderboard.js',
+    ]
+});

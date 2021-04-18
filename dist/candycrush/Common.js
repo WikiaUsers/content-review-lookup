@@ -1,31 +1,14 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-
-// UserTags
-window.UserTagsJS = {
-	modules: {},
-	tags: {}
-};
-UserTagsJS.modules.inactive = 90;
-UserTagsJS.modules.newuser = true;
-UserTagsJS.modules.autoconfirmed = true;
-// NOTE: bannedfromchat displays in Oasis but is not a user-identity group so must be checked manually
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'threadmoderator', 'patroller', 'content-moderator', 'rollback', 'sysop', 'blocked', 'bot', 'bot-global', 'staff', 'vstf', 'helper'];
-UserTagsJS.modules.metafilter = {
-	sysop: ['bot'],
-	threadmoderator: ['sysop', 'bureaucrat', 'bot'],
-	rollback: ['content-moderator', 'sysop', 'bureaucrat', 'founder', 'bot'],
-	'content-moderator': ['sysop', 'bureaucrat', 'founder', 'bot'],
-	bot: ['bot-global']
-};
-
 // AjaxRC
-AjaxRCRefreshText = 'Auto-refresh';
-AjaxRCRefreshHoverText = 'Automatically refreshes the page when new edits occur.';
-ajaxPages = ["Special:RecentChanges", "Special:WikiActivity", "Special:Log", "Special:Images", "Special:Videos", "Special:Contributions", "Special:AbuseLog"];
+window.ajaxSpecialPages = ["RecentChanges", "Log", "NewFiles", "Contributions", "AbuseLog"];
+$.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
+    'ajaxrc-refresh-text': 'Auto-refresh',
+    'ajaxrc-refresh-hover': 'Enable page auto-refresh',
+}}}}});
 
 // AjaxBatchDelete
-batchDeleteDelay = 1000;
+window.batchDeleteDelay = 1000;
 
 // ArticleRating
 window.ArticleRating = {
@@ -37,38 +20,11 @@ window.ArticleRating = {
     starStroke: '#000'
 };
 
-//Centralizing WAM log
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
-
-// DynamicImages
-DynamicImages = {
-    gifImages: true,
-    gifGalleryImages: false
-};
-
-// Standard Edit Summary
-// Create the "dev" namespace if it doesn't exist already:
- 
-window.dev = window.dev || {};
- 
-// Create the sub-namespace for this addon and set some options:
- 
-window.dev.editSummaries = {
-     css: '#stdSummaries { ... }',
-     select: 'MediaWiki:StandardEditSummary'
-};
-
 // BackToTopButton default settings
-var Speed = 600;
-var Start = 800;
+window.BackToTopSpeed = 600;
+window.BackToTopStart = 800;
 
-// RevealAnonIP
-window.RevealAnonIP = {
-    permissions : ['threadmoderator', 'rollback', 'content-moderator', 'sysop', 'bureaucrat', 'staff', 'soap', 'helper']
-};
-
+// Timer
 function updatetimer(i) {
     var now = new Date();
     var then = timers[i].eventdate;

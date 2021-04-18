@@ -1,5 +1,5 @@
 //
-// Last Modified: 8th January 2015, 23:10
+// Last Modified: 17th April 2021, 18:05
 // This is the wiki-wide javascript file.
 // Anything below will be loaded on all wiki-styles.
 //
@@ -14,10 +14,7 @@
 (function (window, $, mw) {
 	"use strict";
   
-	// Fix images on threads (image line breaks and looks messy)
-	$(".msg-body img").unwrap();
-        
-        // Custom edit buttons
+	// Custom edit buttons
 	if (mw.toolbar) {
 		mw.toolbar.addButton(
 			'https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png',
@@ -53,17 +50,15 @@
 		);
 	}
 
-        // Append a notice after infobox to help users find the main article.
-        if(mw.config.get("wgNamespaceNumber") === 112) {
-                var name = wgPageName.slice(8);
-                var title = name.replace(/_/g," ");
-        	$("div#mw-content-text > table.mobile-ibox").after("<h3>Return to <a href='/wiki/"+name+"'>"+title+"</a></h3>");
-        }
+	// Append a notice after infobox to help users find the main article.
+	if(mw.config.get("wgNamespaceNumber") === 112) {
+		var name = wgPageName.slice(8);
+		var title = name.replace(/_/g," ");
+		$("div#mw-content-text > table.mobile-ibox").after(`<h3>Return to <a href='/wiki/${name}'>${title}</a></h3>`);
+	}
 
-        // Add custom class for styling long list of refs
-        if ($('.references li').length > 9) {
-           $('.references').addClass('compactreferences');
-        }
+	// Add custom class for styling long list of refs
+	if ($('.references li').length > 9) { $('.references').addClass('compactreferences'); }
 }(window, jQuery, mediaWiki));
 
 // This code snippet is for all sysop-only tools.
@@ -72,25 +67,20 @@
 if (jQuery.inArray("sysop", wgUserGroups) !=-1) {
     mw.util.addPortletLink("AccountNavigation", "/wiki/Special:AdminDashboard", "Dashboard", "p-dashboard");
     mw.util.addPortletLink("AccountNavigation", "/wiki/Special:UserRights", "Manage Rights", "p-userrights");
-    importScriptPage('AjaxBatchDelete/code.js', 'dev');
-    importScriptPage('CacheCheck/code.js', 'dev');
-}
-
-// Load forum changes
-if(wikiaPageType === "forum") {
-    importScriptPage("MediaWiki:Common.js/Forum.js");
+    importArticles({
+		type: "script",
+		articles: [
+			"u:dev:MediaWiki:AjaxBatchDelete/code.js",
+			"u:dev:MediaWiki:CacheCheck/code.js"
+		]
+	});
 }
 
 // AjaxRC
-window.ajaxPages = ["Special:WikiActivity","Special:Log","Special:RecentChanges"];
+window.ajaxSpecialPages = ["Log", "RecentChanges"];
 window.ajaxIndicator = 'https://images.wikia.nocookie.net/__cb20100609110347/software/images/a/a9/Indicator.gif';
 window.AjaxRCRefreshText = 'Auto Refresh';
 window.AjaxRCRefreshHoverText = 'Silently refreshes the contents of this page every 60 seconds without requiring a full reload';
-
-// RevealAnonIP
-window.RevealAnonIP = {
-    permissions : ['user']
-};
 
 // ArchiveTool
 window.archiveListTemplate = 'ArchiveList';
@@ -107,20 +97,27 @@ window.MessageWallUserTags = {
         "Damage3245"        : "Admin"
     }
 };
+
 // This imports various scripts that help the wiki.
 // Non-local scripts load first for interoperability.
 importArticles({
 	type: "script",
 	articles: [
-		"u:dev:ListFiles/code.js",
-		"u:dev:ArchiveTool/code.js",
-                "u:dev:DiscordIntegrator/code.js",
-		"u:dev:RevealAnonIP/code.js",
-		"u:dev:NullEditButton/code.js",
-                "u:dev:MessageWallUserTags/code.js",
-		"u:dev:ReferencePopups/code.js",
-		"u:dev:User:UltimateSupreme/AjaxRollback.js",
-		"u:dev:AjaxRC/code.js",
+		"u:dev:MediaWiki:DiscussionsFeed.js",
+		"u:dev:MediaWiki:WhatLinksHere/code.js",
+		"u:dev:MediaWiki:WikiActivity.js",
+		"u:dev:MediaWiki:ListFiles/code.js",
+		"u:dev:MediaWiki:ArchiveTool/code.js",
+		"u:dev:MediaWiki:DiscordIntegrator/code.js",
+		"u:dev:MediaWiki:NullEditButton/code.js",
+		"u:dev:MediaWiki:MessageWallUserTags/code.js",
+		"u:dev:MediaWiki:ReferencePopups/code.js",
+		"u:dev:MediaWiki:AnchoredRollback/code.js",
+		"u:dev:MediaWiki:FileUsageAuto-update/code.js",
+		"u:dev:MediaWiki:MassCategorization/code.js",
+		"u:dev:MediaWiki:MassEdit/code.js",
+		"u:dev:MediaWiki:MassRename/code.js",
+		"u:dev:MediaWiki:AjaxRC/code.js",
 		"u:naruto:MediaWiki:Gadget-AcountNav.js",
 		"MediaWiki:Common.js/FixUploader.js"
 	]

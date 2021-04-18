@@ -107,6 +107,8 @@ Date.parseISO8601 = function(text) {
 	
 					// Canonicalise back to space instead of underscores
 					username = (username && username.replace(/_/g, ' '));
+				} else if (namespace === 'UserProfileActivity') {
+					username = mw.config.get('profileUserName');
 				} else if (namespace !== 'Following') { // Following is self only
 					return; // Some other special page.
 				}
@@ -263,13 +265,21 @@ Date.parseISO8601 = function(text) {
 		// ResourceLoader as well.
 		var coreDeps = ['mediawiki.util'];
 		mw.loader.load(coreDeps, null, true);
-		if (config.debug !== 'noload') {
-			mw.loader.using(coreDeps, function() {
-				window.importArticles({ type:'script', articles: importList });
-			});
-		} else {
-			config.imports = importList;
-		}
+		
+		var interval = setInterval(function () {
+			if (!$('#userProfileApp').length) {
+				return;
+			}
+			clearInterval(interval);
+			
+			if (config.debug !== 'noload') {
+				mw.loader.using(coreDeps, function() {
+					window.importArticles({ type:'script', articles: importList });
+				});
+			} else {
+				config.imports = importList;
+			}
+		});
 	
 	});
 	// Done.

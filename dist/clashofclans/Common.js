@@ -132,7 +132,8 @@
         'w:c:clashofclans:MediaWiki:Common.js/Protection.js',
         'w:c:clashofclans:MediaWiki:Common.js/AvailableBuildings.js',
         'w:c:clashofclans:MediaWiki:Common.js/GoldPass.js',
-        'w:c:clashofclans:MediaWiki:Common.js/HeroSkins.js'
+        'w:c:clashofclans:MediaWiki:Common.js/HeroSkins.js',
+        'w:c:clashofclans:MediaWiki:Common.js/Toggle.js'
     ];
     // Use Wikia's importArticles() function to load JavaScript files
     window.importArticles({

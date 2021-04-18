@@ -105,7 +105,7 @@ $(window).load(function() {
             ret.push({
                 name: p[x++],
                 bclass: p[x++],
-                version: parseFloat(p[x++])});
+                raceid: parseFloat(p[x++])});
         }
         return ret;
     },
@@ -189,7 +189,10 @@ $(window).load(function() {
         $.each(dmgMods, function (i, v) {
             var tmp = '#bestiary_creature_' + v;
             var val = creaturedata[v] == '0%' ? 0 : (parseInt(creaturedata[v], 10) || 100);
-            if (val === 0) {
+            if (val < 0) {
+            	$(tmp).attr('class', 'bestiary_dmg_immune');
+                $(tmp).parent().attr('title', 'Sensitive to ' + dmgNames[i] + ': ' + val + '% (gets healed)');
+            } else if (val === 0) {
                 $(tmp).attr('class', 'bestiary_dmg_immune');
                 $(tmp).parent().attr('title', 'Sensitive to ' + dmgNames[i] + ': ' + val + '% (immune)');
             } else if (val < 100) {
@@ -202,8 +205,12 @@ $(window).load(function() {
                 $(tmp).attr('class', 'bestiary_dmg_weak');
                 $(tmp).parent().attr('title', 'Sensitive to ' + dmgNames[i] + ': ' + val + '% (weak)');
             }
-            val += val > 100 ? 5 : 0; //Adds 5 if weak to account for 1px border between neutral and weak. 
-            $(tmp).width(21 + val/5);
+            if (val < 0) {
+            	$(tmp).width(10);
+            } else {
+	            val += val > 100 ? 5 : 0; //Adds 5 if weak to account for 1px border between neutral and weak. 
+	            $(tmp).width(21 + val/5);
+            }
         });
         
         //
@@ -273,8 +280,8 @@ $(window).load(function() {
     $.each(bestiary_difficulty, function (i, v) {
        bestiary_creature_baseinfo = bestiary_creature_baseinfo.concat(bestiary_get_creature_list(v)); 
     });
-    bestiary_creature_baseinfo.sort(function(a, b) {  //Sort by version 
-        return a.version - b.version;
+    bestiary_creature_baseinfo.sort(function(a, b) {  //Sort by race_id 
+        return a.raceid - b.raceid;
     });
     $.each(bestiary_creature_baseinfo, function (i, v) {
         bestiary_classes[v.bclass] += 1; 

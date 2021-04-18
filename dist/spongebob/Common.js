@@ -384,6 +384,8 @@ window.MessageWallUserTags = {
 
         'FlyingDutchmen': 'Rollback',
         'TheJasbre202': 'Rollback',
+        'The gamer 987654321': 'Rollback',
+        'SpongyFanatic2021': 'Rollback'
     }
 };
 

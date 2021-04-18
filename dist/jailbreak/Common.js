@@ -17,7 +17,6 @@ window.MessageWallUserTags = {
         'Marktheartest': 'Bureaucrat • Administrator',
         'LordDuncan7': 'Bureaucrat • Administrator',
         //Admins
-        'Jdoggie14': 'Administrator',
         'DiscordResistance': 'Administrator',
         'AmyD1': 'Administrator',
         'AppleNoo69': 'Administrator',
@@ -38,6 +37,7 @@ window.MessageWallUserTags = {
         'Phycotox': 'Former Staff',
         'StormDragon456': 'Former Staff',
         'Evita128': 'Former Staff',
+        'Jdoggie14': 'Former Staff',
         //Wiki manager
         'Sitb': 'Wiki Manager'
         

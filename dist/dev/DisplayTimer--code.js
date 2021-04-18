@@ -1,12 +1,12 @@
 /* [[DisplayTimer]] - adds a UTC display clock with purge + null edit function */
 
 /*jslint browser, single, long */
-/*global $, mw */
+/*global jQuery, mediaWiki */
 
-$(function () {
+(function ($, mw) {
     'use strict';
 
-    // Double run protection.
+    // double run protection
     if ($('#displayTimer, #showdate, #DisplayClockJS, #display-timer').length) {
         return;
     }
@@ -23,52 +23,68 @@ $(function () {
     };
 
 
-    var updateDateInterval;
-    var $parent = $('<li>').attr('id', 'displayTimer').css('direction', 'ltr');
-    var $node = $('<a>').attr({
-        title: msg.tooltip,
-        href: '?action=purge'
-    }).appendTo($parent);
+    var clockNode;
+    var updateClockInterval;
 
-    function updateDate() {
-        $node.text(new Date().toUTCString().slice(5, -3) + '(UTC)');
+    function updateClock() {
+        clockNode.textContent = new Date().toUTCString().slice(5, -3) + '(UTC)';
     }
 
+    function stopClock(cancel) {
+        if (cancel) {
+            document.removeEventListener('visibilitychange', startClock);
+        }
+
+        clearInterval(updateClockInterval);
+    }
+
+    function startClock() {
+        stopClock();
+
+        if (document.visibilityState === 'visible') {
+            updateClock();
+            updateClockInterval = setInterval(updateClock, 1000);
+        }
+    }
+
+
     function nullEditPage() {
-        $node.text(msg.nulledit);
+        clockNode.textContent = msg.nulledit;
+
         $.post(mw.util.wikiScript('api'), {
             action: 'edit',
             format: 'json',
             title: mw.config.get('wgPageName'),
-            token: mw.user.tokens.get('editToken'),
+            token: mw.user.tokens.get('csrfToken'),
             prependtext: ''
         }).always(function (data) {
             if (data.edit && data.edit.result === 'Success') {
-                $node.text(msg.nulleditsuccess);
+                clockNode.textContent = msg.nulleditsuccess;
                 location.reload(true);
             } else {
-                $node.text(msg.nulleditfail);
+                clockNode.textContent = msg.nulleditfail;
             }
         });
     }
 
     function purgePage() {
-        $node.text(msg.purge);
+        clockNode.textContent = msg.purge;
+
         $.post(mw.util.wikiScript('api'), {
             titles: mw.config.get('wgPageName'),
             action: 'purge',
             format: 'json'
         }).always(function (data) {
             if (data.purge && data.purge[0].purged === '') {
-                $node.text(msg.purgesuccess);
+                clockNode.textContent = msg.purgesuccess;
                 location.reload(true);
             } else {
-                $node.text(msg.purgefail);
+                clockNode.textContent = msg.purgefail;
             }
         });
     }
 
-    $node.on('click', function (event) {
+    function clockClick(event) {
         event.preventDefault();
 
         if (!mw.config.get('wgIsArticle')) {
@@ -76,49 +92,68 @@ $(function () {
             return;
         }
 
-        clearInterval(updateDateInterval);
+        stopClock(true);
 
         if (event.shiftKey) {
             mw.loader.using('mediawiki.util', nullEditPage);
         } else {
             mw.loader.using('mediawiki.util', purgePage);
         }
-    });
-
-    if (mw.config.get('skin') === 'oasis') {
-        var oasisCSS = {
-            border: 0,
-            marginInlineStart: 'auto',
-            order: 1
-        };
-
-        // for oasis 1.19
-        oasisCSS.float = document.dir === 'rtl' ? 'left' : 'right';
-
-        $parent.css(oasisCSS).appendTo('.toolbar > .tools');
-    } else {
-        $parent.css('text-transform', 'none').prependTo('#p-personal ul');
     }
 
-    updateDate();
-    updateDateInterval = setInterval(updateDate, 1000);
-    $parent = null;
 
+    function i18n() {
+        // load translations via i18n-js
+        if (!(window.dev && window.dev.i18n && window.dev.i18n.loadMessages)) {
+            mw.loader.load('https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:I18n-js/code.js&only=scripts');
+        }
 
-    // load translated messages via i18n-js
-    if (!(window.dev && window.dev.i18n && window.dev.i18n.loadMessages)) {
-        mw.loader.load("https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js");
-    }
+        mw.hook('dev.i18n').add(function (i18njs) {
+            i18njs.loadMessages('DisplayTimer').done(function (i18n) {
+                // update messages object w/ loaded translations
+                Object.keys(msg).forEach(function (key) {
+                    msg[key] = i18n.msg(key).plain();
+                });
 
-    mw.hook('dev.i18n').add(function (i18njs) {
-        i18njs.loadMessages('DisplayTimer').done(function (i18n) {
-            // update messages object w/ loaded translations
-            Object.keys(msg).forEach(function (key) {
-                msg[key] = i18n.msg(key).plain();
+                // update existing tooltip
+                if (clockNode) {
+                    clockNode.title = msg.tooltip;
+                }
             });
-
-            // update existing tooltip
-            $node.attr('title', msg.tooltip);
         });
-    });
-});
+    }
+
+    function main() {
+        var $container = $('<li>');
+        var $clock = $('<a>').on('click', clockClick).attr({
+            title: msg.tooltip,
+            href: '?action=purge'
+        });
+
+        clockNode = $clock[0];
+
+        switch (mw.config.get('skin')) {
+        case 'oasis':
+            $container.css({
+                border: 0,
+                marginInlineStart: 'auto',
+                order: 1
+            }).appendTo('.toolbar > .tools');
+            break;
+        case 'hydra':
+        case 'hydradark':
+            $container = $('<div>').addClass('netbar-box right').insertAfter('#netbar .netbar-spacer');
+            break;
+        default: // vector, monobook, etc.
+            $container.css('text-transform', 'none').prependTo('#p-personal ul');
+        }
+
+        $container.attr('id', 'displayTimer').css('direction', 'ltr').append($clock);
+
+        startClock();
+        document.addEventListener('visibilitychange', startClock);
+    }
+
+    $(main);
+    i18n();
+}(jQuery, mediaWiki));

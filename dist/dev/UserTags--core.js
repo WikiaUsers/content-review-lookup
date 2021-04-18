@@ -64,6 +64,11 @@ if (typeof(Object.create) !== 'function') {
 window.dev = $.extend(true, window.dev, { UserTags: {} });
 /*global dev */
 
+// Remove broken cache local storage key introduced due to accident
+// @TODO remove after a few days (like at most a week or something)
+if (mw.storage.get('UserTags-OasisTagsModule-TagDataCache') === '[object Object]') {
+	mw.storage.remove('UserTags-OasisTagsModule-TagDataCache');
+}
 
 //
 // Logger component
@@ -1519,10 +1524,10 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
             }
             // Cache data for reuse to avoid multiple queries for the same thing
             if (!fromCache && mw.storage) {
-                mw.storage.set(this._storageKey, {
+                mw.storage.set(this._storageKey, JSON.stringify({
                     expiry: Date.now() + 36e5, // +1hr
-                    data: JSON.stringify(json)
-                });
+                    data: json
+                }));
             }
             return {
                 tags: tagData,

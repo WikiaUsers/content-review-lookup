@@ -106,7 +106,8 @@
         'MediaWiki:Common.js/Protection.js',
         'MediaWiki:Common.js/AvailableBuildings.js',
         'MediaWiki:Common.js/GoldPass.js',
-        'MediaWiki:Common.js/QuickDiff.js'
+        'MediaWiki:Common.js/QuickDiff.js',
+        'MediaWiki:Common.js/Toggle.js'
         //for global "w:c:clashofclans:"
     ];
     // Use Wikia's importArticles() function to load JavaScript files

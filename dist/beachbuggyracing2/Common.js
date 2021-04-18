@@ -2,16 +2,8 @@
 
 window.UserTagsJS = {
 	modules: {},
-	tags: {},
+	tags: {
+		rollback: { u:'Rollback tag'},
+	},
 	oasisPlaceBefore: ''
 };
-
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		// group: { associated tag data }
-		founder: { u:'Founder' },
-		featured: { u:'Featured' },
-		rollbacks: { u:'Rollback' }
-	}
-}

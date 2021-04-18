@@ -210,12 +210,3 @@ function checktimers() {
     }
 }
 addOnloadHook(checktimers);
-
-importArticles({
-    type: 'script',
-    articles: [
-        // ...
-        'w:c:dev:ReferencePopups/code.js',
-        // ...
-    ]
-});

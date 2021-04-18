@@ -18,12 +18,15 @@ UserTagsJS.extensions.mwGroups = (function($, document) {
         _storageKey: 'UserTags-mwGroups-TagDataCache',
         _groupRegex: /^group-(.+)-member$/,
         start: function(config, username, logger/*, lang*/) {
-            // NOTE: bannedfromchat displays in Oasis but is not a user-identity group
-            var groups = ['bannedfromchat', 'blocked', 'bot', 'bureaucrat', 'chatmoderator', 'checkuser', 'content-moderator', 'council', 'helper', 'rollback', 'staff', 'sysop', 'threadmoderator', 'vanguard', 'global-discussions-moderator', 'content-volunteer', 'wiki-manager', 'content-team-member', 'soap'];
+            var groups = ['blocked', 'bot', 'bureaucrat', 'checkuser', 'content-moderator', 'council', 'helper', 'rollback', 'staff', 'sysop', 'threadmoderator', 'vanguard', 'global-discussions-moderator', 'content-volunteer', 'wiki-manager', 'content-team-member', 'soap'];
             if (!$.isArray(config)) {
-                config = groups;
-            } else if (window.UserTagsMergeMWGroups === true) {
-                config = _.union(config, groups);
+				if (!$.isPlainObject(config)) {
+				    config = groups;
+				} else if (config.merge === true) {
+				    config = config.groups.concat(groups);
+				} else {
+				    config = config.groups;
+				}
             }
             // Convert array into a hash
             var set = {}, sanity = /^[A-Za-z0-9\-]+$/, messages = [];

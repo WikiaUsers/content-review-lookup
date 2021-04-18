@@ -68,6 +68,7 @@ UserTagsJS.modules.mwGroups = [
 ];
 UserTagsJS.modules.userfilter = {
        'Law of Royale': ['founder'],
+       'Detective Wasabi': ['Admin'],
        'PanettoniTFG': ['bureaucrat','sysop']
     };
 UserTagsJS.modules.metafilter = {

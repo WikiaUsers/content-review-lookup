@@ -1,4 +1,4 @@
-// DONT TOUCH THIS PAGE -SEAN
+// DO NOT TOUCH THIS PAGE UNLESS YOU KNOW WHAT YOU'RE DOING - A message from the Galaxy Wiki Staff™
  
 /* Auto updating recent changes opt-in
   * See w:c:dev:AjaxRC for info & attribution 
@@ -16,22 +16,22 @@ window.ajaxPages = [
 // back to top button
 window.BackToTopModern = true;
 
-
 // background parallax animation | turn down velocity to make it more subtle
-var velocity = 0.05;
+var velocity = 0.1;
 
-function update(){ 
-    var pos = $(window).scrollTop(); 
+$(window).scroll(function() {
+	var pos = $(window).scrollTop(); 
     $('body.background-image').each(function() { 
-        var $element = $(this);
-        // subtract some from the height b/c of the padding
+    	var initY = $(this).offset().top
         var height = $(window).height();
-        $(this).css('backgroundPosition', '50% ' + Math.round((height - pos) * velocity) + 'px'); 
-    }); 
-}
-
-update()
-$(window).bind('scroll', update);
+        var endY = initY + $(this).height()
+        
+        var diff = pos - initY;
+        var ratio = Math.round((diff / height) * 100)
+        //console.log('Position: ' + pos + ' | diff: ' + diff + ' | ratio: ' + ratio + ' | BGPos: ' + parseInt(-(ratio * velocity)))
+        $(this).css('backgroundPosition', 'center ' + parseInt(-(ratio * velocity)) + 'px');
+    });
+})
 
 // Code below was made by Smallketchup82 for the animation of templates with links. On clicking the link, check if tab is focused. If not, check every 100 miliseconds if the tab is focused, if it is focused, add the class which runs the CSS transition.
 var el = document.querySelector('.TemplateRevision.UnderlineStyle');

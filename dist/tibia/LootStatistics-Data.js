@@ -18,10 +18,26 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+// Changes made on April 15, 2021
+'Cobra Vizier': '12.65.10733 (2)',
+'Cobra Assassin': '12.65.10733 (2)',
+'Cobra Scout': '12.65.10733 (2)',
+'Brachiodemon': '12.65.10733 (2)',
+'Infernal Demon': '12.65.10733 (2)',
+'Infernal Phantom': '12.65.10733 (2)',
+'Bony Sea Devil': '12.65.10733 (2)',
+'Turbulent Elemental': '12.65.10733 (2)',
+'Capricious Phantom': '12.65.10733 (2)',
+'Many Faces': '12.65.10733 (2)',
+'Druid\'s Apparition': '12.65.10733 (2)',
+'Knight\'s Apparition': '12.65.10733 (2)',
+'Paladin\'s Apparition': '12.65.10733 (2)',
+'Sorcerer\'s Apparition': '12.65.10733 (2)',
+'Distorted Phantom': '12.65.10733 (2)',
 // Changes made on December 01, 2020
-'Brachiodemon': '12.60.10468',
-'Infernal Demon': '12.60.10468',
-'Infernal Phantom': '12.60.10468',
+//'Brachiodemon': '12.60.10468',
+//'Infernal Demon': '12.60.10468',
+//'Infernal Phantom': '12.60.10468',
 'Cloak of Terror': '12.60.10468',
 'Courage Leech': '12.60.10468',
 'Vibrant Phantom': '12.60.10468',
@@ -31,9 +47,9 @@ window.loot_parser_data = {
 'Mould Phantom': '12.50.10135',
 // Changes made on July 28, 2020
 'Ancient Lion Knight': '12.10.10043', //Now uses RC instead of regular
-'Cobra Assassin': '12.40.10043',
-'Cobra Scout': '12.40.10043',
-'Cobra Vizier': '12.40.10043',
+//'Cobra Assassin': '12.40.10043',
+//'Cobra Scout': '12.40.10043',
+//'Cobra Vizier': '12.40.10043',
 // Changes made on March 24, 2020
 // Documented here: https://www.tibia.com/forum/?action=announcement&announcementid=98 (+ post #38897080)
 'Cave Devourer': '12.31.9618',

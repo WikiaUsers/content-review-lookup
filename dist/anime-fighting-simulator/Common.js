@@ -5,3 +5,4 @@ importArticles({
         "u:dev:MediaWiki:User Avatar Finder/code.js"
     ]
 });
+TBL_GROUP = "roblox-en";

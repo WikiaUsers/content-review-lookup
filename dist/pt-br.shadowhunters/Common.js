@@ -17,6 +17,7 @@ importArticles({
         'u:dev:MediaWiki:AddBlockUserTag/code.js',
         'u:dev:MediaWiki:AjaxRename/code.js',
         'u:dev:MediaWiki:DiscussionsFeed.js',
+        'u:dev:MediaWiki:UploadMultipleFiles.js',
     ]
 });
 

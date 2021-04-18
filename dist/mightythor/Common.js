@@ -464,7 +464,7 @@ icon: 'https://images.wikia.nocookie.net/marveldatabase/images/8/88/Comic_List.p
 action: {
 type: 'encapsulate',
 options: {
-pre: "{{Marvel Database:Volume Template\r| volume_logo             = \r| PreviousVol             = \r| NextVol                 = \r| publisher               = Marvel\r| main_volume             = \r| status                  = Active; Canceled; Finished; Announced\r| format                  = Limited Series; Ongoing Series; One Shot; Annual; Handbook; TPB\r| type                    = Solo; Team; Team-Up; Event; Adaptation\r| genres                  = Superhero\r| featured                = \r\r| SeeAlso                 = \r| MarvelUnlimited     = \r| Comixology          = \r\r",
+pre: "{{Marvel Database:Volume Template\r| volume_logo             = \r| PreviousVol             = \r| NextVol                 = \r| publisher               = Marvel Comics\r| main_volume             = \r| status                  = Active; Canceled; Finished; Announced\r| format                  = Limited Series; Ongoing Series; One Shot; Annual; Handbook; TPB\r| type                    = Solo; Team; Team-Up; Event; Adaptation\r| genres                  = Superhero\r| featured                = \r\r| SeeAlso                 = \r| MarvelUnlimited     = \r| Comixology          = \r\r",
 post: "}}"
 }
 }
@@ -477,14 +477,14 @@ section: 'advanced',
 group: 'infoboxes',
 tools: {
 "image": {
-label: 'Image',
+label: 'Power',
 type: 'button',
 icon: 'https://images.wikia.nocookie.net/marveldatabase/images/d/dc/Image_Button.png',
 action: {
 type: 'encapsulate',
 options: {
-pre: "{{Marvel Database:Image Template\r| License                 = ",
-post: "\r| ImageType               = \r\r| Universe                = \r| Subject1                = \r| Subject2                = \r| Subject3                = \r| Subject4                = \r| Subject5                = \r\r| Source                  = \r| CoverArtist1            = \r| Penciler1               = \r| Inker1                  = \r| Colourist1              = \r| Letterer1               = \r}}"
+pre: "<includeonly>{{Power Grid\r| Reference         = ",
+post: "\r| Intelligence      = \r\| Strength          = \r| Speed             = \r\| Durability        = \r| Energy Projection = \r| Fighting Skills   = \r}}</includeonly>"
 }
 }
 }

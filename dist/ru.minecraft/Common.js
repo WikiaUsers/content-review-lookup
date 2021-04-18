@@ -40,19 +40,6 @@ mcw.events = {};
 /* Fired whenever wiki content is added. (#mw-content-text, live preview, load page, etc.) */
 mw.hook( 'wikipage.content' ).add( function( $wikipageContent ) {
 
-/* 43 Добавляет Викификатор */
-if ( mw.config.get( 'wgAction' ) == 'edit' || mw.config.get( 'wgAction' ) == 'submit' ) {
-	console.log('MediaWiki:Common.js — editFunction start');
-		if ( mw.user.options.get( 'gadget-legacyToolbar' ) == 1 ) {
-			mw.loader.load('https://minecraft.fandom.com/ru/index.php?title=MediaWiki:Gadget-legacyToolbar.js&action=raw&ctype=text/javascript');
-			console.log('MediaWiki:Common.js — legacyToolbar enabled');
-		}
-		else { console.log('MediaWiki:Common.js — legacyToolbar not enabled');console.log('MediaWiki:Common.js — options are set as ' + mw.user.options.get( 'gadget-legacyToolbar' )); };
-		mw.loader.load('https://minecraft.fandom.com/ru/index.php?title=MediaWiki:Wikificator.js&action=raw&ctype=text/javascript');
-		console.log('MediaWiki:Common.js — after Wikificator call msg');
-	}
-else { console.log('MediaWiki:Common.js — wikificator and legacyToolbar not enabled'); }
-
 /**
  * Collapsible elements
  *

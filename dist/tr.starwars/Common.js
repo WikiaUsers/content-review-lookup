@@ -662,6 +662,11 @@ function insertAtCursor(myField, myValue) {
 window.AddRailModule = [{prepend: true}];
 /* Şablon:RailModule final */
 
+/* LinkPreview fix */
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.RegExp.iparents = ['.quote'];
+/* LinkPreview fix end */
+
 $( fillEditSummaries );
 $( fillEditSummariesVisualEditor );
 $( fillPreloads );
