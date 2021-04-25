@@ -247,18 +247,14 @@ mw.loader.using([
             cmlimit: 'max'
         })
         .done(function (d) {
-            if (!d.error) {
-                var data = d.query;
-                for (var i in data.categorymembers) {
-                    var currTitles = $('#text-mass-protect').val();
-                    $('#text-mass-protect').val(currTitles + data.categorymembers[i].title + '\n');
-                }
-            } else {
-                $('#text-error-output').append(i18n.msg('categoryFail').escape() + category + ' : ' + d.error.code + '<br/>');
+            var data = d.query;
+            for (var i in data.categorymembers) {
+                var currTitles = $('#text-mass-protect').val();
+                $('#text-mass-protect').val(currTitles + data.categorymembers[i].title + '\n');
             }
         })
-        .fail(function () {
-            $('#text-error-output').append(i18n.msg('categoryFail').escape() + category + '!<br/>');
+        .fail(function (code) {
+            $('#text-error-output').append(i18n.msg('categoryFail').escape() + category + ' : ' + code + '<br/>');
         });
     }
     /**
@@ -277,16 +273,11 @@ mw.loader.using([
             token: mw.user.tokens.get('editToken')
         })
         .done(function (d) {
-            if (!d.error) {
-                console.log(i18n.msg('success', page).plain());
-            } else {
-                console.log(i18n.msg('fail').escape() + page + ': ' + d.error.code);
-                $('#text-error-output').append(i18n.msg('fail').escape() + page + ': ' + d.error.code + '<br/>');
-            }
+            console.log(i18n.msg('success', page).plain());
         })
-        .fail(function () {
-            console.log(i18n.msg('fail').escape() + page);
-            $('#text-error-output').append(i18n.msg('fail').escape() + page + '<br/>');
+        .fail(function (code) {
+            console.log(i18n.msg('fail').escape() + page + ': ' + code);
+            $('#text-error-output').append(i18n.msg('fail').escape() + page + ': ' + code + '<br/>');
         });
         setTimeout(process, window.massProtectDelay || 1000);
     }

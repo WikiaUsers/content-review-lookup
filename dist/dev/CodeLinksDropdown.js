@@ -17,7 +17,7 @@ mw.hook('dev.i18n').add(function (lib) {
                 'wgVersion'
             ]),
             isUCP = config.wgVersion !== "1.19.24",
-            rootUrl = isUCP ? 'ucp' : 'community',
+            rootUrl = 'community',
             namespacePath = mw.util.getUrl(config.wgFormattedNamespaces[2] + ':'),
             username = config.wgUserName,
             usernamePath = namespacePath + username;

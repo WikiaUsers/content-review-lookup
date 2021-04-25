@@ -63,7 +63,7 @@ mw.loader.using(['site']).then(function() {
                 gNF();
                 return;
 	        }
-			$.ajax({url:'/fr/api.php',data:{action:'query',meta:'tokens',format:'json'},dataType:'json'}).done(function(data) {
+			$.ajax({url:mw.util.wikiScript('api'),data:{action:'query',meta:'tokens',format:'json'},dataType:'json'}).done(function(data) {
 				fd = new FormData();
 				fd.append("action","upload");
 				fd.append("token",data.query.tokens.csrftoken);
@@ -74,7 +74,7 @@ mw.loader.using(['site']).then(function() {
 				fd.append("ignorewarnings",1);
 				fd.append("format","json");
 				$.ajax({
-					url:'/fr/api.php',
+					url:mw.util.wikiScript('api'),
 					method:'POST',
 					data:fd,
 					cache:false,

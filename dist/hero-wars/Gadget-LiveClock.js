@@ -37,8 +37,12 @@
             clearInterval(clockInterval);
             clockInterval = null;
         }
-        $content.find('.clock-static').text(function(index, text) {
-            return getDateTimeFormat(this).format(new Date(text));
+        $content.find('.clock-static').text(function(index) {
+            try {
+                return getDateTimeFormat(this).format(new Date(this.getAttribute('data-parse') || (Number(this.getAttribute('data-timestamp')) * 1000) || undefined));
+            } catch (error) {
+                return error
+            }
         });
         var clock_live = $content.find('.clock-live');
 

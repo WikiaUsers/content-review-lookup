@@ -74,7 +74,7 @@ var tooltips = {
 				$target
 					.find( '.infobox2-slideshow:not( .infobox2-slideshow-auto )' )
 					.addClass( 'infobox2-slideshow-auto' );
-				dlcUtil.update( $target );
+				dlcUtil.update( $target.get( 0 ) );
 				slideshows.init( $target );
 				$source.on( {
 					mouseenter: tooltips.showTooltip,

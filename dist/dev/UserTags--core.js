@@ -1183,7 +1183,13 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
 
             // Next stage processing begins when the DOM is ready (find masthead)
             timingDom = Date.now();
-            $($.proxy(this._onDomReady, this));
+            var interval = setInterval($.proxy(function () {
+            	if (!$('#userProfileApp .user-identity-header__attributes').length) {
+            		return;
+            	}
+            	clearInterval(interval);
+            	this._onDomReady($);
+            }, this), 100);
         },
 
         //
@@ -1202,10 +1208,7 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
                 ? '#userProfileApp > .user-identity-box__wrapper > .user-identity-box > .user-identity-box__info > .user-identity-header > .user-identity-header__attributes'
                 : '#firstHeading'
             );
-            if (!$masthead.length) { // This shouldn't happen
-                return logger.err(0, "No Masthead found. We shouldn't have got this far...");
-            }
-            // In Oasis, masthead is #UserProfileMasthead, Monobook is just the H1
+            // In Oasis, masthead is #userProfileApp, Monobook is just the H1
             this._$masthead = (siteSkin === 'oasis' ? $masthead.parent().parent() : $masthead);
 
             // Invoke the onDOMReady function in OasisTagsModule since it needs to
@@ -1376,9 +1379,9 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
                         // NOTE: Hashes CANNOT occur in MediaWiki page titles
                         part = link.lastIndexOf('#');
                         if (part === -1) {
-                            node.href = mw.util.wikiGetlink(link);
+                            node.href = mw.util.getUrl(link);
                         } else {
-                            node.href = mw.util.wikiGetlink(link.substr(0, part))
+                            node.href = mw.util.getUrl(link.substr(0, part))
                                 + '#' + mw.util.wikiUrlencode(link.substr(part + 1))
                                 ;
                         }

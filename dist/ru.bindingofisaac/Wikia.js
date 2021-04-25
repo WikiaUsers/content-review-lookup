@@ -1,7 +1,20 @@
+//рецепты мешка
+$(function(){
+    $('.tt3').each(function(){
+        $(this).click(function() {
+            $('.tt4').removeClass('defaultCraft');
+            $('.tt3').removeClass('defaultButton');
+            $(this).find('.tt4').addClass('defaultCraft');
+            $(this).addClass('defaultButton');
+        });
+    });
+});
+
 //Шаблон:RailModule dev wiki
 window.AddRailModule = [
-    { page: 'Template:RailModule2', },
-    'Template:RailModule',
+    { page: 'Template:Rail0', prepend: true },
+    'Template:Rail1',
+    'Template:Rail2',
 ];
 
 //Стиль бек кнопки dev wiki

@@ -6,6 +6,7 @@ importArticles({
     articles: [
 		'u:dev:ProtectionIcons.js',
 		'u:dev:FastOldImageDelete/code.js',
+		'u:dev:MarkBlocked.js',
 		'u:dev:Discussions Restore All.js',
 		'u:dev:ImportJS-Plus.js',
     ]

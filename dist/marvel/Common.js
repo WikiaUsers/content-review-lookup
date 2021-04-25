@@ -351,7 +351,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database:Location Template\r| Image                   = ",
-post: "\r| OfficialName            = \r| Aliases                 = \r\r| Universe                = \r| Galaxy                  = \r| StarSystem              = \r| Planet                  = \r| Continent               = \r| Country                 = \r| Region                  = \r| State                   = \r| City                    = \r| Locale                  = \r\r| Population              = \r| Creators                = \r| First                   = \r\r| HistoryText             = \r\r| PointsOfInterest        = \r| Residents               = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+post: "\r| OfficialName            = \r| Aliases                 = \r\r| Universe                = \r| Galaxy                  = \r| StarSystem              = \r| Planet                  = \r| Continent               = \r| Country                 = \r| Region                  = \r| State                   = \r| City                    = \r| Locale                  = \r\r| Population              = \r\r| Creators                = \r| First                   = \r\r| HistoryText             = \r\r| PointsOfInterest        = \r| Residents               = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 }
 }
 }
@@ -370,7 +370,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database: Item Template\r| Image                   = ",
-post: "\r| OfficialName            = \r| Aliases                 = \r| Model                   = \r| Version                 = \r\r| Universe                = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r| Origin                  = \r\r| Dimensions              = \r| Weight                  = \r| Creators                = \r| First                   = \r\r| HistoryText             = \r\r| CurrentOwner            = \r| PreviousOwners          = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+post: "\r| OfficialName            = \r| Aliases                 = \r\r| CurrentOwner            = \r| PreviousOwners          = \r| AlternateOwners         = \r\r| Type                    = \r| Material                = \r| Dimensions              = \r| Weight                  = \r\r| Origin                  = \r| Universe                = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r\r| Creators                = \r| First                   = \r\r| HistoryText             = \r| Properties              = \r| AlternateVersions       = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 }
 }
 }
@@ -502,7 +502,7 @@ icon: 'https://images.wikia.nocookie.net/marveldatabase/images/5/5a/Images_Butto
 action: {
 type: 'encapsulate',
 options: {
-pre: "{{Marvel Database:Gallery Template\r| GalleryType             = \r| GalleryData             = \r<gallery position=\"center\" captionalign=\"center\">\r",
+pre: "{{Marvel Database:Gallery Template\r| GalleryType             = \r| GalleryData             = \r==Comics==\r===Interior Images===\r<gallery position="center" captionalign="center">\r",
 post: "\r</gallery>\r| SeeAlso                 = \r}}"
 }
 }
@@ -522,7 +522,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database:Episode Template\r| Image               = ",
-post: "\r| Month               = \r| Year                = \r\r| Director            = \r| Producer1_1         = \r| Writer1_1           = \r\r| Quotation           = \r| Speaker             = \r\r| EpisodeTitle        = \r| Synopsis            = \r\r| Appearing           = \r'''Featured Characters:'''\r* <br/>\r'''Supporting Characters:'''\r* <br/>\r'''Antagonists:'''\r* <br/>\r'''Other Characters:'''\r* <br/>\r'''Locations:'''\r* <br/>\r'''Items:'''\r* <br/>\r'''Vehicles:'''\r* <br/>\r\r| Notes               = \r| Trivia              = \r| Recommended         = \r| Links               = \r}}"
+post: "\r| Day                 = \r| Month               = \r| Year                = \r\r| Director1           = \r| Producer1           = \r| Writer1             = \r\r| Quotation           = \r| Speaker             = \r\r| EpisodeTitle        = \r| Synopsis            = \r\r| Appearing           = \r'''Featured Characters:'''\r* <br/>\r'''Supporting Characters:'''\r* <br/>\r'''Antagonists:'''\r* <br/>\r'''Other Characters:'''\r* <br/>\r'''Locations:'''\r* <br/>\r'''Items:'''\r* <br/>\r'''Vehicles:'''\r* <br/>\r\r| Notes               = \r| Trivia              = \r| Recommended         = \r| Links               = \r}}"
 }
 }
 }

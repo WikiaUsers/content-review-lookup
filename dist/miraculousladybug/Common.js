@@ -1,15 +1,8 @@
-/* Spoiler alert */
-window.SpoilerAlert = {
-    isSpoiler: function () {
-        return -1 != $.inArray('Spoiler', wgCategories);
-    }
-};
-
 /* User Tags */
 window.UserTagsJS = {
     tags: {
-        chatmoderator: { u: 'Discord Moderator' },
-        imagecontrol: { u: 'Image control' }
+        discordmod: { u: 'Discord Moderator' },
+        imagecontrol: { u: 'Image Control' }
     },
     modules: {
         inactive: {

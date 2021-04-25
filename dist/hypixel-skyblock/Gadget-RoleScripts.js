@@ -51,7 +51,6 @@ window.AjaxBlock = {
 			'[[WP:Disinformation|Spreading False Rumors/Information]]': 'Spreading False Rumors/Information',
 			'[[WP:WP:SHOUT|Shouting]]': 'Shouting',
 			'Immature/Innapropriate Behavior/Conduct': 'Immature/Innapropriate Behavior/Conduct',
-			 'Violation of [[Skyblock Rules|SkyBlock Rules]]': 'Violation of SkyBlock Rules',
 			 'Violation of FANDOM Terms of Use (https://www.fandom.com/terms-of-use)': 'Violation of FANDOM Terms of Use',
 		},
 	},

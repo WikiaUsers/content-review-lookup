@@ -3,7 +3,8 @@ importArticles({
     type: 'script',
     articles: [
         'u:anime:MediaWiki:Anime-Common.js',
-        'MediaWiki:Common.js/FairUseUpload.js'
+        'MediaWiki:Common.js/FairUseUpload.js',
+        'u:dev:MediaWiki:ReferencePopups/code.js',
     ]
 });
 

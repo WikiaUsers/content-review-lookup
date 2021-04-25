@@ -10,329 +10,309 @@
  * that will impact the users of the script, you are welcome
  *
  * Author: Ultimate Dark Carnage
- * Version: v2.0
+ * Version: v2.1
  **/
 
-( function( window ) { 
+(function(window, $, mw){
 	"use strict";
 	
-	// Configuration object
-	const options = window.rwa || window.rwaOptions || { };
-	
-	// Current script version
-	const __version = "v2.0";
-	
-	// Script name
-	const __name = "WikiActivity";
-	
-	// MediaWiki variables
-	const __mw = mw.config.get( [ 
-		"wgCityId",
-        "wgNamespaceNumber",
-        "wgFormattedNamespaces",
-        "wgTitle",
-        "wgSiteName",
-        "wgServer",
-        "wgUserName",
-        "wgUserGroups",
-        "wgScriptPath"
-	] );
-	
-	// UCP object
-	window.UCP = window.UCP || { };
-	
-	// Developers object
-	window.dev = window.dev || { };
-	
-	// If the script has been ran, stop
-	if ( ( window.UCP.WikiActivity || window.activityLoaded ) ) return;
+	// If the script has been ran, stop here
+	if (window.wikiActivityLoaded) return;
 	
 	// Sets the loaded state to true
-	window.activityLoaded = true;
+	window.wikiActivityLoaded = true;
 	
-	// A list of core scripts
-	const __scripts = Object.freeze( { 
-		i18n : "u:dev:MediaWiki:I18n-js/code.js",
-		colors : "u:dev:MediaWiki:Colors/code.js",
-		wds : "u:dev:MediaWiki:WDSIcons/code.js",
-		ui : "u:dev:MediaWiki:Dorui.js"
-	} );
+	// Creates the UCP object if it does not exist
+	window.UCP = window.UCP || { };
 	
-	// A list of installed scripts
-	const __installedScripts = [ ];
+	// Creates the Dev object if it does not exist
+	window.dev = window.dev || { };
 	
-	// A list of core MediaWiki dependencies
-	const __deps = Object.freeze( [ 
-		"mediawiki.util",
-		"mediawiki.api"
-	] );
-	
-	// Function to load all scripts
-	function loadScripts( ) { 
-		mw.loader.using( __deps ).then( function( ) { 
-			Object.keys( __scripts ).forEach( function( name ) { 
-				const key = name === "ui" ? "doru" : "dev";
-				const script = __scripts[ name ];
-				
-				if ( 
-					window[ key ][ name ] || 
-					__installedScripts.includes( script ) 
-				) { 
-					__installedScripts.push( script );
-					return;
-				}
-				
-				importArticle( { type : "script", article : script } );
-			} );
-			
-			loadCSS( );
+	// Escapes regex characters
+	function regesc( s ) {
+        return s.replace( /[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, "\\$&" );
+    }
+    
+    // Parses the date object
+    function parseDate( x ) {
+        var d = null;
+        return !isNaN( (
+            d = ( x instanceof Date ) ?
+                x :
+                new Date( x )
+            )
+            ) ?
+            d : null;
+    }
+    
+    // Safely parses a JSON string
+    function safeJSONParse(s){
+        try { return JSON.parse(s); }
+        catch (e) { console.warn(e); return s; }
+    }
+
+    // Creates the storage
+    function MapStorage(base) {
+    	// Stores the current instance on a variable
+    	const ms = this;
+    	
+    	// The current interval for watching the storage object
+    	ms.__interval = null;
+    	
+    	// Determines whether the storage is checking for keys
+    	ms.__watching = false;
+    	
+    	// Watches the storage property
+    	ms.__init = function(){
+    		ms.__interval = setInterval(ms.__check.bind(ms), 1000);
+    		ms.__watching = true;
+    	};
+    	
+    	// Checks for properties in the storage object
+    	ms.__check = function(){
+    		Object
+    			.keys(localStorage)
+    			.filter(function(s){
+    				if (!s.startsWith(base + ":")) return false;
+    				const value = localStorage.getItem(s);
+    				const object = safeJSONParse(value);
+    				
+    				const v = typeof object === "object" ? object.value : object;
+    				const e = typeof object === "object" ? Number(object.expiry) || Infinity : Infinity;
+    				
+    				return (v !== undefined) && (e > -1);
+    			})
+    			.forEach(function(key){
+    				const val = safeJSONParse(localStorage.getItem(key));
+    				const expiry = typeof val === "object" ? Number(object.expiry) || Infinity : Infinity;
+    				
+    				if (!isFinite(expiry) || isNaN(expiry)) return;
+    				
+    				const d = parseDate(expiry).getTime() / 1000;
+    				const c = Date.now( ) / 1000;
+    				const f = d - c;
+    				
+    				if (f < 1) localStorage.removeItem(key);
+    			});
+    	};
+    	
+    	// Fetches the value from its property
+    	ms.get = function(k){
+    		if (arguments.length < 1) return;
+    		const key = base + ":" + k;
+    		const value = localStorage.getItem(key);
+    		return safeJSONParse(value);
+    	};
+    	
+    	// Sets a value to a property
+    	ms.set = function(k, v, e){
+    		if (arguments.length < 1) return false;
+    		
+    		if (arguments.length === 1 && typeof k === "object"){
+    			return Object
+    				.keys(k)
+    				.some(function(key){
+    					var value = k[key];
+    					
+    					if (!(typeof value === "object" && "expiry" in value)) {
+    						value = { value: value, expiry: "Infinity" };
+    					}
+    					
+    					return ms.set(key, value);
+    				});
+    		}
+    		
+    		if (arguments.length === 3) {
+    			v = { value: v, expiry: String((isNaN(e) || !isFinite(e)) ? Infinity : e) };
+    		} else {
+    			v = { value: v, expiry: "Infinity" };
+    		}
+    		
+    		const key = base + ":" + k;
+    		const result = JSON.stringify(v);
+    		
+    		localStorage.setItem(key, result);
+    	};
+    	
+    	// Removes a property from the storage object
+    	ms.remove = function(k){
+    		const key = base + ":" + k;
+    		localStorage.removeItem(key);
+    	};
+    	
+    	// Clears the activity storage
+    	ms.clear = function(){
+    		Object
+    			.keys(localStorage)
+    			.filter(function(s){
+    				return s.startsWith(base + ":");
+    			})
+    			.forEach(localStorage.removeItem);
+    	};
+    	
+    	ms.__init();
+    }
+    
+	// Creates the script loader
+	function Loader(callback, thisArg){
+		// If there is one argument, set the context to the current instance
+		if (arguments.length === 1) thisArg = this;
+		
+		// A list of loaded scripts
+		this.loadedScripts = [];
+		
+		// An object that contains scripts to load
+		this.scripts = Object.freeze( { 
+			"dev.i18n": Object.freeze( {
+				script: "u:dev:MediaWiki:I18n-js/code.js",
+				key: "i18n"
+			} ),
+			"dev.colors": Object.freeze( {
+				script: "u:dev:MediaWiki:Colors/code.js",
+				key: "colors"
+			} ),
+			"dev.wds": Object.freeze( {
+				script: "u:dev:MediaWiki:WDSIcons/code.js",
+				key: "wds"
+			} ),
+			"doru.ui": Object.freeze( {
+				script: "u:dev:MediaWiki:Dorui.js",
+				key: "dorui"
+			} )
 		} );
-	}
-	
-	// Function to load CSS
-	function loadCSS( ) { 
-		importArticle( { 
-			type : "style",
-			article : "u:dev:MediaWiki:WikiActivity.css"
-		} );
-	}
-	
-	// Initializes all scripts
-	loadScripts( );
-	
-	// A list of canonical namespaces
-	const __namespaces = Object.freeze( [ 
-		0, // Main (article)
-		1, // Talk
-		2, // User
-		3, // User talk
-		4, // Project (<SITENAME>)
-		5, // Project talk (<SITENAME> talk)
-		6, // File
-		7, // File talk
-		8, // Forum
-		9, // Forum talk
-		500, // User blog
-		828, // Module
-		829 // Module talk
-	] );
-	
-	// Creates a {Promise} for checking 
-	// if the namespace is a talk namespace
-	function isTalk( ns ) { 
-		const __isTalk = Object.freeze( [ 
-			1,
-			3,
-			5,
-			7,
-			829
-		] );
 		
-		return new Promise( function( r, j ) { 
-			if ( __isTalk.includes( ns ) ) return r( );
-			j( );
-		} );
-	}
-	
-	// Creating the main object
-	function WikiActivity( i18n ) { 
-		// A list of canonical types
-		const types = Object.freeze( [ 
-			"main",
-			"watchlist",
-			"images"
-		] );
+		this.loaded = false;
 		
-		// Sets the current instance to a variable
-		const _w = this;
-		
-		// A list of subpages
-		const _s = Object.freeze( { 
-			main : [ "", /^m(?:ain|)$/i ],
-			watchlist : /^w(?:atchlist|)$|^fo(?:llowing|)$/i,
-			images : /^i(?:mages|)$|^f(?:iles?|)$/i
-		} );
-		
-		// The main storage key
-		const _ks = "${name}-".replace( "${name}", __name );
-		
-		// Function to parse a date object
-		function parseDate( d ) { 
-			return !isNaN( 
-				( d = d instanceof Date ? d : new Date( d ) ) 
-			) ? d : null;
-		}
-		
-		// Creates a storage pseudo-constructor
-		function storage( ) { 
-			const _ps = { };
-			
-			function safeJSONParse( s ) { 
-				try { return JSON.parse( s ); }
-				catch ( e ) { console.warn( e ); return s; } 
-			}
-			
-			function getStorageKey( k ) { 
-				return arguments.length ? String( _ks + k ) : "";  
-			}
-			
-			function watch( ) { 
-				setInterval( function( ) { 
-					const _keys = Object
-						.keys( localStorage )
-						.filter( function( s ) { 
-							if ( !s.startsWith( _ks ) ) return false;
-							
-							const _sv = localStorage.getItem( s );
-							
-							const _sp = safeJSONParse( _sv );
-							
-							return (
-								( typeof _sp === "object" ) &&
-								( _sp.hasOwnProperty( "expiry" ) ) &&
-								( _sp.hasOwnProperty( "value" ) )
-							);
-						} );
-					
-					_keys.forEach( function( key ) { 
-						const value = safeJSONParse( localStorage.getItem( key ) );
-						
-						const date = parseDate( value.expiry ).getTime( ) / 1000;
-						
-						const curr = Date.now( ) / 1000;
-						
-						if ( ( date - curr ) < 1 ) localStorage.removeItem( key );
-					} );
-				}, 1000 );
-			}
-			
-			_ps.get = function( k ) { 
-				if ( !arguments.length ) return;
-				
-				const pk = getStorageKey( k );
-				const pv = localStorage.getItem( pk );
-				
-				if ( 
-					( typeof pv === "object" ) &&
-					( pv.hasOwnProperty( "expiry" ) ) &&
-					( pv.hasOwnProperty( "value" ) )
-				) return pv.value;
-				
-				return pv;
-			};
-			
-			_ps.set = function( k, v ) { 
-				if ( !arguments.length ) return false;
-				
-				if ( arguments.length === 1 && typeof k === "object" ) { 
-					return Object
-						.keys( k )
-						.some( function( pk ) { 
-							const pv = k[ pk ];
-							return _ps.set( pk, pv );
-						} );
-				}
-				
-				const _k = getStorageKey( k );
-				
-				const _v = JSON.stringify( v );
-				
-				localStorage.setIten( _k, _v );
-				
-				return true;
-			};
-			
-			_ps.remove = function( k ) { 
-				if ( !arguments.length ) return false;
-				const _pk = getStorageKey( k );
-				
-				try { 
-					localStorage.removeItem( _pk );
-				} catch( e ) { 
-					return false;
-				}
-				
-				return true;
-			};
-			
-			_ps.clear = function( ) { 
-				Object
-					.keys( localStorage )
-					.filter( function( s ) { 
-						return s.startsWith( _ks );
-					} )
-					.forEach( localStorage.removeItem  );
-			};
-			
-			_ps.store = function( o, d ) { 
-				if ( !isNaN( d ) && isFinite( d ) ) {
-					d = Math.abs( parseInt( d ) );
-					d = Date.now( ) + d;
-				} else { 
-					d = parseDate( d );
-					
-					if ( isNaN( d ) ) d = Date.now( ) * ( 2 * 24 * 3600 * 1000 );
-				}
-				
-				d = parseDate( d );
-				
-				Object
-					.keys( o )
-					.forEach( function( k ) { 
-						const v = o[ k ];
-						
-						const r = new Map( [ 
-							[ "expiry", d.toISOString( ) ],
-							[ "value", v ]
-						] );
-						
-						_ps.set( k, Object.fromEntries( r ) );
-					} );
-			};
-			
-			return _ps;
-		}
-		
-		// Title parts for WikiActivity
-		const parts = __mw.wgTitle.split( "/" );
-		
-		// Checks if the page is a special page
-		const isSpecial = __mw.wgNamespaceNumber === -1;
-		
-		// Automatically shifts the parts array
-		parts.shift( );
-		
-		// The current subpage
-		const subpage = parts[ 0 ] || "";
-		
-		// The wrapper for localStorage
-		_w.storage = storage( );
-		
-		// Fetches subpage patterns
-		_w.getSubpageObject = function( ) { 
-			const sKeys = types.filter( function( k ) { 
-				return k !== "main";
-			} );
-			
-			const sObject = { };
-			
-			sKeys.forEach( function( k ) { 
-				sObject[ k ] = Object.freeze( { 
-					name : k,
-					match : function( s ) { 
-						const p = _s[ k ];
-						if ( typeof p === "string" ) { 
-							return p === s;
-						} else if ( p instanceof RegExp ) { 
-							return p.test( s ); 
-						} else return false;
-					}
-				} );
-			} );
-			
-			return sObject;
+		this.init = function(){
+			mw.loader
+				.using("mediawiki.util")
+				.then(this.loadScripts.bind(this));
 		};
 		
-		_w.getType = function( ) { }
+		this.loadScripts = function(){
+			importArticle({
+				type: "style",
+				article: "u:dev:MediaWiki:WikiActivity.css"
+			});
+			
+			const promises = Object
+				.keys(this.scripts)
+				.map(function(name){
+					console.log(this);
+					const obj = this.scripts[name];
+					const key = obj.key;
+					const script = obj.script;
+					
+					if (window.dev[key]) {
+						this.loadedScripts.push(script);
+						return Promise.resolve();
+					}
+					
+					return new Promise(function(resolve, reject){
+						importArticle({ 
+							type: "script",
+							article: script
+						}).then((function(){
+							this.loadedScripts.push(script);
+							resolve();
+						}).bind(this));
+					});
+				}, this);
+			
+			Promise
+				.all(promises)
+				.then((function(){
+					this.loaded = true;
+					callback.call(thisArg);
+				}).bind(this));
+		};
 	}
-} )( this );
+	
+	// Creates the WikiActivity constructor
+	function WikiActivity(opts){
+		// Stores the current instance to a variable
+		const wk = this;
+		
+		// Name of the script (used as a local storage key)
+		wk.NAME = "WikiActivity";
+		
+		// The current version of the script
+		wk.VERSION = "v2.1";
+		
+		// MediaWiki configuration object
+		wk.CONFIG = mw.config.get( [ 
+			"wgCityId",
+			"wgNamespaceNumber",
+			"wgFormattedNamespaces",
+			"wgTitle",
+			"wgSiteName",
+			"wgServer",
+			"wgUserName",
+			"wgUserGroups",
+			"wgScriptPath"
+		] );
+		
+		// A list of user groups
+		wk.USER_GROUPS = wk.CONFIG.wgUserGroups;
+		
+		// Initializes the script
+		wk.init = function(){
+			// Checks if the user can block
+			wk.canBlock = Object.freeze([
+				"staff", "wiki-manager", "content-team-member",
+				"soap", "sysop", "global-discussions-moderator",
+				"helper"
+			]).some(function(n){
+				return wk.USER_GROUPS.includes(n);
+			});
+			
+			// Checks if the user has moderator rights
+			wk.isMod = Object.freeze([
+				"staff", "wiki-manager", "content-team-member",
+				"soap", "sysop", "global-discussions-moderator",
+				"helper", "discussions-moderator", "threadmoderator"
+			]).some(function(n){
+				return wk.USER_GROUPS.includes(n);
+			});
+			
+			// Checks if the user can rollback edits
+			wk.canRollback = Object.freeze([
+				"staff", "wiki-manager", "content-team-member",
+				"soap", "sysop", "global-discussions-moderator",
+				"helper", "discussions-moderator", "threadmoderator",
+				"rollback"
+			]).some(function(n){
+				return wk.USER_GROUPS.includes(n);
+			});
+			
+			wk.AVATAR_CACHE = {};
+			
+			wk.ICON_NAMES = Object.freeze({
+				edit: "pencil",
+				"new": "add",
+				comment: "comment",
+				talk: "bubble",
+				categorize: "tag",
+				diff: "clock",
+				options: "gear",
+				more: "more"
+			});
+			
+			wk.SUBPAGES = {};
+			
+			wk.SUBPAGE_PATTERNS = {};
+			
+			wk.TYPES = Object.freeze({
+				
+			});
+		};
+		
+		wk.loader = new Loader(wk.init, wk);
+		
+		wk.storage = new MapStorage(this.NAME);
+		
+		wk.loader.init();
+	}
+	
+	window.WikiActivity = WikiActivity;
+})(window, jQuery, mediaWiki);

@@ -5,7 +5,7 @@ mw.loader.using(["mediawiki.api"], function(require) {
     var config = mw.config.get([
         "wgCanonicalNamespace",
         "wgTitle",
-        "wgSitename",
+        "wgSiteName",
         "wgUserGroups",
         "wgServer"
     ]);
@@ -28,7 +28,7 @@ mw.loader.using(["mediawiki.api"], function(require) {
                 }
             });
     
-            document.title = "Interwiki Recent Changes | " + config.wgSitename;
+            document.title = "Interwiki Recent Changes | " + config.wgSiteName;
             $("#PageHeader h1").text("Recent changes – Roblox wikis");
             history.replaceState({}, '', "/wiki/Special:CentralRecentChanges");
             

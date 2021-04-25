@@ -29,11 +29,10 @@ See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
 
 // Small script to change wall text
 $('a[title="Message Wall"]').html('wall');
-$('a.external.text').removeAttr('target');
+$('a.external').removeAttr('target');
 
 // Add custom "focusable" class
 $('.focusable').attr('tabindex', 0);
-
 
 /* Script to make page-specific styling (see [[Project:Page Styles]]) */
 $('#mw-content-text > .mw-parser-output').find('.pageStyles').each(function() {

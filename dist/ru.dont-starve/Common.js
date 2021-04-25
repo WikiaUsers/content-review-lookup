@@ -213,6 +213,8 @@ window.ImprovedTabbers = {
 
 /*Поваренная книга в окне*/
 $(function(){
+switch ( mw.config.get('wgPageName') ) {
+case 'Поваренная_книга':
 var modal;
 
 mw.hook('dev.modal').add(function(modal) {
@@ -262,6 +264,8 @@ importArticle({
 });
 });
 });
+break;
+}
 });
 
 /*Шаблон:Настройки*/

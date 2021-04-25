@@ -9,13 +9,11 @@
     if ($('.mw-rollback-link').length || window.RollbackWikiDisable) {
         return;
     }
-    var isUCP;
     var Rollback = $.extend(window.Rollback, {
         config: mw.config.get([
             'wgAction',
             'wgCanonicalSpecialPageName',
-            'wgPageName',
-            'wgVersion'
+            'wgPageName'
         ]),
         _preload: 2,
         getPageType: function() {
@@ -238,11 +236,7 @@
                 this.outputError('editFail', data.error.code);
             } else {
                 var msg = this.i18n.msg('success');
-                if (isUCP) {
-                    mw.notify(msg.plain());
-                } else {
-                    new BannerNotification(msg.escape(), 'confirm').show();
-                }
+                mw.notify(msg.plain());
             }
         },
         outputError: function(message, code) {
@@ -252,21 +246,16 @@
                     this.i18n.msg('ajaxError').plain() :
                     code
             );
-            if (isUCP) {
-                mw.notify(msg.plain(), {
-                    type: 'error'
-                });
-            } else {
-                new BannerNotification(msg.escape(), 'error').show();
-            }
+            mw.notify(msg.plain(), {
+                type: 'error'
+            });
         }
     });
-    isUCP = Rollback.config.wgVersion !== '1.19.24';
     mw.loader.using([
         'mediawiki.api',
         'mediawiki.user',
         'mediawiki.util',
-        isUCP ? 'mediawiki.notification' : 'ext.bannerNotifications'
+        'mediawiki.notification'
     ], Rollback.preload.bind(Rollback));
     mw.hook('dev.i18n').add(Rollback.preload.bind(Rollback));
     importArticle({

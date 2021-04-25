@@ -21,5 +21,34 @@ mw.loader.using('mediawiki.api').then(function(){
 	}
 });
 window.MastheadRightsBadgeSettings = {
-    iconSize: '60px',
+    iconSize: '40px',
+};
+window.UserTagsJS = {
+	tags: {
+		bureaucrat: { u:'Executive Chef', link:'Project:Wiki_Staff' },
+		sysop: { u:'Head Chef', link:'Project:Wiki_Staff' },
+		'content-moderator': { u:'Sous Chef', link:'Project:Wiki_Staff' },
+		threadmoderator: { u:'Sous Chef', link:'Project:Wiki_Staff' },
+		bot: { u: 'Bot', link: 'Special:ListUsers/bot' },
+		inactive: { u: 'Inactive' },
+		blocked: { u: 'Ejected', link: 'Special:BlockList' },
+		'wiki-manager': { u: 'Wiki Manager', link: 'w:Help:Wiki_Managers' },
+		soap: { u: 'SOAP', link: 'w:Help:SOAP' },
+		council: {u: 'Council', link: 'w:Help:Community Council'},
+		redditmod: {u: 'Reddit Mod' }
+    },
+	modules: {
+        inactive: 60,
+        mwGroups: true,
+        autoconfirmed: true,
+        custom: {
+            'CollinKulesha': ['redditmod'],
+            'Octranspo9307': ['redditmod'],
+            'Anythingworx47': ['redditmod']
+        },
+        metafilter: {
+        	sysop: ['bureaucrat','bot'],
+			threadmoderator: ["content-moderator"],
+			}
+        }
 };

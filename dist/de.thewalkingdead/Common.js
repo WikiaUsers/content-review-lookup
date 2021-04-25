@@ -60,3 +60,9 @@ window.pPreview = $.extend(true, window.pPreview, {
 $('a').hover(function(e){
     $(this).attr('title', '');
 });
+
+window.DiscordBannerSettings = {
+    bannerStyle: '3',
+    inviteLink: 'KeUM7gra3D',
+    prependToRail: true
+};

@@ -47,11 +47,11 @@ function initializeClock(id, endtime) {
 /* Fire in correct order */ 
 var clock = document.getElementById( 'clockdiv' );
 if ( clock ) {
-    initializeClock('clockdiv', 'November 12 2019 00:00:00 GMT-1100')
+    initializeClock('clockdiv', 'April 29 2021 00:00:00 GMT-1100')
 } else {
     mw.hook( 'AddRailModule.module' ).add( function( template ) {
         if ( template !== 'Template:RailModule' ) return;
-        initializeClock('clockdiv', 'November 12 2019 00:00:00 GMT-1100')
+        initializeClock('clockdiv', 'April 29 2021 00:00:00 GMT-1100')
     } )
 }
 

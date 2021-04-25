@@ -28,7 +28,7 @@
         'Les Shamans Escargot',
         'Les Érudits du Sanctuaire de l’Âme',
         'La Troupe Grimm (Groupe)',
-        'Le Coeur du Cauchemar',
+        'Le coeur des cauchemars',
         'Reine des Abeilles Vespa',
         'Vaisseaux',
         'Vide',

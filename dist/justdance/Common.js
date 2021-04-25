@@ -35,17 +35,14 @@ UserTagsJS.modules.custom = {
     'TheChibiKing': [],
     'Jackboog21': [],
     /* Mini-Admins */
-    'JDisbae': [],
     /* Content Mods */
     /* Discussion Mods */
     /* Rollbacks */
     'GetLuck': [],
-    'Kafluffle101': [],
     'Saus the Seafish': [],
     'Will07498': [],
     /* Chat Mods */
     'JohnDotto': [],
-    'MistyMelissa': [],
     'TudoBen': [],
 	
     //Former Staff
@@ -61,11 +58,13 @@ UserTagsJS.modules.custom = {
     'Stanley56': ['former-admin'],
     'FurryTrash23': ['former-admin'],
     /* Former Mini-Admins */
+    'JDisbae': ['former-miniadmin'],
     'ZodiacGiraffe': ['former-miniadmin'],
     /* Former Content Mods */
     /* Former Discussion Mods */
     /* Former Rollbacks */
     'Blv08': ['former-rollback'],
+    'Kafluffle101': ['former-rollback'],
     /* Former Chat Mods */
     'TheSkyField': ['former-chatmod'],
     'AngelSasayaki': ['former-chatmod'],
@@ -73,6 +72,7 @@ UserTagsJS.modules.custom = {
     'PewDieFern': ['former-chatmod'],
     'SatoTheScientist101': ['former-chatmod'],
     'Novophoenix': ['former-chatmod'],
+    'MistyMelissa': ['former-chatmod'],
 };
 UserTagsJS.modules.mwGroups = ['council', 'rollback', 'chatmoderator', 'threadmoderator', 'content-moderator', 'sysop', 'bureaucrat'];
 //Remove tag if has any of the blacklisted tags

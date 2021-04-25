@@ -103,14 +103,14 @@ $(function() {
     });
 });
 
-/* ###################################################################################### */
-/* ### Staff Images                                                                   ### */
-/* ### --------------------------------------------------------------------           ### */
-/* ### Description: Loads all of the latest staff images on the staff page.           ### */
-/* ### URL: https://fallout.wikia.com/wiki/Fallout_Wiki:Administrators_and_moderators ### */
-/* ### Credit:      User:TwoBearsHigh-Fiving                                          ### */
-/* ###              User:FDekker                                                      ### */
-/* ###################################################################################### */
+/* ####################################################################################### */
+/* ### Staff Images                                                                    ### */
+/* ### --------------------------------------------------------------------            ### */
+/* ### Description: Loads all of the latest staff images on the staff page.            ### */
+/* ### URL: https://fallout.fandom.com/wiki/Fallout_Wiki:Administrators_and_moderators ### */
+/* ### Credit:      User:TwoBearsHigh-Fiving                                           ### */
+/* ###              User:FDekker                                                       ### */
+/* ####################################################################################### */
 $(function() {
     var placeholderClass = "user-image-placeholder";
 
@@ -166,7 +166,7 @@ $(function() {
 /* ##################################################################################### */
 /* ### Notable content                                                               ### */
 /* ### --------------------------------------------------------------------          ### */
-/* ### Description: Create a collapsible template where mw-collapsable is not        ### */
+/* ### Description: Create a collapsible template where mw-collapsible is not        ### */
 /* ###              suitable to use.                                                 ### */
 /* ### URL: https://fallout.fandom.com/wiki/Fallout_Wiki:Notable_content/draft       ### */
 /* ### Credit:      User:Sakaratte                                                   ### */

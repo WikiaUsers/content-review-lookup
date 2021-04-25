@@ -84,4 +84,11 @@ function addAjaxDisplayLink() {
 	});
 }
 
+const images = document.querySelectorAll("#content img");
+const regex = new RegExp(/cb=\d+/);
+
+images.forEach(function(image) {
+    image.setAttribute("src", image.src.replace(regex, "format=original"));
+});
+
 $(addAjaxDisplayLink);

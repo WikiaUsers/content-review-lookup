@@ -14,11 +14,13 @@
 	if (window.BlockLookup && window.BlockLookup.loaded) {
 		return window.BlockLookup.warn('Script double loaded, exiting...');
 	}
-	
+
 	if (mw.config.get('wgPageName').startsWith('Special:Blocklookup')) {
 		window.location.replace(window.location.href.replace('Special:Blocklookup', 'Special:BlockLookup'));
 	}
-	
+
+	window.dev = window.dev || {};
+
 	/**
 	 * Main Script Class
 	 * 
@@ -29,7 +31,7 @@
 	window.BlockLookup = $.extend({
 		// Variable for double load protection
 		loaded: true,
-		
+
 		// Configuration
 		doDebug: false,
 
@@ -61,7 +63,7 @@
 		noAbuseLog: false,
 		elements: {},
 		cachedInputs: null,
-		$content: mw.util.$content,
+		$content: $('#mw-content-text'),
 
 		/**
 		 * Data object for Hooks fired by this script
@@ -103,15 +105,14 @@
 				'mediawiki.api',
 				'mediawiki.notify',
 				'mediawiki.util',
+				'mediawiki.user',
 				'oojs-ui',
 				'mediawiki.widgets.UserInputWidget',
 				'mediawiki.interface.helpers.styles',
 			],
-			otherOnloadPromises: [
-				mw.user.getRights(),	
-			],
+			otherOnloadPromises: [],
 		}),
-		
+
 		/**
 		 * User rights level object.
 		 * Stores data about the necessary rights to preform an action.
@@ -165,12 +166,12 @@
 			"move": Object.freeze([
 				"user",
 			]),
-			
+
 			"*": Object.freeze([
 				"*",
 			]),
 		}),
-		
+
 		inputSelectors: Object.freeze([
 			'wpTarget',
 			'limit',
@@ -182,11 +183,11 @@
 			'wpSearchFilter',
 			'mw-blocklookup-submit',
 		]),
-		
+
 		specialElements: Object.freeze({
 			'wpTarget': 1,			
 		}),
-		
+
 		/**#====================================================================#
 		 * Loader functions
 		 * --------------------------------
@@ -218,13 +219,13 @@
 		 * @class		BlockLookup
 		 */
 		 setPreloading: function() {
-	 		document.getElementById('firstHeading').innerHTML = 'Block Lookup';
+			document.getElementById('firstHeading').innerHTML = 'Block Lookup';
 			document.title = 'Block Lookup | ' + this.wg.wgSiteName + ' | Fandom';
-			
+
 			this.$content.addClass('specialpage-mw-blocklookup');
 			this.$content.text('Loading...');
 		 },
-	
+
 		/**
 		 * Function for when a hook is loaded.
 		 * This is function is called 2 times. When the hooks count reach 2, it adds the click event handlers.
@@ -246,16 +247,20 @@
 					this.ui = value;
 					break;
 			}
-			
+
 			if (this.hooksCount === 2) {
 				// Load all imports
-				$.when.apply($, this.imports.otherOnloadPromises.concat(mw.loader.using(this.imports.await))).then(function(userRights) {
-					this.i18n.loadMessages('BlockLookup', { language: this.lang })
-						.then(this.init.bind(this, userRights), this.warn)
+				$.when.apply($, this.imports.otherOnloadPromises.concat(mw.loader.using(this.imports.await))).then(function() {
+					$.when(mw.user.getRights(), this.i18n.loadMessages('BlockLookup', { language: this.lang }))
+						.then(function() {
+							this.init.apply(this, arguments);
+						}.bind(this))
 						.catch(function(e) {
 							this.warn(e);
-						});
-				}.bind(this), this.warn);
+						}.bind(this));
+				}.bind(this)).catch(function(e) {
+					this.warn(e);
+				}.bind(this));
 			}
 		},
 
@@ -269,7 +274,7 @@
 			Object.entries(libs).forEach(function(data) {
 				var hookName = data[0];
 				var devLib = data[1];
-				
+
 				if (window.dev[devLib]) {
 					this.onHook(hookName, window.dev[devLib]);
 					this.imports.scripts.splice(1, 0);
@@ -292,7 +297,7 @@
 				'dev.ui': 'ui',
 				'dev.i18n': 'i18n',
 			});
-			
+
 			if (this.imports.scripts.length) importArticles({
 				type: "script",
 				articles: this.imports.scripts,
@@ -302,7 +307,7 @@
 				articles: this.imports.style,
 			});
 		},
-	
+
 		/**
 		 * Actual script initializer.
 		 * This function sets up the event handlers on the page 
@@ -322,17 +327,17 @@
 			this.urlVars = this.getUrlVars() || {};
 			this.MWui = OO.ui;
 			this.saveInputs = this.saveInputs.bind(this);
-			
+
 			// Hooks
 			Object.values(this.hook).forEach(function(value, i) {
 				delete this.hook[i];
 				this.hook[value] = mw.hook('BlockLookup.' + value);
 			}, this);
-			
+
 			// Previous Inputs
 			var cachedInputs = mw.storage.get('dev-script-BlockLookup-inputsCache');
 			this.cachedInputs = cachedInputs ? JSON.parse(cachedInputs) : {};
-			
+
 			// User rights variables
 			var userChecks = {
 				canBlock: 'block',
@@ -340,17 +345,17 @@
 				canDelete: 'delete',
 				isGlobal: 'global',	
 			};
-			
+
 			Object.keys(userChecks).forEach(function(k) {
 				this[k] = this.doDebug ? true : (k === 'isGlobal' ? this.hasGroup : this.hasRight).call(this, userChecks[k]);
 			}, this);
-			
+
 			// Url state variables
 			var state = this.getUrlState();
 			Object.keys(state).forEach(function(k) {
 				this[k] = state[k] || "";
 			}, this);
-			
+
 			// Freeze data objects
 			this.freeze([
 				this.wg,
@@ -358,11 +363,11 @@
 				this.namespaces,
 				this.hook,
 			]);
-			
+
 			// Fire any hooks attached to this script
 			this.hook.loaded.fire();
 			this.i18n.useUserLang();
-			
+
 			// Rights checks
 			this.levels = {
 				hasGlobalRights: 'global',
@@ -370,19 +375,19 @@
 				canCheckUser: 'checkuser',
 				canDelete: 'delete',
 			};
-			
+
 			Object.keys(this.levels).forEach(function(key) {
 				this.levels[key] = this.doDebug ? true : (key === 'hasGlobalRights' ? this.hasGroup : this.hasRight).call(this, this.levels[key]);
 			}, this);
 			Object.freeze(this.levels);
-						
+
 			// Input Selectors
 			var inputSelectors = {};
 			this.inputSelectors.forEach(function(v) {
 				inputSelectors[v] = '#' + v;
 			});
 			this.inputSelectors = inputSelectors;
-			
+
 			// OOUI Elements
 			this.elements.wpTarget = new mw.widgets.UserInputWidget({
 				id: "wpTarget",
@@ -397,17 +402,17 @@
 					})
 				.end()
 				.css({ display: 'inline' });
-				
+
 			this.elements.progressBar = new this.MWui.ProgressBarWidget({
 				id: "mw-blocklookup-progressbar",
 			}).toggle();
-			
+
 			// Load actual interface
 			switch (this.wg.wgPageName.split('/').shift()) {
 				case('Special:BlockLookup'): this.initInterface(); break;
 				case('Special:BlockList'): this.initBlockList(); break;
 			}
-			
+
 			this.log('Ready');
 		},
 
@@ -427,9 +432,9 @@
 		 * @param {Object[]} objects - The objects to freeze
 		 */
 		 freeze: function(objects) {
-		 	return objects.map(function(v) {
-		 		return Object.freeze(v);
-		 	});
+			return objects.map(function(v) {
+				return Object.freeze(v);
+			});
 		 },
 
 		/**
@@ -443,7 +448,7 @@
 		 */
 		getRights: function(action) {
 			action = action.toLowerCase();
-			
+
 			switch (action) {
 				case ("global"):
 					return this.groups[action];
@@ -483,7 +488,7 @@
 
 			return false;
 		},
-		
+
 		/**
 		 * User Rights checker function.
 		 * Checks if the user has the right requested.
@@ -601,7 +606,7 @@
 		log: function() {
 			return this.logBuilder('log', arguments);
 		},
-		
+
 		/**
 		 * Function to log a verbose message with the script's name.
 		 * 
@@ -613,7 +618,7 @@
 		debug: function() {
 			return this.doDebug ? this.logBuilder('debug', arguments) : undefined;
 		},
-		
+
 		/**
 		 * Function to generate the namespaces input select.
 		 *
@@ -624,31 +629,31 @@
 		generateNamespaces: function() {
 			var o = this.namespaces,
 				ret = [];
-			
+
 			Object.keys(o).forEach(function(key) {
 				var value = o[key];
-				
+
 				ret.push({
 					type: 'option',
 					value: key,
 					text: value,
 				});
 			});
-			
+
 			ret[0] = {
 				type: 'option',
 				value: "",
 				selected: true,
 				text: this.msg('all'),
 			};
-			
+
 			ret.splice(1, 0, {
 				type: 'option',
 				value: 0,
 				selected: true,
 				text: '(Main)',
 			});
-			
+
 			return $(this.ui({
 				type: 'select',
 				attr: {
@@ -675,7 +680,7 @@
 			var page = page || this.wg.wgPageName;
 			var origPage = page;
 			var options = options || {};
-			
+
 			var wiki, specials = {
 				'^(m|meta):': 'meta.wikimedia.org',
 				'^(mw):': 'mediawiki.org',
@@ -685,16 +690,16 @@
 				'^(?:w|wikia):(?:c|community):([a-z]+)?\\.([a-z_\\-0-9A-Z]+):': function(match) {
 					var community = match[2],
 						lang = match[1];
-		
+
 					return "https://" + community + ".fandom.com" + lang ? '/' + lang : '';
 				}
 			};
-		
+
 			if ((/^(.+?):/).test(page)) {
 				for (var k in specials) {
 					if (specials.hasOwnProperty(k)) {
 						var v = specials[k];
-			
+
 						if (new RegExp(k, 'i').test(page)) {
 							if (typeof(v) === "string") {
 								wiki = v;
@@ -707,9 +712,9 @@
 					}
 				}
 			}
-			
+
 			if (typeof(options.condition) === 'undefined') options.condition = true;
-			
+
 			return this.ui({
 				type: 'a',
 				text: this.string(alt || page),
@@ -720,7 +725,7 @@
 				}),
 			}) || "";
 		},
-		
+
 		/**
 		 * Function to convert an element into a string.
 		 *
@@ -736,8 +741,8 @@
 				return String(value);
 			}
 		},
-		
-		
+
+
 		/**
 		 * Function to get the parametrs of the current URL.
 		 *
@@ -758,16 +763,16 @@
 					'wpSearchFilter': null,
 					'namespace': null,
 				};
-			
+
 			for (var i in keys) {
 				if (keys.hasOwnProperty(i)) {
 					var v = keys[i];
 					ret[i] = this.urlVars[i] || this.cachedInputs[i] || (!this.isNullish(v) ? v : "");
 				}
 			}
-			
+
 			ret.users = ret.users.replace(/[\+_]/g, ' ');
-						
+
 			return ret;
 		},
 
@@ -781,12 +786,12 @@
 		 */
 		getUrlVars: function(url) {
 			url = url || window.location.href;
-			
+
 			var query = url.match(/\?([^#]*?)(?:#.*?)?$/),
 				ret = {};
-			
+
 			if (!query || !query[1]) return null;
-		
+
 			function _evalParam(v) {
 				if ("null undefined true false NaN Infinity".split(' ').includes(v)) {
 					switch(v) {
@@ -807,16 +812,16 @@
 			query = query[1].split('&');
 			query.forEach(function(v) {
 				v = v.match(/^([^=]*?)\=(.*?)$/);
-								
+
 				if (!v) return;
 
 				ret[v[1]] = _evalParam(v[2]);
 			});
-			
+
 			return ret;
 		},
-		
-		
+
+
 		/**
 		 * Function to get format the flags of blocks.
 		 *
@@ -835,7 +840,7 @@
 				default: return null;
 			}
 		},
-		
+
 		/**
 		 * Function to test the type of the target provided.
 		 *
@@ -846,10 +851,10 @@
 		 */
 		testInput: function(value) {
 			value = value.toString();
-			
+
 			var isId = value.match(/^\#?\d+$/gi),
 				isIp = value ? mw.util.isIPAddress(value, true) : false;
-				
+
 			return {
 				isIPv4: mw.util.isIPv4Address(value, true),
 				isIPv6: mw.util.isIPv6Address(value, true),
@@ -858,7 +863,7 @@
 				isUser: !isIp && !isId,
 			};
 		},
-		
+
 		/**
 		 * Function to format a date.
 		 *
@@ -880,11 +885,11 @@
 				},
 				dateFormatter = Intl.DateTimeFormat(this.wg.wgContentLanguage, dateOptions).format;
 
-			timestamp = String(timestamp || new Date().toGMTString()).toLowerCase()	;
+			timestamp = String(timestamp || new Date().toGMTString()).toLowerCase();
 
 			return (['infinite', 'infinity', 'indefinite'].includes(timestamp)) 
-				? 'Infinite' 
-				: dateFormatter(Date.parse(timestamp)) + (showCurrentTimeZone ? ' ' + Date().match(/\((.+?)\)$/)[0] : "");
+				? 'Infinite'
+				: dateFormatter(new Date(timestamp.toUpperCase())) + (showCurrentTimeZone ? ' ' + Date().match(/\((.+?)\)$/)[0] : "");
 		},
 
 		/**
@@ -897,7 +902,7 @@
 		 */
 		parse: function(wikitext, parseOptions) {
 			var defer = new $.Deferred();
- 
+
 			this.api
 				.get({ 
 					action: 'parse', 
@@ -914,10 +919,10 @@
 					defer.resolve(data.parse.text["*"]);
 				})
 				.catch(defer.reject);
- 
+
 			return defer;
 		},
-	
+
 		/**
 		 * Function to toggle the script's pending state.
 		 *
@@ -928,16 +933,16 @@
 		 */
 		togglePending: function(state) {
 			var pending = this.nullishDefault(state, !this.pending);
-			
+
 			$('#mw-blocklookup-output').toggle(!pending);
 			this.elements.progressBar.toggle(pending);
 			this.toggleInputs(pending);
-			
+
 			this.pending = pending;
-			
+
 			return pending;
 		},
-	
+
 		/**
 		 * Function to toggle the script's input's disabled status.
 		 *
@@ -950,10 +955,10 @@
 			var toggled = this.nullishDefault(state, !this.toggled);
 			this.$content.find('input:not(.mw-blocklookup__toggle-checkbox), select, checkbox, button').attr('disabled', toggled);
 			this.toggled = toggled;
-			
+
 			if (toggled) $(this.inputSelectors['mw-blocklookup-submit']).text('Loading...');
 			else $(this.inputSelectors['mw-blocklookup-submit']).text('Look up block information');
-			
+
 			return toggled;
 		},
 
@@ -967,32 +972,32 @@
 		 */
 		gatherInputs: function(skipCache) {
 			this.inputs = {};
-			
+
 			Object.entries(this.inputSelectors).forEach(function(d) {
 				var k = d[0];
 				var v = d[1];
 				var value;
-				
+
 				if (this.elements[k]) {
 					value = this.elements[k].getValue();
 				} else if (this.cachedInputs[k] && !skipCache) {
 					value = this.cachedInputs[k];	
 				} else {
 					var el = $(v);
-					
+
 					if (el.prop('type') === 'checkbox') {
 						value = el.prop('checked');
 					} else {
 						value = el.val();
 					}
 				}
-								
+
 				this.inputs[k === 'mw-blocklookup-namespace' ? 'namespace' : k] = k === 'wpTarget' ? decodeURIComponent(value) : value;	
 			}, this);
-			
+
 			return this.inputs;
 		},
-		
+
 		/**
 		 * Function to cache the script's inputs.
 		 *
@@ -1004,9 +1009,9 @@
 		saveInputs: function() {
 			var inputs = this.gatherInputs(true);
 			this.cachedInputs = inputs;
-			
+
 			this.hook['input-change'].fire(inputs);
-			
+
 			return mw.storage.set('dev-script-BlockLookup-inputsCache', JSON.stringify(inputs));
 		},
 
@@ -1036,14 +1041,14 @@
 						"white-space": "nowrap",
 					},
 				};
-			
+
 			if (d.id) o.attr.id = d.id;
 			delete d.label.text;
-			
+
 			var elements = [{
 				type: 'input',
 				style: $.extend(d.checkbox.style || {}, {
-					
+
 				}),
 				attr: $.extend(d.checkbox, {
 					id: d.checkbox.name,
@@ -1056,7 +1061,7 @@
 				type: 'label',
 				text: text,
 				style: $.extend(d.label.style || {}, {
-					
+
 				}),
 				attr: $.extend(d.label, {
 					'for': d.checkbox.name,
@@ -1064,14 +1069,14 @@
 					title: d.title || d.label.title,
 				}),
 			}];
-			
+
 			if (!d.checkbox.checked) delete elements[0].attr.checked;
-			
+
 			o.children.push.apply(o.children, elements);
-			
+
 			return this.ui(o);			
 		},
-		
+
 		/**
 		 * Function to convert an empty value to a boolean value.
 		 *
@@ -1084,7 +1089,7 @@
 			if (v === "") return true;
 			else if (!v) return false;
 		},
-		
+
 		/**
 		 * Function to create a seperator.
 		 *
@@ -1101,13 +1106,13 @@
 					html: " &bull; ",
 					condition: this.nullishDefault(cond, true),
 				};
-					
+
 				case(2): return {
 					type: "span",
 					text: " | ",
 					condition: this.nullishDefault(cond, true),
 				};
-				
+
 				case(3): return {
 					type: "span",
 					text: this.sep3,
@@ -1116,14 +1121,14 @@
 				default: return "";
 			}
 		},
-		
+
 		/**#=====================================================================#
 		 * Main functions
 		 * --------------------------------
 		 * These functions do the main work when running this script.
 		 **#=====================================================================#
 		 */
-		 
+
 		 /**
 		 * Initiates the main interface.
 		 *
@@ -1293,10 +1298,10 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 					},
 				}
 			);
-			
+
 			var ret = this.ui(o);
 			this.elements.wpTarget.setValue(decodeURIComponent(this.users) || this.cachedInputs.wpTarget);
-			
+
 			this.$content.html(
 				$(ret).find('#mw-blocklookup-output')
 					.after(this.elements.progressBar.$element)
@@ -1306,10 +1311,10 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 			this.addInputListeners();
 			var val = this.elements.wpTarget.getValue();
 			if (val !== "" && val !== this.cachedInputs.wpTarget) this.onSubmit();
-			
+
 			return ret;
 		},
-		
+
 		 /**
 		 * Initiates the interface on Special:BlockList.
 		 *
@@ -1351,7 +1356,7 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 				]
 			}));
 		},
-		
+
 		 /**
 		 * Fetches block data for several cases.
 		 *
@@ -1365,24 +1370,24 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 			function readyHtml(html) {
 				var $html = $(html);
 				var globallyBlocked;
-				
+
 				if (type === 'contribs' && $html.find('#mw-content-text > .userprofile.mw-warning-with-logexcerpt').length) globallyBlocked = true;
-				
+
 				$html = $html.find('#mw-content-text > ul:first-of-type, #mw-content-text > form > ul:first-of-type');
 				$html.find('input').remove();
-				
+
 				if (globallyBlocked) {
 					$html.addClass('global-blocked');
 				}
-								
+
 				return $html;
 			}
-			
+
 			switch (type.toLowerCase()) {
 				case('block'): 
 					params.user = params.user.replace(/^User:/i, '');
 					var test = this.testInput(params.user);
-					
+
 					params.user = params.user.match(/^#\d+$/gi) ? params.user.replace('#', '') : params.user;
 
 					return this.api.get({
@@ -1394,14 +1399,14 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 						bkip: test.isIp && !test.isId && !test.isUser ? params.user : undefined,
 						bklimit: 1,
 					});
-				
+
 				case('abuselog'): return $.get(mw.util.getUrl('Special:AbuseLog') + '?' + $.param({
 					wpSearchUser: params.user,
 					wpSearchTitle: params.wpSearchTitle,
 					limit: params.limit,
 					namespace: params.namespace,
 				})).then(readyHtml);
-				
+
 				case('contribs'): return $.get(mw.util.getUrl('Special:Contributions/' + params.user) + '?' + $.param({
 					limit: params.limit,
 					namespace: params.namespace,
@@ -1410,13 +1415,13 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 					associated: Number(params.associated),
 					tagfilter: params.tagfilter,
 				})).then(readyHtml);
-				
+
 				case('blocklog'): return $.get(mw.util.getUrl('Special:Log/block') + '?' + $.param({
 					limit: params.limit,
 					tagfilter: params.tagfilter,
 					page: 'User:' + params.user,
 				})).then(readyHtml);
-				
+
 				case('userdata'): return this.api.get({
 					action: 'query',
 					list: 'users',
@@ -1430,11 +1435,11 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 				}).then(function(data) {
 					return data.query.users[0];
 				});
-				
+
 				default: return null;
 			}
 		},
-		
+
 		 /**
 		 * Adds event listeners for input focuses.
 		 *
@@ -1447,7 +1452,7 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 				this.prevFocused = e.target;
 			}.bind(this));
 		},
-		
+
 		/**
 		 * Adds event listeners for input changes.
 		 *
@@ -1459,7 +1464,7 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 			this.$content.find('select, input').on('change', this.saveInputs);
 			this.elements.wpTarget.on('change', this.saveInputs);
 		},
-		
+
 		/**
 		 * Adds event listeners for input changes.
 		 *
@@ -1471,12 +1476,12 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 		 */
 		reject: function(message) {
 			message = message || 'The Username, IP address, or Block ID provided is not blocked.';
-			
+
 			this.togglePending();
 			this.hook['result-reject'].fire(message);
 			$('#mw-blocklookup-output').text(message);
 		},
-		
+
 		/**
 		 * Adds event listeners for the specified event.
 		 *
@@ -1496,10 +1501,10 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 					pending: this.pending,
 				});
 			}.bind(this));
-			
+
 			return callback;
 		},
-		
+
 		/**
 		 * Prepares block data for rendering.
 		 *
@@ -1509,10 +1514,10 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 		 */
 		prepareData: function(data) {
 			if (!data.query.blocks[0]) return null;
-			
+
 			var block = data.query.blocks[0];
 			var test = this.testInput(block.user || block.id);
-			
+
 			var flags = {
 				anonOnly: this.emptyToBool(block.anononly),
 				noCreate: this.emptyToBool(block.nocreate),
@@ -1520,7 +1525,7 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 				noEmail: this.emptyToBool(block.noemail),
 				wallDisabled: !this.emptyToBool(block.allowusertalk),
 			};
-			
+
 			var params = {
 				blocker: block.by,
 				expiry: block.expiry,
@@ -1533,16 +1538,16 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 
 				flags: [],
 			};
-			
+
 			$.extend(params, flags);
-			
+
 			params.flags = Object.keys(flags).filter(function(v) {
 				return params[v];
 			}).map(this.formatFlags);
-			
+
 			return params;
 		},
-		
+
 		/**
 		 * Main event handler for when the submit button is pressed.
 		 *
@@ -1554,25 +1559,25 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 		 */
 		onSubmit: function(e) {
 			if (e) e.preventDefault();
-			
+
 			this.log('Getting block data...');
 			this.gatherInputs();			
-			
+
 			$('#mw-blocklookup-output').empty();
 			this.togglePending();
-			
+
 			this.hook.submit.fire(this.inputs);
 			this.hook['load-start'].fire();
-			
+
 			this.getData('block', {
 				user: this.inputs.wpTarget,
 				limit: this.inputs.limit,
 			}).then(function(data) {
 				this.debug(data);
 				data = this.prepareData(data);
-				
+
 				if (!data) return this.reject();
-				
+
 				$.when(
 					this.parse(data.reason, {
 						text: 1,
@@ -1607,15 +1612,15 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 				).then(function() {
 					var arr = [data, false].concat(Array.from(arguments));
 					$('#mw-blocklookup-output').html(this.loadData.apply(this, arr));
-						
+
 					this.togglePending();
 					$(this.prevFocused).focus();
 					this.hook['result-success'].fire(arr);
 				}.bind(this)).catch(this.warn);
-				
+
 			}.bind(this)).catch(function(code, error) {
 				this.warn.call(this, 'API Error in fetching lookup data:', error.error.info, '(' + code + ')');
-				
+
 				switch(code) {
 					case('baduser_bkusers'): this.reject('Invalid lookup target provided: "' + this.inputs.wpTarget + '"'); break;
 					case('http'): this.reject('An API error occured in fetching user data, please try again.'); break;
@@ -1624,7 +1629,7 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 				this.hook['load-end'].fire();
 			}.bind(this));
 		},
-		
+
 		/**
 		 * Renders the block data.
 		 *
@@ -1642,9 +1647,9 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 		loadData: function(data, collapse, blockReason, blockHtml, abuseLogHtml, contribsHtml, userData) {
 			var test = this.testInput(data.target || data.id);
 			var id = Math.random().toString().replace(/^0\./gmi, '');
-			
+
 			this.debug.apply(this, arguments);
-			
+
 			return this.ui({
 				type: 'fieldset',
 				attr: {
@@ -1925,7 +1930,7 @@ You may enter an IP address, Username, or Block ID to begin. For IP\'s, IPv6 and
 								children: [{
 									type: "b",
 									text: 'IP Tools: ',
-									
+
 								}, {
 									children: [
 										this.makeLink("https://cleantalk.org/blacklists/" + data.target, "Spam blacklist check", {

@@ -88,3 +88,9 @@ importArticles({
         'u:dev:MediaWiki:ModernLeaderboard.js',
     ]
 });
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AddButtonsPhoto/code.js',
+    ]
+});

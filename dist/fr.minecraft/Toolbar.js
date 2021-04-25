@@ -1,3 +1,4 @@
+// <nowiki>
 ( function() {
 
 
@@ -59,7 +60,7 @@ var buttons = [
 		"Insérer une galerie d'images",
 		'\n<gallery>\n',
 		'\n</gallery>',
-		'Fichier:Exemple.png|Légende1\nFichier:Exemple.png|Légende2'
+		'Fichier:Exemple.jpg|Légende1\nFichier:Exemple.jpg|Légende2'
 	],
 	[
 		'//upload.wikimedia.org/wikipedia/commons/f/fd/Button_blockquote.png',
@@ -87,3 +88,4 @@ $.each( buttons, function() { mw.toolbar.addButton.apply( null, this ); } );
 
 
 } )();
+// </nowiki>

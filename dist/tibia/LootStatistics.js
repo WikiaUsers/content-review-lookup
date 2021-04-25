@@ -47,6 +47,7 @@
     'Brain Squid': {'Inkwell': 'Inkwell (Black)'},
     'Chopper': {'Dung Ball': 'Dung Ball (Quest)'},
     'Cloak of Terror': {'Crown': 'Crown (Plant)'},
+    'Cobra Vizier': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Crazed Summer Rearguard': {'Egg With Dream Essence': 'Egg with Dream Essence'},
     'Crazed Summer Vanguard': {'Egg With Dream Essence': 'Egg with Dream Essence'},
     'Crazed Winter Rearguard': {'Egg With Dream Essence': 'Egg with Dream Essence', 'Ice Flower': 'Ice Flower (Item)'},
@@ -98,6 +99,7 @@
     'Priestess': {'Book': 'Book (Orange)'},
     'Prince Drazzak': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Rage Squid': {'Inkwell': 'Inkwell (Black)'},
+    'Renegade Quara Hydromancer': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Renegade Quara Pincher': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Robby the Reckless': {'Bag With Stolen Gold': 'Bag with Stolen Gold'},
     'Rotten Golem': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
@@ -128,6 +130,7 @@
     'The Unwelcome': {'Amber': 'Amber (Item)', 'Amber With A Dragonfly': 'Amber with a Dragonfly'},
     'Thieving Squirrel': {'Flask With Beaver Bait': 'Flask with Beaver Bait'},
     'Usurper Archer': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
+    'Usurper Commander': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Usurper Warlock': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Vibrant Phantom': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'}
   },
@@ -904,7 +907,7 @@
     loot_stats_rc;
     //loot
     loot_tmp = {};
-    loot =  loot_o.split(',');
+    loot = loot_o.split(',');
     if (reward_chest) { loot_stats_rc = ''; }
     //monster
     amonster = amonster_o;
@@ -1354,7 +1357,7 @@
     /*jslint regexp: true */
     not_player_names_regexp_remove = /\((.+)\)/g;
     loot_regexps = [
-      /Loot of (.+?): (.+)/,
+      /Loot of (.+?): (.+?)\.?$/,
       /(?:Your deeds have been noticed and )?[tT]he following items dropped by (.+?) are available in your reward chest: (.+)/
     ];
     /*jslint regexp: false */
@@ -1365,7 +1368,7 @@
       lootmatch = theline.match(loot_regexps[0]);
       //regular loot
       if (lootmatch) {
-        lootignore = theline.match(/\b(?:active prey bonus|gut charm|increased loot|boosted loot)\b/i);
+        lootignore = theline.match(/\b(?:active prey bonus|gut charm|increased loot|boosted loot|due to low stamina)\b/i);
         if (!lootignore) {
           lootparser_loot_process_loot(lootmatch[1], lootmatch[2], monsters, loot_exp, loot_tem);
         }
@@ -1374,7 +1377,7 @@
         //reward container loot
         lootmatch_rc = theline.match(loot_regexps[1]);
         if (lootmatch_rc) {
-          lootignore = theline.match(/\b(?:active prey bonus|gut charm|increased loot|boosted loot)\b/i);
+          lootignore = theline.match(/\b(?:active prey bonus|gut charm|increased loot|boosted loot|due to low stamina)\b/i);
           if (!lootignore) {
             lootparser_loot_process_loot(lootmatch_rc[1], lootmatch_rc[2], monsters, loot_exp_rc, loot_tem_rc, true, stats_rc);
           }

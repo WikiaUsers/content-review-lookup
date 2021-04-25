@@ -35,12 +35,15 @@ window.tooltips_list = [
         classname: 'card-icon',
         parse: '{' + '{Tooltip/Card|<#card#>}}',
     },
+    {
+        classname: 'custom-tooltip',
+        parse: '{' + '{Tooltip|<#1#>|<#2#>|<#3#>|<#4#>|<#5#>|<#6#>|<#7#>|<#8#>|<#9#>}}',
+    },
 ];
 
 window.tooltips_config = {
-    offsetX: 15,
+	offsetX: 15,
     offsetY: 15,
-    waitForImages: true,
     noCSS: true,
 };
 

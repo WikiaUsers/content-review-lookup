@@ -75,9 +75,9 @@ var dlcUtil = {
 	},
 
 	/**
-	 * @param {JQuery} $elem 
+	 * @param {HTMLElement} element 
 	 */
-	update: function ( $elem ) {}
+	update: function ( element ) {}
 };
 
 var slideshows = {

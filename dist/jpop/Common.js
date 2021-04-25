@@ -18,5 +18,7 @@ importArticles({
         "w:c:dev:ReferencePopups/code.js", 
 		/* Added on 2020-10-25 by D4rkWzd */
         'u:dev:MediaWiki:WikiActivity.js',
+        /* Added on 2021-04-21 by D4rkWzd */
+        'u:dev:MediaWiki:YouTubeModal/code.js',
     ]
 });

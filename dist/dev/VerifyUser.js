@@ -111,7 +111,7 @@ mw.loader.using(['mediawiki.util', (mw.config.get('wgVersion') === '1.19.24' ? '
             verifyUser.i18n = i18n;
 
             // Update header/title
-            $('.page-header__title').text(i18n.msg('title').plain());
+            $('.page-header__title, .wiki-page-header__title').text(i18n.msg('title').plain());
             $(document).prop('title', i18n.msg('title').plain() + ' | Fandom');
             var username = config.wgUserName,
                 pagename = config.wgPageName,

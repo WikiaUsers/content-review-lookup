@@ -47,4 +47,23 @@ $.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
 
 window.galleryButtonIconHidden = false;
 window.galleryButtonText = 'Add or remove an image/video to this gallery';
-window.galleryButtonIcon = 'https://imgur.com/tko9tP1.png';
+
+// DiscussionFeed script customizing
+
+
+
+// FastBlock label - We promised the admins this great tool!
+
+window.FastBlock = [
+    {
+        label: 'Vandalism',
+        expiry: '2 weeks',
+        reason: 'Vandalism. See our Blocking policy.'
+    },
+    {
+        label: 'Harassment',
+        expiry: '1 year',
+        reason: 'Harassment. See our blocking policy',
+        nocreate: 0
+    }  
+];

@@ -35,7 +35,7 @@ var interval = setInterval(function () {
 	//Бюрократы
 	$('.wds-avatar a[href$="Flotiliya"]').parents(elements).addClass("bureaucrat");
 	//Администраторы
-	$('.wds-avatar a[href$="Default"]').parents(elements).addClass("administrator");
+	$('.wds-avatar a[href$="Simon_Pikalov"]').parents(elements).addClass("administrator");
 	//Модераторы
 	$('.wds-avatar a[href$="Default"]').parents(elements).addClass("contentmoderator");
 	//Младшие модераторы
@@ -96,6 +96,19 @@ var interval = setInterval(function () {
         $(".user-identity-header__attributes:not(:has(.user-identity-header__tag.tag-administrator2))").append(
 	        $('<span>', {
                 'class': 'user-identity-header__tag tag-administrator2',
+                'text': "Админиcтратор"
+            })
+        );
+	}
+}, 100 );
+/********************************/
+/*    Баннер Администраторов    */
+/********************************/
+var interval = setInterval(function () {
+    if ($('.user-identity-header__attributes:contains("Simon Pikalov") h1').length > 0) {            
+        $(".user-identity-header__attributes:not(:has(.user-identity-header__tag.tag-administrator3))").append(
+	        $('<span>', {
+                'class': 'user-identity-header__tag tag-administrator3',
                 'text': "Админиcтратор"
             })
         );

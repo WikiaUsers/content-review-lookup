@@ -24,7 +24,7 @@
     }, {
         type: 'script',
         articles: [
-            'u:dev:Colors/code.js'
+            'u:dev:MediaWiki:Colors/code.js'
         ]
     });
     // Creating default CSS for the module
@@ -74,7 +74,7 @@
             // Get all links that are not excluded
             // @returns jQuery object
             links: function(){
-                return $('#WikiaRail .module a, #WikiaRail .rail-module a, .mw-content-text a').filter(function(){
+                return $('#WikiaRail .module a, #WikiaRail .rail-module a, #mw-content-text a').filter(function(){
                     var isNormalLink = !$(this).is(config.exceptions.join(', '));
                     return isNormalLink;
                 });
@@ -183,13 +183,13 @@
                         'top': (offset.top + height) + 'px'
                     });
                     // prevent the module from appending twice
-                    if (!$('#article-preview').exists())
+                    if (!$('#article-preview').length)
                         $('.WikiaSiteWrapper').append($preview_wrapper);
                 });
             });
             // ...then create a "mouseout" to remove the module
             $(this).on('mouseout', function hide(event){
-                if ($('#article-preview').exists()){
+                if ($('#article-preview').length){
                     $('#article-preview').remove();
                 }
             });

@@ -2,19 +2,28 @@
 
 /* Applies css styles to the last column of the members-table based on the value of the cells */
 $(function() {
-	$("table.members-table td:last-child:contains('Active')").css("background-color", "#00FF00");
-	$("table.members-table td:last-child:contains('Deceased')").css("background-color", "#A6A6A6");
-	$("table.members-table td:last-child:contains('Unknown')").css("background-color", "#AD5AAD");
-	$("table.members-table td:last-child:contains('Left Familia')").css("background-color", "#AFEEEE");
-	$("table.members-table td:last-child:contains('Left familia')").css("background-color", "#AFEEEE");
-	$("table.members-table td:last-child:contains('Temporary Leave')").css("background-color", "#AFEEEE");
-	$("table.members-table td:last-child:contains('Temporary leave')").css("background-color", "#AFEEEE");
-	$("table.members-table td:last-child:contains('Partially Left Familia')").css("background-color", "#AFEEEE");
-	$("table.members-table td:last-child:contains('Partially Left familia')").css("background-color", "#AFEEEE");
-	$("table.members-table td:last-child:contains('Partially left Familia')").css("background-color", "#AFEEEE");
-	$("table.members-table td:last-child:contains('Partially left familia')").css("background-color", "#AFEEEE");
-	$("table.members-table td:last-child:contains('Left Guild')").css("background-color", "#AFEEEE");
-	$("table.members-table td:last-child:contains('Left guild')").css("background-color", "#AFEEEE");
-	$("table.members-table td:last-child:contains('Imprisoned')").css("background-color", "#FFFF00");
-	$("table.members-table td:last-child:contains('Defected')").css("background-color", "#FF4C4C");
+
+	/* Case insensitive (icontains) */
+	jQuery.expr.pseudos.icontains = jQuery.expr.createPseudo(function(arg) {
+		return function( elem ) {
+			return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+		};
+	});
+
+	lastColumn = "table.members-table td:last-child";
+	$(lastColumn + ':icontains("Active")').css("background-color", "#00FF00");
+	$(lastColumn + ':icontains("Deceased")').css("background-color", "#A6A6A6");
+	$(lastColumn + ':icontains("Unknown")').css("background-color", "#AD5AAD");
+	$(lastColumn + ':icontains("Left familia")').css("background-color", "#AFEEEE");
+	$(lastColumn + ':icontains("Partially left Familia")').css("background-color", "#AFEEEE");
+	$(lastColumn + ':icontains("Temporary leave")').css("background-color", "#AFEEEE");
+	$(lastColumn + ':icontains("Left guild")').css("background-color", "#AFEEEE");
+	$(lastColumn + ':icontains("Imprisoned")').css("background-color", "#FFFF00");
+	$(lastColumn + ':icontains("Defected")').css("background-color", "#FF4C4C");
+
+	/* Special case for Bell */
+	firstColumn = "table.members-table td:first-child";
+	$(firstColumn + ':contains("Bell Cranel")').each(function() {
+		$(this).siblings(':last-child').css("background-color", "#AFEEEE");
+	});
 });

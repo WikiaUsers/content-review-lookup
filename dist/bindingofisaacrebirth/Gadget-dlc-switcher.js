@@ -1,14 +1,14 @@
 var dlcSwitcher = {
 	/**
 	 * The article content container, containing the parser output.
-	 * @type {JQuery}
+	 * @type {HTMLDivElement}
 	 */
-	$contentText: null,
+	contentText: null,
 	/**
 	 * The parser output.
-	 * @type {JQuery}
+	 * @type {HTMLDivElement}
 	 */
-	$parserOutput: null,
+	parserOutput: null,
 	/**
 	 * The table of contents from the parser output.
 	 * @type {JQuery}
@@ -16,9 +16,9 @@ var dlcSwitcher = {
 	$toc: null,
 	/**
 	 * The DLC switcher form items.
-	 * @type {JQuery}
+	 * @type {HTMLLIElement[]}
 	 */
-	$items: null,
+	items: [],
 
 	/**
 	 * The current URL.
@@ -160,70 +160,32 @@ var dlcSwitcher = {
 	 * Initializes the gadget on a page.
 	 */
 	init: function () {
-		console.log( 'DLC Switcher v0.12.1' );
+		console.log( 'DLC Switcher v0.13.1' );
 
-		// Only use the gadget on articles (and test user page).
 		if (
-			!$( 'body.mediawiki' ).hasClass( 'ns-0' ) &&
-			!$( 'body.mediawiki' ).hasClass( 'page-User_Derugon_Sandbox_DLC_switcher' )
+			!document.body.classList.contains( 'ns-0' ) &&
+			!document.body.classList.contains( 'page-User_Derugon_Sandbox_DLC_switcher' )
 		) {
 			return;
 		}
 
-		// Initializes some JQuery elements.
-		dlcSwitcher.$contentText = $( '#mw-content-text' );
-		dlcSwitcher.$parserOutput = dlcSwitcher.$contentText
-			.find( '.mw-parser-output' );
-		dlcSwitcher.$items = $(
-			'<li class="dlc-switcher-item" id="dlc-switcher-item-0" title="Hide content unavailable with Rebirth"></li>' +
-			'<li class="dlc-switcher-item" id="dlc-switcher-item-1" title="Hide content unavailable with Afterbirth"></li>' +
-			'<li class="dlc-switcher-item" id="dlc-switcher-item-2" title="Hide content unavailable with Afterbirth+"></li>' +
-			'<li class="dlc-switcher-item" id="dlc-switcher-item-3" title="Hide content unavailable with Repentance"></li>'
-		);
+		dlcSwitcher.contentText  = document.getElementById( 'mw-content-text' );
+		dlcSwitcher.parserOutput = dlcSwitcher.contentText
+			.getElementsByClassName( 'mw-parser-output' )[ 0 ];
 
-		// Checks if the entire page is limited to some versions.
-		dlcSwitcher.pageFilter = Math.pow( 2, dlcSwitcher.$items.length ) - 1;
-		var $contextBox = dlcSwitcher.$parserOutput.find( '.context-box' ).first();
-		if ( $contextBox.length && !$contextBox.prevAll( ':header' ).length ) {
-			dlcSwitcher.pageFilter = dlcUtil.getDlcFilter(
-				$contextBox.children( 'img.dlc' ).get( 0 )
-			);
-		}
+		dlcSwitcher.generateDlcSwitcherItems();
+		dlcSwitcher.setPageFilter();
+		dlcSwitcher.insertDlcSwitcherElement();
 
-		// Generates the DLC switcher form and puts it on the page.
-		dlcSwitcher.$items.each( dlcSwitcher.initItem );
-		var $ul = $( '<ul id="dlc-switcher">' ).append( dlcSwitcher.$items );
-		if ( $( 'body.rootpage-Binding_of_Isaac_Rebirth_Wiki' ).length ) {
-			$( '#mf-welcome' )
-				.append(
-					'<p>Use one of the following filters to hide the wiki ' +
-					'content unrelated to your game version:</p><br>'
-				)
-				.after( $ul.addClass( 'dlc-switcher-block' ) );
-		} else {
-			$ul.appendTo( '#firstHeading' );
-		}
-
-		// Updates the selected DLC filter from the URL parameters.
-		if ( dlcSwitcher.selectedIndex === -1 ) {
-			var urlParam = mw.util.getParamValue( 'dlcfilter' );
-			if ( !urlParam ) {
-				return;
-			}
-			dlcSwitcher.selectedIndex = parseInt( urlParam, 10 );
-			if (
-				isNaN( dlcSwitcher.selectedIndex ) ||
-				dlcSwitcher.selectedIndex < 0 ||
-				dlcSwitcher.selectedIndex >= dlcSwitcher.$items.length
-			) {
-				return;
-			}
+		if ( !dlcSwitcher.updateSelectedIndex() ) {
+			return;
 		}
 		dlcUtil.selectedFilter = Math.pow( 2, dlcSwitcher.selectedIndex );
 
 		// Sets the DLC icon removal function according to the previously
 		// retrieved global article DLC.
-		dlcUtil.update = function ( $elem ) {
+		dlcUtil.update = function ( elem ) {
+			var $elem = $( elem );
 			var processors = Object.entries( dlcSwitcher.preProcessors );
 			for ( var i = 0; i < processors.length; ++i ) {
 				$elem.find( processors[ i ][ 0 ] ).each( processors[ i ][ 1 ] );
@@ -242,39 +204,135 @@ var dlcSwitcher = {
 			}
 		};
 
-		// Updates the selected DLC switcher form item.
-		dlcSwitcher.url.searchParams.delete( 'dlcfilter' );
-		$( dlcSwitcher.$items.get( dlcSwitcher.selectedIndex ) )
-			.addClass( 'dlc-switcher-item-active' )
-			.children()
-			.attr( 'href', dlcSwitcher.url.href );
+		dlcSwitcher.updateSelectedDlcSwitcherItem();
+		dlcUtil.update( dlcSwitcher.parserOutput );
+		dlcSwitcher.updateAnchorsDlcFilter();
+	},
 
-		// Modifies the page content to remove any information not from the
-		// selected version.
-		dlcUtil.update( dlcSwitcher.$parserOutput );
+	/**
+	 * Generates the DLC switcher form items.
+	 */
+	generateDlcSwitcherItems: function () {
+		var item = document.createElement( 'li' );
+		item.id = 'dlc-switcher-item-0';
+		item.title = 'Hide content unavailable with Rebirth';
+		item.classList.add( 'dlc-switcher-item' );
+		dlcSwitcher.items.push( item );
+		item = document.createElement( 'li' );
+		item.id = 'dlc-switcher-item-1';
+		item.title = 'Hide content unavailable with Afterbirth';
+		item.classList.add( 'dlc-switcher-item' );
+		dlcSwitcher.items.push( item );
+		item = document.createElement( 'li' );
+		item.id = 'dlc-switcher-item-2';
+		item.title = 'Hide content unavailable with Afterbirth+';
+		item.classList.add( 'dlc-switcher-item' );
+		dlcSwitcher.items.push( item );
+		item = document.createElement( 'li' );
+		item.id = 'dlc-switcher-item-3';
+		item.title = 'Hide content unavailable with Repentance';
+		item.classList.add( 'dlc-switcher-item' );
+		dlcSwitcher.items.push( item );
+	},
 
-		// Adds a corresponding "dlcfilter" URL parameter to links where none
-		// is used.
-		$( ":not( .mw-editsection, .dlc-switcher-item ) > a[ href ^= '/wiki/' ]" )
-			.prop( 'href', dlcSwitcher.updateHrefDlcFilter );
+	/**
+	 * Checks if the entire page is limited to some versions then sets the page
+	 * global DLC filter accordingly.
+	 */
+	setPageFilter: function () {
+		dlcSwitcher.pageFilter = Math.pow( 2, dlcSwitcher.items.length ) - 1;
+		var contextBoxes = dlcSwitcher.parserOutput
+			.getElementsByClassName( 'context-box' );
+		if ( !contextBoxes.length ) {
+			return;
+		}
+		var element = contextBoxes[ 0 ].previousElementSibling;
+		while ( element ) {
+			if ( dlcSwitcher.higherHeaders.hasOwnProperty( element.tagName ) ) {
+				return;
+			}
+			element = element.previousElementSibling;
+		}
+		dlcSwitcher.pageFilter = dlcUtil.getDlcFilter(
+			contextBoxes[ 0 ].getElementsByClassName( 'dlc' )[ 0 ]
+		);
+	},
+
+	/**
+	 * Generates the DLC switcher form and puts it on the page.
+	 */
+	insertDlcSwitcherElement: function () {
+		dlcSwitcher.items.forEach( dlcSwitcher.initItem );
+		var ul = document.createElement( 'ul' );
+		ul.id = 'dlc-switcher';
+		for ( var i in dlcSwitcher.items ) {
+			ul.appendChild( dlcSwitcher.items[ i ] );
+		}
+		var body = document.querySelector( 'body' );
+		if ( !body.classList.contains( 'rootpage-Binding_of_Isaac_Rebirth_Wiki' ) ) {
+			document.getElementById( 'firstHeading' ).appendChild( ul );
+			return;
+		}
+		ul.classList.add( 'dlc-switcher-block' );
+
+		var pageLanguage = dlcSwitcher.util.getPageLanguage();
+		var noticePage = 'mediawiki:gadget-dlc-switcher/mf-welcome/' + pageLanguage;
+		if ( !mw.Title.exists( noticePage ) ) {
+			noticePage = 'mediawiki:gadget-dlc-switcher/mf-welcome/en';
+		}
+
+		dlcSwitcher.util.getPageContent( noticePage, function ( pageContent ) {
+			document.getElementById( 'mf-welcome' ).append(
+				pageContent,
+				document.createElement( 'br' ),
+				ul
+			);
+		} );
 	},
 
 	/**
 	 * Adds a link to a DLC switcher item or deactivates it if it does not match
 	 * the page DLC filter.
 	 * @this HTMLElement
-	 * @param {number} index 
+	 * @param {HTMLLIElement} item  
+	 * @param {number}        index 
 	 */
-	initItem: function ( index ) {
-		var $this = $( this );
+	initItem: function ( item, index ) {
 		if ( ( Math.pow( 2, index ) & dlcSwitcher.pageFilter ) === 0 ) {
-			$this
-				.addClass( 'dlc-switcher-item-deactivated' )
-				.removeAttr( 'title' );
+			item.classList.add( 'dlc-switcher-item-deactivated' );
+			item.removeAttribute( 'title' );
 			return;
 		}
 		dlcSwitcher.url.searchParams.set( 'dlcfilter', index.toString() );
-		$this.append( '<a href="' + dlcSwitcher.url.href + '"></a>' );
+		var a = document.createElement( 'a' );
+		a.href = dlcSwitcher.url.href;
+		item.appendChild( a );
+	},
+
+	/**
+	 * Updates the index of the currently selected DLC switcher form item from
+	 * the URL parameters.
+	 * @returns True if a valid DLC filter should be applied, false otherwise.
+	 */
+	updateSelectedIndex: function () {
+		if ( dlcSwitcher.selectedIndex !== -1 ) {
+			return true;
+		}
+		var urlParam = mw.util.getParamValue( 'dlcfilter' );
+		if ( !urlParam ) {
+			return false;
+		}
+		dlcSwitcher.selectedIndex = parseInt( urlParam, 10 );
+		if (
+			dlcSwitcher.util.isIndex(
+				dlcSwitcher.selectedIndex,
+				dlcSwitcher.items
+			)
+		) {
+			return true;
+		}
+		dlcSwitcher.selectedIndex = -1;
+		return false;
 	},
 
 	/**
@@ -649,7 +707,7 @@ var dlcSwitcher = {
 		// Removes the table of contents item, then updates the number of the
 		// following items.
 		if ( !dlcSwitcher.$toc ) {
-			dlcSwitcher.$toc = dlcSwitcher.$parserOutput.find( '#toc' );
+			dlcSwitcher.$toc = $( dlcSwitcher.parserOutput ).find( '#toc' );
 		}
 		if ( dlcSwitcher.$toc.length ) {
 			var $tocElement   = dlcSwitcher.$toc.find(
@@ -727,24 +785,99 @@ var dlcSwitcher = {
 	},
 
 	/**
-	 * Updates the "dlcfilter" URL parameter of a link.
-	 * @param {number} _ 
-	 * @param {string} href The link href value.
-	 * @returns The new link href value.
+	 * Updates the selected DLC switcher form item.
 	 */
-	updateHrefDlcFilter: function ( _, href ) {
-		var url = new URL( href );
-		//url.pathname.substr( 6 ).match( '^/wiki/[^:/]+(/.*)$' )
-		if (
-			url.pathname.match( '^/wiki/(?:[^:/]+(?:/.*)?|' +
-				dlcSwitcher.specialArticleTitles + ')$' ) &&
-			!url.searchParams.has( 'dlcfilter' )
-		) {
+	updateSelectedDlcSwitcherItem: function () {
+		dlcSwitcher.url.searchParams.delete( 'dlcfilter' );
+		var item = dlcSwitcher.items[ dlcSwitcher.selectedIndex ];
+		item.classList.add( 'dlc-switcher-item-active' );
+		item.firstElementChild.setAttribute( 'href', dlcSwitcher.url.href );
+	},
+
+	/**
+	 * Adds a corresponding "dlcfilter" URL parameter to anchors where none is
+	 * used.
+	 */
+	updateAnchorsDlcFilter: function () {
+		var anchors = document.getElementsByTagName( 'a' );
+		for ( var i in anchors ) {
+			var anchor = anchors[ i ];
+			if ( !anchor.href ) {
+				continue;
+			}
+			var parentClassList = anchor.parentElement.classList;
+			if (
+				parentClassList.contains( 'mw-editsection' ) ||
+				parentClassList.contains( 'dlc-switcher-item' )
+			) {
+				continue;
+			}
+			var url = new URL( anchor.href );
+			if (
+				!url.pathname.match(
+					'^/wiki/(?:[^:/]+(?:/.*)?|' +
+					dlcSwitcher.specialArticleTitles + ')$'
+				) ||
+				url.searchParams.has( 'dlcfilter' )
+			) {
+				continue;
+			}
 			url.searchParams.append( 'dlcfilter',
 				dlcSwitcher.selectedIndex.toString()
 			);
+			anchor.href = url.href;
 		}
-		return url.href;
+	},
+
+	util: {
+		/**
+		 * The language codes used on the wiki.
+		 */
+		languageCodes: [ 'en', 'es', 'it', 'ja', 'ru', 'zh' ],
+
+		/**
+		 * Gets the language used on the page.
+		 * @returns The language code used on the page.
+		 */
+		getPageLanguage: function () {
+			var pageName = mw.config.get( 'wgPageName' );
+			var lastPartIndex = pageName.lastIndexOf( '/' );
+			if ( lastPartIndex === -1 ) {
+				return 'en';
+			}
+			var lastPart = pageName.substr( lastPartIndex + 1 );
+			if ( !dlcSwitcher.util.languageCodes.includes( lastPart ) ) {
+				return 'en';
+			}
+			return lastPart;
+		},
+
+		/**
+		 * Gets the HTML content of a page.
+		 * @param {string}              pageName The name of the page.
+		 * @param {(e:ChildNode)=>void} callback The function to call when the
+		 *                                       page content has been retrieved.
+		 */
+		getPageContent: function ( pageName, callback ) {
+			new mw.Api()
+				.parse( '{{' + pageName + '}}' )
+				.then( function ( parserOutput ) {
+					var template = document.createElement( 'template' );
+					template.innerHTML = parserOutput;
+					return template.content.firstChild.firstChild;
+				} )
+				.then( callback );
+		},
+
+		/**
+		 * Indicates if a number is a valid index of an array.
+		 * @param {number} number The number.
+		 * @param {any[]}  array  The array.
+		 * @returns True if "array[ number ]" exists, false otherwise.
+		 */
+		isIndex: function ( number, array ) {
+			return !isNaN( number ) && number >= 0 && number < array.length;
+		}
 	}
 };
 

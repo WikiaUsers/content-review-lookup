@@ -1,16 +1,16 @@
 function timer(){
 for (var i = 4; i > 1; i = i - 1){
-  $('<span style="font-weight:bold;" id="chance' + i +'"></span>').prependTo('.cookpotcell');
-  $('<span style="position: relative;"><img class="hiddeningredientcookpot" id="result' + i +'"></span>').prependTo('.cookpotcell');	
+  $('<span style="font-weight:bold;" id="chance' + i +'"></span>').prependTo('#cookpotWorkSpace');
+  $('<span style="position: relative;"><img class="hiddeningredientcookpot" id="result' + i +'"></span>').prependTo('#cookpotWorkSpace');	
 }
 
-$('<span style="font-weight:bold;" id="chance1"></span>').prependTo('.cookpotcell');
-$('<span style="position: relative;"><img class="ingredientcookpot" id="result1"></span>').prependTo('.cookpotcell');
-$('<span style="position: relative;"><img id="arrowcookpot" class="cookpotarrow" src = "https://vignette.wikia.nocookie.net/dont-starve/images/d/d2/Crock_Pot.png/revision/latest?cb=20130110150334&path-prefix=ru"></span>').prependTo('.cookpotcell');
-$('<span style="position: relative;"><img class="ingredientcookpot" id="cookpot4" onclick="cookpotDelete(3)"></span>').prependTo('.cookpotcell');
-$('<span style="position: relative;"><img class="ingredientcookpot" id="cookpot3" onclick="cookpotDelete(2)"></span>').prependTo('.cookpotcell');
-$('<span style="position: relative;"><img class="ingredientcookpot" id="cookpot2" onclick="cookpotDelete(1)"></span>').prependTo('.cookpotcell');
-$('<span style="position: relative;"><img class="ingredientcookpot" id="cookpot1" onclick="cookpotDelete(0)"></span>').prependTo('.cookpotcell');
+$('<span style="font-weight:bold;" id="chance1"></span>').prependTo('#cookpotWorkSpace');
+$('<span style="position: relative;"><img class="ingredientcookpot" id="result1"></span>').prependTo('#cookpotWorkSpace');
+$('<span style="position: relative;"><img id="arrowcookpot" class="cookpotarrow" src = "https://vignette.wikia.nocookie.net/dont-starve/images/d/d2/Crock_Pot.png/revision/latest?cb=20130110150334&path-prefix=ru"></span>').prependTo('#cookpotWorkSpace');
+$('<span style="position: relative;"><img class="ingredientcookpot" id="cookpot4" onclick="cookpotDelete(3)"></span>').prependTo('#cookpotWorkSpace');
+$('<span style="position: relative;"><img class="ingredientcookpot" id="cookpot3" onclick="cookpotDelete(2)"></span>').prependTo('#cookpotWorkSpace');
+$('<span style="position: relative;"><img class="ingredientcookpot" id="cookpot2" onclick="cookpotDelete(1)"></span>').prependTo('#cookpotWorkSpace');
+$('<span style="position: relative;"><img class="ingredientcookpot" id="cookpot1" onclick="cookpotDelete(0)"></span>').prependTo('#cookpotWorkSpace');
  
 $('#cpclear').attr('onclick','cookpotDeleteAll()');
 $(".cookpot > div > p > span > a").each(function(){
@@ -46,7 +46,11 @@ var cookpotTimer;
 setTimeout(timer,1000);
 window.cookpotDeleteResult = function(){
     if((cookpot[0] !== undefined) && (cookpot[1] !== undefined) && (cookpot[2] !== undefined) && (cookpot[3] !== undefined)){
+    if(navigator.userAgent.includes('Firefox')){
+    $('#result1').removeAttr('src');
+    }else{
     $('#result1').attr('src',' ');
+    }
     $('#arrowcookpot').attr('src',"https://vignette.wikia.nocookie.net/dont-starve/images/d/d2/Crock_Pot.png/revision/latest?cb=20130110150334&path-prefix=ru");
     $('#chance1').text(' ');
     $('#description1').css({"display":"none"});
@@ -69,14 +73,22 @@ window.cookpotDeleteResult = function(){
 window.cookpotDelete = function(i){
     cookpotDeleteResult();
     delete cookpot[i];
-    $('#cookpot' + (i + 1)).attr('src',' ');
+    if(navigator.userAgent.includes('Firefox')){
+    $('#cookpot' + (i + 1)).removeAttr('src');
+    }else{
+    $('#cookpot' + (i + 1)).attr('src',' ');	
+    }
 };
  
 window.cookpotDeleteAll = function(){
     cookpotDeleteResult();
     for(var i = 0;i < 4; i++){
     delete cookpot[i];
-    $('#cookpot' + (i + 1)).attr('src',' ');
+    if(navigator.userAgent.includes('Firefox')){
+    $('#cookpot' + (i + 1)).removeAttr('src');
+    }else{
+    $('#cookpot' + (i + 1)).attr('src',' ');	
+    }
     }
 };
  

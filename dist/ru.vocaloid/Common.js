@@ -3,3 +3,9 @@ Redptich|Парторг
 Pdtplfs|Комиссар
 Такос2|Ответственный работник
 GrilledTheorist|Смотрящий
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:Flags.js',
+    ]
+});

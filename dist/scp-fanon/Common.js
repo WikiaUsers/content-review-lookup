@@ -11,6 +11,8 @@ window.UserTagsJS = {
 	oasisPlaceBefore: '',
 };
 // Input Credentials
-function InputCredentials() { 
-	document.getElementByID("CredOutput").style.display = "block";
-}
+window.onclick = function(event) {
+	if (event.target == document.getElementsByClassName("cred-input")[0]) {
+		document.getElementsByClassName("cred-output-hide")[0].classList.remove('cred-output-hide');
+	}
+};

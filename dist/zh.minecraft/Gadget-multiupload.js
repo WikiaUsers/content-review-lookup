@@ -69,7 +69,7 @@ mw.loader.using(['site']).then(function () {
 				gNF();
 				return;
 			}
-			$.ajax({ url: '/zh/api.php', data: { action: 'query', meta: 'tokens', format: 'json' }, dataType: 'json' }).done(function (data) {
+			$.ajax({ url: mw.util.wikiScript('api'), data: { action: 'query', meta: 'tokens', format: 'json' }, dataType: 'json' }).done(function (data) {
 				fd = new FormData();
 				fd.append("action", "upload");
 				fd.append("token", data.query.tokens.csrftoken);
@@ -81,7 +81,7 @@ mw.loader.using(['site']).then(function () {
 				fd.append("format", "json");
 				fd.append("comment", comment);
 				$.ajax({
-					url: '/zh/api.php',
+					url: mw.util.wikiScript('api'),
 					method: 'POST',
 					data: fd,
 					cache: false,

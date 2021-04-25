@@ -54,11 +54,11 @@
         medalMatcher: function(url) {
             /* 
             // Checking for wikia image's links
-            // Can be used 3 serves: image, images or vignette
-            // Images and vignette can have number after it - images2
+            // Can be used 4 serves: image, images, static or vignette
+            // Those subdomains can have number after it - images2
             // Links SHOULD have wikia's server - .wikia.nocookie.net
             */
-            if (url.match(/https?:\/\/(images?|vignette)\d?\.wikia\.nocookie\.net\//)) {
+            if (url.match(/https?:\/\/(images?|static|vignette)\d?\.wikia\.nocookie\.net\//)) {
                 return true;
             }
             

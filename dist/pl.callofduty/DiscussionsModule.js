@@ -33,13 +33,15 @@ $(function () {
 			.text(mw.messages.get("oasis-more"))
 	});
 	
-    $.ajax("https://services.fandom.com/discussion/" + config.wgCityId + "/threads", {
+    $.ajax(config.wgServer + config.wgScriptPath + "/wikia.php", {
         method: "get",
         data: {
-            limit: 4,
-            sortBy: "trending",
-            responseGroup: "small",
-            viewableOnly: "true"
+            controller: "DiscussionThread",
+			method: "getThreads",
+			limit: 4,
+			sortBy: "trending",
+			responseGroup: "small",
+			viewableOnly: "true"
         }
     }).done(function (result) {
         var threads = result._embedded.threads;

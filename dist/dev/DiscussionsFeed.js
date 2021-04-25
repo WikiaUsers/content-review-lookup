@@ -98,7 +98,7 @@ function updateFeed(content, isMod, canBlock, epoch) {
             }
         }
     };
-    request.open("GET", "https://services.fandom.com/discussion/" + wgCityId + "/posts?limit=" + rcLimit + "&since=" + dt.toISOString() + "&page=0&responseGroup=small&reported=false&viewableOnly=" + (!isMod).toString(), true);
+    request.open("GET", mw.util.wikiScript("wikia") + "?controller=DiscussionPost&method=getPosts&limit=" + rcLimit + "&since=" + dt.toISOString() + "&page=0&responseGroup=small&reported=false&viewableOnly=" + (!isMod).toString(), true);
     request.setRequestHeader('Accept', 'application/hal+json');
     request.withCredentials = true;
     request.send();
@@ -130,7 +130,8 @@ function initFeed(content, isMod, canBlock) {
             }
         }
     };
-    request.open("GET", "https://services.fandom.com/discussion/" + wgCityId + "/posts?limit=" + rcLimit + "&page=0&responseGroup=small&reported=false&viewableOnly=" + (!isMod).toString(), true);
+    
+    request.open("GET", mw.util.wikiScript("wikia") + "?controller=DiscussionPost&method=getPosts&limit=" + rcLimit + "&page=0&responseGroup=small&reported=false&viewableOnly=" + (!isMod).toString(), true);
     request.setRequestHeader('Accept', 'application/hal+json');
     request.withCredentials = true;
     request.send();
@@ -152,4 +153,4 @@ function createDiscussionsFeed() {
     }
 }
 
-$(createDiscussionsFeed);
+mw.loader.using('mediawiki.util').then(createDiscussionsFeed);

@@ -4149,6 +4149,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"fanciful": {
+				"name": "Fanciful",
+				"colors": [
+					"rainbow",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"fantasy": {
 				"name": "Fantasy",
 				"colors": [
@@ -6795,6 +6803,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "unbreedable"
+			},
+			"jealous": {
+				"name": "Jealous",
+				"colors": [
+					"rainbow",
+					"green"
+				],
+				"rarity": "common"
 			},
 			"jester": {
 				"name": "Jester",
@@ -10123,6 +10139,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"perky": {
+				"name": "Perky",
+				"colors": [
+					"rainbow",
+					"white",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"peryton": {
 				"name": "Peryton",
 				"colors": [
@@ -11927,6 +11952,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"sealine": {
+				"name": "Sealine",
+				"colors": [
+					"rainbow",
+					"blue",
+					"green"
+				],
+				"rarity": "unbreedable"
+			},
 			"sealord": {
 				"name": "Sealord",
 				"colors": [
@@ -12089,6 +12123,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"white",
 					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"sharing": {
+				"name": "Sharing",
+				"colors": [
+					"rainbow",
+					"blue",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},

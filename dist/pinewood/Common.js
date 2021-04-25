@@ -3,31 +3,31 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
             'bot': {
-                u: 'BOT',
+                u: 'Bot',
                 order: -1/0 
             },
             bureaucrat: { 
-                u: 'BUREAUCRAT',
+                u: 'Bureaucrat',
                 order: 1 
             },
             sysop: {
-                u: 'ADMINISTRATOR',
+                u: 'Administrator',
                 order: 2
             },
             moderator: {
-                u: 'MODERATOR',
+                u: 'Moderator',
                 order: 3
             },
             'content-moderator': {
-                u: 'CONTENT MODERATOR',
+                u: 'Content Moderator',
                 order: 4 
             },
             threadmoderator: {
-                u: 'DISCUSSION MODERATOR',
+                u: 'Discussion Moderator',
                 order: 5 
             },
             newuser: { 
-                u: 'NEW USER',
+                u: 'New User',
                 order: 6
             }
 	}
@@ -40,11 +40,6 @@ UserTagsJS.modules.newuser = { // should be equal to auto-confirmed
 	days: 3,
 	edits: 0,
 	namespace: 0
-};
-var MessageBlock = {
-  title : 'Blocked',
-  message : 'You have been blocked for $2 because you have $1. If you wish to appeal this block please contact me or another administrator.',
-  autocheck : true
 };
 var MessageBlock = {
   title : 'Blocked',

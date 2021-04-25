@@ -712,8 +712,8 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 					'ip-tool-geolocate': "//db-ip.com/${user}",
 				},
 				user: {
-					'user-tool-js': "//ucp.fandom.com/wiki/User:${user}/global.js",
-					'user-tool-css': "//ucp.fandom.com/wiki/User:${user}/global.css",
+					'user-tool-js': "//community.fandom.com/wiki/User:${user}/global.js",
+					'user-tool-css': "//community.fandom.com/wiki/User:${user}/global.css",
 					'user-tool-services': '//services.fandom.com/user-attribute/user/${id}',
 					'user-tool-cc_log': "//community.fandom.com/wiki/Special:Log/rights?page=User:${user}",
 				},

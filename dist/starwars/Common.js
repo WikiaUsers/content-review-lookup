@@ -743,6 +743,7 @@ function disableOldForumEdit() {
 	if ( typeof( enableOldForumEdit ) != 'undefined' && enableOldForumEdit ) {
 		return;
 	}
+	$( '#old-forum-warning-section .mw-editsection' ).remove();
 	if ( !document.getElementById( 'old-forum-warning' ) ) {
 		return;
 	}
