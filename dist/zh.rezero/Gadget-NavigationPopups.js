@@ -229,8 +229,8 @@
         /////////////////////////////////////
         // 以下内容由 [[User:AnnAngela]] 补正
         /////////////////////////////////////
-        "globalSearchHint": wgULS("在维基百科其他语言搜索“%s”", "在維基百科其他語言搜尋「%s」"),
-        "googleSearchHint": wgULS("在 Google 上搜索“%s”", "在 Google 上搜尋「%s」"),
+        "globalSearchHint": wgULS("在维基百科其他语言搜索「%s」", "在維基百科其他語言搜尋「%s」"),
+        "googleSearchHint": wgULS("在 Google 上搜索「%s」", "在 Google 上搜尋「%s」"),
         "enable previews": wgULS("启用预览", "啟用預覽"),
         "show preview": wgULS("禁用预览", "禁用預覽"),
         "historyfeedHint": wgULS("该页面的近期更改 RSS feed", "該頁面的近期變更 RSS feed"),
@@ -716,7 +716,7 @@ $(function() {
     function insertArticlePreview(download, art, navpop) {
         if (download && typeof download.data == typeof "") {
             if (art.namespaceId() == pg.nsTemplateId && getValueOf("popupPreviewRawTemplates")) {
-                var h = '<hr /><span style="font-family: monospace;">' + download.data.entify().split("\\n").join("<br />\\n") + "</span>";
+                var h = '<hr /><span style="font-family: monospace;">' + download.data.entify().split("\\n").join("<br>\\n") + "</span>";
                 setPopupHTML(h, "popupPreview", navpop.idNumber);
             } else {
                 var p = prepPreviewmaker(download.data, art, navpop);

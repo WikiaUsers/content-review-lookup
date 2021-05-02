@@ -1405,9 +1405,9 @@ $(function() {
                         '<span id = "calculator_ew_skill_trainedbar2" style="text-align: left; width: 50%; background-color: #444444"></span>' +
                     '</div></td>' +
                     '</td>' +
-                    '<td><input id="calculator_ew_nweapons" type="number" value="0" min="0" max="1000" style="width:40px;" disabled></td>' +
-                    '<td><input id="calculator_ew_weapcost_gold" type="number" value="0" min="0" step = "262.5" max="2626500" style="width:65px;" disabled>k</td>' +
-                    '<td><input id="calculator_ew_weapcost_coins"  type="number" value="0" min="0" step = "25" max="25000" style="width:50px;" disabled></td>' +
+                    '<td><input id="calculator_ew_nweapons" type="number" value="0" min="0" max="99999" style="width:60px;" disabled></td>' +
+                    '<td><input id="calculator_ew_weapcost_gold" type="number" value="0" min="0" step = "262.5" max="9999999" style="width:90px;" disabled>k</td>' +
+                    '<td><input id="calculator_ew_weapcost_coins"  type="number" value="0" min="0" step = "25" max="999975" style="width:70px;" disabled></td>' +
                     '</tr>' +
                 '</table><span id="calculator_ew_warning", style="color:red;"></span>' +
                 '<br/><br/>' +

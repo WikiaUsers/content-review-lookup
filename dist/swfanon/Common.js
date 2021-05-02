@@ -260,6 +260,7 @@
     window.importArticles({
       type: "script",
       articles: [
+      	"MediaWiki:AutoDelete.js",
         "u:dev:MediaWiki:DiscussionTemplates.js"
       ]
     });

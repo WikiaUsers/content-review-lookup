@@ -52,6 +52,21 @@ var config = {
     characterData: true
 	};
 $( document ).ready(function() {
+	if($(".duMap").length > 0)
+	{
+		$.getScript( "/wiki/MediaWiki:Leaflet.js?action=raw" ).done(function( script, textStatus ) {
+			$.getScript( "/wiki/MediaWiki:MapData.js?action=raw" ).done(function( script, textStatus ) {
+	    		$.getScript( "/wiki/MediaWiki:MapTest.js?action=raw" ).done(function( script, textStatus ) {
+	    			$(".duMap").each(function(index){
+	    				var id = "duMap"+index;
+	    				$(this).attr("id",id);
+	    				initMap(id);
+	    			})
+	    			
+				});
+			 });
+		});
+	}
     setInterval(function(){  
     $("img").each(function (i, v){
 	    if($(v)[0].hasAttribute('src'))

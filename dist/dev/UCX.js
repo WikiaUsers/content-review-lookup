@@ -17,3 +17,6 @@
     	}
 	});
 })();
+
+/* Now you can access Search via pressing Fandom logo */
+$('*[data-tracking-label="logo"]').attr('href', mw.config.get("wgScriptPath") + "/wiki/Special:Search");

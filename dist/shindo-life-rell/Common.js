@@ -6,6 +6,13 @@ var MessageBlock = {
 };
 TBL_GROUP = "roblox-en";
 
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:UserAccountAge/code2.js',
+    ]
+});
+
 //Credits to HumansCanWinElves for the following script
 (function (mw, $, window) {
 	

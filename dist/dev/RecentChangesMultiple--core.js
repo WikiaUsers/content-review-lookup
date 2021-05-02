@@ -686,6 +686,9 @@ var RCData =  (function () {
         this.type = null;
     };
     RCData.prototype.init = function (pData) {
+        if (!pData.title) {
+            pData.title = "";
+        } 
         this.date = new Date(pData.timestamp);
         this.userEdited = pData.user != "" && pData.anon != "";
         this.author = this.userEdited ? pData.user : (pData.anon ? pData.anon : pData.user);

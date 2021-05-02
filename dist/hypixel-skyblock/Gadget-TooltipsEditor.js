@@ -42,7 +42,7 @@ $.when(
 	console.log('Loading TooltipsEditor...');
 	
 	function replaceLines(s) {
-		return s.replaceAll('\n', '/');
+		return s.replaceAll(/(?<!\\)\//g, '\\/').replaceAll(/\n/g, '/');
 	}
 	
 	function convertSlashes(s) {
@@ -152,8 +152,7 @@ $.when(
 						].join(""));
 					});
 					
-					ret = "return {\n" + ret.join('\n') + "\n}\n".replaceAll('&amp;', '&').replaceAll(/(?<!\\)\\\//g, '\\\\/');
-					console.log(ret);
+					ret = "return {\n" + ret.join('\n') + "\n}\n".replaceAll('&amp;', '&').replaceAll(/\\/g, '\\\\');
 					
 					api.postWithEditToken({
 						action: "edit",
@@ -528,7 +527,7 @@ $.when(
 			function updatePreview() {
 				$('#TooltipsEditor-preview').attr({
 					'data-minetip-text': replaceLines(ace.tooltipsTextEditor.getValue()),
-					'data-minetip-title': replaceLines(ace.tooltipsTitleEditor.getValue()),
+					'data-minetip-title': ace.tooltipsTitleEditor.getValue(),
 				});
 			}
 			

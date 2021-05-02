@@ -237,7 +237,12 @@ gridFilters = {
         }
         
         if (($('#grid-filter-affinities-field')[0].selectedIndex > 0 && $('#grid-filter-affinities-field')[0].selectedIndex < 5) || $('#grid-filter-special-field')[0].selectedIndex > 1) {
-        	$('#grid-matches').text($(gridContainer + ' > span:visible').length + ' matching cards');
+        	var len = $(gridContainer + ' > span:visible').length;
+        	if (len === 1) {
+        		$('#grid-matches').text('1 matching card');
+        	} else {
+        		$('#grid-matches').text(len + ' matching cards');
+        	}
         } else {
         	var i = 0;
         	$(gridContainer + ' > span:visible').each(function() {
@@ -246,7 +251,11 @@ gridFilters = {
         		//if ($(this).data('special').includes('Starter')) i++;
         		if ($(this).data('special').includes('Normal')) i++;
         	});
-        	$('#grid-matches').text(i + ' matching cards');
+        	if (i === 1) {
+        		$('#grid-matches').text('1 matching card');
+        	} else {
+        		$('#grid-matches').text(i + ' matching cards');
+        	}
         }
         $(gridContainer).append($('#grid-matches'));
 

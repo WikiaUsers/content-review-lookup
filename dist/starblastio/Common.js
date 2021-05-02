@@ -53,3 +53,38 @@ if (mw.config.get('wgTitle') === 'Changelogs') {
 	})
 	.fail(function (e) {$("#mw-changelog").html("<p>An error occured while loading data from the server!</p><p>Please reload the page and try again</p>")});
 }
+
+(function(){
+	function hideFade () {
+		$( "#backtotop" ).hide ();
+		$( function () {
+			$( window ).scroll( function () {
+				if ( $( this ).scrollTop () > $(window).innerHeight()/2 ) {
+					$( '#backtotop' ).fadeIn ();
+				} else {
+					$( '#backtotop' ).fadeOut ();
+				}
+			});
+		});
+	}
+	 
+	function goToTop (){
+		$( 'body,html' ).animate ({
+			scrollTop: 0
+		}, ScrollSpeed );
+		return false;
+	}
+	 
+	function addBackToTop () {
+		$('<div id="backtotop" title="Back To Top" style="padding: 5px; border: 2px solid darkslategrey;position: fixed; right:20px; bottom:20px; cursor:pointer"><img src="https://raw.githubusercontent.com/Bhpsngum/img-src/master/arrow-up.png" width="30" height="30"></div>').appendTo($(document.body));	
+		$("#backtotop").on("click", goToTop);
+		hideFade ();
+	}
+	 
+	var ScrollSpeed = 600;
+	 
+	if( !window.BackToTop  ) {
+		addBackToTop (); 
+		window.BackToTop = true;
+	}
+})();

@@ -36,6 +36,12 @@ $.get(
     }
 );
 
+// RailModule
+window.AddRailModule = [
+    {page: 'Template:RailModule', prepend: true},
+    'Template:ChatModule'
+];
+
 // Configuration for NoLicenseWarning
 window.NoLicenseWarning = {
     forceLicense: true
@@ -53,4 +59,16 @@ window.UserStatusSettings = {
     away: '#cc7',
     dnd: 'crimson',
     offline: 'darkgray',
+};
+
+// Configuration for Standard Edit Summary
+// Create the "dev" namespace if it doesn't exist already:
+
+window.dev = window.dev || {};
+
+// Create the sub-namespace for this addon and set some options:
+
+window.dev.editSummaries = {
+     css: '#stdSummaries { ... }',
+     select: 'MediaWiki:Custom-StandardEditSummary'
 };

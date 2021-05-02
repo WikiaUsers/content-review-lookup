@@ -1,3 +1,35 @@
+$(function() {
+	$("#BtnAWK").click(function() {
+	    $(".evolution").css("display", "none");
+	    $("#TextAWK").css("display", "block");
+	});
+	
+	$("#Btn5").click(function() {
+	    $(".evolution").css("display", "none");
+	    $("#Text5").css("display", "block");
+	});
+	
+	$("#Btn4").click(function() {
+	    $(".evolution").css("display", "none");
+	    $("#Text4").css("display", "block");
+	});
+	
+	$("#Btn3").click(function() {
+	    $(".evolution").css("display", "none");
+	    $("#Text3").css("display", "block");
+	});
+	
+	$("#Btn2").click(function() {
+	    $(".evolution").css("display", "none");
+	    $("#Text2").css("display", "block");
+	});
+	
+	$("#Btn1").click(function() {
+	    $(".evolution").css("display", "none");
+	    $("#Text1").css("display", "block");
+	});
+});
+
 /* Any JavaScript here will be loaded for users using the 2 column main page layout */
 /*****************************************
 /* Front Page column height equalization *
@@ -355,109 +387,3 @@ $('.random-subset').each(function() {
 }(window.countdownTimer = window.countdownTimer || {}, mediaWiki, jQuery));
 
 // End Countdown
-
-;(function(mw, $) {
-	
-	function filter(list, filter) {
-		if (!filter.length) {
-			return list;
-		}
-
-		return list.filter(function(x) {
-			var entry = $(list[x]).get(0);        
-			return filter.find(function(y) {
-				var filterEntry = $(y).get(0);
-	            if (filterEntry.dataset.key === "ability-filter") {
-					var abilityFilterValues = entry.dataset.abilityFilter.replace(/\s/g, '').split(",") || "";
-					var hasMatchingAbility = false;
-					abilityFilterValues.forEach(function(value) {
-						if (filterEntry.dataset.value.indexOf(value) >= 0)	 {
-							hasMatchingAbility = true;
-						}
-					});
-	                return hasMatchingAbility;
-	            } else if (filterEntry.dataset.key === "availability") {
-	            	var availabilityValues = entry.dataset.availability.replace(/\s/g, '').split(",") || "";
-					var hasMatchingAvailability = false;
-					availabilityValues.forEach(function(value) {
-						if (filterEntry.dataset.value.replace(/\s/g, '').indexOf(value) >= 0)	 {
-							hasMatchingAvailability = true;
-						}
-					});
-	                return hasMatchingAvailability;
-	            }
-	            
-                return String(filterEntry.dataset.value).toLowerCase() === String(entry.dataset[filterEntry.dataset.key]).toLowerCase();
-			});
-		});
-	}
-
-	function updateFilters() {
-		var elementFilters = $('.filter-group-element > .mw-ui-button.mw-ui-progressive').toArray();
-		var weaponFilters = $('.filter-group-weapon > .mw-ui-button.mw-ui-progressive').toArray();
-		var rarityFilters = $('.filter-group-rarity > .mw-ui-button.mw-ui-progressive').toArray();
-		var availabilityFilters = $('.filter-group-availability > .mw-ui-button.mw-ui-progressive').toArray();
-		var classFilters = $('.filter-group-class > .mw-ui-button.mw-ui-progressive').toArray();
-		var groupFilters = $('.filter-group-group > .mw-ui-button.mw-ui-progressive').toArray();
-		var characterList = $('.grid-entry');
-
-		characterList.each(function() {
-			this.style.display = 'none';
-		});
-
-		var filteredList = characterList;
-		filteredList = filter(filteredList, elementFilters);
-		filteredList = filter(filteredList, weaponFilters);
-		filteredList = filter(filteredList, rarityFilters);
-		filteredList = filter(filteredList, availabilityFilters);
-		filteredList = filter(filteredList, classFilters);
-		filteredList = filter(filteredList, groupFilters);
-		console.log(filteredList);
-
-		filteredList.each(function() {
-			this.style.display = '';
-		});
-	}
-
-$(document).ready(function() {
-    $('.character-filters label').on('click', function(event) {
-        $(event.target).toggleClass('mw-ui-progressive');
-        updateFilters();
-    });
-    
-    $(".event-dialogue > p").each(function() {
-        var wrapper = $('<div style="display: flex; align-items: flex-start;margin-top: 10px;margin-bottom: 10px;"></div>')
-        var text = $(this).text().trim();
-        var img = $(this).find("a:first-child");
-        var imgWrapper = $('<div style="padding-right: 10px"></div>');
-        var textWrapper = $('<div style="flex-grow: 1"></div>');
-
-        textWrapper.text(text);
-        imgWrapper.append(img);
-        wrapper.append(imgWrapper);
-        wrapper.append(textWrapper);
-
-        $(this).parent().append(wrapper);
-        $(this).remove();
-    });
-    
-    //start of font size toggle for story
-    
-    $("#smallText").click(function() {
-    	$(".event-dialogue").css("font-size", "0.875em");
-    });
-    
-    $("#mediumText").click(function() {
-    	$(".event-dialogue").css("font-size", "1.125em");
-    });
-    
-    $("#largeText").click(function() {
-    	$(".event-dialogue").css("font-size", "1.875em");
-    });
-    
-    //end of font size toggle for story
-    
-    
-});
-
-})(mediaWiki, jQuery);

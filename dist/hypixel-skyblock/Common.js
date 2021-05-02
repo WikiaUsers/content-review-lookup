@@ -29,8 +29,7 @@ See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
 
 // Small script to change wall text
 $('a[title="Message Wall"]').html('wall');
-$('a.external').removeAttr('target');
-
+$('a.external, a[rel^="noreferrer"]').removeAttr('target');
 // Add custom "focusable" class
 $('.focusable').attr('tabindex', 0);
 

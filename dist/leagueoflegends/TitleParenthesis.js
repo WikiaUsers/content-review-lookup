@@ -9,18 +9,17 @@
 
 $(function () {
     var conf = mw.config.get([
-       'wgNamespaceNumber',
-        'wgTitle'
+       'wgNamespaceNumber'
     ]);
+    var title = $('h1#firstHeading').text();
 
-	if (conf.wgNamespaceNumber !== 0 || conf.wgTitle.lastIndexOf('(') < 0 ||
+	if (conf.wgNamespaceNumber !== 0 || title.lastIndexOf('(') < 0 ||
 		$('.no-parenthesis-style').length) {
 		return;
 	} 
 	
 	// use the title in the DOM so this respects DISPLAYTITLE
-	var title = $('h1#firstHeading').text(),
-		start = title.lastIndexOf('('),
+	var start = title.lastIndexOf('('),
 		end = title.substring(start, title.length).lastIndexOf(')');
 
 	// add offset here
@@ -29,10 +28,10 @@ $(function () {
 	$('h1#firstHeading')
 		.empty()
 		.append(
-			title.substring(0, start),
+			mw.html.escape(title.substring(0, start)),
 			$('<span>')
 				.addClass('title-parenthesis')
 				.text(title.substring(start, end)),
-			title.substring(end, title.length)
+			mw.html.escape(title.substring(end, title.length))
 		);
 });

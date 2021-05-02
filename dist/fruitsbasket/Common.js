@@ -1,4 +1,11 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+/* Recreate welcome bot, credit to Avatar Wiki */
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2: '{{MediaWiki:Custom-Welcome}}',
+        3: false
+    },
+    summary: 'Welcome to the wiki! (automatic edit)'
+};
  
 /* Auto Refresh Settings */
 var ajaxPages = [

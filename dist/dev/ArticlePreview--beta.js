@@ -1,793 +1,944 @@
 /**
- * @title           ArticlePreview
- * @version         v2.0
- * @author          Ultimate Dark Carnage
- * @description     This script allows the viewer to see a preview of
- *                  an article by hovering a local link.
- * @file            File:ArticlePreview_placeholder.png
+ * ArticlePreview
+ * Version: 2.0
+ * 
+ * Author: Ultimate Dark Carnage
+ * Other attribution: HumansCanWinElves
+ * 
+ * This script allows a user to see a preview of an article by hovering
+ * a local link and go to a page by clicking on that link.
  **/
-require([
-    "wikia.window",
-    "wikia.document",
-    "jquery",
-    "mw",
-    require.optional("ext.wikia.design-system.loading-spinner")
-], function(window, document, $, mw, Spinner){
-    "use strict";
-    // Script name
-    var NAME = "ArticlePreview";
-    // Script version
-    var VERSION = "v2.0";
-    // Creating a RegExp escape function
-    function regesc(string){
-        return string.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, "\\$&");
-    }
-    // Checks if the object is empty
-    function isEmpty(obj){
-        for (var key in obj) return false;
-        return true;
-    }
-    // User groups that allow for admin functions
-    var ADMIN_GROUPS = Object.freeze([
-        "staff", "helper", "wiki-manager", "content-team-member", "sysop", "soap"
-    ]);
-    // The user's rights
-    var USER_GROUPS = mw.config.get("wgUserGroups");
-    // Checking if the user is allowed to use admin function
-    var IS_ADMIN = USER_GROUPS.some(function(group){
-        return ADMIN_GROUPS.indexOf(group) > -1;
-    });
-    // Proxy handler
-    var PROXY_HANDLER = Object.freeze({
-        get: function getter(object, property){
-            return property in object ? object[property] : null;
-        }
-    });
-    // Page cache
-    var CACHE = new Proxy({}, PROXY_HANDLER);
-    // Scripts to import
-    var SCRIPTS = Object.freeze([
-        "u:dev:MediaWiki:I18n-js/code.js",
-        "u:dev:MediaWiki:Colors/code.js",
-        "u:dev:MediaWiki:WDSIcons/code.js"
-    ]);
-    // Importing integral scripts
-    importArticles({ type: 'script', articles: SCRIPTS });
-    // Importing the main stylesheet
-    importArticle({ type: 'style', article: 'u:dev:MediaWiki:ArticlePreview.css' });
-    // Current host name
-    var HOST = mw.config.get("wgServer");
-    // Current page name
-    var PAGE = mw.config.get("wgPageName");
-    // Namespace number
-    var NAMESPACE = mw.config.get("wgNamespaceNumber");
-    // Article path
-    var ARTICLE_PATH = mw.config.get('wgArticlePath');
-    // Formatted namespaces
-    var FORMATTED_NAMESPACES = mw.config.get('wgFormattedNamespaces');
-    // Page action
-    var ACTION = mw.config.get('wgAction');
-    // Database pattern
-    var DATABASE_PATTERN = /https?:\/\/([\w\d][\w\d\-\_\.]*[\w\d])\.(?:wikia|fandom)\.(?:com|org)/g;
-    // Database name
-    var DATABASE_NAME = HOST.replace(DATABASE_PATTERN, '$1');
-    // Default configurations
-    var DEFAULTS = Object.freeze({
-        allowPlaceholder: false,
-        force: false,
-        exceptions: Object.freeze([
-            '.free', '.toc a', '.wikia-button', '.button a', 
-            '.wikia-menu-button a', '.wds-button', '.wds-button a',
-            '.wds-tabs a', '.wds-dropdown a'
-        ]),
-        scope: Object.freeze(['#WikiaRail .rail-module', '.mw-content-text']),
-        namespaces: Object.freeze([
-            "-1", 0, 1, 2, 3, 4, 5, 
-            10, 11, 14, 15, 110, 
-            111, 500, 501, 502
-        ]),
-        actions: Object.freeze(["", "view", "history", "purge"]),
-        ignorePages: [],
-        buttons: [],
-        characterLimit: 350,
-        delay: 1500
-    });
-    // Pattern object
-    var PATTERNS = Object.freeze({
-        fullLink: /^https?:\/\/([\w\d][\w\d\-\_]*[\w\d])\.(?:fandom|wikia)\.(?:com|org)\/(?:wiki\/|index\.php\?(?:.*\&)?title=)([^?&#]*)(?:.*)?$/,
-        wikiLink: /^https?:\/\/([\w\d][\w\d\-]*[\w\d])\.(?:fandom|wikia)\.(?:com|org)\/?$/,
-        wikiLink2: /^https?:\/\/([\w\d][\w\d\-]*[\w\d])\.(?:fandom|wikia)\.(?:com|org)\/?/,
-        wikiLink3: /https?:\/\/(?:[\w\d][\w\d]*[\w\d])\.(?:fandom|wikia)\.(?:com|org)\/?/,
-        database: DATABASE_PATTERN,
-        shortLink: /^\/(?:wiki\/|index\.php\?(?:.*\&)?title=)([^?&#]*)(?:.*)?$/,
-        ns: /^https?:\/\/([\w\d][\w\d\-]*[\w\d])\.(?:fandom|wikia)\.(?:com|org)\/(?:wiki\/|index\.php\?(?:.*\&)?title=)([^?&#:]*)\:([^?&#]*)(?:.*)?$/,
-        ns2: /^\/(?:wiki\/|index\.php\?(?:.*)?title=)([^?&#]*)(?:.*)?$/,
-        urlparams: /[?&]([^?&#=]*)(?:=([^?&#=])|#)/g,
-        tags: /<.*>/gm,
-        prep: Object.freeze({
-            script: /<script[^\>]*>[\s\S]*?<\/script>/gim,
-            ref: /<ref>[\s\S]*?<\/ref>/gim
-        }),
-        image: /^https?:\/\/(?:vignette|image)\.wikia\.nocookie\.net(?:\/.*)$/,
-        image2: /(\.(?:wikia(?:\.nocookie)?|fandom)\.(?:com|org|net))$/
-    });
-    // Namespaces
-    var NAMESPACES = Object.keys(namespaces).reduce(function(O, n){
-        var namespace = namespaces[n];
-        O[namespace] = n;
-        return O;
-    }, {});
-    // Clamp function
-    function clamp(n, min, max){
-        var x = min, y = max;
-        min = y < x ? y : x;
-        max = y < x ? x : y;
-        if (isNaN(n)) return min;
-        n = Number(n);
-        return Math.max(min, Math.min(n, max));
-    }
-    // Promisifying the function
-    function promisify(deferred){
-        return new Promise(function(resolve, reject){
-            $.when(deferred).done(resolve).fail(reject);
-        });
-    }
-    // Creating the controller constructor
-    function Controller(options){
-        if (!this.__previewLoaded) return new Controller(options);
-        options = Object.assign({}, options);
-        Object.keys(DEFAULTS).forEach(function(key){
-            var curr = options[key] !== void 0 ? options[key] : null;
-            options[key] = curr !== null ? curr : DEFAULTS[key];
-            if (key === "characterLimit") options[key] = clamp(options[key], 300, 1200);
-            else if (key === "delay") options[key] = clamp(options[key], 200, 60*60*1000);
-        });
-        this.__NAME__ = NAME;
-        this.__VERSION__ = VERSION;
-        this.isAdmin = IS_ADMIN;
-        this.options = options;
-        this.patterns = Object.assign({}, PATTERNS);
-        this.currentUri = {};
-        this.position = { x: 0, y: 0, clientX: 0, clientY: 0 };
-        this.__process();
-        return this;
-    }
-    
-    Controller.prototype.__process = function __process(){
-        this.getLinks = new Links({
-            exclude: this.options.exceptions,
-            scope: this.options.scope,
-            referrer: this
-        });
-    };
-    
-    function Links(options){
-        if (!this.__length) return new Links(options);
-        this.elements = [];
-        this.options = Object.assign({}, options);
-        this.__length = 0;
-        this.__process();
-        return this;
-    }
-    
-    Links.prototype.__process = function __process(){
-        if (!Array.isArray(this.options.scope)) return false;
-        var scope = this.options.scope,
-            exceptions = Array.isArray(this.options.exceptions) ? this.options.exceptions : [];
-        Array.from(scope).forEach(function(selector){
-            var links = document.querySelectorAll(selector + ' a');
-        }, this);
-    };
-});
+( function( window, $, mw ) { 
+	"use strict";
+	
+	// URL variables for the current page
+	const urlVars = new URLSearchParams( location.search );
+	
+	// If the user prefers not to show the article preview, do not run
+	if ( urlVars.get( "nopreview" ) ) return;
 
-require(["wikia.window", "jquery", "mw", "ext.wikia.design-system.loading-spinner"], function(window, $, mw, Spinner){
-    /**
-     * Converting string to objects
-     **/
-    var toObject = AP.toObject = function toObject(val, ctx){
-        ctx = ctx || this;
-        var rarr = /([^\[\]\d][^\[\]]*)\[((?:[\d]+)|(?:\".*\")|(?:\'.*\'))\]/g,
-            rq1 = /\"(.*)\"/g, rq2 = /\'(.*)\'/g,
-            keys = val.split("."), curr = ctx;
-        while (keys.length && typeof curr == "object"){
-            var key = keys.shift(), prop = "";
-            if (rarr.test(key)){
-                prop = key.replace(rarr, "$2");
-                if (rq1.test(prop)) prop = prop.replace(rq1, "$1");
-                else if (rq2.test(prop)) prop = prop.replace(rq2, "$1");
-                else { if (!isNaN(prop)) prop = parseInt(prop); else prop = "" }
-                key = key.replace(rarr, "$1");
-            }
-            if (prop) curr = curr[key][prop];
-            else curr = curr[key];
-        }
-        return curr;
-    };
+	// Function to escape regular expressions
+	function escapeRegExp( string ) { 
+		return string.replace( /[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&' );
+	}
 
-    AP.controller = function Controller(options){
-        if (!(this instanceof AP.controller)){
-            return new AP.controller(options);
-        }
-        options = $.extend({}, options);
-        // MediaWiki variables
-        this.formattedNamespaces = mw.config.get("wgFormattedNamespaces");
-        this.wikiHost = mw.config.get("wgServer");
-        this.userName = mw.config.get("wgUserName");
-        this.pageName = mw.config.get("wgPageName");
-        this.siteName = mw.config.get("wgSiteName");
-        this.articlePath = mw.config.get("wgArticlePath");
-        this.namespaceNumber = mw.config.get("wgNamespaceNumber");
-        this.action = mw.config.get("wgAction");
-        this.namespaces = invert(this.formattedNamespaces);
-        this.apiURL = new mw.Uri({ path: mw.config.get("wgScriptPath") + "/api.php" });
-        // Constant properties
-        this.VERSION = "2.0b";
-        this.NAME = "ArticlePreview";
-        // Configurable properties
-        this.EXCEPTIONS = merge(options.exceptions, [".free", ".toc a", "a.wikia-button", ".wikia-button a", "a.button", ".button a", "a.wds-button", ".wds-button a", ".wikia-menu-button a", ".wds-dropdown a"]);
-        this.NAMESPACES = merge(options.namespaces, ["-1", 0, 1, 2, 3, 4, 5, 10, 11, 14, 15, 110, 111, 500, 501, 502]);
-        this.ACTIONS = merge(options.actions, ["", "view", "history", "purge"]);
-        this.DEFAULT_IMAGE = def(options.defaultImage, options.defImage, "https://images.wikia.nocookie.net/dev/images/2/20/Image_Placeholder.png");
-        this.IGNORE = merge(options.ignorePages, []);
-        this.FORCE_POS = def(options.force, false);
-        this.CHAR_LIMIT = Math.min(1200, Math.max(350, def(options.charLimit, 350)));
-        this.DELAY = def(!isNaN(options.delay) ? options.delay : null, false);
-        this.FADE = def(options.fade === true ? null : options.fade, false);
-        this.elems = def(options.elems);
-        this.content = def(options.content, "#mw-content-text, #WikiaRail .rail-module");
-        this.ronlyinclude = def(options.ronlyinclude, []);
-        this.riclasses = def(options.riclasses, []);
-        this.riparents = def(options.riparents, []);
-        this.ripages = def(options.ripages, []);
-        this.riimages = def(options.riimages, []);
-        // Elements
-        this.$links = null;
-        this.$elem = null;
-        // Other properties
-        this._callbacks = {};
-        this.href = "";
-        this.uri = {};
-        this.hasImage = false;
-        this.namespace = "";
-        this.ns = 0;
-        this.page = "";
-        this.ui = null;
-        this.isAllowedNs = true;
-        this.new = false;
-        this.ignorePage = false;
-        this.loc = { x: 5, y: 5 };
-        this.pos = { x: null, y: null, clientX: null, clientY: null };
-        this.IS_ADMIN = isAdmin();
-        this.currPage = this.createURIObj(window.location).truepath;
-        this.currLink = window.location.href;
+	// Decodes the URL and converts underscores to spaces
+	function decodeURL( string ) { 
+		return decodeURIComponent( string.replace( /_/g, " " ) );
+	}
+	
+	// Creates a script loader constructor
+	function Loader( scripts, callback, thisArg ) { 
+		// Sets the current instance in a variable
+		const al = this;
+		
+		// If there are less than three arguments, set the context to the current instance
+		if ( arguments.length < 3 ) thisArg = this;
+		
+		// An array of loaded scripts
+		al.loadedScripts = [ ];
+		
+		// An object that contains scripts to load
+		al.scripts = scripts;
+		
+		// Determines whether the loader is completed
+		al.loaded = false;
+		
+		// Initializes the loader
+		al.init = function( ) { 
+			mw.loader
+				.using( [ "mediawiki.util", "mediawiki.Title", "mediawiki.api", "mediawiki.Uri" ] )
+				.then( al.loadScripts.bind( this ) );
+		};
+		
+		// Loads all scripts if they are not loaded
+		al.loadScripts = function( ) { 
+			importArticle( { type: "style", article: "u:dev:MediaWiki:ArticlePreview/beta.css" } );
+			
+			const promises = Promise.all( 
+				Object
+					.getOwnPropertyNames( al.scripts )
+					.map( function( name ) { 
+						const script = al.scripts[ name ];
+						
+						if ( window.dev[ name ] ) { 
+							al.loadedScripts.push( script );
+							return Promise.resolve( );
+						}
+						
+						return new Promise( function( resolve, reject ) { 
+							importArticle( { 
+								type: "script",
+								article: script
+							} ).then( function( ) { 
+								al.loadedScripts.push( script );
+							} ).then( resolve ).catch( reject );
+						} );
+					} )
+			);
+			
+			return promises.then( function( ) { 
+				al.loaded = true;
+				return callback.apply( thisArg, al );
+			} );
+		};
 
-        this.rilinks.push(this.currPage);
-        this.rilinks.push(new RegExp(this.apiUri.path));
-        return this;
-    };
+		return al;
+	}
+	
+	// Creates a new vector
+	function Vector( x, y ) { 
+		x = ( isNaN( x ) || !isFinite( x ) ) ? 0 : x;
+		y = ( isNaN( y ) || !isFinite( y ) ) ? 0 : y;
+		
+		this.x = x;
+		this.y = y;
+		
+		this.copy = function( ) { 
+			return new Vector( x, y );
+		};
 
-    AP.controller.prototype = {
-		constructor: AP.controller,
-		set state(value){
-			this.fire("statechange", { value: value });
-		},
-        process: function(){
-            this.$links = def(this.elems, $(this.content).find("a[href]").not($.proxy(function(i, elem){
-                return $(elem).is(this.EXCEPTIONS.join(", "));
-            }, this)));
-            this.buttons = [{
-                name: "edit",
-                link: "?action=edit",
-                condition: $.proxy(function(){
-                    return !this.new;
-                }, this)
-            }, {
-                name: "create",
-                link: "?action=edit",
-                condition: $.proxy(function(){
-                    return this.new;
-                }, this)
-            }, {
-                name: "history",
-                link: "?action=history"
-            }, {
-                name: "delete",
-                link: "?action=delete",
-                condition: isAdmin
-            }, {
-                name: "watch",
-                link: "?action=watch"
-            }];
-            this.$links.on({
-                "mouseover": $.proxy(this.mouseover, this),
-                "mouseout": $.proxy(this.mouseout, this)
-            });
-            return this;
-        },
-        check: function(callback){
-            var args = slice.call(arguments, 1);
-            if (this.rns1.test(this.link)){
-                this.namespace = this.link.replace(this.rns1, "$1");
-            } else if (this.rns2.test(this.link)){
-                this.namespace = this.link.replace(this.rns2, "$1");
-            }
+		this.add = function( v ) { 
+			return Vector.add( this, v );
+		};
 
-            this.namespace = encodeURIComponent(this.namespace);
-            this.ns = this.namespaces[this.namespace];
-            this.isAllowedNs = has.call(this.NAMESPACES, this.ns);
+		this.subtract = function( v ) { 
+			return Vector.add( this, v );
+		};
 
-            if (this.rfulllink.test(this.link)){
-                this.wiki = this.link.replace(this.rfulllink, "$1");
-                this.page = this.link.replace(this.rfulllink, "$2");
-            } else if (this.rwikilink1.test(this.link)){
-                this.wiki = this.link.replace(this.rwikilink1, "$1");
-                this.page = this.siteName;
-            } else if (this.rshortlink.test(this.link)){
-                this.wiki = this.wikiHost.replace(this.rwikilink1, "$1");
-                this.page = this.link.replace(this.rshortlink, "$1");
-            } else {
-                this.wiki = this.wikiHost.replace(this.rwikilink1, "$1");
-                this.page = this.siteName;
-            }
+		this.multiply = function( scalar ) { 
+			return Vector.multiply( this, scalar );
+		};
 
-            this.currWiki = this.wikiHost.replace(this.rwikilink1, "$1");
+		this.divide = function( scalar ) { 
+			return Vector.divide( this, scalar );
+		};
 
-            this.wiki = encodeURIComponent(this.wiki);
-            this.page = encodeURIComponent(this.page);
-            this.currWiki = encodeURIComponent(this.currWiki);
-            
-            if (
-                (!$.isEmptyObject(this.uri) && this.uri.interwiki) ||
-                (this.IGNORE.indexOf(this.page) > -1) ||
-                (this.ignorePage(this.page)) ||
-                (!this.isAllowedNs) ||
-                (this.wiki !== this.currWiki)
-            ) return false;
+		return this;
+	}
+	
+	// Static methods for the vector constructor
+	Vector.add = function( vx, vy ) { 
+		const ax = vx.x + vy.x, ay = vx.y + vy.y;
+		return new Vector( ax, ay );
+	};
+	
+	Vector.subtract = function( vx, vy ) { 
+		const ax = vx.x - vy.x, ay = vx.y - vy.y;
+		return new Vector( ax, ay );
+	};
+	
+	Vector.multiply = function( v, scalar ) { 
+		const ax = v.x * scalar, ay = v.y * scalar;
+		return new Vector( ax, ay );
+	};
+	
+	Vector.divide = function( v, scalar ) { 
+		const ax = v.x / scalar, ay = v.y / scalar;
+		return new Vector( ax, ay );
+	};
+	
+	function ArticlePreview( opts ) { 
+		// If there are no arguments, set the options to an empty object
+		opts = arguments.length === 0 ? { } : opts;
 
-            return callback.apply(this, args);
-        },
-        ignorePage: function(page){
-            if (!(this.ripages || []).length) return false;
-			var res = false;
-            for (var i = 0; i < this.ripages.length; i++){
-				if (((Object((pattern = this.ripages[i])) instanceof RegExp) ? pattern : {}).test && pattern.test(page)) res = true;
+		// Setting the current instance to a variable
+		const ap = this;
+		
+		// The current script version
+		ap.VERSION = "2.0";
+		
+		// The current script name
+		ap.NAME = "ArticlePreview";
+		
+		// MediaWiki configuration variables
+		ap.MW = mw.config.get( [
+			"wgServer",
+			"wgPageName",
+			"wgNamespaceNumber",
+			"wgArticlePath",
+			"wgFormattedNamespaces"
+		] );
+		
+		// The current script target
+		ap.TARGET = document.querySelector( ".WikiaPageContentWrapper" );
+		
+		// The current mouse vector
+		ap.VECTOR = new Vector( );
+
+		// The main preview container
+		ap.CONTAINER = document.createElement( "section" );
+		ap.CONTAINER.classList.add( "article-preview" );
+
+		// The main preview wrapper
+		ap.WRAPPER = document.createElement( "div" );
+		ap.WRAPPER.classList.add( "article-preview__body" );
+
+		// Appends the wrapper to its container
+		ap.CONTAINER.append( ap.WRAPPER );
+
+		// Checks if the mouse is hovering over a local link
+		ap.HOVER = false;
+
+		// Determines whether the article preview allows caching
+		ap.ALLOW_CACHE = false;
+
+		// The cache object
+		ap.CACHE = { };
+
+		// Determines whether the preview is in the DOM
+		ap.IN_DOM = false;
+
+		// The image used when no image is found
+		ap.DEFAULT_IMAGE = "";
+
+		// Determines whether to show infoboxes
+		ap.INFOBOX = false;
+
+		// Determines whether to show the table of contents
+		ap.TOC = false;
+
+		// Determines whether to generate the whole page
+		ap.WHOLE_PAGE = false;
+
+		// Determines whether the preview allows an image
+		ap.NO_IMAGE = false;
+
+		// The maximum text length
+		ap.MAXIMUM_TEXT_LENGTH = 1024;
+
+		// Default configuration options
+		ap.DEFAULTS = Object.freeze( { 
+			ignoreImages: [ ],
+			ignorePages: [ mw.config.get( "wgPageName" ).split( "_" ).join( " " ) ],
+			ignoreURLs: [ ],
+			ignoreParents: [ ],
+			ignoreSelectors: [ ],
+			ignoreNamespaces: [ ],
+			infobox: ap.INFOBOX,
+			toc: ap.TOC,
+			wholePage: ap.WHOLE_PAGE,
+			cache: ap.ALLOW_CACHE,
+			noImage: ap.NO_IMAGE,
+			defaultImage: ap.DEFAULT_IMAGE,
+			target: ap.TARGET,
+			maxTextLength: ap.MAXIMUM_TEXT_LENGTH
+		} );
+
+		// An array of scripts to load
+		ap.SCRIPTS = Object.freeze( { 
+			"i18n": "u:dev:MediaWiki:I18n-js/code.js",
+			"wds": "u:dev:MediaWiki:WDSIcons/code.js",
+			"dorui": "u:dev:MediaWiki:Dorui.js",
+			"colors": "u:dev:MediaWiki:Colors/code.js"
+		} );
+
+		// The setters object
+		ap.SETTERS = Object.freeze( { 
+			ignoreImages: function( value ) { 
+				if ( Array.isArray( value ) ) { 
+					return value.forEach( function( v ) { 
+						if ( v === undefined || v === null ) return;
+						ap.PATTERNS.IGNORE_IMAGES.push( v );
+					} );
+				}
+
+				ap.PATTERNS.IGNORE_IMAGES.push( value );
+			},
+			ignorePages: function( value ) { 
+				if ( Array.isArray( value ) ) { 
+					return value.forEach( function( v ) { 
+						if ( v === undefined || v === null ) return;
+						ap.PATTERNS.IGNORE_PAGES.push( v );
+					} );
+				}
+
+				ap.PATTERNS.IGNORE_PAGES.push( value );
+			},
+			ignoreSelectors: function( value ) { 
+				if ( Array.isArray( value ) ) { 
+					return value.forEach( function( v ) { 
+						if ( v === undefined || v === null ) return;
+						ap.PATTERNS.IGNORE_SELECTORS.push( v );
+					} );
+				}
+
+				ap.PATTERNS.IGNORE_SELECTORS.push( value );
+			},
+			ignoreNamespaces: function( value ) { 
+				if ( Array.isArray( value ) ) { 
+					return value.forEach( function( v ) { 
+						if ( v === undefined || v === null ) return;
+						ap.PATTERNS.IGNORE_NAMESPACES.push( v );
+					} );
+				}
+
+				ap.PATTERNS.IGNORE_NAMESPACES.push( value );
+			},
+			ignoreParents: function( value ) { 
+				if ( Array.isArray( value ) ) { 
+					return value.forEach( function( v ) { 
+						if ( v === undefined || v === null ) return;
+						ap.PATTERNS.IGNORE_PARENTS.push( v );
+					} );
+				}
+
+				ap.PATTERNS.IGNORE_PARENTS.push( value );
+			},
+			ignoreURLs: function( value ) { 
+				if ( Array.isArray( value ) ) { 
+					return value.forEach( function( v ) { 
+						if ( v === undefined || v === null ) return;
+						ap.PATTERNS.IGNORE_URLS.push( v );
+					} );
+				}
+
+				ap.PATTERNS.IGNORE_URLS.push( value );
+			},
+			maxTextLength: function( value ) { 
+				if ( isNaN( value ) || !isFinite( value ) ) { 
+					ap.MAXIMUM_TEXT_LENGTH = 1024;
+					return;
+				}
+
+				ap.MAXIMUM_TEXT_LENGTH = Math.max( 250, Math.min( value, 1200 ) );
+			},
+			onlyinclude: function( value ) { 
+				if ( Array.isArray( value ) ) { 
+					return value.forEach( function( v ) { 
+						if ( v === undefined || v === null ) return;
+						ap.PATTERNS.ONLYINCLUDE.push( v );
+					} );
+				}
+
+				ap.PATTERNS.ONLYINCLUDE.push( value );
+			},
+			prep: function( value ) { 
+				if ( Array.isArray( value ) ) { 
+					return value.forEach( function( v ) { 
+						if ( v === undefined || v === null ) return;
+						ap.PATTERNS.PREP.push( v );
+					} );
+				}
+
+				ap.PATTERNS.PREP.push( value );
+			},
+			infobox: "INFOBOX",
+			toc: "TOC",
+			wholePage: "WHOLE_PAGE",
+			cache: "ALLOW_CACHE",
+			noImage: "NO_IMAGE",
+			defaultImage: "DEFAULT_IMAGE",
+			target: "TARGET"
+		} );
+
+		// The configuration object
+		ap.CONFIG = { };
+
+		// An object of conditions for showing the preview
+		ap.CONDITIONS = Object.freeze( { 
+			ELEMENT: { 
+				type: HTMLElement,
+				dispatch: function( element ) { 
+					const whitelistedTagNames = Object.freeze( [ 
+						"a",
+						"area"
+					] );
+					
+					if ( !whitelistedTagNames.includes( element.tagName.toLowerCase( ) ) ) { 
+						return false;
+					}
+
+					const ignoreSelectors = ap.PATTERNS.IGNORE_SELECTORS.every( function( selector ) { 
+						const elementsFromSelector = ap.TARGET.querySelectorAll( selector );
+						const inSelector = Array.from( elementsFromSelector ).includes( element );
+
+						return inSelector === false;
+					} );
+					
+					if ( !ignoreSelectors ) return false;
+					
+					return ap.PATTERNS.IGNORE_PARENTS.every( function( selector ) { 
+						return element.closest( selector ) === null;
+					} );
+				}
+			},
+			PAGE: { 
+				type: String,
+				dispatch: function( page ) { 
+					const title = new mw.Title( page );
+
+					const ignoreNamespaces = ap.PATTERNS.IGNORE_NAMESPACES.every( function( value ) { 
+						if ( !isNaN( value ) && isFinite( value ) ) { 
+							return title.namespace === value;
+						}
+
+						if ( RegExp.prototype.isPrototypeOf( Object( value ) ) ) { 
+							const namespacePrefix = title.getNamespacePrefix( );
+							const namespace = namespacePrefix.split( ":" )[ 0 ];
+							const trueNamespace = namespace === "" ? "Main" : namespace;
+
+							const namespaceKey = "namespace-" + trueNamespace.toLowerCase( );
+
+							const parsedNamespace = ap.msg( namespaceKey ).escape( );
+
+							if ( !ap.msg( namespaceKey ).exists ) return true;
+
+							return !value.test( parsedNamespace );
+						}
+
+						if ( typeof namespace === "number" ) { 
+							return title.namespace !== value;
+						}
+
+						return String( title.getNamespacePrefix( ).split( ":" )[ 0 ] ) !== value;
+					} );
+
+					if ( !ignoreNamespaces ) return false;
+
+					return ap.PATTERNS.IGNORE_PAGES.every( function( value ) { 
+						if ( RegExp.prototype.isPrototypeOf( Object( value ) ) ) { 
+							return !value.test( page );
+						}
+
+						return String( value ) !== page;
+					} );
+				}
+			},
+			URL: { 
+				type: mw.Uri,
+				dispatch: function( url ) { 
+					if ( !ap.PATTERNS.FANDOM_URI.test( url.host ) ) return false;
+
+					return ap.PATTERNS.IGNORE_URLS.every( function( value ) { 
+						if ( RegExp.prototype.isPrototypeOf( Object( value ) ) ) { 
+							return !value.test( String( url ) );
+						}
+
+						return String( value ) !== String( url );
+					} );
+				}
 			}
-			return res;
-		},
-		ignoreLink: function(link){
-			if (!(this.rilinks || []).length) return false;
-			var res = false;
-			for (var i = 0; i < this.rilinks.length; i++){
-				if (((Object((pattern = this.rilinks[i])) instanceof RegExp) ? pattern : {}).test && pattern.test(link)) res = true;
+		} );
+
+		// An object of regular expression patterns
+		ap.PATTERNS = { 
+			IGNORE_SELECTORS: [ 
+				".free",
+				".toc a",
+				".wikia-button",
+				".wds-button",
+				".wikia-button a",
+				".wds-button a",
+				".wikia-menu-button a",
+				".new",
+				".wds-list a"
+			],
+			IGNORE_PARENTS: [ ".nopreview" ],
+			IGNORE_PAGES: [ /Special\:(?:User)(?:Logout)/ ],
+			IGNORE_IMAGES: [ ],
+			IGNORE_URLS: [ window.location.href ],
+			IGNORE_NAMESPACES: [ ],
+			ONLYINCLUDE: [ ],
+			PREP: [ /<script>[\s\S]*?<\/script>/igm, /<ref>[\s\S]*?<\/ref>/igm ],
+			IMAGE_URI: /\.(?:(?:wikia|fandom)\.com|wikia\.(?:org|nocookie\.net))$/,
+			FANDOM_URI: /\.(?:(?:wikia|fandom)\.com|wikia\.org)$/,
+			WIKI_TITLE: /^\/wiki\/([^?&]+).*$/,
+			INDEX_TITLE: /^\/index\.php\?(?:.+&|)title=([^?&]+).*$/,
+		};
+
+		// Sets all configuration options
+		ap.setOptions = function( opts ) { 
+			const keys = Object.getOwnPropertyNames( ap.DEFAULTS );
+
+			while ( keys.length ) { 
+				const key = keys.shift( );
+				const value = ap.DEFAULTS[ key ];
+
+				if ( typeof opts[ key ] !== "undefined" ) { 
+					ap.CONFIG[ key ] = opts[ key ];
+					continue;
+				}
+
+				ap.CONFIG[ key ] = value;
 			}
-			return res;
-        },
-        ignoreImage: function(src){
-            if (!(this.rimages || []).length) return false;
-            var res = false;
-            for (var i = 0; i < this.rimages.length; i++){
-                if (((Object((pattern = this.rimages[i])) instanceof RegExp) ? pattern : {}).test && pattern.test(src)) res = true;
-            }
-            return res;
-        },
-        load: function(){
-            $.ajax({
-                method: "GET",
-                dataType: "json",
-                url: "/api.php",
-                xhr: $.proxy(function(){
-                    var xhr = $.ajaxSettings.xhr();
 
-                    xhr.addEventListener("progress", $.proxy(function(event){
-                        this.fire("progress", [event]);
-                    }, this));
+			ap.initOptions( );
+		};
 
-                    return xhr;
-                }, this),
-                data: {
-                    format: "json",
-                    action: "parse",
-                    page: this.page,
-                    prop: "images|text",
-                    disablepp: "",
-                    redirects: ""
-                }
-            }).done($.proxy(function(data){
-                if (data.error || !data.parse){
-                    this.state = "failed";
-                    this.fire("failed error", data);
-                    this.new = true;
+		// Initializes all configurations
+		ap.initOptions = function( ) { 
+			Object
+				.getOwnPropertyNames( ap.CONFIG )
+				.forEach( function( key ) { 
+					const setter = ap.SETTERS[ key ];
 
-                    this.ui.set({
-                        type: "new",
-                        content: i18n.get("notfound").escape(),
-                        image: this.DEFAULT_IMAGE
-                    }).addButtons(this.buttons);
-                    return this;
-                }
+					if ( Function.prototype.isPrototypeOf( Object( setter ) ) ) { 
+						return setter( ap.CONFIG[ key ] );
+					}
 
-                var image = data.parse.images.map(function(img){
-                        if (this.ignoreImage(img)) return false;
-                        return img;
-                    }, this).filter(Boolean)[0],
-                    content = data.parse.text["*"];
-                if (!image) image = this.DEFAULT_IMAGE;
+					if ( typeof setter === "string" ) { 
+						ap[ setter ] = ap.CONFIG[ key ];
+					}
+				} );
+		};
 
-                if (!content){
-                    this.state = "missing";
-                    this.fire("missing", data);
-                    this.new = true;
-                    this.ui.set({
-                        type: "missing",
-                        content: i18n.get("missing").escape(),
-                        image: this.DEFAULT_IMAGE
-                    }).addButtons(this.buttons);
-                    return this;
-                }
+		// The function to initialize the script
+		ap.init = function( ) {
+			// I18n object
+			ap.i18no = window.dev.i18n;
+			
+			// Dorui (UI) object
+			ap.ui = window.dev.dorui;
+			
+			// Colors object
+			ap.colors = window.dev.colors;
+			
+			// WDSIcons object
+			ap.wds = window.dev.wds;
+			
+			// When the i18n messages are loaded, continue
+			ap.loadMessages( ap.load );
+		};
+		
+		// Loads all messages for the script
+		ap.loadMessages = function( callback ) { 
+			mw
+				.hook( "dev.i18n" )
+				.add( function( i18no ) { 
+					i18no
+						.loadMessages( ap.NAME )
+						.then( callback );
+				} );
+		};
+		
+		// Loads the script
+		ap.load = function( i18n ) { 
+			// Sets the current message instance
+			ap.i18n = i18n;
+			
+			// Fetches all links
+			const links = ap.TARGET.querySelectorAll( "a" );
 
-                content = this.preprocess(content);
-                var $temp = $('<div>').html(content);
-                $temp.find("aside").prevAll().remove();
-                $temp.find("aside, table").remove();
+			// Create a shorthand message function
+			ap.msg = function( name ) { 
+				function getInstance( args ) { 
+					args.unshift( name );
+					return ap.i18n.msg.apply( ap.i18n, args );
+				}
 
-                // Step 1
-                content = $temp.text();
-                // Step 2
-                content = content ? content.replace(this.rtags, "") : "";
-                // Step 3
-                content = content.trim().substr(0, this.CHAR_LIMIT);
-                // Step 4
-                content = mw.html.escape(content);
-                // Step 5
-                if (content.indexOf(this.page) > -1){
-                    content = content.replace(this.page, "<span class='bold'>$&</span>")
-                }
-                this.ui.set("type", "content");
-                this.ui.set("content", content);
-
-                if (image !== this.DEFAULT_IMAGE){
-                    var imgSrc = "File:" + image.trim(),
-                        apiimage = new mw.Uri({ path: ("interwiki" in this.uri && this.uri.interwiki) || "" + "/api.php" });
-                    apiimage.extend({
-                        "action": "query",
-                        "redirects": true,
-                        "titles": imgSrc,
-                        "iiprop": "url",
-                        "prop": "imageinfo",
-                        "format": "json",
-                        "indexpageids": true
-                    });
-                    $.getJSON(apiimage.toString()).done($.proxy(function(response){
-                        var img, query = response.query;
-                        if (query.redirects && query.redirects.length){
-                            var redirect = query.redirects[0],
-                                r = redirect.to;
-                            if (r.length > 0) r = r[0];
-                            else {
-                                this.fire("noimage", { image: this.DEFAULT_IMAGE });
-                                this.ui.set("image", this.DEFAULT_IMAGE);
-                                return this;
-                            }
-                            var apiimg = apiimage.clone().extend({ titles: r });
-
-                            $.getJSON(apiimg.toString(), $.proxy(function(d){
-                                var pageid = d.query.pageids[0];
-                                img = data.query.pages[pageid].url;
-                                
-                                if (img.length > 0) img = img[0];
-                                else img = false;
-
-                                if (!img){ 
-                                    this.fire("noimage", { image: this.DEFAULT_IMAGE });
-                                    this.ui.set("img", this.DEFAULT_IMAGE);
-                                } else {
-                                    this.fire("imagefound", { image: img });
-                                    this.ui.set("img", img);
-                                }
-                            }, this));
-                        } else {
-                            var id = query.pageids[0], page = query.pages[id];
-                            img = page.imageinfo[0].url;
-                            if (img.length > 0) img = img[0];
-                            else img = false;
-
-                            if (!img){
-                                this.fire("noimage", { image: this.DEFAULT_IMAGE });
-                                this.ui.set("image", this.DEFAULT_IMAGE);
-                            } else {
-                                this.fire("imagefound", { image: img });
-                                this.ui.set("image", img);
-                            }
-                        }
-                    }, this)).fail($.proxy(function(){
-                        this.fire("imagefail", { image: this.DEFAULT_IMAGE });
-                        this.ui.set("image", this.DEFAULT_IMAGE);
-                    }, this));
-                } else {
-                    this.fire("noimage", { image: this.DEFAULT_IMAGE });
-                    this.ui.set("image", this.DEFAULT_IMAGE);
+				return Object.freeze( { 
+					parse: function( ) { 
+						const msg = getInstance( Array.from( arguments ) );
+						return msg.parse( );
+					},
+					escape: function( ) { 
+						const msg = getInstance( Array.from( arguments ) );
+						return msg.escape( );
+					},
+					plain: function( ) { 
+						const msg = getInstance( Array.from( arguments ) );
+						return msg.plain( );
+					},
+					encode: function( ) { 
+						const msg = getInstance( Array.from( arguments ) );
+						const plain = msg.plain( );
+						return encodeURIComponent( plain );
+					},
+					decode: function( ) { 
+						const msg = getInstance( Array.from( arguments ) );
+						const plain = msg.plain( );
+						return decodeURIComponent( plain );
+					},
+					exists: ap.i18n.msg( name ).exists
+				} );
+			};
+			
+			// Checks the image source
+			ap.checkImageSrc = function( src ) { 
+				if ( !src ) return false;
+				try { 
+					const url = new mw.Uri( src );
+					return ap.PATTERNS.IMAGE_HOST.test( url.host );
+				} catch( e ) { 
+					return false;
+				}
+			};
+			
+			// Matches the value type
+			ap.matchesType = function( type, value ) { 
+				const isString = typeof type === "string";
+				
+				return isString ? typeof value === type :
+					type.prototype.isPrototypeOf( Object( value ) );
+			};
+			
+			// Checks the URL for an element
+			ap.checkURL = function( url ) { 
+				const check = ap.CONDITIONS.URL;
+				
+				if ( ap.matchesType( check.type, url ) ) { 
+					return check.dispatch( url );
 				}
 				
-				this.state = "complete";
-                this.fire("complete success", data);
-            }, this)).fail($.proxy(function(error){
-				this.state = "failed";
-                this.fire("error fail", error);
-            }, this));
-            return this;
-        },
-        preprocess: function(content){
-            if ((Object(this.prep) instanceof Object) || $.isEmptyObject(this.prep)) return "";
-            var $temp = $("<div>").html(s);
-            if (Object(this.ronlyinclude) instanceof Array){
-                content = this.ronlyinclude.map(function(target){
-                    var $target = $temp.find(target);
-                    if ($target.length){
-                        $temp.remove(target);
-                        return $target.map(function(){
-                            return this.outerHTML;
-                        }).toArray().join();
-                    } else return false;
-                }).filter(Boolean).join() || content;
-            }
+				return false;
+			};
+			
+			// Checks the <a> element
+			ap.checkElement = function( element ) { 
+				const check = ap.CONDITIONS.ELEMENT;
+				
+				if ( ap.matchesType( check.type, element ) ) { 
+					return check.dispatch( element );
+				}
+				
+				return false;
+			};
+			
+			// Checks if a page can show the preview
+			ap.checkPage = function( page ) { 
+				const check = ap.CONDITIONS.PAGE;
 
-            Object.keys(this.prep).forEach(function(key){
-                var pattern = this.prep[key];
-                content = content.replace(pattern, "");
-            }, this);
+				page = decodeURIComponent( page ).split( "_" ).join( " " );
+				
+				if ( ap.matchesType( check.type, page ) ) { 
+					return check.dispatch( page );
+				}
+				
+				return false;
+			};
+			
+			// Checks each link
+			links.forEach( ap.checkLink );
+		};
+		
+		// Checks the current link
+		ap.checkLink = function( element ) { 
+			// Step 1. Checks if an element can show the preview
+			const isAllowed = ap.checkElement( element );
 
-            return s;
-        },
-        toLink: function(){
-            var res = this.link, wikiSrc, page;
-            if (this.rfulllink.test(res)){
-                wikiSrc = this.rwikilink2.exec(this.link)[0];
-                page = res.replace(this.rfulllink, "$2").replace(/\s+/g, "_");
-                res = wikiSrc + this.articlePath.replace("$1", page);
-            } else if (this.rwikilink1.test(res)){
-                wikiSrc = this.rwikilink1.exec(this.link)[0];
-                page = this.siteName.replace(/\s+/g, "_");
-                res = wikiSrc + this.articlePath.replace("$1", page);
-            } else if (this.rshortlink.test(res)){
-                wikiSrc = this.wikiHost;
-                page = this.link.replace(this.rshortlink, "$1");
-                res = wikiSrc + this.articlePath.replace("$1", page);
-            } else return this.link;
-            return res;
-        },
-        mouseover: function(event){
-            this.$elem = $(event.delegateTarget);
-            this.link = this.$elem.attr("href");
-            this.currLink = this.toLink();
-            this.check(function(){
-                this.fire("datachange setdata mouseover");
-                this.setData(event);
-            });
-        },
-        mouseout: function(event){
-            this.check(function(){
-                this.fire("datachange removedata mouseout");
-                this.removeData(event);
-            });
-        },
-        createURI: function(){
-            this.fire("urichange");
-            this.uri = this.createURIObj(this.link);
-        },
-        createURIObj: function(href){
-            var uri = {};
-            try {
-                uri = new mw.URI(href.toString());
-                uri.pathname = uri.path;
-                uri.hostname = uri.host;
-            } catch (ignore){}
+			// If the element does not pass the test, skip;
+			if ( !isAllowed ) return;
+			
+			// Step 2. Creates the URL object for the link
+			const url = new mw.Uri( element.href );
 
-            if (!$.isEmptyObject(uri)){
-                try {
-                    uri.truepath = decodeURIComponent(uri.pathname.replace(this.rwikilink3, ""));
-                    uri.interwiki = h.path.split("/wiki/")[0];
-                    uri.islocal = this.articlePath.split("/wiki/")[0] === uri.interwiki;
-                } catch (ignore){}
-            }
-            return uri;
-        },
-        setData: function(event){
-            this.createURI();
-            this.pos.x = event.pageX;
-            this.pos.y = event.pageY;
-            this.pos.clientX = event.clientX;
-            this.pos.clientY = event.clientY;
-            if (!(Object(this.delay) instanceof Boolean)){
-                if (!isNaN(this.delay) && isFinite(this.delay)){
-                    this.delay = parseInt(this.delay);
-                    setTimeout($.proxy(this.load, this), this.delay);
-                } else {
-                    this.load();
-                }
-            } else this.load();
-        },
-        createUI: function(options){
-            if (!this.ui) this.ui = new AP.ui();
-            options = $.extend({}, options);
-            if (!$.isEmptyObject(options)){
-                this.ui.set(options);
-            }
-            return this;
-        },
-        openUI: function(){
-            if (!this.ui.loaded) this.ui.add();
-            this.updateUI();
-        },
-        updateUI: function(){
-            this.ui.process(function(ctx){
-                var type = "fadeIn", fade = 200;
-                if (isNaN(ctx.FADE) && ctx.FADE !== "default"){
-                    fade = Infinity;
-                    type = "show";
-                } else if (!isNaN(ctx.FADE)){
-                    fade = ctx.FADE;
-                }
-                if (!this.isVisible){
-                    if (type === "fadeIn"){
-                        this.$elem[type](fade, $.proxy(ctx.calculate, ctx, this));
-                    } else {
-                        this.$elem[type]($.proxy(ctx.calculate, ctx, this));
-                    }
-                } else {
-                    ctx.calculate.call(ctx, this);
-                }
-            }, this);
-        },
-        calculate: function(ui){
-            if ((this.pos.clientY + ui.$elem.height()) > $(window).height()){
-                this.pos.y -= (ui.$elem.height() + this.loc.y);
-            } else {
-                this.pos.y += this.loc.y;
-            }
+			// If the link does not pass the test, skip;
+			if ( !ap.checkURL( url ) ) return;
+			
+			// Step 3. Fetches the page name
+			const page = decodeURL( ap.PATTERNS.INDEX_TITLE.test( url.path ) ?
+				ap.PATTERNS.INDEX_TITLE.exec( url.path )[ 1 ] : 
+				( ap.PATTERNS.WIKI_TITLE.test( url.path ) ? 
+					ap.PATTERNS.WIKI_TITLE.exec( url.path )[ 1 ] : 
+					"" ) );
+			
+			console.log( page );
+			// If the page name is blank, undefined, or does not
+			// pass the test, stop here.
+			if ( page === "" || !ap.checkPage( page ) ) return;
 
-            if ((this.pos.clientX + ui.$elem.width()) > $(window).width()){
-                this.pos.x -= (ui.$elem.width() + this.loc.x);
-            } else {
-                this.pos.x += this.loc.x;
-            }
+			// The parsed page name
+			const parsedPage = decodeURIComponent( page ).split( "_" ).join( " " );
 
-            this.pos.x = this.pos.x > 0 ? this.pos.x : 0;
-            this.pos.y = this.pos.y > 0 ? this.pos.y : 0;
+			// Sets the page name to a data attribute
+			element.dataset.pageName = parsedPage;
 
-            ui.$elem.css({
-                left: this.FORCE_POS ? $("body").scrollLeft() : this.pos.x,
-                top: this.FORCE_POS ? $("body").scrollTop() : this.pos.y
-            });
-        },
-        removeData: function(){
-            this.link = "";
-            this.closeUI();
-        },
-        fire: function(name){
-            var args = slice.call(arguments, 1);
-            name = name.split(" ");
-            if (name.length === 1) name = name[0];
-            if (typeof name === "string"){
-                if (!has.call(this._callbacks, name)) this._callbacks[name] = $.Callbacks("memory");
-                this._callbacks[name].fireWith(this, args);
-            } else if (Object(name) instanceof Array) {
-                name.forEach(function(key){
-                    if (!has.call(this._callbacks, key)) this._callbacks[key] = $.Callbacks("memory");
-                    this._callbacks[key].fireWith(this, args);
-                }, this);
-            } else return this;
-            return this;
-        },
-        on: function(name, callback){
-            name = name.split(" ");
-            if (name.length === 1) name = name[0];
-            if (typeof name === "string"){
-                if (!has.call(this._callbacks, name)) this._callbacks[name] = $.Callbacks("memory");
-                this._callbacks[name].add(callback);
-            } else if (Object(name) instanceof Array) {
-                name.forEach(function(key){
-                    if (!has.call(this._callbacks, key)) this._callbacks[key] = $.Callbacks("memory");
-                    this._callbacks[key].add(callback);
-                }, this);
-            } else return this;
-            return this;
-        },
-        done: function(callback){
-            this.on("complete", callback);
-            return this;
-        },
-        fail: function(callback){
-            this.on("error", callback);
-            return this;
-        },
-        always: function(callback){
-            this.on("always", callback);
-            return this;
-        },
-        missing: function(callback){
-            this.on("missing", callback);
-            return this;
-        }
-    };
+			// Creates an event listener when the mouse is hovering over the link
+			element.addEventListener( "mouseover", ap.onHover.bind( ap, { 
+				element: element,
+				page: parsedPage,
+				url: url
+			} ) );
 
-    AP.ui = function ui(options){
-        if (!(this instanceof AP.ui)){
-            return new AP.ui(options);
-        }
-        options = $.extend({}, options);
-        this.autoUpdateKeys = ["content", "image", "buttons"];
-        this.autoUpdate = def(options.autoUpdate, true);
-        this.maxWidth = def(options.maxWidth, 650);
-        this.buttons = merge(options.buttons, []);
-        this.content = "";
-        this.image = "";
-        this.isVisible = false;
-        this.create();
-        return this;
-    };
+			// Creates an event listener when the mouse leaves the link
+			element.addEventListener( "mouseout", ap.offHover.bind( ap, {
+				element: element, 
+				page: parsedPage
+			} ) );
+		};
 
-    AP.ui.prototype = {
-		constructor: AP.ui,
-		set state(value){
-			this.fire("statechange", { value: value });
-		},
-        create: function(){
-			this.$wrapper = $("<div>", { "class": "ap__ui" });
-			this.$content = $("<figure>", { "class": "ap__content" });
-			this.$buttons = $("<nav>", { "class": "ap__toolbar" });
-			this.$image = $("<img>", { "class": "ap__image" });
-            this.$caption = $("<figcaption>", { "class": "ap__text" });
-            this.$options = $("<nav>", { "class": "ap__options" });
-            this.$list = $("<section>", { "class": "ap__options-list" });
-			return this;
-        },
-        process: function(callback, context){
-            var args = slice.call(arguments), l = 2;
-            if (!(this.$wrapper && this.$wrapper.length)) return;
-            if (typeof context === "undefined"){
-                l = 1; context = this;
-            }
-            args = slice.call(args, l);
-            callback.apply(context, [this].concat(args));
-            return this;
-        },
-        get: function(key){}
-    };
+		// Function to activate when hovering over a link
+		ap.onHover = function( opts, event ) { 
+			console.log( arguments );
 
-    var i18n = AP.i18n = {
-        load: function(){
-			mw.hook("dev.i18n").add(function(i18no){
-				i18no.loadMessages("ArticlePreview").then(function(_i18n){
-					AP.i18n.get = _i18n.msg;
-					AP.i18n.init.resolve();
-				});
-			});
-		},
-        init: $.Deferred()
-    };
+			// Sets the hover state to true
+			ap.HOVER = true;
 
-    i18n = AP.i18n;
+			// Fetches the mouse coordinates
+			const x = event.pageX, y = event.pageY;
 
-    var css = AP.css = {
-		properties: {},
-		set: function(){},
-		load: function(){},
-        init: $.Deferred()
-    };
+			// Sets the coordinates to a vector
+			ap.VECTOR = new Vector( x, y );
 
-    var coreDeps = ["mediawiki.api", "mediawiki.util", "mediawiki.Title"];
+			// The element that is being hovered
+			const element = opts.element;
 
-    mw.loader.load(coreDeps, null, true);
+			// The current page name
+			const currentPage = opts.page;
 
-    $.when(
-        i18n.init,
-        css.init,
-        mw.loader.using(coreDeps)
-    ).done(function(){
-        var config = $.extend({}, window.APConfig);
-            mainController = new AP.controller(config);
-        
-        window.ArticlePreview = AP;
-        window.APController = APController;
-    });
-});
+			// The current URL
+			const url = opts.url;
+
+			// Shows the article preview
+			ap.generateInfo( currentPage )
+				.then( ap.generateElement.bind( ap, element, url ) );
+		};
+
+		ap.generateInfo = function( currentPage ) { 
+			if ( ap.ALLOW_CACHE ) { 
+				if ( ap.CACHE.hasOwnProperty( currentPage ) ) { 
+					return new Promise( function( resolve, reject ) { 
+						resolve( ap.CACHE[ currentPage ] );
+					} );
+				}
+			}
+
+			const api = new mw.Api( );
+
+			const params = { 
+				action: "parse",
+				page: currentPage,
+				prop: "images|text",
+				format: "json",
+				disablepp: true,
+				redirects: true
+			};
+
+			if ( ap.WHOLE_PAGE ) { 
+				params.section = 0;
+			}
+
+			return api.get( params );
+		};
+
+		ap.process = function( text, page ) { 
+			const temp = document.createElement( "div" );
+			temp.innerHTML = text;
+
+			if ( !Array.isArray( ap.PATTERNS.PREP ) ) return "";
+
+			if ( Array.isArray( ap.PATTERNS.ONLYINCLUDE ) ) { 
+				text = ap.PATTERNS.ONLYINCLUDE
+					.map( function( value ) { 
+						const elements = temp.querySelectorAll( value );
+						if ( !elements ) return false;
+
+						return Array.from( elements ).map( function( element ) { 
+							temp.removeChild( element );
+							return element.outerHTML;
+						} ).join( "" );
+					} )
+					.filter( Boolean )
+					.join( "" ) || text;
+			}
+
+			text = ap.PATTERNS.PREP.reduce( function( value, pattern ) { 
+				value = value.replace( pattern, "" );
+				return value;
+			}, text );
+
+			const titlePattern = new RegExp( escapeRegExp( page ) );
+
+			text = text.replace( titlePattern, '<strong class="">$&</strong>' );
+
+			return text;
+		};
+
+		ap.generateElement = function( element, url, data ) { 
+			if ( !data.parse ) { 
+				ap.PATTERNS.IGNORE_URLS.push( url.pathname );
+				return;
+			}
+
+			if ( ap.ALLOW_CACHE ) { 
+				if ( !ap.CACHE.hasOwnProperty( data.parse.title ) ) { 
+					ap.CACHE[ data.parse.title ] = data;
+				}
+			}
+
+			const image = data.parse.images.map( function( value ) { 
+				if ( ap.checkImageSrc( value ) ) return false;
+				return value;
+			} ).filter( Boolean )[ 0 ];
+
+			const text = data.parse.text[ "*" ];
+
+			if ( !image && !text ) { 
+				ap.PATTERNS.IGNORE_URLS.push( url.pathname );
+				return;
+			}
+
+			const temp = document.createElement( "div" );
+			temp.innerHTML = ap.process( text, element.dataset.pageName );
+
+			const infoboxes = temp.querySelectorAll( ".infobox" );
+			const portableInfoboxes = temp.querySelectorAll( "aside.portable-infobox" );
+			const toc = temp.querySelectorAll( ".toc" );
+
+			if ( !ap.INFOBOX ) { 
+				infoboxes.forEach( function( infobox ) { 
+					infobox.remove( );
+				} );
+
+				portableInfoboxes.forEach( function( infobox ) { 
+					infobox.remove( );
+				} );
+			}
+
+			if ( !ap.TOC ) { 
+				toc.forEach( function( elem ) { 
+					elem.remove( );
+				} );
+			}
+
+			const result = temp.innerHTML;
+
+			if ( !ap.CONTAINER.querySelector( ".article-preview__text" ) ) {
+				const previewText = document.createElement( "div" );
+				previewText.classList.add( "article-preview__text" );
+				previewText.innerHTML = result;
+
+				ap.WRAPPER.insertAdjacentElement( "beforeend", previewText );
+			} else { 
+				const previewText = ap.CONTAINER.querySelector( ".article-preview__text" );
+				previewText.innerHTML = result;
+			}
+
+			if ( ap.NO_IMAGE ) return ap.processPreview( element );
+
+			if ( !ap.CONTAINER.querySelector( ".article-preview__image" ) ) {
+				const previewImage = new Image( );
+				previewImage.classList.add( "article-preview__image" );
+				ap.WRAPPER.insertAdjacentElement( "afterbegin", previewImage );
+
+				if ( image ) {
+					ap.generateImage( image )
+						.then( ap.processImage.bind( ap, previewImage, element ) );
+					return;
+				} else { 
+					ap.processImage( previewImage, element, { 
+						useDefaultImage: true
+					} );
+				}
+			} else {
+				const previewImage = ap.CONTAINER.querySelector( ".article-preview__image" );
+
+				if ( image ) {
+					ap.generateImage( image )
+						.then( ap.processImage.bind( ap, previewImage, element ) );
+					return;
+				} else { 
+					ap.processImage( previewImage, element, { 
+						useDefaultImage: true
+					} );
+				}
+			}
+		};
+
+		ap.generateImage = function( image ) { 
+			const api = new mw.Api( );
+
+			const params = Object.freeze( { 
+				action: "query",
+				redirects: true,
+				titles: "File:" + image.trim( ),
+				iiprop: "url",
+				prop: "imageinfo",
+				format: "json",
+				indexpageids: true
+			} );
+
+			return api.get( params );
+		};
+
+		ap.processImage = function( previewImage, element, data ) { 
+			if ( data.useDefaultImage ) { 
+				previewImage.src = ap.DEFAULT_IMAGE;
+				return ap.processPreview( element );
+			}
+
+			const query = data.query;
+			const pageid = query.pageids[ 0 ];
+			const page = query.pages[ pageid ];
+
+			if ( !query.redirects ) {
+				const imageinfo = page.imageinfo;
+
+				if ( imageinfo.length ) { 
+					previewImage.src = imageinfo[ 0 ].url;
+				} else { 
+					previewImage.src = ap.DEFAULT_IMAGE;
+				}
+
+				return ap.processPreview( element );
+			} else {
+				const redirect = query.redirects[ 0 ].to;
+				const redirectTitle = redirect.replace( /^File:/i, "" );
+
+				ap.generateImage( redirectTitle )
+					.then( ap.processImage.bind( ap, previewImage, element ) );
+			}
+		};
+
+		ap.processPreview = function( element ) { 
+			// Creates a client rect object for the link
+			const clientRect = element.getBoundingClientRect( );
+
+			// Creating an offset vector
+			const offset = new Vector( -20, clientRect.height - 6 );
+
+			// Adds the offset to its vector
+			ap.VECTOR = ap.VECTOR.add( offset );
+
+			// Changes the positioning of the article preview
+			ap.CONTAINER.style.top = ap.VECTOR.y + "px";
+			ap.CONTAINER.style.left = ap.VECTOR.x + "px";
+
+			// Creates the element if it is not on the DOM
+			if ( !ap.IN_DOM ) { 
+				// Append the container to its target
+				ap.TARGET.append( ap.CONTAINER );
+
+				// The preview is in the DOM. Set the state to true.
+				ap.IN_DOM = true;
+			}
+
+			// Adds a class name to show the preview
+			ap.CONTAINER.classList.add( "show" );
+		};
+
+		// Function to initialize when the mouse leaves the link
+		ap.offHover = function( opts, event ) { 
+			// Sets the hover state to false
+			ap.HOVER = false;
+
+			// Hides the article preview
+			ap.CONTAINER.classList.remove( "show" );
+
+			// Removes all content from the container
+			const content = ap.CONTAINER.querySelector( ".article-preview__text" );
+			content.innerHTML = "";
+
+			// Changes the image source to the default image
+			const image = ap.CONTAINER.querySelector( ".article-preview__image" );
+			image.src = ap.DEFAULT_IMAGE;
+		};
+
+		// Set all configurations
+		ap.setOptions( opts );
+
+		// Create a loader to initialize the script
+		ap.LOADER = new Loader( ap.SCRIPTS, ap.init, ap );
+
+		// Initializes the script
+		ap.LOADER.init( );
+
+		// Fires the ready hook
+		mw.hook( "articlePreview.ready" ).fire( this );
+	}
+
+	window.ArticlePreview = ArticlePreview;
+	
+	window.ap = new ArticlePreview( window.articlePreview );
+} )( window, jQuery, mediaWiki );

@@ -112,6 +112,7 @@
     'Sorcerer\'s Apparition': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Spidris': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Spidris Elite': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
+    'Srezz Yellow Eyes': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Squid Warden': {'Inkwell': 'Inkwell (Black)'},
     'Tarnished Spirit': {'Book': 'Book (Orange)'},
     'Thaian': {'Amber': 'Amber (Item)'},

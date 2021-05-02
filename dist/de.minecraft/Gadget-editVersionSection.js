@@ -3,7 +3,7 @@ $( document ).ready( function( $ ) {
 	if ( btnData.length ) {
 		var editPage = btnData.html();
 		
-		$.getJSON( 'https://minecraft-de.gamepedia.com/api.php', {
+		$.getJSON( 'https://minecraft.fandom.com/de/api.php', {
 			action: 'parse',
 			page: editPage,
 			prop: 'sections',
@@ -13,12 +13,12 @@ $( document ).ready( function( $ ) {
 				var sections = data.parse.sections;
 				for ( var i = 0; i < sections.length; i++ ) {
 					if ( sections[i].anchor.localeCompare( mw.config.get("wgPageName") ) === 0 ) {
-						var sectionLink = '/index.php?title=' + editPage + '&action=edit&section=';
+						var sectionLink = '/de/index.php?title=' + editPage + '&action=edit&section=';
 						$( '#ca-edit a' ).attr( 'href', sectionLink + sections[i].index ).html( 'Bearbeiten' );
 						
 						var edittopHTML = '<span class="mw-editsection">' +
 							'<span class="mw-editsection-bracket" style="margin-right: 0.25em;color: #555555;">[</span>' +
-							'<a href="/index.php?title=' + mw.config.get("wgPageName") + '&amp;action=edit" title="Diese Seite bearbeiten">Quelltext bearbeiten</a>' +
+							'<a href="/de/index.php?title=' + mw.config.get("wgPageName") + '&amp;action=edit" title="Diese Seite bearbeiten">Quelltext bearbeiten</a>' +
 							'<span class="mw-editsection-bracket" style="margin-left: 0.25em;color: #555555;">]</span>' +
 							'</span>';
 						

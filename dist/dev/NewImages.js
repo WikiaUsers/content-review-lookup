@@ -4,7 +4,8 @@
     function newImages() {
 
         if (
-            !$('.WikiaRail, .photo-module').length
+            ! $('.WikiaRail').length
+            || $('.photo-module').length
             || mw.config.values.wgCanonicalNamespace == 'Special'
             || mw.config.values.wgCanonicalNamespace == 'MediaWiki'
             || window.NewImagesScript
@@ -243,7 +244,7 @@
                     '</h2>' +
                     '<div class="photo-stats">' +
                         '<div class="tally">' +
-                            '<em>' + f.amount + '</em>' +
+                            '<em>' + f.amount.toLocaleString(mw.config.values.wgUserLanguage) + '</em>' +
                             '<span>' + f.lng.i + '</span>' +
                         '</div>' +
                         '<a href="' + mw.config.values.wgArticlePath.replace('$1', 'Special:Upload') + '" class="wds-is-secondary wds-button wds-is-squished">' + f.lng.u + '</a>' +

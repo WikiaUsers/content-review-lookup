@@ -109,15 +109,15 @@ mw.loader.using('mediawiki.api', function() {
  
 					$.ajax({
 						type: 'POST',
-						url: 'https://services.fandom.com/discussion/wall/' + cityId + '/' + users[0].userid + '/threads',
-						contentType: 'application/json',
-						data: JSON.stringify({
-							siteId: cityId,
+						url: mw.util.wikiScript('wikia') + '?controller=Fandom%5CMessageWall%5CMessageWall&method=createThread&format=json',
+						data: {
+							token: mw.user.tokens.get('editToken'),
+							wallOwnerId: users[0].userid,
 							title: config.title,
 							rawContent: messages,
 							jsonModel: '{"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"' + messages + '"}]}]}',
-							attachments: {contentImages: [], openGraphs: [], atMentions: []}
-						}),
+							attachments: '{"contentImages": [], "openGraphs": [], "atMentions": []}'
+						},
 						xhrFields: {
 							withCredentials: true 
 						}

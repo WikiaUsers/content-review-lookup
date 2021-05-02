@@ -824,8 +824,7 @@
 		}
 		var sweeperForm = createForm(currPages, options);
 		sweepedPages = 0;
-		sweepedLinks = 0;
-		$.showCustomModal("Link Sweeper", sweeperForm, {
+		dev.showCustomModal("Link Sweeper", sweeperForm, {
 			id: "backLinkForm",
 			width: 325,
 			buttons: [{
@@ -895,7 +894,7 @@
 				id: "cancelButton",
 				handler: function () {
 					bContinueProcess = false;
-					$("#backLinkForm").closeModal();
+					dev.showCustomModal.closeModal($("#backLinkForm"));
 				}
 			}, {
 				message: msg("btn_remove_backlinks"),
@@ -976,5 +975,11 @@
 			type: "batch"
 		}, showLinkSweeperModal);
 	}
-	main();
+	mw.hook('dev.showCustomModal').add(function() {
+		main();
+	});
+	importArticle({
+	    type: 'script',
+	    article: 'u:dev:MediaWiki:ShowCustomModal.js'
+	});
 }(window, mw, $));

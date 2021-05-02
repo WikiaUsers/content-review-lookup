@@ -33,7 +33,8 @@
         'Tribù dei Muschiosi',
         'Tribù delle Mantidi',
         'Tribù dei Ragni',
-        'Lore'
+        'Lore',
+        'Sigilli'
  
     ];
  

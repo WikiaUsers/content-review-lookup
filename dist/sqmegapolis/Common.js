@@ -2,12 +2,20 @@
 
 /* All script imports in MediaWiki:ImportJS */
 
-/* Inactive Configuration */
+// NoLicenseWarning
+window.NoLicenseWarning = {
+    forceLicense: true
+};
+
+/* BackToTop */
+window.BackToTopModern = true;
+
+/* InactiveUsers */
 window.InactiveUsers = {
     months: 2,
 };
 
-/* Spoiler Configuration */
+/* Spoiler */
 window.SpoilerAlert = {
   categories: "Spoiler",
 };
@@ -36,20 +44,8 @@ UserTagsJS.modules.newuser = {
 };
 
 importArticles({
-    type: 'script',
+    type: "style",
     articles: [
-        'u:es.alternativo:MediaWiki:Slider.js',
-        'u:pad.wikia.com:MediaWiki:FilterTable.js',
-    ]
-}, {
-    type: 'style',
-    articles: [
-        'u:dev:FontAwesome/code.css'
+        "w:c:dev:MediaWiki:FontAwesome.css"
     ]
 });
-
-// RailWAM configuration
-window.railWAM = {
-    logPage:"Project:WAM Log",
-    appendAfter:'DiscordIntegrator'
-};

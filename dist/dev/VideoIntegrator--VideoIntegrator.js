@@ -38,6 +38,15 @@ mw.hook('wikipage.content').add(function($content) {
                         css: css,
                         frameborder: 0
                     })
+                   );
+                break;
+            case 'fembed':
+                $this.html(
+                    $('<iframe>', {
+                        src: 'https://femax.com/v/' + id,
+                        css: css,
+                        frameborder: 0
+                    })
                 );
                     break;
             case 'ok.ru':

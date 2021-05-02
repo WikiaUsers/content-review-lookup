@@ -33,3 +33,10 @@ importArticles({
         'u:dev:MediaWiki:DiscussionsRailModule/code.js',
     ]
 });
+
+window.SpoilerAlertJS = {
+    question: 'This area contains spoilers. Do you want to continue?',
+    yes: 'Of course!',
+    no: 'Nope',
+    fadeDelay: 1000
+};

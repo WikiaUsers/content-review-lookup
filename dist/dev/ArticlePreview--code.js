@@ -8,6 +8,8 @@
  * -- Allows a user to create a new page if it does not exist
  * - Version 1.1
  * -- Added support to default colors
+ * - Version 1.1.1
+ * -- Minor fixes for UCP - HumansCanWinElves
  *
  * @author Ultimate Dark Carnage
  **/

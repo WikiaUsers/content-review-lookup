@@ -1351,6 +1351,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ]
             },
+            "augur": {
+                "name": "Augur",
+                "types": [
+                    "marble key"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "20_hours_20",
+                "rarity": 3,
+                "parenteligibility": "infinity",
+                "offspringeligibility": "marketonly",
+                "notes": [
+                    "feature"
+                ]
+            },
             "auntie": {
                 "name": "Auntie",
                 "types": [
@@ -1486,6 +1502,32 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "6_hours_6",
                 "rarity": 1
+            },
+            "azorchid": {
+                "name": "Azorchid",
+                "types": [
+                    "flower",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "pink"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "blue"
+                            ]
+                        ]
+                    ]
+                ]
             },
             "azoul": {
                 "name": "Azoul",
@@ -4704,6 +4746,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ]
             },
+            "confidence": {
+                "name": "Confidence",
+                "types": [
+                    "flower",
+                    "green",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "congo": {
                 "name": "Congo",
                 "types": [
@@ -6162,6 +6221,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 3,
                 "offspringeligibility": "expired"
             },
+            "dayflower": {
+                "name": "Dayflower",
+                "types": [
+                    "flower",
+                    "pink",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "25_hours_25",
+                "rarity": 4,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "daywing": {
                 "name": "Daywing",
                 "types": [
@@ -6993,6 +7069,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "duskbloom": {
+                "name": "Duskbloom",
+                "types": [
+                    "flower",
+                    "black",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "duskhopper": {
                 "name": "Duskhopper",
                 "types": [
@@ -7562,6 +7655,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 1,
                 "notes": [
                     "hidden"
+                ]
+            },
+            "enchanted": {
+                "name": "Enchanted",
+                "types": [
+                    "flower",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
                 ]
             },
             "enchantress": {
@@ -8322,6 +8431,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "15_hours_15",
                 "rarity": 3,
                 "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "field": {
+                "name": "Field",
+                "types": [
+                    "flower",
+                    "white",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
                 "notes": [
                     "feature"
                 ]
@@ -16855,6 +16981,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "mum": {
+                "name": "Mum",
+                "types": [
+                    "flower",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "mummy": {
                 "name": "Mummy",
                 "types": [
@@ -19437,6 +19579,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "11_hours_11",
                 "rarity": 3,
                 "offspringeligibility": "wheel",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "ornate": {
+                "name": "Ornate",
+                "types": [
+                    "gold"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "24_hours_24",
+                "rarity": 4,
+                "parenteligibility": "goldtype",
+                "offspringeligibility": "marketonly",
                 "notes": [
                     "feature"
                 ]
@@ -22637,6 +22795,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "15_hours_15",
                 "rarity": 3,
                 "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "regeneration": {
+                "name": "Regeneration",
+                "types": [
+                    "food"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "parenteligibility": "infinity",
+                "offspringeligibility": "marketonly",
                 "notes": [
                     "feature"
                 ]

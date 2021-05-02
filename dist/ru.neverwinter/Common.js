@@ -39,7 +39,8 @@ function showTip(e) {
   if ($p.hasClass("selflink")==false) {
     $t.removeAttr("title");
     $p.removeAttr("title");
-    var url = "/ru/index.php?title="+$t.data("tt").replace(/ /g,"_").replace(/\?/g,"%3F")+"&action=render .tooltip-content";
+   /*var url = "/ru/index.php?title="+$t.data("tt").replace(/ /g,"_").replace(/\?/g,"%3F").replace(/\+/g,"%2B")+"&action=render .tooltip-content";*/
+   var url = "/ru/index.php?title=" + encodeURIComponent(decodeURIComponent($t.data("tt"))) + "&action=render " + 'div[class*="tooltip-content"]';
     if (tipCache[url] != null) {
       $tfb.html(tipCache[url]);
       displayTip(e);

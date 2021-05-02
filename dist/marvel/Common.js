@@ -502,8 +502,8 @@ icon: 'https://images.wikia.nocookie.net/marveldatabase/images/5/5a/Images_Butto
 action: {
 type: 'encapsulate',
 options: {
-pre: "{{Marvel Database:Gallery Template\r| GalleryType             = \r| GalleryData             = \r==Comics==\r===Interior Images===\r<gallery position="center" captionalign="center">\r",
-post: "\r</gallery>\r| SeeAlso                 = \r}}"
+pre: "{{Marvel Database:Gallery Template\r| GalleryType             = \r| GalleryData             = \r\r==Comics==\r===Interior Art===\r<gallery position=\"center\" captionalign=\"center\">\r",
+post: "\r</gallery>\r\r| SeeAlso                 = \r}}"
 }
 }
 }

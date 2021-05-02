@@ -14,7 +14,7 @@ window.tooltips_list = [
         parse: '{' + '{Template:Enemy tip|1=<#name#>|2=<#codename#>|3=<#dura#>|4=<#atk#>|5=<#def#>|6=<#rist#>}}',
     },  {
         classname: 'character-tooltip',
-        parse: '{' + '{Template:Character tip|1=<#name#>|2=<#class#>|3=<#rarity#>|4=<#faction#>|5=<#left#>|6=<#top#>|width=<#width#>}}'
+        parse: '{' + '{Template:Character tip|1=<#name#>|2=<#class#>|3=<#rarity#>|4=<#faction#>|5=<#left#>|6=<#top#>|link=<#link#>|width=<#width#>|height=<#height#>|tooltip=<#tooltip#>}}'
     },	{
         classname: 'collection-tooltip',
         parse: '{' + '{Template:Collection tip|1=<#name#>|2=<#text1#>|3=<#text2#>|e=<#event#>|q=<#quality#>|c=<#condition#>|n=<#note#>}}',

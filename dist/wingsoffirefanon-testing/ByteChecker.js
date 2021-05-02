@@ -1,4 +1,4 @@
-$(function () {
+mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 	window.byteCounter = {
 		/**
 		 * Default regular expressions
@@ -89,14 +89,11 @@ $(function () {
 		 * @param {Number} size - Size of the trimmed page
 		 */
 		notification: function notification(size) {
-			if (size < 2500)
-				dev.toasts.warning('Page is smaller than 2500 bytes: ' + size, {
-					timeout: 10000,
-				});
-			else
-				dev.toasts.success('Page is larger than 2500 bytes: ' + size, {
-					timeout: 10000,
-				});
+			if (size < 2500) {
+				dev.toasts.warning('Page is smaller than 2500 bytes: ' + size, { timeout: 10000 });
+			} else {
+				dev.toasts.success('Page is larger than 2500 bytes: ' + size, { timeout: 10000 });
+			}
 		},
 
 		/**
@@ -109,7 +106,6 @@ $(function () {
 				return;
 			}
 
-			const context = this;
 			// Fetch the current page's context as wikitext
 			new mw.Api()
 				.get({
@@ -119,15 +115,21 @@ $(function () {
 					prop: 'wikitext',
 					formatversion: 'latest',
 				})
-				.then(function (data) {
-					const page = data.parse.wikitext;
+				.then(
+					function (data) {
+						const page = data.parse.wikitext;
 
-					const filteredPage = context.filterData(page, context);
+						if (page.includes('[[Category:Genre (Comic)]]')) {
+							return dev.toasts.success("This page is a comic and shouldn't be deleted!", { timeout: 10000 });
+						}
 
-					const pageSize = new Blob([filteredPage]).size;
+						const filteredPage = this.filterData(page, this);
 
-					context.notification(pageSize);
-				})
+						const pageSize = new Blob([filteredPage]).size;
+
+						this.notification(pageSize);
+					}.bind(this)
+				)
 				.catch(function () {
 					console.error;
 				});
@@ -139,9 +141,7 @@ $(function () {
 		articles: ['u:dev:MediaWiki:Toasts.js', 'u:dev:MediaWiki:UI-js/code.js'],
 	});
 
-	mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
-		mw.hook('dev.ui').add(function () {
-			window.byteCounter.button();
-		});
+	mw.hook('dev.ui').add(function () {
+		window.byteCounter.button();
 	});
 });

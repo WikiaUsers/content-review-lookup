@@ -396,14 +396,13 @@
 
         if (!sassParams) {
             // If wgSassParams doesn't exist, fetch theme colors from the DOM.
-            var colorBody = module.parse($('body').css('background-color')).hex(),
-                computedBodyStyle = getComputedStyle(document.body);
+            var computedBodyStyle = getComputedStyle(document.body);
             sassParams = {
-                'color-body': colorBody,
-                'color-body-middle': colorBody,
+                'color-body': computedBodyStyle.getPropertyValue('--theme-community-background-color'),
+                'color-body-middle': computedBodyStyle.getPropertyValue('--theme-community-background-color'),
                 'color-page': computedBodyStyle.getPropertyValue('--theme-article-background-color'),
                 'color-buttons': computedBodyStyle.getPropertyValue('--theme-accent-color'),
-                'color-community-header': module.parse($('.wds-community-header').css('background-color')).hex(),
+                'color-community-header': computedBodyStyle.getPropertyValue('--theme-header-background-color'),
                 'color-links': computedBodyStyle.getPropertyValue('--theme-link-color'),
             };
         }

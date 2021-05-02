@@ -687,6 +687,13 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "super"
 			},
+			"augur": {
+				"name": "Augur",
+				"colors": [
+					"marblekey"
+				],
+				"rarity": "unbreedable"
+			},
 			"auntie": {
 				"name": "Auntie",
 				"colors": [
@@ -759,6 +766,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"blue",
 					"red"
+				],
+				"rarity": "common"
+			},
+			"azorchid": {
+				"name": "Azorchid",
+				"colors": [
+					"flower",
+					"blue"
 				],
 				"rarity": "common"
 			},
@@ -2373,6 +2388,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"confidence": {
+				"name": "Confidence",
+				"colors": [
+					"flower",
+					"green",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"congo": {
 				"name": "Congo",
 				"colors": [
@@ -3172,6 +3196,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "super"
 			},
+			"dayflower": {
+				"name": "Dayflower",
+				"colors": [
+					"flower",
+					"pink",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"daywing": {
 				"name": "Daywing",
 				"colors": [
@@ -3608,6 +3641,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"duskbloom": {
+				"name": "Duskbloom",
+				"colors": [
+					"flower",
+					"black",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"duskhopper": {
 				"name": "Duskhopper",
 				"colors": [
@@ -3917,6 +3959,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"blue"
 				],
 				"rarity": "common"
+			},
+			"enchanted": {
+				"name": "Enchanted",
+				"colors": [
+					"flower",
+					"purple"
+				],
+				"rarity": "unbreedable"
 			},
 			"enchantress": {
 				"name": "Enchantress",
@@ -4287,6 +4337,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Feygarden",
 				"colors": [
 					"fey",
+					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"field": {
+				"name": "Field",
+				"colors": [
+					"flower",
+					"white",
 					"green"
 				],
 				"rarity": "unbreedable"
@@ -8572,6 +8631,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"mum": {
+				"name": "Mum",
+				"colors": [
+					"flower",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"mummy": {
 				"name": "Mummy",
 				"colors": [
@@ -9765,6 +9832,13 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"yellow",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"ornate": {
+				"name": "Ornate",
+				"colors": [
+					"gold"
 				],
 				"rarity": "unbreedable"
 			},
@@ -11323,6 +11397,13 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"world",
 					"purple",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"regeneration": {
+				"name": "Regeneration",
+				"colors": [
+					"food"
 				],
 				"rarity": "unbreedable"
 			},

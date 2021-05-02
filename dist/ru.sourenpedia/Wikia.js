@@ -94,3 +94,15 @@ importArticles({
         'u:dev:MediaWiki:AddButtonsPhoto/code.js',
     ]
 });
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:BulkVideoUpload.js',
+    ]
+});
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:UTCClock/code.js',
+    ]
+});

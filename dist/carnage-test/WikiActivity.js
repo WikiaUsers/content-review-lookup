@@ -153,6 +153,45 @@
     	ms.__init();
     }
     
+    function timeago(epoch, msg, calcDiff) { 
+    	const diff = calcDiff ? (Math.floor(Date.now()) - (new Date(epoch * 1000))) / 1000 : Number(epoch);
+    	if (isNaN(diff)) return "";
+    	
+    	const minutes = Math.round(diff / 60);
+    	const hours = Math.round(minutes / 60);
+    	const days = Math.round(hours / 24);
+    	const months = Math.round(days / 30);
+    	const years = Math.round(months / 12);
+    	
+    	if (diff < 5) return msg("timeago-justnow").parse();
+    	
+    	const time = Object.freeze([
+    		{ name: "seconds-ago", condition: diff < 60, value: diff},
+    		{ name: "minute-ago", condition: minutes < 2 },
+    		{ name: "minutes-ago", condition: minutes < 60, value: minutes },
+    		{ name: "hour-ago", condition: hours < 2 },
+    		{ name: "hours-ago", condition: hours < 24, value: hours },
+    		{ name: "day-ago", condition: days < 2 },
+    		{ name: "days-ago", condition: days < 30, value: days },
+    		{ name: "month-ago", condition: months < 2 },
+    		{ name: "months-ago", condition: months < 12, value: months },
+    		{ name: "year-ago", condition: years < 2 },
+    		{ name: "years-ago", condition: years >= 2, value: years }
+    	]);
+    	
+    	for (var i = 0; i < time.length; i++) {
+    		const opt = time[i];
+    		const condition = opt.condition, name = opt.name, value = opt.value || null;
+    		
+    		if (condition === true) {
+    			if (value) return msg("timeago-" + name, value).parse();
+    			return msg("timeago-" + name).parse();
+    		}
+    	}
+    	
+    	return "";
+    }
+    
 	// Creates the script loader
 	function Loader(callback, thisArg){
 		// If there is one argument, set the context to the current instance
@@ -255,7 +294,7 @@
 		// A list of user groups
 		wk.USER_GROUPS = wk.CONFIG.wgUserGroups;
 		
-		// Initializes the script
+		// Step 1: Initialize the script
 		wk.init = function(){
 			// Checks if the user can block
 			wk.canBlock = Object.freeze([
@@ -303,9 +342,23 @@
 			wk.SUBPAGE_PATTERNS = {};
 			
 			wk.TYPES = Object.freeze({
-				
+				"default": "main",
+				main: Object.freeze({
+					aliases: Object.freeze([""])
+				}),
+				watchlist: Object.freeze({
+					aliases: Object.freeze(["wl", "w", "following"])
+				}),
+				media: Object.freeze({
+					aliases: Object.freeze(["m", "i", "image", "file", "files"])
+				})
 			});
+			
+			wk.checkType();
 		};
+		
+		// Checks if the current page matches a canonical type
+		wk.checkType = function(){};
 		
 		wk.loader = new Loader(wk.init, wk);
 		

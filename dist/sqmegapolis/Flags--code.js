@@ -6,15 +6,22 @@
  * Author:      KockaAdmiralac <1405223@gmail.com>
  * Modded:      Qoushik
  */
-$(function()
-{
-    $(".flag-icon").each(function(supercalifragilisticexpialidocious, el)
-    {
-        el = $(el);
-        el.html(mw.html.element('img', {
-            src: "http://flags.wikia.com/wiki/Special:FilePath/File:" + el.data().lang + el.data().type,
-            width: el.data().width,
-            title: el.text()
-        }, ""));
-    }.bind(this));
-});
++function() {
+    var mwContentTextProcessed = false;
+    mw.hook('wikipage.content').add(function helper($content) {
+        // ensure that mw-content-text processed was
+        if ($content && $content.attr('id') === 'mw-content-text') {
+            mwContentTextProcessed = true;
+        } else if (!mwContentTextProcessed) {
+            helper($('#mw-content-text'));
+        }
+        $content.find('.flag-icon').each(function() {
+            var $this = $(this);
+            $this.html($('<img>', {
+                src: '//flags.fandom.com/wiki/Special:FilePath/File:' + $this.data().lang + $this.data().type,
+                width: $this.data().width,
+                title: $this.text()
+            }));
+        });
+    });
+}();

@@ -16,7 +16,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'MultipleUpload' || mw.confi
     if (!$.getUrlVar('wpForReUpload') && !$('#wpUploadDescription').val()) {
         jQuery(function ($) {
             'use strict';
-            $('#wpUploadDescription').val('[[Category:Images]]');
+            $('#wpUploadDescription').val('');
         });
     }
 }

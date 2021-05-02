@@ -22,7 +22,7 @@ $(function () {
 	var title = $('h1#firstHeading').text(),
 		start = 0,
 		end = title.indexOf(':'),
-		namespace = title.substring(start, end);
+		namespace = mw.html.escape(title.substring(start, end));
 
 	// add offset here
 	end += start + 1;
@@ -30,10 +30,10 @@ $(function () {
 	$('h1#firstHeading')
 		.empty()
 		.append(
-			title.substring(0, start),
+			mw.html.escape(title.substring(0, start)),
 			$('<span>')
 				.addClass(namespace + '-prefix')
 				.text(title.substring(start, end)),
-			title.substring(end, title.length)
+			mw.html.escape(title.substring(end, title.length))
 		);
 });

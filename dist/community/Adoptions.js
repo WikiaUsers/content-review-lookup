@@ -8,7 +8,14 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api']).then(functi
     if (mw.config.get('wgPageName') !== 'Adoption:Requests' || !userName) {
         return;
     }
-
+	function filterFandomDomain(input) {
+        var fandomDomainRE = /(?:https?:\/\/)?(.*?\.)(gamepedia\.com|wikia\.org|fandom\.com)(\/[^\/]*?)?(?:\/.*)?$/;
+        var filteredDomain = input.match(fandomDomainRE);
+        if (!filteredDomain) return null;
+        filteredDomain.splice(0,1);
+        if (filteredDomain[2] === '/wiki' || filteredDomain[2] === '/f') filteredDomain.pop();
+        return filteredDomain.join('');
+    }
     mw.hook('dev.modal').add(function(modal) {
         var adoptionModal = new window.dev.modal.Modal({
             title: 'Adoption Request',
@@ -26,7 +33,7 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api']).then(functi
                 submitForm: function () {
                     var $form = $('#adoption'),
                         wikiname = $form.find('#wikiname').val(),
-                        url = $form.find('#adoptionUrl').val(),
+                        url = 'https://'+filterFandomDomain($form.find('#adoptionUrl').val()),
                         numDays = $form.find('#numDays').val() || 0,
                         numAdmins = $form.find('#numAdmins').val() || 0,
                         comments = $form.find('#comment').val();
@@ -96,14 +103,7 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api']).then(functi
     });
     $('body').off('change.adoptionURL').on('change.adoptionURL','#adoptionUrl',function() {
         $('.adoptionPrefill').prop('disabled',true);
-        function filterFandomDomain(input) {
-            var fandomDomainRE = /(?:https?:\/\/)?(.*?\.)(gamepedia\.com|wikia\.org|fandom\.com)(\/[^\/]*?)?(?:\/.*)?$/;
-            var filteredDomain = input.match(fandomDomainRE);
-            if (!filteredDomain) return null;
-            filteredDomain.splice(0,1);
-            if (filteredDomain[2] === '/wiki' || filteredDomain[2] === '/f') filteredDomain.pop();
-            return filteredDomain.join('');
-        }
+        
         var url = filterFandomDomain($('#adoptionUrl').val());
         if (!url) {
             mw.notify('The format of the URL provided was not recognized.',{tag:'adoption',type:'error'});

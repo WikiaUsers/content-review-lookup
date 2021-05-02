@@ -28,7 +28,7 @@
 			iw = [];
 		
 		$.each( d.query.pages[ id ].categories, function( i, v ) {
-			cats.push( '<a href="/ru/' + v.title + '">' + v.title.replace( /Категория:/, '' ) + '</a>' );
+			cats.push( '<a href="/ru/' + mw.html.escape(v.title) + '">' + mw.html.escape(v.title.replace( /Категория:/, '' )) + '</a>' );
 		});
 
 		$.each( d.query.pages[ id ].langlinks, function( i, v ) {

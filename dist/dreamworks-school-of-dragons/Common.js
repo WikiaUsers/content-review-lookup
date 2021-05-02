@@ -170,8 +170,8 @@ function colorGuide_initialize(){
     addImageHolder("colorPreviewCanvasHolder", "colorRenderImage", "colorImgSrc", onloadCallback);
 
     addColorPicker("primaryColorPickerHolder", "primaryColorPicker", "#ff0000");
-    addColorPicker("secondaryColorPickerHolder", "secondaryColorPicker", "#00ff00");
-    addColorPicker("tertiaryColorPickerHolder", "tertiaryColorPicker", "#0000ff");
+    addColorPicker("secondaryColorPickerHolder", "secondaryColorPicker", "#0000ff");
+    addColorPicker("tertiaryColorPickerHolder", "tertiaryColorPicker", "#00ff00");
     addColorPicker("backgroundColorPickerHolder", "backgroundColorPicker", "#000000");
 }
 

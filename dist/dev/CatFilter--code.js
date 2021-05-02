@@ -1,6 +1,10 @@
 // Allows filtering pages in a category by namespace
-(function ( mw, $) {
+(function (window, $, mw) {
     'use strict';
+    
+    if (window.catFilter) { return; }
+    window.catFilter = { loaded: true };
+    
     //Creates a combo box with the namespace
     function createNamespaceCmbList(dropOptions) {
         var Html = mw.html;
@@ -64,53 +68,52 @@
     function main() {
         var Html = mw.html;
         var dropList = createNamespaceCmbList(["main"]);
-        var namespace = mw.config.get("wgNamespaceNumber");
-        if (namespace === 14) {
-            var namespaceDropdown = "Namespace " + Html.element("select", {
-                id: "namespaceDropdown",
-                // style: "float:right",
-                // multiple: "",
-                size: ""
-            }, new Html.Raw(dropList));
-            var formOutput = namespaceDropdown;
-            formOutput += " " + Html.element("button", {
-                id: "catfilter-ns-button"
-            }, "Show");
-            formOutput += Html.element("textarea", {
-                id: "catfilter-pages-textarea",
-                style: "display:none; height: 5em; width: 100%;"
-            }, "");
-            $("#mw-content-text").prepend(formOutput);
-            $("#catfilter-ns-button").on("click", function () {
-                var page = mw.config.get("wgTitle");
-                var config = {
-                    action: "query",
-                    list: "categorymembers",
-                    cmtitle: "Category:" + page,
-                    cmnamespace: getNamespacesFilter(),
-                    bot: true,
-                    cmlimit: 500
-                };
-                processAction("post", config, "", "", function (data) {
-                    if (data && !data.error && !data.warnings) {
-                        var output = "";
-                        var catmembers = data.query.categorymembers;
-                        $("#catfilter-pages-textarea").text("");
-                        Object.keys(catmembers).forEach(function (id) {
-                            if (catmembers[id]) {
-                                output += catmembers[id].title + "\n";
-                            }
-                        });
-                        $("#catfilter-pages-textarea").css("display", "block");
-                        $("#catfilter-pages-textarea").text(output);
-                        console.log(data);
-                    } else {
-                        console.log(data.error);
-                    }
-                });
-
+        var namespaceDropdown = "Namespace " + Html.element("select", {
+            id: "namespaceDropdown",
+            // style: "float:right",
+            // multiple: "",
+            size: ""
+        }, new Html.Raw(dropList));
+        var formOutput = namespaceDropdown;
+        formOutput += " " + Html.element("button", {
+            id: "catfilter-ns-button"
+        }, "Show");
+        formOutput += Html.element("textarea", {
+            id: "catfilter-pages-textarea",
+            style: "display:none; height: 5em; width: 100%;"
+        }, "");
+        $("#mw-content-text").prepend(formOutput);
+        $("#catfilter-ns-button").on("click", function () {
+            var page = mw.config.get("wgTitle");
+            var config = {
+                action: "query",
+                list: "categorymembers",
+                cmtitle: "Category:" + page,
+                cmnamespace: getNamespacesFilter(),
+                cmlimit: 500
+            };
+            processAction("post", config, "", "", function (data) {
+                if (data && !data.error && !data.warnings) {
+                    var output = "";
+                    var catmembers = data.query.categorymembers;
+                    $("#catfilter-pages-textarea").text("");
+                    Object.keys(catmembers).forEach(function (id) {
+                        if (catmembers[id]) {
+                            output += catmembers[id].title + "\n";
+                        }
+                    });
+                    $("#catfilter-pages-textarea").css("display", "block");
+                    $("#catfilter-pages-textarea").text(output);
+                    console.log(data);
+                } else {
+                    console.log(data.error);
+                }
             });
-        }
+
+        });
     }
-    main();
-})( mw, $);
+    
+    if (mw.config.get("wgNamespaceNumber") === 14) {
+    	main();
+    }
+})(window, jQuery, mediaWiki);

@@ -160,7 +160,7 @@ var dlcSwitcher = {
 	 * Initializes the gadget on a page.
 	 */
 	init: function () {
-		console.log( 'DLC Switcher v0.13.1' );
+		console.log( 'DLC Switcher v0.13.2' );
 
 		if (
 			!document.body.classList.contains( 'ns-0' ) &&
@@ -190,7 +190,11 @@ var dlcSwitcher = {
 			for ( var i = 0; i < processors.length; ++i ) {
 				$elem.find( processors[ i ][ 0 ] ).each( processors[ i ][ 1 ] );
 			}
-			$elem.find( 'img.dlc' ).each( dlcSwitcher.removeDlcImg );
+			var dlcIcons = elem.querySelectorAll( 'img.dlc' );
+			for ( i = dlcIcons.length - 1; i >= 0; --i ) {
+				dlcSwitcher.removeDlcImg( dlcIcons[ i ] );
+			}
+			//$elem.find( 'img.dlc' ).each( dlcSwitcher.removeDlcImg ); TODO
 			while ( dlcSwitcher.postponed.length ) {
 				var todo = dlcSwitcher.postponed;
 				dlcSwitcher.postponed = [];
@@ -243,19 +247,32 @@ var dlcSwitcher = {
 		dlcSwitcher.pageFilter = Math.pow( 2, dlcSwitcher.items.length ) - 1;
 		var contextBoxes = dlcSwitcher.parserOutput
 			.getElementsByClassName( 'context-box' );
-		if ( !contextBoxes.length ) {
+		if (
+			!contextBoxes.length ||
+			dlcSwitcher.getPreviousHeading( contextBoxes[ 0 ] )
+		) {
 			return;
-		}
-		var element = contextBoxes[ 0 ].previousElementSibling;
-		while ( element ) {
-			if ( dlcSwitcher.higherHeaders.hasOwnProperty( element.tagName ) ) {
-				return;
-			}
-			element = element.previousElementSibling;
 		}
 		dlcSwitcher.pageFilter = dlcUtil.getDlcFilter(
 			contextBoxes[ 0 ].getElementsByClassName( 'dlc' )[ 0 ]
 		);
+	},
+
+	/**
+	 * Gets the last heading element used before an element.
+	 * @param {Element} elem The element.
+	 * @returns {HTMLHeadingElement} The previous heading element if there is
+	 *                               one, null otherwise.
+	 */
+	getPreviousHeading: function ( elem ) {
+		elem = elem.previousElementSibling;
+		while (
+			elem &&
+			!dlcSwitcher.higherHeaders.hasOwnProperty( elem.tagName )
+		) {
+			elem = elem.previousElementSibling;
+		}
+		return elem;
 	},
 
 	/**
@@ -293,7 +310,6 @@ var dlcSwitcher = {
 	/**
 	 * Adds a link to a DLC switcher item or deactivates it if it does not match
 	 * the page DLC filter.
-	 * @this HTMLElement
 	 * @param {HTMLLIElement} item  
 	 * @param {number}        index 
 	 */
@@ -338,65 +354,133 @@ var dlcSwitcher = {
 	/**
 	 * Removes a DLC icon and its related content if the DLC filter does not
 	 * match the image one.
-	 * @this {HTMLImageElement}
+	 * @param {HTMLImageElement} icon The DLC icon.
 	 */
-	removeDlcImg: function () {
-		var $this     = $( this );
-		var imgFilter = dlcUtil.getDlcFilter( this );
-		var $parent   = $this.parent();
-
-		// Removes DLC icon if filters match.
-		if ( ( imgFilter & dlcUtil.selectedFilter ) > 0 ) {
-			do {
-				$this.remove();
-				$this   = $parent;
-				$parent = $parent.parent();
-			} while ( $this.length && $this.html().trim() === '' && !$this.is( 'td' ) );
-			return;
+	removeDlcImg: function ( icon ) {
+		if ( ( dlcUtil.getDlcFilter( icon ) & dlcUtil.selectedFilter ) > 0 ) {
+			dlcSwitcher.removeElement( icon );
+		} else if (
+			!dlcSwitcher.handleContextBox( icon ) &&
+			!dlcSwitcher.handleItemList( icon ) &&
+			!dlcSwitcher.handleList( icon ) &&
+			!dlcSwitcher.handleText( $( icon ) )
+		) {
+			mw.log.warn( 'unmatched dlc' );
 		}
-
-		// Handles context boxes.
-		if ( $parent.hasClass( 'context-box' ) ) {
-			var $header = $parent.prevAll( ':header' ).first();
-			if ( $header.length ) {
-				dlcSwitcher.recRemoveElement( $header );
-				return;
-			}
-			dlcSwitcher.recRemoveElement( $parent );
-			return;
-		}
-
-		// Handles list items.
-		if ( $parent.is( 'li' ) ) {
-			if ( $parent.hasClass( 'dlc-switcher-item-list' ) && dlcSwitcher.handleItemList( $this ) ) {
-				return;
-			}
-			if ( !$this.get( 0 ).previousSibling ) {
-				dlcSwitcher.recRemoveElement( $parent );
-				return;
-			}
-		}
-
-		// Handles generic block/inline cases.
-		if ( dlcSwitcher.handleText( $this ) ) {
-			return;
-		}
-
-		mw.log.warn( 'unmatched dlc' );
 	},
 
 	/**
-	 * Removes a DLC icon and its related content in an HTML list element using
-	 * items as a key.
-	 * @param {JQuery} $elem The JQuery DLC icon element.
+	 * Removes an element and its empty parents.
+	 * @param {HTMLElement} elem The element to remove.
+	 */
+	removeElement: function ( elem ) {
+		var parent = elem.parentElement;
+		while (
+			parent &&
+			parent !== dlcSwitcher.parserOutput &&
+			!dlcSwitcher.hasSibling( elem ) &&
+			parent.tagName !== 'TD'
+		) {
+			elem   = parent;
+			parent = parent.parentElement;
+		}
+		elem.remove();
+	},
+
+	/**
+	 * Indicates whether an element has a sibling. Ignores comments and
+	 * "invisible" strings.
+	 * @param {HTMLElement} elem The element.
+	 * @returns True if the element has no sibling other than a comment or an
+	 *          "invisible" string.
+	 */
+	hasSibling: function ( elem ) {
+		return dlcSwitcher.hasPreviousSibling( elem ) ||
+		       dlcSwitcher.hasNextSibling( elem );
+	},
+
+	/**
+	 * Indicates whether an element has a previous sibling. Ignores comments and
+	 * "invisible" strings.
+	 * @param {HTMLElement} elem The element.
+	 * @returns True if the element has a previous sibling other than a comment
+	 *          or an "invisible" string.
+	 */
+	hasPreviousSibling: function ( elem ) {
+		var sibling = elem.previousSibling;
+		if ( !sibling ) {
+			return false;
+		}
+		while (
+			sibling.nodeType === Node.COMMENT_NODE ||
+			sibling.nodeType === Node.TEXT_NODE &&
+			sibling.textContent.trim() === ''
+		) {
+			sibling = sibling.previousSibling;
+			if ( !sibling ) {
+				return false;
+			}
+		}
+		return true;
+	},
+
+	/**
+	 * Indicates whether an element has a next sibling. Ignores comments and
+	 * "invisible" strings.
+	 * @param {HTMLElement} elem The element.
+	 * @returns True if the element has a next sibling other than a comment or
+	 *          an "invisible" string.
+	 */
+	hasNextSibling: function ( elem ) {
+		var sibling = elem.nextSibling;
+		if ( !sibling ) {
+			return false;
+		}
+		while (
+			sibling.nodeType === Node.COMMENT_NODE ||
+			sibling.nodeType === Node.TEXT_NODE &&
+			sibling.textContent.trim() === ''
+		) {
+			sibling = sibling.nextSibling;
+			if ( !sibling ) {
+				return false;
+			}
+		}
+		return true;
+	},
+
+	/**
+	 * Removes a DLC context box and its related content in a DLC context box.
+	 * @param {HTMLElement} dlcIcon The DLC icon.
 	 * @returns True if the DLC icon has been handled properly, false otherwise.
 	 */
-	handleItemList: function ( $elem ) {
+	handleContextBox: function ( dlcIcon ) {
+		var contextBox = dlcIcon.parentElement;
+		if ( !contextBox.classList.contains( 'context-box' ) ) {
+			return false;
+		}
+		var header = dlcSwitcher.getPreviousHeading( contextBox );
+		dlcSwitcher.recRemoveElement( $( header || contextBox ) );
+		return true;
+	},
+
+	/**
+	 * Removes a DLC icon and its related content in a list using items as a key.
+	 * @param {HTMLElement} dlcIcon The DLC icon.
+	 * @returns True if the DLC icon has been handled properly, false otherwise.
+	 */
+	handleItemList: function ( dlcIcon ) {
+		var li = dlcIcon.parentElement;
+		if (
+			li.tagName !== 'LI' ||
+			!li.classList.contains( 'dlc-switcher-item-list' )
+		) {
+			return false;
+		}
 		/** @type {ChildNode} */
-		var elem = $elem.get( 0 );
+		var elem = dlcIcon;
 		var next = elem.nextSibling;
-		var $li  = $elem.parent();
-		var $ul  = $elem.nextAll( 'ul' );
+		var $ul  = $( dlcIcon ).nextAll( 'ul' );
 		if ( !$ul.length ) {
 			while (
 				next.nodeType !== Node.TEXT_NODE ||
@@ -409,7 +493,7 @@ var dlcSwitcher = {
 			if ( next.textContent.match( '^[^/]*:' ) ) {
 				var prev = elem.previousSibling;
 				if ( !prev ) {
-					dlcSwitcher.recRemoveElement( $li );
+					dlcSwitcher.recRemoveElement( $( li ) );
 					return true;
 				}
 				prev.textContent = prev.textContent
@@ -430,7 +514,7 @@ var dlcSwitcher = {
 			prev.nodeType !== Node.TEXT_NODE ||
 			prev.textContent.trim()
 		) {
-			return false; // Is this even possible?
+			return false; // Is this even possible? (TODO: yep, using "+")
 		}
 		elem.remove();
 		while (
@@ -459,6 +543,23 @@ var dlcSwitcher = {
 		var $li = $ul.children( ':first-of-type' );
 		$ul.before( $li.html() );
 		dlcSwitcher.recRemoveElement( $li );
+	},
+
+	/**
+	 * Removes a DLC icon and its related content in a list.
+	 * @param {HTMLElement} dlcIcon The DLC icon.
+	 * @returns True if the DLC icon has been handled properly, false otherwise.
+	 */
+	handleList: function ( dlcIcon ) {
+		var li = dlcIcon.parentElement;
+		if (
+			li.tagName !== 'LI' ||
+			dlcSwitcher.hasPreviousSibling( dlcIcon )
+		) {
+			return false;
+		}
+		dlcSwitcher.recRemoveElement( $( li ) );
+		return true;
 	},
 
 	/**

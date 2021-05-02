@@ -27,16 +27,6 @@ window.importScriptCallback = function(page, ready) {
 
 window.importScriptURICallback = jQuery.getScript;
 
-/* WAM记录器 */
-window.railWAM = {
-    logPage:"Project:WAM Log" 
-};
-
-/* dev:LockOldBlogs */
-window.LockOldBlogs = {
-    expiryMessage: wgULS('此博客已存档，无法进行评论。', '此網誌已存檔，無法發表評論。'),
-};
-
 /* dev:UserTags */
 window.UserTagsJS = {
     modules: {},
@@ -120,11 +110,6 @@ $(".analytics_table").each(function() {
 ////////////////////////////////
 // MEDIAWIKI JQUERY FUNCTION
 /* Opens chat in a new window for homepage */
-$(".openchat a").click(function () {
-    window.open('/wiki/Special:Chat', 'wikiachat', 'width=600,height=600,menubar=no,status=no,location=no,toolbar=no,scrollbars=no,resizable=yes');
-    return false;
-});
-
 /* Guided Tours */
 if (mw.config.get('wgCanonicalNamespace') == 'User_blog') {
 	setTimeout(function() {

@@ -63,14 +63,13 @@ window.UserTagsJS = {
 		newuser: true,
 		custom: {
 		    '': ['monthuser'], 
-		    'Fabrix199': ['yearuser'],
+		    ' ': ['yearuser'],
 		    'Alansanchez412': ['asistente'],
 		    'Alexis21155': ['asistente'],
 		    'Bloomdanix': ['asistente'],
 		    'GhostRiley2000': ['asistente'],
             'GuidoM1995': ['asistente'],
-            'Marco_Antonio_Guti%C3%A9rrez_Udaondo': ['asistente'],
-            'Marco Antonio Gutiérrez Udaondo': ['asistente']
+            'Ale_-_Remastered': ['asistente']
         }
     },
 	tags: {

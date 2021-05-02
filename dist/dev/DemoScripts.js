@@ -328,6 +328,11 @@
             scripts: 'MediaWiki:ProtectionIcons.js'
         },
 
+        PseudoMonobook: {
+            page: 'PseudoMonobook',
+            styles: 'MediaWiki:PseudoMonobook.css'
+        },
+
         QuickLogs: {
             page: 'Special:Contributions/Wikia',
             scripts: 'MediaWiki:QuickLogs/code.js'

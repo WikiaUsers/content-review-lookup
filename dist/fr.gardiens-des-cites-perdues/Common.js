@@ -28,36 +28,6 @@ $(function() { $('.insertusername').text(wgUserName); });
 
 /// Customisation
 
-// UserTags
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		rollback: { u: 'Mentor', m: 'Mentor', f:'Mentor', link: 'Aide:Rollback' },
-		ambassador: { u: 'Ambassadeur', m: 'Ambassadeur', f: 'Ambassadrice', order: 1 },
-		wikicode: { u: 'Brigadier Wikicode', m: 'Brigadier Wikicode', f: 'Brigadière Wikicode' },
-		ancien: { u: 'Ancien', m: 'Ancien', f: 'Ancienne', order: 1 }
-	}
-};
-
-UserTagsJS.modules.autoconfirmed = true;
-
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'bannedfromchat', 'rollback', 'chatmoderator', 'bot', 'codeur', 'ambassador', 'util', 'voldev', 'helper', 'wikicode'];
-
-UserTagsJS.modules.custom = {
-	    'Julesandherbooks': ['ambassador', 'wikicode'],
-	    'Teteban41' : ['wikicode'],
-	    'Lucie_l%27Hydrokin%C3%A9siste' : ['wikicode'],
-	    'Maman Paillette 25' : ['wikicode'],
-	    'Soronos' : ['wikicode'],
-	    'SophieVacker01' : ['wikicode'],
-	    'Lou0420': ['ancien'],
-        'Foster71': ['ancien'],
-        'Vacker1290': ['ancien'],
-        'Kesuna': ['ancien'],
-        'Dexphie': ['ancien'],
-        'Fandekeefe': ['ancien'],
-};
-
 // Imports
 
 importArticles({
