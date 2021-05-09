@@ -23,10 +23,11 @@
         'wgContentLanguage',
         'wgCurRevisionId',
         'wgFormattedNamespaces',
+        'wgNamespaceIds',
+        'wgPageContentModel',
         'wgPageName',
         'wgUserLanguage',
-        'wgVersion',
-        'wgPageContentModel'
+        'wgVersion'
     ]),
     
 
@@ -400,11 +401,22 @@
                 m[2].substring(3) :
                 'Template:' + m[2].substring(2));
             console.log(href);
+        } else if (m[2][0] === '/') {
+            href = mw.config.values.wgPageName + m[2];
         } else {
-            href = m[2];
             var templ = config.wgFormattedNamespaces[10] + ':';
-            if(href.indexOf('Template:') !== 0 && href.indexOf(templ) !== 0) {
-                href = templ + href;
+
+            if(m[2].indexOf(':') !== -1) {
+
+                var pagenamePrefix = m[2].split(':')[0];
+                if (config.wgNamespaceIds.hasOwnProperty(pagenamePrefix.toLowerCase())) {
+                    href = m[2];
+                } else {
+                    href = templ + m[2];
+                }
+
+            } else {
+                href = templ + m[2];
             }
         }
         return delim + m[1] + '<a href="' + createHref(href) + '">' + m[2] + '</a>' + m[3];

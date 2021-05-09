@@ -84,7 +84,8 @@ const pages = {
     "Video Star's Launcher Box": "https://static.wikia.nocookie.net/roblox/images/9/91/MVC-bg.jpg/revision/latest",
     "Developer's Launcher Box": "https://static.wikia.nocookie.net/roblox/images/9/91/MVC-bg.jpg/revision/latest",
     "MVP's Launcher Box": "https://static.wikia.nocookie.net/roblox/images/9/91/MVC-bg.jpg/revision/latest",
-}
+    "Tiny Egg of Nonexistence": "https://static.wikia.nocookie.net/roblox/images/9/91/MVC-bg.jpg/revision/latest",
+};
 
 var pageName = mw.config.get("wgTitle");
 if (pages[pageName]) {

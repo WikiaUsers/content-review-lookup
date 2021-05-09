@@ -101,7 +101,7 @@ mw.loader.using(['site','ext.wikiEditor']).done(function() {
 			'tooltip': {
 				label: icText, 
 				type: 'button',
-				icon: 'https://wow.gamepedia.com/media/wow.gamepedia.com/6/6f/Button_item.png',
+				icon: 'https://static.wikia.nocookie.net/wowpedia/images/6/6f/Button_item.png/revision/latest',
 				action: {
 					type: 'callback',
 					execute: function(context) {

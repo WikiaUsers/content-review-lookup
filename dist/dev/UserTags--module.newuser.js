@@ -85,14 +85,13 @@ UserTagsJS.extensions.newuser = (function($, mw, Date) {
 			};
 		},
 		_onDomReady: function(username, $) {
-			var $node = $('#userProfileApp .user-identity-stats > li:first-chid > a > strong');
-			if ($node.length) {
-				var num = $node.text().replace(/[^\d]/g, '');
-				if (num) {
-					return this._editsPromise.resolve(+num);
+			if ($('#userProfileApp .user-identity-stats > li > a > strong').length) {
+				var number = Number($('#userProfileApp .user-identity-stats > li:first-child > a > strong').text()) + Number($('#userProfileApp .user-identity-stats > li:last-child > a > strong').text());
+				if (!isNaN(number)) {
+					return this._editsPromise.resolve(+number);
 				}
 				// WTF?
-				this._logger.err('Oasis masthead gave us junk instead of a number:', $node.text(), '(Falling back to AJAX)');
+				this._logger.err('Oasis masthead gave us junk instead of a number! Falling back to AJAX');
 			} else {
 				// Er... crap
 				this._logger.err('Cannot find Oasis masthead to scrape counter! Falling back to AJAX');

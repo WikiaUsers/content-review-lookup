@@ -11,7 +11,7 @@
         lang = mw.config.get( 'wgContentLanguage' );// use rules by content;
             
     p.isUcp = parseFloat( mw.config.get( 'wgVersion' ) ) > 1.19;
-    p.debug = p.isUcp || mw.config.get( 'debug' ) || urlVars.get('debug1');// ucp have problems with debug mode, so...
+    p.debug = /*p.isUcp || */mw.config.get( 'debug' ) || urlVars.get('debug1');// ucp have problems with debug mode, so...
     // these ((())) are made for reasons
     if ((( wikificator && wikificator.loaded === true ) || ( !wikificator.forced && ( !p.isUcp && $.inArray( mw.config.get( 'wgAction' ), [ 'edit', 'submit' ] ) === -1) ) ) ) return;
 

@@ -13,7 +13,7 @@ $(document).ready(function()
         enableWidget.appendChild(redditWidget);
  
         // Add the script 
-        redditWidget.contentWindow.document.write("<html><head></head><body><script src='https://www.reddit.com/r/nekoatsume/new/.embed?limit=10&t=all&sort=new&bordercolor=FFFFFF&twocolumn=true' type='text/javascript'></script></body></html>");
+        redditWidget.contentWindow.document.write("<html><head></head><body><script src='https://www.reddit.com/r/TsukiAdventure/.embed?limit=10&t=all&sort=new&bordercolor=FFFFFF&twocolumn=true' type='text/javascript'></script></body></html>");
  
         // Readjust height based on how much content reddit widget has
         var tryReadjust = setInterval(function()

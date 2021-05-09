@@ -8,8 +8,12 @@
  * This script allows a user to see a preview of an article by hovering
  * a local link and go to a page by clicking on that link.
  **/
+
 ( function( window, $, mw ) { 
 	"use strict";
+
+	// Sets the configuration object to an empty object if it does not exist
+	window.articlePreview = window.articlePreview || { };
 	
 	// URL variables for the current page
 	const urlVars = new URLSearchParams( location.search );
@@ -25,6 +29,75 @@
 	// Decodes the URL and converts underscores to spaces
 	function decodeURL( string ) { 
 		return decodeURIComponent( string.replace( /_/g, " " ) );
+	}
+
+	// Creates a spinner constructor
+	function Spinner( size ) { 
+		// Set the size to an object if the size is a number
+		if ( typeof size !== "object" ) { 
+			if ( !isNaN( size ) && isFinite( size ) ) { 
+				size = { width: Number( size ), height: Number( size ) };
+			} else {
+				throw new TypeError( "The value must either be an object or a finite number." );
+			}
+		}
+
+		// The current spinner instance
+		const sp = this;
+
+		// The spinner element
+		const spinner = document.createElementNS( "http://www.w3.org/2000/svg", "svg" );
+		spinner.classList.add( "wds-spinner", "wds-spinner__block" );
+
+		const spinnerAttr = Object.freeze( { 
+			width: size.width,
+			height: size.height,
+			viewBox: [ 0, 0, 66, 66 ].join( " " ),
+			xmlns: "http://www.w3.org/2000/svg"
+		} );
+
+		Object.getOwnPropertyNames( spinnerAttr )
+			.forEach( function( property ) { 
+				const value = spinnerAttr[ property ];
+				spinner.setAttribute( property, value );
+			} );
+
+		// The grouping element
+		const g = document.createElementNS( "http://www.w3.org/2000/svg", "g" );
+		g.setAttribute( "transform", "translate(33, 33)" );
+
+		// The circle element
+		const c = document.createElementNS( "http://www.w3.org/2000/svg", "circle" );
+		c.classList.add( "wds-spinner__stroke" );
+
+		const cAttr = Object.freeze( { 
+			fill: "none",
+			r: 30,
+			"stroke-width": 2,
+			"stroke-dasharray": 188.49555921538757,
+			"stroke-dashoffset": 188.49555921538757,
+			"stroke-linecap": "round"
+		} );
+
+		Object.getOwnPropertyNames( cAttr )
+			.forEach( function( property ) { 
+				const value = cAttr[ property ];
+				c.setAttribute( property, value );
+			} );
+		
+		// Creates the spinner element
+		g.append( c );
+		spinner.append( g );
+
+		// Returns the actual element
+		sp.el = function( ) { 
+			return spinner;
+		};
+
+		// Returns the outer html
+		sp.html = function( ) { 
+			return spinner.outerHTML;
+		};
 	}
 	
 	// Creates a script loader constructor
@@ -53,7 +126,7 @@
 		
 		// Loads all scripts if they are not loaded
 		al.loadScripts = function( ) { 
-			importArticle( { type: "style", article: "u:dev:MediaWiki:ArticlePreview/beta.css" } );
+			// importArticle( { type: "style", article: "u:dev:MediaWiki:ArticlePreview.css" } );
 			
 			const promises = Promise.all( 
 				Object
@@ -138,9 +211,9 @@
 		return new Vector( ax, ay );
 	};
 	
-	function ArticlePreview( opts ) { 
+	function ArticlePreview( options ) { 
 		// If there are no arguments, set the options to an empty object
-		opts = arguments.length === 0 ? { } : opts;
+		options = arguments.length === 0 ? { } : options;
 
 		// Setting the current instance to a variable
 		const ap = this;
@@ -161,7 +234,8 @@
 		] );
 		
 		// The current script target
-		ap.TARGET = document.querySelector( ".WikiaPageContentWrapper" );
+		ap.TARGET = document.querySelector( "#WikiaMainContent" ) ||
+			document.querySelector( "#mw-content-text" );
 		
 		// The current mouse vector
 		ap.VECTOR = new Vector( );
@@ -173,6 +247,10 @@
 		// The main preview wrapper
 		ap.WRAPPER = document.createElement( "div" );
 		ap.WRAPPER.classList.add( "article-preview__body" );
+
+		// The preview overlay
+		// ap.OVERLAY = document.createElement( "div" );
+		// ap.OVERLAY.classList.add( "article-preview__overlay" );
 
 		// Appends the wrapper to its container
 		ap.CONTAINER.append( ap.WRAPPER );
@@ -206,6 +284,9 @@
 
 		// The maximum text length
 		ap.MAXIMUM_TEXT_LENGTH = 1024;
+
+		// Default spinner height
+		ap.SPINNER_HEIGHT = 64;
 
 		// Default configuration options
 		ap.DEFAULTS = Object.freeze( { 
@@ -366,6 +447,8 @@
 			PAGE: { 
 				type: String,
 				dispatch: function( page ) { 
+					if ( page === "" ) return false;
+
 					const title = new mw.Title( page );
 
 					const ignoreNamespaces = ap.PATTERNS.IGNORE_NAMESPACES.every( function( value ) { 
@@ -440,7 +523,7 @@
 			IGNORE_URLS: [ window.location.href ],
 			IGNORE_NAMESPACES: [ ],
 			ONLYINCLUDE: [ ],
-			PREP: [ /<script>[\s\S]*?<\/script>/igm, /<ref>[\s\S]*?<\/ref>/igm ],
+			PREP: [ /<script>[\s\S]*?<\/script>/igm, /<ref>[\s\S]*?<\/ref>/igm, /<p.*\>\n*(?:<br.*\s*\/?>|)\n*<\/p>/gim ],
 			IMAGE_URI: /\.(?:(?:wikia|fandom)\.com|wikia\.(?:org|nocookie\.net))$/,
 			FANDOM_URI: /\.(?:(?:wikia|fandom)\.com|wikia\.org)$/,
 			WIKI_TITLE: /^\/wiki\/([^?&]+).*$/,
@@ -559,7 +642,7 @@
 				if ( !src ) return false;
 				try { 
 					const url = new mw.Uri( src );
-					return ap.PATTERNS.IMAGE_HOST.test( url.host );
+					return ap.PATTERNS.IMAGE_URI.test( url.host );
 				} catch( e ) { 
 					return false;
 				}
@@ -632,8 +715,7 @@
 				( ap.PATTERNS.WIKI_TITLE.test( url.path ) ? 
 					ap.PATTERNS.WIKI_TITLE.exec( url.path )[ 1 ] : 
 					"" ) );
-			
-			console.log( page );
+
 			// If the page name is blank, undefined, or does not
 			// pass the test, stop here.
 			if ( page === "" || !ap.checkPage( page ) ) return;
@@ -659,20 +741,27 @@
 		};
 
 		// Function to activate when hovering over a link
-		ap.onHover = function( opts, event ) { 
-			console.log( arguments );
-
+		ap.onHover = function( opts ) { 
 			// Sets the hover state to true
 			ap.HOVER = true;
 
-			// Fetches the mouse coordinates
-			const x = event.pageX, y = event.pageY;
-
-			// Sets the coordinates to a vector
-			ap.VECTOR = new Vector( x, y );
+			// Adds the spinner to the element
+			const spinner = new Spinner( 64 );
+			const spinnerEl = spinner.el( );
+			spinnerEl.classList.add( "article-preview__spinner" );
+			ap.WRAPPER.innerHTML = spinnerEl.outerHTML;
 
 			// The element that is being hovered
 			const element = opts.element;
+
+			// The current client rect object
+			const rect = element.getBoundingClientRect( );
+
+			// Fetches the actual coordinates
+			const x = ( rect.left + window.pageXOffset ), y = ( rect.top + window.pageYOffset ) + ( rect.height + 2 );
+
+			// Sets the coordinates to a vector
+			ap.VECTOR = new Vector( x, y );
 
 			// The current page name
 			const currentPage = opts.page;
@@ -712,7 +801,7 @@
 			return api.get( params );
 		};
 
-		ap.process = function( text, page ) { 
+		ap.process = function( text ) { 
 			const temp = document.createElement( "div" );
 			temp.innerHTML = text;
 
@@ -734,13 +823,10 @@
 			}
 
 			text = ap.PATTERNS.PREP.reduce( function( value, pattern ) { 
+				console.log( pattern.test( value ), value, pattern );
 				value = value.replace( pattern, "" );
 				return value;
 			}, text );
-
-			const titlePattern = new RegExp( escapeRegExp( page ) );
-
-			text = text.replace( titlePattern, '<strong class="">$&</strong>' );
 
 			return text;
 		};
@@ -772,67 +858,54 @@
 			const temp = document.createElement( "div" );
 			temp.innerHTML = ap.process( text, element.dataset.pageName );
 
-			const infoboxes = temp.querySelectorAll( ".infobox" );
-			const portableInfoboxes = temp.querySelectorAll( "aside.portable-infobox" );
-			const toc = temp.querySelectorAll( ".toc" );
+			const selectorsToRemove = [ ".notice", "table" ];
 
 			if ( !ap.INFOBOX ) { 
-				infoboxes.forEach( function( infobox ) { 
-					infobox.remove( );
-				} );
-
-				portableInfoboxes.forEach( function( infobox ) { 
-					infobox.remove( );
-				} );
+				selectorsToRemove.push( ".infobox", "aside.portable-infobox" );
 			}
 
 			if ( !ap.TOC ) { 
-				toc.forEach( function( elem ) { 
-					elem.remove( );
-				} );
+				selectorsToRemove.push( ".toc" );
 			}
+
+			const elementsToRemove = temp.querySelectorAll( selectorsToRemove.join( ", " ) );
+
+			elementsToRemove.forEach( function( target ) { 
+				target.remove( );
+			} );
 
 			const result = temp.innerHTML;
 
-			if ( !ap.CONTAINER.querySelector( ".article-preview__text" ) ) {
-				const previewText = document.createElement( "div" );
-				previewText.classList.add( "article-preview__text" );
-				previewText.innerHTML = result;
+			ap.WRAPPER.innerHTML = "";
 
-				ap.WRAPPER.insertAdjacentElement( "beforeend", previewText );
-			} else { 
-				const previewText = ap.CONTAINER.querySelector( ".article-preview__text" );
-				previewText.innerHTML = result;
+			const previewText = document.createElement( "div" );
+			previewText.classList.add( "article-preview__text" );
+			previewText.innerHTML = result;
+
+			ap.WRAPPER.insertAdjacentElement( "beforeend", previewText );
+
+			if ( ap.NO_IMAGE ) { 
+				// Appends the overlay to its wrapper
+				// ap.WRAPPER.append( ap.OVERLAY );
+
+				return ap.processPreview( element );
 			}
 
-			if ( ap.NO_IMAGE ) return ap.processPreview( element );
+			const previewImage = new Image( );
+			previewImage.classList.add( "article-preview__image" );
+			ap.WRAPPER.insertAdjacentElement( "afterbegin", previewImage );
 
-			if ( !ap.CONTAINER.querySelector( ".article-preview__image" ) ) {
-				const previewImage = new Image( );
-				previewImage.classList.add( "article-preview__image" );
-				ap.WRAPPER.insertAdjacentElement( "afterbegin", previewImage );
+			// Appends the overlay to its wrapper
+			// ap.WRAPPER.insertAdjacentElement( "afterbegin", ap.OVERLAY );
 
-				if ( image ) {
-					ap.generateImage( image )
-						.then( ap.processImage.bind( ap, previewImage, element ) );
-					return;
-				} else { 
-					ap.processImage( previewImage, element, { 
-						useDefaultImage: true
-					} );
-				}
-			} else {
-				const previewImage = ap.CONTAINER.querySelector( ".article-preview__image" );
-
-				if ( image ) {
-					ap.generateImage( image )
-						.then( ap.processImage.bind( ap, previewImage, element ) );
-					return;
-				} else { 
-					ap.processImage( previewImage, element, { 
-						useDefaultImage: true
-					} );
-				}
+			if ( image ) {
+				ap.generateImage( image )
+					.then( ap.processImage.bind( ap, previewImage, element ) );
+				return;
+			} else { 
+				ap.processImage( previewImage, element, { 
+					useDefaultImage: true
+				} );
 			}
 		};
 
@@ -850,6 +923,19 @@
 			} );
 
 			return api.get( params );
+		};
+
+		ap.getImageOrientation = function( image ) { 
+			const height = image.naturalHeight || image.height;
+			const width = image.naturalWidth || image.width;
+
+			const aspectRatio = width / height;
+
+			if ( aspectRatio < 1 ) return "portrait";
+
+			if ( aspectRatio > 1 ) return "landscape";
+
+			return "square";
 		};
 
 		ap.processImage = function( previewImage, element, data ) { 
@@ -871,7 +957,14 @@
 					previewImage.src = ap.DEFAULT_IMAGE;
 				}
 
-				return ap.processPreview( element );
+				console.log( previewImage.naturalHeight, previewImage.height );
+
+				ap.CONTAINER.style.height = ( previewImage.naturalHeight || previewImage.height ) + "px";
+
+				const imageOrientation = ap.getImageOrientation( previewImage );
+				ap.CONTAINER.dataset.orientation = imageOrientation;
+
+				return ap.processPreview( /* element */ );
 			} else {
 				const redirect = query.redirects[ 0 ].to;
 				const redirectTitle = redirect.replace( /^File:/i, "" );
@@ -881,15 +974,15 @@
 			}
 		};
 
-		ap.processPreview = function( element ) { 
+		ap.processPreview = function( /* element */ ) { 
 			// Creates a client rect object for the link
-			const clientRect = element.getBoundingClientRect( );
+			// const clientRect = element.getBoundingClientRect( );
 
 			// Creating an offset vector
-			const offset = new Vector( -20, clientRect.height - 6 );
+			// const offset = new Vector( -20, clientRect.height - 10 );
 
 			// Adds the offset to its vector
-			ap.VECTOR = ap.VECTOR.add( offset );
+			// ap.VECTOR = ap.VECTOR.add( offset );
 
 			// Changes the positioning of the article preview
 			ap.CONTAINER.style.top = ap.VECTOR.y + "px";
@@ -909,24 +1002,20 @@
 		};
 
 		// Function to initialize when the mouse leaves the link
-		ap.offHover = function( opts, event ) { 
+		ap.offHover = function( /* opts, event */ ) { 
+			// If the hover state is false, stop
+			if ( !ap.HOVER ) return;
+
 			// Sets the hover state to false
 			ap.HOVER = false;
 
-			// Hides the article preview
+			// Hides the article preview and empties the element
 			ap.CONTAINER.classList.remove( "show" );
-
-			// Removes all content from the container
-			const content = ap.CONTAINER.querySelector( ".article-preview__text" );
-			content.innerHTML = "";
-
-			// Changes the image source to the default image
-			const image = ap.CONTAINER.querySelector( ".article-preview__image" );
-			image.src = ap.DEFAULT_IMAGE;
+			ap.WRAPPER.innerHTML = "";
 		};
 
 		// Set all configurations
-		ap.setOptions( opts );
+		ap.setOptions( options );
 
 		// Create a loader to initialize the script
 		ap.LOADER = new Loader( ap.SCRIPTS, ap.init, ap );
@@ -939,6 +1028,5 @@
 	}
 
 	window.ArticlePreview = ArticlePreview;
-	
 	window.ap = new ArticlePreview( window.articlePreview );
 } )( window, jQuery, mediaWiki );

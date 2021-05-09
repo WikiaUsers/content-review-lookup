@@ -12,10 +12,7 @@ mw.loader.using('mediawiki.api', function() {
 		useTalk,
 		preloads = 2,
 		isUCP = mw.config.get('wgVersion') !== '1.19.24',
-		config = $.extend({
-			title: 'Block',
-			message: 'You have received a $2 block for the reason of $1'
-		}, window.MessageBlock);
+		config;
  
 	function preload() {
 		if (--preloads === 0) {
@@ -25,6 +22,11 @@ mw.loader.using('mediawiki.api', function() {
  
 	function init(i18nData) {
 		i18n = i18nData;
+		
+		config = $.extend({
+			title: i18n.msg('title').escape(),
+			message: i18n.msg('message').escape()
+		}, window.MessageBlock);
  
 		if (isUCP) {
 			$('#mw-htmlform-options').append('<div class="mw-htmlform-field-HTMLCheckField oo-ui-layout oo-ui-labelElement oo-ui-fieldLayout oo-ui-fieldLayout-align-inline" data-ooui=""><div class="oo-ui-fieldLayout-body"><span class="oo-ui-fieldLayout-field"><span id="mw-input-wpMessage" class="oo-ui-widget oo-ui-widget-enabled oo-ui-inputWidget oo-ui-checkboxInputWidget" aria-disabled="false" data-ooui=""><input type="checkbox" tabindex="0" aria-disabled="false" name="wpMessage" value="1" class="oo-ui-inputWidget-input" id="mw-input-wpMessage"><span class="oo-ui-checkboxInputWidget-checkIcon oo-ui-widget oo-ui-widget-enabled oo-ui-iconElement oo-ui-iconElement-icon oo-ui-icon-check oo-ui-labelElement-invisible oo-ui-iconWidget" aria-disabled="false"></span></span></span><span class="oo-ui-fieldLayout-header"><label class="oo-ui-labelElement-label">' + i18n.msg('button').escape() + '</label></span></div></div>');

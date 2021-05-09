@@ -1,5 +1,9 @@
 /* These codes are run on every page load for all users. */
 
+// LockOldComments configuration
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 100;
+
 // AddRailModule configuration
 window.AddRailModule = [
 	{page: 'Template:Discord', prepend: true}

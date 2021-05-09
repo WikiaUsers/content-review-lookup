@@ -356,7 +356,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Block'
 			action: 'parse',
 			prop: 'wikitext',
 			formatversion: '2',
-			page: 'MediaWiki:Custom-TopicBlockLog-topics'
+			page: 'MediaWiki:Custom-TopicBlockLog-topics.json'
 		}).then(function(data) {
 			if (data.parse) {
 				var TOPICS = JSON.parse(data.parse.wikitext.replace(/\/\*(.|\s)*?\*\//g, '')),

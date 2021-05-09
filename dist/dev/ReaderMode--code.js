@@ -12,17 +12,15 @@
  *
  * @modes [light][dark]
  *
- * @version 1.0.4
+ * @version 1.0.5 - Adjustements for UCP (mainly the selecctors) and little fixes
  *
  * @license GNU GPL v2.0
  */
  
-var readerMode = window.readerMode || {};
- 
-readerMode.hasLoaded = false;
+var readerMode = window.readerMode = window.readerMode || {}; 
  
 readerMode.addTitle = function() {
-    $( '.mw-content-text' ).prepend( '<h1 style="text-align: center;">' + mw.config.get( 'wgPageName' ).replace( /_/g, ' ' ) + '</h1><br />' );
+    $( '#mw-content-text' ).prepend( '<h1 style="text-align: center;">' + mw.html.escape( mw.config.get( 'wgPageName' ).replace( /_/g, ' ' ) ) + '</h1><br />' );
 };
  
 readerMode.lightMode = function() {
@@ -32,13 +30,15 @@ readerMode.lightMode = function() {
         img,\
         button,\
         #globalNavigation,\
-        #WikiaRail,\
-        #catlinks,\
-        #WikiaFooter,\
+        #WikiaRailWrapper,\
+        .page-header__categories,\
+        #articleCategories,\
+        #mixed-content-footer,\
         #WikiaBar,\
-        #WikiHeader,\
-        #WikiaPageHeader,\
-        .WikiaArticleFooter,\
+        .wds-community-header,\
+        #PageHeader,\
+        .WikiaArticleInterlang,\
+        .license-description\
         .wikia-gallery,\
         .wordmark {\
             display: none !important;\
@@ -46,12 +46,11 @@ readerMode.lightMode = function() {
         #WikiaMainContentContainer {\
             margin-right: 0px !important;\
             color: #000000;\
-            opacity: none !important;\
+            opacity: 1 !important;\
         }\
         body,\
-        #WikiaPageBackground,\
-        #WikiaPage,\
-        .WikiaPAge {\
+        .WikiaPage,\
+        .WikiaPageContentWrapper {\
             background-color: #FFFFFF !important;\
             border: none !important;\
         }\
@@ -74,9 +73,8 @@ readerMode.darkMode = function() {
 	       color: #FFFFFF;\
         }\
         body,\
-        #WikiaPageBackground,\
-        #WikiaPage,\
-        .WikiaPAge {\
+        .WikiaPage,\
+        .WikiaPageContentWrapper {\
 	       background-color: #000000 !important;\
         }";
  
@@ -110,15 +108,11 @@ readerMode.getURLMode = function() {
  
     if ( mode !== null ) {
         switch ( mode ) {
+            case 'reader':
             case 'reader-light': 
                 return 'reader-light';
-                break;
             case 'reader-dark':
                 return 'reader-dark';
-                break;
-            case 'reader':
-                return 'reader-light';
-                break;
             default:
                 return '';
         }
@@ -128,7 +122,7 @@ readerMode.getURLMode = function() {
 };
  
 readerMode.addButtons = function() {
-    $( '#WikiaPageHeader' ).append( '<br />Read in <a href="/wiki/' + mw.config.get( 'wgPageName' ) + '?mode=reader-light">light</a> or <a href="/wiki/' + mw.config.get( 'wgPageName' ) + '?mode=reader-dark">dark</a> mode' );
+    $( '.WikiaPageContentWrapper' ).prepend('<div style="padding:0.5em; text-align:center;">Read in <a href="/wiki/' + mw.html.escape( mw.config.get( 'wgPageName' ) ) + '?mode=reader-light">light</a> or <a href="/wiki/' + mw.html.escape( mw.config.get( 'wgPageName' ) ) + '?mode=reader-dark">dark</a> mode</div>');
 };
  
 readerMode.init = function() {
@@ -143,7 +137,8 @@ readerMode.init = function() {
  
 $( document ).ready( function() {
     if ( mw.config.get( 'wgNamespaceNumber' ) === 0 ) {
-        if ( readerMode.hasLoaded === false ) {
+        if (!readerMode.hasLoaded) {
+            readerMode.hasLoaded = true;
             readerMode.init();
         }
     }

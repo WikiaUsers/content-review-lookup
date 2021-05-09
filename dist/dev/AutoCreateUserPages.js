@@ -73,8 +73,9 @@
             deferreds = deferreds.concat([
                 $.get(mw.util.wikiScript('wikia'), $.extend({type: 'posts'}, socialActivity)),
                 $.get(mw.util.wikiScript('wikia'), $.extend({type: 'messages'}, socialActivity)),
-                $.get(mw.util.wikiScript('wikia'), $.extend({type: 'comments'}, socialActivity))
+                (this.mwconfig.wgCityId === 7931 ? null : $.get(mw.util.wikiScript('wikia'), $.extend({type: 'comments'}, socialActivity)))
             ]);
+            
             $.when.apply($, deferreds).done($.proxy(this.cbContribs, this)).fail($.proxy(this.cbContribsFail, this));
         },
         cbContribsFail: function (d) {
@@ -177,6 +178,6 @@
     mw.loader.using([
         'mediawiki.api.edit',
         'mediawiki.util',
-        (mw.config.get('wgVersion') !== '1.19.24' ? 'mediawiki.notify' : 'mediawiki')
+        'mediawiki.notify'
     ]).then($.proxy(AutoCreateUserPages.preload, AutoCreateUserPages));
 })();

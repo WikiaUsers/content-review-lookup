@@ -3,5 +3,11 @@ window.listUsers = {
     talk: true,
 }
 window.listUsers.customgroups = ['content-moderator','threadmoderator'];
-importScriptPage('ListUsers/code.js', 'dev');
-importScriptPage('ListUsers/code2.js', 'dev');
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ListUsers/code.js',
+        'u:dev:MediaWiki:ListUsers/code2.js',
+        'MediaWiki:LoopOgv.js'
+    ]
+});

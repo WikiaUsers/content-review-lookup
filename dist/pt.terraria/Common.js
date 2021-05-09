@@ -15,21 +15,21 @@ $('.terraria:not(.outer)')
 */
 
 // Disable creation of non-talk pages by anonymous IP editors and link to registration (also disabled by abuse filter but this provides warning before attempting edit)
-var wgPageName = mw.config.get( 'wgPageName' );
-var wgUserName = mw.config.get( 'wgUserName' );
+const wgPageName = mw.config.get( 'wgPageName' );
+const wgUserName = mw.config.get( 'wgUserName' );
 
 var isTalk = false, isAnon = false;
 if (wgPageName.indexOf('talk:') > -1 || wgPageName.indexOf('Talk:') > -1) isTalk = true;
 if (wgUserName === null) isAnon = true;
 
-if (isAnon == true){
+if (isAnon === true){
 	$('a.new').each(function(){
 		var href = $(this).attr('href');
 		$(this).attr('href', href.replace(/&action=edit/g, '') );
 	});
 }
 
-if (isAnon == true && isTalk == false) {
+if (isAnon === true && isTalk === false) {
 	var anonWarnText = 'Page creation by anonymous editors is currently disabled. <br/> To create this page, please <a href="http://terraria.gamepedia.com/Special:CreateAccount">register an account</a> first.';
 	$('body').append('<div class="anonWarnOverlay" style="display:none; background-color: #000; opacity: 0.4; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 500;"></div>');					
 	$('body').prepend('<div class="anonWarnBox" style="display:none; text-align:center; font-weight: bold; box-shadow: 7px 7px 5px #000; font-size: 0.9em; line-height: 1.5em; z-index: 501; opacity: 1; position: fixed; width: 50%; left: 25%; top: 30%; background: #F7F7F7; border: #222 ridge 1px; padding: 20px;">' + anonWarnText + '</div>');
@@ -69,7 +69,7 @@ function addAjaxDisplayLink() {
 		table.find(".ajax-load-link").parent().andSelf().filter('a').click(function(event) {
 			event.preventDefault();
 			var sourceTitle = table.data('ajax-source-page'), baseLink = mw.config.get('wgScript') + '?';
-			cell.text('Por favor espere, o conteúdo está sendo carregado...');
+			cell.text('Please wait, the content is being loaded...');
 			$.get(baseLink + $.param({ action: 'render', title: sourceTitle }), function (data) {
 				if (data) {
 					cell.html(data);
@@ -81,24 +81,25 @@ function addAjaxDisplayLink() {
 						});
 					}
 					headerLinks.text('[');
-					headerLinks.append($('<a>Editar</a>').attr('href', baseLink + $.param({ action: 'edit', title: sourceTitle })));
+					headerLinks.append($('<a>edit</a>').attr('href', baseLink + $.param({ action: 'edit', title: sourceTitle })));
 					headerLinks.append(document.createTextNode(']\u00A0['));
 					var shown = true;
-					$("<a href='javascript:;'>Esconder</a>").click(function() {
+					$("<a href='javascript:;'>hide</a>").click(function() {
 						shown = !shown;
 						shown ? cell.show() : cell.hide();
-						$(this).text(shown ? "Esconder" : "Mostrar");
+						$(this).text(shown ? "hide" : "show");
 					}).appendTo(headerLinks);
 					headerLinks.append(document.createTextNode(']'));
 				}
 			}).error(function() {
-				cell.text('Não é possível a carregar tabela; o artigo fonte pode não existir.');
+				cell.text('Unable to load table; the source article for it might not exist.');
 			});
 		});
 	});
 }
 
 $(addAjaxDisplayLink);
+
 $.when( $.ready ).then(function() {
 	// Document is ready.
 	// desktop view for mobile screen.
@@ -160,12 +161,14 @@ $(function() {
 	if (mw.config.get('wgCanonicalNamespace') != 'Module') return;
 	$('.s1, .s2').each(function() {
 		var html = $(this).html();
+		// the module name is surrounded by quotes, so we have to remove them
 		var quote = html[0];
 		var quoteRE = new RegExp('^' + quote + '|' + quote + '$', 'g');
-		var name = html.replace(quoteRE,"");
+		var name = html.replace(quoteRE, ""); // remove quotes
+		// link the module name
 		if (name.startsWith("Module:")) {
-			var target = name.replace(/ /g,'%20');
-			var url = mw.config.get('wgServer') + '/' + target;
+			var target = encodeURIComponent(name);
+			var url = mw.config.get('wgServer') + mw.config.get('wgScript') + '?title=' + target;
 			var str = quote + '<a href="' + url + '">' + name + '</a>' + quote;
 			$(this).html(str);
 		}
@@ -228,4 +231,4 @@ $(document).ready(function (){
 	});
 });
 
-mw.loader.load('https://terraria.gamepedia.com/index.php?title=MediaWiki:HairDyeSliders.js&action=raw&ctype=text/javascript');
+mw.loader.load('/index.php?title=MediaWiki:HairDyeSliders.js&action=raw&ctype=text/javascript');

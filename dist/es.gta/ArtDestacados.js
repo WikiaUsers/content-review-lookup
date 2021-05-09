@@ -41,7 +41,10 @@ mw.loader.using(['jquery.client', 'mediawiki.base']).then(function() {
                             alert('No has incluído ninguna razón. Justifica por qué estás realizando esta propuesta.');
                             return;
                     }
-                    var pagecontent = '{{PPD\n|var1		= 1612665774 <!-- NO EDITAR -->\n|var2		= 1613270574 <!-- NO EDITAR -->\n|tipo		=' + tipo + '<!-- NO EDITAR n/m/d/g/h  -->\n |propone	=' + userName + '\n|estado	= nuevo <!-- NO EDITAR aceptado/rechazado/anulado  -->\n |nombre	=' + nombre + '\n |motivos	=' + motivos + '-- [[user:' + userName + '|' + userName + ']] 02:42 7 feb 2021 (UTC)}}', 
+                    
+                    var time1 = '{{' + 'subst:#time:U}}';
+                    var time2 = '{{' + 'subst:#time:U|+7days }}';
+                    var pagecontent = '{{PPD\n|var1		= ' + time1 + ' <!-- NO EDITAR -->\n|var2		= ' + time2 + ' <!-- NO EDITAR -->\n|tipo		=' + tipo + '<!-- NO EDITAR n/m/d/g/h  -->\n |propone	=' + userName + '\n|estado	= nuevo <!-- NO EDITAR aceptado/rechazado/anulado  -->\n |nombre	=' + nombre + '\n |motivos	=' + motivos + '-- [[user:' + userName + '|' + userName + ']]' + '~~' + '~' + '~~ }}', 
                         date = new Date(),
                         day = ('0' + date.getDate()).slice(-2),
                         month = ('0' + (date.getMonth() + 1)).slice(-2),

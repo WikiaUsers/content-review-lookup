@@ -15,6 +15,6 @@ if ($.inArray(wgNamespaceNumber, [ 0, 1, 4, 5, 6, 7, 14, 15, 110, 111, 400, 401,
             textAlign : 'center',
             boxShadow : '0 0 5px 0 rgba(58,81,86,.39)',
         }
-    }).text('Amour Sucré est un jeu du studio de création Beemoov. Le wikia Amour Sucré est un site indépendant non sponsorisé par le groupe Beemoov. Les images proviennent en majorité du jeu.')
+    }).text('Amour Sucré est un jeu du studio de création Beemoov. Le wiki Amour Sucré est un site indépendant non sponsorisé par le groupe Beemoov. Les images proviennent en majorité du jeu.')
     .appendTo('.WikiaArticle');
 }

@@ -43,6 +43,9 @@ if (mw.config.get("wgCanonicalNamespace") == "") {
         } else if (BGcategories[ct] == "Five Nights at Freddy's AR: Special Delivery") {
             BGbackground = BG('FNaF AR BG.jpg');
             break;
+        } else if (BGcategories[ct] == "Security Breach: Fury's Rage") {
+            BGbackground = BG('SB FR BG.png');
+            break;
         } else if ((BGcategories[ct] == "Книги") || (BGcategories[ct] == "Персонажи книг")) {
             BGbackground = BG('FNaF Books BG.png');
             break;

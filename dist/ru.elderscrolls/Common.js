@@ -119,7 +119,10 @@ var imgs = [
 'https://static.wikia.nocookie.net/elderscrolls/images/7/71/Bg6.jpg/revision/latest?path-prefix=ru',
 'https://static.wikia.nocookie.net/elderscrolls/images/2/28/Bg7.jpg/revision/latest?path-prefix=ru',
 'https://static.wikia.nocookie.net/elderscrolls/images/c/c4/Bg8.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/6/60/Bg9.jpg/revision/latest?path-prefix=ru'
+'https://static.wikia.nocookie.net/elderscrolls/images/6/60/Bg9.jpg/revision/latest?path-prefix=ru',
+'https://static.wikia.nocookie.net/elderscrolls/images/5/58/Background-04.jpg/revision/latest?path-prefix=ru',
+'https://static.wikia.nocookie.net/elderscrolls/images/1/13/Background-07.jpg/revision/latest?path-prefix=ru',
+'https://static.wikia.nocookie.net/elderscrolls/images/3/30/Background-08.jpg/revision/latest?path-prefix=ru'
 ];
 
 document.getElementsByTagName("body")[0].setAttribute("style", 'background-image:url('

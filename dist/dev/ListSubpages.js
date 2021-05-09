@@ -3,7 +3,9 @@
         return;
     }
     window.ListSubpagesLoaded = true;
-    
+    var msg;
+    var wikis = [];
+
     function parallelIter(arr, concurrent, fn) {
         var $promise = $.Deferred();
         var i = 0;
@@ -15,13 +17,13 @@
                 if (finished === 0) {
                     $promise.resolve(values);
                 }
-    
+
                 return;
             }
-    
+
             var index = i;
             var value = arr[i++];
-    
+
             fn(value).then(
                 function(data) {
                     values[index] = data;
@@ -33,57 +35,70 @@
                 }
             );
         };
-    
+
         while (concurrent--) {
             cb();
         }
-    
+
         return $promise.promise();
     }
 
-    function load (msg) {
-        $.ajax({
-            url: 'https://appcommunitycentral.fandom.com/wikia.php?controller=UserActivity%5C&method=index&format=jsonp',
-            dataType: 'jsonp'
-        }).done(function (d) {
-            parallelIter(d.items, 5, function(item) {
-                var wiki = item.url.replace(/^http:/, 'https:');
-                return $.ajax({
-                    url: wiki + 'api.php?action=query&list=allpages&apprefix=' + mw.config.get('wgUserName') + '/&apnamespace=2&format=json',
-                    dataType: 'jsonp',
-                    timeout: 5000
-                }).done(function (d) {
-                    if (d.error) {
-                        $('#errors').append(
-                            mw.html.escape(d.error.info),
-                            ': ',
-                            $('<a>',{
-                                href: wiki,
-                                text: wiki
+    function getSubpages (wikis) {
+        parallelIter(wikis, 5, function (item) {
+            return $.ajax({
+                url: item + 'api.php?action=query&list=allpages&apprefix=' + mw.config.get('wgUserName') + '/&apnamespace=2&format=json',
+                dataType: 'jsonp',
+                timeout: 5000
+            }).done(function (d) {
+                if (d.error) {
+                    $('#errors').append(
+                        mw.html.escape(d.error.info),
+                        ': ',
+                        $('<a>', {
+                            href: item,
+                            text: item
+                        }),
+                        '<br>'
+                    );
+                } else {
+                    d.query.allpages.forEach(function (p) {
+                        var url = item + 'wiki/' + p.title;
+                        $('#results').append(
+                            $('<a>', {
+                                href: url,
+                                text: url
                             }),
                             '<br>'
                         );
-                    } else {
-                        d.query.allpages.forEach(function (p) {
-                            var url = wiki + 'wiki/' + p.title;
-                            $('#results').append(
-                                $('<a>', {
-                                    href: url,
-                                    text: url
-                                }),
-                                '<br>'
-                            );
-                        });
-                    }
-                });
-            }).then(function () {
-                alert(msg);
+                    });
+                }
             });
+        }).then(function () {
+            alert(msg);
         });
+    }
+
+    function getUrls (data) {
+        var data = $(data);
+
+        data.find('.user-activity__table-wrapper tbody tr').each(function () {
+            wikis.push($(this).find('td:first-child > a').attr('href'));
+        });
+
+        if (data.find('.TablePager-button-next.oo-ui-widget-enabled').length) {
+            getWikis(new mw.Uri(data.find('.TablePager-button-next > a').attr('href')).query.offset);
+        } else {
+            getSubpages(wikis);
+        }
+    }
+
+    function getWikis (offset) {
+        $.get('https://community.fandom.com/wiki/Special:UserActivity?uselang=en' + (offset ? '&offset=' + offset : '')).done(getUrls);
     }
 
     function main (i18nData) {
         var i18n = i18nData;
+        msg = i18n.msg('done').plain();
         $('.page-header__title').text('ListSubpages');
         document.title = 'ListSubpages | ' + mw.config.get('wgSiteName') + ' | Fandom';
         $('#mw-content-text').empty();
@@ -95,7 +110,7 @@
             i18n.msg('errors-header').escape() +
             '<br><pre id="errors"/>'
         );
-        load(i18n.msg('done').plain());
+        getWikis();
     }
 
     mw.loader.using('mediawiki.util').then(function () {

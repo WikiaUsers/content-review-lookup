@@ -10723,6 +10723,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"prettypetal": {
+				"name": "Pretty Petal",
+				"colors": [
+					"flower",
+					"yellow"
+				],
+				"rarity": "common"
+			},
 			"prettygeist": {
 				"name": "Prettygeist",
 				"colors": [

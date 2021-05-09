@@ -8,7 +8,7 @@ window.LockOldBlogs = {
 importArticles({
     type: "script",
     articles: [
-        'u:dev:AdminDashboard JS-Button/code.js',
-        'u:dev:CommunityDataUsers/code.js',
+        'u:dev:MediaWiki:AdminDashboard JS-Button/code.js',
+        'u:dev:MediaWiki:CommunityDataUsers/code.js',
     ]
 });

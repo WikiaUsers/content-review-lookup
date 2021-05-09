@@ -1,6 +1,4 @@
-/*<pre><nowiki>*/
-
-// Copied from http://avatar.wikia.com/wiki/MediaWiki:Common.js/icons.js
+// Copied from https://avatar.wikia.com/wiki/MediaWiki:Common.js/icons.js
 $( function eraIconsOasis() {
     if ( mw.config.get( 'wgVersion' ) !== '1.19.24' && $( '#title-eraicons' ).length ) {
         $( '.page-header__contribution > div' ).first().append( $( '#title-eraicons' ).show() );
@@ -14,15 +12,7 @@ $( function eraIconsOasis() {
     }
 } );
 
-// Add clickable skin to Instant Expert: The Force Awakens page (temporary)
-if(mw.config.get('wgPageName') === "Instant_Expert:The_Force_Awakens") {
-    var targetURL = 'http://ow.ly/W5KxR';
-    $('body').prepend('<a href="' + targetURL + '"><div class="clickable-skin"></div></a>');
-    $('.clickable-skin').css({
-        'height': '100%',
-        'position': 'absolute',
-        'width': '100%',
-        'z-index': '1'
+ /* May the Fourth 2021 fun! */
+   $(function () {
+        $('#fourth').append("<iframe width='100%'  height='1200px' style='background-color:transparent!important' src='https://gleam.io/Rz3FG/win-stars-wars-day-prizes-with-fanatical'></iframe>");
     });
-}
-/*</nowiki></pre>*/

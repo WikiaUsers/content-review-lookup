@@ -3,64 +3,21 @@
         return;
     }
     var msgs;
-    var preloads = 3;
-
-    function buildUI () {
-        $('#wpDeleteReasonRow').after(
-            window.dev.ui({
-                type: 'tr',
-                children: [
-                    {
-                        type: 'td'
-                    },
-                    {
-                        type: 'td',
-                        classes: [
-                            'mw-input'
-                        ],
-                        children: [
-                            {
-                                type: 'input',
-                                attr: {
-                                    tabindex: '3',
-                                    id: 'wpTalkDelete',
-                                    value: '1',
-                                    type: 'checkbox',
-                                    name: 'wpTalkDelete'
-                                }
-                            },
-                            {
-                                type: 'label',
-                                attr: {
-                                    'for': 'wpTalkDelete'
-                                },
-                                html: '&nbsp;' + msgs[0]
-                            }
-                        ]
-                    }
-                ]
-            })
-        );
-    }
+    var preloads = 2;
 
     function handler (d) {
         var page = d.query.pages[mw.config.get('wgArticleId')];
-        var ucp = mw.config.get('wgVersion') !== '1.19.24';
         if (!page.talkid) {
             return;
         }
-        if (ucp) {
-            var checkbox = new OO.ui.CheckboxInputWidget({
-                id: 'wpTalkDelete'
-            });
-            var line = new OO.ui.FieldLayout(checkbox, {
-                label: msgs[0],
-                align: 'inline'
-            });
-            $('.oo-ui-fieldLayout:nth-child(2)').after(line.$element);
-        } else {
-            buildUI();
-        }
+        var checkbox = new OO.ui.CheckboxInputWidget({
+            id: 'wpTalkDelete'
+        });
+        var line = new OO.ui.FieldLayout(checkbox, {
+            label: msgs[0],
+            align: 'inline'
+        });
+        $('.oo-ui-fieldLayout:nth-child(2)').after(line.$element);
         var params = {
             action: 'delete',
             format: 'json',
@@ -70,12 +27,10 @@
         };
         $('#deleteconfirm').click(function (e) {
             if (e.target.id === 'wpConfirmB' || $(e.target).closest('#wpConfirmB').length) {
-                var watch = ucp ? OO.ui.infuse($('#wpWatch').parent()).isSelected() : $('#wpWatch').attr('checked');
-                if (watch) {
+                if (OO.ui.infuse($('#wpWatch').parent()).isSelected()) {
                     params.watchlist = 'watch';
                 }
-                var checked = ucp ? checkbox.isSelected() : $('#wpTalkDelete').attr('checked');
-                if (checked) {
+                if (checkbox.isSelected()) {
                     new mw.Api().post(params);
                 }
             }
@@ -101,15 +56,11 @@
         }
     }
 
-    mw.hook('dev.ui').add(preload);
     mw.hook('dev.i18n').add(preload);
     mw.loader.using('mediawiki.api').then(preload);
 
-    importArticles({
+    importArticle({
         type: 'script',
-        article: [
-            'u:dev:MediaWiki:I18n-js/code.js',
-            'u:dev:MediaWiki:UI-js/code.js'
-        ]
+        article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
 })();

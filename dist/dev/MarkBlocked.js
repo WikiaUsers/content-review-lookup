@@ -138,7 +138,7 @@
 	//--------Main function
 
 	function markBlocked( container ) {
-		var contentLinks = ( container || mw.util.$content ).find( 'a' )
+		var contentLinks = ( container || mw.util.$content || $('#mw-content-text')).find( 'a' )
 				.not( '.editsection > a, .mw-editsection > a' )
 				.add( '#ca-nstab-user a, li[data-id="profile"] > a' );
 

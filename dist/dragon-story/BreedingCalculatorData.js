@@ -21360,6 +21360,32 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "prettypetal": {
+                "name": "Pretty Petal",
+                "types": [
+                    "flower",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "green"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "prettygeist": {
                 "name": "Prettygeist",
                 "types": [

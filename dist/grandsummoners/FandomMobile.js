@@ -200,3 +200,35 @@
 }(window.countdownTimer = window.countdownTimer || {}, mediaWiki, jQuery));
 
 // End Countdown
+
+$(function() {
+    $("#BtnAWK").click(function() {
+        $(".evolution").css("display", "none");
+        $("#TextAWK").css("display", "block");
+    });
+    
+    $("#Btn5").click(function() {
+        $(".evolution").css("display", "none");
+        $("#Text5").css("display", "block");
+    });
+    
+    $("#Btn4").click(function() {
+        $(".evolution").css("display", "none");
+        $("#Text4").css("display", "block");
+    });
+    
+    $("#Btn3").click(function() {
+        $(".evolution").css("display", "none");
+        $("#Text3").css("display", "block");
+    });
+    
+    $("#Btn2").click(function() {
+        $(".evolution").css("display", "none");
+        $("#Text2").css("display", "block");
+    });
+    
+    $("#Btn1").click(function() {
+        $(".evolution").css("display", "none");
+        $("#Text1").css("display", "block");
+    });
+});

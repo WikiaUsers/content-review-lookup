@@ -3,46 +3,8 @@
         return;
     }
     window.MinimalJSPagesLoaded = true;
-    var ucp = mw.config.get('wgVersion') !== '1.19.24';
 
     function click () {
-        $(this).hide();
-        if ($(this).hasClass('showunsubmitted')) {
-            $('button.hideapproved').hide();
-            $('table > tbody > tr').has('td:nth-child(2) > span:not(.content-review-status-unsubmitted)').hide();
-        } else {
-            $('table > tbody > tr').has('td:nth-child(2) > .content-review-status-live').hide();
-        }
-    }
-
-    function init (i18n) {
-        var button1 = $('<button>', {
-            click: click,
-            text: i18n.msg('show').plain(),
-            class: 'showunsubmitted secondary'
-        });
-        var button2 = $('<button>', {
-            click: click,
-            text: i18n.msg('hide').plain(),
-            class: 'hideapproved secondary'
-        });
-        $('table').prev().append(button1, ' ', button2);
-
-        //not jquery because .children() doesn't support text nodes
-        document.querySelectorAll('.content-review-status').forEach(function (status) {
-            var td = status.parentElement,
-            nodes = td.childNodes,
-            i = nodes.length;
-            while (i--) {
-                var node = nodes[i];
-                if (node.nodeType == Node.TEXT_NODE || status.classList.contains('content-review-status-rejected') && i == 1) {
-                    td.removeChild(node);
-                }
-            }
-        });
-    }
-
-    function UCPclick () {
         $(this).hide();
         if ($(this).hasClass('showunsubmitted')) {
             $('button.hideapproved').hide();
@@ -52,14 +14,14 @@
         }
     }
 
-    function UCPinit (i18n) {
+    function init (i18n) {
         var button1 = $('<button>', {
-            click: UCPclick,
+            click: click,
             text: i18n.msg('show').plain(),
             class: 'showunsubmitted wds-button wds-is-secondary'
         });
         var button2 = $('<button>', {
-            click: UCPclick,
+            click: click,
             text: i18n.msg('hide').plain(),
             class: 'hideapproved wds-button wds-is-secondary'
         });
@@ -82,11 +44,7 @@
     }
 
     mw.hook('dev.i18n').add(function (i18n) {
-        if (ucp) {
-            i18n.loadMessages('MinimalJSPages').done(UCPinit);
-        } else {
-            i18n.loadMessages('MinimalJSPages').done(init);
-        }
+        i18n.loadMessages('MinimalJSPages').done(init);
     });
 
     importArticles({

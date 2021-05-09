@@ -3,12 +3,14 @@
 // Updated by: Caburum
 
 $(function() {
-	importArticle({
-    	type: 'style',
-		article: 'u:dev:MediaWiki:CopyTitle.css'
-    }).then(function() {
+	if (window.CopyTitleLoaded) {
+		return;
+	}
+	window.CopyTitleLoaded = true;
+	
+	function init(i18n) {
     	var el = document.createElement('span');
-		$(el).attr('id', 'title-copy-container').html('<span id="title-copy-content" title="Copy only title (no namespace)">&#xF0C5;</span><span id="title-copy-all" title="Copy full title (including namespace)">&#xF0C5;</span>');
+		$(el).attr('id', 'title-copy-container').html('<span id="title-copy-content" title="' + i18n.msg('title-copy-content').escape() + '">&#xF0C5;</span><span id="title-copy-all" title="' + i18n.msg('title-copy-all').escape() + '">&#xF0C5;</span>');
 		$('#firstHeading').append($(el));
 	
 		$('#title-copy-content').click(function() {
@@ -41,5 +43,18 @@ $(function() {
 				$('#title-copy-all').css('color', '');
 			}, 2000);
 		});
+    };
+    
+    mw.hook('dev.i18n').add(function() {
+    	window.dev.i18n.loadMessages('CopyTitle').then(init);
     });
+
+	importArticle({
+		type: 'style',
+		article: 'u:dev:MediaWiki:CopyTitle.css'
+	});
+	importArticles({
+		type: 'script',
+		article: 'u:dev:MediaWiki:I18n-js/code.js'
+	});
 });

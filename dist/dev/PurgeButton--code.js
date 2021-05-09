@@ -21,10 +21,7 @@
     }
 
     function init(text) {
-        $([
-            '.UserProfileActionButton .wikia-menu-button .WikiaMenuElement',
-            '.page-header__contribution-buttons .wds-list'
-        ].join(',')).first().append(
+        $('.page-header__contribution-buttons .wds-list').first().append(
             $('<li>').append(
                 $('<a>', {
                     id: 'ca-purge',

@@ -231,14 +231,14 @@ function regularEventCountdown(refTime) {
 	/***********************
 	*  FORTNIGHTLY EVENTS  *
 	************************/
-	//if refTime is not set, use default
-	var referenceTime = (!isNaN(Date.parse(refTime)) ? new Date(refTime + suffix) : new Date("April 23 2021" + suffix));
+	//if refTime is not set, use default (Reminder: DO NOT USE suffix)
+	var referenceTime = (!isNaN(Date.parse(refTime)) ? new Date(refTime) : new Date("April 23 2021"));
 	//set referenceTime to the Friday of the week
 	referenceTime.setDate(referenceTime.getDate() + 5 - referenceTime.getDay());
 	//forgot to reset tempTime before use
 	tempTime = new Date(servTime);
-	//get difference of current time from reference time (const 13 seem to work fine. previously 15. XD)
-	var diffDay = 13 - (parseInt((tempTime.getTime() - referenceTime.getTime()) / (1000*60*60*24)) % 14);
+	//get difference of current time from reference time
+	var diffDay = 14 - (parseInt((tempTime.getTime() - referenceTime.getTime()) / (1000*60*60*24)) % 14);
 	//2x event 1
 	if (diffDay < 14)
 	{

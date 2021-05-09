@@ -27,21 +27,12 @@ importArticles({
     ]
 });
 
-/* Adding EditIntros */
-function addEditIntro( name ) {
-	$( '.mw-editsection, #ca-edit, #ca-ve-edit' ).find( 'a' ).each( function ( i, el ) {
-		el.href = $( this ).attr( 'href' ) + '&editintro=' + name;
-	} );
-}
+/* Reference popups */
+importScriptPage('ReferencePopups/code.js', 'dev');
 
-if ( mw.config.get( 'wgNamespaceNumber' ) === 0 ) {
-	$( function () {
-		var cats = mw.config.get( 'wgCategories' );
-		if ( !cats ) {
-			return;
-		}
-		if ( $.inArray( 'Acquired programming', cats ) !== -1 ) {
-			addEditIntro( 'Template:International_program_editintro' );
-		}
-	} );
-}
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ReferencePopups/code.js',
+    ]
+});

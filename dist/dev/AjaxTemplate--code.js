@@ -1,6 +1,6 @@
 // <nowiki>
 (function() {
-    if (window.AjaxTemplateLoaded) {
+    if (window.AjaxTemplateLoaded || mw.config.get('wgNamespaceNumber') == -1) {
         return;
     }
     window.AjaxTemplateLoaded = true;
@@ -40,7 +40,7 @@
             if (this.config.wgNamespaceNumber % 2 === 0) {
                 options.prependtext = '{{' + text + '}}<br />';
             } else {
-                options.appendtext = '<br /><br /> {{subst:' + text + '}}~~~~';
+                options.appendtext = '<br /><br /> {{subst:' + text + '}}~~' + '~~';
             }
             this.api
                 .post(options)

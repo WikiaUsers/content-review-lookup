@@ -3,8 +3,6 @@
         return;
     }
     window.FixPhalanxBlockLinksLoaded = true;
-    var ucp = mw.config.get('wgVersion') !== '1.19.24';
-    var preloads = 2;
 
     function handler (data) {
         if (!data.query.userinfo.rights.includes('block')) {
@@ -19,34 +17,23 @@
         data.query.specialpagealiases.forEach(function (x) {
             mapping[x.realname] = specialNamespace + ':' + x.aliases[0];
         });
-
-        var element = ucp ? '.mw-contributions-user-tools' : '#contentSub';
-        var blockurl = mw.util.getUrl(mapping.Block);
-        var unblockurl = mw.util.getUrl(mapping.Unblock);
-        var unblockelement = $(element + ' a[href^="' + unblockurl + '/"]');
+        var unblockelement = $('.mw-contributions-user-tools a[href^="' + mw.util.getUrl(mapping.Unblock) + '/"]');
 
         if (!unblockelement.length) {
             return;
         }
 
-        $(element + ' a[href^="' + blockurl + '"]').text(data.query.allmessages[0]["*"]);
-        if (ucp) {
-            unblockelement.parent().hide();
-        } else {
-            unblockelement.hide();
-            unblockelement[0].previousSibling.remove();
-        }
+        $('.mw-contributions-user-tools a[href^="' + mw.util.getUrl(mapping.Block) + '"]').text(data.query.allmessages[0]["*"]);
+        unblockelement.parent().hide();
     }
 
     function init () {
-        var user = ucp ? mw.config.get('profileUserName') : $('.UserProfileMasthead .masthead-info h1').text();
-
         new mw.Api().get({
             action: 'query',
             meta: 'userinfo|allmessages|siteinfo',
             uiprop: 'rights',
             list: 'blocks',
-            bkusers: user,
+            bkusers: mw.config.get('profileUserName'),
             bklimit: 1,
             ammessages: 'blocklink',
             amlanguage: mw.config.get('wgUserLanguage'),
@@ -55,12 +42,5 @@
         }).done(handler);
     }
 
-    function preload () {
-        if (--preloads === 0) {
-            init();
-        }
-    }
-
-    mw.loader.using('mediawiki.api').then(preload);
-    mw.loader.using('mediawiki.util').then(preload);
+    mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(init);
 })();

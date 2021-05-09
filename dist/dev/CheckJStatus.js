@@ -78,7 +78,7 @@ $(function() {
 	            .append(pages[target].lastStatus)
 	            .append(pages[target].liveStatus);
             } else {
-            	var none = '<div class="content-review__status content-review__status--none">None</div>'
+            	var none = '<div class="content-review__status content-review__status--none">' + i18n.msg('none').plain() + '</div>'
             	$('#cjsm-result').append(none).append(none).append(none);
             }
 

@@ -13,10 +13,8 @@
     }
     var msgs;
     var preloads = 2;
-    var ucp = mw.config.get('wgVersion') !== '1.19.24';
     var user = ucp ? mw.config.get('profileUserName') : $('.UserProfileMasthead .masthead-info h1').text();
     var userpage = mw.config.get('wgFormattedNamespaces')[2] + ':' + user;
-    var selector = ucp ? $('.mw-contributions-user-tools > .mw-changeslist-links > span:last-child') : $('#contentSub > a:last-child');
     var config = $.extend({}, window.DeleteUserpage);
     
     function doProtect () {
@@ -67,12 +65,8 @@
             text: msgs[0]
         });
 
-        if (ucp) {
-            selector.after(element);
-            element.wrap('<span></span>');
-        } else {
-            selector.after(' | ', element);
-        }
+        $('.mw-contributions-user-tools > .mw-changeslist-links > span:last-child').after(element);
+        element.wrap('<span></span>');
     }
 
     function handler (d) {

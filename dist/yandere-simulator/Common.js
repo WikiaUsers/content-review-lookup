@@ -216,9 +216,6 @@ UserTagsJS.modules.implode = {
 	'deputy-bureaucrat': ['bureaucrat', 'deputy'],
 };
 
-//Prevents existing tags from being hidden
-//(window.dev = window.dev || {}).profileTags = { noHideTags: true };
-
 //MastHeadRightsBadge
 window.MastheadRightsBadgeSettings = {
     iconSize: '25px',

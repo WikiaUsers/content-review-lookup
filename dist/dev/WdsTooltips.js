@@ -3,7 +3,7 @@
  * @author: KhangND (idea by 机智的小鱼君)
  * @description: documented at https://dev.fandom.com/WdsTooltips
  */
-require(['jquery', 'wikia.window'], function($, window) {
+(function () {
     var container = '#mw-content-text';
     if (window.WdsTLoaded || $(container).length === 0) {
         return;
@@ -70,4 +70,4 @@ require(['jquery', 'wikia.window'], function($, window) {
     }
 
     $(className + '*').hover(handlers.mouseenter, handlers.mouseout);
-});
+})();

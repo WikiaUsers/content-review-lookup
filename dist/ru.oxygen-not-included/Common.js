@@ -57,6 +57,6 @@ $('.oni-database > .database-list li').click(function() {
 setInterval(function () {
 	$('.wds-avatar a[href$="TESERACT"]').closest('.Reply, .Reply_body__3woA9').addClass('TESERACT');
 	$('.wds-avatar a[href$="Ksarfax"]').closest('.Reply, .Reply_body__3woA9').addClass('Ksarfax');
-	$('.wds-avatar a[href$="FruitShakeSB"]').closest('.Reply, .Reply_body__3woA9').addClass('FruitShakeSB');
+	$('.wds-avatar a[href$="MarisFrance"]').closest('.Reply, .Reply_body__3woA9').addClass('MarisFrance');
 	$('.wds-avatar a[href$="%D0%9D%D0%B8%D0%B2%D0%B0%D0%BB%D1%8C"]').closest('.Reply, .Reply_body__3woA9').addClass('Nival');
 }, 500 );

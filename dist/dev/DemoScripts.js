@@ -395,6 +395,11 @@
             selector: '.rating-widget',
             scripts: 'MediaWiki:StarRatings/ui.js'
         },
+        
+        Tabber: {
+            page: 'Global_Lua_Modules/Tabber',
+            styles: 'MediaWiki:Global_Lua_Modules/Tabber.css'
+        },
 
         TableHash: {
             page: 'TableHash',

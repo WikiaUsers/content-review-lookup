@@ -114,3 +114,6 @@ window.MessageBlock = {
   title: 'Блокировка',
   message: 'Вы были заблокированы на $2, причина: $1.',
 };
+
+/* AddRailModule */
+window.AddRailModule = ['Шаблон:Статья_месяца'];

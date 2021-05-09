@@ -17,7 +17,7 @@
         return console.log('BlockListTools:', typeof(data) === 'object' ? data.join(' ') : data);
     }
     
-    if (window.blockListTools.Init || namespace !== -1 && pagename !== 'BlockList') {
+    if (window.blockListTools && window.blockListTools.Init || namespace !== -1 && pagename !== 'BlockList') {
         logMsg('Namespace/page is not supported, skipping importing script.');
         return;
     }
@@ -29,9 +29,9 @@
         /* Variables within iterator */
         var $elem = $(this).children('a'),
             href = $elem.prop('href'),
-            ip = href.match(/(\d{1,3}\.){3}\d{1,3}/g),
             classes = $elem.prop('class'),
-            user = href.split(':')[2];
+            user = href.split(':')[2],
+            ip = mw.util.isIPAddress(user);
  
         if (ip) {
             $elem.first().after(

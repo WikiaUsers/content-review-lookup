@@ -1,16 +1,16 @@
 /*
-Warnings:
+Notes:
 - This page must be imported locally in ImportJS to take effect.
 - If you do not understand how to do this, please contact a Wiki Staff member or Smallketchup82 (sugondese#5733)
-- This will not work with multiple parallax div containers on a single page. If you put multiple div containers with the "parallax" ID, the first container on the page will be the only one that works. This is due to the simple nature of every element requiring a different ID in order to work as intended. | YOU CAN PUT AS MUCH ELEMENTS AS YOU WANT INSIDE OF YOUR DIV CONTAINER, THIS WARNING MEANS THAT YOU CANT HAVE MORE THAN 1 CONTAINER ON A SINGLE PAGE!
+- This will work with multiple div containers. Simply apply the class "parallax" and reference this documentation to customize it to your liking: https://github.com/wagerfield/parallax#22-configuration-options
 ──────────────────────────────────────────────────────────────────────────────
 Usage:
-To make it work, make a div container with the id of "parallax" and put another div inside of it. Give the div a data-depth attribute and put the content inside of it. It should work.
+To make it work, make a div container that has the class "parallax" and put another div inside of it. Give the div a data-depth attribute and put the content inside of it. You can do this for as may div's you want, reference this page to customize your parallax: https://github.com/wagerfield/parallax#22-configuration-options
 
 Read this github page for the full usage (please read it, i did a very bad job at explaining): https://github.com/wagerfield/parallax#12-preparations
 ──────────────────────────────────────────────────────────────────────────────
 Example:
-<div id="parallax">
+<div class="parallax">
 	<div data-depth="0.5">This text should give off a parallax effect based on your mouse's position.</div>
 </div>
 ──────────────────────────────────────────────────────────────────────────────
@@ -21,7 +21,7 @@ nothing uses the ID "parallax". Usage of this can be found here: https://github.
 ──────────────────────────────────────────────────────────────────────────────
 Configuration:
 Configuration can be viewed here: https://github.com/wagerfield/parallax#2-configuration
-^ Make sure to read the whole configuration section carefully if you wish to apply certain settings (such as hoverOnly) to your parallax element. You will have to declare the settings you want as an attribute (similar to what you did with data-depth) for the div container (which is the div that has the parallax ID).
+^ Make sure to read the whole configuration section carefully if you wish to apply certain settings (such as hoverOnly) to your parallax'ed element. You will have to declare the settings you want as an attribute (similar to what you did with data-depth) for the div container (which is the div that has the parallax ID).
 ──────────────────────────────────────────────────────────────────────────────
 */
 
@@ -552,5 +552,9 @@ Configuration can be viewed here: https://github.com/wagerfield/parallax#2-confi
     }, {}, [5])(5)
 });
 
-var scene = document.getElementById('parallax');
-var parallaxInstance = new Parallax(scene);
+// apply the parallax to the 'parallax' class
+var elems = document.querySelectorAll('.parallax');
+
+elems.forEach(function(elem) {
+	var parallaxInstance = new Parallax(elem);
+});

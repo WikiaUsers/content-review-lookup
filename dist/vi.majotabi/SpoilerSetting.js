@@ -1,6 +1,9 @@
 (function($){
     "use strict";
     $(document).ready(function(){
+    	if (window.AdditionalRailModuleDisabled) {
+        	return;
+    	}
         const
             spTitle = "Tiết lộ nội dung",	       
             spMain = $("<div>", { id: "spoiler-setting", class: "rail-module spoiler-module" })
@@ -47,6 +50,11 @@
         var spStatus = localStorage.getItem("spoilerStatus");
 			
   		function spoilerApplyChange(value){
+  			if (value === "2" && mw.config.values.wgUserGroups.includes("sysop") === false){
+  				alert('Chức năng này tạm thời chỉ khả dụng cho quản trị viên');
+  				value = "0";
+  			}
+			$("#spSelect").val(value); 
             $(".spoiler").css('display', spValue[value].spoiler);
             $(".jap-spoiler").css('display',spValue[value].jspoiler);
             $(".jap-spoiler-notif").css('display',spValue[value].jspoilerN);
@@ -79,7 +87,6 @@
 	
 			if (spStatus === null) {spStatus = 0}
 	
-			$("#spSelect").val(spStatus); 
 			spoilerApplyChange(spStatus);
 			$("#spSelect").on('change', function() {spoilerApplyChange($(this).val())});
     	}

@@ -44,8 +44,3 @@ function chatStatement() {
 }
 
 $(chatStatement);
-
-// Change default image for LinkPreview
-window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
-window.pPreview.defimage = "https://static.wikia.nocookie.net/armoredcore/images/0/0c/Placeholder_emblem.png/revision/latest?cb=20140729075228";
-window.pPreview.noimage = "https://static.wikia.nocookie.net/armoredcore/images/0/0c/Placeholder_emblem.png/revision/latest?cb=20140729075228";

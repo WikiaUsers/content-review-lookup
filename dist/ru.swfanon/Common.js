@@ -849,3 +849,45 @@ function ShowEditTools()
 {
   $('div.mw-editTools, #EditTools_LayerBG').fadeIn(150);
 }
+
+//Сворачивание шаблонов App и Credits
+function getElementsByClass(searchClass, node, tag)
+{
+    var classElements = new Array();
+
+    if (node == null) node = document;
+
+    if (tag == null) tag = '*';
+
+    var els = node.getElementsByTagName(tag);
+    var elsLen = els.length;
+    var tester = new ClassTester(searchClass);
+
+    for (i = 0, j = 0; i < elsLen; i++) {
+        if (tester.isMatch(els[i])) {
+            classElements[j] = els[i];
+            j++;
+        }
+    }
+
+    return classElements;
+}
+
+function addHideButtons() 
+{
+    var hidables = getElementsByClass('hidable');
+
+    for (var i = 0; i < hidables.length; i++) {
+        var box = hidables[i];
+        var button = getElementsByClass('hidable-button', box, 'span');
+
+        if (button != null && button.length > 0) {
+            button = button[0];
+
+            button.onclick = toggleHidable;
+            button.appendChild(document.createTextNode('[Скрыть]'));
+
+            if (new ClassTester('start-hidden').isMatch(box)) button.onclick('bypass');
+        }
+    }
+}

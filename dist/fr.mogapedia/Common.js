@@ -28,7 +28,6 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
      
      //Tags admin
-     'Bllob': ['o'],
      'Dysmea': ['art','discord'],
      'Houmgaor' : ['hunt_staff', 'discord'],
      'Hutskuchi' : ['news', 'discord'],
@@ -40,17 +39,19 @@ UserTagsJS.modules.custom = {
      'Mr.pyro01': ['film'],
          
      //Admins retraités
-     'Shin-itchi': ['afk'],
-     'Wrondral' : ['afk'],
      'BadBart86' : ['afk'],
-     'Non0w' : ['afk'],
+     'Bllob':      ['o', 'afk'],
+     'Non0w' :     ['afk'],
+     'Shin-itchi': ['afk'],
+     'Wrondral' :  ['afk'],
 };
 
 /****************************** MonsterNavigationTabs *************************/
 
 var tabId = $('.monster-tabs li.selected').attr('data-tab');
 console.log(tabId);
-$('#monsterNavigationTabs').nextAll().appendTo('.monster-content div[data-tab='+ tabId +']');
+$('#monsterNavigationTabs').nextAll().appendTo('.monster-content div[data-tab=' 
++ tabId +']');
 $('.monster-content div[data-tab='+ tabId +']').addClass('selected');
 
 $('.monster-tabs a').replaceWith(function(){
@@ -63,9 +64,11 @@ $('.monster-tabs li').click( function () {
     element.addClass('selected');
     
     $('.monster-content div').removeClass('selected');
-    $('.monster-content div[data-tab='+ element.attr('data-tab') +']').addClass('selected');
+    $('.monster-content div[data-tab='+ element.attr('data-tab') + 
+    ']').addClass('selected');
     
-    if ($('.monster-content div[data-tab="'+ element.attr('data-tab') +'"]').children().length === 0) {
+    if ($('.monster-content div[data-tab="'+ element.attr('data-tab') + 
+    '"]').children().length === 0) {
         $.ajax({
             url: 'http://fr.mogapedia.wikia.com/api.php',
             data: {
@@ -78,8 +81,10 @@ $('.monster-tabs li').click( function () {
             type: 'GET',
             cache: false,
         }).done(function (data){ 
-            $('.monster-content div[data-tab="'+ element.attr('data-tab') +'"]').append(data.parse.text['*']);
-            $('.monster-content div[data-tab="'+ element.attr('data-tab') +'"] #monsterNavigationTabs').remove();
+            $('.monster-content div[data-tab="'+ element.attr('data-tab') + 
+            '"]').append(data.parse.text['*']);
+            $('.monster-content div[data-tab="'+ element.attr('data-tab') + 
+            '"] #monsterNavigationTabs').remove();
         });
     }    
 });
@@ -115,17 +120,25 @@ $('.hovered-cell td a').append(overlay);
             var cdimg = '<div style="background:url(https://images.wikia.nocookie.net/mogapedia/fr/images/f/f5/Countdown-MH.png) no-repeat; width:49px; height:76px; overflow:hidden; display:inline-block; border-radius:4px"></div>';
             // Date de différence = date d'arrivée - date du jour
             var diff = new Date(new Date($(this).text()) - new Date().getTime() );
-            $(this).html(cdimg + cdimg + " " + cdimg + cdimg + " " + cdimg + cdimg + " " + cdimg + cdimg);
+            $(this).html(cdimg + cdimg + " " + cdimg + cdimg + " " + cdimg + 
+            cdimg + " " + cdimg + cdimg);
             // Le nombre de jours
-            diff.days = (diff.getFullYear() - 1970) * 365 + diff.getMonth() * 30 + (diff.getDate() - 1);
+            diff.days = (diff.getFullYear() - 1970) * 365 + diff.getMonth() * 30 
+            + (diff.getDate() - 1);
             // Si l'évènement est déjà passé ou trop lointain
             if (diff.getFullYear() < 1970 || diff.days > 99 ) return;
-            // On met en attribut "cd" le nombre de secondes pour mettre en place les cadres pour les images 
+            // On met en attribut "cd" le nombre de secondes pour mettre en 
+            // place les cadres pour les images 
             $(this).attr("cd", diff.getTime() );
             // Chaîne telle que le décompte doit être affiché
-            diff.string = (diff.days < 10 ? '0' : '') + diff.days + (diff.getHours() < 10 ? '0' : '') + diff.getHours() + (diff.getMinutes() < 10 ? '0' : '') + diff.getMinutes() + (diff.getSeconds() < 10 ? '0' : '') + diff.getSeconds();
+            diff.string = (diff.days < 10 ? '0' : '') + diff.days + 
+            (diff.getHours() < 10 ? '0' : '') + diff.getHours() + 
+            (diff.getMinutes() < 10 ? '0' : '') + diff.getMinutes() + 
+            (diff.getSeconds() < 10 ? '0' : '') + diff.getSeconds();
             for (var i = 0; i < 8; i++){
-                // 77=hauteur d'un panneau, 6=nombre de panneaux pour chaque chiffre. Pour chaque case, on affiche la bonne portion d'image qui  renvoit au bon chiffre
+                // 77=hauteur d'un panneau, 6=nombre de panneaux pour chaque 
+                // chiffre. Pour chaque case, on affiche la bonne portion 
+                // d'image qui  renvoit au bon chiffre
                 $($(this).children()[i]).css("background-position", "-2px -" + (parseInt(diff.string.substr(i, 1), 10) * 77 * 6 + 1) + "px");
             }
             $(this).show();
@@ -145,9 +158,13 @@ $('.hovered-cell td a').append(overlay);
             if (!Math.floor(diff.getTime() / 1000) ) return;
             diff.setTime(diff.getTime() - 1000);
             $(this).attr("cd", diff.getTime() );
-            diff.days = (diff.getFullYear() - 1970) * 365 + diff.getMonth() * 30 + (diff.getDate() - 1);
+            diff.days = (diff.getFullYear() - 1970) * 365 + diff.getMonth() * 30 
+            + (diff.getDate() - 1);
             // On crée une chaîne de caractères sous la forme HH MM SS
-            diff.string = ( (diff.days < 10) ? '0' : '') + diff.days + ( (diff.getHours() < 10) ? '0' : '') + diff.getHours() + (diff.getMinutes() < 10 ? '0' : '') + diff.getMinutes() + (diff.getSeconds() < 10 ? '0' : '') + diff.getSeconds();
+            diff.string = ( (diff.days < 10) ? '0' : '') + diff.days + ( 
+            	(diff.getHours() < 10) ? '0' : '') + diff.getHours() + 
+            	(diff.getMinutes() < 10 ? '0' : '') + diff.getMinutes() + 
+            	(diff.getSeconds() < 10 ? '0' : '') + diff.getSeconds();
             var frame = 8,
                 max_array = [9,9, 2,3, 5,9, 5,9];
             do {
@@ -164,7 +181,10 @@ $('.hovered-cell td a').append(overlay);
         ypos += (max != 9 && ypos == -1) ? 77 * 6 : 77;
         if (ypos > 0) ypos -= 77 * 6 * (max + 1);
         $(obj).css("background-position", "-2px " + ypos + "px");
-        if (ypos % (77 * 6) !== 0 && ypos % (77 * 6) != -1) setTimeout(function() {hutsku.CDStep(obj, max);}, 60);
+        if (ypos % (77 * 6) !== 0 && ypos % (77 * 6) != -1) 
+        	setTimeout(function() {
+        		hutsku.CDStep(obj, max);
+        	}, 60);
     },
 };
 hutsku.init_cd();
@@ -185,39 +205,37 @@ mw.hook("wikipage.content").add(function(content) {
 });
 
 /********************************** Monster List ******************************/
-// Ce code permet de filter les résultats sur une page de type "Liste des
-// monstre". Réalisé par [[Utilisateur:Hutskuchi|Hutskuchi]] et 
-// [[Utilisateur:Houmgaor|Houmgaor]]
+/* 
+Ce code permet de filter les résultats sur une page de type "Liste des monstre". 
+Conçu par Hutskuchi et Houmgaor
 
-// Remarque : pour un bon fonctionnement du script, vous devez ajouter le 
-// code CSS associé
+Remarque : pour un bon fonctionnement du script, vous devez ajouter le 
+code CSS associé
+*/
 var monsterList = {
 	main: $(function() {
-		// Filtre par espèce
-		$('.monster-filter-select').html(
-			'<select>\
-				<option value="Tout">Tout</option>\
-				<option value="Herbivore">Herbivore</option>\
-				<option value="Lynien">Lynien</option>\
-				<option value="Drake ailé">Drake ailé</option>\
-				<option value="Neopteron">Neopteron</option>\
-				<option value="Carapaceon">Carapaceon</option>\
-				<option value="Temnoceran">Temnoceran</option>\
-				<option value="Amphibien">Amphibien</option>\
-				<option value="Leviathan">Leviathan</option>\
-				<option value="Bête à crocs">Bête à crocs</option>\
-				<option value="Wyverne volante">Wyverne volante</option>\
-				<option value="Wyverne rapace">Wyverne rapace</option>\
-				<option value="Wyverne de terre">Wyverne de terre</option>\
-				<option value="Wyverne à crocs">Wyverne à crocs</option>\
-				<option value="Wyverne aquatique">Wyverne aquatique</option>\
-				<option value="Wyverne serpent">Wyverne serpent</option>\
-				<option value="Dragon ancien">Dragon ancien</option>\
-				<option value="Relique">Relique</option>\
-				<option value="???">???</option>\
-				<option value="Inclassable">Inclassable</option>\
-			</select>'
-		);
+		var species, dropdown;
+		// On récupère toutes les espèces de cet opus
+		species = [];
+		$('.monster-list div span').each(function (i, elem) {
+			if (!species.includes(elem.title))
+				species.push(elem.title);
+		});
+		species.sort();
+		// Ajout d'un type spécial "Tout" pour le pas filtrer les types
+		species.unshift("Tout");
+		
+		// Menu déroulant pour filtrer par type de monstre
+		dropdown = $('.monster-filter-select');
+		dropdown.html('<select></select>');
+		
+		// Ajout des types de monstre
+		species.forEach(function (elem) {
+			var opt = $('<option></option>');
+			opt.text(elem);
+			opt.attr('value', elem);
+			dropdown.find('select').append(opt);
+		});
 		
 		// Filtre par nom
 		$('.monster-filter-search').html(
@@ -231,25 +249,26 @@ var monsterList = {
 	
 	// Filtrage des monstres
 	listFiltering: function () {
-		var filterSpecies, filterName, list, regex, i, name, species;
-	    filterSpecies = $('.monster-filter-select select').find(':selected').text();
+		var filterSpecies, filterName, regex;
+	    filterSpecies = $('.monster-filter-select select').find(':selected')
+	    .text();
 	    filterName = $('.monster-filter-search input').val().trim();
-	    list = $('.monster-list td');
-	    regex = new RegExp(filterName.toLowerCase(),"g");
+	    regex = new RegExp(filterName, "gi");
 	    
-	    for (i = 0; i < list.length; i++) {
-	        name = $('a', list[i]).attr("title");
-	        species = $('span', list[i]).attr("title");
+	    $('.monster-list div').each(function (i, elem) {
+	    	var name, specie;
+	    	name = $('a', elem).attr("title");
+	        specie = $('span', elem).attr("title");
 	        
-	        if (name) {
-	            if (filterSpecies != species && filterSpecies != "Tout") {
-	            	$(list[i]).addClass('filtered');
-	            } else if (!(name.toLowerCase().match(regex))) {
-	            	$(list[i]).addClass('filtered');
-	            } else {
-	            	$(list[i]).removeClass('filtered');   
-	            }
-	        }
-	    }
+	        if (!name || !specie) 
+	        	return;
+	        	
+            if (filterSpecies != specie && filterSpecies != "Tout" 
+            || !name.match(regex)) {
+            	$(elem).addClass('filtered');
+            } else {
+            	$(elem).removeClass('filtered');   
+            }
+	    });
 	},
 };

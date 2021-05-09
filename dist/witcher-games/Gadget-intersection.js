@@ -1,4 +1,4 @@
-$(function() {
+mw.loader.using('mediawiki.util').then(function(){
 	var links = $("#catlinks ul a");
 	if (links.length <= 1) return;
 	links.before('<input type="checkbox" checked="checked" class="intersect-checkbox" />');
@@ -13,9 +13,9 @@ $(function() {
 			alert("You must select at least one category to find similar pages.");
 			return;
 		} else if (outCount == 1) {
-			window.location = mw.util.wikiGetlink('Category:' + outList);
+			window.location = mw.util.getUrl('Category:' + outList);
 		} else {
-			window.location = mw.util.wikiGetlink('Intersection:' + outList);
+			window.location = mw.util.getUrl('Intersection:' + outList);
 		}
 		$(this).text("Redirecting...");
 	});

@@ -5,11 +5,11 @@
 ----second number represents number of effects
 */
 
-var tooltips_debug = false;
-var tooltips_config = {
+window.tooltips_debug = false;
+window.tooltips_config = {
     noCSS: true,
 }
-var tooltips_list = [
+window.tooltips_list = [
         {
         classname: 'specialization-tooltip',
         parse: '{' + '{SpecializationTile/Tooltip|2=<#row#>|name=<#name#>|3=<#icon#>|level=<#level#>|description=<#description#>|author=<#author#>|effect=<#effect#>|effect2=<#effect2#>|effect3=<#effect3#>|effect4=<#effect4#>|effect5=<#effect5#>|leveluppoints=<#leveluppoints#>|specname=<#specname#>|investmentreq=<#investmentreq#>|investmentreq2=<#investmentreq2#>|notice=<#notice#>}}',

@@ -1367,20 +1367,20 @@ $(function() {
                 '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Exercise_Club.gif" style="float:right;"></div>' +
             '</div></div>' +
             '<div style="position:relative;">' +
-                'Loyalty points:' +
-                '<input id="calculator_ew_loyalty_pts" type="number" value="0" min="0" max="10000" style="width:45px;">' +
-                'Loyalty bonus:' +
-                '<input id="calculator_ew_loyalty_bonus" type="number" value="0" min="0" max="50" step = "5" style="width:45px;">%<br/><br/>' +
-                'Skill/Vocation: <select name="calculator_ew_voc_skill"><option value="magemagic" selected>Magic/Mage</option><option value="magemagic">Melee/Knight</option><option value="magemagic">Distance/Paladin</option><option value="magicpaladin">Magic/Paladin</option><option value="magicknight">Magic/Knight</option></select><br/><br/>' +
-                'Weapon Type: <select name="calculator_ew_wep_type"><option value="training">Training (50x, 1min40s)</option><option value="regular" selected>Regular (500x, 16min40s)</option><option value="durable">Durable (1,800x, 1h)</option><option value="lasting">Lasting (14,400x, 8h)</option></select><br/><br/>' +
-                '<input type="checkbox" name="ew_event" value="double">Double Skills Event' +
-                '<input type="checkbox" name="ew_dummy" value="expert">House Dummy<br/><br/>' +
+                '<label>Loyalty points:' +
+                '<input id="calculator_ew_loyalty_pts" type="number" value="0" min="0" max="10000" style="width:45px;"></label>' +
+                '<label>Loyalty bonus:' +
+                '<input id="calculator_ew_loyalty_bonus" type="number" value="0" min="0" max="50" step = "5" style="width:45px;">%</label><br/><br/>' +
+                '<label>Skill/Vocation: <select name="calculator_ew_voc_skill"><option value="magemagic" selected>Magic/Mage</option><option value="magemagic">Melee/Knight</option><option value="magemagic">Distance/Paladin</option><option value="magicpaladin">Magic/Paladin</option><option value="magicknight">Magic/Knight</option></select><label><br/><br/>' +
+                '<label>Weapon Type: <select name="calculator_ew_wep_type"><option value="training">Training (50x, 1min40s)</option><option value="regular" selected>Regular (500x, 16min40s)</option><option value="durable">Durable (1,800x, 1h)</option><option value="lasting">Lasting (14,400x, 8h)</option></select></label><br/><br/>' +
+                '<label><input type="checkbox" name="ew_event" value="double">Double Skills Event</label>' +
+                '<label><input type="checkbox" name="ew_dummy" value="expert">House Dummy</label><br/><br/>' +
                 /*'<input type="radio" name="ew_charges" value="exercise" checked>Exercise Weapon (500 charges)' +
                 '<input type="radio" name="ew_charges" value="training">Training Weapon (100 charges)<br/><br/>' +*/
-                '<input type="radio" name="ew_mode" value="weapons">Number of Weapons' +
-                '<input type="radio" name="ew_mode" value="skill" checked>Weapons required to achieve a skill' +
-                /*'<input type="radio" name="ew_mode" value="gold">Cost in Gold' +
-                '<input type="radio" name="ew_mode" value="coins">Cost in Tibia Coins' +*/
+                '<label><input type="radio" name="ew_mode" value="weapons">Number of Weapons</label>' +
+                '<label><input type="radio" name="ew_mode" value="skill" checked>Weapons required to achieve a skill</label>' +
+                /*'<label><input type="radio" name="ew_mode" value="gold">Cost in Gold</label>' +
+                '<label><input type="radio" name="ew_mode" value="coins">Cost in Tibia Coins</label>' +*/
                 '<table style="margin: 0 auto;">' +
                 '<tr>' +
                 '<td>Current Skill (Base + Loyalty)</td><td>% left</td>'+
@@ -1396,7 +1396,7 @@ $(function() {
                 
                 '<table style="margin: 0 auto;">' +
                 '<tr>' +
-                '<td>Trained Skill</td><td>% left</td><td># of Weapons</td><td>Cost (Gold)</td><td>Cost (TC)</td>' +
+                '<td><label for="calculator_ew_skill_trained">Trained Skill</label></td><td><label for="calculator_ew_skill_left_trained">% left</label></td><td><label for="calculator_ew_nweapons"># of Weapons</label></td><td><label for="calculator_ew_weapcost_gold">Cost (Gold)</label></td><td><label for="calculator_ew_weapcost_coins">Cost (TC)</label></td>' +
                 '</tr><tr>' + 
                     '<td><input id="calculator_ew_skill_trained" type="number" value="0" min="0" max="150" style="width:40px;"></td>' +
                     '<td><span id="calculator_ew_skill_left_trained">100</span><br/>' +
@@ -1405,9 +1405,9 @@ $(function() {
                         '<span id = "calculator_ew_skill_trainedbar2" style="text-align: left; width: 50%; background-color: #444444"></span>' +
                     '</div></td>' +
                     '</td>' +
-                    '<td><input id="calculator_ew_nweapons" type="number" value="0" min="0" max="99999" style="width:60px;" disabled></td>' +
-                    '<td><input id="calculator_ew_weapcost_gold" type="number" value="0" min="0" step = "262.5" max="9999999" style="width:90px;" disabled>k</td>' +
-                    '<td><input id="calculator_ew_weapcost_coins"  type="number" value="0" min="0" step = "25" max="999975" style="width:70px;" disabled></td>' +
+                    '<td><input id="calculator_ew_nweapons" type="number" value="0" min="0" max="1000" style="width:60px;" disabled></td>' +
+                    '<td><input id="calculator_ew_weapcost_gold" type="number" value="0" min="0" step = "262.5" max="2626500" style="width:70px;" disabled>k</td>' +
+                    '<td><input id="calculator_ew_weapcost_coins"  type="number" value="0" min="0" step = "25" max="25000" style="width:70px;" disabled></td>' +
                     '</tr>' +
                 '</table><span id="calculator_ew_warning", style="color:red;"></span>' +
                 '<br/><br/>' +
