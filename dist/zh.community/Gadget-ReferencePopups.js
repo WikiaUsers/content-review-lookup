@@ -1,6 +1,1 @@
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:ReferencePopups/code.js',
-    ]
-});
+mw.loader.load( 'https://dev.fandom.com/index.php?title=MediaWiki:ReferencePopups/code.js&action=raw&ctype=text/javascript' );

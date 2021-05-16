@@ -6,7 +6,7 @@ if (wgPageName === 'Experience') {
     });
 }
 
-if (wgPageName === 'ItemFindTest') {
+if (wgPageName === 'Bonuses') {
     $(function () {
         importScriptPage('MediaWiki:Calculators/BonusCode.js');
     });

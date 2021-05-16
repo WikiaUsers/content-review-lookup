@@ -7,11 +7,8 @@
      editbox.value = "{"+"{Marvel Database:Image Template\n"
                    + "| License                 = \n"
                    + "| ImageType               = \n"
-                   + "| Description             = \n"
-                   + "| GalleryDescription      = \n\n"
-                   + "| Source                  = \n"
-                   + "| Permission              = \n"
-                   + "| Issue                   = \n\n"
+                   + "| Description             = \n\n"
+                   + "| Source                  = \n\n"
                    + "| Universe                = \n"
                    + "| Subject1                = \n"
                    + "| Subject2                = \n"
@@ -21,10 +18,8 @@
                    + "| CoverArtist1            = \n"
                    + "| Penciler1               = \n"
                    + "| Inker1                  = \n"
-                   + "| Colourist1              = \n"
+                   + "| Colorist1               = \n"
                    + "| Letterer1               = \n\n"
-                   + "| Notes                   = \n"
-                   + "| Trivia                  = \n"
                    + "}"+"}";
 
  }

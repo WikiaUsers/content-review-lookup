@@ -1,5 +1,4 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-importScriptPage('ShowHide/code.js', 'dev');
 
 /* Any JavaScript here will be loaded for all users on every page load. */
 /* <pre><nowiki> */
@@ -110,7 +109,7 @@ importScriptPage('ShowHide/code.js', 'dev');
      }
  }
  
- addOnloadHook( createCollapseButtons );
+ $( createCollapseButtons );
  
  /** Dynamic Navigation Bars (experimental) *************************************
   *
@@ -218,7 +217,7 @@ importScriptPage('ShowHide/code.js', 'dev');
      }
   }
  
-  addOnloadHook( createNavigationBarToggleButton );
+  $( createNavigationBarToggleButton );
 
 // **************************************************
 // Experimental javascript countdown timer (Splarka)
@@ -281,7 +280,7 @@ function checktimers() {
     updatetimer(i);  //start it up
   }
 }
-addOnloadHook(checktimers);
+$(checktimers);
 
 // **************************************************
 //  - end -  Experimental javascript countdown timer
@@ -289,17 +288,6 @@ addOnloadHook(checktimers);
 
 document.write('<script type="text/javascript" src="' 
     + '/index.php?title=MediaWiki:Functions.js&action=raw&ctype=text/javascript&smaxage=18000"></script>');
-
-// **************************************************
-// Edit summaries
-// **************************************************
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:Standard Edit Summary/code.js',
-    ]
-});
 
 
 // **************************************************
@@ -453,24 +441,7 @@ $( function () {
 		}
 	}
 } );
-/*****************************/
-/******** Countdowns *********/
-/*****************************/
-importArticles({
-    type: "script",
-    articles: [
-        "w:c:dev:Countdown/code.js"
-    ]
-});
-/*****************************/
-/********* RailWAM ***********/
-/*****************************/
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:RailWAM/code.js',
-    ]
-});
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 

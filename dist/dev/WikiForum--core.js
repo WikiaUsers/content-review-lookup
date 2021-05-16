@@ -1,25 +1,25 @@
 /**
- * @name WikiForum.core
+ * @name WikiForum/core
+ * @version 3.0.2 (Core version)
  * @author 机智的小鱼君 <dragon-fish@qq.com>
- * @description Provide a front-end structured discussion page with JavaScript.
- *              Similar to Community Feed and support wikitext.
+ * @desc Provide a front-end structured discussion page with JavaScript.
+ *       Similar to Community Feed and support wikitext.
  *
  * @license MIT
- * @url https://github.com/Wjghj-Project/Gadget-WikiForum
+ * @url https://github.com/Fandom-zh/Gadget-WikiForum
  */
 
 /******/ (function() { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./module/actionEdit.js":
-/*!******************************!*\
-  !*** ./module/actionEdit.js ***!
-  \******************************/
+/***/ "./src/module/actionEdit.js":
+/*!**********************************!*\
+  !*** ./src/module/actionEdit.js ***!
+  \**********************************/
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-var _require = __webpack_require__(/*! ./mw */ "./module/mw.js"),
+var _require = __webpack_require__(/*! ./mw */ "./src/module/mw.js"),
     api = _require.api,
-    conf = _require.conf,
     editToken = _require.editToken;
 
 module.exports = function (_ref) {
@@ -38,13 +38,13 @@ module.exports = function (_ref) {
 
 /***/ }),
 
-/***/ "./module/actionGet.js":
-/*!*****************************!*\
-  !*** ./module/actionGet.js ***!
-  \*****************************/
+/***/ "./src/module/actionGet.js":
+/*!*********************************!*\
+  !*** ./src/module/actionGet.js ***!
+  \*********************************/
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-var _require = __webpack_require__(/*! ./mw */ "./module/mw.js"),
+var _require = __webpack_require__(/*! ./mw */ "./src/module/mw.js"),
     api = _require.api,
     conf = _require.conf;
 
@@ -54,16 +54,18 @@ module.exports = function () {
     format: 'json',
     action: 'parse',
     prop: 'text|wikitext',
+    disabletoc: 1,
+    disableeditsection: 1,
     page: page
   });
 };
 
 /***/ }),
 
-/***/ "./module/log.js":
-/*!***********************!*\
-  !*** ./module/log.js ***!
-  \***********************/
+/***/ "./src/module/log.js":
+/*!***************************!*\
+  !*** ./src/module/log.js ***!
+  \***************************/
 /***/ (function(module) {
 
 function log() {
@@ -106,10 +108,10 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./module/mw.js":
-/*!**********************!*\
-  !*** ./module/mw.js ***!
-  \**********************/
+/***/ "./src/module/mw.js":
+/*!**************************!*\
+  !*** ./src/module/mw.js ***!
+  \**************************/
 /***/ (function(module) {
 
 module.exports = {
@@ -122,21 +124,17 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./module/parser.js":
-/*!**************************!*\
-  !*** ./module/parser.js ***!
-  \**************************/
-/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+/***/ "./src/module/parser.js":
+/*!******************************!*\
+  !*** ./src/module/parser.js ***!
+  \******************************/
+/***/ (function(module) {
 
-var _require = __webpack_require__(/*! ./log */ "./module/log.js"),
-    log = _require.log;
 /**
  * @function parseForums 从源代码解析可能存在的全部主题
  * @param {Element} code
  * @param {String} title
  */
-
-
 function parseForums(code, title) {
   var $root = $(code);
   var forums = [];
@@ -168,7 +166,7 @@ function parseThreads(forum) {
   var $forum = $(forum);
   if (prefix) prefix += '-';
   var threads = [];
-  $threads = getThreads($forum);
+  var $threads = getThreads($forum);
   $.each($threads, function (index, thread) {
     var threadObj = {
       threadid: String(prefix + (index + 1)),
@@ -218,36 +216,6 @@ function getMeta(thread) {
   return $data;
 }
 /**
- * @function getUser 获取帖子发帖者信息
- * @param {Element} thread
- */
-
-
-function getUser(thread) {
-  var $thread = $(thread);
-  var author = $thread.data('userAuthor') || '';
-  var last = $thread.data('userLast') || author;
-  return {
-    author: author,
-    last: last
-  };
-}
-/**
- * @function getTime 获取帖子发帖时间信息
- * @param {Element} thread
- */
-
-
-function getTime(thread) {
-  var $thread = $(thread);
-  var publish = $thread.data('timePublish') || '';
-  var modify = $thread.data('timeModify') || publish;
-  return {
-    publish: publish,
-    modify: modify
-  };
-}
-/**
  * @module fromApi 解析 MediaWiki API 返回的信息
  * @param {Object} data 来自 API 的结果：api.php?action=parse&prop=wikitext|text&page=<pageName>
  */
@@ -283,7 +251,6 @@ function fromApi(data) {
 
 
 function fromHtml(code) {
-  var title = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
   var $code = $(code);
   var forumEl = parseForums($code);
   return forumEl;
@@ -296,23 +263,22 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./module/renderer.js":
-/*!****************************!*\
-  !*** ./module/renderer.js ***!
-  \****************************/
+/***/ "./src/module/renderer.js":
+/*!********************************!*\
+  !*** ./src/module/renderer.js ***!
+  \********************************/
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-var _require = __webpack_require__(/*! ./parser */ "./module/parser.js"),
+var _require = __webpack_require__(/*! ./parser */ "./src/module/parser.js"),
     fromApi = _require.fromApi;
 
-var actionGet = __webpack_require__(/*! ./actionGet */ "./module/actionGet.js");
+var actionGet = __webpack_require__(/*! ./actionGet */ "./src/module/actionGet.js");
 
-var _require2 = __webpack_require__(/*! ./mw */ "./module/mw.js"),
-    util = _require2.util,
+var _require2 = __webpack_require__(/*! ./mw */ "./src/module/mw.js"),
     hook = _require2.hook,
     conf = _require2.conf;
 
-var _require3 = __webpack_require__(/*! ./log */ "./module/log.js"),
+var _require3 = __webpack_require__(/*! ./log */ "./src/module/log.js"),
     log = _require3.log,
     error = _require3.error; // 获取帖子元素
 
@@ -355,30 +321,38 @@ function getMeta(ctx) {
 
 
 function renderAllForums(_ref2) {
-  var Obj = _ref2.Obj,
+  var forumEl = _ref2.forumEl,
       theme = _ref2.theme,
       $root = _ref2.$root;
   log('开始渲染全部论坛');
-  var html = Obj.html;
+  var html = forumEl.html;
   var $allForums = theme.allForumsContainer();
-  $.each(html, function (index, forum) {
-    log('递归渲染主题', "".concat(index + 1, "/").concat(html.length));
-    $allForums.append(renderForum({
-      $root: $root,
-      _forum: Obj,
-      forumMeta: forum.meta,
-      forumid: forum.forumid,
-      forum: forum,
-      theme: theme
-    }), theme.afterAllForums ? theme.afterAllForums({
-      $root: $root,
-      $container: $allForums,
-      _forum: Obj,
-      forumMeta: forum.meta,
-      forumid: forum.forumid,
-      fn: fn
-    }) : '');
-  });
+
+  if (html.length < 1) {
+    if (theme.noForumContainer) {
+      $allForums.append(theme.noForumContainer());
+    }
+  } else {
+    $.each(html, function (index, forum) {
+      log('递归渲染主题', "".concat(index + 1, "/").concat(html.length));
+      $allForums.append(renderForum({
+        $root: $root,
+        _forum: forumEl,
+        forumMeta: forum.meta,
+        forumid: forum.forumid,
+        forum: forum,
+        theme: theme
+      }), theme.afterAllForums ? theme.afterAllForums({
+        $root: $root,
+        $container: $allForums,
+        _forum: forumEl,
+        forumMeta: forum.meta,
+        forumid: forum.forumid,
+        fn: fn
+      }) : '');
+    });
+  }
+
   return $allForums;
 } // 渲染单个主题
 
@@ -460,8 +434,8 @@ function renderThread(ctx) {
 }
 
 var fn = {
-  parser: __webpack_require__(/*! ./parser */ "./module/parser.js"),
-  updater: __webpack_require__(/*! ./updater */ "./module/updater.js")
+  parser: __webpack_require__(/*! ./parser */ "./src/module/parser.js"),
+  updater: __webpack_require__(/*! ./updater */ "./src/module/updater.js")
 }; // 从页面加载内容，并渲染到根元素
 
 function fromPage() {
@@ -496,8 +470,10 @@ function toHtml(forumEl) {
  */
 
 
-function toPage(Obj) {
-  var target = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '#mw-content-text';
+function toPage(_ref3) {
+  var forumEl = _ref3.forumEl,
+      _ref3$target = _ref3.target,
+      target = _ref3$target === void 0 ? '#mw-content-text' : _ref3$target;
   log('准备渲染到页面，等待主题文件……');
   /**
    * 触发主题函数
@@ -507,7 +483,7 @@ function toPage(Obj) {
   hook('WikiForum.theme').fire(function (theme) {
     var $root = $(target);
     $root.html(renderAllForums({
-      Obj: Obj,
+      forumEl: forumEl,
       theme: theme,
       $root: $root
     }));
@@ -526,20 +502,26 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./module/updater.js":
-/*!***************************!*\
-  !*** ./module/updater.js ***!
-  \***************************/
+/***/ "./src/module/updater.js":
+/*!*******************************!*\
+  !*** ./src/module/updater.js ***!
+  \*******************************/
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-var _require = __webpack_require__(/*! ./mw */ "./module/mw.js"),
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+var _require = __webpack_require__(/*! ./mw */ "./src/module/mw.js"),
     conf = _require.conf;
 
-var _require2 = __webpack_require__(/*! ./log */ "./module/log.js"),
+var _require2 = __webpack_require__(/*! ./log */ "./src/module/log.js"),
     log = _require2.log,
     error = _require2.error;
 
-var actionEdit = __webpack_require__(/*! ./actionEdit */ "./module/actionEdit.js");
+var actionEdit = __webpack_require__(/*! ./actionEdit */ "./src/module/actionEdit.js");
 /**
  * @module updater 更新器
  *
@@ -549,17 +531,15 @@ var actionEdit = __webpack_require__(/*! ./actionEdit */ "./module/actionEdit.js
  */
 
 /**
- * @function fixHTML 检查字符串的HTML标签是否匹配，wikitext是否闭合
+ * @function contentValidator 检查字符串的HTML标签是否匹配，wikitext是否闭合
  * @param {String} str
  */
 
 
-function fixHTML(str) {
+function contentValidator(str) {
   // Trying to fix wikitext
-  var openTable = str.match(/\{\|/g);
-  openTable = openTable ? openTable.length : 0;
-  var closeTable = str.match(/\n\|\}/g);
-  closeTable = closeTable ? closeTable.length : 0;
+  var openTable = (str.match(/\{\|/g) || []).length;
+  var closeTable = (str.match(/\n\|\}/g) || []).length;
 
   for (var i = 0; i < openTable - closeTable; i++) {
     str += '\n|}';
@@ -595,7 +575,7 @@ function handleEdit(_ref) {
 
     log('更新论坛成功', ret);
 
-    var _require3 = __webpack_require__(/*! ./renderer */ "./module/renderer.js"),
+    var _require3 = __webpack_require__(/*! ./renderer */ "./src/module/renderer.js"),
         fromPage = _require3.fromPage;
 
     fromPage(pageName, $root);
@@ -651,7 +631,7 @@ function parseThread(thread) {
     });
   }
 
-  var html = "\n".concat(indentStr, "<!-- start thread#").concat(threadid || 'latest', " -->\n").concat(indentStr, "<div class=\"forum-thread\" ").concat(metaList, ">\n").concat(indentStr, "  <div class=\"forum-content\">\n<!-- start content -->\n").concat(fixHTML(content), "\n<!-- end content -->\n").concat(indentStr, "  </div>").concat(reply, "\n").concat(indentStr, "</div>\n").concat(indentStr, "<!-- end thread#").concat(threadid || 'latest', " -->\n");
+  var html = "\n".concat(indentStr, "<!-- start thread#").concat(threadid || 'latest', " -->\n").concat(indentStr, "<ul class=\"forum-thread\" ").concat(metaList, ">\n").concat(indentStr, "  <li class=\"forum-content\">\n<!-- start content -->\n").concat(contentValidator(content), "\n<!-- end content -->\n").concat(indentStr, "  </li>").concat(reply, "\n").concat(indentStr, "</ul>\n").concat(indentStr, "<!-- end thread#").concat(threadid || 'latest', " -->\n");
   return html;
 }
 /**
@@ -666,14 +646,34 @@ function getMeta(meta) {
   $.each(meta, function (key, val) {
     var newKey = 'data-' + key.replace(/(.*)([A-Z])(.*)/g, '$1-$2$3').toLowerCase();
     metaList.push("".concat(newKey, "=\"").concat(val, "\""));
-  });
+  }); // 确保data的顺序是固定的
+
+  var metaList1 = {};
+  var metaListKeys = Object.keys(meta).sort();
+
+  var _iterator = _createForOfIteratorHelper(metaListKeys),
+      _step;
+
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var key = _step.value;
+      metaList1[key] = metaList[key];
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+
+  metaList = metaList1;
   metaList = metaList.join(' ');
   return metaList;
 }
 
 function timeStamp() {
   return new Date().toISOString();
-}
+} // eslint-disable-next-line no-unused-vars
+
 
 function isComplex(id, depthMax) {
   id = id.split('-');
@@ -860,8 +860,9 @@ module.exports = {
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
 /******/ 		// Check if module is in cache
-/******/ 		if(__webpack_module_cache__[moduleId]) {
-/******/ 			return __webpack_module_cache__[moduleId].exports;
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
@@ -878,11 +879,13 @@ module.exports = {
 /******/ 	}
 /******/ 	
 /************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
 !function() {
 "use strict";
-/*!******************!*\
-  !*** ./index.js ***!
-  \******************/
+/*!**********************!*\
+  !*** ./src/index.js ***!
+  \**********************/
 /**
  * @name WikiForum.core
  * @author 机智的小鱼君 <dragon-fish@qq.com>
@@ -890,17 +893,17 @@ module.exports = {
  */
 
 
-var log = __webpack_require__(/*! ./module/log */ "./module/log.js");
+var log = __webpack_require__(/*! ./module/log */ "./src/module/log.js");
 
-var _require = __webpack_require__(/*! ./module/mw */ "./module/mw.js"),
+var _require = __webpack_require__(/*! ./module/mw */ "./src/module/mw.js"),
     hook = _require.hook;
 
 mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.user'], function () {
   // init global variable
   var Core = {
-    parser: __webpack_require__(/*! ./module/parser */ "./module/parser.js"),
-    renderer: __webpack_require__(/*! ./module/renderer */ "./module/renderer.js"),
-    updater: __webpack_require__(/*! ./module/updater */ "./module/updater.js")
+    parser: __webpack_require__(/*! ./module/parser */ "./src/module/parser.js"),
+    renderer: __webpack_require__(/*! ./module/renderer */ "./src/module/renderer.js"),
+    updater: __webpack_require__(/*! ./module/updater */ "./src/module/updater.js")
   };
   window.WikiForum = $.extend({}, window.WikiForum, Core);
   hook('WikiForum').fire(Core);
@@ -909,3 +912,4 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.user'], function 
 }();
 /******/ })()
 ;
+//# sourceMappingURL=core.js.map

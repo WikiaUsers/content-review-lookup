@@ -1,4 +1,4 @@
-// Script: https://dev.fandom.com/wiki/PatrolPanel
+// Script: [[w:c:dev:PatrolPanel]]
 
 mw.loader.using('ext.fandom.ContentReview.legacyLoaders.js').then(function() {
 	// Import script if on the right page

@@ -26,8 +26,11 @@
 	 */
 	const isMobileSession = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test( navigator.userAgent );
 
+	// Nie uruchamiaj na FandomDesktop
+	const isFandomDesktop = mw.config.get( 'skin' ) === 'fandomdesktop';
+
 	// Nie uruchamiaj skryptu w określonych okolicznościach
-	if ( isTrackingRejected() || isMobileSession || window.FloatingFBLoaded ) {
+	if ( isFandomDesktop || isTrackingRejected() || isMobileSession || window.FloatingFBLoaded ) {
 		return;
 	}
 

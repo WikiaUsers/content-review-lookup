@@ -9,7 +9,7 @@ function FairUseRationale() {
 		document.getElementById('wpUploadDescription').value = '{{Fair use rationale\n| Description       = \n| Source            = Code Geass Anime by Sunrise \n| Portion           = \n| Purpose           = \n| Resolution        = \n| Replaceability    = \n| Other Information = \n}}';
 	}
 }
-addOnloadHook(FairUseRationale);
+$(FairUseRationale);
  
 // ****** END: JavaScript for [[Special:Upload]] ******
 
@@ -31,12 +31,6 @@ importArticles({
         'w:dev:DupImageList/code.js',
         // List Admins
         'w:dev:ListAdmins/code.js',
-        // Signature Check
-        'w:dev:SignatureCheck/code.js',
-        // Search Suggest
-        'w:dev:SearchSuggest/code.js',
-        // Lock Old Blogs
-        'w:dev:LockOldBlogs/code.js',
         // Standard Edit Summary
         'w:dev:Standard_Edit_Summary/code.js',
     ]

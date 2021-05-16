@@ -73,14 +73,16 @@ if (wgArticleId === 41081 || wgArticleId === 334755) {
  ****************************************************************************/
 /* --- Special:Upload template preload --- */
 
-    var matches = window.location.href.match(/wpForReUpload/);
-    
-    if( matches && matches.length ) {
-    	var mwct;
-    } else {
-    	$("#mw-content-text #mw-upload-form fieldset #mw-htmlform-description tbody .mw-htmlform-field-HTMLTextAreaField .mw-input #wpUploadDescription").html("{{infobox file\n|description = \n|source      = \n}}\n\n[[Category:]]");
-    	$("#mw-upload-form fieldset table#mw-htmlform-description tbody tr.mw-htmlform-field-Licenses").hide();
-    }
+var matches = window.location.href.match(/wpForReUpload/);
+
+if( matches && matches.length ) {
+	var mwct;
+} else {
+	$("#mw-content-text #mw-upload-form fieldset #mw-htmlform-description tbody .mw-htmlform-field-HTMLTextAreaField .mw-input #wpUploadDescription").html("{{infobox file\n|description = \n|source      = \n}}\n\n[[Category:]]");
+	$("#mw-upload-form fieldset table#mw-htmlform-description tbody tr.mw-htmlform-field-Licenses").hide();
+}
+
+mw.config.set('UMFBypassLicenseCheck',true);
  
 /*** Article info box *******************************************************
  * Creates and displays article info box (if page has something to display)

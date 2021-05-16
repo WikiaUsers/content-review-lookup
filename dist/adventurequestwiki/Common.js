@@ -398,7 +398,7 @@ function initVoidRotation() {
     }
 }
 
-window.onload = function() {
+document.body.onload = function() {
     initTitle();
     initButtons();
 	attachClickEvent();
@@ -407,3 +407,11 @@ window.onload = function() {
 	initVoidRotation();
 	autoFilter();
 }
+
+initTitle();
+initButtons();
+attachClickEvent();
+initFloat();
+initCalendar();
+initVoidRotation();
+autoFilter();

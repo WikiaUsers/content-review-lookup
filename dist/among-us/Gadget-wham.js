@@ -1,4 +1,4 @@
-// Code: https://dev.fandom.com/wiki/WHAM
+// Code: [[w:c:dev:WHAM]]
 
 mw.loader.using('ext.fandom.ContentReview.legacyLoaders.js').then(function() {
 	window.WHAMBotMe = true;

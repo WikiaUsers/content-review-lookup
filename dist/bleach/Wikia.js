@@ -32,3 +32,10 @@ importArticles({
 //      'l:MediaWiki:Snow.js',
         'u:dev:SocialIcons/code.js' ]
 });
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MultiUpload.js',
+    ]
+});

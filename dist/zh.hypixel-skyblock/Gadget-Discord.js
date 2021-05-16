@@ -1,4 +1,8 @@
-importArticle({
-    type: 'script',
-    article: 'u:dev:MediaWiki:Discord.js'
+mw.loader.using(['mediawiki.util', 'mediawiki.Uri', 'ext.fandom.ContentReview.legacyLoaders.js'], function() {
+	importArticles({
+		type: 'script',
+		articles: [
+			'u:dev:MediaWiki:Discord.js',
+		]
+	});
 });

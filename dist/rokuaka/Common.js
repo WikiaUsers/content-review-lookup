@@ -238,3 +238,27 @@ window.railWAM = {
 };
 
 }(window, jQuery, mediaWiki));
+
+.bubble:before {
+  display:block;
+  content:"";
+  border-style: solid;
+  border-width: 0 0 20px 20px;
+  border-color: transparent transparent #8ed1ec transparent;
+  width:0px;
+  position:absolute;
+  margin-left:-26px;
+  margin-top:3px
+}
+.bubble:after {
+  display:block;
+  content:"";
+  border-style: solid;
+  border-style: solid;
+  border-width: 0 0 17px 17px;
+  border-color: transparent transparent #bee5f4 transparent;
+  width:0px;
+  position:absolute;
+  margin-left:-23px;
+  margin-top:-20px
+}

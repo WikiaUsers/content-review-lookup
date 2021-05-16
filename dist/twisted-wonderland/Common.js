@@ -1,6 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 //Custom Tooltips
-var tooltips_config = {
+window.tooltips_config = {
     offsetX: 0,
     offsetY: 20,
     waitForImages: true,
@@ -8,7 +8,7 @@ var tooltips_config = {
     noCSS: true,
 };
  
-var tooltips_list = [
+window.tooltips_list = [
 {
     classname: 'magic-tooltip',
     parse: '{| \n!<#name#>\n|-\n|<#skill#>\n|}', 

@@ -369,7 +369,7 @@ function rewriteHover() {
 
 /* Слайдеры */
  
-mw.loader.using( ['jquery.ui.tabs'], function() {
+/*mw.loader.using( ['jquery.ui.tabs'], function() {
 $( "[class^=portal_vtab]" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
 $( "[class^=portal_vtab] li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 $(function() {

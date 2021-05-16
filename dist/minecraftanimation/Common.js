@@ -1,7 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 //<nowiki>
-// Prevent MediaWiki parsing in code files. (e.g. ~~~~ into a signature)
+// Prevent MediaWiki parsing in code files. (e.g. [[User:Withersoul 235|<span style = "font-size: 16px; font-family: 'Arial Black'; font-variant: small-caps; color: crimson; font-weight: bold; text-decoration: none; text-shadow: 1px 0 0 black, 0 1px 0 black, 0 0 15px black;">Wither the Striker</span>]] 09:41, 13 May 2021 (UTC) into a signature)
 
 //==============================================================
 // Create dev namespace 
@@ -86,9 +86,9 @@ if (roll && edit || roll && pedit || edit && cmod || cmod && pedit
 /** Ajax Redirect (Admin / Content Moderator only) **/
 
 if (cmod || sysop) {
-  importArticle({
-  type: 'script',
-  article: 'u:dev:MediaWiki:AjaxRedirect/code.js'
+	  importArticle({
+	  type: 'script',
+	  article: 'u:dev:MediaWiki:AjaxRedirect/code.js'
 })}
 
 //-------------------------------------------------------------
@@ -357,12 +357,12 @@ window.SpoilerAlertJS = {
 //===================
 
 var MessageBlock = {
-  title: "You're out.",
-  message: "You have been banned for the following reason: $1. \
-  The expiry of your ban has been set to $2. \
-  If you feel eligible for a Repent Trial or think you should be unbanned,\
-  let an admin know or contact the FANDOM Staff. Have a nice day.",
-  autocheck: false
+	  title: "You're out.",
+	  message: "You have been banned for the following reason: $1. \
+	  The expiry of your ban has been set to $2. \
+	  If you feel eligible for a Repent Trial or think you should be unbanned,\
+	  let an admin know or contact the FANDOM Staff. Have a nice day.",
+	  autocheck: false
 };
 
 //==========================================
@@ -370,9 +370,9 @@ var MessageBlock = {
 //==========================================
 
 window.dev.DynamicImages = {
- svgGallery: true,
- svgLightbox: true,
- svgIncreaseSrc: 4
+	 svgGallery: true,
+	 svgLightbox: true,
+	 svgIncreaseSrc: 4
 };
 
 //=====================
@@ -387,6 +387,8 @@ window.DisableBotMessageWalls = {
 //=================================
 // Create custom Special pages
 //=================================
+
+/*
 
 window.JSSpecialPagePages = window.JSSpecialPagePages || [ ];
 
@@ -423,7 +425,7 @@ mw.hook('jsspecialpage.ready').add(function(e) {
 // If hooks don't work for whatever reason, resort to Plan B
 
 if (!mw.hook) {
-    
+    /*
     window.JSSpecialPagePages.push({
         t: 'DynamicFileList',
         c: 'This page provides a form to query the\
@@ -451,9 +453,11 @@ if (!mw.hook) {
         Page plugin</a>. Follow the link for more info on how to use \
         it yourself.<br /><div id="mw-dupimages"></div>'
     });
-}
+} */
 
 /** Do some small things on Special:SpecialPages **/
+
+/*
 
 void function() {
 	if (wgPageName !== "Special:SpecialPages") {return}
@@ -469,7 +473,7 @@ void function() {
 	
 	$("a[href$='Special:UserSignup']").text("User signup");
 	$("a[href$='Special:WikiaConfirmEmail']").text("Confirm email");
-}();
+}(); */
 
 //==========================
 // Script imports
@@ -478,24 +482,24 @@ void function() {
 importArticles({
     type: 'script',
     articles: new Array(
-        "w:c:dev:MediaWiki:DisableBotMessageWalls/code.js",
+        //"w:c:dev:MediaWiki:DisableBotMessageWalls/code.js",
         'u:dev:MessageBlock/code.js',
         'u:dev:MediaWiki:AdminDashboard JS-Button/code.js',
         "w:c:dev:AdminDashboard block/code.js",
-        "u:dev:AjaxCommentDelete/code.js",
+        //"u:dev:AjaxCommentDelete/code.js",
         'u:dev:MediaWiki:ShowUserGroups.js',
         'u:dev:DynamicImages/code.js',
-        'w:c:dev:MediaWiki:DupImageList/code.js',
+        //'w:c:dev:MediaWiki:DupImageList/code.js',
         "u:dev:MediaWiki:GlobalEditcount/code.js",
         'w:c:dev:GameSlider/code.js',
         "u:dev:MediaWiki:ProtectionIcons/code.js",
-        'u:dev:MediaWiki:RefreshThreads/code.js',
+        //'u:dev:MediaWiki:RefreshThreads/code.js',
         "w:c:dev:JSSpecialPage/code.js",
-        'u:dev:MediaWiki:SimilarArticles/code.js',
+        //'u:dev:MediaWiki:SimilarArticles/code.js',
         'u:dev:MediaWiki:LuaError/code.js',
         'u:dev:WallGreetingButton/code.js',
-        "u:dev:SearchSuggest/code.js",
-        "w:c:dev:MediaWiki:ListFiles/code.js"
+        "u:dev:SearchSuggest/code.js"
+        //"w:c:dev:MediaWiki:ListFiles/code.js"
     )
 });
 
@@ -509,7 +513,7 @@ importArticles({
 //=================================================================
 
 document.addEventListener("DOMContentLoaded", function() {
-    var rows = document.querySelectorAll("#CountdownTable tr");
+    var rows = document.querySelectorAll(".CountdownTable tr");
     for (var h = 2; h < rows.length; h++) {
         var cell = rows[h].querySelector("td");
         cell.textContent = h - 1;

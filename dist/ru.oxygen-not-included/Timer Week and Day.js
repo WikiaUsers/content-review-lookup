@@ -1,64 +1,28 @@
-function updatetimer(i) {
-   var now = new Date();
-   var then = timers[i].eventdate;
-   var delta = count = Math.floor((then.getTime()-now.getTime())/(1000 * 60 * 60 * 24));
- 
-   //Выявление и избежание ошибки
-   if(isNaN(delta)) { 
-       timers[i].firstChild.nodeValue = '** ' + timers[i].eventdate + ' **' ;
-       return;
-       }
- 
-   if(delta < 0) {
-       delta = -delta;
-       var tpm = '';
-       }
-       else var tpm = '';
+function updatetimer() {
+	var now = new Date();
+	var then = new Date($('.countdowndateONI').text());
+	var delta = (then - now)/(1000 * 60 * 60 * 24);
+	var text = "";
+	
+	if (delta < -1) text = "Уже вышло!";
+	else if (delta < 0) text = "Совсем чуть-чуть!"
+	else if (delta < 1) text = "Меньше дня!";
+	else {
+		delta = Math.floor(delta);
+		var weeks = Math.floor(delta / 7);
+		var days = delta - weeks * 7;
+		
+		if (weeks === 0) text = days + ' ' + RusEnds(days, 'день','дня','дней');
+		else if (days === 0) text = weeks + ' ' + RusEnds(weeks, 'неделя','недели','недель');
+		else text = weeks + ' ' + RusEnds(weeks, 'неделя','недели','недель') + ', ' + days + ' ' + RusEnds(days, 'день','дня','дней');
+	}
+	$('.lefttimeONI').text(text);
+}
 
-   var left = '';
-   var week = Math.floor(delta / 7); //Определяем кол-во недель
-   var day = delta - 7 * week; //Определяем кол-во дней
-   
-   //Обновление таймера каждый день, а не каждую секунду
-   if ((delta * 24 * 60 * 1000 + 1000) < count) return;
-   
-   //Если дней не 0, то выводим
-   if (day !== 0) {
-       if (day == 1) left = day + ' день';
-       else if (day < 5) left = day + ' дня';
-       else left = day + ' дней';
-       }
-    
-   //Если есть и дни, и недели, то пишем союз
-   if (day !== 0 && week !== 0) left = ' и ' + left;
-   
-   //Если недель не 0, то выводим
-   if (week !== 0) {
-       if (week % 10 == 1) left = week + ' неделя' + left;
-       else if (week % 10 < 5) left = week + ' недели' + left;
-       else left = week + ' недель' + left;
-       }
-    
-   //Если и дней, и недель 0, то выводим "Меньше дня"
-   if (day == 0 && week == 0) left = 'Меньше дня';
-    
-   timers[i].firstChild.nodeValue = tpm + left;
-   timeouts[i] = setTimeout('updatetimer(' + i + ')', 1000 * 60 * 60 * 24);
- }
- 
- function checktimers() {
-   //Скрыть 'nocountdown' и показать 'countdown'
-   var nocountdowns = getElementsByClassName(document, 'span', 'nocountdownONI');
-   for(var i in nocountdowns) nocountdowns[i].style.display = 'none'
-   var countdowns = getElementsByClassName(document, 'span', 'countdownONI');
-   for(var i in countdowns) countdowns[i].style.display = 'inline'
- 
-   timers = getElementsByClassName(document, 'span', 'countdowndateONI');  
-   timeouts = new Array();
-   if(timers.length == 0) return;
-   for(var i in timers) {
-     timers[i].eventdate = new Date(timers[i].firstChild.nodeValue);
-     updatetimer(i);
-   }
- }
-$(checktimers);
+function RusEnds(num, one, two, five) {
+	var d10 = num % 10, d100 = num % 100;
+	if (d10 == 1 && d100 != 11) return one;
+	if (d10 > 1 && d10 < 5 && ( d100 < 10 || d100 >= 20)) return two;
+	else return five;
+}
+updatetimer();

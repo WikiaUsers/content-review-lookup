@@ -1,3 +1,15 @@
+// Importy skryptów dotyczących skórki Oasis
+importArticles( {
+	type: 'script',
+	articles: [
+		'u:dev:MediaWiki:SeeMoreActivityButton/code.js',
+		'u:dev:MediaWiki:DiscordChat.js',
+		'u:dev:MediaWiki:RCStats.js',
+		'u:dev:MediaWiki:SearchSuggest/code.js',
+		'u:dev:MediaWiki:ReferencePopups/code.js',
+	]
+} );
+
 // FACEBOOK WIDGET
 $('body').append('<div id="fb-root"></div><script>(function(d, s, id) {var js, fjs = d.getElementsByTagName(s)[0];if (d.getElementById(id)) return;js = d.createElement(s); js.id = id;js.src = "//connect.facebook.net/pl_PL/all.js#xfbml=1";fjs.parentNode.insertBefore(js, fjs);}(document, \'script\', \'facebook-jssdk\'));</script>');
 $(document).ready(function(){
@@ -39,6 +51,6 @@ $('#mw-upload-form').submit(function (e) { return emptyLicenseAlert(this); });
 // Konfigi
 window.SeeMoreActivityButtonRC = true;
 InactiveUsers = { 
-    months: 1,
-    text: 'Nieaktywny'
+	months: 1,
+	text: 'Nieaktywny'
 };

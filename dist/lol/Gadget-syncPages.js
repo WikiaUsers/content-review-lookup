@@ -46,13 +46,13 @@ window.syncPages = function(sourcePages) {
 			console.log("Done!");
 			return $.Deferred().resolve();
 		}
-		if (allWikis[cw]+".gamepedia.com" == mw.config.get("wgServerName")) { 
+		if (allWikis[cw]+".fandom.com" == mw.config.get("wgServerName")) { 
 			cw++;
 			nextWiki();
 			return;
 		}
 		console.log("Starting next wiki: " + allWikis[cw]);
-		fa = new mw.ForeignApi("https://"+allWikis[cw]+".gamepedia.com/api.php");
+		fa = new mw.ForeignApi("https://"+allWikis[cw]+".fandom.com/api.php");
 		editPage();
 		return;
 	}

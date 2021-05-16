@@ -123,7 +123,7 @@ $(function () {
       //90
       'Dragon_Slayer', 'Revenant', 'Jouster', 'Moth_Cape', 'Rascoohan',
       //95
-      'Merry_Garb', 'Rune_Master'
+      'Merry_Garb', 'Rune_Master', 'Forest_Warden'
     ],
     //other outfits the array index is the id(starting at 100)
     //must also be added to Template:OutfiterLink

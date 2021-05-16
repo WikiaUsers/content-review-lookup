@@ -590,70 +590,73 @@ mw.loader.using("jquery.client", function() {
         window.syntaxHighlighterSiteConfig = window.syntaxHighlighterSiteConfig || {};
         window.syntaxHighlighterConfig = window.syntaxHighlighterConfig || {};
 
-        // @change – get proper config for all wikis
-        configureColor("backgroundColor", "transparent", false);
-        configureColor("foregroundColor", "unset",       false);
+        // @change Implement hook to determine whther wiki is dark or light-themed
+        function isDarkWiki() {
+            // https://awik.io/determine-color-bright-dark-using-javascript/
+            function isDarkColor(color) {
+                // Variables for red, green, blue values
+                var r, g, b, hsp;
 
-        /**
-         * @change – UCP doesn't have `wgIsDarkTheme`, so we're replacing it
-         *
-         * https://awik.io/determine-color-bright-dark-using-javascript/
-         * Changed a bit to better fit for this specific use-case
-         *
-         * @param color
-         */
-        function isDarkColor(color) {
-            // Variables for red, green, blue values
-            var r, g, b, hsp;
+                // Check the format of the color, HEX or RGB?
+                if (color.match(/^rgb/)) {
 
-            // Check the format of the color, HEX or RGB?
-            if (color.match(/^rgb/)) {
+                    // If RGB --> store the red, green, blue values in separate variables
+                    color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
 
-                // If RGB --> store the red, green, blue values in separate variables
-                color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+                    r = color[1];
+                    g = color[2];
+                    b = color[3];
+                }
+                else {
 
-                r = color[1];
-                g = color[2];
-                b = color[3];
+                    // If hex --> Convert it to RGB: http://gist.github.com/983661
+                    color = + ("0x" + color.slice(1).replace(
+                    color.length < 5 && /./g, "$&$&"));
+
+                    r = color >> 16;
+                    g = color >> 8 & 255;
+                    b = color & 255;
+                }
+
+                // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
+                hsp = Math.sqrt(
+                    0.299 * (r * r) +
+                    0.587 * (g * g) +
+                    0.114 * (b * b)
+                );
+
+                // Using the HSP value, determine whether the color is light or dark
+                return ( hsp > 127.5
+                    ? false
+                    : true
+                );
             }
-            else {
 
-                // If hex --> Convert it to RGB: http://gist.github.com/983661
-                color = + ("0x" + color.slice(1).replace( 
-                color.length < 5 && /./g, "$&$&"));
+            // Support all skins
+            window.UCP.syntaxHighlight.backgroundSelector = {
+                oasis: ".WikiaPageContentWrapper",
+                hydra: ".mw-body",
+                hydradark: ".mw-body",
+                fandomdesktop: ".page__main"
+            };
 
-                r = color >> 16;
-                g = color >> 8 & 255;
-                b = color & 255;
-            }
+            const bcgSelector = window.UCP.syntaxHighlight.backgroundSelector[mw.config.get("skin")];
+            const bcgElement = document.querySelector(bcgSelector);
+            const bcgColor = getComputedStyle(bcgElement).getPropertyValue("background-color");
 
-            // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
-            hsp = Math.sqrt(
-                0.299 * (r * r) +
-                0.587 * (g * g) +
-                0.114 * (b * b)
-            );
-
-            // Using the HSP value, determine whether the color is light or dark
-            return ( hsp > 127.5
-                ? false
-                : true
-            );
+            return isDarkColor(bcgColor);
         }
 
         /**
-         * @change – get proper config for wikis per theme (including Gamepedia)
+         * @change Set configuration depending on wiki's theme
          *
-         * Configuration taken from Wikia/app repository
-         * https://github.com/Wikia/app/blob/dev/extensions/wikia/EditPageLayout/js/plugins/WikitextSyntaxHighlighterQueueInit.js
+         * Color configuration taken from Wikia/app repository
+         * [[github:Wikia/app/blob/dev/extensions/wikia/EditPageLayout/js/plugins/WikitextSyntaxHighlighterQueueInit.js]]
          */
-        const isGamepedia = mw.config.get("wgServer").indexOf("gamepedia.com") !== -1;
+        configureColor("backgroundColor", "transparent", false);
+        configureColor("foregroundColor", "unset",       false);
 
-        const bcgSelector = document.getElementsByClassName(isGamepedia ? "mw-body" : "WikiaPageContentWrapper")[0];
-        const bcgColor = getComputedStyle(bcgSelector).getPropertyValue("background-color");
-        const isDarkWiki = isDarkColor(bcgColor);
-
-        if ( isDarkWiki ) {
+        if ( isDarkWiki() ) {
             configureColor("boldOrItalicColor", "#44466d", true);
             configureColor("commentColor",      "#4d1a19", true);
             configureColor("entityColor",       "#474d23", true);

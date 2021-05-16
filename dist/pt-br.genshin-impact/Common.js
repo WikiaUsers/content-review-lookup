@@ -6,23 +6,16 @@ importArticles({
     ]
 });
 
-function switchModeToApplyPreload() {
-	var ptList = document.getElementById('pt-list');
-	if (ptList) {
-		ptList.change(function() {
-			console.log("pt-list");
-            // var $this = $(this),
-            //     val = $this.val();
-
-            // // Restore default option
-            // $this.find('option:first-child').prop('selected', true);
-
-            // // Preload the template on click
-            // getPreloadPage(val);
-            })
+function switchApplyPreload() {
+	if($('.ve-ui-surface-visual').length) {
+		$('#preload-templates').prepend('<p id="preload_message">Pré carregar não funciona no editor visual, mude para editor de código</p>');
+		$('#pt-list').attr("disabled", true);
+	}
+	else {
+		$('#preload_message').remove();
+		$('#pt-list').attr("disabled", false);
 	}
 }
 mw.hook("wikipage.content").add(function($content) {
-   console.log("meu teste");
-	switchModeToApplyPreload();
+	switchApplyPreload();
 });

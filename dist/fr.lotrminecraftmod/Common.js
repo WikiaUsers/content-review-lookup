@@ -11,7 +11,7 @@
     var admins = [
         {name: "Areades", color:"#81BEF7"},
         {name: "Aldan_Tanneo", color:"#387C44"},
-        {name: "Delwynn_Ier", color:"#900000"},
+        {name: "DelWindows", color:"#900000"},
         {name: "Eirienlaurë", color:"#32cadb"}
     ];
  

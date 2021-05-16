@@ -38,14 +38,14 @@ mw.loader.using(['site', 'mediawiki.util']).then(function() {
 			alert(i18n.nofiles);
 			return false;
 		}
-		if ($("#wpLicense option:selected").val() === "") {
+		if ($("#wpLicense option:selected").val() === "" && !mw.config.get('UMFBypassLicenseCheck')) {
 			alert(i18n.nolicense);
 			return false;
 		}
 		summary = $("#wpUploadDescription").val();
 		if (summary !== "") summary = "== "+i18n.summary+" ==\n"+summary;
-		license = "== "+i18n.license+" ==\n"+$("#wpLicense option:selected").prop("title");
-		text = summary + "\n" + license;
+		license = ($("#wpLicense option:selected").val() === "")?"":"\n== "+i18n.license+" ==\n"+$("#wpLicense option:selected").prop("title");
+		text = summary + license;
 		watch = "preferences";
 		if ($("#wpWatchthis").is(":checked")) watch = "watch";
 		else watch = "nochange";

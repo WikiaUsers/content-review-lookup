@@ -4,11 +4,12 @@
  * @author: Pcj (based on work by Unai01, Lil' Miss Rarity, Jr Mime and bola)
  */
 mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api']).then(function() {
+    var exception = '';
     var userName = mw.config.get('wgUserName');
     if (mw.config.get('wgPageName') !== 'Adoption:Requests' || !userName) {
         return;
     }
-	function filterFandomDomain(input) {
+    function filterFandomDomain(input) {
         var fandomDomainRE = /(?:https?:\/\/)?(.*?\.)(gamepedia\.com|wikia\.org|fandom\.com)(\/[^\/]*?)?(?:\/.*)?$/;
         var filteredDomain = input.match(fandomDomainRE);
         if (!filteredDomain) return null;
@@ -37,6 +38,10 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api']).then(functi
                         numDays = $form.find('#numDays').val() || 0,
                         numAdmins = $form.find('#numAdmins').val() || 0,
                         comments = $form.find('#comment').val();
+                    if (exception !== '') {
+                        mw.notify(exception,{tag:'adoption',type:'error'});
+                        return;
+                    }
                     if (url.trim() === "") {
                         mw.notify('Please enter the wiki URL.',{tag:'adoption',type:'warn'});
                         return;
@@ -75,7 +80,13 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api']).then(functi
                             action: 'edit',
                             title: "Adoption:"+wikiname+suffix,
                             text: pagecontent
-                        }).done(function () {
+                        }).done(function (data) {
+                            if (data.edit) {
+                                if (data.edit.warning) {
+                                    mw.notify(data.edit.warning, {tag:'adoption',type:'error'});
+                                    return;
+                                }
+                            }
                             location.href = mw.util.getUrl("Adoption:"+wikiname+suffix);
                         }).fail(function () {
                             mw.notify('There were problems submitting your request.', {tag:'adoption',type:'error'});
@@ -103,11 +114,16 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api']).then(functi
     });
     $('body').off('change.adoptionURL').on('change.adoptionURL','#adoptionUrl',function() {
         $('.adoptionPrefill').prop('disabled',true);
-        
+        exception = '';
         var url = filterFandomDomain($('#adoptionUrl').val());
         if (!url) {
             mw.notify('The format of the URL provided was not recognized.',{tag:'adoption',type:'error'});
             $('.adoptionPrefill').prop('disabled',false);
+            return;
+        }
+        if (url.startsWith('community.fandom.com')) {
+            exception = 'Fandom-branded wikis are not available to be adopted.';
+            mw.notify(exception,{tag:'adoption',type:'error'});
             return;
         }
         $.getJSON('//'+url+'/api.php?format=json&callback=?',{
@@ -142,8 +158,13 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api']).then(functi
                     mw.notify('There appear to be at least a few other active users on the wiki. Please consider creating a Discussions post describing your intention to adopt the wiki and let them give their feedback. If you already have, please be sure to include a link to that post.', {tag:'adoption',type:'warn'});
                 }
             }
-                        var ucDays = 0;
+            var ucDays = 0;
             if (data.query.usercontribs) {
+                if (data.query.usercontribs.length === 0) {
+                    exception = 'You must have contributed to the wiki in the past week in order to adopt it.';
+                    mw.notify(exception,{tag:'adoption',type:'warn'});
+                    return;
+                }
                 var ucDArr = [];
                 for (var u in data.query.usercontribs) {
                     var ucDay = data.query.usercontribs[u].timestamp.slice(0,10);
@@ -158,7 +179,12 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api']).then(functi
             if (data.query.users) {
                 if (data.query.users[0]) {
                     if (data.query.users[0].groups) {
-                        if (data.query.users[0].groups.indexOf('sysop') > -1 || data.query.users[0].groups.indexOf('bureaucrat') > -1) {
+                        if (data.query.users[0].groups.indexOf('bureaucrat') > -1) {
+                            exception = 'You are already a bureaucrat on this wiki. You do not need to adopt this wiki.';
+                            mw.notify(exception,{tag:'adoption',type:'error'});
+                            return;
+                        }
+                        if (data.query.users[0].groups.indexOf('sysop') > -1) {
                             mw.notify('You are already an admin on this wiki. Please keep in mind you do not need to adopt a wiki you are already admin for unless you are applying to be a bureaucrat.',{tag:'adoption',type:'warn'});
                             return;
                         }

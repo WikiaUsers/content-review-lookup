@@ -26,30 +26,30 @@
  *       not sure if it supports multiple namespaces though
  * @todo Whitelist domains for href attributes when sanitising HTML?
  */
- 
+
 /*jshint bitwise:true, browser:true, camelcase:true, curly:true, devel:false,
          eqeqeq:true, es3:false, forin:true, immed:true, jquery:true,
          latedef:true, newcap:true, noarg:true, noempty:true, nonew:true,
          onevar:false, plusplus:false, quotmark:single, undef:true, unused:true,
          strict:true, trailing:true
 */
- 
+
 /*global mediaWiki, hsbwiki */
 window.hsbwiki = window.hsbwiki || {}
- 
+
 ;(function ($, mw, hsb, undefined) {
     'use strict';
- 
+
         /**
          * Caching for search suggestions
          */
     var cache = {},
- 
+
         /**
          * Internal variable to store references to each calculator on the page.
          */
         calcStore = {},
- 
+
         /**
          * Private helper methods for `Calc`
          *
@@ -93,19 +93,19 @@ window.hsbwiki = window.hsbwiki || {}
                         'semihidden'
                     ],
                     configError = false;
- 
+
                 // parse the calculator's config
                 // @example param=arg1|arg1|arg3|arg4
                 lines.forEach(function (line) {
                     var temp = line.split('='),
                         param,
                         args;
- 
+
                     // incorrect config
                     if (temp.length < 2) {
                         return;
                     }
- 
+
                     // an equals is used in one of the arguments
                     // @example HTML label with attributes
                     // so join them back together to preserve it
@@ -113,40 +113,40 @@ window.hsbwiki = window.hsbwiki || {}
                     if (temp.length > 2) {
                         temp[1] = temp.slice(1,temp.length).join('=');
                     }
- 
+
                     param = temp[0].trim().toLowerCase();
                     args = temp[1].trim();
- 
+
                     if (validParams.indexOf(param) === -1) {
                         // use console for easier debugging
                         console.log('Unknown parameter: ' + param);
                         configError = true;
                         return;
                     }
- 
+
                     if (param === 'suggestns') {
                         config.suggestns = args.split(/\s*,\s*/);
                         return;
                     }
- 
+
                     if (param !== 'param') {
                         config[param] = args;
                         return;
                     }
- 
+
                     // split args
                     args = args.split(/\s*\|\s*/);
- 
+
                     // store template params in an array to make life easier
                     config.tParams = config.tParams || [];
- 
+
                     if (validParamTypes.indexOf(args[3]) === -1 && args[3] !== '') {
                         // use console for easier debugging
                         console.log('Unknown param type: ' + args[3]);
                         configError = true;
                         return;
                     }
- 
+
                     config.tParams.push({
                         name: mw.html.escape(args[0]),
                         label: args[1] || args[0],
@@ -156,15 +156,15 @@ window.hsbwiki = window.hsbwiki || {}
                         rawtogs: mw.html.escape(args[5] || '')
                     });
                 });
- 
+                
                 if (configError) {
                     config.configError = 'This calculator\'s config contains errors. Please report it to an admin or check the javascript console for details.';
                 }
- 
+
                 config = $.extend(defConfig, config);
                 return config;
             },
- 
+
             /**
              * Generate a unique id for each input
              *
@@ -174,7 +174,7 @@ window.hsbwiki = window.hsbwiki || {}
             getId: function (inputId) {
                 return [this.form, this.result, inputId].join('-');
             },
- 
+
             /**
              * Output an error to the UI
              *
@@ -189,7 +189,7 @@ window.hsbwiki = window.hsbwiki || {}
                             .text(error)
                     );
             },
- 
+
             /**
              * Toggle the visibility and enabled status of fields/groups
              *
@@ -224,10 +224,10 @@ window.hsbwiki = window.hsbwiki || {}
                         // [skywiki] Yet another hacky way to get around not having ooui
                         param.$ui.closest("tr").toggle(show);
                         param.$ui.prop('disabled', !show);
- 
+                        
                     }
                 };
- 
+    
                 if (toggles[item]) {
                     toggles[item].on.forEach( function (widget) {
                         togitem(widget, true);
@@ -248,7 +248,7 @@ window.hsbwiki = window.hsbwiki || {}
                     });
                 }
             },
- 
+
             /**
              * Check that a number is within a specified range
              *
@@ -263,29 +263,29 @@ window.hsbwiki = window.hsbwiki || {}
                 if (!param.range) {
                     return true;
                 }
- 
+
                 var parts = param.range.split('-'),
                     method = parseFloat;
- 
+
                 // enforce integer ranges for int
                 // otherwise allow floats for number
                 if (param.type === 'int') {
                     method = parseInt;
                 }
- 
+
                 // check lower limit
                 if (parts[0] !== '' && x < method(parts[0], 10)) {
                     return false;
                 }
- 
+
                 // check upper limit
                 if (parts[1] !== '' && x > method(parts[1], 10)) {
                     return false;
                 }
- 
+
                 return true;
             },
- 
+
             /**
              * Parse the toggles for an input
              *
@@ -297,7 +297,7 @@ window.hsbwiki = window.hsbwiki || {}
                 var tmptogs = rawdata.split(/\s*;\s*/),
                     allkeys = [], allvals = [],
                     toggles = {};
- 
+    
                 if (tmptogs.length > 0 && tmptogs[0].length > 0) {
                     tmptogs.forEach(function (tog) {
                         var tmp = tog.split(/\s*=\s*/),
@@ -324,11 +324,11 @@ window.hsbwiki = window.hsbwiki || {}
                         }
                         allvals = allvals.concat(val);
                     });
- 
+    
                     allkeys = allkeys.filter(function (item, pos, arr) {
                         return arr.indexOf(item) === pos;
                     });
- 
+    
                     allkeys.forEach(function (key) {
                         toggles[key].off = allvals.filter(function (val) {
                             if ( toggles[key].on.includes(val) ) {
@@ -338,15 +338,15 @@ window.hsbwiki = window.hsbwiki || {}
                             }
                         });
                     });
- 
+    
                     // Add all items to default
                     toggles.alltogs = {};
                     toggles.alltogs.off = allvals;
                 }
- 
+    
                 return toggles;
             },
- 
+
             /**
              * Form submission handler
              */
@@ -354,7 +354,7 @@ window.hsbwiki = window.hsbwiki || {}
                 var self = this,
                     code = '{{' + self.template,
                     formError = false;
- 
+
                 // setup template for submission
                 self.tParams.forEach(function (param) {
                     var val,
@@ -362,23 +362,23 @@ window.hsbwiki = window.hsbwiki || {}
                         // use separate error tracking for each input
                         // or every input gets flagged as an error
                         error = false;
- 
+
                     if (param.type === 'fixed' || param.type === 'hidden') {
                         val = param.def;
                     } else {
                         $input = $('#' + helper.getId.call(self, param.name));
                         val = $input.val();
- 
+
                         if (param.type === 'int') {
                             val = val.split(',').join('');
                         } else if (param.type === 'check') {
                             val = $input.prop('checked');
- 
+
                             if (param.range) {
                                 val = param.range.split(',')[val ? 0 : 1];
                             }
                         }
- 
+
                         // int types must be a valid integer or range
                         if (
                             param.type === 'int' &&
@@ -389,7 +389,7 @@ window.hsbwiki = window.hsbwiki || {}
                         ) {
                             error = true;
                         }
- 
+
                         // number types must be a valid number or range
                         if (
                             param.type === 'number' &&
@@ -400,7 +400,7 @@ window.hsbwiki = window.hsbwiki || {}
                         ) {
                             error = true;
                         }
- 
+
                         if (error) {
                             $input.addClass('jcInvalid');
                             formError = true;
@@ -408,20 +408,20 @@ window.hsbwiki = window.hsbwiki || {}
                             $input.removeClass('jcInvalid');
                         }
                     }
- 
+                    
                     code += '|' + param.name + '=' + val;
                 });
- 
+
                 if (formError) {
                     helper.showError.call(self, 'One or more fields contains an invalid value.');
                     return;
                 }
- 
+
                 code += '}}';
- 
+
                 helper.loadTemplate.call(self, code);
             },
- 
+
             /**
              * Parse the template used to display the result of the form
              *
@@ -436,7 +436,7 @@ window.hsbwiki = window.hsbwiki || {}
                         title: self.template,
                         disablepp: 'true'
                     };
- 
+                
                 // experimental support for using VE to parse calc templates
                 if (!!mw.util.getParamValue('vecalc')) {
                     params = {
@@ -447,24 +447,24 @@ window.hsbwiki = window.hsbwiki || {}
                         wikitext: code
                     };
                 }
- 
+
                 $('#' + self.form + ' .jcSubmit input')
                     .val('Loading...')
                     .prop('disabled', true);
- 
+
                 // @todo time how long these calls take
                 (new mw.Api())
                     .post(params)
                     .done(function (response) {
                         var html;
- 
+                        
                         if (!!mw.util.getParamValue('vecalc')) {
                             // strip body tag
                             html = $(response.visualeditor.content).contents();
                         } else {
                             html = response.parse.text['*'];
                         }
- 
+                        
                         helper.dispResult.call(self, html);
                     })
                     .fail(function (_, error) {
@@ -474,7 +474,7 @@ window.hsbwiki = window.hsbwiki || {}
                         helper.showError.call(self, error);
                     });
             },
- 
+
             /**
              * Display the calculator result on the page
              *
@@ -484,16 +484,16 @@ window.hsbwiki = window.hsbwiki || {}
                 $('#' + this.form + ' .jcSubmit input')
                     .val('Submit')
                     .prop('disabled', false);
- 
-                $('#bodyContent, #WikiaArticle')
+
+                $('#bodyContent, #WikiaArticle, .WikiaArticle')
                     .find('#' + this.result)
                         .empty()
                         .removeClass('jcError')
                         .html(html);
- 
+                
                 // allow scripts to hook into form submission
                 mw.hook('rscalc.submit').fire();
- 
+
                 mw.loader.using('jquery.tablesorter', function () {
                     $('table.sortable').tablesorter();
                 });
@@ -501,7 +501,7 @@ window.hsbwiki = window.hsbwiki || {}
                     $('.mw-collapsible').makeCollapsible();
                 });
             },
- 
+
             /**
              * Sanitise any HTML used in labels
              *
@@ -538,34 +538,34 @@ window.hsbwiki = window.hsbwiki || {}
                     $html = $.parseHTML(html, /* document */ null, /* keepscripts */ false),
                     // append to a div so we can navigate the node tree
                     $div = $('<div>').append($html);
- 
+
                 $div.find('*').each(function () {
                     var $this = $(this),
                         tagname = $this.prop('tagName').toLowerCase(),
                         attrs,
                         array,
                         href;
- 
+
                     if (whitelistTags.indexOf(tagname) === -1) {
                         mw.log('Disallowed tagname: ' + tagname);
                         $this.remove();
                         return;
                     }
- 
+
                     attrs = $this.prop('attributes');
                     array = Array.prototype.slice.call(attrs);
- 
+
                     array.forEach(function (attr) {
                         if (whitelistAttrs.indexOf(attr.name) === -1) {
                             mw.log('Disallowed attribute: ' + attr.name + ', tagname: ' + tagname);
                             $this.removeAttr(attr.name);
                             return;
                         }
- 
+
                         // make sure there's nasty in nothing in href attributes
                         if (attr.name === 'href') {
                             href = $this.attr('href');
- 
+
                             if (
                                 // disable warnings about script URLs
                                 // jshint -W107
@@ -582,10 +582,10 @@ window.hsbwiki = window.hsbwiki || {}
                         }
                     });
                 });
- 
+
                 return $div.contents();
             },
- 
+
             /**
              * Handlers for parameter input types
              */
@@ -603,7 +603,7 @@ window.hsbwiki = window.hsbwiki || {}
                     param.$ui = $td; // [skywiki] custom way of doing much less involved "param.ooui"
                     return $td;
                 },
- 
+
                 /**
                  * Handler for select dropdowns
                  *
@@ -622,7 +622,7 @@ window.hsbwiki = window.hsbwiki || {}
                             }),
                         opts = param.range.split(/\s*,\s*/),
                         def = opts[0];
- 
+
                     opts.forEach(function (opt) {
                         // undo the mw.html.escape call used when creating the params object
                         // and defer the escaping to $.fn.val and $.fn.text instead
@@ -631,31 +631,31 @@ window.hsbwiki = window.hsbwiki || {}
                                  .replace(/&amp;/g, '&')
                                  .replace(/&quot;/g, '"')
                                  .replace(/&#039;/g, '\'');
- 
+
                         var $option = $('<option>')
                                 .val(opt)
                                 .text(opt);
- 
+
                         if (opt === param.def) {
                             $option.prop('selected', true);
                         }
- 
+
                         $select.append($option);
                     });
- 
+
                     param.toggles = helper.parseToggles(param.rawtogs, def);
- 
+    
                     if ( Object.keys(param.toggles).length > 0 ) {
                         $select.on('change', function(){
                             helper.toggle.call(self, $(this).val(), param.toggles);
                         });
                     }
- 
+
                     param.$ui = $select; // [skywiki] custom way of doing much less involved "param.ooui"
                     $td.append($select);
                     return $td;
                 },
- 
+
                 /**
                  * Handler for checkbox inputs
                  *
@@ -673,26 +673,26 @@ window.hsbwiki = window.hsbwiki || {}
                                 id: id
                             });
                     param.toggles = helper.parseToggles(param.rawtogs, 'true');
- 
+
                     if (
                         param.def === 'true' ||
                         (param.range !== undefined && param.def === param.range.split(',')[0])
                     ) {
                         $input.prop('checked', true);
                     }
- 
- 
+                    
+                    
                     if ( Object.keys(param.toggles).length > 0 ) {
                         $input.on('change', function(){
                             helper.toggle.call(self, this.checked ? "true" : "false", param.toggles);
                         });
                     }
- 
+
                     param.$ui = $input; // [skywiki] custom way of doing much less involved "param.ooui"
                     $td.append($input);
                     return $td;
                 },
- 
+
                 /**
                  * Default handler for inputs
                  *
@@ -710,19 +710,19 @@ window.hsbwiki = window.hsbwiki || {}
                                 id: id
                             })
                             .val(param.def);
- 
+
                     param.$ui = $input; // [skywiki] custom way of doing much less involved "param.ooui"
                     $td.append($input);
- 
+
                     if (param.type === 'article') {
                         this.acInputs.push(id);
                     }
- 
+
                     return $td;
                 }
             }
         };
- 
+
     /**
      * Create an instance of `Calc`
      * and parse the config stored in `elem`
@@ -735,7 +735,7 @@ window.hsbwiki = window.hsbwiki || {}
             $elem = $(elem),
             lines,
             config;
- 
+            
         // support div tags for config as well as pre
         // be aware using div tags relies on wikitext for parsing
         // so you can't use anchor or img tags
@@ -748,15 +748,15 @@ window.hsbwiki = window.hsbwiki || {}
             // so use .text() instead for <pre> tags
             lines = $elem.text();
         }
- 
+        
         lines = lines.split('\n');
- 
+        
         config = helper.parseConfig.call(this, lines);
- 
+
         // merge config in
         $.extend(this, config);
         this.acInputs = [];
- 
+
         /**
          * @todo document
          */
@@ -765,11 +765,11 @@ window.hsbwiki = window.hsbwiki || {}
                 id = helper.getId.call(self, id);
                 return $('#' + id);
             }
- 
+            
             return $('#jsForm-' + self.form).find('select, input');
         };
     }
- 
+    
     /**
      * Helper function for getting the id of an input
      *
@@ -779,10 +779,10 @@ window.hsbwiki = window.hsbwiki || {}
     Calc.prototype.getId = function (id) {
         var self = this,
             inputId = helper.getId.call(self, id);
- 
+
         return inputId;
     };
- 
+
     /**
      * Build the calculator form
      */
@@ -800,16 +800,16 @@ window.hsbwiki = window.hsbwiki || {}
             $table = $('<table>')
                 .addClass('wikitable')
                 .addClass('jcTable');
- 
+        
         self.indexkeys = {};
- 
+        
         self.tParams.forEach(function (param, index) {
             // can skip any output here as the result is pulled from the
             // param default in the config on submission
             if (param.type === 'hidden') {
                 return;
             }
- 
+
             var id = helper.getId.call(self, param.name),
                 $tr = $('<tr>'),
                 $td = $('<td>'),
@@ -822,7 +822,7 @@ window.hsbwiki = window.hsbwiki || {}
                 label = param.label.indexOf('<') > -1 ?
                     helper.sanitiseLabels(param.label) :
                     param.label;
- 
+
             // add label
             $tr.append(
                 $('<th>')
@@ -832,20 +832,20 @@ window.hsbwiki = window.hsbwiki || {}
                             .html(label)
                     )
             );
- 
+
             $td = helper.tParams[method].call(self, $td, param, id);
             $tr.append($td);
- 
+
             if (param.type === 'semihidden') {
                 $tr.hide();
             }
- 
+
             $table.append($tr);
- 
+
             // Add item to indexkeys
             self.indexkeys[param.name] = index;
         });
- 
+
         // Run toggle for each field, check validity
         self.tParams.forEach( function (param) {
             if (param.toggles && Object.keys(param.toggles).length > 0) {
@@ -871,7 +871,7 @@ window.hsbwiki = window.hsbwiki || {}
             //     param.ooui.setValidityFlag();
             // }
         });
- 
+
         $table.append(
             $('<tr>')
                 .append(
@@ -885,18 +885,18 @@ window.hsbwiki = window.hsbwiki || {}
                         )
                 )
         );
- 
+
         $form.append($table);
- 
+        
         if (self.configError) {
             $form.append(self.configError);
         }
- 
-        $('#bodyContent, #WikiaArticle')
+
+        $('#bodyContent, #WikiaArticle, .WikiaArticle')
             .find('#' + self.form)
                 .empty()
                 .append($form);
- 
+
         // Enable suggest on article fields
         mw.loader.using(['mediawiki.api','jquery.ui.autocomplete'], function () {
             self.acInputs.forEach(function (input) {
@@ -905,12 +905,12 @@ window.hsbwiki = window.hsbwiki || {}
                     minLength: 3,
                     source: function(request, response) {
                         var term = request.term;
- 
+
                         if (term in cache) {
                             response(cache[term]);
                             return;
                         }
- 
+
                         (new mw.Api())
                             .get({
                                 action: 'opensearch',
@@ -928,14 +928,14 @@ window.hsbwiki = window.hsbwiki || {}
             });
         });
     };
- 
+    
     /**
      * @todo
      */
     function lookupCalc(calcId) {
         return calcStore[calcId];
     }
- 
+
     /**
      * @todo
      */
@@ -943,17 +943,17 @@ window.hsbwiki = window.hsbwiki || {}
         $('.jcConfig').each(function () {
             var c = new Calc(this);
             c.setupCalc();
- 
+            
             calcStore[c.form] = c;
         });
- 
+        
         // allow scripts to hook into calc setup completion
         mw.hook('rscalc.setupComplete').fire();
     }
- 
+
     $(init);
- 
+    
     hsb.calc = {};
     hsb.calc.lookup = lookupCalc;
- 
+
 }(jQuery, mediaWiki, hsbwiki));

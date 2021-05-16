@@ -6,7 +6,7 @@
 -------
  About
 -------
-- Adds classes to some user tags and modifies the text of some, to "filter" some and add some.
+- Adds classes to some user tags and modifies the text of some, to "filter" some and add some. (Using UserTags, kept as backup though)
 - Adds classes to comments of desired users, so they can be styled with css
 - Changes some avatar and link attributes in Message Walls and Article Comments for the QOL
 
@@ -77,6 +77,7 @@ $(function addClassToComments() {
 		});
 	}, 100 );
 });
+/*
 $(function CustomizeUserTags() {
 	var timeout = setTimeout(function() {
 	clearInterval(interval);
@@ -130,7 +131,7 @@ if ($('#userProfileApp .user-identity-box__wrapper').length) {
 			   	}
 			}
 		}, 100 );
-	});
+	});*/
 });
 $(function() {
 var interval = setInterval(function () {

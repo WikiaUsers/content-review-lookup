@@ -37,7 +37,7 @@
 						var requestUrl = mw.util.wikiScript("wikia") + "?controller=Discussion"+(isThread ? "Thread" : "Post")+"&method=undelete&"+(isThread ? "thread" : "post")+"Id="+ID;
 						return fetch(requestUrl, {
 							"credentials": "include",
-							"method": "PUT",
+							"method": "POST",
 						});
 					}
 

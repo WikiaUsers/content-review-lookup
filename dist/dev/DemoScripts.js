@@ -105,6 +105,11 @@
             page: 'DiscordTheme',
             styles: 'MediaWiki:DiscordTheme.css'
         },
+        
+        DiscordGlobalFooter: {
+        	page: 'DiscordGlobalFooter',
+        	styles: 'MediaWiki:DiscordGlobalFooter.css'
+        },
 
         DropdownMenu: {
             selector: '.custom-dropdown',
@@ -456,6 +461,11 @@
         UserActivityTab: {
             page: 'User:' + mw.config.get('wgUserName'),
             scripts: 'MediaWiki:UserActivityTab/code.js'
+        },
+        
+        UserAnimations: {
+            page: 'UserAnimations',
+            styles: 'MediaWiki:UserAnimations.css'
         },
         
         UserAvatarLink: {

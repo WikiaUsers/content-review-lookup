@@ -29,14 +29,16 @@ UserTagsJS.modules.metafilter = {
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
 (function () {
-    if (document.getElementById("calculator")) {
-        addCalculator();
-    }
-    if (document.getElementById("potential-calculator")) {
-        addPotentialCalculator();
-    }
+    mw.hook("wikipage.content").add(function ($content) {
+        $content.find(".level-calculator").each(function (i, elem) {
+            addLevelCalculator(elem);
+        });
+        $content.find(".potential-calculator").each(function (i, elem) {
+            addPotentialCalculator(elem);
+        });
+    });
 
-    function addCalculator() {
+    function addLevelCalculator(div) {
         var title = document.createTextNode("DQ Wiki Level Calculator:");
         var currentField = createField("current", "Your current level:");
         var goalField = createField("goal", "Your goal level:");
@@ -44,7 +46,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         submit.append("Done");
         var text = document.createTextNode("");
 
-        document.getElementById("calculator").append(
+        div.append(
             title, createBr(),
             currentField.label, currentField.input, createBr(),
             goalField.label, goalField.input, createBr(),
@@ -64,7 +66,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         };
     }
 
-    function addPotentialCalculator() {
+    function addPotentialCalculator(div) {
         var powerField = createField("pot-power", "Current power (optional)");
         var currentField = createField("pot-current", "Upgrades already done");
         var totalField = createField("pot-total", "Total upgrades");
@@ -72,7 +74,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         submit.append("Calculate");
         var text = document.createTextNode("");
 
-        document.getElementById("potential-calculator").append(
+        div.append(
             powerField.label, powerField.input, createBr(),
             currentField.label, currentField.input, createBr(),
             totalField.label, totalField.input, createBr(),
@@ -183,7 +185,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     function calculateUpgradeCost(current, total) {
         var cost = 0;
         if (current < 24) {
-            if (current == 0) cost = 100;
+            if (current === 0) cost = 100;
             var c = 100;
             for (var i = 1; i < 24 && i < total; i++) {
                 c = c * 1.06 + 50;

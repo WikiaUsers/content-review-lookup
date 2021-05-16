@@ -19,7 +19,6 @@ importArticles({
 		"MediaWiki:Common.js/Usernames.js",
 		"MediaWiki:Common.js/WikiNotification.js",
 		"u:dev:MediaWiki:AutoCreateUserPages.js",
-		//"u:dev:UserTags/code.js",
     ]
 });
 
@@ -42,7 +41,7 @@ $(function() {
     }
 });
 
-/*User Tags (Not satisfied with its stability yet, but I'll leave the configuration here)
+/*User Tags*/
 window.UserTagsJS = {
         modules: {},
         tags: {
@@ -58,8 +57,12 @@ window.UserTagsJS = {
     };
     
     UserTagsJS.modules.inactive = 30;
-    UserTagsJS.modules.newuser = true;
-    UserTagsJS.modules.autoconfirmed = true;
+	UserTagsJS.modules.newuser = {
+		computation: function(days, edits) {
+			return days < 7 && edits < 30;
+		}
+	};
+	UserTagsJS.modules.autoconfirmed = true;
     UserTagsJS.modules.mwGroups = [
         'bureaucrat',
         'sysop',
@@ -82,7 +85,6 @@ window.UserTagsJS = {
         'content-moderator': ['bureaucrat', 'sysop'],
         threadmoderator: ['bureaucrat', 'sysop'],
         rollback:        ['bureaucrat', 'sysop', 'moderator', 'content-moderator', 'threadmoderator'],
-        inactive:        ['formerstaff']
     };
     
     UserTagsJS.modules.implode = {
@@ -97,4 +99,3 @@ window.UserTagsJS = {
         'Pinkgalaxy': ['formerstaff'],
         'Sboy13': ['formerstaff'],
     };
-*/

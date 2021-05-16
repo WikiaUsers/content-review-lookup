@@ -29,12 +29,12 @@ var i18n = {
 	luaKeySection: 'section',
 	luaKeySections: 'sections',
 	luaKeySettings: 'settings',
-	luaKeySettingsHeight: 'height',
+	luaKeySettingsHeight: 'długość',
 	luaKeySettingsPos: 'pos',
-	luaKeySettingsSize: 'size',
+	luaKeySettingsSize: 'wielkość',
 	luaKeySettingsSpacing: 'spacing',
-	luaKeySettingsUrl: 'url',
-	luaKeySettingsWidth: 'width',
+	luaKeySettingsUrl: false,  // Disable updating URL since we don't need saving settings on IDs page
+	luaKeySettingsWidth: 'wielkość',
 	namePlaceholder: 'Type a name',
 	noPermissionNotice: 'You do not have permission to edit this sprite.',
 	panelChangesIdTitle: 'Data changes',
@@ -141,7 +141,7 @@ var create = function( state ) {
 	var oldHtml;
 	var spritesheet;
 	var spriteSettings = JSON.parse( $doc.attr( 'data-settings' ) );
-	var dataPage = $doc.data( 'datapage' );
+	var dataPage = $doc.data( 'idspage' );
 	var changes = [];
 	var undoneChanges = [];
 	var usedNames = {};
@@ -1621,16 +1621,16 @@ var create = function( state ) {
 						}
 						idsRows[this.id] = idData;
 					} );
-					
+					// mc-pl: disable settings saving in IDs page as we have separate page for settings
 					// Sort the settings object so it doesn't change order
 					// everytime due to lua not supporting ordered tables
-					var sortedSettings = {};
-					Object.keys( spriteSettings ).sort().forEach( function( key ) {
-						sortedSettings[key] = spriteSettings[key];
-					} );
+					//var sortedSettings = {};
+					//Object.keys( spriteSettings ).sort().forEach( function( key ) {
+					//	sortedSettings[key] = spriteSettings[key];
+					//} );
 					
 					var table = {};
-					table[i18n.luaKeySettings] = sortedSettings;
+					//table[i18n.luaKeySettings] = sortedSettings;
 					table[i18n.luaKeySections] = headingRows;
 					table[i18n.luaKeyIds] = idsRows;
 					

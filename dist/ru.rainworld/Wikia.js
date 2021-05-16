@@ -10,67 +10,85 @@ $(document).ready(function () {
 //Отображение/скрытие элементов
 $(document).ready(function () {
   buttons = $(".button-toggle");
-  for (let i = 0; i < buttons.length; i++) {
+  for (i = 0; i < buttons.length; i++) {
     button = buttons[i];
     $(button).text("Показать");
+
+    if (button.children) {
+      for (k = 0; k < button.children.length; k++) {
+        $(button.children[k]).attr("style", "pointer-events: none;");
+      }
+    }
+
     $("#" + button.id + "-toggle").addClass("display-none");
   }
-});
 
-$(".button-toggle").click(function () {
-  toggle(this.id);
+  $(".button-toggle").click(function () {
+    id = this.id;
+    if ($("#" + id + "-toggle").hasClass("display-none")) {
+      $("#" + id).text("Скрыть");
+      $("#" + id + "-toggle").removeClass("display-none");
+    } else {
+      $("#" + id).text("Показать");
+      $("#" + id + "-toggle").addClass("display-none");
+    }
+  });
 });
-
-function toggle(id) {
-  if ($("#" + id + "-toggle").hasClass("display-none")) {
-    $("#" + id).text("Скрыть");
-    $("#" + id + "-toggle").removeClass("display-none");
-  } else {
-    $("#" + id).text("Показать");
-    $("#" + id + "-toggle").addClass("display-none");
-  }
-}
 
 //Переключение элементов
 $(document).ready(function () {
   tabbers = $(".rw-tabber");
-  for (let i = 0; i < tabbers.length; i++) {
+  for (i = 0; i < tabbers.length; i++) {
     tabber = tabbers[i].id;
     tabber_buttons = document.getElementById(tabber + "-buttons").children;
     tabber_tabs = document.getElementById(tabber + "-tabs").children;
 
-    for (let i = 0; i < tabber_buttons.length; i++) {
-      const tabber_button = tabber_buttons[i];
-      const tabber_tab = tabber_tabs[i];
+    for (j = 0; j < tabber_buttons.length; j++) {
+      tabber_button = tabber_buttons[j];
+      tabber_tab = tabber_tabs[j];
 
-      let button_id = tabber + "-" + i;
-      let tab_id = button_id + "-tab";
+      button_id = tabber + "-" + j;
+      tab_id = button_id + "-tab";
 
       $(tabber_button).addClass("button-tabber");
       $(tabber_button).attr("id", button_id);
-      $(tabber_button).attr(
-        "onclick",
-        "button_tabber_click('" + tabber + "','" + tab_id + "')"
-      );
+      $(tabber_button).attr("tabber", tabber);
 
       $(tabber_tab).attr("id", tab_id);
-      if (i > 0) $(tabber_tab).hide();
+
+      if (j === 0) {
+        $(tabber_button).addClass("button-active");
+      } else {
+        $(tabber_tab).hide();
+      }
 
       if (tabber_button.children) {
-        $(tabber_button.children[0]).attr("style", "pointer-events: none;");
+        for (k = 0; k < tabber_button.children.length; k++) {
+          $(tabber_button.children[k]).attr("style", "pointer-events: none;");
+        }
       }
     }
   }
+
+  $(".button-tabber").click(function () {
+    tab_id = this.id + "-tab";
+    tabber_tabs = document.getElementById(
+      $(this).attr("tabber") + "-tabs"
+    ).children;
+
+    $(".button-active[tabber=" + $(this).attr("tabber") + "]").removeClass(
+      "button-active"
+    );
+    $(this).addClass("button-active");
+
+    for (i = 0; i < tabber_tabs.length; i++) {
+      tabber_tab = tabber_tabs[i];
+
+      if (tabber_tab.id == tab_id) {
+        $(tabber_tab).show();
+      } else {
+        $(tabber_tab).hide();
+      }
+    }
+  });
 });
-
-function button_tabber_click(tabber, tab_id) {
-  tabber = document.getElementById(tabber + "-tabs");
-  tabber_tabs = tabber.children;
-
-  for (let i = 0; i < tabber_tabs.length; i++) {
-    const tabber_tab = tabber_tabs[i];
-
-    if (tabber_tab.id == tab_id) $(tabber_tab).show();
-    else $(tabber_tab).hide();
-  }
-}

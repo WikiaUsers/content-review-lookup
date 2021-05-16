@@ -17,3 +17,16 @@ importScriptPage('BackToTopButton/code.js', 'dev');
 /* shows if an user is inactive in their profile */
 importScriptPage('InactiveUsers/code.js', 'dev');
 /* end inactive */
+
+/* tooltip config and custom tooltips */
+window.tooltips_config = {
+    waitForImages: true,
+    noCSS: true,
+};
+window.tooltips_list = [
+	{
+		classname: 'burgle-ability-tooltip',
+		parse: '{' + '{BurgleCatsSkillDetail|<#skillname#>}}',
+	}
+];
+/* end of tooltip */

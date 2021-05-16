@@ -1,30 +1,26 @@
-//__NOWYSIWYG__ <syntaxhighlight lang="javascript">
 /**
   * Disable Bot Message Walls 
   * 
   * @author - Jdm280
+  * @author - Caburum
   *  
   */
 
 $(function (config) {
-    config = config || {};
-    var PageName = mw.config.get('wgTitle'), 
-    Namespace = mw.config.get('wgCanonicalNamespace'),
-    exceptions = config.exceptions || [];
- 
-    if (Namespace === "Message_Wall") {
-        $.getJSON('/api.php?action=query&list=groupmembers&gmgroups=bot&gmlimit=max&format=json', //Calling all bots
-        function(data) {
-            var botList = data.users;
-            for (var i = 0; i < botList.length; i++) {
-                if (botList[i].name === PageName) {
-                    if (exceptions.indexOf(PageName) === -1 ) {
-                        $('.Wall.Board').remove();
-                    }
-                    break;
-                }
-            }
-        });
-    }
+	config = config || {};
+	var user = mw.config.get('profileUserName'),
+	isWallPage = mw.config.get('profileIsMessageWallPage'),
+	exceptions = config.exceptions || [];
+
+	if (
+		isWallPage && // Message Wall of a vaid user
+		!exceptions.includes(user) // User is not excluded
+	) {
+		$.getJSON(mw.util.wikiScript('api') + '?action=query&format=json&list=users&usprop=groups&ususers=' + mw.util.rawurlencode(user), // Check user's groups
+		function(data) {
+			if (data.query.users[0].groups.includes('bot')) { // User is a bot
+				$('div#MessageWall').remove();
+			}
+		});
+	}
 }(window.DisableBotMessageWalls));
-// </syntaxhighlight>

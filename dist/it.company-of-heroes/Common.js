@@ -5,7 +5,7 @@
 // ================================================================
  
 // onload stuff
-var firstRun = true;
+/*var firstRun = true;
  
 function loadFunc() {
 	if( firstRun )
@@ -257,10 +257,11 @@ if ( mw.config.get( 'wgArticleId' ) == 0 && mw.config.get( 'wgNamespaceNumber' )
 // ================================================================
 // END - hasClass var/Test if an element has a certain class
 // ================================================================
- 
+/* 
 function fixSearch() {
 	var button = document.getElementById('searchSubmit');
  
 	if( button )
 		button.name = 'go';
 }
+*/

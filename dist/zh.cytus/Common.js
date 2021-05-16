@@ -39,7 +39,6 @@ $(document).ready(function() {
 	}
 });
 
-
 /* April fools
 Randomizes all the text and buttons on the Main Page
 */

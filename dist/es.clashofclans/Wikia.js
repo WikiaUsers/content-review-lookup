@@ -95,6 +95,9 @@ function appendLanguageDropdown() {
 if( $('.WikiaArticleInterlang').length > 0 ) {
 	addOnloadHook(appendLanguageDropdown);
 }
+
+$("#BrawlStarsLink, #ClashRoyaleLink").prependTo(".page-header__contribution > div:first-child").css({"display": "inline-block"});
+
 // var WikiaNotificationMessage = "¡Hay una nueva actualización disponible!";
 importArticles({
 	type: 'script',

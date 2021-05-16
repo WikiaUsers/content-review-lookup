@@ -358,5 +358,15 @@ function addWikifButton() {
 }
 if (wgAction == 'edit' || wgAction == 'submit') {
         importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Wikificator.js&action=raw&ctype=text/javascript')
-        addOnloadHook(addWikifButton)
+        $(addWikifButton)
 }
+
+//Scrolls Games left and right
+$('.GamesArrowLeft').click(function () {
+    scroll = $('#GamesCarousel').scrollLeft();
+    $('#GamesCarousel').animate({'scrollLeft': scroll-540},1000);
+});
+$('.GamesArrowRight').click(function () {
+    scroll = $('#GamesCarousel').scrollLeft();
+    $('#GamesCarousel').animate({'scrollLeft': scroll+540},1000);
+});

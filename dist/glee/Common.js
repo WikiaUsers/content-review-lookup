@@ -91,30 +91,3 @@ $(document).ready(function(){
 		$('#control_edit').remove();
 	}
 });
-
-$(".openchat a").click(function() {
-   window.open('/wiki/Special:Chat', 'wikiachat', 'width=600,height=600,menubar=no,status=no,location=no,toolbar=no,scrollbars=no,resizable=yes');
-   return false;
-});
-
-/* For AjaxRC/code.js */
-var ajaxPages = ["Special:WikiActivity"];
-var AjaxRCRefreshText = 'Auto-Refresh';
-
-PurgeButtonText = 'Purge'; // for PurgeButton/code.js
-
-importArticles({
-    type: "script",
-    articles: [
-	"w:c:dev:ShowHide/code.js",
-	"w:c:dev:CollapsibleInfobox/code.js", // for examples on w:c:dev:CollapsibleInfobox
-	"w:c:dev:AjaxRC/code.js",
-	"w:c:dev:BackToTopButton/code.js",
-	"w:c:dev:OasisToolbarButtons/code.js",
-	"w:c:dev:AutoEditDropdown/code.js",
-	"w:c:dev:PurgeButton/code.js",
-        "w:c:dev:Countdown/code.js",
-	"MediaWiki:Common.js/displayTimer.js", // Add UTC clock above articles
-	"MediaWiki:Common.js/userRightsIcons.js" //Custom user rights icons on userpages
-    ]
-});

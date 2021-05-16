@@ -1,5 +1,6 @@
-// This JS file is a transpiled file, source is located at https://github.com/Julli4n/BGSWiki/blob/main/src/pages/MediaWiki/Common.ts
-// Open to PRs and issues
+/* This JS file is a transpiled file, source is located at https://github.com/Julli4n/BGSWiki/blob/main/src/pages/MediaWiki/Common.ts
+Open to PRs and issues*/
+
 "use strict";
 
 function createElement(tagName, data) {
@@ -22,7 +23,9 @@ function commafy(input) {
 }
 
 var __default = {
+  minLevel: 1,
   maxLevel: 25,
+  minEnchant: 0,
   maxEnchant: 40,
   maxShadowEnchant: 50,
   maxLevelEffect: 1.5,
@@ -30,12 +33,18 @@ var __default = {
   maxShadowEnchantEffect: 2
 };
 
+function calculate(min, max, maxEffect, level, stat) {
+  return stat + (stat * maxEffect - stat) * (level - min) / (max - min);
+}
+
 function calculateStat() {
   var level = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
   var enchant = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
   var stat = arguments.length > 2 ? arguments[2] : undefined;
-  var res = stat + (stat * __default.maxLevelEffect - stat) * (level - 1) / (__default.maxLevel - 1);
-  return res + (res * __default.maxShadowEnchantEffect - res) * enchant / __default.maxShadowEnchant;
+  var isAmplified = arguments.length > 3 ? arguments[3] : undefined;
+  var calculation = calculate(__default.minLevel, __default.maxLevel, __default.maxLevelEffect, level, stat);
+  calculation = calculate(__default.minEnchant, __default.maxShadowEnchant, __default.maxShadowEnchantEffect, enchant, calculation);
+  return calculation * (isAmplified ? 1.15 : 1);
 }
 
 function StatsCalculator(element) {
@@ -47,7 +56,7 @@ function StatsCalculator(element) {
   var enchantLabel = createElement("label", {
     innerHTML: "Enchant"
   });
-  var calculate = createElement("button", {
+  var calculate1 = createElement("button", {
     innerHTML: "Calculate",
     onclick: function onclick() {
       var infobox = document.getElementsByClassName("portable-infobox")[0];
@@ -95,24 +104,24 @@ function StatsCalculator(element) {
     innerHTML: "🔮 Max Level",
     onclick: function onclick() {
       level.value = String(__default.maxLevel);
-      calculate.click();
+      calculate1.click();
     }
   });
   var maxEnchant = createElement("button", {
     innerHTML: "🧪 Max Enchant",
     onclick: function onclick() {
       enchant.value = String(__default.maxEnchant);
-      calculate.click();
+      calculate1.click();
     }
   });
   var maxShadowEnchant = createElement("button", {
     innerHTML: "👽 Max Shadow Enchant",
     onclick: function onclick() {
       enchant.value = String(__default.maxShadowEnchant);
-      calculate.click();
+      calculate1.click();
     }
   });
-  element.append(levelLabel, createElement("br"), level, createElement("br"), maxLevel, createElement("br"), createElement("br"), enchantLabel, createElement("br"), enchant, createElement("br"), maxEnchant, createElement("br"), createElement("br"), maxShadowEnchant, createElement("br"), createElement("br"), calculate);
+  element.append(levelLabel, createElement("br"), level, createElement("br"), maxLevel, createElement("br"), createElement("br"), enchantLabel, createElement("br"), enchant, createElement("br"), maxEnchant, createElement("br"), createElement("br"), maxShadowEnchant, createElement("br"), createElement("br"), calculate1);
 }
 
 if (document.getElementsByClassName("calculator")[0]) {

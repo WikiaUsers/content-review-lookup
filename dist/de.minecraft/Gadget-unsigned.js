@@ -112,19 +112,6 @@ if(mw.config.get('wgNamespaceNumber') > 0 &&
 	}
 
 	function addSigWikiCode(){
-		// from rev 28011729 of 
-		// [[:en:Wikipedia:WikiProject_User_scripts/Scripts/Get_tidy_title]]
-		function aswcGet_tidy_title(){ // get the URL version of the page title
-			var editlk = 
-				document.getElementById('ca-edit').getElementsByTagName('a')[0].href;
-			// cut everything up to "title=" from the start and everything past 
-			// "&action=edit" from the end
-			editlk = editlk.substring(
-					editlk.indexOf('title=') + 6, 
-					editlk.lastIndexOf('&action=edit')
-			);
-			return editlk; // the result from this function might be needed unescape()ed
-		};
 		// localizable strings start
 		var lsMonth_names = ["January ", "February ", "March ", "April ", "May ", 
 				"June ", "July ", "August ", "September ", "October ", "November ", 
@@ -163,7 +150,7 @@ if(mw.config.get('wgNamespaceNumber') > 0 &&
 		// get timestamp, user, summary of last x edits
 		xmlhttp.open("GET", mw.config.get('wgScriptPath') + 
 				"/api.php?format=xml&action=query&prop=revisions&rvlimit=" + max_nofe + 
-				"&rvcomments&titles=" + aswcGet_tidy_title());
+				"&rvcomments&titles=" + encodeURIComponent(mw.config.get('wgPageName')));
 		var history_offset = 0;
 		xmlhttp.onreadystatechange = function(){
 			if(xmlhttp.readyState!=4) 

@@ -1,20 +1,3 @@
-/* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:PurgeButton/code.js',
-        'u:dev:ReferencePopups/code.js',
-        'u:dev:LinkPreview/code.js',
-        'u:dev:MediaWiki:DiscussionsRailModule/code.js'
-    ]
-});
-
-/*Статусы участников*/
-MastRights = {};
-MastRights["Iiayk"] = ["Хранитель вики"];
-
-importScriptPage("MediaWiki:Masthead.js", "ru.c");
-
 /****************************************/
 /* слайдер на jquery от Tierrie         */
 /****************************************/

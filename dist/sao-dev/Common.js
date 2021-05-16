@@ -14,18 +14,9 @@ var AjaxRCRefreshText = 'Auto-refresh';
 var AjaxRCRefreshHoverText = 'Automatically refresh the page';
 var ajaxRefresh = 300000;
 
-//Import Scripts
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:AjaxRC/code.js',             //Auto-Refresh
-        'u:dev:ExternalImageLoader/code.js',
-        'u:dev:PurgeButton/code.js',        // Adds a Purge button
-        'u:dev:ReferencePopups/code.js',    //Popup references
-        'u:dev:Toggler.js',
-    ]
-});
-//End Script Import
+//
+// Import scripts moved to MediaWiki:ImportJS
+//
 
 // **************************************************
 // Experimental javascript countdown timer (Splarka) + Edits by (1caiser)

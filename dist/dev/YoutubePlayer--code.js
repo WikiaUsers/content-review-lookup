@@ -17,6 +17,7 @@ mw.hook('wikipage.content').add(function($content) {
             loop: loop,
             playlist: loop === '1' ? id : '',
             start: String(data.start || '').trim(),
+            end: String(data.end || '').trim(),
             list: String(data.list || '').trim()
         };
 

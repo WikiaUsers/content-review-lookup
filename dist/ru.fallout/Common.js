@@ -141,9 +141,9 @@ if ( $('.va-titleicons').length ) {
 //================================================================
 // Импорт скриптов, некорректно работающих с [[MediaWiki:ImportJS]]
 
-importArticles({
-	type: 'script',
-	articles: [
-		'u:dev:MediaWiki:Standard_Edit_Summary/code.js', // Древняя подстановка описания правок в старом редакторе кода.
-	]
-});
+// importArticles({
+// 	type: 'script',
+// 	articles: [
+// 		'u:dev:MediaWiki:Standard_Edit_Summary/code.js', // Древняя подстановка описания правок в старом редакторе кода.
+// 	]
+// });

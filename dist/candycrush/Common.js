@@ -1,24 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-// AjaxRC
-window.ajaxSpecialPages = ["RecentChanges", "Log", "NewFiles", "Contributions", "AbuseLog"];
-$.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
-    'ajaxrc-refresh-text': 'Auto-refresh',
-    'ajaxrc-refresh-hover': 'Enable page auto-refresh',
-}}}}});
-
 // AjaxBatchDelete
 window.batchDeleteDelay = 1000;
-
-// ArticleRating
-window.ArticleRating = {
-    title: 'Sweet Rating',
-    values: ['Sweet', 'Tasty', 'Delicious', 'Divine', 'Sugar Stars'],
-    starSize: [24, 24],
-    starColor: ['#ccc', '#08f7ff'],
-    exclude: ['Candy Crush Saga/Versions'],
-    starStroke: '#000'
-};
 
 // BackToTopButton default settings
 window.BackToTopSpeed = 600;
@@ -101,18 +84,3 @@ $(function() {
 });
  
 /* End of the {{USERNAME}} replacement */
-
-
-/* Imports that never affect Oasis Skin (Only monobook skins) */
-$(function () {
-    if (skin === 'oasis' || skin === 'wikia' ) {
-        /* Nothing to import */}
-    else {
-    importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:LastEdited/code.js'
-    ]
-});
-    }
-});

@@ -19,14 +19,31 @@
     if (
         window.isEraIconsLoaded ||
         $.inArray(mw.config.get("wgNamespaceNumber"), RESTRICTED_NS) !== -1 ||
-        !$("#PageHeader").length
+        (!$("#PageHeader").length && !$(".page-header").length)
     ) {
         return;
     }
     window.isEraIconsLoaded = true;
 
     var EraIcons = {
-        target: ".page-header__contribution>div:first-child",
+        target: function(){
+            if($("#PageHeader").length){
+                return ".page-header__contribution>div:first-child";
+            } else {
+                if($(".page-header__languages").length){
+                    return ".page-header__languages";
+                } else {
+                    if(!$(".page-header__eraicons-target").length){
+                        $(".page-header").append(
+                            mw.html.element("div", {
+                                "class": "page-header__eraicons-target"
+                            })
+                        );
+                    }
+                    return ".page-header__eraicons-target";
+                }
+            }
+        },
         container: "page-header__eraicons",
 
         /**
@@ -62,14 +79,14 @@
             if ($("." + this.container).length) {
                 $("." + this.container).empty();
             } else {
-                $(that.target).prepend(
+                $(that.target()).prepend(
                     mw.html.element("div", {
                         "class": that.container
                     })
                 );
             }
 
-            if ($(".page-header__languages").length) {
+            if ($(".page-header__languages").length && $("#PageHeader").length) {
                 $("." + that.container).css("right", "70px");
             }
 

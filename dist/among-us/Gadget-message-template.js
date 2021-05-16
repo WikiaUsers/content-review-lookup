@@ -1,5 +1,5 @@
-// Messages: https://among-us.fandom.com/wiki/Among_Us_Wiki:Staff_messages
-// Script: https://dev.fandom.com/wiki/DiscussionTemplates
+// Messages: [[Among Us Wiki:Staff messages]]
+// Script: [[w:c:dev:DiscussionTemplates]]
 
 mw.loader.using('ext.fandom.ContentReview.legacyLoaders.js').then(function() {
 	if(mw.config.get('wgNamespaceNumber') == 1200) { // Message Wall

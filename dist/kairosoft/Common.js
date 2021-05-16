@@ -24,24 +24,35 @@ if((tNode = $("#gamenavlinks [href*='/wiki/Friend_IDs_(']")).length || (tNode = 
 
 //##############################################################
 /* ==Format Friend IDs== (B00)*/
-// Adds friend id to icon the the link in the GameNav (need to get link styling + one link click)
-$("#mw-content-text .friend-id-list li, #mw-content-text .friend-id-list ~ ul li").each(function(li){
-	var html = $(this).text().trim();
-	var friendIDLineData = html.match(/^(\d{0,3}[ \-,.]?\d{3}[ -,.]?\d{3}[ -,.]?\d{3}) ?-? ?(.*)*/);
-	if(friendIDLineData) {
-		var id = friendIDLineData[1]; id = id.replace(/[ \-,.]/g, "");
-		var tSep = "<span class='friend-id-sep'></span>";
-		var length = id.length;
-		id = id.split('');
-		id.splice(length-3, 0, tSep);
-		id.splice(length-6, 0, tSep);
-		if(length > 9) id.splice(length-9, 0, tSep);
-		id = id.join('');
-		var desc = friendIDLineData[2] ? " - "+friendIDLineData[2].trim() : "";
-		$(this).html("<code class='friend-id'>"+id+"</code>"+desc);
+// Make sure it re-fires whenever context is re-added (such as after a page edit)
+function detectFriendList(pContent){
+	if(pContent.find(".friend-id-list").length) {
+		// For better CSS support
+		$(".WikiaArticle").addClass("friend-id-page");
 	}
-});
 
+	// If a friend list exists format an IDs found in list on the page (only when inside a mw-content-text to avoid firing while editing)
+	$("#mw-content-text .friend-id-list li, #mw-content-text .friend-id-list ~ ul li").each(function(li){
+		$(this).data("friend-checked", true);
+		var html = $(this).text().trim();
+		// Match list starting with a 9-12 long number, possibly formatted with various stuff
+		// Don't checking for long number to avoid it detecting dates and stuff people may put after the number
+		var friendIDLineData = html.match(/^(\d{0,3}[ \-'∙,.]?\d{3}[ \-'∙,.]?\d{3}[ \-'∙,.]?\d{3}) ?-? ?(.*)*/);
+		if(friendIDLineData) {
+			var id = friendIDLineData[1]; id = id.replace(/[ \-,.]/g, "");
+			var tSep = "<span class='friend-id-sep'></span>";
+			var length = id.length;
+			id = id.split('');
+			id.splice(length-3, 0, tSep);
+			id.splice(length-6, 0, tSep);
+			if(length > 9) id.splice(length-9, 0, tSep);
+			id = id.join('');
+			var desc = friendIDLineData[2] ? " - "+friendIDLineData[2].trim() : "";
+			$(this).html("<code class='friend-id'>"+id+"</code>"+desc);
+		}
+	});
+}
+mw.hook('wikipage.content').add(detectFriendList);
 
 //##############################################################
 /* ==importArticle pre-script actions== (X00)*/

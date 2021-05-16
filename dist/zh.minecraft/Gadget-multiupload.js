@@ -37,11 +37,11 @@ mw.loader.using(['site']).then(function () {
 	$("#multiFileSubmit").click(function () {
 		files = $("#multiupload")[0].files;
 		if (files.length === 0) {
-			alert(i18n.nofiles);
+			mw.notify( i18n.nofiles, { title: comment } );
 			return false;
 		}
 		if ($("#wpLicense option:selected").val() === "") {
-			alert(i18n.nolicense);
+			mw.notify( i18n.nolicense, { title: comment } );
 			return false;
 		}
 		summary = $("#wpUploadDescription").val();

@@ -291,6 +291,19 @@ $(function () {
 	        importScriptPage('MediaWiki:Calculators/Code.js');
 	    });
 	}
+	
+	if (mw.config.get('wgPageName') === 'Skills_Calculator') {
+	    $(function () {
+	        importScriptPage('MediaWiki:Calculators/Skills.js');
+	    });
+	}
+	
+	if (mw.config.get('wgPageName') === 'Character_Stats_Calculator') {
+	    $(function () {
+	        importScriptPage('MediaWiki:Calculators/Stats.js');
+	    });
+	}
+	
 	/* End of Calculators */
 	/* Bestiary */
 	if (mw.config.get('wgPageName') === 'Bestiary/Simulator') {

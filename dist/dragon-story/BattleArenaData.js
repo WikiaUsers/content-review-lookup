@@ -1449,6 +1449,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"brightlotus": {
+				"name": "Bright Lotus",
+				"colors": [
+					"flower",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"brightphoenix": {
 				"name": "Bright Phoenix",
 				"colors": [
@@ -4553,6 +4561,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"dino",
 					"pink",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"florial": {
+				"name": "Florial",
+				"colors": [
+					"flower",
+					"pink"
 				],
 				"rarity": "unbreedable"
 			},
@@ -11677,6 +11693,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"rouge": {
+				"name": "Rouge",
+				"colors": [
+					"flower",
+					"pink",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"royal": {
 				"name": "Royal",
 				"colors": [
@@ -12441,6 +12466,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"royal",
 					"white"
+				],
+				"rarity": "unbreedable"
+			},
+			"skylight": {
+				"name": "Skylight",
+				"colors": [
+					"flower",
+					"white",
+					"blue"
 				],
 				"rarity": "unbreedable"
 			},

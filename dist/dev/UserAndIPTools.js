@@ -720,7 +720,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 				restricted: {
 					'user-tool-lookupuser': '//community.fandom.com/wiki/Special:LookupUser/${user}',
 					'user-tool-lookupcontribs': '//community.fandom.com/wiki/Special:LookupContribs?target=${user}',
-					'ip-tool-multilookup': '//community.fandom.com/wiki/Special:MultiLookup?wptarget=${user}',
+					'ip-tool-multilookup': '//community.fandom.com/wiki/Special:MultiLookup?wgtarget=${user}',
 				}
 			};
 
