@@ -69,21 +69,6 @@ function initVisibility() {
 
 //Kaynak: jedipedia.de'nin Common.js
 /***** Konfiguriert von Benutzer SVG *****/
- 
-//[[Özel:Yükle]]
- function remove_no_license_special_upload() {
-   if (mw.config.get('wgPageName') != "Özel:Yükle")
-     return;
-   var license = document.getElementById("wpLicense");
-   if (!license)
-     return;
-   var options = license.getElementsByTagName("option");
-   if (!options)
-     return;
-   license.removeChild(options[0]);
- }
-
- $(remove_no_license_special_upload);
 
 //[[Özel:Çoklu Yükleme]]
  function remove_no_license_special_multipleupload() {

@@ -336,7 +336,7 @@ ajaxPages = ["Special:RecentChanges", "Special:WikiActivity"];
 
 /* End of AjaxRC */
 
-/* LockForums and LockOldBlogs */
+/* LockForums, LockOldBlogs, and LockOldComments */
 
 window.LockForums = {
     lockMessageWalls: true,
@@ -347,7 +347,11 @@ window.LockOldBlogs = {
     expiryDays: 90
 };
 
-/* End of LockForums and LockOldBlogs */
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 90;
+window.lockOldComments.addNoteAbove = true;
+
+/* End of LockForums, LockOldBlogs, and LockOldComments */
 
 /*
 importArticles({ type: 'script', articles: [ 
@@ -375,7 +379,6 @@ window.MessageWallUserTags = {
         'Stryker305': 'Administrator',
         'BSpongeSM02':  'Administrator',
     
-        'DragonSpore18': 'Assistant',
         'The_Smarter,_Wiser_King_Dedede': 'Assistant',
 
         'Idroppedmypen': 'Discussion Moderator',

@@ -333,7 +333,7 @@ function setupModule(data) {
                 '<img />' +
             '</div>' +
         '</li>');
-        $member.append(v.username + (v.bot ? ' <span class="discord-bot">BOT</span>' : ''));
+        $member.append(mw.html.escape(v.username) + (mw.html.escape(v.bot) ? ' <span class="discord-bot">BOT</span>' : ''));
         $member.find('.discord-avatar').addClass("discord-" + v.status);
         $member.find('img').attr("src", v.avatar_url);
  

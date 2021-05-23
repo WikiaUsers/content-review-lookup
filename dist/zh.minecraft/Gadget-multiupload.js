@@ -11,9 +11,9 @@ mw.loader.using(['site']).then(function () {
 		summary: "文件说明",
 		license: "授权协议",
 		uploading: "上传中……",
-		uploaded: "已上传：",
+		uploaded: "已上传",
 		failed: "上传失败",
-		done: "上传成功",
+		done: "上传结束",
 		comment: "Multiupload"
 	};
 	if (mw.config.get("wgPageName") !== i18n.specialpage) return;
@@ -89,7 +89,13 @@ mw.loader.using(['site']).then(function () {
 					processData: false,
 					type: 'POST'
 				}).done(function (d) {
-					$("#mw-content-text > ul").append('<li><a href="' + d.upload.imageinfo.descriptionurl + '" target="_blank">' + d.upload.filename + '</a></li>');
+					if ('error' in d) {
+						$("#multiUploadFailed ul").append('<li>' + files[curFile].name + '：' + d.error.info + '</li>');
+						$("#multiUploadFailed").show();
+					}
+					else {
+						$("#mw-content-text > ul").append('<li><a href="' + d.upload.imageinfo.descriptionurl + '" target="_blank">' + d.upload.filename + '</a></li>');
+					}
 					curFile++;
 					gNF();
 				}).fail(function (d) {

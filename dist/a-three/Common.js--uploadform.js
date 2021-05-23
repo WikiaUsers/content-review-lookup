@@ -41,7 +41,7 @@
             },    
             'Other': {
                 'Card images': 'Card images',
-                'Card icons': 'Icons',
+                'Card icons': 'Card icons',
                 'Chibis': 'Chibi',
                 'Full Bodies': 'Fullbody',
                 'Event images': 'Event',
@@ -49,7 +49,9 @@
                 'Stage Play images': 'Stage Play',
                 'Blog images': 'Actors Blog',
                 'Cover Art': 'Album or DVD Cover',
-                'Gallery': 'Does not fall in any other category'
+                'Banners': 'Banner',
+                'Gallery': 'Does not fall in any other category',
+                'Videos': 'Video',
             }
             
         },

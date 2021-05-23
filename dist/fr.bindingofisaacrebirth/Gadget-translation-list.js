@@ -4,11 +4,11 @@ $.when(
 ).then( function () {
 	var sourceWikiRoot = 'https://bindingofisaacrebirth.fandom.com',
 		targetWikiRoot = 'https://bindingofisaacrebirth.fandom.com/fr',
-		sourceApi      = new mw.ForeignApi( sourceWikiRoot + '/api.php' ),
 		targetApi      = new mw.Api();
 
 	/**
 	* @typedef {{ pageid: number, title: string }} PageQueryResult
+	* @typedef {{ fromid: number }} RedirectQueryResult
 	* @typedef {{ page: string, revision: string }} CargoQueryResult
 	* @typedef {{ source: PageQueryResult?, target: PageQueryResult?, oldRevision: number, newRevision: number }} RowData
 	*/
@@ -31,22 +31,24 @@ $.when(
 		this.rows        = [];
 
 		Promise.all( [
-			this.apiQueryAllPages( sourceApi ),
+			this.foreignApiQueryAllPages( sourceWikiRoot ),
 			this.apiQueryAllPages( targetApi ),
-			this.apiCargoQueryAll()
+			this.apiCargoQueryAll(),
+			this.foreignApiQueryAllRedirects( sourceWikiRoot ),
+			this.apiQueryAllRedirects( targetApi )
 		] ).then( function ( data ) {
 			self.onDataFetch( data );
 		} );
 	}
 
 	/**
-	 * @param {[ PageQueryResult[], PageQueryResult[], CargoQueryResult[] ]} data
+	 * @param {[ PageQueryResult[], PageQueryResult[], CargoQueryResult[], RedirectQueryResult[], RedirectQueryResult[] ]} data
 	 */
 	TranslationList.prototype.onDataFetch = function ( data ) {
 		var self = this;
 
-		this.sourcePages = data[ 0 ];
-		this.targetPages = data[ 1 ];
+		this.sourcePages = data[ 0 ].filter( filter, data[ 3 ] );
+		this.targetPages = data[ 1 ].filter( filter, data[ 4 ] );
 
 		Promise.all( data[ 2 ].map( this.linkCargoTuple, this ) ).then( function ( rows ) {
 			rows = self.sourcePages.reduce( accUnlinkedSourcePage, rows );
@@ -55,6 +57,19 @@ $.when(
 			self.fillTable();
 		} );
 	};
+
+	/**
+	 * @this {RedirectQueryResult[]}
+	 * @param {PageQueryResult} p
+	 */
+	function filter( p ) {
+		for ( var i in this ) {
+			if ( this[ i ].fromid === p.pageid ) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	TranslationList.prototype.fillTable = function () {
 		var $table = this.$table,
@@ -152,7 +167,8 @@ $.when(
 			title: targetPage.title
 		};
 
-		return sourceApi.get( {
+		return $.getJSON( sourceWikiRoot + '/api.php', {
+			format: 'json',
 			action: 'query',
 			prop: 'info',
 			revids: row.oldRevision
@@ -184,27 +200,47 @@ $.when(
 	/**
 	 * Queries all pages.
 	 * @param {mwApi} api MediaWiki API.
-	 * @returns The page array promise.
+	 * @returns {PageQueryResult[] | JQuery.Promise<PageQueryResult[]>} The page array promise.
 	 */
 	TranslationList.prototype.apiQueryAllPages = function ( api ) {
 		var args = {
 			action: 'query',
 			list: 'allpages',
 			rawcontinue: true,
-			aplimit: 500,
-			apnamespace: this.namespace
+			apnamespace: this.namespace,
+			aplimit: 500
 		};
 		return _apiQueryAllPages( api, args, [] );
 	};
+
+	/**
+	 * Queries all redirects.
+	 * @param {mwApi} api MediaWiki API.
+	 * @returns {RedirectQueryResult[] | JQuery.Promise<RedirectQueryResult[]>} The page array promise.
+	 */
+	TranslationList.prototype.apiQueryAllRedirects = function ( api ) {
+		var args = {
+			action: 'query',
+			list: 'allredirects',
+			rawcontinue: true,
+			arprop: 'ids',
+			arnamespace: this.namespace,
+			arlimit: 500
+		};
+		return _apiQueryAllPages( api, args, [] );
+	};
+
 	/**
 	 * @param {mwApi} api
 	 * @param {*} args
 	 * @param {PageQueryResult[]} storage
-	 * @returns {PageQueryResult[] | JQuery.Promise<PageQueryResult[]>}
+	 * @returns {any[] | JQuery.Promise<any[]>}
 	 */
 	function _apiQueryAllPages( api, args, storage ) {
 		return api.get( args ).then( function ( data ) {
-			storage = storage ? storage.concat( data.query.allpages ) : data.query.allpages;
+			for ( var arg in data.query ) {
+				storage = storage ? storage.concat( data.query[ arg ] ) : data.query[ arg ];
+			}
 			if ( !data[ 'query-continue' ] ) {
 				return storage;
 			}
@@ -214,6 +250,64 @@ $.when(
 				}
 			}
 			return _apiQueryAllPages( api, args, storage );
+		} );
+	}
+
+	/**
+	 * Queries all pages.
+	 * @param {string} api MediaWiki API.
+	 * @returns {PageQueryResult[] | JQuery.Promise<PageQueryResult[]>} The page array promise.
+	 */
+	TranslationList.prototype.foreignApiQueryAllPages = function ( api ) {
+		var args = {
+			format: 'json',
+			action: 'query',
+			list: 'allpages',
+			rawcontinue: true,
+			apnamespace: this.namespace,
+			aplimit: 500
+		};
+		return _foreignApiQueryAllPages( api, args, [] );
+	};
+
+	/**
+	 * Queries all redirects.
+	 * @param {string} api MediaWiki API.
+	 * @returns {RedirectQueryResult[] | JQuery.Promise<RedirectQueryResult[]>} The page array promise.
+	 */
+	TranslationList.prototype.foreignApiQueryAllRedirects = function ( api ) {
+		var args = {
+			format: 'json',
+			action: 'query',
+			list: 'allredirects',
+			rawcontinue: true,
+			arprop: 'ids',
+			arnamespace: this.namespace,
+			arlimit: 500
+		};
+		return _foreignApiQueryAllPages( api, args, [] );
+	};
+
+	/**
+	 * @param {string} api
+	 * @param {*} args
+	 * @param {PageQueryResult[]} storage
+	 * @returns {any[] | JQuery.Promise<any[]>}
+	 */
+	function _foreignApiQueryAllPages( api, args, storage ) {
+		return $.getJSON( api + '/api.php', args ).then( function ( data ) {
+			for ( var arg in data.query ) {
+				storage = storage ? storage.concat( data.query[ arg ] ) : data.query[ arg ];
+			}
+			if ( !data[ 'query-continue' ] ) {
+				return storage;
+			}
+			for ( var i in data[ 'query-continue' ] ) {
+				for ( var arg in data[ 'query-continue' ][ i ] ) {
+					args[ arg ] = data[ 'query-continue' ][ i ][ arg ];
+				}
+			}
+			return _foreignApiQueryAllPages( api, args, storage );
 		} );
 	}
 

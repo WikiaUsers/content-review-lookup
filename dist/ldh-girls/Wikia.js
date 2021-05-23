@@ -1,3 +1,5 @@
+window.BackToTopModern = true;
+
 /*Image Slider*/
 $(function() {
   var slideTotal = $(".cslider ul li").length;

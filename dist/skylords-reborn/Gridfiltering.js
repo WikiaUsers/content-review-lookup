@@ -1,4 +1,3 @@
-gridContainer = '#card-grid';
 gridFilters = {
     search: 'search',
 
@@ -24,12 +23,12 @@ gridFilters = {
 
 (function () {
     function gridFiltering() {
-        var grid = $(gridContainer);
+        var grid = $('#card-grid');
         if (!grid.length) return;
         if (!gridFilteringSwitches()) return;
 
         window.gridElements = [];
-        grid.find('.card-icon').each(function () {
+        grid.children(grid.hasClass('list-of-cards') ? 'div' : '.grid-icon').each(function () {
             var obj = {};
             var elem = $(this);
             obj['*'] = elem;
@@ -50,7 +49,7 @@ gridFilters = {
             if (!container.length) continue;
             flag = true;
 
-            if (gridFilters[x] == 'search') {
+            if (gridFilters[x] === 'search') {
                 $('<input type="text" />')
                     .appendTo(container)
                     .attr({
@@ -109,8 +108,8 @@ gridFilters = {
             .click(function () {
                 if ($(this).text() === 'Show more') {
                     $(this).text('Show less');
-                    $(gridContainer).css('max-height', '1600px');
-                    $(gridContainer).removeClass('collapsed').addClass('expanded');
+                    $('#card-grid').css('max-height', $('#card-grid').hasClass('list-of-cards') ? '' : '1600px');
+                    $('#card-grid').removeClass('collapsed').addClass('expanded');
                 } else {
                     $(this).text('Show more');
                     if ($('.grid-filter-container')[0].getBoundingClientRect().top <= 0) {
@@ -119,10 +118,11 @@ gridFilters = {
                             behavior: 'smooth',
                         });
                     }
-                    $(gridContainer).css('max-height', $('body').hasClass('mainpage') ? '380px' : '210px');
-                    $(gridContainer).removeClass('expanded').addClass('collapsed');
+                    $('#card-grid').css('max-height', $('body').hasClass('mainpage') ? '380px' : $('#card-grid') ? '500px' : '210px');
+                    $('#card-grid').removeClass('expanded').addClass('collapsed');
                 }
-                if ($(gridContainer + ' > span:visible').length <= ($('body').hasClass('mainpage') ? 84 : 42)) {
+        	if ((document.querySelector('#card-grid:not(.list-of-cards)') && $('#card-grid:not(.list-of-cards) > span:visible').length <= ($('body').hasClass('mainpage') ? 84 : 42))
+        		|| (document.querySelector('#card-grid.list-of-cards') && $('#card-grid.list-of-cards > div:visible').length <= 4)) {
                     $('#grid-collapse').hide();
                 } else {
                     $('#grid-collapse').show();
@@ -142,7 +142,7 @@ gridFilters = {
     function gridFilteringClear() {
         for (var x in gridFilters) {
             var el = $('#grid-filter-' + x + '-field, #grid-filter-' + x + ' > input');
-            if (el.attr('type') == 'checkbox') el.prop('checked', true);
+            if (el.attr('type') === 'checkbox') el.prop('checked', true);
             else el.val('');
         }
         $('#grid-filter-sort > select').prop('selectedIndex', 0);
@@ -155,12 +155,12 @@ gridFilters = {
         var val = $('#grid-filter-sort > select').val();
 
         function sort(comp, asc) {
-            $('#card-grid > .grid-icon')
+            $('#card-grid > .grid-icon, #card-grid.list-of-cards > div')
                 .sort(function (a, b) {
                     var $a = $(a).data(comp);
                     var $b = $(b).data(comp);
-                    $a = typeof $a == 'string' ? $a.toLowerCase() : $a;
-                    $b = typeof $b == 'string' ? $b.toLowerCase() : $b;
+                    $a = typeof $a === 'string' ? $a.toLowerCase() : $a;
+                    $b = typeof $b === 'string' ? $b.toLowerCase() : $b;
                     if ($a < $b) return asc ? -1 : 1;
                     if ($a > $b) return asc ? 1 : -1;
                     return 0;
@@ -170,11 +170,11 @@ gridFilters = {
 
         switch (val) {
             case 'nameasc':
-                comp = 'card';
+                comp = '1';
                 asc = true;
                 break;
             case 'namedesc':
-                comp = 'card';
+                comp = '1';
                 asc = false;
                 break;
             case 'orbsasc':
@@ -195,11 +195,11 @@ gridFilters = {
                 break;
         }
 
-        if (val != 'nameasc' && val != 'namedesc') sort('card', true);
+        if (val !== 'nameasc' && val !== 'namedesc') sort('1', true);
 
         sort(comp, asc);
 		
-		$(gridContainer).append($('#grid-matches'));
+		$('#card-grid').append($('#grid-matches'));
         $(window).scroll();
     }
     function gridFilteringApply() {
@@ -223,12 +223,12 @@ gridFilters = {
                     if (value === '') continue;
 
                     var type = field.data('type');
-                    if (type == 'search') {
+                    if (type === 'search') {
                         var rx = new RegExp('^.*?(' + value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&') + ').*?$', 'i');
                         var flag = rx.test(gridElements[x][y].join(', '));
                         if (!flag) active = false;
-                    } else if (type == 'select') {
-                        if (gridElements[x][y].indexOf(value) == -1) active = false;
+                    } else if (type === 'select') {
+                        if (gridElements[x][y].indexOf(value) === -1) active = false;
                     }
                 }
             }
@@ -237,7 +237,7 @@ gridFilters = {
         }
         
         if (($('#grid-filter-affinities-field')[0].selectedIndex > 0 && $('#grid-filter-affinities-field')[0].selectedIndex < 5) || $('#grid-filter-special-field')[0].selectedIndex > 1) {
-        	var len = $(gridContainer + ' > span:visible').length;
+        	var len = $('#card-grid > span:visible').length;
         	if (len === 1) {
         		$('#grid-matches').text('1 matching card');
         	} else {
@@ -245,7 +245,7 @@ gridFilters = {
         	}
         } else {
         	var i = 0;
-        	$(gridContainer + ' > span:visible').each(function() {
+        	$('#card-grid > span:visible').each(function() {
         		if ($(this).data('affinities') !== 'None') i+=2;
         		if ($(this).data('special').includes('Promo')) i++;
         		//if ($(this).data('special').includes('Starter')) i++;
@@ -257,9 +257,10 @@ gridFilters = {
         		$('#grid-matches').text(i + ' matching cards');
         	}
         }
-        $(gridContainer).append($('#grid-matches'));
+        $('#card-grid').append($('#grid-matches'));
 
-        if ($(gridContainer + ' > span:visible').length <= ($('body').hasClass('mainpage') ? 84 : 42)) {
+		if ((document.querySelector('#card-grid:not(.list-of-cards)') && $('#card-grid:not(.list-of-cards) > span:visible').length <= ($('body').hasClass('mainpage') ? 84 : 42))
+        		|| (document.querySelector('#card-grid.list-of-cards') && $('#card-grid.list-of-cards > div:visible').length <= 4)) {
             $('#grid-collapse').hide();
             //$('#grid-matches').hide();
         } else {

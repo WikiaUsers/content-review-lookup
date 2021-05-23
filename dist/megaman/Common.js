@@ -2,3 +2,4 @@
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
+$("img").each(function(){ $(this).attr("src", $(this).attr("src").replace("&format=original","") ) });

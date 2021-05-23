@@ -1,6 +1,6 @@
 /**
  * @name WikiForum/core
- * @version 3.0.2 (Core version)
+ * @version 3.0.5 (Core version)
  * @author 机智的小鱼君 <dragon-fish@qq.com>
  * @desc Provide a front-end structured discussion page with JavaScript.
  *       Similar to Community Feed and support wikitext.
@@ -132,8 +132,8 @@ module.exports = {
 
 /**
  * @function parseForums 从源代码解析可能存在的全部主题
- * @param {Element} code
- * @param {String} title
+ * @param {Element|string} code
+ * @param {string} title
  */
 function parseForums(code, title) {
   var $root = $(code);
@@ -157,7 +157,7 @@ function parseForums(code, title) {
 /**
  * @function parseThreads 递归全部的帖子
  * @param {Element} forum
- * @param {String} prefix
+ * @param {string} prefix
  */
 
 
@@ -342,14 +342,14 @@ function renderAllForums(_ref2) {
         forumid: forum.forumid,
         forum: forum,
         theme: theme
-      }), theme.afterAllForums ? theme.afterAllForums({
+      }), theme === null || theme === void 0 ? void 0 : theme.afterAllForums({
         $root: $root,
         $container: $allForums,
         _forum: forumEl,
         forumMeta: forum.meta,
         forumid: forum.forumid,
         fn: fn
-      }) : '');
+      }));
     });
   }
 
@@ -443,8 +443,11 @@ function fromPage() {
   var target = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '#mw-content-text';
   actionGet(page).then(function (data) {
     log('成功从 API 获取源代码', page);
-    var Obj = fromApi(data);
-    toPage(Obj, target);
+    var forumEl = fromApi(data);
+    toPage({
+      forumEl: forumEl,
+      target: target
+    });
   }, function (err) {
     error('从 API 获取源代码失败', {
       page: page,
@@ -508,12 +511,6 @@ module.exports = {
   \*******************************/
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 var _require = __webpack_require__(/*! ./mw */ "./src/module/mw.js"),
     conf = _require.conf;
 
@@ -525,14 +522,13 @@ var actionEdit = __webpack_require__(/*! ./actionEdit */ "./src/module/actionEdi
 /**
  * @module updater 更新器
  *
- * @description
- * 为了避免老版本jQuery的XSS漏洞
- * forumEl->wikitext的过程采用String拼接的方式
+ * @desc 为了避免老版本 jQuery 的 XSS 漏洞
+ *       forumEl -> wikitext 的过程采用 string 拼接的方式
  */
 
 /**
  * @function contentValidator 检查字符串的HTML标签是否匹配，wikitext是否闭合
- * @param {String} str
+ * @param {string} str
  */
 
 
@@ -553,7 +549,7 @@ function contentValidator(str) {
 }
 /**
  * @function handleEdit 处理forumEl并发布
- * @param {Object} forumEl
+ * @param {import('../types/index').ForumElement[]} forumEl
  */
 
 
@@ -585,17 +581,24 @@ function handleEdit(_ref) {
 }
 /**
  * @function parseAllForums
+ * @param {import('../types/index').ForumElement[]} forumEl
  */
 
 
 function parseAllForums(forumEl) {
   var html = '';
-  $.each(forumEl, function (index, forum) {
+  forumEl.forEach(function (forum) {
     html += parseForum(forum);
   });
   html = "<!--\n - WikiForum Container\n - \n - Total Forums: ".concat(forumEl.length, "\n - Last modiflied: ").concat(timeStamp(), "\n - Last user: ").concat(conf.wgUserName, "\n -\n - DO NOT EDIT DIRECTLY\n -->\n").concat(html, "\n\n<!-- end WikiForum -->");
   return html;
 }
+/**
+ *
+ * @param {import('../types/index').ForumElement} forum
+ * @returns
+ */
+
 
 function parseForum(forum) {
   var forumid = forum.forumid,
@@ -609,6 +612,13 @@ function parseForum(forum) {
   var html = "\n<!-- start forum#".concat(forumid || 'latest', " -->\n<div class=\"wiki-forum\" ").concat(metaList, ">\n").concat(threadList, "\n</div>\n<!-- end forum#").concat(forumid || 'latest', " -->");
   return html;
 }
+/**
+ *
+ * @param {import('../types/index').ForumThread} thread
+ * @param {*} indent
+ * @returns
+ */
+
 
 function parseThread(thread) {
   var indent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -636,38 +646,18 @@ function parseThread(thread) {
 }
 /**
  * @function getMeta 将meta转换为 data-*="" 字符串
- * @param {Object} meta jQuery.data()
+ * @param {Record<string, any>} meta jQuery.data()
+ * @return {string}
  */
 
 
 function getMeta(meta) {
-  // 将 fooBar 转换为 foo-bar 的形式
   var metaList = [];
   $.each(meta, function (key, val) {
     var newKey = 'data-' + key.replace(/(.*)([A-Z])(.*)/g, '$1-$2$3').toLowerCase();
     metaList.push("".concat(newKey, "=\"").concat(val, "\""));
-  }); // 确保data的顺序是固定的
-
-  var metaList1 = {};
-  var metaListKeys = Object.keys(meta).sort();
-
-  var _iterator = _createForOfIteratorHelper(metaListKeys),
-      _step;
-
-  try {
-    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var key = _step.value;
-      metaList1[key] = metaList[key];
-    }
-  } catch (err) {
-    _iterator.e(err);
-  } finally {
-    _iterator.f();
-  }
-
-  metaList = metaList1;
-  metaList = metaList.join(' ');
-  return metaList;
+  });
+  return metaList.sort().join(' ');
 }
 
 function timeStamp() {
@@ -680,10 +670,6 @@ function isComplex(id, depthMax) {
   if (id.length > depthMax) return true;
   return false;
 }
-/**
- * @function updateThread 编辑内容
- */
-
 
 function updateThread(_ref2) {
   var forumEl = _ref2.forumEl,

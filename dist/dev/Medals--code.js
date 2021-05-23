@@ -235,7 +235,9 @@
                     format: 'json'
                 },
                 success: function(d) {
-                    if (d.edit.result == 'Success') {
+                	if (d.error && d.error.info) {
+                		alert(d.error.info);
+                	} else if (d.edit && d.edit.result == 'Success') {
                         medalFunctions.quickPurge();
                     }
                 }

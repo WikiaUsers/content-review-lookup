@@ -4833,6 +4833,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"fresh": {
+				"name": "Fresh",
+				"colors": [
+					"flower",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"friendly": {
 				"name": "Friendly",
 				"colors": [
@@ -8008,6 +8016,22 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"magnaura": {
+				"name": "Magnaura",
+				"colors": [
+					"flower",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"magnetic": {
+				"name": "Magnetic",
+				"colors": [
+					"metal",
+					"pink"
+				],
+				"rarity": "rare"
+			},
 			"magnificent": {
 				"name": "Magnificent",
 				"colors": [
@@ -8032,14 +8056,6 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"white"
 				],
 				"rarity": "unbreedable"
-			},
-			"magnetic": {
-				"name": "Magnetic",
-				"colors": [
-					"metal",
-					"pink"
-				],
-				"rarity": "rare"
 			},
 			"malachite": {
 				"name": "Malachite",
@@ -11359,6 +11375,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"redstem": {
+				"name": "Red Stem",
+				"colors": [
+					"flower",
+					"white",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"redbloom": {
 				"name": "Redbloom",
 				"colors": [
@@ -13160,6 +13185,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"blue"
 				],
 				"rarity": "unbreedable"
+			},
+			"sprout": {
+				"name": "Sprout",
+				"colors": [
+					"flower",
+					"black"
+				],
+				"rarity": "common"
 			},
 			"stpatricks": {
 				"name": "St. Patrick's",

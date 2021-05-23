@@ -1,10 +1,4 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-
-// RevealAnonIP
- 
-window.RevealAnonIP = {
-    permissions: ['rollback', 'sysop', 'bureaucrat']
-};
  
 /* Test if an element has a certain class **************************************
  *

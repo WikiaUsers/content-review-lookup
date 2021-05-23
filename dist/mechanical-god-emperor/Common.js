@@ -1,17 +1,18 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 importArticles({
-    type: "style",
+    type: 'script',
     articles: [
-        "w:c:dev:MediaWiki:FontAwesome.css"
+        'u:dev:MediaWiki:DivEditor/code.js',
     ]
 });
 
-$(function addPageBottom() {
-        $("#WikiaRail").append('{{Translated}}');
-});
-window.countdownTimer = {
-    myFunction: function () {
-       $(this).text(' MGE TL has been completed!');
-    }
+/* DiscordBanner Settings */
+
+window.DiscordBannerSettings = {
+    noRail: true
 };
+
+/* Modern BackToTop Button */
+
+window.BackToTopModern = true;

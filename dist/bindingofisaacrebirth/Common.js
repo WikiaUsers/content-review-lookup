@@ -29,6 +29,25 @@ $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
 	$( 'div.collection' ).on( 'scroll', function () {
 		$( 'div.collection' ).scrollLeft( $( this ).scrollLeft() );
 	} );
+
+	// Custom fonts
+	$( '.custom-font' ).each( function () {
+		for ( var i = 0; i < this.classList.length; ++i ) {
+			if ( this.classList[ i ].substring( 0, 12 ) === 'custom-font-' ) {
+				useCustomFont( this, this.classList[ i ].substr( 12 ) );
+				return;
+			}
+		}
+		useCustomFont( this, 'TeamMeat' );
+	} );
+
+	$( '.pi-data-label' ).each( function () {
+		useCustomFont( this, 'TeamMeat-Bold' )
+	} );
+	$(
+		'.pi-item[data-source="quote"],' +
+		'.pi-item[data-source="type"] > .pi-data-value'
+	).each( function () { useCustomFont( this, 'TeamMeat' ) } );
 } );
 
 // TODO: Remove
@@ -51,6 +70,72 @@ function loadSlideshows( $container, timeout ) {
 			$slideshow.append( $slideshow.children( ':first' ) );
 		})();
 	} );
+}
+
+var specialCharacters = {
+	/* ! */ '\u0021': "emark",
+	/* " */ '\u0022': "oquote",
+	/* # */ '\u0023': "hash",
+	/* $ */ '\u0024': "dol",
+	/* % */ '\u0025': "percent",
+	/* & */ '\u0026': "and",
+	/* ' */ '\u0027': "apos",
+	/* ( */ '\u0028': "oparen",
+	/* ) */ '\u0029': "cparen",
+	/* * */ '\u002A': "star",
+	/* + */ '\u002B': "plus",
+	/* . */ '\u002E': "point",
+	/* / */ '\u002F': "slash",
+	/* : */ '\u003A': "colon",
+	/* ; */ '\u003B': "scolon",
+	/* < */ '\u003C': "lthan",
+	/* = */ '\u003D': "equal",
+	/* > */ '\u003E': "gthan",
+	/* ? */ '\u003F': "qmark",
+	/* @ */ '\u0040': "at",
+	/* [ */ '\u005B': "obrkt",
+	/* \ */ '\u005C': "bslash",
+	/* ] */ '\u005D': "cbrkt",
+	/* { */ '\u007B': "obrace",
+	/* | */ '\u007C': "vbar",
+	/* } */ '\u007D': "cbrace",
+	/* ~ */ '\u007E': "tilde",
+	/* ¢ */ '\u00A2': "cent",
+	/* £ */ '\u00A3': "pound",
+	/* ¤ */ '\u00A4': "curren",
+	/* § */ '\u00A7': "ss",
+	/* © */ '\u00A9': "copy",
+	/* ® */ '\u00AE': "regtm",
+	/* ° */ '\u00B0': "degree",
+	/* ± */ '\u00B1': "pm",
+	/* ¶ */ '\u00B6': "pilcrow",
+	/* “ */ '\u201C': "oquote",
+	/* ” */ '\u201D': "cquote",
+	/* † */ '\u2020': "dagger",
+	/* ‡ */ '\u2021': "diesis",
+	/* € */ '\u20AC': "euro"
+};
+
+function useCustomFont( element, name ) {
+	var $this    = $( element ),
+		char     = '',
+		str      = $this.text(),
+		str2     = '<span style="white-space:nowrap">',
+		font     = 'font-' + name,
+		intro    = '<div class="' + font + ' ' + font + '-',
+		i        = 0,
+		len      = 0,
+		charCode = 0;
+	while ( i < str.length ) {
+		charCode = str.charCodeAt( i );
+		len      = charCode >= 0xD800 && charCode <= 0xDBFF ? 2 : 1;
+		char     = str.substr( i, len );
+		str2    += ( char === ' ' ? '</span> &nbsp;<span style="white-space:nowrap">' : intro + ( specialCharacters[ char ] || char ) + '">' + char + '</div>' );
+		i       += len;
+	}
+	$this
+		.addClass( 'custom-font custom-font-enabled' )
+		.html( str2 + '</span>' );
 }
 
 var dlcUtil = {
@@ -155,4 +240,30 @@ var slideshows = {
 			})();
 		}
 	}
+};
+
+var dlcFilterUtil = {
+	/**
+	 * Indicates whether the DLC filtering has been loaded and finished
+	 * modifying the DOM.
+	 */
+	loaded: false,
+
+	/**
+	 * The currently selected DLC filter.
+	 */
+	selectedFilter: 0,
+
+	/**
+	 * Gets the DLC filter of a DLC icon.
+	 * @param {Element} icon The DLC icon.
+	 * @returns The DLC filter of the given DLC icon, 0 otherwise.
+	 */
+	getDlcFilter: function ( icon ) { return 0 },
+
+	/**
+	 * Removes DLC icons from an element, according to the selected filter.
+	 * @param {Element} element The element to remove DLC icons from.
+	 */
+	applyFilter: function ( element ) {}
 };

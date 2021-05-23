@@ -2,18 +2,56 @@
 importArticles({
     type: 'script',
     articles: [
-        'w:c:dev:AjaxRC/i18n.code.js', // Кнопка очистки кэша страницы
-        'u:dev:DiscordIntegrator/code.js',        // Дискорд
-        'w:c:dev:ReferencePopups/code.js', //Для всплывающих ссылок
-        'w:c:ru.sword-art-online:MediaWiki:RepeatableTimer.js',
-        'MediaWiki:Buttons.js'
+        'u:ru.marvel:MediaWiki:Countdown.js',
     ]
 });
 
-/**
-* SocialIcons	
-* See http://dev.wikia.com/wiki/SocialIcons	
-*/
-importScriptPage('SocialIcons/code.js','dev');
+/** Для пользовательской страницы участника: добавление неактивного статуса **/
+//Inactive users
+InactiveUsers = { 
+    months: 3,
+    text: 'Неактивный Участник'
+};
  
-// ============================================================
+importScriptPage('InactiveUsers/code.js', 'dev');
+
+window.onload = function () {
+if (wgUserName !== 'null') {
+        $('.insertusername').html(wgUserName);
+    }
+}
+
+/** Для быстрого описания правок **/
+window.dev = window.dev || {};
+window.dev.editSummaries = {
+    select: [
+'Пожалуйста, добавьте описание правки:',
+'1. Правка текста', [
+   'Создание статьи',
+   'Перевод',
+   'Дополнение информации',
+   'Правка грамматики/пунктуации',
+   'Добавление ссылок',
+   'Викификация',
+   'Удаление ненужной информации' ]
+'2. Изображения', [
+   'Добавление изображений',
+   'Удаление/замена изображений' ]
+'3. Отмена правки', [
+   'Отмена вандализма',
+   'Изменение/отмена неграмотной правки' ]
+'4. Шаблоны', [
+   'Добавление шаблона',
+   'Изменение шаблона',
+   'Удаление шаблона' ]
+'5. Категории', [
+   'Добавление категорий',
+   'Удаление категорий',
+   'Изменение порядка категорий' ]
+    ]
+};
+
+importArticles({ type: 'script', articles: [ 
+    'u:dev:Standard_Edit_Summary/code.js'
+]});
+ ============================================================

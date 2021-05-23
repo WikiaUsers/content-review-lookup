@@ -48,6 +48,7 @@ function detectFriendList(pContent){
 			if(length > 9) id.splice(length-9, 0, tSep);
 			id = id.join('');
 			var desc = friendIDLineData[2] ? " - "+friendIDLineData[2].trim() : "";
+			// Escaping isn't required since the id has to match the regex above (which is only numbers) and the description is just what was already on the page (which should already be escaped)
 			$(this).html("<code class='friend-id'>"+id+"</code>"+desc);
 		}
 	});

@@ -1,0 +1,2 @@
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.noimage = "https://static.wikia.nocookie.net/ballcarl/images/1/10/RTOQl8d.png/revision/latest?cb=20210520172919&format=original";

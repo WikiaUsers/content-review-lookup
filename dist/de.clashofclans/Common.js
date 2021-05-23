@@ -17,7 +17,8 @@ var messageWallUserTags = {
     'NicoHohadler':'Rh9-Turnier-Sieger',
     'Braindeadwulf':'Rh10-Turnier-Sieger',
     'Body95':'Rh11-Turnier-Sieger',
-    'R3stl3SSWarr1or':'Moderator'
+    'R3stl3SSWarr1or':'Moderator',
+    'KleineEule':'Rollback-Benutzer'
 };
  
 $(function($) {
@@ -59,3 +60,9 @@ abuseLogRC_showTo = [ 'content-moderator' ];
 
 /* BackToTopButton */
 //window.BackToTopModern = true;
+
+// ClashRoyale-Link (from clashofclans.fandom.com)
+$(document).ready(function() {
+    // Clash Royale topic interwiki links
+    $("#ClashRoyaleLink").prependTo(".page-header__contribution > div:first-child").css({"display": "inline-block"});
+});

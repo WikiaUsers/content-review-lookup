@@ -1,72 +1,7 @@
 // <nowiki>
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/* Bracket Highlighting - Adapted from Liquipedia - http://wiki.teamliquid.net/dota2/MediaWiki:Common.js */
-var bracketGame;
-mw.hook('wikipage.content').add(function() {
-	$('.match-row').each( function() {
-		if ($(this).find('.bracket-game-details').length > 0 && $(this).find('.legend-table').length == 0) {
-			$(this).find('td:eq(2)').prepend('<div style="position:relative"><div class="match-row-icon"></div></div>');
-		}
-	});
-	$('.match-row').off('hover');
-	$('.match-row').off('click');
-	$('.match-row').hover(function () {
-		$(this).addClass('bracket-hover');
-		if ($(this).closest('.match-row').find('.bracket-game-details').length) {
-			$(this).css('cursor', 'pointer');
-		}
-	},
-	function () {
-		$(this).removeClass('bracket-hover');
-	});
-
-	$('.match-row').click(function (event) {
-		if (bracketGame != null) {
-			bracketGame.find('.bracket-game-details').toggle();
-			if (bracketGame[0] === $(this)[0]) {
-				bracketGame = null;
-				return;
-			}
-		}
-		bracketGame = $(this);
-		var height = bracketGame.find('.bracket-game-details').height();
-		bracketGame.find('.bracket-game-details').css('margin-top', 3);
-		bracketGame.find('.bracket-game-details').toggle();
-		event.stopPropagation();
-	});
-
-
-	$('html').click(function () {
-		if (bracketGame != null) {
-			bracketGame.find('.bracket-game-details').toggle();
-			bracketGame = null;
-		}
-	});
-
-	$('.bracket-game-details').click(function (event) {
-		event.stopPropagation();
-	});
-});
-/* End Bracket Highlighting */
-
-/* functions for gadgets */
-window.displayColor = function(colorclass, id) {
-	if (! id) id = 'p-cactions';
-    $("#" + id).addClass(colorclass);
-    return;
-}
-
-window.clearDisplayColor = function(id) {
-	if (! id) id = 'p-cactions';
-	$("#" + id).removeClass("gadget-action-fail gadget-action-incomplete gadget-action-success");
-}
-
-/* end functions for gadgets */
-
-
 /* expiration of matches starting in schedule navboxes (and anything else) */
-
 $.when(mw.loader.using('mediawiki.util'), $.ready).then( function () {
 	var $expirationList = $('.upcoming-matches');
 	if (!$expirationList.length) {
@@ -81,21 +16,14 @@ $.when(mw.loader.using('mediawiki.util'), $.ready).then( function () {
 	})
 } );
 
-/* end expiration of matches starting in schedule navboxes (and anything else) */
-
 /* temp fix until tipping over disables hovers on edit buttons etc */
 $(function() {
-	var title = mw.config.get('wgTitle');
-	$('[data-to-target-title="' + title + '"]').each(function () {
+	$('.mw-editsection .to_hasTooltip').each(function () {
 		$(this).removeClass('to_hasTooltip');
 		$(this).attr('data-to-id','');
 	});
+	$('.to_hasTooltip[data-to-flags="fiem"]').removeAttr('title');
 });
-
-$(function() {
-	$('.to_hasTooltip[data-to-missing-page="false"]').removeAttr('title');
-})
-
 
 $(function() {
 	if (mw.config.get('wgCanonicalNamespace') != 'Module') return;
@@ -115,6 +43,7 @@ $(function() {
 
 $(function() {
 	if (mw.config.get('wgPageName') != 'MediaWiki:Gadgets-definition') return;
+	if (window.location.href.indexOf("history") > 0) return;
 	var urlPrefix = mw.config.get('wgServer') + '/MediaWiki:Gadget-';
 	function replaceWithLink(str) {
 		var link = document.createElement('a');
@@ -145,11 +74,12 @@ $(function() {
 		$(this).html($(this).closest('div').attr('data-ci-label'));
 		$(this).css('display', 'inline-block');
 	});
+	$('.ci-loading-text').css('display','none');
 });
 
 $(function() {
 	var $cargoFields = $('.mw-special-CargoTables #mw-content-text > ul');
-	if (!$cargoFields) return;
+	if (!$cargoFields.length) return;
 	var tableName = mw.config.get('wgTitle').match(/\/([^\/]+)$/)[1];
 	if (!tableName) return;
 	return new mw.Api().postWithToken('csrf', {
@@ -158,7 +88,7 @@ $(function() {
 		text : '{{#invoke:CargoDeclare|main|' + tableName + '|forgadget=yes}}'
 	}).then(function(data) {
 		var wikitext = data.expandtemplates.wikitext;
-		var dict = wikitext.split(';;;');
+		var dict = wikitext.split(';!;!;');
 		var lookup = {};
 		dict.forEach(function(entry) {
 			var tbl = entry.split(':::');
@@ -173,6 +103,27 @@ $(function() {
 			this.appendChild(el);
 		});
 	});
+});
+
+$(function() {
+	if (!$('.mw-special-Movepage').length) return;
+	var title = mw.config.get('wgTitle').replace('MovePage/', '');
+	return new mw.Api().get({
+		action : 'query',
+		prop:'info',
+		titles:'Data:' + title
+	}).then(function(data) {
+		if (data.query.pages["-1"] !== undefined) return;
+		var el = document.createElement('div');
+		var url = mw.config.get('wgServer') + '/Data:' + title;
+		$(el).html('Warning! A <a href="' + url + '">Data page</a> exists for this page!');
+		$(el).addClass('important-notice');
+		$(el).insertAfter(document.getElementById('wpReason'));
+	});
+});
+
+$(function() {
+    $('.mw-special-CargoTables .cargoTable th.field_Page').html('_pageName');
 });
 
 // </nowiki>

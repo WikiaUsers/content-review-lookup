@@ -1,16 +1,15 @@
- // Lädt die [[Vorlage:Dateiinfo|Dateiinfovorlage]] beim Hochladen direkt im Beschreibungsfeld. Ist über [[MediaWiki:Common.js|Common.js]] eingebunden.
+ // Lädt die Vorlage:Dateiinfo beim Hochladen direkt im Beschreibungsfeld.
 
- function setSpecialUploadTemplate() {
-     var editbox = document.getElementById('wpUploadDescription');
-     if (!editbox)            return;
-     if (editbox.value != '') return;
-     editbox.value = "{"+"{Dateiinfo\n"
-                   + "|Beschreibung = \n"
-                   + "|Datum = \n"
-                   + "|Urheber = \n"
-                   + "|Quelle = \n"
-                   + "|Lizenz = \n"
-                   + "|Anmerkungen = \n"
-                   + "}"+"}";
- }
- addOnloadHook(setSpecialUploadTemplate);
+ $(function setSpecialUploadTemplate() {
+	if ( wgCanonicalSpecialPageName != "Upload" ) return;
+	var editbox = document.getElementById('wpUploadDescription');
+	if (!editbox)            return;
+	if (editbox.value != '') return;
+	editbox.value = "{"+"{Dateiinfo\n"
+	                   + "|Beschreibung = \n"
+	                   + "|Datum = \n"
+	                   + "|Autor = \n"
+	                   + "|Quelle = \n"
+	                   + "|Lizenz = Bildzitat \n"
+	                   + "}"+"}";
+ });

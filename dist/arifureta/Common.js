@@ -1,8 +1,4 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-window.railWAM = {
-    logPage: "Project:WAM Log"
-};
- 
 window.massEditConfig = {
     editInterval: 1500
 };
@@ -16,14 +12,6 @@ window.AjaxCommentDeleteConfig = {
  
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 window.pPreview.tlen = 1000;
- 
-/* RailWAM */
-window.railWAM = {
-    logPage:"Project:WAM Log/Auto-Statistics",
-    loadOnPage:'Special:WikiActivity',
-    autoLogForUsers:["User:Supratim1986"],
-    loadOnNamespace:[-1],
-};
  
 window.MassCategorizationGroups = ['sysop', 'content-moderator'];
  

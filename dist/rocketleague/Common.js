@@ -1,18 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/***************************/
-/* Dev Wiki Script Imports */
-/***************************/
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:DiscordIntegrator/code.js',
-        'u:dev:CacheCheck/code.js',
-        'u:dev:ChatReload/code.js',
-        'u:dev:DisplayClock/code.js',
-    ]
-});
 
 /***************************/
 /* Patches - toggle button */

@@ -1,0 +1,1 @@
+console.log("[DEBUG] Global oasis.js loaded .... OK");

@@ -32,12 +32,8 @@
 /* Card Tooltip */
 window.tooltips_list = [
     {
-        classname: 'card-icon',
-        parse: '{' + '{Tooltip/Card|<#card#>}}',
-    },
-    {
         classname: 'custom-tooltip',
-        parse: '{' + '{Tooltip|<#1#>|<#2#>|<#3#>|<#4#>|<#5#>|<#6#>|<#7#>|<#8#>|<#9#>}}',
+        parse: '{' + '{#invoke:Tooltip|<#tt-type#>|<#1#>|<#2#>|<#3#>|<#4#>|<#5#>|<#6#>|<#7#>|<#8#>|<#9#>}}',
     },
 ];
 

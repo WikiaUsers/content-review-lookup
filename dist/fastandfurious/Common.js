@@ -28,3 +28,10 @@ importScriptPage('AjaxRC/code.js', 'dev');
 importArticles({ type: 'script', articles: [ 
     'u:dev:Standard_Edit_Summary/code.js'
 ]});
+
+window.SpoilerAlertJS = {
+    question: 'This area contains spoilers for F9. Do you wish to continue?',
+    yes: 'Yes',
+    no: 'No',
+    fadeDelay: 1000
+};

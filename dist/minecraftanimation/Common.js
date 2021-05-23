@@ -1,7 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 //<nowiki>
-// Prevent MediaWiki parsing in code files. (e.g. [[User:Withersoul 235|<span style = "font-size: 16px; font-family: 'Arial Black'; font-variant: small-caps; color: crimson; font-weight: bold; text-decoration: none; text-shadow: 1px 0 0 black, 0 1px 0 black, 0 0 15px black;">Wither the Striker</span>]] 09:41, 13 May 2021 (UTC) into a signature)
+// Prevent MediaWiki parsing in code files. (e.g. ~~~~ into a signature)
 
 //==============================================================
 // Create dev namespace 
@@ -677,3 +677,5 @@ if (!!$("input#username").attr('value', wgUserName)&&
           $('#wpGroup-bureaucrat').attr('checked', Boolean(true));
 }
 */
+
+//</nowiki>

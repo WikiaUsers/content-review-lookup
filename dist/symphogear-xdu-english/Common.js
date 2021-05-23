@@ -296,6 +296,7 @@ if (mw.config.get('wgCategories').includes('Effect')) {
                 var splitString;
                 var recombinedString;
                 var index;
+                var charElement;
 
                 if (passiveArray) {
                     html_content +=
@@ -318,7 +319,8 @@ if (mw.config.get('wgCategories').includes('Effect')) {
                         splitString = entry[1].split('['); //[[File:{{#replace:{{#explode:{{{1|}}}|[|5}}|]|}}.png|25px]]
                         recombinedString = splitString[0];
                         for (var index2 = 1; index2 < splitString.length; index2++) {
-                            recombinedString += "[[File:" + splitString[index2].replace("]", ".png|25px]]");
+                        	charElement = splitString[index2].replace("]", "");
+                            recombinedString += "[[File:" + charElement + ".png|25px|link=" + charElement + "]]";
                         }
                         html_content += "<tr id='passiveResult" + index + "'><td>[[File:No_" + (parseInt(entry[0].split(" ")[1]) + 0) + ".png|53px|link=" + entry[0] + "]]</td><td>" + recombinedString + "</td><td>" + entry[2] + "</td></tr>";
                     }
@@ -347,7 +349,8 @@ if (mw.config.get('wgCategories').includes('Effect')) {
                         splitString = entry[1].split('['); //[[File:{{#replace:{{#explode:{{{1|}}}|[|5}}|]|}}.png|25px]]
                         recombinedString = splitString[0];
                         for (var index2 = 1; index2 < splitString.length; index2++) {
-                            recombinedString += "[[File:" + splitString[index2].replace("]", ".png|25px]]");
+                            charElement = splitString[index2].replace("]", "");
+                            recombinedString += "[[File:" + charElement + ".png|25px|link=" + charElement + "]]";
                         }
                         html_content += "<tr id='specialAttackResult" + index + "'><td>[[File:No_" + (parseInt(entry[0].split(" ")[1]) + 0) + ".png|53px|link=" + entry[0] + "]]</td><td>" + recombinedString + "</td><td>" + entry[2] + "</td></tr>";
                     }
@@ -376,7 +379,8 @@ if (mw.config.get('wgCategories').includes('Effect')) {
                         splitString = entry[1].split('['); //[[File:{{#replace:{{#explode:{{{1|}}}|[|5}}|]|}}.png|25px]]
                         recombinedString = splitString[0];
                         for (var index2 = 1; index2 < splitString.length; index2++) {
-                            recombinedString += "[[File:" + splitString[index2].replace("]", ".png|25px]]");
+                            charElement = splitString[index2].replace("]", "");
+                            recombinedString += "[[File:" + charElement + ".png|25px|link=" + charElement + "]]";
                         }
                         html_content += "<tr id='leaderResult" + index + "'><td>[[File:No_" + (parseInt(entry[0].split(" ")[1]) + 0) + ".png|53px|link=" + entry[0] + "]]</td><td>" + recombinedString + "</td><td>" + entry[2] + "</td></tr>";
                     }
@@ -405,7 +409,8 @@ if (mw.config.get('wgCategories').includes('Effect')) {
                         splitString = entry[1].split('['); //[[File:{{#replace:{{#explode:{{{1|}}}|[|5}}|]|}}.png|25px]]
                         recombinedString = splitString[0];
                         for (var index2 = 1; index2 < splitString.length; index2++) {
-                            recombinedString += "[[File:" + splitString[index2].replace("]", ".png|25px]]");
+                            charElement = splitString[index2].replace("]", "");
+                            recombinedString += "[[File:" + charElement + ".png|25px|link=" + charElement + "]]";
                         }
                         html_content += "<tr id='gearResult" + index + "'><td>[[File:No_" + (parseInt(entry[0].split(" ")[1]) + 0) + ".png|53px|link=" + entry[0] + "]]</td><td>" + recombinedString + "</td><td>" + entry[2] + "</td></tr>";
                     }
@@ -434,7 +439,8 @@ if (mw.config.get('wgCategories').includes('Effect')) {
                         splitString = entry[1].split('['); //[[File:{{#replace:{{#explode:{{{1|}}}|[|5}}|]|}}.png|25px]]
                         recombinedString = splitString[0];
                         for (var index2 = 1; index2 < splitString.length; index2++) {
-                            recombinedString += "[[File:" + splitString[index2].replace("]", ".png|25px]]");
+                            charElement = splitString[index2].replace("]", "");
+                            recombinedString += "[[File:" + charElement + ".png|25px|link=" + charElement + "]]";
                         }
                         html_content += "<tr id='saResult" + index + "'><td>[[File:No_" + (parseInt(entry[0].split(" ")[1]) + 0) + ".png|53px|link=" + entry[0] + "]]</td><td>" + recombinedString + "</td><td>" + entry[2] + "</td></tr>";
                     }
@@ -463,7 +469,8 @@ if (mw.config.get('wgCategories').includes('Effect')) {
                         splitString = entry[1].split('['); //[[File:{{#replace:{{#explode:{{{1|}}}|[|5}}|]|}}.png|25px]]
                         recombinedString = splitString[0];
                         for (var index2 = 1; index2 < splitString.length; index2++) {
-                            recombinedString += "[[File:" + splitString[index2].replace("]", ".png|25px]]");
+                            charElement = splitString[index2].replace("]", "");
+                            recombinedString += "[[File:" + charElement + ".png|25px|link=" + charElement + "]]";
                         }
                         html_content += "<tr id='zetsugiResult" + index + "'><td>[[File:No_" + (parseInt(entry[0].split(" ")[1]) + 0) + ".png|53px|link=" + entry[0] + "]]</td><td>" + recombinedString + "</td><td>" + entry[2] + "</td></tr>";
                     }
@@ -532,6 +539,7 @@ if (mw.config.get('wgCategories').includes('Effect')) {
                 var splitString;
                 var recombinedString;
                 var index;
+                var memElement;
 
 				if (memArray)
 				{
@@ -553,7 +561,8 @@ if (mw.config.get('wgCategories').includes('Effect')) {
 	                    splitString = entry[1].split('['); //[[File:{{#replace:{{#explode:{{{1|}}}|[|5}}|]|}}.png|25px]]
 	                    recombinedString = splitString[0];
 	                    for (var index2 = 1; index2 < splitString.length; index2++) {
-	                        recombinedString += "[[File:" + splitString[index2].replace("]", ".png|25px]]");
+	                        charElement = splitString[index2].replace("]", "");
+                            recombinedString += "[[File:" + memElement + ".png|25px|link=" + memElement + "]]";
 	                    }
 	                    html_content += "<tr id='memoriaResult" + index + "'><td>[[File:No_" + entry[0].split(" ")[1] + ".png|53px|link=" + entry[0] + "]]</td><td>" + recombinedString + "</td></tr>";
 	                }

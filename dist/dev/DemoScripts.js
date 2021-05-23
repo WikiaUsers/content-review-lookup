@@ -530,6 +530,21 @@
                 $('#wpTextbox1').replaceWith($('<textarea>', {id: 'wpTextbox1', value: t, style: 'width:inherit;min-width:50%;height:inherit;min-height:100px;'}));
             }
         },
+      
+        WikiForum: {
+            page: 'WikiForum/demo',
+            scripts: [
+                'MediaWiki:WikiForum/core.js',
+                'MediaWiki:WikiForum/theme/default.js',
+            ],
+            exec: function () {
+                mw.hook('WikiForum').add(function (Core) {
+                    var pageName = mw.config.get('wgPageName');
+                    if (!pageName.startsWith('WikiForum/demo')) return;
+                    Core.renderer.fromPage(pageName);
+                });
+            },
+        },
     };
 
     function merge (other) {

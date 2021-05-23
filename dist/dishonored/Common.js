@@ -7,7 +7,7 @@
 /* ######################################################################## */
  
 var indicator = 'https://images.wikia.nocookie.net/dishonoredvideogame/images/4/43/RCajax-loader.gif';
-var ajaxPages = new Array("Special:RecentChanges", "Special:WikiActivity", "Dishonored Wiki:WikiActivity", "Special:NewFiles");
+var ajaxPages = new Array("Special:WikiActivity", "Dishonored Wiki:WikiActivity", "Special:NewFiles");
 var ajaxTimer;
 var ajaxRefresh = 60000;
 var refreshText = 'Auto-refresh';
@@ -71,15 +71,6 @@ function loadPageData() {
       if (doRefresh) ajaxTimer = setTimeout("loadPageData();", ajaxRefresh);
    });
 }
-addOnloadHook(function(){ for (x in ajaxPages) { if (wgPageName == ajaxPages[x] && $("#ajaxToggle").length==0) preloadAJAXRL() } } );
+$(function(){ for (x in ajaxPages) { if (wgPageName == ajaxPages[x] && $("#ajaxToggle").length==0) preloadAJAXRL() } } );
 
 importScriptPage('ShowHide2/code.js', 'dev');
-
-importArticles({
-    type: 'script',
-    articles: [
-        // ...
-        'w:c:dev:ReferencePopups/code.js',
-        // ...
-    ]
-});

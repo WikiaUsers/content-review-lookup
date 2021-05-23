@@ -36,6 +36,7 @@
 	'use strict';
 
 	var config = mw.config.get([
+			'skin',
 			'stylepath',
 			'wgAction',
 			'wgCanonicalSpecialPageName',
@@ -67,6 +68,13 @@
 		href = location.href.replace(/#[\S]*/, ''),
 		i18n,
 		isUCP = config.wgVersion !== '1.19.24';
+
+	/**
+	 * Not supported on FandomDesktop
+	 */
+	if (config.skin === 'fandomdesktop') {
+		return;
+	}
 
 	/**
 	 * Fix for Unified Community Platform

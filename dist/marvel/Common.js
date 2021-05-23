@@ -484,7 +484,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database:Image Template\r| License                 = ",
-post: "\r| ImageType               = \r\r| Universe                = \r| Subject1                = \r| Subject2                = \r| Subject3                = \r| Subject4                = \r| Subject5                = \r\r| Source                  = \r| CoverArtist1            = \r| Penciler1               = \r| Inker1                  = \r| Colourist1              = \r| Letterer1               = \r}}"
+post: "\r| ImageType               = \r\r| Universe                = \r| Subject1                = \r| Subject2                = \r| Subject3                = \r| Subject4                = \r| Subject5                = \r\r| Source                  = \r| CoverArtist1            = \r| Penciler1               = \r| Inker1                  = \r| Colorist1               = \r| Letterer1               = \r}}"
 }
 }
 }

@@ -398,9 +398,9 @@
             // If wgSassParams doesn't exist, fetch theme colors from the DOM.
             var computedBodyStyle = getComputedStyle(document.body);
             sassParams = {
-                'color-body': computedBodyStyle.getPropertyValue('--theme-community-background-color'),
-                'color-body-middle': computedBodyStyle.getPropertyValue('--theme-community-background-color'),
-                'color-page': computedBodyStyle.getPropertyValue('--theme-article-background-color'),
+                'color-body': computedBodyStyle.getPropertyValue('--theme-body-background-color'),
+                'color-body-middle': computedBodyStyle.getPropertyValue('--theme-body-background-color'),
+                'color-page': computedBodyStyle.getPropertyValue('--theme-page-background-color'),
                 'color-buttons': computedBodyStyle.getPropertyValue('--theme-accent-color'),
                 'color-community-header': computedBodyStyle.getPropertyValue('--theme-header-background-color'),
                 'color-links': computedBodyStyle.getPropertyValue('--theme-link-color'),

@@ -9,6 +9,7 @@
  */
 
 (function (mw, $, window) {
+  if (mw.config.get('skin') === 'fandomdesktop') return;
   var root = $("#toc");
   if (window.FloatingTocLoaded || !root.length) return;
   window.FloatingTocLoaded = true;

@@ -1,0 +1,2 @@
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/saimoe/images/3/35/Aaa.jpg/revision/latest/scale-to-width-down/225?cb=20200416083658';

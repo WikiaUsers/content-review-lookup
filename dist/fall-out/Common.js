@@ -4,6 +4,22 @@
 /* ### JavaScript here is loaded for all users and all skins.           ### */
 /* ######################################################################## */
 
+
+/* ######################################################################## */
+/* ### ImportJS OVERRIDES                                               ### */
+/* ### ---------------------------------------------------------------- ### */
+/* ### Description: Overrides configurations of ImportJS modules.       ### */
+/* ### Credit:      User:FWDekker                                       ### */
+/* ######################################################################## */
+
+// ArchiveTool changed their default values at some point.
+// These lines revert it to the old values.
+window.ArchiveToolConfig = { 
+   archiveListTemplate: "Archives",
+   archivePageTemplate: "Archivepage",
+};
+
+
 /* ######################################################################## */
 /* ### SHARED CODE                                                      ### */
 /* ### ---------------------------------------------------------------- ### */

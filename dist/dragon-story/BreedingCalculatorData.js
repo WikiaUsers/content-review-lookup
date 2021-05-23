@@ -9366,6 +9366,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "fresh": {
+                "name": "Fresh",
+                "types": [
+                    "flower",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "friendly": {
                 "name": "Friendly",
                 "types": [
@@ -15754,6 +15770,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "16_hours_16",
                 "rarity": 3,
                 "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "magnaura": {
+                "name": "Magnaura",
+                "types": [
+                    "flower",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
                 "notes": [
                     "feature"
                 ]
@@ -22716,6 +22748,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "redstem": {
+                "name": "Red Stem",
+                "types": [
+                    "flower",
+                    "white",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "redbloom": {
                 "name": "Redbloom",
                 "types": [
@@ -26379,6 +26428,32 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "worldevent",
                 "notes": [
                     "feature"
+                ]
+            },
+            "sprout": {
+                "name": "Sprout",
+                "types": [
+                    "flower",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "black"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "blue"
+                            ]
+                        ]
+                    ]
                 ]
             },
             "stpatricks": {

@@ -1,4 +1,4 @@
 InactiveUsers = { 
 	months: 1,
-        text: 'inativo'};
+        text: 'Inativo'};
 importScriptPage('InactiveUsers/code.js', 'dev');

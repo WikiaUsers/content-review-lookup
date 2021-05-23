@@ -7,7 +7,7 @@
  * [kowiki] Fixed an issue with help-panel-button ([[ko:User:ykhwong]])
  * [zhwiki] Add a timer to autohide button, check more gadgets. Add scrollDownButton
  *   @from https://ko.wikipedia.org/?oldid=25440719
- *   @maintainer 安忆 ([[zh:User:AnYiLin]])
+ *   @zhwikipedia_maintainer 安忆 ([[zh:User:AnYiLin]])
  */
 (function($, mw) {
 	var scrollDownButtonId = 'scrollDownButton',
@@ -63,7 +63,11 @@
 	var scrollButtonTimer;
 	$(window).on('scroll', function() {
 		var dingHeight = $('#bluedeck_ding>div').height() ? $('#bluedeck_ding>div').height() : 0;
-		$('#mw-ge-help-panel-cta-button').length > 0 ? $scrollDownButton.css('bottom', dingHeight + 75 + 'px') && $scrollUpButton.css('bottom', dingHeight + 116 + 'px') : $scrollDownButton.css('bottom', dingHeight + 24 + 'px') && $scrollUpButton.css('bottom', dingHeight + 65 + 'px');
+		$('#mw-ge-help-panel-cta-button').length > 0 ?
+		  $scrollDownButton.css('bottom', dingHeight + 75 + 'px') && $scrollUpButton.css('bottom', dingHeight + 116 + 'px') :
+          $('.skin-fandomdesktop').length > 0 ?
+		    $scrollDownButton.css('bottom', dingHeight + 44 + 'px') && $scrollUpButton.css('bottom', dingHeight + 85 + 'px') :
+		    $scrollDownButton.css('bottom', dingHeight + 24 + 'px') && $scrollUpButton.css('bottom', dingHeight + 65 + 'px');
 		$('#cat_a_lot').length > 0 || $('#proveit').length > 0 || $('.wordcount').length > 0 ? $scrollDownButton.css('left', '10px') && $scrollUpButton.css('left', '10px') : $scrollDownButton.css('left', 'unset') && $scrollUpButton.css('left', 'unset');
 		$(this).scrollTop() > 60 ? $scrollDownButton.fadeIn('slow') && $scrollUpButton.fadeIn('slow') : $scrollDownButton.fadeOut('slow') && $scrollUpButton.fadeOut('slow');
 		this.clearTimeout(scrollButtonTimer);

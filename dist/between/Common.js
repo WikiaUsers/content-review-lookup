@@ -67,3 +67,6 @@ window.FastBlock = [
         nocreate: 0
     }  
 ];
+// preventing 'Forum talk:{{{1}}}'. For make new suggestions to the forum:index, do it on BW:APZ.
+$(function () { /* Redirects */
+    if (mw.config.get('wgNamespaceNumber') == 101) location.href = mw.config.get('wgServer') + '/wiki/Forum:' + mw.config.get('wgTitle');

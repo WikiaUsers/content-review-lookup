@@ -1,0 +1,1 @@
+console.log("[DEBUG] Global fandomdesktop.js loaded .... OK");

@@ -12,16 +12,15 @@ $.when(
 	var lastRevision;
 	/** @type {{ pageid: string, title: string }} */
 	var sourcePage;
-	var sourceWikiRoot = 'https://bindingofisaacrebirth.gamepedia.com',
-		sourceApi      = new mw.ForeignApi( sourceWikiRoot + '/api.php' ),
+	var sourceWikiRoot = 'https://bindingofisaacrebirth.fandom.com',
 		targetApi      = new mw.Api();
 
-    targetApi.get( {
-        action: 'cargoquery',
-        tables: 'maintenance',
-        fields: 'revision',
-        where: '_pageID=' + mw.config.get( 'wgArticleId' ),
-        limit: 1
+	targetApi.get( {
+		action: 'cargoquery',
+		tables: 'maintenance',
+		fields: 'revision',
+		where: '_pageID=' + mw.config.get( 'wgArticleId' ),
+		limit: 1
 	} ).done( onCargoQueryFetch );
 
 	/**
@@ -30,14 +29,15 @@ $.when(
 	function onCargoQueryFetch( data ) {
 		var cargoquery = data.cargoquery;
 
-        if ( cargoquery.length ) {
+		if ( cargoquery.length ) {
 			translatedRevision = cargoquery[ 0 ].title.revision;
-			sourceApi.get( {
+			$.getJSON( sourceWikiRoot + '/api.php', {
+				format: 'json',
 				action: 'query',
 				prop: 'revisions',
 				revids: translatedRevision
 			} ).done( onSourcePageFetch );
-            return;
+			return;
 		}
 
 		var $editnotice = $( 'body.action-edit #translation-editnotice' );
@@ -86,7 +86,8 @@ $.when(
 			return;
 		}
 
-		sourceApi.get( {
+		$.getJSON( sourceWikiRoot + '/api.php', {
+			format: 'json',
 			action: 'query',
 			prop: 'revisions',
 			pageids: sourcePage.pageid
@@ -158,7 +159,8 @@ $.when(
 	}
 
 	function translationSearch() {
-		sourceApi.get( {
+		$.getJSON( sourceWikiRoot + '/api.php', {
+			format: 'json',
 			action: 'query',
 			prop: 'revisions',
 			titles: $searchInput.val()

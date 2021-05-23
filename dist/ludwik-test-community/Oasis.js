@@ -1,0 +1,1 @@
+console.log("[DEBUG] Global wikia.js loaded .... OK");

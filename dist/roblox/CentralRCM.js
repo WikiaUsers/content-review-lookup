@@ -44,7 +44,7 @@ mw.loader.using(["mediawiki.api"], function(require) {
                 page: "Template:RobloxWikis"
             }).then(function(data) {
                 if (data.parse) {
-                    var wikitext = data.parse.wikitext + "[[w:c:roblox|"; // Roblox Wikia is included on footer slightly differently
+                    var wikitext = data.parse.wikitext + "[[w:c:roblox|"; // Roblox Wiki is included on footer slightly differently
                     var subdomain = /\[\[w:c:([^|]+?)\|/gi, m;
                     
                     while (m = subdomain.exec(wikitext))

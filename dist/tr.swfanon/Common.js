@@ -1,31 +1,4 @@
 /* Buraya konulacak JavaScript kodu sitedeki her kullanıcı için her sayfa yüklendiğinde çalışacaktır */
-/* Bilgi preload */
-  this.insertInformationTemplate = function (target) {
-    var $target, defaultText;
-
-    $target = (target instanceof $) ? target : $(target);
-    defaultText = "==Özet==\n{{Bilgi\n|açıklama=\n|kaynak=\n" +
-      "|esersahibi=\n|lisanslama=\n}}";
-
-    this.getTemplate("Template:Stdinformation").then(
-      function (data) {
-        return data;
-      },
-      function () {
-        return defaultText;
-      }
-    ).then(function (value) {
-      $target.val(value);
-    });
-  };
-  
-      // Add <nowiki>{{Information}}</nowiki> to field if viewing Special:Upload
-if (mw.config.get("wgCanonicalSpecialPageName") === "Upload") {
-  this.insertInformationTemplate("#wpUploadDescription");
-}
-
-/* Bilgi preload end */
-
 /**
  * Start upload form customisations
  * @author Green tentacle
@@ -83,7 +56,7 @@ function setupUploadForm(){
 			tbody2.append('<tr><td class="mw-label" style="width: 125px;">TypeTür kategorileri:</td><td class="mw-input"><textarea id="cattypeBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
 		} else {
 			// Old style form just needs Information template in the summary box
-			$('#wpUploadDescription').val('==Özet==\r\n{{Bilgi\r\n|attention=\r\n|description=\r\n|source=\r\n|artist=\r\n|filespecs=\r\n|licensing=\r\n|other versions=\r\n|cat artist=\r\n|cat licensee=\r\n|cat subject=\r\n|cat type=\r\n}}');
+			$('#wpUploadDescription').val('==Özet==\r\n{{Bilgi\r\n|dikkat=\r\n|açıklama=\r\n|kaynak=\r\n|eser sahibi=\r\n|dosyaözellikleri=\r\n|lisanslama=\r\n|diğerversiyonlar=\r\n|kategori lisans sahibi=\r\n|kategori konusu=\r\n|kategori türü=\r\n}}');
 
 			// Add link to guided form
 			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="//starwars.wikia.com/tr/index.php?title=Special:Upload" onclick="javascript:localStorage.setItem(\'uploadform\', \'guided\')">Rehberli yükleme formuna geç</a></div>');

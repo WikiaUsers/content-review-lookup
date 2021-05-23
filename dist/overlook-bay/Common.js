@@ -1,4 +1,4 @@
-/*** Adding a user account age tag ***/
+/*** JavaScript Imports ***/
 importArticles({
     type: 'script',
     articles: [

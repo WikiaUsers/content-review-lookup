@@ -1,4 +1,4 @@
-mw.config.set('UMFBypassLicenseCheck',true);
+console.log('testing code execution');
 mw.loader.using('mediawiki.api').then(function() {
 	if (mw.config.get('wgPageName') != 'Special:TransferWikis') return;
 	if (!mw.config.get('wgUserGroups').includes('util')) return;

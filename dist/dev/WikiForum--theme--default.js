@@ -1,6 +1,6 @@
 /**
  * @name WikiForum/theme/fandom
- * @version 3.0.2 (Core version)
+ * @version 3.0.5 (Core version)
  * @author 机智的小鱼君 <dragon-fish@qq.com>
  * @desc Provide a front-end structured discussion page with JavaScript.
  *       Similar to Community Feed and support wikitext.

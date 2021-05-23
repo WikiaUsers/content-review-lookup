@@ -13,6 +13,15 @@ window.ajaxPages = [
     "Special:AllPages"
 ];
 
+// random background image, the first one is always our default. check https://roblox-galaxy-official.fandom.com/wiki/File:Wiki-background for a list of our backgrounds.
+var imgs = [
+	'https://vignette.wikia.nocookie.net/roblox-galaxy-official/images/5/50/Wiki-background/revision/latest?cb=20200109030158',
+	'https://static.wikia.nocookie.net/roblox-galaxy-official/images/a/ae/Galaxy_bg.jpg/revision/latest?cb=20210523005538&format=original',
+	'https://static.wikia.nocookie.net/roblox-galaxy-official/images/d/d6/Galaxy_2_bg.jpg/revision/latest?cb=20210523005620&format=original'
+	];
+    
+document.body.style.backgroundImage = 'url(' + imgs[Math.floor(Math.random() * imgs.length)] + ')'
+
 // back to top button
 window.BackToTopModern = true;
 

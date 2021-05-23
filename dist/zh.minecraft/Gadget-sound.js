@@ -6,6 +6,7 @@ mw.hook( 'wikipage.content' ).add( function( $content ) {
 	var i18n = {
 		playTitle: '点击播放',
 		stopTitle: '点击暂停',
+		audioNotExist: '此声音文件不存在',
 	};
 	$content.find('.sound' ).prop( 'title', i18n.playTitle ).on( 'click', function( e ) {
 		// Ignore links
@@ -16,6 +17,9 @@ mw.hook( 'wikipage.content' ).add( function( $content ) {
 		var audio = $( this ).find( '.sound-audio' )[0];
 		if ( audio ) {
 			audio.paused ? audio.play() : audio.pause();
+		}
+		else {
+			mw.notify( i18n.audioNotExist );
 		}
 	} ).find( '.sound-audio' ).on( 'play', function() {
 		// Stop any already playing sounds

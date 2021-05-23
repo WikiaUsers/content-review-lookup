@@ -19,6 +19,7 @@
         be: "Закрыць",
         bn: "বন্ধ করুন",
         de: "Schließen",
+        el: "Κλείσιμο",
         es: "Cerrar",
         fr: "Fermer",
         hi: "बंद करें",

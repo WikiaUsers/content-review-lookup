@@ -11,7 +11,7 @@ importArticles({
 /********************************************************/
 /********************************************************/
 //Constantes
-var fieldsArray = ["cetusCycle_countdown", "voidTraderCycle_countdown", "orbisCycle_countdown", "pcInvasions", "ps4Invasions", "xb1Invasions", "swiInvasions", "cambionCycle_countdown"];
+var fieldsArray = ["cetusCycle_countdown", "voidTraderCycle_countdown", "orbisCycle_countdown", "pcInvasions", "ps4Invasions", "xb1Invasions", "swiInvasions", "cambionCycle_countdown", "sortieRewards"];
 var plateformsArray = ["pc", "ps4", "xb1", "swi"];
 
 const API_ADDRESS = "https://api.warframestat.us/";
@@ -170,6 +170,17 @@ function buildHomePage_Timers() {
 			}
 		};
 		cambionRequest.send();
+	}
+	//sortieRewards
+	sortieRewards= fieldsArray[8];
+	if (document.getElementById(id60a3e0fdacb0c7a68ef85ad4)) {
+		var sortieRequest = new XMLHttpRequest();
+		sortieRequest.open('GET', API_ADDRESS.concat('pc/sortie'), true);
+		sortieRequest.onload = function () {
+			var data = JSON.parse(this.response);
+			preText = "<span style=\"color: #4ec4df;\">Test Sortie</span>";
+		};
+		sortieRequest.send();
 	}
 }
 

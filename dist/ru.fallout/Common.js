@@ -5,6 +5,75 @@
 /* [[MediaWiki:Wikia.js]] для скриптов вне основного блока (.mw-parser-output) */
 
 //================================================================
+// Костыль для удаление пустого тега <p> перед инфобоксами
+$('#mw-content-text .mw-parser-output > .portable-infobox').prev('p').each(function() {
+    var pLength = $(this).text().replace(/(\n|\s)/g, '').length;
+    if (pLength === 0) $(this).hide();
+});
+
+//================================================================
+// [[Template:Игры]]
+if ( $('.va-titleicons').length ) {
+	var previewCount = $('.va-titleicons-preview > a').length;
+	var fullsizeCount = $('.va-titleicons-fullsize-content > a').length;
+	
+	if (previewCount < fullsizeCount) {
+		$('.va-titleicons-preview').addClass('va-titleicons-showmore');
+	}
+
+    $('.va-titleicons').prependTo('.page-header__contribution > div:first-child');
+    $('.va-titleicons').show();
+}
+
+//================================================================
+// Настройки скриптов
+
+//--------------------------------
+// Неактивные пользователи (InactiveUsers)
+InactiveUsers = {
+	months: 3,
+	text: 'Неактивен'
+};
+
+//--------------------------------
+// Проверка подписей (SignatureCheck)
+// window.SignatureCheckJS = {
+// 	// Parts of the confirm prompt
+// 	preamble: '',
+// 	epilogue: '\nНажмите кнопу «отмена» и внесите соответствующие изменения. Если же вы уверены, что данное предупреждение сработало ошибочно, то вы можете сохранить страницу, нажав кнопку «OK»',
+// 	noForumheader: 'Вы удалили (либо забыли добавить) шапку форума. Пожалуйста, добавьте в начало страницы шаблон {{Forumheader}}.\n\n',
+// 	noSignature: 'Вы забыли добавить подпись к своему сообщению с помощью четырёх тильда ~ ~ ~ ~ (без пробелов)\n',
+// 		forumheader: 'Forumheader'
+// };
+
+//--------------------------------
+// Что-то про ReferencePopups
+( (window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {} ).lockdown = true;
+
+//--------------------------------
+// Полу-автоматическая архивация (ArchiveTool)
+// Конфигурация, вероятно, не работает. Используем значения по-умолчанию + перенаправления.
+// var ArchiveToolConfig = {
+// 	archiveListTemplate: 'Archives',
+// 	archivePageTemplate: 'Archivepage',
+// 	archiveSubpage: 'Archive'
+// };
+
+//--------------------------------
+// Автообновление служебных страниц (AJAX Recent Changes)
+// Пока что не адаптировано под UCP
+// var ajaxPages = ["Служебная:Вклад","Служебная:Журналы","Служебная:Новые_страницы","Служебная:Новые_файлы"];
+// var AjaxRCRefreshText = 'Автообновление';
+// var AjaxRCRefreshHoverText = 'Включить автообновление';
+
+//--------------------------------
+// Описание правок (Standard Edit Summary)
+window.dev = window.dev || {};
+window.dev.editSummaries = {
+	select: 'Шаблон:Описание правки'
+};
+
+//================================================================
 // Вставка пользовательского имени для [[Template:Username]]
 $(function() {
 	if (mw.config.values.wgUserName != 'null') {
@@ -49,58 +118,6 @@ if ( $('.js-items-spoilers').length ) {
 }
 
 //================================================================
-// Настройки скриптов
-
-//--------------------------------
-// Неактивные пользователи (InactiveUsers)
-InactiveUsers = {
-	months: 3,
-	text: 'Неактивен'
-};
-
-//--------------------------------
-// Проверка подписей (SignatureCheck)
-// window.SignatureCheckJS = {
-// 	// Parts of the confirm prompt
-// 	preamble: '',
-// 	epilogue: '\nНажмите кнопу «отмена» и внесите соответствующие изменения. Если же вы уверены, что данное предупреждение сработало ошибочно, то вы можете сохранить страницу, нажав кнопку «OK»',
-// 	noForumheader: 'Вы удалили (либо забыли добавить) шапку форума. Пожалуйста, добавьте в начало страницы шаблон {{Forumheader}}.\n\n',
-// 	noSignature: 'Вы забыли добавить подпись к своему сообщению с помощью четырёх тильда ~ ~ ~ ~ (без пробелов)\n',
-// 		forumheader: 'Forumheader'
-// };
-
-//--------------------------------
-// Что-то про ReferencePopups
-( (window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {} ).lockdown = true;
-
-//--------------------------------
-// Предотвращает скрытие существующих тегов ProfileTags
-(window.dev = window.dev || {}).profileTags = { noHideTags: true };
-
-//--------------------------------
-// Полу-автоматическая архивация (ArchiveTool)
-// Конфигурация, вероятно, не работает. Используем значения по-умолчанию + перенаправления.
-// var ArchiveToolConfig = {
-// 	archiveListTemplate: 'Archives',
-// 	archivePageTemplate: 'Archivepage',
-// 	archiveSubpage: 'Archive'
-// };
-
-//--------------------------------
-// Автообновление служебных страниц (AJAX Recent Changes)
-// Пока что не адаптировано под UCP
-// var ajaxPages = ["Служебная:Вклад","Служебная:Журналы","Служебная:Новые_страницы","Служебная:Новые_файлы"];
-// var AjaxRCRefreshText = 'Автообновление';
-// var AjaxRCRefreshHoverText = 'Включить автообновление';
-
-//--------------------------------
-// Описание правок (Standard Edit Summary)
-window.dev = window.dev || {};
-window.dev.editSummaries = {
-	select: 'Шаблон:Описание правки'
-};
-
-//--------------------------------
 // Фикс нескрываемых подзаголовков в "mw-collapsible mw-collapsed sortable"
 $(function() {
 
@@ -123,27 +140,3 @@ $(function() {
     });
 
 });
-
-//--------------------------------
-// [[Template:Игры]]
-if ( $('.va-titleicons').length ) {
-	var previewCount = $('.va-titleicons-preview > a').length;
-	var fullsizeCount = $('.va-titleicons-fullsize-content > a').length;
-	
-	if (previewCount < fullsizeCount) {
-		$('.va-titleicons-preview').addClass('va-titleicons-showmore');
-	}
-
-    $('.va-titleicons').prependTo('.page-header__contribution > div:first-child');
-    $('.va-titleicons').show();
-}
-
-//================================================================
-// Импорт скриптов, некорректно работающих с [[MediaWiki:ImportJS]]
-
-// importArticles({
-// 	type: 'script',
-// 	articles: [
-// 		'u:dev:MediaWiki:Standard_Edit_Summary/code.js', // Древняя подстановка описания правок в старом редакторе кода.
-// 	]
-// });

@@ -19,6 +19,20 @@ var i18n = {
 /* Fired whenever wiki content is added. (#mw-content-text, live preview, load page, etc.) */
 mw.hook( 'wikipage.content' ).add( function( $wikipageContent ) {
 
+/**
+ * Pre transform some escaped element content into unescaped version.
+ * Currently such elements including: <style>
+ */
+( function() {
+	// all element selectors defined here
+	var selector = 'style';
+	var temp = document.createElement( 'div' );
+	$wikipageContent.find( selector ).each( function() {
+		temp.innerHTML = $( this ).text();
+		$( this ).text( temp.innerText || temp.textContent );
+	});
+	temp = null;
+}() );
 
 /**
  * Collapsible elements

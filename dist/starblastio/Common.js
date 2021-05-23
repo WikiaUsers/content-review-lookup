@@ -76,7 +76,7 @@ if (mw.config.get('wgTitle') === 'Changelogs') {
 	}
 	 
 	function addBackToTop () {
-		$('<div id="backtotop" title="Back To Top" style="padding: 5px; border: 2px solid darkslategrey;position: fixed; right:20px; bottom:20px; cursor:pointer"><img src="https://raw.githubusercontent.com/Bhpsngum/img-src/master/arrow-up.png" width="30" height="30"></div>').appendTo($(document.body));	
+		$('<a href="javascript:void(0);" id="backtotop" title="Back To Top"></a>').appendTo($(document.body));	
 		$("#backtotop").on("click", goToTop);
 		hideFade ();
 	}

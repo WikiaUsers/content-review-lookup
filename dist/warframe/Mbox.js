@@ -10,7 +10,7 @@ function closeBox() {
 		if (!boxes[i].classList.contains("fixed-close")) {
 			var id = boxes[i].id;
 			boxes[i].classList.add("fixed-close");
-			var close = boxes[i].getElementsByClassName("mbox__close")[0];
+			var close = boxes[i].children[0].children[1].getElementsByClassName("mbox__close")[0];
 			/* ×xΧхХ᙭ */
 			close.innerHTML = '<span onclick="$(\'#' + id + '\').css(\'display\', \'none\');">×</span>';
 		}
