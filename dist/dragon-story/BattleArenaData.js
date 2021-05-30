@@ -4807,6 +4807,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"fragrance": {
+				"name": "Fragrance",
+				"colors": [
+					"flower",
+					"yellow",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"franken": {
 				"name": "Franken",
 				"colors": [
@@ -10229,6 +10238,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"perfume": {
+				"name": "Perfume",
+				"colors": [
+					"flower",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"peridot": {
 				"name": "Peridot",
 				"colors": [
@@ -11710,6 +11727,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"rosebloom": {
+				"name": "Rosebloom",
+				"colors": [
+					"flower",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"roseglass": {
 				"name": "Roseglass",
 				"colors": [
@@ -12361,6 +12386,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"marblekey"
 				],
 				"rarity": "unbreedable"
+			},
+			"silky": {
+				"name": "Silky",
+				"colors": [
+					"flower",
+					"purple"
+				],
+				"rarity": "common"
 			},
 			"silver": {
 				"name": "Silver",
@@ -13174,6 +13207,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"pink",
 					"yellow",
 					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"springshine": {
+				"name": "Springshine",
+				"colors": [
+					"flower",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},

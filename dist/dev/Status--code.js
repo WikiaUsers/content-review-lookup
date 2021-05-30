@@ -7,8 +7,7 @@ $(function() {
 		]),
 		inUserNamespace = $.inArray(config.wgNamespaceNumber, [2, 3, 1200]) !== -1,
 		i18n,
-		date = new Date(),
-		isUCP = !mw.config.get('wgVersion').startsWith('1.19.');
+		date = new Date();
 	if (!inUserNamespace || window.StatusLoaded) {
 		return;
 	}
@@ -81,7 +80,7 @@ $(function() {
 		}
 		getRecentEdits(userName).done(function(data) {
 			var userStatus = getUserStatus(data),
-			    userProfile = isUCP ? '.user-identity-box .user-identity-stats' : '.UserProfileMasthead .details';
+			    userProfile = '.user-identity-box .user-identity-stats';
 
 			appendToUserProfile(userStatus, userProfile);
 		});

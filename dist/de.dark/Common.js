@@ -48,16 +48,3 @@ $(function() {
     if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) { return; }
     $('span.insertusername').text(mw.config.get('wgUserName'));
 });
-
-// RailWAM
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
-// - end - RailWAM
- 
-// ** Recent Wiki Activity and Recent changes auto refresh ** //
-window.ajaxPages = [
-    "Special:RecentChanges",
-    "Special:WikiActivity"
-];
-// - end - Auto-refresh

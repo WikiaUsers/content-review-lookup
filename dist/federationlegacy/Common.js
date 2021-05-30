@@ -1,6 +1,5 @@
 /**
  * Primary JavaScript file (all skins)
- * Updated on 2 Feb. 2021
  */
 
 /*------------------------------------*\
@@ -79,8 +78,14 @@ UserTagsJS.modules.inactive = 30;
 /* Insert page header icons */
 
 if($('#canon').length) {
+	// Remove the icon from the page content and insert it into the page header
 	$('#PageHeader').prepend('<div id="header-icons"></div>');
 	$('#header-icons').append($('#canon'));
+	
+	// Remove an empty paragraph tag that sometimes appears at the top of the page content when the icon is removed
+	if($.trim($('.mw-parser-output > p').first().html()) === '') {
+		$('.mw-parser-output > p').first().remove();
+	}
 }
 
 /* Fix parser issues with tabbers */

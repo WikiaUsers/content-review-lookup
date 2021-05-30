@@ -5,6 +5,10 @@ $(document).ready(function () {
   if (classList.indexOf("Klen_s_flame") != -1) {
     $(document.body).addClass("page-Klen_s_flame");
   }
+  
+  if (classList.indexOf("Foxengton") != -1) {
+    $(document.body).addClass("page-Foxengton");
+  }
 });
 
 //Отображение/скрытие элементов

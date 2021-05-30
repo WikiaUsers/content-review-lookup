@@ -40,7 +40,8 @@
         'Molx',
         'Lord Galarzaa',
         'JO hn',
-        'Wirox0'
+        'Wirox0',
+        'VoydBot'
     ];
     tips = [];
     reasons = [];

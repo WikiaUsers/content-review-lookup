@@ -1,6 +1,15 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 // ============================================================
 
+/* Count-down Timer */
+importScript('MediaWiki:Common.js/countdowntimer.js');
+
+/* Stats */
+importScript('MediaWiki:Common.js/stats.js');
+
+/* Clock */
+importScript('MediaWiki:Common.js/Clock.js');
+
 /****************************/
 /* spoilers by User:Tierrie */
 /****************************/
@@ -9,6 +18,7 @@ importScriptPage('Content/SpoilersToggle.js', 'scripts');
 // *******
 // Auto-Refreshing RecentChanges, Logs, Contributions, and WikiActivity (Courtesy of Sactage)
 // *******
+importScriptPage('AjaxRC/code.js', 'dev');
 window.ajaxPages = [
     "Special:RecentChanges",
     "Special:Log",
@@ -200,3 +210,22 @@ window.UserBadgesJS = {
     };
     $($.proxy(DiscordIntegrator.preload, DiscordIntegrator));
 })();
+
+/* Test if an element has a certain class **************************************
+ *
+ * Description: Uses regular expressions and caching for better performance.
+ * Maintainers: User:Mike Dillon, User:R. Koot, User:SG
+ */
+
+var hasClass = (function () {
+    var reCache = {};
+    return function (element, className) {
+        return (reCache[className] ? reCache[className] : (reCache[className] = new RegExp("(?:\\s|^)" + className + "(?:\\s|$)"))).test(element.className);
+    };
+})();
+
+//Username 
+var username = wgUserName; 
+if (username !== null) { 
+    $('#InputUsername').html(username); 
+}

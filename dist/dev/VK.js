@@ -10,7 +10,6 @@ $(function () {
     function init() {
         mw.loader.getScript("https://vk.com/js/api/openapi.js?168").then(
             function () {
-                console.log(vkElements);
                 for (var i in vkElements) {
                     var d = vkElements[i].dataset;
 
@@ -164,4 +163,4 @@ $(function () {
             }
         )
     };
-})
+});

@@ -248,5 +248,8 @@ PFD_messages = {
 //===================================
 
 // Vedere "MediaWiki:ImportJS"
-
+importArticles({
+    type: "script",
+    article: "MediaWiki:CustomInterfaceOasis.js"
+});
 // END Importazioni

@@ -41,11 +41,13 @@ $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
 		useCustomFont( this, 'TeamMeat' );
 	} );
 
-	$( '.pi-data-label' ).each( function () {
-		useCustomFont( this, 'TeamMeat-Bold' )
-	} );
 	$(
-		'.pi-item[data-source="quote"],' +
+		'.pi-header,' +
+		':not( .pi-group ) > .pi-data > .pi-data-label'
+	).each( function () { useCustomFont( this, 'TeamMeat-Bold' ) } );
+	$(
+		'.pi-group > .pi-data > .pi-data-label,' +
+		'.pi-item[data-source="quote"] > .pi-data-value,' +
 		'.pi-item[data-source="type"] > .pi-data-value'
 	).each( function () { useCustomFont( this, 'TeamMeat' ) } );
 } );
@@ -117,25 +119,34 @@ var specialCharacters = {
 };
 
 function useCustomFont( element, name ) {
-	var $this    = $( element ),
-		char     = '',
-		str      = $this.text(),
-		str2     = '<span style="white-space:nowrap">',
-		font     = 'font-' + name,
-		intro    = '<div class="' + font + ' ' + font + '-',
-		i        = 0,
-		len      = 0,
-		charCode = 0;
-	while ( i < str.length ) {
-		charCode = str.charCodeAt( i );
-		len      = charCode >= 0xD800 && charCode <= 0xDBFF ? 2 : 1;
-		char     = str.substr( i, len );
-		str2    += ( char === ' ' ? '</span> &nbsp;<span style="white-space:nowrap">' : intro + ( specialCharacters[ char ] || char ) + '">' + char + '</div>' );
-		i       += len;
+	var childNodes = element.childNodes;
+	for ( var i = 0; i < childNodes.length; ++i ) {
+		var childNode = childNodes[ i ];
+		if ( childNode.nodeType !== Node.TEXT_NODE ) {
+			continue;
+		}
+
+		var char     = '',
+			str      = childNode.textContent,
+			str2     = '<span style="white-space:nowrap">',
+			font     = 'font-' + name,
+			intro    = '<div class="' + font + ' ' + font + '-',
+			j        = 0,
+			len      = 0,
+			charCode = 0;
+		while ( j < str.length ) {
+			charCode = str.charCodeAt( j );
+			len      = charCode >= 0xD800 && charCode <= 0xDBFF ? 2 : 1;
+			char     = str.substr( j, len );
+			str2    += ( char === ' ' ? '</span> <span style="white-space:nowrap">' : intro + ( specialCharacters[ char ] || char ) + '">' + char + '</div>' );
+			j       += len;
+		}
+		str2 += '</span>';
+
+		var template = document.createElement( 'template' );
+		template.innerHTML = '<span class="custom-font custom-font-enabled">' + str2 + '</span>';
+		childNode.replaceWith( template.content.firstChild );
 	}
-	$this
-		.addClass( 'custom-font custom-font-enabled' )
-		.html( str2 + '</span>' );
 }
 
 var dlcUtil = {

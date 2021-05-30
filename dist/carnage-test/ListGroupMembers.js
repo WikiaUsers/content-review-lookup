@@ -279,6 +279,7 @@
 	    //
 	    lgm.sort = function( name, a, b ) { 
 	    	
+	    	return null;
 	    };
 	}
 } )( window, jQuery, mediaWiki );

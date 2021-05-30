@@ -304,6 +304,12 @@ $(function () {
 	    });
 	}
 	
+	if (mw.config.get('wgPageName') === 'Armor_Calculator') {
+	    $(function () {
+	        importScriptPage('MediaWiki:Calculators/Armor.js');
+	    });
+	}
+	
 	/* End of Calculators */
 	/* Bestiary */
 	if (mw.config.get('wgPageName') === 'Bestiary/Simulator') {
@@ -460,7 +466,7 @@ $(function () {
 });
 /* Quest transcript linker end */
 /* Updates toggle changes start */
-if (mw.config.get('wgPageName') === 'Major_Updates' || mw.config.get('wgPageName') === 'Winter_Updates' || mw.config.get('wgPageName') === 'Summer_Updates' || mw.config.get('wgPageName') === 'Spring_Updates' || mw.config.get('wgPageName') === 'Autumn_Updates' || mw.config.get('wgPageName') === 'Patch_Updates' || mw.config.get('wgPageName') === 'Minor_Updates') {
+if (mw.config.get('wgPageName') === 'Major_Updates' || mw.config.get('wgPageName') === 'Winter_Updates' || mw.config.get('wgPageName') === 'Summer_Updates' || mw.config.get('wgPageName') === 'Spring_Updates' || mw.config.get('wgPageName') === 'Autumn_Updates' || mw.config.get('wgPageName') === 'Patch_Updates' || mw.config.get('wgPageName') === 'Minor_Updates' || mw.config.get('wgPageName') === 'Version_6_Updates' || mw.config.get('wgPageName') === 'Version_7_Updates' || mw.config.get('wgPageName') === 'Version_8_Updates' || mw.config.get('wgPageName') === 'Version_9_Updates' || mw.config.get('wgPageName') === 'Version_10_Updates' || mw.config.get('wgPageName') === 'Version_11_Updates' || mw.config.get('wgPageName') === 'Version_12_Updates') {
     $(function () {
         $('#Updates_Toggle_Changes td:nth-child(6),#Updates_Toggle_Changes th:nth-child(6)').hide();
         $('#Updates_Toggle_Changes').prepend(

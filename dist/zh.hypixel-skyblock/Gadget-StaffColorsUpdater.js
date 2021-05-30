@@ -173,3 +173,5 @@ mw.loader.using(['mediawiki.api']).then(function() {
 		}));
 	}());
 });
+
+mw.hook('hsw.gadget.staffColorsUpdater').add(function(update) { update(); });

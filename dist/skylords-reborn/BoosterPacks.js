@@ -78,7 +78,7 @@
 	        cards.forEach(function (c) {
 	            var scene = cardScene.cloneNode(true);
 	            scene.addEventListener('click', function() {this.classList.add('card--flipped')});
-	            scene.appendChild(cardStorage.querySelector('.card-icon[data-card="' + c + '"]').cloneNode(true));
+	            scene.appendChild(cardStorage.querySelector('.custom-tooltip[data-1="' + c + '"]').cloneNode(true));
 	            container.appendChild(scene);
 	        });
 	    }

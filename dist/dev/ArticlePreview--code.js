@@ -320,7 +320,7 @@
 
 		// An array of stylesheets to load
 		ap.STYLESHEETS = Object.freeze( [
-			// "u:dev:MediaWiki:ArticlePreview/beta.css"
+			"u:dev:MediaWiki:ArticlePreview.css"
 		] );
 
 		// An array of MediaWiki modules to load

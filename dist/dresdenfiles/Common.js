@@ -34,3 +34,8 @@ window.discussionsModuleConfig = {
 
 /* Era Icons */
 window.useIncludedStylesheet = true;//End EI*/
+
+importArticle({
+    type: 'script',
+    article: 'u:dragonage:MediaWiki:SpoilersToggle.js'
+});

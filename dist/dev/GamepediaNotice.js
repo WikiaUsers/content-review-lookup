@@ -37,7 +37,7 @@
                 ),
                 $('<span>').html(i18n.msg('gamepedia-notice_text', 'https://gamepedia.com').parse())
             )
-        ).insertBefore('#PageHeader');
+        ).insertBefore('.page-header');
 
         // Get data from system message using Fetch lib
         mw.hook('dev.fetch').add(function(fetch) {

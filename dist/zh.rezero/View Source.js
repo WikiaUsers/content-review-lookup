@@ -320,7 +320,7 @@
             .removeClass('active');
             module[$a.data('source') ? 'hideSource' : 'loadSource']();
         });
-        $('<li>').append($a).insertBefore($list.find('#ca-move').parent());
+        $('<li>').append($a).insertAfter($list.find('#ca-history').parent());
     }
 
     function init (i18nInstance) {

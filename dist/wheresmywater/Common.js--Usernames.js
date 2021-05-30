@@ -12,11 +12,6 @@
  AUTHORS 
 ---------
 - E12Dragon: current and orginal UCP compatible version
-
---------------
- Last Updated
---------------
-- 23 May 2021
 */
 
 var config = mw.config.get([
@@ -30,7 +25,7 @@ var config = mw.config.get([
 
 function customizeComments() {
 		var interval = setInterval(function () {
-		var elements = ".Reply, .Reply_body__3woA9, .Message, .Comment_body__7p3np";
+		var elements = ".Reply:not([data-user]), .Reply_body__3woA9:not([data-user]), .Message:not([data-user]), .Comment_body__7p3np:not([data-user])";
 		$('#MessageWall .EntityHeader_name__2oRXg, #articleComments .EntityHeader_name__2oRXg').filter(function() {
 		       $(this).parents(elements).attr('data-user', $(this).text()).addClass('user-comment');
 			});
@@ -78,9 +73,17 @@ function customizeUserProfileApp() {
     }, 100);
 }
 function customizeLeaderboardAvatars() {
-$('.rootpage-Special_Leaderboard td.user > a').filter(function() {
-		       $(this).siblings('.wds-avatar').find('.wds-avatar__image').attr('alt', $(this).text()).attr('title', $(this).text()).wrap("<a href='/wiki/User:"+$(this).text().replace(/ /g, '_')+"'></a>");
+$('td.user > a').filter(function() {
+		       $(this).siblings('.wds-avatar').find('.wds-avatar__image[src="https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest/scale-to-width-down/50"]').attr('alt', $(this).text()).attr('title', $(this).text());
+		       $(this).siblings('.wds-avatar').find('.wds-avatar__image').wrap("<a href='/wiki/User:"+$(this).text().replace(/ /g, '_')+"'></a>");
 			});
+}
+function customizeCommunityPageAvatars() {
+	var interval = setInterval(function () {
+	$('svg.wds-avatar__image:not([alt])').attr('title', function(){
+		return $(this).parent('a').attr('href').split(':')[1].replace(/%20/g, ' ').replace(/_/g, ' ')}).attr('alt', function(){
+		return $(this).parent('a').attr('href').split(':')[1].replace(/%20/g, ' ').replace(/_/g, ' ')});
+	}, 100 );
 }
 
 $(function() {
@@ -90,6 +93,7 @@ $(function() {
         	customizeUserProfileApp();
             }
         if (config.wgCanonicalNamespace === "Message_Wall" ||
+    		config.wgCanonicalNamespace == "User_blog" ||
             config.wgCanonicalNamespace === "" ) {
         	customizeComments();
         	customizeReplyBoxAvatars();
@@ -104,5 +108,8 @@ $(function() {
         	}
         if (config.wgPageName == "Special:Leaderboard") {
         	customizeLeaderboardAvatars();
+        	}
+        if (config.wgPageName == "Special:Community") {
+        	customizeCommunityPageAvatars();
         	}
     });

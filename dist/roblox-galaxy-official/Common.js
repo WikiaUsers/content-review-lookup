@@ -21,6 +21,9 @@ var imgs = [
 	];
     
 document.body.style.backgroundImage = 'url(' + imgs[Math.floor(Math.random() * imgs.length)] + ')'
+document.body.style.backgroundRepeat = "repeat"
+document.body.style.backgroundSize = "120%"
+document.body.style.backgroundAttachment = "fixed"
 
 // back to top button
 window.BackToTopModern = true;

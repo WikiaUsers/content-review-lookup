@@ -28,6 +28,7 @@ $(function() {
 });
 // END Cronologia capitoli ed episodi
 
+
 //=================================
 //       Gallerie Personaggi
 //=================================
@@ -35,7 +36,7 @@ $(function() {
 // nei template galleria 
 
 $(function() {
-	$(".galleria .wikia-gallery .gallery-image-wrapper")
+	$(".galleria .gallery .gallerybox .thumb")
 	.each(function () {
 		var $fileURL = $(this).find("img").attr("data-image-key");
 		var $fileName = $(this).find("img").attr("data-image-name");
@@ -46,6 +47,7 @@ $(function() {
 });
 // END Gallerie Personaggi
 
+
 //=====================================
 //        Sezioni "Navigazione"
 //=====================================
@@ -54,6 +56,7 @@ $(function() {
 	$('span#Navigazione').parent().css('clear', 'both');
 });
 // END Sezioni "Navigazione"
+
 
 //====================================
 //          Immagine casuale
@@ -64,7 +67,7 @@ $(function() {
 
 $(function () {
 	// Lista immagini
-	var WikiaRailImageArray = [
+	var RailImageArray = [
 		'url("/it/wiki/Special:FilePath/Rail-Image_1.png")',
 		'url("/it/wiki/Special:FilePath/Rail-Image_2.png")',
 		'url("/it/wiki/Special:FilePath/Rail-Image_3.png")',
@@ -76,12 +79,13 @@ $(function () {
 	];
 
 	// Scelta immagine
-	var chosenWikiaRailImage = Math.round(Math.random() * (WikiaRailImageArray.length - 1));
+	var chosenRailImage = Math.round(Math.random() * (RailImageArray.length - 1));
 
 	// Aggiunta immagine
-	$('.wikia-rail-inner').css("background-image", WikiaRailImageArray[chosenWikiaRailImage]);
+	$('.page__right-rail').css("background-image", RailImageArray[chosenRailImage]);
 });
 // END Immagine casuale
+
 
 //==================================
 //       Strumenti aggiuntivi
@@ -100,56 +104,15 @@ $(function () {
 });
 // END Strumenti aggiuntivi
 
-//=================================
-//      Barra social networks
-//=================================
-/*
-$(function () {
-	if ( (wgPageName != 'One_Piece_Wiki_Italia') && ( wgNamespaceNumber === 0 || wgNamespaceNumber === 4 || wgNamespaceNumber === 6 || wgNamespaceNumber === 14 || wgNamespaceNumber === 112 || wgNamespaceNumber === 114 || wgNamespaceNumber === 500 || wgNamespaceNumber === 1201) ) { 
-		$('#WikiaPage #WikiaFooter').before(
-			'<footer id="social-footer">' +
-				'<table>' +
-					'<tr>' +
-						'<th>Condividi su:</th>' +
-						'<td><div class="fb-like" data-width="" data-layout="button_count" data-action="like" data-size="small" data-share="true"></div></td>' +
-						'<td><a href="https://twitter.com/share" class="twitter-share-button" data-text="Leggendo si impara su @OnePieceWiki_it!" data-related="getfandom,fandom_italy" data-lang="it" data-show-count="false">Tweet</a></td>' +
-						'<th>Seguici su:</th>' +
-						'<td><div class="fb-like" data-width="" data-href="https://www.facebook.com/OnePieceWiki.it" data-layout="button_count" data-action="like" data-size="small" data-share="true" data-show-faces="true"></div></td>' +
-						'<td><a href="https://twitter.com/OnePieceWiki_it" class="twitter-follow-button" data-size="small" data-lang="it" data-show-count="false">Follow @OnePieceWiki_it</a></td>' +
-					'</tr>' +
-				'</table>' +
-			'</footer>'
-		);
-	}
-});
-// END Barra social networks
-*/
-//==================================
-//    Default tab su pagine file
-//==================================
-/*
-$(function () {
-	$('.tabs li[data-tab=history]').removeClass('selected');
-	$('div[data-tab-body=history').removeClass('selected');
-
-	$('.tabs li[data-tab=about]').addClass('selected');
-	$('div[data-tab-body=about').addClass('selected');
-});
-// END Default tab su pagine file
-*/
 
 //=====================================
 //               Altro
 //=====================================
 // Correzione sovrapposizione tra i profili e la tabella personaggi
 // vedere: http://community.wikia.com/wiki/Thread:1216988
-
+/*
 $(function () {
 	$( '.TabellaPersonaggi' ).wrap( '<div class="TabellaPersonaggi-container"></div>' );
 });
-
-// Cambio stile pulsanti nella barra laterale
-$(function () {
-	$("#WikiaRail .community-page-rail-module .wds-button, #WikiaRail .chat-module .wds-button, #WikiaRail .photo-module .photo-stats .wds-button").removeClass("wds-is-secondary");
-});
+*/
 // END Altro

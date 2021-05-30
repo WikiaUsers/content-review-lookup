@@ -1,4 +1,6 @@
 
+window.BackToTopModern = true;
+
 /* Portable infoboxes colors */
 (function() {
 	// Function to check for Portable Infoboxes, and change their color

@@ -1,10 +1,9 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-
-$(document).ready(function() {
-    var newsection = '<section id        ="sidebar" class="module">';
+$(function() {
+    var newSection = '<section id="sidebar" class="module"><h2>' +
+      'What is New?' + '</h2>' + '</section>';
     $('#WikiaRail').append(newSection);
-    $.getJSON('/api.php?action           =parse&text={{Sidebar}}&format   =json', function(data) {
+    $.getJSON('/api.php?action=parse&text={{Sidebar}}&format=json', function(data) {
         var code = data.parse.text['*'];
-        $('section#sidebar').append(code );
-    }); 
+        $('section#sidebar').append(code);
+    });
 });

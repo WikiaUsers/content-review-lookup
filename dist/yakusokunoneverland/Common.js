@@ -1,4 +1,3 @@
-/* <nowiki> */
 /* Any JavaScript here will be loaded for all users on every page load. */
 /* Block Message */
 window.MessageBlock = {
@@ -253,12 +252,6 @@ $(function() {
         }, 'fast');
     });
 });
-
-/* WAM Score */
-window.railWAM = {
-    logPage: "Project:WAM Log"
-};
-
 
 //Turns off autoscroll on hover
 $('#sliderframe').on("mouseenter", function() {

@@ -476,7 +476,7 @@ $( ".accueil-parts .partbox" ).hover(
 		$( ".partboxselp" ).css('background', '').css('opacity', '0.5');
 		$( ".partinfo" ).html( $( this ).find( "span:last" ).text() );
 	}, function() {
-		$( ".partinfo" ).html( "Venez parcourir les couloirs de Poudlard avec la communauté de la Pensine&nbsp;!" );
+		$( ".partinfo" ).html( "Venez parcourir les couloirs de Poudlard avec nos partanires&nbsp;!" );
 		$( this ).removeClass( "partboxsel" );
 		$( ".partboxselp" ).css('background', 'rgba( 255, 0, 0, 0.1)').css('opacity', '1');
 	}

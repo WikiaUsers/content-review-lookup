@@ -13,4 +13,8 @@ importArticles({
 preloadTemplates_list =  "MediaWiki: Custom-PreloadTemplatesList" ; 
 preloadTemplates_subpage =  "case-by-case" ;
 
-window.pPreview.noimage = 'https://i.ytimg.com/vi/XlVOJg23QZ0/maxresdefault.jpg';
+// Замена изображения для всплывающего окна ссылки
+window.pPreview = $.extend(true, window.pPreview, {
+    defimage: 'https://static.wikia.nocookie.net/jojo/images/6/68/NoImg.jpg/revision/latest?cb=20210528133952&path-prefix=ru',
+    noimage: 'https://static.wikia.nocookie.net/jojo/images/6/68/NoImg.jpg/revision/latest?cb=20210528133952&path-prefix=ru'
+});

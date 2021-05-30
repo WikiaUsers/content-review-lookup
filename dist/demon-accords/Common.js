@@ -8,6 +8,23 @@ window.LockOldBlogs = {
     nonexpiryCategory: 'Never archived blogs'
 };
 
+// Upload form - need to run before adding hide buttons
+	if ( mw.config.get('wgCanonicalSpecialPageName') === 'Upload' ) {
+		setupUploadForm();
+	}
+
+	addHideButtons();
+
+	if( document.getElementById('mp3-navlink') !== null ) {
+		document.getElementById('mp3-navlink').onclick = onArticleNavClick;
+		document.getElementById('mp3-navlink').getElementsByTagName('a')[0].href = 'javascript:void(0)';
+	}
+
+	if( window.storagePresent ) {
+		initVisibility();
+	}
+
+
 /* UserTags */
 window.UserTagsJS = {
     tags: {

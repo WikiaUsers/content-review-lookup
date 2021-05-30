@@ -17,8 +17,8 @@ window.SpoilerAlertJS = {
 /* User Tags */
 window.UserTagsJS = {
     tags: {
-        chatmoderator: { u: 'Discord Moderator' },
-        imagecontrol: { u: 'Image control' }
+        discordmod: { u: 'Discord Moderator' },
+        imagecontrol: { u: 'Image Control' }
     },
     modules: {
         inactive: {

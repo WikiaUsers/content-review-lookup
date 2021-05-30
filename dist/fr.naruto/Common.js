@@ -125,11 +125,11 @@
 		pageScriptList.push('u:dev:MediaWiki:DupImageList/code.js');
 	}
  
-	 
+	 /*
 	//Affichage de l'iframe du dernier épisode sur ADN
 	if (wgPageName === "Accueil") {
 		pageScriptList.push('MediaWiki:LastEpisode.js');
-	}
+	}*/
 	
 	//Tri des catégories (pour Principal et Fichier)
 	if ( [0, 6].includes(mw.config.get('wgNamespaceNumber')) ){

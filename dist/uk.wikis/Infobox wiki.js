@@ -100,7 +100,7 @@
                 }
                 data.query.statistics.hub = wikiInfo.hub;
                 data.query.statistics.founding_user_id = wikiInfo.founding_user_id;
-                data.query.statistics.creation_date = new Date(wikiInfo.creation_date + ' UTC').toLocaleString();
+                data.query.statistics.creation_date = new Date(wikiInfo.creation_date + 'Z').toLocaleString();
                 def.resolve(data);
             })
             .fail(function (dv1) {

@@ -2,7 +2,7 @@
 /**
  * TabberEX
  *
- * @version 2.0
+ * @version 2.1
  *
  * @author Jono99 <https://phigros.fandom.com/wiki/User:Jono99>
  *
@@ -20,9 +20,9 @@
  
 	// Inject CSS
 	(function() {
-		var css = document.createElement("style");
-		css.innerHTML = "/* CSS owned by FANDOM */\n.oo-ui-tabSelectWidget{text-align:left;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:auto}.oo-ui-tabOptionWidget{display:inline-block;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;vertical-align:bottom;align-items:center;display:inline-flex;font-size:12px;font-weight:700;height:40px;margin:0;padding:0 11px;text-transform:uppercase;-webkit-transition:background-color 300ms,color 300ms,border-color 300ms;-moz-transition:background-color 300ms,color 300ms,border-color 300ms;transition:background-color 300ms,color 300ms,border-color 300ms}.oo-ui-tabSelectWidget-frameless .oo-ui-tabOptionWidget,.oo-ui-tabSelectWidget:not(.oo-ui-tabSelectWidget-framed) .oo-ui-tabOptionWidget{-webkit-transition:color 300ms,box-shadow 300ms;-moz-transition:color 300ms,box-shadow 300ms;transition:color 300ms,box-shadow 300ms;border-bottom-style:solid;border-bottom-width:1px}.oo-ui-tabOptionWidget .oo-ui-labelElement-label{margin:0;pointer-events:none}";
-		document.head.appendChild(css);
+		var tabberex_css = document.createElement("style");
+		tabberex_css.innerHTML = "/* CSS owned by FANDOM */\n.oo-ui-tabOptionWidget{display:inline-block;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;vertical-align:bottom;align-items:center;color:rgba(var(--theme-page-text-color--rgb),.75);display:inline-flex;font-size:14px;font-weight:500;height:40px;letter-spacing:.5px;margin:0;padding:0 11px;-webkit-transition:background-color .3s,color .3s,border-color .3s;-moz-transition:background-color .3s,color .3s,border-color .3s;transition:background-color .3s,color .3s,border-color .3s}.oo-ui-tabSelectWidget:not(.oo-ui-tabSelectWidget-framed) .oo-ui-tabOptionWidget{-webkit-transition:color .3s,box-shadow .3s;-moz-transition:color .3s,box-shadow .3s;transition:color .3s,box-shadow .3s;border-bottom:1px solid var(--theme-border-color)}.oo-ui-tabSelectWidget:not(.oo-ui-tabSelectWidget-framed) .oo-ui-tabOptionWidget.oo-ui-optionWidget-selected{box-shadow:inset 0 -2px 0 0 var(--theme-link-color);color:var(--theme-link-color)}";
+		document.head.appendChild(tabberex_css);
 	})();
 		
 	window.tabberex_showTab = function(tabber_id, i)
@@ -92,6 +92,7 @@
 		var ex_header;
 		function get_ex_header(_) {
 			ex_header = $(this).html();
+			$(this).remove();
 		}
 		$(tab_element).children("p").children("span.tabberex-tab-header").each(get_ex_header);
 		$(tab_element).children("span.tabberex-tab-header").each(get_ex_header);

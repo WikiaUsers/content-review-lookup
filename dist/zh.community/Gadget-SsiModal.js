@@ -1,11 +1,4 @@
-(function (root, factory) {
-    //@author http://ifandelse.com/its-not-hard-making-your-library-support-amd-and-commonjs/
-    if (typeof module === "object" && module.exports) {
-        module.exports = factory(require("jquery"));
-    } else {
-        root.ssi_modal = factory(root.jQuery);
-    }
-}(this, function ($) {
+(function ($, mw) {
     var animationSupport = checkAnimationSupport();
     var openedModals = 0;
     var sharedBackdrop = 0;
@@ -152,14 +145,14 @@
                     className: 'ssi-displayIcon', method: function () {
                         modalObj.changePreviewState();
                     }
-                })
+                });
             }
             if (this.options.closeIcon) {
                 this.options.iconButtons.push({
                     className: 'ssi-closeIcon', method: function () {
                         modalObj.close();
                     }
-                })
+                });
             }
             setAnimations(this);
         } else {
@@ -302,8 +295,8 @@
                     $buttons.slideDown();//and buttons
                     time = setTimeout(function () {//after 2 seconds
                         $buttons.slideUp();//hide them
-                        $icons.fadeOut()
-                    }, 2000)
+                        $icons.fadeOut();
+                    }, 2000);
                 });
             }
             this.setModalHeight(40, 'height');         //set the height
@@ -1769,4 +1762,4 @@
 
     return ssi_modal;
 
-}));
+})(jQuery, mediaWiki);

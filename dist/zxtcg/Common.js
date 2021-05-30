@@ -3,8 +3,7 @@
 importArticles({
     type: "script",
     articles: [
-        'u:onepiece:MediaWiki:Common.js/elementClass.js',
-        'u:joeplayground:MediaWiki:Tooltip.js'
+        'u:onepiece:MediaWiki:Common.js/elementClass.js'
     ]
 });
 

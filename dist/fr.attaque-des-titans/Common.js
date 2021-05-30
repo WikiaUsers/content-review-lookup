@@ -33,52 +33,16 @@ $(function spoilerLoad(){
 // **************************************************
 
  
-//Customization for imported scripts
-//PreloadFileDescription, source: https://dev.wikia.com/wiki/PreloadFileDescription
-PFD_templates = [
-    {
-        label:   'Images',
-        desc:    '{{Documentation_Image\n|Description = \n|source      = \n|Vu = \n|Information }}',
-    },
-];
-
-// https://dev.wikia.com/wiki/RevealAnonIP This must be placed above all imports.
-window.RevealAnonIP = {
-    permissions : ['user']
-};
- 
+//Imported scripts
 importArticles({
     type: "script",
     articles: [
-        "MediaWiki:Common.js/navfix.js", /*Fix wiki navigation ~Jgjake2*/
-        "MediaWiki:Common.js/countdown.js", /*Countdown timer ~Splarkle*/
-        "MediaWiki:Common.js/sliders.js", /*Jquery sliders ~Tierrie*/
-        "MediaWiki:Common.js/title.js", /* {{Title}} ~CoDWiki*/
-        "MediaWiki:Common.js/collapse.js", /*Collapsibles ~HaLo2FrEeEk*/
-        "MediaWiki:Common.js/summaries.js", /*Standard edit summaries*/
         "MediaWiki:Common.js/UserGroupMessages.js",
-        "MediaWiki:Common.js/masthead.js",
-        "MediaWiki:Common.js/autolock.js", /*30day blog lock*/
-        
         "MediaWiki:Functions.js",
         "MediaWiki:Gadget-Edittools.js",
         "MediaWiki:Gadget-SigReminder.js",
         "MediaWiki:Accueil.js", /* accueil */
-        "MediaWiki:Spoiler.js", /* Modele spoiler */
         "MediaWiki:Think.js",
         "MediaWiki:Common.js/Other.js", /* Tout code important devra etre mis ici */
-        "MediaWiki:Chat.js",
-        
-        "u:dev:View_Source/code.js", /* add "view source" link to edit dropdown */
-        "u:dev:PurgeButton/code.js", /* add "refresh" link to edit dropdown */
-        "u:dev:SearchSuggest/code.js", // add "search suggestions" to search results
-        "w:c:deadisland:User:Jgjake2/js/ElderScrolls/Popups.js", /*Popup script  ~Jgjake2*/
-        "w:c:fr.onepiece:MediaWiki:Common.js/Switch.js",
-        "w:c:dev:RevealAnonIP/code.js",
     ]
 });
-
-/* Actualisation automatique */
-window.AjaxRCRefreshText = 'Actualisation automatique';
-window.AjaxRCRefreshHoverText = 'Actualiser automatiquement la page';
-window.ajaxPages = ["Spécial:Modifications_récentes","Spécial:WikiActivity"]

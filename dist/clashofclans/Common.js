@@ -10,7 +10,38 @@
                     'from localStorage to re-enable site-wide JavaScript.');
         return;
     }
-
+	
+	/* Articles are interwiki links so that other wikis can use them. */
+    importArticles({
+        type: 'script',
+        articles: [
+        'w:c:spottra:MediaWiki:Common.js/Numeral.js', // Defines num.format('<fmt>')
+        'w:c:spottra:MediaWiki:Common.js/AjaxGallery.js',
+        'u:dev:Countdown/code.js',
+        'u:dev:SpoilerAlert/code.js',
+        'u:dev:TopEditors/code.js',
+        'u:dev:UserTags/code.js',
+        'MediaWiki:Common.js/RGBColor.js',
+        'MediaWiki:Common.js/Usernames.js',
+        'MediaWiki:Common.js/Sliders.js',
+        'MediaWiki:Common.js/GemCalculators.js',
+        'MediaWiki:Common.js/Experience.js',
+        'MediaWiki:Common.js/Tabber2.js',
+        'MediaWiki:Common.js/ImageHover.js',
+        'MediaWiki:Common.js/CumulativeCosts.js',
+        'MediaWiki:Common.js/ModeToggle.js',
+        'MediaWiki:Common.js/PageVerify.js',
+        'MediaWiki:Common.js/GorillaMan.js',
+        'MediaWiki:Common.js/Lugia.js',
+        'MediaWiki:Common.js/BadgeGenerator.js',
+        'MediaWiki:Common.js/Protection.js',
+        'MediaWiki:Common.js/AvailableBuildings.js',
+        'MediaWiki:Common.js/GoldPass.js',
+        'MediaWiki:Common.js/HeroSkins.js',
+        'MediaWiki:Common.js/Toggle.js'
+    	]
+    });
+	
 	/*Remove Edit Wall Greeting button unless it's your own or if you're staff*/
 	$(function() {
 		if (mw.config.get('wgCanonicalNamespace') == "Message_Wall") {
@@ -37,6 +68,8 @@
         tags: {
             heroicuser:  { u: 'Most Heroic Contributor' },
             imageeditor: { u: 'Image Editor' },
+            sysop: { u: 'Administrator' },
+        	threadmoderator: { u: 'Discussions Moderator' },
             retiredstaff: { u: 'Retired Staff', title: 'This former staff member is inactive.' },
             inactive: { u: 'Retired Clasher', title: 'This user is inactive.' }
         }
@@ -48,26 +81,30 @@
     UserTagsJS.modules.mwGroups = [
         'bureaucrat',
         'sysop',
-        'chatmoderator',
+        'content-moderator',
         'threadmoderator',
         'rollback',
-        'patroller',
-        'bannedfromchat',
         'bot',
         'bot-global',
+        'blocked', 
+        'checkuser',
+        'council',
+        'helper',
+        'staff',
+        'vanguard',
+        'soap',
     ];
     
     UserTagsJS.modules.metafilter = {
-        bureaucrat:      ['founder'],
-        sysop:           ['founder', 'bureaucrat'],
-        chatmoderator:   ['founder', 'bureaucrat', 'sysop'],
-        threadmoderator: ['founder', 'bureaucrat', 'sysop', 'chatmoderator'],
-        rollback:        ['founder', 'bureaucrat', 'sysop', 'chatmoderator', 'threadmoderator'],
+        sysop:           ['bureaucrat'],
+        'content-moderator': ['bureaucrat', 'sysop'],
+        threadmoderator: ['bureaucrat', 'sysop'],
+        rollback:        ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator'],
         inactive:        ['retiredstaff']
     };
     
     UserTagsJS.modules.custom = {
-        'FaceBound': ['imageeditor'],
+        'FaceBound': ['imageeditor', 'retiredstaff'],
         
         'Tonkaty': ['retiredstaff'],
         'GorillaMan': ['retiredstaff'],
@@ -91,6 +128,9 @@
         'Stan890': ['retiredstaff'],
         'SynergyShade3624': ['retiredstaff'],
         'Tparry': ['retiredstaff'],
+        'Utkar22': ['retiredstaff'],
+		'WitchHealer': ['retiredstaff'],
+		'Zazme Yakuza': ['retiredstaff'],
         'Zegaloft12': ['retiredstaff'],
         '2442cc': ['retiredstaff'],
     };
@@ -108,38 +148,7 @@
             }
         };
     }
-
-    /* Articles are interwiki links so that other wikis can use them. */
-    articles = [
-        'w:c:spottra:MediaWiki:Common.js/Numeral.js', // Defines num.format('<fmt>')
-        'w:c:spottra:MediaWiki:Common.js/AjaxGallery.js',
-        'u:dev:Countdown/code.js',
-        'u:dev:SpoilerAlert/code.js',
-        'u:dev:TopEditors/code.js',
-        'w:c:clashofclans:MediaWiki:Common.js/RGBColor.js',
-        'w:c:clashofclans:MediaWiki:Common.js/Usernames.js',
-        'w:c:clashofclans:MediaWiki:Common.js/Sliders.js',
-        'w:c:clashofclans:MediaWiki:Common.js/GemCalculators.js',
-        'w:c:clashofclans:MediaWiki:Common.js/Experience.js',
-        'w:c:clashofclans:MediaWiki:Common.js/Tabber2.js',
-        'w:c:clashofclans:MediaWiki:Common.js/ImageHover.js',
-        'w:c:clashofclans:MediaWiki:Common.js/CumulativeCosts.js',
-        'w:c:clashofclans:MediaWiki:Common.js/ModeToggle.js',
-        'w:c:clashofclans:MediaWiki:Common.js/PageVerify.js',
-        'w:c:clashofclans:MediaWiki:Common.js/GorillaMan.js',
-        'w:c:clashofclans:MediaWiki:Common.js/Lugia.js',
-        'w:c:clashofclans:MediaWiki:Common.js/BadgeGenerator.js',
-        'w:c:clashofclans:MediaWiki:Common.js/Protection.js',
-        'w:c:clashofclans:MediaWiki:Common.js/AvailableBuildings.js',
-        'w:c:clashofclans:MediaWiki:Common.js/GoldPass.js',
-        'w:c:clashofclans:MediaWiki:Common.js/HeroSkins.js',
-        'w:c:clashofclans:MediaWiki:Common.js/Toggle.js'
-    ];
-    // Use Wikia's importArticles() function to load JavaScript files
-    window.importArticles({
-        type: 'script',
-        articles: articles
-    });
+    
     console.log('Site-wide JavaScript in MediaWiki:Common.js will load the ' +
                 'following JavaScript files:\n   ' + articles.join('\n   '));
 

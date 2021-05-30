@@ -8,7 +8,7 @@ var gm = document.getElementById("generator_main"),
 	},
 	params_items = {
 		tables: "GUIDs, Items, Bestiary, Familiars",
-		fields: "GUIDs.name=GName,Items.name=IName,Bestiary.name=BName,Familiars.name=FName, Items.type, GUIDs.item_guid, GUIDs.effect_guid=statusEffects, GUIDs.potion_guid=potionDatas", // GUIDs.upgrade_guid=equipment
+		fields: "GUIDs.name=GName,Items.name=IName,Bestiary.name=BName,Familiars.name=FName, Items.type, GUIDs.item_guid, GUIDs.effect_guid=statusEffects, GUIDs.potion_guid=potionDatas, GUIDs.upgrade_guid=equipment",
 		where: "GUIDs.name>'' OR Items.name>'' OR Bestiary.name>'' OR Familiars.name>''",
 		join_on: "GUIDs.name=Items.name, GUIDs.name=Bestiary.name, GUIDs.name=Familiars.name"
 	},
@@ -310,6 +310,7 @@ function create_load() {
 			if (loaded) {
 				org_json = loaded;
 				w.clear_all();
+				console.log("Loading peasant..");
 				loaded.peonColor = Math.max(0, loaded.peonColor || 0);
 				loaded.peonColor -= Math.floor(loaded.peonColor / portrait.max_range) * portrait.max_range;
 				tmp = Math.ceil(loaded.peonColor / portrait.eye_range);
@@ -332,6 +333,7 @@ function create_load() {
 					document.getElementById("sg_peasant_gender").children[0].options[0].selected = true;
 				}
 				w.gender_changed();
+				console.log("Loading upgrades..");
 				var ustable = document.getElementById("upgrade_string").rows;
 				while ((res = upgrade_string_regex.exec(loaded.upgradeString)) !== null) {
 					if (res.index === upgrade_string_regex.lastIndex) {
@@ -341,6 +343,7 @@ function create_load() {
 						ustable[ustable.length-2].cells[1].children[0].value = res[2];
 					}
 				}
+				console.log("Loading found-count..");
 				var fctable = document.getElementById("foundCount_list").rows;
 				while ((res = found_count_regex.exec(loaded.foundCountString)) !== null) {
 					if (res.index === found_count_regex.lastIndex) {
@@ -350,20 +353,27 @@ function create_load() {
 						fctable[fctable.length-2].cells[2].children[0].value = res[2];
 					}
 				}
+				console.log("Loading kill-count..");
 				var kctable = document.getElementById("killCount_list").rows;
 				while ((res = kill_count_regex.exec(loaded.killCountString)) !== null) {
 					if (res.index === kill_count_regex.lastIndex) {
 						kill_count_regex.lastIndex++;
 					}
 					if (add_guid("killCount_list", res[1])) {
-						kctable[fctable.length-2].cells[2].children[0].value = res[2];
+						kctable[kctable.length-2].cells[2].children[0].value = res[2];
 					}
 				}
+				console.log("Loading unlocked..");
 				add_data(loaded.unlocked, "unlocked_list");
+				console.log("Loading discovered..");
 				add_data(loaded.discovered, "discovered_list");
+				console.log("Loading dropHistory..");
 				add_data(loaded.autoSaveData.dropHistory, "dropHistory_list");
+				console.log("Loading pickupHistory..");
 				add_data(loaded.autoSaveData.pickupHistory, "pickupHistory_list");
+				console.log("Loading killHistory..");
 				add_data(loaded.autoSaveData.killHistory, "killHistory_list");
+				console.log("Loading statuseffect..");
 				var se_list = document.getElementById("statuseffect_list").rows;
 				for (i=0;i<loaded.autoSaveData.statusEffects.length;i++){
 					if (add_guid("statuseffect_list", loaded.autoSaveData.statusEffects[i].id)) {
@@ -373,6 +383,7 @@ function create_load() {
 						row.cells[4].children[0].value = loaded.autoSaveData.statusEffects[i].sticky;
 					}
 				}
+				console.log("Loading familiar-xp..");
 				for (i=0;i<loaded.autoSaveData.familiarXP.length;i++){
 					ele = document.getElementById("familiar_" + loaded.autoSaveData.familiarXP[i].id);
 					if (ele) {
@@ -545,10 +556,7 @@ function add_item_option(data, entry_no) {
 		s_options.appendChild(el.cloneNode());
 		set_attributes(s_options.lastChild, ["sg_search_alt", d.title.statusEffects, "value", (d.title.IName || d.title.BName || d.title.FName || d.title.GName) + " - " + d.title.statusEffects]);
 	}
-	/* if (d.title.equipment.length > 0) {
-		e_options.appendChild(el.cloneNode());
-	} */
-	if (d.title["item guid"].length > 0) {
+	if (d.title["item guid"].length > 0 || d.title.equipment.length > 0) {
 		o_options.appendChild(el.cloneNode());
 	}
 	var t = (d.title.type || "").toLowerCase();

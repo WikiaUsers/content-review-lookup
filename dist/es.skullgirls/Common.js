@@ -63,7 +63,7 @@ if ($('.emote-template').length || $('#WikiaArticleComments').length) {
         }
  
         var emotes = '';
-        $.getJSON('/api.php?action=query&prop=revisions&titles=MediaWiki:Emoticons' + 
+        $.getJSON('/es/api.php?action=query&prop=revisions&titles=MediaWiki:Emoticons' + 
           '&rvprop=content&format=json', function(data) {
             emotes = data.query.pages['622'].revisions[0]['*'];
  

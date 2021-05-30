@@ -339,11 +339,6 @@ $('#sliderframe').on("mouseenter",function(){
  
 /* Головна сторінка/Слайдер - кінець*/
  
-//=============================================================================
-// Tooltip support
-//=============================================================================
-importScriptPage('MediaWiki:Tooltip.js', 'joeplayground');
- 
 // *****************************************************
  // * Experimental javascript countdown timer (Splarka) *
  // * Version 0.0.3                                     *

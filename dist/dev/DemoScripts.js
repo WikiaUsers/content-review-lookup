@@ -532,7 +532,7 @@
         },
       
         WikiForum: {
-            page: 'WikiForum/demo',
+            page: 'WikiForum',
             scripts: [
                 'MediaWiki:WikiForum/core.js',
                 'MediaWiki:WikiForum/theme/default.js',

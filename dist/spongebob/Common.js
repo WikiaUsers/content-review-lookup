@@ -324,7 +324,7 @@ UserTagsJS.modules.custom = {
 UserTagsJS.modules.inactive = 30;
 UserTagsJS.modules.newuser = true;
 UserTagsJS.modules.autoconfirmed = true;
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'chatmoderator', 'patroller', 'rollback', 'bannedfromchat', 'bot', 'bot-global', 'assistant', 'moderator'];
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'patroller', 'rollback', 'bannedfromchat', 'bot', 'bot-global', 'assistant', 'moderator'];
 
 /* End of User Tags */
 
@@ -380,6 +380,7 @@ window.MessageWallUserTags = {
         'BSpongeSM02':  'Administrator',
     
         'The_Smarter,_Wiser_King_Dedede': 'Assistant',
+        'The_gamer_987654321': 'Assistant',
 
         'Idroppedmypen': 'Discussion Moderator',
         'SpongeTron_D': 'Discussion Moderator',
@@ -388,7 +389,6 @@ window.MessageWallUserTags = {
 
         'FlyingDutchmen': 'Rollback',
         'TheJasbre202': 'Rollback',
-        'The_gamer_987654321': 'Rollback',
         'SpongyFanatic2021': 'Rollback'
     }
 };
@@ -476,7 +476,7 @@ if ( WorldCupIterators.length > 0 ) {
 
 	var HasAllowedUserRights = false;
 
-	var AllowedUserRights = ["bureaucrat", "sysop", "assistant", "threadmoderator", "chatmoderator", "rollback"];
+	var AllowedUserRights = ["bureaucrat", "sysop", "assistant", "threadmoderator", "rollback"];
 
 	//determining user rights
 

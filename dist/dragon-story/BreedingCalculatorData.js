@@ -9316,6 +9316,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "fragrance": {
+                "name": "Fragrance",
+                "types": [
+                    "flower",
+                    "yellow",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "franken": {
                 "name": "Franken",
                 "types": [
@@ -20362,6 +20379,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "perfume": {
+                "name": "Perfume",
+                "types": [
+                    "flower",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "peridot": {
                 "name": "Peridot",
                 "types": [
@@ -23457,6 +23490,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "rosebloom": {
+                "name": "Rosebloom",
+                "types": [
+                    "flower",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "roseglass": {
                 "name": "Roseglass",
                 "types": [
@@ -24789,6 +24838,32 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "marketonly",
                 "notes": [
                     "feature"
+                ]
+            },
+            "silky": {
+                "name": "Silky",
+                "types": [
+                    "flower",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "pink"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "purple"
+                            ]
+                        ]
+                    ]
                 ]
             },
             "silver": {
@@ -26412,6 +26487,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "28_hours_28",
                 "rarity": 3,
                 "offspringeligibility": "expired"
+            },
+            "springshine": {
+                "name": "Springshine",
+                "types": [
+                    "flower",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
             },
             "sprinkle": {
                 "name": "Sprinkle",

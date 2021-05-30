@@ -11,7 +11,7 @@ $(function() {
 		var name = html.replace(quoteRE,"");
 		if (name.startsWith("Модуль:")) {
 			var target = name.replace(/ /g,'%20');
-			var url = mw.config.get('wgServer') + '/' + target;
+			var url = mw.config.get('wgServer') + '/ru/' + target;
 			var str = quote + '<a href="' + url + '">' + name + '</a>' + quote;
 			$(this).html(str);
 		}
@@ -33,7 +33,7 @@ $(function() {
 		
 		if (name.startsWith("Модуль:")) {
 			var target = name.replace(/ /g, '%20');
-			var url = mw.config.get('wgServer') + '/' + target;
+			var url = mw.config.get('wgServer') + '/ru/' + target;
 			var str = '[[<a href="' + url + '">' + name + '</a>]]';
 			$(this).html(str);
 		}

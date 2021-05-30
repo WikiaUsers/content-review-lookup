@@ -451,7 +451,7 @@ function SetToolbar()
 		'<span onclick="InsertText(\'\\n{{Interlang\\n|en=\',\'\\n}}\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_interlang"><a class="oo-ui-buttonElement-button" role="button" title="Шаблон межъязыковых ссылок" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon" ></span></a></span>'
 	);
 	$('#wikiEditor-section-main div.group-codemirror').prepend(
-		'<span onclick="Wikify(\'WIKIFY\'); Wikify(\'CATEG\');" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_wikifikator2"><a class="oo-ui-buttonElement-button" role="button" title="Вукификатор" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon oo-ui-icon-link"></span></a></span>'
+		'<span onclick="Wikify(\'WIKIFY\');" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_wikifikator2"><a class="oo-ui-buttonElement-button" role="button" title="Вукификатор" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon oo-ui-icon-link"></span></a></span>'
 	);
 	
 	// добавление кнопки "Подпись"

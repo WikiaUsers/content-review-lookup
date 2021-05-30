@@ -126,15 +126,11 @@
     )
  
     // Append menu
-    if ($('.page-header__contribution > div:first > .page-header__languages:not(.page-header__variants)').length < 1) {
-      $('.page-header__contribution > div:first').prepend($variantMenu);
-    } else {
-      $($variantMenu).insertAfter($('.page-header__contribution > div:first > .page-header__languages:not(.page-header__variants)'));
-    }
-
+    $('.page-header__contribution > div:first').prepend($variantMenu)
+ 
     // Add style
     mw.util.addCSS(
-      '.page-header__languages + .page-header__variants{margin-left: 5px;}'
+      '.page-header__variants + .page-header__languages{margin-left: 5px;}'
     )
   })
 })()

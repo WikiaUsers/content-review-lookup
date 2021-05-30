@@ -12,11 +12,6 @@ window.categoryCSS = {
     "Va' Rok": "MediaWiki:Va'_Rok.css"
 };
 
-// RailWAM
-window.railWAM = {
-    logPage : "Project:WAM Log"
-};
-
 // UserTags
 window.UserTagsJS = {
     modules: {

@@ -16,3 +16,4 @@ window.DiscordBannerSettings = {
 /* Modern BackToTop Button */
 
 window.BackToTopModern = true;
+window.BackToTopStart = 50;

@@ -398,15 +398,15 @@ function initVoidRotation() {
     }
 }
 
-document.body.onload = function() {
-    initTitle();
-    initButtons();
-	attachClickEvent();
-	initFloat();
-	initCalendar();
-	initVoidRotation();
-	autoFilter();
-}
+// document.body.onload = function() {
+//     initTitle();
+//     initButtons();
+// 	attachClickEvent();
+// 	initFloat();
+// 	initCalendar();
+// 	initVoidRotation();
+// 	autoFilter();
+// }
 
 initTitle();
 initButtons();

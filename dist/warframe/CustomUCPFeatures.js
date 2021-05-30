@@ -296,11 +296,13 @@ function fixCommentHeader(commentID, replyID, commentHeader, poster, posterName,
 	
 	node1 = document.createElement("A"); node1.className = "EntityHeader_name__2oRXg";
 	node1.href = link;
-	if ((window.CustomUCPFeatures && window.CustomUCPFeatures.revealAnonIP) || poster !== "A Lone Tenno") {
-		node1.innerText = posterName;
-	} else {
-		node1.innerText = poster;
-	}
+if ((window.CustomUCPFeatures && window.CustomUCPFeatures.revealAnonIP) || (poster !== "A Fandom user" && poster !== "A Lone Tenno")) {
+        node1.innerText = posterName;
+    } else if (poster === "A Fandom user") {
+        node1.innerText = "A Lone Tenno";
+    } else {
+        node1.innerText = poster;
+    }
 	commentHeader.appendChild(node1);
 	
 	node1 = document.createElement("SPAN"); node1.className = "EntityHeader_middot__2f4XC";

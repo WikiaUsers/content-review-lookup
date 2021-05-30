@@ -46,9 +46,6 @@ window.AddRailModule = [{prepend: true}];
 //          jQuery Slider
 //================================
 
-// Code from http://dragonage.wikia.com/wiki/MediaWiki:Common.js created by "Tierrie"
-// see also http://onepiece.wikia.com/wiki/MediaWiki:Common.js/slider.js
-
 mw.loader.using(["jquery.cookie"]);
 
 mw.loader.using(["jquery.ui.tabs"], function() {

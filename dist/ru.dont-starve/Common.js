@@ -333,3 +333,17 @@ $('#settingselect').click(function() {
         $('.settingchange').css({"background": "none"});
 });
 });
+
+/*Профиль Фяна*/
+$('#phyanselect .cc-1').click(function() {
+    $('#phyanprofile #footer').css({"background-image": "url('https://static.wikia.nocookie.net/dont-starve/images/3/3d/%D0%9F%D0%BB%D0%B0%D0%BD_%D0%B4%D0%B5%D0%B9%D1%81%D1%82%D0%B2%D0%B8%D0%B9_%D0%B4%D0%BB%D1%8F_Don%27t_Starve_Together_%D0%BD%D0%B0_2021_%D0%B3%D0%BE%D0%B4.jpg/revision/latest?cb=20210204185306&path-prefix=ru')"});
+});
+$('#phyanselect .cc-2').click(function() {
+    $('#phyanprofile #footer').css({"background-image": "url('https://static.wikia.nocookie.net/dont-starve/images/a/a3/New_Horizons_загрузочный_экран.png/revision/latest?cb=20200321071926&path-prefix=ru')"});
+});
+$('#phyanselect .cc-3').click(function() {
+    $('#phyanprofile #footer').css({"background-image": "url('https://static.wikia.nocookie.net/dont-starve/images/d/de/Nightfall_загрузочный_экран.png/revision/latest?cb=20200321072004&path-prefix=ru')"});
+});
+$('#phyanselect .cc-4').click(function() {
+    $('#phyanprofile #footer').css({"background-image": "url('https://static.wikia.nocookie.net/dont-starve/images/1/1b/Critters_загрузочный_экран.png/revision/latest?cb=20190607221438&path-prefix=ru')"});
+});

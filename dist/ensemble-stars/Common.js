@@ -1,5 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
- 
+
 /* Auto Refresh */
 window.ajaxPages = ['Special:RecentChanges','Special:WikiActivity'];
 window.AjaxRCRefreshText = 'Auto-refresh';
@@ -11,6 +11,19 @@ var tooltips_config = {
     events: ['CustomEvent'],
     noCSS: true,
 };
+
+/* discord banner */
+window.DiscordBannerSettings = {
+    bannerStyle: '2',
+    inviteLink: 'bdbGujg2tM',
+    prependToRail: true,
+};
+
+/* rail modules */
+window.AddRailModule = [
+	{prepend: true},
+    'Template:RailModule2',
+];
  
 /*Story Render Themes*/
 console.log("Script version 1.1.0 is running!");

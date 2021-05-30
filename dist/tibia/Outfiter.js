@@ -7,7 +7,7 @@ $(function () {
     //shared variables for MediaWiki:Outfiter/Template.js and MediaWiki:Outfiter.js START
     loading_img = 'https://static.wikia.nocookie.net/tibia/en/images/8/81/Outfiter_Loading.gif',
     error_img = 'https://static.wikia.nocookie.net/tibia/en/images/f/f6/Outfiter_Error.png',
-    //mounts, the array index is the id
+    //mounts, the array index is the idm
     //must also be added to Template:Infobox_Mount
     outfiter_mount_names = [
       //0
@@ -123,7 +123,7 @@ $(function () {
       //90
       'Dragon_Slayer', 'Revenant', 'Jouster', 'Moth_Cape', 'Rascoohan',
       //95
-      'Merry_Garb', 'Rune_Master', 'Forest_Warden'
+      'Merry_Garb', 'Rune_Master', 'Forest_Warden', 'Citizen_of_Issavi'
     ],
     //other outfits the array index is the id(starting at 100)
     //must also be added to Template:OutfiterLink
@@ -151,7 +151,9 @@ $(function () {
       //150
       'Lost_Soul', 'Phantom', 'Lion_(A)', 'Lion_(B)', 'Werehyaena',
       //155
-      'Werelion', 'Pirat', 'Raccoon'
+      'Werelion', 'Pirat', 'Raccoon', 'Tyrant', 'Girtablilu',
+      //160
+      'Bashmu', 'Carnisylvan', 'Chimera'
     ],
     //outfits the array index is the id(starting at 200)
     //must also be added to Template:OutfiterLink
@@ -181,7 +183,8 @@ $(function () {
       Trailblazer: 8,
       Lost_Soul: 8,
       Revenant: 8,
-      Rune_Master: 8
+      Rune_Master: 8,
+      Tyrant: 8
     },
     outfiter_sprites_walking = {
       CM: 2,
@@ -331,6 +334,11 @@ $(function () {
       Werelion: true,
       Pirat: true,
       Raccoon: true,
+      Tyrant: true,
+      Bashtu: true,
+      Girtablilu: true,
+      Carnisylvan: true,
+      Chimera: true,
       None: true
     },
     //no mount
@@ -391,7 +399,12 @@ $(function () {
       Werehyaena: true,
       Werelion: true,
       Pirat: true,
-      Raccoon: true
+      Raccoon: true,
+      Tyrant: true,
+      Girtablilu: true,
+      Bashmu: true,
+      Carnisylvan: true,
+      Chimera: true
     },
     //no addon
     outfiter_a_names = {
@@ -496,7 +509,12 @@ $(function () {
       Werehyaena: true,
       Werelion: true,
       Pirat: true,
-      Raccoon: true
+      Raccoon: true,
+      Tyrant: true,
+      Girtablilu: true,
+      Bashmu: true,
+      Carnisylvan: true,
+      Chimera: true
     },
     //outfits with no floor movement
     outfiter_no_floor_move_names = {

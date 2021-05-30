@@ -313,7 +313,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database:Character Template\r| Image                   = ",
-post: "\r| RealName                = \r| CurrentAlias            = \r| Aliases                 = \r\r| Affiliation             = \r| Relatives               = \r| MaritalStatus           = \r\r| CharRef                 = \r| Gender                  = \r| Height                  = \r| Weight                  = \r| Eyes                    = \r| Hair                    = \r| UnusualFeatures         = \r\r| Origin                  = \r| Universe                = \r| PlaceOfBirth            = \r\r| Identity                = \r| Citizenship             = \r| Occupation              = \r| Education               = \r| BaseOfOperations        = \r\r| Creators                = \r| First                   = \r\r| HistoryText             = \r\r| Personality             = \r\r| Powers                  = \r| Abilities               = \r| Strength                = \r| Weaknesses              = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Marvel                  = \r| Wikipedia               = \r| Links                   = \r}}"
+post: "\r| Name                    = \r| CurrentAlias            = \r| Aliases                 = \r\r| Affiliation             = \r| Relatives               = \r| MaritalStatus           = \r\r| CharRef                 = \r| Gender                  = \r| Height                  = \r| Weight                  = \r| Eyes                    = \r| Hair                    = \r| UnusualFeatures         = \r\r| Origin                  = \r| Universe                = \r| PlaceOfBirth            = \r\r| Identity                = \r| Citizenship             = \r| Occupation              = \r| Education               = \r| BaseOfOperations        = \r\r| Creators                = \r| First                   = \r\r| HistoryText             = \r\r| Personality             = \r\r| Powers                  = \r| Abilities               = \r| Strength                = \r| Weaknesses              = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Marvel                  = \r| Wikipedia               = \r| Links                   = \r}}"
 }
 }
 }
@@ -332,7 +332,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database:Team Template\r| Image                   = ",
-post: "\r| OfficialName            = \r| EditorialNames          = \r| Aliases                 = \r\r| Status                  = \r| Identity                = \r| Universe                = \r| BaseOfOperations        = \r\r| TeamLeaders             = \r| CurrentMembers          = \r| FormerMembers           = \r| Allies                  = \r| Enemies                 = \r\r| Origin                  = \r| PlaceOfFormation        = \r| PlaceOfDefunction       = \r| Creators                = \r| First                   = \r| Last                    = \r\r| HistoryText             = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+post: "\r| Name                    = \r| EditorialNames          = \r| Aliases                 = \r\r| Status                  = \r| Identity                = \r| Universe                = \r| BaseOfOperations        = \r\r| TeamLeaders             = \r| CurrentMembers          = \r| FormerMembers           = \r| Allies                  = \r| Enemies                 = \r\r| Origin                  = \r| PlaceOfFormation        = \r| PlaceOfDefunction       = \r| Creators                = \r| First                   = \r| Last                    = \r\r| HistoryText             = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 }
 }
 }
@@ -370,7 +370,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database: Item Template\r| Image                   = ",
-post: "\r| OfficialName            = \r| Aliases                 = \r\r| CurrentOwner            = \r| PreviousOwners          = \r| AlternateOwners         = \r\r| Type                    = \r| Material                = \r| Dimensions              = \r| Weight                  = \r\r| Origin                  = \r| Universe                = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r\r| Creators                = \r| First                   = \r\r| HistoryText             = \r| Properties              = \r| AlternateVersions       = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+post: "\r| Name                    = \r| Aliases                 = \r\r| CurrentOwner            = \r| PreviousOwners          = \r| AlternateOwners         = \r\r| Type                    = \r| Material                = \r| Dimensions              = \r| Weight                  = \r\r| Origin                  = \r| Universe                = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r\r| Creators                = \r| First                   = \r\r| HistoryText             = \r| Properties              = \r| AlternateVersions       = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 }
 }
 }
@@ -427,7 +427,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database: Vehicle Template\r| Image                   = ",
-post: "\r| OfficialName            = \r| Title                   = \r| Nicknames               = \r| Universe                = \r| Status                  = \r| CurrentModel            = \r| CurrentOwner            = \r| TransportMethod         = \r| Dimensions              = \r| Creators                = \r| Origin                  = \r| First                   = \r\r| HistoryText             = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+post: "\r| Name                    = \r| Title                   = \r| Nicknames               = \r| Universe                = \r| Status                  = \r| CurrentModel            = \r| CurrentOwner            = \r| TransportMethod         = \r| Dimensions              = \r| Creators                = \r| Origin                  = \r| First                   = \r\r| HistoryText             = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 }
 }
 }

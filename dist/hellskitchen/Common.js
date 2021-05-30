@@ -35,7 +35,8 @@ window.UserTagsJS = {
 		'wiki-manager': { u: 'Wiki Manager', link: 'w:Help:Wiki_Managers' },
 		soap: { u: 'SOAP', link: 'w:Help:SOAP' },
 		council: {u: 'Council', link: 'w:Help:Community Council'},
-		redditmod: {u: 'Reddit Mod' }
+		redditmod: {u: 'Reddit Moderator' },
+		discordmod: {u: 'Discord Moderator' }
     },
 	modules: {
         inactive: 60,
@@ -44,7 +45,9 @@ window.UserTagsJS = {
         custom: {
             'CollinKulesha': ['redditmod'],
             'Octranspo9307': ['redditmod'],
-            'Anythingworx47': ['redditmod']
+            'Anythingworx47': ['redditmod'],
+            'UltimateKing98': ['discordmod'],
+            'Marke34': ['discordmod']
         },
         metafilter: {
         	sysop: ['bureaucrat','bot'],

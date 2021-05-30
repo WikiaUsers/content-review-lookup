@@ -267,7 +267,7 @@ addOnloadHook(createNavigationBarToggleButton);
  *  Maintainers: [[User:Random832]]
  */
 
-ts_alternate_row_colors = false;
+ts_alternate_row_colors = true;
 
 /** Magic editintros ****************************************************
  *

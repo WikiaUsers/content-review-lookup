@@ -51,8 +51,8 @@ window.UserTagsJS = {
             formerstaff: { u: 'Former Staff', title: 'This user was formerly a Wiki Staff member.' },
             inactive: { u: 'Inactive', title: 'This user hasn\'t edited in the last 30 days.' },
             blocked: { title: 'This user is currently blocked.' },
-            newuser: { u: 'New User', title: 'This user is new to the wiki.' },
-            notautoconfirmed: { title: 'This user is new to FANDOM.'}
+            newuser: { u: 'New Editor', title: 'This user is new to the wiki.' },
+            notautoconfirmed: { u: 'New User', title: 'This user is new to FANDOM.'}
         }
     };
     

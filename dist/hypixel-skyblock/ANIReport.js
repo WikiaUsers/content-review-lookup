@@ -80,7 +80,7 @@ $.when(
 							api.postWithToken('csrf', {
 								action: "edit",
 								title: "Hypixel SkyBlock Wiki:Administrator's Noticeboard",
-								summary: "Reporting [[User:" + user + "|" + user + "]] to the administrators: [[HSW:CG|Possible vioaltion of Comment guidelines]]; See " + link + " for the comment in question.",
+								summary: "Reporting [[User:" + user + "|" + user + "]] to the administrators: [[HSW:CG|Possible violation of Comment guidelines]]; See " + link + " for the comment in question.",
 								appendtext: "\n\n==Report by [[User:" + mw.config.get('wgUserName') + "|" + mw.config.get('wgUserName') + "]]==" + "\n\
 {{Report\n\
 |" + user + "\n\

@@ -123,3 +123,9 @@ $('#showMap').on('click', function(e){ //отображает карту при 
     $('#forMap').attr({"style":"display:block"});
 });
 }
+
+// Замена изображения для всплывающего окна ссылки
+window.pPreview = $.extend(true, window.pPreview, {
+    defimage: 'https://static.wikia.nocookie.net/onepiece/images/d/d5/NoPicAvailable.png/revision/latest?cb=20130719054732&path-prefix=ru',
+    noimage: 'https://static.wikia.nocookie.net/onepiece/images/d/d5/NoPicAvailable.png/revision/latest?cb=20130719054732&path-prefix=ru'
+});

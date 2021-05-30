@@ -4,6 +4,11 @@
 
 window.BackToTopModern = true;
 
+/* AddRailModule on top */
+window.AddRailModule = [
+    {page: 'Template:CurrentBirthday', prepend: true},
+];
+
 /* For card details on card icon hover */
 window.tooltips_config = {
     offsetX: 10,

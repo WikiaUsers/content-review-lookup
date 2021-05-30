@@ -39,14 +39,6 @@ $(function () {
     }
 });
 
-/**********
- Wikipedia:Tools/Navigation popups
-**********/
-// [[wikipedia:User:Lupin/popups]]
-importScriptURI("http://en.wikipedia.org/w/index.php?action=raw&ctype=text/javascript&title=User:Lupin/popups.js");
-popupStructure='menus';
-popupDelay=1.5;
-
 /**
  * Configure my list of global.js articles
  * Grab the list from sessionStorage if available
@@ -63,19 +55,9 @@ try {
 }
 if (!jQuery.isArray(globalJSArticles)) {
 	globalJSArticles = [
-        'u:joeplayground:MediaWiki:Tooltip.js',
-		'u:dev:PurgeButton/code.js',
-		'u:dev:DynamicImages/code.js',
-		'u:dev:FloatingToc/code.js',
-		'u:dev:WallGreetingButton/code.js',
 		'u:dev:ListFiles/code.js',
-		'u:dev:SearchSuggest/code.js',
-		'u:dev:ExternalImageLoader/code.js',
-		'u:dev:AjaxPatrol/code.js',
 		'u:dev:InfoWidgets/code.js',
         'u:dev:SpoilerAlert/code.js',
-        'u:dev:RevealAnonIP/code.js',
-        'u:dev:AutoEditDropdown/code.js',
         'u:dev:MediaWiki:Countdown/code.js',
 	];
 }
