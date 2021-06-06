@@ -686,7 +686,8 @@ $(addfaicon);
  */
 function addEditIntro(name) {
 	// Top link
-	$('#ca-edit').attr('href', $('#ca-edit').attr('href') + '&editintro=' + name);
+	$('.page-header #ca-edit').attr('href', $('.page-header #ca-edit').attr('href') + '&editintro=' + name);
+	$('.page-side-tools #ca-edit').attr('href', $('.page-side-tools #ca-edit').attr('href') + '&editintro=' + name);
 	$('span.mw-editsection > a').each( function () {
 		$(this).attr('href', $(this).attr('href') + '&editintro=' + name);
 	} );
@@ -733,11 +734,10 @@ $( function () {
  * Page can still be edited by going via the edit tab on the history etc, or by 
  * typing the edit address manually.
  * By [[User:Spang|Spang]]
- * Monaco support by [[User:Uberfuzzy|Uberfuzzy]]
- * Oasis support by [[User:Uberfuzzy|Uberfuzzy]]
+ * Monaco and Oasis support by [[User:Uberfuzzy|Uberfuzzy]]
  * Removal of section edit buttons and new section tab on talk pages added by [[User:Grunny|Grunny]]
  * User:/User talk: support and styling in new skin by [[User:Grunny|Grunny]]
- * UCP support by [[User:01miki10]]
+ * UCP and FandomDesktop support by [[User:01miki10|01miki10]]
  */
 function disableOldForumEdit() {
 	if ( typeof( enableOldForumEdit ) != 'undefined' && enableOldForumEdit ) {
@@ -748,13 +748,15 @@ function disableOldForumEdit() {
 		return;
 	}
 
-	if ( $( '#PageHeader #ca-addsection' ).length ) {
-		$( '#PageHeader #ca-addsection' ).html( 'Archived' ).removeAttr( 'href' );
-		$( '#PageHeader #ca-edit' ).remove();
+	if ( $( '.page-header #ca-addsection' ).length ) {
+		$( '.page-header #ca-addsection' ).html( 'Archived' ).removeAttr( 'href' );
+		$( '.page-header #ca-edit' ).remove();
+		$( '.page-side-tools #ca-addsection' ).remove();
 		$( 'span.mw-editsection' ).remove();
 		return;
 	} else {
-		$( '#PageHeader #ca-edit' ).html( 'Archived' ).removeAttr( 'href' );
+		$( '.page-header #ca-edit' ).html( 'Archived' ).removeAttr( 'href' );
+		$( '.page-side-tools #ca-edit' ).remove();
 		$( 'span.mw-editsection' ).remove();
 		return;
 	}
@@ -942,3 +944,19 @@ function fillEditSummariesVisualEditor() {
 }
 
 $( fillEditSummariesVisualEditor );
+
+// Copied from https://avatar.wikia.com/wiki/MediaWiki:Common.js/icons.js
+$( function eraIconsOasis() {
+    if ( $( '#title-eraicons' ).length ) {
+    	if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
+    		$( '.page-header__actions' ).first().append( $( '#title-eraicons' ).show() );
+    	} else {
+    	    $( '.page-header__contribution > div' ).first().append( $( '#title-eraicons' ).show() );
+    	}
+    }
+} );
+
+ /* May the Fourth 2021 fun! */
+   $(function () {
+        $('#fourth').append("<iframe width='100%'  height='1200px' style='background-color:transparent!important' src='https://gleam.io/Rz3FG/win-stars-wars-day-prizes-with-fanatical'></iframe>");
+    });

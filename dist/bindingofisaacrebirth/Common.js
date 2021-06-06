@@ -43,7 +43,8 @@ $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
 
 	$(
 		'.pi-header,' +
-		':not( .pi-group ) > .pi-data > .pi-data-label'
+		':not( .pi-group ) > .pi-data > .pi-data-label,' +
+		'.pi-smart-data-label'
 	).each( function () { useCustomFont( this, 'TeamMeat-Bold' ) } );
 	$(
 		'.pi-group > .pi-data > .pi-data-label,' +

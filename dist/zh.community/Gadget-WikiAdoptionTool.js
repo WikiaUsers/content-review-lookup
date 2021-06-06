@@ -19,6 +19,7 @@
  ** 2020年1月7日 (二) 17:56 (UTC)：新增过滤器，阻止非法字符
  ** 2021年2月11日：基于UCP进行了重构
  ** 2021年3月9日 (二) 13:02 (UTC)：Minor fix
+ ** 2021年6月2日 (三) 20:45 (UTC)：Minor fix: UCX
  */
 
 !(function() {
@@ -28,13 +29,12 @@
   // 申请按钮
   var $adoptBtn = function() {
     return $('<a>', {
-      href: 'javascript:;',
-      class: 'adoption-start-btn'
+      href: 'javascript:;'
     })
       .click(showModal)
       .append(
         $('<span>')
-          .addClass('wds-is-secondary wds-button wds-is-squished')
+          .addClass('adoption-start-btn wds-is-secondary wds-button wds-is-squished')
           .text(wgULS('填写领养表格', '填寫領養表單'))
           .css({
             cursor: 'pointer'
@@ -48,7 +48,7 @@
   // 已完成弹窗
   if (conf.wgNamespaceNumber === 112 || conf.wgArticleId === 20821) {
     //添加按钮
-    $('.page-header__contribution-buttons').append($adoptBtn)
+    $('.page-header__contribution-buttons, .page-header__actions').append($adoptBtn)
     //提示已收到申请
     if (mw.util.getParamValue('newrequest')) {
       ssi_modal.notify('success', {

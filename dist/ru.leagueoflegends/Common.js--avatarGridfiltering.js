@@ -34,8 +34,6 @@
  
 				field.keyup(function() {
 					avatarGridFilteringApply()
-					if(window.avatarGridFiltersTimeout) window.clearTimeout(window.avatarGridFiltersTimeout)
-					window.avatarGridFiltersTimeout = window.setTimeout(avatarGridFilteringClear, 120000)
 				})
 			} else if(avatarGridFilters[x] instanceof Array) {
 				var field = $('<select></select>').appendTo(container).attr('id', container.attr('id')+'-field').data('type', 'select')
@@ -47,8 +45,6 @@
  
 				field.change(function() {
 					avatarGridFilteringApply()
-					if(window.avatarGridFiltersTimeout) window.clearTimeout(window.avatarGridFiltersTimeout)
-					window.avatarGridFiltersTimeout = window.setTimeout(avatarGridFilteringClear, 120000)
 				})
 			}
 		}

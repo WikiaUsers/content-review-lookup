@@ -98,7 +98,7 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api']).then(functi
             }
         });
         adoptionModal.create();
-        $('.WikiaMainContentContainer #adoptions')
+        $('#adoptions')
             .attr('class', 'wds-button btn-large')
             .text('Adopt a Wiki')
             .wrap($('<div>').css('text-align', 'center'))

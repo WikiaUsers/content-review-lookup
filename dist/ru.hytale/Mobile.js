@@ -1,7 +1,9 @@
 /**
-* Размещённая ниже напись на языке Java влияет на всех пользователей и посетителей мобильной версии вики.
-* Для написей обеих настольной и мобильной версий см. MediaWiki:Global.js.
-* Для написей настольной версии см. MediaWiki:Common.js.
+* Размещаемый ниже код JavaScript применяется к основной теме внешнего вида Фандома (FandomMobile) у всех пользователей и посетителей мобильной версии вики.
+* Для кода обеих настольной и мобильной версий вики см. MediaWiki:Common.js.
+* Для кода только основной настольной версии вики (FandomDesktop) см. MediaWiki:Fandomdesktop.js.
+* Для кода только старой настольной версии вики (HydraDark) см. MediaWiki:Hydradark.js.
+* Для кода только основной мобильной версии вики (FandomMobile) см. MediaWiki:Mobile.js.
 **/
 
 mw.loader.load('/index.php?title=MediaWiki:Global.js&action=raw&ctype=text/javascript');
@@ -10,6 +12,7 @@ mw.loader.load('/index.php?title=MediaWiki:Jquery.js&action=raw&ctype=text/javas
 mw.loader.load('/index.php?title=MediaWiki:App.js&action=raw&ctype=text/javascript');
 mw.loader.load('/index.php?title=MediaWiki:Vue.js&action=raw&ctype=text/javascript');
 mw.loader.load('/index.php?title=MediaWiki:Video.js&action=raw&ctype=text/javascript');
+mw.loader.load('/index.php?title=MediaWiki:Employees.js&action=raw&ctype=text/javascript');
 
 
 /* Добавление ссылок "текущая версия" и "отменить" на страницу Служебная:MobileDiff */

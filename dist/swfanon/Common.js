@@ -226,6 +226,30 @@
   };
 
   /**
+   * @description This function is used to append the {{tl|Top}} template to the
+   * top of the page in the page header. This function was adapted from code
+   * found in Wookieepedia's MediaWiki:Common.js file & previously written by
+   * User:Grunny.
+   *
+   * @author Grunny <sw.wikia.com/w/User talk:Grunny>
+   * @author Sebolto <swf.wikia.com/w/User talk:Sebolto>
+   *
+   * @returns {undefined}
+   */
+  this.situateTopTemplate = function () {
+    var $top, $target;
+
+    $top = $("#title-top");
+    $target = (mw.config.get("skin") === "fandomdesktop")
+      ? $(".page-header__actions").first()
+      : $(".page-header__contribution > div").first();
+
+    if ($top.length) {
+      $target.append($top.show());
+    }
+  };
+
+  /**
    * @description This function is used to load a set of tools & plugins for 
    * exclusive use by Administrators alone. This functionality was previously
    * loaded from <code>MediaWiki:Group-sysop.js</code> prior to its deactivation
@@ -236,6 +260,43 @@
    * @returns {void}
    */
   this.loadAdminTools = function () {
+    var config, skinSpecificTarget, skinSpecificClass, buttonText;
+
+    // Cache window properties
+    config = mw.config.get([
+      "skin",
+      "wgNamespaceNumber"
+    ]);
+
+    // Element to which PageCreator + LastEdited will be appended
+    skinSpecificTarget = (config.skin === "oasis")
+      ? ".page-header__contribution-buttons"
+      : ".page-header__actions";
+
+    // Styling for the button
+    skinSpecificClass = (config.skin === "oasis")
+      ? "wds-button wds-is-squished wds-is-secondary"
+      : "wds-button wds-is-text page-header__action-button has-label";
+
+    // Display text for button
+    buttonText = "Info";
+
+    window.pageCreatorConfig = {
+      namespaces: [0, 4, 6, 8, 10, 14],
+      useAvatar: false,
+      useUTC: false,
+      useTimestamp: true
+    };
+
+    window.lastEdited = {
+      avatar: false,
+      comment: false,
+      size: false,
+      namespaces: {
+        exclude: [1, 2, 3, 5, 7, 9, 11, 12, 15, 110, 111, 1202]
+      }
+    };
+
     window.DiscussionTemplates = {
       templates: {
         "Image Policy": {
@@ -260,10 +321,44 @@
     window.importArticles({
       type: "script",
       articles: [
-      	"MediaWiki:AutoDelete.js",
+        "MediaWiki:AutoDelete.js",
         "u:dev:MediaWiki:DiscussionTemplates.js"
       ]
     });
+
+    if (
+      $(skinSpecificTarget).length &&
+      $.inArray(
+        config.wgNamespaceNumber,
+        window.pageCreatorConfig.namespaces
+      ) !== -1
+    ) {
+      // Load PageCreator & LastEdited on click
+      $(skinSpecificTarget).append(
+        $("<a>", {
+          "class": skinSpecificClass,
+          "id": "toggle-page-info-button",
+          "text": buttonText,
+        }).click(function () {
+          window.importArticles({
+            type: "script",
+            articles: [
+              "u:dev:MediaWiki:LastEdited/code.js",
+              "u:dev:MediaWiki:PageCreator/code2.js",
+            ],
+          });
+
+          mw.util.addCSS(
+            "#lastEdited {" +
+              "font-size: 12px !important;" +
+            "}"
+          );
+
+          // Remove button once pressed
+          $(this).remove();
+        })
+      );
+    }
   };
 
   /**
@@ -300,6 +395,11 @@
     // Load tools restricted to Administrators
     if (new RegExp("sysop").test(mw.config.get("wgUserGroups").join(" "))) {
       this.loadAdminTools();
+    }
+    
+    // Situate Template:Top in page header (load page tools 1st)
+    if ($("#title-top").length) {
+      this.situateTopTemplate();
     }
   };
 

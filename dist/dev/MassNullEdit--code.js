@@ -135,14 +135,12 @@
     function pause() {
         paused = true;
         rateLimited = false;
-        document.getElementById('mne-start-button').removeAttribute('disabled');
-        document.getElementById('mne-pause-button').setAttribute('disabled', '');
+        modalMain.$element.removeClass("processing");
     }
 
     function start() {
         paused = false;
-        document.getElementById('mne-start-button').setAttribute('disabled', '');
-        document.getElementById('mne-pause-button').removeAttribute('disabled');
+        modalMain.$element.addClass("processing");
         process();
     }
 
@@ -350,7 +348,7 @@
                 formData = document.forms['mne-mode'].elements;
                 modalAddPages.$footer.append(
                     $('<span>').attr('id', 'mne-processing-msg').text(i18n('processing').plain()),
-                    $('<span>').addClass('mw-ajax-loader')
+                    mw.libs.QDmodal.getSpinner()
                 );
             },
             onHide: function () {
@@ -427,6 +425,10 @@
             onShow: function () {
                 input = document.getElementById('mne-input');
                 pause();
+                modalMain.$footer.append(
+                    $('<span>').attr('id', 'mne-processing-msg').text(i18n('processing').plain()),
+                    mw.libs.QDmodal.getSpinner()
+                );
             },
             onHide: function () {
                 pause();
@@ -434,11 +436,11 @@
             },
             buttons: [{
                 text: i18n('initiate').plain(),
-                attr: {id: 'mne-start-button'},
+                attr: {id: 'mne-main-start'},
                 handler: start
             }, {
                 text: i18n('pause').plain(),
-                attr: {id: 'mne-pause-button'},
+                attr: {id: 'mne-main-pause'},
                 handler: pause
             }, {
                 text: i18n('addpages').plain(),
@@ -466,6 +468,9 @@
         modalMain = new mw.libs.QDmodal('mne-main');
         modalAddPages = new mw.libs.QDmodal('mne-addpages');
 
+        modalMain.$element.addClass("mne-modal");
+        modalAddPages.$element.addClass("mne-modal");
+
         var $link = $('<li>').append(
             $('<a>').attr({
                 href: '#',
@@ -486,18 +491,18 @@
         var i18nMsgs = new $.Deferred();
         var waitFor = [i18nMsgs];
 
-        mw.loader.load(devLoadUrl.replace('script', 'style') + 'MassNullEdit.css', 'text/css');
+        mw.loader.load(devLoadUrl.replace('script', 'style') + 'MassNullEdit.css&cb=20210606', 'text/css');
 
-        if (!(mw.libs.QDmodal && mw.libs.QDmodal.version >= 20180212)) {
+        if (!(mw.libs.QDmodal && mw.libs.QDmodal.version >= 20210606)) {
             waitFor.push($.ajax({
                 cache: true,
                 dataType: 'script',
-                url: devLoadUrl + 'QDmodal.js&cb=20180212'
+                url: devLoadUrl + 'QDmodal.js&cb=20210606'
             }));
         }
 
         if (!(window.dev && dev.i18n && dev.i18n.loadMessages)) {
-            mw.loader.load(devLoadUrl + 'I18n-js/code.js');
+            mw.loader.load(devLoadUrl + 'I18n-js/code.js&*');
         }
 
         mw.hook('dev.i18n').add(function (i18njs) {

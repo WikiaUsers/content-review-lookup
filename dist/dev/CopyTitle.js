@@ -11,7 +11,7 @@ $(function() {
 	function init(i18n) {
     	var el = document.createElement('span');
 		$(el).attr('id', 'title-copy-container').html('<span id="title-copy-content" title="' + i18n.msg('title-copy-content').escape() + '">&#xF0C5;</span><span id="title-copy-all" title="' + i18n.msg('title-copy-all').escape() + '">&#xF0C5;</span>');
-		$('#firstHeading').append($(el));
+		$('.skin-oasis #firstHeading, .skin-fandomdesktop .page-header__title').append($(el));
 	
 		$('#title-copy-content').click(function() {
 			var text = mw.config.get('wgTitle');
@@ -43,7 +43,7 @@ $(function() {
 				$('#title-copy-all').css('color', '');
 			}, 2000);
 		});
-    };
+    }
     
     mw.hook('dev.i18n').add(function() {
     	window.dev.i18n.loadMessages('CopyTitle').then(init);

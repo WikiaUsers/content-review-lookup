@@ -139,7 +139,7 @@
                     $el[m]($loader);
                 }
             } else {
-                $loader.insertAfter('#PageHeader .page-header__title, .UserProfileActionButton');
+                $loader.insertAfter('.page-header .page-header__title, .UserProfileActionButton');
             }
             this.$content = $loader;
             mw.hook('LastEdited.inserted').fire($loader);

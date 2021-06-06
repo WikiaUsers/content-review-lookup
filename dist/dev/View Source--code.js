@@ -302,7 +302,7 @@
     i18n, $content, $list, $source, $a, $toc, headers = [];
 
     // Return if content model is not wikitext.
-    if (config.wgVersion !== '1.19.24' && config.wgPageContentModel !== 'wikitext') {
+    if (config.wgPageContentModel !== 'wikitext') {
         return;
     }
 
@@ -327,7 +327,7 @@
     function init (i18nInstance) {
         i18n = i18nInstance;
         $content = $('#mw-content-text');
-        $list = $('.page-header__contribution-buttons .wds-list, .UserProfileActionButton .WikiaMenuElement');
+        $list = $('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list');
 
         if ($content.length && $list.length) {
             addButton();

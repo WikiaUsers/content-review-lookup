@@ -50,7 +50,7 @@ For use with older versions of MediaWiki, use the archived versions below:
 			prefix: '',
 			// Some text to append to the edit summary. Named 'using' for historical reasons. If you prefer
 			// to have a marker at the front, use prefix and set this to the empty string.
-			using: ' использовано [[Help:Gadget-HotCat|HotCat]]',
+			using: ' при помощи [[Help:Gadget-HotCat|HotCat]]',
 			// $1 is replaced by a number. If your language has several plural forms (c.f. [[:en:Dual (grammatical form)]]),
 			// you can set this to an array of strings suitable for passing to mw.language.configPlural().
 			// If that function doesn't exist, HotCat will simply fall back to using the last

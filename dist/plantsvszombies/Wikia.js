@@ -277,3 +277,9 @@ $('.wds-global-navigation__search-input').on('keyup', function(){
 		}
 	}
 });
+
+window.MessageBlock = {
+  title : 'Block',
+  message : 'You have been blocked for $2 for $1',
+  autocheck : true
+};

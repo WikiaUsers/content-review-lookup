@@ -1,8 +1,27 @@
-//Importing scripts from dev.wikia.com. Remember to add new scripts within this importArticles block to reduce the times for loading and executing
+if(mw.config.get('wgNamespaceNumber') === 0) {
+    importArticles({
+        type: "script",
+        articles: [
+            "u:fr.naruto:MediaWiki:Common.js/CategoriesSort.js"
+        ]
+    });
+}
+
 // http://dev.wikia.com/wiki/RevealAnonIP This must be placed above all imports.
 window.RevealAnonIP = {
     permissions: ['user']
 };
+
+//Ajout du calendrier en haut de l'activité du wiki
+window.AddRailModule = [{prepend: true}];
+
+//Profile Tags config
+(window.dev = window.dev || {}).profileTags = {
+    noHideTags: true
+};
+
+/* Ajout de la classe activetab  à l'onglet actif de la ParentTab Portable */
+$(".pi-theme-parenttab .mw-selflink").parent().addClass('activetab');
 
 //Config pour le message d'alerte des pages explicites
 ExplicitAlert = {

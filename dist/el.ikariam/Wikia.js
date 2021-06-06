@@ -68,7 +68,8 @@ var LD = {
 	},
 	tho:'.',
 	dec:',',
-	Tipsrel:['ξύλου','κρασιού','μαρμάρου','kρυστάλλου','Θείου']
+	Tipsrel:['ξύλου','κρασιού','μαρμάρου','kρυστάλλου','Θείου'],
+	wondernames:['Σιδηρουργείο του Ήφαιστου','Ιερό Άλσος του Άδη','Κήποι της Δήμητρας','Παρθενώνας της Αθηνάς','Ναός του Ερμή','Φρούριο του Άρη','Ναός του Ποσειδώνα','Κολοσσός']
 };
 function escRegEx(str) { return str.replace(/[\[\]\/\{\}\(\)\-\?\$\*\+\.\\\^\|]/g, "\\$&"); }
 function ucfirst(s) { return s[0].toUpperCase()+s.slice(1); }
@@ -363,6 +364,50 @@ function shipsTableTip(level,base)
 		txt += '<tr><td>'+(z+1)+'</td><td>'+(z+1<=(level)?'-':BT(Math.ceil(base*Math.pow(0.95,z-(level)))-Math.ceil(base*Math.pow(0.95,z+1-(level)))))+'</td><td>'+(z+1<(level)?'-':(z+1>(level)?BT(base-Math.ceil(base*Math.pow(0.95,z+1-(level)))):'<span style="color:blue">0 δ</span>'))+'</td><td>'+(z+1<(level)?'-':BT(Math.ceil(base*Math.pow(0.95,z+1-(level)))))+'</td><td>'+(z+14)+'</td><td>'+(z+14<=(level)?'-':BT(Math.ceil(base*Math.pow(0.95,z+13-(level)))-Math.ceil(base*Math.pow(0.95,z+14-(level)))))+'</td><td>'+(z+14<(level)?'-':(z+14>(level)?BT(base-Math.ceil(base*Math.pow(0.95,z+14-(level)))):'<span style="color:blue">'+0+' δ</span>'))+'</td><td>'+(z+14<(level)?'-':BT(Math.ceil(base*Math.pow(0.95,z+14-(level)))))+'</td>'+(z==12?'<td colspan="4"></td>':'<td>'+(z+27)+'</td><td>'+(z+27<=(level)?'-':BT(Math.ceil(base*Math.pow(0.95,z+26-(level)))-Math.ceil(base*Math.pow(0.95,z+27-(level)))))+'</td><td>'+(z+27<(level)?'-':(z+27>(level)?BT(base-Math.ceil(base*Math.pow(0.95,z+27-(level)))):'<span style="color:blue">0 δ</span>'))+'</td><td>'+(z+27<(level)?'-':BT(Math.ceil(base*Math.pow(0.95,z+27-(level)))))+'</td>')+'</tr>';
 	}
 	return ('<u>Μαθηματικός τύπος</u><br><b><i>Διάρκεια κατασκευής (δ) = Βασική διάρκεια &times; 0,,95<sup>Επίπεδο-Επίπεδο εμφάνισης</sup></i></b><br>Ναυπηγείο <b>'+level+'<sup>ου</sup></b> επιπέδου<br>Βασικός χρόνος κατασκευής: <b>'+BT(base)+'</b><table class=&quot;darktable zebra&quot; style=&quot;text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto&quot;><thead><tr><th rowspan="3">'+img('Minimum.gif','Ελάχιστο επίπεδο αποθήκης','Ελάχιστο επίπεδο αποθήκης','image',20,20,'Αποθήκη')+'</th><th colspan="3">Διάρκεια</th><th rowspan="3">'+img('Minimum.gif','Ελάχιστο επίπεδο αποθήκης','Ελάχιστο επίπεδο αποθήκης','image',20,20,'Αποθήκη')+'</th><th colspan="3">Διάρκεια</th><th rowspan="3">'+img('Minimum.gif','Ελάχιστο επίπεδο αποθήκης','Ελάχιστο επίπεδο αποθήκης','image',20,20,'Αποθήκη')+'</th><th colspan="3">Διάρκεια</th></tr><tr><th colspan="2">μείωσης</th><th rowspan="2">τελική</th><th colspan="2">μείωσης</th><th rowspan="2">τελική</th><th colspan="2">μείωσης</th><th rowspan="2">τελική</th></tr><tr><th>'+img('Time_small.gif','Διάρκεια','Διάρκεια','image',10,10,'Διάρκεια')+'</th><th>Σ '+img('Time_small.gif','Διάρκεια','Διάρκεια','image',10,10,'Διάρκεια')+'</th><th>'+img('Time_small.gif','Διάρκεια','Διάρκεια','image',10,10,'Διάρκεια')+'</th><th>Σ '+img('Time_small.gif','Διάρκεια','Διάρκεια','image',10,10,'Διάρκεια')+'</th><th>'+img('Time_small.gif','Διάρκεια','Διάρκεια','image',10,10,'Διάρκεια')+'</th><th>Σ '+img('Time_small.gif','Διάρκεια','Διάρκεια','image',10,10,'Διάρκεια')+'</th></tr></thead><tbody>'+txt+'</tbody></table>').replace(/"/g,'&quot;');
+}
+function FaithTableGenerator()
+{
+	if($('table#FaithCalc').length==1)
+	{
+		var tds = '';
+		var durs = [7,4,9,7,1,3,1,3];
+		for(var x=0;x<4;x++)
+		{
+			var r1 = '', r2 = '', r3 = '', r4 = '';
+			for(var i=0;i<6;i++)
+			{
+				r1 += '<td><input id="t_'+(2*(x+1)-1)+'_'+i+'" name="t_'+(2*(x+1)-1)+'" type="radio" value="'+i+'"'+(i==0?' checked="checked"':'')+'></td>';
+				r2 += '<td><input id="t_'+(2*(x+1))+'_'+i+'" name="t_'+(2*(x+1))+'" type="radio" value="'+i+'"'+(i==0?' checked="checked"':'')+'></td>';
+				r3 += '<td><input id="t_'+(2*(x+1)+5)+'_'+i+'" name="t_'+(2*(x+1)+5)+'" type="radio" value="'+i+'"'+(i==0?' checked="checked"':'')+'></td>';
+				r4 += '<td><input id="t_'+(2*(x+1)+6)+'_'+i+'" name="t_'+(2*(x+1)+6)+'" type="radio" value="'+i+'"'+(i==0?' checked="checked"':'')+'></td>';
+			}
+			tds += '<tr style="border:1px solid black"><td '+(x<3?' rowspan="2"':'')+' style="border:1px solid black">'+img(LD.wondernames[2*x]+'.gif',LD.wondernames[2*x],LD.wondernames[2*x],'','',50,LD.wondernames[2*x])+'<br><i>'+lnk(LD.wondernames[2*x],LD.wondernames[2*x],LD.wondernames[2*x])+'</i></td><td id="cd_'+(2*(x+1)-1)+'" '+(x<3?' rowspan="2"':'')+' style="width:80px;border:1px solid black">'+BT(durs[2*x]*864e2)+'</td><td '+(x<3?' rowspan="2"':'')+'>'+img(LD.wondernames[2*x+1]+'.gif',LD.wondernames[2*x+1],LD.wondernames[2*x+1],'','',50,LD.wondernames[2*x+1])+'<br><i>'+lnk(LD.wondernames[2*x+1],LD.wondernames[2*x+1],LD.wondernames[2*x+1])+'</i></td><td id="cd_'+(2*(x+1))+'" '+(x<3?' rowspan="2"':'')+' style="width:80px;border:1px solid black">'+BT(durs[2*x+1]*864e2)+'</td><td style="border:1px solid black"'+(x<3?'':'')+'>'+(x<3?(2*(x+1)-1)+'<sup>'+(x==0?'η':(x==1?'η':'η'))+'</sup>':img('crown.png','Μορφή πολιτεύματος','Μορφή πολιτεύματος','','','','Μορφή πολιτεύματος'))+'</td>'+(x<3?r1+'<td style="border:1px solid black">'+(2*(x+1)+5)+'<sup>η</sup></td>'+r3:'<td colspan="8" style="border:1px solid black"><label for="gov_theo"><input id="gov_theo" name="gov" type="radio" value="80"> Θεοκρατία</label><br><label for="gov_rest"><input id="gov_rest" name="gov" type="radio" value="100" checked="checked"> Μορφή πολιτεύματος<br>εκτός Θεοκρατίας</label></td><td colspan="5" style="border:1px solid black"><input id="btnClear" type="button" value="Εκκαθάριση" onclick="ClearFaithTable()"><br><input id="btnCalc" type="Button" value="Υπολογισμός" onclick="CalcFaithTable()"></td>')+'</tr>'+(x<3?'<tr style="border:1px solid black"><td style="border:1px solid black">'+(2*(x+1))+'<sup>'+(x==0?'η':'η')+'</sup>'+'</td>'+(x<3?r2+'<td style="border:1px solid black">'+(2*(x+1)+6)+'<sup>η</sup></td>'+r4:'')+'</tr>':'')+'';
+		}
+		$('table#FaithCalc > tbody').append(tds);
+		$('input#btnClear').on('click',function()
+		{
+			$('[id^="t_"][id$="_0"]').prop('checked',true);
+			$('[id^="cd_"]').each(function(k,dr)
+			{
+				$(dr).html(BT(durs[(parseInt($(dr).attr('id').replace(/\D+/g,''))-1)]*864e2));
+			});
+			$('#gov_rest').prop('checked',true);
+		});
+		$('input#btnCalc').on('click',function()
+		{
+			var temple = 0;
+			$('[id^="t_"]:checked').each(function(k,c)
+			{
+				temple += parseInt($(c).val());
+			});
+			temple = temple <= 5 ? 5 : temple;
+			var gov = parseInt($('[id^="gov_"]:checked').val()!=undefined ? $('[id^="gov_"]:checked').val() : 100);
+			$.each(durs,function(k,dr)
+			{
+				$('[id^="cd_"]:eq('+k+')').html(BT(4320*dr*gov/temple));
+			});
+		});
+	}
 }
 function createTable(jsn)
 {
@@ -970,6 +1015,7 @@ $(document).ready(function()
 	{
 		try
 		{
+			FaithTableGenerator();
 			var txt = '';
 			var div = $content.find('#jsjson').html();
 			var jsn = div?JSON.parse(div.substr(div.indexOf('{'),div.lastIndexOf('}')-2)):{};

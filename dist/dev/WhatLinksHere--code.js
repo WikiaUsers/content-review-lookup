@@ -8,7 +8,7 @@
 (function() {
     'use strict';
 
-    var $list = $('.page-header__contribution-buttons .wds-list, .UserProfileActionButton .WikiaMenuElement');
+    var $list = $('.page-header__actions .wds-list, .UserProfileActionButton .WikiaMenuElement');
 
     if (!$list.length || window.WhatLinksHereLoaded) {
         return;

@@ -1,5 +1,12 @@
 //<nowiki>
-(function ($, mw) {
+importArticle({
+    type: 'script',
+    article: 'u:dev:MediaWiki:ShowCustomModal.js'
+});
+mw.hook('dev.showCustomModal').add(function(showCustomModal) {
+    creation(jQuery, mediaWiki);
+});
+function creation($, mw) {
     
     'use strict';
     
@@ -9,13 +16,11 @@
         'wgNamespaceNumber',
         'wgUserGroups',
         'wgUserName',
-        'wgUserEditCount',
         'wgUserRegistration'
     ]);
-
+    
+    // Days since registration
     conf.userTime = (Date.now() - conf.wgUserRegistration) / (1000 * 60 * 60 * 24);
-
-    mw.loader.load( 'oojs-ui' );
     
     var req = {
         custodian: {
@@ -56,41 +61,48 @@
         }
     };
     
+    function getUserDetails() {
+        $.ajax({
+            url: "https://animaljam.fandom.com/wiki/Special:Editcount/" + conf.wgUserName,
+            dataType: 'text',
+            type: 'GET',
+            success: function(data) {
+            	var editcount = $(data).find("#editcount table table tr:nth-child(2) td:nth-child(2)").text();
+                // The returned data uses commas in the number of edits, which breaks parseInt if not removed
+                conf.userEdits = parseInt(editcount.replace(",",""), 10);
+            }
+        });
+    }
+    
     function getUserGroups() {
         var commonRights = ["autoconfirmed", "*", "poweruser", "user"];
         conf.userGroups = conf.wgUserGroups.filter(function(val) {
             return commonRights.indexOf(val) == -1;
         });
     }
+    
+    function closeModal() {
+    	var confirmation = confirm("Are you sure you want to close this modal? Any work you enter will not be saved.")
+        if (confirmation) dev.showCustomModal.closeModal($($('.modalWrapper')[$('.modalWrapper').length - 1]));
+    }
  
     function createModal(title, body, options) {
-		var messageDialog = new OO.ui.MessageDialog();
         if (options) {
-            options.unshift({id: "close", action: "close", label: "Close", handler: function() {messageDialog.close()}});
+            options.buttons.unshift({id: "close", message: "Close", handler: function() { closeModal() }});
         } else {
-            options = [{id: "close", action: "close", label: "Close", handler: function() {messageDialog.close()}}];
-        }		
-		messageDialog.getActionProcess = function(action) {
-		  return new OO.ui.Process(function() {
-		    options.forEach(function(obj) {
-		      if (obj.action === action && obj.hasOwnProperty("handler")) obj.handler.call();
-		    });
-		  });
-		};
-		var windowManager = new OO.ui.WindowManager();
-		$( 'body' ).append(windowManager.$element);
-		windowManager.addWindows([messageDialog]);
-		windowManager.openWindow(messageDialog, {title: title,  message: $("<div>" + body + "</div>"), verbose: true, size: "larger", actions: options});
+            options = {buttons: [{id: "close", message: "Close", handler: function() { closeModal() }}]};
+        }
+        dev.showCustomModal(title, body, options);
     }
     
     function showRightsModal(id) {
-        if (/*conf.wgUserEditCount > req[id].edits && conf.userTime > req[id].time && */conf.wgUserGroups.indexOf(req[id].group) > -1) {
+        if (conf.userEdits > req[id].edits && conf.userTime > req[id].time && conf.wgUserGroups.indexOf(req[id].group) > -1) {
             console.log("Suitable");
             getUserGroups();
-            createModal(req[id].name + " RfR", 'Please provide a summary as to why you believe you are suitable for rights. <br/><form class="WikiaForm" id="rightsForm"><fieldset><textarea id="summary" class="formField" placeholder="Personal statement" type="text" style="width:100%"/><span id="br2" /></fieldset></form>', [{id: "submit", action: "submit", label: "Submit", active: true, handler: function() { submitRfR(req[id], $('#summary').val()) }}]);
+            createModal(req[id].name + " RfR", 'Please provide a summary as to why you believe you are suitable for rights. <br/><form class="WikiaForm" id="rightsForm"><fieldset><textarea id="summary" class="formField" placeholder="Personal statement" type="text" style="width:100%"/><span id="br2" /></fieldset></form>', {buttons: [{id: "submit", message: "Submit", handler: function() { submitRfR(req[id], $('#summary').val()) }}]});
         } else {
             console.log("Not suitable");
-            console.log(conf.wgUserEditCount + "vs" + req[id].edits + "required");
+            console.log(conf.userEdits + "vs" + req[id].edits + "required");
             console.log(conf.userTime + "vs" + req[id].time + "required");
             console.log(conf.wgUserGroups.join() + "vs" + req[id].group + "required");
             createModal(req[id].name + " RfR", "You cannot create a RfR of this type, as you do not meet the requirements.");
@@ -107,7 +119,7 @@
                 title: "Project:Request for " + right.name + "/" + conf.wgUserName,
                 summary: "Creating new RfR",
                 createonly: true,
-                text: "{{" + "subst:RfR|right=" + right.name + "|user=" + conf.wgUserName + "|currentrights=" + conf.userGroups.join(", ") + "|edits=" + conf.wgUserEditCount + "|regtime=" + Math.round(conf.userTime) + "|statement=" + summary + "|creation=" + dateString + "}}",
+                text: "{{" + "subst:RfR|right=" + right.name + "|user=" + conf.wgUserName + "|currentrights=" + conf.userGroups.join(", ") + "|edits=" + conf.userEdits + "|regtime=" + Math.round(conf.userTime) + "|statement=" + summary + "|creation=" + dateString + "}}",
                 format: 'json',
                 token: mw.user.tokens.get('editToken')
             },
@@ -155,6 +167,7 @@
     }
 
     function loadRfR() {
+        getUserDetails();
         $('.requestur').click(function() {
             console.log("click");
             var id = $(this).attr('id');
@@ -169,6 +182,6 @@
     }
     
     $(init);
-}(jQuery, mediaWiki));
+}
 
 //</nowiki>

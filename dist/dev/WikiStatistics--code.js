@@ -22,8 +22,8 @@
             //Maybe add support for https? -Sophie
             proto = (/^https?:\/\/|^\/\//i).exec(wiki);
             proto = proto ? proto[0] : '//';
-            wiki = wiki.replace(/^https?:\/+|^\/+/i, '').replace(/\.wikia\.com.*/i, '');
-            wiki = proto + encodeURIComponent(wiki) + '.wikia.com';
+            wiki = wiki.replace(/^https?:\/+|^\/+/i, '').replace(/\.fandom\.com.*/i, '');
+            wiki = proto + encodeURIComponent(wiki) + '.fandom.com';
             // if data request in process
             if (cache[wiki]) {
                 // if data in cache
@@ -44,8 +44,8 @@
             if (!(/^https?:\/\//i).test()) {
                 wiki = '//' + wiki;
             }
-            if (wiki.indexOf('.wikia.com') === -1) {
-                wiki = wiki + '.wikia.com';
+            if (wiki.indexOf('.fandom.com') === -1) {
+                wiki = wiki + '.fandom.com';
             }
             */
             ///* disabled due to XSS issue

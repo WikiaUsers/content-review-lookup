@@ -4,9 +4,8 @@
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:AjaxBatchDelete.js',
-        'u:dev:MassProtect/code.js',
-        'u:dev:MassRenameRevert/code.js',
-        'u:dev:WHAM/code.2.js'
+        'u:dev:MediaWiki:AjaxBatchDelete.js',
+        'u:dev:MediaWiki:MassProtect/code.js',
+        'u:dev:MediaWiki:MassRenameRevert/code.js'
     ]
 });//End CAT*/

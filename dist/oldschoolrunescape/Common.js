@@ -4,28 +4,7 @@
 // some scripts (especially ones from RS3 wiki) need this
 window.rswiki = { loaded: {} };
 
-// AjaxRC - http://dev.wikia.com/wiki/AjaxRC
-// Imported in MediaWiki:ImportJS
-window.AjaxRCRefreshText = 'Auto-refresh';
-window.ajaxPages = [
-    "Special:RecentChanges",
-    "Special:Watchlist",
-    "Special:Log",
-    "Special:Contributions",
-    "Forum:Watercooler",
-    "Special:AbuseLog",
-    "Special:NewFiles",
-    "Category:Speedy_deletion_candidates",
-    "Category:Speedy_move_candidates",
-    "Special:Statistics",
-    "Special:NewPages",
-    "Special:ListFiles",
-    "Special:Log/move"
-];
-
 var scripts = [
-    'MediaWiki:Common.js/compare.js',
-    'u:dev:DISPLAYTITLE/code.js',
     'MediaWiki:Common.js/youtube.js',
     'MediaWiki:Wikia.js/sidebar.js',
     'MediaWiki:Common.js/gemwupdate.js',
@@ -61,12 +40,6 @@ if (wgPageName.indexOf("Special:MovePage/File:") != -1 || (wgCanonicalNamespace 
 // Unchecks redirects when moving files
 if (wgPageName.indexOf("Special:MovePage/File:") != -1) {
     $('input#wpLeaveRedirect').removeAttr('checked');
-}
-
-if ((wgUserGroups||[]).indexOf('sysop')!=-1) {
-    window.autoWelcomeText = '{{subst:Welcome|~~~~}}';
-    window.autoWelcomeSummary = '';
-    scripts.push('u:runescape:User:Quarenon/autowelcome.js');
 }
 
 //calc.js import from main RSWiki

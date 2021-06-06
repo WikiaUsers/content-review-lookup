@@ -22,6 +22,11 @@ gridFilters = {
 };
 
 (function () {
+    var isMainPage = $('body').hasClass('mainpage');
+    var isList = $('#card-grid').hasClass('list-of-cards');
+    
+    $('#card-grid').css('max-height', isMainPage ? '400px' : isList ? '500px' : '230px');
+    
     function gridFiltering() {
         var grid = $('#card-grid');
         if (!grid.length) return;
@@ -56,7 +61,6 @@ gridFilters = {
                         id: container.attr('id') + '-field',
                         placeholder: container.data('placeholder'),
                     })
-                    .css({ width: '72px', height: '26px', padding: '0 5px' })
                     .data('type', 'search')
                     .keyup(gridFilteringApply);
             } else if (['orbs', 'orbsamount', 'rarity', 'type'].indexOf(x) >= 0) {
@@ -94,7 +98,7 @@ gridFilters = {
             }
         }
 
-        $('<select><option value="nameasc">- Sort by -</option><option value="nameasc">Name ▲</option><option value="namedesc">Name ▼</option><option value="orbsasc">#Orbs ▲</option><option value="orbsdesc">#Orbs ▼</option><option value="costasc">Cost ▲</option><option value="costdesc">Cost ▼</option></select>')
+        $('<select><option value="nameasc">- Sort by -</option><option value="nameasc">Name ▲</option><option value="namedesc">Name ▼</option><option value="orbsasc">#Orbs ▲</option><option value="orbsdesc">#Orbs ▼</option><option value="costasc">Cost ▲</option><option value="costdesc">Cost ▼</option><option value="rarasc">Rarity ▲</option><option value="rardesc">Rarity ▼</option></select>')
             .change(gridFilteringSort)
             .appendTo($('#grid-filter-sort'));
 
@@ -108,7 +112,6 @@ gridFilters = {
             .click(function () {
                 if ($(this).text() === 'Show more') {
                     $(this).text('Show less');
-                    $('#card-grid').css('max-height', $('#card-grid').hasClass('list-of-cards') ? '' : '1600px');
                     $('#card-grid').removeClass('collapsed').addClass('expanded');
                 } else {
                     $(this).text('Show more');
@@ -118,11 +121,11 @@ gridFilters = {
                             behavior: 'smooth',
                         });
                     }
-                    $('#card-grid').css('max-height', $('body').hasClass('mainpage') ? '380px' : $('#card-grid') ? '500px' : '210px');
                     $('#card-grid').removeClass('expanded').addClass('collapsed');
                 }
-        	if ((document.querySelector('#card-grid:not(.list-of-cards)') && $('#card-grid:not(.list-of-cards) > span:visible').length <= ($('body').hasClass('mainpage') ? 84 : 42))
-        		|| (document.querySelector('#card-grid.list-of-cards') && $('#card-grid.list-of-cards > div:visible').length <= 4)) {
+                var visibleCards = $('#card-grid > .custom-tooltip:visible').length;
+                var perRow = Math.floor($('#card-grid').width() / (isList ? 203 : 58));
+                if (visibleCards <= perRow * (isMainPage ? 6 : isList ? 1 : 3)) {
                     $('#grid-collapse').hide();
                 } else {
                     $('#grid-collapse').show();
@@ -146,6 +149,7 @@ gridFilters = {
             else el.val('');
         }
         $('#grid-filter-sort > select').prop('selectedIndex', 0);
+        $('#card-grid.expanded + #grid-collapse > button').click();
         gridFilteringApply();
         gridFilteringSort();
     }
@@ -153,12 +157,23 @@ gridFilters = {
         var $container = $('#card-grid');
         var comp, asc;
         var val = $('#grid-filter-sort > select').val();
+        
+        var convertRarity = {
+        	'Common': 0,
+        	'Uncommon': 1,
+        	'Rare': 2,
+        	'Ultra Rare': 3,
+        };
 
         function sort(comp, asc) {
             $('#card-grid > .grid-icon, #card-grid.list-of-cards > div')
                 .sort(function (a, b) {
                     var $a = $(a).data(comp);
                     var $b = $(b).data(comp);
+                    if (comp === 'rarity') {
+                    	$a = convertRarity[$a];
+                    	$b = convertRarity[$b];
+                    }
                     $a = typeof $a === 'string' ? $a.toLowerCase() : $a;
                     $b = typeof $b === 'string' ? $b.toLowerCase() : $b;
                     if ($a < $b) return asc ? -1 : 1;
@@ -193,13 +208,21 @@ gridFilters = {
                 comp = 'cost';
                 asc = false;
                 break;
+            case 'rarasc':
+                comp = 'rarity';
+                asc = true;
+                break;
+            case 'rardesc':
+                comp = 'rarity';
+                asc = false;
+                break;
         }
 
         if (val !== 'nameasc' && val !== 'namedesc') sort('1', true);
 
         sort(comp, asc);
-		
-		$('#card-grid').append($('#grid-matches'));
+        
+        $('#card-grid').append($('#grid-matches'));
         $(window).scroll();
     }
     function gridFilteringApply() {
@@ -236,36 +259,44 @@ gridFilters = {
             else gridFilteringHide(elem);
         }
         
-        if (($('#grid-filter-affinities-field')[0].selectedIndex > 0 && $('#grid-filter-affinities-field')[0].selectedIndex < 5) || $('#grid-filter-special-field')[0].selectedIndex > 1) {
-        	var len = $('#card-grid > span:visible').length;
+        if ($('#card-grid').hasClass('list-of-cards')) {
+        	var len = $('#card-grid > .custom-tooltip:visible').length;
         	if (len === 1) {
-        		$('#grid-matches').text('1 matching card');
-        	} else {
-        		$('#grid-matches').text(len + ' matching cards');
-        	}
+                $('#grid-matches').text('1 matching card');
+            } else {
+                $('#grid-matches').text(len + ' matching cards');
+            }
         } else {
-        	var i = 0;
-        	$('#card-grid > span:visible').each(function() {
-        		if ($(this).data('affinities') !== 'None') i+=2;
-        		if ($(this).data('special').includes('Promo')) i++;
-        		//if ($(this).data('special').includes('Starter')) i++;
-        		if ($(this).data('special').includes('Normal')) i++;
-        	});
-        	if (i === 1) {
-        		$('#grid-matches').text('1 matching card');
-        	} else {
-        		$('#grid-matches').text(i + ' matching cards');
-        	}
+        	if (($('#grid-filter-affinities-field')[0].selectedIndex > 0 && $('#grid-filter-affinities-field')[0].selectedIndex < 5) || $('#grid-filter-special-field')[0].selectedIndex > 1) {
+            var len = $('#card-grid > span:visible').length;
+            if (len === 1) {
+                $('#grid-matches').text('1 matching card');
+            } else {
+                $('#grid-matches').text(len + ' matching cards');
+            }
+        } else {
+            var i = 0;
+            $('#card-grid > span:visible').each(function() {
+                if ($(this).data('affinities') !== 'None') i+=2;
+                if ($(this).data('special').includes('Promo')) i++;
+                //if ($(this).data('special').includes('Starter')) i++;
+                if ($(this).data('special').includes('Normal')) i++;
+            });
+            if (i === 1) {
+                $('#grid-matches').text('1 matching card');
+            } else {
+                $('#grid-matches').text(i + ' matching cards');
+            }
+        }
         }
         $('#card-grid').append($('#grid-matches'));
 
-		if ((document.querySelector('#card-grid:not(.list-of-cards)') && $('#card-grid:not(.list-of-cards) > span:visible').length <= ($('body').hasClass('mainpage') ? 84 : 42))
-        		|| (document.querySelector('#card-grid.list-of-cards') && $('#card-grid.list-of-cards > div:visible').length <= 4)) {
+        var visibleCards = $('#card-grid > .custom-tooltip:visible').length;
+        var perRow = Math.floor($('#card-grid').width() / (isList ? 203 : 58));
+        if (visibleCards <= perRow * (isMainPage ? 6 : isList ? 1 : 3)) {
             $('#grid-collapse').hide();
-            //$('#grid-matches').hide();
         } else {
             $('#grid-collapse').show();
-            //$('#grid-matches').show();
         }
         $(window).scroll();
     }

@@ -375,7 +375,7 @@
      * Shows loading status until the wikimarks have loaded
      */
     function showLoading() {
-        var $nav = $('.wds-community-header__local-navigation .wds-tabs'),
+        var $nav = $('.wds-community-header__local-navigation .wds-tabs, .fandom-community-header__local-navigation .wds-tabs'),
             $li = $('<li>');
 
         $li.addClass('wds-tabs__tab wikimarks')
@@ -408,7 +408,9 @@
         // hide the explore tab (the new "on the wiki" tab)
         // TODO: send in a ticket to get a class for this
         //       as it feels super fragile
-        $('.wds-tabs__tab-label.wds-dropdown__toggle').last().hide();
+        
+        // find the list with "random page" link and hide the whole list (explore tab)
+        $('.wds-list [data-tracking="explore-random"]').closest(".wds-dropdown").hide();
         // add our new tab to the start of the nav
         $nav.prepend($li);
     }
@@ -463,7 +465,7 @@
             return;
         }
 
-        if (!$('.wds-community-header__local-navigation').length) {
+        if (!$('.wds-community-header__local-navigation, .fandom-community-header__local-navigation').length) {
             mw.log('Wikimarks: wikinav not found, aborting...');
             return;
         }

@@ -3,12 +3,11 @@
  */
 
 $( function IconsOasis() {
-    if ( $( '.wds-community-header' ).length ) {
-        $( '#PageHeader' ).prepend(
-            $( '#icons' ).attr( 'style', 'position: absolute;' )
-        );
-    } else {
-    	$( '.WikiaPageHeader' ).append( $( '#icons' ) );
-    	$( '#icons' ).css( { 'position' : 'absolute', 'bottom' : '-2em' } ).show();
+    if ( $( '#icons' ).length ) {
+    	if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
+    		$( '.page-header__actions' ).first().append( $( '#icons' ).show() );
+    	} else {
+    	    $( '.page-header__contribution > div' ).first().append( $( '#icons' ).show() );
+    	}
     }
 } );

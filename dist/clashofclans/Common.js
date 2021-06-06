@@ -44,23 +44,21 @@
 	
 	/*Remove Edit Wall Greeting button unless it's your own or if you're staff*/
 	$(function() {
-		if (mw.config.get('wgCanonicalNamespace') == "Message_Wall") {
-		var rights = mw.config.get('wgUserGroups');
-		 if (!rights.includes("sysop", "bureaucrat", "content-moderator", "threadmoderator", "rollback")) {
-		       var interval = setInterval(function() {
-				 if ($('.MessageWallButtons').length) {
+		var config = mw.config.get([
+	   'wgCanonicalNamespace',
+	   'wgUserName',
+	   'wgTitle',
+	   'wgUserGroups'
+		]);
+		if (config.wgCanonicalNamespace == "Message_Wall" && config.wgTitle != config.wgUserName && !config.wgUserGroups.includes("sysop", "bureaucrat", "content-moderator", "threadmoderator", "rollback")) {
+		    var interval = setInterval(function() {
+				if ($('.MessageWallButtons').length) {
 		   			clearInterval(interval);
-					var username = mw.config.get('wgUserName');
-					var page = mw.config.get('wgTitle');
-						if (page != username) {
-							$('.MessageWallButtons').remove();
-							}
-					  }
-				}, 10);
-			}
-		}
+					$(this).remove();
+				}
+			}, 10);
+	    }
 	});
-
 
     // Customize tags on user profiles
     window.UserTagsJS = {
@@ -161,8 +159,7 @@ $(document).ready(function() {
     $('.wds-dropdown a[data-tracking=explore-random], ul.tools li a[data-name=random]').attr("href", "/wiki/Special:Random/main");
 
     // Clash Royale and Brawl Stars topic interwiki links
-    $("#BrawlStarsLink, #ClashRoyaleLink").prependTo(".page-header__contribution > div:first-child").css({"display": "inline-block"});
-
+	$("#ClashRoyaleLink, #BrawlStarsLink").prependTo(".page-header__languages, .page-header__contribution > div:first-child").css({"display": "inline-block"});
 });
 
 

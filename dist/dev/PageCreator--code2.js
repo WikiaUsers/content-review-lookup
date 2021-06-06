@@ -111,8 +111,8 @@
         ID_PAGECREATOR_TALKPAGE: "pageCreator-talkpage",
         ID_PAGECREATOR_CONTRIBUTIONS: "pageCreator-contribs",
         ID_PAGECREATOR_TIMESTAMP: "pageCreator-timestamp",
-        ID_PAGEHEADER_WRAPPER: "PageHeader",
 
+        CLASS_PAGEHEADER_WRAPPER: "page-header",
         CLASS_PAGECREATOR_WRAPPER: "pageCreator",
         CLASS_PAGECREATOR_IMAGE: "pageCreator-image",
         CLASS_PAGECREATOR_LINK: "pageCreator-link",
@@ -721,7 +721,7 @@
       $(infobar).insertBefore("#" + this.Selectors.ID_LASTEDITED_WRAPPER);
     } else {
       $(infobar).insertAfter(
-        "#" + this.Selectors.ID_PAGEHEADER_WRAPPER + " " +
+        "." + this.Selectors.CLASS_PAGEHEADER_WRAPPER + " " +
         "." + this.Selectors.CLASS_PAGEHEADER_TITLE + ", " +
         "." + this.Selectors.CLASS_USERPAGE_BUTTON
       );

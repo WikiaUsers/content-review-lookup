@@ -210,28 +210,25 @@
 				editorColors[itemName] = $('#ecp-' + itemName).val();
 			});
 			var cssText = 
-				'/* removes horizontal lines between text */\n' +
-				'pre.CodeMirror-line{\n\tborder-width: 0 !important;\n}\n' +
 				'/* syntax highlight coloring */\n' +
 				'.cm-mw-template-ext-link-ground.cm-mw-template-bracket,\n.cm-mw-template-ext-link-ground.cm-mw-template-name,\n.cm-mw-template-ext-link-ground.cm-mw-template-delimiter,\n.cm-mw-template-ext-link-ground.cm-mw-template,\n.cm-mw-template-ext2-link-ground.cm-mw-template-bracket,\n.cm-mw-template-ext2-link-ground.cm-mw-template-name,\n.cm-mw-template-ext2-link-ground.cm-mw-template-delimiter,\n.cm-mw-template-ext2-link-ground.cm-mw-template,\n.cm-mw-template-ext3-link-ground.cm-mw-template-bracket,\n.cm-mw-template-ext3-link-ground.cm-mw-template-name,\n.cm-mw-template-ext3-link-ground.cm-mw-template-delimiter,\n.cm-mw-template-ext3-link-ground.cm-mw-template,\n.cm-mw-template-link-ground.cm-mw-template-bracket,\n.cm-mw-template-link-ground.cm-mw-template-name,\n.cm-mw-template-link-ground.cm-mw-template-delimiter,\n.cm-mw-template-link-ground.cm-mw-template,\n.cm-mw-template-ext-ground.cm-mw-template-bracket,\n.cm-mw-template-ext-ground.cm-mw-template-name,\n.cm-mw-template-ext-ground.cm-mw-template-delimiter,\n.cm-mw-template-ext-ground.cm-mw-template,\n.cm-mw-template-ext2-ground.cm-mw-template-bracket,\n.cm-mw-template-ext2-ground.cm-mw-template-name,\n.cm-mw-template-ext2-ground.cm-mw-template-delimiter,\n.cm-mw-template-ext2-ground.cm-mw-template,\n.cm-mw-template-ext3-ground.cm-mw-template-bracket,\n.cm-mw-template-ext3-ground.cm-mw-template-name,\n.cm-mw-template-ext3-ground.cm-mw-template-delimiter,\n.cm-mw-template-ext3-ground.cm-mw-template,\n.cm-mw-template-ground.cm-mw-template-bracket,\n.cm-mw-template-ground.cm-mw-template-name,\n.cm-mw-template-ground.cm-mw-template-delimiter,\n.cm-mw-template-ground.cm-mw-template {\n/* ecp-template-t1 */\n\tcolor: ' + editorColors['template-t1'] + ';\n}\n' +
 				'.cm-mw-template2-ext-link-ground.cm-mw-template-bracket,\n.cm-mw-template2-ext-link-ground.cm-mw-template-name,\n.cm-mw-template2-ext-link-ground.cm-mw-template-delimiter,\n.cm-mw-template2-ext-link-ground.cm-mw-template,\n.cm-mw-template2-ext2-link-ground.cm-mw-template-bracket,\n.cm-mw-template2-ext2-link-ground.cm-mw-template-name,\n.cm-mw-template2-ext2-link-ground.cm-mw-template-delimiter,\n.cm-mw-template2-ext2-link-ground.cm-mw-template,\n.cm-mw-template2-ext3-link-ground.cm-mw-template-bracket,\n.cm-mw-template2-ext3-link-ground.cm-mw-template-name,\n.cm-mw-template2-ext3-link-ground.cm-mw-template-delimiter,\n.cm-mw-template2-ext3-link-ground.cm-mw-template,\n.cm-mw-template2-link-ground.cm-mw-template-bracket,\n.cm-mw-template2-link-ground.cm-mw-template-name,\n.cm-mw-template2-link-ground.cm-mw-template-delimiter,\n.cm-mw-template2-link-ground.cm-mw-template,\n.cm-mw-template2-ext-ground.cm-mw-template-bracket,\n.cm-mw-template2-ext-ground.cm-mw-template-name,\n.cm-mw-template2-ext-ground.cm-mw-template-delimiter,\n.cm-mw-template2-ext-ground.cm-mw-template,\n.cm-mw-template2-ext2-ground.cm-mw-template-bracket,\n.cm-mw-template2-ext2-ground.cm-mw-template-name,\n.cm-mw-template2-ext2-ground.cm-mw-template-delimiter,\n.cm-mw-template2-ext2-ground.cm-mw-template,\n.cm-mw-template2-ext3-ground.cm-mw-template-bracket,\n.cm-mw-template2-ext3-ground.cm-mw-template-name,\n.cm-mw-template2-ext3-ground.cm-mw-template-delimiter,\n.cm-mw-template2-ext3-ground.cm-mw-template,\n.cm-mw-template2-ground.cm-mw-template-bracket,\n.cm-mw-template2-ground.cm-mw-template-name,\n.cm-mw-template2-ground.cm-mw-template-delimiter,\n.cm-mw-template2-ground.cm-mw-template {\n/* ecp-template-t2 */\n\tcolor: ' + editorColors['template-t2'] + ';\n}\n' +
 				'.cm-mw-template3-ext-link-ground.cm-mw-template-bracket,\n.cm-mw-template3-ext-link-ground.cm-mw-template-name,\n.cm-mw-template3-ext-link-ground.cm-mw-template-delimiter,\n.cm-mw-template3-ext-link-ground.cm-mw-template,\n.cm-mw-template3-ext2-link-ground.cm-mw-template-bracket,\n.cm-mw-template3-ext2-link-ground.cm-mw-template-name,\n.cm-mw-template3-ext2-link-ground.cm-mw-template-delimiter,\n.cm-mw-template3-ext2-link-ground.cm-mw-template,\n.cm-mw-template3-ext3-link-ground.cm-mw-template-bracket,\n.cm-mw-template3-ext3-link-ground.cm-mw-template-name,\n.cm-mw-template3-ext3-link-ground.cm-mw-template-delimiter,\n.cm-mw-template3-ext3-link-ground.cm-mw-template,\n.cm-mw-template3-link-ground.cm-mw-template-bracket,\n.cm-mw-template3-link-ground.cm-mw-template-name,\n.cm-mw-template3-link-ground.cm-mw-template-delimiter,\n.cm-mw-template3-link-ground.cm-mw-template,\n.cm-mw-template3-ext-ground.cm-mw-template-bracket,\n.cm-mw-template3-ext-ground.cm-mw-template-name,\n.cm-mw-template3-ext-ground.cm-mw-template-delimiter,\n.cm-mw-template3-ext-ground.cm-mw-template,\n.cm-mw-template3-ext2-ground.cm-mw-template-bracket,\n.cm-mw-template3-ext2-ground.cm-mw-template-name,\n.cm-mw-template3-ext2-ground.cm-mw-template-delimiter,\n.cm-mw-template3-ext2-ground.cm-mw-template,\n.cm-mw-template3-ext3-ground.cm-mw-template-bracket,\n.cm-mw-template3-ext3-ground.cm-mw-template-name,\n.cm-mw-template3-ext3-ground.cm-mw-template-delimiter,\n.cm-mw-template3-ext3-ground.cm-mw-template,\n.cm-mw-template3-ground.cm-mw-template-bracket,\n.cm-mw-template3-ground.cm-mw-template-name,\n.cm-mw-template3-ground.cm-mw-template-delimiter,\n.cm-mw-template3-ground.cm-mw-template {\n/* ecp-template-t3 */\n\tcolor: ' + editorColors['template-t3'] + ';\n}\n' +
-				'.skin-oasis .cm-mw-template-argument-name {\n/* ecp-template-param */\n\tcolor: ' + editorColors['template-param'] + ';\n}\n' +
-				'.skin-oasis .cm-mw-extlink-bracket,\n.skin-oasis .cm-mw-link-bracket,\n.skin-oasis .cm-mw-link-delimiter {\n/* ecp-link */\n\tcolor: ' + editorColors['link'] + ';\n}\n' +
-				'.skin-oasis .cm-mw-extlink-protocol,\n.skin-oasis .cm-mw-extlink,\n.skin-oasis .cm-mw-free-extlink-protocol,\n.skin-oasis .cm-mw-free-extlink,\n.skin-oasis .cm-mw-link-pagename,\n.skin-oasis .cm-mw-link,\n.skin-oasis .cm-mw-link-tosection {\n/* ecp-link-target */\n\tcolor: ' + editorColors['link-target'] + ';\n}\n' +
-				'.skin-oasis .cm-mw-extlink-text,\n.skin-oasis .cm-mw-link-text {\n/* ecp-link-text */\n\tcolor: ' + editorColors['link-text'] + ';\n}\n' +
-				'.skin-oasis .cm-mw-htmltag-bracket,\n.skin-oasis .cm-mw-htmltag-name,\n.skin-oasis .cm-mw-exttag-bracket,\n.skin-oasis .cm-mw-exttag-name {\n/* ecp-tag */\n\tcolor: ' + editorColors['tag'] + ';\n}\n' +
-				'.skin-oasis .cm-mw-htmltag-attribute,\n.skin-oasis .cm-mw-exttag-attribute {\n/* ecp-tag-attr */\n\tcolor: ' + editorColors['tag-attr'] + ';\n}\n' +
-				'.skin-oasis .cm-mw-mnemonic {\n/* ecp-entity */\n\tcolor: ' + editorColors['entity'] +';\n}\n' +
-				'.skin-oasis .cm-mw-comment {\n/* ecp-comment */\n\tcolor: ' + editorColors['comment'] +';\n}\n' +
-				'.skin-oasis .cm-mw-parserfunction-bracket,\n.skin-oasis .cm-mw-parserfunction-name,\n.skin-oasis .cm-mw-parserfunction-delimiter {\n/* ecp-parser-func */\n\tcolor: ' + editorColors['parser-func'] + ';\n}\n' +
-				'.skin-oasis .cm-mw-templatevariable-bracket,\n.skin-oasis .cm-mw-templatevariable-name,\n.skin-oasis .cm-mw-templatevariable-delimiter,\n.skin-oasis .cm-mw-templatevariable {\n/* ecp-parameter */\n\tcolor: ' + editorColors['parameter'] + ';\n}\n' +
-				'.skin-oasis .cm-mw-table-bracket,\n.skin-oasis .cm-mw-table-definition,\n.skin-oasis .cm-mw-table-delimiter {\n/* ecp-table */\n\tcolor: ' + editorColors['table'] + ';\n}\n' +
-				'.skin-oasis .cm-mw-apostrophes-bold,\n.skin-oasis .cm-mw-apostrophes-italic,\n.skin-oasis .cm-mw-section-header,\n.skin-oasis .cm-mw-hr,\n.skin-oasis .cm-mw-signature,\n.skin-oasis .cm-mw-list,\n.skin-oasis .cm-mw-indenting,\n.skin-oasis .cm-mw-doubleUnderscore {\n/* ecp-markup */\n\tcolor: ' + editorColors['markup'] + ';\n}\n';
-			new mw.Api().post({
+				'.CodeMirror-line .cm-mw-template-argument-name {\n/* ecp-template-param */\n\tcolor: ' + editorColors['template-param'] + ';\n}\n' +
+				'.CodeMirror-line .cm-mw-extlink-bracket,\n.CodeMirror-line .cm-mw-link-bracket,\n.CodeMirror-line .cm-mw-link-delimiter {\n/* ecp-link */\n\tcolor: ' + editorColors['link'] + ';\n}\n' +
+				'.CodeMirror-line .cm-mw-extlink-protocol,\n.CodeMirror-line .cm-mw-extlink,\n.CodeMirror-line .cm-mw-free-extlink-protocol,\n.CodeMirror-line .cm-mw-free-extlink,\n.CodeMirror-line .cm-mw-link-pagename,\n.CodeMirror-line .cm-mw-link,\n.CodeMirror-line .cm-mw-link-tosection {\n/* ecp-link-target */\n\tcolor: ' + editorColors['link-target'] + ';\n}\n' +
+				'.CodeMirror-line .cm-mw-extlink-text,\n.CodeMirror-line .cm-mw-link-text {\n/* ecp-link-text */\n\tcolor: ' + editorColors['link-text'] + ';\n}\n' +
+				'.CodeMirror-line .cm-mw-htmltag-bracket,\n.CodeMirror-line .cm-mw-htmltag-name,\n.CodeMirror-line .cm-mw-exttag-bracket,\n.CodeMirror-line .cm-mw-exttag-name {\n/* ecp-tag */\n\tcolor: ' + editorColors['tag'] + ';\n}\n' +
+				'.CodeMirror-line .cm-mw-htmltag-attribute,\n.CodeMirror-line .cm-mw-exttag-attribute {\n/* ecp-tag-attr */\n\tcolor: ' + editorColors['tag-attr'] + ';\n}\n' +
+				'.CodeMirror-line .cm-mw-mnemonic {\n/* ecp-entity */\n\tcolor: ' + editorColors['entity'] +';\n}\n' +
+				'.CodeMirror-line .cm-mw-comment {\n/* ecp-comment */\n\tcolor: ' + editorColors['comment'] +';\n}\n' +
+				'.CodeMirror-line .cm-mw-parserfunction-bracket,\n.CodeMirror-line .cm-mw-parserfunction-name,\n.CodeMirror-line .cm-mw-parserfunction-delimiter {\n/* ecp-parser-func */\n\tcolor: ' + editorColors['parser-func'] + ';\n}\n' +
+				'.CodeMirror-line .cm-mw-templatevariable-bracket,\n.CodeMirror-line .cm-mw-templatevariable-name,\n.CodeMirror-line .cm-mw-templatevariable-delimiter,\n.CodeMirror-line .cm-mw-templatevariable {\n/* ecp-parameter */\n\tcolor: ' + editorColors['parameter'] + ';\n}\n' +
+				'.CodeMirror-line .cm-mw-table-bracket,\n.CodeMirror-line .cm-mw-table-definition,\n.CodeMirror-line .cm-mw-table-delimiter {\n/* ecp-table */\n\tcolor: ' + editorColors['table'] + ';\n}\n' +
+				'.CodeMirror-line .cm-mw-apostrophes-bold,\n.CodeMirror-line .cm-mw-apostrophes-italic,\n.CodeMirror-line .cm-mw-section-header,\n.CodeMirror-line .cm-mw-hr,\n.CodeMirror-line .cm-mw-signature,\n.CodeMirror-line .cm-mw-list,\n.CodeMirror-line .cm-mw-indenting,\n.CodeMirror-line .cm-mw-doubleUnderscore {\n/* ecp-markup */\n\tcolor: ' + editorColors['markup'] + ';\n}\n';
+			new mw.Api().postWithEditToken({
 	            action: 'edit',
 	            title: 'User:' + config.wgUserName + '/editorcolor.css',
-	            token: mw.user.tokens.get('csrfToken') || mw.user.tokens.get('editToken'),
 	            text: cssText,
 	        }).done(function(data){
 	        	mw.loader.using('mediawiki.notification', function () {
@@ -252,10 +249,9 @@
 	        }).done(function(data){
 	        	var css = data.parse.wikitext["*"];
 	        	if (css.search('@import "\/load\.php[?]articles=User:' + config.wgUserName + '\/editorcolor\.css&only=styles&mode=articles";') < 0) {
-	        		api.post({
+	        		api.postWithEditToken({
 	        			action: 'edit',
 			            title: 'User:' + config.wgUserName + '/common.css',
-			            token: mw.user.tokens.get('csrfToken') || mw.user.tokens.get('editToken'),
 			            prependtext: '@import "/load.php?articles=User:' + config.wgUserName + '/editorcolor.css&only=styles&mode=articles";\n'
 	        		}).done(function(data){
 	        			mw.loader.using('mediawiki.notification', function () {
@@ -272,10 +268,9 @@
 	        		});
 	        	}
 	        }).fail(function(data){
-				api.post({
+				api.postWithEditToken({
 	    			action: 'edit',
 		            title: 'User:' + config.wgUserName + '/common.css',
-		            token: mw.user.tokens.get('csrfToken') || mw.user.tokens.get('editToken'),
 		            prependtext: '@import "/load.php?articles=User:' + config.wgUserName + '/editorcolor.css&only=styles&mode=articles";\n'
 	    		}).done(function(data){
 	    			mw.loader.using('mediawiki.notification', function () {

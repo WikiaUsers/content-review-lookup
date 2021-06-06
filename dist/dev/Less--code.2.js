@@ -240,7 +240,7 @@
              * Inserts update button
              */
             addUpdate: function () {
-                $('#WikiaMainContent').prepend(
+                $('#WikiaMainContent, #content').prepend(
                     $('<a>')
                         .addClass('wds-is-squished wds-button')
                         .attr({

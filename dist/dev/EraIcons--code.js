@@ -34,7 +34,7 @@
                     return ".page-header__languages";
                 } else {
                     if(!$(".page-header__eraicons-target").length){
-                        $(".page-header").append(
+                        $(".page-header__top").append(
                             mw.html.element("div", {
                                 "class": "page-header__eraicons-target"
                             })

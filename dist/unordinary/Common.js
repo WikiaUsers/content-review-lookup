@@ -1,4 +1,13 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+ $(window).load(function() {
+    importArticles({
+        type: "script",
+        articles: [
+        'u:dev:MediaWiki:Tooltips.js',
+        ]
+    });
+});
+ 
  
 /* Auto Refresh */
 window.AjaxRCRefreshText = 'Auto-refresh';
@@ -98,3 +107,17 @@ $(function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
     $("span.insertusername").html(wgUserName);
 });
+
+//Tooltips
+
+window.tooltips_list = [
+    {
+        classname: 'common-tooltip',
+        parse: '{'+'{Common-Tooltip|<#param#>}}',
+    }
+];
+window.tooltips_config = {
+    offsetX: 20,
+    offsetY: 20,
+    waitForImages: true
+};

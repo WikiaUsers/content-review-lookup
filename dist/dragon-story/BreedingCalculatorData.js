@@ -625,6 +625,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "amusement": {
+                "name": "Amusement",
+                "types": [
+                    "yellow",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "worldevent",
+                "notes": [
+                    "feature"
+                ]
+            },
             "anaphor": {
                 "name": "Anaphor",
                 "types": [
@@ -834,6 +850,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "40_hours_40",
                 "rarity": 4,
                 "level": 14
+            },
+            "anxious": {
+                "name": "Anxious",
+                "types": [
+                    "purple",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
             },
             "aphrodite": {
                 "name": "Aphrodite",
@@ -1470,6 +1502,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "16_hours_16",
                 "rarity": 2,
                 "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "averse": {
+                "name": "Averse",
+                "types": [
+                    "green",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "25_hours_25",
+                "rarity": 4,
+                "offspringeligibility": "crafted",
                 "notes": [
                     "feature"
                 ]
@@ -13600,6 +13648,19 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 2,
                 "offspringeligibility": "expired"
             },
+            "joy": {
+                "name": "Joy",
+                "types": [
+                    "green",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 4
+            },
             "joyfrost": {
                 "name": "Joyfrost",
                 "types": [
@@ -17192,6 +17253,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                             ]
                         ]
                     ]
+                ]
+            },
+            "naches": {
+                "name": "Naches",
+                "types": [
+                    "red",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
                 ]
             },
             "naga": {
@@ -22995,6 +23072,38 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "6_hours_6",
                 "rarity": 3,
                 "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "remorseful": {
+                "name": "Remorseful",
+                "types": [
+                    "blue",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "repulsed": {
+                "name": "Repulsed",
+                "types": [
+                    "green",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "20_hours_20",
+                "rarity": 4,
+                "offspringeligibility": "worldevent",
                 "notes": [
                     "feature"
                 ]

@@ -42,13 +42,13 @@ $(
         mw.util.addCSS(".nkch-moveToTopButton { visibility: hidden; opacity: 0; position: fixed; bottom: 50px; right: 30px; cursor: pointer; transition: .3s }");
 
         // .nkch-moveToTopButton::before
-        mw.util.addCSS(".nkch-moveToTopButton::before { content: ''; display: block; width: 1px; height: 65px; position: absolute; top: calc(-65px - 25px); right: 0; left: 0; margin: 0 auto; background-color: var(--theme-article-text-color); animation: moveToTop 1.6s cubic-bezier(0.87, 0, 0.13, 1) infinite; pointer-events: none; transition: .3s }");
+        mw.util.addCSS(".nkch-moveToTopButton::before { content: ''; display: block; width: 1px; height: 65px; position: absolute; top: calc(-65px - 25px); right: 0; left: 0; margin: 0 auto; background-color: var(--theme-page-text-color); animation: moveToTop 1.6s cubic-bezier(0.87, 0, 0.13, 1) infinite; pointer-events: none; transition: .3s }");
 
         // .nkchmoveToTopButton-is-visible
         mw.util.addCSS(".nkch-moveToTopButton-is-visible { visibility: visible; opacity: 1; transition: .3s }");
 
         // .nkch-moveToTopText
-        mw.util.addCSS(".nkch-moveToTopText { writing-mode: vertical-lr; text-transform: uppercase; letter-spacing: 0.1em; color: var(--theme-article-text-color); font-family: Rubik, sans-serif }");
+        mw.util.addCSS(".nkch-moveToTopText { writing-mode: vertical-lr; text-transform: uppercase; letter-spacing: 0.1em; color: var(--theme-page-text-color); font-family: Rubik, sans-serif }");
 
         // animation
         mw.util.addCSS("@keyframes moveToTop { 0% { height: 64px; top: calc(-65px - 25px); } 50% { height: 0; top: calc(-65px - 25px); } 51% { height: 0; top: -25px; } 100% { height: 65px; } }");

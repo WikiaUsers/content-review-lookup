@@ -6,7 +6,7 @@
 (function ($, mw) {
     "use strict";
 
-    var version = 20210313;
+    var version = 20210606.1;
 
     if (mw.libs.QDmodal && mw.libs.QDmodal.version >= version) {
         return;
@@ -162,7 +162,7 @@
         }
 
         if (data.loading) {
-            this.$content.empty().append($spinner);
+            this.$content.empty().append($spinner.clone());
         } else {
             this.$content.html(data.content || "");
         }
@@ -196,6 +196,11 @@
 
     mw.libs.QDmodal.version = version;
 
+    // provide other scripts a copy of the loading spinner
+    mw.libs.QDmodal.getSpinner = function () {
+    	return $("<span>").addClass("qdmodal-spinner-container").append($spinner.clone());
+    };
+
     // no-op function, kept to prevent breakage in other scripts
     mw.libs.QDmodal.loadTheme = function () {};
 
@@ -211,7 +216,7 @@
         var css = document.createElement("link");
         css.id = "qdmodal-stylesheet";
         css.rel = "stylesheet";
-        css.href = "https://dev.fandom.com/load.php?mode=articles&only=styles&articles=MediaWiki:QDmodal.css&cb=" + version;
+        css.href = "https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:QDmodal.css&cb=" + version + "&only=styles";
         document.head.prepend(css);
     });
 

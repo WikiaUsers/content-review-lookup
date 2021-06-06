@@ -79,7 +79,12 @@ UserTagsJS.modules.inactive = 30;
 
 if($('#canon').length) {
 	// Remove the icon from the page content and insert it into the page header
-	$('#PageHeader').prepend('<div id="header-icons"></div>');
+	if($('#PageHeader').length) { // backwards compat
+		$('#PageHeader').prepend('<div id="header-icons"></div>');
+	} else {
+		$('.page-header__top').append('<div id="header-icons"></div>');
+	}
+	
 	$('#header-icons').append($('#canon'));
 	
 	// Remove an empty paragraph tag that sometimes appears at the top of the page content when the icon is removed

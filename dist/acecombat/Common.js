@@ -2,7 +2,7 @@
 
 // LockOldComments configuration
 window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 100;
+window.lockOldComments.limit = 365;
 
 // AddRailModule configuration
 window.AddRailModule = [

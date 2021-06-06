@@ -10,11 +10,3 @@ $(document).ready(function () {
 
 
 //Aby zmienić plakietki z uprawnieniami, wejdź na stronę MediaWiki:ProfileTags
-
-
-
-$(".big-img").click(function () {
-  $(this).hide(500, function () {
-    $(this).remove();
-  });
-});

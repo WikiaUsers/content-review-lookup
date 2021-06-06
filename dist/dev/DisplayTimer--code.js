@@ -136,9 +136,11 @@
         case 'oasis':
             $container.css({
                 border: 0,
-                marginInlineStart: 'auto',
-                order: 1
-            }).appendTo('.toolbar > .tools');
+                marginInlineStart: 'auto'
+            });
+            // fallthrough
+        case 'fandomdesktop':
+            $container.css('order', 1).appendTo('.toolbar > .tools');
             break;
         case 'hydra':
         case 'hydradark':

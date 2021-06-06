@@ -12,5 +12,5 @@ mw.loader.using('ext.fandom.ContentReview.legacyLoaders.js').then(function() {
 	}
 
 	// Add link in community header buttons
-	$('.wds-community-header__wiki-buttons > .wds-dropdown > .wds-dropdown__content > ul').append('<li><a href="/wiki/Special:PatrolPanel">Patrol Panel</a></li>')
+	$(mw.config.get('skin') === 'fandomdesktop' ? '.wiki-tools > .wds-dropdown > .wds-dropdown__content > ul' : '.wds-community-header__wiki-buttons > .wds-dropdown > .wds-dropdown__content > ul').append('<li><a href="/wiki/Special:PatrolPanel">Patrol Panel</a></li>');
 });

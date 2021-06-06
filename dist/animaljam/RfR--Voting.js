@@ -1,4 +1,11 @@
-(function ($, mw) {
+importArticle({
+    type: 'script',
+    article: 'u:dev:MediaWiki:ShowCustomModal.js'
+});
+mw.hook('dev.showCustomModal').add(function(showCustomModal) {
+    voting(jQuery, mediaWiki);
+});
+function voting ($, mw) {
  
     'use strict';
  
@@ -21,44 +28,32 @@
                     .replace(/\\f/g, "\\f");
     };
  
-    function closeModal(modal) {
-        var confirmMsg = confirm("Are you sure you want to discard your vote?")
-        if (confirmMsg) modal.close();
+    function closeModal() {
+		var confirmation = confirm("Are you sure you want to close this modal? Any work you enter will not be saved.")
+        if (confirmation) $($('.modalWrapper')[$('.modalWrapper').length - 1]).closeModal();
     }
  
     function createModal(title, body, options) {
-		var messageDialog = new OO.ui.MessageDialog();
         if (options) {
-            options.unshift({id: "close", action: "close", label: "Close", handler: function() {closeModal(messageDialog)}});
+            options.buttons.unshift({id: "close", message: "Close", handler: function() { closeModal() }});
         } else {
-            options = [{id: "close", action: "close", label: "Close", handler: function() {closeModal(messageDialog)}}];
-        }		
-		messageDialog.getActionProcess = function(action) {
-		  return new OO.ui.Process(function() {
-		    options.forEach(function(obj) {
-		      if (obj.action === action && obj.hasOwnProperty("handler")) obj.handler.call();
-		    });
-		  });
-		};
-		var windowManager = new OO.ui.WindowManager();
-		$( 'body' ).append(windowManager.$element);
-		windowManager.addWindows([messageDialog]);
-		return windowManager.openWindow(messageDialog, {title: title,  message: $("<div>" + body + "</div>"), verbose: true, size: "larger", actions: options});
+            options = {buttons: [{id: "close", message: "Close", handler: function() { closeModal() }}]};
+        }
+        dev.showCustomModal(title, body, options);
     }
  
     function help() {
-        createModal("Help", "<b>Help</b><br/>This system is designed to make it as easy as possible to vote on a RfR. If you experience any problems while using it, which is fairly likely, firstly consider whether this is the sort of thing you want to waste your time on. If the answer is yes, please leave <a href='http://animaljam.wikia.com/wiki/User:CheesyPotatoes_:)'>CheesyPotatoes :)</a> a message.");
+        createModal("Help", "<b>Help</b><br/>This system is designed to make it as easy as possible to vote on a RfR. If you experience any problems while using it, which is fairly likely, firstly consider whether this is the sort of thing you want to waste your time on. If the answer is yes, please leave <a href='http://animaljam.fandom.com/wiki/User:CheesyPotatoes :)'>CheesyPotatoes :)</a> a message.");
     }
  
     function rfrVote() {
         createModal(
             "Vote",
             "<form id='voteForm'><select name='voteSelect'><option name='support'>Support</option><option name='neutral'>Neutral</option><option name='oppose'>Oppose</option></select><br/>Reason<br/><textarea name='voteReason' style='width: 90%'/></form><br/><small>Note: changes may not show up immediately.",
-[{id: "submit", action: "submit", label: "Submit", active: true, handler: function() {getExistingVotes(submitVote)}}, {id: "remove", action: "remove", label: "Remove", handler: function() {getExistingVotes(removeVote)}}]
-        ).then(function() {
-            $('#remove').hide();
-            checkIfVoted();
-        })
+            {buttons: [{id: "submit", message: "Submit", handler: function() {getExistingVotes(submitVote)}}, {id: "remove", message: "Remove", handler: function() {getExistingVotes(removeVote)}}]}
+        );
+        $('#remove').hide();
+        checkIfVoted();
     }
  
     function checkIfVoted() {
@@ -68,7 +63,7 @@
                     if(x == conf.wgUserName) {
                         $('[name="voteSelect"]').val(k);
                         $('[name="voteReason"]').text(y);
-                        $('span#submit .oo-ui-labelElement-label').text("Change");
+                        $('a#submit').text("Change");
                         $('#remove').show();
                         conf.userHasVoted = true;
                         conf.userVote = k;
@@ -82,12 +77,8 @@
         if (conf.userHasVoted) {
             delete data[conf.userVote][conf.wgUserName];
         }
-        if ($("[name='voteReason']").val().length > 0) {
-	        data[$("[name='voteSelect']").val()][conf.wgUserName] = $("[name='voteReason']").val();
-	        saveVotes(data);
-        } else {
-        	alert("Please provide a reason for your vote.")
-        }
+        data[$("[name='voteSelect']").val()][conf.wgUserName] = $("[name='voteReason']").val();
+        saveVotes(data);
     }
  
     function removeVote(data) {
@@ -170,4 +161,4 @@
     }
  
 	$(init);
-}(jQuery, mediaWiki));
+};

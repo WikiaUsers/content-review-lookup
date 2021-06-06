@@ -10,7 +10,7 @@ $(function() {
         '<p>Daftar ini dihasilkan dari subkategori Kategori:Gambar episode. ' +
         'Harap periksa apakah sebuah gambar dimaksudkan untuk ukurannya sebelum diunggah ulang.  ' +
         'Buat saran apa pun (termasuk pola tambahan yang harus dilewati) ' +
-        '<a href="/wiki/Pembicaraan_Pengguna:Ivan_the_Brony_Kaiju" title="Pembicaraan Pengguna: Ivan the Brony Kaiju">di sini</a>.</p>' + 
+        '<a href="wiki/Pembicaraan_Pengguna:Ivan_the_Brony_Kaiju" title="Pembicaraan Pengguna: Ivan the Brony Kaiju">di sini</a>.</p>' + 
         '<div id="non720" style="width:100%;"></div>'
     );
     
@@ -78,7 +78,7 @@ $(function() {
             pagelist.sort();
             for (var i = 0; i < pagelist.length; i++) {
                 $('#non720-' + nospecials(episode) + ' ol').append('<li>' + $('<a />', {
-                    'href': '/wiki/' + encodeURIComponent(pagelist[i][0].replace(/ /g, '_')),
+                    'href': 'id/wiki/' + encodeURIComponent(pagelist[i][0].replace(/ /g, '_')),
                     'text': pagelist[i][0]
                 })[0].outerHTML + ' - ' + pagelist[i][1] + 'x' + pagelist[i][2] + '</li>');
             }
@@ -123,7 +123,7 @@ $(function() {
         for (var j = 0; j < sections.length; j++) {
             $('#non720').append($('<h2 />', {
                 'html': $('<a />', {
-                    'href': '/wiki/' + sections[j].replace(/ /g, '_') + '/Galeri',
+                    'href': 'id/wiki/' + sections[j].replace(/ /g, '_') + '/Galeri',
                     'title': sections[j],
                     'text': sections[j]
                 })

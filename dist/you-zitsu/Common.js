@@ -296,6 +296,7 @@ importArticles({
 
 /* Link Preview */
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.noimage = 'https://vignette.wikia.nocookie.net/youkoso-jitsuryoku-shijou-shugi-no-kyoushitsu-e/images/8/89/Wiki-wordmark.png/revision/latest?cb=20180106124836&format=original';
 window.pPreview.tlen = 1000;
 
 window.pPreview.RegExp.onlyinclude = ['.preview'];

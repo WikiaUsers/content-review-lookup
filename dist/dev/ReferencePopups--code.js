@@ -222,11 +222,11 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
             return 'rgba(' + color.red() + ',' + color.green() + ',' + color.blue() + ',' + alpha + ')';
         }
 
-        if (mw.config.get('skin') === 'oasis') {
-            color.page = Colors.parse(Colors.wikia.page);
-            color.pageBorder = Colors.parse(Colors.wikia.border);
-            color.accent = Colors.parse(Colors.wikia.menu);
-            color.popText = Colors.wikia.text;
+        if (mw.config.get('skin') === 'oasis' || mw.config.get('skin') === 'fandomdesktop') {
+            color.page = Colors.parse(Colors.fandom.page);
+            color.pageBorder = Colors.parse(Colors.fandom.border);
+            color.accent = Colors.parse(Colors.fandom.menu);
+            color.popText = Colors.fandom.text;
         } else {
             var $content = $('#content');
             color.page = tryParse(ifOk($('#globalWrapper').css('backgroundColor'), $content.css('backgroundColor')), 'white');
@@ -290,7 +290,7 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
             context: null, // context node to attach the popup to (#mw-content-text) [Default: body, watch the z-index]
             escapeCloses: true,
             extraClass: '', // Extra CSS classes for repurposing the popups (e.g. width control)
-            contentBoxClass: '', // Classes applied to the content box (WikiaArticle)
+            contentBoxClass: '', // Classes applied to the content box (page-content)
             stickyHover: false, // Ignore mouseleave from the element we are attached to.
 
             open: null, // open/close event callbacks (optional)
@@ -976,11 +976,7 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
             hoverDelay: userConfig.hoverDelay,
             animation: userConfig.animate && 'fold',
             stickyHover: userConfig.stick,
-            contentBoxClass: 'WikiaArticle'
-                // Disabled. Attach to body so on top of everything.
-                // NOTE: May cause CSS malfunctions in the popup due to not being descended
-                //	from .WikiaPage.V2 or #WikiaMainContent
-                //context: '#WikiaMainContent, #mw-content-text'
+            contentBoxClass: 'page-content'
         }, $ref[0]);
     }
 

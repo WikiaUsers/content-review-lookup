@@ -633,3 +633,8 @@ window.DiscussionTemplates = {
 
 // TopicBlockLog
 TBL_GROUP = "roblox-en";
+
+// LockOldComments configuration
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 30;
+window.lockOldComments.addNoteAbove = true;

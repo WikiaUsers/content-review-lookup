@@ -8,12 +8,3 @@ $(document).ready(function(){
 	  // Else use ‘day’ theme
 	  document.body.style.backgroundImage = "url('https://i.imgur.com/M7ZsPeH.jpg')";
 });
-
-// prevents existing tags from being hidden
-(window.dev = window.dev || {}).profileTags = { noHideTags: true };
-
-window.DiscordBannerSettings = {
-    bannerStyle: '2',
-    inviteLink: 'xkSFpVP',
-    prependToRail: true
-};

@@ -10,3 +10,5 @@ importArticles({
         'u:dev:MediaWiki:DiscussionsRailModule/code.js',
     ]
 });
+
+importScriptPage('TwitterWidget/code.js', 'dev');

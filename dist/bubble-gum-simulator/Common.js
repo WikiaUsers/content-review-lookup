@@ -1,4 +1,4 @@
-/* This JS file is a transpiled file, source is located at https://github.com/Julli4n/BGSWiki/blob/main/src/pages/MediaWiki/Common.ts
+/* This JS file is a transpiled file, source is located at https://github.com/RumbleWikis/BGSWiki/blob/main/src/pages/MediaWiki/Common.ts
 Open to PRs and issues*/
 
 "use strict";

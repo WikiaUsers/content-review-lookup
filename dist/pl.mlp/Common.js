@@ -156,3 +156,10 @@ document.querySelectorAll('.youtube-placeholderlink:not(.loaded)').forEach(funct
     el.appendChild(iframe);
     el.classList.add('loaded');
 });
+
+//Dismiss custom floating images on some user profile pages
+$(".big-img").click(function () {
+  $(this).hide(500, function () {
+    $(this).remove();
+  });
+});

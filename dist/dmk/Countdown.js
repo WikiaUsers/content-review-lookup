@@ -2,7 +2,7 @@
 /**
  * dmkCountdown
  *
- * @version 1.0
+ * @version 1.1
  *
  * @author Effan R <https://dmk.fandom.com/wiki/User:Effan_R>
  *
@@ -28,15 +28,18 @@
 	var NO_LEADING_ZEROS = 1,
 	SHORT_FORMAT = 2,
 	NO_ZEROS = 4,
-	FIRST_TWO = 8;
+	FIRST_TWO = 8,
+	NO_SECONDS = 16;
 
 	function output (i, diff) {
 		/*jshint bitwise:false*/
 		var delta, result, parts = [];
-		delta = diff % 60;
-		result = ' ' + (delta === 1 ? 'second' : 'seconds');
-		if (countdowns[i].opts & SHORT_FORMAT) result = result.charAt(1);
-		parts.unshift(delta + result);
+		if ((countdowns[i].opts & NO_SECONDS) === 0) {
+			delta = diff % 60;
+			result = ' ' + (delta === 1 ? 'second' : 'seconds');
+			if (countdowns[i].opts & SHORT_FORMAT) result = result.charAt(1);
+			parts.unshift(delta + result);
+		}
 		diff = Math.floor(diff / 60);
 		delta = diff % 60;
 		result = ' ' + (delta === 1 ? 'minute' : 'minutes');
@@ -79,7 +82,7 @@
 	}
 
 	function end(i) {
-		var c = countdowns[i].node.parent();
+		var c = countdowns[i].node.closest(".dmkcountdown");
 		switch (c.attr('data-end')) {
 		case 'remove':
 			c.remove();
@@ -90,7 +93,7 @@
 			return false;
 		case 'toggle':
 			var toggle = c.attr('data-toggle');
-			if (toggle && toggle == 'next') {
+			if (toggle && toggle === 'next') {
 				c.next().css('display', 'inline');
 				c.css('display', 'none');
 				return true;
@@ -139,7 +142,7 @@
 
 	function getOptions (node) {
 		/*jshint bitwise:false*/
-		var text = node.parent().attr('data-options'),
+		var text = node.closest(".dmkcountdown").attr('data-options'),
 			opts = SHORT_FORMAT | NO_LEADING_ZEROS | FIRST_TWO;
 
 		if (text) {
@@ -163,6 +166,9 @@
 			}
 			if (/full-mode/.test(text)) {
 				opts &= ~FIRST_TWO;
+			}
+			if (/no-seconds/.test(text)) {
+				opts |= NO_SECONDS;
 			}
 		}
 		return opts;

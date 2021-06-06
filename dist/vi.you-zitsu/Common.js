@@ -244,6 +244,7 @@ importArticles({
 
 /* Link Preview */
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.noimage = 'https://vignette.wikia.nocookie.net/you-zitsu/images/8/89/Wiki-wordmark.png/revision/latest?cb=20180310021440&format=original&path-prefix=vi';
 window.pPreview.tlen = 1000;
 
 window.pPreview.RegExp.onlyinclude = ['.preview'];

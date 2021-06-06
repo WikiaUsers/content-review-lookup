@@ -11,33 +11,33 @@ window.AutoCreateUserPagesConfig = {
 };
 
 importArticles({
-    type: "script",
+    type: 'script',
     articles: [
-        "MediaWiki:Common.js/Protection.js",
-		"MediaWiki:Common.js/AOTM.js",
-		"MediaWiki:Common.js/Walkthrough.js",
-		"MediaWiki:Common.js/Usernames.js",
-		"MediaWiki:Common.js/WikiNotification.js",
-		"u:dev:MediaWiki:AutoCreateUserPages.js",
+        'MediaWiki:Common.js/Protection.js',
+		'MediaWiki:Common.js/AOTM.js',
+		'MediaWiki:Common.js/Walkthrough.js',
+		'MediaWiki:Common.js/Usernames.js',
+		'MediaWiki:Common.js/WikiNotification.js',
+		'u:dev:MediaWiki:AutoCreateUserPages.js',
+		'u:dev:UserTags/code.js',
     ]
 });
 
 /*Remove Edit Wall Greeting button unless it's your own or if you're staff*/
 $(function() {
-	if (mw.config.get('wgCanonicalNamespace') == "Message_Wall") {
-	var rights = mw.config.get('wgUserGroups');
-	 if (!rights.includes("sysop", "bureaucrat", "content-moderator", "threadmoderator", "rollback")) {
-	       var interval = setInterval(function() {
-			 if ($('.MessageWallButtons').length) {
+	var config = mw.config.get([
+    'wgCanonicalNamespace',
+    'wgUserName',
+    'wgTitle',
+    'wgUserGroups'
+	]);
+	if (config.wgCanonicalNamespace == "Message_Wall" && config.wgTitle != config.wgUserName && !config.wgUserGroups.includes("sysop", "bureaucrat", "content-moderator", "threadmoderator", "rollback")) {
+	    var interval = setInterval(function() {
+			if ($('.MessageWallButtons').length) {
     			clearInterval(interval);
-				var username = mw.config.get('wgUserName');
-				var page = mw.config.get('wgTitle');
-					if (page != username) {
-						$('.MessageWallButtons').remove();
-						}
-				  }
-			}, 10);
-    	}
+				$(this).remove();
+			}
+		}, 10);
     }
 });
 

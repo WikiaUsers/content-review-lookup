@@ -1,7 +1,8 @@
 /**
  * Demo for the [[Modal]] library.
  */
-require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
+(function() {
+    'use strict';
     var ModalDemo = {
         loading: 2,
         modal: function(modal) {
@@ -159,4 +160,4 @@ require(['wikia.window', 'jquery', 'mw'], function(window, $, mw) {
     });
     mw.hook('dev.modal').add($.proxy(ModalDemo.modal, ModalDemo));
     mw.hook('dev.ui').add($.proxy(ModalDemo.ui, ModalDemo));
-});
+})();

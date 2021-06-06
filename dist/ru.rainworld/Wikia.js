@@ -5,7 +5,7 @@ $(document).ready(function () {
   if (classList.indexOf("Klen_s_flame") != -1) {
     $(document.body).addClass("page-Klen_s_flame");
   }
-  
+
   if (classList.indexOf("Foxengton") != -1) {
     $(document.body).addClass("page-Foxengton");
   }
@@ -25,6 +25,10 @@ $(document).ready(function () {
     }
 
     $("#" + button.id + "-toggle").addClass("display-none");
+
+    //Установка Id
+    $("#" + button.id + "-toggle").attr("id", button.id + i + "-toggle");
+    $(button).attr("id", button.id + i);
   }
 
   $(".button-toggle").click(function () {
@@ -44,6 +48,15 @@ $(document).ready(function () {
   tabbers = $(".rw-tabber");
   for (i = 0; i < tabbers.length; i++) {
     tabber = tabbers[i].id;
+
+    $("#" + tabber + "-buttons").attr("id", tabber + i + "-buttons");
+    $("#" + tabber + "-tabs").attr("id", tabber + i + "-tabs");
+    $("#" + tabber).attr("id", tabber + i);
+
+    tabber = tabbers[i].id;
+
+    console.log(tabber);
+
     tabber_buttons = document.getElementById(tabber + "-buttons").children;
     tabber_tabs = document.getElementById(tabber + "-tabs").children;
 

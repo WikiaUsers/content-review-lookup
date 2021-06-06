@@ -3,7 +3,7 @@
  * Author:      KockaAdmiralac <wikia@kocka.tech>
  * Description: Allows intergration with Discord [https://discord.com]
  */
-(function(mw, $) {
+(function() {
     'use strict';
     var mconfig = mw.config.get([
         'wgUserLanguage',
@@ -167,9 +167,31 @@
             }, this));
         },
         /**
+         * Determines the theme of the widget.
+         * @param {string} config Configured theme
+         * @return {string} 'light' or 'dark' depending on the wiki theme and configuration
+         */
+        determineTheme(config) {
+            // If explicitly configured to light or dark.
+            if (config === 'dark') {
+                return 'dark';
+            }
+            if (config === 'light') {
+                return 'light';
+            }
+            // If not configured, and the current FandomDesktop theme is set.
+            if ($('body').hasClass('theme-fandomdesktop-light')) {
+                return 'light';
+            }
+            if ($('body').hasClass('theme-fandomdesktop-dark')) {
+                return 'dark';
+            }
+            // Otherwise, default to dark.
+            return 'dark';
+        },
+        /**
          * Generating widget content from an object
-         * @todo i18n
-         * @return [String] content of the widget
+         * @return {string} Content of the widget
          */
         generateContent: function(config) {
             return config.id ?
@@ -188,8 +210,7 @@
             mw.html.element('iframe', {
                 src: 'https://discord.com/widget?id=' +
                      config.id +
-                     '&theme=' +
-                     (config.theme === 'light' ? 'light' : 'dark') +
+                     '&theme=' + this.determineTheme(config.theme) +
                      '&username=' + encodeURIComponent(
                          config.username === '@disabled' ?
                          '' :
@@ -206,15 +227,10 @@
         }
     };
     mw.hook('dev.i18n').add($.proxy(DiscordIntegrator.hook, DiscordIntegrator));
-
     if (!window.dev || !window.dev.i18n) {
-        if (mw.config.get('wgVersion') === '1.19.24') {
-            importArticle({
-                type: 'script',
-                article: 'u:dev:MediaWiki:I18n-js/code.js'
-            });
-        } else {
-            mw.loader.load('https://dev.fandom.com/load.php?mode=articles&articles=u:dev:MediaWiki:I18n-js/code.js&only=scripts');
-        }
+        importArticle({
+            type: 'script',
+            article: 'u:dev:MediaWiki:I18n-js/code.js'
+        });
     }
-})(window.mediaWiki, window.jQuery);
+})();

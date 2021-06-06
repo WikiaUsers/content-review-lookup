@@ -18,7 +18,7 @@
             'wgArticleId'
         ]),
         isUCP = config.wgVersion !== '1.19.24',
-        $sel = $('.UserProfileActionButton .WikiaMenuElement, .page-header__contribution-buttons .wds-list').first(),
+        $sel = $('.page-header__actions .wds-list, .page-header__contribution-buttons .wds-list').first(),
         spinnerHTML = '<svg class="wds-spinner wds-spinner__block" width="78" height="78" viewBox="0 0 78 78" xmlns="http://www.w3.org/2000/svg"><g transform="translate(39, 39)"><circle class="wds-spinner__stroke" fill="none" stroke-width=""stroke-dasharray="238.76104167282426" stroke-dashoffset="238.76104167282426"stroke-linecap="round" r="38"></circle></g></svg>';
 
     if (!$sel.length || !$('#ca-edit').length || config.wgArticleId === 0 || window.NullEditButtonLoaded) {

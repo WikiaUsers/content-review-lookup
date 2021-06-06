@@ -13,7 +13,6 @@ importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:WikiActivity.js',
-        'u:dev:MediaWiki:AddUserRightsTag/code.js',
         'u:dev:MediaWiki:AddBlockUserTag/code.js',
         'u:dev:MediaWiki:AjaxRename/code.js',
         'u:dev:MediaWiki:DiscussionsFeed.js',

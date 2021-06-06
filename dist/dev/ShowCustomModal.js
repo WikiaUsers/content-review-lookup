@@ -17,8 +17,6 @@
 (function() {
     if (window.dev && dev.showCustomModal) return;
 
-    var skin = mw.config.get('skin');
-
     var closeModal = function($modals) {
         $modals.each(function(_, modal) {
             var $modal = $(modal);
@@ -112,20 +110,12 @@
 
         var ts = Math.round(Date.now() / 1000);
         var id = settings.id || ($dialog.attr('id') || ts) + 'Wrapper';
-        var wrapper;
-
-        if (skin === 'oasis' || settings.appendToBody) {
-            wrapper = $('<section>', {
-                'class': 'SCMModal modalWrapper',
-                'id': id
-            }).append($('<section>', {
-                'class': 'modalContent'
-            }).append($dialog)).appendTo('body');
-        } else {
-            $dialog.wrap('<div class="SCMModal modalWrapper" id="' + id + '"></div>');
-            wrapper = $dialog.closest('.modalWrapper');
-            wrapper.appendTo('#positioned_elements');
-        }
+        var wrapper = $('<section>', {
+            'class': 'SCMModal modalWrapper',
+            'id': id
+        }).append($('<section>', {
+            'class': 'modalContent'
+        }).append($dialog)).appendTo('body');
 
         if (settings.className) {
             wrapper.addClass(settings.className);
@@ -144,46 +134,31 @@
             headline.prependTo(wrapper);
         }
 
-        if (settings.tabsOutsideContent || skin === 'oasis') {
-            var modalTabs = wrapper.find('.modal-tabs');
-            if (modalTabs.length !== 0) {
-                modalTabs.insertBefore(wrapper.find('.modalContent'));
-            }
+        var modalTabs = wrapper.find('.modal-tabs');
+        if (modalTabs.length !== 0) {
+            modalTabs.insertBefore(wrapper.find('.modalContent'));
         }
 
-        if (skin === 'oasis') {
-            if (settings.width !== 'auto') {
-                if (settings.width !== undefined) {
-                    modalWidth = settings.width + 40;
-                } else {
-                    mainContent = $('#WikiaMainContent');
-                    if (mainContent.length > 0) {
-                        modalWidth = mainContent.width();
-                    }
-                }
+        if (settings.width !== 'auto') {
+            if (settings.width !== undefined) {
+                modalWidth = settings.width + 40;
             } else {
-                modalWidth = 'auto';
+                mainContent = $('#WikiaMainContent');
+                if (mainContent.length > 0) {
+                    modalWidth = mainContent.width();
+                }
             }
-
-            wrapper.width(modalWidth).css({
-                left: '50%',
-                height: settings.height,
-                'margin-left': -wrapper.outerWidth(false) / 2,
-                top: $(window).scrollTop() + settings.topOffset,
-                zIndex: calculatedZIndex
-            });
-        } else if (settings.suppressDefaultStyles) {
-            wrapper.css({
-                zIndex: calculatedZIndex,
-                top: $(window).scrollTop() + settings.topOffset
-            });
         } else {
-            wrapper.width(settings.width).css({
-                marginLeft: -wrapper.outerWidth(false) / 2,
-                top: getModalTopOffset(wrapper),
-                zIndex: calculatedZIndex
-            }).fadeIn('fast');
+            modalWidth = 'auto';
         }
+
+        wrapper.width(modalWidth).css({
+            left: '50%',
+            height: settings.height,
+            'margin-left': -wrapper.outerWidth(false) / 2,
+            top: $(window).scrollTop() + settings.topOffset,
+            zIndex: calculatedZIndex
+        });
 
         if (settings.showCloseButton) {
             wrapper.prepend('<button class="close wikia-chiclet-button"><img src="https://images.wikia.com/dev/images/3/31/SCM-icon-close.png"></button>');
@@ -232,14 +207,14 @@
             });
         }
 
-        $(window).on('resize.modal', function() {
-            if (window.skin == 'oasis' || !settings.resizeModal) {
-                return;
-            }
+        // $(window).on('resize.modal', function() {
+        //     if (!settings.resizeModal) {
+        //         return;
+        //     }
 
-            wrapper.css('top', getModalTopOffset(wrapper));
-            $('.blackout:last').height($(document).height());
-        });
+        //     wrapper.css('top', getModalTopOffset(wrapper));
+        //     $('.blackout:last').height($(document).height());
+        // });
 
         var blackoutOpacity = 0.65;
         if (settings.blackoutOpacity) {
@@ -268,11 +243,7 @@
             }
         });
 
-        if (skin == 'oasis' || settings.appendToBody) {
-            blackout.appendTo('body');
-        } else {
-            blackout.appendTo('#positioned_elements');
-        }
+        blackout.appendTo('body');
 
         wrapper.data('blackout', blackout);
         if (typeof settings.onCreate == 'function') {

@@ -252,6 +252,22 @@ $(function () {
 	    articles: 'MediaWiki:LootValue.js'
 	});
 	/* End of Loot Statistics data + LootPercentages */
+	/* Show/hide Template:Scene when inside Template:CreatureAbility */
+	/* Current version is not compatible with mobile skin (and can't be hidden on it) and not many scenes can be added to a single page
+	$('.creatureAbility').mouseover(function() {
+		if (window.innerWidth >= 1000 && $(this).find(".abilityScene").length > 0) {
+			$(this).addClass('activeAbility');
+			$(this).find(".abilityScene").css({'visibility':'visible'});	
+		}
+	});
+	$('.creatureAbility').mouseout(function() {
+		if (window.innerWidth >= 1000 && $(this).find(".abilityScene").length > 0) {
+			$(this).removeClass('activeAbility');
+			$(this).find(".abilityScene").css({'visibility':'hidden'});
+		}
+	});
+	*/
+	/* End of Show/hide Template:Scene when inside Template:CreatureAbility */
 	/* Loot Statistics */
 	if (mw.config.get('wgPageName') === 'Loot_Statistics') {
 	    importArticles({

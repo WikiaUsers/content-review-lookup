@@ -16,6 +16,3 @@ window.DiscussionTemplates = {
         },
     allowedGroups: ['sysop']
 };
-
-/*** Modern Back To Top Button Config ***/
-window.BackToTopModern = true;

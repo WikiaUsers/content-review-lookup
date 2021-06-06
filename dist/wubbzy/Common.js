@@ -112,21 +112,22 @@ window.MassCategorizationGroups = ['sysop', 'content-moderator'];
 
 /* Other */
 
-if(!mw.storage.get('noti')) {
-	mw.notify($('<a href="https://discord.gg/fWP7a6J">https://discord.gg/fWP7a6J</a>'), { autoHide: false, tag: "discord", title: "Join our server at Discord" }).then(function() {
-		document.getElementsByClassName("mw-notification-tag-discord")[0].addEventListener("click", function() {
-			mw.storage.set("noti", "true");
-		});
-	});
-}
-     
-if(!mw.storage.get('noti2')) {
-    mw.notify($('<span>Please, if you are new by editing on this wiki, check the <a href="https://wubbzy.fandom.com/wiki/Help:Community_rules">rules</a> we have set for the comfort of the community and the reader</span>'), { autoHide: false, tag: "rules", title: "Community rules", type: "warn" }).then(function() {
-        document.getElementsByClassName("mw-notification-tag-rules")[0].addEventListener("click", function() {
-            mw.storage.set("noti2", "true");
-        });
-    });
-}
+importArticle({
+    type: 'script',
+    article: 'u:dev:MediaWiki:BannerNotification.js'
+});
+mw.hook('dev.banners').add(function(BannerNotification) {
+	if(!mw.storage.get('wwd_banner')) {
+		new BannerNotification('Join our Discord server, Wow Wow Discord: <a href="https://discord.gg/fWP7a6J">https://discord.gg/fWP7a6J</a>', 'confirm').onClose(() => {
+			mw.storage.set("wwd_banner", "true");
+		}).show();
+	}
+	if(!mw.storage.get('community_rules_banner')) {
+		new BannerNotification('<span>Please, if you are new by editing on this wiki, check the <a href="https://wubbzy.fandom.com/wiki/Help:Community_rules">rules</a> we have set for the comfort of the community and the reader</span>', 'warn').onClose(() => {
+			mw.storage.set("community_rules_banner", "true");
+		}).show();
+	}
+});
 
 if (mw.config.get("wgUserGroups").indexOf('sysop') > -1) {
 	try {

@@ -204,8 +204,8 @@
       value: Object.freeze({
         NAMES: Object.freeze({
           STANDARD: Object.freeze([
-            "Chat",
             "Common",
+            "Fandomdesktop",
             "Wikia"
           ]),
           CUSTOM: Object.freeze([

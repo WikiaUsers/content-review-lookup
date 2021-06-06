@@ -4,7 +4,7 @@
 
 	$(function() {
 	    var conf = mw.config.get(["skin"]);
-	    if (conf.skin !== "oasis") return;
+	    if (conf.skin !== "oasis" && conf.skin !== "fandomdesktop") return;
 	
 	    var originalUrl = new URL(window.location.href);
 	    var queryParams = new URLSearchParams(originalUrl.search);

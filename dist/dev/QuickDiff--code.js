@@ -226,7 +226,10 @@
         css += "#quickdiff-modal > footer { display: flex }";
         mw.util.addCSS(css);
 
-        if (mw.config.get("skin") === "oasis" && mw.loader.getState("skin.oasis.diff.css")) {
+        if (
+        	(mw.config.get("skin") === "oasis" || mw.config.get("skin") === "fandomdesktop")
+        	&& mw.loader.getState("skin.oasis.diff.css")
+        ) {
             diffStylesModule.push("skin.oasis.diff.css");
         }
 

@@ -1,6 +1,6 @@
-/* from https://wow.gamepedia.com/MediaWiki:Common.js */
+/* from https://wowpedia.fandom.com/wiki/MediaWiki:Common.js */
 
-var article = "#bodyContent";
+var article = ".page-content";
 
 var Tooltips = {hideClasses:[], cache:{}, activeHover: false, enabled: true, activeVersion: ''};
 var $tfb, $ttfb, $htt;
@@ -117,5 +117,7 @@ function tooltipsInit(root) {
 }
 
 $(function() {
+	$('#bodyContent').addClass('page-content'); /* Support hydra/hydradark */
+
 	tooltipsInit($(article));
 });

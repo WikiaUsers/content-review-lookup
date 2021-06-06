@@ -10,12 +10,12 @@ const l10n = (function() {
 		'hovertext': {
 			'en': 'Change your skin setting from "$oldskinname$" to "$newskinname$" and reload the page',
 			'de': 'Deine Skin-Einstellung von „$oldskinname$“ to „$newskinname$“ ändern und die Seite neu laden',
-			'fr': 'Change votre option d\'apparence de "$oldskinname$" à "$newskinname$" et recharge la page'
+			'fr': 'Change votre paramètre d\'apparence de "$oldskinname$" à "$newskinname$" et recharge la page'
 		},
 		'error': {
 			'en': 'Could not change the skin. Reason: ',
 			'de': 'Konnte den Skin nicht wechseln. Grund: ',
-			'fr': 'N\'a pas pu changer d\'apparence. Raison : '
+			'fr': 'N\'a pas pu changer l\'apparence. Raison : '
 		}
 	};
 	const $lang = mw.config.get( 'wgUserLanguage' ) || 'en';
@@ -26,8 +26,8 @@ const l10n = (function() {
 
 // this table defines the switching that is to be performed, depending on the current skin
 const switchTable = {
-	"hydra": "hydradark", // if current skin is "hydra", then switch to "hydradark"
-	"hydradark": "hydra"
+	"hydra": ["hydradark", "fandomdesktop"], // if current skin is "hydra", then switch to "hydradark" and "fandomdesktop"
+	"hydradark": ["hydra", "fandomdesktop"]
 };
 
 const apiGetOptions = {
@@ -46,7 +46,9 @@ function apiSetSkinOption(skinname) {
 var skinnames_messages = {}; // set, to prevent duplicates
 for (const skinname in switchTable) {
 	skinnames_messages['skinname-' + skinname] = true; // add to set
-	skinnames_messages['skinname-' + switchTable[skinname]] = true; // add to set
+	for (const targetskinname of switchTable[skinname]) { // iterate over all target skins
+		skinnames_messages['skinname-' + targetskinname] = true; // add to set
+	}
 }
 
 $(document).ready(function() {
@@ -62,23 +64,24 @@ $(document).ready(function() {
 				return;
 			}
 			
-			const targetSkin = switchTable[currentSkin];
-			const newskinname = mw.msg('skinname-' + targetSkin);
 			const oldskinname = mw.msg('skinname-' + currentSkin);
-			
-			const buttonlabel = l10n('buttonlabel').replace('$newskinname$', newskinname);
-			const hovertext = l10n('hovertext').replace('$newskinname$', newskinname).replace('$oldskinname$', oldskinname);
-			
-			// create button in the dropdown menu
-			$(mw.util.addPortletLink('p-cactions', 'javascript:;', buttonlabel, 'ca-switch-skin', hovertext)).click(function() {
+			for (const targetSkin of switchTable[currentSkin]) {
+				const newskinname = mw.msg('skinname-' + targetSkin);
 				
+				const buttonlabel = l10n('buttonlabel').replace('$newskinname$', newskinname);
+				const hovertext = l10n('hovertext').replace('$newskinname$', newskinname).replace('$oldskinname$', oldskinname);
+				
+				// create button in the dropdown menu
+				$(mw.util.addPortletLink('p-cactions', 'javascript:;', buttonlabel, 'ca-switch-skin-' + targetSkin, hovertext)).click(function() {
+
 				// upon clicking the button: switch skin
 				new mw.Api().postWithToken('csrf', apiSetSkinOption(targetSkin)).done(function(data) {
-					location.reload();
-				}).fail(function(code, data) {
-					alert(l10n('error') + code);
+						location.reload();
+					}).fail(function(code, data) {
+						alert(l10n('error') + code);
+					});
 				});
-			});
+			}
 		});
 	});
 });

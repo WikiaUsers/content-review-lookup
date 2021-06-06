@@ -13,11 +13,10 @@
     window.loadedShowUserGroups = true;
 
     var inUserNamespace = [2, 3, 1200].indexOf(mw.config.get("wgNamespaceNumber")) !== -1;
-    var isOasis119 = mw.config.get("skin") === "oasis" && mw.config.get("wgVersion") === "1.19.24";
 
     function addGroupsToPage(data, i18n) {
         var groups = data[0].query.users[0].groups;
-        var $content = isOasis119 ? $("<li>") : $("<div>");
+        var $content = $("<div>");
 
         if (!groups) {
             // likely a not-existing or invalid username
@@ -56,26 +55,19 @@
                     .text(i18n.msg("label").plain())
             );
 
-        if (isOasis119) {
-            $(".masthead-info > .details > ul").append($content);
-        } else {
-            $("#firstHeading").eq(0).after($content);
-        }
+        $("#firstHeading, .page-header__title").eq(0).after($content);
     }
 
     function getUserNameFromPage() {
         var userName;
 
-        if (isOasis119) {
-            // for oasis 1.19 skin, run on all pages with the user masthead
-            userName = $(".masthead-info > hgroup > h1").text();
-        } else if (inUserNamespace) {
+        if (inUserNamespace) {
             // wgRelevantUserName available in MW 1.23+ - fallback to wgTitle when unavailable
             userName = mw.config.get("wgRelevantUserName", mw.config.get("wgTitle").split("/")[0]);
         }
 
         // ignore anon user pages
-        if (mw.util.isIPv4Address(userName) || mw.util.isIPv6Address(userName)) {
+        if (mw.util.isIPAddress(userName)) {
             userName = null;
         }
 

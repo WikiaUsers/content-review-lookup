@@ -48,7 +48,6 @@ $(document).ready(function()
 	}
 });
 
-//------------------------------------//
 // Блок "Новые статьи" с Шаблон:NewPagesModule внутри.
 $(function(){
 	$('<section class="new-pages-module"></section>')
@@ -56,7 +55,6 @@ $(function(){
 		.load('/ru/index.php?title=Template:NewPagesModule&action=render');
 });
 
-//------------------------------------//
 // Настройка блокировки статей от спойлеров
 window.SpoilerAlertJS = {
     question: 'Эта статья содержит спойлеры. Вы уверены, что хотите продолжить чтение?',
@@ -65,6 +63,75 @@ window.SpoilerAlertJS = {
     fadeDelay: 1600
 };
 
-//------------------------------------------
 /* Настройка для dev:PreloadTemplates */ 
 preloadTemplates_subpage =  "case-by-case" ;
+
+// Счётчик статей
+mw.loader.using("mediawiki.api").then(
+    function () {
+        return new mw.Api().loadMessagesIfMissing(["community-header-pages"]);
+    }
+).then(
+    function () {
+        $.ajax({
+            url: encodeURI(mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/api/v1/Articles/Details"),
+            type: "GET",
+            data: {
+                controller: "DesignSystemApi",
+                method: "getCommunityHeader",
+                product: "wikis",
+                id: mw.config.get("wgCityId"),
+            }
+        }).done(
+            function (data) {
+                var wikiTools = document.querySelectorAll(".wiki-tools");
+
+                for (var i = 0; i < wikiTools.length; i++) {
+                    var counter = document.createElement("div");
+
+                    Object.assign(counter.style, {
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "3px",
+                        justifyContent: "center",
+                        textAlign: "right",
+                        marginRight: "8px"
+                    });
+
+                    var counterValue = document.createElement("span");
+                    counterValue.innerHTML = data.counter.value;
+
+                    Object.assign(counterValue.style, {
+                        display: "block",
+                        fontWeight: "bold",
+                        lineHeight: 1
+                    });
+
+                    counter.appendChild(counterValue);
+
+                    var counterLabel = document.createElement("span");
+                    counterLabel.innerHTML = mw.message(data.counter.label.key).text();
+
+                    Object.assign(counterLabel.style, {
+                        display: "block",
+                        fontSize: "10px",
+                        fontWeight: "bold",
+                        lineHeight: 1,
+                        textTransform: "uppercase"
+                    });
+
+                    counter.appendChild(counterLabel);
+
+                    wikiTools[i].children[0].before(counter);
+                }
+            }
+        );
+    }
+);
+
+// Всплывающая подсказка красных ссылок
+document.querySelectorAll("a.new").forEach(
+    function (i) {
+        i.setAttribute("title", decodeURI(new mw.Uri(i.href).path.replace(mw.config.get("wgScriptPath"), "").replace("/wiki/", "").replace(/_/g, " ")));
+    }
+)

@@ -8,8 +8,11 @@
 
 ;(function (window, $, mw) {
 	'use strict';
+	
+	if (window.MorePageActionsLoaded) return;
+	window.MorePageActionsLoaded = true;
 
-	var ddm = $('.page-header__contribution-buttons .wds-dropdown__content > ul'); // Gets dropdown menu
+	var ddm = $('.skin-oasis .page-header__contribution-buttons .wds-dropdown__content > ul, .skin-fandomdesktop .page-header .page-header__actions .wds-dropdown__content > ul'); // Gets dropdown menu
 	var currentPage = encodeURIComponent(mw.config.get('wgPageName'));
 	var path = mw.config.get('wgArticlePath');
 

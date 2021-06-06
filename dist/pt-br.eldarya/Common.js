@@ -1,39 +1,13 @@
 /* Códigos JavaScript colocados aqui serão carregados por todos aqueles que acessarem alguma página desta wiki */
 
-$(document).ready(function(){
-
-var d = new Date();
-
-var n = d.getHours();
-
-if (n > 17 || n < 6)
-
-  // If time is after 7PM or before 6AM, apply night theme to ‘body’
-
-  document.body.style.backgroundImage = "url('<nowiki>https://i.imgur.com/w28SHSM.jpg'</nowiki>)";
-
-else
-
-  // Else use ‘day’ theme
-
-  document.body.style.backgroundImage = "url('<nowiki>https://i.imgur.com/M7ZsPeH.jpg'</nowiki>)";
-
-});
-
 // prevents existing tags from being hidden
-
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
 
 // Discord Banner
-
 window.DiscordBannerSettings = {
-
-    bannerStyle: '2',
-
-    inviteLink: 'xkSFpVP',
-
-    prependToRail: true
-
+    bannerStyle: '2',
+    inviteLink: 'xkSFpVP',
+    prependToRail: true
 };
 
 /* Tooltips */
@@ -42,7 +16,7 @@ var tooltips_config = {
     offsetY: 10,
     waitForImages: false,
     events: ['CustomEvent'],
-    noCSS: true,
+    noCSS: true
 };
 
 /* Alerta de Spoiler */
@@ -55,21 +29,6 @@ window.SpoilerAlertJS = {
 
 /* Categorização em massa */
 window.MassCategorizationGroups = ['sysop', 'content-moderator'];
-
-/* WAM */
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
-
-/* Replaces {{USERNAME}} with the name of the user browsing the page. */
- 
-function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
-    $("span.insertusername").html(wgUserName);
- }
- addOnloadHook(UserNameReplace);
- 
-/* End of the {{USERNAME}} replacement */
 
 /* Identificação de usuários específicos */
 window.MessageWallUserTags = {

@@ -37,6 +37,11 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 				find: '(?:\h*\n){2,}',
 				replaceWith: '\n\n',
 			},
+			// Remove (most of) external links 
+			{
+				find: '\\[(http|https):\/\/([^\\s]+)',
+				replaceWith: '',
+			},
 		],
 
 		/**
@@ -119,7 +124,8 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 					function (data) {
 						const page = data.parse.wikitext;
 
-						if (page.includes('[[Category:Genre (Comic)]]')) {
+						// String is broken up to prevent this page being categorised
+						if (page.includes('[[' + 'Category:Genre (Comic)]]')) {
 							return dev.toasts.success("This page is a comic and shouldn't be deleted!", { timeout: 10000 });
 						}
 

@@ -12,7 +12,13 @@ function addProtectionBanner() {
       return;
    }
    // Relocate it and make it appear 
-   var parent = $('.page-header__contribution-buttons .wds-button-group').get(0);
+   var selector;
+   if ( mw.config.get('skin') === 'fandomdesktop' ) {
+      selector = '.page-header__actions'
+   } else {
+   	  selector = '.page-header__contribution-buttons .wds-button-group'
+   }
+   var parent = $(selector).get(0);
    if (typeof parent !== 'undefined') {
       $(parent).prepend(elem);
       $(elem).addClass('protection-image-visible');

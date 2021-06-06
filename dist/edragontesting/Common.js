@@ -5,6 +5,7 @@ importArticles({
 		"MediaWiki:Common.js/Masthead.js",
 		"MediaWiki:Common.js/HeroSkins.js",
 		"MediaWiki:Common.js/Walkthrough.js",
+		"MediaWiki:Common.js/Testing.js",
 		"u:dev:UserTags/code.js",
     ]
 });

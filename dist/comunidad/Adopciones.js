@@ -82,7 +82,7 @@ mw.loader.using(['jquery.client', 'mediawiki.base']).then(function() {
             }
         });
         adoptionModal.create();
-        $('.WikiaMainContentContainer #adopciones')
+        $('#mw-content-text #adopciones')
             .attr('class', 'wds-button gran-btn')
             .text('Solicitar una adopción')
             .wrap($('<div>').css('text-align', 'center'))

@@ -40,7 +40,8 @@
  * whether or not to auto-convert settings from AnnouncementsIgnore
  * AnnouncementsIgnore settings
  * timestamp to generate unique IDs for notification requests
- * list of unblockable users, list of filters, running status, dismissal delay
+ * list of unblockable users, list of filters, running status, dismissal delay,
+   MediaWiki API object
 */
     
     var unblock_groups = [
@@ -51,21 +52,19 @@
         "wiki-manager"
     ];
     var unblock_def = jQuery.Deferred();
-    var notif_types19 = [
+    var notif_types = [
         "announcement-target",
         "discussion-post",
         "discussion-upvote",
         "post-at-mention",
-        "thread-at-mention"
-    ];
-    var notif_types33 = notif_types19.concat([
+        "thread-at-mention",
         "article-comment-at-mention",
         "article-comment-reply",
         "article-comment-reply-at-mention",
         "message-wall-post",
         "message-wall-thread",
         "talk-page-message"
-    ]);
+    ];
     var data_types = {
         "announcement": "announcement",
         "article-comment-at-mention": "article-comment-at-mention",
@@ -82,7 +81,7 @@
     };
     var config = mw.config.get([
         "wgServer",
-        "wgVersion"
+        "skin"
     ]);
     var domain = config.wgServer.split(".").slice(-2).join(".");
     var whitelist = !!window.andrewds1021.ignore_notifications.whitelist;
@@ -92,35 +91,9 @@
     var convert = !window.andrewds1021.ignore_notifications.no_conversion;
     var ai_settings = window.announcementsIgnore;
     var timestamp = Date.now();
-    var unblock, filters, running, delay;
+    var unblock, filters, running, delay, api;
     
 /* recursive functions to retrieve unblockable users */
-    
-/*
- * this version is for legacy and requires the following request object
-{
-    action: "query",
-    list: "groupmembers",
-    gmgroups: unblock_groups.join("|"),
-    gmlimit: 500
-}
-*/
-    
-    function getUnblocks19(obj) {
-        obj.api.get(obj.request).then(function (data) {
-            if (data && data.users) data.users.forEach(function (val) {
-                obj.ids.push(String(val.userid));
-            });
-            if (data && data["query-continue"] && data["query-continue"].groupmembers
-                && data["query-continue"].groupmembers.gmoffset) {
-                obj.request.gmoffset = data["query-continue"].groupmembers.gmoffset;
-                getUnblocks19(obj);
-            } else {
-                unblock = obj.ids;
-                unblock_def.resolve(obj.ids);
-            }
-        });
-    }
     
 /*
  * this version is for UCP and requires the following request object
@@ -132,15 +105,15 @@
 }
 */
     
-    function getUnblocks33(obj) {
-        obj.api.get(obj.request).then(function (data) {
+    function getUnblocks(obj) {
+        api.get(obj.request).then(function (data) {
             if (data && data.query && data.query.allusers)
                 data.query.allusers.forEach(function (val) {
                 obj.ids.push(String(val.userid));
             });
             if (data && data["continue"] && data["continue"].aufrom) {
                 obj.request.aufrom = data["continue"].aufrom;
-                getUnblocks33(obj);
+                getUnblocks(obj);
             } else {
                 unblock = obj.ids;
                 unblock_def.resolve(obj.ids);
@@ -161,11 +134,11 @@
 }
 */
     
-    function getUnblocks33b(obj) {
+    function getUnblocksb(obj) {
         unblock = [];
         unblock_def.resolve(unblock);
 /*
-        obj.api.get(obj.request).then(function (data) {
+        api.get(obj.request).then(function (data) {
             if (!data || !data.listuserssearchuser) {
                 unblock = obj.ids;
                 unblock_def.resolve(obj.ids);
@@ -177,7 +150,7 @@
             }
             if (i == obj.request.limit) {
                 obj.request.offset = obj.request.offset + obj.request.limit;
-                getUnblocks33b(obj);
+                getUnblocksb(obj);
             } else {
                 unblock = obj.ids;
                 unblock_def.resolve(obj.ids);
@@ -189,20 +162,10 @@
 /* after API module is loaded, retrieve unblockable users */
     
     mw.loader.using("mediawiki.api").then(function () {
-        var obj = {
-            api: new mw.Api(),
-            ids: []
-        };
-        if (config.wgVersion === "1.19.24") {
-            obj.request = {
-                action: "query",
-                list: "groupmembers",
-                gmgroups: unblock_groups.join("|"),
-                gmlimit: 500
-            };
-            getUnblocks19(obj);
-        } else {
-            obj.request = {
+        api = new mw.Api();
+        getUnblocksb({
+            ids: [],
+            request: {
                 action: "listuserssearchuser",
                 groups: unblock_groups.join(","),
                 contributed: 0,
@@ -210,9 +173,8 @@
                 sort: "asc",
                 limit: 10,
                 offset: 0
-            };
-            getUnblocks33b(obj);
-        }
+            }
+        });
     });
     
 /*
@@ -464,7 +426,7 @@
             })),
             contentType: "application/json; charset=UTF-8"
         }).then(function () {
-            var count_request = {
+            var count_def = jQuery.ajax({
                 url: "https://services." + domain + "/on-site-notifications"
                     + "/notifications/unread-count",
                 type: "GET",
@@ -475,41 +437,98 @@
                 },
                 dataType: "json",
                 data: {
-                    startingTimestamp: info.time
+                    startingTimestamp: info.time,
+                    contentType: notif_types
                 }
-            };
-            if (config.wgVersion === "1.19.24") {
-                count_request.data.contentType = notif_types19;
-            } else {
-                count_request.data.contentType = notif_types33;
-            }
-            jQuery.ajax(count_request).then(function (count_reply) {
-                var counter = document.getElementById("onSiteNotificationsCount");
-                if (!counter || (typeof count_reply.unreadCount != "number")
-                    || !isFinite(count_reply.unreadCount)) return;
-                counter.textContent = count_reply.unreadCount;
-                if (count_reply.unreadCount == 0) counter.classList.add("wds-is-hidden");
             });
-            Array.prototype.slice.call(document.querySelectorAll(
-                "#notificationContainer li.wds-is-unread")).forEach(
-                function (val) {
-                var num = dismiss.length;
-                var type = val.getAttribute("data-type");
-                var ref = val.getAttribute("data-uri");
-                var link = val.getElementsByClassName("wds-notification-card"
-                    + "__outer-body")[0].getAttribute("href");
-                var search = true;
-                var notif, i;
-                for (i = 0; search && (i < num); i++) {
-                    notif = dismiss[i];
-                    if ((link == notif.events.latestEvent.uri)
-                        && (data_types[type] + "-notification" == notif.type)
-                        && (ref == notif.refersTo.uri)) {
-                        val.classList.remove("wds-is-unread");
-                        search = false;
+            if (config.skin === "fandomdesktop") {
+                var notif_section = document.querySelector(".global-navigation__bottom"
+                    + " .notifications");
+                if (!notif_section) {
+                    running = false;
+                    return;
+                }
+                jQuery.when(count_def, api.get({
+                    action: "notifications",
+                    do: "getNotificationsForUser",
+                    itemsPerPage: 1,
+                    unread: 1
+                })).then(function (fandom_reply, gamepedia_reply) {
+                    fandom_reply = fandom_reply[0];
+                    gamepedia_reply = gamepedia_reply[0];
+                    if ((typeof fandom_reply.unreadCount != "number")
+                        || !isFinite(fandom_reply.unreadCount)) return;
+                    var global_counter =
+                        notif_section.querySelector(".notifications__counter");
+                    var fandom_counter = notif_section.querySelector(
+                        "[data-tracking-label=\"notifications-tab-fandom\"]"
+                        + " .NotificationsDropdown-module_tabTotal__p7gqN");
+                    if (global_counter && (typeof gamepedia_reply.meta.unread == "number")
+                        && isFinite(gamepedia_reply.meta.unread)) {
+                        var global_unread = fandom_reply.unreadCount
+                            + gamepedia_reply.meta.unread;
+                        global_counter.textContent = global_unread;
+                        if (global_unread == 0)
+                            global_counter.classList.add("wds-is-hidden");
                     }
+                    if (fandom_counter) {
+                        fandom_counter.textContent = fandom_reply.unreadCount;
+                        if (fandom_reply.unreadCount == 0)
+                            fandom_counter.classList.add("wds-is-hidden");
+                    }
+                });
+                var fandom_list = notif_section.querySelectorAll(".wds-tab__content")[0];
+                if (!fandom_list) {
+                    running = false;
+                    return;
                 }
-            });
+                Array.prototype.slice.call(fandom_list.querySelectorAll(
+                    ".NotificationCard-module_isUnread__25iz-")).forEach(function (val) {
+                    var num = dismiss.length;
+                    var type = val.getAttribute("data-tracking-label").slice(19);
+                    var link = val.children[0].getAttribute("href");
+                    var search = true;
+                    var notif, i;
+                    for (i = 0; search && (i < num); i++) {
+                        notif = dismiss[i];
+                        if ((link == notif.events.latestEvent.uri)
+                            && (data_types[type] + "-notification" == notif.type)) {
+                            val.classList.remove(
+                                "NotificationCard-module_isUnread__25iz-");
+                            search = false;
+                        }
+                    }
+                });
+            } else {
+                count_def.then(function (count_reply) {
+                    var counter = document.getElementById("onSiteNotificationsCount");
+                    if (!counter || (typeof count_reply.unreadCount != "number")
+                        || !isFinite(count_reply.unreadCount)) return;
+                    counter.textContent = count_reply.unreadCount;
+                    if (count_reply.unreadCount == 0)
+                        counter.classList.add("wds-is-hidden");
+                });
+                Array.prototype.slice.call(document.querySelectorAll(
+                    "#notificationContainer li.wds-is-unread")).forEach(
+                    function (val) {
+                    var num = dismiss.length;
+                    var type = val.getAttribute("data-type");
+                    var ref = val.getAttribute("data-uri");
+                    var link = val.getElementsByClassName("wds-notification-card"
+                        + "__outer-body")[0].getAttribute("href");
+                    var search = true;
+                    var notif, i;
+                    for (i = 0; search && (i < num); i++) {
+                        notif = dismiss[i];
+                        if ((link == notif.events.latestEvent.uri)
+                            && (data_types[type] + "-notification" == notif.type)
+                            && (ref == notif.refersTo.uri)) {
+                            val.classList.remove("wds-is-unread");
+                            search = false;
+                        }
+                    }
+                });
+            }
             running = false;
         }, function () {
             running = false;

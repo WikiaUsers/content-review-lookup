@@ -370,7 +370,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database:Item Template\r| Image                   = ",
-post: "\r| OfficialName            = \r| Aliases                 = \r| Type                    = \r| Material                = \r| Model                   = \r| Version                 = \r| Dimensions              = \r| Weight                  = \r| Properties              = \r\r| Universe                = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r| Origin                  = \r\r| Dimensions              = \r| Weight                  = \r| Creators                = \r| First                   = \r\r| CurrentOwner            = \r| PreviousOwners          = \r| AlternateOwners         = \r| AlternateVersions       = \r\r| HistoryText             = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+post: "\r| OfficialName            = \r| Aliases                 = \r| Type                    = \r| Material                = \r| Model                   = \r| Version                 = \r| Dimensions              = \r| Weight                  = \r| Properties              = \r\r| Universe                = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r| Origin                  = \r\r| Creators                = \r| First                   = \r\r| CurrentOwner            = \r| PreviousOwners          = \r| AlternateOwners         = \r| AlternateVersions       = \r\r| HistoryText             = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 }
 }
 }

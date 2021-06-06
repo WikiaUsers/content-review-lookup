@@ -1,7 +1,7 @@
 
 /* Configuration for Discord Banner */
 window.DiscordBannerSettings = {
-    bannerStyle: '3',
+    bannerStyle: '1',
     inviteLink: 'Nzxz4YS',
     prependToRail: true
 };

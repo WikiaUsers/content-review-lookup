@@ -4,16 +4,16 @@
  * Original by pcj of Wowpedia
  *
  * Maintenance, cleanup, style and bug fixes by:
- * - Grunny         (https://c.wikia.com/wiki/User:Grunny)
- * - Kangaroopower  (https://c.wikia.com/wiki/User:Kangaroopower)
- * - Cqm            (https://c.wikia.com/wiki/User:Cqm)
+ * - Grunny         (https://c.fandom.com/wiki/User:Grunny)
+ * - Kangaroopower  (https://c.fandom.com/wiki/User:Kangaroopower)
+ * - Cqm            (https://c.fandom.com/wiki/User:Cqm)
  *
- * The script follows Wikia JS guidelines or MediaWiki coding standards where the Wikia guidelines do not specify:
+ * The script follows Fandom JS guidelines or MediaWiki coding standards where the Fandom guidelines do not specify:
  * - <https://github.com/Wikia/guidelines/blob/master/JavaScript/CodingConventions.md>
  * - <https://www.mediawiki.org/wiki/Manual:Coding_conventions/JavaScript>
  *
  * Editing guidelines:
- * - This script has extremely high usage across Wikia, please do not deploy without extensive testing.
+ * - This script has extremely high usage across Fandom, please do not deploy without extensive testing.
  * - Be aware that this script must be ES3 compliant due to the minifier used by ResourceLoader. 
  * - Due to the historic high usage of this script, several decisions have been made to keep it stable. As such, please pay attention to comments relating to this.
  */
@@ -30,9 +30,9 @@
 	browser:true, devel:false, jquery:true
 */
 
-/*global mediaWiki:true, Wikia:true, importArticle:true */
+/*global mediaWiki:true, importArticle:true */
 
-;(function (window, $, mw, Wikia) {
+;(function (window, $, mw) {
 	'use strict';
 
 	var config = mw.config.get([
@@ -41,8 +41,7 @@
 			'wgAction',
 			'wgCanonicalSpecialPageName',
 			'wgPageName',
-			'wgUserLanguage',
-			'wgVersion'
+			'wgUserLanguage'
 		]),
 		// use common file as it's very likely to be already cached by user
 		// used in oasis sidebar loading, preview modal, etc.
@@ -50,8 +49,6 @@
 		ajaxTimer,
 		ajRefresh = window.ajaxRefresh || 60000,
 		ajPages = window.ajaxPages || [],
-		// WikiActivity should not be added here; use the configuration options
-		// on your local wiki to add AjaxRC to your local WikiActivity page
 		ajSpecialPages = window.ajaxSpecialPages || ['Recentchanges'],
 		// don't load on these values of wgAction
 		// @todo check if markpatrolled should be here
@@ -66,22 +63,13 @@
 		// so the callbacks for ajaxsend and ajaxcomplete won't fire
 		// just by comparing settings.url to location.href
 		href = location.href.replace(/#[\S]*/, ''),
-		i18n,
-		isUCP = config.wgVersion !== '1.19.24';
-
-	/**
-	 * Not supported on FandomDesktop
-	 */
-	if (config.skin === 'fandomdesktop') {
-		return;
-	}
+		i18n;
 
 	/**
 	 * Fix for Unified Community Platform
 	 * Don't load on enchanced filter enabled Recentchanges and Watchlist as it causes issues with interface
 	 */
 	if (
-		isUCP &&
 		(
 			(
 				config.wgCanonicalSpecialPageName === 'Recentchanges' &&
@@ -155,6 +143,12 @@
 		if ($ret.length) {
 			return $ret;
 		}
+
+        $ret = $('.page__main .page-header__title-wrapper');
+
+        if ($ret.length) {
+            return $ret;
+        }
 
 		return false;
 	}
@@ -246,7 +240,7 @@
 
 		// fallback for pages with profile masthead
 		if ($appTo === false) {
-			$('#WikiaArticle').prepend($checkbox);
+			$('.WikiaArticle').prepend($checkbox);
 		} else {
 			$appTo.append($checkbox);
 		}
@@ -258,28 +252,11 @@
 				$throbber.show();
 			}
 		}).ajaxComplete(function(_, _2, settings) {
-			var $collapsibleElements = $('#mw-content-text').find('.mw-collapsible'),
-				ajCallAgain = window.ajaxCallAgain || [],
+			var ajCallAgain = window.ajaxCallAgain || [],
 				i;
 
 			if (href === settings.url) {
 				$throbber.hide();
-
-				if ($collapsibleElements.length) {
-					$collapsibleElements.makeCollapsible();
-				}
-
-				if (config.wgCanonicalSpecialPageName === 'Recentchanges') {
-					mw.special.recentchanges.init();
-
-					if ($('.mw-recentchanges-table').find('.WikiaDropdown').length) {
-						Wikia.RecentChanges.init();
-					}
-				}
-
-				if (config.wgCanonicalSpecialPageName === 'WikiActivity') {
-					window.WikiActivity.init();
-				}
 
 				for (i = 0; i < ajCallAgain.length; i++) {
 					// check item is a function before calling it to avoid errors
@@ -347,4 +324,4 @@
 		}
 	});
 
-}(this, jQuery, mediaWiki, Wikia));
+}(this, jQuery, mediaWiki));

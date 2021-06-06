@@ -13,12 +13,17 @@
 	if (mw.config.get("wgNamespaceNumber") === 3) {
 		if($(".page-header__page-subtitle a[title*='Message Wall']").length){
 			var relativeLink = mw.config.get("wgArticlePath").replace("$1", mw.config.get("wgPageName"));
-			$("#ca-addsection").remove();
+			var classLink = "wds-button";
+			var editText = $("#ca-edit").text();
+			if(mw.config.get("skin")=="fandomdesktop"){
+				classLink += " wds-is-text page-header__action-button has-label";
+				$(".page-side-tools #ca-addsection").replaceWith('<a class="page-side-tool page-side-edit" id="EUTA-edit" href="' + relativeLink + '?action=edit&redirect=no" title="' + editText + '"></a>');
+			}
 			$("#ca-edit")
 				.attr("href", relativeLink + "?action=edit&redirect=no")
-				.html("<span>" + $("#ca-edit").text() + "</span>")
-				.addClass("wds-button")
-				.prependTo(".page-header__contribution-buttons .wds-button-group");
+				.html("<span>" + editText + "</span>")
+				.addClass(classLink);
+			$(".page-header #ca-addsection").replaceWith($("#ca-edit"));
 			$("#ca-history").attr("href", relativeLink + "?action=history&redirect=no");
 			$("#ca-protect").attr("href", relativeLink + "?action=protect&redirect=no");
 			$("#ca-delete").attr("href", relativeLink + "?action=delete&redirect=no");
@@ -27,6 +32,7 @@
 		// Prepend icon to edit button if dev.wds properly imports
 		mw.hook("dev.wds").add(function(wds) {
 			$("#ca-edit").prepend(wds.icon("pencil-small"));
+			$("#EUTA-edit").append(wds.icon("pencil-small"));
 		});
 	}
 	

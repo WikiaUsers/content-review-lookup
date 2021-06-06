@@ -56,8 +56,9 @@
         if (cl.localStorageIsUsable) {
             $("#mw-content-text").append(
                 $("<span>")
-                    .addClass("button")
-                    .click(clearCache)
+                    .addClass("wds-button")
+                    .css("margin-top", "1em")
+                    .on("click", clearCache)
                     .msg("codeload-clear-cache")
             );
         }

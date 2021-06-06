@@ -5,7 +5,8 @@ $(function() {
         '#calculator_exerciseweapons {width:690px;}' +
         '#calculator_exerciseweapons input {margin: 0px 10px 0px 10px;}' +
         '#calculator_reakskill {width:550px;}' +
-        '#calculator_reakskill input {margin: 0px 10px 0px 10px;}'
+        '#calculator_reakskill input {margin: 0px 10px 0px 10px;}' +
+        '</style>'
     );
     var loyalty_bonus = function(points) {
             var bonus = Math.floor(points / 360) * 0.05 + 1;
@@ -110,6 +111,35 @@ $(function() {
 
     /* Training */
     (function() {
+        var serializeIntoHash = function() {
+          const params = new URLSearchParams();
+          params.set('loyaltyPoints', $('#calculator_ew_loyalty_pts').val());
+          params.set('weaponType', $('select[name=calculator_ew_wep_type]').val());
+          params.set('doubleEvent', $('input[name=ew_event]').prop('checked'));
+          params.set('houseDummy', $('input[name=ew_dummy]').prop('checked'));
+          params.set('skill', $('select[name=calculator_ew_voc_skill]').val());
+          params.set('level', $('#calculator_ew_skill_level').val());
+          params.set('percentageRemaining', $('#calculator_ew_left').val());
+          params.set('target', $('#calculator_ew_skill_trained').val());
+          return '#' + params.toString();
+        };
+        var deserializeFromHash = function() {
+          const hash = location.hash.slice(1);
+          if (!hash) return;
+          const params = new URLSearchParams(hash);
+          // Check if these are the params for this particular tool.
+          if (!params.has('weaponType')) return;
+          $('#calculator_ew_loyalty_pts').val(params.get('loyaltyPoints')).trigger('input');
+          $('select[name=calculator_ew_wep_type]').val(params.get('weaponType'));
+          $('input[name=ew_event]').prop('checked', params.get('doubleEvent'));
+          $('input[name=ew_dummy]').prop('checked', params.get('houseDummy'));
+          $('select[name=calculator_ew_voc_skill]').val(params.get('skill'));
+          $('#calculator_ew_skill_level').val(params.get('level'));
+          $('#calculator_ew_left').val(params.get('percentageRemaining'));
+          $('#calculator_ew_skill_trained').val(params.get('target'));
+          calculator_exerciseweapons_update();
+        };
+
         var calculator_exerciseweapons_update = function() {
             var loyalty = 1 + parseInt($('#calculator_ew_loyalty_bonus').val(), 10) / 100;
             loyalty = isNaN(loyalty) ? 1 : loyalty;
@@ -126,8 +156,8 @@ $(function() {
             }
             var curr_pts = current_pts(level, vocation, pct_left, 'magic');
             var mode = $('input[name=ew_mode]:checked').val();
-            var event = $('input[name=ew_event]:checked').val() ? 2 : 1;
-            var dummy = $('input[name=ew_dummy]:checked').val() ? 1.1 : 1;
+            var event = $('input[name=ew_event]').prop('checked') ? 2 : 1;
+            var dummy = $('input[name=ew_event]').prop('checked') ? 1.1 : 1;
             var weapon_type = 1;
             if ($('select[name=calculator_ew_wep_type]').val() == 'training') {
                 weapon_type = 0.1;
@@ -175,7 +205,7 @@ $(function() {
                 next_pts_total = level_to_pts(trained_level + 1, vocation, 'magic');
                 left_pts = next_pts_total - trained_pts;
                 final_pct_left = Math.ceil(10000 * (left_pts / pts_to_next)) / 100;
-                final_pct_left = final_pct_left > 100 ? 100 : final_pct_left; //Roundings and reversed formula can lead to slightly different numbers that end up with 100.01% pct left. 
+                final_pct_left = final_pct_left > 100 ? 100 : final_pct_left; //Roundings and reversed formula can lead to slightly different numbers that end up with 100.01% pct left.
                 $('#calculator_ew_skill_bar1').width(100 - pct_left + "%");
                 $('#calculator_ew_skill_bar2').width(pct_left + "%");
 
@@ -201,6 +231,9 @@ $(function() {
 
                 $('#calculator_ew_train_time').html(train_time_h + ' hours, ' + train_time_min + ' minutes and ' + train_time_s + ' seconds');
             }
+
+            // Update the permalink.
+            $('#permalink_training').prop('hash', serializeIntoHash());
         };
         $('#calculator_exerciseweapons').html(
             '<div style="position: absolute;width: 680px;"><div style="display: grid;grid-row-gap:50px;">' +
@@ -215,10 +248,10 @@ $(function() {
             '</div></div>' +
             '<div style="position:relative;">' +
             '<label>Loyalty points:' +
-            '<input id="calculator_ew_loyalty_pts" type="number" value="0" min="0" max="10000" style="width:45px;"></label>' +
+            '<input id="calculator_ew_loyalty_pts" type="number" value="0" min="0" max="10000" style="width:55px;"></label>' +
             '<label>Loyalty bonus:' +
-            '<input id="calculator_ew_loyalty_bonus" type="number" value="0" min="0" max="50" step = "5" style="width:45px;">%</label><br/><br/>' +
-            '<label>Skill/Vocation: <select name="calculator_ew_voc_skill"><option value="magemagic" selected>Magic/Mage</option><option value="magemagic">Melee/Knight</option><option value="magemagic">Distance/Paladin</option><option value="magicpaladin">Magic/Paladin</option><option value="magicknight">Magic/Knight</option></select><label><br/><br/>' +
+            '<input id="calculator_ew_loyalty_bonus" type="number" value="0" min="0" max="50" step="5" style="width:45px;">%</label><br/><br/>' +
+            '<label>Skill/Vocation: <select name="calculator_ew_voc_skill"><option value="magicmage" selected>Magic/Mage</option><option value="meleeknight">Melee/Knight</option><option value="distancepaladin">Distance/Paladin</option><option value="magicpaladin">Magic/Paladin</option><option value="magicknight">Magic/Knight</option></select><label><br/><br/>' +
             '<label>Weapon Type: <select name="calculator_ew_wep_type"><option value="training">Training (50x, 1min40s)</option><option value="regular" selected>Regular (500x, 16min40s)</option><option value="durable">Durable (1,800x, 1h)</option><option value="lasting">Lasting (14,400x, 8h)</option></select></label><br/><br/>' +
             '<label><input type="checkbox" name="ew_event" value="double">Double Skills Event</label>' +
             '<label><input type="checkbox" name="ew_dummy" value="expert">House Dummy</label><br/><br/>' +
@@ -232,11 +265,11 @@ $(function() {
             '<tr>' +
             '<td>Current Skill (Base + Loyalty)</td><td>% left</td>' +
             '</tr><tr>' +
-            '<td><input id="calculator_ew_skill_level" type="number" value="0" min="0" max="150" style="width:40px;"></td>' +
-            '<td><input id="calculator_ew_left" type="number" value="100" min="0.01" max="100" style="width:50px;"><br/>' +
+            '<td><input id="calculator_ew_skill_level" type="number" value="0" min="0" max="150" style="width:50px;"></td>' +
+            '<td><input id="calculator_ew_left" type="number" value="100" min="0.01" max="100" style="width:55px;"><br/>' +
             '<div style="width: 136px; border:1px #000000 solid;">' +
-            '<span id = "calculator_ew_skill_bar1" style="text-align: right; height: 2px; width: 100%;background-color: #11B711;display: table;"></span>' +
-            '<span id = "calculator_ew_skill_bar2" style="text-align: left; width: 50%; background-color: #444444"></span>' +
+            '<span id="calculator_ew_skill_bar1" style="text-align: right; height: 2px; width: 100%;background-color: #11B711;display: table;"></span>' +
+            '<span id="calculator_ew_skill_bar2" style="text-align: left; width: 50%; background-color: #444444"></span>' +
             '</div></td>' +
             '</table><br/>' +
             'Simulations:' +
@@ -245,7 +278,7 @@ $(function() {
             '<tr>' +
             '<td><label for="calculator_ew_skill_trained">Trained Skill</label></td><td><label for="calculator_ew_skill_left_trained">% left</label></td><td><label for="calculator_ew_nweapons"># of Weapons</label></td><td><label for="calculator_ew_weapcost_gold">Cost (Gold)</label></td><td><label for="calculator_ew_weapcost_coins">Cost (TC)</label></td>' +
             '</tr><tr>' +
-            '<td><input id="calculator_ew_skill_trained" type="number" value="0" min="0" max="150" style="width:40px;"></td>' +
+            '<td><input id="calculator_ew_skill_trained" type="number" value="0" min="0" max="150" style="width:50px;"></td>' +
             '<td><span id="calculator_ew_skill_left_trained">100</span><br/>' +
             '<div style="width: 136px; border:1px #000000 solid;">' +
             '<span id = "calculator_ew_skill_trainedbar1" style="text-align: right; height: 2px; width: 100%;background-color: #11B711;display: table;"></span>' +
@@ -264,28 +297,33 @@ $(function() {
             '<span id="calculator_ew_dummy_desc">regular</span> dummy,' +
             '<br/>each weapon will advance ' +
             '<span id="calculator_ew_weappct_desc">1</span>% of the current skill.<br/><br/>' +
-            'You will need <span id="calculator_ew_train_time">0 hours, 0 minutes and 0 seconds</span> to use the required number of exercise weapons.' +
+            'You will need <span id="calculator_ew_train_time">0 hours, 0 minutes and 0 seconds</span> to use the required number of exercise weapons.<br/><a href="#loyaltyPoints=0&amp;weaponType=regular&amp;doubleEvent=false&amp;houseDummy=false&amp;skill=magicmage&amp;level=0&amp;percentageRemaining=100&amp;target=0" rel="permalink" id="permalink_training">Permanent link</a>' +
             '</div>'
         );
-        $('#calculator_ew_loyalty_pts').on('keyup change', function() {
+
+        $('#calculator_ew_loyalty_pts').on('input', function() {
             $('#calculator_ew_loyalty_bonus').val(Math.round(100 * (loyalty_bonus(parseInt($('#calculator_ew_loyalty_pts').val(), 10)) - 1)));
             calculator_exerciseweapons_update();
         });
-        $('#calculator_ew_loyalty_bonus').on('keyup change', function() {
+        $('#calculator_ew_loyalty_bonus').on('input', function() {
             $('#calculator_ew_loyalty_pts').val(360 * (parseInt($('#calculator_ew_loyalty_bonus').val(), 10) / 5));
             calculator_exerciseweapons_update();
         });
-        $('input[name=ew_mode], input[name=ew_dummy], input[name=ew_event], select[name=calculator_ew_voc_skill], select[name=calculator_ew_wep_type], #calculator_ew_skill_level, #calculator_ew_left, #calculator_ew_skill_trained, #calculator_ew_nweapons').on('keyup change', function() {
+        $('input[name=ew_mode], input[name=ew_dummy], input[name=ew_event], select[name=calculator_ew_voc_skill], select[name=calculator_ew_wep_type], #calculator_ew_skill_level, #calculator_ew_left, #calculator_ew_skill_trained, #calculator_ew_nweapons').on('input', function() {
             calculator_exerciseweapons_update();
         });
-        $('#calculator_ew_weapcost_gold').on('keyup change', function() {
+        $('#calculator_ew_weapcost_gold').on('input', function() {
             $('#calculator_ew_nweapons').val(Math.floor($('#calculator_ew_weapcost_gold').val() / 262.5));
             calculator_exerciseweapons_update();
         });
-        $('#calculator_ew_weapcost_coins').on('keyup change', function() {
+        $('#calculator_ew_weapcost_coins').on('input', function() {
             $('#calculator_ew_nweapons').val(Math.floor($('#calculator_ew_weapcost_coins').val() / 25));
             calculator_exerciseweapons_update();
         });
+
+        // Restore inputs based on the URL hash, if applicable.
+        deserializeFromHash();
+
     }());
 
     /* Loyalty */
@@ -367,7 +405,7 @@ $(function() {
             '<input type="radio" value = "none" name ="calculator_rs_vocation">None' +
             '<br/><br/>' +
             'Loyalty points:' +
-            '<input id="calculator_rs_loyalty_pts" type="number" value="0" min="0" max="10000" style="width:45px;">' +
+            '<input id="calculator_rs_loyalty_pts" type="number" value="0" min="0" max="10000" style="width:55px;">' +
             'Loyalty bonus:' +
             '<input id="calculator_rs_loyalty_bonus" type="number" value="0" min="0" max="50" step = "5">%<br/><br/>' +
             '<div">' +
@@ -395,20 +433,20 @@ $(function() {
                 '</div>' +
                 '</td>' +
                 '</tr>');
-            $('#calculator_rs_' + type + '_level, #calculator_rs_' + type + '_left').on('keyup change', function() {
-                calculator_realskill_update([type])
+            $('#calculator_rs_' + type + '_level, #calculator_rs_' + type + '_left').on('input', function() {
+                calculator_realskill_update([type]);
             });
         }
-        $('#calculator_rs_loyalty_pts').on('keyup change', function() {
+        $('#calculator_rs_loyalty_pts').on('input', function() {
             $('#calculator_rs_loyalty_bonus').val(Math.round(100 * (loyalty_bonus(parseInt($('#calculator_rs_loyalty_pts').val(), 10)) - 1)));
             calculator_realskill_update();
         });
-        $('#calculator_rs_loyalty_bonus').on('keyup change', function() {
+        $('#calculator_rs_loyalty_bonus').on('input', function() {
             $('#calculator_rs_loyalty_pts').val(360 * (parseInt($('#calculator_rs_loyalty_bonus').val(), 10) / 5));
             calculator_realskill_update();
         });
         $('input[name="calculator_rs_vocation"]').change(function() {
-            calculator_realskill_update(skilltypes)
+            calculator_realskill_update(skilltypes);
         });
         calculator_realskill_update();
     }());

@@ -44,7 +44,13 @@ function updatetimer(i) {
   timeouts[i] = setTimeout('updatetimer(' + i + ')',1000);
 }
 
-importScriptPage('ShowHide/code.js', 'dev');
+/* Configuration for [[w:c:dev:AddRailModule]] */
+window.AddRailModule = [{
+    page: 'Template:Likewise',
+    prepend: true,
+    maxAge: 86400,
+}];
+
 
 function checktimers() {
   //hide 'nocountdown' and show 'countdown'

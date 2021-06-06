@@ -26,12 +26,10 @@
         });
     }
 
-    //Add class to preferences parent li so that the defualt placement can attach
-    $('.wds-global-navigation__user-menu > div:nth-child(2) > ul > li > a[data-tracking-label="account.preferences"]').parent().addClass('account-preferences');
-
     var $i18n, config, isUCP;
 
     config = mw.config.get([
+        "skin",
         "wgCityId",
         "wgUserName",
         "wgVersion"
@@ -39,12 +37,19 @@
 
     isUCP = window.parseFloat(config.wgVersion) > 1.19;
 
+    //Add class to preferences parent li so that the defualt placement can attach
+    $(((config.skin === "oasis")
+        ? ".wds-global-navigation__user-menu > div:nth-child(2)"
+        : ".global-navigation__bottom .wds-dropdown__content") +
+          " > ul > li > a[data-tracking-label='account.preferences']"
+    ).parent().addClass("account-preferences");
+
     /**
      * @class BlogLink
      * @classdesc The central BlogLink class
      */
     var BlogLink = {
-        defaultPlacement: ".wds-global-navigation__user-menu > div:nth-child(2) > ul > li.account-preferences",
+        defaultPlacement: "li.account-preferences",
 
         /**
          * @method addLink
@@ -65,11 +70,9 @@
                 $text
             );
 
-            if ($($target).length) {
-                $($target).before($element);
-            } else {
-                $(this.defaultPlacement).before($element);
-            }
+            $(($($target).length ? $target : this.defaultPlacement))[
+                (config.skin === "oasis") ? "before" : "after"
+            ]($element);
         },
 
         /**
@@ -172,6 +175,10 @@
 
             // Add contribs link if selected as user option
             if (this.config.contribs) {
+                if (config.skin === "fandomdesktop") {
+                    $("a[data-tracking-label='account.contributions'").remove();
+                }
+
                 this.addLink(
                     "contributions",
                     "Special:Contributions/" + config.wgUserName,

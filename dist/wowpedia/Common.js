@@ -30,7 +30,7 @@ function tocLinkToSelector(link) {
 }
 
 
-var article = "#bodyContent";
+var article = ".page-content";
 
 // See [[Help:Tooltips]]
 var Tooltips = {hideClasses:[], cache:{}, activeHover: false, enabled: true, activeVersion: ''};
@@ -284,9 +284,9 @@ function versionsInit() {
 	});
 	tocentry.remove();
 
-	var baseEditLink = $("#bodyContent div.wtooltip").first().parentsUntil("#bodyContent").addBack().prev("h2, h3").first().find(".editsection a").attr("href");
+	var baseEditLink = $("#content div.wtooltip").first().parentsUntil("#content").addBack().prev("h2, h3").first().find(".editsection a").attr("href");
 	baseEditLink = baseEditLink ? baseEditLink : (mw.config.get("wgScript") + "?action=edit&title=" + mw.util.wikiUrlencode(mw.config.get("wgTitle")) + "&section=0");
-	var ttstore = {'#': $("#bodyContent div.wtooltip").first()}, editlinks = {}, conditionals = {'#': 'default'};
+	var ttstore = {'#': $("#content div.wtooltip").first()}, editlinks = {}, conditionals = {'#': 'default'};
 	var tips = $("#item-versions div.wtooltip").not(".wtooltip .wtooltip"), headers = tips.prev("h3").find(".mw-headline");
 	var tabs = '<span id="versions-header-tabs" class="item-versions">';
 	for (var i = 0; i < headers.length; i++) {
@@ -319,7 +319,7 @@ function versionsInit() {
 		}
 		versionsShow(target);
 	});
-	tabs.appendTo("#firstHeading");
+	tabs.appendTo(".page-header__title");
 	
 	if ((window.location.hash && ttstore[window.location.hash])) {
 		versionsShow(window.location.hash);
@@ -333,8 +333,8 @@ function versionsInit() {
 	function versionsShow(key) {
 		$(".versions-cv").hide();
 		$(".versions-cv-" + quoteSelectorName(conditionals[key])).show();
-		if ($("#bodyContent div.wtooltip").first()[0] != ttstore[key][0])
-			$("#bodyContent div.wtooltip").first().replaceWith(ttstore[key]);
+		if ($("#content div.wtooltip").first()[0] != ttstore[key][0])
+			$("#content div.wtooltip").first().replaceWith(ttstore[key]);
 
 		$("#versions-header-tabs .activetab").toggleClass("activetab inactivetab");
 		$('#versions-header-tabs a[href="'+key+'"]').toggleClass("activetab inactivetab");
@@ -376,7 +376,7 @@ function inlineVersionsInit() {
 		if (ofs) n.text(nt.replace(/\d+/, v - ofs));
 	});
 
-	tabs.appendTo('#firstHeading');
+	tabs.appendTo('.page-header__title');
 	tabs.children('a').click(function(e) {
 		var $t = $(this), target = $t.attr("href"), $cnt = $t.data('version-content');
 		e.preventDefault();
@@ -461,6 +461,9 @@ function timeInit() {
 }
 
 $(function() {
+	$('#firstHeading').addClass('page-header__title');
+	$('#bodyContent').addClass('page-content');
+
 	if ($("table.classnav").length) classNav();
 	if ($("#ptabs").length) doPortalTabs();
 
@@ -473,7 +476,7 @@ $(function() {
 	requireImageLicense();
 	if (mw.config.get("wgUserName") != null) $("span.insertusername").html(mw.config.get("wgUserName"));
 	$(article+" .quote").prepend("<span class='quotemark' style='float:right;'>&#8221;</span><span class='quotemark' style='float:left;'>&#8220;</span>").css("max-width","75%").after("<br clear='left' />");
-	$(".mw-mpt-link").html("<a href='/Special:WhatLinksHere/"+$(".firstHeading").text().replace("Move ","").replace(/'/g,"%27")+"'>Links to the old page title</a>");
+	$(".mw-mpt-link").html("<a href='/Special:WhatLinksHere/"+$(".page-header__title").text().replace("Move ","").replace(/'/g,"%27")+"'>Links to the old page title</a>");
 	$(".coords-link").each(function() {
 		if ($(this).next().find("a.new").length)
 			$(this).addClass('broken');

@@ -704,7 +704,7 @@ function setupUploadForm(){
 			tbody2.append('<tr><td class="mw-label" style="width: 125px;">TypeTür kategorileri:</td><td class="mw-input"><textarea id="cattypeBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
 		} else {
 			// Old style form just needs Information template in the summary box
-			$('#wpUploadDescription').val('==Özet==\r\n{{Bilgi\r\n|attention=\r\n|description=\r\n|source=\r\n|artist=\r\n|filespecs=\r\n|licensing=\r\n|other versions=\r\n|cat artist=\r\n|cat licensee=\r\n|cat subject=\r\n|cat type=\r\n}}');
+			$('#wpUploadDescription').val('{{Bilgi\r\n|attention=\r\n|description=\r\n|source=\r\n|artist=\r\n|filespecs=\r\n|licensing=\r\n|other versions=\r\n|cat artist=\r\n|cat licensee=\r\n|cat subject=\r\n|cat type=\r\n}}');
 
 			// Add link to guided form
 			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="//starwars.wikia.com/tr/index.php?title=Special:Upload" onclick="javascript:localStorage.setItem(\'uploadform\', \'guided\')">Rehberli yükleme formuna geç</a></div>');
@@ -736,7 +736,7 @@ function verifySummary(){
 		return false;
 	}
 
-	var strBuilder = '==Özet==\r\n{{Bilgi\r\n';
+	var strBuilder = '{{Bilgi\r\n';
 	strBuilder += '|attention=' + document.getElementById('attentionBox').value + '\r\n';
 	strBuilder += '|description=' + document.getElementById('descriptionBox').value + '\r\n';
 	strBuilder += '|source=' + document.getElementById('sourceBox').value + '\r\n';

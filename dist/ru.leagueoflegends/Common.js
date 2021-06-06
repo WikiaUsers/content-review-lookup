@@ -26,11 +26,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
         'game': ['- Игра -',
             ['LOL','League of Legends'],
             ['TFT','Teamfight Tactics'],
-            ['TFT1','- Набор 1 - Войны фракций'],
-            ['TFT2','- Набор 2 - СНС'],
-            ['TFT3','- Набор 3 - Галактики'],
-            ['LOR','Legends of Runeterra'],
-            ['WR','Wild Rift']
+            ['LOR','Legends of Runeterra']
         ],
         'role': ['- Роль -',
             ['Манипулятор','Манипулятор'],
@@ -55,6 +51,42 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
         'type': ['- Дальность -',
             ['Ближний','Ближний бой'],
             ['Дальний','Дальний бой']
+        ]
+    };
+    /* Config for [[MediaWiki:Common.js/avatarGridfiltering.js]] */
+    avatarGridContainer = '#avatar-grid';
+    avatarGridFilters = {
+        'search': 'search',
+        'availability': ['- Доступность -',
+            ['Available','• Доступные'],
+            ['Legacy','• Архив'],
+            ['Unavailable','• Недоступные'],
+            ['Temporary','• Временные'],
+            ['Unlocked','• За создание учетной записи'],
+            ['Unreleased','• Невыпущенные']
+        ],
+        'source': ['- Источник -',
+            ['Store','• Магазин Riot'],
+            ['Riot','• Награда от Riot'],
+            ['Missions','• Задания'],
+            ['Bundle','• Наборы'],
+            ['Code','• Промоакции'],
+            ['Account Creation','• Создание учетной записи'],
+        ],
+        'release': ['- Год -',
+            ['2021release', '• 2021'],
+            ['2020release', '• 2020'],
+            ['2019release', '• 2019'],
+            ['2018release', '• 2018'],
+            ['2017release', '• 2017'],
+            ['2016release', '• 2016'],
+            ['2015release', '• 2015'],
+            ['2014release', '• 2014'],
+            ['2013release', '• 2013'],
+            ['2012release', '• 2012'],
+            ['2011release', '• 2011'],
+            ['2010release', '• 2010'],
+            ['2009release', '• 2009']
         ]
     };
 /* End of mw.loader.using callback */

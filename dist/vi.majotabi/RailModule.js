@@ -6,7 +6,7 @@
     	}
     	
     	function addToRail(content){
-    		const filter = $('#top-right-boxad-wrapper, #top-boxad-wrapper, #NATIVE_TABOOLA_RAIL, .content-review-module').last();
+    		const filter = $('#rail-boxad-wrapper, #top-right-boxad-wrapper, #top-boxad-wrapper, #NATIVE_TABOOLA_RAIL, .content-review-module').last();
     		if (filter.length > 0) {
                 content.insertAfter(filter);
             } else {

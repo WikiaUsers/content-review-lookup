@@ -2,7 +2,7 @@
 
 window.tooltips_config = {
     offsetX: 20,
-    offsetY: 10,
+    offsetY: 20,
     waitForImages: true,
     noCSS: true
 };

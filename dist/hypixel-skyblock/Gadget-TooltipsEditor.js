@@ -116,6 +116,36 @@ $.when(
 #TooltipsEditor {\
 	width: 700px !important;\
 }\
+.TooltipsEditor-insertFormat, .TooltipsEditor-insertChar {\
+	cursor: copy;\
+}\
+#TooltipsEditor .oo-ui-buttonElement-button {\
+    color: var(--theme-article-text-color) !important;\
+    font-family: rubik,helvetica,arial,sans-serif !important;\
+    border: none;\
+    margin-top: 20px;\
+    margin-bottom: 20px;\
+    background-color: var(--theme-accent-color);\
+}\
+#TooltipsEditor-save{\
+	margin-right: 10px;\
+}\
+#TooltipsEditor-cancel{\
+	background-color: transparent !important;\
+	text-transform: uppercase;\
+}\
+#TooltipsEditor-preview{\
+	background-color: transparent !important;\
+	cursor: default;\
+	border: dotted 0.15em !important;\
+}\
+.TooltipsEditor-editTooltip, .TooltipsEditor-removeTooltip {\
+	cursor: pointer;\
+}\
+.TooltipsEditor-previewTooltip {\
+	cursor: default;\
+	color: var(--qdmodal-text-color);\
+}\
 	".trim());
 	mw.loader.load(['ext.codeEditor.ace']);
 	
@@ -337,9 +367,10 @@ $.when(
 				n: "underline",
 				m: "strikethrough",
 				o: "italic",
+				r: "reset",
 			};
 	
-			var chars = ('❤ ❈ ❁ ✦ ☣ ☠ ✎ ∞ ✯ ♣ ❂ ⚔ ⫽ α ✹ ⸕ ☘ 🗲 ❣ ⚚')
+			var chars = ('❤ ❈ ❁ ✦ ☣ ☠ ✎ ∞ ✯ ♣ ❂ ⚔ ⫽ α ✹ ⸕ ☘ 🗲 ❣ ⚚ ⸎ ʬ')
 				.replaceAll(" ", " &nbsp; ")
 				.split(" ")
 				.map(function(v) {
@@ -358,7 +389,8 @@ $.when(
 				$('<div>', {
 					id: "TooltipsEditor-search",
 					html: [
-						'Enter Tooltip Name: ',
+						'<h3>Tooltips Editor Main Page</h3>',
+						'Search Existing Tooltip: ',
 						$('<input>', {
 							id: "TooltipsEditor-searchInput",
 							keyup: function() {
@@ -382,6 +414,7 @@ $.when(
 												href: mw.util.getUrl(v),
 												title: v,
 												text: v,
+												target: "_blank"
 											}),
 											' (',
 											 $('<a>', {
@@ -390,7 +423,7 @@ $.when(
 												'data-tooltipTitle': json[v] && json[v].title && json[v].title.replaceAll('&amp;', '&'),
 												'data-tooltipText': json[v] && json[v].text && json[v].text.replaceAll('&amp;', '&'),
 												'data-tooltipLink': json[v] && json[v].name && json[v].name.replaceAll('&amp;', '&'),
-												'data-tooltipKey': v.replaceAll('&amp;', '&'),
+												'data-tooltipKey': v.replaceAll('&amp;', '&')
 											}),
 											"<b> &bull; </b>",
 											$('<a>', {
@@ -411,13 +444,19 @@ $.when(
 								});
 							},
 						}),
-						'<br>',
-						$("<button>", {
-							id: "TooltipsEditor-addNew",
-							text: "Add New Tooltip",
-							click: function() {
-								openEditor();
-							},
+						'<span style="margin: 0 15px 0 15px; font-weight: bold; text-transform: uppercase;">or</span>',
+						$('<span>', {
+							"class": "oo-ui-buttonElement",
+							html: [
+								$("<button>", {
+									id: "TooltipsEditor-addNew",
+									"class": "oo-ui-buttonElement-button",
+									text: "Add New Tooltip",
+									click: function() {
+										openEditor();
+									},
+								})
+							]
 						}),
 						'<br>',
 						$('<b>', { text: 'Search Results:', id: "searchResultsMessage", style: "display: none;" }),
@@ -427,6 +466,18 @@ $.when(
 								'list-style-type': 'square',
 								'margin-left': "10px",
 							},
+						}),
+						$("<span>", {
+							css: {"font-style": "italic", float: "right", "margin-bottom": "1em"},
+							html: [
+								"(",
+								$('<a>', {
+									href: mw.util.getUrl("MediaWiki:Gadget-TooltipsEditor.js"),
+									text: "View JavaScript",
+									target: "_blank"
+								}),
+								")"
+								]
 						}),
 					]
 				}),
@@ -447,7 +498,7 @@ $.when(
 								$('<a>', {
 									href: mw.util.getUrl("Template:UIText"),
 									text: "UIText",
-									title: "emplate:UIText",
+									title: "Template:UIText",
 								}),
 								'}}', 
 							],
@@ -456,13 +507,13 @@ $.when(
 						'<br>',
 						$('<fieldset>', {
 							html: [
-								$('<legend>', { text: "Insert" }),
+								$('<legend>', { text: "Toolbox (Click to Insert)", css: {"font-weight": "bold", "font-size": "16px"}}),
 								$('<div>', {
 									html: [
 										"<b>Formatting:</b>",
 										$('<div>', {
 											id: "TooltipsEditor-insertFormat",
-											html: "0123456789abcdeflmno"
+											html: "0123456789abcdeflmnor"
 												.replaceAll("", "_")
 												.replaceAll("_", "_<b> &bull; </b>_")
 												.split("_")
@@ -481,17 +532,17 @@ $.when(
 										}),
 										'<hr>',
 										"<b>Special Characters:</b>",
-										$('<div>', { html: chars }),
+										$('<div>', { id: "TooltipsEditor-insertChar", html: chars }),
 									],
 								}),
 							],
-						}),
+						}),'<br>',
 						$('<b>', { text: 'Tooltip ID: ' }),
-						$('<input>', { css: { width: "400px" }, id: "TooltipsEditor-key" }),
+						$('<input>', { css: { width: "400px", position: "relative", left: "3.6em" }, id: "TooltipsEditor-key" }),
 						'<br>',
 						$('<b>', { text: 'Tooltip Link: ' }),
-						$('<input>', { css: { width: "400px" }, id: "TooltipsEditor-link" }),
-						'<br>',
+						$('<input>', { css: { width: "400px", position: "relative", left: "2.5em" }, id: "TooltipsEditor-link" }),
+						'<br>','<br>',
 						$('<b>', { text: 'Tooltip Title: ' }),
 						$('<div>', {
 							id: "TooltipsEditor-title-AceEditor",
@@ -602,7 +653,9 @@ $.when(
 							}, insert);
 						});
 					}
-				}	
+					lastFocusedEditor.focus();
+				}
+				else lastFocusedElement.focus();
 			});
 			
 			window.ace.tooltipsTextEditor = setupEditor("TooltipsEditor-text-AceEditor");
@@ -625,57 +678,75 @@ $.when(
 				
 				$('.qdmodal-button').css({ display: "none" });				
 				$('#TooltipsEditor-save, #TooltipsEditor-preview, #TooltipsEditor-cancel').remove();
+				var $button1 = $('<span>', {
+						"class": "oo-ui-buttonElement",
+					}).append(
+						$('<button>', {
+							id: "TooltipsEditor-save",
+							text: "Save",
+							"class": "oo-ui-buttonElement-button",
+							click: function() {
+								var text = ace.tooltipsTextEditor.getValue(),
+									title = ace.tooltipsTitleEditor.getValue(),
+									key = $("#TooltipsEditor-key").val(),
+									link = $("#TooltipsEditor-link").val();
+									
+								if (!key) return alert("You need to enter a tooltip ID!");
+								if (!link) return alert("You need to enter the tooltip's link!");
+									
+								if (oldKey) delete json[oldKey];
+								editor.addClass('mw-ajax-loader');
+								$('.qdmodal-button').css({ display: "" });		
+								$('#TooltipsEditor-editor, #searchResultsMessage').css({ display: "none" });
+								
+								api.post({ 
+									action: "parse", 
+									contentmodel: "wikitext",
+									text: "{{UIText|" + text + "|}}",
+								}).then(function(data) {
+									json[key] = {
+										text: text ? $(data.parse.text["*"])
+											.find('p')
+											.html()
+											.trim()
+											.replace(/&amp;/g, '&') : undefined,
+										title: title.trim(),
+										name: link.trim(),
+									};
+									isInMain = true;
+									data = json;
+									
+									reset(true);
+								});
+							},
+						})
+					);
+				var $button2 = $('<span>', {
+						"class": "oo-ui-buttonElement",
+					}).append(
+						$('<button>', {
+							id: "TooltipsEditor-cancel",
+							text: "Cancel",
+							"class": "oo-ui-buttonElement-button",
+							click: function() {
+								reset(confirm('Go back to main page without saving?'));
+							},
+						})
+					);
+				var $button3 = $('<span>', {
+						"class": "oo-ui-buttonElement",
+						css: {'float': 'right'},
+					}).append(
+						$('<button>', {
+							id: "TooltipsEditor-preview",
+							'class': "minetip oo-ui-buttonElement-button",
+							text: "Preview",
+						})
+					);
 				$('#TooltipsEditor-editor').append(
-					$('<button>', {
-						id: "TooltipsEditor-save",
-						text: "Save",
-						click: function() {
-							var text = ace.tooltipsTextEditor.getValue(),
-								title = ace.tooltipsTitleEditor.getValue(),
-								key = $("#TooltipsEditor-key").val(),
-								link = $("#TooltipsEditor-link").val();
-								
-							if (!key) return alert("You need to enter a tooltip ID!");
-							if (!link) return alert("You need to enter the tooltip's link!");
-								
-							if (oldKey) delete json[oldKey];
-							editor.addClass('mw-ajax-loader');
-							$('.qdmodal-button').css({ display: "" });		
-							$('#TooltipsEditor-editor, #searchResultsMessage').css({ display: "none" });
-							
-							api.post({ 
-								action: "parse", 
-								contentmodel: "wikitext",
-								text: "{{UIText|" + text + "|}}",
-							}).then(function(data) {
-								json[key] = {
-									text: text ? $(data.parse.text["*"])
-										.find('p')
-										.html()
-										.trim()
-										.replace(/&amp;/g, '&') : undefined,
-									title: title.trim(),
-									name: link.trim(),
-								};
-								isInMain = true;
-								data = json;
-								
-								reset(true);
-							});
-						},
-					}),
-					$('<button>', {
-						id: "TooltipsEditor-cancel",
-						text: "Cancel",
-						click: function() {
-							reset(confirm('Are you sure you want to exit the editor?'));
-						},
-					}),
-					$('<button>', {
-						id: "TooltipsEditor-preview",
-						'class': "minetip",
-						text: "Preview",
-					})
+					$button1,
+					$button2,
+					$button3
 				);
 				updatePreview();
 			}
@@ -684,7 +755,11 @@ $.when(
 				e.preventDefault();
 				e.stopImmediatePropagation();
 				
-				insertText($(this).attr('data-insert') || $(this).text());	
+				if (lastFocusedEditor) {
+					insertText($(this).attr('data-insert') || $(this).text());
+					lastFocusedEditor.focus();
+				}
+				else lastFocusedElement.focus();
 			});
 			
 			$(document.body).on('click', '.TooltipsEditor-removeTooltip', function() {

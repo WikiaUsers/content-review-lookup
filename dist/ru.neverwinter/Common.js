@@ -28,7 +28,7 @@ function moveTip(e) {
 	var newTop = e.clientY + ((e.clientY > (wh/2)) ? -eh : 20);
 	var newLeft = e.clientX + ((e.clientX > ($(window).width()/2)) ? -($ct.innerWidth()+20):20);
 	newTop = Math.max(105, Math.min(wh - eh, newTop));
-	$ct.css({"position":"fixed","font-size":"0.90em","top":newTop + "px","left":newLeft + "px"});
+	$ct.css({"position":"fixed","font-size":"0.755em","top":newTop + "px","left":newLeft + "px"});
 }
 
 // AJAX tooltips
@@ -67,9 +67,9 @@ function bindTT() {
 // check to see if it is active then do it
 function ttMouseOver() {
   if (tooltipsOn) {
-    $("#bodyContent").append('<div id="tfb" class="htt"></div>');
+    $("#content").append('<div id="tfb" class="htt"></div>');
     $tfb = $("#tfb");
-    $("#bodyContent span.ajaxttlink").each(bindTT);
+    $("#content span.ajaxttlink").each(bindTT);
   }
 }
 

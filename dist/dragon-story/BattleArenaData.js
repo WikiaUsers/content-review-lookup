@@ -286,15 +286,6 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
-			"amphora": {
-				"name": "Amphora",
-				"colors": [
-					"black",
-					"yellow",
-					"red"
-				],
-				"rarity": "unbreedable"
-			},
 			"amour": {
 				"name": "Amour",
 				"colors": [
@@ -309,6 +300,23 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"valentine",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"amphora": {
+				"name": "Amphora",
+				"colors": [
+					"black",
+					"yellow",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"amusement": {
+				"name": "Amusement",
+				"colors": [
+					"yellow",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},
@@ -421,6 +429,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"purple"
 				],
 				"rarity": "ultra"
+			},
+			"anxious": {
+				"name": "Anxious",
+				"colors": [
+					"purple",
+					"yellow"
+				],
+				"rarity": "unbreedable"
 			},
 			"aphrodite": {
 				"name": "Aphrodite",
@@ -749,6 +765,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Avenging",
 				"colors": [
 					"champion"
+				],
+				"rarity": "unbreedable"
+			},
+			"averse": {
+				"name": "Averse",
+				"colors": [
+					"green",
+					"blue"
 				],
 				"rarity": "unbreedable"
 			},
@@ -6944,6 +6968,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"joy": {
+				"name": "Joy",
+				"colors": [
+					"green",
+					"yellow"
+				],
+				"rarity": "common"
+			},
 			"joyfrost": {
 				"name": "Joyfrost",
 				"colors": [
@@ -8736,6 +8768,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"mythic"
 				],
 				"rarity": "rare"
+			},
+			"naches": {
+				"name": "Naches",
+				"colors": [
+					"red",
+					"yellow"
+				],
+				"rarity": "unbreedable"
 			},
 			"naga": {
 				"name": "Naga",
@@ -11496,6 +11536,22 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"purple",
 					"pink"
+				],
+				"rarity": "unbreedable"
+			},
+			"remorseful": {
+				"name": "Remorseful",
+				"colors": [
+					"blue",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
+			"repulsed": {
+				"name": "Repulsed",
+				"colors": [
+					"green",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},
