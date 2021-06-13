@@ -29,3 +29,32 @@ var tooltips_list = [
         parse: '<#wiki#>',        
     }
 ];
+
+window.tooltips_config = {
+    waitForImages: true,
+    noCSS: true,
+};
+
+
+window.tooltips_list = [
+    {
+        classname: 'isg-small-tooltip',
+        parse: '{'+'{<#template#>|show=tip}}',
+    },
+    {
+        classname: 'isg-medium-tooltip',
+        parse: '{'+'{<#template#>|show=tip}}',
+    },
+    {
+        classname: 'isg-large-tooltip',
+        parse: '{'+'{<#template#>|show=tip}}',
+    },
+    {
+        classname: 'isg-dynamic-tooltip',
+        parse: '{'+'{<#template#>|show=tip|size=<#size#>}}',
+    },
+    {
+        classname: 'isg-wiki-tooltip',
+        parse: '<#wiki#>',        
+    }
+];

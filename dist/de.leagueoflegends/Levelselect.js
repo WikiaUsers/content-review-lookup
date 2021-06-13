@@ -1,4 +1,4 @@
-(function() {
+mw.loader.using('site').then(function() {
     'use strict';
     var stats = [
         'Health',
@@ -137,4 +137,4 @@
         init(mw.util.$content);
         mw.hook('wikipage.content').add(init);
     });
-})();
+});

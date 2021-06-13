@@ -1,30 +1,31 @@
 (function lockOldComments(window, $, mw) {
+	
+	"use strict";
 
-	if (window.lockOldComments) {
-		if (window.lockOldComments.loaded) {
-			return;
-		} else {
-			lockOldComments.loaded = true;
-		}
-	} else {
-		window.lockOldComments = { loaded: true };
-	}
+    // Temporarily keep Oasis support
+    var isOasis = mw.config.get('skin') === 'oasis';
+
+	window.lockOldComments = window.lockOldComments || {};
+	if (window.lockOldComments.loaded) return;
+	window.lockOldComments.loaded = true;
 
 	var config = mw.config.get([
 		'wgTitle',
 		'wgNamespaceNumber'
 		]);
 		
-	if ( [0, 500].indexOf(config.wgNamespaceNumber) < 0 ) { return; }
+	if ( [0, 500].indexOf(config.wgNamespaceNumber) < 0 ) return;
 
 	// A careful selector instead of document.getElementById which can be
 	// fooled with an id in the page content. 
 	// The element matching this selector is part of the original HTML,
 	// so it should be safe to check for it just once.
 	var commentSection = document.querySelector(
-			'#WikiaMainContentContainer > #mw-data-after-content > #articleComments');
+		isOasis ?
+			  '#WikiaMainContentContainer > #mw-data-after-content > #articleComments'
+			: '.page-footer > #mw-data-after-content > #articleComments');
 
-	if (!commentSection) { return; }
+	if (!commentSection) return;
 
 	var apiURL, // = mw.util.wikiScript('wikia'), once mw.util is loaded
 		apiParams = {
@@ -73,6 +74,10 @@
 		}
 	}
 
+	// Gets a comment wrapper
+	// Locks the reply box, adds a locking message and a class
+	// On first call adds an above-note unless above-note is cancelled
+	// Does not check the comment age - this have to be checked before calling
 	function lockBox(target) {
 		$(target)
 		.addClass('LockOldComments-locked')
@@ -92,7 +97,7 @@
 					.css({
 						padding: '12px',
 						'text-align': 'center',
-						color: 'var(--theme-warning-color)'
+						color: isOasis ? 'var(--theme-warning-color)' : 'var(--theme-alert-color)'
 					})
 					.append(addMsg(
 						$('<strong>'),
@@ -105,6 +110,8 @@
 		}
 	}
 	
+	// Gets a collection of comment wrappers
+	// Checks the comments' age and locks the old ones
 	function lock(target) {
 
 		$(target).each(function() {
@@ -113,7 +120,7 @@
 			    id = $this.attr('data-thread-id'),
 			    time;
 			
-			if (!id) { return; }
+			if (!id) return;
 			time = threads[id];
 			if (time) {
 				if ( time < limit ) {
@@ -134,6 +141,8 @@
 		});		
 	}
 
+	// A callback function for the mutations observer
+	// Checks for new comment wrappers and send them to lock()
 	function checkAddedNodes(mutations) {
 		var i,
 		    addedComments = [],
@@ -141,6 +150,7 @@
 		    
 		function findComments()  {
 			
+			// (No strict mode violation here, 'this' is passed by .each() )
 			var $this = $(this);
 
             if ($this.hasClass('Comment_wrapper__2mxBn')) {
@@ -164,25 +174,34 @@
         } else if (a) { // Retrive more comment threads if needed
         	b = Object.keys(threads).length;
         	c = b + a; // max amount of comment threads we need for now
-
-        	do {
+        	
+        	getComments().done(function more() {
         		d = b;
-        		apiParams.page = apiParams.page + 1;
-        		getComments();
         		b = Object.keys(threads).length;
-        	} while (b > d && b < c);
-
-            lock(addedComments);
+        		
+        		// If new information has been successfully loaded, and it is 
+        		// still less than the number needed, get more.
+        		if (b > d && b < c) {
+        			getComments().done(more).fail(function() { lock(addedComments); });
+        		} else {
+        			lock(addedComments);
+        		}
+        	}).fail(function() { lock(addedComments); });
         }
 	}
 	
 	function init() {
 		
 		apiURL = mw.util.wikiScript('wikia');
+		
+		// (No strict mode violation here because 'this' is only needed to make
+		// the .bind() method happy)
 		getComments = $.getJSON.bind(this, apiURL, apiParams, function(data) {
 		    var i;
+		    
+		    apiParams.page = apiParams.page + 1;
 		
-		    if (!data.threads) { return NaN; }
+		    if (!data.threads) return NaN;
 		    for (i = 0; i < data.threads.length; i++) {
 		        try {
 		            threads[data.threads[i].id] = data.threads[i].creationDate.epochSecond * 1000;
@@ -191,12 +210,17 @@
 		        }
 		    }
 		});
-		getComments(); // get one bunch anyway
-
-		observer = new MutationObserver(checkAddedNodes);
-		observer.observe(commentSection, { childList: true, subtree: true });
-	
-		lock($(commentSection).find('.Comment_wrapper__2mxBn'));
+		
+		// Get one bunch of comments information - same as is supposed to load
+		// on the page.
+		// Then start observing for new comments and call lock() for any 
+		// comments that are already laoded.
+		getComments().done(function() {
+			observer = new MutationObserver(checkAddedNodes);
+			observer.observe(commentSection, { childList: true, subtree: true });
+		
+			lock($(commentSection).find('.Comment_wrapper__2mxBn'));
+		});
 			
 	}
 	

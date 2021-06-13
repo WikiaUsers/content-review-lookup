@@ -7,12 +7,6 @@ window.AutoCreateUserPagesConfig = {
     summary: 'Script: Creating user profile'
 };
 
-/* Auto-refreshing recent changes */
-ajaxPages = ["Special:RecentChanges","Special:Watchlist","Special:Log","Special:Contributions"];
-AjaxRCRefreshText = 'Auto-refresh';
-AjaxRCRefreshHoverText = 'Automatically refresh the page';
-importScriptPage('MediaWiki:AjaxRC/code.js', 'dev');
-
 /* Standard edit summaries
  * jQuery version of Sikon's fillEditSummaries
  * @author Grunny - taken from Wookieepedia */
@@ -40,46 +34,36 @@ function fillEditSummaries() {
 }
 $(fillEditSummaries);
 
-/* Custom buttons 
-if (mwCustomEditButtons) {
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/youngjustice/images/5/57/CIT_Button.png",
-        "speedTip": "Canon-In-Training",
-        "tagOpen": "{{CIT|",
-        "tagClose": "}}",
-        "sampleText": "Insert text"
-    };
+/* "Temporary" fix for {{#dpl:execandexit=geturlargs}} by User:MarkusRost */
+$( function() {
+	/* Make the confirmation on action=purge keep DPL arguments */
+	if ( mw.config.get('wgAction') === 'purge' ) {
+	     var purgeForm = $('#mw-content-text form.mw-htmlform');
+	     var purgeParams = purgeForm.find('input[name="redirectparams"]').val().split('&').filter( function (param) {
+	         return param.startsWith('DPL_');
+	     } );
+	     if ( purgeParams.length ) {
+	         purgeForm.attr('action', purgeForm.attr('action') + '&' + purgeParams.join('&') );
+	     }
+	 }
+	/* Avoid the purge confirmation all together, restoring legacy behaviour until extension is fixed */
+	 $('.DPL-purge a.external, a.external[href^="https://avatar.fandom.com/"][href*="&action=purge"]').on( 'click', function( e ) {
+		var $form = $( '<form>' ).attr( {
+			method: 'POST',
+			action: this.href,
+		} ).appendTo( document.body );
+		$form.submit();
+		e.preventDefault();
+	} );
+} );
 
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/youngjustice/images/2/2f/TS_Button.png",
-        "speedTip": "Timestamp",
-        "tagOpen": "{{TS|",
-        "tagClose": "|Date|Time|Timezone}}",
-        "sampleText": "Place"
-    };
-
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/youngjustice/images/c/ce/Ep_ref_Button.png",
-        "speedTip": "Episode/issue reference tag",
-        "tagOpen": "<ref name=>{{ep ref|",
-        "tagClose": "}}</ref>",
-        "sampleText": "number"
-    };
-
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/youngjustice/images/2/24/AG_Button.png",
-        "speedTip": "Ask Greg reference",
-        "tagOpen": "<ref name=id>{{askgreg|QID|2020-MONTH-DAY|2020-",
-        "tagClose": "}}</ref>",
-        "sampleText": "MONTH-DAY"
-    }
-
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/youngjustice/images/2/2d/Tweet_Button.png",
-        "speedTip": "Tweet reference",
-        "tagOpen": "<ref>{{tweet|poster|username|url id|2020-MONTH-DAY|2020-",
-        "tagClose": "}}</ref>",
-        "sampleText": "MONTH-DAY"
-    }
-
-}*/
+/* User profile header custom tags */
+window.UserTagsJS = {
+modules: {},
+tags: {
+sysop: { link:'Project:Administrators' },
+rollback: { link:'Project:Rollback' }
+}
+};
+window.UserTagsJS.modules.inactive = 30;
+window.UserTagsJS.modules.mwGroups = ['rollback', 'sysop', 'bot', 'bot-global'];

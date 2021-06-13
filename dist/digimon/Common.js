@@ -1,5 +1,14 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* Username inserts for the Player template; source: KHWiki.com */
+function UserNameReplace() {
+    if (typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || mw.config.get('wgUserName') == null) return;
+    $('span.insertusername').each(function () {
+        $(this).text(mw.config.get('wgUserName'));
+    });
+}
+$(UserNameReplace);
+
 /** Dynamic Navigation Bars (experimental) *************************************
  *
  *  Description: See [[Wikipedia:NavFrame]].

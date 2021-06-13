@@ -13,6 +13,21 @@ AjaxRCRefreshHoverText = 'Automatically refresh the page';
 //	</span>
 //	<span class="nocountdown">Javascript disabled.</span>
 
+/* Check if infobox has a secondary type and add css class if it does */
+function pokemonInfoboxSecondaryType() {
+	var pokemonInfobox = document.getElementsByClassName("type-pokemon");
+	Array.prototype.forEach.call(pokemonInfobox, function(box) {
+    	var typeDiv = box.querySelectorAll("[data-source='type']")[0];
+    	// If 4 span elements are present it means there are two types (2 spans per type)
+    	if (typeDiv.getElementsByTagName("div")[0].getElementsByTagName("span").length == 4) {
+    		secondaryType = typeDiv.getElementsByTagName("div")[0].getElementsByTagName("span")[2].innerText;
+    		var cssClass = "pi-theme-secondary-" + secondaryType;
+    		box.classList.add(cssClass);
+    	}
+	});
+}
+$(pokemonInfoboxSecondaryType);
+
 function updatetimer(i) {
 	var now = new Date();
 	var then = timers[i].eventdate;
@@ -233,12 +248,14 @@ addOnloadHook( createNavigationBarToggleButton );
 })();
 /* END LazyLoadVideo */
 
+
 // IRC code originally from Sactage
 if(wgPageName == 'Pokémon_Wiki:IRC')
 	$(function() {
 		var nick = (wgUserName == null) ? ('Wikian' + Math.floor(Math.random() * 10)) : wgUserName.replace(/ /g, '_');
 		$('#IRClogin').append('<iframe src="http://webchat.freenode.net/?nick=' + encodeURIComponent(nick) + '&channels=wikia-pokemon&prompt=true&uio=OT10cnVlJjExPTE3NCYxMj10cnVld1" width="950" height="400" style="border:0;"></iframe>');
 	});
+
 
 /* ############################################# */
 /* ##          CUSTOM EDIT BUTTONS            ## */

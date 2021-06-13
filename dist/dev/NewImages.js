@@ -4,7 +4,7 @@
     function newImages() {
 
         if (
-            ! $('.WikiaRail').length
+            ! $('#WikiaRail').length
             || $('.photo-module').length
             || mw.config.values.wgCanonicalNamespace == 'Special'
             || mw.config.values.wgCanonicalNamespace == 'MediaWiki'
@@ -218,12 +218,12 @@
                 clearInterval( i );
 
                 setTimeout( function() { // Space
-                    if ( $( '#WikiaRail .activity-module' ).length && !$('.WikiaRail, .photo-module').length ) {
+                    if ( $( '#WikiaRail .activity-module' ).length && !$('#WikiaRail, .photo-module').length ) {
                         f.createBody( t, '#WikiaRail .activity-module', 'after' );
                     } else if ( $( '#WikiaRail .rail-sticky-module' ).length ) {
                         f.createBody( t, '#WikiaRail .rail-sticky-module', 'before' );
                     } else {
-                        f.createBody( t, '#WikiaRail', 'append' );
+                        f.createBody( t, '#WikiaRail');
                     }
                 }, 1000 );
             }, 250 );

@@ -38,8 +38,8 @@ window.MessageWallUserTags = {
         'StormDragon456': 'Former Staff',
         'Evita128': 'Former Staff',
         'Jdoggie14': 'Former Staff',
-        //Wiki manager
-        'Sitb': 'Wiki Manager'
+        //Wiki representative
+        'Sitb': 'Wiki Representative'
         
     }
 };

@@ -5,6 +5,7 @@
 //Remplit la variable mwCustomEditButtons  pour ajouter des boutons à la barre d'outils
 
 function addCustomButton(imageFile, speedTip, tagOpen, tagClose, sampleText, imageId) {
+/* Not supported on UCP
    mwCustomEditButtons[mwCustomEditButtons.length] =
     {"imageId": imageId,
      "imageFile": imageFile,
@@ -12,6 +13,7 @@ function addCustomButton(imageFile, speedTip, tagOpen, tagClose, sampleText, ima
      "tagOpen": tagOpen,
      "tagClose": tagClose,
      "sampleText": sampleText};
+*/
 }
  
 addCustomButton('https://images.wikia.nocookie.net/central/images/8/88/Btn_toolbar_enum.png','Liste numérotée','\n# élément 1\n# élément 2\n# élément 3','','');
@@ -253,8 +255,10 @@ function makeAusklapp()
 }
  
 // Nach dem Laden des Fensters folgendes Ausführen:
+/* Not supported on UCP
 addOnloadHook(makeAusklapp);
- 
+*/
+
 /* Test if an element has a certain class **************************************
  *
  * Description: Uses regular expressions and caching for better performance.
@@ -352,9 +356,11 @@ function createCollapseButtons()
         }
     }
 }
- 
+
+/* Not supported on UCP 
 addOnloadHook( createCollapseButtons );
- 
+*/
+
 /** Dynamic Navigation Bars (experimental) *************************************
  *
  *  Description: See [[Wikipedia:NavFrame]].
@@ -440,8 +446,10 @@ function createNavigationBarToggleButton()
         }
     }
 }
- 
+
+/* Not supported on UCP 
 addOnloadHook( createNavigationBarToggleButton );
+*/
 //
 
 /*
@@ -532,10 +540,12 @@ function createCollapseButtons()
     }
 }
 
+/* Not supported on UCP
 addOnloadHook( createCollapseButtons );
+*/
 
 /*Paramètres UserTags*/
-importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
+importArticle({type:'script', article:'w:c:dev:MediaWiki:UserTags/code.js'});
 
 window.UserTagsJS = {
 	modules: {},

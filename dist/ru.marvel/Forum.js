@@ -1,6 +1,9 @@
 // ВЕСЬ КОД ВЗЯТ С ВУКИПЕДИИ И РАЗРЕШЕН К ИСПОЛЬЗОВАНИЮ
 // Смотреть также Шаблон:GIF
 
+var sMessage= '',
+	sSection = 'new';
+	
 $('.btn_ForumMessage').unbind('click').click(function()
 {
 	sSection = 'new';

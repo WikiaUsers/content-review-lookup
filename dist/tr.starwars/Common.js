@@ -789,3 +789,37 @@ function verifyName(){
 $( fillEditSummaries );
 $( fillEditSummariesVisualEditor );
 $( fillPreloads );
+
+/** Archive edit tab disabling *************************************
+ * Disables the edit tab on old forum topic pages to stop noobs bumping old topics.
+ * Page can still be edited by going via the edit tab on the history etc, or by 
+ * typing the edit address manually.
+ * By [[User:Spang|Spang]]
+ * Monaco and Oasis support by [[User:Uberfuzzy|Uberfuzzy]]
+ * Removal of section edit buttons and new section tab on talk pages added by [[User:Grunny|Grunny]]
+ * User:/User talk: support and styling in new skin by [[User:Grunny|Grunny]]
+ * UCP and FandomDesktop support by [[User:01miki10|01miki10]]
+ */
+function disableOldForumEdit() {
+	if ( typeof( enableOldForumEdit ) != 'undefined' && enableOldForumEdit ) {
+		return;
+	}
+	$( '#old-forum-warning-section .mw-editsection' ).remove();
+	if ( !document.getElementById( 'old-forum-warning' ) ) {
+		return;
+	}
+
+	if ( $( '.page-header #ca-addsection' ).length ) {
+		$( '.page-header #ca-addsection' ).html( 'Arşivlendi' ).removeAttr( 'href' );
+		$( '.page-header #ca-edit' ).remove();
+		$( '.page-side-tools #ca-addsection' ).remove();
+		$( 'span.mw-editsection' ).remove();
+		return;
+	} else {
+		$( '.page-header #ca-edit' ).html( 'Arşivlendi' ).removeAttr( 'href' );
+		$( '.page-side-tools #ca-edit' ).remove();
+		$( 'span.mw-editsection' ).remove();
+		return;
+	}
+}
+$( disableOldForumEdit );

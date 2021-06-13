@@ -33,7 +33,7 @@ gridFilters = {
         if (!gridFilteringSwitches()) return;
 
         window.gridElements = [];
-        grid.children(grid.hasClass('list-of-cards') ? 'div' : '.grid-icon').each(function () {
+        grid.children('.custom-tooltip').each(function () {
             var obj = {};
             var elem = $(this);
             obj['*'] = elem;
@@ -49,6 +49,8 @@ gridFilters = {
 
     function gridFilteringSwitches() {
         var flag = false;
+        var disabledCtrls = document.getElementById('grid-filter-container').className.split(/\s+/);
+
         for (var x in gridFilters) {
             var container = $('#grid-filter-' + x);
             if (!container.length) continue;
@@ -79,10 +81,12 @@ gridFilters = {
                     }).appendTo(container);
                 }
             } else if (gridFilters[x] instanceof Array) {
-                var field = $('<select></select>')
-                    .appendTo(container)
-                    .attr('id', container.attr('id') + '-field')
-                    .data('type', 'select');
+                var field = $('<select></select>', {
+                	id: container.attr('id') + '-field',
+                	disabled: disabledCtrls.includes('hide-'+x),
+                })
+                	.data('type', 'select')
+                    .appendTo(container);
                 $('<option></option>').appendTo(field).attr('value', '').html(gridFilters[x][0]);
                 for (var y = 1; y < gridFilters[x].length; y++) {
                     var opt = $('<option></option>').appendTo(field).html(gridFilters[x][y][1]);
@@ -115,9 +119,9 @@ gridFilters = {
                     $('#card-grid').removeClass('collapsed').addClass('expanded');
                 } else {
                     $(this).text('Show more');
-                    if ($('.grid-filter-container')[0].getBoundingClientRect().top <= 0) {
+                    if ($('#grid-filter-container')[0].getBoundingClientRect().top <= 0) {
                         window.scrollBy({
-                            top: $('.grid-filter-container')[0].getBoundingClientRect().top - 100,
+                            top: $('#grid-filter-container')[0].getBoundingClientRect().top - 100,
                             behavior: 'smooth',
                         });
                     }
@@ -166,7 +170,7 @@ gridFilters = {
         };
 
         function sort(comp, asc) {
-            $('#card-grid > .grid-icon, #card-grid.list-of-cards > div')
+            $('#card-grid > .custom-tooltip')
                 .sort(function (a, b) {
                     var $a = $(a).data(comp);
                     var $b = $(b).data(comp);

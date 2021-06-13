@@ -113,7 +113,7 @@ v4cp.data.css = (
 		'\theight: 12px;\n' +
 		'\tfloat: right;\n' +
 		'\tmargin: 2px 4px;\n' +
-		'\tbackground: url(\'http://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Emblem-unreadable.svg/14px-Emblem-unreadable.svg.png\') center no-repeat;\n' +
+		'\tbackground: url(\'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Emblem-unreadable.svg/14px-Emblem-unreadable.svg.png\') center no-repeat;\n' +
 		'\tborder: 1px solid #cccccc;\n' +
 		'\tborder-radius: 3px;\n' +
 		'\tcursor: pointer;\n' +

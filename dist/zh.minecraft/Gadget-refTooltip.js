@@ -12,7 +12,7 @@ $( function() {
 	};
 	
 	var $win = $( window );
-	var $body = $( '.mw-body' );
+	var $body = $( '#content' );
 	var $content = $( '#mw-content-text' );
 	var $tooltip = $();
 	var $tooltipText = $();

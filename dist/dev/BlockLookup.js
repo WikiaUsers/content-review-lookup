@@ -219,10 +219,9 @@
 		 * @class		BlockLookup
 		 */
 		 setPreloading: function() {
-			document.getElementById('firstHeading').innerHTML = 'Block Lookup';
+			document.getElementsByClassName('page-header__title')[0].innerHTML = 'Block Lookup';
 			document.title = 'Block Lookup | ' + this.wg.wgSiteName + ' | Fandom';
 
-			this.$content.addClass('specialpage-mw-blocklookup');
 			this.$content.text('Loading...');
 		 },
 

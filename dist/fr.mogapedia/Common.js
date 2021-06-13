@@ -217,7 +217,7 @@ var monsterList = {
 		var species, dropdown;
 		// On récupère toutes les espèces de cet opus
 		species = [];
-		$('.monster-list div span').each(function (i, elem) {
+		$('.monster-list td span').each(function (i, elem) {
 			if (!species.includes(elem.title))
 				species.push(elem.title);
 		});
@@ -255,7 +255,7 @@ var monsterList = {
 	    filterName = $('.monster-filter-search input').val().trim();
 	    regex = new RegExp(filterName, "gi");
 	    
-	    $('.monster-list div').each(function (i, elem) {
+	    $('.monster-list td').each(function (i, elem) {
 	    	var name, specie;
 	    	name = $('a', elem).attr("title");
 	        specie = $('span', elem).attr("title");

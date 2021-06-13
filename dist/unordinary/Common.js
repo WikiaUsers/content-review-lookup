@@ -30,7 +30,9 @@ window.railWAM = {
     logPage:"Project:WAM Log"
 };
 
-window.AddRailModule = [{prepend: true}];
+window.AddRailModule = [
+    {page: 'Template:FastPassWarning', prepend: true},
+];
  
 window.PurgeButtonText = 'Refresh';
 

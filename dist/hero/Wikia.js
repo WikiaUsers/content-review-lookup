@@ -1,9 +1,3 @@
-var SocialMediaButtons = { 
-	position: "top",
-	colorScheme: "gray"
-};
-importScriptPage('SocialIcons/code.js','dev');
-
 /* Featured video message */
 //By User:Fngplg
 $(function(){
@@ -13,10 +7,6 @@ $(function(){
     banner.show();
 });
 
-window.AddRailModule = [{
-    page: 'Template:DiscordRailModule',
-    appendAfter: '.DiscordIntegratorModule .rail-module',
-}];
 mw.hook('wikipage.content').add(function ($elem) {
     $elem.filter('section.railModule.rail-module')
          .find('span.wds-button>a:only-child')

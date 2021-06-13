@@ -636,7 +636,7 @@ window.mapper = (function mapper(ns) {
     }
     var tmp =
       (mw.config.get('wgPageName') != 'Mapper' ?
-        '<div style=\'text-align:center;background:#eeeeee;color:#0038d8;font-weight:bold;height:19px;padding-top: 2px\'>TibiaWiki Map</div>' +
+        '<div style=\'text-align:center;font-weight:bold;height:1.6em;\'>TibiaWiki Map</div>' +
         '<div class="minimap_wx" onclick="$(\'.minimap_wp, #minimap_blackout\').css(\'display\', \'none\').html(\'&nbsp;\'); return false;">X</div>' :
         '<div style="border-bottom-color:#aaaaaa;border-bottom-style:solid;border-bottom-width:1px;"><font size="+1">Mapper</font></div><br />') +
       '<div style="display:block;border:1px #3366CC solid;background-color:grey;">' +
@@ -664,7 +664,7 @@ window.mapper = (function mapper(ns) {
       '</div>' +
       '</div></div>' +
       '</div>' +
-      '<div style="' + (mw.config.get('wgPageName') != 'Mapper' ? 'background-color:#EEEEEE;' : '') + '">' +
+      '<div>' +
       '<table border="0"><tr><td style="vertical-align:top;width:46px;">' +
       '<div style="margin:2px;line-height:10px;"><input type="button" onclick="mapper.minimap_pos_b(\'ns\', -30);" class="starn btns" value="" /><br />' +
       '<input type="button" onclick="mapper.minimap_pos_b(\'we\', -30);" class="starw btns" value="" />' +

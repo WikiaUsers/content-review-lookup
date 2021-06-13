@@ -289,6 +289,7 @@
 			input = document.createElement('input'),
 			inputLabel = document.createElement('label');
 		input.id = "upload_btn";
+		input.accept=".json";
 		inputLabel.innerText = "Opens a local file from your computer.";
 		inputLabel.setAttribute("for", "upload_btn");
 		inputLabel.style.width = 0;

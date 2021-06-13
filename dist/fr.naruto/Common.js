@@ -142,9 +142,10 @@
 			$('.references').addClass('compactreferences');
 	});
 
-	if (mw.config.get('skin') === 'oasis') {
+	// Ajouteur de modèle dans les pages de fichier
+	if (['oasis', 'fandomdesktop'].includes(mw.config.get('skin'))) {
 	
-		// Ajouteur de modèles dans les pages de fichier
+		// Ajouter le modèles dans les pages de fichier uniquement pour les utilisateur inscrits
 		if (mw.config.get('wgCanonicalNamespace') === 'File' && 
 			mw.config.get('wgUserGroups').includes('user'))
 			$(function() {
@@ -154,14 +155,18 @@
 					'{{Inutilisé}}': 'Image inutilisée',
 					'{{Mauvais titre}}': 'Mauvais titre'
 				},
-				tempOptStr = '';
+				tempOptStr = '',
+        		header = { 
+        			oasis : '#PageHeader',
+					fandomdesktop : '.page-header' 
+        		};
 	 
 				for (var i in Options) {
 					tempOptStr += '<option value="' + i + '" style="text-align:left;">' + Options[i] + '</option>';
 				}
 	 
 				var html = '<div><select id="FileTemplateAdder" class="oo-ui-dropdownWidget-handle fileTemplateAdder-dropdown">' + tempOptStr + '</select>&nbsp;<a class="wds-button" style="margin:0 1em; cursor:pointer;" id="templateSubmit">Ajouter le modèle</a></div>';
-				$('#PageHeader').after(html);
+				$(header[mw.config.get('skin')]).after(html);
 				$('#templateSubmit').click(function() {
 					$(this).html('<img src="https://images.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif" style="vertical-align: baseline;" border="0" />');
 					new mw.Api().post({

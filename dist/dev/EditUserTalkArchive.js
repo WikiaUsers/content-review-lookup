@@ -14,7 +14,7 @@
 		if($(".page-header__page-subtitle a[title*='Message Wall']").length){
 			var relativeLink = mw.config.get("wgArticlePath").replace("$1", mw.config.get("wgPageName"));
 			var classLink = "wds-button";
-			var editText = $("#ca-edit").text();
+			var editText = $("#ca-edit").text().trim();
 			if(mw.config.get("skin")=="fandomdesktop"){
 				classLink += " wds-is-text page-header__action-button has-label";
 				$(".page-side-tools #ca-addsection").replaceWith('<a class="page-side-tool page-side-edit" id="EUTA-edit" href="' + relativeLink + '?action=edit&redirect=no" title="' + editText + '"></a>');

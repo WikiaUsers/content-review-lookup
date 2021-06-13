@@ -12,13 +12,13 @@ window.questions = [
     "A Heart Hero",
     "Green",
     "SAM",
-    "I don;t know",
+    "I don't know",
     ["Who created this wiki?",
-    "The CORRECT answer to question 2",
-    "An INCORRECT answer to question 2",
-    "Another INCORRECT answer to question 2"],
+    "Bubble",
+    "ME",
+    "Eh idk"],
 
-    ["When was KHC founded?",
-    "The CORRECT answer to question 3",
-    "An INCORRECT answer to question 3"]
+    ["When did you join?",
+    "IDK",
+    "22222"]
 ];

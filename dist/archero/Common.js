@@ -81,7 +81,7 @@ window.ajaxPages = [
                 channel: '670976875308253237',
                 server: '670969857101266954',
                 shard: 'https://e.widgetbot.io',
-                location: [-25, 'right']
+                location: [-50, 'right']
             };
  
             var options = JSON.stringify(crateOptions, null, 4);

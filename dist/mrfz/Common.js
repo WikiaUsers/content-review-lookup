@@ -18,5 +18,8 @@ window.tooltips_list = [
     },	{
         classname: 'collection-tooltip',
         parse: '{' + '{Template:Collection tip|1=<#name#>|2=<#text1#>|3=<#text2#>|e=<#event#>|q=<#quality#>|c=<#condition#>|n=<#note#>}}',
-    },
+    },	{
+        classname: 'furniture-tooltip',
+        parse: '{' + '{Template:Furniture tip|1=<#name#>|2=<#text1#>|3=<#text2#>|a=<#ambience#>|t1=<#type#>|t2=<#theme#>|s=<#set#>|o=<#obtain#>|o1a=<#obtain1a#>|o1b=<#obtain1b#>|o1c=<#obtain1c#>}}',
+    }
 ];

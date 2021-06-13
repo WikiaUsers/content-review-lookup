@@ -40,7 +40,3 @@ endtextmaintenance: function () {
        $(this).text('This maintenance has ended');
     }
 };
-/* Adding categories to customized upload page */
-if (['MultipleUpload', 'Upload'].indexOf(mw.config.get('wgCanonicalSpecialPageName')) > -1) {
-        importScript('MediaWiki:Common.js/uploadform.js');
-    }

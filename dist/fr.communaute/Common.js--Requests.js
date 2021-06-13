@@ -76,15 +76,18 @@ function submit(type) {
      //namespace     
      namespace = 'Demande_interwiki';
  
-     //content
-     var lines = $('#Names').val().split('\n');
+     //content without empty lines
+     var lines = $('#Names').val().split('\n').filter(function(line){ return line.trim().length > 0; });
  
      content = '{{' + 'Demande' + '}}\n\n';
-     for (i = 0; i < lines.length; i++) {
+     for (var i = 0; i < lines.length; i++) {
         var links = lines[i].split(' -> ');
         
-        //Ignore empty lines
-        if ( !links[0] || !links[1]) continue;
+        //check the line could be splitted previously
+        if ( !links[0] || !links[1]) {
+        	alert('La liste des liens interwikis semble avoir été mal renseignée. Veuillez corriger votre saisie.');
+        	return false;
+        }
         
         content = content + '{{LienInterwiki|' + 
                   shortUrl( links[0] ) + 

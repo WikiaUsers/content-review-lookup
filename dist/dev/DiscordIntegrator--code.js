@@ -171,7 +171,7 @@
          * @param {string} config Configured theme
          * @return {string} 'light' or 'dark' depending on the wiki theme and configuration
          */
-        determineTheme(config) {
+        determineTheme: function(config) {
             // If explicitly configured to light or dark.
             if (config === 'dark') {
                 return 'dark';

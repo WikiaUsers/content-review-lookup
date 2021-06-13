@@ -33,7 +33,7 @@ Date.parseISO8601 = function(text) {
 		// Figure out what skin we're on.
 		//
 		var siteSkin = mw.config.get('skin');
-		if (({oasis:1, wikia:1})[siteSkin] === 1) {
+		if (({oasis:1, wikia:1, fandomdesktop:1})[siteSkin] === 1) {
 			siteSkin = 'oasis';
 		} else if (({wowwiki:1, uncyclopedia:1, monobook:1, vector:1})[siteSkin] === 1) {
 			siteSkin = 'monobook';

@@ -1,23 +1,23 @@
-/* Any JavaScript here will be loaded for sysops only */
+/* Qualquer JavaScript aqui será carregado apenas para sysops */
 /**
- * Blank the "Other/additional reason" field when deleting pages,
- * and insert the reason from the delete template instead
+ * Em branco o campo "Outro/motivo adicional" ao excluir páginas,
+ * e insira o motivo da predefinição de exclusão
  * 
- * This is so we don't get stupid vandalism and spam and
- * whatnot preserved for posterity in the delete log
+ * É assim que não temos vandalismo estúpido e spam e
+ * O que não preservado para a posteridade no registro de exclusão
  */
 $.when( $.ready, mw.loader.using( 'mediawiki.util' ) ).done( function() {
 	'use strict';
 	/**
-	 * Part 1: Add the deletion reason from the delete template to the delete button
+	 * Parte 1: Parte 1: Adicionar o motivo da eliminação a partir da predefinição de exclusão para o botão de Excluir 
 	 */
 	var $deleteReason = $( '.delete-reason' );
 	if ( $deleteReason.length ) {
-		// A parent node is required for $().replaceWith to work
+		// Um nó pai é necessário para $().replaceWith para funcionar 
 		var $reasonNodes = $( '<i>' ).append( $( '.delete-reason' ).contents().clone() );
 		$reasonNodes.find( 'a' ).each( function() {
 			var $link = $( this );
-			// Only allow internal links
+			// Permitido apenas links internos
 			var classes = $link.attr( 'class' );
 			if ( classes && classes !== 'new' && classes !== 'mw-redirect' ) {
 				return;
@@ -38,17 +38,17 @@ $.when( $.ready, mw.loader.using( 'mediawiki.util' ) ).done( function() {
 		var reasonText = $reasonNodes.text();
 		if ( reasonText ) {
 			$( '#ca-delete a' ).prop( 'href', function() {
-				// Purposly not using wpReason, so the auto-generated reason is still there initially
-				// so the user can press undo to get it back if they want it instead of this one
+				// Propositadamente não usando wpReason, então o motivo inicialmente é gerado automaticamente
+				// então o usuário pode pressionar desfazer para recuperá-lo se eles quiserem em vez deste
 				return this.href += '&deleteReason=' + encodeURIComponent( reasonText );
 			} );
 		}
 	}
 	
 	/**
-	 * Part 2: Get the previously added reason from the URL, or try to extract it from the "content was" summary.
-	 * Then if it partially matches one of the pre-defined deletion reasons, select that and blank the summary,
-	 * otherwise just replace the summary with it
+	 * Parte 2: Obtenha o motivo previamente adicionado do URL ou tente extrai-lo do resumo do "conteúdo".
+	 * Então, se parcialmente corresponder a uma dos motivos de exclusão pré-definidas, selecione isso e em branco o resumo,
+	 * caso contrário, basta substituir o resumo por ele
 	 */
 	if ( mw.config.get( 'wgAction' ) === 'delete' && !mw.util.getParamValue( 'wpReason' ) ) {
 		var $reason = $( '#wpReason' ), autoReason = $reason.prop( 'value' );

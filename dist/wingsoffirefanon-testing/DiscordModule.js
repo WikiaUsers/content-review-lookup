@@ -72,7 +72,7 @@ $(function () {
 		 */
 		loadCSS: function loadCSS() {
 			mw.util.addCSS(
-				".discord-module-svg{margin-right:7px;fill:rgba(58, 58, 58, 0.75)}.discord-module-content{display:flex;align-items:center}.discord-module-guidelines{flex:1;font-size:12px;line-height:1.5}.discord-module .discord-module-content > .discord-module-connect > .discord-module-join{border-color:#7289da;background-color:#7289da;color:#fff}.discord-module .discord-module-content > .discord-module-connect > .discord-module-join.wds-button:focus,.discord-module .discord-module-content > .discord-module-connect > .discord-module-join.wds-button:hover{border-color:#8ea1e1;background-color:#8ea1e1;color:#fff}.mw-parser-output .discord-module{max-width:300px}.mw-parser-output .discord-module-connect{margin-left:10px}"
+				".discord-module-svg{margin-right:7px;fill:rgba(58, 58, 58, 0.75)}.discord-module-content{display:flex;align-items:center}p.discord-module-guidelines{flex:1;font-size:12px;line-height:1.5}.discord-module .discord-module-content > .discord-module-connect > .discord-module-join{border-color:#7289da;background-color:#7289da;color:#fff}.discord-module .discord-module-content > .discord-module-connect > .discord-module-join.wds-button:focus,.discord-module .discord-module-content > .discord-module-connect > .discord-module-join.wds-button:hover{border-color:#8ea1e1;background-color:#8ea1e1;color:#fff}.mw-parser-output .discord-module{max-width:300px}.mw-parser-output .discord-module-connect{margin-left:10px}"
 			);
 		},
 

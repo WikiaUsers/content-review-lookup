@@ -17,7 +17,7 @@ window.tooltips_config = {
 
 // Add upload images button to Special:NewFiles
 $(function(){
-	if($("body.page-Special_NewFiles").length){
+	if($("body.page-Special_NewFiles").length && mw.config.get('skin') == 'oasis'){
 		$(".page-header__contribution-buttons").append("<a class='wds-button' href='/wiki/Special:Upload'><svg class='wds-icon wds-icon-small'><use xlink:href='#wds-icons-image'></use></svg><span>Add new image</span></a>");
 	}
 });

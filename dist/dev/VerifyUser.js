@@ -152,7 +152,7 @@ mw.loader.using(['mediawiki.util', (mw.config.get('wgVersion') === '1.19.24' ? '
 
             // Display warning and disable submit button if Discord tag is invalid
             $('#verify-input').on('keypress keydown keyup', function() {
-                if (!$(this).val().match(/^.{3,32}#[0-9]{4}$/)) {
+                if (!$(this).val().match(/^.{2,32}#[0-9]{4}$/)) {
                     $('#verify-input-invalid').css('visibility', 'visible');
                     $('#verify').addClass('wds-is-disabled');
                 } else {

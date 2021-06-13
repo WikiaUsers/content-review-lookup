@@ -10,15 +10,23 @@ $(function() {
 		$('.fandomdesktop-theme-toggle').click(function() {
 			var theme = $('body').hasClass('theme-fandomdesktop-light') ? 'light' : 'dark';
 			var newTheme = theme === 'light' ? 'dark' : 'light';
-
-			// Implementation by [[User:Pcj]] from ThemeSwitcher
-			$.get(mw.util.wikiScript('wikia') + '?controller=ThemeApi&method=themeVariables&variant=' + newTheme + '&cb=' + (new Date().getTime())).done(function(data) {
-				var $s = $('#pcjThemeSwitch')[0] || $('<style>').attr('id','pcjThemeSwitch').appendTo('body');
-				$($s).text(data);
-				$('body').removeClass('theme-fandomdesktop-light theme-fandomdesktop-dark').addClass('theme-fandomdesktop-' + newTheme);
-			});
+			setTheme(newTheme);
 		});
 	});
+
+	var urlTheme = mw.util.getParamValue('usetheme');
+	if (['light', 'dark'].includes(urlTheme)) {
+		setTheme(urlTheme);
+	}
+
+	function setTheme(newTheme) {
+		// Implementation by [[User:Pcj]] from ThemeSwitcher
+		$.get(mw.util.wikiScript('wikia') + '?controller=ThemeApi&method=themeVariables&variant=' + newTheme + '&cb=' + (new Date().getTime())).done(function(data) {
+			var $s = $('#pcjThemeSwitch')[0] || $('<style>').attr('id', 'pcjThemeSwitch').appendTo('body');
+			$($s).text(data);
+			$('body').removeClass('theme-fandomdesktop-light theme-fandomdesktop-dark').addClass('theme-fandomdesktop-' + newTheme);
+		});
+	}
 
 	importArticle({
 		type: 'script',

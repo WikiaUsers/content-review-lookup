@@ -1,3 +1,4 @@
+$('.page-header__contribution>div:first-child').append($('.title-eraicons').first());
 /* Buraya konulacak JavaScript kodu sitedeki her kullanıcı için her sayfa yüklendiğinde çalışacaktır */
 /**
  * Start upload form customisations
@@ -137,3 +138,6 @@ function verifyName(){
 /**
  * End upload form customisations
  */
+ 
+ /* Disable rollback script */
+window.RollbackWikiDisable = true;

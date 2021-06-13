@@ -252,8 +252,7 @@ $(function () {
 	    articles: 'MediaWiki:LootValue.js'
 	});
 	/* End of Loot Statistics data + LootPercentages */
-	/* Show/hide Template:Scene when inside Template:CreatureAbility */
-	/* Current version is not compatible with mobile skin (and can't be hidden on it) and not many scenes can be added to a single page
+	/* Show/hide Template:Scene when inside Template:Ability */
 	$('.creatureAbility').mouseover(function() {
 		if (window.innerWidth >= 1000 && $(this).find(".abilityScene").length > 0) {
 			$(this).addClass('activeAbility');
@@ -266,8 +265,8 @@ $(function () {
 			$(this).find(".abilityScene").css({'visibility':'hidden'});
 		}
 	});
-	*/
-	/* End of Show/hide Template:Scene when inside Template:CreatureAbility */
+	/* End of Show/hide Template:Scene when inside Template:Ability */
+	
 	/* Loot Statistics */
 	if (mw.config.get('wgPageName') === 'Loot_Statistics') {
 	    importArticles({
@@ -324,6 +323,15 @@ $(function () {
 	    $(function () {
 	        importScriptPage('MediaWiki:Calculators/Armor.js');
 	    });
+	}
+	
+	if (mw.config.get('wgPageName').includes('Calculator')) {
+		 $(function () {
+		 	importArticles({
+	            type: 'style',
+	            article: 'MediaWiki:Calculators.css'
+	        });
+		 });
 	}
 	
 	/* End of Calculators */
@@ -782,6 +790,28 @@ $(function () {
     return b.getAttribute("data-value") - a.getAttribute("data-value");
   });
   $("#creature-resistance ul").append(arr);
+});
+
+/* Fix pixel-art images */
+$('.page-content img, .WikiaMainContent img').on('load', function(){
+    var srcvar = $(this).attr('src');
+    if(srcvar && //$(this).parents('.map_image_crop').legnth == 0 &&
+    	!srcvar.endsWith('format=original') && srcvar.startsWith('https://static.wikia.nocookie.net')) {
+        if(srcvar.includes('?')) {
+            $(this).attr('src', srcvar+'&format=original');
+        } else {
+            $(this).attr('src', srcvar+'?format=original');
+        }
+    }
+    var srcset = $(this).attr('srcset');
+    if(srcset && !srcset.contains('format=original')) {
+    	var srcarray = srcset.split(' ');
+    	$(this).attr('srcset', srcarray[0]+'&format=original');
+    }
+}).each(function() {
+  if(this.complete) { 
+      $(this).trigger('load');
+  }
 });
 
 /* twbox - section headers behave as anchor links */

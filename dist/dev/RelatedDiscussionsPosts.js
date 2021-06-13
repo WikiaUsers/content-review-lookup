@@ -17,11 +17,15 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(
                                 border: "1px solid rgba(191, 191, 191, 0.5)",
                                 borderRadius: "5px",
                                 clear: "both",
-                                marginTop: "20px",
+                                margin: "10px 0",
                                 padding: "18px"
                             });
 
-                            $("#articleCategories").after(rdp_base);
+                            if (mw.config.get("skin") == "fandomdesktop") {
+                                document.querySelector(".license-description").after(rdp_base);
+                            } else {
+                                document.querySelector("#articleCategories").after(rdp_base);
+                            };
 
                             var rdp_wrapper = document.createElement("div");
                             rdp_wrapper.id = "rdp-wrapper";

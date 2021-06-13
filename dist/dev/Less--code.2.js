@@ -167,7 +167,11 @@
                     ns,
                     mwi,
                     i;
-                    
+                
+                mw.util.addCSS(
+                        '.skin-fandomdesktop #less-update-button{margin-top: 0px !important;}'
+                );
+                
                 if (profile.name === 'msie' && profile.versionNumber < 9) {
                     // we're not going to support anything below ie9
                     // so stop here rather than cause any errors

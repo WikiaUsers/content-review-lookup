@@ -127,22 +127,6 @@ $(function() {
             }
             return populateArr;
         };
-        $('body:first').append(
-	        '<style type="text/css">' +
-	        '#calculators_container{width:100%;}' +
-	        '#calculators_container>div {text-align:center;padding:8px 10px;margin: 0 auto;}' +
-	        '#calculator_armor td {vertical-align:top;}' +
-	        '#calculator_armor_damages, #calculator_armor_compare {width:100%;}' +
-	        '#calculator_armor_damages td, #calculator_armor_compare td {width: 9%;vertical-align:middle;}' +
-	        '#calculator_armor_damages th, #calculator_armor_compare th {width: 19%;vertical-align:middle;}' +
-	        '#calculator_armor_compare th {font-weight:normal;}' +
-	        '#calculator_armor_body_main {background:url(\'https://tibia.fandom.com/index.php?title=Special:FilePath&file=Tibia_Client_Background_Light.gif\');margin:0px 10px;position:relative;display:inline-block;width:112px;height:149px;border:1px black solid;}' +
-	        '#calculator_armor_body_main div {position:absolute; width:32px; height:32px;background:url(\'https://tibia.fandom.com/index.php?title=Special:FilePath&file=Set_Background.gif\');padding: 1px;}' +
-	        '#calculator_armor_body_main img {border:none;cursor:pointer;}' +
-	        '#calculator_armor_tt_items {display:none;z-index:999;position:absolute;width:auto;height:auto;background:#DDDDDD;border:1px black solid;padding:4px;}' +
-	        '</style>'
-        );
-        
     	/*Armor*/
     (function() {
         $('#calculator_armor').append(

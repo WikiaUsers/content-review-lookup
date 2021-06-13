@@ -15,7 +15,9 @@
             window.BackToTopFade :
             600,
         $button,
-        cc = $('.wds-community-header').css('background-color'),
+        cc = mw.config.get('skin') === 'fandomdesktop' ?
+        	$(':root').css('--theme-accent-color') :
+        	$('.wds-community-header').css('background-color'),
         theme;
  
     // Double-run protection

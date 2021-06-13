@@ -142,7 +142,7 @@
 		});
 		
 		$($(".tabberex-body").get().reverse()).each(function() {
-			$(this).children("div").css("display", "none");
+			$(this).children().css("display", "none");
 		});
 		
 		$($(".tabberex").get().reverse()).each(function() {

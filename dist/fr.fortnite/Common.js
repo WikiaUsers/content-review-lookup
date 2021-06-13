@@ -1,15 +1,21 @@
 // Texte d'information, de fr.lego.wikia.com/wiki/MediaWiki:Common.js
 var disclaimerNs=[0,1,4,5,6,7,14,15,110,111,400,401,500,502,503,-1];
 if (disclaimerNs.indexOf(wgNamespaceNumber) !== -1) {
-var legaltext="Le Wiki Francophone Fortnite est un site indépendant non sponsorisé par Epic Games.";
-var legaldiv='<div id="lcowiki_legal"><div style="clear:both"></div><br><center><div class="legaldisclaimer">'+legaltext+"</div></center></div>";
-$(".WikiaArticle").append(legaldiv);
-$(".legaldisclaimer").css({
-fontSize:"80%",
-border:"1px solid #009FFF",
-backgroundColor:"#F2F2F2",
-borderRadius:"8px"
-})};
+	var legaltext="Le Wiki Francophone Fortnite est un site indépendant non sponsorisé par Epic Games.";
+	var legaldiv='<div id="lcowiki_legal"><div style="clear:both"></div><br><center><div class="legaldisclaimer">'+legaltext+"</div></center></div>";
+	if (mw.config.get('skin') === 'fandomdesktop') 
+		$(".page-content").append(legaldiv);
+	else
+		$(".WikiaArticle").append(legaldiv);
+		
+	var backgroundColor = isThemeDark ? "#404040" : "#F2F2F2";
+	$(".legaldisclaimer").css({
+	  fontSize:"80%",
+	  border:"1px solid #009FFF",
+	  backgroundColor:backgroundColor,
+	  borderRadius:"8px"
+	})
+}
  
 // Fin du texte d'information
 
@@ -99,3 +105,13 @@ window.ajaxPages = [
     "Spécial:WikiActivity",
     "Spécial:Watchlist"
 ];
+
+// prevents existing tags from being hidden
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };
+
+window.ArticleRating = {
+    values: ['Très mauvais', 'Mauvais', 'Moyen', 'Bon', 'Excellent'],
+    starSize: [24, 24],
+    starColor: ['#ccc', '#ffba01'],
+    starStroke: '#000'
+}

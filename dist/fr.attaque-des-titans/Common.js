@@ -33,16 +33,10 @@ $(function spoilerLoad(){
 // **************************************************
 
  
-//Imported scripts
+/*//Imported scripts
 importArticles({
     type: "script",
     articles: [
-        "MediaWiki:Common.js/UserGroupMessages.js",
         "MediaWiki:Functions.js",
-        "MediaWiki:Gadget-Edittools.js",
-        "MediaWiki:Gadget-SigReminder.js",
-        "MediaWiki:Accueil.js", /* accueil */
-        "MediaWiki:Think.js",
-        "MediaWiki:Common.js/Other.js", /* Tout code important devra etre mis ici */
     ]
-});
+});*/

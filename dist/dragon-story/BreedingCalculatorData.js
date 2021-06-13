@@ -750,6 +750,38 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "android": {
+                "name": "Android",
+                "types": [
+                    "black",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "expired",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "andromeda": {
+                "name": "Andromeda",
+                "types": [
+                    "cosmic",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "anemone": {
                 "name": "Anemone",
                 "types": [
@@ -789,34 +821,18 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 2,
                 "offspringeligibility": "expired"
             },
-            "android": {
-                "name": "Android",
+            "annoyed": {
+                "name": "Annoyed",
                 "types": [
-                    "black",
-                    "green"
+                    "pink",
+                    "white"
                 ],
                 "environments": [
                     "dragon_islands"
                 ],
-                "incubation": "16_hours_16",
-                "rarity": 3,
-                "offspringeligibility": "expired",
-                "notes": [
-                    "feature"
-                ]
-            },
-            "andromeda": {
-                "name": "Andromeda",
-                "types": [
-                    "cosmic",
-                    "red"
-                ],
-                "environments": [
-                    "dragon_islands"
-                ],
-                "incubation": "15_hours_15",
-                "rarity": 3,
-                "offspringeligibility": "tournament",
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]
@@ -4826,6 +4842,19 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "notes": [
                     "feature"
                 ]
+            },
+            "confounded": {
+                "name": "Confounded",
+                "types": [
+                    "white",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15
             },
             "congo": {
                 "name": "Congo",
@@ -19983,6 +20012,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "panic": {
+                "name": "Panic",
+                "types": [
+                    "purple",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "pansy": {
                 "name": "Pansy",
                 "types": [
@@ -28997,6 +29042,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "dragon_islands"
                 ],
                 "incubation": "25_hours_25",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "trepidation": {
+                "name": "Trepidation",
+                "types": [
+                    "purple",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
                 "rarity": 3,
                 "offspringeligibility": "leaderboard",
                 "notes": [

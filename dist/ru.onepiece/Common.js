@@ -4,11 +4,51 @@
 // == Imports ==
 // See MediaWiki:ImportJS
 
-var MultiUploadoption = {
-    max: 30
-};
 
-// ============================================================
+// == Всплывающая подсказка красных ссылок ==
+mw.loader.using("mediawiki.api").then(
+  function() {
+	document.querySelectorAll("a.new").forEach(
+	    function (i) {
+	        i.setAttribute("title", decodeURI(new mw.Uri(i.href).path.replace(mw.config.get("wgScriptPath"), "").replace("/wiki/", "").replace(/_/g, " ")));
+	    }
+	);
+  }
+);
+
+// == Настройка гаджетов ==
+nkch_gst_gadgets = [{
+    name: "RWA", // название гаджета с MediaWiki:Gadget-Название; обязательно
+    title: "Недавняя вики-деятельность", // Название в меню
+    description: "Недавняя вики-деятельность" // Описание гаджета в меню при наведении
+}, {
+    name: "ModernProfile",
+    title: "Современный профиль",
+    description: "Современный профиль"
+}, {
+    name: "UWStyle",
+    title: "Единый стиль вики",
+    description: "Общее оформление вики-проектов"
+}, {
+    name: "RemoveCatSpoiler",
+    title: "Прежние Категории",
+    description: "Прежние Категории"
+}];
+
+// == "Категории" ==
+	// Перемещает ссылки, удаляя ненужный контент
+	$(function() {
+		$(".mw-normal-catlinks ul").replaceWith(
+			$(".mw-normal-catlinks").contents()
+		);
+		$(".mw-normal-catlinks").replaceWith(
+			$(".mw-normal-catlinks").contents()
+		);
+		$("#mw-hidden-catlinks ul").replaceWith(
+		    $("#mw-hidden-catlinks").contents()
+		);
+	});
+
 // == Автовыведения имени посетителя ==
 (function () { 
 if ( !wgUserName ) return; 

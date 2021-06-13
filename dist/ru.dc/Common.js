@@ -33,19 +33,19 @@ $(function() {
     if ( mw.config.get( 'wgVersion' ) !== '1.19.24' && $( '#title-eraicons' ).length ) {
         $( '.page-header__contribution > div' ).first().append( $( '#title-eraicons' ).show() );
     } else if ( $( '.wds-community-header' ).length ) {
-		$( '#PageHeader' ).prepend(
+		$( '.page-header' ).prepend(
 		$( '#icons' ).attr( 'style', 'position: absolute; right: 70px;' )
 	);
 	} else {
-		$( '.WikiaPageHeader' ).append( $( '#icons' ) );
-		$( '#icons' ).css( { 'position' : 'absolute', 'right' : '5.1em', 'bottom' : '-2em' } ).show();
+		$( '.page-header' ).append( $( '#icons' ) );
+		$( '#icons' ).css( { 'position' : 'absolute', 'bottom' : '-2em' } ).show();
 }
 });
 
 /* Делает активной последнюю вкладку панели */
 $(document).ready(function () {
-    $('.pi-theme-lastpanel .pi-section-tab.pi-section-active, .pi-theme-lastpanel .pi-section-content.pi-section-active').removeClass('pi-section-active')
-    $('.pi-theme-lastpanel .pi-section-tab:last-child, .pi-theme-lastpanel .pi-section-content:last-child').addClass('pi-section-active')
+    $('.pi-theme-lastpanel .wds-tabs__tab.wds-is-current, .pi-theme-lastpanel .wds-tab__content.wds-is-current').removeClass('wds-is-current')
+    $('.pi-theme-lastpanel .wds-tabs__tab:last-child, .pi-theme-lastpanel .wds-tab__content:last-child').addClass('wds-is-current')
 });
 
 /* Добавление кнопки викификатора */

@@ -1,13 +1,3 @@
-/* FloatingTOC https://dev.fandom.com/wiki/FloatingToc*/
-window.FloatingToc = {
-    speed: 500,
-    auto: false,
-    enableKey: false
-};
-
-
-
-
 /* DiscussionTemplates https://dev.fandom.com/wiki/DiscussionTemplates*/
 window.DiscussionTemplates = {
     templates: {

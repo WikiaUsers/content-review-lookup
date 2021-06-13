@@ -1,24 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/* Rail DiscordBanner */
- 
-window.DiscordBannerSettings = {
-    bannerStyle: '3',
-    inviteLink: 'rQj4CMp',
-    prependToRail: false,
-    noRail: false
-};
-
-
-/* FloatingTOC https://dev.fandom.com/wiki/FloatingToc*/
-window.FloatingToc = {
-    speed: 500,
-    auto: false,
-    enableKey: false
-};
-
-
-
 
 /* DiscussionTemplates https://dev.fandom.com/wiki/DiscussionTemplates*/
 window.DiscussionTemplates = {

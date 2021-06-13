@@ -17,9 +17,21 @@
 	
 	function sortCategDOMElements(){
         
-		var headerCategories = $('.page-header__categories-links')[0],
-			headerCategoriesOthers = $('.page-header__categories-dropdown-content ul:first li'),
-			categories = $('.categories')[0],            
+		var skinCatLists = {
+				oasis : { 
+					headCat: '.page-header__categories-links',
+					headCatOth: '.page-header__categories-dropdown-content ul:first li',
+					categories: '.categories'
+				},
+				fandomdesktop : { 
+					headCat: '.page-header__categories',
+					headCatOth: '.page-header__categories-dropdown-content ul:first li',
+					categories: '.categories'
+				}
+			},
+			headerCategories = $(skinCatLists[mw.config.get('skin')].headCat)[0],
+			headerCategoriesOthers = $(skinCatLists[mw.config.get('skin')].headCatOth),
+			categories = $(skinCatLists[mw.config.get('skin')].categories)[0],          
 			headerCategList = [],
 			categList = [];
         

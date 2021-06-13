@@ -35,6 +35,11 @@
 			page: 'Template:ActivityFeed',
 			styles: 'MediaWiki:ActivityFeedMimic.css'
 		},
+		
+		AutoHeadingNumber: {
+			page: 'AutoHeadingNumber',
+			styles: 'MediaWiki:AutoHeadingNumber.css',
+		},
 
         BackToTopButton: {
             page: 'BackToTopButton',
@@ -70,6 +75,11 @@
             page: 'CollapsibleInfobox',
             scripts: 'MediaWiki:CollapsibleInfobox/code.js',
             styles: 'MediaWiki:CollapsibleInfobox.css'
+        },
+        
+        CollapsiblePageTools: {
+            page: 'CollapsiblePageTools',
+            scripts: 'MediaWiki:CollapsiblePageTools.js'
         },
 
         Contextlink: {

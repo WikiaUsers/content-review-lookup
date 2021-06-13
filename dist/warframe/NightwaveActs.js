@@ -18,7 +18,17 @@ const REP_IMG_URL = WIKI_IMG_URL + "9/92/ReputationLargeBlack.png/" +
     "revision/latest/scale-to-width-down/20?cb=20141029201703";
 // Contains JSON map to be fetched
 const IMG_MAP_URL = "https://warframe.fandom.com/" +
-    "api.php?action=parse&page=Module:NightwaveActs&format=json";
+    "api.php?action=parse&page=Module:NightwaveActs&format=json&prop=wikitext";
+
+// Page that user is currently on
+const NW_PAGE_NAME = mw.config.get("wgPageName");
+
+// Only run this code on these pages
+const WHITELIST_PAGES = [
+	"Template:NightwaveActs",
+	"Nightwave",
+	"Nightwave/Acts_Currently_Available",
+];
 
 const ActTypeEnum = {
     "DAILY": 1,
@@ -27,26 +37,19 @@ const ActTypeEnum = {
 };
 Object.freeze(ActTypeEnum); // For immutability
 
-const NW_PAGE_NAME = mw.config.get("wgPageName");
-
-// Only run this code on these pages
-if (NW_PAGE_NAME === "Template:NightwaveActs" || NW_PAGE_NAME === "Nightwave" ||
-    NW_PAGE_NAME === "Nightwave/Acts_Currently_Available") {
+// Actual entry point
+if (WHITELIST_PAGES.includes(NW_PAGE_NAME)) {
     nwActTableInit();
 }
 
 // Initializes fetching and building process for Nightwave act table.
 function nwActTableInit() {
     Promise.all([ getActData(API_URL), getImageMap(IMG_MAP_URL) ])
-    .then(function(values) {
+    .then(function (values) {
         // DOM preparation and table building done here
-        prepAndBuild(values[0], values[1]).then(function(value) {
-        	console.log(value);
-        	 // Calling countdownInit() from MediaWiki:Countdown.js start countdown timers
-        	countdownInit();
-        });
+        prepAndBuild(values[0], values[1]);
     })
-    .catch(function(error) {
+    .catch(function (error) {
         console.error(error);
     });
 }
@@ -58,24 +61,18 @@ function nwActTableInit() {
 function getImageMap(url) {
     return fetch(url, { mode: "same-origin" })
         .then(function (response) {
-            console.log(response);
+            console.log("GET JSON image map in Module:NightwaveActs:", response);
             return response.json();
         })
         .then(function (data) {
-            console.log("JSON data of Nightwave act icons:");
-            console.log(data);
-            // Type string, getting what's in code block in page
-            var jsonImgMap = data.parse.text["*"];
-            // Actual data is encapsulated between these delimiters
+            // Type string, getting what is in code block on page
+            var jsonImgMap = data.parse.wikitext["*"];
             jsonImgMap = jsonImgMap.substring(
-                jsonImgMap.indexOf("JSON START") + 10, jsonImgMap.indexOf("JSON END")
+                jsonImgMap.indexOf("--[[") + 4, jsonImgMap.indexOf("]]--")
             );
-            // Removing any trace HTML tags so string can be converted to JSON
-            jsonImgMap = jsonImgMap.replace(/<[^>]*>/g, "");
-            // Replacing HTML &quot; with double quotation marks
-            jsonImgMap = jsonImgMap.replace(/(&quot;)/g, "\"");
-            console.log(jsonImgMap);
-            return JSON.parse(jsonImgMap);
+            jsonImgMap = JSON.parse(jsonImgMap);
+            console.log("JSON image map in Module:NightwaveActs:", jsonImgMap);
+            return jsonImgMap;
         })
         .catch(function (error) {
             console.log(error);
@@ -87,12 +84,11 @@ function getImageMap(url) {
 // Returns a Promise that contains the Nightwave act data if fetch was successful
 function getActData(url) {
     return fetch(API_URL).then(function (response) {
-                console.log(response);
+                console.log("GET Nightwave act data from " + API_URL + ":", response);
                 return response.json();
             })
             .then(function (actDataJSON) {
-                console.log("JSON data of current Nightwave acts:");
-                console.log(actDataJSON);
+                console.log("JSON data of current Nightwave acts:", actDataJSON);
                 return actDataJSON;
             })
             .catch(function (error) {
@@ -104,22 +100,11 @@ function getActData(url) {
 // Prepares DOM for table creation and building resultant act tables.
 function prepAndBuild(actDataJSON, jsonImgMap) {
     $(document).ready(function () {
-        console.log("Ready to build Nightwave act table.");
+        console.info("Ready to build Nightwave act table.");
         // These ids will be on Template:NightwaveActs page
         var $resultDaily = $(document.getElementById("nightwave_daily"));
         var $resultWeekly = $(document.getElementById("nightwave_weekly"));
         var $resultElite = $(document.getElementById("nightwave_elite"));
-
-        // Adding starting div tags for each span element within tabber element
-        $resultDaily.append($([
-            "<div class=\"daily\">"
-        ].join("\n")).prop("outerHTML"));
-        $resultWeekly.append($([
-            "<div class=\"weekly\">"
-        ].join("\n")).prop("outerHTML"));
-        $resultElite.append($([
-            "<div class=\"elite\">"
-        ].join("\n")).prop("outerHTML"));
 
         // Work with JSON data here
         actDataJSON.activeChallenges.forEach(function (actJSON) {
@@ -127,7 +112,6 @@ function prepAndBuild(actDataJSON, jsonImgMap) {
             var actImgURL;
             var tabIDAttr;
             var rowIDAttr;
-            var classAttr;
 
             if (actJSON.isDaily) {
                 actType = ActTypeEnum.DAILY;
@@ -137,45 +121,40 @@ function prepAndBuild(actDataJSON, jsonImgMap) {
                 actType = ActTypeEnum.ELITE;
             }
 
-            // Initializing tabIDAttr, rowIDAttr, classAttr, and actImgURL
+            // Initializing tabIDAttr, rowIDAttr, and actImgURL
             switch (actType) {
                 case ActTypeEnum.DAILY:
                     tabIDAttr = "nightwave_daily";
                     rowIDAttr = "daily_acts";
-                    classAttr = "daily";
                     actImgURL = WIKI_IMG_URL + jsonImgMap.daily[actJSON.title];
                     break;
 
                 case ActTypeEnum.WEEKLY:
                     tabIDAttr = "nightwave_weekly";
                     rowIDAttr = "weekly_acts";
-                    classAttr = "weekly";
                     actImgURL = WIKI_IMG_URL + jsonImgMap.weekly[actJSON.title];
                     break;
 
                 case ActTypeEnum.ELITE:
                     tabIDAttr = "nightwave_elite";
                     rowIDAttr = "elite_acts";
-                    classAttr = "elite";
                     actImgURL = WIKI_IMG_URL + jsonImgMap.elite[actJSON.title];
                     break;
             }
 
-            buildTable(actType, tabIDAttr, rowIDAttr, classAttr);
+            buildTable(actType, tabIDAttr, rowIDAttr);
             buildTableRow(actType, actImgURL, tabIDAttr, rowIDAttr, actJSON);
         });
+        console.info("Nightwave act table successfully built.");
     });
-    return Promise.resolve("Table successfully built.");
 }
 
 // Adds table elements.
-function buildTable(actType, tabIDAttr, rowIDAttr, classAttr) {
+function buildTable(actType, tabIDAttr, rowIDAttr) {
     // Add table if a div element with id associated with act type is not found
     // One table per act type
-    if ($(document.getElementById(tabIDAttr))
-        .find("#" + rowIDAttr).length === 0) {
-        $(document.getElementById(tabIDAttr))
-            .find("." + classAttr).append($("<div>", {
+    if ($(document.getElementById(tabIDAttr)).find("#" + rowIDAttr).length === 0) {
+        $(document.getElementById(tabIDAttr)).append($("<div>", {
                 id: rowIDAttr,
                 append: [
                     $("<p>"),
@@ -190,8 +169,7 @@ function buildTable(actType, tabIDAttr, rowIDAttr, classAttr) {
                                             $("<th>").text("Icon"),
                                             $("<th>").text("Name & Description"),
                                             $("<th>").text("Reward"),
-                                            (actType === ActTypeEnum.DAILY) ? $("<th>")
-                                                .text("Time Remaining") : null,
+											$("<th>").text("End Date")
                                         ]
                                     })
                                 ]
@@ -256,9 +234,11 @@ function buildTableRow(actType, actImgURL, tabIDAttr, rowIDAttr, actJSON) {
                         $("<b>").text(actJSON.reputation.toLocaleString())
                     ]
                 }),
-                // Additional classes are for countdown timer (MediaWiki:Countdown.js,
-                // see Template:Countdown for example usage)
-                (actType !== ActTypeEnum.DAILY) ? null : buildTimerElements(actJSON.expiry)
+                $("<td>", {
+                    append: [
+                    	$("<b>").text(parseISOString(actJSON.expiry))
+                    ]
+                })
             ]
         }));
 }
@@ -269,46 +249,6 @@ function parseISOString(s) {
     var arr = s.split(/\D+/);
     var date = new Date(Date.UTC(arr[0], --arr[1], arr[2], arr[3], arr[4],
         arr[5], arr[6]));
-    return date.toLocaleString();
-}
-
-// Adds countdown elements to page
-function buildTimerElements(expiry) {
-	return $("<td>").append($("<div>", {
-        align: "center",
-        append: [
-            $("<strong>", {
-                append: [
-                    $("<span>", {
-                        class: "customcountdown",
-                        style: "font-size:14px; display:visible;",
-                        append: [
-                            $("<span>", { style: "display:none;", class: "seedDate" })
-                                .text(parseISOString(expiry)),
-
-                            $("<span>", { style: "display:none;", class: "bText" }).text(""),
-                            $("<span>", { style: "display:none;", class: "bDelayText" }).text(""),
-
-                            $("<span>", { class: "timer" }).text(""),
-
-                            $("<span>", { style: "display:none;", class: "aText" }).text(""),
-                            $("<span>", { style: "display:none;", class: "aDelayText" }).text(""),
-
-                            $("<span>", { style: "display:none;", class: "loopTime" }).text("3D"),
-                            $("<span>", { style: "display:none;", class: "loopLimit" }).text("1"),
-                            $("<span>", { style: "display:none;", class: "endText" }).text("Expired"),
-                            $("<span>", { style: "display:none;", class: "delayTime" }).text(""),
-                            $("<span>", { style: "display:none;", class: "delayDisplay" }).text(""),
-                            $("<span>", { style: "display:none;", class: "dst" }).text(""),
-                            $("<span>", { style: "display:none;", class: "dateFormat" })
-                                .text("D hh mm ss"),
-                            $("<span>", { style: "display:none;", class: "dateLabels" })
-                                .text("single"),
-                        ]
-                    })
-                ]
-            })
-        ]
-    }));
+    return date.toLocaleString() + " (" + (new window.Intl.DateTimeFormat().resolvedOptions().timeZone) + ")";
 }
 /* END Cephalon Scientia Nightwave Current Acts */

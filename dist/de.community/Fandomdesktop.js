@@ -1,0 +1,1 @@
+if (mw.config.get("wgNamespaceNumber") == "118") $('.page-header').after('<a href="https://community.fandom.com/de/wiki/Rechte-Antrag">Rechte-Antrag</a>');

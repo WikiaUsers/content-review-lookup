@@ -21,16 +21,26 @@
 
     if (mw.config.get('skin') === 'fandomdesktop') {
         $(document).on('keyup', '.SearchInput-module_input__1mP-U', function() {
-	        var txt = $(this).val(),
-		        m = txt.match(/^\!([a-z]+) /),
-		        e = this;
+	        var old = $(this).val(),
+                txt,
+		        m = old.match(/^\!([a-z]+) /),
+		        $e = $(this),
+                interval, times = 0;
 	
             if (m && namespaces.hasOwnProperty(m[1])) {
-	    		txt = namespaces[m[1]] + ":" + txt.substr(m[1].length + 2);
-                // This timeout is way too long but without it another function in the queue reverts the change
-			    setTimeout(function() {
-                    $(e).val(txt);
-                }, 1000);
+	    		txt = namespaces[m[1]] + ":" + old.substr(m[1].length + 2);
+                $e.val(txt);
+                // Fighting some global code that changes it back
+				interval = setInterval(function() {
+				    if ($e.val() === old) {
+				        $e.val(txt);
+				        times = 0;
+				        clearInterval(interval);
+				    } else if (++times >  10) {
+				        times = 0;
+				        clearInterval(interval);
+				    }
+				}, 100);
 		    }
 	    });
     } else {

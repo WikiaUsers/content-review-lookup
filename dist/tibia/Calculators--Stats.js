@@ -7,19 +7,6 @@ $(function() {
             $(o).prev().prev().val(parseInt($(o).prev().prev().val(), 10) + 1);
             $(o).prev().prev().keyup();
         };
-    $('body:first').append(
-        '<style type="text/css">' +
-        '#calculators_container{width:100%;}' +
-        '#calculators_container>div {text-align:center;border:1px solid #bfcfcf; background-color:#f9fcff;padding:8px 10px;margin: 0 auto;}' +
-        '#calculator_statsrs {display:block;width:296px;position:relative;}' +
-        '#calculator_statsrs div {position:absolute;color:#bfbfbf;font:bold 14px Tahoma;}' +
-        '#calculator_statsr1 {top:64px;right:30px;}' +
-        '#calculator_statsr2 {top:90px;right:30px;}' +
-        '#calculator_statsr3 {top:30px;left:165px;}' +
-        '#calculator_statsr4 {top:30px;left:23px;}' +
-        '#calculator_exp {width:400px;}' +
-        '#calculator_stats {width:300px;}'
-    );
     /*Exp*/
     (function() {
         $('#calculator_exp')

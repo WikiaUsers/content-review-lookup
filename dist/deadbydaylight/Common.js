@@ -21,6 +21,7 @@ $(function(){
 		$('#inceptionPerks' + i).click(GetInceptionPerksHandler(i));
 	}
 	/**************************************************************************/
+	CreateEditSourceLink();
 	SetAppropriateDimensions();
 	SetHeadersShadows();
 	$.each($(".mw-collapsible-text"), function(index, element){
@@ -110,7 +111,17 @@ function SetAppropriateDimensionsCosts(){
 	});
 }
 
-
+function CreateEditSourceLink(){
+	console.log('CreateEditSourceLink Executed');
+	var link = document.querySelectorAll('[data-tracking-label="ca-edit-dropdown"]')[0].getAttribute('href');
+	var vanillaEdit = document.querySelectorAll('[data-tracking-label="ca-ve-edit"]')[1];
+	var editSourceNode = document.createElement('a');
+	editSourceNode.appendChild(document.createTextNode('Edit Source'));
+	editSourceNode.setAttribute('href', link);
+	editSourceNode.setAttribute('class', 'wds-button wds-is-text page-header__action-button has-label');
+	
+	vanillaEdit.parentNode.insertBefore(editSourceNode, vanillaEdit.nextSibling);
+}
 /*********************************************************************************************/
 /*********************************************************************************************/
 /*********************************************************************************************/

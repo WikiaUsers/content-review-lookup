@@ -1,13 +1,4 @@
 $(function() {
-    $('body:first').append(
-        '<style>' +
-        '#calculators_container>div {text-align:center;border:1px solid #bfcfcf; background-color:#f9fcff;padding:8px 10px;margin: 0 auto;}' +
-        '#calculator_exerciseweapons {width:690px;}' +
-        '#calculator_exerciseweapons input {margin: 0px 10px 0px 10px;}' +
-        '#calculator_reakskill {width:550px;}' +
-        '#calculator_reakskill input {margin: 0px 10px 0px 10px;}' +
-        '</style>'
-    );
     var loyalty_bonus = function(points) {
             var bonus = Math.floor(points / 360) * 0.05 + 1;
             if (bonus > 1.5) {

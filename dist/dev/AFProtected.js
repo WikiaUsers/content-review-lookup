@@ -22,13 +22,15 @@
                    !(
                        p.lastIndexOf('.js') === p.length - 3 &&
                        p !== 'MediaWiki:Common.js' &&
-                       p !== 'MediaWiki:Wikia.js'
+                       p !== 'MediaWiki:Wikia.js' &&
+                       p !== 'MediaWiki:Fandomdesktop.js'
                    ) &&
                    // a whitelisted CSS,
                    !(
                        p.lastIndexOf('.css') === p.length - 4 &&
                        p !== 'MediaWiki:Common.css' &&
-                       p !== 'MediaWiki:Wikia.css'
+                       p !== 'MediaWiki:Wikia.css' &&
+                       p !== 'MediaWiki:Fandomdesktop.css'
                    ) &&
                    // a whitelisted Custom-
                    (

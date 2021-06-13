@@ -949,9 +949,9 @@ $( fillEditSummariesVisualEditor );
 $( function eraIconsOasis() {
     if ( $( '#title-eraicons' ).length ) {
     	if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
-    		$( '.page-header__actions' ).first().append( $( '#title-eraicons' ).show() );
+    		$( '.page-header__actions' ).first().prepend( $( '#title-eraicons' ).show() );
     	} else {
-    	    $( '.page-header__contribution > div' ).first().append( $( '#title-eraicons' ).show() );
+    	    $( '.page-header__contribution > div' ).first().prepend( $( '#title-eraicons' ).show() );
     	}
     }
 } );

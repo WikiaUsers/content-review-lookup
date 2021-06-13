@@ -7,7 +7,7 @@ mediaWiki.loader.using('mediawiki.api', function () {
 			page: 'Vorlage:TopBoxText',
 			prop: 'text'
 		}).done(function (json) {
-			$('#WikiaRail').append('<section class="module">' +  json.parse.text['*'] + '</section>');
+			$('#WikiaRail').append('<section id="top-box-text" class="rail-module">' +  json.parse.text['*'] + '</section>');
 		});
 	}
 });

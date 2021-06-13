@@ -21,7 +21,8 @@
                        i18n.msg('text').plain();
             $(
                 '.UserProfileActionButton > .wikia-menu-button > ul,' +
-                '.page-header__contribution-buttons .wds-list'
+                '.page-header__contribution-buttons .wds-list,' +
+                '.page-header__actions .wds-list'
             ).first().append(
                 $('<li>', {
                     id: 'ca-intro'

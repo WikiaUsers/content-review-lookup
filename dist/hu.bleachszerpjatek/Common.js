@@ -23,3 +23,13 @@ ajaxPages = [
     'Special:NewFiles',
     'Special:AbuseLog'
 ];
+
+/***User Tags***/
+window.UserTagsJS = {
+    modules: {},
+    tags: {
+        // group: { associated tag data }
+        bureaucrat: 'Sōtaichō',
+        sysop: 'Taichō',
+    }
+};

@@ -245,7 +245,7 @@
       : $(".page-header__contribution > div").first();
 
     if ($top.length) {
-      $target.append($top.show());
+      $target.prepend($top.show());
     }
   };
 
@@ -391,15 +391,15 @@
     if ($("#wpSummaryLabel").length) {
       this.buildSummariesDropdown();
     }
-
-    // Load tools restricted to Administrators
-    if (new RegExp("sysop").test(mw.config.get("wgUserGroups").join(" "))) {
-      this.loadAdminTools();
-    }
     
     // Situate Template:Top in page header (load page tools 1st)
     if ($("#title-top").length) {
       this.situateTopTemplate();
+    }
+
+    // Load tools restricted to Administrators
+    if (new RegExp("sysop").test(mw.config.get("wgUserGroups").join(" "))) {
+      this.loadAdminTools();
     }
   };
 

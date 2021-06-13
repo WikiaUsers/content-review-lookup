@@ -43,10 +43,3 @@ $(function() {
 	});
 });
 // END of Template:Tabs
-
-/* AddRailModule on top */
-window.AddRailModule = [
-    {page: 'Template:Today', prepend: true},
-    {page: 'Template:Events', prepend: true},
-    {page: 'Template:RailModule', prepend: true},
-];

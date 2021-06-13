@@ -5,3 +5,18 @@ window.SpoilerAlertJS = {
     no: 'Não, ainda não',
     fadeDelay: 1600
 };
+importScriptPage('SpoilerAlert/code.js', 'dev');
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WikiActivity.js',
+        'u:dev:MediaWiki:AddBlockUserTag/code.js',
+        'u:dev:MediaWiki:AjaxRename/code.js',
+        'u:dev:MediaWiki:DiscussionsFeed.js',
+        'u:dev:MediaWiki:UploadMultipleFiles.js',
+    ]
+});
+
+// Pop-ups em Referências
+importScriptPage('ReferencePopups/code.js', 'dev');

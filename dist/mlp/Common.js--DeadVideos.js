@@ -42,8 +42,8 @@ $(function() {
                     });
                 }
 
-                if (data['query-continue']) {
-                    getList(data['query-continue'].categorymembers.gcmcontinue);
+                if (data.continue) {
+                    getList(data.continue.gcmcontinue);
                 } else {
                     pending -= 1;
                     if (pending === 0) {
@@ -70,11 +70,17 @@ $(function() {
 
         pending = IDlists.length;
         $.each(IDlists, function(index, value) {
-            $.getJSON('https://www.googleapis.com/youtube/v3/videos?part=status&id=' + 
+            $.getJSON('https://www.googleapis.com/youtube/v3/videos?part=status,contentDetails&id=' + 
               value.join(',') + '&key=AIzaSyB9m40QxbD9iq9zM9_eXiBfmwJ3dZrvdgg', function(data) {
                 $.each(data.items, function(index, value) {
-                    if (value.status.uploadStatus !== 'rejected') {
-                        //console.log('Deleting ' + videoList[value.id]);
+                    if (
+                    	value.status.uploadStatus !== 'rejected' &&
+                    	(// number of ISO country codes
+                    		value.contentDetails.regionRestriction && value.contentDetails.regionRestriction.blocked ?
+                    		value.contentDetails.regionRestriction.blocked.length < 249 :
+                    		true
+                    	)
+                    ) {
                         delete videoList[value.id];
                     }
                 });

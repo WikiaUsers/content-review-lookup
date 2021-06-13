@@ -30,7 +30,7 @@
             this.i18n = i18n;
             this.api = new mw.Api();
             this.modal = this.createModal();
-            $('.page-header__contribution-buttons .wds-list, .UserProfileActionButton .WikiaMenuElement').append(
+            $('.skin-fandomdesktop .page-header .page-header__actions .wds-dropdown__content > ul, .page-header__contribution-buttons .wds-list, .UserProfileActionButton .WikiaMenuElement').append(
                 $('<li>').append(
                     $('<a>', {
                         click: $.proxy(this.click, this),

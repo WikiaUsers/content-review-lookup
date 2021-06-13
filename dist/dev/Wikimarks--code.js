@@ -32,6 +32,7 @@
     'use strict';
 
     var conf = mw.config.get([
+    		'skin',
             'stylepath',
             'wgPageName',
             'wgScriptPath',
@@ -115,34 +116,36 @@
             $this.parent('li').addClass('wds-dropdown-level-3');
         });
 
-        // add sticked to parent class for level 3 submenus
-        $.unique($menu.find('.wds-dropdown-level-2').parent()).each(function () {
-            $(this).children().each(function (i) {
-                var $this = $(this),
-                    $list;
+        if (conf.skin !== 'fandomdesktop') {
+            // add sticked to parent class for level 3 submenus
+	        $.unique($menu.find('.wds-dropdown-level-2').parent()).each(function () {
+	            $(this).children().each(function (i) {
+	                var $this = $(this),
+	                    $list;
 
-                if ($this.hasClass('wds-dropdown-level-2')) {
-                    $list = $this.find('> .wds-dropdown-level-2__content > .wds-list');
+	                if ($this.hasClass('wds-dropdown-level-2')) {
+	                    $list = $this.find('> .wds-dropdown-level-2__content > .wds-list');
 
-                    if (($list.children().length - 1) < i) {
-                        $this.addClass('wds-is-sticked-to-parent');
-                    }
-                }
-            });
-        });
+	                    if (($list.children().length - 1) < i) {
+	                        $this.addClass('wds-is-sticked-to-parent');
+	                    }
+	                }
+	            });
+	        });
 
-        // add sticked to parent class for level 4 submenus
-        $.unique($menu.find('.wds-dropdown-level-3').parent()).each(function () {
-            $(this).children().each(function (i) {
-                var $this = $(this);
+	        // add sticked to parent class for level 4 submenus
+	        $.unique($menu.find('.wds-dropdown-level-3').parent()).each(function () {
+	            $(this).children().each(function (i) {
+	                var $this = $(this);
 
-                if ($this.hasClass('wds-dropdown-level-3')) {
-                    if (($this.find('.wds-list').children().length - 1) < i) {
-                        $this.addClass('wds-is-sticked-to-parent');
-                    }
-                }
-            });
-        });
+	                if ($this.hasClass('wds-dropdown-level-3')) {
+	                    if (($this.find('.wds-list').children().length - 1) < i) {
+	                        $this.addClass('wds-is-sticked-to-parent');
+	                    }
+	                }
+	            });
+	        });
+		}
 
         // remove href from text converted to links
         $menu.find('a[href="' + conf.wgScriptPath + '/wiki/"]')
@@ -389,7 +392,7 @@
                     .addClass('wds-dropdown')
                     .append(
                         $('<div>')
-                            .addClass('wds-tabs__tab-label wds-dropdown__toggle')
+                            .addClass('wds-tabs__tab-label wds-dropdown__toggle first-level-item')
                             .append(
                                 $('<a>')
                                     .attr(

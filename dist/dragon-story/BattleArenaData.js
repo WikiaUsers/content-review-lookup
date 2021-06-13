@@ -413,6 +413,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"annoyed": {
+				"name": "Annoyed",
+				"colors": [
+					"pink",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"antique": {
 				"name": "Antique",
 				"colors": [
@@ -2428,6 +2436,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "unbreedable"
+			},
+			"confounded": {
+				"name": "Confounded",
+				"colors": [
+					"white",
+					"black"
+				],
+				"rarity": "common"
 			},
 			"congo": {
 				"name": "Congo",
@@ -10037,6 +10053,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"panic": {
+				"name": "Panic",
+				"colors": [
+					"purple",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"pansy": {
 				"name": "Pansy",
 				"colors": [
@@ -14476,6 +14500,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"white",
 					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"trepidation": {
+				"name": "Trepidation",
+				"colors": [
+					"purple",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},
