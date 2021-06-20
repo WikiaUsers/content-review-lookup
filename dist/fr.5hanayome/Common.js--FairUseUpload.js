@@ -52,7 +52,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'MultipleUpload') {
 		$desc.val('{{Information Fichier\n' +
                   '|Description   = \n' +
                   '|Source   = \n' +
-                  '|Personnages dans image   = \n' +
+                  '|Personnages dans l\'image   = \n' +
                   '|Autre Information   = \n' + '}}'
         );
     });
@@ -93,7 +93,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                         + '</tr>\n';
 	                }
 	                customRows += fromTemplate('Description', 'descriptionBox', true, '[REQUIS] Décrire ce qu’il se passe ou ce que ça représente.');
-	                customRows += fromTemplate('Source', 'sourceBox', true, '[REQUIS] D’où ça provient, le chapitre ou le numéro d’épisode exact.');
+	                customRows += fromTemplate('Source', 'sourceBox', false, '[S’IL Y A] D’où ça provient, le chapitre ou le numéro d’épisode exact.');
 	                customRows += fromTemplate('Personnages dans l’image', 'characterBox', false, '[S’IL Y A] Liste des Personnages sous forme de liens internes séparés par des virgules.');
 	                customRows += fromTemplate('Autre Information', 'otherinfoBox', false, '[OPTIONNEL] Toute autre information concernant l’image.');
 	                customRows += fromTemplate('Nom Fichier Wiki anglais', 'en5ToubunNoHanayomeFileBox', false, '[OPTIONNEL] Nom de l’image sur le The Quintessential Quintuplets Wiki. (Wiki anglais) (Ne pas saisir «&nbsp;File:&nbsp;»)');
@@ -113,15 +113,6 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                        $.showModal('Description Incomplète', 'Merci de renseigner une descriptioin correcte pour votre image. Décrire ce qu’il se produit et pourquoi est-elle importante.');
 	                        return false;
 	                    }
-	     
-	                    if (!$.trim($customRows.find('#sourceBox').val())) {
-	                        $.showModal('Source Incomplète', 'Merci de saisir la source de votre image (numéro exact de chapitre ou d’épisode).');
-	                        return false;
-	                    } else if (/google/i.test($customRows.find('#sourceBox').val())) {
-	                        $.showModal('Source Incorrecte', 'Google n’est pas une source valide pour les images. Merci de saisir le numéro exact de chapitre ou d’épisode d’où l’image provient.');
-	                        $customRows.find('#sourceBox').val('');
-	                        return false;
-	                    }
 
 	                    //Ajout du lien interwiki
 	                    var enfilename = "",
@@ -131,11 +122,11 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                        enfilename = '\n[[en:File:' + en5ToubunNoHanayomefile + ']]';
 	                    }
 	     
-	                    var strBuilder = template;
+	                    var strBuilder = "";
 	                    strBuilder += '{{Information Fichier\n';
 	                    strBuilder += '|Description = ' + $.trim($customRows.find('#descriptionBox').val()) + '\n';
 	                    strBuilder += '|Source = ' + $.trim($customRows.find('#sourceBox').val()) + '\n';
-	                    strBuilder += '|Personnages dans image = ' + $.trim($customRows.find('#characterBox').val()).replace(/\]\set\s/g, '], ') + '\n';
+	                    strBuilder += '|Personnages dans l\'image = ' + $.trim($customRows.find('#characterBox').val()).replace(/\]\set\s/g, '], ') + '\n';
 	                    strBuilder += '|Autre Information = ' + $.trim($customRows.find('#otherinfoBox').val()) + '\n';
 	                    strBuilder += '}}';
 	                    strBuilder += enfilename;

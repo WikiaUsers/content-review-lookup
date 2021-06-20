@@ -141,6 +141,11 @@
             styles: 'MediaWiki:EmeraldGlobalNav.css'
         },
         
+        ExternalIcons: {
+        	page: 'ExternalIcons',
+        	styles: 'MediaWiki:ExternalIcons.css'
+        },
+        
         FadedDropdowns: {
             page: 'FadedDropdowns',
             styles: 'MediaWiki:FadedDropdowns.css'
@@ -316,6 +321,11 @@
         NavboxBuilder: {
             selector: '.navbox .navbox-table-wrapper',
             styles: 'MediaWiki:Global_Lua_Modules/NavboxBuilder.css'
+        },
+        
+        OasisRevived: {
+            page: 'OasisRevived',
+            styles: 'MediaWiki:OasisRevived.css'
         },
         
         OrganizedNotifs: {
@@ -537,7 +547,7 @@
                 window.wikificator = window.wikificator || {};
                 window.wikificator.forced = true;
                 var t = $('#wpTextbox1').text();
-                $('#wpTextbox1').replaceWith($('<textarea>', {id: 'wpTextbox1', value: t, style: 'width:inherit;min-width:50%;height:inherit;min-height:100px;'}));
+                $('#wpTextbox1').replaceWith($('<textarea>', {id: 'wpTextbox1', value: t, text: t, style: 'width:inherit;min-width:50%;height:inherit;min-height:100px;'}));
             }
         },
       

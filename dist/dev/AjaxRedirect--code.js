@@ -1,4 +1,4 @@
-/*
+/**
  * AjaxRedirect
  * @description Redirects the current page quickly.
  * @author Ozuzanna
@@ -73,7 +73,7 @@
     function init(lang) {
         i18n = lang;
 
-        $('.page-header__contribution-buttons .wds-list').first().append(
+        $('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list').first().append(
             $('<li>').append(
                 $('<a>', {
                     css: {

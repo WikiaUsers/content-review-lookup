@@ -50,13 +50,17 @@ nkch_gst_gadgets = [{
 
 // Всплывающая подсказка красных ссылок
 mw.loader.using("mediawiki.api").then(
-  function() {
-	document.querySelectorAll("a.new").forEach(
-	    function (i) {
-	        i.setAttribute("title", decodeURI(new mw.Uri(i.href).path.replace(mw.config.get("wgScriptPath"), "").replace("/wiki/", "").replace(/_/g, " ")));
-	    }
-	);
-  }
+	function() {
+		if (mw.config.get("skin") !== "fandomdesktop"){
+			return;
+			} else {
+				document.querySelectorAll("a.new").forEach(
+				    function (i) {
+				        i.setAttribute("title", decodeURI(new mw.Uri(i.href).path.replace(mw.config.get("wgScriptPath"), "").replace("/wiki/", "").replace(/_/g, " ")));
+				    }
+				);
+			}
+		}
 );
 
 // выполнение при готовности страницы

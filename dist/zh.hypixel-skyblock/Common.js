@@ -418,9 +418,17 @@ window.lessOpts.push( {
 	load: [ 'MediaWiki:Common.css', 'MediaWiki:Custom-common.less' ],
 	// target page header
 	header: 'MediaWiki:Custom-css-header/common',
+} );
+
+window.lessConfig = window.lessConfig || [];
+window.lessConfig = {
+    // reloads the page after the target page has successfully been updated
+    reload: true,
+    // wraps the parsed CSS in pre tags to prevent any unwanted links to templates, pages or files
+    wrap: true,
 	// allowed groups
 	allowed: [ 'codeeditor' ],
-} );
+};
 
 //###########################################
 /* ===UserTagsJS=== (X02) */

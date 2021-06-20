@@ -222,7 +222,7 @@ window.hsbwiki = window.hsbwiki || {}
                         //     param.ooui.setDisabled(!show);
                         // }
                         // [skywiki] Yet another hacky way to get around not having ooui
-                        param.$ui.closest("tr").toggle(show);
+                        param.$ui.closest('tr').toggle(show);
                         param.$ui.prop('disabled', !show);
                         
                     }
@@ -485,7 +485,7 @@ window.hsbwiki = window.hsbwiki || {}
                     .val('Submit')
                     .prop('disabled', false);
 
-                $('#bodyContent, #WikiaArticle, .WikiaArticle')
+                $('#bodyContent, #WikiaArticle, .WikiaArticle, #content, .page-content')
                     .find('#' + this.result)
                         .empty()
                         .removeClass('jcError')
@@ -684,7 +684,7 @@ window.hsbwiki = window.hsbwiki || {}
                     
                     if ( Object.keys(param.toggles).length > 0 ) {
                         $input.on('change', function(){
-                            helper.toggle.call(self, this.checked ? "true" : "false", param.toggles);
+                            helper.toggle.call(self, this.checked ? 'true' : 'false', param.toggles);
                         });
                     }
 
@@ -892,7 +892,7 @@ window.hsbwiki = window.hsbwiki || {}
             $form.append(self.configError);
         }
 
-        $('#bodyContent, #WikiaArticle, .WikiaArticle')
+        $('#bodyContent, #WikiaArticle, .WikiaArticle, #content, .page-content')
             .find('#' + self.form)
                 .empty()
                 .append($form);

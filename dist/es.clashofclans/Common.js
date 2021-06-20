@@ -1,6 +1,6 @@
 if (wgPageName === 'Wiki_Clash_of_Clans_en_Español') {
   importScriptPage('MediaWiki:Portada.js');
-};
+}
 QuickCommentsreason = 'Añadir comentarios basura';
 QuickCommentsdeletereason = 'spam';
 QuickCommentsduration = '3 days';
@@ -11,7 +11,9 @@ importArticles({
 	articles: [
 		'u:dev:ExtendedNavigation/code.js',
 		'u:dev:QuickComments/code.js',
-		'w:c:clashofclans:MediaWiki:Common.js/ModeToggle.js'
+		'w:c:clashofclans:MediaWiki:Common.js/ModeToggle.js',
+		'MediaWiki:Common.js/Usernames.js',
+	    'u:dev:UserTags/code.js',
 		]
 });
 
@@ -81,12 +83,13 @@ importArticles({
     window.UserTagsJS = {
         modules: {},
         tags: {
-            heroicuser:  { u: 'Most Heroic Contributor' },
-            imageeditor: { u: 'Image Editor' },
-            sysop: { u: 'Administrator' },
-        	threadmoderator: { u: 'Discussions Moderator' },
-            retiredstaff: { u: 'Retired Staff', title: 'This former staff member is inactive.' },
-            inactive: { u: 'Retired Clasher', title: 'This user is inactive.' }
+            sysop: { u: 'Administrador' },
+            bureaucrat: { u: 'Burócrata'},
+        	threadmoderator: { u: 'Moderador de discusiones' },
+        	'content-moderator': { u:'Moderador de contenido'},
+        	rollback : { u:'Reversores'},
+            inactive: { u: 'Inactivo', title: 'This user is inactive.' },
+            newuser: {u: 'Nuevo usuario' }
         }
     };
     
@@ -117,39 +120,6 @@ importArticles({
         rollback:        ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator'],
         inactive:        ['retiredstaff']
     };
-    
-    UserTagsJS.modules.custom = {
-        'FaceBound': ['imageeditor', 'retiredstaff'],
-        
-        'Tonkaty': ['retiredstaff'],
-        'GorillaMan': ['retiredstaff'],
-        'Spottra': ['retiredstaff'],
-        'Badw0lf007': ['retiredstaff'],
-        'BlazedDragon': ['retiredstaff'],
-        'Dahimi': ['retiredstaff'],
-        'DarkDracolth': ['retiredstaff'],
-        'ElementalChaos': ['retiredstaff'],
-        'Eurus Allen': ['retiredstaff'],
-        'Infinity323': ['retiredstaff'],
-        'Japster': ['retiredstaff'],
-        'Jeager117': ['retiredstaff'],
-        'Kk9199': ['retiredstaff'],
-        'Lugia101101': ['retiredstaff'],
-        'Misso5': ['retiredstaff'],
-        'Misssupersal': ['retiredstaff'],
-        'Moseezator': ['retiredstaff'],
-        'O8el1x': ['retiredstaff'],
-        'Spirits of nature': ['retiredstaff'],
-        'Stan890': ['retiredstaff'],
-        'SynergyShade3624': ['retiredstaff'],
-        'Tparry': ['retiredstaff'],
-        'Utkar22': ['retiredstaff'],
-		'WitchHealer': ['retiredstaff'],
-		'Zazme Yakuza': ['retiredstaff'],
-        'Zegaloft12': ['retiredstaff'],
-        '2442cc': ['retiredstaff'],
-    };
-    
 
     if (typeof(window.SpoilerAlert) === 'undefined') {
         window.SpoilerAlert = {

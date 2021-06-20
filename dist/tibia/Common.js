@@ -254,13 +254,17 @@ $(function () {
 	/* End of Loot Statistics data + LootPercentages */
 	/* Show/hide Template:Scene when inside Template:Ability */
 	$('.creatureAbility').mouseover(function() {
-		if (window.innerWidth >= 1000 && $(this).find(".abilityScene").length > 0) {
+		if ($(this).find(".abilityScene").length > 0) {
 			$(this).addClass('activeAbility');
-			$(this).find(".abilityScene").css({'visibility':'visible'});	
+			var scene = $(this).find(".abilityScene");
+			scene.css({
+				'visibility':'visible',
+				'left': Math.min(0, $(window).width() - (scene.width() + scene.parent().offset().left)),
+			});	
 		}
 	});
 	$('.creatureAbility').mouseout(function() {
-		if (window.innerWidth >= 1000 && $(this).find(".abilityScene").length > 0) {
+		if ($(this).find(".abilityScene").length > 0) {
 			$(this).removeClass('activeAbility');
 			$(this).find(".abilityScene").css({'visibility':'hidden'});
 		}
@@ -791,8 +795,17 @@ $(function () {
   });
   $("#creature-resistance ul").append(arr);
 });
+/* Sort draft of new resistance table */
+$(function () {
+  var arr = $("#creature-resistance-d").children('.creature-resistance-el');
+  Array.prototype.sort.call(arr, function (a, b) {
+    return b.getAttribute("data-value") - a.getAttribute("data-value");
+  });
+  $("#creature-resistance-d").append(arr);
+});
 
 /* Fix pixel-art images */
+/*
 $('.page-content img, .WikiaMainContent img').on('load', function(){
     var srcvar = $(this).attr('src');
     if(srcvar && //$(this).parents('.map_image_crop').legnth == 0 &&
@@ -812,7 +825,7 @@ $('.page-content img, .WikiaMainContent img').on('load', function(){
   if(this.complete) { 
       $(this).trigger('load');
   }
-});
+});*/
 
 /* twbox - section headers behave as anchor links */
 $("#twbox h1, #twbox h2, #twbox h3, #twbox h4, #twbox h5, #twbox h6").each(function () {
@@ -832,3 +845,35 @@ $("#twbox h1, #twbox h2, #twbox h3, #twbox h4, #twbox h5, #twbox h6").each(funct
         });
     }
 }());
+
+function reload_imgs(target) {
+	var srcvar = $(target).attr('src');
+    if(srcvar &&
+    	!srcvar.endsWith('format=original') && srcvar.startsWith('https://static.wikia.nocookie.net')) {
+        if(srcvar.includes('?')) {
+            $(target).attr('src', srcvar+'&format=original');
+        } else {
+            $(target).attr('src', srcvar+'?format=original');
+        }
+    }
+    var srcset = $(target).attr('srcset');
+    if(srcset && !srcset.includes('format=original')) {
+    	var srcarray = srcset.split(' ');
+    	$(target).attr('srcset', srcarray[0]+'&format=original');
+    }
+    return;
+}
+$(window).load(function() {
+/* Fix pixel-art images */
+	document.body.addEventListener('load', function(event) {
+		const target = event.target;
+		if ($(target).is('img')) {
+		    reload_imgs(target);
+		}
+	}, true);
+	$('.page-content img, .WikiaMainContent img').each(function() {
+		if(this.complete) { 
+			reload_imgs(this);
+		}
+	});
+});

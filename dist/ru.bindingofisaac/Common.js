@@ -20,7 +20,6 @@ $(function(){
 window.AddRailModule = [
     { page: 'Template:Rail0', prepend: true },
     'Template:Rail1',
-    'Template:Rail2',
 ];
 
 if (mw.config.get('wgPageName') != 'Интерактивная_таблица_артефактов') {
@@ -112,3 +111,11 @@ function addLinkInActivityModule() {
         setTimeout(addLinkInActivityModule, 500)
 }
 addLinkInActivityModule()
+
+
+importArticles({
+    type: "script",
+    articles: [
+        'u:nkch:MediaWiki:DiscussionsRailModule.js'
+    ]
+});

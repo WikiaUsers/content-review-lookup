@@ -72,9 +72,11 @@ mw.loader.using(['mediawiki.api']).then(function() {
 				};
 				
 				forKeys(overrides, function(state, v) {
-					forKeys(v, function(_, list) {
+					forKeys(v, function(rank_, list) {
+						console.log(list);
 						list.forEach(function(user) {
 							overridesList[state].push(user);
+							if (groupsList[rank_].indexOf(user) === -1) groupsList[rank_].push(user);
 						});
 					});
 				});
@@ -84,38 +86,60 @@ mw.loader.using(['mediawiki.api']).then(function() {
 					
 					var temp = [];
 					var done = {};
+					
 					forKeys(groupsList, function(rank, users) {
-						var hidden = [];
 						var userList = [];
-						
+						var hidden = [];
+						var ruleType = [];
 						temp.push("\n/* " + rank + "*/");
-	
+						
 						function each(user) {
 							if (data.ignore.indexOf(user) !== -1) return;
 							if (user.includes(' ')) each(user.replace(/ /g, '_'));
 							var sel = data.selectors[state].replace(/\$1/, user);
 							
-							if (!done[user] && overridesList[state].indexOf(user) === -1) userList.push(sel);
-							else if (overrides[state][rank].indexOf(user) !== -1 && !done[user]) userList.push(sel + '/* for personal reasons */');
-							else if (!done[user] && overridesList[state].indexOf(user) !== -1) userList.push('/* ' + sel + ' /* for personal reasons */');
+							if (!done[user] && overridesList[state].indexOf(user) === -1) {
+								ruleType.push("normal");
+								userList.push(sel);
+							}
+							else if (overrides[state][rank].indexOf(user) !== -1 && !done[user]) {
+								ruleType.push("override");
+								userList.push(sel);
+							}
+							else if (!done[user] && overridesList[state].indexOf(user) !== -1) {
+								ruleType.push("overridden");
+								userList.push('/* ' + sel + ' */');
+							}
 							
 							if (done[user]) hidden.push('  ' + sel);
-	
+							
 							if (overridesList[state].indexOf(user) === -1) done[user] = true;
 						}
-	
+						
 						users.forEach(each);
-	
+						
+						var lastElem = -1;
+						for (var index = ruleType.length-1; index >= 0; index--) {
+							if (ruleType[index] === "normal" || ruleType[index] === "override") {
+								lastElem = index;
+								break;
+							}
+						}
+						for (index = 0; index < ruleType.length; index++) {
+							if (index === lastElem) userList[index] = userList[index].replace(/,(\s*)$/, '$1');
+							if (ruleType[index] === "override") userList[index] += " /* This selector is an override */";
+							if (ruleType[index] === "overridden") userList[index] += " /* This selector is overridden */";
+						}
+						
 						temp.push('/* ' + data.abbr[rank] + '\'s With higher ranks are removed\n' + hidden.join('\n') + '\n*/');
 						temp.push(userList.join('\n'));
-	
+						
 						var rule = objectToRule(data.styles[state]);
 						if (i === 0) rule = rule.replace(/\$1/, data.colors[rank][0]).replace(/\$2/, data.colors[rank][1]);
 						else if (i === 1) rule = rule.replace(/\$1/, data.imageUrls[rank]);
 						else if (i === 2) rule = rule.replace(/\$1/, data.wallText[rank]);
-	
-						var len = temp.push(rule);
-						temp[len-2] = temp[len-2].replace(/,(\s*)$/, '$1');
+						
+						temp.push((lastElem !== -1)? rule : ('/*\n'+rule+'\n*/'));
 					});
 					ret.push(temp.join('\n'));
 				});
@@ -123,7 +147,7 @@ mw.loader.using(['mediawiki.api']).then(function() {
 				def.resolve(ret.join('\n'));
 			}).catch(console.warn);
 		}).catch(console.warn);
-
+		
 		return def;
 	}
 
@@ -169,9 +193,12 @@ mw.loader.using(['mediawiki.api']).then(function() {
 					});
 				},
 				text: "Update Staff Colors",
+				title: "Update Staff Colors",
 			}),
+			title: "Update Staff Colors",
+			css: {
+				cursor: "pointer",
+			}
 		}));
 	}());
 });
-
-mw.hook('hsw.gadget.staffColorsUpdater').add(function(update) { update(); });

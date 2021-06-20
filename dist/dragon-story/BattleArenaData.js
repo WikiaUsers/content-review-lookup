@@ -597,6 +597,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"argument": {
+				"name": "Argument",
+				"colors": [
+					"red",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"aries": {
 				"name": "Aries",
 				"colors": [
@@ -3907,6 +3915,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"embarrassed": {
+				"name": "Embarrassed",
+				"colors": [
+					"blue",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"ember": {
 				"name": "Ember",
 				"colors": [
@@ -4847,6 +4863,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"fragile": {
+				"name": "Fragile",
+				"colors": [
+					"diamond",
+					"green"
+				],
+				"rarity": "unbreedable"
+			},
 			"fragrance": {
 				"name": "Fragrance",
 				"colors": [
@@ -5022,6 +5046,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "unbreedable"
+			},
+			"fury": {
+				"name": "Fury",
+				"colors": [
+					"red",
+					"white"
+				],
+				"rarity": "common"
 			},
 			"furylord": {
 				"name": "Furylord",
@@ -7607,6 +7639,13 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"dino",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"loathing": {
+				"name": "Loathing",
+				"colors": [
+					"green"
 				],
 				"rarity": "unbreedable"
 			},

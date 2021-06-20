@@ -9,7 +9,7 @@ const l10n = (function() {
 		},
 		'hovertext': {
 			'en': 'Change your skin setting from "$oldskinname$" to "$newskinname$" and reload the page',
-			'de': 'Deine Skin-Einstellung von „$oldskinname$“ to „$newskinname$“ ändern und die Seite neu laden',
+			'de': 'Deine Skin-Einstellung von „$oldskinname$“ zu „$newskinname$“ ändern und die Seite neu laden',
 			'fr': 'Change votre paramètre d\'apparence de "$oldskinname$" à "$newskinname$" et recharge la page'
 		},
 		'error': {

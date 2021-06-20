@@ -63,9 +63,10 @@ function bindTT() {
 // check to see if it is active then do it
 function ttMouseOver() {
   if (tooltipsOn) {
-    $("#bodyContent").append('<div id="tfb" class="htt"></div>');
+	$('#bodyContent').addClass('page-content');
+    $(".page-content").append('<div id="tfb" class="htt"></div>');
     $tfb = $("#tfb");
-    $("#bodyContent span.ajaxttlink").each(bindTT);
+    $(".page-content span.ajaxttlink").each(bindTT);
   }
 }
 

@@ -8,7 +8,7 @@
  * 
  */
 
-$('.wds-global-navigation__user-menu .wds-dropdown__content').addClass('wds-is-not-scrollable');
+$('.wds-global-navigation__user-menu .wds-dropdown__content, .global-navigation__bottom > .wds-dropdown > .wds-dropdown__content').addClass('wds-is-not-scrollable');
 mw.hook('dev.i18n').add(function (lib) {
     lib.loadMessages('CodeLinksDropdown').then(function (i18n) {
         var config = mw.config.get([
@@ -22,7 +22,10 @@ mw.hook('dev.i18n').add(function (lib) {
             username = config.wgUserName,
             usernamePath = namespacePath + username;
             
-        $('.wds-global-navigation__user-menu > .wds-dropdown__content > ul.wds-list > li:nth-child(2)').after(
+        $([
+			'.wds-global-navigation__user-menu > .wds-dropdown__content > ul.wds-list > li:nth-child(2)',
+			'.global-navigation__bottom > .wds-dropdown > .wds-dropdown__content > ul.wds-list > li:nth-child(1)'
+		].join(', ')).after(
             '<li class="wds-is-stickied-to-parent wds-dropdown-level-2">'+
                 '<a href="#" class="wds-dropdown-level-2__toggle" data-id="codelinks">' +
                     i18n.msg('codelinks').escape() + 

@@ -3,7 +3,29 @@
 	window.quickPurgeLoaded = true;
 
 	var indexPath = mw.config.get('wgScript');
-	$(document.body).on('click', 'a[href*="action=purge"]', function(e) {
+	
+	function purgePage(page) {
+		new mw.Api().post({
+			action: 'purge',
+			forcelinkupdate: true,
+			titles: page,
+		}).then(function(res) {
+			console.log(page);
+			console.log('Purge Result:', res);
+			location.replace(mw.util.getUrl(page));
+		}, function(_, e) {
+			console.warn('API Error in purging the page \"' + page + '\":', e.error.info);
+		});
+	}
+	
+	$(function() {
+		if (mw.config.get("wgAction") == "purge") {
+			var page = mw.config.get("wgPageName");
+			purgePage(page);
+		}
+	});
+	
+	$(document.body).on('click', 'a[href*="action=purge"], a[href*="action=Purge"]', function(e) {
 		// Don't activate if meta keys are used
 		if (e.ctrlKey || e.altKey || e.shiftKey) return;
  
@@ -25,16 +47,7 @@
 
 		e.preventDefault();
 		e.stopImmediatePropagation();
-
-		new mw.Api().post({
-			action: 'purge',
-			forcelinkupdate: true,
-			titles: page,
-		}).then(function(res) {
-			console.log('Purge Result:', res);
-			location.replace(mw.util.getUrl(page));
-		}, function(_, e) {
-			console.warn('API Error in purging the page \"' + page + '\":', e.error.info);
-		});
+		
+		purgePage(page);
 	});
 })();

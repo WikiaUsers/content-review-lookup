@@ -86,19 +86,25 @@ mw.loader.using(["mediawiki.api", "oojs-ui"]).then(
                                         label: "Steam",
                                         title: "Перейти на страницу игры в Steam",
                                         href: "https://store.steampowered.com/app/400910/RabiRibi/",
-                                        classes: ["rbrbw-mainpage-greetings-storelink", "rbrbw-mainpage-greetings-storelink-steam"]
+                                        classes: ["rbrbw-mainpage-greetings-storelink", "rbrbw-mainpage-greetings-storelink-steam"],
+                                        target: "_blank",
+                                        rel: "noreferrer noopener"
                                     }),
                                     new OO.ui.ButtonWidget({
                                         label: "PlayStation Store",
                                         title: "Перейти на страницу игры в PlayStation Store",
                                         href: "https://store.playstation.com/ru-ru/product/EP4293-CUSA08233_00-RABIRIBIPS400100",
-                                        classes: ["rbrbw-mainpage-greetings-storelink", "rbrbw-mainpage-greetings-storelink-psstore"]
+                                        classes: ["rbrbw-mainpage-greetings-storelink", "rbrbw-mainpage-greetings-storelink-psstore"],
+                                        target: "_blank",
+                                        rel: "noreferrer noopener"
                                     }),
                                     new OO.ui.ButtonWidget({
                                         label: "Nintendo eShop",
                                         title: "Перейти на страницу игры в Nintendo eShop",
                                         href: "https://www.nintendo.ru/-/-Nintendo-Switch/Rabi-Ribi-1651288.html",
-                                        classes: ["rbrbw-mainpage-greetings-storelink", "rbrbw-mainpage-greetings-storelink-eshop"]
+                                        classes: ["rbrbw-mainpage-greetings-storelink", "rbrbw-mainpage-greetings-storelink-eshop"],
+                                        target: "_blank",
+                                        rel: "noreferrer noopener"
                                     })
                                 ],
                                 classes: ["rbrbw-mainpage-greetings-storelinks"]

@@ -1,4 +1,4 @@
-// chunk-vendors.js
+// VENDOR.JS
 
 (window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-vendors"], {
 "00ee":function(t, e, n) {

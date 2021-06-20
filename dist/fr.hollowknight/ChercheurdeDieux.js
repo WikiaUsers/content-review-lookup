@@ -18,7 +18,7 @@
         'Panthéon du Grand Maître',
         'Vaisseau Pur',
         'L’Éternelle Ordalie', 'L’Éternelle Ordalie',
-        'Chercheur de Dieux (PNJ)',
+        'Chercheuse de Dieux',
         'Idole du Vide',
         'Masque Effrité',
         'Syntoniseur Divin',

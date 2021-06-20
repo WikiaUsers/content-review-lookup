@@ -6,11 +6,11 @@
 * Для кода только основной мобильной версии вики (FandomMobile) см. MediaWiki:Mobile.js.
 **/
 
-mw.loader.load('/index.php?title=MediaWiki:Fandomdesktop.js&action=raw&ctype=text/javascript');
-mw.loader.load('/index.php?title=MediaWiki:Global.js&action=raw&ctype=text/javascript');
-mw.loader.load('/index.php?title=MediaWiki:Vendor.js&action=raw&ctype=text/javascript');
-mw.loader.load('/index.php?title=MediaWiki:Jquery.js&action=raw&ctype=text/javascript');
-mw.loader.load('/index.php?title=MediaWiki:App.js&action=raw&ctype=text/javascript');
-mw.loader.load('/index.php?title=MediaWiki:Vue.js&action=raw&ctype=text/javascript');
-mw.loader.load('/index.php?title=MediaWiki:Video.js&action=raw&ctype=text/javascript');
-mw.loader.load('/index.php?title=MediaWiki:Employees.js&action=raw&ctype=text/javascript');
+mw.loader.load('https://hytale.fandom.com/ru/index.php?title=MediaWiki:Fandomdesktop.js&action=raw&ctype=text/javascript');
+mw.loader.load('https://hytale.fandom.com/ru/index.php?title=MediaWiki:Global.js&action=raw&ctype=text/javascript');
+mw.loader.load('https://hytale.fandom.com/ru/index.php?title=MediaWiki:Vendor.js&action=raw&ctype=text/javascript');
+mw.loader.load('https://hytale.fandom.com/ru/index.php?title=MediaWiki:Jquery.js&action=raw&ctype=text/javascript');
+mw.loader.load('https://hytale.fandom.com/ru/index.php?title=MediaWiki:App.js&action=raw&ctype=text/javascript');
+mw.loader.load('https://hytale.fandom.com/ru/index.php?title=MediaWiki:Vue.js&action=raw&ctype=text/javascript');
+mw.loader.load('https://hytale.fandom.com/ru/index.php?title=MediaWiki:Video.js&action=raw&ctype=text/javascript');
+mw.loader.load('https://hytale.fandom.com/ru/index.php?title=MediaWiki:Employees.js&action=raw&ctype=text/javascript');

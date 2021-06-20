@@ -14,12 +14,15 @@ window.tooltips_list = [
         parse: '{' + '{Template:Enemy tip|1=<#name#>|2=<#codename#>|3=<#dura#>|4=<#atk#>|5=<#def#>|6=<#rist#>}}',
     },  {
         classname: 'character-tooltip',
-        parse: '{' + '{Template:Character tip|1=<#name#>|2=<#class#>|3=<#rarity#>|4=<#faction#>|5=<#left#>|6=<#top#>|link=<#link#>}}'
+        parse: '{' + '{Template:Character tip|1=<#name#>|2=<#class#>|3=<#rarity#>|4=<#faction#>|5=<#left#>|6=<#top#>|link=<#link#>}}',
     },	{
         classname: 'collection-tooltip',
         parse: '{' + '{Template:Collection tip|1=<#name#>|2=<#text1#>|3=<#text2#>|e=<#event#>|q=<#quality#>|c=<#condition#>|n=<#note#>}}',
     },	{
         classname: 'furniture-tooltip',
         parse: '{' + '{Template:Furniture tip|1=<#name#>|2=<#text1#>|3=<#text2#>|a=<#ambience#>|t1=<#type#>|t2=<#theme#>|s=<#set#>|o=<#obtain#>|o1a=<#obtain1a#>|o1b=<#obtain1b#>|o1c=<#obtain1c#>}}',
+    },	{
+        classname: 'outfit-tooltip',
+        parse: '{' + '{Template:Outfit tip|1=<#name#>|2=<#text1#>|3=<#text2#>|4=<#text3#>|m=<#model#>|s1=<#skin#>|i=<#illustrator#>|s2=<#series#>|o=<#obtain#>}}',
     }
 ];

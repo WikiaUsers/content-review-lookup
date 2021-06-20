@@ -8,10 +8,13 @@ window.MassEditConfig = {
   }
 };
 
-/*自動刷新*/
-window.ajaxPages = ["Some Frequently Updated Page"];
-window.ajaxSpecialPages = ["Recentchanges", "Watchlist", "Log", "Contributions"];
-window.ajaxIndicator = 'https://images.wikia.nocookie.net/__cb1468579810/common/skins/common/images/ajax.gif';
-window.ajaxRefresh = 30000;
-window.AjaxRCRefreshText = 'Auto-refresh';
-window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
+/*用戶標籤*/
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+	    es: {u:'金牌顧客', link:'fliplinestudios.fandom.com/es'},
+	},
+};
+UserTagsJS.modules.custom = {
+    'Nick2345'   : ['es'],
+};

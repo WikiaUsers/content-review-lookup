@@ -215,6 +215,12 @@ $(function() {
     });
 });
 
+window.SpoilerAlertJS = {
+    question: 'Stop right there! This area contains some spoilers. Do you want to see them?',
+    yes: 'Yep! I suck!',
+    no: 'No thank you!',
+    fadeDelay: 1600
+};
 /* ##################################################################################### */
 /* ### Global File Usage                                                             ### */
 /* ### ----------------------------------------------------------------              ### */

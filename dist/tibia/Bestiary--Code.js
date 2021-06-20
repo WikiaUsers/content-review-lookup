@@ -84,7 +84,7 @@ $(window).load(function() {
         });
         return false;
     },
-    //Get lsit of all besitary creatures from DPL table. 
+    //Get list of all bestiary creatures from DPL table. 
     bestiary_get_creature_list = function (diff) {
         var ret = [],
         x, p, h = $('#bestiary_list_' + diff).html().replace(/<p>/gi, '').replace(/<\/p>/gi, '');
@@ -106,8 +106,11 @@ $(window).load(function() {
                 name: p[x++],
                 bclass: p[x++],
                 raceid: parseFloat(p[x++])});
+            if (ret[ret.length - 1].bclass === '') {
+            	ret.pop();
+            }
         }
-        return ret;
+		return ret;	
     },
     bestiary_level_imgs = {harmless: fpath + 'Bestiary_Level_Harmless.gif', trivial: fpath + 'Bestiary_Level_Trivial.gif', easy: fpath + 'Bestiary_Level_Easy.gif', medium: fpath + 'Bestiary_Level_Medium.gif', hard: fpath + 'Bestiary_Level_Hard.gif', challenging: fpath + 'Bestiary_Level_Challenging.gif'},
     bestiary_occurrence_imgs = {common: fpath + 'Bestiary_Occurrence_Common.gif', uncommon: fpath +  'Bestiary_Occurrence_Uncommon.gif', rare: fpath + 'Bestiary_Occurrence_Rare.gif', veryrare: fpath + 'Bestiary_Occurrence_Very_Rare.gif'},

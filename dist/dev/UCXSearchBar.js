@@ -5,12 +5,14 @@ $.when($.ready, mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg"])).then(
 		return;
 	}
 	
+	var ScriptPath = mw.config.get("wgScriptPath");
+	
 	var search_icon = $('<svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-magnifying-glass-small"></use></svg>');
 
 	var search_form = $("<form>")
 		.addClass("wiki-tools__search-container")
 		.addClass("wds-dropdown")
-		.attr("action", "/wiki/Special:Search");
+		.attr("action", ScriptPath + "/wiki/Special:Search");
 
 	var search_box = $("<input>")
 		.addClass("wiki-tools__search-input")
@@ -48,10 +50,10 @@ $.when($.ready, mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg"])).then(
 
 	search_form.append(search_box, search_hidden, search_button, search_linksuggest_box_div);
 
-	$("div.wiki-tools.wds-button-group").prepend(search_form);
+	$(".wiki-tools__search").replaceWith(search_form);
 
 	function update_linksuggest(container_selector){
-		var search_query = $(container_selector +" .wiki-tools__search-input").val().trim();
+		var search_query = $(container_selector + " .wiki-tools__search-input").val().trim();
 		if(!search_query){
 			$(container_selector + " .wiki-tools__search-linksuggest-list").attr("style", "display: none !important;");
 			return;
@@ -66,11 +68,11 @@ $.when($.ready, mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg"])).then(
 			data.linksuggest.result.suggestions.forEach(function(suggestion){
 				$(container_selector + " .wiki-tools__search-linksuggest-list  > ul").append($("<li>")
 					.attr("title", suggestion)
-					.append($('<a href="/wiki/' + suggestion + '">' + suggestion.replace(new RegExp("(" + search_query + ")", "gi"), "<b>$1</b>") + "</a>"))
+					.append($('<a href="' + ScriptPath + "/wiki/" + suggestion + '">' + suggestion.replace(new RegExp("(" + search_query + ")", "gi"), "<b>$1</b>") + "</a>"))
 				);
 			});
 			$(container_selector + " .wiki-tools__search-linksuggest-list  > ul").append($("<li>")
-				.append($('<a class="wiki-tools__search-linksuggest-list-see-all" href="/wiki/Special:Search?query=' + search_query + '&scope=internal&navigationSearch=true">' + mw.msg("search-modal-see-all-results", search_query) + "</a>"))
+				.append($('<a class="wiki-tools__search-linksuggest-list-see-all" href="' + ScriptPath + "/wiki/Special:Search?query=" + search_query + '&scope=internal&navigationSearch=true">' + mw.msg("search-modal-see-all-results", search_query) + "</a>"))
 			);
 			$(container_selector + " .wiki-tools__search-linksuggest-list").attr("style", "display: block !important;");
 		});

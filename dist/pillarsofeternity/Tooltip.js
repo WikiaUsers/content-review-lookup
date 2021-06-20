@@ -33,21 +33,28 @@
 	        // This makes it difficult to get the document height in pure CSS, which we need to
 	        // prevent tooltips from overflowing the document when they're drawn off the screen
 	        // So instead we use the height of the global-wrapper class
-	        globalWrapper = $(document.getElementById("global-wrapper"));
+	        globalWrapper = $(document.querySelector("#global-wrapper, .main-container"));
 	
+	        /*
 	        $(window).resize(function()
 	        {
 	            tooltipHolder.style.height = globalWrapper.height() + "px";
 	        })
+	        */
 	
 	        // --- Create tooltip holder ---
-	        // The holder is required to prevent expanding the page when a tooltip is overflowing the window
-	        // As far as I know the only way to do this is with a container to define the overflow bounds
+	        // An explicitly-sized holder is required to prevent expanding the page when a tooltip is overflowing the window
+	        // If we didn't need to do this, overflow: visible could be set on a zero sized holder without issue
+
+	        // As far as I know the only way to do this is with a container to define the overflow bounds.
+	        // We could also use the new overflow clip, e.g "position: absolute; width:100%; overflow: visible; overflow-x: clip;"",
+	        // but Safari is (as usual) slow to support it <- This is what we're doing for now - Safari can go do one
+
 	        tooltipHolder = document.createElement("div");
 	
 	        // Set id and height (remaining properties are in CSS)
 	        tooltipHolder.setAttribute("id", "advanced-tooltip-holder");
-	        tooltipHolder.style.height = globalWrapper.height() + "px";
+	        //tooltipHolder.style.height = globalWrapper.height() + "px";
 	
 	        // Add it to the top of the document body
 	        document.body.prepend(tooltipHolder);
@@ -377,7 +384,7 @@
 	
 	        // Convert from tooltip container relative to document-body relative
 	        top = (containerPos.top - globalWrapper.offset().top) + top;
-	        left = (containerPos.left - globalWrapper.offset().left) + left;
+	        left = (containerPos.left - globalWrapper.position().left) + left;
 	
 	        content.css({"top":top, "left":left});
 	    });

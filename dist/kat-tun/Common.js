@@ -16,3 +16,34 @@ UserTagsJS.modules.user = {
 UserTagsJS.modules.custom = {
     'Tsukihibiki': ['user'],
 };
+/* Multiple Uploads */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MultiUpload.js',
+    ]
+});
+
+/* User Badges */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MastheadRightsBadge.js',
+    ]
+});
+
+/* Tooltips */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:Tooltips.js',
+    ]
+});
+
+/* Searchbar */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:UCXSearchBar.js',
+    ]
+});

@@ -48,8 +48,8 @@
     function addHtml($menu) {
         var $wikimarks = $('.wikimarks');
 
-        $wikimarks.find('> .wds-dropdown > .wds-tabs__tab-label > a').append(
-            '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron" id="wds-icons-dropdown-tiny"><path id="dropdown-tiny" d="M6 10a.997.997 0 0 1-.707-.293l-4-4A1 1 0 0 1 2 4h8a1 1 0 0 1 .707 1.707l-4 4A.997.997 0 0 1 6 10z"/></path></svg>'
+        $wikimarks.find('> .wds-dropdown > .wds-tabs__tab-label').append(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg>'
         );
 
         $wikimarks.children('.wds-dropdown').append($menu);
@@ -62,7 +62,6 @@
         // so fire an event so people can interact/extend it further
         mw.hook('wikimarks.loaded').fire($wikimarks);
     }
-
 
     /**
      * Prepare the parsed HTML and attach to the DOM
@@ -116,36 +115,34 @@
             $this.parent('li').addClass('wds-dropdown-level-3');
         });
 
-        if (conf.skin !== 'fandomdesktop') {
-            // add sticked to parent class for level 3 submenus
-	        $.unique($menu.find('.wds-dropdown-level-2').parent()).each(function () {
-	            $(this).children().each(function (i) {
-	                var $this = $(this),
-	                    $list;
+        // add sticked to parent class for level 3 submenus
+        $.unique($menu.find('.wds-dropdown-level-2').parent()).each(function () {
+            $(this).children().each(function (i) {
+                var $this = $(this),
+                    $list;
 
-	                if ($this.hasClass('wds-dropdown-level-2')) {
-	                    $list = $this.find('> .wds-dropdown-level-2__content > .wds-list');
+                if ($this.hasClass('wds-dropdown-level-2')) {
+                    $list = $this.find('> .wds-dropdown-level-2__content > .wds-list');
 
-	                    if (($list.children().length - 1) < i) {
-	                        $this.addClass('wds-is-sticked-to-parent');
-	                    }
-	                }
-	            });
-	        });
+                    if (($list.children().length - 1) < i) {
+                        $this.addClass('wds-is-sticked-to-parent');
+                    }
+                }
+            });
+        });
 
-	        // add sticked to parent class for level 4 submenus
-	        $.unique($menu.find('.wds-dropdown-level-3').parent()).each(function () {
-	            $(this).children().each(function (i) {
-	                var $this = $(this);
+        // add sticked to parent class for level 4 submenus
+        $.unique($menu.find('.wds-dropdown-level-3').parent()).each(function () {
+            $(this).children().each(function (i) {
+                var $this = $(this);
 
-	                if ($this.hasClass('wds-dropdown-level-3')) {
-	                    if (($this.find('.wds-list').children().length - 1) < i) {
-	                        $this.addClass('wds-is-sticked-to-parent');
-	                    }
-	                }
-	            });
-	        });
-		}
+                if ($this.hasClass('wds-dropdown-level-3')) {
+                    if (($this.find('.wds-list').children().length - 1) < i) {
+                        $this.addClass('wds-is-sticked-to-parent');
+                    }
+                }
+            });
+        });
 
         // remove href from text converted to links
         $menu.find('a[href="' + conf.wgScriptPath + '/wiki/"]')
@@ -413,7 +410,7 @@
         //       as it feels super fragile
         
         // find the list with "random page" link and hide the whole list (explore tab)
-        $('.wds-list [data-tracking="explore-random"]').closest(".wds-dropdown").hide();
+        $('.wds-list [data-tracking="explore-random"]').closest('.wds-dropdown').hide();
         // add our new tab to the start of the nav
         $nav.prepend($li);
     }
@@ -427,36 +424,7 @@
             'article': 'u:dev:MediaWiki:Wikimarks.css'
         });
 
-        $.ajax({
-            url: mw.config.get('wgLoadScript'),
-            data: {
-                mode: 'articles',
-                articles: 'u:dev:MediaWiki:Colors/code.js',
-                only: 'scripts'
-            },
-            dataType: 'script',
-            cache: true
-        }).done(function () {
-            var c = dev.colors,
-                w = c.wikia,
-                p = c.parse(w.page),
-                bgColor;
 
-            if (p.isBright()) {
-                if (p.lightness() > 0.9) {
-                    bgColor = '#fff';
-                } else {
-                    bgColor = p.mix('#000', 90).hex();
-                }
-            } else {
-                bgColor = p.mix('#fff', 90).hex();
-            }
-
-
-            mw.util.addCSS(
-                '.wds-community-header .wds-dropdown__content .wds-list.wds-is-linked .wds-dropdown-level-3 .wds-dropdown-level-3__content { background-color: ' + bgColor + '; border-color: ' + w.border + '; color: ' + w.text + '; }'
-            );
-        });
     }
 
     /**

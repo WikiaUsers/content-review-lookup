@@ -20,9 +20,18 @@ mw.loader.using("mediawiki.api").then(
 
                 Object.assign(communityblock.style, {
                     borderTop: "1px solid var(--theme-border-color)",
-                    marginTop: "18px",
                     position: "relative"
                 });
+                
+                if (mw.config.get("skin") === "fandomdesktop") {
+                	Object.assign(communityblock.style, {
+                    	marginTop: "35px"
+                	});
+                } else {
+                	Object.assign(communityblock.style, {
+                    	marginTop: "18px"
+                	});
+                }
 
                 var communityblock_avatars = document.createElement("div");
                 communityblock_avatars.classList.add("avatars");

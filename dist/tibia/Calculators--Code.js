@@ -1359,12 +1359,12 @@ $(function() {
             '<div style="position: absolute;width: 680px;"><div style="display: grid;grid-row-gap:50px;">' +
                 '<div><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Ferumbras_Exercise_Dummy.gif" style="float:left">' +
                 '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Exercise_Dummy.gif" style="float:right"></div>' +
-                '<div><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Exercise_Bow.gif" style="float:left;">' +
-                '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Exercise_Sword.gif" style="float:right;"></div>' +
-                '<div><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Exercise_Rod.gif" style="float:left;">' +
-                '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Exercise_Axe.gif" style="float:right;"></div>' +
-                '<div><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Exercise_Wand.gif" style="float:left;">' +
-                '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Exercise_Club.gif" style="float:right;"></div>' +
+                '<div><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Bow.gif" style="float:left;">' +
+                '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Sword.gif" style="float:right;"></div>' +
+                '<div><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Rod.gif" style="float:left;">' +
+                '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Axe.gif" style="float:right;"></div>' +
+                '<div><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Wand.gif" style="float:left;">' +
+                '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Club.gif" style="float:right;"></div>' +
             '</div></div>' +
             '<div style="position:relative;">' +
                 '<label>Loyalty points:' +

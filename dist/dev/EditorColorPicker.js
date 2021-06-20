@@ -387,7 +387,15 @@
 			});
 		}
 		loadDefaultColors();
-		
+		// preview background color
+		$.get(mw.util.wikiScript('wikia')+'?controller=ThemeApi&method=themeVariables&variant=dark').done(function(data) {
+			var color = data.match(/--theme-page-background-color:(#[a-f0-9].*?);/)[1];
+			$('#ecp-theme-fandomdesktop-dark .ecp-preview-box').css('background-color', color);
+		});
+		$.get(mw.util.wikiScript('wikia')+'?controller=ThemeApi&method=themeVariables&variant=light').done(function(data) {
+	 		var color = data.match(/--theme-page-background-color:(#[a-f0-9].*?);/)[1];
+			$('#ecp-theme-fandomdesktop-light .ecp-preview-box').css('background-color', color);
+		});
 		function updateColors(colors) {
 			for (var key in colors) {
 			    if (colors.hasOwnProperty(key)) {
@@ -423,6 +431,7 @@
 		}
 		loadSavedColors();
 		return;
+		
 	}
 	function addButton() {
 		var header;

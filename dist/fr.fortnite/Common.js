@@ -8,11 +8,10 @@ if (disclaimerNs.indexOf(wgNamespaceNumber) !== -1) {
 	else
 		$(".WikiaArticle").append(legaldiv);
 		
-	var backgroundColor = isThemeDark ? "#404040" : "#F2F2F2";
 	$(".legaldisclaimer").css({
 	  fontSize:"80%",
 	  border:"1px solid #009FFF",
-	  backgroundColor:backgroundColor,
+	  backgroundColor:"var(--theme-accent-dynamic-color-2)",
 	  borderRadius:"8px"
 	})
 }

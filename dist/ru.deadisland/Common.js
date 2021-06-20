@@ -22,13 +22,3 @@ $(document).ready(function() {
   });
 });
 } );
-
-//настройки для pagePreview
-window.pPreview = $.extend(true, window.pPreview, {
-    defimage: 'https://vignette.wikia.nocookie.net/borderlands/images/0/05/Ajax.gif/revision/latest?cb=20170626182120&path-prefix=ru',
-    noimage: 'https://vignette.wikia.nocookie.net/deadisland/images/0/0e/No_image.jpg/revision/latest?cb=20200730092720&format=original&path-prefix=ru',
-        RegExp: {
-        iimages: [/Gear\.png/]
-
-    },
-});

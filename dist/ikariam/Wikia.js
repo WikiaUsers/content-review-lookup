@@ -1,8 +1,11 @@
 //
 // Any JavaScript here will be loaded for all users using the Wikia skin on every page load
 //
+
 //
 // Format for multiple scripts
+//
+
 //
 // importArticles({
 //  type: "script",
@@ -12,12 +15,15 @@
 //    ]
 // });
 //
+
+//
 // Import the scripts located in MediaWiki:Common.js
 //
  importArticle({
      type: "script",
      article: "MediaWiki:Common.js"     // Loads the MediaWiki:Common.js file
  });
+ 
 //Generates building information table in each building page
 function escRegEx(str) { return str.replace(/[\[\]\/\{\}\(\)\-\?\$\*\+\.\\\^\|]/g, "\\$&"); }
 function prntf(s,r)

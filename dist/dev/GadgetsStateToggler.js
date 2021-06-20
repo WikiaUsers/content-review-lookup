@@ -3,8 +3,9 @@ mw.loader.using(["mediawiki.user"]).then(
         if (typeof window.nkch === "undefined") {
             const nkch = {};
             window.nkch = nkch;
-            nkch.gst = {};
         }
+
+        if (typeof nkch.gst === "undefined") nkch.gst = {};
 
         if (!nkch.gst.isActive && !mw.user.isAnon()) {
             nkch.gst.isActive = true;
@@ -91,66 +92,66 @@ mw.loader.using(["mediawiki.user"]).then(
                                     (function (i) {
                                         var gadgetState = mw.loader.getState("ext.gadget." + nkch.gst.gadgets[i].name);
 
-                                        if (gadgetState === null) {
-                                            console.error("Гаджет " + nkch.gst.gadgets[i].name + " не найден.");
-                                        } else if (gadgetState === "registered" || gadgetState === "ready") {
-                                            console.log(nkch.gst.gadgets[i].name + ": " + gadgetState);
+                                        console.log(nkch.gst.gadgets[i].name + ": " + gadgetState);
 
-                                            /* - elements - */
+                                        /* - elements - */
 
-                                            nkch.gst.el.button.dropdown.content.list.items[i] = {
-                                                $e: document.createElement("li"),
-                                                input: {
-                                                    $e: document.createElement("input")
-                                                },
-                                                label: {
-                                                    $e: document.createElement("label")
-                                                }
-                                            };
+                                        nkch.gst.el.button.dropdown.content.list.items[i] = {
+                                            $e: document.createElement("li"),
+                                            input: {
+                                                $e: document.createElement("input")
+                                            },
+                                            label: {
+                                                $e: document.createElement("label")
+                                            }
+                                        };
 
-                                            /* - item - */
+                                        /* - item - */
 
-                                            Object.assign(nkch.gst.el.button.dropdown.content.list.items[i].$e.style, {
-                                                textAlign: "left"
-                                            });
+                                        Object.assign(nkch.gst.el.button.dropdown.content.list.items[i].$e.style, {
+                                            textAlign: "left"
+                                        });
 
-                                            nkch.gst.el.button.dropdown.content.list.$e.appendChild(nkch.gst.el.button.dropdown.content.list.items[i].$e);
+                                        nkch.gst.el.button.dropdown.content.list.$e.appendChild(nkch.gst.el.button.dropdown.content.list.items[i].$e);
 
-                                            /* - item : input - */
+                                        /* - item : input - */
 
-                                            nkch.gst.el.button.dropdown.content.list.items[i].input.$e.classList.add("wds-toggle__input");
-                                            nkch.gst.el.button.dropdown.content.list.items[i].input.$e.id = "gst-toggle-" + i;
-                                            nkch.gst.el.button.dropdown.content.list.items[i].input.$e.setAttribute("type", "checkbox");
+                                        nkch.gst.el.button.dropdown.content.list.items[i].input.$e.classList.add("wds-toggle__input");
+                                        nkch.gst.el.button.dropdown.content.list.items[i].input.$e.id = "gst-toggle-" + i;
+                                        nkch.gst.el.button.dropdown.content.list.items[i].input.$e.setAttribute("type", "checkbox");
 
-                                            var opName = "gadget-" + nkch.gst.gadgets[i].name;
+                                        var opName = "gadget-" + nkch.gst.gadgets[i].name;
 
-                                            if (gadgetState === "registered") {
-                                                nkch.gst.el.button.dropdown.content.list.items[i].input.$e.checked = false;
-                                            } else if (gadgetState === "ready") {
-                                                nkch.gst.el.button.dropdown.content.list.items[i].input.$e.checked = true;
-                                            };
+                                        if (gadgetState === "registered") {
+                                            nkch.gst.el.button.dropdown.content.list.items[i].input.$e.checked = false;
+                                        } else if (gadgetState === "ready") {
+                                            nkch.gst.el.button.dropdown.content.list.items[i].input.$e.checked = true;
+                                        };
 
-                                            nkch.gst.el.button.dropdown.content.list.items[i].input.$e.addEventListener("change", function () {
-                                                if (mw.user.options.get(opName) === 0) {
+                                        nkch.gst.el.button.dropdown.content.list.items[i].input.$e.addEventListener("change", function () {
+                                            if (mw.user.options.get(opName) === null || typeof mw.user.options.get(opName) === "undefined") {
+                                                opValue = 1;
+                                            } else {
+                                                if (mw.user.options.get(opName).toString() === "0") {
                                                     opValue = 1;
-                                                } else if (mw.user.options.get(opName) === 1) {
+                                                } else if (mw.user.options.get(opName).toString() === "1") {
                                                     opValue = 0;
-                                                };
+                                                }
+                                            }
 
-                                                new mw.Api().post({
-                                                    action: "options",
-                                                    token: mw.user.tokens.get("csrfToken"),
-                                                    optionname: opName,
-                                                    optionvalue: opValue
-                                                }).done(
-                                                    function () {
-                                                        mw.user.options.set(opName, opValue);
-                                                        mw.notify(i18n.msg("reload-page").plain());
-                                                        return false;
-                                                    }
-                                                );
-                                            }, false);
-                                        }
+                                            new mw.Api().post({
+                                                action: "options",
+                                                token: mw.user.tokens.get("csrfToken"),
+                                                optionname: opName,
+                                                optionvalue: opValue.toString()
+                                            }).done(
+                                                function () {
+                                                    mw.user.options.set(opName, opValue.toString());
+                                                    mw.notify(i18n.msg("reload-page").plain());
+                                                    return false;
+                                                }
+                                            );
+                                        }, false);
 
                                         nkch.gst.el.button.dropdown.content.list.items[i].$e.appendChild(nkch.gst.el.button.dropdown.content.list.items[i].input.$e);
 

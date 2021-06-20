@@ -40,6 +40,9 @@ $(function () {
           img = item[0].img,
           des = item[0].des;
  
+        $('body.skin-fandomdesktop').css({
+          'background-image': 'url(' + img + ')'
+        });
         $('body.skin-oasis').css({
           'background-image': 'url(' + img + ')'
         });
@@ -48,6 +51,19 @@ $(function () {
  
     randomBg();
  
+    $('.fandom-community-header__local-navigation .wds-tabs').append(
+      $('<li>', { 'class': 'wds-tabs__tab' }).append(
+        $('<div>', { 'class': 'wds-tabs__tab-label' }).append(
+          $('<a>', {
+            'src': 'javascript:;',
+            'id': 'RandomBg'
+          })
+          .text(msg('RandomBackground'))
+          .prepend('<img src="https://vignette.wikia.nocookie.net/no-game-no-life/images/7/70/Random.png/revision/latest?cb=20190616113051&format=original&path-prefix=zh" style="width:12px;height:12px;"/>&nbsp;')
+          .click(randomBg)
+        )
+      )
+    );
     $('.wds-community-header__local-navigation .wds-tabs').append(
       $('<li>', { 'class': 'wds-tabs__tab' }).append(
         $('<div>', { 'class': 'wds-tabs__tab-label' }).append(

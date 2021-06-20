@@ -23,3 +23,11 @@ importArticles({
         'u:dev:MediaWiki:Tooltips.js',
     ]
 });
+
+/* Searchbar */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:UCXSearchBar.js',
+    ]
+});

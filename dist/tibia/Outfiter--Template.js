@@ -77,9 +77,11 @@ $(function () {
       //160
       'Eventide_Nandu', 'Savanna_Ostrich', 'Phantasmal_Jade', 'White_Lion_(Mount)', 'Cunning_Hyaena',
       //165
-      'Scruffy_Hyaena', 'Voracious_Hyaena', 'Krakoloss', 'Festive Mammoth', 'Holiday Mammoth',
+      'Scruffy_Hyaena', 'Voracious_Hyaena', 'Krakoloss', 'Festive_Mammoth', 'Holiday_Mammoth',
       //170
-      'Merry Mammoth'
+      'Merry_Mammoth', 'Void_Watcher', 'Rune_Watcher', 'Rift_Watcher', 'Dandelion',
+      //175
+      'Hyacinth', 'Peony', 'Singeing_Steed', 'Shellodon', 'Phant'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -121,7 +123,9 @@ $(function () {
       //85
       'Orcsoberfest_Garb', 'Poltergeist', 'Falconer', 'Herder', 'Trailblazer',
       //90
-      'Dragon_Slayer', 'Revenant', 'Jouster', 'Moth_Cape', 'Rascoohan'
+      'Dragon_Slayer', 'Revenant', 'Jouster', 'Moth_Cape', 'Rascoohan',
+      //95
+      'Merry_Garb', 'Rune_Master', 'Forest_Warden', 'Citizen_of_Issavi', 'Royal_Bounacean_Advisor'
     ],
     //other outfits the array index is the id(starting at 100)
     //must also be added to Template:OutfiterLink
@@ -254,13 +258,18 @@ $(function () {
       Snow_Strider: 8,
       Dusk_Pryer: 8,
       Dawn_Strayer: 8,
-      Phantasmal_Jade: 8
+      Phantasmal_Jade: 8,
+      Void_Watcher: 8,
+      Rune_Watcher: 8,
+      Rift_Watcher: 8,
+      Singeing_Steed: 8
     },
     outfiter_sprites_mount_walking = {
     },
     //mounts that are colourisable
     outfiter_mount_colourisable = {
-      Krakoloss: true
+      Krakoloss: true,
+      Shellodon: true
     },
     //image names with _Female suffix for female
     outfiter_f_suffix_inames = {

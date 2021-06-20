@@ -122,4 +122,8 @@ $(function() {
 	});
 });
 
+$(function() {
+    $('.mw-special-CargoTables .cargoTable th.field_Page').html('_pageName');
+});
+
 // </nowiki>

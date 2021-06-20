@@ -127,14 +127,13 @@ mw.hook('wikipage.content').add(function($content) {
 /* AddRailModule on top */
 window.AddRailModule = [
     {page: 'Template:RailModule', prepend: true},
-    {page: 'Template:Events', prepend: true},
-    'Template:Upcoming'
+    {page: 'Template:Events', prepend: true}
 ];
 
 /* Discord Banner */
 window.DiscordBannerSettings = {
-    bannerStyle: '2',
-    inviteLink: 'TYxrUXPAgx', // Fandom Developers, EXAMPLE CONFIGURATION
+    bannerStyle: '3',
+    inviteLink: 'TYxrUXPAgx',
     prependToRail: false
 };
 
@@ -149,3 +148,23 @@ window.tooltips_config = {
     offsetX: 10,
     offsetY: 10
 };
+
+/*Template:Accordion*/
+var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    /* Toggle between adding and removing the "active" class,
+    to highlight the button that controls the panel */
+    this.classList.toggle("active");
+
+    /* Toggle between hiding and showing the active panel */
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "block") {
+      panel.style.display = "none";
+    } else {
+      panel.style.display = "block";
+    }
+  });
+}

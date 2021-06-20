@@ -65,17 +65,32 @@ mw.loader.using('mediawiki.api', function() {
 				var users = data.query.users;
 				if (!users.length) return alert('No users found with this name.');
 				
+				var postBody = {
+					token: mw.user.tokens.get('editToken'),
+					wallOwnerId: users[0].userid,
+					title: i18n.msg('messageTitle').escape(),
+					rawContent: `You have received $1 for the following reason:
+TEST
+During this time, please read through the wiki rules so that this does not happen again.
+You may appeal your block on my Community Central message wall.
+Per Fandom's wiki rules and blocking policy, since this block's duration is less than 2 weeks, you may not appeal this block.
+Since this is a violation of Fandom's Terms of Use, you may not appeal this block.`,
+					jsonModel: '{"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"You+have+received+$1+for+the+following+reason:"}]},{"type":"paragraph"},{"type":"paragraph","content":[{"type":"text","marks":[{"type":"em"}],"text":"TEST"}]},{"type":"paragraph"},{"type":"paragraph","content":[{"type":"text","text":"During+this+time,+please+read+through+the+"},{"type":"text","marks":[{"type":"link","attrs":{"href":"https://google.com","title":null}}],"text":"wiki+rules"},{"type":"text","text":"+so+that+this+does+not+happen+again."}]},{"type":"paragraph"},{"type":"paragraph","content":[{"type":"text","text":"You+may+appeal+your+block+on+my+"},{"type":"text","marks":[{"type":"link","attrs":{"href":"https://bing.com","title":null}}],"text":"Community+Central+message+wall"},{"type":"text","text":"."}]},{"type":"paragraph"},{"type":"paragraph","content":[{"type":"text","text":"Per+"},{"type":"text","marks":[{"type":"link","attrs":{"href":"https://apple.com","title":null}}],"text":"Fandom\'s+wiki+rules+and+blocking+policy"},{"type":"text","text":",+since+this+block\'s+duration+is+less+than+2+weeks,+you+may+not+appeal+this+block."}]},{"type":"paragraph"},{"type":"paragraph","content":[{"type":"text","text":"Since+this+is+a+violation+of+"},{"type":"text","marks":[{"type":"link","attrs":{"href":"https://microsoft.com","title":null}}],"text":"Fandom\'s+Terms+of+Use"},{"type":"text","text":",+you+may+not+appeal+this+block."}]}]}',
+					attachments: '{"contentImages":[],"openGraphs":[],"atMentions":[]}'
+				};
+				
 				$.ajax({
 					type: 'POST',
 					url: mw.util.wikiScript('wikia') + '?controller=Fandom%5CMessageWall%5CMessageWall&method=createThread&format=json',
-					data: {
-						token: mw.user.tokens.get('editToken'),
-						wallOwnerId: users[0].userid,
-						title: i18n.msg('messageTitle').escape(),
-						rawContent: 'test',
-						jsonModel: '{"type":"doc","content":' + generatePayload(duration, reason, forToU) + '}]}',
-						attachments: '{"contentImages": [], "openGraphs": [], "atMentions": []}'
-					},
+					data: encode(postBody),
+					// data: {
+					// 	token: mw.user.tokens.get('editToken'),
+					// 	wallOwnerId: users[0].userid,
+					// 	title: i18n.msg('messageTitle').escape(),
+					// 	rawContent: '2',
+					// 	jsonModel: '{"type":"doc","content":' + generatePayload(duration, reason, forToU) + '}]}',
+					// 	attachments: '{"contentImages": [], "openGraphs": [], "atMentions": []}'
+					// },
 					xhrFields: {
 						withCredentials: true 
 					}
@@ -124,6 +139,10 @@ mw.loader.using('mediawiki.api', function() {
 			}
 		];
 		return JSON.stringify(payload);
+	}
+	
+	function encode(x) {
+		return Object.keys(x).reduce((p, c) => (p ? p + '&' : p) + `${c}=${encodeURIComponent(x[c]).replace(/\%20/g, '+').replace(/\%2B/g, '+')}`, '');
 	}
 
 	mw.hook('dev.i18n').add(preload);

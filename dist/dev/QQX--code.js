@@ -35,6 +35,6 @@
     });
     importArticle({
         type: 'script',
-        article: 'u:dev:I18n-js/code.js'
+        article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
 })();

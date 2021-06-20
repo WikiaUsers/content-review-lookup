@@ -9,7 +9,7 @@ $(function(){
 		$('#inceptionPerks' + i).css('font-weight', 'bold');
 		$('#inceptionPerks' + i).css('color', '#e2ce97');
 		$('#inceptionPerks' + i).css('display', 'inline');
-		$('#inceptionPerks' + i).html('Pokaż/Ukryj (tylko) Umiejętności Wprowadzone w Tym Roku &#10060;');
+		$('#inceptionPerks' + i).html('SPokaż/Ukryj (tylko) Umiejętności wprowadzone w tym roku &#10060;');
 		
 		$('#inceptionPerks' + i).hover(function(){
 			$(this).css('cursor', 'pointer');
@@ -21,6 +21,7 @@ $(function(){
 		$('#inceptionPerks' + i).click(GetInceptionPerksHandler(i));
 	}
 	/**************************************************************************/
+	CreateEditSourceLink();
 	SetAppropriateDimensions();
 	SetHeadersShadows();
 	$.each($(".mw-collapsible-text"), function(index, element){
@@ -40,7 +41,7 @@ function GetInceptionPerksHandler(year){
 		var inceptionRows = $('.inception-row' + year);
 		var switcher = $('#inceptionPerks' + year);
 		var rowsDisplayed = inceptionRows.css('display') == 'table-row';
-		var text = 'Pokaż/Ukryj (tylko) Umiejętności Wprowadzone w Tym Roku';
+		var text = 'Pokaż/Ukryj (tylko) Umiejętności wprowadzone w tym roku';
 		//console.log("rowsDisplayed: " + rowsDisplayed);
 		//console.log($('.inception-row' + year));
 		//console.log(year);
@@ -109,3 +110,18 @@ function SetAppropriateDimensionsCosts(){
 		}
 	});
 }
+
+function CreateEditSourceLink(){
+	console.log('CreateEditSourceLink Executed');
+	var link = document.querySelectorAll('[data-tracking-label="ca-edit-dropdown"]')[0].getAttribute('href');
+	var vanillaEdit = document.querySelectorAll('[data-tracking-label="ca-ve-edit"]')[1];
+	var editSourceNode = document.createElement('a');
+	editSourceNode.appendChild(document.createTextNode('Edit Source'));
+	editSourceNode.setAttribute('href', link);
+	editSourceNode.setAttribute('class', 'wds-button wds-is-text page-header__action-button has-label');
+	
+	vanillaEdit.parentNode.insertBefore(editSourceNode, vanillaEdit.nextSibling);
+}
+/*********************************************************************************************/
+/*********************************************************************************************/
+/*********************************************************************************************/

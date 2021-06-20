@@ -8,11 +8,11 @@ mw.loader.using('oojs-ui').then(function() {
 	function createPageForm() {
 		var formConfig = {
 			'text': {
-				'input_page_title': 'Название',
-				'create_page_btn_text': 'Далее',
-				'go_to_page_btn_text': 'Перейти к статье',
-				'go_to_blank': 'Перейти к бланку',
-				'text_placeholder': 'Заголовок новой статьи'
+				'input_page_title': 'Enter Name of Page',
+				'create_page_btn_text': 'Next',
+				'go_to_page_btn_text': 'Go to Article',
+				'go_to_blank': 'Go to Form',
+				'text_placeholder': 'New Article Title'
 			},
 			'data': {
 				'template_page': mw.config.values.wgFormattedNamespaces[10] + ':CreatePageBlank'

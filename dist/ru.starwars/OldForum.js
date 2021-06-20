@@ -8,7 +8,7 @@ $('.btn_ForumMessage').unbind('click').click(function()
 $('.btn_ForumReply').unbind('click').click(function()
 {
 	sHeader = $(this).parents('.BlockForumMessage, .BlockForumReply').prev('h6');
-	sLink= sHeader.find('.mw-editsection .mw-editsection-divider').next('a').attr('href');
+	sLink= sHeader.find('.mw-editsection a').attr('href');
 	sID  = sHeader.find('.mw-headline').attr('id');
 	sSection = sLink.replace(/.*section=(\d*)\b.*/, '$1');
 
@@ -190,7 +190,7 @@ function SaveForumMessage()
 					oLast = oCurr;
 				}
 			
-				sSection= oLast.prev('h6').find('.mw-editsection .mw-editsection-divider').next('a').attr('href').replace(/.*section=(\d*)\b.*/, '$1');
+				sSection= oLast.prev('h6').find('.mw-editsection a').attr('href').replace(/.*section=(\d*)\b.*/, '$1');
 
 				//$.post("https://starwars.fandom.com/ru/api.php", {action: "parse", format: "json", formatversion: "2", prop: "text|indicators|displaytitle|modules|jsconfigvars|categorieshtml|templates|langlinks|limitreporthtml", text: sMessage, pst: "true", preview: "true", sectionpreview: "true", disableeditsection: "true", useskin: "oasis", uselang: "ru"})
 				//.done(function(data)

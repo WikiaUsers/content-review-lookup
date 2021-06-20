@@ -4,7 +4,7 @@
     a = [
         'Rêves Cachés',
         'Protecteur Blanc',
-        'Prince Gris Zote',
+        'Zote le Prince Gris',
         'Zoteling Sautant',
         'Zoteling Ailé',
         'Zoteling Instable',

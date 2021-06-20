@@ -1,37 +1,4 @@
 ///////////////////////////////////////////////
-/******* Anon Tags | By KockaAdmiralac *******/
-///////////////////////////////////////////////
-(function() {
-    var $masthead = $('#UserProfileMasthead');
-    if (!$masthead.exists()) {
-        return;
-    }
-    var $info = $masthead.find('.masthead-info hgroup'),
-        username = $info.find('h1').text();
-    if (
-        mw.util.isIPv4Address(username) ||
-        mw.util.isIPv6Address(username)
-    ) {
-        var $tag = $info.find('.tag');
-        if ($tag.exists()) {
-            var blocked = $tag.remove().text();
-            $info.append(
-                $('<span>', {
-                    'class': 'tag-container'
-                }).append(
-                    $('<a>', {
-                        'text':    blocked,
-                        'href':    mw.util.getUrl('Help:Blocking'),
-                        'title':   'Help:Block',
-                        'class':   'tag usergroup-blocked blocked-user'
-                    })
-                )
-            );
-        }
-    }
-})();
-
-///////////////////////////////////////////////
 /************* Tag Configuration *************/
 ///////////////////////////////////////////////
 /* Tag Creation */
@@ -242,16 +209,18 @@ UserTagsJS.modules.autoconfirmed = true;
 UserTagsJS.modules.isblocked     = true;
 UserTagsJS.modules.nonuser       = true;
 UserTagsJS.modules.inactive      = 30;
-UserTagsJS.modules.newuser       = {
-    days: 14,
-    edits: 100
-};
+UserTagsJS.modules.newuser       = false;
 UserTagsJS.modules.mwGroups      = [
     'blocked',
     'authenticated',
     'bot-global',
     'bot',
     'checkuser',
+    'council',
+    'helper',
+    'staff',
+    'vanguard',
+    'soap',
     'founder',
     'bureaucrat',
     'sysop',
@@ -268,8 +237,10 @@ UserTagsJS.modules.custom = {
     /** Staff Ranks **/
     'GellyPop'          : ['st', 'sa'],
     'JustLeafy'         : ['st'],
-    'Briskmetal007'     : ['st'],
+    'Banarama'          : ['st'],
     'AJ (QA)'           : ['st'],
+    'Briskmetal007'     : ['st'],
+    'GeoScoph'          : ['st'],
     'Anonymoususer12321': ['st', 'sa'],
     'MrMewshmallow'     : ['founder'],
 
@@ -503,21 +474,6 @@ UserTagsJS.modules.metafilter = {
     ],
     hi: 'blocked'
 };//End MF*/
-
-
-/* User Filter */
-UserTagsJS.modules.userfilter = {
-    'Zathsu': [
-        'content-moderator',
-        'threadmoderator',
-        'chatmoderator',
-        'rollback',
-        'com',
-        'mod',
-        'sen'
-    ]
-};//End UF*/
-
 
 /* Implode */
 UserTagsJS.modules.implode = {

@@ -1,3 +1,4 @@
+/* Adds secondary themes to single-mode Pokémon PIs with a secondary type */
 $('aside.portable-infobox.type-pokemon').has('.pi-item[data-source="type"] img').each(function() {
     var $second = $(this).find('.pi-item[data-source="type"] img').eq(1);
     var attr    = $second.attr("data-image-name");
@@ -10,6 +11,7 @@ $('aside.portable-infobox.type-pokemon').has('.pi-item[data-source="type"] img')
     }
 });
 
+/* Switches multi-mode (paneled) PI themes based on the types in each mode */
 mw.loader.using('mediawiki.util').then(function () {
     var InfoboxTypeThemes = {
         updateInfoboxTypes: function(infobox, types) {
@@ -36,7 +38,7 @@ mw.loader.using('mediawiki.util').then(function () {
             }
         },
         getInfoboxTypes: function(infobox) {
-            var activeSection = infobox.querySelector('.pi-section-contents > .pi-section-active');
+            var activeSection = infobox.querySelector('.pi-panel > .wds-is-current');
             var anchors = activeSection.querySelectorAll('.pi-data[data-item-name="type"] .pi-data-value a');
             var types = [];
 
@@ -63,7 +65,7 @@ mw.loader.using('mediawiki.util').then(function () {
             });
         },
         processInfobox: function(infobox) {
-            var tabContainer = infobox.querySelector('.pi-section-contents');
+            var tabContainer = infobox.querySelector('.pi-panel');
             this.observeChanges(tabContainer, infobox);
             this.updateTabs(infobox);
         },

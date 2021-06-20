@@ -75,10 +75,10 @@ $(function() {
                     buttonTitle: 'Корисні функції',
                     protect: 'Захистити',
                     ajaxContent: 'AJAX-оновлення',
-                    quickDelete: 'Швидке видалення',
+                    quickDelete: 'Швидке вилучення',
                     stubTemplate: 'Додати шаблон Stub',
                     deleteTemplate: 'Додати шаблон Delete',
-                    addCustomTemplate: 'Користувальницький шаблон',
+                    addCustomTemplate: 'Користувацький шаблон',
                     contentRefreshed: 'Вміст оновлено!'
                 },
                 zh: { // Chinese
@@ -137,7 +137,7 @@ $(function() {
             var lang = mw.config.get('wgUserLanguage'),
                 elementContent = $.extend(i18n.en, i18n[lang.split('-')[0]], i18n[lang]);
 
-            $('.page-header__contribution-buttons').append("<div class=\"wds-button-group\" style=\"vertical-align: top\">" +
+            $('.page-header__contribution-buttons, .skin-fandomdesktop .page-header__actions').append("<div class=\"wds-button-group\" style=\"vertical-align: top\">" +
                 "<a href=\"javascript:void(0)\" class=\"wds-is-squished wds-button\" id=\"usful\">" +
                 "<span>" + elementContent.buttonTitle + "</span>" +
                 "</a>" +

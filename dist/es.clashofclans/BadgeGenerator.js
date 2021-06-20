@@ -218,7 +218,7 @@
  
     $( '#options-container' ).append(
         '<div id="container-lvl" class="container">' +
-            '<div class="container-header">Level</div>' +
+            '<div class="container-header">Nivel</div>' +
             '<div class="container-values" />' +
         '</div>'
     );

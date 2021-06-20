@@ -36,7 +36,8 @@
 		    $('<section class="rail-module activity-module ChatModule">' +
 		        '<h2 class="discord-header">' +
 		            '<img alt="Discord" src="https://vignette.wikia.nocookie.net/atom-rpg/images/d/d0/Discord_logo.png/revision/latest?cb=20181227135639&path-prefix=ru" class="discord-icon">' + 
-		            '<span><a href="https://en.wikipedia.org/wiki/Discord_(software)" target="_blank">Discord</a></span>' + 
+		            /* '<span><a href="https://en.wikipedia.org/wiki/Discord_(software)" target="_blank">Discord</a></span>' + */
+		            '<span>Discord</span>' + 
 		        '</h2>' +
 		        '<table>' +
 		            '<tbody>' +

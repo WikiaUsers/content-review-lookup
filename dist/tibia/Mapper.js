@@ -258,7 +258,7 @@ window.mapper = (function mapper(ns) {
     });
   }
 
-  function minimap_data_to_url(type) {
+  function minimap_data_to_url (type) {
     //0x.1x,2y.3y,4z,5zoom,6zoomm,7centermark
     //0x.1x,2y.3y,4z,5icon,6link
     var x, ret;
@@ -817,11 +817,12 @@ window.mapper = (function mapper(ns) {
     $mapper_bind_links: $mapper_bind_links,
     mapper_bind_all_links: mapper_bind_all_links,
     mapper_rebind_all_links: mapper_rebind_all_links,
-
+	
     minimap_get_coords: minimap_get_coords,
     image_preload_supported: image_preload_supported,
     mapper_preload_files: mapper_preload_files,
     minimap_change_src: minimap_change_src,
+    minimap_data_to_url: minimap_data_to_url,
 
     // TODO Ideally all functions would be modular and exportable.
     // Some of these functions are exported but they probably shouldn't be.

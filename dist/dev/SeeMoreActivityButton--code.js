@@ -62,13 +62,11 @@
     function SeeMoreActivity(i18n) {
         // Internal configuration for script.
         this.i18n = i18n.msg('see-more').plain();
-        this.isUCP = mw.config.get('wgVersion') !== '1.19.24';
         this.icon = {
             diff: window.dev.wds.icon('magnifying-glass-tiny'),
             btn:  window.dev.wds.icon('menu-control-small')
         };
         this.conf = {
-            rc:  window.SeeMoreActivityButtonRC || this.isUCP,
             old: window.SeeMoreActivityButtonOld || false
         };
 
@@ -123,18 +121,14 @@
      * @this                window.dev.seeMoreActivity
      */
     SeeMoreActivity.prototype._execute = function() {
-        var $activity = $rail.children('#wikia-recent-activity');
+        var $activity = $('#wikia-recent-activity');
         if ($activity.length === 0) {
             return;
         }
         // Button addition.
         $activity.children('h2').append(
             $('<a>', {
-                'href':  mw.util.getUrl('Special:' +
-                    (this.conf.rc ?
-                        'RecentChanges' :
-                        'WikiActivity')
-                ),
+                'href':  mw.util.getUrl('Special:RecentChanges'),
                 'class': 'wds-button wds-is-text',
                 'id':    'seemoreactivity-button',
                 'title': this.i18n,

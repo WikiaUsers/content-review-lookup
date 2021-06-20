@@ -22,7 +22,6 @@ $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
 	$( '.notitle a' ).removeAttr( 'title' );
 
 	// Slideshows
-	loadSlideshows( $( '.mw-parser-output' ), 2500 );
 	slideshows.init( $( '.mw-parser-output' ) );
 
 	// Collection pages
@@ -52,28 +51,6 @@ $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
 		'.pi-item[data-source="type"] > .pi-data-value'
 	).each( function () { useCustomFont( this, 'TeamMeat' ) } );
 } );
-
-// TODO: Remove
-/**
- * @param {JQuery} $container 
- * @param {number} timeout 
- */
-function loadSlideshows( $container, timeout ) {
-	$container.find( '.infobox-slideshow' ).each( function () {
-		var $slideshow = $( this ),
-			$slides    = $slideshow.children();
-		if ( $slides.length < 2 ) {
-			$slideshow.removeClass( 'infobox-slideshow' );
-			$slides.children().unwrap();
-			return;
-		}
-
-		(function interval() {
-			setTimeout( interval, timeout );
-			$slideshow.append( $slideshow.children( ':first' ) );
-		})();
-	} );
-}
 
 var specialCharacters = {
 	/* ! */ '\u0021': "emark",
@@ -218,31 +195,41 @@ var slideshows = {
 				: $slideshow.children( '.infobox2-slide:first' )
 			).addClass( 'infobox2-slide-active' );
 		}
-		$slideshow.prepend( $titleBar );
-		$slides
-			.each( function () {
-				var $slide = $( this ),
-					$title = $slide.children( '.infobox2-slide-title:first' );
-				$title
-					.remove()
-					.appendTo( $titleBar )
-					.on( 'click', function () {
-						$titleBar
-							.children( '.infobox2-slide-title-active' )
-							.removeClass( 'infobox2-slide-title-active' );
-						$slideshow
-							.children( '.infobox2-slide-active' )
-							.removeClass( 'infobox2-slide-active' );
-						$title.addClass( 'infobox2-slide-title-active' );
-						$slide.addClass( 'infobox2-slide-active' );
-					} );
-			} )
-			.last()
-			.addClass( 'infobox2-slide-active' );
-		$titleBar
-			.children( ':last' )
-			.addClass( 'infobox2-slide-title-active' );
-		if ( !$slideshow.hasClass( 'infobox2-slideshow-hidden' ) ) {
+		$slides.each( function () {
+			var $slide = $( this ),
+				$title = $slide.children( '.infobox2-slide-title:first' );
+			$title
+				.remove()
+				.appendTo( $titleBar )
+				.on( 'click', function () {
+					$titleBar
+						.children( '.infobox2-slide-title-active' )
+						.removeClass( 'infobox2-slide-title-active' );
+					$slideshow
+						.children( '.infobox2-slide-active' )
+						.removeClass( 'infobox2-slide-active' );
+					$title.addClass( 'infobox2-slide-title-active' );
+					$slide.addClass( 'infobox2-slide-active' );
+				} );
+		} );
+		if ( $slideshow.hasClass( 'dlc-slideshow' ) ) {
+			$slides.last().addClass( 'infobox2-slide-active' );
+			$titleBar.children( ':last' ).addClass( 'infobox2-slide-title-active' );
+		} else {
+			$slides.first().addClass( 'infobox2-slide-active' );
+			$titleBar.children( ':first' ).addClass( 'infobox2-slide-title-active' );
+		}
+		if ( $titleBar.children().length ) {
+			$titleBar
+				.prependTo( $slideshow )
+				.find( 'a' ).each( function () {
+				    $( this ).replaceWith( this.childNodes );
+				} );
+		}
+		if (
+			!$slideshow.hasClass( 'infobox2-slideshow-hidden' ) &&
+			!$slideshow.find( '.infobox2-slideshow' ).length
+		) {
 			$slides.on( 'click', cycle );
 		}
 		if ( $slideshow.hasClass( 'infobox2-slideshow-auto' ) ) {

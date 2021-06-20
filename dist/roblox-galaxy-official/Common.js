@@ -19,16 +19,31 @@ var imgs = [
 	'https://static.wikia.nocookie.net/roblox-galaxy-official/images/a/ae/Galaxy_bg.jpg/revision/latest?cb=20210523005538&format=original',
 	'https://static.wikia.nocookie.net/roblox-galaxy-official/images/d/d6/Galaxy_2_bg.jpg/revision/latest?cb=20210523005620&format=original'
 	];
-    
-document.body.style.backgroundImage = 'url(' + imgs[Math.floor(Math.random() * imgs.length)] + ')'
-document.body.style.backgroundRepeat = "repeat"
-document.body.style.backgroundSize = "120%"
-document.body.style.backgroundAttachment = "fixed"
+var random = false;
+window.addEventListener('load',function(){
+	randomBG();
+	console.log('load');
+});
+//check after 500 ms to see if window load event fired, otherwise set background to default
+window.setTimeout(function(){
+	if(!random){
+		randomBG();
+		console.log('timeout');
+	} 
+},1500);
+
+function randomBG(){
+	document.body.style.backgroundImage = 'url(' + imgs[Math.floor(Math.random() * imgs.length)] + ')';
+	document.body.style.backgroundRepeat = "repeat";
+	document.body.style.backgroundSize = "120%";
+	document.body.style.backgroundAttachment = "fixed";
+	random = true;
+}
 
 // back to top button
 window.BackToTopModern = true;
 
-// background parallax animation | turn down velocity to make it more subtle
+// background parallax animation | turn down velocity to make it more subtle | do not remove without telling smallketchup82
 var velocity = 0.1;
 
 $(window).scroll(function() {
@@ -45,29 +60,6 @@ $(window).scroll(function() {
     });
 })
 
-// Code below was made by Smallketchup82 for the animation of templates with links. On clicking the link, check if tab is focused. If not, check every 100 miliseconds if the tab is focused, if it is focused, add the class which runs the CSS transition.
-var el = document.querySelector('.TemplateRevision.UnderlineStyle');
-var elstyle = document.querySelector('.UnderlineStyle .noexternal .header1 span:after');
-if(el !== null) {
-el.onclick = function() {
-if(!el.classList.contains("Underlineactive")) {
-	setTimeout(function() {
-			if(document.visibilityState === "hidden") {
-		var x = setInterval(function() {
-			if(document.visibilityState === "visible") {
-				clearInterval(x);
-				el.classList.add("Underlineactive");
-				console.log('added class after visibility changed')
-			}
-		}, 100)
-	} else if(document.visibilityState === "visible") {
-		el.classList.add("Underlineactive");
-		console.log('added class without visibility change')
-	}
-	}, 500)
-}
-};
-}
 //To view additional scripts, refer to MediaWiki:ImportJS or search the MediaWiki domain for other "".js" pages
 //Importing the Navbox.js
 importArticles({

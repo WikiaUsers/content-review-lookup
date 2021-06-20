@@ -37,6 +37,10 @@ InactiveUsers = {
 ( (window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {} ).lockdown = true;
 
 //--------------------------------
+// Кастомные теги участников не перезатирают обычные
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };
+
+//--------------------------------
 // Полу-автоматическая архивация (ArchiveTool)
 // Конфигурация, вероятно, не работает. Используем значения по-умолчанию + перенаправления.
 // var ArchiveToolConfig = {

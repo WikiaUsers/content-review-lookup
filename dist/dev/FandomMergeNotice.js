@@ -66,7 +66,7 @@
                 ),
                 $( '<span>', { html: content } )
             )
-        ).insertBefore( '#PageHeader' );
+        ).insertBefore( '.page-header' );
     }
 
     // Load i18n-js

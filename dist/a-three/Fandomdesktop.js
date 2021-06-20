@@ -5,9 +5,7 @@
 window.BackToTopModern = true;
 
 /* AddRailModule on top */
-window.AddRailModule = [
-    {page: 'Template:RailModule', prepend: true}
-];
+window.AddRailModule = [{prepend: true}];
 
 /* For card details on card icon hover */
 window.tooltips_config = {

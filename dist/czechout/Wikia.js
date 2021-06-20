@@ -14,9 +14,9 @@
         $('#WikiaRail').append("<iframe width='300' height='1000' src='https://www.thestrikeback.com/'></iframe>");
     });
 */
- /* Blog CTA */
+ /* Blog CTA 
    $(function () {
-        $('#servant').append("<iframe width='670px' height='1000px' style='margin:0 auto;text-align:center;background-color:transparent!important' src='https://gleam.io/Rz3FG/win-stars-wars-day-prizes-with-fanatical'></iframe>");
+        $('#servant').append("<iframe width='100%' height='600px' src='https://experience.apple/apple-tv-plus/servant/'></iframe>");
     });
 
 

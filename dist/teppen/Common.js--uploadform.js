@@ -15,6 +15,7 @@
         categories: {
             'Game series': {
                 'Ace Attorney images': 'Ace Attorney',
+                'Breath of Fire images': 'Breath of Fire',
                 'Resident Evil images': 'Resident Evil',
                 'Street Fighter images': 'Street Fighter',
                 'Strider images': 'Strider',

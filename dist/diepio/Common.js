@@ -22,16 +22,14 @@ if (
     importArticles({
         type: 'script',
         articles: [
-            'CategoryCommunityModules.js',
-            'Tags.js',
-            'Tournaments.js',
+            // 'CategoryCommunityModules.js',
+            'MediaWiki:Tags.js',
+            // 'Tournaments.js',
             'u:dev:CommunityDataUsers/code.js',
-            'u:dev:ListUsers/code2.js',
+            // 'u:dev:ListUsers/code2.js',
             'u:dev:Medals/code.js',
-            'u:dev:UserRightsRecord/code.js',
+            // 'u:dev:UserRightsRecord/code.js',
             'u:dev:UserTags/code.js',
-            'u:dev:WikiManager_Nameplate.js',
-            'u:elderscrolls:Common.js/DiscussionsLinks.js'
         ]
     }, {
         type: 'style',

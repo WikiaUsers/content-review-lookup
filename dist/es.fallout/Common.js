@@ -12,10 +12,10 @@
 /* ###              Usuario:Porter21 (Oasis & Monobook support)          ### */
 /* ### Aviso legal: Véase https://dev.wikia.com/wiki/ArchiveTool/code.js ### */
 /* ######################################################################### */
-var ArchiveToolConfig = { 
-   archiveListTemplate: 'Archivados',
-   archivePageTemplate: 'PágArchivada',
-   archiveSubpage: 'Archivado',
+window.ArchiveToolConfig = {
+   archiveListTemplate: "Archivados",
+   archivePageTemplate: "PágArchivada",
+   archiveSubpage: "Archivado",
    userLang: true
 };
 
@@ -53,7 +53,7 @@ $(function() {
         return;
     if (wgNamespaceNumber !== 0 && wgNamespaceNumber !== 4 && wgNamespaceNumber !== 110 && wgNamespaceNumber !== 502)
         return;
-    if (skin !== "oasis" && skin !== "wikia")
+    if (skin !== "oasis" && skin !== "fandomdesktop")
         return;
 
     var wrapper = $("#va-titleicons-wrapper");
@@ -62,7 +62,7 @@ $(function() {
     if (wrapper.length === 0 || iconBar.length === 0 || $("a", previewBar).length === 0)
         return;
 
-    var articleDiv = $(".WikiaArticle");
+    var articleDiv = $("#content");
     if (articleDiv.length > 0) {
         iconBar.css("display", "block");
         wrapper.prependTo(articleDiv);
@@ -87,7 +87,6 @@ $(function() {
 /* ###              Usuario:FDekker                                          ### */
 /* ############################################################################# */
 $(function() {
-
     $(".ticker").each(function(_, ticker) {
         var step = 10;  // How many pixels to move text each tick
         var tickerSpeed = 200;
@@ -138,7 +137,7 @@ $(function() {
             return $(placeholder).attr("data-user");
         })
         .map(function(_, user) {
-        	return user.replace(/@/g, "\"")
+        	return user.replace(/@/g, "\"");
         })
         .toArray();
  
@@ -147,7 +146,7 @@ $(function() {
         data: { "ids": users.join(",") },
         success: function(response) {
             response.items.forEach(function(item) {
-            	var escapedName = item.name.replace(/"/g, "@")
+            	var escapedName = item.name.replace(/"/g, "@");
 
             	$("." + placeholderClass + "[data-user]")
         			// Separate filter to support quotes in usernames

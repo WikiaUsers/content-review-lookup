@@ -70,7 +70,6 @@ var tooltips = {
 					.addClass( 'tooltip-content' )
 					.appendTo( tooltips.$wrapper );
 				tooltips.targets.set( template, $target );
-				loadSlideshows( $target, 1500 ); // TODO: remove
 				$target
 					.find( '.infobox2-slideshow:not( .infobox2-slideshow-auto )' )
 					.addClass( 'infobox2-slideshow-auto' );

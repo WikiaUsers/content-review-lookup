@@ -1,4 +1,5 @@
-// NavArticleCounter by Не кочан
+// @source https://nkch.fandom.com/wiki/MediaWiki:NavArticleCounter.js
+// @version 15.06.2021
 mw.loader.using("mediawiki.api").then(
     function () {
         return new mw.Api().loadMessagesIfMissing(["community-header-pages"]);
@@ -42,7 +43,12 @@ mw.loader.using("mediawiki.api").then(
                     counter.appendChild(counterValue);
 
                     var counterLabel = document.createElement("span");
-                    counterLabel.innerHTML = mw.message(data.counter.label.key).text();
+                    if (mw.config.get("wgPageContentLanguage") == "ru") {
+                        mw.messages.set("nkch-article-counter", "{{PLURAL:$1|страница|страницы|страниц}}");
+                        counterLabel.innerHTML = mw.message("nkch-article-counter", +data.counter.value).text();
+                    } else {
+                        counterLabel.innerHTML = mw.message(data.counter.label.key).text();
+                    }
 
                     Object.assign(counterLabel.style, {
                         display: "block",

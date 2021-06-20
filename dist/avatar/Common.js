@@ -66,7 +66,7 @@ window.MessageBlock = {
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MessageBlock/code.js'
+        'u:dev:MediaWiki:MessageBlock/code.js'
     ]
 });
 

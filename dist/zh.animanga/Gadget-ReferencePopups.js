@@ -1,0 +1,1 @@
+mw.loader.load( 'https://dev.fandom.com/index.php?title=MediaWiki:ReferencePopups/code.js&action=raw&ctype=text/javascript' );

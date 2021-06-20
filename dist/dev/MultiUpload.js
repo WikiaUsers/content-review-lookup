@@ -29,8 +29,10 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
             token = mw.user.tokens.get('editToken'),
             files = [],
             stdmsgs = ['filedesc', 'license-header', 'fileexists-no-change', 'fileexists-duplicate-version', 'verification-error', 'fileexists-shared-forbidden', 'permissiondenied', 'watchthisupload', 'ignorewarnings'].join('|'),
-            limit,
-            curFile = 0;
+            limit = (window.MultiUploadoption && window.MultiUploadoption.max) ? window.MultiUploadoption.max : -1,
+            defaultlicense = (window.MultiUploadoption && window.MultiUploadoption.defaultlicense) ? window.MultiUploadoption.defaultlicense : '',
+            curFile = 0
+            ;
 
         function preload() {
             if (--preloads === 0) {
@@ -60,11 +62,6 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
         * Set Maximum number of file the user can import at one time (can be overriden by a config var but its value is capped at 100)
         */
         function setLimit() {
-            if (window.MultiUploadoption && window.MultiUploadoption.max) {
-                limit = window.MultiUploadoption.max;
-            } else {
-                limit = -1;
-            }
             if (limit < 0 ||
                 limit > 101 ||
                 typeof limit !== 'number') {
@@ -98,7 +95,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
                     filedesc.find("#mw-htmlform-description > tbody > tr.mw-htmlform-field-HTMLTextAreaField > td.mw-label > label").attr("for", "wpUploadDescription" + index);
                     filedesc.find("#wpDestFile").attr("name", "wpDestFile" + index).attr("id", "wpDestFile" + index).val(element.name);
                     filedesc.find("#wpUploadDescription").attr("name", "wpUploadDescription" + index).attr("id", "wpUploadDescription" + index);
-                    filedesc.find("#wpLicense").attr("name", "wpLicense" + index).attr("id", "wpLicense" + index);
+                    filedesc.find("#wpLicense").attr("name", "wpLicense" + index).attr("id", "wpLicense" + index).val(defaultlicense);
                     filedesc.append("<hr />");
                     filedesc.append("<td class=\"mw-input\"><input name=\"wpWatchthis" + index + "\" type=\"checkbox\" value=\"1\" checked=\"checked\" id=\"wpWatchthis" + index + "\">&nbsp;<label for=\"wpWatchthis" + index + "\">" + i18n.msg('watchthisupload').escape() + "</label></td>");
                     filedesc.append("<td class=\"mw-input\"><input name=\"wpIgnoreWarning" + index + "\" type=\"checkbox\" value=\"1\" id=\"wpIgnoreWarning" + index + "\">&nbsp;<label for=\"wpIgnoreWarning" + index + "\">" + i18n.msg('ignorewarnings').escape() + "</label></td>");

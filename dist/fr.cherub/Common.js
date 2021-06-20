@@ -14,3 +14,16 @@ window.SpoilerAlert = {
     no: 'Non, pas maintenant',
     fadeDelay: 1600
 };
+
+/* Inversion des couleurs des elements grace au modele [[Modèle:InversionTheme]] */
+var root = document.querySelector(':root');
+var tabImages;
+if (getComputedStyle(root).getPropertyValue('--theme-page-background-color') == '#ffffff') {
+	tabImages = Array.from(document.getElementsByClassName('inversionClair'));
+} else {
+	tabImages = Array.from(document.getElementsByClassName('inversionSombre'));
+}
+console.log(tabImages);
+for (var i = 0; i<tabImages.length; i++) {
+	tabImages[i].style.filter = 'invert(100%)';
+}
