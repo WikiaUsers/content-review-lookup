@@ -1,9 +1,27 @@
+/*
+ * CustomBackgrounds
+ * @description Applies custom background images for set articles.
+ * Not compatible with FandomDesktop.
+ * @author Thundermaker300
+ */
+
+$(function() {
+    if(mw.config.get('skin') !== 'oasis') return;
+    var pageName = mw.config.get("wgTitle");
+    if(pages[pageName]) {
+        mw.util.addCSS('body.background-dynamic.skin-oasis::after, body.background-dynamic.skin-oasis::before {background-image: none;}');
+        document.body.style.backgroundImage = "url(\"" + pages[pageName] + "\")";
+        document.body.style.backgroundSize = "cover";
+        document.body.style.backgroundPosition = "center";
+    }
+});
+
 const pages = {
     // Individual pages
     "Egg Hunt 2020: Agents of E.G.G.": "https://vignette.wikia.nocookie.net/roblox/images/4/4f/Space.jpg/revision/latest",
     "Nimblz": "https://vignette.wikia.nocookie.net/roblox/images/8/8c/NimblzBG.png/revision/latest",
     "Roblox Developers Conference 2020": "https://vignette.wikia.nocookie.net/roblox/images/c/cb/RDC2020Background.png/revision/latest",
-    
+
     // Wonder Woman
     "Wonder Woman: The Themyscira Experience": "https://vignette.wikia.nocookie.net/roblox/images/3/30/WonderwomanBG.png/revision/latest",
     "WorkingGameDC": "https://vignette.wikia.nocookie.net/roblox/images/3/30/WonderwomanBG.png/revision/latest",
@@ -26,7 +44,7 @@ const pages = {
     "Wonder Woman's Armor - Wonder Woman": "https://vignette.wikia.nocookie.net/roblox/images/3/30/WonderwomanBG.png/revision/latest",
     "Wonder Woman's Armored Skirt": "https://vignette.wikia.nocookie.net/roblox/images/3/30/WonderwomanBG.png/revision/latest",
     "Wonder Woman's Sword & Shield - Wonder Woman": "https://vignette.wikia.nocookie.net/roblox/images/3/30/WonderwomanBG.png/revision/latest",
-    
+
     // The Island of Move
     "Build It, Play It: The Island of Move": "https://vignette.wikia.nocookie.net/roblox/images/9/95/BuildItPlayItBG.jpg/revision/latest",
     "Roblox Build It, Play It": "https://vignette.wikia.nocookie.net/roblox/images/9/95/BuildItPlayItBG.jpg/revision/latest",
@@ -37,7 +55,7 @@ const pages = {
     "Speedy Shades": "https://vignette.wikia.nocookie.net/roblox/images/9/95/BuildItPlayItBG.jpg/revision/latest",
     "Cardio Cans": "https://vignette.wikia.nocookie.net/roblox/images/9/95/BuildItPlayItBG.jpg/revision/latest",
     "Kinetic Staff": "https://vignette.wikia.nocookie.net/roblox/images/9/95/BuildItPlayItBG.jpg/revision/latest",
-    
+
     // Metaverse Champions
     "Metaverse Champions": "https://static.wikia.nocookie.net/roblox/images/9/91/MVC-bg.jpg/revision/latest",
     "Metaverse Events": "https://static.wikia.nocookie.net/roblox/images/9/91/MVC-bg.jpg/revision/latest",
@@ -109,11 +127,3 @@ const pages = {
     "Sparks' Winner Wings": "https://static.wikia.nocookie.net/roblox/images/9/91/MVC-bg.jpg/revision/latest",
     "Valkyrie of the Metaverse": "https://static.wikia.nocookie.net/roblox/images/9/91/MVC-bg.jpg/revision/latest",
 };
-
-var pageName = mw.config.get("wgTitle");
-if (pages[pageName]) {
-    mw.util.addCSS('body.background-dynamic.skin-oasis::after, body.background-dynamic.skin-oasis::before {background-image: none;}');
-    document.body.style.backgroundImage = "url(\""+pages[pageName]+"\")";
-    document.body.style.backgroundSize = "cover";
-    document.body.style.backgroundPosition = "center";
-}

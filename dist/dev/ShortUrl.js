@@ -10,6 +10,7 @@
   var config = mw.config.get()
 
   // 判断是需要载入
+  dev = dev || {}
   if (config.wgArticleId < 1) return
   if (dev.shortUrl !== undefined) return
 

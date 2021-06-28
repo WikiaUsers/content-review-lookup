@@ -75,7 +75,7 @@
 
                 showGUContainer('#mw-imagepage-section-linkstoimage, #mw-imagepage-nolinkstoimage', '<h3>Global</h3>');
 
-                if (config.auto_show)
+                if (config.auto_show || $('#ca-delete').length)
                     showGUTable();
 
                 break;

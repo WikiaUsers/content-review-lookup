@@ -227,6 +227,18 @@ $(function() {
 });
 
 
+
+/* 
+////////////////////////////////////////////////////////////////////
+// THE BELOW CODE randomly changes text above top navigation from "Marvel Database" to one from the list
+////////////////////////////////////////////////////////////////////
+*/
+var elements=document.getElementsByClassName('fandom-community-header__community-name');
+var wiki_name=elements[0];
+var wiki_name_number=Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + 1;
+wiki_name.textContent=["Face Front, True Believers!", "'Nuff Said!", "Excelsior!", "Make Mine Marvel", "Avengers Assemble!", "To Me, My X-Men!", "With Great Power...", "Hulk Smash!", "Snikt!", "It's Clobberin' Time!", "Flame On!", "Wakanda Forever!", "I Am Iron Man", "I Am Groot", "By the Hoary Host of Hoggoth!", "Bamf!", "Whosoever Holds This Hammer, If They Be Worthy...", "By the Bristling Beard of Odin!", "Imperius Rex!", "Oh, My Stars and Garters!", "The Best There Is...", "...Hope You Survive the Experience!", "Sweet Christmas!", "Whatta Revoltin' Development!", "Have at Thee!", "And There Came a Day Unlike Any Other...", "Thwip!", "Champions Charge!" ][wiki_name_number];
+
+
 /* 
 ////////////////////////////////////////////////////////////////////
 // THE BELOW CODE ADDS CUSTOM BUTTONS TO THE JAVASCRIPT EDIT TOOLBAR
@@ -313,7 +325,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database:Character Template\r| Image                   = ",
-post: "\r| Name                    = \r| CurrentAlias            = \r| Aliases                 = \r\r| Affiliation             = \r| Relatives               = \r| MaritalStatus           = \r\r| CharRef                 = \r| Gender                  = \r| Height                  = \r| Weight                  = \r| Eyes                    = \r| Hair                    = \r| UnusualFeatures         = \r\r| Origin                  = \r| Universe                = \r| PlaceOfBirth            = \r\r| Identity                = \r| Citizenship             = \r| Occupation              = \r| Education               = \r| BaseOfOperations        = \r\r| Creators                = \r| First                   = \r\r| HistoryText             = \r\r| Personality             = \r\r| Powers                  = \r| Abilities               = \r| Strength                = \r| Weaknesses              = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Marvel                  = \r| Wikipedia               = \r| Links                   = \r}}"
+post: "\r| Name                    = \r| CurrentAlias            = \r| Aliases                 = \r\r| Affiliation             = \r| Relatives               = \r| MaritalStatus           = \r\r| CharRef                 = \r| Gender                  = \r| Height                  = \r| Weight                  = \r| Eyes                    = \r| Hair                    = \r| UnusualFeatures         = \r\r| Origin                  = \r| Reality                 = \r| PlaceOfBirth            = \r\r| Identity                = \r| Citizenship             = \r| Occupation              = \r| Education               = \r| BaseOfOperations        = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| Personality             = \r\r| Powers                  = \r| Abilities               = \r| Strength                = \r| Weaknesses              = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Marvel                  = \r| Wikipedia               = \r| Links                   = \r}}"
 }
 }
 }
@@ -332,7 +344,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database:Team Template\r| Image                   = ",
-post: "\r| Name                    = \r| EditorialNames          = \r| Aliases                 = \r\r| Status                  = \r| Identity                = \r| Universe                = \r| BaseOfOperations        = \r\r| TeamLeaders             = \r| CurrentMembers          = \r| FormerMembers           = \r| Allies                  = \r| Enemies                 = \r\r| Origin                  = \r| PlaceOfFormation        = \r| PlaceOfDefunction       = \r| Creators                = \r| First                   = \r| Last                    = \r\r| HistoryText             = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+post: "\r| Name                    = \r| EditorialNames          = \r| Aliases                 = \r\r| Status                  = \r| Identity                = \r| Reality                 = \r| BaseOfOperations        = \r\r| TeamLeaders             = \r| CurrentMembers          = \r| FormerMembers           = \r| Allies                  = \r| Enemies                 = \r\r| Origin                  = \r| PlaceOfFormation        = \r| PlaceOfDefunction       = \r| Creators                = \r| First                   = \r| Last                    = \r\r| History                 = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 }
 }
 }
@@ -351,7 +363,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database:Location Template\r| Image                   = ",
-post: "\r| OfficialName            = \r| Aliases                 = \r\r| Universe                = \r| Galaxy                  = \r| StarSystem              = \r| Planet                  = \r| Continent               = \r| Country                 = \r| Region                  = \r| State                   = \r| City                    = \r| Locale                  = \r\r| Population              = \r\r| Creators                = \r| First                   = \r\r| HistoryText             = \r\r| PointsOfInterest        = \r| Residents               = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+post: "\r| Name                    = \r| Aliases                 = \r\r| Reality                 = \r| Galaxy                  = \r| StarSystem              = \r| Planet                  = \r| Continent               = \r| Country                 = \r| Region                  = \r| State                   = \r| City                    = \r| Locale                  = \r\r| Population              = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| PointsOfInterest        = \r| Residents               = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 }
 }
 }
@@ -370,7 +382,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database: Item Template\r| Image                   = ",
-post: "\r| Name                    = \r| Aliases                 = \r\r| CurrentOwner            = \r| PreviousOwners          = \r| AlternateOwners         = \r\r| Type                    = \r| Material                = \r| Dimensions              = \r| Weight                  = \r\r| Origin                  = \r| Universe                = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r\r| Creators                = \r| First                   = \r\r| HistoryText             = \r| Properties              = \r| AlternateVersions       = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+post: "\r| Name                    = \r| Aliases                 = \r\r| CurrentOwner            = \r| PreviousOwners          = \r| AlternateOwners         = \r\r| Type                    = \r| Material                = \r| Dimensions              = \r| Weight                  = \r\r| Origin                  = \r| Reality                 = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r\r| Creators                = \r| First                   = \r\r| History                 = \r| Properties              = \r| AlternateVersions       = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 }
 }
 }
@@ -408,7 +420,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database:Race Template\r| Image                   = ",
-post: "\r| Name                    = \r| Aliases                 = \r| Identity                = \r| Affiliation             = \r| Universe                = \r| BaseOfOperations        = \r\r| BodyType                = \r| AvgHeight               = \r| AvgWeight               = \r| Eyes                    = \r| Hair                    = \r| Skin                    = \r| NumberOfLimbs           = \r| NumberOfFingers         = \r| NumberOfToes            = \r| SpecialAdaptations      = \r| UnusualFeatures         = \r\r| Origin                  = \r| GalaxyOfOrigin          = \r| StarSystemOfOrigin      = \r| HomePlanet              = \r| PlaceOfBirth            = \r| Creators                = \r| First                   = \r\r| HistoryText             = \r\r| Habitat                 = \r| Gravity                 = \r| Atmosphere              = \r| Population              = \r\r| Powers                  = \r| Abilities               = \r| AvgStrength             = \r| Weaknesses              = \r\r| GovernmentType          = \r| TechnologyLevel         = \r| CulturalTraits          = \r| Representatives         = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+post: "\r| Name                    = \r| Aliases                 = \r| Identity                = \r| Affiliation             = \r| Reality                 = \r| BaseOfOperations        = \r\r| BodyType                = \r| AvgHeight               = \r| AvgWeight               = \r| Eyes                    = \r| Hair                    = \r| Skin                    = \r| NumberOfLimbs           = \r| NumberOfFingers         = \r| NumberOfToes            = \r| SpecialAdaptations      = \r| UnusualFeatures         = \r\r| Origin                  = \r| GalaxyOfOrigin          = \r| StarSystemOfOrigin      = \r| HomePlanet              = \r| PlaceOfBirth            = \r| Creators                = \r| First                   = \r\r| History                 = \r\r| Habitat                 = \r| Gravity                 = \r| Atmosphere              = \r| Population              = \r\r| Powers                  = \r| Abilities               = \r| AvgStrength             = \r| Weaknesses              = \r\r| GovernmentType          = \r| TechnologyLevel         = \r| CulturalTraits          = \r| Representatives         = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 }
 }
 }
@@ -427,7 +439,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database: Vehicle Template\r| Image                   = ",
-post: "\r| Name                    = \r| Title                   = \r| Nicknames               = \r| Universe                = \r| Status                  = \r| CurrentModel            = \r| CurrentOwner            = \r| TransportMethod         = \r| Dimensions              = \r| Creators                = \r| Origin                  = \r| First                   = \r\r| HistoryText             = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+post: "\r| Name                    = \r| Title                   = \r| Aliases                 = \r| Reality                 = \r| Status                  = \r| CurrentModel            = \r| CurrentOwner            = \r| TransportMethod         = \r| Dimensions              = \r| Creators                = \r| Origin                  = \r| First                   = \r\r| History                 = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 }
 }
 }

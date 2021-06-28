@@ -437,7 +437,6 @@ function loadFunc() {
 
     rewriteTitle();
     showEras('title-eraicons');
-    showEras('title-shortcut');
 }
 
 function onStdSummaryChange() {

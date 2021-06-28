@@ -12,7 +12,7 @@ mw.loader.using('mediawiki.api', function() {
     
     if (
         window.AjaxBatchDeleteLoaded ||
-        !/sysop|staff|helper|wiki-manager|content-team-member|content-volunteer|content-moderator|soap/.test(mw.config.get('wgUserGroups').join())
+        !/sysop|staff|helper|wiki-manager|content-team-member|content-moderator|soap/.test(mw.config.get('wgUserGroups').join())
     ) {
         return;
     }

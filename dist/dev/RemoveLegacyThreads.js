@@ -1,5 +1,5 @@
 mw.loader.using(['mediawiki.api']).done(function() {
-	if (!/sysop|soap|staff|helper|wiki-manager|content-team-member|util/.test(mw.config.get('wgUserGroups').join('\n'))) {
+	if (!/sysop|bot|soap|staff|bot-global|helper|wiki-manager|content-team-member|util/.test(mw.config.get('wgUserGroups').join('\n'))) {
 		return;
 	}
 	if (mw.config.get('wgCanonicalSpecialPageName') !== 'Whatlinkshere') return;
@@ -24,7 +24,7 @@ mw.loader.using(['mediawiki.api']).done(function() {
 				for (var l in pg.linkshere) {
 					var link = pg.linkshere[l];
 					if (threadLinks.indexOf(link.title) === -1) continue;
-					prom.push(a.postWithEditToken({action:'edit',text:'',pageid:link.pageid,reason:'Blanking inaccessible threads'}));
+					prom.push(a.postWithEditToken({action:'edit',text:'',pageid:link.pageid,reason:'Blanking inaccessible threads',bot:true}));
 				}
 			}
 			Promise.allSettled(prom).then(function(res) {

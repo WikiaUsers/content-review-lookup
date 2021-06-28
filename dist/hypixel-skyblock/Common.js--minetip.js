@@ -7,8 +7,7 @@ $(function() {
 	var escapeChars = { '\\&': '&#38;', '<': '&#60;', '>': '&#62;' };
 	var escape = function(text) {
 		// "\" must be escaped first
-		return text.replace(/\\\\/g, '&#92;')
-			.replace(/\\&|[<>]/g, function(char) { return escapeChars[char]; });
+		return text.replace(/\\&|[<>]/g, function(char) { return escapeChars[char]; });
 	};
 	var $tooltip = $();
 	var $win = $(window), winWidth, winHeight, width, height;
@@ -22,7 +21,7 @@ $(function() {
 				title = $elem.attr('title');
 				if (title !== undefined) {
 					title = $.trim(title.replace(/&/g, '\\&'));
-					$elem.attr('data-minetip-title', title);
+					$elem.attr('data-minetip-title', escape(title));
 				}
 			}
 			

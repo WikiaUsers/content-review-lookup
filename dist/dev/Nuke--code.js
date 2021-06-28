@@ -35,7 +35,7 @@ mw.loader.using(['jquery.client', 'mediawiki.util', 'mediawiki.api', 'mediawiki.
 
     if (
         window.NukeLoaded ||
-        !/sysop|staff|helper|wiki-manager|content-volunteer|content-moderator|content-team-member|soap/.test(config.wgUserGroups.join())
+        !/sysop|staff|helper|wiki-manager|content-moderator|content-team-member|soap/.test(config.wgUserGroups.join())
     ) {
         return;
     }

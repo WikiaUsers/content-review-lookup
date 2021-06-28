@@ -333,7 +333,7 @@
 		initURLandDisplayParams();
 
 		// Dev Info: script-dev-div
-		var devInfo = '<div id="script-dev-div"><a href="https://dev.wikia.com/wiki/ListFiles" '
+		var devInfo = '<div id="script-dev-div"><a href="https://dev.fandom.com/wiki/ListFiles" '
 			+ 'title="Read about this script">w:c:dev:ListFiles</a>';
 		if (window.localStorage) {
 			devInfo += ('<span id="settings-save">[<a title="Saves your settings to local storage">Save current settings</a>]</span>'
@@ -645,6 +645,7 @@
 	// main form initialization sequence
 	function initialize() {
 	    var version = mw.config.get('wgVersion');
+	    var skin = mw.config.get('skin');
 	    if (version === '1.19.24') {
 	        pathRegex = new RegExp('^' + $.escapeRE(mw.config.get('wgArticlePath').replace('$1', '')));
 	    } else if (version >= '1.34') {
@@ -670,7 +671,7 @@
 					filenames += getFile($(this).children('a:first')) + "\n";
 					count++;
 				});
-				$tr = $('<tr id="filenames-list-tr"><td colspan="6" style="text-align:center; padding:10px;">Here is a raw list of the ' + count + ' filename(s) currently shown on this page, provided by the <a title="w:c:dev:ListFiles" href="https://dev.wikia.com/wiki/ListFiles">ListFiles</a> script on the Fandom Developers Wiki.<br /><textarea id="filenames-list-textarea" style="width:95%; height:150px;"></textarea></td></tr>');
+				$tr = $('<tr id="filenames-list-tr"><td colspan="6" style="text-align:center; padding:10px;">Here is a raw list of the ' + count + ' filename(s) currently shown on this page, provided by the <a title="w:c:dev:ListFiles" href="https://dev.fandom.com/wiki/ListFiles">ListFiles</a> script on the Fandom Developers Wiki.<br /><textarea id="filenames-list-textarea" style="width:95%; height:150px;"></textarea></td></tr>');
 				$tr.find('#filenames-list-textarea').val(filenames);
 
 				// insert new table row
@@ -685,7 +686,7 @@
 					$container;
 
 				// set filenames
-				if (version === '1.19.24') {
+				if (version === '1.19.24' || skin === 'fandomdesktop') {
 				    $('.gallerytext > a').each(function() {
 				        filenames += getFile(this) + "\n";
 				        count++;
@@ -696,12 +697,12 @@
 				        count++;
 				    });
 				}
-				$container = $('<div id="filesnames-list-container"><hr /><p>Here is a raw list of the ' + count + ' filename(s) currently shown on this page, provided by the <a title="w:c:dev:ListFiles" href="https://dev.wikia.com/wiki/ListFiles">ListFiles</a> script on the Fandom Developers Wiki.</p><textarea id="filesnames-list-textarea" style="width: 95%; height: 150px"></textarea></div>');
+				$container = $('<div id="filesnames-list-container"><hr /><p>Here is a raw list of the ' + count + ' filename(s) currently shown on this page, provided by the <a title="w:c:dev:ListFiles" href="https://dev.fandom.com/wiki/ListFiles">ListFiles</a> script on the Fandom Developers Wiki.</p><textarea id="filesnames-list-textarea" style="width: 95%; height: 150px"></textarea></div>');
 				$container.children('#filesnames-list-textarea').val(filenames);
 
 				// insert container
 				$('#filesnames-list-container').remove(); // prevent duplicates
-				if (version === '1.19.24') {
+				if (version === '1.19.24' || skin === 'fandomdesktop') {
 				    $('.gallery').before($container);
 				} else {
 				    $('.wikia-gallery').before($container);

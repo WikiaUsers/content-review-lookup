@@ -25,6 +25,11 @@ window.MessageWallUserTags = {
     }
 };
 
+/* AddRailModule on top */
+window.AddRailModule = [
+    {page: 'Template:RailModule', prepend: true},
+];
+
 /* Template for Tabs -  From Wikia One Piece*/
 // Template:Tabs
 $(function() {

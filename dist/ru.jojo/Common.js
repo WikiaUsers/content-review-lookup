@@ -1,12 +1,5 @@
-// importArticles({
-//     type: 'script',
-//     articles: [
-//         'u:dev:ReferencePopups/code.js',      // Всплывающие примечания
-//     ]
-// });
 /* На вики также подключено "Extension:Variables" MediaWiki */
 // ============================================================
-
 preloadTemplates_list =  "MediaWiki: Custom-PreloadTemplatesList" ; 
 preloadTemplates_subpage =  "case-by-case" ;
 
@@ -21,10 +14,6 @@ nkch_gst_gadgets = [{
     name: "RWA", // название гаджета с MediaWiki:Gadget-Название; обязательно
     title: "Недавняя вики-деятельность", // Название в меню
     description: "Недавняя вики-деятельность" // Описание гаджета в меню при наведении
-}, {
-    name: "ModernProfile",
-    title: "Современный профиль",
-    description: "Современный профиль"
 }, {
     name: "UWStyle",
     title: "Единый стиль вики",

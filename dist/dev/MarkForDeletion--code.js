@@ -25,7 +25,7 @@
         config.wgAction !== 'view' ||
         config.wgNamespaceNumber === -1 ||
         config.wgUserName === null ||
-        /content-moderator|sysop|helper|staff|content-volunteer|wiki-manager|content-team-member|soap/.test(config.wgUserGroups.join('|')) ||
+        /content-moderator|sysop|helper|staff|wiki-manager|content-team-member|soap/.test(config.wgUserGroups.join('|')) ||
         window.MarkForDeletionLoaded
     ) {
         return;
@@ -124,3 +124,4 @@
         i18n.loadMessages('MarkForDeletion').done(initDeleteNoticeButton);
     });
 })();
+// </nowiki>

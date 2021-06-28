@@ -16,3 +16,12 @@ window.DiscussionTemplates = {
         },
     allowedGroups: ['sysop']
 };
+
+/*** Back To Top Button Config ***/
+window.BackToTopModern = true;
+window.BackToTopStart = 200;
+
+/*** Tooltips Customization ***/
+window.tooltips_config = {
+    noCSS: true,
+}

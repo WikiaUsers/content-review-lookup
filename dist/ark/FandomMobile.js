@@ -51,3 +51,14 @@ $( document ).ready( fpmobilecollapse.initialize );
 /****************************************
 /* End Main Page Mobile Collapse Script *
 /****************************************/
+
+RLQ.push(['jquery', function() {
+  $('.tabber .tabbertab').each(function () {
+    // add a pseudo-heading before each tabber using its label.
+    // note: FandomMobile has no styles for pseudo-headings.
+    $('<dl>')
+      .append($('<dt>')
+              .text($(this).attr('title'))
+             ).insertBefore($(this));
+  });
+}]);

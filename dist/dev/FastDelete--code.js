@@ -29,7 +29,7 @@
         (conf.wgNamespaceNumber === 2 && isUCP && $('.noarticletext').length) ||
         (conf.wgNamespaceNumber != 2 && isUCP && !$('#ca-delete').length) ||
         (!isUCP && !$('#ca-delete').length) ||
-        !/sysop|staff|helper|wiki-manager|content-team-member|content-volunteer|content-moderator|soap/.test(mw.config.get('wgUserGroups').join())
+        !/sysop|staff|helper|wiki-manager|content-team-member|content-moderator|soap/.test(mw.config.get('wgUserGroups').join())
     ) {
         return;
     }

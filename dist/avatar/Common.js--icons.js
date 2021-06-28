@@ -4,10 +4,10 @@
 
 $( function () {
     if ( $( '#icons' ).length ) {
-    	if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
-    		$( '.page-header__actions' ).before( $( '#icons' ).css('padding-top', '17px').show() );
-    	} else {
-    	    $( '.page-header__contribution > div' ).first().append( $( '#icons' ).show() );
-    	}
+        if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
+            $( '.page-header__actions' ).prepend( $( '#icons' ).show() );
+        } else {
+            $( '.page-header__contribution > div' ).first().append( $( '#icons' ).show() );
+        }
     }
 } );

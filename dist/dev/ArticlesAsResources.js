@@ -55,14 +55,7 @@ $(function () {
         if (obj.type === 'style') {
             obj.type = 'css';
         }
-        if (typeof obj.articles === 'object') {
-            const list = [];
-            obj.articles.forEach(item => {
-                list.push(request(item, obj.type));
-            });
-            return Promise.all(list);
-        }
-        return request(obj.articles, obj.type);
+		return Promise.all(obj.articles.map(item => request(item, obj.type)));
     };
 
     window.importArticles = (...objs) => {

@@ -21,6 +21,7 @@
                 'Citron Card images': 'Citron',
                 'Guy Card images': 'Guy',
                 'Hisoka Mikage Card images': 'Hisoka Mikage',
+                'Homare Arisugawa Card images': 'Homare Arisugawa',
                 'Itaru Chigasaki Card images': 'Itaru Chigasaki',
                 'Juza Hyodo Card images': 'Juza Hyodo',
                 'Kazunari Miyoshi Card images': 'Kazunari Miyoshi',

@@ -361,7 +361,7 @@
         $('#gdm-dashboard-search').empty().append(Mustache.render(GDMD.templates.search));
         var year = new Date().getUTCFullYear();
         var month = new Date().getUTCMonth();
-        $.when(GDMD.getPageContents(GDMD.PAGES.OVERVIEW + year + ' ' + GDMD.MONTHS[month])).then(function(content) {
+        $.when(GDMD.getPageContents(GDMD.PAGES.OVERVIEW + '2021 April')).then(function(content) {
             var badDatePromise = $.Deferred().resolve(content);
             var ignoreWikisPromise = GDMD.getPageContents(GDMD.PAGES.IGNORE);
             if (content === null) {

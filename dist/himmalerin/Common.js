@@ -1,1 +1,3 @@
-console.log('Logging from MediaWiki:Common.js', 'test');
+window.NoLicenseWarning = {
+	forceLicense: true,
+};

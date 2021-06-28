@@ -9,9 +9,7 @@ $('.page-header__contribution>div:first-child').append($('.eraicons').first());
     }
 })();
 
-/**
- * Show/hide for media timeline -- Grunny
- **/
+/* Show/hide for media timeline -- Grunny */
 $( function () {
     if( !$( '.timeline-toggles' ).length ) {
         return;

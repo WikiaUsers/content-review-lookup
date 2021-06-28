@@ -202,7 +202,7 @@ $( function() {
 	     }
 	 }
 	/* Avoid the purge confirmation all together, restoring legacy behaviour until extension is fixed */
-	 $('.DPL-purge a.external').on( 'click', function( e ) {
+	 $('.DPL-purge a').on( 'click', function( e ) {
 		var $form = $( '<form>' ).attr( {
 			method: 'POST',
 			action: this.href,

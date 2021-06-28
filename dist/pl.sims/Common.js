@@ -158,3 +158,13 @@ function addTitleGames() {
 }
  
 addOnloadHook( addTitleGames );
+
+nkch_gst_gadgets = [{
+    name: "ModernProfile", // Title of the gadget from MediaWiki:Gadgets-definition; required
+    title: "Modern Profile", // Name of the gadget in dropdown
+    description: "Modern Profile for user page" // Description of the gadget on hover
+}, {
+    name: "RCM",
+    title: "Recent Changes Modern",
+    description: "Customized Recent Changes"
+}];

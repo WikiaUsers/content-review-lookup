@@ -482,7 +482,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'ext.codeEditor.ace']).then(
 	}
 	
 	function initInterface() {
-		document.getElementById('firstHeading').innerHTML = 'Search For Pages';
+		(document.getElementById('firstHeading') || document.getElementsByClassName('page-header__title')[0]).innerHTML = 'Search For Pages';
 		document.title = 'Search For Pages | ' + mw.config.get('wgSiteName') + ' | Fandom';
 
 		$(document.body).on('click', '.SP-deleteSelectionCheckbox', function() {

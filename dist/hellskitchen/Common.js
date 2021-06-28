@@ -25,18 +25,22 @@ window.MastheadRightsBadgeSettings = {
 };
 window.UserTagsJS = {
 	tags: {
-		bureaucrat: { u:'Executive Chef', link:'Project:Wiki_Staff' },
-		sysop: { u:'Head Chef', link:'Project:Wiki_Staff' },
-		'content-moderator': { u:'Sous Chef', link:'Project:Wiki_Staff' },
-		threadmoderator: { u:'Sous Chef', link:'Project:Wiki_Staff' },
+		bureaucrat: { u:'Bureaucrat', link:'Project:Wiki_Staff', order: 3 },
+		sysop: { u:'Administrator', link:'Project:Wiki_Staff', order: 4 },
+		'content-moderator': { u:'Content Moderator', link:'Project:Wiki_Staff', order: 5 },
+		threadmoderator: { u:'Discussion Moderator', link:'Project:Wiki_Staff', order: 6 },
 		bot: { u: 'Bot', link: 'Special:ListUsers/bot' },
 		inactive: { u: 'Inactive' },
 		blocked: { u: 'Ejected', link: 'Special:BlockList' },
-		'wiki-manager': { u: 'Wiki Manager', link: 'w:Help:Wiki_Managers' },
-		soap: { u: 'SOAP', link: 'w:Help:SOAP' },
-		council: {u: 'Council', link: 'w:Help:Community Council'},
-		redditmod: {u: 'Reddit Moderator' },
-		discordmod: {u: 'Discord Moderator' }
+		'wiki-manager': { u: 'Wiki Manager', link: 'w:Help:Wiki_Managers', order: 1 },
+		soap: { u: 'SOAP', link: 'w:Help:SOAP', order: 2 },
+		council: {u: 'Council', link: 'w:Help:Community Council', order: 9},
+		redditmod: {u: 'Reddit Moderator', link: 'Project:Wiki_Staff', order: 7 },
+		discordmod: {u: 'Discord Moderator', link: 'Project:Wiki_Staff', order: 8 },
+		discordmod1: {u: 'Discord Moderator', link: 'Project:Wiki_Staff', order: 8 },
+		discordmod2: {u: 'Discord Moderator', link: 'Project:Wiki_Staff', order: 8 },
+		discordmod3: {u: 'Discord Moderator', link: 'Project:Wiki_Staff', order: 8 },
+		staff: {u: 'Staff', link: 'w:Project:Staff', order: 0}
     },
 	modules: {
         inactive: 60,
@@ -46,12 +50,23 @@ window.UserTagsJS = {
             'CollinKulesha': ['redditmod'],
             'Octranspo9307': ['redditmod'],
             'Anythingworx47': ['redditmod'],
+            'Zacatero': ['redditmod'],
             'UltimateKing98': ['discordmod'],
             'Marke34': ['discordmod']
         },
         metafilter: {
-        	sysop: ['bureaucrat','bot'],
-			threadmoderator: ["content-moderator"],
-			}
-        }
+        	sysop: ['bot'],
+        	'discordmod3': ['sysop','threadmoderator','content-moderator'],
+        	'discordmod2': ['threadmoderator'],
+        	'inactive': ['bureaucrat','sysop','threadmoderator','content-moderator','discordmod','redditmod','SOAP','wiki-manager','staff','bot']
+		},
+		explode: {
+			'discordmod': ['sysop'],
+			'discordmod1': ['threadmoderator'],
+			'discordmod2': ['content-moderator'],
+			'discordmod3': ['redditmod']
+		}
+    }
 };
+//TZclock config
+window.TZclockSimpleFormat = true;

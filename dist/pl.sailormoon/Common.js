@@ -16,38 +16,3 @@ if ( mwCustomEditButtons ) {
      "tagClose": "",
      "sampleText": ""};
 }
-
-/* IMPORT */
-importArticles({
-    type: "script",
-    articles: [
-      "MediaWiki:Common.js/ajax.js", /* Automatyczne odświeżanie */
-      'w:c:dev:ReferencePopups/code.js', /* Wyskakujące przypisy */
-    ]
-});
-
-/* Komunikat o niewybraniu licencji do przesłanego pliku */
-function emptyLicenseAlert(form) {
-        var msg = "Licencja pliku nie została wybrana. Możesz spróbować ponownie ale pamiętaj, że pliki bez licencji są usuwane."
-        if(window.emptyLicenseWarningDelivered) return true;
-        if($('#wpLicense').val() == '') {
-                alert(msg);
-                window.emptyLicenseWarningDelivered = true
-                return false
-        }
-        return true;
-}
-$('#mw-upload-form').submit(function(e) {return emptyLicenseAlert(this);});
-
-/* Blokada starych blogów i wątków */
-window.LockForums = {
-    expiryDays: 30,
-    expiryMessage: "Nikt nie napisał tu żadnego postu od ponad 30 dni, więc dalsze komentowanie zostało automatycznie wyłączone, ponieważ ewentualne nowe wpisy zostałyby prawdopodobnie uznane za odkopywanie starych dyskusji. Jeśli masz coś ważnego do przekazania na dany temat, załóż nowy wątek.",
-    forumName: "Forum" 
-};
- 
-/* window.LockOldBlogs = {
-    expiryDays: 30,
-    expiryMessage: "Nikt nie skomentował tego blogu od ponad 30 dni. Nowy komentarz zostałby i tak prawdopodobnie uznany za odkopywanie starych dyskusji, więc możliwość komentowania została automatycznie wyłączona. Jeśli jesteś autorem bloga i chcesz, aby komentowanie zawsze było możliwe, dodaj kategorię „Blogi zawsze aktualne”.",
-    nonexpiryCategory: "Blogi zawsze aktualne"
-}; */

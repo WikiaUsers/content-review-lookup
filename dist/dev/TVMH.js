@@ -65,6 +65,10 @@
 			while ( match = TVMH.REGEX_TABVIEW.exec( content ) ) {
 				out.push( match[1] );
 			}
+
+			while ( match = TVMH.REGEX_TABVIEW_ALT.exec( content ) ) {
+				out.push( match[1] );
+			}
 		}
 
 		return out.reduce( function ( c, v ) {
@@ -792,6 +796,7 @@
 		REGEX_NOWIKI: new RegExp( '<nowiki>(.*?)<\\/nowiki>', 'gs' ),
 		REGEX_PRE: new RegExp( '<pre[^>]*>(.*?)<\\/pre>', 'gs' ),
 		REGEX_TABVIEW: new RegExp( '<tabview[^>]*>(.*?)<\\/tabview>', 'gs' ),
+		REGEX_TABVIEW_ALT: new RegExp( '{{#tag:tabview\\|(.*?)}}', 'gs' ), // it doesn't work with nested templates, just for detection
 
 		rawDetection: false,
 

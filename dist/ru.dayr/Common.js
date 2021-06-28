@@ -1,4 +1,8 @@
-/*Автообновление служебных страниц*/
-window.ajaxPages = ["Recentchanges", "WikiActivity"];
-window.AjaxRCRefreshText = 'Автообновление';
-window.AjaxRCRefreshHoverText = 'Включить автообновление';
+importArticles({
+	type: "script",
+	articles: [
+		"u:nkch:MediaWiki:ExploreMenuIcons.js",
+		"u:nkch:MediaWiki:Snippet/ExternalLinksInNewWindow.js",
+		"u:nkch:MediaWiki:Snippet/SpecificLinksInNewWindow.js"
+	]
+});

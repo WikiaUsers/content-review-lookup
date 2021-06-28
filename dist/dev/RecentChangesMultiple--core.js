@@ -451,7 +451,11 @@ var Main =  (function () {
             });
         });
         tLoadPromises[tLoadPromises.length] = mw.loader.using([
-            'mediawiki.special.recentchanges'
+            'mediawiki.special.recentchanges',
+            'mediawiki.special.changeslist',
+            'mediawiki.special.changeslist.enhanced',
+            'skin.oasis.css',
+            'skin.oasis.recentChanges.css'
         ].concat((Global_1["default"].isUcpWiki ? ['ext.fandom.photoGallery.gallery.css'] : []), (Global_1["default"].isUcpWiki ? ["mediawiki.diff.styles", "skin.oasis.diff.css"] : ['mediawiki.action.history.diff'])))
             .then(function () {
             makeCollapsible_1["default"]();

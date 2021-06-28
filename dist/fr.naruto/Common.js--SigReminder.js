@@ -11,7 +11,6 @@ if (!RegExp.escape) (function(RegExp) {
 	};
 })(RegExp);
 
-
 // Only run if enabled, or not set
 if (window.SignatureCheckJS || window.SignatureCheckJS === void 0)
 (function(window, $, mw, config) {

@@ -28,3 +28,6 @@ for(var i=0;i<ols.length;i++){
 //Adding page jumping for blog post listings (click the #)
 var pageLocation=window.location+'';
 document.getElementsByClassName("paginator-spacer")[0].innerHTML='...&nbsp;<a onclick="var pageToScrollTo=prompt(\'Page number?\');window.location=pageLocation.split(\'?page=\')[0]+\'?page=\'+pageToScrollTo;">#</a>&nbsp;...';
+
+//Trying to fix forums (thread creation button). So far only works for Forum:Googology
+document.getElementById("forumCreateThreadBox").innerHTML='<button onclick="window.location.href=(window.location.href).replace(\':Googology\',\':\'+( (x=prompt(\'Title?\')) ==\'Googology\' ? \'Forbidden thread title\' : x ));">Create new thread</button>';

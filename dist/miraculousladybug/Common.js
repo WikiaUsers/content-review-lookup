@@ -97,11 +97,16 @@ $(function() {
         'https://vignette.wikia.nocookie.net/lady-bug/images/4/4a/Fox_Logo.png/revision/latest?cb=20190524072049',
         'https://vignette.wikia.nocookie.net/lady-bug/images/1/1a/Bee_Logo.png/revision/latest?cb=20190524154346',
         'https://vignette.wikia.nocookie.net/lady-bug/images/8/80/Turtle_Logo.png/revision/latest?cb=20190524154414',
+        'https://static.wikia.nocookie.net/lady-bug/images/6/66/Peacock_Logo.png/revision/latest?cb=20210621113042',
         'https://vignette.wikia.nocookie.net/lady-bug/images/4/43/Butterfly_Logo.png/revision/latest?cb=20190524072147'
       ];
  
     $('.wds-community-header__wordmark img').attr('src', images[Math.floor(Math.random() * images.length)]);
 });
+
+if ($('body').hasClass('theme-fandomdesktop-dark') {
+    $('.fandom-community-header__image > img').attr('src', 'https://static.wikia.nocookie.net/lady-bug/images/5/5b/Night_theme_icon.png/revision/latest?cb=20210625114314');
+}
 
 /* Massscript limits */
 window.MassCategorizationGroups = ['sysop', 'imagecontrol', 'bot'];

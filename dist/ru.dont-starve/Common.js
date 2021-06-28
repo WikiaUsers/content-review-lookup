@@ -347,3 +347,21 @@ $('#phyanselect .cc-3').click(function() {
 $('#phyanselect .cc-4').click(function() {
     $('#phyanprofile #footer').css({"background-image": "url('https://static.wikia.nocookie.net/dont-starve/images/1/1b/Critters_загрузочный_экран.png/revision/latest?cb=20190607221438&path-prefix=ru')"});
 });
+
+/*Для дискорда*/
+$(function(){
+    intervalName = setInterval(userlink,500);
+        function userlink(){
+            if ($('a[href="#showDiscordUsers"').length){
+            	clearInterval(userlink);
+                $('a[href="#showDiscordUsers"]').click(function() {
+                    $('#show-discord-users .oo-ui-panelLayout span').each(function(){
+                    var username = ($(this).text()).trim();
+                    var config = mw.config.get(['wgScriptPath']);
+    
+                    $(this).wrap('<a href="' + config.wgScriptPath + '/Участник:' + username + '"></a>');
+                    });
+                });
+            };
+        }
+});

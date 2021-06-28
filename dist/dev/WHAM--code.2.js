@@ -571,6 +571,7 @@
             } else {
                 $('#contentSub').append(' ', $button);
             }
+            mw.hook('dev.wham.button').fire($button);
             mw.hook('QuickLogs.loaded').add(qlIntegration);
         }
 

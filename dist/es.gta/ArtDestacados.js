@@ -81,10 +81,10 @@ mw.loader.using(['jquery.client', 'mediawiki.base']).then(function() {
             }
         });
         featuredModal.create();
-        $('.WikiaMainContentContainer #lang-ES')
+        $('#mw-content-text #lang-ES')
             .attr('class', 'wds-button gran-btn')
             .text('Hacer una propuesta')
-            .wrap($('<center>'))
+            .wrap($('<div>').css('text-align', 'center'))
             .css('cursor', 'pointer')
             .on('click', function() {
                 featuredModal.show();

@@ -21,3 +21,12 @@ window.InactiveUsers = {
 	 months: 4, 
 	 text: 'Inactive',
 };
+
+//Quote color auto-set 
+$(function() {
+if ($('.portable-infobox .pi-secondary-background').length > 0) {
+	$(':root').css('--lquote-color', $('.portable-infobox .pi-secondary-background').css('background-color')); //set css variable to our custom accent color
+}
+else 
+	return;
+});

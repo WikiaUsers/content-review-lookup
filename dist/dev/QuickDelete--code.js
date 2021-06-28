@@ -20,7 +20,7 @@
     if (
         window.QuickDeleteLoaded ||
         [14].indexOf(config.wgNamespaceNumber) === -1 ||
-        !/sysop|content-moderator|content-volunteer|staff|helper|wiki-manager|content-team-member|soap/.test(config.wgUserGroups.join())
+        !/sysop|content-moderator|staff|helper|wiki-manager|content-team-member|soap/.test(config.wgUserGroups.join())
     ) {
         return;
     }

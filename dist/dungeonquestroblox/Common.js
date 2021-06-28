@@ -39,19 +39,18 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     });
 
     function addLevelCalculator(div) {
-        var title = document.createTextNode("DQ Wiki Level Calculator:");
-        var currentField = createField("current", "Your current level:");
-        var goalField = createField("goal", "Your goal level:");
+        createSpan(div).update("DQ Wiki Level Calculator");
+        var currentField = createField("current", "Your current level");
+        var goalField = createField("goal", "Your goal level");
         var submit = document.createElement("button");
-        submit.append("Done");
-        var text = document.createTextNode("");
+        submit.append("Calculate");
+        var result = createSpan(div);
 
         div.append(
-            title, createBr(),
+            createBr(),
             currentField.label, currentField.input, createBr(),
             goalField.label, goalField.input, createBr(),
-            submit, createBr(),
-            text
+            submit, createBr()
         );
 
         submit.onclick = function () {
@@ -62,7 +61,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
             var xpString = addCommas(xp);
 
-            text.nodeValue = "You will need about " + xpString + " experience";
+            result.update("You will need about " + xpString + " experience.");
         };
     }
 
@@ -72,14 +71,13 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         var totalField = createField("pot-total", "Total upgrades");
         var submit = document.createElement("button");
         submit.append("Calculate");
-        var text = document.createTextNode("");
+        var result = createSpan(div);
 
         div.append(
             powerField.label, powerField.input, createBr(),
             currentField.label, currentField.input, createBr(),
             totalField.label, totalField.input, createBr(),
-            submit, createBr(),
-            text
+            submit, createBr()
         );
 
         var power;
@@ -89,7 +87,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         submit.onclick = function () {
             var errString = parseFields();
             if (errString) {
-                text.nodeValue = errString;
+                result.update(errString);
                 return;
             }
 
@@ -97,19 +95,19 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
             var costString = addCommas(cost);
 
             if (isNaN(power)) {
-                text.nodeValue = "It will cost " + costString
-                    + " gold to upgrade.";
+                result.update("It will cost " + costString +
+                    " gold to upgrade.");
             } else {
                 var pot = calculatePotential(power, current, total);
                 var potString = addCommas(pot);
-                text.nodeValue = "The potential power is " + potString
-                    + ", and it will cost " + costString + " gold to upgrade.";
+                result.update("The potential power is " + potString +
+                    ", and it will cost " + costString + " gold to upgrade.");
             }
         };
 
         function parseFields() {
-            var message = "Remove any decimal points or thousands separators "
-                + "from the ";
+            var message = "Remove any decimal points or thousands " +
+                "separators from the ";
             if (hasDotsOrCommas(powerField.input.value)) {
                 return message + "current power.";
             } else if (hasDotsOrCommas(currentField.input.value)) {
@@ -123,14 +121,14 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
             total = parseInt(totalField.input.value);
 
             if (isNaN(current) || isNaN(total)) {
-                return "Both upgrades done and total upgrades "
-                    + "must contain numbers.";
+                return "Both upgrades done and total upgrades " +
+                    "must contain numbers.";
             } else if (power < 0 || current < 0 || total < 0) {
                 return "All numbers cannot be negative.";
             } else if (current > total) {
-                return "Upgrades already done (" + current
-                    + ") cannot be more than total number of upgrades (" + total
-                    + ").";
+                return "Upgrades already done (" + current +
+                    ") cannot be more than total number of upgrades (" +
+                    total + ").";
             }
         }
     }
@@ -147,6 +145,21 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         return { label: label, input: input };
     }
 
+    function createSpan(parentElement) {
+        var span = document.createElement("span");
+        var node = document.createTextNode("");
+        span.append(node);
+        var appended = false;
+        function update(text) {
+            if (!appended) {
+                appended = true;
+                parentElement.append(span);
+            }
+            node.nodeValue = text;
+        }
+        return { span: span, node: node, update: update };
+    }
+
     function createBr() {
         return document.createElement("br");
     }
@@ -156,7 +169,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     }
 
     function addCommas(num) {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return num.toLocaleString();
     }
 
     function calculateXp(currentLevel, goalLevel) {
@@ -185,7 +198,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     function calculateUpgradeCost(current, total) {
         var cost = 0;
         if (current < 24) {
-            if (current === 0) cost = 100;
+            if (current === 0 && total > 0) cost = 100;
             var c = 100;
             for (var i = 1; i < 24 && i < total; i++) {
                 c = c * 1.06 + 50;

@@ -1,251 +1,323 @@
 //<nowiki>
-/* 
+/**
  * Selectively delete multiple files or pages directly on certain special pages.
  * Based on WHAM2 code by Ozuzanna.
- * @author Spottra, KhangND
+ * @author Spottra <https://dev.fandom.com/wiki/User:Spottra>
+ * @author KhangND <https://dev.fandom.com/wiki/User:KhangND>
+ * @author Thundercraft5 <https://dev.fandom.com/wiki/User:Thundercraft5>
  */
 (function($, mw) {
-    var ug = mw.config.get("wgUserGroups"),
-        page = mw.config.get("wgCanonicalSpecialPageName"),
-        token = mw.user.tokens.get("editToken"),
-        specialPages = {
-            1: [ // ol
-                'Listredirects',
-                'BrokenRedirects',
-                'Unusedcategories',
-                'Unusedtemplates',
-                'Deadendpages',
-                'Shortpages'
-            ],
-            2: [ // table
-                'Allpages',
-                'Prefixindex'
-            ],
-            3: [ // gallery
-                'Unusedimages',
-                'UnusedVideos'
-            ]
-        };
+	var userGroups = mw.config.get("wgUserGroups"),
+		specialPage = mw.config.get("wgCanonicalSpecialPageName"),
+		token = mw.user.tokens.get("editToken"),
+		supportedPages = [
+			[
+				'Listredirects',
+				'Lonelypages',
+				'Ancientpages',
+				'Fewestrevisions',
+				'Withoutinterwiki',
+				'Shortpages',
+				'Uncategorizedfiles',
+				'Uncategorizedpages',
+				'Uncategorizedtemplates',
+				'Unorganizedtemplates',
+				'Unusedcategories',
+				'Unusedtemplates',
+				'BrokenRedirects',
+				'Unusedcategories',
+				'Unusedtemplates',
+				'Deadendpages',
+				'Shortpages',
+			], [
+				'Allpages',
+				'Prefixindex',
+			], [
+				'Unusedimages',
+			],
+		];
 
-    function pageType() { //get page type
-        for (var i in specialPages) {
-            if (specialPages[i].indexOf(page) >= 0)
-                return Number(i);
-        }
-    }
+	const logger = (function() {
+		Object.keys(this).forEach(function(method) {
+			this[method] = this[method].bind(null, '[MultipleFileDelete] [' + method.toUpperCase() + ']:');
+		}, this);
 
-    // load protections
-    if (!pageType() // not from list
-        || !/staff|helper|sysop|content-moderator|content-team-member|content-volunteer|wiki-manager|soap/.test(ug.join()) //not in group
-        || window.mfdLoaded // double loading
-        // exclude page(s)
-        || (window.mfdExclude && (window.mfdExclude === page || window.mfdExclude.indexOf(page) >= 0))
-        ) {
-            return;
-        }
-    window.mfdLoaded = true;
+		return this;
+	}).call({
+		error: console.error,
+		warn: console.warn,
+		log: console.log,
+		debug: mw.log,
+	});
 
-    var btnProps = {
-            'class': 'button',
-            css: {
-                cursor: 'pointer',
-                height: 'initial',
-                'margin-left': 3,
-            }
-        },
-        i18n = {},
-        $wrapper = $(),
-        time = 0;
+	// load protections
+	if (!supportedPages.flat().includes(specialPage) // not from list
+		|| !/staff|helper|sysop|content-moderator|content-team-member|wiki-manager|soap/.test(userGroups.join('\n')) //not in group
+		|| window.mfdLoaded // double loading
+		// exclude page(s)
+		|| (window.mfdExclude && (window.mfdExclude === page || window.mfdExclude.indexOf(page) >= 0))
+		) {
+			return logger.log('Page is not supported, or script is double loading, exiting...');
+		}
 
-    function preload(i18nLoaded) {
-        ['start', 'delete', 'check',
-        'uncheck', 'enter', 'reason',
-        'noselect', 'error', 'success'].forEach(function(msg) {
-            i18n[msg] = i18nLoaded.msg(msg).plain();
-        });
+	window.mfdLoaded = true;
 
-        init();
-    }
+	var btnProps = {
+			css: {
+				cursor: 'pointer',
+				height: 'initial',
+				'margin-left': 3,
+			}
+		},
+		i18n = {},
+		$wrapper = $(),
+		$oldButton,
+		specialPageType = supportedPages.findIndex(function(pages) {
+			return pages.indexOf(specialPage) >= 0;
+		}) + 1,
+		time = 0,
+		api = new mw.Api(),
+		i18Messages = [
+			'start', 
+			'delete', 
+			'check',
+			'uncheck', 
+			'enter', 
+			'reason',
+			'noselect', 
+			'error', 
+			'success',
+			'uninvert',
+			'invert',
+		];
 
-    function init() {
-        // create wrapper with start button
-        $wrapper = $('<span>').append(
-            $('<button>', $.extend({
-                text: i18n.start,
-                click: start
-            }, btnProps)));
-        if (pageType() === 2) {
-            $('#mw-content-text').find(
-                '.mw-allpages-table-chunk, #mw-prefixindex-list-table'
-            ).before($wrapper);
-        } else {
-            $wrapper.appendTo('.mediawiki_showingresults + p');
-        }
-    }
+	function preload(i18nLoaded) {
+		i18Messages.forEach(function(msg) {
+			i18n[msg] = i18nLoaded.msg(msg).plain();
+		});
 
-    function start() {
-        $(this).remove();
+		init();
+	}
 
-        // create checkboxes and add before items
-        var chk = '<input class="selectiveDel" type="checkbox" />';
-        switch (pageType()) {
-            case 1:
-                $('ol li a:first-child').each(function() {
-                    $(this).before(chk);
-                    selectHax(this);
-                });
-                break;
-            case 2:
-                if ($('.mw-allpages-table-chunk').length) { // Allpages
-                    $('.mw-allpages-table-chunk td a').each(function() {
-                        $(this).before(chk);
-                        selectHax(this);
-                    });
-                } else { //PrefixIndex
-                    $('#mw-prefixindex-list-table td a').each(function() {
-                        $(this).before(chk);
-                        selectHax(this);
-                    });
-                }
-                break;
-            default:
-                $('.gallerytext > a').each(function() {
-                    $(this).before(chk);
-                    selectHax(this);
-                });
-        }
+	function init() {
+		// create wrapper with start button
+		$wrapper = $('<span>', {
+			html: $('<button>', $.extend({
+				class: 'btn-mfd-start',
+				text: i18n.start,
+				click: start,
+			}, btnProps))
+		});
 
-        $wrapper.append(
-            // delete button
-            $('<button>', $.extend({
-                id: 'btn-mfd-delete',
-                text: i18n['delete'],
-                click: performDelete,
-            }, btnProps)),
-            // check all button
-            $('<button>', $.extend({
-                text: i18n.check,
-                click: performCheck,
-            }, btnProps))
-        );
-    }
+		$([
+			'.mw-allpages-body', 
+			'.mw-prefixindex-body', 
+			'.mw-spcontent > p:first-of-type',
+			'.mw-spcontent > p:last-of-type',
+		].join(', ')).before($wrapper);
 
-    function performDelete() {
-        var selected = $('.selectiveDel:checked');
-        if (!selected.length)
-            return alert(i18n.noselect);
+		$([
+			'.mw-prefixindex-body', 
+			'.mw-allpages-body',
+		].join(', ')).after($wrapper.clone());
+	}
 
-        var deleteReason = prompt(i18n.enter, i18n.reason);
-        if (!deleteReason)
-            return;
-        
-        // lock delete button
-        $(this)
-            .attr('disabled', true)
-            .css({
-                'background-image': 'url(https://slot1-images.wikia.nocookie.net/__cb1557858431190/common/skins/common/images/ajax.gif)',
-                'background-repeat': 'no-repeat',
-                'background-position': 'center'
-            });
+	function start() {
+		$('.btn-mfd-start').after(
+			// delete button
+			$('<button>', $.extend({
+				class: 'btn-mfd-delete',
+				text: i18n['delete'],
+				click: performDelete,
+			}, btnProps)),
+			// check all button
+			$('<button>', $.extend({
+				class: "btn-mfd-check",
+				text: i18n.check,
+				click: performCheck,
+			}, btnProps)),
+			// invert selection button
+			$('<button>', $.extend({
+				class: "btn-mfd-invert",
+				text: i18n.invert,
+				click: invertSelection,
+			}, btnProps)),
+		);
+		$oldButton = $('.btn-mfd-start').remove();
 
-        selected.each(function(i) {
-            var page =
-                $(this).parent().find('a').first().attr('title') ||
-                $(this).parent().find('a').first().text();
-            apiDelete(
-                page,
-                deleteReason,
-                selected.length // reload indicator
-            );
-        });
-    }
+		// create checkboxes and add before items
+		var $chk = $('<input>', {
+			class: "selectiveDel",
+			type: "checkbox",
+		});
 
-    function performCheck() {
-        var btn = $(this);
+		switch (specialPageType) {
+			case 1:
+				mw.util.$content.find('ol li a:first-child').each(function() {
+					$(this).before($chk.clone());
+					selectHax(this);
+				});
 
-        if (btn.text() === i18n.uncheck) {
-            $('.selectiveDel').each(function() {
-                this.checked = false;
-            });
+				break;
+			case 2:
+				if ($('.mw-allpages-table-chunk').length) { // Allpages
+					$('.mw-allpages-table-chunk td a').each(function() {
+						$(this).before($chk.clone());
+						selectHax(this);
+					});
+				} else { //PrefixIndex
+					$('.mw-prefixindex-list > li a, .mw-allpages-body li > a').each(function() {
+						$(this).before($chk.clone());
+						selectHax(this);
+					});
+				}
 
-            btn.text(i18n.check);
-        } else {
-            $('.selectiveDel').each(function() {
-                this.checked = true;
-            });
+				break;
+			default:
+				$('.gallerytext > a').each(function() {
+					$(this).before($chk.clone());
+					selectHax(this);
+				});
+		}
+	}
 
-            btn.text(i18n.uncheck);
-        }
-        displayCount();
-    }
+	function performDelete() {
+		var selected = $('.selectiveDel:checked');
+		if (!selected.length)
+			return alert(i18n.noselect);
 
-    function selectHax(elem) { // parent select hacks
-        $(elem).parent().hover(function() {
-            $(this).css({
-                cursor: 'pointer',
-                background: 'rgba(0,0,0,.2)'
-            });
-        }, function() {
-            $(this).css({
-                background: 'initial'
-            });
-        });
-        $(elem).parent().click(function(e) {
-            if (e.target === this) { // prevent event double firing
-                var input = $(this).children('input')[0];
-                input.checked = input.checked ? false : true;
-            }
-            displayCount();
-        });
-    }
+		var deleteReason = prompt(i18n.enter, i18n.reason);
+		if (!deleteReason)
+			return;
+		
+		// lock delete button
+		$(this)
+			.attr('disabled', true)
+			.text("")
+			.css({
+				'background-image': 'url(https://slot1-images.wikia.nocookie.net/__cb1557858431190/common/skins/common/images/ajax.gif)',
+				'background-repeat': 'no-repeat',
+				'background-position': 'center'
+			});
 
-    function displayCount() {
-        $('#btn-mfd-delete').text(
-            i18n['delete']
-            + ' ('
-            + $('.selectiveDel:checked').length
-            + ')');
-    }
+		selected.each(function(i) {
+			var $link = $(this).parent().find('a').first();
+			var page = $link.attr('title') || $link.text();
 
-    function apiDelete(page, reason, items) {
-        new mw.Api().post({
-                format: 'json',
-                action: 'delete',
-                title: page,
-                reason: reason,
-                bot: true,
-                token: token
-            })
-            .done(function(d) {
-                var notification;
-                notification = d.error ?
-                    new BannerNotification(i18n.error + ': ' + page, 'error') :
-                    new BannerNotification(i18n.success + ': ' + page, 'confirm');
+			apiDelete(
+				page,
+				deleteReason,
+				$link,
+				i+1,
+				selected.length // reload indicator
+			);
+		});
+	}
 
-                setTimeout(function() {
-                    notification.show();
-                }, time - 500);
+	function performCheck() {
+		var $btn = $('.btn-mfd-check');
+		var $checkboxes = $('.selectiveDel');
+	
+		if ($btn.first().text() === i18n.uncheck) {
+			$checkboxes.each(function() {
+				this.checked = false;
+			});
 
-                setTimeout(function() {
-                    notification.hide();
-                }, time += 1000);
-                
-                if(time === items * 1000) {
-                    setTimeout(function() {
-                        location.reload();
-                    }, time - 1000);
-                }
-            });
-    }
+			$btn.text(i18n.check);
+		} else {
+			$checkboxes.each(function() {
+				this.checked = true;
+			});
 
-    importArticle({
-        type: 'script',
-        article: 'u:dev:MediaWiki:I18n-js/code.js'
-    });
-    mw.hook('dev.i18n').add(function(i18n) {
-        $.when(  
-            i18n.loadMessages('MultipleFileDelete'),
-            mw.loader.using('mediawiki.api')
-        ).then(preload);
-    });
+			$btn.text(i18n.uncheck);
+		}
+		displayCount();
+	}
+
+	function selectHax(elem) { // parent select hacks
+		var $elem = $(elem);
+		var $parent = $elem.parent();
+
+		$parent.hover(function() {
+			$(this).css({
+				cursor: 'pointer',
+				background: 'rgba(0,0,0,.2)'
+			});
+		}, function() {
+			$(this).css({
+				background: 'initial'
+			});
+		});
+
+		$parent.click(function(e) {
+			if (e.target === this) { // prevent event double firing
+				var input = $(this).children('input')[0];
+				input.checked = !input.checked;
+			}
+			displayCount();
+		});
+	}
+
+	function invertSelection() {
+		$('.selectiveDel').each(function() {
+			this.checked = !this.checked;
+		});
+		$(this).text($(this).text() === i18n.invert ? i18n.uninvert : i18n.invert);
+		displayCount();
+	}
+
+	function displayCount() {
+		$('.btn-mfd-delete').text(
+			i18n['delete']
+			+ ' ('
+			+ $('.selectiveDel:checked').length
+			+ ')');
+	}
+
+	function reset() {
+		$('.btn-mfd-delete')
+			.attr('disabled', false)
+			.text(i18n['delete'])
+			.css({
+				'background-image': "",
+			});
+
+		$('.btn-mfd-check').text(i18n.check);
+		$('.btn-mfd-invert').text(i18n.invert);
+	}
+
+	function apiDelete(page, reason, $link, cur, count) {
+	   	api.post({
+			format: 'json',
+			action: 'delete',
+			title: page,
+			reason: reason,
+			bot: true,
+			token: token
+		}).then(function(d) {
+			mw.notify('Successfully deleted ' + page);
+			logger.log('Successfully deleted ' + page);
+			$link.parent().remove();
+
+			if (cur === count) {
+				reset();
+			}
+
+		}, function(_, e) {
+			mw.notify('Failed to delete deleted ' + page + ": " + e.error.info, { type: "warn" });
+			logger.warn('Failed to delete deleted ' + page + ": " + e.error.info);
+		});
+	}
+
+	importArticle({
+		type: 'script',
+		article: 'u:dev:MediaWiki:I18n-js/code.js'
+	});
+
+	mw.hook('dev.i18n').add(function(i18n) {
+		$.when(  
+			i18n.loadMessages('MultipleFileDelete'),
+			mw.loader.using('mediawiki.api')
+		).then(preload);
+	});
 })(this.jQuery, this.mediaWiki);

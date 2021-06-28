@@ -112,3 +112,15 @@ importArticles({
         'u:dev:MediaWiki:WHAM/code.2.js',
     ]
 });
+
+//===================================
+// Новый блок "Новые статьи" с [[Шаблон:NewPagesModule]] внутри.
+// Стили записаны в MediaWiki:Boxes.css
+// Скрипт by ДжоДжо Вики
+// 
+
+$(function(){
+	$('<section class="module"></section>')
+		.appendTo('#WikiaRail')
+		.load('/ru/index.php?title=Template:NewPagesModule&action=render');
+});

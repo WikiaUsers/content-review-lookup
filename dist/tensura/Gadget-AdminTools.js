@@ -71,7 +71,5 @@ importArticles({
         'u:dev:MediaWiki:MassProtect/code.js',
         'u:dev:MediaWiki:MassRename/code.js',
         'u:dev:MediaWiki:PageRenameAuto-update/code.js'
-        'u:dev:MediaWiki:RedirectManagement/code.js',
-        'u:dev:MediaWiki:WhatLinksHere/code.js',
     ]
 });

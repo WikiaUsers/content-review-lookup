@@ -4,7 +4,7 @@ Code written/maintained by Explodabat. Please contact me on the Wiki Discord at 
 ──────────────────────────────────────────────────────────────────────────────
 This content previously lived on MediaWiki:Common.js
 */
-console.log("Navbox JS Version 4.29.21");
+console.log("Navbox JS Version 6.27.21");
 //Array of ship objects -- see "function Ship(...)" for constructor & properties
 var shipArr = [];
 var count = 0;
@@ -175,7 +175,7 @@ function cleanArr(){
 		    }
 			if(j < shipArr.length){ //check if index is still valid after potential removals from above
 			//limit each object property to only the expected values. Redundant call to toString in case a previous replace made variable type vague
-				shipArr[j].name = shipArr[j].name.toString().replace(/[^a-zA-Z0-9\s\'\-ß]/g,""); //only letters, numbers, spaces, "-" (e.g. for "Prototype X-1")
+				shipArr[j].name = shipArr[j].name.toString().replace(/[^a-zA-Z0-9\s\'\-ß_()]/g,""); //only letters, numbers, spaces, "-" (e.g. for "Prototype X-1")
 				//price is cleaned separately later because of special cases
 				shipArr[j].type = shipArr[j].type.toString().replace(/[^\sa-zA-Z0-9_]/g, ""); //only letters, numbers, spaces, and underscores
 			}
@@ -267,6 +267,11 @@ function fillNavbox(){
             a = document.createElement('em');
             a.appendChild(document.createTextNode(tempShipArr[i].name));
             a.title = tempShipArr[i].name+" (Current Page)";
+        }
+        else if(tempShipArr[i].name == "Dont use or banned" && t.innerHTML.toString() !==undefined && t.innerHTML.toString() == "dont_use_or_banned"){
+        	a = document.createElement('em');
+            a.appendChild(document.createTextNode("dont_use_or_banned"));
+            a.title = "dont_use_or_banned (Current Page)";
         }
         //else create a hyperlink
         else{

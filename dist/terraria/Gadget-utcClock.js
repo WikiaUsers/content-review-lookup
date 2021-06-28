@@ -47,6 +47,12 @@ window.showTime = function() {
 }
 
 $(function() {
-	$('.netbar-box.right:first').before('<div style="margin-right:1em;margin-top: -3px;"><a title="' + lang('linkTitle') + '" href="' + linkPurge + '" class="dateNode" style="' + clockStyle + '"></a></div>');
+	/* Add to the QuickBar on FandomDesktop, netbar on Hydra/Hydradark */
+	if (mw.config.get("skin") === 'fandomdesktop') {
+		$('.wikia-bar .toolbar .tools').append('<li id="gadget-utc-clock" style="width: 70px;"><a class="dateNode" style="margin: auto;" href="' + linkPurge + '" title="' + lang('linkTitle') + '"></a></li>');
+	} else {
+		$('.netbar-box.right:first').before('<div style="margin-right:1em;margin-top: -3px;"><a title="' + lang('linkTitle') + '" href="' + linkPurge + '" class="dateNode" style="' + clockStyle + '"></a></div>');
+	}
+
 	showTime();
 });

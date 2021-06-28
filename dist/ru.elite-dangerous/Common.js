@@ -1,93 +1,5 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
 
- // *****************************************************
- // * Experimental javascript countdown timer (Splarka) *
- // * Version 0.0.3                                     *
- // *****************************************************
- //
- // Usage example:
- //  <span class="countdown" style="display:none;">
- //  Only <span class="countdowndate">January 01 2007 00:00:00 PST</span> until New years.
- //  </span>
- //  <span class="nocountdown">Javascript disabled.</span>
- 
-   //  function updatetimer(i) {
-   //    var now = new Date();
-   //   var then = timers[i].eventdate;
-   //    var diff = count=Math.floor((then.getTime()-now.getTime())/1000);
-   // catch bad date strings
-   //     if(isNaN(diff)) { 
-   //       timers[i].firstChild.nodeValue = '** ' + timers[i].eventdate + ' **' ;
-   //      return;
-   //    }
- 
-   // determine plus/minus
- //     if(diff<0) {
- //       diff = -diff;
- //       var tpm = '';''
- //     } else {
- //       var tpm = '';''
- //     }
- 
-   // Calculate the diff - Modified by Eladkse
- //    if ((diff%60) == 1) {
- //      left = (diff%60) + ' секунды';
- //    } else {
- //      left = (diff%60) + ' секунда';
- //    }
- //      diff=Math.floor(diff/60);
- //    if(diff > 0) {
- //      if ((diff%60) == 1) {
- //        left = (diff%60) + ' минута, и ' + left;
- //      } else {
- //        left = (diff%60) + ' минут, и ' + left;
- //      }
- //    }
- //      diff=Math.floor(diff/60);
- //    if(diff > 0) {
- //      if ((diff%24) == 1) {
- //        left = (diff%24) + ' час, ' + left;
-  //     } else {
-  //       left = (diff%24) + ' часов, ' + left;
- //      }
-  //   }
-  //     diff=Math.floor(diff/24);
- //    if(diff > 0) {
- //      if (diff == 1) {
- //        left = diff + ' день, ' + left;
- //      } else {
- //        left = diff + ' дней, ' + left;
- //      }
- //    }
- //    timers[i].firstChild.nodeValue = tpm + left;
- 
- //     // a setInterval() is more efficient, but calling setTimeout()
- //     // makes errors break the script rather than infinitely recurse
- //     timeouts[i] = setTimeout('updatetimer(' + i + ')',1000);
- //   }
- 
-    // function checktimers() {
-   //hide 'nocountdown' and show 'countdown'
-    //   var nocountdowns = getElementsByClassName(document, 'span', 'nocountdown');
-   //    for(var i in nocountdowns) nocountdowns[i].style.display = 'none'
-    //   var countdowns = getElementsByClassName(document, 'span', 'countdown');
-    //   for(var i in countdowns) countdowns[i].style.display = 'inline'
- 
-   //set up global objects timers and timeouts.
-    //   timers = getElementsByClassName(document, 'span', 'countdowndate');  //global
-    //   timeouts = new Array(); // generic holder for the timeouts, global
-    //   if(timers.length == 0) return;
-    //   for(var i in timers) {
-    //     timers[i].eventdate = new Date(timers[i].firstChild.nodeValue);
-    //     updatetimer(i);  //start it up
-     //  }
-   //  }
-   //  addOnloadHook(checktimers);
- 
- // **************************************************
- //  - end -  Experimental javascript countdown timer
- // **************************************************
-
 /* Главное меню. Табуляция. Взято с http://ru.summonerswar.wikia.com */
 // Script for switching tabs on main page
 (function($) {
@@ -122,3 +34,78 @@ InactiveUsers = {
     months: 2,
     text: 'В СТАЗИСЕ'
 };
+
+
+/* Счётчик статей. Табуляция. Взято с marvel.fandom.com/ru */
+mw.loader.using("mediawiki.api").then(
+    function () {
+        return new mw.Api().loadMessagesIfMissing(["community-header-pages"]);
+    }
+).then(
+    function () {
+        $.ajax({
+            url: encodeURI(mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/api/v1/Articles/Details"),
+            type: "GET",
+            data: {
+                controller: "DesignSystemApi",
+                method: "getCommunityHeader",
+                product: "wikis",
+                id: mw.config.get("wgCityId"),
+            }
+        }).done(
+            function (data) {
+                var wikiTools = document.querySelectorAll(".wiki-tools");
+
+                for (var i = 0; i < wikiTools.length; i++) {
+                    var counter = document.createElement("div");
+
+                    Object.assign(counter.style, {
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "3px",
+                        justifyContent: "center",
+                        textAlign: "right",
+                        marginRight: "8px"
+                    });
+
+                    var counterValue = document.createElement("span");
+                    counterValue.innerHTML = data.counter.value;
+
+                    Object.assign(counterValue.style, {
+                        display: "block",
+                        fontWeight: "bold",
+                        lineHeight: 1
+                    });
+
+                    counter.appendChild(counterValue);
+
+                    var counterLabel = document.createElement("span");
+                    counterLabel.innerHTML = mw.message(data.counter.label.key).text();
+
+                    Object.assign(counterLabel.style, {
+                        display: "block",
+                        fontSize: "10px",
+                        fontWeight: "bold",
+                        lineHeight: 1,
+                        textTransform: "uppercase"
+                    });
+
+                    counter.appendChild(counterLabel);
+
+                    wikiTools[i].children[0].before(counter);
+                }
+            }
+        );
+    }
+);
+
+// выполнение при готовности страницы
+$(document).ready(function()
+{      
+    // если открыта страница загрузки изображения
+    if (wgCanonicalSpecialPageName === 'Upload') 
+    {
+        // добавление шаблона в поле краткого описания для загружаемого изображения
+        $('#wpUploadDescription').val('{{Описание \n| Описание  = \n| Пояснение = \n| Дата      = \n| Автор     = \n| Лицензия  = \n}}\n');
+	}
+});

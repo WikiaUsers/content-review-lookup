@@ -1,9 +1,10 @@
 $(document).ready(
     function () {
-        $('body').prepend('<canvas></canvas>')
+    	mw.util.addCSS('canvas#EnterTheMatrix { position: fixed; z-index: -1; width: 100%; height: 100%; }');
+        $('body').prepend('<canvas id="EnterTheMatrix"></canvas>');
     }).ready(
     function () {
-        const C = document.querySelector("canvas"),
+        const C = document.querySelector("canvas#EnterTheMatrix"),
             $ = C.getContext("2d"),
             W = (C.width = window.innerWidth),
             H = (C.height = window.innerHeight);

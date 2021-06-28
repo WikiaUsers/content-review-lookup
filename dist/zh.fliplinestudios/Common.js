@@ -18,3 +18,5 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
     'Nick2345'   : ['es'],
 };
+
+UserTagsJS.modules.mwGroups = ['founder', 'bureaucrat', 'sysop', 'content-moderator', 'threadmoderator', 'chatmoderator', 'rollback', 'soap', 'global-discussions-moderator'];

@@ -138,6 +138,7 @@
 				'content-team-member',
 				'checkuser',
 				'util',
+				'global-discussions-moderator',
 			]),
 
 			"block": Object.freeze([
@@ -148,6 +149,7 @@
 				'global-discussions-moderator',
 				'wiki-manager',
 				'soap',
+				'content-team-member',
 			]),
 
 			"delete": Object.freeze([
@@ -157,10 +159,8 @@
 				'soap',
 				'staff',
 				'helper',
-				'global-discussions-moderator',
 				'wiki-manager',
 				'content-team-member',
-				'util',
 			]),
 
 			"move": Object.freeze([

@@ -10,7 +10,13 @@ $(function() {
 	/* ================================== *\
 		# wiki links to [[Special:CatNav]]
 	\* ================================== */
-	$("#WikiaBarWrapper .tools").append('<li><a href="/wiki/Special:CatNav">CatNav</a></li>');
+	if ($("#WikiaBarWrapper .tools").length > 0) {
+		// fandom or fandom desktop
+		$("#WikiaBarWrapper .tools").append('<li><a href="' + mw.config.get("wgArticlePath").replace("$1", "Special:CatNav") + '">CatNav</a></li>');
+	} else {
+		// non-fandom-desktop gamepedia
+		$('#p-tb[role="navigation"] ul').append('<li id="t-catnav"><a href="' + mw.config.get("wgArticlePath").replace("$1", "Special:CatNav") + '">CatNav</a></li>');
+	}
 
 	/* ================================== *\
 		# core objects
@@ -24,8 +30,45 @@ $(function() {
 	};
 
 	/* ================================== *\
+		# console
+	\* ================================== */
+
+	catnav.console = {
+		logs: [],
+		debug: true // will be changed to 'false' after defining catnav.data, unless 'window.CatNav.debug' is also 'true'
+	};
+	catnav.console.add = function(type, data) {
+		var debug = catnav.console.debug;
+		if (["log", "error", "info", "warn"].indexOf(type) > -1) {
+			type = "log";
+		}
+		catnav.console.logs.push([type, debug, data]);
+		if (debug) {
+			console[type]("[-] CatNav :: ", data);
+		}
+	};
+	catnav.logs = [];
+	catnav.console.log = function(data) {
+		catnav.console.add("log", data);
+	};
+	catnav.console.error = function(data) {
+		catnav.console.add("error", data);
+	};
+	catnav.console.info = function(data) {
+		catnav.console.add("info", data);
+	};
+	catnav.console.warn = function(data) {
+		catnav.console.add("warn", data);
+	};
+	
+	/* ================================== *\
 		# data
 	\* ================================== */
+
+	/* first update document.title */
+	document.title = document.title.split(" | ").map(function(a, b) {
+		return b === 0 ? "CatNav" : a;
+	}).join(" | ");
 
 	/* regular data */
 	catnav.data = {
@@ -34,8 +77,8 @@ $(function() {
 		current: [],
 		selectedPage: null,
 		storage: {
-			url: "//community.wikia.com", // url to the wiki that hosts your imports
-			scriptPath: "" // e.g. "/w" for wikipedia, empty string for wikia
+			url: "//community.fandom.com", // url to the wiki that hosts your imports
+			scriptPath: "" // e.g. "/w" for wikipedia, empty string for fandom
 		},
 		markup: {
 			html: null,
@@ -54,15 +97,15 @@ $(function() {
 			'\t\t<div class="catnav-commoncats">\n' +
 				'\t\t\t<h3>\n' +
 					'\t\t\t\tCommon categories' +
-					'&nbsp;<input type="button" class="wikia-button" value="+" id="catnav-commoncats-add" />\n' +
+					'&nbsp;<input type="button" class="wikia-button" value="add" id="catnav-commoncats-add" />\n' +
 				'\t\t\t</h3>\n' +
 				'\t\t\t<h5>\n' +
-					'\t\t\t\tImport and merge with <a href="//community.wikia.com/wiki/Special:MyPage/catnav.css">global settings</a>' +
+					'\t\t\t\tImport and merge with&nbsp;<a href="//community.fandom.com/wiki/Special:MyPage/catnav.css">global settings</a>' +
 					'&nbsp;<input type="button" class="wikia-button catnav-commoncats-global" value="import" id="catnav-commoncats-global-import" />\n' +
 					'&nbsp;<input type="button" class="wikia-button catnav-commoncats-global" value="export" id="catnav-commoncats-global-export" />\n' +
 				'\t\t\t</h5>\n' +
 				'\t\t\t<div id="catnav-commoncats-wrapper">\n' +
-				'\t\t\t\t<span style="font-size: smaller;">Left click an item to add it to the included categories list, or right click it to add it to the excluded categories list. Clicking the delete icon would remove the associated item from your favorites.</span>\n' +
+				'\t\t\t\t<span style="font-size: smaller;">Left click an item to add it to the included categories list, or right click it to add it to the excluded categories list. Clicking the delete icon would remove the associated item from your favorites from the browser\'s cache. To remove a link from future imports, please manually remove it from your global favorites page.</span>\n' +
 					'\t\t\t\t<div id="catnav-commoncats-container">\n' +
 					'\t\t\t\t</div>\n' +
 				'\t\t\t</div>\n' +
@@ -78,17 +121,24 @@ $(function() {
 				'\t\t\t</tr>\n' +
 			'\t\t</tbody></table>\n' +
 		'\t</div>\n' +
+		// filter options
+		'\t<div class="catnav-gui-group">\n' +
+			'\t\t<p>\n' +
+				'\t\t\t<input type="checkbox" id="catnav-filter-state" /><label for="catnav-filter-state">Filter page titles</label><br />\n' +
+				'\t\t\t<input type="text" id="catnav-filter-text" placeholder="Filter pattern" /><br />\n' +
+				'\t\t\t<input type="checkbox" id="catnav-filter-case" checked /><label for="catnav-filter-case">Case-insensitive search</label><br />\n' +
+				'\t\t\t<input type="checkbox" id="catnav-filter-regex" /><label for="catnav-filter-regex">Regex pattern</label>\n' +
+			'\t\t</p>\n' +
+		'\t</div>\n' +
 		// settings
 		'\t<div class="catnav-gui-group">\n' +
 			'\t\t<p>\n' +
 				'\t\t\tNumber of rows: <input type="text" id="catnav-rows" value="3" /><br />\n' +
 				'\t\t\t<input type="checkbox" id="catnav-ns" checked /><label for="catnav-ns">List mainspace only</label><br />\n' +
 				'\t\t\t<input type="radio" name="catnav-sort" id="catnav-sort-alphabet" value="alphabet" checked /><label for="catnav-sort-alphabet">Sort by alphabetic order</label> <span style="font-size: 66%;">(note that using other modes may dramatically increase loading time)</span><br />\n' +
-				'\t\t\t<input type="radio" name="catnav-sort" id="catnav-sort-bypageid" value="bypageid" /><label for="catnav-sort-bypageid" style="border-bottom: 1px dotted; cursor: help;" title="Notice! This option sorts by pageids rather than the actual creation time, to save an enormous amount of time. Old pages that get deleted and restored received a new ID, and therefore may appear newer than they actually are">Sort by creation date (page ids)*</label><br />\n' +
+				'\t\t\t<input type="radio" name="catnav-sort" id="catnav-sort-bypageid" value="bypageid" /><label for="catnav-sort-bypageid">Sort by page ID (date of creation / restoration for deleted pages)</label><br />\n' +
 				'\t\t\t<!-- <input type="radio" name="catnav-sort" id="catnav-sort-creation" value="creation" /><label for="catnav-sort-creation">Sort by creation date</label><br /> -->\n' +
 				'\t\t\t<input type="radio" name="catnav-sort" id="catnav-sort-lastedit" value="lastedit" /><label for="catnav-sort-lastedit">Sort by last edit</label><br />\n' +
-				'\t\t\t<input type="radio" name="catnav-sort" id="catnav-sort-populars" value="populars" /><label for="catnav-sort-populars">Sort by most popular (requires Category Exhibition enabled)</label><br />\n' +
-				'\t\t\t<input type="radio" name="catnav-sort" id="catnav-sort-comments" value="comments" /><label for="catnav-sort-comments">Sort by number of article comments</label><br />\n' +
 				'\t\t\t<input type="checkbox" id="catnav-dir" /><label for="catnav-dir">Use descending order</label><br />\n' +
 			'\t\t</p>\n' +
 			'\t\t<input type="button" id="catnav-go" value="generate" /> <span id="catnav-loading">\n' +
@@ -115,6 +165,10 @@ $(function() {
 		'\t</div>\n' +
 	'</nav>';
 
+	/* global favorites */
+	catnav.data.globalString = 	location.href.match(/^https?\:\/{2}(.+)\.fandom\.com(?:\/(.+))?\/wiki\//);
+	catnav.data.globalString = (typeof catnav.data.globalString[2] === "string" ? catnav.data.globalString[2] + "." : "") + catnav.data.globalString[1];
+
 	/* ================================== *\
 		# global CatNav object management
 	\* ================================== */
@@ -125,11 +179,14 @@ $(function() {
 			catnav.data.storage.url = catnav._g.storage[0];
 			catnav.data.storage.scriptPath = catnav._g.storage[1];
 		} else if (catnav._g.hasOwnProperty("storage")) {
-			console.error("catnav :: global 'CatNav.storage' has been defined, but it is not a valid array");
+			catnav.console.error("catnav :: global 'CatNav.storage' has been defined, but it is not a valid array");
 		}
 	} else {
 		// window.CatNav has not been defined - define it
 		window.CatNav = {};
+	}
+	if (window.CatNav.debug !== true) {
+		catnav.console.debug = false;
 	}
 
 	/* ================================== *\
@@ -142,7 +199,7 @@ $(function() {
 	catnav.fn.catMembers = function(cat, ns, arr, cont, cb) {
 		/*
 		catnav.fn.getMembersOfCat("Foo", 0, [], "", function(data) {
-			console.log(data);
+			catnav.console.log(data);
 		});
 		*/
 		var req = new XMLHttpRequest();
@@ -230,7 +287,7 @@ $(function() {
 
 	// find the category with the fewest members
 	catnav.fn.getSmallestCat = function(data) {
-		console.log("smallest cat!", data);
+		catnav.console.log("smallest cat!", data);
 		var small = {
 			cat: null,
 			length: Infinity
@@ -307,6 +364,13 @@ $(function() {
 		}
 	};
 
+	// clear results
+	catnav.fn.clear = function() {
+		catnav.data.current = [];
+		catnav.fn.updateMarkup();
+		catnav.fn.updatePagesListNav();
+	}
+
 	// go to page 'n + 1'
 	catnav.fn.gotoPage = function(n, uponGeneration) {
 		catnav.data.selectedPage = n;
@@ -329,7 +393,7 @@ $(function() {
 		var req = new XMLHttpRequest(),
 			missingTitles = [],
 			i;
-		console.error(titles);
+		catnav.console.error(titles);
 		for (i = 0; i < titles.length; i++) {
 			// missingTitles lists all articles that haven't been previously loaded by 'queryPages'
 			// articles already in 'catnav.data.details' will not be requested again
@@ -361,8 +425,7 @@ $(function() {
 				title: title,
 				url: a.url,
 				img: a.thumbnail,
-				lastedit: a.revision.timestamp,
-				comments: a.comments
+				lastedit: a.revision.timestamp
 			};
 		}
 	};
@@ -382,6 +445,7 @@ $(function() {
 
 	// error message
 	catnav.fn.error = function(bool, msg) {
+		catnav.console.error(["'catnav.fn.error' call ::", {bool: bool, msg: msg}]);
 		// if 'bool' show message, otherwise hide
 		// 'msg' is the new html content
 		$("#catnav-noneerror").html(msg)[bool ? "show" : "hide"]();
@@ -391,6 +455,13 @@ $(function() {
 	catnav.fn.collapseText = function(s) {
 		return s.replace(/\n+[ \t]+\n+|\n{2,}/g, "\n").trim();
 	};
+
+	// escape string for regex
+	catnav.fn.stringToRegex = function(s) {
+		return s.replace(/[\\\/\[\]\(\)\?\!\=\-\+\*\.\{\}\<\>\,\^\$]/g, function(a) {
+			return "\\" + a;
+		});
+	}
 
 	// sort pages by user preferences
 	catnav.fn.sortTitles = function(titles, categories, mode, reverse, cb) {
@@ -405,9 +476,32 @@ $(function() {
 			'reverse' is a boolean: set as true in order to reverse the list of pages in the end of the process
 			'categories' parameter may be needed for specific advanced sorting methods
 		*/
-		mode = ["bypageid", /*"creation",*/ "lastedit", "alphabet", "populars", "comments" /*, "talksize"*/].indexOf(mode) > -1 ? mode : "alphabet";
+		/* first, check if there's need to filter titles */
+		if ($("#catnav-filter-state")[0].checked) {
+			var filter = {
+				value: $("#catnav-filter-text").val(),
+				ci: $("#catnav-filter-case")[0].checked,
+				re: $("#catnav-filter-regex")[0].checked
+			}
+			try {
+				filter.pattern = new RegExp(filter.re ? filter.value : catnav.fn.stringToRegex(filter.value), filter.ci ? "i" : "");
+				// filter patterns
+				titles = titles.filter(function(title) {
+					if (filter.pattern.test(title)) {
+						return true;
+					}
+				});
+			} catch(err) {
+				alert("Invalid regex- filter was ignored for the current search and all available titles are shown.\nPlease check your filter text (open console to view the full error message).");
+				console.error("[catnav] :: regex error", err);
+				catnav.console.error(err);
+			}
+		}
+
+		/* start sorting */
+		mode = ["bypageid", "lastedit", "alphabet"].indexOf(mode) > -1 ? mode : "alphabet";
 		var sortedTitles;
-		console.log("sortTitles", arguments);
+		catnav.console.log("sortTitles", arguments);
 		switch (mode) {
 			// @ mode == "alphabet"
 			case "alphabet":
@@ -418,22 +512,21 @@ $(function() {
 				}
 				cb(sortedTitles);
 				break;
-			// @ mode == "lastedit" or "comments"
+			// @ mode == "lastedit"
 			case "lastedit":
-			case "comments":
-				// sort by lastedit, or number of comments
+				// sort by lastedit
 				catnav.fn.queryPages(titles, function(titles) {
 					// 'catnav.fn.queryPages' is required to know how to sort all titles before splitting into navpages
 					var details = catnav.data.details,
 						title,
 						curr,
-						arr = [], // array of values (last edit timestamp or number of comments)
-						pagesBySortingMethod = {}, // object: key => sorting method value (timestamp or comment, value => array with titles with that associated value (in case 2+ articles have the value)
+						arr = [], // array of values (last edit timestamp)
+						pagesBySortingMethod = {}, // object: key => sorting method value (timestamp, value => array with titles with that associated value (in case 2+ articles have the value)
 						i;
 					// copy data from 'catnav.data.details' about the wanted titles
 					for (title in details) {
 						if (titles.indexOf(title) > -1) {
-							curr = details[title][mode == "lastedit" ? "lastedit" : "comments"];
+							curr = details[title]["lastedit"];
 							if (arr.indexOf(Number(curr)) === -1) {
 								arr.push(Number(curr));
 							}
@@ -478,7 +571,7 @@ $(function() {
 						id,
 						ids = [];
 					// 'pagesByIds': key => pageid, value => title
-					console.info("details as of running: " + JSON.stringify(details));
+					catnav.console.info("details as of running: " + JSON.stringify(details));
 					for (title in details) {
 						if (titles.indexOf(title) > -1) {
 							id = details[title].id;
@@ -499,31 +592,6 @@ $(function() {
 						sortedTitles.reverse();
 					}
 					cb(sortedTitles);
-				});
-				break;
-
-			// @ mode == "populars"
-			case "populars":
-				// sort by most popular (using category exhibition api)
-				catnav.fn.getCategorySizes(categories, {}, function(allcats) {
-					var cat,
-						smallestCat;
-					for (cat in allcats) {
-						allcats[cat] = new Array(allcats[cat]);
-					}
-					smallestCat = catnav.fn.getSmallestCat(allcats);
-					catnav.fn.getExhibitionMembers(smallestCat, [], 1, function(exMembers) {
-						var sortedTitles = []; // final result
-						// go through 'getExhibitionMembers' results, and add the current exhibition member
-						// to 'sortedTitles' if the 'titles' argument (in 'sortTitles') contains it
-						exMembers.forEach(function(member) {
-							if (titles.indexOf(member) > -1) {
-								// member exists in the passed titles list
-								sortedTitles.push(member);
-							}
-						});
-						cb(sortedTitles);
-					});
 				});
 				break;
 		}
@@ -556,12 +624,16 @@ $(function() {
 
 	// manipulate storage
 	catnav.fn.storage = function(method, savingData) {
+		var gs = catnav.data.globalString;
 		switch (method) {
 			case "get":
 				var storage = localStorage.getItem("catnav");
-				console.log(method, storage);
-				storage = storage ? JSON.parse(storage) : {favorites: []};
-				console.log(method, storage);
+				catnav.console.log(method, storage);
+				storage = storage ? JSON.parse(storage) : {favorites: {}};
+				if (!storage.favorites.hasOwnProperty(gs)) {
+					storage.favorites[gs] = [];
+				}
+				catnav.console.log(method, storage);
 				return storage;
 			case "set":
 				localStorage.setItem("catnav", JSON.stringify(savingData));
@@ -584,7 +656,7 @@ $(function() {
 				$(a).val(b.join("\n").trim());
 			}
 		}).click(function(e) {
-			console.log(e.target, this);
+			catnav.console.log(e.target, this);
 			if ($(e.target).is(this) && e.which === 1) {
 				var a = $("#catnav-textarea-include"),
 					b = $(a).val().split("\n");
@@ -594,7 +666,8 @@ $(function() {
 		});
 		$(item).find("img").click(function() {
 			var storage = catnav.fn.storage("get"),
-				fave = storage.favorites,
+				gs = catnav.data.globalString,
+				fave = storage.favorites[gs],
 				index = fave.indexOf($(this).parent().data("name"));
 				if (index > -1) {
 					fave.splice(index, 1);
@@ -609,7 +682,7 @@ $(function() {
 	catnav.fn.addGlobalFavorites = function() {
 		var user = encodeURIComponent(mw.config.get("wgUserName"));
 		$.ajax({
-			url: catnav.data.storage.url + mw.config.get("wgScriptPath") + "/api.php?action=query&format=json&prop=revisions&rvprop=content&titles=User:" + user + "/catnav.css&callback=catnavcb&" + new Date().getTime(),
+			url: catnav.data.storage.url + (catnav.data.storage.url === "//community.fandom.com" ? "" : mw.config.get("wgScriptPath")) + "/api.php?action=query&format=json&prop=revisions&rvprop=content&titles=User:" + user + "/catnav.css&callback=catnavcb&" + new Date().getTime(),
 			action: "GET",
 			dataType: "jsonp",
 			jsonpCallback: "catnavcb",
@@ -619,15 +692,15 @@ $(function() {
 					content,
 					cities = {},
 					currCity,
-					wiki = location.hostname.replace(/\.wikia\.com$/i, ""),
+					wiki = catnav.data.globalString,
 					storage;
 				for (pageid in pages) {
 					if (pageid == -1) {
-						alert("No data found. Please make sure that 'https://community.wikia.com/wiki/User:" + user + "/catnav.css' exists");
+						alert("No data found. Please make sure that 'https://community.fandom.com/wiki/User:" + user + "/catnav.css' exists");
 					} else {
 						content = pages[pageid].revisions[0]["*"];
 						content.split("\n").forEach(function(line, lineNumber) {
-							console.warn(lineNumber, lineNumber + 1, line);
+							catnav.console.warn(lineNumber, lineNumber + 1, line);
 							var temp;
 							switch (line.charAt(0)) {
 								case "@":
@@ -655,11 +728,11 @@ $(function() {
 				}
 				if (cities.hasOwnProperty(wiki)) {
 					storage = catnav.fn.storage("get");
-					console.info(storage);
+					catnav.console.info(storage);
 					cities[wiki].forEach(function(category) {
-						console.info(category);
-						if (storage.favorites.indexOf(category) === -1) {
-							storage.favorites.push(category);
+						catnav.console.info(category);
+						if (storage.favorites[wiki].indexOf(category) === -1) {
+							storage.favorites[wiki].push(category);
 							catnav.fn.insertFavorite(category);
 						}
 					});
@@ -669,41 +742,10 @@ $(function() {
 		});
 	};
 
-	// get wikia's standard categoryexhibition members of a given category
-	catnav.fn.getExhibitionMembers = function(category, arr, page, cb) {
-		// arguments => "Foo", [], 1, function() {}
-		var req = new XMLHttpRequest();
-		req.open("GET", mw.config.get("wgScriptPath") + "/index.php?action=ajax&articleId=" + encodeURIComponent(category) + "&method=axGetArticlesPage&rs=CategoryExhibitionAjax&page=" + page + "&cb=" + new Date().getTime(), true);
-		req.onload = function() {
-			if (req.status == 200) {
-				var data = JSON.parse(req.responseText),
-					lastPage = $(data.paginator).find(".paginator-page").last().attr("data-page");
-				// last page is 1, if there are no subpages for the standard exhibition
-				lastPage = $.isNumeric(lastPage) ? Number(lastPage) : 1;
-				// add titles
-				$(data.page).find(".title").each(function() {
-					arr.push($(this).text());
-				});
-				// check if reached to the last page
-				if (page === lastPage) {
-					// last page - call 'cb' and pass the title list to its arguments
-					cb(arr);
-				} else {
-					// not last page - continue to next one
-					catnav.fn.getExhibitionMembers(category, arr, page + 1, cb);
-				}
-			} else {
-				catnav.fn.onLoadingEnd();
-				catnav.fn.error(true, "CategoryExhibitionAjax request error (status " + req.status + "): could not load sorting resources for the list of pages.<br />Please make sure that the wiki on which you are right now has Category Exhibition enabled. You may try some of the different sorting methods if you wish.");
-			}
-		};
-		req.send();
-	};
-
 	// get sizes of categories
 	catnav.fn.getCategorySizes = function(categories, sizelist, cb) {
 		// arguments => ["Foo1", "Foo2", "Fooetc."], {}, function() {}
-		console.log("inite :: getCategorySizes");
+		catnav.console.log("inite :: getCategorySizes");
 		var req = new XMLHttpRequest(),
 			curr = categories.splice(0, 50);
 		for (var i = 0; i < curr.length; i++) {
@@ -739,13 +781,14 @@ $(function() {
 	// when no further resources are to be loaded
 	// when all required resources have loaded and processed, or when an error prevents the process completion
 	catnav.fn.onLoadingEnd = function() {
+		catnav.fn.unsealUI();
 		$("#catnav-loading").hide();
 	};
 
 	// convert local favorites to global favorites syntax (that the user can copy and paste in their global list)
 	catnav.fn.exportGlobalFavorites = function() {
-		var wiki = location.hostname.replace(/\.wikia\.com$/i, ""),
-			favorites = catnav.fn.storage("get").favorites,
+		var wiki = catnav.data.globalString,
+			favorites = catnav.fn.storage("get").favorites[wiki],
 			lines = ["@" + wiki];
 		for (var i = 0; i < favorites.length; i++) {
 			lines.push("#" + favorites[i]);
@@ -762,12 +805,20 @@ $(function() {
 		// # triggers
 		// 'generate' button
 		$("#catnav-go").click(function() {
+			catnav.fn.clear();
+			catnav.fn.sealUI();
 			$("#catnav-loading").show(); // show loading text
 			var incCats = catnav.fn.collapseText($("#catnav #catnav-textarea-include").val()).replace(/\n/g, "|"), // included categories
 				disCats = catnav.fn.collapseText($("#catnav #catnav-textarea-exclude").val()).replace(/\n/g, "|"), // exclude categories
 				catList = incCats.split("|"), // array of included categories - needed for advanced page sorting methods
 				nsStr = $("#catnav-ns")[0].checked ? "0" : "";
 			// get included categories (object: key => categoryname, val => array of listed pages in that category)
+			if (incCats.length === 0) {
+				catnav.fn.unsealUI();
+				$("#catnav-loading").hide();
+				catnav.fn.error(1, "Please enter at least one valid category under the \"Add from categories\" field.");
+				return;
+			}
 			catnav.fn.catMembersMulti(incCats, nsStr, function(incData) {
 				// sort the pages into a single array
 				catnav.fn.joinMembers(incData, true, function(incTitles) {
@@ -795,11 +846,12 @@ $(function() {
 		// adding categories to favorites
 		$("#catnav-commoncats-add").click(function() {
 			var category = prompt("Please insert a name of a category you'd like to add to favorites"),
-				storage;
+				storage,
+				gs = catnav.data.globalString;
 			if (category) {
 				storage = catnav.fn.storage("get");
-				if (storage.favorites.indexOf(category) === -1) {
-					storage.favorites.push(category);
+				if (storage.favorites[gs].indexOf(category) === -1) {
+					storage.favorites[gs].push(category);
 					storage = catnav.fn.storage("set", storage);
 					catnav.fn.insertFavorite(category);
 				}
@@ -812,7 +864,8 @@ $(function() {
 		// initiating favorites
 		$(function() {
 			var storage = catnav.fn.storage("get"),
-				fave = storage.favorites,
+				gs = catnav.data.globalString,
+				fave = storage.favorites[gs],
 				i;
 			for (i = 0; i < fave.length; i++) {
 				catnav.fn.insertFavorite(fave[i]);
@@ -867,6 +920,14 @@ $(function() {
 		return "#" + new Array(4).join(contrast);
 	};
 
+	// seal ui fields while searching
+	catnav.fn.sealUI = function() {
+		$("nav#catnav .catnav-gui-group").find("textarea, input").attr("disabled", "disabled");
+	}
+	catnav.fn.unsealUI = function() {
+		$("nav#catnav .catnav-gui-group").find("textarea, input").removeAttr("disabled");
+	}
+
 	/* ================================== *\
 		# implementations
 	\* ================================== */
@@ -874,14 +935,27 @@ $(function() {
 	// check if the page is [[Special:CatNav]]
 	if (mw.config.get("wgNamespaceNumber") === -1 && mw.config.get("wgTitle") == "CatNav") {
 		/* css */
-		importArticle({
-			type: 'style',
-			article: 'u:dev:MediaWiki:CatNav.css'
-		});
+		if (window.importArticle) {
+			// fandom
+			importArticle({
+				type: 'style',
+				article: 'u:dev:MediaWiki:CatNav.css'
+			});
+		} else {
+			// gamepedia
+			(function(c) {
+				c.rel = "stylesheet";
+				c.type = "text/css";
+				c.href = "https://dev.fandom.com/wiki/MediaWiki:CatNav.css?action=raw&ctype=text/css";
+				document.head.appendChild(c);
+			}(document.createElement("link")));
+		}
 		// redefine results counter
 		mw.util.addCSS(
 			'#catnav-resultscounter {\n' +
-				'\tcolor: ' + catnav.fn.contrastfy(getComputedStyle(document.querySelector("section#WikiaPageBackground") || document.querySelector(".WikiaPageContentWrapper")).backgroundColor) + ';\n' +
+				// support for pre-ucp, ucp-compatible, fandom desktop, and legacy gamepedia
+				// intentionally not adding fallback (e.g. 'document.body') as possible layout changes in the future might make detecting style issues problematic
+				'\tcolor: ' + catnav.fn.contrastfy(getComputedStyle(document.querySelector("section#WikiaPageBackground") || document.querySelector(".WikiaPageContentWrapper") || document.querySelector("main.page__main") || document.querySelector("body > #global-wrapper > #pageWrapper > #content")).backgroundColor) + ';\n' +
 			'}' +
 			'#catnav .catnav-gui-group {\n' +
 				'\tborder: 1px solid ' + getComputedStyle(document.body).backgroundColor + ';\n' +
@@ -897,7 +971,7 @@ $(function() {
 						'\t\t\t<span id="catnav-export-modal-close" />\n' +
 					'\t\t</h3>\n' +
 					'\t\t<p>\n' +
-						'\t\t\tCopy the following data and paste it in the bottom of your <a href="//community.wikia.com/wiki/Special:MyPage/catnav.css">global settings</a>.<br />\n' +
+						'\t\t\tCopy the following data and paste it in the bottom of your <a href="//community.fandom.com/wiki/Special:MyPage/catnav.css">global settings</a>.<br />\n' +
 						'\t\t\tIn case you have previously created global favorites list for the current wiki, you might want to merge the two lists.\n' +
 					'\t\t</p>\n' +
 					'\t\t<textarea id="catnav-export-modal-textarea"></textarea>\n' +
@@ -915,7 +989,7 @@ $(function() {
 	} else {
 		// this is not [[Special:CatNav]]
 		CatNav.init = function() {
-			console.warn("catnav :: 'CatNav.init' was requested, but has not been defined on [[Special:CatNav]]");
+			catnav.console.warn("catnav :: 'CatNav.init' was requested, but has not been defined on [[Special:CatNav]]");
 		};
 	}
 });

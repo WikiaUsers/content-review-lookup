@@ -28,7 +28,7 @@ mw.loader.using('mediawiki.api').then(function() {
             id: 'ArticleCommentsHeader-container'
         });
 
-        $('#WikiaMainContentContainer').append($comments);
+        $('#WikiaMainContentContainer, .page-footer').append($comments);
     }
 
     function getHeader() {

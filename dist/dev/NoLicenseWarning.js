@@ -61,7 +61,7 @@
 
         // Clean, UCP-compatible banners
         function notify( key, type ) {
-            var msg = i18n.msg( key ).escape();
+            var msg = i18n.msg( key ).plain();
 
             mw.loader.using( 'mediawiki.notification', function() {
                 mw.notification.notify( msg );

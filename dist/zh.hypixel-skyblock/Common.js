@@ -279,15 +279,15 @@ $("div[class^='mw-customtoggle-'],div[class*=' mw-customtoggle-']").on("click", 
 
 /* Arbitrator Icon */
 $.when(
-    $.getJSON("/wiki/MediaWiki:Custom-ArbitratorsList.json?action=raw&ctype=text/json"),
-    $.getJSON("/wiki/MediaWiki:Gadget-StaffColorsUpdater.js/staff-colors.json?action=raw&ctype=text/json")
+    $.getJSON("/zh/wiki/MediaWiki:Custom-ArbitratorsList.json?action=raw&ctype=text/json"),
+    $.getJSON("/zh/wiki/MediaWiki:Gadget-StaffColorsUpdater.js/staff-colors.json?action=raw&ctype=text/json")
 ).then(function() {
 	var json = arguments[0][0];
 	var selector = arguments[1][0].selectors.ICONS;
 	
     json.forEach(function(user) {
         $(selector.replace(/\$1/, user).replace(/::before/, '').replace(/,$/, '')).after($('<a>', {
-            href: "/wiki/Project:Arbitration Committe",
+            href: "/zh/wiki/Project:Arbitration Committe",
             title: "This User is an Arbitrator",
             html: $('<img>', {
                 src: "https://static.wikia.nocookie.net/hypixel-skyblock/images/4/41/Scale_of_justice.png/revision/latest/scale-to-width-down/16",

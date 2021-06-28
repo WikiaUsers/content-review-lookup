@@ -184,6 +184,11 @@
             page: 'FloatingCommunityHeaderButtons',
             styles: 'MediaWiki:FloatingCommunityHeaderButtons.css'
         },
+        
+        FloatingTitle: {
+        	page: 'FloatingTitle',
+        	styles: 'MediaWiki:FloatingTitle.css'
+        },
 
         GlobalEditcount: {
             page: 'User:Wikia',

@@ -88,7 +88,7 @@ importArticles({
         	threadmoderator: { u: 'Moderador de discusiones' },
         	'content-moderator': { u:'Moderador de contenido'},
         	rollback : { u:'Reversores'},
-            inactive: { u: 'Inactivo', title: 'This user is inactive.' },
+            inactive: { u: 'Inactivo', title: 'Este usuario es inactivo.' },
             newuser: {u: 'Nuevo usuario' }
         }
     };

@@ -9,10 +9,9 @@ window.UserTagsJS = {
 		king: 'King',
 		queen: 'Queen',
 		legend: 'Legend',
-		popstar: 'Hero of Popstar',
 		fightinggameenthusiast: 'Fighting Game Enthusiast',
 		oddworldinhabitant: 'Oddworld Inhabitant',
-		blocked: 'One of Dr. Robotniks Goons',
+		blocked: 'Maverick',
 		chatmoderator: 'Freedom Fighter',
 		founder: 'Creator',
 		authenticated: 'Authenticated User',
@@ -27,15 +26,7 @@ window.UserTagsJS = {
 // Custom groups for users! Be careful when editing this.
 UserTagsJS.modules.custom = {
 	'SonicStorm478': ['techsupport'],
-	'Kirbyyyyyyy': ['guardianofmasteremerald', 'popstar'],
 	'Oddworld-2001': ['oddworldinhabitant', 'fightinggameenthusiast'],
-	'Masked Rage': ['legend'],
-	'Space Jamzu': ['fightinggameenthusiast'],
-	'Prince Elias': ['prince'],
-	'Princess Sally': ['princess'],
-	'King Maximillian': ['king'],
-	'Queen Alicia': ['queen'],
-	'Rotor Walrus': ['techsupport'],
 };
 UserTagsJS.modules.autoconfirmed = true;
 UserTagsJS.modules.newuser = true;

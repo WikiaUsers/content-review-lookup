@@ -74,6 +74,8 @@ window.hsbwiki = window.hsbwiki || {}
                     },
                     // used for debugging incorrect config names
                     validParams = [
+                    	'calcname',
+                    	'calcpage',
                         'form',
                         'param',
                         'result',
@@ -222,7 +224,7 @@ window.hsbwiki = window.hsbwiki || {}
                         //     param.ooui.setDisabled(!show);
                         // }
                         // [skywiki] Yet another hacky way to get around not having ooui
-                        param.$ui.closest("tr").toggle(show);
+                        param.$ui.closest('tr').toggle(show);
                         param.$ui.prop('disabled', !show);
                         
                     }
@@ -449,7 +451,7 @@ window.hsbwiki = window.hsbwiki || {}
                 }
 
                 $('#' + self.form + ' .jcSubmit input')
-                    .val('Loading...')
+                	.val('..')
                     .prop('disabled', true);
 
                 // @todo time how long these calls take
@@ -469,7 +471,7 @@ window.hsbwiki = window.hsbwiki || {}
                     })
                     .fail(function (_, error) {
                         $('#' + self.form + ' .jcSubmit input')
-                            .val('Submit')
+                        	.val('↵')
                             .prop('disabled', false);
                         helper.showError.call(self, error);
                     });
@@ -482,10 +484,10 @@ window.hsbwiki = window.hsbwiki || {}
              */
             dispResult: function (html) {
                 $('#' + this.form + ' .jcSubmit input')
-                    .val('Submit')
+                	.val('↵')
                     .prop('disabled', false);
 
-                $('#bodyContent, #WikiaArticle, .WikiaArticle')
+                $('#bodyContent, #WikiaArticle, .WikiaArticle, #content, .page-content')
                     .find('#' + this.result)
                         .empty()
                         .removeClass('jcError')
@@ -666,7 +668,8 @@ window.hsbwiki = window.hsbwiki || {}
                  * @returns {jQuery.object} A jQuery object representing the completed table cell
                  */
                 check: function ($td, param, id) {
-                    var $input = $('<input>')
+                    var self = this,
+                    	$input = $('<input>')
                             .attr({
                                 type: 'checkbox',
                                 name: id,
@@ -684,7 +687,7 @@ window.hsbwiki = window.hsbwiki || {}
                     
                     if ( Object.keys(param.toggles).length > 0 ) {
                         $input.on('change', function(){
-                            helper.toggle.call(self, this.checked ? "true" : "false", param.toggles);
+                            helper.toggle.call(self, this.checked ? 'true' : 'false', param.toggles);
                         });
                     }
 
@@ -787,6 +790,7 @@ window.hsbwiki = window.hsbwiki || {}
      * Build the calculator form
      */
     Calc.prototype.setupCalc = function () {
+    	console.log(this);
         var self = this,
             $form = $('<form>')
                 .attr({
@@ -803,6 +807,39 @@ window.hsbwiki = window.hsbwiki || {}
         
         self.indexkeys = {};
         
+        var $submitButton = $('<td>')
+            .addClass('jcSubmit')
+            .attr('rowspan', Object.keys(self.tParams).length)
+            .css({
+            	'vertical-align': 'bottom',
+            })
+            .append(
+            	$('<div>').append(
+                    $('<input>')
+                    	.addClass('wds-button')
+                        .attr('type', 'submit')
+                        .css({
+                        	'font-size': '2em',
+                        	'padding': '0.7em 0.5em',
+                        	'background': '#444',
+							'border': 'none',
+                        })
+                        .val('↵')
+                )
+            );
+
+
+		$table.append($('<tr>').append(
+			$('<td>').attr('colspan', 3)
+			.append(
+				$('<span>').text(self.calcname || 'Calculator'),
+				$('<a>').text('view template')
+					.attr('href', self.template && '/wiki/'+self.template || '#'),
+				$('<a>').text('view calculator')
+					.attr('href', self.calcpage && '/wiki/'+self.calcpage || '#')
+			)
+		));
+
         self.tParams.forEach(function (param, index) {
             // can skip any output here as the result is pulled from the
             // param default in the config on submission
@@ -835,6 +872,11 @@ window.hsbwiki = window.hsbwiki || {}
 
             $td = helper.tParams[method].call(self, $td, param, id);
             $tr.append($td);
+
+            if ($submitButton) {
+            	$tr.append($submitButton);
+            	$submitButton = null;
+            }
 
             if (param.type === 'semihidden') {
                 $tr.hide();
@@ -872,27 +914,13 @@ window.hsbwiki = window.hsbwiki || {}
             // }
         });
 
-        $table.append(
-            $('<tr>')
-                .append(
-                    $('<td>')
-                        .addClass('jcSubmit')
-                        .attr('colspan', '2')
-                        .append(
-                            $('<input>')
-                                .attr('type', 'submit')
-                                .val('Submit')
-                        )
-                )
-        );
-
         $form.append($table);
         
         if (self.configError) {
             $form.append(self.configError);
         }
 
-        $('#bodyContent, #WikiaArticle, .WikiaArticle')
+        $('#bodyContent, #WikiaArticle, .WikiaArticle, #content, .page-content')
             .find('#' + self.form)
                 .empty()
                 .append($form);

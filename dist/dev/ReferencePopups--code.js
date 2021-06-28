@@ -75,6 +75,10 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
             coreConfigureText: 'Configurer Popups de Référence',
             coreConfigureHover: 'Modifier les préférences pour les Popups de Référence'
         },
+        hi: {
+            coreConfigureText: 'उद्धरण पॉपअप कॉन्फिगर करें',
+            coreConfigureHover: 'उद्धरण पॉपअप के सेटिंग्स को बदलें'
+        },
         it: {
             coreConfigureText: 'Configura le note a popup',
             coreConfigureHover: 'Cambia le impostazioni per le note a popup'

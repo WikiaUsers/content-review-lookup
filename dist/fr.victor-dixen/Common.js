@@ -5,11 +5,6 @@ importArticles({
 }, {
 	type: 'style',
 	article: 'u:zh.pad.wikia.com:MediaWiki:CountDown.css'
-}, {
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:NullEditButton/code.js',
-    ]
 });
 
 

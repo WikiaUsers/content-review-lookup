@@ -24,9 +24,13 @@ importArticles({
 // **************************************************************
  
 window.RevealAnonIP = {
-    permissions : ["rollback", "sysop", "bureaucrat", "staff", "helper", "vstf"]
+    permissions : ["rollback", "sysop", "bureaucrat", "staff", "helper", "soap"]
 };
  
 // ****************************
 // End of RevealAnonIP settings 
 //
+
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 14;
+window.lockOldComments.addNoteAbove = true;

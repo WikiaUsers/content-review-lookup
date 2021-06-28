@@ -8,7 +8,7 @@ if (mw.config.get('wgTitle') === 'Changelogs') {
 			return t.months[Number(str[1])-1]+" "+Number(str[2])+", "+str[0];
 		}
 		function space(n) {
-			return new Array(n*2).fill("&nbsp;").join("");
+			return new "&nbsp;".repeat(n*2);
 		}
 		t.date=data.match(/(\d{4}[-]\d{2}[-]\d{2})/g);
 		$("#mw-changelog").html("<div id='mw-changelog_filter' style='position:static;float:right;background:hsla(200,30%,15%,.9)'>Filter by Date: ");

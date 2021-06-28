@@ -62,7 +62,7 @@ window.MassCategorizationGroups = ['sysop', 'imagecontrol', 'bot'];
 /* Toggle spolier button text */
 $(function () {
     var button = $('.mw-customtoggle-ShowSpoiler');
-    if (!button.length) {
+    if (button.length !== 1) {
         return;
     }
 

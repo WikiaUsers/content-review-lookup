@@ -11,6 +11,12 @@
 */
 /* global mw, ace */
 
+// Load Styles 
+$('<link>', { 
+	rel: "stylesheet", 
+	href: "https://hypixel-skyblock.fandom.com/wiki/MediaWiki:Gadget-TooltipsEditor.css?action=raw&ctype=text/css" 
+}).appendTo('head');
+
 $.when(
 	$.Deferred(function(def) { 
 		$(function() { 
@@ -80,148 +86,6 @@ $.when(
 		});
 	}
 	
-	mw.util.addCSS("\
-#minetip-tooltip {\
-	z-index: 99999999 !important; \
-}\
-\
-.ace_format_bold {\
-	font-weight: bold !important;\
-}\
-\
-.ace_format_italic {\
-	font-style: italic !important;\
-}\
-\
-.ace_format_underline {\
-	font-style: italic !important;\
-	text-decoration: strikethrough, underline;\
-	text-decoration-color: currentcolor;\
-}\
-\
-.ace_format_strikethrough {\
-	text-decoration: line-through;\
-	text-decoration-color: currentcolor;\
-}\
-\
-.ace_escape {\
-	color: #a1bff5 !important;\
-	font-weight: bold !important;\
-}\
-\
-.ace_backescape {\
-	color: #B58900 !important;\
-	font-weight: bold !important;\
-}\
-\
-#TooltipsEditor {\
-	width: 700px !important;\
-}\
-.TooltipsEditor-insertFormat, .TooltipsEditor-insertChar {\
-	cursor: copy;\
-}\
-.TooltipsEditor-insertChar {\
-	margin: 0em 0.3em;\
-}\
-#TooltipsEditor .oo-ui-buttonElement-button {\
-  color: var(--theme-article-text-color) !important;\
-  font-family: rubik,helvetica,arial,sans-serif !important;\
-  border: none;\
-  margin-top: 1.5em;\
-  margin-bottom: 1.5em;\
-  background-color: var(--theme-accent-color);\
-}\
-#TooltipsEditor-save {\
-	margin-right: 1em;\
-}\
-#TooltipsEditor-cancel {\
-	background-color: transparent !important;\
-	text-transform: uppercase;\
-}\
-#TooltipsEditor-preview {\
-	background-color: transparent !important;\
-    cursor: help;\
-	border: dotted 0.15em !important;\
-}\
-.TooltipsEditor-editTooltip, .TooltipsEditor-removeTooltip {\
-	cursor: pointer;\
-}\
-.TooltipsEditor-previewTooltip {\
-    cursor: help;\
-	color: var(--qdmodal-text-color);\
-}\
-#TooltipsEditor-actionLog li, .actions-revert {\
-	font-style: italic;\
-}\
-.actions-none {\
-	color: #808080;\
-}\
-.actions-add, .actions-modify, .actions-remove {\
-	font-weight: bold;\
-	font-size: 13px;\
-}\
-.actions-add {\
-	color: lime;\
-}\
-.actions-modify {\
-	color: #DAA520;\
-}\
-.actions-remove {\
-	color: red;\
-}\
-.actions-revert {\
-	color: darkgray;\
-	font-size: 13px;\
-}\
-.actions-add::before, .actions-modify::before, .actions-remove::before, .actions-revert::before{\
-	margin-right: 1.5em;\
-}\
-.actions-add::before {\
-	content: '+ ';\
-}\
-.actions-modify::before {\
-	content: '≠ ';\
-}\
-.actions-remove::before {\
-	content: '– ';\
-}\
-.actions-revert::before {\
-    content: '> ';\
-    margin-left: 0.8em;\
-}\
-.actions-undo-button, .actions-preview-button {\
-    text-decoration: underline dotted;\
-    font-size: 0.8em;\
-    color: white;\
-}\
-.actions-undo-button {\
-    padding: 0em 0.4em;\
-    margin-left: 0.7em;\
-    cursor: pointer;\
-}\
-.actions-preview-button {\
-    padding: 0em 0.4em;\
-    cursor: help;\
-}\
-.noselect {\
-	-webkit-touch-callout: none;\
-	-webkit-user-select: none;\
-	-khtml-user-select: none;\
-	-moz-user-select: none;\
-	-ms-user-select: none;\
-	user-select: none;\
-}\
-#TooltipsEditor-totalTooltips p {\
-	font-style: italic;\
-}\
-#TooltipsEditor-totalTooltips p span {\
-	font-weight: bold;\
-	margin-left: 0.5em;\
-}\
-#TooltipsEditor-searchInput {\
-	margin-left: 1em;\
-}\
-	".trim());
 	mw.loader.load(['ext.codeEditor.ace']);
 	
 	function onClick(tooltips) {
@@ -265,27 +129,67 @@ $.when(
 						].join(""));
 					});
 					
-					ret = "return {\n" + ret.join('\n') + "\n}\n".replaceAll('&amp;', '&').replaceAll(/\\/g, '\\\\');
+					ret = "return {\n" + ret.join('\n') + "\n}\n".replaceAll(/&amp;/g, '&');
+					console.log(ret);
 					
 					api.postWithEditToken({
 						action: "edit",
-						text: ret.replaceAll(/&amp;/g, '&'),
+						text: ret,
 						title: mw.config.get('wgPageName'),
 						summary: "Updating tooltips (TooltipsEditor)",
 						minor: true,
 					}).always(console.log);
+					
+					mw.notify('', {title: 'Tooltips Saved!', type:'success'});
 				},
 			}],
 		});
 		$('#TooltipsEditor > section').attr('class', 'mw-ajax-loader');	
 		
-		api.post({
-			action: 'scribunto-console',
-			title: mw.config.get('wgPageName'),
-			question: "=mw.text.jsonEncode(p)",
-			content: tooltips,
-		}).then(function(d) {
-			var json = JSON.parse(d['return'].replaceAll('\\\\', '\\'.repeat(4)));
+		function luaTableToJson(s) {
+			return api.post({
+				action: 'scribunto-console',
+				title: mw.config.get('wgPageName'),
+				question: "=mw.text.jsonEncode(p)",
+				content: s,
+			});
+		}
+		
+		function processResult(d) {
+			return JSON.parse(d.replaceAll('\\', '\\\\'));
+		}
+		
+		var promises = [];
+		var split = tooltips.split('\n');
+		
+		// Split lua table into multiple tables due to size limitation of 500k bytes
+		if (split.length > 1350) {
+			var lines = split;
+			lines.pop();
+			lines.shift();
+			
+			for (var i = 0; i < lines.length; i += 900) {
+				var ret = 'return {\n' + lines.slice(i, i + 900).join('\n') + '\n}';
+				promises.push(luaTableToJson(ret));
+			}
+		} else {
+			promises = [luaTableToJson(tooltips)];
+		}
+		
+		$.when.apply($, promises).then(function() {
+			var json;
+			if (arguments.length > 1) {
+				var jsonStr = [];
+				
+				// Merge result into a single string to limit JSON.parse() calls
+				Array.from(arguments).forEach(function(v) {
+					jsonStr.push(v[0]['return'].replace(/^\{|\}$/g, ''));
+				});
+				// Parse String
+				json = JSON.parse("{" + jsonStr.join(',') + "}");
+			} else {
+				json = processResult(arguments[0]);
+			}
 			var oldjson = {};
 			var editor = $('#TooltipsEditor > section');
 			data = json;
@@ -330,7 +234,8 @@ $.when(
 					}
 					else if (key in json)
 						delete json[key];
-					actions[key] = 'revert';
+					if (key in actions) delete actions[key];
+					mw.notify('for '+key, {title: 'Undo Successful', type:'success'});
 					updateActions();
 					if ($('#TooltipsEditor-searchInput').val().trim() !== "") $('#TooltipsEditor-searchInput').keyup();
 				}
@@ -351,75 +256,86 @@ $.when(
 				var len = Object.keys(actions).length;
 				var ls = [[],[],[],[]];
 				
-				$log.empty();
-				$log.append($('<li>', {text: len ? "Unsaved changes: " : "No changes were made", "class": "actions-none"}));
+				$log.empty().append($('<li>', {text: len ? "Unsaved changes: " : "No changes were made", "class": "actions-none"}));
+				
 				if (len) {
 					Object.keys(actions).sort().forEach(function(k) {
-						if (actions[k] === "add") {
-							ls[0].push($('<li>', {
-							html: [
-								"Added "+k,
-								$('<a>', { text: "undo", "class": "actions-undo-button", "data-value": k }).on("click", revertAction),
-								$('<span>', {
-									'class': "actions-preview-button minetip", 
-									text: "preview (current)",
-									'data-minetip-text': json[k] && json[k].text && json[k].text.replaceAll('&amp;', '&'),
-									'data-minetip-title': json[k] && json[k].title && json[k].title.replaceAll('&amp;', '&'), 
-								})
-							],
-							"class": "actions-add"
-							}));
-						}
-						else if (actions[k] === "modify") {
-							ls[1].push($('<li>', {
-							html: [
-								"Modified "+k,
-								$('<a>', { text: "undo", "class": "actions-undo-button", "data-value": k }).on("click", revertAction),
-								$('<span>', {
-									'class': "actions-preview-button minetip", 
-									text: "preview (undo)",
-									'data-minetip-text': oldjson[k] && oldjson[k].text && oldjson[k].text.replaceAll('&amp;', '&'),
-									'data-minetip-title': oldjson[k] && oldjson[k].title && oldjson[k].title.replaceAll('&amp;', '&'), 
-								}),
-								$('<span>', {
-									'class': "actions-preview-button minetip", 
-									text: "preview (current)",
-									'data-minetip-text': json[k] && json[k].text && json[k].text.replaceAll('&amp;', '&'),
-									'data-minetip-title': json[k] && json[k].title && json[k].title.replaceAll('&amp;', '&'), 
-								})
-							],
-							"class": "actions-modify"
-							}));
-						}
-						else if (actions[k] === "remove") {
-							ls[2].push($('<li>', {
-							html: [
-								"Removed "+k,
-								$('<a>', { text: "undo", "class": "actions-undo-button", "data-value": k }).on("click", revertAction),
-								$('<span>', {
-									'class': "actions-preview-button minetip", 
-									text: "preview (undo)",
-									'data-minetip-text': oldjson[k] && oldjson[k].text && oldjson[k].text.replaceAll('&amp;', '&'),
-									'data-minetip-title': oldjson[k] && oldjson[k].title && oldjson[k].title.replaceAll('&amp;', '&'), 
-								})
-							],
-							"class": "actions-remove"
-							}));
-						}
-						else if (actions[k] === "revert") {
-							delete actions[k];
-							ls[3].push($('<p>', {
-								text: "Undo successful for item: "+k,
-								"class": "actions-revert",
-								"data-value": k
-							}).fadeOut(3500, function() {
-							}));
+						switch(actions[k]) {
+							case('add'): {
+								ls[0].push($('<li>', {
+									html: [
+										"Added "+k,
+										$('<a>', { text: "undo", "class": "actions-undo-button", "data-value": k }).on("click", revertAction),
+										$('<a>', {
+											'class': "actions-edit-button",
+											text: "edit",
+											'data-tooltipTitle': json[k] && json[k].title && json[k].title.replaceAll('&amp;', '&'),
+											'data-tooltipText': json[k] && json[k].text && json[k].text.replaceAll('&amp;', '&'),
+											'data-tooltipLink': json[k] && json[k].name && json[k].name.replaceAll('&amp;', '&'),
+											'data-tooltipKey': k.replaceAll('&amp;', '&')
+										}),
+										$('<span>', {
+											'class': "actions-preview-button minetip", 
+											text: "preview (current)",
+											'data-minetip-text': json[k] && json[k].text && json[k].text.replaceAll('&amp;', '&'),
+											'data-minetip-title': json[k] && json[k].title && json[k].title.replaceAll('&amp;', '&'), 
+										})
+									],
+									"class": "actions-add"
+								}));
+								break;
+							}
+							case("modify"): {
+								ls[1].push($('<li>', {
+									html: [
+										"Modified "+k,
+										$('<a>', { text: "undo", "class": "actions-undo-button", "data-value": k }).on("click", revertAction),
+										$('<a>', {
+											'class': "actions-edit-button",
+											text: "edit",
+											'data-tooltipTitle': json[k] && json[k].title && json[k].title.replaceAll('&amp;', '&'),
+											'data-tooltipText': json[k] && json[k].text && json[k].text.replaceAll('&amp;', '&'),
+											'data-tooltipLink': json[k] && json[k].name && json[k].name.replaceAll('&amp;', '&'),
+											'data-tooltipKey': k.replaceAll('&amp;', '&')
+										}),
+										$('<span>', {
+											'class': "actions-preview-button minetip", 
+											text: "preview (undo)",
+											'data-minetip-text': oldjson[k] && oldjson[k].text && oldjson[k].text.replaceAll('&amp;', '&'),
+											'data-minetip-title': oldjson[k] && oldjson[k].title && oldjson[k].title.replaceAll('&amp;', '&'), 
+										}),
+										$('<span>', {
+											'class': "actions-preview-button minetip", 
+											text: "preview (current)",
+											'data-minetip-text': json[k] && json[k].text && json[k].text.replaceAll('&amp;', '&'),
+											'data-minetip-title': json[k] && json[k].title && json[k].title.replaceAll('&amp;', '&'), 
+										})
+									],
+									"class": "actions-modify"
+								}));
+								break;
+							}
+							case("remove"): {
+								ls[2].push($('<li>', {
+									html: [
+										"Removed&nbsp;"+k,
+										$('<a>', { text: "undo", "class": "actions-undo-button", "data-value": k }).on("click", revertAction),
+										$('<span>', {
+											'class': "actions-preview-button minetip", 
+											text: "preview (undo)",
+											'data-minetip-text': oldjson[k] && oldjson[k].text && oldjson[k].text.replaceAll('&amp;', '&'),
+											'data-minetip-title': oldjson[k] && oldjson[k].title && oldjson[k].title.replaceAll('&amp;', '&'), 
+										})
+									],
+									"class": "actions-remove"
+								}));
+								break;
+							}
 						}
 					});
 				}
-				$log.append(ls[0]);
-				$log.append(ls[1]);
-				$log.append(ls[2]);
+				
+				ls.forEach(function(v) { $log.append(v) });
 				$log.append($('<li>', {text: "Saving changes will also sort all Tooltips in alphabetical order.", "class": "actions-none"}));
 				$("#TooltipsEditor-undoLog").append(ls[3]); //.prepend(ls[3])
 				
@@ -430,11 +346,9 @@ $.when(
 							var diff = Object.keys(json).length - oldjsonkeys.length;
 							if (diff < 0) {
 								return { text: "("+diff+")", css: {color: "red"} };
-							}
-							else if (diff > 0) {
+							} else if (diff > 0) {
 								return { text: "(+"+diff+")", css: {color: "lime"} };
-							}
-							else {
+							} else {
 								return { text: "(0)", css: {color: "gray"} };
 							}
 						}())),
@@ -542,7 +456,7 @@ $.when(
 							},
 							onMatch: onMatch,
 						}, {
-							regex: "&r",
+							regex: /&r/,
 							token: function() {
 								formats = [];
 								return 'escape.format.code.color';	
@@ -786,18 +700,35 @@ $.when(
 								'margin-left': "0.8em",
 							},
 						}),
-						$("<span>", {
+						$("<div>", {
 							css: {"font-style": "italic", float: "right", "margin-bottom": "1em"},
 							html: [
-								"(",
-								$('<a>', {
-									href: mw.util.getUrl("MediaWiki:Gadget-TooltipsEditor.js"),
-									text: "View JavaScript",
-									target: "_blank"
+								$("<span>", {
+									css: {"margin-left": "0.5em"},
+									html: ["(", $('<a>', {
+											href: mw.util.getUrl("MediaWiki:Gadget-TooltipsEditor.js"),
+											text: "View JavaScript",
+											target: "_blank"
+										}), ")" ]
 								}),
-								")"
-								]
-						}),
+								$("<span>", {
+									css: {"margin-left": "0.5em"},
+									html: ["(", $('<a>', { text: "Debug" }).on("click", function() {
+										var it = prompt("Please enter an item to see its JSON");
+										if (it !== null && it !== "") {
+											if (it in json) {
+												console.log({
+													"JSON": json[it].text,
+													"OUTPUT-WOULD-BE": json[it].text.replace(/(['"])/g, '\\$1').replaceAll(/&amp;/g, '&'),
+												});
+												mw.notify('See results in console', {title: 'Debug', type:'warning'});
+											}
+											else mw.notify('Debug failed: Item not found.', {title: 'Debug', type:'warning'});
+										}
+									}), ")" ]
+								}),
+							]
+						})
 					]
 				}),
 				$('<div>', {
@@ -982,7 +913,7 @@ $.when(
 				
 				ace.tooltipsTextEditor.setValue(convertSlashes(text || ""));
 				ace.tooltipsTitleEditor.setValue(title || "");
-				$("#TooltipsEditor-link").val(link) || "";
+				$("#TooltipsEditor-link").val(link || "");
 				$("#TooltipsEditor-key").val(key || "");
 				
 				$('.qdmodal-button').css({ display: "none" });				
@@ -1021,7 +952,9 @@ $.when(
 											.find('p')
 											.html()
 											.trim()
-											.replace(/&amp;/g, '&') : undefined,
+											.replace(/&amp;/g, '&')
+											.replace(/(?<!\\)\\/g, '\\\\')
+											.replace(/&nbsp;/g, ' '): undefined,
 										title: title.trim(),
 										name: link.trim(),
 									};
@@ -1085,7 +1018,7 @@ $.when(
 				$('#TooltipsEditor-searchInput').keyup();
 			});
 			
-			$(document.body).on('click', '.TooltipsEditor-editTooltip', function() {
+			$(document.body).on('click', '.TooltipsEditor-editTooltip, .actions-edit-button', function() {
 				var $this = $(this);
 
 				openEditor(

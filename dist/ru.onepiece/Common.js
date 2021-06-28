@@ -1,9 +1,5 @@
 /* На вики также подключено "Extension:DynamicPageList" MediaWiki */
-
 // =====================================
-// == Imports ==
-// See MediaWiki:ImportJS
-
 
 // == Всплывающая подсказка красных ссылок ==
 mw.loader.using("mediawiki.api").then(
@@ -21,10 +17,6 @@ nkch_gst_gadgets = [{
     name: "RWA", // название гаджета с MediaWiki:Gadget-Название; обязательно
     title: "Недавняя вики-деятельность", // Название в меню
     description: "Недавняя вики-деятельность" // Описание гаджета в меню при наведении
-}, {
-    name: "ModernProfile",
-    title: "Современный профиль",
-    description: "Современный профиль"
 }, {
     name: "UWStyle",
     title: "Единый стиль вики",
@@ -147,7 +139,7 @@ PFD_templates = [{
  
 PFD_discourageEditorFileUpload = true;
 
-/* подложка карты*/
+/* = подложка карты = */
 if ($('#noMap').length) {
 $('body').append('<div style="display: none; background: rgba(30, 36, 49, 0);" id="forMap">'+$('#noMap').wrap('<div/>').parent().html()+'</div>'); //Строит карту
  

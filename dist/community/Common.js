@@ -1,8 +1,5 @@
-//Redirect chat to a url if the chat isn't enabled
-if (
-    mw.config.get('wgCanonicalSpecialPageName') === 'Chat' &&
-    !mw.loader.getState('ext.Chat2')
-) {
+//Redirect Special:Chat to Discord
+if (mw.config.get('wgPageName') === 'Special:Chat') {
     window.location = 'https://community.fandom.com/wiki/Discord';
 }
 
@@ -11,6 +8,7 @@ window.LockForums = {
     expiryDays: 60
 };
 
-window.AddRailModule = [
-    {page: 'MediaWiki:DiscordAMA', prepend: true},
-];
+window.AddRailModule = [{
+	page: 'MediaWiki:DiscordAMA',
+	prepend: true
+}];

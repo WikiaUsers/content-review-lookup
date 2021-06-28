@@ -33,7 +33,7 @@
 window.tooltips_list = [
     {
         classname: 'custom-tooltip',
-        parse: '{' + '{#invoke:Tooltip|<#tt-type#>|<#1#>|<#2#>|<#3#>|<#4#>|<#5#>|<#6#>|<#7#>|<#8#>|<#9#>}}',
+        parse: '{' + '{#invoke:Tooltip|<#tt-type#>|1=<#1#>|2=<#2#>|3=<#3#>|4=<#4#>|5=<#5#>|6=<#6#>|7=<#7#>|8=<#8#>|9=<#9#>}}',
     },
 ];
 
