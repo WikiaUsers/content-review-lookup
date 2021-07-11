@@ -4,8 +4,8 @@
  *       <tt>code2.js</tt> allows for the exclusion of users in other rights
  *       groups via the addition of classes to the <tt>.listusers</tt> div.
  *       Also, minor i18n configuration added. Made for Diep.io Wikia.
- * @authors Eizen <dev.wikia.com/wiki/User_talk:Eizen> (code2.js author)
- *          Slyst <dev.wikia.com/wiki/User_talk:Slyst> (original author)
+ * @authors Eizen <dev.fandom.com/wiki/User_talk:Eizen> (code2.js author)
+ *          .jun <dev.fandom.com/wiki/User_talk:.jun> (original author)
  * @external "mediawiki.util"
  * @external "jQuery"
  * @external "wikia.window"
@@ -81,9 +81,6 @@ require(["mw", "wikia.window"], function (mw, wk) {
                     break;
                 case "LU-exclude-bureaucrat":
                     $excludedGroups.push("bureaucrat");
-                    break;
-                case "LU-exclude-chatmoderator":
-                    $excludedGroups.push("chatmoderator");
                     break;
                 case "LU-exclude-content-moderator":
                     $excludedGroups.push("content-moderator");
@@ -282,7 +279,6 @@ require(["mw", "wikia.window"], function (mw, wk) {
                 "sysop",
                 "content-moderator",
                 "threadmoderator",
-                "chatmoderator",
                 "rollback",
                 "content-volunteer",
                 "wiki-manager",

@@ -6,6 +6,7 @@
  * @author KhangND <https://dev.fandom.com/wiki/User:KhangND>
  * @author Thundercraft5 <https://dev.fandom.com/wiki/User:Thundercraft5>
  */
+/* jshint esversion: 5 */
 (function($, mw) {
 	var userGroups = mw.config.get("wgUserGroups"),
 		specialPage = mw.config.get("wgCanonicalSpecialPageName"),
@@ -37,7 +38,7 @@
 			],
 		];
 
-	const logger = (function() {
+	var logger = (function() {
 		Object.keys(this).forEach(function(method) {
 			this[method] = this[method].bind(null, '[MultipleFileDelete] [' + method.toUpperCase() + ']:');
 		}, this);
@@ -76,6 +77,7 @@
 			return pages.indexOf(specialPage) >= 0;
 		}) + 1,
 		time = 0,
+		wgArticlePath = mw.config.get('wgArticlePath').replace(/\$1/, '');
 		api = new mw.Api(),
 		i18Messages = [
 			'start', 
@@ -90,6 +92,7 @@
 			'uninvert',
 			'invert',
 		];
+	
 
 	function preload(i18nLoaded) {
 		i18Messages.forEach(function(msg) {
@@ -141,7 +144,7 @@
 				class: "btn-mfd-invert",
 				text: i18n.invert,
 				click: invertSelection,
-			}, btnProps)),
+			}, btnProps))
 		);
 		$oldButton = $('.btn-mfd-start').remove();
 
@@ -166,7 +169,7 @@
 						selectHax(this);
 					});
 				} else { //PrefixIndex
-					$('.mw-prefixindex-list > li a, .mw-allpages-body li > a').each(function() {
+					$('.mw-prefixindex-list > li a, .gallery-image-wrapper').each(function() {
 						$(this).before($chk.clone());
 						selectHax(this);
 					});
@@ -174,8 +177,8 @@
 
 				break;
 			default:
-				$('.gallerytext > a').each(function() {
-					$(this).before($chk.clone());
+				$('.gallerytext > a, .gallery-image-wrapper').each(function() {
+					$(this).has('.image.lightbox').before($chk.clone());
 					selectHax(this);
 				});
 		}
@@ -193,16 +196,18 @@
 		// lock delete button
 		$(this)
 			.attr('disabled', true)
-			.text("")
+			.text("Deleting Pages...")
 			.css({
-				'background-image': 'url(https://slot1-images.wikia.nocookie.net/__cb1557858431190/common/skins/common/images/ajax.gif)',
 				'background-repeat': 'no-repeat',
 				'background-position': 'center'
 			});
 
 		selected.each(function(i) {
 			var $link = $(this).parent().find('a').first();
-			var page = $link.attr('title') || $link.text();
+			var page;
+
+			if (specialPageType === 3) page = $link.attr('href').replace(wgArticlePath, '');
+			else page = $link.attr('title') || $link.text();
 
 			apiDelete(
 				page,
@@ -287,6 +292,8 @@
 	}
 
 	function apiDelete(page, reason, $link, cur, count) {
+		page = decodeURIComponent(page); // Api doesn't like percent encodes page names
+
 	   	api.post({
 			format: 'json',
 			action: 'delete',
@@ -297,7 +304,8 @@
 		}).then(function(d) {
 			mw.notify('Successfully deleted ' + page);
 			logger.log('Successfully deleted ' + page);
-			$link.parent().remove();
+			var $target = specialPageType === 3 ? $link.parent().parent().parent() : $link.parent();
+			$target.remove();
 
 			if (cur === count) {
 				reset();

@@ -1,6 +1,6 @@
 // Ligbox - by ShopDD  http://shopdd.net/ligbox/
 $(function(){
-    $('body:not([class*="page-特別"]):not([class*="page-ファイル"]) #WikiaMainContent').on('click', 'a', function(event) {
+    $('body:not([class*="page-特別"]):not([class*="page-ファイル"]) #content').on('click', 'a', function(event) {
         var url = $(this).attr("href");
  
 		if(!url.match(/(jpg|gif|png)/i)){

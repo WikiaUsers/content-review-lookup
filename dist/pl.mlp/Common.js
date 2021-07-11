@@ -10,12 +10,12 @@
 //EditIntroButtonText = 'Edytuj wstęp';
 
 //LinkPreview (http://dev.wikia.com/wiki/LinkPreview) missing image placeholder and disable for character images on the list of characters
-window.pPreview = $.extend(true, window.pPreview, {
+/*window.pPreview = $.extend(true, window.pPreview, {
     noimage: 'https://vignette.wikia.nocookie.net/mlp/images/6/6d/TECH-brak_obrazka.svg/revision/latest?cb=20170709164212&path-prefix=pl',
     RegExp: {
         iparents: ['.characters-gallery'],
     },
-});
+});*/
 
 
 //Import skryptów
@@ -65,7 +65,7 @@ function startTime() {
             $("#CountdownTimer" + (i + 1)).html(prepareCounterText(days, hours, minutes, seconds));
         }
     }
-    t = setTimeout('startTime()', 500);
+    t = setTimeout(function() { startTime(); }, 500);
 }
 
 function prepareCounterText(days, hours, minutes, seconds) {
@@ -85,7 +85,7 @@ function createTwoDigitNumber(number) {
     return number;
 }
 
-$(document).ready;
+startTime();
 
 //Skrypt do obliczania poprawnej formy liczby mnogiej autorstwa Vengira, optymalizowany przez Dj mateooshkę, zrefaktoryzowany przez Haifischa
 function createPluralForm(number, single, plural1, plural2) {
@@ -98,7 +98,7 @@ function createPluralForm(number, single, plural1, plural2) {
     }
 }
 
-var activityBackgrounds = {
+/*var activityBackgrounds = {
     1: "https://images.wikia.nocookie.net/__cb20140527232909/mlp/pl/images/6/65/TECH-MAT-TS.png",
     2: "https://images.wikia.nocookie.net/__cb20140527232908/mlp/pl/images/4/48/TECH-MAT-R.png",
     3: "https://images.wikia.nocookie.net/__cb20140527232907/mlp/pl/images/2/2e/TECH-MAT-FS.png",
@@ -108,35 +108,35 @@ var activityBackgrounds = {
     7: "https://images.wikia.nocookie.net/__cb20140527232907/mlp/pl/images/c/ca/TECH-MAT-KC.png",
     8: "https://images.wikia.nocookie.net/__cb20140527232908/mlp/pl/images/1/1b/TECH-MAT-KL.png",
     9: "https://images.wikia.nocookie.net/__cb20140527232908/mlp/pl/images/0/08/TECH-MAT-S.png",
-};
+};*/
 
 
-backgroundLoaded = false;
+//backgroundLoaded = false;
 
-$('#WikiaRail').bind('DOMNodeInserted', function(event) {
+/*$('#WikiaRail').bind('DOMNodeInserted', function(event) {
     if (!backgroundLoaded) {
         $("#WikiaRecentActivity").attr("style","background: url('" + activityBackgrounds[Math.floor((Math.random() * 9) + 1)] + "') no-repeat right bottom");
         backgroundLoaded = true;
     }
-});
+});*/
 
 //Informowanie o braku licencji
 function emptyLicenseAlert(form) {
-    var msg = "Licencja pliku nie została wybrana. Proszę o dodanie odpowiedniej licencji."
+    var msg = "Licencja pliku nie została wybrana. Proszę o dodanie odpowiedniej licencji.";
     if(window.emptyLicenseWarningDelivered) {
         return true;
     }
-    if($('#wpLicense').val() == '') {
+    if($('#wpLicense').val() === '') {
         alert(msg);
-        window.emptyLicenseWarningDelivered = true
-        return false
+        window.emptyLicenseWarningDelivered = true;
+        return false;
     }
     return true;
 }
 $('#mw-upload-form').submit(function(e) {return emptyLicenseAlert(this);});
 
 ///Skrypt na nazwę użytkownika
-if (wgUserName != null/* && span.insertusername != undefined*/) {
+if (wgUserName !== null/* && span.insertusername != undefined*/) {
     $(".insertusername").html(wgUserName);
 }
 

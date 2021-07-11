@@ -1,45 +1,17 @@
 /**
- * 05:37, June 27, 2017 (UTC)
+ * 23:19, July 4, 2021 (UTC)
  * http://naruto.wikia.com/wiki/MediaWiki:Common.js
  * This is the central JavaScript file for the Wiki. Any code placed in here will
  * run on every page for every user (logged in or not) on every skin (Oasis or
- * Monobook).
+ * Fandomdesktop).
  */
 
 (function (window, $, mw) {
 	"use strict";
-
-	// Bulk loading scripts.
-	// scriptList are scripts to load everywhere
-	// pageScriptList are scripts which only certain pages need.
-	var scriptList = [],
-		pageScriptList = [];
-
-					/* Scripts to be loaded everywhere */
-
-	// Make WantedFiles File:xxx entries become links to Special:Upload (bug fix)
-	scriptList.push('MediaWiki:Common.js/FixWantedFiles.js');
-
-	// Configure AjaxRC
-	(window.ajaxPages = (window.ajaxPages || [])).push(
-		"Special:RecentChanges",
-		"Special:Watchlist",
-		"Special:Log",
-		"Special:Contributions",
-		"Special:NewFiles",
-		"Special:NewPages",
-		"Special:ListFiles",
-		"Special:WikiActivity"
-	);
-	window.AjaxRCRefreshText = 'Auto-Segar';
-	window.AjaxRCRefreshHoverText = 'Secara otomatis menyegarkan setiap 60 detik';
-	window.ajaxCallAgain = ($.isArray(window.ajaxCallAgain) && window.ajaxCallAgain) || [];
-	scriptList.push('u:dev:AjaxRC/code.js');
-
+	
 	// ArchiveTool
 	window.archiveListTemplate = 'ArchiveList';
 	window.archivePageTemplate = 'ArchivePage';
-	scriptList.push('u:dev:ArchiveTool/code.js');
 
 	// User tags
 	window.UserTagsJS = {
@@ -74,102 +46,10 @@
 			}
 		}
 	};
-	scriptList.push('u:dev:UserTags/code.js');
 
-	// Null Edit button
-	// Conditionally load purge button if page cannot be edited
-	if ($("#ca-edit").length || $("a[data-id='editprofile']").length) {
-		scriptList.push('u:dev:NullEditButton/code.js');
-	} else {
-		scriptList.push('u:dev:PurgeButton/code.js');
-	}
-
-	// List Files. See [[Narutopedia:ListFiles]]
-	scriptList.push('u:dev:ListFiles/code.js');
-
-	// Warnings
-	scriptList.push('MediaWiki:Common.js/Warnings.js');
-
-	// Reference Popups, like on Wikipedia
-	scriptList.push('u:dev:ReferencePopups/code.js');
-	
-	//Displays time at top right of screen
-	scriptList.push('u:dev:DisplayClock/code.js');
-
-					/* Page specific scripts */
-
-    // Temporary BrowseData
-    //if (mw.config.get("wgCanonicalSpecialPageName") === "BrowseData") {
-    //    pageScriptList.push('Mediawiki:Common.js/BrowseData.js');
-	//}
-
-	// List Duplicate images
-	if (mw.config.get('wgPageName') === 'Project:Gambar Duplikat') {
-		pageScriptList.push('u:dev:DupImageList/code.js');
-	}
-
-	// Various changes to the new forums
-	if (({1201: 1, 2000: 1})[mw.config.get('wgNamespaceNumber')] === 1 || 
-        mw.config.get('wgCanonicalSpecialPageName') === 'Forum'
-    ) {
-        // Lock forums if not commented for 60 days
-        // Place a warning after 30 days
-        window.LockForums = {
-            expiryDays: 60,
-            expiryMessage: "Kiriman ini belum dikomentari selama lebih dari <actualDays> hari. Tidak perlu dibalas.",
-            warningDays: 30,
-            banners: true,
-            ignoreDeletes: true,
-            warningPopup: true,
-        };
-        pageScriptList.push('u:dev:LockForums/code.js');
-
-        window.ArchiveBoards= {
-            boards : ["Arsip Diskusi Wiki", "Arsip Bab"],
-        };
-        pageScriptList.push('u:dev:ArchiveBoards/code.js');
-
-        pageScriptList.push('MediaWiki:Common.js/ForumChanges.js');
-	}
-
-	// Custom Special:[Multiple]Upload UI
-	if (({Upload: 1, MultipleUpload: 1})[mw.config.get('wgCanonicalSpecialPageName')] === 1) {
-		pageScriptList.push(
-			'MediaWiki:Common.js/FairUseUpload.js',
-			'MediaWiki:Common.js/FixMultipleUpload.js' // Fix the Special:MultipleUpload page
-		);
-	}
-
-					/* Small scripts which donot need a seperate page (Snippets) */
-
-	// Remove red-links (deleted pages) from Recent Changes
-	// [They stay red, they just don't link to ?action=edit]
-	if (({
-		Recentchanges: 1,
-		Log: 1
-	})[mw.config.get('wgCanonicalSpecialPageName')] === 1) {
-		var deNewRC = function () {
-			$('a.new').each(function () {
-				this.href = this.href.replace(/\?[^?]*$/, '');
-			});
-		};
-		$(deNewRC);
-		window.ajaxCallAgain.push(deNewRC);
-	}
-	
 	// Add custom class for styling long list of refs
 	if ($('.references li').length > 9)
         $('.references').addClass('compactreferences');
-
-    // SMW default popup is broken in wikia
-    // Use custom modal
-    $('.ultisup-image-popup a').click(function(ev) {
-        ev.preventDefault();
-        $.showCustomModal(this.title, '<img id="ultisup-load" src="https://images.wikia.nocookie.net/__cb1498150157/common/skins/common/images/ajax.gif"/>', {
-            width: 1000
-        });
-        $("#ultisup-load").parent().load(this.href + " #gallery-0");
-});
 
 	// Oasis-only scripts
 	if (mw.config.get('skin') === 'oasis') {
@@ -220,82 +100,6 @@
                     });
             });
         });
-
-		// Add link to ParentPage to Wiki-Nav
-		// Idea from avatar wiki
-		$("<li><a>").addClass('subnav-2-item')
-			.find('a').attr({
-					'href': '/wiki/Project:ParentPage',
-					'class': 'subnav-2a'
-				}).text('Halaman Induk').end()
-		.appendTo($('.WikiHeader nav ul li.marked ul'));
 	}
 
-	// Make edit with form as default when available
-    var $edit = $('#ca-edit'),
-        $pencil = $edit.find('img'),
-        $formedit = $('#ca-formedit');
-        
-    if ($formedit.length) {
-        $edit.attr('href', '?action=formedit').text('Sunting dengan bentuk').prepend($pencil);
-        $formedit.attr('href', '?action=edit').text('Sunting halaman ini');
-    }
-
-	// Custom edit buttons
-	if (mw.toolbar) {
-		mw.toolbar.addButton(
-			'https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png',
-			'Pengalihan',
-			'#ALIH [[',
-			']]',
-			'Masukkan teks',
-			'mw-editbutton-redirect'
-		);
-
-		mw.toolbar.addButton(
-			'https://images.wikia.nocookie.net/__cb20100821183407/bleach/en/images/e/e1/O_Accent_Button.png',
-			'Tambahkan karakter ō',
-			'ō',
-			'',
-			'',
-			'mw-editbutton-macron-o'
-		);
-		
-		mw.toolbar.addButton(
-			'https://images.wikia.nocookie.net/__cb20100821183407/bleach/en/images/d/db/U_Accent_Button.png',
-			'Tambahkan karakter ū',
-			'ū',
-			'',
-			'',
-			'mw-editbutton-macron-u'
-		);
-
-		mw.toolbar.addButton(
-			'https://images.wikia.nocookie.net/naruto/images/7/79/Button_reflink.png',
-			'Tambahkan Referensi Bab',
-			'<ref>',
-			'</ref>',
-			'Bab 0, halaman 0',
-			'mw-editbutton-ref'
-		);
-	}
-
-	// HOOK: Verbatim imports embedded on particular pages.
-	if ($.isArray(window.pageNeededScripts)) {
-		pageScriptList.push.apply(pageScriptList, window.pageNeededScripts);
-		try {
-			delete window.pageNeededScripts;
-		} catch (e) {
-			window.pageNeededScripts = null;
-		} // IE8 sucks.
-	}
-
-	// Import all scripts in bulk (and minified)
-	window.importArticles({
-		type: 'script',
-		articles: scriptList
-	}, {
-		type: 'script',
-		articles: pageScriptList
-	});
 }(window, jQuery, mediaWiki));

@@ -1,5 +1,5 @@
 /* from https://nkch.fandom.com/wiki/MediaWiki:CommunityPageRailModule.js */
-mw.loader.using("mediawiki.api").then(
+mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(
     function () {
         return new mw.Api().loadMessagesIfMissing(["communitypage-help-us-grow", "communitypage-entry-button"]);
     }).then(
@@ -71,8 +71,13 @@ mw.loader.using("mediawiki.api").then(
                 
                 var communityblock_content_link = document.createElement("a");
                 communityblock_content_link.classList.add("wds-button", "wds-is-secondary", "entry-button");
-                communityblock_content_link.href = mw.Title.makeTitle(-1, "Community").getPrefixedText();
-                communityblock_content_link.innerHTML = mw.message("communitypage-entry-button").text();
+
+                Object.assign(communityblock_content_link.style, {
+                    whiteSpace: "nowrap"
+                });
+                
+                communityblock_content_link.href = mw.util.getUrl(mw.Title.makeTitle(-1, "Community").getPrefixedText());
+                communityblock_content_link.innerHTML = mw.message("communitypage-entry-button").escaped();
 
                 function railCheck() {
                     if ($(".wikia-rail-inner.is-ready").length) {
@@ -81,8 +86,8 @@ mw.loader.using("mediawiki.api").then(
                         $(".rail-module .activity-items").after(communityblock);
                     } else {
                         setTimeout(railCheck, 500);
-                    };
-                };
+                    }
+                }
 
                 railCheck();
 
@@ -95,11 +100,11 @@ mw.loader.using("mediawiki.api").then(
                     communityblock_topusers_avatar.id = "community-page-topusers-avatar-" + i;
 
                     var communityblock_topusers_link = document.createElement("a");
-                    communityblock_topusers_link.href = mw.Title.makeTitle(2, topUsers[i].name).getPrefixedText();
+                    communityblock_topusers_link.href = mw.util.getUrl(mw.Title.makeTitle(2, topUsers[i].name).getPrefixedText());
                     communityblock_topusers_link.title = topUsers[i].name;
                     communityblock_topusers_avatar.appendChild(communityblock_topusers_link);
 
-                    if (topUsers[i].avatarUrl != "") {
+                    if (topUsers[i].avatarUrl !== "") {
                         var communityblock_topusers_image = document.createElement("img");
                         communityblock_topusers_image.classList.add("wds-avatar__image");
                         communityblock_topusers_image.setAttribute("src", topUsers[i].avatarUrl);
@@ -117,7 +122,7 @@ mw.loader.using("mediawiki.api").then(
                         communityblock_topusers_link.appendChild(communityblock_topusers_icon);
                     }
 
-                    communityblock_avatars_stack.appendChild(communityblock_topusers_avatar)
+                    communityblock_avatars_stack.appendChild(communityblock_topusers_avatar);
                 }
 
                 communityblock.appendChild(communityblock_content);
@@ -125,6 +130,6 @@ mw.loader.using("mediawiki.api").then(
                 communityblock_content.appendChild(communityblock_content_desc);
                 communityblock_content.appendChild(communityblock_content_link);
             }
-        )
+        );
     }
 );

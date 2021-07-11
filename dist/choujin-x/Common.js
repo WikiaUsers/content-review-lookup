@@ -1,1 +1,1 @@
-window.DiscordBannerSettings = {    bannerStyle: '3',    inviteLink: 'mfgeRa3J76',    prependToRail: true };
+window.DiscordBannerSettings = {    bannerStyle: '3',    inviteLink: 'MhnDg6y9xs',    prependToRail: true };

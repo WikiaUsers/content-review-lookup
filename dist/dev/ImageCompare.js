@@ -4,12 +4,10 @@
 */
 (function imageCompare(mw, $, window) {
 	
-	debugger;
 	if (window.imageCompare) { return; }
 	window.imageCompare = { loaded: true };
 	
 	function initComparisons() {
-		debugger;
 		var x, i;
 
 		/* Find all elements with an "overlay" class: */

@@ -804,29 +804,6 @@ $(function () {
   $("#creature-resistance-d").append(arr);
 });
 
-/* Fix pixel-art images */
-/*
-$('.page-content img, .WikiaMainContent img').on('load', function(){
-    var srcvar = $(this).attr('src');
-    if(srcvar && //$(this).parents('.map_image_crop').legnth == 0 &&
-    	!srcvar.endsWith('format=original') && srcvar.startsWith('https://static.wikia.nocookie.net')) {
-        if(srcvar.includes('?')) {
-            $(this).attr('src', srcvar+'&format=original');
-        } else {
-            $(this).attr('src', srcvar+'?format=original');
-        }
-    }
-    var srcset = $(this).attr('srcset');
-    if(srcset && !srcset.contains('format=original')) {
-    	var srcarray = srcset.split(' ');
-    	$(this).attr('srcset', srcarray[0]+'&format=original');
-    }
-}).each(function() {
-  if(this.complete) { 
-      $(this).trigger('load');
-  }
-});*/
-
 /* twbox - section headers behave as anchor links */
 $("#twbox h1, #twbox h2, #twbox h3, #twbox h4, #twbox h5, #twbox h6").each(function () {
     var $this = $(this);
@@ -846,32 +823,32 @@ $("#twbox h1, #twbox h2, #twbox h3, #twbox h4, #twbox h5, #twbox h6").each(funct
     }
 }());
 
-function reload_imgs(target) {
-	var srcvar = $(target).attr('src');
-    if(srcvar &&
-    	!srcvar.endsWith('format=original') && srcvar.startsWith('https://static.wikia.nocookie.net')) {
-        if(srcvar.includes('?')) {
-            $(target).attr('src', srcvar+'&format=original');
-        } else {
-            $(target).attr('src', srcvar+'?format=original');
-        }
-    }
-    var srcset = $(target).attr('srcset');
-    if(srcset && !srcset.includes('format=original')) {
-    	var srcarray = srcset.split(' ');
-    	$(target).attr('srcset', srcarray[0]+'&format=original');
-    }
-    return;
-}
-$(window).load(function() {
 /* Fix pixel-art images */
+$(function(){
+	function reload_imgs(target) {
+		var srcvar = $(target).attr('src');
+	    if(srcvar &&
+	    	!srcvar.endsWith('format=original') && srcvar.startsWith('https://static.wikia.nocookie.net')) {
+	        if(srcvar.includes('?')) {
+	            $(target).attr('src', srcvar+'&format=original');
+	        } else {
+	            $(target).attr('src', srcvar+'?format=original');
+	        }
+	    }
+	    var srcset = $(target).attr('srcset');
+	    if(srcset && !srcset.includes('format=original')) {
+	    	var srcarray = srcset.split(' ');
+	    	$(target).attr('srcset', srcarray[0]+'&format=original');
+	    }
+	    return;
+	}
 	document.body.addEventListener('load', function(event) {
 		const target = event.target;
 		if ($(target).is('img')) {
 		    reload_imgs(target);
 		}
 	}, true);
-	$('.page-content img, .WikiaMainContent img').each(function() {
+	$('.page__main img, .WikiaMainContent img').each(function() {
 		if(this.complete) { 
 			reload_imgs(this);
 		}

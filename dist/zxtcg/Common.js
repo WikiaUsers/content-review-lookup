@@ -3,7 +3,8 @@
 importArticles({
     type: "script",
     articles: [
-        'u:onepiece:MediaWiki:Common.js/elementClass.js'
+        'u:onepiece:MediaWiki:Common.js/elementClass.js',
+        'MediaWiki:CardSearch.js'
     ]
 });
 

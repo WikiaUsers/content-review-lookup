@@ -25,7 +25,6 @@
      * @classdesc Main TemplateTypeButtons class
      */
     var Main = {};
-    Main.isUCP = config.wgVersion !== '1.19.24';
     /**
      * @type {Array}.{String}
      * @description System messages to get
@@ -74,14 +73,12 @@
      */
     Main.buttons = function (i18n) {
         $.each(this.types, function (k, v) {
-            console.log(k, v);
+            // console.log(k, v);
             $('<span>', {
-                'class': (Main.isUCP ? 'wds-button' : 'button') + ' temptype-button',
+                'class': 'wds-button temptype-button',
                 'data-id': v,
-                'text': Main.isUCP ?
-                    mw.message(Main.messages[k]).plain() :
-                    i18n()[k]
-            }).insertAfter('#PageHeader');
+                'text': mw.message(Main.messages[k]).plain()
+            }).insertAfter('#PageHeader, .page-header__bottom');
         });
         $('.temptype-button').click(function () {
             var that = $(this);
@@ -90,9 +87,7 @@
                 that.text()
             ) {
                 $.post(mw.util.wikiScript('wikia') + '?' + $.param({
-                    controller: Main.isUCP ?
-                        'Fandom\\TemplateClassification\\Api\\ClassificationController' :
-                        'TemplateClassificationApi',
+                    controller: 'Fandom\\TemplateClassification\\Api\\ClassificationController',
                     method: 'classifyTemplate',
                     format: 'json'
                 }), {
@@ -102,47 +97,17 @@
                     editToken: mw.user.tokens.get('editToken'),
                     token: mw.user.tokens.get('csrfToken')
                 }, function (d) {
-                    if (Main.isUCP) {
-                        mw.notify(d.status);
-                    } else {
-                        new BannerNotification(
-                            i18n(14),
-                            'confirm'
-                        ).show();
-                    }
+                    mw.notify(d.status);
                 });
             }
         });
     };
     /**
-     * @method init
-     * @description Initiates the script by getting the messages
-     * @param {Function} fetch - Variable for Fetch
-     */
-    Main.init = function (fetch) {
-        fetch({
-            lang: config.wgContentLanguage,
-            messages: this.messages
-        }).then($.proxy(this.buttons, this));
-    };
-    /**
      * @method preload
      * @description Preloads the hook
      */
-    Main.preload = function () {
-        mw.hook('dev.fetch').add(
-            $.proxy(this.init, this)
-        );
-    };
     mw.loader.using('mediawiki.user').then(
-        Main.isUCP ?
-            $.proxy(Main.buttons, Main) :
-            $.proxy(Main.preload, Main)
+        $.proxy(Main.buttons, Main),
+        mw.util.addCSS('.temptype-button { margin: 3px 3px 0 0; padding: 4px 10px; }') // Smaller buttons (more like legacy version)
     );
-    if (!Main.isUCP) {
-        importArticle({
-            type: 'script',
-            article: 'u:dev:MediaWiki:Fetch.js'
-        });
-    }
 })();

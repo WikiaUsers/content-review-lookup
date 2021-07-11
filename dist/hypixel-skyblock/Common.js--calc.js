@@ -818,7 +818,8 @@ window.hsbwiki = window.hsbwiki || {}
             .append(
             	$('<div>').text('↵').css({
             		'font-size': '2em',
-            		'padding': '0 0.3em'
+            		'padding': '0 0.3em',
+            		'text-align': 'center',
             	})
             )
             .click(function(){
@@ -854,7 +855,7 @@ window.hsbwiki = window.hsbwiki || {}
 
             var id = helper.getId.call(self, param.name),
                 $tr = $('<tr>'),
-                $td = $('<td>'),
+                $td = $('<td>').addClass('jcTable-cell-normal').addClass('jcInput'),
                 method = helper.tParams[param.type] ?
                     param.type :
                     'def',
@@ -867,7 +868,7 @@ window.hsbwiki = window.hsbwiki || {}
 
             // add label
             $tr.append(
-                $('<th>')
+                $('<th>').addClass('jcTable-cell-normal').addClass('jcLabel')
                     .append(
                         $('<label>')
                             .attr('for', id)

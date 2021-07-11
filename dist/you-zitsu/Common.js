@@ -190,8 +190,8 @@ importScriptPage('AjaxRC/code.js', 'dev');
         $("#ultisup-load").parent().load(this.href + " #gallery-0");
 });
  
-	// Oasis-only scripts
-	if (mw.config.get('skin') === 'oasis') {
+	// FandomDesktop scripts
+	if (mw.config.get('skin') === 'fandomdesktop') {
         // Template adder on file pages
         if (mw.config.get('wgCanonicalNamespace') === 'File')
         $(function() {
@@ -242,13 +242,6 @@ importScriptPage('AjaxRC/code.js', 'dev');
 		type: 'script',
 		articles: pageScriptList
 	});
-/* Adds icons to page header bottom border */
-$(document).ready(function() {
-	if (skin == "oasis" || skin == "wikia") {
-		$('.WikiaPageHeader').append($('#icons'));
-		$('#icons').css({'position' : 'absolute', 'right' : '0', 'bottom' : '-1.2em'});
-	}
-});
 
 /* Hide the breadcrum on pages using Parent Tab */
 if($(".parenttab").length) {

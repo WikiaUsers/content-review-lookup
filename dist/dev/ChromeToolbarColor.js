@@ -4,25 +4,28 @@
  * 
  * @author  Rail01
  * @author  KockaAdmiralac
+ * @author  Caburum
  */
 ( function( mw, window ) {
-    // Double-loading prevention
-    if ( document.querySelector( 'meta[name="theme-color"]' ) ) return;
+	// Double-loading prevention
+	if ( document.querySelector( 'meta[name="theme-color"]' ) ) return;
 
-    // Find community header
-    var header = document.getElementsByClassName( 'wds-community-header' )[0];
-    if ( !header ) {
-    	// There is no header in the editor
-    	return;
-    }
+	var color;
+	if (mw.config.get('skin') === 'oasis') {
+		color = getComputedStyle( document.documentElement ).getPropertyValue( '--theme-header-background-color' );
+	} else {
+		color = getComputedStyle( document.documentElement ).getPropertyValue( '--theme-sticky-nav-background-color' );
+	}
 
-    // Create and configure <meta> tag
-    var meta = document.createElement( 'meta' );
-    meta.setAttribute( 'name', 'theme-color' );
-    meta.setAttribute( 'content',
-        window.ChromeToolbarColor || getComputedStyle( header )['background-color']
-    );
+	if (!color) return;
 
-    // Add tag to document's head
-    document.head.appendChild( meta );
+	// Create and configure <meta> tag
+	var meta = document.createElement( 'meta' );
+	meta.setAttribute( 'name', 'theme-color' );
+	meta.setAttribute( 'content',
+		window.ChromeToolbarColor || color
+	);
+
+	// Add tag to document's head
+	document.head.appendChild( meta );
 } )( mediaWiki, this );

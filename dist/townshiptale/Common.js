@@ -18,7 +18,7 @@ function map($class, $function)
 
 map('.att-news', function($div)
 {
-	var blogApi = "https://strapi.townshiptale.dev/graphql?query={posts(limit:7,%20sort:%22date:desc%22){title,date,slug}}&format=txt&format=txt&origin=*";
+	var blogApi = "https://strapi.townshiptale.dev/graphql?query={posts(limit:7,sort:%22date:desc%22,where:{status:%22published%22}){title,date,slug}}&format=txt&format=txt&origin=*";
 
 	$div = $div.children(":first");
 	    		

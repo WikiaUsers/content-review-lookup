@@ -126,4 +126,18 @@ const pages = {
     "Shard of Valkyrie, the MVPs": "https://static.wikia.nocookie.net/roblox/images/9/91/MVC-bg.jpg/revision/latest",
     "Sparks' Winner Wings": "https://static.wikia.nocookie.net/roblox/images/9/91/MVC-bg.jpg/revision/latest",
     "Valkyrie of the Metaverse": "https://static.wikia.nocookie.net/roblox/images/9/91/MVC-bg.jpg/revision/latest",
+    
+    // Starcourt
+    "Stranger Things: Starcourt Mall": "https://static.wikia.nocookie.net/roblox/images/c/cb/StrangerThingBG.png/revision/latest",
+    "Starcourt Badge (Stranger Things)": "https://static.wikia.nocookie.net/roblox/images/c/cb/StrangerThingBG.png/revision/latest",
+    "WalkieTalkie (Stranger Things)": "https://static.wikia.nocookie.net/roblox/images/c/cb/StrangerThingBG.png/revision/latest",
+    "Eleven's Headgear (Stranger Things)": "https://static.wikia.nocookie.net/roblox/images/c/cb/StrangerThingBG.png/revision/latest",
+    "DustinHat": "https://static.wikia.nocookie.net/roblox/images/c/cb/StrangerThingBG.png/revision/latest",
+    "Hawkins High Backpack (Stranger Things)": "https://static.wikia.nocookie.net/roblox/images/c/cb/StrangerThingBG.png/revision/latest",
+    "Steve’s Scoops Ahoy Costume (Stranger Things)": "https://static.wikia.nocookie.net/roblox/images/c/cb/StrangerThingBG.png/revision/latest",
+    "Robin’s Scoops Ahoy Costume (Stranger Things)": "https://static.wikia.nocookie.net/roblox/images/c/cb/StrangerThingBG.png/revision/latest",
+    "Eleven’s “Starcourt Splatter” Costume (Stranger Things)": "https://static.wikia.nocookie.net/roblox/images/c/cb/StrangerThingBG.png/revision/latest",
+    "Will the Wise Costume (Stranger Things)": "https://static.wikia.nocookie.net/roblox/images/c/cb/StrangerThingBG.png/revision/latest",
+    "Demogorgon Costume (Stranger Things)": "https://static.wikia.nocookie.net/roblox/images/c/cb/StrangerThingBG.png/revision/latest",
+    "Hazmat Suit (Stranger Things)": "https://static.wikia.nocookie.net/roblox/images/c/cb/StrangerThingBG.png/revision/latest",
 };

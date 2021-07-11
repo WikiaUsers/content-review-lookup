@@ -65,3 +65,40 @@ return new Promise((resolve, reject) => {
 }) 
 }
 */
+/*
+
+switch (mw.config.get('wgPageName')) {
+    case 'Template:VisitCount':
+       
+        var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+		setInterval(function(){
+			var Http = new XMLHttpRequest();
+			const url='https://games.roblox.com/v1/games?universeIds=21164849';
+			Http.open("GET", url);
+			Http.send();
+		
+			Http.onreadystatechange = (e) => {
+				var visits = Http.responseText.substring(
+					Http.responseText.indexOf(':',Http.responseText.search("visits")) + 1, 
+					Http.responseText.indexOf(",",Http.responseText.search("visits"))
+				);
+				function commas(x) {
+					var pattern = /(-?\d+)(\d{3})/;
+					while (pattern.test(x))
+						x = x.replace(pattern, "$1,$2");
+					return x;
+				};
+				
+				
+				 visits = commas(visits);
+				
+				
+				console.log(visits);
+			};
+		}, 5000);
+        
+        break;
+
+}
+
+*/

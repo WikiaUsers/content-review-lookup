@@ -8,7 +8,7 @@
 
 (function () {
 	'use strict';
-	if (window.veTitleLink) return;
+	if (mw.config.get('skin') === 'fandomdesktop' || window.veTitleLink) return;
 	window.veTitleLink = true;
 
 	// '1' === visual editor - source mode,

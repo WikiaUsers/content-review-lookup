@@ -2,22 +2,9 @@
  
 /* importScriptPages-start */
  
-importScriptPage('Countdown/code.js', 'dev');
- 
-importScriptPage('ShowHide/code.js', 'dev');
- 
 //importScriptPage('MediaWiki:Search_Fix.js', 'dantest');
  
 importScriptPage('BackToTopButton/code.js', 'dev');
- 
-importArticles({
-    type: 'script',
-    articles: [
-        // ...
-        'w:c:dev:ReferencePopups/code.js',
-        // ...
-    ]
-});
  
 /* importScriptPages-end */
  
@@ -182,10 +169,9 @@ importArticles({
 	type: "script",
 	articles: [
 		"w:dev:ShowHide/code.js", /* Collapsible elements and tables */
-		"w:dev:PurgeButton/code.js", /* Add "purge" option to page controls */
 		"w:dev:DisableArchiveEdit/code.js", /* Discourage/disable the editing of talk page archives */
 		"w:dev:Countdown/code.js", /* Countdown clock */
-                "w:c:dev:ReferencePopups/code.js", /* Reference Popups */
+        "w:c:dev:ReferencePopups/code.js", /* Reference Popups */
 		"w:runescape:MediaWiki:Common.js/standardeditsummaries.js", /* Standard edit summaries */
 		"MediaWiki:Common.js/imports.js", /* UserTags and AjaxRC */
 		"MediaWiki:Common.js/randompagelink.js", /* Special:Random > Special:Random/main in navigation */
@@ -202,14 +188,12 @@ importArticles({
 		"MediaWiki:Common.js/customizeforums.js", /* Wikia forum feature changes (possibly more to come) */
 		"MediaWiki:Common.js/talkbutton.js", /* Talk page buttons to article headers */
 		"MediaWiki:Common.js/fanonmodule.js", /* Create WikiaRail element to advertise the fanon portal */
-                "MediaWiki:Common.js/communitydiscussionpages.js", /* Javascript for community discussion pages, including VfD. */
-                "MediaWiki:Common.js/fanonsubscriptionmodule.js", /* Tool used to automate mass-posting on message walls with an easy UI. */
+        "MediaWiki:Common.js/communitydiscussionpages.js", /* Javascript for community discussion pages, including VfD. */
+        "MediaWiki:Common.js/fanonsubscriptionmodule.js", /* Tool used to automate mass-posting on message walls with an easy UI. */
 	]
 });
 
 /* Discourage/disable the editing of talk page archives */
-importScriptPage('DisableArchiveEdit/code.js', 'dev');
- 
 importScriptPage('DupImageList/code.js', 'dev');
  
 importStylesheet("Template:Ambox/code.css");
@@ -219,12 +203,6 @@ importScript('MediaWiki:Common.js/displaytitle.js');
  
 /* Add a tag for "rollback" to profile header when category present */
 importScript('MediaWiki:Common.js/rollbacktag.js');
- 
-/* Auto Refresh */
-AjaxRCRefreshText = 'Auto-refresh';
-AjaxRCRefreshHoverText = 'Automatically refresh the page';
-ajaxPages = ["Special:RecentChanges","Special:WikiActivity"];
-importScriptPage('AjaxRC/code.js', 'dev');
  
 /* Custom edit buttons */ 
 importScript('MediaWiki:Common.js/CEB.js');
@@ -1025,7 +1003,7 @@ function owwsitesearch(f) {
 }
  
  
-addOnloadHook(toggleInit);
+$(toggleInit);
 
 /* Для шаблона "В этот день" */
 var TodayIs = new Date().getDate().toString() + '-' + (new Date().getMonth() + 1).toString();

@@ -5,7 +5,6 @@
 // Config scripts, list what each is used for.
 // Most any config must go above the import statements.
 // Unless stated otherwise.
-// Please don't edit this without Psychobilly's permission, this breaks easily.
 // ==============================
 
 // RevealAnonIP
@@ -53,28 +52,24 @@ $(function () {
 
 // ================================================================
 // Username tags additions/filters (Working as intended)
-// Be careful and edit only with Psychobilly's permission, this breaks easily. 
 // ================================================================
 window.UserTagsJS = {
 	modules: {},
 	tags: {
 		bureaucrat: { u:'Bureaucrat'},
         dev: { u:'Developer'},
-        newuser: { u:'Fresh Blood'},
-        chatmoderator: { u:'Chat Mod'},
+        discordmod: { u:'Discord Moderator'},
         rollback: { u:'Rollback'},
+        newuser: { u:'Fresh Blood'},
         sysop: {u:'Admin'},
-        mothra: {u:'Mothra'},
-        kek: {u:'Kek'},
-        owner: {u:'owner'},
+        owner: {u:'Owner'},
         qa: {u:'Lead QA'}
 	}
 };
 
 UserTagsJS.modules.custom = {
-        'Psychobilly2422': ['dev'],
-        'Iskaldur': ['mothra'],
-        'Schmidkalkan': ['kek'],
+	    'MichaelMason115': ['discordmod'],
+        'AMGSheena': ['dev'],
         'Shruk': ['owner'],
         'Centaura': ['qa'],
         'Akuma_Kira': ['dev']
@@ -83,7 +78,6 @@ UserTagsJS.modules.custom = {
 
 UserTagsJS.modules.mwGroups = [
     'bureaucrat',
-    'chatmoderator',
     'patroller',
     'rollback',
     'sysop',
@@ -104,7 +98,7 @@ UserTagsJS.modules.metafilter = {
         'rollback'
     ],
     rollback: ['sysop'],
-    newuser: ['chatmoderator', 'bannedfromchat'], 
+    newuser: ['bannedfromchat'], 
 };
 
 UserTagsJS.modules.autoconfirmed = false;
@@ -117,9 +111,7 @@ UserTagsJS.modules.newuser = {
 };
 
 UserTagsJS.modules.userfilter = {
-    'Psychobilly2422': ['bureaucrat'], //Remove Bureaucrat
-    'Shruk': ['bureaucrat'], //Remove Bureaucrat
-    'Centaura': ['sysop'] //Admin
+    'PossiblySeiko': ['newuser'], // Remove Fresh Blood Tag
 };
 
 // ===================
@@ -131,16 +123,10 @@ window.MessageWallUserTags = {
     glowSize: '20px',     //Glow size – The default radius of the text-shadow glow effect
     glowColor: 'Indigo', //Glow color
     users: {
-        'Psychobilly2422': 'Developer',
+    	'MichaelMason115': 'Discord Moderator',
+        'AMGSheena': 'Developer',
         'Akuma_Kira': 'Developer',
         'Shruk': 'Owner',
-        'Schmidkalkan': 'Bureaucrat',
-        'Iskaldur': 'Bureaucrat',
-        'FacciaBianco': 'Retired',
-        'Waterway1': 'Bureaucrat',
-        'The_Tickle_Monster_SCP-999': 'Chatmod',
-        'Darkstar293': 'Retired',
         'Centaura': 'Lead QA',
-        'Homura-chan': 'Content Mod',
     }
 };

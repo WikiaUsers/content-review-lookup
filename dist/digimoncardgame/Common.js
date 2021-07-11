@@ -65,10 +65,12 @@ function searchJavaScript() {
 			var checkbox = document.createElement("input");
 			checkbox.type = 'checkbox';
 			checkbox.id = cat + "-" + subcats[i].replace(/\W/g, '');
+			checkbox.setAttribute("class", "checkBoxCardSearch");
 			checkbox.setAttribute("data-cat", subcats[i]);
 			
 			var label = document.createElement("label");
 			label.setAttribute("for", checkbox.id);
+			label.setAttribute("class", "checkBoxCardSearchLabel");
 			label.textContent = subcats[i];
 			
 			container.appendChild(checkbox);
@@ -107,6 +109,8 @@ function searchJavaScript() {
 	
 	function addItems(elem) {
 		//Lists
+		var archetypeContainer = document.getElementById("archetypeContainer");
+		addList.bind(this, elem, archetypeContainer, "Archetype")();
 		var cTypeContainer = document.getElementById("cTypeContainer");
 		addList.bind(this, elem, cTypeContainer, "Type")();
 		var levelContainer = document.getElementById("levelContainer");

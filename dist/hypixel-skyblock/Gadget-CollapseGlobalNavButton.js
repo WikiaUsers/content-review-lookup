@@ -1,9 +1,15 @@
 // Gadget use only, default off for all users
-importArticles({
-	type: "style",
-	articles: [
-		"u:dev:MediaWiki:CollapseGlobalNavButton.js",
-		"u:dev:MediaWiki:CollapseGlobalNavButton.css",
-		"u:dev:MediaWiki:CollapseGlobalNavButton.css/compatibility.css",
-	],
+mw.loader.using(['mediawiki.util', 'mediawiki.Uri', 'ext.fandom.ContentReview.legacyLoaders.js'], function() {
+	importArticles({
+	    type: "script",
+	    articles: [
+			"u:dev:MediaWiki:CollapseGlobalNavButton.js",
+	    ]
+	}, {
+	    type: "style",
+	    articles: [
+			"u:dev:MediaWiki:CollapseGlobalNavButton.css",
+			"u:dev:MediaWiki:CollapseGlobalNavButton.css/compatibility.css",
+		],
+	});
 });

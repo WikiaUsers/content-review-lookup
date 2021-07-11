@@ -6,7 +6,6 @@ window.tooltips_config = {
 importArticles({
 	type: "script",
 	articles: [
-		"u:nkch:MediaWiki:CommunityPageRailModule.js",
 		"u:nkch:MediaWiki:Snippet/ExternalLinksInNewWindow.js",
 		"u:nkch:MediaWiki:Snippet/SpecificLinksInNewWindow.js",
 		"u:nkch:MediaWiki:ExploreMenuIcons.js"

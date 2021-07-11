@@ -4,9 +4,12 @@ mw.loader.using("mediawiki.api").then(
 		$('<section class="rail-module new-pages-module"></section>')
 			.appendTo('#WikiaRail')
 			.load(mw.config.get("wgScriptPath") + '/index.php?title=Template:NewPagesModule&action=render');
-		importArticle({
+		importArticles({
 			type: 'style',
-			article: 'u:dev:MediaWiki:NewPagesModule.css'
+			articles: [
+	            'u:dev:MediaWiki:NewPagesModule.css',
+	            'u:dev:MediaWiki:FontAwesome.css'
+            ]
 		});
 	});
   }

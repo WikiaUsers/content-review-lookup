@@ -12,11 +12,11 @@
     }
     var scriptName;
     var elements = {
-        editdropdown: '.page-header__contribution-buttons .wds-dropdown__content .wds-list, .UserProfileActionButton .WikiaMenuElement',
-        globalnav: '.wds-global-navigation__user-menu .wds-dropdown__content > .wds-list',
+        editdropdown: '.page-header__actions .wds-dropdown__content .wds-list, .page-header__contribution-buttons .wds-dropdown__content .wds-list, .UserProfileActionButton .WikiaMenuElement',
+        globalnav: '.global-navigation__bottom > .wds-dropdown > .wds-dropdown__content > .wds-list, .wds-global-navigation__user-menu .wds-dropdown__content > .wds-list',
         toolbar: '#WikiaBar .toolbar .tools',
         tools: tools(),
-        wikinav: '.wds-community-header__wiki-buttons .wds-dropdown__content .wds-list'        
+        wikinav: '.wiki-tools .wds-dropdown__content .wds-list, .wds-community-header__wiki-buttons .wds-dropdown__content .wds-list'        
     };
     /**
      * @method createToolsMenu
@@ -206,7 +206,7 @@
      * @returns {string}
      */
     function tools () {
-        var place = ' #WikiaBar #my-tools-menu';
+        var place = '#WikiaBar #my-tools-menu';
         if ($(place).length === 0) {
             createToolsMenu();
         }

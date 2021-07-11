@@ -55,7 +55,7 @@ $( function() {
 		// Dunno how to give Intl an offset, or convert an offset to a timezone name
 		var timezone = mw.user.options.get( 'timecorrection' ).split( '|' )[2];
 		if ( !timezone ) {
-			timezone = 'UTC';
+			timezone = 'Asia/Shanghai';
 		}
 		// Doesn't seem to be a simple way to test if Intl is supported, as older
 		// browsers support just some of the features (timezones), so just have a go
@@ -63,7 +63,7 @@ $( function() {
 		var dateFormatter;
 		try {
 			dateFormatter = new Intl.DateTimeFormat( lang, {
-				day: 'numeric', month: 'long', year: 'numeric',
+				day: 'numeric', month: 'short', 
 				hour: 'numeric', minute: 'numeric', hour12: false,
 				timeZone: timezone,
 			} );

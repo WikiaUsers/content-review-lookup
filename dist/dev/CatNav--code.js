@@ -65,11 +65,6 @@ $(function() {
 		# data
 	\* ================================== */
 
-	/* first update document.title */
-	document.title = document.title.split(" | ").map(function(a, b) {
-		return b === 0 ? "CatNav" : a;
-	}).join(" | ");
-
 	/* regular data */
 	catnav.data = {
 		details: {}, // details about pages
@@ -961,6 +956,12 @@ $(function() {
 				'\tborder: 1px solid ' + getComputedStyle(document.body).backgroundColor + ';\n' +
             '}\n'
 		);
+
+		/* document title */
+		document.title = document.title.split(" | ").map(function(a, b) {
+			return b === 0 ? "CatNav" : a;
+		}).join(" | ");
+
 		/* markup */
 		// export modal (main content loaded using 'catnav.fn.init'
 		$("body").append(

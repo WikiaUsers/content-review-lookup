@@ -21,7 +21,7 @@ window.UserTagsJS = {
 /* Given UserTags */
 UserTagsJS.modules.custom = {
     'Dr. DreyJaden': ['seniorbureaucrat'],
-    'CasuallyJack': ['juniorsysop'],
+    'CasuallyJack': ['seniorsysop'],
 };
 
 /* UserTags metafilter */

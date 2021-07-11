@@ -23,12 +23,12 @@ Object.freeze(BARO_COUNTDOWN_CLASSES);
 
 // All dictionaries related to time use the abbreviated time units as keys
 const TIME_UNIT_ABBR = {
-    Year: "年",
-    Month: "月",
-    Day: "日",
-    Hour: "小時",
-    Minute: "分鐘",
-    Second: "秒"
+    Year: "Y",
+    Month: "M",
+    Day: "D",
+    Hour: "h",
+    Minute: "m",
+    Second: "s"
 };
 Object.freeze(TIME_UNIT_ABBR);
 
@@ -340,7 +340,7 @@ function getDisplayUnits(dateLabels) {
         case "full":
             for (var unit in TIME_UNIT_ABBR) {
                 unitAbbr = TIME_UNIT_ABBR[unit];
-                timeUnits[unitAbbr] = " " + unit;
+                timeUnits[unitAbbr] = " " + unit + "s";
             }
             break;
         case "single":

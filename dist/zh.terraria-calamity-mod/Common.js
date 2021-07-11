@@ -95,6 +95,10 @@ $('.GameSaver').html(function(){
   });
 });
 /*AO*/
+            window.onload=function(){
+                var oMbl = document.getElementById("fandom-mobile-wrapper");
+                var oTxtNode = document.createTextNode("注意！您正在使用移动视图。请到页面最底部，点击 “查看完整网站” 或 “VIEW FULL SITE” 切换到完整视图。否则无法正常浏览本Wiki！") ;
+                oMbl.insertBefore(oTxtNode,oMbl.firstChild)
          window.onload = function(){
 /*文文的制裁*/
              document.onkeydown = function (){

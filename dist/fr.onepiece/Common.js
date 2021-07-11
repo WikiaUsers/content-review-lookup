@@ -10,40 +10,26 @@ $(function()
 *********** !!! TOUJOURS APRES les imports !!! *******************
 ******************************************************************/
 
+/* Version du JS revue par @Think D. Solucer */
+// Page JS concernant les IHM du wiki
+
+/* Début JS des utilisateurs*/
 importArticles({
     type: "script",
     articles: [
-
-// JS du wiki
-        'MediaWiki:Utilisateurs.js',
-        'MediaWiki:Forum.js', // Pour le forum
-        'MediaWiki:Common.js/Other.js', // Autre
-        
-
-// Projet "en suspens"
-
-//'MediaWiki:Common.js/Verif_octets.js', // Pour éviter les modifs trolls
-//'MediaWiki:Common.js/Poisson_avril.js', // Special 1er avril
-//'MediaWiki:Common.js/Aide_fofo_scan.js', // Pour les debutants sur les topic des scans
-//'MediaWiki:Common.js/Hommytroll.js', // Hommy <3
-// 'MediaWiki:Common.js/Noel.js', // Pour noel
-
-// JS externe au wiki
-        'u:dev:MediaWiki:ShowHide/code.js',
-        'u:dev:MediaWiki:RevealAnonIP/code.js',
-        'u:dev:MediaWiki:GalleryButtonCustomText/code.js',
-        //'u:dev:SpoilerAlert/code.js',
-        //'l:MediaWiki:Chat-headline',
+        'MediaWiki:Common.js/userRightIcons.js', // Étiquettes
+        'MediaWiki:Common.js/Avertissements.js', // Ne pas hésiter à demander l'ajout de nouveaux avertissements
     ]
 });
-            
+
+/* Fin JS des utilisateurs */
         
-//InterlanguageFlags
-importArticles({
-    type: "style",
-    articles: [
-        "w:c:dev:InterlanguageFlags/code.css"
-    ]
+
+//retirer la raison par défaut sur spécial:supprimer
+$(function() {
+    if(mw.config.get('wgAction') === 'delete') {
+        $("#wpReason").val("");
+    }
 });
 
 // Tout afficher (Vivre Card)

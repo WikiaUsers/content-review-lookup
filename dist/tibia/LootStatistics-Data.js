@@ -18,13 +18,20 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+// Changes made on July 06, 2021 - 12.67.10934 (2)
+'Brachiodemon': '12.67.10934',
+'Infernal Demon': '12.67.10934',
+'Infernal Phantom': '12.67.10934',
+'Bony Sea Devil': '12.67.10934',
+'Turbulent Elemental': '12.67.10934',
+'Capricious Phantom': '12.67.10934',
 // Changes made on June 01, 2021
-'Brachiodemon': '12.66.10866',
-'Infernal Demon': '12.66.10866',
-'Infernal Phantom': '12.66.10866',
-'Bony Sea Devil': '12.66.10866',
-'Turbulent Elemental': '12.66.10866',
-'Capricious Phantom': '12.66.10866',
+//'Brachiodemon': '12.66.10866',
+//'Infernal Demon': '12.66.10866',
+//'Infernal Phantom': '12.66.10866',
+//'Bony Sea Devil': '12.66.10866',
+//'Turbulent Elemental': '12.66.10866',
+//'Capricious Phantom': '12.66.10866',
 'Hazardous Phantom': '12.66.10866',
 'Many Faces': '12.66.10866',
 'Druid\'s Apparition': '12.66.10866',

@@ -1,17 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-
-// Imports
-importArticles({
-    type: 'script',
-    articles: [
-	    'u:boombeach:MediaWiki:Common.js/insertusername.js',
-	    'u:boombeach:MediaWiki:Common.js/Protection.js'
-	]
-});
-
-
-// General Changes
 $(document).ready(function() {
 	
     // Change Random Page button to only go to pages in the mainspace

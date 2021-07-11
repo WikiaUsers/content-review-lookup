@@ -14,28 +14,3 @@ $(function() {
 		$editLinks.attr('href', $editLinks.attr('href') + '&editintro=Template:SpoilWarning');
 	}
 });
-
-var SocialMediaButtonsNamespaces = [0, 6, 14, 500, 502, 1201];
-var SocialMediaButtons = { 
-	position: "top",
-	colorScheme: "color:#FF0000",
-	buttonSize: "default",
-	wikiTwitterAccount: "BleachWikia"
-};
-
-importArticles({
-    type: "script",
-    articles: [
-        'u:dev:Countdown/code.js',
-        'u:dev:AjaxBatchDelete/code.js',
-        'u:dev:DisplayClock/code.js',
-//      'l:MediaWiki:Snow.js',
-        'u:dev:SocialIcons/code.js' ]
-});
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:MultiUpload.js',
-    ]
-});

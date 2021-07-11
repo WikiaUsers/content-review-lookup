@@ -8,9 +8,9 @@ window.RevealAnonIP = {
 importArticles({
     type: "script",
     articles: [
-        "MediaWiki:Common.js/PersistentHeaders.js", /* Scrolling table headers*/
+        "MediaWiki:Common.js/PersistentHeaders.js", /* Scrolling table headers ~Flightmare*/
         "u:dev:MediaWiki:RevealAnonIP/code.js",
-        "MediaWiki:Common.js/collapse.js" /*Collapsibles*/
+        "MediaWiki:Common.js/collapse.js" /*Collapsibles ~HaLo2FrEeEk*/
     ]
 });
 
@@ -25,7 +25,7 @@ window.dev.editSummaries = {
     select: 'MediaWiki:Custom-Summaries'
 };
 
-/* Portable Infobox subtheme overrides */
+/* Portable Infobox subtheme overrides by Kopcap94 */
 (function( $ ) {
 	"use strict";
 	var title_text;

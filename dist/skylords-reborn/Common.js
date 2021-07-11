@@ -1,31 +1,31 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/* Flip Text */
-(function () {
-    function addHook() {
-        $('.flipText1').show();
-        $('.flipText2').hide();
-        $('.flipText1, .flipText2').off();
-        $('.flipText1, .flipText2').click(function (e) {
-            $(e.target).closest('span#container.container').children().toggle();
-        });
-    }
-    $(addHook);
-    mw.hook('wikipage.content').add(addHook);
-})();
+/* flip thingy */
+mw.hook('wikipage.content').add(function () {
+	document.querySelectorAll('.flip-container').forEach(function (container) {
+		var c = container.querySelectorAll('.flip-content-1,.flip-content-2');
+		container.querySelectorAll('.flip-switch').forEach(function (sw) {
+			sw.addEventListener('click', function () {
+				c.forEach(function (el) {
+					el.style.display = el.style.display === 'none' ? '' : 'none';
+				});
+			});
+		});
+	});
+});
 
 /* Image Loading Fix */
 (function () {
-    $('.lazyimg-wrapper img.lazyload').each(function () {
-        $(this).removeClass('lazyload');
-        $(this).attr('src', $(this).attr('data-src'));
+    document.querySelectorAll('.lazyimg-wrapper img.lazyload').forEach(function (el) {
+        el.classList.remove('lazyload');
+        el.src = el.dataset.src;
     });
 })();
 (function () {
-    $(':not(lazyimg-wrapper) .cv-card-container img.lazyload').each(function () {
-        $(this).removeClass('lazyload');
-        $(this).attr('src', $(this).attr('data-src'));
-        $(this).attr('loading', 'lazy');
+    document.querySelectorAll(':not(lazyimg-wrapper) .cv-card-container img.lazyload').forEach(function (el) {
+        el.classList.remove('lazyload');
+        el.src = el.dataset.src;
+        el.loading = 'lazy';
     });
 })();
 
@@ -42,48 +42,3 @@ window.tooltips_config = {
     offsetY: 15,
     noCSS: true,
 };
-
-/* Toggleable skill tabs */
-mw.hook('wikipage.content').add(function (elem) {
-    $(elem)
-        .find('.skill-tabs:not(.made-skill-tabs)')
-        .each(function () {
-            var tabs = $(this).addClass('made-skill-tabs');
-            var dts = $(this).find('> dt');
-            if (dts.length === 2) tabs.addClass('toggle-tabs');
-            dts.each(function (i) {
-                var dt = $(this);
-                if (i > 0) {
-                    dt.addClass('hidden-tab').find('+ dd').addClass('hidden-tab');
-                    dt.prepend(
-                        $('<span class="prev-tab" title="Click to cycle through the information.">«</span>')
-                            .mousedown(function (e) {
-                                e.preventDefault();
-                            })
-                            .click(function () {
-                                dts.addClass('hidden-tab').find('+ dd').addClass('hidden-tab');
-                                $(dts[i - 1])
-                                    .removeClass('hidden-tab')
-                                    .find('+ dd')
-                                    .removeClass('hidden-tab');
-                            })
-                    );
-                }
-                if (i < dts.length - 1) {
-                    dt.append(
-                        $('<span class="next-tab" title="Click to cycle through the information.">»</span>')
-                            .mousedown(function (e) {
-                                e.preventDefault();
-                            })
-                            .click(function () {
-                                dts.addClass('hidden-tab').find('+ dd').addClass('hidden-tab');
-                                $(dts[i + 1])
-                                    .removeClass('hidden-tab')
-                                    .find('+ dd')
-                                    .removeClass('hidden-tab');
-                            })
-                    );
-                }
-            });
-        });
-});

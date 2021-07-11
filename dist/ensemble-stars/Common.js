@@ -248,3 +248,26 @@ function activateTheme() {
 
 /* Back to Top Arrow (Main code in MediaWiki:ImportJS) */
 window.BackToTopModern = true;
+
+/**
+ * Adds CSS classes to the body tag based on the categories this page belongs to
+ *
+ * @source https://www.mediawiki.org/wiki/Snippets/Style_pages_based_on_categories
+ * @revision 2016-01-18
+ */
+(function($, mw) {
+  var fn = function() {
+    var cats = mw.config.get('wgCategories'), newClasses;
+    if (cats) {
+      newClasses = $.map(cats, function(el) {
+        return 'cat-' + encodeURIComponent(el.replace(/[ .]/g, '_')).replace(/%/g, '_');
+      }).join(' ');
+      $(document.body).addClass(newClasses);
+    }
+  };
+  if (document.body) {
+    fn();
+  } else {
+    $(fn);
+  }
+})(jQuery, mw);

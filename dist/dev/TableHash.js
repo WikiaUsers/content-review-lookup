@@ -5,9 +5,11 @@
         if (!hash) {
             return;
         }
-        $('.article-table ' + hash + ', .wikitable ' + hash)
-            .closest('tr')
-            .addClass('selected');
+        var elem = document.getElementById(hash.substring(1));
+        if (!elem) {
+            return;
+        }
+        $(elem).closest('tr').addClass('selected');
     }
     highlightHash();
     $(window).on('hashchange', highlightHash);

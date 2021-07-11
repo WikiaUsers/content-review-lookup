@@ -252,7 +252,7 @@ mw.loader.using(['jquery.client', 'mediawiki.util', 'mediawiki.api', 'mediawiki.
                     id: "nuke-username",
                 }),
                 $('<br/>'), 
-                'Pattern for the page name: ',
+                'Regex pattern (e.g. .*) for the page name: ',
                 $('<input>', {
                     type: "text",
                     id: "nuke-match",
@@ -265,9 +265,9 @@ mw.loader.using(['jquery.client', 'mediawiki.util', 'mediawiki.api', 'mediawiki.
                     name: "nuke-namespace",
                     html: [
                         $('<option>', {
-                            value: "All",
+                            value: "all",
                             selected: "",
-                            html: "All",
+                            html: "all",
                         }),
                         $('<option>', {
                             value: 0,
@@ -342,6 +342,14 @@ mw.loader.using(['jquery.client', 'mediawiki.util', 'mediawiki.api', 'mediawiki.
                             html: "Forum talk",
                         }),
                         $('<option>', {
+                            value: 420,
+                            html: "GeoJson",
+                        }),
+                        $('<option>', {
+                            value: 421,
+                            html: "GeoJson talk",
+                        }),
+                        $('<option>', {
                             value: 500,
                             html: "User blog",
                         }),
@@ -356,6 +364,14 @@ mw.loader.using(['jquery.client', 'mediawiki.util', 'mediawiki.api', 'mediawiki.
                         $('<option>', {
                             value: 503,
                             html: "Blog talk",
+                        }),
+                        $('<option>', {
+                            value: 710,
+                            html: "TimedText",
+                        }),
+                        $('<option>', {
+                            value: 711,
+                            html: "TimedText talk",
                         }),
                         $('<option>', {
                             value: 828,
@@ -388,6 +404,22 @@ mw.loader.using(['jquery.client', 'mediawiki.util', 'mediawiki.api', 'mediawiki.
                         $('<option>', {
                             value: 2002,
                             html: "Topic",
+                        }),
+                        $('<option>', {
+                            value: 2300,
+                            html: "Gadget",
+                        }),
+                        $('<option>', {
+                            value: 2301,
+                            html: "Gadget talk",
+                        }),
+                        $('<option>', {
+                            value: 2302,
+                            html: "Gadget definition",
+                        }),
+                        $('<option>', {
+                            value: 2303,
+                            html: "Gadget definition talk",
                         }),
                     ]
                 }),

@@ -71,7 +71,8 @@
         });
 	}
 
-	// Make edit with form as default when available
+    /*
+	// Make edit with form as default when available 
     var $edit = $('#ca-edit'),
         $pencil = $edit.find('img'),
         $formedit = $('#ca-formedit');
@@ -79,6 +80,6 @@
     if ($formedit.length) {
         $edit.attr('href', '?action=formedit').text('Edit with form').prepend($pencil);
         $formedit.attr('href', '?action=edit').text('Edit this page');
-    }
+    } //*/
 
 }(window, jQuery, mediaWiki));

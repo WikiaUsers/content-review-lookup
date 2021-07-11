@@ -1664,6 +1664,9 @@ var create = function( state ) {
 							url[1] = 'version=' + Date.now();
 							$doc.data( 'url', url.join( '?' ) );
 						}
+						else {
+							url[1] = url[1].replace( /^(.*&)?(version=[^&]+)(&.*)?$/, '$2' );
+						}
 						
 						obj[i18n.luaKeySettings][i18n.luaKeySettingsUrl] =
 							luaTable.func( $doc.data( 'urlfunc' ).replace( /\$1/, url[1] ) );

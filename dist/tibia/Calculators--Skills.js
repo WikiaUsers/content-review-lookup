@@ -113,7 +113,12 @@ $(function () {
       params.set('skill', $('select[name=calculator_ew_voc_skill]').val());
       params.set('level', $('#calculator_ew_skill_level').val());
       params.set('percentageRemaining', $('#calculator_ew_left').val());
-      params.set('target', $('#calculator_ew_skill_trained').val());
+      const isNumberOfWeaponsMode = $('input[name=ew_mode]:checked').val() === 'weapons';
+      if (isNumberOfWeaponsMode) {
+        params.set('weapons', $('#calculator_ew_nweapons').val());
+      } else {
+        params.set('target', $('#calculator_ew_skill_trained').val());
+      }
       return '#' + params.toString();
     };
     const deserializeFromHashTraining = function () {
@@ -129,7 +134,13 @@ $(function () {
       $('select[name=calculator_ew_voc_skill]').val(params.get('skill'));
       $('#calculator_ew_skill_level').val(params.get('level'));
       $('#calculator_ew_left').val(params.get('percentageRemaining'));
-      $('#calculator_ew_skill_trained').val(params.get('target'));
+      if (params.has('weapons')) {
+        $('input[name=ew_mode][value=weapons]').prop('checked', true);
+        $('#calculator_ew_nweapons').val(params.get('weapons'));
+      } else {
+        $('input[name=ew_mode][value=skill]').prop('checked', true);
+        $('#calculator_ew_skill_trained').val(params.get('target'));
+      }
       calculator_exerciseweapons_update();
     };
 
@@ -250,8 +261,8 @@ $(function () {
         '<label><input type="checkbox" name="ew_dummy" value="expert">House Dummy</label><br/><br/>' +
         /*'<input type="radio" name="ew_charges" value="exercise" checked>Exercise Weapon (500 charges)' +
             '<input type="radio" name="ew_charges" value="training">Training Weapon (100 charges)<br/><br/>' +*/
-        '<label><input type="radio" name="ew_mode" value="weapons">Number of Weapons</label>' +
-        '<label><input type="radio" name="ew_mode" value="skill" checked>Weapons required to achieve a skill</label>' +
+        '<label><input type="radio" name="ew_mode" value="weapons">Enter Number of Weapons</label>' +
+        '<label><input type="radio" name="ew_mode" value="skill" checked>Enter Target Skill</label>' +
         /*'<label><input type="radio" name="ew_mode" value="gold">Cost in Gold</label>' +
             '<label><input type="radio" name="ew_mode" value="coins">Cost in Tibia Coins</label>' +*/
         '<table style="margin: 0 auto;">' +

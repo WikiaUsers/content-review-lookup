@@ -38,11 +38,7 @@ $.when(
 		}
 	})
 ).then(function() {
-	if (
-		mw.config.get('wgPageName') !== 'Module:Inventory_slot/Tooltips' 
-			&& mw.config.get('wgPageName') !== '모듈:Inventory_slot/Tooltips' 
-		|| window.TooltipsEditorLoaded
-	) return;
+	if (mw.config.get('wgPageName') !== '모듈:Inventory_slot/Tooltips' || window.TooltipsEditorLoaded) return;
 	
 	var modal = new mw.libs.QDmodal("TooltipsEditor");
 	var api = new mw.Api();
@@ -268,11 +264,11 @@ $.when(
 							case('add'): {
 								ls[0].push($('<li>', {
 									html: [
-										"Added "+k,
-										$('<a>', { text: "undo", "class": "actions-undo-button", "data-value": k }).on("click", revertAction),
+										"추가됨: "+k,
+										$('<a>', { text: "실행 취소", "class": "actions-undo-button", "data-value": k }).on("click", revertAction),
 										$('<a>', {
 											'class': "actions-edit-button",
-											text: "edit",
+											text: "편집",
 											'data-tooltipTitle': json[k] && json[k].title && json[k].title.replaceAll('&amp;', '&'),
 											'data-tooltipText': json[k] && json[k].text && json[k].text.replaceAll('&amp;', '&'),
 											'data-tooltipLink': json[k] && json[k].name && json[k].name.replaceAll('&amp;', '&'),
@@ -280,7 +276,7 @@ $.when(
 										}),
 										$('<span>', {
 											'class': "actions-preview-button minetip", 
-											text: "preview (current)",
+											text: "미리보기",
 											'data-minetip-text': json[k] && json[k].text && json[k].text.replaceAll('&amp;', '&'),
 											'data-minetip-title': json[k] && json[k].title && json[k].title.replaceAll('&amp;', '&'), 
 										})
@@ -292,7 +288,7 @@ $.when(
 							case("modify"): {
 								ls[1].push($('<li>', {
 									html: [
-										"Modified "+k,
+										"수정됨: "+k,
 										$('<a>', { text: "undo", "class": "actions-undo-button", "data-value": k }).on("click", revertAction),
 										$('<a>', {
 											'class': "actions-edit-button",
@@ -304,13 +300,13 @@ $.when(
 										}),
 										$('<span>', {
 											'class': "actions-preview-button minetip", 
-											text: "미리보기 (실행취소)",
+											text: "미리보기",
 											'data-minetip-text': oldjson[k] && oldjson[k].text && oldjson[k].text.replaceAll('&amp;', '&'),
 											'data-minetip-title': oldjson[k] && oldjson[k].title && oldjson[k].title.replaceAll('&amp;', '&'), 
 										}),
 										$('<span>', {
 											'class': "actions-preview-button minetip", 
-											text: "미리보기 (현재)",
+											text: "미리보기",
 											'data-minetip-text': json[k] && json[k].text && json[k].text.replaceAll('&amp;', '&'),
 											'data-minetip-title': json[k] && json[k].title && json[k].title.replaceAll('&amp;', '&'), 
 										})
@@ -322,11 +318,11 @@ $.when(
 							case("remove"): {
 								ls[2].push($('<li>', {
 									html: [
-										"Removed&nbsp;"+k,
-										$('<a>', { text: "undo", "class": "actions-undo-button", "data-value": k }).on("click", revertAction),
+										"삭제됨: &nbsp;"+k,
+										$('<a>', { text: "실행 취소", "class": "actions-undo-button", "data-value": k }).on("click", revertAction),
 										$('<span>', {
 											'class': "actions-preview-button minetip", 
-											text: "미리보기 (실행취소)",
+											text: "미리보기",
 											'data-minetip-text': oldjson[k] && oldjson[k].text && oldjson[k].text.replaceAll('&amp;', '&'),
 											'data-minetip-title': oldjson[k] && oldjson[k].title && oldjson[k].title.replaceAll('&amp;', '&'), 
 										})
@@ -345,7 +341,7 @@ $.when(
 				
 				$("#TooltipsEditor-totalTooltips").html($('<p>', {
 					html: [
-						"Tooltips Count: "+Object.keys(json).length,
+						"총 툴팁 수: "+Object.keys(json).length,
 						$('<span>', (function() {
 							var diff = Object.keys(json).length - oldjsonkeys.length;
 							if (diff < 0) {
@@ -525,27 +521,27 @@ $.when(
 			};
 			
 			var rarityConversions = {
-				"Common": "f",
-				"Uncommon": "a",
-				"Rare": "9",
-				"Epic": "5",
-				"Legendary": "6",
-				"Mythic": "d",
-				"Supreme": "4",
-				"Special": "c",
-				"Very Special": "c",
+				"일반": "f",
+				"고급": "a",
+				"희귀": "9",
+				"특급": "5",
+				"전설": "6",
+				"신화": "d",
+				"최고": "4",
+				"특별": "c",
+				"초특별": "c",
 			};
 			
 			var shortForm = {
-				"Common": "C",
-				"Uncommon": "U",
-				"Rare": "R",
-				"Epic": "E",
-				"Legendary": "L",
-				"Mythic": "M",
-				"Supreme": "SE",
-				"Special": "SL",
-				"Very Special": "VSL",
+				"일반": "C",
+				"고급": "U",
+				"희귀": "R",
+				"특급": "E",
+				"전설": "L",
+				"신화": "M",
+				"최고": "SE",
+				"특별": "SL",
+				"초특별": "VSL",
 			};
 	
 			var chars = ('❤ ❈ ❁ ✦ ☣ ☠ ✎ ∞ ✯ ♣ ❂ ⚔ ⫽ α ✹ ⸕ ☘ 🗲 ❣ ⚚ ⸎ ʬ')
@@ -556,7 +552,7 @@ $.when(
 						return $('<a>', {
 							'class': "TooltipsEditor-insertChar",
 							text: v,
-							title: 'Insert "' + v + '"',
+							title: '삽입 "' + v + '"',
 						});
 					} else {
 						return v;
@@ -571,7 +567,7 @@ $.when(
 				var val = $this.val();
 				var abort = false;
 				
-				if (val.trim() === "") return $results.html('<p>Enter a search term to start searching.</p>');
+				if (val.trim() === "") return $results.html('<p>검색어를 입력하여 검색하세요.</p>');
 				
 				var names = Object.keys(json).sort();
 				var results = searchArray(names, val);
@@ -595,7 +591,7 @@ $.when(
 							' (',
 							 $('<a>', {
 								'class': "TooltipsEditor-editTooltip",
-								text: "edit",
+								text: "편집",
 								'data-tooltipTitle': json[v] && json[v].title && json[v].title.replaceAll('&amp;', '&'),
 								'data-tooltipText': json[v] && json[v].text && json[v].text.replaceAll('&amp;', '&'),
 								'data-tooltipLink': json[v] && json[v].name && json[v].name.replaceAll('&amp;', '&'),
@@ -604,14 +600,14 @@ $.when(
 							"<span class='noselect'> &bull; </span>",
 							$('<span>', {
 								'class': "TooltipsEditor-previewTooltip minetip", 
-								text: "preview",
+								text: "미리보기",
 								'data-minetip-text': json[v] && json[v].text && json[v].text.replaceAll('&amp;', '&'),
 								'data-minetip-title': json[v] && json[v].title && json[v].title.replaceAll('&amp;', '&'), 
 							}),
 							"<span class='noselect'> &bull; </span>",
 							$('<a>', {
 								'class': "TooltipsEditor-removeTooltip", 
-								text: "remove",
+								text: "삭제",
 								'data-key': v.replaceAll('&amp;', '&'), 
 							}),
 							')',
@@ -619,9 +615,9 @@ $.when(
 					})[0]);
 				});
 				
-				if (!results.length) return $results.html('<p>No tooltip matched your search.</p>');
-				else if (abort) $results.append('<p>Showing the first 100 results.</p>');
-				else $results.append('<p>Total: '+results.length+(results.length > 1 && " results" || " result" )+'.</p>');
+				if (!results.length) return $results.html('<p>검색된 결과가 없습니다.</p>');
+				else if (abort) $results.append('<p>처음 100개의 결과를 표시합니다.</p>');
+				else $results.append('<p>총 '+results.length+("개의 결과")+'.</p>');
 			}
 			
 			function processColors() {
@@ -664,20 +660,20 @@ $.when(
 					id: "TooltipsEditor-search",
 					html: [
 						$('<span>', { id: "TooltipsEditor-totalTooltips" }),
-						'<h3>Tooltips Editor Main Page</h3>',
-						'Search Existing Tooltip: ',
+						'<h3>툴팁 편집기 메인 페이지</h3>',
+						'존재하는 툴팁 찾기: ',
 						$('<input>', {
 							id: "TooltipsEditor-searchInput",
 							keyup: generateSearch,
 						}),
-						'<span style="margin: 0 1em; font-weight: bold; text-transform: uppercase;">or</span>',
+						'<span style="margin: 0 1em; font-weight: bold; text-transform: uppercase;">또는</span>',
 						$('<span>', {
 							"class": "oo-ui-buttonElement",
 							html: [
 								$("<button>", {
 									id: "TooltipsEditor-addNew",
 									"class": "oo-ui-buttonElement-button",
-									text: "Add New Tooltip",
+									text: "새로운 툴팁 추가하기",
 									click: function() {
 										openEditor();
 									},
@@ -696,7 +692,7 @@ $.when(
 							id: "TooltipsEditor-undoLog"
 						}),
 						'<br>',
-						$('<b>', { text: 'Search Results: ', id: "searchResultsMessage", style: "display: none;" }),
+						$('<b>', { text: '검색된 결과 ', id: "searchResultsMessage", style: "display: none;" }),
 						$('<ul>', {
 							id: "TooltipsEditor-searchResults",
 							css: {
@@ -711,13 +707,13 @@ $.when(
 									css: {"margin-left": "0.5em"},
 									html: ["(", $('<a>', {
 											href: mw.util.getUrl("MediaWiki:Gadget-TooltipsEditor.js"),
-											text: "View JavaScript",
+											text: "자바스크립트 보기",
 											target: "_blank"
 										}), ")" ]
 								}),
 								$("<span>", {
 									css: {"margin-left": "0.5em"},
-									html: ["(", $('<a>', { text: "Debug" }).on("click", function() {
+									html: ["(", $('<a>', { text: "디버그" }).on("클릭", function() {
 										var it = prompt("Please enter an item to see its JSON");
 										if (it !== null && it !== "") {
 											if (it in json) {
@@ -761,28 +757,28 @@ $.when(
 						'<br>',
 						$('<fieldset>', {
 							html: [
-								$('<legend>', { text: "Toolbox (Click to Insert)", css: {"font-weight": "bold", "font-size": "16px"}}),
+								$('<legend>', { text: "도구 상자 (항목을 클릭하여 삽입할 수 있습니다)", css: {"font-weight": "bold", "font-size": "16px"}}),
 								$('<div>', {
 									html: [
-										"<b>Formatting</b>",
+										"<b>글자 형식</b>",
 										$('<div>', { id: "TooltipsEditor-insertFormat", html: processColors(), "class": "noselect" }),
 										'<hr>',
-										"<b>Special Character</b>",
+										"<b>특수문자</b>",
 										$('<div>', { id: "TooltipsEditor-insertChar", html: chars, "class": "noselect" }),
 										'<hr>',
-										"<b>Rarity Text/Color</b>",
+										"<b>희귀도 표시</b>",
 										$('<div>', { id: "TooltipsEditor-insertFormat", html: processRarityTexts(), "class": "noselect" }),
 									],
 								}),
 							],
 						}),'<br>',
-						$('<b>', { text: 'Tooltip ID: ' }),
-						$('<input>', { css: { width: "400px", position: "relative", left: "3.6em" }, id: "TooltipsEditor-key" }),
+						$('<b>', { text: '툴팁 ID: ' }),
+						$('<input>', { css: { width: "400px", position: "relative", left: "8.95em" }, id: "TooltipsEditor-key" }),
 						'<br>',
-						$('<b>', { text: 'Tooltip Link: ' }),
+						$('<b>', { text: '아이콘에 삽입될 링크: ' }),
 						$('<input>', { css: { width: "400px", position: "relative", left: "2.5em" }, id: "TooltipsEditor-link" }),
 						'<br>','<br>',
-						$('<b>', { text: 'Tooltip Title: ' }),
+						$('<b>', { text: '툴팁 제목: ' }),
 						$('<div>', {
 							id: "TooltipsEditor-title-AceEditor",
 							css: {
@@ -794,7 +790,7 @@ $.when(
 								'border': '1px solid #474747',
 							}
 						}),
-						$('<b>', { text: 'Tooltip Text: ' }),
+						$('<b>', { text: '툴팁 텍스트: ' }),
 						$('<div>', {
 							id: "TooltipsEditor-text-AceEditor",
 							css: {
@@ -927,7 +923,7 @@ $.when(
 					}).append(
 						$('<button>', {
 							id: "TooltipsEditor-save",
-							text: "Save",
+							text: "저장",
 							"class": "oo-ui-buttonElement-button",
 							click: function() {
 								var text = ace.tooltipsTextEditor.getValue(),
@@ -938,8 +934,8 @@ $.when(
 				                throwOldjson(oldKey);
 				                throwOldjson(key);
                 				
-								if (!key) return alert("You need to enter a tooltip ID!");
-								if (!link) return alert("You need to enter the tooltip's link!");
+								if (!key) return alert("툴팁 ID를 입력해야 합니다!");
+								if (!link) return alert("아이콘에 삽입될 링크를 입력해야 합니다!");
 								
 								if (oldKey) delete json[oldKey];
 								editor.addClass('mw-ajax-loader');
@@ -976,10 +972,10 @@ $.when(
 					}).append(
 						$('<button>', {
 							id: "TooltipsEditor-cancel",
-							text: "Cancel",
+							text: "취소",
 							"class": "oo-ui-buttonElement-button",
 							click: function() {
-								reset(confirm('Go back to main page without saving?'));
+								reset(confirm('저장하지 않고 메인 페이지로 돌아가시겠습니까?'));
 							},
 						})
 					);
@@ -990,7 +986,7 @@ $.when(
 						$('<button>', {
 							id: "TooltipsEditor-preview",
 							'class': "minetip oo-ui-buttonElement-button",
-							text: "Preview",
+							text: "미리보기",
 						})
 					);
 				$('#TooltipsEditor-editor').append(

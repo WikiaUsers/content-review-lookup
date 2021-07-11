@@ -28,7 +28,7 @@ if((tNode = $("#gamenavlinks [href*='/wiki/Friend_IDs_(']")).length || (tNode = 
 function detectFriendList(pContent){
 	if(pContent.find(".friend-id-list").length) {
 		// For better CSS support
-		$(".WikiaArticle").addClass("friend-id-page");
+		$("#content").addClass("friend-id-page");
 	}
 
 	// If a friend list exists format an IDs found in list on the page (only when inside a mw-content-text to avoid firing while editing)

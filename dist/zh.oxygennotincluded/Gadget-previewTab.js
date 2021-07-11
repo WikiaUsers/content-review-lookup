@@ -1,0 +1,1 @@
+mw.loader.load('https://terraria.fandom.com/zh/wiki/MediaWiki:Gadget-previewTab.js?action=raw&ctype=text/javascript')

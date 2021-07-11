@@ -3,11 +3,11 @@ $(document).ready(function () {
     if(wgPageName == "Argent_des_sorciers") {
         // Variables de contenu des deux tables de conversion
         var se = '<tr><td colspan="3" style="height: 0; padding: 0;"></td><td rowspan="4"><label style=""> <input type="radio" name="se" value="se" checked>&nbsp;Sorciers / € </label><br> <label> <input type="radio" name="se" value="es">€ / Sorciers </label></td></tr><tr id="se_nom_pieces"> <td>Gallions</td><td>Mornilles</td><td>Noises</td></tr><tr id="se_champs_pieces"> <td> <input id="gallions"/> </td><td> <input id="mornilles"/> </td><td> <input id="noises"/> </td></tr><tr id="se_euros"> <td>Euros (€) :</td><td> <input id="euros" disabled></input> </td><td id="va" style="text-align: center"></td></tr><tr style="color: orangered"><td id="erreurs" style="padding: 0 5px;" colspan="4"></td></tr>',
-            ss = '<tr><tr id="ss_nom_pieces"> <td>Gallions</td><td>Mornilles</td><td>Noises</td></tr><tr id="ss_champs_pieces"> <td> <input id="ss_gallions"/> </td><td> <input id="ss_mornilles"/> </td><td> <input id="ss_noises"/> </td></tr><tr style="height: 85px; vertical-align: top;"> <td style="text-align: center; padding-top:5px; font-size: 110%" colspan="3">Convertir en&nbsp;&nbsp;<select style="font-size: 100%; width: 150px" id="dd"> <option value="493">Gallions</option> <option value="29">Mornilles</option> <option value="1">Noises</option> </select> </td></tr><tr> <td id="ss_res" style="text-align: center">Résultat :</td><td> <input id="resultat" disabled></input> </td><td id="ss_va" style="text-align: center"></td></tr><tr style="background-color: #aEaBaF;"><td colspan="3" style="text-align: center;">Optimisation de la répartition des pièces</td></tr><tr id="ss2_nom_pieces"> <td>Gallions</td><td>Mornilles</td><td>Noises</td></tr><tr id="ss2_champs_pieces"> <td> <input id="ss2_gallions" disabled/> </td><td> <input id="ss2_mornilles" disabled/> </td><td> <input id="ss2_noises" disabled/> </td></tr><tr style="color: orangered"><td id="erreurs" style="padding: 0 5px;" colspan="3"></td></tr>',
+            ss = '<tr><tr id="ss_nom_pieces"> <td>Gallions</td><td>Mornilles</td><td>Noises</td></tr><tr id="ss_champs_pieces"> <td> <input id="ss_gallions"/> </td><td> <input id="ss_mornilles"/> </td><td> <input id="ss_noises"/> </td></tr><tr style="height: 85px; vertical-align: top;"> <td style="text-align: center; padding-top:5px; font-size: 110%" colspan="3">Convertir en&nbsp;&nbsp;<select style="font-size: 100%; width: 150px" id="dd"> <option value="493">Gallions</option> <option value="29">Mornilles</option> <option value="1">Noises</option> </select> </td></tr><tr> <td id="ss_res" style="text-align: center">Résultat :</td><td> <input id="resultat" disabled></input> </td><td id="ss_va" style="text-align: center"></td></tr><tr class="couleur-repartition"><td colspan="3" style="text-align: center;">Optimisation de la répartition des pièces</td></tr><tr id="ss2_nom_pieces"> <td>Gallions</td><td>Mornilles</td><td>Noises</td></tr><tr id="ss2_champs_pieces"> <td> <input id="ss2_gallions" disabled/> </td><td> <input id="ss2_mornilles" disabled/> </td><td> <input id="ss2_noises" disabled/> </td></tr><tr style="color: orangered"><td id="erreurs" style="padding: 0 5px;" colspan="3"></td></tr>',
             re = /^(?![0-9\.\S]*$).*/g;
     
         // mise en place du HTML
-        $( '#table_de_conversions' ).html( '<table id="tabledeconversions" style="width: 100%; font-weight: bold;background-color: white; border: 1px solid black; border-collapse: collapse; color: black;"> <thead style="background-color: #6E6B6F;"> <tr> <td colspan="4" style="height: 50px; text-align: center"> <label style="margin-right: 50px"> <input type="radio" name="mode" value="se" checked>&nbsp;Sorciers / Moldus </label> <label> <input type="radio" name="mode" value="ss">&nbsp;Sorciers / Sorciers </label> </td></tr></thead> <tbody>' + se + '</tbody></table>' );
+        $( '#table_de_conversions' ).html( '<table id="tabledeconversions" style="width: 100%; font-weight: bold; border-collapse: collapse;"> <thead> <tr> <td colspan="4" style="height: 50px; text-align: center"> <label style="margin-right: 50px"> <input type="radio" name="mode" value="se" checked>&nbsp;Sorciers / Moldus </label> <label> <input type="radio" name="mode" value="ss">&nbsp;Sorciers / Sorciers </label> </td></tr></thead> <tbody>' + se + '</tbody></table>' );
         
         // Appel des différentes fonctions au changement de tables
         $('input[name="mode"]:radio').on('change', function () {
@@ -139,12 +139,46 @@ $(document).ready(function () {
             }
         }
         mw.util.addCSS(
+        	'.theme-fandomdesktop-light #tabledeconversions {\n' +
+        	    '\tbackground-color: #F3EBDC;\n' +
+        	    '\tborder: 1px solid #E9DFCB;\n' +
+        	    '\tcolor: #3A3A3A;\n' +
+        	'}\n' +
+        	
+        	'.theme-fandomdesktop-light #tabledeconversions thead {\n' +
+        	    '\tbackground-color: #E9DFCB;\n' +
+        	'}\n' +
+        	
+        	'.theme-fandomdesktop-light #tabledeconversions .couleur-repartition {\n' +
+        	    '\tbackground-color: #e9dfcb;\n' +
+        	'}\n'  +
+        	
+        	'.theme-fandomdesktop-dark #tabledeconversions {\n' +
+        	    '\tbackground-color: #3D454D;\n' +
+        	    '\tborder: 1px solid #E9DFCB;\n' +
+        	    '\tcolor: #e5e5e5;\n' +
+        	'}\n' +
+        	
+        	'.theme-fandomdesktop-dark #tabledeconversions thead {\n' +
+        	    '\tbackground-color: #4A555F;\n' +
+        	'}\n' +
+        	
+        	'.theme-fandomdesktop-dark #tabledeconversions .couleur-repartition {\n' +
+        	    '\tbackground-color: #4a555f;\n' +
+        	'}\n' +
+        	
         	'#table_de_conversions td label:first-child {\n' +
         		'\tpadding-bottom: 20px;\n' +
         	'}\n' +
          
-        	'#table_de_conversions td {\n' +
-        		'\tborder: 1px solid black;\n' +
+        	'.theme-fandomdesktop-light #table_de_conversions td {\n' +
+        		'\tborder: 1px solid #E9DFCB;\n' +
+        		'\tborder-collapse: collapse;\n' +
+        		'\ttext-align: center;\n' +
+        	'}\n' +
+         
+        	'.theme-fandomdesktop-dark #table_de_conversions td {\n' +
+        		'\tborder: 1px solid #4A555F;\n' +
         		'\tborder-collapse: collapse;\n' +
         		'\ttext-align: center;\n' +
         	'}\n' +

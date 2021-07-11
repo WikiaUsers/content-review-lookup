@@ -32,7 +32,7 @@ window.tablePopoutInit = function() {
 
   //**** add icon before table
   $('.sprite.popout').remove();
-  $('.popout').each(function() {$(this).before($('<img src="' + mw.config.get("wgBlankImgUrl") + '" title="Click to expand table" class="sprite popout">').click(tablePopout));})
+  $('.popout').each(function() {$(this).before($('<img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" title="Click to expand table" class="sprite popout">').click(tablePopout));})
 }
 $(document).ready(function() { 
   tablePopoutInit();

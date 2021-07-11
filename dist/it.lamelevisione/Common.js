@@ -12,7 +12,7 @@ AjaxRCRefreshText = "Aggiornamento automatico";
 AjaxRCRefreshHoverText = "Abilita l'aggiornamento automatico della pagina";
 //Immagine default per anteprima di link privi di immagini
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
-window.pPreview.noimage = 'https://vignette.wikia.nocookie.net/dragonball/images/e/ee/No_immagine.png/revision/latest?cb=20181002202318&path-prefix=it';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/lamelevisione/images/f/fb/Melevisione_-_Pagina_senza_immagine.png/revision/latest?cb=20210630221740&path-prefix=it';
 //railwam
 window.railWAM = {
     logPage:"Project:WAM Log"

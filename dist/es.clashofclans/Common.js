@@ -36,6 +36,7 @@ importArticles({
         articles: [
         'w:c:spottra:MediaWiki:Common.js/Numeral.js', // Defines num.format('<fmt>')
         'w:c:spottra:MediaWiki:Common.js/AjaxGallery.js',
+        'MediaWiki:Common.js/GoldPass.js',
         'u:dev:Countdown/code.js',
         'u:dev:SpoilerAlert/code.js',
         'u:dev:TopEditors/code.js',
@@ -55,7 +56,6 @@ importArticles({
         'MediaWiki:Common.js/BadgeGenerator.js',
         'MediaWiki:Common.js/Protection.js',
         'MediaWiki:Common.js/AvailableBuildings.js',
-        'MediaWiki:Common.js/GoldPass.js',
         'MediaWiki:Common.js/HeroSkins.js',
         'MediaWiki:Common.js/Toggle.js'
     	]

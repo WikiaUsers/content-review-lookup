@@ -12,8 +12,8 @@
         ['css', 'js'].map(function(ext) {
             return $('<li>', {
                 append: $('<a>', {
-                    'href': mw.util.getUrl('MediaWiki:Wikia.' + ext),
-                    text: 'Wikia ' + ext.toUpperCase()
+                    'href': mw.util.getUrl('MediaWiki:Common.' + ext),
+                    text: 'Common ' + ext.toUpperCase()
                 })
             });
         })

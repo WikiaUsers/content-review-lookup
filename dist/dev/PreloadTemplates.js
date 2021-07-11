@@ -26,7 +26,7 @@
         console.log('[PreloadTemplates]: page is not supported.');
         return;
     }
-    console.log('[PreloadTemplates]: version 1.05 - 11/2020.');
+    console.log('[PreloadTemplates]: version 1.06 - 07/2021.');
 
     // =================
     //   Configuration
@@ -89,7 +89,6 @@
         }).done(function(preloadData) {
             // Parse some MediaWiki tags
             var preloadDataParsed = parseMW(preloadData);
-
             // Display error if no useful data is present
             if (preloadDataParsed === '') {
                 notFound(page);
@@ -98,7 +97,8 @@
 
             // Insert syntax
             var cke = document.getElementsByClassName('cke_source'),
-                textbox = document.getElementById('wpTextbox1');
+                textbox = document.getElementById('wpTextbox1'),
+                cm = $(".CodeMirror").get(0);
             if (window.ve && ve.init && ve.init.target && ve.init.target.active) {
                 // UCP Visual Editor (Source mode)
                 ve.init.target
@@ -109,7 +109,13 @@
             } else if (cke.length) {
                 // Visual editor
                 insertAtCursor(cke[0], preloadDataParsed);
-            } else if (textbox) {
+            } else if (cm){
+                // text editor with syntex heighting
+                var cmEditor = cm.CodeMirror;
+                var cmdDoc = cmEditor.getDoc();
+                cmdDoc.replaceRange(preloadDataParsed, cmdDoc.getCursor());
+            }
+            else if(textbox) {
                 insertAtCursor(textbox, preloadDataParsed);
             } else {
                 console.warn('[PreloadTemplates] Could not find textbox to bind to');

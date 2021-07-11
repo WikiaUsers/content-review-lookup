@@ -1,6 +1,6 @@
 /**
  * @name WikiForum/theme/fandom
- * @version 3.0.5 (Core version)
+ * @version 3.1.0 (Core version)
  * @author 机智的小鱼君 <dragon-fish@qq.com>
  * @desc Provide a front-end structured discussion page with JavaScript.
  *       Similar to Community Feed and support wikitext.
@@ -709,14 +709,7 @@ function main(i18n) {
           threadid: threadid,
           fn: fn
         });
-        return $('<div>', {
-          "class": 'forum-thread',
-          id: htmlId
-        }).append($('<div>', {
-          "class": 'forum-before'
-        }).append($idLink, $userLink), $content, $('<div>', {
-          "class": 'forum-after'
-        }).append($timeArea, $('<div>', {
+        var $replyContainer = $('<div>', {
           "class": 'new-reply-container'
         }).append($('<div>', {
           "class": 'modify-buttons-group'
@@ -727,7 +720,15 @@ function main(i18n) {
         }).click(function () {
           $replyArea.show();
           $(this).hide();
-        })), $replyArea), reactionContainer(ctx)));
+        })), $replyArea);
+        return $('<div>', {
+          "class": 'forum-thread',
+          id: htmlId
+        }).append($('<div>', {
+          "class": 'forum-before'
+        }).append($idLink, $userLink), $content, $('<div>', {
+          "class": 'forum-after'
+        }).append($timeArea, ctx.isComplex ? null : $replyContainer, reactionContainer(ctx)));
       }
     }; // 新回复容器
 

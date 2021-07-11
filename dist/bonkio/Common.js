@@ -12,5 +12,8 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
 UserTagsJS.modules.custom = {
 	'DasUnterstrich': ['bcdstaff'],
-	'Mad bonkio user': ['bcdstaff']
+	'Levesile': ['bcdstaff'],
+	'NotARagingPeep': ['bcdstaff'],
+	'Lemon Juice 89': ['bcdstaff'],
+	'Wopper1': ['bcdstaff']
 };

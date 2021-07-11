@@ -1,1 +1,0 @@
-$(function(){$('#chat-nick-text').html(wgUserName);});

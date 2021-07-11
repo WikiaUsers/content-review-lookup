@@ -56,6 +56,7 @@ window.UserTagsJS = {
         },
         metafilter: {
         	sysop: ['bot'],
+        	'discordmod': ['bot'],
         	'discordmod3': ['sysop','threadmoderator','content-moderator'],
         	'discordmod2': ['threadmoderator'],
         	'inactive': ['bureaucrat','sysop','threadmoderator','content-moderator','discordmod','redditmod','SOAP','wiki-manager','staff','bot']

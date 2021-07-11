@@ -1,65 +1,46 @@
-var aka = name
-
+var aka = wgRelevantUserName;
 window.UserTagsJS = {
-        tags: {
-            bureaucrat: {
-                u: 'Bureaucrat',
-                /*link: 'Project:Bureaucrats'*/
-            },
-            sysop: {
-                u: 'Administrator',
-                title: 'Respect this member because ' + aka + 'is an administrator of Snowflakie Tent. ' + aka + 'blocks you easily!',
-                link: 'Project:Administrators'
-            },
-            'content-moderator': {
-                u: 'Content Moderator',
-                /*link: 'Project:Content moderator'*/
-            },
-            rollback: {
-                u: 'Rollback',
-                /*link: 'Project:Rollback'*/
-            },
-            newuser: {
-                u: 'New Member'
-            },
-            'autoconfirmed-user': {
-                u: 'Active',
-                /*link: 'Project:Autoconfirmed users'*/
-            },
-            user: {
-                u: 'Member',
-                /*link: 'Project:Autoconfirmed users'*/
-            },
-            inactive: {
-                u: 'Inactive',
-                title: 'This user hasn\'t edited for 30 days! ' + aka + 'is definitely inactive!'
-            },
-            nonuser: {
-                u: 'Non-User',
-                title: 'The user hasn\'t been granted membership on the wiki yet.'
-            },
-            blocked: {
-                u: 'Blocked',
-                title: 'Uh oh! This user violated the policies and deserves a block. For more information, read the block report below.',
-                link: 'Project:Blocking Policy'
-            },
-        },
-        modules: {
-            stopblocked: false,
-            inactive: 30,
-            mwGroups: [
-                'bureaucrat',
-                'rollback',
-                'sysop',
-                'content-moderator',
-                'autoconfirmed-user',
-                'user',
-                'bot',
-                'bot-global',
-                'blocked',
-                'nonuser'
-            ],
-            autoconfirmed: true,
-            newuser: true,
-            },
-    };
+	modules: {},
+	tags: {
+		sysop: {
+			u: 'Administrator',
+    	    m: 'Administrator',
+    	    f: 'Administratress',
+        	title: 'Respect this member because ' + aka + ' is an administrator of Snowflakie Tent. ' + aka + ' blocks you easily!',
+            link: 'Project:Administrators'
+		}, // I don't really like the name "sysop".
+		sfounder: {
+			u: 'Founder',
+			title: aka + ' is the starter of The Ice Mystery series.'
+		},
+		collaborator: {
+			u: 'Collaborator',
+			m: 'Collaborator',
+			f: 'Collaboratress',
+			title: aka + ' develops the series.'
+			
+		},
+		'mini-collab': {
+			u: 'Mini Collab.',
+			title: aka + ' helps the collaborators to develop the series.'
+		},
+		spellcheck: {
+			u: 'Spellchecker',
+			title: aka + ' correct spelling and grammar.'
+		}
+	}
+};
+// Add custom groups to several users.
+UserTagsJS.modules.custom = {
+	'ZayKitty': ['sfounder', 'collaborator', 'spellcheck'],
+	'-Scratchland-': ['sysop','collaborator'],
+	'-Rainyland-': ['mini-collab'],
+	'-HigHrocks-': ['mini-collab'],
+	'ZayNeko': ['spellcheck']
+};
+UserTagsJS.modules.autoconfirmed = true;
+UserTagsJS.modules.newuser = true;
+UserTagsJS.modules.inactive = 35; // Inactive if no edits in 35 days.
+UserTagsJS.modules.userfilter = {
+	'-Scratchland-': ['inactive'] // Ivy or Lunar is never inactive, even when she is.
+};

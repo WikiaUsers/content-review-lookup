@@ -1,5 +1,12 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+var SocialMediaButtons = { 
+	position: "top",
+	colorScheme: "color",
+};
+importScriptPage('SocialIcons/code.js','dev');
+importScriptPage('MediaWiki:Wikia.js/Slider.js','halo');
+
 /* Auto Refresh */
 AjaxRCRefreshText = 'Auto-refresh';
 AjaxRCRefreshHoverText = 'Automatically refresh the page';

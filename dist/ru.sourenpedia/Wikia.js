@@ -124,3 +124,9 @@ $(function(){
 		.appendTo('#WikiaRail')
 		.load('/ru/index.php?title=Template:NewPagesModule&action=render');
 });
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WebArchive.js',
+    ]
+});

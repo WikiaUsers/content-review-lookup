@@ -1,5 +1,5 @@
 /*WikiEditor/Викификатор*/
-if (document.URL.indexOf('action=edit') > 0 || document.URL.indexOf('action=submit') > 0) {
+if ( $.inArray( mw.config.get( 'wgAction' ), ['edit', 'submit'] ) !== -1 ) {
         mw.loader.load( '//ru.wikipedia.org/w/index.php?title=MediaWiki:Gadget-wikificator.js&action=raw&ctype=text/javascript' );
 }
 
@@ -24,7 +24,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 } );
 };
  
-if (document.URL.indexOf('action=edit') > 0 || document.URL.indexOf('action=submit') > 0) {
+if ( $.inArray( mw.config.get( 'wgAction' ), ['edit', 'submit'] ) !== -1 ) {
         mw.loader.using( 'user.options', function () {
                 if ( mw.user.options.get('usebetatoolbar') ) {
                         mw.loader.using( 'ext.wikiEditor.toolbar', function () {

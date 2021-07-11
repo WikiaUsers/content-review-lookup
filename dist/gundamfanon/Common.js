@@ -1,6 +1,3 @@
-/* Link to GFW Answers */
-$('ul.tools li:first-child').after('<li><a href="https://gundamfanon.fandom.com/wiki/Gundam_Fanon_Wiki:About">Got a question about the Gundam Fanon Wiki?</a></li>');
-
 /* UserTags */
 window.UserTagsJS = {
 	modules: {},

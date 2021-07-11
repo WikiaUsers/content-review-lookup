@@ -47,48 +47,6 @@ window.LockOldBlogs = {
     nonexpiryCategory: "Staff Blogs"
 };
 
-//Switch between light and dark theme by Sophiedp
-$(function () {
-	return; //temp disable due to having no dark theme and not wanting to confuse users
-	var lsKey = localStorage.getItem('MLwiki-theme');
-	if (lsKey && lsKey === 'dark') {
-    	$('body').addClass('theme-dark');
-    } else {
-    	$('body').addClass('theme-light');
-    }
-
-    function chooseTheme (reverse) {
-    	if (reverse) {
-    		if ($('body').hasClass('theme-dark')) {
-	    		return 'light';
-	    	}
-	    	return 'dark';
-    	}
-    	if ($('body').hasClass('theme-dark')) {
-    		return 'dark';
-    	}
-    	return 'light';
-    }
-
-    $('<li>', {
-        append: $('<a>', {
-            text: chooseTheme(true) + ' theme',
-            href: '#',
-            css: {
-            	cursor: 'pointer',
-            	'text-transform': 'capitalize'
-            },
-            click: function () {
-            	var cache = chooseTheme();
-                $('body').addClass('theme-' + chooseTheme(true)).removeClass('theme-' + cache);
-                $(this).text(chooseTheme(true) + ' theme');
-                localStorage.setItem('MLwiki-theme', chooseTheme(true));
-            }
-        }),
-        prependTo: $('#WikiaBar .toolbar .tools')
-    });
-});
-
 /* Randomize wiki word-marks */
 $(function() {
     var images = [
@@ -104,7 +62,7 @@ $(function() {
     $('.wds-community-header__wordmark img').attr('src', images[Math.floor(Math.random() * images.length)]);
 });
 
-if ($('body').hasClass('theme-fandomdesktop-dark') {
+if ($('body').hasClass('theme-fandomdesktop-dark')) {
     $('.fandom-community-header__image > img').attr('src', 'https://static.wikia.nocookie.net/lady-bug/images/5/5b/Night_theme_icon.png/revision/latest?cb=20210625114314');
 }
 

@@ -6,7 +6,7 @@ function addArticleMonthBanner() {
       return;
    }
    // Relocate it and make it appear 
-   var parent = $('.page-header__contribution-buttons .wds-button-group').get(0);
+   var parent = $('.page-header__actions').get(0);
    if (typeof parent !== 'undefined') {
       $(parent).prepend(elem);
       $(elem).addClass('aotm-image-visible');

@@ -20,3 +20,12 @@ window.DiscussionTemplates = {
 
     allowedGroups: ['sysop', 'rollback', 'content-moderator', 'threadmoderator']
 };
+
+
+/*Navigation extension https://life-is-strange.fandom.com/wiki/MediaWiki:Wikia.js */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:ExtendedNavigation/code.js'
+    ]
+})

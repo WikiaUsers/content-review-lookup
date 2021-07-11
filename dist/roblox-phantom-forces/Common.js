@@ -2,16 +2,11 @@
 /*               Maintained by Ivan Clemente and DuoDeca-S                   */
 
 // FANDOM DEV IMPORT
-// Note from Duo: I prefer to have the importArticle addons here as opposed to
-// ImportJS for sake of organization
 importArticles({               
     type: "script",
     articles: [
-        "u:dev:ProfileTags/code.js",
         "u:dev:Countdown/code.js",
-        'u:dev:TopEditors/code.js',
         'u:dev:PurgeButton/code.js',
-        'u:dev:AjaxBatchDelete/code.2.js',
         'u:dev:MediaWiki:AdminDashboard JS-Button/code.js',
         'u:dev:MediaWiki:AdminDashboard block/code.js',
         'u:dev:MediaWiki:MastheadRightsBadge.js',
@@ -30,7 +25,6 @@ $(function() {
 // BlockLog config
 TBL_GROUP = "roblox-en";
 
-
 // Message Wall and Forum User Tags
 
 // Sysops and Bureaucrats, you may choose to have your own
@@ -47,12 +41,12 @@ window.MessageWallUserTags = {
 		'TaigaTheWikiaEditor': 'Wiki Founder',
 		
 		// Wiki Manager
-		'Atvelonis': 'Wiki Manager',
+		'Moviesign': 'Wiki Manager',
 		
 		// Wiki Bureaucrats
-		'Ivan Clemente': 'Bureaucrat',
-		'DuoDeca-S': 'Bureaucrat',
-		'SundownMKII': 'Bureaucrat',
+		'Ivan Clemente': 'Sysop',
+		'DuoDeca-S': 'Sysop',
+		'SundownMKII': 'Sysop',
 		
 		// Wiki Administrators
 		'Aurified': 'Administrator',
@@ -63,6 +57,7 @@ window.MessageWallUserTags = {
 		'ForbiddenExceed': 'Administrator',
 		
 		// Wiki Moderators
+		'Slow-ying': 'Moderator',
 		
 		// Developers
 		'Litozinnamon': 'Developer',
@@ -72,10 +67,16 @@ window.MessageWallUserTags = {
 		'Glowydingus': 'Contributor',
 		'FlamingSwifferDuster': 'Contributor',
 		'Goofiershoes': 'Contributor',
-		'BiddinUp': 'Contributor',
 		'Poodros': 'Contributor',
+		'WolfDawgz': 'Contributor',
+		'VictorReznov345': 'Contributor',
+		'Destrukktoid': 'Contributor',
 		
 		// StyLiS Staff
 		'Savaughn08': 'StyLiS Staff',
+		'Spezi12': 'StyLiS Staff',
     }
 };
+
+// Prevents the default tags (e.g. Sysop, etc.) from being hidden when using ProfileTags.js
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };

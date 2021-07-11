@@ -16,23 +16,11 @@
         type: 'script',
         articles: [
         'w:c:spottra:MediaWiki:Common.js/Numeral.js', // Defines num.format('<fmt>')
-        'w:c:spottra:MediaWiki:Common.js/AjaxGallery.js',
-        'u:dev:Countdown/code.js',
-        'u:dev:SpoilerAlert/code.js',
-        'u:dev:TopEditors/code.js',
         'u:dev:UserTags/code.js',
-        'MediaWiki:Common.js/RGBColor.js',
         'MediaWiki:Common.js/Usernames.js',
-        'MediaWiki:Common.js/Sliders.js',
         'MediaWiki:Common.js/GemCalculators.js',
         'MediaWiki:Common.js/Experience.js',
-        'MediaWiki:Common.js/Tabber2.js',
-        'MediaWiki:Common.js/ImageHover.js',
-        'MediaWiki:Common.js/CumulativeCosts.js',
         'MediaWiki:Common.js/ModeToggle.js',
-        'MediaWiki:Common.js/PageVerify.js',
-        'MediaWiki:Common.js/GorillaMan.js',
-        'MediaWiki:Common.js/Lugia.js',
         'MediaWiki:Common.js/BadgeGenerator.js',
         'MediaWiki:Common.js/Protection.js',
         'MediaWiki:Common.js/AvailableBuildings.js',
@@ -138,8 +126,14 @@
 	   // Change Random Page button to only go to pages in the mainspace
 	   $('.wds-dropdown a[data-tracking=explore-random], ul.tools li a[data-name=random]').attr("href", "/wiki/Special:Random/main");
 	   
-		// Clash Royale and Brawl Stars topic interwiki links
-		$("#ClashRoyaleLink, #BrawlStarsLink").prependTo(".page-header__languages, .page-header__contribution > div:first-child").css({"display": "inline-block"});
+		// Clash Royale, Brawl Stars and Clash Quest topic interwiki links
+		if ($('body.skin-oasis').length) {
+			$("#ClashRoyaleLink, #BrawlStarsLink, #ClashQuestLink").prependTo(".page-header__contribution > div:first-child").css({"display": "inline-block"});
+		}else if ($('.page-header__languages').length) {
+			$("#ClashRoyaleLink, #BrawlStarsLink, #ClashQuestLink").prependTo(".page-header__languages").css({"display": "inline-block"});
+		}else {
+			$("#ClashRoyaleLink, #BrawlStarsLink, #ClashQuestLink").appendTo(".page-header__top").css({"display": "inline-block"});
+		}
 	});
 
     if (typeof(window.SpoilerAlert) === 'undefined') {

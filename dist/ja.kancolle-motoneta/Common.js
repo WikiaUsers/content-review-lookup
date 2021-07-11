@@ -1,20 +1,17 @@
-// Disable the parser cache on pages which use the <randomimage> tag
-window.wgRandomImageNoCache = true;
-
-// "AddRailModule" configuration
-window.AddRailModule = [{ maxAge: 0 }];
-
-// "BackToTopButton" configuration
-window.BackToTopModern = true;
-
-// "ImprovedTabbers" configuration
-window.ImprovedTabbers = {
-  HumanReadableAnchor: true,
-};
-
 // "Tooltips" configuration
 window.tooltips_config = {
   waitForImages: true,
+};
+
+// Disable the parser cache on pages which use the <randomimage> tag
+window.wgRandomImageNoCache = true;
+
+
+//add class for footer
+const footerClass = document.getElementsByClassName('wds-global-footer');
+const waterDepth = (document.body.scrollHeight - 740);
+if (waterDepth >= 5100) {
+  footerClass[0].classList.add('over5100m');
 }
 
 

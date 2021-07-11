@@ -17,9 +17,9 @@ var $spriteEditTab;
     
 // Mudanças temporárias para o FandomDesktop
 if ( $( ".skin-fandomdesktop" ).length > 0 ) {
-	var $editButton = $( '#ca-edit' );
+	var $editButton = $( '#ca-edit-side-tool' );
 	if ( !$editButton.length ) {
-		$editButton = $( '#ca-viewsource' );
+		$editButton = $( '#ca-viewsource-side-tool' );
 	}
 	
 	$spriteEditLink = $( '<a>' )

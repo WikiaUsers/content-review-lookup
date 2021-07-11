@@ -257,6 +257,23 @@ window.mapper = (function mapper(ns) {
       return false;
     });
   }
+  
+  function minimap_scrollstart () {
+  	$('#minimap_img').on('wheel', function(e) {
+		e.preventDefault();
+		var delta;
+		if (e.originalEvent.wheelDelta !== undefined)
+			delta = e.originalEvent.wheelDelta;
+		else
+			delta = e.originalEvent.deltaY * -1;
+		if(delta > 0) {
+			minimap_pos_b('zoom', 2);
+		}
+		else{
+			minimap_pos_b('zoom', 0.5);
+		}
+	});
+  }
 
   function minimap_data_to_url (type) {
     //0x.1x,2y.3y,4z,5zoom,6zoomm,7centermark
@@ -294,13 +311,13 @@ window.mapper = (function mapper(ns) {
         }
       }
       ret += '}' + '}';
-    } else if (type == 2) { //Wiki Link
+    } else if (type == 2) { //Wiki Link => Deprecated in favor of Mapepr Coords template
       ret = document.getElementById('minimap_tcode3').value.replace(/\s|%20/gi, '_');
       ret = '[' + minimap_data_to_url(0).replace(/\s|%20/gi, '_') + (ret === '' ? '' : ' ') + ret + ']';
     } else if (type == 3) { //x,y,z
       ret = minimap_map_data[0] + '.' + minimap_map_data[1] + ',' + minimap_map_data[2] + '.' + minimap_map_data[3] + ',' +
         minimap_map_data[4];
-    } else if (type == 4) { //tibiaml map
+    } else if (type == 4) { //tibiaml map => tibiamla does not exist anymore
       ret = 'http://map.tibiaml.com/?p=' +
         ((minimap_map_data[0] * 256) + minimap_map_data[1]) + ',' + ((minimap_map_data[2] * 256) + minimap_map_data[3]) + ',' +
         minimap_map_data[4] + ':' + (minimap_map_data[5] > 7 ? 8 : (minimap_map_data[5] > 3 ? 7 : (minimap_map_data[5] > 2 ? 6 : 5)));
@@ -355,7 +372,7 @@ window.mapper = (function mapper(ns) {
     if ($('#minimap_tcode1').size()) {
       $('#minimap_tcode1').val(minimap_data_to_url(0));
       $('#minimap_tcode2').val(minimap_data_to_url(1));
-      $('#minimap_tcode4').val(minimap_data_to_url(2));
+      //$('#minimap_tcode4').val(minimap_data_to_url(2));
       $('#minimap_tcode5').val(minimap_data_to_url(5));
       if (typeof reset_list == 'undefined' || reset_list) {
         var i = 1;
@@ -664,49 +681,58 @@ window.mapper = (function mapper(ns) {
       '</div>' +
       '</div></div>' +
       '</div>' +
-      '<div>' +
-      '<table border="0"><tr><td style="vertical-align:top;width:46px;">' +
-      '<div style="margin:2px;line-height:10px;"><input type="button" onclick="mapper.minimap_pos_b(\'ns\', -30);" class="starn btns" value="" /><br />' +
+      '<div>' + //section under map
+      '<div>' + //map controls
+      '<div style="display:flex;">' + //first row
+      //compass rose
+      '<div style="margin:2px;line-height:10px;width:46px;"><input type="button" onclick="mapper.minimap_pos_b(\'ns\', -30);" class="starn btns" value="" /><br />' + 
       '<input type="button" onclick="mapper.minimap_pos_b(\'we\', -30);" class="starw btns" value="" />' +
       '<input type="button" onclick="mapper.minimap_pos_b(\'reset\');" class="starc btns" value="" />' +
       '<input type="button" onclick="mapper.minimap_pos_b(\'we\', 30);" class="stare btns" value="" /><br />' +
       '<input type="button" onclick="mapper.minimap_pos_b(\'ns\', 30);" class="stars btns" value="" />' +
       '</div>' +
-      '</td><td style="vertical-align:top;width:46px;">' +
-      '<div style="margin:2px;">' +
+      // zoom and floor buttons
+      '<div style="margin:2px;width:46px;">' +
       '<input type="button" onclick="mapper.minimap_pos_b(\'zoom\', 0.5);" class="zoomm btn" value="" />' +
       '<input type="button" onclick="mapper.minimap_pos_b(\'floor\', -1);" class="floorp btn" value="" /><br />' +
       '<input type="button" onclick="mapper.minimap_pos_b(\'zoom\', 2);" class="zoomp btn" value="" />' +
       '<input type="button" onclick="mapper.minimap_pos_b(\'floor\', 1);" class="floorm btn" value="" />' +
       '</div>' +
-      '</td><td style="vertical-align:top;">' +
+      // checkboxes
+      '<div style="margin:2px;width:140px;">' +
       '<input type="checkbox" value="1" checked="checked" id="minimap_marks_enabled" onclick="mapper.minimap_pos();" />Enable marks<br />' +
       '<input type="checkbox" value="1" ' + (pars[7] ? 'checked="checked" ' : '') + 'id="minimap_cmark_enabled" onclick="mapper.minimap_pos();" />Center mark<br />' +
-      '</td><td style="vertical-align:top;padding-left:10px;">' +
+      '</div>' +
+      // floor and coords
+      '<div style="margin:2px;">' +
       'Current floor: <input id="minimap_current_floor" type="text" size="4" value="" readonly="readonly" onclick="this.select()" /><br />' +
       'Coords: <input id="minimap_current_coords" type="text" size="18" value="" readonly="readonly" onclick="this.select()" />' +
-      '</td></tr><td>&nbsp;</td><td>&nbsp;</td><td colspan="2">' +
-      '<input type="checkbox" value="1" ' + (minimap_read_cookie('minimap_hres') == '1' ? 'checked="checked" ' : '') + 'id="minimap_hres_enabled" onclick="mapper.minimap_write_cookie(\'minimap_hres\', (this.checked ? 1 : 0)); mapper.minimap_pos();" />Load high resolution images &nbsp;' +
-      '<input type="checkbox" value="0" ' + (!preload_image ? 'disabled=disabled' : '') + 'onclick="mapper.mapper_preload_files(this);" /> Preload images &nbsp;' +
-      (mw.config.get('wgPageName') == 'Mapper' ?
-        '<input type="checkbox" value="1" ' + (window.location.search.indexOf('coords=') !== -1 ? '' : 'checked="checked" ') + 'id="minimap_editor_mode" onclick="mapper.minimap_pos();" />Editor mode &nbsp;' +
-        '<input type="checkbox" value="1" ' + (minimap_read_cookie('minimap_fresh') == '1' ? 'checked="checked" ' : '') + 'onclick="mapper.minimap_write_cookie(\'minimap_fresh\', this.checked ? 1 : 0); mapper.minimap_change_src(); " />Force-reload images' +
-        '</td></tr></table><table border="0" style="width:512px;overflow:auto"><tr>' +
-        '<td colspan="2" style="border-top:1px #333333 solid;border-bottom:1px #333333 solid;text-align:center;">Mark manager' +
-        '</td></tr><tr><td coldspan="2">' +
-        '<div style="font-size:80%;">' +
-        '<a href="" onclick="$(\'#mapper_help1\').toggle(); return false;">Toggle Help</a><br />' +
-        '<div id="mapper_help1" style="background-color:#DDDDDD;display:none;">' +
-        'Enable <b>Editor Mode</b><br />' +
-        'Select an icon<br />' +
-        'Optionally write a wiki article name<br />' +
-        'Use the dotted lines(Center Mark) to select where you want to add a mark<br />' +
-        'Click <b>Add</b><br />' +
-        'To remove a mark, select it on the list, wait the map takes you to it and click <b>Remove</b><br />' +
-        'The "1" Icon is used to add marks with numbers, write a number instead of an article name' +
-        '</div></div>' +
-        '</td></tr></table><table><tr><td style="overflow:auto;width:270px;vertical-align:top;">' +
-        '<input type="radio" value="1" checked="checked" name="mapper_markc" id="mapper_marker_r1" class="mapper_marker_r" />' +
+      '</div>' +
+      '</div>' + //end first row
+      '<div>' + //second row
+      '<span style="display:inline-block;"><input type="checkbox" value="1" ' + (minimap_read_cookie('minimap_hres') == '1' ? 'checked="checked" ' : '') + 'id="minimap_hres_enabled" onclick="mapper.minimap_write_cookie(\'minimap_hres\', (this.checked ? 1 : 0)); mapper.minimap_pos();" />Load high resolution images &nbsp;</span>' +
+      '<span style="display:inline-block;"><input type="checkbox" value="0" ' + (!preload_image ? 'disabled=disabled' : '') + 'onclick="mapper.mapper_preload_files(this);" /> Preload images &nbsp;</span>' +
+      (mw.config.get('wgPageName') == 'Mapper' ? //Mark Manager and Links only displayed on Mapper page
+	  '<span style="display:inline-block;"><input type="checkbox" value="1" ' + (window.location.search.indexOf('coords=') !== -1 ? '' : 'checked="checked" ') + 'id="minimap_editor_mode" onclick="mapper.minimap_pos();" />Editor mode &nbsp;</span>' +
+      '<span style="display:inline-block;"><input type="checkbox" value="1" ' + (minimap_read_cookie('minimap_fresh') == '1' ? 'checked="checked" ' : '') + 'onclick="mapper.minimap_write_cookie(\'minimap_fresh\', this.checked ? 1 : 0); mapper.minimap_change_src(); " />Force-reload images</span>' +
+      '</div>' + //end second row
+      '</div>' + //end map controls
+      '<div>' + //mark manager
+      '<span style="display:block;border-top:1px solid;border-bottom:1px solid;text-align:center;">Mark manager</span>' +
+      '<div style="font-size:80%;">' + //Map manager help
+      '<a href="" onclick="$(\'#mapper_help1\').toggle(); return false;">Toggle Help</a><br />' +
+      '<div id="mapper_help1" style="background-color:#DDDDDD;display:none;">' +
+      'Enable <b>Editor Mode</b><br />' +
+      'Select an icon<br />' +
+      'Optionally write a wiki article name<br />' +
+      'Use the dotted lines(Center Mark) to select where you want to add a mark<br />' +
+      'Click <b>Add</b><br />' +
+      'To remove a mark, select it on the list, wait the map takes you to it and click <b>Remove</b><br />' +
+      'The "1" Icon is used to add marks with numbers, write a number instead of an article name' +
+      '</div></div>' + //end Map manager help
+      '<div style="display:flex;padding-top:10px;">' + //markers select and view
+      '<div style="font-size: 80%;">' + //markers selection 
+      '<input type="radio" value="1" checked="checked" name="mapper_markc" id="mapper_marker_r1" class="mapper_marker_r" />' +
         '<input type="radio" value="3" name="mapper_markc" id="mapper_marker_r3" class="mapper_marker_r" />' +
         '<input type="radio" value="5" name="mapper_markc" id="mapper_marker_r5" class="mapper_marker_r" />' +
         '<input type="radio" value="7" name="mapper_markc" id="mapper_marker_r7" class="mapper_marker_r" />' +
@@ -731,27 +757,49 @@ window.mapper = (function mapper(ns) {
         '<input type="radio" value="22" name="mapper_markc" id="mapper_marker_r22" class="mapper_marker_r" /><br />' +
         'Optional Article: <input type="text" value="" size="15" id="mapper_optional_link" /><br />' +
         '<input type="button" value="Add" onclick="mapper.minimap_mapper_add_mark();" />' +
-        '</td><td style="vertical-align:top;">' +
-
-        '<select size="6" id="mapper_list" style="width:90px"></select>' +
-        '&nbsp;<input type="button" value="Remove" disabled="disabled" id="mapper_mark_remove" onclick="mapper.minimap_mapper_remove_mark();" />' +
-
-        '</td></tr></table><table border="0" style="width:510px;overflow:auto;"><tr><td colspan="2" style="border-top:1px #333333 solid;border-bottom:1px #333333 solid;text-align:center;">' +
-        'Link and templates' +
-        '</td></tr><tr><td>Wiki Link:' +
-        '</td><td>' +
-        '<table style="width:100%;overflow:auto;"><tr><td>Link text:' +
-        '</td><td><input id= "minimap_tcode3" type="text" value="here" size="10" onkeyup="minimap_codes_update();" />' +
-        '</td></tr><td>Code:' +
-        '</td><td><input id= "minimap_tcode4" readonly="readonly" type="text" value="" size="30" onclick="this.select()" />' +
-        '</td></tr><td>Template:' +
-        '</td><td><input id= "minimap_tcode5" readonly="readonly" type="text" value="" size="30" onclick="this.select()" />' +
-        '</td></tr></table>' +
-        '</td></tr><tr><td>Direct Link:</td><td><input id= "minimap_tcode1" readonly="readonly" type="text" value="" size="45" onclick="this.select()" />' +
-        '</td></tr><tr><td>Simple Template:' +
-        '</td><td><input id= "minimap_tcode2" readonly="readonly" type="text" value="" size="45" onclick="this.select()" />' :
-        '') +
-      '</td></tr></table></div>' +
+      '</div>' + //end markers selection 
+      '<div style="margin-left: 20px;">' + //view active markers
+        '<select size="7" id="mapper_list" style="width:90px;"></select>' +
+      '</div>' + //end view active markers
+      '<div style="margin-left:10px;">' +
+        '<input type="button" value="Remove" disabled="disabled" id="mapper_mark_remove" onclick="mapper.minimap_mapper_remove_mark();" />' +
+      '</div>' + 
+      '</div>' + //end markers select and view
+      '</div>' + //end mark manager
+      '<div>' + //links and templates
+      '<span style="display:block;border-top:1px solid;border-bottom:1px solid;text-align:center;">Link and templates</span>' +
+      '<div style="display:grid;align-items:center;row-gap: 5px;">' + //grid container
+        '<div style="grid-row:1 / span 2;">' +
+        'Wiki Link' +
+        '</div>' +
+        '<div style="grid-column:2;">' +
+        'Link text:'  +
+        '</div>' +
+        '<div style="grid-column:3 / span 2;">' +
+        '<input id= "minimap_tcode3" type="text" value="here" size="10" onkeyup="mapper.minimap_codes_update();" />'  +
+        '</div>' +
+        '<div style="grid-column:2;">' +
+        'Template:' +
+        '</div>' +
+        '<div style="grid-column:3 / span 2;">' +
+        '<input id= "minimap_tcode5" readonly="readonly" type="text" value="" style="width: 100%;" onclick="this.select()" />' +
+        '</div>' +
+        '<div style="grid-row:3;">' +
+        'Direct Link' +
+        '</div>' +
+        '<div style="grid-row:3;grid-column:2 / span 3;">' +
+        '<input id= "minimap_tcode1" readonly="readonly" type="text" value="" style="width: 100%;" onclick="this.select()" />'  +
+        '</div>' +
+        '<div style="grid-row:4;">' +
+        'Simple Template' +
+        '</div>' +
+        '<div style="grid-row:4;grid-column:2 / span 3;">' +
+        '<input id= "minimap_tcode2" readonly="readonly" type="text" value="" style="width: 100%;" onclick="this.select()" />' +
+        '</div>' +
+      '</div>' + //end grid container
+      '</div>' : //end links and templates
+        '</div></div>') +
+      '</div>' +
       (mw.config.get('wgPageName') != 'Mapper' ?
         '<div onclick="window.open(mapper.minimap_data_to_url(0)); $(\'.minimap_wx\').click(); return false;" class="minimap_wl" title="Expand on TibiaWiki"></div>' :
         '') +
@@ -769,6 +817,7 @@ window.mapper = (function mapper(ns) {
     });
     minimap_pos();
     minimap_dragstart();
+    minimap_scrollstart();
     if (mw.config.get('wgPageName') == 'Mapper') {
       try {
         $('#mapper_loading').hide();
@@ -817,6 +866,7 @@ window.mapper = (function mapper(ns) {
     $mapper_bind_links: $mapper_bind_links,
     mapper_bind_all_links: mapper_bind_all_links,
     mapper_rebind_all_links: mapper_rebind_all_links,
+    minimap_codes_update: minimap_codes_update,
 	
     minimap_get_coords: minimap_get_coords,
     image_preload_supported: image_preload_supported,

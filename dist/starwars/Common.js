@@ -1,63 +1,56 @@
 /* <pre><nowiki> */
 
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:AjaxRC/code.js'
-    ]
-});
-
-if (wgPageName === 'Wookieepedia:IRC/Cloak_requests') {
+if (mw.config.get('wgPageName') === 'Wookieepedia:IRC/Cloak_requests') {
     importArticles({
         type: 'script',
         article: 'MediaWiki:AjaxCloakRequest.js'
     });
 }
 
-if ((wgPageName == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough') ||
-    (wgPageName == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/ArmoryBox') ||
-    (wgPageName == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/FactionsBox')) {
+if ((mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough') ||
+    (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/ArmoryBox') ||
+    (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/FactionsBox')) {
         importArticles({
             type: 'style',
             article: 'MediaWiki:SWUWalkthrough.css'
         });
 }
 
-if ((wgPageName.substring(0,wgPageName.indexOf('/')) == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough') ||
-    (wgPageName.substring(0,61) == 'Wookieepedia:Star Wars: Uprising Super Walkthrough/Abilities/') ||
-    (wgPageName.substring(0,17) == 'Template:Uprising') ||
-    (wgPageName == 'Template:AbilityList') || 
-    (wgPageName == 'Template:CurrencyIcon') ||
-    (wgPageName == 'Template:EquipmentTable') || 
-    (wgPageName == 'Template:TrainerCard') ||
-    (wgPageName == 'Template:TrainerCard/Main')) {
+if ((mw.config.get('wgPageName').substring(0,mw.config.get('wgPageName').indexOf('/')) == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough') ||
+    (mw.config.get('wgPageName').substring(0,61) == 'Wookieepedia:Star Wars: Uprising Super Walkthrough/Abilities/') ||
+    (mw.config.get('wgPageName').substring(0,17) == 'Template:Uprising') ||
+    (mw.config.get('wgPageName') == 'Template:AbilityList') || 
+    (mw.config.get('wgPageName') == 'Template:CurrencyIcon') ||
+    (mw.config.get('wgPageName') == 'Template:EquipmentTable') || 
+    (mw.config.get('wgPageName') == 'Template:TrainerCard') ||
+    (mw.config.get('wgPageName') == 'Template:TrainerCard/Main')) {
         importArticles({
             type: 'style',
             article: 'MediaWiki:SWU_Super_Walkthrough_Fonts.css'
         });
 }
 
-if ((wgPageName == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/Burnin_Konn') || 
-    (wgPageName == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/Components') || 
-    (wgPageName == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/Components/Materials') || 
-    (wgPageName == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/Anoat_sector') || 
-    (wgPageName == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/Components/Crystals') || 
-    (wgPageName == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/ArmoryBox') || 
-    (wgPageName == 'Template:UprisingPageFooter') || 
-    (wgPageName == 'Template:UprisingPageFooter/Components') || 
-    (wgPageName == 'Template:UprisingPageFooter/Main') || 
-    (wgPageName == 'Template:UprisingPageFooter/Abilities') || 
-    (wgPageName == 'Template:UprisingCanonTabs/doc') || 
-    (wgPageName == 'Template:UprisingCanonTabs') || 
-    (wgPageName == 'Template:UprisingCanonTabs/Main') || 
-    (wgPageName == 'Template:UprisingEquipmentInfobox') || 
-    (wgPageName == 'Template:UprisingEquipmentInfobox/main') || 
-    (wgPageName == 'Template:UprisingPageFooter/General') || 
-    (wgPageName == 'Template:UprisingComponentBox') || 
-    (wgPageName == 'Template:EquipmentProgressionTable') || 
-    (wgPageName == 'Template:AbilityList') || 
-    (wgPageName == 'Template:EquipmentTable') || 
-    (wgPageName == 'Template:UprisingAbilityBox/Main')) {
+if ((mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/Burnin_Konn') || 
+    (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/Components') || 
+    (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/Components/Materials') || 
+    (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/Anoat_sector') || 
+    (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/Components/Crystals') || 
+    (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/ArmoryBox') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/Components') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/Main') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/Abilities') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingCanonTabs/doc') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingCanonTabs') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingCanonTabs/Main') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingEquipmentInfobox') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingEquipmentInfobox/main') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/General') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingComponentBox') || 
+    (mw.config.get('wgPageName') == 'Template:EquipmentProgressionTable') || 
+    (mw.config.get('wgPageName') == 'Template:AbilityList') || 
+    (mw.config.get('wgPageName') == 'Template:EquipmentTable') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingAbilityBox/Main')) {
         importArticles({
             type: 'style',
             article: 'MediaWiki:SWU_Super_Walkthrough_Equipment.css'
@@ -356,8 +349,8 @@ function toggleHidable(bypassStorage) {
     Requires copying Template:USERNAME.
 */
 function substUsername() {
-	if( wgUserName ) {
-		$('.insertusername').text(wgUserName);
+	if( mw.config.get('wgUserName') ) {
+		$('.insertusername').text(mw.config.get('wgUserName'));
 	}
 }
 
@@ -765,7 +758,7 @@ $( disableOldForumEdit );
 
 //Removes the "Featured on:" line on File pages -- By Grunny
 $( function (){
-	if ( wgNamespaceNumber == 6 && $('#file').length != 0 ) {
+	if ( mw.config.get('wgNamespaceNumber') == 6 && $('#file').length != 0 ) {
 		$('#file').html($('#file').html().replace(/Featured on\:(.*?)\<br\>/, ''));
 	}
 } );
@@ -799,7 +792,7 @@ $( function lazyLoadTorApp() {
 		$lazyLoadEl = $( '#WookTorLazyload' ),
 		includeHtml,
 		$editLink;
-	if ( mw.config.get( 'wgPageName' ) !== pageName || !$lazyLoadEl.length ) {
+	if ( mw.config.get('wgPageName') !== pageName || !$lazyLoadEl.length ) {
 		return;
 	}
 

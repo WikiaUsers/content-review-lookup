@@ -1,6 +1,6 @@
 /**
  * @name WikiForum/core
- * @version 3.0.5 (Core version)
+ * @version 3.1.0 (Core version)
  * @author 机智的小鱼君 <dragon-fish@qq.com>
  * @desc Provide a front-end structured discussion page with JavaScript.
  *       Similar to Community Feed and support wikitext.
@@ -420,6 +420,7 @@ function renderThread(ctx) {
     threadid: threadid,
     meta: meta,
     content: content,
+    isComplex: isComplex(threadid, forumMeta.depthMax),
     fn: fn
   }); // 如果有回复，处理回复
 
@@ -431,6 +432,13 @@ function renderThread(ctx) {
   }
 
   return $thread;
+}
+
+function isComplex(id) {
+  var depthMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 3;
+  id = id.split('-');
+  if (id.length > depthMax) return true;
+  return false;
 }
 
 var fn = {
@@ -500,7 +508,8 @@ module.exports = {
   toHtml: toHtml,
   fromPage: fromPage,
   getContent: getContent,
-  getMeta: getMeta
+  getMeta: getMeta,
+  isComplex: isComplex
 };
 
 /***/ }),
@@ -590,7 +599,7 @@ function parseAllForums(forumEl) {
   forumEl.forEach(function (forum) {
     html += parseForum(forum);
   });
-  html = "<!--\n - WikiForum Container\n - \n - Total Forums: ".concat(forumEl.length, "\n - Last modiflied: ").concat(timeStamp(), "\n - Last user: ").concat(conf.wgUserName, "\n -\n - DO NOT EDIT DIRECTLY\n -->\n").concat(html, "\n\n<!-- end WikiForum -->");
+  html = "<!--\n - WikiForum Container\n - \n - Total Forums: ".concat(forumEl.length, "\n - Last modified: ").concat(timeStamp(), "\n - Last user: ").concat(conf.wgUserName, "\n -\n - DO NOT EDIT DIRECTLY\n -->\n").concat(html, "\n\n<!-- end WikiForum -->");
   return html;
 }
 /**
@@ -662,13 +671,6 @@ function getMeta(meta) {
 
 function timeStamp() {
   return new Date().toISOString();
-} // eslint-disable-next-line no-unused-vars
-
-
-function isComplex(id, depthMax) {
-  id = id.split('-');
-  if (id.length > depthMax) return true;
-  return false;
 }
 
 function updateThread(_ref2) {

@@ -6,13 +6,13 @@ var i18n = {
 		linkTitle: 'Klicke hier, um den Server-Cache der aktuellen Seite zu leeren'
 	},
 	fr: {
-		linkTitle: 'Cliquer pour purger le cache du serveur pour la page en cours du wiki'
-	},
-	ru: {
-		linkTitle: 'Щёлкните здесь, чтобы очистить кэш сервера на текущей вики-странице'
+		linkTitle: 'Cliquez pour purger le cache du serveur de la page actuelle du wiki'
 	},
 	pt: {
 		linkTitle: 'Clique para limpar o cache do servidor para a página da wiki atual'
+	},
+	ru: {
+		linkTitle: 'Щёлкните здесь, чтобы очистить кэш сервера на текущей вики-странице'
 	}
 };
 

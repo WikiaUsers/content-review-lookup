@@ -1,5 +1,8 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+// dev:AddRailModule configuration
+window.AddRailModule = [{page: 'Template:AssassinsInNeed', prepend: true}];
+
 //THE CODES BELOW DEALS WITH ERA TEMPLATE
 //codes courtesy of silent hill wiki.
 
@@ -84,11 +87,3 @@ moveRating();
 showEras('title-linktabs');
 
 // END OF CODES FOR ERA
-
-$(function(){
-	// Disable the button to add images to existing galleries
-	$('#bodyContent .wikia-gallery-add a').unbind('click').click(function(){return false;});
-	
-	// Fix apostrophe in search placeholder
-	$(".wds-global-navigation__search-input").attr("placeholder", "Search Assassin's Creed Wiki...");
-});

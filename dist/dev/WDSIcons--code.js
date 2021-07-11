@@ -111,6 +111,8 @@
             // Mask IDs need to be unique - temp fix issue by renaming the problematic mask.
             $sprite.find('symbol#wds-icons-external-small g mask').attr('id', 'mask-3');
             $sprite.find('symbol#wds-icons-external-small g g').attr('mask', 'url(#mask-3)');
+            // Remove clipping paths for some icons that were being cut off.
+            $sprite.find('symbol g[clip-path="url(#clip0)"]').attr('clip-path', null);
             // Populate registry.
             $.each(prefix, function(t, p) {
                 registry[t] = [].slice.call($sprite.children())

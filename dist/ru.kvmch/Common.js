@@ -2,15 +2,14 @@
 //способ работы: получаем через get содержимое журнала патрулирования с поисковыми параметрами, соответствующими названию текущей страницы
 //и проверяем, есть ли запись о патрулировании текущей просматриваемой версии, если нет - ставим на страницу плашку с сообщением
 
-//изменения: теперь будем проверять и по location.search, чтобы шаблон не выскакивал где попало
-	var test_hostname = document.location.pathname;
+//изменения: получаем текущую версию страницы новым способом
+
+var test_hostname = document.location.pathname;
 	var test_qu = document.location.search;
 	var hostname_split = test_hostname.split('/');
 	var page_urldecode_name = decodeURI(hostname_split[3]);
 	var test_pttrn_pagename = new RegExp(/^[a-zA-Zа-яА-Я0-9_]+$/);
-	var currentVersionPage = $('a[dir=ltr]').attr('href');
-	currentVersionPage = currentVersionPage.split('=');
-	currentVersionPage = currentVersionPage[1];
+	var currentVersionPage = mw.config.get('wgCurRevisionId');
 	if(hostname_split[2] == 'wiki' && test_pttrn_pagename.test(page_urldecode_name) === true && !test_qu){
 		$.get('/ru/index.php?title=Служебная%3ALog&type=patrol&user=&page='+page_urldecode_name+'&year=&month=-1', function(data){
 			if(data.indexOf('oldid='+currentVersionPage+'&amp;diff=prev') == '-1'){

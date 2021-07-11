@@ -45,99 +45,104 @@
 			},
 		};
 	}
-	
-	$('.global-navigation__bottom').addClass('button-added').prepend($('<div>', {
-		class: "global-navigation__collapse",
-		title: "Hide Global Navigation",
-		data: {
-			collapsed: false,
-		},
-		click: function() {
-			var $this = $(this);
-	
-			if ($this.data('collapsed')) {
-				// Remove collapsed classes
-				$(document.body).removeClass('global-navigation-collapsed');
-	
-				// Refresh editors if there are any with animation
-				var interval = createInterval(function() {
-					resizeEditors();
-				}, 0);
-					
-				// Stage 1 of animation
-				$notifs.addClass('collapsing')
-					.removeClass('notifs-in')
-					.one('animationend', function(e) {
-						e.stopPropagation(); // To prevent duplicate events with global nav
-						$notifs.removeClass('collapsing')
-							.removeClass('open');
-	
-						$nav.addClass('uncollapsing');
-						$([ $main[0], $localNav[0] ]).addClass('collapsing');
+
+	mw.hook('dev.i18n').add(function (i18nJS) { i18nJS.loadMessages('CollapseGlobalNavButton').done(function (i18n) {
+		$('.global-navigation__bottom').addClass('button-added').prepend($('<div>', {
+			class: "global-navigation__collapse",
+			title: i18n.msg('hide').plain(),
+			data: {
+				collapsed: false,
+			},
+			click: function() {
+				var $this = $(this);
+		
+				if ($this.data('collapsed')) {
+					// Remove collapsed classes
+					$(document.body).removeClass('global-navigation-collapsed');
+		
+					// Refresh editors if there are any with animation
+					var interval = createInterval(function() {
+						resizeEditors();
+					}, 0);
 						
-						$this.attr('title', "Hide Global Navigation");
-						// Cache state
-						localStorage.setItem('CGNB-Collapsed', 'uncollapsed');
-						// Start refreshing editors
-						interval.start();
+					// Stage 1 of animation
+					$notifs.addClass('collapsing')
+						.removeClass('notifs-in')
+						.one('animationend', function(e) {
+							e.stopPropagation(); // To prevent duplicate events with global nav
+							$notifs.removeClass('collapsing')
+								.removeClass('open');
+		
+							$nav.addClass('uncollapsing');
+							$([ $main[0], $localNav[0] ]).addClass('collapsing');
+							
+							$this.attr('title', i18n.msg('hide').plain());
+							// Cache state
+							localStorage.setItem('CGNB-Collapsed', 'uncollapsed');
+							// Start refreshing editors
+							interval.start();
+						});
+						
+					// Stage 2 of animation
+					$nav.one('animationend', function() {
+						$nav.removeClass('nav-out uncollapsing');
+						$([ $main[0], $localNav[0] ]).removeClass('collapsing uncollapsed');
+	
+						// End Refreshing of editors
+						interval.end();
+					});
+		
+					$this.data('collapsed', false);
+					mw.hook('dev.cgnb.change').fire(false); // Fire event
+				} else {
+					// Add collapsing classes
+					$nav.addClass('collapsing');
+					$(document.body).addClass('global-navigation-collapsed');
+					$([ $main[0], $localNav[0] ]).addClass('uncollapsing');
+					
+					// Refresh editors if there are any with animation
+					var interval = createInterval(function() {
+						resizeEditors();
+					}, 0);
+						
+					// Start refreshing editors
+					interval.start();
+	
+					// On stage 1 of animation
+					$nav.one('animationend', function() {
+						$nav.removeClass('collapsing')
+							.addClass('nav-out');
+						$([ $main[0], $localNav[0] ]).removeClass('uncollapsing').addClass('uncollapsed');
+					
+						$notifs.addClass('uncollapsing open');
+						$this.attr('title', i18n.msg('show').plain());
+						
+						localStorage.setItem('CGNB-Collapsed', 'collapsed'); // Cache state
+						// End Refreshing of editors
+						interval.end();
 					});
 					
-				// Stage 2 of animation
-				$nav.one('animationend', function() {
-					$nav.removeClass('nav-out uncollapsing');
-					$([ $main[0], $localNav[0] ]).removeClass('collapsing uncollapsed');
+					// On Stage 2 of animation
+					$notifs.one('animationend', function() {
+						$notifs.removeClass('uncollapsing')
+							.addClass('notifs-in');
+					});
+		
+					$this.data('collapsed', true);
+					mw.hook('dev.cgnb.change').fire(true); // Fire event
+				}
+			},
+			html: '<svg class="wds-icon wds-icon-tiny" style="transform: rotate(90deg);"><use xlink:href="#wds-icons-menu-control-tiny"></use></svg>'
+		}));
+	})});
 
-					// End Refreshing of editors
-					interval.end();
-				});
-	
-				$this.data('collapsed', false);
-				mw.hook('dev.cgnb.change').fire(false); // Fire event
-			} else {
-				// Add collapsing classes
-				$nav.addClass('collapsing');
-				$(document.body).addClass('global-navigation-collapsed');
-				$([ $main[0], $localNav[0] ]).addClass('uncollapsing');
-				
-				// Refresh editors if there are any with animation
-				var interval = createInterval(function() {
-					resizeEditors();
-				}, 0);
-					
-				// Start refreshing editors
-				interval.start();
-
-				// On stage 1 of animation
-				$nav.one('animationend', function() {
-					$nav.removeClass('collapsing')
-						.addClass('nav-out');
-					$([ $main[0], $localNav[0] ]).removeClass('uncollapsing').addClass('uncollapsed');
-				
-					$notifs.addClass('uncollapsing open');
-					$this.attr('title', "Show Global Navigation");
-					
-					localStorage.setItem('CGNB-Collapsed', 'collapsed'); // Cache state
-					// End Refreshing of editors
-					interval.end();
-				});
-				
-				// On Stage 2 of animation
-				$notifs.one('animationend', function() {
-					$notifs.removeClass('uncollapsing')
-						.addClass('notifs-in');
-				});
-	
-				$this.data('collapsed', true);
-				mw.hook('dev.cgnb.change').fire(true); // Fire event
-			}
-		},
-		html: '<svg class="wds-icon wds-icon-tiny" style="transform: rotate(90deg);"><use xlink:href="#wds-icons-menu-control-tiny"></use></svg>'
-	}));
-	
-	// Import CSS
+	// Import CSS/I18n
 	importArticles({
-		type: "style",
-		articles: ["u:dev:MediaWiki:CollapseGlobalNavButton.css"],
+		type: 'style',
+		articles: [
+			'u:dev:MediaWiki:CollapseGlobalNavButton.css',
+			'u:dev:MediaWiki:I18n-js/code.js',
+		],
 	});
 	
 	if (collapsed) $('.global-navigation__collapse').click();

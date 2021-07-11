@@ -21,3 +21,4 @@ $('.addSig').click(function(){
 		    var txtToAdd = ' ~' + '~' + '~' + '~';
 		    $('#wpTextbox1').val(textAreaTxt.substring(0, caretPos) + txtToAdd + textAreaTxt.substring(caretPos) );
 });
+}

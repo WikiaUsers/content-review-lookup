@@ -22,8 +22,15 @@ window.tooltips_config = {
 	offsetY: 5,
 };
 
-// Add upload images button to Special:NewFiles
+/*** On page load ***/
 $(function(){
+	// Template:TOC limit side tools support
+	if($(".toclimit").length){
+		var limit = $(".toclimit").attr("class").replace("toclimit","").trim();
+		$("#sticky-toc").addClass(limit);
+	}
+	
+	// Add upload images button to Special:NewFiles
 	if($("body.page-Special_NewFiles").length){
 		var buttonArea = ".page-header__buttons";
 		if(mw.config.get("skin") == "oasis") buttonArea = ".page-header__contribution-buttons";

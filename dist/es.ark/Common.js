@@ -40,11 +40,6 @@ function selectElementText(element) {
   }
 }
 
-// load js for calculating wild creature level stats
-if(document.getElementById('wildStatCalc')){
-    mw.loader.load('/index.php?title=MediaWiki:WildCreatureStats.js&action=raw&ctype=text/javascript','text/javascript',false);
-}
-
 // redirect to language version if url contains querystring iwredirect (for Dododex)
 $(function() {
   var match = location.search.match(/iwredirect=([^;&]*)/);
@@ -58,6 +53,11 @@ $(function() {
 
 /* Fires when DOM is ready */
 $( function() {
+
+// load js for calculating wild creature level stats
+if(document.getElementById('wildStatCalc')){
+    mw.loader.load('/index.php?title=MediaWiki:WildCreatureStats.js&action=raw&ctype=text/javascript','text/javascript',false);
+}
 
 
 /**

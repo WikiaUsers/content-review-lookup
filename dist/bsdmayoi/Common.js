@@ -63,6 +63,24 @@ $(document).ready(function() {
         $(event.delegateTarget).toggleClass('active');
         updateCharacterFilters();
     });
+	$('.character-filters .select-group')
+		.prepend(function() { return '<input placeholder="' + this.title + '">'; })
+		.children('input')
+		.keyup(function() {
+		const inputEl = $(this);
+		const filterText = inputEl.val();
+		const selectOptions = inputEl.parent().find('.select');
+
+		if (filterText.length === 0) {
+			selectOptions.show();
+		} else {
+			selectOptions.hide();
+			selectOptions.filter(function() {
+				return this.innerText.toLowerCase().includes(filterText.toLowerCase());
+			}).show();
+		}
+	});
+    
     // Replace periods in URL hash with %'s because wiki links URL
     // encode characters with periods instead.
     var urlParams = new URLSearchParams(decodeURIComponent(

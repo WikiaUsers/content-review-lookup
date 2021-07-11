@@ -184,7 +184,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Uri', 'ext.fandom
 	// This function checks if the user belongs to any of the groups passed in
 	function userBelongsToGroup() {
 		var groups = Array.from(arguments);
-		return wgUserGroups.some(function(g){ return groups.includes(g) });
+		return mw.config.get("wgUserGroups").some(function(g){ return groups.includes(g) });
 	}
 	
 	// autoconfirmed or above

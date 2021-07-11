@@ -4,7 +4,7 @@ function addProtectionBanner() {
       return;
    }
    // Relocate it and make it appear 
-   var parent = $('.page-header__contribution-buttons .wds-button-group, .page-header__bottom .page-header__actions').get(0);
+   var parent = $('.page-header__actions').get(0);
    if (typeof parent !== 'undefined') {
       $(parent).prepend(elem);
       $(elem).addClass('protection-image-visible');

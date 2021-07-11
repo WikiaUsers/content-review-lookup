@@ -38,7 +38,12 @@ $.when(
 		}
 	})
 ).then(function() {
-	if (mw.config.get('wgPageName') !== 'Module:Inventory_slot/Tooltips' || window.TooltipsEditorLoaded) return;
+	// Pages
+	var allowedPages = [
+		'Module:Inventory_slot/Tooltips',
+		'Module:Inventory_slot/Test'
+	];
+	if (($.inArray(mw.config.get('wgPageName'), allowedPages) === -1) || window.TooltipsEditorLoaded) return;
 	
 	var modal = new mw.libs.QDmodal("TooltipsEditor");
 	var api = new mw.Api();
@@ -156,7 +161,7 @@ $.when(
 		}
 		
 		function processResult(d) {
-			return JSON.parse(d.replaceAll('\\', '\\\\'));
+			return JSON.parse(d.replaceAll(/\\(?![\'\"\/])/g, '\\\\'));
 		}
 		
 		var promises = [];
@@ -182,11 +187,14 @@ $.when(
 				var jsonStr = [];
 				
 				// Merge result into a single string to limit JSON.parse() calls
-				Array.from(arguments).forEach(function(v) {
-					jsonStr.push(v[0]['return'].replace(/^\{|\}$/g, ''));
-				});
+				if (Array.isArray(arguments[0])) {
+					Array.from(arguments).forEach(function(v) {
+						jsonStr.push(v[0]['return'].replace(/^\{|\}$/g, ''));
+					});
+				}
+				else jsonStr.push(arguments[0]['return'].replace(/^\{|\}$/g, ''));
 				// Parse String
-				json = JSON.parse("{" + jsonStr.join(',') + "}");
+				json = processResult("{" + jsonStr.join(',') + "}");
 			} else {
 				json = processResult(arguments[0]);
 			}
@@ -772,13 +780,13 @@ $.when(
 								}),
 							],
 						}),'<br>',
-						$('<b>', { text: 'Tooltip ID: ' }),
-						$('<input>', { css: { width: "400px", position: "relative", left: "3.6em" }, id: "TooltipsEditor-key" }),
+						$('<span>', { text: 'Tooltip ID: ', css: { "font-weight": "bold", "width": "8.7em", display: "inline-block" } }),
+						$('<input>', { css: { width: "400px", position: "relative" }, id: "TooltipsEditor-key" }),
 						'<br>',
-						$('<b>', { text: 'Tooltip Link: ' }),
-						$('<input>', { css: { width: "400px", position: "relative", left: "2.5em" }, id: "TooltipsEditor-link" }),
+						$('<span>', { text: 'Tooltip Link: ', css: { "font-weight": "bold", "width": "8.7em", display: "inline-block" } }),
+						$('<input>', { css: { width: "400px", position: "relative" }, id: "TooltipsEditor-link" }),
 						'<br>','<br>',
-						$('<b>', { text: 'Tooltip Title: ' }),
+						$('<span>', { text: 'Tooltip Title: ', css: { "font-weight": "bold" } }),
 						$('<div>', {
 							id: "TooltipsEditor-title-AceEditor",
 							css: {
@@ -790,7 +798,7 @@ $.when(
 								'border': '1px solid #474747',
 							}
 						}),
-						$('<b>', { text: 'Tooltip Text: ' }),
+						$('<span>', { text: 'Tooltip Text: ', css: { "font-weight": "bold" } }),
 						$('<div>', {
 							id: "TooltipsEditor-text-AceEditor",
 							css: {

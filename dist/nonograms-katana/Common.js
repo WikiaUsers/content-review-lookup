@@ -1,6 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-//Changes every output cell in the table to "".
+//Changes every output cell in the table to "0" or "".
 function delete_table(){
 	document.getElementById("xp").innerHTML = "0";
 	document.getElementById("coin").innerHTML = "0";

@@ -1,4 +1,9 @@
-$('.page-header__contribution>div:first-child').append($('.eraicons').first());
+if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
+	$( '.page-header__actions' ).first().prepend( $( '.eraicons' ).first() );
+} else {
+	$( '.page-header__contribution > div:first-child' ).append($('.eraicons').first() );
+}
+
 /* EN title */
 (function() {
     var $ent = document.querySelector('#enTitle'),
@@ -33,20 +38,20 @@ $( function () {
 function initVisibility() {
 	var page = window.pageName.replace(/\W/g,'_');
 	var show = localStorage.getItem('infoboxshow-' + page);
- 
+
 	if( show == 'false' ) {
 		infoboxToggle();
 	}
- 
+
 	var hidables = getElementsByClass('hidable');
- 
+
 	for(var i = 0; i < hidables.length; i++) {
 		show = localStorage.getItem('hidableshow-' + i  + '_' + page);
- 
+
 		if( show == 'false' ) {
 			var content = getElementsByClass('hidable-content', hidables[i]);
 			var button = getElementsByClass('hidable-button', hidables[i]);
- 
+
 			if( content != null && content.length > 0 &&
 				button != null && button.length > 0 && content[0].style.display != 'none' )
 			{
@@ -55,7 +60,7 @@ function initVisibility() {
 		} else if( show == 'true' ) {
 			var content = getElementsByClass('hidable-content', hidables[i]);
 			var button = getElementsByClass('hidable-button', hidables[i]);
- 
+
 			if( content != null && content.length > 0 &&
 				button != null && button.length > 0 && content[0].style.display == 'none' )
 			{
@@ -820,4 +825,110 @@ function disableOldForumEdit() {
 		return;
 	}
 }
+
+function addHideButtons() {
+	var hidables = getElementsByClass('hidable');
+
+	for( var i = 0; i < hidables.length; i++ ) {
+		var box = hidables[i];
+		var button = getElementsByClass('hidable-button', box, 'span');
+
+		if( button != null && button.length > 0 ) {
+			button = button[0];
+
+			button.onclick = toggleHidable;
+			button.appendChild( document.createTextNode('[Gizle]') );
+
+			if( new ClassTester('start-hidden').isMatch(box) )
+				button.onclick('bypass');
+		}
+	}
+}
+
+function toggleHidable(bypassStorage) {
+	var parent = getParentByClass('hidable', this);
+	var content = getElementsByClass('hidable-content', parent);
+	var nowShown;
+
+	if( content != null && content.length > 0 ) {
+		content = content[0];
+
+		if( content.style.display == 'none' ) {
+			content.style.display = content.oldDisplayStyle;
+			this.firstChild.nodeValue = '[Hide]';
+			nowShown = true;
+		} else {
+			content.oldDisplayStyle = content.style.display;
+			content.style.display = 'none';
+			this.firstChild.nodeValue = '[Show]';
+			nowShown = false;
+		}
+
+		if( window.storagePresent && ( typeof( bypassStorage ) == 'undefined' || bypassStorage != 'bypass' ) ) {
+			var page = window.pageName.replace(/\W/g, '_');
+			var items = getElementsByClass('hidable');
+			var item = -1;
+
+			for( var i = 0; i < items.length; i++ ) {
+				if( items[i] == parent ) {
+					item = i;
+					break;
+				}
+			}
+
+			if( item == -1 ) {
+				return;
+			}
+
+			localStorage.setItem('hidableshow-' + item + '_' + page, nowShown);
+		}
+	}
+}
+
+/*
+    Source: http://www.dustindiaz.com/getelementsbyclass/
+    getElementsByClass, which complements getElementById and getElementsByTagName, returns an array of all subelements of ''node'' that are tagged with a specific CSS class (''searchClass'') and are of the tag name ''tag''. If tag is null, it searches for any suitable elements regardless of the tag name.
+    Example: getElementsByClass('infobox', document.getElementById('content'), 'div') selects the same elements as the CSS declaration #content div.infobox
+*/
+function getElementsByClass(searchClass, node, tag)
+{
+	var classElements = new Array();
+
+	if(node == null)
+		node = document;
+
+	if(tag == null)
+		tag = '*';
+
+	var els = node.getElementsByTagName(tag);
+	var elsLen = els.length;
+	var tester = new ClassTester(searchClass);
+
+	for(i = 0, j = 0; i < elsLen; i++)
+	{
+		if(tester.isMatch(els[i]))
+		{
+			classElements[j] = els[i];
+			j++;
+		}
+	}
+
+	return classElements;
+}
+
+function ClassTester(className)
+{
+    this.regex = new RegExp("(^|\\s)" + className + "(\\s|$)");
+}
+
+ClassTester.prototype.isMatch = function(element)
+{
+    return this.regex.test(element.className);
+}
+/*
+    end getElementsByClass
+*/
+
+$(addHideButtons);
+
 $( disableOldForumEdit );

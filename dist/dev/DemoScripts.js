@@ -330,8 +330,14 @@
         
         OasisRevived: {
             page: 'OasisRevived',
-            styles: 'MediaWiki:OasisRevived.css'
+            styles: 'MediaWiki:OasisRevived.css',
+            scripts: 'MediaWiki:OasisRevived.js'
         },
+        
+        OldWikiaBar: {
+	        page: "OldWikiaBar",
+	        styles: "MediaWiki:OldWikiaBar.css"
+	    },
         
         OrganizedNotifs: {
             page: 'OrganizedNotifs',
@@ -564,8 +570,11 @@
             ],
             exec: function () {
                 mw.hook('WikiForum').add(function (Core) {
-                    var pageName = mw.config.get('wgPageName');
-                    if (!pageName.startsWith('WikiForum/demo')) return;
+                    var conf = mw.config.get();
+                    if (
+                      !conf.wgPageName.startsWith('WikiForum/demo') ||
+                      conf.wgAction !== 'view'
+                    ) return;
                     Core.renderer.fromPage(pageName);
                 });
             },

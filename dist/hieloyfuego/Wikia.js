@@ -1,10 +1,3 @@
-/* Prueba para enlaces interlanguage */
-$(function(){
-     if ($('#Interlinks').length ) {
-            $('#WikiaRail').append('<section class="InterModule rail-module" id="InterModule"><h2>Otros idiomas</h2><ul>' + $('#Interlinks').html() + '</ul></section>');
-     }
-});
- 
 /* Cambio de background, modificado por Bola en dos partes, primero para alternar 6 backgrounds diferentes durante 1 hora y una segunda parte para alternar entre 7 clases diferentes dependiendo del día de la semana. */
  
 // Primera parte - 6 backgrounds durante 1 hora

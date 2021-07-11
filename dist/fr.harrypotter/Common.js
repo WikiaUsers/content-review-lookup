@@ -212,41 +212,6 @@ $(function() { $('.insertusername').html(wgUserName); });
 
 //=================================================================================================
 //
-//                                             TWITTER
-//
-//=================================================================================================
-
-//'u:dev:TwitterWidget/code.js'
-
-//=================================================================================================
-//                                                                                                
-//                                             Top Editors                                        
-//                                                                                                 
-//       @Auteur : Hulothe                                                                          
-//       @Usage : Ajout du module Top Editors                                                       
-//                                                                                                  
-//=================================================================================================
-
-$('#WikiaRail > .LatestPhotosModule').after('<div class="module"><div class="topeditors" data-te-namespace="" data-te-type="edit|new" data-te-show="" data-te-user="" data-te-limit="10" data-te-offset="7">Chargement...</div></div>');
-
-//=================================================================================================
-//                                                                                                  
-//                                            SOCIAL ICONS                                          
-//                                                                                                  
-//       @Auteur : Rappy 4187                                                                       
-//       @Usage : Personnalisation de la barre d'outils                                             
-//                                                                                                  
-//=================================================================================================
-
-var SocialMediaButtonsNamespaces = [0, 2, 6, 14, 500];
-var SocialMediaButtons = { 
-	position: 'top',
-	colorScheme: 'color',
-	buttonSize: '30px'
-};
-
-//=================================================================================================
-//
 //                                         IMPORT D'ARTICLES
 //
 //=================================================================================================
@@ -254,17 +219,6 @@ var SocialMediaButtons = {
 importArticles({
 	type: 'script',
 	articles: [
-		'u:dev:MediaWiki:ReferencePopups/code.js',
-		'u:dev:MediaWiki:DynamicImages/code.js',
-		'u:dev:MediaWiki:ExtendedNavigation/code.js',
-		'u:dev:MediaWiki:UserTags/code.js',
-		'u:dev:MediaWiki:Standard_Edit_Summary/code.js',
-		'u:dev:MediaWiki:TopEditors/code.js',
-		'u:dev:MediaWiki:EditcountTag/code.js',
-		'u:dev:MediaWiki:ListUsers/code.js',
-		'u:dev:MediaWiki:FileUsageAuto-update/code.js',
-		'u:dev:MediaWiki:Countdown/code.js',
-        'u:dev:SocialIcons/code.js',
         'MediaWiki:Common.js/Convertisseur.js', // Convertisseur argent des sorciers / euros
 	]
 });

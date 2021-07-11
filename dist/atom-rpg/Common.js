@@ -137,3 +137,6 @@ importArticles({
 		'u:dev:MediaWiki:RecentChangesMultiple/code.2.js',
     ]
 });
+
+// prevents existing tags from being hidden
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };

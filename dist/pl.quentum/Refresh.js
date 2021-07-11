@@ -1,1 +1,0 @@
-importScriptPage('MediaWiki:AjaxRC/code.js', 'dev');

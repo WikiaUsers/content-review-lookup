@@ -1,5 +1,3 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-
 /* Multiple Uploads */
 importArticles({
     type: 'script',
@@ -29,5 +27,13 @@ importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:UCXSearchBar.js',
+    ]
+});
+
+/* Search Suggestions */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:SearchSuggest/code.js',
     ]
 });

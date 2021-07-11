@@ -1,33 +1,27 @@
-/*------ Пояснение ------*/
-// После перехода на UCP данный скрипт имеет следующие особенности:
+/*----------------------------- Пояснение ------------------------------------*/
+// Скрипт имеет следующие особенности:
 // * Выполняется один раз при загрузке страницы, после чего доступ к нему не возможен
 // * Может не выдвавать ошибки при выполнении и не выполнять код после ошибки
 // * К функциям, не привязанным к конкретным объектам DOM, после выполнения скрипта нельзя обратиться
 
-/*------ Содержание ------*/
+/*----------------------------- Содержание -----------------------------------*/
 // * Импорт
 // * Настройки
 // * Кнопка "Back To Top"
-// * Template:Hover fix
-// * Template:ExtImg - Возможно не используется
-// * Быстрый индекс - неизвестная функция. Генерирует страницу с побуквенным списком статей
+// * Логотип для светлой темы
 // * Случайный фон страницы
 // * Слайдер на jqueryUI - Используется на главной странице
 // * Вспрывающие подсказки при наведении на ссылку
 // * Fix сворачиваемых, сортируемых таблиц
 // * Fix галереи-слайдшоу после перехода на UCP
 
-/*------ Импорт ------*/
+/*-------------------------------- Импорт ------------------------------------*/
 // Викификатор
 if (wgAction == 'edit' || wgAction == 'submit') {
 	importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Gadget-wikificator.js&action=raw&ctype=text/javascript');
 }
 
-// Old Skyrim Map O0o___o0O
-if (wgPageName == 'Карта_(Skyrim)')
-	importScript("MediaWiki:SkyrimMap.js");
-
-/*------ Настройки ------*/
+/*------------------------------- Настройки ----------------------------------*/
 // Автообновление служебных страниц (AJAX Recent Changes)
 var ajaxPages = ["Служебная:Contributions","Служебная:NewPages","Служебная:RecentChanges","Служебная:WikiActivity","Служебная:NewFiles","Служебная:Log","Служебная:Видео"];
 var AjaxRCRefreshText = 'Автообновление';
@@ -56,7 +50,7 @@ window.wfPlugins.push(function (txt, r) {
 	r( /\{\{примечания\}\}/g, '<references />' );
 });
 
-/*------ Кнопка "Back To Top" в футоре Oasis theme ------*/
+/*----------------------------- Кнопка "Back To Top" -------------------------*/
 // Created by Noemon from Dead Space Wiki
 function hideFade () {
 	// hide #backtotop first
@@ -74,10 +68,13 @@ function hideFade () {
 }
 
 function addBackToTop () {
-	if( skin == 'oasis' ) {
+	if ( skin == 'oasis' ) {
 		$('<li id="backtotop"><button type="button" value="Наверх" onClick="$( &#39;body,html&#39; ).animate ({scrollTop: 0}, 600 );">Наверх</button></li>').appendTo('#WikiaBarWrapper .toolbar > .tools'); 
-		hideFade ();
-	}	
+	}
+	if ( skin == 'fandomdesktop' ) {
+		$('<div id="backtotop" onClick="$( &#39;body,html&#39; ).animate ({scrollTop: 0}, 600 );">&#11014;</div>').appendTo('#WikiaBar'); 
+	}
+	hideFade();
 }
  
 if( !window.BackToTop  ) {
@@ -89,28 +86,22 @@ if( !window.BackToTop  ) {
 var ButtonStart = 800;
 var BackToTop = true; // prevent duplication
 
-/*------ Template:Hover fix ------*/
-if ('ontouchstart' in window || 'onmsgesturechange' in window) {
-	$(document.documentElement).addClass('touchscreen');
+/*------------------------ Логотип для светлой темы --------------------------*/
+if (document.getElementsByTagName("body")[0].classList.contains('theme-fandomdesktop-light')) {
+	$(".fandom-community-header__image>img").attr('src', "https://static.wikia.nocookie.net/elderscrolls/images/3/39/Wiki-wordmark_v.2_-_Light.png/revision/latest?cb=20210708065843&path-prefix=ru");
 }
+/*------------------------- Случайный фон страницы ---------------------------*/
+var backgroundLight = [
+'https://static.wikia.nocookie.net/elderscrolls/images/b/b6/Background-13.jpg/revision/latest?path-prefix=ru',
+'https://static.wikia.nocookie.net/elderscrolls/images/f/f0/Background-14.jpg/revision/latest?path-prefix=ru',
+'https://static.wikia.nocookie.net/elderscrolls/images/e/eb/Background-15.jpg/revision/latest?path-prefix=ru',
+'https://static.wikia.nocookie.net/elderscrolls/images/9/9c/Background-16.jpg/revision/latest?path-prefix=ru',
+'https://static.wikia.nocookie.net/elderscrolls/images/0/0c/Background-17.jpg/revision/latest?path-prefix=ru',
+'https://static.wikia.nocookie.net/elderscrolls/images/2/2d/Background-18.jpg/revision/latest?path-prefix=ru',
+'https://static.wikia.nocookie.net/elderscrolls/images/4/4f/Background-19.jpg/revision/latest?path-prefix=ru'
+];
 
-/*------ Template:ExtImg ------*/
-function ExtImg() { 
-	var ExtImg_Link = $(this).data('img');
-	$(this).html('<a href="' + ExtImg_Link + '" target="_blank"><img src="' + ExtImg_Link + '" alt="External Image" width="128px" />');
-}
-
-/*------ Быстрый индекс ------*/
-if (wgCanonicalSpecialPageName === 'Search') {
-var SearchNavTrigger = $('#mw-content-text .search-tabs');
-	SearchNavTrigger.append('<li class="normal"><a href="#" id="charindex">Быстрый индекс</a></li>');
-	$('#charindex').click(function() {
-		$('.results-wrapper').load('/wiki/The_Elder_Scrolls_Wiki:Быстрый_индекс?action=render').css('width','640px');
-	});
-}
-
-/*------ Случайный фон страницы ------*/
-var imgs = [
+var backgroundDark = [
 'https://static.wikia.nocookie.net/elderscrolls/images/c/cb/Bg1.jpg/revision/latest?path-prefix=ru',
 'https://static.wikia.nocookie.net/elderscrolls/images/a/a5/Bg2.jpg/revision/latest?path-prefix=ru',
 'https://static.wikia.nocookie.net/elderscrolls/images/f/ff/Bg3.jpg/revision/latest?path-prefix=ru',
@@ -125,10 +116,14 @@ var imgs = [
 'https://static.wikia.nocookie.net/elderscrolls/images/3/30/Background-08.jpg/revision/latest?path-prefix=ru'
 ];
 
-document.getElementsByTagName("body")[0].setAttribute("style", 'background-image:url('
-+ imgs[Math.floor((imgs.length) * Math.random())] + ') !important');
+if ((document.getElementsByTagName("body")[0].classList.contains('theme-fandomdesktop-dark'))||(document.getElementsByTagName("body")[0].classList.contains('skin-oasis'))) {
+	document.getElementsByTagName("body")[0].setAttribute("style", 'background-image:url('+ backgroundDark[Math.floor((backgroundDark.length) * Math.random())] + ') !important');
+}
+if (document.getElementsByTagName("body")[0].classList.contains('theme-fandomdesktop-light')) {
+	document.getElementsByTagName("body")[0].setAttribute("style", 'background-image:url('+ backgroundLight[Math.floor((backgroundLight.length) * Math.random())] + ') !important');
+}
 
-/*------ Sliders на jqueryUI ------*/
+/*------------------------ Sliders на jqueryUI -------------------------------*/
 // by User:Tierrie
 mw.loader.using( ['jquery.ui.tabs'], function() {
 	$(document).ready(function() {
@@ -157,7 +152,7 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 	});
 });
 
-/* Вспрывающие подсказки при наведении на ссылку */
+/*---------------- Вспрывающие подсказки при наведении на ссылку -------------*/
 // Скрипт при наведении на ссылку анализирует целевую статью. Если он находит там текст с css-классом linkPreviewText, то создаётся окно предпросмотра.
 // В окне предпросмотра обображается текст с css-классом linkPreviewText и изображение из контейнера с css-классом linkPreviewImage.
 // Данные классы добавлены в большинство шаблонов. Изображения-ссылки не обрабатываются.
@@ -181,7 +176,7 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 		delay : 100, // Задержка появления подсказки
 		tlen : 1000, // Максимальная длина текста
 		csize : 500, // Количество кэшированных страниц
-		includeText : ['.linkPreviewText'], // Стили текста, которые включаются в окно предпросмотра
+		includeText : '.linkPreviewText:first', // Стили текста, которые включаются в окно предпросмотра
 		includeImage : '.linkPreviewImage img', // Селектор получения изображения окна предпросмотра
 	};
 	var pp = {};
@@ -196,7 +191,7 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 	Settings.context = this;
 	Settings.f = {init: init, main: main, createuri: createUri, getpreview: ngetPreview,
 					showpreview: nshowPreview, hidepreview: nhidePreview, cache: ncache,
-					cacheof: ncacheOf, chkimagesrc: chkImageSrc, preprocess: preprocess};
+					cacheof: ncacheOf, chkimagesrc: chkImageSrc};
 
 	mw.loader.using(['mediawiki.util', 'mediawiki.Uri'], init);
 
@@ -371,29 +366,6 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 				return false;
 		}
 		return false;
-	}
-	
-	// Функция выбора необходимого текста с целевой страницы
-	function preprocess (text) {
-		if (!(Settings.RegExp.prep instanceof Array) || Settings.RegExp.prep.length < 1) return '';
-		var s = text,
-				$s = $('<div>').html(s);
-		if (Settings.RegExp.includeText && (Settings.RegExp.includeText instanceof Array)) {
-				s = Settings.RegExp.includeText.map(function(v) {
-					var $v = $s.find(v);
-					if ($v.length) {
-						$s.remove(v);
-						return $v.map(function() {return this.outerHTML}).toArray().join();
-					} else {
-						return false;
-					}
-				})
-				.filter(Boolean).join() || '';
-		}
-		Settings.RegExp.prep.forEach(function (v) {
-				s = s.replace(v, '');
-		});
-		return s;
 	}
 	
 	// Служебная функция - Получение ссылки
@@ -579,7 +551,7 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 					return this;
 				}
 				var img = $(data.parse.text['*']).find(Settings.RegExp.includeImage).attr('data-image-name');
-				var text = data.parse.text['*'];
+				var text = $(data.parse.text['*']).find(Settings.RegExp.includeText)[0].outerHTML;
 				if (!img && !text) {
 					pp.stop(nuri.truepath);
 					if (Settings.apid || withD) {
@@ -590,8 +562,6 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 						return ngetPreview(ev, null, true);
 					}
 				}
-				//preprocess (cleanup)
-				text = preprocess(text);
 				if (text=='') {
 					pp.stop(nuri.truepath);
 					return this;
@@ -724,7 +694,7 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 	}
 })(jQuery);
 
-/*------- Fix сворачиваемых, сортируемых таблиц ---------*/
+/*---------------- Fix сворачиваемых, сортируемых таблиц ---------------------*/
 // Восстанавливает показ шапки сортировки
 // Автор: VitaZheltyakov
 function fixTable(){
@@ -746,7 +716,7 @@ function fixTable(){
 	});
 }
 
-/*------- Fix галереи-слайдшоу после перехода на UCP ------*/
+/*-------------- Fix галереи-слайдшоу после перехода на UCP ------------------*/
 // Восстанавливает поддержку параметра widths у галерей-слайдшоу
 // Восстанавливает открытие изображения в окне при нажатии на него в галерее-слайдшоу
 // Исправляет работу автоматической обрезки
@@ -835,6 +805,6 @@ function slideRegenerate(){
 }
 
 $(document).ready(function() {
-	setTimeout(function(){ slideRegenerate(); }, 2000);
-	setTimeout(function(){ fixTable(); }, 2000);
+	fixTable();
+	setTimeout(function(){ slideRegenerate(); }, 2000); // Запускаем отложено, т.к. галереи подгружаются не сразу
 });

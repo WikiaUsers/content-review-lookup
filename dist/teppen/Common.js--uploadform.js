@@ -38,6 +38,7 @@
                 'Animated images': 'Animated image',
                 'User images': 'Image for my userpage',
                 'Wiki related images': 'Wiki related',
+                'Voice-overs': 'Voice-over',
                 'Images': 'Does not fall in any other category'
             }
             

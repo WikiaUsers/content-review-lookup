@@ -2,9 +2,9 @@ mw.hook('wikipage.content').add(function($content) {
     if (!$content) {
         return;
     }
-    $content.find('.iframe').each(function() {
+    $content.find('.scratch').each(function() {
         var $this = $(this),
-            id = $this.attr('data-url'),
+            id = $this.attr('data-id'),
             css = {
                 width: 'inherit',
                 height: 'inherit',
@@ -12,7 +12,7 @@ mw.hook('wikipage.content').add(function($content) {
             };
         $this.html(
             $('<iframe>', {
-                src: id,
+                src: 'https://turbowarp.org/' + id +'/embed',
                 css: css
             })
         );

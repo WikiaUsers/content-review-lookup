@@ -4,7 +4,7 @@ Code written/maintained by Explodabat. Please contact me on the Wiki Discord at 
 ──────────────────────────────────────────────────────────────────────────────
 This content previously lived on MediaWiki:Common.js
 */
-console.log("Navbox JS Version 6.27.21");
+console.log("Navbox JS Version 7.05.21");
 //Array of ship objects -- see "function Ship(...)" for constructor & properties
 var shipArr = [];
 var count = 0;
@@ -32,7 +32,7 @@ if(localStorage.getItem("storedArr") !== null){
     count = shipArr.length;
 } 
 //Array of valid category-based types (classes/events)
-var types = ["AI","Fighters","Hidden Event","Halloween 2016","Halloween 2017","Christmas 2017","Fourth of July 2018","Halloween 2018","Christmas 2018","Fourth of July 2019","Retro Ship Event 2019","Halloween 2019","Christmas 2019","Promotion","April Fools 2020","Fourth of July 2020","Retro Ship Event 2020","Halloween 2020","Black Friday 2020","Christmas 2020","Super Capital","Advanced","Miner","Freighter","Frigate","Destroyer","Cruiser","Battlecruiser","Battleship","Dreadnought","Carrier","Admin"];
+var types = ["AI","Fighters","Hidden Event","Halloween 2016","Halloween 2017","Christmas 2017","Fourth of July 2018","Halloween 2018","Christmas 2018","Fourth of July 2019","Retro Ship Event 2019","Halloween 2019","Christmas 2019","Promotion","April Fools 2020","Fourth of July 2020","Retro Ship Event 2020","Halloween 2020","Black Friday 2020","Christmas 2020","Fourth of July 2021","Super Capital","Advanced","Miner","Freighter","Frigate","Destroyer","Cruiser","Battlecruiser","Battleship","Dreadnought","Carrier","Admin"];
 //Array of pages to be removed from shipArr -- all non-ship pages
 var unwantedNamesTypes = ["Ships","Tier List","All Ship","INVALID","Category"];
 //General parser object used for parsing the requested pages
@@ -49,7 +49,7 @@ function startNavboxFill(){
 		else sortBy = "name";
 		if(shipArr.length === 0){
 			returnPage("Category:Ships",getNames,0); //load first 200 entries
-			returnPage("Category:Ships?from=MRLS Launcher",getNames,0); //load remaining entries
+			returnPage("Category:Ships?from=Lykos",getNames,0); //load remaining entries
 			returnPage("Category:AI",getNames,0); //load AI class
 			count = 0;
 		}

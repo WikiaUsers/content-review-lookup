@@ -1,7 +1,6 @@
 (function () {
-    var profile = $('.UserProfileMasthead hgroup');
     if (
-        !profile.exists() ||
+        !mw.config.get('profileUserName') ||
         window.SOAPReportMenuLoaded
     ) {
         return;
@@ -18,10 +17,10 @@
         }
     );
     function init (i18n) {
-        profile.append(
+        $('.user-identity-header__actions').append(
             $('<a>', {
                 'class': 'soap-report-menu',
-                'href': '//soap.fandom.com/wiki/Report:Profile',
+                'href': '//soap.fandom.com/wiki/Report:Spam',
                 'title': i18n.msg('title').plain(),
                 'target': '_blank'
             })

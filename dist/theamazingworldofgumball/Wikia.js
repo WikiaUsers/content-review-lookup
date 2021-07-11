@@ -437,10 +437,15 @@ $(function() {
     showSlide();
   });
 
-  for (var i = 0; i < slideTotal; i++) {
-    var thumbnail = $(".cslider ul li img").eq(i).attr("data-src");
-    $(".cslider-thumbs").append("<img src=" + thumbnail + "/>").children().first().addClass("active");
+document.querySelectorAll(".cslider ul li img").forEach(function(i) {
+  var thumbnail = '';
+  if (i.classList.contains('lazyload')) {
+    thumbnail = i.getAttribute('data-src');
+  } else {
+    thumbnail = i.getAttribute('src');
   }
+  $(".cslider-thumbs").append("<img src=" + thumbnail + "/>").children().first().addClass("active");
+});
 
   $(".cslider-thumbs img").click(function() {
     clearInterval(slideshow);

@@ -11,6 +11,20 @@
  */
 
 mw.loader.using('mediawiki.api').then(function() {
+
+	// function to get URL parameters and values
+    function getUrlVars() {
+	    var vars = [], hash;
+	    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	    for(var i = 0; i < hashes.length; i++)
+	    {
+	        hash = hashes[i].split('=');
+	        vars.push(hash[0]);
+	        vars[hash[0]] = hash[1];
+	    }
+	    return vars;
+	}
+
     var wg = mw.config.get([
         'wgUserGroups',
         'wgPageName',
@@ -21,7 +35,7 @@ mw.loader.using('mediawiki.api').then(function() {
     can_restore = /sysop|staff|helper|content-volunteer|content-moderator|content-team-member|wiki-manager|soap/.test(ug.join()),
     config = window.ViewDeleted || {rc: true, logs: 'replace'},
     rc = config.rc && $('#recentchanges-options + .rc-conntent').length,
-    logs = config.logs && (wg.wgPageName.slice(-7) == '/delete' || $.getUrlVar('type') == 'delete');
+    logs = config.logs && (wg.wgPageName.slice(-7) == '/delete' || getUrlVars().type == 'delete');
     config.modal = config.modal || {};
     config.modal.preview = config.modal.preview || {};
     config.modal.content = config.modal.content || {};
@@ -35,6 +49,7 @@ mw.loader.using('mediawiki.api').then(function() {
             article: 'u:dev:MediaWiki:I18n-js/code.js'
         });
     }
+
     // Add the view content links
     function add_links() {
         var $vc_link = $('<span>', {
@@ -49,7 +64,7 @@ mw.loader.using('mediawiki.api').then(function() {
             ']'
             ]
         });
-        if ((wg.wgPageName.slice(-7) == '/delete' || $.getUrlVar('type') == 'delete') && config.logs) { // Special:Log/delete
+        if ((wg.wgPageName.slice(-7) == '/delete' || getUrlVars().type == 'delete') && config.logs) { // Special:Log/delete
             if (config.logs == 'replace') {
                 $('.mw-logline-delete .mw-logevent-actionlink a').click(show_modal);
             } else {
@@ -58,7 +73,7 @@ mw.loader.using('mediawiki.api').then(function() {
                 });
             }
         } else if (config.rc) { // RecentChanges
-            if ($.getUrlVar('hideenhanced') == 1) {
+            if (getUrlVars().hideenhanced == 1) {
                 var $elems = $('.special > li').filter(function() {
                     var $this = $(this),
                     href = $this.children('a').first().attr('href').toLowerCase(),
@@ -85,7 +100,7 @@ mw.loader.using('mediawiki.api').then(function() {
         if (e.target.nodeName != 'A' || (logs && (e.ctrlKey || e.shiftKey))) return;
         e.preventDefault();
         var $this = $(this),
-        title = $.getUrlVar('hideenhanced') == 1 ? $this.prev().prev().text() : $this.closest('li, td').find('a').not('.comment a, .mw-logevent-actionlink a, .view-content-wrapper a').last().text(),
+        title = getUrlVars().hideenhanced == 1 ? $this.prev().prev().text() : $this.closest('li, td').find('a').not('.comment a, .mw-logevent-actionlink a, .view-content-wrapper a').last().text(),
         file_ns = Object.keys(wg.wgNamespaceIds).filter(function(el) {
             return wg.wgNamespaceIds[el] == 6;
         }),

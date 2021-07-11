@@ -132,50 +132,6 @@ ContentLoader.prototype.send = function(url, postdata, contentType)
 */
 
 /*
-    Source: http://www.dustindiaz.com/getelementsbyclass/
-    getElementsByClass, which complements getElementById and getElementsByTagName, returns an array of all subelements of ''node'' that are tagged with a specific CSS class (''searchClass'') and are of the tag name ''tag''. If tag is null, it searches for any suitable elements regardless of the tag name.
-    Example: getElementsByClass('infobox', document.getElementById('content'), 'div') selects the same elements as the CSS declaration #content div.infobox
-*/
-function getElementsByClass(searchClass, node, tag)
-{
-	var classElements = new Array();
-
-	if(node == null)
-		node = document;
-
-	if(tag == null)
-		tag = '*';
-
-	var els = node.getElementsByTagName(tag);
-	var elsLen = els.length;
-	var tester = new ClassTester(searchClass);
-
-	for(i = 0, j = 0; i < elsLen; i++)
-	{
-		if(tester.isMatch(els[i]))
-		{
-			classElements[j] = els[i];
-			j++;
-		}
-	}
-
-	return classElements;
-}
-
-function ClassTester(className)
-{
-    this.regex = new RegExp("(^|\\s)" + className + "(\\s|$)");
-}
-
-ClassTester.prototype.isMatch = function(element)
-{
-    return this.regex.test(element.className);
-}
-/*
-    end getElementsByClass
-*/
-
-/*
     Returns the parameter as it appears in the query string. Equivalent to $_GET[p] in PHP.
 */
 function queryString(p) 
@@ -284,6 +240,16 @@ function getFirstHeading()
     var element = document.getElementById('WikiaPageHeader');
     return (element != null && element != 'undefined') ? element : null;
     
+}
+
+function ClassTester(className)
+{
+    this.regex = new RegExp("(^|\\s)" + className + "(\\s|$)");
+}
+
+ClassTester.prototype.isMatch = function(element)
+{
+    return this.regex.test(element.className);
 }
 
 /*
@@ -490,7 +456,7 @@ function rewriteTitle()
     firstHeading.style.textAlign = titleAlign.childNodes[0].nodeValue;*/
     var text = $("#title-meta").text();
     var ex_text = $("#WikiaPageHeader > h1, #firstHeading").html();
-    if ((text != null || text != '') && (ex_text != null || ex_text != ''))
+	if (text != null && text != '' && ex_text != null && ex_text != '')
     $("#WikiaPageHeader > h1, #firstHeading").contents(ex_text.replace(window.pageName,text));
 }
 

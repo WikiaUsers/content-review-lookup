@@ -67,6 +67,31 @@ UserTagsJS.modules.implode = {
 	'rollback-inactif': ['apprenti', 'inactif'] //Idem (spécificité des modos "apprenti héros")
 };
 
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:ExtendedNavigation/code.js',
+        'u:dev:SocialIcons/code.js'
+    ]
+});
+
+    //Réseaux sociaux
+
+var SocialMediaButtons = { 
+	position: 'top',
+	colorScheme: 'dark',
+	buttonSize: '20px',
+        wikitwitteraccount: 'ZeldaWikiFr'
+};
+
+if(mw.config.get('wgUserName')) {
+    window.DiscordIntegratorConfig = {
+        siderail: {
+            title: "Serveur Discord",
+            id: "192899995010203648"
+        }
+    };
+}
 
 /*Texte "rafraîchir"*/
 PurgeButtonText = 'Rafraîchir';

@@ -7,7 +7,7 @@ importArticles({
     type: 'script',
     article: 'MediaWiki:Mapper.js'
 });
-$(window).load(function() {
+$(function(){
     //__NOWYSIWYG__
     'use strict';
     var bestiary_creature_baseinfo = [],
@@ -112,8 +112,8 @@ $(window).load(function() {
         }
 		return ret;	
     },
-    bestiary_level_imgs = {harmless: fpath + 'Bestiary_Level_Harmless.gif', trivial: fpath + 'Bestiary_Level_Trivial.gif', easy: fpath + 'Bestiary_Level_Easy.gif', medium: fpath + 'Bestiary_Level_Medium.gif', hard: fpath + 'Bestiary_Level_Hard.gif', challenging: fpath + 'Bestiary_Level_Challenging.gif'},
-    bestiary_occurrence_imgs = {common: fpath + 'Bestiary_Occurrence_Common.gif', uncommon: fpath +  'Bestiary_Occurrence_Uncommon.gif', rare: fpath + 'Bestiary_Occurrence_Rare.gif', veryrare: fpath + 'Bestiary_Occurrence_Very_Rare.gif'},
+    bestiary_level_imgs = {harmless: 'https://static.wikia.nocookie.net/tibia/images/a/ab/Bestiary_Level_Harmless.gif/revision/latest?cb=20200618024600&path-prefix=en&format=original', trivial: 'https://static.wikia.nocookie.net/tibia/images/d/d1/Bestiary_Level_Trivial.gif/revision/latest?cb=20200618024558&path-prefix=en&format=original', easy: 'https://static.wikia.nocookie.net/tibia/images/b/bf/Bestiary_Level_Easy.gif/revision/latest?cb=20200618024557&path-prefix=en&format=original', medium: 'https://static.wikia.nocookie.net/tibia/images/f/ff/Bestiary_Level_Medium.gif/revision/latest?cb=20200618024555&path-prefix=en&format=original', hard: 'https://static.wikia.nocookie.net/tibia/images/4/46/Bestiary_Level_Hard.gif/revision/latest?cb=20200618024554&path-prefix=en&format=original', challenging: 'https://static.wikia.nocookie.net/tibia/images/3/30/Bestiary_Level_Challenging.gif/revision/latest?cb=20200611174646&path-prefix=en&format=original'},
+    bestiary_occurrence_imgs = {common: 'https://static.wikia.nocookie.net/tibia/images/2/2c/Bestiary_Occurrence_Common.gif/revision/latest?cb=20180618025920&path-prefix=en&format=original', uncommon: 'https://static.wikia.nocookie.net/tibia/images/2/2f/Bestiary_Occurrence_Uncommon.gif/revision/latest?cb=20180618025920&path-prefix=en&format=original', rare: 'https://static.wikia.nocookie.net/tibia/images/d/d5/Bestiary_Occurrence_Rare.gif/revision/latest?cb=20180618025921&path-prefix=en&format=original', veryrare: 'https://static.wikia.nocookie.net/tibia/images/0/08/Bestiary_Occurrence_Very_Rare.gif/revision/latest?cb=20180618025921&path-prefix=en&format=original'},
     bestiary_display_classes = function() {
         $('#bestiary_creature_namebar').hide();
         $('#bestiary_search_results').empty();
@@ -152,6 +152,11 @@ $(window).load(function() {
         });
         $('#bestiary_loot_common, #bestiary_loot_uncommon, #bestiary_loot_semirare, #bestiary_loot_rare, #bestiary_loot_veryrare').empty();
         
+    },
+    bestiary_update_items_urls = function(urls) {
+    	$.each(urls, function(i, v) {
+    		$('#loot_item_' + i).attr('src', v + '&format=original');
+    	});
     },
     bestiary_populate_ui = function() {
         var minKills = {harmless: 25, trivial: 250, easy: 500, medium: 1000, hard: 2500, challenging: 5000},
@@ -226,10 +231,27 @@ $(window).load(function() {
         $('#bestiary_loot_common').empty();
         $('#bestiary_loot_uncommon').empty();
         if (typeof(creaturedata.loot) != "undefined") {
+        	var apiqueries = [],
+        	totalitems = 0,
+        	origurls = [];
             $.each(creaturedata.loot, function(i, v) {
-                $('#bestiary_loot_' + v.rarity).append('<div class="bestiary_loot_item" title="' + v.iname + '"><a href="https://tibia.fandom.com/wiki/' + v.iname + '" style="color:inherit;" target="_blank"><img src="' + fpath + v.iname + '.gif"><span>' + v.amount + '</span></a></div>');
-                    itemcounter[v.rarity]++;
+            	var itemurl = fpath + v.iname + ".gif";
+            	apiqueries.push('File:' + v.iname + '.gif');
+            	$('#bestiary_loot_' + v.rarity).append('<div class="bestiary_loot_item" title="' + v.iname + '"><a href="https://tibia.fandom.com/wiki/' + v.iname + '" style="color:inherit;" target="_blank"><img id="loot_item_' + totalitems + '" src="' + itemurl + '"><span>' + v.amount + '</span></a></div>');
+            	totalitems++;
+				itemcounter[v.rarity]++;
             });
+			$.ajax({
+				async: true,
+				type: 'GET',
+			    url: 'https://tibia.fandom.com/api.php?action=query&titles=' + apiqueries.join('|') + '&prop=imageinfo&iiprop=url&format=json',
+			    success: function (data) {
+			    	$.each(data.query.pages, function(i, v) {
+			    		origurls.push(v.imageinfo[0].url);
+			    	});
+			    	bestiary_update_items_urls(origurls);
+			    }
+			});
         }
         $.each(rareness, function(i, v) {
             if (itemcounter[v] === 0) {
@@ -253,7 +275,7 @@ $(window).load(function() {
         
         // Rebind all the mapper links.
         // Only rebind if Mapper dependency loaded.
-        mapper && mapper.mapper_rebind_all_links && mapper.mapper_rebind_all_links();
+        typeof(mapper) !== 'undefined' && typeof(mapper.mapper_rebind_all_links) !== 'undefined' && mapper.mapper_rebind_all_links();
     },
     bestiary_populate_class = function (bclass) {
         if (typeof(bclass) == 'undefined') return;

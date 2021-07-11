@@ -3,8 +3,14 @@
  * @author                  Americhino
  * @version                 1.0.1
  * @license                 CC-BY-SA 3.0 */
-var $user = mw.config.get('wgTitle').split('/');
-if (($user[1] ? $user[1] : $user[0]) === mw.config.get('wgUserName')) {
+var config = mw.config.get([
+		'wgTitle',
+		'profileUserName',
+		'wgUserName'
+	]),
+	$user = config.wgTitle.split('/');
+
+if (config.profileUserName && ($user[1] ? $user[1] : $user[0]) === config.wgUserName) {
     mw.hook('dev.i18n').add(function (i18n) {
         i18n.loadMessages('UserStatus').done(function (i18n) {
             mw.loader.using('mediawiki.notify').then(function() {
@@ -59,7 +65,12 @@ if (($user[1] ? $user[1] : $user[0]) === mw.config.get('wgUserName')) {
                                         )
                                     ) 
                             );
-                $('.user-identity-header__button').after($statusLink);
+				var interval = setInterval(function() {
+				    if ($('#userProfileApp').length) {
+				        clearInterval(interval);
+		                $('.user-identity-header__button').after($statusLink);
+				    }
+				}, 1000);                            
                 $statusLink.append($statusDropdown);
                 $('body').on('click', 'a[id^="StatusMenu-"]', function(e) {
                     e.preventDefault();

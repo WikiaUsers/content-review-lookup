@@ -15,10 +15,39 @@
 			var relativeLink = mw.config.get("wgArticlePath").replace("$1", mw.config.get("wgPageName"));
 			var classLink = "wds-button";
 			var editText = $("#ca-edit").text().trim();
+			
 			if(mw.config.get("skin")=="fandomdesktop"){
 				classLink += " wds-is-text page-header__action-button has-label";
-				$(".page-side-tools #ca-addsection").replaceWith('<a class="page-side-tool page-side-edit" id="EUTA-edit" href="' + relativeLink + '?action=edit&redirect=no" title="' + editText + '"></a>');
+				
+				/* Replace side tools edit button */
+				$(".page-side-tools #ca-addsection-side-tool").replaceWith('<a class="page-side-tool page-side-edit" id="EUTA-edit" href="' + relativeLink + '?action=edit&redirect=no"></a>');
+				
+				/* Add tooltip, thanks to Bitomic's code from MediaWiki:ThemeToggler.js */
+				var EUTAtooltip;
+				$("#EUTA-edit").mouseenter(function(){
+					var tooltipmsg = editText;
+					var topPosition = ($(this).offset().top - $(document).scrollTop() + 20) + "px";
+					var leftPosition = ($(this).offset().left + 50) + "px";
+					var tooltip = $("<div>", {
+						class: "wds-tooltip is-right",
+						css: {
+							left: leftPosition,
+							top: topPosition
+						},
+						text: tooltipmsg
+					});
+					$("body").append(tooltip);
+					EUTAtooltip = tooltip;
+				});
+				$("#EUTA-edit").mouseleave(function(){
+					var tooltip = EUTAtooltip;
+					EUTAtooltip = undefined;
+					if(tooltip){
+						tooltip.remove();
+					}
+				});
 			}
+			
 			$("#ca-edit")
 				.attr("href", relativeLink + "?action=edit&redirect=no")
 				.html("<span>" + editText + "</span>")
@@ -38,13 +67,30 @@
 	
 	/* Add button on Message Walls to user talk pages */
 	if (mw.config.get("wgNamespaceNumber") === 1200) {
-	    // Add button above Message Wall
-		var talkLink = mw.config.get("wgServer") + mw.config.get("wgArticlePath").replace("$1", "User_talk:" + mw.config.get("wgTitle"));
-		$("#MessageWall").before('<div id="euta_buttons" style="margin-bottom: 1em; text-align: right;"><a id="euta_button" class="wds-button wds-is-secondary" href="' + talkLink + '?redirect=no"><span>User Talk Archive</span></a></div>');
-		
-		// Prepend icon to button if dev.wds properly imports
-		mw.hook("dev.wds").add(function(wds) {
-			$("#euta_button").prepend(wds.icon("bubble-small"));
+		// Add button above Message Wall, only if the User talk page exists
+		var EUTA_user = mw.config.get("wgTitle");
+		var api = new mw.Api();
+		api.get({
+			action: "query",
+			list: "allpages",
+			apfrom: EUTA_user,
+			apto: EUTA_user,
+			apnamespace: 3,
+		}).done(function(d){
+			if(!d.error){
+				if(d.query.allpages.length){
+					var talkLink = mw.config.get("wgServer") + mw.config.get("wgArticlePath").replace("$1", d.query.allpages[0].title);
+					$("#MessageWall").before('<div id="euta_buttons" style="margin-bottom: 1em; text-align: right;"><a id="euta_button" class="wds-button wds-is-secondary" href="' + talkLink + '?redirect=no"><span>User Talk Archive</span></a></div>');
+					// Prepend icon to button if dev.wds properly imports
+					mw.hook("dev.wds").add(function(wds) {
+						$("#euta_button").prepend(wds.icon("bubble-small"));
+					});
+				}
+			} else {
+				console.error("EditUserTalkArchive: Error when checking for user talk page:" + d.error.code);
+			}
+		}).fail(function(){
+			console.error("EditUserTalkArchive: Failed to check for user talk page");
 		});
 	}
 	

@@ -18,6 +18,12 @@ if (document.querySelector(".worldmap") != null)
 	mw.loader.load('/index.php?title=MediaWiki:WorldmapPoe1.js&action=raw&ctype=text/javascript');
 }
 
+// Load ContainerTable.js (only if a loot-container-table is present on the page)
+if (document.querySelector(".loot-container-table") != null)
+{
+	mw.loader.load('/index.php?title=MediaWiki:ContainerTable.js&action=raw&ctype=text/javascript');
+}
+
 // Load ContainerList.js (only if a loot-container-list is present on the page)
 if (document.querySelector(".loot-container-list") != null)
 {

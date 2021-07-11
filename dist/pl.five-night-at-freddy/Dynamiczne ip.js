@@ -1,1 +1,0 @@
-importScriptURI('https://pl.wikipedia.org/wiki/MediaWiki:Gadget-dynamic-ips.js&action=raw&ctype=text/javascript');

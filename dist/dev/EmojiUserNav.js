@@ -5,6 +5,7 @@
     usernav.find('a[data-tracking-label="account.help"]').text('❓️');
     usernav.find('a[data-tracking-label="account.preferences"]').text('⚙️');
     usernav.find('a[data-tracking-label="account.contributions"]').text('✏️');
+    usernav.find('a[data-tracking-label="bingebot.watchlist"]').text('📺');
     usernav.find('.wds-sign-out__button').text('👋');
     window.dev = $.extend(true, window.dev, {
         i18n: {

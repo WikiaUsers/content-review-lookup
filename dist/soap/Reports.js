@@ -441,11 +441,7 @@
                     token: mw.user.tokens.get('editToken')
             })
             .done(function (res) {
-                if (c.wgPageName == "SOAP_Wiki") {
-                    location.replace('https://soap.fandom.com/wiki/' + opts.page + '?action=purge');
-                } else {
-                    location.reload(location + '?action=purge');
-                }
+                location.replace('https://soap.fandom.com/wiki/' + opts.page);
             });
         } else {
             return (new mw.Api())
@@ -460,11 +456,7 @@
 
             })
             .done(function (res) {
-                if (c.wgPageName == "SOAP_Wiki") {
-                    location.replace('https://soap.fandom.com/wiki/' + opts.page + '?action=purge');
-                } else {
-                    location.reload(location + '?action=purge');
-                }
+            	location.replace('https://soap.fandom.com/wiki/' + opts.page);
             });
         }
     }

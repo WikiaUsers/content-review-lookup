@@ -11,7 +11,7 @@ if (disclaimerNs.indexOf(wgNamespaceNumber) !== -1) {
 	$(".legaldisclaimer").css({
 	  fontSize:"80%",
 	  border:"1px solid #009FFF",
-	  backgroundColor:"var(--theme-accent-dynamic-color-2)",
+	  backgroundColor:"var(--theme-page-background-color--secondary)",
 	  borderRadius:"8px"
 	})
 }

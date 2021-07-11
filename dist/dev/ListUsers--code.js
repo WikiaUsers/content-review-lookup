@@ -34,7 +34,7 @@ $(function() {
         limit: 10,
         active: true
     }, window.listUsers),
-        gmgroups = ['bot', 'sysop', 'bureaucrat', 'staff', 'soap', 'helper', 'rollback', 'chatmoderator'];
+        gmgroups = ['bot', 'sysop', 'bureaucrat', 'staff', 'soap', 'helper', 'rollback'];
     function createList (group, au) {
         var html = '';
         for (var i in au) {
