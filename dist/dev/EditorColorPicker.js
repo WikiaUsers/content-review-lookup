@@ -7,6 +7,7 @@
 	var config = mw.config.get([
 		'wgPageName',
 		'wgFormattedNamespaces',
+		'wgCanonicalSpecialPageName',
 		'wgServerName',
 		'wgSiteName',
 		'wgUserName',
@@ -455,7 +456,8 @@
 		}
 	}
 	function isEditorColorPickerPage() {
-		return config.wgPageName === wgFormattedNamespaces[-1] + ':EditorColorPicker';
+		return config.wgPageName === wgFormattedNamespaces[-1] + ':EditorColorPicker'
+			|| config.wgCanonicalSpecialPageName === 'Blankpage' && new URLSearchParams(window.location.search).get('blankspecial') === 'editorcolorpicker';
 	}
 	function loadEditorColorPickerPage() {
 		mw.loader.using( ['mediawiki.api', 'oojs-ui-core'] ).then( generateEditorColorPickerPage );

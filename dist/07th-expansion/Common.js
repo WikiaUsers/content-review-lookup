@@ -392,47 +392,55 @@ mw.loader.load('https://help.gamepedia.com/index.php?title=MediaWiki:Gadget-mult
 //**************************************************************************
 mw.loader.load('//en.wikipedia.org/w/index.php?title=User:Frietjes/findargdups.js&action=raw&ctype=text/javascript');
 
-/*dlc/content filter code by Derugon https://gitlab.com/Derugon/mediawiki-gadget-dlc-filter*/
-/**
- * Wiki-wise configuration of the DLC filter.
- */
- var dlcFilterConfig = {
 
-	/**
-	 * The path on the website to an article.
-	 */
-	path: 'wiki/',
+/*testing content filter by Derugon*/
+/**
+ * Wiki-wise configuration of the content filter.
+ */
+var contentFilterConfig = {
 
 	/**
 	 * The list of available filters, each one being the description of the
 	 * corresponding filter.
+	 * @type {string[]}
 	 */
 	filters: [
-		/* 0001 */ 'Hide content from Higurashi Gou and Sotsu',
-		/* 0010 */ 'Hide content from Higurashi Sotsu',
-		/* 0100  'Hide content unavailable with the second DLC'*/
+		/* 01 */ 'Hide spoilers',
+		/* 10 */ 'Show spoilers'
 	],
 
 	/**
 	 * The namespaces where the filtering should be available.
+	 * @type {number[]}
 	 */
-	filteredNamespaces: [ 0 ],
+	filteredNamespaces: [ 0, 2 ],
 
 	/**
-	 * The HTML <a> elements which redirect to articles from a namespace with
-	 * filtering enabled.
+	 * The pages where the filtering should be available, if they are not from a
+	 * namespace where the filtering is available.
+	 * @type {string[]}
 	 */
 	filteredSpecialTitles: [
 		'Special:Random'
 	],
 
 	/**
+	 * If an element on a page has this class (directly on the page or
+	 * transcluded), the filtering becomes available, even if the page is not
+	 * from a namespace in filteredNamespaces or in filteredSpecialTitles.
+	 * Use false to disable this functionality.
+	 * @type {string|false}
+	 */
+	filterEnableClass: false,
+
+	/**
 	 * The language codes used on the wiki.
+	 * @type {string[]}
 	 */
 	languageCodes: [],
 
 	/**
-	 * Some translatable messages are used with the DLC filter. These can be
+	 * Some translatable messages are used with the content filter. These can be
 	 * customized by creating/editing their corresponding page:
 	 * 
 	 *     <messagesLocation><messageName>
@@ -447,48 +455,231 @@ mw.loader.load('//en.wikipedia.org/w/index.php?title=User:Frietjes/findargdups.j
 	 * 
 	 * (<languageCode> being the corresponcing language code: one of the values
 	 *  in the previously defined languageCodes array)
+	 * @type {string}
 	 */
-	messagesLocation: 'mediawiki:',
+	messagesLocation: 'mediawiki:content-filter/',
 
 	/**
-	 * Removes a DLC icon and its related content from the DOM, following custom
-	 * rules.
-	 * @param {Element} dlcIcon The DLC icon to remove.
-	 * @returns True if the DLC icon has been handled by this function, false if
-	 *          it should be handled the normal way.
+	 * The name of the URL parameter used to store the selected filter.
+	 * @type {string}
 	 */
-	customHandler: function ( dlcIcon ) {
+	urlParam: 'contentfilter',
 
-		// ...
+	/**
+	 * If an element with this ID is on a page (directly on the page or
+	 * transcluded), it will be filled with the "info" message (see the
+	 * messagesLocation parameter) followed by the filter buttons. These will
+	 * then not appear on the page header.
+	 * Use false to disable this functionality.
+	 * @type {string|false}
+	 */
+	filtersInfoId: false,
 
+	/**
+	 * To indicate with which filters some content should be visible or hidden,
+	 * the corresponding elements have to use a specific filtering class:
+	 * 
+	 *     <filterClassIntro><mask>
+	 * 
+	 * (<filterClassIntro> being the value of this parameter and <mask>
+	 *  the bitmask of the filters the associated content should be available
+	 *  with)
+	 * 
+	 * Each element also has to use a filtering type class (either
+	 * blockFilterClass, wrapperFilterClass, or inlineFilterClass).
+	 * 
+	 * For instance, if the available filters were previously defined as:
+	 * 
+	 *     filters: [
+	 *         'filter1',  // 01
+	 *         'filter2'   // 10
+	 *     ],
+	 * 
+	 * using "0" (00) as <mask> will hide the content while any of the filters
+	 * are enabled, using "1" (01) as <mask> will hide the content while the
+	 * second filter is enabled, using "2" (10) as <mask> will hide the content
+	 * while the first filter is enabled, using "3" (11) as <mask> will have no
+	 * effect (the content will be shown with any filter enabled). If the value
+	 * of this parameter is 'filter-', then the following tags are valid uses:
+	 * 
+	 *     <span class="filter-2 …"> … </span>
+	 *     <img class="filter-1 …" />
+	 * 
+	 * @type {string}
+	 */
+	filterClassIntro: 'spoiler-',
+
+	/**
+	 * This class can be used on elements to indicate that they should be
+	 * removed entirely if the selected filter does not match the element
+	 * bitmask, and left in place otherwise.
+	 * Use false to disable this functionality.
+	 * @type {string|false}
+	 */
+	blockFilterClass: false,
+
+	/**
+	 * This class can be used on elements to indicate that they should be
+	 * unwrapped if the selected filter does not match the element bitmask
+	 * (the element itself is removed, its content is left in place), and left
+	 * in place otherwise.
+	 * Use false to disable this functionality.
+	 * @type {string|false}
+	 */
+	wrapperFilterClass: 'spoiler',
+
+	/**
+	 * This class can be used on elements to indicate that they should be
+	 * removed if any filter is enabled. Their associated content is then
+	 * removed if the selected filter does not match the element bitmask, and
+	 * left in place otherwise.
+	 * Use false to disable this functionality.
+	 * @type {string|false}
+	 */
+	inlineFilterClass: false,
+
+	/**
+	 * If an element with a filter bitmask class is inside an element with this
+	 * class, the corresponding bitmask is applied to the surrounding section.
+	 * If the element is not in a section, then the bitmask is applied to the
+	 * entire page: the filter buttons not matching the bitmask are disabled.
+	 * Use false to disable this functionality.
+	 * @type {string|false}
+	 */
+	contextFilterClass: false,
+
+	/**
+	 * This class can be used on elements to make them invisible to filtering:
+	 * the script will go through them when trying to remove elements. For
+	 * instance, the button used to collapse tables (.mw-collapsible-toggle) is
+	 * skipped by default.
+	 * Use false to disable this functionality.
+	 * @type {string|false}
+	 */
+	skipClass: false,
+
+	/**
+	 * If a page has navigation bars or elements considered out of the page
+	 * content at the bottom of the page, using this class on at least the first
+	 * one will prevent these elements from being removed with a previous
+	 * section (see contextFilterClass).
+	 * Use false to disable this functionality.
+	 * @type {string|false}
+	 */
+	contentEndClass: false,
+
+	/**
+	 * By default, a row is removed from a table if its first cell is removed.
+	 * If the title cell of a table is not the first one, then a class with the
+	 * following format can be used to indicate which cell should be considered
+	 * the main one:
+	 * 
+	 *     <mainColumnClassIntro><index>
+	 * 
+	 * (<mainColumnClassIntro> being the value of this parameter and <index>
+	 *  the index of the main cell, the first one being 1)
+	 * 
+	 * For instance, if the value of this parameter is 'main-column-', then the
+	 * following classes can be used to respectively make the second and third
+	 * columns the main ones:
+	 * 
+	 *     {| class="main-column-2"
+	 *      ! Column 1
+	 *      ! Main column 2
+	 *      ! Column 3
+	 *      …
+	 *      |}
+	 *     {| class="main-column-3"
+	 *      ! Column 1
+	 *      ! Column 2
+	 *      ! Main column 3
+	 *      …
+	 *      |}
+	 * 
+	 * Use false to disable this functionality.
+	 * @type {string|false}
+	 */
+	mainColumnClassIntro: false,
+
+	/**
+	 * If a table has this class, its cells can be removed (instead of being
+	 * only cleared), the following cells on the column will then be shifted.
+	 * Use false to disable this functionality.
+	 * @type {string|false}
+	 */
+	listTableClass: false,
+
+	/**
+	 * This class works the same way as skipClass, except that it will try to
+	 * put back the element on the page somewhere else if it has to be removed.
+	 * Use false to disable this functionality.
+	 * @type {string|false}
+	 */
+	inContentAddClass: false,
+
+	/**
+	 * Removes an element with a block filter, following custom rules.
+	 * @param {Element} element The element to remove.
+	 * @returns True if the removal has been handled by this function, false if
+	 *          it should be handled the default way.
+	 */
+	blockFilterCustomHandler: function ( element ) {
 		return false;
 	},
 
 	/**
-	 * Does things before removing DLC icons from an element.
-	 * @param {Element} element The element to remove DLC icons from.
+	 * Removes an element with a wrapper filter, following custom rules.
+	 * @param {Element} element The element to remove.
+	 * @returns True if the removal has been handled by this function, false if
+	 *          it should be handled the default way.
 	 */
-	preprocess: function ( element ) {
-
-		// ...
-
+	wrapperFilterCustomHandler: function ( element ) {
+		contentFilter.removePreviousNodeUntilText( element, '.' );
+		return false;
 	},
 
 	/**
-	 * Does things after removing DLC icons from an element.
-	 * @param {Element} element The element to remove DLC icons from.
+	 * Removes an element with an inline filter and its related content,
+	 * following custom rules.
+	 * @param {Element} element The element to remove.
+	 * @returns True if the removal has been handled by this function, false if
+	 *          it should be handled the default way.
 	 */
-	postprocess: function ( element ) {
+	inlineFilterCustomHandler: function ( element ) {
+		return false;
+	},
 
-		// ...
-
-	}
-};
-var dlcFilter = {
 	/**
-	 * The version number of the DLC filter.
+	 * Does things before removing elements with a filter from a container.
+	 * @param {Element} container The container to remove elements from.
 	 */
-	version: '1.0',
+	preprocess: function ( container ) {
+		// Adds a numeric filter to spoiler tags to tell the script the tags
+		// should be hidden with the first filter enabled ("Hide spoilers").
+		var spoilers = container.getElementsByClassName( 'spoiler' );
+		for ( var i = spoilers.length - 1; i >= 0; --i ) {
+			spoilers.item( i ).classList.add( 'spoiler-2' );
+		}
+	},
+
+	/**
+	 * Does things after removing elements with a filter from a container.
+	 * @param {Element} container The container to remove elements from.
+	 */
+	postprocess: function ( container ) {}
+};
+
+
+
+/**
+ * Removes information from pages according to a filter, which can be
+ * enabled/disabled from the toolbar.
+ */
+var contentFilter = {
+	/**
+	 * The version number of the content filter.
+	 */
+	version: '1.2',
 
 	/**
 	 * The parser output.
@@ -501,33 +692,33 @@ var dlcFilter = {
 	 */
 	toc: null,
 	/**
-	 * The DLC filter form items.
+	 * The filter form items.
 	 * @type {HTMLLIElement[]}
 	 */
 	items: [],
 
 	/**
 	 * A MediaWiki API to the current wiki.
-	 * @type {mwApi}
+	 * @type {mw.Api}
 	 */
 	api: null,
 	/**
 	 * The current URI.
-	 * Used to set links to the current page with a DLC filter on or off.
-	 * @type {mwUri}
+	 * Used to set links to the current page with a filter on or off.
+	 * @type {mw.Uri}
 	 */
 	uri: null,
 
 	/**
-	 * The page global DLC filter.
+	 * The page global filter.
 	 */
 	pageFilter: 0,
 	/**
-	 * The index of the currently selected DLC filter form item.
+	 * The index of the currently selected filter form item.
 	 */
 	selectedIndex: -1,
 	/**
-	 * The currently selected DLC filter.
+	 * The currently selected filter.
 	 */
 	selectedFilter: 0,
 
@@ -537,54 +728,69 @@ var dlcFilter = {
 	postponed: [],
 
 	/**
-	 * Initializes the DLC filter on a page.
+	 * Initializes the content filter on a page.
 	 */
 	init: function () {
-		console.log( 'DLC Filter v' + dlcFilter.version );
+		console.log( 'Content Filter v' + contentFilter.version );
 
-		if ( "dlcFilterUtil" in window ) {
-			dlcFilterUtil.selectedFilter = 0;
-			dlcFilterUtil.getDlcFilter = dlcFilter.getDlcFilter;
-			dlcFilterUtil.applyFilter = function () {};
+		try {
+			contentFilterConfig;
+		} catch ( _ ) {
+			mw.log.error(
+				'Content Filter: The configuration object is undefined. ' +
+				'Please define a contentFilterConfig object this script ' +
+				'would have access to.'
+			);
+			return;
+		}
+		var isUtilDefined = true;
+		try {
+			contentFilterUtil.selectedFilter = 0;
+			contentFilterUtil.getFilterMax   = contentFilter.getFilterMax;
+			contentFilterUtil.getFilter      = contentFilter.getFilter;
+			contentFilterUtil.applyFilter    = function () {};
+		} catch ( _ ) {
+			isUtilDefined = false;
 		}
 
-		if ( !dlcFilter.isFilteringAvailable() ) {
-			if ( "dlcFilterUtil" in window ) {
-				dlcFilterUtil.loaded = true;
+		if ( !contentFilter.isFilteringAvailable() ) {
+			if ( isUtilDefined ) {
+				contentFilterUtil.loaded = true;
 			}
 			return;
 		}
 
-		dlcFilter.parserOutput = document
-			.getElementById( 'mw-content-text' )
-			.getElementsByClassName( 'mw-parser-output' )[ 0 ];
-		dlcFilter.toc          = document.getElementById( 'toc' );
-		dlcFilter.api          = new mw.Api();
-		dlcFilter.uri          = new mw.Uri( document.location.href );
-		dlcFilter.pageFilter   = dlcFilter.getPageFilter();
+		var contentText = document.getElementById( 'mw-content-text' );
+		contentFilter.parserOutput = contentText ?
+			contentText.getElementsByClassName( 'mw-parser-output' )[ 0 ] :
+			null;
+		contentFilter.toc          = document.getElementById( 'toc' );
+		contentFilter.api          = new mw.Api();
+		contentFilter.uri          = new mw.Uri( document.location.href );
+		contentFilter.pageFilter   = contentFilter.getPageFilter();
 
-		dlcFilter.generateDlcFilterItems();
-		dlcFilter.insertDlcFilterElement();
+		contentFilter.generateFilterItems();
+		contentFilter.insertFilterElement();
 
-		if ( !dlcFilter.updateSelectedIndex() ) {
-			if ( "dlcFilterUtil" in window ) {
-				dlcFilterUtil.loaded = true;
+		if ( !contentFilter.updateSelectedIndex() ) {
+			if ( isUtilDefined ) {
+				contentFilterUtil.loaded = true;
 			}
 			return;
 		}
 
-		dlcFilter.selectedFilter = Math.pow( 2, dlcFilter.selectedIndex );
-		if ( "dlcFilterUtil" in window ) {
-			dlcFilterUtil.selectedFilter = dlcFilter.selectedFilter;
-			dlcFilterUtil.applyFilter = dlcFilter.applyFilter;
+		contentFilter.selectedFilter = Math.pow( 2, contentFilter.selectedIndex );
+		if ( isUtilDefined ) {
+			contentFilterUtil.selectedFilter = contentFilter.selectedFilter;
+			contentFilterUtil.applyFilter = contentFilter.applyFilter;
 		}
 
-		dlcFilter.updateSelectedDlcFilterItem();
-		dlcFilter.applyFilter( dlcFilter.parserOutput );
-		dlcFilter.updateAnchorsDlcFilter();
+		contentFilter.updateSelectedFilterItem();
+		contentFilter.applyFilter( contentFilter.parserOutput );
+		contentFilter.updateAnchorsFilter();
 
-		if ( "dlcFilterUtil" in window ) {
-			dlcFilterUtil.loaded = true;
+		if ( isUtilDefined ) {
+			contentFilterUtil.loaded = true;
 		}
 	},
 
@@ -593,29 +799,62 @@ var dlcFilter = {
 	 * @returns True if the filters can be used, false otherwise.
 	 */
 	isFilteringAvailable: function () {
-		if ( document.getElementsByClassName( 'dlc-filter-enable' ).length ) {
+		if (
+			contentFilterConfig.filterEnableClass &&
+			document.getElementsByClassName(
+				contentFilterConfig.filterEnableClass
+			).length
+		) {
 			return true;
 		}
-		var namespace = dlcFilter.findClassStartingWith( document.body, 'ns-' );
-		return dlcFilterConfig.filteredNamespaces.includes( +namespace );
+		var namespace = contentFilter.findClassStartingWith( document.body, 'ns-' );
+		return contentFilterConfig.filteredNamespaces.includes( +namespace );
 	},
 
 	/**
 	 * Checks if the entire page is limited to some versions then sets the page
-	 * global DLC filter accordingly.
+	 * global filter accordingly.
 	 */
 	getPageFilter: function () {
-		var contextBoxes = dlcFilter.parserOutput
-			.getElementsByClassName( 'context-box' );
+		if (
+			!contentFilterConfig.contextFilterClass ||
+			!contentFilter.parserOutput
+		) {
+			return contentFilter.getFilterMax();
+		}
+		var contextBoxes = contentFilter.parserOutput
+			.getElementsByClassName( contentFilterConfig.contextFilterClass );
 		if (
 			!contextBoxes.length ||
-			dlcFilter.getPreviousHeading( contextBoxes[ 0 ] )
+			contentFilter.getPreviousHeading( contextBoxes[ 0 ] )
 		) {
-			return Math.pow( 2, dlcFilterConfig.filters.length ) - 1;
+			return contentFilter.getFilterMax();
 		}
-		return dlcFilter.getDlcFilter(
-			contextBoxes[ 0 ].getElementsByClassName( 'dlc' )[ 0 ]
-		);
+		if ( contentFilterConfig.blockFilterClass ) {
+			var blockElement = contextBoxes[ 0 ].getElementsByClassName(
+				contentFilterConfig.blockFilterClass
+			)[ 0 ];
+			if ( blockElement ) {
+				return contentFilter.getFilter( blockElement );
+			}
+		}
+		if ( contentFilterConfig.wrapperFilterClass ) {
+			var wrapperElement = contextBoxes[ 0 ].getElementsByClassName(
+				contentFilterConfig.wrapperFilterClass
+			)[ 0 ];
+			if ( wrapperElement ) {
+				return contentFilter.getFilter( wrapperElement );
+			}
+		}
+		if ( contentFilterConfig.inlineFilterClass ) {
+			var inlineElement = contextBoxes[ 0 ].getElementsByClassName(
+				contentFilterConfig.inlineFilterClass
+			)[ 0 ];
+			if ( inlineElement ) {
+				return contentFilter.getFilter( inlineElement );
+			}
+		}
+		return 0;
 	},
 
 	/**
@@ -632,13 +871,25 @@ var dlcFilter = {
 	},
 
 	/**
-	 * Gets the DLC filter of a DLC icon.
-	 * @param {Element} icon The DLC icon.
-	 * @returns The DLC filter of the given DLC icon, 0 otherwise.
+	 * Gets the numeric filter preventing content from being removed with any
+	 * filter.
+	 * @returns The maximum allowed numeric filter.
 	 */
-	getDlcFilter: function ( icon ) {
-		var dlcFilterClass = dlcFilter.findClassStartingWith( icon, 'dlc-' );
-		return dlcFilterClass ? +dlcFilterClass : 0;
+	getFilterMax: function () {
+		return Math.pow( 2, contentFilterConfig.filters.length ) - 1;
+	},
+
+	/**
+	 * Gets the numeric filter of an element.
+	 * @param {Element} element The element.
+	 * @returns The numeric filter of the given element, 0 otherwise.
+	 */
+	getFilter: function ( element ) {
+		var filterClass = contentFilter.findClassStartingWith(
+			element,
+			contentFilterConfig.filterClassIntro
+		);
+		return filterClass ? +filterClass : 0;
 	},
 
 	/**
@@ -658,51 +909,61 @@ var dlcFilter = {
 	},
 
 	/**
-	 * Generates the DLC filter form items.
+	 * Generates the filter form items.
 	 */
-	generateDlcFilterItems: function () {
+	generateFilterItems: function () {
+		var itemBase = document.createElement( 'li' );
+		itemBase.classList.add( 'content-filter-item' );
+		itemBase.appendChild( document.createElement( 'a' ) );
 		for (
 			var i = 0, pow = 1;
-			i < dlcFilterConfig.filters.length;
+			i < contentFilterConfig.filters.length;
 			++i, pow *= 2
 		) {
-			var item = document.createElement( 'li' );
-			item.id = 'dlc-filter-item-' + i;
-			item.classList.add( 'dlc-filter-item' );
-			dlcFilter.items.push( item );
-			if ( ( pow & dlcFilter.pageFilter ) === 0 ) {
-				item.classList.add( 'dlc-filter-item-deactivated' );
+			var item = itemBase.cloneNode( true );
+			item.id = 'content-filter-item-' + i;
+			contentFilter.items.push( item );
+			if ( ( pow & contentFilter.pageFilter ) === 0 ) {
+				item.classList.add( 'content-filter-item-deactivated' );
 				continue;
 			}
-			item.title = dlcFilterConfig.filters[ i ];
-			dlcFilter.uri.extend( { dlcfilter: i } );
-			var a = document.createElement( 'a' );
-			a.href = dlcFilter.uri.toString();
-			item.appendChild( a );
+			item.title = contentFilterConfig.filters[ i ];
+			/** @type {{[k:string]:number}} */
+			var obj = {};
+			obj[ contentFilterConfig.urlParam ] = i;
+			contentFilter.uri.extend( obj );
+			/** @type {HTMLAnchorElement} */
+			( item.firstChild ).href = contentFilter.uri.toString();
 		}
 	},
 
 	/**
-	 * Generates the DLC filter form and puts it on the page.
+	 * Generates the filter form and puts it on the page.
 	 */
-	insertDlcFilterElement: function () {
+	insertFilterElement: function () {
 		var ul = document.createElement( 'ul' );
-		ul.id = 'dlc-filter';
-		for ( var i = 0; i < dlcFilter.items.length; ++i ) {
-			ul.appendChild( dlcFilter.items[ i ] );
+		ul.id = 'content-filter';
+		for ( var i = 0; i < contentFilter.items.length; ++i ) {
+			ul.appendChild( contentFilter.items[ i ] );
 		}
-		var info = document.getElementById( 'dlc-filter-info' );
+		var info = contentFilterConfig.filtersInfoId &&
+			document.getElementById( contentFilterConfig.filtersInfoId );
 		if ( !info ) {
-			document.getElementById( 'firstHeading' ).appendChild( ul );
+			var wrapper = document
+				.getElementsByClassName( 'page-header__actions' )
+				.item( 0 );
+			wrapper.prepend( ul );
 			return;
 		}
-		dlcFilter.getMessage( 'info', function ( pageContent ) {
-			info.appendChild( pageContent || document.createTextNode(
-				'Use one of the following filters to hide the wiki ' +
-				'content unrelated to your game version:'
-			) );
-			info.appendChild( document.createElement( 'br' ) );
-			info.appendChild( ul );
+		contentFilter.getMessage( 'info', function ( pageContent ) {
+			info.append(
+				pageContent || document.createTextNode(
+					'Use one of the following filters to hide the wiki ' +
+					'content unrelated to your game version:'
+				),
+				document.createElement( 'br' ),
+				ul
+			);
 		} );
 	},
 
@@ -713,32 +974,32 @@ var dlcFilter = {
 	 *                                       message has been retrieved.
 	 */
 	getMessage: function ( name, callback ) {
-		var messagePage          = dlcFilterConfig.messagesLocation + name,
+		var messagePage          = contentFilterConfig.messagesLocation + name,
 			localizedMessagePage = messagePage + '/' +
-				dlcFilter.getPageLanguage();
+				contentFilter.getPageLanguage();
 
-		dlcFilter.pageExists( messagePage ).then( messagePageExists );
+		contentFilter.pageExists( messagePage ).then( messagePageExists );
 
 		function messagePageExists( /** @type {boolean} */ pageExists ) {
 			if ( !pageExists ) {
 				callback( null );
 				return;
 			}
-			if ( !dlcFilterConfig.languageCodes.length ) {
-				dlcFilter.getPageContent( messagePage ).then( callback );
+			if ( !contentFilterConfig.languageCodes.length ) {
+				contentFilter.getPageContent( messagePage ).then( callback );
 				return;
 			}
-			dlcFilter
+			contentFilter
 				.pageExists( localizedMessagePage )
 				.then( localizedMessagePageExists );
 		}
 
 		function localizedMessagePageExists( /** @type {boolean} */ pageExists ) {
 			if ( !pageExists ) {
-				dlcFilter.getPageContent( messagePage ).then( callback );
+				contentFilter.getPageContent( messagePage ).then( callback );
 				return;
 			}
-			dlcFilter.getPageContent( localizedMessagePage ).then( callback );
+			contentFilter.getPageContent( localizedMessagePage ).then( callback );
 		}
 	},
 
@@ -748,7 +1009,7 @@ var dlcFilter = {
 	 * @returns The boolean promise.
 	 */
 	pageExists: function ( pageName ) {
-		return dlcFilter.api
+		return contentFilter.api
 			.get( { action: 'query', titles: pageName } )
 			.then( function ( ret ) {
 				return !ret.query.pages[ '-1' ];
@@ -761,10 +1022,10 @@ var dlcFilter = {
 	 * @returns The HTML content promise.
 	 */
 	getPageContent: function ( pageName ) {
-		return dlcFilter.api
+		return contentFilter.api
 			.parse( '{{' + pageName + '}}' )
 			.then( function ( parserOutput ) {
-				return dlcFilter.stringToElements( parserOutput ).firstChild;
+				return contentFilter.stringToElements( parserOutput ).firstChild;
 			} );
 	},
 
@@ -784,36 +1045,47 @@ var dlcFilter = {
 	 * @returns The language code used on the page.
 	 */
 	getPageLanguage: function () {
-		var pageName = mw.config.get( 'wgPageName' );
-		var lastPartIndex = pageName.lastIndexOf( '/' );
+		var pageName = mw.config.get( 'wgPageName' ),
+			lastPartIndex = pageName.lastIndexOf( '/' );
 		if ( lastPartIndex === -1 ) {
 			return 'en';
 		}
 		var lastPart = pageName.substr( lastPartIndex + 1 );
-		if ( !dlcFilterConfig.languageCodes.includes( lastPart ) ) {
+		if ( !contentFilterConfig.languageCodes.includes( lastPart ) ) {
 			return 'en';
 		}
 		return lastPart;
 	},
 
 	/**
-	 * Updates the index of the currently selected DLC filter form item from
-	 * the URL parameters.
-	 * @returns True if a valid DLC filter should be applied, false otherwise.
+	 * Updates the index of the currently selected filter form item from the URL
+	 * parameters.
+	 * @returns True if a valid filter should be applied, false otherwise.
 	 */
 	updateSelectedIndex: function () {
-		if ( dlcFilter.selectedIndex !== -1 ) {
+		if ( contentFilter.selectedIndex !== -1 ) {
 			return true;
 		}
-		var urlParam = mw.util.getParamValue( 'dlcfilter' );
+		var urlParam = mw.util.getParamValue( contentFilterConfig.urlParam );
 		if ( !urlParam ) {
 			return false;
 		}
-		dlcFilter.selectedIndex = parseInt( urlParam, 10 );
-		if ( dlcFilter.isIndex( dlcFilter.selectedIndex, dlcFilter.items ) ) {
+		contentFilter.selectedIndex = parseInt( urlParam, 10 );
+		if (
+			contentFilter.isIndex(
+				contentFilter.selectedIndex,
+				contentFilter.items
+			)
+		) {
 			return true;
 		}
-		dlcFilter.selectedIndex = -1;
+		contentFilter.selectedIndex = -1;
+		mw.log.error(
+			'Content Filter: The selected numeric filter (' + urlParam + ') ' +
+			'is unavailable, please use an integer x so 0 ≤ x ≤ ' +
+			( contentFilter.items.length - 1 ) + '. No filtering will be ' +
+			'performed.'
+		);
 		return false;
 	},
 
@@ -828,183 +1100,226 @@ var dlcFilter = {
 	},
 
 	/**
-	 * Removes DLC icons from an element, according to the selected filter.
-	 * @param {Element} element The element to remove DLC icons from.
+	 * Removes elements with a filter from a container.
+	 * @param {Element} container The container to remove elements from.
 	 */
-	applyFilter: function ( element ) {
-		dlcFilterConfig.preprocess( element );
-		var dlcIcons  = element.getElementsByClassName( 'dlc' );
-		var oldLength = dlcIcons.length;
-		for ( var i = 0; i < dlcIcons.length; ) {
-			dlcFilter.removeDlcElement( dlcIcons[ i ] );
-			if ( dlcIcons.length === oldLength ) {
-				++i;
-			} else {
-				oldLength = dlcIcons.length;
-			}
+	applyFilter: function ( container ) {
+		contentFilterConfig.preprocess( container );
+		if ( contentFilterConfig.blockFilterClass ) {
+			contentFilter.forEachLiveElement(
+				container.getElementsByClassName(
+					contentFilterConfig.blockFilterClass
+				),
+				contentFilter.processBlockFilter
+			);
 		}
-		while ( dlcFilter.postponed.length ) {
-			var todo = dlcFilter.postponed;
-			dlcFilter.postponed = [];
+		if ( contentFilterConfig.wrapperFilterClass ) {
+			contentFilter.forEachLiveElement(
+				container.getElementsByClassName(
+					contentFilterConfig.wrapperFilterClass
+				),
+				contentFilter.processWrapperFilter
+			);
+		}
+		if ( contentFilterConfig.inlineFilterClass ) {
+			contentFilter.forEachLiveElement(
+				container.getElementsByClassName(
+					contentFilterConfig.inlineFilterClass
+				),
+				contentFilter.processInlineFilter
+			);
+		}
+		while ( contentFilter.postponed.length ) {
+			var todo = contentFilter.postponed;
+			contentFilter.postponed = [];
 			for ( var i = 0; i < todo.length; ++i ) {
 				todo[ i ][ 0 ]( todo[ i ][ 1 ] );
 			}
 		}
-		dlcFilterConfig.postprocess( element );
+		contentFilterConfig.postprocess( container );
 	},
 
 	/**
-	 * Removes a DLC icon and its related content if the DLC filter does not
-	 * match the image one.
-	 * @param {Element} element The DLC icon.
+	 * Performs the specified action for each element of a live list.
+	 * @template E The element type.
+	 * @param {HTMLCollectionOf<E>} liveElementList The live element list.
+	 * @param {(element:E)=>void}   callback        A function called for each
+	 *                                              element.
 	 */
-	removeDlcElement: function ( element ) {
-		if (
-			( dlcFilter.getDlcFilter( element ) & dlcFilter.selectedFilter ) > 0
-		) {
-			dlcFilter.removeDlcElementWithoutContext( element );
-		} else if (
-			!dlcFilterConfig.customHandler( element ) &&
-			!dlcFilter.handleDlcIcon( element )
-		) {
-			mw.log.warn( 'unmatched dlc' );
+	forEachLiveElement: function ( liveElementList, callback ) {
+		var previousLength = liveElementList.length;
+		for ( var i = 0; i < liveElementList.length; ) {
+			callback( liveElementList[ i ] );
+			if ( previousLength > liveElementList.length ) {
+				previousLength = liveElementList.length;
+			} else {
+				++i;
+			}
 		}
 	},
 
 	/**
-	 * Removes a DLC icon and its empty parents.
-	 * @param {Element} element The DLC icon.
+	 * Removes an element with a block filter if its filter does not match the
+	 * selected one.
+	 * @param {Element} element The element.
 	 */
-	removeDlcElementWithoutContext: function ( element ) {
+	processBlockFilter: function ( element ) {
+		var elementFilter = contentFilter.getFilter( element );
+		if ( ( elementFilter & contentFilter.selectedFilter ) > 0 ) {
+			element.classList.remove(
+				/** @type {string} */
+				( contentFilterConfig.blockFilterClass )
+			);
+		} else if ( !contentFilter.handleBlockFilter( element ) ) {
+			element.classList.remove(
+				/** @type {string} */
+				( contentFilterConfig.blockFilterClass )
+			);
+			mw.log.warn( 'unmatched block filter' );
+		}
+	},
+
+	/**
+	 * Removes an element with a block filter if its filter does not match the
+	 * selected one.
+	 * @param {Element} element The element.
+	 */
+	processWrapperFilter: function ( element ) {
+		var elementFilter = contentFilter.getFilter( element );
+		if ( ( elementFilter & contentFilter.selectedFilter ) > 0 ) {
+			element.classList.remove(
+				/** @type {string} */
+				( contentFilterConfig.wrapperFilterClass )
+			);
+		} else if ( !contentFilter.handleWrapperFilter( element ) ) {
+			contentFilter.unwrap( element );
+			mw.log.warn( 'unmatched wrapper filter' );
+		}
+	},
+
+	/**
+	 * Removes an element with an inline filter. Also removes its related
+	 * content if the element filter does not match the selected one.
+	 * @param {Element} element The element.
+	 */
+	processInlineFilter: function ( element ) {
+		var elementFilter = contentFilter.getFilter( element );
+		if ( ( elementFilter & contentFilter.selectedFilter ) > 0 ) {
+			contentFilter.removeElementWithoutContext( element );
+		} else if ( !contentFilter.handleInlineFilter( element ) ) {
+			element.classList.remove(
+				/** @type {string} */
+				( contentFilterConfig.inlineFilterClass )
+			);
+			mw.log.warn( 'unmatched inline filter' );
+		}
+	},
+
+	/**
+	 * Removes an element and its empty parents.
+	 * @param {Element} element The element to remove.
+	 */
+	removeElementWithoutContext: function ( element ) {
 		var parent = element.parentElement;
 		while (
-			parent !== dlcFilter.parserOutput &&
-			!dlcFilter.hasSibling( element ) &&
+			parent !== contentFilter.parserOutput &&
+			!contentFilter.hasSibling( element ) &&
 			parent.tagName !== 'TD'
 		) {
 			element = parent;
-			parent = parent.parentElement;
+			parent  = parent.parentElement;
 		}
 		parent.removeChild( element );
 	},
 
 	/**
-	 * Indicates whether an element has a sibling. Ignores comments and
-	 * "invisible" strings.
-	 * @param {Element} element The element.
-	 * @returns True if the element has no sibling other than a comment or an
-	 *          "invisible" string.
+	 * Removes an element with a block filter.
+	 * @param {Element} element The element to remove.
+	 * @returns True if the removal has been handled properly, false otherwise.
 	 */
-	hasSibling: function ( element ) {
-		return dlcFilter.hasPreviousSibling( element ) ||
-		       dlcFilter.hasNextSibling( element );
-	},
-
-	/**
-	 * Indicates whether an element has a previous sibling. Ignores comments and
-	 * "invisible" strings.
-	 * @param {Element} element The element.
-	 * @returns True if the element has a previous sibling other than a comment
-	 *          or an "invisible" string.
-	 */
-	hasPreviousSibling: function ( element ) {
-		var sibling = element.previousSibling;
-		if ( !sibling ) {
-			return false;
-		}
-		while (
-			sibling.nodeType === Node.COMMENT_NODE ||
-			sibling.nodeType === Node.TEXT_NODE &&
-			sibling.textContent.trim() === ''
+	handleBlockFilter: function ( element ) {
+		if (
+			contentFilterConfig.blockFilterCustomHandler &&
+			contentFilterConfig.blockFilterCustomHandler( element )
 		) {
-			sibling = sibling.previousSibling;
-			if ( !sibling ) {
-				return false;
-			}
+			return true;
 		}
+
+		contentFilter.removeElement( element );
 		return true;
 	},
 
 	/**
-	 * Indicates whether an element has a next sibling. Ignores comments and
-	 * "invisible" strings.
-	 * @param {Element} element The element.
-	 * @returns True if the element has a next sibling other than a comment or
-	 *          an "invisible" string.
+	 * Removes an element with a wrapper filter.
+	 * @param {Element} element The element to remove.
+	 * @returns True if the removal has been handled properly, false otherwise.
 	 */
-	hasNextSibling: function ( element ) {
-		var sibling = element.nextSibling;
-		if ( !sibling ) {
-			return false;
-		}
-		while (
-			sibling.nodeType === Node.COMMENT_NODE ||
-			sibling.nodeType === Node.TEXT_NODE &&
-			sibling.textContent.trim() === ''
+	handleWrapperFilter: function ( element ) {
+		if (
+			contentFilterConfig.wrapperFilterCustomHandler &&
+			contentFilterConfig.wrapperFilterCustomHandler( element )
 		) {
-			sibling = sibling.nextSibling;
-			if ( !sibling ) {
-				return false;
-			}
+			return true;
 		}
+
+		contentFilter.removeElement( element );
 		return true;
 	},
 
 	/**
-	 * Removes a DLC icon and its related content.
-	 * @param {Element} dlcIcon The DLC icon.
-	 * @returns True if the DLC icon has been handled properly, false otherwise.
+	 * Removes an element with an inline filter and its related content.
+	 * @param {Element} element The element to remove.
+	 * @returns True if the removal has been handled properly, false otherwise.
 	 */
-	handleDlcIcon: function ( dlcIcon ) {
-		var parent = dlcIcon.parentElement;
+	handleInlineFilter: function ( element ) {
+		if (
+			contentFilterConfig.inlineFilterCustomHandler &&
+			contentFilterConfig.inlineFilterCustomHandler( element )
+		) {
+			return true;
+		}
 
-		if ( parent.classList.contains( 'context-box' ) ) {
-			var heading = dlcFilter.getPreviousHeading( parent );
-			dlcFilter.recRemoveElement( heading || parent );
+		var parent = element.parentElement;
+
+		if (
+			contentFilterConfig.contextFilterClass &&
+			parent.classList.contains(
+				contentFilterConfig.contextFilterClass
+			)
+		) {
+			var heading = contentFilter.getPreviousHeading( parent );
+			contentFilter.removeElement( heading || parent );
 			return true;
 		}
 
 		if (
 			parent.tagName === 'LI' &&
-			!dlcFilter.hasPreviousSibling( dlcIcon )
+			!contentFilter.hasPreviousSibling( element )
 		) {
-			dlcFilter.recRemoveElement( parent );
+			contentFilter.removeElement( parent );
 			return true;
 		}
 
-		if ( dlcFilter.getNextText( dlcIcon ) === '' ) {
-			// TODO: Rework this part, and maybe remove it as it seems to follow
-			// some unintuitive rules.
-			var nextElement = dlcIcon.nextElementSibling;
-			while (
-				nextElement?.classList.contains( 'dlc-filter-skip' ) ||
-				nextElement?.classList.contains( 'mw-collapsible-toggle' )
-			) {
-				nextElement = nextElement.nextElementSibling;
-			}
+		contentFilter.removeGhostSiblings( element );
+		if ( !contentFilter.getNextText( element ) ) {
+			var nextElement = element.nextElementSibling;
 			if ( !nextElement ) {
-				dlcFilter.recRemoveElement( dlcIcon.parentElement );
+				contentFilter.removeElement( element.parentElement );
 				return true;
 			}
 			if ( nextElement.tagName === 'BR' ) {
-				dlcFilter.removePreviousNodeUntil( nextElement, 'BR' );
+				contentFilter.removePreviousNodesUntilName( nextElement, 'BR' );
+				nextElement.remove();
 				return true;
 			}
 		}
 
-		var element         = dlcIcon;
-		var previousElement = dlcIcon.previousElementSibling;
-		var previousText    = dlcFilter.getPreviousText( dlcIcon );
-		while (
-			previousElement?.classList.contains( 'dlc-filter-skip' ) ||
-			previousElement?.classList.contains( 'mw-collapsible-toggle' )
-		) {
-			element         = previousElement;
-			previousElement = previousElement.previousElementSibling;
-		}
+		var previousElement = element.previousElementSibling,
+			previousText    = contentFilter.getPreviousText( element );
 		if (
-			previousText && !previousText.endsWith( '.' ) ||
-			!previousText && previousElement && previousElement.tagName !== 'BR'
+			previousText ?
+				!previousText.endsWith( '.' ) :
+				previousElement && previousElement.tagName !== 'BR'
 		) {
 			return false;
 		}
@@ -1016,22 +1331,25 @@ var dlcFilter = {
 		do {
 			textContent = node.textContent.trimEnd();
 			nextNode    = node.nextSibling;
-			parent.removeChild( node );
+			node.remove();
 			node = nextNode;
 			if ( !node ) {
 				if ( !previousElement && !previousText ) {
-					dlcFilter.recRemoveElement( parent );
+					contentFilter.removeElement( parent );
 				}
 				return true;
 			}
 			if ( node.nodeName === 'BR' ) {
-				parent.removeChild( node );
+				node.remove();
 				return true;
 			}
 			if (
 				textContent.endsWith( '.' ) &&
 				node instanceof HTMLElement &&
-				node.classList.contains( 'dlc' )
+				node.classList.contains(
+					/** @type {string} */
+					( contentFilterConfig.inlineFilterClass )
+				)
 			) {
 				return true;
 			}
@@ -1039,87 +1357,80 @@ var dlcFilter = {
 	},
 
 	/**
-	 * Recursively removes an element: also removes its containers and previous
-	 * headings if they are empty after the element being removed.
+	 * Removes an element. Also removes its containers and previous headings if
+	 * they are empty after the element being removed.
 	 * @param {Element} element The element to remove.
 	 */
-	recRemoveElement: function ( element ) {
+	removeElement: function ( element ) {
 		if ( element.classList.contains( 'gallerytext' ) ) {
 			while ( element.classList.contains( 'gallerybox' ) ) {
 				element = element.parentElement;
 			}
 		}
-
-		var parent  = element.parentElement,
-			sibling = element.previousElementSibling;
-		while ( dlcFilter.hasClass( sibling, 'dlc-filter-ornament' ) ) {
-			parent.removeChild( sibling );
-			sibling = element.previousElementSibling;
-		}
-		sibling = element.nextElementSibling;
-		while ( dlcFilter.hasClass( sibling, 'dlc-filter-ornament' ) ) {
-			parent.removeChild( sibling );
-			sibling = element.nextElementSibling;
-		}
-
-		if ( element.tagName === 'TH' || element.tagName === 'TD' ) {
-			dlcFilter.removeTableCell( element );
+		contentFilter.removeGhostSiblings( element );
+		switch ( element.tagName ) {
+		case 'H2':
+		case 'H3':
+		case 'H4':
+		case 'H5':
+		case 'H6':
+			contentFilter.removeHeadingElement( element );
 			return;
-		}
-
-		if ( element.classList.contains( 'mw-headline' ) ) {
-			dlcFilter.recRemoveElement( parent );
+		case 'LI':
+			contentFilter.removeListItem( element );
 			return;
-		}
-
-		if ( element instanceof HTMLHeadingElement ) {
-			var headingLevel = dlcFilter.getHeadingLevel( element );
-			sibling = element.nextElementSibling;
-			while ( !dlcFilter.isOutOfSection( sibling, headingLevel ) ) {
-				var toRemove = sibling;
-				sibling = sibling.nextElementSibling;
-				parent.removeChild( toRemove );
+		case 'TBODY':
+			contentFilter.removeElement( element.parentElement );
+			return;
+		case 'TR':
+			if ( !contentFilter.hasSibling( element ) ) {
+				contentFilter.removeElement( element.parentElement );
+			} else {
+				element.remove();
 			}
+			return;
+		case 'TH':
+		case 'TD':
+			contentFilter.removeTableCell( element );
+			return;
 		}
-
-		sibling = element.previousElementSibling;
-		parent.removeChild( element );
-		dlcFilter.ensureNonEmptySection( sibling );
-		if ( !parent.childNodes.length ) {
-			dlcFilter.recRemoveElement( parent );
-		}
+		contentFilter.removeDefaultElement( element );
 	},
 
 	/**
-	 * Indicates whether an element or all its children have a class.
-	 * @param {Element} element   The element.
-	 * @param {string}  className The class name.
-	 * @returns {boolean} True if the element or all its children have the
-	 *                    given class, false otherwise.
+	 * Handles the removal of a heading element.
+	 * @param {Element} element The <h2/h3/h4/h5/h6> element.
 	 */
-	hasClass: function ( element, className ) {
-		if ( !element ) {
-			return false;
+	removeHeadingElement: function ( element ) {
+		var headingLevel = contentFilter.getHeadingLevel( element ),
+			sibling      = element.nextElementSibling;
+		while ( !contentFilter.isOutOfSection( sibling, headingLevel ) ) {
+			var toRemove = sibling;
+			sibling = sibling.nextElementSibling;
+			toRemove.remove();
 		}
-		if ( element.classList.contains( className ) ) {
-			return true;
+		contentFilter.removeTocElement(
+			element.getElementsByClassName( 'mw-headline' )[ 0 ].id
+		);
+	},
+
+	/**
+	 * Handles the removal of a list item.
+	 * @param {Element} item The <li> element.
+	 */
+	removeListItem: function ( item ) {
+		var list = item.parentElement;
+		if ( list.childNodes.length > 1 ) {
+			item.remove();
+			return;
 		}
-		var children = element.children;
-		if ( !children.length ) {
-			return false;
-		}
-		for ( var i = 0; i < children.length; ++i ) {
-			if ( !dlcFilter.hasClass( children[ i ], className ) ) {
-				return false;
-			}
-		}
-		return true;
+		contentFilter.removeElement( list );
 	},
 
 	/**
 	 * Handles the removal of a table cell, from clearing it to removing the
 	 * entire table depending to the situation.
-	 * @param {Element} cell The JQuery <th/td> element.
+	 * @param {Element} cell The <th/td> element.
 	 */
 	removeTableCell: function ( cell ) {
 		var row    = cell.parentElement,
@@ -1135,7 +1446,7 @@ var dlcFilter = {
 		}
 
 		if ( tbody.tagName === 'THEAD' && cell.tagName === 'TH' ) {
-			// TODO: fix with mw-collapsible & sortable
+			// TODO: Fix with mw-collapsible & sortable.
 			var isLastColumn = !cell.nextElementSibling;
 			row.removeChild( cell );
 			if ( !tbody.nextElementSibling ) {
@@ -1155,23 +1466,20 @@ var dlcFilter = {
 			}
 		}
 
-		var mainColumn = dlcFilter.findClassStartingWith(
-			table,
-			'dlc-filter-main-column-'
-		);
-		if (
-			mainColumn && +mainColumn === column + 1 ||
-			!mainColumn && column === 0
-		) {
-			if ( tbody.children.length === 1 ) {
-				dlcFilter.recRemoveElement( table );
-				return;
-			}
-			tbody.removeChild( row );
+		var mainColumn = contentFilterConfig.mainColumnClassIntro &&
+			contentFilter.findClassStartingWith(
+				table,
+				contentFilterConfig.mainColumnClassIntro
+			) || 1;
+		if ( +mainColumn === column + 1 ) {
+			contentFilter.removeElement( row );
 			return;
 		}
 
-		if ( table.classList.contains( 'dlc-switcher-list' ) ) {
+		if (
+			contentFilterConfig.listTableClass &&
+			table.classList.contains( contentFilterConfig.listTableClass )
+		) {
 			row.removeChild( cell );
 			return;
 		}
@@ -1181,8 +1489,26 @@ var dlcFilter = {
 	},
 
 	/**
-	 * Recursively removes an element if it is a heading and its associated section is
-	 * empty. Also updates the table of contents.
+	 * Handles the removal of any element.
+	 * @param {Element} element The element.
+	 */
+	removeDefaultElement: function ( element ) {
+		if ( element.classList.contains( 'mw-headline' ) ) {
+			contentFilter.removeElement( element.parentElement );
+			return;
+		}
+		var parent  = element.parentElement,
+			sibling = element.previousElementSibling;
+		element.remove();
+		contentFilter.ensureNonEmptySection( sibling );
+		if ( !parent.childNodes.length ) {
+			contentFilter.removeElement( parent );
+		}
+	},
+
+	/**
+	 * Recursively removes an element if it is a heading and its associated
+	 * section is empty. Also updates the table of contents.
 	 * @param {Element} element The element.
 	 */
 	ensureNonEmptySection: function ( element ) {
@@ -1190,51 +1516,68 @@ var dlcFilter = {
 			return;
 		}
 		while ( !( element instanceof HTMLHeadingElement ) ) {
-			if ( element.id !== 'incontent_player' ) {
+			if (
+				!contentFilterConfig.inContentAddClass ||
+				!element.classList.contains(
+					contentFilterConfig.inContentAddClass
+				)
+			) {
 				return;
 			}
 			element = element.previousElementSibling;
 		}
-
 		if (
-			!dlcFilter.isOutOfSection(
+			!contentFilter.isOutOfSection(
 				element.nextElementSibling,
-				dlcFilter.getHeadingLevel( element )
+				contentFilter.getHeadingLevel( element )
 			)
 		) {
 			return;
 		}
-
-		if ( dlcFilter.toc ) {
-			var tocElement    = dlcFilter.toc.querySelector(
-				'[href="#' +
-				element.getElementsByClassName( 'mw-headline' )[ 0 ].id + '"]'
-			);
-			var tocParent     = tocElement.parentElement;
-			var tocNumber     = tocElement
-					.getElementsByClassName( 'tocnumber' )[ 0 ].textContent;
-			var lastDotPos    = tocNumber.lastIndexOf( '.', 1 ) + 1;
-			var lastTocNumber = +tocNumber.substring( lastDotPos );
-
-			var nextParent    = tocParent.nextElementSibling;
-			while ( nextParent ) {
-				var nextTocNumbers = nextParent
-					.getElementsByClassName( 'tocnumber' );
-				for ( var i = 0; i < nextTocNumbers.length; ++i ) {
-					var textContent = nextTocNumbers[ i ].textContent;
-					nextTocNumbers[ i ].textContent =
-						textContent.substring( 0, lastDotPos ) + lastTocNumber +
-						textContent.substring( tocNumber.length );
-				}
-				++lastTocNumber;
-				nextParent = nextParent.nextElementSibling;
-			}
-			tocParent.parentNode.removeChild( tocParent );
-		}
-
 		var previousElement = element.previousElementSibling;
+		contentFilter.removeTocElement(
+			element.getElementsByClassName( 'mw-headline' )[ 0 ].id
+		);
 		element.parentNode.removeChild( element );
-		dlcFilter.ensureNonEmptySection( previousElement );
+		contentFilter.ensureNonEmptySection( previousElement );
+	},
+
+	/**
+	 * Removes a row (associated to a removed heading element) from the
+	 * table of contents, then updates the numbering of the following rows.
+	 * @param {string} id The ID of the removed heading element.
+	 * @returns True if a row has been removed from the table of contents, false
+	 *          if the table of contents has not been defined or if there is no
+	 *          associated row.
+	 */
+	removeTocElement: function ( id ) {
+		if ( !contentFilter.toc ) {
+			return false;
+		}
+		var element = contentFilter.toc.querySelector( '[href="#' + id + '"]' );
+		if ( !element ) {
+			return false;
+		}
+		var parent     = element.parentElement,
+			number     = element
+				.getElementsByClassName( 'tocnumber' )[ 0 ].textContent,
+			lastDotPos = number.lastIndexOf( '.', 1 ) + 1,
+			lastNumber = +number.substring( lastDotPos ),
+			nextParent = parent.nextElementSibling;
+		while ( nextParent ) {
+			var nextNumbers = nextParent
+					.getElementsByClassName( 'tocnumber' );
+			for ( var i = 0; i < nextNumbers.length; ++i ) {
+				var textContent = nextNumbers[ i ].textContent;
+				nextNumbers[ i ].textContent =
+					textContent.substring( 0, lastDotPos ) + lastNumber +
+					textContent.substring( number.length );
+			}
+			++lastNumber;
+			nextParent = nextParent.nextElementSibling;
+		}
+		parent.parentNode.removeChild( parent );
+		return true;
 	},
 
 	/**
@@ -1257,38 +1600,239 @@ var dlcFilter = {
 	isOutOfSection: function ( element, headingLevel ) {
 		return !element ||
 		       element instanceof HTMLHeadingElement &&
-			   headingLevel >= dlcFilter.getHeadingLevel( element ) ||
-			   element.classList.contains( 'dlc-filter-end' );
+		       headingLevel >= contentFilter.getHeadingLevel( element ) ||
+		       contentFilterConfig.contentEndClass &&
+		       element.classList.contains(
+			       contentFilterConfig.contentEndClass
+		       );
 	},
 
 	/**
-	 * Removes a node and its previous ones if they do not have the given name.
-	 * @param {ChildNode} node     The node to remove.
-	 * @param {string}    nodeName The node name to find to stop removing nodes.
+	 * Indicates whether an element or all its children have a class.
+	 * @param {Element} element   The element.
+	 * @param {string}  className The class name.
+	 * @returns {boolean} True if the element or all its children have the
+	 *                    given class, false otherwise.
 	 */
-	removePreviousNodeUntil: function ( node, nodeName ) {
-		var parent   = node.parentNode,
-			previous = node;
-		do {
-			previous = node.previousSibling;
-			parent.removeChild( node );
-			node     = previous;
-		} while ( node && node.nodeName !== nodeName );
+	hasClass: function ( element, className ) {
+		if ( !element ) {
+			return false;
+		}
+		if ( element.classList.contains( className ) ) {
+			return true;
+		}
+		var children = element.children;
+		if ( !children.length ) {
+			return false;
+		}
+		for ( var i = 0; i < children.length; ++i ) {
+			if ( !contentFilter.hasClass( children[ i ], className ) ) {
+				return false;
+			}
+		}
+		return true;
 	},
 
 	/**
-	 * Removes a node and its following ones if they do not have the given name.
-	 * @param {ChildNode} node     The node to remove.
-	 * @param {string}    nodeName The node name to find to stop removing nodes.
+	 * Indicates whether an element has a sibling. Ignores comments and
+	 * "invisible" strings.
+	 * @param {Element} element The element.
+	 * @returns True if the element has no sibling other than a comment or an
+	 *          "invisible" string.
 	 */
-	removeNextNodeUntil: function ( node, nodeName ) {
-		var parent = node.parentNode,
-			next   = node;
-		do {
-			next = node.nextSibling;
-			parent.removeChild( node );
-			node = next;
-		} while ( node && node.nodeName !== nodeName );
+	hasSibling: function ( element ) {
+		return contentFilter.hasPreviousSibling( element ) ||
+		       contentFilter.hasNextSibling( element );
+	},
+
+	/**
+	 * Indicates whether an element has a previous sibling. Ignores comments and
+	 * "invisible" strings.
+	 * @param {Element} element The element.
+	 * @returns True if the element has a previous sibling other than a comment
+	 *          or an "invisible" string.
+	 */
+	hasPreviousSibling: function ( element ) {
+		var sibling = element.previousSibling;
+		if ( !sibling ) {
+			return false;
+		}
+		while ( contentFilter.isGhostNode( sibling ) ) {
+			sibling = sibling.previousSibling;
+			if ( !sibling ) {
+				return false;
+			}
+		}
+		return true;
+	},
+
+	/**
+	 * Indicates whether an element has a next sibling. Ignores comments and
+	 * "invisible" strings.
+	 * @param {Element} element The element.
+	 * @returns True if the element has a next sibling other than a comment or
+	 *          an "invisible" string.
+	 */
+	hasNextSibling: function ( element ) {
+		var sibling = element.nextSibling;
+		if ( !sibling ) {
+			return false;
+		}
+		while ( contentFilter.isGhostNode( sibling ) ) {
+			sibling = sibling.nextSibling;
+			if ( !sibling ) {
+				return false;
+			}
+		}
+		return true;
+	},
+
+	/**
+	 * Indicates whether a node should be considered as an additional
+	 * non-essential node.
+	 * @param {Node} node The node.
+	 * @returns True if the node is non-essential, false otherwise.
+	 */
+	isGhostNode: function ( node ) {
+		if ( !node ) {
+			return false;
+		}
+		switch ( node.nodeType ) {
+		case Node.COMMENT_NODE:
+			return true;
+		case Node.TEXT_NODE:
+			return !node.textContent.trim();
+		case Node.ELEMENT_NODE:
+			/** @type {Element} */
+			var element = ( node );
+			return element.classList.contains( 'mw-collapsible-toggle' ) ||
+			       contentFilterConfig.skipClass &&
+			       element.classList.contains( contentFilterConfig.skipClass );
+		}
+		return false;
+	},
+
+	/**
+	 * Removes the non-essential nodes around a node.
+	 * @param {Node} node The node.
+	 */
+	removeGhostSiblings: function ( node ) {
+		var sibling = node.previousSibling;
+		while ( contentFilter.isGhostNode( sibling ) ) {
+			sibling.remove();
+			sibling = node.previousSibling;
+		}
+		sibling = node.nextSibling;
+		while ( contentFilter.isGhostNode( sibling ) ) {
+			sibling.remove();
+			sibling = node.nextSibling;
+		}
+	},
+
+	/**
+	 * Removes nodes before a node while they do not have the given node name.
+	 * @param {ChildNode} node         The node.
+	 * @param {string}    nodeName     The node name.
+	 * @param {boolean}   [removeLast] If the last node (with the given name)
+	 *                                 should also be removed.
+	 */
+	removePreviousNodesUntilName: function ( node, nodeName, removeLast ) {
+		var sibling = node.previousSibling;
+		while ( sibling && ( sibling.nodeName !== nodeName ) ) {
+			sibling.remove();
+			sibling = node.previousSibling;
+		}
+		if ( removeLast ) {
+			sibling.remove();
+		}
+	},
+
+	/**
+	 * Removes nodes after a node while they do not have the given node name.
+	 * @param {ChildNode} node         The node.
+	 * @param {string}    nodeName     The node name.
+	 * @param {boolean}   [removeLast] If the last node (with the given name)
+	 *                                 should also be removed.
+	 */
+	removeNextNodesUntilName: function ( node, nodeName, removeLast ) {
+		var sibling = node.nextSibling;
+		while ( sibling && ( sibling.nodeName !== nodeName ) ) {
+			sibling.remove();
+			sibling = node.nextSibling;
+		}
+		if ( removeLast ) {
+			sibling.remove();
+		}
+	},
+
+	/**
+	 * Removes nodes before a node while they do not contain the given text.
+	 * @param {ChildNode} node         The node.
+	 * @param {string}    text 	       The searched text.
+	 * @param {boolean}   [removeText] If the searched text should also be
+	 *                                 removed from the last node.
+	 */
+	removePreviousNodeUntilText: function ( node, text, removeText ) {
+		var sibling = node.previousSibling;
+		while (
+			sibling && (
+				sibling.nodeType !== Node.TEXT_NODE ||
+				sibling.textContent.indexOf( text ) === -1
+			)
+		) {
+			sibling.remove();
+			sibling = node.previousSibling;
+		}
+		if ( !sibling ) {
+			return;
+		}
+		if ( !removeText ) {
+			sibling.textContent = sibling.textContent.substr(
+				0,
+				sibling.textContent.lastIndexOf( text ) + text.length
+			);
+			return;
+		}
+		sibling.textContent = sibling.textContent
+			.substr( 0, sibling.textContent.lastIndexOf( text ) )
+			.trimEnd();
+		if ( !sibling.textContent ) {
+			sibling.remove();
+		}
+	},
+	
+	/**
+	 * Removes nodes after a node while they do not contain the given text.
+	 * @param {ChildNode} node         The node.
+	 * @param {string}    text 	       The searched text.
+	 * @param {boolean}   [removeText] If the searched text should also be
+	 *                                 removed from the last node.
+	 */
+	removeNextNodeUntilText: function ( node, text, removeText ) {
+		var sibling = node.nextSibling;
+		while (
+			sibling && (
+				sibling.nodeType !== Node.TEXT_NODE ||
+				sibling.textContent.indexOf( text ) === -1
+			)
+		) {
+			sibling.remove();
+			sibling = node.nextSibling;
+		}
+		if ( !sibling ) {
+			return;
+		}
+		if ( !removeText ) {
+			sibling.textContent = sibling.textContent
+				.substr( sibling.textContent.indexOf( text ) );
+			return;
+		}
+		sibling.textContent = sibling.textContent
+			.substr( sibling.textContent.indexOf( text ) + text.length )
+			.trimStart();
+		if ( !sibling.textContent ) {
+			sibling.remove();
+		}
 	},
 
 	/**
@@ -1314,20 +1858,74 @@ var dlcFilter = {
 	},
 
 	/**
-	 * Updates the selected DLC filter form item.
+	 * Removes an element, leaving its content in place.
+	 * @param {Element}   element  The element to remove.
+	 * @param {ChildNode} [target] The node which should be directly after the
+	 *                             initial element contents, defaults to the
+	 *                             initial element.
 	 */
-	updateSelectedDlcFilterItem: function () {
-		delete dlcFilter.uri.query.dlcfilter;
-		var item = dlcFilter.items[ dlcFilter.selectedIndex ];
-		item.classList.add( 'dlc-filter-item-active' );
-		item.firstElementChild.setAttribute( 'href', dlcFilter.uri.toString() );
+	unwrap: function ( element, target ) {
+		if ( !target ) {
+			target = element;
+		}
+		var parent = target.parentElement;
+		if ( !parent ) {
+			return;
+		}
+		var childNode = element.firstChild;
+		if ( !childNode ) {
+			element.remove();
+			return;
+		}
+		var sibling = target.previousSibling;
+		if (
+			sibling &&
+			childNode.nodeType === Node.TEXT_NODE &&
+			sibling.nodeType === Node.TEXT_NODE
+		) {
+			sibling.textContent += childNode.textContent;
+			childNode.remove();
+		}
+		childNode = element.lastChild;
+		if ( !childNode ) {
+			element.remove();
+			return;
+		}
+		sibling = target.nextSibling;
+		if (
+			sibling &&
+			childNode.nodeType === Node.TEXT_NODE &&
+			sibling.nodeType === Node.TEXT_NODE
+		) {
+			sibling.textContent = childNode.textContent + sibling.textContent;
+			childNode.remove();
+		}
+		childNode = element.firstChild;
+		while ( childNode ) {
+			parent.insertBefore( childNode, target );
+			childNode = element.firstChild;
+		}
+		element.remove();
 	},
 
 	/**
-	 * Adds a corresponding "dlcfilter" URL parameter to anchors where none is
+	 * Updates the selected filter form item.
+	 */
+	updateSelectedFilterItem: function () {
+		delete contentFilter.uri.query[ contentFilterConfig.urlParam ];
+		var item = contentFilter.items[ contentFilter.selectedIndex ];
+		item.classList.add( 'content-filter-item-active' );
+		item.firstElementChild.setAttribute(
+			'href',
+			contentFilter.uri.toString()
+		);
+	},
+
+	/**
+	 * Adds a corresponding filter URL parameter to anchors where none is
 	 * used.
 	 */
-	updateAnchorsDlcFilter: function () {
+	updateAnchorsFilter: function () {
 		var anchors = document.getElementsByTagName( 'a' );
 		for ( var i = 0; i < anchors.length; ++i ) {
 			var anchor = anchors[ i ];
@@ -1335,34 +1933,43 @@ var dlcFilter = {
 				continue;
 			}
 			if (
-				anchor.parentElement.classList.contains( 'dlc-filter-item' )
+				anchor.parentElement.classList.contains( 'content-filter-item' )
 			) {
 				continue;
 			}
 			var uri = new mw.Uri( anchor.href );
-			if (
-				!uri.path.startsWith( '/' + dlcFilterConfig.path ) ||
-				uri.query.dlcfilter
-			) {
+			if ( uri.query[ contentFilterConfig.urlParam ] ) {
+				continue;
+			}
+			var match = uri.path.match(
+				mw.RegExp
+					.escape( mw.config.get( 'wgArticlePath' ) )
+					.replace( '\\$1', '(.*)' )
+			);
+			if ( !match ) {
 				continue;
 			}
 			var title = new mw.Title(
-				uri.path.substr( dlcFilterConfig.path.length + 1 )
+				mw.Uri.decode( match[ 1 ] ) ||
+				mw.config.get( 'wgMainPageTitle' )
 			);
 			if (
-				!dlcFilterConfig.filteredNamespaces.includes(
+				!contentFilterConfig.filteredNamespaces.includes(
 					title.getNamespaceId()
 				) &&
-				!dlcFilterConfig.filteredSpecialTitles.includes(
+				!contentFilterConfig.filteredSpecialTitles.includes(
 					title.getPrefixedText()
 				)
 			) {
 				continue;
 			}
-			uri.extend( { dlcfilter: dlcFilter.selectedIndex } );
+			/** @type {{[k:string]:number}} */
+			var obj = {};
+			obj[ contentFilterConfig.urlParam ] = contentFilter.selectedIndex;
+			uri.extend( obj );
 			anchor.href = uri.toString();
 		}
 	}
 };
 
-$( dlcFilter.init );
+$( contentFilter.init );

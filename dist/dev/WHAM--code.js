@@ -31,7 +31,7 @@
 
 $(document).ready(function() {
 	var ug = wgUserGroups.join(' ');
-	if(ug.indexOf('staff') + ug.indexOf('helper') + ug.indexOf('soap') + ug.indexOf('sysop') + ug.indexOf('rollback') + ug.indexOf('content-moderator') + ug.indexOf('content-team-member') + ug.indexOf('wiki-manager') > -8) {
+	if(ug.indexOf('staff') + ug.indexOf('helper') + ug.indexOf('soap') + ug.indexOf('sysop') + ug.indexOf('rollback') + ug.indexOf('content-moderator') + ug.indexOf('wiki-specialist') + ug.indexOf('wiki-representative') > -8) {
 		if(wgCanonicalSpecialPageName === "Contributions") {
 
 			/*! jQuery UI - v1.8.23 - 2012-08-15

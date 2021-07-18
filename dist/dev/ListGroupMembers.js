@@ -36,8 +36,6 @@ void ( function( window, $, mw ) {
         }
         return gcs( el ).getPropertyValue( p );
     };
-    // Checks whether the page is viewing on the Unified Community Platform
-    const isUCP = parseFloat( mw.config.get( "wgVersion" ) ) > 1.19;
     // Importing the core stylesheet
     importArticle( { 
         type : "style",
@@ -111,20 +109,19 @@ void ( function( window, $, mw ) {
         global : Object.freeze( [ 
             "staff",
             "helper",
-            "wiki-manager",
-            "content-team-member",
+            "wiki-representative",
+            "wiki-specialist",
             "soap",
             "global-discussion-moderator",
             "vanguard",
             "voldev",
-            "councilor"
+            "council"
         ] ),
         local : Object.freeze( [
             "bureaucrat",
             "sysop",
-            "discussions-moderator",
+            "threadmoderator",
             "content-moderator",
-            "chatmoderator", // deprecated
             "rollback",
             "bot"
         ] )
@@ -146,18 +143,17 @@ void ( function( window, $, mw ) {
     const USER_GROUP_ORDER = Object.freeze( [ 
         "staff",
         "helper",
-        "wiki-manager",
-        "content-team-member",
+        "wiki-representative",
+        "wiki-specialist",
         "soap",
         "global-discussion-moderator",
         "vanguard",
         "voldev",
-        "councilor",
+        "council",
         "bureaucrat",
         "sysop",
-        "discussions-moderator",
+        "threadmoderator",
         "content-moderator",
-        "chatmoderator", // deprecated
         "rollback",
         "bot"
     ] );
@@ -168,11 +164,11 @@ void ( function( window, $, mw ) {
         "vstf" : "soap",
         "grasp" : "soap",
         "volunteer-developer" : "voldev",
-        "council" : "councilor",
-        "chatmod" : "chatmoderator", // deprecated
+        "councilor" : "council",
         "crat" : "bureaucrat",
         "admin" : "sysop",
-        "rollbacker" : "rollback"
+        "rollbacker" : "rollback",
+        "discussion-moderator": "threadmoderator"
     } );
     // Sorting functions
     const SORT = Object.freeze( { 
@@ -521,28 +517,17 @@ void ( function( window, $, mw ) {
             }.bind( this ) );
         },
         loadUsers : function( group ) { 
-            const ajax = this[ "loadUsersAjax" + ( isUCP ? "UCP" : "" ) ];
+            const ajax = this.loadUsersAjax;
             return new Promise( function( resolve, reject ) {
                 ajax( group ).done( function( response ) {
-                    const promise = this[ "handleUsersResponse" + 
-                        ( isUCP ? "UCP" : "" ) ]
+                    const promise = this.handleUsersResponse
                         .call( this, response, group );
                     promise.then( resolve )[ "catch" ]( reject );
                 }.bind( this ) );
             }.bind( this ) );
         },
-        loadUsersAjax : function( group ) { 
-            return $.get( mw.config.get( "wgScriptPath" ) + "/api.php", { 
-                format : "json",
-                action : "query",
-                list : "groupmembers",
-                gmgroups : group.split( "|" )[ 0 ],
-                gmlimit : "max",
-                cb : Date.now( )
-            } );
-        },
-        loadUsersAjaxUCP : function( group ) { 
-            return $.get( mw.config.get( "wgScriptPath" ) + "/api.php", { 
+        loadUsersAjax : function( group ) {
+            return $.get( mw.config.get( "wgScriptPath" ) + "/api.php", {
                 format : "json",
                 action : "query",
                 list : "allusers",
@@ -551,16 +536,11 @@ void ( function( window, $, mw ) {
             } );
         },
         handleUsersResponse : function( response, group ) { 
-            const users = Array.from( response.users ).map( function( item ) { 
-                return ( { name : item.name, group : group, userid : item.userid } );
-            } );
-            return new Promise( function( resolve, reject ) {
-                Promise.all( users.map( this.loadData, this ) )
-                    .then( resolve )[ "catch" ]( reject );
-            }.bind( this ) );
-        },
-        handleUsersResponseUCP : function( response, group ) { 
             const query = response.query;
+            if (query.allusers.length >= 500) {
+                // We fetched a nonexistent group, meaning that all users will now be returned.
+                return Promise.resolve([]);
+            }
             const users = Array.from( query.allusers ).map( function( item ) { 
                 return ( { name : item.name, group : group, userid : item.userid } );
             } );
@@ -572,25 +552,16 @@ void ( function( window, $, mw ) {
         loadData : function( user ) { 
             return new Promise( function( resolve, reject ) { 
                 const group = user.group, name = user.name, userid = user.userid;
-                const ajax = this[ "loadDataAjax" + ( isUCP ? "UCP" : "" ) ];
-                const target = isUCP ? userid : name;
+                const ajax = this.loadDataAjax;
+                const target = userid;
                 ajax( target ).done( function( data ) {
-                    const promise = this[ "handleData" + 
-                        ( isUCP ? "UCP" : "" ) ]
+                    const promise = this.handleData
                         .call( this, data, name, group ); 
                     promise.then( resolve )[ "catch" ]( reject );
                 }.bind( this ) );
             }.bind( this ) );
         },
-        loadDataAjax : function( name ) { 
-            return $.get( mw.config.get( "wgScriptPath" ) + "/wikia.php", { 
-                controller : "UserProfilePage",
-                method : "renderUserIdentityBox",
-                format : "json",
-                title : "User:" + name
-            } );
-        },
-        loadDataAjaxUCP : function( userid ) { 
+        loadDataAjax : function( userid ) { 
             return $.get( mw.config.get( "wgScriptPath" ) + "/wikia.php", {
                 controller : "UserProfile",
                 method : "getUserData",
@@ -599,54 +570,6 @@ void ( function( window, $, mw ) {
             } );
         },
         handleData : function( data, name, group ) { 
-            return new Promise( function( resolve, reject ) {
-                const params = { name : name, groups : [ group ] };
-                const user = data.user;
-                params.avatar = user.avatar;
-                params.registration = new Date( user.registration || FOUNDING );
-                params.edits = parseInt( user.edits );
-                if ( !this.cache.hasOwnProperty( name ) ) {
-                    this.cache[ name ] = params;
-                    if ( this.grouped ) { 
-                        if ( this.useRegistry ) { 
-                            const type = getGroupType( group );
-                            this.users[ type ][ group ].push( this.cache[ name ] );
-                        } else {
-                            this.users[ group ].push( this.cache[ name ] );
-                        }
-                    } else { 
-                        this.users.push( this.cache[ name ] );
-                    }
-                } else {
-                    var index = -1;
-                    if ( !this.grouped ) {
-                        index = this.users.findIndex( function( u ) { 
-                            return u.name === name; 
-                        } );
-                        this.users[ index ].groups.push( group );
-                        this.cache[ name ].groups.push( group );
-                    } else { 
-                        console.log( this, this.cache );
-                        const orig = this.cache[ name ].groups[ 0 ];
-                        if ( this.useRegistry ) {
-                            const type = getGroupType( orig );
-                            index = this.users[ type ][ orig ].findIndex( function( u ) { 
-                                return u.name === name;
-                            } );
-                            this.users[ type ][ orig ][ index ].groups
-                                .push( group );
-                        } else {
-                            index = this.users[ orig ].findIndex( function( u ) { 
-                                return u.name === name;
-                            } );
-                            this.users[ orig ][ index ].groups.push( group );
-                        }
-                    }
-                }
-                resolve( );
-            }.bind( this ) );
-        },
-        handleDataUCP : function( data, name, group ) { 
             return new Promise( function( resolve, reject ) { 
                 const params = { name : name, groups : [ group ] };
                 const user = data.userData;

@@ -6,19 +6,38 @@
  *       Solve the very long link of the pages that name contain non-ASCII words.
  */
 ;(function($, mw, dev) {
-  // 缓存 mw 变量
-  var config = mw.config.get()
+  // Cache config
+  var conf = mw.config.get()
 
-  // 判断是需要载入
-  dev = dev || {}
-  if (config.wgArticleId < 1) return
+  // Shoud load?
+  if (conf.wgArticleId < 1) return
   if (dev.shortUrl !== undefined) return
 
-  var shortUrl =
-    config.wgServer + config.wgScript + '?curid=' + config.wgArticleId
+  // Variables
+  var baseURL = window.shortUrlBase || conf.wgServer + conf.wgScript
+  var revision = conf.wgCurRevisionId
+  var oldid = Number(mw.util.getParamValue('oldid'))
+  var diff = mw.util.getParamValue('diff')
+  var curid = conf.wgArticleId
+
+  // Make query string
+  var query = {}
+  if (diff && oldid !== diff) {
+    query.diff = diff
+    // oldid is prev?
+    if (oldid && $('.diff-multi').length) {
+      query.oldid = oldid
+    }
+  } else if (oldid && oldid !== revision) {
+    query.oldid = oldid
+  } else {
+    query.curid = curid
+  }
+
+  var shortUrl = baseURL + '?' + $.param(query)
   dev.shortUrl = shortUrl
 
-  // 在文章后插入段落
+  // Add side tool
   function init(ctx) {
     var i18n = ctx[0]
     var addSideTool = ctx[1]
@@ -33,7 +52,7 @@
     )
 
     tool.$button.on('click', function() {
-      // 创建 input 元素，选中复制，然后销毁
+      // Create input element, exec copy, then destroy it
       var $tooltip = tool.$tooltip,
         $copyState = $tooltipContent.find('.copyState'),
         $input = $('<input>', {
@@ -51,9 +70,14 @@
         $copyState.text(i18n.msg('copy').parse())
       }, 1500)
     })
+
+    mw.hook('dev.shortUrl').fire({
+      shortUrl: shortUrl,
+      sideTool: tool,
+    })
   }
 
-  // 将短链接替换进文章
+  // Insert short URL into article
   $('.shortUrl').text(shortUrl)
   $('.shortUrl-link, .shortUrlLink')
     .html('')
@@ -80,4 +104,11 @@
       mw.hook('dev.addSideTool').add(next)
     }),
   ]).then(init)
-})(jQuery, mediaWiki, window.dev)
+})(
+  jQuery,
+  mediaWiki,
+  (function() {
+    window.dev = window.dev || {}
+    return window.dev
+  })()
+)

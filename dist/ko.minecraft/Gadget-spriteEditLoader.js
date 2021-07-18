@@ -13,12 +13,13 @@ if ( !$( '#spritedoc' ).length && !editPage ) {
 }
 
 var $spriteEditLink;
+var $spriteEditTab;
     
 // Temporary: FandomDesktop-specific changes
 if ( $( ".skin-fandomdesktop" ).length > 0 ) {
-	var $editButton = $( '#ca-edit' );
+	var $editButton = $( '#ca-edit-side-tool' );
 	if ( !$editButton.length ) {
-		$editButton = $( '#ca-viewsource' );
+		$editButton = $( '#ca-viewsource-side-tool' );
 	}
 	
 	$spriteEditLink = $( '<a>' )
@@ -30,6 +31,7 @@ if ( $( ".skin-fandomdesktop" ).length > 0 ) {
 	    // It's the "Photograph" icon from Heroicons – https://heroicons.dev/
 	    
 	$spriteEditLink.insertAfter( $editButton );
+	$spriteEditTab = $spriteEditLink;
 } else {
 	var $editTab = $( '#ca-edit' );
 	if ( !$editTab.length ) {
@@ -38,7 +40,7 @@ if ( $( ".skin-fandomdesktop" ).length > 0 ) {
 	$spriteEditLink = $( '<a>' ).text( '스프라이트 편집' ).attr( 'href',
 		mw.util.getUrl( editPage, { spriteaction: 'edit' } )
 	);
-	var $spriteEditTab = $( '<li>' )
+	$spriteEditTab = $( '<li>' )
 	    .attr( 'id', 'ca-spriteedit' )
 	    .addClass( 'page-side-tool' )
 	    .append(

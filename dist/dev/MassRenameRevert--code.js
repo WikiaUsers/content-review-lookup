@@ -41,14 +41,14 @@
         $('#mw-content-text').find('p').first().append('<br/><a id="start-btn" class="button" style="cursor:pointer">' + i18n.msg('open').escape() + '</a> <a id="uncheck-btn" class="button" style="cursor:pointer">' + i18n.msg('uncheck').escape() +'</a>');
         $('.mw-logline-move').each(function() {
             var title = $(this).children('a').last().attr('title');
-            if (title.split('(page does not exist)').length === 1) {
+            if (title && title.split('(page does not exist)').length === 1) {
                 $(this).prepend(chk);
             }
         });
         $('#start-btn').click(function() {
             $('.mw-logline-move').each(function() {
                 var chkObject = $(this).find('input');
-                if (chkObject.attr('checked')) {
+                if (chkObject.prop('checked')) {
                     var href = $(this).children('.mw-logevent-actionlink').find('a').attr('href');
                     window.open(href,'_blank');
                 }
@@ -57,21 +57,13 @@
  
         $('#uncheck-btn').click(function() {
             var btn = $(this);
+            $('.mw-logline-move').each(function() {
+                var chkObject = $(this).find('input');
+                chkObject.prop('checked', !chkObject.prop('checked'));
+            });
             if (btn.text() == i18n.msg('uncheck').plain()) {
-                $('.mw-logline-move').each(function() {
-                    var chkObject = $(this).find('input');  
-                    if (chkObject.attr('checked')) {
-                        chkObject.removeAttr('checked');
-                    }
-                });
                 btn.text(i18n.msg('check').plain());
             } else {
-                $('.mw-logline-move').each(function() {
-                    var chkObject = $(this).find('input');  
-                    if (!chkObject.attr('checked')) {
-                        chkObject.attr('checked','checked');
-                    }
-                });
                 btn.text(i18n.msg('uncheck').plain()); 
             }
         });

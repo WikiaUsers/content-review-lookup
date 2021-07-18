@@ -113,7 +113,7 @@
             crossDomain: true,
             data: {
                 action: 'query',
-                titles: 'File:Wiki-wordmark.png',
+                titles: 'File:Site-logo.png',
                 prop: 'imageinfo',
                 iiprop: 'url',
                 meta: 'siteinfo',
@@ -326,10 +326,10 @@
             if (typeof e.dataset.url !== 'undefined') {
                 var a = e.dataset.url.split(':'),
                     img = new Image;
-                img.src = wiki + '/wiki/special:filepath/favicon.ico';
+                img.src = wiki + '/wiki/special:filepath/Site-favicon.ico';
                 e.appendChild(img);
                 img.addEventListener('error', function (err) {
-                    err.target.src = 'https://images.wikia.nocookie.net/__cb1531133815/common/skins/common/images/favicon.ico';
+                    err.target.src = 'https://wikies.fandom.com/wiki/special:filepath/Error_fav.ico';
                 }, {once: !0, passive: !0});
             }
         });

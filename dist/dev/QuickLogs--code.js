@@ -2,7 +2,7 @@
  *
  * Displays user logs on Special:Contributions
  * 
- * @author Slyst
+ * @author .jun
  */
  
 mw.loader.using('mediawiki.util').then(function() {
@@ -78,8 +78,8 @@ mw.loader.using('mediawiki.util').then(function() {
                 'helper',
                 'staff',
                 'global-discussions-moderator',
-                'content-team-member',
-                'wiki-manager',
+                'wiki-specialist',
+                'wiki-representative',
                 'soap'
             ]);
         },
@@ -95,8 +95,7 @@ mw.loader.using('mediawiki.util').then(function() {
                     'sysop',
                     'helper',
                     'staff',
-                    'content-team-member',
-                    'wiki-manager',
+                    'wiki-representative',
                     'soap'
                ]);
         },
@@ -111,7 +110,7 @@ mw.loader.using('mediawiki.util').then(function() {
                 'rollback',
                 'bot',
                 'global-discussions-moderator',
-                'wiki-manager',
+                'wiki-representative',
                 'vanguard',
                 'helper',
                 'staff',

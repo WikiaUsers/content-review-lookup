@@ -14,6 +14,7 @@ importArticles({
 		'w:c:clashofclans:MediaWiki:Common.js/ModeToggle.js',
 		'MediaWiki:Common.js/Usernames.js',
 	    'u:dev:UserTags/code.js',
+	    'u:dev:MediaWiki:AddBlockUserTag/code.js',
 		]
 });
 

@@ -16,7 +16,7 @@
         !(/DoubleRedirects|BrokenRedirects/g.test(config.wgCanonicalSpecialPageName)) ||
         window.RedirectManagementLoaded ||
         (
-            !(/sysop|staff|helper|content-moderator|content-volunteer|content-team-member|wiki-manager|soap/.test(config.wgUserGroups)) &&
+            !(/sysop|staff|helper|content-moderator|content-volunteer|wiki-specialist|wiki-representative|soap/.test(config.wgUserGroups)) &&
             config.wgCanonicalSpecialPageName === 'BrokenRedirects'
         )
     ) {
@@ -96,9 +96,9 @@
                     )
                 );
             } else {
-                $('.page-header__contribution-buttons').append(
+                $('.page-header__contribution-buttons, .page-header__actions').append(
                     $('<a>', {
-                        'class': 'wds-is-squished wds-button',
+                        'class': 'wds-button',
                         id: 'btn-resolve-redirects',
                         title: this.msg('button'),
                         text: this.msg('button')

@@ -115,7 +115,7 @@ mw.loader.using(['jquery.makeCollapsible'], function() {
             refreshTimer = window.setTimeout(loadData, config.interval * 1000);
         }
         // Update last update status
-        $('#ab_update img').hide();
+        $('#ab_update .mw-ajax-loader').hide();
         $('#abLastUpdate').text((new Date()).toLocaleTimeString());
     }
 
@@ -152,7 +152,7 @@ mw.loader.using(['jquery.makeCollapsible'], function() {
         }
 
         // Show loading image
-        $('#ab_update img').show();
+        $('#ab_update .mw-ajax-loader').show();
 
         // Define query
         var itemQuery;
@@ -303,12 +303,12 @@ mw.loader.using(['jquery.makeCollapsible'], function() {
                 '<legend>' + i18n.msg('optionsHeader').escape() + '</legend>' +
                 '<form>' +
                     '<div class="abRefresh">' +
-                        '<input type="checkbox" id="abAutoRefresh" checked="checked" /> <label for="abAutoRefresh" id="abAutoRefreshText">' + i18n.msg('autoRefresh', config.interval).escape() + '</label>' +
+                        '<input type="checkbox" id="abAutoRefresh" checked="checked" /> <label for="abAutoRefresh" id="abAutoRefreshText">' + i18n.msg('autoRefresh', config.interval).parse() + '</label>' +
                         '&nbsp;<input type="text" name="abIntervalTime" id="abIntervalTime" style="width:50px;">&nbsp;' +
                         '<input type="button" id="abSetIntervalButton" value="' + i18n.msg('changeButton').escape() + '">' +
                         '<input type="button" id="abRefresh" title="' + i18n.msg('refreshButtonDesc').escape() + '" value="' + i18n.msg('refreshButton').escape() + '" style="margin-left:5px;">' +
                         '<div id="ab_update" style="float:right;">' +
-                            '<img src="https://images.wikia.com/skins/common/images/ajax.gif" width="16" height="16" alt="' + mw.msg('activityindicator-message') + '"/> ' +
+                            '<span class="mw-ajax-loader"></span> ' +
                             '<span style="font-weight:bold;">' + i18n.msg('lastUpdate').escape() + '</span>&nbsp;<span id="abLastUpdate"></span>' +
                         '</div>' +
                     '</div>' +
@@ -556,7 +556,7 @@ mw.loader.using(['jquery.makeCollapsible'], function() {
         console.log('[AbuseLogRC]: version 1.07 - 26/10/2020.');
 
         // Check whether the user is permitted to view AbuseLogRC
-        showToGroups = ['sysop', 'helper', 'staff', 'wiki-manager', 'content-team-member', 'soap'];
+        showToGroups = ['sysop', 'helper', 'staff', 'wiki-representative', 'wiki-specialist', 'soap'];
         $.each($.isArray(window.abuseLogRC_showTo) ? window.abuseLogRC_showTo : [
             (window.abuseLogRC_showTo === 'all') ? 'user' : window.abuseLogRC_showTo
         ], function (i, group) {

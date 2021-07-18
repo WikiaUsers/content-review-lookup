@@ -3,42 +3,9 @@
  * @Version        1.0.0
  * @Author         Ursuul <https://dev.fandom.com/wiki/User:Ursuul>
  * @Description    Preconfigured UserTags installation w/ links & ordering
- * @Using code by  KockaAdmiralac <https://dev.fandom.com/wiki/User:KockaAdmiralac>
  * @See also       <https://dev.fandom.com/wiki/UserTags>
  *                 <https://dev.fandom.com/wiki/PrettyUserTags>
- *                 <https://dev.fandom.com/wiki/MediaWiki:EasyUserTags/code.js>
  */
-
-/* Anon Tags */
-(function() {
-    var $masthead = $('#UserProfileMasthead');
-    if (!$masthead.exists()) {
-        return;
-    }
-    var $info = $masthead.find('.masthead-info hgroup'),
-        username = $info.find('h1').text();
-    if (
-        mw.util.isIPv4Address(username) ||
-        mw.util.isIPv6Address(username)
-    ) {
-        var $tag = $info.find('.tag');
-        if ($tag.exists()) {
-            var blocked = $tag.remove().text();
-            $info.append(
-                $('<span>', {
-                    'class': 'tag-container'
-                }).append(
-                    $('<a>', {
-                        'text':    blocked,
-                        'href':    mw.util.getUrl('Help:Blocking#Appealing a block'),
-                        'title':   'Help:Blocking',
-                        'class':   'tag usergroup-blocked blocked-user'
-                    })
-                )
-            );
-        }
-    }
-})();
 
 /* Tag Definitions */
 window.UserTagsJS = {
@@ -53,7 +20,7 @@ window.UserTagsJS = {
             link:  'Help:Bots',
             title: 'Help:Bots'
         },
-        'content-team-member': {
+        'wiki-specialist': {
             link:  'Help:Content Team Members',
             title: 'Help:Content Team Members'
         },
@@ -89,7 +56,7 @@ window.UserTagsJS = {
             link:  'Help:Volunteer Developers',
             title: 'Help:Volunteer Developers'
         },
-        'wiki-manager': {
+        'wiki-representative': {
             link:  'Help:Wiki Managers',
             title: 'Help:Wiki Managers'
         },
@@ -188,7 +155,7 @@ UserTagsJS.modules.metafilter = {
         'staff',
         'sysop',
         'threadmoderator',
-        'wiki-manager'
+        'wiki-representative'
     ],
     'bot': 'bot-global',
     'bureaucrat': [

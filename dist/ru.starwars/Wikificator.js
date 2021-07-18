@@ -254,7 +254,7 @@ function Wikify()
             // загрузка  подставляемого текста автозамены в массив
             $(oTermSource).find(' td:nth-child(2)').each( function()
             {
-                wmLocaleNS[i] = $(this).text();
+                wmLocaleNS[i] = $(this).text().replace(/\\\[\\\[/g, "[[");
                 i = i+1; 
             });
                                            

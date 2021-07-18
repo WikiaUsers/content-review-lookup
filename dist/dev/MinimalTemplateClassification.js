@@ -1,24 +1,19 @@
 /**
  * @name            MinimalTemplateClassification
- * @version         v1.0
+ * @version         v1.1
  * @author          TheGoldenPatrik1
  * @description     Hides the Template Classification modal descriptions.
  */
-require([
-    'wikia.window',
-    'jquery',
-    'mw',
-], function (window, $, mw) {
+(function() {
     'use strict';
-    var $link = $('a.template-classification-type-text');
+    var $link = $('.template-classification-entry-point__toggle');
     if (
         window.MinimalTemplateClassification ||
-        !$link.exists()
+        $link.length === 0
     ) {
         return;
     }
     window.MinimalTemplateClassification = true;
-    var $body;
     var i18n;
     /**
      * @class Main
@@ -31,7 +26,8 @@ require([
          * @returns {void}
          */
         click: function () {
-            var $button = $('#toggle-template-classification-descriptions');
+            var $button = $('.toggle-template-classification-descriptions');
+            var $body = $('.template-classification-dialog__description');
             if (window.isMTCTextShown === true) {
                 window.isMTCTextShown = false;
                 $body.hide();
@@ -48,44 +44,28 @@ require([
          * @returns {void}
          */
         button: function () {
-            $body  = $('label > div > p');
-            $('#blackout_TemplateClassificationEditModal .buttons').append(
-                $('<button>', {
-                    'type': 'button',
-                    'class': 'button normal secondary',
-                    'click': Main.click,
-                    'text':
-                        i18n.msg(
-                            window.isMTCTextShown ?
-                            'hide' :
-                            'show'
-                        ).plain(),
-                    'id': 'toggle-template-classification-descriptions'
-                })
-            );        
-        },
-        /**
-         * @method wait
-         * @description Checks to see if the modal exists yet
-         * @returns {void}
-         */
-        wait: function () {
-            if ($('#TemplateClassificationEditModal').length) {
-                Main.button();
-            } else {
-                Main.delay();
+            if ($('.toggle-template-classification-descriptions').length) {
+                return;
             }
-        },
-        /**
-         * @method delay
-         * @description Gives the modal time to load
-         * @returns {void}
-         */
-        delay: function () {
-            setTimeout(
-                Main.wait,
-                500
-            );
+            $('.oo-ui-processDialog-actions-other').append(
+                $('<span>', {
+                    'class': 'oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-framed oo-ui-labelElement oo-ui-flaggedElement-safe oo-ui-buttonWidget oo-ui-actionWidget'
+                }).append(
+                    $('<a>', {
+                        'class': 'oo-ui-buttonElement-button',
+                        'click': Main.click
+                    }).append(
+                        $('<span>', {
+                            'class': 'oo-ui-labelElement-label toggle-template-classification-descriptions',
+                            'text': i18n.msg(
+                                window.isMTCTextShown ?
+                                'hide' :
+                                'show'
+                            ).plain()
+                        })
+                    )
+                )
+            );        
         },
         /**
          * @method init
@@ -96,12 +76,9 @@ require([
         init: function (i18nData) {
             i18n = i18nData;
             if (!window.isMTCTextShown) {
-                mw.util.addCSS('label > div > p { display: none; }');
+                mw.util.addCSS('.template-classification-dialog__description { display: none; }');
             }
-            if ($('#TemplateClassificationEditModal').length) {
-                Main.button();
-            }
-            $link.click(Main.delay);
+            $link.click(Main.button);
         }
     };
     mw.hook('dev.i18n').add(function(i18n) {
@@ -111,4 +88,4 @@ require([
         type: 'script',
         article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
-});
+})();

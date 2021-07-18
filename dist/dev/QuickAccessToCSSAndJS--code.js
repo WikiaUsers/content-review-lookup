@@ -19,9 +19,7 @@ mw.loader.using('mediawiki.util').then(function() {
         js: 'https://community.fandom.com/wiki/User:' + user + '/global.js',
         css: 'https://community.fandom.com/wiki/User:' + user + '/global.css',
         localcommoncss: mw.util.getUrl('User:' + user + '/common.css'),
-        localcommonjs: mw.util.getUrl('User:' + user + '/common.js'),
-        localchatcss: mw.util.getUrl('User:' + user + '/chat.css'),
-        localchatjs: mw.util.getUrl('User:' + user + '/chat.js'),
+        localcommonjs: mw.util.getUrl('User:' + user + '/common.js')
     };
 
     function addLink(linkName) {
@@ -30,7 +28,7 @@ mw.loader.using('mediawiki.util').then(function() {
                 href: links[linkName],
                 text: i18n.msg(linkName).plain()
             })
-        ).insertBefore('.wds-global-navigation__user-menu li:last');
+        ).insertBefore('.global-navigation__bottom li:last');
     }
 
     mw.hook('dev.i18n').add(function(i18njs) {

@@ -6,7 +6,7 @@
 
 (function() {
     function addButtons(match, i18n) {
-        $('.page-header__contribution-buttons .wds-list').append(
+        $('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list').append(
             $('<li>').append(
                 $('<a>', {
                     href: mw.util.getUrl(match[1], { action: 'edit' }),

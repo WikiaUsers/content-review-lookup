@@ -21,7 +21,6 @@ mw.loader.using([
         return;
     }
     window.PreferenceLinksLoaded = true;
-    var isUCP = config.wgVersion !== '1.19.24';
     /**
      * @class PreferenceLinks
      * @classdesc Main PreferenceLinks class
@@ -35,7 +34,7 @@ mw.loader.using([
         'prefs-personal',
         'prefs-emailv2',
         'prefs-editing',
-        isUCP ? 'prefs-rendering' : 'prefs-under-the-hood',
+        'prefs-rendering',
         'prefs-auth-prefstext',
         'prefs-gadgets',
         'global-navigation-user-my-preferences'
@@ -48,7 +47,7 @@ mw.loader.using([
         'personal',
         'emailv2',
         'editing',
-        isUCP ? 'rendering' : 'under-the-hood',
+        'rendering',
         'auth-prefstext',
         'gadgets'
     ];
@@ -63,7 +62,7 @@ mw.loader.using([
         );
         importArticle({
             type: 'script',
-            article: 'u:dev:WDSIcons/code.js'
+            article: 'u:dev:MediaWiki:WDSIcons/code.js'
         });
     };
     /**
@@ -102,7 +101,7 @@ mw.loader.using([
      */
     PreferenceLinks.main = function () {
         var $list = $('<ul>', {'class': 'wds-list wds-is-linked'});
-        var place = '.wds-list > li > a[data-tracking-label="account.preferences"]';
+        var place = '.global-navigation__bottom .wds-list > li > a[data-tracking-label="account.preferences"]';
         $.each(this.buttons, $.proxy(function (k, v) {
             if (v === 'gadgets' && this.warnings) {
                 return;
@@ -116,10 +115,11 @@ mw.loader.using([
                 )
             );
         }, this));
-        $('.wds-global-navigation__user-menu')
+        var $parent = $(place).parent();
+        $('.global-navigation__bottom')
             .children('.wds-dropdown__content')
-            .addClass('wds-is-not-scrollable')
-            .find(place).parent().after(
+            .addClass('wds-is-not-scrollable');
+        $parent.after(
             $('<li>', {
                 'id': 'preference-links-dropdown',
                 'class': 'wds-dropdown-level-2'
@@ -140,8 +140,7 @@ mw.loader.using([
                     'append': $list
                 })
             )
-        );
-        $(place).parent().remove();
+        ).remove();
     };
     PreferenceLinks.init();
 });

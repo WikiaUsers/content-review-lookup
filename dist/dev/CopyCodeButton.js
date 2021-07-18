@@ -2,7 +2,7 @@ $(function() {
     'use strict';
 
     function init(i18n) {
-        $(window.copyButtonPosition || 'div.mw-geshi.mw-content-ltr.pi-data-value').prepend($('<div>', {
+        $(window.copyButtonPosition || '.pi-navigation:has(div.mw-highlight.mw-content-ltr.pi-data-value)').prepend($('<div>', {
             id: 'CopyCodeButton',
             text: i18n.msg('copy').plain()
         }));
@@ -11,11 +11,11 @@ $(function() {
             id: 'CopyCodeButtonHover'
         }));
 
-        if ($('#CopyCodeButton').exists()) {
+        if ($('#CopyCodeButton').length) {
             document.querySelector('#CopyCodeButton').addEventListener('click', function() {
                 $('#CopyCodeButton').click();
                 var range = document.createRange();
-                range.selectNode(document.querySelector(window.syntaxHighLightArea || 'div.javascript.source-javascript'));
+                range.selectNode(document.querySelector(window.syntaxHighLightArea || 'div.mw-highlight'));
                 window.getSelection().addRange(range);
                 try {
                     document.execCommand('copy');

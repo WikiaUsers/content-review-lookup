@@ -13,7 +13,7 @@
     }
     var msgs;
     var preloads = 2;
-    var user = ucp ? mw.config.get('profileUserName') : $('.UserProfileMasthead .masthead-info h1').text();
+    var user = mw.config.get('profileUserName');
     var userpage = mw.config.get('wgFormattedNamespaces')[2] + ':' + user;
     var config = $.extend({}, window.DeleteUserpage);
     
@@ -118,8 +118,8 @@
                     i18n.msg('delete-confirm').plain(),
                     i18n.msg('protect-confirm').plain()
                 ];
+                init();
             });
-            init();
         }
     }
 

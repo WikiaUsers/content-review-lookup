@@ -11,7 +11,7 @@
         'wgVersion'
     ]);
     if (
-        !/bot|soap|bureaucrat|sysop|staff|helper|wiki-manager/.test(config.wgUserGroups.join()) ||
+        !/bot|soap|bureaucrat|sysop|staff|helper|wiki-representative/.test(config.wgUserGroups.join()) ||
         window.BotManagementLoaded
     ) {
         return;

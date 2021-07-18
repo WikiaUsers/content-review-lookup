@@ -70,7 +70,7 @@ mw.loader.using('mediawiki.api').then(function () {
             // Server ID isn't Fandom Developers, but invite code _is_. If the current user is an admin/WM/staff/helper,
             // let's complain to them. Otherwise, we'll be nice and try to get an instant invite code
             // from `widget.json`.
-            if (/sysop|wiki-manager|staff|helper/.test(mw.config.get('wgUserGroups'))) {
+            if (/sysop|wiki-representative|staff|helper/.test(mw.config.get('wgUserGroups'))) {
                 deferred.resolve(actuallyConstructBanner(skeleton, serverId, inviteCode, bannerStyle).append($('<div>', {
                     style: 'color: #e81a3f;',
                     html: 'Your banner\'s invite link is not configured correctly. For help, ask <a href="https://discord.gg/' + FANDOM_DEVELOPERS_INVITE_CODE + '">here</a>.'

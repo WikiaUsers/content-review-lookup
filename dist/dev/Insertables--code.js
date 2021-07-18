@@ -24,7 +24,7 @@
         /* new version */
         $content.find('.mediaWikiData').each(function() {
             var $this = $(this),
-                data = $this.data('mw');
+                data = $this.data('var');
             if (
                 typeof data === 'string' &&
                 (

@@ -1,8 +1,3 @@
-$(".openchat a").click(function() { 
-    window.open('/wiki/Special:Chat', 'wikiachat', 'width=600,height=600,menubar=no,status=no,location=no,toolbar=no,scrollbars=no,resizable=yes'); 
-    return false; 
-});
-
 // UserTags
 window.UserTagsJS = {
 	modules: {},

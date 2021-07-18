@@ -1,6 +1,6 @@
 // <nowiki>
 (function() {
-    if (window.AjaxTemplateLoaded || mw.config.get('wgNamespaceNumber') == -1) {
+    if (window.AjaxTemplateLoaded || mw.config.get('wgNamespaceNumber') === -1) {
         return;
     }
     window.AjaxTemplateLoaded = true;
@@ -9,17 +9,15 @@
             this.i18n = i18n;
             this.api = new mw.Api();
             this.$element = $('<a>', {
-                'class': $('.UserProfileActionButton .WikiaMenuElement').length ?
-                    'wikia-menu-button' :
-                    'wds-button wds-is-secondary',
-                click: $.proxy(this.click, this),
-                text: i18n.msg('button').plain()
+                'class': 'wds-button wds-is-secondary',
+                'click': $.proxy(this.click, this),
+                'text': i18n.msg('button').plain()
             });
             this.config = mw.config.get([
                 'wgNamespaceNumber',
                 'wgPageName'
             ]);
-            $('.UserProfileActionButton, .page-header__contribution-buttons')
+            $('.page-header__contribution-buttons, .page-header__actions')
                 .append(this.$element);
         },
         click: function() {
@@ -48,19 +46,16 @@
         },
         callback: function(d) {
             if (!d.error) {
-                if (mw.config.get('wgVersion') !== '1.19.24') {
-                    mw.loader.using('mediawiki.notify').then(function () {
-                        mw.notify(this.i18n.msg('added').escape());
-                    });
-                } else {
-                    new BannerNotification(this.i18n.msg('added').escape(), 'confirm').show();
-                }
+                mw.notify(this.i18n.msg('added').escape());
             }
         },
         hook: function(i18n) {
             $.when(
                 i18n.loadMessages('AjaxTemplate'),
-                mw.loader.using('mediawiki.api')
+                mw.loader.using([
+                    'mediawiki.api',
+                    'mediawiki.notify'
+                ])
             ).then($.proxy(this.init, this));
         }
     };

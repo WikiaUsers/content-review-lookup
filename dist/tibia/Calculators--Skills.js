@@ -119,7 +119,7 @@ $(function () {
       } else {
         params.set('target', $('#calculator_ew_skill_trained').val());
       }
-      return '#' + params.toString();
+      return window.location.href.split('#')[0] + '#' + params.toString();
     };
     const deserializeFromHashTraining = function () {
       const hash = location.hash.slice(1);
@@ -161,7 +161,7 @@ $(function () {
       var curr_pts = current_pts(level, vocation, pct_left, 'magic');
       var mode = $('input[name=ew_mode]:checked').val();
       var event = $('input[name=ew_event]').prop('checked') ? 2 : 1;
-      var dummy = $('input[name=ew_event]').prop('checked') ? 1.1 : 1;
+      var dummy = $('input[name=ew_dummy]').prop('checked') ? 1.1 : 1;
       var weapon_type = 1;
       if ($('select[name=calculator_ew_wep_type]').val() == 'training') {
         weapon_type = 0.1;
@@ -237,7 +237,7 @@ $(function () {
       }
 
       // Update the permalink.
-      $('#permalink_training').prop('hash', serializeIntoHashTraining());
+      $('#permalink_training').prop('value', serializeIntoHashTraining());
     };
     $('#calculator_exerciseweapons').html(
       '<div style="position: absolute;width: 680px;"><div style="display: grid;grid-row-gap:50px;">' +
@@ -300,9 +300,19 @@ $(function () {
         '<span id="calculator_ew_dummy_desc">regular</span> dummy,' +
         '<br/>each weapon will advance ' +
         '<span id="calculator_ew_weappct_desc">1</span>% of the current skill.<br/><br/>' +
-        'You will need <span id="calculator_ew_train_time">0 hours, 0 minutes and 0 seconds</span> to use the required number of exercise weapons.<br/><a href="#loyaltyPoints=0&amp;weaponType=regular&amp;doubleEvent=false&amp;houseDummy=false&amp;skill=magicmage&amp;level=0&amp;percentageRemaining=100&amp;target=0" rel="permalink" id="permalink_training">Permanent link</a>' +
+        'You will need <span id="calculator_ew_train_time">0 hours, 0 minutes and 0 seconds</span> to use the required number of exercise weapons.<br/><br/>' +
+        '<input type="text" id="permalink_training" style="display:block;width:90%;margin:0 auto;font-size:0.7em;" value="https://tibia.fandom.com/wiki/Skills_Calculator?loyaltyPoints=0&amp;weaponType=regular&amp;doubleEvent=false&amp;houseDummy=false&amp;skill=magicmage&amp;level=0&amp;percentageRemaining=100&amp;target=0">' +
         '</div>',
     );
+    
+    $('#calculator_exerciseweapons').after('<p>Calculate duration of remaining charges on weapon:</p>' +
+    	'<div style="width:690px;">' +
+    	'<label>Remaining charges:&nbsp;' +
+        '<input id="calculator_ew_remaining_charges" type="number" value="14400" min="1" max="14400" style="width:60px;">' +
+        '</label><br/><br/>' +
+    	'<span id="calculator_ew_remaining_time">8 hours, 0 minutes and 0 seconds</span>' +
+    	'</div>'
+    )
 
     $('#calculator_ew_loyalty_pts').on('input', function () {
       $('#calculator_ew_loyalty_bonus').val(Math.round(100 * (loyalty_bonus(parseInt($('#calculator_ew_loyalty_pts').val(), 10)) - 1)));
@@ -323,7 +333,21 @@ $(function () {
       $('#calculator_ew_nweapons').val(Math.floor($('#calculator_ew_weapcost_coins').val() / 25));
       calculator_exerciseweapons_update();
     });
-
+    
+    $('#calculator_ew_remaining_charges').on('input', function() {
+      	var hours, mins, secs, charges = $('#calculator_ew_remaining_charges').val();
+      	hours = Math.floor((charges * 2) / 3600);
+      	charges -= hours * 3600 / 2;
+      	mins = Math.floor((charges * 2) / 60);
+        charges -= mins * 60 / 2;
+      	secs = charges * 2;
+      	$('#calculator_ew_remaining_time').html(hours + ' hours, ' + mins + ' minutes and ' + secs + ' seconds')
+    });
+	
+	$('#permalink_training').on('click', function() {
+	  $(this).select();
+	});
+	
     // Restore inputs based on the URL hash, if applicable.
     deserializeFromHashTraining();
   })();
@@ -351,7 +375,7 @@ $(function () {
       params.set('shieldPercentageRemaining', $('#calculator_rs_shield_left').val());
       params.set('fishLevel', $('#calculator_rs_fish_level').val());
       params.set('fishPercentageRemaining', $('#calculator_rs_fish_left').val());
-      return '#' + params.toString();
+      return window.location.href.split('#')[0] + '#' + params.toString();
     };
     const deserializeFromHashLoyalty = function () {
       const hash = location.hash.slice(1);
@@ -448,7 +472,7 @@ $(function () {
       }
 
       // Update the permalink.
-      $('#permalink_loyalty').prop('hash', serializeIntoHashLoyalty());
+      $('#permalink_loyalty').prop('value', serializeIntoHashLoyalty());
     };
 
     $('#calculator_reakskill').html(
@@ -463,12 +487,12 @@ $(function () {
         '<label>Loyalty bonus:' +
         '<input id="calculator_rs_loyalty_bonus" type="number" value="0" min="0" max="50" step="5">%</label><br/><br/>' +
         '<div">' +
-        '<table id ="calculator_rs_inputs" style="margin: 0 auto;">' +
+        '<table id="calculator_rs_inputs" style="margin: 0 auto;">' +
         '<tr>' +
         '<td>Skill</td><td>Current</td><td>% left</td><td>real skill</td><td>% left</td>' +
         '</tr>' +
-        '</table>' +
-        '<a href="#TODO" rel="permalink" id="permalink_loyalty">Permanent link</a>' +
+        '</table><br/>' +
+        '<input type="text" id="permalink_loyalty" style="display:block;width:90%;margin:0 auto;font-size: 0.7em;">' +
         '</div>',
     );
     for (const type of skilltypes) {
@@ -525,7 +549,10 @@ $(function () {
       calculator_realskill_update(skilltypes);
     });
     calculator_realskill_update();
-
+	
+	$('#permalink_loyalty').on('click', function() {
+	  $(this).select();
+	});
     // Restore inputs based on the URL hash, if applicable.
     deserializeFromHashLoyalty();
   })();

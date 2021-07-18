@@ -197,8 +197,8 @@ require(['wikia.window', 'jquery', 'mw'], function (window, $, mw) {
         global: [
             'staff',
             'helper',
-            'wiki-manager',
-            'content-team-member',
+            'wiki-representative',
+            'wiki-specialist',
             'soap',
             'global-discussions-moderator',
             'voldev',

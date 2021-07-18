@@ -1,33 +1,3 @@
-/* MediaWiki:Gadget-site-lib.js */
-window.wgUXS = function (wg, hans, hant, cn, tw, hk, sg, zh, mo, my) {
-    var ret = {
-        'zh': zh || hans || hant || cn || tw || hk || sg || mo || my,
-        'zh-hans': hans || cn || sg || my,
-        'zh-hant': hant || tw || hk || mo,
-        'zh-cn': cn || hans || sg || my,
-        'zh-sg': sg || hans || cn || my,
-        'zh-tw': tw || hant || hk || mo,
-        'zh-hk': hk || hant || mo || tw,
-        'zh-mo': mo || hant || hk || tw
-    }
-    return ret[wg] || zh || hant || hans || tw || cn || hk || sg || mo || my; //保證每一語言有值
-}
- 
-window.wgULS = function (hans, hant, cn, tw, hk, sg, zh, mo, my) {
-    return wgUXS(mw.config.get('wgUserLanguage'), hans, hant, cn, tw, hk, sg, zh, mo, my);
-};
- 
-window.wgUVS = function (hans, hant, cn, tw, hk, sg, zh, mo, my) {
-    return wgUXS(mw.config.get('wgUserVariant'), hans, hant, cn, tw, hk, sg, zh, mo, my);
-};
- 
-window.importScriptCallback = function(page, ready) {
-    importScriptURICallback(mw.config.get('wgServer') + mw.config.get('wgScript') + '?title=' + mw.util.wikiUrlencode(page) + '&action=raw&ctype=text/javascript', ready);
-};
- 
-window.importScriptURICallback = jQuery.getScript;// 
-
-
 ============================================================
 // BEGIN Dynamic Navigation Bars (experimantal)
 // This script is from Wikipedia. For author attribution, please see https://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
@@ -339,7 +309,7 @@ UserTagsJS.modules.custom = {
 UserTagsJS.modules.inactive = 30;
 UserTagsJS.modules.newuser = true;
 UserTagsJS.modules.autoconfirmed = true;
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'chatmoderator', 'patroller', 'rollback', 'bannedfromchat', 'bot', 'bot-global', 'assistant', 'moderator'];
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'patroller', 'rollback', 'bannedfromchat', 'bot', 'bot-global', 'assistant', 'moderator'];
 
 /* End of User Tags */
 
@@ -351,7 +321,7 @@ ajaxPages = ["Special:RecentChanges", "Special:WikiActivity"];
 
 /* End of AjaxRC */
 
-/* LockForums and LockOldBlogs */
+/* LockForums、LockOldBlogs 與 LockOldComments */
 
 window.LockForums = {
     lockMessageWalls: true,
@@ -362,7 +332,7 @@ window.LockOldBlogs = {
     expiryDays: 90
 };
 
-/* End of LockForums and LockOldBlogs */
+/* LockForums、LockOldBlogs 與 LockOldComments 結尾 */
 
 /*
 importArticles({ type: 'script', articles: [ 
@@ -470,7 +440,7 @@ if ( WorldCupIterators.length > 0 ) {
 
 	var HasAllowedUserRights = false;
 
-	var AllowedUserRights = ["bureaucrat", "sysop", "assistant", "threadmoderator", "chatmoderator", "rollback"];
+	var AllowedUserRights = ["bureaucrat", "sysop", "assistant", "threadmoderator", "rollback"];
 
 	//determining user rights
 

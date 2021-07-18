@@ -4,3 +4,4 @@
 // https://dev.fandom.com/wiki/PreloadTemplates
 window.preloadTemplates_list = "MediaWiki:Custom-PreloadTemplates"
 window.preloadTemplates_subpage = "case-by-case";
+window.shorUrlBase = "oni.fandom.com/zh"

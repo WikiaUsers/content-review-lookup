@@ -1,7 +1,7 @@
 /* ჩაკეცვის ფუნქცია (collapsing) */
 var autoCollapse = 2;
-var collapseCaption = 'დამალვა';
-var expandCaption = 'ჩვენება';
+var collapseCaption = 'damalva';
+var expandCaption = 'chveneba';
  
 function collapseTable( tableIndex ) {
         var Button = document.getElementById( 'collapseButton' + tableIndex );

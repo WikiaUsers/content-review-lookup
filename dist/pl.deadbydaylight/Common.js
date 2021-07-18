@@ -9,7 +9,7 @@ $(function(){
 		$('#inceptionPerks' + i).css('font-weight', 'bold');
 		$('#inceptionPerks' + i).css('color', '#e2ce97');
 		$('#inceptionPerks' + i).css('display', 'inline');
-		$('#inceptionPerks' + i).html('SPokaż/Ukryj (tylko) Umiejętności wprowadzone w tym roku &#10060;');
+		$('#inceptionPerks' + i).html('Pokaż/Ukryj (tylko) Umiejętności wprowadzone w tym roku &#10060;');
 		
 		$('#inceptionPerks' + i).hover(function(){
 			$(this).css('cursor', 'pointer');

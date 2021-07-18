@@ -126,7 +126,7 @@
 				'staff',
 				'helper',
 				'global-discussions-moderator',
-				'wiki-manager',
+				'wiki-representative',
 				'soap',
 			]),
 
@@ -134,8 +134,8 @@
 				'soap',
 				'helper',
 				'staff',
-				'wiki-manager',
-				'content-team-member',
+				'wiki-representative',
+				'wiki-specialist',
 				'checkuser',
 				'util',
 				'global-discussions-moderator',
@@ -147,9 +147,9 @@
 				'helper',
 				'bureaucrat',
 				'global-discussions-moderator',
-				'wiki-manager',
+				'wiki-representative',
 				'soap',
-				'content-team-member',
+				'wiki-specialist',
 			]),
 
 			"delete": Object.freeze([
@@ -159,8 +159,8 @@
 				'soap',
 				'staff',
 				'helper',
-				'wiki-manager',
-				'content-team-member',
+				'wiki-representative',
+				'wiki-specialist',
 			]),
 
 			"move": Object.freeze([

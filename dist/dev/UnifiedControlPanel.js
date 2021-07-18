@@ -116,7 +116,7 @@
             btnCancel_click();
         } else {
             // not attached yet
-            cfg.form.prependTo('.WikiaPage:first');
+            cfg.form.prependTo('#content');
             // set size and position
             cfg.form.offset({
                 top: $(window).scrollTop() + ((($(window).height() - cfg.form.height()) / 2 > 0) ? ($(window).height() - cfg.form.height()) / 2 : 0),

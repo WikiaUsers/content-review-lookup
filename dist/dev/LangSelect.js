@@ -15,7 +15,7 @@ mw.loader.using('mediawiki.util').then(function () {
     var $ld = $('.lang-select-data'),
         $ph = $('.page-header__languages'),
         $tn = $('.transclude-notice'),
-        $int = $('.WikiaArticleInterlang ul'),
+        $int = $('.WikiaArticleInterlang ul, .page-footer__languages div'),
         conf = mw.config.get([
             'wgAction',
             'wgArticlePath',
@@ -72,7 +72,7 @@ mw.loader.using('mediawiki.util').then(function () {
         // LangSelect modifications.
         if ($tn.length) {
             // Link overrides.
-            $(this.elements)
+            $(this._elements)
                 .each(this._edit.bind(this));
             $links.add($int.find('a[href]'))
                 .attr('href', this._uselang.bind(this));
@@ -133,7 +133,7 @@ mw.loader.using('mediawiki.util').then(function () {
      * @param               {Object} u MediaWiki Uri for button target.
      */
     LangSelect.prototype._addBaseButton = function(a, u) {
-        $('.page-header__contribution-buttons .wds-list')
+        $('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list')
             .find('a[id$="-' + a + '"]')
             .parent()
         .after(
@@ -193,7 +193,7 @@ mw.loader.using('mediawiki.util').then(function () {
      */
     LangSelect.prototype._addInterwikiLink = function(opts) {
         // Fetch interlanguage & page header link.
-        var selc = 'a[data-tracking="top-' + opts.lang + '"]';
+        var selc = 'a[data-tracking="top-' + opts.lang + '"], a[data-tracking-label="lang-' + opts.lang + '"]';
         // Check if the link exists.
         if (!$ph.find(selc).length) {
             this._linkGenerator(opts);
@@ -241,6 +241,7 @@ mw.loader.using('mediawiki.util').then(function () {
                 append: $('<a>', {
                     'id': opts.id,
                     'data-tracking': opts.lang,
+                    'data-tracking-label': 'lang-' + opts.lang,
                     'href': opts.path,
                     'text': opts.text
                 })

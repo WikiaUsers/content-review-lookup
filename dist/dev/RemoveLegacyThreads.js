@@ -1,5 +1,5 @@
 mw.loader.using(['mediawiki.api']).done(function() {
-	if (!/sysop|bot|soap|staff|bot-global|helper|wiki-manager|content-team-member|util/.test(mw.config.get('wgUserGroups').join('\n'))) {
+	if (!/sysop|bot|soap|staff|bot-global|helper|wiki-representative|wiki-specialist|util/.test(mw.config.get('wgUserGroups').join('\n'))) {
 		return;
 	}
 	if (mw.config.get('wgCanonicalSpecialPageName') !== 'Whatlinkshere') return;

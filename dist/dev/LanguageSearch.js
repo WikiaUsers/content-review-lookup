@@ -117,10 +117,17 @@
      * @method              attr
      */
     LangSearch.prototype.attr = function(i, li) {
-        var l = li.firstElementChild
+        var l;
+        if (mw.config.get('skin') === 'oasis') {
+            l = li.firstElementChild
                 .getAttribute('data-tracking')
-                .match(/top-([\s\S]+)$/)[1],
-            d = this.data;
+                .match(/top-([\s\S]+)$/)[1];
+        } else {
+            l = li.firstElementChild
+                .getAttribute('data-tracking-label')
+                .match(/lang-([\s\S]+)$/)[1];
+        }
+        var d = this.data;
         $(li).attr({
              'data-code': l,
              'data-latn': (d[l].latn || '').normalize().toLowerCase(),
@@ -197,7 +204,7 @@
     ['UI-js/code', 'WDSIcons/code'].forEach(function(s) {
         importArticle({
             type: 'script',
-            article: 'u:dev:' + s + '.js'
+            article: 'u:dev:MediaWiki:' + s + '.js'
         });
     });
 

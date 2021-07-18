@@ -162,14 +162,14 @@
                 var profile = $.client.profile(),
                     run = false,
                     // usergroups that can edit mediawiki pages
-                    allowed = ['sysop', 'vanguard', 'content-volunteer', 'soap', 'helper', 'content-team-member', 'wiki-manager', 'staff']
+                    allowed = ['sysop', 'vanguard', 'content-volunteer', 'soap', 'helper', 'wiki-specialist', 'wiki-representative', 'staff']
                         .concat(config.allowed),
                     ns,
                     mwi,
                     i;
                 
                 mw.util.addCSS(
-                        '.skin-fandomdesktop #less-update-button{margin-top: 0px !important;}'
+                    // put any additional css rules here
                 );
                 
                 if (profile.name === 'msie' && profile.versionNumber < 9) {
@@ -244,7 +244,7 @@
              * Inserts update button
              */
             addUpdate: function () {
-                $('#WikiaMainContent, #content').prepend(
+                $('#content').prepend(
                     $('<a>')
                         .addClass('wds-is-squished wds-button')
                         .attr({
@@ -253,7 +253,6 @@
                             id: 'less-update-button'
                         })
                         .css({
-                            'margin-top': '-5px',
                             'margin-bottom': '5px'
                         })
                         .text(i18n.msg('update-css').plain())

@@ -65,7 +65,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
             if (limit < 0 ||
                 limit > 101 ||
                 typeof limit !== 'number') {
-                if (/staff|helper|util|bot-global|wiki-manager/.test(config.wgUserGroups.join())) {
+                if (/staff|helper|util|bot-global|wiki-representative/.test(config.wgUserGroups.join())) {
                     limit = 200;
                 } else if (/bureaucrat|bot/.test(config.wgUserGroups.join())) {
                     limit = 70;

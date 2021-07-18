@@ -2,7 +2,7 @@
 	/* only local and global staff and if script has not already run */
 	if (
 		window.EditUserTalkArchiveLoaded ||
-		!/sysop|staff|helper|wiki-manager|content-team-member|content-volunteer|soap/.test(mw.config.get("wgUserGroups").join())
+		!/sysop|staff|helper|wiki-representative|wiki-specialist|content-volunteer|soap/.test(mw.config.get("wgUserGroups").join())
 	) {
 		return;
 	}

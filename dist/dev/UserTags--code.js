@@ -165,8 +165,7 @@ Date.parseISO8601 = function(text) {
 					mwGroups: true, // Internal defaults
 					metafilter: {
 						sysop: ['bureaucrat','founder'],
-						bureaucrat: ['founder'],
-						chatmoderator: ['sysop','bureaucrat']
+						bureaucrat: ['founder']
 					}
 				};
 			}

@@ -74,6 +74,16 @@
           QUERY: "useusercss",
           VALUE: 0,
           MESSAGE: "userCSS"
+        }),
+        SITEJS: Object.freeze({
+          QUERY: "usesitejs",
+          VALUE: 0,
+          MESSAGE: "siteJS"
+        }),
+        SITECSS: Object.freeze({
+          QUERY: "usesitecss",
+          VALUE: 0,
+          MESSAGE: "siteCSS"
         })
       })
     },

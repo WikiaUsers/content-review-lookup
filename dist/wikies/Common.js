@@ -8,3 +8,10 @@ window.tooltips_list = [{
     parse: '{{#invoke:getdata2|div|<#article#>|Инфо}}'
 }
 ];
+
+/*кастом модули*/
+window.AddRailModule = [
+    { page: 'Template:RailModule1', prepend: true },
+    'Template:RailModule2',
+    'Template:RailModule3',
+];

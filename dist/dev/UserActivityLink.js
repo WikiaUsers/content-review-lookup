@@ -14,7 +14,7 @@
         article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
     function init (i18n) {
-        $('.wds-global-navigation__user-menu div:nth-child(2) ul li:nth-child(2)').after(
+        $('.wds-global-navigation__user-menu div:nth-child(2) ul li:nth-child(2), .global-navigation__bottom .wds-list li:nth-child(2)').after(
             $('<li>').append(
                 $('<a>', {
                     'data-id': 'activity',

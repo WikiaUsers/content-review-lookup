@@ -4,7 +4,7 @@
 **/
 (function() {
     'use strict';
-    var results, i18n, isUCP = mw.config.get('wgVersion') !== '1.19.24';
+    var results, i18n;
 
     function searchMap(article) {
         var description = article.abstract;

@@ -22,28 +22,19 @@
     }
 
     window.AjaxRedirectLoaded = true;
-    var isUCP = mw.config.get('wgVersion') !== '1.19.24';
 
     function respHandler(res) {
         if (res === true) {
             console.log(i18n.msg('success').plain());
-            if (isUCP) {
-                mw.notify(i18n.msg('success').plain());
-            } else {
-                new BannerNotification(i18n.msg('success').escape(), 'confirm').show();
-            }
+            mw.notify(i18n.msg('success').plain());
             setTimeout(function() {
                 window.location.reload();
             }, 3000);
         } else {
             console.log(i18n.msg('fail').plain());
-            if (isUCP) {
-                mw.notify(i18n.msg('fail').plain(), {
-                    type: 'error'
-                });
-            } else {
-                new BannerNotification(i18n.msg('fail').escape(), 'error').show();
-            }
+            mw.notify(i18n.msg('fail').plain(), {
+                type: 'error'
+            });
         }
     }
 
@@ -92,8 +83,9 @@
             lib.loadMessages('AjaxRedirect'),
             mw.loader.using([
                 'mediawiki.api',
+                'mediawiki.notify',
                 'mediawiki.user'
-            ].concat(isUCP ? ['mediawiki.notify'] : []))
+            ])
         ).then(init);
     });
 

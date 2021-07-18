@@ -11,12 +11,12 @@
     ci.restrict = ci.restrict !== undefined ? ci.restrict : true;
     // dbl run or wrong conditions
     var mws = mw.config.get(['wgNamespaceNumber', 'skin', 'wgUserName']);
-    if (ci.f || !mws.wgUserName || (mws.skin !== 'oasis') || (ci.restrict && (mws.wgNamespaceNumber !== 14))) return;// fuck the anonymous
+    if (ci.f || !mws.wgUserName || (ci.restrict && (mws.wgNamespaceNumber !== 14))) return;// fuck the anonymous
     // image extension
     ci.ext = ci.ext || '.png';
     // image class
     ci.cls = ci.cls || 'cicon-image';
-    ci.cls = $.htmlentities(ci.cls);
+    ci.cls = mw.html.escape(ci.cls);
     // scale. save bandwith
     ci.scale = ci.scale === undefined ? '/scale-to-width-down/50' : ci.scale === '' ? '' : $.htmlentities(ci.scale);
     // image prepend: prep+name+ext

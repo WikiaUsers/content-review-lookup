@@ -1,0 +1,1 @@
+/* #REDIRECT */mw.loader.load("https://darkandlight.gamepedia.com/index.php?title=MediaWiki:Group-sysop.js\u0026action=raw\u0026ctype=text/javascript");

@@ -111,11 +111,3 @@ function addLinkInActivityModule() {
         setTimeout(addLinkInActivityModule, 500)
 }
 addLinkInActivityModule()
-
-
-importArticles({
-    type: "script",
-    articles: [
-        'u:nkch:MediaWiki:DiscussionsRailModule.js'
-    ]
-});

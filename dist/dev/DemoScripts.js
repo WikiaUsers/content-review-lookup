@@ -575,7 +575,7 @@
                       !conf.wgPageName.startsWith('WikiForum/demo') ||
                       conf.wgAction !== 'view'
                     ) return;
-                    Core.renderer.fromPage(pageName);
+                    Core.renderer.fromPage(conf.wgPageName);
                 });
             },
         },

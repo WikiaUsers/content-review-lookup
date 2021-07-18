@@ -7,7 +7,7 @@
  * Using code by Jr Mime
  */
 (function() {
-    if (window.PRA || !/content-moderator|helper|staff|sysop|content-volunteer|wiki-manager|content-team-member/g.test(mw.config.get('wgUserGroups').join('|'))) {
+    if (window.PRA || !/content-moderator|helper|staff|sysop|content-volunteer|wiki-representative|wiki-specialist/g.test(mw.config.get('wgUserGroups').join('|'))) {
         return;
     }
     window.PRAoptions = $.extend({

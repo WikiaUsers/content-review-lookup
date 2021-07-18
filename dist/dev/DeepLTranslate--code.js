@@ -26,7 +26,7 @@
             text: i18n.msg('translate').plain()
         });
  
-        $('.page-header__contribution-buttons').append($button);
+        $('.page-header__contribution-buttons, .page-header__actions').append($button);
 
         $button.click(function() {
             window.open('https://www.deepl.com/translator#' + config.wgPageContentLanguage + '/' + config.wgUserLanguage + '/' + encodedText);

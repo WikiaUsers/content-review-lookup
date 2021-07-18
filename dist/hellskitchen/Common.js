@@ -20,26 +20,27 @@ mw.loader.using('mediawiki.api').then(function(){
 		});
 	}
 });
-window.MastheadRightsBadgeSettings = {
-    iconSize: '40px',
-};
 window.UserTagsJS = {
 	tags: {
-		bureaucrat: { u:'Bureaucrat', link:'Project:Wiki_Staff', order: 3 },
-		sysop: { u:'Administrator', link:'Project:Wiki_Staff', order: 4 },
-		'content-moderator': { u:'Content Moderator', link:'Project:Wiki_Staff', order: 5 },
-		threadmoderator: { u:'Discussion Moderator', link:'Project:Wiki_Staff', order: 6 },
+		bureaucrat: { u:'Bureaucrat', link:'Project:Wiki_Staff', order: 6 },
+		sysop: { u:'Administrator', link:'Project:Wiki_Staff', order: 7 },
+		'content-moderator': { u:'Content Moderator', link:'Project:Wiki_Staff', order: 8 },
+		rollback: {u: 'Trial Moderator', order: 8},
+		threadmoderator: { u:'Discussion Moderator', link:'Project:Wiki_Staff', order: 9 },
 		bot: { u: 'Bot', link: 'Special:ListUsers/bot' },
 		inactive: { u: 'Inactive' },
 		blocked: { u: 'Ejected', link: 'Special:BlockList' },
-		'wiki-manager': { u: 'Wiki Manager', link: 'w:Help:Wiki_Managers', order: 1 },
-		soap: { u: 'SOAP', link: 'w:Help:SOAP', order: 2 },
-		council: {u: 'Council', link: 'w:Help:Community Council', order: 9},
-		redditmod: {u: 'Reddit Moderator', link: 'Project:Wiki_Staff', order: 7 },
-		discordmod: {u: 'Discord Moderator', link: 'Project:Wiki_Staff', order: 8 },
-		discordmod1: {u: 'Discord Moderator', link: 'Project:Wiki_Staff', order: 8 },
-		discordmod2: {u: 'Discord Moderator', link: 'Project:Wiki_Staff', order: 8 },
-		discordmod3: {u: 'Discord Moderator', link: 'Project:Wiki_Staff', order: 8 },
+		'wiki-representative': { u: 'Wiki Representative', link: 'w:Help:Wiki_Managers', order: 1 },
+		'wiki-specialist': { u: 'Wiki Specialists', link: 'w:Help:Wiki_Specialists', order: 2 },
+		soap: { u: 'SOAP', link: 'w:Help:SOAP', order: 3 },
+		vanguard: {u: 'Vanguard', link: 'w:Help:Vanguard', order: 4},
+		'global-discussions-moderator': {w: 'Global Discussions Moderator', link:'w:Help:Global Discussions moderators', order: 5},
+		council: {u: 'Council', link: 'w:Help:Community Council', order: 12},
+		redditmod: {u: 'Reddit Moderator', link: 'Project:Wiki_Staff', order: 10 },
+		discordmod: {u: 'Discord Moderator', link: 'Project:Wiki_Staff', order: 11 },
+		discordmod1: {u: 'Discord Moderator', link: 'Project:Wiki_Staff', order: 11 },
+		discordmod2: {u: 'Discord Moderator', link: 'Project:Wiki_Staff', order: 11 },
+		discordmod3: {u: 'Discord Moderator', link: 'Project:Wiki_Staff', order: 11 },
 		staff: {u: 'Staff', link: 'w:Project:Staff', order: 0}
     },
 	modules: {

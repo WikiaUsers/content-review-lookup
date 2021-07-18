@@ -177,28 +177,27 @@
         i18n = i18n[lang] || i18n[lang.split('-')[0]] || i18n.en;
         $('#WikiaBar .toolbar .tools').prepend(
             $('<li>', {
-                'class': 'mytools menu'
+                'class': 'mytools menu wds-dropdown wds-is-flipped'
             }).append(
                 $('<span>', {
-                    'class': 'arrow-icon-ctr'
+                    'class': 'wds-dropdown__toggle'
                 }).append(
-                    $('<span>', {
-                        'class': 'arrow-icon arrow-icon-single'
+                    '<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg>',
+                    $('<a>', {
+                        href: '#',
+                        text: i18n
                     })
                 ),
-                $('<a>', {
-                    href: '#',
-                    text: i18n
-                }),
-                $('<ul>', {
-                    'class': 'tools-menu',
-                    id: 'my-tools-menu'
-                })
+                $('<div>', {
+                    'class': 'wds-dropdown__content'
+                }).append(
+                    $('<ul>', {
+                        'class': 'tools-menu wds-list wds-is-linked',
+                        id: 'my-tools-menu'
+                    })
+                )
             )
         );
-        if (window.WikiaFooterApp) {
-            window.WikiaFooterApp.init();
-        }
     }
     /**
      * @method tools

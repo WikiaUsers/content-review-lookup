@@ -5,17 +5,18 @@
 */
 
 mw.loader.using('mediawiki.api').then(function() {
-	if ([0, 500].indexOf(mw.config.get('wgNamespaceNumber')) === -1 || window.customCommentsLoaded) {
+	if ([0, 500, 1200].indexOf(mw.config.get('wgNamespaceNumber')) === -1 || window.customCommentsLoaded) {
 		return;
 	}
 	window.customCommentsLoaded = true;
 	
 	function setGroup(name, group) {
-		var all = Array.from(document.querySelectorAll('.Comment_comment__sASOd, .Reply_body__3woA9'));
+		var type = mw.config.get('wgNamespaceNumber') === 1200 ? 'message' : 'comment';
+		var all = Array.from(document.querySelectorAll('.Comment_comment__sASOd, .Reply_body__3woA9, .Message, .Reply'));
 		all.forEach(function(i) {
 			if (i.querySelector('.EntityHeader_name__2oRXg').innerText === name) {
-				if (!i.classList.contains('comment-' + group)) {
-					i.classList.add('comment-' + group);
+				if (!i.classList.contains(type + '-' + group)) {
+					i.classList.add(type + '-' + group);
 				}
 			}
 		});
@@ -63,7 +64,7 @@ mw.loader.using('mediawiki.api').then(function() {
 						setGroup(j, i.group);
 					});
 				});
-			}).observe(document.querySelector('#articleComments'), {
+			}).observe(document.querySelector('#articleComments, #MessageWall'), {
 				childList: true,
 				subtree: true
 		    });

@@ -135,11 +135,28 @@ mw.hook( 'wikipage.content' ).add( function( $wikipageContent ) {
 
 /**
  * Extra functionality for tabber
- */
+ 
 
 $(document).on('click', '.toggle-tab', function(e) {
 	var btn = $(e.target);
 	var tabbertab = btn.closest('.tabbertab');
+	var view1 = tabbertab.find('.view1');
+	var view2 =  tabbertab.find('.view2');
+	if (view1.is(':visible') === true) {
+		view2.show();
+		view1.hide();
+		btn.html(view1.attr("title"));
+	} else {
+		view1.show();
+		view2.hide();
+		btn.html(view2.attr("title"));
+	}
+});
+*/
+           /* This version is for FandomDesktop */
+$(document).on('click', '.toggle-tab', function(e) {
+	var btn = $(e.target);
+	var tabbertab = btn.closest('.wds-tabs__tab');
 	var view1 = tabbertab.find('.view1');
 	var view2 =  tabbertab.find('.view2');
 	if (view1.is(':visible') === true) {

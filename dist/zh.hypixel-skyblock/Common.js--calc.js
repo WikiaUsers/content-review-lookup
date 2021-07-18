@@ -34,6 +34,12 @@
          strict:true, trailing:true
 */
 
+// Load Styles 
+$('<link>', { 
+	rel: 'stylesheet', 
+	href: 'https://hypixel-skyblock.fandom.com/zh/wiki/MediaWiki:Common.js/calc.css?action=raw&ctype=text/css'
+}).appendTo('head');
+
 /*global mediaWiki, hsbwiki */
 window.hsbwiki = window.hsbwiki || {}
 
@@ -183,13 +189,14 @@ window.hsbwiki = window.hsbwiki || {}
              * @param error {String} A string representing the error message to be output
              */
             showError: function (error) {
-                $('#' + this.result)
+                $(this.result !== 'inner'? ('#' + this.result): ('#' + this.form + ' .jcResult'))
                     .empty()
                     .append(
                         $('<span>')
                             .addClass('jcError')
                             .text(error)
-                    );
+                    )
+                    .show();
             },
 
             /**
@@ -450,9 +457,8 @@ window.hsbwiki = window.hsbwiki || {}
                     };
                 }
 
-                $('#' + self.form + ' .jcSubmit input')
-                	.val('..')
-                    .prop('disabled', true);
+                $('#' + self.form + ' .jcSubmit div')
+                	.text('..').css('color','gray');
 
                 // @todo time how long these calls take
                 (new mw.Api())
@@ -470,9 +476,8 @@ window.hsbwiki = window.hsbwiki || {}
                         helper.dispResult.call(self, html);
                     })
                     .fail(function (_, error) {
-                        $('#' + self.form + ' .jcSubmit input')
-                        	.val('↵')
-                            .prop('disabled', false);
+                        $('#' + self.form + ' .jcSubmit div')
+                        	.text('↵').css('color','white');
                         helper.showError.call(self, error);
                     });
             },
@@ -483,15 +488,15 @@ window.hsbwiki = window.hsbwiki || {}
              * @param response {String} A string representing the HTML to be added to the page
              */
             dispResult: function (html) {
-                $('#' + this.form + ' .jcSubmit input')
-                	.val('↵')
-                    .prop('disabled', false);
+                $('#' + this.form + ' .jcSubmit div')
+                	.text('↵').css('color','white');
 
                 $('#bodyContent, #WikiaArticle, .WikiaArticle, #content, .page-content')
-                    .find('#' + this.result)
+                    .find(this.result !== 'inner'? ('#' + this.result): ('#' + this.form + ' .jcResult'))
                         .empty()
                         .removeClass('jcError')
-                        .html(html);
+                        .html(html)
+                        .show();
                 
                 // allow scripts to hook into form submission
                 mw.hook('rscalc.submit').fire();
@@ -808,37 +813,38 @@ window.hsbwiki = window.hsbwiki || {}
         self.indexkeys = {};
         
         var $submitButton = $('<td>')
-            .addClass('jcSubmit')
+            .addClass('jcSubmit').addClass('noselect')
             .attr('rowspan', Object.keys(self.tParams).length)
-            .css({
-            	'vertical-align': 'bottom',
-            })
             .append(
-            	$('<div>').append(
-                    $('<input>')
-                    	.addClass('wds-button')
-                        .attr('type', 'submit')
-                        .css({
-                        	'font-size': '2em',
-                        	'padding': '0.7em 0.5em',
-                        	'background': '#444',
-							'border': 'none',
-                        })
-                        .val('↵')
-                )
-            );
+            	$('<div>').text('↵').css({
+            		'font-size': '2em',
+            		'padding': '0 0.3em',
+            		'text-align': 'center',
+            	})
+            )
+            .click(function(){
+            	$form.submit();
+            });
 
 
-		$table.append($('<tr>').append(
+		$table.append($('<tr>').addClass('jcTable-toprow').append(
 			$('<td>').attr('colspan', 3)
 			.append(
 				$('<span>').text(self.calcname || 'Calculator'),
-				$('<a>').text('view template')
-					.attr('href', self.template && '/wiki/'+self.template || '#'),
-				$('<a>').text('view calculator')
+				$('<a>').text('view template').addClass('noselect')
+					.attr('href', self.template && '/wiki/'+self.template || '#')
+					.attr('target', '_blank'),
+				$('<a>').text('view calculator').addClass('noselect')
 					.attr('href', self.calcpage && '/wiki/'+self.calcpage || '#')
+					.attr('target', '_blank')
 			)
 		));
+		
+		if (self.result === 'inner') {
+			$table.append($('<tr>').append(
+				$('<td>').attr('colspan','3').addClass('jcResult').hide()
+			));
+		}
 
         self.tParams.forEach(function (param, index) {
             // can skip any output here as the result is pulled from the
@@ -849,7 +855,7 @@ window.hsbwiki = window.hsbwiki || {}
 
             var id = helper.getId.call(self, param.name),
                 $tr = $('<tr>'),
-                $td = $('<td>'),
+                $td = $('<td>').addClass('jcTable-cell-normal').addClass('jcInput'),
                 method = helper.tParams[param.type] ?
                     param.type :
                     'def',
@@ -862,7 +868,7 @@ window.hsbwiki = window.hsbwiki || {}
 
             // add label
             $tr.append(
-                $('<th>')
+                $('<th>').addClass('jcTable-cell-normal').addClass('jcLabel')
                     .append(
                         $('<label>')
                             .attr('for', id)

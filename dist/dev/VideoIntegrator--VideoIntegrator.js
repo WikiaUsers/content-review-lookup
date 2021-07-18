@@ -43,7 +43,7 @@ mw.hook('wikipage.content').add(function($content) {
             case 'fembed':
                 $this.html(
                     $('<iframe>', {
-                        src: 'https://femax.com/v/' + id,
+                        src: 'https://femax20.com/v/' + id,
                         css: css,
                         frameborder: 0
                     })
@@ -124,6 +124,16 @@ mw.hook('wikipage.content').add(function($content) {
                         src: 'https://commons.wikimedia.org/wiki/File%3A' + id + '?embedplayer=yes',
                         css: css,
                         frameborder: 0
+                    })
+                           );
+                break;
+            case 'Sibnet':
+                $this.html(
+                    $('<iframe>', {
+                        src: 'https://video.sibnet.ru/shell.php?videoid=' + id,
+                        css: css,
+                        frameborder: 0,
+                        allowfullscreen: true
                     })
                 );
                 break;

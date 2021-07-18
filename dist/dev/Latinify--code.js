@@ -10,7 +10,7 @@
     var config = mw.config.get([
         'wgContentLanguage'
     ]);
-    var $buttons = $('.page-header__contribution-buttons .wds-list'),
+    var $buttons = $('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list'),
         cache = {},
         i18n = {},
         maps, map,

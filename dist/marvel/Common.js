@@ -235,14 +235,9 @@ $(function() {
 */
 var wiki_name_number=Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + 1;
 var wiki_name_text=["Face Front, True Believers!", "'Nuff Said!", "Excelsior!", "Make Mine Marvel", "Avengers Assemble!", "To Me, My X-Men!", "With Great Power...", "Hulk Smash!", "Snikt!", "It's Clobberin' Time!", "Flame On!", "Wakanda Forever!", "I Am Iron Man", "I Am Groot", "By the Hoary Host of Hoggoth!", "Bamf!", "Whosoever Holds This Hammer, If They Be Worthy...", "By the Bristling Beard of Odin!", "Imperius Rex!", "Oh, My Stars and Garters!", "The Best There Is...", "...Hope You Survive the Experience!", "Sweet Christmas!", "Whatta Revoltin' Development!", "Have at Thee!", "And There Came a Day Unlike Any Other...", "Thwip!", "Champions Charge!" ][wiki_name_number];
-/*  for FandomDesktop */
-var elements1=document.getElementsByClassName('fandom-community-header__community-name');
-var wiki_name1=elements1[0];
-/*  for Oasis */
-var elements2=document.getElementsByClassName('wds-community-header__sitename');
-var wiki_name2=elements2[0];
-wiki_name1.textContent=wiki_name_text;
-wiki_name2.textContent=wiki_name_text;
+var elements=document.getElementsByClassName('fandom-community-header__community-name');
+var wiki_name=elements[0];
+wiki_name.textContent=wiki_name_text;
 
 
 /* 
@@ -251,319 +246,339 @@ wiki_name2.textContent=wiki_name_text;
 ////////////////////////////////////////////////////////////////////
 */
 
-var customizeToolbar = function () {
+
+var customizeToolbar2 = function () {
 /* Strike-through text */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'main',
-group: 'format',
-tools: {
-"strike": {
-label: 'Strike-through text',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/central/images/c/c9/Button_strike.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "<s>",
-post: "</s>"
-}
-}
-}
-}
+	section: 'main',
+	group: 'format',
+	tools: {
+		"strike": {
+			label: 'Strike-through text',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/central/images/c/c9/Button_strike.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "<s>",
+					post: "</s>"
+				}
+			}
+		}
+	}
 } );
 /* Comment */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'main',
-group: 'format',
-tools: {
-"comment": {
-label: 'Comment',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/central/images/7/74/Button_comment.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "<!-- ",
-post: " -->"
-}
-}
-}
-}
+	section: 'main',
+	group: 'format',
+	tools: {
+		"comment": {
+			label: 'Comment',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/central/images/7/74/Button_comment.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "<!-- ",
+					post: " -->"
+				}
+			}
+		}
+	}
+} );
+/* disambiguation */
+$( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
+	section: 'main',
+	group: 'insert',
+	tools: {
+		"disambiguation": {
+			label: 'Disambiguation',
+			type: 'button',
+			icon: 'https://upload.wikimedia.org/wikipedia/commons/6/62/Button_desambig.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{DisambiguationFull",
+					post: "\r|main         = \r|main_name    = \r|main_title   = \r|main_image   = \r|noimage      = \r\r|alternative1 = \r|include1     = \r|exclude1     = \r}}"
+				}
+			}
+		}
+	}
 } );
 /* subst:Cat */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'main',
-group: 'insert',
-tools: {
-"cat": {
-label: 'Quick categorization',
-type: 'button',
-icon: 'https://upload.wikimedia.org/wikipedia/commons/b/b4/Button_category03.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{subst:Cat",
-post: "}}"
-}
-}
-}
-}
+	section: 'main',
+	group: 'insert',
+	tools: {
+		"cat": {
+			label: 'Quick categorization',
+			type: 'button',
+			icon: 'https://upload.wikimedia.org/wikipedia/commons/b/b4/Button_category03.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{subst:Cat",
+					post: "}}"
+				}
+			}
+		}
+	}
 } );
 /*-------- INFOBOXES --------*/
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'advanced',
-groups: {
-"infoboxes": {
-'label': 'Infoboxes'
-}
-}
+	section: 'advanced',
+	groups: {
+		"infoboxes": {
+			'label': 'Infoboxes'
+		}
+	}
 } );
 /* Character */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'advanced',
-group: 'infoboxes',
-tools: {
-"character": {
-label: 'Character',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/marveldatabase/images/2/29/Character_Button.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{Marvel Database:Character Template\r| Image                   = ",
-post: "\r| Name                    = \r| CurrentAlias            = \r| Aliases                 = \r\r| Affiliation             = \r| Relatives               = \r| MaritalStatus           = \r\r| CharRef                 = \r| Gender                  = \r| Height                  = \r| Weight                  = \r| Eyes                    = \r| Hair                    = \r| UnusualFeatures         = \r\r| Origin                  = \r| Reality                 = \r| PlaceOfBirth            = \r\r| Identity                = \r| Citizenship             = \r| Occupation              = \r| Education               = \r| BaseOfOperations        = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| Personality             = \r\r| Powers                  = \r| Abilities               = \r| Strength                = \r| Weaknesses              = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Marvel                  = \r| Wikipedia               = \r| Links                   = \r}}"
-}
-}
-}
-}
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"character": {
+			label: 'Character',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/2/29/Character_Button.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Database:Character Template\r| Image                   = ",
+					post: "\r| Name                    = \r| CurrentAlias            = \r| Aliases                 = \r\r| Affiliation             = \r| Relatives               = \r| MaritalStatus           = \r\r| CharRef                 = \r| Gender                  = \r| Height                  = \r| Weight                  = \r| Eyes                    = \r| Hair                    = \r| UnusualFeatures         = \r\r| Origin                  = \r| Reality                 = \r| PlaceOfBirth            = \r\r| Identity                = \r| Citizenship             = \r| Occupation              = \r| Education               = \r| BaseOfOperations        = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| Personality             = \r\r| Powers                  = \r| Abilities               = \r| Strength                = \r| Weaknesses              = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Marvel                  = \r| Wikipedia               = \r| Links                   = \r}}"
+				}
+			}
+		}
+	}
 } );
 /* Team */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'advanced',
-group: 'infoboxes',
-tools: {
-"team": {
-label: 'Team',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/marveldatabase/images/5/5d/Team_Button.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{Marvel Database:Team Template\r| Image                   = ",
-post: "\r| Name                    = \r| EditorialNames          = \r| Aliases                 = \r\r| TeamLeaders             = \r| CurrentMembers          = \r| FormerMembers           = \r\r| Identity                = \r| Affiliation             = \r| Allies                  = \r| Enemies                 = \r\r| Origin                  = \r| Status                  = \r| Reality                 = \r| BaseOfOperations        = \r| PlaceOfFormation        = \r| PlaceOfDissolution       = \r\r| Creators                = \r| First                   = \r| Last                    = \r\r| History                 = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
-}
-}
-}
-}
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"team": {
+			label: 'Team',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/5/5d/Team_Button.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Database:Team Template\r| Image                   = ",
+					post: "\r| Name                    = \r| EditorialNames          = \r| Aliases                 = \r\r| TeamLeaders             = \r| CurrentMembers          = \r| FormerMembers           = \r\r| Identity                = \r| Affiliation             = \r| Allies                  = \r| Enemies                 = \r\r| Origin                  = \r| Status                  = \r| Reality                 = \r| BaseOfOperations        = \r| PlaceOfFormation        = \r| PlaceOfDissolution       = \r\r| Creators                = \r| First                   = \r| Last                    = \r\r| History                 = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+				}
+			}
+		}
+	}
 } );
 /* Location */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'advanced',
-group: 'infoboxes',
-tools: {
-"location": {
-label: 'Location',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/marveldatabase/images/f/f2/Location_Button.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{Marvel Database:Location Template\r| Image                   = ",
-post: "\r| Name                    = \r| Aliases                 = \r\r| Reality                 = \r| Galaxy                  = \r| StarSystem              = \r| Planet                  = \r| Continent               = \r| Country                 = \r| Region                  = \r| State                   = \r| City                    = \r| Locale                  = \r\r| Population              = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| PointsOfInterest        = \r| Residents               = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
-}
-}
-}
-}
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"location": {
+			label: 'Location',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/f/f2/Location_Button.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Database:Location Template\r| Image                   = ",
+					post: "\r| Name                    = \r| Aliases                 = \r\r| Reality                 = \r| Galaxy                  = \r| StarSystem              = \r| Planet                  = \r| Continent               = \r| Country                 = \r| Region                  = \r| State                   = \r| City                    = \r| Locale                  = \r\r| Population              = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| PointsOfInterest        = \r| Residents               = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+				}
+			}
+		}
+	}
 } );
 /* Item */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'advanced',
-group: 'infoboxes',
-tools: {
-"item": {
-label: 'Item',
-type: 'button',
-icon: 'https://upload.wikimedia.org/wikipedia/commons/7/79/Button_bombe.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{Marvel Database: Item Template\r| Image                   = ",
-post: "\r| Name                    = \r| Aliases                 = \r\r| CurrentOwner            = \r| PreviousOwners          = \r| AlternateOwners         = \r\r| Type                    = \r| Material                = \r| Dimensions              = \r| Weight                  = \r\r| Origin                  = \r| Reality                 = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r\r| Creators                = \r| First                   = \r\r| History                 = \r| Properties              = \r| AlternateVersions       = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
-}
-}
-}
-}
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"item": {
+			label: 'Item',
+			type: 'button',
+			icon: 'https://upload.wikimedia.org/wikipedia/commons/7/79/Button_bombe.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Database: Item Template\r| Image                   = ",
+					post: "\r| Name                    = \r| Aliases                 = \r\r| CurrentOwner            = \r| PreviousOwners          = \r| AlternateOwners         = \r\r| Type                    = \r| Material                = \r| Dimensions              = \r| Weight                  = \r\r| Origin                  = \r| Reality                 = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r\r| Creators                = \r| First                   = \r\r| History                 = \r| Properties              = \r| AlternateVersions       = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+				}
+			}
+		}
+	}
 } );
 /* Reality */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'advanced',
-group: 'infoboxes',
-tools: {
-"reality": {
-label: 'Reality',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/marveldatabase/images/1/12/Reality_Button.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{Marvel Database:Reality Template\r| Title                   = \r| Image                   = ",
-post: "\r| EarthNumber             = \r| Aliases                 = \r| Status                  = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| Residents               = \r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
-}
-}
-}
-}
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"reality": {
+			label: 'Reality',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/1/12/Reality_Button.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Database:Reality Template\r| Title                   = \r| Image                   = ",
+					post: "\r| EarthNumber             = \r| Aliases                 = \r| Status                  = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| Residents               = \r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+				}
+			}
+		}
+	}
 } );
 /* Race */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'advanced',
-group: 'infoboxes',
-tools: {
-"race": {
-label: 'Race',
-type: 'button',
-icon: 'https://vignette.wikia.nocookie.net/emperors-domination/images/a/a5/Button_Race.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{Marvel Database:Race Template\r| Image                   = ",
-post: "\r| Name                    = \r| Aliases                 = \r\r| Identity                = \r| Affiliation             = \r\r| BodyType                = \r| AvgHeight               = \r| AvgWeight               = \r| Eyes                    = \r| Hair                    = \r| Skin                    = \r| NumberOfLimbs           = \r| NumberOfFingers         = \r| NumberOfToes            = \r| SpecialAdaptations      = \r| UnusualFeatures         = \r\r| Origin                  = \r| Status                  = \r| Reality                 = \r| GalaxyOfOrigin          = \r| StarSystemOfOrigin      = \r| HomePlanet              = \r| BaseOfOperations        = \r| PlaceOfBirth            = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| Habitat                 = \r| Gravity                 = \r| Atmosphere              = \r| Population              = \r\r| Powers                  = \r| Abilities               = \r| AvgStrength             = \r| Weaknesses              = \r\r| GovernmentType          = \r| TechnologyLevel         = \r| CulturalTraits          = \r| Representatives         = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
-}
-}
-}
-}
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"race": {
+			label: 'Race',
+			type: 'button',
+			icon: 'https://vignette.wikia.nocookie.net/emperors-domination/images/a/a5/Button_Race.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Database:Race Template\r| Image                   = ",
+					post: "\r| Name                    = \r| Aliases                 = \r\r| Identity                = \r| Affiliation             = \r\r| BodyType                = \r| AvgHeight               = \r| AvgWeight               = \r| Eyes                    = \r| Hair                    = \r| Skin                    = \r| NumberOfLimbs           = \r| NumberOfFingers         = \r| NumberOfToes            = \r| SpecialAdaptations      = \r| UnusualFeatures         = \r\r| Origin                  = \r| Status                  = \r| Reality                 = \r| GalaxyOfOrigin          = \r| StarSystemOfOrigin      = \r| HomePlanet              = \r| BaseOfOperations        = \r| PlaceOfBirth            = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| Habitat                 = \r| Gravity                 = \r| Atmosphere              = \r| Population              = \r\r| Powers                  = \r| Abilities               = \r| AvgStrength             = \r| Weaknesses              = \r\r| GovernmentType          = \r| TechnologyLevel         = \r| CulturalTraits          = \r| Representatives         = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+				}
+			}
+		}
+	}
 } );
 /* Vehicle */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'advanced',
-group: 'infoboxes',
-tools: {
-"vehicle": {
-label: 'Vehicle',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/marveldatabase/images/2/20/Vehicle_Button.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{Marvel Database: Vehicle Template\r| Image                   = ",
-post: "\r| Name                    = \r| Aliases                 = \r\r| CurrentOwner            = \r| PreviousOwners          = \r\r| TransportMethod         = \r| CurrentModel            = \r| PreviousModels          = \r| Dimensions              = \r\r| Origin                  = \r| Reality                 = \r| Status                  = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
-}
-}
-}
-}
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"vehicle": {
+			label: 'Vehicle',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/2/20/Vehicle_Button.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Database: Vehicle Template\r| Image                   = ",
+					post: "\r| Name                    = \r| Aliases                 = \r\r| CurrentOwner            = \r| PreviousOwners          = \r\r| TransportMethod         = \r| CurrentModel            = \r| PreviousModels          = \r| Dimensions              = \r\r| Origin                  = \r| Reality                 = \r| Status                  = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+				}
+			}
+		}
+	}
 } );
 /* Comic */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'advanced',
-group: 'infoboxes',
-tools: {
-"comic": {
-label: 'Comic issue',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/marveldatabase/images/3/3a/Comic_Button.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{Marvel Database:Comic Template\r| Image               = ",
-post: "\r| Image2              = \r| Image2Text          = \r| Month               = \r| Year                = \r| ReleaseDate         = \r| Pages               = \r| Rating              = \r| OriginalPrice       = \r\r| Editor-in-Chief     = \r| CoverArtist1        = \r| Production1_1       = \r| Publisher1_1        = \r| CCO                 = \r| President1_1        = \r\r| Quotation           = \r| Speaker             = \r\r| StoryTitle1         = \r| Writer1_1           = \r| Penciler1_1         = \r| Inker1_1            = \r| Colourist1_1        = \r| Letterer1_1         = \r| Editor1_1           = \r\r|  Appearing1         = \r'''Featured Characters:'''\r* <br/>\r'''Supporting Characters:'''\r* <br/>\r'''Antagonists:'''\r* <br/>\r'''Other Characters:'''\r* <br/>\r'''Races and Species:'''\r* <br/>\r'''Locations:'''\r* <br/>\r'''Items:'''\r* <br/>\r'''Vehicles:'''\r* <br/>\r\r| Synopsis1           = \r\r| Solicit             = \r\r| Notes               = \r| Trivia              = \r| Recommended         = \r| Links               = \r}}"
-}
-}
-}
-}
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"comic": {
+			label: 'Comic issue',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/3/3a/Comic_Button.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Database:Comic Template\r| Image               = ",
+					post: "\r| Image2              = \r| Image2Text          = \r| Month               = \r| Year                = \r| ReleaseDate         = \r| Pages               = \r| Rating              = \r| OriginalPrice       = \r\r| Editor-in-Chief     = \r| CoverArtist1        = \r| Production1_1       = \r| Publisher1_1        = \r| CCO                 = \r| President1_1        = \r\r| Quotation           = \r| Speaker             = \r\r| StoryTitle1         = \r| Writer1_1           = \r| Penciler1_1         = \r| Inker1_1            = \r| Colourist1_1        = \r| Letterer1_1         = \r| Editor1_1           = \r\r|  Appearing1         = \r'''Featured Characters:'''\r* <br/>\r'''Supporting Characters:'''\r* <br/>\r'''Antagonists:'''\r* <br/>\r'''Other Characters:'''\r* <br/>\r'''Races and Species:'''\r* <br/>\r'''Locations:'''\r* <br/>\r'''Items:'''\r* <br/>\r'''Vehicles:'''\r* <br/>\r\r| Synopsis1           = \r\r| Solicit             = \r\r| Notes               = \r| Trivia              = \r| Recommended         = \r| Links               = \r}}"
+				}
+			}
+		}
+	}
 } );
 /* Volume */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'advanced',
-group: 'infoboxes',
-tools: {
-"volume": {
-label: 'Volume',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/marveldatabase/images/8/88/Comic_List.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{Marvel Database:Volume Template\r| volume_logo             = \r| PreviousVol             = \r| NextVol                 = \r| publisher               = \r| format                  = \r| type                    = \r| genres                  = \r| featured                = \r\r| SeeAlso                 = \r\r",
-post: "}}"
-}
-}
-}
-}
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"volume": {
+			label: 'Volume',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/8/88/Comic_List.png',
+			action: {
+			type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Database:Volume Template\r| volume_logo             = \r| PreviousVol             = \r| NextVol                 = \r| publisher               = \r| format                  = \r| type                    = \r| genres                  = \r| featured                = \r\r| SeeAlso                 = \r\r",
+					post: "}}"
+				}
+			}
+		}
+	}
 } );
 /* Image */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'advanced',
-group: 'infoboxes',
-tools: {
-"image": {
-label: 'Image',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/marveldatabase/images/d/dc/Image_Button.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{Marvel Database:Image Template\r| License                 = ",
-post: "\r| ImageType               = \r\r| Universe                = \r| Subject1                = \r| Subject2                = \r| Subject3                = \r| Subject4                = \r| Subject5                = \r\r| Source                  = \r| CoverArtist1            = \r| Penciler1               = \r| Inker1                  = \r| Colorist1               = \r| Letterer1               = \r}}"
-}
-}
-}
-}
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"image": {
+			label: 'Image',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/d/dc/Image_Button.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Database:Image Template\r| License                 = ",
+					post: "\r| ImageType               = \r\r| Universe                = \r| Subject1                = \r| Subject2                = \r| Subject3                = \r| Subject4                = \r| Subject5                = \r\r| Source                  = \r| CoverArtist1            = \r| Penciler1               = \r| Inker1                  = \r| Colorist1               = \r| Letterer1               = \r}}"
+				}
+			}
+		}
+	}
 } );
 /* Gallery */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'advanced',
-group: 'infoboxes',
-tools: {
-"gallery": {
-label: 'Gallery',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/marveldatabase/images/5/5a/Images_Button.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{Marvel Database:Gallery Template\r| GalleryType             = \r| GalleryData             = \r\r==Comics==\r===Interior Art===\r<gallery position=\"center\" captionalign=\"center\">\r",
-post: "\r</gallery>\r\r| SeeAlso                 = \r}}"
-}
-}
-}
-}
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"gallery": {
+			label: 'Gallery',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/5/5a/Images_Button.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Database:Gallery Template\r| GalleryType             = \r| GalleryData             = \r\r==Comics==\r===Interior Art===\r<gallery position=\"center\" captionalign=\"center\">\r",
+					post: "\r</gallery>\r\r| SeeAlso                 = \r}}"
+				}
+			}
+		}
+	}
 } );
 /* Episode */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'advanced',
-group: 'infoboxes',
-tools: {
-"episode": {
-label: 'Episode',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/marveldatabase/images/e/ee/Episode_Button.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{Marvel Database:Episode Template\r| Image               = ",
-post: "\r| Day                 = \r| Month               = \r| Year                = \r\r| Director1           = \r| Producer1           = \r| Writer1             = \r\r| Quotation           = \r| Speaker             = \r\r| EpisodeTitle        = \r| Synopsis            = \r\r| Appearing           = \r'''Featured Characters:'''\r* <br/>\r'''Supporting Characters:'''\r* <br/>\r'''Antagonists:'''\r* <br/>\r'''Other Characters:'''\r* <br/>\r'''Locations:'''\r* <br/>\r'''Items:'''\r* <br/>\r'''Vehicles:'''\r* <br/>\r\r| Notes               = \r| Trivia              = \r| Recommended         = \r| Links               = \r}}"
-}
-}
-}
-}
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"episode": {
+			label: 'Episode',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/e/ee/Episode_Button.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Database:Episode Template\r| Image               = ",
+					post: "\r| Day                 = \r| Month               = \r| Year                = \r\r| Director1           = \r| Producer1           = \r| Writer1             = \r\r| Quotation           = \r| Speaker             = \r\r| EpisodeTitle        = \r| Synopsis            = \r\r| Appearing           = \r'''Featured Characters:'''\r* <br/>\r'''Supporting Characters:'''\r* <br/>\r'''Antagonists:'''\r* <br/>\r'''Other Characters:'''\r* <br/>\r'''Locations:'''\r* <br/>\r'''Items:'''\r* <br/>\r'''Vehicles:'''\r* <br/>\r\r| Notes               = \r| Trivia              = \r| Recommended         = \r| Links               = \r}}"
+				}
+			}
+		}
+	}
 } );
 /* Marvel staff */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'advanced',
-group: 'infoboxes',
-tools: {
-"staff": {
-label: 'Marvel staff',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/marveldatabase/images/3/3e/Staff_Button.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{Marvel Database:Staff Template\r| Image                   = ",
-post: "\r| RealName                = \r| Pseudonyms              = \r| Employers               = \r| Titles                  = \r\r| Gender                  = \r| YearOfBirth             = \r| MonthOfBirth            = \r| DayOfBirth              = \r| CityOfBirth             = \r| StateOfBirth            = \r| CountryOfBirth          = \r| Creations               = \r| First                   = \r\r| PersonalHistory         = \r| ProfessionalHistory     = \r\r| Notes                   = \r| Trivia                  = \r| OfficialWebsite         = \r| Links                   = \r}}"
-}
-}
-}
-}
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"staff": {
+			label: 'Marvel staff',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/3/3e/Staff_Button.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Database:Staff Template\r| Image                   = ",
+					post: "\r| RealName                = \r| Pseudonyms              = \r| Employers               = \r| Titles                  = \r\r| Gender                  = \r| YearOfBirth             = \r| MonthOfBirth            = \r| DayOfBirth              = \r| CityOfBirth             = \r| StateOfBirth            = \r| CountryOfBirth          = \r| Creations               = \r| First                   = \r\r| PersonalHistory         = \r| ProfessionalHistory     = \r\r| Notes                   = \r| Trivia                  = \r| OfficialWebsite         = \r| Links                   = \r}}"
+				}
+			}
+		}
+	}
 } );
 };
 /* Check if view is in edit mode and that the required modules are available. Then, customize the toolbar … */
@@ -573,7 +588,7 @@ mw.loader.using( 'user.options' ).then( function () {
 if ( mw.user.options.get( 'usebetatoolbar' ) == 1 ) {
 $.when(
 mw.loader.using( 'ext.wikiEditor' ), $.ready
-).then( customizeToolbar );
+).then( customizeToolbar2 );
 }
 } );
 }

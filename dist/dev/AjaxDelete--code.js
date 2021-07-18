@@ -21,7 +21,7 @@
         window.AjaxDeleteLoaded ||
         (
             !$('#ca-delete').length &&
-            !/sysop|content-moderator|staff|helper|wiki-manager|content-team-member|soap/.test(config.wgUserGroups.join())
+            !/sysop|content-moderator|staff|helper|wiki-representative|wiki-specialist|soap/.test(config.wgUserGroups.join())
         )
     ) {
         return;

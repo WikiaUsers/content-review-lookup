@@ -1,0 +1,1 @@
+<iframe src="https://www.guilded.gg/canvas_index.html?route=%2Fcanvas%2Fembed%2Fteamcard%2FMlvaLO2R&size=large" width="553" height="262" frameborder="0" scrolling="no"></iframe>

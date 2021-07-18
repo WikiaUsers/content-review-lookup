@@ -8,7 +8,8 @@
                 'bot',
                 'user',
                 'autoconfirmed',
-                'chatmoderator'
+                'chatmoderator',
+                'emailconfirmed'
             ],
             standart: [
                 'Администраторы',

@@ -139,7 +139,7 @@ mw.loader.using(['mediawiki.api']).then(function() {
 						else if (i === 1) rule = rule.replace(/\$1/, data.imageUrls[rank]);
 						else if (i === 2) rule = rule.replace(/\$1/, data.wallText[rank]);
 						
-						temp.push((lastElem !== -1)? rule : ('/*\n'+rule+'\n*/'));
+						temp.push(rule);
 					});
 					ret.push(temp.join('\n'));
 				});
@@ -173,13 +173,14 @@ mw.loader.using(['mediawiki.api']).then(function() {
 				mw.config.get('wgPageName') !== 'MediaWiki:Custom-common.less/staff-colors.less' 
 				&& mw.config.get('wgPageName') !== 'MediaWiki:Gadget-StaffColorsUpdater.js/staff-colors.json' 
 				&& mw.config.get('wgPageName') !== 'MediaWiki:Custom-common.less' 
+				&& mw.config.get('wgPageName') !== 'MediaWiki:Common.css' 
 			)
 			|| mw.config.get('wgAction') !== 'view'
 			|| !/sysop|codeeditor|staff|util|soap|wiki-manager|content-team-member|content-reviewer|content-volunteer/.test(mw.config.get('wgUserGroups').join('\n').toLowerCase())
 		) return;
 		window.StaffColorsUpdaterLoaded = true;
 		
-		$('#mw-content-text').prepend($('<div>', {
+		$('#mw-content-text').before($('<a>', {
 			class: "wds-button",
 			html: $('<div>', {
 				click: function() {
@@ -189,7 +190,7 @@ mw.loader.using(['mediawiki.api']).then(function() {
 
 					window.updateStaffColors(function() {
 						$this.text("Update Staff Colors");
-						alert('Done!');
+						alert('Staff Color Updater:\nSuccessfully updated staff colors!\n\nFile Updated: Custom-common.less/staff-colors.less\nUpdater: Gadget-StaffColorsUpdater.js\nData Source: Gadget-StaffColorsUpdater.js/staff-colors.json');
 					});
 				},
 				text: "Update Staff Colors",

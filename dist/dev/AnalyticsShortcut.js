@@ -5,7 +5,7 @@
 ;( function( mw, window ) {
     'use strict';
 
-    if ( !(document.getElementsByClassName( 'wds-community-header__wiki-buttons' )[0] || document.getElementsByClassName( 'wiki-tools' )[0]) || window.analyticsButtonLoaded || !/sysop|staff|helper|wiki-manager|content-team-member/.test(mw.config.get( 'wgUserGroups' ).join()) ) {
+    if ( !(document.getElementsByClassName( 'wds-community-header__wiki-buttons' )[0] || document.getElementsByClassName( 'wiki-tools' )[0]) || window.analyticsButtonLoaded || !/sysop|staff|helper|wiki-representative|wiki-specialist/.test(mw.config.get( 'wgUserGroups' ).join()) ) {
         return;
     }
 

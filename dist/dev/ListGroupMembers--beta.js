@@ -87,8 +87,8 @@ void ( function( window, $, mw ) {
         global : Object.freeze( [ 
             "staff",
             "helper",
-            "wiki-manager",
-            "content-team-member",
+            "wiki-representative",
+            "wiki-specialist",
             "soap",
             "global-discusssions-moderator",
             "vanguard",
@@ -122,8 +122,8 @@ void ( function( window, $, mw ) {
     const USER_GROUP_ORDER = Object.freeze( [ 
         "staff",
         "helper",
-        "wiki-manager",
-        "content-team-member",
+        "wiki-representative",
+        "wiki-specialist",
         "soap",
         "global-discussion-moderator",
         "vanguard",

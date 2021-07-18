@@ -27,7 +27,8 @@
     function cook(text) {
         // capitalize and despacelize text
         if (!text) return '';
-        return '[' + text.slice(0, 1).toUpperCase() + text.slice(0, 1).toLowerCase() + ']' + $.escapeRE(text.slice(1)).replace(/[ _]/g, '[ _]');
+        var escapeRegex = mw.RegExp.escape || mw.util.escapeRegExp;
+        return '[' + text.slice(0, 1).toUpperCase() + text.slice(0, 1).toLowerCase() + ']' + escapeRegex(text.slice(1)).replace(/[ _]/g, '[ _]');
     }// cook
     
     function getPage(pagename) {
@@ -123,8 +124,9 @@
     
     function report(content, type) {
         // report result helper
-        mw.loader.using(['ext.bannerNotifications']).done(function() {
-            new BannerNotification(content, type, null, 10000).show();
+        mw.notify(content, {
+            autoHideSeconds: 10,
+            type: type
         });
     }// report
     
@@ -214,4 +216,5 @@
         i18nLoad: i18nLoad,
     };
     importArticle({type: 'style', article: 'u:dev:MediaWiki:CategoryQuickRemove.css'});
+    mw.loader.using(['mediawiki.notify', 'mediawiki.util']);
 }((window.fng = window.fng || {}).cqr = window.fng.cqr || {});

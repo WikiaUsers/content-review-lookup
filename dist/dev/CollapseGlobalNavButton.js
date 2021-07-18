@@ -8,7 +8,7 @@
  */
 (function() {
 	if (mw.config.get('skin') !== 'fandomdesktop') return console.warn('[CollapseGlobalNavButton] [WARN]: Script was loaded on a skin other than UCX, exiting...');
-	if ($('.global-navigation__collapse').length) return;
+	if ($('.global-navigation__collapse').length) return console.warn('[CollapseGlobalNavButton] [WARN]: Script was double loaded, exiting...');
 	
 	var $notifs = $('.global-navigation__bottom');
 	var $nav = $notifs.parent();
@@ -134,6 +134,8 @@
 			},
 			html: '<svg class="wds-icon wds-icon-tiny" style="transform: rotate(90deg);"><use xlink:href="#wds-icons-menu-control-tiny"></use></svg>'
 		}));
+		
+		if (collapsed) $('.global-navigation__collapse').click();
 	})});
 
 	// Import CSS/I18n
@@ -144,6 +146,4 @@
 			'u:dev:MediaWiki:I18n-js/code.js',
 		],
 	});
-	
-	if (collapsed) $('.global-navigation__collapse').click();
 }());

@@ -421,7 +421,7 @@
 			var then = revisions.reduce(function(a, b) {
 				return a.user !== now.user ? a : b;
 			});
-			var canRollbackNatively = ['sysop', 'soap', 'staff', 'helper', 'rollback', 'content-moderator', 'wiki-manager', 'content-team-member'].some(function(group) {
+			var canRollbackNatively = ['sysop', 'soap', 'staff', 'helper', 'rollback', 'content-moderator', 'wiki-representative', 'wiki-specialist'].some(function(group) {
 				return config.wgUserGroups.indexOf(group) !== -1;
 			});
 			if (canRollbackNatively) {

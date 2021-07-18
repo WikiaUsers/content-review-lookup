@@ -1,23 +1,23 @@
 /**
  * Name:        HighlightUpdate
  * Version:     v1.0
- * Author:      KockaAdmiralac <1405523@gmail.com>
+ * Author:      KockaAdmiralac <1405523@gmail.com>, Joritochip
  * Description: Adds a button for updating [[MediaWiki:Highlight.css]].
  */
+
 (function () {
     'use strict';
     var config = mw.config.get([
         'wgArticleId',
-        'wgCityId',
-        'wgVersion'
+        'wgCityId'
     ]);
+    
     if (
         config.wgArticleId !== 2160 ||
         Number(config.wgCityId) !== 7931 ||
         $('#ca-highlights').length
-    ) {
-        return;
-    }
+    ) return;
+    
     var HighlightUpdater = {
         groups: {
             'vanguard': {
@@ -27,6 +27,10 @@
             'voldev': {
                 color: '#23c8d2',
                 cssVar: 'voldev'
+            },
+            'content-volunteer': {
+                color: '#ff7000',
+                cssVar: 'convol'
             },
             'global-discussions-moderator': {
                 color: '#4286f4',
@@ -40,13 +44,13 @@
                 color: '#4c5f1d',
                 cssVar: 'helper'
             },
-            'content-team-member': {
+            'wiki-specialist': {
                 color: '#d27d2c',
                 cssVar: 'ctm'
             },
-            'wiki-manager': {
+            'wiki-representative': {
                 color: '#09e5a2',
-                cssVar: 'wiki-manager'
+                cssVar: 'wiki-manager' // backwards compat
             },
             'staff': {
                 color: '#ddaa00',
@@ -70,15 +74,16 @@
                 'Testludwikvs': ['soap'],
                 'Ucpnltest2': ['soap'],
                 'Ursuula': [
-                    'wiki-manager',
-                    'content-team-member'
+                    'wiki-representative',
+                    'wiki-specialist'
                 ],
-                'Wiki-o-slay': ['soap']
+                'Wiki-o-slay': ['soap'],
+                'JT222': ['staff']
             }
         },
         init: function() {
             this.api = new mw.Api();
-            $('.page-header__contribution-buttons .wds-list').append(
+            $('.page-header__actions .wds-list').append(
                 $('<li>').append(
                     $('<a>', {
                         click: $.proxy(this.click, this),
@@ -90,28 +95,39 @@
             );
         },
         click: function() {
-            this.api.get({
-                action: 'query',
-                list: 'groupmembers',
-                gmgroups: Object.keys(this.groups).join('|') + '|bot-global',
-                gmlimit: 'max',
-                pageids: 2160,
-                prop: 'revisions',
-                rvprop: 'content',
-                indexpageids: true,
-                cb: Date.now()
-            }).then($.proxy(this.callback, this));
+            var params = {
+				uselang: 'en'
+			};
+            Object.keys(this.groups).forEach(function(value, index) {
+				params['groups['+index+']'] = value;
+            });
+            $.get(mw.util.getUrl('Special:ListGlobalUsers', params), 
+				$.proxy(this.parseUsers, this));
+        },
+        parseUsers: function(data) {
+            var $data = $(data),
+                users = $data.find('.list-global-users-members > li').map(function(index, child) {
+                    var $child = $(child),
+                        $groups = $child.contents().filter(function() {
+                            return this.nodeType == 3 && !this.nextSibling;
+                        });
+                    return {
+                        name: $child.find('bdi').text(),
+                        groups: $groups.text().trim().slice(1, -1).split(', ')
+                    };
+                });
+            this.callback(users);
         },
         callback: function(data) {
-            var users = {};
-            var overrides = this.overrides;
-            for (var group1 in this.groups) {
-                users[group1] = [];
-            }
-            data.users.forEach(function(u) {
-                var groups = u.groups;
-                if (overrides.remove[u.name]) {
-                    overrides.remove[u.name].forEach(function(g) {
+            var users = {},
+                overrides = this.overrides;
+            Object.keys(this.groups).forEach(function(value) {
+                users[value] = [];
+            });
+            data.each(function(index, user) {
+                var groups = user.groups;
+                if (overrides.remove[user.name]) {
+                    overrides.remove[user.name].forEach(function(g) {
                         if (groups.indexOf(g) !== -1) {
                             groups.splice(groups.indexOf(g), 1);
                         }
@@ -121,7 +137,7 @@
                     return;
                 }
                 groups.forEach(function(g) {
-                    users[g].push(u.name);
+                    if (users[g]) users[g].push(user.name);
                 });
             });
             Object.keys(overrides.add).forEach(function(name) {
@@ -142,23 +158,33 @@
                     '    color: var(--highlight-' + this.groups[group].cssVar +
                     ') !important;\n}\n\n';
             }
-            this.api.post({
-                action: 'edit',
-                text: data.query.pages[data.query.pageids[0]]
-                    .revisions[0]['*']
-                    .replace(
-                        /(\/\* HighlightUpdate-start \*\/\n)[\s\S]*$/igm,
-                        function(_, m) {
-                            return m + text;
-                        }
-                    ),
-                title: 'MediaWiki:Highlight.css',
-                // eslint-disable-next-line max-len
-                summary: 'Automatically updating via [[MediaWiki:Highlight.js|Highlight.js]]',
-                minor: true,
-                bot: true,
-                token: mw.user.tokens.get('editToken')
-            }).then($.proxy(this.edited, this));
+            this.api.get({
+                action: 'query',
+                prop: 'revisions',
+                rvprop: 'content',
+                rvslots: 'main',
+                indexpageids: true,
+                pageids: 2160
+            }).then($.proxy(function(data) {
+                var content = data.query.pages[data.query.pageids[0]]
+                    .revisions[0].slots.main['*'];
+                
+                this.api.post({
+                    action: 'edit',
+                    text: content.replace(
+                            /(\/\* HighlightUpdate-start \*\/\n)[\s\S]*$/igm,
+                            function(_, m) {
+                                return m + text;
+                            }
+                        ),
+                    title: 'MediaWiki:Highlight.css',
+                    // eslint-disable-next-line max-len
+                    summary: 'Automatically updating via [[MediaWiki:Highlight.js|Highlight.js]]',
+                    minor: true,
+                    bot: true,
+                    token: mw.user.tokens.get('editToken')
+                }).then($.proxy(this.edited, this));
+            }, this));
         },
         getSelectorsFor: function(group, users) {
             var encode = [];
@@ -173,22 +199,10 @@
             var selectors = encode.map(function(sel) {
                 return 'a[href$=":' + sel + '"]';
             });
-            if (group === 'staff') {
-                selectors.push('.ChatWindow .User.staff');
-            }
             return selectors;
         },
         edited: function() {
-            if (config.wgVersion === '1.19.24') {
-                new BannerNotification(
-                    'Highlights successfully updated!',
-                    'confirm'
-                ).show();
-            } else {
-                mw.loader.using('mw.notification').then(function () {
-                    mw.notify('Highlights successfully updated!');
-                });
-            }
+            mw.notify('Highlights successfully updated!');
             setTimeout(function() {
                 window.location.reload();
             }, 3000);

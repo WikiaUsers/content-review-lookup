@@ -4712,6 +4712,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"focal": {
+				"name": "Focal",
+				"colors": [
+					"beast",
+					"pink"
+				],
+				"rarity": "common"
+			},
 			"fog": {
 				"name": "Fog",
 				"colors": [
@@ -4960,6 +4968,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Frightmare",
 				"colors": [
 					"black",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"frigid": {
+				"name": "Frigid",
+				"colors": [
+					"beast",
+					"white",
 					"blue"
 				],
 				"rarity": "unbreedable"
@@ -6171,6 +6188,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"holiday",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"heirloom": {
+				"name": "Heirloom",
+				"colors": [
+					"beast",
+					"white",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},
@@ -8033,6 +8059,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"world",
 					"rainbow",
 					"purple"
+				],
+				"rarity": "unbreedable"
+			},
+			"lunaura": {
+				"name": "Lunaura",
+				"colors": [
+					"beast",
+					"cosmic",
+					"blue"
 				],
 				"rarity": "unbreedable"
 			},

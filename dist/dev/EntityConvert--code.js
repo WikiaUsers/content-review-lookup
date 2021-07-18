@@ -92,9 +92,9 @@ EntityConvert.markup.interface = '<section id=\"entity-convert\" style=\"display
 		<input type=\"checkbox\" checked="checked" id=\"entity-convert-options-decode-hex\" /> Decode hexadecimal entities<br />\
 		<input type=\"checkbox\" id=\"entity-convert-options-decode-amp\" /> Decode ampersands (&amp;amp; &rarr; &amp;)<br />\
 		<input type=\"checkbox\" id=\"entity-convert-options-decode-xml\" /> Decode other default XML entities <span class=\"explain\" title=\"&amp;quot;, &amp;apos;, &amp;lt; and &amp;gt; to &quot;, &apos;, &lt; and &gt;\">(?)</span><br />\
-		<input type=\"checkbox\" id=\"entity-convert-options-decode-custom\" /> Decode custom entities <a class=\"explain\" title=\"Entities specified by words, like &amp;nbsp;, &amp;bull; and &amp;trade; are not decoded. Checking this checkbox allows you to decode these as well. Click this link to find out more.\" href=\"https://dev.wikia.com/wiki/EntityConvert#Custom_Entities\">(?)</a><br />\
+		<input type=\"checkbox\" id=\"entity-convert-options-decode-custom\" /> Decode custom entities <a class=\"explain\" title=\"Entities specified by words, like &amp;nbsp;, &amp;bull; and &amp;trade; are not decoded. Checking this checkbox allows you to decode these as well. Click this link to find out more.\" href=\"https://dev.fandom.com/wiki/EntityConvert#Custom_Entities\">(?)</a><br />\
 		<input type=\"button\" id=\"entity-convert-button-options-hide\" value=\"Close options\" />\
-		<a href="/wiki/c:dev:Talk:EntityConvert" target="_blank" title="Go to feature\'s talk page"><input type=\"button\" value=\"Feedback/bug reports\" /></a>\
+		<a href="https://dev.fandom.com/wiki/Talk:EntityConvert" target="_blank" title="Go to feature\'s talk page"><input type=\"button\" value=\"Feedback/bug reports\" /></a>\
 	</div>\
 </section>';
 EntityConvert.markup.trigger = '<li id="entity-convert-trigger" class="overflow"><a style="cursor: hand; cursor: pointer;">HTML Entity Convert</a></li>';
@@ -107,16 +107,11 @@ $("body").append(EntityConvert.markup.interface);
 $("section#entity-convert").css("top", (screen.availHeight - $("section#entity-convert").height()) / 2 + "px");
 $("section#entity-convert").css("left", (screen.availWidth - $("section#entity-convert").width()) / 2 + "px");
 
-// create trigger
-if (mw.config.get("skin") === "oasis") {
-	// if oasis - add to bottom option menu "dropdown" if it has less than 10 items. if it has more add to the ordinary bottom bar
-	if ($("body > .WikiaSiteWrapper > #WikiaBarWrapper #my-tools-menu > li").length < 10) {
-		$(".wikia-bar #my-tools-menu").prepend(EntityConvert.markup.trigger);
-	} else {
-		$("body > .WikiaSiteWrapper > #WikiaBarWrapper .tools").append(EntityConvert.markup.trigger);
-	}
-} else if (mw.config.get("skin") === "monobook") { // this is monobook
-	$("#globalWrapper > #column-one > #p-tb > .pBody > ul").append(EntityConvert.markup.trigger);
+// add to bottom option menu "dropdown" if it has less than 10 items. if it has more add to the ordinary bottom bar
+if ($("#my-tools-menu > li").length < 10) {
+	$("#my-tools-menu").prepend(EntityConvert.markup.trigger);
+} else {
+	$("#WikiaBarWrapper .tools").prepend(EntityConvert.markup.trigger);
 }
 
 
@@ -126,17 +121,9 @@ $("section#entity-convert > #entity-convert-close span").click(function() {
 });
 
 // open interface
-if (mw.config.get("skin") === "oasis") {
-	// oasis
-	$(".wikia-bar #my-tools-menu #entity-convert-trigger").click(function() {
-		$("section#entity-convert").show(70);
-	});
-} else if (mw.config.get("skin") === "monobook") {
-	// monobook
-	$("#globalWrapper > #column-one > #p-tb > .pBody #entity-convert-trigger").click(function() {
-		$("section#entity-convert").show(70);
-	});
-}
+$("#my-tools-menu #entity-convert-trigger").click(function() {
+	$("section#entity-convert").show(70);
+});
 
 // show-hide options buttons
 $('section#entity-convert input#entity-convert-button-options-show').click(function() {

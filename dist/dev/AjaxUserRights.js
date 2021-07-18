@@ -9,10 +9,7 @@ $(function() {
     if (window.AjaxUserRightsLoaded) return;
     window.AjaxUserRightsLoaded = true;
 
-    const isUCP = mw.config.get('wgVersion') !== '1.19.24';
-    const rightsCanon =  isUCP ?
-        ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator', 'rollback'] :
-        ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator', 'chatmoderator', 'rollback'];
+    const rightsCanon =  ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator', 'rollback'];
     var config = mw.config.get(['wgPageName', 'wgNamespaceNumber', 'wgUserGroups', 'wgUserName']),
         target, modal, i18n,
         api = new mw.Api();
@@ -122,19 +119,11 @@ $(function() {
             };
             api.post(opts).done(function(result) {
                 if (!result.warnings && (Object.keys(result.userrights.added).length > 0 || Object.keys(result.userrights.removed).length > 0 )) {
-                    if (isUCP) {
-                        mw.notify(i18n.msg('notification-success').plain());
-                    } else {
-                        new BannerNotification(i18n.msg('notification-success').escape(), 'confirm').show();
-                    }
+                    mw.notify(i18n.msg('notification-success').plain());
                 } else {
-                    if (isUCP) {
-                        mw.notify(i18n.msg('notification-error').plain(), {
-                            type: 'error'
-                        });
-                    } else {
-                        new BannerNotification(i18n.msg('notification-error').escape(), 'error').show();
-                    }
+                    mw.notify(i18n.msg('notification-error').plain(), {
+                        type: 'error'
+                    });
                     console.warn(result);
                 }
             });
@@ -191,7 +180,7 @@ $(function() {
         'u:dev:MediaWiki:I18n-js/code.js'
     ]});
 
-    mw.loader.using(isUCP ? ['mediawiki.api', 'mediawiki.notify'] :'mediawiki.api').then(function() {
+    mw.loader.using(['mediawiki.api', 'mediawiki.notify']).then(function() {
         mw.hook('dev.i18n').add(function(i18np) {
             i18np.loadMessages('AjaxUserRights').then(function(i18np) {
                 i18n = i18np;

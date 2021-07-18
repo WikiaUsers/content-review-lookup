@@ -7,12 +7,15 @@ window.tooltips_config = {
 window.wgRandomImageNoCache = true;
 
 
-//add class for footer
-const footerClass = document.getElementsByClassName('wds-global-footer');
-const waterDepth = (document.body.scrollHeight - 740);
-if (waterDepth >= 5100) {
-  footerClass[0].classList.add('over5100m');
+//Add class for body
+const depth = (document.body.scrollHeight - 740);
+if (depth >= 5100) {
+  document.getElementsByTagName("body")[0].classList.add("over5100m");
 }
+
+//Add random class for body
+const randNum = Math.floor(Math.random() * 10);
+document.getElementsByTagName("body")[0].classList.add("randomizer-" + randNum);
 
 
 // Make image link="empty" unnecessary

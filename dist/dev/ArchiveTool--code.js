@@ -33,8 +33,7 @@
         'wgArticleId',
         'wgNamespaceNumber',
         'wgPageName',
-        'wgTitle',
-        'wgVersion'
+        'wgTitle'
     ]);
     if (
         // If the script has already loaded..
@@ -56,7 +55,6 @@
     }
     window.ArchiveToolLoaded = true;
     var ArchiveTool = {
-        isUCP: config.wgVersion !== '1.19.24',
         config: $.extend(true, {
             archiveListTemplate: window.archiveListTemplate || 'ArchiveList',
             archivePageTemplate: window.archivePageTemplate || 'ArchivePage',
@@ -75,14 +73,6 @@
                 i18n.useContentLang();
             }
             this.api = new mw.Api();
-            var controls = (
-                $('#WikiaUserPagesHeader').length ?
-                    '.UserProfileActionButton' :
-                    '#PageHeader'
-            ) + ' .wds-dropdown__content > ul';
-            if (config.wgNamespaceNumber === 3 && $('#WikiaUserPagesHeader').length) {
-                controls = '.UserProfileActionButton > .wikia-menu-button > ul';
-            }
             $('<li>', {
                 id: 'control_archive',
                 click: $.proxy(this.click, this)
@@ -92,7 +82,7 @@
                     rel: 'nofollow',
                     text: i18n.msg('button').plain()
                 })
-            ).appendTo(controls);
+            ).appendTo('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list');
         },
         click: function() {
             var regexEscape = $.escapeRE ?
@@ -108,21 +98,13 @@
                 regexEscape(this.config.archiveListTemplate) +
                 '\\}\\}'
             );
-            this.$container = $('.WikiaArticle')
+            this.$container = $('.WikiaArticle, #content')
                 .first()
                 .addClass('archiving')
                 .empty();
-            if (this.isUCP) {
-                this.$loading = $('<span>', {
-                    'class': 'ajax mw-ajax-loader'
-                });
-            } else {
-                this.$loading = $('<img>', {
-                    'alt': this.i18n.msg('loading').plain(),
-                    'class': 'ajax',
-                    'src': config.stylepath + '/common/progress-wheel.gif'
-                });
-            }
+            this.$loading = $('<span>', {
+                'class': 'ajax mw-ajax-loader'
+            });
             this.$loading.appendTo(this.$container);
             this.api.get({
                 action: 'query',
@@ -189,30 +171,29 @@
                 }).appendTo(tr);
             });
             this.$body = $body;
-            var buttonClass = this.isUCP ? 'wds-button' : 'wikia-button';
             $('<div>', {
                 'class': 'buttons'
             }).append(
                 $('<a>', {
-                    'class': buttonClass + ' secondary',
+                    'class': 'wds-button secondary',
                     'click': $.proxy(this.clickSelect, this),
                     'text': this.i18n.msg('select').plain()
                 }),
                 ' ',
                 $('<a>', {
-                    'class': buttonClass + ' secondary',
+                    'class': 'wds-button secondary',
                     'click': $.proxy(this.clickDeselect, this),
                     'text': this.i18n.msg('deselect').plain()
                 }),
                 ' ',
                 $('<a>', {
-                    'class': buttonClass,
+                    'class': 'wds-button',
                     'click': $.proxy(this.archive, this),
                     'text': this.i18n.msg('save').plain()
                 }),
                 ' ',
                 $('<a>', {
-                    'class': buttonClass,
+                    'class': 'wds-button',
                     'click': $.proxy(this.clickAbort, this),
                     'text': this.i18n.msg('abort').plain()
                 })

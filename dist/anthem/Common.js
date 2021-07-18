@@ -71,3 +71,13 @@ $(function(){
     }
 });
 //</syntaxhighlight>
+
+
+//Importing the Countdown script
+
+importArticles({
+    type: "script",
+    articles: [
+        "w:c:dev:MediaWiki:Countdown/code.js"
+    ]
+});

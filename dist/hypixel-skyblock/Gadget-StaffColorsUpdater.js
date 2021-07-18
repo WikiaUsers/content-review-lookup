@@ -199,6 +199,7 @@ mw.loader.using(['mediawiki.api']).then(function() {
 			title: "Update Staff Colors",
 			css: {
 				cursor: "pointer",
+				"margin-bottom": "5px",
 			}
 		}));
 	}());

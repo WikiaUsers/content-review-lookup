@@ -41,7 +41,7 @@
         } );
     }
     
-    // A flag to know which edit button to add
+    // A flag to mark if the old location is being used
     var backcompat;
     
     // Creating the primary Wall Greeting object
@@ -77,7 +77,7 @@
                     "staff",
                     "helper",
                     "soap",
-                    "wiki-manager"
+                    "wiki-representative"
                 ] );
                 const isAllowed = allowedGroups.some( function( g ) { 
                     return conf.wgUserGroups.includes( g );
@@ -140,55 +140,90 @@
             } );
         },
         renderButtons : function( user ) { 
-            const subpage = this.i18n
-                .inContentLang( )
-                .msg( 'subpage-name' )
-                .plain( );
+            const _this = this,
+            	buttons = document.createElement( "div" ),
+	        	editButton = document.createElement( "a" ),
+	        	text = document.createElement( "span" ),
+            	subpage = this.i18n
+	                .inContentLang( )
+	                .msg( 'subpage-name' )
+	                .plain( ),
+	        	pageName = conf.wgFormattedNamespaces[ 2 ] + ":" + user + "/" +
+	        		subpage,
+	        	editUrl = conf.wgServer + mw.util.getUrl( pageName, {
+                    action: "edit"
+                });
                 
-            const buttons = document.createElement( "div" );
+	        const moveUrl = conf.wgServer + mw.util.getUrl( "Special:MovePage/" +
+            		conf.wgFormattedNamespaces[ 1202 ] + ":" + user, {
+            			wpNewTitle: pageName,
+            			wpReason: this.i18n.inContentLang( )
+                			.msg( 'move-reason' ).plain()
+            		}),
+            	warning = document.createElement( "div" );
+
             buttons.style.marginBottom = "1em";
-            buttons.style.textAlign = document.body.classList.contains("sitedir-rtl") ? "left" : "right";
-            this.wrapper.insertAdjacentElement( "afterbegin", buttons );
+            buttons.style.textAlign =
+            	document.body.classList.contains("sitedir-rtl") ? "left"
+            													: "right";
             buttons.classList.add( "MessageWallButtons" );
-            
-            const editButton = document.createElement( "a" );
-            
-            const text = document.createElement( "span" );
-            text.classList.add( "edit-button-text" );
-            text.innerText = this.i18n.msg( "edit" ).plain( );
-            
-            editButton.append( text );
-            const t = this;
-            mw.hook( "dev.wds" ).add(function () {
-                editButton.prepend( t.dev.wds.icon( "pencil-small" ) );
-            });
-            
-            editButton.classList.add( "wds-button", "MessageWallEditButton" );
-            
-            // Setting the button target according to which greeting page 
-            // is displayed
-            var m;
+	        	
             if (backcompat) {
-                m = mw.util.getUrl( conf.wgFormattedNamespaces[ 1202 ] + 
-                ":" + user, {
-                    // ?action=edit currently doesn't work on the MWG namespace
-                    action: "edit"
-                } ).replace ("action=edit", "veaction=editsource");
+            	warning.innerHTML = this.i18n.inContentLang().msg(
+            		'warning-move-page', conf.wgFormattedNamespaces[ 2 ]
+            		).parse( );
+            	warning.style.background = "var(--theme-alert-label, #fff)";
+            	warning.style.color = "var(--theme-alert-color, #e81a3f)";
+            	warning.style.textAlign = "center";
+            	warning.style.border = "1px solid";
+            	buttons.appendChild( warning );
+
+	            text.classList.add( "move-button-text" );
+	            text.innerText = this.i18n.msg( 'move' ).plain( );
+	            
+	            editButton.append( text );
+	            editButton.classList.add( "wds-button", "MessageWallEditButton" );
+
+	            editButton.setAttribute( "href", moveUrl );
+                
+                editButton.addEventListener("click", function(event) {
+                	// return if it's any mouse button other than left
+                	if (event.button) return;
+                	event.preventDefault();
+                	
+                	var api = new mw.Api();
+                	api.postWithEditToken({
+                		action: 'move',
+                		from: conf.wgFormattedNamespaces[ 1202 ] + ":" + user,
+                		to: pageName,
+                		reason: _this.i18n.inContentLang( )
+                			.msg( 'move-reason' ).plain()
+                	}).done(function(response) {
+                		if (!response.error) {
+                			window.location.assign( mw.util.getUrl( pageName) );
+                		} else {
+                			window.location.assign(moveUrl);
+                		}
+                	}).fail(function() {
+                		window.location.assign(moveUrl);
+                	});
+                });
             } else {
-                const subpage = this.i18n
-                    .inContentLang( )
-                    .msg( 'subpage-name' )
-                    .plain( );
-                m = mw.util.getUrl( conf.wgFormattedNamespaces[ 2 ] + 
-                ":" + user + "/" + subpage, {
-                    action: "edit"
-                } );
+	            text.classList.add( "edit-button-text" );
+	            text.innerText = this.i18n.msg( "edit" ).plain( );
+	            
+	            editButton.append( text );
+	            
+	            mw.hook( "dev.wds" ).add(function () {
+	                editButton.prepend( _this.dev.wds.icon( "pencil-small" ) );
+	            });
+	            
+	            editButton.classList.add( "wds-button", "MessageWallEditButton" );
+
+	            editButton.setAttribute( "href", editUrl );
             }
-            
-            editButton.setAttribute( "href", conf.wgServer + m );
-            
+
             buttons.appendChild( editButton );
-            
             this.wrapper.insertAdjacentElement( "afterbegin", buttons );
         },
         fetchGreeting : function( user ) { 

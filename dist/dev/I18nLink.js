@@ -27,7 +27,7 @@ mw.loader.using([
         isMediaWiki = config.wgNamespaceNumber === 8;
         titleText = isLua ? 'Module:' + (isLuaModule ? config.wgTitle.replace(/\/.*/, '') : title[1]) + '/i18n' : 'MediaWiki:Custom-' + config[isMediaWiki ? 'wgTitle' : 'wgPageName'].replace(/\/.*|\.js/, '') + '/i18n.json',
         api = new mw.Api(),
-        list = $('.page-header__contribution-buttons .wds-list'),
+        list = $('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list'),
         options = $.extend(
             {
                 create: true,

@@ -8,7 +8,7 @@ $(function (window, $, mw) {
         page_id = mw.config.get("wgArticleId"),
         namespace = mw.config.get("wgNamespaceNumber"),
         usergroups = mw.config.get("wgUserGroups"),
-        signature = "~~~~",
+        signature = "~~" + "~~",
         $container,
         modal_button_name;
     
@@ -182,7 +182,7 @@ $(function (window, $, mw) {
         $('.thispage').each(function () {
             $(this).html($(this).html() + " (this page)");
         });
-        if (usergroups.indexOf('content-moderator') + usergroups.indexOf('sysop') + usergroups.indexOf('helper') + usergroups.indexOf('soap') + usergroups.indexOf('staff') + usergroups.indexOf('util') + usergroups.indexOf('bureaucrat') + wgUserGroups.indexOf('wiki-manager') == -8) {
+        if (usergroups.indexOf('content-moderator') + usergroups.indexOf('sysop') + usergroups.indexOf('helper') + usergroups.indexOf('soap') + usergroups.indexOf('staff') + usergroups.indexOf('util') + usergroups.indexOf('bureaucrat') + wgUserGroups.indexOf('wiki-representative') == -8) {
             $('.bureaucrat').fadeOut(500, function() {
 				$('.bureaucrat').remove();
 			});
@@ -206,7 +206,7 @@ $(function (window, $, mw) {
                 });
             });
         }
-        if (usergroups.indexOf('content-moderator') + usergroups.indexOf('sysop') + usergroups.indexOf('helper') + usergroups.indexOf('VSTF') + usergroups.indexOf('staff') + usergroups.indexOf('util') == -6) {
+        if (usergroups.indexOf('content-moderator') + usergroups.indexOf('sysop') + usergroups.indexOf('helper') + usergroups.indexOf('soap') + usergroups.indexOf('staff') + usergroups.indexOf('util') == -6) {
             $('.sysop').fadeOut(500, function() {
 				$('.sysop').remove();
 			});

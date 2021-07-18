@@ -152,18 +152,13 @@ window.tooltips_config = {
 window.preloadTemplates_list = "MediaWiki:Custom-PreloadTemplatesList";
 window.preloadTemplates_subpage = "syntax";
 
-/* Adds icons to page header
- * by: The 888th Avatar, adapted to new header by Thailog
+/* Adds icons to page header bottom border
+ * by: [[User:The 888th Avatar]]
  */
-$(function() {
-    if ( mw.config.get( 'wgVersion' ) !== '1.19.24' && $( '#title-eraicons' ).length ) {
-        $( '.page-header__contribution > div' ).first().append( $( '#title-eraicons' ).show() );
-    } else if ( $( '.wds-community-header' ).length ) {
-        $( '#PageHeader' ).prepend(
-            $( '#icons' ).attr( 'style', 'position: absolute; right: 75px; top: 10px;' )
-        );
-    } else {
-        $( '.WikiaPageHeader' ).append( $( '#icons' ) );
-        $( '#icons' ).css( { 'position' : 'absolute', 'right' : '5.1em', 'bottom' : '-2em' } ).show();
-    }
+ 
+$(document).ready(function() {
+	if (skin == "oasis" || skin == "wikia") {
+		$('.WikiaPageHeader').append($('#icons'));
+		$('#icons').css({'position' : 'absolute', 'right' : '0', 'bottom' : '-1.2em'});
+	}
 });

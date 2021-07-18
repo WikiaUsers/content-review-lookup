@@ -238,7 +238,7 @@
         } else {
             $('#Contributions').html('<font size="4">' + i18n.nocontribs + '</font>');
         }
-        if (cfg.wgUserGroups.indexOf('sysop') + cfg.wgUserGroups.indexOf('bureaucrat') + cfg.wgUserGroups.indexOf('staff') + cfg.wgUserGroups.indexOf('soap') + cfg.wgUserGroups.indexOf('helper') + wgUserGroups.indexOf('wiki-manager') == -6) {
+        if (cfg.wgUserGroups.indexOf('sysop') + cfg.wgUserGroups.indexOf('bureaucrat') + cfg.wgUserGroups.indexOf('staff') + cfg.wgUserGroups.indexOf('soap') + cfg.wgUserGroups.indexOf('helper') + wgUserGroups.indexOf('wiki-representative') == -6) {
             $('#blockbutton').attr("disabled", "true");
             $('#Deletecontributions').html('<font size="4">' + i18n.noright + '</font>');
         }

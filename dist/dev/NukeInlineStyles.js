@@ -2,7 +2,7 @@
  * @file        NukeInlineStyles
  * @description Add a button to the toolbar will remove inline styles when pressed
  * @author      Himmalerin
- * @version     1.1.0
+ * @version     1.2.0
  */
 
 (function () {
@@ -84,15 +84,7 @@
 
   // Get all elements within the WikiaMainContent element so we can remove their
   // inline styles
-  // For Legacy wikis
-  if (mw.config.get('wgVersion') === '1.19.24') {
-    var nisPageContent = document.querySelectorAll('#mw-content-text *');
-  } else {
-    // For UCP wikis
-    var nisPageContent = document.querySelectorAll(
-      '#mw-content-text > .mw-parser-output *'
-    );
-  }
+  var nisPageContent = document.querySelectorAll('#mw-content-text > .mw-parser-output *');
   // Find the toolbar
   var nisToolbar = document.querySelector('.WikiaBarWrapper .toolbar > .tools');
 
@@ -103,12 +95,8 @@
   var nisButton = document.createElement('button');
   // Set button id
   nisButton.id = 'js-nukeStyles';
-  // If on a UCP wiki give the button a class and set styles to make it fit
-  if (mw.config.get('wgVersion') !== '1.19.24') {
-    nisButton.className = 'wds-button';
-    nisButton.style.cssText =
-      'min-height: unset; height: unset; padding: 0 4px;';
-  }
+  nisButton.className = 'wds-button';
+  nisButton.style.cssText = 'min-height: unset; height: unset; padding: 0 4px;';
   // Set button type
   nisButton.type = 'button';
   // Set onclick to remove styles

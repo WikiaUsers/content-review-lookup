@@ -281,8 +281,8 @@ require(["mw", "wikia.window"], function (mw, wk) {
                 "threadmoderator",
                 "rollback",
                 "content-volunteer",
-                "wiki-manager",
-                "content-team-member",
+                "wiki-representative",
+                "wiki-specialist",
                 "soap"
             ];
 

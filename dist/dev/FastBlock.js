@@ -11,19 +11,17 @@
         config = mw.config.get([
             'profileUserName',
             'wgUserGroups',
-            'wgUserName',
-            'wgVersion'
+            'wgUserName'
         ]),
         $user = config.profileUserName || $masthead.find('.masthead-info h1').text(),
-        i18n,
-        isUCP = config.wgVersion !== '1.19.24';
+        i18n;
     if (
         window.FastBlockLoaded ||
         !buttons ||
         !Array.isArray(buttons) ||
         buttons.length === 0 ||
         !$user ||
-        !/sysop|staff|helper|global-discussions-moderator|wiki-manager|soap/.test(config.wgUserGroups) ||
+        !/sysop|staff|helper|global-discussions-moderator|wiki-representative|soap/.test(config.wgUserGroups) ||
         $user === config.wgUserName
     ) {
         return;
@@ -139,18 +137,11 @@
          * @returns {void}
          */
         notif: function (text, type) {
-            if (isUCP) {
-                mw.notify($('<span>', {
-                    html: text
-                }), {
-                    type: type
-                });
-            } else {
-                new BannerNotification(
-                    text,
-                    type
-                ).show();
-            }
+            mw.notify($('<span>', {
+                html: text
+            }), {
+                type: type
+            });
         }
     };
     mw.hook('dev.i18n').add(function (lib) {
@@ -159,9 +150,10 @@
             Main.findContainer(),
             mw.loader.using([
                 'mediawiki.api',
+                'mediawiki.notify',
                 'mediawiki.user',
                 'mediawiki.util'
-            ].concat(isUCP ? ['mediawiki.notify'] : []))
+            ])
         ).then(Main.init);
     });
     importArticle({

@@ -3,7 +3,7 @@ $(function() {
     var urlVars = new URLSearchParams(location.search);
     var mwc = mw.config.get(['wgUserLanguage', 'wgFormattedNamespaces', 'wgCanonicalSpecialPageName']);
     if (mwc.wgCanonicalSpecialPageName !== 'Wantedpages' || $('.wp-filter').length) return;
-    var r = /(.*?):/;
+    var r = /^([^:]+):/;
     var activeFilter = [];
     var strings = {
         // language list - start
@@ -79,7 +79,7 @@ $(function() {
         .wp-checkbox:checked+.wp-label{filter:invert(200%)}';
 
     function onChange (e) {
-        var state = $('.wp-checkbox').attr('checked');
+        var state = $('.wp-checkbox').prop('checked');
         $('.special li').css('display', state ? 'none' : 'list-item');
         activeFilter = [];
         $.each(e.target.selectedOptions, function() {
@@ -94,9 +94,10 @@ $(function() {
     strings = $.extend(true, {}, strings.en, strings[mwc.wgUserLanguage], strings[urlVars.get('uselang')]);
     
     //add ns data
-    $('.special .new, .special .newcategory').each(function() {
+    $('.special li').each(function() {
         var $this = $(this);
-        var ns = r.exec($this.text()) || '';
+        var $link = $this.find('a').first();
+        var ns = r.exec($link.text().trim()) || '';
         if (ns instanceof Array) ns = ns[1];
         if (Object.values(mwc.wgFormattedNamespaces).indexOf(ns) > -1) {
             $this.closest('li').attr('data-ns', ns);

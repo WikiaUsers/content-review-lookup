@@ -5,14 +5,18 @@ window.UserIconsInit = function(source) {
   if (typeof debug452 == "function") debug452("UserIconsInit - from "+source);
   if ($(".withUserIcons").length) { // Only add it ''once''
     if (typeof debug452 == "function") debug452("UserIconsInit - already added");
-    $('.WikiaPage').off('DOMNodeInserted');
+    $('.WikiaPage, .page__main').off('DOMNodeInserted');
     return;  
   }
   var currentuser = $('.user-identity-header h1').html(); //get current userpage
   var icontarget = ".user-identity-header__actions";
   var tagtarget = ".user-identity-header__attributes";
 
-  if (typeof currentuser  == "undefined" || !$(icontarget).length || !$(tagtarget).length ) return; //Run on user pages only
+  if (typeof currentuser == "undefined" || !$(icontarget).length || !$(tagtarget).length ) { 
+    //  if ($(".ns-2").length || $(".ns-3").length || $(".mw-special-UserProfileActivity").length || $(".mw-special-Contributions").length)	
+    if (typeof debug452 == "function") debug452("UserIconsInit exit - header missing"); 
+    return; 
+  }
   $("#userProfileApp").addClass("withUserIcons");
   if (typeof debug452 == "function") debug452("UserIconsInit continue - from "+source); 
 
@@ -109,8 +113,11 @@ $(function() {
   $(document).trigger('readystatechange');
 });
 
-$('.WikiaPage').on('DOMNodeInserted', function(event) {
-  if (!$('.user-identity-header h1').length) return; // too soon
+$('.WikiaPage, .page__main').on('DOMNodeInserted', function(event) {
+  if (!$('.user-identity-header h1').length) {
+    if (typeof debug452 == "function") debug452("no header"); 
+    return; // too soon
+  }
   if ($(".user-profile-navigation").length && !$(".user-profile-navigation__link a[href^='/wiki/User_talk']").length) {
     var link = $(".user-profile-navigation__link a[href^='/wiki/Special:Contributions/']").attr("href").replace("Special:Contributions/","User_talk:");
     $(".user-profile-navigation").prepend('<li class="user-profile-navigation__link '+((link=="/wiki/"+mw.config.get("wgPageName"))?'is-active':'false')+'"><a href="'+link+'">Talk</a></li>');

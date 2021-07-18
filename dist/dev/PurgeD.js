@@ -18,7 +18,7 @@
                 'staff',
                 'helper',
                 'global-discussions-moderator',
-                'wiki-manager',
+                'wiki-representative',
                 'soap'
             ]);
         },

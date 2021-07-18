@@ -1,18 +1,17 @@
 /**
  * Name:        EditcountTab
- * Version:     v1.0
- * Author:      KockaAdmiralac <1405223@gmail.com>
+ * Version:     v1.1
+ * Author:      KockaAdmiralac <wikia@kocka.tech>
  * Description: Adds a tab to user profile pages linking to their
  *              edit count.
  */
 (function() {
-    var username = $('#UserProfileMasthead h1').text();
+    var username = mw.config.get('profileUserName');
     if (
         window.EditcountTabLoaded ||
-        !$('#WikiaUserPagesHeader').exists() ||
+        !username ||
         // TODO: Fix weird loading order
-        mw.util.isIPv4Address(username) ||
-        mw.util.isIPv6Address(username)
+        mw.util.isIPAddress(username)
     ) {
         return;
     }
@@ -29,9 +28,9 @@
         });
     }).then(function(d) {
         var text = d.query.allmessages[0]['*'];
-        $('#WikiaUserPagesHeader .tabs-container .tabs').append(
+        $('.user-profile-navigation').append(
             $('<li>', {
-                'data-id': 'editcount',
+                'class': 'user-profile-navigation__link',
                 id: 'editcount-tab'
             }).append(
                 $('<a>', {

@@ -343,7 +343,7 @@ var tooltips_list = [{
     });
 }(jQuery));
 
-var article = "#bodyContent";
+var article = ".page-content";
 
 var Tooltips = {
     hideClasses: [],
@@ -557,6 +557,7 @@ function tooltipsInit(root) {
 }
 
 $(function() {
+	$('#bodyContent').addClass('page-content');
     tooltipsInit($(article));
 });
 

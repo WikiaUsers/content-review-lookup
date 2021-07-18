@@ -22,7 +22,7 @@
             target: ( !window.WebArchiveNewTab ? '_blank' : null ),
             text: i18n.msg( 'archive-text' ).plain(),
             title: i18n.msg( 'archive-title' ).plain()
-        }).appendTo( '.page-header__contribution-buttons' );
+        }).appendTo( '.page-header__contribution-buttons, .page-header__actions' );
     }
 
     mw.hook( 'dev.i18n' ).add(function(i18n) {

@@ -11,8 +11,8 @@
         'wgUserGroups'
     ]);
     if (
-        !/bureaucrat|sysop|staff|helper|wiki-manager/.test(config.wgUserGroups.join()) ||
-        $('#UserProfileMasthead, #userProfileApp').length === 0 ||
+        !/bureaucrat|sysop|staff|helper|wiki-representative/.test(config.wgUserGroups.join()) ||
+        $('#userProfileApp').length === 0 ||
         window.AddUserRightsTagLoaded
     ) {
         return;
@@ -21,7 +21,7 @@
     function findContainer() {
         var promise = $.Deferred(),
             interval = setInterval(function() {
-                var $element = $('#userProfileApp .user-identity-header__attributes, #UserProfileMasthead hgroup');
+                var $element = $('#userProfileApp .user-identity-header__actions');
                 if ($element.length) {
                     clearInterval(interval);
                     promise.resolve($element);
@@ -30,17 +30,9 @@
         return promise;
     }
     function init(text, $container) {
-        var username = config.profileUserName ||
-                       $('.masthead-info h1').text();
         $('<a>', {
-            'class': 'tag user-identity-header__tag',
-            'css': {
-                float: 'right',
-                color: 'inherit',
-                marginTop: '15px',
-                marginRight: '-15px'
-            },
-            'href': mw.util.getUrl('Special:UserRights/' + username),
+            'class': 'wds-button user-identity-header__button',
+            'href': mw.util.getUrl('Special:UserRights/' + config.profileUserName),
             'text': text
         }).appendTo($container);
     }

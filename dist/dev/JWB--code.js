@@ -30,22 +30,21 @@ window.JWB = {}; //The main global object for the script.
 		JWB.allowed = false;
 		return;
 	}
-	importStylesheetURI('https://en.wikipedia.org/w/index.php?title=User:Joeytje50/JWB.css&action=raw&ctype=text/css');
-	mw.loader.load('mediawiki.action.history.diff');
+	mw.loader.load('https://en.wikipedia.org/w/index.php?title=User:Joeytje50/JWB.css&action=raw&ctype=text/css');
+	mw.loader.load('mediawiki.diff.styles');
 	
-	var i18n = importScriptURI('https://dev.wikia.com/wiki/MediaWiki:JWB/i18n.js?action=raw&ctype=text/javascript');
-	i18n.onload = function() {
+	mw.loader.getScript('https://dev.fandom.com/wiki/MediaWiki:JWB/i18n.js?action=raw&ctype=text/javascript').then(function() {
 		if (JWB.allowed === true) {
 			JWB.init(); //init if verification has already returned true
 		} else if (JWB.allowed === false) {
 			alert(JWB.msg('not-on-list'));
 		}
-	};
-	
+	});
+
 	//RegEx Typo Fixing
-	importScriptURI('https://dev.wikia.com/wiki/MediaWiki:JWB/RETF.js?action=raw&ctype=text/javascript').onload = function() {
-			$('#refreshRETF').click(RETF.load);
-	};
+	mw.loader.getScript('https://dev.fandom.com/wiki/MediaWiki:JWB/RETF.js?action=raw&ctype=text/javascript').then(function() {
+    	$('#refreshRETF').click(RETF.load);
+	});
 
 	(new mw.Api()).get({
 		action: 'query',
@@ -134,12 +133,6 @@ JWB.index_php = mw.config.get('wgScript');
 JWB.isStopped = true;
 JWB.tooltip = window.tooltipAccessKeyPrefix || '';
 JWB.configext = 'js';
-if (document.location.hostname.split('.').slice(-2).join('.') == 'wikia.com') {
-	//it makes no sense, but Wikia does not allow users to create .js subpages of their userpage.
-	//Because the settings should REALLY be protected from vandalism automatically, the backup is .css
-	//even though this has nothing to do with CSS.
-	JWB.configext = 'css';
-}
 JWB.settingspage = 'JWB';
 if (window.hasOwnProperty('JWBSETTINGS')) {
 	JWB.settingspage = JWBSETTINGS;

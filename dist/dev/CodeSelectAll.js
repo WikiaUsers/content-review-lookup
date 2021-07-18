@@ -7,15 +7,10 @@
  */
 
 (function() {
-    var langs = ['jquery', 'javascript', 'lua', 'css'],
-    toSelector = function(lang) {
-        return '.source-' + lang;
-    };
-    if (
-        mw.config.get('wgNamespaceNumber') !== 8 ||
-        !document.querySelector(langs.map(toSelector)) ||
-        window.CodeSelectAll
-    ) return;
+    var highlight = document.querySelector('.mw-highlight');
+    if (mw.config.get('wgNamespaceNumber') !== 8 || !highlight || window.CodeSelectAll) {
+        return;
+    }
 
     window.CodeSelectAll = true;
 
@@ -40,7 +35,7 @@
             (!document.activeElement || ['input', 'textarea'].indexOf(document.activeElement.nodeName.toLowerCase()) == -1)
         ) {
             e.preventDefault();
-            select(document.querySelector(langs.map(toSelector)));
+            select(highlight);
         }
     });
 })();

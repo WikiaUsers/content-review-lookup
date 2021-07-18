@@ -2,6 +2,7 @@
 
 (function () {
     
+/* setting strict mode and double-run prevention */
     "use strict";
     if (window.andrewds1021 && window.andrewds1021.user_last_activity
         && window.andrewds1021.user_last_activity.has_run) return;
@@ -14,7 +15,7 @@
     }
     window.andrewds1021.user_last_activity.has_run = true;
     
-/* retrieve and set type of logs to search */
+/* retrieve and set type of activities to search */
     var cons = window.andrewds1021.user_last_activity.edits;
     if (cons === undefined) {
         cons = true;
@@ -27,265 +28,231 @@
 /* if no logs to search, exit */
     if (!cons && !logs) return;
     
-/* get elements to process */
-    var id_elems = Array.prototype.slice.call(document.querySelectorAll(
-        ".UserLastActivity[data-userlastactivity-userid]"));
-    var name_elems = Array.prototype.slice.call(document.querySelectorAll(
-        ".UserLastActivity[data-userlastactivity-username]"
-        +":not([data-userlastactivity-userid])"));
+/* get elements, names, and ids to process */
+    var names = {};
+    Array.prototype.slice.call(document.querySelectorAll(".UserLastActivity"
+        + "[data-userlastactivity-username]:not([data-userlastactivity-userid])"
+        )).forEach(function (value) {
+        var key = value.getAttribute("data-userlastactivity-username").trim()
+            .replace(/_/g, " ");
+        if (!key) return;
+        key = key.charAt(0).toUpperCase() + key.substring(1);
+        if (!names[key]) names[key] = [];
+        names[key].push(value);
+    });
+    var ids = {};
+    Array.prototype.slice.call(document.querySelectorAll(".UserLastActivity"
+        + "[data-userlastactivity-userid]")).forEach(function (value) {
+        var key = value.getAttribute("data-userlastactivity-userid").trim();
+        if (/^[1-9]\d*$/.test(key)) {
+            if (!ids[key]) ids[key] = [];
+            ids[key].push(value);
+        } else if (value.hasAttribute("data-userlastactivity-username")) {
+            key = value.getAttribute("data-userlastactivity-username").trim()
+                .replace(/_/g, " ");
+            if (!key) return;
+            key = key.charAt(0).toUpperCase() + key.substring(1);
+            if (!names[key]) names[key] = [];
+            names[key].push(value);
+        }
+    });
     
 /* if no elements to replace, exit */
-    if (!id_elems.length && !name_elems.length) return;
+    if (!Object.keys(names).length && !Object.keys(ids).length) return;
     
-/* extract user ids and names */
-    var ids = id_elems.map(function (value) {
-        return value.getAttribute("data-userlastactivity-userid").trim();
-    });
-    var names = name_elems.map(function (value) {
-        return value.getAttribute("data-userlastactivity-username").trim();
-    });
-    
-/* convert names into expected format */
-    names.forEach(function (value, index, array) {
-        var con_val = value.replace(/_/g, " ");
-        con_val = con_val.charAt(0).toUpperCase() + con_val.substring(1);
-        array[index] = con_val;
-    });
-    
-/*
-retrieve messages and language
-
-To-Do:
-decide whether or not to use I18n-js
-implement decision
-*/
-    var no_activity = {
-        "en": "No Activity",
-        "qqx": "UserLastActivity \"no_activity\" Object"
-    };
+/* retrieve custom messages */
+    var no_activity, retrieval_error;
     var custom_no_activity = window.andrewds1021.user_last_activity.no_activity;
-    if (custom_no_activity) {
-        Object.keys(custom_no_activity).forEach(function (value) {
-            if (custom_no_activity[value]) {
-                no_activity[value] = custom_no_activity[value];
-            }
+    var custom_retrieval_error = window.andrewds1021.user_last_activity
+        .retrieval_error;
+    if (typeof custom_no_activity == "object") {
+        no_activity = custom_no_activity[mw.config.get("wgUserLanguage")];
+    } else if (typeof custom_no_activity == "string") {
+        no_activity = custom_no_activity;
+    }
+    if (typeof custom_retrieval_error == "object") {
+        retrieval_error = custom_retrieval_error[mw.config.get("wgUserLanguage")];
+    } else if (typeof custom_retrieval_error == "string") {
+        retrieval_error = custom_retrieval_error;
+    }
+    
+/* retrieve [[I18n-js]] messages */
+    var i18n_def = jQuery.Deferred();
+    mw.hook("dev.i18n").add(function (i18n) {
+        i18n.loadMessages("UserLastActivity").done(function (i18n) {
+            if (!no_activity) no_activity = i18n.msg("no_activity").plain();
+            if (!retrieval_error) retrieval_error = i18n.msg("retrieval_error")
+                .plain();
+            i18n_def.resolve();
         });
-    }
-    var config = mw.config.get([
-        "wgUserLanguage",
-        "wgPageContentLanguage",
-        "wgContentLanguage",
-        "wgVersion"
-    ]);
+    });
     
-/*
-retrieve and set datetime format
-
-To-Do:
-implement
-*/
-    var format = window.andrewds1021.user_last_activity.format;
-    if (format) {
-    
-    }
+    importArticles({
+        type: "script",
+        articles: [
+            "u:dev:MediaWiki:I18n-js/code.js"
+        ]
+    });
     
 /* declare additional variables */
-    var dates = jQuery.Deferred();
-    var user_elems, users;
-    
-    mw.loader.using("mediawiki.api").then(function () {
-        return new mw.Api();
-    }).then(function (api) {
-/* if no ids, skip id-to-name conversion */
-        if (!ids.length) {
-            user_elems = name_elems;
-            users = names;
-            return api;
-        }
-/* construct request for names */
-        var names_req = {
-            action: "query",
-            list: "users",
-        };
-        if (config.wgVersion === "1.19.24") {
-            names_req.usids = ids.join("|");
-        } else {
-            names_req.ususerids = ids.join("|");
-        }
-/* request names for ids */
-        return api.get(names_req).then(function (data) {
-            if (data.query && data.query.users) {
-/* create list of names with ids as keys */
-                var id_names = data.query.users.reduce(function (accum, value) {
-                    accum[value.userid] = value.name;
-                    return accum;
-                }, {});
-/* remove anonymous user from list */
-                delete id_names["0"];
-/* replace ids with names */
-                ids.forEach(function (value, index, array) {
-                    array[index] = id_names[value];
-                });
-            } else {
-                ids.forEach(function (value, index, array) {
-                    array[index] = undefined;
-                });
-            }
-/* for ids without a returned name, use specified name if provided */
-            ids.forEach(function (value, index, array) {
-                if (!value && id_elems[index].hasAttribute("data-userlastactivity"
-                    +"-username")) {
-                    var con_val = id_elems[index].getAttribute("data"
-                        +"-userlastactivity-username").trim().replace(/_/g, " ");
-                    con_val = con_val.charAt(0).toUpperCase() + con_val.substring(1);
-                    array[index] = con_val;
-                }
-            });
-/* for ids without a name, remove entries from arrays */
-            id_elems = id_elems.filter(function (value, index) {
-                return ids[index];
-            });
-            ids = ids.filter(function (value) {
-                return value;
-            });
-/* combine arrays */
-            user_elems = id_elems.concat(name_elems);
-            users = ids.concat(names);
-            return api;
-        });
-    }).then(function (api) {
-/* if no users, skip name validation */
-        if (!users.length) {
-            return {
-                api: api,
-                names: [],
-                index: 0,
-                dates: {}
-            };
-        }
-/* construct array of unique names */
-        var unique = users.filter(function (value, index, array) {
-            return index == array.indexOf(value);
-        });
-/* dummy request to validate names */
-        return api.get({
-            action: "query",
-            list: "users",
-            ususers: unique.join("|")
-        }).then(function (data) {
-/*
-construct array of returned names
-re-using variable "unique" because we can and description is applicable
-avoid adding anonymous user (gets returned if name is provided)
-
-Note: If an account is currently or has previously been a member of a global
-user group, previous names associated with the account may have their ids set
-to "0". While these names used to be returned in results, they currently are
-not and, therefore, will not get mistaken for the anonymous user.
-*/
-            if (data.query && data.query.users) {
-                unique = data.query.users.reduce(function (accum, value) {
-                    if (value.userid) {
-                        accum.push(value.name);
-                    }
-                    return accum;
-                }, []);
-            } else {
-                unique = [];
-            }
-/* for non-validated names, remove entries from combined arrays */
-            user_elems = user_elems.filter(function (user_elems_value,
-                user_elems_index) {
-                return unique.some(function (unique_value) {
-                    return users[user_elems_index] === unique_value;
-                });
-            });
-            users = users.filter(function (users_value) {
-                return unique.some(function (unique_value) {
-                    return users_value === unique_value;
-                });
-            });
-            return {
-                api: api,
-                names: unique,
-                index: 0,
-                dates: {}
-            };
-        });
-    }).then(getDates);
-    
-/* replace contents of elements if user was found */
-    dates.done(function (data) {
-        users.forEach(function (value, index) {
-            if (data[value]) {
-                user_elems[index].textContent = data[value];
-            }
-        });
-    });
+    var api;
     
     function getDates(obj) {
-/* if all names have been processed, resolve deferred object and return */
-        if (obj.index >= obj.names.length) {
-            dates.resolve(obj.dates);
-            return;
-        }
+/* if all names have been processed, return resolved deferred */
+        if (obj.index >= obj.names.length) return jQuery.Deferred()
+            .resolve(obj.dates);
+/* change name */
         var name = obj.names[obj.index];
-/* construct request for logged activity */
-        var request = {action: "query"};
+        obj.request.ususers = name;
+        if (cons) obj.request.ucuser = name;
+        if (logs) obj.request.leuser = name;
+/* send request for logged activity */
+        return api.get(obj.request).then(
+            function (data) {
+                if (!data || !data.query || !(data.query.usercontribs
+                    || data.query.logevents) || !(!data.query.users
+                    || !data.query.users.length || !data.query.users[0]
+                    .hasOwnProperty("missing"))) {
+                    obj.dates[name] = retrieval_error;
+                } else {
+/* determine what to use for element content */
+                    var con_time, log_time;
+                    var contrib = data.query.usercontribs;
+                    var logevnt = data.query.logevents;
+                    if (contrib && contrib.length) {
+                        con_time = contrib[0].timestamp;
+                    }
+                    if (logevnt && logevnt.length) {
+                        log_time = logevnt[0].timestamp;
+                    }
+                    if (con_time && log_time) {
+                        if (con_time >= log_time) {
+                            obj.dates[name] = new Date(con_time).toLocaleString();
+                        } else {
+                            obj.dates[name] = new Date(log_time).toLocaleString();
+                        }
+                    } else if (con_time) {
+                        obj.dates[name] = new Date(con_time).toLocaleString();
+                    } else if (log_time) {
+                        obj.dates[name] = new Date(log_time).toLocaleString();
+                    } else {
+                        obj.dates[name] = no_activity;
+                    }
+                }
+                obj.index = obj.index + 1;
+                return getDates(obj);
+            },
+            function () {
+                obj.dates[name] = retrieval_error;
+                obj.index = obj.index + 1;
+                return getDates(obj);
+            }
+        );
+    }
+    
+    function getNames(obj) {
+/*
+   if all ids have been processed, attempt to use names instead for remaining
+   elements then return resolved deferred
+*/
+        if (obj.index >= obj.ids.length) {
+            Object.keys(ids).forEach(function (id_key) {
+                ids[id_key].forEach(function (elem) {
+                    var name_key;
+                    if (elem.hasAttribute("data-userlastactivity-username"))
+                        name_key = elem.getAttribute("data-userlastactivity"
+                        + "-username").trim().replace(/_/g, " ");
+                    if (name_key) {
+                        name_key = name_key.charAt(0).toUpperCase()
+                            + name_key.substring(1);
+                        if (!names[name_key]) names[name_key] = [];
+                        names[name_key].push(elem);
+                    } else {
+                        elem.textContent = retrieval_error;
+                    }
+                });
+            });
+            return jQuery.Deferred().resolve();
+        }
+/* change ids */
+        obj.request[obj.parameter] = obj.ids.slice(obj.index, obj.index
+            + obj.limit).join("|");
+/* send request for names */
+        return api.get(obj.request).then(
+            function (data) {
+                if (data && data.query && data.query.users) data.query.users
+                    .forEach(function (value) {
+/* append elements array to that for the corresponding name */
+                    if (!value.name || !value.userid) return;
+                    if (names[value.name]) {
+                        names[value.name] = names[value.name]
+                            .concat(ids[value.userid]);
+                    } else {
+                        names[value.name] = ids[value.userid];
+                    }
+                    delete ids[value.userid];
+                });
+                obj.index = obj.index + obj.limit;
+                return getNames(obj);
+            },
+            function () {
+                obj.index = obj.index + obj.limit;
+                return getNames(obj);
+            }
+        );
+    }
+    
+    jQuery.when(i18n_def, mw.loader.using("mediawiki.api").then(function () {
+        api = new mw.Api();
+    })).then(function () {
+/*
+   get names associated with ids and set error message as content for elements
+   where no name was found for the id and there is no fallback name specified
+*/
+        var obj = {
+            ids: Object.keys(ids),
+            index: 0,
+            limit: 50,
+            request: {
+                action: "query",
+                list: "users"
+            }
+        };
+        if (mw.config.get("wgVersion") === "1.19.24") {
+            obj.parameter = "usids";
+        } else {
+            obj.parameter = "ususerids";
+        }
+        return getNames(obj);
+    }).then(function () {
+/* get activity timestamps and determin element content */
+        var obj = {
+            names: Object.keys(names),
+            index: 0,
+            dates: {},
+            request: {
+                action: "query",
+                list: "users"
+            }
+        };
         if (cons) {
-            request.list = "usercontribs";
-            request.ucuser = name;
-            request.uclimit = 1;
-            request.ucprop = "timestamp";
+            obj.request.list = obj.request.list + "|usercontribs";
+            obj.request.uclimit = 1;
+            obj.request.ucprop = "timestamp";                
         }
         if (logs) {
-            if (request.list) {
-                request.list = request.list + "|logevents";
-            } else {
-                request.list = "logevents";
-            }
-            request.leuser = name;
-            request.lelimit = 1;
-            request.leprop = "timestamp";
+            obj.request.list = obj.request.list + "|logevents";
+            obj.request.lelimit = 1;
+            obj.request.leprop = "timestamp";                
         }
-/* send request for logged activity */
-        obj.api.get(request).then(function (data) {
-            var contrib, logevnt, con_time, log_time;
-            if (data && data.query) {
-                contrib = data.query.usercontribs;
-                logevnt = data.query.logevents;
-            }
-            if (contrib && (contrib.length > 0)) {
-                con_time = contrib[0].timestamp;
-            }
-            if (logevnt && (logevnt.length > 0)) {
-                log_time = logevnt[0].timestamp;
-            }
-            if (con_time && log_time) {
-                if (con_time >= log_time) {
-                    obj.dates[name] = new Date(con_time).toLocaleString();
-                } else {
-                    obj.dates[name] = new Date(log_time).toLocaleString();
-                }
-            } else if (con_time) {
-                obj.dates[name] = new Date(con_time).toLocaleString();
-            } else if (log_time) {
-                obj.dates[name] = new Date(log_time).toLocaleString();
-            } else if (contrib || logevnt) {
-                if (no_activity[config.wgUserLanguage]) {
-                    obj.dates[name] = no_activity[config.wgUserLanguage];
-                } else if (no_activity[config.wgPageContentLanguage]) {
-                    obj.dates[name] = no_activity[config.wgPageContentLanguage];
-                } else if (no_activity[config.wgContentLanguage]) {
-                    obj.dates[name] = no_activity[config.wgContentLanguage];
-                } else {
-                    obj.dates[name] = no_activity["en"];
-                }
-            }
-        }).always(function () {
-            obj.index = obj.index + 1;
-            getDates(obj);
+        return getDates(obj);
+    }).then(function (dates) {
+/* set element content as previously determined */
+        Object.keys(names).forEach(function (key) {
+            names[key].forEach(function (elem) {
+                elem.textContent = dates[key];
+            });
         });
-    }
+    });
     
 })();

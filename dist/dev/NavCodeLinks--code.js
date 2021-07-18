@@ -8,7 +8,7 @@
         return;
     }
     window.NavCodeLinksLoaded = true;
-    $('.wds-global-navigation__user-menu .wds-list').prepend(
+    $('.wds-global-navigation__user-menu .wds-list, .wiki-tools .wds-dropdown__content .wds-list').append(
         ['css', 'js'].map(function(ext) {
             return $('<li>', {
                 append: $('<a>', {

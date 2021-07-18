@@ -55,7 +55,7 @@
     };// init
     
     // main
-    if (cfg.wgUserName && new RegExp('sysop|bureaucrat' + (settings.groups ? '|' + settings.groups : '')).test(cfg.wgUserGroups.join(','))) {
+    if (cfg.wgUserName && new RegExp('sysop|content-moderator' + (settings.groups ? '|' + settings.groups : '')).test(cfg.wgUserGroups.join(','))) {
         mw.loader.using(['mediawiki.api']).done(function() {
             new mw.Api().get({
                 action: 'query',

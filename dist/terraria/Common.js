@@ -106,16 +106,25 @@ $(function() {
 	});
 });
 
-//Automatically expand pages to full-width on FandomDesktop for unregistered users.
-//common.js is loaded BEFORE fandomdesktop-expand module, so we attach it to window.load to make sure it works.
-$(window).on('load', function(){
-	if( $('body.skin-fandomdesktop').length
-		&& (wgUserName === null)
-		&& (!$('html').hasClass('is-content-expanded'))
-		&& (localStorage.contentwidth !== "collapsed")
-	){
-		$("button.content-size-toggle").click();
-	}
+//Automatically expand pages to full-width and hide right bar on FandomDesktop by default
+$(function() {
+    if( !$('body.skin-fandomdesktop').length ){
+        return;
+    }
+	//common.js is loaded BEFORE skin.fandomdesktop.js module.
+	mw.loader.using("skin.fandomdesktop.js").then(function(){
+	    if( !$('body.is-content-expanded').length ){
+	        if( ((mw.config.get("wgUserName") === null) ? localStorage.contentwidth : mw.user.options.get('contentwidth')) !== "collapsed"){
+	        	$("button.content-size-toggle").click();
+	    	}
+	    }
+	    if( !$('aside.page__right-rail.is-rail-hidden').length ){
+	    	if( (mw.config.get("wgUserName") !== null) && (mw.user.options.get('rightrailvisible') !== "visible") ){
+	    		$("button.right-rail-toggle").click();
+	    	}
+	    }
+	});
+	
 });
 
 //Main page responsive layout. Ports breakpoints for hydra skin to all skins.

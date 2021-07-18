@@ -107,11 +107,7 @@
                     break;
                 }
             }
-            var $editElement = $(
-                    $('.UserProfileActionButton').length
-                    ? '.UserProfileActionButton'
-                    : '.page-header__contribution-buttons'
-                ),
+            var $editElement = $('.page-header__contribution-buttons, .page-header__actions'),
                 $moveElement = $('#ca-move'),
                 $replaceElement = $('#ca-replace-file');
             if (createSysop || createAutoconfirmed) {

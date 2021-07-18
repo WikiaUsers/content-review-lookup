@@ -21,7 +21,7 @@ $(document).ready(function() {
 $(function(){
 $('<section class="rail-module"></section>')
 .appendTo('#WikiaRail')
-.load('/index.php?title=Template:RailModule&action=render');
+.load('https://althistory.fandom.com/ru/wiki/Шаблон:RailModule .mw-parser-output');
 });
  
 

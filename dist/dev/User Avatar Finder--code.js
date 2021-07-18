@@ -24,7 +24,7 @@ mw.loader.using(['jquery.client', 'mediawiki.util']).then(function() {
                 } else if (size < 16) {
                     size = 16;
                 }
-                avatar = avatar.replace(/\/scale-to-width-down\/\d+/, '/scale-to-width-down/' + size);
+                avatar = avatar.replace(/\/thumbnail\/width\/\d+\/height\/\d+/, '/thumbnail/width/' + size + '/height/' + size);
             }
 
             var img = $('<img>', {

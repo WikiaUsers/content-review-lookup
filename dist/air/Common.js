@@ -50,3 +50,4 @@ function varButton() {
     $body.addClass('var1');
     return $varButton;
 }
+importArticles({    type: 'script',    articles: [        'u:dev:MediaWiki:WikiActivity.js',    ]});

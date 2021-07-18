@@ -127,28 +127,14 @@
 	   $('.wds-dropdown a[data-tracking=explore-random], ul.tools li a[data-name=random]').attr("href", "/wiki/Special:Random/main");
 	   
 		// Clash Royale, Brawl Stars and Clash Quest topic interwiki links
-		if ($('body.skin-oasis').length) {
-			$("#ClashRoyaleLink, #BrawlStarsLink, #ClashQuestLink").prependTo(".page-header__contribution > div:first-child").css({"display": "inline-block"});
-		}else if ($('.page-header__languages').length) {
-			$("#ClashRoyaleLink, #BrawlStarsLink, #ClashQuestLink").prependTo(".page-header__languages").css({"display": "inline-block"});
+		var elements = '#ClashRoyaleLink, #BrawlStarsLink, #ClashQuestLink';
+		if ($('.page-header__languages').length) {
+			$(elements).prependTo(".page-header__languages").css({"display": "inline-block"});
 		}else {
-			$("#ClashRoyaleLink, #BrawlStarsLink, #ClashQuestLink").appendTo(".page-header__top").css({"display": "inline-block"});
+			$(elements).appendTo(".page-header__top").css({"display": "inline-block"});
 		}
 	});
 
-    if (typeof(window.SpoilerAlert) === 'undefined') {
-        window.SpoilerAlert = {
-            question: 'Chief! This page contains sneak peeks. Are you sure you ' +
-                      'want to enter?',
-            yes: 'Yes, please',
-            no: 'No, let it be a surprise',
-            isSpoiler: function () {
-                return (-1 !== wgCategories.indexOf('Spoiler') &&
-                    Boolean($('.spoiler').length));
-            }
-        };
-    }
-    
     console.log('Site-wide JavaScript in MediaWiki:Common.js will load the ' +
                 'following JavaScript files:\n   ' + articles.join('\n   '));
 

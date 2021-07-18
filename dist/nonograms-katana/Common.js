@@ -32,17 +32,17 @@ function calculate() {
 	document.getElementById("wrong_number").innerHTML = "";
 	var xp = 1000, ruby = 1, bt_ram = 1, tr_map = 3;
 	var items1 = [
-		["5","https://static.wikia.nocookie.net/nonograms-katana/images/f/f0/Arrows.png/revision/latest?cb=20210111142621"],
-		["5","https://static.wikia.nocookie.net/nonograms-katana/images/b/b9/Fan.png/revision/latest?cb=20210111143226"],
-		["5","https://static.wikia.nocookie.net/nonograms-katana/images/a/ac/Shuriken.png/revision/latest?cb=20210111145634"],
-		["5","https://static.wikia.nocookie.net/nonograms-katana/images/e/e9/Katana.png/revision/latest?cb=20210111145304"],
-		["5","https://static.wikia.nocookie.net/nonograms-katana/images/9/9a/Spikes.png/revision/latest?cb=20210111145700"],
-		["5","https://static.wikia.nocookie.net/nonograms-katana/images/7/7c/Boomerang.png/revision/latest?cb=20210111142949"],
-		["5","https://static.wikia.nocookie.net/nonograms-katana/images/3/31/Petard.png/revision/latest?cb=20210111145400"],
-		["5","https://static.wikia.nocookie.net/nonograms-katana/images/3/3b/Bomb.png/revision/latest?cb=20210111142922"],
-		["5","https://static.wikia.nocookie.net/nonograms-katana/images/c/c9/Steel.png/revision/latest?cb=20210111145724"],
-		["5","https://static.wikia.nocookie.net/nonograms-katana/images/a/a7/Iron_sand.png/revision/latest?cb=20210111143836"],
-		["2","https://static.wikia.nocookie.net/nonograms-katana/images/6/6d/Sushi.png/revision/latest?cb=20210111145817"],
+		["5","https://static.wikia.nocookie.net/nonograms-katana/images/f/f0/Arrows.png/revision/latest?cb=20210710185924"],
+		["5","https://static.wikia.nocookie.net/nonograms-katana/images/b/b9/Fan.png/revision/latest?cb=20210710185840"],
+		["5","https://static.wikia.nocookie.net/nonograms-katana/images/a/ac/Shuriken.png/revision/latest?cb=20210710190109"],
+		["5","https://static.wikia.nocookie.net/nonograms-katana/images/e/e9/Katana.png/revision/latest?cb=20210710190010"],
+		["5","https://static.wikia.nocookie.net/nonograms-katana/images/9/9a/Spikes.png/revision/latest?cb=20210710190757"],
+		["5","https://static.wikia.nocookie.net/nonograms-katana/images/7/7c/Boomerang.png/revision/latest?cb=20210710190854"],
+		["5","https://static.wikia.nocookie.net/nonograms-katana/images/3/31/Petard.png/revision/latest?cb=20210710190156"],
+		["5","https://static.wikia.nocookie.net/nonograms-katana/images/3/3b/Bomb.png/revision/latest?cb=20210710190341"],
+		["5","https://static.wikia.nocookie.net/nonograms-katana/images/c/c9/Steel.png/revision/latest?cb=20210710193716"],
+		["5","https://static.wikia.nocookie.net/nonograms-katana/images/a/a7/Iron_sand.png/revision/latest?cb=20210710194025"],
+		["2","https://static.wikia.nocookie.net/nonograms-katana/images/6/6d/Sushi.png/revision/latest?cb=20210710194303"],
 		["1","https://static.wikia.nocookie.net/nonograms-katana/images/8/83/Mortar.png/revision/latest?cb=20210307192837"]];
 	var items2 = [
 		["0",""],
@@ -53,8 +53,8 @@ function calculate() {
 		["0",""],
 		["0",""],
 		["0",""],
-		["5","https://static.wikia.nocookie.net/nonograms-katana/images/4/4f/Charcoal.png/revision/latest?cb=20210111143028"],
-		["5","https://static.wikia.nocookie.net/nonograms-katana/images/9/92/Chemicals.png/revision/latest?cb=20210111143103"],
+		["5","https://static.wikia.nocookie.net/nonograms-katana/images/4/4f/Charcoal.png/revision/latest?cb=20210710193800"],
+		["5","https://static.wikia.nocookie.net/nonograms-katana/images/9/92/Chemicals.png/revision/latest?cb=20210710194109"],
 		["0",""],
 		["0",""]];
 	var unlocks = [["Workshop lvl. 1","","","",""],
@@ -67,7 +67,7 @@ function calculate() {
 					["Smithy lvl. 1","Rouge","","",""],
 					["Gong (building) lvl. 1","Pagoda lvl. 3","Logistician lvl. 2","Athlete lvl. 1","Antiquarian lvl. 1"],
 					["Lumber Mill lvl. 1","Intellectual lvl. 1","","",""],
-					["","","","",""],
+					["Garden lvl. 1","Monk","","",""],
 					["","","","",""],
 					["","","","",""],
 					["Geologist","Athlete lvl. 2","","",""],
@@ -126,14 +126,14 @@ function calculate() {
 	
 	document.getElementById("coin").innerHTML = level*2 + " x ";
 	var imgCoin = document.createElement("img");
-	imgCoin.src = "https://static.wikia.nocookie.net/nonograms-katana/images/6/6d/Coin.png/revision/latest?cb=20210111143200";
+	imgCoin.src = "https://static.wikia.nocookie.net/nonograms-katana/images/6/6d/Coin.png/revision/latest?cb=20210710184706";
 	imgCoin.width = "30";
 	imgCoin.height = "30";
 	document.getElementById("coin").appendChild(imgCoin);
 	
 	document.getElementById("ruby").innerHTML = ruby + " x ";
 	var imgRuby = document.createElement("img");
-	imgRuby.src = "https://static.wikia.nocookie.net/nonograms-katana/images/a/a9/Ruby.png/revision/latest?cb=20210111145432";
+	imgRuby.src = "https://static.wikia.nocookie.net/nonograms-katana/images/a/a9/Ruby.png/revision/latest?cb=20210710184829";
 	imgRuby.width = "30";
 	imgRuby.height = "30";
 	document.getElementById("ruby").appendChild(imgRuby);
@@ -159,7 +159,7 @@ function calculate() {
 	if (level > 14) {
 		document.getElementById("bt_ram").innerHTML = bt_ram + " x ";
 		var imgBTram = document.createElement("img");
-		imgBTram.src = "https://static.wikia.nocookie.net/nonograms-katana/images/d/d9/Battering_Ram.png/revision/latest?cb=20210111142838";
+		imgBTram.src = "https://static.wikia.nocookie.net/nonograms-katana/images/0/0e/Battering_ram.png/revision/latest?cb=20210710192019";
 		imgBTram.width = "30";
 		imgBTram.height = "30";
 		document.getElementById("bt_ram").appendChild(imgBTram);
@@ -170,7 +170,7 @@ function calculate() {
 	if (level > 4) {
 		document.getElementById("tr_map").innerHTML = tr_map + " x ";
 		var imgTRmap = document.createElement("img");
-		imgTRmap.src = "https://static.wikia.nocookie.net/nonograms-katana/images/9/9b/Treasure_map_fragment_lvl._1.png/revision/latest?cb=20210111145859";
+		imgTRmap.src = "https://static.wikia.nocookie.net/nonograms-katana/images/9/9b/Treasure_map_fragment_lvl._1.png/revision/latest?cb=20210710194412";
 		imgTRmap.width = "30";
 		imgTRmap.height = "30";
 		document.getElementById("tr_map").appendChild(imgTRmap);

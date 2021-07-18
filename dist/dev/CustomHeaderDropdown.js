@@ -12,7 +12,7 @@
 
     window.CustomHeaderDropdown = $.extend({
         links: window.CustomHeaderLinks,
-        $buttons: $('.wds-community-header__wiki-buttons'),
+        $buttons: $('.wds-community-header__wiki-buttons, .wiki-tools'),
         buildDropdown: function(links) {
             var $dropdown = $('<ul>', {
                 'class': 'wds-list wds-is-linked'

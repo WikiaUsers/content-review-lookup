@@ -110,14 +110,13 @@
   };
 
   dpv.getPosts = function() {
-
-    $.ajax({
-      url: 'https://services.fandom.com/discussion/' + config.wgCityId + '/users/' + config.profileUserId + '/posts?responseGroup=full&limit=100&viewableOnly=false',
-      type: 'GET',
-      xhrFields: {
-        withCredentials: true
-      },
-      crossdomain: true
+    $.get(mw.util.wikiScript('wikia'), {
+          controller: 'DiscussionContribution',
+          method: 'getPosts',
+          userId: config.profileUserId,
+          responseGroup: 'full',
+          limit: 100,
+          viewableOnly: false
     }).done(function(data) {
       $("#dpv-content").empty();
       var posts = data._embedded['doc:posts'];
@@ -193,6 +192,9 @@
 
   mw.hook('dev.i18n').add(dpv.preload);
   mw.hook('dev.showCustomModal').add(dpv.preload);
-  mw.loader.using('mediawiki.template.mustache').then(dpv.preload);
+  mw.loader.using([
+      'mediawiki.template.mustache',
+      'mediawiki.util'
+  ]).then(dpv.preload);
 })();
 //</pre>

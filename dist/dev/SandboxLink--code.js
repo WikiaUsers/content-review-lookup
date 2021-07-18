@@ -18,7 +18,7 @@
                 'wgFormattedNamespaces',
                 'wgUserName'
             ]);
-            $('.wds-global-navigation__user-menu .wds-list').append(
+            $('.wds-global-navigation__user-menu .wds-list, .global-navigation__bottom .wds-list').append(
                 $('<li>', {
                     id: 'MySandbox'
                 }).append(

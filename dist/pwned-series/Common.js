@@ -5,8 +5,12 @@ window.tooltips_config = {
 }
 
 window.tooltips_list = [
-	{
-		classname: 'GemstoneToolTip',
-		parse:'{'+'{GemToolTip|Name=<#name#>}}'
-	},
+{
+    classname: 'TrophyToolTip',
+    parse: '{'+'{TrophyToolTip|Name=<#name#>}}',   // '+' makes MediaWiki ignore the template on the page with settings
+},
+{
+	classname: 'GemstoneToolTip',
+	parse:'{'+'{GemToolTip|Name=<#name#>}}'
+},
 ]

@@ -140,7 +140,7 @@
             });
             // fallthrough
         case 'fandomdesktop':
-            $container.css('order', 1).appendTo('.toolbar > .tools');
+            $container.css({'order': 1, 'width': '14em'}).appendTo('.toolbar > .tools');
             break;
         case 'hydra':
         case 'hydradark':

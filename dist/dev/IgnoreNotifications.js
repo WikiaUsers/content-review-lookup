@@ -48,8 +48,7 @@
         "helper",
         "soap",
         "staff",
-        "vstf",
-        "wiki-manager"
+        "wiki-representative"
     ];
     var unblock_def = jQuery.Deferred();
     var notif_types = [

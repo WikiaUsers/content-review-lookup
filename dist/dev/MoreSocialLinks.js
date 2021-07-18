@@ -1,41 +1,20 @@
 /**
  * Name:        MoreSocialLinks
- * Version:     v1.0
- * Author:      KockaAdmiralac <1405223@gmail.com>
+ * Version:     v1.1
+ * Author:      KockaAdmiralac <wikia@kocka.tech>
  * Description: Adds Instagram, Twitch and YouTube links to user profiles
  */
-require([
-    'wikia.window',
-    'mw',
-    'jquery',
-    'wikia.nirvana'
-], function(window, mw, $, nirvana) {
+(function() {
     'use strict';
-    var $masthead = $('#UserProfileMasthead');
-    if (!$masthead.exists() || window.MoreSocialLinksLoaded) {
+    var config = mw.config.get([
+        'profileUserId',
+        'profileUserName',
+        'wgUserId'
+    ]);
+    if (!config.profileUserName || window.MoreSocialLinksLoaded) {
         return;
     }
     window.MoreSocialLinksLoaded = true;
-    if (
-        !window.dev || !window.dev.i18n ||
-        !window.dev.ui || !window.dev.modal
-    ) {
-        importArticle({
-            type: 'script',
-            articles: [
-                'u:dev:MediaWiki:I18n-js/code.js',
-                'u:dev:MediaWiki:Modal.js',
-                'u:dev:MediaWiki:UI-js/code.js'
-            ]
-        });
-    }
-    importArticles({
-        type: 'style',
-        articles: [
-            'u:dev:MediaWiki:FandomIcons.css',
-            'u:dev:MediaWiki:MoreSocialLinks.css'
-        ]
-    });
     var MoreSocialLinks = {
         regexes: {
             instagram: /^https?:\/\/(?:m\.|www\.)?instagram\.com\//,
@@ -43,56 +22,56 @@ require([
             twitter: /^https?:\/\/(?:mobile\.)?twitter\.com\//,
             youtube: /^https?:\/\/(?:m\.|www\.)?youtube\.com\/(?:user|channel)\//
         },
+        linkFields: [
+            'facebook',
+            'instagram',
+            'twitch',
+            'twitter',
+            'website',
+            'youtube'
+        ],
         links: {},
-        username: $masthead.find('h1[itemprop="name"]').text(),
-        toLoad: 3,
-        preload: function() {
-            if (--this.toLoad === 0) {
-                $.when(
-                    window.dev.i18n.loadMessages('MoreSocialLinks'),
-                    this.nirvana()
-                ).then($.proxy(this.init, this));
-            }
+        loaded: function() {
+            $.when(
+                window.dev.i18n.loadMessages('MoreSocialLinks'),
+                this.findContainer()
+            ).then($.proxy(this.init, this));
         },
-        nirvana: function() {
-            return nirvana.getJson(
-                'UserProfilePage',
-                'renderUserIdentityBox',
-                {
-                    title: 'User:' + this.username
+        findContainer: function() {
+	        var promise = $.Deferred();
+	        var interval = setInterval(function() {
+                var $element = $('#userProfileApp .user-identity-social');
+                if ($element.length) {
+                    clearInterval(interval);
+                    promise.resolve($element);
                 }
-            );
-        },
-        init: function(i18n, data) {
+            }, 300);
+	        return promise;
+	    },
+        init: function(i18n, $links) {
             this.i18n = i18n;
-            this.id = data[0].user.id;
-            this.canEdit = data[0].canEditProfile;
-            this.services().then($.proxy(this.show, this));
-        },
-        services: function() {
-            return $.get(
-                'https://services.wikia.com/user-attribute/user/bulk',
-                {
-                    id: this.id
-                }
-            );
+            this.$links = $links;
+            $.get('https://services.fandom.com/user-attribute/user/bulk', {
+                cb: Date.now(),
+                id: config.profileUserId
+            }).then($.proxy(this.show, this));
         },
         show: function(data) {
-            var $links = $masthead.find('.links');
-            $.each(data.users[this.id], $.proxy(this.eachLink, this));
+            $.each(data.users[config.profileUserId], $.proxy(this.eachLink, this));
+            if (Number(config.wgUserId) === Number(config.profileUserId)) {
+                this.links.edit = '#';
+            }
             var links = window.dev.ui({
                 type: 'ul',
-                classes: ['links'],
+                classes: ['user-identity-social'],
                 children: $.map(this.links, $.proxy(this.mapLink, this))
             });
-            if ($links.exists()) {
-                $links.replaceWith(links);
-            } else {
-                $masthead.find('.masthead-info-lower').append(links);
-            }
+            $(links).append(this.$links.find('.user-identity-social__icon.wds-dropdown'));
+            this.$links.replaceWith(links);
             this.initModal();
-            $masthead.find('.links > .edit > a')
-                .click($.proxy(this.edit, this));
+            $(links).find('.edit > a')
+                .click($.proxy(this.edit, this))
+                .removeAttr('target');
         },
         eachLink: function(k, v) {
             if (!v) {
@@ -111,6 +90,8 @@ require([
                 case 'social_youtube':
                     if (v.match(this.regexes.youtube)) {
                         this.links.youtube = v;
+                    } else {
+                        this.links.youtube = 'https://youtube.com/user/' + v;
                     }
                     break;
                 case 'twitter':
@@ -118,11 +99,6 @@ require([
                     break;
                 case 'website':
                     this.links.website = v;
-                    break;
-                default:
-                    if (this.canEdit) {
-                        this.links.edit = '#';
-                    }
                     break;
             }
         },
@@ -132,25 +108,29 @@ require([
                 classes: [k],
                 children: [
                     {
-                        type: 'span',
-                        classes: [
-                            'fandom-icons',
-                            'icon-' + (
-                                k === 'website' ?
-                                    'earth' :
-                                    k === 'edit' ?
-                                        'pencil' :
-                                        k
-                            )
-                        ]
-                    },
-                    {
                         type: 'a',
+                        children: [
+                            {
+                                type: 'span',
+                                classes: [
+                                    'fandom-icons',
+                                    'icon-' + (
+                                        k === 'website' ?
+                                            'earth' :
+                                            k === 'edit' ?
+                                                'pencil' :
+                                                k
+                                    )
+                                ]
+                            }
+                        ],
+                        classes: ['user-identity-social__icon'],
                         attr: {
                             href: v,
-                            rel: 'nofollow'
+                            rel: 'noopener noreferrer',
+                            target: '_blank'
                         },
-                        text: this.msg('link-' + k)
+                        title: this.msg('link-' + k)
                     }
                 ]
             };
@@ -162,20 +142,14 @@ require([
                         event: 'save',
                         primary: true,
                         text: this.msg('save')
-                    },
-                    {
-                        event: 'close',
-                        text: this.msg('cancel')
                     }
                 ],
-                closeTitle: this.msg('cancel'),
                 content: {
                     type: 'form',
                     classes: [
-                        'MoreSocialLinksForm',
-                        'WikiaForm'
+                        'MoreSocialLinksForm'
                     ],
-                    children: $.map(this.links, $.proxy(this.mapGroup, this))
+                    children: $.map(this.linkFields, $.proxy(this.mapGroup, this))
                         .filter(Boolean)
                 },
                 context: this,
@@ -188,10 +162,7 @@ require([
             });
             this.modal.create();
         },
-        mapGroup: function(v, k) {
-            if (k === 'edit') {
-                return false;
-            }
+        mapGroup: function(k) {
             return {
                 type: 'div',
                 classes: ['input-group'],
@@ -209,7 +180,7 @@ require([
                             id: k,
                             name: k,
                             type: 'text',
-                            value: v
+                            value: this.links[k] || ''
                         }
                     }
                 ]
@@ -243,15 +214,14 @@ require([
                 context: this,
                 data: data,
                 type: 'PATCH',
-                url: 'https://services.wikia.com/user-attribute/user/' +
-                     this.id,
+                url: 'https://services.fandom.com/user-attribute/user/' +
+                     config.profileUserId,
                 xhrFields: {
                     withCredentials: true
                 }
             }).done(this.saved);
         },
         saved: function(d) {
-            console.log(d);
             window.location.reload();
         },
         edit: function() {
@@ -261,7 +231,19 @@ require([
             return this.i18n.msg(msg).plain();
         }
     };
-    mw.hook('dev.i18n').add($.proxy(MoreSocialLinks.preload, MoreSocialLinks));
-    mw.hook('dev.ui').add($.proxy(MoreSocialLinks.preload, MoreSocialLinks));
-    mw.hook('dev.modal').add($.proxy(MoreSocialLinks.preload, MoreSocialLinks));
-});
+    importArticle({
+        type: 'script',
+        articles: [
+            'u:dev:MediaWiki:I18n-js/code.js',
+            'u:dev:MediaWiki:Modal.js',
+            'u:dev:MediaWiki:UI-js/code.js'
+        ]
+    }).then($.proxy(MoreSocialLinks.loaded, MoreSocialLinks));
+    importArticles({
+        type: 'style',
+        articles: [
+            'u:dev:MediaWiki:FandomIcons.css',
+            'u:dev:MediaWiki:MoreSocialLinks.css'
+        ]
+    });
+})();

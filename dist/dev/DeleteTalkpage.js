@@ -51,8 +51,8 @@
         if (--preloads === 0) {
             window.dev.i18n.loadMessages('DeleteTalkpage').then(function (i18n) {
                 msgs = [i18n.msg('label').escape(), i18n.msg('reason').plain()];
+                init();
             });
-            init();
         }
     }
 

@@ -14,7 +14,7 @@
     var api, languages,
         contentLang = mw.config.get('wgContentLanguage'),
         token = mw.user.tokens.get('editToken'),
-        notCustom = /soap|helper|content-team-member|wiki-manager|staff|util/.test(mw.config.get('wgUserGroups').join('|')),
+        notCustom = /soap|helper|wiki-specialist|wiki-representative|staff|util/.test(mw.config.get('wgUserGroups').join('|')),
         // [[MediaWiki:Custom-language-code-sorting]]
         languageCodeSortingId = 14830,
         modal;

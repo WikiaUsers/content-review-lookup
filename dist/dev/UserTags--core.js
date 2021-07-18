@@ -493,7 +493,7 @@ dev.UserTags.SledgeAJAX = (function(Object, $, mw, Logger) {
  *
  * TODO: Split Oasis and Monobook crap out of UserTags into Strategy Modules
  *    (UserTagsJS.skinStrategies.(oasis|monobook), these can be in their own top-level as well.
- * TODO: Create a MonobookTagsModule to query allusers to get Staff/VSTF/etc memberships
+ * TODO: Create a MonobookTagsModule to query allusers to get Staff/SOAP/etc memberships
  *    so that will work in Monobook too.
  * TODO: Allow grouping of tags, each group will be given a separate container so it can be
  *    placed in a different location in the masthead. E.g. Core groups go in the HGROUP as
@@ -1426,10 +1426,10 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
     UserTags.OasisTagsModule = {
         _blacklist: [
             'staff',
-            'wiki-manager',
-            'content-team-member',
+            'wiki-representative',
+            'wiki-specialist',
             'helper',
-            'vstf',
+            'soap',
             'global-discussions-moderator',
             'voldev',
             'vanguard',
@@ -1570,7 +1570,6 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
     /*var TagWhitelist = {
         founder:1,
         blocked:1,
-        chatmoderator:1,
         sysop:1,
         bureaucrat:1
     };*/

@@ -6,7 +6,7 @@
  */
 (function () {
 	if (
-		!/sysop|staff|helper|global-discussions-moderator|content-team-member|wiki-manager|soap/.test(mw.config.get('wgUserGroups').join()) ||
+		!/sysop|staff|helper|global-discussions-moderator|wiki-specialist|wiki-representative|soap/.test(mw.config.get('wgUserGroups').join()) ||
 		$('#userProfileApp').length === 0 ||
 		window.AddBlockUserTagLoaded
 	) {
@@ -24,7 +24,6 @@
 				var $element = $('#userProfileApp .user-identity-header__actions');
 				if ($element.length) {
 					clearInterval(interval);
-					main = true;
 					promise.resolve($element);
 				}
 			}, 300);

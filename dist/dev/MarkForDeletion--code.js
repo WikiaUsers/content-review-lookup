@@ -25,7 +25,7 @@
         config.wgAction !== 'view' ||
         config.wgNamespaceNumber === -1 ||
         config.wgUserName === null ||
-        /content-moderator|sysop|helper|staff|wiki-manager|content-team-member|soap/.test(config.wgUserGroups.join('|')) ||
+        /content-moderator|sysop|helper|staff|wiki-representative|wiki-specialist|soap/.test(config.wgUserGroups.join('|')) ||
         window.MarkForDeletionLoaded
     ) {
         return;
@@ -103,7 +103,7 @@
             })
         ), $toolbar = $('#WikiaBarWrapper'),
             $tools = $toolbar.find('li.mytools'),
-            $dropdown = $('.page-header__contribution-buttons .wds-list');
+            $dropdown = $('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list');
  
         if (window.MarkForDeletionEditDropdown && $dropdown.length) {
             // insert link in edit dropdown if user wants that

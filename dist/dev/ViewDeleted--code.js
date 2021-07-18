@@ -32,7 +32,7 @@ mw.loader.using('mediawiki.api').then(function() {
         'wgNamespaceIds'
     ]),
     ug = wg.wgUserGroups,
-    can_restore = /sysop|staff|helper|content-volunteer|content-moderator|content-team-member|wiki-manager|soap/.test(ug.join()),
+    can_restore = /sysop|staff|helper|content-volunteer|content-moderator|wiki-specialist|wiki-representative|soap/.test(ug.join()),
     config = window.ViewDeleted || {rc: true, logs: 'replace'},
     rc = config.rc && $('#recentchanges-options + .rc-conntent').length,
     logs = config.logs && (wg.wgPageName.slice(-7) == '/delete' || getUrlVars().type == 'delete');

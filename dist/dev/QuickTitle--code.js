@@ -1,13 +1,13 @@
 // Allows a user to change the displayed title of a page without pressing the Edit button
 // Authors: KCCreations & KockaAdmiralac
+// <nowiki>
 mw.loader.using([
      'mediawiki.api',
      'mediawiki.user'
 ]).then(function() {
     var config = mw.config.get([
         'wgIsArticle',
-        'wgPageName',
-        'wgVersion'
+        'wgPageName'
     ]);
 
     // Limiting the scope of the script
@@ -29,7 +29,7 @@ mw.loader.using([
     mw.hook('dev.i18n').add(function(i18no) {
         i18no.loadMessages('QuickTitle').then(function(i18n) {
  
-            var titleLocation = $('.page-header .page-header__main .page-header__title'); // Location of the title
+            var titleLocation = $('.page-header__title'); // Location of the title
  
             // Caches the page data so it doesn't load the data every time the page loads
             // Also ensures the page exists before being able to rename it
@@ -38,7 +38,7 @@ mw.loader.using([
                     if ($('#QuickTitleField').length > 0) {
                         return;
                     }
-                    var title = $(this)[0].firstChild.textContent;
+                    var title = $(this)[0].firstChild.textContent.trim();
                     $(this).append(
                         $('<br/>'),
                         $('<input>', {
@@ -80,25 +80,22 @@ mw.loader.using([
                             title: config.wgPageName,
                             token: mw.user.tokens.get("csrfToken") || mw.user.tokens.get("editToken")
                         }, text ? { "text": text } : { prependtext: displayTitle })).done(function(d) {
-                            if (d.error) {
-                                new BannerNotification(i18n.msg('error', d.error.code).escape(), 'error').show();
-                            } else {
-                                titleLocation.text(newTitle);
-                                window.location.reload();
-                            }
+                            titleLocation.text(newTitle);
+                            window.location.reload();
                         }).fail(function(code) {
-                            if (config.wgVersion === '1.19.24') {
-                                new BannerNotification(i18n.msg('error', code || 'http').escape()).show();
-                            } else {
-                                mw.notify(i18n.msg('error', code).plain(), {
-                                    type: 'error'
-                                });
-                            }
+                            mw.notify(i18n.msg('error', code).plain(), {
+                                type: 'error'
+                            });
                         });
                     });
-                    $('#QuickTitleCancel').click(function() { setTimeout(function() { titleLocation.text(title); }, 100); });
+                    $('#QuickTitleCancel').click(function() {
+                        setTimeout(function() {
+                            titleLocation.text(title);
+                        }, 100);
+                    });
                 });
             });
         });
     });
 });
+// </nowiki>

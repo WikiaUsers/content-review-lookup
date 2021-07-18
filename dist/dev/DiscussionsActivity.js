@@ -461,7 +461,7 @@
         var style = '<link rel="stylesheet" type="text/css" href="https://slot1-images.wikia.nocookie.net/__am/1515674256/sasses/color-page%3D%2523' + hex + '%26skins/extensions/wikia/MyHome/oasis.scss,extensions/wikia/Wall/css/WallWikiActivity.scss" />';
         title.insertAdjacentHTML('afterend', style);
         // Gets user perms
-        var blockers = ['sysop', 'staff', 'wiki-manager', 'helper', 'soap', 'global-discussions-moderator'];
+        var blockers = ['sysop', 'staff', 'wiki-representative', 'helper', 'soap', 'global-discussions-moderator'];
         canBlock = blockers.some(function (role) { return config.wgUserGroups.indexOf(role) > -1; });
         isMod = Boolean(canBlock || config.wgUserGroups.indexOf('threadmoderator') > -1);
         // Calls the next steps once the following task is complete

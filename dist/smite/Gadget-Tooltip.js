@@ -92,7 +92,7 @@ function bindTT() {
 		$t.data("tt", $p.attr("title").replace(" (page does not exist)","").replace("?","%3F")).on("mouseenter",showTip).on("mouseleave",hideTip).mousemove(moveTip);
 		if ($p.hasClass("new")) {
 			els = '<sup><span class="plainlinks">';
-			for (x=0;x<2;x++) els += eLink(x,$t.data("tt").replace("Quest:",""));
+			for (x=0;x<2;x++) els += eLink(x,$t.data("tt"));
 			$p.after(els+'</span></sup>');
 		} else {
 			$t.removeAttr("title");

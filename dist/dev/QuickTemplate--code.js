@@ -9,16 +9,12 @@
     }
     window.QuickTemplateLoaded = true;
 
-    var preloads = 2, modal, isUCP = mw.config.get('wgVersion') !== '1.19.24';
+    var preloads = 2, modal;
 
     function notification(msg, type) {
-        if (isUCP) {
-            mw.notify(msg.plain(), {
-                type: type
-            });
-        } else {
-            new BannerNotification(msg.escape(), type).show();
-        }
+        mw.notify(msg.plain(), {
+            type: type
+        });
     }
 
     function template(i18n) {
@@ -103,9 +99,10 @@
                 window.dev.i18n.loadMessages('QuickTemplate'),
                 mw.loader.using([
                     'mediawiki.api',
+                    'mediawiki.notify',
                     'mediawiki.user',
                     'mediawiki.util'
-                ].concat(isUCP ? ['mediawiki.notify'] : []))
+                ])
             ).then(init);
         }
     }

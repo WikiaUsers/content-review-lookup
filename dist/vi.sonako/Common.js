@@ -17,8 +17,6 @@ function impart(article) {
 
 jQuery.fx.interval = 80;
 
-window.DragDropUploader = true;
-
 window.mbLoadingOpacity = 1;
 
 window.PurgeButtonText = 'Làm mới trang';
@@ -52,15 +50,6 @@ $(function() {
 if ((mw.config.get('wgAction') === 'view') && (mediaWiki.config.get('wgPageName') !== 'Sonako_Light_Novel') && (mediaWiki.config.get('wgNamespaceNumber') !== -1 || mediaWiki.config.get('wgNamespaceNumber') !== 1201 || mediaWiki.config.get('wgNamespaceNumber') !== 2001)) {
     impart('u:dev:MediaWiki:ReferencePopups/code.js');
     impart('u:dev:MediaWiki:LastEdited/code.js');
-}
-if (mediaWiki.config.get('wgPageName') === 'Sonako_Statistics') {
-    impart('MediaWiki:WikiStats.js');
-}
-// Cài đặt bộ gõ [[Wikipedia:Gõ tiếng Việt|AVIM]] từ Wikipedia tiếng Việt
-// Sửa đổi để chạy trên Wikia bởi Dai ca superman
-if ((mediaWiki.config.get('wgPageName') !== 'Sonako_Light_Novel') && (mediaWiki.config.get('wgNamespaceNumber') === 0 || mediaWiki.config.get('wgNamespaceNumber') === 500 || mediaWiki.config.get('wgNamespaceNumber') === 1202 || mediaWiki.config.get('wgNamespaceNumber') === 1200 || mediaWiki.config.get('wgNamespaceNumber') === 1201 || mediaWiki.config.get('wgNamespaceNumber') === 2000) || mw.config.get('wgAction') === 'edit') {
-    impart('MediaWiki:AVIM.js');
-    impart('MediaWiki:AVIM_portlet.js');
 }
 if (mw.config.get('wgNamespaceNumber') === 0 || mw.config.get('wgNamespaceNumber') === 500) {
     impart('MediaWiki:Ebook.js');

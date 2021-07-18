@@ -30,3 +30,11 @@ window.tooltips_list = [
 	}
 ];
 /* end of tooltip */
+
+/*Add sidebar rail module*/
+
+window.AddRailModule = [
+    {page: 'Template:TopAddRail', prepend: true, maxAge: 60},
+    {page: 'Template:BottomAddRail', maxAge: 60},
+];
+/* End of sidebar rail module */

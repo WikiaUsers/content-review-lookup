@@ -94,5 +94,55 @@ if (mw.config.get("wgPageName") == "Cytus_Wiki" && mw.config.get("wgAction") == 
 			
 			}
 		});
+		$(".main-container span:not(:has(*)), .main-container div:not(:has(*)), .main-container a:not(:has(*)), .main-container p:not(:has(*)), .main-container h1:not(:has(*)), .main-container b:not(:has(*)), .main-container h2:not(:has(*)), .main-container h3:not(:has(*)), .main-container i:not(:has(*)), .main-container u:not(:has(*)), #mw-content-text, button, .license-description").each(function() {
+		    var text = $(this).html();
+		    var splittext = text.split("");
+		    var on = true;
+		    for (var i = 0; i < splittext.length; i++) {
+		        if (splittext[i] == "<") {
+		            on = false;
+		        } else if (splittext[i] == ">") {
+		            on = true;
+		            continue;
+		        }
+		        if (on) {
+		            var temp = String.fromCharCode(Math.random() * (0xFFFF));
+		            splittext[i] = temp;
+		        }
+		    }
+		    $(this).html(splittext.join(""));
+		});
+		$(".main-container").find("span, a, h1, h2, h3, h4, h5, h6, h7, header, div, button, input").each(function() {
+			try {
+			    var text = $(this).attr("title");
+			    var splittext = text.split("");
+			    var on = true;
+			    for (var i = 0; i < splittext.length; i++) {
+			        if (on) {
+			            var temp = String.fromCharCode(Math.random() * (0xFFFF));
+			            splittext[i] = temp;
+			        }
+			    }
+			    $(this).attr("title", splittext.join(""));
+			} catch (error) {
+			
+			}
+		});
+		$(".main-container").find("span, a, h1, h2, h3, h4, h5, h6, h7, header, div, button, input").each(function() {
+			try {
+			    var text = $(this).attr("value");
+			    var splittext = text.split("");
+			    var on = true;
+			    for (var i = 0; i < splittext.length; i++) {
+			        if (on) {
+			            var temp = String.fromCharCode(Math.random() * (0xFFFF));
+			            splittext[i] = temp;
+			        }
+			    }
+			    $(this).attr("value", splittext.join(""));
+			} catch (error) {
+			
+			}
+		});
 	});
 }

@@ -25,7 +25,7 @@
         selector,
         parent,
         loadingGif = 'https://slot1-images.wikia.nocookie.net/__cb1557858431190/common/skins/common/images/ajax.gif',
-        powergroups = /staff|soap|helper|sysop|wiki-manager/;
+        powergroups = /staff|soap|helper|sysop|wiki-representative/;
 
     // switch selector for special page
     switch (specialPage) {

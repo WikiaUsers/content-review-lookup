@@ -20,7 +20,7 @@
         ]);
         if (
             config.wgCanonicalSpecialPageName !== 'Contributions' ||
-            !/rollback|content-moderator|threadmoderator|sysop|soap|staff|helper|global-discussions-moderator|wiki-manager|content-team-member/.test(config.wgUserGroups.join()) ||
+            !/rollback|content-moderator|threadmoderator|sysop|soap|staff|helper|global-discussions-moderator|wiki-representative|wiki-specialist/.test(config.wgUserGroups.join()) ||
             window.WHAMLoaded
         ) {
             return;
@@ -394,7 +394,7 @@
         }
 
         function canFlagBot() {
-            return /soap|staff|helper|wiki-manager/.test(config.wgUserGroups.join());
+            return /soap|staff|helper|wiki-representative/.test(config.wgUserGroups.join());
         }
 
         function click() {

@@ -92,9 +92,10 @@
         i18no.loadMessages('AddAnnouncement').done(function(d) {
             i18n = d;
                 $('<button>', {
-                    type: 'checkbox',
-                    id: 'addAnnouncement',
-                    text: i18n.msg('add').plain()
+                    'class': 'wds-button',
+                    'type': 'checkbox',
+                    'id': 'addAnnouncement',
+                    'text': i18n.msg('add').plain()
                 }).click(addAnnouncement).appendTo(mw.util.$content);
         });
     });

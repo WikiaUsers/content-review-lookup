@@ -20,7 +20,7 @@
             'soap',
             'helper',
             'global-discussions-moderator',
-            'wiki-manager'
+            'wiki-representative'
         ].join('|')).test(config.wgUserGroups.join()) ||
         // DO NOT run for anonymous users. This will delete ALL posts and replies
         // of ALL anonymous users that ever posted in the wiki's Discussions,

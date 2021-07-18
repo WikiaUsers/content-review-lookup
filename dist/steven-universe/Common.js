@@ -11,7 +11,7 @@ window.UserTagsJS = {
         custom: {
             'Navid 1600': ['discordmod'],
             'Iudexkoo': ['discordmod'],
-            'CrystalMomSquad': ['discordmod']
+            'Treesmasherftw': ['discordmod']
         }
     }
 };

@@ -57,7 +57,7 @@
     function hideTags($masthead) {
         var $tags = $masthead.find('[class*="tag"]');
             // whitelist of which tags not to remove
-            // noRemove = ['staff', 'vstf', 'council', 'authenticated', 'helper'];
+            // noRemove = ['staff', 'soap', 'council', 'authenticated', 'helper'];
 
         /*
         // this tests if the tag is one of the tags not to remove

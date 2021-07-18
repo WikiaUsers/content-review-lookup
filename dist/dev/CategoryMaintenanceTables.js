@@ -85,7 +85,7 @@
                     data.map(function(els) {
                         return '<tr><td>' + els[0] + '</td>' +
                             '<td>' + mw.config.get('wgServer') +
-                            mw.config.get('wgScriptPath') + '/wiki/' +
+                            mw.config.get('wgScriptPath') + '/wiki/Category:' +
                             els[0].replace(/ /g, '_') + '</td>' +
                             '<td>' + els[1] + '</td></tr>';
                     }).join('') +
@@ -124,7 +124,7 @@
                 var el = document.createElement('textarea');
                 el.value = cmt.data.map(function(els) {
                     return els[0] + '\t' + mw.config.get('wgServer') +
-                           mw.config.get('wgScriptPath') + '/wiki/' +
+                           mw.config.get('wgScriptPath') + '/wiki/Category:' +
                            els[0].replace(/ /g, '_') + '\t' + els[1];
                 }).join('\n');
                 document.body.appendChild(el);

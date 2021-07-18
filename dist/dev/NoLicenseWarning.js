@@ -36,8 +36,8 @@
         'helper',
         'vanguard',
         'content-volunteer',
-        'content-team-member',
-        'wiki-manager',
+        'wiki-specialist',
+        'wiki-representative',
         'bot-global',
         'soap'
     ];

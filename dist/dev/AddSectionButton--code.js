@@ -17,7 +17,7 @@
             });
             importArticle({
                 type: 'script',
-                article: 'u:dev:I18n-js/code.js'
+                article: 'u:dev:MediaWiki:I18n-js/code.js'
             });
         } else {
             sectionButton();
@@ -27,7 +27,7 @@
     function sectionButton(i18n) {
         buttonText = buttonText || i18n.msg('add').plain();
         var $dropdown = $(
-            '.UserProfileActionButton  > .wikia-menu-button > ul,' +
+            '.page-header__actions .wds-list,' +
             '.page-header__contribution-buttons .wds-list'
         ).first();
 

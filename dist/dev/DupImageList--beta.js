@@ -59,8 +59,8 @@
     const canDelete = isMember( [ 
         "staff",
         "helper",
-        "content-team-member",
-        "wiki-manager",
+        "wiki-specialist",
+        "wiki-representative",
         "soap",
         "sysop",
         "content-moderator"

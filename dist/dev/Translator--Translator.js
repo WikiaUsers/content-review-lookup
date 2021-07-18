@@ -18,10 +18,10 @@ $(function() {
         }).toString());
     }
 
-    $('.WikiaMainContent').prepend(
+    $('#content').prepend(
         $('<button>', {
             id: 'TranslateButton',
-            'class': 'wikia-button',
+            'class': 'wds-button',
             css: {
                 'font-weight': 800,
                 width: '6em',

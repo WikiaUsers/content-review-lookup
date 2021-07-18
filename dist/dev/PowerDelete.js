@@ -18,7 +18,7 @@ mw.loader.using('mediawiki.api').then(function() {
         i18n;
 
     if (
-        !/sysop|content-moderator|staff|helper|content-team-member|wiki-manager|soap/.test(config.wgUserGroups.join()) ||
+        !/sysop|content-moderator|staff|helper|wiki-specialist|wiki-representative|soap/.test(config.wgUserGroups.join()) ||
         window.powerDelLoaded ||
         config.wgNamespaceNumber === -1 ||
         config.wgNamespaceNumber === 1200 ||
@@ -142,7 +142,7 @@ mw.loader.using('mediawiki.api').then(function() {
         });
         modal.create();
 
-        $('.UserProfileActionButton .WikiaMenuElement, .page-header__contribution-buttons .wds-list')
+        $('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list')
             .first()
             .append(window.dev.ui({
                 type: 'li',

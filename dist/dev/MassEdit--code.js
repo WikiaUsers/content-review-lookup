@@ -212,8 +212,8 @@
           "soap",
           "helper",
           "vanguard",
-          "wiki-manager",
-          "content-team-member",
+          "wiki-representative",
+          "wiki-specialist",
           "content-volunteer",
         ]),
         CAN_MESSAGE: Object.freeze([

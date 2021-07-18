@@ -147,7 +147,8 @@
 	
 		// Ajouter le modèles dans les pages de fichier uniquement pour les utilisateur inscrits
 		if (mw.config.get('wgCanonicalNamespace') === 'File' && 
-			mw.config.get('wgUserGroups').includes('user'))
+			mw.config.get('wgUserGroups').includes('user') && 
+    		mw.config.get('wgAction') === 'view' )
 			$(function() {
 				var Options = {
 					'{{Sans licence}}': 'Image sans licence',

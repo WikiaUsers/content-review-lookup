@@ -7,21 +7,19 @@
  * @author KockaAdmiralac
  */
 (function() {
-    var $list = $('.page-header__contribution-buttons .wds-list'),
+    var $list = $('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list'),
         config = mw.config.get([
             'stylepath',
             'wgArticleId',
             'wgNamespaceNumber',
             'wgPageName',
-            'wgUserLanguage',
-            'wgVersion'
+            'wgUserLanguage'
         ]),
         title,
         $link,
         api,
         messages,
-        unwatch,
-        isUCP = config.wgVersion !== '1.19.24';
+        unwatch;
     if (
         $list.length === 0 ||
         config.wgArticleId === 0 ||
@@ -44,14 +42,10 @@
         e.preventDefault();
         var params = {
             action: 'watch',
-            title: config.wgPageName,
+            titles: config.wgPageName,
             token: mw.user.tokens.get('watchToken'),
             unwatch: unwatch ? true : undefined
         };
-        if (isUCP) {
-            params.titles = params.title;
-            delete params.title;
-        }
         api.post(params).done(function(data) {
             if (!data.error) {
                 unwatch = !unwatch;
@@ -60,15 +54,9 @@
                 $link = $newLink;
             }
         });
-        if (isUCP) {
-            $link.html($('<span>', {
-                'class': 'mw-ajax-loader'
-            }));
-        } else {
-            $link.html($('<img>', {
-                src: config.stylepath + '/common/images/ajax.gif'
-            }));
-        }
+        $link.html($('<span>', {
+            'class': 'mw-ajax-loader'
+        }));
     }
     function createLink() {
         return $('<a>', {

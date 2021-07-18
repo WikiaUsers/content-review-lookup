@@ -5,7 +5,7 @@ mw.loader.using('ext.fandom.ContentReview.legacyLoaders.js').then(function() {
 	if(mw.config.get('wgNamespaceNumber') == 1200) { // Message Wall
 		window.DiscussionTemplates = {
 			templates: {},
-			allowedGroups: ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator', 'wiki-manager']
+			allowedGroups: ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator', 'wiki-representative']
 		};
 		
 		$.getJSON('/index.php?title=MediaWiki:Gadget-message-template.json&action=raw&ctype=application/json', function(templateData) {

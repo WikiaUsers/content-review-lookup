@@ -53,7 +53,7 @@
 
 	// load protections
 	if (!supportedPages.flat().includes(specialPage) // not from list
-		|| !/staff|helper|sysop|content-moderator|content-team-member|wiki-manager|soap/.test(userGroups.join('\n')) //not in group
+		|| !/staff|helper|sysop|content-moderator|wiki-specialist|wiki-representative|soap/.test(userGroups.join('\n')) //not in group
 		|| window.mfdLoaded // double loading
 		// exclude page(s)
 		|| (window.mfdExclude && (window.mfdExclude === page || window.mfdExclude.indexOf(page) >= 0))
@@ -153,6 +153,7 @@
 			class: "selectiveDel",
 			type: "checkbox",
 		});
+		console.log(specialPageType);
 
 		switch (specialPageType) {
 			case 1:
@@ -163,8 +164,8 @@
 
 				break;
 			case 2:
-				if ($('.mw-allpages-table-chunk').length) { // Allpages
-					$('.mw-allpages-table-chunk td a').each(function() {
+				if ($('.mw-allpages-chunk').length) { // Allpages
+					$('.mw-allpages-chunk li > a').each(function() {
 						$(this).before($chk.clone());
 						selectHax(this);
 					});

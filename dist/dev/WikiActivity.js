@@ -10,212 +10,24 @@
  * that will impact the users of the script, you are welcome
  *
  * Author: Ultimate Dark Carnage
- * Version: v1.2b (v2.0 in progress)
+ * Version: v0.998b
  **/
+
+// Creating the configuration object if it does not exist
+window.rwaOptions = window.rwaOptions || { };
 
 // Initializing the script via an IIFE
 ( function( window, $, mw ) {
     "use strict";
 
-	/** Version 2 (coming soon) **/
-	// Creating the configuration object if it does not exist
-	const options = window.rwaOptions = window.rwaOptions || { };
-	
-	//
-	if ( options.disabled || window.UCP.WikiActivity || window.WikiActivityLoaded ) return;
-	
-	//
-	window.WikiActivityLoaded = true;
-	
-	//
-	const mwc = mw.config.get( );
-	
-	//
-	function Loader( callback, resources, thisArg ) { 
-		// Sets the current instance in a variable
-		const al = this;
-		
-		// If there are less than three arguments, set the context to the current instance
-		if ( arguments.length < 3 ) thisArg = this;
-
-		// An array of loaded scripts
-		al.loadedScripts = [ ];
-		
-		// Creates a script loader constructor
-		al.loadedStylesheets = [ ];
-
-		// An array of MediaWiki modules
-		al.modules = resources.MODULES || [ ];
-
-		// An object of scripts to load
-		al.scripts = resources.SCRIPTS || { };
-
-		// An array of stylesheets to load
-		al.stylesheets = resources.STYLESHEETS || [ ];
-
-		// Initializes the loader
-		al.init = function( ) { 
-			if ( Array.isArray( al.modules ) && al.modules.length ) { 
-				return mw.loader
-					.using( al.modules )
-					.then( al.loadScripts.bind( al ) );
-			}
-
-			al.loadScripts( );
-		};
-
-		// Loads all scripts and stylesheets if they are not loaded
-		al.loadScripts = function( ) { 
-			if ( Array.isArray( al.stylesheets ) && al.stylesheets.length ) { 
-				al.stylesheets.forEach( function( stylesheet ) {
-					importArticle( { 
-						type: "style", 
-						article: stylesheet 
-					} ).then( function( ) { 
-						al.loadedStylesheets.push( stylesheet );
-					} );
-				} );
-			}
-
-			const promises = Promise.all( 
-				Object
-					.getOwnPropertyNames( al.scripts )
-					.map( function( name ) { 
-						const script = al.scripts[ name ];
-
-						if ( window.dev[ name ] ) { 
-							al.loadedScripts.push( script );
-							return Promise.resolve( );
-						}
-
-						return new Promise( function( resolve, reject ) { 
-							importArticle( { 
-								type: "script",
-								article: script
-							} ).then( function( ) { 
-								al.loadedScripts.push( script );
-							} ).then( resolve )[ "catch" ]( reject );
-						} );
-					} )
-			);
-
-			return promises.then( function( ) { 
-				al.loaded = true;
-				return callback.apply( thisArg, al );
-			} );
-		};
-
-		return al;
-	}
-	
-	// 
-	function WikiActivityController( opts ) { 
-		//
-		const wac = this;
-		
-		//
-		const CAN_BLOCK = Object.freeze( [
-	        "sysop",
-	        "staff",
-	        "wiki-manager",
-	        "helper",
-	        "soap",
-	        "global-discussions-moderator"
-	    ] );
-	    
-	    //
-	    const IS_MOD = Object.freeze( CAN_BLOCK.concat( "discussion-moderator", "threadmoderator" ) );
-	    
-	    //
-	    const CAN_ROLLBACK = Object.freeze( CAN_BLOCK.concat( "rollback" ) );
-	    
-	    //
-	    const CAN_PATROL = Object.freeze( CAN_BLOCK.concat( "patroller" ) );
-		
-		//
-		wac.___NAME___ = "WikiActivity";
-		
-		//
-		wac.___VERSION___ = "v2.0b";
-		
-		//
-		wac.___MODULES___ = Object.freeze( [ 
-			"mediawiki.api",
-			"mediawiki.Title",
-			"mediawiki.Uri"
-		] );
-		
-		//
-		wac.___SCRIPTS___ = Object.freeze( { 
-			i18n: "u:dev:MediaWiki:I18n-js/code.js",
-			colors: "u:dev:MediaWiki:Colors/code.js",
-			wds: "u:dev:MediaWiki:WDSIcons/code.js",
-			dorui: "u:dev:MediaWiki:Dorui.js"
-		} );
-		
-		//
-		wac.___STYLESHEETS___ = [ 
-			"u:dev:MediaWiki:WikiActivity.css"
-		];
-		
-		//
-		wac.THEMES = [ ];
-		
-		//
-		wac.PAGE_CACHE = { };
-		
-		//
-		wac.AVATAR_CACHE = { };
-		
-		//
-		wac.CAN_BLOCK = CAN_BLOCK.some( function( group ) { 
-			return mwc.wgUserGroups.includes( group );
-		} );
-		
-		//
-		wac.IS_MOD = IS_MOD.some( function( group ) { 
-			return mwc.wgUserGroups.includes( group );
-		} );
-		
-		//
-		wac.CAN_ROLLBACK = CAN_ROLLBACK.some( function( group ) { 
-			return mwc.wgUserGroups.includes( group );
-		} );
-		
-		//
-		wac.CAN_PATROL = CAN_PATROL.some( function( group ) { 
-			return mwc.wgUserGroups.includes( group );
-		} );
-		
-		//
-		wac.SUBPAGES = Object.freeze( { 
-			"main": { 
-				aliases: [ "" ]
-			},
-			"following": { 
-				aliases: [ "f", "watchlist", "w" ],
-				patterns: [ ]
-			},
-			"media": { 
-				aliases: [ "m" ],
-				patterns: [ ]
-			}
-		} );
-		
-		//
-		wac.___LOADER___ = new Loader( wac.init, { 
-			SCRIPTS: wac.___SCRIPTS___,
-			STYLESHEETS: wac.___STYLESHEETS___,
-			MODULES: wac.___MODULES___
-		} );
-	}
-	
-	/** Version 1 (current version) **/
     // The script name
     const NAME = "WikiActivity";
 
     // Current script version
     const VERSION = "v1.0b";
+
+    // Creating the options object
+    const options = window.rwaOptions;
 
     // Creating the MediaWiki configuration object
     const conf = mw.config.get( [
@@ -231,12 +43,27 @@
         "wgVersion" // Temporary
     ] );
 
+    // MediaWiki version (in floating point)
+    const MW_VERSION = parseFloat( conf.mwVersion );
+
+    // TEMPORARY: If this wiki is on the legacy platform, do not run
+    if ( MW_VERSION === 1.19 ) return;
+
     // Creating the UCP object
     window.UCP = window.UCP || { };
 
     // Creating the Dev object
     window.dev = window.dev || { };
-    
+
+    // If this is not a special page or the script has been ran, do not run
+    if (
+        window.UCP.WikiActivity ||
+        window.WikiActivityLoaded
+    ) return;
+
+    // Setting the loaded state to true
+    window.WikiActivityLoaded = true;
+
     // Core scripts
     const scripts = new Map( [
         [ "i18n", "u:dev:MediaWiki:I18n-js/code.js" ],
@@ -353,7 +180,7 @@
     const CAN_BLOCK = Object.freeze( [
         "sysop",
         "staff",
-        "wiki-manager",
+        "wiki-representative",
         "helper",
         "soap",
         "global-discussions-moderator"

@@ -7,7 +7,6 @@
 
 ;(function($, mw) {
    'use strict';
-    var isUCP = mw.config.get('wgVersion') !== '1.19.24';
 
    // Loads or checks for DiscussionsRC
    if (window.discRC) {
@@ -16,11 +15,7 @@
    if (mw.config.get('wgPageName') === mw.config.get('wgFormattedNamespaces')[-1] + ':DiscussionsRC') {
       $('h1.page-header__title').text('DiscussionsRC');
       document.title = 'DiscussionsRC | ' + mw.config.get('wgSiteName') + ' | Fandom';
-      if (isUCP) {
-         $('#WikiaMainContent').empty().append($('<div/>', {id: 'discrc'}));
-      } else {
-         $('#WikiaArticle').empty().append($('<div/>', {id: 'discrc'}));
-      }
+      $('#WikiaMainContent, #content').empty().append($('<div/>', {id: 'discrc'}));
    }
    if (!$('#discrc').length) {
       return;
@@ -186,6 +181,7 @@
                            break;
                         default:
                            console.warn('Unexpected funnel type "%s" for post %s', post.funnel, post.threadId);
+                           /* fall through */
                         case 'TEXT':
                            post.newPostIcon = 'text';
                            post.newPostTooltip = 'New text post';
@@ -261,9 +257,7 @@
                   }
                )
             );
-            if (isUCP) {
-               window.dev.modal.modals['drc-view-post']._modal.updateSize();
-            }
+            window.dev.modal.modals['drc-view-post']._modal.updateSize();
             if (!Object.prototype.hasOwnProperty.call(thread._embedded, 'doc:posts')) {
                return;
             }
@@ -284,9 +278,7 @@
                      isHighlighted: (post.id === replyId)
                   })
                );
-               if (isUCP) {
-                  window.dev.modal.modals['drc-view-post']._modal.updateSize();
-               }
+               window.dev.modal.modals['drc-view-post']._modal.updateSize();
             });
             var highlightedPost = document.querySelector('#drc-view-post-content .drc-post-highlighted');
             if (highlightedPost !== null) {
@@ -303,8 +295,8 @@
                content: '<div id="drc-view-post-content"></div>',
                id: 'drc-view-post',
                width: 600,
-               size: isUCP ? 'large' : 'medium',
-               buttons: isUCP ? [{text: 'Close', label: 'Close', flags: ['safe', 'close'] }] : [],
+               size: 'large',
+               buttons: [{text: 'Close', label: 'Close', flags: ['safe', 'close'] }],
                callback: function(wrapper) {
                   wrapper.find('button.close.wikia-chiclet-button > img').replaceWith('<svg class="wds-icon"><use xlink:href="#wds-icons-close"></use></svg>');
                }
@@ -404,20 +396,16 @@
       $.when.apply(null, wikiLoadPromises).always(function() {
          discRC.generatePosts(discRC.wikis, 0);
          discRC.events();
-      })
+      });
    };
    importArticle({
        type: 'script',
        article: 'u:dev:MediaWiki:Modal.js'
    });
    mw.hook('dev.modal').add(function() {
-      if (isUCP) {
-         mw.loader.using('mediawiki.template.mustache', function() {
-            discRC.init();
-         });
-      } else {
+      mw.loader.using('mediawiki.template.mustache', function() {
          discRC.init();
-      }
+      });
    });
    window.discRC = discRC;
 })(jQuery, mediaWiki);
