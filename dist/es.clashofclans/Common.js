@@ -122,6 +122,16 @@ importArticles({
         inactive:        ['retiredstaff']
     };
 
+	$(function() {
+	   	// Clash Royale, Brawl Stars and Clash Quest topic interwiki links
+		var elements = '#ClashRoyaleLink, #BrawlStarsLink, #ClashQuestLink';
+		if ($('.page-header__languages').length) {
+			$(elements).prependTo(".page-header__languages").css({"display": "inline-block"});
+		}else {
+			$(elements).appendTo(".page-header__top").css({"display": "inline-block"});
+		}
+	});
+
     if (typeof(window.SpoilerAlert) === 'undefined') {
         window.SpoilerAlert = {
             question: 'Chief! This page contains sneak peeks. Are you sure you ' +
@@ -139,13 +149,3 @@ importArticles({
                 'following JavaScript files:\n   ' + articles.join('\n   '));
 
 }(jQuery, mediaWiki, window.localStorage));
-
-
-$(document).ready(function() {
-
-    // Change Random Page button to only go to pages in the mainspace
-    $('.wds-dropdown a[data-tracking=explore-random], ul.tools li a[data-name=random]').attr("href", "/wiki/Special:Random/main");
-
-    // Clash Royale and Brawl Stars topic interwiki links
-	$("#ClashRoyaleLink, #BrawlStarsLink").prependTo(".page-header__languages, .page-header__contribution > div:first-child").css({"display": "inline-block"});
-});

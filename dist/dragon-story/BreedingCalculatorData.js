@@ -247,19 +247,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
-            "aether": {
-                "name": "Aether",
-                "types": [
-                    "blue",
-                    "purple"
-                ],
-                "environments": [
-                    "dragon_islands"
-                ],
-                "incubation": "16_hours_16",
-                "rarity": 3,
-                "offspringeligibility": "expired"
-            },
             "aerial": {
                 "name": "Aerial",
                 "types": [
@@ -290,6 +277,45 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "expired",
                 "notes": [
                     "feature"
+                ]
+            },
+            "aether": {
+                "name": "Aether",
+                "types": [
+                    "blue",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "expired"
+            },
+            "aetherstorm": {
+                "name": "Aetherstorm",
+                "types": [
+                    "beast",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "blue"
+                            ]
+                        ]
+                    ]
                 ]
             },
             "afterlife": {
@@ -833,6 +859,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "18_hours_18",
                 "rarity": 4,
                 "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "anomaly": {
+                "name": "Anomaly",
+                "types": [
+                    "beast",
+                    "purple",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
                 "notes": [
                     "feature"
                 ]
@@ -8284,6 +8327,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                             ]
                         ]
                     ]
+                ]
+            },
+            "faithful": {
+                "name": "Faithful",
+                "types": [
+                    "beast",
+                    "flower",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
                 ]
             },
             "fallingleaf": {
@@ -22200,6 +22260,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "8_hours_8",
                 "rarity": 4
             },
+            "prismatic": {
+                "name": "Prismatic",
+                "types": [
+                    "beast",
+                    "pink",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "prizefighter": {
                 "name": "Prize Fighter",
                 "types": [
@@ -29390,6 +29467,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "16_hours_16",
                 "rarity": 3,
                 "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "tri": {
+                "name": "Tri",
+                "types": [
+                    "beast",
+                    "white",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]

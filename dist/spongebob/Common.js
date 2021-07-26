@@ -373,23 +373,25 @@ window.MessageWallUserTags = {
         'Figmeister': 'Bureaucrat • Administrator',
         
         'Anthony2306': 'Administrator',
-        'Kandy_Katie': 'Administrator',
+        'Kandy Katie': 'Administrator',
         'Koolkitty108': 'Administrator',
         'TheKorraFanatic': 'Administrator',
         'Stryker305': 'Administrator',
         'BSpongeSM02':  'Administrator',
     
-        'The_Smarter,_Wiser_King_Dedede': 'Assistant',
-        'The_gamer_987654321': 'Assistant',
+        'The Smarter, Wiser King Dedede': 'Assistant',
+        'The gamer 987654321': 'Assistant',
 
         'Idroppedmypen': 'Discussion Moderator',
-        'SpongeTron_D': 'Discussion Moderator',
+        'SpongeTron D': 'Discussion Moderator',
         'BookFandumb': 'Discussion Moderator',
-        'Arthur_Read_fan': 'Discussion Moderator'
+        'Arthur Read fan': 'Discussion Moderator',
+        'Minnesotaman2007!': 'Discussion Moderator',
 
         'FlyingDutchmen': 'Rollback',
         'TheJasbre202': 'Rollback',
-        'SpongyFanatic2021': 'Rollback'
+        'SpongyFanatic2021': 'Rollback',
+        'FireMatch': 'Rollback'
     }
 };
 

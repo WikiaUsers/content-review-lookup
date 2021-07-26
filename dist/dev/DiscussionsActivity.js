@@ -17,6 +17,8 @@
   window.DiscussionsActivityLoaded = true;
 
   console.log('DiscussionsActivity v0.9.9');
+  
+  const isFD = mw.config.get( "skin" ) === "fandomdesktop";
 
   var config = window.mw.config.get([
     'wgCanonicalNamespace',
@@ -201,10 +203,10 @@
     var title = escapeHTML(embed[0].title);
     var url = escapeHTML(embed[0].url);
     var thumbnail = getThumbnail(embed[0].imageHeight, embed[0].imageWidth);
-    var separator = document.getElementsByClassName('page-header__separator')[0];
-    var separatorColor = window.getComputedStyle(separator).backgroundColor;
+    var target = document.getElementsByClassName('page-header__title')[0];
+    var color = window.getComputedStyle(target).color;
     var fragment = document.createRange().createContextualFragment(
-      '<a target="_blank" style="border-color: ' + separatorColor + ';" title="' + url + '" href="' + url + '" class="og-container large-image-card-mobile small-image-card-desktop ember-view"><!---->' +
+      '<a target="_blank" style="border-color: ' + color + ';" title="' + url + '" href="' + url + '" class="og-container large-image-card-mobile small-image-card-desktop ember-view"><!---->' +
         '<div class="og-image-wrapper">' +
           '<img src="' + embed[0].imageUrl + '/scale-to-width-down/200" width="' + thumbnail.width + '" height="' + thumbnail.height + '" alt="' + title + '" class="og-image rda-image"><!---->' +
         '</div>' +
@@ -377,7 +379,7 @@
    */
   function checkboxes (content) {
     // Gets header
-    var header = document.getElementsByClassName('page-header__main')[0];
+    var header = document.getElementsByClassName('page-header')[0];
     // Creates wrapper
     var chbxsFrag = document.createRange().createContextualFragment('<div id="rda-checkboxes" class="page-header__subtitle"></div>');
     var div = chbxsFrag.firstChild;
@@ -442,7 +444,7 @@
     }
     // Replaces the title
     document.title = i18n('document_title_new').escape() + ' |' + document.title.split('|').slice(1).join('|');
-    document.getElementById('PageHeader').getElementsByTagName('h1')[0].textContent = i18n('document_title_new').plain();
+    document.getElementsByClassName("page-header__title").textContent = i18n('document_title_new').plain();
     // Gets div of content
     var content = document.getElementById('mw-content-text');
     // Different actions depending on status
@@ -450,7 +452,7 @@
       // If Discussions were loaded correctly
       case 200:
         // Detects the background color to request the proper copy of the styles of Wiki Activity
-        var background = isUCP ? document.getElementsByClassName('WikiaPageContentWrapper')[0] : document.getElementById('WikiaPageBackground');
+        var background = document.getElementsByClassName('page')[0];
         var rgb = window.getComputedStyle(background).backgroundColor.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
         function toHex(i) {
           return parseInt(i, 10).toString(16).padStart(2, i);

@@ -23,3 +23,7 @@
 if( wgUserName ) {
 	$('.insertusername').text(wgUserName);
 }
+
+// Preload Template Javascript Config
+preloadTemplates_list = "MediaWiki:Custom-PreloadTemplatesList";
+preloadTemplates_subpage = "case-by-case";

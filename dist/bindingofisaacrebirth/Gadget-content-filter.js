@@ -9,14 +9,39 @@ window.contentFilterConfig = {
 	title: 'Filter content',
 
 	/**
-	 * The list of available filters, each one being the description of the
-	 * corresponding filter.
+	 * The number of filtering layers (bits) used on pages.
+	 */
+	filterCount: 4, // max filter = 15 (1111)
+
+	/**
+	 * The list of available filters, each one being its numeric filter, its
+	 * displayed title (it can be a simple string or an URL to an image) and
+	 * a description of the corresponding filter.
+	 * Use false instead of an object to deactivate a filter and keep URL
+	 * compatibility.
+	 * Use false as filter description to not show any description.
 	 */
 	filters: [
-		/* 0001 */ 'Hide content unavailable with Rebirth',
-		/* 0010 */ 'Hide content unavailable with Afterbirth',
-		/* 0100 */ 'Hide content unavailable with Afterbirth+',
-		/* 1000 */ 'Hide content unavailable with Repentance'
+		{
+			filter: 1, // 0001
+			title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/2/25/Dlc_na_indicator.png/revision/latest',
+			description: 'Hide content unavailable with Rebirth'
+		},
+		{
+			filter: 2, // 0010
+			title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/9/95/Dlc_a_indicator.png/revision/latest',
+			description: 'Hide content unavailable with Afterbirth'
+		},
+		{
+			filter: 4, // 0100
+			title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/4/4c/Dlc_a†_indicator.png/revision/latest',
+			description: 'Hide content unavailable with Afterbirth+'
+		},
+		{
+			filter: 8, // 1000
+			title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/f/f2/Dlc_r_indicator.png/revision/latest',
+			description: 'Hide content unavailable with Repentance'
+		}
 	],
 
 	/**
@@ -112,30 +137,51 @@ window.contentFilterConfig = {
     filterClassIntro: 'dlc-',
 
 	/**
-	 * This class can be used on elements to indicate that they should be
-	 * removed entirely if the selected filter does not match the element
-	 * bitmask, and left in place otherwise.
-	 * Use false to disable this functionality.
+	 * The list of filter types. Each filter type can be used on an element by
+	 * adding its corresponding class to it, and is handled depending on its
+	 * mode:
+	 *  - an element with a "block" type is removed entirely if the selected
+	 *    filter does not match the one of the element, and left in place
+	 *    otherwise.
+	 *  - an element with a "wrapper" type is unwrapped if the selected filter
+	 *    does not match the one of the element (the element itself is removed,
+	 *    its content is left in place), and left in place otherwise.
+	 *  - an element with an "inline" type is removed if any filter is enabled.
+	 *    Their associated content is then removed if the selected filter does
+	 *    not match the one of the element, and left in place otherwise.
+	 * The default removal rules for an element can be overriden with a custom
+	 * handling function.
+	 * It is also possible to "fix" a numeric filter to a type. For example, if
+	 * the value filterClassIntro is 'filter-' and the following type is
+	 * defined:
+	 * 
+	 *     {
+	 *         class: 'simple-filter',
+	 *         fixed: 2,
+	 *         …
+	 *     }
+	 * 
+	 * the use of the "filter-2" class would be optional, the two following
+	 * cases would give the same result:
+	 * 
+	 *     <img class="simple-filter filter-2" />
+	 *     <img class="simple-filter" />
+	 * 
+	 * Use false as fixed filter to use a numeric filter class instead of a
+	 * fixed numeric filter.
 	 */
-	blockFilterClass: false,
-
-	/**
-	 * This class can be used on elements to indicate that they should be
-	 * unwrapped if the selected filter does not match the element bitmask
-	 * (the element itself is removed, its content is left in place), and left
-	 * in place otherwise.
-	 * Use false to disable this functionality.
-	 */
-	wrapperFilterClass: false,
-
-	/**
-	 * This class can be used on elements to indicate that they should be
-	 * removed if any filter is enabled. Their associated content is then
-	 * removed if the selected filter does not match the element bitmask, and
-	 * left in place otherwise.
-	 * Use false to disable this functionality.
-	 */
-	inlineFilterClass: 'dlc',
+	filterTypes: [
+		{
+			class: 'dlc',
+			fixed: false,
+			mode: 'inline',
+			customHandler: function ( element ) {
+				return handleItemDictionary.call( this, element ) ||
+					   handleInnerList.call( this, element ) ||
+					   handleNavListVertical.call( this, element );
+			}
+		}
+	],
 
 	/**
 	 * If an element with a filter bitmask class is inside an element with this
@@ -209,39 +255,6 @@ window.contentFilterConfig = {
 	 * Use false to disable this functionality.
 	 */
 	inContentAddClass: false,
-
-	/**
-	 * Removes an element with a block filter, following custom rules.
-	 * @param element The element to remove.
-	 * @returns True if the removal has been handled by this function, false if
-	 *          it should be handled the default way.
-	 */
-	blockFilterCustomHandler: function ( element ) {
-		return false;
-	},
-
-	/**
-	 * Removes an element with a wrapper filter, following custom rules.
-	 * @param element The element to remove.
-	 * @returns True if the removal has been handled by this function, false if
-	 *          it should be handled the default way.
-	 */
-	wrapperFilterCustomHandler: function ( element ) {
-		return false;
-	},
-
-	/**
-	 * Removes an element with an inline filter and its related content,
-	 * following custom rules.
-	 * @param element The element to remove.
-	 * @returns True if the removal has been handled by this function, false if
-	 *          it should be handled the default way.
-	 */
-	inlineFilterCustomHandler: function ( element ) {
-		return handleItemDictionary.call( this, element ) ||
-		       handleInnerList.call( this, element ) ||
-		       handleNavListVertical.call( this, element );
-	},
 
 	/**
 	 * Does things before removing elements from a container.
@@ -393,8 +406,11 @@ function handleInnerList( element ) {
 	if ( !innerList || innerList.tagName !== 'UL' ) {
 		return false;
 	}
-	var filter  = this.getFilter( element ),
-		sibling = innerList.previousSibling,
+	var filter = this.getFilter( element );
+	if ( filter === false ) {
+		return false;
+	}
+	var sibling = innerList.previousSibling,
 		lis     = innerList.children;
 	while ( sibling ) {
 		sibling.remove();
@@ -410,7 +426,7 @@ function handleInnerList( element ) {
 		if ( child instanceof Element ) {
 			var childFilter = this.getFilter( child );
 			if (
-				childFilter > 0 &&
+				childFilter &&
 				!haveSimilarBits( upperBound, filter, childFilter )
 			) {
 				++i;
@@ -677,6 +693,13 @@ function postprocessListNavs( container ) {
 
 ( function () {
 
+/** @type {(msg:string)=>void} */
+var log = null;
+/** @type {(msg:string)=>void} */
+var warn = null;
+/** @type {(msg:string)=>void} */
+var error = null;
+
 /** @type {contentFilterConfig} */
 var config = null;
 
@@ -688,16 +711,19 @@ var util = {
 	getFilter: function () { return -1 },
 	applyFilter: function () {}
 };
+
 /** @type {contentFilter} */
 var contentFilter = {
-	version: '1.2',
+	version: '1.4',
+	applyFilterLimit: 10,
 
 	parserOutput: null,
 	toc: null,
 	items: [],
 
 	api: null,
-	uri: null,
+	currentUri: null,
+	defaultUri: null,
 
 	pageFilter: 0,
 	selectedIndex: -1,
@@ -706,29 +732,28 @@ var contentFilter = {
 	postponed: [],
 
 	init: function () {
-		console.log( 'Content Filter v' + contentFilter.version );
+		log   = console.log;
+		warn  = mw.log.warn;
+		error = mw.log.error;
 
-		if ( !window.contentFilterUtil ) {
-			util.getFilterMax = contentFilter.getFilterMax;
-			util.getFilter    = contentFilter.getFilter;
-			window.contentFilterUtil = util;
-		} else if ( !window.contentFilterUtil.loaded ) {
-			mw.log.error(
+		log( 'Content Filter v' + contentFilter.version );
+
+		if ( window.contentFilterUtil && !window.contentFilterUtil.loaded ) {
+			error(
 				'Content Filter: Another instance of the script is already ' +
 				'running. Please wait for it to finish before running it again.'
 			);
 			return;
 		}
 
-		if ( !window.contentFilterConfig ) {
-			mw.log.error(
-				'Content Filter: The configuration object is undefined. ' +
-				'Please define a contentFilterConfig object this script ' +
-				'would have access to.'
-			);
+		config = Object.freeze( contentFilter.getConfig() );
+		if ( !config ) {
 			return;
 		}
-		config = window.contentFilterConfig;
+
+		util.getFilterMax = contentFilter.getFilterMax;
+		util.getFilter    = contentFilter.getFilter;
+		window.contentFilterUtil = util;
 
 		if ( !contentFilter.isFilteringAvailable() ) {
 			util.loaded = true;
@@ -736,12 +761,12 @@ var contentFilter = {
 		}
 
 		var contentText = document.getElementById( 'mw-content-text' );
-		contentFilter.parserOutput = contentText ?
-			contentText.getElementsByClassName( 'mw-parser-output' )[ 0 ] :
-			null;
+		contentFilter.parserOutput = contentText &&
+			contentText.getElementsByClassName( 'mw-parser-output' )[ 0 ];
 		contentFilter.toc          = document.getElementById( 'toc' );
 		contentFilter.api          = new mw.Api();
-		contentFilter.uri          = new mw.Uri( document.location.href );
+		contentFilter.currentUri   = new mw.Uri( document.location.href );
+		contentFilter.defaultUri   = new mw.Uri();
 		contentFilter.pageFilter   = contentFilter.getPageFilter();
 
 		contentFilter.generateFilterItems();
@@ -752,15 +777,420 @@ var contentFilter = {
 			return;
 		}
 
-		contentFilter.selectedFilter = Math.pow( 2, contentFilter.selectedIndex );
-		util.selectedFilter          = contentFilter.selectedFilter;
-		util.applyFilter             = contentFilter.applyFilter;
+		contentFilter.selectedFilter = Math.pow(
+			2, contentFilter.selectedIndex
+		);
+		util.selectedFilter = contentFilter.selectedFilter;
+		util.applyFilter    = contentFilter.applyFilter;
 
 		contentFilter.updateSelectedFilterItem();
 		contentFilter.applyFilter( contentFilter.parserOutput );
 		contentFilter.updateAnchorsFilter();
 
 		util.loaded = true;
+	},
+
+	isInteger: function ( value, min, max ) {
+		return typeof value === 'number' &&
+			!isNaN( value ) &&
+			( value | 0 ) === value &&
+			( min === undefined || value >= min ) &&
+			( max === undefined || value <= max );
+	},
+
+	getConfig: function () {
+		var config     = window.contentFilterConfig,
+			errorFound = false;
+		if ( typeof config !== 'object' ) {
+			error(
+				'Content Filter: The configuration object is undefined. ' +
+				'Please define a contentFilterConfig object this script ' +
+				'would have access to.'
+			);
+			return null;
+		}
+		config = contentFilter.merge( config, {
+			title: false,
+			filters: [],
+			filteredNamespaces: [],
+			filteredSpecialTitles: [],
+			filterEnableClass: false,
+			languageCodes: [],
+			messagesLocation: '',
+			filtersInfoId: false,
+			filterTypes: [],
+			contextFilterClass: false,
+			skipClass: false,
+			contentEndClass: false,
+			mainColumnClassIntro: false,
+			listTableClass: false,
+			inContentAddClass: false,
+			preprocess: function () {},
+			postprocess: function () {}
+		} );
+
+		// title
+		if ( typeof config.title !== 'string' && config.title !== false ) {
+			warn(
+				'Content Filter: The "title" configuration parameter is ' +
+				'neither a string or false.'
+			);
+			config.title = false;
+		}
+		// filterCount
+		if ( !contentFilter.isInteger( config.filterCount, 1 ) ) {
+			error(
+				'Content Filter: The "filterCount" configuration parameter ' +
+				'is not a natural number.'
+			);
+			return null;
+		}
+		// filters
+		if ( !Array.isArray( config.filters ) ) {
+			warn(
+				'Content Filter: The "filters" configuration parameter is ' +
+				'not an array.'
+			);
+			config.filters = [];
+		}
+		var filterMax = Math.pow( 2, config.filterCount ) - 1;
+		for ( var i = config.filters.length - 1; i >= 0; --i ) {
+			var filter = config.filters[ i ];
+			if ( filter === false ) {
+				continue;
+			}
+			if ( typeof filter !== 'object' ) {
+				warn(
+					'Content Filter: The index ' + i + ' of the "filters" ' +
+					'configuration parameter is not an object.'
+				);
+				config.filters[ i ] = false;
+				continue;
+			}
+			filter = contentFilter.merge( filter, {
+				description: false
+			} );
+			if ( !contentFilter.isInteger( filter.filter, 0, filterMax ) ) {
+				warn(
+					'Content Filter: The "filter" parameter of the index ' + i +
+					' of the "filters" configuration parameter is not a ' +
+					'valid numeric filter.'
+				);
+				config.filters[ i ] = false;
+				continue;
+			}
+			if ( typeof filter.title !== 'string' ) {
+				warn(
+					'Content Filter: The "title" parameter of the index ' + i +
+					' of the "filters" configuration parameter is not a string.'
+				);
+				config.filters[ i ] = false;
+				continue;
+			}
+			if (
+				typeof filter.description !== 'string' &&
+				filter.description !== false
+			) {
+				warn(
+					'Content Filter: The "description" parameter of the ' +
+					'index ' + i + ' of the "filters" configuration ' +
+					'parameter is neither a string or false.'
+				);
+				filter.description = false;
+				continue;
+			}
+			config.filters[ i ] = filter;
+		}
+		// filteredNamespaces
+		if ( !Array.isArray( config.filteredNamespaces ) ) {
+			warn(
+				'Content Filter: The "filteredNamespaces" configuration ' +
+				'parameter is not an array.'
+			);
+			config.filteredNamespaces = [];
+		}
+		for ( i = config.filteredNamespaces.length - 1; i >= 0; --i ) {
+			var filteredNamespace = config.filteredNamespaces[ i ];
+			if (
+				typeof filteredNamespace !== 'number' ||
+				!mw.config.get( 'wgFormattedNamespaces' )
+					.hasOwnProperty( filteredNamespace )
+			) {
+				warn(
+					'Content Filter: The index ' + i + ' of the ' +
+					'"filteredNamespaces" configuration parameter is not a ' +
+					'valid namespace number.'
+				);
+				config.filteredNamespaces.splice( i, 1 );
+			}
+		}
+		// filteredSpecialTitles
+		if ( !Array.isArray( config.filteredSpecialTitles ) ) {
+			warn(
+				'Content Filter: The "filteredSpecialTitles" configuration ' +
+				'parameter is not an array.'
+			);
+			config.filteredSpecialTitles = [];
+		}
+		for ( i = config.filteredSpecialTitles.length - 1; i >= 0; --i ) {
+			var filteredSpecialTitle = config.filteredSpecialTitles[ i ];
+			if ( typeof filteredSpecialTitle !== 'string' ) {
+				warn(
+					'Content Filter: The index ' + i + ' of the ' +
+					'"filteredSpecialTitles" configuration parameter is not ' +
+					'a valid namespace number.'
+				);
+				config.filteredSpecialTitles.splice( i, 1 );
+			}
+		}
+		// filterEnableClass
+		if (
+			typeof config.filterEnableClass !== 'string' &&
+			config.filterEnableClass !== false
+		) {
+			warn(
+				'Content Filter: The "filterEnableClass" configuration ' +
+				'parameter is neither a string or false.'
+			);
+			config.filterEnableClass = false;
+		}
+		// languageCodes
+		if ( !Array.isArray( config.languageCodes ) ) {
+			warn(
+				'Content Filter: The "languageCodes" configuration parameter ' +
+				'is not an array.'
+			);
+			config.languageCodes = [];
+		}
+		for ( i = config.languageCodes.length - 1; i >= 0; --i ) {
+			var languageCode = config.languageCodes[ i ];
+			if ( typeof languageCode !== 'string' ) {
+				warn(
+					'Content Filter: The index ' + i + ' of the ' +
+					'"languageCodes" configuration parameter is not a string.'
+				);
+				config.languageCodes.splice( i, 1 );
+			}
+		}
+		// messagesLocation
+		if ( typeof config.messagesLocation !== 'string' ) {
+			error(
+				'Content Filter: The "messagesLocation" configuration ' +
+				'parameter is not a string.'
+			);
+			errorFound = true;
+		}
+		// urlParam
+		if ( typeof config.urlParam !== 'string' ) {
+			error(
+				'Content Filter: The "urlParam" configuration parameter is ' +
+				'not a string.'
+			);
+			errorFound = true;
+		}
+		// filtersInfoId
+		if (
+			typeof config.filtersInfoId !== 'string' &&
+			config.filtersInfoId !== false
+		) {
+			warn(
+				'Content Filter: The "filtersInfoId" configuration parameter ' +
+				'is neither a string or false.'
+			);
+			config.filtersInfoId = false;
+		}
+		// filterClassIntro
+		if ( typeof config.filterClassIntro !== 'string' ) {
+			error(
+				'Content Filter: The "filterClassIntro" configuration ' +
+				'parameter is not a string.'
+			);
+			errorFound = true;
+		}
+		// filterTypes
+		if ( !Array.isArray( config.filterTypes ) ) {
+			warn(
+				'Content Filter: The "filterTypes" configuration parameter ' +
+				'is not an array.'
+			);
+			config.filterTypes = [];
+		}
+		for ( i = config.filterTypes.length - 1; i >= 0; --i ) {
+			var filterType = config.filterTypes[ i ];
+			if ( typeof filterType !== 'object' ) {
+				warn(
+					'Content Filter: The index ' + i + ' of the ' +
+					'"filterTypes" configuration parameter is not an object.'
+				);
+				config.filterTypes.splice( i, 1 );
+				continue;
+			}
+			filterType = contentFilter.merge( filterType, {
+				class: undefined,
+				fixed: false,
+				mode: undefined,
+				customHandler: false
+			} );
+			if ( typeof filterType.class !== 'string' ) {
+				warn(
+					'Content Filter: The "class" parameter of the index ' + i +
+					' of the "filterTypes" configuration parameter is not a ' +
+					'string.'
+				);
+				config.filterTypes.splice( i, 1 );
+				continue;
+			}
+			if (
+				!contentFilter.isInteger( filterType.fixed, 0, filterMax ) &&
+				filterType.fixed !== false
+			) {
+				warn(
+					'Content Filter: The "class" parameter of the index ' + i +
+					' of the "filterTypes" configuration parameter is not a ' +
+					'string.'
+				);
+				// using "filterType.fixed = false;" would output a lot of
+				// warnings to the console and could interrupt element removals.
+				config.filterTypes.splice( i, 1 );
+				continue;
+			}
+			if (
+				filterType.mode !== 'block' &&
+				filterType.mode !== 'wrapper' &&
+				filterType.mode !== 'inline'
+			) {
+				warn(
+					'Content Filter: The "mode" parameter of the index ' + i +
+					' of the "filterTypes" configuration parameter is not a ' +
+					'valid filter type mode.'
+				);
+				config.filterTypes.splice( i, 1 );
+				continue;
+			}
+			if (
+				typeof filterType.customHandler !== 'function' &&
+				filterType.customHandler !== false
+			) {
+				warn(
+					'Content Filter: The "customHandler" parameter of the ' +
+					'index ' + i + ' of the "filterTypes" configuration ' +
+					'parameter is not a function.'
+				);
+				// using "filterType.customHandler = false;" could cause
+				// unwanted removals and affect content readability.
+				config.filterTypes.splice( i, 1 );
+				continue;
+			}
+			config.filterTypes[ i ] = filterType;
+		}
+		// contextFilterClass
+		if (
+			typeof config.contextFilterClass !== 'string' &&
+			config.contextFilterClass !== false
+		) {
+			warn(
+				'Content Filter: The "contextFilterClass" configuration ' +
+				'parameter is neither a string or false.'
+			);
+			config.contextFilterClass = false;
+		}
+		// skipClass
+		if (
+			typeof config.skipClass !== 'string' &&
+			config.skipClass !== false
+		) {
+			warn(
+				'Content Filter: The "skipClass" configuration parameter is ' +
+				'neither a string or false.'
+			);
+			config.skipClass = false;
+		}
+		// contentEndClass
+		if (
+			typeof config.contentEndClass !== 'string' &&
+			config.contentEndClass !== false
+		) {
+			warn(
+				'Content Filter: The "contentEndClass" configuration ' +
+				'parameter is neither a string or false.'
+			);
+			config.contentEndClass = false;
+		}
+		// mainColumnClassIntro
+		if (
+			typeof config.mainColumnClassIntro !== 'string' &&
+			config.mainColumnClassIntro !== false
+		) {
+			warn(
+				'Content Filter: The "mainColumnClassIntro" configuration ' +
+				'parameter is neither a string or false.'
+			);
+			config.mainColumnClassIntro = false;
+		}
+		// listTableClass
+		if (
+			typeof config.listTableClass !== 'string' &&
+			config.listTableClass !== false
+		) {
+			warn(
+				'Content Filter: The "listTableClass" configuration ' +
+				'parameter is neither a string or false.'
+			);
+			config.listTableClass = false;
+		}
+		// inContentAddClass
+		if (
+			typeof config.inContentAddClass !== 'string' &&
+			config.inContentAddClass !== false
+		) {
+			warn(
+				'Content Filter: The "inContentAddClass" configuration ' +
+				'parameter is neither a string or false.'
+			);
+			config.inContentAddClass = false;
+		}
+		// preprocess
+		if ( typeof config.preprocess !== 'function' ) {
+			warn(
+				'Content Filter: The "preprocess" configuration parameter ' +
+				'is not a function.'
+			);
+			config.preprocess = function () {};
+		}
+		// postprocess
+		if ( typeof config.postprocess !== 'function' ) {
+			warn(
+				'Content Filter: The "postprocess" configuration parameter ' +
+				'is not a function.'
+			);
+			config.postprocess = function () {};
+		}
+		return errorFound ? null : config;
+	},
+
+	merge: function ( fst, snd ) {
+		/** @type {any} */
+		var obj = {};
+		for ( var i in fst ) {
+			if (
+				i === '__proto__' ||
+				i === 'constuctor' && typeof fst[ i ] === 'function'
+			) {
+				continue;
+			}
+			obj[ i ] = fst[ i ];
+		}
+		for ( var j in snd ) {
+			if (
+				j === '__proto__' ||
+				j === 'constuctor' && typeof snd[ j ] === 'function' ||
+				obj[ j ] !== undefined
+			) {
+				continue;
+			}
+			obj[ j ] = snd[ j ];
+		}
+		return obj;
 	},
 
 	isFilteringAvailable: function () {
@@ -780,37 +1210,40 @@ var contentFilter = {
 		}
 		var contextBoxes = contentFilter.parserOutput
 			.getElementsByClassName( config.contextFilterClass );
-		if (
-			!contextBoxes.length ||
-			contentFilter.getPreviousHeading( contextBoxes[ 0 ] )
-		) {
-			return contentFilter.getFilterMax();
-		}
-		if ( config.blockFilterClass ) {
-			var blockElement = contextBoxes[ 0 ].getElementsByClassName(
-				config.blockFilterClass
-			)[ 0 ];
-			if ( blockElement ) {
-				return contentFilter.getFilter( blockElement );
+		for ( var i = 0; i < contextBoxes.length; ++i ) {
+			var contextBox = contextBoxes[ i ];
+			if ( contentFilter.getPreviousHeading( contextBox ) ) {
+				break;
+			}
+			for ( var j = 0; j < config.filterTypes.length; ++j ) {
+				var filterType = config.filterTypes[ j ],
+					filter     = contentFilter.getFilter( contextBox ),
+					children   = contextBox.getElementsByClassName(
+						filterType.class
+					);
+				if ( contextBox.classList.contains( filterType.class ) ) {
+					if ( filterType.fixed !== false ) {
+						return filterType.fixed;
+					}
+					if ( filter !== false ) {
+						return filter;
+					}
+				}
+				if ( filterType.fixed !== false ) {
+					if ( children.length ) {
+						return filterType.fixed;
+					}
+					continue;
+				}
+				for ( var k = 0; k < children.length; ++k ) {
+					filter = contentFilter.getFilter( children[ k ] );
+					if ( filter !== false ) {
+						return filter;
+					}
+				}
 			}
 		}
-		if ( config.wrapperFilterClass ) {
-			var wrapperElement = contextBoxes[ 0 ].getElementsByClassName(
-				config.wrapperFilterClass
-			)[ 0 ];
-			if ( wrapperElement ) {
-				return contentFilter.getFilter( wrapperElement );
-			}
-		}
-		if ( config.inlineFilterClass ) {
-			var inlineElement = contextBoxes[ 0 ].getElementsByClassName(
-				config.inlineFilterClass
-			)[ 0 ];
-			if ( inlineElement ) {
-				return contentFilter.getFilter( inlineElement );
-			}
-		}
-		return 0;
+		return contentFilter.getFilterMax();
 	},
 
 	getPreviousHeading: function ( element ) {
@@ -822,7 +1255,7 @@ var contentFilter = {
 	},
 
 	getFilterMax: function () {
-		return Math.pow( 2, config.filters.length ) - 1;
+		return Math.pow( 2, config.filterCount ) - 1;
 	},
 
 	getFilter: function ( element ) {
@@ -830,7 +1263,11 @@ var contentFilter = {
 			element,
 			config.filterClassIntro
 		);
-		return filterClass ? +filterClass : 0;
+		if ( filterClass === null ) {
+			return false;
+		}
+		var filter = +filterClass;
+		return +filter < 0 ? false : +filter;
 	},
 
 	findClassStartingWith: function ( element, intro ) {
@@ -844,46 +1281,79 @@ var contentFilter = {
 	},
 
 	generateFilterItems: function () {
-		var itemBase = document.createElement( 'li' );
+		var itemBase = document.createElement( 'li' ),
+			aBase    = document.createElement( 'a' ),
+			imgBase  = document.createElement( 'img' );
 		itemBase.classList.add( 'content-filter-item' );
-		itemBase.appendChild( document.createElement( 'a' ) );
-		for (
-			var i = 0, pow = 1;
-			i < config.filters.length;
-			++i, pow *= 2
-		) {
-			var item = itemBase.cloneNode( true );
-			item.id = 'content-filter-item-' + i;
-			contentFilter.items.push( item );
-			if ( ( pow & contentFilter.pageFilter ) === 0 ) {
-				item.classList.add( 'content-filter-item-deactivated' );
+		imgBase.loading = 'eager';
+		for ( var i = 0; i < config.filters.length; ++i ) {
+			var filter = config.filters[ i ];
+			if ( !filter ) {
+				contentFilter.items.push( null );
 				continue;
 			}
-			item.title = config.filters[ i ];
-			/** @type {{[k:string]:number}} */
-			var obj = {};
-			obj[ config.urlParam ] = i;
-			contentFilter.uri.extend( obj );
-			/** @type {HTMLAnchorElement} */
-			( item.firstChild ).href = contentFilter.uri.toString();
+			var item   = itemBase.cloneNode( true );
+			/** @type {HTMLElement} */
+			var target = item;
+			item.id = 'content-filter-item-' + i;
+			if ( filter.filter & contentFilter.pageFilter ) {
+				if ( filter.description ) {
+					item.title = filter.description;
+				}
+				/** @type {{[k:string]:number}} */
+				var obj = {},
+					a   = aBase.cloneNode( true );
+				obj[ config.urlParam ] = i;
+				contentFilter.currentUri.extend( obj );
+				a.href = contentFilter.currentUri.toString();
+				item.appendChild( a );
+				target = a;
+			} else {
+				item.classList.add( 'content-filter-item-deactivated' );
+			}
+			if ( contentFilter.isUrl( filter.title ) ) {
+				var img = imgBase.cloneNode( true );
+				img.src = filter.title;
+				target.appendChild( img );
+			} else {
+				target.textContent = filter.title;
+			}
+			contentFilter.items.push( item );
+		}
+	},
+
+	/**
+	 * Indicates whether a string is a valid URL.
+	 * @param str The string to test.
+	 * @returns True if the given string is a valid URL, false otherwise.
+	 */
+	isUrl: function ( str ) {
+		try {
+			var uri = new mw.Uri( str );
+			return uri.toString() !== contentFilter.defaultUri.toString() &&
+				   ( uri.protocol === 'http' || uri.protocol === 'https' );
+		} catch ( _ ) {
+			return false;
 		}
 	},
 
 	insertFilterElement: function () {
 		var ul = document.createElement( 'ul' );
 		ul.id = 'content-filter';
-		if ( config.title ) {
-			var title = document.createElement( 'div' );
-			title.id        = 'content-filter-title';
-			title.innerHTML = config.title;
-			ul.appendChild( title );
-		}
 		for ( var i = 0; i < contentFilter.items.length; ++i ) {
-			ul.appendChild( contentFilter.items[ i ] );
+			if ( contentFilter.items[ i ] ) {
+				ul.appendChild( contentFilter.items[ i ] );
+			}
 		}
 		var info = config.filtersInfoId &&
 			document.getElementById( config.filtersInfoId );
 		if ( !info ) {
+			if ( config.title ) {
+				var title = document.createElement( 'div' );
+				title.id          = 'content-filter-title';
+				title.textContent = config.title;
+				ul.appendChild( title );
+			}
 			var wrapper = document
 				.getElementsByClassName( 'page-header__actions' )
 				.item( 0 );
@@ -969,21 +1439,29 @@ var contentFilter = {
 		}
 		contentFilter.selectedIndex = parseInt( urlParam, 10 );
 		if (
-			contentFilter.isIndex(
+			!contentFilter.isIndex(
 				contentFilter.selectedIndex,
 				contentFilter.items
 			)
 		) {
-			return true;
+			contentFilter.selectedIndex = -1;
+			error(
+				'Content Filter: The selected numeric filter (' + urlParam +
+				') is unavailable, please use an integer x so 0 ≤ x ≤ ' +
+				( contentFilter.items.length - 1 ) + '. No filtering will ' +
+				'be performed.'
+			);
+			return false;
 		}
-		contentFilter.selectedIndex = -1;
-		mw.log.error(
-			'Content Filter: The selected numeric filter (' + urlParam + ') ' +
-			'is unavailable, please use an integer x so 0 ≤ x ≤ ' +
-			( contentFilter.items.length - 1 ) + '. No filtering will be ' +
-			'performed.'
-		);
-		return false;
+		if ( !contentFilter.items[ contentFilter.selectedIndex ] ) {
+			contentFilter.selectedIndex = -1;
+			error(
+				'Content Filter: The selected numeric filter (' + urlParam +
+				') has been diabled. No filtering will be performed.'
+			);
+			return false;
+		}
+		return true;
 	},
 
 	isIndex: function ( number, array ) {
@@ -992,92 +1470,71 @@ var contentFilter = {
 
 	applyFilter: function ( container ) {
 		config.preprocess.call( contentFilter, container );
-		if ( config.blockFilterClass ) {
-			contentFilter.forEachLiveElement(
-				container.getElementsByClassName(
-					config.blockFilterClass
+		for ( var i = 0; i < config.filterTypes.length; ++i ) {
+			var filterType = config.filterTypes[ i ],
+				elements   = container.getElementsByClassName(
+					filterType.class
 				),
-				contentFilter.processBlockFilter
-			);
-		}
-		if ( config.wrapperFilterClass ) {
-			contentFilter.forEachLiveElement(
-				container.getElementsByClassName(
-					config.wrapperFilterClass
-				),
-				contentFilter.processWrapperFilter
-			);
-		}
-		if ( config.inlineFilterClass ) {
-			contentFilter.forEachLiveElement(
-				container.getElementsByClassName(
-					config.inlineFilterClass
-				),
-				contentFilter.processInlineFilter
-			);
+				oldLength  = elements.length,
+				loopLimit  = 0;
+			while ( elements.length ) {
+				contentFilter.applyFilterType( filterType, elements[ 0 ] );
+				if (
+					elements.length >= oldLength &&
+					++loopLimit >= contentFilter.applyFilterLimit
+				) {
+					error(
+						'Content Filter: Too many element removals have been ' +
+						'realized without reducing the number of elements.'
+					);
+					break;
+				}
+			}
 		}
 		while ( contentFilter.postponed.length ) {
 			var todo = contentFilter.postponed;
 			contentFilter.postponed = [];
-			for ( var i = 0; i < todo.length; ++i ) {
-				todo[ i ][ 0 ]( todo[ i ][ 1 ] );
+			for ( i = 0; i < todo.length; ++i ) {
+				todo[ i ][ 0 ].call( contentFilter, todo[ i ][ 1 ] );
 			}
 		}
 		config.postprocess.call( contentFilter, container );
 	},
 
-	forEachLiveElement: function ( liveElementList, callback ) {
-		var previousLength = liveElementList.length;
-		for ( var i = 0; i < liveElementList.length; ) {
-			callback( liveElementList[ i ] );
-			if ( previousLength > liveElementList.length ) {
-				previousLength = liveElementList.length;
-			} else {
-				++i;
+	applyFilterType: function ( filterType, element ) {
+		var filter = filterType.fixed;
+		if ( filter === false ) {
+			filter = contentFilter.getFilter( element );
+			if ( filter === false ) {
+				element.classList.remove( filterType.class );
+				warn(
+					'Content Filter: The element does not have any valid ' +
+					'numeric filter class, but its filter type is not fixed.'
+				);
+				return;
 			}
 		}
-	},
-
-	processBlockFilter: function ( element ) {
-		var elementFilter = contentFilter.getFilter( element );
-		if ( ( elementFilter & contentFilter.selectedFilter ) > 0 ) {
-			element.classList.remove(
-				/** @type {string} */
-				( config.blockFilterClass )
-			);
-		} else if ( !contentFilter.handleBlockFilter( element ) ) {
-			element.classList.remove(
-				/** @type {string} */
-				( config.blockFilterClass )
-			);
-			mw.log.warn( 'unmatched block filter' );
+		if ( ( filter & contentFilter.selectedFilter ) > 0 ) {
+			switch ( filterType.mode ) {
+			case 'block':
+				element.classList.remove( filterType.class );
+				return;
+			case 'wrapper':
+				contentFilter.unwrap( element );
+				return;
+			case 'inline':
+				contentFilter.removeElementWithoutContext( element );
+				return;
+			}
 		}
-	},
-
-	processWrapperFilter: function ( element ) {
-		var elementFilter = contentFilter.getFilter( element );
-		if ( ( elementFilter & contentFilter.selectedFilter ) > 0 ) {
-			element.classList.remove(
-				/** @type {string} */
-				( config.wrapperFilterClass )
-			);
-		} else if ( !contentFilter.handleWrapperFilter( element ) ) {
-			contentFilter.unwrap( element );
-			mw.log.warn( 'unmatched wrapper filter' );
+		if ( contentFilter.handleFilter( filterType, element ) ) {
+			return;
 		}
-	},
-
-	processInlineFilter: function ( element ) {
-		var elementFilter = contentFilter.getFilter( element );
-		if ( ( elementFilter & contentFilter.selectedFilter ) > 0 ) {
-			contentFilter.removeElementWithoutContext( element );
-		} else if ( !contentFilter.handleInlineFilter( element ) ) {
-			element.classList.remove(
-				/** @type {string} */
-				( config.inlineFilterClass )
-			);
-			mw.log.warn( 'unmatched inline filter' );
-		}
+		element.classList.remove( filterType.class );
+		warn(
+			'Content Filter: Unmatched ' + filterType.mode + ' filter "' +
+			filterType.class + '"'
+		);
 	},
 
 	removeElementWithoutContext: function ( element ) {
@@ -1093,42 +1550,34 @@ var contentFilter = {
 		parent.removeChild( element );
 	},
 
-	handleBlockFilter: function ( element ) {
-		if ( config.blockFilterCustomHandler.call( contentFilter, element ) ) {
-			return true;
-		}
-
-		contentFilter.removeElement( element );
-		return true;
-	},
-
-	handleWrapperFilter: function ( element ) {
-		if ( config.wrapperFilterCustomHandler.call( contentFilter, element ) ) {
-			return true;
-		}
-
-		contentFilter.removeElement( element );
-		return true;
-	},
-
-	handleInlineFilter: function ( element ) {
-		if ( config.inlineFilterCustomHandler.call( contentFilter, element ) ) {
-			return true;
-		}
-
-		var parent = element.parentElement;
-
+	handleFilter: function ( filterType, element ) {
 		if (
-			config.contextFilterClass &&
-			parent.classList.contains(
-				config.contextFilterClass
-			)
+			filterType.customHandler &&
+			filterType.customHandler.call( contentFilter, element )
 		) {
-			var heading = contentFilter.getPreviousHeading( parent );
-			contentFilter.removeElement( heading || parent );
 			return true;
 		}
 
+		switch ( filterType.mode ) {
+		case 'block':
+		case 'wrapper':
+			contentFilter.removeElement( element );
+			return true;
+		}
+
+		var parent = element;
+		if ( config.contextFilterClass ) {
+			while ( parent && parent !== contentFilter.parserOutput ) {
+				if ( parent.classList.contains( config.contextFilterClass ) ) {
+					var heading = contentFilter.getPreviousHeading( parent );
+					contentFilter.removeElement( heading || parent );
+					return true;
+				}
+				parent = parent.parentElement;
+			}
+		}
+
+		parent = element.parentElement;
 		if (
 			parent.tagName === 'LI' &&
 			!contentFilter.hasPreviousSibling( element )
@@ -1183,10 +1632,7 @@ var contentFilter = {
 			if (
 				textContent.endsWith( '.' ) &&
 				node instanceof HTMLElement &&
-				node.classList.contains(
-					/** @type {string} */
-					( config.inlineFilterClass )
-				)
+				contentFilter.hasFilter( node )
 			) {
 				return true;
 			}
@@ -1243,12 +1689,11 @@ var contentFilter = {
 	},
 
 	removeListItem: function ( item ) {
-		var list = item.parentElement;
-		if ( list.childNodes.length > 1 ) {
+		if ( item.previousSibling || item.nextSibling ) {
 			item.remove();
 			return;
 		}
-		contentFilter.removeElement( list );
+		contentFilter.removeElement( item.parentElement );
 	},
 
 	removeTableCell: function ( cell ) {
@@ -1316,7 +1761,7 @@ var contentFilter = {
 			sibling = element.previousElementSibling;
 		element.remove();
 		contentFilter.ensureNonEmptySection( sibling );
-		if ( !parent.childNodes.length ) {
+		if ( !parent.hasChildNodes() ) {
 			contentFilter.removeElement( parent );
 		}
 	},
@@ -1442,6 +1887,24 @@ var contentFilter = {
 			}
 		}
 		return true;
+	},
+
+	hasFilter: function ( element ) {
+		for ( var i = 0; i < config.filterTypes.length; ++i ) {
+			if (
+				element.classList.contains( config.filterTypes[ i ].class ) &&
+				(
+					config.filterTypes[ i ].fixed !== false ||
+					contentFilter.findClassStartingWith(
+						element,
+						config.filterClassIntro
+					) 
+				)
+			) {
+				return true;
+			}
+		}
+		return false;
 	},
 
 	isGhostNode: function ( node ) {
@@ -1613,12 +2076,15 @@ var contentFilter = {
 	},
 
 	updateSelectedFilterItem: function () {
-		delete contentFilter.uri.query[ config.urlParam ];
+		delete contentFilter.currentUri.query[ config.urlParam ];
 		var item = contentFilter.items[ contentFilter.selectedIndex ];
+		if ( !item ) {
+			return;
+		}
 		item.classList.add( 'content-filter-item-active' );
 		item.firstElementChild.setAttribute(
 			'href',
-			contentFilter.uri.toString()
+			contentFilter.currentUri.toString()
 		);
 	},
 

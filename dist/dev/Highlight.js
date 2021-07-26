@@ -46,11 +46,11 @@
             },
             'wiki-specialist': {
                 color: '#d27d2c',
-                cssVar: 'ctm'
+                cssVar: 'ws'
             },
             'wiki-representative': {
                 color: '#09e5a2',
-                cssVar: 'wiki-manager' // backwards compat
+                cssVar: 'wr'
             },
             'staff': {
                 color: '#ddaa00',
@@ -59,7 +59,9 @@
         },
         overrides: {
             add: {
-                'SOAP_Bot': ['soap']
+                'SOAP_Bot': ['soap'],
+                'JT222': ['staff'],
+                'idekmandy': ['staff']
             },
             remove: {
                 'CT1000': ['soap'],
@@ -77,8 +79,7 @@
                     'wiki-representative',
                     'wiki-specialist'
                 ],
-                'Wiki-o-slay': ['soap'],
-                'JT222': ['staff']
+                'Wiki-o-slay': ['soap']
             }
         },
         init: function() {

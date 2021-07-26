@@ -6,7 +6,14 @@ if (mw.config.get('wgPageName') === 'Шаблон:Map2') {
     importArticle({ type: 'script', article: 'MediaWiki:MapSS.js' });
 }
 
-
+/*Адаптация виджета в лайт скине*/
+$(function(){
+if ($('body').hasClass('theme-fandomdesktop-light')) {
+     $('.vk-widget').attr('data-color-bg', '9dabba');
+     $('.vk-widget').attr('data-color-text', '000000')
+     $('.vk-widget').attr('data-color-button', '2e5073')
+}
+});
 
 /*map map подложка карты*/
 if ($('#noMap').length) {
@@ -30,5 +37,3 @@ if ($('#noMap').length) {
     for(i=0;i<$('#forMap .mapMarker a > img').length;i++) //Подгружает маркеры
         $('#forMap .mapMarker a > img')[i].src = $('#forMap .mapMarker a > img')[i].dataset.src
 }
-
-window.multipleActivity_changeLink = true

@@ -18,3 +18,11 @@ window.ajaxRefresh = 30000;
 
 /* Configuration for EraIcons */
 window.useIncludedStylesheet = true;
+
+/* Configuration for AjaxRC */
+window.ajaxSpecialPages = ["Log", "Log/upload", "Log/newusers"];
+window.ajaxRefresh = 30000;
+
+/* Configuration for TopicBlockList */
+TBL_GROUP = "hypo-en";
+TBL_WIKIS = [ "hypotheticalcitiescountries", "hypothetical-events", "hypotheticalhurricanes", "hypotheticaltornadoes" ];

@@ -1,5 +1,5 @@
 /* ShowHide deprecation warning */
-(function () {
+mw.loader.using(['mediawiki.notify']).then(function() {
     var config = mw.config.get([
             'wgCanonicalSpecialPageName',
             'wgNamespaceNumber',
@@ -15,7 +15,7 @@
 
     console.warn('[Deprecation] ShowHide is no longer supported. You should consider switching your templates to MediaWiki collapsible selectors, such as class="mw-collapsible". See https://community.fandom.com/wiki/Help:Collapsing for more details.');
     if ($elements.length) {
-        console.warn('Elements that used by deprecated ShowHide script:', $elements);
+        console.warn('Elements used by the deprecated ShowHide script:', $elements);
     }
 
     // allow warning banner to be disabled
@@ -44,7 +44,14 @@
     }
 
     function banner(usage) {
-        new BannerNotification(warningText.replace('$1', usage), 'warn').onClose(onClose).show();
+        mw.notify($(warningText.replace('$1', usage)), {
+            autoHide: false,
+            tag: 'ShowHide',
+            type: 'warn'
+        });
+        setTimeout(function() {
+            $('.mw-notification-tag-ShowHide').click(onClose);
+        }, 2000);
     }
 
     // current page content makes use of ShowHide - show usage warning
@@ -57,7 +64,7 @@
         banner('being imported on this wiki');
     }
 
-})();
+});
 
 /*
  * Copyright © 2009, Daniel Friesen

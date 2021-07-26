@@ -173,7 +173,6 @@ if (data["query-continue"]) setTimeout("findDupImages('"+data["query-continue"].
 $(function () { if ($("#mw-dupimages").length) findDupImages(); });
 
 
-
 /*
 ////////////////////////////////////////////////////////////////////
 // Script de exibição de chave de classificação de data de lançamento por usuário:Bobogoobo (de https://community.wikia.com/wiki/Thread:918005)
@@ -224,10 +223,11 @@ $(function() {
 // O CÓDIGO ABAIXO altera aleatoriamente o texto acima da navegação superior de "Marvel Wiki" para um da lista
 ////////////////////////////////////////////////////////////////////
 */
+var wiki_name_number=Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + 1
+var wiki_name_text=["Frente Rosto, Verdadeiros crentes!", "'Nuff Disse!", "Excelsior!", "Make Mine Marvel", "Avante, Vingadores!", "Pra mim, meus X-Men!", "Com Grandes Poderes...", "Hulk Esmaga!", "Snikt!", "É hora de Clobberin!", "Em Chamas!", "Wakanda Pra Sempre!", "Eu Sou o Homem de Ferro", "Eu Sou Groot", "Pelo Hospedeiro Hoary de Hoggoth!", "Bamf!", "Quem Punhar Este Martelo, Se For Digno...", "Pela Barba Eriçada de Odin!", "Imperius Rex!", "Oh, Minhas Estrelas e Ligas!", "O Melhor Que Existe...", "...Espero Que Você Sobreviva à Experiência!", "Doce Natal!", "Que Desenvolvimento Revoltante", "Tenha em Ti!", "E Aí Veio um Dia Diferente de Qualquer Outro...", "Thwip!", "Champions Charge!" ]
 var elements=document.getElementsByClassName('fandom-community-header__community-name');
 var wiki_name=elements[0];
-var wiki_name_number=Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + 1;
-wiki_name.textContent=["Frente Rosto, Verdadeiros crentes!", "'Nuff Disse!", "Excelsior!", "Make Mine Marvel", "Avante, Vingadores!", "Pra mim, meus X-Men!", "Com Grandes Poderes...", "Hulk Esmaga!", "Snikt!", "É hora de Clobberin!", "Em Chamas!", "Wakanda Pra Sempre!", "Eu Sou o Homem de Ferro", "Eu Sou Groot", "Pelo Hospedeiro Hoary de Hoggoth!", "Bamf!", "Quem Punhar Este Martelo, Se For Digno...", "Pela Barba Eriçada de Odin!", "Imperius Rex!", "Oh, Minhas Estrelas e Ligas!", "O Melhor Que Existe...", "...Espero Que Você Sobreviva à Experiência!", "Doce Natal!", "Que Desenvolvimento Revoltante", "Tenha em Ti!", "E Aí Veio um Dia Diferente de Qualquer Outro...", "Thwip!", "Champions Charge!" ][wiki_name_number];
+wiki_name.textContent=wiki_name_text;
 
 
 /* 
@@ -236,7 +236,7 @@ wiki_name.textContent=["Frente Rosto, Verdadeiros crentes!", "'Nuff Disse!", "Ex
 ////////////////////////////////////////////////////////////////////
 */
 
-var customizeToolbar = function () {
+var customizeToolbar2 = function () {
 /* Strike-through text */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 section: 'main',
@@ -305,22 +305,22 @@ groups: {
 } );
 /* Personagem */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'advanced',
-group: 'infoboxes',
-tools: {
-"personagem": {
-label: 'Personagem',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/marveldatabase/images/2/29/Character_Button.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{Marvel Wiki:Predefinição de Personagem\r| Imagem                   = ",
-post: "\r| NomeReal                 = \r| NomeOriginal             = \r | IdentidadeAtual          = \r | OutrasIdentidades        = \r\r| Afiliação                = \r| Parentes                 = | EstadoCivil              = \r\r| CharRef                 = \r| Sexo                     = \r| Altura                   = \r| Peso                     = \r| Olhos                    = \r| Cabelo                   = \r| AtributosIncomuns        = \r\r| Origem                   = \r| Universo                 = \r| LocalDeNascimento        = \r\r| Identidade               = \r| Cidadania                = \r| Ocupação                 = \r| Educação                 = \r| BaseDeOperações          = \r\r| Criadores                = \r| Primeira                 = \r| PrimeiraBR               = \r\r| História                = \r\r| Personalizade                  = \r\r| Poderes                  = \r| Habilidades              = \r| Força                    = \r| Fraquezas                = \r\r| Equipamento              = \r| Transporte               = \r| Armas                    = \r\r| Notas                    = \r| Curiosidades             = \r| Marvel                   = \r| Wikipedia                = \r| Links                    = \r}}"
-}
-}
-}
-}
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"personagem": {
+			label: 'Personagem',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/2/29/Character_Button.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Wiki:Predefinição de Personagem\r| Imagem                   = ",
+					post: "\r| NomeReal                 = \r| NomeOriginal             = \r | IdentidadeAtual          = \r | OutrasIdentidades        = \r\r| Afiliação                = \r| Parentes                 = | EstadoCivil              = \r\r| CharRef                 = \r| Sexo                     = \r| Altura                   = \r| Peso                     = \r| Olhos                    = \r| Cabelo                   = \r| AtributosIncomuns        = \r\r| Origem                   = \r| Universo                 = \r| LocalDeNascimento        = \r\r| Identidade               = \r| Cidadania                = \r| Ocupação                 = \r| Educação                 = \r| BaseDeOperações          = \r\r| Criadores                = \r| Primeira                 = \r| PrimeiraBR               = \r\r| História                = \r\r| Personalizade                  = \r\r| Poderes                  = \r| Habilidades              = \r| Força                    = \r| Fraquezas                = \r\r| Equipamento              = \r| Transporte               = \r| Armas                    = \r\r| Notas                    = \r| Curiosidades             = \r| Marvel                   = \r| Wikipedia                = \r| Links                    = \r}}"
+				}
+			}
+		}
+	}
 } );
 
 /* Verifique se a visualização está no modo de edição e se os módulos necessários estão disponíveis. Em seguida, personalize a barra de ferramentas … */
@@ -330,7 +330,7 @@ mw.loader.using( 'user.options' ).then( function () {
 if ( mw.user.options.get( 'usebetatoolbar' ) == 1 ) {
 $.when(
 mw.loader.using( 'ext.wikiEditor' ), $.ready
-).then( customizeToolbar );
+).then( customizeToolbar2 );
 }
 } );
 }

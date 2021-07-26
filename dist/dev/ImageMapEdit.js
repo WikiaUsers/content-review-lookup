@@ -1,3 +1,4 @@
+(function () {
 /*
 	Copyright (c) 2007-2013 Peter Schlömer
 
@@ -10,6 +11,10 @@
 	Source: https://imagemapedit.toolforge.org/ime.js
 */
 
+if (window.ImageMapEditLoaded) return;
+window.ImageMapEditLoaded = true;
+
 if (mw.config.get('wgNamespaceNumber') == 6 && mw.config.get('wgAction') == 'view') {
 	mw.loader.load('//imagemapedit.toolforge.org/ime.js');
 }
+})();

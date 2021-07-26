@@ -517,7 +517,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 				type: 'encapsulate',
 				options: {
 					pre: "{{Marvel Database:Image Template\r| License                 = ",
-					post: "\r| ImageType               = \r\r| Universe                = \r| Subject1                = \r| Subject2                = \r| Subject3                = \r| Subject4                = \r| Subject5                = \r\r| Source                  = \r| CoverArtist1            = \r| Penciler1               = \r| Inker1                  = \r| Colorist1               = \r| Letterer1               = \r}}"
+					post: "\r| ImageType               = \r\r| Reality                 = \r| Subject1                = \r| Subject2                = \r| Subject3                = \r| Subject4                = \r| Subject5                = \r\r| Source                  = \r| CoverArtist1            = \r| Penciler1               = \r| Inker1                  = \r| Colorist1               = \r| Letterer1               = \r}}"
 				}
 			}
 		}
@@ -574,7 +574,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 				type: 'encapsulate',
 				options: {
 					pre: "{{Marvel Database:Staff Template\r| Image                   = ",
-					post: "\r| RealName                = \r| Pseudonyms              = \r| Employers               = \r| Titles                  = \r\r| Gender                  = \r| YearOfBirth             = \r| MonthOfBirth            = \r| DayOfBirth              = \r| CityOfBirth             = \r| StateOfBirth            = \r| CountryOfBirth          = \r| Creations               = \r| First                   = \r\r| PersonalHistory         = \r| ProfessionalHistory     = \r\r| Notes                   = \r| Trivia                  = \r| OfficialWebsite         = \r| Links                   = \r}}"
+					post: "\r| Name                    = \r| Pseudonyms              = \r| Employers               = \r| Titles                  = \r\r| Gender                  = \r| YearOfBirth             = \r| MonthOfBirth            = \r| DayOfBirth              = \r| CityOfBirth             = \r| StateOfBirth            = \r| CountryOfBirth          = \r| Creations               = \r| First                   = \r\r| PersonalHistory         = \r| ProfessionalHistory     = \r\r| Notes                   = \r| Trivia                  = \r| OfficialWebsite         = \r| Links                   = \r}}"
 				}
 			}
 		}

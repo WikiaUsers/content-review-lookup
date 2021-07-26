@@ -3,7 +3,7 @@
  * @module                  VanguardTools
  * @description             Accelerates Vanguard migration workflow.
  * @author                  Speedit
- * @version                 1.2.2
+ * @version                 1.3.0
  * @license                 CC-BY-SA 3.0
  * 
  */
@@ -39,9 +39,6 @@
         'wgVersion'
     ]);
 
-    // Whether the current wiki is on the UCP.
-    VAN.isUCP = VAN.mw.wgVersion !== '1.19.24';
-
     // User parrot status.
     VAN.parrot = VAN.mw.wgUserGroups.some(function(ug) {
         return ['vanguard', 'staff', 'helper', 'wiki-representative'].indexOf(ug) > -1;
@@ -54,12 +51,10 @@
         redirect: true,
         nav: true,
         template: true,
-        showdraft: true,
-        insights: true,
-        pdash: true,
         adminalert: true,
         icons: true,
-        create: false
+        create: false,
+        toolbox: true
     }, window.vanguardToolsConfig);
     if (VAN.config.modules && !$.isArray(VAN.config.modules)) {
         delete VAN.config.modules;
@@ -128,9 +123,13 @@
             });
         });
         // Import dependencies.
-        importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });
-        importArticle({ type: 'script', article: 'u:dev:MediaWiki:WDSIcons/code.js' });
-        importArticle({ type: 'script', article: 'u:dev:MediaWiki:TVMH.js' });
+        importArticles({
+            type: 'script',
+            articles: [
+                'u:dev:MediaWiki:I18n-js/code.js',
+                'u:dev:MediaWiki:WDSIcons/code.js'
+            ]
+        });
     };
 
     // Redirect module for S:IB.
@@ -186,12 +185,8 @@
             navigator.serviceWorker.controller.postMessage({
                 command: 'van_send_notif',
                 i18n: {
-                    cancel: VAN.isUCP ?
-                        mw.message('ooui-dialog-message-reject').plain() :
-                        VAN.mw.wgMessages.cancel,
-                    ok: VAN.isUCP ?
-                        mw.message('ooui-dialog-message-accept').plain() :
-                        VAN.mw.wgMessages.ok,
+                    cancel: mw.message('ooui-dialog-message-reject').plain(),
+                    ok: mw.message('ooui-dialog-message-accept').plain(),
                     source: VAN.i18n.msg('sourceredirect').plain()
                 }
             }, [VAN.redirect.mch.port2]);
@@ -291,9 +286,7 @@
                         $('<a>', {
                             'href': (function(t) {
                                 var p = VAN.mw.wgArticlePath.replace('$1', t);
-                                return (l === 'portabilitydash') ?
-                                    'https://portability.fandom.com' + p:
-                                    p;
+                                return p;
                             }(t)),
                             text: VAN.i18n.msg(l).plain()
                         })
@@ -305,13 +298,30 @@
                 'class': 'wds-dropdown-chevron'
             });
             var $c = VAN.nav.dropdown($l, icon);
-            // Append to menu
-            $('.wds-global-navigation__user-menu')
-                // Prevent scrollable dropdown.
-                .children('.wds-dropdown__content')
-                .addClass('wds-is-not-scrollable')
-                // Insert dropdown.
-                .find('.wds-list > li > a[data-tracking-label="account.profile"]').parent().after($c);
+            if (VAN.mw.skin === 'fandomdesktop') {
+            	//start at the sign out button (use attr selector to support [[NoGlobalNav]])
+                $('li[id="global-navigation-user-signout"]')
+                	//go up to the parent
+                	.parent()
+                	//find the userpage link
+                	.find('li > a[data-tracking-label="account.profile"]')
+                	//go up to the link's parent
+                	.parent()
+                	//insert dropdown
+                	.before($c)
+                	//go up two parents
+                	.parent().parent()
+                	//prevent scrollable dropdown
+                	.addClass('wds-is-not-scrollable');
+            } else {
+                // Append to menu
+                $('.wds-global-navigation__user-menu')
+                    // Prevent scrollable dropdown.
+                    .children('.wds-dropdown__content')
+                    .addClass('wds-is-not-scrollable')
+                    // Insert dropdown.
+                    .find('.wds-list > li > a[data-tracking-label="account.profile"]').parent().after($c);
+            }
             VAN.nav.$executed.resolve();
         },
         // Create dropdown.
@@ -321,7 +331,7 @@
                 'class': 'wds-dropdown-level-2'
             }).append(
                 $('<a>', {
-                    'href': mw.util.getUrl(VAN.nav.uri.insights),
+                    'href': mw.util.getUrl(VAN.nav.uri.infoboxes),
                     'target': '_blank',
                     'rel': 'noopener noreferrer',
                     'class': [
@@ -345,16 +355,13 @@
         },
         // Global navigation links.
         uri: {
-            // Remove after UCP Phase 1
-            insights:        'Special:Insights/nonportableinfoboxes',
             infoboxes:       'Special:Templates?type=infobox',
             templates:       'Special:Templates',
             sitecss:         'Special:CSS',
             personalcss:     'Special:MyPage/common.css',
             themescss:       'MediaWiki:Themes.css?action=edit',
             admins:          'Special:ListUsers/sysop',
-            // Remove after UCP Phase 1
-            wikifeatures:    'Special:WikiFeatures',
+            wikifeatures:    'Special:AdminDashboard',
             portabilitydash: 'Special:PortabilityDashboard?url=' + VAN.mw.wgServer.match(/\/\/([^.]+)/)[1],
             tvmh:            'Special:Blankpage/TVMH'
         },
@@ -381,28 +388,14 @@
                 $('<ul>')
             );
             $popout.appendTo(document.body);
-            if (VAN.isUCP) {
-                VAN.mw.wgTemplateClassificationDialogConfig
-                    .templateTypes
-                    .forEach(function(type) {
-                        VAN.template.labels[type] = mw.message(
-                            'template-classification-type-' + type
-                        ).plain();
-                });
-                VAN.template.populatePopout($popout);
-            } else {
-                $.get(mw.util.wikiScript('wikia'), {
-                    controller: 'TemplateClassification',
-                    format: 'json',
-                    method: 'getTemplateClassificationEditForm'
-                }, function(d) {
-                    // Extract labels.
-                    d.templateTypes.forEach(function(dt) {
-                        VAN.template.labels[dt.type] = dt.name;
-                    });
-                    VAN.template.populatePopout($popout);
-                });
-            }
+            VAN.mw.wgTemplateClassificationDialogConfig
+                .templateTypes
+                .forEach(function(type) {
+                    VAN.template.labels[type] = mw.message(
+                        'template-classification-type-' + type
+                    ).plain();
+            });
+            VAN.template.populatePopout($popout);
         },
         // After the labels have been fetched, populate popout.
         populatePopout: function($popout) {
@@ -435,9 +428,7 @@
             VAN.template.type = VAN.template.types[e.which].type,
             VAN.template.label = VAN.template.labels[VAN.template.type];
             $.post(mw.util.wikiScript('wikia') + '?' + $.param({
-                controller: VAN.isUCP ?
-                    'Fandom\\TemplateClassification\\Api\\ClassificationController' :
-                    'TemplateClassificationApi',
+                controller: 'Fandom\\TemplateClassification\\Api\\ClassificationController',
                 format: 'json',
                 method: 'classifyTemplate'
             }), {
@@ -455,13 +446,9 @@
             $('.template-classification-entry-point__wrapper')
                 .attr('data-type', VAN.template.type);
             var message = VAN.i18n.msg('templatetypechange', VAN.template.label).plain();
-            if (VAN.isUCP) {
-                mw.loader.using('mediawiki.notify').then(function () {
-                    mw.notify(message);
-                });
-            } else {
-                new BannerNotification(message, 'confirm').show();
-            }
+            mw.loader.using('mediawiki.notify').then(function () {
+                mw.notify(message);
+            });
         },
         // Template type map for keyboard shortkeys.
         types: {
@@ -483,225 +470,6 @@
         $executed: $.Deferred()
     };
 
-    // S:I/NPI utility extension.
-    VAN.insights = {
-        // Module initialiser.
-        init: function() {
-            if (
-                VAN.config.insights !== true ||
-                $('.insights-nav-item.insights-icon-nonportableinfoboxes.active')
-                    .find('.insights-red-dot').length === 0 ||
-                VAN.isUCP
-            ) {
-                VAN.insights.$executed.resolve();
-                return;
-            }
-            // Data lists.
-            VAN.insights.list = {};
-            var chunks = [];
-            [].slice.call($('.insights-list-item-title')).map(function(e, i) {
-                // Template name.
-                var t = e.innerText;
-                $(e).closest('.insights-list-item')
-                    .attr('data-template', t);
-                // API data.
-                VAN.insights.list[t] = {};
-                (
-                    chunks[Math.floor(i / 50)] =
-                        chunks[Math.floor(i / 50)] ||
-                        []
-                )[i % 50] = t;
-            });
-            VAN.insights.api = new mw.Api();
-            chunks.forEach(function(c) {
-                VAN.insights.api.get({
-                    'action': 'query',
-                    'prop': 'info',
-                    'inprop': 'protection',
-                    'titles': c.join('|')
-                }).done(VAN.insights.handler);
-            });
-        },
-        // Template list
-        list: {},
-        // API handler.
-        handler: function(d) {
-            $.each(d.query.pages, function(id, data) {
-                VAN.insights.list[data.title].protection =
-                    data.protection.filter(function(obj) {
-                        return (obj.type === 'edit');
-                    }).length > 0;
-            });
-            if (Object.keys(VAN.insights.list).every(function(t) {
-                return VAN.insights.list[t].hasOwnProperty('protection');
-            })) {
-                VAN.insights.ui();
-            }
-        },
-        // Interface configuration map for actions.
-        map: {
-            'viewdraft': {
-                icon: 'eye-small'
-            },
-            'conversion': {
-                icon: 'gear-small'
-            },
-            'rawcode': {
-                icon: 'article-small',
-                query: {
-                    action: 'raw',
-                    ctype: 'text/css' // Firefox fix.
-                }
-            },
-            'protected': {
-                icon: 'lock-small',
-                query: {
-                    action: 'history'
-                }
-            },
-            'unprotected': {
-                icon: 'unlock-small',
-                query: {
-                    action: 'history'
-                }   
-            }
-        },
-        // UI modification.
-        ui: function() {
-            // Add page header class (hack for button colors).
-            $('.insights-content').addClass('page-header');
-            // Button map for WDS icon addition.
-            $('.insights-list-cell-altaction .wikia-button').each(function() {
-                var $b = $(this),
-                    t = $(this).closest('.insights-list-item')
-                        .attr('data-template');
-                VAN.insights.list[t].$toolbar =
-                    $('<div>', {
-                        'class': [
-                            'wds-button-group',
-                            'van-action-button-group'
-                        ].join(' ')
-                    }).insertBefore($b).append($b);
-                // Class addition.
-                $b
-                    .removeAttr('class')
-                    .addClass([
-                        'wds-button',
-                        'wds-is-squished'
-                    ].join(' '))
-                    .addClass(function(i, c) {
-                        if ($b.attr('href').indexOf('action=edit') > -1) {
-                            return [
-                                'van-action-button',
-                                'van-is-conversion'
-                            ].join(' ');
-                        } else {
-                            return [
-                                'wds-is-secondary',
-                                'van-action-button',
-                                'van-is-viewdraft'
-                            ].join(' ');
-                        }
-                    }).html(function(i, html) {
-                        return '<span>' + mw.html.escape(html) + '<span>';
-                    });
-                // List buttons.
-                VAN.insights.list[t].$buttons = [$b];
-                // Generate toolbar.
-                VAN.insights.tbr(t);
-            });
-        },
-        // Template toolbar generator.
-        tbr: function(t) {
-            var b = {
-                    'unprotected': false,
-                    'protected': true
-                },
-                $t = VAN.insights.list[t].$toolbar;
-            // Button creation.
-            $.each(VAN.insights.map, function(l, c) {
-                // Prevent duplication.
-                if (
-                    !['conversion', 'viewdraft'].some(function(s) {
-                        return l === s;
-                    }) &&
-                    (
-                        Object.keys(b).indexOf(l) === -1 ||
-                        VAN.insights.list[t].protection === b[l]
-                    )
-                ) {
-                    // Button element.
-                    var $b = $('<a>', {
-                            'href': (function() {
-                                var uri = new mw.Uri(mw.util.getUrl(t));
-                                // Add query
-                                if (c.query) {
-                                    uri.extend(c.query);
-                                }
-                                return uri.toString();
-                            }()),
-                            html: $('<span>', {
-                                text: VAN.i18n.msg(l).plain()
-                            })
-                        })
-                        .addClass([
-                            'wds-button',
-                            'wds-is-squished',
-                            'wds-is-secondary',
-                            'van-tools-button',
-                            'van-is-' + l
-                        ].join(' '))
-                        .appendTo(VAN.insights.list[t].$toolbar);
-                    // Cache button.
-                    VAN.insights.list[t].$buttons.push($b);
-                }
-                // Icon addition.
-                $t.children('.van-is-' + l)
-                    .prepend(VAN.wds.icon(c.icon));
-            });
-            VAN.insights.$executed.resolve();
-        },
-        $executed: $.Deferred()
-    };
-
-    // S:PortabilityDashboard utility extension.
-    VAN.pdash = {
-        init: function() {
-            if (
-                VAN.config.pdash !== true ||
-                VAN.mw.wgCityId !== '1230494' ||
-                VAN.mw.wgCanonicalSpecialPageName !== 'PortabilityDashboard'
-            ) {
-                VAN.pdash.$executed.resolve();
-                return;
-            }
-            // Table elements.
-            var $p = mw.util.$content.children('.portability-dashboard-table'),
-                $h = $p.find('.headerSort');
-            // Table sorting deactivation.
-            $h
-                .removeAttr('title').removeAttr('class')
-                .off('click')
-                .children('div').remove();
-            // Add index.
-            $('<th>', {
-                append: $('<span>', {
-                    'class': 'tooltip-icon-wrapper',
-                    text:    'Rank'
-                }),
-            }).prependTo('.portability-dashboard-table thead tr');
-            $p.find('tbody tr').each(function(i) {
-                $('<td>', {
-                    text: (i + 1)
-                }).prependTo(this);
-            });
-            // Re-sort table.
-            $p.removeClass('jquery-tablesorter').tablesorter();
-            VAN.pdash.$executed.resolve();
-        },
-        $executed: $.Deferred()
-    };
-
     // "You are editing this page without admin" alert.
     VAN.adminalert = {
         init: function() {
@@ -710,7 +478,7 @@
                 return;
             }
             if (
-                !['dev', 'communitytest'].includes(VAN.mw.wgDBname) &&
+                !['dev'].includes(VAN.mw.wgDBname) &&
                 VAN.mw.wgCanonicalNamespace === 'MediaWiki' &&
                 !/sysop/.test(VAN.mw.wgUserGroups)
             ) {
@@ -720,43 +488,6 @@
                     .find('svg').before(VAN.wds.icon('alert-small').outerHTML);
             }
             VAN.adminalert.$executed.resolve();
-        },
-        $executed: $.Deferred()
-    };
-
-    // Replace the create draft button with a link to the page if it is already available.
-    VAN.showdraft = {
-        init: function () {
-            var draftDiv = $('section.templatedraft-module.module');
-            var draftAnchor = draftDiv.children('a');
-            var draftAnchorHref = draftAnchor.attr('href');
-
-            if (
-                VAN.config.showdraft !== true ||
-                VAN.mw.wgCanonicalNamespace !== 'Template' ||
-                VAN.mw.wgAction !== 'view' ||
-                draftDiv.length <= 0 ||
-                draftAnchor.length <= 0 ||
-                draftAnchorHref.indexOf('action=approvedraft') > 0
-            ) {
-                VAN.showdraft.$executed.resolve();
-                return;
-            }
-
-            var draftUrl = draftAnchorHref.slice(0,draftAnchorHref.lastIndexOf('?'));
-            // Validate the random URL we took from the DOM is indeed the wiki's URL.
-            if (new mw.Uri().host === new mw.Uri(draftUrl).host) {
-                return;
-            }
-            $.ajax(draftUrl + '?action=raw').done(function () {
-                draftDiv.children('h2').text(VAN.i18n.msg('showdraftheader').plain());
-                draftDiv.children('.templatedraft-module-subtitle').remove();
-                draftDiv.children('p').text(VAN.i18n.msg('showdraftbody').plain());
-                draftAnchor.attr('href', draftUrl);
-                draftAnchor.children('button').text(VAN.i18n.msg('showdraftbutton').plain());
-            });
-
-            VAN.showdraft.$executed.resolve();
         },
         $executed: $.Deferred()
     };
@@ -776,7 +507,7 @@
         $executed: $.Deferred()
     };
     
-    // Make QuickCreateUserPage and QuickCreateMessageWallGreeting optional script imports
+    // Make QuickCreateUserPage an optional script import
     VAN.create = {
         init: function () {
             if (VAN.config.create !== true) {
@@ -784,8 +515,29 @@
                 return;
             }
 
-            importArticle({ type: 'script', article: 'u:dev:MediaWiki:QuickCreateMessageWallGreeting/code.js' });
             importArticle({ type: 'script', article: 'u:dev:MediaWiki:QuickCreateUserPage/code.js' });
+
+            VAN.create.$executed.resolve();
+        },
+        $executed: $.Deferred()
+    };
+    
+    VAN.toolbox = {
+        init: function () {
+            if (VAN.config.toolbox !== true) {
+                VAN.create.$executed.resolve();
+                return;
+            }
+
+            importArticles({
+                type: 'script',
+                articles: [
+                	'u:dev:MediaWiki:Q.js',
+                    'u:dev:MediaWiki:TVMH.js',
+                    'u:dev:MediaWiki:DupeArgs.js',
+                    'u:dev:MediaWiki:MassNullEdit/code.js'
+                ]
+            });
 
             VAN.create.$executed.resolve();
         },
@@ -810,8 +562,7 @@
     mw.loader.using([
         'mediawiki.util',
         'mediawiki.api',
-        'mediawiki.Uri',
-        'jquery.tablesorter'
+        'mediawiki.Uri'
     ]).then(VAN.init);
 
 })();

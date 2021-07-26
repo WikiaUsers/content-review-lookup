@@ -109,10 +109,12 @@
 /* send request for logged activity */
         return api.get(obj.request).then(
             function (data) {
-                if (!data || !data.query || !(data.query.usercontribs
-                    || data.query.logevents) || !(!data.query.users
-                    || !data.query.users.length || !data.query.users[0]
-                    .hasOwnProperty("missing"))) {
+                if (!data || !data.query || !data.query.users || !data.query
+                    .users.length || data.query.users[0].hasOwnProperty("missing")
+                    || !(!data.query.users[0].hasOwnProperty("invalid")
+                    || mw.util.isIPv4Address(data.query.users[0].name, true)
+                    || mw.util.isIPv6Address(data.query.users[0].name, true))
+                    || !(data.query.usercontribs || data.query.logevents)) {
                     obj.dates[name] = retrieval_error;
                 } else {
 /* determine what to use for element content */
@@ -202,7 +204,10 @@
         );
     }
     
-    jQuery.when(i18n_def, mw.loader.using("mediawiki.api").then(function () {
+    jQuery.when(i18n_def, mw.loader.using([
+        "mediawiki.api",
+        "mediawiki.util"
+    ]).then(function () {
         api = new mw.Api();
     })).then(function () {
 /*

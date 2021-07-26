@@ -1,4 +1,4 @@
-$(window).load(function() {
+$(function() {
     'use strict';
     
     /* General vars */

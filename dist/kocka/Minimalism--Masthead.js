@@ -11,19 +11,15 @@ mw.loader.using('mediawiki.util').then(function() {
         'wgArticleId',
         'wgCanonicalSpecialPageName',
         'wgPageName'
-    ]), ip = mw.config.get('profileUserName') || $('#UserProfileMasthead .masthead-info h1').text();
-    if (ip && (mw.util.isIPv4Address(ip) || mw.util.isIPv6Address(ip))) {
+    ]), ip = mw.config.get('profileUserName');
+    if (ip && (mw.util.isIPAddress(ip))) {
         if (
             config.wgCanonicalSpecialPageName !== 'Contributions' &&
             !config.wgArticleId
         ) {
             window.location.href = mw.util.getUrl('Special:Contribs/' + ip);
         } else {
-            $('#WikiaUserPagesHeader, #userProfileApp').remove();
+            $('#userProfileApp').remove();
         }
-    }
-    // Mark as subpage to remove the top margin properly
-    if (config.wgPageName.indexOf('/') !== -1) {
-        $('body').addClass('is-subpage');
     }
 });

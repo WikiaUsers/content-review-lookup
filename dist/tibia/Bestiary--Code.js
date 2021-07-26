@@ -154,9 +154,12 @@ $(function(){
         
     },
     bestiary_update_items_urls = function(urls) {
-    	$.each(urls, function(i, v) {
-    		$('#loot_item_' + i).attr('src', v + '&format=original');
+    	$.each(Object.keys(urls), function(i, v) {
+    		$($("img[data-file='" + v +"']")[0]).attr('src', urls[v] + '&format=original');
     	});
+    	/*$.each(urls, function(i, v) {
+    		$('#loot_item_' + i).attr('src', v + '&format=original');
+    	});*/
     },
     bestiary_populate_ui = function() {
         var minKills = {harmless: 25, trivial: 250, easy: 500, medium: 1000, hard: 2500, challenging: 5000},
@@ -233,11 +236,12 @@ $(function(){
         if (typeof(creaturedata.loot) != "undefined") {
         	var apiqueries = [],
         	totalitems = 0,
-        	origurls = [];
+        	origurls = {};
             $.each(creaturedata.loot, function(i, v) {
-            	var itemurl = fpath + v.iname + ".gif";
-            	apiqueries.push('File:' + v.iname + '.gif');
-            	$('#bestiary_loot_' + v.rarity).append('<div class="bestiary_loot_item" title="' + v.iname + '"><a href="https://tibia.fandom.com/wiki/' + v.iname + '" style="color:inherit;" target="_blank"><img id="loot_item_' + totalitems + '" src="' + itemurl + '"><span>' + v.amount + '</span></a></div>');
+            	var itemurl = fpath + v.iname + ".gif",
+            	pagetitle = 'File:' + v.iname + '.gif';
+            	apiqueries.push(pagetitle);
+            	$('#bestiary_loot_' + v.rarity).append('<div class="bestiary_loot_item" title="' + v.iname + '"><a href="https://tibia.fandom.com/wiki/' + v.iname + '" style="color:inherit;" target="_blank"><img data-file="' + pagetitle + '" src="' + itemurl + '"><span>' + v.amount + '</span></a></div>');
             	totalitems++;
 				itemcounter[v.rarity]++;
             });
@@ -247,7 +251,7 @@ $(function(){
 			    url: 'https://tibia.fandom.com/api.php?action=query&titles=' + apiqueries.join('|') + '&prop=imageinfo&iiprop=url&format=json',
 			    success: function (data) {
 			    	$.each(data.query.pages, function(i, v) {
-			    		origurls.push(v.imageinfo[0].url);
+			    		origurls[v.title] = v.imageinfo[0].url;
 			    	});
 			    	bestiary_update_items_urls(origurls);
 			    }

@@ -5,7 +5,7 @@ $(function () {
 	var $dataDiv = $(dataDiv);
 	var overviewPage = $dataDiv.attr('data-overviewpage');
 	// add refresh data link
-	$(mw.util.addPortletLink('p-views', 'javascript:;', 'Refresh Overview', 'ca-refresh-overview', 'Refresh event overview page', '2')).click(function() {
+	$(mw.util.addPortletLink('p-views', 'javascript:;', 'Refresh Overview', 'ca-refresh-overview', 'Refresh event overview page', '2', 'ca-edit')).click(function() {
 		$('body').css('cursor', 'wait');
 		var a = new mw.Api();
 		

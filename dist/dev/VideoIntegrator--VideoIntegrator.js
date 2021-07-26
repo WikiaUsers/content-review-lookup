@@ -45,7 +45,8 @@ mw.hook('wikipage.content').add(function($content) {
                     $('<iframe>', {
                         src: 'https://femax20.com/v/' + id,
                         css: css,
-                        frameborder: 0
+                        frameborder: 0,
+                        allowfullscreen: true
                     })
                 );
                     break;

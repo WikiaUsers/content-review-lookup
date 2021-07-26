@@ -28,7 +28,7 @@ $(function() {
             'BG8', // 8
             'BG8', // 9
             'BG8', // 10
-            'BG3', // 11
+            'BG8', // 11
             'BG3', // 12
             'BG1', // 13
             'BG1', // 14
@@ -36,10 +36,10 @@ $(function() {
             'BG1', // 16
             'BG6', // 17
             'BG6', // 18
-            'BG6', // 19
+            'BG2', // 19
             'BG2', // 20
             'BG2', // 21
-            'BG2', // 22
+            'BG4', // 22
             'BG4'  // 23
         ])[new Date().getHours()];
         $(document.body).addClass(cl);

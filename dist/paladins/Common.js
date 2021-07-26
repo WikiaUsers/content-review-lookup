@@ -146,7 +146,7 @@ function updateTimer(timerParams, num) {
     // When loop iterations reaches loop limit, hide normal text, hide delay
     // text, hide normal/delay time periods, and only show end of loop text
     if ((numLoops === loopLimit) && (endDate.getTime() <= now.getTime())) {
-        document.getElementById("endText_" + num).setAttribute("style", "display:visible");
+        document.getElementById("endText_" + num).setAttribute("style", "display:visible; font-size:12px; font-weight:normal; front; line-height: 0.7;");
         document.getElementById("bText_" + num).setAttribute("style", "display:none;");
         document.getElementById("aText_" + num).setAttribute("style", "display:none;");
         document.getElementById("bDelayText_" + num).setAttribute("style", "display:none");
@@ -175,8 +175,8 @@ function updateTimer(timerParams, num) {
         document.getElementById("endText_" + num).setAttribute("style", "display:none");
         document.getElementById("bText_" + num).setAttribute("style", "display:none");
         document.getElementById("aText_" + num).setAttribute("style", "display:none");
-        document.getElementById("bDelayText_" + num).setAttribute("style", "display:visible");
-        document.getElementById("aDelayText_" + num).setAttribute("style", "display:visible");
+        document.getElementById("bDelayText_" + num).setAttribute("style", "display:visible; font-size:12px; font-weight:normal; front; line-height: 0.7;");
+        document.getElementById("aDelayText_" + num).setAttribute("style", "display:visible; font-size:12px; font-weight:normal; front; line-height: 0.7;");
         // Adding the time values onto the page for delayed time period
         if (delayDisplay) {
             $("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiff, timeUnits));

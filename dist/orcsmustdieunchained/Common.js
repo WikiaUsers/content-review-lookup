@@ -155,19 +155,19 @@ $(document).on('click', '.toggle-tab', function(e) {
 */
            /* This version is for FandomDesktop */
 $(document).on('click', '.toggle-tab', function(e) {
-	var btn = $(e.target);
-	var tabbertab = btn.closest('.wds-tabs__tab');
-	var view1 = tabbertab.find('.view1');
-	var view2 =  tabbertab.find('.view2');
-	if (view1.is(':visible') === true) {
-		view2.show();
-		view1.hide();
-		btn.html(view1.attr("title"));
-	} else {
-		view1.show();
-		view2.hide();
-		btn.html(view2.attr("title"));
-	}
+    var btn = $(e.target);
+    var content = btn.parent();
+    var view1 = content.find('.view1');
+    var view2 =  content.find('.view2');
+    if (view1.is(':visible') === true) {
+        view2.show();
+        view1.hide();
+        btn.html(view1.attr("title"));
+    } else {
+        view1.show();
+        view2.hide();
+        btn.html(view2.attr("title"));
+    }
 });
 
 /* End wiki content hook */

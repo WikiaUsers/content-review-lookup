@@ -13,13 +13,20 @@ mw.hook('wikipage.content').add(function($content) {
 
         uri.path += id;
         uri.query = {
-            autoplay: 0,
             loop: loop,
             playlist: loop === '1' ? id : '',
             start: String(data.start || '').trim(),
             end: String(data.end || '').trim(),
             list: String(data.list || '').trim()
         };
+        
+        // From July 2021, embed does not work properly with some parameters
+        // left empty.
+        for (var prop in uri.query) {
+            if (!uri.query[prop]) {
+                delete uri.query[prop];
+            }
+        }
 
         $this.html(
             $('<iframe>', {

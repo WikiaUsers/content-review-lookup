@@ -19,6 +19,7 @@
   var oldid = Number(mw.util.getParamValue('oldid'))
   var diff = mw.util.getParamValue('diff')
   var curid = conf.wgArticleId
+  var threadId = mw.util.getParamValue('threadId')
 
   // Make query string
   var query = {}
@@ -33,6 +34,7 @@
   } else {
     query.curid = curid
   }
+  if (threadId) query.threadId = threadId
 
   var shortUrl = baseURL + '?' + $.param(query)
   dev.shortUrl = shortUrl

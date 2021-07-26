@@ -44,7 +44,7 @@ $(function () {
             return console.error('[ImportArticles]', 'Both `article` and `articles` used.', obj);
         }
         if (obj.article) {
-            obj.articles = obj.article;
+            obj.articles = [obj.article];
         }
         if (typeof obj.articles !== 'string' && typeof obj.articles !== 'object') {
             return console.error('[ImportArticles]', 'Something other than an array or a string was passed to `article`/`articles`.', obj);

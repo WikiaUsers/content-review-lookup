@@ -111,14 +111,6 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
-			"aether": {
-				"name": "Aether",
-				"colors": [
-					"blue",
-					"purple"
-				],
-				"rarity": "super"
-			},
 			"aerial": {
 				"name": "Aerial",
 				"colors": [
@@ -134,6 +126,22 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "unbreedable"
+			},
+			"aether": {
+				"name": "Aether",
+				"colors": [
+					"blue",
+					"purple"
+				],
+				"rarity": "super"
+			},
+			"aetherstorm": {
+				"name": "Aetherstorm",
+				"colors": [
+					"beast",
+					"white"
+				],
+				"rarity": "common"
 			},
 			"afterlife": {
 				"name": "Afterlife",
@@ -418,6 +426,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"pink",
 					"white"
+				],
+				"rarity": "unbreedable"
+			},
+			"anomaly": {
+				"name": "Anomaly",
+				"colors": [
+					"beast",
+					"purple",
+					"blue"
 				],
 				"rarity": "unbreedable"
 			},
@@ -4262,6 +4279,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"fairytale"
 				],
 				"rarity": "rare"
+			},
+			"faithful": {
+				"name": "Faithful",
+				"colors": [
+					"beast",
+					"flower",
+					"purple"
+				],
+				"rarity": "unbreedable"
 			},
 			"fallingleaf": {
 				"name": "Falling Leaf",
@@ -11127,6 +11153,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "ultra"
 			},
+			"prismatic": {
+				"name": "Prismatic",
+				"colors": [
+					"beast",
+					"pink",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"prizefighter": {
 				"name": "Prize Fighter",
 				"colors": [
@@ -14669,6 +14704,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"purple",
 					"white"
+				],
+				"rarity": "unbreedable"
+			},
+			"tri": {
+				"name": "Tri",
+				"colors": [
+					"beast",
+					"white",
+					"green"
 				],
 				"rarity": "unbreedable"
 			},

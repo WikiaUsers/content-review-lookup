@@ -60,7 +60,6 @@ window.UserTagsJS = {
         dev: { u:'Developer'},
         discordmod: { u:'Discord Moderator'},
         rollback: { u:'Rollback'},
-        newuser: { u:'Fresh Blood'},
         sysop: {u:'Admin'},
         owner: {u:'Owner'},
         qa: {u:'Lead QA'}
@@ -81,10 +80,8 @@ UserTagsJS.modules.mwGroups = [
     'patroller',
     'rollback',
     'sysop',
-    'bannedfromchat',
     'bot',
     'bot-global',
-    'newuser'
 ];
 
 UserTagsJS.modules.metafilter = {
@@ -98,21 +95,10 @@ UserTagsJS.modules.metafilter = {
         'rollback'
     ],
     rollback: ['sysop'],
-    newuser: ['bannedfromchat'], 
 };
 
 UserTagsJS.modules.autoconfirmed = false;
 UserTagsJS.modules.isblocked = true;
-UserTagsJS.modules.inactive = 30; // 30 days
-UserTagsJS.modules.newuser = {
-	days: 3, // Must have been on the Wiki for 3 days
-	edits: 5, // And have at least 5 edits to remove the tag
-	namespace: 0 // Edits must be made to articles to count
-};
-
-UserTagsJS.modules.userfilter = {
-    'PossiblySeiko': ['newuser'], // Remove Fresh Blood Tag
-};
 
 // ===================
 // MessageWallUserTags config

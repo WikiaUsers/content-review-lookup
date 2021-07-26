@@ -1,5 +1,5 @@
 /* from https://nkch.fandom.com/wiki/MediaWiki:CommunityPageRailModule.js */
-mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(
+mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.jqueryMsg"]).then(
     function () {
         return new mw.Api().loadMessagesIfMissing(["communitypage-help-us-grow", "communitypage-entry-button"]);
     }).then(
@@ -57,12 +57,13 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(
 
                 Object.assign(communityblock_content.style, {
                     display: "flex",
-                    marginTop: "26px"
+                    marginTop: "26px",
+                    alignItems: "center"
                 });
 
                 var communityblock_content_desc = document.createElement("div");
                 communityblock_content_desc.classList.add("description");
-                communityblock_content_desc.innerHTML = mw.message("communitypage-help-us-grow", info.wikiVariables.name).parse();
+                communityblock_content_desc.innerHTML = mw.message("communitypage-help-us-grow", info.wikiVariables.name).parse().replace(/'''(.*)'''/,"<strong>$1</strong>");
 
                 Object.assign(communityblock_content_desc.style, {
 					fontSize: "14px",
@@ -73,7 +74,8 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(
                 communityblock_content_link.classList.add("wds-button", "wds-is-secondary", "entry-button");
 
                 Object.assign(communityblock_content_link.style, {
-                    whiteSpace: "nowrap"
+                    whiteSpace: "nowrap",
+                    marginLeft: "10px"
                 });
                 
                 communityblock_content_link.href = mw.util.getUrl(mw.Title.makeTitle(-1, "Community").getPrefixedText());

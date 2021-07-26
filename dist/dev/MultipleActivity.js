@@ -549,7 +549,7 @@ mw.loader.using("mediawiki.api").then(
                                                                     topUsersImage.style.height = "40px";
                                                                 } else {
                                                                     topUsersImage.style.filter = "invert(.5)";
-                                                                    topUsersImage.style.backgroundImage = "url('/extensions/wikia/DesignSystem/node_modules/design-system/dist/svg/wds-icons-avatar.svg')";
+                                                                    topUsersImage.style.backgroundImage = "url('/resources-ucp/dist/svg/wds-icons-avatar.svg')";
                                                                     topUsersImage.style.width = "38px";
                                                                     topUsersImage.style.height = "38px";
                                                                 }
@@ -711,7 +711,7 @@ mw.loader.using("mediawiki.api").then(
                                                             }
 
                                                             function icon(icon) {
-                                                                return "url('/extensions/wikia/DesignSystem/node_modules/design-system/dist/svg/wds-icons-" + icon + "-small.svg')"
+                                                                return "url('/resources-ucp/dist/svg/wds-icons-" + icon + "-small.svg')"
                                                             }
 
                                                             // check the type of element

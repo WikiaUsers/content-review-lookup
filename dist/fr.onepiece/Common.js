@@ -1,9 +1,4 @@
-/* Version du JS revue par @John Trololo et @Think D. Solucer */
-/* <pre> */
-$(function()
-{
-
-    /* Début JS */
+/* Version du JS revue par @John Trololo, @Think D. Solucer et @CaptainDisfiking*/
     
 /*****************************************************************
 ** S'il vous plait, ne mettez aucun code JS avant les imports ****
@@ -12,18 +7,6 @@ $(function()
 
 /* Version du JS revue par @Think D. Solucer */
 // Page JS concernant les IHM du wiki
-
-/* Début JS des utilisateurs*/
-importArticles({
-    type: "script",
-    articles: [
-        'MediaWiki:Common.js/userRightIcons.js', // Étiquettes
-        'MediaWiki:Common.js/Avertissements.js', // Ne pas hésiter à demander l'ajout de nouveaux avertissements
-    ]
-});
-
-/* Fin JS des utilisateurs */
-        
 
 //retirer la raison par défaut sur spécial:supprimer
 $(function() {
@@ -36,7 +19,7 @@ $(function() {
 var expandAllFlag = 0;
 var $expandAll = $('.expandAll a');
 $('.expandAll a').click(function(){
-    if (expandAllFlag == 0){
+    if (expandAllFlag === 0){
         $('.mw-collapsible .mw-collapsible-toggle-collapsed').click();
         expandAllFlag = 1;
         $expandAll.text('Tout refermer');
@@ -45,9 +28,7 @@ $('.expandAll a').click(function(){
         expandAllFlag = 0;
         $expandAll.text('Tout afficher');
     }
-});
-//End of Expand All
+});    
+ //End of Expand All
 
    /* Fin JS */
-});
-/* </pre> */

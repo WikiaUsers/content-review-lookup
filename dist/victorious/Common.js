@@ -7,3 +7,6 @@ window.AutoCreateUserPagesConfig = {
     },
     summary: 'Script: Creating user profile'
 };
+
+/* prevents existing tags from being hidden */
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };

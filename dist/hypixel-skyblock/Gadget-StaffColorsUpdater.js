@@ -139,6 +139,7 @@ mw.loader.using(['mediawiki.api']).then(function() {
 						else if (i === 1) rule = rule.replace(/\$1/, data.imageUrls[rank]);
 						else if (i === 2) rule = rule.replace(/\$1/, data.wallText[rank]);
 						
+						if (lastElem === -1) rule = '/*\n' + rule + '\n*/';
 						temp.push(rule);
 					});
 					ret.push(temp.join('\n'));

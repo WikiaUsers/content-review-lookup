@@ -3,81 +3,139 @@ mw.loader.using(["mediawiki.api", "oojs-ui"]).then(
         // Velocity.js
         mw.loader.getScript("https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.2/velocity.min.js").then(
             function () {
-                var video = document.createElement("video");
-                video.setAttribute("loop", "loop");
-                video.setAttribute("autoplay", "autoplay");
+                const mpv = {};
 
-                Object.assign(video.style, {
-                    borderRadius: "10px",
-                    filter: "brightness(.2)",
-                    width: "100%"
-                });
+                mpv.elements = {
+                    video: {
+                        $el: document.createElement("video"),
+                        $classes: ["rbrbw-mainpage-header__video"],
+                        $attributes: {
+                            autoplay: "autoplay",
+                            loop: "loop"
+                        },
+                        source: {
+                            $el: document.createElement("source"),
+                            $classes: ["rbrbw-mainpage-header__video-src"],
+                            $attributes: {
+                                src: "/ru/wiki/Special:Filepath/File:Microtrailer.webm"
+                            }
+                        }
+                    },
+                    blackout: {
+                        $el: document.createElement("div"),
+                        $classes: ["rbrbw-mainpage-header__blackout"]
+                    },
+                    content: {
+                        $el: document.createElement("div"),
+                        $classes: ["rbrbw-mainpage-header__content"],
+                        image: {
+                            $el: document.createElement("img"),
+                            $classes: ["rbrbw-mainpage-header__image"],
+                            $attributes: {
+                                src: "/ru/wiki/Special:Filepath/File:Заглавная_-_Сисини.png",
+                                width: 80
+                            }
+                        },
+                        title: {
+                            $el: document.createElement("div"),
+                            $classes: ["rbrbw-mainpage-header__title"]
+                        },
+                        subtitle: {
+                            $el: document.createElement("p"),
+                            $classes: ["rbrbw-mainpage-header__subtitle"]
+                        },
+                        separator: {
+                            $el: document.createElement("hr"),
+                            $classes: ["rbrbw-mainpage-header__separator"]
+                        },
+                        description: {
+                            $el: document.createElement("p"),
+                            $classes: ["rbrbw-mainpage-header__description"]
+                        },
+                        storeLinks: {
+                            $el: "...",
+                            $classes: ["rbrbw-mainpage-header__storelinks"]
+                        }
+                    }
+                };
 
-                var src = document.createElement("source");
-                src.src = "https://static.wikia.nocookie.net/rabi-ribi/images/2/2a/Microtrailer.webm/revision/latest?path-prefix=ru";
+                /* ~ video ~ */
+                mpv.elements.video.$el.classList.add(mpv.elements.video.$classes);
 
-                var content = document.createElement("div");
+                for (var i in mpv.elements.video.$attributes) {
+                    mpv.elements.video.$el.setAttribute(i, mpv.elements.video.$attributes[i]);
+                };
 
-                Object.assign(content.style, {
-                    margin: "10% 0",
-                    position: "absolute",
-                    textAlign: "center",
-                    width: "80%"
-                });
+                var header = document.querySelector("#rbrbw-mainpage-header");
+                header.innerHTML = "";
+                header.appendChild(mpv.elements.video.$el);
 
-                var img = document.createElement("img");
-                img.id = "rbrbw-mainpage-greetings-image";
-                img.src = "https://vignette.wikia.nocookie.net/rabi-ribi/images/1/12/Заглавная_-_Сисини.png/revision/latest?path-prefix=ru";
-                img.setAttribute("width", "80px");
+                /* ~ video : source ~ */
+                mpv.elements.video.source.$el.classList.add(mpv.elements.video.source.$classes);
 
-                Object.assign(img.style, {
-                    opacity: 0
-                });
+                for (var i in mpv.elements.video.source.$attributes) {
+                    mpv.elements.video.source.$el.setAttribute(i, mpv.elements.video.source.$attributes[i]);
+                };
 
-                var header = document.createElement("div");
-                header.id = "rbrbw-mainpage-greetings-header";
-                header.innerHTML = "Добро пожаловать на " + mw.config.get("wgSiteName");
+                mpv.elements.video.$el.appendChild(mpv.elements.video.source.$el);
 
-                Object.assign(header.style, {
-                    background: "linear-gradient(45deg, #8b57bc, #ee7294)",
-                    fontFamily: "'VAG World Bold', 'Helvetica Neue', Helvetica, sans-serif",
-                    fontSize: "25px",
-                    letterSpacing: "0.1ex",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    opacity: 0
-                });
+                /* ~ blackout ~ */
+                mpv.elements.blackout.$el.classList.add(mpv.elements.blackout.$classes);
 
-                var subheader = document.createElement("p");
-                subheader.id = "rbrbw-mainpage-greetings-subheader";
-                subheader.innerHTML = "Википроект об игре <i>Rabi-Ribi</i>, свободный для редактирования";
+                mpv.elements.video.$el.after(mpv.elements.blackout.$el);
 
-                Object.assign(subheader.style, {
-                    opacity: 0
-                });
+                /* ~ content ~ */
+                mpv.elements.content.$el.classList.add(mpv.elements.content.$classes);
 
-                var separator = document.createElement("hr");
-                separator.id = "rbrbw-mainpage-greetings-separator";
+                mpv.elements.blackout.$el.after(mpv.elements.content.$el);
 
-                Object.assign(separator.style, {
-                    background: "linear-gradient(90deg, transparent, #ee7294, transparent)",
-                    border: "none",
-                    height: "2px",
-                    width: "80%",
-                    opacity: 0
-                });
+                /* ~ content : image ~ */
+                mpv.elements.content.image.$el.classList.add(mpv.elements.content.image.$classes);
 
-                var desc = document.createElement("p");
-                desc.id = "rbrbw-mainpage-greetings-description";
-                desc.innerHTML = "<i><a href='/ru/wiki/Rabi-Ribi'>Rabi-Ribi</a></i> — это показательная смесь метроидвании и буллет-хелла от студии <i>CreSpirit</i> за авторством идеи <i>GemaYue</i>, предлагающая множество различных сложностей, боссов и вариантов её прохождения.";
+                for (var i in mpv.elements.content.image.$attributes) {
+                    mpv.elements.content.image.$el.setAttribute(i, mpv.elements.content.image.$attributes[i]);
+                };
 
-                Object.assign(desc.style, {
-                    opacity: 0
-                });
+                mpv.elements.content.$el.appendChild(mpv.elements.content.image.$el);
 
-                mw.util.addCSS(".rbrbw-mainpage-greetings-storelinks { opacity: 0 }")
+                animate(mpv.elements.content.image.$el, 700, 1300);
 
-                var storelinks = new OO.ui.FieldLayout(
+                /* ~ content : title ~ */
+                mpv.elements.content.title.$el.classList.add(mpv.elements.content.title.$classes);
+
+                mpv.elements.content.title.$el.innerHTML = "Добро пожаловать на " + mw.config.get("wgSiteName");
+
+                mpv.elements.content.$el.appendChild(mpv.elements.content.title.$el);
+
+                animate(mpv.elements.content.title.$el, 1800, 800);
+
+                /* ~ content : subtitle ~ */
+                mpv.elements.content.subtitle.$el.classList.add(mpv.elements.content.subtitle.$classes);
+
+                mpv.elements.content.subtitle.$el.innerHTML = "Википроект об игре <i>Rabi-Ribi</i>, свободный для редактирования";
+
+                mpv.elements.content.$el.appendChild(mpv.elements.content.subtitle.$el);
+
+                animate(mpv.elements.content.subtitle.$el, 2100, 800);
+
+                /* ~ content : separator ~ */
+                mpv.elements.content.separator.$el.classList.add(mpv.elements.content.separator.$classes);
+
+                mpv.elements.content.$el.appendChild(mpv.elements.content.separator.$el);
+
+                animate(mpv.elements.content.separator.$el, 2400, 800);
+
+                /* ~ content : description ~ */
+                mpv.elements.content.description.$el.classList.add(mpv.elements.content.description.$classes);
+
+                mpv.elements.content.description.$el.innerHTML = "<i><a href='/ru/wiki/Rabi-Ribi'>Rabi-Ribi</a></i> — это показательная смесь метроидвании и буллет-хелла от студии <i>CreSpirit</i> за авторством идеи <i>GemaYue</i>, предлагающая множество различных сложностей, боссов и вариантов её прохождения.";
+
+                mpv.elements.content.$el.appendChild(mpv.elements.content.description.$el);
+
+                animate(mpv.elements.content.description.$el, 2400, 800);
+
+                /* ~ content : storelinks ~ */
+                mpv.elements.content.storeLinks.$el = new OO.ui.FieldLayout(
                     new OO.ui.Widget({
                         content: [
                             new OO.ui.HorizontalLayout({
@@ -86,7 +144,7 @@ mw.loader.using(["mediawiki.api", "oojs-ui"]).then(
                                         label: "Steam",
                                         title: "Перейти на страницу игры в Steam",
                                         href: "https://store.steampowered.com/app/400910/RabiRibi/",
-                                        classes: ["rbrbw-mainpage-greetings-storelink", "rbrbw-mainpage-greetings-storelink-steam"],
+                                        classes: ["rbrbw-mainpage-header__storelink", "rbrbw-mainpage-header__storelink--steam"],
                                         target: "_blank",
                                         rel: "noreferrer noopener"
                                     }),
@@ -94,7 +152,7 @@ mw.loader.using(["mediawiki.api", "oojs-ui"]).then(
                                         label: "PlayStation Store",
                                         title: "Перейти на страницу игры в PlayStation Store",
                                         href: "https://store.playstation.com/ru-ru/product/EP4293-CUSA08233_00-RABIRIBIPS400100",
-                                        classes: ["rbrbw-mainpage-greetings-storelink", "rbrbw-mainpage-greetings-storelink-psstore"],
+                                        classes: ["rbrbw-mainpage-header__storelink", "rbrbw-mainpage-header__storelink--psstore"],
                                         target: "_blank",
                                         rel: "noreferrer noopener"
                                     }),
@@ -102,99 +160,43 @@ mw.loader.using(["mediawiki.api", "oojs-ui"]).then(
                                         label: "Nintendo eShop",
                                         title: "Перейти на страницу игры в Nintendo eShop",
                                         href: "https://www.nintendo.ru/-/-Nintendo-Switch/Rabi-Ribi-1651288.html",
-                                        classes: ["rbrbw-mainpage-greetings-storelink", "rbrbw-mainpage-greetings-storelink-eshop"],
+                                        classes: ["rbrbw-mainpage-header__storelink", "rbrbw-mainpage-header__storelink--eshop"],
                                         target: "_blank",
                                         rel: "noreferrer noopener"
                                     })
                                 ],
-                                classes: ["rbrbw-mainpage-greetings-storelinks"]
+                                classes: mpv.elements.content.storeLinks.$classes
                             })
                         ]
                     })
                 );
 
-                Object.assign(storelinks.$element[0].style, {
+                Object.assign(mpv.elements.content.storeLinks.$el.$element[0].style, {
                     display: "flex",
                     justifyContent: "center"
                 });
 
-                $("#rbrbw-mainpage-header")[0].innerHTML = "";
-                $("#rbrbw-mainpage-header")[0].appendChild(video);
-                video.appendChild(src);
-                video.after(content);
+                mpv.elements.content.$el.appendChild(mpv.elements.content.storeLinks.$el.$element[0]);
 
-                content.appendChild(img);
-                content.appendChild(header);
-                content.appendChild(subheader);
-                content.appendChild(separator);
-                content.appendChild(desc);
-                content.appendChild(storelinks.$element[0]);
+                animate(mpv.elements.content.storeLinks.$el.$element[0], 2700, 800);
 
-                $.Velocity.hook($("#rbrbw-mainpage-greetings-image"), "translateY", "50px");
-                $.Velocity.hook($("#rbrbw-mainpage-greetings-header"), "translateY", "50px");
-                $.Velocity.hook($("#rbrbw-mainpage-greetings-subheader"), "translateY", "50px");
-                $.Velocity.hook($("#rbrbw-mainpage-greetings-separator"), "translateY", "50px");
-                $.Velocity.hook($("#rbrbw-mainpage-greetings-description"), "translateY", "50px");
-                $.Velocity.hook($("#rbrbw-mainpage-greetings-storelinks"));
+                function animate(element, delay, duration) {
+                    Object.assign(element.style, {
+                        opacity: 0
+                    });
 
-                $("#rbrbw-mainpage-greetings-image").velocity({
-                    translateY: 0,
-                    opacity: 1
-                }, {
-                    delay: 700,
-                    duration: 1300,
-                    easing: "easeOutCubic",
-                    queue: false
-                });
+                    $.Velocity.hook($(element), "translateY", "50px");
 
-                $("#rbrbw-mainpage-greetings-header").velocity({
-                    translateY: 0,
-                    opacity: 1
-                }, {
-                    delay: 1800,
-                    duration: 800,
-                    easing: "easeOutCubic",
-                    queue: false
-                });
-                
-                $("#rbrbw-mainpage-greetings-subheader").velocity({
-                    translateY: 0,
-                    opacity: 1
-                }, {
-                    delay: 2100,
-                    duration: 800,
-                    easing: "easeOutCubic",
-                    queue: false
-                });
-
-                $("#rbrbw-mainpage-greetings-separator").velocity({
-                    translateY: 0,
-                    opacity: 1
-                }, {
-                    delay: 2400,
-                    duration: 800,
-                    easing: "easeOutCubic",
-                    queue: false
-                });
-
-                $("#rbrbw-mainpage-greetings-description").velocity({
-                    translateY: 0,
-                    opacity: 1
-                }, {
-                    delay: 2400,
-                    duration: 800,
-                    easing: "easeOutCubic",
-                    queue: false
-                });
-
-                $(".rbrbw-mainpage-greetings-storelinks").velocity({
-                    opacity: 1
-                }, {
-                    delay: 2700,
-                    duration: 800,
-                    easing: "easeOutCubic",
-                    queue: false
-                });
+                    $(element).velocity({
+                        translateY: 0,
+                        opacity: 1
+                    }, {
+                        delay: delay,
+                        duration: duration,
+                        easing: "easeOutCubic",
+                        queue: false
+                    });
+                };
             }
         );
     }

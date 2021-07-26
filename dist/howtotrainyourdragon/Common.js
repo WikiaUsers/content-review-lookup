@@ -103,3 +103,21 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
         });
     });
 });
+
+/*Message Wall User Tags*/
+window.MessageWallUserTags = {
+    tagColor: '#B22222',
+    txtSize: '10px',
+    glow: true,
+    glowSize: '15px',
+    glowColor: '#8B0000',
+    users: {
+        'Spongebob456': 'Representative',
+        'Annabeth_and_Percy': 'Bureaucrat',
+        'HiccstridFan92': 'Admin',
+        'Tauriel_the_Elf': 'Admin',
+        'DublynT': 'Admin',
+        'Nuttetuff': ‘Moderator',
+        'Clodaghelm': 'Moderator'
+    }
+};

@@ -77,8 +77,15 @@ mw.hook('wikipage.content').add(function($content) {
     setFavicon.setAttribute('href', 'https://static.wikia.nocookie.net/gardiens-des-cites-perdue/images/6/64/Favicon.ico/revision/latest?cb=20201126084739&path-prefix=fr');
     headTitle.appendChild(setFavicon);
  });
- headTitle.appendChild(setFavicon);
+ //headTitle.appendChild(setFavicon);
 })();
+
+// Traduire "Edit Wall Greeting" en français
+
+if (wgPageName.startsWith('Mur:'))
+  setTimeout(function () {
+      document.body.innerHTML = document.body.innerHTML.replace(/Edit Wall Greeting/, "Modifier l'accueil du mur");
+  }, 4000);
 
 /// Modèles
 
@@ -140,7 +147,7 @@ mw.loader.using(["jquery.ui.tabs"], function() {
 
 // Retrait des [GDCP] dans les sommaires – par Ninofr
 
-(function () {
+$(function () {
   /**
    * @type {HTMLElement}
    */
@@ -156,4 +163,4 @@ mw.loader.using(["jquery.ui.tabs"], function() {
       ''
     );
   document.getElementById('toc').innerHTML = content;
-})();
+});

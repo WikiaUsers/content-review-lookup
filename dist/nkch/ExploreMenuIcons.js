@@ -27,6 +27,16 @@
                         icon.classList.add("navigation-item-icon");
                         navDropdownLinks[i].querySelector("span").before(icon);
                         break
+                    case "explore-videos":
+                        var icon = wds.icon("video-tiny");
+                        icon.classList.add("navigation-item-icon");
+                        navDropdownLinks[i].querySelector("span").before(icon);
+                        break
+                    case "explore-images":
+                        var icon = wds.icon("images-tiny");
+                        icon.classList.add("navigation-item-icon");
+                        navDropdownLinks[i].querySelector("span").before(icon);
+                        break
                 }
             };
         }

@@ -19,6 +19,7 @@ $(function() {
 	$('.user-navigation-moved .moved-notifications .wds-dropdown').attr('class', '');
 	$('.user-navigation-moved .moved-notifications .wds-dropdown__toggle').removeClass('wds-dropdown__toggle');
 	$('.user-navigation-moved .wds-dropdown.wds-open-to-right').removeClass('wds-open-to-right');
+	$('.user-navigation-moved .wds-dropdown .wds-dropdown__content').addClass('wds-is-right-aligned');
 	$('.user-navigation-moved .moved-notifications .global-navigation__icon').click(function(e) {
 		e.stopPropagation();
 		$('.global-navigation .notifications .global-navigation__icon').click();

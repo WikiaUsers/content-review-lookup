@@ -36,12 +36,19 @@
             $(this).addClass('active_ita').siblings().removeClass('active_ita');
 
             searchInput.value = $(this).find('.filter-one').text();
-            searchInput.dispatchEvent(new Event('input', { bubbles: true }))
+            searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+            
+            if ($(this).is('#tb-transf')) {
+            	$('.item').addClass('tb-transb');
+            } else {
+            	$('.item').removeClass('tb-transb');
+            }
         });
         // Кнопка сброса поиска
         $('.ita_def').click(function() {
             searchInput.value = '';
-            searchInput.dispatchEvent(new Event('input', { bubbles: true }))
+            searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+            $('.item').removeClass('tb-transb');
         });    
  
         // Кнопки сортировки

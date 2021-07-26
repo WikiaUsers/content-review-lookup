@@ -1,4 +1,4 @@
-$.when($.ready, mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg"])).then(function(){
+$.when(mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg"])).then(function(){
     return new mw.Api().loadMessagesIfMissing(["search-modal-see-all-results", "tooltip-search", "tooltip-search-go"]);
 }).then(function(){
 	if (mw.config.get("skin") !== "fandomdesktop"){
@@ -50,6 +50,7 @@ $.when($.ready, mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg"])).then(
 
 	search_form.append(search_box, search_hidden, search_button, search_linksuggest_box_div);
 
+	$(".wiki-tools").addClass("wiki-tools__ucxsearch"); // trigger hiding of fake search box to prevent content shift
 	$(".wiki-tools__search").replaceWith(search_form);
 
 	function update_linksuggest(container_selector){

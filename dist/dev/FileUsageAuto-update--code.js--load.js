@@ -1,1322 +1,1290 @@
+/* eslint-disable max-lines */
+/* eslint-disable max-statements */
+/* eslint-disable complexity */
+/* eslint-disable no-alert */
 /**
-*
-* Description:
-* Updates file links in use on the wiki when image is renamed.
-*
-* @Author Foodbandlt
-* @Author Jr Mime
-* Last updated 29 September, 2015
-**/
-
-// Options processing
-
-if (typeof LIR === "undefined"){
-
-	LIR = {
-		/**************************************
-		// Multilingual support (sorry about the amount of messages...)
-		**************************************/
-		supportedLanguages: ["en", "be", "de", "fr", "it", "pl", "ru", "uk"],
-
-		/*
-			To insert new languages, add the language code to the supportedLanguages array above and
-			make a sub-page of FileUsageAuto-update with the name of your language code
-			example: FileUsageAuto-update/en.js
-		*/
-
-		i18n: {
-			// Compatibility with how Wikia handles non-English wikis... ugh
-			en: {
-				fileNamespace: 'File',
-				imageNamespace: 'Image',
-				videoNamespace: 'Video',
-			}
-		},
-		// Wiki's selected language
-		lang: '',
-		// User's selected language
-		userLang: '',
-		wg: mw.config.get([
-			'wgAction',
-			'wgCanonicalNamespace',
-			'wgCanonicalSpecialPageName',
-			'wgContentLanguage',
-			'wgFileExtensions',
-			'wgFormattedNamespaces',
-			'wgPageName',
-			'wgScriptPath',
-			'wgTitle',
-			'wgUserLanguage',
-			'wgUserName',
-		]),
-
-		ERRORS: [],
-
-		/**************************************
-		// Object instance-related functions
-		**************************************/
-
-		constructInstance: function(button){
-			this.started = false;
-
-			this.buttonId = button;
-
-			this.method = '',
-
-			this.updateStatus = function(gifDisplay, message){
-				if ($("#queueStatus-" + this.buttonId).length == 0 && $("#liveLoader-" + this.buttonId).length == 0) return false;
-
-				if (typeof gifDisplay === "string"){
-					message = gifDisplay;
-				}else if (typeof gifDisplay === "boolean"){
-					if (gifDisplay == false){
-						displayValue = "none";
-					}else{
-						displayValue = "inline-block";
-					}
-					if ($("#liveLoader-" + this.buttonId).length > 0){
-						$("#liveLoader-" + this.buttonId).css("display", displayValue);
-					}
-				}else{
-					return false;
-				}
-
-				if (typeof message === "string" && $("#queueStatus-" + this.buttonId).length > 0){
-					$("#queueStatus-" + this.buttonId).html(" " + message);
-				}
-				return true;
-			};
-
-			this.start = function(type, oldName, newName, reason, callback){
-				LIR.rand = Math.floor( Math.random()*1000 );
-				/*Variable used for closure to access the instance of the object*/
-				var objectInst = this;
-
-				if (!Storage){
-					return false;
-				}
-
-				/* Checks if function has already started */
-				if ((this.started == true || LIR.started == true) && typeof this.queuePosition === "undefined"){
-					return false;
-				}
-
-				/* Treat manual additions like multi because I'm lazy */
-				if (type == "manual"){
-					type = "multi";
-					this.method = "manual";
-
-					this.updateStatus(true, LIR.userLang.processing);
-				}
-
-				/* Checks whether renaming single image or adding to queue */
-				if (typeof(type) !== "undefined"){
-					if (type == "single"){
-						this.started = true;
-						this.updateStatus(true, LIR.userLang.processing);
-						this.type = "single";
-					}else if (type == "multi"){
-						this.started = true;
-
-						if (typeof this.queuePosition === "undefined"){
-							this.queuePosition = ++localStorage.LIRQueuedUpdates;
-							this.updateStatus(true);
-						}
-
-						if (this.queuePosition != localStorage.LIRQueuedUpdatesPos){
-							this.updateStatus( LIR.userLang.waitList[0] + " " + ((this.queuePosition - localStorage.LIRQueuedUpdatesPos)) + " " + LIR.userLang.waitList[1] );
-							setTimeout(function(){
-								objectInst.start(type, oldName, newName, reason, callback)
-							},
-							500);
-							return false;
-						}
-
-						this.updateStatus(LIR.userLang.processing);
-						this.type = "multi";
-					}else{
-						if (console) console.log("Incorrect type specified");
-						return false;
-					}
-				}else{
-					this.started = true;
-					this.updateStatus(true, LIR.userLang.processing);
-					this.type = "single";
-				}
-
-				/* Retrieves queue, or resets variables if doesn't exist */
-				if (typeof (localStorage[LIR.wg.wgUserName + "_LIRQueueData"]) !== "undefined"){
-					this.queueData = JSON.parse(localStorage[LIR.wg.wgUserName + "_LIRQueueData"]);
-				}else{
-					this.queueData = [];
-				}
-
-				/* Sets variables used by the function */
-				if (typeof oldName != "undefined" && typeof newName != "undefined"){
-					if (oldName == "" || newName == ""){
-						this.updateStatus(false, LIR.userLang.fileNameBlank);
-						this.started = false;
-						localStorage.LIRQueuedUpdatesPos++;
-						delete this.queuePosition;
-						return false;
-					}
-					var oldImageName = oldName,
-						newImageName = newName;
-						if (typeof reason == "undefined") var reason = "";
-				}else{
-					var oldImageName = $('input[name="wpOldTitle"]').val().slice(LIR.lang.fileNamespace.length + 1),
-						newImageName = $("#wpNewTitleMain").val(),
-						reason = $("#wpReason").val();
-				}
-
-				if ( $("#wpLeaveRedirect").length != 0 ){
-					var leaveRedirect = $("#wpLeaveRedirect").is(":checked");
-				}else{
-					var leaveRedirect = false;
-				}
-
-				this.pageKey = [];
-
-				/* Checks if old or new file name is currently part of the queue */
-				for (i=0; i<this.queueData.length; i++){
-					if (this.queueData[i].newImage == oldImageName ||
-						this.queueData[i].newImage == newImageName ||
-						this.queueData[i].oldImage == oldImageName ||
-						this.queueData[i].oldImage == newImageName){
-
-						this.started = false;
-						if (typeof this.queuePosition !== "undefined"){
-							localStorage.LIRQueuedUpdatesPos++;
-							delete this.queuePosition;
-						}
-
-						if (this.queueData[i].oldImage == oldImageName || this.queueData[i].newImage == oldImageName){
-							var errorMessage = 'alreadyInQueue';
-						}else{
-							var errorMessage = 'nameInUse';
-						}
-
-						this.updateStatus(false, LIR.userLang[errorMessage]);
-						if (typeof(callback) === "function"){
-							callback(false, errorMessage);
-						}
-						return false;
-					}
-				}
-				var isVideo = true;
-				for (var ext in LIR.wg.wgFileExtensions){
-					if (oldImageName.indexOf("." + LIR.wg.wgFileExtensions[ext]) != -1){
-						isVideo = false;
-						break;
-					}
-				}
-
-				/* Checks if destination file name is the same as file being renamed (since Wikia's server-sided code usually validates this) */
-				var oldExt = oldImageName.slice(oldImageName.lastIndexOf(".")).toLowerCase();
-				var newExt = newImageName.slice(newImageName.lastIndexOf(".")).toLowerCase();
-
-				if (oldExt != newExt &&
-					!((oldExt == ".jpeg" || oldExt == ".jpg") && (newExt == ".jpeg" || newExt == ".jpg")) && // Same MIME type bugfix
-					this.method != "manual" &&
-					!isVideo){
-
-					this.started = false;
-					if (typeof this.queuePosition !== "undefined"){
-						localStorage.LIRQueuedUpdatesPos++;
-						delete this.queuePosition;
-					}
-					this.updateStatus(false, LIR.userLang.invalidExtension);
-					if (typeof(callback) === "function"){
-						callback(false, "invalidExtension");
-					}
-					return false;
-				}
-
-				if (localStorage[LIR.wg.wgUserName + "_LIRNamespaceSelection"] == false){
-					var namespaceSelection = "&blnamespace=0";
-				}else{
-					var namespaceSelection = "";
-				}
-
-
-				/* Check if destination file name is in use */
-				$.getJSON(LIR.wg.wgScriptPath + "/api.php?action=query&prop=revisions&rvprop=content&titles=" + LIR.lang.fileNamespace + ":"+encodeURIComponent(newImageName.replace(/ /g, "_")).replace(/"/g, "%22").replace(/'/g, "%27")+"&format=json&v=" + LIR.rand, function(result){
-					if (typeof result.query.pages[-1] !== "undefined" || objectInst.method == "manual"){
-						/* If not, then get file usage for image */
-						$.getJSON(LIR.wg.wgScriptPath + "/api.php?action=query&list=imageusage&iutitle=" + LIR.lang.fileNamespace + ":"+encodeURIComponent(oldImageName.replace(/ /g, "_")).replace(/"/g, "%22").replace(/'/g, "%27")+"&iulimit=20&format=json&v=" + LIR.rand, function(result){
-							var imageUsage = result.query.imageusage;
-
-							$.getJSON(LIR.wg.wgScriptPath + "/api.php?action=query" + namespaceSelection + "&list=backlinks&bltitle=" + LIR.lang.fileNamespace + ":" + encodeURIComponent(oldImageName.replace(/ /g, "_")).replace(/"/g, "%22").replace(/'/g, "%27") + "&format=json&v=" + LIR.rand, function(result){
-								var imageLinks = result.query.backlinks;
-								var totalImageUsage = imageUsage.concat(imageLinks);
-
-								if (console) console.log("Image usage successfully retrieved");
-								if (totalImageUsage.length > 0){
-
-									/* Resets queue-related variables if only renaming and replacing a single image */
-									if (objectInst.type == "single"){
-
-										objectInst.queueData = [];
-										objectInst.queueDataList = [];
-										objectInst.pageKey = [];
-
-										for (var currentPage = 0; currentPage < totalImageUsage.length; currentPage++){
-											var title = totalImageUsage[currentPage].title;
-											/* Temporary until Wikia fixes issue with editing blog comments through the API */
-											if (title.search( new RegExp(LIR.lang.userBlogCommentNamespace, "i") ) != -1){
-												var LIRBlogComment = true;
-											}
-										}
-
-										objectInst.queueDataList.push({
-											oldImage: oldImageName,
-											newImage: newImageName,
-											reason: reason,
-											move: true,
-											noRedirect: !leaveRedirect
-										});
-
-									}else{
-										objectInst.queueData.push({
-											oldImage: oldImageName,
-											newImage: newImageName,
-											reason: reason,
-											move: (objectInst.method == "manual" ? false : true),
-											noRedirect: !leaveRedirect
-										});
-
-										for (var currentPage = 0; currentPage < totalImageUsage.length; currentPage++){
-											var title = totalImageUsage[currentPage].title;
-											/* Temporary until Wikia fixes issue with editing blog comments through the API */
-											if (title.search( new RegExp(LIR.lang.userBlogCommentNamespace, "i") ) != -1){
-												var LIRBlogComment = true;
-											}
-										}
-									}
-
-									/* Stores queue if renaming multiple images, or updates file usage if only renaming one */
-									if (objectInst.type == "multi"){
-										objectInst.storeQueue();
-										objectInst.started = false;
-										localStorage.LIRQueuedUpdatesPos++;
-
-										objectInst.updateStatus(false, LIR.userLang.successful);
-
-										if (LIR.wg.wgCanonicalSpecialPageName == "Movepage" &&
-											(LIR.wg.wgPageName.indexOf(LIR.lang.fileNamespace + ":") != -1 ||
-											LIR.wg.wgPageName.indexOf(LIR.i18n.en.fileNamespace + ":") != -1 ||
-											LIR.wg.wgPageName.indexOf(LIR.lang.imageNamespace + ":") != -1 ||
-											LIR.wg.wgPageName.indexOf(LIR.i18n.en.imageNamespace + ":") != -1 ||
-											LIR.wg.wgPageName.indexOf(LIR.lang.videoNamespace + ":") != -1 ||
-											LIR.wg.wgPageName.indexOf(LIR.i18n.en.videoNamespace + ":") != -1)
-										){
-											window.location = LIR.wg.wgScriptPath + "/wiki/" + LIR.lang.fileNamespace + ":" + encodeURIComponent(oldImageName.replace(/ /g, "_")).replace(/"/g, "%22").replace(/'/g, "%27");
-										}else{
-											if (typeof callback == "function")
-												callback(true);
-										}
-									}else{
-										/* This may seem odd, but because I use LIR.processQueue() for both single and multiple image
-											updating, it requires this.started to be false to start */
-										objectInst.started = false;
-										LIR.processQueue(function(){
-											window.location = LIR.wg.wgScriptPath + "/wiki/" + LIR.lang.fileNamespace + ":" + encodeURIComponent(newImageName.replace(/ /g, "_")).replace(/"/g, "%22").replace(/'/g, "%27");
-										});
-									}
-
-
-								}else{
-									/* Else, prompt to use normal renaming, since this is kind of pointless otherwise */
-									objectInst.started = false;
-									if (typeof objectInst.queuePosition !== "undefined"){
-										localStorage.LIRQueuedUpdatesPos++;
-										delete objectInst.queuePosition;
-									}
-									objectInst.updateStatus(false, LIR.userLang.fileNotUsed);
-									if (typeof(callback) === "function"){
-										callback(false, "fileNotUsed");
-									}
-								}
-							});
-						});
-					}else{
-						objectInst.started = false;
-						if (typeof objectInst.queuePosition !== "undefined"){
-							localStorage.LIRQueuedUpdatesPos++;
-							delete objectInst.queuePosition;
-						}
-						objectInst.updateStatus(false, LIR.userLang.destInUse);
-						if (typeof(callback) === "function"){
-							callback(false, "destInUse");
-						}
-					}
-				});
-
-			};
-
-			this.storeQueue = function(){
-				/* Standalone function to store the queue in window.localStorage
-					uses wgUserName as a variable key so multi-user computers on the same wiki don't get each other's queue */
-				localStorage[LIR.wg.wgUserName + "_LIRQueueData"] = JSON.stringify(this.queueData);
-			};
-		},
-
-		instances: [],
-
-
-		/**************************************
-		// Processing-related functions
-		**************************************/
-
-		started: false,
-
-		delay: 1000,
-
-		updateProgress: function(show, progress){
-			if (typeof progress == "undefined" && typeof show == "boolean")
-				progress = 0;
-
-			if (typeof show == "boolean"){
-				if (LIR.instances[0].type == "multi"){
-					if (show)
-						$(".modalToolbar").prepend("<div id='LIRQueueProgress' style='float: left; width: 200px; border: 2px solid black; height: 17px;'><div id='LIRProgressInd' style='width: 0%; height: 100%; float: left; background-color: green;'></div></div>");
-					else
-						$("#LIRQueueProgress").remove();
-				}
-			}
-
-			if (typeof progress == "number"){
-				$("#LIRProgressInd").css("width", ((progress * 100) + "%"));
-				return;
-			}
-
-			if (typeof show == "number")
-				$("#LIRProgressInd").css("width", ((show * 100) + "%"));
-		},
-
-		getUsage: function(index, callback){
-			if (localStorage[LIR.wg.wgUserName + "_LIRNamespaceSelection"] == false){
-				var namespaceSelection = "&blnamespace=0";
-			}else{
-				var namespaceSelection = "";
-			}
-
-			$.getJSON(LIR.wg.wgScriptPath + "/api.php?action=query&list=imageusage&iutitle=" + LIR.lang.fileNamespace + ":"+encodeURIComponent(LIR.queueDataList[index].oldImage.replace(/ /g, "_")).replace(/"/g, "%22").replace(/'/g, "%27")+"&iulimit=5000&format=json&v=" + LIR.rand, function(result){
-				var imageUsage = result.query.imageusage;
-
-				$.getJSON(LIR.wg.wgScriptPath + "/api.php?action=query" + namespaceSelection + "&bllimit=5000&list=backlinks&bltitle=" + LIR.lang.fileNamespace + ":" + encodeURIComponent(LIR.queueDataList[index].oldImage.replace(/ /g, "_")).replace(/"/g, "%22").replace(/'/g, "%27") + "&format=json&v=" + LIR.rand, function(result){
-					var imageLinks = result.query.backlinks;
-					var totalImageUsage = imageUsage.concat(imageLinks);
-
-					if (console) console.log("Image usage successfully retrieved");
-
-					/* Adds pages image is used on to window.LIR.pageKey to help keep track of pages in window.LIR.pageData later on */
-					for (var currentPage = 0; currentPage < totalImageUsage.length; currentPage++){
-						var title = totalImageUsage[currentPage].title;
-
-						if (LIR.pageKey.indexOf(title) == -1){
-							LIR.pageKey[LIR.pageKey.length] = title;
-						}
-
-						for (i = 0; i <= LIR.queueData.length; i++){
-							if (i == LIR.queueData.length){
-								LIR.queueData[LIR.queueData.length] = {
-									oldImage: LIR.queueDataList[index].oldImage,
-									newImage: LIR.queueDataList[index].newImage,
-									title: title,
-									move: LIR.queueDataList[index].move
-								};
-								break;
-							}else if (LIR.queueData[i].title == title &&
-								LIR.queueData[i].oldImage == LIR.queueDataList[index].oldImage &&
-								LIR.queueData[i].newImage == LIR.queueDataList[index].newImage){
-								break;
-							}
-						}
-					}
-
-					if (typeof(callback) === "function"){
-						callback();
-					}
-				});
-			});
-		},
-
-		processQueue: function(callback){
-			if (localStorage.LIRQueuedUpdates < localStorage.LIRQueuedUpdatesPos && localStorage.LIRQueuedUpdates != 0){
-				localStorage.LIRQueuedUpdates = 0;
-				localStorage.LIRQueuedUpdatesPos = 1;
-			}
-
-			/* Check if operation already started */
-			if (LIR.started == true){
-				return false;
-			}
-
-			/* this.type is already set if processing single update */
-			if (typeof(LIR.instances[0].type) === "undefined"){
-				LIR.instances[0].type = "multi";
-			}
-
-			/* Variable redeclaration */
-			LIR.started = true;
-			LIR.requestCompleted = [];
-			LIR.pageData = [];
-
-			/* Queue retrieval, returns false if no queue */
-			if ( (LIR.instances[0].type == "multi" && localStorage.LIRQueuedUpdates == 0) || LIR.instances[0].type == "single"){
-				if (typeof (localStorage[LIR.wg.wgUserName + "_LIRQueueData"]) !== "undefined" || LIR.instances[0].type == "single"){
-					if (LIR.instances[0].type == "multi"){
-						LIR.queueDataList = JSON.parse(localStorage[LIR.wg.wgUserName + "_LIRQueueData"]);
-						LIR.updateProgress(true);
-						if (console) console.log("Queue retrieved successfully.");
-					}else{
-						LIR.queueDataList = LIR.instances[0].queueDataList;
-					}
-
-					LIR.usageRequested = 0;
-					LIR.usageProgress = 0;
-					LIR.moveRequested = LIR.queueDataList.length;
-					LIR.moveProgress = 0;
-					LIR.queueData = [];
-					LIR.pageKey = [];
-					LIR.timer = 0;
-
-					for (var index in LIR.queueDataList){
-						if (LIR.queueDataList[index].move == true){
-							LIR.moveFile(index, function(index){
-								LIR.updateProgress( ((++LIR.moveProgress) / LIR.moveRequested) / 2 );
-								LIR.usageRequested++;
-								LIR.getUsage(index, function(){
-									LIR.usageProgress++;
-									if (LIR.moveProgress == LIR.moveRequested && LIR.usageProgress == LIR.usageRequested){
-										LIR.processPageContent(callback);
-									}
-								});
-							},
-							function(callback){
-								LIR.updateProgress( ((++LIR.moveProgress) / LIR.moveRequested) / 2 );
-
-								if (LIR.moveProgress == LIR.moveRequested && LIR.usageProgress == LIR.usageRequested){
-									LIR.processPageContent(callback);
-								}
-							});
-						}else{
-							LIR.updateProgress( ((++LIR.moveProgress) / LIR.moveRequested) / 2 );
-							LIR.usageRequested++;
-							LIR.getUsage(index, function(){
-								LIR.usageProgress++;
-								if (LIR.moveProgress == LIR.moveRequested && LIR.usageProgress == LIR.usageRequested){
-									LIR.processPageContent(callback);
-								}
-							});
-						}
-					}
-				}else{
-					if (console) console.log("Queue does not exist or was unable to be retrieved.");
-					LIR.started = false;
-					return false;
-				}
-
-
-			}else if (LIR.instances[0].type == "multi" && localStorage.LIRQueuedUpdates != 0){
-				if (console) console.log("Pages are still being added to the queue.");
-				alert(LIR.userLang.pagesWaiting);
-				LIR.started = false;
-				return false;
-			}else if (LIR.instances[0].type == "single"){
-				LIR.processPageContent(callback);
-			}
-		},
-
-		lowerUpperReg: function(input){
-			return "[" + input.substr(0,1).toUpperCase() + input.substr(0,1).toLowerCase() + "]" + input.substr(1);
-		},
-
-		processPageContent: function(callback) {
-			if (console) console.log("Begin queue execution");
-
-			/* Sets progress checking variables */
-			for (i = 0; i<LIR.pageKey.length; i++){
-				LIR.requestCompleted[i] = false;
-			}
-			var pageDataRetrieved = 0;
-
-			if (console) console.log("Getting page contents");
-
-
-			for (var j = 0; j < (Math.floor(LIR.pageKey.length/500)+1); j++){
-				var tempArray = [];
-
-				for (var k = (j * 500); k < (j * 500) + 500; k++){
-					if (k == LIR.pageKey.length){
-						break;
-					}
-
-					tempArray.push( LIR.pageKey[k] );
-				}
-
-			/* Calls API for page contents */
-				$.post(
-					LIR.wg.wgScriptPath + "/api.php",
-					{
-						action: "query",
-						prop: "revisions",
-						rvprop: "content",
-						titles: tempArray.join("|"),
-						format: "json"
-					},
-					function(result){
-						/* Saves page contents for each page in LIR.pageData */
-						for (var i in result.query.pages){
-							var keyNum = LIR.pageKey.indexOf(result.query.pages[i].title);
-							LIR.pageData[keyNum] = {
-								title: LIR.pageKey[keyNum],
-								content: result.query.pages[i].revisions[0]["*"],
-								changed: false
-							};
-							pageDataRetrieved++;
-						}
-
-						if (pageDataRetrieved == LIR.pageKey.length){
-							if (console) console.log("Page contents retrieved and saved");
-							LIR.log(LIR.userLang.contentsRetrieved);
-
-							if (console) console.log("Begin processing page content.");
-
-							/* Replacing image name on each page */
-							for (i=0; i<LIR.queueData.length; i++){
-								var pageKey = LIR.pageKey.indexOf(LIR.queueData[i].title);
-								var escapedName0 = window.LIR.queueData[i].oldImage.replace(/\*/g, "\\*").replace(/\?/g, "\\?").replace(/\./g, "\\.").replace(/( |_)/g, "[ _]*?").replace(/\(/g, "\\(").replace(/\)/g, "\\)").replace(/\+/g, "\\+");
-
-								if ( escapedName0.substr(0,1).match(/[A-z]/i) ){
-									var escapedName = LIR.lowerUpperReg(escapedName0);
-								}else{
-									var escapedName = escapedName0;
-								}
-
-								var pageReplacement = new RegExp("(\\n[ ]*?|\\[?:?(" + LIR.lowerUpperReg(LIR.lang.fileNamespace) + "|" + LIR.lowerUpperReg(LIR.lang.imageNamespace) + "|" + LIR.lowerUpperReg(LIR.lang.videoNamespace) + "|" + LIR.lowerUpperReg(LIR.i18n.en.fileNamespace) + "|" + LIR.lowerUpperReg(LIR.i18n.en.imageNamespace) + "|" + LIR.lowerUpperReg(LIR.i18n.en.videoNamespace) + "):[ ]*?|=[ ]*?|\\|)" +
-									escapedName +
-									"([ ]*?\\n|[ ]*?\\||[ ]*?\\]|[ ]*?\\}|[ ]*?;)", "g");
-								var replacementReg = new RegExp(escapedName, "g");
-								var regExec;
-
-								if (LIR.pageData[pageKey].content.search(pageReplacement) != -1){
-									LIR.pageData[pageKey].changed = true;
-									if (console) console.log("\""+LIR.queueData[i].oldImage+"\" replaced on page \""+LIR.queueData[i].title+"\"");
-
-									while ((regExec = pageReplacement.exec(LIR.pageData[pageKey].content)) != null){
-										if (LIR.queueData[i].newImage == "" && LIR.queueData[i].move == false){ // Removing links/usages
-											if (regExec[1].search(/\n/g) != -1 || regExec[3].search(/\n/g) != -1 || regExec[1].search(/=/g) != -1){//If surrounded by newlines or equals, we need to keep them to prevent things from breaking
-												LIR.pageData[pageKey].content = LIR.pageData[pageKey].content.replace(regExec[0], regExec[0].replace(replacementReg, "<nowiki>" + LIR.queueData[i].oldImage + "</nowiki>"));
-												pageReplacement.lastIndex += "<nowiki></nowiki>".length;
-											}else{
-												LIR.pageData[pageKey].content = LIR.pageData[pageKey].content.replace(regExec[0], "<nowiki>" + regExec[0] + "</nowiki>");
-												pageReplacement.lastIndex += "<nowiki></nowiki>".length;
-											}
-										}else{ // Everything else
-											LIR.pageData[pageKey].content = LIR.pageData[pageKey].content.replace(regExec[0], regExec[0].replace(replacementReg, LIR.queueData[i].newImage));
-											pageReplacement.lastIndex += (regExec[0].replace(replacementReg, LIR.queueData[i].newImage).length - regExec[0].length) - (regExec[3].length);
-										}
-									}
-								}else{
-									if (LIR.instances[0].type == "multi"){
-										LIR.failedLog(LIR.queueData[i].oldImage, LIR.queueData[i].newImage, LIR.queueData[i].title);
-									}else{
-										alert(
-											LIR.userLang.unableToFind[0] +
-											' "' + LIR.queueData[i].oldImage + '" ' +
-											LIR.userLang.unableToFind[1] +
-											' "' + LIR.queueData[i].title + '"; ' +
-											LIR.userLang.unableToFind[2]
-										);
-									}
-								}
-							}
-
-							LIR.log(LIR.userLang.submittingContent);
-							if (console) console.log("Begin submitting pages");
-
-							var l = 0;
-
-							if (LIR.instances[0].type == "multi")
-								LIR.queueProgress = 0;
-
-							var throttle = setInterval(function(){
-								if (LIR.pageData[l].changed == true){
-									LIR.submitChangedPages(l, callback);
-								}else{
-									LIR.requestCompleted[l] = true;
-								}
-
-								l++;
-
-								if (l == LIR.pageData.length){
-									clearInterval(throttle);
-								}
-							}, (LIRoptions.delay || LIR.delay));
-						}else if (k == LIR.pageKey.length && pageDataRetrieved != LIR.pageKey.length){
-							if(console) console.log("There was a problem retrieving one or more pages. Retrieved " + LIR.pageData.length + " of " + LIR.pageKey.length + " pages");
-						}
-					},
-					"json"
-				);
-			}
-		},
-
-		submitChangedPages: function(pageKey, callback) {
-
-			$.ajax({
-				url: LIR.wg.wgScriptPath + "/api.php",
-				type: "POST",
-				async: true,
-				data: {
-					action: "edit",
-					title: LIR.pageData[pageKey].title,
-					summary: (LIRoptions.editSummary || LIR.lang.editSummary),
-					text: LIR.pageData[pageKey].content,
-					minor: true,
-					nocreate: true,
-					redirect: false,
-					bot: true,
-					token: mediaWiki.user.tokens.get("editToken"),
-					format: "json"
-				},
-				contentType: "application/x-www-form-urlencoded",
-				error: function(){
-					LIR.requestCompleted[pageKey] = true;
-					alert("Unable to publish page \""+LIR.pageKey[pageKey]+"\".  Please rename images on that page manually.");
-					if (LIR.requestCompleted.indexOf(false) == -1){
-						delete localStorage[LIR.wg.wgUserName + "_LIRQueueData"];
-						LIR.started = false;
-
-						if (typeof(callback) === "function"){
-							callback();
-						}
-					}
-				},
-				success: function(result){
-					LIR.requestCompleted[pageKey] = true;
-					if (console) console.log("Posted page \""+LIR.pageKey[pageKey]+"\"");
-					if (LIR.instances[0].type == "multi"){
-						LIR.updateProgress( ( ((++LIR.queueProgress) / LIR.pageKey.length) / 2) + 0.5);
-						//LIR.userLang.blogComment
-						if (typeof result.error !== "undefined"){
-							if ( LIR.pageData[pageKey].title.search(new RegExp(LIR.lang.userBlogCommentNamespace, "i")) != -1){
-								LIR.failedLogCustom(LIR.userLang.blogComment +
-									' → <a target="_blank" href="' + LIR.wg.wgScriptPath + '/wiki/' +
-										encodeURIComponent(LIR.pageData[pageKey].title.replace(/ /g, "_")).replace(/"/g, "%22").replace(/'/g, "%27") + '">' +
-										LIR.pageData[pageKey].title +
-									'</a>'
-								);
-							}else{
-								LIR.failedLogCustom(
-									LIR.userLang.unableToSubmit[0] +
-									' "' + LIR.pageData[pageKey].title + '" ' +
-									LIR.userLang.unableToSubmit[1] +
-									' "' + result.error.code + '; ' + result.error.info + '" . ' +
-									LIR.userLang.unableToSubmit[2]
-								);
-							}
-
-							for (var i in LIR.queueData){
-								if (LIR.queueData[i].title === LIR.pageData[pageKey].title){
-									LIR.failedLog(LIR.queueData[i].oldImage, LIR.queueData[i].newImage, LIR.queueData[i].title);
-								}
-							}
-						}
-					}else{
-						if (typeof result.error !== "undefined"){
-							if ( LIR.pageData[pageKey].title.search(new RegExp(LIR.lang.userBlogCommentNamespace, "i")) != -1){
-								alert(LIR.userLang.blogComment +
-									' → ' +
-										LIR.lang.fileNamespace + ':' + LIR.pageData[pageKey].title
-								);
-							}else{
-								alert(LIR.userLang.unableToSubmit[0] +
-									' "' + LIR.pageData[pageKey].title + '" ' +
-									LIR.userLang.unableToSubmit[1] +
-									'"' + result.error.code + '". ' +
-									LIR.userLang.unableToSubmit[2]
-								);
-							}
-						}
-					}
-
-
-					if (LIR.requestCompleted.indexOf(false) == -1){
-						if (LIR.instances[0].type == "multi"){
-							/* Cleans up localStorage variables */
-							delete localStorage[LIR.wg.wgUserName + "_LIRQueueData"];
-							LIR.started = false;
-							LIR.updateProgress(false);
-						}
-						/* Call callback if exists */
-						if (typeof(callback) === "function"){
-							callback();
-						}
-					}
-				}
-			});
-		},
-
-		moveFile: function(index, callback, failure) {
-			var data = {
-				action: "move",
-				from: LIR.lang.fileNamespace + ":" + LIR.queueDataList[index].oldImage,
-				to: LIR.lang.fileNamespace + ":" + LIR.queueDataList[index].newImage,
-				reason: LIR.queueDataList[index].reason,
-				movetalk: true,
-				ignorewarnings: true,
-				token: mediaWiki.user.tokens.get("editToken"),
-				format: "json"
-			};
-
-			if ( LIR.queueDataList[index].noRedirect ){
-				data = $.extend(data, {noredirect: true});
-			}
-			setTimeout(function(){
-				$.ajax({
-					url: LIR.wg.wgScriptPath + "/api.php",
-					type: "POST",
-					async: true,
-					data: data,
-					contentType: "application/x-www-form-urlencoded",
-					error: function(){
-						alert("Unable to move file \"" + LIR.queueDataList[index].oldImage + "\" to \"" + LIR.queueDataList[index].newImage + "\".");
-					},
-					success: function(result){
-						if (typeof result.error === "undefined" || LIR.queueDataList[index].move == false){
-							if (console) console.log("Moved file \"" + LIR.queueDataList[index].oldImage + "\"");
-
-							/* Call callback if exists */
-							if (typeof(callback) === "function"){
-								callback(index);
-							}
-						}else if (result.error.code == "articleexists" || result.error.code == "invalidtitle"){
-							var promptResponse = prompt(
-								LIR.userLang.unableToMove[0] +
-								' "' + LIR.queueDataList[index].oldImage + '" ' +
-								LIR.userLang.unableToMove[1] +
-								' "' + LIR.queueDataList[index].newImage + '" ' +
-								LIR.userLang.unableToMove[2] +
-								' "' + result.error.code + '" . \n' +
-								LIR.userLang.unableToMoveChoose
-							);
-
-							if (promptResponse != null && promptResponse != ""){
-								LIR.queueDataList[index].newImage = promptResponse;
-								LIR.moveFile(index, callback, failure);
-							}else{
-								if (LIR.instances[0].type == "multi"){
-									LIR.failedLogCustom('"' + LIR.queueDataList[index].oldImage + '" ' + LIR.userLang.unableToMoveFail);
-
-									if (LIR.queueDataList.length == 1){
-										delete localStorage[LIR.wg.wgUserName + "_LIRQueueData"];
-										LIR.started = false;
-										LIR.log( LIR.userLang.queueComplete );
-										LIR.updateQueueListing();
-									}else{
-										delete LIR.queueDataList[index];
-
-										failure();
-									}
-								}else{
-									LIR.started = false;
-									LIR.instances[0].updateStatus(false,
-										LIR.userLang.unableToMove[0] +
-										' "' + LIR.queueDataList[index].oldImage + '" ' +
-										LIR.userLang.unableToMove[1] +
-										' "' + LIR.queueDataList[index].newImage + '" ' +
-										LIR.userLang.unableToMove[2] +
-										' "' + result.error.code + '" .'
-									);
-								}
-							}
-						}else{
-							LIR.failedLogCustom(
-								LIR.userLang.unableToMove[0] +
-								' "' + LIR.queueDataList[index].oldImage + '" ' +
-								LIR.userLang.unableToMove[1] +
-								' "' + LIR.queueDataList[index].newImage + '" ' +
-								LIR.userLang.unableToMove[2] +
-								' "' + result.error.code + '; ' + result.error.info + '" . ' +
-								'"' + LIR.queueDataList[index].oldImage + '" ' + LIR.userLang.unableToMoveFail
-							);
-							LIR.ERRORS.push(result);
-
-							if (LIR.queueDataList.length == 1){
-								delete localStorage[LIR.wg.wgUserName + "_LIRQueueData"];
-								LIR.started = false;
-								LIR.log(LIR.userLang.queueComplete);
-								LIR.updateQueueListing();
-							}else{
-								delete LIR.queueDataList[index];
-
-								failure();
-							}
-						}
-					}
-				});
-			}, (LIR.timer++) * (LIRoptions.delay || LIR.delay));
-		},
-
-		removeFromQueue: function(queueOldName, callback){
-			LIR.instances[0].queueData = JSON.parse(localStorage[LIR.wg.wgUserName + "_LIRQueueData"]);
-
-			for (var i in LIR.instances[0].queueData){
-				if (queueOldName.match(new RegExp(LIR.instances[0].queueData[i].oldImage.replace(/\*/g, "\\*").replace(/\?/g, "\\?").replace(/\./g, "\\.").replace(/( |_)/g, "[ _]*?").replace(/\(/g, "\\(").replace(/\)/g, "\\)").replace(/\+/g, "\\+"), "gi") ) != null){
-					LIR.instances[0].queueData.splice(i, 1);
-					break;
-				}
-			}
-
-			if (LIR.instances[0].queueData.length > 0){
-				LIR.instances[0].storeQueue();
-			}else{
-				delete localStorage[LIR.wg.wgUserName + "_LIRQueueData"];
-			}
-
-			if (typeof(callback) === "function"){
-				callback();
-			}
-		},
-
-		/**************************************
-		// Modal-related functions
-		**************************************/
-
-		log: function(message){
-			if (typeof LIR.logMessages === "undefined"){
-				LIR.logMessages = "";
-			}
-
-			LIR.logMessages = LIR.logMessages + "<div style='font-weight: bold'>" + message + "</div>";
-
-			if ($("#LIRLog").length > 0){
-				$("#LIRLog").html(LIR.logMessages);
-				$("#LIRLog").scrollTop(100000000);
-				$("#LIRLog div:odd").css("background-color", "grey");
-			}
-		},
-
-		failedLog: function(oldI, newI, page){
-			LIR.failedLogCustom("<a target='_blank' href='" + LIR.wg.wgScriptPath + "/wiki/" + LIR.lang.fileNamespace + ":" + encodeURIComponent(oldI.replace(/ /g, "_")).replace(/"/g, "%22").replace(/'/g, "%27") + "'>" + oldI + "</a> → <a target='_blank' href='" + LIR.wg.wgScriptPath + "/wiki/" + LIR.lang.fileNamespace + ":" + encodeURIComponent(newI.replace(/ /g, "_")).replace(/"/g, "%22").replace(/'/g, "%27") + "'>" + newI + "</a> on <a target='_blank' href='" + LIR.wg.wgScriptPath + "/wiki/" + encodeURIComponent(page.replace(/ /g, "_")).replace(/"/g, "%22").replace(/'/g, "%27") + "'>" + page + "</a>");
-		},
-
-		failedLogCustom: function(text){
-			if (typeof(LIR.logFailed) === "undefined"){
-				LIR.logFailed = "";
-			}
-			LIR.logFailed += "<div>" + text + "</div>";
-			LIR.updateFailedListing();
-		},
-
-		updateFailedListing: function() {
-			if ($("#LIRFailedLog").length > 0 && typeof LIR.logFailed != "undefined"){
-				$("#LIRFailedLog").html(LIR.logFailed);
-				$("#LIRFailedLog div:odd").css("background-color", "red");
-			}
-		},
-
-		updateQueueListing: function(callback){
-			if (typeof (localStorage[LIR.wg.wgUserName + "_LIRQueueData"]) !== "undefined"){
-				LIR.queueData = JSON.parse(localStorage[LIR.wg.wgUserName + "_LIRQueueData"]);
-			}else{
-				$("#LIRQueue").html("<div>" + LIR.userLang.nothingInQueue + "</div>");
-				$("#LIRQueueLengthBox").html("0");
-				LIR.log( LIR.userLang.queueUpdate );
-				return false;
-			}
-
-			var LIRCurrentQueueData = LIR.queueData;
-			var queueToAdd = "";
-
-			for (i = 0; i<LIRCurrentQueueData.length; i++){
-				queueToAdd += "<div style='position:relative; padding-left: 20px; " + (!LIRCurrentQueueData[i].move && LIRCurrentQueueData[i].newImage != "" ? 'background-color: lightyellow !important;' : '') + (!LIRCurrentQueueData[i].move && LIRCurrentQueueData[i].newImage == "" ? 'background-color: #ffbfbf !important;' : '') + "'><div class='LIRDeleteButton' title='" + LIR.userLang.removeFromQueue + "' style='cursor: pointer; width: 15px; height: 15px; position: absolute; left: 3px; top: 2px;'><img width='15' height='15' src='https://upload.wikimedia.org/wikipedia/commons/b/ba/Red_x.svg' /></div><a class='LIROldName' target='_blank' href='" + LIR.wg.wgScriptPath + "/wiki/" + LIR.lang.fileNamespace + ":" + encodeURIComponent(LIRCurrentQueueData[i].oldImage.replace(/ /g, "_")).replace(/"/g, "%22").replace(/'/g, "%27") + "'>" + LIRCurrentQueueData[i].oldImage + "</a> → "+ (!LIRCurrentQueueData[i].move && LIRCurrentQueueData[i].newImage == "" ? "(Removing)" : "<a class='LIRNewName' target='_blank' href='" + LIR.wg.wgScriptPath + "/wiki/" + LIR.lang.fileNamespace + ":" + encodeURIComponent(LIRCurrentQueueData[i].newImage.replace(/ /g, "_")).replace(/"/g, "%22").replace(/'/g, "%27") + "'>" + LIRCurrentQueueData[i].newImage + "</a>") + "</div>";
-			}
-
-			$("#LIRQueue").html(queueToAdd);
-			$("#LIRQueueLengthBox").html(LIR.queueData.length);
-			$("#LIRQueue > div:odd").css("background-color", "lightgrey");
-			LIR.log( LIR.userLang.queueUpdate );
-
-
-		},
-
-		updateNamespaceSelection: function(){
-			if ($("#LIRNamespaceToggleCheck").is(":checked")){
-				localStorage[LIR.wg.wgUserName + "_LIRNamespaceSelection"] = "checked";
-			}else{
-				localStorage[LIR.wg.wgUserName + "_LIRNamespaceSelection"] = "";
-			}
-		},
-
-		showQueueModal: function(){
-			$.showCustomModal(
-				LIR.userLang.queueModalTitle,
-				'<div id="LIRContainer" style="width: 100%;">' +
-				'<div id="LIRQueue" style="overflow-y: scroll; width: 590px; height: 300px; float: left; border: 1px solid black; font-weight: bold; background-color: #FFFFFF;"></div>'+
-				'<div id="LIRLog" style="overflow-y: scroll; height: 300px; width: 200px; float: right; background-color: lightgrey; border: 1px solid black;"></div>'+
-				'<div id="LIRQueueLength" style="float: left;margin: 5px 15px 0px 0px; font-weight: bold;">' + LIR.userLang.filesInQueue + ': <span id="LIRQueueLengthBox"></span></div>'+
-				'<div id="LIRNamespaceToggle" style="float: left; margin: 5px 5px 0px 0px;"><label><input type="checkbox" id="LIRNamespaceToggleCheck" onchange="LIR.updateNamespaceSelection()" ' + localStorage[LIR.wg.wgUserName + "_LIRNamespaceSelection"] + '>' +
-					LIR.userLang.namespaceCheckbox +
-				'</label></div>'+
-				'<span id="liveLoader-0" style="display: none; float: right;margin-top: 7px;"><img src="https://images.wikia.nocookie.net/common/skins/common/progress-wheel.gif"></span>'+
-				'<div style="clear: both"></div> <div id="LIRFailedLog" style="width: 798px; margin: 5px auto 0px auto; background-color: #ffbfbf; height: 150px; border: 1px solid black; font-weight: bold; overflow-y: scroll;">' +
-					LIR.userLang.failedDescription +
-				'</div> </div>',
-				{
-					id: "queueModal",
-					width: 800,
-					buttons: [
-						{
-							id: "close",
-							message: LIR.userLang.queueModalClose,
-							handler: function () {
-								$("#queueModal .close").click();
-							}
-						},
-						{
-							id: "openManualModal",
-							message: LIR.userLang.queueModalManual,
-							handler: function () {
-								if (LIR.started){ return false;}
-								LIR.showManualModal();
-							}
-						},
-						{
-							id: "resetCounter",
-							message: LIR.userLang.queueModalReset,
-							handler: function () {
-								if (LIR.started || LIR.instances[0].started){ return false;}
-								if (confirm(
-									LIR.userLang.queueModalWaitConfirm[0] + "\n\n" +
-									LIR.userLang.queueModalWaitConfirm[1] +
-									" " +(localStorage.LIRQueuedUpdates - localStorage.LIRQueuedUpdatesPos + 1) + " " +
-									LIR.userLang.queueModalWaitConfirm[2] + "\n\n" +
-									LIR.userLang.queueModalWaitConfirm[3]
-									)){
-
-									localStorage.LIRQueuedUpdates = 0;
-									localStorage.LIRQueuedUpdatesPos = 1;
-									LIR.log(LIR.userLang.waitCleared);
-								}
-							}
-						},
-						{
-							id: "updateButton",
-							message: LIR.userLang.queueModalUpdate,
-							handler: function(){
-								LIR.updateQueueListing();
-							}
-						},
-						{
-							id: "executeButton",
-							message: LIR.userLang.queueModalExecute,
-							defaultButton: true,
-							handler: function(){
-								if (typeof localStorage[LIR.wg.wgUserName + "_LIRQueueData"] !== "undefined"){
-									LIR.log( LIR.userLang.queueStarted );
-									LIR.instances[0].updateStatus(true);
-									LIR.processQueue(function(){
-										LIR.log( LIR.userLang.queueComplete );
-										LIR.instances[0].updateStatus(false);
-										LIR.updateQueueListing();
-									});
-								}else{
-									LIR.log(LIR.userLang.noQueueExists);
-								}
-							}
-						}
-					],
-					callback: function(){
-						$(".blackout, #queueModal .close").off("click").click(function(){
-							if ((LIR.started == false || typeof(LIR.started) === "undefined")){
-								delete LIRCurrentQueueData;
-								$(document).off("click", ".LIRDeleteButton");
-								$("#queueModal").remove();
-								$(".blackout").fadeOut(function(){
-									$(this).remove();
-								});
-							}
-						});
-
-						$(document).on("click", ".LIRDeleteButton", function(){
-							LIR.removeFromQueue($(this).parent().find("a.LIROldName").html(), function(){
-								LIR.log(LIR.userLang.itemRemoved);
-								LIR.updateQueueListing();
-							});
-						});
-
-						LIR.updateQueueListing();
-						LIR.updateFailedListing();
-					}
-				}
-			);
-		},
-
-		addToQueueButton: function(buttonId) {
-			if ( $("#fuau-button-" + buttonId).attr("data-fuau-from") != "undefined" && $("#fuau-button-" + buttonId).attr("data-fuau-from") != ""){
-				if ( $("#fuau-button-" + buttonId).attr("data-fuau-to") != "undefined" && $("#fuau-button-" + buttonId).attr("data-fuau-to") != ""){
-					$("#fuau-button-" + buttonId).css("display", "none");
-
-					LIR.instances[buttonId].start("multi", decodeURIComponent( $("#fuau-button-" + buttonId).attr("data-fuau-from") ), decodeURIComponent( $("#fuau-button-" + buttonId).attr("data-fuau-to").replace(/_/g, " ") ), LIR.userLang.using + " [[w:c:dev:FileUsageAuto-update#Other_features|FileUsageAuto-update]].", function(successful, error){
-						if (successful){
-							LIR.instances[buttonId].updateStatus(false, LIR.userLang.successful);
-						}
-
-						if (typeof error != "undefined"){
-							switch (error){
-								case "nameInUse":
-								case "invalidExtension":
-								case "destInUse":
-									$("#fuau-button-" + buttonId).css("display", "inline-block");
-									LIR.showFuauModal( $("#fuau-button-" + buttonId), buttonId, error );
-									break;
-							}
-						}
-					});
-				}else{
-					LIR.showFuauModal( $("#fuau-button-" + buttonId), buttonId, "toUndef");
-				}
-			}else{
-				LIR.instances[buttonId].updateStatus(false, LIR.userLang.varsUndef);
-			}
-		},
-
-		showFuauModal: function(buttonObj, Id, message){
-			$.showCustomModal(
-				LIR.userLang.queueAddition,
-				'<fieldset><span> ' + LIR.userLang[message] + '  ' + LIR.userLang.tryDiffName + ' </span><br><span style="font-weight:bold">' + LIR.userLang.oldFileName + ':</span><br>' + LIR.lang.fileNamespace + ':<input disabled id="modalOldName" type="text" style="width:400px" value="' + decodeURIComponent( buttonObj.attr("data-fuau-from") ).replace(/_/g, " ") + '" /><br><span style="font-weight:bold">' + LIR.userLang.newFileName + ':</span><br>' + LIR.lang.fileNamespace + ':<input id="modalNewName" type="text" style="width:400px" value="' + (typeof buttonObj.attr("data-fuau-to") != "undefined" ? decodeURIComponent( buttonObj.attr("data-fuau-to") ).replace(/_/g, " ") : "") + '" /><br><input id="modalId" type="text" value="' + Id + '" style="display: none;" /></fieldset>',
-				{
-					id: "fuauModal",
-					width: 650,
-					buttons: [
-						{
-							id: "cancel",
-							message: LIR.userLang.queueModalClose,
-							handler: function(){
-								$(".close").click();
-							}
-						},
-						{
-							id: "submit",
-							defaultButton: true,
-							message: LIR.userLang.addToQueue,
-							handler: function(){
-								var Id = $("#modalId").val();
-								if ( $("#modalNewName").val() != "" ){
-									$("#fuau-button-" + Id).attr( "data-fuau-to", encodeURIComponent( $("#modalNewName").val() ).replace(/'/g, "%27") );
-									$(".close").click();
-									LIR.addToQueueButton(Id);
-								}
-							}
-						}
-					],
-					callback: function(){
-						$(".blackout, .close").off("click").click(function(){
-								$("#fuauModal").remove();
-								$(".blackout").fadeOut(function(){
-									$(this).remove();
-								});
-						});
-					}
-				}
-			);
-		},
-
-		showManualModal: function(){
-			$.showCustomModal(
-				LIR.userLang.queueAddition,
-				'<fieldset><span>' + LIR.userLang.manualModalDescription + '</span><br><br><span style="font-weight:bold">' + LIR.userLang.oldFileName + ':</span><br> ' + LIR.lang.fileNamespace + ':<input id="modalOldName" type="text" style="width:400px" /><br><span style="font-weight:bold">' + LIR.userLang.newFileName + ':</span><br>' + LIR.lang.fileNamespace + ':<input id="modalNewName" type="text" style="width:400px" /><br><span id="liveLoader-0" style="display:none"><img src="https://images.wikia.nocookie.net/common/skins/common/progress-wheel.gif" /></span><span id="queueStatus-0" style="font-weight: bold"></span></fieldset>',
-				{
-					id: "manualModal",
-					width: 650,
-					buttons: [
-						{
-							id: "cancel",
-							message: LIR.userLang.queueModalClose,
-							handler: function(){
-								$("#manualModal .close").click();
-							}
-						},
-						{
-							id: "submit",
-							defaultButton: true,
-							message: LIR.userLang.addToQueue,
-							handler: function(){
-								if (LIR.instances[0].started){ return false; }
-								LIR.instances[0].start("manual", $("#modalOldName").val(), $("#modalNewName").val(), "", function(res){
-									if (res){
-										delete LIR.instances[0].queuePosition;
-										$("#modalOldName, #modalNewName").val('');
-										$("#modalOldName").focus();
-										LIR.updateQueueListing();
-									}
-								});
-							}
-						}
-					],
-					callback: function(){
-						$(".blackout, #manualModal .close").off("click").click(function(){
-							if (!LIR.instances[0].started){
-								$("#manualModal").remove();
-								$(".blackout").fadeOut(function(){
-									$(this).remove();
-								});
-							}
-						});
-
-						$("#modalOldName, #modalNewName").on("keypress", function(e){
-							if (e.which == 13){
-								$("#manualModal #submit").click();
-							}
-						})
-					}
-				}
-			);
-		},
-
-		initialize: function(){
-			if (typeof LIR.supportedLanguages.indexOf(LIR.wg.wgContentLanguage) == -1){
-				if (LIR.wg.wgAction == 'view' && (LIR.wg.wgCanonicalNamespace == "File" || LIR.wg.wgCanonicalNamespace == "Image" || LIR.wg.wgCanonicalNamespace == "Video")) {
-					$('.page-header__contribution-buttons .wds-list').append(
-						$('<li/>').append(
-							$('<a/>', {
-								'href': 'https://dev.fandom.com/wiki/Talk:FileUsageAuto-update',
-								'title': 'Request/provide translations',
-								'html': 'Queue lang not supported'
-							})
-						)
-					);
-				}else if (LIR.wg.wgCanonicalSpecialPageName == "Movepage" &&
-					(LIR.wg.wgPageName.indexOf(LIR.i18n.en.fileNamespace + ":") != -1 ||
-					LIR.wg.wgPageName.indexOf(LIR.i18n.en.imageNamespace + ":") != -1 ||
-					LIR.wg.wgPageName.indexOf(LIR.lang.imageNamespace + ":") != -1 ||
-					LIR.wg.wgPageName.indexOf(LIR.wg.wgFormattedNamespaces[6] + ":") != -1)
-				){
-					$('td.mw-submit').append("<br /><br /><div style='width: 850px; white-space: normal; font-weight: bold;'>FileUsageAuto-update language not supported</div>");
-				}
-			}else{
-				if (LIR.supportedLanguages.indexOf(LIR.wg.wgUserLanguage) == -1){
-					var userLang = "en";
-				}else{
-					var userLang = LIR.wg.wgUserLanguage;
-				}
-
-				if (typeof localStorage.LIRQueuedUpdates === "undefined"){
-					localStorage.LIRQueuedUpdates = 0;
-					localStorage.LIRQueuedUpdatesPos = 1;
-				}
-
-				if (typeof LIRoptions === "undefined")
-					LIRoptions = {};
-
-				if (typeof localStorage[LIR.wg.wgUserName + "_LIRNamespaceSelection"] === "undefined"){
-					localStorage[LIR.wg.wgUserName + "_LIRNamespaceSelection"] = "";
-				}
-
-				 /* Get language pack! */
-				$.ajax({
-					url: "https://dev.fandom.com/wiki/MediaWiki:FileUsageAuto-update/" + LIR.wg.wgContentLanguage + ".js?action=raw&ctype=text/javascript",
-					dataType: "script",
-					cache: true,
-					success: function(){
-						if (console) console.log('FileUsageAuto-update: Loaded language pack ' + LIR.wg.wgContentLanguage);
-						LIR.lang = LIR.i18n[LIR.wg.wgContentLanguage];
-
-						if (userLang != LIR.wg.wgContentLanguage){
-							$.ajax({
-								url: "https://dev.fandom.com/wiki/MediaWiki:FileUsageAuto-update/" + userLang + ".js?action=raw&ctype=text/javascript",
-								dataType: "script",
-								cache: true,
-								success: function(){
-									if (console) console.log('FileUsageAuto-update: Loaded secondary language pack ' + userLang);
-									LIR.userLang = LIR.i18n[userLang];
-									LIR.makeUI();
-								}
-							});
-						}else{
-							LIR.userLang = LIR.lang;
-							LIR.makeUI();
-						}
-					}
-				});
-			}
-		},
-
-		makeUI: function(){
-			/* Actions performed on page load to add script elements */
-			if (LIR.wg.wgCanonicalSpecialPageName == "Movepage" &&
-					(LIR.wg.wgPageName.indexOf(LIR.lang.fileNamespace + ":") != -1 ||
-					LIR.wg.wgPageName.indexOf(LIR.i18n.en.fileNamespace + ":") != -1 ||
-					LIR.wg.wgPageName.indexOf(LIR.lang.imageNamespace + ":") != -1 ||
-					LIR.wg.wgPageName.indexOf(LIR.i18n.en.imageNamespace + ":") != -1 ||
-					LIR.wg.wgPageName.indexOf(LIR.lang.videoNamespace + ":") != -1 ||
-					LIR.wg.wgPageName.indexOf(LIR.i18n.en.videoNamespace + ":") != -1) &&
-				Storage){
-				/* File move page */
-				LIR.instances[0] = new LIR.constructInstance(0);
-				// Buttons
-				LIR.appendButtonText = "<a style='margin-left: 20px;' class='wikia-button' onclick='LIR.instances[0].start(\"single\")'>" + (LIRoptions.singleButtonText || LIR.userLang.singleButtonText) + "</a>" +
-					"<a style='margin-left: 20px;' class='wikia-button' onclick='LIR.instances[0].start(\"multi\")'>" + (LIRoptions.queueButtonText || LIR.userLang.queueButtonText) + "</a>";
-				// Loading icon and message / instructions
-				LIR.appendButtonText += "<span id='liveLoader-0' style='display:none'><img src='https://images.wikia.nocookie.net/common/skins/common/progress-wheel.gif' /></span>" +
-					"<span id='queueStatus-0' style='font-weight: bold'></span>" +
-					// "<div id='LIRFailedLog' style='margin: 5px 0px; background-color: #ffbfbf; height: 150px; border: 1px solid black; font-weight: bold; overflow: scroll;'>" +
-						// LIR.userLang.failedDescription + "</div>" +
-					"<br /><div style='width: 850px; white-space: normal;'>" + LIR.userLang.movePageDescription[0] + " <b>\""+
-						(LIRoptions.singleButtonText || LIR.userLang.singleButtonText)+"\"</b> " + LIR.userLang.movePageDescription[1] +
-						" <b>\""+(LIRoptions.queueButtonText || LIR.userLang.queueButtonText)+"\"</b> " + LIR.userLang.movePageDescription[2] + "</div>";
-				// Optional bottom message
-				if (LIRoptions.bottomMessage){
-					LIR.appendButtonText += ('<br /><div style="font-weight: bold; width: 850px; white-space: normal;">' + LIRoptions.bottomMessage + '</div>');
-				}
-
-				LIR.appendButtonText += ('<br /><div style="font-weight: bold; width: 850px; white-space: normal;">' + LIR.userLang.movePageInfo[0] + ' 29th of September, 2015.  ' + LIR.userLang.movePageInfo[1] + '</div>');
-
-				$('td.mw-submit').append(LIR.appendButtonText);
-				$('#mw-movepage-table tr:eq(4)').after('<tr><td></td><td class="mw-input"><label><input type="checkbox" id="LIRNamespaceToggleCheck" onchange="LIR.updateNamespaceSelection()" ' + localStorage[LIR.wg.wgUserName + "_LIRNamespaceSelection"] + '>&nbsp;' + LIR.userLang.namespaceCheckbox + ' <span style="font-size: 9px;">' + LIR.userLang.movePageNamespaceSelect[0] + ' ' + (LIRoptions.singleButtonText || LIR.userLang.singleButtonText) + ' ' + LIR.userLang.movePageNamespaceSelect[1] + '</span></label></td></tr>');
-			} else if ((LIR.wg.wgCanonicalNamespace == "File" || LIR.wg.wgCanonicalNamespace == "Image" || LIR.wg.wgCanonicalNamespace == "Video") && Storage) {
-				/* File page */
-				LIR.instances[0] = new LIR.constructInstance(0);
-					$(".page-header__contribution-buttons .wds-list").append("<li><a onclick='LIR.showQueueModal()'>" + LIR.userLang.queue + "</a></li>");
-
-				if (typeof localStorage[LIR.wg.wgUserName + "_LIRQueueData"] !== "undefined"){
-					LIR.instances[0].queueData = JSON.parse(localStorage[LIR.wg.wgUserName + "_LIRQueueData"]);
-
-
-					for (var i in LIR.instances[0].queueData){
-						if (LIR.wg.wgTitle.match(new RegExp(LIR.instances[0].queueData[i].oldImage.replace(/\*/g, "\\*").replace(/\?/g, "\\?").replace(/\./g, "\\.").replace(/( |_)/g, "[ _]*?").replace(/\(/g, "\\(").replace(/\)/g, "\\)").replace(/\+/g, "\\+"), "gi") ) != null){
-
-								$("#WikiaArticle").prepend('<table id="LIRNotification" class="metadata plainlinks ambox ambox-notice" style="border-left: 10px solid lightgreen;"><tbody><tr><td class="mbox-image"><div style="width: 52px;"><img alt="" src="https://upload.wikimedia.org/wikipedia/commons/b/bd/Checkmark_green.svg" width="46" height="40"></div></td><td class="mbox-text" style="">' + LIR.userLang.fileInQueue + '<br>' + LIR.userLang.newFileName + ': <span style="font-weight: bold;">'+LIR.instances[0].queueData[i].newImage+'</span></td></tr><tr><td colspan="2" style="text-align: right;"><a onclick="LIR.showQueueModal()" style="cursor: pointer;">' + LIR.userLang.queue + '</a>&nbsp;&bull;&nbsp;<a id="LIRRemoveFromQueue" style="cursor: pointer;">' + LIR.userLang.removeFromQueue + '</a></td></tr></tbody></table>');
-
-							$("#LIRRemoveFromQueue").on("click", function(){
-								LIR.removeFromQueue(LIR.instances[0].queueData[i].oldImage, function(){
-									$("#LIRNotification").slideUp("fast", function(){
-										this.remove();
-									});
-								});
-							});
-							break;
-						}
-					}
-				}
-			}else if ($(".fuau").length > 0){
-				/* Add to queue button placeholders */
-				LIR.buttonIndex = 0;
-				$(".fuau").each(function(){
-					LIR.instances[LIR.buttonIndex] = new LIR.constructInstance(LIR.buttonIndex);
-					$(this).html("<a class='wikia-button' id='fuau-button-" + LIR.buttonIndex + "' data-fuau-from='" + $(this).attr('data-fuau-from') + "' data-fuau-to='" + $(this).attr('data-fuau-to') + "' onclick='LIR.addToQueueButton(" + LIR.buttonIndex + ")'>" + LIR.userLang.addToQueue + "</a><span id='liveLoader-" + LIR.buttonIndex + "' style='display:none'><img src='https://images.wikia.nocookie.net/common/skins/common/images/ajax.gif' /></span><span id='queueStatus-" + LIR.buttonIndex + "' style='font-weight: bold'></span>");
-					LIR.buttonIndex++;
-				});
-				delete LIR.buttonIndex;
-			}else{
-				if (console) console.log("Looks like FileUsageAuto-update isn't supported");
-			}
-		}
-	};
-
-	LIR.initialize();
-}
+ * Name:        FileUsageAuto-update
+ * Description: Updates file links in use on the wiki when image is renamed.
+ * Version:     v2.0
+ * Authors:     Foodbandlt
+ *              Jr Mime
+ *              KockaAdmiralac
+ */
+(function() {
+    'use strict';
+    if (window.LIR) {
+        return;
+    }
+    var LIR = {
+        options: window.LIRoptions || {},
+        wg: mw.config.get([
+            'wgAction',
+            'wgCanonicalNamespace',
+            'wgCanonicalSpecialPageName',
+            'wgContentLanguage',
+            'wgFileExtensions',
+            'wgFormattedNamespaces',
+            'wgPageName',
+            'wgScriptPath',
+            'wgTitle',
+            'wgUserLanguage',
+            'wgUserName'
+        ]),
+        ERRORS: [],
+        updateStatus: function(gifDisplay, message) {
+            var $queueStatusButton = $('#queueStatus');
+            var $liveLoaderButton = $('#liveLoader');
+            if ($queueStatusButton.length === 0 && $liveLoaderButton.length === 0) {
+                return false;
+            }
+            var buttonMessage = message;
+            if (typeof gifDisplay === 'string') {
+                buttonMessage = gifDisplay;
+            } else if (typeof gifDisplay === 'boolean') {
+                $liveLoaderButton.css('display', gifDisplay ? 'inline-block' : 'none');
+            } else {
+                return false;
+            }
+            if (typeof buttonMessage === 'string' && $queueStatusButton.length > 0) {
+                $queueStatusButton.html(' ' + buttonMessage);
+            }
+            return true;
+        },
+        start: function(type, oldName, newName, reason, callback) {
+            // Checks if function has already started
+            if ((LIR.started || LIR.started) && typeof LIR.queuePosition === 'undefined') {
+                return false;
+            }
+            // Treat manual additions like multi
+            var normalizedType = type;
+            if (normalizedType === 'manual') {
+                normalizedType = 'multi';
+                LIR.method = 'manual';
+                LIR.updateStatus(true, LIR.i18n.msg.processing);
+            }
+            // Checks whether renaming single image or adding to queue
+            if (typeof normalizedType === 'undefined') {
+                LIR.started = true;
+                LIR.updateStatus(true, LIR.i18n.msg('processing').escape());
+                LIR.type = 'single';
+            } else if (normalizedType === 'single') {
+                LIR.started = true;
+                LIR.updateStatus(true, LIR.i18n.msg('processing').escape());
+                LIR.type = 'single';
+            } else if (normalizedType === 'multi') {
+                LIR.started = true;
+                if (typeof LIR.queuePosition === 'undefined') {
+                    LIR.queuePosition = ++localStorage.LIRQueuedUpdates;
+                    LIR.updateStatus(true);
+                }
+                if (LIR.queuePosition !== Number(localStorage.LIRQueuedUpdatesPos)) {
+                    var position = LIR.queuePosition - Number(localStorage.LIRQueuedUpdatesPos);
+                    LIR.updateStatus(LIR.i18n.msg('waitList', position).escape());
+                    setTimeout(function() {
+                        LIR.start(normalizedType, oldName, newName, reason, callback);
+                    }, 500);
+                    return false;
+                }
+
+                LIR.updateStatus(LIR.i18n.msg('processing').escape());
+                LIR.type = 'multi';
+            } else {
+                if (console) {
+                    console.log('Incorrect type specified');
+                }
+                return false;
+            }
+            // Retrieves queue, or resets variables if doesn't exist
+            if (typeof localStorage[LIR.wg.wgUserName + '_LIRQueueData'] === 'undefined') {
+                LIR.queueData = [];
+            } else {
+                LIR.queueData = JSON.parse(localStorage[LIR.wg.wgUserName + '_LIRQueueData']);
+            }
+            // Sets variables used by the function
+            var newReason;
+            var oldImageName;
+            var newImageName;
+            if (typeof oldName !== 'undefined' && typeof newName !== 'undefined') {
+                if (oldName === '' || newName === '') {
+                    LIR.updateStatus(false, LIR.i18n.msg('fileNameBlank').escape());
+                    LIR.started = false;
+                    localStorage.LIRQueuedUpdatesPos++;
+                    delete LIR.queuePosition;
+                    return false;
+                }
+                oldImageName = oldName;
+                newImageName = newName;
+                if (typeof reason === 'undefined') {
+                    newReason = '';
+                }
+            } else {
+                oldImageName = $('input[name="wpOldTitle"]').val().slice(LIR.wg.wgFormattedNamespaces[6].length + 1);
+                newImageName = $('input[name="wpNewTitleMain"]').val();
+                newReason = $('input[name="wpReason"]').val();
+            }
+            var leaveRedirect = $('input[name="wpLeaveRedirect"]').is(':checked');
+            LIR.pageKey = [];
+            // Checks if old or new file name is currently part of the queue
+            var alreadyIn = LIR.queueData.find(function(data) {
+                return data.newImage === oldImageName ||
+                       data.newImage === newImageName ||
+                       data.oldImage === oldImageName ||
+                       data.oldImage === newImageName;
+            });
+            if (alreadyIn) {
+                LIR.started = false;
+                if (typeof LIR.queuePosition !== 'undefined') {
+                    localStorage.LIRQueuedUpdatesPos++;
+                    delete LIR.queuePosition;
+                }
+                var errorMessage;
+                if (alreadyIn.oldImage === oldImageName || alreadyIn.newImage === oldImageName) {
+                    errorMessage = 'alreadyInQueue';
+                } else {
+                    errorMessage = 'nameInUse';
+                }
+                LIR.updateStatus(false, LIR.i18n.msg(errorMessage).escape());
+                if (typeof callback === 'function') {
+                    callback(false, errorMessage);
+                }
+                return false;
+            }
+            var isVideo = true;
+            for (var ext in LIR.wg.wgFileExtensions) {
+                if (oldImageName.indexOf('.' + LIR.wg.wgFileExtensions[ext]) !== -1) {
+                    isVideo = false;
+                    break;
+                }
+            }
+            // Checks if destination file name is the same as file being renamed
+            var oldExt = oldImageName.slice(oldImageName.lastIndexOf('.')).toLowerCase();
+            var newExt = newImageName.slice(newImageName.lastIndexOf('.')).toLowerCase();
+
+            if (
+                oldExt !== newExt &&
+                // Same MIME type bugfix
+                !(
+                    (oldExt === '.jpeg' || oldExt === '.jpg') &&
+                    (newExt === '.jpeg' || newExt === '.jpg')
+                ) &&
+                LIR.method !== 'manual' &&
+                !isVideo
+            ) {
+                LIR.started = false;
+                if (typeof LIR.queuePosition !== 'undefined') {
+                    localStorage.LIRQueuedUpdatesPos++;
+                    delete LIR.queuePosition;
+                }
+                LIR.updateStatus(false, LIR.i18n.msg('invalidExtension').escape());
+                if (typeof callback === 'function') {
+                    callback(false, 'invalidExtension');
+                }
+                return false;
+            }
+            // Check if destination file name is in use
+            LIR.api.get({
+                action: 'query',
+                prop: 'revisions',
+                rvprop: 'content',
+                titles: 'File:' + newImageName,
+                v: Date.now()
+            }).then(function(result) {
+                if (typeof result.query.pages[-1] !== 'undefined' || LIR.method === 'manual') {
+                    return LIR.backlinksUsagePromise(oldImageName);
+                }
+                LIR.started = false;
+                if (typeof LIR.queuePosition !== 'undefined') {
+                    localStorage.LIRQueuedUpdatesPos++;
+                    delete LIR.queuePosition;
+                }
+                LIR.updateStatus(false, LIR.i18n.msg('destInUse').escape());
+                if (typeof callback === 'function') {
+                    callback(false, 'destInUse');
+                }
+            }).then(function(result) {
+                if (!result) {
+                    // An error occurred during the previous stage.
+                    return;
+                }
+                var imageUsage = result.query.imageusage;
+                var imageLinks = result.query.backlinks;
+                var totalImageUsage = imageUsage.concat(imageLinks);
+                console.log('Image usage successfully retrieved');
+                if (totalImageUsage.length === 0) {
+                    // Else, prompt to use normal renaming, since this is kind of pointless otherwise
+                    LIR.started = false;
+                    if (typeof LIR.queuePosition !== 'undefined') {
+                        localStorage.LIRQueuedUpdatesPos++;
+                        delete LIR.queuePosition;
+                    }
+                    LIR.updateStatus(false, LIR.i18n.msg('fileNotUsed').escape());
+                    if (typeof callback === 'function') {
+                        callback(false, 'fileNotUsed');
+                    }
+                    return;
+                }
+                // Resets queue-related variables if only renaming and replacing a single image
+                if (LIR.type === 'single') {
+                    LIR.queueData = [];
+                    LIR.queueDataList = [];
+                    LIR.pageKey = [];
+                    LIR.queueDataList.push({
+                        oldImage: oldImageName,
+                        newImage: newImageName,
+                        reason: newReason,
+                        move: true,
+                        noRedirect: !leaveRedirect
+                    });
+                } else {
+                    LIR.queueData.push({
+                        oldImage: oldImageName,
+                        newImage: newImageName,
+                        reason: newReason,
+                        move: LIR.method !== 'manual',
+                        noRedirect: !leaveRedirect
+                    });
+                }
+                // Stores queue if renaming multiple images, or updates file usage if only renaming one
+                if (LIR.type === 'multi') {
+                    LIR.storeQueue();
+                    LIR.started = false;
+                    localStorage.LIRQueuedUpdatesPos++;
+                    LIR.updateStatus(false, LIR.i18n.msg('successful').escape());
+                    var enFileNamespace = 'File:';
+                    var langFileNamespace = LIR.wg.wgFormattedNamespaces[6] + ':';
+                    var pageName = LIR.wg.wgPageName;
+                    if (
+                        LIR.wg.wgCanonicalSpecialPageName === 'Movepage' &&
+                        (
+                            pageName.indexOf(langFileNamespace) !== -1 ||
+                            pageName.indexOf(enFileNamespace) !== -1
+                        )
+                    ) {
+                        // We're on Special:MovePage for a file.
+                        window.location = mw.util.getUrl('File:' + oldImageName);
+                    } else if (typeof callback === 'function') {
+                        callback(true);
+                    }
+                } else {
+                    /**
+                     * This may seem odd, but because LIR.processQueue() is used for both single and multiple image
+                     * updating, it requires LIR.started to be false to start
+                     */
+                    LIR.started = false;
+                    LIR.processQueue(function() {
+                        window.location.href = mw.util.getUrl('File:' + newImageName);
+                    });
+                }
+            });
+        },
+        /**
+         * Standalone function to store the queue in window.localStorage
+         * uses wgUserName as a variable key so multi-user computers on the same wiki don't get each other's queue
+         */
+        storeQueue: function() {
+            localStorage[LIR.wg.wgUserName + '_LIRQueueData'] = JSON.stringify(LIR.queueData);
+        },
+        backlinksUsagePromise: function(file) {
+            var options = {
+                action: 'query',
+                list: 'backlinks|imageusage',
+                bltitle: 'File:' + file,
+                bllimit: 'max',
+                iutitle: 'File:' + file,
+                iulimit: 'max',
+                v: Date.now()
+            };
+            if (!localStorage[LIR.wg.wgUserName + '_LIRNamespaceSelection']) {
+                options.blnamespace = 0;
+            }
+            return LIR.api.get(options);
+        },
+        started: false,
+        delay: 1000,
+        updateProgress: function(show, progress) {
+            var newProgress = progress;
+            if (typeof newProgress === 'undefined' && typeof show === 'boolean') {
+                newProgress = 0;
+            }
+            if (typeof show === 'boolean') {
+                if (LIR.type === 'multi') {
+                    if (show) {
+                        var ui = window.dev.dorui;
+                        $('.modalToolbar').prepend(ui.div({
+                            attrs: {
+                                id: 'LIRQueueProgress'
+                            },
+                            child: ui.div({
+                                attrs: {
+                                    id: 'LIRProgressInd'
+                                }
+                            })
+                        }));
+                    } else {
+                        $('#LIRQueueProgress').remove();
+                    }
+                }
+            }
+            if (typeof newProgress === 'number') {
+                $('#LIRProgressInd').css('width', newProgress * 100 + '%');
+                return;
+            }
+            if (typeof show === 'number') {
+                $('#LIRProgressInd').css('width', show * 100 + '%');
+            }
+        },
+        compareQueueDataEntries: function(currentData, currentTitle, entry) {
+            return entry.title === currentTitle &&
+                   entry.oldImage === currentData.oldImage &&
+                   entry.newImage === currentData.newImage;
+        },
+        getUsage: function(index) {
+            var data = LIR.queueDataList[index];
+            return LIR.backlinksUsagePromise(data.oldImage).then(function(result) {
+                var imageUsage = result.query.imageusage;
+                var imageLinks = result.query.backlinks;
+                var totalImageUsage = imageUsage.concat(imageLinks);
+                console.log('Image usage successfully retrieved');
+                // Adds pages image is used on to LIR.pageKey to help keep track of pages in LIR.pageData later on
+                totalImageUsage.forEach(function(usageData) {
+                    var title = usageData.title;
+                    if (LIR.pageKey.indexOf(title) === -1) {
+                        LIR.pageKey.push(title);
+                    }
+                    if (!LIR.queueData.some(LIR.compareQueueDataEntries.bind(this, data, title))) {
+                        LIR.queueData.push({
+                            oldImage: data.oldImage,
+                            newImage: data.newImage,
+                            title: title,
+                            move: data.move
+                        });
+                    }
+                });
+            });
+        },
+        processQueue: function(callback) {
+            if (
+                Number(localStorage.LIRQueuedUpdates) < Number(localStorage.LIRQueuedUpdatesPos) &&
+                Number(localStorage.LIRQueuedUpdates) !== 0
+            ) {
+                localStorage.LIRQueuedUpdates = 0;
+                localStorage.LIRQueuedUpdatesPos = 1;
+            }
+            // Check if operation already started
+            if (LIR.started) {
+                return false;
+            }
+            // LIR.type is already set if processing single update
+            if (typeof LIR.type === 'undefined') {
+                LIR.type = 'multi';
+            }
+            // Variable redeclaration
+            LIR.started = true;
+            LIR.requestCompleted = [];
+            LIR.pageData = [];
+            // Queue retrieval, returns false if no queue
+            var queueDataLS = localStorage[LIR.wg.wgUserName + '_LIRQueueData'];
+            if (LIR.type === 'multi' && Number(localStorage.LIRQueuedUpdates) === 0 || LIR.type === 'single') {
+                if (typeof queueDataLS === 'undefined' && LIR.type !== 'single') {
+                    console.log('Queue does not exist or was unable to be retrieved.');
+                    LIR.started = false;
+                    return false;
+                }
+                if (LIR.type === 'multi') {
+                    LIR.queueDataList = JSON.parse(queueDataLS);
+                    LIR.updateProgress(true);
+                    console.log('Queue retrieved successfully.');
+                }
+                LIR.usageRequested = 0;
+                LIR.usageProgress = 0;
+                LIR.moveRequested = LIR.queueDataList.length;
+                LIR.moveProgress = 0;
+                LIR.queueData = [];
+                LIR.pageKey = [];
+                LIR.timer = 0;
+                LIR.queueDataList.forEach(function(queueData, index) {
+                    if (queueData.move) {
+                        LIR.moveFile(
+                            index,
+                            function() {
+                                LIR.updateProgress(++LIR.moveProgress / LIR.moveRequested / 2);
+                                LIR.usageRequested++;
+                                LIR.getUsage(index).then(function() {
+                                    LIR.usageProgress++;
+                                    if (
+                                        LIR.moveProgress === LIR.moveRequested &&
+                                        LIR.usageProgress === LIR.usageRequested
+                                    ) {
+                                        LIR.processPageContent(callback);
+                                    }
+                                });
+                            },
+                            function() {
+                                LIR.updateProgress(++LIR.moveProgress / LIR.moveRequested / 2);
+                                if (
+                                    LIR.moveProgress === LIR.moveRequested &&
+                                    LIR.usageProgress === LIR.usageRequested
+                                ) {
+                                    LIR.processPageContent(callback);
+                                }
+                            }
+                        );
+                    } else {
+                        LIR.updateProgress(++LIR.moveProgress / LIR.moveRequested / 2);
+                        LIR.usageRequested++;
+                        LIR.getUsage(index).then(function() {
+                            LIR.usageProgress++;
+                            if (
+                                LIR.moveProgress === LIR.moveRequested &&
+                                LIR.usageProgress === LIR.usageRequested
+                            ) {
+                                LIR.processPageContent(callback);
+                            }
+                        });
+                    }
+                });
+            } else if (LIR.type === 'multi') {
+                console.log('Pages are still being added to the queue.');
+                alert(LIR.i18n.msg('pagesWaiting').plain());
+                LIR.started = false;
+                return false;
+            }
+        },
+        lowerUpperReg: function(input) {
+            return '[' + input.substr(0, 1).toUpperCase() + input.substr(0, 1).toLowerCase() + ']' + input.substr(1);
+        },
+        processPageContent: function(callback) {
+            console.log('Begin queue execution');
+            // Sets progress checking variables
+            for (var i = 0; i < LIR.pageKey.length; i++) {
+                LIR.requestCompleted[i] = false;
+            }
+            var promises = [];
+            console.log('Getting page contents');
+            for (var j = 0; j < Math.floor(LIR.pageKey.length / 500) + 1; j++) {
+                var tempArray = [];
+                for (var k = j * 500; k < j * 500 + 500 && k < LIR.pageKey.length; k++) {
+                    tempArray.push(LIR.pageKey[k]);
+                }
+                // Calls API for page contents
+                promises.push(LIR.api.post({
+                    action: 'query',
+                    prop: 'revisions',
+                    rvprop: 'content',
+                    titles: tempArray.join('|'),
+                    format: 'json'
+                }).then(LIR.processPageCallback));
+            }
+            $.when.apply(this, promises).then(function() {
+                // TODO: Now we're no longer sure we collected all pages
+                console.log('Page contents retrieved and saved');
+                LIR.log(LIR.i18n.msg('contentsRetrieved').escape());
+                console.log('Begin processing page content.');
+                // Replacing image name on each page
+                var escapeRegExp = mw.RegExp.escape || mw.util.escapeRegExp;
+                LIR.queueData.forEach(function(data) {
+                    var pageKey = LIR.pageKey.indexOf(data.title);
+                    var pageData = LIR.pageData[pageKey];
+                    var escapedName = escapeRegExp(data.oldImage);
+                    if (escapedName.substr(0, 1).match(/[A-z]/i)) {
+                        escapedName = LIR.lowerUpperReg(escapedName);
+                    }
+                    var pageReplacement = new RegExp(
+                        '(\\n[ ]*?|\\[?:?([Ff]ile|[Ii]mage|' +
+                        LIR.lowerUpperReg(LIR.wg.wgFormattedNamespaces[6]) +
+                        '|' +
+                        LIR.lowerUpperReg(LIR.i18n.msg('imageNamespace').plain()) +
+                        '):[ ]*?|=[ ]*?|\\|)' +
+                        escapedName +
+                        '([ ]*?\\n|[ ]*?\\||[ ]*?\\]|[ ]*?\\}|[ ]*?;)',
+                        'g'
+                    );
+                    if (pageData.content.search(pageReplacement) !== -1) {
+                        var replacementReg = new RegExp(escapedName, 'g');
+                        var regExec;
+                        pageData.changed = true;
+                        console.log(data.oldImage, 'replaced on page', data.title);
+                        while ((regExec = pageReplacement.exec(pageData.content)) !== null) {
+                            if (!data.newImage && !data.move) {
+                                // Removing links/usages
+                                var replaceWith;
+                                if (regExec[1].search(/\n/g) !== -1 || regExec[3].search(/\n/g) !== -1 || regExec[1].search(/[=]/g) !== -1) {
+                                    // If surrounded by newlines or equals, keep them to prevent things from breaking
+                                    replaceWith = regExec[0].replace(
+                                        replacementReg,
+                                        '<nowiki>' + data.oldImage + '</nowiki>'
+                                    );
+                                } else {
+                                    replaceWith = '<nowiki>' + regExec[0] + '</nowiki>';
+                                }
+                                pageData.content = pageData.content.replace(regExec[0], replaceWith);
+                                pageReplacement.lastIndex += '<nowiki></nowiki>'.length;
+                            } else {
+                                // Everything else
+                                var replaced = regExec[0].replace(replacementReg, data.newImage);
+                                pageData.content = pageData.content.replace(regExec[0], replaced);
+                                pageReplacement.lastIndex += replaced.length - regExec[0].length - regExec[3].length;
+                            }
+                        }
+                    } else if (LIR.type === 'multi') {
+                        LIR.failedLog(data.oldImage, data.newImage, data.title);
+                    } else {
+                        alert(LIR.i18n.msg('unableToFind', data.oldImage, data.title).plain());
+                    }
+                });
+                LIR.log(LIR.i18n.msg('submittingContent').escape());
+                console.log('Begin submitting pages');
+                var l = 0;
+                if (LIR.type === 'multi') {
+                    LIR.queueProgress = 0;
+                }
+                var throttle = setInterval(function() {
+                    if (LIR.pageData[l].changed) {
+                        LIR.submitChangedPages(l, callback);
+                    } else {
+                        LIR.requestCompleted[l] = true;
+                    }
+                    l++;
+                    if (l === LIR.pageData.length) {
+                        clearInterval(throttle);
+                    }
+                }, LIR.options.delay || LIR.delay);
+            });
+        },
+        processPageCallback: function(result) {
+            // Saves page contents for each page in LIR.pageData
+            for (var i in result.query.pages) {
+                var keyNum = LIR.pageKey.indexOf(result.query.pages[i].title);
+                LIR.pageData[keyNum] = {
+                    title: LIR.pageKey[keyNum],
+                    content: result.query.pages[i].revisions[0]['*'],
+                    changed: false
+                };
+            }
+        },
+        submitChangedPages: function(pageKey, callback) {
+            LIR.api.post({
+                action: 'edit',
+                title: LIR.pageData[pageKey].title,
+                summary: LIR.options.editSummary || LIR.i18n.inContentLang().msg('editSummary').plain(),
+                text: LIR.pageData[pageKey].content,
+                minor: true,
+                nocreate: true,
+                redirect: false,
+                bot: true,
+                token: mw.user.tokens.get('csrfToken')
+            }).then(function() {
+                LIR.requestCompleted[pageKey] = true;
+                console.log('Posted page', LIR.pageKey[pageKey]);
+                if (LIR.type === 'multi') {
+                    LIR.updateProgress(++LIR.queueProgress / LIR.pageKey.length / 2 + 0.5);
+                }
+                if (LIR.requestCompleted.indexOf(false) === -1) {
+                    if (LIR.type === 'multi') {
+                        // Cleans up localStorage variables
+                        delete localStorage[LIR.wg.wgUserName + '_LIRQueueData'];
+                        LIR.started = false;
+                        LIR.updateProgress(false);
+                    }
+                    // Call callback if exists
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                }
+            }).fail(function(code) {
+                var message = LIR.i18n.msg('unableToSubmit', LIR.pageData[pageKey].title, code);
+                if (LIR.type === 'multi') {
+                    LIR.failedLogCustom(message.escape());
+                    LIR.queueData.forEach(function(data) {
+                        if (data.title === LIR.pageData[pageKey].title) {
+                            LIR.failedLog(data.oldImage, data.newImage, data.title);
+                        }
+                    });
+                } else {
+                    alert(message.plain());
+                }
+            });
+        },
+        moveFile: function(index, callback, failure) {
+            var data = LIR.queueDataList[index];
+            var fileNS = LIR.wg.wgFormattedNamespaces[6];
+            var options = {
+                action: 'move',
+                from: fileNS + ':' + data.oldImage,
+                to: fileNS + ':' + data.newImage,
+                reason: data.reason,
+                movetalk: true,
+                ignorewarnings: true,
+                token: mw.user.tokens.get('csrfToken')
+            };
+            if (data.noRedirect) {
+                options.noredirect = true;
+            }
+            setTimeout(function() {
+                LIR.api.post(options).then(function(result) {
+                    if (typeof result.error === 'undefined' || !data.move) {
+                        console.log('Moved file', data.oldImage);
+                        if (typeof callback === 'function') {
+                            callback();
+                        }
+                    }
+                }).fail(function(code) {
+                    var errorMsg = LIR.i18n.msg('unableToMove', data.oldImage, data.newImage, code);
+                    if (!data.move) {
+                        console.log('Error while moving file, but we weren\'t supposed to move it anyways?');
+                        if (typeof callback === 'function') {
+                            callback();
+                        }
+                    } else if (code === 'articleexists' || code === 'invalidtitle') {
+                        var promptResponse = prompt(
+                            errorMsg.plain() + '\n' + LIR.i18n.msg('unableToMoveChoose').plain()
+                        );
+                        if (promptResponse) {
+                            data.newImage = promptResponse;
+                            LIR.moveFile(index, callback, failure);
+                        } else if (LIR.type === 'multi') {
+                            LIR.failedLogCustom(LIR.i18n.msg('unableToMoveFail', data.oldImage).escape());
+                            if (LIR.queueDataList.length === 1) {
+                                delete localStorage[LIR.wg.wgUserName + '_LIRQueueData'];
+                                LIR.started = false;
+                                LIR.log(LIR.i18n.msg('queueComplete').escape());
+                                LIR.updateQueueListing();
+                            } else {
+                                delete LIR.queueDataList[index];
+                                failure();
+                            }
+                        } else {
+                            LIR.started = false;
+                            LIR.updateStatus(false, errorMsg.escape());
+                        }
+                    } else {
+                        LIR.failedLogCustom(
+                            errorMsg.escape() + ' ' +
+                            LIR.i18n.msg('unableToMoveFail', data.oldImage).escape()
+                        );
+                        LIR.ERRORS.push(code);
+                        if (LIR.queueDataList.length === 1) {
+                            delete localStorage[LIR.wg.wgUserName + '_LIRQueueData'];
+                            LIR.started = false;
+                            LIR.log(LIR.i18n.msg('queueComplete').escape());
+                            LIR.updateQueueListing();
+                        } else {
+                            delete LIR.queueDataList[index];
+                            failure();
+                        }
+                    }
+                });
+            }, LIR.timer++ * (LIR.options.delay || LIR.delay));
+        },
+        removeFromQueue: function(queueOldName) {
+            LIR.queueData = JSON.parse(localStorage[LIR.wg.wgUserName + '_LIRQueueData']);
+            var escapeRegExp = mw.RegExp.escape || mw.util.escapeRegExp;
+            var index = LIR.queueData.findIndex(function(data) {
+                return queueOldName.match(new RegExp(escapeRegExp(data.oldImage), 'gi'));
+            });
+            if (index !== -1) {
+                LIR.queueData.splice(index, 1);
+            }
+            if (LIR.queueData.length > 0) {
+                LIR.storeQueue();
+            } else {
+                delete localStorage[LIR.wg.wgUserName + '_LIRQueueData'];
+            }
+        },
+        log: function(text) {
+            var options = {
+                classes: ['LIRLogEntry']
+            };
+            if (typeof text === 'object') {
+                options.child = text;
+            } else {
+                options.html = text;
+            }
+            $('#LIRLog')
+                .append(window.dev.dorui.div(options))
+                .scrollTop(100000000);
+        },
+        failedLog: function(oldImage, newImage, page) {
+            var ui = window.dev.dorui;
+            LIR.failedLogCustom(ui.frag([
+                ui.a({
+                    attrs: {
+                        href: mw.util.getUrl('File:' + oldImage),
+                        target: '_blank'
+                    },
+                    text: oldImage
+                }),
+                ' → ',
+                ui.a({
+                    attrs: {
+                        href: mw.util.getUrl(newImage),
+                        target: '_blank'
+                    },
+                    text: newImage
+                }),
+                ' on ',
+                ui.a({
+                    attrs: {
+                        href: mw.util.getUrl(page),
+                        target: '_blank'
+                    },
+                    text: page
+                })
+            ]));
+        },
+        failedLogCustom: function(text) {
+            var options = {};
+            if (typeof text === 'object') {
+                options.child = text;
+            } else {
+                options.html = text;
+            }
+            $('#LIRFailedLog').append(window.dev.dorui.div(options));
+        },
+        updateQueueListing: function() {
+            var queueDataLS = localStorage[LIR.wg.wgUserName + '_LIRQueueData'];
+            var ui = window.dev.dorui;
+            if (!queueDataLS) {
+                $('#LIRQueue').html(ui.div({
+                    text: LIR.i18n.msg('nothingInQueue').plain()
+                }));
+                $('#LIRQueueLengthBox').text('0');
+                LIR.log(LIR.i18n.msg('queueUpdate').escape());
+                return false;
+            }
+            LIR.queueData = JSON.parse(queueDataLS);
+            $('#LIRQueue').html(LIR.queueData.map(function(data) {
+                var removing = !data.move && !data.newImage;
+                return ui.div({
+                    classes: {
+                        FUAuQueueEntry: true,
+                        FUAuQueueEntryStyle1: !data.move && data.newImage,
+                        FUAuQueueEntryRemoving: removing
+                    },
+                    children: [
+                        ui.div({
+                            attrs: {
+                                title: LIR.i18n.msg('removeFromQueue').plain()
+                            },
+                            classes: ['LIRDeleteButton'],
+                            children: [
+                                ui.img({
+                                    attrs: {
+                                        height: 15,
+                                        width: 15,
+                                        src: 'https://upload.wikimedia.org/wikipedia/commons/b/ba/Red_x.svg'
+                                    }
+                                })
+                            ],
+                            events: {
+                                click: function() {
+                                    LIR.removeFromQueue(data.oldImage);
+                                    LIR.log(LIR.i18n.msg('itemRemoved').escape());
+                                    LIR.updateQueueListing();
+                                }
+                            }
+                        }),
+                        ui.a({
+                            attrs: {
+                                href: mw.util.getUrl('File:' + data.oldImage),
+                                target: '_blank'
+                            },
+                            classes: ['LIROldName'],
+                            text: data.oldImage
+                        }),
+                        ' → ',
+                        removing ?
+                            LIR.i18n.msg('removing').plain() :
+                            ui.a({
+                                attrs: {
+                                    href: mw.util.getUrl('File:' + data.newImage),
+                                    target: '_blank'
+                                },
+                                classes: ['LIRNewName'],
+                                text: data.newImage
+                            })
+                    ]
+                });
+            }));
+            $('#LIRQueueLengthBox').text(LIR.queueData.length);
+            LIR.log(LIR.i18n.msg('queueUpdate').escape());
+        },
+        updateNamespaceSelection: function() {
+            var $element = $('#LIRNamespaceToggleCheck input');
+            if ($element.length === 0) {
+                // OOUI is dumb
+                $element = $('#LIRNamespaceToggleCheck');
+            }
+            if ($element.is(':checked')) {
+                localStorage[LIR.wg.wgUserName + '_LIRNamespaceSelection'] = 'checked';
+            } else {
+                localStorage[LIR.wg.wgUserName + '_LIRNamespaceSelection'] = '';
+            }
+        },
+        showQueueModal: function() {
+            var ui = window.dev.dorui;
+            var $modal = window.dev.showCustomModal(LIR.i18n.msg('queueModalTitle').escape(), {
+                content: ui.div({
+                    attrs: {
+                        id: 'LIRContainer'
+                    },
+                    children: [
+                        ui.div({
+                            attrs: {
+                                id: 'LIRQueue'
+                            }
+                        }),
+                        ui.div({
+                            attrs: {
+                                id: 'LIRLog'
+                            }
+                        }),
+                        ui.div({
+                            attrs: {
+                                id: 'LIRQueueLength'
+                            },
+                            children: [
+                                LIR.i18n.msg('filesInQueue').plain(),
+                                ui.span({
+                                    attrs: {
+                                        id: 'LIRQueueLengthBox'
+                                    }
+                                })
+                            ]
+                        }),
+                        ui.div({
+                            attrs: {
+                                id: 'LIRNamespaceToggle'
+                            },
+                            children: [
+                                ui.input({
+                                    attrs: {
+                                        id: 'LIRNamespaceToggleCheck',
+                                        type: 'checkbox'
+                                    },
+                                    events: {
+                                        change: LIR.updateNamespaceSelection
+                                    }
+                                    // TODO: Initial checked based on localStorage
+                                }),
+                                ui.label({
+                                    attrs: {
+                                        'for': 'LIRNamespaceToggleCheck'
+                                    },
+                                    text: LIR.i18n.msg('namespaceCheckbox').plain()
+                                }),
+                                LIR.createLiveLoader(ui),
+                                ui.div({
+                                    attrs: {
+                                        id: 'LIRFailedLog'
+                                    },
+                                    text: LIR.i18n.msg('failedDescription').plain()
+                                })
+                            ]
+                        })
+                    ]
+                }),
+                id: 'queueModal',
+                width: 800,
+                buttons: [
+                    {
+                        id: 'close',
+                        message: LIR.i18n.msg('queueModalClose').escape(),
+                        handler: function() {
+                            window.dev.showCustomModal.closeModal($modal);
+                        }
+                    },
+                    {
+                        id: 'openManualModal',
+                        message: LIR.i18n.msg('queueModalManual').escape(),
+                        handler: function() {
+                            if (LIR.started) {
+                                return false;
+                            }
+                            LIR.showManualModal();
+                        }
+                    },
+                    {
+                        id: 'resetCounter',
+                        message: LIR.i18n.msg('queueModalReset').escape(),
+                        handler: function() {
+                            if (LIR.started) {
+                                return false;
+                            }
+                            var diff = Number(localStorage.LIRQueuedUpdates) -
+                                       Number(localStorage.LIRQueuedUpdatesPos) +
+                                       1;
+                            if (confirm(LIR.i18n.msg('queueModalWaitConfirm', diff).plain())) {
+                                localStorage.LIRQueuedUpdates = 0;
+                                localStorage.LIRQueuedUpdatesPos = 1;
+                                LIR.log(LIR.i18n.msg('waitCleared').escape());
+                            }
+                        }
+                    },
+                    {
+                        id: 'updateButton',
+                        message: LIR.i18n.msg('queueModalUpdate').escape(),
+                        handler: function() {
+                            LIR.updateQueueListing();
+                        }
+                    },
+                    {
+                        id: 'executeButton',
+                        message: LIR.i18n.msg('queueModalExecute').escape(),
+                        defaultButton: true,
+                        handler: function() {
+                            if (typeof localStorage[LIR.wg.wgUserName + '_LIRQueueData'] === 'undefined') {
+                                LIR.log(LIR.i18n.msg('noQueueExists').escape());
+                            } else {
+                                LIR.log(LIR.i18n.msg('queueStarted').escape());
+                                LIR.updateStatus(true);
+                                LIR.processQueue(function() {
+                                    LIR.log(LIR.i18n.msg('queueComplete').escape());
+                                    LIR.updateStatus(false);
+                                    LIR.updateQueueListing();
+                                });
+                            }
+                        }
+                    }
+                ],
+                callback: function() {
+                    $('.blackout, #queueModal .close').off('click').click(function() {
+                        if (LIR.started === false || typeof LIR.started === 'undefined') {
+                            delete LIR.queueData;
+                            $('#queueModal').remove();
+                            $('.blackout').fadeOut(function() {
+                                $(this).remove();
+                            });
+                        }
+                    });
+                    LIR.updateQueueListing();
+                }
+            });
+        },
+        createLiveLoader: function(ui) {
+            return ui.span({
+                attrs: {
+                    id: 'liveLoader'
+                },
+                child: ui.img({
+                    attrs: {
+                        src: 'https://images.wikia.nocookie.net/common/skins/common/progress-wheel.gif'
+                    }
+                }),
+                style: {
+                    display: 'none'
+                }
+            });
+        },
+        createQueueStatus: function(ui) {
+            return ui.span({
+                attrs: {
+                    id: 'queueStatus'
+                }
+            });
+        },
+        showManualModal: function() {
+            var ui = window.dev.dorui;
+            var filePrefix = LIR.wg.wgFormattedNamespaces[6] + ':';
+            var $modal = window.dev.showCustomModal(LIR.i18n.msg('queueAddition').escape(), {
+                content: ui.fieldset({
+                    children: [
+                        ui.p({
+                            child: ui.span({
+                                html: LIR.i18n.msg('manualModalDescription').parse()
+                            })
+                        }),
+                        ui.p({
+                            children: [
+                                ui.strong({
+                                    text: LIR.i18n.msg('oldFileName').plain()
+                                }),
+                                ui.br(),
+                                filePrefix,
+                                ui.input({
+                                    attrs: {
+                                        id: 'modalOldName',
+                                        type: 'text'
+                                    }
+                                }),
+                                ui.br(),
+                                ui.strong({
+                                    // TODO: Separate i18n message?
+                                    html: LIR.i18n.msg('newFileName', '').parse()
+                                }),
+                                ui.br(),
+                                filePrefix,
+                                ui.input({
+                                    attrs: {
+                                        id: 'modalNewName',
+                                        type: 'text'
+                                    }
+                                })
+                            ]
+                        }),
+                        ui.p({
+                            children: [
+                                LIR.createLiveLoader(ui),
+                                LIR.createQueueStatus(ui)
+                            ]
+                        })
+                    ]
+                }),
+                id: 'manualModal',
+                width: 650,
+                buttons: [
+                    {
+                        id: 'cancel',
+                        message: LIR.i18n.msg('queueModalClose').escape(),
+                        handler: function() {
+                            window.dev.showCustomModal.closeModal($modal);
+                        }
+                    },
+                    {
+                        id: 'submit',
+                        defaultButton: true,
+                        message: LIR.i18n.msg('addToQueue').escape(),
+                        handler: function() {
+                            if (LIR.started) {
+                                return false;
+                            }
+                            var $oldName = $('#modalOldName');
+                            var $newName = $('#modalNewName');
+                            LIR.start('manual', $oldName.val(), $newName.val(), '', function(res) {
+                                if (res) {
+                                    delete LIR.queuePosition;
+                                    $oldName.val('').focus();
+                                    $newName.val('');
+                                    LIR.updateQueueListing();
+                                }
+                            });
+                        }
+                    }
+                ],
+                callback: function() {
+                    $('.blackout, #manualModal .close').off('click').click(function() {
+                        if (LIR.started) {
+                            return false;
+                        }
+                        $('#manualModal').remove();
+                        $('.blackout').fadeOut(function() {
+                            $(this).remove();
+                        });
+                    });
+                    $('#modalOldName, #modalNewName').on('keypress', function(e) {
+                        if (e.which === 13) {
+                            $('#manualModal #submit').click();
+                        }
+                    });
+                }
+            });
+        },
+        initialize: function(i18n) {
+            LIR.api = new mw.Api();
+            LIR.i18n = i18n;
+            var ui = window.dev.dorui;
+            if (typeof localStorage.LIRQueuedUpdates === 'undefined') {
+                localStorage.LIRQueuedUpdates = 0;
+                localStorage.LIRQueuedUpdatesPos = 1;
+            }
+            if (typeof localStorage[LIR.wg.wgUserName + '_LIRNamespaceSelection'] === 'undefined') {
+                localStorage[LIR.wg.wgUserName + '_LIRNamespaceSelection'] = '';
+            }
+            var enFileNamespace = 'File:';
+            var langFileNamespace = LIR.wg.wgFormattedNamespaces[6] + ':';
+            var pageName = LIR.wg.wgPageName;
+            if (
+                LIR.wg.wgCanonicalSpecialPageName === 'Movepage' &&
+                (
+                    pageName.indexOf(langFileNamespace) !== -1 ||
+                    pageName.indexOf(enFileNamespace) !== -1
+                )
+            ) {
+                var $anchor = $('.oo-ui-buttonInputWidget').parent();
+                // Buttons
+                $anchor.append(
+                    ui.a({
+                        attrs: {
+                            id: 'FUAuStartSingle'
+                        },
+                        classes: ['wds-button'],
+                        events: {
+                            click: LIR.start.bind(this, 'single')
+                        },
+                        text: LIR.options.singleButtonText || LIR.i18n.msg('singleButtonText').plain()
+                    }),
+                    ui.a({
+                        attrs: {
+                            'class': 'wds-button',
+                            'id': 'FUAuStartMulti'
+                        },
+                        events: {
+                            click: LIR.start.bind(this, 'multi')
+                        },
+                        text: LIR.options.queueButtonText || LIR.i18n.msg('queueButtonText').plain()
+                    }),
+                    LIR.createLiveLoader(ui),
+                    LIR.createQueueStatus(ui),
+                    ui.br(),
+                    ui.div({
+                        attrs: {
+                            id: 'FUAuMovePageDescription'
+                        },
+                        html: LIR.i18n.msg(
+                            'movePageDescription',
+                            LIR.options.singleButtonText || LIR.i18n.msg('singleButtonText').plain(),
+                            LIR.options.queueButtonText || LIR.i18n.msg('queueButtonText').plain()
+                        ).parse()
+                    }),
+                    ui.br(),
+                    LIR.options.bottomMessage ?
+                        ui.div({
+                            attrs: {
+                                id: 'FUAuBottomMessage'
+                            },
+                            html: LIR.options.bottomMessage
+                        }) :
+                        null,
+                    ui.br(),
+                    ui.div({
+                        attrs: {
+                            id: 'FUAuFooter'
+                        },
+                        html: LIR.i18n.msg('movePageInfo').parse()
+                    })
+                );
+                var checkbox = new OO.ui.CheckboxInputWidget({
+                    id: 'LIRNamespaceToggleCheck'
+                });
+                $('#mw-movepage-table .oo-ui-fieldLayout-align-inline').last().after(
+                    new OO.ui.FieldLayout(checkbox, {
+                        align: 'inline',
+                        label: LIR.i18n.msg('namespaceCheckbox').plain(),
+                        selected: Boolean(localStorage[LIR.wg.wgUserName + '_LIRNamespaceSelection'])
+                    }).$element,
+                    ui.div({
+                        classes: ['FUAuNote'],
+                        text: LIR.i18n.msg(
+                            'movePageNamespaceSelect',
+                            LIR.options.singleButtonText || LIR.i18n.msg('singleButtonText').plain()
+                        ).plain()
+                    })
+                );
+                checkbox.$element
+                    .find('input')
+                    .on('change', LIR.updateNamespaceSelection);
+            } else if (LIR.wg.wgCanonicalNamespace === 'File') {
+                // File page
+                $('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list').append(
+                    $('<li>').append(
+                        $('<a>', {
+                            click: LIR.showQueueModal,
+                            text: LIR.i18n.msg('queue').plain()
+                        })
+                    )
+                );
+                if (typeof localStorage[LIR.wg.wgUserName + '_LIRQueueData'] !== 'undefined') {
+                    LIR.queueData = JSON.parse(localStorage[LIR.wg.wgUserName + '_LIRQueueData']);
+                    var escapeRegExp = mw.RegExp.escape || mw.util.escapeRegExp;
+                    var matchedData = LIR.queueData.find(function(data) {
+                        return LIR.wg.wgTitle.match(new RegExp(escapeRegExp(data.oldImage), 'gi'));
+                    });
+                    $('#content').prepend(ui.table({
+                        attrs: {
+                            id: 'LIRNotification'
+                        },
+                        classes: ['metadata', 'plainlinks', 'ambox', 'ambox-notice'],
+                        child: ui.tbody({
+                            children: [
+                                ui.tr({
+                                    children: [
+                                        ui.td({
+                                            classes: ['mbox-image'],
+                                            child: ui.div({
+                                                child: ui.img({
+                                                    attrs: {
+                                                        height: 40,
+                                                        // eslint-disable-next-line max-len
+                                                        src: 'https://upload.wikimedia.org/wikipedia/commons/b/bd/Checkmark_green.svg',
+                                                        width: 46
+                                                    }
+                                                })
+                                            })
+                                        }),
+                                        ui.td({
+                                            classes: ['mbox-text'],
+                                            children: [
+                                                LIR.i18n.msg('fileInQueue').plain(),
+                                                ui.br(),
+                                                ui.span({
+                                                    html: LIR.i18n.msg('newFileName', matchedData.newImage).parse()
+                                                })
+                                            ]
+                                        })
+                                    ]
+                                }),
+                                ui.tr({
+                                    child: ui.td({
+                                        attrs: {
+                                            colspan: 2,
+                                            id: 'LIRNotificationBottom'
+                                        },
+                                        children: [
+                                            ui.a({
+                                                attrs: {
+                                                    href: '#'
+                                                },
+                                                events: {
+                                                    click: LIR.showQueueModal
+                                                },
+                                                text: LIR.i18n.msg('queue').plain()
+                                            }),
+                                            ' • ',
+                                            ui.a({
+                                                attrs: {
+                                                    href: '#'
+                                                },
+                                                events: {
+                                                    click: function() {
+                                                        LIR.removeFromQueue(matchedData.oldImage);
+                                                        $('#LIRNotification').slideUp('fast', function() {
+                                                            this.remove();
+                                                        });
+                                                    }
+                                                },
+                                                text: LIR.i18n.msg('removeFromQueue').plain()
+                                            })
+                                        ]
+                                    })
+                                })
+                            ]
+                        })
+                    }));
+                }
+            }
+        },
+        preload: function() {
+            $.when(
+                window.dev.i18n.loadMessages('FileUsageAuto-update'),
+                mw.loader.using([
+                    'mediawiki.api',
+                    'mediawiki.user',
+                    'mediawiki.util'
+                ])
+            ).then(LIR.initialize);
+        }
+    };
+    importArticles({
+        type: 'script',
+        articles: [
+            'u:dev:MediaWiki:I18n-js/code.js',
+            'u:dev:MediaWiki:Dorui.js',
+            'u:dev:MediaWiki:ShowCustomModal.js'
+        ]
+    }).then(LIR.preload);
+    importArticle({
+        type: 'style',
+        article: 'u:dev:MediaWiki:FileUsageAuto-update.css'
+    });
+    window.LIR = LIR;
+})();

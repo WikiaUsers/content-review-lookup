@@ -486,5 +486,3 @@
 
     bootstrap();
 }());
-
-// END Rail Module //

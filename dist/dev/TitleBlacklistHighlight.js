@@ -17,7 +17,7 @@
 	-W082
 */
 /* global mw, ace */
-if (mw.config.get('wgPageName') === 'MediaWiki:Titleblacklist') mw.loader.using(['ext.codeEditor.ace', 'ext.codeEditor.ace.modes', 'ext.codeEditor'], function() {
+if (mw.config.get('wgPageName') === ((window.TBHL || {}).page || 'MediaWiki:Titleblacklist')) mw.loader.using(['ext.codeEditor.ace', 'ext.codeEditor.ace.modes', 'ext.codeEditor'], function() {
 	"use strict";
 	
 	ace.define('ace/mode/tb_highlight_rules', [], function(require, exports, module) {

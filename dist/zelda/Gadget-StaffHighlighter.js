@@ -190,15 +190,15 @@ if (  canonicalNamespace == 'Special'
 	  || document.URL.indexOf('&oldid=') > 0) {
 	
 	$(document).ready(function() {
-		$("#bodyContent a").each(function() {
+		$("#content a").each(function() {
 			var n = $(this)
 			  , u = null
 			  , linkHref = n.attr('href');
 			if (linkHref) {
-				if (linkHref.substr(0,6) === "/User:") {
-					u = linkHref.substr(6);
-				} else if (linkHref.substr(0,22) === "/index.php?title=User:") {
-					u = linkHref.substr(22);
+				if (linkHref.substr(0,11) === "/wiki/User:") {
+					u = linkHref.substr(11);
+				} else if (linkHref.substr(0,27) === "/wiki/index.php?title=User:") {
+					u = linkHref.substr(27);
 				}
 				if (u !== null) {
 					if      (traineerights[u] === 1) n.addClass("trainee admin").removeClass("gamepedia_pro_user");

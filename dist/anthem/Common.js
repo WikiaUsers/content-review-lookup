@@ -78,6 +78,7 @@ $(function(){
 importArticles({
     type: "script",
     articles: [
-        "w:c:dev:MediaWiki:Countdown/code.js"
+        "w:c:dev:MediaWiki:Countdown/code.js",
+        'u:dev:MediaWiki:MassEdit/code.js',
     ]
 });

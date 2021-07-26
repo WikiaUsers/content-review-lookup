@@ -39,8 +39,13 @@
 
     window.moreDropdownloaded = true;
     
-    $('.page-header__contribution').prepend(
-        "<div class=\"wds-dropdown\" style=\"padding-bottom: 12px;\" id=\"more-dropdown-button\">" + 
+    $('.page-header__contribution, .page-header__actions').after(
+        "<div class=\"wds-dropdown\" style=\"" 
+        	+ "margin-top: -12px;"
+			+ "position: absolute;"
+			+ "right: 10px;"
+			+ "top: 14px;"
+		+ "\" id=\"more-dropdown-button\">" + 
             "<div class=\"wds-dropdown__toggle\">" + 
                 "<span>More</span>" + 
                 "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 12 12\" class=\"wds-icon wds-icon-tiny wds-dropdown__toggle-chevron\" id=\"wds-icons-dropdown-tiny\">" + 
@@ -53,6 +58,7 @@
             "</div>" + 
             "<div class=\"wds-dropdown__content wds-is-not-scrollable wds-is-right-aligned\">" + 
                 "<ul class=\"wds-list wds-is-linked\" id=\"more-dropdown\">" + 
+                    "<li id=\"md-pageinfo\"><a href=\"" + PAGE_PATHNAME + fullpage + "?action=info\">Page info</a></li>" +
                     "<li id=\"md-subpages\"><a href=\"" + PAGE_PATHNAME + "Special:PrefixIndex/" + fullpage + "/\">Subpages</a></li>" +
                     "<li id=\"md-purge\"><a href=\"" + PAGE_PATHNAME + fullpage + "?action=purge\">Purge</a></li>" +
                     "<li id=\"md-latest-diff\"><a href=\"" + PAGE_PATHNAME + fullpage + "?diff=cur\">Latest Edit</a></li>" +
@@ -96,6 +102,7 @@
                             "</div>" + 
                             "<div class=\"wds-dropdown__content wds-is-not-scrollable wds-is-right-aligned\">" + 
                                 "<ul class=\"wds-list wds-is-linked\" id=\"more-dropdown\">" + 
+                                    "<li id=\"md-pageinfo\"><a href=\"" + PAGE_PATHNAME + fullpage + "?action=info\">Page info</a></li>" +
                                     "<li id=\"md-subpages\"><a href=\"" + PAGE_PATHNAME + "Special:PrefixIndex/" + ((namespace === 3 || namespace === 2)?fullpage:"User:" + username) + "/\" title=\"View Subpages of this page\">Subpages</a></li>" + 
                                     "<li id=\"md-purge\"><a href=\"" + PAGE_PATHNAME + fullpage + "?action=purge\">Purge</a></li>" +
                                     "<li id=\"md-page-logs-dropdown\" class=\"wds-dropdown-level-2\">" + 

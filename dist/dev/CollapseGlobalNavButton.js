@@ -90,6 +90,7 @@
 	
 						// End Refreshing of editors
 						interval.end();
+						mw.hook('dev.cgnb.changeend').fire(false);
 					});
 		
 					$this.data('collapsed', false);
@@ -120,6 +121,7 @@
 						localStorage.setItem('CGNB-Collapsed', 'collapsed'); // Cache state
 						// End Refreshing of editors
 						interval.end();
+						mw.hook('dev.cgnb.changeend').fire(true);
 					});
 					
 					// On Stage 2 of animation
@@ -136,6 +138,7 @@
 		}));
 		
 		if (collapsed) $('.global-navigation__collapse').click();
+		mw.hook('dev.cgnb.loaded').fire();
 	})});
 
 	// Import CSS/I18n

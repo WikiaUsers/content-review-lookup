@@ -113,7 +113,7 @@ $(function() {
     }
 	//common.js is loaded BEFORE skin.fandomdesktop.js module.
 	mw.loader.using("skin.fandomdesktop.js").then(function(){
-	    if( !$('body.is-content-expanded').length ){
+	    if( !$('.is-content-expanded').length ){
 	        if( ((mw.config.get("wgUserName") === null) ? localStorage.contentwidth : mw.user.options.get('contentwidth')) !== "collapsed"){
 	        	$("button.content-size-toggle").click();
 	    	}
@@ -508,4 +508,82 @@ $(function() {
 		});
 		update($slider);
 	});
+});
+
+// for mobile
+$(function(){
+    if( !$('body.skin-fandomdesktop').length ){
+        return;
+    }
+	if("ontouchstart" in window){
+		//click event can toggle hover effect.
+		var procRule = function($rule){
+			switch($rule.constructor.name){
+				case "CSSStyleRule":
+			  		if( $rule.selectorText.indexOf(':hover') == -1){
+			  			return;
+			  		}
+			  		$rule.selectorText = $rule.selectorText.split(',').map(function($item){
+			  			if($item.indexOf(':hover')){
+			  				return $item + ', ' + $item.replace(':hover', '.hoverhover');
+			  			}else{
+			  				return $item;
+			  			}
+			  		}).join(', ');
+			  		break;
+			  	case "CSSMediaRule":
+			  		for (var i = 0; i < $rule.cssRules.length; i++) {
+						procRule( $rule.cssRules[i]);
+					}
+					break;
+		  		default:
+		  			//skip.
+			  		break;
+			  }
+		}
+		for (var i = 0; i < document.styleSheets.length; i++) {
+			var styleSheet = document.styleSheets[i];
+			try{
+				for (var j = 0; j < styleSheet.cssRules.length; j++) {
+						procRule( styleSheet.cssRules[j], styleSheet );
+			
+				}
+			}
+			catch(e){//cross domain
+				//console.log('Access to stylesheet %s is denied. Ignoring...', styleSheet.href);
+			}
+		}
+		
+		$(".fandom-community-header__local-navigation .wds-dropdown__content .wds-list.wds-is-linked .wds-dropdown-level-2").on("click", function(event){
+			$(this).toggleClass("expanded");
+			event.preventDefault();
+			event.stopPropagation();
+		});
+		$(".fandom-community-header__local-navigation .wds-dropdown__content .wds-list.wds-is-linked .wds-dropdown-level-2 > div").on("click", function(event){
+			event.stopPropagation();
+		});
+		
+		var $hoverhoverElement = null; 
+		$("body, .fandom-community-header__local-navigation .more-menu .wds-dropdown__toggle").on("click", function(){
+			if(!$hoverhoverElement){
+				return;
+			}
+			$hoverhoverElement.removeClass('hoverhover');
+			$hoverhoverElement.find('.expanded').removeClass('expanded');
+			$hoverhoverElement = null;
+		});
+		$(".wds-dropdown:not(.more-menu) .wds-dropdown__toggle").click(function(event){
+			var $box = $(this).closest(".wds-dropdown");
+			if($hoverhoverElement && ($hoverhoverElement.get(0) != $box.get(0))){
+				$hoverhoverElement.removeClass('hoverhover');
+				$hoverhoverElement = null;
+			}
+			$box.toggleClass('hoverhover');
+			if($box.hasClass('hoverhover')){
+				$hoverhoverElement = $box;
+			}
+			event.preventDefault();
+			event.stopPropagation();
+		});
+	}
 });

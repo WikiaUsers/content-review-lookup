@@ -7,14 +7,11 @@ window.SpoilerAlertJS = {
     no: 'Não, ainda não',
     fadeDelay: 1600
 };
-importScriptPage('SpoilerAlert/code.js', 'dev');
 
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:WikiActivity.js',
         'u:dev:MediaWiki:AddBlockUserTag/code.js',
-        'u:dev:MediaWiki:AjaxRename/code.js',
         'u:dev:MediaWiki:DiscussionsFeed.js',
         'u:dev:MediaWiki:UploadMultipleFiles.js',
     ]
@@ -28,7 +25,6 @@ window.AjaxRCRefreshText = 'Carregamento Automático';
 window.AjaxRCRefreshHoverText = 'A página recarrega-se automaticamente';
 window.ajaxPages = [
     "Especial:Mudanças_recentes",
-    "Especial:WikiActivity",
     "Especial:Páginas_vigiadas",
     "Especial:Arquivos_novos",
     "Especial:Lista_de_arquivos",

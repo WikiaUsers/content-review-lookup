@@ -1,10 +1,11 @@
 //Adapted from Terraria Wiki MediaWiki:Common.js
+
+$(function() {
 // Disable triggering of new browser tab when clicking URL links that point to internal wiki addresses (purge, edit, etc)
-$('a[href^="//thoriummod.gamepedia.com"]').removeAttr('target');
+$('a[href^="//thoriummod.fandom.com/"]').removeAttr('target');
 
 // Select links to new tabs for Template:ilnt and Template:elnt
-$('.linkNewTab a').each(function(){
-    $(this).attr('target','_blank');
+$('.linkNewTab a').attr('target','_blank');
 });
 
 // Implement border-collapse + border-radius workaround for "terraria"-class tables 
@@ -140,4 +141,25 @@ $(window).on('load', function(){
    if ($left_height > $wrapper.height()){
    	   $wrapper.css('min-height', $left_height+'px');
    }
+});
+
+//Automatically expand pages to full-width and hide right bar on FandomDesktop by default
+$(function() {
+    if( !$('body.skin-fandomdesktop').length ){
+        return;
+    }
+	//common.js is loaded BEFORE skin.fandomdesktop.js module.
+	mw.loader.using("skin.fandomdesktop.js").then(function(){
+	    if( !$('.is-content-expanded').length ){
+	        if( ((mw.config.get("wgUserName") === null) ? localStorage.contentwidth : mw.user.options.get('contentwidth')) !== "collapsed"){
+	        	$("button.content-size-toggle").click();
+	    	}
+	    }
+	    if( !$('aside.page__right-rail.is-rail-hidden').length ){
+	    	if( (mw.config.get("wgUserName") !== null) && (mw.user.options.get('rightrailvisible') !== "visible") ){
+	    		$("button.right-rail-toggle").click();
+	    	}
+	    }
+	});
+	
 });
