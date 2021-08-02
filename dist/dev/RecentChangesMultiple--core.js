@@ -71,7 +71,7 @@ var Global =  (function () {
             tButton.style.cssText = "float:right;";
         }
     };
-    Global.version = "2.15h";
+    Global.version = "2.15i";
     Global.lastVersionDateString = "Nov 2 2020 00:00:00 GMT";
     Global.config = mw.config.get([
         "skin",
@@ -4113,7 +4113,7 @@ var WikiData =  (function () {
         this.scriptdir = "";
         this.firstSeperator = "?";
         this.htmlName = this.servername.replace(/([\.\/])/g, "-");
-        this.isWikiaWiki = (this.servername.indexOf(".wikia.") > -1) || (this.servername.indexOf(".fandom.") > -1);
+        this.isWikiaWiki = (this.servername.indexOf(".wikia.") > -1) || (this.servername.indexOf(".fandom.") > -1) || (this.servername.indexOf(".gamepedia.") > -1);
         this.isLegacyWikiaWiki = this.isWikiaWiki;
         this.useOutdatedLogSystem = this.isWikiaWiki;
         var tWikiDataSplit, tKey, tVal; 
@@ -4162,7 +4162,7 @@ var WikiData =  (function () {
                             this.favicon = "//" + this.favicon;
                         }
                         else {
-                            this.favicon = "//vignette.wikia.nocookie.net/" + this.favicon + "/images/6/64/Favicon.ico";
+                            this.favicon = "//vignette.wikia.nocookie.net/" + this.favicon + "/images/4/4a/Site-favicon.ico";
                         }
                         break;
                     }
@@ -4218,11 +4218,9 @@ var WikiData =  (function () {
                     }
                 }
                 else if (!!pQuery.pages) {
-                    var tPageID;
-                    for (tPageID in pQuery.pages)
-                        break; 
-                    if (pQuery.pages[tPageID] && pQuery.pages[tPageID].imageinfo) {
-                        this.favicon = pQuery.pages[tPageID].imageinfo[0].url;
+                    var page = Object.keys(pQuery.pages).map(function (key) { return pQuery.pages[key]; }).filter(function (p) { return p.missing !== ""; }).sort(function (a, b) { return b.title.length - a.title.length; }).shift();
+                    if (page && page.imageinfo) {
+                        this.favicon = page.imageinfo[0].url;
                     }
                 }
             }
@@ -4370,7 +4368,7 @@ var WikiData =  (function () {
         params["siprop"] = ["general", "namespaces", "statistics", "variables"].join("|");
         tPropList.push("imageinfo");
         params["iiprop"] = "url";
-        params["titles"] = "File:Favicon.ico";
+        params["titles"] = "File:Favicon.ico|File:Site-favicon.ico";
         if (this.username) {
             tUrlList.push("users");
             params["ususers"] = this.username;

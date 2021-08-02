@@ -1,39 +1,19 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+//Add username alt attribute to masthead profile so highlight css works there
+$(function () {
+    if (!mw.config.get('profileUserName')) {
+        return;
+    }
 
-//Auto Message Blocked
-var MessageBlock = {
-    title : 'Blocked.',
-    message : 'You have been blocked for $2 for the following reason(s): "$1"',
-    autocheck : true
-};
- 
-/* LockOldBlogs */
-window.LockOldBlogs = {
-    expiryDays: 30,
-    expiryMessage: "This blog hasn\'t been commented on for over 30 days. There is no need to comment."
-};
+    if ($('#userProfileApp .user-identity-avatar__image').length) {
+    	$('#userProfileApp .user-identity-avatar__image').attr('alt', mw.config.get('profileUserName'));
+    	return;
+    }
 
-/* Users blocked infinite */
-window.addEventListener('load', function() {
-	// Timeouts are always a terrible way to go, but UserTags has no event dispatched when it finished loading.
-	setTimeout(function() {
-		if (document.getElementById('UserProfileMasthead') === null) return;
-		var blockTag = document.querySelector('.tag.usergroup-blocked.blocked-user');
-		if (blockTag === null) return;
-		new mw.Api().get({
-			action: 'query',
-			list: 'blocks',
-			bkprop: 'expiry',
-			bktimestamp: new Date().getTime(),
-			bkusers: wgTitle
-		}).done(function(d) {
-			if (d.query.blocks[0] && d.query.blocks[0].expiry == 'infinity') {
-				blockTag.innerHTML = 'Shattered';
-			}
-		});
-	}, 250);
+    var interval = setInterval(function () {
+        if (!$('#userProfileApp .user-identity-avatar__image').length) {
+            return;
+        }
+        clearInterval(interval);
+        $('#userProfileApp .user-identity-avatar__image').attr('alt', mw.config.get('profileUserName'));
+    }, 100);
 });
- 
-if (mw.config.get('skin') != 'oasis' ) { // if skin == monobook or skin == uncyclopedia
-	importScriptPage('UserWikiInfo/code.js', 'dev');
-}

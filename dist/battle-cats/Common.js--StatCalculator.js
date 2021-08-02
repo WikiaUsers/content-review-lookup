@@ -30,6 +30,9 @@ function formulate() {
     var sumlevel = naturallevel + pluslevel;
     //decimals fraction limit
     var fractionlimit = +($(this).closest('.statcalc').find('.fractionlimit').text());
+    if (fractionlimit > 19) {
+         fractionlimit = 20;
+     } 
     //treasure effect
     var treasurehp = +($(this).closest('.statcalc').find('.treasurehp').text());
     var treasureatk = +($(this).closest('.statcalc').find('.treasureattack').text());
@@ -125,17 +128,18 @@ var aphit4c =  Math.floor(Math.floor(Math.floor( Math.floor(aphit4 * (1 + treasu
 var aphit5c =  Math.floor(Math.floor(Math.floor( Math.floor(aphit5 * (1 + treasureatkeffect)) * ((100 + individualmodatk)/100)) + (talentatk * multihit5)) * ((100 + globalmodatk)/100));
 var aphit6c =  Math.floor(Math.floor(Math.floor( Math.floor(aphit6 * (1 + treasureatkeffect)) * ((100 + individualmodatk)/100)) + (talentatk * multihit6)) * ((100 + globalmodatk)/100));
 
+var apsuminitial = aphit1c + aphit2c + aphit3c + aphit4c + aphit5c + aphit6c; 
 
-$(this).parents('.stat-container').find('.multihitcal').text(aphit1c.toLocaleString(undefined,{maximumFractionDigits: fractionlimit}));
+//Replace Sum Attack with calculated stat
+    $(this).parents('.statcalc .stat-container').find('.ap-calculated').text(apsuminitial.toLocaleString(undefined,{maximumFractionDigits: fractionlimit}));
+//Replace Multi Hit attack with calculated stat
+$(this).parents('.stat-container').find('.multihit1c').text(aphit1c.toLocaleString(undefined,{maximumFractionDigits: fractionlimit}));
 $(this).parents('.stat-container').find('.multihit2c').text(aphit2c.toLocaleString(undefined,{maximumFractionDigits: fractionlimit}));
 $(this).parents('.stat-container').find('.multihit3c').text(aphit3c.toLocaleString(undefined,{maximumFractionDigits: fractionlimit}));
 $(this).parents('.stat-container').find('.multihit4c').text(aphit4c.toLocaleString(undefined,{maximumFractionDigits: fractionlimit}));
 $(this).parents('.stat-container').find('.multihit5c').text(aphit5c.toLocaleString(undefined,{maximumFractionDigits: fractionlimit}));
 $(this).parents('.stat-container').find('.multihit6c').text(aphit6c.toLocaleString(undefined,{maximumFractionDigits: fractionlimit}));
 
-//Replace Sum Attack with calculated stat
-    $(this).parents('.statcalc .stat-container').find('.ap-calculated').text(apsuminitial.toLocaleString(undefined,{maximumFractionDigits: fractionlimit}));
-	
 //How much DPS stats grown
 //    var dpsgrowninitial = (dpsinitial * treasureatkeffect) + (((dpsinitial * 
 //        (sumlevel - 1) * basegrow/100) - ( dpsinitial * (growpliera/100) * growmultia) - ( dpsinitial * (growplierb/100) * growmultib) - ( dpsinitial * (growplierc/100) * growmultic) - ( dpsinitial * (growplierd/100) * growmultid) - ( dpsinitial * (growpliere/100) * growmultie) ) * (1 + treasureatkeffect));

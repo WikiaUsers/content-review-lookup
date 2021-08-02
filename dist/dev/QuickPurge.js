@@ -29,7 +29,7 @@
 		// Don't activate if meta keys are used
 		if (e.ctrlKey || e.altKey || e.shiftKey) return;
  
-		var link = new mw.Uri(e.target.href);
+		var link = new mw.Uri(decodeURIComponent(e.target.href));
 		var page;
 		// Support all formats described at: https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Short_URL
 		if (link.path == indexPath) {

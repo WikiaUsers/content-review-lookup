@@ -391,7 +391,8 @@ window.MessageWallUserTags = {
         'FlyingDutchmen': 'Rollback',
         'TheJasbre202': 'Rollback',
         'SpongyFanatic2021': 'Rollback',
-        'FireMatch': 'Rollback'
+        'FireMatch': 'Rollback',
+        'SPONGEBOBSUPERFANINFINITY': 'Rollback'
     }
 };
 

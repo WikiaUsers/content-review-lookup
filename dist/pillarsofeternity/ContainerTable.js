@@ -1,55 +1,92 @@
 /*
 	Used in conjunction with Template:ContainerTable and Template:Container
-	Currently only supports one ContainerTable per page - bad things might happen otherwise!
+	Supports multiple ContainerTables on one page, though they are not synced together
 */
 
 (function() // <- Immediately invoked function expression to scope variables and functions to this script
 {
-    var lootContainerTable = document.querySelector(".loot-container-table");
-    var lootContainerTableWrapper = document.querySelector(".loot-container-table-wrapper");
-    var randomLootCells = lootContainerTable.querySelectorAll(".lootlist-results-day");
-    var randomLootHeaders = lootContainerTable.querySelectorAll(".lootlist-results-day-header");
+    var lootContainerTables = document.querySelectorAll(".loot-container-table");
+    var dayDropdowns = [];
 
-    var cellsByDay = {};
-
-    function addElementToCellsByDay(elem)
+    lootContainerTables.forEach(function(table)
     {
-        var day = parseInt(elem.dataset.day);
+        var cellsByDay = collectDayCellsAndHeaders(table);
+        var dayDropdown = createDayDropdown(table);
+        dayDropdowns.push(dayDropdown);
 
-        if (cellsByDay[day] == undefined)
-            cellsByDay[day] = [];
-        
-        cellsByDay[day].push(elem);
+        // Add dropdown event
+        dayDropdown.addEventListener("change", function(e)
+        {
+            // Show all cells and headers
+            if (e.target.value == "all")
+            {
+                for (var day = 1; day <= 20; day++)
+                {
+                    for (var i = 0; i < cellsByDay[day].length; i++)
+                    {
+                        cellsByDay[day][i].style.display = "";
+                    }
+                }
+            }
+
+            // Show only cells and the header for a specific day
+            else
+            {
+                for (var day = 1; day <= 20; day++)
+                {
+                    var display = day == e.target.value ? "" : "none";
+
+                    for (var i = 0; i < cellsByDay[day].length; i++)
+                    {
+                        cellsByDay[day][i].style.display = display;
+                    }
+                }
+            }
+        });
+    });
+    
+// ContainerTable functions
+
+    // Collects all .lootlist-results-day and .lootlist-results-day-header for a table
+    // Returning an array of these elements indexed by the day
+    function collectDayCellsAndHeaders(table)
+    {
+        var cellsByDay = {};
+        var randomLootCells = table.querySelectorAll(".lootlist-results-day");
+        var randomLootHeaders = table.querySelectorAll(".lootlist-results-day-header");
+
+        function addElementToCellsByDay(elem)
+        {
+            var day = parseInt(elem.dataset.day);
+
+            if (cellsByDay[day] == undefined)
+                cellsByDay[day] = [];
+
+            cellsByDay[day].push(elem);
+        }
+
+        randomLootCells.forEach(addElementToCellsByDay);
+        randomLootHeaders.forEach(addElementToCellsByDay);
+
+        return cellsByDay;
     }
 
-    randomLootCells.forEach(addElementToCellsByDay);
-    randomLootHeaders.forEach(addElementToCellsByDay);
+    // Replaces the placeholder .loot-container-list-select-day element in the table
+    // with an actual dropdown (since we cannot create form elements in wikitext)
+    // Returns the created <select>, or null if the placeholder doesn't exist
+    function createDayDropdown(table)
+    {
+        // Get the placeholder dropdown
+        var placeholder = table.querySelector(".loot-container-list-select-day");
 
-    // The currently selected day, 0 for all, -1 for none
-    var selectedDay = 0;
-	
-	if (document.readyState !== "loading") { processContainerTable(); }
-	else { window.addEventListener("DOMContentLoaded", processContainerTable); }
-	
-	function processContainerTable()
-	{
-	    // Per container
-	    addHeaderDayDropdown();
-	}
+        if (placeholder == undefined)
+            return null;
 
-// ContainerTable functions
-	
-	// Add overarching day dropdown
-	function addHeaderDayDropdown()
-	{
-	    var dayDropdown = lootContainerTable.querySelector(".loot-container-list-select-day");
-	    
-	    // Create a new select 
-	    var select = document.createElement("select");
-	    select.classList.add(...dayDropdown.classList);
-	    select.style.cssText = dayDropdown.style.cssText;
+	    // Create a select
+        var select = document.createElement("select");
+        select.setAttribute("title", "Day of the month");
 
-	    // Add hide all and show all options
+        // Add hide all and show all options
         var showAllOpt = document.createElement("option");
         showAllOpt.setAttribute("value", "all");
         showAllOpt.appendChild(document.createTextNode("Show all"));
@@ -58,52 +95,25 @@
         // Show all by default
         selectedDay = 0;
         showAllOpt.setAttribute("selected", "");
-	
-	    // Add day options
-	    for (i = 1; i <= 20; i++)
-	    {
-	        var opt = document.createElement("option");
-	        opt.setAttribute("value", i);
-	        opt.appendChild(document.createTextNode(addOrdinal(i)));
-	
-	        select.appendChild(opt);
-	    }
-	
-	    // Replace the existing placeholder with an actual dropdown
-	    dayDropdown.replaceWith(select);
-	    dayDropdown = select;
 
-        // Add dropdown event
-	    dayDropdown.addEventListener("change", function(e)
-	    {
-	        if (dayDropdown.value == "all")
-	        {
-	            selectedDay = dayDropdown.value == 0;
+        // Add day options
+        for (i = 1; i <= 20; i++)
+        {
+            var opt = document.createElement("option");
+            opt.setAttribute("value", i);
+            opt.appendChild(document.createTextNode(addOrdinal(i)));
 
-	            for (var day = 1; day <= 20; day++)
-	            {
-	                for (var i = 0; i < cellsByDay[day].length; i++)
-	                {
-	                    cellsByDay[day][i].style.display = "";
-	                }
-	            }
-	        }
-	        else
-	        {
-                selectedDay = parseInt(dayDropdown.value);
+            select.appendChild(opt);
+        }
 
-	            for (var day = 1; day <= 20; day++)
-	            {
-	                var display = day == dayDropdown.value ? "" : "none";
-	                
-                    for (var i = 0; i < cellsByDay[day].length; i++)
-	                {
-	                    cellsByDay[day][i].style.display = display;
-	                }
-	            }
-	        }
-	    });
-	}
+        // Replace the existing placeholder with an actual dropdown
+        select.classList.add(...placeholder.classList);
+        select.style.cssText = placeholder.style.cssText;
+        placeholder.replaceWith(select);
+
+        return select;
+    }
+	
 
 // General helper functions
 

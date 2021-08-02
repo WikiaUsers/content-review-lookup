@@ -1126,7 +1126,7 @@
                     LIR.createLiveLoader(ui),
                     LIR.createQueueStatus(ui),
                     ui.br(),
-                    ui.div({
+                    ui.span({
                         attrs: {
                             id: 'FUAuMovePageDescription'
                         },
@@ -1146,7 +1146,7 @@
                         }) :
                         null,
                     ui.br(),
-                    ui.div({
+                    ui.span({
                         attrs: {
                             id: 'FUAuFooter'
                         },

@@ -357,3 +357,9 @@ if(mw.config.get('wgNamespaceNumber') == 116) {
     });
 
 })();
+
+// Rozwija kategorie i interlagi
+(function($) {
+    $(".page-footer__categories").removeClass("wds-is-collapsed");
+    $(".page-footer__languages").removeClass("wds-is-collapsed");
+})(jQuery);

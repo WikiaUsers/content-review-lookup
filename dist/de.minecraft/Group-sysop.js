@@ -37,7 +37,7 @@ $.when( $.ready, mw.loader.using( 'mediawiki.util' ) ).done( function() {
 		
 		var reasonText = $reasonNodes.text();
 		if ( reasonText ) {
-			$( '#ca-delete a' ).prop( 'href', function() {
+			$( '#ca-delete a, a#ca-delete' ).prop( 'href', function() {
 				// Purposly not using wpReason, so the auto-generated reason is still there initially
 				// so the user can press undo to get it back if they want it instead of this one
 				return this.href += '&deleteReason=' + encodeURIComponent( reasonText );

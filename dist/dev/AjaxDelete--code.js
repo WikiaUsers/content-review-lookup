@@ -165,13 +165,37 @@
             // user specifies a "length" parameter in the configuration
             // and some other stuff jQuery will interpret it
             // as an array and bad things can happen
-            for (var i in obj) {
-                $select.append(
-                    $('<option>', {
-                        value: i,
-                        text: obj[i]
-                    })
-                );
+            for (var key in obj) {
+            	var value = obj[key];
+
+            	if (typeof value === 'string') {
+                    $select.append(
+                        $('<option>', {
+                            value: key,
+                            text: value
+                        })
+                    );
+            	} else {
+                    var children = [];
+
+                    for (var subKey in value) {
+                        var subValue = value[subKey];
+
+                        children.push(
+                            $('<option>', {
+                                value: subKey,
+                                text: subValue
+                            })
+                        );
+                    }
+
+                    $select.append(
+                    	$('<optgroup>', {
+	                        label: key,
+	                        html: children
+                        })
+                    );
+            	}
             }
             return $select;
         },

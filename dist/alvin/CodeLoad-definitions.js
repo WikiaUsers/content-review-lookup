@@ -10,20 +10,21 @@ codeLoad.definitions = {
             "enabled": true
         }
     },
-    "clock": {
-        "title": "UTC Clock",
-        "description": "Adds a UTC clock to the page header",
-        "group": "extras",
-        "articles": [
-            "dev:UTCClock/code.js"
-        ],
-        "preferences": {
-            "requiresGlobalPrefs": true,
-            "globalPrefNamespace": "DisplayClockJS",
-            "enabled": false,
-            "format": "%2H:%2M:%2S %p %2d %B %Y (UTC)"
-        }
-    },
+// Awaiting FandomDesktop Support
+//    "clock": {
+//        "title": "UTC Clock",
+//        "description": "Adds a UTC clock to the page header",
+//        "group": "extras",
+//        "articles": [
+//            "dev:UTCClock/code.js"
+//        ],
+//        "preferences": {
+//            "requiresGlobalPrefs": true,
+//            "globalPrefNamespace": "DisplayClockJS",
+//            "enabled": false,
+//            "format": "%2H:%2M:%2S %p %2d %B %Y (UTC)"
+//        }
+//    },
     "countdown": {
         "title": "Countdown Clocks",
         "description": "Adds clocks that countdown to specific events and releases",
@@ -35,28 +36,18 @@ codeLoad.definitions = {
             "enabled": true
         }
     },
-    "font": {
-        "title": "Totally Nuts Font",
-        "description": "Removes custom font from text areas with exception of article and rail headers",
-        "group": "design",
-        "articles": [
-            "Wikia.css/totally-nuts.css"
-        ],
-        "preferences": {
-            "enabled": false
-        }
-    },
-    "header": {
-        "title": "Advanced Header Theme",
-        "description": "Modifies the page navigation header style to better match Munkapedia's theming",
-        "group": "design",
-        "articles": [
-            "Advanced Header Theme.css"
-        ],
-        "preferences": {
-            "enabled": false
-        }
-    },
+// To Be Rewritten
+//    "font": {
+//        "title": "Totally Nuts Font",
+//        "description": "Removes custom font from text areas with exception of article and rail headers",
+//        "group": "design",
+//        "articles": [
+//            "Wikia.css/totally-nuts.css"
+//        ],
+//        "preferences": {
+//            "enabled": false
+//        }
+//    },
     "ratings": {
         "title": "Star Ratings",
         "description": "Adds five star ratings to episode, special, and film pages",
@@ -68,18 +59,17 @@ codeLoad.definitions = {
             "enabled": true
         }
     },
-//	  AWAITING SUPPORT
-//    "references": {
-//        "title": "Reference Popups",
-//        "description": "Adds a floating citation box on hover of a reference number",
-//        "group": "extras",
-//        "articles": [
-//            "dev:ReferencePopups/code.js"
-//        ],
-//        "preferences": {
-//            "enabled": true
-//        }
-//    },
+    "references": {
+        "title": "Reference Popups",
+        "description": "Adds a floating citation box on hover of a reference number",
+        "group": "extras",
+        "articles": [
+            "dev:ReferencePopups/code.js"
+        ],
+        "preferences": {
+            "enabled": true
+        }
+    },
     "snow": {
         "title": "Snow",
         "description": "Creates a gentle winter snowfall in the wiki's background",

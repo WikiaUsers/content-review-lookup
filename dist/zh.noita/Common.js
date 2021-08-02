@@ -134,6 +134,7 @@ jQuery(function () {
                 replaceSpellInfoBoxData(templateName, wikiText, $t);
                 return showTipFromCacheEntry(e, wikiText, dataSelector);
             });
+            return;
         }
 
         api.get({

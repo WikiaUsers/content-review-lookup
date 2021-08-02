@@ -29,3 +29,6 @@ console.log(tabImages);
 for (var i = 0; i<tabImages.length; i++) {
 	tabImages[i].style.filter = 'invert(100%)';
 }
+
+// empêcher les balises existantes d'être masquées avec ProfileTags
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };

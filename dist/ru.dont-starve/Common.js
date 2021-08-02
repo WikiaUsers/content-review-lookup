@@ -125,50 +125,6 @@ $(function changePageCounterEndingRus(){
 	}
 });
 
-/*Связывание табберов и вкладок инфобокса*/
-
-window.tabberLinkInfobox = function(title){
-var childrenLi = $('.pi-section-label a[data-title='+title+']').parent();
-childrenLi.parent().addClass('pi-section-active');
-childrenLi.parent().siblings('.pi-section-tab').removeClass('pi-section-active');
-var divContent = $('.pi-section-content[data-title='+title+']');
-divContent.addClass('pi-section-active');
-divContent.siblings('.pi-section-content').removeClass('pi-section-active');
-}
-
-$(function(){
-
-if ($('ul').is('.pi-section-navigation')){
-if(($('.pi-section-navigation').length) === 1){
-$('.pi-section-label').each(function(){
-var title = ($(this).html()).trim();
-$(this).text('');
-
-$('<a/>', 
-{
-href : ('#' + title),
-text: title,
-}
-).appendTo(this);
-
-$('.pi-section-content[data-ref='+ $(this).parent().attr('data-ref') +']').attr('data-title',title);
-$(this).children('a').attr('data-title',title);
-});
-
-tabberInfoboxInterval = setInterval(tabberInfobox,50);
-}
-}
-});
-function tabberInfobox(){
-if(($('.tabbernav > li > a[data-title]').length)!== 0){
-$('.tabbernav > li > a').each(function(){
-var title = $(this).attr('data-title');
-$(this).attr('onclick', 'tabberLinkInfobox("'+title+'")');
-});
-clearInterval(tabberInfoboxInterval);
-}
-}
-
 /*Страница администрации*/
 $(function(){
 $('.dsadmin, .dsmoder').click(function(){

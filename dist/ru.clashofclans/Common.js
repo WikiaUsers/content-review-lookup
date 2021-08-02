@@ -122,10 +122,6 @@
 
 
 $(document).ready(function() {
-
-    // Change Random Page button to only go to pages in the mainspace
-    $('.wds-dropdown a[data-tracking=explore-random], ul.tools li a[data-name=random]').attr("href", "/wiki/Special:Random/main");
-
     // Clash Royale and Brawl Stars topic interwiki links
     $("#BrawlStarsLink, #ClashRoyaleLink").prependTo(".page-header__contribution > div:first-child").css({"display": "inline-block"});
 
@@ -257,3 +253,10 @@ function UserNameReplace() {
     $("span.insertusername").html(wgUserName);
  }
 $(UserNameReplace);
+
+/*Твиттер в тёмной теме*/
+$(function(){
+if ($('body').hasClass('theme-fandomdesktop-dark')) {
+     $('.twitter-timeline').attr('data-theme', 'dark');
+}
+});

@@ -1,1 +1,0 @@
-mw.loader.load( 'https://dev.fandom.com/wiki/MediaWiki:FD-CSS-VList.js?action=raw&ctype=text/javascript' );

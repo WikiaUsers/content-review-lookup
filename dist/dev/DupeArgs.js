@@ -1,7 +1,7 @@
 /* DupeArgs
  *
  * Finds pages with templates that have duplicate parameters, and reports them
- * Resolution coming soon™️ maybe I don't know do you?
+ * Resolution coming now
  *
  * @author Dorumin
  */
@@ -10,11 +10,14 @@
     var loading = [
         'dorui',
         'modal',
+        'banners',
         'api'
     ];
     var ui;
+    var BannerNotification;
     var api;
     var refs = {};
+    var lastSummary;
 
     function deepQuery(args) {
         return new Promise(function(_resolve) {
@@ -248,7 +251,8 @@
     function normalizeArgName(name) {
         // Does _ have to be turned to " "?
         // No, and neither does it have to be lowercased
-        return name.trim();
+        // But HTML comments do have to be stripped
+        return name.replace(/<!--[\s\S]+?-->/g, '').trim();
     }
 
     function getPageDupes(page) {
@@ -288,8 +292,122 @@
         return str.replace(/ /g, String.fromCharCode(160));
     }
 
+    function replaceRanges(string, replacements) {
+        var buffer = '';
+        var last = 0;
+
+        for (var i = 0; i < replacements.length; i++) {
+            var replacement = replacements[i];
+
+            buffer += string.slice(last, replacement.start);
+            buffer += replacement.string;
+
+            last = replacement.end;
+        }
+
+        buffer += string.slice(last, string.length);
+
+        return buffer;
+    }
+
     function onResolve(page, dupes, e) {
-        console.log(page, dupes, e);
+        var pageParent = e.target.closest('.page-report');
+        var templates = pageParent.querySelectorAll('.page-duplicate-template');
+        var chosen = Array.from(templates).map(function(template) {
+            var spans = template.querySelectorAll('pre span');
+            var argmap = {};
+            var finished = [];
+
+            spans.forEach(function(span) {
+                var arg = span.getAttribute('data-arg');
+
+                if (!argmap.hasOwnProperty(arg)) {
+                    argmap[arg] = -1;
+                }
+
+                if (!finished.includes(arg)) {
+                    argmap[arg] += 1;
+
+                    if (span.classList.contains('chosen')) {
+                        finished.push(arg);
+                    }
+                }
+            });
+
+            return argmap;
+        });
+
+        var newContent = replaceRanges(
+            page.content,
+            dupes.map(function(dupe, index) {
+                var template = '{{' + dupe.template.parsed.name;
+
+                var seen = {};
+
+                for (var i = 0; i < dupe.template.parsed.args.length; i++) {
+                    var arg = dupe.template.parsed.args[i];
+                    var name = normalizeArgName(arg.key);
+
+                    if (!seen.hasOwnProperty(name)) {
+                        seen[name] = -1;
+                    }
+
+                    seen[name] += 1;
+
+                    if (!chosen[index].hasOwnProperty(name) || chosen[index][name] === seen[name]) {
+                        // if (chosen[index][name] === seen[name]) {
+                        //     console.log('Found ' + name, chosen[index], seen[name]);
+                        // }
+
+                        if (arg.inline) {
+                            template += '|' + arg.value;
+                        } else {
+                            template += '|' + arg.key + '=' + arg.value;
+                        }
+                    }
+                }
+
+                template += '}}';
+
+                return {
+                    start: dupe.template.start,
+                    end: dupe.template.end,
+                    string: template
+                };
+            })
+        );
+
+        var result = doEdit(page.title, newContent);
+        if (result === null) return;
+
+        pageParent.style.opacity = '0.5';
+
+        result.then(function() {
+            pageParent.scrollIntoView();
+            pageParent.remove();
+        })['catch'](function(e) {
+            console.log(e);
+            pageParent.style.opacity = '';
+        });
+    }
+
+    function doEdit(title, newContent) {
+        // console.log(newContent);
+        // window.nc = newContent;
+
+        var summary = prompt('Hit me with your edit summary, baby', lastSummary);
+        if (summary === null) return null;
+
+        lastSummary = summary;
+
+        return api.postWithToken('csrf', {
+            action: 'edit',
+            title: title,
+            text: newContent,
+            summary: summary,
+            minor: true,
+            token: mw.user.tokens.get('editToken')
+        });
     }
 
     function onRedSpanClick(e) {
@@ -465,7 +583,10 @@
                     });
 
                     if (dupes.length !== 0) {
-                        reportDupes(page, dupes);
+                        reportDupes({
+                            title: page.title,
+                            content: content
+                        }, dupes);
                     }
                 }
 
@@ -473,6 +594,9 @@
             },
             params: {
                 action: 'query',
+                // generator: 'allpages',
+                // gaplimit: 'max',
+                // gapnamespace: '2',
                 generator: 'categorymembers',
                 gcmtitle: 'Category:Pages using duplicate arguments in template calls',
                 gcmlimit: 'max',
@@ -525,7 +649,10 @@
                     text: 'DupeArgs'
                 }),
                 events: {
-                    click: showModal
+                    click: function(e) {
+                        e.preventDefault();
+                        showModal();
+                    }
                 }
             })
         );
@@ -535,6 +662,9 @@
         switch (label) {
             case 'dorui':
                 ui = arg;
+                break;
+            case 'banners':
+                BannerNotification = arg;
                 break;
             case 'api':
                 api = new mw.Api();
@@ -558,11 +688,13 @@
             type: 'script',
             articles: [
                 'u:dev:MediaWiki:Dorui.js',
+                'u:dev:MediaWiki:BannerNotification.js',
                 'u:dev:MediaWiki:ShowCustomModal.js'
             ]
         });
 
         mw.hook('doru.ui').add(onload.bind(null, 'dorui'));
+        mw.hook('dev.banners').add(onload.bind(null, 'banners'));
         mw.hook('dev.showCustomModal').add(onload.bind(null, 'modal'));
         mw.loader.using('mediawiki.api').then(onload.bind(null, 'api'));
     }

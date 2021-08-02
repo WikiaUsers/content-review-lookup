@@ -12,6 +12,9 @@ window.lastEdited = {
 // https://dev.fandom.com/wiki/ProfileTags
 window.dev.profileTags = { noHideTags: true };
 
+// Disables the Rollback Script 
+window.RollbackWikiDisable = true;
+
 // Add user tag to rollbacks
 var rollbackTagLoader = setInterval(function() {
 	if ($('.user-identity-box').length) {

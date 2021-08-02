@@ -18,7 +18,12 @@ function delete_table(){
 //Calculates rewards for levels on page "Levelling".
 function calculate() {
 	var level = document.getElementById("level").value;
-	//If the input number is not between 2 and 1000, clears the table.
+	//If the input is not a number or if the number is not between 2 and 1000, clears the table.
+	if(isNaN(level)){
+    	document.getElementById("wrong_number").innerHTML = "Please enter a number.";
+		delete_table();
+		return;
+        }
 	if (level < 2){
 		document.getElementById("wrong_number").innerHTML = "You have enter a number smaller than 2.";
 		delete_table();

@@ -1,5 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-window.customCommentGroups = [ { group: "Admins", users: ["Joshuabirger", "AviatorPhil"] }, { group: "Moderators", users: ["LibertyTrooper"] }, [ { group: "Bots", users: ["ERLCcleanupbot"] } ];
+window.customCommentGroups = [ { group: "Admins", users: ["Joshuabirger", "AviatorPhil"] }, { group: "Moderators", users: ["LibertyTrooper"] }, { group: "Bots", users: ["ERLCcleanupbot"] } ];
 window.MessageBlock = { title : 'Block', message : 'You have been blocked for $2 because due to $1, please respond to appeal.', autocheck : true };
 
 window.ArticleRating = { title: 'Rate This Article', values: ['Worst', 'Bad', 'Average', 'Good', 'Great'], starSize: [24, 24], starColor: ['#ccc', '#ffba01'], starStroke: '#000', exclude: ['Page A', 'Page B'], excludeCats: ['Category:A', 'Category:B'], location: 'top-rail' }

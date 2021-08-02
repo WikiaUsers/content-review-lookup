@@ -1,11 +1,11 @@
 // <nowiki>
-$(function () {	
+$(function () {
 	var dataDiv = document.getElementById('data-ns-pageinfo');
 	if (! dataDiv) return;
 	var $dataDiv = $(dataDiv);
 	var overviewPage = $dataDiv.attr('data-overviewpage');
 	// add refresh data link
-	$(mw.util.addPortletLink('p-views', 'javascript:;', 'Refresh Overview', 'ca-refresh-overview', 'Refresh event overview page', '2', 'ca-edit')).click(function() {
+	$(mw.util.addPortletLink('p-views', 'javascript:;', 'Refresh Overview', 'ca-refresh-overview', 'Refresh event overview page', '2')).click(function() {
 		$('body').css('cursor', 'wait');
 		var a = new mw.Api();
 		
@@ -272,6 +272,12 @@ $(function () {
 		});
 	});
 	
+	// move RO button into place in FandomDesktop
+	if ($('.page__main')) {
+		var $el = $('#ca-refresh-overview');
+		$el.detach();
+		$el.insertAfter($('#p-views #ca-edit'));
+	}
 });
 
 $(function() {

@@ -60,12 +60,12 @@ $(addPageBottom);
    not earlier. */
 
 var newElement = [
- '<section class="UEFAEuro2020Gradient module">',
- '   <h1><a href="https://football.fandom.com/wiki/UEFA_Euro_2021">UEFA Euro 2021</a></h1>',
+ '<section class="2022FIFAWorldCupGradient module">',
+ '   <h1><a href="https://football.fandom.com/wiki/2022_FIFA_World_Cup">2022 FIFA World Cup1</a></h1>',
  '   <div id=features style="margin-top: -16px; padding: 0; width: 100%;">',
  '         <tr style="line-height: 15px; text-align: center; font-size: 14px;">',
  '            <td>',
- '                 This is the place to be for all the news about UEFA Euro 2021. From the qualification to the final in London. You can view all the teams and groups, the topscorers, the players with the most assists, players who are inform, all the stadiums and a lot more.<br><a href="https://football.fandom.com/wiki/UEFA_Euro_2021">Go to the page</a><br>Go to the <a href="http://football.wikia.com/wiki/Match_Center">Match Center</a> for upcoming matches. ',
+ '                 This is the place to be for all the news about 2022 FIFA World Cup. From the qualification to the final in Lusail. You can view all the teams and groups, the topscorers, the players with the most assists, players who are inform, all the stadiums and a lot more.<br><a href="2022 FIFA World Cup">Go to the page</a><br>Go to the <a href="http://football.wikia.com/wiki/Match_Center">Match Center</a> for upcoming matches. ',
  '            </td>',
  '         </tr>',
  '   </div>',

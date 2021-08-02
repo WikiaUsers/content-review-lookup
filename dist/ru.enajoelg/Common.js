@@ -3,27 +3,37 @@
 $(function(){
 	$('.win_slider_button_1').click(function() {
     	$(".win_slider_1").removeClass("hide_slide");
-    	$(".win_slider_1").siblings('.win_slide ').addClass('hide_slide');
+    	$(".win_slider_1").siblings('.win_slide').addClass('hide_slide');
+    	$(this).addClass('active_button');
+    	$(this).siblings('.button').removeClass('active_button');
 	});
 
 	$('.win_slider_button_2').click(function() {
     	$(".win_slider_2").removeClass("hide_slide");
     	$(".win_slider_2").siblings('.win_slide ').addClass('hide_slide');
+    	$(this).addClass('active_button');
+    	$(this).siblings('.button').removeClass('active_button');
 	});
 
 	$('.win_slider_button_3').click(function() {
     	$(".win_slider_3").removeClass("hide_slide");
     	$(".win_slider_3").siblings('.win_slide ').addClass('hide_slide');
+    	$(this).addClass('active_button');
+    	$(this).siblings('.button').removeClass('active_button');
 	});
 
 	$('.win_slider_button_4').click(function() {
     	$(".win_slider_4").removeClass("hide_slide");
     	$(".win_slider_4").siblings('.win_slide ').addClass('hide_slide');
+    	$(this).addClass('active_button');
+    	$(this).siblings('.button').removeClass('active_button');
 	});
 
 	$('.win_slider_button_5').click(function() {
     	$(".win_slider_5").removeClass("hide_slide");
     	$(".win_slider_5").siblings('.win_slide ').addClass('hide_slide');
+    	$(this).addClass('active_button');
+    	$(this).siblings('.button').removeClass('active_button');
 	});
 
 	$('#help_button').click(function() {

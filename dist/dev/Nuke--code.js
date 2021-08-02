@@ -43,7 +43,7 @@ mw.loader.using(['jquery.client', 'mediawiki.util', 'mediawiki.api', 'mediawiki.
 
 	var self = {
 		init: function() {
-			$('#PageHeader h1.page-header__title').text('Nuke');
+			$('.page-header__title').text('Nuke');
 			document.title = "Nuke | " + config.wgSiteName + " | Fandom";
 			mw.util.addCSS('.thumbnail-nuke { max-width: 250px; width: auto; height: 80px; }');
 
@@ -309,7 +309,7 @@ mw.loader.using(['jquery.client', 'mediawiki.util', 'mediawiki.api', 'mediawiki.
 						class: "wikia-button",
 						id: "nuke-rc",
 						name: "nuke-rc",
-						value: 'Go',
+						value: 'List pages',
 						type: "submit",
 					}),
 					css: {

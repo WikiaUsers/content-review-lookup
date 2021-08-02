@@ -37,139 +37,8 @@ function timer() {
 		var src = $(this).children('img').attr('data-src');
 		$(this).children('img').attr('src', src);
 	});
-}
-var cookpot = [];
-var dlc = "DS";
-var warly = false;
-var mode = "None";
-var cookpotTimer;
-setTimeout(timer, 1000);
-window.cookpotDeleteResult = function() {
-	if ((cookpot[0] !== undefined) && (cookpot[1] !== undefined) && (cookpot[2] !== undefined) && (cookpot[3] !== undefined)) {
-		if (navigator.userAgent.includes('Firefox')) {
-			$('#result1').removeAttr('src');
-		} else {
-			$('#result1').attr('src', ' ');
-		}
-		$('#arrowcookpot').attr('src', "https://vignette.wikia.nocookie.net/dont-starve/images/d/d2/Crock_Pot.png/revision/latest?cb=20130110150334&path-prefix=ru");
-		$('#chance1').text(' ');
-		$('#description1').css({
-			"display": "none"
-		});
-		for (var i = 4; i > 1; --i) {
-			if (($('#result' + i).css('display')) !== 'none') {
-				$('#chance' + i).text(' ');
-				$('#description' + i).css({
-					"display": "none"
-				});
-				$('#result' + i).removeClass('ingredientcookpot');
-				$('#result' + i).addClass('hiddeningredientcookpot');
-				$('#result' + i).attr('src', ' ');
-			}
-		}
-		clearInterval(cookpotTimer);
-		for (var k = 0; k < 15; k++) {
-			delete cookpotResult[k];
-		}
-	}
-};
 
-window.cookpotDelete = function(i) {
-	cookpotDeleteResult();
-	delete cookpot[i];
-	if (navigator.userAgent.includes('Firefox')) {
-		$('#cookpot' + (i + 1)).removeAttr('src');
-	} else {
-		$('#cookpot' + (i + 1)).attr('src', ' ');
-	}
-};
-
-window.cookpotDeleteAll = function() {
-	cookpotDeleteResult();
-	for (var i = 0; i < 4; i++) {
-		delete cookpot[i];
-		if (navigator.userAgent.includes('Firefox')) {
-			$('#cookpot' + (i + 1)).removeAttr('src');
-		} else {
-			$('#cookpot' + (i + 1)).attr('src', ' ');
-		}
-	}
-};
-
-
-window.cookpotAdd = function(title, src) { //Добавляет ингридиент в казан, если слот пустой то он добавляет в него, если слот был удалён, также добавляет в него
-	if (event.ctrlKey !== true) {
-		if (cookpot[0] === undefined) {
-			cookpot[0] = title;
-			$('#cookpot1').attr('src', src);
-		} else if (cookpot[1] === undefined) {
-			cookpot[1] = title;
-			$('#cookpot2').attr('src', src);
-		} else if (cookpot[2] === undefined) {
-			cookpot[2] = title;
-			$('#cookpot3').attr('src', src);
-		} else if (cookpot[3] === undefined) {
-			cookpot[3] = title;
-			$('#cookpot4').attr('src', src);
-		}
-		if ((cookpot[0] !== undefined) && (cookpot[1] !== undefined) && (cookpot[2] !== undefined) && (cookpot[3] !== undefined)) {
-			var api = new mw.Api();
-			clearInterval(cookpotTimer);
-			api.get({
-				action: 'expandtemplates',
-				text: '{{#invoke:Cookpot|cookpotCalculate|' + dlc + '|' + warly + '|' + mode + '|' + cookpot[0] + '|' + cookpot[1] + '|' + cookpot[2] + '|' + cookpot[3] + '}}'
-			}).done(function(data) {
-				cookpotResult = data.expandtemplates['*'];
-				return cookpotResult;
-			});
-			if (($('#result1').attr('src') == ' ') || ($('#result1').attr('src') === undefined)) {
-				src = $('#cookpotatwork').children('img').attr('data-src');
-				$('#arrowcookpot').attr('src', src);
-			}
-			cookpotTimer = setInterval(showResult, 700);
-		}
-	}
-};
-
-window.showResult = function() {
-	function returnResult() {
-		if ((cookpotResult !== undefined) && (cookpotResult[0] !== undefined)) {
-			clearInterval(cookpotTimer);
-			if ((cookpotResult.length !== 20) && (cookpotResult !== undefined)) {
-				cookpotResult = cookpotResult.split(', ');
-			}
-			for (var i = 0; i <= 15; i = i + 5) {
-				if (cookpotResult[i] !== '0') {
-					var src = $('#' + cookpotResult[i]).children('img').attr('data-src');
-					var id = (i / 5 + 1);
-					$('#result' + id).attr('src', src);
-					if (i !== 0) {
-						$('#result' + id).removeClass('hiddeningredientcookpot');
-						$('#result' + id).addClass('ingredientcookpot');
-					}
-					$('#arrowcookpot').attr('src', "https://vignette.wikia.nocookie.net/dont-starve/images/d/d2/Crock_Pot.png/revision/latest?cb=20130110150334&path-prefix=ru");
-					$('#name' + id).text(cookpotResult[i + 1]);
-					$('#health' + id).text(' ' + cookpotResult[i + 2] + ' ');
-					$('#hunger' + id).text(' ' + cookpotResult[i + 3] + ' ');
-					$('#sanity' + id).text(' ' + cookpotResult[i + 4] + ' ');
-					$('#description' + id).css({
-						"display": ""
-					});
-				}
-				if (cookpotResult[15] !== '0') {
-					$('#chance1, #chance2, #chance3, #chance4').text('25%');
-				} else if (cookpotResult[10] !== '0') {
-					$('#chance1, #chance2, #chance3').text('33%');
-				} else if (cookpotResult[5] !== '0') {
-					$('#chance1, #chance2').text('50%');
-				}
-			}
-		}
-	}
-	return returnResult();
-};
-
-$('#buttonds').click(function sortds() {
+	$('#buttonds').click(function sortds() {
 	$(".ds").css({
 		"display": ""
 	});
@@ -346,6 +215,137 @@ $('.cookpot > div > p > span > a > img').on('click', function() {
 		window.open(href, '_blank').focus();
 	}
 });
+}
+
+var cookpot = [];
+var dlc = "DS";
+var warly = false;
+var cookpotTimer;
+setTimeout(timer, 1000);
+window.cookpotDeleteResult = function() {
+	if ((cookpot[0] !== undefined) && (cookpot[1] !== undefined) && (cookpot[2] !== undefined) && (cookpot[3] !== undefined)) {
+		if (navigator.userAgent.includes('Firefox')) {
+			$('#result1').removeAttr('src');
+		} else {
+			$('#result1').attr('src', ' ');
+		}
+		$('#arrowcookpot').attr('src', "https://vignette.wikia.nocookie.net/dont-starve/images/d/d2/Crock_Pot.png/revision/latest?cb=20130110150334&path-prefix=ru");
+		$('#chance1').text(' ');
+		$('#description1').css({
+			"display": "none"
+		});
+		for (var i = 4; i > 1; --i) {
+			if (($('#result' + i).css('display')) !== 'none') {
+				$('#chance' + i).text(' ');
+				$('#description' + i).css({
+					"display": "none"
+				});
+				$('#result' + i).removeClass('ingredientcookpot');
+				$('#result' + i).addClass('hiddeningredientcookpot');
+				$('#result' + i).attr('src', ' ');
+			}
+		}
+		clearInterval(cookpotTimer);
+		for (var k = 0; k < 15; k++) {
+			delete cookpotResult[k];
+		}
+	}
+};
+
+window.cookpotDelete = function(i) {
+	cookpotDeleteResult();
+	delete cookpot[i];
+	if (navigator.userAgent.includes('Firefox')) {
+		$('#cookpot' + (i + 1)).removeAttr('src');
+	} else {
+		$('#cookpot' + (i + 1)).attr('src', ' ');
+	}
+};
+
+window.cookpotDeleteAll = function() {
+	cookpotDeleteResult();
+	for (var i = 0; i < 4; i++) {
+		delete cookpot[i];
+		if (navigator.userAgent.includes('Firefox')) {
+			$('#cookpot' + (i + 1)).removeAttr('src');
+		} else {
+			$('#cookpot' + (i + 1)).attr('src', ' ');
+		}
+	}
+};
+
+
+window.cookpotAdd = function(title, src) { //Добавляет ингридиент в казан, если слот пустой то он добавляет в него, если слот был удалён, также добавляет в него
+	if (event.ctrlKey !== true) {
+		if (cookpot[0] === undefined) {
+			cookpot[0] = title;
+			$('#cookpot1').attr('src', src);
+		} else if (cookpot[1] === undefined) {
+			cookpot[1] = title;
+			$('#cookpot2').attr('src', src);
+		} else if (cookpot[2] === undefined) {
+			cookpot[2] = title;
+			$('#cookpot3').attr('src', src);
+		} else if (cookpot[3] === undefined) {
+			cookpot[3] = title;
+			$('#cookpot4').attr('src', src);
+		}
+		if ((cookpot[0] !== undefined) && (cookpot[1] !== undefined) && (cookpot[2] !== undefined) && (cookpot[3] !== undefined)) {
+			var api = new mw.Api();
+			clearInterval(cookpotTimer);
+			api.get({
+				action: 'expandtemplates',
+				text: '{{#invoke:Cookpot|cookpotCalculate|' + dlc + '|' + warly + '|' + cookpot[0] + '|' + cookpot[1] + '|' + cookpot[2] + '|' + cookpot[3] + '}}'
+			}).done(function(data) {
+				cookpotResult = data.expandtemplates['*'];
+				return cookpotResult;
+			});
+			if (($('#result1').attr('src') == ' ') || ($('#result1').attr('src') === undefined)) {
+				src = $('#cookpotatwork').children('img').attr('data-src');
+				$('#arrowcookpot').attr('src', src);
+			}
+			cookpotTimer = setInterval(showResult, 700);
+		}
+	}
+};
+
+window.showResult = function() {
+	function returnResult() {
+		if ((cookpotResult !== undefined) && (cookpotResult[0] !== undefined)) {
+			clearInterval(cookpotTimer);
+			if ((cookpotResult.length !== 20) && (cookpotResult !== undefined)) {
+				cookpotResult = cookpotResult.split(', ');
+			}
+			for (var i = 0; i <= 15; i = i + 5) {
+				if (cookpotResult[i] !== '0') {
+					var src = $('#' + cookpotResult[i]).children('img').attr('data-src');
+					var id = (i / 5 + 1);
+					$('#result' + id).attr('src', src);
+					if (i !== 0) {
+						$('#result' + id).removeClass('hiddeningredientcookpot');
+						$('#result' + id).addClass('ingredientcookpot');
+					}
+					$('#arrowcookpot').attr('src', "https://vignette.wikia.nocookie.net/dont-starve/images/d/d2/Crock_Pot.png/revision/latest?cb=20130110150334&path-prefix=ru");
+					$('#name' + id).text(cookpotResult[i + 1]);
+					$('#health' + id).text(' ' + cookpotResult[i + 2] + ' ');
+					$('#hunger' + id).text(' ' + cookpotResult[i + 3] + ' ');
+					$('#sanity' + id).text(' ' + cookpotResult[i + 4] + ' ');
+					$('#description' + id).css({
+						"display": ""
+					});
+				}
+				if (cookpotResult[15] !== '0') {
+					$('#chance1, #chance2, #chance3, #chance4').text('25%');
+				} else if (cookpotResult[10] !== '0') {
+					$('#chance1, #chance2, #chance3').text('33%');
+				} else if (cookpotResult[5] !== '0') {
+					$('#chance1, #chance2').text('50%');
+				}
+			}
+		}
+	}
+	return returnResult();
+};
 
 intervalCookpotResult = setInterval(timerCookpotResult, 1000);
 
@@ -353,59 +353,43 @@ function timerCookpotResult() {
 	if (($('#result1').attr('src') !== undefined)) {
 		$('#result1').on('click', function() {
 			if (event.ctrlKey == true) {
-				if (mode == "None") {
-					var href = cookpotResult[1];
-					window.open(href, '_blank');
-				} else {}
+				var href = cookpotResult[1];
+				window.open(href, '_blank');
 			}
 		});
 		$('#result2').on('click', function() {
 			if (event.ctrlKey == true) {
-				if (mode == "None") {
-					var href = cookpotResult[6];
-					window.open(href, '_blank');
-				} else {}
+				var href = cookpotResult[6];
+				window.open(href, '_blank');
 			}
 		});
 		$('#result3').on('click', function() {
 			if (event.ctrlKey == true) {
-				if (mode == "None") {
-					var href = cookpotResult[11];
-					window.open(href, '_blank');
-				} else {}
+				var href = cookpotResult[11];
+				window.open(href, '_blank');
 			}
 		});
 		$('#result4').on('click', function() {
 			if (event.ctrlKey == true) {
-				if (mode == "None") {
-					var href = cookpotResult[16];
-					window.open(href, '_blank');
-				} else {}
+				var href = cookpotResult[16];
+				window.open(href, '_blank');
 			}
 		});
 		$('#name1').on('click', function() {
-			if (mode == "None") {
-				var href = cookpotResult[1];
-				window.open(href, '_blank');
-			} else {}
+			var href = cookpotResult[1];
+			window.open(href, '_blank');
 		});
 		$('#name2').on('click', function() {
-			if (mode == "None") {
-				var href = cookpotResult[6];
-				window.open(href, '_blank');
-			} else {}
+			var href = cookpotResult[6];
+			window.open(href, '_blank');
 		});
 		$('#name3').on('click', function() {
-			if (mode == "None") {
-				var href = cookpotResult[11];
-				window.open(href, '_blank');
-			} else {}
+			var href = cookpotResult[11];
+			window.open(href, '_blank');
 		});
 		$('#name4').on('click', function() {
-			if (mode == "None") {
-				var href = cookpotResult[16];
-				window.open(href, '_blank');
-			} else {}
+		    var href = cookpotResult[16];
+			window.open(href, '_blank');
 		});
 		clearInterval(intervalCookpotResult);
 	}

@@ -5,15 +5,10 @@
 article = "";
  
 var tooltipsOn = true;
- 
 var $tfb;
- 
 var $ttfb;
- 
 var $htt;
- 
 var activeHoverLink = null;
- 
 var tipCache = new Object;
  
 function hideTip() {
@@ -46,7 +41,7 @@ function showTip(e) {
     if ($p.hasClass("selflink") == false) {
         $t.removeAttr("title");
         $p.removeAttr("title");
-        var url = "/index.php?title=" + $t.data("tt").replace(/ /g, "_").replace(/\?/g, "%3F") + "&action=render div.tooltip-content";
+        var url = "/ko/index.php?title=" + $t.data("tt").replace(/ /g, "_").replace(/\?/g, "%3F") + "&action=render div.tooltip-content";
         if (tipCache[url] != null) {
             $tfb.html(tipCache[url]);
             displayTip(e);
@@ -93,10 +88,11 @@ function ttMouseOver() {
  
 // check to see if it is active then do it
 $( function() {
+	$('#bodyContent').addClass('page-content');
 	if(skin=='oasis') {
 		article = "#WikiaArticle";
 	} else {
-		article = "#bodyContent";
+		article = ".page-content";
 	}
  
         ttMouseOver();

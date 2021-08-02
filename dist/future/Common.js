@@ -8,7 +8,7 @@ ajaxPages = [
     "Special:Contributions"
 ];
 /* Dark Mode Tool */
-
+/*
 var darkMode = localStorage.getItem("FutureDarkMode")=="enabled";
 var DMClass = "future-dark-mode";
 var DMToolClass = "dark-mode-tool";
@@ -27,4 +27,5 @@ $(".toolbar .tools").append(DMTool);
 if(darkMode){
     $("body").addClass(DMClass);
 }
+*/
 /* End Dark Mode Tool */

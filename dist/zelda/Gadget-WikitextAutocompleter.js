@@ -1,3 +1,4 @@
+// <pre>
 /**
  * WikitextAutocompleter
  * Provides Autocomplete (a dropdown list) for wiki editing such as for 
@@ -365,3 +366,4 @@ if (mw.config.get("wgAction") == "edit") {
 	$(document).ready(autoComplete.getTextcompleteScript);
 	
 }
+// </pre>

@@ -42,6 +42,8 @@
             'Other Card assets': {
                 'Card images': 'Card images',
                 'Card icons': 'Card icons',
+                'Card images/Transparent': 'Card transparent',
+                'Card images/Raws': 'Card raw',
                 'Chibis': 'Chibi',
             },
 

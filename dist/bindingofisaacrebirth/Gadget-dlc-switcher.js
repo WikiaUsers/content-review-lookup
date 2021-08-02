@@ -163,6 +163,7 @@ var dlcSwitcher = {
 		console.log( 'DLC Switcher v0.13.2' );
 
 		if (
+			!document.body.classList.contains( 'skin-hydradark' ) ||
 			!document.body.classList.contains( 'ns-0' ) &&
 			!document.body.classList.contains( 'page-User_Derugon_Sandbox_DLC_switcher' )
 		) {

@@ -5,8 +5,6 @@
 importArticles({               
     type: "script",
     articles: [
-        "u:dev:Countdown/code.js",
-        'u:dev:PurgeButton/code.js',
         'u:dev:MediaWiki:AdminDashboard JS-Button/code.js',
         'u:dev:MediaWiki:AdminDashboard block/code.js',
         'u:dev:MediaWiki:MastheadRightsBadge.js',

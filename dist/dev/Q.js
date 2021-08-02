@@ -49,7 +49,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api']).then(function () {
             rvslots: '*',
             gapnamespace: 10
         }, function (data) {
-            for (const page of Object.values(data.query.pages)) {
+            Object.values(data.query.pages).forEach(function (page) {
                 if (/\|1{{{\d+?\|}}}=/.test(page.revisions[0].slots.main['*'])) {
                     console.log('found', page);
                     badPages.push({
@@ -57,9 +57,14 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api']).then(function () {
                         match: page.revisions[0].slots.main['*'].match(/\|1{{{\d+?\|}}}=/)[0]
                     });
                 }
-            }
+            });
         }, function () {
             alert('All done!');
+            
+            if (!badPages.length) {
+            	$('#mw-content-text #results').text(mw.messages.get('specialpage-empty'));
+            	return;
+            }
 
             $('#mw-content-text #results').html(badPages.map(function (item) {
                 return $('<a>', {
@@ -68,29 +73,20 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api']).then(function () {
                 }).prop('outerHTML') + ' - ' + item.match;
             }).join('\n')).after($('<div>', {
                 class: 'wds-button',
-                text: 'Edit',
+                text: mw.messages.get('edit'),
                 css: {
                     'margin-top': '5px'
                 },
                 click: function () {
                     $(this).addClass('wds-is-disabled');
-                    var summary = prompt('Please enter an edit summary');
+                    var summary = prompt(mw.messages.get('summary'));
                     edit(badPages, summary);
                 }
             }));
         });
     }
 
-    if (mw.config.get('wgCanonicalSpecialPageName') !== 'Blankpage' && !mw.config.get('wgTitle').endsWith('/Q')) {
-        $('#WikiaBar .toolbar .tools > :first-child').append(
-            $('<li>', {
-                append: $('<a>', {
-                    text: 'Q',
-                    href: mw.util.getUrl('Special:BlankPage/Q')
-                })
-            })
-        );
-    } else {
+    if (mw.config.get('wgCanonicalSpecialPageName') === 'Blankpage' && mw.config.get('wgTitle').endsWith('/Q')) {
         $('.page-header__title').text('Q');
         document.title = document.title.replace('Blank page', 'Q');
         $('#mw-content-text p').replaceWith(
@@ -98,6 +94,17 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api']).then(function () {
                 id: 'results'
             })
         );
-        main();
+        new mw.Api().loadMessagesIfMissing(['summary', 'specialpage-empty']).then(function () {
+			main();
+        });
+    } else {
+		$('#WikiaBar .toolbar .tools > :first-child').after(
+            $('<li>', {
+                append: $('<a>', {
+                    text: 'Q',
+                    href: mw.util.getUrl('Special:BlankPage/Q')
+                })
+            })
+        );
     }
 });

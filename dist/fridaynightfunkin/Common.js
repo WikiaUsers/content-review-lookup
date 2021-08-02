@@ -12,3 +12,8 @@ window.UserStatusSettings = {
     dnd: '#f04747',
     offline: '#747f8d',
 };
+window.DeleteUserpage = {
+   noConfirm: true,
+   protect: false,
+   deleteReason: 'Abusive Userpage'
+}

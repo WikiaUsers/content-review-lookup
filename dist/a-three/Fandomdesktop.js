@@ -38,6 +38,14 @@ endtextmaintenance: function () {
        $(this).text('This maintenance has ended');
     }
 };
+
+/* Replaces {{USERNAME}} with the name of the user browsing the page.
+   Requires copying Template:USERNAME. */
+$(function() {
+    if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) { return; }
+    $('span.insertusername').text(mw.config.get('wgUserName'));
+});
+
 /* Adding categories to customized upload page */
 if (['MultipleUpload', 'Upload'].indexOf(mw.config.get('wgCanonicalSpecialPageName')) > -1) {
         importScript('MediaWiki:Common.js/uploadform.js');

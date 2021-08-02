@@ -28,16 +28,21 @@ UserTagsJS.modules.metafilter = {
 
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
+// Big churgus 1: Add da calculators  
 (function () {
     mw.hook("wikipage.content").add(function ($content) {
         $content.find(".level-calculator").each(function (i, elem) {
             addLevelCalculator(elem);
+        });
+        $content.find(".damage-calculator").each(function (i, elem) {
+            addDamageCalculator(elem);
         });
         $content.find(".potential-calculator").each(function (i, elem) {
             addPotentialCalculator(elem);
         });
     });
 
+//Create da calculators
     function addLevelCalculator(div) {
         createSpan(div).update("DQ Wiki Level Calculator");
         var currentField = createField("current", "Your current level");
@@ -65,6 +70,48 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         };
     }
 
+	    function addDamageCalculator(div) {
+        createSpan(div).update("DQ Wiki Damage Calculator");
+        var weaponField = createField("weapon", "Weapon's power");
+        var armorField = createField("armor", "Armor's power");
+        var helmField = createField("helm", "Helm's power");
+        var skillField = createField("skill", "Skill points");
+        var submit = document.createElement("button");
+        submit.append("Calculate");
+        var result = createSpan(div);
+
+        div.append(
+            createBr(),
+            weaponField.label, weaponField.input, createBr(),
+            armorField.label, armorField.input, createBr(),
+            helmField.label, helmField.input, createBr(),
+            skillField.label, skillField.input, createBr(),
+            submit, createBr()
+        );
+
+        submit.onclick = function () {
+            var weapon = parseInt(weaponField.input.value);
+            var armor = parseInt(armorField.input.value);
+            var helm = parseInt(helmField.input.value);
+			var skill = parseInt(skillField.input.value);
+			
+			var dmg = calculateDMG(weapon, armor, helm, skill);
+			var low = dmg * .95;
+			var high = dmg * 1.05;
+			
+			var baseDamage = addCommas(dmg);
+			var lowDamage = addCommas(low);
+			var highDamage = addCommas(high);
+			
+			result.update("No Inner" + "<br>" +
+			"Average:" + baseDamage + "<br>" +
+			"Low Damage:" + lowDamage + "<br>" +
+			"High Damage:" + highDamage + "<br>"
+			); 
+            
+        };
+    }
+    
     function addPotentialCalculator(div) {
         var powerField = createField("pot-power", "Current power (optional)");
         var currentField = createField("pot-current", "Upgrades already done");
@@ -180,6 +227,11 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         return xp;
     }
 
+	function calculateDMG(wep, arm, helm, skill) {
+        var damage = Math.floor((wep * (0.6597 + 0.013202 * skill)*((arm+helm)*0.0028))*107);
+        return damage;
+    }
+    
     function calculatePotential(power, current, total) {
         var potential = power;
         var upgrades = current;

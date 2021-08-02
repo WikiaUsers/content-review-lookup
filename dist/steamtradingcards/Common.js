@@ -4,3 +4,6 @@
 window.RevealAnonIP = {
 	permissions : ['rollback', 'sysop', 'bureaucrat']
 };
+
+// Disables the Rollback Script 
+window.RollbackWikiDisable = true;

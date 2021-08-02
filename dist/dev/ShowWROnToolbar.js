@@ -5,7 +5,7 @@ mw.loader.using('mediawiki.api').then(function () {
 	}
 	window.ShowWROnToolbarLoaded = true;
 
-	function main (msg) {
+	function main () {
 		$.get(mw.config.get('wgScriptPath') + '/wiki/Special:Community', function (data) {
 	        var fake = document.createElement('div');
 	        fake.innerHTML = data;

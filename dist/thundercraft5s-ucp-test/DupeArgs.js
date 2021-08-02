@@ -3,16 +3,17 @@
  * Finds pages with templates that have duplicate parameters, and reports them
  * @author Dorumin
  */
+/* jshint maxerr: 99999 */
 
 (function() {
-    var loading = [
-        'dorui',
-        'modal',
-        'api'
-    ];
-    var ui;
-    var api;
-    var refs = {};
+	var loading = [
+		'dorui',
+		'modal',
+		'api'
+	];
+	var ui;
+	var api;
+	var refs = {};
 
     function deepQuery(args) {
         return new Promise(function(_resolve) {
@@ -30,7 +31,7 @@
                         resolve: resolve,
                         extra: data['continue'],
                         params: args.params
-                    })
+                    });
                 } else {
                     resolve();
                 }
@@ -38,297 +39,297 @@
         });
     }
 
-    function nextIgnoreRanges(start, str, char, ranges) {
-        var i = start;
+	function nextIgnoreRanges(start, str, char, ranges) {
+		var i = start;
 
-        outer:
-        while (true) {
-            i = str.indexOf(char, i + 1);
+		outer:
+		while (true) {
+			i = str.indexOf(char, i + 1);
 
-            if (i === -1) {
-                break;
-            }
+			if (i === -1) {
+				break;
+			}
 
-            for (var j = 0; j < ranges.length; j++) {
-                var range = ranges[j];
+			for (var j = 0; j < ranges.length; j++) {
+				var range = ranges[j];
 
-                if (range.start <= i && i < range.end) {
-                    continue outer;
-                }
-            }
+				if (range.start <= i && i < range.end) {
+					continue outer;
+				}
+			}
 
-            break;
-        }
+			break;
+		}
 
-        return i;
-    }
+		return i;
+	}
 
-    // Hacky add-on, grab link ranges and <gallery> ranges
-    // For ignoring pipes inside
-    function grabIgnoreRanges(text) {
-        var ranges = [];
-        var regex = /(?:\[\[[^\]]+\]\]|\[\[[^\|]+\|[^\]]*\]\]|<(gallery)>[\s\S]*?<\/\1>)/g;
-        var match;
+	// Hacky add-on, grab link ranges and <gallery> ranges
+	// For ignoring pipes inside
+	function grabIgnoreRanges(text) {
+		var ranges = [];
+		var regex = /(?:\[\[[^\]]+\]\]|\[\[[^\|]+\|[^\]]*\]\]|<(gallery)>[\s\S]*?<\/\1>)/g;
+		var match;
 
-        while ((match = regex.exec(text)) !== null) {
-            ranges.push({
-                start: match.index,
-                end: match.index + match[0].length
-            });
-        }
+		while ((match = regex.exec(text)) !== null) {
+			ranges.push({
+				start: match.index,
+				end: match.index + match[0].length
+			});
+		}
 
-        return ranges;
-    }
+		return ranges;
+	}
 
-    function parseArg(arg) {
-        var parsed = parseTemplates(arg).concat(grabIgnoreRanges(arg));
-        var nextEq = nextIgnoreRanges(0, arg, '=', parsed);
+	function parseArg(arg) {
+		var parsed = parseTemplates(arg).concat(grabIgnoreRanges(arg));
+		var nextEq = nextIgnoreRanges(0, arg, '=', parsed);
 
-        if (nextEq === -1) {
-            return {
-                inline: true,
-                value: arg
-            };
-        } else {
-            return {
-                inline: false,
-                key: arg.slice(0, nextEq),
-                value: arg.slice(nextEq + 1)
-            };
-        }
-    }
+		if (nextEq === -1) {
+			return {
+				inline: true,
+				value: arg
+			};
+		} else {
+			return {
+				inline: false,
+				key: arg.slice(0, nextEq),
+				value: arg.slice(nextEq + 1)
+			};
+		}
+	}
 
-    function parseTemplate(template) {
-        var name = '';
-        var args = [];
+	function parseTemplate(template) {
+		var name = '';
+		var args = [];
 
-        var inner = template.source.slice(2, -2);
-        var firstPipe = inner.indexOf('|');
-        if (firstPipe === -1) {
-            name = inner;
-        } else {
-            name = inner.slice(0, firstPipe);
+		var inner = template.source.slice(2, -2);
+		var firstPipe = inner.indexOf('|');
+		if (firstPipe === -1) {
+			name = inner;
+		} else {
+			name = inner.slice(0, firstPipe);
 
-            var after = inner.slice(firstPipe + 1);
-            var parsed = parseTemplates(after).concat(grabIgnoreRanges(after));
-            var last = 0;
-            var argIndex = 1;
+			var after = inner.slice(firstPipe + 1);
+			var parsed = parseTemplates(after).concat(grabIgnoreRanges(after));
+			var last = 0;
+			var argIndex = 1;
 
-            while (true) {
-                var nextPipe = nextIgnoreRanges(last, after, '|', parsed);
+			while (true) {
+				var nextPipe = nextIgnoreRanges(last, after, '|', parsed);
 
-                var argText;
-                if (nextPipe === -1) {
-                    argText = after.slice(last);
+				var argText;
+				if (nextPipe === -1) {
+					argText = after.slice(last);
 
-                    // Stupid hack for piped stuff
-                    if (argText === '|') {
-                        argText = '';
-                        last = after.length;
-                        nextPipe = 0;
-                    }
-                } else {
-                    argText = after.slice(last, nextPipe);
+					// Stupid hack for piped stuff
+					if (argText === '|') {
+						argText = '';
+						last = after.length;
+						nextPipe = 0;
+					}
+				} else {
+					argText = after.slice(last, nextPipe);
 
-                    // Stupid hack for empty piped args
-                    if (argText.charAt(0) === '|') {
-                        argText = argText.slice(1);
+					// Stupid hack for empty piped args
+					if (argText.charAt(0) === '|') {
+						argText = argText.slice(1);
 
-                        if (argText === '') {
-                            last = nextPipe;
-                        } else {
-                            last = nextPipe + 1;
+						if (argText === '') {
+							last = nextPipe;
+						} else {
+							last = nextPipe + 1;
 
-                            var arg = parseArg('');
-                            if (arg.inline) {
-                                arg.key = argIndex.toString();
-                                argIndex++;
+							var arg = parseArg('');
+							if (arg.inline) {
+								arg.key = argIndex.toString();
+								argIndex++;
 
-                                // for debug order stuff
-                                var value = arg.value;
-                                delete arg.value;
-                                arg.value = value;
-                            }
+								// for debug order stuff
+								var value = arg.value;
+								delete arg.value;
+								arg.value = value;
+							}
 
-                            args.push(arg);
-                        }
-                    } else {
-                        last = nextPipe + 1;
-                    }
-                }
+							args.push(arg);
+						}
+					} else {
+						last = nextPipe + 1;
+					}
+				}
 
-                var arg = parseArg(argText);
-                if (arg.inline) {
-                    arg.key = argIndex.toString();
-                    argIndex++;
+				var arg = parseArg(argText);
+				if (arg.inline) {
+					arg.key = argIndex.toString();
+					argIndex++;
 
-                    // for debug order stuff
-                    var value = arg.value;
-                    delete arg.value;
-                    arg.value = value;
-                }
+					// for debug order stuff
+					var value = arg.value;
+					delete arg.value;
+					arg.value = value;
+				}
 
-                args.push(arg);
+				args.push(arg);
 
-                if (nextPipe === -1) {
-                    break;
-                }
-            }
-        }
+				if (nextPipe === -1) {
+					break;
+				}
+			}
+		}
 
-        return {
-            name: name,
-            args: args,
-            source: template.source
-        };
-    }
+		return {
+			name: name,
+			args: args,
+			source: template.source
+		};
+	}
 
-    // Parses top-level templates
-    // And gives you key-value as the arguments
-    // Duplicates are NOT removed, whitespace IS preserved
-    // Argument names are not normalized
-    // This is lossless parsing, but it does not handle {{{1}}} well at all
-    function parseTemplates(text, parsed) {
-        var templates = [];
-        var braces = 0;
-        var last = false;
-        var start = -1;
+	// Parses top-level templates
+	// And gives you key-value as the arguments
+	// Duplicates are NOT removed, whitespace IS preserved
+	// Argument names are not normalized
+	// This is lossless parsing, but it does not handle {{{1}}} well at all
+	function parseTemplates(text, parsed) {
+		var templates = [];
+		var braces = 0;
+		var last = false;
+		var start = -1;
 
-        for (var i = 0; i < text.length; i++) {
-            var char = text[i];
+		for (var i = 0; i < text.length; i++) {
+			var char = text[i];
 
-            switch (char) {
-                case '{':
+			switch (char) {
+				case '{':
 					if (text[i+1] === '|') return templates; // Check for table syntax
 
-                    braces++;
+					braces++;
 
-                    if (last) {
-                        start = i - 1;
-                        last = false;
-                    } else {
-                        if (start === -1) {
-                            last = true;
-                        }
-                    }
-                    break;
-                case '}':
-                    if (braces > 0) {
-                        braces--;
-                    }
+					if (last) {
+						start = i - 1;
+						last = false;
+					} else {
+						if (start === -1) {
+							last = true;
+						}
+					}
+					break;
+				case '}':
+					if (braces > 0) {
+						braces--;
+					}
 
-                    if (braces === 0 && start !== -1) {
-                        var templateSource = text.slice(start, i + 1);
-                        var template = {
-                            start: start,
-                            end: i + 1,
-                            source: templateSource
-                        };
-                        template.parsed = parseTemplate(template);
-                        if (parsed) {
-                            templates.push(template.parsed);
-                        } else {
-                            templates.push(template);
-                        }
+					if (braces === 0 && start !== -1) {
+						var templateSource = text.slice(start, i + 1);
+						var template = {
+							start: start,
+							end: i + 1,
+							source: templateSource
+						};
+						template.parsed = parseTemplate(template);
+						if (parsed) {
+							templates.push(template.parsed);
+						} else {
+							templates.push(template);
+						}
 
-                        start = -1;
-                    }
+						start = -1;
+					}
 
-                    last = false;
-                    break;
-                default:
-                    last = false;
-                    break;
-            }
-        }
+					last = false;
+					break;
+				default:
+					last = false;
+					break;
+			}
+		}
 
-        return templates;
-    }
+		return templates;
+	}
 
-    function normalizeArgName(name) {
-        // Does _ have to be turned to " "?
-        return name.trim().toLowerCase();
-    }
+	function normalizeArgName(name) {
+		// Does _ have to be turned to " "?
+		return name.trim().toLowerCase();
+	}
 
-    function getPageDupes(page) {
-        var dupes = [];
-        var templates = parseTemplates(page.content);
+	function getPageDupes(page) {
+		var dupes = [];
+		var templates = parseTemplates(page.content);
 
-        for (var i = 0; i < templates.length; i++) {
-            var argmap = {};
-            var template = templates[i].parsed;
+		for (var i = 0; i < templates.length; i++) {
+			var argmap = {};
+			var template = templates[i].parsed;
 
-            for (var j = 0; j < template.args.length; j++) {
-                var arg = template.args[j];
-                var name = normalizeArgName(arg.key);
+			for (var j = 0; j < template.args.length; j++) {
+				var arg = template.args[j];
+				var name = normalizeArgName(arg.key);
 
-                if (argmap.hasOwnProperty(name)) {
-                    console.log(page.title, name);
-                    dupes.push(template);
-                    break;
-                }
+				if (argmap.hasOwnProperty(name)) {
+					console.log(page.title, name);
+					dupes.push(template);
+					break;
+				}
 
-                argmap[name] = true;
-            }
-        }
+				argmap[name] = true;
+			}
+		}
 
-        return dupes;
-    }
+		return dupes;
+	}
 
-    function nonBreaking(str) {
-        return str.replace(/ /g, String.fromCharCode(160));
-    }
+	function nonBreaking(str) {
+		return str.replace(/ /g, String.fromCharCode(160));
+	}
 
-    function buildDupe(dupe) {
-        var dupeKeys = Object.values(dupe.argmap)
-            .filter(function(args) {
-                return args.length > 1;
-            })
-            .map(function(args) {
-                return args[0].key;
-            });
+	function buildDupe(dupe) {
+		var dupeKeys = Object.values(dupe.argmap)
+			.filter(function(args) {
+				return args.length > 1;
+			})
+			.map(function(args) {
+				return args[0].key;
+			});
 
-        return ui.div({
-            class: 'page-duplicate-template',
-            children: [
-                ui.div({
-                    text: 'Duplicates: ' + dupeKeys.join(', ')
-                }),
-                ui.pre({
-                    style: {
-                        whiteSpace: 'pre-line',
-                        overflowWrap: 'break-word'
-                    },
-                    children: [
-                        '{{',
-                        nonBreaking(dupe.template.name),
-                        ui.frag(
-                            dupe.template.args.map(function(arg) {
-                                var name = normalizeArgName(arg.key);
+		return ui.div({
+			class: 'page-duplicate-template',
+			children: [
+				ui.div({
+					text: 'Duplicates: ' + dupeKeys.join(', ')
+				}),
+				ui.pre({
+					style: {
+						whiteSpace: 'pre-line',
+						overflowWrap: 'break-word'
+					},
+					children: [
+						'{{',
+						nonBreaking(dupe.template.name),
+						ui.frag(
+							dupe.template.args.map(function(arg) {
+								var name = normalizeArgName(arg.key);
 
-                                if (arg.inline) {
-                                    var text = '|' + arg.value;
+								if (arg.inline) {
+									var text = '|' + arg.value;
 
-                                    if (dupe.argmap[name].length > 1) {
-                                        return ui.span({
-                                            style: {
-                                                color: 'red'
-                                            },
-                                            text: text
-                                        });
-                                    } else {
-                                        return text;
-                                    }
-                                } else {
-                                    var text = '|' + nonBreaking(arg.key) + '=' + arg.value;
+									if (dupe.argmap[name].length > 1) {
+										return ui.span({
+											style: {
+												color: 'red'
+											},
+											text: text
+										});
+									} else {
+										return text;
+									}
+								} else {
+									var text = '|' + nonBreaking(arg.key) + '=' + arg.value;
 
-                                    if (dupe.argmap[name].length > 1) {
-                                        return ui.span({
+									if (dupe.argmap[name].length > 1) {
+										return ui.span({
 											class: "param",
-                                            style: {
-                                                color: 'red'
-                                            },
-                                            children: [ui.span({ class: "keyvalue", children: [
+											style: {
+												color: 'red'
+											},
+											children: [ui.span({ class: "keyvalue", children: [
 												ui.span({ class: "pipe", text: "|" }),
 												ui.span({ class: "key", text: nonBreaking(arg.key) }),
 												ui.span({ class: "keyvalue-equals", text: '=' }),
@@ -343,21 +344,21 @@
 													else renameTemplateParams.call(this, e, arg.key, dupe, arg);
 												},
 											},
-                                        });
-                                    } else {
-                                        return text;
-                                    }
-                                }
-                            })
-                        ),
-                        '}}'
-                    ]
-                })
-            ]
-        });
-    }
+										});
+									} else {
+										return text;
+									}
+								}
+							})
+						),
+						'}}'
+					]
+				})
+			]
+		});
+	}
 
-	async function removeDupes(dupe, text, e) {
+	function removeDupes(dupe, text, e) {
 		var $this = $(this);
 		var pos = $this.parent().children().toArray().indexOf(this);
 		var chosenKey = $this.text().split(/\s*=\s*/).shift().slice(1).trim();
@@ -381,16 +382,16 @@
 			});
 		}
 
-		text = dupe.page.revisions[0].slots.main["*"].replace(dupe.template.source, text);
+		text = dupe.page.revisions[0].slots.main["*"].replace(dupe.template.source, text.replaceAll(String.fromCharCode(160), ' '));
 
-		dupe.template = parseTemplates(text)[0];
+		dupe.template = parseTemplates(text)[0].parsed;
 		dupe.page.revisions[0].slots.main["*"] = text;
 
-		for (var i in dupe.argmap) delete dupe.argmap[i];
-		for (var j = 0; j < dupe.template.length; j++) {
+		for (var j = 0; j < dupe.template.args.length; j++) {
 			var arg = dupe.template.args[j];
 			var name = normalizeArgName(arg.key);
 
+			dupe.argmap[name] = [];
 			dupe.argmap[name].push(arg);
 		}	
 
@@ -431,6 +432,7 @@
 	function renameTemplateParams(e, oldKey, dupe, arg) {
 		console.log(dupe);
 		var content = dupe.page.revisions[0].slots.main["*"];
+		oldKey = oldKey.trim();
 	
 		$(this).addClass('active-textbox').find('.key').hide().after($('<input>', {
 			value: oldKey,
@@ -461,10 +463,18 @@
 						.next()
 						.remove();
 
-					var text = content.replace(dupe.template.source, par.text());
+					var text = content.replace(dupe.template.source, par.text().replaceAll(String.fromCharCode(160), ' '));
 
-					dupe.template = parseTemplates(text)[0];
+					dupe.template = parseTemplates(text)[0].parsed;
 					dupe.page.revisions[0].slots.main["*"] = text;
+		
+					for (var j = 0; j < dupe.template.args.length; j++) {
+						var arg = dupe.template.args[j];
+						var name = normalizeArgName(arg.key);
+			
+						dupe.argmap[name] = [];
+						dupe.argmap[name].push(arg);
+					}	
 
 					if ($remaining.length <= 1) {
 						$remaining.css({ color: "inherit" })
@@ -489,58 +499,59 @@
 				} else if (e.key === 'Esc' || this.value.trim() === oldKey || (this.value.trim() === "" && e.key === "Enter")) 								$this.prev().show().next().remove().end().parents('.active-textbox').removeClass('active-textbox');
 			},
 		})).next().focus();
+	}	
+
+	function reportDupes(page, content, dupes) {
+		var dupes = [];
+		var templates = parseTemplates(content);
+
+		for (var i = 0; i < templates.length; i++) {
+			var argmap = {};
+			var template = templates[i].parsed;
+			var hasDupes = false;
+
+			for (var j = 0; j < template.args.length; j++) {
+				var arg = template.args[j];
+				var name = normalizeArgName(arg.key);
+
+				if (!argmap.hasOwnProperty(name)) {
+					argmap[name] = [];
+				} else {
+					hasDupes = true;
+				}
+
+				argmap[name].push(arg);
+			}
+
+			if (hasDupes) {
+				dupes.push({
+					template: template,
+					argmap: argmap,
+					page: page,
+				});
+			}
+		}
+
+		refs.dupeList.appendChild(
+			ui.div({
+				class: 'page-report',
+				children: [
+					ui.h2({
+						class: 'page-title',
+						child: ui.a({
+							href: mw.util.getUrl(page.title),
+							text: page.title
+						})
+					}),
+					ui.div({
+						class: 'page-duplicate-templates',
+						children: dupes.map(buildDupe)
+					})
+				]
+			})
+		);
 	}
 
-    function reportDupes(page, content, dupes) {
-        var dupes = [];
-        var templates = parseTemplates(content);
-
-        for (var i = 0; i < templates.length; i++) {
-            var argmap = {};
-            var template = templates[i].parsed;
-            var hasDupes = false;
-
-            for (var j = 0; j < template.args.length; j++) {
-                var arg = template.args[j];
-                var name = normalizeArgName(arg.key);
-
-                if (!argmap.hasOwnProperty(name)) {
-                    argmap[name] = [];
-                } else {
-                    hasDupes = true;
-                }
-
-                argmap[name].push(arg);
-            }
-
-            if (hasDupes) {
-                dupes.push({
-                    template: template,
-                    argmap: argmap,
-					page: page,
-                });
-            }
-        }
-
-        refs.dupeList.appendChild(
-            ui.div({
-                class: 'page-report',
-                children: [
-                    ui.h2({
-                        class: 'page-title',
-                        child: ui.a({
-                            href: mw.util.getUrl(page.title),
-                            text: page.title
-                        })
-                    }),
-                    ui.div({
-                        class: 'page-duplicate-templates',
-                        children: dupes.map(buildDupe)
-                    })
-                ]
-            })
-        );
-    }
 
     function fetchAllDupes() {
         var pagesFetched = 0;
@@ -557,7 +568,6 @@
                     pagesFetched++;
 
                     var content = page.revisions[0].slots.main['*'];
-
                     var dupes = getPageDupes({
                         title: page.title,
                         content: content
@@ -572,9 +582,10 @@
             },
             params: {
                 action: 'query',
-                generator: 'allpages',
-                gaplimit: 'max',
-                gapnamespace: '0',
+                generator: 'categorymembers',
+                gcmtitle: 'Category:Pages using duplicate arguments in template calls',
+                gcmlimit: 'max',
+                // gcmnamespace: '*',
                 prop: 'revisions',
                 rvprop: 'content',
                 rvslots: 'main'
@@ -584,90 +595,90 @@
         });
     }
 
-    function showModal() {
-        var dupeList;
-        var $modal = dev.showCustomModal('DupeArgs', {
-            content: ui.div({
-                children: [
-                    'Searching for pages with duplicate arguments...',
-                    refs.status = ui.div(),
-                    refs.dupeList = ui.div({
-                        id: 'dupe-list'
-                    })
-                ]
-            }),
-            buttons: [
-                {
-                    message: 'Close',
-                    handler: function() {
-                        dev.showCustomModal.closeModal($modal);
-                        refs = {};
-                    }
-                }
-            ]
-        });
+	function showModal() {
+		var dupeList;
+		var $modal = dev.showCustomModal('DupeArgs', {
+			content: ui.div({
+				children: [
+					'Searching for pages with duplicate arguments..',
+					refs.status = ui.div(),
+					refs.dupeList = ui.div({
+						id: 'dupe-list'
+					})
+				]
+			}),
+			buttons: [
+				{
+					message: 'Close',
+					handler: function() {
+						dev.showCustomModal.closeModal($modal);
+						refs = {};
+					}
+				}
+			]
+		});
 
-        fetchAllDupes();
-    }
+		fetchAllDupes();
+	}
 
-    function init() {
-        var tools = document.getElementById('my-tools-menu');
-        if (tools === null) return;
+	function init() {
+		var tools = document.getElementById('my-tools-menu');
+		if (tools === null) return;
 
-        tools.appendChild(
-            ui.li({
-                class: 'custom',
-                child: ui.a({
-                    id: 'MassCat-tools-button',
-                    href: '#',
-                    text: 'DupeArgs'
-                }),
-                events: {
-                    click: showModal
-                }
-            })
-        );
-    }
+		tools.appendChild(
+			ui.li({
+				class: 'custom',
+				child: ui.a({
+					id: 'MassCat-tools-button',
+					href: '#',
+					text: 'DupeArgs'
+				}),
+				events: {
+					click: showModal
+				}
+			})
+		);
+	}
 
-    function onload(label, arg) {
-        switch (label) {
-            case 'dorui':
-                ui = arg;
-                break;
-            case 'api':
-                api = new mw.Api();
-                break;
-        }
+	function onload(label, arg) {
+		switch (label) {
+			case 'dorui':
+				ui = arg;
+				break;
+			case 'api':
+				api = new mw.Api();
+				break;
+		}
 
-        var index = loading.indexOf(label);
-        if (index === -1) {
-            throw new Error('Unregistered dependency loaded: ' + label);
-        }
+		var index = loading.indexOf(label);
+		if (index === -1) {
+			throw new Error('Unregistered dependency loaded: ' + label);
+		}
 
-        loading.splice(index, 1);
+		loading.splice(index, 1);
 
-        if (loading.length === 0) {
-            init();
-        }
-    }
+		if (loading.length === 0) {
+			init();
+		}
+	}
 
-    function preload() {
-        importArticles({
-            type: 'script',
-            articles: [
-                'u:dev:MediaWiki:Dorui.js',
-                'u:dev:MediaWiki:ShowCustomModal.js'
-            ]
-        });
+	function preload() {
+		importArticles({
+			type: 'script',
+			articles: [
+				'u:dev:MediaWiki:Dorui.js',
+				'u:dev:MediaWiki:ShowCustomModal.js'
+			]
+		});
 
-        mw.hook('doru.ui').add(onload.bind(null, 'dorui'));
-        mw.hook('dev.showCustomModal').add(onload.bind(null, 'modal'));
-        mw.loader.using('mediawiki.api').then(onload.bind(null, 'api'));
-    }
+		mw.hook('doru.ui').add(onload.bind(null, 'dorui'));
+		mw.hook('dev.showCustomModal').add(onload.bind(null, 'modal'));
+		mw.loader.using('mediawiki.api').then(onload.bind(null, 'api'));
+	}
 
-    preload();
+	preload();
 
-    window.DupeArgs = {
-        loading: loading
-    };
+	window.DupeArgs = {
+		loading: loading
+	};
 })();

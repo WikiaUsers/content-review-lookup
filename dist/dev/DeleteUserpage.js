@@ -72,8 +72,7 @@
     function handler (d) {
         if (
             d.query.userinfo.rights.includes('delete') &&
-            !d.query.pages['-1'] &&
-            d.query.pages[Object.keys(d.query.pages)[0]].revisions[0].user !== user
+            !d.query.pages['-1']
         ) {
             if (localStorage.getItem('fetch-CanDelete')) {
                 localStorage.removeItem('fetch-CanDelete');
@@ -89,10 +88,6 @@
                     action: 'query',
                     meta: 'userinfo',
                     uiprop: 'rights',
-                    prop: 'revisions',
-                    rvprop: 'user',
-                    rvdir: 'newer',
-                    rvlimit: 1,
                     titles: userpage,
                     format: 'json'
                 }).done(function (d) {

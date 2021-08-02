@@ -186,6 +186,33 @@ mw.hook('wikipage.content').add(function() {
 		$('.all-toggle-all-toggle[data-all-toggle-key="' + attr +'"]').toggleClass('toggle-section-hidden');
 	});
 	
+	
+	// Show-Hide individual columns of tables, using Widget:ColumnShowHide
+	$('.column-show-hide-toggler').off('click');
+	$('.column-show-hide-toggler').click(function(e) {
+		var tableIndex = $(this).closest('.column-show-hide').attr('data-table-index');
+		var columnIndex = $(this).attr('name');
+		var selectors = [
+			'table.column-show-hide-' + tableIndex + ' > * > tr > *:nth-of-type(' + columnIndex + '):not(.colspan-cell)',
+			'table.column-show-hide-' + tableIndex + ' > tr > *:nth-of-type(' + columnIndex + '):not(.colspan-cell)',
+		];
+		var selectorsStr = selectors.join(', ');
+		$(selectorsStr).toggleClass('column-show-hide-hidden');
+	});
+	
+	$('.column-show-hide-show-all').off('click');
+	$('.column-show-hide-show-all').click(function(e) {
+		$(this).closest('.column-show-hide').find('.column-show-hide-toggler').prop("checked", true);
+		var tableIndex = $(this).closest('.column-show-hide').attr('data-table-index');
+		var selectors = [
+			'table.column-show-hide-' + tableIndex + ' > * > tr > *:not(.colspan-cell)',
+			'table.column-show-hide-' + tableIndex + ' > tr > *:not(.colspan-cell)',
+		];
+		var selectorsStr = selectors.join(', ');
+		$(selectorsStr).removeClass('column-show-hide-hidden');
+	});
+	// End show-hide stuff
+	
 	// LAZY STUFF
 	
 	function processAllLazyTogglers(toggleClass) {

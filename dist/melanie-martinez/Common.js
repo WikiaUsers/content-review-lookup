@@ -19,19 +19,6 @@ importArticles({
         "w:c:dev:SpoilerAlert/code.js"
     ]
 });
-
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		// group: { associated tag data }
-		socialmediamanager: { u:'Social Media Manager' }
-	}
-};
-
-UserTagsJS.modules.custom = {
-	'Big Bad Wolves': ['socialmediamanager'], // Add Social Media Manager
-	'AshleyxTrash': ['socialmediamanager'], // Add Social Media Manager
-};
 window.railWAM = {
     logPage:"Project:WAM Log"
 };

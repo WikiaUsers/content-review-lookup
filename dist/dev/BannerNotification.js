@@ -13,6 +13,12 @@
     window.dev = window.dev || {};
     window.dev.banners = {};
 
+	var typeAliases = {
+		success: 'confirm',
+		info: 'notify',
+		warning: 'warn'
+	};
+
     function getUCPBannerModuleName() {
         var modules = mw.loader.getModuleNames();
         var prefix = 'BannerNotifications-';
@@ -60,7 +66,9 @@
     function createBannerNotificationWrapper(BannerNotification) {
         return createClass({
             constructor: function(content, type, $parent, timeout) {
-                this._inner = new BannerNotification(content, type, $parent, timeout);
+            	var mappedType = typeAliases[type] || type;
+            	
+                this._inner = new BannerNotification(content, mappedType, $parent, timeout);
                 this.type = this._inner.type;
                 this.content = this._inner.content;
                 this.hidden = this._inner.hidden;
@@ -155,9 +163,9 @@
         });
     }
 
-    // function patchStyles() {
-    //     mw.util.addCSS('.wds-banner-notification .wds-banner-notification__text a { color: var(--themed-link-color) }');
-    // }
+    function patchStyles() {
+        mw.util.addCSS('.wds-banner-notification.wds-alert.error { color: var(--wds-banner-notification-text-color); }');
+    }
 
     var isUCP = parseFloat(mw.config.get('wgVersion')) > 1.19;
     var bannerModule = isUCP
@@ -173,7 +181,7 @@
 
             mw.hook('dev.banners').fire(Wrapper);
 
-            // patchStyles();
+            patchStyles();
         });
     } else {
         require([bannerModule], function(BannerNotification) {
@@ -181,7 +189,7 @@
 
             mw.hook('dev.banners').fire(BannerNotification);
 
-            // patchStyles();
+            patchStyles();
         });
     }
 })();

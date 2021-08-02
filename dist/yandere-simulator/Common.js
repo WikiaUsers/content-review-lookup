@@ -146,6 +146,7 @@ UserTagsJS.modules.custom = {
 	'Ekoa Daiki': ['former-intern'],
 	'Maven1010': ['former-intern'],
 	'AquaSniper37': ['former-intern'],
+	'Thekoolgal11': ['former-intern']
 };
 //Remove tag if has any of the blacklisted tags
 UserTagsJS.modules.metafilter = {

@@ -53,26 +53,43 @@ $(function () {
 		$("#l1").css("background-color", "rgba(0,0,0,0.3)");
 		$("#l2").css("background-color", "initial");
 		$("#l3").css("background-color", "initial");
+		$("#l4").css("background-color", "initial");
 		$(".level1").css("display", "contents");
 		$(".level2").css("display", "none");
 		$(".level3").css("display", "none");
+		$(".level4").css("display", "none");
 	});
 
 	$("#l2").click(function () {
 		$("#l1").css("background-color", "initial");
 		$("#l2").css("background-color", "rgba(0,0,0,0.3)");
 		$("#l3").css("background-color", "initial");
+		$("#l4").css("background-color", "initial");
 		$(".level1").css("display", "none");
 		$(".level2").css("display", "contents");
 		$(".level3").css("display", "none");
+		$(".level4").css("display", "none");
 	});
 
 	$("#l3").click(function () {
 		$("#l1").css("background-color", "initial");
 		$("#l2").css("background-color", "initial");
 		$("#l3").css("background-color", "rgba(0,0,0,0.3)");
+		$("#l4").css("background-color", "initial");
 		$(".level1").css("display", "none");
 		$(".level2").css("display", "none");
 		$(".level3").css("display", "contents");
+		$(".level4").css("display", "none");
+	});
+
+	$("#l4").click(function () {
+		$("#l1").css("background-color", "initial");
+		$("#l2").css("background-color", "initial");
+		$("#l3").css("background-color", "initial");
+		$("#l4").css("background-color", "rgba(0,0,0,0.3)");
+		$(".level1").css("display", "none");
+		$(".level2").css("display", "none");
+		$(".level3").css("display", "none");
+		$(".level4").css("display", "contents");
 	});
 });

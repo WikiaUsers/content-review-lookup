@@ -311,7 +311,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 		"personagem": {
 			label: 'Personagem',
 			type: 'button',
-			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/2/29/Character_Button.png',
+			icon: 'https://static.wikia.nocookie.net/marvel/images/2/29/Character_Button.png/revision/latest?cb=20180131200510&path-prefix=pt-br',
 			action: {
 				type: 'encapsulate',
 				options: {
@@ -322,7 +322,44 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 		}
 	}
 } );
-
+/* Equipe */
+$( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"equipe": {
+			label: 'Equipe',
+			type: 'button',
+			icon: 'https://static.wikia.nocookie.net/marvel/images/5/5d/Team_Button.png/revision/latest?cb=20180131200839&format=original&path-prefix=pt-br',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Wiki:Predefinição de Equipe\r| Imagem                  = ",
+					post: "\r| Nome                    = \r| NomesEditoriais         = \r| OutrosNomes             = \r\r| LíderesDaEquipe         = \r| MembrosAtuais           = \r| MembrosAnteriores       = \r\r| Identidade              = \r| Afiliação               = \r| Aliados                 = \r| Inimigos                = \r\r| Origem                  = \r| Status                  = \r| Realidade               = \r| BaseDeOperações         = \r| LocalDeFormação         = \r| LocalDeDissolução       = \r\r| Criadores               = \r| Primeira                = \r| Última                  = \r\r| História                = \r\r| Equipamento             = \r| Transporte              = \r| Armas                   = \r\r| Notas                   = \r| Curiosidade             = \r| Links                   = \r}}"
+				}
+			}
+		}
+	}
+} );
+/* Local */
+$( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
+	section: 'advanced',
+	group: 'infoboxes',
+	tools: {
+		"local": {
+			label: 'Local',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/f/f2/Location_Button.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Marvel Wiki:Predefinição de Local\r| Imagem                  = ",
+					post: "\r| Nome                    = \r| OutrosNomes             = \r\r| Realidade               = \r| Galáxia                 = \r| SistemaEstelar          = \r| Planeta                 = \r| Continente              = \r| País                    = \r| Região                  = \r| Estado                  = \r| Cidade                  = \r| Localidade              = \r\r| População               = \r\r| Criadores               = \r| Primeira                = \r\r| História                = \r\r| PontosDeInteresse       = \r| Residentes              = \r\r| Notas                   = \r| Curiosidades            = \r| Links                   = \r}}"
+				}
+			}
+		}
+	}
+} );
 /* Verifique se a visualização está no modo de edição e se os módulos necessários estão disponíveis. Em seguida, personalize a barra de ferramentas … */
 if ( [ 'editar', 'enviar' ].indexOf( mw.config.get( 'wgAction' ) ) !== -1 ) {
 mw.loader.using( 'user.options' ).then( function () {
