@@ -43,7 +43,7 @@
 			case 'wikitext': return; // 'text/x-wiki' is the default
 			case 'javascript': return 'text/javascript';
 			case 'css': return 'text/css';
-			case 'json': case 'GeoJSON': case 'GeoJson': return 'application/json';
+			case 'json': case 'GeoJSON': case 'GeoJson': case 'interactivemap': return 'application/json';
 			case 'text': return 'text/plain';
 		}
 	}

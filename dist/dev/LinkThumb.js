@@ -1,61 +1,89 @@
 /* linkThumb
  *   shows a brief thumbnail of files when you hover over File: links
- *   ver 0.2
+ *   ver 0.3
  *   by mfaizsyahmi, 2015
+ *   ucp adaptation by Kofirs2634, 2021
  */
-var linkThumb = {
-	// the container element
-	$container: $('<div>').css({
-		position:"fixed",
-		bottom:"30px",
-		left:"10px",
-		"z-index":999999}
-	).appendTo('body'),
-	// the variable that holds the timeout ID
-	timeoutvar: null,
-	// set image width here
-	imgwidth: 200,
-	// sets event for File: links
-	main: function() {
-		$('#mw-content-text').find(':link[href^="/wiki/File:"][href$=".jpg"], :link[href^="/wiki/File:"][href$=".jpeg"], :link[href^="/wiki/File:"][href$=".gif"], :link[href^="/wiki/File:"][href$=".png"]')
-		.off('mouseenter.linkThumb mouseleave.linkThumb')
-		.on('mouseenter.linkThumb', function(e) { 
-			clearTimeout(linkThumb.timeoutvar);
-			linkThumb.timeoutvar = setTimeout( linkThumb.get( $(this).attr('href'), 500));
-		}).on('mouseleave.linkThumb', function(e) {
-			clearTimeout(linkThumb.timeoutvar);
-			linkThumb.$container.empty();
-		});
-	},
-	// queries the API for thumbnail url
-	get: function(href) {
-		var title = decodeURIComponent(href.replace(/^\/wiki\//,''));
-		mw.log(title);
-		$.get('/api.php', {
-			action:'query',
-			titles: title,
+mw.loader.using('mediawiki.api', function() {
+	if (window.linkThumb || mw.config.get('wgCanonicalSpecialPageName') == 'Newimages') return
+	window.linkThumb = true
+	
+	if (!window.linkThumbConfig) window.linkThumbConfig = {}
+	
+	const c = mw.config.get(['wgScriptPath', 'wgFormattedNamespaces', 'wgArticlePath']),
+		api = new mw.Api()
+	var requestTimer, closeTimer
+	var i18n
+	
+	function init() {
+		// append preview block and its styles
+		$('body').append($('<div>', { id: 'linkThumb-prev' }))
+		$('head').append($('<style>', { id: 'linkThumb-styles', text:
+			'#linkThumb-prev{position:fixed;bottom:20px;left:80px;z-index:9999;color:var(--theme-body-text-color)}' +
+			'#linkThumb-prev.error{background:var(--theme-page-background-color);border:1px solid #F00;padding:0 4px;color:var(--theme-page-text-color)}'
+		}))
+		
+		// search all links leading to files' pages
+		var selector = '#mw-content-text a[href^="' + c.wgArticlePath.replace('$1', encodeURI(c.wgFormattedNamespaces[6])) + '"]'
+		$(selector)
+		.mouseenter(function(e) {
+			if ($(e.target).prop('tagName') != 'A') return
+			
+			// cut out start of link and keep only namespaced file title
+			var title = $(e.target).attr('href').substr(c.wgArticlePath.replace('$1', '').length)
+			
+			// some mess with timers
+			clearTimeout(closeTimer)
+			clearTimeout(requestTimer)
+			
+			// send request with small delay
+			requestTimer = setTimeout(
+				function() { getImg(title) },
+				window.linkThumbConfig.requestTimeout >= 500 ? window.linkThumbConfig.requestTimeout : 1000
+			)
+		})
+		.mouseleave(function(e) {
+			clearTimeout(requestTimer)
+			// close preview
+			closeTimer = setTimeout(
+				function() { $('#linkThumb-prev').empty().removeClass('error') },
+				window.linkThumbConfig.closeTimeout || 2000
+			)
+		})
+	}
+
+	function getImg(title) {
+		// while request is pending, show the loading text
+		$('#linkThumb-prev').removeClass('error').text(i18n.msg('loading').plain())
+		api.get({
+			action: 'query',
+			titles: decodeURI(title),
 			prop: 'imageinfo',
 			iiprop: 'url',
-			iiurlwidth: linkThumb.imgwidth,
-			format:'json',
+			iiurlwidth: window.linkThumbConfig.width > 0 ? window.linkThumbConfig.width : 200,
 			redirects: true
-		}).done(function(d) {
-			// when done, retrieve url and display
-			for(var wat in d.query.pages) { // should be only one
-				if ( d.query.pages[wat].hasOwnProperty('imageinfo') ) {
-					var url = d.query.pages[wat].imageinfo["0"].thumburl;
-					linkThumb.$container.empty();
-					var $img = $('<img>').attr('src',url).css('border','2px solid').appendTo(linkThumb.$container);
-					linkThumb.$container.show().delay(3000).fadeOut(1000);//.append('<br>'+d.query.pages[wat].title)
-				} else {
-					linkThumb.$container.text('Failed to get thumbnail for ' + d.query.pages[wat].title).delay(2000).empty();
-				}
+		}).done(function(r) {
+			var path = r.query.pages[Object.keys(r.query.pages)[0]]
+			if (path.missing !== undefined) { // file doesn't exist, show error
+				$('#linkThumb-prev').addClass('error').html(i18n.msg('error-unexist', c.wgArticlePath.replace('$1', title), decodeURI(title)).plain())
+			} else if (typeof path.imageinfo == 'undefined') { // that rare case when file doesn't have a thumbnail
+				$('#linkThumb-prev').addClass('error').html(i18n.msg('error-no-thumb', c.wgArticlePath.replace('$1', title), decodeURI(title)).plain())
+			} else { // file exists, show it
+				$('#linkThumb-prev').empty().append($('<img>', {
+					src: r.query.pages[Object.keys(r.query.pages)[0]].imageinfo[0].thumburl
+				}))
 			}
-		}).fail(function(title) {
-			linkThumb.$container.text('Failed to get info for ' + title).delay(2000).empty();
-		}(title));
+		}).fail(function(e) { // catching uncaught errors
+			console.error('linkThumb got an error:', e)
+			$('#linkThumb-prev').addClass('error').html(i18n.msg('error-failed', c.wgArticlePath.replace('$1', title), decodeURI(title)).plain())
+		})
 	}
-};
-if (mw.config.get('wgCanonicalSpecialPageName') !== 'Images') {
-    linkThumb.main();
-}
+
+	mw.hook('dev.i18n').add(function(i) {
+		i.loadMessages('LinkThumb').then(function(i) {
+			i18n = i; i18n.useUserLang(); init()
+		})
+	})
+
+	importArticle({ type: 'script', article: 'u:dev:MediaWiki:i18n-js/code.js' })
+});

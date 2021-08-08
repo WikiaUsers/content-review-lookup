@@ -9,7 +9,6 @@ mw.loader.using(['mediawiki.util', 'mediawiki.Uri', 'ext.fandom.ContentReview.le
 	    type: "style",
 	    articles: [
 			"u:dev:MediaWiki:CollapseGlobalNavButton.css",
-			"u:dev:MediaWiki:CollapseGlobalNavButton.css/compatibility.css",
 		],
 	});
 });

@@ -198,7 +198,7 @@ $(function() {
 		});
 		*/
 		var req = new XMLHttpRequest();
-		req.open("get", mw.config.get("wgScriptPath") + "/api.php?action=query&format=json&list=categorymembers&cmtitle=Category:" + encodeURIComponent(cat) + "&cmnamespace=" + ns + "&cmcontinue=" + encodeURIComponent(cont) + "&rawcontinue=&cmlimit=max&cb=" + new Date().getTime(), true);
+		req.open("GET", mw.config.get("wgScriptPath") + "/api.php?action=query&format=json&list=categorymembers&cmtitle=Category:" + encodeURIComponent(cat) + "&cmnamespace=" + ns + "&cmcontinue=" + encodeURIComponent(cont) + "&rawcontinue=&cmlimit=max&cb=" + new Date().getTime(), true);
 		req.onload = function() {
 			var data = JSON.parse(this.responseText);
 			if (data.hasOwnProperty("query")) {
@@ -386,6 +386,9 @@ $(function() {
 	// get info about pages (url, thumb, etc.)
 	catnav.fn.queryPages = function(titles, cb) {
 		var req = new XMLHttpRequest(),
+			f = new FormData(),
+			fD,
+			fDProp,
 			missingTitles = [],
 			i;
 		catnav.console.error(titles);
@@ -396,14 +399,25 @@ $(function() {
 				missingTitles.push(catnav.data.pageids[titles[i]]);
 			}
 		}
-		req.open("get", mw.config.get("wgScriptPath") + "/api/v1/Articles/Details?&abstract=0&width=140&height=140&ids=" + missingTitles.join(","), true);
+		// form data for requestest
+		fD = {
+			abstract: 0,
+			width: 140,
+			height: 140,
+			ids: missingTitles.join(",")
+		}
+		for (fDProp in fD) {
+			f.append(fDProp, fD[fDProp]);
+		}
+		// the actual request
+		req.open("POST", mw.config.get("wgScriptPath") + "/api/v1/Articles/Details", true);
 		req.onload = function() {
 			catnav.fn.parsePagesQuery(JSON.parse(this.responseText));
 			cb(titles);
 		};
 		if (missingTitles.length > 0) {
 			// data about at least 1 page needs to be requested
-			req.send();
+			req.send(f);
 		} else {
 			// info about those pages has already loaded
 			cb(titles);

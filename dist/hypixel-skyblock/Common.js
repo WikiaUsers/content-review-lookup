@@ -337,6 +337,15 @@ $(function(){
 	if (!$(".sbw-ui-tabber").length) {
 		return;
 	}
+	
+	function clickTab(id) {
+		id = "ui-"+id;
+		if(!$("#"+id).length) { console.warn("No such tab ID \"" + id + "\""); return; }
+		$(".sbw-ui-tab-content#"+id).siblings().addClass("hidden").hide();
+		$(".sbw-ui-tab-content#"+id).removeClass("hidden").show();
+		// Since images don't load on hidden tabs, force them to load
+		$(".sbw-ui-tab-content#"+id+" .lzy[onload]").load();
+	}
 
 	// .hidden works on mobile, but not on desktop
 	$(".sbw-ui-tab-content.hidden").hide();
@@ -366,15 +375,6 @@ $(function(){
 			clickTab(id); 
 		}
 	});
-	
-	function clickTab(id) {
-		id = "ui-"+id;
-		if(!$("#"+id).length) { console.warn("No such tab ID \"" + id + "\""); return; }
-		$(".sbw-ui-tab-content").addClass("hidden").hide();
-		$(".sbw-ui-tab-content#"+id).removeClass("hidden").show();
-		// Since images don't load on hidden tabs, force them to load
-		$(".sbw-ui-tab-content#"+id+" .lzy[onload]").load();
-	}
 });
 
 if (mw.config.get('wgPageName').match(/^S:(.+)$/i)) {

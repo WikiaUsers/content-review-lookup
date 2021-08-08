@@ -1,4 +1,4 @@
-window.allWikis = ['lol', 'cod-esports', 'fortnite-esports', 'valorant-esports', 'wildrift-esports', 'rollerchampions-esports', 'legendsofruneterra-esports', 'splatoon2-esports', 'teamfighttactics', 'smite-esports', 'halo-esports', 'rl-esports', 'gears-esports', 'pubg-esports', 'paladins-esports', 'siege-esports', 'nba2k-esports', 'default-loadout-esports', 'help-esports', 'commons-esports', 'fifa-esports', 'apexlegends-esports'];
+window.allWikis = ['lol', 'cod-esports', 'fortnite-esports', 'valorant-esports', 'wildrift-esports', 'rollerchampions-esports', 'legendsofruneterra-esports', 'splatoon2-esports', 'tft-esports', 'smite-esports', 'halo-esports', 'rl-esports', 'gears-esports', 'pubg-esports', 'paladins-esports', 'siege-esports', 'nba2k-esports', 'default-loadout-esports', 'help-esports', 'fifa-esports', 'apexlegends-esports'];
 
 // author: pcj
 
@@ -52,7 +52,7 @@ window.syncPages = function(sourcePages) {
 			return;
 		}
 		console.log("Starting next wiki: " + allWikis[cw]);
-		fa = new mw.ForeignApi("https://"+allWikis[cw]+".sandbox-s8.fandom.com/api.php");
+		fa = new mw.ForeignApi("https://"+allWikis[cw]+".fandom.com/api.php");
 		editPage();
 		return;
 	}

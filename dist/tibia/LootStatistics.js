@@ -1355,7 +1355,7 @@
     not_player_names_regexp_remove = /\((.+)\)/g;
     loot_regexps = [
       /Loot of (.+?): (.+?)\.?$/,
-      /(?:Your deeds have been noticed and )?[tT]he following items dropped by (.+?) are available in your reward chest: (.+)/
+      /(?:Your deeds have been noticed and )?[tT]he following items dropped by (.+?) are available in your reward chest: (.+?)\.?$/
     ];
     /*jslint regexp: false */
     //read lines

@@ -55,10 +55,15 @@
             },
             'Other': {
                 'Icons': 'Icons',
+                'Badges': 'Badge',
                 'Full Bodies': 'Fullbody',
+                'Profile': 'Profile',
+                'Anime Gallery': 'Anime',
+                'Manga Gallery': 'Manga',
                 'Cover Art': 'Album or DVD Cover',
                 'Banners': 'Banner',
                 'Videos': 'Video',
+                'Voice Lines': 'Voice Line',
                 'Gallery': 'Does not fall in any other category',         
             }
             

@@ -17,7 +17,8 @@
     var BannerNotification;
     var api;
     var refs = {};
-    var lastSummary;
+    var config = window.DupeArgs || {};
+    var lastSummary = config.summary || "";
 
     function deepQuery(args) {
         return new Promise(function(_resolve) {

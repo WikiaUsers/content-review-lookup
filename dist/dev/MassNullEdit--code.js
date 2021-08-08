@@ -73,6 +73,7 @@
     var modalAddPages;
     var paused = true;
     var rateLimited = false;
+    var rateLimitTimeoutId;
     var stopAddPages = null;
 
     function log(i18nMsg) {
@@ -148,10 +149,10 @@
         if (rateLimited) {
             log(i18n('notice-ratelimit'));
             pause();
-            setTimeout(start, 30000);
+            rateLimitTimeoutId = setTimeout(start, 30000);
         }
 
-        if (paused) {
+        if (paused || input === null) {
             return;
         }
 
@@ -433,6 +434,7 @@
             onHide: function () {
                 pause();
                 input = null;
+                clearTimeout(rateLimitTimeoutId);
             },
             buttons: [{
                 text: i18n('initiate').plain(),

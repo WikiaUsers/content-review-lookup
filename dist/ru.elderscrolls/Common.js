@@ -12,6 +12,7 @@
 // * Случайный фон страницы
 // * Слайдер на jqueryUI - Используется на главной странице
 // * Вспрывающие подсказки при наведении на ссылку
+// * Изменение раскладки выделеного текста в редакторе кода
 // * Fix сворачиваемых, сортируемых таблиц
 // * Fix галереи-слайдшоу после перехода на UCP
 
@@ -694,6 +695,160 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 	}
 })(jQuery);
 
+/*----------- Изменение раскладки выделеного текста в редакторе кода ---------*/
+// Основано на скрипте Wikificator.
+// Автор: VitaZheltyakov
+function switcher() {
+	var Switcher_CantWork = 'Не поддерживается вашим браузером.';
+	var Switcher_FullText = 'Выделите фрагмент текста для изменения раскладки.';
+
+	// Регистрируем новый инструмент
+	function registerSwitcher() {
+		registerTool({
+			name: 'switcher',
+			position: 100,
+			title: 'Раскладка',
+			label: 'Изменить раскладку',
+			callback: switchLayout,
+			classic: {
+				icon: 'https://static.wikia.nocookie.net/elderscrolls/images/a/a8/Switcher-icon.png/revision/latest?path-prefix=ru',
+			},
+			visual: {
+				icon: 'https://static.wikia.nocookie.net/elderscrolls/images/a/a8/Switcher-icon.png/revision/latest?path-prefix=ru',
+				modes: ['source'],
+				addRightAway: true,
+			},
+		});
+	}
+
+	// Добавляем новуй инструмент на страницах редактирования
+	if (wgAction == 'edit' || wgAction == 'submit') {
+		registerSwitcher();
+	}
+
+	// Основная функция. Вызов происходит по нажатию на кнопку
+	function switchLayout() {
+		// Проверяем, поддерживает ли браузер регулярные выражения (RegExp) 
+		if ('code'.replace(/d/g, 'r') != 'core') {
+			alert(Switcher_CantWork);
+			return
+		}
+		
+		var $input, caretPosition, textScroll,
+		txt = '',
+		$CodeMirrorVscrollbar = $( '.CodeMirror-vscrollbar' );
+
+		$input = $( '#wpTextbox1' );
+
+		if ( $input ) {
+			$input.focus();
+			caretPosition = $input.textSelection( 'getCaretPosition', { startAndEnd: true } );
+			if ( caretPosition ) {
+				textScroll = ( $CodeMirrorVscrollbar.length ? $CodeMirrorVscrollbar : $input )
+					.scrollTop();
+				// Если ничего не выделено
+				if ( caretPosition[0] === caretPosition[1] ) {
+					alert(Switcher_FullText);
+					return;
+				} else {
+					txt = $input.textSelection( 'getSelection' );
+					processText();
+					$input.textSelection( 'encapsulateSelection', {
+						replace: true,
+						peri: txt
+					} );
+					$input.textSelection( 'setSelection', {
+						start: caretPosition[0],
+						end: caretPosition[0] + txt.length
+					} );
+				}
+				( $CodeMirrorVscrollbar.length ? $CodeMirrorVscrollbar : $input )
+					.scrollTop( textScroll );
+			}
+			// Если что-то пошло не так
+			else {
+				alert(Switcher_CantWork);
+				return;
+			}
+		}
+
+		//Здесь производим замену в переменной txt - это отразится на выделенном фрагменте текста 
+		function processText() {
+			txt = txt.replace(/f/g, 'а');
+			txt = txt.replace(/,/g, 'б');
+			txt = txt.replace(/d/g, 'в');
+			txt = txt.replace(/u/g, 'г');
+			txt = txt.replace(/l/g, 'д');
+			txt = txt.replace(/t/g, 'е');
+			txt = txt.replace(/`/g, 'ё');
+			txt = txt.replace(/;/g, 'ж');
+			txt = txt.replace(/p/g, 'з');
+			txt = txt.replace(/b/g, 'и');
+			txt = txt.replace(/q/g, 'й');
+			txt = txt.replace(/r/g, 'к');
+			txt = txt.replace(/k/g, 'л');
+			txt = txt.replace(/v/g, 'м');
+			txt = txt.replace(/y/g, 'н');
+			txt = txt.replace(/j/g, 'о');
+			txt = txt.replace(/g/g, 'п');
+			txt = txt.replace(/h/g, 'р');
+			txt = txt.replace(/c/g, 'с');
+			txt = txt.replace(/n/g, 'т');
+			txt = txt.replace(/e/g, 'у');
+			txt = txt.replace(/a/g, 'ф');
+			txt = txt.replace(/\[/g, 'х');
+			txt = txt.replace(/w/g, 'ц');
+			txt = txt.replace(/x/g, 'ч');
+			txt = txt.replace(/i/g, 'ш');
+			txt = txt.replace(/o/g, 'щ');
+			txt = txt.replace(/]/g, 'ъ');
+			txt = txt.replace(/s/g, 'ы');
+			txt = txt.replace(/m/g, 'ь');
+			txt = txt.replace(/'/g, 'э');
+			txt = txt.replace(/\./g, 'ю');
+			txt = txt.replace(/z/g, 'я');
+
+			txt = txt.replace(/F/g, 'А');
+			txt = txt.replace(/</g, 'Б');
+			txt = txt.replace(/D/g, 'В');
+			txt = txt.replace(/U/g, 'Г');
+			txt = txt.replace(/L/g, 'Д');
+			txt = txt.replace(/T/g, 'Е');
+			txt = txt.replace(/~/g, 'Ё');
+			txt = txt.replace(/:/g, 'Ж');
+			txt = txt.replace(/P/g, 'З');
+			txt = txt.replace(/B/g, 'И');
+			txt = txt.replace(/Q/g, 'Й');
+			txt = txt.replace(/R/g, 'К');
+			txt = txt.replace(/K/g, 'Л');
+			txt = txt.replace(/V/g, 'М');
+			txt = txt.replace(/Y/g, 'Н');
+			txt = txt.replace(/J/g, 'О');
+			txt = txt.replace(/G/g, 'П');
+			txt = txt.replace(/H/g, 'Р');
+			txt = txt.replace(/C/g, 'С');
+			txt = txt.replace(/N/g, 'Т');
+			txt = txt.replace(/E/g, 'У');
+			txt = txt.replace(/A/g, 'Ф');
+			txt = txt.replace(/\{/g, 'Х');
+			txt = txt.replace(/W/g, 'Ц');
+			txt = txt.replace(/X/g, 'Ч');
+			txt = txt.replace(/I/g, 'Ш');
+			txt = txt.replace(/O/g, 'Щ');
+			txt = txt.replace(/\}/g, 'Ъ');
+			txt = txt.replace(/S/g, 'Ы');
+			txt = txt.replace(/M/g, 'Ь');
+			txt = txt.replace(/"/g, 'Э');
+			txt = txt.replace(/>/g, 'Ю');
+			txt = txt.replace(/Z/g, 'Я');
+			txt = txt.replace(/\//g, '.');
+			txt = txt.replace(/\?/g, ',');
+			txt = txt.replace(/\^/g, ':');
+			txt = txt.replace(/\$/g, ';');
+		}
+	}
+}
+
 /*---------------- Fix сворачиваемых, сортируемых таблиц ---------------------*/
 // Восстанавливает показ шапки сортировки
 // Автор: VitaZheltyakov
@@ -805,6 +960,7 @@ function slideRegenerate(){
 }
 
 $(document).ready(function() {
+	setTimeout(function(){ switcher(); }, 5000); // Запускаем отложено, т.к. инструменты подгружаются не сразу
 	fixTable();
 	setTimeout(function(){ slideRegenerate(); }, 2000); // Запускаем отложено, т.к. галереи подгружаются не сразу
 });

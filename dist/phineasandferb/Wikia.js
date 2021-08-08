@@ -16,11 +16,7 @@ var hasClass = (function () {
 /*** DEV SCRIPTS ***/ 
 // Configuration for NoLicenseWarning
 window.NoLicenseWarning = {
-    forceLicense: true,
-    excludedGroups: [
-        'sysop',
-        'bureaucrat'
-    ]
+    forceLicense: true
 }; 
 
 // Configuration for LockForums

@@ -57,14 +57,14 @@ $(function() {
 			var overviewPage = $overviewDiv.attr('data-overviewpage');
 			var wgServer = mw.config.get('wgServer');
 			var maxPages = parseInt($overviewDiv.attr('data-datapages'));
-			var firstText = maxPages > 0 ? 'view data' : 'create data';
+			var firstText = maxPages > 0 ? 'edit data' : 'create data';
 			addTitleLink(firstText, 'Data:' + overviewPage);
 			for (i = 2; i <= maxPages; i++) {
 				addTitleLink('page ' + i, 'Data:' + overviewPage + '/' + i);
 			}
 			if ($overviewDiv.attr('data-has-participants-datapage')) {
-				addLink('view data', 'Data:' + overviewPage + '/Participants', $('#Participants').closest('h2'));
-				addLink('view data', 'Data:' + overviewPage + '/Participants', $('#Notable_Participants').closest('h2'));
+				addLink('edit data', 'Data:' + overviewPage + '/Participants', $('#Participants').closest('h2'));
+				addLink('edit data', 'Data:' + overviewPage + '/Participants', $('#Notable_Participants').closest('h2'));
 			}
 			
 		}

@@ -1,0 +1,1 @@
+$('a[href^="//terraria.gamepedia.com"]').removeAttr('target');

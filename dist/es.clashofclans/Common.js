@@ -1,25 +1,12 @@
-if (wgPageName === 'Wiki_Clash_of_Clans_en_Español') {
-  importScriptPage('MediaWiki:Portada.js');
-}
-QuickCommentsreason = 'Añadir comentarios basura';
-QuickCommentsdeletereason = 'spam';
-QuickCommentsduration = '3 days';
-
+/* Cualquier JavaScript aquí se cargará para todos los usuarios en cada carga de la página. */
 
 importArticles({
 	type: 'script',
 	articles: [
-		'u:dev:ExtendedNavigation/code.js',
-		'u:dev:QuickComments/code.js',
 		'w:c:clashofclans:MediaWiki:Common.js/ModeToggle.js',
-		'MediaWiki:Common.js/Usernames.js',
-	    'u:dev:UserTags/code.js',
-	    'u:dev:MediaWiki:AddBlockUserTag/code.js',
 		]
 });
 
-/* Tomado de la wiki inglesa (con permiso de ellos/Taken from the English wiki (with their permission). */
- 
 (function ($, mw, store) {
     "use strict";
     var articles;
@@ -31,38 +18,25 @@ importArticles({
         return;
     }
 	
-	/* Articles are interwiki links so that other wikis can use them. */
+	/* Los artículos son enlaces interwiki para que otros wikis puedan utilizarlos. */
     importArticles({
         type: 'script',
         articles: [
         'w:c:spottra:MediaWiki:Common.js/Numeral.js', // Defines num.format('<fmt>')
-        'w:c:spottra:MediaWiki:Common.js/AjaxGallery.js',
-        'MediaWiki:Common.js/GoldPass.js',
-        'u:dev:Countdown/code.js',
-        'u:dev:SpoilerAlert/code.js',
-        'u:dev:TopEditors/code.js',
-        'u:dev:UserTags/code.js',
-        'MediaWiki:Common.js/RGBColor.js',
+         'u:dev:UserTags/code.js',
         'MediaWiki:Common.js/Usernames.js',
-        'MediaWiki:Common.js/Sliders.js',
         'MediaWiki:Common.js/GemCalculators.js',
         'MediaWiki:Common.js/Experience.js',
-        'MediaWiki:Common.js/Tabber2.js',
-        'MediaWiki:Common.js/ImageHover.js',
-        'MediaWiki:Common.js/CumulativeCosts.js',
-        'MediaWiki:Common.js/ModeToggle.js',
-        'MediaWiki:Common.js/PageVerify.js',
-        'MediaWiki:Common.js/GorillaMan.js',
-        'MediaWiki:Common.js/Lugia.js',
         'MediaWiki:Common.js/BadgeGenerator.js',
         'MediaWiki:Common.js/Protection.js',
         'MediaWiki:Common.js/AvailableBuildings.js',
+        'MediaWiki:Common.js/GoldPass.js',
         'MediaWiki:Common.js/HeroSkins.js',
         'MediaWiki:Common.js/Toggle.js'
     	]
     });
 	
-	/*Remove Edit Wall Greeting button unless it's your own or if you're staff*/
+	/*Eliminar el botón de Editar Saludo en el Muro a menos que sea el suyo propio o si es personal*/
 	$(function() {
 		var config = mw.config.get([
 	   'wgCanonicalNamespace',
@@ -86,10 +60,10 @@ importArticles({
         tags: {
             sysop: { u: 'Administrador' },
             bureaucrat: { u: 'Burócrata'},
-        	threadmoderator: { u: 'Moderador de discusiones' },
-        	'content-moderator': { u:'Moderador de contenido'},
-        	rollback : { u:'Reversores'},
-            inactive: { u: 'Inactivo', title: 'Este usuario es inactivo.' },
+        	threadmoderator: { u: 'Mod. de discusiones' },
+        	'content-moderator': { u:'Mod. de contenido'},
+        	rollback : { u:'Reversor'},
+            inactive: { u: 'Clasher Inactivo', title: 'Este usuario es inactivo.' },
             newuser: {u: 'Nuevo usuario' }
         }
     };

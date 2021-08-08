@@ -83,12 +83,12 @@
 
         $(this).append(
             '<span class="month">' +
-                '<span class="num" />' +
+                '<span class="num"></span>' +
                 '<span class="small" style="font-size: 30%; margin: 0px 4px;">Минут</span>' +
             '</span>' +
             '<span class="day">' +
-                '<span class="num" />' +
-                '<span class="small" style="font-size: 85%; margin: 0px 4px;" />' +
+                '<span class="num"></span>' +
+                '<span class="small" style="font-size: 85%; margin: 0px 4px;"></span>' +
             '</span>'
         );
         $( this ).find( '.month' ).css( 'display', $(this).attr('data-show-month') ? '':'none' );

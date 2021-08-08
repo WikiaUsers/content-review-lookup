@@ -6,6 +6,7 @@
 (function() {
     'use strict';
     var mconfig = mw.config.get([
+        'wgContentLanguage',
         'wgUserLanguage',
         'wgUserName'
     ]);
@@ -27,9 +28,11 @@
         /**
          * Preloads translations.
          */
-        hook: function(i18n) {
+        imported: function(i18n) {
             $.when(
-                i18n.loadMessages('DiscordIntegrator'),
+                window.dev.i18n.loadMessages('DiscordIntegrator', {
+                    cacheVersion: 2
+                }),
                 mw.loader.using('mediawiki.api')
             ).then($.proxy(this.preload, this));
         },
@@ -57,7 +60,9 @@
                 ].map(function(el) {
                     return 'Custom-DiscordIntegrator-config-' + el;
                 }).join('|'),
-                amlang: mconfig.wgUserLanguage,
+                amlang: mconfig.wgUserLanguage === 'qqx' ?
+                    mconfig.wgContentLanguage :
+                    mconfig.wgUserLanguage,
                 uselang: 'content', // T97096
                 smaxage: 300,
                 maxage: 300
@@ -117,9 +122,9 @@
          * Inserting the widget to siderail
          */
         insertToSiderail: function() {
-            var filter = $('#top-right-boxad-wrapper, #top-boxad-wrapper, #NATIVE_TABOOLA_RAIL, .content-review-module').last(),
+            var filter = $('#top-right-boxad-wrapper, #top-boxad-wrapper, #NATIVE_TABOOLA_RAIL, .content-review-module').last();
             // TODO: Insert some user configuration here
-                el = $('<div>', { class: 'DiscordIntegratorModule rail-module' });
+            var el = $('<div>', { class: 'DiscordIntegratorModule rail-module' });
             if (this.config.title) {
                 el.append(
                     $('<h2>', {
@@ -137,7 +142,7 @@
                 );
             }
             el.append(this.generateContent(this.config));
-            if(this.config.footer) {
+            if (this.config.footer) {
                 el.append(
                     $('<p>', {
                         id: 'DiscordIntegratorModuleFooter',
@@ -194,43 +199,38 @@
          * @return {string} Content of the widget
          */
         generateContent: function(config) {
-            return config.id ?
+            if (!config.id || !config.id.match(/\d{17,19}/)) {
+                return this.i18n.msg('error').parse();
+            }
+            if (
                 (
-                    (
-                        config.loggedIn === true ||
-                        (
-                            Boolean(config['logged-in']) === true &&
-                            config['logged-in'] !== 'false' &&
-                            config['logged-in'] !== '{{{loggedIn}}}'
-                        )
-                    ) &&
-                    !mconfig.wgUserName
-                ) ?
-            this.i18n.msg('login').parse() :
-            mw.html.element('iframe', {
-                src: 'https://discord.com/widget?id=' +
-                     config.id +
+                    config.loggedIn === true ||
+                    Boolean(config['logged-in']) === true &&
+                    config['logged-in'] !== 'false' &&
+                    config['logged-in'] !== '{{{loggedIn}}}'
+                ) && !mconfig.wgUserName
+            ) {
+                return this.i18n.msg('login').parse();
+            }
+            var username = config.username === '@disabled' ?
+                 '' :
+                 config.username === '@function' &&
+                 typeof window.DiscordIntegratorGetUsername === 'function' ?
+                     window.DiscordIntegratorGetUsername() :
+                     config.username || mconfig.wgUserName;
+            return mw.html.element('iframe', {
+                src: 'https://discord.com/widget?id=' + config.id +
                      '&theme=' + this.determineTheme(config.theme) +
-                     '&username=' + encodeURIComponent(
-                         config.username === '@disabled' ?
-                         '' :
-                         config.username === '@function' &&
-                         typeof window.DiscordIntegratorGetUsername === 'function' ?
-                             window.DiscordIntegratorGetUsername() :
-                             config.username || mconfig.wgUserName
-                     ),
+                     '&username=' + encodeURIComponent(username),
                 width: config.width || '100%',
                 height: config.height || '400px',
                 allowtransparency: 'true',
                 frameborder: '0'
-            }) : this.i18n.msg('error').escape();
+            });
         }
     };
-    mw.hook('dev.i18n').add($.proxy(DiscordIntegrator.hook, DiscordIntegrator));
-    if (!window.dev || !window.dev.i18n) {
-        importArticle({
-            type: 'script',
-            article: 'u:dev:MediaWiki:I18n-js/code.js'
-        });
-    }
+    importArticle({
+        type: 'script',
+        article: 'u:dev:MediaWiki:I18n-js/code.js'
+    }).then($.proxy(DiscordIntegrator.imported, DiscordIntegrator));
 })();

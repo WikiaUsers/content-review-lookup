@@ -37,11 +37,11 @@ $( function () {
 			cw = 0;
 			return $.Deferred().resolve();
 		}
-		if (allWikis[cw]+".gamepedia.com" == thisWiki) { 
+		if (allWikis[cw]+".fandom.com" == thisWiki) { 
 			cw++;
 			return updateGDPage();
 		}
-		var fa = new mw.ForeignApi("https://"+allWikis[cw]+".gamepedia.com/api.php");
+		var fa = new mw.ForeignApi("https://"+allWikis[cw]+".fandom.com/api.php");
 		return getGDContents(fa).then(function(gdtext) {
 			var oldtext = gdtext.split(splitText)[0];
 			return fa.postWithToken('csrf', {

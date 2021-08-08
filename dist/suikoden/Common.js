@@ -176,3 +176,7 @@ function finalQa(e){
 	out.innerHTML = 'You scored ' + perc + ' out of ' + ids.length + '! That\'s ' + Math.floor(100 / ids.length * perc) + '%!';
 	(e.target || e.srcElement).disabled = true;
 }
+
+window.addEventListener('DOMContentLoaded', function() { try {
+  if (document.getElementById('toc').getElementsByTagName('ul')[0].style.display != 'none') { toggleToc(); }
+} catch (exception) {} }, false);

@@ -72,3 +72,6 @@ rollback: { link:'Project:Rollback' }
 };
 window.UserTagsJS.modules.inactive = 30;
 window.UserTagsJS.modules.mwGroups = ['rollback', 'sysop', 'bot', 'bot-global'];
+
+/* Bypass the license check on UploadMultipleFiles */
+mw.config.set('UMFBypassLicenseCheck',true);

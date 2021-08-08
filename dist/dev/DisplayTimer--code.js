@@ -1,15 +1,10 @@
-/* [[DisplayTimer]] - adds a UTC display clock with purge + null edit function */
+/* [[DisplayTimer]] - add a UTC display clock with purge + null edit function */
 
-/*jslint browser, single, long */
+/*jslint browser, single, long, unordered */
 /*global jQuery, mediaWiki */
 
 (function ($, mw) {
     'use strict';
-
-    // double run protection
-    if ($('#displayTimer, #showdate, #DisplayClockJS, #display-timer').length) {
-        return;
-    }
 
     // default English messages - i18n-js will load other languages async
     var msg = {
@@ -31,7 +26,7 @@
     }
 
     function stopClock(cancel) {
-        if (cancel) {
+        if (cancel || clockNode.isConnected === false) {
             document.removeEventListener('visibilitychange', startClock);
         }
 
@@ -103,7 +98,6 @@
 
 
     function i18n() {
-        // load translations via i18n-js
         if (!(window.dev && window.dev.i18n && window.dev.i18n.loadMessages)) {
             mw.loader.load('https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:I18n-js/code.js&only=scripts');
         }
@@ -124,7 +118,7 @@
     }
 
     function main() {
-        var $container = $('<li>');
+        var $container = $('<li>').attr('id', 'displayTimer').css('direction', 'ltr');
         var $clock = $('<a>').on('click', clockClick).attr({
             title: msg.tooltip,
             href: '?action=purge'
@@ -132,16 +126,23 @@
 
         clockNode = $clock[0];
 
+        // remove any existing clock
+        $(document.querySelectorAll('#displayTimer')).remove();
+
         switch (mw.config.get('skin')) {
         case 'oasis':
             $container.css({
                 border: 0,
-                marginInlineStart: 'auto'
-            });
-            // fallthrough
+                marginInlineStart: 'auto',
+                order: 1
+            }).appendTo('.toolbar > .tools');
+            break;
         case 'fandomdesktop':
-            $container.css({'order': 1, 'width': '15em'}).appendTo('.toolbar > .tools');
-            $clock.css({'margin': '0 auto'});
+            $container.css({
+                minWidth: '15em',
+                order: 1
+            }).appendTo('.toolbar > .tools');
+            $clock.css('margin', '0 auto');
             break;
         case 'hydra':
         case 'hydradark':
@@ -151,7 +152,7 @@
             $container.css('text-transform', 'none').prependTo('#p-personal ul');
         }
 
-        $container.attr('id', 'displayTimer').css('direction', 'ltr').append($clock);
+        $container.append($clock);
 
         startClock();
         document.addEventListener('visibilitychange', startClock);

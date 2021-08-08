@@ -485,8 +485,8 @@
                 LIR.queueData.forEach(function(data) {
                     var pageKey = LIR.pageKey.indexOf(data.title);
                     var pageData = LIR.pageData[pageKey];
-                    var escapedName = escapeRegExp(data.oldImage);
-                    if (escapedName.substr(0, 1).match(/[A-z]/i)) {
+                    var escapedName = escapeRegExp(data.oldImage).replace(/( |_)/g, '[ _]*?');
+                    if (escapedName.substr(0, 1).match(/[A-Za-z]/i)) {
                         escapedName = LIR.lowerUpperReg(escapedName);
                     }
                     var pageReplacement = new RegExp(
@@ -823,7 +823,7 @@
         },
         showQueueModal: function() {
             var ui = window.dev.dorui;
-            var $modal = window.dev.showCustomModal(LIR.i18n.msg('queueModalTitle').escape(), {
+            window.dev.showCustomModal(LIR.i18n.msg('queueModalTitle').escape(), {
                 content: ui.div({
                     attrs: {
                         id: 'LIRContainer'
@@ -888,13 +888,6 @@
                 width: 800,
                 buttons: [
                     {
-                        id: 'close',
-                        message: LIR.i18n.msg('queueModalClose').escape(),
-                        handler: function() {
-                            window.dev.showCustomModal.closeModal($modal);
-                        }
-                    },
-                    {
                         id: 'openManualModal',
                         message: LIR.i18n.msg('queueModalManual').escape(),
                         handler: function() {
@@ -902,6 +895,16 @@
                                 return false;
                             }
                             LIR.showManualModal();
+                        }
+                    },
+                    {
+                        id: 'openBatchModal',
+                        message: LIR.i18n.msg('queueModalBatch').escape(),
+                        handler: function() {
+                            if (LIR.started) {
+                                return false;
+                            }
+                            LIR.showBatchModal();
                         }
                     },
                     {
@@ -986,7 +989,7 @@
         showManualModal: function() {
             var ui = window.dev.dorui;
             var filePrefix = LIR.wg.wgFormattedNamespaces[6] + ':';
-            var $modal = window.dev.showCustomModal(LIR.i18n.msg('queueAddition').escape(), {
+            window.dev.showCustomModal(LIR.i18n.msg('queueAddition').escape(), {
                 content: ui.fieldset({
                     children: [
                         ui.p({
@@ -1034,13 +1037,6 @@
                 width: 650,
                 buttons: [
                     {
-                        id: 'cancel',
-                        message: LIR.i18n.msg('queueModalClose').escape(),
-                        handler: function() {
-                            window.dev.showCustomModal.closeModal($modal);
-                        }
-                    },
-                    {
                         id: 'submit',
                         defaultButton: true,
                         message: LIR.i18n.msg('addToQueue').escape(),
@@ -1077,6 +1073,62 @@
                         }
                     });
                 }
+            });
+        },
+        multipleManualAdd: function(files) {
+            var pair = files.shift();
+            if (!pair) {
+                return;
+            }
+            LIR.start('manual', pair[0], pair[1], '', function(res) {
+                if (res) {
+                    delete LIR.queuePosition;
+                    LIR.updateQueueListing();
+                }
+                $('#batchModalInput').val(files.map(function(filePair) {
+                    return filePair[0] + ' ' + filePair[1];
+                }).join('\n'));
+                LIR.multipleManualAdd(files);
+            });
+        },
+        showBatchModal: function() {
+            var ui = window.dev.dorui;
+            window.dev.showCustomModal(LIR.i18n.msg('queueAddition').escape(), {
+                content: ui.fieldset({
+                    children: [
+                        ui.p({
+                            text: LIR.i18n.msg('batchModalDescription').plain()
+                        }),
+                        ui.textarea({
+                            attrs: {
+                                id: 'batchModalInput',
+                                rows: 20
+                            }
+                        })
+                    ]
+                }),
+                id: 'batchModal',
+                width: 650,
+                buttons: [
+                    {
+                        id: 'submit',
+                        defaultButton: true,
+                        message: LIR.i18n.msg('addToQueue').escape(),
+                        handler: function() {
+                            if (LIR.started) {
+                                return false;
+                            }
+                            LIR.multipleManualAdd(
+                                $('#batchModalInput')
+                                    .val()
+                                    .split('\n')
+                                    .map(function(line) {
+                                        return line.trim().split(' ');
+                                    })
+                            );
+                        }
+                    }
+                ]
             });
         },
         initialize: function(i18n) {
@@ -1214,7 +1266,7 @@
                                         ui.td({
                                             classes: ['mbox-text'],
                                             children: [
-                                                LIR.i18n.msg('fileInQueue').plain(),
+                                                LIR.i18n.msg('alreadyInQueue').plain(),
                                                 ui.br(),
                                                 ui.span({
                                                     html: LIR.i18n.msg('newFileName', matchedData.newImage).parse()
@@ -1265,7 +1317,9 @@
         },
         preload: function() {
             $.when(
-                window.dev.i18n.loadMessages('FileUsageAuto-update'),
+                window.dev.i18n.loadMessages('FileUsageAuto-update', {
+                    cacheVersion: 2
+                }),
                 mw.loader.using([
                     'mediawiki.api',
                     'mediawiki.user',

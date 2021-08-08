@@ -76,5 +76,5 @@ if (
 // Positioning for Template:PageTags
 // *********************************
 
-$('.page-header__contribution>div:first-child').append( $( '#pagetags' ) );
-$( '#pagetags' ).css( { 'float' : 'left', 'margin-right' : '7px', 'margin-top' : '-5px' } ).show();
+$('.page-header__actions').prepend( $( '#pagetags' ) );
+$( '#pagetags' ).css( { 'float' : 'left', 'margin-right' : '15px', 'margin-top' : '5px' } ).show();

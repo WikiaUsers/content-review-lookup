@@ -1,5 +1,5 @@
 // <nowiki>
-$(function () {	
+$(function () {
 	var dataDiv = document.getElementById('data-ns-pageinfo');
 	if (! dataDiv) return;
 	var $dataDiv = $(dataDiv);
@@ -51,7 +51,8 @@ $(function () {
 			}).then(function(data) {
 				var str = data.parse.text['*'];
 				if (str.includes('Lua error')) {
-					window.reportError("Error updating pick-ban, it's likely that the order doesn't match the MatchSchedule!");
+					window.reportError("Error updating pick-ban, it's likely that the order doesn't match the MatchSchedule! Perhaps you need to add a |notab=yes? We will now print the error that was detected.");
+					window.reportError(str);
 					return $.Deferred().reject();
 				}
 				console.log(str);
@@ -78,6 +79,7 @@ $(function () {
 			while (tbl.length > 0 && tbl[0][0] == page) {
 				templatesToChange.push(makeGameDict(tbl.shift()));
 			}
+			console.log(templatesToChange);
 			return a.get({
 				action : 'query',
 				prop : 'revisions',
@@ -270,6 +272,12 @@ $(function () {
 		});
 	});
 	
+	// move RO button into place in FandomDesktop
+	if ($('.page__main')) {
+		var $el = $('#ca-refresh-overview');
+		$el.detach();
+		$el.insertAfter($('#p-views #ca-edit'));
+	}
 });
 
 $(function() {

@@ -1130,6 +1130,38 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 3,
                 "offspringeligibility": "expired"
             },
+            "archbeast": {
+                "name": "Arch Beast",
+                "types": [
+                    "beast",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "archtarot": {
+                "name": "Arch Tarot",
+                "types": [
+                    "tarot",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "archangel": {
                 "name": "Archangel",
                 "types": [
@@ -7627,6 +7659,39 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "level": 4,
                 "offspringeligibility": "expired"
             },
+            "elitechampion": {
+                "name": "Elite Champion",
+                "types": [
+                    "champion",
+                    "white",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "25_hours_25",
+                "rarity": 4,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "eliteroyal": {
+                "name": "Elite Royal",
+                "types": [
+                    "royal",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "20_hours_20",
+                "rarity": 4,
+                "offspringeligibility": "worldevent",
+                "notes": [
+                    "feature"
+                ]
+            },
             "elusive": {
                 "name": "Elusive",
                 "types": [
@@ -11336,6 +11401,49 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ]
             },
+            "grandfairytale": {
+                "name": "Grand Fairytale",
+                "types": [
+                    "fairytale",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "grandzodiac": {
+                "name": "Grand Zodiac",
+                "types": [
+                    "zodiac",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "blue"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "grandcaster": {
                 "name": "Grandcaster",
                 "types": [
@@ -12928,6 +13036,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "17_hours_17",
                 "rarity": 3
+            },
+            "hyperdiamond": {
+                "name": "Hyper Diamond",
+                "types": [
+                    "diamond",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "worldevent",
+                "notes": [
+                    "feature"
+                ]
             },
             "hypernova": {
                 "name": "Hypernova",

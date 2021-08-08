@@ -13,6 +13,7 @@ $(function () {
 			'Tooltip:%s',
 			'%s/Tournament Results',
 			'%s/Schedule History',
+			'%s/Pick-Ban History',
 		];
 		subpages = subpages.map(function(p) {
 			return p.replace('%s', fulltitle);

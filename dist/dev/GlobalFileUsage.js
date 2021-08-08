@@ -1,7 +1,7 @@
-(function($, document, mw) {
+;(function($, document, mw) {
     'use strict';
 
-    function globalFileUsage() {
+    function globalFileUsage(i18n) {
 
         if (window.globalFileUsageInit) return;
 
@@ -38,29 +38,29 @@
 
         var params   = '/api.php?action=query&titles=File:' + fileName + '&prop=fileusage&format=json';
 
-        function showGUContainer(place, title) {
+        function showGUContainer(place, title, i18n) {
 
             // $('#global-usage-container').remove(); // for tests
-            $(place).append('<div id="global-usage-container">' + title + '<p><button class="wds-button" id="show-global-usage-btn"><span>Show Usage</span></button></p></div>');
+            $(place).append('<div id="global-usage-container">' + title + '<p><button class="wds-button" id="show-global-usage-btn"><span>' + i18n.msg('button-show').plain() + '</span></button></p></div>');
 
             $('#show-global-usage-btn').click(function(){
-                showGUTable();
+                showGUTable(i18n);
             });
 
         }
 
-        function showGUTable() {
+        function showGUTable(i18n) {
 
             $('#global-usage-list').remove();
-            $('#global-usage-container').append('<table id="global-usage-list" class="wikitable" style="width:100%"><tbody><tr><th>Lang</th><th>Page</th></tr></tbody></table>');
+            $('#global-usage-container').append('<table id="global-usage-list" class="wikitable" style="width:100%"><tbody><tr><th>' + i18n.msg('lang').plain() + '</th><th>' + i18n.msg('page').plain() + '</th></tr></tbody></table>');
 
             langs.forEach(function(lang) {
                 if (lang == mw.config.values.wgContentLanguage) return;
                 $('#global-usage-list').append('<tbody data-lang="' + lang + '"></tbody>');
-                usageQuery(siteUrl, params, lang);
+                usageQuery(siteUrl, params, lang, i18n);
             });
 
-            $('#show-global-usage-btn').text('Update Usage').prop('disabled', true);
+            $('#show-global-usage-btn').text(i18n.msg('button-update').plain()).prop('disabled', true);
 
             setTimeout(function(){
                 $('#show-global-usage-btn').prop('disabled', false);
@@ -68,15 +68,15 @@
 
         }
 
-        var deleteWarning = '<div id="global-usage-delete-warning" hidden><strong>Warning!</strong> This file used at other languages.</div>';
+        var deleteWarning = '<div id="global-usage-delete-warning" hidden>' + i18n.msg('delete-warn').plain() + '</div>';
 
         switch (action) {
             case 'view':
 
-                showGUContainer('#mw-imagepage-section-linkstoimage, #mw-imagepage-nolinkstoimage', '<h3>Global</h3>');
+                showGUContainer('#mw-imagepage-section-linkstoimage, #mw-imagepage-nolinkstoimage', '<h3>' + i18n.msg('global').plain() + '</h3>', i18n);
 
                 if (config.auto_show || $('#ca-delete').length)
-                    showGUTable();
+                    showGUTable(i18n);
 
                 break;
 
@@ -86,8 +86,8 @@
 
                     $('#mw-img-deleteconfirm').append(deleteWarning);
 
-                    showGUContainer('#mw-content-text', '<h2>Global Usage</h2>');
-                    showGUTable();
+                    showGUContainer('#mw-content-text', '<h2>' + i18n.msg('global-usage').plain() + '</h2>', i18n);
+                    showGUTable(i18n);
 
                 }
                 break;
@@ -98,14 +98,14 @@
 
                     $('#movepage').append(deleteWarning);
 
-                    showGUContainer('#mw-content-text', '<h2>Global Usage</h2>');
-                    showGUTable();
+                    showGUContainer('#mw-content-text', '<h2>' + i18n.msg('global-usage').plain() + '</h2>', i18n);
+                    showGUTable(i18n);
 
                 }
                 break;
         }
 
-        function usageQuery(siteUrl, params, lang) {
+        function usageQuery(siteUrl, params, lang, i18n) {
 
             var usageUrl = siteUrl + lang + params;
             var $langRow =  $('#global-usage-list [data-lang="' + lang + '"]');
@@ -117,7 +117,7 @@
                 .then(function(response){
                     if (!response.ok) {
                         var fullUrl = siteUrl + lang;
-                        $langRow.append('<tr class="global-usage-error"><td>' + lang + '</td><td colspan="2"><strong>Error:</strong> Have no connection to <a href="'+ fullUrl +'">' + fullUrl + '</a></td></tr>');
+                        $langRow.append('<tr class="global-usage-error"><td>' + lang + '</td><td colspan="2">' + i18n.msg('connection-error', fullUrl).plain() + '</td></tr>');
                     }
                     return response.json();
                 })
@@ -148,6 +148,14 @@
 
     }
 
-    mw.hook('wikipage.content').add(globalFileUsage);
+    mw.hook('wikipage.content').add(function() {
+        mw.hook('dev.i18n').add(function(i) {
+            i.loadMessages('GlobalFileUsage').done(function(i) {
+                i.useUserLang(); globalFileUsage(i)
+            })
+        })
+    })
+    
+    importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' })
  
 })(window.jQuery, document, window.mediaWiki);

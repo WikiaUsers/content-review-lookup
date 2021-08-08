@@ -18,7 +18,7 @@ mw.hook('wikipage.content').add(function($content) {
             };
         $this.html(
             $('<iframe>', {
-                src: 'https://docs.google.com/forms/d/e/' + id + '/viewform?embedded=true',
+                src: 'https://docs.google.com/forms/d/e/' + id + '/viewform?embedded=true&hl=' + mw.config.get('wgUserLanguage'),
                 css: css
             })
         );

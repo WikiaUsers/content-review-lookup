@@ -1,5 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-// Rating Widget
+// Rating Widget; credit to Merlin Wiki
 jQuery(function($) {
         "use strict";
 

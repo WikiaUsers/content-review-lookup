@@ -1,3 +1,4 @@
+// @author: [[w:c:dev:User:DutyS12345]]
 (function (window, $, mw) {
 	'use strict';
 	// Load Protection
@@ -240,18 +241,25 @@
 			var cssText = '';
 			for (var i = 0; i < codeMirrorSkins.length; i++) {
 				var skin = codeMirrorSkins[i];
-				cssText += '/* ' + codeMirrorSkinNames[skin] + ' */\n';
+				var skinDisabled = $('#ecp-' + skin + ' .ecp-skin-toggle .oo-ui-toggleWidget').attr('aria-checked') == 'false';
+				cssText += '/* ' + codeMirrorSkinNames[skin] + (skinDisabled ? ' disabled' : '') + ' */\n';
+				
 				for (var j = 0; j < codeMirrorItems.length; j++) {
 					var item = codeMirrorItems[j];
-					var selectors = codeMirrorSelectors[item];
-					for (var k = 0; k < selectors.length - 1; k++) {
-						cssText += '.' + skin + ' ' + selectors[k] + ',\n';
+					if (skinDisabled) {
+						cssText += '/* ' + skin + ' ' + item + ' */\n\t/* color: ' + $('#ecp-' + skin + '__' + item).val() + '; */\n';
+					} else {
+						var selectors = codeMirrorSelectors[item];
+						for (var k = 0; k < selectors.length - 1; k++) {
+							cssText += '.' + skin + ' ' + selectors[k] + ',\n';
+						}
+						cssText += '.' + skin + ' ' + selectors[k];
+						cssText += ' {\n/* ' + skin + ' ' + item + ' */\n\tcolor: ' + $('#ecp-' + skin + '__' + item).val() + ';\n}\n';
 					}
-					cssText += '.' + skin + ' ' + selectors[k];
-					cssText += ' {\n/* ' + skin + ' ' + item + ' */\n\tcolor: ' + $('#ecp-' + skin + '__' + item).val() + ';\n}\n';
 				}
+				cssText += '\n';
 			}
-			// post
+			
 			new mw.Api().postWithEditToken({
 				action: 'edit',
 				title: 'User:' + config.wgUserName + '/editorcolor.css',
@@ -266,6 +274,7 @@
 				});
 			});
 		}
+		
 		function linkCodeMirrorColors(){
 			var api = new mw.Api();
 			api.get({
@@ -309,7 +318,7 @@
 				});
 			});
 		}
-		
+		var skinToggleSwitches = {};
 		function generateCodeMirrorSkinSection( skin ){
 			var colorInputs = $('<div>', {'class': 'ecp-inputs'}).append($('<h3>').text('Choose colors:'));
 			var colorPreview = $('<div>', {'class': 'ecp-preview'}).append($('<h3>').text('Preview:')).append($('<pre>', {'class': 'ecp-preview-box'}).html(codeMirrorPreviewText));
@@ -319,7 +328,7 @@
 				colorInputs
 					.append($('<div>')
 						.append($('<input>', {'type': 'color', 'id': itemID, 'name': itemID}).on("input", function(event){
-							$('#ecp-' + skin + ' > .ecp-preview  .ecp-' + item).css('color', event.target.value);
+							$('#ecp-' + skin + ' .ecp-preview  .ecp-' + item).css('color', event.target.value);
 						}))
 						.append(' ')
 						.append($('<label>', {'for': itemID})
@@ -327,7 +336,24 @@
 						)
 					);
 			});
-			return $('<div>', {'id': 'ecp-' + skin, 'class': 'ecp-skin-wrapper'}).append(colorInputs, colorPreview);
+			var skinToggleSwitch = new OO.ui.ToggleSwitchWidget({
+		        value: true,
+		    }).on( 'change', function(toggleValue) {
+				$('#ecp-' + skin + ' .ecp-skin-toggle .oo-ui-labelElement-label').first().text(toggleValue ? 'Enabled' : 'Disabled');
+				$('#ecp-' + skin + ' .ecp-inputs input[type=color]').prop('disabled', !toggleValue);
+			});
+		    var skinToggleLabel = new OO.ui.FieldLayout(skinToggleSwitch, {
+			    label: 'Enabled',
+			    align: 'right',
+			    classes	: [ 'ecp-skin-toggle' ]
+			});
+		    skinToggleSwitches[skin] = skinToggleSwitch;
+		    var skinName = codeMirrorSkinNames[skin];
+			return $('<div>', {'id': 'ecp-' + skin, 'class': 'ecp-codemirror-skin'}).append(
+					skinToggleLabel.$element,
+					$('<h2>').text(skinName),
+					$('<div>', {'class': 'ecp-inputs-preview-wrapper'}).append(colorInputs, colorPreview)
+				);
 		}
 		
 		// main page
@@ -339,8 +365,7 @@
 		var codeMirrorSection = $('<section>', {id: 'ecp-codemirror'})
 			.addClass('ecp-section');
 		codeMirrorSkins.forEach(function ( skin ) {
-			var skinName = codeMirrorSkinNames[skin];
-			codeMirrorSection.append($('<h2>').text(skinName), generateCodeMirrorSkinSection(skin));
+			codeMirrorSection.append(generateCodeMirrorSkinSection(skin));
 		});
 		if (config.wgUserName) {
 			var codeMirrorSubmit = $('<div>', {
@@ -383,20 +408,24 @@
 			codeMirrorSkins.forEach(function(skin){
 				codeMirrorItems.forEach(function(item){
 					$('#ecp-' + skin + '__' + item).attr('value', defaultColors[item]);
-					$('#ecp-' + skin + ' > .ecp-preview  .ecp-' + item).css('color', defaultColors[item]);
+					$('#ecp-' + skin + ' .ecp-preview  .ecp-' + item).css('color', defaultColors[item]);
 				});
 			});
 		}
 		loadDefaultColors();
-		// preview background color
+		
+		// preview background color & text color
 		$.get(mw.util.wikiScript('wikia')+'?controller=ThemeApi&method=themeVariables&variant=dark').done(function(data) {
-			var color = data.match(/--theme-page-background-color:(#[a-f0-9].*?);/)[1];
-			$('#ecp-theme-fandomdesktop-dark .ecp-preview-box').css('background-color', color);
+			var bgcolor = data.match(/--theme-page-background-color:(#[a-f0-9].*?);/)[1];
+			var textcolor = data.match(/--theme-page-text-color:(#[a-f0-9].*?);/)[1];
+			$('#ecp-theme-fandomdesktop-dark .ecp-preview-box').css({'background-color': bgcolor, 'color': textcolor});
 		});
 		$.get(mw.util.wikiScript('wikia')+'?controller=ThemeApi&method=themeVariables&variant=light').done(function(data) {
-			var color = data.match(/--theme-page-background-color:(#[a-f0-9].*?);/)[1];
-			$('#ecp-theme-fandomdesktop-light .ecp-preview-box').css('background-color', color);
+			var bgcolor = data.match(/--theme-page-background-color:(#[a-f0-9].*?);/)[1];
+			var textcolor = data.match(/--theme-page-text-color:(#[a-f0-9].*?);/)[1];
+			$('#ecp-theme-fandomdesktop-light .ecp-preview-box').css({'background-color': bgcolor, 'color': textcolor});
 		});
+		
 		function updateColors(colors) {
 			for (var key in colors) {
 				if (Object.prototype.hasOwnProperty.call(colors, key)) {
@@ -405,10 +434,11 @@
 					var skin = keyParts[0];
 					var item = keyParts[1];
 					$('#ecp-' + key).val(color);
-					$('#ecp-' + skin + ' > .ecp-preview  .ecp-' + item).css('color', color);
+					$('#ecp-' + skin + ' .ecp-preview  .ecp-' + item).css('color', color);
 				}
 			}
 		}
+		
 		function loadSavedColors() {
 			if (config.wgUserName) {
 				new mw.Api().get({
@@ -419,12 +449,20 @@
 					var css = data.parse.wikitext["*"];
 					var savedColors = {};
 					if (css.length) {
-						var pattern = /\/\*\s*?([a-zA-Z-]*?)\s+([a-zA-Z0-9-]*?)\s*?(?:\*\/)?\s*?color\s*?:\s*?(#[0-9a-fA-F]{6})\s*?;/g; // /* skin-oasis template-t1 */\n\tcolor : #ffffff;
+						// /* skin-oasis template-t1 */\n\tcolor : #ffffff;
+						// /* skin-oasis template-t1 */\n\t/*color : #ffffff; */
+						var pattern = /\/\*\s*?([a-zA-Z-]*?)\s+([a-zA-Z0-9-]*?)[ \t\n\r\f\v\*\/]*?color\s*?:\s*?(#[0-9a-fA-F]{6})\s*?;/g; 
 						var match;
 						while ((match = pattern.exec(css)) !== null) {
 							// skin = match[1], item = match[2], color = match[3];
 							savedColors[match[1] + '__' + match[2]] = match[3];
 						}
+						codeMirrorSkins.forEach(function(skin){
+							var skinDisabledPattern = new RegExp('\\/\\*\\s*?' + codeMirrorSkinNames[skin] + '\\s+disabled\\s*?\\*\\/');
+							if (skinDisabledPattern.test(css)) {
+								skinToggleSwitches[skin].setValue(false);
+							}
+						});
 					}
 					updateColors(savedColors);
 				}).fail(function(data){
@@ -434,8 +472,8 @@
 		}
 		loadSavedColors();
 		return;
-		
 	}
+	
 	function addButton() {
 		var header;
 		if(config.skin === 'oasis') {
@@ -455,13 +493,16 @@
 			});
 		}
 	}
+	
 	function isEditorColorPickerPage() {
 		return config.wgPageName === wgFormattedNamespaces[-1] + ':EditorColorPicker'
 			|| config.wgCanonicalSpecialPageName === 'Blankpage' && new URLSearchParams(window.location.search).get('blankspecial') === 'editorcolorpicker';
 	}
+	
 	function loadEditorColorPickerPage() {
-		mw.loader.using( ['mediawiki.api', 'oojs-ui-core'] ).then( generateEditorColorPickerPage );
+		mw.loader.using( ['mediawiki.api', 'oojs-ui'] ).then( generateEditorColorPickerPage );
 	}
+	
 	mw.hook('wikipage.content').add(function () {
 		if (window.ecpButton) {
 			addButton();

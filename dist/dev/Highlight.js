@@ -1,93 +1,31 @@
 /**
  * Name:        HighlightUpdate
- * Version:     v1.0
- * Author:      KockaAdmiralac <1405523@gmail.com>, Joritochip
+ * Author:      KockaAdmiralac <wikia@kocka.tech>, Joritochip
  * Description: Adds a button for updating [[MediaWiki:Highlight.css]].
  */
-
 (function () {
     'use strict';
     var config = mw.config.get([
         'wgArticleId',
         'wgCityId'
     ]);
-    
-    if (
-        config.wgArticleId !== 2160 ||
-        Number(config.wgCityId) !== 7931 ||
-        $('#ca-highlights').length
-    ) return;
-    
+
+    if (config.wgArticleId !== 2160 || config.wgCityId !== 7931 || $('#ca-highlights').length) {
+        return;
+    }
+
     var HighlightUpdater = {
-        groups: {
-            'vanguard': {
-                color: '#1eaf7a',
-                cssVar: 'vanguard'
-            },
-            'voldev': {
-                color: '#23c8d2',
-                cssVar: 'voldev'
-            },
-            'content-volunteer': {
-                color: '#ff7000',
-                cssVar: 'convol'
-            },
-            'global-discussions-moderator': {
-                color: '#4286f4',
-                cssVar: 'gdm'
-            },
-            'soap': {
-                color: '#ff7777',
-                cssVar: 'soap'
-            },
-            'helper': {
-                color: '#4c5f1d',
-                cssVar: 'helper'
-            },
-            'wiki-specialist': {
-                color: '#d27d2c',
-                cssVar: 'ws'
-            },
-            'wiki-representative': {
-                color: '#09e5a2',
-                cssVar: 'wr'
-            },
-            'staff': {
-                color: '#ddaa00',
-                cssVar: 'staff'
-            }
-        },
-        overrides: {
-            add: {
-                'SOAP_Bot': ['soap'],
-                'JT222': ['staff'],
-                'idekmandy': ['staff']
-            },
-            remove: {
-                'CT1000': ['soap'],
-                'Data-engineering-bot': ['global-discussions-moderator'],
-                'DSlayful': [
-                    'staff',
-                    'helper',
-                    'soap'
-                ],
-                'Noreports': ['global-discussions-moderator'],
-                'Socvoluntary': ['soap'],
-                'Testludwikvs': ['soap'],
-                'Ucpnltest2': ['soap'],
-                'Ursuula': [
-                    'wiki-representative',
-                    'wiki-specialist'
-                ],
-                'Wiki-o-slay': ['soap']
-            }
-        },
-        init: function() {
+        preload: function() {
             this.api = new mw.Api();
+            this.getContent(32635).then(this.init.bind(this));
+        },
+        init: function(content) {
+            this.api = new mw.Api();
+            this.config = JSON.parse(content);
             $('.page-header__actions .wds-list').append(
                 $('<li>').append(
                     $('<a>', {
-                        click: $.proxy(this.click, this),
+                        click: this.click.bind(this),
                         id: 'ca-highlights',
                         text: 'Update highlights',
                         href: '#'
@@ -95,97 +33,98 @@
                 )
             );
         },
-        click: function() {
+        click: function(event) {
+            event.preventDefault();
             var params = {
 				uselang: 'en'
 			};
-            Object.keys(this.groups).forEach(function(value, index) {
-				params['groups['+index+']'] = value;
+            Object.keys(this.config.groups).forEach(function(value, index) {
+				params['groups[' + index + ']'] = value;
             });
-            $.get(mw.util.getUrl('Special:ListGlobalUsers', params), 
-				$.proxy(this.parseUsers, this));
+            $.when(
+                $.get(mw.util.getUrl('Special:ListGlobalUsers', params)),
+                this.getContent(2160)
+            ).then(this.parseUsers.bind(this));
         },
-        parseUsers: function(data) {
-            var $data = $(data),
-                users = $data.find('.list-global-users-members > li').map(function(index, child) {
-                    var $child = $(child),
-                        $groups = $child.contents().filter(function() {
-                            return this.nodeType == 3 && !this.nextSibling;
-                        });
-                    return {
-                        name: $child.find('bdi').text(),
-                        groups: $groups.text().trim().slice(1, -1).split(', ')
-                    };
-                });
-            this.callback(users);
-        },
-        callback: function(data) {
-            var users = {},
-                overrides = this.overrides;
-            Object.keys(this.groups).forEach(function(value) {
-                users[value] = [];
-            });
-            data.each(function(index, user) {
-                var groups = user.groups;
-                if (overrides.remove[user.name]) {
-                    overrides.remove[user.name].forEach(function(g) {
-                        if (groups.indexOf(g) !== -1) {
-                            groups.splice(groups.indexOf(g), 1);
-                        }
-                    });
-                }
-                if (groups.indexOf('bot-global') !== -1) {
-                    return;
-                }
-                groups.forEach(function(g) {
-                    if (users[g]) users[g].push(user.name);
-                });
-            });
-            Object.keys(overrides.add).forEach(function(name) {
-                overrides.add[name].forEach(function(g) {
-                    if (users[g] && users[g].indexOf(name) === -1) {
-                        users[g].push(name);
-                    }
-                });
-            });
-            var text = '';
-            for (var group in users) {
-                text +=
-                    '/* ' + group + ' */\n' +
-                    this.getSelectorsFor(group, users[group].sort())
-                    .join(',\n') + ' {\n' + 
-                    '    color: ' + this.groups[group].color +
-                    ' !important;\n' + 
-                    '    color: var(--highlight-' + this.groups[group].cssVar +
-                    ') !important;\n}\n\n';
-            }
-            this.api.get({
+        getContent: function(pageid) {
+            return this.api.get({
                 action: 'query',
                 prop: 'revisions',
                 rvprop: 'content',
                 rvslots: 'main',
-                indexpageids: true,
-                pageids: 2160
-            }).then($.proxy(function(data) {
-                var content = data.query.pages[data.query.pageids[0]]
-                    .revisions[0].slots.main['*'];
-                
-                this.api.post({
-                    action: 'edit',
-                    text: content.replace(
-                            /(\/\* HighlightUpdate-start \*\/\n)[\s\S]*$/igm,
-                            function(_, m) {
-                                return m + text;
-                            }
-                        ),
-                    title: 'MediaWiki:Highlight.css',
-                    // eslint-disable-next-line max-len
-                    summary: 'Automatically updating via [[MediaWiki:Highlight.js|Highlight.js]]',
-                    minor: true,
-                    bot: true,
-                    token: mw.user.tokens.get('editToken')
-                }).then($.proxy(this.edited, this));
-            }, this));
+                pageids: pageid
+            }).then(function(data) {
+                return data.query.pages[pageid].revisions[0].slots.main['*'];
+            });
+        },
+        parseUsers: function(data, content) {
+            this.users = {};
+            var $data = $(data[0]);
+            var overrides = this.config.overrides;
+            Object.keys(this.config.groups).forEach(function(value) {
+                this.users[value] = [];
+            }, this);
+            $data.find('.list-global-users-members > li').each(this.parseUser.bind(this));
+            Object.keys(overrides.add).forEach(function(name) {
+                overrides.add[name].forEach(function(g) {
+                    if (this.users[g] && this.users[g].indexOf(name) === -1) {
+                        this.users[g].push(name);
+                    }
+                }, this);
+            }, this);
+            var text = '';
+            for (var group in this.users) {
+                if (this.users[group].length === 0) {
+                    continue;
+                }
+                text +=
+                    '/* ' + group + ' */\n' +
+                    this.getSelectorsFor(group, this.users[group].sort())
+                    .join(',\n') + ' {\n' + 
+                    '    color: ' + this.config.groups[group].color +
+                    ' !important;\n' + 
+                    '    color: var(--highlight-' + this.config.groups[group].cssVar +
+                    ') !important;\n}\n\n';
+            }
+            this.api.post({
+                action: 'edit',
+                text: content.replace(
+                    /(\/\* HighlightUpdate-start \*\/\n)[\s\S]*$/igm,
+                    function(_, m) {
+                        return m + text;
+                    }
+                ),
+                title: 'MediaWiki:Highlight.css',
+                // eslint-disable-next-line max-len
+                summary: 'Automatically updating via [[MediaWiki:Highlight.js|Highlight.js]]',
+                minor: true,
+                bot: true,
+                token: mw.user.tokens.get('csrfToken')
+            }).then(this.edited.bind(this));
+        },
+        parseUser: function(index, child) {
+            var $child = $(child);
+            var $groups = $child.contents().filter(function() {
+                return this.nodeType === 3 && !this.nextSibling;
+            });
+            var overrides = this.config.overrides;
+            var name = $child.find('bdi').text();
+            var groups = $groups.text().trim().slice(1, -1).split(', ');
+            if (overrides.remove[name]) {
+                overrides.remove[name].forEach(function(g) {
+                    if (groups.indexOf(g) !== -1) {
+                        groups.splice(groups.indexOf(g), 1);
+                    }
+                });
+            }
+            if (groups.indexOf('bot-global') !== -1) {
+                return;
+            }
+            groups.forEach(function(g) {
+                if (this.users[g]) {
+                    this.users[g].push(name);
+                }
+            }, this);
         },
         getSelectorsFor: function(group, users) {
             var encode = [];
@@ -213,5 +152,5 @@
         'mediawiki.api',
         'mediawiki.user',
         'mediawiki.util'
-    ]).then($.proxy(HighlightUpdater.init, HighlightUpdater));
+    ]).then(HighlightUpdater.preload.bind(HighlightUpdater));
 })();

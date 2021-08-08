@@ -8,21 +8,33 @@ $(document).ready(function (){
 	//localization.
 	var $text_wikitext = {
 		'en': 'Wikitext',
+		'fr': 'Wikitexte',
+		'pt': 'Wikitexto',
+		'pt-br': 'Wikitexto',
 		'zh': '维基文本',
 		'zh-cn': '维基文本'
 	}
 	var $text_preview = {
 		'en': 'Preview',
+		'fr': 'Prévisualiser',
+		'pt': 'Antever',
+		'pt-br': 'Pré-visualizar',
 		'zh': '预览',
 		'zh-cn': '预览'
 	}
 	var $text_changes = {
 		'en': 'Changes',
+		'fr': 'Modifications',
+		'pt': 'Alteraçãos',
+		'pt-br': 'Alterações',
 		'zh': '差异',
 		'zh-cn': '差异'
 	}
 	var $text_nochanges = {
 		'en': 'No change',
+		'fr': 'Aucune modification',
+		'pt': 'Nenhuma alteração',
+		'pt-br': 'Nenhuma alteração',
 		'zh': '无差异',
 		'zh-cn': '无差异'
 	}

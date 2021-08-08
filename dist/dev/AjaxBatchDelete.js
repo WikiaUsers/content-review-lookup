@@ -23,8 +23,7 @@ mw.loader.using('mediawiki.api', function() {
         placement,
         preloads = 3,
         deleteModal,
-        paused = true,
-        isUCP = mw.config.get('wgVersion') !== '1.19.24';
+        paused = true;
 
     function preload() {
         if (--preloads === 0) {
@@ -55,7 +54,7 @@ mw.loader.using('mediawiki.api', function() {
         deleteModal = new window.dev.modal.Modal({
             content: formHtml(),
             id: 'form-batch-delete',
-            size: isUCP ? 'large' : 'medium',
+            size: 'large',
             title: i18n.msg('modalTitle').escape(),
             buttons: [
                 {
@@ -75,10 +74,6 @@ mw.loader.using('mediawiki.api', function() {
                     text: i18n.msg('addCategoryContents').escape(),
                     primary: true,
                     event: 'addCategoryContents'
-                },
-                {
-                    text: i18n.msg('close').escape(),
-                    event: 'close'
                 }
             ],
             events: {
@@ -180,29 +175,16 @@ mw.loader.using('mediawiki.api', function() {
             cmtitle: 'Category:' + category,
             cmlimit: 5000
         }).done(function(d) {
-            if (!d.error) {
-                var data = d.query;
-                for (var i in data.categorymembers) {
-                    if (isUCP) {
-                        $('#text-mass-delete').val(
-                            $('#text-mass-delete').val() +
-                            data.categorymembers[i].title +
-                            '\n'
-                        );
-                    } else {
-                        $('#text-mass-delete').append(data.categorymembers[i].title + '\n');
-                    }
-                }
-            } else {
-                outputError('GetContents', category, d.error.code);
+            var data = d.query;
+            for (var i in data.categorymembers) {
+                $('#text-mass-delete').val(
+                    $('#text-mass-delete').val() +
+                    data.categorymembers[i].title +
+                    '\n'
+                );
             }
         }).fail(function(code) {
-            // Handle AJAX errors on UCP
-            if (isUCP) {
-                outputError('GetContents', category, code);
-            } else {
-                outputError('GetContents', category, i18n.msg('ajaxError').plain());
-            }
+            outputError('GetContents', category, code);
         });
     }
  
@@ -220,42 +202,21 @@ mw.loader.using('mediawiki.api', function() {
             token: token,
             bot: true
         }).done(function(d) {
-            if (!d.error) {
-                console.log(i18n.msg('deleteSuccess', page).plain());
-                if (document.getElementById('protect-check').checked) {
-                    api.post({
-                        action: 'protect',
-                        expiry: 'infinite',
-                        protections: 'create=sysop',
-                        watchlist: 'preferences',
-                        title: page,
-                        reason: reason,
-                        token: token
-                    }).done(function(d) {
-                        if (!d.error) {
-                            console.log(i18n.msg('protectSuccess', page).plain());
-                        } else {
-                            console.log(i18n.msg('errorProtect', page, d.error.code).plain());
-                            outputError('Protect', page, d.error.code);
-                        }
-                    }).fail(function() {
-                        console.log(i18n.msg('errorProtect', page, i18n.ajaxError).plain());
-                        outputError('Protect', page, i18n.msg('ajaxError').plain());
-                    });
-                }
-            } else {
-                console.log(i18n.msg('errorDelete', page, d.error.code).plain());
-                outputError('Delete', page, d.error.code);
+            if (document.getElementById('protect-check').checked) {
+                api.post({
+                    action: 'protect',
+                    expiry: 'infinite',
+                    protections: 'create=sysop',
+                    watchlist: 'preferences',
+                    title: page,
+                    reason: reason,
+                    token: token
+                }).fail(function() {
+                    outputError('Protect', page, i18n.msg('ajaxError').plain());
+                });
             }
         }).fail(function(code) {
-            if (isUCP) {
-                // TODO: Handle AJAX error on UCP.
-                console.log(i18n.msg('errorDelete', page, code).plain());
-                outputError('Delete', page, code);
-            } else {
-                console.log(i18n.msg('errorDelete', page, i18n.msg('ajaxError').plain()).plain());
-                outputError('Delete', page, i18n.msg('ajaxError').plain());
-            }
+            outputError('Delete', page, code);
         });
         setTimeout(process, window.batchDeleteDelay || 1000);
     }

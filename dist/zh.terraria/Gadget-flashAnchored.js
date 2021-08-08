@@ -52,8 +52,9 @@ function flash(obj){
 			setTimeout(function(){
 				obj.css('background','#FFBE46'); 
 				setTimeout(function(){
-					obj.css('transition',''); 
-				},1000);
+					obj.css('transition','background-color 1000ms ease-out');
+					obj.css('background-color', oldBg);
+				},4000);
 			},20);
 		},150);
 	},1);

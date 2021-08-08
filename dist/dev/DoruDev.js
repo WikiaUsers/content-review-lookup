@@ -7,12 +7,12 @@
 
 (function() {
     var loading = [
+        'preact',
         'dorui',
         'modal',
         'api',
         'css'
     ];
-    var ui;
     var settings = {
         inner: JSON.parse(localStorage.getItem('DoruDev-state') || '{}'),
         get: function(key) {
@@ -20,70 +20,93 @@
         },
         set: function(key, value) {
             settings.inner[key] = value;
+
             localStorage.setItem('DoruDev-state',
                 JSON.stringify(settings.inner)
             );
         }
     };
+    var ui;
+    var preact;
+    var h;
+    var tags;
+    var useEffect;
+    var useState;
 
-    function buildTextZone(type) {
-        var reload;
+    function TextZone(props) {
+        var changed = useState(false);
+        var errored = useState(false);
+        var input = useState(settings.get(props.type) || '');
 
-        return ui.div({
+        useEffect(function() {
+            try {
+                settings.set(props.type, input.value);
+            } catch(e) {
+                errored.set(true);
+            }
+        }, [props.type, input.value]);
+
+        return tags.div({
             children: [
-                'Add your ' + type + ' in the following textarea',
-                ui.textarea({
+                'Add your ' + props.type + ' to the following textarea',
+                tags.textarea({
                     class: 'code-textarea',
-                    props: {
-                        value: settings.get(type) || ''
-                    },
-                    events: {
-                        input: function(e) {
-                            settings.set(type, e.target.value);
-
-                            reload.style.display = '';
-                        }
+                    value: input.value,
+                    onInput: function(e) {
+                        changed.set(true);
+                        input.set(e.target.value);
                     }
                 }),
-                reload = ui.div({
-                    style: {
-                        display: 'none'
-                    },
-                    text: 'You will have to reload the page for the ' + type + ' to take effect'
+                changed.value && tags.div({
+                    child: 'You will have to reload the page for the ' + props.type + ' to take effect'
+                }),
+                errored.value && tags.div({
+                    child: 'Storing to localStorage failed. Your browser is blocking the script from being saved, please clear your browsing data.'
                 })
             ]
         });
     }
 
+    function EnabledCheckbox() {
+        var enabled = useState(settings.get('enabled') === true);
+
+        useEffect(function() {
+            settings.set('enabled', enabled.value);
+        }, [enabled.value]);
+
+        return tags.div({
+            children: [
+                tags.input({
+                    type: 'checkbox',
+                    id: 'DoruDev-enable-checkbox',
+                    checked: enabled.value,
+                    onInput: function(e) {
+                        enabled.set(e.target.checked);
+                    }
+                }),
+                tags.label({
+                    for: 'DoruDev-enable-checkbox',
+                    child: 'Let the script run code'
+                })
+            ]
+        });
+    }
+
+    function DoruDev() {
+        return preact.frag([
+            'I hope your code is not as bad as last time',
+            h(EnabledCheckbox),
+            h(TextZone, { type: 'js' }),
+            h(TextZone, { type: 'css' })
+        ]);
+    }
+
     function showModal() {
+        var root;
         var $modal = dev.showCustomModal('DoruDev', {
             width: 500,
-            content: ui.div({
-                children: [
-                    'I hope your code is not as bad as last time',
-                    ui.div({
-                        children: [
-                            ui.input({
-                                type: 'checkbox',
-                                id: 'DoruDev-enable-checkbox',
-                                props: {
-                                    checked: settings.get('enabled') === true
-                                },
-                                events: {
-                                    input: function(e) {
-                                        settings.set('enabled', e.target.checked);
-                                    }
-                                }
-                            }),
-                            ui.label({
-                                for: 'DoruDev-enable-checkbox',
-                                text: 'Let the script run code'
-                            })
-                        ]
-                    }),
-                    buildTextZone('js'),
-                    buildTextZone('css')
-                ]
+            content: root = ui.div({
+                id: 'DoruDev-root'
             }),
             buttons: [
                 {
@@ -101,6 +124,11 @@
                 }
             ]
         });
+
+        preact.render(
+            h(DoruDev),
+            root
+        );
     }
 
     function init() {
@@ -127,6 +155,13 @@
 
     function onload(label, arg) {
         switch (label) {
+            case 'preact':
+                preact = arg;
+                h = preact.h;
+                tags = preact.tags;
+                useEffect = preact.useEffect;
+                useState = preact.useState;
+                break;
             case 'dorui':
                 ui = arg;
                 break;
@@ -152,6 +187,7 @@
             type: 'script',
             articles: [
                 'u:dev:MediaWiki:Dorui.js',
+                'u:dev:MediaWiki:Preact.js',
                 'u:dev:MediaWiki:ShowCustomModal.js'
             ]
         });
@@ -162,6 +198,7 @@
         }).then(onload.bind(null, 'css'));
 
         mw.hook('doru.ui').add(onload.bind(null, 'dorui'));
+        mw.hook('dev.preact').add(onload.bind(null, 'preact'));
         mw.hook('dev.showCustomModal').add(onload.bind(null, 'modal'));
         mw.loader.using('mediawiki.api').then(onload.bind(null, 'api'));
     }

@@ -2,16 +2,6 @@
 
 /// Customisation
 
-// Imports
-
-importArticles({
-    type: 'script',
-    articles: [
-        'w:c:dev:UserTags/code.js',
-        'u:dev:MediaWiki:ExtendedPrivateMessaging/code.js',
-    ]
-});
-
 // AddRailModule (Dev Wiki)
 
 window.AddRailModule = [{prepend: true}];

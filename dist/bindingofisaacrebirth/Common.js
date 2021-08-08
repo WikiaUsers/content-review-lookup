@@ -3,6 +3,7 @@
 $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
 
 	// Cache purge shortcut
+	// TODO: HydraDark only
 	$( '#ca-cargo-purge' )
 		.remove()
 		.appendTo( '#p-views > ul' )
@@ -127,33 +128,6 @@ function useCustomFont( element, name ) {
 	}
 }
 
-var dlcUtil = {
-	/**
-	 * The currently selected DLC filter.
-	 */
-	selectedFilter: 0,
-
-	/**
-	 * Gets the DLC filter of a DLC icon.
-	 * @param {HTMLElement} img The DLC icon.
-	 * @returns The DLC filter of the given DLC icon, 0 otherwise.
-	 */
-	getDlcFilter: function ( img ) {
-		var classList = img.classList;
-		for ( var i = 0; i < classList.length; ++i ) {
-			if ( classList[ i ].startsWith( 'dlc-' ) ) {
-				return +classList[ i ].substr( 4 );
-			}
-		}
-		return 0;
-	},
-
-	/**
-	 * @param {HTMLElement} element 
-	 */
-	update: function ( element ) {}
-};
-
 var slideshows = {
 	/**
 	 * @param {JQuery} $container 
@@ -176,7 +150,7 @@ var slideshows = {
 			return;
 		}
 		$slideshow.addClass( 'infobox2-slideshow-enabled' );
-		var $titleBar  = $( '<div class="infobox2-slideshow-titlebar">' );
+		var $titleBar = $( '<div class="infobox2-slideshow-titlebar">' );
 		function cycle() {
 			var $nextTitle = $titleBar
 				.children( '.infobox2-slide-title-active' )
@@ -226,6 +200,7 @@ var slideshows = {
 				    $( this ).replaceWith( this.childNodes );
 				} );
 		}
+		slideshows.fixMinHeight( $slideshow.get( 0 ) );
 		if (
 			!$slideshow.hasClass( 'infobox2-slideshow-hidden' ) &&
 			!$slideshow.find( '.infobox2-slideshow' ).length
@@ -238,9 +213,63 @@ var slideshows = {
 				cycle();
 			})();
 		}
+	},
+
+	fixMinHeight: function ( slideshow ) {
+		var slides      = slideshow.getElementsByClassName( 'infobox2-slide' ),
+			activeSlide = slideshow.getElementsByClassName( 'infobox2-slide-active' )[ 0 ];
+		if ( !activeSlide ) {
+			return;
+		}
+		activeSlide.classList.remove( 'infobox2-slide-active' );
+		var minHeight = 0;
+		for ( var j = slides.length - 1; j >= 0; --j ) {
+			var slide = slides[ j ];
+			slide.classList.add( 'infobox2-slide-active' );
+			minHeight = Math.max(
+				minHeight,
+				slideshow.getBoundingClientRect().height
+			);
+			slide.classList.remove( 'infobox2-slide-active' );
+		}
+		activeSlide.classList.add( 'infobox2-slide-active' );
+		var titleBars = slideshow.getElementsByClassName( 'infobox2-title-bar' );
+		if ( titleBars.length ) {
+			minHeight += titleBars[ 0 ].getBoundingClientRect().height;
+		} 
+		slideshow.style.minHeight = minHeight + 'px';
 	}
 };
 
+// TODO: HydraDark only
+var dlcUtil = {
+	/**
+	 * The currently selected DLC filter.
+	 */
+	selectedFilter: 0,
+
+	/**
+	 * Gets the DLC filter of a DLC icon.
+	 * @param {HTMLElement} img The DLC icon.
+	 * @returns The DLC filter of the given DLC icon, 0 otherwise.
+	 */
+	getDlcFilter: function ( img ) {
+		var classList = img.classList;
+		for ( var i = 0; i < classList.length; ++i ) {
+			if ( classList[ i ].startsWith( 'dlc-' ) ) {
+				return +classList[ i ].substr( 4 );
+			}
+		}
+		return 0;
+	},
+
+	/**
+	 * @param {HTMLElement} element 
+	 */
+	update: function ( element ) {}
+};
+
+// TODO: HydraDark only
 var dlcFilterUtil = {
 	/**
 	 * Indicates whether the DLC filtering has been loaded and finished

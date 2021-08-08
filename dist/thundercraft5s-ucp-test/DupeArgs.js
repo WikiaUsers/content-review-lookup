@@ -200,7 +200,7 @@
 
 			switch (char) {
 				case '{':
-					if (text[i+1] === '|') return templates; // Check for table syntax
+					if (text[i+1] === '|') continue; // Check for table syntax
 
 					braces++;
 

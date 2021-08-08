@@ -52,7 +52,7 @@ window.syncPages = function(sourcePages) {
 			return;
 		}
 		console.log("Starting next wiki: " + allWikis[cw]);
-		fa = new mw.ForeignApi("https://"+allWikis[cw]+".sandbox-s8.fandom.com/api.php");
+		fa = new mw.ForeignApi("https://"+allWikis[cw]+".fandom.com/api.php");
 		editPage();
 		return;
 	}

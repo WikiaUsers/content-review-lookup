@@ -15,7 +15,7 @@ mw.loader.using('mediawiki.api').then(function () {
     // Configuration
     var config = window.DiscordBannerSettings || {},
         bannerStyle = config.bannerStyle || '3',
-        inviteLink = config.inviteLink || '7CPgcnWqYK', // SV Server
+        inviteLink = config.inviteLink || '6NV4hcW7uu', // SV Server
         prependToRail = config.prependToRail === undefined ? true : config.prependToRail, // Prepends to rail by default
         noRail = config.noRail || false; // Adds rail module by default
     if (

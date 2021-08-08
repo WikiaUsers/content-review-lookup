@@ -36,24 +36,23 @@ codeLoad.definitions = {
             "enabled": true
         }
     },
-// To Be Rewritten
-//    "font": {
-//        "title": "Totally Nuts Font",
-//        "description": "Removes custom font from text areas with exception of article and rail headers",
-//        "group": "design",
-//        "articles": [
-//            "Wikia.css/totally-nuts.css"
-//        ],
-//        "preferences": {
-//            "enabled": false
-//        }
-//    },
+    "font": {
+        "title": "Totally Nuts Font",
+        "description": "Adds custom font to all text areas, with the exception of the editors",
+        "group": "design",
+        "articles": [
+            "Fandomdesktop.css/totally-nuts.css"
+        ],
+        "preferences": {
+            "enabled": false
+        }
+    },
     "ratings": {
         "title": "Star Ratings",
         "description": "Adds five star ratings to episode, special, and film pages",
         "group": "content",
         "articles": [
-            "Wikia.js/star-ratings.js"
+            "Fandomdesktop.js/star-ratings.js"
         ],
         "preferences": {
             "enabled": true
@@ -75,7 +74,7 @@ codeLoad.definitions = {
         "description": "Creates a gentle winter snowfall in the wiki's background",
         "group": "design",
         "articles": [
-            "Wikia.js/snow.js"
+            "Fandomdesktop.js/snow.js"
         ],
         "preferences": {
             "enabled": false,

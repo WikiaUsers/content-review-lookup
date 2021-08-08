@@ -15,6 +15,20 @@
     }
     window.andrewds1021.user_last_activity.has_run = true;
     
+/* declare/retrieve miscellaneous variables */
+    var config = mw.config.get([
+        "wgUserLanguage",
+        "wgUserVariant",
+        "wgVersion"
+    ]);
+    var lang = config.wgUserVariant || config.wgUserLanguage;
+    var api;
+    
+/* retrieve datetime format */
+    var format = window.andrewds1021.user_last_activity.format;
+    if (typeof format != "object") format = {};
+    if (!format.hasOwnProperty("locales")) format.locales = lang;
+    
 /* retrieve and set type of activities to search */
     var cons = window.andrewds1021.user_last_activity.edits;
     if (cons === undefined) {
@@ -66,12 +80,12 @@
     var custom_retrieval_error = window.andrewds1021.user_last_activity
         .retrieval_error;
     if (typeof custom_no_activity == "object") {
-        no_activity = custom_no_activity[mw.config.get("wgUserLanguage")];
+        no_activity = custom_no_activity[lang];
     } else if (typeof custom_no_activity == "string") {
         no_activity = custom_no_activity;
     }
     if (typeof custom_retrieval_error == "object") {
-        retrieval_error = custom_retrieval_error[mw.config.get("wgUserLanguage")];
+        retrieval_error = custom_retrieval_error[lang];
     } else if (typeof custom_retrieval_error == "string") {
         retrieval_error = custom_retrieval_error;
     }
@@ -79,7 +93,9 @@
 /* retrieve [[I18n-js]] messages */
     var i18n_def = jQuery.Deferred();
     mw.hook("dev.i18n").add(function (i18n) {
-        i18n.loadMessages("UserLastActivity").done(function (i18n) {
+        i18n.loadMessages("UserLastActivity", {
+            language: lang
+        }).done(function (i18n) {
             if (!no_activity) no_activity = i18n.msg("no_activity").plain();
             if (!retrieval_error) retrieval_error = i18n.msg("retrieval_error")
                 .plain();
@@ -93,9 +109,6 @@
             "u:dev:MediaWiki:I18n-js/code.js"
         ]
     });
-    
-/* declare additional variables */
-    var api;
     
     function getDates(obj) {
 /* if all names have been processed, return resolved deferred */
@@ -129,14 +142,18 @@
                     }
                     if (con_time && log_time) {
                         if (con_time >= log_time) {
-                            obj.dates[name] = new Date(con_time).toLocaleString();
+                            obj.dates[name] = (new Date(con_time))
+                                .toLocaleString(format.locales, format);
                         } else {
-                            obj.dates[name] = new Date(log_time).toLocaleString();
+                            obj.dates[name] = (new Date(log_time))
+                                .toLocaleString(format.locales, format);
                         }
                     } else if (con_time) {
-                        obj.dates[name] = new Date(con_time).toLocaleString();
+                        obj.dates[name] = (new Date(con_time))
+                            .toLocaleString(format.locales, format);
                     } else if (log_time) {
-                        obj.dates[name] = new Date(log_time).toLocaleString();
+                        obj.dates[name] = (new Date(log_time))
+                            .toLocaleString(format.locales, format);
                     } else {
                         obj.dates[name] = no_activity;
                     }
@@ -209,6 +226,31 @@
         "mediawiki.util"
     ]).then(function () {
         api = new mw.Api();
+        
+/* configure timeZone for datetime format */
+        if (format.hasOwnProperty("timeZone")) return;
+        return api.get({
+            action: "query",
+            meta: "userinfo",
+            uiprop: "options"
+        }).then(
+            function (data) {
+                if (data && data.query && data.query.userinfo
+                    && data.query.userinfo.options
+                    && data.query.userinfo.options.timecorrection
+                    && !/^Offset/.test(data.query.userinfo.options.timecorrection)) {
+                    if (/^System/.test(data.query.userinfo.options.timecorrection)) {
+                        format.timeZone = "UTC";
+                    } else {
+                        format.timeZone = data.query.userinfo.options
+                            .timecorrection.split("|")[2];
+                    }
+                }
+            },
+            function () {
+                return jQuery.Deferred().resolve();
+            }
+        );
     })).then(function () {
 /*
    get names associated with ids and set error message as content for elements
@@ -223,7 +265,7 @@
                 list: "users"
             }
         };
-        if (mw.config.get("wgVersion") === "1.19.24") {
+        if (config.wgVersion === "1.19.24") {
             obj.parameter = "usids";
         } else {
             obj.parameter = "ususerids";

@@ -8,7 +8,7 @@ window.tooltips_config = {
 window.tooltips_list = [
   {
     classname: 'tooltip-link',
-    parse: '{' + '{<#format#>|link=<#link#>}}',
+    parse: '{' + '{:<#content#>}}',
     delay: 500,
   }
 ];

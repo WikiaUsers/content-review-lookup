@@ -562,6 +562,22 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"archbeast": {
+				"name": "Arch Beast",
+				"colors": [
+					"beast",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
+			"archtarot": {
+				"name": "Arch Tarot",
+				"colors": [
+					"tarot",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"archangel": {
 				"name": "Archangel",
 				"colors": [
@@ -3932,6 +3948,23 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "super"
 			},
+			"elitechampion": {
+				"name": "Elite Champion",
+				"colors": [
+					"champion",
+					"white",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"eliteroyal": {
+				"name": "Elite Royal",
+				"colors": [
+					"royal",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"elusive": {
 				"name": "Elusive",
 				"colors": [
@@ -5779,6 +5812,22 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"grandfairytale": {
+				"name": "Grand Fairytale",
+				"colors": [
+					"fairytale",
+					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"grandzodiac": {
+				"name": "Grand Zodiac",
+				"colors": [
+					"zodiac",
+					"white"
+				],
+				"rarity": "common"
+			},
 			"grandcaster": {
 				"name": "Grandcaster",
 				"colors": [
@@ -6602,6 +6651,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"mythic",
 					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"hyperdiamond": {
+				"name": "Hyper Diamond",
+				"colors": [
+					"diamond",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},

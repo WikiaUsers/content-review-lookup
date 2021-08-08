@@ -1,25 +1,42 @@
 // By Equazcion: https://terraria.gamepedia.com/User:Equazcion
 
-var wgNamespaceNumber = mw.config.get( 'wgNamespaceNumber' );
-var wgPageName = mw.config.get( 'wgPageName' );
-var wgTitle = mw.config.get( 'wgTitle' );
+var wgNamespaceNumber = mw.config.get( 'wgNamespaceNumber' ),
+    wgPageName = mw.config.get( 'wgPageName' ),
+    wgTitle = mw.config.get( 'wgTitle' );
 
 if (wgNamespaceNumber == 6) {
+
+    var URLprefix = 'https://',
+        URLsuffix = '.gamepedia.com/api.php?format=json&callback=?',
+        msgForeignUses = 'File usage (foreign)',
+        msgImageLink = 'file page',
+        msgNoUses = 'No foreign uses of this file were detected.',
+        msgListLink = 'List foreign uses',
+        msgLocalFileListHeader = 'File usage (local)';
+
 	$('#mw-imagepage-reupload-link').append(
 		$('<li></li>').append(
-			$('<a></a>', {'class':'foreignLink', 'href':'#ddd', 'text':'List foreign uses'})
+			$('<a></a>', {'class':'foreignLink', 'href':'#ddd', 'text':msgListLink})
 		)
 	);
+
 	$('.foreignLink').click(function(){
-		$('.interUses').remove();
-		$('div[id$="linkstoimage"]').append($('<ul></ul>', {'class':'interUses'}));
-		var $interUses = $('.interUses');
-		var URLprefix = 'https://', 
-			URLsuffix = '.gamepedia.com/api.php?format=json&callback=?';
-		var msgForeignUses = 'Foreign uses',
-			msgImageLink = 'file page',
-			msgNoUses = 'No foreign uses of this file were detected.';
-		$interUses.append( $('<h2></h2>', {'text':msgForeignUses, 'style':'margin-left:-22px;'}) );
+        // Clear any existing list
+        $('ul.interUses').remove();
+        $('h2#foreignUsesHeader').remove();
+        $('li#foreignTOClink').remove();
+        
+        // Create header and list elements
+		$('h2#filelinks')
+            .text(msgLocalFileListHeader)
+            .before('<h2 id="foreignUsesHeader">' + msgForeignUses + '</h2><ul class="interUses"></ul>');
+        
+        // Add TOC link
+        $('ul#filetoc li a[href="#filelinks"]')
+        	.text(msgLocalFileListHeader)
+        	.parent('li').after('<li id="foreignTOClink"><a href="#foreignUsesHeader">' + msgForeignUses + '</a></li>');
+        
+        var $interUses = $('.interUses');
 		var langs = {
 			"Russian":"terraria-ru",
 			"French":"terraria-fr",
@@ -81,6 +98,5 @@ if (wgNamespaceNumber == 6) {
 				});
 			});
 		});
-	setTimeout(function(){$interUses[0].scrollIntoView(true)}, 1000);
 	});
 }

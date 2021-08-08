@@ -165,8 +165,8 @@
                 console.log('Page contents retrieved and saved. Begin processing page content.');
                 // Replacing image name on each page
                 var escapeRegExp = mw.RegExp.escape || mw.util.escapeRegExp;
-                var escapedName = escapeRegExp(PRA.oldName);
-                if (escapedName.substr(0, 1).match(/[A-z]/i)) {
+                var escapedName = escapeRegExp(PRA.oldName).replace(/( |_)/g, '[ _]*?');
+                if (escapedName.substr(0, 1).match(/[A-Za-z]/i)) {
                     escapedName = '[' + escapedName.substr(0, 1).toUpperCase() +
                                   escapedName.substr(0, 1).toLowerCase() + ']' + escapedName.substr(1);
                 }

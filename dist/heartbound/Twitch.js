@@ -1,19 +1,18 @@
 /**
  * Name:        GoPirateSoftware
- * Version:     v1.0
- * Author:      KockaAdmiralac <1405223@gmail.com>
+ * Author:      KockaAdmiralac <wikia@kocka.tech>
  * Description: Adds a sidebar module when Pirate Software is streaming
  */
 (function() {
     'use strict';
     var $rail = $('#WikiaRail'), $module;
-    if (window.GoPirateSoftwareLoaded || !$rail.exists()) {
+    if (window.GoPirateSoftwareLoaded || $rail.length === 0) {
         return;
     }
     window.GoPirateSoftwareLoaded = true;
     function insert() {
         var $modules = $('#top-right-boxad-wrapper, .content-review-module');
-        if ($modules.exists()) {
+        if ($modules.length) {
             $module.insertAfter($modules);
         } else {
             $rail.prepend($module);
@@ -71,7 +70,7 @@
      * CONTENT REVIEW NOTE:
      *   This just checks the stream information.
      *   It doesn't send any personal data along with it, so it cannot
-     *   be used as a method of associating IP addresses with Wikia
+     *   be used as a method of associating IP addresses with Fandom
      *   usernames like CheckUser does.
      */
     $.get('https://twitch.heartbound.wiki', {

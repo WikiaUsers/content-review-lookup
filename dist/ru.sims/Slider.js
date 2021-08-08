@@ -1,10 +1,12 @@
 /******************************************************************/
-/*   Скрипт слайдера by User:Tierrie (см. MediaWiki:Slider.css)   */
+/*   Скрипт слайдера by User:Tierrie (см. MediaWiki:Slider FD.css)   */
 /******************************************************************/
+mw.loader.using( ['jquery.cookie']);
+
 mw.loader.using( ['jquery.ui.tabs'], function() {
   $( "[class^=portal_vtab]" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
   $( "[class^=portal_vtab] li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
- 
+
   var $tabs = $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100} } );
   $("[class*=portal_sliderlink]").click(function() { // bind click event to link
     $tabs.tabs('select', this.className.match(/portal_sliderlink-(\d+)/)[1]);
@@ -16,7 +18,7 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
     return false;
   });
   $('#portal_prev').click(function() { // bind click event to link
-    $tabs.tabs('select', ($tabs.tabs('option', 'selected') === 0) ? ($tabs.tabs('length')-1) : $tabs.tabs('option', 'selected') - 1 ); // switch to previous tab
+    $tabs.tabs('select', ($tabs.tabs('option', 'selected') == 0) ? ($tabs.tabs('length')-1) : $tabs.tabs('option', 'selected') - 1 ); // switch to previous tab
     return false;
   });
 });

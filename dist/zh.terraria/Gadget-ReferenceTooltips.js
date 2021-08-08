@@ -1,7 +1,7 @@
 // By Yair Rand: https://en.wikipedia.org/wiki/User_talk:Yair_rand/ReferenceTooltips
 
-mw.loader.load( '/index.php?title=MediaWiki:Common.js/Jquery.cookie.js&action=raw&ctype=text/javascript' );
-mw.loader.load( '/index.php?title=MediaWiki:Common.js/ReferenceTooltips.css&action=raw&ctype=text/css', 'text/css' );
+//mw.loader.load( '/index.php?title=MediaWiki:Common.js/Jquery.cookie.js&action=raw&ctype=text/javascript' );
+//mw.loader.load( '/index.php?title=MediaWiki:Common.js/ReferenceTooltips.css&action=raw&ctype=text/css', 'text/css' );
 
 window.pg || $(document).ready( function($) {
 
@@ -26,7 +26,7 @@ window.pg || $(document).ready( function($) {
             });
         }
 
- var addedHeightOffset = -27; // Add an additional tooltip height offset specific to Terraria Wiki
+ var addedHeightOffset = -2; // Add an additional tooltip height offset specific to Terraria Wiki
 
         var settings = document.cookie.split("RTsettings=")[1];
         settings = settings ? settings.split(";")[0].split("%7C") : [1, 200, +("ontouchstart" in document.documentElement)];

@@ -141,7 +141,8 @@ $(function() {
 		var $offset = $width > 980 ? 250 : ($width > 500 ? 42: 12); // (fullwidth - content width) on hydra skin.
 		
 		//header
-		$header.toggleClass('collapsable', $width < 1660);
+		$header.toggleClass('collapsable', $width < 1300);
+		$header.toggleClass('collapsed', $width < 730);
 		
 		//row breaks of flexboxes 
 		$content
@@ -236,7 +237,7 @@ $(function() {
 	}).triggerHandler('resize');
 	$btn.on('click', function(){
 		$header.toggleClass('collapsed');
-	}).click();
+	});
 });
 
 // translation project banner
@@ -510,6 +511,7 @@ $(function() {
 	});
 });
 
+/* broken under new fandom skin, waiting for fix.
 // for mobile
 $(function(){
     if( !$('body.skin-fandomdesktop').length ){
@@ -587,3 +589,4 @@ $(function(){
 		});
 	}
 });
+*/

@@ -644,15 +644,8 @@
 
 	// main form initialization sequence
 	function initialize() {
-	    var version = mw.config.get('wgVersion');
-	    var skin = mw.config.get('skin');
-	    if (version === '1.19.24') {
-	        pathRegex = new RegExp('^' + $.escapeRE(mw.config.get('wgArticlePath').replace('$1', '')));
-	    } else if (version >= '1.34') {
-	        pathRegex = new RegExp('^' + mw.util.escapeRegExp(mw.config.get('wgArticlePath').replace('$1', '')));
-	    } else {
-	        pathRegex = new RegExp('^' + mw.RegExp.escape(mw.config.get('wgArticlePath').replace('$1', '')));
-	    }
+	    var escapeRegex = mw.RegExp.escape || mw.util.escapeRegExp;
+        pathRegex = new RegExp('^' + escapeRegex(mw.config.get('wgArticlePath').replace('$1', '')));
 		if (mw.config.get('wgAction') !== 'edit') {
 			$(initListFilesForm);
 		}
@@ -686,27 +679,16 @@
 					$container;
 
 				// set filenames
-				if (version === '1.19.24' || skin === 'fandomdesktop') {
-				    $('.gallerytext > a').each(function() {
-				        filenames += getFile(this) + "\n";
-				        count++;
-				    });
-				} else {
-				    $('.gallery-image-wrapper > a').each(function() {
-				        filenames += getFile(this) + "\n";
-				        count++;
-				    });
-				}
+			    $('.gallery-image-wrapper > a').each(function() {
+			        filenames += getFile(this) + "\n";
+			        count++;
+			    });
 				$container = $('<div id="filesnames-list-container"><hr /><p>Here is a raw list of the ' + count + ' filename(s) currently shown on this page, provided by the <a title="w:c:dev:ListFiles" href="https://dev.fandom.com/wiki/ListFiles">ListFiles</a> script on the Fandom Developers Wiki.</p><textarea id="filesnames-list-textarea" style="width: 95%; height: 150px"></textarea></div>');
 				$container.children('#filesnames-list-textarea').val(filenames);
 
 				// insert container
 				$('#filesnames-list-container').remove(); // prevent duplicates
-				if (version === '1.19.24' || skin === 'fandomdesktop') {
-				    $('.gallery').before($container);
-				} else {
-				    $('.wikia-gallery').before($container);
-				}
+			    $('.wikia-gallery').before($container);
 			});
 		}
 	}

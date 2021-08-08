@@ -10,11 +10,21 @@ mw.hook( 'wikipage.content' ).add( function( $content ) {
 		var $text = {
 			'playTitle': {
 				'en': 'Click to play',
+				'de': 'Zum Abspielen anklicken',
+				'fr': 'Cliquer pour jouer',
+				'pt': 'Clique para jogar',
+				'pl': 'Naciśnij by odtworzyć',
+				'ru': 'Щёлкните, чтобы воспроизвести',
 				'zh': '点击播放',
 				'zh-cn': '点击播放'
 			},
 			'stopTitle': {
 				'en': 'Click to stop',
+				'de': 'Zum Beenden anklicken',
+				'fr': 'Cliquer pour arrêter',
+				'pt': 'Clique para parar',
+				'pl': 'Naciśnij by zatrzymać',
+				'ru': 'Щёлкните, чтобы остановить',
 				'zh': '点击停止',
 				'zh-cn': '点击停止'
 			}

@@ -13,22 +13,22 @@
 $(function() {
 	var pagename = mw.config.get('wgPageName'),
 		sep2 = '<b> &bull; </b>';
-	
+
 	function makeLink(link, text, query, id) {
 		query = query ? new mw.Uri().extend(query).getQueryString() : undefined;
-		
+
 		return $('<a>', {
 			id: id,
-			href: mw.util.getUrl(link + (query ? "?" + query : "")),
+			href: mw.util.getUrl(link) + (query ? "?" + query : ""),
 			title: link,
 			text: text || link,
 		});
 	}
-	
-	if (window.globalJsLinksLoaded || !pagename.match(/\/(global|common)\.(js|css)\/?/) || mw.config.get('wgCityId') !== 2182188) return;
+
+	if (window.globalJsLinksLoaded || !pagename.match(/\/(global|common)\.(js|css)\/?/) || mw.config.get('wgCityId') !== 177) return;
 	window.globalJsLinksLoaded = true;
 	window.globalJsIgnoreJSPages = window.globalJsIgnoreJSPages || [];
-	
+
 	var isCSS = /\.css$/.test(pagename),
 		prefix = isCSS ? 'css' : 'js',
 		isLocal = /\/common\.(js|css)/.test(pagename),
@@ -38,17 +38,17 @@ $(function() {
 		}),
 		invertedPrefix = !isCSS ? 'css' : 'js',
 		userName = mw.config.get('wgUserName');
-	
-	$.get('/wiki/Special:PrefixIndex/User:' + userName + '/global.' + prefix + '/').then(function(data) {
-	    var arr = [];
-	    $(data).find('.mw-prefixindex-list > li > a').each(function() {
-	    	var title = $(this).attr('title');
-	        
-	        if (!window.globalJsIgnoreJSPages.some(function(v) {
-	        	return title.match(v);
-	        })) arr.push(title);
-	    });
-	    return arr;
+
+	$.get(mw.util.getUrl('Special:PrefixIndex/User:' + userName + '/global.' + prefix + '/')).then(function(data) {
+		var arr = [];
+		$(data).find('.mw-prefixindex-list > li > a').each(function() {
+			var title = $(this).attr('title');
+
+			if (!window.globalJsIgnoreJSPages.some(function(v) {
+				return title.match(v);
+			})) arr.push(title);
+		});
+		return arr;
 	}).then(function(arr) {
 		var $list = $('<ul>', {
 			css: {
@@ -56,7 +56,7 @@ $(function() {
 				'margin': '0.4em 0px 0.5em 2.5em',
 			}
 		});
-		$('#firstHeading').html($('#firstHeading').html().replace(/^User:.*\//g, 'JS: ').replace('global.js/', ''));
+		// $('#firstHeading').html($('#firstHeading').html().replace(/^User:.*\//g, 'JS: ').replace('global.js/', ''));
 
 		arr.forEach(function(v) {
 			$list.append(
@@ -84,7 +84,7 @@ $(function() {
 				})
 			);
 		});
-		
+
 		$('#mw-clearyourcache')
 			.after(
 				$('<div>', {
@@ -154,8 +154,8 @@ $(function() {
 					],
 				})
 			);
-			
+
 		$('#mw-clearyourcache').remove();
-			
+
 	});
 });

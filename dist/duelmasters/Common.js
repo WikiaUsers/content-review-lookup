@@ -1,10 +1,12 @@
 window.tooltips_config = {
-    offsetX: 8,
-    offsetY: 8,
-    waitForImages: false,
-    events: ['CustomEvent'],
-    noCSS: true,
-}
+    noCSS: true
+};
+window.tooltips_list = [
+   {
+       classname: 'card-tooltip',
+       parse: '{'+'{CardTT|<#image#>}}',
+   }
+];
 
 //=============== Card Database Test / Advanced Card Search ==================
 function searchJavaScript() {
@@ -64,7 +66,6 @@ function searchJavaScript() {
 
 		//number comparisons(eg. Power)
 		var conditions = elem.querySelectorAll('select[class="comparisonCondition"]');
-		var powerNotFound = false;
 		conditions.forEach(function (condition) 
 		{
 			var n1 = condition.id.indexOf("-inputComparison");
@@ -124,16 +125,11 @@ function searchJavaScript() {
 							}
 							
 						});
-						if(categoriesToInclude.length >=1) categories.push(categoriesToInclude.join("¦"));
-						else powerNotFound = true;
+						categories.push(categoriesToInclude.join("¦"));
 					}
 				}
 			}
 		});
-		if(powerNotFound){
-			document.getElementById('content-container').innerHTML = "No cards match the search criteria.";
-			return;
-		} 
 		
 		if(categories.length === 0 && exCategories.length === 0 && matchTitles === null && set === 'Any'){
 			document.getElementById('content-container').innerHTML = "No search parameters specified or invalid number input.";
@@ -358,7 +354,7 @@ function searchJavaScript() {
 	addItems(divBox);	
 }
 switch (mw.config.get('wgPageName')) {
-	case "User:NotoroX/CardSearchV2": //test page
+	case "User:NotoroX/CardSearch": //test page
 	case "Advanced_Card_Search":
 		searchJavaScript();
 		

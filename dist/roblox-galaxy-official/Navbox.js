@@ -32,7 +32,7 @@ if(localStorage.getItem("storedArr") !== null){
     count = shipArr.length;
 } 
 //Array of valid category-based types (classes/events)
-var types = ["AI","Fighters","Hidden Event","Halloween 2016","Halloween 2017","Christmas 2017","Fourth of July 2018","Halloween 2018","Christmas 2018","Fourth of July 2019","Retro Ship Event 2019","Halloween 2019","Christmas 2019","Promotion","April Fools 2020","Fourth of July 2020","Retro Ship Event 2020","Halloween 2020","Black Friday 2020","Christmas 2020","Fourth of July 2021","Super Capital","Advanced","Miner","Freighter","Frigate","Destroyer","Cruiser","Battlecruiser","Battleship","Dreadnought","Carrier","Admin"];
+var types = ["AI","Fighters","Hidden Event","Halloween 2016","Halloween 2017","Christmas 2017","Fourth of July 2018","Halloween 2018","Christmas 2018","Fourth of July 2019","Retro Ship Event 2019","Halloween 2019","Christmas 2019","Promotion","April Fools 2020","Fourth of July 2020","Retro Ship Event 2020","Halloween 2020","Black Friday 2020","Christmas 2020","Fourth of July 2021","Retro Ship Event 2021","Super Capital","Advanced","Miner","Freighter","Frigate","Destroyer","Cruiser","Battlecruiser","Battleship","Dreadnought","Carrier","Admin"];
 //Array of pages to be removed from shipArr -- all non-ship pages
 var unwantedNamesTypes = ["Ships","Tier List","All Ship","INVALID","Category"];
 //General parser object used for parsing the requested pages

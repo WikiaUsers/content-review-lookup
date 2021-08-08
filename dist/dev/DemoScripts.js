@@ -156,6 +156,11 @@
             styles: 'MediaWiki:FandomIcons.css'
         },
 
+		FandomXP: {
+			page: 'FandomXP',
+			styles: 'MediaWiki:FandomXP.css'
+		},
+
         FastFileDelete: {
             page: 'FastFileDelete',
             scripts: 'MediaWiki:FastFileDelete.js',

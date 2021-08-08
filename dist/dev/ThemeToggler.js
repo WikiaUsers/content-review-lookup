@@ -8,9 +8,14 @@ $(function() {
 		var newTheme = theme === 'light' ? 'dark' : 'light';
 
 		// Implementation by [[User:Pcj]] from ThemeSwitcher
-		$.get( mw.util.wikiScript( 'wikia' ) + '?controller=ThemeApi&method=themeVariables&variant=' + newTheme + '&cb=' + ( new Date().getTime() ) ).done( function( data ) {
-			var $s = $( '#pcjThemeSwitch' )[0] || $( '<style>' ).attr( 'id', 'pcjThemeSwitch' ).appendTo( 'body' );
-			$( $s ).text( data );
+		$.when(
+			$.get(mw.util.wikiScript( 'wikia' ) + '?controller=ThemeApi&method=themeVariables&variant=' + newTheme + '&cb=' + ( new Date().getTime() ) ),
+			$.get( mw.util.wikiScript( 'load' ) + '?modules=ext.fandom.DesignSystem.GlobalNavigation.brand.' + newTheme + '.css%7Cext.fandom.DesignSystem.brand.' + newTheme + '.css&only=styles' )
+		)
+		.done( function( wikiTheme, brandTheme ) {
+			var css = wikiTheme[0] + brandTheme[0];
+			var $s = $( '#pcjThemeSwitch' )[0] || $( '<style>' ).attr( 'id', 'pcjThemeSwitch' ).appendTo('body');
+			$($s).text(css);
 			$( 'body' ).removeClass( 'theme-fandomdesktop-light theme-fandomdesktop-dark' ).addClass( 'theme-fandomdesktop-' + newTheme );
 		} );
 	}

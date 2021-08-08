@@ -9,8 +9,24 @@ window.UserTagsJS = {
 	}
 };
 
+/* mentions user */
 $(function($, user) {
     if (user !== '') {
         $('.insertusername').text(user);
     }
 }(window.jQuery, (window.mw.config.get('wgUserName') || '')));
+
+/* oasis */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:OasisRevived.js',
+    ]
+});
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:OldFandomColors.js',
+    ]
+});

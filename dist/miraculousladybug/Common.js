@@ -85,3 +85,20 @@ $(function () {
 
 	button.click(toggleText);
 });
+
+/* Episode Guide International hides headings on Desktop */
+const
+    epgPages = "Episode_guide/International/",
+    epgTabber = "wds-tabber",
+    epgTabContent = "wds-tab__content";
+
+if (mw.config.get('wgPageName').startsWith(epgPages)) {
+    const tabs = document.getElementsByClassName(epgTabber);
+    if (tabs) {
+        Array.prototype.forEach.call(document.getElementsByClassName(epgTabContent), function(tab) {
+            Array.prototype.forEach.call(tab.getElementsByTagName("h2"), function(i) {
+                i.remove();
+            });
+        });
+    }
+}

@@ -1,11 +1,11 @@
+// <nowiki>
 (function () {
     if (!window.DiscussionTemplates) {
         window.DiscussionTemplates = {};
     }
     if (
         window.DiscussionTemplates.loaded ||
-        mw.config.get('wgNamespaceNumber') !== 1200 ||
-        mw.config.get('wgVersion') === '1.19.24'
+        mw.config.get('wgNamespaceNumber') !== 1200
     ) {
         return;
     }
@@ -26,6 +26,7 @@
         text: null
     };
     var modal;
+    var paramValues = {};
 
     function selectTemplate () {
     	if (!selected.template && !selected.text) {
@@ -39,9 +40,17 @@
             wrapoutputclass: null, //I don't know if this is a bug or not, but it gets rid of the wrapping div
             format: 'json'
         };
+        var tmpl = window.DiscussionTemplates.templates[selected.template];
         if (selected.text) {
             params.text = selected.text;
             params.contentmodel = 'wikitext';
+        } else if (tmpl.parameters) {
+            params.contentmodel = 'wikitext';
+            params.text = '{{' + tmpl.name;
+            for (var param in paramValues) {
+                params.text += '|' + param + '=' + paramValues[param];
+            }
+            params.text += '}}';
         } else {
             params.page = window.DiscussionTemplates.templates[selected.template].name;
 		}
@@ -64,7 +73,7 @@
                 content = content.replace(/\$USER/g, mw.html.escape(mw.config.get('profileUserName')));
             }
             $('.message-wall-app > div > .EditorForm .rich-text-editor__content > div').html(function () {
-                if ($(this).html()) {
+                if ($(this).text().trim()) {
                     return '<p>' + $(this).html() + '<br><br></p>' + content;
                 }
                 return content;
@@ -73,7 +82,7 @@
                 alert(i18n.msg('title-not-supported-nocopy').plain());
             } else {
                 alert(i18n.msg('title-not-supported').plain());
-                navigator.clipboard.writeText(window.DiscussionTemplates.templates[selected.template].title);
+                navigator.clipboard.writeText(tmpl.title);
             }
             modal.close();
         });
@@ -87,6 +96,7 @@
             templates: [],
             wikis: []
         };
+        var $parameters = $('<div>');
         if (window.DiscussionTemplates.templates) {
 	        Object.keys(window.DiscussionTemplates.templates).forEach(function (i) {
 	            list.templates.push(
@@ -120,9 +130,24 @@
 	        });
 	        var templateSelected = function (option) {
 	            selected.template = option.label;
+	            $parameters.empty();
+	            paramValues = {};
+	            var tmpl = window.DiscussionTemplates.templates[selected.template];
+	            if (tmpl.parameters) {
+	                $.each(tmpl.parameters, function(param, label) {
+    	                var paramLabel = new OO.ui.LabelWidget({
+                            label: label
+                        });
+                        var paramArea = new OO.ui.TextInputWidget();
+                        paramArea.on('change', function (value) {
+                            paramValues[param] = value;
+                        });
+                        $parameters.append([paramLabel.$element, '<br>', paramArea.$element, '<br>']);
+	                });
+	            }
 	        };
 	        templatesDropDown.getMenu().on('select', templateSelected);
-	        layout.$element.append([templateLabel.$element, '<br>', templatesDropDown.$element, '<br><br><hr/><br>']);
+	        layout.$element.append([templateLabel.$element, '<br>', templatesDropDown.$element, $parameters, '<br><br><hr/><br>']);
 		}
 
         var textareaLabel = new OO.ui.LabelWidget({
@@ -190,25 +215,18 @@
 
     function init (i18nData) {
         i18n = i18nData;
-        $('#MessageWall').on('click', '.message-wall-app > div > div[class^="FormEntryPoint_form-entry-point__"]', function () {
+        setInterval(function() {
             if ($('#add-discussion-template').length) {
                 return;
             }
-            $(function addButtons () {
-                var $o = $('.message-wall-app > div > .EditorForm__actions');
-                if (!$o.length) {
-                    setTimeout(addButtons, 250);
-                } else {
-                    $o.append(
-                        $('<button>', {
-                            click: click,
-                            id: 'add-discussion-template',
-                            class: 'wds-button wds-is-secondary wds-is-text'
-                        }).append(window.dev.wds.icon('bubble-small'))
-                    );
-                }
-            });
-        });
+            $('.message-wall-app > div > .EditorForm__actions').append(
+                $('<button>', {
+                    click: click,
+                    id: 'add-discussion-template',
+                    class: 'wds-button wds-is-secondary wds-is-text'
+                }).append(window.dev.wds.icon('bubble-small'))
+            );
+        }, 1000);
     }
 
     function preload () {
@@ -232,3 +250,4 @@
         ]
     });
 })();
+// </nowiki>

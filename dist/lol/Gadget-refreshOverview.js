@@ -255,6 +255,9 @@ $(function () {
 		window.purgeAll(pagesToPurge)
 		//.then(window.blankEdit)
 		.then(getWikitextFromTemplateAndSave)
+		.then(function() {
+			window.purgeAll([mw.config.get('wgMainPageTitle')]);
+		})
 		.then(getPBData)
 		.then(updatePB)
 		.then(updateTimeline)

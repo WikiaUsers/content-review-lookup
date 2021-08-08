@@ -51,6 +51,7 @@ function stageData(){
  
 window.tooltips_config = {
     waitForImages: true,
+    noCSS: true,
 };
  
 window.tooltips_list = [

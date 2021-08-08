@@ -2,7 +2,17 @@ $(function() {
 	var $schedule = $('#top-schedule');
 	if (! $schedule) return;
 	$schedule.detach();
-	$("#mw-head").append($schedule);
+	if ($('#p-logo').length) {
+		$("#mw-head").append($schedule);
+	}
+	else {
+		// rearrange the DOM to make space for the top schedule
+		$('.fandom-community-header .fandom-community-header__community-name-wrapper').detach();
+		$wikiTools = $('.fandom-community-header .wiki-tools');
+		$wikiTools.detach();
+		$('.community-header-wrapper .fandom-community-header__local-navigation').append($wikiTools);
+		$schedule.insertAfter($('.fandom-community-header .fandom-community-header__image'));
+	}
 	$schedule.css('display', '');
     var i = 0;
     $('.topschedule-box').each(function() {

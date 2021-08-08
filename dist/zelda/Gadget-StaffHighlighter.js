@@ -13,10 +13,7 @@ var adminrights		= {},
 	retiredrights	= {};
 
 adminrights = {
-	"52katie"		:1,
 	Androidos18		:1,
-	Astroninja1		:1,
-	AzelleAx		:1,
 	Chuck			:1,
 	Greenrupee      :1,
 	Htwretched      :1,
@@ -39,7 +36,6 @@ traineerights = {
 execrights = {
 	Cody			:1,
 	Codydaviestv	:1,
-	GoldenChaos		:1,
 	Jason			:1,
 	Joshua			:1,
 	Link_Lab		:1,
@@ -64,6 +60,7 @@ botrights = {
 };
 
 retiredrights = {
+	"52katie"				:1,
 	"901blazebunny"			:1,
 	Abdullah				:1,
 	Abdullah5599			:1,
@@ -72,11 +69,13 @@ retiredrights = {
 	Alexander				:1,
 	Ando					:1,
 	Aranok					:1,
+	Astroninja1				:1,
 	ATorres16				:1,
 	AtrumLevis				:1,
 	Autydi					:1,
 	Axiomist				:1,
 	Axle_the_Beast			:1,
+	AzelleAx				:1,
 	Barquero13095			:1,
 	Benfitzy				:1,
 	Bob23					:1,
@@ -108,6 +107,7 @@ retiredrights = {
 	Fury_Three				:1,
 	Ganman3					:1,
 	Gateway2Drillbit		:1,
+	GoldenChaos				:1,
 	"Hammer_Bro._Mike"		:1,
 	Henhouse				:1,
 	Hylian_pi				:1,

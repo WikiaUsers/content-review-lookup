@@ -1,10 +1,5 @@
 /* All code JS - By TRJ-VoRoN from The Binding of Isaac Ru Wiki */
 
-//Интерактивная таблица
-if (mw.config.get('wgPageName') === 'Интерактивная_таблица_артефактов') {
-    importArticle({ type: 'script', article: 'MediaWiki:Items.js' });
-}
-
 
 //рецепты мешка
 $(function(){
@@ -24,10 +19,6 @@ window.AddRailModule = [
     'Template:Rail1',
 ];
 
-if (mw.config.get('wgPageName') != 'Интерактивная_таблица_артефактов') {
-    importArticle({ type: 'script', article: 'u:dev:MediaWiki:AddRailModule/code.js' });
-}
-
 //Стиль бек кнопки dev wiki
 window.BackToTopModern = true;
 
@@ -36,12 +27,10 @@ if ($('#blight').length) {
    $('#blight .sn[data-title="' + mw.config.get('wgPageName') + '"]').addClass("snlight");
 }
 
-
-
 //Подсветка кнопок сортировки
 $(document).on('click', '.rentable_sort span', function(){
-	  $(this).addClass('active_ita').siblings().removeClass('active_ita')
-})
+	  $(this).addClass('active_ita').siblings().removeClass('active_ita');
+});
 
 //Переключатель для инт. таблицы (и возможно для других элементов)
   $(function () {
@@ -65,28 +54,7 @@ $(document).on('click', '.rentable_sort span', function(){
 
 
 //Превью предметов через модуль Getdata
-window.tooltips_list = [{
-    classname: 'tooltip-monster',
-    parse: '{{#invoke:getdata|infobox|<#article#>|Монстр Rebirth}}'
-},
-
-{
-    classname: 'tooltip-item',
-    parse: '{{#invoke:getdata|infobox|<#article#>|Предмет Rebirth}}'
-},
-
-
-{
-    classname: 'tooltip-trinket',
-    parse: '{{#invoke:getdata|infobox|<#article#>|Брелок Rebirth}}'
-},
-
-{
-    classname: 'tooltip-info',
-    parse: '{{#invoke:getdata2|div|<#article#>|Инфо}}'
-}
-
-];
+window.tooltips_list = [];
 
 //Кнопочки для страницы Four Souls
 $('.cardb1').click(function(){
@@ -108,8 +76,8 @@ mw.loader.load('https://dead-cells.fandom.com/ru/wiki/MediaWiki:HSlider.js?actio
 
 function addLinkInActivityModule() {
     if ($("#WikiaRail section").length >= 2)
-        $("#wikia-recent-activity .has-icon").wrap("<a href='https://"+ window.location.host +"/wiki/Special:RecentChanges'>")
+        $("#wikia-recent-activity .has-icon").wrap("<a href='https://"+ window.location.host +"/wiki/Special:RecentChanges'>");
     else
-        setTimeout(addLinkInActivityModule, 500)
+        setTimeout(addLinkInActivityModule, 500);
 }
-addLinkInActivityModule()
+addLinkInActivityModule();

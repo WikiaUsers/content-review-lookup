@@ -9,3 +9,11 @@ if($('.podgłówek').length) {
    $('<div class="page-header__page-subtitle alternatywny-podgłówek">'+$('.podgłówek').html()+'</div>').appendTo('.page-header__title-wrapper');
    $('.podgłówek').remove();
 }
+
+// Anons.css
+if ( !mw.config.get( 'wgUserId' ) ) {
+    importArticle( {
+        type: 'style',
+        article: 'MediaWiki:Anons.css'
+    } );
+}

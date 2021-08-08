@@ -7,7 +7,7 @@
  * @external    "jQuery UI 1.12.1"
  * @external    "I18n-js"
  */
-
+// <nowiki>
 /* mw.loader.load('https://code.jquery.com/jquery-1.12.4.js'); */
 mw.loader.load('https://code.jquery.com/ui/1.12.1/jquery-ui.js');
 mw.loader.load('/zh/wiki/MediaWiki:Gadget-NoteTAViewer.css?action=raw&ctype=text/css', 'text/css' );
@@ -182,3 +182,4 @@ noteTAViewer = ( function() { $( function() {
 mw.hook('wikipage.content').add( function ( $content ) {
     setTimeout("noteTAViewer();", 0);
 });
+// </nowiki>

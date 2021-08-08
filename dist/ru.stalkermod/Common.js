@@ -27,16 +27,6 @@ importArticles({
 
 var auto_comment = 0;
  
-if (document.URL.indexOf("action=edit") > 0 || document.URL.indexOf("action=submit") > 0)
-{
-       if (wgCanonicalNamespace != "Special")
-       {
-               document.write('<script type="text/javascript" src="/index.php' +
-               '?title=MediaWiki:Onlyifediting.js&action=raw' +
-               '&ctype=text/javascript&dontcountme=s"></script>');
-       }
-}
- 
 //Кнопки быстрого описания правки
  
 //список кнопок
@@ -93,74 +83,10 @@ function insertSummary(text) {
  if (wpSummary.value.match(/[^ ]$/)) wpSummary.value += ' '
  wpSummary.value += text
 }
- 
+
 //вызов функции вставки кнопок быстрого описания правки при загрузке страницы
 addOnloadHook(SummaryButtons)
- 
-//A script that adds a "Back To Top" option in the footer of the Oasis theme.
-//I don't like scrolling back to top on long pages neither do you :)
-//
- 
- 
-function hideFade () {
-	// hide #backtotop first
-	$( "#backtotop" ).hide ();
-	// fade in #backtotop
-	$( function () {
-		$( window ).scroll( function () {
-			if ( $( this ).scrollTop () > ButtonStart ) {
-				$( '#backtotop' ).fadeIn ();
-			} else {
-				$( '#backtotop' ).fadeOut ();
-			}
-		});
-	});
-}
- 
-//A script that adds a "Back To Top" option in the footer of the Oasis theme.
-//Created by Noemon from Dead Space Wiki, translate from ru.elderscrolls.wikia
- 
-function hideFade () {
-	// hide #backtotop first
-	$( "#backtotop" ).hide ();
-	// fade in #backtotop
-	$( function () {
-		$( window ).scroll( function () {
-			if ( $( this ).scrollTop () > ButtonStart ) {
-				$( '#backtotop' ).fadeIn ();
-			} else {
-				$( '#backtotop' ).fadeOut ();
-			}
-		});
-	});
-}
- 
-function goToTop (){
-	// scroll body to 0px on click
-	$( 'body,html' ).animate ({
-		scrollTop: 0
-	}, ScrollSpeed );
-	return false;
-}
- 
-function addBackToTop () {
-	if( skin == 'oasis' ) {
-		$('<li id="backtotop" style="position: absolute; right:20px; top:0px; border:none;"><button type="button" value="Наверх" onClick="goToTop();">Наверх</button></li>').appendTo('#WikiaBarWrapper .toolbar > .tools');	
-		hideFade ();
-	}	
-}
- 
-var ButtonStart = 800;
-var ScrollSpeed = 600;
- 
-if( !window.BackToTop  ) {
-	$( document ).ready( function () { 
-		addBackToTop (); 
-	});
-}
-var BackToTop = true; // prevent duplication
- 
- 
+
 function addWikifButton() {
         var toolbar = document.getElementById('toolbar')
         if (!toolbar) return
@@ -294,12 +220,11 @@ function createCollapseButtons() {
    }
 }
  
-jQuery(function($) {
-   createCollapseButtons();
-});
- 
+$( createCollapseButtons );
+
 // ============================================================
 // END Collapsible tables
+// нет ссылок на данную функцию
 // ============================================================
 
 function infoboxToggle() {
@@ -322,25 +247,9 @@ function infoboxToggle() {
 	}
 }
  
+!function( $, mw ) {
+	var u = mw.config.get( 'wgUserName');
 
-if (wgUserName != 'null') {
-    $('.insertusername').text(wgUserName);
-}
-
-/** 
-*Function for adding content from special page to the bottom of the Chat module in the right rail
-*
-*By Wildream
-*/
-function getNews() {
-    if ($('.ChatModule').length) {
-        $.get(mw.config.get('wgServer') + '/wiki/MediaWiki:Полезные_ссылки', function (data) {
-            $NewsModule = $('<section class="wiki-news module"><h1 style="margin-top:0px; margin-bottom:10px;">Полезные ссылки</h1><div>' +
-                $(data).find('#mw-content-text').html() + '</div></section>');
-            $NewsModule.appendTo('#WikiaRail');
-        });
-    } else {
-        setTimeout(getNews, 200);
-    }
-}
-getNews();
+	if ( u == null ) return;
+    $('.insertusername').text( u );
+}( jQuery, mediaWiki );

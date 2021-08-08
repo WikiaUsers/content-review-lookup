@@ -157,3 +157,7 @@ $(function ttforhandy() {
         }
     }
 });
+
+/* Back to Top Button tweaks */
+
+window.BackToTopFade = 0;

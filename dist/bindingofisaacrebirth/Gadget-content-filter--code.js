@@ -7,6 +7,7 @@
  * Repository:  https://gitlab.com/Derugon/mediawiki-gadget-dlc-filter
  */
 
+// <nowiki>
 ( function () {
 
 /** @type {(msg:string)=>void} */
@@ -1477,3 +1478,4 @@ var contentFilter = {
 
 $( contentFilter.init );
 } )();
+// </nowiki>

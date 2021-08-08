@@ -98,7 +98,7 @@ $(function () {
 	function APIthing() {
 		// If we ever use this gadget outside of the "main" namespace then we don't want to precede the name of the page with a ':'
 		// So if current namespace number is 0 (i.e. main) then add a ':' before the pageName, otherwise don't
-		var includePage = mw.config.get('wgNamespaceNumber') == 0 ? ':' + mw.config.get('wgPageName') : mw.config.get('wgPageName');
+		var includePage = mw.config.get('wgNamespaceNumber') === 0 ? ':' + mw.config.get('wgPageName') : mw.config.get('wgPageName');
 		var text = "{{#vardefine:mygamestage|" + inputValue + "}}{{" + includePage + "}}";
 		var api = new mw.Api();
 		api.get({
@@ -119,7 +119,7 @@ $(function () {
 		var checkValue = $("#level-entry-level").val();
 		var inputVal;
 		if (isNaN(checkValue) || checkValue>999999 || checkValue<0) {
-			inputValue = 1
+			inputValue = 1;
 		} else {
 			inputValue = $("#level-entry-level").val();
 		}

@@ -41,7 +41,7 @@ $( function () {
 			cw++;
 			return updateGDPage();
 		}
-		var fa = new mw.ForeignApi("https://"+allWikis[cw]+".sandbox-s8.fandom.com/api.php");
+		var fa = new mw.ForeignApi("https://"+allWikis[cw]+".fandom.com/api.php");
 		return getGDContents(fa).then(function(gdtext) {
 			var oldtext = gdtext.split(splitText)[0];
 			return fa.postWithToken('csrf', {

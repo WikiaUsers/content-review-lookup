@@ -37,8 +37,5 @@ importArticles({
         'u:dev:MediaWiki:RailWAM/code.js',
         'u:dev:MediaWiki:UploadInPage/code.js',
         'u:dev:MediaWiki:WallGreetingButton/code.js'
-        'u:dev:MediaWiki:RedirectManagement/code.js',
-        'u:dev:MediaWiki:WhatLinksHere/code.js',
-        'u:dev:MediaWiki:DeepLTranslate/code.js',
     ]
 });

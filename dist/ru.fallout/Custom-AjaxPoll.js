@@ -80,10 +80,8 @@
 
 			$(poll.answers).each(function () {
 				var percent = this.votes / poll.totalVotes * 100;
-				percent = isNaN(percent) ? '0%' : percent.toFixed(2) + '%';
-
-
-
+				percent = isNaN(percent) ? '0%' : percent.toFixed(0) + '%';
+                var votes = isNaN(this.votes) ? '–' : this.votes;
 
                 var pollItemId = 'poll-item-' + this.id;
 
@@ -95,18 +93,25 @@
 					value: this.id,
 				});
 
-
-
+				var $percentValue = $('<div>', {
+					class: 'dc-poll__answerPercentValue',
+					text: percent,
+				});
 				var $percent = $('<div>', {
 					class: 'dc-poll__answerPercent',
-					text: percent,
+					append: $percentValue,
 				});
 				var $name = $('<div>', {
 					class: 'dc-poll__answerName',
 					text: this.text,
 				});
-				var $radioIcon = $('<div>', {
-					class: 'dc-poll__answerRadioIcon',
+				var $votesValue = $('<div>', {
+					class: 'dc-poll__answerVotesValue',
+					text: votes,
+				});
+				var $votes = $('<div>', {
+					class: 'dc-poll__answerVotes',
+					append: $votesValue,
 				});
 				var $label = $('<label>', {
 					class: 'dc-poll__answerLabel',
@@ -114,7 +119,7 @@
 						'background': 'linear-gradient(90deg, var(--local-bar-color) 0%, var(--local-bar-color) calc(' + percent + ' + 10%), transparent calc(' + percent + ' + 10%))'
 					},
 					for: pollItemId,
-					append: [$name, $percent, $radioIcon],
+					append: [$name, $percent, $votes],
 				});
 
 				var $item = $('<li>', {
@@ -122,7 +127,6 @@
 					append: [(isAnon ? null : $radio), $label],
 					appendTo: $answersList,
 				});
-
 
 			});
 
@@ -134,8 +138,6 @@
 					.replace('$3', poll.totalVotes),
 				appendTo: $poll,
 			});
-
-
 
 			var $submitBtn = $('<input>', {
 				type: 'submit',

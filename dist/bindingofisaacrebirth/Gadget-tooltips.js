@@ -1,3 +1,4 @@
+// <nowiki>
 var tooltips = {
 	/**
 	 * The MediaWiki API.
@@ -118,3 +119,4 @@ var tooltips = {
 };
 
 $( tooltips.init );
+// </nowiki>

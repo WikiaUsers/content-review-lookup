@@ -17,6 +17,14 @@ importArticles({
     ]
 });
 
+// Banner do Discord
+window.DiscordBannerSettings = {
+    bannerStyle: '1',
+    inviteLink: 'xZX5WRu2Fy',
+    prependToRail: false,
+    noRail: true
+};
+
 // Pop-ups em Referências
 importScriptPage('ReferencePopups/code.js', 'dev');
 

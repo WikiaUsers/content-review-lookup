@@ -6,6 +6,8 @@ $(function() {
 	
 	//initialize script-wide variables
 	var paramRegExp = /(\?|&)variant(?:=[^&]*)?(&|$)/g,
+		extRegExp = /(?:dark|default|light)\.css(%7[Cc]|$)/g,
+		now = Math.floor(Date.now() / 1000),
 		scriptsReady = $.Deferred(),
 		themes = {
 			current: 'user'
@@ -18,7 +20,7 @@ $(function() {
 			newTheme = 'user';
 		if (newTheme === themes.current) return;
 		
-		var cssLinks = $('link[href*="/wikia.php"][href*="controller=ThemeApi"]'
+		var cssVarLinks = $('link[href*="/wikia.php"][href*="controller=ThemeApi"]'
 			+ '[href*="method=themeVariables"]'),
 			indicator = $('.ThemeSelector-indicator');
 		
@@ -33,7 +35,7 @@ $(function() {
 		}
 		
 		if (newTheme === 'wiki') {
-			cssLinks.attr('href', function(i, v) {
+			cssVarLinks.attr('href', function(i, v) {
 				return v.replace(paramRegExp, function(m, p1, p2) {
 					return p2 === '&' ? (p1 === '?' ? '?' : '&') : '';
 				});
@@ -41,7 +43,7 @@ $(function() {
 			
 			newTheme = themes.wiki;
 		} else {
-			cssLinks.attr('href', function(i, v) {
+			cssVarLinks.attr('href', function(i, v) {
 				return !paramRegExp.test(v) ? v + '&variant=' + newTheme
 					: v.replace(paramRegExp, function(m, p1, p2) {
 					return p1 + 'variant=' + newTheme + p2;
@@ -49,6 +51,11 @@ $(function() {
 			});
 		}
 		
+		$('link[href*="/load.php"][href*=".brand."]').attr('href', function(i, v) {
+			return v.replace(extRegExp, function(m, p1) {
+				return newTheme + '.css' + p1;
+			});
+		});
 		$('body').removeClass('theme-fandomdesktop-light theme-fandomdesktop-dark')
 			.addClass('theme-fandomdesktop-' + newTheme);
 	}
@@ -98,7 +105,8 @@ $(function() {
 			dataType: 'text',
 			data: {
 				controller: 'ThemeApi',
-				method: 'themeVariables'
+				method: 'themeVariables',
+				version: now
 			}
 		}).then(function(wiki_css) {
 			return $.ajax({
@@ -108,6 +116,7 @@ $(function() {
 				data: {
 					controller: 'ThemeApi',
 					method: 'themeVariables',
+					version: now,
 					variant: 'dark'
 				}
 			}).then(function(dark_css) {
@@ -130,9 +139,9 @@ $(function() {
 				+ '</use></svg>',
 			iconWikiTheme = '<svg height="18" width="18" viewBox="0 0 18 18"'
 				+ ' class="wds-icon wds-icon-small" xmlns="http://www.w3.org/2000/svg">'
-				+ '<use height="12" width="12" xlink:href="#wds-icons-light-mode-small">'
+				+ '<use height="12" width="12" xlink:href="#wds-icons-sun-small">'
 				+ '</use><use y="6" x="-18" height="12" width="12" style="transform:'
-				+ ' rotateY(180deg);" xlink:href="#wds-icons-dark-mode-small"></use></svg>',
+				+ ' rotateY(180deg);" xlink:href="#wds-icons-moon-small"></use></svg>',
 			gui, running;
 		
 		//insert a small about of CSS
@@ -191,14 +200,14 @@ $(function() {
 			gui = $('<div class="wiki-tools wds-button-group ThemeSelector-buttons"></div>')
 				.append(
 				$('<a class="wds-button wds-is-secondary" title="' + i18n.light.escape()
-					+ '"></a>').append(wds.icon('light-mode-small')).click(function() {
+					+ '"></a>').append(wds.icon('sun-small')).click(function() {
 					if (running) return;
 					running = true;
 					setTheme('light');
 					running = false;
 				}),
 				$('<a class="wds-button wds-is-secondary" title="' + i18n.dark.escape()
-					+ '"></a>').append(wds.icon('dark-mode-small')).click(function() {
+					+ '"></a>').append(wds.icon('moon-small')).click(function() {
 					if (running) return;
 					running = true;
 					setTheme('dark');

@@ -40,6 +40,7 @@ Wikificator загружается только на странице редак
 ===================================================================*/
 switch(mw.config.values.wgAction) {
     case 'edit':
+    case 'submit':
     	importArticles({
     		type: "script",
     		articles: [

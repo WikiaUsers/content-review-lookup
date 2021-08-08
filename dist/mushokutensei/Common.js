@@ -88,3 +88,8 @@ window.UserTagsJS = {
         },
     },
 };
+
+/* Configuration settings for LinkPreview */
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.defimage = 'https://mushokutensei.fandom.com/wiki/File:Placeholder.png';
+window.pPreview.noimage = 'https://mushokutensei.fandom.com/wiki/File:Placeholder.png';

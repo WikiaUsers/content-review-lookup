@@ -1,3 +1,4 @@
+// <nowiki>
 var dlcSwitcher = {
 	/**
 	 * The article content container, containing the parser output.
@@ -984,3 +985,4 @@ var dlcSwitcher = {
 };
 
 $( dlcSwitcher.init );
+// </nowiki>
