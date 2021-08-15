@@ -896,57 +896,38 @@ if(infoboxHasImageToggler == true) {
 }
 });
 
-/* ######################################################################## */
-/* ### COUNTDOWN TIMER                                                  ### */
-/* ### ---------------------------------------------------------------- ### */
-/* ### Description: Adds a modifiable countdown timer to any page       ### */
-/* ### Credit:      User:Sammylau                                       ### */
-/* ######################################################################## */
-importArticles({
-    type: "script",
-    articles: [
-        "w:c:dev:Countdown/code.js"
-    ]
-});
-/* </nowiki> */
+/* ##################################################################################### */
+/* ### Notable content                                                               ### */
+/* ### --------------------------------------------------------------------          ### */
+/* ### Description: Create a collapsible template where mw-collapsible is not        ### */
+/* ###              suitable to use.                                                 ### */
+/* ### URL: https://fallout.fandom.com/wiki/Fallout_Wiki:Notable_content/draft       ### */
+/* ### Credit:      User:Sakaratte                                                   ### */
+/* ##################################################################################### */
 
-
-/* ######################################################################## */
-/* ### NOTABLE CONTENT                                                  ### */
-/* ### ---------------------------------------------------------------- ### */
-/* ### Description: Custom expand/collapse code for the Notable content ### */
-/* ###              Template                                            ### */
-/* ### Credit:      User:Sakaratte                                      ### */
-/* ######################################################################## */
- 
-/*Initialise variables */
-var helipInitialise = document.getElementsByClassName('np-helip');
- 
-/* Remove duplicate id's from article */
-for (i=0; i < helipInitialise.length; ++i)
-    {
-        var newHelip = "np-helip" + i;
-        var newCollapse = "np-Collapsed" + i;
-    document.getElementById("np-helip").setAttribute("onclick", 'npCollapsible("' + newHelip + '", "' + newCollapse + '")');
-    document.getElementById("np-helip").innerHTML = "Mais";
-    document.getElementById("np-collapsed").id = newCollapse;
-    document.getElementById("np-helip").id = newHelip;
-    }
- 
-/* Switches collapsible content between hidden and visible */
-function npCollapsible (helipName, collapseName) {
+$(function() {
     var collapseCaption = "Menos";
     var expandCaption = "Mais";
- 
-    navState = document.getElementById(helipName).innerHTML;
-    navClass = document.getElementById(collapseName).classList;
-    if (navState == expandCaption) {
-        navClass.add("np-visible");
-        navClass.remove("np-hidden");
-        document.getElementById(helipName).innerHTML = collapseCaption;
-    } else {
-        navClass.remove("np-visible");
-        navClass.add("np-hidden");
-        document.getElementById(helipName).innerHTML = expandCaption;
-    }
-}
+
+    document.querySelectorAll(".np-collapsible").forEach(function(collapsible) {
+        removeLazyLoad(collapsible);
+
+        var collapsed = collapsible.querySelector("#np-collapsed");
+        var helip = collapsible.querySelector("#np-helip");
+        helip.innerHTML = expandCaption;
+        helip.addEventListener("click", function(e) {
+            var navState = helip.innerHTML;
+            var navClassList = collapsed.classList;
+
+            if (navState == expandCaption) {
+                navClassList.add("np-visible");
+                navClassList.remove("np-hidden");
+                helip.innerHTML = collapseCaption;
+            } else {
+                navClassList.remove("np-visible");
+                navClassList.add("np-hidden");
+                helip.innerHTML = expandCaption;
+            }
+        });
+    });
+});

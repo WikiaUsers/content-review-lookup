@@ -1,11 +1,3 @@
-importArticles({
-    type: 'script',
-    articles: [
-        // ...
-        'u:dev:ListUsers/code.js',
-        // ...
-    ]
-});
 window.quizName = "Wie gut kennt ihr euch mit die Abenteuer des Robin Hood aus?";
 window.quizLang = "de";
 window.resultsTextArray = [ 

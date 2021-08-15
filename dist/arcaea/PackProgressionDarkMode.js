@@ -13,8 +13,9 @@
 (function (window, $, mw) {
 	var replace_darkmode_progression_graphs = function() {
 		$($("body.theme-fandomdesktop-dark .progression-graph img").get()).each(function(i) {
-			var src_base = this.src;
-			this.src = src_base.split("Progression_Light.png")[0] + "Progression_Dark.png/revision/latest";
+			var image_filename = this.src.split("/")[7];
+			console.log(image_filename);
+			this.src = "https://arcaea.fandom.com/wiki/Special:FilePath/" + image_filename.replace("Light.png", "Dark.png");
 		});
 	};
 	

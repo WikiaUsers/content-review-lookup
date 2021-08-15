@@ -10,7 +10,7 @@ importArticles({
 window.DiscussionTemplates = {
     templates: {
         'block-message': {
-            name: 'Template:Block Message',
+            name: 'Template:Moderation/Block Message',
             title: 'Block Notice'
           }
         },

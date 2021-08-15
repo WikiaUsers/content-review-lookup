@@ -194,7 +194,7 @@
     module.parse = function (str) {
         var result = false, m, radix = false, c = false;
         if (typeof str === 'string') {
-            str = str.toLowerCase();
+            str = str.toLowerCase().trim();
             if ((m = str.match(/^(?:#([\da-f])([\da-f])([\da-f])|#([\da-f]{2})([\da-f]{2})([\da-f]{2})|rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*|rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(1|0\.?\d*)\s*\))$/)) !== null) {
                      if (m[1])  { c = m.slice(1,  4);  radix = 16; $.each(c, function (i,v) { c[i] += v; }); }
                 else if (m[4])  { c = m.slice(4,  7);  radix = 16; }

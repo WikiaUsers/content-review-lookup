@@ -13,7 +13,6 @@ $(function() {
 			$('.Wardrobe-BK .SkinIcon, .Wardrobe-BK .Title, .Wardrobe-BK .Subtitle, .Wardrobe-BK .Model, .Wardrobe-BK .theme-icon').removeClass("active");
 			$("." + Class).addClass("active");
 			$(this).addClass("active");
-			$('.Wardrobe-BK .SkinPreview .Subtitle').removeClass('active');
 			if ($(this).attr('data-type') === 'Gold') {
 				$('.Wardrobe-BK .SkinPreview .Subtitle[data-type="Gold"]').addClass('active');
 			}else if ($(this).attr('data-type') === 'Legendary') {
@@ -45,7 +44,6 @@ $(function() {
 			$('.Wardrobe-AQ .SkinIcon, .Wardrobe-AQ .Title, .Wardrobe-AQ .Subtitle, .Wardrobe-AQ .Model, .Wardrobe-AQ .theme-icon').removeClass("active");
 			$("." + Class).addClass("active");
 			$(this).addClass("active");
-			$('.Wardrobe-AQ .SkinPreview .Subtitle').removeClass('active');
 			if ($(this).attr('data-type') === 'Gold') {
 				$('.Wardrobe-AQ .SkinPreview .Subtitle[data-type="Gold"]').addClass('active');
 			}else if ($(this).attr('data-type') === 'Legendary') {
@@ -76,7 +74,7 @@ $(function() {
 			});
 		}else if (Parent == 'Wardrobe-GW') {
 			$("." + Class).addClass("active");
-			$('.Wardrobe-GW .SkinPreview .Subtitle').removeClass('active');
+			$('.Wardrobe-GW .SkinIcon, .Wardrobe-GW .Title, .Wardrobe-GW .Subtitle, .Wardrobe-GW .Model, .Wardrobe-GW .theme-icon').removeClass("active");
 			$("." + Class).addClass("active");
 			$(this).addClass("active");
 			if ($(this).attr('data-type') === 'Gold') {
@@ -105,7 +103,7 @@ $(function() {
 			
 		}else {
 			$("." + Class).addClass("active");
-			$('.Wardrobe-RC .SkinPreview .Subtitle').removeClass('active');
+			$('.Wardrobe-RC .SkinIcon, .Wardrobe-RC .Title, .Wardrobe-RC .Subtitle, .Wardrobe-RC .Model, .Wardrobe-RC .theme-icon').removeClass("active");
 			$("." + Class).addClass("active");
 			$(this).addClass("active");
 			if ($(this).attr('data-type') === 'Gold') {

@@ -21,8 +21,7 @@ window.UserTagsJS = {
     tags: {
         bureaucrat: { order:-1 },
         sysop: { order:0 },
-        bot: { u: 'AutoBot', order:50 },
-        newuser: { u: 'Newbie', order:100 }
+        bot: { u: 'AutoBot', order:50 }
     }
 };
 

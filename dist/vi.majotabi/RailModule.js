@@ -159,14 +159,14 @@
     	volumeList = {
     		values: [
     			{
-    				lang: "Tiếng Nhật",
+    				lang: "Nhật Bản",
     				action: function(){
 						$(".jap-only, .ja-info").css("display", "block");
 						$(".vi-info").css("display", "none");
     				}
     			},
     			{
-    				lang: "Tiếng Việt",
+    				lang: "Việt Nam",
     				action: function(){
 						$(".jap-only, .ja-info").css("display", "none");
 						$(".vi-info").css("display", "block");

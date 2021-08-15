@@ -266,7 +266,7 @@
 				text: cssText,
 			}).done(function(data){
 				mw.loader.using('mediawiki.notification', function () {
-					mw.notification.notify('Saved Code Mirror colors to User:' + config.wgUserName + '/editorcolor.css', {tag: 'ecp-CM-save', type: 'success'});	
+					mw.notification.notify('Saved Code Mirror colors to User:' + config.wgUserName.replace(' ', '_') + '/editorcolor.css', {tag: 'ecp-CM-save', type: 'success'});	
 				});
 			}).fail(function(data){
 				mw.loader.using('mediawiki.notification', function () {
@@ -283,14 +283,15 @@
 				prop: 'wikitext',
 			}).done(function(data){
 				var css = data.parse.wikitext["*"];
-				if (css.search('@import "\/load\.php[?]articles=User:' + config.wgUserName + '\/editorcolor\.css&only=styles&mode=articles";') < 0) {
+				var user = config.wgUserName.replace(' ', '_');
+				if (css.search('@import "\/load\.php[?]articles=User:' + user + '\/editorcolor\.css&only=styles&mode=articles";') < 0) {
 					api.postWithEditToken({
 						action: 'edit',
 						title: 'User:' + config.wgUserName + '/common.css',
-						prependtext: '@import "/load.php?articles=User:' + config.wgUserName + '/editorcolor.css&only=styles&mode=articles";\n'
+						prependtext: '@import "/load.php?articles=User:' + user + '/editorcolor.css&only=styles&mode=articles";\n'
 					}).done(function(data){
 						mw.loader.using('mediawiki.notification', function () {
-							mw.notification.notify('Linked Code Mirror colors to User:' + config.wgUserName + '/common.css', {tag: 'ecp-CM-link', type: 'success'});
+							mw.notification.notify('Linked Code Mirror colors to User:' + user + '/common.css', {tag: 'ecp-CM-link', type: 'success'});
 						});
 					}).fail(function(data){
 						mw.loader.using('mediawiki.notification', function () {
@@ -299,17 +300,18 @@
 					});
 				} else {
 					mw.loader.using('mediawiki.notification', function () {
-						mw.notification.notify('Code Mirror colors already linked to User:' + config.wgUserName +'/common.css', {tag: 'ecp-CM-link', type: 'info'});
+						mw.notification.notify('Code Mirror colors already linked to User:' + user +'/common.css', {tag: 'ecp-CM-link', type: 'info'});
 					});
 				}
 			}).fail(function(data){
+				var user = config.wgUserName.replace(' ', '_');
 				api.postWithEditToken({
 					action: 'edit',
 					title: 'User:' + config.wgUserName + '/common.css',
-					prependtext: '@import "/load.php?articles=User:' + config.wgUserName + '/editorcolor.css&only=styles&mode=articles";\n'
+					prependtext: '@import "/load.php?articles=User:' + user + '/editorcolor.css&only=styles&mode=articles";\n'
 				}).done(function(data){
 					mw.loader.using('mediawiki.notification', function () {
-						mw.notification.notify('Linked Code Mirror colors to User:' + config.wgUserName + '/common.css', {tag: 'ecp-CM-link', type: 'success'});
+						mw.notification.notify('Linked Code Mirror colors to User:' + user + '/common.css', {tag: 'ecp-CM-link', type: 'success'});
 					});
 				}).fail(function(data){
 					mw.loader.using('mediawiki.notification', function () {

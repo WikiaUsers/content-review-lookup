@@ -1,4 +1,4 @@
-$.when( mw.loader.using( 'mediawiki.util' ), $.ready ).then( function () { 
+$( function () { 
 	$(mw.util.addPortletLink('p-cactions', 'javascript:;', '!Patrol All', 'ca-patrol-all', 'Patrol & accept all revisions of this page')).click(function() {
 		clearDisplayColor();		
 		if (!confirm("Patrol all revisions?")) {

@@ -5,5 +5,6 @@ importArticles({
     articles: [
         "MediaWiki:DropDownMenu.css",
         "MediaWiki:DropDownMenu2.css",
+        "MediaWik:Wikia.css"
     ]
 });

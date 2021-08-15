@@ -103,5 +103,5 @@ var i18n = {
 
 // Change the side rail variable data
 var root = document.querySelector(':root');
-root.style.setProperty('--theme-page-background-color--secondary', '#352f25');
-root.style.setProperty('--theme-link-color--hover', '#c86a17')
+root.style.setProperty('--theme-page-background-color--secondary', '#282828');
+root.style.setProperty('--theme-link-color--hover', '#46799c');

@@ -1,4 +1,4 @@
-/* Gem Calculators - Dahimi * Tomado de la wiki inglesa (con permiso)Taken from the English wiki (with permission)/
+/* Gem Calculators - Dahimi * Tomado de la wiki inglesa (con permiso)Taken from the English wiki (with permission) */
 function timeStamp_GemCalculators_js() {
    return "2017.09.21 01:12 (UTC-7)";
 }

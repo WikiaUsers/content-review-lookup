@@ -25,6 +25,13 @@ importArticles({
 });
 
 importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AjaxBatchDelete.js',
+    ]
+});
+
+importArticles({
     type: "script",
     articles: [
         "w:c:dev:UserTags/code.js",

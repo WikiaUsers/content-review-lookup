@@ -41,19 +41,30 @@ mw.hook( 'wikipage.content' ).add( function() {
  * Kliknięcie gdziekolwiek na element kategorii strony głównej niech będzie przekierowaniem
  */
 mw.hook( 'wikipage.content' ).add( function() {
-	const categoryElements = document.querySelectorAll( 'li.cat-el' );
+	const categoryElements = document.querySelectorAll( '.categories-list .cat-el' );
 
-	/**
-	 * Gdy elementy istnieją (t.j. jesteśmy na stronie głównej), dodaj eventListenery nasłuchujące 
-	 * kliknięcia na element kategorii, a następnie przekierujące do odpowiadajacej im strony
-	 */
-	if ( !!categoryElements ) categoryElements.forEach( function( category ) {
-		category.addEventListener( 'click', function() {
-			mw.loader.using( 'mediawiki.util', function() {
-				location.replace( mw.util.getUrl( 'Kategoria:' + category.dataset.catName ) );
+	// Sprawdź, czy istnieją elementy kategorii
+	if ( !!categoryElements ) {
+		/**
+		 * Wykorzystanie konstruktora MouseEvent() do zarejestrowania
+		 * wydarzenia kliknięcia, a później jego wykonania jest lepsze
+		 * od użycia location.replace(), bo pozwala m.in. na powrót do
+		 * poprzedniej strony przy użyciu nawigacji w przeglądarce.
+		 */
+		const clickEvent = new MouseEvent( 'click', {
+			view: window,
+			bubbles: true,
+			cancelable: false
+		} );
+
+		categoryElements.forEach( function( category ) {
+			const categoryLink = category.querySelector( 'a' );
+
+			category.addEventListener( 'click', function() {
+				categoryLink.dispatchEvent( clickEvent );
 			} );
 		} );
-	} );
+	}
 } );
 
 /**

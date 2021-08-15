@@ -1,39 +1,18 @@
-//Add border color to PIs
-$('.portable-infobox').each(function () {
-    var cls = $(this).attr('class').match(/pi-theme-_(\S+)/);
-    if (cls) {
-        $(this).css('border-color', '#' + cls[1]);
-    }
-});
+importScriptPage('Countdown/code.js', 'dev');
+importScriptPage('ShowHide/code.js', 'dev');
+/* Spoiler Alert */
+SpoilerAlert = {
+    isSpoiler: function () {
+        return -1 !== wgCategories.indexOf('Spoiler');
+  },
+    back: true
+};
+importScriptPage('SpoilerAlert/code.js', 'dev');
+importScriptPage('BackToTopButton/code.js', 'dev');
 
-//TZclock config
-window.TZclockSimpleFormat = true;
-
-//AddRailModule config
-window.AddRailModule = [{prepend: true}];
-
-//EraIcons config
-window.useIncludedStylesheet = true;
-
-//BackToTopButton config
-window.BackToTopModern = true;
-
-//Add username alt attribute to masthead profile so highlight css works there
-$(function () {
-    if (!mw.config.get('profileUserName')) {
-        return;
-    }
-
-    if ($('#userProfileApp .user-identity-avatar__image').length) {
-    	$('#userProfileApp .user-identity-avatar__image').attr('alt', mw.config.get('profileUserName'));
-    	return;
-    }
-
-    var interval = setInterval(function () {
-        if (!$('#userProfileApp .user-identity-avatar__image').length) {
-            return;
-        }
-        clearInterval(interval);
-        $('#userProfileApp .user-identity-avatar__image').attr('alt', mw.config.get('profileUserName'));
-    }, 100);
+$(function(){
+	importArticles({
+		type: "script",
+		articles: ["u:pad.wikia.com:MediaWiki:FilterTable.js"]
+	});
 });

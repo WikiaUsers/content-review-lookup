@@ -155,3 +155,12 @@ function changeBackg() {
 }
 
 window.onload = changeBackg; //run onload website
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassEdit/code.js',
+    ]
+});
+
+console.log('hello world');

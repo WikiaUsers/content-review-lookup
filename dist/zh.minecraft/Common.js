@@ -245,25 +245,6 @@ if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'Upload' ) {
 	}, '.minetip, .invslot-item' );
 }() );
 
-/* [[Template:Tabs]] */
-$(".tabtable").each(function(i, e) {
-	var $table = $(e);
-	var $nav = $table.find(".tabtable-nav");
-	$table.find(".tabtable-cell").each(function(i, e) {
-		var $cell = $(e);
-		var $tab = $("<div class='tabtable-tab'><span>" + $cell.attr("data-title") +"</span></div>");
-		$nav.append($tab);
-		$tab.click(function() {
-			$table.find(".tabtable-cell").removeClass("active");
-			$cell.addClass("active");
-			$nav.find(".tabtable-tab").removeClass("active");
-			$tab.addClass("active");
-		});
-	});
-	$table.find(".tabtable-cell").first().addClass("active");
-	$nav.find(".tabtable-tab").first().addClass("active");
-});
-
 /* Minecraft Dungeons:Wiki logo redirect and title changes */
 var imageUrl = $("a.mw-wiki-logo").css("backgroundImage");
 if (imageUrl.indexOf("Dungeons") != -1){

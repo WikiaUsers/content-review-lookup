@@ -24,17 +24,10 @@ mw.loader.using(['jquery.ui.tabs'], function() {
 
 var ShowHideConfig = { autoCollapse: 2 };
 
+/* ==============
+   Quiz Extension
+   ============== */
 
-
-
-/* Rail WAM Graph */
- 
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
-window.railWAM = {
-    logPage:"Project:WAM Log",
-    showLogAlert: false,
-    autoLogForUsers: "YazzyDream ",
-    botUsers: "YazzyDream ",
-};
+   $(function () {
+        $('#WikiaRail').prepend("<iframe width='100%' height='600' src='https://fandomrewards.typeform.com/to/VLwUreRS' style='margin:20px 0'></iframe>");
+    });

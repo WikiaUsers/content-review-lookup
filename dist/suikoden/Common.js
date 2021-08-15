@@ -37,6 +37,10 @@ Example:
 div class="_set_" data-author="Mr. Manly Man" data-s1="Hi?:^Yes^;No;" data-s2="Do you like CoC?:^Yes^;No;" data-s3="How many balls of cheese were there?:1;2;3;4;5;^6^;7;8;9;10;" /div
 Include <'s and >'s.*/
 
+window.addEventListener('DOMContentLoaded', function() { try {
+  if (document.getElementById('toc').getElementsByTagName('ul')[0].style.display != 'none') { toggleToc(); }
+} catch (exception) {} }, false);
+
 function checkQuiza(arr, parent){
     var admin = mw.config.get('wgRestrictionEdit').indexOf('sysop') >= 0;
 	if(!admin) arr.splice(20);
@@ -139,7 +143,7 @@ function startQuiza(){
 		    form.appendChild(subm);
     }
 }
-addOnloadHook(startQuiza);
+$(startQuiza);
  
 function finalQa(e){
     var id = parseInt((e.target || e.srcElement).getAttribute('data-id'), 10);
@@ -176,7 +180,3 @@ function finalQa(e){
 	out.innerHTML = 'You scored ' + perc + ' out of ' + ids.length + '! That\'s ' + Math.floor(100 / ids.length * perc) + '%!';
 	(e.target || e.srcElement).disabled = true;
 }
-
-window.addEventListener('DOMContentLoaded', function() { try {
-  if (document.getElementById('toc').getElementsByTagName('ul')[0].style.display != 'none') { toggleToc(); }
-} catch (exception) {} }, false);

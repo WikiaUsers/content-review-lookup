@@ -18,9 +18,10 @@ window.SpoilerAlert = {
 
 
 /* Inversion des couleurs des elements grace au modele [[Modèle:InversionTheme]] */
+var couleurPageThemeClair = '#ffffff';
 var root = document.querySelector(':root');
 var tabImages;
-if (getComputedStyle(root).getPropertyValue('--theme-page-background-color') == '#ffffff') {
+if (getComputedStyle(root).getPropertyValue('--theme-page-background-color') == couleurPageThemeClair) {
 	tabImages = Array.from(document.getElementsByClassName('inversionClair'));
 } else {
 	tabImages = Array.from(document.getElementsByClassName('inversionSombre'));
@@ -29,6 +30,3 @@ console.log(tabImages);
 for (var i = 0; i<tabImages.length; i++) {
 	tabImages[i].style.filter = 'invert(100%)';
 }
-
-// empêcher les balises existantes d'être masquées avec ProfileTags
-(window.dev = window.dev || {}).profileTags = { noHideTags: true };

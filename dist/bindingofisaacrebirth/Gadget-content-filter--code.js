@@ -1303,19 +1303,15 @@ var contentFilter = {
 	removePreviousNodeUntilText: function ( node, text, removeText ) {
 		var sibling = node.previousSibling;
 		while (
-			sibling && (
-				sibling.nodeType !== Node.TEXT_NODE ||
-				sibling.textContent.indexOf( text ) === -1
-			)
+			!sibling ||
+			sibling.nodeType !== Node.TEXT_NODE ||
+			sibling.textContent.indexOf( text ) === -1
 		) {
-			if ( sibling instanceof HTMLBRElement ) {
+			if ( !sibling || sibling instanceof HTMLBRElement ) {
 				return;
 			}
 			sibling.remove();
 			sibling = node.previousSibling;
-		}
-		if ( !sibling ) {
-			return;
 		}
 		if ( !removeText ) {
 			sibling.textContent = sibling.textContent.substr(
@@ -1335,19 +1331,15 @@ var contentFilter = {
 	removeNextNodeUntilText: function ( node, text, removeText ) {
 		var sibling = node.nextSibling;
 		while (
-			sibling && (
-				sibling.nodeType !== Node.TEXT_NODE ||
-				sibling.textContent.indexOf( text ) === -1
-			)
+			!sibling ||
+			sibling.nodeType !== Node.TEXT_NODE ||
+			sibling.textContent.indexOf( text ) === -1
 		) {
-			if ( sibling instanceof HTMLBRElement ) {
+			if ( !sibling || sibling instanceof HTMLBRElement ) {
 				return;
 			}
 			sibling.remove();
 			sibling = node.nextSibling;
-		}
-		if ( !sibling ) {
-			return;
 		}
 		if ( !removeText ) {
 			sibling.textContent = sibling.textContent

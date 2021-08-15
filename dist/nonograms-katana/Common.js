@@ -73,7 +73,7 @@ function calculate() {
 					["Gong (building) lvl. 1","Pagoda lvl. 3","Logistician lvl. 2","Athlete lvl. 1","Antiquarian lvl. 1"],
 					["Lumber Mill lvl. 1","Intellectual lvl. 1","","",""],
 					["Garden lvl. 1","Monk","","",""],
-					["","","","",""],
+					["Rock Garden lvl. 1","Logistician lvl. 3","Weapon Collector lvl. 2","Treasure Hunter lvl. 2",""],
 					["","","","",""],
 					["Geologist","Athlete lvl. 2","","",""],
 					["Logistician lvl. 4","Antiquarian lvl. 2","","",""],

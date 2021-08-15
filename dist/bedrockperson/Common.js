@@ -2,10 +2,10 @@
    Requires copying Template:USERNAME. */
 
 function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
+    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
     $("span.insertusername").html(wgUserName);
  }
- addOnloadHook(UserNameReplace);
+$(UserNameReplace);
 
 /* End of the {{USERNAME}} replacement */
 
@@ -76,7 +76,7 @@ function checktimers() {
     updatetimer(i);  //start it up
   }
 }
-addOnloadHook(checktimers);
+$(checktimers);
 
 // **************************************************
 //  - end -  Experimental javascript countdown timer
@@ -90,13 +90,3 @@ $(function(){
 		articles: ["u:zh.pad.wikia.com:MediaWiki:CountDown.css"]
 	});
 });
-/* Replaces {{USERNAME}} with the name of the user browsing the page.
-   Requires copying Template:USERNAME. */
-
-function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
-    $("span.insertusername").html(wgUserName);
- }
- addOnloadHook(UserNameReplace);
-
-/* End of the {{USERNAME}} replacement */

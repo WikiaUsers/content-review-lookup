@@ -54,7 +54,7 @@ $(function() {
 //-------------------- Exponential
 //-------------------- Alien Head
   else if (pagename == "Alien_Head") {
-    $("#calc-table tr:last").after('<tr><td><input id="mx-calc" type="number" min="1" style="width:54px"></td><td><span id="mx-out1"></span></td><td><span id="mx-out2"></span></td><td><span id="mx-out3"></span></td><td><span id="mx-out4"></span></td><td><span id="mx-out5"></span></td><td><span id="mx-out6"></span></td><td><span id="mx-out7"></span></td><td><span id="mx-out8"></span></td></tr>')
+    $("#calc-table tr:last").after('<tr><td><input id="mx-calc" type="number" min="1" style="width:54px"></td><td><span id="mx-out1"></span></td><td><span id="mx-out2"></span></td><td><span id="mx-out3"></span></td><td><span id="mx-out4"></span></td><td><span id="mx-out5"></span></td><td><span id="mx-out6"></span></td><td><span id="mx-out7"></span></td><td><span id="mx-out8"></span></td><td><span id="mx-out9"></span></td><td><span id="mx-out10"></span></td></tr>')
     $("#calc-table th:last").before('<th><input id="mx-calc-cd" type="number" min="0.5" step="0.5" style="width:54px"> s</th>')
     $("#calc-table tr").each(function() {
       $("td:last", this).before('<td><span class="mx-outr"></span></td>')
@@ -64,12 +64,14 @@ $(function() {
       x = Math.pow(0.75, Number($("#mx-calc").val()))
       $("#mx-out1").text(Math.max(parseFloat((2 * x).toFixed(2)), 0.5))
       $("#mx-out2").text(Math.max(parseFloat((3 * x).toFixed(2)), 0.5))
-      $("#mx-out3").text(Math.max(parseFloat((5 * x).toFixed(2)), 0.5))
-      $("#mx-out4").text(Math.max(parseFloat((7 * x).toFixed(2)), 0.5))
-      $("#mx-out5").text(Math.max(parseFloat((8 * x).toFixed(2)), 0.5))
-      $("#mx-out6").text(Math.max(parseFloat((10 * x).toFixed(2)), 0.5))
-      $("#mx-out7").text(Math.max(parseFloat((12 * x).toFixed(2)), 0.5))
-      $("#mx-out8").text(parseFloat(((1 - x) * 100).toFixed(1)) + "%")
+      $("#mx-out3").text(Math.max(parseFloat((4 * x).toFixed(2)), 0.5))
+      $("#mx-out4").text(Math.max(parseFloat((5 * x).toFixed(2)), 0.5))
+      $("#mx-out5").text(Math.max(parseFloat((6 * x).toFixed(2)), 0.5))
+      $("#mx-out6").text(Math.max(parseFloat((7 * x).toFixed(2)), 0.5))
+      $("#mx-out7").text(Math.max(parseFloat((8 * x).toFixed(2)), 0.5))
+      $("#mx-out8").text(Math.max(parseFloat((10 * x).toFixed(2)), 0.5))
+      $("#mx-out9").text(Math.max(parseFloat((12 * x).toFixed(2)), 0.5))
+      $("#mx-out10").text(parseFloat(((1 - x) * 100).toFixed(1)) + "%")
       if ($("#mx-calc-cd").val()) {
         $(".mx-outr:last").text(Math.max(parseFloat((Number($("#mx-calc-cd").val()) * x).toFixed(2)), 0.5))
       }
@@ -150,13 +152,15 @@ $(function() {
   
 //-------------------- Armor
   else if (pagename == "Armor") {
-    $("#calc-table tr:last").after('<tr><td><input id="mx-calc" type="number" step="10" style="width:54px"></td><td><span id="mx-out"></span></td></tr>')
+    $("#calc-table tr:last").after('<tr><td><input id="mx-calc" type="number" step="10" style="width:54px"></td><td><span id="mx-out1"></span></td><td><span id="mx-out2"></span></td></tr>')
     
     $("#mx-calc").on("input", function() {
       x = Number($("#mx-calc").val())
-      y = 1 - x / (100 + Math.abs(x))
-      y = Math.min(Math.max(y, 0.0001), 1.9999).toFixed(4)
-      $("#mx-out").text(y)
+      x = 1 - x / (100 + Math.abs(x))
+      x = Math.min(Math.max(x, 0.0001), 1.9999).toFixed(4)
+      y = ((1 - x) * 100).toFixed(2)
+      $("#mx-out1").text(y + "%")
+      $("#mx-out2").text(x)
     })
   }
 })

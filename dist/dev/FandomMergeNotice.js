@@ -58,11 +58,7 @@
         } ).append(
             $( '<div>', { id: 'fandom_notice' } ).append(
                 $( '<div>', { id: 'fandom_notice-images' } ).append(
-                    $( '<a>', { href: fandomURL } ).append(
-                        $( '<img>', {
-                            src: 'https://vignette.wikia.nocookie.net/rappy/images/b/bc/Fandom_logo.png/revision/latest/scale-to-height-down/75'
-                        } )
-                    )
+                    $( '<a>', { href: fandomURL } )
                 ),
                 $( '<span>', { html: content } )
             )

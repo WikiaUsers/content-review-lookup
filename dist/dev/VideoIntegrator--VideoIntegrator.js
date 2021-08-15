@@ -131,7 +131,7 @@ mw.hook('wikipage.content').add(function($content) {
             case 'Sibnet':
                 $this.html(
                     $('<iframe>', {
-                        src: 'https://video.sibnet.ru/shell.php?videoid=' + id,
+                        src: 'https://video.sibnet.ru/shell.php?videoid=' + id + '&share=0',
                         css: css,
                         frameborder: 0,
                         allowfullscreen: true

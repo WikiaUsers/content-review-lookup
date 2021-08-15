@@ -170,7 +170,7 @@ mw.hook( 'wikipage.content' ).add( function( $wikipageContent ) {
 		.append( '[', $( '<span>' ).addClass( 'jslink' ).text( i18n.hideText ), ']' );
 	
 	var extractList = function( $contentContainer, listClass ) {
-		var $content = $contentContainer.find( '.mw-parser-output > ul > li > ul' ).children( ':not(.nbttree-inherited)' );
+		var $content = $contentContainer.find( '.mw-parser-output > ul > li > ul' ).children();
 		if ( listClass ) {
 			$content.addClass( listClass );
 		}
@@ -227,6 +227,9 @@ mw.hook( 'wikipage.content' ).add( function( $wikipageContent ) {
 					$buttonLink.text( i18n.hideText );
 				} else {
 					if ( treeview ) {
+						$content.children(".load-page-button").children(".jslink").each(function() {
+                            if ($(this).text() === i18n.hideText) this.click();
+                        });
 						$content.detach();
 					} else {
 						$contentContainer.hide();

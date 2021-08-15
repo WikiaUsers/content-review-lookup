@@ -845,6 +845,13 @@ function switcher() {
 			txt = txt.replace(/\?/g, ',');
 			txt = txt.replace(/\^/g, ':');
 			txt = txt.replace(/\$/g, ';');
+			
+			txt = txt.replace(/є/g, 'э');
+			txt = txt.replace(/Є/g, 'Э');
+			txt = txt.replace(/ї/g, 'ъ');
+			txt = txt.replace(/Ї/g, 'Ъ');
+			txt = txt.replace(/\u0456/g,'ы');
+			txt = txt.replace(/\u0406/g, 'Ы');
 		}
 	}
 }

@@ -3,7 +3,7 @@
 
 function referenceTooltips($content) {
     // Make sure we are in article, project, or help namespace
-    if ($.inArray(mw.config.get('wgCanonicalNamespace'), ["", "Project", "Help", "Draft"]) !== -1) {
+    if ($.inArray(mw.config.get('wgCanonicalNamespace'), ["", "Project", "Help", "Draft", "Category", "User", "Forum"]) !== -1) {
 
         function toggleRT(o) {
             mw.loader.using("mediawiki.cookie", function () {

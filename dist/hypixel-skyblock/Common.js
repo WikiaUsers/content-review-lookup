@@ -337,7 +337,7 @@ $(function(){
 	if (!$(".sbw-ui-tabber").length) {
 		return;
 	}
-	
+
 	function clickTab(id) {
 		id = "ui-"+id;
 		if(!$("#"+id).length) { console.warn("No such tab ID \"" + id + "\""); return; }
@@ -349,7 +349,7 @@ $(function(){
 
 	// .hidden works on mobile, but not on desktop
 	$(".sbw-ui-tab-content.hidden").hide();
-	
+
 	$(".sbw-ui-tabber .invslot").each(function(){
 		var classes = Array.from($(this)[0].classList).filter(function(c) {
 				return c.indexOf("goto-") === 0 || c.indexOf("ui-") === 0;
@@ -374,6 +374,23 @@ $(function(){
 		if (id) { 
 			clickTab(id); 
 		}
+	});
+
+	// makes an extra button to go back to the first UI tab
+	$(".sbw-ui-tabber").each(function() {
+		var elementId = $(this).find(":first-child").attr("id");
+	
+		if (!elementId) return;
+	
+		var className = elementId.replace("ui-", "");
+	
+		$(this).find('.mcui').append(
+		$("<div>").addClass("mcui-returnbutton text-zoom-independent noselect")
+			.attr('data-font-size', '22').text("↻")
+			.click(function() {
+				clickTab(className);
+			})
+		);
 	});
 });
 
@@ -451,7 +468,7 @@ window.UserTagsJS = {
 	oasisPlaceBefore: ''
 };
 
-UserTagsJS.modules.custom = {
+window.UserTagsJS.modules.custom = {
 	// Old Wiki Staff
 	'IcyOfficial': ['oldstaff', 'mod', 'discord'],
 	'4hrue2kd83f': ['oldstaff', 'discord'],

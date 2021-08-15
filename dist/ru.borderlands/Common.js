@@ -1,9 +1,5 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
 
-//настройки цитат
-window.nQuoteSettings = window.nQuoteSettings || {};
-window.nQuoteSettings.useQuoteTemplate = true;
-
 //настройки для pagePreview
 window.pPreview = $.extend(true, window.pPreview, {
     defimage: 'https://vignette.wikia.nocookie.net/borderlands/images/0/05/Ajax.gif/revision/latest?cb=20170626182120&path-prefix=ru',
@@ -25,8 +21,6 @@ window.ajaxPages = [
 window.AjaxRCRefreshText = 'автообновление страницы'; //Отображаемое название
 // AjaxRC *****
 
-window.PurgeButtonText = 'Обновить'; //Отображаемое название
-
 /*Показ IP анонимов в комментариях*/
 window.RevealAnonIP = {
     permissions: ['rollback', 'sysop', 'bureaucrat']
@@ -37,35 +31,7 @@ window.nAutoCap = $.extend(true, window.nAutoCap, {
     autocap: false,
 });
 
-/*для работы WAM виджета*/
-window.railWAM = {
-    logPage:"Project:WAM Log",
-    // показывать ниже самых интересных вещей
-    appendAfter: ['#wikia-recent-activity', '.insights-module'],
-};
-
 //******* bugfixes start *******
-//*******
-/* в юцп проблемы не видно
-//отключение ссылок в recentchanges, иногда посылающих на #
-if (wgCanonicalSpecialPageName === 'Recentchanges') {
-    $('body').on('click', '.mw-enhanced-rc .mw-collapsible-toggle a', function(e){e.preventDefault()});
-}
-*/
-//******
-//правильные формы мн числа для количества "страниц" в заголовке
-$(function() {
-    // plural for mw:community-header-pages @user:fngplg, 2018
-    mw.loader.using(['mediawiki.language']).done(function() {
-        $('.wds-community-header__counter-label').text(
-            mw.language.convertPlural(
-                $('.wds-community-header__counter-value').text(),
-                ['страница', 'страницы', 'страниц']
-            )
-        );
-    });
-});
-//******
 //******* bugfixes end *******
 
 //collapsing in the community corner

@@ -535,7 +535,8 @@
                 	'u:dev:MediaWiki:Q.js',
                     'u:dev:MediaWiki:TVMH.js',
                     'u:dev:MediaWiki:DupeArgs.js',
-                    'u:dev:MediaWiki:MassNullEdit/code.js'
+                    'u:dev:MediaWiki:MassNullEdit/code.js',
+                    'u:dev:MediaWiki:PortableListUsers.js'
                 ]
             });
 

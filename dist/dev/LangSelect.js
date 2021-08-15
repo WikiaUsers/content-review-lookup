@@ -154,7 +154,7 @@ mw.loader.using('mediawiki.util').then(function () {
      * @this                window.dev.langSelect
      */
     LangSelect.prototype._interwiki = function() {
-        var $label = $ph.find('.wds-dropdown__toggle span');
+        var label = $ph.find('.wds-dropdown__toggle').get(0).firstChild;
         // Add content language link.
         if (this.lang !== conf.wgContentLanguage) {
             this._addInterwikiLink({
@@ -163,11 +163,11 @@ mw.loader.using('mediawiki.util').then(function () {
                     uselang: conf.wgContentLanguage
                 }).toString(),
                 'lang': conf.wgContentLanguage,
-                'text': $label.text()
+                'text': label.textContent
             });
         }
         // Text override for interwiki dropdown.
-        $label.text(this.langName);
+        label.textContent = this.langName;
         // Add preload link if user language is missing.
         if (!this.userlangExists) {
             var userPath = this.parent + '/' + conf.wgUserLanguage,

@@ -10,6 +10,7 @@
             window.niheaderToggler=true;
             var ne=$('.portable-infobox'); //infoboxes
             var ni=0;
+            ne.addClass('pi-collapse');
             for (ni=0; ni<ne.length; ni++) {
                 //add .pi-header. 4 collapse\expand marker
                 //wrapInner to prevent style overlapping (pi-title>>pi-header)

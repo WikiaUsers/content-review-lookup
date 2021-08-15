@@ -78,7 +78,6 @@
             landing: 'sysop',
             storage: false,
             time: 'timeago'
-            
         },
         window.PortableListUsers
     );
@@ -177,12 +176,13 @@
             return this.getData();
         }
         this.api.get({
-            action: 'query',
-            list: 'allusers|groupmembers',
-            augroup: obj,
-            aulimit: 'max',
-            gmgroups: obj,
-            gmlimit: 'max'
+            action: 'listuserssearchuser',
+            groups: obj,
+            contributed: 0,
+            limit: 5000,
+            order: 'ts_edit',
+            sort: 'desc',
+            offset: 0
         }).done(
             $.proxy(this.getData, this)
         );
@@ -226,52 +226,13 @@
             if (d.error) {
                 return;
             }
-            $.each(d.users || d.query.allusers, $.proxy(function (k, v) {
-                obj[v.name] = v.name;
+            $.each(d.listuserssearchuser, $.proxy(function (k, v) {
+                obj[v.username] = v.username;
+                if (!this.data[v.username]) {
+                    this.data[v.username] = v;
+                }
             }, this));
         }
-        if (!this.isObject(obj)) {
-            return this.loadModal();
-        }
-        var users = Object.keys(obj).join('|');
-        this.api.post({
-            action: 'query',
-            list: 'users|usercontribs',
-            ususers: users,
-            usprop: 'groups|editcount|gender|registration',
-            ucuser: users,
-            uclimit: 'max',
-            ucprop: 'timestamp|title'
-        }).done(
-            $.proxy(this.loadData, this)
-        );
-    };
-    /**
-     * @method loadData
-     * @description Loads the data from getData
-     * @param {JSON} d - The data from getData
-     * @returns {void}
-     */
-    LU.loadData = function (d) {
-        if (d.error) {
-            return;
-        }
-        $.each(d.query.users, $.proxy(function (k, v) {
-            if (!this.data[v.name]) {
-                this.data[v.name] = v;
-            }
-        }, this));
-        $.each(d.query.usercontribs, $.proxy(function (k, v) {
-            if (!this.data[v.user]) {
-                return;
-            }
-            if (!this.data[v.user].timestamp) {
-                this.data[v.user].timestamp = v.timestamp;
-            }
-            if (!this.data[v.user].title) {
-                this.data[v.user].title = v.title;
-            }
-        }, this));
         this.loadModal();
     };
     /**
@@ -372,19 +333,17 @@
      */
     LU.addContent = function () {
         $.each(this.data, $.proxy(function (k, v) {
-            if (this.users[this.currentGroup][v.name || k]) {
-                var count = v.editcount || '0';
+            if (this.users[this.currentGroup][v.username || k]) {
+                var count = v.edit_count || '0';
                 if (Number(count) < Number(this.currentNumber)) {
                     return;
                 }
                 this.createRow(
-                    v.name || k,
-                    v.timestamp,
-                    v.title,
-                    v.userid,
+                    v.username || k,
+                    v.last_edit_date,
+                    v.diff_edit_url,
+                    v.user_id,
                     count,
-                    v.gender,
-                    v.registration,
                     v.groups
                 );
             }
@@ -415,12 +374,10 @@
      * @param {String} title
      * @param {String} id
      * @param {Number|String} editcount
-     * @param {String} gender
-     * @param {String} registration
      * @param {Array} groups
      * @returns {void}
      */
-    LU.createRow = function (user, timestamp, title, id, editcount, gender, registration, groups) {
+    LU.createRow = function (user, timestamp, title, id, editcount, groups) {
         var item = this.mobile ? '<li>' : '<tr>';
         if (user) {
             this.$.list.append(
@@ -444,21 +401,15 @@
                     ),
                     this.createItem(
                         timestamp ?
-                        this.createLink(this.timestamp(timestamp), title)  :
+                        this.createLink(this.timestamp(timestamp), title, false) :
                         (editcount === '0' ? 'N/A' : timestamp),
                         'last-edited'
                     ),
                     this.createItem(editcount, 'editcount'),
-                    this.createItem(gender, 'gender'),
                     this.createItem(
-                        registration ?
-                        this.timestamp(registration) :
-                        registration,
-                        'registration'
-                    ),
-                    this.createItem(
-                        groups.join(', ')
-                        .replace(', *', '').replace(', user', ''),
+                        groups
+                        .replace(', *', '').replace(', user', '')
+                        .replace('*, ', '').replace('user, ', ''),
                         'groups'
                     ),
                     this.createItem(
@@ -480,8 +431,6 @@
                     this.createSpecialItem('user'),
                     this.createSpecialItem('last-edited'),
                     this.createSpecialItem('editcount'),
-                    this.createSpecialItem('gender'),
-                    this.createSpecialItem('registration'),
                     this.createSpecialItem('groups'),
                     this.createSpecialItem('avatar')
                 )
@@ -544,42 +493,81 @@
      * @description Creates an a item
      * @param {String} text - The link text
      * @param {String} href - The link href
+     * @param {boolean} isTitle - Whether or not util.getUrl should be called (defaults true)
      * @returns {String}
      */
-    LU.createLink = function (text, href) {
+    LU.createLink = function (text, href, isTitle) {
         return $('<a>', {
             'text': text,
-            'href': mw.util.getUrl(href)
+            'href': isTitle !== false ? mw.util.getUrl(href) : href
         });
     };
     /**
-     * @method timestamp
-     * @description Processes timestamps
-     * @param {String} time - The timestamp to process
+     * @method timeAgo 
+     * @description Reimplements $.timeago due to a bug that prevents dates from > 1 month ago
+     * @param {Date} time - The time to compare to
      * @returns {String}
      */
-    LU.timestamp = function (time) {
-        var $time = new Date(time).toString();
-        var formattedTime;
-        if (this.options.time === 'timeago') {
-            formattedTime = $.timeago(
-                $time.slice(0, 3) + ', ' +
-                $time.slice(4, 15) + ', ' +
-                $time.slice(16, 24)
-            );
-        } else if (this.options.time === 'utc') {
-            $time = new Date(time).toUTCString();
-            formattedTime = $time.slice(0, 3) + ', ' +
-                $time.slice(4, 16) + ', ' +
-                $time.slice(17, 25) + ' (' +
-                $time.slice(26) + ')';
-        } else {
-            formattedTime = $time.slice(0, 3) + ', ' +
-                $time.slice(4, 15) + ', ' +
-                $time.slice(16, 24) + ' ' +
-                $time.slice(34);
+    LU.timeAgo = function (time) {
+        var millis = (new Date()).getTime() - time.getTime();
+        var isFuture = millis < 0 ? 1 : 0;
+        var seconds = millis / 1e3,     // r
+            minutes = seconds / 60,     // n
+            hours = minutes / 60,       // i
+            days = hours / 24,          // a
+            years = days / 365;         // o
+        function msg (key, arg) {
+            return mw.message('timeago-' + key + (isFuture ? '-from-now' : ''), arg).text();
         }
-        return formattedTime;
+        return seconds < 45 && msg('second', Math.round(seconds)) ||
+            seconds < 90 && msg('minute', 1) ||
+            minutes < 45 && msg('minute', Math.round(minutes)) ||
+            minutes < 90 && msg('hour', 1) ||
+            hours < 24 && msg('hour', Math.round(hours)) ||
+            hours < 48 && msg('day', 1) ||
+            days < 30 && msg('day', Math.floor(days)) ||
+            days < 60 && msg('month', 1) ||
+            days < 365 && msg('month', Math.floor(days / 30)) ||
+            years < 2 && msg('year', 1) ||
+            msg('year', Math.floor(years));
+    };
+    /** 
+     * @method timestamp
+     * @description Parses and reformats the timestamp provided by the API
+     * @param {String} time - The timestamp to parse
+     * @returns {Date}
+     */
+    LU.timestamp = function (timestamp) {
+        if (this.options.time === 'timeago') {
+            var split = timestamp.replace(/,/g, '').split(' '),
+                time = split[0].split(':');
+            var year = split[3],
+                month = split[1],
+                day = split[2],
+                hour = time[0],
+                minute = time[1];
+            var monthIndex = [
+                'January', 
+                'February', 
+                'March', 
+                'April', 
+                'May', 
+                'June', 
+                'July', 
+                'August', 
+                'September', 
+                'October', 
+                'November', 
+                'December'
+            ].indexOf(month);
+            return this.timeAgo(
+                new Date(
+                    Date.UTC(year, monthIndex, day, hour, minute)
+                )
+            );
+        } else {
+            return timestamp;
+        }
     };
     var packages = [
         'mediawiki.api',

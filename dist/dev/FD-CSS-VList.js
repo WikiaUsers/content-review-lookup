@@ -31,15 +31,15 @@ const RestrictedCSSVariables = [
 '--fandom-global-nav-gp-legacy-logo'
 ];
 
-function isCPR(checkString) { return ( RestrictedCSSVariables.indexOf( checkString ) >= 0 ) };
+function isCPR(checkString) { return ( RestrictedCSSVariables.indexOf( checkString ) >= 0 ) }
 
 if (!$Loaded) {
 
 const CSSTokenSeparators = /[\{\}\:\;\0\s\,]/;
 var s , c , v , CSSTokens ;
 
-$( PageSelector ).prepend(
-'<a id="FDCVToggle" onclick="$(ColorList).toggle();" style="top:0;right:0;float:right;text-align:right;padding:0.25em;border:1px solid var(--theme-link-color);">' +
+$( PageSelector ).first().prepend(
+'<a id="FDCVToggle" title="FD-CSS-VList" onclick="$(ColorList).toggle();" style="top:0;right:0;float:right;text-align:right;">' +
 '<!-- https://heroicons.dev/#color-swatch !-->' +
 '<svg class="wds-icon wds-icon-small" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">' +
 '<path fill-rule="evenodd" clip-rule="evenodd" d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z" />' +
@@ -80,15 +80,15 @@ var entry = $( '<div>' , { id: 'CSSVL' + s , title: s + ': ' + c , css: { border
 
 if ( s.includes('-image') || s.includes('-logo') ) {
 
-entry.css( { backgroundColor: 'transparent' , backgroundPosition: 'left top' , backgroundSize: 'contain' , backgroundRepeat: 'no-repeat' , overflow: 'wrap' , wordWrap: 'break-word' , backgroundImage: c } )
+entry.css( { backgroundColor: 'transparent' , backgroundPosition: 'left top' , backgroundSize: 'contain' , backgroundRepeat: 'no-repeat' , overflow: 'wrap' , wordWrap: 'break-word' , backgroundImage: c } );
 
 } else if ( s.endsWith( '--rgb' ) ) {
 
-entry.css( 'backgroundColor' , 'rgb(' + c + ')' )
+entry.css( 'backgroundColor' , 'rgb(' + c + ')' );
 
 } else {
 
-entry.css( 'backgroundColor', c )
+entry.css( 'backgroundColor', c );
 
 }
 

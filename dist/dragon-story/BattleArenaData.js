@@ -3948,12 +3948,28 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "super"
 			},
+			"elitearcane": {
+				"name": "Elite Arcane",
+				"colors": [
+					"arcane",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
 			"elitechampion": {
 				"name": "Elite Champion",
 				"colors": [
 					"champion",
 					"white",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"eliteolympus": {
+				"name": "Elite Olympus",
+				"colors": [
+					"olympus",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},
@@ -6661,6 +6677,23 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"white"
 				],
 				"rarity": "unbreedable"
+			},
+			"hyperdino": {
+				"name": "Hyper Dino",
+				"colors": [
+					"dino",
+					"pink",
+					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"hyperstone": {
+				"name": "Hyper Stone",
+				"colors": [
+					"stone",
+					"red"
+				],
+				"rarity": "common"
 			},
 			"hypernova": {
 				"name": "Hypernova",

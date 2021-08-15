@@ -45,6 +45,8 @@ gridFilters = {
             }
             window.gridElements.push(obj);
         });
+        
+    	gridFilteringApply();
     }
 
     function gridFilteringSwitches() {

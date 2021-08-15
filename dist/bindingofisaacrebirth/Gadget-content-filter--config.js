@@ -293,12 +293,11 @@ function handleItemDictionary( element ) {
 	) {
 		return false;
 	}
-	var li      = parent.parentElement,
-		keyType = getKeyType( element );
+	var keyType = getKeyType( element );
 	switch ( keyType ) {
 	case DictKeyType.UNIQUE:
 	case DictKeyType.COMBINED:
-		this.removeElement( li );
+		this.removeElement( parent.parentElement );
 		return true;
 	case DictKeyType.FIRST_ALTERNATIVE:
 		while ( element.previousSibling ) {
@@ -311,7 +310,7 @@ function handleItemDictionary( element ) {
 		this.removePreviousNodeUntilText( element, '/', true );
 		this.removeNextNodeUntilText( element, '/' );
 		element.remove();
-		break;
+		return true;
 	case DictKeyType.LAST_ALTERNATIVE:
 		this.removePreviousNodeUntilText( element, '/', true );
 		while ( element.nextSibling ) {
@@ -338,9 +337,7 @@ var DictKeyType = {
  * @see DictKeyType
  */
 function getKeyType( element ) {
-	/** @type {ChildNode} */
-	var node    = element,
-		sibling = node.previousSibling;
+	var sibling = element.previousSibling;
 	while (
 		sibling && (
 			sibling.nodeType !== Node.TEXT_NODE ||
@@ -348,8 +345,6 @@ function getKeyType( element ) {
 			sibling.textContent.lastIndexOf( '+' ) === -1
 		)
 	) {
-		node.remove();
-		node    = sibling;
 		sibling = sibling.previousSibling;
 	}
 	var slashIndex = -1,
@@ -363,8 +358,7 @@ function getKeyType( element ) {
 				DictKeyType.COMBINED :
 				DictKeyType.LAST_ALTERNATIVE;
 	}
-	node    = element;
-	sibling = node.nextSibling;
+	sibling = element.nextSibling;
 	while (
 		sibling && (
 			sibling.nodeType !== Node.TEXT_NODE ||
@@ -372,8 +366,6 @@ function getKeyType( element ) {
 			sibling.textContent.indexOf( '+' ) === -1
 		)
 	) {
-		node.remove();
-		node    = sibling;
 		sibling = sibling.nextSibling;
 	}
 	if ( sibling ) {

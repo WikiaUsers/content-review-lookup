@@ -7659,6 +7659,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "level": 4,
                 "offspringeligibility": "expired"
             },
+            "elitearcane": {
+                "name": "Elite Arcane",
+                "types": [
+                    "arcane",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "elitechampion": {
                 "name": "Elite Champion",
                 "types": [
@@ -7672,6 +7688,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "25_hours_25",
                 "rarity": 4,
                 "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "eliteolympus": {
+                "name": "Elite Olympus",
+                "types": [
+                    "olympus",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
                 "notes": [
                     "feature"
                 ]
@@ -13051,6 +13083,49 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "worldevent",
                 "notes": [
                     "feature"
+                ]
+            },
+            "hyperdino": {
+                "name": "Hyper Dino",
+                "types": [
+                    "dino",
+                    "pink",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "hyperstone": {
+                "name": "Hyper Stone",
+                "types": [
+                    "stone",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "black"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ]
+                    ]
                 ]
             },
             "hypernova": {

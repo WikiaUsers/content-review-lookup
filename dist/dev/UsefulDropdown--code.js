@@ -138,11 +138,11 @@ $(function() {
                 elementContent = $.extend(i18n.en, i18n[lang.split('-')[0]], i18n[lang]);
 
             $('.page-header__contribution-buttons, .skin-fandomdesktop .page-header__actions').append("<div class=\"wds-button-group\" style=\"vertical-align: top\">" +
-                "<a href=\"javascript:void(0)\" class=\"wds-is-squished wds-button\" id=\"usful\">" +
+                "<a href=\"javascript:void(0)\" class=\"wds-button wds-is-text page-header__action-button has-label collapsible\" id=\"usful\">" +
                 "<span>" + elementContent.buttonTitle + "</span>" +
                 "</a>" +
                 "<div class=\"wds-dropdown\">" +
-                "<div class=\"wds-button wds-is-squished wds-dropdown__toggle\">" +
+                "<div class=\"wds-dropdown__toggle wds-button wds-is-text page-header__action-button\">" +
                 "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" class=\"wds-icon wds-icon-tiny wds-dropdown__toggle-chevron\" id=\"wds-icons-dropdown-tiny\"><path d=\"M6 9l4-5H2\" fill-rule=\"evenodd\"></path></svg></div>" +
                 "<div class=\"wds-dropdown__content wds-is-not-scrollable wds-is-right-aligned\">" +
                 "<ul class=\"wds-list wds-is-linked\">" +

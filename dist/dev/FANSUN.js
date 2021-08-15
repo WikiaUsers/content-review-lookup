@@ -32,11 +32,11 @@
         }
         // Dark theme class
         $(document.body).addClass(window.dev.colors
-            ? 'oasis-dark-theme ' +
+            ? 'oasis-dark-theme theme-fandomdesktop-dark ' +
               'menu-dark ' +
               'page-dark'
-            : 'oasis-dark-theme'
-        ).removeClass('menu-bright page-bright');
+            : 'oasis-dark-theme theme-fandomdesktop-dark'
+        ).removeClass('menu-bright page-bright theme-fandomdesktop-light');
     }
 
     /**

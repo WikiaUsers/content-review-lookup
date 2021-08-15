@@ -124,6 +124,29 @@ $(function() {
 	    	}
 	    }
 	});
+	// page tools into header (place here to init dropdown function properly.)
+	if(!$('aside.page__right-rail.is-rail-hidden').length){
+		return;
+	}
+	var $box = $('.page-header__top');
+	if(!$box.length){
+		return;
+	}
+	$("#WikiaRail").on("afterLoad.rail", function(){
+		var $pageTools = $('#p-tb');
+		if(!$pageTools.length){
+			return;
+		}
+		var $t = $('<div class="page-header__pagetools"><div class="wds-dropdown"><div class="wds-dropdown__toggle">'+$pageTools.find('h2').text()+'<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg></div><div class="wds-dropdown__content wds-is-not-scrollable"></div></div></div>');
+		$pageTools.find('ul').clone().removeClass().addClass('wds-list wds-is-linked').appendTo($t.find("div.wds-dropdown__content"));
+		var $cate = $box.find('.page-header__categories');
+		if($cate.length){
+			$cate.after($t);
+		}
+		else{
+			$box.prepend($t);
+		}
+	});
 	
 });
 
@@ -320,9 +343,14 @@ $(function() {
 		$this.closest('.infobox, .infotable').removeClass('c-expert c-master c-normal').addClass($this.hasClass('normal')?'c-normal':($this.hasClass('expert')?'c-expert':'c-master'));
 	});
 
-	//spoiler
+	//template:spoiler
 	$('.spoiler-content').on('click', function(){
 		$(this).toggleClass('show');
+	});
+	
+	//template:toggleBox
+	$('.trw-togglehandle').on('click', function(){
+		$(this).closest('.trw-toggleable').toggleClass(['toggled', 'not-toggled']);
 	});
 
 });
@@ -511,82 +539,82 @@ $(function() {
 	});
 });
 
-/* broken under new fandom skin, waiting for fix.
 // for mobile
 $(function(){
     if( !$('body.skin-fandomdesktop').length ){
         return;
     }
-	if("ontouchstart" in window){
-		//click event can toggle hover effect.
-		var procRule = function($rule){
-			switch($rule.constructor.name){
-				case "CSSStyleRule":
-			  		if( $rule.selectorText.indexOf(':hover') == -1){
-			  			return;
-			  		}
-			  		$rule.selectorText = $rule.selectorText.split(',').map(function($item){
-			  			if($item.indexOf(':hover')){
-			  				return $item + ', ' + $item.replace(':hover', '.hoverhover');
-			  			}else{
-			  				return $item;
-			  			}
-			  		}).join(', ');
-			  		break;
-			  	case "CSSMediaRule":
-			  		for (var i = 0; i < $rule.cssRules.length; i++) {
-						procRule( $rule.cssRules[i]);
-					}
-					break;
-		  		default:
-		  			//skip.
-			  		break;
-			  }
-		}
-		for (var i = 0; i < document.styleSheets.length; i++) {
-			var styleSheet = document.styleSheets[i];
-			try{
-				for (var j = 0; j < styleSheet.cssRules.length; j++) {
-						procRule( styleSheet.cssRules[j], styleSheet );
-			
-				}
-			}
-			catch(e){//cross domain
-				//console.log('Access to stylesheet %s is denied. Ignoring...', styleSheet.href);
-			}
-		}
-		
-		$(".fandom-community-header__local-navigation .wds-dropdown__content .wds-list.wds-is-linked .wds-dropdown-level-2").on("click", function(event){
-			$(this).toggleClass("expanded");
-			event.preventDefault();
-			event.stopPropagation();
-		});
-		$(".fandom-community-header__local-navigation .wds-dropdown__content .wds-list.wds-is-linked .wds-dropdown-level-2 > div").on("click", function(event){
-			event.stopPropagation();
-		});
-		
-		var $hoverhoverElement = null; 
-		$("body, .fandom-community-header__local-navigation .more-menu .wds-dropdown__toggle").on("click", function(){
-			if(!$hoverhoverElement){
-				return;
-			}
-			$hoverhoverElement.removeClass('hoverhover');
-			$hoverhoverElement.find('.expanded').removeClass('expanded');
-			$hoverhoverElement = null;
-		});
-		$(".wds-dropdown:not(.more-menu) .wds-dropdown__toggle").click(function(event){
-			var $box = $(this).closest(".wds-dropdown");
-			if($hoverhoverElement && ($hoverhoverElement.get(0) != $box.get(0))){
-				$hoverhoverElement.removeClass('hoverhover');
-				$hoverhoverElement = null;
-			}
-			$box.toggleClass('hoverhover');
-			if($box.hasClass('hoverhover')){
-				$hoverhoverElement = $box;
-			}
-			event.preventDefault();
-			event.stopPropagation();
-		});
+	if(!("ontouchstart" in window)){
+		return; 
 	}
+	//duplicate css rules
+	var procRule = function($rule){
+		switch($rule.constructor.name){
+			case "CSSStyleRule":
+		  		if( $rule.selectorText.indexOf(':hover') == -1){
+		  			return;
+		  		}
+		  		$rule.selectorText = $rule.selectorText.split(',').map(function($item){
+		  			if($item.indexOf(':hover')){
+		  				return $item + ', ' + $item.replace(':hover', '.hoverhover');
+		  			}else{
+		  				return $item;
+		  			}
+		  		}).join(', ');
+		  		break;
+		  	case "CSSMediaRule":
+		  		for (var i = 0; i < $rule.cssRules.length; i++) {
+					procRule( $rule.cssRules[i]);
+				}
+				break;
+	  		default:
+	  			//skip.
+		  		break;
+		  }
+	}
+	for (var i = 0; i < document.styleSheets.length; i++) {
+		var styleSheet = document.styleSheets[i];
+		try{
+			for (var j = 0; j < styleSheet.cssRules.length; j++) {
+					procRule( styleSheet.cssRules[j], styleSheet );
+		
+			}
+		}
+		catch(e){//cross domain
+			//console.log('Access to stylesheet %s is denied. Ignoring...', styleSheet.href);
+		}
+	}
+	//local nav dropdown lists workaround:
+	$(".fandom-community-header__local-navigation .wds-dropdown__content .wds-list.wds-is-linked .wds-dropdown-level-2").on("click", function(event){
+		$(this).toggleClass("expanded");
+		event.preventDefault();
+		event.stopPropagation();
+	});
+	$(".fandom-community-header__local-navigation .wds-dropdown__content .wds-list.wds-is-linked .wds-dropdown-level-2 > div").on("click", function(event){
+		event.stopPropagation();
+	});
+	var $hoverhoverElement = null; 
+	$("body, .fandom-community-header__local-navigation .more-menu .wds-dropdown__toggle").on("click", function(){
+		if(!$hoverhoverElement){
+			return;
+		}
+		$hoverhoverElement.removeClass('hoverhover');
+		$hoverhoverElement.find('.expanded').removeClass('expanded');
+		$hoverhoverElement = null;
+	});
+	//wds-dropdown workaround: click -> hover
+	$('body').delegate(".wds-dropdown:not(.more-menu) .wds-dropdown__toggle", "click", function(event){
+		var $box = $(this).closest(".wds-dropdown");
+		if($hoverhoverElement && ($hoverhoverElement.get(0) != $box.get(0))){
+			$hoverhoverElement.removeClass('hoverhover');
+			$hoverhoverElement = null;
+		}
+		$box.toggleClass('hoverhover');
+		if($box.hasClass('hoverhover')){
+			$hoverhoverElement = $box;
+		}
+		event.preventDefault();
+		event.stopPropagation();
+	});
+	
 });
-*/

@@ -276,11 +276,7 @@ $(function () {
 	});
 	
 	// move RO button into place in FandomDesktop
-	if ($('.page__main')) {
-		var $el = $('#ca-refresh-overview');
-		$el.detach();
-		$el.insertAfter($('#p-views #ca-edit'));
-	}
+	moveToPViews($('#ca-refresh-overview'));
 });
 
 $(function() {

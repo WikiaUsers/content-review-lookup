@@ -23,7 +23,8 @@
         ).color;
     }
 
-    $('.wds-community-header__local-navigation .wds-dropdown')
+    $(/* Oasis */ '.wds-community-header__local-navigation .wds-dropdown' + ', ' +
+      /* FandomDesktop */ '.fandom-community-header__local-navigation .wds-dropdown')
         .click(function(e) {
             var $this = $(this);
             if ($this.hasClass('hovered')) return;
@@ -36,8 +37,12 @@
     mw.util.addCSS([
         makeStyle(
             [
+            	/* Oasis */ 
                 '.wds-community-header__local-navigation .wds-dropdown__toggle',
-                '.wds-community-header__local-navigation .wds-dropdown__toggle a'
+                '.wds-community-header__local-navigation .wds-dropdown__toggle a',
+                /* FandomDesktop */
+                '.fandom-community-header__local-navigation .wds-dropdown__toggle',
+                '.fandom-community-header__local-navigation .wds-dropdown__toggle a'
             ],
             {
                 cursor: 'pointer'
@@ -45,9 +50,14 @@
         ),
         makeStyle(
             [
+            	/* Oasis */ 
                 '.wds-community-header__local-navigation .wds-dropdown:not(.hovered):not(.wds-is-touch-device):not(.wds-is-not-hoverable):hover .wds-dropdown__content',
                 '.wds-community-header__local-navigation .wds-dropdown:not(.hovered):not(.wds-is-touch-device):not(.wds-is-not-hoverable):hover:not(.wds-no-chevron)::before',
-                '.wds-community-header__local-navigation .wds-dropdown:not(.hovered):not(.wds-is-touch-device):not(.wds-is-not-hoverable):hover:not(.wds-no-chevron)::after'
+                '.wds-community-header__local-navigation .wds-dropdown:not(.hovered):not(.wds-is-touch-device):not(.wds-is-not-hoverable):hover:not(.wds-no-chevron)::after',
+                /* FandomDesktop */
+                '.fandom-community-header__local-navigation .wds-dropdown:not(.hovered):not(.wds-is-touch-device):not(.wds-is-not-hoverable):hover .wds-dropdown__content',
+                '.fandom-community-header__local-navigation .wds-dropdown:not(.hovered):not(.wds-is-touch-device):not(.wds-is-not-hoverable):hover:not(.wds-no-chevron)::before',
+                '.fandom-community-header__local-navigation .wds-dropdown:not(.hovered):not(.wds-is-touch-device):not(.wds-is-not-hoverable):hover:not(.wds-no-chevron)::after'
             ],
             {
                 display: 'none'
@@ -55,7 +65,10 @@
         ),
         makeStyle(
             [
-                '.wds-community-header__local-navigation .wds-tabs__tab:not(.hovered):hover .wds-tabs__tab-label'
+            	/* Oasis */ 
+                '.wds-community-header__local-navigation .wds-tabs__tab:not(.hovered):hover .wds-tabs__tab-label',
+                /* FandomDesktop */
+                '.fandom-community-header__local-navigation .wds-tabs__tab:not(.hovered):hover .wds-tabs__tab-label'
             ],
             {
                 color: getDefaultTabColor()
@@ -63,7 +76,10 @@
         ),
         makeStyle(
             [
-                '.wds-community-header__local-navigation .wds-dropdown:not(.hovered):not(.wds-is-touch-device):not(.wds-is-not-hoverable):hover .wds-dropdown__toggle-chevron'
+            	/* Oasis */ 
+                '.wds-community-header__local-navigation .wds-dropdown:not(.hovered):not(.wds-is-touch-device):not(.wds-is-not-hoverable):hover .wds-dropdown__toggle-chevron',
+                /* FandomDesktop */
+                '.fandom-community-header__local-navigation .wds-dropdown:not(.hovered):not(.wds-is-touch-device):not(.wds-is-not-hoverable):hover .wds-dropdown__toggle-chevron'
             ],
             {
                 transform: 'none',

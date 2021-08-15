@@ -3,20 +3,21 @@
     if (window.bang) return;
     window.bang = { loaded: true };
 
-	var namespaces = {
-			t: "Template",
-			mw: "MediaWiki",
-			s: "Special",
-			h: "Help",
-			m: "Module",
-			f: "File",
-			u: "User",
-			ut: "User talk",
-			w: "Message Wall",
-			ub: "User blog",
-			p: "Project",
-			c: "Category",
-			fo: "Forum"
+	var ns = mw.config.get('wgFormattedNamespaces'),
+		namespaces = {
+			t: ns[10], // Template
+			mw: ns[8], // MediaWiki
+			s: ns[-1], // Special
+			h: ns[12], // Help
+			m: ns[828], // Module
+			f: ns[6], // File
+			u: ns[2], // User
+			ut: ns[3], // User talk
+			w: ns[1200], // Message Wall
+			ub: ns[500], // User blog
+			p: ns[4], // Project
+			c: ns[14], // Category
+			fo: ns[110] // Forum
 		};
 
     if (mw.config.get('skin') === 'fandomdesktop') {
