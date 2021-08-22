@@ -2,7 +2,7 @@
 /**
  * Countdown
  *
- * @version 2.1
+ * @version 2.2
  *
  * @author Pecoes <https://c.fandom.com/wiki/User:Pecoes>
  * @author Asaba <https://dev.fandom.com/wiki/User:Asaba>
@@ -19,392 +19,35 @@
 /*global mediaWiki:true*/
 
 ;(function (module, mw, $, undefined) {
-
 	'use strict';
-
-	var translations = $.extend(true, {
-		// Language list - start
-		// Arabic (العربية)
-		ar: {
-			and: 'و',
-			second: 'ثانية',
-			seconds: 'ثواني',
-			minute: 'دقيقة',
-			minutes: 'دقائق',
-			hour: 'ساعة',
-			hours: 'ساعات',
-			day: 'يوم',
-			days: 'أيام'
-		},
-		// Belarusian (Беларуская)
-		be: {
-			and: 'і',
-			second: 'секунда',
-			seconds: 'секунд',
-			minute: 'хвіліна',
-			minutes: 'хвілін',
-			hour: 'гадзіну',
-			hours: 'гадзін',
-			day: 'дзень',
-			days: 'дзён'
-		},
-		// Catalan (Català)
-		ca: {
-			and: 'i',
-			second: 'segon',
-			seconds: 'segons',
-			minute: 'minut',
-			minutes: 'minuts',
-			hour: 'hora',
-			hours: 'hores',
-			day: 'dia',
-			days: 'dies'
-		},
-		// German (Deutsch)
-		de: {
-			and: 'und',
-			second: 'Sekunde',
-			seconds: 'Sekunden',
-			minute: 'Minute',
-			minutes: 'Minuten',
-			hour: 'Stunde',
-			hours: 'Stunden',
-			day: 'Tag',
-			days: 'Tage'
-		},
-		// English (English)
-		en: {
-			and: 'and',
-			second: 'second',
-			seconds: 'seconds',
-			minute: 'minute',
-			minutes: 'minutes',
-			hour: 'hour',
-			hours: 'hours',
-			day: 'day',
-			days: 'days'
-		},
-		// Greek (Ελληνικά)
-		el: {
-			and: 'και',
-			second: 'δευτερόλεπτο',
-			seconds: 'δευτερόλεπτα',
-			minute: 'λεπτό',
-			minutes: 'λεπτά',
-			hour: 'ώρα',
-			hours: 'ώρες',
-			day: 'ημέρα',
-			days: 'ημέρες'
-		},
-		// Spanish (Español)
-		es: {
-			and: 'y',
-			second: 'segundo',
-			seconds: 'segundos',
-			minute: 'minuto',
-			minutes: 'minutos',
-			hour: 'hora',
-			hours: 'horas',
-			day: 'día',
-			days: 'días'
-		},
-		// French (Français)
-		fr: {
-			and: 'et',
-			second: 'seconde',
-			seconds: 'secondes',
-			minute: 'minute',
-			minutes: 'minutes',
-			hour: 'heure',
-			hours: 'heures',
-			day: 'jour',
-			days: 'jours'
-		},
-		//Hindi (हिंदी)
-		hi: {
-			and: 'और',
-			second: 'सेकंड',
-			seconds: 'सेकंड',
-			minute: 'मिनट',
-			minutes: 'मिनट',
-			hour: 'घंटा',
-			hours: 'घंटे',
-			day: 'दिन',
-			days: 'दिन'
-		},
-		// Hungarian (Magyar)
-		hu: {
-			and: 'és',
-			second: 'másodperc',
-			seconds: 'másodperc',
-			minute: 'perc',
-			minutes: 'perc',
-			hour: 'óra',
-			hours: 'óra',
-			day: 'nap',
-			days: 'nap'
-		},
-		// Indonesia (Bahasa Indonesia)
-		id: {
-			and: 'dan',
-			second: 'detik',
-			seconds: 'detik',
-			minute: 'menit',
-			minutes: 'menit',
-			hour: 'jam',
-			hours: 'jam',
-			day: 'hari',
-			days: 'hari'
-		},
-		// Italian (Italiano)
-		it: {
-			and: 'e',
-			second: 'secondo',
-			seconds: 'secondi',
-			minute: 'minuto',
-			minutes: 'minuti',
-			hour: 'ora',
-			hours: 'ore',
-			day: 'giorno',
-			days: 'giorni'
-		},
-		// Japanese (日本語)
-		ja: {
-			and: '',
-			second: '秒',
-			seconds: '秒',
-			minute: '分',
-			minutes: '分',
-			hour: '時間',
-			hours: '時間',
-			day: '日',
-			days: '日'
-		},
-		// Korean (한국어)
-		ko:{
-			and: ' ',
-			second: '초',
-			seconds: '초',
-			minute: '분',
-			minutes: '분',
-			hour: '시간',
-			hours: '시간',
-			day: '일',
-			days: '일'
-		},
-		// Malay (Bahasa Melayu)
-		ms: {
-			and: 'dan',
-			second: 'saat',
-			seconds: 'saat',
-			minute: 'minit',
-			minutes: 'minit',
-			hour: 'jam',
-			hours: 'jam',
-			day: 'hari',
-			days: 'hari'
-		},
-		// Dutch (Nederlands)
-		nl: {
-			and: 'en',
-			second: 'seconde',
-			seconds: 'seconden',
-			minute: 'minuut',
-			minutes: 'minuten',
-			hour: 'uur',
-			hours: 'uur',
-			day: 'dag',
-			days: 'dagen'
-		},
-		// Polish (Polski)
-		pl: {
-			and: 'i',
-			second: 'sekunda',
-			seconds: 'sekund(y)',
-			minute: 'minuta',
-			minutes: 'minut(y)',
-			hour: 'godzina',
-			hours: 'godzin(y)',
-			day: 'dzień',
-			days: 'dni'
-		},
-		// Portuguese (Português)
-		pt: {
-			and: 'e',
-			second: 'segundo',
-			seconds: 'segundos',
-			minute: 'minuto',
-			minutes: 'minutos',
-			hour: 'hora',
-			hours: 'horas',
-			day: 'dia',
-			days: 'dias'
-		},
-		// Brazilian Portuguese (Português do Brasil)
-		'pt-br': {
-			and: 'e',
-			second: 'segundo',
-			seconds: 'segundos',
-			minute: 'minuto',
-			minutes: 'minutos',
-			hour: 'hora',
-			hours: 'horas',
-			day: 'dia',
-			days: 'dias'
-		},
-		// Romanian (Română)
-		ro: {
-			and: 'și',
-			second: 'secundă',
-			seconds: 'secunde',
-			minute: 'minut',
-			minutes: 'minute',
-			hour: 'oră',
-			hours: 'ore',
-			day: 'zi',
-			days: 'zile',
-		},
-		// Russian (русский)
-		ru: {
-			and: 'и',
-			second: 'секунда',
-			seconds: 'секунд',
-			minute: 'минута',
-			minutes: 'минут',
-			hour: 'час',
-			hours: 'часов',
-			day: 'день',
-			days: 'дней'
-		},
-		// Serbian (српски језик)
-		sr: {
-			and: 'i',
-			second: 'sekundu',
-			seconds: 'sekunde/-i',
-			minute: 'minutu',
-			minutes: 'minute/-a',
-			hour: 'sat',
-			hours: 'sata/-i',
-			day: 'dan',
-			days: 'dana'
-		},
-		// Tagalog
-		tl: {
-			and: 'at',
-			second: 'segundo',
-			seconds: 'mga segundo',
-			minute: 'minuto',
-			minutes: 'mga minuto',
-			hour: 'oras',
-			hours: 'mga oras',
-			day: 'araw',
-			days: 'mga araw'
-		},
-		// Turkish (Türkçe)
-		tr: {
-			and: 've',
-			second: 'saniye',
-			seconds: 'saniye',
-			minute: 'dakika',
-			minutes: 'dakika',
-			hour: 'saat',
-			hours: 'saat',
-			day: 'gün',
-			days: 'gün'
-		},
-		// Ukrainian (Українська)
-		uk: {
-			and: 'та',
-			second: 'секунда',
-			seconds: 'секунд',
-			minute: 'хвилина',
-			minutes: 'хвилин',
-			hour: 'годину',
-			hours: 'годин',
-			day: 'день',
-			days: 'днів'
-		},
-		// Vietnamese (Tiếng Việt)
-		vi: {
-			and: 'và',
-			second: 'giây',
-			seconds: 'giây',
-			minute: 'phút',
-			minutes: 'phút',
-			hour: 'giờ',
-			hours: 'giờ',
-			day: 'ngày',
-			days: 'ngày'
-		},
-		// Chinese (简体中文)
-		zh: {
-			and: ' ',
-			second: '秒',
-			seconds: '秒',
-			minute: '分',
-			minutes: '分',
-			hour: '时',
-			hours: '时',
-			day: '天',
-			days: '天'
-		},
-		
-		// Chinese (台湾繁體中文)
-		'zh-tw':{
-			and: ' ',
-			second: '秒',
-			seconds: '秒',
-			minute: '分',
-			minutes: '分',
-			hour: '時',
-			hours: '時',
-			day: '天',
-			days: '天'
-		},
-		
-		// Chinese (香港繁體中文)
-		'zh-hk':{
-			and: ' ',
-			second: '秒',
-			seconds: '秒',
-			minute: '分',
-			minutes: '分',
-			hour: '時',
-			hours: '時',
-			day: '天',
-			days: '天'
-		}
-		// Language list - stop
-	}, module.translations || {}),
-	i18n = translations[
-		mw.config.get('wgContentLanguage')
-	] || translations.en;
 
 	var countdowns = [];
 
 	var NO_LEADING_ZEROS = 1,
 	SHORT_FORMAT = 2,
 	NO_ZEROS = 4;
+	
+	var i18n;
 
 	function output (i, diff) {
 		/*jshint bitwise:false*/
 		var delta, result, parts = [];
 		delta = diff % 60;
-		result = ' ' + i18n[delta === 1 ? 'second' : 'seconds'];
+		result = ' ' + i18n.msg(delta === 1 ? 'second' : 'seconds').plain();
 		if (countdowns[i].opts & SHORT_FORMAT) result = result.charAt(1);
 		parts.unshift(delta + result);
 		diff = Math.floor(diff / 60);
 		delta = diff % 60;
-		result = ' ' + i18n[delta === 1 ? 'minute' : 'minutes'];
+		result = ' ' + i18n.msg(delta === 1 ? 'minute' : 'minutes').plain();
 		if (countdowns[i].opts & SHORT_FORMAT) result = result.charAt(1);
 		parts.unshift(delta + result);
 		diff = Math.floor(diff / 60);
 		delta = diff % 24;
-		result = ' ' + i18n[delta === 1 ? 'hour'   : 'hours'  ];
+		result = ' ' + i18n.msg(delta === 1 ? 'hour' : 'hours').plain();
 		if (countdowns[i].opts & SHORT_FORMAT) result = result.charAt(1);
 		parts.unshift(delta + result);
 		diff = Math.floor(diff / 24);
-		result = ' ' + i18n[diff  === 1 ? 'day'    : 'days'   ];
+		result = ' ' + i18n.msg(delta === 1 ? 'day' : 'days').plain();
 		if (countdowns[i].opts & SHORT_FORMAT) result = result.charAt(1);
 		parts.unshift(diff  + result);
 		result = parts.pop();
@@ -422,7 +65,7 @@
 			if (countdowns[i].opts & SHORT_FORMAT) {
 				result = parts.join(' ') + ' ' + result;
 			} else {
-				result = parts.join(', ') + ' ' + i18n.and + ' ' + result;
+				result = parts.join(', ') + ' ' + i18n.msg('and').plain() + ' ' + result;
 			}
 		}
 		countdowns[i].node.text(result);
@@ -515,7 +158,7 @@
 			var $this = $(this),
 				date = (new Date($this.text())).valueOf();
 			if (isNaN(date)) {
-				$this.text('BAD DATE');
+				$this.text(i18n.msg('bad-date').plain());
 				return;
 			}
 			countdowns.push({
@@ -530,6 +173,13 @@
 		}
 	}
 
-	mw.hook('wikipage.content').add(init);
-
+	mw.hook('wikipage.content').add(function() {
+		mw.hook('dev.i18n').add(function(p) {
+			p.loadMessages('Countdown').then(function(p) {
+				i18n = p; i18n.useUserLang(); init()
+			})
+		})
+	});
+	
+	importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' })
 }(window.countdownTimer = window.countdownTimer || {}, mediaWiki, jQuery));

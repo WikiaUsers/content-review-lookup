@@ -1,4 +1,5 @@
-if (mw.config.get('wgTitle') === 'Changelogs') {
+// Changelog auto-update
+if ($("#mw-changelog").length > 0) {
 	$.ajax("https://starblast.io/changelog.txt")
 	.done(function (data) {
 		function t(){};
@@ -53,7 +54,7 @@ if (mw.config.get('wgTitle') === 'Changelogs') {
 	})
 	.fail(function (e) {$("#mw-changelog").html("<p>An error occured while loading data from the server!</p><p>Please reload the page and try again</p>")});
 }
-
+// backToTop button
 (function(){
 	function hideFade () {
 		$( "#backtotop" ).hide ();

@@ -1843,10 +1843,10 @@
         'Тэнк': 'tank'
     };
 
-    var start_top = Math.floor( 100 * Math.random() ) + 100,
-        start_left = Math.floor( 600 * Math.random() ) + 200;
+    var start_top = Math.floor( 100 * Math.random() ),
+        start_left = Math.floor( 300 * Math.random() ) + 100;
 
-    $( 'body' ).append( '<div id="pony" style="position: absolute; top: ' + start_top + 'px; left: ' + start_left + 'px; z-index: 9999;" />' );
+    $( 'body' ).append( '<div id="pony" style="position: absolute; top: ' + start_top + 'px; left: ' + start_left + 'px; z-index: 9999; pointer-events: none;" />' );
 
     var status = wpReadCookie(),
         btn_text = 'Скрыть пони',
@@ -1957,7 +1957,7 @@
 
                 var move_x = off.left - move_to_x_px;
 
-                if ( move_x < 30 ) {
+                if ( move_x < 80 ) {
                     $( '#pony' ).css( 'transform', 'scaleX(1)' );
                     move_x = off.left + 50;
                 }

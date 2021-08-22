@@ -106,25 +106,6 @@ setInterval(function () {
 	$('.wds-avatar a[href$="TheZhab"]').closest('.Reply, .Reply_body__3woA9').addClass('TheZhab');
 }, 500 );
 
-/*Окончание в слове страницы до фикса на UCP*/
-
-$(function changePageCounterEndingRus(){
-	if($('.wds-community-header__counter-label').length !== 0){
-	var pageCount = (($('.wds-community-header__counter-value').text())%100);
-	if(((pageCount >= 0) && (pageCount <= 10)) || ((pageCount >= 20) && (pageCount <= 99))){
-	 if((pageCount%10 === 0) || ((pageCount%10 >= 5) && (pageCount%10 <= 9))){
-	 	$('.wds-community-header__counter-label').text('Страниц');
-	 }else if((pageCount%10 >= 2) && (pageCount%10 <=4)){
-	 	$('.wds-community-header__counter-label').text('Страницы');
-	 }else if(pageCount%10 == 1){
-	 	$('.wds-community-header__counter-label').text('Страница');
-	 }
-	}else{
-		$('.wds-community-header__counter-label').text('Страниц');
-	}
-	}
-});
-
 /*Страница администрации*/
 $(function(){
 $('.dsadmin, .dsmoder').click(function(){

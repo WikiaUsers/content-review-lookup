@@ -332,7 +332,7 @@ setInterval(function () {
         if ($user.match(/InvaderrrZIM|PhoenixKenny|Klonoamiyumi/g)) {
             $(this).addClass('bureaucrat');
         }
-        if ($user.match(/MarvinDarwin|Fenton127/g)) {
+        if ($user.match(/MarvinDarwin|Fenton127|Mario&LuigiBowser'sInsideStory/g)) {
             $(this).addClass('chat-mod');
         }
         
@@ -365,7 +365,8 @@ window.MessageWallUserTags = {
         'SomnoticAgama': 'Patroller',
         'Villicus': 'Bot',
         'MarvinDarwin': 'Chat Moderator',
-        'Fenton127': 'Chat Moderator'
+        'Fenton127': 'Chat Moderator',
+        'Mario&LuigiBowser\'sInsideStory': 'Chat Moderator'
     }
 };
  

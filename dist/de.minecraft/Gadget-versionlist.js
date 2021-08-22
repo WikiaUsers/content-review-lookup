@@ -1,6 +1,30 @@
 $( document ).ready( function( $ ) {
+	'use strict';
+
+	var i18n = {
+		pageName: 'Minecraft_Wiki:Versionsliste',
+		
+		version: 'Version',
+		type: 'Type',
+		time: 'Time',
+		released: 'Released',
+		url: 'URL',
+		info: 'Info',
+		load: 'Load',
+		
+		assets: 'Assets',
+		client: 'Client',
+		server: 'server',
+		clientMappings: 'Client Mappings',
+		serverMappings: 'Server Mappings',
+		
+		loading: 'Loading...',
+		loadingFailed: 'Loading version info failed.',
+		loadingError: 'An error occurred while loading version info.'
+	};
+	
 	var pagename = mw.config.get( 'wgPageName' );
-	if ( pagename != 'Minecraft_Wiki:Versionsliste' ) return;
+	if ( pagename != i18n.pageName ) return;
 	
 	$( '.list_versions_form' ).show();
 	$( '.list_versions_disabled' ).hide();
@@ -10,12 +34,12 @@ $( document ).ready( function( $ ) {
 			$( '.list_versions_list' ).append(
 				$( '<div>' ).addClass( 'list_versions_header' ).append(
 					$( '<div>' ).addClass( 'list_versions_version_desc' ).append(
-						$( '<div>' ).addClass( 'list_versions_version_id' ).html( 'Version' ),
-						$( '<div>' ).addClass( 'list_versions_version_type' ).html( 'Type' ),
-						$( '<div>' ).addClass( 'list_versions_version_time' ).html( 'Time' ),
-						$( '<div>' ).addClass( 'list_versions_version_releasetime' ).html( 'Released' ),
-						$( '<div>' ).addClass( 'list_versions_version_url' ).html( 'URL' ),
-						$( '<div>' ).addClass( 'list_versions_header_loadinfo' ).html( 'Info' )
+						$( '<div>' ).addClass( 'list_versions_version_id' ).html( i18n.version ),
+						$( '<div>' ).addClass( 'list_versions_version_type' ).html( i18n.type ),
+						$( '<div>' ).addClass( 'list_versions_version_time' ).html( i18n.time ),
+						$( '<div>' ).addClass( 'list_versions_version_releasetime' ).html( i18n.released ),
+						$( '<div>' ).addClass( 'list_versions_version_url' ).html( i18n.url ),
+						$( '<div>' ).addClass( 'list_versions_header_loadinfo' ).html( i18n.info )
 					)
 				)
 			);
@@ -33,7 +57,7 @@ $( document ).ready( function( $ ) {
 							$( '<div>' ).addClass( 'list_versions_version_url' ).append(
 								$ ( '<a>' ).attr( 'href', version.url ).html( version.url )
 							),
-							$( '<div>' ).addClass( 'list_versions_version_loadinfo' ).attr( 'data-versionurl', version.url ).html( '[Load]' ).click( function() {
+							$( '<div>' ).addClass( 'list_versions_version_loadinfo' ).attr( 'data-versionurl', version.url ).html( '[' + i18n.load + ']' ).click( function() {
 								var info_button = $( this );
 								if ( info_button.hasClass( 'list_versions_version_loadinfo_loaded' ) ) return;
 								$.getJSON( info_button.attr( 'data-versionurl' ) ).done( function( data ) {
@@ -47,7 +71,7 @@ $( document ).ready( function( $ ) {
 										
 										if (assetIndex !== undefined) version_info.append(
 											$( '<div>' ).addClass( 'list_versions_version_info_assets' ).append(
-												$( '<div>' ).addClass( 'list_versions_version_info_assets_title' ).html( 'Assets:' ),
+												$( '<div>' ).addClass( 'list_versions_version_info_assets_title' ).html( i18n.assets + ':' ),
 												$( '<div>' ).addClass( 'list_versions_version_info_assets_url' ).append(
 													$ ( '<a>' ).attr( 'href', assetIndex ).html( assetIndex )
 												)
@@ -55,7 +79,7 @@ $( document ).ready( function( $ ) {
 										);
 										if (client !== undefined) version_info.append(
 											$( '<div>' ).addClass( 'list_versions_version_info_client' ).append(
-												$( '<div>' ).addClass( 'list_versions_version_info_client_title' ).html( 'Client:' ),
+												$( '<div>' ).addClass( 'list_versions_version_info_client_title' ).html( i18n.client + ':' ),
 												$( '<div>' ).addClass( 'list_versions_version_info_client_url' ).append(
 													$ ( '<a>' ).attr( 'href', client ).html( client )
 												)
@@ -63,7 +87,7 @@ $( document ).ready( function( $ ) {
 										);
 										if (server !== undefined) version_info.append(
 											$( '<div>' ).addClass( 'list_versions_version_info_server' ).append(
-												$( '<div>' ).addClass( 'list_versions_version_info_server_title' ).html( 'Server:' ),
+												$( '<div>' ).addClass( 'list_versions_version_info_server_title' ).html( i18n.server + ':' ),
 												$( '<div>' ).addClass( 'list_versions_version_info_server_url' ).append(
 													$ ( '<a>' ).attr( 'href', server ).html( server )
 												)
@@ -71,7 +95,7 @@ $( document ).ready( function( $ ) {
 										);
 										if (client_obf !== undefined) version_info.append(
 											$( '<div>' ).addClass( 'list_versions_version_info_client_obf' ).append(
-												$( '<div>' ).addClass( 'list_versions_version_info_client_obf_title' ).html( 'Client Mappings:' ),
+												$( '<div>' ).addClass( 'list_versions_version_info_client_obf_title' ).html( i18n.clientMappings + ':' ),
 												$( '<div>' ).addClass( 'list_versions_version_info_client_obf_url' ).append(
 													$ ( '<a>' ).attr( 'href', client_obf ).html( client_obf )
 												)
@@ -79,7 +103,7 @@ $( document ).ready( function( $ ) {
 										);
 										if (server_obf !== undefined) version_info.append(
 											$( '<div>' ).addClass( 'list_versions_version_info_server_obf' ).append(
-												$( '<div>' ).addClass( 'list_versions_version_info_server_obf_title' ).html( 'Server Mappings:' ),
+												$( '<div>' ).addClass( 'list_versions_version_info_server_obf_title' ).html( i18n.serverMappings + ':' ),
 												$( '<div>' ).addClass( 'list_versions_version_info_server_obf_url' ).append(
 													$ ( '<a>' ).attr( 'href', server_obf ).html( server_obf )
 												)
@@ -91,12 +115,12 @@ $( document ).ready( function( $ ) {
 									} ).fail( function() {
 										info_button.closest( '.list_versions_version_desc' ).after(
 											$( '<div>' ).addClass( 'list_versions_version_info' ).append(
-												$( '<div>' ).addClass( 'list_versions_version_info_fail' ).html( 'Loading version info failed.' )
+												$( '<div>' ).addClass( 'list_versions_version_info_fail' ).html( i18n.loadingFailed )
 											)
 										);
-										info_button.html( '[Load]' );
+										info_button.html( '[' + i18n.load + ']' );
 									} );
-								info_button.html( 'Loading...' );
+								info_button.html( i18n.loading );
 							} )
 						)
 					)
@@ -105,6 +129,6 @@ $( document ).ready( function( $ ) {
 		}
 	).fail( function() {
 		$( '.list_versions_loading' ).hide();
-		$( '.list_versions_list' ).html( 'An error occurred while loading version info.' );
+		$( '.list_versions_list' ).html( i18n.loadingError );
 	} );
 } );

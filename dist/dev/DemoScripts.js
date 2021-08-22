@@ -1,16 +1,15 @@
-/*jshint curly:false, jquery:true, browser:true */
-/*global mediaWiki:true, importArticles:true, importArticle:true, dev:true*/
+/* jshint curly:false, jquery:true, browser:true */
+/* global mediaWiki:true, importArticles:true, importArticle:true, dev:true */
 
 ;(function ($, mw, cfg) {
     'use strict';
-
+    
     var urlVars = new URLSearchParams(location.search);
     // killswitch & dblrun protection
     if (urlVars.get('nodemo') || cfg.loaded) return;
     cfg.loaded = true;
-
+    
     var includes = {
-
         /**
          * a-z ordered
          * 
@@ -37,7 +36,7 @@
 		},
 		
 		AutoHeadingNumber: {
-			page: 'AutoHeadingNumber',
+			page: 'AutoHeadingsNumber',
 			styles: 'MediaWiki:AutoHeadingNumber.css',
 		},
 
@@ -69,12 +68,6 @@
             page: 'BotoneraPopups',
             scripts: 'MediaWiki:BotoneraPopups/Code/en.js',
             styles: 'MediaWiki:BotoneraPopups.css'
-        },
-
-        CollapsibleInfobox: {
-            page: 'CollapsibleInfobox',
-            scripts: 'MediaWiki:CollapsibleInfobox/code.js',
-            styles: 'MediaWiki:CollapsibleInfobox.css'
         },
         
         CollapsiblePageTools: {
@@ -307,11 +300,6 @@
             page: 'ModernModals',
             styles: 'MediaWiki:ModernModals.css'
         },
-
-        ModernRail: {
-            page: 'ModernRail',
-            styles: 'MediaWiki:ModernRail.css'
-        },
         
         ModernWikiNavigation: {
             page: 'ModernWikiNavigation',
@@ -337,6 +325,11 @@
             page: 'OasisRevived',
             styles: 'MediaWiki:OasisRevived.css',
             scripts: 'MediaWiki:OasisRevived.js'
+        },
+        
+        OldOasisTheme: {
+        	page: 'OldOasisTheme',
+        	styles: 'MediaWiki:OldOasisTheme.css'
         },
         
         OldWikiaBar: {

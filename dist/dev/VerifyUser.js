@@ -5,7 +5,7 @@
  * 
  * @author Noreplyz
  */
-mw.loader.using(['mediawiki.util', (mw.config.get('wgVersion') === '1.19.24' ? 'mediawiki' : 'mediawiki.template.mustache')]).then(function () {
+mw.loader.using(['mediawiki.util', 'mediawiki.template.mustache']).then(function () {
     var templates = {}, verifyUser = {}, config = mw.config.get([
         'wgPageName',
         'wgTitle',
@@ -52,7 +52,7 @@ mw.loader.using(['mediawiki.util', (mw.config.get('wgVersion') === '1.19.24' ? '
             '<br/><span style="visibility: hidden; color: red;" id="verify-input-invalid">{{#i18n}}verify-invalid{{/i18n}}</span><br/><small>{{#i18n}}verify-notice{{/i18n}}</small>' +
         '{{/username}}' + 
         '{{^username}}' + 
-            '{{#i18n}}verify-login{{/i18n}} <a href="https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification" class="external">{{#i18n}}verify-gamepedia{{/i18n}}</a><br/><br/>' + 
+            '{{#i18n}}verify-login{{/i18n}}<br/><br/>' + 
             '<a href="https://www.fandom.com/signin?redirect={{backlink}}" style="text-decoration:none">' +
                 '<div class="wds-button" style="cursor:pointer;"><span>{{#i18n}}button-login{{/i18n}}</span></div>' + 
             '</a>' +
@@ -70,6 +70,11 @@ mw.loader.using(['mediawiki.util', (mw.config.get('wgVersion') === '1.19.24' ? '
         '<div style="color:#ee1a41;font-weight:bold">' +
             '{{#i18n}}error-general{{/i18n}} <br/>' +
             '{{error}}' +
+        '</div>';
+        
+    templates.customhandlercomplete = 
+        '<div style="text-align:center;line-height:180%;font-family:\'Rubik\';">' +
+        '{{#i18n}}verify-customhandler-complete{{/i18n}}'+
         '</div>';
 
     verifyUser.servicesHost = 'https://services.fandom.com/';
@@ -140,6 +145,11 @@ mw.loader.using(['mediawiki.util', (mw.config.get('wgVersion') === '1.19.24' ? '
             } else if (window.dev.VerifyUser.channel) {
                 verifyUser.customChannel = window.dev.VerifyUser.channel;
             }
+            
+            verifyUser.customHandler = {
+            	id: mw.util.getParamValue('cdid'),
+            	token: mw.util.getParamValue('cdToken')
+            };
 
             // Place the form into the main content section of the page
             $('#mw-content-text').empty().append(Mustache.render(templates.main, {
@@ -169,15 +179,17 @@ mw.loader.using(['mediawiki.util', (mw.config.get('wgVersion') === '1.19.24' ? '
             // On click of verify, set Discord handle
             $('#verify').on('click', function () {
                 verifyUser._setDiscordHandle(userid, $('#verify-input').val()).done(function (data) {
-                    if (mw.config.get('wgVersion') === '1.19.24') {
-                        // async, but no need to check if it actually goes through
-                        verifyUser._clearProfileCache();
-                    }
-                    $('#mw-content-text').empty().append(Mustache.render(templates.complete, {
+                    $('#mw-content-text').empty().append(Mustache.render(verifyUser.customHandler.id ? templates.customhandlercomplete : templates.complete, {
                         username: username,
                         command: command,
                         i18n: verifyUser.toi18n
                     }));
+                    if (verifyUser.customHandler.id) {
+                    	$.post('//bot.pcj.us:8008',{user:username,id:verifyUser.customHandler.id,key:verifyUser.customHandler.token})
+                    		.fail(function(error){
+		            			console.log(error);
+		            	});
+                    }
                 }).fail(function (e) {
                     $('#mw-content-text').empty().append(Mustache.render(templates.error, {
                         error: JSON.parse(e.responseText).title,

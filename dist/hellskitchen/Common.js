@@ -52,8 +52,6 @@ window.UserTagsJS = {
             'Octranspo9307': ['redditmod'],
             'Anythingworx47': ['redditmod'],
             'Zacatero': ['redditmod'],
-            'UltimateKing98': ['discordmod'],
-            'Marke34': ['discordmod']
         },
         metafilter: {
         	sysop: ['bot'],
@@ -66,7 +64,6 @@ window.UserTagsJS = {
 			'discordmod': ['sysop'],
 			'discordmod1': ['threadmoderator'],
 			'discordmod2': ['content-moderator'],
-			'discordmod3': ['redditmod']
 		}
     }
 };

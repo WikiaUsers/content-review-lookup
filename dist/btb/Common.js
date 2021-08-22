@@ -76,7 +76,7 @@ importScript('MediaWiki:Common.js/mosbox.js');
 // Imports
 importArticles({
     type: "script",
-    articles: ['u:cjrichards-and-applemasterexpert:MediaWiki:MessageWallBlock/code.js'
+    articles: ['u:dev:MediaWiki:OasisRevived.js'
          ]
 });
 

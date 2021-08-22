@@ -1,4 +1,4 @@
-if ("test mode wasn't still broken" == "you would see this message!") return;
+alert("test mode is working");
 
 /**
  * Custom implementation of the "View Source" script, incorporating parts of these scripts:

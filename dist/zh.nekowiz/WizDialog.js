@@ -14,7 +14,7 @@ window.onload = function() {
 	tWizDialog = setInterval(autoNextWizDialog, msSwitch);
 
 	nTopsH2   = [0];
-	var allH2 = $(".WikiaArticle h2:not(#toctitle>)");
+	var allH2 = $(".page-content h2:not(#toctitle>)");
 	for (var i = 1; i < allH2.length; i++) {
 		nTopsH2.push( allH2.eq(i).position().top );
 	}

@@ -107,7 +107,7 @@ fdButtons[fdButtons.length] = {
     'label': 'spam'
 };
 fdButtons[fdButtons.length] = {
-    'summary': '[[Biblioteca Virtual Wikia:Políticas|Políticas]]',
+    'summary': '[[:Políticas de la Biblioteca Virtual Fandom|Políticas]]',
     'label': 'Incump. artículos'
 };
 fdButtons[fdButtons.length] = {

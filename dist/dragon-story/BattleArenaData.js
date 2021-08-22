@@ -570,6 +570,31 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"archelemental": {
+				"name": "Arch Elemental",
+				"colors": [
+					"elemental",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
+			"archfey": {
+				"name": "Arch Fey",
+				"colors": [
+					"fey",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
+			"archmetal": {
+				"name": "Arch Metal",
+				"colors": [
+					"metal",
+					"black",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"archtarot": {
 				"name": "Arch Tarot",
 				"colors": [
@@ -5836,6 +5861,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"grandrainbow": {
+				"name": "Grand Rainbow",
+				"colors": [
+					"rainbow",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"grandzodiac": {
 				"name": "Grand Zodiac",
 				"colors": [
@@ -6692,6 +6725,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"stone",
 					"red"
+				],
+				"rarity": "common"
+			},
+			"hyperworld": {
+				"name": "Hyper World",
+				"colors": [
+					"world",
+					"blue"
 				],
 				"rarity": "common"
 			},

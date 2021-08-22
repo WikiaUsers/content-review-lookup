@@ -7,6 +7,7 @@
 /*----------------------------- Содержание -----------------------------------*/
 // * Импорт
 // * Настройки
+// * Блок "Новые страницы"
 // * Кнопка "Back To Top"
 // * Логотип для светлой темы
 // * Случайный фон страницы
@@ -49,6 +50,19 @@ window.wfPlugins.push(function (txt, r) {
 	r( /(\d+)\s*[\-\—]\s*(\d+)/g, '$1–$2' );
 	r( /\b([MCDLXVI]+)\s*[\-\—]\s*([MCDLXVI]+)\b/g, '$1–$2' );
 	r( /\{\{примечания\}\}/g, '<references />' );
+});
+
+/*----------------------------- Блок "Новые страницы" ------------------------*/
+// Блок правой панели. Всзято с вики "Убежище"
+$(function(){
+	if (
+		$('#WikiaRail').length
+		&& mw.config.values.wgCanonicalNamespace != 'Special'
+		&& mw.config.values.wgCanonicalNamespace != 'MediaWiki'
+	)
+	$('<section class="rail-module"></section>')
+		.appendTo('#WikiaRail')
+		.load('/ru/index.php?title=Template:RailModuleNewPages&action=render');
 });
 
 /*----------------------------- Кнопка "Back To Top" -------------------------*/

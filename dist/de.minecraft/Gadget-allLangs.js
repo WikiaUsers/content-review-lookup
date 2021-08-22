@@ -1,7 +1,11 @@
 $( document ).ready( function( $ ) {
+	'use strict';
 	var pagename = '';
 
-	if ( mw.config.get( 'wgNamespaceNumber' ) == 8 || mw.config.get( 'wgNamespaceNumber' ) == 9 || mw.config.get( 'wgNamespaceNumber' ) == 202 ) { // MediaWiki-Namespace, Diskussion und Profil
+	if ( mw.config.get( 'wgNamespaceNumber' ) == 8 // MediaWiki
+	|| mw.config.get( 'wgNamespaceNumber' ) == 9 // Diskussion
+	|| mw.config.get( 'wgNamespaceNumber' ) == 202 // Profil
+	) {
 		pagename = mw.config.get( 'wgCanonicalNamespace' ) + ':' + mw.config.get( 'wgTitle' );
 	} 
 	else if ( mw.config.get( 'wgNamespaceNumber' ) == -1 ) { // Spezialseiten
@@ -33,35 +37,37 @@ $( document ).ready( function( $ ) {
 		'zh': '中文'
 	};
 
-	if ( !$( '#p-lang' ).length && pagename.length ) {
-		$( '#p-tb' ).after(
-			$( '<div>', { 'class': 'portal expanded', 'id': 'p-lang', 'aria-labelledby': 'p-lang-label' } ).append(
-				$( '<h3>', {
-					'id': 'p-lang-label',
-					'href': '#',
-					'aria-haspopup': 'true',
-					'aria-controls': 'p-lang-list',
-					'role': 'button',
-					'aria-pressed': 'true',
-					'aria-expanded': 'true'
-				} ).html( 'In anderen Sprachen' ),
-				$( '<div>', { 'class': 'body' } ).append(
-					$( '<ul>', { 'id': 'p-lang-list' } )
-				).hide()
+	if ( pagename.length ) {
+		$( '.page-header__top' ).append(
+			$( '<div>' )
+			.addClass( 'page-header__languages' )
+			.append(
+				$( '<div>' )
+				.addClass( 'wds-dropdown' )
+				.append(
+					$( '<div>' )
+					.addClass ('wds-dropdown__toggle' )
+					.text( 'Deutsch' )
+				)
+				.append(
+					$( '<div>')
+					.addClass( 'wds-dropdown__content' )
+					.append(
+						$( '<ul>' )
+						.addClass( 'wds-list' )
+						.addClass( 'wds-is-linked' )
+					)
+				)
 			)
 		);
 		
 		for ( var lang in langs ) {
-			$( '#p-lang-list' ).append(
-				$( '<li>', { 'class': 'interlanguage-link interwiki-' + lang } ).append(
-					$( '<a>',
-						{
-							'title': pagename + ' – ' + langs[lang],
-							'href': 'https://minecraft' + ( lang == 'technik' ? '-technik.fandom.com/de' : '.fandom.com' + ( lang == 'en' ? '' : '/' + lang ) ) + '/wiki/' + pagename,
-							'lang': lang,
-							'hreflang': lang
-						} )
-					.html( langs[lang] )
+			$( '.page-header__languages .wds-dropdown__content .wds-list' ).append(
+				$( '<li>')
+				.append(
+					$( '<a>')
+					.attr( 'href', 'https://minecraft' + ( lang == 'technik' ? '-technik.fandom.com/de' : '.fandom.com' + (lang == 	'en' ? '' : '/' + lang ) ) + '/wiki/' + pagename )
+					.text( langs[lang] )
 				)
 			);
 		}

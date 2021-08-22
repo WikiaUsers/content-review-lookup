@@ -273,7 +273,7 @@ JWB.api.get = function(pagename) {
 			JWB.page.name = response.query.redirects[0].to;
 		}
 		var newContent = JWB.replace(JWB.page.content);
-		if (JWB.stopped === true) return;
+		if (JWB.isStopped === true) return;
 		JWB.status('done', true);
 		var containRegex = $('#containRegex').prop('checked'), containFlags = $('#containFlags').val();
 		var skipContains = containRegex ? new RegExp($('#skipContains').val(), containFlags) : $('#skipContains').val();

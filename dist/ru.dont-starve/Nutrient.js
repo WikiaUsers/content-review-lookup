@@ -1,100 +1,202 @@
-var nutrientTimer;
-var nutrientAddInterval;
+switch ( mw.config.get('wgPageName') ) {
+    case 'Удобрения':
+    	
 var holemode = 9;
-var nutrients = [];
-nutrients['4'] = [];
-nutrients['9'] = [];
-nutrients['16'] = [];
+var plants = [];
+var soil = [];
+
+function Soil(holemode) {
+	this.soil = [];
+	this.soil.length = holemode;
+	this.holemode = holemode;
+	
+	this.getAllStats = function(){
+		var stats = {
+		    'growth' : 0,
+		    'compost' : 0,
+		    'manure' : 0
+		};
+		
+		for (var i = 0; i < this.soil.length; i++){
+			if (this.soil[i]) {
+				stats.growth = stats.growth + this.soil[i].growth;
+				stats.compost = stats.compost + this.soil[i].compost;
+				stats.manure = stats.manure + this.soil[i].manure;
+			}
+		}
+		stats.growth = stats.growth * 4;
+		stats.compost = stats.compost * 4;
+		stats.manure = stats.manure * 4;
+		
+		return stats;
+	};
+	
+	this.add = function(plant){
+		for (var i = 0; i < this.soil.length; i++){
+			if (!this.soil[i]) {
+				this.soil[i] = plants[plant];
+				var imageUrl = $('#' + plant + '_planted').attr('data-src');
+				$('#soil_' + this.holemode + '_' + i).css({
+					"background": "url(" + imageUrl + ") 100% 100% no-repeat",
+					"background-size": "contain",
+					"padding-top": "5em"
+			    });
+				break;
+			}
+		}
+	};
+	
+	this.remove = function(element){
+		$(element).css({
+			"background-image": "",
+			"padding-top": ""
+		});
+		delete this.soil[$(element).attr('position')];
+	};
+	
+	this.removeAll = function(){
+		$('#soil_' + this.holemode + ' > p > span').css({
+			"background-image": "",
+			"padding-top": ""
+        });
+		this.soil = [];
+		this.soil.length = this.holemode;
+	};
+}
+
+soil[4] = new Soil(4);
+soil[9] = new Soil(9);
+soil[16] = new Soil(16);
+
+function AddPlantValues(name, growth, compost, manure){
+	plants[name] = {
+	'growth' : growth,
+	'compost' : compost,
+	'manure' : manure,
+	};
+}
+
+AddPlantValues('carrot',-4,2,2);
+AddPlantValues('corn',2,-4,2);
+AddPlantValues('potato',2,2,-4);
+AddPlantValues('tomato',-2,-2,4);
+AddPlantValues('asparagus',2,-4,2);
+AddPlantValues('eggplant',2,2,-4);
+AddPlantValues('pumpkin',-4,2,2);
+AddPlantValues('watermelon',4,-2,-2);
+AddPlantValues('dragonfruit',4,4,-8);
+AddPlantValues('durian',4,-8,4);
+AddPlantValues('garlic',4,-8,4);
+AddPlantValues('onion',-8,4,4);
+AddPlantValues('pepper',4,4,-8);
+AddPlantValues('pomegranate',-8,4,4);
+AddPlantValues('tillweed',-2,-2,-2);
+AddPlantValues('forgetmelots',-2,-2,-2);
+AddPlantValues('firenettle',-2,-2,-2);
+AddPlantValues('ivy',-2,-2,-2);
 
 $(function() {
 
-	$("#holemode").click(function sortseed() {
-		clearInterval(nutrientAddInterval);
-		clearTimeout(nutrientTimer);
-		if (($("#soil3").css("display")) !== "none") {
-			$("#soil2").css({
+	$("#holemode").click(function() {
+		if (($("#soil_9").css("display")) !== "none") {
+			$("#soil_4, #soil_9").css({
 				"display": "none"
 			});
-			$("#soil3").css({
-				"display": "none"
-			});
-			$("#soil4").css({
+			$("#soil_16").css({
 				"display": ""
 			});
 			holemode = 16;
-			changeNutrientQuantity(1);
-		} else if (($("#soil4").css("display")) !== "none") {
-			$("#soil4").css({
+		} else if (($("#soil_16").css("display")) !== "none") {
+			$("#soil_9, #soil_16").css({
 				"display": "none"
 			});
-			$("#soil3").css({
-				"display": "none"
-			});
-			$("#soil2").css({
+			$("#soil_4").css({
 				"display": ""
 			});
 			holemode = 4;
-			changeNutrientQuantity(1);
 		} else {
-			$("#soil2").css({
+			$("#soil_4, #soil_16").css({
 				"display": "none"
 			});
-			$("#soil3").css({
+			$("#soil_9").css({
 				"display": ""
 			});
-			$("#soil4").css({
-				"display": "none"
-			});
 			holemode = 9;
-			changeNutrientQuantity(1);
 		}
+		changeNutrientQuantity(1);
 	});
+	
 	$('#digmode').attr('onclick', 'removePlantAll()');
+	
 	$('#planted > p > a').each(function() {
 		var id = $(this).attr('title');
 		$(this).children('img').attr('id', (id + '_planted'));
 	});
+	
 	$('#plant > p > img').each(function() {
 		var title = $(this).attr('title');
 		$(this).attr('id', title);
-		$(this).attr('onclick', 'nutrientBoofer("' + title + '")');
+		$(this).attr('onclick', 'addPlant("' + title + '")');
 	});
 
 	var x = 0;
-	$('#soil2 > p > span').each(function() {
+	$('#soil_4 > p > span').each(function() {
 		$(this).attr('id', ('soil_4_' + x));
-		$(this).attr('onclick', 'removePlant4("' + x + '")');
+		$(this).attr('position', x);
+		$(this).on('click', function(){
+		   soil[holemode].remove(this);	
+		   changeNutrientQuantity();
+		});
 		x = x + 1;
 		return x;
 	});
 
 	x = 0;
-	$('#soil3 > p > span').each(function() {
+	$('#soil_9 > p > span').each(function() {
 		$(this).attr('id', ('soil_9_' + x));
-		$(this).attr('onclick', 'removePlant9("' + x + '")');
+		$(this).attr('position', x);
+		$(this).on('click', function(){
+		   soil[holemode].remove(this);	
+		   changeNutrientQuantity();
+		});
 		x = x + 1;
 		return x;
 	});
 
 	x = 0;
-	$('#soil4 > p > span').each(function() {
+	$('#soil_16 > p > span').each(function() {
 		$(this).attr('id', ('soil_16_' + x));
-		$(this).attr('onclick', 'removePlant16("' + x + '")');
+		$(this).attr('position', x);
+		$(this).on('click', function(){
+		   soil[holemode].remove(this);	
+		   changeNutrientQuantity();
+		});
 		x = x + 1;
 		return x;
 	});
-
 });
 
-window.changeNutrientQuantity = function(controlNumber) {
-	if ((nutrients[holemode] !== undefined) && ((nutrients[holemode].includes(',')) || (nutrients[holemode].length == 13))) {
-		if (nutrients[holemode].length !== 13) {
-			nutrients[holemode] = nutrients[holemode].split(',');
-		}
-		if (nutrients[holemode][1] > 0) {
-			$('#gr1').text('' + nutrients[holemode][1] + '');
-			$('#gr2').text('' + nutrients[holemode][2] + '');
-			$('#gr3').text('' + nutrients[holemode][3] + '');
+window.changeNutrientQuantity = function() {
+	    var stats = soil[holemode].getAllStats()
+	    if (stats.growth < 0 || stats.compost < 0 || stats.manure < 0) {
+	    	var cw = Math.max(Math.ceil(stats.growth / -24), Math.ceil(stats.compost / -32),  Math.ceil(stats.manure / -24));
+	    	var gf = Math.max(Math.ceil(stats.growth / -8), Math.ceil(stats.compost / -8),  Math.ceil(stats.manure / -8));
+	    	var tg = Math.max(Math.ceil(stats.growth / -8), Math.ceil(stats.compost / -32),  Math.ceil(stats.manure / -8));
+	    	$('#cw').text('' + cw + '')
+			$('#gf').text('' + gf + '');
+		  	$('#tg').text('' + tg + '');
+		  	$('.secondnut').css({
+				'display': ''
+			});
+	    } else {
+	    	$('.secondnut').css({
+				'display': 'none'
+			});
+	    }
+	    if (stats.growth < 0) { 
+			$('#gr1').text('' + Math.ceil(stats.growth / -8) + '')
+			$('#gr2').text('' + Math.ceil(stats.growth / -16) + '');
+			$('#gr3').text('' + Math.ceil(stats.growth / -32) / 5 + '');
 			$('#growth').css({
 				'display': ''
 			});
@@ -109,10 +211,10 @@ window.changeNutrientQuantity = function(controlNumber) {
 				'display': ''
 			});
 		}
-		if (nutrients[holemode][4] > 0) {
-			$('#cm1').text('' + nutrients[holemode][4] + '');
-			$('#cm2').text('' + nutrients[holemode][5] + '');
-			$('#cm3').text('' + nutrients[holemode][6] + '');
+		if (stats.compost < 0) {
+			$('#cm1').text('' + Math.ceil(stats.compost / -8) + '');
+			$('#cm2').text('' + Math.ceil(stats.compost / -16) + '');
+			$('#cm3').text('' + Math.ceil(stats.compost / -24) + '');
 			$('#compost').css({
 				'display': ''
 			});
@@ -127,10 +229,10 @@ window.changeNutrientQuantity = function(controlNumber) {
 				'display': ''
 			});
 		}
-		if (nutrients[holemode][7] > 0) {
-			$('#man1').text('' + nutrients[holemode][7] + '');
-			$('#man2').text('' + nutrients[holemode][8] + '');
-			$('#man3').text('' + nutrients[holemode][9] + '');
+		if (stats.manure < 0) {
+			$('#man1').text('' + Math.ceil(stats.manure / -8) + '');
+			$('#man2').text('' + Math.ceil(stats.manure / -16) + '');
+			$('#man3').text('' + Math.ceil(stats.manure / -16) / 10 + '');
 			$('#manure').css({
 				'display': ''
 			});
@@ -145,226 +247,17 @@ window.changeNutrientQuantity = function(controlNumber) {
 				'display': ''
 			});
 		}
-		clearInterval(nutrientAddInterval);
-	} else if ((controlNumber === 0) || (nutrients[holemode].length === 0)) {
-		$('#growth').css({
-			'display': 'none'
-		});
-		$('#growthnone').css({
-			'display': ''
-		});
-		$('#compost').css({
-			'display': 'none'
-		});
-		$('#compostnone').css({
-			'display': ''
-		});
-		$('#manure').css({
-			'display': 'none'
-		});
-		$('#manurenone').css({
-			'display': ''
-		});
-		clearInterval(nutrientAddInterval);
-	}
 };
 
-var soil4 = [];
-for (var i = 0; i < 4; i++) {
-	soil4[i] = 'None';
+window.addPlant = function(plant) {
+	soil[holemode].add(plant);
+	changeNutrientQuantity();
 }
-
-var soil9 = [];
-for (var i = 0; i < 9; i++) {
-	soil9[i] = 'None';
-}
-
-var soil16 = [];
-for (var i = 0; i < 16; i++) {
-	soil16[i] = 'None';
-}
-
-window.nutrientCalc4Add = function(plant) {
-	clearTimeout(nutrientTimer);
-	for (var i = 0; i < 4; i++) {
-		if (soil4[i] == 'None') {
-			var imageUrl = $('#' + plant + '_planted').attr('data-src');
-			$('#soil_4_' + i).css({
-				"background": "url(" + imageUrl + ") 100% 100% no-repeat"
-			});
-			$('#soil_4_' + i).css({
-				"background-size": "contain"
-			});
-			$('#soil_4_' + i).css({
-				"padding-top": "5em"
-			});
-			soil4[i] = plant;
-			break;
-		}
-	}
-	nutrientTimer = setTimeout(nutrientLuaCall4, 500);
-};
-
-window.nutrientCalc9Add = function(plant) {
-	clearTimeout(nutrientTimer);
-	for (var i = 0; i < 9; i++) {
-		if (soil9[i] == 'None') {
-			var imageUrl = $('#' + plant + '_planted').attr('data-src');
-			$('#soil_9_' + i).css({
-				"background": "url(" + imageUrl + ") 100% 100% no-repeat"
-			});
-			$('#soil_9_' + i).css({
-				"background-size": "contain"
-			});
-			$('#soil_9_' + i).css({
-				"padding-top": "5em"
-			});
-			soil9[i] = plant;
-			break;
-		}
-	}
-	nutrientTimer = setTimeout(nutrientLuaCall9, 500);
-};
-
-window.nutrientCalc16Add = function(plant) {
-	clearTimeout(nutrientTimer);
-	for (var i = 0; i < 16; i++) {
-		if (soil16[i] == 'None') {
-			var imageUrl = $('#' + plant + '_planted').attr('data-src');
-			$('#soil_16_' + i).css({
-				"background": "url(" + imageUrl + ") 100% 100% no-repeat"
-			});
-			$('#soil_16_' + i).css({
-				"background-size": "contain"
-			});
-			$('#soil_16_' + i).css({
-				"padding-top": "5em"
-			});
-			soil16[i] = plant;
-			break;
-		}
-	}
-	nutrientTimer = setTimeout(nutrientLuaCall16, 500);
-};
-
-window.removePlant4 = function(i) {
-	clearTimeout(nutrientTimer);
-	soil4[i] = 'None';
-	nutrientTimer = setTimeout(nutrientLuaCall4, 500);
-	$('#soil_4_' + i).css({
-		"background-image": ""
-	});
-	$('#soil_4_' + i).css({
-		"padding-top": ""
-	});
-};
-
-window.removePlant9 = function(i) {
-	clearTimeout(nutrientTimer);
-	soil9[i] = 'None';
-	nutrientTimer = setTimeout(nutrientLuaCall9, 500);
-	$('#soil_9_' + i).css({
-		"background-image": ""
-	});
-	$('#soil_9_' + i).css({
-		"padding-top": ""
-	});
-};
-
-window.removePlant16 = function(i) {
-	clearTimeout(nutrientTimer);
-	soil16[i] = 'None';
-	nutrientTimer = setTimeout(nutrientLuaCall16, 500);
-	$('#soil_16_' + i).css({
-		"background-image": ""
-	});
-	$('#soil_16_' + i).css({
-		"padding-top": ""
-	});
-};
 
 window.removePlantAll = function() {
-	clearTimeout(nutrientTimer);
-	if (holemode == 4) {
-		for (var l = 0; l < 4; l++) {
-			soil4[i] = 'None';
-			$('#soil_4_' + l).css({
-				"background-image": ""
-			});
-			$('#soil_4_' + l).css({
-				"padding-top": ""
-			});
-		}
-	} else if (holemode == 9) {
-		for (var k = 0; k < 9; k++) {
-			soil9[i] = 'None';
-			$('#soil_9_' + k).css({
-				"background-image": ""
-			});
-			$('#soil_9_' + k).css({
-				"padding-top": ""
-			});
-		}
-	} else if (holemode == 16) {
-		for (var x = 0; x < 16; x++) {
-			soil16[i] = 'None';
-			$('#soil_16_' + x).css({
-				"background-image": ""
-			});
-			$('#soil_16_' + x).css({
-				"padding-top": ""
-			});
-		}
-	}
-	delete nutrients[holemode];
-	changeNutrientQuantity(0);
+	soil[holemode].removeAll()
+	changeNutrientQuantity();
 };
 
-window.nutrientLuaCall4 = function() {
-	delete nutrients[holemode];
-	var api = new mw.Api();
-	api.get({
-		action: 'expandtemplates',
-		text: '{{#invoke:Nutrients|nutrients4|' + soil4[0] + '|' + soil4[1] + '|' + soil4[2] + '|' + soil4[3] + '}}'
-	}).done(function(data) {
-		nutrients['4'] = data.expandtemplates['*'];
-		return nutrients['4'];
-	});
-	nutrientAddInterval = setInterval(changeNutrientQuantity, 700, 1);
-};
-
-window.nutrientLuaCall9 = function() {
-	delete nutrients[holemode];
-	var api = new mw.Api();
-	api.get({
-		action: 'expandtemplates',
-		text: '{{#invoke:Nutrients|nutrients9|' + soil9[0] + '|' + soil9[1] + '|' + soil9[2] + '|' + soil9[3] + '|' + soil9[4] + '|' + soil9[5] + '|' + soil9[6] + '|' + soil9[7] + '|' + soil9[8] + '}}'
-	}).done(function(data) {
-		nutrients['9'] = data.expandtemplates['*'];
-		return nutrients['9'];
-	});
-	nutrientAddInterval = setInterval(changeNutrientQuantity, 700, 1);
-};
-
-window.nutrientLuaCall16 = function() {
-	delete nutrients[holemode];
-	var api = new mw.Api();
-	api.get({
-		action: 'expandtemplates',
-		text: '{{#invoke:Nutrients|nutrients16|' + soil16[0] + '|' + soil16[1] + '|' + soil16[2] + '|' + soil16[3] + '|' + soil16[4] + '|' + soil16[5] + '|' + soil16[6] + '|' + soil16[7] + '|' + soil16[8] + '|' + soil16[9] + '|' + soil16[10] + '|' + soil16[11] + '|' + soil16[12] + '|' + soil16[13] + '|' + soil16[14] + '|' + soil16[15] + '}}'
-	}).done(function(data) {
-		nutrients['16'] = data.expandtemplates['*'];
-		return nutrients['16'];
-	});
-	nutrientAddInterval = setInterval(changeNutrientQuantity, 700, 1);
-};
-
-window.nutrientBoofer = function(plant) {
-	if (holemode == 4) {
-		nutrientCalc4Add(plant);
-	} else if (holemode == 9) {
-		nutrientCalc9Add(plant);
-	} else {
-		nutrientCalc16Add(plant);
-	}
-};
+break;
+}

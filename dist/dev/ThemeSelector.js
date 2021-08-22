@@ -51,13 +51,16 @@ $(function() {
 			});
 		}
 		
-		$('link[href*="/load.php"][href*=".brand."]').attr('href', function(i, v) {
-			return v.replace(extRegExp, function(m, p1) {
-				return newTheme + '.css' + p1;
+		if ((newTheme === 'dark') != mw.config.get('isDarkTheme')) {
+			$('link[href*="/load.php"][href*=".brand."]').attr('href', function(i, v) {
+				return v.replace(extRegExp, function(m, p1) {
+					return newTheme + '.css' + p1;
+				});
 			});
-		});
-		$('body').removeClass('theme-fandomdesktop-light theme-fandomdesktop-dark')
-			.addClass('theme-fandomdesktop-' + newTheme);
+			$('body').removeClass('theme-fandomdesktop-light theme-fandomdesktop-dark')
+				.addClass('theme-fandomdesktop-' + newTheme);
+			mw.config.set('isDarkTheme', newTheme === 'dark');
+		}
 	}
 	
 	$.when(
@@ -142,7 +145,7 @@ $(function() {
 				+ '<use height="12" width="12" xlink:href="#wds-icons-sun-small">'
 				+ '</use><use y="6" x="-18" height="12" width="12" style="transform:'
 				+ ' rotateY(180deg);" xlink:href="#wds-icons-moon-small"></use></svg>',
-			gui, running;
+			gui, running, insert;
 		
 		//insert a small about of CSS
 		importArticles({
@@ -230,10 +233,12 @@ $(function() {
 			);
 		}
 		
-		gui.appendTo('#ThemeSelector-wrapper' + (window.ThemeSelector.addSticky
-			? ', .fandom-sticky-header' : '')).append($('<a class="wds-button wds-is-secondary"'
-			+ ' title="' + i18n.save.escape() + '"></a>').append(iconSetPreference)
-			.click(function() {
+		insert = window.ThemeSelector.insertAfter ? gui.insertAfter.bind(gui)
+			: gui.insertBefore.bind(gui);
+		
+		insert((window.ThemeSelector.addSticky ? '' : '#ThemeSelector-wrapper ')
+			+ '.wiki-tools').append($('<a class="wds-button wds-is-secondary" title="'
+			+ i18n.save.escape() + '"></a>').append(iconSetPreference).click(function() {
 			if (running) return;
 			running = true;
 			var theme = themes.current === 'user' ? themes.user : themes.current;

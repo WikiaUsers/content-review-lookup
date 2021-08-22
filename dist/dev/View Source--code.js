@@ -134,6 +134,7 @@
         tabber: 'https://community.fandom.com/wiki/Help:Tabber',
         tabview: 'https://community.fandom.com/wiki/Help:Tab_view',
         tangler: 'https://community.fandom.com/wiki/Help:Video',
+        templatedata: 'https://www.mediawiki.org/wiki/Extension:TemplateData',
         timeline: 'https://www.mediawiki.org/wiki/Extension:Timeline',
         twitter: 'https://community.fandom.com/wiki/Help:Social_media_integration#Adding_a_Twitter_timeline',
         verbatim: 'https://community.fandom.com/wiki/Help:Verbatim_tags',

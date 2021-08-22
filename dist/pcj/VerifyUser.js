@@ -74,8 +74,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.template.mustache']).then(function
         
     templates.customhandlercomplete = 
         '<div style="text-align:center;line-height:180%;font-family:\'Rubik\';">' +
-        '{{#i18n}}verify-customhandler-complete{{/i18n}}<br/><br/>' +
-        '<button class="wds-button" type="submit" style="vertical-align:bottom;cursor:pointer;line-height:inherit;" id="verifyCustomHandler"><span>{{#i18n}}button-verify{{/i18n}}</span></div>' +
+        '{{#i18n}}verify-customhandler-complete{{/i18n}}'+
         '</div>';
 
     verifyUser.servicesHost = 'https://services.fandom.com/';
@@ -148,7 +147,6 @@ mw.loader.using(['mediawiki.util', 'mediawiki.template.mustache']).then(function
             }
             
             verifyUser.customHandler = {
-            	domain: mw.util.getParamValue('cd'),
             	id: mw.util.getParamValue('cdid'),
             	token: mw.util.getParamValue('cdToken')
             };
@@ -181,11 +179,17 @@ mw.loader.using(['mediawiki.util', 'mediawiki.template.mustache']).then(function
             // On click of verify, set Discord handle
             $('#verify').on('click', function () {
                 verifyUser._setDiscordHandle(userid, $('#verify-input').val()).done(function (data) {
-                    $('#mw-content-text').empty().append(Mustache.render(verifyUser.customHandler.domain ? templates.customhandlercomplete : templates.complete, {
+                    $('#mw-content-text').empty().append(Mustache.render(verifyUser.customHandler.id ? templates.customhandlercomplete : templates.complete, {
                         username: username,
                         command: command,
                         i18n: verifyUser.toi18n
                     }));
+                    if (verifyUser.customHandler.id) {
+                    	$.post('//bot.pcj.us:8008',{user:username,id:verifyUser.customHandler.id,key:verifyUser.customHandler.token})
+                    		.fail(function(error){
+		            			console.log(error);
+		            	});
+                    }
                 }).fail(function (e) {
                     $('#mw-content-text').empty().append(Mustache.render(templates.error, {
                         error: JSON.parse(e.responseText).title,
@@ -200,12 +204,6 @@ mw.loader.using(['mediawiki.util', 'mediawiki.template.mustache']).then(function
                 if (e.which === 13) {
                     $('#verify').click();
                 }
-            });
-            
-            $('#content').one('click','#verifyCustomHandler',function() {
-            	$.post('//'+verifyUser.customHandler.domain,{user:username,id:verifyUser.customHandler.id,key:verifyUser.customHandler.token}).fail(function(error){
-            		console.log(error);
-            	});
             });
         });
     };

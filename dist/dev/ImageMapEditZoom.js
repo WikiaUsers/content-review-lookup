@@ -70,12 +70,17 @@
                 original.splice(parseInt(removed[0].removedNodes[0].id
                     .match(id_regexp)[1]), 1);
             } else if (added.length) {
-                original.push({
-                    zoom: zoom,
-                    left: added[0].addedNodes[0].style.left,
-                    top: added[0].addedNodes[0].style.top,
-                    width: added[0].addedNodes[0].style.width,
-                    height: added[0].addedNodes[0].style.height
+                added.forEach(function (val1) {
+                    Array.prototype.slice.call(val1.addedNodes)
+                        .forEach(function (val2) {
+                        original[parseInt(val2.id.match(id_regexp)[1])] = {
+                            zoom: zoom,
+                            left: val2.style.left,
+                            top: val2.style.top,
+                            width: val2.style.width,
+                            height: val2.style.height
+                        };
+                    });
                 });
             } else if ((records[0].type == "attributes")
                 && (records[0].target.parentElement == preview)

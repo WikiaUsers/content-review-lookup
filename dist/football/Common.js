@@ -61,7 +61,7 @@ $(addPageBottom);
 
 var newElement = [
  '<section class="2022FIFAWorldCupGradient module">',
- '   <h1><a href="https://football.fandom.com/wiki/2022_FIFA_World_Cup">2022 FIFA World Cup1</a></h1>',
+ '   <h1><a href="https://football.fandom.com/wiki/2022_FIFA_World_Cup">2022 FIFA World Cup</a></h1>',
  '   <div id=features style="margin-top: -16px; padding: 0; width: 100%;">',
  '         <tr style="line-height: 15px; text-align: center; font-size: 14px;">',
  '            <td>',

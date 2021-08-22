@@ -11,20 +11,14 @@ window.ajaxSpecialPages = [
 /* CacheCheck */
 window.topLevelCat = 'Tensei Shitara Slime datta ken Wiki';
  
-/* RailWAM */
-window.railWAM = {
-    autoLogForUsers: 'User:Toji-san',
-    logPage: 'Project:WAM Log'
-};
- 
-/* UploadInPage */
-window.needsLicense = true;
- 
 /* Imports */
 importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:AddRailModule/code.js',
+        'u:dev:MediaWiki:AjaxAbuseLog.js',
+        'u:dev:MediaWiki:AjaxRedirect/code.js',
+        'u:dev:MediaWiki:AutoPurge/code.js',
         'u:dev:MediaWiki:AjaxRC/code.js',
         'u:dev:MediaWiki:CacheCheck/code.js',
         'u:dev:MediaWiki:DiscussionsActivity/code.js',
@@ -34,8 +28,5 @@ importArticles({
         'u:dev:MediaWiki:ListFiles/code.js',
         'u:dev:MediaWiki:MarkBlocked.js',
         'u:dev:MediaWiki:PurgeButton/code.js',
-        'u:dev:MediaWiki:RailWAM/code.js',
-        'u:dev:MediaWiki:UploadInPage/code.js',
-        'u:dev:MediaWiki:WallGreetingButton/code.js'
     ]
 });

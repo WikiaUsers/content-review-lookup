@@ -30,6 +30,6 @@ if ( mw.config.get( 'wgNamespaceNumber' ) === 0
 		}
 
 		document.title = text_sz_to_ss( document.title );
-		node_sz_to_ss( $( '.mw-body' ).get(0) ); //with firstHeader, sitenotice and so on
+		node_sz_to_ss( $( '.page-content' ).get(0) ); //with firstHeader, sitenotice and so on
 	});
 }

@@ -1,4 +1,4 @@
-!(function( $, mw ) {
+!(function( mw ) {
 	"use strict";
 	if ( mw.config.get('wgPageName') !== 'Save-Generator' ) return;
 	var SG;
@@ -719,5 +719,5 @@
 	};
 	console.log(SG);
 	window.SG = SG;
-	$(SG.init);
-})( this.jQuery, this.mediaWiki );
+	SG.init();
+})( this.mediaWiki );

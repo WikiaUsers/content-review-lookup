@@ -199,7 +199,7 @@
          * @return {string} Content of the widget
          */
         generateContent: function(config) {
-            if (!config.id || !config.id.match(/\d{17,19}/)) {
+            if (!config.id || !String(config.id).match(/\d{17,19}/)) {
                 return this.i18n.msg('error').parse();
             }
             if (

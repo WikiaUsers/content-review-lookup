@@ -17,7 +17,7 @@ $(document).ready(function()
 	// случайный пункт из списка ссылок
 	iImgIndex= Math.floor( Math.random() * 17);
 	// смена фона страницы
-    $('body.skin-oasis').addClass("BodyImg"+iImgIndex);
+    $('body').addClass("BodyImg"+iImgIndex);
     
     $('div.mw-editinginterface, div.mw-newarticletext, div.warningbox, div.mw-warning-with-logexcerpt').click(function()
 	{

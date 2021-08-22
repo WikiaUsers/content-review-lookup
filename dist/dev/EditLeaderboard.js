@@ -1,19 +1,17 @@
 /**
  * Name:		EditLeaderboard
- * Version:		v1.0
+ * Version:		v1.1
  * Author:		Caburum
  * Description:	Creates a leaderboard based on edit count at Special:Leaderboard
  *				Useful for wikis not using the achievements extension
 **/
 
 (function() {
-	var wg = mw.config.get([
-		'wgCanonicalSpecialPageName',
-		'wgNamespaceNumber'
-	]);
-
-	if (wg.wgNamespaceNumber != -1 || wg.wgCanonicalSpecialPageName != 'Leaderboard' || window.EditLeaderboardLoaded) return;
+	if (window.EditLeaderboardLoaded) return; // Double load protection
 	window.EditLeaderboardLoaded = true;
+
+	var page = mw.config.get('wgCanonicalSpecialPageName');
+	if (!['Leaderboard', 'Specialpages'].includes(page)) return; // Not Special:Leaderboard or Special:SpecialPages
 
 	mw.util.addCSS('\
 		#EditLeaderboard {\
@@ -38,6 +36,16 @@
 			return new mw.Api().loadMessagesIfMissing(['fandom-pagetitle', 'leaderboard-title', 'achievements-leaderboard-rank-label', 'listusers-username', 'listusersrev-cnt']);
 		})
 		.then(function() {
+			if (page === 'Specialpages') { // Add a link on Special:SpecialPages then exit
+				var link = mw.config.get('wgFormattedNamespaces')[-1] + ':Leaderboard';
+				return $('<a>', {
+					text: mw.msg('leaderboard-title'),
+					title: link,
+					href: mw.util.getUrl(link),
+					appendTo: $('<li>').appendTo($('#mw-specialpagesgroup-other + div.mw-specialpages-list ul'))
+				});
+			}
+
 			var api = new mw.Api(),
 				$contentContainer = $('#content'),
 				$pageTitle = $('.page-header__title'),
@@ -53,6 +61,8 @@
 				$tableBody = $('<tbody></tbody>');
 
 			$contentContainer.empty(); // Remove already existing content
+			$pageTitle.text(mw.msg('leaderboard-title'));
+			$(document).prop('title', mw.msg('fandom-pagetitle', mw.msg('leaderboard-title')));
 
 			api.get({
 				action: 'listuserssearchuser',
@@ -75,7 +85,5 @@
 			});
 
 			$contentContainer.append($table.append($tableBody));
-			$pageTitle.text(mw.msg('leaderboard-title'));
-			$(document).prop('title', mw.msg('fandom-pagetitle', mw.msg('leaderboard-title')));
 		});
 })();

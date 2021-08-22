@@ -37,6 +37,7 @@
  * whether or not to proceed even if there was an error with notification retrieval
  * whether or not to try to retrieve complete lists of users for notifications
  * maximum number of notifications to retrieve per request to the service
+ * maximum number of requests sent to the service
  * whether or not to auto-convert settings from AnnouncementsIgnore
  * AnnouncementsIgnore settings
  * timestamp to generate unique IDs for notification requests
@@ -87,6 +88,11 @@
     var ignore_errors = !!window.andrewds1021.ignore_notifications.ignore_errors;
     var all_users = !!window.andrewds1021.ignore_notifications.all_users;
     var limit = window.andrewds1021.ignore_notifications.limit;
+    if ((typeof limit != "number") || !isFinite(limit) || (limit < 1)
+        || (limit > 50)) limit = undefined;
+    var page_count = window.andrewds1021.ignore_notifications.page_count;
+    if ((typeof page_count != "number") || isNaN(page_count) || (page_count < 0))
+        page_count = undefined;
     var convert = !window.andrewds1021.ignore_notifications.no_conversion;
     var ai_settings = window.announcementsIgnore;
     var timestamp = Date.now();
@@ -534,7 +540,7 @@
         });
     }
     
-/* functions to request and recieve notifications */
+/* functions to request and receive notifications */
     
     function getNotifications() {
         if (running) return;
@@ -542,7 +548,8 @@
         timestamp = Date.now();
         var info = {
             id: "andrewds1021.ignore_notifications." + timestamp,
-            limit: limit
+            limit: limit,
+            page_count: page_count
         };
         if (all_users) info.mode = "user";
         mw.hook("andrewds1021.get_on_site_notifications.run").fire(Object.freeze(info));
@@ -561,7 +568,12 @@
 /* function for initial run */
     
     function firstRun(notifs, info) {
-        if (((info.counter === 0) && (!all_users || (info.mode !== "notification")))
+        if (((info.counter === 0) && (!all_users || (info.mode !== "notification"))
+            && ((info.types.length >= notif_types.length)
+            && notif_types.every(function (val1) {
+                return info.types.indexOf(val1) != -1;
+            })) && (!limit || !page_count
+            || (((info.limit || 50) * info.page_count) >= (limit * page_count))))
             || (info.id === "andrewds1021.ignore_notifications." + timestamp)) {
             running = true;
             timestamp = Date.now();

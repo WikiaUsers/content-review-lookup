@@ -67,31 +67,7 @@ mw.hook( 'wikipage.content' ).add( function() {
 	}
 } );
 
-/**
- * Moduł ResourceLoadera dodający hook wykonywany po załadowaniu prawego panelu
- * Potrzebny do skryptów osadzanych w treści prawego panelu wiki
- */
-mw.loader.implement( 'custom.righRailHook', function() {
-	// Prawy panel nie istnieje, zakończ
-	if ( !document.querySelector( '.page__right-rail' ) ) {
-		return;
-	}
-
-	// Opóźnienie wynosi 150ms
-	const intervalDelay = 150;
-
-	// Zarejestruj interwał nasłuchujący istnienia panelu
-	const rightRailInterval = setInterval( function() {
-		// Panel został załadowany
-		if ( !!document.querySelector( '.sticky-modules-wrapper' ) ) {
-			// Usuń interwał
-			clearInterval( rightRailInterval );
-
-			// Wykonaj hook
-			mw.hook( 'custom.rightRail.loaded' ).fire(
-				// Zwróć callback z zawartością panelu
-				document.querySelector( '.right-rail-wrapper' )
-			);
-		}
-	}, intervalDelay );
+importArticle( {
+	type: 'script',
+	article: 'MediaWiki:SocialMedia.js'
 } );

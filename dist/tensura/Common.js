@@ -21,6 +21,27 @@ window.pPreview.RegExp.iparents = [
     '.char-element'
 ];
 
+// Prepare custom messages for NoLicenseWarning
+window.dev = window.dev || {};
+window.dev.i18n = window.dev.i18n || {};
+window.dev.i18n.overrides = window.dev.i18n.overrides || {};
+window.dev.i18n.overrides['NoLicenseWarning'] = window.dev.i18n.overrides['NoLicenseWarning'] || {};
+
+// Add custom content instead of default messages
+window.dev.i18n.overrides['NoLicenseWarning']['warning-text'] = 'You are trying to upload a file to {{SITENAME}} without selecting any license. Please do be infromed that any unlicensed file may be removed. ';
+window.dev.i18n.overrides['NoLicenseWarning']['rejected-text'] = 'Your file has been rejected from {{SITENAME}}. Please contanct a moderator for further assistance.  ';
+
+// Configuration for NoLicenseWarning
+window.NoLicenseWarning = {
+    forceLicense: true,
+    excludedGroups: [
+        'sysop',
+        'threadmoderator',
+        'content-moderator',
+        'bot'
+    ]
+};
+
 // User tags
 window.UserTagsJS = {
     tags: {

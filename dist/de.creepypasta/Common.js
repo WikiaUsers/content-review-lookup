@@ -12,6 +12,13 @@ $(document).ready(function() {
 });
 }
 
+// TODO: Hacky copy from function below, do properly at some point. Or don't.
+    if(!(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null)) {
+       $("span.insertusername").text(wgUserName);
+    }
+// END OF TODO
+
+
 /** Archive edit tab disabling *************************************
  * Disables the edit tab on old forum topic pages to stop new people bumping old topics.
  * Page can still be edited by going via the edit tab on the history etc, or by 

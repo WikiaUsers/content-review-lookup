@@ -1,4 +1,4 @@
-(function() {
+$(function() {
     'use strict';
     if ([
             'Allpages',
@@ -77,4 +77,4 @@
     mw.hook('dev.i18n').add(
         $.proxy(AllPagesHideRedirect.preload, AllPagesHideRedirect)
     );
-})();
+});

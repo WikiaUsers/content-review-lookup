@@ -11,7 +11,14 @@ $(function() {
 	window.RecentWikiActivityDiffLoaded = true;
 
 	// Make text display on one line
-	mw.util.addCSS('.recent-wiki-activity__page-title { display: initial }');
+	mw.util.addCSS('\
+		.recent-wiki-activity__page-title { display: initial }\
+		.recent-wiki-activity .page-title {\
+			white-space: nowrap;\
+			overflow: hidden;\
+			text-overflow: ellipsis;\
+		}\
+	');
 
 	function init() {
 		$('.rail-module.recent-wiki-activity li.activity-item > .page-title').each(function(i, parent) {

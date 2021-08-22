@@ -3,8 +3,8 @@
  * @docs [[BrowserHeaderColor]]
  * @author Kofirs2634
  */
- mw.loader.using('oojs-ui', function() {
-	if (mw.config.get('skin') != 'fandomdesktop') return
+$(function() {
+ 	if (!['fandomdesktop', 'fandommobile'].includes(mw.config.get('skin'))) return
 	
 	if (window.BrowserHeaderColor) return
 	window.BrowserHeaderColor = true
@@ -16,6 +16,12 @@
 	}
 	var colors, modal
 	var modalObj
+	
+	if (mw.config.get('skin') == 'fandommobile')
+		return $('head').append($('<meta>', {
+			name: 'theme-color',
+			content: getVar('--fandom-global-nav-background-color')
+		}))
 
 	function appendTag() {
 		$('head').append($('<meta>', { name: 'theme-color' }))
@@ -76,19 +82,21 @@
 		$('#bhc-modal-wrp').append(new OO.ui.ButtonSelectWidget({ id: 'bhc-color-pick', items: items }).$element)
 	}
 
-	mw.hook('dev.modal').add(function(m) {
-		modal = m; appendTag(); initModal()
-
-		$('.page-side-tools').append($('<button>', {
-			class: 'page-side-tool',
-			id: 'bhc-config',
-			title: 'Выбрать цвет шапки браузера'
-		}).append(new OO.ui.IconWidget({ icon: 'browser' }).$element))
-		$('#bhc-config').click(function() { buildModal(); modalObj.show() })
-
-		if (!localStorage.getItem('bhc-color')) localStorage.setItem('bhc-color', 'body')
+	mw.loader.using('oojs-ui', function() {
+		mw.hook('dev.modal').add(function(m) {
+			modal = m; appendTag(); initModal()
+	
+			$('.page-side-tools').append($('<button>', {
+				class: 'page-side-tool',
+				id: 'bhc-config',
+				title: 'Выбрать цвет шапки браузера'
+			}).append(new OO.ui.IconWidget({ icon: 'browser' }).$element))
+			$('#bhc-config').click(function() { buildModal(); modalObj.show() })
+	
+			if (!localStorage.getItem('bhc-color')) localStorage.setItem('bhc-color', 'body')
+		})
+	
+		importArticle({ type: 'script', article: 'u:dev:MediaWiki:Modal.js' })
+		importArticle({ type: 'style', article: 'u:ru.koffee:MediaWiki:BrowserHeaderColor.css' })
 	})
-
-	importArticle({ type: 'script', article: 'u:dev:MediaWiki:Modal.js' })
-	importArticle({ type: 'style', article: 'u:ru.koffee:MediaWiki:BrowserHeaderColor.css' })
-})
+});

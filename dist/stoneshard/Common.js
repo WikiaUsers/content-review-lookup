@@ -12,3 +12,24 @@ function resizeAllTableImages() {
 mw.hook('wikipage.content').add(function () {
     resizeAllTableImages();
 });
+
+//Automatically expand pages to full-width and hide right bar on FandomDesktop by default
+$(function() {
+    if( !$('body.skin-fandomdesktop').length ){
+        return;
+    }
+    //common.js is loaded BEFORE skin.fandomdesktop.js module.
+    mw.loader.using("skin.fandomdesktop.js").then(function(){
+        if( !$('.is-content-expanded').length ){
+            if( ((mw.config.get("wgUserName") === null) ? localStorage.contentwidth : mw.user.options.get('contentwidth')) !== "collapsed"){
+                $("button.content-size-toggle").click();
+            }
+        }
+        if( !$('aside.page__right-rail.is-rail-hidden').length ){
+            if( (mw.config.get("wgUserName") !== null) && (mw.user.options.get('rightrailvisible') !== "visible") ){
+                $("button.right-rail-toggle").click();
+            }
+        }
+    });
+    
+});

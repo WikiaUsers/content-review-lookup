@@ -98,3 +98,43 @@ $(addAjaxDisplayLink);
          $box.toggleClass('collapsed');
       });
    }
+
+
+// Recipe finder functionality - by Philo04
+if(wgPageName == "Calamity_Mod_Wiki:Recipe_Finder"){
+	var RecipeFinderSearchBox = $("<input>")
+		.addClass("mw-inputbox-input mw-ui-input mw-ui-input-inline")
+		.css("vertical-align", "top")
+		.attr("id", "RecipeFinderSearchInput")
+		.attr("autocomplete", "off");
+	var RecipeFinderSearchButton = $("<button>")
+		.addClass("mw-ui-button mw-ui-progressive")
+		.attr("id", "RecipeFinderSearchButton")
+		.attr("title", "Search")
+		.append("Search");
+	$("#RecipeFinderInput").append(RecipeFinderSearchBox, RecipeFinderSearchButton);
+
+	function FindRecipes(){
+		var RecipeFinderSearchQuery = $("#RecipeFinderSearchInput").val().trim();
+		new mw.Api().get({
+			action: "parse",
+			text: "{{#if:{{recipes/exist|ingredient=" + RecipeFinderSearchQuery + "}}|{{recipes|ingredient=" + RecipeFinderSearchQuery + "|title={{item|" + RecipeFinderSearchQuery.replace(/^#/, "") + "|note=({{recipes/count|ingredient=" + RecipeFinderSearchQuery + "}} recipes)}}}}|<span style=\"color:red;font-weight:bold;\">Recipes: No result</span>}}",
+			disablelimitreport: true,
+			format: "json"
+		}).then(function(data){
+			$("#RecipeFinderOutput").empty();
+			$("#RecipeFinderOutput").append(data.parse.text['*']);
+			mw.loader.using(["jquery.tablesorter"], function(){// have to load separately to make the table sortable
+				$("#RecipeFinderOutput table.sortable").tablesorter();
+			});
+		});
+	}
+
+	$("#RecipeFinderSearchButton").on("click", FindRecipes);
+	
+	$("#RecipeFinderSearchInput").on("keyup", function(event){
+		if(event.key == "Enter"){
+			FindRecipes();
+		}
+	});
+}

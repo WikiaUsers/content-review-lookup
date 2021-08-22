@@ -55,7 +55,7 @@ if (wgNamespaceNumber > -1) {
     else {
     	edittopHTML = '<span class="mw-editsection">' +
     	'<span class="mw-editsection-bracket">[ </span>' +
-		'<a href="?action=edit&amp;section=0" title="' + l10n('title') + '">' + l10n('edit') + '</a>' +
+		'<a href="/index.php?title=' + wgPageName + '&amp;action=edit&amp;section=0" title="' + l10n('title') + '">' + l10n('edit') + '</a>' +
     	'<span class="mw-editsection-bracket"> ]</span>' +
 		'</span>';
     }

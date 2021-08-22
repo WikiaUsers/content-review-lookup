@@ -71,7 +71,7 @@ var Global =  (function () {
             tButton.style.cssText = "float:right;";
         }
     };
-    Global.version = "2.15i";
+    Global.version = "2.16";
     Global.lastVersionDateString = "Nov 2 2020 00:00:00 GMT";
     Global.config = mw.config.get([
         "skin",
@@ -115,7 +115,7 @@ var Global =  (function () {
 }());
 exports["default"] = Global;
 
-},{"./Utils":13}],2:[function(require,module,exports){
+},{"./Utils":14}],2:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Utils_1 = require("./Utils");
@@ -374,7 +374,7 @@ function modalLinkButton(text, event, link) {
     return { text: i18n_1["default"](text), event: event, callback: function () { window.open(link, '_blank'); } };
 }
 
-},{"./Global":1,"./RCData":4,"./RCMModal":9,"./Utils":13,"./i18n":15}],3:[function(require,module,exports){
+},{"./Global":1,"./RCData":4,"./RCMModal":10,"./Utils":14,"./i18n":16}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var RCMManager_1 = require("./RCMManager");
@@ -429,7 +429,7 @@ var Main =  (function () {
         tDataset = null;
         tFirstWrapper = null;
         var tLoadPromises = [];
-        Utils_1["default"].newElement("link", { rel: "stylesheet", type: "text/css", href: "/load.php?mode=articles&articles=u:dev:MediaWiki:RecentChangesMultiple.css&only=styles" }, document.head);
+        Utils_1["default"].newElement("link", { rel: "stylesheet", type: "text/css", href: "https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:RecentChangesMultiple.css&only=styles" }, document.head);
         tLoadPromises[tLoadPromises.length] = this.importArticles({
             type: 'script',
             articles: [
@@ -669,7 +669,7 @@ var Main =  (function () {
 }());
 exports["default"] = new Main();
 
-},{"./Global":1,"./RCMManager":8,"./RCMModal":9,"./Utils":13,"./i18n":15,"./lib/makeCollapsible":17}],4:[function(require,module,exports){
+},{"./Global":1,"./RCMManager":9,"./RCMModal":10,"./Utils":14,"./i18n":16,"./lib/makeCollapsible":18}],4:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Utils_1 = require("./Utils");
@@ -891,7 +891,65 @@ var RCData =  (function () {
 }());
 exports["default"] = RCData;
 
-},{"./Utils":13,"./i18n":15,"./types/RC_TYPE":19}],5:[function(require,module,exports){
+},{"./Utils":14,"./i18n":16,"./types/RC_TYPE":20}],5:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Utils_1 = require("./Utils");
+var RC_TYPE_1 = require("./types/RC_TYPE");
+var RCDataLog_1 = require("./RCDataLog");
+var $ = window.jQuery;
+var mw = window.mediaWiki;
+var RCDataAbuseLog =  (function (_super) {
+    __extends(RCDataAbuseLog, _super);
+    function RCDataAbuseLog(pWikiInfo, pManager) {
+        return _super.call(this, pWikiInfo, pManager) || this;
+    }
+ RCDataAbuseLog.prototype.dispose = function () {
+        _super.prototype.dispose.call(this);
+    };
+ RCDataAbuseLog.prototype.init = function (pData) {
+        if (!pData.title) {
+            pData.title = "";
+        } 
+        this.type = RC_TYPE_1["default"].LOG;
+        this.date = new Date(pData.timestamp);
+        this.userEdited =
+            /(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))/.test(pData.user)
+                || /((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])/.test(pData.user);
+        this.author = pData.user;
+        this.title = Utils_1["default"].escapeCharacters(pData.title.split("/@comment")[0]);
+        this.namespace = pData.ns;
+        this.logtype = "abuse"; 
+        this.logaction = pData.action; 
+        this.pageid = pData.id; 
+        this.isBotEdit = false; 
+        this.isMinorEdit = false; 
+        this.isPatrolled = false; 
+        this.titleNoNS = (this.namespace != 0 && this.title.indexOf(":") > -1) ? this.title.split(/:(.+)/)[1] : this.title; 
+        this.uniqueID = this.title; 
+        this.hrefTitle = Utils_1["default"].escapeCharactersLink(pData.title);
+        this.href = this.wikiInfo.articlepath + this.hrefTitle;
+        this.hrefBasic = this.href.split("/@comment")[0];
+        this.hrefFS = this.href + this.wikiInfo.firstSeperator;
+        this.actionhidden = pData.actionhidden == "";
+        this._initLog(pData, []);
+        return this; 
+    };
+    return RCDataAbuseLog;
+}(RCDataLog_1["default"]));
+exports["default"] = RCDataAbuseLog;
+
+},{"./RCDataLog":7,"./Utils":14,"./types/RC_TYPE":20}],6:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -1109,7 +1167,7 @@ var RCDataFandomDiscussion =  (function (_super) {
 }(RCData_1["default"]));
 exports["default"] = RCDataFandomDiscussion;
 
-},{"./Global":1,"./RCData":4,"./Utils":13,"./i18n":15,"./types/RC_TYPE":19}],6:[function(require,module,exports){
+},{"./Global":1,"./RCData":4,"./Utils":14,"./i18n":16,"./types/RC_TYPE":20}],7:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -1169,24 +1227,29 @@ var RCDataLog =  (function (_super) {
         else {
             tLogParams = pRCData.logparams;
         }
-        switch (this.logtype) {
+        this.logParams = { type: this.logtype };
+        switch (this.logParams.type) {
             case "move": {
-                this.log_move_newTitle = "";
+                var log_move_newTitle = "";
                 var is_log_move_noredirect = false;
                 if (this.wikiInfo.useOutdatedLogSystem == false) {
                     if (tLogParams) {
-                        this.log_move_newTitle = Utils_1["default"].escapeCharacters(tLogParams.target_title);
+                        log_move_newTitle = Utils_1["default"].escapeCharacters(tLogParams.target_title);
                         is_log_move_noredirect = tLogParams.suppressredirect == "";
                     }
                 }
                 else {
                     tLogParams = tLogParams.move;
                     if (tLogParams) {
-                        this.log_move_newTitle = Utils_1["default"].escapeCharacters(tLogParams.new_title);
+                        log_move_newTitle = Utils_1["default"].escapeCharacters(tLogParams.new_title);
                         is_log_move_noredirect = tLogParams.suppressedredirect == "";
                     }
                 }
-                this.log_move_noredirect = is_log_move_noredirect ? "-noredirect" : "";
+                this.logParams = {
+                    type: "move",
+                    noredirect: is_log_move_noredirect ? "-noredirect" : "",
+                    newTitle: log_move_newTitle,
+                };
                 break;
             }
             case "rights": {
@@ -1295,17 +1358,45 @@ var RCDataLog =  (function (_super) {
                 }
                 break;
             }
+            case "abusefilter": {
+                this.logParams = {
+                    type: "abusefilter",
+                    historyId: tLogParams.historyId,
+                    newId: tLogParams.newId,
+                };
+                break;
+            }
+            case "abuse": {
+                this.logParams = {
+                    type: "abuse",
+                    result: pRCData.result,
+                    filter: pRCData.filter,
+                    filter_id: pRCData.filter_id,
+                };
+                break;
+            }
+            case "contentmodel": {
+                this.logParams = {
+                    type: "contentmodel",
+                    oldmodel: tLogParams.oldmodel,
+                    newmodel: tLogParams.newmodel,
+                };
+                break;
+            }
         }
         tLogParams = null;
     };
     RCDataLog.prototype.logTitleLink = function () {
-        return "(<a class='rc-log-link' href='" + this.wikiInfo.articlepath + "Special:Log/" + this.logtype + "'>" + this.logTitle() + "</a>)";
+        var logPage = this.logtype === "abuse" ? "Special:AbuseLog" : "Special:Log/" + this.logtype;
+        return "(<a class='rc-log-link' href='" + this.wikiInfo.articlepath + logPage + "'>" + this.logTitle() + "</a>)";
     };
     RCDataLog.prototype.logTitle = function () {
         switch (this.logtype) {
+            case "abuse": return i18n_1["default"]("abuselog");
             case "abusefilter": return i18n_1["default"]("abusefilter-log");
             case "block": return i18n_1["default"]("blocklogpage");
             case "chatban": return i18n_1["default"]("chat-chatban-log");
+            case "contentmodel": return i18n_1["default"]("log-name-contentmodel");
             case "delete": return i18n_1["default"]("dellogpage");
             case "import": return i18n_1["default"]("importlogpage");
             case "merge": return i18n_1["default"]("mergelog");
@@ -1321,12 +1412,13 @@ var RCDataLog =  (function (_super) {
         }
     };
     RCDataLog.prototype.logActionText = function () {
+        var _this = this;
         var tLogMessage = "";
         if (this.actionhidden) {
             tLogMessage = "<span class=\"history-deleted\">" + i18n_1["default"]("rev-deleted-event") + "</span>";
             tLogMessage += this.getSummary();
         }
-        switch (this.logtype) {
+        switch (this.logParams.type) {
             case "block": {
                 tLogMessage += this.userDetails() + " ";
                 switch (this.logaction) {
@@ -1370,8 +1462,8 @@ var RCDataLog =  (function (_super) {
                 break;
             }
             case "move": {
-                tLogMessage += i18n_1["default"](("logentry-move-" + this.logaction + (this.log_move_noredirect || "" )), this.userDetails(), undefined, 
-                "<a href='" + this.hrefFS + "redirect=no'>" + this.title + "</a>", "<a href='" + (this.wikiInfo.articlepath + Utils_1["default"].escapeCharactersLink(this.log_move_newTitle)) + "'>" + this.log_move_newTitle + "</a>");
+                tLogMessage += i18n_1["default"](("logentry-move-" + this.logaction + (this.logParams.noredirect || "" )), this.userDetails(), undefined, 
+                "<a href='" + this.hrefFS + "redirect=no'>" + this.title + "</a>", "<a href='" + (this.wikiInfo.articlepath + Utils_1["default"].escapeCharactersLink(this.logParams.newTitle)) + "'>" + this.logParams.newTitle + "</a>");
                 break;
             }
             case "protect": {
@@ -1458,6 +1550,73 @@ var RCDataLog =  (function (_super) {
                 tChatData = null;
                 break;
             }
+            case "abusefilter": {
+                var _a = this.logParams, filterId = _a.newId, historyId = _a.historyId;
+                this.wikiInfo.needsAbuseFilterFilters = true;
+                switch (this.logaction) {
+                    case "create":
+                    case "modify":
+                        {
+                            tLogMessage += i18n_1["default"]("abusefilter-logentry-" + this.logaction, this.userDetails(), undefined, 
+                            undefined, "<a href='" + this.href + "'>" + this.title + "</a>", "<a href='" + this.wikiInfo.getUrl("Special:AbuseFilter/history/" + filterId + "/diff/prev/" + historyId) + "'>" + i18n_1["default"]("abusefilter-log-detailslink") + "</a>");
+                            break;
+                        }
+                }
+                break;
+            }
+            case "abuse": {
+                var _b = this.logParams, result = _b.result, filter_1 = _b.filter, filter_id = _b.filter_id;
+                var filterFromDesc_1 = { found: 0 };
+                if (filter_1.trim() != "") {
+                    Object.keys(this.wikiInfo.abuseFilterFilters).forEach(function (i) {
+                        if (_this.wikiInfo.abuseFilterFilters[i].description == filter_1) {
+                            filterFromDesc_1.found++;
+                            filterFromDesc_1.id = Number(i);
+                            filterFromDesc_1.private = _this.wikiInfo.abuseFilterFilters[i].private;
+                        }
+                    });
+                }
+                if (filterFromDesc_1.found !== 1) {
+                    filterFromDesc_1.id = filterFromDesc_1.private = undefined;
+                }
+                filterFromDesc_1.private = filterFromDesc_1.private !== undefined ? filterFromDesc_1.private : true; 
+                var resultString = result === ""
+                    ? i18n_1["default"]('abusefilter-log-noactions')
+                    : result.split(",").map(function (r) { return i18n_1["default"]('abusefilter-action-' + r); }).join(", ");
+                var filterIdLink = !filterFromDesc_1.private && filterFromDesc_1.id
+                    ? "<a href='" + this.wikiInfo.getUrl('Special:AbuseFilter/' + filterFromDesc_1.id) + "'>" + i18n_1["default"]('abusefilter-log-detailedentry-local', filterFromDesc_1.id) + "</a>"
+                    : i18n_1["default"]('abusefilter-log-detailedentry-local', filterFromDesc_1.id !== undefined ? filterFromDesc_1.id : "?");
+                if (this.wikiInfo.user.rights.abusefilter_log_detail) {
+                    tLogMessage = i18n_1["default"]('abusefilter-log-detailedentry-meta', undefined, this.userDetails(), filterIdLink, this.logaction, "<a href='" + this.href + "'>" + this.title + "</a>", resultString, filter_1, [
+                        "<a href='" + this.wikiInfo.getUrl("Special:AbuseLog/" + this.pageid) + "'>" + i18n_1["default"]('abusefilter-log-detailslink') + "</a>",
+                        "<a href='" + this.wikiInfo.getUrl("Special:AbuseFilter/examine/log/" + this.pageid) + "'>" + i18n_1["default"]('abusefilter-changeslist-examine') + "</a>",
+                    ].join(" | "), undefined);
+                }
+                else {
+                    tLogMessage = i18n_1["default"]('abusefilter-log-entry', undefined, this.userDetails(), this.logaction, "<a href='" + this.href + "'>" + this.title + "</a>", resultString, filter_1, undefined, undefined);
+                    if (filterFromDesc_1.id !== undefined && !filterFromDesc_1.private) {
+                        tLogMessage += " (" + filterIdLink + ")";
+                    }
+                }
+                tLogMessage = tLogMessage.replace("$1: ", "").replace("$1", "");
+                break;
+            }
+            case 'contentmodel': {
+                var _c = this.logParams, oldmodel = _c.oldmodel, newmodel = _c.newmodel;
+                switch (this.logaction) {
+                    case "new":
+                    case "change":
+                        {
+                            tLogMessage += i18n_1["default"]("logentry-contentmodel-" + this.logaction, this.userDetails(), undefined, 
+                            "<a href='" + this.href + "'>" + this.title + "</a>", oldmodel, newmodel);
+                            break;
+                        }
+                }
+                if (this.logaction == "change" && this.wikiInfo.user.rights.editcontentmodel) {
+                    tLogMessage += " (<a href='" + this.wikiInfo.getUrl('Special:ChangeContentModel', { pagetitle: this.hrefTitle, model: oldmodel, reason: i18n_1["default"]('logentry-contentmodel-change-revert') }) + "'>" + i18n_1["default"]('logentry-contentmodel-change-revertlink') + "</a>)";
+                }
+                break;
+            }
         }
         if (tLogMessage == "") {
             tLogMessage += this.userDetails() + (" ??? (" + this.logtype + " - " + this.logaction + ") ");
@@ -1478,7 +1637,7 @@ var RCDataLog =  (function (_super) {
 }(RCData_1["default"]));
 exports["default"] = RCDataLog;
 
-},{"./RCData":4,"./Utils":13,"./i18n":15,"./types/RC_TYPE":19}],7:[function(require,module,exports){
+},{"./RCData":4,"./Utils":14,"./i18n":16,"./types/RC_TYPE":20}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Utils_1 = require("./Utils");
@@ -2157,7 +2316,7 @@ var RCList =  (function () {
 }());
 exports["default"] = RCList;
 
-},{"./Global":1,"./GlobalModal":2,"./Utils":13,"./i18n":15,"./types/RC_TYPE":19}],8:[function(require,module,exports){
+},{"./Global":1,"./GlobalModal":2,"./Utils":14,"./i18n":16,"./types/RC_TYPE":20}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Main_1 = require("./Main");
@@ -2169,6 +2328,7 @@ var WikiData_1 = require("./WikiData");
 var RCData_1 = require("./RCData");
 var RCDataLog_1 = require("./RCDataLog");
 var RCDataFandomDiscussion_1 = require("./RCDataFandomDiscussion");
+var RCDataAbuseLog_1 = require("./RCDataAbuseLog");
 var RCList_1 = require("./RCList");
 var Utils_1 = require("./Utils");
 var i18n_1 = require("./i18n");
@@ -2232,6 +2392,7 @@ var RCMManager =  (function () {
             this.discNamespaces.WALL = dns.indexOf("WALL") != -1;
             this.discNamespaces.ARTICLE_COMMENT = dns.indexOf("ARTICLE_COMMENT") != -1;
         }
+        this.abuseLogsAllowed = true;
         this.hideusers = []; 
         if (tDataset.hideusers) {
             this.hideusers = tDataset.hideusers.replace(/_/g, " ").split(",");
@@ -2626,6 +2787,8 @@ var RCMManager =  (function () {
             mw.log("WARNING: ", pData.warning);
         }
         this.ajaxCallbacks.push(function () {
+            pWikiData.initAbuseFilterFilters(pData.query);
+            _this._parseWikiAbuseLog(pData.query.abuselog, pWikiData);
             _this._parseWiki(pData.query.recentchanges, pData.query.logevents, pWikiData);
         });
         if (this.ajaxCallbacks.length === 1) {
@@ -2697,6 +2860,21 @@ var RCMManager =  (function () {
             return true;
         }
         return false;
+    };
+    RCMManager.prototype._parseWikiAbuseLog = function (pLogs, pWikiData) {
+        var _this = this;
+        if (!pLogs || pLogs.length <= 0) {
+            return;
+        }
+        pWikiData.updateLastChangeDate(Utils_1["default"].getFirstItemFromObject(pLogs));
+        pLogs.forEach(function (pLogData) {
+            if (_this._changeShouldBePrunedBasedOnOptions(pLogData.user, pWikiData)) {
+                return;
+            }
+            _this.itemsToAddTotal++;
+            _this._addRCDataToList(new RCDataAbuseLog_1["default"](pWikiData, _this).init(pLogData));
+            pWikiData.resultsCount++;
+        });
     };
     RCMManager.prototype._addRCDataToList = function (pNewRC) {
         var _this = this;
@@ -3147,7 +3325,7 @@ var RCMManager =  (function () {
 }());
 exports["default"] = RCMManager;
 
-},{"./Global":1,"./Main":3,"./RCData":4,"./RCDataFandomDiscussion":5,"./RCDataLog":6,"./RCList":7,"./RCMModal":9,"./RCMOptions":10,"./RCMWikiPanel":11,"./Utils":13,"./WikiData":14,"./i18n":15,"./types/RC_TYPE":19}],9:[function(require,module,exports){
+},{"./Global":1,"./Main":3,"./RCData":4,"./RCDataAbuseLog":5,"./RCDataFandomDiscussion":6,"./RCDataLog":7,"./RCList":8,"./RCMModal":10,"./RCMOptions":11,"./RCMWikiPanel":12,"./Utils":14,"./WikiData":15,"./i18n":16,"./types/RC_TYPE":20}],10:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -3309,7 +3487,7 @@ var RCMModal =  (function () {
 }());
 exports["default"] = RCMModal;
 
-},{"./Global":1,"./i18n":15}],10:[function(require,module,exports){
+},{"./Global":1,"./i18n":16}],11:[function(require,module,exports){
 "use strict";
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -3586,7 +3764,7 @@ var RCMOptions =  (function () {
 }());
 exports["default"] = RCMOptions;
 
-},{"./Global":1,"./Utils":13,"./i18n":15,"./lib/WikiaMultiSelectDropdown":16}],11:[function(require,module,exports){
+},{"./Global":1,"./Utils":14,"./i18n":16,"./lib/WikiaMultiSelectDropdown":17}],12:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Global_1 = require("./Global");
@@ -3674,7 +3852,7 @@ var RCMWikiPanel =  (function () {
     };
     RCMWikiPanel.prototype.onIconClick = function (pWikiInfo, e) {
         var _this = this;
-        var infoBanner = this.infoNode.querySelector(".banner-notification");
+        var infoBanner = this.infoNode.querySelector(".rcm-wiki-info-banner");
         if (infoBanner && infoBanner.dataset.wiki == pWikiInfo.servername &&  e && (e.screenX != 0 && e.screenY != 0)) {
             this.closeInfo();
         }
@@ -3747,18 +3925,18 @@ var RCMWikiPanel =  (function () {
     RCMWikiPanel.prototype.addBanner = function (contents, addCloseButton, params) {
         if (params === void 0) { params = ""; }
         var html = [
-            "<div class='banner-notification warn' " + params + ">",
-            (addCloseButton ? "<button class='close wikia-chiclet-button'><img></button>" : ""),
+            "<div class='rcm-wiki-info-banner banner-notification' " + params + ">",
+            (addCloseButton ? "<button class='close wikia-chiclet-button'></button>" : ""),
             "<div class='msg'>" + contents + "</div>",
             "</div>",
         ].filter(function (o) { return !!o; }).join("");
         this.infoNode.innerHTML = html;
         if (addCloseButton) {
-            this.infoNode.querySelector(".banner-notification .close").addEventListener("click", this.closeInfo.bind(this));
+            this.infoNode.querySelector(".rcm-wiki-info-banner .close").addEventListener("click", this.closeInfo.bind(this));
         }
     };
     RCMWikiPanel.prototype.closeInfo = function () {
-        $(this.infoNode.querySelector(".banner-notification")).animate({ height: "toggle", opacity: "toggle" }, 200, function () {
+        $(this.infoNode.querySelector(".rcm-wiki-info-banner")).animate({ height: "toggle", opacity: "toggle" }, 200, function () {
             $(this).remove();
         });
     };
@@ -3776,7 +3954,7 @@ var RCMWikiPanel =  (function () {
 }());
 exports["default"] = RCMWikiPanel;
 
-},{"./Global":1,"./Utils":13,"./i18n":15}],12:[function(require,module,exports){
+},{"./Global":1,"./Utils":14,"./i18n":16}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Utils_1 = require("./Utils");
@@ -3816,7 +3994,7 @@ var UserData =  (function () {
 }());
 exports["default"] = UserData;
 
-},{"./Utils":13}],13:[function(require,module,exports){
+},{"./Utils":14}],14:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Global_1 = require("./Global");
@@ -3978,6 +4156,14 @@ var Utils =  (function () {
         }
         return null;
     };
+    Utils.arrayFind = function (pArray, pFunc) {
+        for (var i = 0; i < pArray.length; ++i) {
+            if (pFunc(pArray[i])) {
+                return pArray[i];
+            }
+        }
+        return null;
+    };
     Utils.isFileAudio = function (pTitle) {
         var tExt = null, audioExtensions = ["oga", "ogg", "ogv"]; 
         for (var i = 0; i < audioExtensions.length; i++) {
@@ -4065,7 +4251,7 @@ var Utils =  (function () {
 }());
 exports["default"] = Utils;
 
-},{"./Global":1}],14:[function(require,module,exports){
+},{"./Global":1}],15:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Global_1 = require("./Global");
@@ -4082,6 +4268,8 @@ var WikiData =  (function () {
         this.user = { rights: {
                 block: false, undelete: false, rollback: true,
                 analytics: false,
+                editcontentmodel: false,
+                abusefilter_view: false, abusefilter_log: false, abusefilter_log_detail: false,
             } };
         this.isWikiaWiki = true;
         this.isLegacyWikiaWiki = true;
@@ -4090,6 +4278,9 @@ var WikiData =  (function () {
         this.usersNeeded = [];
         this.discCommentPageNames = new Map();
         this.discCommentPageNamesNeeded = [];
+        this.isAbuseLogEnabled = false; 
+        this.abuseFilterFilters = {};
+        this.needsAbuseFilterFilters = false;
         this.hidden = false;
         this.lastChangeDate = null;
         this.lastDiscussionDate = null;
@@ -4235,16 +4426,42 @@ var WikiData =  (function () {
         }
         if (this.needsUserData && !!pQuery.users) {
             this.needsUserData = false;
-            var tRightList = pQuery.users[0].rights;
-            this.user.rights = {
-                block: tRightList.indexOf("block") > -1,
-                undelete: tRightList.indexOf("undelete") > -1,
-                rollback: tRightList.indexOf("rollback") > -1,
-                analytics: tRightList.indexOf("analytics") > -1,
-            };
+            this._setUserRights(pQuery.users[0].rights);
+        }
+        else if (this.needsUserData && !!pQuery.userinfo) {
+            this.needsUserData = false;
+            this._setUserRights(pQuery.userinfo.rights);
         }
         if (this.favicon == null) {
             this.favicon = Global_1["default"].FAVICON_BASE + this.scriptpath;
+        }
+        return this;
+    };
+    WikiData.prototype._setUserRights = function (rightsList) {
+        this.user.rights = {
+            block: rightsList.indexOf("block") > -1,
+            undelete: rightsList.indexOf("undelete") > -1,
+            rollback: rightsList.indexOf("rollback") > -1,
+            analytics: rightsList.indexOf("analytics") > -1,
+            editcontentmodel: rightsList.indexOf("editcontentmodel") > -1,
+            abusefilter_view: rightsList.indexOf("abusefilter-view") > -1,
+            abusefilter_log: rightsList.indexOf("abusefilter-log") > -1,
+            abusefilter_log_detail: rightsList.indexOf("abusefilter-log-detail") > -1,
+        };
+        if (this.manager.abuseLogsAllowed) {
+            this.isAbuseLogEnabled = this.user.rights.abusefilter_log; 
+            this.needsAbuseFilterFilters = this.isAbuseLogEnabled;
+        }
+    };
+    WikiData.prototype.initAbuseFilterFilters = function (pQuery) {
+        if (this.needsAbuseFilterFilters && !!pQuery.abusefilters) {
+            this.needsAbuseFilterFilters = false;
+            this.abuseFilterFilters = {};
+            var tFilter = void 0;
+            for (var i = 0; i < pQuery.abusefilters.length; i++) {
+                tFilter = pQuery.abusefilters[i];
+                this.abuseFilterFilters[tFilter.id] = { description: tFilter.description, private: tFilter.private === "" };
+            }
         }
         return this;
     };
@@ -4312,6 +4529,10 @@ var WikiData =  (function () {
         }
         return "data-username=\"" + pUser.replace(/"/g, "&quot;") + "\"";
     };
+    WikiData.prototype.getUrl = function (pageName, params) {
+        var query = params ? this.firstSeperator + $.param(params) : "";
+        return "" + this.articlepath + pageName + query;
+    };
     WikiData.prototype.checkForSecondaryLoading = function () {
         var MAX = 50, loops = Math.ceil(this.usersNeeded.length / MAX);
         for (var i = 0; i < loops; i++) {
@@ -4375,7 +4596,8 @@ var WikiData =  (function () {
             params["usprop"] = "rights";
         }
         else {
-            this.needsUserData = false;
+            tMetaList.push("userinfo");
+            params["uiprop"] = "rights";
         }
         if (tUrlList.length > 0) {
             params["list"] = tUrlList.join("|");
@@ -4459,6 +4681,18 @@ var WikiData =  (function () {
             params["lelimit"] = this.rcParams.limit;
             params["leend"] = tEndDate.toISOString();
         }
+        if (this.isAbuseLogEnabled && this.manager.abuseLogsAllowed && this.rcParams.hidelogs == false && this.user.rights.abusefilter_view && this.user.rights.abusefilter_log) {
+            if (this.needsAbuseFilterFilters) {
+                tUrlList.push("abusefilters");
+                params["abflimit"] = 500;
+                params["abfshow"] = "enabled";
+                params["abfprop"] = "id|description|private"; 
+            }
+            tUrlList.push("abuselog");
+            params["afllimit"] = this.rcParams.limit;
+            params["aflend"] = tEndDate.toISOString();
+            params["aflprop"] = "ids|filter|user|title|action|result|timestamp|hidden|revid"; 
+        }
         params["list"] = tUrlList.join("|");
         if (tMetaList.length > 0) {
             params["meta"] = tMetaList.join("|");
@@ -4480,7 +4714,7 @@ var WikiData =  (function () {
 }());
 exports["default"] = WikiData;
 
-},{"./Global":1,"./UserData":12,"./Utils":13}],15:[function(require,module,exports){
+},{"./Global":1,"./UserData":13,"./Utils":14}],16:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Global_1 = require("./Global");
@@ -4598,6 +4832,8 @@ var MESSAGES = i18n.MESSAGES = {
     'wikifeatures-log-name': 'Wiki Features log',
     'chat-chatban-log': 'Chat ban log',
     'abusefilter-log': 'Abuse filter log',
+    'abuselog': 'Abuse log',
+    'log-name-contentmodel': 'Content model change log',
     'blocklogentry': 'blocked [[$1]] with an expiry time of $2 $3',
     'reblock-logentry': 'changed block settings for [[$1]] with an expiry time of $2 $3',
     'unblocklogentry': 'unblocked $1',
@@ -4672,8 +4908,13 @@ var MESSAGES = i18n.MESSAGES = {
     'allmessages-filter-all': 'All',
     'listusers-select-all': 'Select all',
     'socialactivity-page-title': 'Social Activity',
-    'abusefilter-log-detailedentry-meta': '$1: $2 triggered $3, performing the action \"$4\" on $5.\nActions taken: $6;\nFilter description: $7 ($8)',
-    'abusefilter-log-entry': '$1: $2 triggered an abuse filter, performing the action \"$3\" on $4.\nActions taken: $5;\nFilter description: $6',
+    "abusefilter-logentry-create": "$1 {{GENDER:$2|created}} $4 ($5)",
+    "abusefilter-logentry-modify": "$1 {{GENDER:$2|modified}} $4 ($5)",
+    "abusefilter-log-detailslink": "details",
+    'abusefilter-log-entry': '$1: $2 {{GENDER:$8|triggered}} an abuse filter, {{GENDER:$8|performing}} the action \"$3\" on $4.\nActions taken: $5;\nFilter description: $6',
+    'abusefilter-log-detailedentry-meta': '$1: $2 {{GENDER:$9|triggered}} $3, {{GENDER:$9|performing}} the action \"$4\" on $5.\nActions taken: $6;\nFilter description: $7 ($8)',
+    "abusefilter-log-detailedentry-local": "filter $1",
+    "abusefilter-changeslist-examine": "examine",
     'abusefilter-action-block': 'Block',
     'abusefilter-action-blockautopromote': 'Block autopromote',
     'abusefilter-action-degroup': 'Remove from groups',
@@ -4682,8 +4923,11 @@ var MESSAGES = i18n.MESSAGES = {
     'abusefilter-action-tag': 'Tag',
     'abusefilter-action-throttle': 'Throttle',
     'abusefilter-action-warn': 'Warn',
-    "abusefilter-log-detailslink": "details",
-    "abusefilter-changeslist-examine": "examine",
+    'abusefilter-log-noactions': 'none',
+    'logentry-contentmodel-new': '$1 {{GENDER:$2|created}} the page $3 using a non-default content model \"$5\"',
+    'logentry-contentmodel-change': '$1 {{GENDER:$2|changed}} the content model of the page $3 from \"$4\" to \"$5\"',
+    'logentry-contentmodel-change-revert': 'revert',
+    'logentry-contentmodel-change-revertlink': 'revert',
 };
 exports.legacyMessagesRemovedContent = [
     "insights",
@@ -5052,7 +5296,7 @@ i18n.wiki2html = function (pText) {
 };
 exports["default"] = i18n;
 
-},{"./Global":1}],16:[function(require,module,exports){
+},{"./Global":1}],17:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var i18n_1 = require("../i18n");
@@ -5301,7 +5545,7 @@ var WikiaMultiSelectDropdown =  (function () {
 }());
 exports.WikiaMultiSelectDropdown = WikiaMultiSelectDropdown;
 
-},{"../i18n":15}],17:[function(require,module,exports){
+},{"../i18n":16}],18:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function default_1() {
@@ -5548,7 +5792,7 @@ function default_1() {
 }
 exports["default"] = default_1;
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Main_1 = require("./Main");
@@ -5561,7 +5805,7 @@ else {
     window.dev.RecentChangesMultiple.app = Main_1["default"];
 }
 
-},{"./Main":3}],19:[function(require,module,exports){
+},{"./Main":3}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var RC_TYPE;
@@ -5575,5 +5819,5 @@ var RC_TYPE;
 })(RC_TYPE || (RC_TYPE = {}));
 exports["default"] = RC_TYPE;
 
-},{}]},{},[18]);
+},{}]},{},[19]);
 //</pre>

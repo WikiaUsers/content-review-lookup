@@ -11,7 +11,7 @@ function scrollTop(){
 }
 
 $(function(){
-	$("div#footer").append($("<span></span>")
+	$("body").append($("<span></span>")
 		.attr({
 			"id": "scroll-top",
 			"title": "Up"

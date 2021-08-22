@@ -24,6 +24,7 @@
             'wgUserName'
         ]),
         toCreate: 0,
+        created: [],
         preload: function() {
             if (
             // You most likely don't want the script to be
@@ -115,21 +116,17 @@
             }
         },
         cbFetchFail: function (d) {
-            if (typeof d == 'string') {
+            if (typeof d === 'string') {
                 this.notify('An error occurred while fetching user page information: ' + d);
             } else {
                 this.notify('An unknown error occurred while fetching user page information.');
             }
         },
         cbFetch: function(d) {
-            if (d.error) {
-                this.notify('An error occurred while fetching user page information: ' + d.error.code);
-            } else {
-                var shouldCreate = $.map(d.query.pages, this.processPage.bind(this));
-                if (!shouldCreate.some(Boolean)) {
-                    console.info('[AutoCreateUserPages] No pages should be created, exiting...');
-                    localStorage.setItem('AutoCreateUserPagesLoaded', true);
-                }
+            var shouldCreate = $.map(d.query.pages, this.processPage.bind(this));
+            if (!shouldCreate.some(Boolean)) {
+                console.info('[AutoCreateUserPages] No pages should be created, exiting...');
+                localStorage.setItem('AutoCreateUserPagesLoaded', true);
             }
         },
         processPage: function(v, k) {
@@ -148,6 +145,7 @@
             }
             console.info('[AutoCreateUserPages] Creating', v.title, '...');
             ++this.toCreate;
+            this.created.push(v.title);
             this.api.postWithEditToken({
                 action: 'edit',
                 title: v.title,
@@ -159,9 +157,8 @@
             return true;
         },
         cbCreate: function(d) {
-            if (d.error) {
-                this.notify('An error occurred while creating a user page: ' + d.error.code);
-            } else if (--this.toCreate === 0) {
+            if (--this.toCreate === 0) {
+                mw.hook('AutoCreateUserPages.loaded').fire(this.created);
                 if (this.config.notify) {
                     mw.notify($('<span>', {
                         html: typeof this.config.notify === 'string' ?

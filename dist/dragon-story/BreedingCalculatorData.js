@@ -1146,6 +1146,55 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "archelemental": {
+                "name": "Arch Elemental",
+                "types": [
+                    "elemental",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "archfey": {
+                "name": "Arch Fey",
+                "types": [
+                    "fey",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "archmetal": {
+                "name": "Arch Metal",
+                "types": [
+                    "metal",
+                    "black",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "archtarot": {
                 "name": "Arch Tarot",
                 "types": [
@@ -11449,6 +11498,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "grandrainbow": {
+                "name": "Grand Rainbow",
+                "types": [
+                    "rainbow",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "grandzodiac": {
                 "name": "Grand Zodiac",
                 "types": [
@@ -13123,6 +13188,32 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                         [
                             "types", [
                                 "red"
+                            ]
+                        ]
+                    ]
+                ]
+            },
+            "hyperworld": {
+                "name": "Hyper World",
+                "types": [
+                    "world",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "pink"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "blue"
                             ]
                         ]
                     ]

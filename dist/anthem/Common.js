@@ -80,5 +80,6 @@ importArticles({
     articles: [
         "w:c:dev:MediaWiki:Countdown/code.js",
         'u:dev:MediaWiki:MassEdit/code.js',
+        'u:dev:MediaWiki:MassRename/code.js',
     ]
 });

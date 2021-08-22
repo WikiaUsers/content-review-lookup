@@ -1,5 +1,5 @@
-var debugcolour = 'yellow';  //Change the colour to confirm cache updates
-var debugversion = '1626283278098';
+var debugcolour = 'blue';  //Change the colour to confirm cache updates
+var debugversion = '1629298206509';
 
 window.test452 = { ready:false, complete:false};
 window.debug452 = function(out, alert) { if (mw.config.get("wgUserName") == "452") { if ( ["object", "null", "function"].indexOf(typeof out) == -1) console.log(new Date().toJSON()+" "+out); else { console.log(new Date().toJSON()+" object:"); console.log(out); } if (typeof alert != "undefined") window.alert(out); } }
@@ -229,9 +229,9 @@ $(document).on('readystatechange', function() {
 	if (!$(".content-review__widget__title a").length) 
 	  $(".content-review__widget__title").html('<a href="/Special:JSPages">'+$(".content-review__widget__title").html()+"</a>");
 
-	if ($('#WikiaRail section').length && !$("#NewFilesModule").length) {
+	if ($('.WikiaRail section').length && !$("#NewFilesModule").length) {
 	  // Only add it ''once''
-	  $('#WikiaRail>section:last-of-type').after("<section id='NewFilesModule' class='module loading'><h2><a href='/Special:NewFiles'>New Files</a><a style='float:right' href='/Special:Upload'><button>Upload");
+	  $('.WikiaRail>div>section:last-of-type').after("<section id='NewFilesModule' class='rail-module loading'><h2><a href='/Special:NewFiles'>New Files</a><a style='float:right' href='/Special:Upload'><button>Upload");
 	  $.get("/Special:NewFiles", function(NewFilesPage) {
 		$("#NewFilesModule").removeClass("loading");
 		if (!$('.wikia-gallery', NewFilesPage).length) { console.log("No NewFiles list."); return; }
@@ -267,25 +267,25 @@ $(document).on('readystatechange', function() {
 	  While Wikia staff may later change their mind, 
 	  this edit cannot be regarded as a TOU violation as it was valid at the time it was made
 	*/
-	if ($('#WikiaRail section').length && !$('#JoinModule').length) { 
+	if ($('.WikiaRail section').length && !$('#JoinModule').length) { 
 /*
 	  var joinheading = new Array("You can edit","Anyone can edit","Anybody can edit","Everyone can edit","Everybody can edit","Help us out","Can you add anything?","What can you add?","See something wrong?","Want to help out?","Do you like editing?","We want you to edit!","Add your knowledge","We need your help","Can you improve the wiki?","Editing is easy","New editors needed","Information needed","Your help is needed","The wiki needs you!","Join the wiki","Edit the wiki","Help the wiki");
 
-	  var joincontent = "<section id='JoinModule' class='module center'><h2>"+joinheading[Math.floor((Math.random()*joinheading.length))]+"</h2><span style='color: purple;font-size: 105%;'>"
+	  var joincontent = "<section id='JoinModule' class='rail-module center'><h2>"+joinheading[Math.floor((Math.random()*joinheading.length))]+"</h2><span style='color: purple;font-size: 105%;'>"
 	   +"Check our <b><a href='/Saints_Row_Wiki:To-do_list'>to-do list</a></b> for ways to help."
 	   +"<br /><a href='/Forum'>Use the Forum</a> if you can't find what you need."
 	   +"<br /><b>If something is incorrect, <a href='?action=edit'>please fix it</a>.</b>"
 	   +"</span></section>";
 */
-	  var joincontent  = "<section id='JoinModule' class='module center'><h2>Shortcuts</h2><div style='overflow: auto;'><div class='JoinLeft'><a href='/Saints_Row_Wiki'>Main Page</a><br><a href='/Portal:Index'>Index</a><br><a href='/Special:RecentChanges'>Recent Changes</a><br><a href='/Saints_Row_Wiki:News'>News</a><br></div><div class='JoinRight'><a href='/Saints_Row_Wiki:To-do_list'>To-do list</a><br><a href='/Saints_Row_Wiki:Forums'>Forum</a><br><a href='/Special:Upload'>Upload Files</a><br><a href='/Saints_Row_Wiki:Maps'>Maps</a></div></div></section>";
+	  var joincontent  = "<section id='JoinModule' class='rail-module center'><h2>Shortcuts</h2><div style='overflow: auto;'><div class='JoinLeft'><a href='/Saints_Row_Wiki'>Main Page</a><br><a href='/Portal:Index'>Index</a><br><a href='/Special:RecentChanges'>Recent Changes</a><br><a href='/Saints_Row_Wiki:News'>News</a><br></div><div class='JoinRight'><a href='/Saints_Row_Wiki:To-do_list'>To-do list</a><br><a href='/Saints_Row_Wiki:Forums'>Forum</a><br><a href='/Special:Upload'>Upload Files</a><br><a href='/Saints_Row_Wiki:Maps'>Maps</a></div></div></section>";
 
-	  $('#WikiaRail section.rail-module').eq('0').before(joincontent);
+	  $('.WikiaRail section.rail-module').eq('0').before(joincontent);
 	}
 	if (!$('#RCLink').length) 
 	  $(".WikiaActivityModule").append('<a href="/Special:RecentChanges" title="Special:RecentChanges" class="more" style="float:left;" id="RCLink">Recent Changes</a>');
 
     });  //end of DOMNodeInserted block
-    $('#WikiaRail').trigger('DOMNodeInserted'); //Bypass race condition by firing the event.
+    $('.WikiaRail').trigger('DOMNodeInserted'); //Bypass race condition by firing the event.
 
     if ($('#editToolbar').length) {
         if (!$('#wikiDiff').length) {

@@ -66,11 +66,11 @@ function UpdateTableHeaders() {
     var offset = $(this).offset();
     var scrollTop = $(window).scrollTop();
     var floatingHeader = $(".tableFloatingHeader", this);
-    var globalNavOffset = $("#globalNavigation").height() || 0;
-    if (scrollTop > offset.top - globalNavOffset && scrollTop + globalNavOffset < offset.top + $(this).height()) {
+    var topNavOffset = $(".fandom-sticky-header").height() || $(".global-navigation").height() || 0;
+    if (scrollTop > offset.top - topNavOffset && scrollTop + topNavOffset < offset.top + $(this).height()) {
       var originalHeader = $(".tableFloatingHeaderOriginal", this);
       
-      floatingHeader.css("top", Math.min(scrollTop - offset.top + globalNavOffset, $(this).height() - floatingHeader.height() - $("tr:last", this).height()) + "px").show();
+      floatingHeader.css("top", Math.min(scrollTop - offset.top + topNavOffset, $(this).height() - floatingHeader.height() - $("tr:last", this).height()) + "px").show();
       
       //--- Copy cell width & horizontal padding from original header -- only way to make the cells obey their width
       $("th", floatingHeader).each(function(i) {

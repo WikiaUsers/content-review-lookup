@@ -33,6 +33,7 @@
 			], [
 				'Allpages',
 				'Prefixindex',
+				'Whatlinkshere',
 			], [
 				'Unusedimages',
 			],
@@ -117,11 +118,13 @@
 			'.mw-prefixindex-body', 
 			'.mw-spcontent > p:first-of-type',
 			'.mw-spcontent > p:last-of-type',
+			'body.mw-special-Whatlinkshere #mw-content-text > p:first-of-type',
 		].join(', ')).before($wrapper);
 
 		$([
 			'.mw-prefixindex-body', 
 			'.mw-allpages-body',
+			'body.mw-special-Whatlinkshere #mw-content-text'
 		].join(', ')).after($wrapper.clone());
 	}
 
@@ -153,7 +156,6 @@
 			class: "selectiveDel",
 			type: "checkbox",
 		});
-		console.log(specialPageType);
 
 		switch (specialPageType) {
 			case 1:
@@ -166,6 +168,11 @@
 			case 2:
 				if ($('.mw-allpages-chunk').length) { // Allpages
 					$('.mw-allpages-chunk li > a').each(function() {
+						$(this).before($chk.clone());
+						selectHax(this);
+					});
+				} else if ($('#mw-whatlinkshere-list').length) { // WhatLinksHere
+					$('#mw-whatlinkshere-list > li > a').each(function() {
 						$(this).before($chk.clone());
 						selectHax(this);
 					});

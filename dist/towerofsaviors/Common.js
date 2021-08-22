@@ -70,11 +70,12 @@ window.tooltips_list = [
 window.texttip = function(){
     var tt = $('.tt-text');
     tt.removeAttr('title').on('mouseenter touchstart',function(){
+        var c = $(this).attr('class').replace("tt-text", "");
         var o = $(this).offset(), w = document.documentElement.clientWidth, b = $(this).hasClass('bottom');
         var p = b ? {top: o.top+$(this).outerHeight()+5} : {bottom: document.documentElement.clientHeight-o.top-$(this).outerHeight()};
         if(o.left<w/2) p.left = b ? o.left : o.left+$(this).outerWidth()+5;
         else p.right = b ? w-o.left-$(this).outerWidth() : w-o.left+5;
-        $('<div>').addClass('tt-tip').css(p).html($(this).data('texttip')).appendTo('body');
+        $('<div>').addClass('tt-tip ' + c).css(p).html($(this).data('texttip')).appendTo('body');
     })
     .on('mouseleave touchend',function(){$('.tt-tip').remove();}).parent('a').removeAttr('title');
     tt.children('a').removeAttr('title');

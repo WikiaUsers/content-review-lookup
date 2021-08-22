@@ -16,6 +16,7 @@ $(function() {
 			var $s = $('#ThemeSwitcher')[0] || $('<style>').attr('id', 'ThemeSwitcher').appendTo('body');
 			$($s).text(css);
 			$('body').removeClass('theme-fandomdesktop-light theme-fandomdesktop-dark').addClass('theme-fandomdesktop-' + newTheme);
+			mw.config.set('isDarkTheme', newTheme === 'dark');
 		});
 	}
 

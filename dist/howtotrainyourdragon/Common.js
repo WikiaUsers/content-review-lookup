@@ -23,12 +23,6 @@ massRenameSummary = 'automatic'; // Optional
 
 massCategorizationDelay = 1000;
 
-window.LockOldBlogs = {
-    expiryDays: 60,
-    expiryMessage: "This blog hasn\'t been commented on for over <expiryDays> days. There is no need to comment.",
-    nonexpiryCategory: "Blogs that won't expire"
-};
- 
  
 /**
 * @author: Flightmare (http://elderscrolls.wikia.com/wiki/User:Flightmare)
