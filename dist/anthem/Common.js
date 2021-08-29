@@ -81,5 +81,8 @@ importArticles({
         "w:c:dev:MediaWiki:Countdown/code.js",
         'u:dev:MediaWiki:MassEdit/code.js',
         'u:dev:MediaWiki:MassRename/code.js',
+        'u:dev:MediaWiki:MassRenameRevert/code.js',
     ]
 });
+
+window.MassRenameRevertGroups = ['sysop', 'content-moderator'];

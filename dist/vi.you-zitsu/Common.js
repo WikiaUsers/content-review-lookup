@@ -137,8 +137,8 @@ importScriptPage('AjaxRC/code.js', 'dev');
         $("#ultisup-load").parent().load(this.href + " #gallery-0");
 });
  
-	// Oasis-only scripts
-	if (mw.config.get('skin') === 'oasis') {
+	// FandomDesktop scripts
+	if (mw.config.get('skin') === 'fandomdesktop') {
         // Template adder on file pages
         if (mw.config.get('wgCanonicalNamespace') === 'File')
         $(function() {
@@ -180,7 +180,6 @@ importScriptPage('AjaxRC/code.js', 'dev');
             });
         });
 	}
-	
 // Import all scripts in bulk (and minified)
 	window.importArticles({
 		type: 'script',

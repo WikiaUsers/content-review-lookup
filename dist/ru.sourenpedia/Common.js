@@ -31,25 +31,25 @@ $(function () {
 
 //------------------------------------//
 nkch_gst_gadgets = [{
-    name: "RWA", // название гаджета с MediaWiki:Gadgets-definition; обязательно
+    name: "RWA", // название гаджета с MediaWiki:Gadget-Название; обязательно
     title: "Недавняя вики-деятельность", // Название в меню
     description: "Недавняя вики-деятельность" // Описание гаджета в меню при наведении
 }, {
-    name: "ModernProfile",
-    title: "Современный профиль",
-    description: "Современный профиль"
-}, {
     name: "UWStyle",
-    title: "Современный профиль",
+    title: "Единый стиль вики",
     description: "Общее оформление вики-проектов"
 }, {
     name: "Quick-insert",
     title: "Быстрая вставка в редакторах",
     description: "Быстрая вставка в редакторах"
 }, {
-    name: "AddCatInPreview",
-    title: "Категории в предпросмотре",
-    description: "Категории в предпросмотре"
+    name: "RemoveCatSpoiler",
+    title: "Прежние Категории",
+    description: "Прежние Категории"
+}, {
+    name: "Cursor",
+    title: "Тематичческий курсор",
+    description: "Тематические курсор"
 }];
 
 // Настройка блокировки статей от спойлеров

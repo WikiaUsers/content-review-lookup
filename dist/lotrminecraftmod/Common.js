@@ -1,132 +1,88 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-//TODO: Organise names, maybe collect all names in an array to reduce code redundancy
-
- //***************************************************\\
-//***Admin, mod, and Temp Mod Post Colours for Forums and Message Walls***\\
-//*******************************************************\\
-(function() {
-    var border_admin = "6px double ";//+color
-    var background_admin = "rgba(216, 180, 88, 0.85) url('https://images.wikia.nocookie.net/__cb20140625215453/lotrminecraftmod/images/0/03/Admin1_120.png') bottom center no-repeat";
-    var admins = [
-        {name: "Thorin11", color:"#A7B200"},
-        {name: "Gen._Grievous1138", color:"#DC143C"},
-        {name: "Areades", color:"#81BEF7"},
-        {name: "Beijing1000", color:"#136613"},
-        {name: "Glflegolas", color:"#387C44"},
-        {name: "Quipp", color:"#00CCFF"},
-        {name: "SamwiseFilmore", color:"#D07130"},
-        {name: "Glaerdir", color:"#F962A5"},
-        {name: "ESP_LOTR", color:"#0EC79F"},
-        {name: "Gruk", color:"#a82a43"},
-        {name: "MilkMC", color:"#3333FF"},
-        {name: "CaptCaptain", color:"#00CCFF"}          // FB mod, same colour as Quipp!!
-    ];
-
-    var border_mod = "2px solid ";//+color
-    var background_mod = "rgba(214, 188, 136, 0.85) url('https://images.wikia.nocookie.net/__cb20141205133613/lotrminecraftmod/images/d/d1/Mod.png') bottom center no-repeat";
-    var mods = [
-        {name: "Seb_TheDunlending", color:"#49C71E"},    // FB mod
-        {name: "Smaug_the_Tyrannical", color:"#CCAC00"},
-        {name: "Commandogregor1234", color:"#BD33A4"},
-        {name: "Ffets", color:"#C4E838"},
-        {name: "Special_Elf_Friend", color:"#00CED1"},
-        {name: "Narvin", color:"#24A0D0"},
-        {name: "High_Prince_Imrahil", color:"#5C8AE6"},
-        {name: "GandalftheTurquoise", color:"#00CED1"},
-        {name: "War_Pig1237", color:"#0099CC"},
-        {name: "Arantoer", color:"#4AA02C"},
-        {name: "AlteOgre", color:"#669900"},
-        {name: "High_King_Ithilion", color:"#3F00FF"},
-        {name: "LysurusPeriphragmoides789", color:"#c63d00"},
-        {name: "Recneps", color:"#8B008B"},
-        {name: "Gorbag12", color:"#000000"},
-        {name: "Dinopizzagamer", color:"#8FBC8F"},
-        {name: "Catfishperson", color:"#13A005"},
-        {name: "Aidansebastian", color:"#007E25"},
-        {name: "Rayn_Turammarth", color:"#00AF9B"},
-        {name: "Adaneth_Mirim%C3%AB", color:"#9370DB"},
-        {name: "Thorin_Stonehelm", color:"#0078FF"},
-        {name: "Rocket_Engineer", color:"#b5b3ff"}
-    ];
-
-    var background_tempmod = "rgba(205, 192, 176, 0.66) url('https://vignette.wikia.nocookie.net/lotrminecraftmod/images/b/b2/Temp_mod_tag_3.png/revision/latest?cb=20150605193955') bottom center no-repeat";
-    var tempmods = [
-        {name:"TomtheBom"},
-        {name:"GimliBurper"}
-    ];
-
-    function get_filter(profile) {
-        return eval("(function() {return $(this).has(\"a[href$=':"+profile.name+"']\").length;})");
-    }
-
-    var avatars = $('.speech-bubble-avatar');
-
-    (function(){
-        var mevans = {name: "LOTRMod", color:"#B55A15"};
-        avatars.filter(get_filter(mevans)).next().css({
-            background: "rgb(216, 180, 88) url('https://images.wikia.nocookie.net/__cb20141225003527/lotrminecraftmod/images/thumb/4/4e/Modcreator.png/250px-Modcreator.png') bottom center no-repeat",
-            padding: '10px',
-            border: border_admin+mevans.color
-        });
-        avatars.filter(get_filter(mevans)).next().addClass('admin');
-    })();
-
-    var i;
-    for (i in admins) {
-        var admin = admins[i];
-        avatars.filter(get_filter(admin)).next().css({
-            background: background_admin,
-            padding: '10px',
-            border: border_admin+admin.color
-        });
-        avatars.filter(get_filter(admin)).next().addClass('admin');
-    }
-    for (i in mods) {
-        var mod = mods[i];
-        avatars.filter(get_filter(mod)).next().css({
-            background: background_mod,
-            padding: '10px',
-            border: border_mod+mod.color
-        });
-        avatars.filter(get_filter(mod)).next().addClass('mod');
-    }
-    for (i in tempmods) {
-        var tempmod = tempmods[i];
-        avatars.filter(get_filter(tempmod)).next().css({
-            background: background_tempmod,
-            padding: '10px',
-        });
-        avatars.filter(get_filter(tempmod)).next().addClass('tempmod');
-    }
-})();
-
 // OTHER CODE //
 
 /* Makes all quotes collapsible by default, excluding the first line.
 */
-var quote = $('.quote:not(.customquote)');
-quote.addClass("mw-collapsible mw-collapsed");
-quote.each(function() {
-    $(this).html(
-        $(this).html().replace(
-            /^(.* wrote:(?:\n|<br>))([\s\S]*)$/m,
-            // [\s\S] = whitespace or non-whitespace = match all ~= [.\n]
-            '$1<span class="mw-collapsible-content">$2</span>'
-        )
-    );
+
+(function(window, $, mw) {
+	if (mw.config.get('wgNamespaceNumber') != 1200 || window.quotesCollapsed) {
+		return;
+	}
+	window.quotesCollapsed = true;
+	
+	// Select the node that will be observed for mutations
+	var target = document.querySelector('#MessageWall');
+	
+	// Callback function to execute when mutations are observed
+	var observer = new MutationObserver(function(mutations) {
+		mutations.forEach(function(mutation) {
+		    var quote = $('.quote:not(.customquote, .mw-collapsible)');
+		    if(quote.length !== 0) {
+		    	quote.each(function() {
+		    		$(this).addClass("mw-collapsible mw-collapsed");
+					$(this).html(
+					    $(this).html().replace(
+					        /^(.* wrote:(?:\n|<br>))([\s\S]*)$/m,
+					        // [\s\S] = whitespace or non-whitespace = match all ~= [.\n]
+					        '$1<span class="mw-collapsible-content">$2</span>'
+					    )
+					);
+				});
+				mw.hook("wikipage.content").fire($('#MessageWall'));
+		    }
+		});
+	});
+	
+	// Options for the observer (which mutations to observe)
+	var config = {childList: true, subtree: true};
+	
+	// Start observing the target node for configured mutations
+	observer.observe(target, config);
+})(this, jQuery, mediaWiki);
+
+(function(window, $, mw) {
+	var username = mw.config.get("wgUserName");
+	
+	if ([0, 500, 1200].indexOf(mw.config.get('wgNamespaceNumber')) === -1 || window.nameInserted || !username || mw.config.get("wgIsMainPage")) {
+		return;
+	}
+	window.nameInserted = true;
+	
+	// Select the node that will be observed for mutations
+	var target = document.querySelector('#MessageWall, #articleComments');
+	
+	// Callback function to execute when mutations are observed
+	var observer = new MutationObserver(function(mutations) {
+		mutations.forEach(function(mutation) {
+		    var replaceText = $(".insertusername");
+		    if(replaceText.length !== 0) {
+		    	replaceText.each(function() {
+		    		if ($(this).text() !== username) {
+						$(this).text(username);
+					}
+		    	});
+		    }
+		});
+	});
+	
+	// Options for the observer (which mutations to observe)
+	var config = {childList: true, subtree: true};
+	
+	// Start observing the target node for configured mutations
+	observer.observe(target, config);
+})(this, jQuery, mediaWiki);
+
+// Get rid of semicolons in ActivityFeed on main page
+$(".page-The_Lord_of_the_Rings_Minecraft_Mod_Wiki .mw-changeslist-line-inner").each(function(){
+	$(this).html($(this).html().replace("‎; ",""));
 });
 
-/* Username replace feature
-* Inserts viewing user's name into <span class="insertusername"></span>
-* Put text inside the spans to be viewed by logged out users
-* Originally by [[wikia:User:Splarka|Splarka]], then by [[User:Spang|Spang]],
-* This (jQuery) version by [[wikia:User:Joeyaa]], written to be backwards compatible
-*/
+/* Rayn -> Noloite (user request) */
+$("[href$='Rayn_Turammarth'], [href$='Rayn%20Turammarth'], [href$='Rayn Turammarth']").each(function(){
+    $(this).text(this.text.replace("Rayn Turammarth", "Noloite"));
+});
 
-if (mw.config.get("wgUserName")) {
-   $(".insertusername").text(mw.config.get("wgUserName"));
-}
 /* Ajax-refresh button config options */
 window.ajaxSpecialPages = ["Contributions","Log","WikiActivity","AbuseLog"];
 window.ajaxRefresh = 30000;
@@ -134,25 +90,16 @@ $.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
    'ajaxrc-refresh-text': 'Auto-refresh',
    'ajaxrc-refresh-hover': 'Automatically refresh the page',
 }}}}});
-// EXTERNAL SCRIPTS
-importArticles({
-   type: "script",
-   articles: [
-       // File Deletion
-       "u:dev:MediaWiki:ListFiles/code.js",
-       "u:dev:MediaWiki:AjaxBatchDelete.js",
-       // AJAX Recent Changes Refresh
-       "u:dev:MediaWiki:AjaxRC.js"
-   ]
-});
 
 // Pre-sorted tables
 // Any sortable table with the class "sorted" will be presorted by
 // its first column, descending
 $(function() {
-    setTimeout(function() {
-        $("table.article-table.sortable.sorted .headerSort:first-child").click();
-    }, 0);
+	if(mw.config.get('wgPageName') != 'Servers') {
+		setTimeout(function() {
+	        $("table.article-table.sortable.sorted .headerSort:first-child").click();
+	    }, 0);
+	}
 });
 
 // Shuffle servers
@@ -183,22 +130,33 @@ $(".pi-image-thumbnail").each(function(){
     var srcarray = srcsetvar.split(" ");
     $(this).attr("srcset", srcarray[0]+"&format=original");
 });
-//Article Images
-$(".WikiaArticle img:not('.avatar, .sprite, .forum-user-avatar, .wds-avatar__image')").on("load", function(){
-    var srcvar = $(this).attr("src");
-    if(srcvar && !srcvar.endsWith("format=original") && (srcvar.startsWith("https://vignette.wikia.nocookie.net") || srcvar.startsWith("https://images.wikia.nocookie.net"))){
-        if(srcvar.includes("?")) {
-            $(this).attr("src", srcvar+"&format=original");
-        } else {
-            $(this).attr("src", srcvar+"?format=original");
-        }
-    }
-}).each(function() {
-  if(this.complete) { //cached images
-      $(this).trigger("load");
-  }
-});
 
+//Other images
+$(function(){
+	function reload_imgs(target) {
+		var srcvar = $(target).attr('src');
+		var pattern = /(?:static|vignette|images)\.wikia\.nocookie\.net/;
+	    if(srcvar && !srcvar.endsWith('format=original') && pattern.exec(srcvar)) {
+	        if(srcvar.includes('?')) {
+	            $(target).attr('src', srcvar+'&format=original');
+	        } else {
+	            $(target).attr('src', srcvar+'?format=original');
+	        }
+	    }
+	    return;
+	}
+	document.body.addEventListener('load', function(event) {
+		const target = event.target;
+		if ($(target).is('img')) {
+		    reload_imgs(target);
+		}
+	}, true);
+	$('.page__main img, .WikiaMainContent img').each(function() {
+		if(this.complete) { 
+			reload_imgs(this);
+		}
+	});
+});
 
   //********************************************\\
 //** Worldmap (Template:MiddleEarthMap) [WIP] **\\
@@ -264,7 +222,7 @@ alert("sucess");
         document.addEventListener("mouseup", dragEnd);
         document.addEventListener("mousemove", update);
         return false;
-    }
+    };
     // Called when the cursor is released anywhere on the screen.
     // This event is only triggered after a call of dragStart. It stops the listeners for this event and the update event.
     var dragEnd = function(e) {
@@ -284,14 +242,14 @@ alert("sucess");
         document.removeEventListener("mousemove", update);
         document.removeEventListener("mouseup", dragEnd);
         return false;
-    }
+    };
     // Called whenever the mouse moves while it is dragging the map
     var update = function(e) {
         map.newX = map.offX + e.clientX - map.dragX;
         map.newY = map.offY + e.clientY - map.dragY;
         var newpos = map.newX.toString() + "px " + map.newY.toString() + "px";
         map.style.backgroundPosition = newpos;
-    }
+    };
     // Called whenever the mousewheel is scrolled while the cursor is inside the map
     var zoom = function(e) {
         e.preventDefault();

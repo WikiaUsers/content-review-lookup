@@ -1,9 +1,8 @@
-'use strict';
-
 /* Hide noscript class */
 document.querySelector(".noscript").style.display = 'none';
 
 !function( $, mw ) {
+	'use strict';
 	/* Fired whenever wiki content is added. (#mw-content-text, live preview, load page, etc.) */
 	mw.hook( 'wikipage.content' ).add( function( $wikipageContent ) {
 

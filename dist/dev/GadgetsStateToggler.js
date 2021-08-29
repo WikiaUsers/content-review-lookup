@@ -188,7 +188,7 @@ mw.loader.using(["mediawiki.user"]).then(
 
                                 /* - button : dropdown : content : noList : text- */
 
-                                nkch.gst.el.button.dropdown.content.noList.text.$e.innerHTML = i18n.msg("no-gadgets").plain();
+                                nkch.gst.el.button.dropdown.content.noList.text.$e.innerHTML = i18n.msg("no-gadgets").escape();
                                 nkch.gst.el.button.dropdown.content.noList.$e.appendChild(nkch.gst.el.button.dropdown.content.noList.text.$e);
                             }
                         }

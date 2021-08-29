@@ -1,4 +1,4 @@
-/** MediaWiki:Wikia.js - Loads for every user using the Oasis skin. **/
+/** MediaWiki:Fandomdesktop.js - Loads for every user using the Oasis skin. **/
 
 /* Configuration for AddRailModule */
 window.AddRailModule = [
@@ -18,10 +18,6 @@ window.ajaxRefresh = 30000;
 
 /* Configuration for EraIcons */
 window.useIncludedStylesheet = true;
-
-/* Configuration for AjaxRC */
-window.ajaxSpecialPages = ["Log", "Log/upload", "Log/newusers"];
-window.ajaxRefresh = 30000;
 
 /* Configuration for TopicBlockList */
 TBL_GROUP = "hypo-en";

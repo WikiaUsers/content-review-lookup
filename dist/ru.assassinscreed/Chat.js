@@ -1,1 +1,0 @@
-importScriptPage('SpeedEmoticon/latest', 'korniux');

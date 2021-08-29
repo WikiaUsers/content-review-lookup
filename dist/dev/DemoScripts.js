@@ -198,6 +198,12 @@
             styles: 'MediaWiki:GlobalNavigationIcons.css'
         },
 
+		HydraRevived: {
+			page: "HydraRevived",
+			scripts: "MediaWiki:HydraRevived.js",
+			styles: "MediaWiki:HydraRevived.css"
+		},
+
         InfoWidgets: {
             selector: '#infowidgets-demo',
             styles: 'MediaWiki:InfoWidgets/demo.css',

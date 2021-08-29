@@ -11,6 +11,6 @@
     mw.hook('dev.wds').add(function(wds) {
         wds.render(mw.util.$content.find('#dev-wds-demo'));
     });
-    importArticle({ type: 'script', article: 'u:dev:WDSIcons/code.js' });
+    importArticle({ type: 'script', article: 'u:dev:MediaWiki:WDSIcons/code.js' });
 }(this, mediaWiki));
 /* </nowiki> */

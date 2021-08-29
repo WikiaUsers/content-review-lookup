@@ -41,7 +41,7 @@ $.when(
 	// Pages
 	var allowedPages = [
 		'Module:Inventory_slot/Tooltips',
-		'Module:Inventory_slot/Test'
+		// 'Module:Inventory_slot/Test', // used only when testing with user script
 	];
 	if (($.inArray(mw.config.get('wgPageName'), allowedPages) === -1) || window.TooltipsEditorLoaded) return;
 	

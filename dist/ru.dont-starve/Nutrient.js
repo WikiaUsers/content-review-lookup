@@ -1,5 +1,5 @@
 switch ( mw.config.get('wgPageName') ) {
-    case 'Удобрения':
+    case 'Удобрения', 'Шаблон:Nutrients':
     	
 var holemode = 9;
 var plants = [];

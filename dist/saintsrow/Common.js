@@ -1,5 +1,5 @@
-var debugcolour = 'blue';  //Change the colour to confirm cache updates
-var debugversion = '1629298206509';
+var debugcolour = 'green';  //Change the colour to confirm cache updates
+var debugversion = '1629299765784';
 
 window.test452 = { ready:false, complete:false};
 window.debug452 = function(out, alert) { if (mw.config.get("wgUserName") == "452") { if ( ["object", "null", "function"].indexOf(typeof out) == -1) console.log(new Date().toJSON()+" "+out); else { console.log(new Date().toJSON()+" object:"); console.log(out); } if (typeof alert != "undefined") window.alert(out); } }
@@ -11,7 +11,7 @@ $(function() { /* Run when page has loaded */
 
   initScripts();
 
-  $('.WikiaArticle a.external[href*="//saintsrow.fandom.com"][target="_blank"]').attr("target","");
+  $('.page-content a.external[href*="//saintsrow.fandom.com"][target="_blank"]').attr("target","");
 
   $("#ToggleCSS").html( $("<a>", { html:"Toggle CSS" }).on("click", function() { toggleCSS() }) );
 
@@ -65,7 +65,7 @@ $(function() { /* Run when page has loaded */
   if (mw.config.get("wgCanonicalSpecialPageName") == "Movepage" && $("#wpNewTitleNs select").val() == 6) $('#wpLeaveRedirect input[name=wpLeaveRedirect]').attr('checked', false); //uncheck redirect box by default when moving files.
 
   //Display count at the top of unordered lists on special pages for easier counting (whatlinkshere, and others.)
-  $(".ns-special .WikiaArticle ul:not(.counted)").each(function(){  
+  $(".ns-special .page-content ul:not(.counted)").each(function(){  
 	if ($(">li", this).length != 50 && $(">li", this).length != $("input[name=limit]").attr("value") && $(">li", this).length > 15) $(this).addClass("counted").before("<p>Displaying "+$(">li", this).length+"</p>");  
   }); /* UCP: works, unusedfiles now has different counter. */
 
@@ -143,7 +143,7 @@ $(function() { /* Run when page has loaded */
   /* Add countdown to cached special pages.  */
   if (mw.config.get("wgNamespaceNumber") == -1) {
 	var datestring = $('*:contains("The following data is cached, and was last updated")');
-	if (datestring.length) {
+	if (datestring.length && !$("#UpdateCountdown").length) {
 	  founddate = datestring[datestring.length-1].innerHTML.match(/updated (.*). A/)[1];
 	  now = new Date();
 	  now_utc = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
@@ -154,8 +154,8 @@ $(function() { /* Run when page has loaded */
 	    var left = diff>86400000?(new Date(diff).toISOString().substr(8, 2) - 1)+" days, ":"";
 	    left += new Date(diff).toISOString().substr(11, 8);
 
-	    $(datestring[datestring.length-1]).append("<div>Time left until next update: "+left+"</div>");
-	  } else $(datestring[datestring.length-1]).append("<div>The special page cache update is overdue.</div>");
+	    $(datestring[datestring.length-1]).append("<div id='UpdateCountdown'>Time left until next update: "+left+"</div>");
+	  } else $(datestring[datestring.length-1]).append("<div id='UpdateCountdown'>The special page cache update is overdue.</div>");
 	}
 
   } //end special pages countdown
@@ -231,7 +231,7 @@ $(document).on('readystatechange', function() {
 
 	if ($('.WikiaRail section').length && !$("#NewFilesModule").length) {
 	  // Only add it ''once''
-	  $('.WikiaRail>div>section:last-of-type').after("<section id='NewFilesModule' class='rail-module loading'><h2><a href='/Special:NewFiles'>New Files</a><a style='float:right' href='/Special:Upload'><button>Upload");
+	  $('.WikiaRail section:last-of-type').after("<section id='NewFilesModule' class='rail-module loading'><h2><a href='/Special:NewFiles'>New Files</a><a style='float:right' href='/Special:Upload'><button>Upload");
 	  $.get("/Special:NewFiles", function(NewFilesPage) {
 		$("#NewFilesModule").removeClass("loading");
 		if (!$('.wikia-gallery', NewFilesPage).length) { console.log("No NewFiles list."); return; }
@@ -422,7 +422,7 @@ window.initScripts = function() {
 
     debug452("usericons debug - ns2:"+$(".ns-2").length +", ns3:"+$(".ns-3").length+", profile: "+$(".mw-special-UserProfileActivity").length+", contribs: "+$(".mw-special-Contributions").length);
     if ($(".ns-2").length || $(".ns-3").length || $(".mw-special-UserProfileActivity").length || $(".mw-special-Contributions").length)	
-	loadScripts.push('u:sr:MediaWiki:Common.js/usericons.js');	// Import custom usericons -custom
+	loadScripts.push('u:sr:MediaWiki:Common.js/usericons.js');	// Import custom usericons -custom.
 
 //    if (mw.config.get("wgPageName") == "Special:DeadVideos")
 //	loadScripts.push('u:sr:MediaWiki:Common.js/DeadVideos.js');	// little use now

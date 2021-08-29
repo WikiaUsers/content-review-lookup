@@ -5,7 +5,7 @@
 */
 
 mw.loader.using('mediawiki.api').then(function() {
-	if ([0, 500, 1200].indexOf(mw.config.get('wgNamespaceNumber')) === -1 || window.customCommentsLoaded) {
+	if ([0, 500, 1200].indexOf(mw.config.get('wgNamespaceNumber')) === -1 || window.customCommentsLoaded || mw.config.get("wgIsMainPage")) {
 		return;
 	}
 	window.customCommentsLoaded = true;

@@ -28,8 +28,8 @@ window.dev.i18n.overrides = window.dev.i18n.overrides || {};
 window.dev.i18n.overrides['NoLicenseWarning'] = window.dev.i18n.overrides['NoLicenseWarning'] || {};
 
 // Add custom content instead of default messages
-window.dev.i18n.overrides['NoLicenseWarning']['warning-text'] = 'You are trying to upload a file to {{SITENAME}} without selecting any license. Please do be infromed that any unlicensed file may be removed. ';
-window.dev.i18n.overrides['NoLicenseWarning']['rejected-text'] = 'Your file has been rejected from {{SITENAME}}. Please contanct a moderator for further assistance.  ';
+window.dev.i18n.overrides['NoLicenseWarning']['warning-text'] = 'Please select a license before proceding. Please do be infromed that any unlicensed file may be removed. ';
+window.dev.i18n.overrides['NoLicenseWarning']['rejected-text'] = 'Your file has been rejected due to not selecting the appropriate license. Please contanct a moderator for further assistance.  ';
 
 // Configuration for NoLicenseWarning
 window.NoLicenseWarning = {

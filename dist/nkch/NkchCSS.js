@@ -12,10 +12,10 @@ if (!nkch.css.isActive) {
     const versions = new Object();
     Object.defineProperties(versions, {
         "nkchCSS": {
-            value: "2.4.0",
+            value: "2.5.0",
         },
         "codeMirror": {
-            value: "5.62.0",
+            value: "5.62.3",
         },
         "jQueryUI": {
             value: "1.12.1",
@@ -93,46 +93,60 @@ if (!nkch.css.isActive) {
     /* ~ elements ~ */
     nkch.css.el = {
         style: {
-            $e: document.createElement("style")
+            $e: document.createElement("style"),
+            $classes: ["nkch-css__style"]
         },
         main: {
             $e: document.createElement("div"),
+            $classes: ["nkch-css"],
             menu: {
                 $e: document.createElement("div"),
+                $classes: ["nkch-css__menu"],
                 title: {
                     $e: document.createElement("div"),
+                    $classes: ["nkch-css__title"],
                     text: {
-                        $e: document.createElement("div")
+                        $e: document.createElement("div"),
+                        $classes: ["nkch-css__title-text"]
                     },
                     info: {
-                        $e: "..."
+                        $e: "...",
+                        $classes: ["nkch-css__title-info"]
                     }
                 },
                 tools: {
                     $e: document.createElement("div"),
+                    $classes: ["nkch-css__tools", "wds-button-group"],
                     beautify: {
-                        $e: document.createElement("button")
+                        $e: document.createElement("button"),
+                        $classes: ["nkch-css__button", "nkch-css__tools-button", "nkch-css__tools-button--beautify", "wds-button", "wds-is-secondary"]
                     },
                     toggle: {
-                        $e: document.createElement("button")
+                        $e: document.createElement("button"),
+                        $classes: ["nkch-css__button", "nkch-css__tools-button", "nkch-css__tools-button--toggle", "wds-button", "wds-is-secondary"]
                     },
                     close: {
-                        $e: document.createElement("button")
+                        $e: document.createElement("button"),
+                        $classes: ["nkch-css__button", "nkch-css__tools-button", "nkch-css__tools-button--close", "wds-button", "wds-is-secondary"]
                     }
                 }
             },
             textarea: {
-                $e: document.createElement("div")
+                $e: document.createElement("div"),
+                $classes: ["nkch-css__text"]
             }
         },
         toolbarButton: {
             $e: document.createElement("li"),
+            $classes: ["nkch-css__toolbar-button"],
             link: {
-                $e: document.createElement("a")
+                $e: document.createElement("a"),
+                $classes: ["nkch-css__toolbar-button-link"]
             }
         },
         communityBarButton: {
-            $e: document.createElement("a")
+            $e: document.createElement("a"),
+            $classes: ["nkch-css__community-bar-button", "wds-community-bar__nkchCSS"]
         }
     };
 
@@ -152,36 +166,33 @@ if (!nkch.css.isActive) {
                         }
                     }
 
+                    /* ~ latest jQueryUI (just in case) ~ */
                     mw.loader.load("https://ajax.googleapis.com/ajax/libs/jqueryui/" + versions.jQueryUI + "/jquery-ui.css", "text/css");
                     mw.loader.getScript("https://ajax.googleapis.com/ajax/libs/jqueryui/" + versions.jQueryUI + "/jquery-ui.js").then(
                         function () {
                             nkch.css.isDisabled = false;
                             nkch.css.cookiesValue = "";
 
+                            function addClasses(element) {
+                                element.$classes.forEach(function (c) {
+                                    element.$e.classList.add(c)
+                                });
+                            }
+
                             /* ~ style ~ */
+                            nkch.css.el.style.$e.setAttribute("type", "text/css");
+                            addClasses(nkch.css.el.style);
+
                             document.head.appendChild(nkch.css.el.style.$e);
 
                             /* ~ main ~ */
-                            nkch.css.el.main.$e.classList.add("nkch-css", "is-disabled");
-
-                            mw.util.addCSS(".nkch-css {" +
-                                "background-color: rgba(var(--theme-page-background-color--rgb), .7);" +
-                                "backdrop-filter: blur(10px);" +
-                                "border: 1px solid var(--theme-border-color);" +
-                                "border-radius: 10px;" +
-                                "bottom: 50px;" +
-                                "height: " + options.defaultHeight + ";" +
-                                "position: fixed;" +
-                                "right: 20px;" +
-                                "width: " + options.defaultWidth + ";" +
-                                "z-index: 9999" +
-                                "}");
-                            mw.util.addCSS(".nkch-css.is-disabled { visibility: hidden; }");
+                            addClasses(nkch.css.el.main);
+                            nkch.css.el.main.$e.classList.add("is-disabled");
 
                             document.body.after(nkch.css.el.main.$e);
 
                             $(nkch.css.el.main.$e).draggable({
-                                cancel: ".nkch-css-text, .nkch-css-popup",
+                                cancel: ".nkch-css__text, .nkch-css__popup",
                                 opacity: 0.8
                             }).resizable({
                                 ghost: true,
@@ -190,43 +201,33 @@ if (!nkch.css.isActive) {
                                 minWidth: 450
                             });
 
-                            /* ~ main : menu ~ */
-                            nkch.css.el.main.menu.$e.classList.add("nkch-css-menu");
+                            Object.assign(nkch.css.el.main.$e.style, {
+                                position: "fixed",
+                                height: options.defaultHeight,
+                                width: options.defaultWidth
+                            });
 
-                            mw.util.addCSS(".nkch-css-menu {" +
-                                "align-items: center;" +
-                                "color: var(--theme-page-text-color);" +
-                                "cursor: default;" +
-                                "display: flex;" +
-                                "font-family: 'Rubik', sans-serif;" +
-                                "font-size: 18px;" +
-                                "justify-content: space-between;" +
-                                "height: 44px;" +
-                                "padding: 0 10px;" +
-                                "}");
+                            /* ~ main : menu ~ */
+                            addClasses(nkch.css.el.main.menu);
 
                             nkch.css.el.main.$e.appendChild(nkch.css.el.main.menu.$e);
 
                             /* ~ main : menu : title ~ */
-                            nkch.css.el.main.menu.title.$e.classList.add("nkch-css-title");
-
-                            mw.util.addCSS(".nkch-css-title { align-items: center; display: flex; max-width: 75%; }");
+                            addClasses(nkch.css.el.main.menu.title);
 
                             nkch.css.el.main.menu.$e.appendChild(nkch.css.el.main.menu.title.$e);
 
                             /* ~ main : menu : title : text ~ */
-                            nkch.css.el.main.menu.title.text.$e.classList.add("nkch-css-title-text");
+                            addClasses(nkch.css.el.main.menu.title.text);
 
                             nkch.css.el.main.menu.title.text.$e.innerHTML = options.title;
-
-                            mw.util.addCSS(".nkch-css-title-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }");
 
                             nkch.css.el.main.menu.title.$e.appendChild(nkch.css.el.main.menu.title.text.$e);
 
                             /* ~ main : menu : title : info ~ */
                             if (options.hideInfo === false) {
                                 nkch.css.el.main.menu.title.info.$e = new OO.ui.PopupButtonWidget({
-                                    classes: ["nkch-css-button", "nkch-css-title-info"],
+                                    classes: ["nkch-css__title-info"],
                                     framed: false,
                                     icon: "info",
                                     popup: {
@@ -237,7 +238,7 @@ if (!nkch.css.isActive) {
                                             "<br><a href='https://beautifier.io'>js-beautify</a> v. " + versions.jsBeautify +
                                             "</div>"),
                                         align: "center",
-                                        classes: ["nkch-css-popup"],
+                                        classes: ["nkch-css__popup"],
                                         head: true,
                                         hideCloseButton: true,
                                         label: "nkchCSS v. " + versions.nkchCSS,
@@ -245,34 +246,25 @@ if (!nkch.css.isActive) {
                                     }
                                 });
 
-                                mw.util.addCSS(".nkch-css-title-info > .oo-ui-buttonElement-button { padding: 5px 6px; }");
-                                mw.util.addCSS(".nkch-css-popup { font-size: initial; z-index: 99999; }");
-                                mw.util.addCSS(".nkch-css-popup .oo-ui-labelElement-label { font-size: initial; margin-bottom: 5px; }");
-                                mw.util.addCSS(".nkch-css-popup .oo-ui-popupWidget-body { font-size: initial; }");
-                                mw.util.addCSS(".nkch-css-popup .oo-ui-popupWidget-head > .oo-ui-buttonWidget > .oo-ui-buttonElement-button .oo-ui-icon-close { min-height: 18px; min-width: 18px; }");
-
                                 nkch.css.el.main.menu.title.$e.appendChild(nkch.css.el.main.menu.title.info.$e.$element[0]);
                             }
 
                             /* ~ main : menu : tools ~ */
-                            nkch.css.el.main.menu.tools.$e.classList.add("nkch-css-tools", "wds-button-group");
+                            addClasses(nkch.css.el.main.menu.tools);
 
                             nkch.css.el.main.menu.$e.appendChild(nkch.css.el.main.menu.tools.$e);
 
                             /* ~ main : menu : tools : buttons ~ */
-                            mw.util.addCSS(".nkch-css-tools .wds-button.wds-is-secondary { padding: 5px 6px; }");
 
                             /* ~ main : menu : tools : buttons : beautify ~ */
-                            nkch.css.el.main.menu.tools.beautify.$e.id = "nkch-css-tools-button-beautify";
-                            nkch.css.el.main.menu.tools.beautify.$e.classList.add("nkch-css-button", "wds-button", "wds-is-secondary");
+                            addClasses(nkch.css.el.main.menu.tools.beautify);
 
                             nkch.css.el.main.menu.tools.beautify.$e.appendChild(wds.icon("star-small"));
 
                             nkch.css.el.main.menu.tools.$e.appendChild(nkch.css.el.main.menu.tools.beautify.$e);
 
                             /* ~ main : menu : tools : buttons : toggle ~ */
-                            nkch.css.el.main.menu.tools.toggle.$e.id = "nkch-css-tools-button-toggle";
-                            nkch.css.el.main.menu.tools.toggle.$e.classList.add("nkch-css-button", "wds-button", "wds-is-secondary");
+                            addClasses(nkch.css.el.main.menu.tools.toggle);
 
                             nkch.css.el.main.menu.tools.toggle.$e.appendChild(wds.icon("eye-small"));
                             nkch.css.el.main.menu.tools.toggle.$e.querySelector("svg").style.fill = "var(--theme-success-color)";
@@ -280,40 +272,34 @@ if (!nkch.css.isActive) {
                             nkch.css.el.main.menu.tools.$e.appendChild(nkch.css.el.main.menu.tools.toggle.$e);
 
                             /* ~ main : menu : tools : buttons : close ~ */
-                            nkch.css.el.main.menu.tools.close.$e.id = "nkch-css-tools-button-close";
-                            nkch.css.el.main.menu.tools.close.$e.classList.add("nkch-css-button", "wds-button", "wds-is-secondary");
+                            addClasses(nkch.css.el.main.menu.tools.close);
 
                             nkch.css.el.main.menu.tools.close.$e.appendChild(wds.icon("close-small"));
 
-                            mw.util.addCSS("#nkch-css-tools-button-close { border-color: var(--theme-alert-color); color: var(--theme-alert-color) }");
-                            mw.util.addCSS("#nkch-css-tools-button-close:hover { border-color: var(--theme-alert-color--hover); color: var(--theme-alert-color--hover) }");
-
                             nkch.css.el.main.menu.tools.close.$e.addEventListener("click", function () {
-                                nkch.actions.close();
+                                nkch.css.actions.close();
                             });
 
                             nkch.css.el.main.menu.tools.$e.appendChild(nkch.css.el.main.menu.tools.close.$e);
 
                             /* ~ main : textarea ~ */
-                            nkch.css.el.main.textarea.$e.classList.add("nkch-css-text");
-
-                            mw.util.addCSS(".nkch-css-text { height: calc(100% - 44px); padding: 0 10px 10px 10px }");
+                            addClasses(nkch.css.el.main.textarea);
 
                             nkch.css.el.main.$e.appendChild(nkch.css.el.main.textarea.$e);
 
                             if (mw.config.get("skin") === "fandomdesktop" || mw.config.get("skin") === "oasis") {
                                 /* ~ toolbarButton ~ */
+                                addClasses(nkch.css.el.toolbarButton);
+
                                 document.querySelector("#WikiaBar .toolbar .tools").appendChild(nkch.css.el.toolbarButton.$e);
 
                                 /* ~ toolbarButton : link ~ */
-                                nkch.css.el.toolbarButton.link.$e.classList.add("nkch-css-toolbar-button");
+                                addClasses(nkch.css.el.toolbarButton.link);
 
                                 nkch.css.el.toolbarButton.link.$e.innerHTML = "nkchCSS";
 
-                                mw.util.addCSS(".nkch-css-toolbar-button { cursor: pointer }");
-
                                 nkch.css.el.toolbarButton.link.$e.addEventListener("click", function () {
-                                    nkch.actions.open();
+                                    nkch.css.actions.open();
                                 });
 
                                 nkch.css.el.toolbarButton.$e.appendChild(nkch.css.el.toolbarButton.link.$e);
@@ -326,15 +312,14 @@ if (!nkch.css.isActive) {
                                     document.querySelector(".wds-community-bar__navigation").before(nkch.css.el.communityBarButton.$e);
                                 }
 
-                                nkch.css.el.communityBarButton.$e.classList.add("wds-community-bar__nkchCSS");
+                                addClasses(nkch.css.el.communityBarButton);
 
                                 nkch.css.el.communityBarButton.$e.addEventListener("click", function () {
-                                    nkch.actions.open();
+                                    nkch.css.actions.open();
                                 });
 
                                 nkch.css.el.communityBarButton.$e.appendChild(wds.icon("preformat-small"));
 
-                                mw.util.addCSS(".wds-community-bar__nkchCSS { align-items: center; color: inherit; cursor: pointer; display: flex; height: 44px; justify-content: center; width: 44px; }");
                             }
 
                             /* ~ load CCS ~ */
@@ -379,10 +364,10 @@ if (!nkch.css.isActive) {
                                                 colorpicker: {
                                                     mode: "edit",
                                                     onChange: function () {
-                                                        nkch.actions.updateCode(editor.getValue());
+                                                        nkch.css.actions.updateCode(editor.getValue());
                                                     },
                                                     onLastUpdate: function () {
-                                                        nkch.actions.updateCode(editor.getValue());
+                                                        nkch.css.actions.updateCode(editor.getValue());
                                                     }
                                                 },
                                                 extraKeys: {
@@ -395,18 +380,21 @@ if (!nkch.css.isActive) {
                                             /* ~ shiny themes ~ */
                                             if (typeof nkch_css_configs === "object" && typeof nkch_css_configs.themes === "object") {
                                                 if (typeof options.themes === "object") {
-                                                    if (document.body.classList.contains("theme-fandomdesktop-light")) {
-                                                        if (typeof options.themes.light === "string") {
-                                                            Object.assign(editorOptions, {
-                                                                theme: options.themes.light
-                                                            })
-                                                        }
-                                                    } else if (document.body.classList.contains("theme-fandomdesktop-dark")) {
-                                                        if (typeof options.themes.dark === "string") {
-                                                            Object.assign(editorOptions, {
-                                                                theme: options.themes.dark
-                                                            })
-                                                        }
+                                                    switch (mw.config.get("isDarkTheme")) {
+                                                        case false:
+                                                            if (typeof options.themes.light === "string") {
+                                                                Object.assign(editorOptions, {
+                                                                    theme: options.themes.light
+                                                                })
+                                                            }
+                                                            break;
+                                                        case true:
+                                                            if (typeof options.themes.dark === "string") {
+                                                                Object.assign(editorOptions, {
+                                                                    theme: options.themes.dark
+                                                                })
+                                                            }
+                                                            break;
                                                     }
                                                 }
                                             } else if (typeof options.theme === "string") {
@@ -432,16 +420,16 @@ if (!nkch.css.isActive) {
                                             var editor = CodeMirror(nkch.css.el.main.textarea.$e, editorOptions);
                                             emmetCodeMirror(editor);
 
-                                            mw.util.addCSS(".CodeMirror { border-radius: 5px; height: 100%; }");
-                                            mw.util.addCSS(".codemirror-colorpicker { z-index: 99999 !important; }");
-
                                             if (typeof nkch_css_configs === "object" && typeof nkch_css_configs.themes === "object") {
                                                 setInterval(
                                                     function () {
-                                                        if (document.body.classList.contains("theme-fandomdesktop-light") && !document.body.classList.contains("theme-fandomdesktop-dark")) {
-                                                            editor.setOption("theme", options.themes.light);
-                                                        } else if (document.body.classList.contains("theme-fandomdesktop-dark") && !document.body.classList.contains("theme-fandomdesktop-light")) {
-                                                            editor.setOption("theme", options.themes.dark);
+                                                        switch (mw.config.get("isDarkTheme")) {
+                                                            case false:
+                                                                editor.setOption("theme", options.themes.light);
+                                                                break;
+                                                            case true:
+                                                                editor.setOption("theme", options.themes.dark);
+                                                                break;
                                                         }
                                                     },
                                                     1000
@@ -450,17 +438,18 @@ if (!nkch.css.isActive) {
 
                                             /* ~ some actions ~ */
                                             nkch.css.el.main.menu.tools.toggle.$e.addEventListener("click", function () {
-                                                nkch.actions.toggle(editor.getValue());
+                                                nkch.css.actions.toggle(editor.getValue());
                                             });
 
                                             nkch.css.el.main.menu.tools.beautify.$e.addEventListener("click", function () {
-                                                nkch.actions.beautify(editor.getValue());
+                                                nkch.css.actions.beautify(editor.getValue());
                                             });
 
                                             const textarea = document.querySelector(".nkch-css .CodeMirror");
+                                            textarea.classList.add("nkch-css__editor");
 
                                             textarea.addEventListener("keyup", function () {
-                                                nkch.actions.updateCode(editor.getValue());
+                                                nkch.css.actions.updateCode(editor.getValue());
                                             });
 
                                             function preventUnload(e) {
@@ -479,7 +468,7 @@ if (!nkch.css.isActive) {
                                                 nkch.css.cookiePath = "/wiki";
                                             }
 
-                                            nkch.actions = {
+                                            nkch.css.actions = {
                                                 updateCode: function (css) {
                                                     if (nkch.css.isDisabled === false) {
                                                         nkch.css.el.style.$e.innerHTML = css;
@@ -535,7 +524,7 @@ if (!nkch.css.isActive) {
                                             };
 
                                             if (options.saveWithCookies === true && options.implementOnLoad === true) {
-                                                nkch.actions.updateCode(nkch.css.cookiesValue);
+                                                nkch.css.actions.updateCode(nkch.css.cookiesValue);
                                             };
                                         }
                                     );
@@ -547,9 +536,12 @@ if (!nkch.css.isActive) {
             );
 
             /* ~ import stuff ~ */
-            importArticle({
+            importArticles({
                 type: "script",
                 article: "u:dev:MediaWiki:WDSIcons/code.js"
+            }, {
+                type: "style",
+                article: "u:nkch:MediaWiki:nkchCSS.css"
             });
         }
     );

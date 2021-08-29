@@ -24,7 +24,7 @@
      article: "MediaWiki:Common.js"     // Loads the MediaWiki:Common.js file
  });
  
-//Generates building information table in each building page
+// Generates building information table in each building page
 function escRegEx(str) { return str.replace(/[\[\]\/\{\}\(\)\-\?\$\*\+\.\\\^\|]/g, "\\$&"); }
 function prntf(s,r)
 {

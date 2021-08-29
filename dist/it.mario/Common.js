@@ -5,7 +5,7 @@ function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
     $("span.insertusername").html(wgUserName);
  }
- addOnloadHook(UserNameReplace);
+$(UserNameReplace);
 /* End of the {{USERNAME}} replacement */
 
  /* Funzione copiata da http://nonciclopedia.wikia.com */
@@ -26,5 +26,13 @@ function UserNameReplace() {
         'u:kocka:MediaWiki:AjaxThreadDelete/code.js'
     ]
 });
- 
- addOnloadHook(alertLoad)
+     
+$(alertLoad)
+
+window.ImprovedTabbers = {
+        HideHeaderTitle: true,
+        HideContentTitle: true,
+        HumanReadableAnchor: true,
+        SynchroInfoboxes: false,
+        SynchroTabbers: false,
+};

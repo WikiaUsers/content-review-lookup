@@ -7741,6 +7741,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "elitedark": {
+                "name": "Elite Dark",
+                "types": [
+                    "dark",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "eliteolympus": {
                 "name": "Elite Olympus",
                 "types": [
@@ -11498,6 +11514,32 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "grandgemstone": {
+                "name": "Grand Gemstone",
+                "types": [
+                    "gemstone",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "black"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "grandrainbow": {
                 "name": "Grand Rainbow",
                 "types": [
@@ -11510,6 +11552,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "15_hours_15",
                 "rarity": 3,
                 "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "grandtropic": {
+                "name": "Grand Tropic",
+                "types": [
+                    "tropic",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]
@@ -13133,6 +13191,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "17_hours_17",
                 "rarity": 3
+            },
+            "hypercosmic": {
+                "name": "Hyper Cosmic",
+                "types": [
+                    "cosmic",
+                    "black",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
             },
             "hyperdiamond": {
                 "name": "Hyper Diamond",

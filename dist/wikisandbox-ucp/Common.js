@@ -1,4 +1,15 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+
+// How to import from dev on a GP wiki
+mw.loader.getScript('https://dev.fandom.com/index.php?title=MediaWiki:ArticlesAsResources.js&action=raw&ctype=text/javascript').then(function() {
+    importArticles({
+        type: 'script',
+        articles: [
+            'u:dev:Discord.js',
+        ],
+    });
+});
+
 /* Front Page 3-column height equalization                              */
 /* ******************************************************************** */
 // Author:  Shawn Bruckner

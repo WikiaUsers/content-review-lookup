@@ -28,7 +28,11 @@
             'small': 18,
             'tiny': 12
         },
-        badge: 18
+        badge: {
+            'standard': 18,
+            'small': 14
+        },
+        vertical: 24
     };
 
     /**
@@ -44,7 +48,9 @@
     var registry = {
         icon: [],
         badge: [],
-        company: []
+        company: [],
+        brand: [],
+        vertical: []
     };
 
     /**
@@ -55,7 +61,9 @@
     var prefix = {
         icon: 'wds-icons-',
         badge: 'wds-avatar-badges-',
-        company: 'wds-company-'
+        company: 'wds-company-',
+        brand: 'wds-brand-',
+        vertical: 'wds-verticals-'
     };
 
      /**
@@ -104,13 +112,7 @@
                     'style': 'position: absolute; height: 0px; width: 0px; overflow: hidden;',
                 });
             // Restriction to valid assets.
-            $sprite.children([
-                'symbol[id^="wds-avatar-icon"]',
-                'symbol#wds-player-icon-play'
-            ].join(',')).remove();
-            // Mask IDs need to be unique - temp fix issue by renaming the problematic mask.
-            $sprite.find('symbol#wds-icons-external-small g mask').attr('id', 'mask-3');
-            $sprite.find('symbol#wds-icons-external-small g g').attr('mask', 'url(#mask-3)');
+            $sprite.children('symbol#wds-player-icon-play').remove();
             // Remove clipping paths for some icons that were being cut off.
             $sprite.find('symbol g[clip-path="url(#clip0)"]').attr('clip-path', null);
             // Populate registry.
@@ -141,6 +143,8 @@
                 icon: icon,
                 badge: badge,
                 company: company,
+                brand: brand,
+                vertical: vertical,
                 render: render
             };
             // Dispatch hook.
@@ -183,11 +187,30 @@
         if (!validate(n, 'badge')) {
             return;
         }
-        var s = sizemap.badge,
-            i = prefix.badge + n;
+        var i = prefix.badge + n,
+            sn = n.split('-').slice(-1)[0],
+            sv = sizemap.badge.hasOwnProperty(sn),
+            s = sv ? sizemap.badge[sn] : sizemap.badge.standard;
         return asset(i, $.extend({}, {
                 'data-id': i,
                 'viewBox': [0, 0, s, s].join(' ')
+            }, (o || {})));
+    }
+
+    /**
+     * WDS brand asset generator.
+     * @method       brand
+     * @param        {String} n icon name
+     * @param        {Object} o attributes
+     * @returns      {SVGElement}
+     */
+    function brand(n, o) {
+        if (!validate(n, 'brand')) {
+            return;
+        }
+        var i = prefix.brand + n;
+        return asset(i, $.extend({}, {
+                'data-id': i
             }, (o || {})));
     }
 
@@ -202,11 +225,10 @@
         if (!validate(n, 'company')) {
             return;
         }
-        var i = prefix.company + n,
-            a = $.extend({}, {
+        var i = prefix.company + n;
+        return asset(i, $.extend({}, {
                 'data-id': i
-            }, (o || {}));
-        return asset(i, a);
+            }, (o || {})));
     }
 
      /**
@@ -220,22 +242,44 @@
         if (!validate(n, 'icon')) {
             return;
         }
+        o = o || {};
         var i = prefix.icon + n,
-            c = (o || {}).class ? (o || {}).class : '',
+            c = o.class ? o.class : '',
             sn = n.split('-').slice(-1)[0],
             sv = sizemap.icon.hasOwnProperty(sn),
             s = sv ? sizemap.icon[sn] : sizemap.icon.standard;
-        delete (o || {}).class;
-        var a = $.extend({}, {
+        delete o.class;
+        return asset(i, $.extend({}, {
+                'data-id': prefix.icon + n,
                 'height': s,
                 'width': s,
                 'viewBox': [0, 0, s, s].join(' '),
-                'class':
-                    ((sv && s !== 'standard') ? 'wds-icon wds-icon-' + sn : 'wds-icon') +
-                    (!c.length ? '' : ' ' + c),
-                'data-id': prefix.icon + n
-            }, (o || {}));
-        return asset(i, a);
+                'class': 'wds-icon' + (!sv ? '' : ' wds-icon-' + sn) +
+                    (!c.length ? '' : ' ' + c)
+            }, o));
+    }
+
+    /**
+     * WDS vertical asset generator.
+     * @method       vertical
+     * @param        {String} n badge name
+     * @param        {Object} o attributes
+     * @returns      {SVGElement}
+     */
+    function vertical(n, o) {
+        if (!validate(n, 'vertical')) {
+            return;
+        }
+        o = o || {};
+        var i = prefix.vertical + n,
+            c = o.class ? o.class : '',
+            s = sizemap.vertical;
+        delete o.class;
+        return asset(i, $.extend({}, {
+                'data-id': i,
+                'viewBox': [0, 0, s, s].join(' '),
+                'class': 'wds-icon wds-is-stroke-icon' + (!c.length ? '' : ' ' + c)
+            }, o));
     }
 
     /**

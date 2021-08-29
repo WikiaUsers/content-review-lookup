@@ -592,7 +592,7 @@ mw.loader.using("jquery.client", function() {
 
         // @change Implement hook to determine whther wiki is dark or light-themed
         window.UCP.syntaxHighlight.isDarkWiki = function() {
-            return document.body.classList.contains( 'theme-fandomdesktop-dark' );
+            return mw.config.get( 'isDarkTheme' );
         };
 
         /**

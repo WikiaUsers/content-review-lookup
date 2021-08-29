@@ -48,7 +48,7 @@ var Konami = function() {
 }
  
         konami = new Konami()
-        konami.load("http://mspaintadventures.wikia.com/wiki/Code_Machine");
+        konami.load("https://mspaintadventures.fandom.com/wiki/Code_Machine");
  
 /*** END KONAMI CODE ***/
 
@@ -91,6 +91,6 @@ var Horse = function() {
 }
  
         horse = new Horse()
-        horse.load("http://mspaintadventures.wikia.com/wiki/Andrew_Hussie");
+        horse.load("https://mspaintadventures.fandom.com/wiki/Andrew_Hussie");
 
 /*** END HORSE CODE ***/

@@ -3,7 +3,6 @@
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:WikiaNotification/code.js',
         'u:dev:MediaWiki:ReferencePopups/code.js',
         'u:dev:MediaWiki:AddRailModule/code.js'
     ]

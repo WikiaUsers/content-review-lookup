@@ -6,7 +6,9 @@ $(function() {
 	
 	//initialize script-wide variables
 	var paramRegExp = /(\?|&)variant(?:=[^&]*)?(&|$)/g,
-		extRegExp = /(?:dark|default|light)\.css(%7[Cc]|$)/g,
+		extRegExp = new RegExp('((?:=|%7[Cc])ext\\.fandom\\.DesignSystem\\.'
+			+ '(?:GlobalNavigation\\.)?brand\\.(?:wikiaorg-)?)(dark|default|light)'
+			+ '(?:\\.css(?:%7[Cc]|&|$))', 'g'),
 		now = Math.floor(Date.now() / 1000),
 		scriptsReady = $.Deferred(),
 		themes = {
@@ -20,42 +22,37 @@ $(function() {
 			newTheme = 'user';
 		if (newTheme === themes.current) return;
 		
-		var cssVarLinks = $('link[href*="/wikia.php"][href*="controller=ThemeApi"]'
-			+ '[href*="method=themeVariables"]'),
-			indicator = $('.ThemeSelector-indicator');
-		
 		themes.current = newTheme;
+		$('.ThemeSelector-indicator').text(i18n[newTheme].plain());
 		
-		if (newTheme === 'user') {
-			indicator.text(i18n.user.plain());
-			
-			newTheme = themes.user;
-		} else {
-			indicator.text(i18n[newTheme].plain());
-		}
+		if (newTheme === 'user') newTheme = themes.user;
 		
-		if (newTheme === 'wiki') {
-			cssVarLinks.attr('href', function(i, v) {
-				return v.replace(paramRegExp, function(m, p1, p2) {
-					return p2 === '&' ? (p1 === '?' ? '?' : '&') : '';
-				});
+		$('link[href*="/wikia.php"][href*="controller=ThemeApi"]'
+			+ '[href*="method=themeVariables"]').attr('href', newTheme === 'wiki'
+			? function(i, v) {
+			return v.replace(paramRegExp, function(m, p1, p2) {
+				return p2 === '&' ? (p1 === '?' ? '?' : '&') : '';
 			});
-			
-			newTheme = themes.wiki;
-		} else {
-			cssVarLinks.attr('href', function(i, v) {
-				return !paramRegExp.test(v) ? v + '&variant=' + newTheme
-					: v.replace(paramRegExp, function(m, p1, p2) {
-					return p1 + 'variant=' + newTheme + p2;
-				});
+		} : function(i, v) {
+			return !paramRegExp.test(v) ? v + '&variant=' + newTheme : v.replace(paramRegExp,
+				function(m, p1, p2) {
+				return p1 + 'variant=' + newTheme + p2;
 			});
-		}
+		});
+		
+		if (newTheme === 'wiki') newTheme = themes.wiki;
 		
 		if ((newTheme === 'dark') != mw.config.get('isDarkTheme')) {
 			$('link[href*="/load.php"][href*=".brand."]').attr('href', function(i, v) {
-				return v.replace(extRegExp, function(m, p1) {
-					return newTheme + '.css' + p1;
-				});
+				var match = extRegExp.exec(v),
+					repIdx;
+				while (match) {
+					repIdx = match.index + match[1].length;
+					extRegExp.lastIndex = repIdx;
+					v = v.slice(0, repIdx) + newTheme + v.slice(repIdx + match[2].length);
+					match = extRegExp.exec(v);
+				}
+				return v;
 			});
 			$('body').removeClass('theme-fandomdesktop-light theme-fandomdesktop-dark')
 				.addClass('theme-fandomdesktop-' + newTheme);

@@ -9,7 +9,7 @@ mw.loader.using('mediawiki.api').then(function() {
         rvprop: 'content',
         rvslots: 'main'
     }).then(function(data) {
-        window.UserTagsJS = JSON.parse(data.query.pages[210341].revisions[0].slots.main['*']);
+        window.UserTagsJS = JSON.parse(data.query.pages[183267].revisions[0].slots.main['*']);
     });
 });
 

@@ -16,7 +16,7 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
     'AestheticsAllY': ['Coder','Alli1','Alli2'],
     'MarsDy': ['Mara1'],
-    'Cherrybombed': ['Coder','Cas1'],
+    'Cherrybombed': ['Cas1'],
     'ChicChick336': ['ContentMod','Designer'],
     'P l u m b l o s s m': ['Rollback'],
 };

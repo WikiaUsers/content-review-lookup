@@ -36,7 +36,7 @@ $(document).ready(function() {
 			var fieldset = $("#mw-content-text > fieldset"); // element that holds the "Hide transclusions | ..." string
 			var fieldsetText = fieldset.html(); // get raw HTML text of its contents
 			var firstPipe = fieldsetText.indexOf(pipe);
-			var secondPipe = fieldsetText.lastIndexOf(pipe);
+			var secondPipe = fieldsetText.indexOf(pipe, firstPipe + 1);
 			// inject
 			var newText = ''.concat(
 				fieldsetText.substring(0, firstPipe), " ",

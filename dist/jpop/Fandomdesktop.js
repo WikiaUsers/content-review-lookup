@@ -1,5 +1,1 @@
-/* Non-collapsed categories Fix */
-$(function() {
-    $('.page-footer__categories.wds-is-collapsed').removeClass('wds-is-collapsed');
-});
-/* End Non-collapsed categories Fix */
+/* JS used in this wiki can be found at MediaWiki:Common.js */

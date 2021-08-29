@@ -1,4 +1,13 @@
 mw.hook('wikipage.content').add(function() {
+	// Handle TOC navigation
+	window.addEventListener('hashchange', function () {
+		if (['Plot', 'Conclusion'].includes(location.hash.substring(1))) {
+			document.querySelectorAll('.show-more:not(.expanded) > .show-more-ctrl > button').forEach(function(el) {
+				el.click();
+			});
+		}
+	});
+	
 	document.querySelectorAll('.show-more').forEach(function(container) {
 
         var ctrl = container.querySelector('.show-more-ctrl');
@@ -21,7 +30,7 @@ mw.hook('wikipage.content').add(function() {
                 container.classList.remove('expanded');
                 btn.innerHTML = 'Show more';
                 if (container.getBoundingClientRect().top <= 0)
-                	window.scrollBy({top: container.getClientRects().top - 100, behavior: 'smooth'});
+                	window.scrollBy({top: container.getBoundingClientRect().top - 100, behavior: 'smooth'});
             } else {
                 container.classList.add('expanded');
                 btn.innerHTML = 'Show less';

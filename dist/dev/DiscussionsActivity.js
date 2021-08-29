@@ -1,594 +1,677 @@
 /**
  * @name DiscussionsActivity
  * @author Manuel de la Fuente (https://manuelfte.com)
+ * @author NoWayThisUsernameIsAlreadyOwnedBySomeone (https://dev.fandom.com/User:NoWayThisUsernameIsAlreadyOwnedBySomeone)
  * - Based on DiscussionsFeed (https://dev.fandom.com/wiki/DiscussionsFeed)
  *   by Flightmare (https://elderscrolls.fandom.com/wiki/User:Flightmare)
- * @version 0.9.9
+ * @version 0.10.0
  * @license CC-BY-SA-3.0
  * @description Creates a special page for latest Discussions messages
- * @todo Link to load more
- * @todo Option to filter between threads and comments
  */
-/* eslint-env browser */
-(function () {
-  'use strict';
+ 
+/*
+ * Features curremtly missing from pre-UCP version:
+ * - embeds
+ * - deleted, reported, locked status
+ * - auto refresh
+ * - show/hide deleted posts if user has permissions (&viewableOnly=false)
+ *
+ * Potential ideas for the future:
+ * - Filter by containerType
+ * - Filter to show only reported posts
+ * - Pop up a image lightbox on click, but preserve "open in new tab" via middle-mouse/ctrl+click
+ * - List extermal links for the post (because those are probably the most interesting)
+ * - Clean up localization keys to be more consistent (duplicate them temporarily)
+ * - Incremental updates for auto-refresh instead of getting all posts again
+ *   --> "&since=" + new Date(posts[0].creationData.epochSecond * 1000 + 1).toISOString();
+ * - "load more" button at the bottom
+ * - Fetch page titles from mediawiki instead of custom locale?
+ * - Option to filter between threads and comments
+ */
+(function(windows, mw) {
+  "use strict";
 
-  if ( window.DiscussionsActivityLoaded ) return;
+  if (window.DiscussionsActivityLoaded) return;
   window.DiscussionsActivityLoaded = true;
-
-  console.log('DiscussionsActivity v0.9.9');
   
-  const isFD = mw.config.get( "skin" ) === "fandomdesktop";
+  console.log('DiscussionsActivity v0.10.0');
 
-  var config = window.mw.config.get([
-    'wgCanonicalNamespace',
-    'wgScriptPath',
-    'wgServer',
-    'wgTitle',
-    'wgUserGroups',
-    'wgUserName',
-    'wgVersion'
+  const mwConfig = mw.config.get([
+    "wgArticlePath",
+    "wgCanonicalSpecialPageName",
+    "wgEnableDiscussions",
+    "wgNamespaceNumber",
+    "wgPageName",
+    "wgScriptPath",
+    "wgServerName",
+    "wgTitle",
   ]);
-  var i18n;
-  var isMod;
-  var canBlock;
-  var wallsEnabled = false;
-  var timeout;
-  var isUCP = config.wgVersion !== '1.19.24';
-  /**
-   * Escapes special characters
-   */
-  function escapeHTML (str) {
-    return (str ? window.mw.html.escape(str) : '');
-  }
-  /**
-   * Converts timestamp to "X time ago"
-   */
-  function epochToTimeAgo (epoch) {
-    var elapsed = (Math.floor(new Date().getTime()) - new Date(epoch * 1000)) / 1000;
-    var factors = [['seconds', 60], ['minutes', 60], ['hours', 24], ['days', 30], ['months', 12], ['years']];
-    var unit;
-    var i = 0;
 
-    for (; i < factors.length && elapsed >= factors[i][1]; i++) {
-      elapsed /= factors[i][1];
-    }
+  if (!mwConfig.wgEnableDiscussions) return;
 
-    unit = factors[i][0];
-    elapsed = Math.floor(elapsed);
+  const otherActivityPages = {
+    Recentchanges: true,
+    SocialActivity: true,
+    Newimages: true,
+  };
+  const isDiscussionsActivityPage =
+    (mwConfig.wgNamespaceNumber === -1 && mwConfig.wgTitle === "DiscussionsActivity") ||
+    /* Special case to load a demo on dev wiki */
+    (mwConfig.wgServerName === "dev.fandom.com" && mwConfig.wgPageName == "DiscussionsActivity/Demo");
+  const isOtherActivityPage = otherActivityPages[mwConfig.wgCanonicalSpecialPageName] === true;
 
-    return i18n(unit + '_ago_' + (elapsed > 1 ? 'plural' : 'singular'), elapsed).escape();
-  }
-  /**
-   * Gets the necessary information about each post
-   */
-  function postInfo (post) {
-    var data = {
-      title: escapeHTML(post._embedded.thread[0].title),
-      text: escapeHTML(post.rawContent.length > 250 ? post.rawContent.substring(0, 250).trim() + '...' : post.rawContent), // Trims the message to 250 characters if it's longer than that
-      userName: escapeHTML(post.createdBy.name),
-      userNameEncoded: null,
-      userID: post.createdBy.id,
-      avatarURL: post.createdBy.avatarUrl,
-      time: epochToTimeAgo(post.creationDate.epochSecond),
-      image: post._embedded.contentImages[0],
-      embed: post._embedded.openGraph,
-      messageID: post.id,
-      threadID: post.threadId,
-      forumName: escapeHTML(post.forumName),
-      forumID: post.forumId,
-      isReply: post.isReply,
-      isReported: (isMod ? post.isReported : undefined),
-      isLocked: post._embedded.thread[0].isLocked,
-      isDeleted: null,
-      isMessageDeleted: post.isDeleted,
-      isThreadDeleted: post._embedded.thread[0].isDeleted,
-      deleter: null,
-      deleterID: null,
-      tags: []
-    };
+  if (!isDiscussionsActivityPage && !isOtherActivityPage) return;
 
-    data.userNameEncoded = data.userName.replace(/ /g, '_'); // Username with spaces replaced with underscores (if any)
-    if (!data.avatarURL) {
-      data.avatarURL = 'https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest';
-    // Images within the 'messaging' folder need this to be resized, with the others is the opposite
-    } else if (data.avatarURL.indexOf('/messaging/') > -1) {
-      data.avatarURL = data.avatarURL.replace(/[^jpg]*$/, '') + '/revision/latest'; // That regex removes any extra parameters after the file extension
-    }
-    data.isDeleted = Boolean(data.isThreadDeleted || data.isMessageDeleted);
-    if (data.isMessageDeleted) {
-      data.deleter = post.lastDeletedBy.name;
-      data.deleterID = post.lastDeletedBy.id;
-    }
-    
-    if (!post.isReply && post._embedded && post._embedded.thread && post._embedded.thread[0] && post._embedded.thread[0].tags) {
-      post._embedded.thread[0].tags.forEach(function(tag) {
-        data.tags.push({
-          title: escapeHTML(tag.articleTitle)
-        });
-      });
-    }
-
-    return data;
-  }
-  /**
-   * Creates the header of the item
+  var i18n; /* assigned later when translations have come in */
+  const perf = {};
+  perf.started = performance.now();
+  /* 
+   * As of August 2021 the discussions API request is way slower than normal MediaWiki API requests.
+   * It will be slower than getting uncached translations, even though those are two sequential calls.
+   * So we need to make sure to give it a head start.
    */
-  function headerItem (data) {
-    var icon = {
-      class: ['new', 'talk'],
-      title: [i18n('icon_title_thread').escape(), i18n('icon_title_reply').escape()]
-    };
-    var i = (data.isReply ? 1 : 0);
-    var header =
-      '<img class="' + icon.class[i] + ' sprite" src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" alt="' + icon.title[i] + '" title="' + icon.title[i] + '" width="16" height="16">' +
-      ' <strong><a class="title rda-title" href="' + config.wgScriptPath +  '/f/p/' + data.threadID + '">' + data.title + '</a></strong>' +
-      ' ' + i18n('in').escape() + ' <a class="rda-category" href="' + config.wgScriptPath +  '/f?catId=' + data.forumID + '&sort=latest">' + data.forumName + '</a>';
-
-    return header;
-  }
-  /**
-   * Creates the row of content
-   */
-  function contentRow (data) {
-    var subtitle = i18n(data.isReply ? 'commented_by' : 'created_by').escape();
-    var blockButton = (canBlock ? ' | <a class="rda-block" href="' + config.wgScriptPath +  '/wiki/Special:Block/' + data.userNameEncoded + '">' + i18n('block').escape() + '</a>' : '');
-    var talk = {
-      class: ['rda-talk', 'rda-wall'],
-      link: ['User_talk', 'Message_Wall'],
-      text: [i18n('talk').escape(), i18n('wall').escape()]
-    };
-    var i = (wallsEnabled ? 1 : 0);
-    var row =
-      '<tr>' +
-        '<td>' +
-          '<img src="' + data.avatarURL + '/scale-to-width-down/50" width="30" height="30" class="avatar rda-avatar" alt="' + data.userName + '">' +
-        '</td>' +
-        '<td>' +
-          '<p>' +
-            '<cite>' +
-              '<span class="subtle">' + subtitle + '</span>' +
-              ' <a class="real-name rda-username" href="' + config.wgScriptPath +  '/f/u/' + data.userID + '">' + data.userName + '</a> (<a class="' + talk.class[i] + '" href="' + config.wgScriptPath +  '/wiki/' + talk.link[i] + ':' + data.userNameEncoded + '">' + talk.text[i] + '</a> | <a class="rda-contribs" href="' + config.wgScriptPath +  '/wiki/Special:Contributions/' + data.userNameEncoded + '">' + i18n('contribs').escape() + '</a>' + blockButton + ')' +
-              ' <a class="subtle rda-time" href="' + config.wgScriptPath +  '/f/p/' + data.threadID + '/r/' + data.messageID + '">' + data.time + '</a>' +
-            '</cite>' +
-          '</p>' +
-          '<p>' +
-            '<span class="rda-content">' + data.text + '</span>' +
-          '</p>' +
-        '</td>' +
-      '</tr>';
-
-    return row;
-  }
-  /**
-    * Gets thumbnail dimensions
-    */
-  function getThumbnail (h, w) {
-    if (w > 200) {
-      h = Math.floor(h * (200 / w));
-      w = 200;
-    }
-    return {height: h, width: w};
-  }
-  /**
-    * Creates the row for image
-    */
-  function imageRow (image, table) {
-    if (!image) {
-      return;
-    }
-    var thumbnail = getThumbnail(image.height, image.width);
-    var cellContent =
-      '<ul class="activityfeed-inserted-media rda-inserted-media reset">' +
-        '<li>' +
-          '<a data-image-link="" href="' + image.url + '">' +
-            '<img src="' + image.url + '/scale-to-width-down/200" width="' + thumbnail.width + '" height="' + thumbnail.height + '" class="rda-image">' +
-          '</a>' +
-        '</li>' +
-      '</ul>';
-    // Appends the row to the table
-    var row = table.insertRow(-1); // Inserts empty row
-    row.setAttribute('data-type', 'inserted-image'); // Injects its data attribute
-    row.insertCell(0); // Inserts first empty cell
-    var cell2 = row.insertCell(1); // Inserts second empty cell for actual content
-    cell2.innerHTML = cellContent; // Inserts the contents
-  }
-  /**
-    * Creates the row for embedded link
-    */
-  function embedRow (embed, table) {
-    if (!embed) {
-      return;
-    }
-    var title = escapeHTML(embed[0].title);
-    var url = escapeHTML(embed[0].url);
-    var thumbnail = getThumbnail(embed[0].imageHeight, embed[0].imageWidth);
-    var target = document.getElementsByClassName('page-header__title')[0];
-    var color = window.getComputedStyle(target).color;
-    var fragment = document.createRange().createContextualFragment(
-      '<a target="_blank" style="border-color: ' + color + ';" title="' + url + '" href="' + url + '" class="og-container large-image-card-mobile small-image-card-desktop ember-view"><!---->' +
-        '<div class="og-image-wrapper">' +
-          '<img src="' + embed[0].imageUrl + '/scale-to-width-down/200" width="' + thumbnail.width + '" height="' + thumbnail.height + '" alt="' + title + '" class="og-image rda-image"><!---->' +
-        '</div>' +
-        '<div class="og-texts">' +
-          '<h3 class="og-title">' + title + '</h3>' +
-          '<div class="og-description subtle">' + escapeHTML(embed[0].description) + '</div>' +
-          '<div class="og-site-name subtle">' + escapeHTML(embed[0].siteName) + '</div>' +
-        '</div>' +
-      '</a>'
-    );
-    var imageWrapper = fragment.firstChild.childNodes[1];
-    if (embed[0].videoUrl) {
-      imageWrapper.classList.add('og-video-thumbnail');
-    }
-    // Appends the row to the table
-    var row = table.insertRow(-1); // Inserts empty row
-    row.setAttribute('data-type', 'inserted-image'); // Injects its data attribute
-    row.insertCell(0); // Inserts first empty cell
-    var cell2 = row.insertCell(1); // Inserts second empty cell for actual content
-    cell2.appendChild(fragment); // Inserts the contents
-  }
-  /**
-   * Creates the row for status (that shows if a message is deleted, reported or locked)
-   */
-  function statusRow (data, table) {
-    var status = {
-      isDeleted: {
-        type: 'deleted',
-        icon: 'trash',
-        iconTitle: i18n('icon_title_deleted').escape(),
-        subtitle: (data.isMessageDeleted ? i18n('message_deleted_by').escape() + ' <a class="rda-deleter" href="' + config.wgScriptPath +  '/f/u/' + data.deleterID + '">' + data.deleter + '</a>' : i18n('parent_thread_deleted').escape()),
-        class: 'rda-deleted'
-      },
-      isReported: {
-        type: 'reported',
-        icon: 'error',
-        iconTitle: i18n('icon_title_reported').escape(),
-        subtitle: i18n('message_reported').escape(),
-        class: 'rda-reported'
-      },
-      isLocked: {
-        type: 'locked',
-        icon: 'lock',
-        iconTitle: i18n('icon_title_locked').escape(),
-        subtitle: i18n(data.isReply ? 'parent_thread_locked' : 'thread_locked').escape(),
-        class: 'rda-locked'
-      }
-    };
-    var key = Object.keys(status).filter(function (e) { return data[e] === true; })[0];
-    if (!key) {
-      return;
-    }
-    var textSpan = table.getElementsByClassName('rda-content')[0]; // Span that contains the text of the post
-    var cellContent =
-      '<cite>' +
-        '<img class="' + status[key].icon + ' sprite rda-icon-' + status[key].type + '" src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" alt="' + status[key].iconTitle + '" title="' + status[key].iconTitle + '" width="16" height="16" />' +
-        '<span class="subtle">' + status[key].subtitle + '</span>' +
-      '</cite>';
-    // Appends the row to the table
-    var row = table.insertRow(-1); // Inserts empty row
-    row.insertCell(0); // Inserts first empty cell
-    var cell2 = row.insertCell(1); // Inserts second empty cell for actual content
-    cell2.className = 'rda-status-' + status[key].type; // Assigns class to this cell
-    cell2.innerHTML = cellContent; // Inserts the contents
-    textSpan.classList.add(status[key].class); // Assigns class to content
-  }
-  /**
-   * Creates a new row for tags that are associated with this post
-   */
-  function tagsRow(tags, table) {
-    if (tags.length === 0) {
-      return;
-    }
-    var row = table.insertRow(-1);
-    row.insertCell(0);
-    var cell2 = row.insertCell(1);
-    var iconHoverText = i18n('icon_title_tags').escape();
-    cell2.className = 'rda-tags';
-    cell2.innerHTML = '<img class="message sprite rda-icon-tags" src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" alt="'+ iconHoverText + '" title="'+ iconHoverText + '" />'
-      + tags.map(function(elem) { return elem.title; }).join(', ');
-  }
-  /**
-   * Creates each of the list items
-   */
-  function buildItem (post, ul) {
-    var data = postInfo(post);
-    var header = headerItem(data);
-    var content = contentRow(data);
-    // Creates a document fragment for the item
-    var itemFrag = document.createRange().createContextualFragment(
-      '<li class="activity-type-discussion rda-entry">' +
-        header +
-        '<table class="wallfeed rda-table">' +
-          '<tbody>' +
-            content +
-          '</tbody>' +
-        '</table>' +
-      '</li>'
-    );
-    var li = itemFrag.firstChild;
-    var table = li.getElementsByTagName('table')[0];
-    // Functions that will add extra rows if needed
-    imageRow(data.image, table);
-    embedRow(data.embed, table);
-    tagsRow(data.tags, table);
-    statusRow(data, table);
-    // Appends the element to the list
-    ul.appendChild(itemFrag);
-  }
-  /**
-   * Creates the HTML of the list
-   */
-  function buildList (response, content) {
-    // Creates a document fragment for the list
-    var listFrag = document.createRange().createContextualFragment('<ul class="activityfeed rda-feed reset" id="myhome-activityfeed"></ul>');
-    var ul = listFrag.firstChild;
-    // For each post retrieved, calls the function that will turn them into list items and append them to the fragment
-    for (var i = 0; i < response.length; i++) {
-      buildItem(response[i], ul);
-    }
-    // Clears the content of the page and replaces it with the fragment
-    content.innerHTML = '';
-    content.appendChild(listFrag);
-  }
-  /**
-   * Gets Discussions list
-   */
-  function getDiscussions (content, loadingElement) {
-    // Shows loading icon
-    loadingElement = (loadingElement || document.getElementById('rda-chbx-autorefresh'));
-    loadingElement.classList.add('rda-loading');
-    // Clears existing timeouts
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-    // Refresh interval
-    var interval = (window.rdaRefreshInterval >= 30000 ? window.rdaRefreshInterval : 60000); // Minimum interval is 30 seconds
-    // Checks whether to show deleted posts
-    var viewableOnly = (isMod && localStorage.getItem('rdaShowDeleted') === 'false' ? true : !isMod);
-    // Retrieves JSON
-    var request = new XMLHttpRequest();
-    request.timeout = 30000;
-    request.ontimeout = function () {
-      content.textContent = i18n('error_no_connection').plain();
-    };
-    request.onreadystatechange = function () {
-      if (request.readyState === 4) {
-        // If posts were retrieved correctly
-        if (request.status === 200) {
-          var response = JSON.parse(request.responseText)._embedded['doc:posts'];
-          buildList(response, content);
-        // If posts couldn't be retrieved
-        } else {
-          content.textContent = i18n('error_no_connection').plain();
-        }
-        // Sets autorefresh
-        var autoRefresh = (localStorage.getItem('rdaAutoRefresh') === 'false' ? false : true); // eslint-disable-line
-        timeout = (autoRefresh ? setTimeout(getDiscussions, interval, content) : timeout); // Sets timeout only if auto refresh is enabled
-        // Hides loading icon
-        loadingElement.classList.remove('rda-loading');
-      }
-    };
-    request.open('GET', config.wgServer + config.wgScriptPath + '/wikia.php?controller=DiscussionPost&method=getPosts&limit=50&containerType=FORUM&viewableOnly=' + viewableOnly, true);
-    request.setRequestHeader('Accept', 'application/hal+json');
-    request.withCredentials = true;
-    request.send();
-  }
-  /**
-   * Sets checkboxes
-   */
-  function checkboxes (content) {
-    // Gets header
-    var header = document.getElementsByClassName('page-header')[0];
-    // Creates wrapper
-    var chbxsFrag = document.createRange().createContextualFragment('<div id="rda-checkboxes" class="page-header__subtitle"></div>');
-    var div = chbxsFrag.firstChild;
-    // Function to create each checkbox
-    function makeChbx (name, id, cookie) {
-      var frag = document.createRange().createContextualFragment(
-        '<span id="' + id + '">' +
-          '<input type="checkbox" />' +
-          '<label>' + name + '</label>' +
-        '</span>'
-      );
-      // Whether to show it as checked
-      if (localStorage.getItem(cookie) !== 'false') {
-        var input = frag.firstChild.childNodes[0];
-        input.checked = true;
-      }
-      // Appends it to the div
-      div.appendChild(frag);
-    }
-    // Creates checkbox for auto refresh
-    makeChbx(i18n('checkbox_auto_refresh').escape(), 'rda-chbx-autorefresh', 'rdaAutoRefresh');
-    // Creates checkbox for show deleted
-    if (isMod) {
-      makeChbx(i18n('checkbox_show_deleted').escape(), 'rda-chbx-showdeleted', 'rdaShowDeleted');
-    }
-    // Appends checkboxes to header
-    header.appendChild(chbxsFrag);
-    // Sets function for checkbox for auto refresh
-    var autoRefresh = document.getElementById('rda-chbx-autorefresh').childNodes[0];
-    autoRefresh.onchange = function () {
-      // If checked, sets value in localStorage and reloads discussions
-      if (autoRefresh.checked) {
-        localStorage.setItem('rdaAutoRefresh', 'true');
-        getDiscussions(content);
-      // If unchecked, sets value in localStorage and clears timeout without reloading
-      } else {
-        localStorage.setItem('rdaAutoRefresh', 'false');
-        clearTimeout(timeout);
-      }
-    };
-    // Sets function for checkbox for show deleted
-    if (isMod) {
-      var showDeleted = document.getElementById('rda-chbx-showdeleted').childNodes[0];
-      showDeleted.onchange = function () {
-        // Sets value in localStorage, whether true or false
-        if (showDeleted.checked) {
-          localStorage.setItem('rdaShowDeleted', 'true');
-        } else {
-          localStorage.setItem('rdaShowDeleted', 'false');
-        }
-        // Reloads discussions to hide/unhide deleted messages while passing the element to show loading icon
-        getDiscussions(content, showDeleted.parentElement);
-      };
-    }
-  }
-  /**
-   * Creates the special page
-   */
-  function createPage (status) {
-    if (config.wgCanonicalNamespace + ':' + config.wgTitle !== 'Special:DiscussionsActivity') {
-      return;
-    }
-    // Replaces the title
-    document.title = i18n('document_title_new').escape() + ' |' + document.title.split('|').slice(1).join('|');
-    document.getElementsByClassName("page-header__title").textContent = i18n('document_title_new').plain();
-    // Gets div of content
-    var content = document.getElementById('mw-content-text');
-    // Different actions depending on status
-    switch (status) {
-      // If Discussions were loaded correctly
-      case 200:
-        // Detects the background color to request the proper copy of the styles of Wiki Activity
-        var background = document.getElementsByClassName('page')[0];
-        var rgb = window.getComputedStyle(background).backgroundColor.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-        function toHex(i) {
-          return parseInt(i, 10).toString(16).padStart(2, i);
-        }
-        var hex = toHex(rgb[1]) + toHex(rgb[2]) + toHex(rgb[3]);
-        // Requests the CSS and inserts it in the page
-        var title = document.getElementsByTagName('title')[0];
-        var style = '<link rel="stylesheet" type="text/css" href="https://slot1-images.wikia.nocookie.net/__am/1515674256/sasses/color-page%3D%2523' + hex + '%26skins/extensions/wikia/MyHome/oasis.scss,extensions/wikia/Wall/css/WallWikiActivity.scss" />';
-        title.insertAdjacentHTML('afterend', style);
-        // Gets user perms
-        var blockers = ['sysop', 'staff', 'wiki-representative', 'helper', 'soap', 'global-discussions-moderator'];
-        canBlock = blockers.some(function (role) { return config.wgUserGroups.indexOf(role) > -1; });
-        isMod = Boolean(canBlock || config.wgUserGroups.indexOf('threadmoderator') > -1);
-        // Calls the next steps once the following task is complete
-        var startLoading = function () {
-          // Inserts checkboxes
-          checkboxes(content);
-          // Inserts temporary content
-          content.innerHTML = '<span class="rda-loading">' + i18n('loading_discussions').escape() + '</span>';
-          // Gets Discussions list
-          getDiscussions(content);
-        };
-        // Checks whether wiki uses Talk Pages or Message Walls
-        var request = new XMLHttpRequest();
-        request.timeout = 30000;
-        request.ontimeout = function () {
-          startLoading();
-        };
-        request.onreadystatechange = function () {
-          if (request.readyState === 4) {
-            if (request.status === 200) {
-              wallsEnabled = true;
-            }
-            startLoading();
-          }
-        };
-        request.open('GET', mw.util.getUrl('Message Wall:Wikia'), true);
-        request.send();
-        break;
-      // If Discussions is not enabled on the domain
-      case 404:
-        content.textContent = i18n('error_discussions_disabled').plain();
-        break;
-      // Any other error
-      default:
-        content.textContent = i18n('error_no_connection').plain();
-    }
-  }
-  /**
-   * Inserts links in header subtitle in certain pages
-   */
-  function insertLinks () {
-    var defaultPages = {
-      RecentChanges: {
-        title: i18n('recent_changes').escape(),
-        links: ['WikiActivity', 'DiscussionsActivity']
-      },
-      WikiActivity: {
-        title: i18n('wiki_activity').escape(),
-        links: ['WikiActivity/watchlist', 'RecentChanges', 'DiscussionsActivity']
-      },
-      DiscussionsActivity: {
-        title: i18n('discussions_activity').escape(),
-        links: ['RecentChanges', 'WikiActivity']
-      },
-      'WikiActivity/watchlist': {
-        title: i18n('watchlist').escape(),
-        links: ['RecentChanges', 'WikiActivity', 'DiscussionsActivity']
-      }
-    };
-    var pages = typeof window.rdaSubtitleLinksPages === 'object'
-      ? Object.fromEntries(Object.entries(window.rdaSubtitleLinksPages).map(function (entry) {
-        var title = entry[0], config = entry[1];
-        return [title, Object.assign({}, defaultPages[title], config)];
-      }))
-      : defaultPages;
-    // Terminates the function if the current page is not in the list
-    if (Object.keys(pages).every(function (p) { return 'Special:' + p !== config.wgCanonicalNamespace + ':' + config.wgTitle; })) {
-      return;
-    }
-    var headerSubtitle = document.getElementsByClassName('page-header__page-subtitle')[0];
-    var pagesLinked = pages[config.wgTitle].links;
-    var links = [];
-
-    pagesLinked.forEach(function (page) {
-      links.push('<a href="' + config.wgScriptPath +  '/wiki/Special:' + page + '" title="Special:' + page + '">' + pages[page].title + ' ></a>');
+  var messagePromise;
+  if (isDiscussionsActivityPage) {
+    messagePromise = new Promise(function(resolve, reject) {
+      const parameters = "?controller=DiscussionPost&method=getPosts&limit=100";
+      callApi(parameters, resolve);
     });
-    // Doesn't include link to followed pages if it's an anonymous user
-    links = (config.wgTitle === 'WikiActivity' && !config.wgUserName ? links.slice(1) : links);
-    // Inserts links
-    headerSubtitle.innerHTML = links.join(' | ');
   }
-  /**
-   * Checks whether Discussions is enabled on the domain
-   */
-  function isDiscussionsEnabled () {
-    var request = new XMLHttpRequest();
-    request.timeout = 30000;
-    request.ontimeout = function () {
-      createPage(request.status);
-    };
-    request.onreadystatechange = function () {
-      if (request.readyState === 4) {
-        // Creates page regardless of status; if success it will load Discussions, if fail it will show an error
-        createPage(request.status);
-        // Inserts links under header only if Discussions is enabled
-        if (request.status === 200) {
-          insertLinks();
-        }
-      }
-    };
-    request.open('GET', config.wgScriptPath + '/f', true);
-    request.send();
-  }
-  /**
-   * Loads localization and CSS, and fires the function when done
-   */
-  window.mw.hook('dev.i18n').add(function (lib) {
-    lib.loadMessages('DiscussionsActivity').done(function (lang) {
+
+  window.importArticles({
+    type: 'script',
+    article: 'u:dev:MediaWiki:I18n-js/code.js'
+  }, {
+    type: 'style',
+    article: 'u:dev:MediaWiki:DiscussionsActivity.css'
+  });
+
+  mw.hook('dev.i18n').add(function(lib) {
+    perf.i18nLoaded = performance.now();
+    lib.loadMessages('DiscussionsActivity').done(function(lang) {
       i18n = lang.msg;
-      isDiscussionsEnabled();
+      perf.i18nMessagesLoaded = performance.now();
+      if (isOtherActivityPage) addDiscussionsActivityLink();
+      if (isDiscussionsActivityPage) renderDiscussions();
     });
   });
-  if (isUCP) {
-    mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js');
-    mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=styles&articles=MediaWiki:DiscussionsActivity.css', 'text/css');
-  } else {
-    window.importArticles(
-      {
-        type: 'script',
-        article: 'u:dev:MediaWiki:I18n-js/code.js'
-      },
-      {
-        type: 'style',
-        article: 'u:dev:MediaWiki:DiscussionsActivity.css'
-      }
-    );
+
+  function callApi(parameters, callback) {
+    const url = mwConfig.wgScriptPath + "/wikia.php" + parameters;
+    const request = new XMLHttpRequest();
+    request.open("GET", url);
+    request.setRequestHeader('Accept', 'application/hal+json');
+    request.withCredentials = true;
+    request.timeout = 10000;
+    request.onloadend = function() {
+      callback(request);
+    };
+    request.send();
   }
-})();
+
+  function addDiscussionsActivityLink() {
+    const activityLinkTabs = document.getElementsByClassName("activity-tabs");
+    if (activityLinkTabs.length === 0) return;
+    const lists = activityLinkTabs[0].getElementsByTagName("ul");
+    if (lists.length === 0) return;
+    const tab = createActivityTab("discussions_activity", "Special:DiscussionsActivity", false);
+    lists[0].appendChild(tab);
+  }
+
+  function renderDiscussions() {
+    const contentElement = document.getElementById("content");
+    contentElement.textContent = "";
+    perf.pageCleared = performance.now();
+    createPageHeader(contentElement);
+    perf.headerCreated = performance.now();
+    messagePromise.then(function(request) {
+      switch (request.status) {
+        case 200:
+          perf.apiResponded = performance.now();
+          const postsData = JSON.parse(request.responseText)._embedded["doc:posts"];
+          perf.jsonParsed = performance.now();
+          const pageNamePromise = queryCommentPageNames(postsData);
+          perf.pageNamesQueryStarted = performance.now();
+          displayPosts(postsData, contentElement, pageNamePromise);
+          perf.postsRendered = performance.now();
+          addCommentLinks(pageNamePromise);
+          break;
+        case 0:
+          console.log("DiscussionsActivity cannot connect to server");
+          break;
+        default:
+          console.log("DiscussionsActivity encountered an error of HTTP " + request.status);
+          break;
+      }
+    });
+  }
+
+  function createPageHeader(contentElement) {
+    changeTitle();
+    const headerFragment = document.createDocumentFragment();
+    headerFragment.appendChild(createPageInfo());
+    headerFragment.appendChild(createActivityTabList());
+    contentElement.appendChild(headerFragment);
+  }
+
+  function changeTitle() {
+    const titleText = i18n("document_title_new").plain();
+    var pageTitle = document.getElementById("firstHeading");
+    pageTitle.innerText = titleText;
+
+    const oldDocTitle = document.title;
+    const index = oldDocTitle.indexOf(" |");
+    if (index >= 0) document.title = titleText + oldDocTitle.substring(index);
+  }
+
+  function createPageInfo() {
+    const container = document.createElement("div");
+    container.className = "rda-activity-summary";
+
+    const message = document.createElement("div");
+    message.innerText = i18n("discussions-activity-summary").plain();
+    container.appendChild(message);
+
+    const help = document.createElement("div");
+    container.appendChild(help);
+    const helpLink = document.createElement("a");
+    helpLink.className = "rda-activity-summary__help-link";
+    helpLink.href = "https://dev.fandom.com/DiscussionsActivity";
+    help.appendChild(helpLink);
+    const svgLink = "/resources-ucp/dist/svg/wds-icons-question-small.svg#question-small";
+    helpLink.appendChild(createSvg(svgLink, "wds-icon wds-icon-small"));
+    helpLink.appendChild(document.createTextNode(" "));
+
+    const helpText = document.createElement("span");
+    helpText.className = "rda-activity-summary__help-caption";
+    helpText.innerText = "Help";
+    helpLink.appendChild(helpText);
+
+    return container;
+  }
+
+  function createActivityTabList() {
+    const activityTabs = document.createElement("div");
+    activityTabs.className = "wds-tabs__wrapper rda-activity-tabs with-bottom-border";
+
+    const tabList = document.createElement("ul");
+    tabList.classList.add("wds-tabs");
+    activityTabs.appendChild(tabList);
+
+    const makeTab = createActivityTab;
+    tabList.appendChild(makeTab("link-text-recent-changes", "Special:RecentChanges", false));
+    tabList.appendChild(makeTab("link-text-social-activity", "Special:SocialActivity", false));
+    tabList.appendChild(makeTab("link-text-new-files", "Special:NewFiles", false));
+    tabList.appendChild(makeTab("discussions_activity", mwConfig.wgPageName, true));
+
+    return activityTabs;
+  }
+
+  function createActivityTab(i18nKey, link, isCurrent) {
+    const name = i18n(i18nKey).plain();
+    const tab = document.createElement("li");
+    tab.className = "wds-tabs__tab";
+    if (isCurrent) tab.classList.add("wds-is-current");
+
+    const tabLabel = document.createElement("div");
+    tabLabel.className = "wds-tabs__tab-label";
+    tab.appendChild(tabLabel);
+    tabLabel.appendChild(createArticleTextLink(link, name));
+
+    return tab;
+  }
+
+  function queryCommentPageNames(posts) {
+    var forumIdsToRequest = {};
+    var postCount = posts.length;
+    for (var i = 0; i < postCount; ++i) {
+      const post = posts[i];
+      if (post._embedded.thread[0].containerType == "ARTICLE_COMMENT") {
+        forumIdsToRequest[post.forumId] = true;
+      }
+    }
+    const ids = Object.keys(forumIdsToRequest).join(",");
+    const parameters = "?controller=FeedsAndPosts&method=getArticleNamesAndUsernames&stablePageIds=" + ids;
+    const promise = new Promise(function(resolve, reject) {
+      callApi(parameters, resolve);
+    });
+    return promise;
+  }
+
+  function displayPosts(posts, parent) {
+    const fragment = document.createDocumentFragment();
+    const list = document.createElement("ul");
+    list.className = "rda-feed";
+    fragment.appendChild(list);
+
+    const postCount = posts.length;
+    for (var i = 0; i < postCount; ++i) {
+      const post = posts[i];
+      const thread = post._embedded.thread[0];
+      const attachments = post._embedded.attachments[0];
+
+      const listEntry = document.createElement("li");
+      listEntry.classList.add("rda-list-entry");
+      const entry = document.createElement("div");
+      entry.classList.add("rda-entry");
+
+      const mainData = document.createElement("div");
+      mainData.classList.add("rda-main-data");
+
+      const contentTable = document.createElement("table");
+      contentTable.classList.add("rda-datatable");
+
+      const textContent = createTextRepresentation(post, 250);
+      if (textContent) {
+        contentTable.appendChild(createTableRow(i18n("post-info-content").plain(), textContent));
+      }
+      if (attachments.contentImages.length > 0) {
+        const imageList = createImageList(attachments.contentImages);
+        contentTable.appendChild(createTableRow(i18n("post-info-images").plain(), imageList));
+      }
+      if (!post.isReply && thread.tags.length > 0) {
+        const tagList = createTagList(thread.tags);
+        contentTable.appendChild(createTableRow(i18n("post-info-tags").plain(), tagList));
+      }
+
+      mainData.appendChild(createTitleLine(post, thread));
+      mainData.appendChild(createAuthorLine(post));
+      mainData.appendChild(contentTable);
+      entry.appendChild(createInfoIcons(post, thread));
+      entry.appendChild(mainData);
+      listEntry.appendChild(entry);
+
+      list.appendChild(listEntry);
+    }
+
+    parent.appendChild(fragment);
+  }
+
+  function createTableRow(headerText, content) {
+    const tr = document.createElement("tr");
+    const th = document.createElement("th");
+    const td = document.createElement("td");
+
+    th.innerText = headerText + ":";
+    td.innterText = content;
+
+    tr.appendChild(th);
+    tr.appendChild(td);
+
+    if (typeof(content) === "string") {
+      td.innerText = content;
+    } else {
+      td.appendChild(content);
+    }
+
+    return tr;
+  }
+
+  function createInfoIcons(post, thread) {
+    const container = document.createElement("div");
+    container.classList.add("rda-info-icons");
+
+    var containerClass;
+    var containerTitle;
+    switch (thread.containerType) {
+      case "FORUM":
+        containerClass = "rda-container-forum";
+        containerTitle = i18n("container-name-forum").plain();
+        break;
+      case "WALL":
+        containerClass = "rda-container-wall";
+        containerTitle = i18n("container-name-wall").plain();
+        break;
+      case "ARTICLE_COMMENT":
+        containerClass = "rda-container-article";
+        containerTitle = i18n("container-name-article").plain();
+        break;
+    }
+
+    var postTypeClass;
+    var postTypeTitle;
+    if (post.isReply) {
+      postTypeClass = "rda-post-type-reply";
+      postTypeTitle = i18n("post-type-reply").plain();
+    } else if (post.poll) {
+      postTypeClass = "rda-post-type-poll";
+      postTypeTitle = i18n("post-type-poll").plain();
+    } else {
+      postTypeClass = "rda-post-type-text";
+      postTypeTitle = i18n("post-type-text").plain();
+    }
+
+    function createIcon(className, title) {
+      const icon = document.createElement("div");
+      icon.classList.add(className);
+      icon.title = title;
+      icon.appendChild(document.createElement("div")); /* wrapper for CSS */
+      return icon;
+    }
+    container.appendChild(createIcon(containerClass, containerTitle));
+    container.appendChild(createIcon(postTypeClass, postTypeTitle));
+    return container;
+  }
+
+  function createTitleLine(post, thread) {
+    const replyText = i18n("post-type-reply").plain();
+    var reply;
+    var threadTitle;
+    var container;
+    switch (thread.containerType) {
+      case "FORUM":
+        const forumThreadUrl = "/f/p/" + post.threadId;
+        threadTitle = createWikiTextLink(forumThreadUrl, thread.title);
+        container = createWikiTextLink("/f?catId=" + post.forumId, post.forumName);
+        reply = createWikiTextLink(forumThreadUrl + "/r/" + post.id, replyText);
+        break;
+      case "WALL":
+        const wallNameLength = post.forumName.length - " Message Wall".length;
+        const wallName = post.forumName.substring(0, wallNameLength);
+        const wallArticleName = "Message_Wall:" + wallName;
+        const wallLinkText = i18n("link-title-message-wall", wallName.replace("_", " ")).plain();
+        const wallThreadUrl = wallArticleName + "?threadId=" + post.threadId;
+        container = createArticleTextLink(wallArticleName, wallLinkText);
+        threadTitle = createArticleTextLink(wallThreadUrl, thread.title);
+        reply = createArticleTextLink(wallThreadUrl + "#" + post.id, replyText); 
+        break;
+      case "ARTICLE_COMMENT":
+        const titleText = createTextRepresentation(thread.firstPost, 70, false);
+        threadTitle = document.createElement("span");
+        threadTitle.innerText = titleText;
+        threadTitle.dataset.rdaForumId = post.forumId;
+        threadTitle.dataset.rdaThreadId = post.threadId;
+        threadTitle.className = "rda-placeholder";
+        container = document.createElement("span");
+        container.innerText = "???";
+        container.dataset.rdaForumId = post.forumId;
+        container.className = "rda-placeholder";
+        reply = document.createElement("span");
+        reply.dataset.rdaForumId = post.forumId;
+        reply.dataset.rdaThreadId = post.threadId;
+        reply.dataset.rdaPostId = post.id;
+        reply.innerText = replyText;
+        reply.className = "rda-placeholder";
+        break;
+    }
+    threadTitle.classList.add("rda-title");
+
+    const titleLine = document.createElement("div");
+    if (post.isReply) {
+      titleLine.appendChild(reply);
+      titleLine.appendChild(document.createTextNode(" " + i18n("to").plain() + " "));
+    }
+    titleLine.appendChild(threadTitle);
+    titleLine.appendChild(document.createTextNode(" " + i18n("in").plain() + " "));
+    titleLine.appendChild(container);
+
+    return titleLine;
+  }
+
+  function createAuthorLine(post) {
+    const authorLine = document.createElement("div");
+    authorLine.classList.add("rda-authorinfo");
+
+    /* For some reason IPs always start with a slash, which we need to cut out */
+    const userName = post.createdBy.name || post.creatorIp.substring(1);
+    const isLoggedIn = post.creatorId !== "0";
+
+    const avatarContainer = document.createElement("div");
+    avatarContainer.classList.add("wds-avatar");
+    if (post.createdBy.avatarUrl) {
+      const image = document.createElement("img");
+      image.setAttribute("class", "wds-avatar__image rda-avatar");
+      image.src = createThumbnailUrl(post.createdBy.avatarUrl, 30, 30);
+      avatarContainer.appendChild(image);
+    } else {
+      avatarContainer.appendChild(createSvg("#wds-icons-avatar", "wds-avatar__image rda-avatar"));
+    }
+    authorLine.appendChild(avatarContainer);
+    authorLine.appendChild(document.createTextNode(i18n("created_by").plain() + " "));
+
+    const profileActivityPageName = "Special:UserProfileActivity/" + userName;
+    const profileActivityLink = createArticleTextLink(profileActivityPageName, userName);
+    authorLine.appendChild(profileActivityLink);
+
+    const contribsPageName = "Special:Contributions/" + userName;
+    const contribsLink = createArticleTextLink(contribsPageName, i18n("contribs").plain());
+    authorLine.appendChild(document.createTextNode(" ("));
+    authorLine.appendChild(contribsLink);
+
+    if (isLoggedIn) {
+      const wallLink = createArticleTextLink("User_talk:" + userName, i18n("talk").plain());
+      authorLine.appendChild(document.createTextNode(" | "));
+      authorLine.appendChild(wallLink);
+
+      const profileLink = createArticleTextLink("User:" + userName, i18n("link-title-profile").plain());
+      authorLine.appendChild(document.createTextNode(" | "));
+      authorLine.appendChild(profileLink);
+    }
+    authorLine.appendChild(document.createTextNode(")"));
+
+    const timeAgo = epochToTimeAgo(post.creationDate.epochSecond);
+    authorLine.appendChild(document.createTextNode(" " + timeAgo));
+
+    return authorLine;
+  }
+
+  function epochToTimeAgo(epoch) {
+    var elapsed = (Math.floor(new Date().getTime()) - new Date(epoch * 1000)) / 1000;
+    var factors = [
+      ['seconds', 60],
+      ['minutes', 60],
+      ['hours', 24],
+      ['days', 30],
+      ['months', 12],
+      ['years']
+    ];
+
+    for (var i = 0; i < factors.length && elapsed >= factors[i][1]; i++) {
+      elapsed /= factors[i][1];
+    }
+    var unit = factors[i][0];
+    elapsed = Math.floor(elapsed);
+
+    return i18n(unit + '_ago_' + (elapsed > 1 ? 'plural' : 'singular'), elapsed).plain();
+  }
+
+  function createImageList(images) {
+    const ul = document.createElement("ul");
+    ul.classList.add("rda-images");
+    const imageCount = images.length;
+    for (var i = 0; i < imageCount; ++i) {
+      const imageData = images[i];
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = imageData.url;
+      const img = document.createElement("img");
+      img.src = createThumbnailUrl(imageData.url, 200, 120);
+      li.appendChild(a);
+      a.appendChild(img);
+      ul.appendChild(li);
+    }
+    return ul;
+  }
+
+  function createTagList(tags) {
+    const ul = document.createElement("ul");
+    ul.classList.add("rda-tags");
+    const tagCount = tags.length;
+    for (var i = 0; i < tagCount; ++i) {
+      const tagData = tags[i];
+      const li = document.createElement("li");
+      const a = createWikiTextLink("/f/t/" + encodeURIComponent(tagData.articleTitle), tagData.articleTitle);
+      li.appendChild(a);
+      ul.appendChild(li);
+    }
+
+    return ul;
+  }
+
+  function addCommentLinks(pageNamesPromise) {
+    pageNamesPromise.then(function(request) {
+      switch (request.status) {
+        case 200:
+          perf.pageNamesQueryCompleted = performance.now();
+          const articleNames = JSON.parse(request.responseText).articleNames;
+          const original = document.getElementsByClassName("rda-feed")[0];
+          /* 
+           * Clone the whole post list, update the off-screen clone
+           * and then replace it back as a single operation.
+           * This seems to perform up to an order of magnitude better
+           * then doing incremental DOM updates (tested in Firefox and Chrome).
+           * If there are loss of posts, but no or nearly no article comments,
+           * doing the direct updates is faster. So ideally we would only do this
+           * if there is a certain amount of elements needing updating.
+           * Maybe make the criterion should be something like this:
+           *    articleComments / totalEntries > threashold
+           * This will require some more testing first to get userful numbers.
+           */
+          const clone = original.cloneNode(true);
+          const placeholders = clone.getElementsByClassName("rda-placeholder");
+          const placeholderCount = placeholders.length;
+          for (var i = 0; i < placeholderCount; ++i) {
+            const placeholder = placeholders[i];
+            const articleInfo = articleNames[placeholder.dataset.rdaForumId];
+            var url = articleInfo.relativeUrl;
+            if (placeholder.dataset.rdaThreadId) {
+              url = url + "?commentId=" + placeholder.dataset.rdaThreadId;
+              if (placeholder.dataset.rdaPostId) {
+                url = url + "&replyId=" + placeholder.dataset.rdaPostId;
+              }
+            }
+            const originalText = placeholder.innerText;
+            const newText = originalText === "???" ? articleInfo.title : originalText;
+            const newElement = createTextLink(url, newText);
+            newElement.classList = placeholder.classList;
+            newElement.classList.remove("rda-placeolder");
+            placeholder.replaceWith(newElement);
+          }
+          original.replaceWith(clone);
+          perf.commentLinksAdded = performance.now();
+          break;
+        case 0:
+          console.log("DiscussionsActivity cannot connect to server");
+          break;
+        default:
+          console.log("DiscussionsActivity encountered an error of HTTP " + request.status);
+          break;
+      }
+
+      if (new URL(windows.location.href).searchParams.has("rdaDebug")) {  
+        const logPerf = function (text, start, end) {
+          console.debug(text + ": " + (end - start) + "ms");
+        };
+        
+        logPerf("load i18n          ", perf.started, perf.i18nLoaded);
+        logPerf("i18n messages      ", perf.i18nLoaded, perf.i18nMessagesLoaded);
+        logPerf("clear page         ", perf.i18nMessagesLoaded, perf.pageCleared);
+        logPerf("render header      ", perf.pageCleared, perf.headerCreated);
+        logPerf("wait for API       ", perf.headerCreated, perf.apiResponded);
+        logPerf("total API call     ", perf.started, perf.apiResponded);
+        logPerf("parse JSON         ", perf.apiResponded, perf.jsonParsed);
+        logPerf("query page names   ", perf.jsonParsed, perf.pageNamesQueryStarted);
+        logPerf("render posts       ", perf.pageNamesQueryStarted, perf.postsRendered);
+        logPerf("wait for page names", perf.postsRendered, perf.pageNamesQueryCompleted);
+        logPerf("update page names  ", perf.pageNamesQueryCompleted, perf.commentLinksAdded);
+        logPerf("total              ", perf.started, perf.commentLinksAdded);
+      }
+    });
+  }
+
+  function createTextRepresentation(post, characterLimit, includeLineBreaks) {
+    if (includeLineBreaks === undefined) includeLineBreaks = true;
+    var result;
+    if (post.jsonModel) {
+      /*
+       * As of August 2021 post.rawContent (seemingly incorrectly) strips HTML tags from code blocks.
+       * Therefor we avoid rawContent entirely and always parse post.jsonModel instead.
+       */
+      result = createTextFromJsonModel(post.jsonModel, characterLimit, includeLineBreaks);
+    } else if (post.poll) {
+      result = post.poll.question;
+      const answers = post.poll.answers;
+      const answerCount = answers.length;
+      for (var i = 0; i < answerCount && result.length < characterLimit; ++i) {
+        result = result + "\n" + answers[i].text;
+      }
+    } else if (post.renderedContent) {
+      /* This is probably migrated from old thread-based technology. */
+      result = stripHtml(post.renderedContent);
+      if (!includeLineBreaks) result = result.replace("\n", "");
+    }
+    if (!result) return undefined;
+    const cappedResult = result.length > characterLimit ?
+      result.substring(0, characterLimit) + "…" :
+      result;
+
+    return cappedResult;
+  }
+
+  function createTextFromJsonModel(jsonModel, characterLimit, includeLineBreaks) {
+    var result = "";
+    const json = JSON.parse(jsonModel);
+    const docContent = json.content;
+    const docContentCount = docContent.length;
+    for (var i = 0; i < docContentCount && result.length < characterLimit; ++i) {
+      const docElement = docContent[i];
+      if ((docElement.type !== "paragraph" && docElement.type !== "code_block") || !docElement.content) {
+        continue;
+      }
+      const paragraphContent = docElement.content;
+      const paragraphContentCount = paragraphContent.length;
+      for (var j = 0; j < paragraphContentCount && result.length < characterLimit; ++j) {
+        const paragraphElement = paragraphContent[j];
+        if (paragraphElement.type !== "text" || !paragraphElement.text) {
+          continue;
+        }
+        result += paragraphElement.text;
+      }
+      if (includeLineBreaks && i !== docContentCount - 1) {
+        result += "\n";
+      }
+    }
+
+    return result;
+  }
+
+  function stripHtml(html) {
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.innerText || "";
+  }
+
+  function createThumbnailUrl(imageUrl, width, height) {
+    if (imageUrl.indexOf("/messaging/") !== -1) {
+      /* This is a pre-UCP default avatar, it needs to be treated like a wiki image */
+      imageUrl += "/revision/latest";
+    }
+    /* see https://github.com/Wikia/vignette#thumbnail-modes */
+    return imageUrl + "/thumbnail-down/width/" + width + "/height/" + height;
+  }
+  
+  function createArticleTextLink(pagename, text) {
+    return createTextLink(mwConfig.wgArticlePath.replace("$1", pagename), text);
+  }
+  
+  function createWikiTextLink(relativeUrl, text) {
+    return createTextLink(mwConfig.wgScriptPath + relativeUrl, text);
+  }
+  
+  function createTextLink(url, text) {
+    var link = document.createElement("a");
+    link.href = url;
+    link.innerText = text;
+    return link;
+  }
+  
+  function createSvg(href, className) {
+    const svgNamespace = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNamespace, "svg");
+    svg.setAttribute("class", className);
+    const use = document.createElementNS(svgNamespace, "use");
+    use.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
+    svg.appendChild(use);
+    return svg;
+  }
+
+})(this, mediaWiki);

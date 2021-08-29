@@ -7,15 +7,7 @@
 AjaxRCRefreshText = 'Auto-refresh';
 AjaxRCRefreshHoverText = 'Automatically refresh the page';
 ajaxPages = ["Special:RecentChanges","Special:WikiActivity"];
- /*
-importArticles({
-    type: 'script',
-    articles: [
-        // ...
-        'u:kocka:MediaWiki:AjaxCommentDelete/code.js',
-        // ...
-    ]
-});*/
+
 batchDeleteDelay = 1000;
 
 massRenameDelay = 1000; // Optional
@@ -85,17 +77,14 @@ function createDProfiles() {
 $(createDProfiles);
 
 mw.loader.using( ['jquery.ui.tabs'], function() {
-    $(function() {
-        var $tabs 
-= $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100} } );
-        $("[class^=portal_sliderlink]").click(function() { // bind click event to link
-            $tabs.tabs('select', this.className.replace("portal_sliderlink_", ""));
-            setTimeout(function() {
-    $(window).scroll();
-}, 1000);
-            return false;
-        });
-    });
+	var $tabs = $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100} });
+	$("[class^=portal_sliderlink]").click(function() { // bind click event to link
+		$tabs.tabs('select', this.className.replace("portal_sliderlink_", ""));
+		setTimeout(function() {
+			$(window).scroll();
+		}, 1000);
+        return false;
+	});
 });
 
 /*Message Wall User Tags*/
@@ -111,7 +100,7 @@ window.MessageWallUserTags = {
         'HiccstridFan92': 'Admin',
         'Tauriel_the_Elf': 'Admin',
         'DublynT': 'Admin',
-        'Nuttetuff': ‘Moderator',
+        'Nuttetuff': 'Moderator',
         'Clodaghelm': 'Moderator'
     }
 };

@@ -331,7 +331,7 @@
                 'class': 'wds-dropdown-level-2'
             }).append(
                 $('<a>', {
-                    'href': mw.util.getUrl(VAN.nav.uri.infoboxes),
+                    'href': mw.util.getUrl(VAN.nav.uri.sitecss), //change back to VAN.nav.uri.infoboxes if/when they come back
                     'target': '_blank',
                     'rel': 'noopener noreferrer',
                     'class': [
@@ -355,9 +355,9 @@
         },
         // Global navigation links.
         uri: {
-            infoboxes:       'Special:Templates?type=infobox',
-            templates:       'Special:Templates',
-            sitecss:         'Special:CSS',
+            //infoboxes:       'Special:Templates?type=infobox', (remember to edit above JS if uncommenting)
+            //templates:       'Special:Templates',
+            sitecss:         'MediaWiki:Fandomdesktop.css?action=edit',
             personalcss:     'Special:MyPage/common.css',
             themescss:       'MediaWiki:Themes.css?action=edit',
             admins:          'Special:ListUsers/sysop',

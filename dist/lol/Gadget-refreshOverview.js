@@ -100,7 +100,7 @@ $(function () {
 					template = template.replace(/\|winner=(\s*)\|/,'|winner=' + thisgame.winner + ' $1|');
 					listOfTemplates[thisgame.N] = template;
 					if (thisgame.bestof && thisgame.serieswinner) {
-						deleteExtraGames(listOfTemplates, thisgame);
+						deleteExtraGames(listOfTemplates, thisgame, template);
 					}
 				}
 				
@@ -135,24 +135,41 @@ $(function () {
 				score2 : game[3],
 				winner : game[4],
 				bestof : parseInt(game[5]),
-				serieswinner : parseInt(game[6])
+				serieswinner : parseInt(game[6]),
+				team1name: game[7], // only for debugging purposes
+				team2name: game[8], // only for debugging purposes
 			}
 		}
 		
-		function deleteExtraGames(listOfTemplates, thisgame) {
+		function deleteExtraGames(listOfTemplates, thisgame, template) {
 			var score1 = parseInt(thisgame.score1);
 			var score2 = parseInt(thisgame.score2);
 			score1 = score1 ? score1 : 0;
 			score2 = score2 ? score2 : 0;
-			if (Math.max(score1, score2) > thisgame.bestof / 2) {
+			var largerScore = Math.max(score1, score2);
+			if (largerScore > thisgame.bestof / 2) {
+				console.log('Game to delete found!');
+				console.log(template);
+				console.log(thisgame);
+				if (template.toLowerCase().search('box')) {
+					// this means that there's a box|break or box|end immediately after the last pick-ban game
+					// this occurs if someone manually prunes some games not using RO
+					console.log('It appears deletion has already occurred for this series.');
+					return;
+				}
 				for (j = 1; j <= thisgame.bestof - score1 - score2; j++) {
 					var indexToDelete = thisgame.N + j;
 					var templateToDelete = listOfTemplates[indexToDelete];
 					if (templateToDelete && templateToDelete.match(/game1\s*=\s*Yes/i)) {
-						console.log("Won't delete " + indexToDelete + " because it contains a game 1");
+						// I'm pretty sure this condition will never occur anymore because the
+						// deletion already occurred for this series check is actually the correct
+						// check for whether we should be skipping or not, and it supercedes
+						// but I'm not about to delete a check that was previously needed when there's
+						// no unit tests in place so this is staying here forever lol
+						console.log("Won't delete " + indexToDelete + " because it contains a game 1. Score: " + largerScore + ', bestof: ' + thisgame.bestof);
 					}
 					else if (templateToDelete) {
-						console.log('Will delete ' + indexToDelete);
+						console.log('Will delete ' + indexToDelete + ', score: ' + largerScore + ', bestof: ' + thisgame.bestof);
 						templateToDelete = templateToDelete.replace(/[^\}]*\}\}/,'DELETE');
 						listOfTemplates[indexToDelete] = templateToDelete;
 					}

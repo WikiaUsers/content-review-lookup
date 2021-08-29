@@ -28,21 +28,14 @@ window.SignatureCheckJS = {
     ]
 };//End SC*/
 
-/** Lock Old Threads **/
-window.LockForums = {    
-    lockMessageWalls: true,
-    expiryDays: 365,
-    expiryMessage: 'This thread is over a year old - there is no need to comment.'
-};/* End LOT*/
-
 /* Article Rating Config */
 window.ArticleRating = {
   title: 'Rate This Article',
-  values: ['Awful', 'Below Average', 'Average', 'Good', 'Great'],
+  values: ['Awful', 'Bad', 'Average', 'Good', 'Great'],
   starSize: [24, 24],
   starColor: ['#ccc', '#ffba01'],
   starStroke: '#000',
-  exclude: ['Policy:Rules', 'Policy:Rules/Discord Rules', 'Policy:Code of Conduct', 'Policy:Accounts'],
+  exclude: ['Project:Rules', 'Project:Rules/Discord Rules', 'Project:Staff', 'Project:Staff/Demotions', 'Project:Staff/Applications'],
   location: 'top-rail'
 };/*End AR*/
 
@@ -102,11 +95,6 @@ function ShowUserGroups_sorter(a, b) {
  
     return sortA - sortB;
 }//End RSUG*/
-
-/*RailWAM*/
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
 
 /** WikiActivity **/
 window.rwaOptions = {

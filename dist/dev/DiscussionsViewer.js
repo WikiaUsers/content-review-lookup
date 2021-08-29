@@ -65,7 +65,40 @@
   };
 
   dpv.click = function() {
-    window.dev.showCustomModal('', '<div id="dpv-view-posts"></div>', {
+    dpv.type = 'discussions';
+    window.dev.showCustomModal('', {
+      content: $('<div>').append(
+        $('<ul>', {
+          'class': 'wds-tabs',
+          'id': 'dpv-tabs'
+        }).append(
+          ['discussions', 'wall-posts', 'comments'].map(function(msg, index) {
+            return $('<li>', {
+              'class': index === 0 ?
+                'wds-tabs__tab wds-is-current' :
+                'wds-tabs__tab',
+              'click': function() {
+                dpv.type = msg;
+                $('#dpv-tabs .wds-is-current').removeClass('wds-is-current');
+                $(this).addClass('wds-is-current');
+                dpv.getPosts();
+              }
+            }).append(
+              $('<div>', {
+                'class': 'wds-tabs__tab-label'
+              }).append(
+                $('<a>', {
+                  href: '#',
+                  text: dpv.i18n.msg(msg).plain()
+                })
+              )
+            );
+          })
+        ),
+        $('<div>', {
+          id: 'dpv-view-posts'
+        })
+      ),
       id: 'dpv-view-post',
       width: 600,
       buttons: []
@@ -79,21 +112,21 @@
     mainPost: '<div class="dpv-post dpv-{{locked}}">' +
       '<div class="dpv-post-avatar"><img src="{{post.createdBy.avatarUrl}}"/></div><div class="dpv-post-top"><span class="dpv-post-author">{{post.createdBy.name}}</span>' +
       ' &bull; <a href="{{wiki}}/wiki/Special:Contributions/{{post.createdBy.name}}">{{i18nContribs}}</a>' +
-      ' &bull; <a href="{{wiki}}/f/u/{{post.createdBy.id}}">{{i18nPosts}}</a>' +
-      ' &bull; {{i18nIn}} <a href="{{wiki}}/f?catId={{post.forumId}}">{{post.forumName}}</a></div>' +
+      ' &bull; <a href="{{postUrl}}">{{i18nPosts}}</a>' +
+      ' &bull; {{i18nIn}} <a href="{{boardUrl}}">{{boardName}}</a></div>' +
       '<div class="dpv-post-date"><a href="{{wiki}}/f/p/{{post.threadId}}">{{date}}</a></div>' +
       '<h2>{{post.title}}</h2>' +
-      '<div class="dpv-post-content">{{post.rawContent}}' +
+      '<div class="dpv-post-content">{{post.rawContent}}{{{post.renderedContent}}}' +
       '{{#img}}<br><img class="dpv-post-image" srv="{{img}}" srcset="{{img}}/scale-to-width-down/420 420w, {{img}}/scale-to-width-down/520 520w, {{img}} 600w" sizes="(min-width: 1575px) 640px, (min-width:1064px) 520px, 100vw">{{/img}}</div>' +
-      '<div class="dpv-post-dlink"><a href="{{wiki}}/f/p/{{post.threadId}}">{{i18nViewInD}}</a></div>' +
+      '<div class="dpv-post-dlink"><a href="{{postUrl}}">{{i18nView}}</a></div>' +
       '</div></div><br>',
     postReply: '<div class="dpv-post-reply dpv-{{locked}}">' +
       '<div class="dpv-post-avatar"><img src="{{post.createdBy.avatarUrl}}" /></div><div class="dpv-post-author dpv-post-top">{{post.createdBy.name}}' +
       ' &bull; <a href="{{wiki}}/wiki/Special:Contributions/{{post.createdBy.name}}">{{i18nContribs}}</a> &bull; <a href="{{wiki}}/f/u/{{post.createdBy.id}}">{{i18nPosts}}</a></div>' +
-      '<div class="dpv-post-date"><a href="{{wiki}}/f/p/{{post.threadId}}/r/{{post.id}}">{{date}}</a></div>' +
-      '<div class="dpv-post-content">{{post.rawContent}} ' +
+      '<div class="dpv-post-date"><a href="{{postUrl}}">{{date}}</a></div>' +
+      '<div class="dpv-post-content">{{post.rawContent}}{{{post.renderedContent}}} ' +
       '{{#img}}<br><img class="dpv-post-image" srv="{{img}}" srcset="{{img}}/scale-to-width-down/420 420w, {{img}}/scale-to-width-down/520 520w, {{img}} 600w" sizes="(min-width: 1575px) 640px, (min-width:1064px) 520px, 100vw">{{/img}}</div>' +
-      '<div class="dpv-post-dlink"><a href="{{wiki}}/f/p/{{post.threadId}}/r/{{post.id}}">{{i18nViewInD}}</a></div>' +
+      '<div class="dpv-post-dlink"><a href="{{postUrl}}">{{i18nView}}</a></div>' +
       '</div><br>'
   };
 
@@ -109,6 +142,55 @@
     return (n < 10) ? '0' + n : n;
   };
 
+  dpv.typeToContainerType = {
+    'comments': 'ARTICLE_COMMENT',
+    'discussions': 'FORUM',
+    'wall-posts': 'WALL'
+  };
+
+  dpv.getBoardName = function(post, other) {
+    switch (dpv.type) {
+      case 'discussions': return post.forumName;
+      // TODO: This is not right (may not work on non-English wikis)
+      case 'wall-posts': return dpv.i18n.msg('message-wall', post.forumName.replace(/ Message Wall$/, '')).plain();
+      // TODO: Comments
+      case 'comments': return '???';
+    }
+  };
+
+  dpv.getBoardUrl = function(post, other) {
+    switch (dpv.type) {
+      case 'discussions': return config.wgScriptPath + '/f?catId=' + post.forumId;
+      // TODO: This is not right (may not work on non-English wikis)
+      case 'wall-posts': return mw.util.getUrl('Message Wall:' + post.forumName.replace(/ Message Wall$/, ''));
+      // TODO: Comments
+      case 'comments': return '#';
+    }
+  };
+
+  dpv.getPostUrl = function(post, other) {
+    var url;
+    switch (dpv.type) {
+      case 'discussions':
+        url = config.wgScriptPath + '/f/p/' + post.threadId;
+        if (post.isReply) {
+          return url + '/r/' + post.id;
+        }
+        return url;
+      // TODO: This is not right (may not work on non-English wikis)
+      case 'wall-posts':
+        url = mw.util.getUrl('Message Wall:' + post.forumName.replace(/ Message Wall$/, ''), {
+          threadId: post.threadId
+        });
+        if (post.isReply) {
+          return url + '#' + post.id;
+        }
+        return url;
+      // TODO: Comments
+      case 'comments': return '#';
+    }
+  };
+
   dpv.getPosts = function() {
     $.get(mw.util.wikiScript('wikia'), {
           controller: 'DiscussionContribution',
@@ -116,9 +198,10 @@
           userId: config.profileUserId,
           responseGroup: 'full',
           limit: 100,
-          viewableOnly: false
+          viewableOnly: false,
+          containerType: dpv.typeToContainerType[dpv.type]
     }).done(function(data) {
-      $("#dpv-content").empty();
+      $("#dpv-view-posts").empty();
       var posts = data._embedded['doc:posts'];
 
 
@@ -157,9 +240,12 @@
               wiki: config.wgServer + config.wgScriptPath,
               locked: option,
               img: imgURL,
+              boardUrl: dpv.getBoardUrl(post),
+              boardName: dpv.getBoardName(post),
+              postUrl: dpv.getPostUrl(post),
               i18nContribs: dpv.i18n.msg('contribs').plain(),
               i18nPosts: dpv.i18n.msg('posts').plain(),
-              i18nViewInD: dpv.i18n.msg('viewInD').plain()
+              i18nView: dpv.i18n.msg('view').plain()
             })
           );
         } else
@@ -177,9 +263,12 @@
                 wiki: config.wgScriptPath,
                 locked: option,
                 img: imgURL,
+                boardUrl: dpv.getBoardUrl(post),
+                boardName: dpv.getBoardName(post),
+                postUrl: dpv.getPostUrl(post),
                 i18nContribs: dpv.i18n.msg('contribs').plain(),
                 i18nPosts: dpv.i18n.msg('posts').plain(),
-                i18nViewInD: dpv.i18n.msg('viewInD').plain(),
+                i18nView: dpv.i18n.msg('view').plain(),
                 i18nIn: dpv.i18n.msg('in').plain()
               })
             );

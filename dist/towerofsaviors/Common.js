@@ -24,6 +24,7 @@ $(document).ready( function() {
 });
 
 function stageData(){
+    $('.stageMobile').remove();
     $('.stageData td.special').each(function(){
         var t = $(this).parent().nextUntil('tr:not(:has(td.specspan))');
         if(t.length == 0) return true;

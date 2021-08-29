@@ -40,7 +40,7 @@ $(document).ready(function() {
 					html.remove();
 					$.each(stags, function(i, item) {
 						if (item === username) return;
-						else userheader.append('<span class="user-identity-header__tag">' + item + '</span>');
+						else userheader.append('<span class="user-identity-header__tag">' + mw.html.escape(item) + '</span>');
 					});
 							
 					console.log("[WikiTags] " + username + "'s tags has been replaced.");

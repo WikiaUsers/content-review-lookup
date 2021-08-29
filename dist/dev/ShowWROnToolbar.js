@@ -2,93 +2,177 @@
  * Shows the wiki rep on the toolbar
  * https://dev.fandom.com/wiki/ShowWROnToolbar
  *
+ * Data obtained by this script is subject to caching on per-wiki basis!
+ * Remove your browser cookies to invalidate it or wait 24 hours auto-expiration
+ * 
+ * Alternatively, you can force-disable cache by setting:
+ * window.ShowWROnToolbarDisableCache = true;
+ *
  * Authors: Noreplyz, Sophiedp
  * Rewritten by: Rail
  */
-mw.loader.using( ['mediawiki.api', 'mediawiki.util'], function() {
+mw.loader.using( [
+    'mediawiki.api',
+    'mediawiki.util',
+    'mediawiki.cookie'
+], function() {
     'use strict';
 
-    // Some wikis (such as Community Central) have this special page disabled
+    /**
+     * Some wikis (such as Community Central) have this special page disabled so check for that
+     * Also prevent double loading
+     */
     if ( !document.querySelector( 'a[data-tracking="explore-community"]' ) || window.ShowWROnToolbarLoaded ) {
         return;
     }
     window.ShowWROnToolbarLoaded = true;
 
-    var showWR = {};
+    const conf = mw.config.get( [
+        'wgContentLanguage',
+        'wgFormattedNamespaces',
+        'wgCityId'
+    ] );
 
-    showWR.wikiRepresentative = {
-        user: null,
-        link: null
-    };
-    showWR.hasNoWR = false;
+    var self = {};
 
-    showWR.scrapCommunity = function( callback ) {
-    	// `apioutput` skin makes this less of a tragedy, safemode prevents custom codes from loading
-        const communityUrl = mw.util.getUrl( 'Special:Community', {
-            useskin: 'apioutput',
-            safemode: 1
-        } );
+    self.cachePrefix = conf.wgCityId + '-';
+    self.cacheKey = 'wikiRepresentative';
 
-        fetch( communityUrl ).then( function( resp ) {
-            return resp.text();
-        } ).then( function( html ) {
-            const parsedHTML = new DOMParser().parseFromString(
-                html, 'text/html'
-            );
-
-            callback( parsedHTML );
-        } );
+    /**
+     * Get data from cache. Defaults to null if data isn't cached
+     * Done via cookies and not localStorage because of expiration time
+     *
+     * @returns {string|null}
+     */
+    self.getCachedData = function() {
+        return mw.cookie.get( self.cacheKey, self.cachePrefix );
     };
 
-    showWR.getWRData = function( callback ) {
-        showWR.scrapCommunity( function( cDOM ) {
-            const wrElement = cDOM.querySelector( 'a[data-tracking="wiki-representative-avatar-username"]' );
-            
-            // Wiki has no WR or ARC person assigned
-            if ( !wrElement ) {
-                showWR.hasNoWR = true;
-                return callback( null );
+    /**
+     * Function to save data to cache without having
+     * to set mw.cookie.set() options on your own
+     *
+     * @param {string} cacheValue
+     */
+    self.cacheData = function( cacheValue ) {
+        self.cacheDuration = ( !window.ShowWROnToolbarDisableCache
+            ? 3600 * 24 // One day
+            : 0 // force session cookie
+        );
+
+        mw.cookie.set( self.cacheKey, cacheValue, {
+            prefix: self.cachePrefix,
+            expires: self.cacheDuration
+        } );
+    };
+
+    self.wikiRepresentative = null;
+    self.hasNoWr = self.getCachedData() === 'null';
+
+    /**
+     * Scrap Special:Community to obtain information about assigned Wiki Representative
+     * or ARC (Admin Request Coordination – that's a non-EN thing) person and parse them.
+     *
+     * Theoretically Special:Community has an API but id doesn't contain WR information.
+     * We use `apioutput` value for `useskin` parameter to make this scrapping a bit more optimal.
+     *
+     * @param {Function} callback
+     */
+    self.getWikiRepresentative = function( callback ) {
+        const communityPageUrl = mw.util.getUrl(
+            conf.wgFormattedNamespaces[-1] + ':Community', {
+                useskin: 'apioutput',
+                safemode: 1
+            }
+        );
+        const scrapRequest = function( callback ) {
+            fetch( communityPageUrl ).then( function( resp ) {
+                return resp.text();
+            } ).then( function( html ) {
+                const parseApi = new DOMParser();
+                const parsedHTML = parseApi.parseFromString( html, 'text/html' );
+
+                callback( parsedHTML );
+            } );
+        };
+
+        scrapRequest( function( communityHtml ) {
+            const wrHandleSelector = 'a[data-tracking="wiki-representative-avatar-username"]';
+            const wrHandle = communityHtml.querySelector( wrHandleSelector );
+
+            // Wiki has no WR assigned – we panic
+            if ( !wrHandle ) {
+                // Not type-correct but eh
+                self.cacheData( 'null' );
+                self.hasNoWr = true;
+
+                callback( null );
+                return false;
             }
 
-            showWR.wikiRepresentative.user = wrElement.innerText.trim();
-            showWR.wikiRepresentative.link = wrElement;
+            // For whatever reason DOM element with this has a lot of spaces around its text
+            const wrUsername = wrHandle.innerText.trim();
 
-            mw.hook( 'dev.showWROnToolbar' ).fire(
-                showWR.wikiRepresentative
-            );
+            self.cacheData( wrUsername );
+            self.wikiRepresentative = wrUsername;
 
-            callback( showWR.wikiRepresentative );
+            mw.hook( 'dev.showWROnToolbar' ).fire( wrUsername );
+
+            callback( wrUsername );
         } );
     };
 
-    showWR.buildUI = function() {
-        const toolbarEl = document.createElement( 'li' );
-        const wrLabel = ( mw.config.get( 'wgContentLanguage' ) === 'en'
+    self.buildUI = function() {
+        const toolbarElement = document.createElement( 'li' );
+        const toolbarWrapper = document.querySelector( '#WikiaBar .tools' );
+
+        const wrLabel = ( conf.wgContentLanguage === 'en'
             ? 'WR'
             : 'ARC'
         );
 
-        toolbarEl.classList.add( 'custom' );
-        toolbarEl.classList.add( 'wrOnToolbar' );
-        toolbarEl.innerHTML = wrLabel + ':&nbsp;';
+        toolbarElement.classList.add( 'custom' );
+        toolbarElement.classList.add( 'wrOnToolbar' );
+        toolbarElement.innerHTML = wrLabel + ':&nbsp;';
 
-        if ( !showWR.hasNoWR ) {
-            toolbarEl.appendChild( showWR.wikiRepresentative.link );
+        if ( !self.hasNoWr ) {
+            const wrLink = document.createElement( 'a' );
+            const wrUrl = mw.util.getUrl(
+                conf.wgFormattedNamespaces[2] + ':' + self.wikiRepresentative
+            );
+
+            wrLink.setAttribute( 'href', wrUrl );
+            wrLink.setAttribute( 'title', self.wikiRepresentative );
+            wrLink.innerText = self.wikiRepresentative;
+
+            toolbarElement.appendChild( wrLink );
         } else {
-            toolbarEl.innerHTML += mw.messages.get( 'rightsnone' );
+            // There is no WR – this requires mw.Api() call beforhand to get message in place
+            new mw.Api().loadMessagesIfMissing( ['rightsnone'] ).then( function() {
+                const noneMessage = mw.messages.get( 'rightsnone' );
+
+                toolbarElement.innerHTML += noneMessage;
+                toolbarElement.setAttribute( 'title', noneMessage );
+            } );
         }
 
-        document.querySelector( '#WikiaBar .tools' ).appendChild( toolbarEl );
+        toolbarWrapper.appendChild( toolbarElement );
     };
 
-    showWR.init = function() {
-        showWR.getWRData( function() {
-            new mw.Api().loadMessagesIfMissing( ['rightsnone'] ).then( function() {
-                showWR.buildUI();
+    self.init = function() {
+        // Check for data in cache. If it's not present – scrap S:Community
+        if ( !self.getCachedData() ) {
+            self.getWikiRepresentative( function() {
+                self.buildUI();
             } );
-        } );
+        } else {
+            self.wikiRepresentative = self.getCachedData();
+            this.buildUI();
+        }
     };
 
-    showWR.init();
-    window.ShowWROnToolbar = showWR;
+    self.init();
+
+    // Export API
+    window.ShowWROnToolbar = self;
 } );

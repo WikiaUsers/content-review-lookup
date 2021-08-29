@@ -3990,6 +3990,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"elitedark": {
+				"name": "Elite Dark",
+				"colors": [
+					"dark",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"eliteolympus": {
 				"name": "Elite Olympus",
 				"colors": [
@@ -5861,11 +5869,27 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"grandgemstone": {
+				"name": "Grand Gemstone",
+				"colors": [
+					"gemstone",
+					"yellow"
+				],
+				"rarity": "common"
+			},
 			"grandrainbow": {
 				"name": "Grand Rainbow",
 				"colors": [
 					"rainbow",
 					"black"
+				],
+				"rarity": "unbreedable"
+			},
+			"grandtropic": {
+				"name": "Grand Tropic",
+				"colors": [
+					"tropic",
+					"pink"
 				],
 				"rarity": "unbreedable"
 			},
@@ -6700,6 +6724,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"mythic",
 					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"hypercosmic": {
+				"name": "Hyper Cosmic",
+				"colors": [
+					"cosmic",
+					"black",
+					"purple"
 				],
 				"rarity": "unbreedable"
 			},

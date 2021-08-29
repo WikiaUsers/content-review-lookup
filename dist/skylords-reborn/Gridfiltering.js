@@ -22,10 +22,12 @@ gridFilters = {
 };
 
 (function () {
-    var isMainPage = $('body').hasClass('mainpage');
+	// whether the container should have increased height or not (mainly for use on the mainpage)
+    var incrH = $('body').hasClass('mainpage') || $('#card-grid').hasClass('increased-height') || false;
+    // whether we're talking about a list of card viewer instances or card icons
     var isList = $('#card-grid').hasClass('list-of-cards');
     
-    $('#card-grid').css('max-height', isMainPage ? '400px' : isList ? '500px' : '230px');
+    $('#card-grid').css('max-height', incrH ? '400px' : isList ? '500px' : '230px');
     
     function gridFiltering() {
         var grid = $('#card-grid');
@@ -131,7 +133,7 @@ gridFilters = {
                 }
                 var visibleCards = $('#card-grid > .custom-tooltip:visible').length;
                 var perRow = Math.floor($('#card-grid').width() / (isList ? 203 : 58));
-                if (visibleCards <= perRow * (isMainPage ? 6 : isList ? 1 : 3)) {
+                if (visibleCards <= perRow * (incrH ? 6 : isList ? 1 : 3)) {
                     $('#grid-collapse').hide();
                 } else {
                     $('#grid-collapse').show();
@@ -299,7 +301,7 @@ gridFilters = {
 
         var visibleCards = $('#card-grid > .custom-tooltip:visible').length;
         var perRow = Math.floor($('#card-grid').width() / (isList ? 203 : 58));
-        if (visibleCards <= perRow * (isMainPage ? 6 : isList ? 1 : 3)) {
+        if (visibleCards <= perRow * (incrH ? 6 : isList ? 1 : 3)) {
             $('#grid-collapse').hide();
         } else {
             $('#grid-collapse').show();

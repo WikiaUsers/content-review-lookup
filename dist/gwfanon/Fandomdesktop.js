@@ -17,3 +17,9 @@ if ( !mw.config.get( 'wgUserId' ) ) {
         article: 'MediaWiki:Anons.css'
     } );
 }
+
+// Category class
+$ ( function ( ) { mw.config.get ( 'wgCategories' ).forEach ( function ( el, id ) { $ ( 'body' ).addClass ( 'cat-' + el.replace(/ /g, '-') ) } ); } );
+
+// File description
+$('textarea[name=wpUploadDescription]').val('{{Informacje\r\n| Opis      = \r\n| Autor     = \r\n| Źródło    = \r\n}}\r\n');

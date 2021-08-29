@@ -18,6 +18,11 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+// Changes made on August 24, 2021
+'Venerable Girtablilu': '12.71.11017',
+'Girtablilu Warrior': '12.71.11017',
+'Bashmu': '12.71.11017',
+'Juvenile Bashmu': '12.71.11017',
 // Changes made on July 06, 2021 - 12.67.10934 (2)
 'Brachiodemon': '12.67.10934',
 'Infernal Demon': '12.67.10934',
@@ -195,7 +200,6 @@ window.loot_parser_data = {
 'Wiggler': '12.30.9391',
 'Mutated Bat': '12.15.8659',
 //'Hellspawn': '12.15.8659',
-'Lost Soul': '12.15.8659',
 'Young Sea Serpent': '12.15.8659',
 //'Crazed Winter Vanguard': '12.03',
 'The Percht Queen': '12.03',
@@ -300,7 +304,7 @@ window.loot_parser_data = {
 'Hand of Cursed Fate': '9.86',
 'Hide': '9.86',
 'Ice Golem': '9.86',
-//'Lost Soul': '9.86',
+'Lost Soul': '9.86',
 'Mammoth': '9.86',
 'Phantasm': '9.86',
 'Quara Constrictor Scout': '9.86',

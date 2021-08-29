@@ -9,7 +9,7 @@ $(function() {
     return; //there can be only one.
   }
 
-  var RCUthrobber = '<img src="https://images.wikia.nocookie.net/common/skins/common/images/ajax.gif" style="vertical-align:top;height:21px;" border="0" alt="Updating page" title="Updating page" />';
+  var RCUthrobber = '<img src="https://static.wikia.nocookie.net/saintsrow/images/0/05/Ajax.gif" style="vertical-align:top;height:21px;" border="0" alt="Updating page" title="Updating page" />';
   window.title = $("title").html();
   window.RCUlast = 0; //5 second check
   var RCUstate = 0; //throbber

@@ -296,8 +296,8 @@ function createContainer() {
     $("<div>", {
       id:"MapScroll",
       title:"", //this pops up in strange places
-      width:$(".WikiaArticle").width(),
-      height:$(".WikiaArticle").width()*3/4,
+      width:$(".page-content").width(),
+      height:$(".page-content").width()*3/4,
     }).append(
       $("<div>", {
         id:"MapPadding",
@@ -405,7 +405,7 @@ function SRWMap(params) {
     this.setval("height", params, 1);
 
     this.image = this.filePrefix+this.image;
-    this.small = this.image+"/revision/latest/scale-to-width-down/"+Math.floor($(".WikiaArticle").width());
+    this.small = this.image+"/revision/latest/scale-to-width-down/"+Math.floor($(".page-content").width());
     this.centerX=this.width/2;
     this.centerY=this.height/2
     this.clean();
@@ -432,7 +432,7 @@ function SRWMap(params) {
           width:this.width,
           height:this.height,
         }).attr("data-title",this.name).attr("title","")
-      ).css("zoom",($(".WikiaArticle").width()-16)/this.width);
+      ).css("zoom",($(".page-content").width()-16)/this.width);
     } else if(which == "full") {
       $("#Progress").html("Loading...");
       $("#MapSmall").after(
@@ -1302,7 +1302,7 @@ $(function() {
   SRW = {Map:{}, Cats:{}, Pins:{}, CatOrder:[]};
   console.log("script init 1.0.10");
   $(".page-header h1").html($(".page-header h1").html().replace("Saints Row Wiki:Maps/","Map:"))
-  if (wgPageName == $("#SRWmap").attr("title")) $("#WikiaArticle").css("margin",0);
+  if (wgPageName == $("#SRWmap").attr("title")) $(".page-content").css("margin",0);
 
   //reset for testing
     $("#SRWmap").removeClass("dirty");
@@ -1315,8 +1315,8 @@ $(function() {
   loadData();
 
   $(window).on("resize", function() {
-    $("#MapScroll").width(Math.round($(".WikiaArticle").width()))
-//    $("#MapScroll").height(Math.round($(".WikiaArticle").width()*3/4));
+    $("#MapScroll").width(Math.round($(".page-content").width()))
+//    $("#MapScroll").height(Math.round($(".page-content").width()*3/4));
 //    if ($("#MapScroll").height() > $(window).height() - 150) 
     $("#MapScroll").height(Math.round($(window).height()- 120));
 

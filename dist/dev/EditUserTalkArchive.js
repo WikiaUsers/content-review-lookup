@@ -56,6 +56,11 @@
 			$("#ca-history").attr("href", relativeLink + "?action=history&redirect=no");
 			$("#ca-protect").attr("href", relativeLink + "?action=protect&redirect=no");
 			$("#ca-delete").attr("href", relativeLink + "?action=delete&redirect=no");
+			$("#ca-purge").attr("href", relativeLink + "?action=purge&redirect=no");
+			$(".mw-editsection a").each(function(){
+				var sectionEdit = $(this).attr("href");
+				$(this).attr("href", sectionEdit + "&redirect=no");
+			});
 		}
 		
 		// Prepend icon to edit button if dev.wds properly imports
@@ -80,11 +85,16 @@
 			if(!d.error){
 				if(d.query.allpages.length){
 					var talkLink = mw.config.get("wgServer") + mw.config.get("wgArticlePath").replace("$1", d.query.allpages[0].title);
-					$("#MessageWall").before('<div id="euta_buttons" style="margin-bottom: 1em; text-align: right;"><a id="euta_button" class="wds-button wds-is-secondary" href="' + talkLink + '?redirect=no"><span>User Talk Archive</span></a></div>');
-					// Prepend icon to button if dev.wds properly imports
-					mw.hook("dev.wds").add(function(wds) {
-						$("#euta_button").prepend(wds.icon("bubble-small"));
-					});
+					const filterCheck = setInterval(function(){
+						if($(".messagewall-filters__filters").length){
+							clearInterval(filterCheck);
+							$(".messagewall-filters__filters").prepend('<div id="euta_wrapper"><a id="euta_button" class="wds-button wds-is-text" href="' + talkLink + '?redirect=no"><span>User Talk Archive</span></a></div>');
+							// Prepend icon to button if dev.wds properly imports
+							mw.hook("dev.wds").add(function(wds) {
+								$("#euta_button").prepend(wds.icon("bubble-small"));
+							});
+						}
+			    	}, 200);
 				}
 			} else {
 				console.error("EditUserTalkArchive: Error when checking for user talk page:" + d.error.code);
@@ -92,6 +102,12 @@
 		}).fail(function(){
 			console.error("EditUserTalkArchive: Failed to check for user talk page");
 		});
+		
+		/* Import CSS */
+		if(!window.EUTACSSLoaded){
+			importArticle({ type: "style", article: "u:dev:MediaWiki:EditUserTalkArchive.css" });
+			window.EUTACSSLoaded = true;
+		}
 	}
 	
 	/* Import WDS */

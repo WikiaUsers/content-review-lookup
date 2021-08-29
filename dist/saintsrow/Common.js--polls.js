@@ -41,7 +41,7 @@ if (!$("#SRWpollstyle").length) {
 	+'\n.sprite.error {    background-position: -1176px -80px; }'
 	+'\n.SRWpoll .sprite {'
 	+'\n    background-color: transparent;'
-	+'\n    background-image: url(https://images.wikia.nocookie.net/__cb1487361765/common/skins/shared/images/sprite.png);'
+	+'\n    background-image: url(https://static.wikia.nocookie.net/saintsrow/images/d/d7/Sprite.png);'
 	+'\n    background-repeat: no-repeat;'
 	+'\n    height: 16px;'
 	+'\n    width: 16px;'

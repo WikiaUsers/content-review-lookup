@@ -1,23 +1,26 @@
-// RemoveTracking by Agent Zuri
-(function() {
+/**
+ * RemoveTracking by Agent Zuri
+ * 
+ * Disclaimer: Running this script may have an advesre impact on functionality of
+ * some site elements and/or other custom scripts.
+ * 
+ * By removing tracking attributes from site DOM elements you agree that when
+ * something goes wrong, it may not be possible to fix it while maintaining
+ * core functionality of this script – i.e. intentionally breaking tracking.
+ */
+mw.loader.using( 'mediawiki.cookie', function() {
     'use strict';
 
     // Prevent double-loading
     if ( window.RemoveTrackingLoaded ) return;
     window.RemoveTrackingLoaded = true;
 
-    // Copied from https://plainjs.com/javascript/utilities/set-cookie-get-cookie-and-delete-cookie-5/
-    function getCookie ( name ) {
-        var v = document.cookie.match( '(^|;) ?' + name + '=([^;]*)(;|$)' );
-        return v ? v[2] : null;
-    }
-
     // Define meta-variables if undefined
-    if ( !window.hasOwnProperty( 'dev' ) ) window.dev = {};
-    if ( !window.dev.hasOwnProperty( 'forceRemoveTracking' ) ) window.dev.forceRemoveTracking = true;
+    window.dev = window.dev || {};
+    window.dev.forceRemoveTracking = window.dev.forceRemoveTracking || true;
 
     // Check if user rejected tracking
-    if ( getCookie( 'tracking-opt-in-status' ) === 'rejected' || window.dev.forceRemoveTracking ) {
+    if ( mw.cookie.get( 'tracking-opt-in-status', '' ) === 'rejected' || window.dev.forceRemoveTracking ) {
         // Catch tracking elements
         var trackers = document.querySelectorAll( '[data-tracking-label], [data-tracking]' );
 
@@ -31,4 +34,4 @@
             tracker.removeAttribute( 'data-tracking-label' );
         } );
     }
-})();
+} );

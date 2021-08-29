@@ -21,3 +21,9 @@ importArticles({
         'u:dev:MediaWiki:YouTubeModal/code.js',
     ]
 });
+
+/* Collapsing categories section by default */
+$(function() {
+    $('.page-footer__categories.wds-is-collapsed').removeClass('wds-is-collapsed');
+});
+/* End categories section */

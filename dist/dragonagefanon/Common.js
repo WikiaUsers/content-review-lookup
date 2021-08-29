@@ -1,4 +1,4 @@
 importArticle({
     type: 'script',
-    article: 'u:dragonage:SpoilersToggle.js'
+    article: 'u:dragonage:MediaWiki:SpoilersToggle.js'
 });

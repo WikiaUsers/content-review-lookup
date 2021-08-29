@@ -12,7 +12,7 @@ window.onhashchange = function () {
 	var hash = window.location.hash.replace(/^#/, '');
 	var element = document.getElementById(hash);
 	flash($(element));
-}
+};
 var hash;
 
 function findFlashable(obj){
@@ -30,6 +30,8 @@ function findFlashable(obj){
 }
 
 function flash(obj){
+	
+	var isDarkTheme = mw.config.get("isDarkTheme");
 
 	var supplied = obj;
 
@@ -50,11 +52,11 @@ function flash(obj){
 	obj.css('background-color','#fff');
 		setTimeout(function(){
 		obj.css('transition','background-color 150ms ease-in');
-		obj.css('background-color','#66CCFF');
+		obj.css('background-color', isDarkTheme ? '#004D99' : '#66CCFF');
 		setTimeout(function(){
 			obj.css('transition','background-color 1000ms ease-out');
 			setTimeout(function(){
-				obj.css('background','#FFE3D5');
+				obj.css('background', isDarkTheme ? '#806000' : '#FFE3D5'); // #806000
 				setTimeout(function(){
 					obj.css('transition','');
 				},1000);
