@@ -1,4 +1,12 @@
+/**
+ * Name:        Tooltips script
+ * Author:      Derugon
+ * Description: Add custom tooltips to the page content.
+ */
+
 // <nowiki>
+( function () {
+
 var tooltips = {
 	/**
 	 * The MediaWiki API.
@@ -6,54 +14,55 @@ var tooltips = {
 	api: new mw.Api(),
 	/**
 	 * The tooltip wrapper.
-	 * @type {JQuery}
+	 * @type {HTMLElement}
 	 */
-	$wrapper: null,
-	/**
-	 * The elements tooltips should be displayed on.
-	 * @type {JQuery}
-	 */
-	$sources: null,
+	wrapper: null,
 	/**
 	 * The tooltip elements within the wrapper.
-	 * @type {Map<String, JQuery>}
+	 * @type {Map<String, Element>}
 	 */
 	targets: new Map(),
 
 	/**
-	 * Initializes the gadget.
+	 * Initializes all tooltips in a container.
 	 */
 	init: function () {
-		tooltips.$wrapper = $( '<div id="tooltip-wrapper">\
-			<div class="tooltip-background tooltip-background-top-left"></div>\
-			<div class="tooltip-background tooltip-background-top"></div>\
-			<div class="tooltip-background tooltip-background-top-right"></div>\
-			<div class="tooltip-background tooltip-background-left"></div>\
-			<div class="tooltip-background tooltip-background-right"></div>\
-			<div class="tooltip-background tooltip-background-bottom-left"></div>\
-			<div class="tooltip-background tooltip-background-bottom"></div>\
-			<div class="tooltip-background tooltip-background-bottom-right"></div>\
-			</div>' ).appendTo( '.mw-parser-output' );
-		tooltips.$sources = $( '.tooltip' )
-			.each( tooltips.initTooltip )
-			.one( 'mouseenter', tooltips.createTooltip );
-		$( document ).on( 'mousemove', tooltips.updateWrapperPosition );
+		Array.prototype.forEach.call(
+			document.getElementsByClassName( 'tooltip' ),
+			tooltips.initTooltip
+		);
 	},
 
 	/**
 	 * Initializes a tooltip.
-	 * @this HTMLElement
+	 * @param {HTMLElement} source The tooltip source element.
 	 */
-	initTooltip: function () {
-		var $source = $( this );
-		var template = $source.data( 'tooltip' );
+	initTooltip: function ( source ) {
+		var template = source.dataset.tooltip;
 		if ( !template ) {
-			$source
-				.removeClass( 'tooltip' )
-				.addClass( 'tooltip-invalid' );
+			if ( !source.title ) {
+				source.classList.remove( 'tooltip' );
+				source.classList.add( 'tooltip-invalid' );
+				return;
+			}
+			var target = document.createElement( 'div' );
+			target.textContent = source.title;
+			source.title = '';
+			target.classList.add( 'tooltip-content' );
+			source.addEventListener( 'mouseenter', tooltips.showTooltip );
+			source.addEventListener( 'mouseleave', tooltips.hideTooltip );
+			tooltips.targets.set( template, target );
+			tooltips.appendTooltip( target );
+			tooltips.showTooltip.call( source );
 			return;
 		}
-		$source.find( 'a' ).attr( 'title', '' );
+		source.addEventListener(
+			'mouseenter', tooltips.createTooltip, { once: true }
+		);
+		var as = source.getElementsByTagName( 'a' );
+		for ( var i = as.length - 1; i >= 0; --i ) {
+			as[ i ].title = '';
+		}
 	},
 
 	/**
@@ -61,29 +70,50 @@ var tooltips = {
 	 * @this HTMLElement
 	 */
 	createTooltip: function () {
-		var $source = $( this );
-		var template = $source.data( 'tooltip' );
+		var source   = this,
+			template = source.dataset.tooltip;
+		if ( tooltips.targets.has( template ) ) {
+			source.addEventListener( 'mouseenter', tooltips.showTooltip );
+			source.addEventListener( 'mouseleave', tooltips.hideTooltip );
+			tooltips.showTooltip.call( source );
+			return;
+		}
 		tooltips.api
-			.parse( '\n<div>{{' + template + '}}</div>' )
+			.parse( '{{' + template + '}}' )
 			.done( function ( output ) {
-				var $target = $( output )
-					.children( ':first' )
-					.addClass( 'tooltip-content' )
-					.appendTo( tooltips.$wrapper );
-				tooltips.targets.set( template, $target );
-				$target
-					.find( '.infobox2-slideshow:not( .infobox2-slideshow-auto )' )
-					.addClass( 'infobox2-slideshow-auto' );
-				dlcUtil.update( $target.get( 0 ) );
-				slideshows.init( $target );
-				$source.on( {
-					mouseenter: tooltips.showTooltip,
-					mouseleave: tooltips.hideTooltip
-				} );
-				if ( $source.is( ':hover' ) ) {
-					$source.each( tooltips.showTooltip );
+				var target            = tooltips.stringToElements( output ),
+					enabledSlideshows = window.slideshows.init( target );
+				target.classList.add( 'tooltip-content' );
+				for ( var i in enabledSlideshows ) {
+					window.slideshows.makeAuto( enabledSlideshows[ i ] );
+				}
+				if ( window.contentFilterUtil ) {
+					window.contentFilterUtil.applyFilter( target );
+				}
+				source.addEventListener( 'mouseenter', tooltips.showTooltip );
+				source.addEventListener( 'mouseleave', tooltips.hideTooltip );
+				tooltips.targets.set( template, target );
+				tooltips.appendTooltip( target );
+				if ( source.matches( ':hover' ) ) {
+					tooltips.showTooltip.call( source );
 				}
 			} );
+	},
+
+	/**
+	 * Appends a tooltip to the tooltip wrapper.
+	 * @param {Element} tooltip The tooltip.
+	 */
+	appendTooltip: function ( tooltip ) {
+		if ( tooltips.wrapper ) {
+			tooltips.wrapper.appendChild( tooltip );
+			return;
+		}
+		tooltips.wrapper = document.createElement( 'div' );
+		tooltips.wrapper.id = 'tooltip-wrapper';
+		tooltips.wrapper.appendChild( tooltip );
+		document.addEventListener( 'mousemove', tooltips.updateWrapper );
+		document.body.appendChild( tooltips.wrapper );
 	},
 
 	/**
@@ -91,9 +121,10 @@ var tooltips = {
 	 * @this HTMLElement
 	 */
 	showTooltip: function () {
-		tooltips.$wrapper.addClass( 'tooltip-wrapper-active' );
-		var template = $( this ).data( 'tooltip' );
-		tooltips.targets.get( template ).addClass( 'tooltip-content-active' );
+		tooltips.wrapper.classList.add( 'tooltip-wrapper-active' );
+		tooltips.targets
+			.get( this.dataset.tooltip )
+			.classList.add( 'tooltip-content-active' );
 	},
 
 	/**
@@ -101,22 +132,33 @@ var tooltips = {
 	 * @this HTMLElement
 	 */
 	hideTooltip: function () {
-		tooltips.$wrapper.removeClass( 'tooltip-wrapper-active' );
-		var template = $( this ).data( 'tooltip' );
-		tooltips.targets.get( template ).removeClass( 'tooltip-content-active' );
+		tooltips.wrapper.classList.remove( 'tooltip-wrapper-active' );
+		tooltips.targets
+			.get( this.dataset.tooltip )
+			.classList.remove( 'tooltip-content-active' );
 	},
 
 	/**
 	 * Updates the position of the tooltip wrapper.
-	 * @param {JQuery.MouseMoveEvent} event The mouse moving event.
+	 * @param {MouseEvent} event The mouse moving event.
 	 */
-	updateWrapperPosition: function ( event ) {
-		tooltips.$wrapper.css( {
-			left: event.clientX + 'px',
-			top : event.clientY + 'px'
-		} );
+	updateWrapper: function ( event ) {
+		tooltips.wrapper.style.left = event.clientX + 'px';
+		tooltips.wrapper.style.top  = event.clientY + 'px';
+	},
+
+	/**
+	 * Generates DOM elements from a string.
+	 * @param {string} str The DOM string.
+	 * @returns The generated DOM elements.
+	 */
+	stringToElements: function ( str ) {
+		var template = document.createElement( 'template' );
+		template.innerHTML = str;
+		return template.content.firstElementChild;
 	}
 };
 
-$( tooltips.init );
+tooltips.init();
+} )();
 // </nowiki>

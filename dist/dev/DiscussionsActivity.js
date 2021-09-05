@@ -4,7 +4,7 @@
  * @author NoWayThisUsernameIsAlreadyOwnedBySomeone (https://dev.fandom.com/User:NoWayThisUsernameIsAlreadyOwnedBySomeone)
  * - Based on DiscussionsFeed (https://dev.fandom.com/wiki/DiscussionsFeed)
  *   by Flightmare (https://elderscrolls.fandom.com/wiki/User:Flightmare)
- * @version 0.10.0
+ * @version 0.10.1
  * @license CC-BY-SA-3.0
  * @description Creates a special page for latest Discussions messages
  */
@@ -34,7 +34,7 @@
   if (window.DiscussionsActivityLoaded) return;
   window.DiscussionsActivityLoaded = true;
   
-  console.log('DiscussionsActivity v0.10.0');
+  console.log('DiscussionsActivity v0.10.1');
 
   const mwConfig = mw.config.get([
     "wgArticlePath",
@@ -611,27 +611,40 @@
   function createTextFromJsonModel(jsonModel, characterLimit, includeLineBreaks) {
     var result = "";
     const json = JSON.parse(jsonModel);
-    const docContent = json.content;
-    const docContentCount = docContent.length;
-    for (var i = 0; i < docContentCount && result.length < characterLimit; ++i) {
-      const docElement = docContent[i];
-      if ((docElement.type !== "paragraph" && docElement.type !== "code_block") || !docElement.content) {
-        continue;
-      }
-      const paragraphContent = docElement.content;
-      const paragraphContentCount = paragraphContent.length;
-      for (var j = 0; j < paragraphContentCount && result.length < characterLimit; ++j) {
-        const paragraphElement = paragraphContent[j];
-        if (paragraphElement.type !== "text" || !paragraphElement.text) {
-          continue;
+    result = parseContentElement(json.content, result, characterLimit, includeLineBreaks);
+    return result;
+  }
+  
+  function parseContentElement(contentElement, result, characterLimit, includeLineBreaks) {
+    const docElementCount = contentElement.length;
+    const addLineBreak = function(currentIndex, totalCount) {
+      if (includeLineBreaks && currentIndex < totalCount - 1) result += "\n";
+    };
+    for (var i = 0; i < docElementCount && result.length < characterLimit; ++i) {
+      const docElement = contentElement[i];
+      const elementContent = docElement.content;
+      if (!elementContent) continue;
+      const subElementCount = elementContent.length;
+      for (var j = 0; j < subElementCount && result.length < characterLimit; ++j) {
+        const subElement = elementContent[j];
+        switch (docElement.type) {
+          case "paragraph":
+          case "code_block":
+            if (subElement.type === "text" && subElement.text) {
+              result += subElement.text;
+            }
+            break;
+          case "bulletList":
+          case "orderedList":
+            if (subElement.type === "listItem" && subElement.content) {
+              result = parseContentElement(subElement.content, result, characterLimit, includeLineBreaks);
+            }
+            addLineBreak(j, subElementCount);
+            break;
         }
-        result += paragraphElement.text;
       }
-      if (includeLineBreaks && i !== docContentCount - 1) {
-        result += "\n";
-      }
+      addLineBreak(i, docElementCount);
     }
-
     return result;
   }
 

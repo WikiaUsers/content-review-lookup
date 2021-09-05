@@ -87,7 +87,7 @@ window.contentFilterConfig = {
 	 * (<languageCode> being the corresponcing language code: one of the values
 	 *  in the previously defined languageCodes array)
 	 */
-	messagesLocation: 'mediawiki:gadget-dlc-filter/',
+	messagesLocation: 'mediawiki:gadget-content-filter/',
 
 	/**
 	 * The name of the URL parameter used to store the selected filter.

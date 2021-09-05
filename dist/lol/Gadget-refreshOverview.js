@@ -148,10 +148,10 @@ $(function () {
 			score2 = score2 ? score2 : 0;
 			var largerScore = Math.max(score1, score2);
 			if (largerScore > thisgame.bestof / 2) {
-				console.log('Game to delete found!');
-				console.log(template);
-				console.log(thisgame);
-				if (template.toLowerCase().search('box')) {
+				// console.log('Game to delete found!');
+				// console.log(template);
+				// console.log(thisgame);
+				if (template.toLowerCase().search('box') !== -1) {
 					// this means that there's a box|break or box|end immediately after the last pick-ban game
 					// this occurs if someone manually prunes some games not using RO
 					console.log('It appears deletion has already occurred for this series.');

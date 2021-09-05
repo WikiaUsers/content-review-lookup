@@ -290,11 +290,10 @@ function filterResults(e){
 
 function initTitle() {
     //Get the title
-	guide_title = document.getElementsByClassName('wds-community-header__sitename')[0];
-	link = guide_title.children[0];
+	guide_title = document.getElementsByClassName('fandom-community-header__community-name')[0];
 	
 	//Change it to a proper one
-	link.innerHTML = "AdventureQuest Guide";
+	guide_title.innerText = "AdventureQuest Guide";
 }
 
 function autoFilter() {

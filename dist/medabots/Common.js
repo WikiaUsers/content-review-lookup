@@ -2,8 +2,8 @@
 
 window.rwaOptions;
 
-var MessageBlock = {
-  title : 'Blocked',
+window.MessageBlock = {
+  title : 'Block',
   message : 'You have been blocked for $2 because you have committed the following offence(s): $1',
   autocheck : true
 };

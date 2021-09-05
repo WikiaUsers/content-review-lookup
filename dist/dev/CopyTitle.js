@@ -35,7 +35,7 @@ $(function() {
 			}\
 			#title-copy-container svg {\
 				height: 50%;\
-				flex-basis: 50%;\
+				flex-basis: ' + (mw.config.get('wgNamespaceNumber') === 0 ? '100%' : '50%') + ';\
 				cursor: pointer;\
 				display: inline-block;\
 				transition: fill 250ms;\
@@ -53,8 +53,8 @@ $(function() {
 
 		$('<span>', { id: 'title-copy-container' })
 			.append(getSVG('title-copy-content', false))
-			.append(getSVG('title-copy-all', true))
-			.appendTo($('.skin-oasis #firstHeading, .skin-fandomdesktop .page-header__title, .ve-fd-header__title'));
+			.append(mw.config.get('wgNamespaceNumber') !== 0 ? getSVG('title-copy-all', true) : null)
+			.appendTo($('.page-header__title, .ve-fd-header__title'));
 	
 		$('#title-copy-content').click(function() {
 			copy(mw.config.get('wgTitle'), this);
@@ -77,7 +77,7 @@ $(function() {
 		$(element).css('fill', 'var(--theme-success-color)');
 		setTimeout(function() {
 			$(element).css('fill', '');
-		}, 2000);
+		}, 1000);
 	}
 
 	mw.hook('dev.i18n').add(function() {

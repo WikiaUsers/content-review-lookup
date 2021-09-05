@@ -105,7 +105,7 @@ $(function() {
 	handleAutocollapse($(article));
 	$("td.collapse-next-row").each(function() {if ($(this).parent().next().height()>300) $(this).append("<span style='float:right;'>[<a>show</a>]</span>").children("span").children("a").click(function(){$(this).text($(this).text()=="hide"?"show":"hide").parent().parent().parent().next().slideToggle();}).parent().parent().parent().next().hide();});
 	requireImageLicense();
-	if (mw.config.get("wgUserName") != null) $("span.insertusername").html(mw.config.get("wgUserName"));
+	if (mw.config.get("wgUserName") !== null) $("span.insertusername").html(mw.config.get("wgUserName"));
 	$(article+" .quote").prepend("<span class='quotemark' style='float:right;'>&#8221;</span><span class='quotemark' style='float:left;'>&#8220;</span>").css("max-width","75%").after("<br clear='left' />");
 	$(".mw-mpt-link").html("<a href='/Special:WhatLinksHere/"+$(".page-header__title").text().replace("Move ","").replace(/'/g,"%27")+"'>Links to the old page title</a>");
 	$(".coords-link").each(function() {
@@ -118,3 +118,12 @@ $(function() {
 		inlineVersionsInit();
 	}
 });
+function handleAutocollapse(root) {
+	var $ct = root.find(".mw-collapsible");
+	var $es = $ct.filter(".mw-autocollapse").not($ct.first()).not(".mw-collapsed, .mw-uncollapsed, .mw-expanded");
+	$es.filter(function() {
+		var link = $(this).find(".mw-collapsible-toggle a");
+		if (link.length) link.first().click();
+		return !link.length;
+	}).toggleClass("mw-collapsed mw-autocollapse");
+}

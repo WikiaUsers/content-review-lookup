@@ -1,3 +1,9 @@
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:BackToTopButton/code.js',
+    ]
+});
 /* Any JavaScript here will be loaded for all users on every page load.                      */
 /* JS placed here is optional and will force the equalization the main page layout columns   */
 /*                                                                                           */

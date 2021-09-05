@@ -122,6 +122,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "acute": {
+                "name": "Acute",
+                "types": [
+                    "egypt",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "admirer": {
                 "name": "Admirer",
                 "types": [
@@ -3581,6 +3597,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "15_hours_15",
                 "rarity": 3,
                 "offspringeligibility": "worldevent",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "canopic": {
+                "name": "Canopic",
+                "types": [
+                    "egypt",
+                    "yellow",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]
@@ -14997,6 +15030,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "13_hours_13",
                 "rarity": 2
             },
+            "lazuli": {
+                "name": "Lazuli",
+                "types": [
+                    "egypt",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "25_hours_25",
+                "rarity": 4,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "leader": {
                 "name": "Leader",
                 "types": [
@@ -19999,6 +20048,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "obelisk": {
+                "name": "Obelisk",
+                "types": [
+                    "egypt",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "obsidian": {
                 "name": "Obsidian",
                 "types": [
@@ -21494,6 +21570,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "18_hours_18",
                 "rarity": 4,
                 "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "pioneer": {
+                "name": "Pioneer",
+                "types": [
+                    "raw marble"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "20_hours_20",
+                "rarity": 3,
+                "parenteligibility": "infinity",
+                "offspringeligibility": "marketonly",
                 "notes": [
                     "feature"
                 ]
@@ -26939,6 +27031,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "sour": {
+                "name": "Sour",
+                "types": [
+                    "food"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "parenteligibility": "infinity",
+                "offspringeligibility": "marketonly",
+                "notes": [
+                    "feature"
+                ]
+            },
             "sourcandy": {
                 "name": "Sour Candy",
                 "types": [
@@ -28429,6 +28537,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "sunray": {
+                "name": "Sunray",
+                "types": [
+                    "egypt",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "sunrise": {
                 "name": "Sunrise",
                 "types": [
@@ -29536,6 +29660,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ]
             },
+            "tomb": {
+                "name": "Tomb",
+                "types": [
+                    "egypt",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "tombstone": {
                 "name": "Tombstone",
                 "types": [
@@ -30373,6 +30513,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "uncovered": {
+                "name": "Uncovered",
+                "types": [
+                    "egypt",
+                    "blue",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "undergrowth": {
                 "name": "Undergrowth",
                 "types": [
@@ -30518,6 +30675,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "18_hours_18",
                 "rarity": 3,
                 "offspringeligibility": "worldevent",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "uplift": {
+                "name": "Uplift",
+                "types": [
+                    "egypt",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
                 "notes": [
                     "feature"
                 ]

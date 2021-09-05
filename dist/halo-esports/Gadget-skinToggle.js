@@ -46,7 +46,7 @@ $(function() {
 		}
 		else {
 			var curURL = window.location.href;
-			var loginURL = "https://www.gamepedia.com/twitch-login?returnUrl=" + curURL;
+			var loginURL = "https://www.fandom.com/twitch-login?returnUrl=" + curURL;
 			$alertScreen.html('<div class="skinchange-choice-outer"><div id="skinchange-dark" class="skinchange-choice"></div><div id="skinchange-light" class="skinchange-choice"></div></div><div id="skinchange-x"></div><div class="skinchange-nouser">You must <a href="' + loginURL + '">log in</a> to permanently change skins, but you can preview!</div>');
 			$alertScreen.insertBefore(logo);
 			function changeSkinTemp(target) {

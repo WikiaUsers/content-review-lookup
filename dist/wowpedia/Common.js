@@ -1,3 +1,12 @@
+mw.loader.getScript('https://dev.fandom.com/wiki/MediaWiki:ArticlesAsResources.js?action=raw&ctype=text/javascript').then(function() {
+	importArticles({
+	    type: 'script',
+	    articles: [
+			'u:dev:MediaWiki:CategoryRedLinks.js'
+	    ]
+	});
+});
+
 function setStoredValue(key, value, expiredays) {
 	if (typeof(localStorage) == "undefined") {
 		var exdate = new Date();

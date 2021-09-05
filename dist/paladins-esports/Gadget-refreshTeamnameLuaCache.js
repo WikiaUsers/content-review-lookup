@@ -26,5 +26,8 @@ $( function () {
 			});
 		});
 	});
+	
+	moveToPViews($('#ca-refresh-teamnames'));
+	
 });
 // </nowiki>

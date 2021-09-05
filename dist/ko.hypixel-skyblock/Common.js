@@ -523,4 +523,5 @@ importScripts([
 	"MediaWiki:Common.js/minetip.js",
 	"MediaWiki:Common.js/skydate.js",
 	"MediaWiki:Common.js/calc.js",
+	"MediaWiki:Common.js/highlight.js", // ko-wiki specific
 ]);

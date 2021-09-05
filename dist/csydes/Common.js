@@ -1,6 +1,6 @@
-// 09:14, 8 December 2020 (UTC) <nowiki>
+// 15:12, 5 September 2021 (UTC) <nowiki>
 
-// AUTO-REFRESH RECENT CHANGES AND WIKI-ACTIVITY
+// AUTO-REFRESH RECENT CHANGES
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 window.ajaxPages = ["Special:RecentChanges"];
@@ -47,19 +47,14 @@ if (['assistant','bot','content-moderator','sysop'].indexOf(mw.config.get('wgUse
     importScriptPage('MediaWiki:MassProtect/code.js', 'dev');
 }
 
-importArticle({
-    type: 'style',
-    article: 'MediaWiki:Import.css'
-});
-
 // Initialise the global objects used without overwriting any already there
 window.dev = window.dev || {};
 window.dev.i18n = window.dev.i18n || {};
 window.dev.i18n.overrides = window.dev.i18n.overrides || {};
-window.dev.i18n.overrides['AdminDashboard JS-Button'] = window.dev.i18n.overrides['AdminDashboard JS-Button'] || {}
+window.dev.i18n.overrides['AdminDashboard_JS-Button'] = window.dev.i18n.overrides['AdminDashboard_JS-Button'] || {}
 
 // Customise the desired messages
-window.dev.i18n.overrides['AdminDashboard JS-Button']['tooltip'] = 'Customise your wiki with local JavaScript.';
+window.dev.i18n.overrides['AdminDashboard_JS-Button']['tooltip'] = 'Customise your wiki with local JavaScript.';
 
 // Prevent users without rollback rights from using the rollback script
 window.RollbackWikiDisable = true;

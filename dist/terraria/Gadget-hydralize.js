@@ -16,8 +16,10 @@ var l10n = (function(){
 			more: 'More', // in right tabs
 			share: 'Share', // in left tabs
 			pagetools: 'Page Tools', // in sidebar, section heading
+			whatlinkshere: 'What links here',
 			'cargo-pagevalues': 'Page values', //in sidebar, under "Page Tools"
 			'recentchangeslinked': 'Related changes', //in sidebar, under "Page Tools"
+			'log': 'Logs',
 			searchText: 'Search '+mw.config.get('wgSiteName'), //placeholder for search box
 			searchGo: 'Go', //text for search button in search box 
 			searchGoTitle: 'Go to a page with this exact name if it exists' //hover text for search button
@@ -28,8 +30,10 @@ var l10n = (function(){
 			more: '更多',
 			share: '分享',
 			pagetools: '页面工具', 
+			whatlinkshere: '链入页面',
 			'cargo-pagevalues': '页面值',
 			'recentchangeslinked': '相关更改',
+			'log': '日志',
 			searchText: '搜索 '+mw.config.get('wgSiteName'),
 			searchGo: '搜索',
 			searchGoTitle: '若存在标题完全匹配的页面，则直接前往该页面'
@@ -87,8 +91,15 @@ $(".fandom-community-header__local-navigation .extra-large-navigation > .wds-dro
 //build page tools on aside (faster than move from right rail after it loaded.)
 (function(){
 	var tools = mw.config.get("wgRailModuleParams");
-	if(!tools){ return; }
-	tools = tools.toolbox;
+	if(tools){
+		tools = tools.toolbox;
+	}
+	else{
+		tools = mw.config.get("wgWikiaBarSkinData").navUrls;
+	}
+	delete tools.mainpage;
+	delete tools.upload;
+	delete tools.specialpages;
 	var $box = $(
 		'<div class="wds-dropdown" data-index="pagetools">'+
 		'<div class="wds-tabs__tab-label wds-dropdown__toggle first-level-item">'+
@@ -102,10 +113,13 @@ $(".fandom-community-header__local-navigation .extra-large-navigation > .wds-dro
 		.appendTo($('.fandom-community-header__local-navigation .extra-large-navigation'))
 		.find('ul.wds-list');
 	$.each(tools, function(key, item){
+		if(!item){
+			return;
+		}
 		$('<a></a>', {
 			href: item.href,
-			text: l10n(key) || item.text || item.msg,
-			id: item.id,
+			text: item.text || l10n(key) || item.msg,
+			id: item.id || 't-'+key,
 			rel: item.rel
 		}).appendTo($box).wrap('<li></li>');
 	});
@@ -117,6 +131,9 @@ $(".fandom-community-header__local-navigation .extra-large-navigation > .wds-dro
 			$box.closest('.wds-dropdown').addClass('collapsed')
 				.find('.wds-dropdown__content').css('display', 'none');
 		}
+		$box
+		.prepend( $box.find('#t-whatlinkshere').parent(), $box.find('#t-recentchangeslinked').parent() )
+		.append( $box.find('#t-info').parent(), $box.find('#t-cargopagevalueslink').parent() );
 	}
 })();
 

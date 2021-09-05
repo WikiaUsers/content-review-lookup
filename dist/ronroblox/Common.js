@@ -22,4 +22,4 @@ window.tooltips_config = {
     waitForImages: false,
     events: ['CustomEvent'],
     noCSS: false,
-}
+};

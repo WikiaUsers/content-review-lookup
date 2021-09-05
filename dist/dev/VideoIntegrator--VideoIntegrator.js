@@ -36,7 +36,8 @@ mw.hook('wikipage.content').add(function($content) {
                     $('<iframe>', {
                         src: 'https://myvi.ru/player/embed/html/' + id,
                         css: css,
-                        frameborder: 0
+                        frameborder: 0,
+                        allowfullscreen: true
                     })
                    );
                 break;

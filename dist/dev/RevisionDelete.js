@@ -19,8 +19,9 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 	]));
 }).then(function(rights, api) {
 	if (window.RevisionDeleteLoaded) return console.warn('[RevisionDelete v1] [WARN]: Script was double loaded, exiting...');
-	if (!~rights.indexOf('delete') || !~rights.indexOf('undelete')) return console.log('[RevisionDelete v1] [Log]: user cannot delete/undelete pages, exiting...');
+	if (!rights.includes('delete') || !rights.includes('undelete')) return console.log('[RevisionDelete v1] [Log]: user cannot delete/undelete pages, exiting...');
 	if (!$('.historysubmit').length || mw.config.get('wgAction') !== 'history') return console.log('[RevisionDelete v1] [Log]: Page only has 1 revision or page is not a history page, exiting...');
+	if (!rights.includes('editinterfacetrusted') && mw.config.get('wgCanonicalNamespace') === 'MediaWiki') return console.log('[RevisionDelete v1] [Log]: User does not have permission to restore MW pages, exiting...');
 		
 	window.RevisionDeleteLoaded = true;
 	

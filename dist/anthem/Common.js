@@ -82,7 +82,13 @@ importArticles({
         'u:dev:MediaWiki:MassEdit/code.js',
         'u:dev:MediaWiki:MassRename/code.js',
         'u:dev:MediaWiki:MassRenameRevert/code.js',
+        'u:dev:MediaWiki:AjaxDelete/code.js',
+        'u:dev:MediaWiki:AjaxBatchDelete.js',
     ]
 });
 
+window.MassEditGroups = ['sysop', 'content-moderator'];
+window.MassRenameGroups = ['sysop', 'content-moderator'];
 window.MassRenameRevertGroups = ['sysop', 'content-moderator'];
+window.AjaxDeleteGroups = ['sysop', 'content-moderator'];
+window.AjaxBatchDeleteGroups = ['sysop', 'content-moderator'];

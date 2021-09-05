@@ -1,9 +1,13 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
 
-importArticles({    type: 'script',    articles: [
-        'u:dev:MediaWiki:AdminDashboard JS-Button/code.js',
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AdminDashboard_JS-Button/code.js',
         'u:dev:MediaWiki:UserBadge/code.js',
-    ]});
+        'u:dev:MediaWiki:CheckJStatus.js',
+    ]
+});
 
 /* Блокировка ссылки конфигурации */
 
@@ -19,3 +23,9 @@ window.pPreview = $.extend(true, window.pPreview, {
         ilinks: [new RegExp('.*?Дерево[_ ]навыков.*')],
     },
 });
+
+/* Показывает использование файла на иноязычных вики */
+window.globalFileUsageConfig = {
+    'lang': ['ru','en','es','et','de','fr','it','nl','no','pl','pt-br','fi','cs','da','ro','sv','uk','zh'],
+    'auto_show': false
+}

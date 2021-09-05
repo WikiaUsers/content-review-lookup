@@ -4,6 +4,8 @@
  * deleting of pages, which the original lacks
  * Original "WHAM" - https://dev.fandom.com/wiki/MediaWiki:WHAM/code.js
  * @author Ozank Cx
+ * 
+ * Used files: [[File:Facebook throbber.gif]]
  */
 
 ;(function($, mw, window) {
@@ -15,8 +17,7 @@
             'wgFormattedNamespaces',
             'wgPageName',
             'wgUserGroups',
-            'wgUserName',
-            'wgVersion'
+            'wgUserName'
         ]);
         if (
             config.wgCanonicalSpecialPageName !== 'Contributions' ||
@@ -26,32 +27,21 @@
             return;
         }
         window.WHAMLoaded = true;
-        const isUCP = config.wgVersion !== '1.19.24';
 
         if (!window.dev || !window.dev.i18n) {
-            if (isUCP) {
-                mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js');
-            }
-            else {
-                importArticle({
-                    type: 'script',
-                    article: 'u:dev:MediaWiki:I18n-js/code.js'
-                });
-            }
-        }
-        if (isUCP) {
-            mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=styles&articles=MediaWiki:WHAM.css', 'text/css');
-        } else {
             importArticle({
-                type: 'style',
-                article: 'u:dev:MediaWiki:WHAM.css'
+                type: 'script',
+                article: 'u:dev:MediaWiki:I18n-js/code.js'
             });
         }
+        importArticle({
+            type: 'style',
+            article: 'u:dev:MediaWiki:WHAM.css'
+        });
 
         const username = config.wgPageName.split('/')[1],
-              token = mw.user.tokens.get(isUCP ? 'csrfToken' : 'editToken'),
+              token = mw.user.tokens.get('csrfToken'),
               delay = window.WHAMDelay || 100,
-              progress = '//images.wikia.nocookie.net/common/skins/common/progress-wheel.gif',
               Api = new mw.Api();
 
         var deleteReason,
@@ -93,7 +83,7 @@
                 len = $links.length;
             if (len === 0) {
                 $('#status-wham').text(i18n.msg('do-rollback-done').plain());
-                if (isUCP) dialog.updateSize();
+                dialog.updateSize();
             }
             $links.each(function(i) {
                 const href = new mw.Uri($(this).attr('href')).extend({
@@ -103,15 +93,15 @@
                     $.get(href);
                     $('#status-wham').html(
                         i18n.msg('do-rollback-status').escape() +
-                        $('<img>', {
-                            src: progress
+                        $('<span>', {
+                            class: 'mw-ajax-loader'
                         }).prop('outerHTML')
                     );
                     if (i === len - 1) {
                         $('#status-wham').text(
                             i18n.msg('do-rollback-done').plain()
                             );
-                        if (isUCP) dialog.updateSize();
+                        dialog.updateSize();
                     }
                 }, i * delay);
             });
@@ -165,14 +155,14 @@
                 setTimeout(function() {
                     $('#status-wham').html(
                         i18n.msg('do-delete-status').escape() +
-                        $('<img>', {
-                            src: progress
+                        $('<span>', {
+                            class: 'mw-ajax-loader'
                         }).prop('outerHTML')
                     );
                     apiDelete(v, deleteReason);
                     if (i === deleteArray.length - 1) {
                         $('#status-wham').text(i18n.msg('do-delete-done').plain());
-                        if (isUCP) dialog.updateSize();
+                        dialog.updateSize();
                     }
                 }, i * delay);
             });
@@ -322,12 +312,7 @@
         }
 
         function startSelectiveDelete() {
-            if (isUCP) {
-                dialog.close();
-            }
-            else {
-                $('#form-main').closeModal();
-            }
+            dialog.close();
             if ($('#btn-wham-del').length && $('#btn-wham-check').length) {
                 return;
             }
@@ -339,13 +324,13 @@
                 .find('ul')
                 .last()
                 .before(
-                    $(isUCP ? '<button>' : '<a>', {
+                    $('<button>', {
                         'class': 'button',
                         'id': 'btn-wham-del',
                         'text': i18n.msg('start-selective-delete').plain()
                     }),
                     ' ',
-                    $(isUCP ? '<button>' : '<a>', {
+                    $('<button>', {
                         'class': 'button',
                         'id': 'btn-wham-check',
                         'text': i18n.msg('selective-delete-check').plain()
@@ -405,7 +390,7 @@
                     class: 'error'
                   });
 
-            if (isUCP && !windowManager) {
+            if (!windowManager) {
                 function WHAMDialog(config) {
                     WHAMDialog.super.call(this, config);
                 }
@@ -566,21 +551,13 @@
                 title: i18n.msg('contribs-wham-title').plain(),
                 text: i18n.msg('contribs-wham').plain()
             });
-            if (isUCP) {
-                $('.mw-contributions-user-tools .mw-changeslist-links').append($('<span>').append($button));
-            } else {
-                $('#contentSub').append(' ', $button);
-            }
+            $('.mw-contributions-user-tools .mw-changeslist-links').append($('<span>').append($button));
             mw.hook('dev.wham.button').fire($button);
             mw.hook('QuickLogs.loaded').add(qlIntegration);
         }
 
         function preload(i18no) {
-            if (isUCP) {
-                $.when(i18no.loadMessages('WHAM'), mw.loader.using(['oojs-ui-windows'])).then(init);
-            } else {
-                i18no.loadMessages('WHAM').then(init);
-            }
+            $.when(i18no.loadMessages('WHAM'), mw.loader.using(['oojs-ui-windows'])).then(init);
         }
 
         mw.hook('dev.i18n').add(preload);

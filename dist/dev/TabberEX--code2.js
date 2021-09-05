@@ -2,7 +2,7 @@
 /**
  * TabberEX
  *
- * @version 2.1
+ * @version 2.2
  *
  * @author Jono99 <https://phigros.fandom.com/wiki/User:Jono99>
  *
@@ -32,7 +32,11 @@
 		.addClass("oo-ui-optionWidget-selected")
 		.css("cursor", "default");
 				
-		$(".tabberex-body" + base_selector).children(":nth-child(" + i + ")").css("display", "block");
+		$($(".tabberex-body" + base_selector).children(":nth-child(" + i + ")").get()).each(function () {
+            var display_value = $(this).attr("data-tab-display");
+            if (display_value === undefined) display_value = "block";
+            $(this).css("display", display_value);
+        });
 	};
 	 
 	window.tabberex_hideTab = function(tabber_id, i)
@@ -154,6 +158,11 @@
 			
 			var tabber_id = $(this).attr("data-tabber-id");
 			if (tabber_id === undefined) tabber_id = String(tabber_i);
+            $(this).attr("data-tabber-id", tabber_id);
+
+            var tabber_head = document.createElement("div");
+            $(tabber_head).addClass("tabberex-head").attr("data-tabber-id", tabber_id);
+            $(this).removeClass("tabberex").addClass("tabberex-body");
 			
 			$(this).children(".tabberex-tab").each(function(i) {
 				var tab_details = process_tabber_head_tab(this, i);
@@ -166,21 +175,12 @@
 				// Get tab content
 				$(this).css("display", "none");
 				tab_contents[i] = $(this);
-				$(this).detach();
 			});
-			
-			var tabs = tabberex_buildTabHead(document.createElement("div"), tabber_id, tab_headers, tab_ex_headers, tab_locations);
-			var content = document.createElement("div");
-			$(content).addClass("tabberex-body")
-			.attr("data-tabber-id", tabber_id);
-			for (var i = 0; i < tab_headers.length; i++)
-			{
-				$(content).append(tab_contents[i]);
-			}
-			this.innerHTML = tabs + content.outerHTML;
-			
+
+            tabberex_buildTabHead(tabber_head, tabber_id, tab_headers, tab_ex_headers, tab_locations);
 			if (default_tabs[tabber_id] === undefined)
 				default_tabs[tabber_id] = default_tab;
+            $(tabber_head).insertBefore(this);
 			tabber_ids.push(tabber_id);
 			tabber_i++;
 		});

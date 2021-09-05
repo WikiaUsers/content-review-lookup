@@ -60,6 +60,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"acute": {
+				"name": "Acute",
+				"colors": [
+					"egypt",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"admirer": {
 				"name": "Admirer",
 				"colors": [
@@ -1808,6 +1816,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"spooky",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"canopic": {
+				"name": "Canopic",
+				"colors": [
+					"egypt",
+					"yellow",
+					"green"
 				],
 				"rarity": "unbreedable"
 			},
@@ -7618,6 +7635,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"lazuli": {
+				"name": "Lazuli",
+				"colors": [
+					"egypt",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
 			"leader": {
 				"name": "Leader",
 				"colors": [
@@ -10013,6 +10038,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"obelisk": {
+				"name": "Obelisk",
+				"colors": [
+					"egypt",
+					"yellow"
+				],
+				"rarity": "common"
+			},
 			"obsidian": {
 				"name": "Obsidian",
 				"colors": [
@@ -10773,6 +10806,13 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"flower",
 					"pink",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"pioneer": {
+				"name": "Pioneer",
+				"colors": [
+					"rawmarble"
 				],
 				"rarity": "unbreedable"
 			},
@@ -13414,6 +13454,13 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"sour": {
+				"name": "Sour",
+				"colors": [
+					"food"
+				],
+				"rarity": "unbreedable"
+			},
 			"sourcandy": {
 				"name": "Sour Candy",
 				"colors": [
@@ -14159,6 +14206,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"sunray": {
+				"name": "Sunray",
+				"colors": [
+					"egypt",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"sunrise": {
 				"name": "Sunrise",
 				"colors": [
@@ -14709,6 +14764,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"tomb": {
+				"name": "Tomb",
+				"colors": [
+					"egypt",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"tombstone": {
 				"name": "Tombstone",
 				"colors": [
@@ -15133,6 +15196,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"uncovered": {
+				"name": "Uncovered",
+				"colors": [
+					"egypt",
+					"blue",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"undergrowth": {
 				"name": "Undergrowth",
 				"colors": [
@@ -15204,6 +15276,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"royal",
 					"champion",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"uplift": {
+				"name": "Uplift",
+				"colors": [
+					"egypt",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},

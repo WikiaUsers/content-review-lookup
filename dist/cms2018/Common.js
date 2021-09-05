@@ -3,6 +3,10 @@
 // Disables the Rollback Script 
 window.RollbackWikiDisable = true;
 
+// Back to Top Button Params
+window.BackToTopSpeed = 400;
+window.BackToTopModern = true;
+
 // Default Image License: Fairuse
 $(function() {
 	if (wgPageName === "Special:Upload") {

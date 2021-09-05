@@ -237,7 +237,7 @@ $(function() {
 			return $.Deferred().resolve(true);
 		}
 		var queryString = linesToCheck
-			.map(function(x) { return 'UniqueMatch="' + x + '"' })
+			.map(function(x) { return 'MatchId="' + x + '"' })
 			.join(' OR ');
 		console.log(queryString);
 		return new mw.Api().get({

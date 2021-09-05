@@ -58,3 +58,11 @@ window.reportError = function(text) {
 	var el = document.createElement('div');
 	$(el).html(text).insertAfter($('#firstHeading'));
 }
+
+window.moveToPViews = function($el) {
+	// fix for FandomDesktop not respecting pviews proper add to p-cactions
+	if ($('.page__main').length) {
+		$el.detach();
+		$el.insertAfter($('#p-views #ca-edit'));
+	}
+}

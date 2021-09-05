@@ -110,12 +110,12 @@ $(document).ready(function()
     //-----------------------------------------------------------------------------------------------
     // добавление на страницу панели (слева) для быстрого перемещения вверх/вниз (НАЧАЛО)
     
-	// добавляем сам прокрутчик
-	$(".WikiaSiteWrapper").prepend("<div id='Scroller' title='Панель быстрой навигации по странице'></div>");	
-	// добавляем иконку прокрутчика
-	$(".WikiaSiteWrapper").prepend("<div id='ScrollerText' ></div>");	
+	// сам прокрутчик
+	$(".global-navigation").prepend("<div id='Scroller' title='Панель быстрой навигации по странице'></div>");	
+	// иконка прокрутчика
+	$(".global-navigation").prepend("<div id='ScrollerText' ></div>");	
 	
-	// вызываем функций прокруткаи страницы для загрузки соот-щей иконки
+	// вызов функций прокруткаи страницы для загрузки соот-щей иконки
 	$(document).scroll();
  
     // функция при щелчке
@@ -124,11 +124,11 @@ $(document).ready(function()
 		iPosition = $( document ).scrollTop();
 		
 		if (iPosition === 0) {
-			// прокручиваем документ, не доходя но "подвала"
+			// прокрутка документа, не доходя но "подвала"
 			$(document).scrollTop( $( document ).height() /*- $( "footer.wds-global-footer" ).height() - $( "#mixed-content-footer" ).height() */- document.documentElement.clientHeight  );
 		}
 		else{
-			// прокручиваем документ в самый верх
+			// прокрутка документа в самый верх
 			$(document).scrollTop(0);
 		}
 		
@@ -243,8 +243,6 @@ $(document).ready(function()
 		$.when( mw.loader.using( 'ext.wikiEditor' ), $.ready).then( SetToolbar );
 		
 	    importScript('MediaWiki:Wikificator.js');
-	    // добавление заголовка редактируемой статьи
-		$('#content').prepend('<h3 class="" style="text-align: center;padding: 5px 0 2px;margin: 0;margin-bottom: 5px;">'+wgTitle+'</h3>');
 	}
 });
 

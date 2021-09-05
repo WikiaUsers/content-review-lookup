@@ -25,7 +25,7 @@
     function main() {
     // open message api
     api.post(query).done(function(data) {
-        
+    	
     //constants
     const CAN_DELETE = /sysop|content-moderator|soap|staff|helper|content-volunteer|wiki-specialist|wiki-representative/.test(usergroups.join()),
          CAN_BLOCK = /sysop|soap|staff|helper|global-discussions-moderator|wiki-representative/.test(usergroups.join()),
@@ -195,6 +195,9 @@
             "</ul>"
         );
     }
+    
+    mw.hook('dev.MoreDropdown.loaded').fire($('#more-dropdown'), $('#user-more-dropdown'));
+    
     });
     
     }

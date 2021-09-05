@@ -1,9 +1,8 @@
-/* Any JavaScript here will be loaded for content-moderators only */
-
 /* AbuseLogRC configuration */
 abuseLogRC_entries = 6;
 abuseLogRC_userInfo = true;
 abuseLogRC_collapsible = true;
+abuseLogRC_showTo = ['content-moderator'];
 
 importArticles({
     type: "script",

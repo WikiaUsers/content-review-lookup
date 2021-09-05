@@ -1,1 +1,0 @@
-$(function () {	$('.page-header__page-subtitle').css({ color: 'green' }).text('Subtitle JS loaded'); });

@@ -12,7 +12,7 @@ if (!nkch.css.isActive) {
     const versions = new Object();
     Object.defineProperties(versions, {
         "nkchCSS": {
-            value: "2.5.0",
+            value: "2.6.0",
         },
         "codeMirror": {
             value: "5.62.3",
@@ -190,6 +190,7 @@ if (!nkch.css.isActive) {
                             nkch.css.el.main.$e.classList.add("is-disabled");
 
                             document.body.after(nkch.css.el.main.$e);
+                            document.body.classList.add("nkch-css__is-added");
 
                             $(nkch.css.el.main.$e).draggable({
                                 cancel: ".nkch-css__text, .nkch-css__popup",
@@ -287,43 +288,46 @@ if (!nkch.css.isActive) {
 
                             nkch.css.el.main.$e.appendChild(nkch.css.el.main.textarea.$e);
 
-                            if (mw.config.get("skin") === "fandomdesktop" || mw.config.get("skin") === "oasis") {
-                                /* ~ toolbarButton ~ */
-                                addClasses(nkch.css.el.toolbarButton);
+                            switch (mw.config.get("skin")) {
+                                case "fandomdesktop":
+                                case "oasis":
+                                    /* ~ toolbarButton ~ */
+                                    addClasses(nkch.css.el.toolbarButton);
 
-                                document.querySelector("#WikiaBar .toolbar .tools").appendChild(nkch.css.el.toolbarButton.$e);
+                                    document.querySelector("#WikiaBar .toolbar .tools").appendChild(nkch.css.el.toolbarButton.$e);
 
-                                /* ~ toolbarButton : link ~ */
-                                addClasses(nkch.css.el.toolbarButton.link);
+                                    /* ~ toolbarButton : link ~ */
+                                    addClasses(nkch.css.el.toolbarButton.link);
 
-                                nkch.css.el.toolbarButton.link.$e.innerHTML = "nkchCSS";
+                                    nkch.css.el.toolbarButton.link.$e.innerHTML = "nkchCSS";
 
-                                nkch.css.el.toolbarButton.link.$e.addEventListener("click", function () {
-                                    nkch.css.actions.open();
-                                });
+                                    nkch.css.el.toolbarButton.link.$e.addEventListener("click", function () {
+                                        nkch.css.actions.open();
+                                    });
 
-                                nkch.css.el.toolbarButton.$e.appendChild(nkch.css.el.toolbarButton.link.$e);
+                                    nkch.css.el.toolbarButton.$e.appendChild(nkch.css.el.toolbarButton.link.$e);
+                                    break;
+                                case "fandommobile":
+                                    /* ~ communityBarButton ~ */
+                                    if (typeof document.querySelector(".wds-community-bar__discussions") !== "null") {
+                                        document.querySelector(".wds-community-bar__discussions").before(nkch.css.el.communityBarButton.$e);
+                                    } else {
+                                        document.querySelector(".wds-community-bar__navigation").before(nkch.css.el.communityBarButton.$e);
+                                    }
 
-                            } else if (mw.config.get("skin") === "fandommobile") {
-                                /* ~ communityBarButton ~ */
-                                if (typeof document.querySelector(".wds-community-bar__discussions") !== "null") {
-                                    document.querySelector(".wds-community-bar__discussions").before(nkch.css.el.communityBarButton.$e);
-                                } else {
-                                    document.querySelector(".wds-community-bar__navigation").before(nkch.css.el.communityBarButton.$e);
-                                }
+                                    addClasses(nkch.css.el.communityBarButton);
 
-                                addClasses(nkch.css.el.communityBarButton);
+                                    nkch.css.el.communityBarButton.$e.addEventListener("click", function () {
+                                        nkch.css.actions.open();
+                                    });
 
-                                nkch.css.el.communityBarButton.$e.addEventListener("click", function () {
-                                    nkch.css.actions.open();
-                                });
-
-                                nkch.css.el.communityBarButton.$e.appendChild(wds.icon("preformat-small"));
-
+                                    nkch.css.el.communityBarButton.$e.appendChild(wds.icon("preformat-small"));
+                                    break;
                             }
 
                             /* ~ load CCS ~ */
                             mw.loader.load("https://cdnjs.cloudflare.com/ajax/libs/codemirror/" + versions.codeMirror + "/codemirror.css", "text/css");
+                            mw.loader.load("https://cdnjs.cloudflare.com/ajax/libs/codemirror/" + versions.codeMirror + "/addon/hint/show-hint.css", "text/css");
                             mw.loader.load("https://cdn.jsdelivr.net/npm/codemirror-colorpicker@" + versions.colorPicker + "/dist/codemirror-colorpicker.css", "text/css");
 
                             /* ~ themes ~ */
@@ -347,6 +351,8 @@ if (!nkch.css.isActive) {
                                     Promise.all([
                                         mw.loader.getScript("https://cdnjs.cloudflare.com/ajax/libs/codemirror/" + versions.codeMirror + "/mode/css/css.js"),
                                         mw.loader.getScript("https://cdnjs.cloudflare.com/ajax/libs/codemirror/" + versions.codeMirror + "/addon/edit/closebrackets.js"),
+                                        mw.loader.getScript("https://cdnjs.cloudflare.com/ajax/libs/codemirror/" + versions.codeMirror + "/addon/hint/show-hint.js"),
+                                        mw.loader.getScript("https://cdnjs.cloudflare.com/ajax/libs/codemirror/" + versions.codeMirror + "/addon/hint/css-hint.js"),
                                         mw.loader.getScript("https://cdn.jsdelivr.net/npm/codemirror-colorpicker@" + versions.colorPicker + "/dist/codemirror-colorpicker.js"),
                                         mw.loader.getScript("https://cdn.jsdelivr.net/npm/emmet-codemirror@" + versions.emmet + "/dist/emmet.js"),
                                         mw.loader.getScript("https://cdnjs.cloudflare.com/ajax/libs/js-beautify/" + versions.jsBeautify + "/beautify-css.js")
@@ -373,7 +379,8 @@ if (!nkch.css.isActive) {
                                                 extraKeys: {
                                                     "Tab": "emmetExpandAbbreviation",
                                                     "Esc": "emmetResetAbbreviation",
-                                                    "Enter": "emmetInsertLineBreak"
+                                                    "Enter": "emmetInsertLineBreak",
+                                                    "Ctrl-Space": "autocomplete"
                                                 }
                                             }
 

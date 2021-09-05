@@ -4,7 +4,7 @@ Code written/maintained by Explodabat. Please contact me on the Wiki Discord at 
 ──────────────────────────────────────────────────────────────────────────────
 This content previously lived on MediaWiki:Common.js
 */
-console.log("Navbox JS Version 7.05.21");
+console.log("Navbox JS Version 8.31.21");
 //Array of ship objects -- see "function Ship(...)" for constructor & properties
 var shipArr = [];
 var count = 0;
@@ -277,11 +277,17 @@ function fillNavbox(){
         else{
             //Link creation
             a = document.createElement('a');
-			//manually replace displayed name of ships with replaced characters in URL
-		    if(tempShipArr[i].name == "SS"){
-                a.appendChild(document.createTextNode("ß"));
+			//manually replace this ship's name with the "displaytitle" lowercase version seen on the page
+		    if(tempShipArr[i].name == "Obamasphere"){
+                a.appendChild(document.createTextNode("obamasphere"));
                 a.href = "/wiki/"+tempShipArr[i].name;
-                a.title = "ß";
+                a.title = "obamasphere";
+            }
+            //manually replace this ship's name with the "displaytitle" that includes a "/" character in only the visual URL text
+		    else if(tempShipArr[i].name == "Prototype X1"){
+                a.appendChild(document.createTextNode("Prototype X/1"));
+                a.href = "/wiki/"+tempShipArr[i].name;
+                a.title = "Prototype X/1";
             }
 			//in the case of invalid/broken links, their presence should be obvious because all attributes use the same value
             else{

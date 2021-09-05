@@ -8,6 +8,7 @@
  * @license: CC-BY-SA - https://creativecommons.org/licenses/by-sa/3.0/
  * @desc: Creates module documentation for lua modules for wikis that are not on MediaWiki 1.31
  */
+/*
 mw.loader.using([ 'mediawiki.api', 'jquery', 'mediawiki.user' ]).then(function() {
     var token = mw.user.tokens.values.editToken,
         fullpagename = mw.config.get("wgPageName"),
@@ -146,3 +147,4 @@ mw.loader.using([ 'mediawiki.api', 'jquery', 'mediawiki.user' ]).then(function()
     }
     
 });
+*/

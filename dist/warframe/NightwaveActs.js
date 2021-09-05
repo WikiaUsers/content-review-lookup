@@ -1,24 +1,32 @@
-// Automating display of active Nightwave acts using an API
-// For use in Warframe FANDOM wiki, particularly in the following page:
-// https://warframe.fandom.com/wiki/Nightwave/Acts_Currently_Available
-// Created by User:Cephalon Scientia
-// Made in JavaScript + jQuery 3.3.1
-
-// Note: As of UCP migration, FANDOM's JS parser still DOES NOT support string
-// interpolation, let keyword, and arrow functions. In addition, keep in mind
-// about JS rendering for anonymous users vs. logged in users.
+/**
+ * Automating display of active Nightwave acts using an API
+ * For use in Warframe FANDOM wiki, particularly in the following page:
+ * https://warframe.fandom.com/wiki/Nightwave/Acts_Currently_Available
+ * 
+ * Note: As of UCP migration, FANDOM's JS parser still DOES NOT support string
+ * interpolation, let keyword, and arrow functions. In addition, keep in mind
+ * about JS rendering for anonymous users vs. logged in users.
+ * Made in JavaScript + jQuery 3.3.1
+ * 
+ * @author	User:Cephalon Scientia
+ * @requires	mediawiki
+ */
 
 /* Cephalon Scientia Nightwave Current Acts */
 
+/**
+ * DO NOT USE ENDPOINT KEY ON https://warframe.fandom.com/wiki/NightwaveActs.json
+ * SINCE THE PAGE IS PUBLICLY EDITABLE; THAT IS THERE FOR REFERENCE, HARD CODE
+ * THE ENDPOINT IN HERE INSTEAD FOR SECURITY REASONS
+ */
 const WIKI_IMG_URL = "https://vignette.wikia.nocookie.net/warframe/images/";
 // All platforms have the same Nightwave acts
 const API_URL = "https://api.warframestat.us/pc/nightwave?language=en";
-// Scaled down image
+// Scaled down reputation icon
 const REP_IMG_URL = WIKI_IMG_URL + "9/92/ReputationLargeBlack.png/" +
     "revision/latest/scale-to-width-down/20?cb=20141029201703";
 // Contains JSON map to be fetched
-const IMG_MAP_URL = "https://warframe.fandom.com/" +
-    "api.php?action=parse&page=Module:NightwaveActs&format=json&prop=wikitext";
+const IMG_MAP_URL = "https://warframe.fandom.com/NightwaveActs.json?action=raw";
 
 // Page that user is currently on
 const NW_PAGE_NAME = mw.config.get("wgPageName");
@@ -30,6 +38,12 @@ const WHITELIST_PAGES = [
 	"Nightwave/Acts_Currently_Available",
 ];
 
+/**
+ * Enum for Nightwave act types.
+ * 
+ * @readonly
+ * @enum {number}
+ */
 const ActTypeEnum = {
     "DAILY": 1,
     "WEEKLY": 2,
@@ -42,7 +56,10 @@ if (WHITELIST_PAGES.includes(NW_PAGE_NAME)) {
     nwActTableInit();
 }
 
-// Initializes fetching and building process for Nightwave act table.
+/**
+ * Initializes fetching and building process for Nightwave act table.
+ * @function	nwActTableInit
+ */
 function nwActTableInit() {
     Promise.all([ getActData(API_URL), getImageMap(IMG_MAP_URL) ])
     .then(function (values) {
@@ -54,24 +71,23 @@ function nwActTableInit() {
     });
 }
 
-// Fetching act image maps from a page outside of MediaWiki namespace
-// so won't have to update this code every time new Nightwave acts are added
-// or if they need to be modified.
-// Returns a Promise that contains the image map data if fetch was successful
+/**
+ * Fetches act image maps from a page outside of MediaWiki namespace.
+ * Will not have to update this code every time new Nightwave acts are added
+ * or if they need to be modified.
+ * 
+ * @function	getImageMap
+ * @param {string} url URL endpoint; assumes that url returns text in a JSON format
+ * @returns A Promise that contains the image map data if fetch was successful
+ */
 function getImageMap(url) {
-    return fetch(url, { mode: "same-origin" })
+    return fetch(url)
         .then(function (response) {
-            console.log("GET JSON image map in Module:NightwaveActs:", response);
+            console.log("GET JSON image map in NightwaveActs.json:", response);
             return response.json();
         })
-        .then(function (data) {
-            // Type string, getting what is in code block on page
-            var jsonImgMap = data.parse.wikitext["*"];
-            jsonImgMap = jsonImgMap.substring(
-                jsonImgMap.indexOf("--[[") + 4, jsonImgMap.indexOf("]]--")
-            );
-            jsonImgMap = JSON.parse(jsonImgMap);
-            console.log("JSON image map in Module:NightwaveActs:", jsonImgMap);
+        .then(function (jsonImgMap) {
+            console.log("JSON image map in NightwaveActs.json:", jsonImgMap);
             return jsonImgMap;
         })
         .catch(function (error) {
@@ -80,8 +96,13 @@ function getImageMap(url) {
         });
 }
 
-// Generic fetching of Nightwave act JSON data.
-// Returns a Promise that contains the Nightwave act data if fetch was successful
+/**
+ * Generic fetching of Nightwave act JSON data.
+ * 
+ * @function	getActData
+ * @param {string} url URL endpoint; assumes that url returns text in a JSON format
+ * @returns A Promise that contains the Nightwave act data if fetch was successful
+ */
 function getActData(url) {
     return fetch(API_URL).then(function (response) {
                 console.log("GET Nightwave act data from " + API_URL + ":", response);
@@ -97,7 +118,13 @@ function getActData(url) {
             });
 }
 
-// Prepares DOM for table creation and building resultant act tables.
+/**
+ * Prepares DOM for table creation and building resultant act tables.
+ * 
+ * @function	prepAndBuild
+ * @param {object} actDataJSON JSON of Nightwave act data
+ * @param {object} jsonImgMap JSON of Nightwave image map
+ */
 function prepAndBuild(actDataJSON, jsonImgMap) {
     $(document).ready(function () {
         console.info("Ready to build Nightwave act table.");
@@ -142,15 +169,21 @@ function prepAndBuild(actDataJSON, jsonImgMap) {
                     break;
             }
 
-            buildTable(actType, tabIDAttr, rowIDAttr);
-            buildTableRow(actType, actImgURL, tabIDAttr, rowIDAttr, actJSON);
+            buildTable(tabIDAttr, rowIDAttr);
+            buildTableRow(actImgURL, tabIDAttr, rowIDAttr, actJSON);
         });
         console.info("Nightwave act table successfully built.");
     });
 }
 
-// Adds table elements.
-function buildTable(actType, tabIDAttr, rowIDAttr) {
+/**
+ * Adds table elements of Nightwave acts table.
+ * 
+ * @function	buildTable
+ * @param {string} tabIDAttr ID name of div element with tabber
+ * @param {string} rowIDAttr ID name of table row element
+ */
+function buildTable(tabIDAttr, rowIDAttr) {
     // Add table if a div element with id associated with act type is not found
     // One table per act type
     if ($(document.getElementById(tabIDAttr)).find("#" + rowIDAttr).length === 0) {
@@ -181,8 +214,15 @@ function buildTable(actType, tabIDAttr, rowIDAttr) {
     }
 }
 
-// Adds table row elements.
-function buildTableRow(actType, actImgURL, tabIDAttr, rowIDAttr, actJSON) {
+/**
+ * Adds table row elements of Nightwave acts table.
+ * 
+ * @param {string} actImgURL URL of image
+ * @param {string} tabIDAttr ID name of div element with tabber
+ * @param {string} rowIDAttr ID name of table row element
+ * @param {object} actJSON JSON data of an active Nightwave act
+ */
+function buildTableRow(actImgURL, tabIDAttr, rowIDAttr, actJSON) {
     $(document.getElementById(tabIDAttr)).find("#" + rowIDAttr)
         .find(".emodtable").append($("<tr>", {
             append: [
@@ -243,8 +283,12 @@ function buildTableRow(actType, actImgURL, tabIDAttr, rowIDAttr, actJSON) {
         }));
 }
 
-// Assume s is in ISO Date format
-// Returns a string in the default locale format and locale time zone
+/**
+ * Parses an ISO string.
+ * 
+ * @param {string} s String in ISO Date format
+ * @returns A string in the default locale format and locale time zone
+ */
 function parseISOString(s) {
     var arr = s.split(/\D+/);
     var date = new Date(Date.UTC(arr[0], --arr[1], arr[2], arr[3], arr[4],

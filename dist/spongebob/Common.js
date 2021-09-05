@@ -336,12 +336,7 @@ ajaxPages = ["Special:RecentChanges", "Special:WikiActivity"];
 
 /* End of AjaxRC */
 
-/* LockForums, LockOldBlogs, and LockOldComments */
-
-window.LockForums = {
-    lockMessageWalls: true,
-    expiryDays: 90
-};
+/* LockOldBlogs and LockOldComments */
 
 window.LockOldBlogs = {
     expiryDays: 90
@@ -351,7 +346,7 @@ window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 90;
 window.lockOldComments.addNoteAbove = true;
 
-/* End of LockForums, LockOldBlogs, and LockOldComments */
+/* End of LockOldBlogs and LockOldComments */
 
 /*
 importArticles({ type: 'script', articles: [ 
@@ -381,6 +376,7 @@ window.MessageWallUserTags = {
     
         'The Smarter, Wiser King Dedede': 'Assistant',
         'The gamer 987654321': 'Assistant',
+        'FireMatch': 'Assistant',
 
         'Idroppedmypen': 'Discussion Moderator',
         'SpongeTron D': 'Discussion Moderator',
@@ -388,10 +384,8 @@ window.MessageWallUserTags = {
         'Arthur Read fan': 'Discussion Moderator',
         'Minnesotaman2007!': 'Discussion Moderator',
 
-        'FlyingDutchmen': 'Rollback',
         'TheJasbre202': 'Rollback',
         'SpongyFanatic2021': 'Rollback',
-        'FireMatch': 'Rollback',
         'SPONGEBOBSUPERFANINFINITY': 'Rollback'
     }
 };

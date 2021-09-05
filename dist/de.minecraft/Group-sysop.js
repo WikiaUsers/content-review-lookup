@@ -24,7 +24,7 @@ $.when( $.ready, mw.loader.using( 'mediawiki.util' ) ).done( function() {
 			}
 			
 			var href = $link.attr( 'href' );
-			var page = mw.util.getParamValue( 'title', href ) || ( href.match( /\/([^?]+)/ || [] )[1] );
+			var page = mw.util.getParamValue( 'title', href ) || ( href.match( /\/de\/wiki\/([^?]+)/ || [] )[1] );
 			if ( page ) {
 				page = decodeURIComponent( page ).replace( /_/g, ' ' );
 				var wikiLink = $link.text();

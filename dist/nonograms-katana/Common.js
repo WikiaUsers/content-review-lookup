@@ -74,7 +74,7 @@ function calculate() {
 					["Lumber Mill lvl. 1","Intellectual lvl. 1","","",""],
 					["Garden lvl. 1","Monk","","",""],
 					["Rock Garden lvl. 1","Logistician lvl. 3","Weapon Collector lvl. 2","Treasure Hunter lvl. 2",""],
-					["","","","",""],
+					["Pagoda lvl. 4","","","",""],
 					["Geologist","Athlete lvl. 2","","",""],
 					["Logistician lvl. 4","Antiquarian lvl. 2","","",""],
 					["Intellectual lvl. 2","","","",""],
@@ -161,7 +161,7 @@ function calculate() {
 		document.getElementById("item2").innerHTML = "0";
 	}
 	
-	if (level > 14) {
+	if (level > 13) {
 		document.getElementById("bt_ram").innerHTML = bt_ram + " x ";
 		var imgBTram = document.createElement("img");
 		imgBTram.src = "https://static.wikia.nocookie.net/nonograms-katana/images/0/0e/Battering_ram.png/revision/latest?cb=20210710192019";

@@ -1,29 +1,16 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
-
-	// Cache purge shortcut
-	// TODO: HydraDark only
-	$( '#ca-cargo-purge' )
-		.remove()
-		.appendTo( '#p-views > ul' )
-		.children()
-		.wrap( '<span>' )
-		.text( '⟳' )
-		.attr( {
-			title    : 'Purge the cache [alt-shift-g]',
-			accesskey: 'g'
-		} )
-		.css( {
-			'line-height': 0,
-			'font-size'  : 'large'
-		} );
+	return mw.loader.getScript( 'https://dev.fandom.com/wiki/MediaWiki:ArticlesAsResources.js?action=raw&ctype=text/javascript' );
+} ).then( function () {
 
 	// Link titles
 	$( '.notitle a' ).removeAttr( 'title' );
 
 	// Slideshows
-	slideshows.init( $( '.mw-parser-output' ) );
+	importScript( 'MediaWiki:Slideshows.js' ).then( function () {
+		slideshows.init();
+	} );
 
 	// Collection pages
 	$( 'div.collection' ).on( 'scroll', function () {
@@ -127,171 +114,3 @@ function useCustomFont( element, name ) {
 		childNode.replaceWith( template.content.firstChild );
 	}
 }
-
-var slideshows = {
-	/**
-	 * @param {JQuery} $container 
-	 */
-	init: function ( $container ) {
-		$container
-			.find( '.infobox2-slideshow:not( .infobox2-slideshow-enabled, .infobox2-slideshow-disabled )' )
-			.each( slideshows.initSlideshow );
-	},
-
-	/**
-	 * @this HTMLElement
-	 */
-	initSlideshow: function () {
-		var $slideshow = $( this ),
-			$slides    = $slideshow.children( '.infobox2-slide' );
-		if ( $slides.length < 2 ) {
-			$slideshow.addClass( 'infobox2-slideshow-disabled' );
-			$slides.children( '.infobox2-slide-title:first-of-type' ).remove();
-			return;
-		}
-		$slideshow.addClass( 'infobox2-slideshow-enabled' );
-		var $titleBar = $( '<div class="infobox2-slideshow-titlebar">' );
-		function cycle() {
-			var $nextTitle = $titleBar
-				.children( '.infobox2-slide-title-active' )
-				.removeClass( 'infobox2-slide-title-active' )
-				.next();
-			( $nextTitle.length
-				? $nextTitle
-				: $titleBar.children( '.infobox2-slide-title:first' )
-			).addClass( 'infobox2-slide-title-active' );
-			var $nextSlide = $slideshow
-				.children( '.infobox2-slide-active' )
-				.removeClass( 'infobox2-slide-active' )
-				.next();
-			( $nextSlide.length
-				? $nextSlide
-				: $slideshow.children( '.infobox2-slide:first' )
-			).addClass( 'infobox2-slide-active' );
-		}
-		$slides.each( function () {
-			var $slide = $( this ),
-				$title = $slide.children( '.infobox2-slide-title:first' );
-			$title
-				.remove()
-				.appendTo( $titleBar )
-				.on( 'click', function () {
-					$titleBar
-						.children( '.infobox2-slide-title-active' )
-						.removeClass( 'infobox2-slide-title-active' );
-					$slideshow
-						.children( '.infobox2-slide-active' )
-						.removeClass( 'infobox2-slide-active' );
-					$title.addClass( 'infobox2-slide-title-active' );
-					$slide.addClass( 'infobox2-slide-active' );
-				} );
-		} );
-		if ( $slideshow.hasClass( 'dlc-slideshow' ) ) {
-			$slides.last().addClass( 'infobox2-slide-active' );
-			$titleBar.children( ':last' ).addClass( 'infobox2-slide-title-active' );
-		} else {
-			$slides.first().addClass( 'infobox2-slide-active' );
-			$titleBar.children( ':first' ).addClass( 'infobox2-slide-title-active' );
-		}
-		if ( $titleBar.children().length ) {
-			$titleBar
-				.prependTo( $slideshow )
-				.find( 'a' ).each( function () {
-				    $( this ).replaceWith( this.childNodes );
-				} );
-		}
-		slideshows.fixMinHeight( $slideshow.get( 0 ) );
-		if (
-			!$slideshow.hasClass( 'infobox2-slideshow-hidden' ) &&
-			!$slideshow.find( '.infobox2-slideshow' ).length
-		) {
-			$slides.on( 'click', cycle );
-		}
-		if ( $slideshow.hasClass( 'infobox2-slideshow-auto' ) ) {
-			(function interval() {
-				setTimeout( interval, 1500 );
-				cycle();
-			})();
-		}
-	},
-
-	fixMinHeight: function ( slideshow ) {
-		var slides      = slideshow.getElementsByClassName( 'infobox2-slide' ),
-			activeSlide = slideshow.getElementsByClassName( 'infobox2-slide-active' )[ 0 ];
-		if ( !activeSlide ) {
-			return;
-		}
-		activeSlide.classList.remove( 'infobox2-slide-active' );
-		var minHeight = 0;
-		for ( var j = slides.length - 1; j >= 0; --j ) {
-			var slide = slides[ j ];
-			slide.classList.add( 'infobox2-slide-active' );
-			minHeight = Math.max(
-				minHeight,
-				slideshow.getBoundingClientRect().height
-			);
-			slide.classList.remove( 'infobox2-slide-active' );
-		}
-		activeSlide.classList.add( 'infobox2-slide-active' );
-		var titleBars = slideshow.getElementsByClassName( 'infobox2-title-bar' );
-		if ( titleBars.length ) {
-			minHeight += titleBars[ 0 ].getBoundingClientRect().height;
-		} 
-		slideshow.style.minHeight = minHeight + 'px';
-	}
-};
-
-// TODO: HydraDark only
-var dlcUtil = {
-	/**
-	 * The currently selected DLC filter.
-	 */
-	selectedFilter: 0,
-
-	/**
-	 * Gets the DLC filter of a DLC icon.
-	 * @param {HTMLElement} img The DLC icon.
-	 * @returns The DLC filter of the given DLC icon, 0 otherwise.
-	 */
-	getDlcFilter: function ( img ) {
-		var classList = img.classList;
-		for ( var i = 0; i < classList.length; ++i ) {
-			if ( classList[ i ].startsWith( 'dlc-' ) ) {
-				return +classList[ i ].substr( 4 );
-			}
-		}
-		return 0;
-	},
-
-	/**
-	 * @param {HTMLElement} element 
-	 */
-	update: function ( element ) {}
-};
-
-// TODO: HydraDark only
-var dlcFilterUtil = {
-	/**
-	 * Indicates whether the DLC filtering has been loaded and finished
-	 * modifying the DOM.
-	 */
-	loaded: false,
-
-	/**
-	 * The currently selected DLC filter.
-	 */
-	selectedFilter: 0,
-
-	/**
-	 * Gets the DLC filter of a DLC icon.
-	 * @param {Element} icon The DLC icon.
-	 * @returns The DLC filter of the given DLC icon, 0 otherwise.
-	 */
-	getDlcFilter: function ( icon ) { return 0 },
-
-	/**
-	 * Removes DLC icons from an element, according to the selected filter.
-	 * @param {Element} element The element to remove DLC icons from.
-	 */
-	applyFilter: function ( element ) {}
-};

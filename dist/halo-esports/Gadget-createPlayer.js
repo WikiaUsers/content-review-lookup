@@ -1,4 +1,3 @@
-// <nowiki>
 $.when( mw.loader.using( 'mediawiki.util' ), $.ready ).then( function () { 
 	var ns = mw.config.get("wgCanonicalNamespace");
 	var infoboxP = document.getElementById('infoboxPlayer');
@@ -65,11 +64,15 @@ $.when( mw.loader.using( 'mediawiki.util' ), $.ready ).then( function () {
 				a = new mw.Api();
 				thistitle = mw.config.get("wgTitle");
 				summary = "Automatically creating player subpages via CreatePlayer";
-				titles = [ thistitle + '/Tournament Results', thistitle + '/Tournament Results/Online', thistitle + '/Tournament Results/Offline' ],
+				titles = [ thistitle + '/Tournament Results', 
+					thistitle + '/Tournament Results/Online', 
+					thistitle + '/Tournament Results/Offline',
+					'Tooltip:' + thistitle ];
 				texts = [ "{{PlayerTabsHeader}}\n{{PlayerResults|%s|show=everything}}",
 					"{{PlayerTabsHeader}}\n{{PlayerResults|%s|show=everything|type=online}}",
-					"{{PlayerTabsHeader}}\n{{PlayerResults|%s|show=everything|type=offline}}"
-						];
+					"{{PlayerTabsHeader}}\n{{PlayerResults|%s|show=everything|type=offline}}",
+					"{{PlayerTooltip}}"
+				];
 				makePage();
 			});
 		}
@@ -85,10 +88,14 @@ $.when( mw.loader.using( 'mediawiki.util' ), $.ready ).then( function () {
 				tag = "create_team"
 				titles = [ thistitle + '/Tournament Results',
 					thistitle + '/Tournament Results/Online',
-					thistitle + '/Tournament Results/Offline'],
+					thistitle + '/Tournament Results/Offline',
+					thistitle + '/Schedule History',
+					'Tooltip:' + thistitle ];
 				texts = [ "{{TeamTabsHeader}}\n{{TeamResults|%s|show=everything}}",
 					"{{TeamTabsHeader}}\n{{TeamResults|%s|show=everything|type=online}}",
 					"{{TeamTabsHeader}}\n{{TeamResults|%s|show=everything|type=offline}}",
+					"{{TeamTabsHeader}}\n{{TeamSchedule|%s}}",
+					"{{RosterTooltip}}"
 				];
 				if (!confirm("Create team?")) {
 					return;
@@ -98,4 +105,3 @@ $.when( mw.loader.using( 'mediawiki.util' ), $.ready ).then( function () {
 		}
 	}
 });
-// </nowiki>

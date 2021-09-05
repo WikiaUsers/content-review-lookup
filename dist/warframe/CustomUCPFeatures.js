@@ -50,52 +50,89 @@ function highlightUser(block, name, highlightBool) {
 	
 	if (highlightBool) {
 		switch(name) {
-			case "DEDrew":
-			case "DE_Glen":
-			case "DEHelen":
-			case "Rebulast":
-				block.style.backgroundColor = "rgba(220,150,0,0.2)";
+			// FANDOM Staff
+			case "Atvelonis":
+			case "CzechOut":
+			case "Dioniso7":
+			case "JAlbor":
+			case "Kirkburn":
+			case "MarkvA":
+			case "Mr Pie 5":
+			case "NinjaFatGuy":
+			case "QATestsStaff":
+			case "Raylan13":
+			case "Shareif":
+			case "Yatalu":
+				block.style.backgroundColor = "rgba(0,220,250,0.25)";
 				break;
 			
-			case "6079Smith":
+			// DE Staff
+			case "DE_Glen":			
+			case "DEDrew":
+			case "DEHelen":
+			case "Rebulast":
+				block.style.backgroundColor = "rgba(250,200,0,0.25)";
+				break;
+			
+			// Admins
+			case "6079Smith":			
 			case "ArcticEngie":
 			case "Brizingr5":
-			case "Darthmufin":
-			case "Flaicher":
-			case "SonyaUliana":
-			case "USouLz":
+			case "Cephalon Scientia":
 			case "ChickenBar":
+			case "Darthmufin":
 			case "Emailformygames":
+			case "FINNER":
+			case "Flaicher":
+			case "Gat235":
 			case "Imargam":
 			case "Juper0":
 			case "MrDESC":
 			case "Noctuaa":
 			case "Raigir":
+			case "SonyaUliana":
 			case "Tnargraef":
 			case "Twilight053":
+			case "USouLz":
 			case "Voqualin":
-			case "Gat235":
-				block.style.backgroundColor = "rgba(220,0,150,0.2)";
+				block.style.backgroundColor = "rgba(220,0,180,0.25)";
 				break;
-				
+			
+			// Mods
+			case "94Connor949":			
+			case "Blizt1998":
 			case "DaExile":
 			case "Doudich":
-			case "FINNER":
+			case "Grunni":
 			case "Hennils":
+			case "Hilycker":
+			case "Jeloxale":
 			case "Kselia":
+			case "Misdirected":
+			case "NoLngrRomng1":
+			case "Protonus":
 			case "Rngd444":
 			case "Starfreak911":
 			case "TunaInABottle":
-			case "94Connor949":
-			case "Blizt1998":
-			case "Grunni":
-			case "Hilycker":
-			case "Jeloxale":
-			case "Misdirected":
-			case "Protonus":
-			case "NoLngrRomng1":
-			case "Cephalon Scientia":
-				block.style.backgroundColor = "rgba(0,220,150,0.2)";
+				block.style.backgroundColor = "rgba(0,220,90,0.25)";
+				break;
+				
+			// Bots
+			case "AkulakhanBot":			
+			case "Arctic's Ludicrous Anti-Spam Bot":
+			case "Catbot":
+			case "Default":
+			case "FANDOM":
+			case "Fandom":
+			case "FANDOMbot":
+			case "FandomBot":
+			case "Flaibot":
+			case "JoeBot":
+			case "Owlbot":
+			case "ScientiaBot":
+			case "Wikia":
+			case "WikiaBot":
+				block.style.backgroundColor = "rgba(250,90,0,0.25)";
 				break;
 		}
 	

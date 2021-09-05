@@ -9,3 +9,10 @@ if(mw.config.get('wgUserName')) {
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:FileUsageAuto-update/code.js',
+    ]
+});

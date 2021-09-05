@@ -149,6 +149,11 @@
             styles: 'MediaWiki:FandomIcons.css'
         },
 
+		Fandom95: {
+			page: 'Fandom95',
+			styles: 'MediaWiki:Fandom95.css'
+		},
+
 		FandomXP: {
 			page: 'FandomXP',
 			styles: 'MediaWiki:FandomXP.css'
@@ -341,6 +346,12 @@
         OldWikiaBar: {
 	        page: "OldWikiaBar",
 	        styles: "MediaWiki:OldWikiaBar.css"
+	    },
+	    
+	    OldFandomColors: {
+	    	page: "OldFandomColors",
+	    	styles: "MediaWiki:OldFandomColors.css",
+	    	scripts: "MediaWiki:OldFandomColors.js",
 	    },
         
         OrganizedNotifs: {

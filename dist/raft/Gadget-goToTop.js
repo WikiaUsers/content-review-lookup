@@ -12,8 +12,10 @@ $(function(){
 	$(".page-side-tools").append($( "<button></button>")
 		.attr({
 			"id": "scroll-top",
+			"class": "page-side-tool",
 			"data-wds-tooltip": "Up",
-			"class": "page-side-tool"
+			"data-wds-tooltip-position": "right",
+			"data-tooltip-attached": "1"
 		})
 	);
 	
