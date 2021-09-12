@@ -21,15 +21,6 @@ Your text here<span class="wiki-notification-sprite-close"></span>
 </div>
 */
 
-var config = mw.config.get([
-    'wgCanonicalNamespace',
-    'wgPageName',
-    'wgCanonicalSpecialPageName',
-    'profileUserName',
-    'wgUserName',
-    'wgServer'
-]);
-
 function closeWikiNotification () {
 	$(".wiki-notification-sprite-close").click(function(){
 		$(this).parents(".wiki-notification").remove();

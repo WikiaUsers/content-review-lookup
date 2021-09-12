@@ -1,16 +1,37 @@
 gridFilters = {
     search: 'search',
 
-    affinities: ['- Affinity -', ['Fire', 'Fire'], ['Frost', 'Frost'], ['Nature', 'Nature'], ['Shadow', 'Shadow'], ['All', 'All'], ['None', 'None']],
+    affinities: [
+        '- Affinity -',
+        ['Fire', 'Fire'],
+        ['Frost', 'Frost'],
+        ['Nature', 'Nature'],
+        ['Shadow', 'Shadow'],
+        ['All', 'All'],
+        ['None', 'None'],
+    ],
     counter: ['- Counter -', ['S', 'S'], ['M', 'M'], ['L', 'L'], ['XL', 'XL']],
     edition: [
         '- Edition -',
         ['Amii', 'Amii'],
         ['Lost Souls', 'Lost Souls'],
+        ['Rebirth', 'Rebirth'],
         ['Renegade', 'Renegade'],
         ['Twilight', 'Twilight'],
     ],
-    faction: ['- Faction -', ['Fire', 'Fire'], ['Frost', 'Frost'], ['Nature', 'Nature'], ['Shadow', 'Shadow'], ['Twilight', 'Twilight'], ['Stonekin', 'Stonekin'], ['Lost Souls', 'Lost Souls'], ['Bandit', 'Bandit'], ['Amii', 'Amii'], ['Legendary', 'Legendary']],
+    faction: [
+        '- Faction -',
+        ['Fire', 'Fire'],
+        ['Frost', 'Frost'],
+        ['Nature', 'Nature'],
+        ['Shadow', 'Shadow'],
+        ['Twilight', 'Twilight'],
+        ['Stonekin', 'Stonekin'],
+        ['Lost Souls', 'Lost Souls'],
+        ['Bandit', 'Bandit'],
+        ['Amii', 'Amii'],
+        ['Legendary', 'Legendary'],
+    ],
     size: ['- Size -', ['S', 'S'], ['M', 'M'], ['L', 'L'], ['XL', 'XL']],
     special: ['- Special -', ['Non-Legendary', 'Non-Legendary'], ['Promo', 'Promo'], ['Starter', 'Starter (PvE)']],
     weapontype: ['- Range -', ['Melee', 'Melee'], ['Ranged', 'Ranged'], ['Special', 'Special']],
@@ -22,13 +43,13 @@ gridFilters = {
 };
 
 (function () {
-	// whether the container should have increased height or not (mainly for use on the mainpage)
+    // whether the container should have increased height or not (mainly for use on the mainpage)
     var incrH = $('body').hasClass('mainpage') || $('#card-grid').hasClass('increased-height') || false;
     // whether we're talking about a list of card viewer instances or card icons
     var isList = $('#card-grid').hasClass('list-of-cards');
-    
+
     $('#card-grid').css('max-height', incrH ? '400px' : isList ? '500px' : '230px');
-    
+
     function gridFiltering() {
         var grid = $('#card-grid');
         if (!grid.length) return;
@@ -47,8 +68,8 @@ gridFilters = {
             }
             window.gridElements.push(obj);
         });
-        
-    	gridFilteringApply();
+
+        gridFilteringApply();
     }
 
     function gridFilteringSwitches() {
@@ -86,10 +107,10 @@ gridFilters = {
                 }
             } else if (gridFilters[x] instanceof Array) {
                 var field = $('<select></select>', {
-                	id: container.attr('id') + '-field',
-                	disabled: disabledCtrls.includes('hide-'+x),
+                    id: container.attr('id') + '-field',
+                    disabled: disabledCtrls.includes('hide-' + x),
                 })
-                	.data('type', 'select')
+                    .data('type', 'select')
                     .appendTo(container);
                 $('<option></option>').appendTo(field).attr('value', '').html(gridFilters[x][0]);
                 for (var y = 1; y < gridFilters[x].length; y++) {
@@ -106,7 +127,9 @@ gridFilters = {
             }
         }
 
-        $('<select><option value="nameasc">- Sort by -</option><option value="nameasc">Name ▲</option><option value="namedesc">Name ▼</option><option value="orbsasc">#Orbs ▲</option><option value="orbsdesc">#Orbs ▼</option><option value="costasc">Cost ▲</option><option value="costdesc">Cost ▼</option><option value="rarasc">Rarity ▲</option><option value="rardesc">Rarity ▼</option></select>')
+        $(
+            '<select><option value="nameasc">- Sort by -</option><option value="nameasc">Name ▲</option><option value="namedesc">Name ▼</option><option value="orbsasc">#Orbs ▲</option><option value="orbsdesc">#Orbs ▼</option><option value="costasc">Cost ▲</option><option value="costdesc">Cost ▼</option><option value="rarasc">Rarity ▲</option><option value="rardesc">Rarity ▼</option></select>'
+        )
             .change(gridFilteringSort)
             .appendTo($('#grid-filter-sort'));
 
@@ -165,12 +188,12 @@ gridFilters = {
         var $container = $('#card-grid');
         var comp, asc;
         var val = $('#grid-filter-sort > select').val();
-        
+
         var convertRarity = {
-        	'Common': 0,
-        	'Uncommon': 1,
-        	'Rare': 2,
-        	'Ultra Rare': 3,
+            Common: 0,
+            Uncommon: 1,
+            Rare: 2,
+            'Ultra Rare': 3,
         };
 
         function sort(comp, asc) {
@@ -179,8 +202,8 @@ gridFilters = {
                     var $a = $(a).data(comp);
                     var $b = $(b).data(comp);
                     if (comp === 'rarity') {
-                    	$a = convertRarity[$a];
-                    	$b = convertRarity[$b];
+                        $a = convertRarity[$a];
+                        $b = convertRarity[$b];
                     }
                     $a = typeof $a === 'string' ? $a.toLowerCase() : $a;
                     $b = typeof $b === 'string' ? $b.toLowerCase() : $b;
@@ -229,7 +252,7 @@ gridFilters = {
         if (val !== 'nameasc' && val !== 'namedesc') sort('1', true);
 
         sort(comp, asc);
-        
+
         $('#card-grid').append($('#grid-matches'));
         $(window).scroll();
     }
@@ -255,7 +278,10 @@ gridFilters = {
 
                     var type = field.data('type');
                     if (type === 'search') {
-                        var rx = new RegExp('^.*?(' + value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&') + ').*?$', 'i');
+                        var rx = new RegExp(
+                            '^.*?(' + value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&') + ').*?$',
+                            'i'
+                        );
                         var flag = rx.test(gridElements[x][y].join(', '));
                         if (!flag) active = false;
                     } else if (type === 'select') {
@@ -266,36 +292,43 @@ gridFilters = {
             if (active) gridFilteringShow(elem);
             else gridFilteringHide(elem);
         }
-        
+
         if ($('#card-grid').hasClass('list-of-cards')) {
-        	var len = $('#card-grid > .custom-tooltip:visible').length;
-        	if (len === 1) {
-                $('#grid-matches').text('1 matching card');
-            } else {
-                $('#grid-matches').text(len + ' matching cards');
-            }
-        } else {
-        	if (($('#grid-filter-affinities-field')[0].selectedIndex > 0 && $('#grid-filter-affinities-field')[0].selectedIndex < 5) || $('#grid-filter-special-field')[0].selectedIndex > 1) {
-            var len = $('#card-grid > span:visible').length;
+            var len = $('#card-grid > .custom-tooltip:visible').length;
             if (len === 1) {
                 $('#grid-matches').text('1 matching card');
             } else {
                 $('#grid-matches').text(len + ' matching cards');
             }
         } else {
-            var i = 0;
-            $('#card-grid > span:visible').each(function() {
-                if ($(this).data('affinities') !== 'None') i+=2;
-                if ($(this).data('special').includes('Promo')) i++;
-                //if ($(this).data('special').includes('Starter')) i++;
-                if ($(this).data('special').includes('Normal')) i++;
-            });
-            if (i === 1) {
-                $('#grid-matches').text('1 matching card');
+            if (
+                ($('#grid-filter-affinities-field')[0].selectedIndex > 0 &&
+                    $('#grid-filter-affinities-field')[0].selectedIndex < 5) ||
+                $('#grid-filter-special-field')[0].selectedIndex > 1
+            ) {
+                var len = $('#card-grid > span:visible').length;
+                if (len === 1) {
+                    $('#grid-matches').text('1 matching card');
+                } else {
+                    $('#grid-matches').text(len + ' matching cards');
+                }
             } else {
-                $('#grid-matches').text(i + ' matching cards');
+                var i = 0;
+                var edIdx = $('#grid-filter-edition-field')[0].selectedIndex;
+                var ed = $('#grid-filter-edition-field')[0].value;
+                $('#card-grid > span:visible').each(function () {
+                    if ($(this).data('affinities') !== 'None') i += 2;
+                    if ($(this).data('special').includes('Promo')) i++;
+                    //if ($(this).data('special').includes('Starter')) i++;
+                    if ($(this).data('special').includes('Normal')) i++;
+                    if (edIdx > 0) i -= $(this).data('edition').split(',').filter(function(e) {return e!==ed}).length;
+                });
+                if (i === 1) {
+                    $('#grid-matches').text('1 matching card');
+                } else {
+                    $('#grid-matches').text(i + ' matching cards');
+                }
             }
-        }
         }
         $('#card-grid').append($('#grid-matches'));
 

@@ -1,4 +1,4 @@
-// 15:12, 5 September 2021 (UTC) <nowiki>
+// 03:58, 12 September 2021 (UTC) <nowiki>
 
 // AUTO-REFRESH RECENT CHANGES
 window.AjaxRCRefreshText = 'Auto-refresh';
@@ -6,15 +6,16 @@ window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 window.ajaxPages = ["Special:RecentChanges"];
 // END AUTO-REFRESH
 
-// Create the "dev" namespace if it doesn't exist already:
- 
+// CREATE THE "DEV" NAMESPACE IF IT DOESN'T EXIST ALREADY
 window.dev = window.dev || {};
  
-// Create the sub-namespace for this addon and set some options:
+// CREATE THE SUB-NAMESPACE FOR THIS ADDON AND SET SOME OPTIONS
 window.dev.editSummaries = {
     select: 'Template:Stdsummaries'
 };
+// END STANDARD EDIT SUMMARIES
 
+// USER TAGS
 window.UserTagsJS = {
 	modules: {},
 	tags: {
@@ -36,7 +37,35 @@ UserTagsJS.modules.mwGroups = [
     'content-moderator',
     'global-discussions-moderator'
 ];
+// END USER TAGS
 
+// *************************************************
+// PAGETITLE REWRITE
+//
+// REWRITES THE PAGE'S TITLE, USED BY TEMPLATE:TITLE
+// *************************************************
+$(function() {
+    var inter = setInterval(function() {
+        if (!$('h1[itemprop=\"name\"]').length) return;
+
+        clearInterval(inter);
+        var newTitle = $("span.newPageTitle").find(':not(big, small, center, h1, h2, h3, h4, h5, h6, b, i, u, s, span, div)').remove().end().html();
+        var edits = $("#user_masthead_since").text();
+        $(".firstHeading,h1[itemprop=\"name\"],.resizable-container .page-header__title").html(newTitle);
+        $("#user_masthead_head h2").html(newTitle + "<small id='user_masthead_since'>" + edits + "</small>");
+    });
+});
+
+$(function changeTitle(){
+    if (!$('span.newPageTitle').length) {
+        return;
+    }
+    var title = $('span.newPageTitle').find(':not(big, small, center, h1, h2, h3, h4, h5, h6, b, i, u, s, span, div)').remove().end().html();
+    $('h1.page-header__title').html(title);
+});
+// END PAGETITLE
+
+// MASS RENAME AND MASS PROTECT DELAY
 if (['assistant','bot','content-moderator','sysop'].indexOf(mw.config.get('wgUserGroups')) >= 0) {
     massRenameDelay = 1000;
     massRenameSummary = 'automatic';
@@ -46,20 +75,23 @@ if (['assistant','bot','content-moderator','sysop'].indexOf(mw.config.get('wgUse
     massProtectSummary = 'automatic';
     importScriptPage('MediaWiki:MassProtect/code.js', 'dev');
 }
+// END MASS RENAME AND MASS PROTECT DELAY
 
-// Initialise the global objects used without overwriting any already there
+// INITIALISE THE GLOBAL OBJECTS USED WITHOUT OVERWRITING ANY ALREADY THERE
 window.dev = window.dev || {};
 window.dev.i18n = window.dev.i18n || {};
 window.dev.i18n.overrides = window.dev.i18n.overrides || {};
 window.dev.i18n.overrides['AdminDashboard_JS-Button'] = window.dev.i18n.overrides['AdminDashboard_JS-Button'] || {}
 
-// Customise the desired messages
+// CUSTOMISE THE DESIRED MESSAGES
 window.dev.i18n.overrides['AdminDashboard_JS-Button']['tooltip'] = 'Customise your wiki with local JavaScript.';
+// END ADMINDASHBOARD JS-BUTTON OVERRIDES
 
-// Prevent users without rollback rights from using the rollback script
+// PREVENT USERS WITHOUT ROLLBACK RIGHTS FROM USING THE ROLLBACK SCRIPT
 window.RollbackWikiDisable = true;
+// END ROLLBACK SCRIPT PREVENTION
 
-// Create an "Add a Blog Post" link to the Project:Administrators' dashboard page
+//CREATE AN "ADD A BLOG POST" LINK TO THE PROJECT:ADMINISTRATORS' DASHBOARD PAGE
 var $elem = $('.create-blog'),
     $html = $elem.html();
 
@@ -70,3 +102,4 @@ $elem.html(
     title: "General",
   })
 );
+// END "ADD A BLOG POST" LINK

@@ -15,8 +15,8 @@
         contentLang = mw.config.get('wgContentLanguage'),
         token = mw.user.tokens.get('editToken'),
         notCustom = /soap|helper|wiki-specialist|wiki-representative|staff|util/.test(mw.config.get('wgUserGroups').join('|')),
-        // [[MediaWiki:Custom-language-code-sorting]]
-        languageCodeSortingId = 14830,
+        // [[MediaWiki:Custom-language-codes.json]]
+        languageCodeSortingId = 33075,
         modal;
     importArticle({
         type: 'style',
@@ -68,8 +68,7 @@
             console.error('[LangSetup] Failed to retrieve language code data');
             return;
         }
-        var data = d[0].query.pages[languageCodeSortingId].revisions[0]['*'];
-        languages = JSON.parse(data.replace(/\/\*.*\*\//g, ''));
+        languages = JSON.parse(d[0].query.pages[languageCodeSortingId].revisions[0]['*']);
         api = new mw.Api();
         modal = new modalLib.Modal({
             buttons: [

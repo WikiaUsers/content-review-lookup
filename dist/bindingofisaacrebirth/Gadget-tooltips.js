@@ -113,7 +113,9 @@ var tooltips = {
 		tooltips.wrapper.id = 'tooltip-wrapper';
 		tooltips.wrapper.appendChild( tooltip );
 		document.addEventListener( 'mousemove', tooltips.updateWrapper );
-		document.body.appendChild( tooltips.wrapper );
+		document
+			.getElementById( 'mw-content-text' )
+			.appendChild( tooltips.wrapper );
 	},
 
 	/**

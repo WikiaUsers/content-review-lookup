@@ -1,14 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-if(wgPageName == "PlanetSide_2_Wiki") {
-	$(document).ready(function() {	
-		/** Hide chat button for logged out users **/
-		if(!wgUserName) {
-			$('.mainpage-box-chat .ChatModule .chat-join').css('position','static');
-		}
-	});
-}
-
 /**********************************************************/
 /* Tooltip: Display Infobox when hover mouse over an item */
 /**********************************************************/

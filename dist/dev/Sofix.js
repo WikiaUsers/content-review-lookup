@@ -50,8 +50,7 @@ function init () {
         type: 'script',
         articles: [
             'u:dev:MediaWiki:Dorui.js',
-            'u:dev:MediaWiki:FixPhalanxBlockLinks.js',
-            'u:dev:MediaWiki:FixCascadingProtectionEditButton.js'
+            'u:dev:MediaWiki:FixPhalanxBlockLinks.js'
         ]
     }, {
         type: 'style',

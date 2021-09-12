@@ -4,37 +4,48 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-                founder: { u:'Initialiser' },
-                bureaucrat: { u:'Watcher' },
-		sysop: { u:'Head Teacher' },
-                rollback: { u:'Rollback' },
-                chatmoderator: { u:'Chat Moderator' },
-                blocked: { u:'Killed' },
-		inactive: { u: 'Lost' },
-		      newuser: { u:'Student' },
-              leader: { u:'Viktor' },
-              developer: { u:'Creator' },
-                contributor: { u:'Advisory' },
-               guard: { u:'Principal' },
-		novice: { u:'Student' },
-		unstoppable: { u:'Unstoppable' },
-		hated: { u:'Filthy Human' },
-          gone: { u:'Gone But Not Forgotten' },
+        founder: { u:'Wiki Founder' },
+        bureaucrat: { u:'Watcher', title:'Bureaucrat' },
+		sysop: { u:'Head Teacher', order:-1/0, title:'Administrator' },
+        rollback: { u:'Time God', title:'Rollback' },
+        chatmoderator: { u:'Announcer', title:'Chat Moderator' },
+        blocked: { u:'Yeeted', title:'This user has been blocked from the wiki because they were naughty.' },
+		inactive: { u: 'Lost', title:'This user has been inactive for over 30 days.' },
+        creator: { u:'The Creator', order:-1/0, title:'MrDrNose himself.', link:'EternityDev' },
+        nonuser: { u: 'Ghost', title:'This user hasn\'t made any edits.' },
+        newuser: { u: 'New Student', title:'Welcome to the wiki. Go ahead, edit something.' },
+		thicc: { u:'thicc boi', title:'thiccy thicc', link:'Thiccobreather', order:1/0 },
+		gone: { u:'Gone But Not Forgotten', title:'This user has moved on to greater things in life. Good for them.' },
+		dead: { u:'Corpse', title:'This user has been here for over 30 days and hasn\'t done anything at all. Come on.' },
+		active: { u:'Active' },
+		alex: { u:'Alex Simp', order:1/0 },
+		erie: { u:'Erie Simp', order:1/0 }
 	}
 };
 UserTagsJS.modules.custom = {
-    JohnnyHarden: ['guard', 'unstoppable', 'leader', 'contributor', 'developer', 'hated', 'gone', 'novice'],
+    'JohnnyHarden': ['gone'],
+    'FendCat': ['thicc', 'active', 'alex'],
+    'MrDrNose.origin': ['thicc', 'creator'],
+    '7ngelbox': ['alex'],
+    'Laurie': ['erie']
 };
 UserTagsJS.modules.autoconfirmed = false;
-UserTagsJS.modules.newuser = 10;
+UserTagsJS.modules.newuser = {
+	days: 5,
+	edits: 5,
+};
 UserTagsJS.modules.inactive = 30;
+UserTagsJS.modules.nonuser = true;
+UserTagsJS.modules.autoconfirmed = true;
 UserTagsJS.modules.mwGroups = ['bureaucrat'];
 UserTagsJS.modules.metafilter = {
-	sysop: ['bureaucrat'],
+	'inactive': ['gone']
 };
 UserTagsJS.modules.userfilter = {
-      Portalcrafter: ['bureaucrat'],
 	'Wikia': ['inactive'],
+};
+UserTagsJS.modules.implode = {
+	dead: ['nonuser', 'inactive'],
 };
 importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
  

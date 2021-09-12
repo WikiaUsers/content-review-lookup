@@ -5,7 +5,7 @@
 // Used files: [[File:CatNav delete.png]]
 
 // note: the 'section#WikiaPageBackground' selector in the bottom is used for non-ucp wikis. may be removed in the future once all wikis have been transfered to the unified community platform
-
+/* <nowiki> */
 $(function() {
 	/* ================================== *\
 		# wiki links to [[Special:CatNav]]
@@ -1008,3 +1008,4 @@ $(function() {
 		};
 	}
 });
+/* </nowiki> */

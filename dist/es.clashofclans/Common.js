@@ -42,8 +42,9 @@ window.UserTagsJS = {
      	threadmoderator: { u: 'Mod. de discusiones' },
     	'content-moderator': { u:'Mod. de contenido'},
     	rollback : { u:'Reversor'},
+    	retiredstaff: { u: 'Personal Retirado', title: 'Este antiguo miembro del personal está inactivo.' },
         inactive: { u: 'Clasher Inactivo', title: 'Este usuario es inactivo.' },
-        newuser: {u: 'Nuevo usuario' }
+        imageeditor: {u: 'Editor de Imágenes' }
     }
 };
     
@@ -67,13 +68,29 @@ UserTagsJS.modules.mwGroups = [
 	'soap',
 ];
     
-UserTagsJS.modules.metafilter = {
-    sysop:           ['bureaucrat'],
-    'content-moderator': ['bureaucrat', 'sysop'],
-    threadmoderator: ['bureaucrat', 'sysop'],
-    rollback:        ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator'],
-    inactive:        ['retiredstaff']
-   };
+    UserTagsJS.modules.metafilter = {
+        sysop:           ['bureaucrat'],
+        'content-moderator': ['bureaucrat', 'sysop'],
+        threadmoderator: ['bureaucrat', 'sysop'],
+        rollback:        ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator'],
+        inactive:        ['retiredstaff']
+    };
+    
+    UserTagsJS.modules.custom = {
+        'KeiCol': ['imageeditor'],
+        
+        'GorillaMan': ['retiredstaff'],
+        'Spottra': ['retiredstaff'],
+        'SynergyShade3624': ['retiredstaff'],
+        'Darkfox17': ['retiredstaff'],
+        'Dahimi': ['retiredstaff'],
+        'Tono555': ['retiredstaff'],
+        'Aventurero 1': ['retiredstaff'],
+        'Pintor Kagamine': ['retiredstaff'],
+        'Lugia101101': ['retiredstaff'],
+        'TheDarkCannon': ['retiredstaff'],
+        'AltandeseCreator': ['retiredstaff'],
+    };
 
 $(function() {
    	// Clash Royale, Brawl Stars and Clash Quest topic interwiki links

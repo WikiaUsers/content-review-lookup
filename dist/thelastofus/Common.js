@@ -34,3 +34,8 @@ $(function() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || mw.config.get('wgUserName') == null) return;
     $("span.insertusername").text(mw.config.get('wgUserName'));
 });
+
+/********** dev:AddRailModule **********/
+window.AddRailModule = [
+	{page: 'Template:DiscordRailModule', prepend: true, maxAge: 86400}
+];

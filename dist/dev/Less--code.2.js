@@ -488,7 +488,7 @@
                     // not as soon as it encounters them
                     mw.hook('less.200').add(function (url) {
                         var uri = new mw.Uri( url ),
-                            path = uri.path.replace('/wiki/', '');
+                            path = uri.path.replace(conf.wgArticlePath, '');
 
                         util.addLine({
                             text: i18n.msg('import-success', path).escape(),
@@ -497,7 +497,7 @@
 
                     mw.hook( 'less.404' ).add(function (url) {
                         var uri = new mw.Uri(url),
-                            path = uri.path.replace('/wiki/', '');
+                            path = uri.path.replace(conf.wgArticlePath, '');
 
                         importErrs += 1;
 
@@ -535,7 +535,7 @@
                             // not the start of the source file
                             err.line = err.line - (i + 1);
                         } else {
-                            err.filename = new mw.Uri(err.filename).path.replace('/wiki/', '');
+                            err.filename = new mw.Uri(err.filename).path.replace(conf.wgArticlePath, '');
                         }
 
                         if (importErrs > 0) {
@@ -728,6 +728,8 @@
                     });
             }
         };
+
+	conf.wgArticlePath = conf.wgArticlePath.replace(/\$1/, '');
 
     if (conf.debug) {
         dev.less = self;

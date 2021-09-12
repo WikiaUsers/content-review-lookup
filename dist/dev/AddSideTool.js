@@ -1,6 +1,7 @@
 /**
  * @name addSideTool
  * @author 机智的小鱼君
+ * <nowiki>
  */
 
 /**
@@ -58,3 +59,4 @@
   dev.addSideTool = addSideTool
   hook('dev.addSideTool').fire(addSideTool)
 })(jQuery, window.dev, mediaWiki.hook)
+// </nowiki>

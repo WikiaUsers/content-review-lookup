@@ -3,6 +3,7 @@
 *  @update for UCP: HumansCanWinElves
 *  @support: Wildream
 *  @testers: Fwy, White torch
+* <nowiki>
 */
 
 ;(function($,mw) {
@@ -587,3 +588,4 @@
     mw.hook('dev.showCustomModal').add(medalFunctions.init);
     
 })(this.jQuery,this.mediaWiki);
+/* </nowiki> */

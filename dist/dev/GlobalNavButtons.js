@@ -1,6 +1,7 @@
 // Global Nav Buttons
 // @author: Jr Mime
 // @author: Caburum
+// <pre>
 
 mw.loader.using(['mediawiki.template.mustache']).then(function () {
 	glnbutt = {};
@@ -75,3 +76,4 @@ mw.loader.using(['mediawiki.template.mustache']).then(function () {
 
 	glnbutt.init();
 });
+// </pre>

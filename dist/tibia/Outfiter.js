@@ -81,7 +81,9 @@ $(function () {
       //170
       'Merry_Mammoth', 'Void_Watcher', 'Rune_Watcher', 'Rift_Watcher', 'Dandelion',
       //175
-      'Hyacinth', 'Peony', 'Singeing_Steed', 'Shellodon', 'Phant'
+      'Hyacinth', 'Peony', 'Singeing_Steed', 'Shellodon', 'Phant',
+      //180
+      'Rustwurm', 'Bogwurm', 'Gloomwurm'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink

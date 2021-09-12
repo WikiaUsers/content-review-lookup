@@ -181,13 +181,13 @@
             $p = $pElem.not(function(){
                 return $(this).attr('class') !== '';
             }).eq(0).html(),
-            $desc = $('<div />').addClass('article-preview-desc description')
+            $desc = $('<div>').addClass('article-preview-desc description')
                 .attr({ 'id': 'article-preview-desc' }).html($p),
             dataImage = this.patterns.dataImage.test($imgElem.attr('src'));
         if (dataImage && this.isNew(event.target)){
             imgSrc = this.placeholder;
         }
-        $img = $('<img />').addClass('article-preview-image image')
+        $img = $('<img>').addClass('article-preview-image image')
                 .attr({ 'id': 'article-preview-image', 'src': imgSrc });
         this.createHTML({
             img: $img,

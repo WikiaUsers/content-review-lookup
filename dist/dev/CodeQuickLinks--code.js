@@ -113,7 +113,7 @@
         ID_LISTING_USERFILES: "cql-listing-user",
         ID_LISTING_SITEFILES: "cql-listing-site",
 
-        // Ad slot <div /> containers
+        // Ad slot <div> containers
         ID_AD_BOXAD: "top_boxad",
         ID_AD_BOXAD_WRAPPER: "top-boxad-wrapper",
         ID_AD_BOXAD_RIGHT: "top-right-boxad-wrapper",

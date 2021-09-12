@@ -60,8 +60,10 @@ $('.fandom-sticky-header').remove();
 		.appendTo($box).wrap('<li></li>')
 		.filter('.wiki-tools__theme-switch')
 		.appendTo($netbar);
+	var $recent = $box.find('a[data-tracking="recent-changes"]');
+	$('<span></span>', {text: $recent.attr('title').split('[')[0]}).appendTo($recent);
 	$box.find('a[data-tracking="explore-main-page"]').parent().after(
-		$box.find('a[data-tracking="recent-changes"]').parent(),
+		$recent.parent(),
 		$box.find('a[data-tracking="explore-random"]').parent()
 	);
 	
@@ -191,14 +193,10 @@ var $topbar = (function(){
 
 	var actions = mw.config.get('wgWikiaBarSkinData');
 	actions = actions && actions.contentActions;
-	var watch_accesskey = (function(){
+	(function(){
 		if(!actions){ return; }
 		//build left/right tabs:
-		var watch_accesskey;
 		delete actions['cargo-purge']; //there is actions.purge already
-		//since the order of scripts loaded, watch/unwatch built here will not work in gadget script:
-		watch_accesskey = (actions.watch || actions.unwatch || {}).accesskey;
-		delete actions.watch; delete actions.unwatch;
 		var $target = $left;
 		$.each(actions, function(key, item){
 			if(key.substring(0,8) === 'varlang-'){ return; } //skip language variants
@@ -237,8 +235,11 @@ var $topbar = (function(){
 				}
 				$('<li></li>',{class: $a.attr('class')}).append($a).appendTo($target);
 			}
+			//workaround for watch/unwatch: take out watch/unwatch from more menu, and set id/class on li element to make mediawiki.page.watch.ajax work properly.
+			var $watch = $more.find('a.mw-watchlink');
+			$watch.closest('li').addClass('mw-watchlink').attr('id', $watch.attr('id')).appendTo($right);
+			$watch.attr('id', null);
 		});
-		return watch_accesskey;
 	})();
 	//Is there anything left in "old" dropdown list?
 	$cactions.find('ul li').appendTo($more);
@@ -284,11 +285,8 @@ var $topbar = (function(){
 			}
 			$li.appendTo($li.parent().hasClass('wds-list') ? $more : $right);
 		});
-		var $watch = $right.find('a.mw-watchlink').attr('accesskey', watch_accesskey);
-		$watch.attr('title', $watch.text().trim())
-		.closest('li').addClass('mw-watchlink').attr('id', $watch.attr('id'));
 		if($more.children().length){
-			$more.closest('.wds-dropdown').appendTo($right); //move to the end
+			$more.closest('.wds-dropdown').appendTo($right); //move more menu to the end
 			mw.loader.using("ext.fandom.wikiaBar.js").then(function(){
 				$more.append($mytools.find('li.tools-customize'));
 			});
@@ -334,6 +332,21 @@ var $topbar = (function(){
 	);
 	/* Enable autocomplete */
 	mw.loader.using('mediawiki.searchSuggest');
+})();
+
+//expand?
+(function(){
+	$body = $('body');
+	$('<div id="hydralize-size-toggle">'+
+	'<svg class="wds-icon wds-icon-small"><use href="#wds-icons-zoom-out-small"></use></svg>'+
+	'<svg class="wds-icon wds-icon-small"><use href="#wds-icons-zoom-in-small"></use></svg>'+
+	'</div>')
+	.prependTo($topbar)
+	.on('click', function(){
+		$body.toggleClass('hydralize-content-expanded');
+		//$.cookie('hydralize-content-expanded', $body.hasClass('hydralize-content-expanded')?"y":"n", {expires: 365, path: '/'});
+	});
+	//$body.toggleClass('hydralize-content-expanded', $.cookie('hydralize-content-expanded') === "y");
 })();
 
 //add a flag class to body element for other scripts.

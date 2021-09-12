@@ -1,11 +1,6 @@
 //##############################################################
 /* ==importArticle pre-script actions== */
 
-// AjaxCommentDelete
-window.AjaxCommentDeleteConfig = {
-	fastDelete: "Comment Was [[#|Off Topic]]/[[w:c:community:Help:Spam|Spam]]/[[w:c:community:Help:Vandalism|Vandalism]]"
-};
-
 //AjaxBlock
 window.AjaxBlock = {
 	blockReasons: {
@@ -229,6 +224,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Uri', 'ext.fandom
 				'u:dev:MediaWiki:MultipleFileDelete/code.js',
 				'u:dev:MediaWiki:AjaxDelete/code.js',
 				'u:dev:MediaWiki:Nuke/code.js',
+				'u:dev:MediaWiki:Reconstitution.js',
 				'u:dev:MediaWiki:AjaxBatchDelete.js',
 			]
 		});

@@ -379,7 +379,7 @@ function bit_rol(num, cnt)
 // </source>
 
 $(function() {
-  $("#content div.amdiv-text").each(function() {
+  $("div.amdiv-text").each(function() {
     var adt = $(this).data("value");
     adt = adt.replace(/'''(.*?)'''/g,"<b>$1</b>");
     adt = adt.replace(/''(.*?)''/g,"<i>$1</i>");
@@ -414,7 +414,7 @@ $(function() {
       return '<a href="'+link+'">'+split.join(' ')+'</a>';
     });
     $(this).html(adt);
-    var $tempSpan = $("<span>").css({"font-size":"90%","white-space":"nowrap","visibility":"hidden","height":0}).html(adt).appendTo("#bodyContent");
+    var $tempSpan = $("<span>").css({"font-size":"90%","white-space":"nowrap","visibility":"hidden","height":0}).html(adt).appendTo("#content");
     var targetWidth = parseInt($tempSpan.width()) + 60;
     if (am = adt.match(/<img/)) targetWidth += (am.length * 60);
     $tempSpan.remove();

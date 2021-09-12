@@ -217,10 +217,6 @@
     function attachMods(mods, attachFragment) {
         var fragment = document.createDocumentFragment();
         mods.forEach(function (mod) { fragment.appendChild(mod.section); });
-        // If [[Rewire]] is loaded, perform ID collision mitigations against the detached trees prior to insertion.
-        if (window.dev && window.dev.rewire) {
-            window.dev.rewire.prepare(fragment);
-        }
         attachFragment(fragment);
         mods.forEach(function (mod) {
             mw.hook('wikipage.content').fire($(mod.section));

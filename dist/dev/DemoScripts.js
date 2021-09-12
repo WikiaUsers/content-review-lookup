@@ -24,14 +24,8 @@
          *
          */
 
-        // Kept out of alphabetical order due to @import
-        JsDoc: {
-            selector: '#js-doc',
-            styles: 'MediaWiki:Documentation.css'
-        },
-
 		ActivityFeedMimic: {
-			page: 'Template:ActivityFeed',
+			page: 'ActivityFeedMimic',
 			styles: 'MediaWiki:ActivityFeedMimic.css'
 		},
 		
@@ -90,9 +84,9 @@
             scripts: 'MediaWiki:DataTables.js'
         },
 
-        DisambiguationManagement: {
-            page: 'Special:Disambiguations',
-            scripts: 'MediaWiki:DisambiguationManagement/code.js'
+        DiscussionsActivity: {
+            page: 'Special:DiscussionsActivity',
+            scripts: 'MediaWiki:DiscussionsActivity.js'
         },
 
         DiscordBanner: {
@@ -440,6 +434,16 @@
         SnowStormCSS: {
             page: 'SnowStormCSS',
             styles: 'MediaWiki:SnowStormCSS/code.css'
+        },
+
+        Standard_Edit_Summary: {
+            page: 'Standard_Edit_Summary',
+            scripts: 'MediaWiki:Standard_Edit_Summary/code.js',
+            exec: function() {
+                (window.dev = window.dev || {}).editSummaries = {
+                    select: 'MediaWiki:Custom-StandardEditSummaries'
+                };
+            }
         },
 
         StarRatingsUi: {

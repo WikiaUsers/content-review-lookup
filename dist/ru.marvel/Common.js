@@ -45,6 +45,13 @@ mw.loader.using("mediawiki.api").then(
 		}
 );
 
+// Случайная надпись
+var wiki_name_number=Math.floor(Math.random() * 12);
+var wiki_name_text=["Эксельсиор!", "Мстители, общий сбор!", "Ко мне, мои Люди-Х!", "С великой силой...", "Халк крушить!", "Пламя!", "Ваканда навсегда!", "Я - железный человек", "Я есть Грут", "Твип!", "Великая сила, никакой ответственности!" ][wiki_name_number];
+var elements=document.getElementsByClassName('fandom-community-header__community-name');
+var wiki_name=elements[0];
+wiki_name.textContent=wiki_name_text;
+
 // выполнение при готовности страницы
 $(document).ready(function()
 {      

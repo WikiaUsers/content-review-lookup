@@ -111,3 +111,9 @@ function addLinkInActivityModule() {
         setTimeout(addLinkInActivityModule, 500)
 }
 addLinkInActivityModule()
+
+//сп
+$(function(){
+    var config = mw.config.get(['wgScriptPath']);
+    $('.fandom-community-header__local-navigation .wds-dropdown:first-child ul.wds-list').prepend('<li><a href="' + config.wgScriptPath + '/wiki/Special:RecentChanges"><svg class="wds-icon wds-icon-tiny navigation-item-icon"><use xlink:href="#wds-icons-activity-small"></use></svg>Свежие правки</a></li>');
+});

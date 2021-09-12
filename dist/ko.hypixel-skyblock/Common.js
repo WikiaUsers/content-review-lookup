@@ -2,7 +2,7 @@
 Any JavaScript here will be loaded for all users on every page load.
 See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
 */
- 
+
 /* Table of Contents
 -----------------------
  * (B00) Element animator
@@ -60,7 +60,7 @@ var inter = setInterval(function() {
             var user = decodeURIComponent($(this).attr('href')).replace(new RegExp(wgArticlePath + "((User|사용자):|(Special:Contributions|특수:기여)\\/)"), ''),
                 $link = $(this).parent().parent().children('a:last-of-type:not(.mw-user-anon-link)'),
                 $this = $(this);
-			
+
             // Dont reveal IP's if the user is not an admin/bureaucrat/global groups
             if (!canBlock && mw.util.isIPAddress(user, true)) return;
 
@@ -134,7 +134,7 @@ $( function() {
 		var $nextFrame = $( curFrame && curFrame.nextElementSibling || parentElem.firstElementChild );
 		return $nextFrame.addClass( 'animated-active' );
 	};
-	
+
 	// Set the name of the hidden property
 	var hidden; 
 	if ( typeof document.hidden !== 'undefined' ) {
@@ -144,7 +144,7 @@ $( function() {
 	} else if ( typeof document.webkitHidden !== 'undefined' ) {
 		hidden = 'webkitHidden';
 	}
-	
+
 	setInterval( function() {
 		if ( hidden && document[hidden] ) {
 			return;
@@ -153,7 +153,7 @@ $( function() {
 			if ( $( this ).hasClass( 'animated-paused' ) ) {
 				return;
 			}
-			
+
 			var $nextFrame = advanceFrame( this, '.animated' );
 			if ( $nextFrame.hasClass( 'animated-subframe' ) ) {
 				advanceFrame( $nextFrame[0], '.animated-subframe' );
@@ -191,7 +191,7 @@ $("tr .text-anchor").each(function(){
 	var id = $(this).attr("id");
 	$(this).removeAttr("id");
 	$(this).closest("tr").attr("id", id);
-	
+
 	// Re-trigger hash tag
 	if(location.hash.replace("#", "") === id) {
 		// Show table if collapsed:
@@ -201,7 +201,7 @@ $("tr .text-anchor").each(function(){
 				var parentTable = $(inCollapseTable[0]);
 				parentTable.removeClass("mw-collapsed");
 				parentTable.find("tr").stop().show();
-				
+
 				/*if(parentTable.hasClass("mw-made-collapsible")) {
 					var collapseID = parentTable.attr("id").replace("mw-customcollapsible-", "");
 					$(".mw-customtoggle-"+collapseID).click();
@@ -243,7 +243,7 @@ $.when(
 ).then(function() {
 	var json = arguments[0][0];
 	var selector = arguments[1][0].selectors.ICONS;
-	
+
     json.forEach(function(user) {
         $(selector.replace(/\$1/, user).replace(/::before/, '').replace(/,$/, '')).after($('<a>', {
             href: wgArticlePath + "Project:Arbitration Committe",
@@ -260,7 +260,7 @@ $('#mw-content-text > .mw-parser-output').find('.pageStyles').each(function() {
 	var $this = $(this);
 	var css = $this.text();
 	var id = $this.attr('id');
-	
+
 	/* For security purposes, DO NOT REMOVE! */
 	function validateCSS(css) {
 		return css
@@ -270,7 +270,7 @@ $('#mw-content-text > .mw-parser-output').find('.pageStyles').each(function() {
 			.replaceAll(/([\t ]*)[a-z0-9\-]+\s*:[ \t]*["']?javascript:([^;\n]*)?;?[\t ]*/gi, '$1/* javascript: is not allowed */') // javascript:
 			.replaceAll(/^([\t ]*)@font-face\s*{[^\0]*?}/gi, "$1/* @font-face is not allowed */"); // @font-face
 	}
-	
+
 	$('<style>', {
 		text: validateCSS(css),
 		type: "text/css",
@@ -302,9 +302,9 @@ if (
 		click: function() {
 			var user = $(this).parent().parent().next().find('li:first-of-type').children('a:first-of-type').text();
 			var message = prompt('Enter a message to respond with:');
-	
+
 			if (message === null) return;
-	
+
 			new mw.Api().postWithEditToken({
 				action: "edit",
 				appendtext: "\n:\{\{AIV|done\}\} " + message + " \{\{Subst:sig\}\}",
@@ -323,7 +323,7 @@ $(function(){
 
 	// .hidden works on mobile, but not on desktop
 	$(".sbw-ui-tab-content.hidden").hide();
-	
+
 	$(".sbw-ui-tabber .invslot").each(function(){
 		var classes = Array.from($(this)[0].classList).filter(function(c) {
 				return c.indexOf("goto-") === 0 || c.indexOf("ui-") === 0;
@@ -333,23 +333,23 @@ $(function(){
 			var className = classes[(classes.length)-1]
 				.replace("goto-", "")
 				.replace("ui-", "");
-				
+
 			$(this).click(function() {
 				clickTab(className);
 			});
 		}
 	});
-	
+
 	$(".sbw-ui-tabber .sbw-ui-tab").click(function(e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
-		
+
 		var id = $(this).data("tab");
 		if (id) { 
 			clickTab(id); 
 		}
 	});
-	
+
 	function clickTab(id) {
 		id = "ui-"+id;
 		if(!$("#"+id).length) { console.warn("No such tab ID \"" + id + "\""); return; }
@@ -393,16 +393,16 @@ $.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
 window.lessOpts = window.lessOpts || [];
 window.lessOpts.push( {
 	// this is the page that has the compiled CSS
-	target: 'MediaWiki:Common.css',
+	target: '미디어위키:Common.css',
 	// this is the page that lists the LESS files to compile
-	source: 'MediaWiki:Custom-common.less',
+	source: '미디어위키:Custom-common.less',
 	// these are the pages that you want to be able to update the target page from
 	// note, you should not have more than one update button per page
-	load: [ 'MediaWiki:Common.css', 'MediaWiki:Custom-common.less' ],
+	load: [ '미디어위키:Common.css', '미디어위키:Custom-common.less' ],
 	// target page header
-	header: 'MediaWiki:Custom-css-header/common',
+	header: '미디어위키:Custom-css-header/common',
 	// allowed groups
-	allowed: [ 'codeeditor' ],
+	allowed: [],
 } );
 
 //###########################################
@@ -428,47 +428,16 @@ window.UserTagsJS = {
 
 window.UserTagsJS.modules.custom = {
 	// Old Wiki Staff
-	'IcyOfficial': ['oldstaff', 'mod', 'discord'],
-	'4hrue2kd83f': ['oldstaff', 'discord'],
-	'SirCowMC': ['oldstaff', 'hypixelstaff', 'discord'],
-	
+
 	// Admins
-	'Thundercraft5': ['templates', 'html', 'css', 'lua'],
-	'Joker876': ['templates', 'html', 'css', 'lua'],
-	'Fewfre': ['templates', 'html', 'css', 'lua', 'js'],
-	'Specter Elite': ['html', 'css', 'templates'],
-	
+
 	// Content Moderators
-	'Snoo999':  ['templates', 'html', 'lua', 'css', 'translator'],
-	'Southmelon': ['templates', 'lua'],
-	'100KPureCool': ['html', 'translator'],
-	
+
 	// Discussions Moderators
-	'Thecrazybone': ['rollback'],
-	'Bewioeop': ['rollback'],
-	'YakuzaMC': ['rollback'],
-	// Ryanbansriyar: ['rollback'], <-- Disabled due to invite abuse
-		
+
 	// Rollbackers
-	'BigBoiSchmeedas': ['rollback'],
-	'BrandonXLF': ['rollback', 'lua', 'js'],
-	'Doej134567': ['rollback'],
-	'Fealtous': ['rollback'],
-	'Flachdachs': ['rollback', 'js'],
-	'Hexafish': ['rollback'],
-	'Lunatic Lunala': ['rollback'],
-	'OfTheAsh': ['rollback'],
-	'PaperAeroplane555': ['rollback'],
-	'Powman898': ['rollback'],
-	'Pwign': ['rollback', 'js', 'lua', 'templates'],
-	'SamuraiMosey': ['rollback'],
-	'Spectrogram': ['rollback'],
-	
+
 	// Users
-	'Eason329': ['translator'],
-	'HibiscusLavaR': ['translator'],
-	'DarkblueKR': ['translator'],
-	'EinsMarcel': ['translator'],
 };
 
 //###########################################
@@ -505,10 +474,10 @@ window.importScripts = function(pages) {
 		var wiki;
 		var match = v.match(/^(?:u|url):(.+?):(.+)$/);
 		(match|| []).shift();
-	
+
 		wiki = wiki || mw.config.get('wgServer').replace('https://', '').replace('.fandom.com', '');
 		match = match || v;
-	
+
 		$.ajax({
 			url: 'https://' + (Array.isArray(match) ? match[0] : wiki) + '.fandom.com' + wgArticlePath + (Array.isArray(match) ? match[1] : match) + '?action=raw&ctype=text/javascript',
 			dataType: "script",

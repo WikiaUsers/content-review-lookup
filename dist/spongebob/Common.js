@@ -373,10 +373,11 @@ window.MessageWallUserTags = {
         'TheKorraFanatic': 'Administrator',
         'Stryker305': 'Administrator',
         'BSpongeSM02':  'Administrator',
+        'The gamer 987654321':  'Administrator',
     
         'The Smarter, Wiser King Dedede': 'Assistant',
-        'The gamer 987654321': 'Assistant',
         'FireMatch': 'Assistant',
+        'SPONGEBOBSUPERFANINFINITY': 'Assistant',
 
         'Idroppedmypen': 'Discussion Moderator',
         'SpongeTron D': 'Discussion Moderator',
@@ -386,7 +387,6 @@ window.MessageWallUserTags = {
 
         'TheJasbre202': 'Rollback',
         'SpongyFanatic2021': 'Rollback',
-        'SPONGEBOBSUPERFANINFINITY': 'Rollback'
     }
 };
 

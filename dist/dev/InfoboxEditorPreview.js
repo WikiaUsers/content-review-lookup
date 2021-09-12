@@ -13,29 +13,6 @@
   ) {
     return;
   }
-
-  /**
-   * LEGACY
-   */
-  if (mw.config.get("wgVersion") === "1.19.24") {
-    if (
-      !mw.config.get("wgIsEditPage") ||
-      $(".template-classification-type-text").attr("data-type") !== "infobox" ||
-      typeof window.ace === "undefined"
-    ) {
-      return;
-    }
-
-    window.importArticle({
-      type: "script",
-      article: "u:dev:MediaWiki:InfoboxEditorPreview/main.js",
-    });
-    return;
-  }
-
-  /**
-   * UCP
-   */
   if (!mw.config.get("wgIsPortableInfoboxTemplate")) return;
   mw.loader.using("ext.visualEditor.desktopArticleTarget.init").then(function () {
     window.importArticle({

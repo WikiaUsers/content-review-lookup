@@ -1,4 +1,5 @@
 // @author: [[w:c:dev:User:DutyS12345]]
+// <pre>
 (function (window, $, mw) {
 	'use strict';
 	// Load Protection
@@ -514,3 +515,4 @@
 		}
 	});
 })(this, jQuery, mediaWiki);
+// </pre>

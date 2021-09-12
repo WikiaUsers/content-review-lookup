@@ -132,7 +132,7 @@ $(function() {
 
     function createModal() {
         modal = new window.dev.modal.Modal({
-            content: '<div id="aur-modal-wrap" />',
+            content: '<div id="aur-modal-wrap"></div>',
             id: 'aur-modal',
             size: 'medium',
             title: 'AjaxUserRights',

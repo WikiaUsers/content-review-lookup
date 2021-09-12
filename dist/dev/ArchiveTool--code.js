@@ -419,3 +419,4 @@
         article: 'u:dev:MediaWiki:ArchiveTool.css'
     });
 })(jQuery);
+// </nowiki>

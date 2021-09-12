@@ -1,6 +1,9 @@
 /*
---- This is basically dev:OggPlayer.js, but with support for all uploadable audio file formats				---
---- Changes: 1) Removed mw 1.19 specific stuff 2) Changed ONE string (the one that validates file formats)	---
+--- This is basically dev:OggPlayer.js, but with support for all uploadable audio file formats
+--- Changes:
+---     1) Removed mw 1.19 specific stuff
+---     2) Changed the string that validates file formats
+---     3) Removed the test whether ogg is supported by the browser
 */
 (function() {
 	'use strict';
@@ -15,20 +18,10 @@
 		var OggPlayer = {
 				constRef:{
 					wrapper:"audio-button",
-					noSupport:"no-support",
 					noAudio:"no-audio",
 					nowPlaying:"now-playing",
 					OggAudio:"OggPlayer-Audio",
 					play:"play"
-				},
-				init: function() {
-					//Test Audio Support
-					var support = document.createElement('audio').canPlayType('audio/ogg');
-					if (support === "") return OggPlayer.noSupport();
-					mw.hook('wikipage.content').add(OggPlayer.monitor);
-				},
-				noSupport: function() {
-					$('.audio-button:not(.ready)').attr('title',i18n.msg(OggPlayer.constRef.noSupport).plain()).addClass(OggPlayer.constRef.noAudio);
 				},
 				monitor: function($elem) {
 					$elem.find('.audio-button').each(OggPlayer.eachInstance);
@@ -92,7 +85,7 @@
 					return true;
 				}
 			};
-		OggPlayer.init();
+		mw.hook('wikipage.content').add(OggPlayer.monitor);
 	}
 
 	mw.hook('dev.i18n').add(function(i18n) {

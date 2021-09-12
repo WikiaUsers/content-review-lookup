@@ -1,5 +1,5 @@
 !(function( $, mw ) {
-	'use strict';
+	"use strict";
 	
 	var i18n = {
 		'listForeignUses': 'List foreign uses',
@@ -11,8 +11,8 @@
 	};
 	
 	var langs = {
-		'Deutsch': 'de',
-		'Русский': 'ru'
+		"Deutsch":"de",
+		"Русский":"ru",
 	};
 
 	var wgPageName = mw.config.get( 'wgPageName' );
@@ -32,17 +32,10 @@
 		$('.foreignLink').click(function(){
 			$('.interUses').remove();
 			$('div[id$="linkstoimage"]').append($('<ul></ul>', {'class':'interUses'}));
-			var $interUses = document.createElement("ul");
-				$interUses.classList.add('interUses');
-			
-			var header1 = $interUses.appendChild(document.createElement("h2"));
-				header1.cssText = "margin-left:-22px";
-				header1.textContent = i18n.msgForeignUses;
-			
-			var header2 = $interUses.appendChild(document.createElement("h3"));
-				header2.classList.add('no_foreign_uses');
-				header2.textContent = i18n.msgNoUses;
-			
+			var $interUses = $('.interUses');
+
+			$interUses.append( $('<h2></h2>', {'text':i18n.msgForeignUses, 'style':'margin-left:-22px;'}) );
+			$interUses.append( $('<h3></h3>', {'text': i18n.msgNoUses, 'class':'no_foreign_uses'}) );
 			$.each(langs, function(key, value) {
 				var currentLangCode = value;
 				var request2 = { action:'query', list:'allimages', ailimit:'1',	aifrom:wgTitle };
@@ -55,25 +48,20 @@
 								if (response1.query.imageusage.length > 0) {
 									var urlImage = i18n.URLprefix + currentLangCode + '/wiki/' + wgPageName;
 									$('.no_foreign_uses').remove();
-									
-									var urlImage2 = $interUses.appendChild(document.createElement("h3"));
-										urlImage2.cssText = "margin-left:-20px";
-										urlImage2.textContent = currentLangName;
-
-									var urlImage3 = urlImage2.appendChild(document.createElement("span"));
-										urlImage3.cssText = "font-size:85%";
-
-									var urlImage4 = urlImage3.appendChild(document.createElement("a"));
-										urlImage4.cssText = "font-size:85%";
-										urlImage4.setAttribute('href', urlImage);
-										urlImage4.textContent = '(' + i18n.msgFileLink + ')';
-									
+									$interUses.append(
+										$('<h3></h3>', {'style':'margin-left:-20px;', 'text':currentLangName}).append(
+											$('<span></span>', {'style':'font-size:85%;'}).append(
+												' (', $('<a></a>', {'href':urlImage, 'text':i18n.msgFileLink}), ')'
+											)
+										)
+									);
 									$.each(response1.query.imageusage, function(index, value) {
 										var urlUse = i18n.URLprefix + currentLangCode + '/wiki/' + value.title;
-										var urlUse1 = $interUses.appendChild(document.createElement("li"));
-										var urlUse2 = urlUse1.appendChild(document.createElement("a"));
-											urlUse2.setAttribute('href', urlUse);
-											urlUse2.textContent = value.title;
+										$interUses.append(
+											$('<li></li>').append(
+												$('<a></a>', {'href': urlUse, 'text':value.title})
+											)
+										);
 									});
 								}
 							});
@@ -81,7 +69,7 @@
 					});
 				});
 			});
-		setTimeout(function(){$interUses.children[0].scrollIntoView(true)}, 1000);
+		setTimeout(function(){$interUses[0].scrollIntoView(true)}, 1000);
 		});
 	}
 })( this.jQuery, this.mediaWiki );

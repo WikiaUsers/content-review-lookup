@@ -2,7 +2,7 @@
 Any JavaScript here will be loaded for all users on every page load.
 See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
 */
- 
+
 /* Table of Contents
 -----------------------
  * (B00) Element animator
@@ -38,7 +38,7 @@ $('#mw-content-text > .mw-parser-output').find('.pageStyles').each(function() {
 	var $this = $(this);
 	var css = $this.text();
 	var id = $this.attr('id');
-	
+
 	/* For security purposes, DO NOT REMOVE! */
 	function validateCSS(css) {
 		return css
@@ -48,7 +48,7 @@ $('#mw-content-text > .mw-parser-output').find('.pageStyles').each(function() {
 			.replaceAll(/([\t ]*)[a-z0-9\-]+\s*:[ \t]*["']?javascript:([^;\n]*)?;?[\t ]*/gi, '$1/* javascript: is not allowed */') // javascript:
 			.replaceAll(/^([\t ]*)@font-face\s*{[^\0]*?}/gi, "$1/* @font-face is not allowed */"); // @font-face
 	}
-	
+
 	$('<style>', {
 		text: validateCSS(css),
 		type: "text/css",
@@ -72,22 +72,22 @@ if (!/bureaucrat|content-moderator|threadmoderator|rollback|sysop|util|staff|hel
 
 // Script to make linking comments easier
 mw.loader.using('mediawiki.Uri', function() {
-    if (mw.config.get('wgPageName').startsWith('Special:Comment')) {
-        var split = mw.config.get('wgPageName').split('/').slice(1);
-        if (!split.length) return;
-        window.location.replace(new mw.Uri('/wiki/' + split[0] + "?" + $.param({ commentId: split[1], replyId: split[2] })));
-    }
+	if (mw.config.get('wgPageName').startsWith('Special:Comment')) {
+		var split = mw.config.get('wgPageName').split('/').slice(1);
+		if (!split.length) return;
+		window.location.replace(new mw.Uri('/wiki/' + split[0] + "?" + $.param({ commentId: split[1], replyId: split[2] })));
+	}
 });
 
 $(document.body).on('click', 'ul[class^="ActionDropdown_list__"] > li:first-of-type, [class^="Comment_wrapper__"]', function(e) {
-    if (e.ctrlKey) {
-    	if ($('[class^="EditorForm_editor-form"]').length) return;
-    	
-        var el = $(e.target).parents('[class^="Comment_wrapper__"]');
-        var replyId = el.attr('data-reply-id');
+	if (e.ctrlKey) {
+		if ($('[class^="EditorForm_editor-form"]').length) return;
 
-        window.navigator.clipboard.writeText('[[Special:Comment/' + mw.config.get('wgPageName') + '/' + el.attr('data-thread-id') + (replyId ? '/' + replyId : "") + "|comment]]");
-    }
+		var el = $(e.target).parents('[class^="Comment_wrapper__"]');
+		var replyId = el.attr('data-reply-id');
+
+		window.navigator.clipboard.writeText('[[Special:Comment/' + mw.config.get('wgPageName') + '/' + el.attr('data-thread-id') + (replyId ? '/' + replyId : "") + "|comment]]");
+	}
 });
 
 // Small script to fix article comments links
@@ -96,56 +96,56 @@ var inter = setInterval(function() {
 	var userGroups = mw.config.get('wgUserGroups');
 	var canBlock = /sysop|util|staff|helper|global-discussions-moderator|wiki-manager|content-team-member|soap|bureaucrat/.test(userGroups.join('\n'));
 
-    function changeCommentLinks() { // jshint ignore:line
-        $('span[class^="EntityHeader_header-details"] > div[class^="wds-avatar EntityHeader_avatar"] > a').each(function() {
-            var user = $(this).attr('href').replace(/\/wiki\/(User:|Special:Contributions\/)/gi, ''),
-                $link = $(this).parent().parent().children('a:last-of-type:not(.mw-user-anon-link)'),
-                $this = $(this);
-			
-            // Dont reveal IP's if the user is not an admin/bureaucrat/global groups
-            if (!canBlock && mw.util.isIPAddress(user, true)) return;
+	function changeCommentLinks() { // jshint ignore:line
+		$('span[class^="EntityHeader_header-details"] > div[class^="wds-avatar EntityHeader_avatar"] > a').each(function() {
+			var user = $(this).attr('href').replace(/\/wiki\/(User:|Special:Contributions\/)/gi, ''),
+				$link = $(this).parent().parent().children('a:last-of-type:not(.mw-user-anon-link)'),
+				$this = $(this);
 
-            $link
-                .attr('href', '/wiki/Special:Contributions/' + user)
-                .html(user);
+			// Dont reveal IP's if the user is not an admin/bureaucrat/global groups
+			if (!canBlock && mw.util.isIPAddress(user, true)) return;
 
-            $this.attr('href', '/wiki/Special:Contributions/' + user);
+			$link
+				.attr('href', '/wiki/Special:Contributions/' + user)
+				.html(user);
 
-            $link.after(
-                '&nbsp;(',
-                $('<a>', {
-                    href: "/wiki/Message_wall:" + user,
-                    html: "wall",
-                    title: "Message_wall:" + user,
-                    class: "mw-user-anon-link",
-                }),
-                canBlock ? '&nbsp;<b>&bull;</b>&nbsp;' : "",
-                canBlock ? $('<a>', {
-                    href: "/wiki/Special:Block/" + user,
-                    html: "block",
-                    title: "Special:Block/" + user,
-                    class: "mw-user-anon-link",
-                }) : "",
-                  ')'
-            );
-        });
-    }
+			$this.attr('href', '/wiki/Special:Contributions/' + user);
+
+			$link.after(
+				'&nbsp;(',
+				$('<a>', {
+					href: "/wiki/Message_wall:" + user,
+					html: "wall",
+					title: "Message_wall:" + user,
+					class: "mw-user-anon-link",
+				}),
+				canBlock ? '&nbsp;<b>&bull;</b>&nbsp;' : "",
+				canBlock ? $('<a>', {
+					href: "/wiki/Special:Block/" + user,
+					html: "block",
+					title: "Special:Block/" + user,
+					class: "mw-user-anon-link",
+				}) : "",
+				')'
+			);
+		});
+	}
 
 	if ($('#articleComments [class*="Comment_wrapper"]').length) {
 		clearInterval(inter);
 		changeCommentLinks();
 	}
 
-    if (!handlerAdded) {
-        handlerAdded = true;
-        $(document.body).on('click', '[class^="ReplyList_view-all-replies"], [class^="ArticleCommentsSingleThread_toolbar-button-back__"], [class*="ViewFilter_view-filter-view-option__"] *', function() {
-            var inter = setInterval(function() {
-                if (!$('#articleComments [class*="Comment_wrapper"]').length) return;
-                clearInterval(inter);
-                changeCommentLinks();
-            }, 10);
-        });
-    }
+	if (!handlerAdded) {
+		handlerAdded = true;
+		$(document.body).on('click', '[class^="ReplyList_view-all-replies"], [class^="ArticleCommentsSingleThread_toolbar-button-back__"], [class*="ViewFilter_view-filter-view-option__"] *', function() {
+			var inter = setInterval(function() {
+				if (!$('#articleComments [class*="Comment_wrapper"]').length) return;
+				clearInterval(inter);
+				changeCommentLinks();
+			}, 10);
+		});
+	}
 }, 25);
 
 //##############################################################
@@ -175,7 +175,7 @@ $( function() {
 		var $nextFrame = $( curFrame && curFrame.nextElementSibling || parentElem.firstElementChild );
 		return $nextFrame.addClass( 'animated-active' );
 	};
-	
+
 	// Set the name of the hidden property
 	var hidden; 
 	if ( typeof document.hidden !== 'undefined' ) {
@@ -185,7 +185,7 @@ $( function() {
 	} else if ( typeof document.webkitHidden !== 'undefined' ) {
 		hidden = 'webkitHidden';
 	}
-	
+
 	setInterval( function() {
 		if ( hidden && document[hidden] ) {
 			return;
@@ -194,7 +194,7 @@ $( function() {
 			if ( $( this ).hasClass( 'animated-paused' ) ) {
 				return;
 			}
-			
+
 			var $nextFrame = advanceFrame( this, '.animated' );
 			if ( $nextFrame.hasClass( 'animated-subframe' ) ) {
 				advanceFrame( $nextFrame[0], '.animated-subframe' );
@@ -232,7 +232,7 @@ $("tr .text-anchor").each(function(){
 	var id = $(this).attr("id");
 	$(this).removeAttr("id");
 	$(this).closest("tr").attr("id", id);
-	
+
 	// Re-trigger hash tag
 	if(location.hash.replace("#", "") === id) {
 		// Show table if collapsed:
@@ -242,7 +242,7 @@ $("tr .text-anchor").each(function(){
 				var parentTable = $(inCollapseTable[0]);
 				parentTable.removeClass("mw-collapsed");
 				parentTable.find("tr").stop().show();
-				
+
 				/*if(parentTable.hasClass("mw-made-collapsible")) {
 					var collapseID = parentTable.attr("id").replace("mw-customcollapsible-", "");
 					$(".mw-customtoggle-"+collapseID).click();
@@ -255,7 +255,7 @@ $("tr .text-anchor").each(function(){
 	}
 });
 
-$(window).on( 'hashchange', function(e) {
+$(window).on( 'hashchange', function() {
 	var hash = location.hash.replace("#", "");
 	$("tr[id]").each(function(){
 		var $row = $(this);
@@ -279,21 +279,21 @@ $("div[class^='mw-customtoggle-'],div[class*=' mw-customtoggle-']").on("click", 
 
 /* Arbitrator Icon */
 $.when(
-    $.getJSON("/wiki/MediaWiki:Custom-ArbitratorsList.json?action=raw&ctype=text/json"),
-    $.getJSON("/wiki/MediaWiki:Gadget-StaffColorsUpdater.js/staff-colors.json?action=raw&ctype=text/json")
+	$.getJSON("/wiki/MediaWiki:Custom-ArbitratorsList.json?action=raw&ctype=text/json"),
+	$.getJSON("/wiki/MediaWiki:Gadget-StaffColorsUpdater.js/staff-colors.json?action=raw&ctype=text/json")
 ).then(function() {
 	var json = arguments[0][0];
 	var selector = arguments[1][0].selectors.ICONS;
-	
-    json.forEach(function(user) {
-        $(selector.replace(/\$1/, user).replace(/::before/, '').replace(/,$/, '')).after($('<a>', {
-            href: "/wiki/Project:Arbitration Committe",
-            title: "This User is an Arbitrator",
-            html: $('<img>', {
-                src: "https://static.wikia.nocookie.net/hypixel-skyblock/images/4/41/Scale_of_justice.png/revision/latest/scale-to-width-down/16",
-            }),
-        }));
-    });
+
+	json.forEach(function(user) {
+		$(selector.replace(/\$1/, user).replace(/::before/, '').replace(/,$/, '')).after($('<a>', {
+			href: "/wiki/Project:Arbitration Committe",
+			title: "This User is an Arbitrator",
+			html: $('<img>', {
+				src: "https://static.wikia.nocookie.net/hypixel-skyblock/images/4/41/Scale_of_justice.png/revision/latest/scale-to-width-down/16",
+			}),
+		}));
+	});
 }).catch(console.warn);
 
 // Change profile links
@@ -319,9 +319,9 @@ if (
 		click: function() {
 			var user = $(this).parent().parent().next().find('li:first-of-type').children('a:first-of-type').text();
 			var message = prompt('Enter a message to respond with:');
-	
+
 			if (message === null) return;
-	
+
 			new mw.Api().postWithEditToken({
 				action: "edit",
 				appendtext: "\n:\{\{AIV|done\}\} " + message + " \{\{Subst:sig\}\}",
@@ -359,17 +359,17 @@ $(function(){
 			var className = classes[(classes.length)-1]
 				.replace("goto-", "")
 				.replace("ui-", "");
-				
+
 			$(this).click(function() {
 				clickTab(className);
 			});
 		}
 	});
-	
+
 	$(".sbw-ui-tabber .sbw-ui-tab").click(function(e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
-		
+
 		var id = $(this).data("tab");
 		if (id) { 
 			clickTab(id); 
@@ -379,11 +379,11 @@ $(function(){
 	// makes an extra button to go back to the first UI tab
 	$(".sbw-ui-tabber").each(function() {
 		var elementId = $(this).find(":first-child").attr("id");
-	
+
 		if (!elementId) return;
-	
+
 		var className = elementId.replace("ui-", "");
-	
+
 		$(this).find('.mcui').append(
 		$("<div>").addClass("mcui-returnbutton text-zoom-independent noselect")
 			.attr('data-font-size', '22').text("↻")
@@ -423,29 +423,41 @@ $.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
 
 //###########################################
 /* ===Less=== (X01) */
+$.when(
+	// get list of pages from the English Wiki
+	$.getJSON("https://hypixel-skyblock.fandom.com/wiki/MediaWiki:Custom-Less.json?action=raw&ctype=text/json")
+).then(function() {
+	var lessPages = arguments[0];
 
-window.lessOpts = window.lessOpts || [];
-window.lessOpts.push( {
-	// this is the page that has the compiled CSS
-	target: 'MediaWiki:Common.css',
-	// this is the page that lists the LESS files to compile
-	source: 'MediaWiki:Custom-common.less',
-	// these are the pages that you want to be able to update the target page from
-	// note, you should not have more than one update button per page
-	load: [ 'MediaWiki:Common.css', 'MediaWiki:Custom-common.less' ],
-	// target page header
-	header: 'MediaWiki:Custom-css-header/common',
-} );
+	var mwns = mw.config.get("wgFormattedNamespaces")[8] + ":"; // localized mw namespace
 
-window.lessConfig = window.lessConfig || [];
-window.lessConfig = {
-    // reloads the page after the target page has successfully been updated
-    reload: true,
-    // wraps the parsed CSS in pre tags to prevent any unwanted links to templates, pages or files
-    wrap: true,
-	// allowed groups
-	allowed: [ 'codeeditor' ],
-};
+	window.lessOpts = window.lessOpts || [];
+	window.lessOpts.push( {
+		// this is the page that has the compiled CSS
+		target: mwns+'Common.css',
+		// this is the page that lists the LESS files to compile
+		source: mwns+'Custom-common.less',
+		// these are the pages that you want to be able to update the target page from
+		// note, you should not have more than one update button per page
+		load: [ mwns+'Common.css', mwns+'Custom-common.less' ].concat(lessPages.map(function(p) {
+			return mwns + 'Custom-common.less/' + p;
+		})),
+		// target page header
+		header: mwns+'Custom-css-header/common',
+	} );
+	
+	window.lessConfig = window.lessConfig || [];
+	window.lessConfig = {
+		// reloads the page after the target page has successfully been updated
+		reload: true,
+		// wraps the parsed CSS in pre tags to prevent any unwanted links to templates, pages or files
+		wrap: true,
+		// allowed groups
+		allowed: [ 'codeeditor' ],
+	};
+	
+	importScripts("u:dev:Less/code.2.js");
+}).catch(console.warn);
 
 //###########################################
 /* ===UserTagsJS=== (X02) */
@@ -473,24 +485,24 @@ window.UserTagsJS.modules.custom = {
 	'IcyOfficial': ['oldstaff', 'mod', 'discord'],
 	'4hrue2kd83f': ['oldstaff', 'discord'],
 	'SirCowMC': ['oldstaff', 'hypixelstaff', 'discord'],
-	
+
 	// Admins
 	'Thundercraft5': ['templates', 'html', 'css', 'lua'],
 	'Joker876': ['templates', 'html', 'css', 'lua'],
 	'Fewfre': ['templates', 'html', 'css', 'lua', 'js'],
 	'Specter Elite': ['html', 'css', 'templates'],
-	
+
 	// Content Moderators
-	'Snoo999':  ['templates', 'html', 'lua', 'css', 'translator'],
+	'Snoo999': ['templates', 'html', 'lua', 'css', 'translator'],
 	'Southmelon': ['templates', 'lua'],
 	'100KPureCool': ['html', 'translator'],
-	
+
 	// Discussions Moderators
 	'Thecrazybone': ['rollback'],
 	'Bewioeop': ['rollback'],
 	'YakuzaMC': ['rollback'],
 	// Ryanbansriyar: ['rollback'], <-- Disabled due to invite abuse
-		
+
 	// Rollbackers
 	'BigBoiSchmeedas': ['rollback'],
 	'BrandonXLF': ['rollback', 'lua', 'js'],
@@ -505,7 +517,7 @@ window.UserTagsJS.modules.custom = {
 	'Pwign': ['rollback', 'js', 'lua', 'templates'],
 	'SamuraiMosey': ['rollback'],
 	'Spectrogram': ['rollback'],
-	
+
 	// Users
 	'Eason329': ['translator'],
 	'HibiscusLavaR': ['translator'],
@@ -547,10 +559,10 @@ window.importScripts = function(pages) {
 		var wiki;
 		var match = v.match(/^(?:u|url):(.+?):(.+)$/);
 		(match|| []).shift();
-	
+
 		wiki = wiki || mw.config.get('wgServer').replace('https://', '').replace('.fandom.com', '');
 		match = match || v;
-	
+
 		$.ajax({
 			url: 'https://' + (Array.isArray(match) ? match[0] : wiki) + '.fandom.com/wiki/' + (Array.isArray(match) ? match[1] : match) + '?action=raw&ctype=text/javascript',
 			dataType: "script",

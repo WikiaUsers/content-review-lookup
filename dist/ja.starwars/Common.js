@@ -697,4 +697,14 @@ function hideContentSub()
 	}
 }
 
-// </nowiki></pre>
+
+// Copied from https://avatar.wikia.com/wiki/MediaWiki:Common.js/icons.js
+$( function eraIconsOasis() {
+    if ( $( '#title-eraicons' ).length ) {
+    	if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
+    		$( '.page-header__actions' ).first().prepend( $( '#title-eraicons' ).show() );
+    	} else {
+    	    $( '.page-header__contribution > div' ).first().prepend( $( '#title-eraicons' ).show() );
+    	}
+    }
+} );

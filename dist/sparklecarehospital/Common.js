@@ -6,12 +6,6 @@
  * ===============================================
  */
 
-/* Link Preview */
-window.pPreview = $.extend(true, window.pPreview, {
-    defimage: 'https://vignette.wikia.nocookie.net/borderlands/images/0/05/Ajax.gif/revision/latest?cb=20170626182120&path-prefix=ru',
-    noimage: 'https://vignette.wikia.nocookie.net/sparklecarehospital/images/0/09/Sparklecare_Tumblr.png/revision/latest/?cb=20170830020146',
-});
-
 /* Ajax Refresh */
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
@@ -22,3 +16,17 @@ window.ajaxPages = [
     "Special:Log",
     "Special:Contributions"
 ];
+
+/* Dynamic favicon */
+(function () {
+	var bodyClassList = document.querySelector("body").classList; // Generate NodeList from <body> classes
+	bodyClassList = Array.from(bodyClassList); // Convert NodeList to Array
+	var fulesPage = "page-Volume_1_Update_Fules";
+	var askPage = "page-Ask_Sparklecare";
+	
+	if (bodyClassList.includes(fulesPage) === true) { // Sets 
+			document.querySelector('[rel="shortcut icon"]').setAttribute("href", "https://images.wikia.com/sparklecarehospital/images/archive/6/64/20181112204018%21Favicon.ico");
+	} else if (bodyClassList.includes(askPage) === true) {
+			document.querySelector('[rel="shortcut icon"]').setAttribute("href", "https://images.wikia.com/sparklecarehospital/images/archive/6/64/20210908023121%21Favicon.ico");
+	} else { return; }
+})();

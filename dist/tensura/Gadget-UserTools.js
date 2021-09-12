@@ -9,7 +9,7 @@ window.ajaxSpecialPages = [
 ];
  
 /* CacheCheck */
-window.topLevelCat = 'Tensei Shitara Slime datta ken Wiki';
+window.topLevelCat = 'Tensei Shitara Slime Datta Ken Wiki';
  
 /* Imports */
 importArticles({

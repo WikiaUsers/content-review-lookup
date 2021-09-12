@@ -110,39 +110,18 @@ if (resImgOverlays.length > 0)
 }
 
 // ======
-// Fix bodyContent being pushed away from the firstHeader when ads are present
-
-var bodyContent = $("#global-wrapper.with-siderail #bodyContent");
-var contentSub = $("#global-wrapper.with-siderail #contentSub");
-
-function fixContentTopWithSidebar()
+/*
+	Because new lines are stripped from portable infoboxes, it means we can't have
+	multiline tooltips anymore. This snippet fixes that, and replaces all instances
+	of "\n" in ALL tooltips (to maintain consistency and expectations) with a new
+	line character. Previously tooltips could use the LINE FEED entity - &#10;
+*/
+var tooltips = document.querySelectorAll(".page-content span.tooltip");
+tooltips.forEach(function(t)
 {
-    if (window.innerWidth > 1350)
-        bodyContent.css("top", "-8px");
-    else
-        bodyContent.css("top", "");
-}
-
-function fixContentSubWithSidebar()
-{
-    if (window.innerWidth > 1350)
-        contentSub.css("margin-top", "1em");
-    else
-        contentSub.css("margin-top", "");
-}
-
-if (bodyContent != undefined)
-{
-	$(window).resize(fixContentTopWithSidebar);
-	fixContentTopWithSidebar();
-}
-
-if (contentSub != undefined)
-{
-	$(window).resize(fixContentSubWithSidebar);
-	fixContentSubWithSidebar();
-}
-
+   var title = t.getAttribute("title");
+   t.setAttribute("title", title.replaceAll("\\n", "\n"));
+});
 
 // ======
 

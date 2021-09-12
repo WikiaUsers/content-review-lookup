@@ -9,8 +9,10 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UNKNOWN_GENDER_TYPE = void 0;
 var Utils_1 = require("./Utils");
 var mw = window.mediaWiki;
+exports.UNKNOWN_GENDER_TYPE = undefined;
 var Global =  (function () {
     function Global() {
     }
@@ -20,9 +22,8 @@ var Global =  (function () {
         Global.NOTIFICATION_ICON = pScriptConfig.NOTIFICATION_ICON || Global.NOTIFICATION_ICON;
         Global.userOptions = mw.user.options.get([
             "date",
-            "gender",
+            "gender", 
         ]);
-        Global.isUcpWiki = Global.config.wgVersion !== '1.19.24';
     };
     Global.getLoader = function (pSize) {
         if (pSize === void 0) { pSize = 15; }
@@ -36,6 +37,11 @@ var Global =  (function () {
         if (pWidth === void 0) { pWidth = 15; }
         if (pHeight === void 0) { pHeight = pWidth; }
         return "<svg width=\"" + pWidth + "\" height=\"" + pHeight + "\" class='rcm-svg-icon'><use xlink:href=\"#" + pID + "\" width=\"" + pWidth + "\" height=\"" + pHeight + "\" /></svg>";
+    };
+    Global.getWdsSymbol = function (pID, width, height) {
+        if (width === void 0) { width = 12; }
+        if (height === void 0) { height = width; }
+        return "<svg class='rcm-svg-icon wds-icon wds-icon-tiny' width=\"" + width + "\" height=\"" + height + "\"><use xlink:href=\"#" + pID + "\" width=\"" + width + "\" height=\"" + height + "\" /></svg>";
     };
     Global.initSymbols = function () {
         if (!Global.SVG_SYMBOLS) {
@@ -71,7 +77,7 @@ var Global =  (function () {
             tButton.style.cssText = "float:right;";
         }
     };
-    Global.version = "2.16";
+    Global.version = "2.16b";
     Global.lastVersionDateString = "Nov 2 2020 00:00:00 GMT";
     Global.config = mw.config.get([
         "skin",
@@ -85,7 +91,6 @@ var Global =  (function () {
         "wgVersion",
     ]);
     Global.debug = Global.config.debug || mw.util.getParamValue("useuserjs") == "0" || mw.util.getParamValue("safemode") == "1";
-    Global.isUcpWiki = false;
     Global.AUTO_REFRESH_LOCAL_STORAGE_ID = "RecentChangesMultiple-autorefresh-" + Global.config.wgPageName;
     Global.OPTIONS_SETTINGS_LOCAL_STORAGE_ID = "RecentChangesMultiple-saveoptionscookie-" + Global.config.wgPageName;
     Global.FAVICON_BASE = "//www.google.com/s2/favicons?domain="; 
@@ -109,20 +114,24 @@ var Global =  (function () {
         "<symbol id=\"rcm-settings-gear\" viewBox=\"0 0 24 24\" enable-background=\"new 0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xml:space=\"preserve\">\n\t\t\t<path style=\"fill:currentColor\" d=\"M20,14.5v-2.9l-1.8-0.3c-0.1-0.4-0.3-0.8-0.6-1.4l1.1-1.5l-2.1-2.1l-1.5,1.1c-0.5-0.3-1-0.5-1.4-0.6L13.5,5h-2.9l-0.3,1.8 C9.8,6.9,9.4,7.1,8.9,7.4L7.4,6.3L5.3,8.4l1,1.5c-0.3,0.5-0.4,0.9-0.6,1.4L4,11.5v2.9l1.8,0.3c0.1,0.5,0.3,0.9,0.6,1.4l-1,1.5 l2.1,2.1l1.5-1c0.4,0.2,0.9,0.4,1.4,0.6l0.3,1.8h3l0.3-1.8c0.5-0.1,0.9-0.3,1.4-0.6l1.5,1.1l2.1-2.1l-1.1-1.5c0.3-0.5,0.5-1,0.6-1.4 L20,14.5z M12,16c-1.7,0-3-1.3-3-3s1.3-3,3-3s3,1.3,3,3S13.7,16,12,16z\"/>\n\t\t</symbol>",
         "<symbol id=\"rcm-disc-page\" viewBox=\"0 0 12 12\"><path d=\"M5 7v3H3V2h6v4H6a1 1 0 0 0-1 1m5.935.326c.03-.086.047-.175.053-.265.001-.022.012-.04.012-.061V1a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h4a.985.985 0 0 0 .383-.077.986.986 0 0 0 .325-.217l3.998-3.998.004-.005a.958.958 0 0 0 .19-.283c.015-.03.023-.062.035-.094\" fill-rule=\"evenodd\"></path></symbol>",
         "<symbol id=\"rcm-disc-envelope\" viewBox=\"0 0 12 12\"><path d=\"M10 9H2V4.414l3.293 3.293a.999.999 0 0 0 1.414 0L10 4.414V9zM8.586 3L6 5.586 3.414 3h5.172zm3.339-1.381A1.003 1.003 0 0 0 11.003 1H.997a.988.988 0 0 0-.704.293A1.003 1.003 0 0 0 0 1.997V10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V1.997a.988.988 0 0 0-.075-.378z\" fill-rule=\"evenodd\"></path></symbol>",
+        "<symbol id=\"rcm-disc-comment\" viewBox=\"0 0 12 12\"><path id=\"comment-tiny\" d=\"M4.5 2c-.668 0-1.293.26-1.757.731A2.459 2.459 0 0 0 2 4.5c0 1.235.92 2.297 2.141 2.47A1 1 0 0 1 5 7.96v.626l1.293-1.293A.997.997 0 0 1 7 7h.5c.668 0 1.293-.26 1.757-.731.483-.476.743-1.1.743-1.769C10 3.122 8.878 2 7.5 2h-3zM4 12a1 1 0 0 1-1-1V8.739A4.52 4.52 0 0 1 0 4.5c0-1.208.472-2.339 1.329-3.183A4.424 4.424 0 0 1 4.5 0h3C9.981 0 12 2.019 12 4.5a4.432 4.432 0 0 1-1.329 3.183A4.424 4.424 0 0 1 7.5 9h-.086l-2.707 2.707A1 1 0 0 1 4 12z\"></path></symbol>",
         "<symbol id=\"rcm-disc-reply\" viewBox=\"0 0 12 12\"><path id=\"reply-tiny\" d=\"M4.998 4H3.412l2.293-2.293A.999.999 0 1 0 4.291.293l-3.999 4a1 1 0 0 0 0 1.415l3.999 4a.997.997 0 0 0 1.414 0 .999.999 0 0 0 0-1.415L3.412 6h1.586c2.757 0 5 2.243 5 5a1 1 0 1 0 2 0c0-3.86-3.141-7-7-7\"></path></symbol>",
+        "<symbol id=\"rcm-disc-poll\" viewBox=\"0 0 12 12\"><path id=\"poll-tiny\" d=\"M2 7a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V8a1 1 0 0 1 1-1zm8-3a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V5a1 1 0 0 1 1-1zM6 0a1 1 0 0 1 1 1v10a1 1 0 0 1-2 0V1a1 1 0 0 1 1-1z\"></path></symbol>",
+        "<symbol id=\"rcm-disc-image\" viewBox=\"0 0 12 12\"><path id=\"image-tiny\" d=\"M10 6.243l-.646-.646a.5.5 0 0 0-.708 0L7 7.243 3.854 4.097a.5.5 0 0 0-.708 0L2 5.243V2h8v4.243zM10 10H2V6.657l1.5-1.5 3.146 3.147a.502.502 0 0 0 .708 0L9 6.657l1 1V10zm1-10H1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1zM6.65 4.35c.09.1.22.15.35.15.07 0 .13-.01.19-.04.06-.02.12-.06.16-.11.05-.04.09-.1.11-.16.03-.06.04-.12.04-.19a.472.472 0 0 0-.15-.35.355.355 0 0 0-.16-.11.495.495 0 0 0-.54.11.472.472 0 0 0-.15.35c0 .07.01.13.04.19.02.06.06.12.11.16\"></path></symbol>",
     ];
     return Global;
 }());
 exports["default"] = Global;
 
-},{"./Utils":14}],2:[function(require,module,exports){
+},{"./Utils":9}],2:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.previewDiscussionHTML = exports.previewPage = exports.previewImages = exports.previewDiff = void 0;
 var Utils_1 = require("./Utils");
 var i18n_1 = require("./i18n");
 var Global_1 = require("./Global");
 var RCMModal_1 = require("./RCMModal");
-var RCData_1 = require("./RCData");
+var rc_data_1 = require("./rc_data");
 var mw = window.mediaWiki;
 function previewDiff(pPageName, pageID, pAjaxUrl, pDiffLink, pUndoLink, pDiffTableInfo) {
     Utils_1["default"].logUrl("(previewDiff)", pAjaxUrl);
@@ -134,6 +143,7 @@ function previewDiff(pPageName, pageID, pAjaxUrl, pDiffLink, pUndoLink, pDiffTab
     if (pUndoLink != null) {
         tButtons.push(modalLinkButton('modal-diff-undo', "undo", pUndoLink));
     }
+    var getRcUrl = function (params) { return pDiffTableInfo.wikiInfo.getPageUrl(pDiffTableInfo.titleUrlEscaped, params); };
     RCMModal_1["default"].showLoadingModal({ title: tTitle, buttons: tButtons }).then(function () {
         $.ajax({ type: 'GET', dataType: 'jsonp', data: {}, url: pAjaxUrl }).then(function (pData) {
             if (!RCMModal_1["default"].isModalOpen()) {
@@ -145,53 +155,54 @@ function previewDiff(pPageName, pageID, pAjaxUrl, pDiffLink, pUndoLink, pDiffTab
             var tNMinor = pDiffTableInfo.newRev.minor ? "<abbr class=\"minoredit\">" + i18n_1["default"]('minoreditletter') + "</abbr> " : "";
             var tRevDate = new Date(tRevision.timestamp);
             var tNewRevDate = pDiffTableInfo.newRev.date;
-            var tModalContent = ''
-                + "<div id='rcm-diff-view'>"
-                + "<table class='diff'>"
-                + "<colgroup>"
-                + "<col class='diff-marker'>"
-                + "<col class='diff-content'>"
-                + "<col class='diff-marker'>"
-                + "<col class='diff-content'>"
-                + "</colgroup>"
-                + "<tbody>"
-                + "<tr class='diff-header' valign='top'>"
-                + "<td class='diff-otitle' colspan='2'>"
-                + "<div class='mw-diff-otitle1'>"
-                + "<strong>"
-                + "<a href='" + pDiffTableInfo.hrefFS + "oldid=" + tRevision.diff.from + "' data-action='revision-link-before'>"
-                + i18n_1["default"]('revisionasof', RCData_1["default"].getFullTimeStamp(tRevDate), Utils_1["default"].formatWikiTimeStampDateOnly(tRevDate), Utils_1["default"].formatWikiTimeStampTimeOnly(tRevDate))
-                + "</a>"
-                + " <span class='mw-rev-head-action'>"
-                + ("(<a href=\"" + pDiffTableInfo.hrefFS + "oldid=" + tRevision.diff.from + "&action=edit\" data-action=\"edit-revision-before\">" + i18n_1["default"]('editold') + "</a>)")
-                + "</span>"
-                + "</strong>"
-                + "</div>"
-                + "<div class='mw-diff-otitle2'>" + RCData_1["default"].formatUserDetails(pDiffTableInfo.wikiInfo, tRevision.user, tRevision.userhidden == "", tRevision.anon != "") + "</div>"
-                + "<div class='mw-diff-otitle3'>" + tOMinor + RCData_1["default"].formatSummary(RCData_1["default"].formatParsedComment(tRevision.parsedcomment, tRevision.commenthidden == "", pDiffTableInfo.wikiInfo)) + "</div>"
-                + "</td>"
-                + "<td class='diff-ntitle' colspan='2'>"
-                + "<div class='mw-diff-ntitle1'>"
-                + "<strong>"
-                + "<a href='" + pDiffTableInfo.hrefFS + "oldid=" + tRevision.diff.to + "' data-action='revision-link-after'>"
-                + i18n_1["default"]('revisionasof', RCData_1["default"].getFullTimeStamp(tNewRevDate), Utils_1["default"].formatWikiTimeStampDateOnly(tNewRevDate), Utils_1["default"].formatWikiTimeStampTimeOnly(tNewRevDate))
-                + "</a>"
-                + " <span class='mw-rev-head-action'>"
-                + ("(<a href=\"" + pDiffTableInfo.hrefFS + "oldid=" + tRevision.diff.to + "&action=edit\" data-action=\"edit-revision-after\">" + i18n_1["default"]('editold') + "</a>)")
-                + "</span>"
-                + "<span class='mw-rev-head-action'>"
-                + ("(<a href=\"" + pDiffTableInfo.hrefFS + "action=edit&undoafter=" + tRevision.diff.to + "&undo=" + tRevision.diff.to + "\" data-action=\"undo\">" + i18n_1["default"]('editundo') + "</a>)")
-                + "</span>"
-                + "</strong>"
-                + "</div>"
-                + "<div class='mw-diff-ntitle2'>" + pDiffTableInfo.newRev.user + "</div>"
-                + "<div class='mw-diff-ntitle3'>" + tNMinor + pDiffTableInfo.newRev.summary + "</div>"
-                + "</td>"
-                + "</tr>"
-                + tRevision.diff["*"]
-                + "</tbody>"
-                + "</table>";
-            +"</div>";
+            var tModalContent = [
+                "<div id='rcm-diff-view'>",
+                "<table class='diff'>",
+                "<colgroup>",
+                "<col class='diff-marker'>",
+                "<col class='diff-content'>",
+                "<col class='diff-marker'>",
+                "<col class='diff-content'>",
+                "</colgroup>",
+                "<tbody>",
+                "<tr class='diff-header' valign='top'>",
+                "<td class='diff-otitle' colspan='2'>",
+                "<div class='mw-diff-otitle1'>",
+                "<strong>",
+                "<a href='" + getRcUrl({ oldid: tRevision.diff.from }) + "' data-action='revision-link-before'>",
+                i18n_1["default"]('revisionasof', Utils_1["default"].formatWikiTimeStamp(tRevDate), Utils_1["default"].formatWikiTimeStampDateOnly(tRevDate), Utils_1["default"].formatWikiTimeStampTimeOnly(tRevDate)),
+                "</a>",
+                " <span class='mw-rev-head-action'>",
+                "(<a href=\"" + getRcUrl({ oldid: tRevision.diff.from, action: 'edit' }) + "\" data-action=\"edit-revision-before\">" + i18n_1["default"]('editold') + "</a>)",
+                "</span>",
+                "</strong>",
+                "</div>",
+                "<div class='mw-diff-otitle2'>" + rc_data_1.RCDataArticle.formatUserDetails(pDiffTableInfo.wikiInfo, tRevision.user, tRevision.userhidden == "", tRevision.anon != "") + "</div>",
+                "<div class='mw-diff-otitle3'>" + tOMinor + rc_data_1.RCDataAbstract.renderSummary(rc_data_1.RCDataArticle.tweakParsedComment(tRevision.parsedcomment, tRevision.commenthidden == "", pDiffTableInfo.wikiInfo)) + "</div>",
+                "</td>",
+                "<td class='diff-ntitle' colspan='2'>",
+                "<div class='mw-diff-ntitle1'>",
+                "<strong>",
+                "<a href='" + getRcUrl({ oldid: tRevision.diff.to }) + "' data-action='revision-link-after'>",
+                i18n_1["default"]('revisionasof', Utils_1["default"].formatWikiTimeStamp(tNewRevDate), Utils_1["default"].formatWikiTimeStampDateOnly(tNewRevDate), Utils_1["default"].formatWikiTimeStampTimeOnly(tNewRevDate)),
+                "</a>",
+                " <span class='mw-rev-head-action'>",
+                "(<a href=\"" + getRcUrl({ oldid: tRevision.diff.to, action: 'edit' }) + "\" data-action=\"edit-revision-after\">" + i18n_1["default"]('editold') + "</a>)",
+                "</span>",
+                "<span class='mw-rev-head-action'>",
+                "(<a href=\"" + getRcUrl({ action: 'edit', undoafter: tRevision.diff.to, undo: tRevision.diff.to }) + "\" data-action=\"undo\">" + i18n_1["default"]('editundo') + "</a>)",
+                "</span>",
+                "</strong>",
+                "</div>",
+                "<div class='mw-diff-ntitle2'>" + pDiffTableInfo.newRev.user + "</div>",
+                "<div class='mw-diff-ntitle3'>" + tNMinor + pDiffTableInfo.newRev.summary + "</div>",
+                "</td>",
+                "</tr>",
+                tRevision.diff["*"],
+                "</tbody>",
+                "</table>",
+                "</div>",
+            ].join("");
             RCMModal_1["default"].setModalContent(tModalContent);
         });
     });
@@ -203,7 +214,7 @@ function previewImages(pAjaxUrl, pImageNames, pArticlePath) {
     pAjaxUrl += "&iiurlwidth=" + size + "&iiurlheight=" + size;
     var tCurAjaxUrl = pAjaxUrl + "&titles=" + tImagesInLog.splice(0, 50).join("|");
     Utils_1["default"].logUrl("(previewImages)", tCurAjaxUrl, pImageNames);
-    var tTitle = i18n_1["default"](Global_1["default"].isUcpWiki ? "images" : "awc-metrics-images");
+    var tTitle = i18n_1["default"]("images");
     var tButtons = [];
     var tAddLoadMoreButton = function () {
         if (tImagesInLog.length > 0) {
@@ -250,16 +261,14 @@ function previewImages_getGalleryItem(pPage, pArticlePath, pSize) {
     var tTitle = pPage.title, tPageTitleNoNS = tTitle.indexOf(":") > -1 ? tTitle.split(":")[1] : tTitle, tImage = pPage.imageinfo ? pPage.imageinfo[0] : null, tInvalidImage = null;
     if (pPage.missing == "") {
         tInvalidImage = {
-            thumbHref: pArticlePath + Utils_1["default"].escapeCharactersLink(tTitle),
+            thumbHref: pArticlePath + Utils_1["default"].escapeCharactersUrl(tTitle),
             thumbText: i18n_1["default"]('filedelete-success', tTitle)
         };
     }
     else if (tImage == null) {
         tInvalidImage = {
-            thumbHref: pArticlePath + Utils_1["default"].escapeCharactersLink(tTitle),
-            thumbText: Global_1["default"].isUcpWiki
-                ? i18n_1["default"]('redirectto') + " " + tTitle
-                : i18n_1["default"]('shared_help_was_redirect', tTitle) 
+            thumbHref: pArticlePath + Utils_1["default"].escapeCharactersUrl(tTitle),
+            thumbText: i18n_1["default"]('redirectto') + " " + tTitle
         };
     }
     else if (Utils_1["default"].isFileAudio(tTitle)) {
@@ -294,8 +303,7 @@ function previewImages_getGalleryItem(pPage, pArticlePath, pSize) {
             image: tInvalidImage.thumbText,
             imageHref: tInvalidImage.thumbHref,
             imageStyle: "height:" + pSize + "px; width:" + pSize + "px; line-height:inherit;",
-            caption: tPageTitleNoNS,
-        });
+            caption: tPageTitleNoNS, });
     }
     else {
         var tOffsetY = pSize / 2 - tImage.thumbheight / 2;
@@ -370,11 +378,85 @@ function previewPage(pAjaxUrl, pPageName, pPageHref, pServerLink) {
     });
 }
 exports.previewPage = previewPage;
+function previewDiscussionHTML(rc) {
+    var _a;
+    var _b = rc.previewData, jsonModel = _b.jsonModel, attachments = _b.attachments, poll = _b.poll;
+    var html = "";
+    if (poll) {
+        var answers = poll.answers, question = poll.question, totalVotes_1 = poll.totalVotes;
+        var isImagePoll = !!((_a = answers === null || answers === void 0 ? void 0 : answers[0]) === null || _a === void 0 ? void 0 : _a.image);
+        var customStyles_1 = {
+            poll__answers: "display: flex; align-items: flex-end; flex-wrap: wrap; text-align: center;",
+            imageCont: "width: 175px; height: 175px; position: relative;",
+            image: "object-fit: cover; height: 100%; left: 0; position: absolute; top: 0; width: 100%;",
+        };
+        html = "\n\t\t<section class=\"post-info\">\n\t\t\t<header class=\"post-info__title\" role=\"presentation\" itemprop=\"headline\">\n\t\t\t\t<!-- <a class=\"post-info__title-link\" href=\"/f/p/" + rc.threadId + "\">" + question + "</a> -->\n\t\t\t\t<big class=\"post-info__title-link\">" + question + "</big>\n\t\t\t</header>\n\t\t\t<div>\n\t\t\t\t<div class=\"" + (isImagePoll ? 'image-poll' : 'post-poll') + "\" itemscope=\"\" itemtype=\"http://schema.org/Question\">\n\t\t\t\t\t" + (!isImagePoll
+            ? "\n\t\t\t\t\t\t" + answers.map(function (ans) { return "\n\t\t\t\t\t\t<div class=\"post-poll__answer\" role=\"presentation\" itemscope=\"\" itemtype=\"http://schema.org/Answer\">\n\t\t\t\t\t\t\t<span class=\"post-poll__text\" itemprop=\"text\">" + ans.text + "</span>\n\t\t\t\t\t\t\t<span class=\"post-poll__votes\" itemprop=\"upvoteCount\">" + Math.floor(ans.votes / totalVotes_1) + "%</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t"; }).join("") + "\n\t\t\t\t\t"
+            : "\n\t\t\t\t\t<div class=\"image-poll__answers image-poll__answers-4\" style=\"" + customStyles_1.poll__answers + "\">\n\t\t\t\t\t\t" + answers.map(function (ans) {
+                var _a;
+                return "\n\t\t\t\t\t\t<div class=\"image-poll__answer\" role=\"presentation\" itemscope=\"\" itemtype=\"http://schema.org/Answer\">\n\t\t\t\t\t\t\t<div class=\"image-poll__image-wrapper\"  style=\"" + customStyles_1.imageCont + "\">\n\t\t\t\t\t\t\t\t<img class=\"image-poll__image\" style=\"" + customStyles_1.image + "\" sizes=\"(max-width: 420px) 180px, 370px\" src=\"" + ((_a = ans.image) === null || _a === void 0 ? void 0 : _a.url) + "\" alt=\"\" loading=\"lazy\">\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"image-poll__gradient-wrapper\"></div>\n\t\t\t\t\t\t\t<span class=\"image-poll__text\" itemprop=\"text\">" + ans.text + "</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t";
+            }).join("") + "\n\t\t\t\t\t</div>\n\t\t\t\t\t") + "\n\t\t\t\t\t<div class=\"post-poll__vote\">\n\t\t\t\t\t\t<p class=\"post-poll__total-votes\" itemprop=\"answerCount\" role=\"presentation\">" + totalVotes_1 + " Votes in Poll</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</section>\n\t\t";
+    }
+    else {
+        var jsonModelDataToString_1 = function (props) {
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+            var recur = function (content) { return content === null || content === void 0 ? void 0 : content.map(jsonModelDataToString_1).join(""); };
+            switch (props.type) {
+                case "doc": return "<div class=\"entity-content\">" + ((_a = recur(props.content)) !== null && _a !== void 0 ? _a : "") + "</div>";
+                case "paragraph": return "<p>" + ((_b = recur(props.content)) !== null && _b !== void 0 ? _b : "<br />") + "</p>";
+                case "code_block": return "<pre><code>" + ((_c = recur(props.content)) !== null && _c !== void 0 ? _c : "<br />") + "</code></pre>";
+                case "bulletList": return "<ul>" + ((_d = recur(props.content)) !== null && _d !== void 0 ? _d : "") + "</ul>";
+                case "orderedList": return "<ol>" + ((_e = recur(props.content)) !== null && _e !== void 0 ? _e : "") + "</ol>";
+                case "listItem": return "<li>" + ((_f = recur(props.content)) !== null && _f !== void 0 ? _f : "") + "</li>";
+                case "image": return "<div class=\"post__image-wrapper\"><img src=\"" + ((_h = (_g = attachments[0]) === null || _g === void 0 ? void 0 : _g.contentImages[props.attrs.id]) === null || _h === void 0 ? void 0 : _h.url) + "\" style=\"max-width: 100%;\" /></div>";
+                case "text": {
+                    var text_1 = (_j = props.text) !== null && _j !== void 0 ? _j : "";
+                    (_k = props.marks) === null || _k === void 0 ? void 0 : _k.forEach(function (mark) {
+                        switch (mark.type) {
+                            case 'strong':
+                                text_1 = "<strong>" + text_1 + "</strong>";
+                                break;
+                            case 'em':
+                                text_1 = "<em>" + text_1 + "</em>";
+                                break;
+                            case 'link':
+                                text_1 = "<a href=\"" + mark.attrs.href + "\" " + (mark.attrs.title ? "title=\"" + mark.attrs.title + "\"" : '') + " target=\"_blank\">" + text_1 + "</a>";
+                                break;
+                        }
+                    });
+                    return text_1;
+                }
+                case "openGraph": {
+                    var graphData = (_l = attachments[0]) === null || _l === void 0 ? void 0 : _l.openGraphs[props.attrs.id];
+                    var customStyles = {
+                        imageCont: "max-height: 175px; max-width: 175px;",
+                        post__og: "line-height:0;",
+                        post__og_link: "line-height:0; display: block;",
+                        post__og_wrapper: "border: 1px solid var(--theme-border-color);",
+                        post__og_summary: "white-space: normal;",
+                        post__og_source: "white-space: normal;",
+                    };
+                    return "<div class=\"post__og\" style=\"" + customStyles.post__og + "\">\n\t\t\t\t\t\t<a class=\"post__og-link\" target=\"_blank\" rel=\"noopener noreferrer\" href=\"" + graphData.url + "\" style=\"" + customStyles.post__og_link + "\">\n\t\t\t\t\t\t\t<span class=\"post__og-data-wrapper\" itemscope=\"\" itemtype=\"http://schema.org/Article\" style=\"" + customStyles.post__og_wrapper + "\">\n\t\t\t\t\t\t\t\t<span class=\"post__og-image-container\" style=\"" + customStyles.imageCont + "\">\n\t\t\t\t\t\t\t\t\t<img class=\"post__og-image\" style=\"background-image: url(&quot;" + graphData.imageUrl + "&quot;);\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\" alt=\"Doodle Champion Island Games!\" itemprop=\"image\" role=\"presentation\" loading=\"lazy\">\n\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t<span class=\"post__og-details\">\n\t\t\t\t\t\t\t\t\t<span class=\"post__og-summary\" style=\"" + customStyles.post__og_summary + "\">\n\t\t\t\t\t\t\t\t\t\t<span class=\"post__og-title\" itemprop=\"headline\">" + graphData.title + "</span>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t" + (graphData.siteName ? "<span class=\"post__og-source\" itemprop=\"publisher\" style=\"" + customStyles.post__og_source + "\">\n\t\t\t\t\t\t\t\t\t\t" + graphData.siteName + "\n\t\t\t\t\t\t\t\t\t\t<svg class=\"wds-icon wds-icon-tiny\"><use xlink:href=\"#wds-icons-external-tiny\"></use></svg>\n\t\t\t\t\t\t\t\t\t</span>" : '') + "\n\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</div>";
+                }
+            }
+            mw.log("RCM: Unknown discussion preview type", rc.wikiInfo.servername, props);
+            return "";
+        };
+        html = jsonModelDataToString_1(jsonModel);
+    }
+    var title = rc.containerType != "ARTICLE_COMMENT" ? rc.threadTitle : i18n_1["default"]("rc-comment", rc.forumName);
+    ;
+    var buttons = [
+        modalLinkButton('modal-preview-openpage', "view", rc.href),
+    ];
+    RCMModal_1["default"].showModal({ title: title, content: html, buttons: buttons });
+}
+exports.previewDiscussionHTML = previewDiscussionHTML;
 function modalLinkButton(text, event, link) {
     return { text: i18n_1["default"](text), event: event, callback: function () { window.open(link, '_blank'); } };
 }
 
-},{"./Global":1,"./RCData":4,"./RCMModal":10,"./Utils":14,"./i18n":16}],3:[function(require,module,exports){
+},{"./Global":1,"./RCMModal":5,"./Utils":9,"./i18n":11,"./rc_data":19}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var RCMManager_1 = require("./RCMManager");
@@ -454,8 +536,10 @@ var Main =  (function () {
             'mediawiki.special.recentchanges',
             'mediawiki.special.changeslist',
             'mediawiki.special.changeslist.enhanced',
-            'skin.oasis.recentChanges.css'
-        ].concat((Global_1["default"].isUcpWiki ? ['ext.fandom.photoGallery.gallery.css'] : []), (Global_1["default"].isUcpWiki ? ["mediawiki.diff.styles", "skin.oasis.diff.css"] : ['mediawiki.action.history.diff'])))
+            'skin.oasis.recentChanges.css',
+            'ext.fandom.photoGallery.gallery.css',
+            "mediawiki.diff.styles", "skin.oasis.diff.css", 
+        ])
             .then(function () {
             makeCollapsible_1["default"]();
         });
@@ -496,7 +580,7 @@ var Main =  (function () {
     Main.prototype._parsePage = function (pCont, pInitDef) {
         var _this = this;
         var tWrappers = pCont.querySelectorAll('.rc-content-multiple, #rc-content-multiple');
-        Utils_1["default"].forEach(tWrappers, function (pNode, pI, pArray) {
+        Utils_1["default"].forEach(tWrappers, function (pNode, pI) {
             if (pNode.rcm_wrapper_used) {
                 mw.log("[Main](_parsePage) Wrapper already parsed; exiting.");
                 return;
@@ -504,16 +588,12 @@ var Main =  (function () {
             pNode.rcm_wrapper_used = true;
             var tRCMManager = new RCMManager_1["default"](pNode, pI);
             _this.rcmList.push(tRCMManager);
-            tRCMManager.resultCont.innerHTML = "<center>" + Global_1["default"].getLoaderLarge() + "</center>";
             pInitDef.done(function () {
                 tRCMManager.init();
             });
         });
-        var refreshAllButton = pCont.querySelector(".rcm-refresh-all");
-        if (refreshAllButton) {
-            refreshAllButton.addEventListener("click", function () { _this._refreshAllManagers(); });
-        }
         tWrappers = null;
+        $(".rcm-refresh-all").on("click", function () { _this._refreshAllManagers(); });
     };
     Main.prototype._refreshAllManagers = function () {
         for (var i = 0; i < this.rcmList.length; i++) {
@@ -532,62 +612,27 @@ var Main =  (function () {
     Main.prototype._loadLangMessages = function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            var tLangLoadAjaxPromises = [];
             var tMissing = [];
             function tRCM_loadLangMessage(pMessages) {
                 var tScriptPath = Global_1["default"].useLocalSystemMessages ? Global_1["default"].config.wgServer + Global_1["default"].config.wgScriptPath : "//community.fandom.com";
-                var url = tScriptPath + "/api.php?action=query&format=json&meta=allmessages&amlang=" + i18n_1["default"].defaultLang + "&ammessages=" + pMessages;
+                var url = tScriptPath + "/api.php?action=query&format=json&meta=allmessages&amlang=" + i18n_1["default"].defaultLang + "&ammessages=" + pMessages.join("|");
                 Utils_1["default"].logUrl("", url);
-                return $.when(
-                $.ajax({ type: 'GET', dataType: 'jsonp', data: {}, url: url,
-                    success: function (pData) {
-                        if (typeof pData === 'undefined' || typeof pData.query === 'undefined')
-                            return; 
-                        $.each((pData.query || {}).allmessages, function (index, message) {
-                            if (message.missing !== '') {
-                                i18n_1["default"].MESSAGES[message.name] = message['*'];
-                            }
-                            else {
-                                if (i18n_1.legacyMessagesRemovedContent.indexOf(message.name) == -1)
-                                    tMissing.push([message.name, i18n_1["default"].MESSAGES[message.name]]);
-                            }
-                        });
-                    }
-                }), 
-                (!Global_1["default"].isUcpWiki ? null : (function () {
-                    var legacyWikiPath = "//community.fandom.com";
-                    var legacyMessages = i18n_1.legacyMessagesRemovedContent;
-                    var url2 = legacyWikiPath + "/api.php?action=query&format=json&meta=allmessages&amlang=" + i18n_1["default"].defaultLang + "&ammessages=" + legacyMessages.join("|");
-                    Utils_1["default"].logUrl("Legacy Messages", url2);
-                    return $.ajax({ type: 'GET', dataType: 'jsonp', data: {}, url: url2,
-                        success: function (pData) {
-                            if (typeof pData === 'undefined' || typeof pData.query === 'undefined')
-                                return; 
-                            $.each((pData.query || {}).allmessages, function (index, message) {
-                                if (message.missing !== '') {
-                                    i18n_1["default"].MESSAGES[message.name] = message['*'];
-                                }
-                                else {
-                                    tMissing.push([message.name, i18n_1["default"].MESSAGES[message.name]]);
-                                }
-                            });
+                return $.ajax({ type: 'GET', dataType: 'jsonp', data: {}, url: url }).done(function (pData) {
+                    var _a;
+                    if (!((_a = pData === null || pData === void 0 ? void 0 : pData.query) === null || _a === void 0 ? void 0 : _a.allmessages))
+                        return; 
+                    $.each(pData.query.allmessages, function (index, message) {
+                        if (message.missing !== '') {
+                            i18n_1["default"].MESSAGES[message.name] = message['*'];
+                        }
+                        else {
+                            tMissing.push([message.name, i18n_1["default"].MESSAGES[message.name]]);
                         }
                     });
-                })()));
+                });
             }
-            var tMessages = "", tNumLoading = 0;
-            Object.keys(i18n_1["default"].MESSAGES).forEach(function (key) {
-                tMessages += (tNumLoading > 0 ? "|" : "") + key;
-                tNumLoading++;
-                if (tNumLoading >= 50) {
-                    tLangLoadAjaxPromises.push(tRCM_loadLangMessage(tMessages));
-                    tMessages = "";
-                    tNumLoading = 0;
-                }
-            }, _this);
-            if (tMessages != "") {
-                tLangLoadAjaxPromises.push(tRCM_loadLangMessage(tMessages));
-            }
+            var tLangLoadAjaxPromises = Utils_1["default"].chunkArray(Object.keys(i18n_1["default"].MESSAGES), 50)
+                .map(function (arr) { return tRCM_loadLangMessage(arr); });
             $.when.apply($, tLangLoadAjaxPromises).done(function (pData) {
                 resolve();
                 if (tMissing.length > 0) {
@@ -649,1674 +694,16 @@ var Main =  (function () {
     };
     Main.prototype.importArticles = function (_a) {
         var type = _a.type, articles = _a.articles;
-        if (Global_1["default"].isUcpWiki) {
-            return window.importArticles({
-                type: 'script',
-                articles: articles
-            });
-        }
-        else {
-            return new Promise(function (resolve) {
-                $.when.apply($, articles.map(function (name) { return $.getScript("/load.php?mode=articles&articles=" + name + "&only=scripts"); })).done(function () {
-                    mw.hook('dev.i18n').add(function (i18n) {
-                        resolve();
-                    });
-                });
-            });
-        }
+        return window.importArticles({
+            type: 'script',
+            articles: articles
+        });
     };
     return Main;
 }());
 exports["default"] = new Main();
 
-},{"./Global":1,"./RCMManager":9,"./RCMModal":10,"./Utils":14,"./i18n":16,"./lib/makeCollapsible":18}],4:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Utils_1 = require("./Utils");
-var i18n_1 = require("./i18n");
-var RC_TYPE_1 = require("./types/RC_TYPE");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
-var RCData =  (function () {
-    function RCData(pWikiInfo, pManager) {
-        this.manager = pManager;
-        this.wikiInfo = pWikiInfo;
-    }
-    RCData.prototype.dispose = function () {
-        delete this.manager;
-        delete this.wikiInfo;
-        this.date = null;
-        this.type = null;
-    };
-    RCData.prototype.init = function (pData) {
-        if (!pData.title) {
-            pData.title = "";
-        } 
-        this.date = new Date(pData.timestamp);
-        this.userEdited = pData.user != "" && pData.anon != "";
-        this.author = this.userEdited ? pData.user : (pData.anon ? pData.anon : pData.user);
-        this.userhidden = pData.userhidden == "";
-        this.title = Utils_1["default"].escapeCharacters(pData.title.split("/@comment")[0]);
-        this.namespace = pData.ns;
-        this.logtype = pData.logtype;
-        this.logaction = pData.logaction;
-        this.newlen = pData.newlen;
-        this.oldlen = pData.oldlen;
-        this.summary = RCData.formatParsedComment(pData.parsedcomment, pData.commenthidden == "", this.wikiInfo);
-        this.unparsedComment = pData.comment;
-        this.pageid = pData.pageid;
-        this.revid = pData.revid;
-        this.old_revid = pData.old_revid;
-        this.isNewPage = pData["new"] == "";
-        this.isBotEdit = pData.bot == "";
-        this.isMinorEdit = pData.minor == "";
-        this.isPatrolled = pData.patrolled == "";
-        this.titleNoNS = (this.namespace != 0 && this.title.indexOf(":") > -1) ? this.title.split(/:(.+)/)[1] : this.title; 
-        this.uniqueID = this.title; 
-        this.hrefTitle = Utils_1["default"].escapeCharactersLink(pData.title);
-        this.href = this.wikiInfo.articlepath + this.hrefTitle;
-        this.hrefBasic = this.href.split("/@comment")[0];
-        this.hrefFS = this.href + this.wikiInfo.firstSeperator;
-        if (this.type == RC_TYPE_1["default"].LOG || (this.logtype && this.logtype != "0")) { 
-        }
-        else if (pData.title.indexOf("/@comment") > -1) { 
-            this.isSubComment = pData.title.indexOf("/@comment") != pData.title.lastIndexOf("/@comment"); 
-            if ( this.namespace == 2001) {
-                this.type = RC_TYPE_1["default"].BOARD;
-            }
-            else if ( this.namespace == 1201) {
-                this.type = RC_TYPE_1["default"].WALL;
-            }
-            else {
-                this.type = RC_TYPE_1["default"].COMMENT;
-            }
-            if (this.type == RC_TYPE_1["default"].BOARD || this.type == RC_TYPE_1["default"].WALL) {
-                this.uniqueID = Utils_1["default"].escapeCharactersLink(pData.title.split("/@comment")[0] + "/@comment" + pData.title.split("/@comment")[1]); 
-                if (this.isSubComment == false) {
-                    var tTitleData = /&lt;ac_metadata title=&quot;(.*?)&quot;&gt;.*?&lt;\/ac_metadata&gt;/g.exec(this.summary);
-                    if (tTitleData != null) {
-                        this.threadTitle = tTitleData[1];
-                        this.summary = this.summary.replace(tTitleData[0], "");
-                    }
-                }
-                this.isWallBoardAction = this.logtype == "0";
-                if (this.isWallBoardAction == false && this.isNewPage == false && this.summary == "") {
-                    this.summary = this.type == RC_TYPE_1["default"].BOARD ? i18n_1["default"]("forum-recentchanges-edit") : i18n_1["default"]("wall-recentchanges-edit");
-                }
-            }
-        }
-        else { 
-            this.type = RC_TYPE_1["default"].NORMAL;
-        }
-        return this; 
-    };
-    RCData.prototype.time = function () {
-        return Utils_1["default"].formatWikiTimeStampTimeOnly(this.date, true);
-    };
-    RCData.prototype.userDetails = function () {
-        return RCData.formatUserDetails(this.wikiInfo, this.author, this.userhidden, this.userEdited);
-    };
-    RCData.formatUserDetails = function (pWikiInfo, pAuthor, pUserHidden, pUserEdited) {
-        if (pUserHidden) {
-            return '<span class="history-deleted">' + i18n_1["default"]("rev-deleted-user") + '</span>';
-        }
-        var blockText = pWikiInfo.user.rights.block ? i18n_1["default"]("pipe-separator") + "<a href='{0}Special:Block/{1}'>" + i18n_1["default"]("blocklink") + "</a>" : "";
-        if (pUserEdited) {
-            return Utils_1["default"].formatString("<span class='mw-usertoollinks'><a href='{0}User:{1}' class='" + pWikiInfo.getUserClass(pAuthor) + "' " + pWikiInfo.getUserClassDataset(pAuthor) + ">{2}</a> (<a href='{0}User_talk:{1}'>" + i18n_1["default"]("talkpagelinktext") + "</a>" + i18n_1["default"]("pipe-separator") + "<a href='{0}Special:Contributions/{1}'>" + i18n_1["default"]("contribslink") + "</a>" + blockText + ")</span>", pWikiInfo.articlepath, Utils_1["default"].escapeCharactersLink(pAuthor), pAuthor);
-        }
-        else {
-            return Utils_1["default"].formatString("<span class='mw-usertoollinks'><a class='rcm-useranon' href='{0}Special:Contributions/{1}'>{2}</a> (<a href='{0}User_talk:{1}'>" + i18n_1["default"]("talkpagelinktext") + "</a>" + blockText + ")</span>", pWikiInfo.articlepath, Utils_1["default"].escapeCharactersLink(pAuthor), pAuthor);
-        }
-    };
-    RCData.prototype.getThreadTitle = function () {
-        return this.threadTitle ? this.threadTitle : "<i>" + i18n_1["default"]('unknownthreadname') + "</i>";
-    };
-    RCData.prototype.getSummary = function () {
-        return RCData.formatSummary(this.summary);
-    };
-    RCData.formatSummary = function (pSummary) {
-        if (pSummary == "" || pSummary == undefined) {
-            return "";
-        }
-        else {
-            return " <span class=\"comment\" dir=\"auto\">(" + pSummary + ")</span>";
-        }
-    };
-    RCData.formatParsedComment = function (pParsedComment, pDeleted, pWikiInfo) {
-        if (!pDeleted) {
-            pParsedComment = pParsedComment.replace(/<a href="\//g, "<a href=\"" + pWikiInfo.server + "/"); 
-        }
-        else {
-            pParsedComment = "<span class=\"history-deleted\">" + i18n_1["default"]("rev-deleted-comment") + "</span>";
-        }
-        if (pParsedComment == "" || pParsedComment == undefined) {
-        }
-        else {
-            pParsedComment = pParsedComment.trim();
-            pParsedComment = pParsedComment.replace(/(\r\n|\n|\r)/gm, " ");
-        }
-        return pParsedComment;
-    };
-    RCData.prototype.wallBoardActionMessageWithSummary = function (pThreadTitle) {
-        var tThreadTitle = pThreadTitle || this.getThreadTitle(); 
-        var tLocalizedActionMessage;
-        var tPrefix = this.type == RC_TYPE_1["default"].BOARD ? "forum-recentchanges" : "wall-recentchanges";
-        var tMsgType = this.isSubComment ? "reply" : "thread";
-        switch (this.logaction) {
-            case "wall_remove":
-                tLocalizedActionMessage = tPrefix + "-removed-" + tMsgType;
-                break;
-            case "wall_admindelete":
-                tLocalizedActionMessage = tPrefix + "-deleted-" + tMsgType;
-                break;
-            case "wall_restore":
-                tLocalizedActionMessage = tPrefix + "-restored-" + tMsgType;
-                break;
-            case "wall_archive":
-                tLocalizedActionMessage = tPrefix + "-closed-thread";
-                break;
-            case "wall_reopen":
-                tLocalizedActionMessage = tPrefix + "-reopened-thread";
-                break;
-        }
-        if (tLocalizedActionMessage) {
-            return " " + i18n_1["default"](tLocalizedActionMessage, this.href, tThreadTitle, this.getBoardWallParentLink(), this.titleNoNS) + this.getSummary();
-        }
-        else {
-            return this.getSummary(); 
-        }
-    };
-    RCData.prototype.getBoardWallParentTitleWithNamespace = function () {
-        if (this.type == RC_TYPE_1["default"].BOARD) {
-            return "Board:" + this.titleNoNS;
-        }
-        else if (this.type == RC_TYPE_1["default"].WALL) {
-            return "Message_Wall:" + this.titleNoNS;
-        }
-        else {
-            mw.log("This should not happen in getBoardWallParent()");
-            return this.title;
-        }
-    };
-    RCData.prototype.getBoardWallParentLink = function () {
-        return this.wikiInfo.articlepath + this.getBoardWallParentTitleWithNamespace();
-    };
-    RCData.prototype.getNotificationTitle = function () {
-        return this.title;
-    };
-    RCData.prototype.pageTitleTextLink = function () {
-        if (this.type == RC_TYPE_1["default"].COMMENT) {
-            var tNameSpaceText = this.namespace == 1 ? "" : this.wikiInfo.namespaces[String(this.namespace - 1)]["*"] + ":";
-            return i18n_1["default"]("rc-comment", "[" + this.href + " " + (tNameSpaceText + this.titleNoNS) + "]");
-        }
-        else {
-            return "<a class='rc-pagetitle' href='" + this.href + "'>" + this.title + "</a>";
-        }
-    };
-    RCData.prototype.wallBoardTitleText = function (pThreadTitle) {
-        if (pThreadTitle == undefined) {
-            pThreadTitle = this.getThreadTitle();
-        }
-        if (this.type == RC_TYPE_1["default"].WALL) {
-            return i18n_1["default"]("wall-recentchanges-thread-group", "<a href='" + this.href + "'>" + pThreadTitle + "</a>", this.getBoardWallParentLink(), this.titleNoNS);
-        }
-        else {
-            return i18n_1["default"]("forum-recentchanges-thread-group", "<a href='" + this.href + "'>" + pThreadTitle + "</a>", this.getBoardWallParentLink(), this.titleNoNS);
-        }
-    };
-    RCData.prototype.getNSClass = function () {
-        return "rc-entry-ns-" + this.namespace;
-    };
-    RCData.prototype.wallBoardHistoryLink = function () {
-        var tLink = "", tText;
-        if (this.type == RC_TYPE_1["default"].WALL) {
-            tLink = this.wikiInfo.articlepath + Utils_1["default"].escapeCharactersLink(this.getBoardWallParentTitleWithNamespace()) + this.wikiInfo.firstSeperator + "action=history";
-            tText = this.isSubComment ? "wall-recentchanges-thread-history-link" : "wall-recentchanges-history-link";
-        }
-        else {
-            tLink = this.wikiInfo.articlepath + Utils_1["default"].escapeCharactersLink(this.getBoardWallParentTitleWithNamespace()) + this.wikiInfo.firstSeperator + "action=history";
-            tText = this.isSubComment ? "forum-recentchanges-thread-history-link" : "forum-recentchanges-history-link";
-        }
-        return "(<a href='" + tLink + "'>" + i18n_1["default"](tText) + "</a>)";
-    };
-    RCData.getFullTimeStamp = function (pDate) {
-        return Utils_1["default"].formatWikiTimeStamp(pDate);
-    };
-    RCData.prototype.shouldBeRemoved = function (pDate) {
-        return this.date.getSeconds() < pDate.getSeconds() - (this.wikiInfo.rcParams.days * 86400) 
-            || this.type != RC_TYPE_1["default"].DISCUSSION && this.wikiInfo.resultsCount > this.wikiInfo.rcParams.limit
-            || this.type == RC_TYPE_1["default"].DISCUSSION && this.wikiInfo.discussionsCount > Math.min(this.wikiInfo.rcParams.limit, 50);
-    };
-    return RCData;
-}());
-exports["default"] = RCData;
-
-},{"./Utils":14,"./i18n":16,"./types/RC_TYPE":20}],5:[function(require,module,exports){
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Utils_1 = require("./Utils");
-var RC_TYPE_1 = require("./types/RC_TYPE");
-var RCDataLog_1 = require("./RCDataLog");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
-var RCDataAbuseLog =  (function (_super) {
-    __extends(RCDataAbuseLog, _super);
-    function RCDataAbuseLog(pWikiInfo, pManager) {
-        return _super.call(this, pWikiInfo, pManager) || this;
-    }
- RCDataAbuseLog.prototype.dispose = function () {
-        _super.prototype.dispose.call(this);
-    };
- RCDataAbuseLog.prototype.init = function (pData) {
-        if (!pData.title) {
-            pData.title = "";
-        } 
-        this.type = RC_TYPE_1["default"].LOG;
-        this.date = new Date(pData.timestamp);
-        this.userEdited =
-            /(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))/.test(pData.user)
-                || /((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])/.test(pData.user);
-        this.author = pData.user;
-        this.title = Utils_1["default"].escapeCharacters(pData.title.split("/@comment")[0]);
-        this.namespace = pData.ns;
-        this.logtype = "abuse"; 
-        this.logaction = pData.action; 
-        this.pageid = pData.id; 
-        this.isBotEdit = false; 
-        this.isMinorEdit = false; 
-        this.isPatrolled = false; 
-        this.titleNoNS = (this.namespace != 0 && this.title.indexOf(":") > -1) ? this.title.split(/:(.+)/)[1] : this.title; 
-        this.uniqueID = this.title; 
-        this.hrefTitle = Utils_1["default"].escapeCharactersLink(pData.title);
-        this.href = this.wikiInfo.articlepath + this.hrefTitle;
-        this.hrefBasic = this.href.split("/@comment")[0];
-        this.hrefFS = this.href + this.wikiInfo.firstSeperator;
-        this.actionhidden = pData.actionhidden == "";
-        this._initLog(pData, []);
-        return this; 
-    };
-    return RCDataAbuseLog;
-}(RCDataLog_1["default"]));
-exports["default"] = RCDataAbuseLog;
-
-},{"./RCDataLog":7,"./Utils":14,"./types/RC_TYPE":20}],6:[function(require,module,exports){
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Global_1 = require("./Global");
-var RCData_1 = require("./RCData");
-var Utils_1 = require("./Utils");
-var i18n_1 = require("./i18n");
-var RC_TYPE_1 = require("./types/RC_TYPE");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
-var RCDataFandomDiscussion =  (function (_super) {
-    __extends(RCDataFandomDiscussion, _super);
-    function RCDataFandomDiscussion(pWikiInfo, pManager) {
-        return _super.call(this, pWikiInfo, pManager) || this;
-    }
- RCDataFandomDiscussion.prototype.dispose = function () {
-        _super.prototype.dispose.call(this);
-    };
- RCDataFandomDiscussion.prototype.init = function (pData) {
-        this.type = RC_TYPE_1["default"].DISCUSSION;
-        this.containerType = "FORUM";
-        var embeddedThread = null;
-        try {
-            embeddedThread = pData._embedded.thread[0];
-            this.containerType = embeddedThread.containerType || "FORUM";
-        }
-        catch (e) { }
-        this.date = new Date(0); 
-        this.date.setUTCSeconds((pData.modificationDate || pData.creationDate).epochSecond);
-        this.userEdited = true;
-        this.author = pData.createdBy.name;
-        if (!this.author && pData.creatorIp) {
-            this.author = pData.creatorIp.replace("/", "");
-            this.userEdited = false;
-        }
-        this.userhidden = false; 
-        this.title = pData.title; 
-        this.namespace = -5234; 
-        this.summary = pData.rawContent;
-        if (this.containerType == "ARTICLE_COMMENT" && !this.summary && pData.jsonModel) {
-            var jsonModel = JSON.parse(pData.jsonModel).content;
-            this.summary = !jsonModel || jsonModel.length === 0 ? "" : jsonModel.map(function (d) { return d.type == "paragraph" && d.content ? d.content.map(function (td) { return td.text || ""; }) : ""; }).join(" ").replace(/  /, " ");
-        }
-        if (this.summary.length > 175) {
-            this.summary = "\"" + this.summary + "\""; 
-            this.summary = this.summary.slice(0, 175) + "...";
-        }
-        this.unparsedComment = this.summary;
-        this.forumId = pData.forumId;
-        this.threadId = pData.threadId;
-        this.pageid = pData.id; 
-        this.isNewPage = pData.modificationDate == null; 
-        this.isBotEdit = false; 
-        this.isMinorEdit = false; 
-        this.isPatrolled = false; 
-        this.titleNoNS = this.title; 
-        this.uniqueID = pData.threadId; 
-        this.hrefTitle = Utils_1["default"].escapeCharactersLink(pData.title);
-        this.isReply = pData.isReply;
-        this.threadHref = this.wikiInfo.scriptpath + "/d/p/" + this.threadId;
-        this.href = this.threadHref + (pData.isReply ? "/r/" + pData.id : "");
-        this.hrefBasic = this.href;
-        this.hrefFS = this.href + this.wikiInfo.firstSeperator;
-        this.threadTitle = embeddedThread ? (embeddedThread.title || pData.title) : pData.title;
-        this.user_id = pData.createdBy.id;
-        this.user_avatarUrl = pData.createdBy.avatarUrl ? pData.createdBy.avatarUrl + "/scale-to-width-down/15" : pData.createdBy.avatarUrl;
-        this.upvoteCount = pData.upvoteCount;
-        this.forumName = pData.forumName;
-        this.rawContent = pData.rawContent;
-        this.isLocked = pData.isLocked;
-        this.isReported = pData.isReported;
-        if (this.containerType == "WALL") {
-            if (this.forumName)
-                this.forumPage = this.forumName.replace(" Message Wall", ""); 
-            if (RCDataFandomDiscussion.users[pData.forumId]) {
-                this.forumPage = RCDataFandomDiscussion.users[pData.forumId].name;
-            }
-        }
-        else if (this.containerType == "ARTICLE_COMMENT" && this.forumName == "Root Forum") {
-            this.forumName = null;
-        }
-        return null; 
-    };
- RCDataFandomDiscussion.prototype.userDetails = function () {
-        if (this.userhidden) {
-            return '<span class="history-deleted">' + i18n_1["default"]("rev-deleted-user") + '</span>';
-        }
-        var articlepath = this.wikiInfo.articlepath, author = Utils_1["default"].escapeCharactersLink(this.author), authorNotUrlSafe = this.author;
-        var toolLinks = [
-            "<a href='" + articlepath + "User_talk:" + author + "'>" + i18n_1["default"]("talkpagelinktext") + "</a>",
-        ];
-        if (this.userEdited) {
-            var tUserContribsLink = this.containerType === "FORUM" ? this.wikiInfo.scriptpath + "/d/u/" + this.user_id : this.wikiInfo.articlepath + "Special:Contributions/" + this.author;
-            toolLinks.push("<a href='" + tUserContribsLink + "'>" + i18n_1["default"]("contribslink") + "</a>");
-        }
-        if (this.wikiInfo.user.rights.block) {
-            toolLinks.push("<a href='" + articlepath + "Special:Block/" + author + "'>" + i18n_1["default"]("blocklink") + "</a>");
-        }
-        return [
-            "<span class='mw-usertoollinks'>",
-            this.getCreatorAvatarImg(),
-            "<a href='" + articlepath + (this.userEdited ? "User:" : "Special:Contributions/") + author + "' class='" + this.wikiInfo.getUserClass(this.author) + "' " + this.wikiInfo.getUserClassDataset(this.author) + ">" + authorNotUrlSafe + "</a>",
-            " (" + toolLinks.join(i18n_1["default"]("pipe-separator")) + ")",
-            "</span>",
-        ].join("");
-    };
-    RCDataFandomDiscussion.prototype.getCreatorAvatarImg = function () {
-        return this.makeAvatarImg(this.author, this.user_avatarUrl);
-    };
-    RCDataFandomDiscussion.prototype.makeAvatarImg = function (pAuthor, pAvatarUrl) {
-        return pAvatarUrl
-            ? "<span class=\"rcm-avatar\"><a href=\"" + this.wikiInfo.articlepath + "User:" + Utils_1["default"].escapeCharactersLink(pAuthor || "") + "\"><img src='" + pAvatarUrl + "' width=\"15\" height=\"15\" /></a> </span>"
-            : "";
-    };
-    RCDataFandomDiscussion.prototype.discussionTitleText = function (pThreadTitle, pIsHead) {
-        if (pIsHead === void 0) { pIsHead = false; }
-        switch (this.containerType) {
-            case "FORUM": {
-                if (pThreadTitle == undefined) {
-                    pThreadTitle = this.getThreadTitle();
-                }
-                var tForumLink = "<a href=\"" + this.wikiInfo.scriptpath + "/d/f?catId=" + this.forumId + "&sort=latest\">" + this.forumName + "</a>";
-                var tText = i18n_1["default"].MESSAGES["wall-recentchanges-thread-group"].replace(/(\[\[.*\]\])/g, "$2"); 
-                return i18n_1["default"].wiki2html(tText, "<a href=\"" + (pIsHead ? this.threadHref : this.href) + "\">" + pThreadTitle + "</a>" + (pIsHead ? "" : this.getUpvoteCount()), tForumLink);
-            }
-            case "WALL": {
-                if (pThreadTitle == undefined) {
-                    pThreadTitle = this.getThreadTitle();
-                }
-                var tThreadUrl = !this.forumPage ? (pIsHead ? this.threadHref : this.href) : this.wikiInfo.articlepath + "Message_Wall:" + this.forumPage + "?threadId=" + this.threadId;
-                var tForumUrl = !this.forumPage ? "#" : this.wikiInfo.articlepath + "Message_Wall:" + this.forumPage;
-                var tText = i18n_1["default"].MESSAGES["wall-recentchanges-thread-group"].replace(/(\[\[.*\]\])/g, "$2"); 
-                return i18n_1["default"].wiki2html(tText, "<a href=\"" + tThreadUrl + "\">" + pThreadTitle + "</a>", "<a href=\"" + tForumUrl + "\">" + this.forumName + "</a>");
-            }
-            case "ARTICLE_COMMENT": {
-                return i18n_1["default"](pIsHead ? "rc-comments" : "rc-comment", this.getCommentForumNameLink());
-            }
-        }
-        mw.log("(discussionTitleText) Unknown containerType:", this.containerType);
-    };
-    RCDataFandomDiscussion.prototype.getCommentForumNameLink = function () {
-        var _this = this;
-        if (this.forumName) {
-            return "[" + this.href + " " + this.forumName + "]";
-        }
-        var tSetDataAfterLoad = function (title, relativeUrl) {
-            _this.forumName = title;
-            _this.threadHref = _this.wikiInfo.server + relativeUrl + ("?commentId=" + _this.threadId);
-            if (_this.isReply) {
-                _this.threadHref += "&replyId=" + _this.pageid;
-            }
-            _this.href = _this.threadHref;
-        };
-        if (this.wikiInfo.discCommentPageNames.has(this.forumId)) {
-            var _a = this.wikiInfo.discCommentPageNames.get(this.forumId), title = _a.title, relativeUrl = _a.relativeUrl;
-            tSetDataAfterLoad(title, relativeUrl);
-            return "[" + this.href + " " + this.forumName + "]";
-        }
-        var uniqID = Utils_1["default"].uniqID();
-        this.wikiInfo.discCommentPageNamesNeeded.push({ pageID: this.forumId, uniqID: uniqID, cb: function (_a) {
-                var title = _a.title, relativeUrl = _a.relativeUrl;
-                if (!_this || !_this.date) {
-                    return;
-                }
-                tSetDataAfterLoad(title, relativeUrl);
-                $(".rcm" + uniqID + " a").attr("href", _this.href).text(_this.forumName);
-            } });
-        if (this.wikiInfo.discCommentPageNamesNeeded.length === 1) {
-            this.manager.secondaryWikiData.push({
-                url: function () {
-                    var ids = _this.wikiInfo.discCommentPageNamesNeeded.map(function (o) { return o.pageID; }).filter(function (o, i, a) { return a.indexOf(o) == i; }).join(",");
-                    var url = _this.wikiInfo.scriptpath + "/wikia.php?controller=FeedsAndPosts&method=getArticleNamesAndUsernames&stablePageIds=" + ids + "&format=json";
-                    Utils_1["default"].logUrl("(getCommentForumNameLink)", url);
-                    return url;
-                },
-                dataType: "json",
-                skipRefreshSanity: true,
-                callback: function (data) {
-                    _this.wikiInfo.discCommentPageNamesNeeded.forEach(function (o) {
-                        if (data.articleNames[Number(o.pageID)]) {
-                            o.cb(data.articleNames[Number(o.pageID)]);
-                            _this.wikiInfo.discCommentPageNames.set(o.pageID, data.articleNames[Number(o.pageID)]);
-                        }
-                    });
-                    _this.wikiInfo.discCommentPageNamesNeeded = [];
-                }
-            });
-        }
-        return "<span class=\"rcm" + uniqID + "\">[[#|" + this.forumName + "]]</span>";
-    };
-    RCDataFandomDiscussion.prototype.getUpvoteCount = function () {
-        if (this.containerType != "FORUM") {
-            return "";
-        }
-        return "<span class=\"rcm-upvotes\"> (" + Global_1["default"].getSymbol("rcm-upvote-tiny") + " " + this.upvoteCount + ")</span>";
-    };
-    RCDataFandomDiscussion.prototype.getThreadStatusIcons = function () {
-        return ""
-            + (this.isLocked ? Global_1["default"].getSymbol("rcm-lock") : "")
-            + (this.isReported ? Global_1["default"].getSymbol("rcm-report") : "");
-    };
-    RCDataFandomDiscussion.prototype.handleSecondaryLoad = function (pElemID) {
-    };
-    RCDataFandomDiscussion.users = {};
-    return RCDataFandomDiscussion;
-}(RCData_1["default"]));
-exports["default"] = RCDataFandomDiscussion;
-
-},{"./Global":1,"./RCData":4,"./Utils":14,"./i18n":16,"./types/RC_TYPE":20}],7:[function(require,module,exports){
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Utils_1 = require("./Utils");
-var i18n_1 = require("./i18n");
-var RCData_1 = require("./RCData");
-var RC_TYPE_1 = require("./types/RC_TYPE");
-var RCDataLog =  (function (_super) {
-    __extends(RCDataLog, _super);
-    function RCDataLog(pWikiInfo, pManager) {
-        return _super.call(this, pWikiInfo, pManager) || this;
-    }
- RCDataLog.prototype.dispose = function () {
-        delete this.manager;
-        delete this.wikiInfo;
-        this.date = null;
-        this.type = null;
-    };
-    RCDataLog.prototype.initLog = function (pData, pLogDataArray) {
-        this.type = RC_TYPE_1["default"].LOG;
-        _super.prototype.init.call(this, pData);
-        this.log_info_0 = pData["0"];
-        this.actionhidden = pData.actionhidden == "";
-        this._initLog(pData, pLogDataArray);
-        return this; 
-    };
-    RCDataLog.prototype._initLog = function (pRCData, pLogDataArray) {
-        if (this.actionhidden) {
-            return;
-        }
-        var tLogParams = null;
-        if (this.wikiInfo.useOutdatedLogSystem) {
-            if (pLogDataArray == undefined) {
-                return;
-            }
-            var i = -1;
-            for (var x = 0; x < pLogDataArray.length; x++) {
-                if (pRCData.logid == pLogDataArray[x].logid) { 
-                    i = x;
-                    break;
-                }
-            }
-            if (i == -1) {
-                return;
-            }
-            tLogParams = pLogDataArray[i];
-        }
-        else {
-            tLogParams = pRCData.logparams;
-        }
-        this.logParams = { type: this.logtype };
-        switch (this.logParams.type) {
-            case "move": {
-                var log_move_newTitle = "";
-                var is_log_move_noredirect = false;
-                if (this.wikiInfo.useOutdatedLogSystem == false) {
-                    if (tLogParams) {
-                        log_move_newTitle = Utils_1["default"].escapeCharacters(tLogParams.target_title);
-                        is_log_move_noredirect = tLogParams.suppressredirect == "";
-                    }
-                }
-                else {
-                    tLogParams = tLogParams.move;
-                    if (tLogParams) {
-                        log_move_newTitle = Utils_1["default"].escapeCharacters(tLogParams.new_title);
-                        is_log_move_noredirect = tLogParams.suppressedredirect == "";
-                    }
-                }
-                this.logParams = {
-                    type: "move",
-                    noredirect: is_log_move_noredirect ? "-noredirect" : "",
-                    newTitle: log_move_newTitle,
-                };
-                break;
-            }
-            case "rights": {
-                this.log_rights_oldgroups = "?";
-                this.log_rights_newgroups = "?";
-                if (this.wikiInfo.useOutdatedLogSystem == false) {
-                    if (tLogParams) {
-                        this.log_rights_oldgroups = tLogParams.oldgroups.length == 0 ? i18n_1["default"]("rightsnone") : tLogParams.oldgroups.join(", ");
-                        this.log_rights_newgroups = tLogParams.newgroups.length == 0 ? i18n_1["default"]("rightsnone") : tLogParams.newgroups.join(", ");
-                    }
-                }
-                else {
-                    tLogParams = tLogParams.rights;
-                    if (tLogParams) {
-                        this.log_rights_oldgroups = tLogParams.old == "" ? i18n_1["default"]("rightsnone") : tLogParams.old;
-                        this.log_rights_newgroups = tLogParams["new"] == "" ? i18n_1["default"]("rightsnone") : tLogParams["new"];
-                    }
-                }
-                break;
-            }
-            case "block": {
-                this.log_block_duration = "?";
-                var log_block_flags_arr = [];
-                if (this.wikiInfo.useOutdatedLogSystem == false) {
-                    if (tLogParams) {
-                        this.log_block_duration = tLogParams.duration;
-                        log_block_flags_arr = tLogParams.flags || [];
-                    }
-                }
-                else {
-                    tLogParams = tLogParams.block;
-                    if (tLogParams) {
-                        this.log_block_duration = tLogParams.duration;
-                        log_block_flags_arr = tLogParams.flags.split(",");
-                    }
-                }
-                for (var i = 0; i < log_block_flags_arr.length; i++) {
-                    if (i18n_1["default"].exists("block-log-flags-" + log_block_flags_arr[i])) {
-                        log_block_flags_arr[i] = i18n_1["default"](("block-log-flags-" + log_block_flags_arr[i]));
-                    }
-                }
-                this.log_block_flags = "(" + log_block_flags_arr.join(", ") + ")";
-                log_block_flags_arr = null;
-                break;
-            }
-            case "delete": {
-                this.log_delete_revisions_num = 1;
-                var log_delete_new_bitmask_id = "?";
-                if (this.wikiInfo.useOutdatedLogSystem == false) {
-                    if (tLogParams) {
-                        this.log_delete_revisions_num = (tLogParams.ids || [1]).length;
-                        log_delete_new_bitmask_id = (tLogParams["new"] || {}).bitmask;
-                    }
-                }
-                else {
-                    if (this.log_info_0) {
-                        log_delete_new_bitmask_id = parseInt((this.log_info_0.split("\n")[3] || "=1").split("=")[1]);
-                    }
-                }
-                switch (log_delete_new_bitmask_id) {
-                    case 1: {
-                        this.log_delete_new_bitmask = i18n_1["default"]("revdelete-content-hid");
-                        break;
-                    }
-                    case 2: {
-                        this.log_delete_new_bitmask = i18n_1["default"]("revdelete-summary-hid"); 
-                        break;
-                    }
-                    case 3: {
-                        this.log_delete_new_bitmask = i18n_1["default"]("revdelete-content-hid") + i18n_1["default"]("and") + " " + i18n_1["default"]("revdelete-summary-hid");
-                        break;
-                    }
-                }
-                break;
-            }
-            case "merge": {
-                this.log_merge_destination = "";
-                this.log_merge_mergepoint = "0";
-                if (this.wikiInfo.useOutdatedLogSystem == false) {
-                    if (tLogParams) {
-                        this.log_merge_destination = Utils_1["default"].escapeCharacters(tLogParams.dest_title);
-                        this.log_merge_mergepoint = tLogParams.mergepoint;
-                    }
-                }
-                else {
-                    if (this.log_info_0 && pRCData["1"]) {
-                        this.log_merge_destination = Utils_1["default"].escapeCharacters(this.log_info_0);
-                        this.log_merge_mergepoint = Utils_1["default"].getTimestampForYYYYMMDDhhmmSS(pRCData["1"]);
-                    }
-                }
-                break;
-            }
-            case "protect": {
-                if (this.wikiInfo.useOutdatedLogSystem == false) {
-                    if (!this.log_info_0 && tLogParams) {
-                        this.log_info_0 = tLogParams.description;
-                    }
-                }
-                break;
-            }
-            case "chatban": {
-                if (this.wikiInfo.useOutdatedLogSystem == false) {
-                    if (!this.log_info_0 && tLogParams) {
-                        this.log_info_0 = [tLogParams["0"], tLogParams["1"], tLogParams["2"], tLogParams["3"], tLogParams["4"]].join("\n");
-                    }
-                }
-                break;
-            }
-            case "abusefilter": {
-                this.logParams = {
-                    type: "abusefilter",
-                    historyId: tLogParams.historyId,
-                    newId: tLogParams.newId,
-                };
-                break;
-            }
-            case "abuse": {
-                this.logParams = {
-                    type: "abuse",
-                    result: pRCData.result,
-                    filter: pRCData.filter,
-                    filter_id: pRCData.filter_id,
-                };
-                break;
-            }
-            case "contentmodel": {
-                this.logParams = {
-                    type: "contentmodel",
-                    oldmodel: tLogParams.oldmodel,
-                    newmodel: tLogParams.newmodel,
-                };
-                break;
-            }
-        }
-        tLogParams = null;
-    };
-    RCDataLog.prototype.logTitleLink = function () {
-        var logPage = this.logtype === "abuse" ? "Special:AbuseLog" : "Special:Log/" + this.logtype;
-        return "(<a class='rc-log-link' href='" + this.wikiInfo.articlepath + logPage + "'>" + this.logTitle() + "</a>)";
-    };
-    RCDataLog.prototype.logTitle = function () {
-        switch (this.logtype) {
-            case "abuse": return i18n_1["default"]("abuselog");
-            case "abusefilter": return i18n_1["default"]("abusefilter-log");
-            case "block": return i18n_1["default"]("blocklogpage");
-            case "chatban": return i18n_1["default"]("chat-chatban-log");
-            case "contentmodel": return i18n_1["default"]("log-name-contentmodel");
-            case "delete": return i18n_1["default"]("dellogpage");
-            case "import": return i18n_1["default"]("importlogpage");
-            case "merge": return i18n_1["default"]("mergelog");
-            case "move": return i18n_1["default"]("movelogpage");
-            case "protect": return i18n_1["default"]("protectlogpage");
-            case "upload": return i18n_1["default"]("uploadlogpage");
-            case "useravatar": return i18n_1["default"]("useravatar-log");
-            case "newusers": return i18n_1["default"]("newuserlogpage");
-            case "renameuser": return i18n_1["default"]("userrenametool-logpage");
-            case "rights": return i18n_1["default"]("rightslog");
-            case "wikifeatures": return i18n_1["default"]("wikifeatures-log-name");
-            default: return this.logtype; 
-        }
-    };
-    RCDataLog.prototype.logActionText = function () {
-        var _this = this;
-        var tLogMessage = "";
-        if (this.actionhidden) {
-            tLogMessage = "<span class=\"history-deleted\">" + i18n_1["default"]("rev-deleted-event") + "</span>";
-            tLogMessage += this.getSummary();
-        }
-        switch (this.logParams.type) {
-            case "block": {
-                tLogMessage += this.userDetails() + " ";
-                switch (this.logaction) {
-                    case "block": {
-                        tLogMessage += i18n_1["default"]("blocklogentry", this.href + "|" + this.titleNoNS, this.log_block_duration, this.log_block_flags);
-                        break;
-                    }
-                    case "reblock": {
-                        tLogMessage += i18n_1["default"]("reblock-logentry", this.href + "|" + this.titleNoNS, this.log_block_duration, this.log_block_flags);
-                        break;
-                    }
-                    case "unblock": {
-                        tLogMessage += i18n_1["default"]("unblocklogentry", this.titleNoNS);
-                        break;
-                    }
-                }
-                break;
-            }
-            case "delete": {
-                tLogMessage += i18n_1["default"](("logentry-delete-" + this.logaction), this.userDetails(), undefined, 
-                "<a href='" + this.href + "'>" + this.title + "</a>", this.log_delete_new_bitmask, this.log_delete_revisions_num);
-                break;
-            }
-            case "import": {
-                tLogMessage += this.userDetails() + " ";
-                switch (this.logaction) {
-                    case "upload": {
-                        tLogMessage += i18n_1["default"]("import-logentry-upload", this.href + "|" + this.title);
-                        break;
-                    }
-                    case "interwiki": {
-                        tLogMessage += i18n_1["default"]("import-logentry-interwiki", this.title);
-                        break;
-                    }
-                }
-                break;
-            }
-            case "merge": {
-                tLogMessage += this.userDetails() + " ";
-                tLogMessage += i18n_1["default"]("import-logentry-upload", this.href + "|" + this.title, this.wikiInfo.articlepath + this.log_merge_destination + "|" + this.log_merge_destination, this.getLogTimeStamp(new Date(this.log_merge_mergepoint)));
-                break;
-            }
-            case "move": {
-                tLogMessage += i18n_1["default"](("logentry-move-" + this.logaction + (this.logParams.noredirect || "" )), this.userDetails(), undefined, 
-                "<a href='" + this.hrefFS + "redirect=no'>" + this.title + "</a>", "<a href='" + (this.wikiInfo.articlepath + Utils_1["default"].escapeCharactersLink(this.logParams.newTitle)) + "'>" + this.logParams.newTitle + "</a>");
-                break;
-            }
-            case "protect": {
-                tLogMessage += this.userDetails() + " ";
-                var t$1 = this.href + "|" + this.title;
-                switch (this.logaction) {
-                    case "protect": {
-                        tLogMessage += i18n_1["default"]("protectedarticle", t$1) + " " + this.log_info_0;
-                        break;
-                    }
-                    case "modify": {
-                        tLogMessage += i18n_1["default"]("modifiedarticleprotection", t$1) + " " + this.log_info_0;
-                        break;
-                    }
-                    case "unprotect": {
-                        tLogMessage += i18n_1["default"]("unprotectedarticle", t$1);
-                        break;
-                    }
-                    case "move_prot": {
-                        tLogMessage += i18n_1["default"].wiki2html(i18n_1["default"].MESSAGES["movedarticleprotection"].replace("[[$2]]", this.log_info_0), t$1);
-                        break;
-                    }
-                }
-                break;
-            }
-            case "upload": {
-                tLogMessage += this.userDetails() + " ";
-                switch (this.logaction) {
-                    case "upload": {
-                        tLogMessage += i18n_1["default"]("uploadedimage", this.href + "|" + this.title);
-                        break;
-                    }
-                    case "overwrite": {
-                        tLogMessage += i18n_1["default"]("overwroteimage", this.href + "|" + this.title);
-                        break;
-                    }
-                }
-                break;
-            }
-            case "newusers": {
-                tLogMessage += i18n_1["default"](("logentry-newusers-" + this.logaction), this.userDetails(), undefined, "");
-                break;
-            }
-            case "rights": {
-                tLogMessage += this.userDetails() + " ";
-                switch (this.logaction) {
-                    case "rights": {
-                        tLogMessage += i18n_1["default"]("rightslogentry", "<a href='" + this.href + "'>" + this.title + "</a>", this.log_rights_oldgroups, this.log_rights_newgroups);
-                        break;
-                    }
-                }
-                break;
-            }
-            case "useravatar": {
-                tLogMessage += this.userDetails() + " ";
-                switch (this.logaction) {
-                    case "avatar_chn": {
-                        tLogMessage += i18n_1["default"]("blog-avatar-changed-log");
-                        break;
-                    } 
-                    case "avatar_rem": {
-                        tLogMessage += i18n_1["default"]("blog-avatar-removed-log", "<a href='" + this.href + "'>" + this.title + "</a>");
-                        break;
-                    } 
-                }
-                break;
-            }
-            case "renameuser": {
-                tLogMessage += this.userDetails() + " renameuser"; 
-                break;
-            }
-            case "wikifeatures": {
-                tLogMessage += this.userDetails() + " wikifeatures"; 
-                break;
-            }
-            case "chatban": {
-                var tChatData = this.log_info_0.split("\n");
-                var t$3 = undefined;
-                if (tChatData[3]) {
-                    t$3 = this.getLogTimeStamp(new Date(parseInt(tChatData[3]) * 1000));
-                }
-                tLogMessage += this.userDetails() + " ";
-                tLogMessage += i18n_1["default"](("chat-" + this.logaction + "-log-entry"), "<a href='" + this.href + "'>" + this.titleNoNS + "</a>", tChatData[2], t$3);
-                tChatData = null;
-                break;
-            }
-            case "abusefilter": {
-                var _a = this.logParams, filterId = _a.newId, historyId = _a.historyId;
-                this.wikiInfo.needsAbuseFilterFilters = true;
-                switch (this.logaction) {
-                    case "create":
-                    case "modify":
-                        {
-                            tLogMessage += i18n_1["default"]("abusefilter-logentry-" + this.logaction, this.userDetails(), undefined, 
-                            undefined, "<a href='" + this.href + "'>" + this.title + "</a>", "<a href='" + this.wikiInfo.getUrl("Special:AbuseFilter/history/" + filterId + "/diff/prev/" + historyId) + "'>" + i18n_1["default"]("abusefilter-log-detailslink") + "</a>");
-                            break;
-                        }
-                }
-                break;
-            }
-            case "abuse": {
-                var _b = this.logParams, result = _b.result, filter_1 = _b.filter, filter_id = _b.filter_id;
-                var filterFromDesc_1 = { found: 0 };
-                if (filter_1.trim() != "") {
-                    Object.keys(this.wikiInfo.abuseFilterFilters).forEach(function (i) {
-                        if (_this.wikiInfo.abuseFilterFilters[i].description == filter_1) {
-                            filterFromDesc_1.found++;
-                            filterFromDesc_1.id = Number(i);
-                            filterFromDesc_1.private = _this.wikiInfo.abuseFilterFilters[i].private;
-                        }
-                    });
-                }
-                if (filterFromDesc_1.found !== 1) {
-                    filterFromDesc_1.id = filterFromDesc_1.private = undefined;
-                }
-                filterFromDesc_1.private = filterFromDesc_1.private !== undefined ? filterFromDesc_1.private : true; 
-                var resultString = result === ""
-                    ? i18n_1["default"]('abusefilter-log-noactions')
-                    : result.split(",").map(function (r) { return i18n_1["default"]('abusefilter-action-' + r); }).join(", ");
-                var filterIdLink = !filterFromDesc_1.private && filterFromDesc_1.id
-                    ? "<a href='" + this.wikiInfo.getUrl('Special:AbuseFilter/' + filterFromDesc_1.id) + "'>" + i18n_1["default"]('abusefilter-log-detailedentry-local', filterFromDesc_1.id) + "</a>"
-                    : i18n_1["default"]('abusefilter-log-detailedentry-local', filterFromDesc_1.id !== undefined ? filterFromDesc_1.id : "?");
-                if (this.wikiInfo.user.rights.abusefilter_log_detail) {
-                    tLogMessage = i18n_1["default"]('abusefilter-log-detailedentry-meta', undefined, this.userDetails(), filterIdLink, this.logaction, "<a href='" + this.href + "'>" + this.title + "</a>", resultString, filter_1, [
-                        "<a href='" + this.wikiInfo.getUrl("Special:AbuseLog/" + this.pageid) + "'>" + i18n_1["default"]('abusefilter-log-detailslink') + "</a>",
-                        "<a href='" + this.wikiInfo.getUrl("Special:AbuseFilter/examine/log/" + this.pageid) + "'>" + i18n_1["default"]('abusefilter-changeslist-examine') + "</a>",
-                    ].join(" | "), undefined);
-                }
-                else {
-                    tLogMessage = i18n_1["default"]('abusefilter-log-entry', undefined, this.userDetails(), this.logaction, "<a href='" + this.href + "'>" + this.title + "</a>", resultString, filter_1, undefined, undefined);
-                    if (filterFromDesc_1.id !== undefined && !filterFromDesc_1.private) {
-                        tLogMessage += " (" + filterIdLink + ")";
-                    }
-                }
-                tLogMessage = tLogMessage.replace("$1: ", "").replace("$1", "");
-                break;
-            }
-            case 'contentmodel': {
-                var _c = this.logParams, oldmodel = _c.oldmodel, newmodel = _c.newmodel;
-                switch (this.logaction) {
-                    case "new":
-                    case "change":
-                        {
-                            tLogMessage += i18n_1["default"]("logentry-contentmodel-" + this.logaction, this.userDetails(), undefined, 
-                            "<a href='" + this.href + "'>" + this.title + "</a>", oldmodel, newmodel);
-                            break;
-                        }
-                }
-                if (this.logaction == "change" && this.wikiInfo.user.rights.editcontentmodel) {
-                    tLogMessage += " (<a href='" + this.wikiInfo.getUrl('Special:ChangeContentModel', { pagetitle: this.hrefTitle, model: oldmodel, reason: i18n_1["default"]('logentry-contentmodel-change-revert') }) + "'>" + i18n_1["default"]('logentry-contentmodel-change-revertlink') + "</a>)";
-                }
-                break;
-            }
-        }
-        if (tLogMessage == "") {
-            tLogMessage += this.userDetails() + (" ??? (" + this.logtype + " - " + this.logaction + ") ");
-        }
-        tLogMessage += this.getSummary();
-        if (this.wikiInfo.user.rights.undelete && this.logtype == "delete" && this.logaction == "delete") {
-            tLogMessage += " (<a href='" + this.wikiInfo.articlepath + "Special:Undelete" + this.wikiInfo.firstSeperator + "target=" + this.hrefTitle + "'>" + i18n_1["default"]("undeletelink") + "</a>)";
-        }
-        return tLogMessage;
-    };
- RCDataLog.prototype.getNotificationTitle = function () {
-        return this.logTitle() + (this.title ? " - " + this.title : "");
-    };
-    RCDataLog.prototype.getLogTimeStamp = function (pDate) {
-        return RCData_1["default"].getFullTimeStamp(pDate);
-    };
-    return RCDataLog;
-}(RCData_1["default"]));
-exports["default"] = RCDataLog;
-
-},{"./RCData":4,"./Utils":14,"./i18n":16,"./types/RC_TYPE":20}],8:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Utils_1 = require("./Utils");
-var i18n_1 = require("./i18n");
-var RC_TYPE_1 = require("./types/RC_TYPE");
-var Global_1 = require("./Global");
-var GlobalModal_1 = require("./GlobalModal");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
-var RCList =  (function () {
-    function RCList(pManager) {
-        this.manager = pManager;
-        this.list = [];
-    }
-    Object.defineProperty(RCList.prototype, "newest", {
-        get: function () { return this.list[0]; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(RCList.prototype, "oldest", {
-        get: function () { return this.list[this.list.length - 1]; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(RCList.prototype, "date", {
-        get: function () { return this.newest.date; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(RCList.prototype, "wikiInfo", {
-        get: function () { return this.newest.wikiInfo; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(RCList.prototype, "type", {
-        get: function () { return this.newest.type; },
-        enumerable: true,
-        configurable: true
-    });
-    RCList.prototype.dispose = function () {
-        delete this.manager;
-        for (var i = 0; i < this.list.length; i++) {
-            this.list[i].dispose();
-            this.list[i] = null;
-        }
-        this.list = null;
-        this.htmlNode = null;
-    };
-    RCList.prototype.addRC = function (pNewRC) {
-        this.list.push(pNewRC);
-        this.list.sort(function (a, b) { return b.date.valueOf() - a.date.valueOf(); }); 
-        return this; 
-    };
-    RCList.prototype.removeRC = function (pRC) {
-        var tDataInListI = this.list.indexOf(pRC);
-        if (tDataInListI > -1) {
-            this.list.splice(tDataInListI, 1)[0].dispose();
-        }
-        else {
-            mw.log("[RCList](removeRC) Data did not exist in list, and thus could not be removed.", pRC);
-        }
-    };
-    RCList.prototype.shouldGroupWith = function (pRC) {
-        if (this.wikiInfo.scriptpath == pRC.wikiInfo.scriptpath
-            && this.type == pRC.type
-            && Utils_1["default"].getMonth(this.date) == Utils_1["default"].getMonth(pRC.date)
-            && Utils_1["default"].getDate(this.date) == Utils_1["default"].getDate(pRC.date)) {
-            switch (this.type) {
-                case RC_TYPE_1["default"].LOG: {
-                    if (this.newest.logtype == pRC.logtype) {
-                        return true;
-                    }
-                    break;
-                }
-                default: {
-                    if (this.newest.uniqueID == pRC.uniqueID) {
-                        return true;
-                    }
-                    break;
-                }
-            }
-        }
-        return false;
-    };
-    RCList.prototype.getLink = function (pRC, pDiff, pOldId) {
-        return pRC.hrefFS + "curid=" + pRC.pageid + (pDiff || pDiff == 0 ? "&diff=" + pDiff : "") + (pOldId ? "&oldid=" + pOldId : "");
-    };
-    RCList.prototype.getDiffLink = function (pFromRC, pToRC) {
-        return pFromRC.hrefFS + "curid=" + pFromRC.pageid + "&diff=" + (pToRC ? pToRC.revid : 0) + "&oldid=" + pFromRC.old_revid;
-    };
-    RCList.prototype._diffHist = function (pRC) {
-        var diffLink = i18n_1["default"]('diff');
-        if (pRC.isNewPage == false) {
-            diffLink = "<a class='rc-diff-link' href='" + this.getDiffLink(pRC, pRC) + "'>" + diffLink + "</a>" + this.getAjaxDiffButton();
-        }
-        if (this.type == RC_TYPE_1["default"].NORMAL && pRC.namespace == 6) {
-            diffLink += this.getAjaxImageButton();
-        }
-        return "(" + (diffLink + i18n_1["default"]("pipe-separator")) + "<a class='rc-hist-link' href='" + pRC.hrefFS + "action=history'>" + i18n_1["default"]('hist') + "</a>)";
-    };
-    RCList.prototype._diffSizeText = function (pToRC, pFromRC) {
-        var tDiffSize = pToRC.newlen - (pFromRC ? pFromRC : pToRC).oldlen;
-        var tDiffSizeText = mw.language.convertNumber(tDiffSize);
-        var html = "<strong class='{0}'>{1}</strong>";
-        if (tDiffSize > 0) {
-            return Utils_1["default"].formatString(html, "mw-plusminus-pos", i18n_1["default"]('parentheses', "+" + tDiffSizeText));
-        }
-        else if (tDiffSize < 0) {
-            return Utils_1["default"].formatString(html, "mw-plusminus-neg", i18n_1["default"]('parentheses', tDiffSizeText));
-        }
-        else {
-            return Utils_1["default"].formatString(html, "mw-plusminus-null", i18n_1["default"]('parentheses', tDiffSizeText));
-        }
-    };
-    RCList.prototype._contributorsCountText = function () {
-        var _this = this;
-        var contribs = {}, indx;
-        this.list.forEach(function (rc) {
-            if (contribs.hasOwnProperty(rc.author)) {
-                contribs[rc.author].count++;
-            }
-            else {
-                contribs[rc.author] = { count: 1, userEdited: rc.userEdited };
-                contribs[rc.author].avatar = (rc.type == RC_TYPE_1["default"].DISCUSSION ? rc.getCreatorAvatarImg() : "");
-            }
-        });
-        var returnText = "[", total = 0, tLength = this.list.length;
-        Object.keys(contribs).forEach(function (key) {
-            returnText += _this._userPageLink(key, contribs[key].userEdited, contribs[key].avatar) + (contribs[key].count > 1 ? " (" + contribs[key].count + "&times;)" : "");
-            total += contribs[key].count;
-            if (total < tLength) {
-                returnText += "; ";
-            }
-        }, this);
-        return returnText + "]";
-    };
-    RCList.prototype._changesText = function () {
-        var returnText = i18n_1["default"]("nchanges", this.list.length);
-        if (this.type == RC_TYPE_1["default"].NORMAL && this.oldest.isNewPage == false) {
-            returnText = "<a class='rc-changes-link' href='" + this.getDiffLink(this.oldest, this.newest) + "'>" + returnText + "</a>" + this.getAjaxDiffButton();
-        }
-        if (this.type == RC_TYPE_1["default"].NORMAL && this.newest.namespace == 6) {
-            returnText += this.getAjaxImageButton();
-        }
-        return returnText;
-    };
-    RCList.prototype._userPageLink = function (pUsername, pUserEdited, pAvatar) {
-        if (pUserEdited) {
-            return pAvatar + "<a href='" + this.wikiInfo.articlepath + "User:" + Utils_1["default"].escapeCharactersLink(pUsername) + "' class=\"" + this.wikiInfo.getUserClass(pUsername) + "\" " + this.wikiInfo.getUserClassDataset(pUsername) + ">" + pUsername + "</a>";
-        }
-        else {
-            return "<a class=\"rcm-useranon\" href='" + this.wikiInfo.articlepath + "Special:Contributions/" + Utils_1["default"].escapeCharactersLink(pUsername) + "'>" + pUsername + "</a>";
-        }
-    };
-    RCList.prototype.getExistingThreadTitle = function () {
-        var tTitle = null;
-        this.list.some(function (rc) {
-            if (rc.threadTitle) {
-                tTitle = rc.threadTitle;
-                return true;
-            }
-            return false;
-        });
-        return tTitle;
-    };
-    RCList.prototype.getThreadTitle = function () {
-        var _this = this;
-        var tTitle = this.getExistingThreadTitle();
-        var tReturnText = tTitle;
-        if (this.manager.extraLoadingEnabled) {
-            var tElemID_1 = Utils_1["default"].uniqID();
-            tReturnText = "<span id='" + tElemID_1 + "'><i>" + (tTitle ? tTitle : i18n_1["default"]('unknownthreadname')) + "</i></span>";
-            if (this.type != RC_TYPE_1["default"].DISCUSSION) {
-                this.manager.secondaryWikiData.push({
-                    url: this.wikiInfo.scriptpath + "/api.php?action=query&format=json&prop=revisions&titles=" + this.newest.uniqueID + "&rvprop=content",
-                    callback: function (data) {
-                        var tSpan = document.querySelector("#" + tElemID_1);
-                        if (!tSpan) {
-                            return;
-                        }
-                        var tPage = Utils_1["default"].getFirstItemFromObject(data.query.pages);
-                        tSpan.parentNode.href = _this.wikiInfo.articlepath + "Thread:" + tPage.pageid;
-                        var tTitleData = /<ac_metadata title="(.*?)".*?>.*?<\/ac_metadata>/g.exec(tPage.revisions[0]["*"]);
-                        if (tTitleData != null) {
-                            tSpan.innerHTML = tTitleData[1];
-                        }
-                    }
-                });
-            }
-            else {
-                if (tTitle == null) {
-                    this.newest.handleSecondaryLoad(tElemID_1);
-                }
-                else {
-                    tReturnText = tTitle;
-                }
-            }
-        }
-        else {
-            if (tReturnText == null) {
-                tReturnText = "<i>" + i18n_1["default"]('unknownthreadname') + "</i>";
-            }
-        }
-        return tReturnText;
-    };
-    RCList.prototype.getAjaxDiffButton = function () {
-        return " <span class=\"rcm-ajaxIcon rcm-ajaxDiff\">" + Global_1["default"].getSymbol("rcm-columns") + "</span>";
-    };
-    RCList.prototype.getAjaxImageButton = function () {
-        return " <span class=\"rcm-ajaxIcon rcm-ajaxImage\">" + Global_1["default"].getSymbol("rcm-picture") + "</span>";
-    };
-    RCList.prototype.getAjaxPagePreviewButton = function () {
-        return " <span class=\"rcm-ajaxIcon rcm-ajaxPage\">" + Global_1["default"].getSymbol("rcm-preview") + "</span>";
-    };
-    RCList.prototype.addPreviewDiffListener = function (pElem, pFromRC, pToRC) {
-        if (pElem) {
-            if (pToRC == undefined) {
-                pToRC = pFromRC;
-            }
-            var pageName = pFromRC.title;
-            var pageID = pFromRC.pageid;
-            var ajaxLink = this.wikiInfo.scriptpath + ("/api.php?action=query&format=json&prop=revisions|info&rvprop=size|user|parsedcomment|timestamp|flags&rvdiffto=" + pToRC.revid + "&revids=" + pFromRC.old_revid);
-            var diffLink = pFromRC.hrefFS + "curid=" + pFromRC.pageid + "&diff=" + pToRC.revid + "&oldid=" + pFromRC.old_revid;
-            var undoLink = pFromRC.hrefFS + "curid=" + pFromRC.pageid + "&undo=" + pToRC.revid + "&undoafter=" + pFromRC.old_revid + "&action=edit";
-            var diffTableInfo = {
-                wikiInfo: pFromRC.wikiInfo,
-                hrefFS: pFromRC.hrefFS,
-                newRev: { user: pToRC.userDetails(), summary: pToRC.getSummary(), date: pToRC.date, minor: pToRC.isMinorEdit },
-            };
-            this._addAjaxClickListener(pElem, function () { GlobalModal_1.previewDiff(pageName, pageID, ajaxLink, diffLink, undoLink, diffTableInfo); });
-            pFromRC = null;
-            pToRC = null;
-        }
-    };
-    RCList.prototype.addPreviewImageListener = function (pElem, pImageRCs) {
-        if (Object.prototype.toString.call(pImageRCs) !== '[object Array]') {
-            pImageRCs = [pImageRCs];
-        }
-        pImageRCs = pImageRCs;
-        if (pElem) {
-            var tImageNames = [];
-            for (var i = 0; i < pImageRCs.length; i++) {
-                if (tImageNames.indexOf(pImageRCs[i].hrefTitle) < 0) {
-                    tImageNames.push(pImageRCs[i].hrefTitle);
-                }
-            }
-            var ajaxLink = this.wikiInfo.scriptpath + "/api.php?action=query&prop=imageinfo&format=json&redirects&iiprop=url|size";
-            var articlepath = this.wikiInfo.articlepath;
-            this._addAjaxClickListener(pElem, function () { GlobalModal_1.previewImages(ajaxLink, tImageNames, articlepath); });
-            pImageRCs = null;
-        }
-    };
-    RCList.prototype.addPreviewPageListener = function (pElem, pRC) {
-        if (pElem) {
-            var ajaxLink_1 = this.wikiInfo.scriptpath + ("/api.php?action=parse&format=json&pageid=" + pRC.pageid + "&prop=text|headhtml&disabletoc=true");
-            var pageName = pRC.title;
-            var pageHref_1 = pRC.href;
-            if (pRC.type == RC_TYPE_1["default"].WALL || pRC.type == RC_TYPE_1["default"].BOARD || pRC.type == RC_TYPE_1["default"].COMMENT) {
-                pageHref_1 = this.wikiInfo.articlepath + "Thread:" + pRC.pageid;
-            }
-            var serverLink_1 = this.wikiInfo.server;
-            this._addAjaxClickListener(pElem, function () { GlobalModal_1.previewPage(ajaxLink_1, pageName, pageHref_1, serverLink_1); });
-        }
-    };
-    RCList.prototype._addAjaxClickListener = function (pElem, pCallback) {
-        var tRCM_AjaxIconClickHandler = function (e) {
-            e.preventDefault();
-            pCallback();
-        };
-        pElem.addEventListener("click", tRCM_AjaxIconClickHandler);
-    };
-    RCList.prototype._flag = function (pFlag, pRC, pEmpty) {
-        var tI18nLetter, tI18nTooltip;
-        switch (pFlag) {
-            case "newpage": {
-                if (pRC.isNewPage) {
-                    tI18nLetter = "newpageletter";
-                    tI18nTooltip = "recentchanges-label-newpage";
-                }
-                break;
-            }
-            case "minoredit": {
-                if (pRC.isMinorEdit) {
-                    tI18nLetter = "minoreditletter";
-                    tI18nTooltip = "recentchanges-label-minor";
-                }
-                break;
-            }
-            case "botedit": {
-                if (pRC.isBotEdit) {
-                    tI18nLetter = "boteditletter";
-                    tI18nTooltip = "recentchanges-label-bot";
-                }
-                break;
-            }
-        }
-        if (!tI18nLetter) {
-            return pEmpty;
-        }
-        else {
-            return "<abbr class=\"" + pFlag + "\" title=\"" + i18n_1["default"](tI18nTooltip) + "\">" + i18n_1["default"](tI18nLetter) + "</abbr>";
-        }
-    };
-    RCList.prototype._getFlags = function (pRC, pEmpty, pData) {
-        pData = pData || {};
-        return ""
-            + this._flag("newpage", pRC, pEmpty)
-            + (pData.ignoreminoredit ? pEmpty : this._flag("minoredit", pRC, pEmpty))
-            + this._flag("botedit", pRC, pEmpty)
-            + pEmpty 
-        ;
-    };
-    RCList.prototype._showFavicon = function () {
-        return this.manager.chosenWikis.length > 1;
-    };
-    RCList.prototype._getBackgroundClass = function () {
-        return this._showFavicon() ? "rcm-tiled-favicon" : "";
-    };
-    RCList.prototype._toHTMLSingle = function (pRC) {
-        if (this.list.length > 1) {
-            return this._toHTMLBlock();
-        }
-        var html = "";
-        switch (pRC.type) {
-            case RC_TYPE_1["default"].LOG: {
-                var tRC = pRC;
-                html += tRC.logTitleLink();
-                if (pRC.logtype == "upload") {
-                    html += this.getAjaxImageButton();
-                }
-                html += RCList.SEP;
-                html += tRC.logActionText();
-                break;
-            }
-            case RC_TYPE_1["default"].WALL:
-            case RC_TYPE_1["default"].BOARD: {
-                if (pRC.isWallBoardAction) {
-                    html += RCList.SEP;
-                    html += pRC.userDetails();
-                    html += pRC.wallBoardActionMessageWithSummary(this.getThreadTitle());
-                }
-                else {
-                    html += pRC.wallBoardTitleText(this.getThreadTitle());
-                    html += this.getAjaxPagePreviewButton();
-                    html += " " + this._diffHist(pRC);
-                    html += RCList.SEP;
-                    html += this._diffSizeText(pRC);
-                    html += RCList.SEP;
-                    html += pRC.userDetails();
-                    html += pRC.getSummary();
-                }
-                break;
-            }
-            case RC_TYPE_1["default"].DISCUSSION: {
-                var tRC = pRC;
-                html += tRC.getThreadStatusIcons();
-                html += tRC.discussionTitleText(tRC.containerType != "ARTICLE_COMMENT" ? this.getThreadTitle() : "unused");
-                html += RCList.SEP;
-                html += tRC.userDetails();
-                html += tRC.getSummary();
-                break;
-            }
-            case RC_TYPE_1["default"].COMMENT:
-            case RC_TYPE_1["default"].NORMAL:
-            default: {
-                html += pRC.pageTitleTextLink();
-                html += this.getAjaxPagePreviewButton();
-                html += " " + this._diffHist(pRC);
-                html += RCList.SEP;
-                html += this._diffSizeText(pRC);
-                html += RCList.SEP;
-                html += pRC.userDetails();
-                html += pRC.getSummary();
-                break;
-            }
-        }
-        var tTable = Utils_1["default"].newElement("table", { className: "mw-enhanced-rc " + pRC.wikiInfo.rcClass + " " + pRC.getNSClass() });
-        Utils_1["default"].newElement("caption", { className: this._getBackgroundClass() }, tTable); 
-        var tRow = Utils_1["default"].newElement("tr", {}, tTable);
-        if (this._showFavicon()) {
-            Utils_1["default"].newElement("td", { innerHTML: pRC.wikiInfo.getFaviconHTML(true) }, tRow);
-        }
-        Utils_1["default"].newElement("td", { className: "mw-enhanced-rc", innerHTML: ""
-                + '<span class="rcm-arr none">&nbsp;</span>'
-                + this._getFlags(pRC, "&nbsp;")
-                + "&nbsp;"
-                + pRC.time()
-                + "&nbsp;"
-        }, tRow);
-        Utils_1["default"].newElement("td", { innerHTML: html }, tRow);
-        this.addPreviewDiffListener(tTable.querySelector(".rcm-ajaxDiff"), pRC);
-        this.addPreviewImageListener(tTable.querySelector(".rcm-ajaxImage"), pRC);
-        this.addPreviewPageListener(tTable.querySelector(".rcm-ajaxPage"), pRC);
-        if (this.manager.makeLinksAjax) {
-            this.addPreviewDiffListener(tTable.querySelector(".rc-diff-link"), pRC);
-            if (tTable.querySelector(".rcm-ajaxImage")) {
-                this.addPreviewImageListener(tTable.querySelector(".rc-log-link"), pRC);
-                this.addPreviewImageListener(tTable.querySelector(".rc-pagetitle"), pRC);
-            }
-        }
-        return tTable;
-    };
-    RCList.prototype._toHTMLBlock = function () {
-        if (this.list.length == 1) {
-            return this._toHTMLSingle(this.newest);
-        }
-        var tBlockHead = this._toHTMLBlockHead();
-        for (var i = 0; i < this.list.length; i++) {
-            tBlockHead.querySelector("tbody").appendChild(this._toHTMLBlockLine(this.list[i]));
-        }
-        if ($(tBlockHead).makeCollapsibleRCM) {
-            $(tBlockHead).makeCollapsibleRCM();
-        }
-        return tBlockHead;
-    };
-    RCList.prototype._toHTMLBlockHead = function () {
-        var html = "";
-        switch (this.type) {
-            case RC_TYPE_1["default"].LOG: {
-                html += this.newest.logTitleLink();
-                if (this.newest.logtype == "upload") {
-                    html += this.getAjaxImageButton();
-                }
-                break;
-            }
-            case RC_TYPE_1["default"].NORMAL: {
-                html += "<a class='rc-pagetitle' href='" + this.newest.href + "'>" + this.newest.title + "</a>";
-                html += this.getAjaxPagePreviewButton();
-                html += " (" + this._changesText() + i18n_1["default"]("pipe-separator") + "<a href='" + this.newest.hrefFS + "action=history'>" + i18n_1["default"]("hist") + "</a>)";
-                html += RCList.SEP;
-                html += this._diffSizeText(this.newest, this.oldest);
-                break;
-            }
-            case RC_TYPE_1["default"].WALL: {
-                html += this.newest.wallBoardTitleText(this.getThreadTitle());
-                html += " (" + this._changesText() + ")";
-                break;
-            }
-            case RC_TYPE_1["default"].BOARD: {
-                html += this.newest.wallBoardTitleText(this.getThreadTitle());
-                html += " (" + this._changesText() + ")";
-                break;
-            }
-            case RC_TYPE_1["default"].DISCUSSION: {
-                html += this.newest.discussionTitleText(this.getThreadTitle(), true);
-                html += " (" + this._changesText() + ")";
-                break;
-            }
-            case RC_TYPE_1["default"].COMMENT: {
-                var tNameSpaceText = this.newest.namespace == 1 ? "" : this.wikiInfo.namespaces[String(this.newest.namespace - 1)]["*"] + ":";
-                var tCommentUrl = this.wikiInfo.articlepath + Utils_1["default"].escapeCharactersLink(tNameSpaceText + this.newest.titleNoNS + "#WikiaArticleComments");
-                html += i18n_1["default"]("rc-comments", "[" + tCommentUrl + " " + (tNameSpaceText + this.newest.titleNoNS) + "]");
-                html += " (" + this._changesText() + ")";
-                break;
-            }
-        }
-        html += RCList.SEP;
-        html += this._contributorsCountText();
-        var tTable = Utils_1["default"].newElement("table", { className: "rcmmw-collapsible mw-enhanced-rc rcmmw-collapsed " + this.newest.wikiInfo.rcClass + " " + this.newest.getNSClass() }); 
-        Utils_1["default"].newElement("caption", { className: this._getBackgroundClass() }, tTable); 
-        var tTbody = Utils_1["default"].newElement("tbody", {}, tTable); 
-        var tRow = Utils_1["default"].newElement("tr", {}, tTbody);
-        if (this._showFavicon()) {
-            Utils_1["default"].newElement("td", { innerHTML: this.newest.wikiInfo.getFaviconHTML(true) }, tRow);
-        }
-        var td1 = Utils_1["default"].newElement("td", {}, tRow);
-        Utils_1["default"].newElement("span", { className: "rcmmw-collapsible-toggle", innerHTML: ''
-                + '<span class="mw-rc-openarrow"><a title="' + i18n_1["default"]("rc-enhanced-expand") + '">' 
-                + '<span class="rcm-arr" title="' + i18n_1["default"]("rc-enhanced-expand") + '">+</span>'
-                + '</a></span>'
-                + '<span class="mw-rc-closearrow"><a title="' + i18n_1["default"]("rc-enhanced-hide") + '">' 
-                + '<span class="rcm-arr" title="' + i18n_1["default"]("rc-enhanced-hide") + '">-</span>'
-                + '</a></span>' }, td1);
-        Utils_1["default"].newElement("td", { className: "mw-enhanced-rc", innerHTML: ""
-                + this._getFlags(this.oldest, "&nbsp;", { ignoreminoredit: true })
-                + "&nbsp;"
-                + this.newest.time()
-                + "&nbsp;"
-        }, tRow);
-        Utils_1["default"].newElement("td", { innerHTML: html }, tRow);
-        this.addPreviewDiffListener(tTable.querySelector(".rcm-ajaxDiff"), this.oldest, this.newest);
-        this.addPreviewImageListener(tTable.querySelector(".rcm-ajaxImage"), this.list);
-        this.addPreviewPageListener(tTable.querySelector(".rcm-ajaxPage"), this.newest);
-        if (this.manager.makeLinksAjax) {
-            this.addPreviewDiffListener(tTable.querySelector(".rc-diff-link, .rc-changes-link"), this.oldest, this.newest);
-            if (tTable.querySelector(".rcm-ajaxImage")) {
-                this.addPreviewImageListener(tTable.querySelector(".rc-log-link"), this.list);
-                this.addPreviewImageListener(tTable.querySelector(".rc-pagetitle"), this.list);
-            }
-        }
-        return tTable;
-    };
-    RCList.prototype._toHTMLBlockLine = function (pRC) {
-        var html = "";
-        switch (pRC.type) {
-            case RC_TYPE_1["default"].LOG: {
-                var tRC = pRC;
-                html += "<span class='mw-enhanced-rc-time'>" + tRC.time() + "</span>";
-                if (tRC.logtype == "upload") {
-                    html += this.getAjaxImageButton();
-                }
-                html += RCList.SEP;
-                html += tRC.logActionText();
-                break;
-            }
-            case RC_TYPE_1["default"].WALL:
-            case RC_TYPE_1["default"].BOARD: {
-                if (pRC.isWallBoardAction) {
-                    html += "<span class='mw-enhanced-rc-time'>" + pRC.time() + "</span>";
-                    html += RCList.SEP;
-                    html += pRC.userDetails();
-                    html += pRC.wallBoardActionMessageWithSummary(this.getThreadTitle());
-                }
-                else {
-                    html += "<span class='mw-enhanced-rc-time'><a href='" + pRC.href + "' title='" + pRC.title + "'>" + pRC.time() + "</a></span>";
-                    html += " (<a href='" + pRC.href + "'>" + i18n_1["default"]("cur") + "</a>";
-                    html += this.getAjaxPagePreviewButton();
-                    if (pRC.isNewPage == false) {
-                        html += i18n_1["default"]("pipe-separator") + "<a href='" + this.getDiffLink(pRC, pRC) + "'>" + i18n_1["default"]("last") + "</a>" + this.getAjaxDiffButton();
-                    }
-                    html += ")";
-                    html += RCList.SEP;
-                    html += this._diffSizeText(pRC);
-                    html += RCList.SEP;
-                    html += pRC.userDetails();
-                    html += pRC.getSummary();
-                }
-                break;
-            }
-            case RC_TYPE_1["default"].DISCUSSION: {
-                var tRC = pRC;
-                html += "<span class='mw-enhanced-rc-time'><a href='" + tRC.href + "' title='" + tRC.title + "'>" + tRC.time() + "</a></span>";
-                html += tRC.getThreadStatusIcons();
-                html += tRC.getUpvoteCount();
-                html += RCList.SEP;
-                html += pRC.userDetails();
-                html += pRC.getSummary();
-                break;
-            }
-            case RC_TYPE_1["default"].COMMENT:
-            case RC_TYPE_1["default"].NORMAL: {
-                html += "<span class='mw-enhanced-rc-time'><a href='" + this.getLink(pRC, null, pRC.revid) + "' title='" + pRC.title + "'>" + pRC.time() + "</a></span>";
-                html += " (<a href='" + this.getLink(pRC, 0, pRC.revid) + "'>" + i18n_1["default"]("cur") + "</a>";
-                if (pRC.type == RC_TYPE_1["default"].COMMENT) {
-                    html += this.getAjaxPagePreviewButton();
-                }
-                if (pRC.isNewPage == false) {
-                    html += i18n_1["default"]("pipe-separator") + "<a href='" + this.getLink(pRC, pRC.revid, pRC.old_revid) + "'>" + i18n_1["default"]("last") + "</a>" + this.getAjaxDiffButton();
-                }
-                html += ")";
-                html += RCList.SEP;
-                html += this._diffSizeText(pRC);
-                html += RCList.SEP;
-                html += pRC.userDetails();
-                html += pRC.getSummary();
-                break;
-            }
-        }
-        var tRow = Utils_1["default"].newElement("tr", { style: "display: none;" });
-        if (this._showFavicon()) {
-            Utils_1["default"].newElement("td", {}, tRow);
-        } 
-        Utils_1["default"].newElement("td", {}, tRow); 
-        Utils_1["default"].newElement("td", { className: "mw-enhanced-rc", innerHTML: ""
-                + this._getFlags(pRC, "&nbsp;")
-                + "&nbsp;"
-        }, tRow);
-        Utils_1["default"].newElement("td", { className: "mw-enhanced-rc-nested", innerHTML: html }, tRow);
-        this.addPreviewDiffListener(tRow.querySelector(".rcm-ajaxDiff"), pRC);
-        this.addPreviewImageListener(tRow.querySelector(".rcm-ajaxImage"), pRC);
-        this.addPreviewPageListener(tRow.querySelector(".rcm-ajaxPage"), pRC);
-        if (this.manager.makeLinksAjax) {
-            this.addPreviewDiffListener(tRow.querySelector(".rc-diff-link"), pRC);
-        }
-        return tRow;
-    };
-    RCList.prototype._toHTMLNonEnhanced = function (pRC, pIndex) {
-        var html = "";
-        switch (pRC.type) {
-            case RC_TYPE_1["default"].LOG: {
-                var tRC = pRC;
-                html += tRC.logTitleLink();
-                if (tRC.logtype == "upload") {
-                    html += this.getAjaxImageButton();
-                }
-                html += i18n_1["default"]("semicolon-separator") + tRC.time();
-                html += RCList.SEP;
-                html += tRC.logActionText();
-                break;
-            }
-            case RC_TYPE_1["default"].WALL:
-            case RC_TYPE_1["default"].BOARD: {
-                if (pRC.isWallBoardAction) {
-                    html += pRC.wallBoardHistoryLink();
-                    html += i18n_1["default"]("semicolon-separator") + pRC.time();
-                    html += RCList.SEP;
-                    html += pRC.userDetails();
-                    html += pRC.wallBoardActionMessageWithSummary(this.getThreadTitle());
-                }
-                else {
-                    html += this._diffHist(pRC);
-                    html += RCList.SEP;
-                    html += this._getFlags(pRC, "") + " ";
-                    html += pRC.wallBoardTitleText(this.getThreadTitle());
-                    html += this.getAjaxPagePreviewButton();
-                    html += i18n_1["default"]("semicolon-separator") + pRC.time();
-                    html += RCList.SEP;
-                    html += this._diffSizeText(pRC);
-                    html += RCList.SEP;
-                    html += pRC.userDetails();
-                    html += pRC.getSummary();
-                }
-                break;
-            }
-            case RC_TYPE_1["default"].DISCUSSION: {
-                var tRC = pRC;
-                html += tRC.getThreadStatusIcons();
-                html += tRC.discussionTitleText(this.getThreadTitle());
-                html += i18n_1["default"]("semicolon-separator") + pRC.time();
-                html += RCList.SEP;
-                html += tRC.userDetails();
-                html += tRC.getSummary();
-                break;
-            }
-            case RC_TYPE_1["default"].COMMENT:
-            case RC_TYPE_1["default"].NORMAL:
-            default: {
-                html += this._diffHist(pRC);
-                html += RCList.SEP;
-                html += this._getFlags(pRC, "") + " ";
-                html += pRC.pageTitleTextLink();
-                html += this.getAjaxPagePreviewButton();
-                html += i18n_1["default"]("semicolon-separator") + pRC.time();
-                html += RCList.SEP;
-                html += this._diffSizeText(pRC);
-                html += RCList.SEP;
-                html += pRC.userDetails();
-                html += pRC.getSummary();
-                break;
-            }
-        }
-        var tLi = Utils_1["default"].newElement("li", { className: (pIndex % 2 == 0 ? "mw-line-even" : "mw-line-odd") + " " + pRC.wikiInfo.rcClass + " " + pRC.getNSClass() });
-        Utils_1["default"].newElement("div", { className: this._getBackgroundClass() }, tLi);
-        ;
-        if (this._showFavicon()) {
-            tLi.innerHTML += pRC.wikiInfo.getFaviconHTML(true) + " ";
-        }
-        tLi.innerHTML += html;
-        this.addPreviewDiffListener(tLi.querySelector(".rcm-ajaxDiff"), pRC);
-        this.addPreviewImageListener(tLi.querySelector(".rcm-ajaxImage"), pRC);
-        this.addPreviewPageListener(tLi.querySelector(".rcm-ajaxPage"), pRC);
-        if (this.manager.makeLinksAjax) {
-            this.addPreviewDiffListener(tLi.querySelector(".rc-diff-link"), pRC);
-            if (tLi.querySelector(".rcm-ajaxImage")) {
-                this.addPreviewImageListener(tLi.querySelector(".rc-log-link"), pRC);
-                this.addPreviewImageListener(tLi.querySelector(".rc-pagetitle"), pRC);
-            }
-        }
-        return tLi;
-    };
-    RCList.prototype.toHTML = function (pIndex) {
-        if (this.manager.rcParams.hideenhanced) {
-            return this.htmlNode = this._toHTMLNonEnhanced(this.newest, pIndex);
-        }
-        else {
-            if (this.list.length > 1) {
-                return this.htmlNode = this._toHTMLBlock();
-            }
-            else {
-                return this.htmlNode = this._toHTMLSingle(this.newest);
-            }
-        }
-    };
-    RCList.SEP = " . . ";
-    return RCList;
-}());
-exports["default"] = RCList;
-
-},{"./Global":1,"./GlobalModal":2,"./Utils":14,"./i18n":16,"./types/RC_TYPE":20}],9:[function(require,module,exports){
+},{"./Global":1,"./RCMManager":4,"./RCMModal":5,"./Utils":9,"./i18n":11,"./lib/makeCollapsible":13}],4:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Main_1 = require("./Main");
@@ -2325,14 +712,10 @@ var RCMOptions_1 = require("./RCMOptions");
 var Global_1 = require("./Global");
 var RCMModal_1 = require("./RCMModal");
 var WikiData_1 = require("./WikiData");
-var RCData_1 = require("./RCData");
-var RCDataLog_1 = require("./RCDataLog");
-var RCDataFandomDiscussion_1 = require("./RCDataFandomDiscussion");
-var RCDataAbuseLog_1 = require("./RCDataAbuseLog");
-var RCList_1 = require("./RCList");
+var rc_data_1 = require("./rc_data");
+var RCList_1 = require("./rc_data/RCList");
 var Utils_1 = require("./Utils");
 var i18n_1 = require("./i18n");
-var RC_TYPE_1 = require("./types/RC_TYPE");
 var $ = window.jQuery;
 var mw = window.mediaWiki;
 var RCMManager =  (function () {
@@ -2346,6 +729,7 @@ var RCMManager =  (function () {
         this.flagWikiDataIsLoaded = false;
         this.isHardRefresh = true;
         this._parseWikiList();
+        this.resultCont.innerHTML = "<center>" + Global_1["default"].getLoaderLarge() + "</center>";
     }
     RCMManager.prototype.dispose = function () {
         this.resultCont = null;
@@ -2392,28 +776,15 @@ var RCMManager =  (function () {
             this.discNamespaces.WALL = dns.indexOf("WALL") != -1;
             this.discNamespaces.ARTICLE_COMMENT = dns.indexOf("ARTICLE_COMMENT") != -1;
         }
-        this.abuseLogsAllowed = true;
-        this.hideusers = []; 
-        if (tDataset.hideusers) {
-            this.hideusers = tDataset.hideusers.replace(/_/g, " ").split(",");
-        }
-        this.hideusers.forEach(function (o, i, a) { a[i] = Utils_1["default"].ucfirst(a[i].trim()); });
-        this.notificationsHideusers = [];
-        if (tDataset.notificationsHideusers) {
-            this.notificationsHideusers = tDataset.notificationsHideusers.replace(/_/g, " ").split(",");
-        }
-        this.notificationsHideusers.forEach(function (o, i, a) { a[i] = Utils_1["default"].ucfirst(a[i].trim()); });
-        this.onlyshowusers = []; 
-        if (tDataset.onlyshowusers) {
-            this.onlyshowusers = tDataset.onlyshowusers.replace(/_/g, " ").split(",");
-        }
-        this.onlyshowusers.forEach(function (o, i, a) { a[i] = Utils_1["default"].ucfirst(a[i].trim()); });
+        this.abuseLogsEnabled = tDataset.abuselogsEnabled == "true";
+        var splitNames = function (str) { var _a; return (_a = str === null || str === void 0 ? void 0 : str.replace(/_/g, " ").split(",")) !== null && _a !== void 0 ? _a : []; };
+        var sanitiseNames = function (user) { return Utils_1["default"].ucfirst(user.trim()); };
+        this.hideusers = splitNames(tDataset.hideusers).map(sanitiseNames);
+        this.notificationsHideusers = splitNames(tDataset.notificationsHideusers).map(sanitiseNames);
+        this.onlyshowusers = splitNames(tDataset.onlyshowusers).map(sanitiseNames);
         this.extraLoadingEnabled = tDataset.extraLoadingEnabled == "false" ? false : true;
         this.makeLinksAjax = tDataset.ajaxlinks == "true" ? true : false;
-        this.chosenWikis = [];
-        $(this.resultCont).find(">ul>li").each(function (i, pNode) {
-            _this.chosenWikis.push(new WikiData_1["default"](_this).initListData(pNode));
-        });
+        this.chosenWikis = $(this.resultCont).find(">ul>li").toArray().map(function (pNode) { return new WikiData_1["default"](_this).initListData(pNode); });
         this.chosenWikis = Utils_1["default"].uniq_fast_key(this.chosenWikis, "scriptpath"); 
         tDataset = null;
         this.resultCont.innerHTML = "";
@@ -2492,7 +863,7 @@ var RCMManager =  (function () {
         this.ajaxID++;
         this.loadingErrorRetryNum = RCMManager.LOADING_ERROR_RETRY_NUM_INC;
         if (this.chosenWikis.length > 0) {
-            Utils_1["default"].forEach(this.chosenWikis, function (tWikiData, i) {
+            this.chosenWikis.forEach(function (tWikiData, i) {
                 _this._loadWikiData(tWikiData, 0, _this.ajaxID, (i + 1) * Global_1["default"].loadDelay);
             });
             this.totalItemsToLoad = this.chosenWikis.length;
@@ -2502,14 +873,15 @@ var RCMManager =  (function () {
         else {
             Utils_1["default"].removeElement(this.statusNode);
             Utils_1["default"].removeElement(this.wikisNode.root);
-            this.resultsNode.innerHTML = "<div class='banner-notification error center'>" + i18n_1["default"](Global_1["default"].isUcpWiki ? "expand_templates_input_missing" : "wikiacuratedcontent-content-empty-section") + "</div>";
+            this.resultsNode.innerHTML = "<div class='banner-notification error center'>" + i18n_1["default"]("expand_templates_input_missing") + "</div>";
         }
     };
     RCMManager.prototype._loadWikiData = function (pWikiData, pTries, pID, pDelayNum) {
         if (pDelayNum === void 0) { pDelayNum = 0; }
-        this._load(pWikiData, pWikiData.getWikiDataApiUrl(), 'jsonp', pTries, pID, this._onWikiDataLoaded.bind(this), pDelayNum);
+        this._load(pWikiData, pWikiData.buildWikiDataApiUrl(), 'jsonp', pTries, pID, this._onWikiDataLoaded.bind(this), pDelayNum);
     };
     RCMManager.prototype._onWikiDataLoaded = function (pData, pWikiData, pTries, pID, pFailStatus) {
+        var _a;
         if (pID != this.ajaxID) {
             return;
         }
@@ -2522,7 +894,7 @@ var RCMManager =  (function () {
             this._handleWikiDataLoadError(pWikiData, pTries, pID, "error-loading-syntaxhang", 1);
             return;
         }
-        else if (pData == null || pData.query == null || pData.query.general == null) {
+        else if (!((_a = pData === null || pData === void 0 ? void 0 : pData.query) === null || _a === void 0 ? void 0 : _a.general)) {
             this._retryOrError(pWikiData, pTries, pID, pFailStatus, this._loadWikiData.bind(this), this._handleWikiDataLoadError.bind(this));
             return;
         }
@@ -2561,7 +933,7 @@ var RCMManager =  (function () {
             _this._onWikiDataParsingFinished(null);
         };
         Utils_1["default"].addTextTo(" ", this.statusNode);
-        Utils_1["default"].newElement("button", { className: "rcm-btn", innerHTML: i18n_1["default"](Global_1["default"].isUcpWiki ? "wall-message-remove" : "wikia-hubs-remove") }, this.statusNode).addEventListener("click", tHandlerRemove);
+        Utils_1["default"].newElement("button", { className: "rcm-btn", innerHTML: i18n_1["default"]("ooui-item-remove") }, this.statusNode).addEventListener("click", tHandlerRemove);
         this.erroredWikis.push({ wikiInfo: pWikiData, tries: pTries, id: pID });
     };
     RCMManager.prototype._onWikiDataParsingFinished = function (pWikiData) {
@@ -2578,6 +950,7 @@ var RCMManager =  (function () {
         });
         mw.util.addCSS(tCSS);
         this.wikisNode.onWikiDataLoaded();
+        this.optionsNode.toggleAbuseLogsFilterVisiblity(this.chosenWikis.some(function (w) { return w.wikiUsesAbuseLogs; }));
         this._start(true);
     };
     RCMManager.prototype._startDiscussionLoading = function (pID) {
@@ -2605,14 +978,15 @@ var RCMManager =  (function () {
     };
     RCMManager.prototype._loadWikiaDiscussions = function (pWikiData, pTries, pID, pDelayNum) {
         if (pDelayNum === void 0) { pDelayNum = 0; }
-        this._load(pWikiData, pWikiData.getWikiDiscussionUrl(), 'json', pTries, pID, this._onWikiDiscussionLoaded.bind(this), pDelayNum);
+        this._load(pWikiData, pWikiData.buildWikiDiscussionUrl(), 'json', pTries, pID, this._onWikiDiscussionLoaded.bind(this), pDelayNum);
     };
     RCMManager.prototype._onWikiDiscussionLoaded = function (pData, pWikiData, pTries, pID, pFailStatus) {
         var _this = this;
+        var _a;
         if (pID != this.ajaxID) {
             return;
         }
-        if (pFailStatus == null && pData && pData["_embedded"] && pData["_embedded"]["doc:posts"]) {
+        if (pFailStatus == null && ((_a = pData === null || pData === void 0 ? void 0 : pData["_embedded"]) === null || _a === void 0 ? void 0 : _a["doc:posts"])) {
             pWikiData.usesWikiaDiscussions = true;
             this.ajaxCallbacks.push(function () {
                 _this._parseWikiDiscussions(pData["_embedded"]["doc:posts"], pWikiData);
@@ -2654,16 +1028,13 @@ var RCMManager =  (function () {
         var tNewRC, tDate, tChangeAdded;
         pData.forEach(function (pRCData) {
             var tUser = pRCData.createdBy.name;
-            if (_this._changeShouldBePrunedBasedOnOptions(tUser, pWikiData)) {
-                return;
-            }
-            if (pWikiData.rcParams.hidemyself && Global_1["default"].username == tUser) {
-                return;
-            }
-            if ((pRCData.modificationDate || pRCData.creationDate).epochSecond < Math.round(pWikiData.getEndDate().getTime() / 1000)) {
+            if (_this._changeShouldBePrunedBasedOnOptions(tUser, !!tUser, pWikiData)) {
                 return;
             }
             try {
+                if ((pRCData.modificationDate || pRCData.creationDate).epochSecond < Math.round(pWikiData.getEndDate().getTime() / 1000)) {
+                    return;
+                }
                 var containerType = pRCData._embedded.thread[0].containerType;
                 if (!_this.discNamespaces[containerType]) {
                     return;
@@ -2671,8 +1042,7 @@ var RCMManager =  (function () {
             }
             catch (e) { }
             _this.itemsToAddTotal++;
-            tNewRC = new RCDataFandomDiscussion_1["default"](pWikiData, _this);
-            tNewRC.init(pRCData);
+            tNewRC = new rc_data_1.RCDataFandomDiscussion(pWikiData, _this, pRCData);
             _this._addRCDataToList(tNewRC);
             pWikiData.discussionsCount++;
         });
@@ -2744,8 +1114,11 @@ var RCMManager =  (function () {
         this.chosenWikis.forEach(function (tWikiData) {
             tWikiData.lastChangeDate = tWikiData.getEndDate();
             tWikiData.lastDiscussionDate = tWikiData.getEndDate();
+            tWikiData.lastAbuseLogDate = tWikiData.getEndDate();
             tWikiData.resultsCount = 0;
             tWikiData.discussionsCount = 0;
+            tWikiData.abuseLogCount = 0;
+            tWikiData.discCommentPageNamesNeeded = [];
         });
         this.rcData = [];
         if (this.recentChangesEntries != null) {
@@ -2763,10 +1136,11 @@ var RCMManager =  (function () {
     };
     RCMManager.prototype._loadWiki = function (pWikiData, pTries, pID, pDelayNum) {
         if (pDelayNum === void 0) { pDelayNum = 0; }
-        this._load(pWikiData, pWikiData.getApiUrl(), 'jsonp', pTries, pID, this._onWikiLoaded.bind(this), pDelayNum);
+        this._load(pWikiData, pWikiData.buildApiUrl(), 'jsonp', pTries, pID, this._onWikiLoaded.bind(this), pDelayNum);
     };
     RCMManager.prototype._onWikiLoaded = function (pData, pWikiData, pTries, pID, pFailStatus) {
         var _this = this;
+        var _a;
         if (pID != this.ajaxID) {
             return;
         }
@@ -2779,7 +1153,7 @@ var RCMManager =  (function () {
             this._handleWikiLoadError(pWikiData, pTries, pID, "error-loading-syntaxhang", 1);
             return;
         }
-        else if (pData == null || pData.query == null || pData.query.recentchanges == null) {
+        else if (((_a = pData === null || pData === void 0 ? void 0 : pData.query) === null || _a === void 0 ? void 0 : _a.recentchanges) == null && !pWikiData.skipLoadingNormalRcDueToFilters()) {
             this._retryOrError(pWikiData, pTries, pID, pFailStatus, this._loadWiki.bind(this), this._handleWikiLoadError.bind(this));
             return;
         }
@@ -2787,9 +1161,10 @@ var RCMManager =  (function () {
             mw.log("WARNING: ", pData.warning);
         }
         this.ajaxCallbacks.push(function () {
+            var _a, _b;
             pWikiData.initAbuseFilterFilters(pData.query);
-            _this._parseWikiAbuseLog(pData.query.abuselog, pWikiData);
-            _this._parseWiki(pData.query.recentchanges, pData.query.logevents, pWikiData);
+            _this._parseWikiAbuseLog((_a = pData.query) === null || _a === void 0 ? void 0 : _a.abuselog, pWikiData);
+            _this._parseWiki((_b = pData.query) === null || _b === void 0 ? void 0 : _b.recentchanges, pWikiData);
         });
         if (this.ajaxCallbacks.length === 1) {
             this.ajaxCallbacks[0]();
@@ -2823,9 +1198,9 @@ var RCMManager =  (function () {
             } }, 20000);
         }
     };
-    RCMManager.prototype._parseWiki = function (pData, pLogData, pWikiData) {
+    RCMManager.prototype._parseWiki = function (pData, pWikiData) {
         var _this = this;
-        if (pData.length <= 0) {
+        if (!pData || pData.length <= 0) {
             this._onWikiParsingFinished(pWikiData);
             return;
         }
@@ -2833,15 +1208,16 @@ var RCMManager =  (function () {
         pWikiData.updateLastChangeDate(Utils_1["default"].getFirstItemFromObject(pData));
         var tNewRC, tDate, tChangeAdded;
         pData.forEach(function (pRCData) {
-            if (_this._changeShouldBePrunedBasedOnOptions(pRCData.user, pWikiData)) {
+            var userEdited = pData.user != "" && pData.anon != "";
+            if (_this._changeShouldBePrunedBasedOnOptions(pRCData.user, userEdited, pWikiData)) {
                 return;
             }
             _this.itemsToAddTotal++;
             if (pRCData.logtype && pRCData.logtype != "0") { 
-                tNewRC = new RCDataLog_1["default"](pWikiData, _this).initLog(pRCData, pLogData);
+                tNewRC = new rc_data_1.RCDataLog(pWikiData, _this, pRCData);
             }
             else {
-                tNewRC = new RCData_1["default"](pWikiData, _this).init(pRCData);
+                tNewRC = new rc_data_1.RCDataArticle(pWikiData, _this, pRCData);
             }
             _this._addRCDataToList(tNewRC);
             pWikiData.resultsCount++;
@@ -2849,7 +1225,10 @@ var RCMManager =  (function () {
         this._onWikiParsingFinished(pWikiData);
     };
     ;
-    RCMManager.prototype._changeShouldBePrunedBasedOnOptions = function (pUser, pWikiData) {
+    RCMManager.prototype._changeShouldBePrunedBasedOnOptions = function (pUser, pUserEdited, pWikiData) {
+        if (Global_1["default"].username && pUser && pWikiData.rcParams.hidemyself && Global_1["default"].username == pUser) {
+            return true;
+        }
         if (pUser && this.hideusers.indexOf(pUser) > -1 || (pWikiData.hideusers && pWikiData.hideusers.indexOf(pUser) > -1)) {
             return true;
         }
@@ -2859,6 +1238,12 @@ var RCMManager =  (function () {
         if (pUser && (pWikiData.onlyshowusers != undefined && pWikiData.onlyshowusers.indexOf(pUser) == -1)) {
             return true;
         }
+        if (pWikiData.rcParams.hideanons && !pUserEdited) {
+            return true;
+        }
+        else if (pWikiData.rcParams.hideliu && pUserEdited) {
+            return true;
+        }
         return false;
     };
     RCMManager.prototype._parseWikiAbuseLog = function (pLogs, pWikiData) {
@@ -2866,14 +1251,16 @@ var RCMManager =  (function () {
         if (!pLogs || pLogs.length <= 0) {
             return;
         }
-        pWikiData.updateLastChangeDate(Utils_1["default"].getFirstItemFromObject(pLogs));
+        pWikiData.updateLastAbuseLogDate(Utils_1["default"].getFirstItemFromObject(pLogs));
         pLogs.forEach(function (pLogData) {
-            if (_this._changeShouldBePrunedBasedOnOptions(pLogData.user, pWikiData)) {
+            pLogData = rc_data_1.RCDataLog.abuseLogDataToNormalLogFormat(pLogData);
+            var userEdited = pLogData.anon != "";
+            if (_this._changeShouldBePrunedBasedOnOptions(pLogData.user, userEdited, pWikiData)) {
                 return;
             }
             _this.itemsToAddTotal++;
-            _this._addRCDataToList(new RCDataAbuseLog_1["default"](pWikiData, _this).init(pLogData));
-            pWikiData.resultsCount++;
+            _this._addRCDataToList(new rc_data_1.RCDataLog(pWikiData, _this, pLogData));
+            pWikiData.abuseLogCount++;
         });
     };
     RCMManager.prototype._addRCDataToList = function (pNewRC) {
@@ -2992,11 +1379,16 @@ var RCMManager =  (function () {
                 continue;
             }
             if (tRcCombo.data.shouldBeRemoved(pDate)) {
-                if (tRcCombo.data.type != RC_TYPE_1["default"].DISCUSSION) {
-                    tRcCombo.data.wikiInfo.resultsCount--;
-                }
-                else {
-                    tRcCombo.data.wikiInfo.discussionsCount--;
+                switch (tRcCombo.data.getRemovalType()) {
+                    case "normal":
+                        tRcCombo.data.wikiInfo.resultsCount--;
+                        break;
+                    case "discussion":
+                        tRcCombo.data.wikiInfo.discussionsCount--;
+                        break;
+                    case "abuselog":
+                        tRcCombo.data.wikiInfo.abuseLogCount--;
+                        break;
                 }
                 this.rcData[i] = null;
                 this.rcData.splice(i, 1);
@@ -3007,7 +1399,9 @@ var RCMManager =  (function () {
                 tRcCombo.data == null;
                 tRcCombo.list = null;
             }
-            else if (tRcCombo.data.wikiInfo.resultsCount <= tRcCombo.data.wikiInfo.rcParams.limit && tRcCombo.data.wikiInfo.discussionsCount <= Math.min(tRcCombo.data.wikiInfo.rcParams.limit, 50)) {
+            else if (tRcCombo.data.wikiInfo.resultsCount <= tRcCombo.data.wikiInfo.rcParams.limit
+                && tRcCombo.data.wikiInfo.discussionsCount <= Math.min(tRcCombo.data.wikiInfo.rcParams.limit, 50)
+                && tRcCombo.data.wikiInfo.abuseLogCount <= tRcCombo.data.wikiInfo.rcParams.limit) {
                 tWikisToCheck.splice(tWikiI, 1);
                 if (tWikisToCheck.length == 0) {
                     break;
@@ -3075,16 +1469,12 @@ var RCMManager =  (function () {
             }
             Main_1["default"].blinkWindowTitle(i18n_1["default"]("notification-new") + " " + i18n_1["default"]("nchanges", tNumNewChanges));
             var tEditTitle = tMostRecentEntry.getNotificationTitle();
-            if (tEditTitle == null) {
-                tEditTitle = this.recentChangesEntries[0].getExistingThreadTitle();
-                tEditTitle = tEditTitle ? i18n_1["default"]('discussions') + " - " + tEditTitle : i18n_1["default"]('discussions');
-            }
             var bodyContents = [];
             if (tEditTitle)
                 bodyContents.push(tEditTitle);
             bodyContents.push(i18n_1["default"]("notification-edited-by", tMostRecentEntry.author));
-            if (tMostRecentEntry.unparsedComment)
-                bodyContents.push(i18n_1["default"]("notification-edit-summary", tMostRecentEntry.unparsedComment));
+            if (tMostRecentEntry.summaryUnparsed)
+                bodyContents.push(i18n_1["default"]("notification-edit-summary", tMostRecentEntry.summaryUnparsed));
             Main_1["default"].addNotification(i18n_1["default"]("nchanges", tNumNewChanges) + " - " + tMostRecentEntry.wikiInfo.sitename + (tNumNewChangesWiki != tNumNewChanges ? " (" + tNumNewChangesWiki + ")" : ""), {
                 body: bodyContents.join("\n")
             });
@@ -3282,23 +1672,24 @@ var RCMManager =  (function () {
             return tRcParams;
         }
         var tRcParamsRawData = pData.split(pExplodeOn);
-        var tRcParamsDataSplit; 
+        var tRcParamsDataSplit, key, val; 
         for (var i = 0; i < tRcParamsRawData.length; i++) {
             tRcParamsDataSplit = tRcParamsRawData[i].split(pSplitOn);
             if (tRcParamsDataSplit.length > 1) {
-                if (tRcParamsDataSplit[0] == "limit" && tRcParamsDataSplit[1]) {
-                    tRcParams["limit"] = parseInt(tRcParamsDataSplit[1]);
+                key = tRcParamsDataSplit[0], val = tRcParamsDataSplit[1];
+                if (key == "limit" && val) {
+                    tRcParams["limit"] = parseInt(val);
                 }
-                else if (tRcParamsDataSplit[0] == "days" && tRcParamsDataSplit[1]) {
-                    tRcParams["days"] = parseInt(tRcParamsDataSplit[1]);
+                else if (key == "days" && val) {
+                    tRcParams["days"] = parseInt(val);
                 }
-                else if (tRcParamsDataSplit[0] == "namespace" && (tRcParamsDataSplit[1] || tRcParamsDataSplit[1] === "0")) {
-                    tRcParams["namespace"] = tRcParamsDataSplit[1];
+                else if (key == "namespace" && (val || val === "0")) {
+                    tRcParams["namespace"] = val;
                 }
-                else if (tRcParamsDataSplit[1]) {
-                    tRcParams[tRcParamsDataSplit[0]] = tRcParamsDataSplit[1] == "1";
+                else if (val) {
+                    tRcParams[key] = val == "1";
                 }
-                paramStringArray.push(tRcParamsDataSplit[0] + "=" + tRcParamsDataSplit[1]);
+                paramStringArray.push(key + "=" + val);
             }
         }
         tRcParams.paramString = paramStringArray.join("&");
@@ -3317,6 +1708,8 @@ var RCMManager =  (function () {
             hidemyself: false,
             hideenhanced: false,
             hidelogs: false,
+            hidenewpages: false,
+            hidepageedits: false,
             namespace: null,
         };
     };
@@ -3325,13 +1718,14 @@ var RCMManager =  (function () {
 }());
 exports["default"] = RCMManager;
 
-},{"./Global":1,"./Main":3,"./RCData":4,"./RCDataAbuseLog":5,"./RCDataFandomDiscussion":6,"./RCDataLog":7,"./RCList":8,"./RCMModal":10,"./RCMOptions":11,"./RCMWikiPanel":12,"./Utils":14,"./WikiData":15,"./i18n":16,"./types/RC_TYPE":20}],10:[function(require,module,exports){
+},{"./Global":1,"./Main":3,"./RCMModal":5,"./RCMOptions":6,"./RCMWikiPanel":7,"./Utils":9,"./WikiData":10,"./i18n":11,"./rc_data":19,"./rc_data/RCList":18}],5:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -3374,16 +1768,14 @@ var RCMModal =  (function () {
         mw.hook('dev.modal').add(function (module) {
             RCMModal.modalFactory = module;
         });
-        if (Global_1["default"].isUcpWiki) {
-            try {
-                window.dev.modal._windowManager.on("closing", function (modal) {
-                    if (modal.elementId == RCMModal.MODAL_ID) {
-                        RCMModal.isOpen = false;
-                    }
-                });
-            }
-            catch (e) { }
+        try {
+            window.dev.modal._windowManager.on("closing", function (modal) {
+                if (modal.elementId == RCMModal.MODAL_ID) {
+                    RCMModal.isOpen = false;
+                }
+            });
         }
+        catch (e) { }
     };
     RCMModal.createModal = function (pData) {
         return __awaiter(this, void 0, void 0, function () {
@@ -3432,7 +1824,7 @@ var RCMModal =  (function () {
                         });
                         return [4 , RCMModal.createModal({
                                 id: RCMModal.MODAL_ID,
-                                size: Global_1["default"].isUcpWiki ? 'larger' : 'content-size',
+                                size: 'larger',
                                 close: function () { RCMModal.isOpen = false; return true; },
                                 title: pData.title,
                                 content: "<div id=\"" + RCMModal.MODAL_CONTENT_ID + "\">" + pData.content + "</div>",
@@ -3463,12 +1855,10 @@ var RCMModal =  (function () {
     };
     RCMModal.setModalContent = function (pHTML) {
         document.querySelector("#" + RCMModal.MODAL_CONTENT_ID).innerHTML = pHTML;
-        if (Global_1["default"].isUcpWiki) {
-            try {
-                window.dev.modal._windowManager.windows[RCMModal.MODAL_ID].updateSize();
-            }
-            catch (e) { }
+        try {
+            window.dev.modal._windowManager.windows[RCMModal.MODAL_ID].updateSize();
         }
+        catch (e) { }
     };
     RCMModal.isModalOpen = function () {
         return RCMModal.modal != null && RCMModal.isOpen;
@@ -3487,15 +1877,18 @@ var RCMModal =  (function () {
 }());
 exports["default"] = RCMModal;
 
-},{"./Global":1,"./i18n":16}],11:[function(require,module,exports){
+},{"./Global":1,"./i18n":11}],6:[function(require,module,exports){
 "use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Global_1 = require("./Global");
@@ -3508,42 +1901,58 @@ var RCMOptions =  (function () {
     function RCMOptions(pManager) {
         var _this = this;
         this._onChange_limit = function (pEvent) {
-            _this.afterChangeNumber("limit", parseInt(pEvent.target.value));
+            _this.afterChangeNumber("limit", parseInt(_this.getInput(pEvent).value));
         };
         this._onChange_days = function (pEvent) {
-            _this.afterChangeNumber("days", parseInt(pEvent.target.value));
+            _this.afterChangeNumber("days", parseInt(_this.getInput(pEvent).value));
         };
         this._onChange_hideminor = function (pEvent) {
-            _this.afterChangeBoolean("hideminor", !pEvent.target.checked);
+            _this.afterChangeBoolean("hideminor", !_this.getInput(pEvent).checked);
         };
         this._onChange_hidebots = function (pEvent) {
-            _this.afterChangeBoolean("hidebots", !pEvent.target.checked);
+            _this.afterChangeBoolean("hidebots", !_this.getInput(pEvent).checked);
         };
         this._onChange_hideanons = function (pEvent) {
-            if (pEvent.target.checked == false && _this.usersCheckbox.checked == false) {
+            if (_this.getInput(pEvent).checked == false && _this.usersCheckbox.checked == false) {
+                _this.rcParams["hideliu"] = false;
                 _this.manager.rcParams["hideliu"] = false;
                 _this.usersCheckbox.checked = true;
             }
-            _this.afterChangeBoolean("hideanons", !pEvent.target.checked);
+            _this.afterChangeBoolean("hideanons", !_this.getInput(pEvent).checked);
         };
         this._onChange_hideliu = function (pEvent) {
-            if (pEvent.target.checked == false && _this.anonsCheckbox.checked == false) {
+            if (_this.getInput(pEvent).checked == false && _this.anonsCheckbox.checked == false) {
+                _this.rcParams["hideanons"] = false;
                 _this.manager.rcParams["hideanons"] = false;
                 _this.anonsCheckbox.checked = true;
             }
-            _this.afterChangeBoolean("hideliu", !pEvent.target.checked);
+            _this.afterChangeBoolean("hideliu", !_this.getInput(pEvent).checked);
         };
         this._onChange_hidemyself = function (pEvent) {
-            _this.afterChangeBoolean("hidemyself", !pEvent.target.checked);
+            _this.afterChangeBoolean("hidemyself", !_this.getInput(pEvent).checked);
         };
         this._onChange_hideenhanced = function (pEvent) {
-            _this.afterChangeBoolean("hideenhanced", !pEvent.target.checked);
+            _this.afterChangeBoolean("hideenhanced", !_this.getInput(pEvent).checked);
         };
         this._onChange_hidelogs = function (pEvent) {
-            _this.afterChangeBoolean("hidelogs", !pEvent.target.checked);
+            _this.afterChangeBoolean("hidelogs", !_this.getInput(pEvent).checked);
+        };
+        this._onChange_hidenewpages = function (pEvent) {
+            _this.afterChangeBoolean("hidenewpages", !_this.getInput(pEvent).checked);
+        };
+        this._onChange_hidepageedits = function (pEvent) {
+            _this.afterChangeBoolean("hidepageedits", !_this.getInput(pEvent).checked);
+        };
+        this._onChange_abuselogs = function (pEvent) {
+            _this.manager.abuseLogsEnabled = _this.getInput(pEvent).checked;
+            if (_this.manager.abuseLogsEnabled) {
+                _this.manager.chosenWikis.forEach(function (w) { return w.needsAbuseFilters = true; });
+            }
+            _this.manager.hardRefresh(true);
+            _this.save();
         };
         this._onChange_settingsSaveCookie = function (pEvent) {
-            if (pEvent.target.checked) {
+            if (_this.getInput(pEvent).checked) {
                 _this.save();
             }
             else {
@@ -3581,9 +1990,13 @@ var RCMOptions =  (function () {
         this.myEditsCheckbox = null;
         this.groupedChangesCheckbox = null;
         this.logsCheckbox = null;
+        this.newPagesCheckbox = null;
+        this.pageEditsCheckbox = null;
+        this.abuseLogsCheckbox = null;
     };
     RCMOptions.prototype.init = function (pElem) {
         var _this = this;
+        var _a;
         this.root = pElem;
         var tSave = this.getSave();
         this.rcParams = tSave.options || {}; 
@@ -3592,6 +2005,7 @@ var RCMOptions =  (function () {
         this.discNamespaces = $.extend({ FORUM: dns.FORUM, WALL: dns.WALL, ARTICLE_COMMENT: dns.ARTICLE_COMMENT }, (tSave.discNamespaces || {}));
         this.manager.discNamespaces = __assign({}, this.discNamespaces);
         this.manager.discussionsEnabled = Object.keys(this.discNamespaces).filter(function (key) { return _this.discNamespaces[key]; }).length > 0;
+        this.manager.abuseLogsEnabled = (_a = tSave.abuseLogsEnabled) !== null && _a !== void 0 ? _a : this.manager.abuseLogsEnabled;
         this._addElements();
         return this;
     };
@@ -3611,6 +2025,8 @@ var RCMOptions =  (function () {
         Utils_1["default"].addTextTo(tRow1Text[1], tRow1);
         this.daysField = Utils_1["default"].newElement("select", {}, tRow1);
         Utils_1["default"].addTextTo(tRow1Text[2] || "", tRow1);
+        Utils_1["default"].addTextTo(" | ", tRow1);
+        this.groupedChangesCheckbox = this._newCheckbox(i18n_1["default"]('rcfilters-group-results-by-page'), tRow1);
         var tRow2 = Utils_1["default"].newElement("div", {}, tContent);
         this.minorEditsCheckbox = this._newCheckbox(i18n_1["default"]('rcshowhideminor', ""), tRow2);
         Utils_1["default"].addTextTo(" | ", tRow2);
@@ -3627,23 +2043,18 @@ var RCMOptions =  (function () {
             this.myEditsCheckbox.title = i18n_1["default"]('optionspanel-hideusersoverride');
         }
         Utils_1["default"].addTextTo(" | ", tRow2);
-        if (Global_1["default"].isUcpWiki) {
-            this.groupedChangesCheckbox = this._newCheckbox(i18n_1["default"]('rcfilters-group-results-by-page'), tRow2);
-        }
-        else {
-            this.groupedChangesCheckbox = this._newCheckbox(i18n_1["default"]('rcshowhideenhanced', ""), tRow2);
-        }
+        this.logsCheckbox = this._newCheckbox(i18n_1["default"]('rcfilters-filter-logactions-label'), tRow2);
         Utils_1["default"].addTextTo(" | ", tRow2);
-        if (Global_1["default"].isUcpWiki) {
-            this.logsCheckbox = this._newCheckbox(i18n_1["default"]('rcfilters-filter-logactions-label'), tRow2);
-        }
-        else {
-            this.logsCheckbox = this._newCheckbox(i18n_1["default"]('rcshowhidelogs', ""), tRow2);
-        }
+        this.newPagesCheckbox = this._newCheckbox(i18n_1["default"]('rcfilters-filter-newpages-label'), tRow2);
+        Utils_1["default"].addTextTo(" | ", tRow2);
+        this.pageEditsCheckbox = this._newCheckbox(i18n_1["default"]('rcfilters-filter-pageedits-label'), tRow2);
+        var tALSpan = Utils_1["default"].newElement("span", { className: "rcm-al-filter", style: "display:none;" }, tRow2);
+        Utils_1["default"].addTextTo(" | ", tALSpan);
+        this.abuseLogsCheckbox = this._newCheckbox(i18n_1["default"]('abuselog'), tALSpan);
         Utils_1["default"].newElement("hr", null, tContent);
         var tRow3 = Utils_1["default"].newElement("table", { className: "mw-recentchanges-table" }, tContent);
         var tRow3Row = Utils_1["default"].newElement("row", { className: "mw-recentchanges-table" }, tRow3);
-        Utils_1["default"].newElement("td", { className: "mw-label", innerHTML: i18n_1["default"](Global_1["default"].isUcpWiki ? "socialactivity-page-title" : "discussions") + ":" }, tRow3Row);
+        Utils_1["default"].newElement("td", { className: "mw-label", innerHTML: i18n_1["default"]("socialactivity-page-title") + ":" }, tRow3Row);
         var tRow3RowTdInput = Utils_1["default"].newElement("td", { className: "mw-input" }, tRow3Row);
         this.discussionsDropdown = this._createNewMultiSelectDropdown([
             { label: i18n_1["default"]('discussions'), value: "FORUM" },
@@ -3653,6 +2064,9 @@ var RCMOptions =  (function () {
         this.addEventListeners();
         this.refresh();
         return this;
+    };
+    RCMOptions.prototype.toggleAbuseLogsFilterVisiblity = function (pShow) {
+        $(this.root).find(".rcm-al-filter").toggle(pShow);
     };
     RCMOptions.prototype._newCheckbox = function (pText, pParent) {
         var tLabel = Utils_1["default"].newElement("label", null, pParent);
@@ -3702,6 +2116,9 @@ var RCMOptions =  (function () {
         this.myEditsCheckbox.checked = !this.manager.rcParams.hidemyself;
         this.groupedChangesCheckbox.checked = !this.manager.rcParams.hideenhanced;
         this.logsCheckbox.checked = !this.manager.rcParams.hidelogs;
+        this.newPagesCheckbox.checked = !this.manager.rcParams.hidenewpages;
+        this.pageEditsCheckbox.checked = !this.manager.rcParams.hidepageedits;
+        this.abuseLogsCheckbox.checked = this.manager.abuseLogsEnabled;
         Object.keys(this.discNamespaces).forEach(function (ns) {
             _this.discussionsDropdown.$dropdown.find("[value=" + ns + "]").attr("checked", _this.discNamespaces[ns]);
         });
@@ -3717,6 +2134,9 @@ var RCMOptions =  (function () {
         this.myEditsCheckbox.addEventListener("change", this._onChange_hidemyself);
         this.groupedChangesCheckbox.addEventListener("change", this._onChange_hideenhanced);
         this.logsCheckbox.addEventListener("change", this._onChange_hidelogs);
+        this.newPagesCheckbox.addEventListener("change", this._onChange_hidenewpages);
+        this.pageEditsCheckbox.addEventListener("change", this._onChange_hidepageedits);
+        this.abuseLogsCheckbox.addEventListener("change", this._onChange_abuselogs);
         this.discussionsDropdown.on("change", this._onChange_discussionsDropdown);
         this.discussionsDropdown.$selectAll.on("change", this._onChange_discussionsDropdown);
     };
@@ -3731,7 +2151,11 @@ var RCMOptions =  (function () {
         this.myEditsCheckbox.removeEventListener("change", this._onChange_hidemyself);
         this.groupedChangesCheckbox.removeEventListener("change", this._onChange_hideenhanced);
         this.logsCheckbox.removeEventListener("change", this._onChange_hidelogs);
+        this.newPagesCheckbox.removeEventListener("change", this._onChange_hidenewpages);
+        this.pageEditsCheckbox.removeEventListener("change", this._onChange_hidepageedits);
+        this.abuseLogsCheckbox.removeEventListener("change", this._onChange_abuselogs);
     };
+    RCMOptions.prototype.getInput = function (pEvent) { return pEvent.target; };
     RCMOptions.prototype.afterChangeNumber = function (pKey, pVal, pHardRefresh) {
         if (pHardRefresh === void 0) { pHardRefresh = false; }
         this.rcParams[pKey] = pVal;
@@ -3749,7 +2173,8 @@ var RCMOptions =  (function () {
     RCMOptions.prototype.save = function () {
         if (this.settingsSaveCookieCheckbox.checked) {
             var _a = this, options = _a.rcParams, discNamespaces = _a.discNamespaces;
-            localStorage.setItem(this.localStorageID, JSON.stringify({ options: options, discNamespaces: discNamespaces }));
+            var abuseLogsEnabled = this.manager.abuseLogsEnabled;
+            localStorage.setItem(this.localStorageID, JSON.stringify({ options: options, discNamespaces: discNamespaces, abuseLogsEnabled: abuseLogsEnabled }));
         }
     };
     RCMOptions.prototype.getSave = function () {
@@ -3764,7 +2189,7 @@ var RCMOptions =  (function () {
 }());
 exports["default"] = RCMOptions;
 
-},{"./Global":1,"./Utils":14,"./i18n":16,"./lib/WikiaMultiSelectDropdown":17}],12:[function(require,module,exports){
+},{"./Global":1,"./Utils":9,"./i18n":11,"./lib/WikiaMultiSelectDropdown":12}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Global_1 = require("./Global");
@@ -3857,18 +2282,17 @@ var RCMWikiPanel =  (function () {
             this.closeInfo();
         }
         else {
-            var tLink_1 = function (page, key) { return "<a href='" + pWikiInfo.articlepath + page + "'>" + i18n_1["default"](key) + "</a>"; };
+            var tLink_1 = function (page, key) { return "<a href='" + pWikiInfo.getPageUrl(page) + "'>" + i18n_1["default"](key) + "</a>"; };
             var tLinkNum = function (page, key, num) { return tLink_1(page, key) + (": <b>" + num + "</b>"); };
             var wikiLinksList = [
                 tLink_1("Special:RecentChanges" + pWikiInfo.firstSeperator + pWikiInfo.rcParams.paramString, "recentchanges"),
+                pWikiInfo.isWikiaWiki && tLink_1("Special:SocialActivity", "socialactivity-page-title"),
                 tLink_1("Special:NewPages", "newpages"),
                 tLink_1("Special:NewFiles", "newimages"),
                 tLink_1("Special:Log", "log"),
-                pWikiInfo.isWikiaWiki && pWikiInfo.isLegacyWikiaWiki && tLink_1("Special:Insights", "insights"),
                 pWikiInfo.isWikiaWiki && pWikiInfo.user.rights.analytics && tLink_1("Special:Analytics", "admindashboard-control-analytics-label"),
                 tLink_1("Special:Random", "randompage"),
                 pWikiInfo.usesWikiaDiscussions && "<a href='" + pWikiInfo.scriptpath + "/d'>" + i18n_1["default"]("discussions") + "</a>",
-                pWikiInfo.isWikiaWiki && tLink_1("Special:SocialActivity", "socialactivity-page-title"),
             ].filter(function (o) { return !!o; });
             var buttons = [];
             if (!this.singleWiki) {
@@ -3884,14 +2308,14 @@ var RCMWikiPanel =  (function () {
             var statsHTML = ""
                 + "<table class='wikitable center statisticstable' style='margin: 0;'>"
                 + "<tr>"
-                + ("<td>" + tLinkNum("Special:AllPages", (Global_1["default"].isUcpWiki ? "articles" : "awc-metrics-articles"), pWikiInfo.statistics.articles) + "</td>")
+                + ("<td>" + tLinkNum("Special:AllPages", "articles", pWikiInfo.statistics.articles) + "</td>")
                 + ("<td>" + tLinkNum("Special:ListFiles", "prefs-files", pWikiInfo.statistics.images) + "</td>")
                 + ("<td>" + tLinkNum("Special:ListUsers", "statistics-users-active", pWikiInfo.statistics.activeusers) + "</td>")
                 + ("<td>" + tLinkNum("Special:ListAdmins", "group-sysop", pWikiInfo.statistics.admins) + "</td>")
                 + ("<td>" + tLinkNum("Special:Statistics", "edits", pWikiInfo.statistics.edits) + "</td>")
                 + "</tr>"
                 + "</table>";
-            var siteLink = "<a href='" + (pWikiInfo.articlepath + Utils_1["default"].escapeCharactersLink(pWikiInfo.mainpage)) + "'>" + pWikiInfo.sitename + "</a>";
+            var siteLink = "<a href='" + (pWikiInfo.articlepath + Utils_1["default"].escapeCharactersUrl(pWikiInfo.mainpage)) + "'>" + pWikiInfo.sitename + "</a>";
             var html = ""
                 + "<table class='rcm-wiki-infotable'>"
                 + "<tr>"
@@ -3954,7 +2378,7 @@ var RCMWikiPanel =  (function () {
 }());
 exports["default"] = RCMWikiPanel;
 
-},{"./Global":1,"./Utils":14,"./i18n":16}],13:[function(require,module,exports){
+},{"./Global":1,"./Utils":9,"./i18n":11}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Utils_1 = require("./Utils");
@@ -3986,7 +2410,7 @@ var UserData =  (function () {
     UserData.getUsersApiUrl = function (pList, pScriptpath) {
         var tReturnText = pScriptpath + "/api.php?action=query&format=json&continue=&list=users";
         tReturnText += "&usprop=" + ["blockinfo", "groups"].join("|"); 
-        tReturnText += "&ususers=" + Utils_1["default"].escapeCharactersLink(pList.join("|").replace(/ /g, "_"));
+        tReturnText += "&ususers=" + Utils_1["default"].escapeCharactersUrl(pList.join("|").replace(/ /g, "_"));
         Utils_1["default"].logUrl("[UserData](getUsersApiUrl)", tReturnText);
         return tReturnText;
     };
@@ -3994,8 +2418,13 @@ var UserData =  (function () {
 }());
 exports["default"] = UserData;
 
-},{"./Utils":14}],14:[function(require,module,exports){
+},{"./Utils":9}],9:[function(require,module,exports){
 "use strict";
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var Global_1 = require("./Global");
 var $ = window.jQuery;
@@ -4117,7 +2546,7 @@ var Utils =  (function () {
     Utils.escapeCharacters = function (pString) {
         return pString ? pString.replace(/"/g, '&quot;').replace(/'/g, '&apos;') : pString;
     };
-    Utils.escapeCharactersLink = function (pString) {
+    Utils.escapeCharactersUrl = function (pString) {
         return mw.util.wikiUrlencode(pString);
     };
     Utils.ucfirst = function (s) { return s && s[0].toUpperCase() + s.slice(1); };
@@ -4135,20 +2564,6 @@ var Utils =  (function () {
         }
         return out;
     };
-    Utils.uniqID = function () {
-        return "id" + (++Global_1["default"].uniqID);
-    };
-    Utils.getFirstItemFromObject = function (pData) {
-        for (var tKey in pData)
-            return pData[tKey];
-    };
-    Utils.objectToUrlQueryData = function (data) {
-        var ret = [];
-        for (var d in data) {
-            ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
-        }
-        return ret.join('&');
-    };
     Utils.removeFromArray = function (pArray, pData) {
         var i = pArray.indexOf(pData);
         if (i != -1) {
@@ -4163,6 +2578,27 @@ var Utils =  (function () {
             }
         }
         return null;
+    };
+    Utils.chunkArray = function (myArray, chunk_size) {
+        var index = 0, arrayLength = myArray.length, chunkedArray = [];
+        for (index = 0; index < arrayLength; index += chunk_size) {
+            chunkedArray.push(myArray.slice(index, index + chunk_size));
+        }
+        return chunkedArray;
+    };
+    Utils.uniqID = function () {
+        return "id" + (++Global_1["default"].uniqID);
+    };
+    Utils.getFirstItemFromObject = function (pData) {
+        for (var tKey in pData)
+            return pData[tKey];
+    };
+    Utils.objectToUrlQueryData = function (data) {
+        var ret = [];
+        for (var d in data) {
+            ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
+        }
+        return ret.join('&');
     };
     Utils.isFileAudio = function (pTitle) {
         var tExt = null, audioExtensions = ["oga", "ogg", "ogv"]; 
@@ -4180,7 +2616,7 @@ var Utils =  (function () {
             args[_i - 2] = arguments[_i];
         }
         var _a = pUrl.replace("&format=json", "&format=jsonfm").split(/\?|\&/), start = _a[0], vars = _a.slice(1);
-        mw.log.apply(mw, [pPrefix, start + "?" + vars.join("&")].concat(args));
+        mw.log.apply(mw, __spreadArray([pPrefix, start + "?" + vars.join("&")], args));
     };
     Utils.version_compare = function (v1Arg, v2Arg, operator) {
         var i = 0, x = 0, compare = 0, 
@@ -4251,7 +2687,7 @@ var Utils =  (function () {
 }());
 exports["default"] = Utils;
 
-},{"./Global":1}],15:[function(require,module,exports){
+},{"./Global":1}],10:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Global_1 = require("./Global");
@@ -4272,20 +2708,20 @@ var WikiData =  (function () {
                 abusefilter_view: false, abusefilter_log: false, abusefilter_log_detail: false,
             } };
         this.isWikiaWiki = true;
-        this.isLegacyWikiaWiki = true;
-        this.useOutdatedLogSystem = false;
         this.users = {};
         this.usersNeeded = [];
         this.discCommentPageNames = new Map();
         this.discCommentPageNamesNeeded = [];
-        this.isAbuseLogEnabled = false; 
-        this.abuseFilterFilters = {};
-        this.needsAbuseFilterFilters = false;
+        this.wikiUsesAbuseLogs = false; 
+        this.abuseFilters = {};
+        this.needsAbuseFilters = false;
         this.hidden = false;
         this.lastChangeDate = null;
         this.lastDiscussionDate = null;
+        this.lastAbuseLogDate = null;
         this.resultsCount = 0;
         this.discussionsCount = 0;
+        this.abuseLogCount = 0;
     }
     WikiData.prototype.dispose = function () {
         this.manager = null;
@@ -4297,6 +2733,7 @@ var WikiData =  (function () {
         this.user = null;
         this.lastChangeDate = null;
         this.lastDiscussionDate = null;
+        this.lastAbuseLogDate = null;
     };
     WikiData.prototype.initListData = function (pNode) {
         var _a = pNode.textContent.trim().replace(/(\r\n|\n|\r)/gm, "\n").split(/[&\n]/).map(function (s) { return s.trim(); }).filter(function (s) { return !!s; }), tWikiDataRawUrl = _a[0], tWikiDataRaw = _a.slice(1); 
@@ -4305,8 +2742,6 @@ var WikiData =  (function () {
         this.firstSeperator = "?";
         this.htmlName = this.servername.replace(/([\.\/])/g, "-");
         this.isWikiaWiki = (this.servername.indexOf(".wikia.") > -1) || (this.servername.indexOf(".fandom.") > -1) || (this.servername.indexOf(".gamepedia.") > -1);
-        this.isLegacyWikiaWiki = this.isWikiaWiki;
-        this.useOutdatedLogSystem = this.isWikiaWiki;
         var tWikiDataSplit, tKey, tVal; 
         for (var i = 0; i < tWikiDataRaw.length; i++) {
             tWikiDataSplit = tWikiDataRaw[i].split("=");
@@ -4397,10 +2832,6 @@ var WikiData =  (function () {
             this.mainpage = pQuery.general.mainpage;
             this.mwversion = pQuery.general.generator;
             this.langCode = pQuery.general.lang;
-            if (this.isWikiaWiki) {
-                this.isLegacyWikiaWiki = this.mwversion == "MediaWiki 1.19.24";
-                this.useOutdatedLogSystem = this.isLegacyWikiaWiki;
-            }
             if (this.favicon == null) {
                 if (pQuery.general.favicon && !this.isWikiaWiki) {
                     this.favicon = pQuery.general.favicon;
@@ -4448,19 +2879,19 @@ var WikiData =  (function () {
             abusefilter_log: rightsList.indexOf("abusefilter-log") > -1,
             abusefilter_log_detail: rightsList.indexOf("abusefilter-log-detail") > -1,
         };
-        if (this.manager.abuseLogsAllowed) {
-            this.isAbuseLogEnabled = this.user.rights.abusefilter_log; 
-            this.needsAbuseFilterFilters = this.isAbuseLogEnabled;
+        this.wikiUsesAbuseLogs = this.user.rights.abusefilter_log; 
+        if (this.manager.abuseLogsEnabled) {
+            this.needsAbuseFilters = this.wikiUsesAbuseLogs;
         }
     };
     WikiData.prototype.initAbuseFilterFilters = function (pQuery) {
-        if (this.needsAbuseFilterFilters && !!pQuery.abusefilters) {
-            this.needsAbuseFilterFilters = false;
-            this.abuseFilterFilters = {};
+        if (this.needsAbuseFilters && !!(pQuery === null || pQuery === void 0 ? void 0 : pQuery.abusefilters)) {
+            this.needsAbuseFilters = false;
+            this.abuseFilters = {};
             var tFilter = void 0;
             for (var i = 0; i < pQuery.abusefilters.length; i++) {
                 tFilter = pQuery.abusefilters[i];
-                this.abuseFilterFilters[tFilter.id] = { description: tFilter.description, private: tFilter.private === "" };
+                this.abuseFilters[tFilter.id] = { description: tFilter.description, private: tFilter.private === "" };
             }
         }
         return this;
@@ -4475,10 +2906,9 @@ var WikiData =  (function () {
         }
         this.rcParams.paramString = this.createRcParamsString(this.rcParams);
         this.rcParams = $.extend(this.manager.getDefaultRCParams(), this.rcParams);
-        if (!this.lastChangeDate) {
-            this.lastChangeDate = this.getEndDate();
-            this.lastDiscussionDate = this.getEndDate();
-        }
+        this.lastChangeDate = this.getEndDate();
+        this.lastDiscussionDate = this.getEndDate();
+        this.lastAbuseLogDate = this.getEndDate();
     };
     WikiData.prototype.createRcParamsString = function (pParams) {
         var tArray = [];
@@ -4529,23 +2959,27 @@ var WikiData =  (function () {
         }
         return "data-username=\"" + pUser.replace(/"/g, "&quot;") + "\"";
     };
-    WikiData.prototype.getUrl = function (pageName, params) {
+    WikiData.prototype.getPageUrl = function (pageName, params) {
         var query = params ? this.firstSeperator + $.param(params) : "";
         return "" + this.articlepath + pageName + query;
     };
+    WikiData.prototype.getApiUrl = function (params) {
+        return this.scriptpath + "/api.php?" + $.param(params).replace(/ /g, "_");
+    };
     WikiData.prototype.checkForSecondaryLoading = function () {
-        var MAX = 50, loops = Math.ceil(this.usersNeeded.length / MAX);
-        for (var i = 0; i < loops; i++) {
-            var url = UserData_1["default"].getUsersApiUrl(this.usersNeeded.slice(i * MAX, (i + 1) * MAX), this.scriptpath);
-            this.checkForSecondaryLoading_doUsersLoad(url);
-        }
+        var _this = this;
+        Utils_1["default"].chunkArray(this.usersNeeded, 50).forEach(function (users) {
+            var url = UserData_1["default"].getUsersApiUrl(users, _this.scriptpath);
+            _this.checkForSecondaryLoading_doUsersLoad(url);
+        });
     };
     WikiData.prototype.checkForSecondaryLoading_doUsersLoad = function (pUrl) {
         var _this = this;
         this.manager.secondaryWikiData.push({
             url: pUrl,
             callback: function (data) {
-                if (!data.query || !data.query.users) {
+                var _a;
+                if (!((_a = data.query) === null || _a === void 0 ? void 0 : _a.users)) {
                     return;
                 }
                 data.query.users.forEach(function (user, i) {
@@ -4574,13 +3008,21 @@ var WikiData =  (function () {
         this.lastChangeDate.setSeconds(this.lastChangeDate.getSeconds() + 1);
         this.lastChangeDate.setMilliseconds(1);
     };
+    WikiData.prototype.updateLastAbuseLogDate = function (pData) {
+        if (new Date(pData.timestamp) < this.lastAbuseLogDate) {
+            return;
+        }
+        this.lastAbuseLogDate = new Date(pData.timestamp);
+        this.lastAbuseLogDate.setSeconds(this.lastAbuseLogDate.getSeconds() + 1);
+        this.lastAbuseLogDate.setMilliseconds(1);
+    };
     WikiData.prototype.updateLastDiscussionDate = function (pData) {
         var tSecond = (pData.modificationDate || pData.creationDate).epochSecond;
         this.lastDiscussionDate = new Date(0);
         this.lastDiscussionDate.setUTCSeconds(tSecond);
         this.lastDiscussionDate.setUTCMilliseconds(1);
     };
-    WikiData.prototype.getWikiDataApiUrl = function () {
+    WikiData.prototype.buildWikiDataApiUrl = function () {
         if (!this.needsSiteinfoData || !this.needsUserData) {
             return null;
         }
@@ -4612,12 +3054,12 @@ var WikiData =  (function () {
         tReturnText.replace(/ /g, "_");
         tMetaList = null;
         tPropList = null;
-        Utils_1["default"].logUrl("[WikiData](getWikiDataApiUrl)", tReturnText);
+        Utils_1["default"].logUrl("[WikiData](buildWikiDataApiUrl)", tReturnText);
         return tReturnText;
     };
-    WikiData.prototype.getWikiDiscussionUrl = function () {
+    WikiData.prototype.buildWikiDiscussionUrl = function () {
         var tEndDate = this.lastDiscussionDate; 
-        var tLimit = this.rcParams.limit < 50 ? this.rcParams.limit : 50; 
+        var tLimit = Math.min(this.rcParams.limit, 100); 
         var params = {
             limit: tLimit,
             page: 0,
@@ -4627,62 +3069,66 @@ var WikiData =  (function () {
             viewableOnly: !this.user.rights.block,
         };
         var tReturnText = this.scriptpath + "/wikia.php?controller=DiscussionPost&method=getPosts&" + Utils_1["default"].objectToUrlQueryData(params);
-        mw.log("[WikiData](getWikiDiscussionUrl) " + this.servername + " - " + tReturnText);
+        mw.log("[WikiData](buildWikiDiscussionUrl) " + this.servername + " - " + tReturnText);
         return tReturnText;
     };
-    WikiData.prototype.getApiUrl = function () {
+    WikiData.prototype.skipLoadingNormalRcDueToFilters = function () {
+        return this.rcParams.hidenewpages && this.rcParams.hidepageedits && this.rcParams.hidelogs;
+    };
+    WikiData.prototype.buildApiUrl = function () {
         var params = {}, tUrlList = [], tMetaList = [], tPropList = [];
         var tEndDate = this.lastChangeDate; 
-        tUrlList.push("recentchanges");
-        params["rcprop"] = WikiData.RC_PROPS; 
-        params["rclimit"] = this.rcParams.limit;
-        params["rcend"] = tEndDate.toISOString();
-        var tRcShow = [];
-        if (this.rcParams.hideminor) {
-            tRcShow.push("!minor");
+        if (!this.skipLoadingNormalRcDueToFilters()) {
+            tUrlList.push("recentchanges");
+            params["rcprop"] = WikiData.RC_PROPS; 
+            params["rclimit"] = this.rcParams.limit;
+            params["rcend"] = tEndDate.toISOString();
+            var tRcShow = [];
+            if (this.rcParams.hideminor) {
+                tRcShow.push("!minor");
+            }
+            if (this.rcParams.hidebots) {
+                tRcShow.push("!bot");
+            }
+            if (this.rcParams.hideanons) {
+                tRcShow.push("!anon");
+            }
+            if (this.rcParams.hideliu) {
+                tRcShow.push("anon");
+            } 
+            params["rcshow"] = tRcShow.join("|");
+            tRcShow = null;
+            var tRcType = []; 
+            if (this.rcParams.hidenewpages == false) {
+                tRcType.push("new");
+            }
+            if (this.rcParams.hidepageedits == false) {
+                tRcType.push("edit");
+            }
+            if (this.rcParams.hidelogs == false) {
+                tRcType.push("log");
+            }
+            params["rctype"] = tRcType.join("|");
+            tRcType = null;
+            var tUserToHide = null;
+            if (this.rcParams.hidemyself && this.username) {
+                tUserToHide = this.username;
+            }
+            else if (this.manager.hideusers.length > 0) {
+                tUserToHide = this.manager.hideusers[0];
+            }
+            else if (this.hideusers) {
+                tUserToHide = this.hideusers[0];
+            }
+            if (tUserToHide != null) {
+                params["rcexcludeuser"] = tUserToHide;
+            }
+            if (this.rcParams.namespace || this.rcParams.namespace === "0") {
+                params["rcnamespace"] = this.rcParams.namespace; 
+            }
         }
-        if (this.rcParams.hidebots) {
-            tRcShow.push("!bot");
-        }
-        if (this.rcParams.hideanons) {
-            tRcShow.push("!anon");
-        }
-        if (this.rcParams.hideliu) {
-            tRcShow.push("anon");
-        } 
-        params["rcshow"] = tRcShow.join("|");
-        tRcShow = null;
-        var tRcType = ["edit", "new"]; 
-        if (this.rcParams.hidelogs == false) {
-            tRcType.push("log");
-        }
-        params["rctype"] = tRcType.join("|");
-        tRcType = null;
-        var tUser = null;
-        if (this.rcParams.hidemyself && this.username) {
-            tUser = this.username;
-        }
-        else if (this.manager.hideusers.length > 0) {
-            tUser = this.manager.hideusers[0];
-        }
-        else if (this.hideusers) {
-            tUser = this.hideusers[0];
-        }
-        if (tUser != null) {
-            params["rcexcludeuser"] = tUser;
-        }
-        if (this.rcParams.namespace || this.rcParams.namespace === "0") {
-            params["rcnamespace"] = this.rcParams.namespace; 
-        }
-        if (this.useOutdatedLogSystem && this.rcParams.hidelogs == false) {
-            tUrlList.push("logevents");
-            params["leprop"] = ["details", "user", "title", "timestamp", "type", "ids"].join("|");
-            params["letype"] = ["rights", "move", "delete", "block", "merge"].join("|");
-            params["lelimit"] = this.rcParams.limit;
-            params["leend"] = tEndDate.toISOString();
-        }
-        if (this.isAbuseLogEnabled && this.manager.abuseLogsAllowed && this.rcParams.hidelogs == false && this.user.rights.abusefilter_view && this.user.rights.abusefilter_log) {
-            if (this.needsAbuseFilterFilters) {
+        if (this.wikiUsesAbuseLogs && this.manager.abuseLogsEnabled && this.user.rights.abusefilter_view && this.user.rights.abusefilter_log) {
+            if (this.needsAbuseFilters) {
                 tUrlList.push("abusefilters");
                 params["abflimit"] = 500;
                 params["abfshow"] = "enabled";
@@ -4690,7 +3136,7 @@ var WikiData =  (function () {
             }
             tUrlList.push("abuselog");
             params["afllimit"] = this.rcParams.limit;
-            params["aflend"] = tEndDate.toISOString();
+            params["aflend"] = this.lastAbuseLogDate.toISOString();
             params["aflprop"] = "ids|filter|user|title|action|result|timestamp|hidden|revid"; 
         }
         params["list"] = tUrlList.join("|");
@@ -4706,7 +3152,7 @@ var WikiData =  (function () {
         tMetaList = null;
         tPropList = null;
         tEndDate = null;
-        Utils_1["default"].logUrl("[WikiData](getApiUrl)", tReturnText);
+        Utils_1["default"].logUrl("[WikiData](buildApiUrl)", tReturnText);
         return tReturnText;
     };
     WikiData.RC_PROPS = ["user", "flags", "title", "ids", "sizes", "timestamp", "loginfo", "parsedcomment", "comment"].join("|"); 
@@ -4714,20 +3160,25 @@ var WikiData =  (function () {
 }());
 exports["default"] = WikiData;
 
-},{"./Global":1,"./UserData":13,"./Utils":14}],16:[function(require,module,exports){
+},{"./Global":1,"./UserData":8,"./Utils":9}],11:[function(require,module,exports){
 "use strict";
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var Global_1 = require("./Global");
 var $ = window.jQuery;
 var mw = window.mediaWiki;
 var i18n = function (pKey) {
+    var _a;
     var pArgs = [];
     for (var _i = 1; _i < arguments.length; _i++) {
         pArgs[_i - 1] = arguments[_i];
     }
-    var _a;
     var tText;
-    var devMsg = (_a = i18n.devI18n).msg.apply(_a, [pKey].concat(pArgs));
+    var devMsg = (_a = i18n.devI18n).msg.apply(_a, __spreadArray([pKey], pArgs));
     if (devMsg.exists) {
         tText = devMsg.plain();
     }
@@ -4738,7 +3189,7 @@ var i18n = function (pKey) {
         mw.log("[RecentChangesMultiple.i18n]() '" + pKey + "' is undefined.");
         return pKey;
     }
-    return i18n.wiki2html.apply(i18n, [tText].concat(pArgs));
+    return i18n.wiki2html.apply(i18n, __spreadArray([tText], pArgs));
 };
 i18n.defaultLang = "en";
 i18n.init = function (pLang) {
@@ -4761,10 +3212,10 @@ var MESSAGES = i18n.MESSAGES = {
     'rcshowhideliu': '$1 logged-in users',
     'rcshowhideanons': '$1 anonymous users',
     'rcshowhidemine': '$1 my edits',
-    'rcshowhideenhanced': '$1 grouped recent changes',
     'rcfilters-group-results-by-page': 'Group results by page',
-    'rcshowhidelogs': '$1 logs',
     'rcfilters-filter-logactions-label': 'Logged actions',
+    'rcfilters-filter-newpages-label': 'Page creations',
+    'rcfilters-filter-pageedits-label': 'Page edits',
     'diff': 'diff',
     'hist': 'hist',
     'hide': 'Hide',
@@ -4785,33 +3236,33 @@ var MESSAGES = i18n.MESSAGES = {
     'rc-enhanced-hide': 'Hide details',
     'semicolon-separator': ';&#32;',
     'pipe-separator': '&#32;|&#32;',
+    'word-separator': ' ',
     'parentheses': '($1)',
+    'parentheses-start': '(',
+    'parentheses-end': ')',
+    'brackets': '[$1]',
+    'quotation-marks': '"$1"',
+    'ntimes': '$1×',
+    'and': '&#32;and',
     'rev-deleted-comment': '(edit summary removed)',
     'rev-deleted-user': '(username removed)',
     'rev-deleted-event': '(log action removed)',
-    'and': '&#32;and',
     'recentchanges': 'Recent changes',
     'newpages': 'New pages',
     'newimages': 'New photos',
     'log': 'Logs',
-    'insights': 'Insights',
     'randompage': 'Random page',
     'group-sysop': 'Administrators',
     'group-user': 'Users',
     'statistics-users-active': 'Active users',
     'prefs-files': 'Files',
-    'awc-metrics-articles': 'Articles',
     'articles': 'Articles',
     'edits': 'Edits',
     'filedelete-success': "'''$1''' has been deleted.",
-    'shared_help_was_redirect': 'This page is a redirect to $1',
     'redirectto': 'Redirect to:',
-    'awc-metrics-images': 'Images',
     'images': 'Images',
-    'wikiacuratedcontent-content-empty-section': 'This section needs some items',
     'expand_templates_input_missing': 'You need to provide at least some input wikitext.',
-    'wikia-hubs-remove': 'Remove',
-    'wall-message-remove': 'Remove',
+    'ooui-item-remove': 'Remove',
     'undeletelink': 'view/restore',
     'admindashboard-control-analytics-label': 'Analytics',
     'abusefilter-history-hidden': 'Hidden',
@@ -4827,16 +3278,13 @@ var MESSAGES = i18n.MESSAGES = {
     'uploadlogpage': 'Upload log',
     'newuserlogpage': 'User creation log',
     'rightslog': 'User rights log',
-    'useravatar-log': 'User avatar log',
     'userrenametool-logpage': 'User rename log',
-    'wikifeatures-log-name': 'Wiki Features log',
-    'chat-chatban-log': 'Chat ban log',
     'abusefilter-log': 'Abuse filter log',
     'abuselog': 'Abuse log',
     'log-name-contentmodel': 'Content model change log',
-    'blocklogentry': 'blocked [[$1]] with an expiry time of $2 $3',
-    'reblock-logentry': 'changed block settings for [[$1]] with an expiry time of $2 $3',
-    'unblocklogentry': 'unblocked $1',
+    'logentry-block-block': '$1 {{GENDER:$2|blocked}} {{GENDER:$4|$3}} with an expiration time of $5 $6',
+    'logentry-block-reblock': '$1 {{GENDER:$2|changed}} block settings for {{GENDER:$4|$3}} with an expiration time of $5 $6',
+    'logentry-block-unblock': '$1 {{GENDER:$2|unblocked}} {{GENDER:$4|$3}}',
     'block-log-flags-anononly': 'anonymous users only',
     'block-log-flags-nocreate': 'account creation disabled',
     'block-log-flags-noautoblock': 'autoblock disabled',
@@ -4846,68 +3294,54 @@ var MESSAGES = i18n.MESSAGES = {
     'block-log-flags-hiddenname': 'username hidden',
     'logentry-delete-delete': '$1 deleted page $3',
     'logentry-delete-delete_redir': '$1 {{GENDER:$2|deleted}} redirect $3 by overwriting',
-    'logentry-delete-restore': '$1 restored page $3',
+    'logentry-delete-restore': '$1 restored page $3 ($4)',
+    'logentry-delete-restore-nocount': '$1 restored page $3',
     'logentry-delete-event': '$1 changed visibility of {{PLURAL:$5|a log event|$5 log events}} on $3: $4',
     'logentry-delete-revision': '$1 changed visibility of {{PLURAL:$5|a revision|$5 revisions}} on page $3: $4',
     'logentry-delete-event-legacy': '$1 changed visibility of log events on $3',
     'logentry-delete-revision-legacy': '$1 changed visibility of revisions on page $3',
+    'restore-count-files': '{{PLURAL:$1|1 file|$1 files}}',
+    'restore-count-revisions': '{{PLURAL:$1|1 revision|$1 revisions}}',
     'revdelete-content-hid': 'content hidden',
     'revdelete-summary-hid': 'edit summary hidden',
-    'import-logentry-upload': 'imported [[$1]] by file upload',
-    'import-logentry-interwiki': 'transwikied $1',
+    'logentry-import-upload': '$1 {{GENDER:$2|imported}} $3 by file upload',
+    'logentry-import-interwiki': '$1 {{GENDER:$2|imported}} $3 from another wiki',
     'pagemerge-logentry': 'merged [[$1]] into [[$2]] (revisions up to $3)',
     'logentry-move-move': '$1 moved page $3 to $4',
     'logentry-move-move-noredirect': '$1 moved page $3 to $4 without leaving a redirect',
     'logentry-move-move_redir': '$1 moved page $3 to $4 over redirect',
     'logentry-move-move_redir-noredirect': '$1 moved page $3 to $4 over a redirect without leaving a redirect',
-    'protectedarticle': 'protected "[[$1]]"',
-    'modifiedarticleprotection': 'changed protection level for "[[$1]]"',
-    'unprotectedarticle': 'removed protection from "[[$1]]"',
-    'movedarticleprotection': 'moved protection settings from "[[$2]]" to "[[$1]]"',
-    'uploadedimage': 'uploaded "[[$1]]"',
-    'overwroteimage': 'uploaded a new version of "[[$1]]"',
+    'logentry-protect-modify': '$1 {{GENDER:$2|changed}} protection level for $3 $4',
+    'logentry-protect-modify-cascade': '$1 {{GENDER:$2|changed}} protection level for $3 $4 [cascading]',
+    'logentry-protect-move_prot': '$1 {{GENDER:$2|moved}} protection settings from $4 to $3',
+    'logentry-protect-protect': '$1 {{GENDER:$2|protected}} $3 $4',
+    'logentry-protect-protect-cascade': '$1 {{GENDER:$2|protected}} $3 $4 [cascading]',
+    'logentry-protect-unprotect': '$1 {{GENDER:$2|removed}} protection from $3',
+    'logentry-upload-overwrite': '$1 {{GENDER:$2|uploaded}} a new version of $3',
+    'logentry-upload-revert': '$1 {{GENDER:$2|reverted}} $3 to an old version',
+    'logentry-upload-upload': '$1 {{GENDER:$2|uploaded}} $3',
     'logentry-newusers-newusers': '$1 created a user account',
     'logentry-newusers-create': '$1 created a user account',
     'logentry-newusers-create2': '$1 created a user account $3',
     'logentry-newusers-autocreate': 'Account $1 was created automatically',
-    'rightslogentry': 'changed group membership for $1 from $2 to $3',
-    'rightslogentry-autopromote': 'was automatically promoted from $2 to $3',
+    'logentry-rights-autopromote': '$1 was automatically {{GENDER:$2|promoted}} from $4 to $5',
+    'logentry-rights-rights': '$1 {{GENDER:$2|changed}} group membership for {{GENDER:$6|$3}} from $4 to $5',
+    'logentry-rights-rights-legacy': '$1 {{GENDER:$2|changed}} group membership for $3',
     'rightsnone': '(none)',
-    'blog-avatar-changed-log': 'Added or changed avatar',
-    'blog-avatar-removed-log': "Removed $1's avatars",
     'userrenametool-success': 'The user "$1" has been renamed to "$2".',
-    'chat-chatbanadd-log-entry': 'banned $1 from chat with an expiry time of $2, ends $3',
-    'chat-chatbanremove-log-entry': 'unbanned $1 from chat',
-    'chat-chatbanchange-log-entry': 'changed ban settings for $1 with an expiry time of $2, ends $3',
-    'wall-recentchanges-edit': 'edited message',
-    'wall-recentchanges-removed-thread': 'removed thread "[[$1|$2]]" from [[$3|$4\'s wall]]',
-    'wall-recentchanges-removed-reply': 'removed reply from "[[$1|$2]]" from [[$3|$4\'s wall]]',
-    'wall-recentchanges-restored-thread': 'restored thread "[[$1|$2]]" to [[$3|$4\'s wall]]',
-    'wall-recentchanges-restored-reply': 'restored reply on "[[$1|$2]]" to [[$3|$4\'s wall]]',
-    'wall-recentchanges-deleted-thread': 'deleted thread "[[$1|$2]]" from [[$3|$4\'s wall]]',
-    'wall-recentchanges-deleted-reply': 'deleted reply from "[[$1|$2]]" from [[$3|$4\'s wall]]',
-    'wall-recentchanges-closed-thread': 'closed thread "[[$1|$2]]" on [[$3|$4\'s wall]]',
-    'wall-recentchanges-reopened-thread': 'reopened thread "[[$1|$2]]" on [[$3|$4\'s wall]]',
-    'wall-recentchanges-thread-group': '$1 on [[$2|$3\'s wall]]',
-    'wall-recentchanges-history-link': 'wall history',
-    'wall-recentchanges-thread-history-link': 'thread history',
-    'forum-recentchanges-edit': 'edited message',
-    'forum-recentchanges-removed-thread': 'removed thread "[[$1|$2]]" from the [[$3|$4 Board]]',
-    'forum-recentchanges-removed-reply': 'removed reply from "[[$1|$2]]" from the [[$3|$4 Board]]',
-    'forum-recentchanges-restored-thread': 'restored thread "[[$1|$2]]" to the [[$3|$4 Board]]',
-    'forum-recentchanges-restored-reply': 'restored reply on "[[$1|$2]]" to the [[$3|$4 Board]]',
-    'forum-recentchanges-deleted-thread': 'deleted thread "[[$1|$2]]" from the [[$3|$4 Board]]',
-    'forum-recentchanges-deleted-reply': 'deleted reply from "[[$1|$2]]" from the [[$3|$4 Board]]',
-    'forum-recentchanges-thread-group': '$1 on the [[$2|$3 Board]]',
-    'forum-recentchanges-history-link': 'board history',
-    'forum-recentchanges-thread-history-link': 'thread history',
-    'forum-recentchanges-closed-thread': 'closed thread "[[$1|$2]]" from [[$3|$4]]',
-    'forum-recentchanges-reopened-thread': 'reopened thread "[[$1|$2]]" from [[$3|$4]]',
-    'forum-related-discussion-heading': 'Discussions about $1',
-    'embeddable-discussions-loading': 'Loading Discussions...',
     'allmessages-filter-all': 'All',
     'listusers-select-all': 'Select all',
     'socialactivity-page-title': 'Social Activity',
+    'activity-social-activity-poll-placeholder': 'poll',
+    'activity-social-activity-image-placeholder': 'image',
+    'socialactivity-view': 'view',
+    'wall-recentchanges-thread-group': '$1 on [[$2|$3\'s wall]]',
+    'activity-social-activity-post-create': "$1 posted $2 in $3: $4",
+    'activity-social-activity-post-reply-create': "$1 replied to the post $2 in $3: $4",
+    'activity-social-activity-message-create': "$1 left the message $2 on $3's wall: $4",
+    'activity-social-activity-message-reply-create': "$1 replied to the message $2 on $3's wall: $4",
+    'activity-social-activity-comment-create': "$1 commented on the article $2: $3",
+    'activity-social-activity-comment-reply-create': "$1 replied to the comment $2 on the article $3: $4",
     "abusefilter-logentry-create": "$1 {{GENDER:$2|created}} $4 ($5)",
     "abusefilter-logentry-modify": "$1 {{GENDER:$2|modified}} $4 ($5)",
     "abusefilter-log-detailslink": "details",
@@ -4929,41 +3363,6 @@ var MESSAGES = i18n.MESSAGES = {
     'logentry-contentmodel-change-revert': 'revert',
     'logentry-contentmodel-change-revertlink': 'revert',
 };
-exports.legacyMessagesRemovedContent = [
-    "insights",
-    "useravatar-log",
-    "wikifeatures-log-name",
-    "blog-avatar-changed-log",
-    "blog-avatar-removed-log",
-    "chat-chatban-log",
-    "chat-chatbanadd-log-entry",
-    "chat-chatbanremove-log-entry",
-    "chat-chatbanchange-log-entry",
-    "wall-recentchanges-edit",
-    "wall-recentchanges-removed-thread",
-    "wall-recentchanges-removed-reply",
-    "wall-recentchanges-restored-thread",
-    "wall-recentchanges-restored-reply",
-    "wall-recentchanges-deleted-thread",
-    "wall-recentchanges-deleted-reply",
-    "wall-recentchanges-closed-thread",
-    "wall-recentchanges-reopened-thread",
-    "wall-recentchanges-thread-group",
-    "wall-recentchanges-history-link",
-    "wall-recentchanges-thread-history-link",
-    "forum-recentchanges-edit",
-    "forum-recentchanges-removed-thread",
-    "forum-recentchanges-removed-reply",
-    "forum-recentchanges-restored-thread",
-    "forum-recentchanges-restored-reply",
-    "forum-recentchanges-deleted-thread",
-    "forum-recentchanges-deleted-reply",
-    "forum-recentchanges-thread-group",
-    "forum-recentchanges-history-link",
-    "forum-recentchanges-thread-history-link",
-    "forum-recentchanges-closed-thread",
-    "forum-recentchanges-reopened-thread",
-];
 i18n.mwLanguageData = {
     en: {
         "digitTransformTable": null,
@@ -5296,9 +3695,10 @@ i18n.wiki2html = function (pText) {
 };
 exports["default"] = i18n;
 
-},{"./Global":1}],17:[function(require,module,exports){
+},{"./Global":1}],12:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.WikiaMultiSelectDropdown = void 0;
 var i18n_1 = require("../i18n");
 var WikiaMultiSelectDropdown =  (function () {
     function WikiaMultiSelectDropdown(element, options) {
@@ -5545,7 +3945,7 @@ var WikiaMultiSelectDropdown =  (function () {
 }());
 exports.WikiaMultiSelectDropdown = WikiaMultiSelectDropdown;
 
-},{"../i18n":16}],18:[function(require,module,exports){
+},{"../i18n":11}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function default_1() {
@@ -5792,7 +4192,1488 @@ function default_1() {
 }
 exports["default"] = default_1;
 
-},{}],19:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var Utils_1 = require("../Utils");
+var i18n_1 = require("../i18n");
+var _1 = require(".");
+var $ = window.jQuery;
+var mw = window.mediaWiki;
+var RCDataAbstract =  (function () {
+    function RCDataAbstract(pWikiInfo, pManager, props) {
+        var _a, _b, _c, _d;
+        this.manager = pManager;
+        this.wikiInfo = pWikiInfo;
+        if (!props.title) {
+            props.title = "";
+        } 
+        this.date = props.date;
+        this.userEdited = props.isUser;
+        this.author = props.author;
+        this.titleOriginal = props.title;
+        this.title = Utils_1["default"].escapeCharacters(props.title);
+        this.titleUrlEscaped = Utils_1["default"].escapeCharactersUrl(props.title);
+        this.editFlags = {
+            newpage: (_a = props.isNewPage) !== null && _a !== void 0 ? _a : false,
+            botedit: (_b = props.isBotEdit) !== null && _b !== void 0 ? _b : false,
+            minoredit: (_c = props.isMinorEdit) !== null && _c !== void 0 ? _c : false,
+            unpatrolled: !((_d = props.isPatrolled) !== null && _d !== void 0 ? _d : false),
+        };
+        this.groupWithID = props.groupWithID;
+    }
+    Object.defineProperty(RCDataAbstract.prototype, "href", {
+        get: function () { return this.getUrl(); },
+        enumerable: false,
+        configurable: true
+    });
+    ;
+    RCDataAbstract.prototype.dispose = function () {
+        delete this.manager;
+        delete this.wikiInfo;
+        this.date = null;
+    };
+    RCDataAbstract.prototype.time = function () {
+        return Utils_1["default"].formatWikiTimeStampTimeOnly(this.date, true);
+    };
+    RCDataAbstract.prototype.getSummary = function () {
+        return RCDataAbstract.renderSummary(this.summary);
+    };
+    RCDataAbstract.renderSummary = function (pSummary) {
+        if (pSummary == "" || pSummary == undefined) {
+            return "";
+        }
+        return " <span class=\"comment\" dir=\"auto\">" + i18n_1["default"]('parentheses', pSummary) + "</span>";
+    };
+    RCDataAbstract.prototype.getNSClass = function () {
+        return "rc-entry-ns-" + this.namespace;
+    };
+    RCDataAbstract.prototype.shouldBeRemoved = function (pDate) {
+        if (this.date.getSeconds() < pDate.getSeconds() - (this.wikiInfo.rcParams.days * 86400)) { 
+            return true;
+        }
+        switch (this.getRemovalType()) {
+            case "normal": return this.wikiInfo.resultsCount > this.wikiInfo.rcParams.limit;
+            case "discussion": return this.wikiInfo.discussionsCount > Math.min(this.wikiInfo.rcParams.limit, 50);
+            case "abuselog": return this.wikiInfo.abuseLogCount > this.wikiInfo.rcParams.limit;
+        }
+    };
+    RCDataAbstract.prototype.getRemovalType = function () {
+        var rc = this;
+        if (rc.type == _1.RC_TYPE.DISCUSSION) {
+            return "discussion";
+        }
+        else if (rc.type == _1.RC_TYPE.LOG && rc.logtype == "abuse") {
+            return "abuselog";
+        }
+        else {
+            return "normal";
+        }
+    };
+    return RCDataAbstract;
+}());
+exports["default"] = RCDataAbstract;
+
+},{".":19,"../Utils":9,"../i18n":11}],15:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Utils_1 = require("../Utils");
+var i18n_1 = require("../i18n");
+var _1 = require(".");
+var $ = window.jQuery;
+var mw = window.mediaWiki;
+var RCDataArticle =  (function (_super) {
+    __extends(RCDataArticle, _super);
+    function RCDataArticle(pWikiInfo, pManager, pData) {
+        var _this = this;
+        var isUser = pData.user != "" && pData.anon != "";
+        _this = _super.call(this, pWikiInfo, pManager, {
+            title: pData.title,
+            date: new Date(pData.timestamp),
+            author: isUser ? pData.user : (pData.anon ? pData.anon : pData.user),
+            isUser: isUser,
+            namespace: pData.ns,
+            groupWithID: pData.title,
+            isNewPage: pData["new"] == "",
+            isBotEdit: pData.bot == "",
+            isMinorEdit: pData.minor == "",
+            isPatrolled: pData.patrolled == "",
+        }) || this;
+        _this.type = _1.RC_TYPE.NORMAL;
+        _this.userhidden = pData.userhidden == "";
+        _this.newlen = pData.newlen;
+        _this.oldlen = pData.oldlen;
+        _this.summary = RCDataArticle.tweakParsedComment(pData.parsedcomment, pData.commenthidden == "", _this.wikiInfo);
+        _this.summaryUnparsed = pData.comment;
+        _this.pageid = pData.pageid;
+        _this.revid = pData.revid;
+        _this.old_revid = pData.old_revid;
+        return _this;
+    }
+ RCDataArticle.prototype.dispose = function () {
+        _super.prototype.dispose.call(this);
+    };
+ RCDataArticle.prototype.getUrl = function (params) {
+        return this.wikiInfo.getPageUrl(this.titleUrlEscaped, params);
+    };
+ RCDataArticle.prototype.userDetails = function () {
+        return RCDataArticle.formatUserDetails(this.wikiInfo, this.author, this.userhidden, this.userEdited);
+    };
+    RCDataArticle.formatUserDetails = function (pWikiInfo, pAuthor, pUserHidden, pUserEdited) {
+        if (pUserHidden) {
+            return '<span class="history-deleted">' + i18n_1["default"]("rev-deleted-user") + '</span>';
+        }
+        var blockText = pWikiInfo.user.rights.block ? i18n_1["default"]("pipe-separator") + "<a href='{0}Special:Block/{1}'>" + i18n_1["default"]("blocklink") + "</a>" : "";
+        if (pUserEdited) {
+            return Utils_1["default"].formatString("<span class='mw-usertoollinks'><a href='{0}User:{1}' class='" + pWikiInfo.getUserClass(pAuthor) + "' " + pWikiInfo.getUserClassDataset(pAuthor) + ">{2}</a> (<a href='{0}User_talk:{1}'>" + i18n_1["default"]("talkpagelinktext") + "</a>" + i18n_1["default"]("pipe-separator") + "<a href='{0}Special:Contributions/{1}'>" + i18n_1["default"]("contribslink") + "</a>" + blockText + ")</span>", pWikiInfo.articlepath, Utils_1["default"].escapeCharactersUrl(pAuthor), pAuthor);
+        }
+        else {
+            return Utils_1["default"].formatString("<span class='mw-usertoollinks'><a class='rcm-useranon' href='{0}Special:Contributions/{1}'>{2}</a> (<a href='{0}User_talk:{1}'>" + i18n_1["default"]("talkpagelinktext") + "</a>" + blockText + ")</span>", pWikiInfo.articlepath, Utils_1["default"].escapeCharactersUrl(pAuthor), pAuthor);
+        }
+    };
+    RCDataArticle.tweakParsedComment = function (pParsedComment, pDeleted, pWikiInfo) {
+        if (!pDeleted) {
+            pParsedComment = pParsedComment === null || pParsedComment === void 0 ? void 0 : pParsedComment.replace(/<a href="\//g, "<a href=\"" + pWikiInfo.server + "/"); 
+        }
+        else {
+            pParsedComment = "<span class=\"history-deleted\">" + i18n_1["default"]("rev-deleted-comment") + "</span>";
+        }
+        return pParsedComment === null || pParsedComment === void 0 ? void 0 : pParsedComment.trim().replace(/(\r\n|\n|\r)/gm, " ");
+    };
+ RCDataArticle.prototype.getNotificationTitle = function () {
+        return this.title;
+    };
+    RCDataArticle.prototype.pageTitleTextLink = function () {
+        return "<a class='rc-pagetitle' href='" + this.href + "'>" + this.title + "</a>";
+    };
+    RCDataArticle.prototype.getRcCompareDiffUrl = function (pToRC) {
+        return this.getUrl({
+            curid: this.pageid,
+            diff: (pToRC === null || pToRC === void 0 ? void 0 : pToRC.revid) || 0,
+            oldid: this.old_revid,
+        });
+    };
+    RCDataArticle.prototype.getRcRevisionUrl = function (diff, oldid) {
+        return this.getUrl(__assign(__assign({ curid: this.pageid }, (diff || diff == 0) && { diff: diff }), oldid && { oldid: oldid }));
+    };
+    return RCDataArticle;
+}(_1.RCDataAbstract));
+exports["default"] = RCDataArticle;
+
+},{".":19,"../Utils":9,"../i18n":11}],16:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Global_1 = require("../Global");
+var _1 = require(".");
+var Utils_1 = require("../Utils");
+var i18n_1 = require("../i18n");
+var $ = window.jQuery;
+var mw = window.mediaWiki;
+var RCDataFandomDiscussion =  (function (_super) {
+    __extends(RCDataFandomDiscussion, _super);
+    function RCDataFandomDiscussion(pWikiInfo, pManager, post) {
+        var _a, _b, _c, _d, _e, _f;
+        var _this = this;
+        var thread = post._embedded.thread[0];
+        var date = new Date(0);
+        date.setUTCSeconds((post.modificationDate || post.creationDate).epochSecond);
+        _this = _super.call(this, pWikiInfo, pManager, {
+            title: (_a = post.title) !== null && _a !== void 0 ? _a : thread.title,
+            date: date,
+            author: (_b = post.createdBy.name) !== null && _b !== void 0 ? _b : post.creatorIp.replace("/", ""),
+            isUser: !!post.createdBy.name,
+            groupWithID: post.threadId,
+            namespace: -5234, 
+        }) || this;
+        _this.type = _1.RC_TYPE.DISCUSSION;
+        _this.containerType = thread.containerType || "FORUM";
+        _this.id = post.id;
+        _this.threadId = post.threadId;
+        _this.threadTitle = (_c = thread === null || thread === void 0 ? void 0 : thread.title) !== null && _c !== void 0 ? _c : post.title;
+        _this.forumId = post.forumId;
+        _this.forumName = post.forumName;
+        _this.forumPageName = post.forumName;
+        _this.user_id = post.createdBy.id;
+        _this.user_avatarUrl = post.createdBy.avatarUrl ? post.createdBy.avatarUrl + "/scale-to-width-down/15" : post.createdBy.avatarUrl;
+        _this.isReply = post.isReply;
+        _this.isLocked = post.isLocked;
+        _this.isReported = post.isReported;
+        _this.action = post.position == 1 ? "new" : "reply";
+        _this.rawContent = post.rawContent;
+        var jsonModel = JSON.parse(post.jsonModel);
+        if (post.rawContent) {
+            _this.summary = post.rawContent;
+            if (_this.summary.length > 100) {
+                _this.summary = _this.summary.slice(0, 100).trim() + "...";
+            }
+        }
+        else {
+            if (post.poll) {
+                _this.summary = Global_1["default"].getWdsSymbol('rcm-disc-poll') + " " + i18n_1["default"]('activity-social-activity-poll-placeholder');
+            }
+            else if (_this.containerType == "ARTICLE_COMMENT" && post.jsonModel) {
+                _this.summary = _this.jsonModelToSummary(jsonModel, 100);
+            }
+            else if (_this.containerType == "ARTICLE_COMMENT" && post.renderedContent) {
+                _this.summary = $("<div>" + post.renderedContent + "</div>").text();
+                if (_this.summary.length > 100) {
+                    _this.summary = _this.summary.slice(0, 100).trim() + "...";
+                }
+            }
+        }
+        _this.summaryUnparsed = _this.summary;
+        if (jsonModel || post.poll) {
+            try {
+                _this.previewData = { jsonModel: jsonModel, attachments: post._embedded.attachments, poll: post.poll };
+            }
+            catch (e) { }
+            ;
+        }
+        if (_this.containerType == "WALL") {
+            if (_this.forumName)
+                _this.forumPageName = _this.forumName.replace(" Message Wall", ""); 
+            if (RCDataFandomDiscussion.users[post.forumId]) {
+                _this.forumPageName = RCDataFandomDiscussion.users[post.forumId].name;
+            }
+        }
+        else if (_this.containerType == "ARTICLE_COMMENT") {
+            if (!_this.forumName || _this.forumName == "Root Forum") {
+                _this.forumName = null;
+                _this.forumPageName = null;
+            }
+            if (!_this.threadTitle) {
+                if ((_d = thread === null || thread === void 0 ? void 0 : thread.firstPost) === null || _d === void 0 ? void 0 : _d.jsonModel) {
+                    var jsonModel_1 = JSON.parse(thread.firstPost.jsonModel);
+                    _this.threadTitle = _this.jsonModelToSummary(jsonModel_1, 65); 
+                }
+                else if ((_e = thread === null || thread === void 0 ? void 0 : thread.firstPost) === null || _e === void 0 ? void 0 : _e.renderedContent) {
+                    _this.threadTitle = $("<div>" + ((_f = thread === null || thread === void 0 ? void 0 : thread.firstPost) === null || _f === void 0 ? void 0 : _f.renderedContent) + "</div>").text();
+                    if (_this.threadTitle.length > 65) {
+                        _this.threadTitle = _this.threadTitle.slice(0, 65).trim() + "...";
+                    }
+                }
+            }
+        }
+        return _this;
+    }
+ RCDataFandomDiscussion.prototype.dispose = function () {
+        _super.prototype.dispose.call(this);
+    };
+ RCDataFandomDiscussion.prototype.getUrl = function (params, ignoreReply) {
+        if (ignoreReply === void 0) { ignoreReply = false; }
+        var _a = this, threadId = _a.threadId, id = _a.id, isReply = _a.isReply, wikiInfo = _a.wikiInfo;
+        var showReply = isReply && !ignoreReply;
+        switch (this.containerType) {
+            case 'FORUM': return wikiInfo.scriptpath + "/d/p/" + threadId + (showReply ? "/r/" + id : '') + (params ? '?' + $.param(params) : '');
+            case 'WALL': return "" + wikiInfo.getPageUrl("Message_Wall:" + Utils_1["default"].escapeCharactersUrl(this.forumPageName), __assign({ threadId: threadId }, params)) + (showReply ? "#" + id : '');
+            case 'ARTICLE_COMMENT': return wikiInfo.getPageUrl(Utils_1["default"].escapeCharactersUrl(this.forumPageName), __assign(__assign({ commentId: threadId }, showReply && { replyId: id }), params));
+        }
+    };
+    RCDataFandomDiscussion.prototype.getForumUrl = function () {
+        var wikiInfo = this.wikiInfo;
+        switch (this.containerType) {
+            case 'FORUM': return wikiInfo.scriptpath + "/d/f?catId=" + this.forumId + "&sort=latest";
+            case 'WALL': return !this.forumPageName ? "#" : this.wikiInfo.getPageUrl("Message_Wall:" + this.forumPageName);
+            case 'ARTICLE_COMMENT': return !this.forumPageName ? "#" : this.getUrl(null, false); 
+        }
+    };
+ RCDataFandomDiscussion.prototype.userDetails = function () {
+        var articlepath = this.wikiInfo.articlepath, author = Utils_1["default"].escapeCharactersUrl(this.author), authorNotUrlSafe = this.author;
+        var toolLinks = [
+            "<a href='" + articlepath + "User_talk:" + author + "'>" + i18n_1["default"]("talkpagelinktext") + "</a>",
+        ];
+        if (this.userEdited) {
+            var tUserContribsLink = this.containerType === "FORUM" ? this.wikiInfo.scriptpath + "/d/u/" + this.user_id : this.wikiInfo.articlepath + "Special:Contributions/" + this.author;
+            toolLinks.push("<a href='" + tUserContribsLink + "'>" + i18n_1["default"]("contribslink") + "</a>");
+        }
+        if (this.wikiInfo.user.rights.block) {
+            toolLinks.push("<a href='" + articlepath + "Special:Block/" + author + "'>" + i18n_1["default"]("blocklink") + "</a>");
+        }
+        return [
+            "<span class='mw-usertoollinks'>",
+            this.getCreatorAvatarImg(),
+            "<a href='" + articlepath + (this.userEdited ? "User:" : "Special:Contributions/") + author + "' class='" + this.wikiInfo.getUserClass(this.author) + "' " + this.wikiInfo.getUserClassDataset(this.author) + ">" + authorNotUrlSafe + "</a>",
+            " (" + toolLinks.join(i18n_1["default"]("pipe-separator")) + ")",
+            "</span>",
+        ].join("");
+    };
+    RCDataFandomDiscussion.prototype.getCreatorAvatarImg = function () {
+        return this.makeAvatarImg(this.author, this.user_avatarUrl);
+    };
+    RCDataFandomDiscussion.prototype.makeAvatarImg = function (pAuthor, pAvatarUrl) {
+        return pAvatarUrl
+            ? "<span class=\"rcm-avatar\"><a href=\"" + this.wikiInfo.articlepath + "User:" + Utils_1["default"].escapeCharactersUrl(pAuthor || "") + "\"><img src='" + pAvatarUrl + "' width=\"15\" height=\"15\" /></a> </span>"
+            : "";
+    };
+    RCDataFandomDiscussion.prototype.jsonModelToSummary = function (jsonModel, maxLength) {
+        var tJsonToSummary = function (props) {
+            if ("content" in props) {
+                return props.content.map(tJsonToSummary).join("");
+            }
+            if (props.type == "text") {
+                return props.text;
+            }
+            else if (props.type == "image") {
+                return " ␚ ";
+            } 
+            return "";
+        };
+        var summary = tJsonToSummary(jsonModel).replace(/  /g, " ").trim();
+        if (summary.length > maxLength) {
+            summary = summary.slice(0, maxLength).trim() + "...";
+        }
+        summary = summary.replace(/␚/g, Global_1["default"].getWdsSymbol('rcm-disc-image') + " " + i18n_1["default"]('activity-social-activity-image-placeholder'));
+        return summary;
+    };
+    RCDataFandomDiscussion.prototype.discussionTitleText = function (ajaxIcon, pIsHead) {
+        if (pIsHead === void 0) { pIsHead = false; }
+        ajaxIcon = this.previewData ? (ajaxIcon !== null && ajaxIcon !== void 0 ? ajaxIcon : "") : ""; 
+        switch (this.containerType) {
+            case "FORUM": {
+                var tForumLink = "<a href=\"" + this.getForumUrl() + "\">" + this.forumName + "</a>";
+                var tText = i18n_1["default"].MESSAGES["wall-recentchanges-thread-group"].replace(/(\[\[.*\]\])/g, "$2"); 
+                return i18n_1["default"].wiki2html(tText, "<a href=\"" + this.getUrl(null, pIsHead) + "\">" + this.threadTitle + "</a>" + ajaxIcon, tForumLink); 
+            }
+            case "WALL": {
+                var tText = i18n_1["default"].MESSAGES["wall-recentchanges-thread-group"].replace(/(\[\[.*\]\])/g, "$2"); 
+                return i18n_1["default"].wiki2html(tText, "<a href=\"" + this.getUrl(null, pIsHead) + "\">" + this.threadTitle + "</a>" + ajaxIcon, "<a href=\"" + this.getForumUrl() + "\">" + this.forumName + "</a>");
+            }
+            case "ARTICLE_COMMENT": {
+                return i18n_1["default"](pIsHead ? "rc-comments" : "rc-comment", this.getCommentForumNameLink(pIsHead) + ajaxIcon);
+            }
+        }
+        mw.log("(discussionTitleText) Unknown containerType:", this.containerType);
+    };
+    RCDataFandomDiscussion.prototype.getCommentLink = function (_a) {
+        var _this = this;
+        var text = _a.text, _b = _a.showReply, showReply = _b === void 0 ? true : _b;
+        this.updateFromOldCommentFetchDataIfNeeded();
+        if (this.forumPageName) {
+            return "<a href='" + this.getUrl(null, !showReply) + "' title='" + this.title + "'>" + (text == "set-to-page-name" ? this.forumName : text) + "</a>";
+        }
+        var uniqID = Utils_1["default"].uniqID();
+        this.wikiInfo.discCommentPageNamesNeeded.push({ pageID: this.forumId, uniqID: uniqID, cb: function (articleData) {
+                if (!_this || !_this.date) {
+                    return;
+                }
+                _this.updateDataFromCommentFetch(articleData);
+                $(".rcm" + uniqID).attr("href", _this.getUrl(null, !showReply));
+                if (text == "set-to-page-name") {
+                    $(".rcm" + uniqID).text(_this.forumName);
+                }
+            } });
+        this.fetchCommentFeedsAndPostsIfNeeded();
+        return "<a class=\"rcm" + uniqID + "\" href='" + this.getUrl(null, !showReply) + "' title='" + this.title + "'>" + (text == "set-to-page-name" ? null : text) + "</a>";
+    };
+    RCDataFandomDiscussion.prototype.getCommentForumNameLink = function (pIsHead) {
+        var _this = this;
+        if (pIsHead === void 0) { pIsHead = false; }
+        this.updateFromOldCommentFetchDataIfNeeded();
+        if (this.forumName) {
+            return "[" + this.getUrl(null, pIsHead) + " " + this.forumName + "]";
+        }
+        var uniqID = Utils_1["default"].uniqID();
+        this.wikiInfo.discCommentPageNamesNeeded.push({ pageID: this.forumId, uniqID: uniqID, cb: function (articleData) {
+                if (!_this || !_this.date) {
+                    return;
+                }
+                _this.updateDataFromCommentFetch(articleData);
+                $(".rcm" + uniqID + " a").attr("href", _this.getUrl(null, pIsHead)).text(_this.forumName);
+            } });
+        this.fetchCommentFeedsAndPostsIfNeeded();
+        return "<span class=\"rcm" + uniqID + "\">[[#|" + this.forumName + "]]</span>";
+    };
+    RCDataFandomDiscussion.prototype.getCommentTimeLink = function () {
+        var _this = this;
+        this.updateFromOldCommentFetchDataIfNeeded();
+        if (this.forumPageName) {
+            return "<a href='" + this.href + "' title='" + this.title + "'>" + this.time() + "</a>";
+        }
+        var uniqID = Utils_1["default"].uniqID();
+        this.wikiInfo.discCommentPageNamesNeeded.push({ pageID: this.forumId, uniqID: uniqID, cb: function (articleData) {
+                if (!_this || !_this.date) {
+                    return;
+                }
+                _this.updateDataFromCommentFetch(articleData);
+                $(".rcm" + uniqID).attr("href", _this.href);
+            } });
+        this.fetchCommentFeedsAndPostsIfNeeded();
+        return "<a class=\"rcm" + uniqID + "\" href='" + this.href + "' title='" + this.title + "'>" + this.time() + "</a>";
+    };
+    RCDataFandomDiscussion.prototype.updateDataFromCommentFetch = function (_a) {
+        var title = _a.title, relativeUrl = _a.relativeUrl;
+        this.forumName = title;
+        this.forumPageName = title;
+    };
+    RCDataFandomDiscussion.prototype.updateFromOldCommentFetchDataIfNeeded = function () {
+        if (!this.forumName && this.wikiInfo.discCommentPageNames.has(this.forumId)) {
+            var articleData = this.wikiInfo.discCommentPageNames.get(this.forumId);
+            this.updateDataFromCommentFetch(articleData);
+        }
+    };
+    RCDataFandomDiscussion.prototype.fetchCommentFeedsAndPostsIfNeeded = function () {
+        var _this = this;
+        if (this.wikiInfo.discCommentPageNamesNeeded.length === 1) {
+            var wikiInfo_1 = this.wikiInfo;
+            this.manager.secondaryWikiData.push({
+                url: function () {
+                    var ids = _this.wikiInfo.discCommentPageNamesNeeded.map(function (o) { return o.pageID; }).filter(function (o, i, a) { return a.indexOf(o) == i; }).join(",");
+                    var url = _this.wikiInfo.scriptpath + "/wikia.php?controller=FeedsAndPosts&method=getArticleNamesAndUsernames&stablePageIds=" + ids + "&format=json";
+                    Utils_1["default"].logUrl("(getCommentForumNameLink)", url);
+                    return url;
+                },
+                dataType: "json",
+                skipRefreshSanity: true,
+                callback: function (data) {
+                    wikiInfo_1.discCommentPageNamesNeeded.forEach(function (o) {
+                        if (data.articleNames[Number(o.pageID)]) {
+                            o.cb(data.articleNames[Number(o.pageID)]);
+                            wikiInfo_1.discCommentPageNames.set(o.pageID, data.articleNames[Number(o.pageID)]);
+                        }
+                    });
+                    wikiInfo_1.discCommentPageNamesNeeded = [];
+                }
+            });
+        }
+    };
+    RCDataFandomDiscussion.prototype.actionText = function () {
+        var userDetails = this.userDetails();
+        var forumLink = "<a href=\"" + this.getForumUrl() + "\">" + this.forumPageName + "</a>";
+        var threadLink = "<a href=\"" + this.getUrl(null, true) + "\">" + this.threadTitle + "</a>";
+        var viewLink = " " + i18n_1["default"]('parentheses', "<a href=\"" + this.getUrl() + "\">" + i18n_1["default"]('socialactivity-view') + "</a>");
+        var summary = i18n_1["default"]('quotation-marks', "<em>" + this.summary + "</em>");
+        switch (this.containerType) {
+            default:
+            case "FORUM": {
+                switch (this.action) {
+                    case "new": return i18n_1["default"]('activity-social-activity-post-create', userDetails, threadLink, forumLink, summary) + viewLink;
+                    case "reply": return i18n_1["default"]('activity-social-activity-post-reply-create', userDetails, threadLink, forumLink, summary) + viewLink;
+                }
+            }
+            case "WALL": {
+                switch (this.action) {
+                    case "new": return i18n_1["default"]('activity-social-activity-message-create', userDetails, threadLink, forumLink, summary) + viewLink;
+                    case "reply": return i18n_1["default"]('activity-social-activity-message-reply-create', userDetails, threadLink, forumLink, summary) + viewLink;
+                }
+            }
+            case "ARTICLE_COMMENT": {
+                forumLink = this.getCommentLink({ text: "set-to-page-name", showReply: false });
+                threadLink = this.getCommentLink({ text: this.threadTitle, showReply: false });
+                viewLink = " " + i18n_1["default"]('parentheses', this.getCommentLink({ text: i18n_1["default"]('socialactivity-view') }));
+                switch (this.action) {
+                    case "new": return i18n_1["default"]('activity-social-activity-comment-create', userDetails, forumLink, summary) + viewLink;
+                    case "reply": return i18n_1["default"]('activity-social-activity-comment-reply-create', userDetails, threadLink, forumLink, summary) + viewLink;
+                }
+            }
+        }
+        return "";
+    };
+    RCDataFandomDiscussion.prototype.getThreadStatusIcons = function () {
+        return ""
+            + (this.isLocked ? Global_1["default"].getSymbol("rcm-lock") : "")
+            + (this.isReported ? Global_1["default"].getSymbol("rcm-report") : "");
+    };
+    RCDataFandomDiscussion.prototype.getThreadTypeIcon = function () {
+        switch (this.containerType) {
+            default:
+            case "FORUM": return Global_1["default"].getWdsSymbol('rcm-disc-comment'); 
+            case "WALL": return Global_1["default"].getWdsSymbol('rcm-disc-envelope');
+            case "ARTICLE_COMMENT": return Global_1["default"].getWdsSymbol('rcm-disc-page'); 
+        }
+        return "";
+    };
+    RCDataFandomDiscussion.prototype.getThreadActionIcon = function () {
+        switch (this.action) {
+            case "new": return this.getThreadTypeIcon();
+            case "reply": return Global_1["default"].getWdsSymbol('rcm-disc-reply');
+        }
+    };
+ RCDataFandomDiscussion.prototype.getNotificationTitle = function () {
+        switch (this.containerType) {
+            case "FORUM": {
+                return i18n_1["default"]('discussions') + ": " + this.threadTitle + " [" + this.forumName + "]";
+            }
+            case "WALL": {
+                return i18n_1["default"]('message-wall') + ": " + this.threadTitle + " [" + this.forumName + "]";
+            }
+            case "ARTICLE_COMMENT": {
+                return i18n_1["default"]("comments");
+            }
+        }
+    };
+    RCDataFandomDiscussion.users = {};
+    return RCDataFandomDiscussion;
+}(_1.RCDataAbstract));
+exports["default"] = RCDataFandomDiscussion;
+
+},{".":19,"../Global":1,"../Utils":9,"../i18n":11}],17:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Utils_1 = require("../Utils");
+var i18n_1 = require("../i18n");
+var _1 = require(".");
+var Global_1 = require("../Global");
+var $ = window.jQuery;
+var mw = window.mediaWiki;
+var RCDataLog =  (function (_super) {
+    __extends(RCDataLog, _super);
+    function RCDataLog(pWikiInfo, pManager, pData) {
+        var _this = this;
+        var isUser = pData.user != "" && pData.anon != "";
+        _this = _super.call(this, pWikiInfo, pManager, {
+            title: pData.title,
+            date: new Date(pData.timestamp),
+            author: isUser ? pData.user : (pData.anon ? pData.anon : pData.user),
+            isUser: isUser,
+            namespace: pData.ns,
+            groupWithID: pData.logtype,
+            isNewPage: pData["new"] == "",
+            isBotEdit: pData.bot == "",
+            isMinorEdit: pData.minor == "",
+            isPatrolled: pData.patrolled == "",
+        }) || this;
+        _this.type = _1.RC_TYPE.LOG;
+        _this.summary = _1.RCDataArticle.tweakParsedComment(pData.parsedcomment, pData.commenthidden == "", _this.wikiInfo);
+        _this.summaryUnparsed = pData.comment;
+        _this.logid = pData.logid;
+        _this.logtype = pData.logtype;
+        _this.logaction = pData.logaction;
+        _this.actionhidden = pData.actionhidden == "";
+        _this.userhidden = pData.userhidden == "";
+        _this._initLog(pData);
+        return _this;
+    }
+ RCDataLog.prototype.dispose = function () {
+        _super.prototype.dispose.call(this);
+    };
+    RCDataLog.prototype._initLog = function (pRCData) {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        if (this.actionhidden) {
+            return;
+        }
+        this.logParams = __assign({ type: this.logtype }, ((_a = pRCData.logparams) !== null && _a !== void 0 ? _a : {}));
+        switch (this.logParams.type) {
+            case "abuse": {
+                var _m = (_b = pRCData.logparams) !== null && _b !== void 0 ? _b : {}, result = _m.result, filter = _m.filter, filter_id = _m.filter_id;
+                this.logParams = {
+                    type: "abuse",
+                    result: result,
+                    filter: filter,
+                    filter_id: filter_id,
+                };
+                break;
+            }
+            case "abusefilter": {
+                var _o = (_c = pRCData.logparams) !== null && _c !== void 0 ? _c : {}, historyId = _o.historyId, newId = _o.newId;
+                this.logParams = {
+                    type: "abusefilter",
+                    historyId: historyId,
+                    newId: newId,
+                };
+                break;
+            }
+            case "block": {
+                var _p = (_d = pRCData.logparams) !== null && _d !== void 0 ? _d : {}, duration = _p.duration, flags = _p.flags, expiry = _p.expiry, sitewide = _p.sitewide;
+                this.logParams = {
+                    type: "block",
+                    duration: duration,
+                    flags: (flags !== null && flags !== void 0 ? flags : [])
+                        .map(function (f) { return i18n_1["default"].exists("block-log-flags-" + f) ? i18n_1["default"](("block-log-flags-" + f)) : f; })
+                        .join(", "),
+                    expiry: expiry,
+                    sitewide: sitewide === "",
+                };
+                break;
+            }
+            case "contentmodel": {
+                var _q = (_e = pRCData.logparams) !== null && _e !== void 0 ? _e : {}, oldmodel = _q.oldmodel, newmodel = _q.newmodel;
+                this.logParams = {
+                    type: "contentmodel",
+                    oldmodel: oldmodel,
+                    newmodel: newmodel,
+                };
+                break;
+            }
+            case "delete": {
+                var _r = (_f = pRCData.logparams) !== null && _f !== void 0 ? _f : {}, count = _r.count, ids = _r.ids, oldMask = _r.old, newMask = _r.new;
+                this.logParams = {
+                    type: "delete",
+                    ids_length: (_g = ids === null || ids === void 0 ? void 0 : ids.length) !== null && _g !== void 0 ? _g : 1,
+                    new_bitmask: newMask === null || newMask === void 0 ? void 0 : newMask.bitmask,
+                    count: count,
+                };
+                break;
+            }
+            case "merge": {
+                var _s = (_h = pRCData.logparams) !== null && _h !== void 0 ? _h : {}, dest_title = _s.dest_title, mergepoint = _s.mergepoint;
+                this.logParams = {
+                    type: "merge",
+                    destination: dest_title ? Utils_1["default"].escapeCharacters(dest_title) : "",
+                    mergepoint: mergepoint,
+                };
+                break;
+            }
+            case "move": {
+                var _t = (_j = pRCData.logparams) !== null && _j !== void 0 ? _j : {}, target_title = _t.target_title, suppressredirect = _t.suppressredirect;
+                this.logParams = {
+                    type: "move",
+                    suppressredirect: suppressredirect == "",
+                    newTitle: target_title && Utils_1["default"].escapeCharacters(target_title),
+                };
+                break;
+            }
+            case "protect": {
+                var _u = (_k = pRCData.logparams) !== null && _k !== void 0 ? _k : {}, description = _u.description, details = _u.details, cascade = _u.cascade, oldtitle_ns = _u.oldtitle_ns, oldtitle_title = _u.oldtitle_title;
+                this.logParams = {
+                    type: "protect",
+                    description: description,
+                    cascade: cascade === "",
+                    oldtitle_title: oldtitle_title,
+                };
+                break;
+            }
+            case "rights": {
+                var _v = (_l = pRCData.logparams) !== null && _l !== void 0 ? _l : {}, oldgroups = _v.oldgroups, newgroups = _v.newgroups;
+                this.logParams = {
+                    type: "rights",
+                    legacy: !newgroups && !oldgroups,
+                    newgroups: (newgroups === null || newgroups === void 0 ? void 0 : newgroups.length) > 0 ? newgroups.join(", ") : i18n_1["default"]("rightsnone"),
+                    oldgroups: (oldgroups === null || oldgroups === void 0 ? void 0 : oldgroups.length) > 0 ? oldgroups.join(", ") : i18n_1["default"]("rightsnone"),
+                };
+                break;
+            }
+        }
+    };
+    RCDataLog.prototype.logTitleLink = function () {
+        var logPage = this.logtype === "abuse" ? "Special:AbuseLog" : "Special:Log/" + this.logtype;
+        return "(<a class='rc-log-link' href='" + this.wikiInfo.getPageUrl(logPage) + "'>" + this.logTitle() + "</a>)";
+    };
+    RCDataLog.prototype.logTitle = function () {
+        switch (this.logtype) {
+            case "abuse": return i18n_1["default"]("abuselog");
+            case "abusefilter": return i18n_1["default"]("abusefilter-log");
+            case "block": return i18n_1["default"]("blocklogpage");
+            case "contentmodel": return i18n_1["default"]("log-name-contentmodel");
+            case "delete": return i18n_1["default"]("dellogpage");
+            case "import": return i18n_1["default"]("importlogpage");
+            case "merge": return i18n_1["default"]("mergelog");
+            case "move": return i18n_1["default"]("movelogpage");
+            case "newusers": return i18n_1["default"]("newuserlogpage");
+            case "protect": return i18n_1["default"]("protectlogpage");
+            case "renameuser": return i18n_1["default"]("userrenametool-logpage");
+            case "rights": return i18n_1["default"]("rightslog");
+            case "upload": return i18n_1["default"]("uploadlogpage");
+            default: return this.logtype; 
+        }
+    };
+    RCDataLog.prototype.logActionText = function () {
+        var _this = this;
+        var _a, _b;
+        var tLogMessage = "";
+        var tAfterLogMessage;
+        if (this.actionhidden) {
+            tLogMessage = "<span class=\"history-deleted\">" + i18n_1["default"]("rev-deleted-event") + "</span>";
+            tLogMessage += this.getSummary();
+        }
+        switch (this.logParams.type) {
+            case "abuse": {
+                var _c = this.logParams, result = _c.result, filter_1 = _c.filter, filter_id = _c.filter_id;
+                var filterFromDesc_1 = { found: 0 };
+                if (filter_1.trim() != "") {
+                    Object.keys(this.wikiInfo.abuseFilters).forEach(function (i) {
+                        if (_this.wikiInfo.abuseFilters[i].description == filter_1) {
+                            filterFromDesc_1.found++;
+                            filterFromDesc_1.id = Number(i);
+                            filterFromDesc_1.private = _this.wikiInfo.abuseFilters[i].private;
+                        }
+                    });
+                }
+                if (filterFromDesc_1.found !== 1) {
+                    filterFromDesc_1.id = filterFromDesc_1.private = undefined;
+                }
+                filterFromDesc_1.private = filterFromDesc_1.private !== undefined ? filterFromDesc_1.private : true; 
+                var resultString = result === ""
+                    ? i18n_1["default"]('abusefilter-log-noactions')
+                    : result.split(",").map(function (r) { return i18n_1["default"]('abusefilter-action-' + r); }).join(", ");
+                var filterIdLink = !filterFromDesc_1.private && filterFromDesc_1.id
+                    ? "<a href='" + this.wikiInfo.getPageUrl('Special:AbuseFilter/' + filterFromDesc_1.id) + "'>" + i18n_1["default"]('abusefilter-log-detailedentry-local', filterFromDesc_1.id) + "</a>"
+                    : i18n_1["default"]('abusefilter-log-detailedentry-local', filterFromDesc_1.id !== undefined ? filterFromDesc_1.id : "?");
+                if (this.wikiInfo.user.rights.abusefilter_log_detail) {
+                    tLogMessage = i18n_1["default"]('abusefilter-log-detailedentry-meta', undefined, this.userDetails(), filterIdLink, this.logaction, "<a href='" + this.href + "'>" + this.title + "</a>", resultString, filter_1, [
+                        "<a href='" + this.wikiInfo.getPageUrl("Special:AbuseLog/" + this.logid) + "'>" + i18n_1["default"]('abusefilter-log-detailslink') + "</a>",
+                        "<a href='" + this.wikiInfo.getPageUrl("Special:AbuseFilter/examine/log/" + this.logid) + "'>" + i18n_1["default"]('abusefilter-changeslist-examine') + "</a>",
+                    ].join(" | "), Global_1.UNKNOWN_GENDER_TYPE);
+                }
+                else {
+                    tLogMessage = i18n_1["default"]('abusefilter-log-entry', undefined, this.userDetails(), this.logaction, "<a href='" + this.href + "'>" + this.title + "</a>", resultString, filter_1, undefined, Global_1.UNKNOWN_GENDER_TYPE);
+                    if (filterFromDesc_1.id !== undefined && !filterFromDesc_1.private) {
+                        tLogMessage += " (" + filterIdLink + ")";
+                    }
+                }
+                tLogMessage = tLogMessage.replace("$1: ", "").replace("$1", "");
+                break;
+            }
+            case "abusefilter": {
+                var _d = this.logParams, filterId = _d.newId, historyId = _d.historyId;
+                this.wikiInfo.needsAbuseFilters = true;
+                switch (this.logaction) {
+                    case "create":
+                    case "modify":
+                        {
+                            tLogMessage += i18n_1["default"]("abusefilter-logentry-" + this.logaction, this.userDetails(), Global_1.UNKNOWN_GENDER_TYPE, undefined, "<a href='" + this.href + "'>" + this.title + "</a>", "<a href='" + this.wikiInfo.getPageUrl("Special:AbuseFilter/history/" + filterId + "/diff/prev/" + historyId) + "'>" + i18n_1["default"]("abusefilter-log-detailslink") + "</a>");
+                            break;
+                        }
+                }
+                break;
+            }
+            case "block": {
+                var _e = this.logParams, duration = _e.duration, flags = _e.flags;
+                var affectedUser = (_a = this.title.split(/:(.+)/)[1]) !== null && _a !== void 0 ? _a : this.title;
+                tLogMessage += i18n_1["default"](("logentry-block-" + this.logaction), this.userDetails(), Global_1.UNKNOWN_GENDER_TYPE, "<a href='" + this.href + "'>" + affectedUser + "</a>", Global_1.UNKNOWN_GENDER_TYPE, 
+                duration, flags && i18n_1["default"]('parentheses', flags));
+                break;
+            }
+            case 'contentmodel': {
+                var _f = this.logParams, oldmodel = _f.oldmodel, newmodel = _f.newmodel;
+                switch (this.logaction) {
+                    case "new":
+                    case "change":
+                        {
+                            tLogMessage += i18n_1["default"]("logentry-contentmodel-" + this.logaction, this.userDetails(), Global_1.UNKNOWN_GENDER_TYPE, "<a href='" + this.href + "'>" + this.title + "</a>", oldmodel, newmodel);
+                            break;
+                        }
+                }
+                if (this.logaction == "change" && this.wikiInfo.user.rights.editcontentmodel) {
+                    tLogMessage += " (<a href='" + this.wikiInfo.getPageUrl('Special:ChangeContentModel', { pagetitle: this.titleUrlEscaped, model: oldmodel, reason: i18n_1["default"]('logentry-contentmodel-change-revert') }) + "'>" + i18n_1["default"]('logentry-contentmodel-change-revertlink') + "</a>)";
+                }
+                break;
+            }
+            case "delete": {
+                var _g = this.logParams, ids_length = _g.ids_length, new_bitmask = _g.new_bitmask, count = _g.count;
+                var arg4 = undefined;
+                switch (this.logaction) {
+                    case 'restore': {
+                        if (count) {
+                            var tArray = [];
+                            if ((count === null || count === void 0 ? void 0 : count.revisions) > 0) {
+                                tArray.push(i18n_1["default"]('restore-count-revisions', count.revisions));
+                            }
+                            if ((count === null || count === void 0 ? void 0 : count.files) > 0) {
+                                tArray.push(i18n_1["default"]('restore-count-files', count.files));
+                            }
+                            arg4 = tArray.join(i18n_1["default"]("and") + i18n_1["default"]("word-separator"));
+                        }
+                        else {
+                            this.logaction += '-nocount';
+                        }
+                        break;
+                    }
+                    case 'revision':
+                    case 'event': {
+                        arg4 = (_b = {
+                            1: i18n_1["default"]("revdelete-content-hid"),
+                            2: i18n_1["default"]("revdelete-summary-hid"),
+                            3: i18n_1["default"]("revdelete-content-hid") + i18n_1["default"]("and") + i18n_1["default"]("word-separator") + i18n_1["default"]("revdelete-summary-hid"),
+                        }[new_bitmask]) !== null && _b !== void 0 ? _b : "?";
+                        break;
+                    }
+                }
+                tLogMessage += i18n_1["default"](("logentry-delete-" + this.logaction), this.userDetails(), Global_1.UNKNOWN_GENDER_TYPE, "<a href='" + this.href + "'>" + this.title + "</a>", arg4, ids_length);
+                if (this.wikiInfo.user.rights.undelete && this.logaction == "delete") {
+                    tAfterLogMessage = " " + i18n_1["default"]('parentheses', "<a href='" + this.wikiInfo.getPageUrl('Special:Undelete', { target: this.titleUrlEscaped }) + "'>" + i18n_1["default"]("undeletelink") + "</a>");
+                }
+                break;
+            }
+            case "import": {
+                tLogMessage += i18n_1["default"](("logentry-import-" + this.logaction), this.userDetails(), Global_1.UNKNOWN_GENDER_TYPE, "<a href='" + this.href + "'>" + this.title + "</a>");
+                break;
+            }
+            case "merge": {
+                var _h = this.logParams, destination = _h.destination, mergepoint = _h.mergepoint;
+                tLogMessage += this.userDetails() + " ";
+                tLogMessage += i18n_1["default"]("pagemerge-logentry", this.href + "|" + this.title, this.wikiInfo.articlepath + destination + "|" + destination, Utils_1["default"].formatWikiTimeStamp(new Date(mergepoint)));
+                break;
+            }
+            case "move": {
+                var _j = this.logParams, newTitle = _j.newTitle, suppressredirect = _j.suppressredirect;
+                var noredirect = suppressredirect ? "-noredirect" : "";
+                tLogMessage += i18n_1["default"](("logentry-move-" + this.logaction + noredirect), this.userDetails(), Global_1.UNKNOWN_GENDER_TYPE, "<a href='" + this.getUrl({ redirect: "no" }) + "'>" + this.title + "</a>", "<a href='" + (this.wikiInfo.articlepath + Utils_1["default"].escapeCharactersUrl(newTitle)) + "'>" + newTitle + "</a>");
+                break;
+            }
+            case "newusers": {
+                tLogMessage += i18n_1["default"](("logentry-newusers-" + this.logaction), this.userDetails(), undefined, "");
+                break;
+            }
+            case "protect": {
+                var _k = this.logParams, description = _k.description, cascade = _k.cascade, oldtitle_title = _k.oldtitle_title;
+                var arg4 = description;
+                switch (this.logaction) {
+                    case "move_prot": {
+                        arg4 = this.wikiInfo.getPageUrl(oldtitle_title);
+                        break;
+                    }
+                }
+                tLogMessage += i18n_1["default"](("logentry-protect-" + this.logaction + (cascade ? '-cascade' : '')), this.userDetails(), Global_1.UNKNOWN_GENDER_TYPE, "<a href='" + this.href + "'>" + this.title + "</a>", arg4);
+                break;
+            }
+            case "renameuser": {
+                tLogMessage += this.userDetails() + " renameuser"; 
+                break;
+            }
+            case "rights": {
+                var _l = this.logParams, oldgroups = _l.oldgroups, newgroups = _l.newgroups, legacy = _l.legacy;
+                if (legacy && this.logaction == "rights") {
+                    this.logaction += '-legacy';
+                }
+                tLogMessage += i18n_1["default"](("logentry-rights-" + this.logaction), this.userDetails(), Global_1.UNKNOWN_GENDER_TYPE, "<a href='" + this.href + "'>" + this.title + "</a>", oldgroups, newgroups, Global_1.UNKNOWN_GENDER_TYPE);
+                break;
+            }
+            case "upload": {
+                tLogMessage += i18n_1["default"](("logentry-upload-" + this.logaction), this.userDetails(), Global_1.UNKNOWN_GENDER_TYPE, "<a href='" + this.href + "'>" + this.title + "</a>");
+                break;
+            }
+        }
+        if (tLogMessage == "") {
+            tLogMessage += this.userDetails() + (" ??? (" + this.logtype + " - " + this.logaction + ") ");
+        }
+        tLogMessage += this.getSummary();
+        if (tAfterLogMessage) {
+            tLogMessage += tAfterLogMessage;
+        }
+        return tLogMessage;
+    };
+ RCDataLog.prototype.getUrl = function (params) {
+        return this.wikiInfo.getPageUrl(this.titleUrlEscaped, params);
+    };
+ RCDataLog.prototype.userDetails = function () {
+        return _1.RCDataArticle.formatUserDetails(this.wikiInfo, this.author, this.userhidden, this.userEdited);
+    };
+ RCDataLog.prototype.getNotificationTitle = function () {
+        return this.logTitle() + (this.title ? " - " + this.title : "");
+    };
+    RCDataLog.abuseLogDataToNormalLogFormat = function (log) {
+        return {
+            type: "log",
+            ns: log.ns,
+            title: log.title,
+            timestamp: log.timestamp,
+            user: log.user,
+            pageid: log.id,
+            anon: mw.util.isIPAddress(log.user) ? "" : undefined,
+            oldlen: 0,
+            newlen: 0,
+            revid: 0,
+            old_revid: 0,
+            rcid: 0,
+            comment: undefined,
+            parsedcomment: undefined,
+            logid: log.id,
+            logtype: "abuse",
+            logaction: log.action,
+            logparams: {
+                filter: log.filter,
+                filter_id: log.filter_id,
+                result: log.result,
+            }
+        };
+    };
+    return RCDataLog;
+}(_1.RCDataAbstract));
+exports["default"] = RCDataLog;
+
+},{".":19,"../Global":1,"../Utils":9,"../i18n":11}],18:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var Utils_1 = require("../Utils");
+var i18n_1 = require("../i18n");
+var Global_1 = require("../Global");
+var GlobalModal_1 = require("../GlobalModal");
+var _1 = require(".");
+var $ = window.jQuery;
+var mw = window.mediaWiki;
+var RCList =  (function () {
+    function RCList(pManager) {
+        this.manager = pManager;
+        this.list = [];
+    }
+    Object.defineProperty(RCList.prototype, "newest", {
+        get: function () { return this.list[0]; },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(RCList.prototype, "oldest", {
+        get: function () { return this.list[this.list.length - 1]; },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(RCList.prototype, "date", {
+        get: function () { return this.newest.date; },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(RCList.prototype, "wikiInfo", {
+        get: function () { return this.newest.wikiInfo; },
+        enumerable: false,
+        configurable: true
+    });
+    RCList.prototype.dispose = function () {
+        delete this.manager;
+        for (var i = 0; i < this.list.length; i++) {
+            this.list[i].dispose();
+            this.list[i] = null;
+        }
+        this.list = null;
+        this.htmlNode = null;
+    };
+    RCList.prototype.addRC = function (pNewRC) {
+        this.list.push(pNewRC);
+        this.list.sort(function (a, b) { return b.date.valueOf() - a.date.valueOf(); }); 
+        return this; 
+    };
+    RCList.prototype.removeRC = function (pRC) {
+        var tDataInListI = this.list.indexOf(pRC);
+        if (tDataInListI > -1) {
+            this.list.splice(tDataInListI, 1)[0].dispose();
+        }
+        else {
+            mw.log("[RCList](removeRC) Data did not exist in list, and thus could not be removed.", pRC);
+        }
+    };
+    RCList.prototype.shouldGroupWith = function (pRC) {
+        return this.wikiInfo.scriptpath == pRC.wikiInfo.scriptpath
+            && this.newest.type == pRC.type
+            && this.newest.groupWithID == pRC.groupWithID
+            && Utils_1["default"].getMonth(this.date) == Utils_1["default"].getMonth(pRC.date)
+            && Utils_1["default"].getDate(this.date) == Utils_1["default"].getDate(pRC.date);
+    };
+    RCList.prototype._diffHist = function (pRC) {
+        var diffLink = i18n_1["default"]('diff');
+        if (pRC.editFlags.newpage == false) {
+            diffLink = "<a class='rc-diff-link' href='" + pRC.getRcCompareDiffUrl(pRC) + "'>" + diffLink + "</a>" + this.getAjaxDiffButton();
+        }
+        if (pRC.namespace == 6) {
+            diffLink += this.getAjaxImageButton();
+        }
+        return "" + i18n_1["default"]('parentheses-start') + diffLink + i18n_1["default"]("pipe-separator") + "<a class='rc-hist-link' href='" + pRC.getUrl({ action: 'history' }) + "'>" + i18n_1["default"]('hist') + "</a>" + i18n_1["default"]('parentheses-end');
+    };
+    RCList.prototype._diffSizeText = function (pToRC, pFromRC) {
+        var tDiffSize = pToRC.newlen - (pFromRC !== null && pFromRC !== void 0 ? pFromRC : pToRC).oldlen;
+        var tDiffSizeText = mw.language.convertNumber(tDiffSize);
+        var html = "<strong class='{0}'>{1}</strong>";
+        if (tDiffSize > 0) {
+            return Utils_1["default"].formatString(html, "mw-plusminus-pos", i18n_1["default"]('parentheses', "+" + tDiffSizeText));
+        }
+        else if (tDiffSize < 0) {
+            return Utils_1["default"].formatString(html, "mw-plusminus-neg", i18n_1["default"]('parentheses', tDiffSizeText));
+        }
+        else {
+            return Utils_1["default"].formatString(html, "mw-plusminus-null", i18n_1["default"]('parentheses', tDiffSizeText));
+        }
+    };
+    RCList.prototype._contributorsCountText = function () {
+        var _this = this;
+        var contribs = this.list.reduce(function (map, rc) {
+            if (map.has(rc.author)) {
+                map.get(rc.author).count++;
+            }
+            else {
+                map.set(rc.author, { count: 1, anon: !rc.userEdited, avatar: (rc.type == _1.RC_TYPE.DISCUSSION ? rc.getCreatorAvatarImg() : "") });
+            }
+            return map;
+        }, new Map());
+        var contribLinks = [];
+        contribs.forEach(function (_a, key) {
+            var count = _a.count, anon = _a.anon, avatar = _a.avatar;
+            contribLinks.push(_this._userPageLink(key, !anon, avatar) + (count > 1 ? " " + i18n_1["default"]('parentheses', i18n_1["default"]('ntimes', count)) : ""));
+        });
+        return i18n_1["default"]('brackets', contribLinks.join(i18n_1["default"]('semicolon-separator')));
+    };
+    RCList.prototype._userPageLink = function (pUsername, pUserEdited, pAvatar) {
+        if (pUserEdited) {
+            return pAvatar + "<a href='" + this.wikiInfo.getPageUrl("User:" + Utils_1["default"].escapeCharactersUrl(pUsername)) + "' class=\"" + this.wikiInfo.getUserClass(pUsername) + "\" " + this.wikiInfo.getUserClassDataset(pUsername) + ">" + pUsername + "</a>";
+        }
+        else {
+            return "<a class=\"rcm-useranon\" href='" + this.wikiInfo.getPageUrl("Special:Contributions/" + Utils_1["default"].escapeCharactersUrl(pUsername)) + "'>" + pUsername + "</a>";
+        }
+    };
+    RCList.prototype.getAjaxDiffButton = function () {
+        return " <span class=\"rcm-ajaxIcon rcm-ajaxDiff\">" + Global_1["default"].getSymbol("rcm-columns") + "</span>";
+    };
+    RCList.prototype.getAjaxImageButton = function () {
+        return " <span class=\"rcm-ajaxIcon rcm-ajaxImage\">" + Global_1["default"].getSymbol("rcm-picture") + "</span>";
+    };
+    RCList.prototype.getAjaxPagePreviewButton = function () {
+        return " <span class=\"rcm-ajaxIcon rcm-ajaxPage\">" + Global_1["default"].getSymbol("rcm-preview") + "</span>";
+    };
+    RCList.prototype.addPreviewDiffListener = function (pElem, pFromRC, pToRC) {
+        if (!pElem) {
+            return;
+        }
+        if (pToRC == undefined) {
+            pToRC = pFromRC;
+        }
+        if (pFromRC.type != _1.RC_TYPE.NORMAL || pToRC.type != _1.RC_TYPE.NORMAL) {
+            return;
+        }
+        var pageName = pFromRC.title;
+        var pageID = pFromRC.pageid;
+        var ajaxLink = this.wikiInfo.getApiUrl({
+            action: 'query', format: 'json', prop: 'revisions|info', rvprop: 'size|user|parsedcomment|timestamp|flags',
+            rvdiffto: pToRC.revid, revids: pFromRC.old_revid
+        });
+        var diffLink = pFromRC.getUrl({ curid: pFromRC.pageid, diff: pToRC.revid, oldid: pFromRC.old_revid });
+        var undoLink = pFromRC.getUrl({ curid: pFromRC.pageid, undo: pToRC.revid, undoafter: pFromRC.old_revid, action: 'edit' });
+        var diffTableInfo = {
+            wikiInfo: pFromRC.wikiInfo,
+            titleUrlEscaped: pFromRC.titleUrlEscaped,
+            newRev: { user: pToRC.userDetails(), summary: pToRC.getSummary(), date: pToRC.date, minor: pToRC.editFlags.minoredit },
+        };
+        this._addAjaxClickListener(pElem, function () { GlobalModal_1.previewDiff(pageName, pageID, ajaxLink, diffLink, undoLink, diffTableInfo); });
+        pFromRC = null;
+        pToRC = null;
+    };
+    RCList.prototype.addPreviewImageListener = function (pElem, pImageRCs) {
+        if (!pElem) {
+            return;
+        }
+        var imageRCs = (Array.isArray(pImageRCs) ? pImageRCs : [pImageRCs]);
+        var tImageNames = imageRCs.map(function (rc) { return rc.titleUrlEscaped; }).filter(function (name, pos, arr) { return arr.indexOf(name) == pos; });
+        var ajaxLink = this.wikiInfo.getApiUrl({ action: 'query', format: 'json', prop: 'imageinfo', iiprop: 'url|size', redirects: '1' });
+        var articlepath = this.wikiInfo.articlepath;
+        this._addAjaxClickListener(pElem, function () { GlobalModal_1.previewImages(ajaxLink, tImageNames, articlepath); });
+    };
+    RCList.prototype.addPreviewPageListener = function (pElem, pRC) {
+        if (!pElem) {
+            return;
+        }
+        switch (pRC.type) {
+            case _1.RC_TYPE.DISCUSSION: {
+                this._addAjaxClickListener(pElem, function () {
+                    GlobalModal_1.previewDiscussionHTML(pRC);
+                });
+                break;
+            }
+            case _1.RC_TYPE.NORMAL: {
+                var ajaxLink_1 = this.wikiInfo.getApiUrl({ action: 'parse', format: 'json', pageid: pRC.pageid, prop: 'text|headhtml', disabletoc: 'true' });
+                var pageName_1 = pRC.title;
+                var pageHref_1 = pRC.href;
+                var serverLink_1 = this.wikiInfo.server;
+                this._addAjaxClickListener(pElem, function () { GlobalModal_1.previewPage(ajaxLink_1, pageName_1, pageHref_1, serverLink_1); });
+                break;
+            }
+        }
+    };
+    RCList.prototype._addAjaxClickListener = function (pElem, pCallback) {
+        var tRCM_AjaxIconClickHandler = function (e) {
+            e.preventDefault();
+            pCallback();
+        };
+        pElem.addEventListener("click", tRCM_AjaxIconClickHandler);
+    };
+    RCList.prototype._flag = function (pFlag, pRC, pEmpty) {
+        if (!pRC.editFlags[pFlag]) {
+            return pEmpty;
+        }
+        var _a = RCList.FLAG_INFO_MAP[pFlag], letter = _a.letter, tooltip = _a.tooltip;
+        return "<abbr class=\"" + pFlag + "\" title=\"" + i18n_1["default"](tooltip) + "\">" + i18n_1["default"](letter) + "</abbr>";
+    };
+    RCList.prototype._getFlags = function (pRC, pEmpty, pData) {
+        return [
+            this._flag("newpage", pRC, pEmpty),
+            ((pData === null || pData === void 0 ? void 0 : pData.ignoreminoredit) ? pEmpty : this._flag("minoredit", pRC, pEmpty)),
+            this._flag("botedit", pRC, pEmpty),
+            pEmpty 
+        ].join("");
+    };
+    RCList.prototype._showFavicon = function () {
+        return this.manager.chosenWikis.length > 1;
+    };
+    RCList.prototype._getBackgroundClass = function () {
+        return this._showFavicon() ? "rcm-tiled-favicon" : "";
+    };
+    RCList.prototype._toHTMLSingle = function (pRC) {
+        if (this.list.length > 1) {
+            return this._toHTMLBlock();
+        }
+        var html = "";
+        switch (pRC.type) {
+            case _1.RC_TYPE.NORMAL:
+            default: {
+                html += pRC.pageTitleTextLink();
+                html += this.getAjaxPagePreviewButton();
+                html += " " + this._diffHist(pRC);
+                html += RCList.SEP;
+                html += this._diffSizeText(pRC);
+                html += RCList.SEP;
+                html += pRC.userDetails();
+                html += pRC.getSummary();
+                break;
+            }
+            case _1.RC_TYPE.LOG: {
+                var tRC = pRC;
+                html += tRC.logTitleLink();
+                if (tRC.logtype == "upload") {
+                    html += this.getAjaxImageButton();
+                }
+                html += RCList.SEP;
+                html += tRC.logActionText();
+                break;
+            }
+            case _1.RC_TYPE.DISCUSSION: {
+                var tRC = pRC;
+                html += pRC.getThreadActionIcon() + " ";
+                html += tRC.getThreadStatusIcons();
+                html += tRC.discussionTitleText(this.getAjaxPagePreviewButton());
+                html += RCList.SEP;
+                html += pRC.actionText();
+                break;
+            }
+        }
+        var tTable = Utils_1["default"].newElement("table", { className: "mw-enhanced-rc " + pRC.wikiInfo.rcClass + " " + pRC.getNSClass() });
+        Utils_1["default"].newElement("caption", { className: this._getBackgroundClass() }, tTable); 
+        var tRow = Utils_1["default"].newElement("tr", {}, tTable);
+        if (this._showFavicon()) {
+            Utils_1["default"].newElement("td", { innerHTML: pRC.wikiInfo.getFaviconHTML(true) }, tRow);
+        }
+        Utils_1["default"].newElement("td", { className: "mw-enhanced-rc", innerHTML: ""
+                + '<span class="rcm-arr none">&nbsp;</span>'
+                + this._getFlags(pRC, "&nbsp;")
+                + "&nbsp;"
+                + pRC.time()
+                + "&nbsp;"
+        }, tRow);
+        Utils_1["default"].newElement("td", { innerHTML: html }, tRow);
+        this.addPreviewDiffListener(tTable.querySelector(".rcm-ajaxDiff"), pRC);
+        this.addPreviewImageListener(tTable.querySelector(".rcm-ajaxImage"), pRC);
+        this.addPreviewPageListener(tTable.querySelector(".rcm-ajaxPage"), pRC);
+        if (this.manager.makeLinksAjax) {
+            this.addPreviewDiffListener(tTable.querySelector(".rc-diff-link"), pRC);
+            if (tTable.querySelector(".rcm-ajaxImage")) {
+                this.addPreviewImageListener(tTable.querySelector(".rc-log-link"), pRC);
+                this.addPreviewImageListener(tTable.querySelector(".rc-pagetitle"), pRC);
+            }
+        }
+        return tTable;
+    };
+    RCList.prototype._toHTMLBlock = function () {
+        if (this.list.length == 1) {
+            return this._toHTMLSingle(this.newest);
+        }
+        var tBlockHead = this._toHTMLBlockHead();
+        for (var i = 0; i < this.list.length; i++) {
+            tBlockHead.querySelector("tbody").appendChild(this._toHTMLBlockLine(this.list[i]));
+        }
+        if ($(tBlockHead).makeCollapsibleRCM) {
+            $(tBlockHead).makeCollapsibleRCM();
+        }
+        return tBlockHead;
+    };
+    RCList.prototype._toHTMLBlockHead = function () {
+        var html = "";
+        switch (this.newest.type) {
+            case _1.RC_TYPE.NORMAL: {
+                html += "<a class='rc-pagetitle' href='" + this.newest.href + "'>" + this.newest.title + "</a>";
+                html += this.getAjaxPagePreviewButton();
+                html += " " + i18n_1["default"]('parentheses-start');
+                html += this.oldest.editFlags.newpage == false
+                    ? "<a class='rc-changes-link' href='" + this.oldest.getRcCompareDiffUrl(this.newest) + "'>" + i18n_1["default"]("nchanges", this.list.length) + "</a>" + this.getAjaxDiffButton()
+                    : i18n_1["default"]("nchanges", this.list.length);
+                if (this.newest.namespace == 6) {
+                    html += this.getAjaxImageButton();
+                }
+                html += i18n_1["default"]("pipe-separator");
+                html += "<a href='" + this.newest.getUrl({ action: 'history' }) + "'>" + i18n_1["default"]("hist") + "</a>";
+                html += i18n_1["default"]('parentheses-end');
+                html += RCList.SEP;
+                html += this._diffSizeText(this.newest, this.oldest);
+                break;
+            }
+            case _1.RC_TYPE.LOG: {
+                html += this.newest.logTitleLink();
+                if (this.newest.logtype == "upload") {
+                    html += this.getAjaxImageButton();
+                }
+                break;
+            }
+            case _1.RC_TYPE.DISCUSSION: {
+                html += this.newest.getThreadTypeIcon() + " ";
+                html += this.newest.discussionTitleText(null, true);
+                html += " " + i18n_1["default"]('parentheses-start');
+                html += i18n_1["default"]("nchanges", this.list.length);
+                html += i18n_1["default"]('parentheses-end');
+                break;
+            }
+        }
+        html += RCList.SEP;
+        html += this._contributorsCountText();
+        var tTable = Utils_1["default"].newElement("table", { className: "rcmmw-collapsible mw-enhanced-rc rcmmw-collapsed " + this.newest.wikiInfo.rcClass + " " + this.newest.getNSClass() }); 
+        Utils_1["default"].newElement("caption", { className: this._getBackgroundClass() }, tTable); 
+        var tTbody = Utils_1["default"].newElement("tbody", {}, tTable); 
+        var tRow = Utils_1["default"].newElement("tr", {}, tTbody);
+        if (this._showFavicon()) {
+            Utils_1["default"].newElement("td", { innerHTML: this.newest.wikiInfo.getFaviconHTML(true) }, tRow);
+        }
+        var td1 = Utils_1["default"].newElement("td", {}, tRow);
+        Utils_1["default"].newElement("span", { className: "rcmmw-collapsible-toggle", innerHTML: ''
+                + '<span class="mw-rc-openarrow"><a title="' + i18n_1["default"]("rc-enhanced-expand") + '">' 
+                + '<span class="rcm-arr" title="' + i18n_1["default"]("rc-enhanced-expand") + '">+</span>'
+                + '</a></span>'
+                + '<span class="mw-rc-closearrow"><a title="' + i18n_1["default"]("rc-enhanced-hide") + '">' 
+                + '<span class="rcm-arr" title="' + i18n_1["default"]("rc-enhanced-hide") + '">-</span>'
+                + '</a></span>' }, td1);
+        Utils_1["default"].newElement("td", { className: "mw-enhanced-rc", innerHTML: ""
+                + this._getFlags(this.oldest, "&nbsp;", { ignoreminoredit: true })
+                + "&nbsp;"
+                + this.newest.time()
+                + "&nbsp;"
+        }, tRow);
+        Utils_1["default"].newElement("td", { innerHTML: html }, tRow);
+        this.addPreviewDiffListener(tTable.querySelector(".rcm-ajaxDiff"), this.oldest, this.newest);
+        this.addPreviewImageListener(tTable.querySelector(".rcm-ajaxImage"), this.list);
+        this.addPreviewPageListener(tTable.querySelector(".rcm-ajaxPage"), this.newest);
+        if (this.manager.makeLinksAjax) {
+            this.addPreviewDiffListener(tTable.querySelector(".rc-diff-link, .rc-changes-link"), this.oldest, this.newest);
+            if (tTable.querySelector(".rcm-ajaxImage")) {
+                this.addPreviewImageListener(tTable.querySelector(".rc-log-link"), this.list);
+                this.addPreviewImageListener(tTable.querySelector(".rc-pagetitle"), this.list);
+            }
+        }
+        return tTable;
+    };
+    RCList.prototype._toHTMLBlockLine = function (pRC) {
+        var html = "";
+        switch (pRC.type) {
+            case _1.RC_TYPE.NORMAL: {
+                html += "<span class='mw-enhanced-rc-time'><a href='" + pRC.getRcRevisionUrl(null, pRC.revid) + "' title='" + pRC.title + "'>" + pRC.time() + "</a></span>";
+                var diffs = [
+                    "<a href='" + pRC.getRcRevisionUrl(0, pRC.revid) + "'>" + i18n_1["default"]("cur") + "</a>",
+                    pRC.editFlags.newpage == false ? "<a href='" + pRC.getRcRevisionUrl(pRC.revid, pRC.old_revid) + "'>" + i18n_1["default"]("last") + "</a>" + this.getAjaxDiffButton() : i18n_1["default"]("last"),
+                ].filter(function (o) { return !!o; });
+                html += " " + i18n_1["default"]('parentheses', diffs.join(i18n_1["default"]("pipe-separator")));
+                html += RCList.SEP;
+                html += this._diffSizeText(pRC);
+                html += RCList.SEP;
+                html += pRC.userDetails();
+                html += pRC.getSummary();
+                break;
+            }
+            case _1.RC_TYPE.LOG: {
+                html += "<span class='mw-enhanced-rc-time'>" + pRC.time() + "</span>";
+                if (pRC.logtype == "upload") {
+                    html += this.getAjaxImageButton();
+                }
+                html += RCList.SEP;
+                html += pRC.logActionText();
+                break;
+            }
+            case _1.RC_TYPE.DISCUSSION: {
+                if (pRC.containerType == "ARTICLE_COMMENT") {
+                    html += "<span class='mw-enhanced-rc-time'>" + pRC.getCommentTimeLink() + "</span>";
+                }
+                else {
+                    html += "<span class='mw-enhanced-rc-time'><a href='" + pRC.href + "' title='" + pRC.title + "'>" + pRC.time() + "</a></span>";
+                }
+                if (pRC.previewData)
+                    html += this.getAjaxPagePreviewButton();
+                html += pRC.getThreadStatusIcons();
+                html += RCList.SEP;
+                html += pRC.getThreadActionIcon() + " ";
+                html += pRC.actionText();
+                break;
+            }
+        }
+        var tRow = Utils_1["default"].newElement("tr", { style: "display: none;" });
+        if (this._showFavicon()) {
+            Utils_1["default"].newElement("td", {}, tRow);
+        } 
+        Utils_1["default"].newElement("td", {}, tRow); 
+        Utils_1["default"].newElement("td", { className: "mw-enhanced-rc", innerHTML: ""
+                + this._getFlags(pRC, "&nbsp;")
+                + "&nbsp;"
+        }, tRow);
+        Utils_1["default"].newElement("td", { className: "mw-enhanced-rc-nested", innerHTML: html }, tRow);
+        this.addPreviewDiffListener(tRow.querySelector(".rcm-ajaxDiff"), pRC);
+        this.addPreviewImageListener(tRow.querySelector(".rcm-ajaxImage"), pRC);
+        this.addPreviewPageListener(tRow.querySelector(".rcm-ajaxPage"), pRC);
+        if (this.manager.makeLinksAjax) {
+            this.addPreviewDiffListener(tRow.querySelector(".rc-diff-link"), pRC);
+        }
+        return tRow;
+    };
+    RCList.prototype._toHTMLNonEnhanced = function (pRC, pIndex) {
+        var html = "";
+        switch (pRC.type) {
+            case _1.RC_TYPE.NORMAL:
+            default: {
+                html += this._diffHist(pRC);
+                html += RCList.SEP;
+                html += this._getFlags(pRC, "") + " ";
+                html += pRC.pageTitleTextLink();
+                html += this.getAjaxPagePreviewButton();
+                html += i18n_1["default"]("semicolon-separator") + pRC.time();
+                html += RCList.SEP;
+                html += this._diffSizeText(pRC);
+                html += RCList.SEP;
+                html += pRC.userDetails();
+                html += pRC.getSummary();
+                break;
+            }
+            case _1.RC_TYPE.LOG: {
+                html += pRC.logTitleLink();
+                if (pRC.logtype == "upload") {
+                    html += this.getAjaxImageButton();
+                }
+                html += i18n_1["default"]("semicolon-separator") + pRC.time();
+                html += RCList.SEP;
+                html += pRC.logActionText();
+                break;
+            }
+            case _1.RC_TYPE.DISCUSSION: {
+                html += pRC.getThreadActionIcon() + " ";
+                html += pRC.getThreadStatusIcons();
+                html += pRC.discussionTitleText(this.getAjaxPagePreviewButton());
+                html += i18n_1["default"]("semicolon-separator") + pRC.time();
+                html += RCList.SEP;
+                html += pRC.actionText();
+                break;
+            }
+        }
+        var tLi = Utils_1["default"].newElement("li", { className: (pIndex % 2 == 0 ? "mw-line-even" : "mw-line-odd") + (" " + pRC.wikiInfo.rcClass + " " + pRC.getNSClass()) });
+        Utils_1["default"].newElement("div", { className: this._getBackgroundClass() }, tLi);
+        ;
+        if (this._showFavicon()) {
+            tLi.innerHTML += pRC.wikiInfo.getFaviconHTML(true) + " ";
+        }
+        tLi.innerHTML += html;
+        this.addPreviewDiffListener(tLi.querySelector(".rcm-ajaxDiff"), pRC);
+        this.addPreviewImageListener(tLi.querySelector(".rcm-ajaxImage"), pRC);
+        this.addPreviewPageListener(tLi.querySelector(".rcm-ajaxPage"), pRC);
+        if (this.manager.makeLinksAjax) {
+            this.addPreviewDiffListener(tLi.querySelector(".rc-diff-link"), pRC);
+            if (tLi.querySelector(".rcm-ajaxImage")) {
+                this.addPreviewImageListener(tLi.querySelector(".rc-log-link"), pRC);
+                this.addPreviewImageListener(tLi.querySelector(".rc-pagetitle"), pRC);
+            }
+        }
+        return tLi;
+    };
+    RCList.prototype.toHTML = function (pIndex) {
+        if (this.manager.rcParams.hideenhanced) {
+            return this.htmlNode = this._toHTMLNonEnhanced(this.newest, pIndex);
+        }
+        else {
+            if (this.list.length > 1) {
+                return this.htmlNode = this._toHTMLBlock();
+            }
+            else {
+                return this.htmlNode = this._toHTMLSingle(this.newest);
+            }
+        }
+    };
+    RCList.SEP = " . . ";
+    RCList.FLAG_INFO_MAP = {
+        newpage: { letter: "newpageletter", tooltip: "recentchanges-label-newpage" },
+        minoredit: { letter: "minoreditletter", tooltip: "recentchanges-label-minor" },
+        botedit: { letter: "boteditletter", tooltip: "recentchanges-label-bot" },
+    };
+    return RCList;
+}());
+exports["default"] = RCList;
+
+},{".":19,"../Global":1,"../GlobalModal":2,"../Utils":9,"../i18n":11}],19:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RC_TYPE = exports.RCDataFandomDiscussion = exports.RCDataLog = exports.RCDataArticle = exports.RCDataAbstract = void 0;
+var RCDataAbstract_1 = require("./RCDataAbstract");
+exports.RCDataAbstract = RCDataAbstract_1["default"];
+var RCDataArticle_1 = require("./RCDataArticle");
+exports.RCDataArticle = RCDataArticle_1["default"];
+var RCDataLog_1 = require("./RCDataLog");
+exports.RCDataLog = RCDataLog_1["default"];
+var RCDataFandomDiscussion_1 = require("./RCDataFandomDiscussion");
+exports.RCDataFandomDiscussion = RCDataFandomDiscussion_1["default"];
+var RC_TYPE_1 = require("../types/RC_TYPE");
+exports.RC_TYPE = RC_TYPE_1["default"];
+
+},{"../types/RC_TYPE":21,"./RCDataAbstract":14,"./RCDataArticle":15,"./RCDataFandomDiscussion":16,"./RCDataLog":17}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Main_1 = require("./Main");
@@ -5805,19 +5686,16 @@ else {
     window.dev.RecentChangesMultiple.app = Main_1["default"];
 }
 
-},{"./Main":3}],20:[function(require,module,exports){
+},{"./Main":3}],21:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var RC_TYPE;
 (function (RC_TYPE) {
     RC_TYPE[RC_TYPE["NORMAL"] = 0] = "NORMAL";
     RC_TYPE[RC_TYPE["LOG"] = 1] = "LOG";
-    RC_TYPE[RC_TYPE["COMMENT"] = 2] = "COMMENT";
-    RC_TYPE[RC_TYPE["WALL"] = 3] = "WALL";
-    RC_TYPE[RC_TYPE["BOARD"] = 4] = "BOARD";
-    RC_TYPE[RC_TYPE["DISCUSSION"] = 5] = "DISCUSSION";
+    RC_TYPE[RC_TYPE["DISCUSSION"] = 2] = "DISCUSSION";
 })(RC_TYPE || (RC_TYPE = {}));
 exports["default"] = RC_TYPE;
 
-},{}]},{},[19]);
+},{}]},{},[20]);
 //</pre>

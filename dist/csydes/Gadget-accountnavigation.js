@@ -6,10 +6,6 @@
     if (navLinks) return;
     var user = mw.util.wikiUrlencode(mw.config.get('wgUserName')),
         links = {
-        contribs: {
-            text: 'My Contributions',
-            url: '/wiki/Special:Mycontributions'
-        },
         blogs: {
             text: 'My Blogs',
             url: '/wiki/User_blog:' + user
@@ -17,10 +13,6 @@
         watchlist: {
             text: 'My Watchlist',
             url: '/wiki/Special:Watchlist'
-        },
-        followed: {
-            text: 'My Followed Pages',
-            url: '/wiki/Special:Following'
         }
     },
         html = '',

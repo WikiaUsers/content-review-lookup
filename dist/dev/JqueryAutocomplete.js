@@ -1,4 +1,4 @@
-// <nowiki>
+// <pre>
 $( function() {
   var availableTags = [
   	// Common MediaWiki/HTML syntax
@@ -36,3 +36,4 @@ $( ".ve-ce-branchNode, .ve-ce-documentNode, .ve-ce-attachedRootNode, .ve-ce-root
   source: availableTags
 });
 } );
+// </pre>

@@ -150,11 +150,11 @@
         return function bind(event){
             var offset = $(event.target).offset(),
                 _isnew = $(event.target).hasClass('new'),
-                $wrapper = $('<section class="article-preview wrapper v2" id="article-preview2" />'),
-                $body = $('<div class="article-preview-body" id="article-preview-body" />'),
-                $header = $('<header class="article-preview-header header" id="article-preview-header" />'),
-                $content = $('<article class="article-preview-content content" id="article-preview-content" />'),
-                $tools = $('<nav class="article-preview-toolbar article-preview-footer toolbar" id="preview-toolbar" />'),
+                $wrapper = $('<section class="article-preview wrapper v2" id="article-preview2">'),
+                $body = $('<div class="article-preview-body" id="article-preview-body">'),
+                $header = $('<header class="article-preview-header header" id="article-preview-header">'),
+                $content = $('<article class="article-preview-content content" id="article-preview-content">'),
+                $tools = $('<nav class="article-preview-toolbar article-preview-footer toolbar" id="preview-toolbar">'),
                 short_link = config.shorten(long_link);
                 
             $.ajax({
@@ -178,11 +178,11 @@
                     image = $img.not(function(){
                         return (/data:image\/(?:.*)/g).test($(this).attr('src'));
                     }).eq(0).attr('src') || 'https://images.wikia.nocookie.net/dev/images/2/20/Image_Placeholder.png',
-                    $image = $('<img class="article-preview-thumb article-preview-image image" id="article-preview-image" />').attr('src', image),
+                    $image = $('<img class="article-preview-thumb article-preview-image image" id="article-preview-image">').attr('src', image),
                     paragraph = $code.find('p').not(function(){
                         return $(this).attr('class') !== '';
                     }).eq(0).html(),
-                    $description = $('<figcaption class="article-preview-description description" id="article-preview-description" />').html(paragraph);
+                    $description = $('<figcaption class="article-preview-description description" id="article-preview-description">').html(paragraph);
                 if (data_image){
                     image = 'https://images.wikia.nocookie.net/dev/images/2/20/Image_Placeholder.png';
                 }
@@ -192,7 +192,7 @@
                     $description.html('This page does not exist yet. Do you want to create the page?');
                 }
                 
-                var $thumb = $('<figure class="article-preview-thumb-wrapper figure" />').html([$image, $description]);
+                var $thumb = $('<figure class="article-preview-thumb-wrapper figure">').html([$image, $description]);
                 
                 $header.html(
                     '<h2 class="article-preview-heading heading">' +
@@ -209,7 +209,7 @@
                     var buttons = config.buttons;
                     return Object.keys(buttons).map(function(name, index){
                         var button_config = buttons[name],
-                            $button = $('<a class="article-preview-button preview-button" />');
+                            $button = $('<a class="article-preview-button preview-button">');
                         $button.attr('id', button_config.id);
                         $button.attr('data-name', name);
                         if (typeof button_config.action == 'function'){

@@ -136,7 +136,8 @@ UserTagsJS.modules.custom = {
     'LeonRaidenYun': ['former-sysop'],
     'Fllflourine': ['former-content-moderator'],
     'CrossverseCrisis': ['former-bureaucrat'],
-    'ExoSaiyan9000': ['former-sysop']
+    'ExoSaiyan9000': ['former-sysop'],
+    'Drag-O-Drawgon': ['former-content-moderator']
 };
 
 UserTagsJS.modules.metafilter = {

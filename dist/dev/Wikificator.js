@@ -2829,3 +2829,4 @@
     }
 
 } )( jQuery, window.wikificator = ( window.wikificator || {} ) );
+// </nowiki>

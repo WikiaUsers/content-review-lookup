@@ -15,7 +15,7 @@
    if (mw.config.get('wgPageName') === mw.config.get('wgFormattedNamespaces')[-1] + ':DiscussionsRC') {
       $('h1.page-header__title').text('DiscussionsRC');
       document.title = 'DiscussionsRC | ' + mw.config.get('wgSiteName') + ' | Fandom';
-      $('#WikiaMainContent, #content').empty().append($('<div/>', {id: 'discrc'}));
+      $('#WikiaMainContent, #content').empty().append($('<div>', {id: 'discrc'}));
    }
    if (!$('#discrc').length) {
       return;
@@ -409,3 +409,4 @@
    });
    window.discRC = discRC;
 })(jQuery, mediaWiki);
+// </nowiki>

@@ -4,6 +4,11 @@
  *
  * See [https://terraria.fandom.com/zh/wiki/MediaWiki:Common.js zh wiki] for example.
  */
+ 
+// login status mark
+if(mw.config.get("wgUserName") !== null){
+	$('body').addClass('logged-in');
+}
 
 var l10nFactory = function($lang, $data) {
 	return function ($key) {

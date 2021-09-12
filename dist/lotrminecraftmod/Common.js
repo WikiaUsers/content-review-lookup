@@ -41,6 +41,7 @@
 	observer.observe(target, config);
 })(this, jQuery, mediaWiki);
 
+// Backwards compatibility - fix username insert in pre-UCP message walls and comments
 (function(window, $, mw) {
 	var username = mw.config.get("wgUserName");
 	
@@ -80,8 +81,44 @@ $(".page-The_Lord_of_the_Rings_Minecraft_Mod_Wiki .mw-changeslist-line-inner").e
 
 /* Rayn -> Noloite (user request) */
 $("[href$='Rayn_Turammarth'], [href$='Rayn%20Turammarth'], [href$='Rayn Turammarth']").each(function(){
-    $(this).text(this.text.replace("Rayn Turammarth", "Noloite"));
+    $(this).html($(this).html().replace("Rayn Turammarth", "Noloite"));
 });
+
+(function(window, $) {
+	if (window.nameReplaced) {
+		return;
+	}
+	window.nameReplaced = true;
+	
+	// Select the node that will be observed for mutations
+	var target1 = document.querySelector('#MessageWall, #articleComments');
+	var target2 = document.querySelector('.page-content');
+	
+	// Callback function to execute when mutations are observed
+	var observer = new MutationObserver(function(mutations) {
+		mutations.forEach(function(mutation) {
+		    var replaceText = $("[href$='Rayn_Turammarth'], [href$='Rayn%20Turammarth'], .FormEntryPoint_text__7JAhS, .Message__edited-by, .EditedBy_edited-by__1ZEJN");
+		    if (replaceText.length !== 0) {
+		    	replaceText.each(function() {
+		    		if ($(this).html().includes("Rayn Turammarth")) {
+						$(this).html($(this).html().replace("Rayn Turammarth", "Noloite"));
+		    		}
+		    	});
+		    }
+		});
+	});
+	
+	// Options for the observer (which mutations to observe)
+	var config = {childList: true, subtree: true};
+	
+	// Start observing the target node for configured mutations
+	if ([0, 500, 1200].indexOf(mw.config.get('wgNamespaceNumber')) !== -1 && !mw.config.get("wgIsMainPage")) {
+		observer.observe(target1, config);
+	}
+	if (mw.config.get('wgNamespaceNumber') === -1) {
+		observer.observe(target2, config);
+	}
+})(this, jQuery);
 
 /* Ajax-refresh button config options */
 window.ajaxSpecialPages = ["Contributions","Log","WikiActivity","AbuseLog"];
@@ -119,44 +156,6 @@ if(mw.config.get('wgPageName') == 'Servers'){
         }
     }
 }
-
-/* This script adds "&format=original" to the end of Wikia image addresses in articles 
- * to load the original PNG/JPG etc. forms instead of the WEBP versions.  Excludes 
- * avatars & sprites such as the edit pencil, and only applies to article content. */
-
-//Infobox images
-$(".pi-image-thumbnail").each(function(){
-    var srcsetvar = $(this).attr("srcset");
-    var srcarray = srcsetvar.split(" ");
-    $(this).attr("srcset", srcarray[0]+"&format=original");
-});
-
-//Other images
-$(function(){
-	function reload_imgs(target) {
-		var srcvar = $(target).attr('src');
-		var pattern = /(?:static|vignette|images)\.wikia\.nocookie\.net/;
-	    if(srcvar && !srcvar.endsWith('format=original') && pattern.exec(srcvar)) {
-	        if(srcvar.includes('?')) {
-	            $(target).attr('src', srcvar+'&format=original');
-	        } else {
-	            $(target).attr('src', srcvar+'?format=original');
-	        }
-	    }
-	    return;
-	}
-	document.body.addEventListener('load', function(event) {
-		const target = event.target;
-		if ($(target).is('img')) {
-		    reload_imgs(target);
-		}
-	}, true);
-	$('.page__main img, .WikiaMainContent img').each(function() {
-		if(this.complete) { 
-			reload_imgs(this);
-		}
-	});
-});
 
   //********************************************\\
 //** Worldmap (Template:MiddleEarthMap) [WIP] **\\

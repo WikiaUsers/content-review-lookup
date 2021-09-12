@@ -98,6 +98,7 @@ const l10nTable = {
     'cpl-error-foreignpages': 'Error while checking whether the pages of this wiki have a counterpart on the <code>$1</code> wiki!',
     'cpl-error-foreigndiff': 'Error while attempting to fetch the size of a diff on the <code>$1</code> wiki!',
     'cpl-error-collapse': 'Couldn\'t load the library that enables table collapsing!',
+    'cpl-error-sorter': 'Couldn\'t load the library that enables table sorting!',
     'cpl-error-messages': 'Couldn\'t load strings for the recent changes-style output!',
 
     // Strings in the output area
@@ -516,6 +517,7 @@ class InputHelper {
   static loadCSS () {
     // load CSS used on Special:RecentChanges
     const modules = [
+      'jquery.tablesorter.styles',
       'mediawiki.feedlink', // the short form "mediawiki.feedlink,helplink,icon" doesn't seem to work ("Unknown module")
       'mediawiki.helplink',
       'mediawiki.icon',
@@ -1918,30 +1920,38 @@ function displayOutput () {
   return new Promise((resolve, reject) => {
     let outputNodes
 
-    // i18n: load "MediaWiki:" system messages
-    new mw.Api().loadMessagesIfMissing(msgs)
-      .done(() => {
-        // with the loaded messages, make the output
-        outputNodes = OutputMaker.make(new PerPageProgress(90, 96))
+    // load "MediaWiki:" system messages (i18n) and library that enables table sorting
+    Promise.all([
+      new mw.Api().loadMessagesIfMissing(msgs)
+        .done(() => { resolve() })
+        .fail(errordata => {
+          errorDuringProcess(errordata, $.i18n('cpl-error-messages'))
+          reject(Error('loadMessagesIfMissing failed!'))
+        }),
+      mw.loader.using('jquery.tablesorter')
+        .done(() => { resolve() })
+        .fail(errordata => {
+          errorDuringProcess(errordata, $.i18n('cpl-error-sorter'))
+          reject(Error('loading jquery.tablesorter failed!'))
+        })
+    ]).then(() => {
+      // with the loaded messages and table sortability, make the output
+      outputNodes = OutputMaker.make(new PerPageProgress(90, 96))
 
-        // load the library that enables table collapsing
-        mw.loader.using('jquery.makeCollapsible')
-          .done(() => {
-            // once loaded, make the output visible
-            $(outputElement).append(...outputNodes)
-            progressbar.setProgress(98)
-            $('.comparepagelist-makeCollapsible').makeCollapsible()
-            resolve()
-          })
-          .fail(errordata => {
-            errorDuringProcess(errordata, $.i18n('cpl-error-collapse'))
-            reject(Error('loading jquery.makeCollapsible failed!'))
-          })
-      })
-      .fail(errordata => {
-        errorDuringProcess(errordata, $.i18n('cpl-error-messages'))
-        reject(Error('loadMessagesIfMissing failed!'))
-      })
+      // load the library that enables table collapsing
+      mw.loader.using('jquery.makeCollapsible')
+        .done(() => {
+          // once loaded, make the output visible
+          $(outputElement).append(...outputNodes)
+          progressbar.setProgress(98)
+          $('.comparepagelist-makeCollapsible').makeCollapsible()
+          resolve()
+        })
+        .fail(errordata => {
+          errorDuringProcess(errordata, $.i18n('cpl-error-collapse'))
+          reject(Error('loading jquery.makeCollapsible failed!'))
+        })
+    })
   })
 }
 
@@ -1950,11 +1960,15 @@ class OutputMaker {
     const bigTerrariaTable = $('<table>')
       .addClass(['terraria', 'lined'])
       .append(
-        $('<tr>').append(
-          $('<th>').html($.i18n('cpl-output-tableheadlocal')),
-          $('<th>').html($.i18n('cpl-output-tableheadforeign', formInput.foreignWiki))
+        $('<thead>').append(
+          $('<tr>').append(
+            $('<th>').html($.i18n('cpl-output-tableheadlocal')),
+            $('<th>').html($.i18n('cpl-output-tableheadforeign', formInput.foreignWiki))
+          )
         )
       )
+    const bigTerrariaTBody = $('<tbody>')
+    bigTerrariaTable.append(bigTerrariaTBody)
 
     perPageProgress.pagecount = pagelistForOutput.length
     pagelistForOutput.forEach(pagedata => {
@@ -1973,8 +1987,9 @@ class OutputMaker {
 
       perPageProgress.increment()
 
-      bigTerrariaTable.append(tableRow)
+      bigTerrariaTBody.append(tableRow)
     })
+    bigTerrariaTable.tablesorter() // make the table sortable
 
     const note = $('<span>')
       .addClass('note-text')
@@ -2464,6 +2479,7 @@ class OutputMaker {
         )
       )
       .css('vertical-align', 'top')
+      .attr('data-sort-value', revdata.timestamp)
 
     return cell
   }
@@ -2613,6 +2629,7 @@ class OutputMaker {
     const cell = $('<td>')
       .append(tableInCell.append(tbody))
       .css('vertical-align', 'top')
+      .attr('data-sort-value', foreignpagedata.firstLine.timestamp)
 
     return cell
   }

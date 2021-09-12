@@ -143,7 +143,7 @@ var hasClass = ( function() {
 function changeBackg() {
 
 	var backgroundImg = [
-		"https://vindictus.gamepedia.com/media/vindictus.gamepedia.com/3/3a/Bg.png"
+		"https://vindictus.gamepedia.com/media/vindictus.gamepedia.com/3/3a/Bg2.png"
 	];
  
 	var index = backgroundImg[Math.floor(Math.random() * backgroundImg.length)];
@@ -152,6 +152,7 @@ function changeBackg() {
         document.body.style.color = "#9fa5a8";
         document.body.style.repeat = "no-repeat";
         document.body.style.position = "left top";
+        document.body.style.backgroundAttachment = "fixed";
 }
 
 window.onload = changeBackg; //run onload website

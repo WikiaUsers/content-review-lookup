@@ -9,22 +9,6 @@ AjaxRCRefreshHoverText = 'Automatically refresh the page';
 ajaxPages = ["Special:RecentChanges","Special:WikiActivity","Special:UncategorizedPages","Special:AllPages","Special:NewFiles"];
 importScriptPage('AjaxRC/code.js', 'dev');
 
-/* MessageWallUserTags */
-window.MessageWallUserTags = {
-    tagColor: '#C778A5',
-    txtSize: '13px',
-    glow: true,
-    glowSize: '15px',
-    glowColor: '#FF7777',
-    users: {
-        'GotenSakurauchi': 'Admin',
-        'Sylphfarn12': 'Admin',
-        'CureHibiki': 'Admin',
-        'Lightangel2': 'Admin',
-        'AirastormRider': 'Admin',
-    }
-};
-
 /* AddRailModule on top */
 window.AddRailModule = [
     {page: 'Template:RailModule', prepend: true},

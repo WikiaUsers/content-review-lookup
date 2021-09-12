@@ -21,7 +21,6 @@ window.UserTagsJS = {
 		    'Alexis21155': ['asistente'],
 		    'Bloomdanix': ['asistente'],
 		    'GhostRiley2000': ['asistente'],
-            'GuidoM1995': ['asistente'],
             'Ale_-_Remastered': ['asistente']
         }
     },
