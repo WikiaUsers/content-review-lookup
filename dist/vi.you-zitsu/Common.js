@@ -188,13 +188,6 @@ importScriptPage('AjaxRC/code.js', 'dev');
 		type: 'script',
 		articles: pageScriptList
 	});
-/* Adds icons to page header bottom border */
-$(document).ready(function() {
-	if (skin == "oasis" || skin == "wikia") {
-		$('.WikiaPageHeader').append($('#icons'));
-		$('#icons').css({'position' : 'absolute', 'right' : '0', 'bottom' : '-1.2em'});
-	}
-});
 
 /* Hide the breadcrum on pages using Parent Tab */
 if($(".parenttab").length) {

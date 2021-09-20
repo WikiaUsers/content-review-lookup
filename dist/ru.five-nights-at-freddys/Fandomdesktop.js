@@ -1,237 +1,15 @@
-/*См. также MediaWiki:Modes.js, MediaWiki:BG.js, MediaWiki:Chatfilter.js, MediaWiki:ImportJS, MediaWiki:Fantom.js*/
+/* -----Меню-----
 
-/* LockOldBlogs */
-window.LockOldBlogs = {
-    expiryDays: 60,
-    expiryMessage: "Доступ к комментариям закрыт, так как блог не комментировали <expiryDays> дней"
-}
+=> ImportJS — список импортируемых скриптов
+=> Fandomdesktop.js — вы здесь
+=> OldComments.js — блокировка ответов к старым комментариям
+=> Common.js — общеприменимые скрипты
+=> ProfileTags — плашки в профиле
+=> Project:Medals — награды в профиле
 
-/* DiscussionTemplates */
-window.DiscussionTemplates = {
-    templates: {
-        /* Предупреждения */
-        'Оскорбление': {
-            name: 'Шаблон:Предупреждение/оскорбление',
-            title: 'Оскорбление'
-        },
-        'Троллинг': {
-            name: 'Шаблон:Предупреждение/троллинг',
-            title: 'Троллинг'
-        },
-        'Спор': {
-            name: 'Шаблон:Предупреждение/спор',
-            title: 'Спор'
-        },
-        'Агрессия': {
-            name: 'Шаблон:Предупреждение/агрессия',
-            title: 'Агрессия'
-        },
-        'Субкритика': {
-            name: 'Шаблон:Предупреждение/субкритика',
-            title: 'Субкритика'
-        },
-        'Маты': {
-            name: 'Шаблон:Предупреждение/маты',
-            title: 'Маты'
-        },
-        'Оффтоп': {
-            name: 'Шаблон:Предупреждение/оффтоп',
-            title: 'оффтоп'
-        },
-        'Флуд': {
-            name: 'Шаблон:Предупреждение/флуд',
-            title: 'Флуд'
-        },
-        'Капс': {
-            name: 'Шаблон:Предупреждение/капс',
-            title: 'Капс'
-        },
-        'Спам': {
-            name: 'Шаблон:Предупреждение/спам',
-            title: 'Спам'
-        },
-        'Реклама': {
-            name: 'Шаблон:Предупреждение/реклама',
-            title: 'Реклама'
-        },
-        'Вандализм': {
-            name: 'Шаблон:Предупреждение/вандализм',
-            title: 'Вандализм'
-        },
-        'Статпад': {
-            name: 'Шаблон:Предупреждение/статпад',
-            title: 'Статпад'
-        },
-        'Плохие правки': {
-            name: 'Шаблон:Предупреждение/плохиеправки',
-            title: 'Плохие правки'
-        },
-        '18+': {
-            name: 'Шаблон:Предупреждение/18',
-            title: '18+'
-        },
-        'Твинк': {
-            name: 'Шаблон:Предупреждение/твинк',
-            title: 'Твинк'
-        },
-        'Плохие блоги': {
-            name: 'Шаблон:Предупреждение/плохиеблоги',
-            title: 'Плохие блоги'
-        },
-        'Вне ценза': {
-            name: 'Шаблон:Предупреждение/внеценза',
-            title: 'Вне ценза'
-        },
-        'Плохие игры': {
-            name: 'Шаблон:Предупреждение/плохиеигры',
-            title: 'Плохие игры'
-        },
-        'Бессмыслица': {
-            name: 'Шаблон:Предупреждение/бессмыслица',
-            title: 'Бессмыслица'
-        },
-    }
-};
+*/
 
-/* FastDelete */
-window.fdButtons = [
-    {
-        summary: 'Вандализм',
-        label: 'Вандал'
-    },
-    {
-        summary: 'Мусор',
-        label: 'Мусор'
-    },
-    {
-        summary: 'Игра не проходит ценз',
-        label: 'Ценз'
-    }
-];
-
-/* MessageBlock */
-window.MessageBlock = {
-  title: 'Блокировка',
-  message: 'Вы были заблокированы на $2, причина: $1.',
-};
-
-/* AddRailModule */
-window.AddRailModule = ['Шаблон:Статья_месяца'];
-
-/* Modes.js */
-$('.template_modes_right').click(function(e) {
-	let scroll = $('.template_modes_body').scrollTop();
-	let i = scroll/105;
-	$(".template_modes_move_" + (i+2)).css("color", "black");
-	for (let k = 1; k < 8; k++) {
-		if (k == (i+2)) {
-			continue;
-		} else {
-			$(".template_modes_move_" + (k)).css("color", "white");
-		}
-	}
-	$('.template_modes_body').scrollTop(scroll+105);
-});
-
-$('.template_modes_left').click(function(e) {
-	let scroll = $('.template_modes_body').scrollTop();
-	let i = scroll/105;
-	$(".template_modes_move_" + (i)).css("color", "black");
-	for (let k = 1; k < 8; k++) {
-		if (k == (i)) {
-			continue;
-		} else {
-			$(".template_modes_move_" + (k)).css("color", "white");
-		}
-	}
-	$('.template_modes_body').scrollTop(scroll-105);
-});
-
-$(".template_modes_move_1").click((e) => {
-	$('.template_modes_body').scrollTop(0);
-	$(".template_modes_move_1").css("color", "black");
-	for (let i = 1; i < 8; i++) {
-		if (i == 1) {
-			continue;
-		} else {
-			$(".template_modes_move_" + i).css("color", "white");
-		}
-	}
-});
-
-$(".template_modes_move_2").click((e) => {
-	$('.template_modes_body').scrollTop(1*105);
-	$(".template_modes_move_2").css("color", "black");
-	for (let i = 1; i < 8; i++) {
-		if (i == 2) {
-			continue;
-		} else {
-			$(".template_modes_move_" + i).css("color", "white");
-		}
-	}
-});
-
-$(".template_modes_move_3").click((e) => {
-	$('.template_modes_body').scrollTop(2*105);
-	$(".template_modes_move_3").css("color", "black");
-	for (let i = 1; i < 8; i++) {
-		if (i == 3) {
-			continue;
-		} else {
-			$(".template_modes_move_" + i).css("color", "white");
-		}
-	}
-});
-
-$(".template_modes_move_4").click((e) => {
-	$('.template_modes_body').scrollTop(3*105);
-	$(".template_modes_move_4").css("color", "black");
-	for (let i = 1; i < 8; i++) {
-		if (i == 4) {
-			continue;
-		} else {
-			$(".template_modes_move_" + i).css("color", "white");
-		}
-	}
-});
-
-$(".template_modes_move_5").click((e) => {
-	$('.template_modes_body').scrollTop(4*105);
-	$(".template_modes_move_5").css("color", "black");
-	for (let i = 1; i < 8; i++) {
-		if (i == 5) {
-			continue;
-		} else {
-			$(".template_modes_move_" + i).css("color", "white");
-		}
-	}
-});
-
-$(".template_modes_move_6").click((e) => {
-	$('.template_modes_body').scrollTop(5*105);
-	$(".template_modes_move_6").css("color", "black");
-	for (let i = 1; i < 8; i++) {
-		if (i == 6) {
-			continue;
-		} else {
-			$(".template_modes_move_" + i).css("color", "white");
-		}
-	}
-});
-
-$(".template_modes_move_7").click((e) => {
-	$('.template_modes_body').scrollTop(6*105);
-	$(".template_modes_move_7").css("color", "black");
-	for (let i = 1; i < 8; i++) {
-		if (i == 7) {
-			continue;
-		} else {
-			$(".template_modes_move_" + i).css("color", "white");
-		}
-	}
-});
-
-/* BG.js */
+/* ========== BG.js ========== */
 function BG(file) {
     if (file) {
         return encodeURI("/ru/wiki/Служебная:FilePath/" + file);
@@ -287,18 +65,20 @@ if (mw.config.get("wgCanonicalNamespace") == "") {
     }
 
     if (BGbackground) {
-        $("body.skin-oasis").css("background", '#000 url(' + BGbackground + ') fixed');
-        $("body.skin-oasis").css("background-size", 'cover');
+        $("body.skin-fandomdesktop").css("background", '#000 url(' + BGbackground + ')');
+        $("body.skin-fandomdesktop").css("background-size", 'cover');
+        $("body.skin-fandomdesktop").css("background-attachment", 'fixed');
+        $(".fandom-community-header__background").css("display", 'none');
     }
 }
 
-/* Fantom.js */
+/* ========== Fantom.js ========== */
 // Код на аниматроников v0.21b
 // Специально для ru.five-nights-at-freddys-rus
 // @author: Kopcap94
 // @not_author_but_just_a_random_guy: Никто,просто никто.
 !function( $ ) {
-    var i = Math.floor( ( Math.random() * 10 ) );
+    var i = Math.floor( ( Math.random() * 20 ) );
     var anim = {};
     var categories = mw.config.get("wgCategories");
     for (var c = 0; c < categories.length; c++) {
@@ -549,3 +329,119 @@ if (mw.config.get("wgCanonicalNamespace") == "") {
         }, 2000);
     });
 }( this.jQuery );
+
+/* ========== FastDelete ========== */
+window.fdButtons = [
+    {
+        summary: 'Вандализм',
+        label: 'Вандал'
+    },
+    {
+        summary: 'Мусор',
+        label: 'Мусор'
+    },
+    {
+        summary: 'Игра не проходит ценз',
+        label: 'Ценз'
+    }
+];
+
+/* ========== DiscussionTemplates ========== */
+window.DiscussionTemplates = {
+    templates: {
+        'Оскорбление': {
+            name: 'Шаблон:Предупреждение/оскорбление',
+            title: 'Оскорбление'
+        },
+        'Троллинг': {
+            name: 'Шаблон:Предупреждение/троллинг',
+            title: 'Троллинг'
+        },
+        'Спор': {
+            name: 'Шаблон:Предупреждение/спор',
+            title: 'Спор'
+        },
+        'Агрессия': {
+            name: 'Шаблон:Предупреждение/агрессия',
+            title: 'Агрессия'
+        },
+        'Субкритика': {
+            name: 'Шаблон:Предупреждение/субкритика',
+            title: 'Субкритика'
+        },
+        'Маты': {
+            name: 'Шаблон:Предупреждение/маты',
+            title: 'Маты'
+        },
+        'Оффтоп': {
+            name: 'Шаблон:Предупреждение/оффтоп',
+            title: 'оффтоп'
+        },
+        'Флуд': {
+            name: 'Шаблон:Предупреждение/флуд',
+            title: 'Флуд'
+        },
+        'Капс': {
+            name: 'Шаблон:Предупреждение/капс',
+            title: 'Капс'
+        },
+        'Спам': {
+            name: 'Шаблон:Предупреждение/спам',
+            title: 'Спам'
+        },
+        'Реклама': {
+            name: 'Шаблон:Предупреждение/реклама',
+            title: 'Реклама'
+        },
+        'Вандализм': {
+            name: 'Шаблон:Предупреждение/вандализм',
+            title: 'Вандализм'
+        },
+        'Статпад': {
+            name: 'Шаблон:Предупреждение/статпад',
+            title: 'Статпад'
+        },
+        'Плохие правки': {
+            name: 'Шаблон:Предупреждение/плохиеправки',
+            title: 'Плохие правки'
+        },
+        '18+': {
+            name: 'Шаблон:Предупреждение/18',
+            title: '18+'
+        },
+        'Твинк': {
+            name: 'Шаблон:Предупреждение/твинк',
+            title: 'Твинк'
+        },
+        'Плохие блоги': {
+            name: 'Шаблон:Предупреждение/плохиеблоги',
+            title: 'Плохие блоги'
+        },
+        'Вне ценза': {
+            name: 'Шаблон:Предупреждение/внеценза',
+            title: 'Вне ценза'
+        },
+        'Плохие игры': {
+            name: 'Шаблон:Предупреждение/плохиеигры',
+            title: 'Плохие игры'
+        },
+        'Бессмыслица': {
+            name: 'Шаблон:Предупреждение/бессмыслица',
+            title: 'Бессмыслица'
+        },
+        'Блокировка': {
+            name: 'Шаблон:Блокировка',
+            title: 'Блокировка'
+        },
+    },
+    allowedGroups: ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator']
+};
+
+/* ========== AddRailModule ========== */
+window.AddRailModule = ['Шаблон:Статья_месяца'];
+
+/* ========== LockOldBlogs ========== */
+window.LockOldBlogs = {
+    expiryDays: 60,
+    expiryMessage: "Доступ к комментариям закрыт, так как блог не комментировали <expiryDays> дней"
+}

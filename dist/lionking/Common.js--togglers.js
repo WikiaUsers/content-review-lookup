@@ -167,4 +167,4 @@ function owwsitesearch(f){
 }
  
  
-addOnloadHook(toggleInit);
+$(toggleInit);

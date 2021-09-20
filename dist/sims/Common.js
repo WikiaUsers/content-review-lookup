@@ -1,4 +1,4 @@
-// 02:44, August 2, 2019 (UTC)
+// 14:33, 15 September 2021 (UTC)
 // <source lang="JavaScript">
 /* Any JavaScript here will be loaded for all users on every page load. */
 
@@ -359,82 +359,6 @@ if (wgUserName != 'null') {
     $('.insertusername').html(wgUserName);
 }
 
-/* Custom edit buttons
-See http://help.wikia.com/wiki/Help:Custom_edit_buttons
- */
-if (mwCustomEditButtons) {
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/central/images/1/11/Btn_toolbar_liste.png",
-        "speedTip": "List",
-        "tagOpen": "\n* ",
-        "tagClose": "\n* Element B\n* Element C",
-        "sampleText": "Element A"
-    };
-}
-if (mwCustomEditButtons) {
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/central/images/8/88/Btn_toolbar_enum.png",
-        "speedTip": "Numbering",
-        "tagOpen": "\n# ",
-        "tagClose": "\n# Element 2\n# Element 3",
-        "sampleText": "Element 1"
-    };
-}
-if (mwCustomEditButtons) {
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/central/images/f/fd/Button_blockquote.png",
-        "speedTip": "Blockquote",
-        "tagOpen": "<blockquote>",
-        "tagClose": "</blockquote>",
-        "sampleText": "Insert text"
-    };
-}
-if (mwCustomEditButtons) {
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/central/images/7/74/Button_comment.png",
-        "speedTip": "Note",
-        "tagOpen": "{{Info|Insert title|",
-        "tagClose": "}}",
-        "sampleText": "Insert text"
-    };
-}
-if (mwCustomEditButtons) {
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/central/images/b/b4/Button_category03.png",
-        "speedTip": "Category",
-        "tagOpen": "[[Category:",
-        "tagClose": "]]",
-        "sampleText": "Category name"
-    };
-}
-if (mwCustomEditButtons) {
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png",
-        "speedTip": "Redirect",
-        "tagOpen": "#REDIRECT [[",
-        "tagClose": "]]",
-        "sampleText": "Insert text"
-    };
-}
-if (mwCustomEditButtons) {
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/central/images/1/12/Button_gallery.png",
-        "speedTip": "Picture gallery",
-        "tagOpen": "\n<gallery>\nImage:",
-        "tagClose": "|[[The Sims Wiki]] Logo\nImage:Wiki.png|[[The Sims Wiki]] Logo\nImage:Wiki.png|Eine [[The Sims Wiki]] Logo\n<\/gallery>",
-        "sampleText": "Wiki.png"
-    };
-}
-if (mwCustomEditButtons) {
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/central/images/3/3b/Button_template_alt.png",
-        "speedTip": "Template",
-        "tagOpen": "{{",
-        "tagClose": "}}",
-        "sampleText": "Template"
-    };
-}
-
 /* Tooltip script begin */
 
 var $tfb;
@@ -579,10 +503,36 @@ addOnloadHook(addTitleGames);
 //Graciously (and unknowingly) provided by The Spanish 'Simspedia'
 
 function fBox() {
-    $('#fbox').append('<iframe marginheight="0" marginwidth="0" src="http://www.facebook.com/connect/connect.php?id=126686564044617&amp;connections=10" align="top" frameborder="0" width="300" height="250" scrolling="no" />');
+    $('#fbox').append('<iframe marginheight="0" marginwidth="0" src="https://www.facebook.com/connect/connect.php?id=126686564044617&amp;connections=10" align="top" frameborder="0" width="300" height="250" scrolling="no" />');
 }
 
 $(fBox);
+
+
+// *************************************************
+// Pagetitle rewrite
+//
+// Rewrites the page's title, used by Template:Title
+// *************************************************
+$(function() {
+    var inter = setInterval(function() {
+        if (!$('h1[itemprop=\"name\"]').length) return;
+
+        clearInterval(inter);
+        var newTitle = $("span.newPageTitle").find(':not(big, small, center, h1, h2, h3, h4, h5, h6, b, i, u, s, span, div)').remove().end().html();
+        var edits = $("#user_masthead_since").text();
+        $(".firstHeading,h1[itemprop=\"name\"],.resizable-container .page-header__title").html(mw.html.escape(newTitle));
+        $("#user_masthead_head h2").html(mw.html.escape(newTitle + "<small id='user_masthead_since'>" + edits + "</small>"));
+    });
+});
+
+$(function changeTitle(){
+    if (!$('span.newPageTitle').length) {
+        return;
+    }
+    var title = $('span.newPageTitle').find(':not(big, small, center, h1, h2, h3, h4, h5, h6, b, i, u, s, span, div)').remove().end().html();
+    $('h1.page-header__title').html(mw.html.escape(title));
+});
 
 /* Ajax Auto-Refresh (courtesy pcj) */
 /* Auto updating recent changes opt-in
@@ -591,7 +541,7 @@ $(fBox);
 
 AjaxRCRefreshText = 'Auto-refresh';
 AjaxRCRefreshHoverText = 'Automatically refresh the page';
-ajaxPages = ["Special:RecentChanges", "Special:WikiActivity"];
+ajaxPages = ["Special:RecentChanges"];
 importScriptPage('AjaxRC/code.js', 'dev');
 
 // *************************************************
@@ -602,7 +552,7 @@ importScriptPage('AjaxRC/code.js', 'dev');
 /* if (wgCanonicalNamespace === "User_talk" || wgCanonicalNamespace === "User") {
     if (document.getElementById('UserProfileMasthead').getElementsByClassName('group').length === 1) {
         if (document.getElementById('adm-changetitle') !== null) {
-            document.getElementById('UserProfileMasthead').getElementsByClassName('group')[0].innerHTML = document.getElementById('adm-changetitle').innerHTML;
+            document.getElementById('UserProfileApp').getElementsByClassName('group')[0].innerHTML = document.getElementById('adm-changetitle').innerHTML;
         }
     }
 } */

@@ -1,14 +1,17 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
-	return mw.loader.getScript( 'https://dev.fandom.com/wiki/MediaWiki:ArticlesAsResources.js?action=raw&ctype=text/javascript' );
+	return mw.loader.getScript( 'https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:ArticlesAsResources.js&only=scripts' );
 } ).then( function () {
 
 	// Link titles
 	$( '.notitle a' ).removeAttr( 'title' );
 
 	// Slideshows
-	importScript( 'MediaWiki:Slideshows.js' ).then( function () {
+	importArticle( {
+		type: 'script',
+		article: 'MediaWiki:Slideshows.js'
+	} ).then( function () {
 		slideshows.init();
 	} );
 

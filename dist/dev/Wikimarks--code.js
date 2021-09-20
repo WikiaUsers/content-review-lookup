@@ -85,12 +85,12 @@
                 .children('li')
                     .children('a')
                         .siblings('ul')
-                            .wrap('<div class="wds-is-not-scrollable wds-dropdown-level-2__content"></div>')
+                            .wrap('<div class="wds-is-not-scrollable wds-dropdown-level-2__content  wds-dropdown-level-nested__content"></div>')
                             .addClass('wds-list wds-is-linked')
                             .children('li')
                                 .children('a')
                                 .siblings('ul')
-                                    .wrap('<div class="wds-is-not-scrollable wds-dropdown-level-3__content"></div>')
+                                    .wrap('<div class="wds-is-not-scrollable wds-dropdown-level-3__content  wds-dropdown-level-nested__content"></div>')
                                     .addClass('wds-list wds-is-linked')
                                     .children('li')
                                         .children('a');
@@ -101,8 +101,8 @@
                 chevron = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" class="wds-icon wds-icon-tiny wds-dropdown-chevron" id="wds-icons-menu-control-tiny"><path d="M11.707 3.293a.999.999 0 0 0-1.414 0L6 7.586 1.707 3.293A.999.999 0 1 0 .293 4.707l5 5a.997.997 0 0 0 1.414 0l5-5a.999.999 0 0 0 0-1.414" fill-rule="evenodd"></path></svg>';
 
             $this.append(chevron);
-            $this.addClass('wds-dropdown-level-2__toggle');
-            $this.parent('li').addClass('wds-dropdown-level-2');
+            $this.addClass('wds-dropdown-level-nested__toggle');
+            $this.parent('li').addClass('wds-dropdown-level-nested');
             
         });
 
@@ -111,37 +111,8 @@
                 chevron = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" class="wds-icon wds-icon-tiny wds-dropdown-chevron" id="wds-icons-menu-control-tiny"><path d="M6.003 10.002a.997.997 0 0 1-.707-.293L.293 4.707a.999.999 0 1 1 1.414-1.414l4.296 4.295 4.293-4.293A.999.999 0 1 1 11.71 4.71l-5 5a.997.997 0 0 1-.707.293" fill-rule="evenodd"></path></svg>';
 
             $this.append(chevron);
-            $this.addClass('wds-dropdown-level-3__toggle');
-            $this.parent('li').addClass('wds-dropdown-level-3');
-        });
-
-        // add sticked to parent class for level 3 submenus
-        $.unique($menu.find('.wds-dropdown-level-2').parent()).each(function () {
-            $(this).children().each(function (i) {
-                var $this = $(this),
-                    $list;
-
-                if ($this.hasClass('wds-dropdown-level-2')) {
-                    $list = $this.find('> .wds-dropdown-level-2__content > .wds-list');
-
-                    if (($list.children().length - 1) < i) {
-                        $this.addClass('wds-is-sticked-to-parent');
-                    }
-                }
-            });
-        });
-
-        // add sticked to parent class for level 4 submenus
-        $.unique($menu.find('.wds-dropdown-level-3').parent()).each(function () {
-            $(this).children().each(function (i) {
-                var $this = $(this);
-
-                if ($this.hasClass('wds-dropdown-level-3')) {
-                    if (($this.find('.wds-list').children().length - 1) < i) {
-                        $this.addClass('wds-is-sticked-to-parent');
-                    }
-                }
-            });
+            $this.addClass('wds-dropdown-level-nested__toggle');
+            $this.parent('li').addClass('wds-dropdown-level-nested');
         });
 
         // remove href from text converted to links

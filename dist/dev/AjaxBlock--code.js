@@ -370,12 +370,12 @@
                         })
                     );
                 } else {
-                    var children = [];
+                    var subChildren = [];
 
                     for (var subKey in value) {
                         var subValue = value[subKey];
 
-                        children.push(
+                        subChildren.push(
                             ui.option({
                                 value: subKey,
                                 text: subValue
@@ -385,7 +385,7 @@
 
                     var group = ui.optgroup({
                         label: key,
-                        children: children
+                        children: subChildren
                     });
 
                     children.push(group);

@@ -55,6 +55,9 @@
                     onInput: function(e) {
                         changed.set(true);
                         input.set(e.target.value);
+                    },
+                    onFocus: function(e) {
+                        e.target.select();
                     }
                 }),
                 changed.value && tags.div({

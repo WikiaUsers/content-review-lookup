@@ -30,3 +30,26 @@ if ($('.portable-infobox .pi-secondary-background').length > 0) {
 else 
 	return;
 });
+
+/*Handling content moderator FANDOM badges to match our color by @Luma.dash*/
+function callback(mutations) { //handle content moderator badge color
+$('span[title="Content Moderator"] svg path:first-child').attr('fill', '#ce2029');	
+}
+$(function() {
+var namespace = mw.config.get('wgCanonicalNamespace');
+if (namespace == "User_blog" || namespace == "Message_Wall") {
+	var observer = new MutationObserver(callback);
+	var Comm;
+	if (namespace == "User_blog") { //in case it is a user blog
+		Comm = document.querySelector('#articleComments');
+	}
+	else if (namespace == "Message_Wall") { //in case it is a message wall
+	Comm = document.querySelector('#MessageWall');
+	}
+var option = {
+	childList: true, 
+	subtree: true
+};
+observer.observe(Comm, option);
+}
+});

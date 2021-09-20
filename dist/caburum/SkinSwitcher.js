@@ -3,6 +3,7 @@
  * Version:     v1.0
  * Author:      Caburum
  * Description: Adds a dropdown to switch between available skins and some variants
+ * <nowiki>
 **/
 
 mw.loader.using(['mediawiki.Uri', 'mediawiki.template.mustache'], function() {
@@ -15,12 +16,12 @@ mw.loader.using(['mediawiki.Uri', 'mediawiki.template.mustache'], function() {
 		{ n: 'Mobile app', s: 'fandommobile', p: { 'mobile-app': 'true' } },
 		{ n: 'Mobile app (dark)', s: 'fandommobile', p: { 'mobile-app': 'true', 'theme': 'dark' } }
 	],
-	template = '<li class="wds-dropdown-level-2">' +
-		'<a class="wds-dropdown-level-2__toggle">' +
+	template = '<li class="wds-dropdown-level-nested">' +
+		'<a class="wds-dropdown-level-nested__toggle">' +
 			'<span>Skins</span>' +
 			'<svg class="wds-icon wds-icon-tiny wds-dropdown-chevron"><use xlink:href="#wds-icons-menu-control-tiny"></use></svg>' +
 		'</a>' +
-		'<div class="wds-is-not-scrollable wds-dropdown-level-2__content" style="top: 50%; right: 94%; left: unset;">' +
+		'<div class="wds-is-not-scrollable wds-dropdown-level-nested__content" style="top: 50%; right: 94%; left: unset;">' +
 			'<ul class="wds-list wds-is-linked">' +
 				'{{#data}}' +
 					'<li><a href="{{{link}}}">{{n}}</a></li>' +

@@ -2,6 +2,11 @@
 // настройки для BackToTopButton
 window.BackToTopModern = true;
 
+/* Прогресс-бар */
+window.AddRailModule = [
+    { page: 'Template:ProgressBar', maxAge: 60 },
+];
+
 /* Сервер (автор скрипта: Сибирский Смотритель) */
 // (function () {
 // if (!mw.config.get('wgUserName'))

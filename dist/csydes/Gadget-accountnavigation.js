@@ -6,13 +6,13 @@
     if (navLinks) return;
     var user = mw.util.wikiUrlencode(mw.config.get('wgUserName')),
         links = {
+        watchlist: {
+            text: 'My Watchlist',
+            url: '/wiki/Special:Watchlist'        	
+        },
         blogs: {
             text: 'My Blogs',
             url: '/wiki/User_blog:' + user
-        },
-        watchlist: {
-            text: 'My Watchlist',
-            url: '/wiki/Special:Watchlist'
         }
     },
         html = '',
@@ -20,7 +20,7 @@
     for (var i in links) {
         html += '<li><a href="' + links[i].url + '" class="wds-global-navigation__dropdown-link">' + links[i].text + '</a></li>';
     }
-    document.querySelector('.wds-global-navigation__user-menu .wds-list > li:nth-child(2)').insertAdjacentHTML('afterEnd', html);
+    document.querySelector('.global-navigation__bottom > .wds-dropdown > .wds-dropdown__content > ul.wds-list > li:nth-child(2)').insertAdjacentHTML('afterEnd', html);
 })();
 //
 // </nowiki>

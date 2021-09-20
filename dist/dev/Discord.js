@@ -667,7 +667,7 @@
             elem.style.maxHeight = (sum + overhead) + 'px';
         },
         patchStupidRail: function() {
-            if (!this.$rail || !window.MutationObserver || navigator.maxTouchPoints === 0) return;
+            if (this.$rail.length === 0 || !window.MutationObserver || navigator.maxTouchPoints === 0) return;
 
             var rail = this.$rail.get(0);
 

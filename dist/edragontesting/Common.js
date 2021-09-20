@@ -43,6 +43,7 @@ window.UserTagsJS = {
         'threadmoderator',
         'rollback',
         'bot',
+        'map-tester',
         'bot-global',
         'blocked', 
         'checkuser',

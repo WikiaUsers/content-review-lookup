@@ -1,7 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 // How to import from dev on a GP wiki
-mw.loader.getScript('https://dev.fandom.com/index.php?title=MediaWiki:ArticlesAsResources.js&action=raw&ctype=text/javascript').then(function() {
+mw.loader.getScript('https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:ArticlesAsResources.js&only=scripts').then(function() {
     importArticles({
         type: 'script',
         articles: [

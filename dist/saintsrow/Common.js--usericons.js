@@ -17,6 +17,9 @@ window.UserIconsInit = function(source) {
     if (typeof debug452 == "function") debug452("UserIconsInit exit - header missing"); 
     return; 
   }
+  //Insert edit count link, replacing Special:Contributions link which is already featured below the edit count.
+  $(".user-identity-stats li:first-child a").attr("href", "/Special:EditCount/"+mw.config.get("profileUserName"));
+
   $("#userProfileApp").addClass("withUserIcons");
   if (typeof debug452 == "function") debug452("UserIconsInit continue - from "+source); 
 

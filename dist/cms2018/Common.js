@@ -13,3 +13,8 @@ $(function() {
     	$("#wpLicense").val("Fairuse");
 	}
 });
+
+// Redirect Special:Chat to Discord
+if (mw.config.get('wgPageName') === "Special:Chat") {
+    window.location = "https://cms2018.fandom.com/wiki/Discord";
+}

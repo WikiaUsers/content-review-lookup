@@ -1,4 +1,31 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+/* Tooltips configuration */
+window.tooltips_config = {
+    offsetX: 40,
+    offsetY: 20,
+    waitForImages: true,
+	noCSS: true,
+};
+
+/* Custom Tooltips */
+window.tooltips_list = [
+    {
+        classname: 'item-tooltip',
+        parse: '{'+'{Item-Tooltip-Caller|<#name#>}}',
+    },
+	{
+        classname: 'card-tooltip',
+        parse: '{'+'{Card-Tooltip-Caller|<#name#>}}',
+    },
+	{
+        classname: 'keyword-tooltip',
+        parse: '{'+'{Keyword-Tooltip-Caller|<#name#>}}',
+    },
+	{
+        classname: 'monster-tooltip',
+        parse: '{'+'{Monster-Tooltip-Caller|<#name#>}}',
+    },
+];
+
 /* Sets the top property for stickyHeader tables */
 function setStickyHeaderTop() {
   const stickyTables = document.getElementsByClassName('stickyHeader');

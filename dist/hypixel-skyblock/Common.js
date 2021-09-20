@@ -224,53 +224,91 @@ setTimeout(function(){
 //##############################################################
 /* ==Small scripts== (W00)*/
 
-/* Used to move ID from {{Text anchor}} onto a parent tr tag (if it exists), allowing the whole row to be styliszed in CSS (using the :target seloector) */
-function _goToID(id) {
-	$("html, body").animate({ scrollTop: $('#'+id).offset().top-65 }, 500);
-}
-$("tr .text-anchor").each(function(){
-	var id = $(this).attr("id");
-	$(this).removeAttr("id");
-	$(this).closest("tr").attr("id", id);
 
-	// Re-trigger hash tag
-	if(location.hash.replace("#", "") === id) {
-		// Show table if collapsed:
-		var inCollapseTable = $(this).parents(".mw-collapsed");
-		setTimeout(function(){
-			if(inCollapseTable.length) {
-				var parentTable = $(inCollapseTable[0]);
-				parentTable.removeClass("mw-collapsed");
-				parentTable.find("tr").stop().show();
-
-				/*if(parentTable.hasClass("mw-made-collapsible")) {
-					var collapseID = parentTable.attr("id").replace("mw-customcollapsible-", "");
-					$(".mw-customtoggle-"+collapseID).click();
-				} else {
-					parentTable.removeClass("mw-collapsed");
-				}*/
-			}
-			_goToID(id);
-		}, 1000);
+/* Moves ID from {{Text anchor}} onto a parent tr tag (if it exists), allowing the whole row to be styliszed in CSS (using the :target seloector) */
+$( function() {
+	function _goToID(id) {
+		$("html, body").animate({ scrollTop: $('#'+id).offset().top-65 }, 500);
 	}
-});
-
-$(window).on( 'hashchange', function() {
-	var hash = location.hash.replace("#", "");
-	$("tr[id]").each(function(){
-		var $row = $(this);
-		var id = $row.attr("id");
-		if(id === hash) {
-			var inCollapseTable = $row.parents(".mw-collapsed");
-			if(inCollapseTable.length) {
-				var $parentTable = $(inCollapseTable[0]);
-				var collapseID = $parentTable.attr("id").replace("mw-customcollapsible-", "");
-				$(".mw-customtoggle-"+collapseID).click();
-			}
-			_goToID(id);
+	// If the element passed is inside of a tabber, the tabber will open to the tab it belongs in
+	function _openTabberTabBelongingToChild(element) {
+		if(!element) { return; }
+		var closestTabber = element.closest('.wds-tabber');
+		var closestTabberContent = element.closest('.wds-tab__content');
+		
+		// If table row is in a tabber
+		if(closestTabber && closestTabberContent && closestTabberContent.parentNode) {
+			// Get a list of tab sections and find out the index of ours in that list
+			var indexOfTab = Array.from(closestTabberContent.parentNode.querySelectorAll(':scope > .wds-tab__content')).indexOf(closestTabberContent);
+			
+			// Using the index from above, change all tab states to point to the tab containing the element passed in to this function
+			closestTabber.querySelectorAll(':scope > .wds-tab__content').forEach((function (elem, i) {
+				elem.classList.toggle('wds-is-current', indexOfTab === i)
+			}));
+			closestTabber.querySelectorAll(':scope > .wds-tabs__wrapper .wds-tabs__tab').forEach((function (elem, i) {
+				elem.classList.toggle('wds-is-current', indexOfTab === i)
+			}));
+		}
+	}
+	// Let's you re-add `:target` css without messing anything else up
+	// https://stackoverflow.com/a/59013961/1411473
+	function _pushHashAndFixTargetSelector(hash) {
+	    history.pushState({}, document.title, hash); //called as you would normally
+	    var onpopstate = window.onpopstate; //store the old event handler to restore it later
+	    window.onpopstate = function() { //this will be called when we call history.back()
+	        window.onpopstate = onpopstate; //restore the original handler
+	        history.forward(); //go forward again to update the CSS
+	    };
+	    history.back(); //go back to trigger the above function
+	}
+	$("tr .text-anchor").each(function(){
+		var $textAnchor = $(this);
+		var id = $(this).attr("id");
+		$(this).removeAttr("id");
+		$(this).closest("tr").attr("id", id);
+	
+		// Re-trigger hash tag
+		if(location.hash.replace("#", "") === id) {
+			// Show table if collapsed:
+			var inCollapseTable = $(this).parents(".mw-collapsed");
+			setTimeout(function(){
+				if(inCollapseTable.length) {
+					var parentTable = $(inCollapseTable[0]);
+					parentTable.removeClass("mw-collapsed");
+					parentTable.find("tr").stop().show();
+	
+					/*if(parentTable.hasClass("mw-made-collapsible")) {
+						var collapseID = parentTable.attr("id").replace("mw-customcollapsible-", "");
+						$(".mw-customtoggle-"+collapseID).click();
+					} else {
+						parentTable.removeClass("mw-collapsed");
+					}*/
+				}
+				_pushHashAndFixTargetSelector(location.hash);
+				_openTabberTabBelongingToChild($textAnchor[0]);
+				_goToID(id);
+			}, 1000);
 		}
 	});
-} );
+	
+	$(window).on( 'hashchange', function() {
+		var hash = location.hash.replace("#", "");
+		$("tr[id]").each(function(){
+			var $row = $(this);
+			var id = $row.attr("id");
+			if(id === hash) {
+				var inCollapseTable = $row.parents(".mw-collapsed");
+				if(inCollapseTable.length) {
+					var $parentTable = $(inCollapseTable[0]);
+					var collapseID = $parentTable.attr("id").replace("mw-customcollapsible-", "");
+					$(".mw-customtoggle-"+collapseID).click();
+				}
+				_openTabberTabBelongingToChild($row[0]);
+				_goToID(id);
+			}
+		});
+	} );
+}() );
 
 $('a[href=\"#ajaxundo\"]').attr('title', 'Instantly undo this edit without leaving the page');
 

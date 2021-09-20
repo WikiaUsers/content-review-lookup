@@ -3,22 +3,6 @@
 /* Back To Top Button Configuration */
     var Speed = 50;
 
-/* Script Import */
-importArticles({
-    type: "script",
-    articles: [
-        "w:dev:UserTags/code.js",
-        "w:dev:LockForums/code.js",
-        "w:dev:FloatingToc/code.js",
-        "w:dev:RevealAnonIP/code.js",
-        "w:dev:FixWantedFiles/code.js",
-        "w:dev:BackToTopButton/code.js",
-        "w:dev:EditIntroButton/code.js",
-        "w:dev:ReferencePopups/code.js",
-        "MediaWiki:Common.js/StandardEditSummaries.js",
-    ]
-});
-
 // BEGINNING: JavaScript for placing the fair use rationale template inside the summary box on [[Special:Upload]]. Code by "[[wikipedia:User:Pinky49]]", created and coded specifically for [[wikia:c:cdnmilitary|Duty & Valour]]. Modified by Yyp for use on Bleach Wiki.
  
 function preloadUploadDesc() {

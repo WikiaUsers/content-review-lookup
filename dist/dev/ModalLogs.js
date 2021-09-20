@@ -11,10 +11,10 @@
                 padding: 0.5em;\
             }\
             #ModalLogs li:nth-child(odd) {\
-                background-color: var(--theme-article-background-color--secondary);\
+                background-color: var(--theme-page-text-mix-color-95);\
             }\
             #ModalLogs li:nth-child(even) {\
-                background-color: var(--oasis-article-background-color--darken-008);\
+                background-color: var(--theme-page-background-color--secondary);\
             }\
         ');
     }
@@ -32,7 +32,7 @@
 
     function init (selector) {
     	style();
-        $('.WikiaPage').find(selector).click(function (e) {
+        $('.mw-contributions-user-tools').find(selector).click(function (e) {
             e.preventDefault();
             var url = $(e.target).attr('href');
             $.get(url).done(modal);

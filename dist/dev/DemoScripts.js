@@ -24,15 +24,15 @@
          *
          */
 
-		ActivityFeedMimic: {
-			page: 'ActivityFeedMimic',
-			styles: 'MediaWiki:ActivityFeedMimic.css'
-		},
-		
-		AutoHeadingNumber: {
-			page: 'AutoHeadingsNumber',
-			styles: 'MediaWiki:AutoHeadingNumber.css',
-		},
+        ActivityFeedMimic: {
+            page: 'ActivityFeedMimic',
+            styles: 'MediaWiki:ActivityFeedMimic.css'
+        },
+        
+        AutoHeadingNumber: {
+            page: 'AutoHeadingsNumber',
+            styles: 'MediaWiki:AutoHeadingNumber.css',
+        },
 
         BackToTopButton: {
             page: 'BackToTopButton',
@@ -104,8 +104,8 @@
         },
         
         DiscordGlobalFooter: {
-        	page: 'DiscordGlobalFooter',
-        	styles: 'MediaWiki:DiscordGlobalFooter.css'
+            page: 'DiscordGlobalFooter',
+            styles: 'MediaWiki:DiscordGlobalFooter.css'
         },
 
         DropdownMenu: {
@@ -129,8 +129,8 @@
         },
         
         ExternalIcons: {
-        	page: 'ExternalIcons',
-        	styles: 'MediaWiki:ExternalIcons.css'
+            page: 'ExternalIcons',
+            styles: 'MediaWiki:ExternalIcons.css'
         },
         
         FadedDropdowns: {
@@ -143,15 +143,15 @@
             styles: 'MediaWiki:FandomIcons.css'
         },
 
-		Fandom95: {
-			page: 'Fandom95',
-			styles: 'MediaWiki:Fandom95.css'
-		},
+        Fandom95: {
+            page: 'Fandom95',
+            styles: 'MediaWiki:Fandom95.css'
+        },
 
-		FandomXP: {
-			page: 'FandomXP',
-			styles: 'MediaWiki:FandomXP.css'
-		},
+        FandomXP: {
+            page: 'FandomXP',
+            styles: 'MediaWiki:FandomXP.css'
+        },
 
         FastFileDelete: {
             page: 'FastFileDelete',
@@ -183,8 +183,8 @@
         },
         
         FloatingTitle: {
-        	page: 'FloatingTitle',
-        	styles: 'MediaWiki:FloatingTitle.css'
+            page: 'FloatingTitle',
+            styles: 'MediaWiki:FloatingTitle.css'
         },
 
         GlobalEditcount: {
@@ -197,11 +197,11 @@
             styles: 'MediaWiki:GlobalNavigationIcons.css'
         },
 
-		HydraRevived: {
-			page: "HydraRevived",
-			scripts: "MediaWiki:HydraRevived.js",
-			styles: "MediaWiki:HydraRevived.css"
-		},
+        HydraRevived: {
+            page: "HydraRevived",
+            scripts: "MediaWiki:HydraRevived.js",
+            styles: ["MediaWiki:HydraRevived/main.css", "MediaWiki:HydraRevived/preload.css"]
+        },
 
         InfoWidgets: {
             selector: '#infowidgets-demo',
@@ -317,8 +317,8 @@
         },
         
         MultipleActivity: {
-        	page: 'Special:MultipleActivity',
-        	scripts: 'MediaWiki:MultipleActivity.js'
+            page: 'Special:MultipleActivity',
+            scripts: 'MediaWiki:MultipleActivity.js'
         },
 
         NavboxBuilder: {
@@ -333,20 +333,20 @@
         },
         
         OldOasisTheme: {
-        	page: 'OldOasisTheme',
-        	styles: 'MediaWiki:OldOasisTheme.css'
+            page: 'OldOasisTheme',
+            styles: 'MediaWiki:OldOasisTheme.css'
         },
         
         OldWikiaBar: {
-	        page: "OldWikiaBar",
-	        styles: "MediaWiki:OldWikiaBar.css"
-	    },
-	    
-	    OldFandomColors: {
-	    	page: "OldFandomColors",
-	    	styles: "MediaWiki:OldFandomColors.css",
-	    	scripts: "MediaWiki:OldFandomColors.js",
-	    },
+            page: "OldWikiaBar",
+            styles: "MediaWiki:OldWikiaBar.css"
+        },
+        
+        OldFandomColors: {
+            page: "OldFandomColors",
+            styles: "MediaWiki:OldFandomColors.css",
+            scripts: "MediaWiki:OldFandomColors.js",
+        },
         
         OrganizedNotifs: {
             page: 'OrganizedNotifs',
@@ -665,7 +665,7 @@
                     return;
                 }
 
-                if (actions.page && (actions.subpages === false ? page : basepage) !== actions.page) {
+                if (actions.page && actions.page !== page && (actions.subpages === false || actions.page !== basepage)) {
                     return;
                 }
 

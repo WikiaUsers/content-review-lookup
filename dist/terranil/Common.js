@@ -17,6 +17,24 @@
 /*                                                                                           */
 /* ***************************************************************************************** */
 
+// ArticlesAsResources.js by Sophie and Dorumin because Fandom haven't added their own version for ImportJS to work on Gamepedia.
+mw.loader.getScript('https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:ArticlesAsResources.js&only=scripts').then(function() {
+	importArticles({
+		type: 'script',
+		articles: [
+			"u:dev:MediaWiki:AddRailModule/code.js", // dev.fandom.com/wiki/AddRailModule
+			"u:dev:MediaWiki:BackToTopButton/code.js", // dev.fandom.com/wiki/BackToTopButton
+			"u:dev:MediaWiki:BalancedTabber.js", // dev.fandom.com/wiki/BalancedTabber
+			"u:dev:MediaWiki:DiscordIntegrator/code.js", // dev.fandom.com/wiki/DiscordIntegrator
+			"u:dev:MediaWiki:MessageBlock/code.js", // dev.fandom.com/wiki/MessageBlock
+			"u:dev:MediaWiki:ModernLightbox.js", // dev.fandom.com/wiki/ModernLightbox
+			"u:dev:MediaWiki:ProtectionIcons.js", // dev.fandom.com/wiki/ProtectionIcons
+			"u:dev:MediaWiki:PreloadTemplates.js", // dev.fandom.com/wiki/PreloadTemplates
+			"u:dev:MediaWiki:ProfileTags.js" // dev.fandom.com/wiki/ProfileTags
+		],
+	});
+});
+
 // Credits to the Among Us Wiki for Rollbacks UserTag Customisation //
 window.dev = window.dev || {};
 

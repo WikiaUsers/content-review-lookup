@@ -433,6 +433,7 @@ class InputFormPreparer {
 // hide the "no JS" text and prepare the DOM structure
 $(document).ready(() => {
   $('.cpl-nojs').hide()
+  $('#cpl-app').html('') // empty the element
   $('#cpl-app').append(
     $('<div>').attr('id', 'comparepagelist-inputarea'),
     $('<div>').attr('id', 'progresslogarea-progresslogarea').append(
@@ -446,23 +447,13 @@ $(document).ready(() => {
 // load dependencies
 Promise.all([
   // load OOUI
-  new Promise((resolve, reject) => {
-    mw.loader.using('oojs-ui').done(() => { resolve() })
-  }),
+  mw.loader.using('oojs-ui'),
   // load jquery.i18n and initialize the l10n table
-  new Promise((resolve, reject) => {
-    mw.loader.using('jquery.i18n').done(() => {
-      $.i18n().load(l10nTable).done(() => {
-        resolve()
-      })
-    })
-  }),
+  mw.loader.using('jquery.i18n').done(() => $.i18n().load(l10nTable)),
   // load the category and interwiki lists
-  new Promise((resolve, reject) => {
-    new InputFormPreparer().makeCateAndIwList().then(data => {
-      console.log('[Compare page list] Category and interwiki list on this wiki:', data)
-      resolve(data)
-    })
+  new InputFormPreparer().makeCateAndIwList().then(cateAndIwList => {
+    console.log('[Compare page list] Category and interwiki list on this wiki:', cateAndIwList)
+    return cateAndIwList
   })
 ]).then(data => {
   // when done, start making the input form
@@ -1032,7 +1023,7 @@ function doCompare () {
             canContinue = confirmationDialog($.i18n('cpl-output-warningdialog-text'), $.i18n('cpl-output-warningdialog-title'))
           }
 
-          return canContinue.then(() => { return pagelist.filterOutPagesWithInvalidForeignTitles() })
+          return canContinue.then(() => pagelist.filterOutPagesWithInvalidForeignTitles())
         } catch (e) { return breakOutOfPromiseChain(e) }
       })
 
@@ -1918,25 +1909,21 @@ function confirmationDialog (text, dialogtitle) {
 
 function displayOutput () {
   return new Promise((resolve, reject) => {
-    let outputNodes
-
     // load "MediaWiki:" system messages (i18n) and library that enables table sorting
     Promise.all([
       new mw.Api().loadMessagesIfMissing(msgs)
-        .done(() => { resolve() })
         .fail(errordata => {
           errorDuringProcess(errordata, $.i18n('cpl-error-messages'))
           reject(Error('loadMessagesIfMissing failed!'))
         }),
       mw.loader.using('jquery.tablesorter')
-        .done(() => { resolve() })
         .fail(errordata => {
           errorDuringProcess(errordata, $.i18n('cpl-error-sorter'))
           reject(Error('loading jquery.tablesorter failed!'))
         })
     ]).then(() => {
       // with the loaded messages and table sortability, make the output
-      outputNodes = OutputMaker.make(new PerPageProgress(90, 96))
+      const outputNodes = OutputMaker.make(new PerPageProgress(90, 96))
 
       // load the library that enables table collapsing
       mw.loader.using('jquery.makeCollapsible')
@@ -1957,7 +1944,7 @@ function displayOutput () {
 
 class OutputMaker {
   static make (perPageProgress) {
-    const bigTerrariaTable = $('<table>')
+    const bigWrapperTable = $('<table>')
       .addClass(['terraria', 'lined'])
       .append(
         $('<thead>').append(
@@ -1967,8 +1954,8 @@ class OutputMaker {
           )
         )
       )
-    const bigTerrariaTBody = $('<tbody>')
-    bigTerrariaTable.append(bigTerrariaTBody)
+    const bigWrapperTBody = $('<tbody>')
+    bigWrapperTable.append(bigWrapperTBody)
 
     perPageProgress.pagecount = pagelistForOutput.length
     pagelistForOutput.forEach(pagedata => {
@@ -1987,15 +1974,15 @@ class OutputMaker {
 
       perPageProgress.increment()
 
-      bigTerrariaTBody.append(tableRow)
+      bigWrapperTBody.append(tableRow)
     })
-    bigTerrariaTable.tablesorter() // make the table sortable
+    bigWrapperTable.tablesorter() // make the table sortable
 
     const note = $('<span>')
       .addClass('note-text')
       .text($.i18n('cpl-output-timezone'))
 
-    return [bigTerrariaTable, note]
+    return [bigWrapperTable, note]
   }
 
   static expandArrow (hideCell, showArrow) {

@@ -21,30 +21,11 @@ window.tooltips_list = [
 ];
 
 /* Countdown code */
-
-window.countdownTimer = {
-    event: function () {
-       $(this).text('This event has ended');
-    }
-};
-window.countdownTimer = {
-  tryouts: function () {
-       $(this).text('This tryouts has ended');
-    }
-};
-
 window.countdownTimer = {
 endtextmaintenance: function () {
-       $(this).text('This maintenance has ended');
+       $(this).text('This has ended');
     }
 };
-
-/* Replaces {{USERNAME}} with the name of the user browsing the page.
-   Requires copying Template:USERNAME. */
-$(function() {
-    if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) { return; }
-    $('span.insertusername').text(mw.config.get('wgUserName'));
-});
 
 /* Adding categories to customized upload page */
 if (['MultipleUpload', 'Upload'].indexOf(mw.config.get('wgCanonicalSpecialPageName')) > -1) {

@@ -637,6 +637,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"architect": {
+				"name": "Architect",
+				"colors": [
+					"egypt",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"archon": {
 				"name": "Archon",
 				"colors": [
@@ -3440,6 +3448,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"blue"
 				],
 				"rarity": "common"
+			},
+			"delta": {
+				"name": "Delta",
+				"colors": [
+					"egypt",
+					"blue"
+				],
+				"rarity": "unbreedable"
 			},
 			"delver": {
 				"name": "Delver",
@@ -9688,6 +9704,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"nether": {
+				"name": "Nether",
+				"colors": [
+					"egypt",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"neverending": {
 				"name": "Never Ending",
 				"colors": [
@@ -13394,6 +13418,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"pink"
 				],
 				"rarity": "unbreedable"
+			},
+			"somber": {
+				"name": "Somber",
+				"colors": [
+					"egypt",
+					"green"
+				],
+				"rarity": "common"
 			},
 			"sootfoot": {
 				"name": "Sootfoot",

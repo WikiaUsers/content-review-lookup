@@ -488,6 +488,10 @@ window.importScripts = function(pages) {
 	});
 };
 
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/hypxielskyblock/images/8/89/Wiki-wordmark.png/revision/latest?cb=20200303134947&format=original&path-prefix=ko'
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/hypxielskyblock/images/8/89/Wiki-wordmark.png/revision/latest?cb=20200303134947&format=original&path-prefix=ko'
+
 importScripts([
 	"MediaWiki:Common.js/minetip.js",
 	"MediaWiki:Common.js/skydate.js",

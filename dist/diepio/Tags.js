@@ -193,6 +193,12 @@ window.UserTagsJS = {
             title: 'Project:Tags',
             order: 780
         },
+        ad: {
+            u:     'Arras Developer',
+            link:  'Project:Tags',
+            title: 'Project:Tags',
+            order: 790
+        },
         hi: {
             u:     'On Hiatus',
             link:  'Project:Tags',
@@ -247,9 +253,11 @@ UserTagsJS.modules.custom = {
     /** Staff Artist **
     'Anonymoususer12321': 'sa',
     
+    /** Arras Developers **/
+    'SpanksMcYeet'     : 'ad',//Arras Co-Developer
+    
     /** Miscellaneous VIPs **/
     'Eizen'             : 'vip',//Script developer
-    'FallenBooster'     : 'vip',//Arras Co-Developer
     'KockaAdmiralac'    : 'vip',//Script developer and cube
 
     /** Youtuber VIPs **/

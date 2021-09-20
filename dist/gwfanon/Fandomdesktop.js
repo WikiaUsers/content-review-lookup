@@ -6,8 +6,16 @@ if($('.headerek').length) {
 
 // Template:ZobaczTeż (EN: SeeAlso)
 if($('.podgłówek').length) {
-   $('<div class="page-header__page-subtitle alternatywny-podgłówek">'+$('.podgłówek').html()+'</div>').appendTo('.page-header__title-wrapper');
+   $('<span class="page-header__page-subtitle alternatywny-podgłówek alternatywny-podgłówek2">'+$('.podgłówek').html()+'</span>').appendTo('.page-header__title-wrapper');
    $('.podgłówek').remove();
+}
+if($('.podgłówek2').length) {
+   $('<span class="page-header__page-subtitle alternatywny-podgłówek alternatywny-podgłówek2">'+$('.podgłówek2').html()+'</span>').appendTo('.page-header__title-wrapper');
+   $('.podgłówek2').remove();
+}
+if($('.podgłówek3').length) {
+   $('<span class="page-header__page-subtitle alternatywny-podgłówek alternatywny-podgłówek3">'+$('.podgłówek3').html()+'</span>').appendTo('.page-header__title-wrapper');
+   $('.podgłówek3').remove();
 }
 
 // Anons.css

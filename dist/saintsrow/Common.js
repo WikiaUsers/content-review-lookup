@@ -1,5 +1,5 @@
-var debugcolour = 'green';  //Change the colour to confirm cache updates
-var debugversion = '1629299765784';
+var debugcolour = 'purple';  //Change the colour to confirm cache updates
+var debugversion = '1631569684220';
 
 window.test452 = { ready:false, complete:false};
 window.debug452 = function(out, alert) { if (mw.config.get("wgUserName") == "452") { if ( ["object", "null", "function"].indexOf(typeof out) == -1) console.log(new Date().toJSON()+" "+out); else { console.log(new Date().toJSON()+" object:"); console.log(out); } if (typeof alert != "undefined") window.alert(out); } }
@@ -11,7 +11,7 @@ $(function() { /* Run when page has loaded */
 
   initScripts();
 
-  $('.page-content a.external[href*="//saintsrow.fandom.com"][target="_blank"]').attr("target","");
+  $('.page-content a[href*="//saintsrow.fandom.com"][target="_blank"]').attr("target","");
 
   $("#ToggleCSS").html( $("<a>", { html:"Toggle CSS" }).on("click", function() { toggleCSS() }) );
 
@@ -44,10 +44,6 @@ $(function() { /* Run when page has loaded */
 	toc.sort();
 	for(var i = 0; i < $('#toc li').length; i++) $('#toc li')[i].innerHTML = toc[i];
   });
-
-  //Insert edit count link, because parser functions can no longer be used in MediaWiki:User-identity-box-edits-since-joining - Wikia was been informed of this problem, and it was not fixed immediately, which indicates it will take years to fix, if ever.
-  $("#UserProfileMasthead .tally em").wrap($("<a>").attr("href", "/Special:EditCount/"+$("#UserProfileMasthead h1[itemprop=name]").html()));
-/* Special:EditCount is missing on UCP */
 
   //implementing redirect to Special: pages, because no-one at Wikia considered the fact that people might want to change links to the old forum to redirect users to the new forum.
   if (mw.util.getParamValue('redirect') != "no" && $("div.redirectMsg").length && $("div.redirectMsg a").attr("href")) {

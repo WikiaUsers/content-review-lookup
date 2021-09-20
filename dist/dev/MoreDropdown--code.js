@@ -62,14 +62,14 @@
                     "<li id=\"md-subpages\"><a href=\"" + PAGE_PATHNAME + "Special:PrefixIndex/" + fullpage + "/\">Subpages</a></li>" +
                     "<li id=\"md-purge\"><a href=\"" + PAGE_PATHNAME + fullpage + "?action=purge\">Purge</a></li>" +
                     "<li id=\"md-latest-diff\"><a href=\"" + PAGE_PATHNAME + fullpage + "?diff=cur\">Latest Edit</a></li>" +
-                    "<li id=\"md-page-logs-dropdown\" class=\"wds-is-sticked-to-parent wds-dropdown-level-2\">" + 
-                        "<a href=\"" + PAGE_PATHNAME + "Special:Log?page=" + fullpage + "\" class=\"wds-dropdown-level-2__toggle\">" + 
+                    "<li id=\"md-page-logs-dropdown\" class=\"wds-is-sticked-to-parent wds-dropdown-level-nested is-calculated\">" + 
+                        "<a href=\"" + PAGE_PATHNAME + "Special:Log?page=" + fullpage + "\" class=\"wds-dropdown-level-nested__toggle\">" + 
                             "<span>Page Logs</span>" + 
                             "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 12\" class=\"wds-icon wds-icon-tiny wds-dropdown-chevron\" id=\"wds-icons-menu-control-tiny\">" + 
                                 "<path d=\"M11.707 3.293a.999.999 0 0 0-1.414 0L6 7.586 1.707 3.293A.999.999 0 1 0 .293 4.707l5 5a.997.997 0 0 0 1.414 0l5-5a.999.999 0 0 0 0-1.414\" fill-rule=\"evenodd\"></path>" + 
                             "</svg>" + 
                         "</a>" + 
-                        "<div class=\"wds-is-not-scrollable wds-dropdown-level-2__content\">" + 
+                        "<div class=\"wds-is-not-scrollable wds-dropdown-level-nested__content\">" + 
                             "<ul class=\"wds-list wds-is-linked\">" + 
                                 "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/delete?page=" + fullpage + "\">Deletion Log</a></li>" + 
                                 "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/move?page=" + fullpage + "\">Move Log</a></li>" + 
@@ -105,14 +105,14 @@
                                     "<li id=\"md-pageinfo\"><a href=\"" + PAGE_PATHNAME + fullpage + "?action=info\">Page info</a></li>" +
                                     "<li id=\"md-subpages\"><a href=\"" + PAGE_PATHNAME + "Special:PrefixIndex/" + ((namespace === 3 || namespace === 2)?fullpage:"User:" + username) + "/\" title=\"View Subpages of this page\">Subpages</a></li>" + 
                                     "<li id=\"md-purge\"><a href=\"" + PAGE_PATHNAME + fullpage + "?action=purge\">Purge</a></li>" +
-                                    "<li id=\"md-page-logs-dropdown\" class=\"wds-dropdown-level-2\">" + 
-                                        "<a href=\"" + PAGE_PATHNAME + "Special:Log?page=User:" + username + "\" class=\"wds-dropdown-level-2__toggle\">" + 
+                                    "<li id=\"md-page-logs-dropdown\" class=\"wds-is-sticked-to-parent wds-dropdown-level-nested is-calculated\">" + 
+                                        "<a href=\"" + PAGE_PATHNAME + "Special:Log?page=User:" + username + "\" class=\"wds-dropdown-level-nested__toggle\">" + 
                                             "<span>Page Logs</span>" + 
                                             "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 12\" class=\"wds-icon wds-icon-tiny wds-dropdown-chevron\" id=\"wds-icons-menu-control-tiny\">" + 
                                                 "<path d=\"M11.707 3.293a.999.999 0 0 0-1.414 0L6 7.586 1.707 3.293A.999.999 0 1 0 .293 4.707l5 5a.997.997 0 0 0 1.414 0l5-5a.999.999 0 0 0 0-1.414\" fill-rule=\"evenodd\"></path>" + 
                                             "</svg>" + 
                                         "</a>" + 
-                                        "<div class=\"wds-is-not-scrollable wds-dropdown-level-2__content\">" + 
+                                        "<div class=\"wds-is-not-scrollable wds-dropdown-level-nested__content\">" + 
                                             "<ul class=\"wds-list wds-is-linked\">" + 
                                                 "<li><a href=\"" + PAGE_PATHNAME + "Special:AbuseLog?wpSearchTitle=" + username + "\">Filter Log</a></li>" + 
                                                 "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/delete?page=User:" + username + "\">Deletion Log</a></li>" + 
@@ -124,14 +124,14 @@
                                     "<div>" + 
                                 "</li>" +
                                 (CAN_BLOCK?(IS_BLOCKED?
-                                "<li id=\"md-page-block-ops-dropdown\" class=\"wds-is-sticked-to-parent wds-dropdown-level-2\">" + 
-                                    "<a href=\"" + PAGE_PATHNAME + "Special:Log/block?page=User:" + username + "\" class=\"wds-dropdown-level-2__toggle\">" +                                             
+                                "<li id=\"md-page-block-ops-dropdown\" class=\"wds-is-sticked-to-parent wds-dropdown-level-nested is-calculated\">" + 
+                                    "<a href=\"" + PAGE_PATHNAME + "Special:Log/block?page=User:" + username + "\" class=\"wds-dropdown-level-nested__toggle\">" +                                             
                                     "<span>Block Tools</span>" + 
                                         "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 12\" class=\"wds-icon wds-icon-tiny wds-dropdown-chevron\" id=\"wds-icons-menu-control-tiny\">" + 
                                             "<path d=\"M11.707 3.293a.999.999 0 0 0-1.414 0L6 7.586 1.707 3.293A.999.999 0 1 0 .293 4.707l5 5a.997.997 0 0 0 1.414 0l5-5a.999.999 0 0 0 0-1.414\" fill-rule=\"evenodd\"></path>" + 
                                         "</svg>" + 
                                     "</a>" + 
-                                    "<div class=\"wds-is-not-scrollable wds-dropdown-level-2__content\">" + 
+                                    "<div class=\"wds-is-not-scrollable wds-dropdown-level-nested__content\">" + 
                                         "<ul class=\"wds-list wds-is-linked\">" + 
                                             "<li><a href=\"" + PAGE_PATHNAME + "Special:Unblock/" + username + "\">Unblock</a></li>" + 
                                             "<li><a href=\"" + PAGE_PATHNAME + "Special:Block/" + username + "\">Change block</a></li>" + 
@@ -165,14 +165,14 @@
                             "</div>" + 
                             "<div class=\"wds-dropdown__content wds-is-not-scrollable wds-is-right-aligned\">" + 
                                 "<ul class=\"wds-list wds-is-linked\" id=\"user-more-dropdown\">" + 
-                                    "<li id=\"user-md-logs-dropdown\" class=\"wds-dropdown-level-2\">" + 
-                                        "<a href=\"" + PAGE_PATHNAME + "Special:Log/" + username + "\" class=\"wds-dropdown-level-2__toggle\">" + 
+                                    "<li id=\"user-md-logs-dropdown\" class=\"wds-is-sticked-to-parent wds-dropdown-level-nested is-calculated\">" + 
+                                        "<a href=\"" + PAGE_PATHNAME + "Special:Log/" + username + "\" class=\"wds-dropdown-level-nested__toggle\">" + 
                                             "<span>Logs</span>" + 
                                             "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 12\" class=\"wds-icon wds-icon-tiny wds-dropdown-chevron\" id=\"wds-icons-menu-control-tiny\">" + 
                                                 "<path d=\"M11.707 3.293a.999.999 0 0 0-1.414 0L6 7.586 1.707 3.293A.999.999 0 1 0 .293 4.707l5 5a.997.997 0 0 0 1.414 0l5-5a.999.999 0 0 0 0-1.414\" fill-rule=\"evenodd\"></path>" + 
                                             "</svg>" + 
                                         "</a>" + 
-                                        "<div class=\"wds-is-not-scrollable wds-dropdown-level-2__content\">" + 
+                                        "<div class=\"wds-is-not-scrollable wds-dropdown-level-nested__content\">" + 
                                             "<ul class=\"wds-list wds-is-linked\">" + 
                                                 "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/" + username + "?type=abusefilter\">Filter Modification Log</a></li>" + 
                                                 "<li><a href=\"" + PAGE_PATHNAME + "Special:Log/" + username + "?type=delete\">Deletion Log</a></li>" + 

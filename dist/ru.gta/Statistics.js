@@ -2,11 +2,7 @@
     if (window.getWikiStatistics) return;
     var cache = {},
         targetClasses = [
-        '.outwikistats-articles',
-        '.outwikistats-activeusers',
-        '.outwikistats-admins',
-        '.outwikistats-edits',
-        '.outwikistats-images',
+        '.page-counter__value',
     ];
 
     function getWikiStatistics(targetClass, prop, $content) {

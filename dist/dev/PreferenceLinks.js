@@ -124,11 +124,11 @@ mw.loader.using([
 		$parent.after(
 			$('<li>', {
 				'id': 'preference-links-dropdown',
-				'class': 'wds-dropdown-level-2'
+				'class': 'wds-dropdown-level-nested'
 			}).append(
 				$('<a>', {
 					'href': mw.util.getUrl('Special:Preferences'),
-					'class': 'wds-dropdown-level-2__toggle preference-links',
+					'class': 'wds-dropdown-level-nested__toggle preference-links',
 					'data-tracking-label': 'account.preferences'
 				}).append(
 					$('<span>', {
@@ -139,7 +139,7 @@ mw.loader.using([
 					})
 				),
 				$('<div>', {
-					'class': 'wds-dropdown-level-2__content wds-is-not-scrollable preference-links-menu',
+					'class': 'wds-dropdown-level-nested__content wds-is-not-scrollable preference-links-menu',
 					'css': {
 						'bottom': '-8px',
 						'top': 'unset'

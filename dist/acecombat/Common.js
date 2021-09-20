@@ -22,18 +22,10 @@ window.tooltips_config = {
 	offsetY: 5,
 };
 
-/*** On page load ***/
+/*** Template:TOC limit side tools support ***/
 $(function(){
-	// Template:TOC limit side tools support
 	if($(".toclimit").length){
 		var limit = $(".toclimit").attr("class").replace("toclimit","").trim();
 		$("#sticky-toc").addClass(limit);
-	}
-	
-	// Add upload images button to Special:NewFiles
-	if($("body.page-Special_NewFiles").length){
-		var buttonArea = ".page-header__buttons";
-		if(mw.config.get("skin") == "oasis") buttonArea = ".page-header__contribution-buttons";
-		$(buttonArea).append("<a class='wds-button' href='/wiki/Special:Upload'><svg class='wds-icon wds-icon-small'><use xlink:href='#wds-icons-image'></use></svg><span>Add new image</span></a>");
 	}
 });

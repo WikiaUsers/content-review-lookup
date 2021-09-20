@@ -135,7 +135,7 @@ $(function() {
 	});
 	
 	$('#plant > p > img').each(function() {
-		var title = $(this).attr('title');
+		var title = mw.html.escape($(this).attr('title'));
 		$(this).attr('id', title);
 		$(this).attr('onclick', 'addPlant("' + title + '")');
 	});

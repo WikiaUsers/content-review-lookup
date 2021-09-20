@@ -78,12 +78,5 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
      "tagOpen": "\n<gallery spacing=medium columns=3 position=center widths=180 orientation=none captionalign=center>\n",
      "tagClose": "\n</gallery>",
      "sampleText": "File:Example 1.png|Description 1\nFile:Example 2.png|Description 2"};
- 
-   mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "http://i1074.photobucket.com/albums/w409/BlazBlueWiki/Speech_bubble_button.png",
-     "speedTip": "Insert a speech bubble",
-     "tagOpen": "{{Template:Your Username\n|time=~~~~~\n|text=",
-     "tagClose": "}}",
-     "sampleText": "Your message. (Admin probably did speech bubble for you. If not, just wait.)\n"};
 
  }

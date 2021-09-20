@@ -7,9 +7,8 @@
     var i18n;
     var preloads = 3;
     var archiveDPL = '{{#ifeq:{{#dpl:|debug=0|allowcachedresults=true|namespace=|uses=Template:Infobox JavaScript|title=$1|count=1|include={Infobox JavaScript}:Status|format=,,,}}|archive|true|}}';
-    var ucpDPL = '{{#ifeq:{{#dpl:|debug=0|allowcachedresults=true|namespace=Dev_Wiki|titleregexp=UCP$|include={/row}:2|includematch=*$1*|format=,,,|count=1}}|Delete|true|}}';
 
-    function checkStatus (item) { //yes I know a lot of this is duplicated, I did that intentionally
+    function checkStatus (item) {
         item = item.replace(/MediaWiki:(.*?)(?:\/.*)?\.js/, '$1').replace(/_/g, ' ');
         $.ajax({
             url: 'https://dev.fandom.com/api.php',
@@ -30,30 +29,6 @@
                 var result = data.parse.text['*'].replace(/<p>(.*)\n<\/p>/, '$1');
                 if (Boolean(result)) {
                     window.dev.toasts.info(i18n.msg('archived', item).escape(), {
-                        timeout: 300000
-                    });
-                }
-            }
-        });
-        $.ajax({
-            url: 'https://dev.fandom.com/api.php',
-            data: {
-                action: 'parse',
-                text: ucpDPL.replace('$1', item),
-                disablelimitreport: true,
-                prop: 'text',
-                wrapoutputclass: '',
-                format: 'json'
-            },
-            dataType: 'jsonp',
-            method: 'GET',
-            success: function (data) {
-                if (data.error) {
-                    return console.error(data.error);
-                }
-                var result = data.parse.text['*'].replace(/<p>(.*)\n<\/p>/, '$1');
-                if (Boolean(result)) {
-                    window.dev.toasts.error(i18n.msg('ucpdelete', item).escape(), {
                         timeout: 300000
                     });
                 }

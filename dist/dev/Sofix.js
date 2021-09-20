@@ -1,15 +1,5 @@
 //Sofix - Fixes various bugs around Fandom
 function main () { //TODO: Figure out some way to do this that's not a bunch of `if`s
-	//Fix body not having dark theme class
-	if (window.Sofix.isDark) {
-		$('body').addClass('theme-dark');
-	}
-
-    //Fix staff sig not being dark themed
-    if (window.Sofix.isDark && $('.staffSigImage').length && window.Sofix.enablePersonalUse) {
-        $('.staffSigImage').css('filter', 'contrast(0) brightness(2)');
-    }
-
     //Add tab title for social activity pages
     if (mw.config.get('wgCanonicalSpecialPageName') === 'UserProfileActivity') {
         document.title = 'Social Activity for ' + mw.config.get('profileUserName') + ' ' + document.title;
@@ -37,7 +27,7 @@ function main () { //TODO: Figure out some way to do this that's not a bunch of 
 function init () {
     window.Sofix = $.extend({
         enablePersonalUse: false,
-        isDark: $(':root').css('--theme-article-text-color') === '#e6e6e6',
+        isDark: mw.config.get('isDarkTheme'),
         modules: []
     }, window.Sofix);
 

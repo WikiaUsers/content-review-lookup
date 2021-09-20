@@ -8,6 +8,9 @@ window.DiscordBannerSettings = {
     inviteLink: 'nd3hG3jpBB', 
     prependToRail: true
 };
+
+/* BackToTopButton */
+window.BackToTopModern = true;
  
 /* CustomButton */
 if (mwCustomEditButtons) {

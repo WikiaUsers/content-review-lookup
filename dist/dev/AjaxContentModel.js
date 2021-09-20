@@ -1,3 +1,13 @@
+/**
+ * AjaxContentModel
+ * 
+ * Allows users to quickly change the content model of a page without reloading.
+ * @author Thundercraft5 <https://dev.fandom.com/wiki/User:Thundercraft5>
+ * @license BSD-3 clause <https://opensource.org/licenses/BSD-3-Clause>
+ * @doc https://dev.fandom.com/wiki/AjaxContentModel
+ * @version 1.0
+ */
+
 /* global $, mw, importArticles, BannerNotification */
 "use strict";
 
@@ -269,7 +279,7 @@ $.when.apply($, [
 	this.wg.wgArticlePath = this.wg.wgArticlePath.slice(0, -2);
 	
 	$(document.body).on('click', 'a[href]', this.onLinkClick.bind(this));
-	if (this.toolbarPlacement) $(this.toolbarPlacement === "mytools" ? 'ul.mytools' : 'ul.tools').prepend($('<li>', {
+	if (this.toolbarPlacement  && this.wg.wgNamespaceNumber !== -1) $(this.toolbarPlacement === "mytools" ? 'ul.mytools' : 'ul.tools').prepend($('<li>', {
 		class: "overflow",
 		html: $("<a>", {
 			text: mw.msg('changecontentmodel-legend'),
@@ -277,7 +287,7 @@ $.when.apply($, [
 			href: mw.util.getUrl(this.aliases[0], { pagetitle: this.wg.wgPageName }),
 		}),
 	}));
-	if (this.appendToContentMenu) $('#ca-protect').parent().after($('<li>', {
+	if (this.appendToContentMenu && this.wg.wgNamespaceNumber !== -1) $('#ca-protect, #ca-unprotect').first().parent().after($('<li>', {
 		html: $('<a>', {
 			text: mw.msg('changecontentmodel-legend'),
 			id: "ca-changecontentmodel",
@@ -285,9 +295,9 @@ $.when.apply($, [
 		}),
 	}));
 	
-	if (this.doKeyBind) {
+	if (this.doKeyBind && this.wg.wgNamespaceNumber !== -1) {
 		window.Mousetrap.bind(this.shortcutKey, function() {
-			this.showModal(this.aliases[0], this.wg.wgPageName, "");	
+			this.showModal(this.wg.wgPageName, null, "");	
 		}.bind(this));
 	}
 }.bind(function() {

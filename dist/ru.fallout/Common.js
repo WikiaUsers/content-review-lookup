@@ -76,8 +76,8 @@ $(function() {
 if ( $('.js-items-spoilers').length ) {
 
     var controls = '<tr colspan="2" class="js-items-controls"><td><div class="js-items-buttons">' +
-        '<span class="button" data-type="show" title="Развернуть">&darr;</span>' +
-        '<span class="button" data-type="hide" title="Свернуть">&uarr;</span>' +
+        '<span class="button" data-type="show" title="Развернуть">▼</span>' +
+        '<span class="button" data-type="hide" title="Свернуть">▲</span>' +
         '</div></td></tr>';
 
     // Adding controls row

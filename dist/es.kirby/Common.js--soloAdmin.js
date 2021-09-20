@@ -14,7 +14,7 @@ function showAdmMessage() {
     };
 }
  
-addOnloadHook(showAdmMessage);
+$(showAdmMessage);
  
 function fastdeleteappend() {
    setTimeout(function(){
@@ -22,4 +22,4 @@ function fastdeleteappend() {
       $('.WikiaRail a[data-id="delete"]').css({'display': 'inline-block'})
    },3000);
 }
-addOnloadHook(fastdeleteappend);
+$(fastdeleteappend);

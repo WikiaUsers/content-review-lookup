@@ -1,4 +1,4 @@
-/* Saints Row Wiki Maps, by 452. v1.0.10
+/* Saints Row Wiki Maps, by 452. v1.0.11
 Created in response to Wikia Maps being abandoned with no updates or fixes in over 6 months.
 Of course, the irony is that hardly anyone uses this, and I have gone years between updates because of it.
 The difference is that I am one person, not a multi-million dollar corporation.
@@ -88,8 +88,7 @@ Solved issues:
  * v1.0.8 removed zoom controls in Firefox, because Firefox sucks. (See "Known issues")
  * v1.0.9 warn when leaving without saving
  * v1.0.10 Resize height on resize, centers correctly after resize, doesn't recenter on pin click, scrolls to map top on click
-
-* Fixed: When you display a cat hidden by default, then open and close the cat editor, the cat list reset the cat to hidden.  Bug originally introduced in v0.28/29.  Cause was renaming poorly named variables, and a missed variable rename.  
+ * v1.0.11 Several logic problems regarding hiding cats (When you display a cat hidden by default, then open and close the cat editor, the cat list reset the cat to hidden.  Bug originally introduced in v0.28/29.  Cause was renaming poorly named variables, and a missed variable rename.  and then, "false" != false)
 
 
 v2.0 will include most suggestions I've made to Wikia, which are general usability improvements.
@@ -123,6 +122,7 @@ Extended features v2.x
  * v2.? Research coloured regions, hover area name: https://github.com/kemayo/maphilight/blob/master/jquery.maphilight.js
  * v2.? Investigate merging validation functions.
  * v2.? UI for manually editing hidden values such as X and Y
+ * v2.? mass check images exist
 
  * v2.? Easy rollback interface... otherwise known as the normal rollback button.  I can't think of a single reason to use a custom rollback
 
@@ -480,6 +480,7 @@ function Cat(params) {
 
   this.setval = function(field, params) {
     if(params[field]) this[field] = params[field].trim();
+    if(this[field] == "false") this[field] = false;
   }
   this.addPin = function(pinID) {
     this.pins[pinID] = 1;
@@ -630,16 +631,14 @@ function editCats() {
                   $(target).val( $(target).val().split("[Ff]ile:").pop());
 
                 if ($(target).val())
-                $.getJSON('/api.php?action=imageserving&format=json&wisTitle=File:'+encodeURIComponent($(target).val())+'&requestid='+CatID+'|'+field+'&*')
-                .done(function (data) {
+                $.getJSON('/api.php?action=imageserving&format=json&wisTitle=File:'+encodeURIComponent($(target).val())+'&requestid='+CatID+'|'+field)
+                .always(function (data) {
+                  if (typeof data.responseJSON != "undefined") data.requestid = data.responseJSON.requestid;
                   CatID = data.requestid.split("|")[0];
                   field = data.requestid.split("|")[1];
                   target = "#edit"+CatID+" #"+field+CatID;
 
-                  if (typeof data.image == "undefined") {
-                    $(target).removeClass("pending").addClass("failed");
-                    $("#CatEditDone").removeClass("pending").removeClass("ok").addClass("failed");
-                  } else if (typeof data.image.error != "undefined") {
+                  if (data.statusText == "error" || typeof data.image == "undefined" || typeof data.image.error != "undefined") {
                     $(target).removeClass("pending").addClass("failed");
                     $("#CatEditDone").removeClass("pending").removeClass("ok").addClass("failed");
                   } else {
@@ -676,13 +675,14 @@ function editCats() {
                   continue;
                 }
                 if (field == "link" && $(target).val()) {
-                  $.getJSON('/api.php?action=imageserving&format=json&wisTitle='+encodeURIComponent($(target).val())+'&requestid='+CatID+'|'+field+'&*')
-                  .done(function (data) {
+                  $.getJSON('/api.php?action=imageserving&format=json&wisTitle='+encodeURIComponent($(target).val())+'&requestid='+CatID+'|'+field)
+                  .always(function (data) {
+                    if (typeof data.responseJSON != "undefined") data.requestid = data.responseJSON.requestid;
                     CatID = data.requestid.split("|")[0];
                     field = data.requestid.split("|")[1];
                     target = "#edit"+CatID+" #"+field+CatID;
 
-                    if (typeof data.image == "undefined") {
+                    if (data.statusText == "error" || typeof data.image == "undefined") {
                       $(target).removeClass("pending").removeClass("ok").addClass("failed");
                       $("#CatEditDone").removeClass("pending").removeClass("ok").addClass("failed");
                     } else {
@@ -822,16 +822,16 @@ function showCats(expand) {
       .append(cat.name)
       .bind("click", function() {
         CatID=$(this).attr("for");
-        SRW.Cats[CatID].displayed = !$("#"+CatID).prop("checked");
+        //SRW.Cats[CatID].displayed = !$("#"+CatID).prop("checked");
 
-        if (SRW.Cats[CatID].displayed)
+        if (!$("#"+CatID).prop("checked"))
           for(pID in SRW.Cats[CatID].pins)
             $("#"+pID).removeClass("hiddenPin");
         else
           for(pID in SRW.Cats[CatID].pins) {
             $("#"+pID).addClass("hiddenPin");
             for(cID in SRW.Pins[pID].cats)
-              if(SRW.Cats[SRW.Pins[pID].cats[cID]].displayed) $("#"+pID).removeClass("hiddenPin");
+              if(!$("#"+SRW.Pins[pID].cats[cID]).prop("checked")) $("#"+pID).removeClass("hiddenPin");
           }
       })
     )
@@ -1048,16 +1048,14 @@ function pinclick(target) {
                          $(target).val( $(target).val().split("[Ff]ile:").pop());
 
                        if ($(target).val())
-                       $.getJSON('/api.php?action=imageserving&format=json&wisTitle=File:'+encodeURIComponent($(target).val())+'&requestid='+PinID+'|'+field+'&*')
-                       .done(function (data) {
+                       $.getJSON('/api.php?action=imageserving&format=json&wisTitle=File:'+encodeURIComponent($(target).val())+'&requestid='+PinID+'|'+field)
+                       .always(function (data) {
+                         if (typeof data.responseJSON != "undefined") data.requestid = data.responseJSON.requestid;
                          PinID = data.requestid.split("|")[0];
                          field = data.requestid.split("|")[1];
                          target = "#"+field+PinID;
 
-                         if (typeof data.image == "undefined") {
-                            $(target).removeClass("pending").addClass("failed");
-                            $("#PinEditDone").removeClass("pending").removeClass("ok").addClass("failed");
-                         } else if (typeof data.image.error != "undefined") {
+                         if (data.statusText == "error" || typeof data.image == "undefined" || typeof data.image.error != "undefined") {
                             $(target).removeClass("pending").addClass("failed");
                             $("#PinEditDone").removeClass("pending").removeClass("ok").addClass("failed");
                          } else {
@@ -1102,12 +1100,14 @@ function pinclick(target) {
                          continue;
                        }
                        if (field == "link" && $(target).val()) {
-                         $.getJSON('/api.php?action=imageserving&format=json&wisTitle='+encodeURIComponent($(target).val())+'&requestid='+PinID+'|'+field+'&*')
-                         .done(function (data) {
+                         $.getJSON('/api.php?action=imageserving&format=json&wisTitle='+encodeURIComponent($(target).val())+'&requestid='+PinID+'|'+field)
+                         .always(function (data) {
+                            if (typeof data.responseJSON != "undefined") data.requestid = data.responseJSON.requestid;
                             PinID = data.requestid.split("|")[0];
                             field = data.requestid.split("|")[1];
                             target = "#"+field+PinID;
-                            if (typeof data.image == "undefined") {
+
+                            if (data.statusText == "error" || typeof data.image == "undefined") {
                               $(target).removeClass("pending").removeClass("ok").addClass("failed");
                               $("#PinEditDone").removeClass("pending").removeClass("ok").addClass("failed");
                             } else {
@@ -1229,7 +1229,6 @@ function parseData(data) {
       SRW.Map = new SRWMap(params);
 
     } else if (params.ID.substr(0,3) == "Cat") {
-
       if (typeof SRW.Cats[params.ID] == "undefined") SRW.Cats[params.ID] = new Cat(params);
       else SRW.Cats[params.ID].setParams(params);
 
@@ -1260,7 +1259,7 @@ function loadData() {
       'title': $("#SRWmap").attr("title"),
       'action': 'raw',
       'ctype': 'text/plain',
-      'c':Math.random()+'&*'
+      'c':Math.random()
     },
     'url': wgScript,
     'success': function(data) {
@@ -1300,7 +1299,7 @@ function afterInit() {
 
 $(function() {
   SRW = {Map:{}, Cats:{}, Pins:{}, CatOrder:[]};
-  console.log("script init 1.0.10");
+  console.log("script init 1.0.11");
   $(".page-header h1").html($(".page-header h1").html().replace("Saints Row Wiki:Maps/","Map:"))
   if (wgPageName == $("#SRWmap").attr("title")) $(".page-content").css("margin",0);
 

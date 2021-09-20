@@ -597,6 +597,11 @@ $(document).ready(function()
 });
 
 
+// ***************************************************************************************************************
+//  Start "Hidden appearances section/interactive tree" script; by [[User:Bp]], modified by [[User:KettleMeetPot]]
+//  from Memory Alpha wiki
+// ***************************************************************************************************************
+
 var tree = 0;
 	var pane = 0;
 	var paneListForThisTree = [];
@@ -697,7 +702,6 @@ var tree = 0;
 				window.location.hash = window.location.hash;
 			}
 		}
-	
 	}
 	
 	$(doAppearancesTrees);

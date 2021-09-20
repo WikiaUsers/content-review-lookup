@@ -328,14 +328,14 @@
         dropdown: function($l, icon) {
             return $('<li>', {
                 'id': 'van-tools-dropdown',
-                'class': 'wds-dropdown-level-2'
+                'class': 'wds-dropdown-level-nested'
             }).append(
                 $('<a>', {
-                    'href': mw.util.getUrl(VAN.nav.uri.sitecss), //change back to VAN.nav.uri.infoboxes if/when they come back
+                    'href': VAN.mw.wgArticlePath.replace('$1', VAN.nav.uri.sitecss), //change back to VAN.nav.uri.infoboxes if/when they come back
                     'target': '_blank',
                     'rel': 'noopener noreferrer',
                     'class': [
-                        'wds-dropdown-level-2__toggle',
+                        'wds-dropdown-level-nested__toggle',
                         'van-tools-link'
                     ].join(' ')
                 }).append(
@@ -346,7 +346,7 @@
                 ),
                 $('<div>', {
                     'class': [
-                        'wds-dropdown-level-2__content',
+                        'wds-dropdown-level-nested__content',
                         'wds-is-not-scrollable',
                         'van-tools-menu'
                     ].join(' ')

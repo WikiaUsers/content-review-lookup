@@ -70,13 +70,6 @@ mw.hook('wikipage.content').add(function($content) {
  //headTitle.appendChild(setFavicon);
 })();
 
-// Traduire "Edit Wall Greeting" en français
-
-if (wgPageName.startsWith('Mur:'))
-  setTimeout(function () {
-      document.body.innerHTML = document.body.innerHTML.replace(/Edit Wall Greeting/, "Modifier l'accueil du mur");
-  }, 4000);
-
 /// Modèles
 
 // Modèle 'Username'

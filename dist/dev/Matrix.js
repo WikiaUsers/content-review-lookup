@@ -91,9 +91,9 @@
                       '! {{int:user-activity-table-lastedit}}\n' +
                       '! {{int:user-activity-table-rights}}\n' +
                       d.items.filter(function(item) {
-                          return !(config.private instanceof Array) ||
-                                 config.private.indexOf(item.url) === -1;
-                      }).map(function(item) {
+                          return !(this.config.private instanceof Array) ||
+                                 this.config.private.indexOf(item.url) === -1;
+                      }, this).map(function(item) {
                           var match = urlRegex.exec(item.url),
                               wiki = match[1];
                           if (match[2]) {

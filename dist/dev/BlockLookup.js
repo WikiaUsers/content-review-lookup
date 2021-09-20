@@ -1,3 +1,12 @@
+/**
+ * BlockLookup
+ * 
+ * Adds a custom special page which allows users to view block information.
+ * @author Thundercraft5 <https://dev.fandom.com/wiki/User:Thundercraft5>
+ * @license BSD-3 clause <https://opensource.org/licenses/BSD-3-Clause>
+ * @doc https://dev.fandom.com/wiki/BlockLookup
+ * @version 1.0
+ */
 /*jshint
 	esversion: 5, forin: true, immed: true, indent: 4, 
 	latedef: false, newcap: true,

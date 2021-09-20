@@ -1,6 +1,6 @@
 /* Please read the doc before using */
 $(function () {
-    const request = (article, type, wiki) => {
+    const request = function (article, type, wiki) {
         if (wiki) {
             if (wiki.includes('.')) {
                 wiki = 'https://' + wiki.split('.')[1] + '.fandom.com/' + wiki.split('.')[0];
@@ -33,7 +33,7 @@ $(function () {
         });
     };
 
-    const main = obj => {
+    const main = function (obj) {
         if (!obj.type) {
             return console.error('[ImportArticles]', 'Object passed without type.', obj);
         }
@@ -55,17 +55,13 @@ $(function () {
         if (obj.type === 'style') {
             obj.type = 'css';
         }
-		return Promise.all(obj.articles.map(item => request(item, obj.type)));
+		return Promise.all(obj.articles.map(function (item) {
+			return request(item, obj.type);
+		}));
     };
 
-    window.importArticles = (...objs) => {
-        return Promise.all(objs.map(main));
-    };
+	window.importArticles = function() {
+	    return Promise.all(Array.from(arguments).map(main));
+	};
     window.importArticle = window.importArticles;
-    window.importScript = article => request(article, 'javascript');
-    window.importScriptPage = (article, wiki) => request(article, 'javascript', wiki);
-    window.importScriptURI = content => mw.loader.load(content);
-    window.importStylesheet = article => request(article, 'css');
-    window.importStylesheetPage = (article, wiki) => request(article, 'css', wiki);
-    window.importStylesheetURI = content => mw.loader.load(content, 'text/css');
 });

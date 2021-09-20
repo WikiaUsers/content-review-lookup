@@ -106,7 +106,8 @@ $.when(
 			"Epic": "5",
 			"Legendary": "6",
 			"Mythic": "d",
-			"Supreme": "4",
+			"Divine": "b",
+			"(Supreme)": "4",
 			"Special": "c",
 			"Very Special": "c",
 		},
@@ -117,7 +118,8 @@ $.when(
 			"Epic": "E",
 			"Legendary": "L",
 			"Mythic": "M",
-			"Supreme": "SE",
+			"Divine": "D",
+			"(Supreme)": "(SE)",
 			"Special": "SL",
 			"Very Special": "VSL",
 		},
@@ -136,7 +138,7 @@ $.when(
 				}
 			}),
 		escapes: {
-			regex: /\\(ench?a?n?t?m?e?n?t?|ra?r?i?t?y?|poti?o?n|sta?t?)\{(?: .+?)\}|\\(?:[rntvb]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{1,4}|u\{[0-9a-fA-F]{1,6}\}|[0-2][0-7]{0,2}|3[0-7][0-7]?|[4-7][0-7].)/,
+			regex: /\\(ench?a?n?t?m?e?n?t?|ra?r?i?t?y?|poti?o?n|sta?t?)\{(?:.+?)\}|\\(?:[rntvb&]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{1,4}|u\{[0-9a-fA-F]{1,6}\}|[0-2][0-7]{0,2}|3[0-7][0-7]?|[4-7][0-7].)/,
 			token: "backescape.code",
 		},
 
@@ -547,7 +549,7 @@ $.when(
 						$("<a>", {
 							"class": "TooltipsEditor-insertFormat",
 							text: v,
-							"data-insert": "&l&" + this.rarityConversions[v] + v.toUpperCase(),
+							"data-insert": "&l&" + this.rarityConversions[v] + v.toUpperCase().replaceAll(/[()]/g, ""),
 							style: "font-style: italic;",
 						}),
 						$("<a>", {
