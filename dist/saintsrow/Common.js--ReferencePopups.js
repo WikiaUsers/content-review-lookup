@@ -25,6 +25,7 @@
 // Global namespace
 window.dev = window.dev || {};
 /*global dev */
+
 dev.ReferencePopups = dev.ReferencePopups || {};
 
 // i18n messages
@@ -805,6 +806,9 @@ function configureRefpopups(settings, onSave, onClose) {
 
         // We need to get just the reference body itself, without the backreference links
         $content.append($cite.find('.reference-text').clone());
+	window.setTimeout(function(){ $(document).trigger("scroll"); }, 100);
+	window.setTimeout(function(){ $(document).trigger("scroll"); }, 500);
+	window.setTimeout(function(){ $(document).trigger("scroll"); }, 1000);
 
         // And away we go
         // NOTE: We're not using the $.fn.referencePopup wrapper as it's safer to stay
@@ -824,4 +828,4 @@ function configureRefpopups(settings, onSave, onClose) {
     }
 
 }); // End Core
-//<nowiki>
+//</nowiki>

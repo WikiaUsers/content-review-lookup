@@ -58,7 +58,7 @@ $( function() {
  *
  * This is so people have a chance to look at the image and click on pages they want to view.
  */
-$( '#mw-content-text' ).on( 'mouseenter mouseleave', '.animated-container, .mcui', function( e ) {
+$( '#mw-content-text' ).on( 'mouseenter mouseleave', '.pw-infobox', function( e ) {
 	$( this ).find( '.animated' ).toggleClass( 'animated-paused', e.type === 'mouseenter' );
 } );
 

@@ -36,7 +36,9 @@ $('a.mw-redirect, a.extiw').each(function(){
 			$.getJSON('https://terrariamods.fandom.com/api.php?callback=?', q, function (data) {
 				var prefix = data.query.redirects[0].tointerwiki;
 				if (prefix == 'tgc') {
-					$('a.mw-redirect[href="/' + $title + '"]').addClass('extiw').attr('title', newHovertext.join(''));
+					$('a.mw-redirect[href="/' + $title + '"]')
+						.addClass(['extiw', 'tgclink'])
+						.attr('title', newHovertext.join(''));
 				}
 			});
 		}

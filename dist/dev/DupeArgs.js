@@ -11,7 +11,8 @@
         'dorui',
         'modal',
         'banners',
-        'api'
+        'api',
+        'messages'
     ];
     var ui;
     var BannerNotification;
@@ -19,6 +20,7 @@
     var refs = {};
     var config = window.DupeArgs || {};
     var lastSummary = config.summary || "";
+    var categoryName;
 
     function deepQuery(args) {
         return new Promise(function(_resolve) {
@@ -599,7 +601,7 @@
                 // gaplimit: 'max',
                 // gapnamespace: '2',
                 generator: 'categorymembers',
-                gcmtitle: 'Category:Pages using duplicate arguments in template calls',
+                gcmtitle: 'Category:' + categoryName,
                 gcmlimit: 'max',
                 // gcmnamespace: '*',
                 prop: 'revisions',
@@ -659,6 +661,24 @@
         );
     }
 
+    function getCategoryName() {
+        var msg = 'duplicate-args-category';
+        var lang = mw.config.get('wgContentLanguage');
+        var resp
+        if (lang === mw.config.get('wgUserLanguage')) {
+            resp = api.loadMessagesIfMissing([msg]).then(function() {
+                categoryName = mw.message(msg).plain();
+            });
+        } else {
+            resp = api.getMessages([msg], {
+                amlang: lang
+            }).then(function(messages) {
+                categoryName = messages[msg];
+            });
+        }
+        resp.then(onload.bind(null, 'messages'));
+    }
+
     function onload(label, arg) {
         switch (label) {
             case 'dorui':
@@ -669,6 +689,7 @@
                 break;
             case 'api':
                 api = new mw.Api();
+                getCategoryName();
                 break;
         }
 

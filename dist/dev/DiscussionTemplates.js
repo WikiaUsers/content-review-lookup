@@ -40,13 +40,12 @@
             wrapoutputclass: null, //I don't know if this is a bug or not, but it gets rid of the wrapping div
             format: 'json'
         };
-        var tmpl = window.DiscussionTemplates.templates[selected.template];
         if (selected.text) {
             params.text = selected.text;
             params.contentmodel = 'wikitext';
-        } else if (tmpl.parameters) {
+        } else if (window.DiscussionTemplates.templates[selected.template].parameters) {
             params.contentmodel = 'wikitext';
-            params.text = '{{' + tmpl.name;
+            params.text = '{{' + window.DiscussionTemplates.templates[selected.template].name;
             for (var param in paramValues) {
                 params.text += '|' + param + '=' + paramValues[param];
             }
@@ -82,7 +81,7 @@
                 alert(i18n.msg('title-not-supported-nocopy').plain());
             } else {
                 alert(i18n.msg('title-not-supported').plain());
-                navigator.clipboard.writeText(tmpl.title);
+                navigator.clipboard.writeText(window.DiscussionTemplates.templates[selected.template].title);
             }
             modal.close();
         });

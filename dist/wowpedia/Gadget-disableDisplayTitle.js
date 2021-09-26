@@ -7,7 +7,10 @@ $(function() {
 		}
 		else {
 			if (mw.config.get("wgCanonicalNamespace") == "Project") return; // skip Project namespace
-			$("#firstHeading").text(mw.config.get("wgCanonicalNamespace") + ":" + mw.config.get("wgTitle"));
+			if (mw.config.get("wgCanonicalNamespace") == "Project_talk")
+				$("#firstHeading").text("Wowpedia talk:" + mw.config.get("wgTitle"));
+			else
+				$("#firstHeading").text(mw.config.get("wgCanonicalNamespace").replace(/_/g," ") + ":" + mw.config.get("wgTitle"));
 		}
 	}
 });

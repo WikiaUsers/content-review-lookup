@@ -17,16 +17,16 @@
         articles: [
         'w:c:spottra:MediaWiki:Common.js/Numeral.js', // Defines num.format('<fmt>')
         'u:dev:UserTags/code.js',
-        'MediaWiki:Common.js/Usernames.js',
-        'MediaWiki:Common.js/GemCalculators.js',
-        'MediaWiki:Common.js/Experience.js',
-        'MediaWiki:Common.js/ModeToggle.js',
-        'MediaWiki:Common.js/BadgeGenerator.js',
-        'MediaWiki:Common.js/Protection.js',
-        'MediaWiki:Common.js/AvailableBuildings.js',
-        'MediaWiki:Common.js/GoldPass.js',
-        'MediaWiki:Common.js/HeroSkins.js',
-        'MediaWiki:Common.js/Toggle.js'
+        'MediaWiki:Usernames.js',
+        'MediaWiki:GemCalculators.js',
+        'MediaWiki:Experience.js',
+        'MediaWiki:ModeToggle.js',
+        'MediaWiki:BadgeGenerator.js',
+        'MediaWiki:Protection.js',
+        'MediaWiki:AvailableBuildings.js',
+        'MediaWiki:GoldPass.js',
+        'MediaWiki:HeroSkins.js',
+        'MediaWiki:Toggle.js'
     	]
     });
 	

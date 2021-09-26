@@ -1,5 +1,5 @@
 /*Quick image licence - contains the most commonly used licencing criteria*/
-if (wgUserGroups.indexOf('autoconfirmed') != -1) {
+if (mw.config.get("wgUserGroups").indexOf('assistant','autoconfirmed','content-moderator','sysop') != -1) {
 function QLicenceUI() {
 	var options = {
                 ' ': 'Select a licence',
@@ -27,9 +27,9 @@ function QLicenceUI() {
 	} else {
 		html += '&nbsp;<span style="color:#ff0000; font-weight:bold; text-align:left;">This page does not have a licence template! Consider adding one.</span> (<a href="https://csydes.fandom.com/wiki/Help:Quick_licence">help</a>)</p>';
 	}
-	$(html).insertBefore('#WikiaMainContent');
+	$(html).insertAfter('#filetoc');
 	$('#aSubmit').click( function(event) {
-		this.innerHTML = '<img src="https://images.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif" style="vertical-align: baseline;" border="0" />';
+		this.innerHTML = '<img src="https://images.wikia.nocookie.net/csydes-test/images/0/05/Ajax.gif" style="vertical-align: baseline;" border="0" />';
 		$.post("/api.php", {action: "edit", title: mw.config.get("wgPageName"), token: mw.user.tokens.values.editToken, bot: true, appendtext: $("#QLicenceSelect").val(), summary: "Adding licence template using [[Help:Quick licence|Quick licence]]"}, function (result) {
 			window.location = wgServer + '/index.php?title=' + mw.config.get("wgPageName") + '&action=purge';
 		});
@@ -38,7 +38,7 @@ function QLicenceUI() {
  
 if (mw.config.get('wgNamespaceIds').file === mw.config.get('wgNamespaceNumber') && mw.config.get('wgAction') === 'view' && !window.QLicenceLoaded) {
     window.QLicenceLoaded = true;
-    addOnloadHook(QLicenceUI);
+    $(QLicenceUI);
 }
 }
 //

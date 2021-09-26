@@ -1,3 +1,7 @@
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/awatar/images/5/5e/Default.png/revision/latest?cb=20210924054003';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/awatar/images/5/5e/Default.png/revision/latest?cb=20210924054003';
+
 InactiveUsers = { text: 'nieaktywny' };
 window.RevealAnonIP = {
     permissions:    [

@@ -1,14 +1,4 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-
-// Create the "dev" namespace if it doesn't exist already:
-window.dev = window.dev || {};
- 
-// Create the sub-namespace for this addon and set some options:
-window.dev.editSummaries = {
-     css: '#stdSummaries { width: 260px; border-radius: 4px; padding: 2px 2px;}',
-     select: [ '(click to browse)', [ 'Added infobox','Added sources/appearances','Added template(s) ','Added/modified categories','Added new information','Cleanup','Corrected spelling/grammar','Corrected template usage','Expanded','Factual correction','Formatting','Replaced duplicate image(s)','Reverted test edit','Reverted vandalism','Reverted vanity edit','Revised','Test edit','Updated with new information' ] ]
-};
-
 window.BackToTopStart = 300; //how much to scroll before the backtotop button appears
 
 //Toggles the display of elements on a page 

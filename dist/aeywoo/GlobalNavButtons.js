@@ -74,6 +74,10 @@ $(function () {
 			}
 		};
 		glnbutt.templates = {
+			gamesIcon: '<svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-games-small"></use></svg>',
+			moviesIcon: '<svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-movies-small"></use></svg>',
+			tvIcon: '<svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-tv-small"></use></svg>',
+			videoIcon: '<svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-video-small"></use></svg>',
 			defaultIcon: '<svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-fandom-small"></use></svg>',
 			normal:
 				'<a {url} class="global-navigation__link">' +
@@ -98,7 +102,11 @@ $(function () {
 			args = {
 				text: args.text,
 				url: args.url || '',
-				icon: args.icon || glnbutt.templates.defaultIcon,
+				gamesIcon: args.icon || glnbutt.templates.gamesIcon,
+				moviesIcon: args.icon || glnbutt.templates.moviesIcon,
+				tvIcon: args.icon || glnbutt.templates.tvIcon,
+				videoIcon: args.icon || glnbutt.templates.videoIcon,
+				defaultIcon: args.icon || glnbutt.templates.defaultIcon,
 				shortName: args.shortName || ''
 			};
 			return glnbutt.templates[template].replace('{text}', args.text).replace('{url}', args.url ? 'href="' + args.url + '"' : '').replace('{icon}', args.icon).replace('{shortName}', args.shortName);

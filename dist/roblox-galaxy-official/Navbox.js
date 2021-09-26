@@ -4,7 +4,7 @@ Code written/maintained by Explodabat. Please contact me on the Wiki Discord at 
 ──────────────────────────────────────────────────────────────────────────────
 This content previously lived on MediaWiki:Common.js
 */
-console.log("Navbox JS Version 8.31.21");
+console.log("Navbox JS Version 9.22.21");
 //Array of ship objects -- see "function Ship(...)" for constructor & properties
 var shipArr = [];
 var count = 0;
@@ -18,10 +18,10 @@ window.setTimeout(function () {
 		updateButtons();
 		//listeners run navbox fill code when navbox is opened
 		Array.from(document.getElementsByTagName("a")).find(function(obj){
-    	    return obj.getAttribute("data-hash") !== null && obj.getAttribute("data-hash").includes("Limited");
+    	    return obj.getAttribute("href") !== null && obj.getAttribute("href").includes("#") && obj.innerText !== null && obj.innerText.includes("Limited");
   	 	}).addEventListener("click", startNavboxFill);
 		Array.from(document.getElementsByTagName("a")).find(function(obj){
-  		      return obj.getAttribute("data-hash") !== null && obj.getAttribute("data-hash").includes("Ships");
+  		      return obj.getAttribute("href") !== null && obj.getAttribute("href").includes("#") && obj.innerText !== null && obj.innerText.includes("Ships");
    		}).addEventListener("click", startNavboxFill);
 	}
 },500);
@@ -61,6 +61,7 @@ function startNavboxFill(){
 //Type is also used to designate the event a limited ship comes from
 function Ship(name,price,type,isVIP,isRemoved){
     this.name = name;
+    this.displayName = name; //used to display custom names when formatting links (e.g. replace "Prototype X1" with "Prototype X/1")
     this.price = price;
     this.type = type;
     this.isVIP = isVIP;
@@ -176,6 +177,9 @@ function cleanArr(){
 			if(j < shipArr.length){ //check if index is still valid after potential removals from above
 			//limit each object property to only the expected values. Redundant call to toString in case a previous replace made variable type vague
 				shipArr[j].name = shipArr[j].name.toString().replace(/[^a-zA-Z0-9\s\'\-ß_()]/g,""); //only letters, numbers, spaces, "-" (e.g. for "Prototype X-1")
+				//if displayName has errors, reset displayName to match name
+				if(shipArr[j].displayName === undefined) shipArr[j].displayName = shipArr[j].name;
+				shipArr[j].displayName = shipArr[j].displayName.toString().replace(/[^a-zA-Z0-9\s\'\-ß_()]/g,""); //only letters, numbers, spaces, "-" (e.g. for "Prototype X-1")
 				//price is cleaned separately later because of special cases
 				shipArr[j].type = shipArr[j].type.toString().replace(/[^\sa-zA-Z0-9_]/g, ""); //only letters, numbers, spaces, and underscores
 			}
@@ -260,41 +264,37 @@ function fillNavbox(){
     for(i = tempShipArr.length-1; i >= 0; i--){
         var a, t;
         //Do not create a hyperlink if current page title equals the name of shipArr[i]
+        //Find the page title and convert it to a lowercase string
         t = Array.from(document.getElementsByTagName("h1")).find(function(obj){
-		return obj.getAttribute("class") !== null && obj.getAttribute("class").includes("page-header__title");});
+		return obj.getAttribute("class") !== null && obj.getAttribute("class").includes("page-header__title");}).innerText.toString().toLowerCase();
 		
-        if(t.innerHTML.toString() !== undefined && t.innerHTML.toString().toLowerCase() === tempShipArr[i].name.toLowerCase()){
+		//custom names for certain ships; skip if displayName has already been changed
+		if(tempShipArr[i].name == tempShipArr[i].displayName){
+			switch(tempShipArr[i].name){
+	            case "Obamasphere":
+					tempShipArr[i].displayName = "obamasphere";
+	                break;
+	            case "Prototype X1":
+					tempShipArr[i].displayName = "Prototype X/1";
+	                break;
+	            case "Dont use or banned":
+					tempShipArr[i].displayName = "dont_use_or_banned";
+			}
+		}
+		//check if the page title is valid
+        if(t !== undefined && t === tempShipArr[i].displayName.toLowerCase()){
             a = document.createElement('em');
-            a.appendChild(document.createTextNode(tempShipArr[i].name));
-            a.title = tempShipArr[i].name+" (Current Page)";
-        }
-        else if(tempShipArr[i].name == "Dont use or banned" && t.innerHTML.toString() !==undefined && t.innerHTML.toString() == "dont_use_or_banned"){
-        	a = document.createElement('em');
-            a.appendChild(document.createTextNode("dont_use_or_banned"));
-            a.title = "dont_use_or_banned (Current Page)";
+            a.appendChild(document.createTextNode(tempShipArr[i].displayName));
+            a.title = tempShipArr[i].displayName+" (Current Page)";
         }
         //else create a hyperlink
         else{
             //Link creation
             a = document.createElement('a');
-			//manually replace this ship's name with the "displaytitle" lowercase version seen on the page
-		    if(tempShipArr[i].name == "Obamasphere"){
-                a.appendChild(document.createTextNode("obamasphere"));
-                a.href = "/wiki/"+tempShipArr[i].name;
-                a.title = "obamasphere";
-            }
-            //manually replace this ship's name with the "displaytitle" that includes a "/" character in only the visual URL text
-		    else if(tempShipArr[i].name == "Prototype X1"){
-                a.appendChild(document.createTextNode("Prototype X/1"));
-                a.href = "/wiki/"+tempShipArr[i].name;
-                a.title = "Prototype X/1";
-            }
-			//in the case of invalid/broken links, their presence should be obvious because all attributes use the same value
-            else{
-				a.appendChild(document.createTextNode(tempShipArr[i].name));
-            	a.href = "/wiki/"+tempShipArr[i].name;
-            	a.title = tempShipArr[i].name;
-            }
+			//in the case of invalid/broken links, their presence should be obvious because all attributes appear as the same value
+            a.appendChild(document.createTextNode(tempShipArr[i].displayName));
+            a.href = "/wiki/"+tempShipArr[i].name;
+            a.title = tempShipArr[i].displayName;
 			//VIP-only ships have a bold name and are indicated as such in the "title" attribute
             if(tempShipArr[i].isVIP == true){
                 a.style.fontWeight = "bold";

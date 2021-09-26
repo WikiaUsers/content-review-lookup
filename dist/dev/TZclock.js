@@ -266,6 +266,14 @@
                     '<div class="js-tzclock-time"></div>',
                 '</div>'
             ),
+            // Avoid nesting <div> in <span> - for valid HTML but also
+            // to allow embedding the clock inline
+            spanDom = String.prototype.concat(
+                '<span class="js-tzclock-wrap">',
+                    '<span class="js-tzclock-lctn"></span>',
+                    '<span class="js-tzclock-time"></span>',
+                '</span>'
+            ),
             e, i;
 
         if (data.length) {
@@ -274,7 +282,8 @@
             if (clock.length) {
                 // init formats with names
                 for ( i = 0; i < clock.length; ++i ) {
-                    e = clock[i].e.empty().append(dom);
+                    e = clock[i].e.empty().append(
+                    	clock[i].e.prop('tagName') === 'SPAN' ? spanDom : dom);
                     // See comment about $().text() at getConfig()
                     $('.js-tzclock-lctn', e).text(clock[i].name);
                 }

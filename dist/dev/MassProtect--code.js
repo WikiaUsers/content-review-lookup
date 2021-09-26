@@ -21,7 +21,6 @@ mw.loader.using([
         placement,
         preloads = 3,
         protectModal,
-        isUCP = mw.config.get('wgVersion') !== '1.19.24',
         paused = true;
     /**
      * @method generateElement
@@ -71,7 +70,7 @@ mw.loader.using([
                 generateElement('move'),
                 generateElement('upload'),
                 generateElement('create'),
-                isUCP ? generateElement('comment') : $('<br />'),
+                generateElement('comment'),
                 $('<hr/>'),
                 $('<p>', {
                     text: i18n.msg('expiry').plain(),

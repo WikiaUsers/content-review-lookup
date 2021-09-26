@@ -23,3 +23,6 @@ nkch_gst_gadgets = [{
     title: "Прежние Категории",
     description: "Прежние Категории"
 }];
+
+// Настройка AddRailModule
+window.AddRailModule = ['Template:DiscordRail2', 'Template:NewPagesModule'];

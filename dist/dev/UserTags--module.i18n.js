@@ -252,16 +252,16 @@ UserTagsJS.extensions.i18n = {
 			inactive: {u: 'inactivo'}
 		},
 		'pt-br': {
-			inactive: {u: 'Inativo'}
-			nonuser: { u: 'Nunca editado'}
-			newuser: { u: 'Novo editor'}
-			notautoconfirmed: { u: 'Nova conta'}
-			sysop: { u: 'Administrador'}
-			checkuser: { u: 'Verificador de usuários'}
-			patroller: { u: 'Patrulheiro'}
-			autopatrolled: { u: 'Patrulheiro automático'}
-			rollback: { u: 'Rollback'}
-			autoconfirmed: { u: 'Auto confirmado'}
+			inactive: {u: 'Inativo'},
+			nonuser: { u: 'Nunca editado'},
+			newuser: { u: 'Novo editor'},
+			notautoconfirmed: { u: 'Nova conta'},
+			sysop: { u: 'Administrador'},
+			checkuser: { u: 'Verificador de usuários'},
+			patroller: { u: 'Patrulheiro'},
+			autopatrolled: { u: 'Patrulheiro automático'},
+			rollback: { u: 'Rollback'},
+			autoconfirmed: { u: 'Auto confirmado'},
 			'bot-global': { u: 'Robô global'}
 		},
 		ro: {

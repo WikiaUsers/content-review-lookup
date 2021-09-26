@@ -11,9 +11,9 @@
 /* Variables for interface text used throughout the script, for ease of translating */
 var i18n = {
 	// Collapsible elements and page loader
-	hideText: '접기',
-	showText: '펼치기',
-	loadErrorTitle: '불러오는 중 오류가 발생했습니다'
+	hideText: '숨기기',
+	showText: '보이기',
+	loadErrorTitle: '불러오는 중 오류가 발생하였습니다'
 };
 
 /* Fired whenever wiki content is added. (#mw-content-text, live preview, load page, etc.) */
@@ -170,7 +170,7 @@ mw.hook( 'wikipage.content' ).add( function( $wikipageContent ) {
 		.append( '[', $( '<span>' ).addClass( 'jslink' ).text( i18n.hideText ), ']' );
 	
 	var extractList = function( $contentContainer, listClass ) {
-		var $content = $contentContainer.find( '.mw-parser-output > ul > li > ul' ).children( ':not(.nbttree-inherited)' );
+		var $content = $contentContainer.find( '.mw-parser-output > ul > li > ul' ).children();
 		if ( listClass ) {
 			$content.addClass( listClass );
 		}
@@ -227,6 +227,9 @@ mw.hook( 'wikipage.content' ).add( function( $wikipageContent ) {
 					$buttonLink.text( i18n.hideText );
 				} else {
 					if ( treeview ) {
+						$content.children(".load-page-button").children(".jslink").each(function() {
+                            if ($(this).text() === i18n.hideText) this.click();
+                        });
 						$content.detach();
 					} else {
 						$contentContainer.hide();

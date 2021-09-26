@@ -39,11 +39,11 @@
 		doKeybind: {Boolean},
 	}
  */
- 
+
 mw.loader.using('mediawiki.api').then(function() {
 	"use strict";
-	 if (window.AjaxRename && window.AjaxRename.loaded) return window.AjaxRename.logMessage({ type: 'warn', message: 'Script double loaded, exiting...' });
- 
+	if (window.AjaxRename && window.AjaxRename.loaded) return window.AjaxRename.logMessage({ type: 'warn', message: 'Script double loaded, exiting...' });
+
 	/**
 	 * Main Script Class
 	 * 
@@ -54,7 +54,7 @@ mw.loader.using('mediawiki.api').then(function() {
 	window.AjaxRename = $.extend({
 		// Variable for double load protection
 		loaded: true,
- 
+
 		/**#====================================================================#
 		 * Default configuration options
 		 * --------------------------------
@@ -64,7 +64,7 @@ mw.loader.using('mediawiki.api').then(function() {
 		renameReasons: null,
 		doKeybind: true,
 		check: {},
- 
+
 		/**#====================================================================#
 		 * Global Variables
 		 * --------------------------------
@@ -77,7 +77,6 @@ mw.loader.using('mediawiki.api').then(function() {
 			'wgUserGroups',
 			'wgNamespaceNumber',
 		]),
-		isUCP: parseFloat(mw.config.get('wgVersion')) > 1.19,
 		namespaces: mw.config.get('wgFormattedNamespaces'),
 		csrfToken: mw.user.tokens.values.csrfToken,
 		version: 0.5,
@@ -87,7 +86,7 @@ mw.loader.using('mediawiki.api').then(function() {
 		$modalContent: '#AjaxRenameModal > section',
 		$modal: '#AjaxRenameModal',
 		$modalTitle: '#AjaxRenameModal > header > h3',
- 
+
 		/**
 		 * Data object for Hooks fired by this script
 		 * 
@@ -102,7 +101,7 @@ mw.loader.using('mediawiki.api').then(function() {
 			modalClosed: mw.hook('dev.ajaxrename.modal.closed'),
 			modalCancelled: mw.hook('dev.ajaxrename.modal.cancelled'),
 		}),
- 
+
 		/**
 		 * Data object for Checkbox conversions from element ids to internal ids
 		 * The documentation label `@requirement` repersents
@@ -120,7 +119,7 @@ mw.loader.using('mediawiki.api').then(function() {
 			'Watch': 'option-watch',
 			'IgnoreWarnings': 'option-ignore-warnings',
 		}),
- 
+
 		/**
 		 * Data object for Checkbox Data
 		 * 
@@ -143,7 +142,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				'default': true,
 				requirement: 'move',
 			}),
- 
+
 			/**
 			 * Watch source/target page option data object
 			 * 
@@ -158,7 +157,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				'default': true,
 				requirement: 'move',
 			}),
- 
+
 			/**
 			 * Move talk page option data object
 			 * 
@@ -173,7 +172,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				'default': false,
 				requirement: 'move',
 			}),
- 
+
 			/**
 			 * Rename Subpages option data object
 			 * 
@@ -188,7 +187,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				'default': false,
 				requirement: 'move',
 			}),
- 
+
 			/**
 			 * Delete targets option data object
 			 * 
@@ -203,7 +202,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				'default': false,
 				requirement: 'delete',
 			}),
- 
+
 			/**
 			 * Ignore warnings option data object
 			 * 
@@ -219,7 +218,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				requirement: 'move',
 			}),
 		}),
- 
+
 		/**
 		 * Data object for All external dependancies/waitfor's data
 		 *
@@ -253,7 +252,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				}),
 			],
 		}),
- 
+
 		/**
 		 * User rights level object.
 		 * Stores data about the necessary rights to preform an action.
@@ -270,7 +269,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				'wiki-representative',
 				'soap',	
 			]),
- 
+
 			"checkuser": Object.freeze([
 				'soap',
 				'helper',
@@ -280,7 +279,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				'checkuser',
 				'util',
 			]),
- 
+
 			"block": Object.freeze([
 				'sysop',
 				'staff',
@@ -290,7 +289,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				'wiki-representative',
 				'soap',
 			]),
- 
+
 			"delete": Object.freeze([
 				'content-moderator',
 				'threadmoderator',
@@ -303,12 +302,12 @@ mw.loader.using('mediawiki.api').then(function() {
 				'wiki-specialist',
 				'util',
 			]),
- 
+
 			"move": Object.freeze([
 				"user",	
 			]),
 		}),
- 
+
 		/**#====================================================================#
 		 * Loader functions
 		 * --------------------------------
@@ -316,7 +315,7 @@ mw.loader.using('mediawiki.api').then(function() {
 		 * to the page.
 		 **#=====================================================================#
 		 */
- 
+
 		/**
 		 * Main initializer script function.
 		 * Adds the hooks the imported scripts fire.
@@ -326,13 +325,12 @@ mw.loader.using('mediawiki.api').then(function() {
 		 * @class		AjaxRename
 		 */
 		hooks: function() {
-		    if (!this.isUCP) return this.logMessage({ message: 'Wiki is not UCP, exiting...' });
 			this.imports.hooks.forEach(function(v) {
 				mw.hook(v).add(this.onHook.bind(this, v));
 			}.bind(this));
 			this['import']();
 		},
- 
+
 		/**
 		 * Function for when a hook is loaded.
 		 * This is function is called 3 times. When the hooks count reach 3, it adds the click event handlers.
@@ -343,22 +341,22 @@ mw.loader.using('mediawiki.api').then(function() {
 		onHook: function(value, arg) {
 			// Increment Hook count
 			++this.hooksCount;
- 
+
 			// Switch hook value
 			switch (value) {
 				case("dev.i18n"): 
 					this.i18n = arg;
 					break;
- 
+
 				case('dev.qdmodal'):
 					this.Modal = mw.libs.QDmodal;
 					break;
- 
+
 				case('dev.ui'): 
 					this.ui = arg;
 					break;
 			}
- 
+
 			// When hooks count reach 3, load the script
 			if (this.hooksCount === 3) {
 				this.i18n.loadMessages('AjaxRename', { language: this.lang })
@@ -368,7 +366,7 @@ mw.loader.using('mediawiki.api').then(function() {
 					});
 			} else return;
 		},
- 
+
 		loadSpecialPageAliases: function() {
 			return this.api.get({
 				action: 'query',
@@ -376,7 +374,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				siprop: 'specialpagealiases',
 			});
 		},
- 
+
 		/**
 		 * Dependancy importer.
 		 * This method imports any external scripts used by this one.
@@ -387,14 +385,13 @@ mw.loader.using('mediawiki.api').then(function() {
 		'import': function() {
 			mw.loader.using('mediawiki.api').always(function() {
 				this.logMessage({ message: 'importing...' });
- 
-				this.api = new mw.Api();	 
-				if (!this.isUCP) this.imports.await[1] = 'ext.bannerNotifications';
+
+				this.api = new mw.Api();
 				Object.freeze(this.imports.await);
- 
+
 				this.loadSpecialPageAliases().always(function(res) {
 					this.parseSpecialPageAliases(res);
- 
+
 					// Add necessary imports ontop of other promises
 					this.imports.otherOnloadPromises.push(
 						mw.loader.using(this.imports.await),
@@ -407,13 +404,13 @@ mw.loader.using('mediawiki.api').then(function() {
 							articles: this.imports.style,	
 						})
 					);
- 
+
 				}.bind(this));
 			}.bind(this)).catch(function(e) {
 				console.warn(e);
 			});
 		},
- 
+
 		/**
 		 * Actual script initializer.
 		 * This function sets up the event handlers on the page 
@@ -427,26 +424,26 @@ mw.loader.using('mediawiki.api').then(function() {
 			this.i18n = i18n;
 			this.wg.wgArticlePath = this.wg.wgArticlePath.replace('$1', ''),
 			this.getParamValue = mw.util.getParamValue;
- 
+
 			Object.freeze(this.wg);
 			this.logMessage({ message: 'Ready' });
- 
+
 			// Fire any hooks attached to this script
 			this.hook.loaded.fire();
 			this.i18n.useUserLang();
- 
+
 			// Add event handlers
 			$(document).on('click', 'a[href]', this.onDocumentClick.bind(this));
 			this.addKeydownEvents();
 		},
- 
+
 		/**#====================================================================#
 		 * Utility functions
 		 * --------------------------------
 		 * These functions preform utilities for the script.
 		 **#=====================================================================#
 		 */
- 
+
 		/**
 		 * Rights data function.
 		 * Returns an array of user groups for the requested action.
@@ -458,7 +455,7 @@ mw.loader.using('mediawiki.api').then(function() {
 		 */
 		getRights: function(action) {
 			action = action.toLowerCase();
- 
+
 			switch(action.toLowerCase()) {
 				case("global"): return this.rights[action];
 				case("checkuser"): return this.rights[action];
@@ -468,7 +465,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				case("move"): return this.rights[action];
 			}
 		},
- 
+
 		/**
 		 * User groups rights checker function.
 		 * Checks if the user has the groups for the requested level.
@@ -480,16 +477,16 @@ mw.loader.using('mediawiki.api').then(function() {
 		hasRights: function(level) {
 			var rights = this.getRights(level),
 				len = rights.length;
- 
+
 			while (len--) {
 				if (this.wg.wgUserGroups.indexOf(rights[len]) !== -1) {
 					return true;
 				}
 			}
- 
+
 			return false;
 		},
- 
+
 		/**
 		 * Function to check whether the script can run.
 		 * Used outside the class.
@@ -500,17 +497,17 @@ mw.loader.using('mediawiki.api').then(function() {
 		canRun: function() {
 			return this.hasRights("move");
 		},
- 
+
 		parseSpecialPageAliases: function(d) {
 			var data = d.query.specialpagealiases.filter(function(page) {
 					return page.realname === "Movepage";
 				})[0],
 				specialpages = [data.realname].concat(data.aliases);			 
- 
+
 			this.specialPageAliases = specialpages;
-            return specialpages;
+			return specialpages;
 		},
- 
+
 		/**
 		 * Function to delete a page.
 		 *
@@ -526,7 +523,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				title: data.title,
 			});
 		},
- 
+
 		/**
 		 * Function to rename a page.
 		 * 
@@ -547,7 +544,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				watchlist: this.isNullish(data.watchlist, 'nochange')
 			});
 		},
- 
+
 		/**
 		 * Function to shorten the syntax for a API request.
 		 *
@@ -563,12 +560,12 @@ mw.loader.using('mediawiki.api').then(function() {
 				bot: true,
 				title: data.title || ((data.action === 'delete') ? this.wg.wgPageName : undefined),
 			};
- 
+
 			var params = $.extend(data, defaultParams);
- 
+
 			return this.api.post(params);
 		},
- 
+
 		/**
 		 * Function to log the response of an API request.
 		 * 
@@ -580,10 +577,10 @@ mw.loader.using('mediawiki.api').then(function() {
 		logPromiseResponse: function(data) {
 			var success = data.success,
 				fail = data.fail;
- 
+
 			fail.notification = fail.notification || {};
 			success.notification = success.notification || {};
- 
+
 			if (typeof(data.res) === "object") {
 				return this.logMessage({ 
 					type: success.type || 'success', 
@@ -598,7 +595,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				});
 			}
 		},
- 
+
 		/**
 		 * Function to log a message with the script's name.
 		 * 
@@ -614,7 +611,7 @@ mw.loader.using('mediawiki.api').then(function() {
 					'success': console.log,
 					'warn': console.warn,
 					'error': console.error,
- 
+
 					// Defualt
 					undefined: console.log,
 				},
@@ -624,32 +621,31 @@ mw.loader.using('mediawiki.api').then(function() {
 					'success': 'LOG',
 					'warn': 'WARN',
 					'error': 'ERROR',
- 
+
 					// Defualt
 					undefined: 'LOG',
 				};
- 
+
 			data.type = (data.type || 'success').toLowerCase();
 			data.message = Array.isArray(data.message) ? data.message : [ data.message ];
- 
+
 			data.message.unshift('[AjaxRename: v' + this.version + '] [' + logKeys[data.type] + ']:');
- 
+
 			funcKeys[data.type].apply(window.console, data.message);
- 
+
 			var notificationMessage = Array.from(data.message);
 			notificationMessage.shift();
 			notificationMessage = notificationMessage.join(' ');
- 
+
 			data.message = data.message.join(' ');
- 
+
 			if (data.showNotification) {
-				if (this.isUCP) mw.notify(notificationMessage, { type: data.type });
-				else new BannerNotification(notificationMessage, data.type);
+				mw.notify(notificationMessage, { type: data.type });
 			}
- 
+
 			return data.message;
 		},
- 
+
 		/**
 		 * Function to load an `i18-js` messsage.
 		 * 
@@ -662,7 +658,7 @@ mw.loader.using('mediawiki.api').then(function() {
 		msg: function() {
 			return this.i18n.msg.apply(null, arguments).plain();	
 		},
- 
+
 		/**
 		 * Function to get the page to rename/move to from the url.
 		 * 
@@ -674,25 +670,25 @@ mw.loader.using('mediawiki.api').then(function() {
 		 */
 		getPage: function(url, type) {
 			type = type || 'from';
- 
+
 			if (!this.isValidLink(url)) return;
- 
+
 			if (type.toLowerCase() === 'from') {
 				return this.getParamValue('wpOldTitle', url) || (url.match(/\/wiki\/.+?\/([^\n\?]+)/) || [])[1];
 			} else if (type.toLowerCase() === 'to') {
 				return this.getParamValue('wpNewTitle', url);
 			}
 		},
- 
+
 		isValidLink: function(url) {
 			var isMoveable = this.specialPageAliases.some(function(alias) {
 				return new RegExp(alias, 'i').test(decodeURI(url));
 			});
- 
+
 			return isMoveable;
 		},
- 
- 
+
+
 		/**
 		 * Function to get a boolean url parameter. This works as the same as `findUrlParam` but it
 		 * converts the return value to a boolean value.
@@ -706,7 +702,7 @@ mw.loader.using('mediawiki.api').then(function() {
 		getBooleanUrlParam: function(url, param) {
 			return Boolean(this.findUrlParam(url, param));
 		},
- 
+
 		/**
 		 * Function to get data on a checkbox.
 		 * This can be it's default value, rights requirement, alias, or its config value.
@@ -725,14 +721,14 @@ mw.loader.using('mediawiki.api').then(function() {
 				alt = data.alt,
 				configVal = data.value,
 				defaultRet = this.nullishDefault(this.check[configVal] || this.check[alt], data['default']);
- 
+
 			if (!this.isNullish(type)) {
 				return data[type];
 			} else {
 				return defaultRet !== undefined ? defaultRet : false;
 			}
 		},
- 
+
 		/**
 		 * Function to get the states of all checkboxes.
 		 * 
@@ -742,17 +738,17 @@ mw.loader.using('mediawiki.api').then(function() {
 		 */
 		getCheckboxStates: function() {
 			var result = {};
- 
+
 			Object.keys(this.checkboxList).forEach(function(id) {
 				var name = this.checkboxList[id],
 					name = name.toLowerCase().replace('option-', '');
- 
+
 				result[name] = $('#AjaxRename-Checkbox-' + id).prop('checked');
 			}.bind(this));
- 
+
 			return result;
 		},
- 
+
 		/**
 		 * Function to get the url params from the clicked link.
 		 * 
@@ -771,20 +767,20 @@ mw.loader.using('mediawiki.api').then(function() {
 					'ignore-warnings': 'wpIgnore',
 				},
 				ret = {};
- 
+
 			ret.check = {};
- 
+
 			Object.keys(booleanKeys).forEach(function(k) {
 				var v = booleanKeys[k],
 					urlParam = this.getParamValue(v, url);
- 
+
 				ret.check[k] = !this.isNullish(urlParam) ? Boolean(Number(urlParam)) : urlParam;
 			}.bind(this));
- 
+
 			ret.reason = this.getParamValue('wpReason', url);
 			return ret;
 		},
- 
+
 		/**
 		 * Function to get the rename reason.
 		 * 
@@ -799,11 +795,11 @@ mw.loader.using('mediawiki.api').then(function() {
 					dropdownValue
 						? dropdownValue + (otherValue ? ': ' + otherValue : '')
 						: otherValue;
- 
+
 			this.renameReason = ret;
 			return ret;
 		},
- 
+
 		/**
 		 * Function to generate a checkbox and label set.
 		 * 
@@ -838,11 +834,11 @@ mw.loader.using('mediawiki.api').then(function() {
 						},
 					}],
 				};
- 
+
 			if (!data.checked) delete ret.children[0].attr.checked;
 			return ret;
 		},
- 
+
 		/**
 		 * Function to check if a value is nullish as this software 
 		 * does not support the `??` operator.
@@ -855,7 +851,7 @@ mw.loader.using('mediawiki.api').then(function() {
 		isNullish: function(v) {
 			return v === null || v === undefined;
 		},
- 
+
 		/**
 		 * Function to set up a nullish default as this software 
 		 * does not support the `??` operator.
@@ -869,7 +865,7 @@ mw.loader.using('mediawiki.api').then(function() {
 		nullishDefault: function(v, $default) {
 			return this.isNullish(v) ? $default : v;	
 		},
- 
+
 		/**
 		 * Function to build a dropdown with options.
 		 *
@@ -880,16 +876,16 @@ mw.loader.using('mediawiki.api').then(function() {
 		 */
 		buildOptionsDropdown: function(data) {
 			if (!data) return null;
- 
+
 			var arr = [],
 				objData = Object.entries(data);
- 
+
 			for (var i1 in objData) {
 				var entries = objData[i1],
 					key = entries[0],
 					value = entries[1],
 					subObjData = Object.entries(value);
- 
+
 				if (typeof(value) === "object") {
 					var tmpObj = {
 						type: "optgroup",
@@ -898,12 +894,12 @@ mw.loader.using('mediawiki.api').then(function() {
 							label: key,
 						},
 					};
- 
+
 					for (var i2 in subObjData) {
 						var entrs = subObjData[i2],
 							k = entrs[0],
 							v = entrs[1];
- 
+
 						tmpObj.children.push({
 							type: "option",
 							text: k,
@@ -912,7 +908,7 @@ mw.loader.using('mediawiki.api').then(function() {
 							}
 						});
 					}
- 
+
 					arr.push(tmpObj);
 				} else {
 					arr.push({
@@ -924,16 +920,16 @@ mw.loader.using('mediawiki.api').then(function() {
 					});
 				}
 			}
- 
+
 			arr.unshift({
 				type: 'option',
 				value: '',
 				text: 'Other',	
 			});
- 
+
 			return arr;
 		},
- 
+
 		/**
 		 * Function to add button(s) to the modal.
 		 * 
@@ -948,12 +944,12 @@ mw.loader.using('mediawiki.api').then(function() {
 					html: data.text,
 					click: data.click,
 				};
- 
+
 				$obj = $.extend($obj, data.attrs);
- 
+
 				$('#AjaxRenameModal > footer').append($('<span>', $obj));
 			}
- 
+
 			if (arguments.length > 1) {
 				Array.prototype.forEach.call(arguments, function(v) {
 					_addButton(v);
@@ -962,14 +958,14 @@ mw.loader.using('mediawiki.api').then(function() {
 				_addButton(arguments[0]);
 			}
 		},
- 
+
 		/**#=====================================================================#
 		 * Main functions
 		 * --------------------------------
 		 * These functions do the main work when running this script.
 		 **#=====================================================================#
 		 */
- 
+
 		/**
 		 * Function to generate the modal HTML.
 		 * 
@@ -980,7 +976,7 @@ mw.loader.using('mediawiki.api').then(function() {
 		 */
 		generateModalForm: function(data) {
 			var arr = [];
- 
+
 			function _generateHeader(data) {
 				return {
 					type: 'div',
@@ -992,47 +988,47 @@ mw.loader.using('mediawiki.api').then(function() {
 					text: data.text,
 				};
 			}
- 
+
 			Object.keys(this.checkboxList).forEach(function(k, i) {
 				var v = this.checkboxList[k],
 					getCheckData = this.getCheckConfigValue.bind(this),
 					checked = !this.isNullish(data.check[v.replace('options-', '')]) ? data.check[v.replace('options-', '')] : getCheckData(v),
 					subpageExists;
- 
+
 				if (i === 1 || i === 2) {
 					subpageExists = 
 						i === 1 
 							? !!data.subpages
 							: !!data.talkSubpages;
- 
+
 				} else {
 					subpageExists = true;
 				}
- 
+
 				arr.push(this.generateCheckbox({
 					id: k,
 					label: v,
 					checked: checked,
 					requirement: this.hasRights(getCheckData(v, 'requirement') || 'move') && subpageExists,
 				}));
- 
+
 				if (i === 3) {
 					arr.push(_generateHeader({
 						text: this.msg('extra-options'),
 					}));					
 				}
 			}.bind(this));
- 
+
 			arr.unshift(_generateHeader({
 				text: this.msg('rename-options'),
 			}));
- 
+
 			var modalForm = this.ui({
 				type: "div",
 				children: [{
 					type: 'p',
 					html: this.i18n.msg('modal-text', data.from, this.msg('option-suppress-redirect')).parse(),
-				},	 { 
+				}, { 
 					type: 'div',
 					html: data.warning,
 					condition: data.warning,
@@ -1098,11 +1094,11 @@ mw.loader.using('mediawiki.api').then(function() {
 					}],
 				}],
 			});
- 
+
 			this.modalForm = modalForm;
 			return modalForm;
 		},
- 
+
 		/**
 		 * Function to generate the reasons input field.
 		 *
@@ -1139,11 +1135,11 @@ mw.loader.using('mediawiki.api').then(function() {
 					},
 				],
 			};
- 
+
 			if (this.isNullish((data.otherInput || {}).value)) delete ret.children[2].children[0].attr.value;
 			return ret;
 		},
- 
+
 		/**
 		 * Function to AJAX GET request the move data for the page.
 		 *
@@ -1159,48 +1155,48 @@ mw.loader.using('mediawiki.api').then(function() {
 					var $document = $(res),
 						$content = $document.find('#mw-content-text'),
 						data = {};
- 
+
 					if (!$document.find('#mw-returnto').length) { 
- 
+
 					var $sel = $document.find('.movepage-wrapper')
 								.first()
 								.nextUntil(),
 						$htmlText = function() {
 							var arr = ['<div>'];
- 
+
 							$sel.each(function() {
 								arr.push($(this).prop('outerHTML'));
 							});
- 
+
 							arr.push('</div>'); 
 							return arr.join('');
 						}(),
 						$html = $($htmlText),
 						noLog = !!$html.find('.mw-warning-logempty').length;
- 
+
 					function _findSubpages(num, arr) {
- 
+
 						$html.find('ul:nth-of-type(' + num + ') > li > a').each(function(a, b, c) {
 							arr.push($(this).html());	
 						});
- 
+
 						return $html.find('ul:nth-of-type(' + num + ')').length ? arr : null;
 					}
- 
+
 					var subpages = _findSubpages(noLog ? 1 : 2, []),
 						talkSubpages = _findSubpages(noLog && subpages ? 2 : !subpages && noLog ? 1 : 3, []),
 						$warning = $content.find('[class^="mw-warning"]').first();
- 
+
 					var ret = {
 						warning: $warning.html(),
 						content: $htmlText,
 						subpages: subpages,
 						talkSubpages: talkSubpages, 
 					};
- 
+
 					this.moveData = ret;
 					return ret;
- 
+
 					} else {
 						return false;
 					}
@@ -1209,7 +1205,7 @@ mw.loader.using('mediawiki.api').then(function() {
 					console.warn(e);	
 				});
 		},
- 
+
 		/**
 		 * Main function to show the modal. This function is bound to `onDocumentClick` and a keydown handler to `document`.
 		 * It may also be used externally.
@@ -1223,18 +1219,18 @@ mw.loader.using('mediawiki.api').then(function() {
 			if ($(this.$modal).length) {
 				$(this.$modal).parent().remove();
 			}
- 
+
 			var modal = new this.Modal('AjaxRenameModal');
- 
+
 			this.hideModal = function() {
 				try {
 					modal.hide();
 				} catch(ignore) {}
- 
+
 				this.currentModal = null;
 				this.hook.modalClosed.fire();
 			};
- 
+
 			// Show Modal, but loading
 			modal.show({
 				content: '',
@@ -1245,32 +1241,32 @@ mw.loader.using('mediawiki.api').then(function() {
 					this.hook.modalClosed.fire();
 				}.bind(this),
 			});
- 
+
 			// Attach modal instance to object
 			this.currentModal = modal;
- 
+
 			// Add spinner
 			$(this.$modalContent).addClass('mw-ajax-loader').css({ width: '900px', height: '500px' });
 			// Remove modal instance handlers if the modal is closed
 			$('#AjaxRename .qdmodal-button, .qdmodal-close').click(this.hideModal.bind(this));
- 
+
 			this.requestMoveData(options.from).then(function(moveData) {
 				// If page does not exist, exit
 				if (!moveData) {
 					$(this.$modalContent).removeClass('mw-ajax-loader');
 					$(this.$modalTitle).html(this.msg('title-noexist-header'));
 					$(this.$modalContent).html(this.i18n.msg('title-noexist', options.from).parse());
- 
+
 					this.addButton({
 						text: this.msg('button-cancel'),
 						click: this.hideModal.bind(this),
 					});
- 
+
 					this.logMessage({ message: 'Page does not exist, exiting...' });
- 
+
 					return;
 				}
- 
+
 				// Finish Loading
 				$(this.$modalContent).html(this.currentModal = this.generateModalForm({ 
 					title: options.modalTitle,
@@ -1283,7 +1279,7 @@ mw.loader.using('mediawiki.api').then(function() {
 					subpages: moveData.subpages,
 					talkSubpages: moveData.talkSubpages,
 				}));
- 
+
 				this.addButton({
 					text: this.msg('button-rename'),
 					click: this.renameHandler.bind(this, moveData, {
@@ -1294,16 +1290,16 @@ mw.loader.using('mediawiki.api').then(function() {
 					text: this.msg('button-cancel'),
 					click: this.hideModal.bind(this),
 				});
- 
+
 				$(this.$modalTitle).html(options.modalTitle);
 				$(this.$modalContent).removeClass('mw-ajax-loader').css({ width: 'fit-content', height: 'fit-content', });
- 
+
 				// Focus on input as the user would likely want that
 				$('#AjaxRename-InputFieldOther-NewTitle').focus();
- 
-                // Set value to current page name
+
+				// Set value to current page name
 				$('#AjaxRename-InputFieldOther-NewTitle').val(options.from);
- 
+
 				// Add event listners when the enter key is pressed
 				$('#AjaxRename-InputFieldOther-OtherRenameReason, #AjaxRename-InputFieldOther-NewTitle')
 					.keydown(function(event) {
@@ -1311,18 +1307,18 @@ mw.loader.using('mediawiki.api').then(function() {
 							$('.qdmodal-button').first().click();
 						}	
 					});
- 
+
 				this.logMessage({ message: 'Successfully showed the modal!' });
- 
+
 				// Fire any hooks attached to the modal loaded hook
 				this.hook.modalLoaded.fire();
 			}.bind(this)).catch(function(e) {
 				this.logMessage({ message: e, type: 'error' });
 			}.bind(this));
- 
+
 			return modal;
 		},
- 
+
 		/**
 		 * Function to handle the rename and any extra options selected.
 		 * 
@@ -1337,29 +1333,29 @@ mw.loader.using('mediawiki.api').then(function() {
 			// Get inputs
 			moveData.from = this.modalOptions.from;
 			moveData.to = $('[id$="NewTitle"]').first().val();
- 
+
 			var check = this.getCheckboxStates(),
 				watch = check.watch ? 'watch' : "preferences",
 				reason = this.getInputReason();
- 
+
 			var ext1 = moveData.from.match(/\.([a-z]+)$/) || [],
 				ext2 = moveData.to.match(/\.([a-z]+)$/) || [];
- 
+
 			// Check inputs
 			if (!$('#AjaxRename-InputFieldOther-NewTitle').val()) {
 				alert(this.msg('no-title', this.modalOptions.from));
 				this.logMessage({ message: 'Failed to rename' + moveData.from + ': No title to rename to', type: 'warn' });
- 
+
 				return;
 			}
 			
-		    if (moveData.from === $('#AjaxRename-InputFieldOther-NewTitle').val()) {
+			if (moveData.from === $('#AjaxRename-InputFieldOther-NewTitle').val()) {
 				alert(this.msg('selfmove', this.modalOptions.from));
 				this.logMessage({ message: 'Failed to rename' + moveData.from + ': Old title is same as new title', type: 'warn' });
- 
+
 				return;
 			}
- 
+
 			if ((
 				ext1[1] !== ext2[1] 
 				|| !moveData.to.match(/^File:/)
@@ -1368,24 +1364,24 @@ mw.loader.using('mediawiki.api').then(function() {
 				this.logMessage({ message: this.msg('file-cannot-move', moveData.from, moveData.to), type: 'warn' });
 				return;
 			}
- 
+
 			// Close Modal
 			this.hideModal.call(this);
- 
+
 			// Handle page lists
 			function _mergePagesList(replaceNew) {
 				var arr = new Array();
- 
+
 				if (!subpages.normal) subpages.normal = [];
 				if (!subpages.talk) subpages.talk = [];
- 
+
 				// Helper function to iterate
 				function _iter(a) {
 					a.forEach(function(v) {
 						arr.push(replaceNew ? v.replace(moveData.from, moveData.to) : v);
 					});
 				}
- 
+
 				// Add main title to deletion query
 				subpages.normal.unshift(moveData.from);
 				// If subpages are not checked, delete them from the que
@@ -1393,13 +1389,13 @@ mw.loader.using('mediawiki.api').then(function() {
 					subpages.normal.splice(1);
 				}
 				_iter(subpages.normal);
- 
+
 				// Same for here
 				if (check['move-talk']) {
 					var talkPage,
 						// If not to rename subpages and talk rename is checked, only add talk page to rename and not subpages
 						temp = check['move-subpages'] ? subpages.talk : [];
- 
+
 					// Handle main talk page name (if it does not have a namespace, add it)
 					if (moveData.to.match(':')) {
 						talkPage = moveData.to.replace('^([^:]+):', function(_, $1) {
@@ -1408,19 +1404,19 @@ mw.loader.using('mediawiki.api').then(function() {
 					} else {
 						talkPage = 'Talk:' + moveData.to;
 					}
- 
+
 					// Add talk page to page list
 					temp.unshift(talkPage);
 					_iter(temp);
 				}
- 
+
 				return arr;
 			}
- 
+
 			// Get page listings
 			var newPages = _mergePagesList(true),
 				oldPages = _mergePagesList(false);
- 
+
 			// Action functions/data
 			var _delete = function(newPage) {
 					promises.deletions.push(this.deletePage({
@@ -1443,28 +1439,28 @@ mw.loader.using('mediawiki.api').then(function() {
 						watchlist: watch,
 					});
 				}.bind(this);
- 
+
 			// More variables
 			promises.deletions = [];
 			pages.deletions = [];
- 
+
 			// If delete box is checked, delete pages
 			if (check['delete-targets']) {
 				for (var i in newPages) {
 					var v = newPages[i];
- 
+
 					_delete(v);
 					pages.deletions.push(v);
 				}
 			}
- 
+
 			// Function to finish promises and move to next
 			function _finishPromises(promises, responseCallback) {
 				return $.when.apply($, promises).always(function() {
 					$.each(arguments, responseCallback)	;
 				});
 			}
- 
+
 			// Wait for deletions if the box is checked (If the checkbox is empty, the `$.when()` is called with no arguments), then move page
 			_finishPromises(promises.deletions, function(i, res) {
 				// Log responses
@@ -1498,7 +1494,7 @@ mw.loader.using('mediawiki.api').then(function() {
 					}.bind(this));
 			}.bind(this));
 		},
- 
+
 		/**
 		 * Modal initializer for event handlers.
 		 * Takes a link, and extracts any useful data for the modal function.
@@ -1514,31 +1510,31 @@ mw.loader.using('mediawiki.api').then(function() {
 					id: "AjaxRenameModal",
 					modalTitle: decodeURI(this.msg('modal-title', this.getPage(link))),
 				};
- 
+
 			// Just a regular `Special:Move` Link
 			if (!this.isValidLink(decodeURI(link))) return;
- 
+
 			// Find Url Parameters
 			// Titles
 			modalOptions.from = this.getPage(decodeURI(link));
 			modalOptions.to = this.getPage(decodeURI(link), 'to');
- 
+
 			// Merge URL parameters
 			$.extend(modalOptions, this.getUrlParams(decodeURI(link)));
- 
+
 			// Store modal options as a reference variable for other uses
 			this.modalOptions = modalOptions;
 
-            // Replace '+' and '_' with ' '
-            this.modalOptions.from = this.modalOptions.from.replace(/[_\+]/g, ' ');
-            
-            // Show modal			
+			// Replace '+' and '_' with ' '
+			this.modalOptions.from = this.modalOptions.from.replace(/[_\+]/g, ' ');
+
+			// Show modal			
 			this.showModal(modalOptions);
- 
+
 			// Fire any hooks attached hook to load the modal
 			this.hook.modalLoading.fire();
 		},
- 
+
 		/**
 		 * Main event handler for this script. Loads the modal with the URL data when clicked.
 		 *
@@ -1550,15 +1546,15 @@ mw.loader.using('mediawiki.api').then(function() {
 		onDocumentClick: function(event) {
 			var $clickedElem = $(event.target),
 				clickedLink = $clickedElem ? $clickedElem.prop('href'): null;
- 
+
 			// Exit if meta keys are pressed
 			if (event.shiftKey || event.ctrlKey) return;
 			if (!this.isValidLink(decodeURI(clickedLink))) return;
- 
+
 			event.preventDefault();
 			this.fireModal(clickedLink);
 		},
- 
+
 		/**
 		 * Secondary event handler for this script when the "m" key is pressed.
 		 * Can be disabled through the `doKeybind` config parameter.
@@ -1568,9 +1564,9 @@ mw.loader.using('mediawiki.api').then(function() {
 		 * @param {Object} event	The event object that is passed to the function when it is called
 		 * @callback
 		 */
-		 addKeydownEvents: function() {
+		addKeydownEvents: function() {
 			if (!this.doKeybind) return;
- 
+
 			function _addEvent(Mousetrap) {
 				Mousetrap.bind('m', function() {
 					this.fireModal(
@@ -1579,19 +1575,15 @@ mw.loader.using('mediawiki.api').then(function() {
 					);
 				}.bind(this));
 			}
- 
-			if (this.isUCP) {
-				_addEvent.call(this, window.Mousetrap);
-			} else {
-				require(['Mousetrap'], _addEvent.bind(this));
-			}
-		 },
+
+			_addEvent.call(this, window.Mousetrap);
+		},
 	}, window.AjaxRename);
- 
+
 	if (!AjaxRename.canRun()) return AjaxRename.logMessage({ message: 'User does not have neccessary rights to run, exiting...' });
- 
+
 	AjaxRename.hooks();
- 
+
 }).fail(function(e) {
 	console.warn(e);
 });

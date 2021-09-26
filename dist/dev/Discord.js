@@ -5,11 +5,7 @@
 (function() {
     if (window.Discord && Discord.init) return;
 
-    var isUCP = mw.config.get('wgVersion').startsWith('1.33.');
-    var ucpOnRailReadyModuleName = isUCP
-        ? mw.loader.getModuleNames().find(function (name) { return name.startsWith('onRailReady-'); })
-        : undefined;
-
+    var ucpOnRailReadyModuleName = mw.loader.getModuleNames().find(function (name) { return name.startsWith('onRailReady-'); });
     var blankImgUrl = mw.config.get('wgBlankImgUrl');
     var canNativelyLazyLoadImages = window.HTMLImageElement.prototype.hasOwnProperty('loading');
     var shouldPolyfillLazyLoadImages = !canNativelyLazyLoadImages && window.hasOwnProperty('IntersectionObserver');
@@ -702,8 +698,8 @@
 
     // Resources and hooks
     if (
-        Discord.$rail.length === 0 ||                          // There _is_ no rail, probably because we're on the main page.
-        Discord.$rail.hasClass(isUCP ? 'is-ready' : 'loaded')  // ... because of course.
+        Discord.$rail.length === 0 ||      // There _is_ no rail, probably because we're on the main page.
+        Discord.$rail.hasClass('is-ready')
     ) {
         Discord.onload();
     } else {

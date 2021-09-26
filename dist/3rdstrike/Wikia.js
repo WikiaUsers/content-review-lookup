@@ -1,1 +1,0 @@
-$.getScript("http://s30.sitemeter.com/js/counter.js?site=s30rvn3s");

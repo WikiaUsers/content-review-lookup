@@ -5,8 +5,6 @@
  * See [https://terraria.fandom.com/zh/wiki/MediaWiki:Common.js zh wiki] for example.
  */
  
-//mw.loader.load("https://dev.fandom.com/wiki/MediaWiki:OriginalImages.js?action=raw\u0026ctype=text/javascript");
- 
 // login status mark
 if(mw.config.get("wgUserName") !== null){
 	$('body').addClass('logged-in');

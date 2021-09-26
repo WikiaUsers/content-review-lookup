@@ -41,14 +41,12 @@
             'wgNamespaceIds',
             'wgArticlePath'
         ]),
-        isUCP: parseFloat(mw.config.get('wgVersion')) > 1.19,
         currentModal: null,
 
         // Resource management
         loading: [
             'css',
             'api',
-            'banners',
             'i18n',
             'i18n-js',
             'modal-js',
@@ -104,20 +102,10 @@
         },
         preload: function() {
             // Styles
-            var imported = importArticle({
+            importArticle({
                 type: 'style',
                 article: 'u:dev:MediaWiki:AjaxBlock.css'
-            });
-
-            if (this.isUCP) {
-                imported.then(this.onload.bind(this, 'css'));
-            } else {
-                if (imported.length === 0) {
-                    this.onload('css');
-                } else {
-                    imported[0].onload = this.onload.bind(this, 'css');
-                }
-            }
+            }).then(this.onload.bind(this, 'css'));
 
             // Libraries
             importArticles({
@@ -135,12 +123,6 @@
 
             // Loader modules
             mw.loader.using('mediawiki.api').then(this.onload.bind(this, 'api'));
-
-            if (this.isUCP) {
-                this.onload('banners');
-            } else {
-                mw.loader.using('ext.bannerNotifications').then(this.onload.bind(this, 'banners'));
-            }
         },
         ensureBlockSelects: function() {
             var pagesToLoad = [];

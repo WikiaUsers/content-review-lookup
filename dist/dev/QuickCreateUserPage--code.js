@@ -14,8 +14,7 @@
     var config = mw.config.get([
         'wgCityId',
         'wgFormattedNamespaces',
-        'wgUserName',
-        'wgVersion'
+        'wgUserName'
     ]);
     // Load Protection
     if (
@@ -29,8 +28,7 @@
     // Variables
     var Api,
         i18n,
-        page = config.wgFormattedNamespaces[2] + ':' + config.wgUserName,
-        isUCP = config.wgVersion !== '1.19.24';
+        page = config.wgFormattedNamespaces[2] + ':' + config.wgUserName;
     /**
      * @class Main
      * @classdesc Central QuickCreateUserPage class
@@ -99,7 +97,7 @@
                     window.qtUserPageTemplate ||
                     '{{w:User:' + config.wgUserName + '}}',
                 summary: i18n.inContentLang().msg('cup-reason').plain(),
-                token: mw.user.tokens.get(isUCP ? 'csrfToken': 'editToken'),
+                token: mw.user.tokens.get('csrfToken'),
                 watchlist: 'preferences'
             }).done(function(d) {
                 if (d.edit.result === 'Success') {
@@ -118,20 +116,11 @@
          * @param {String} confirm - Whether the result is a success
          */
         showResult: function (msg, confirm) {
-            if (isUCP) {
-                mw.loader.using('mediawiki.notification', function() {
-                    mw.notification.notify(i18n.msg(msg).escape(), {
-                        tag: 'quickCreateUserPage'
-                    });
+            mw.loader.using('mediawiki.notification', function() {
+                mw.notification.notify(i18n.msg(msg).escape(), {
+                    tag: 'quickCreateUserPage'
                 });
-            } else {
-                require(['BannerNotification'], function(BannerNotification) {
-                    new BannerNotification(
-                        i18n.msg(msg).escape(),
-                        confirm ? 'confirm' : 'error'
-                    ).show();
-                });
-            }
+            });
         }
     };
     // Load Script
@@ -142,12 +131,8 @@
         ).done(Main.init);
     });
     // Import
-    if (isUCP) {
-        mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js');
-    } else {
-        importArticle({
-            type: 'script',
-            article: 'u:dev:MediaWiki:I18n-js/code.js'
-        });
-    }
+    importArticles({
+        type: 'script',
+        articles: ['u:dev:MediaWiki:I18n-js/code.js']
+    });
 })(jQuery, mediaWiki, this);

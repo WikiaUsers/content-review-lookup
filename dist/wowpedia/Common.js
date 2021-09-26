@@ -328,7 +328,12 @@ function versionsInit() {
 		}
 		versionsShow(target);
 	});
-	tabs.appendTo(".page-header__title");
+	if ((mw.config.get('wgAction') != "edit" && mw.config.get('wgAction') != "submit")) {
+		tabs.appendTo(".page-header__title");
+	}
+	else {
+		tabs.appendTo(".ve-fd-header__title");
+	}
 	
 	if ((window.location.hash && ttstore[window.location.hash])) {
 		versionsShow(window.location.hash);
@@ -385,7 +390,12 @@ function inlineVersionsInit() {
 		if (ofs) n.text(nt.replace(/\d+/, v - ofs));
 	});
 
-	tabs.appendTo('.page-header__title');
+	if ((mw.config.get('wgAction') != "edit" && mw.config.get('wgAction') != "submit")) {
+		tabs.appendTo('.page-header__title');
+	}
+	else {
+		tabs.appendTo('.ve-fd-header__title');
+	}
 	tabs.children('a').click(function(e) {
 		var $t = $(this), target = $t.attr("href"), $cnt = $t.data('version-content');
 		e.preventDefault();

@@ -9,20 +9,7 @@ window.rwaOptions = {
 	autoInit: true 
 };
 
-importArticles({
-    /* Added on 2020-09-28 by ElpisGalaxy */
-    type: "script",
-    articles: [
-        "u:dev:MediaWiki:BackToTopButton/code.js",
-        "u:dev:MediaWiki:ReferencePopups/code.js", 
-		/* Added on 2020-10-25 by D4rkWzd */
-        'u:dev:MediaWiki:WikiActivity.js',
-        /* Added on 2021-04-21 by D4rkWzd */
-        'u:dev:MediaWiki:YouTubeModal/code.js',
-    ]
-});
-
-/* Collapsing categories section by default */
+/* Expanding categories section by default */
 $(function() {
     $('.page-footer__categories.wds-is-collapsed').removeClass('wds-is-collapsed');
 });

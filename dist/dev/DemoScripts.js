@@ -22,18 +22,19 @@
          * - styles: stylesheet(s) to load when selector or page are detected
          * - scripts: script(s) to load when selector or page are detected
          *
-         */
-
+         **/
+		
         ActivityFeedMimic: {
             page: 'ActivityFeedMimic',
             styles: 'MediaWiki:ActivityFeedMimic.css'
         },
-        
-        AutoHeadingNumber: {
-            page: 'AutoHeadingsNumber',
-            styles: 'MediaWiki:AutoHeadingNumber.css',
-        },
-
+		
+		AjaxRename: {
+			page: 'AjaxRename',
+			styles: 'MediaWiki:AjaxRename.css',
+			scripts: 'MediaWiki:AjaxRename/code.js'
+		},
+		
         BackToTopButton: {
             page: 'BackToTopButton',
             scripts: 'MediaWiki:BackToTopButton/code.js',
@@ -41,54 +42,32 @@
                 window.BackToTopModern = true;
             }
         },
-
-        Banner: {
-            page: 'Banner',
-            scripts: 'MediaWiki:Banner.js',
-            exec: function () {
-                // show the banner every time
-                try {
-                    window.localStorage.removeItem('dev-banner');
-                } catch (ex) {}
-            }
-        },
-
+		
         BlendGlobalNav: {
             page: 'BlendGlobalNav',
             styles: 'MediaWiki:BlendGlobalNav.css'
         },
-
-        BotoneraPopups: {
-            page: 'BotoneraPopups',
-            scripts: 'MediaWiki:BotoneraPopups/Code/en.js',
-            styles: 'MediaWiki:BotoneraPopups.css'
-        },
-        
-        CollapsiblePageTools: {
-            page: 'CollapsiblePageTools',
-            scripts: 'MediaWiki:CollapsiblePageTools.js'
-        },
-
+		
         Contextlink: {
             selector: '.context-link',
             styles: 'MediaWiki:Global_Lua_Modules/Context-link.css'
         },
-
+		
         CSSForTheColorBlind: {
             page: 'CSSForTheColorBlind',
             styles: 'MediaWiki:CSSForTheColorBlind.css'
         },
-
+		
         DataTables: {
             selector: '.datatable',
             scripts: 'MediaWiki:DataTables.js'
         },
-
+		
         DiscussionsActivity: {
             page: 'Special:DiscussionsActivity',
             scripts: 'MediaWiki:DiscussionsActivity.js'
         },
-
+		
         DiscordBanner: {
             page: 'DiscordBanner',
             scripts: 'MediaWiki:DiscordBanner.js',
@@ -107,21 +86,21 @@
             page: 'DiscordGlobalFooter',
             styles: 'MediaWiki:DiscordGlobalFooter.css'
         },
-
+		
         DropdownMenu: {
             selector: '.custom-dropdown',
             styles: 'MediaWiki:DropdownMenu.css'
         },
-
-        EditcountTab: {
-            page: 'User:Puxlit',
-            scripts: 'MediaWiki:EditcountTab.js'
-        },
-
-        EditcountTag: {
-            page: 'User:Wikia',
-            scripts: 'MediaWiki:EditcountTag/code.js'
-        },
+        
+		EditcountTab: {
+			page: 'User:Puxlit',
+			scripts: 'MediaWiki:EditcountTab.js'
+		},
+		
+		EditcountTag: {
+			page: 'User:Wikia',
+			scripts: 'MediaWiki:EditcountTag/code.js'
+		},
         
         EmeraldGlobalNav: {
             page: 'EmeraldGlobalNav',
@@ -137,22 +116,22 @@
             page: 'FadedDropdowns',
             styles: 'MediaWiki:FadedDropdowns.css'
         },
-
+		
         FandomIcons: {
             page: 'FandomIcons',
             styles: 'MediaWiki:FandomIcons.css'
         },
-
+		
         Fandom95: {
             page: 'Fandom95',
             styles: 'MediaWiki:Fandom95.css'
         },
-
+		
         FandomXP: {
             page: 'FandomXP',
             styles: 'MediaWiki:FandomXP.css'
         },
-
+		
         FastFileDelete: {
             page: 'FastFileDelete',
             scripts: 'MediaWiki:FastFileDelete.js',
@@ -166,54 +145,44 @@
             page: 'FatButton',
             styles: 'MediaWiki:FatButton.css'
         },
-
-        FileLogs: {
-            page: 'File:QQX_Oasis.png',
-            scripts: 'MediaWiki:FileLogs.js'
-        },
-        
-        Flags: {
-            selector: '.flag-icon',
-            scripts: 'MediaWiki:Flags/code.js'
-        },
-
-        FloatingCommunityHeaderButtons: {
-            page: 'FloatingCommunityHeaderButtons',
-            styles: 'MediaWiki:FloatingCommunityHeaderButtons.css'
-        },
+		
+		FileLogs: {
+			page: 'File:QQX_Oasis.png',
+			scripts: 'MediaWiki:FileLogs.js'
+		},
+		
+		Flags: {
+			selector: '.flag-icon',
+			scripts: 'MediaWiki:Flags/code.js'
+		},
         
         FloatingTitle: {
             page: 'FloatingTitle',
             styles: 'MediaWiki:FloatingTitle.css'
         },
-
-        GlobalEditcount: {
-            page: 'User:Wikia',
-            scripts: 'MediaWiki:GlobalEditcount/code.js'
-        },
-
+		
         GlobalNavigationIcons: {
             page: 'GlobalNavigationIcons',
             styles: 'MediaWiki:GlobalNavigationIcons.css'
         },
-
+		
         HydraRevived: {
-            page: "HydraRevived",
-            scripts: "MediaWiki:HydraRevived.js",
-            styles: ["MediaWiki:HydraRevived/main.css", "MediaWiki:HydraRevived/preload.css"]
+            page: 'HydraRevived',
+            scripts: 'MediaWiki:HydraRevived.js',
+            styles: ['MediaWiki:HydraRevived/main.css', 'MediaWiki:HydraRevived/preload.css']
         },
-
+		
         InfoWidgets: {
             selector: '#infowidgets-demo',
             styles: 'MediaWiki:InfoWidgets/demo.css',
             scripts: 'MediaWiki:InfoWidgets/demo.js'
         },
-
+		
         Katsuragi: {
             page: 'Katsuragi',
             styles: 'MediaWiki:Katsuragi.css'
         },
-
+		
         Less: {
             selector: 'body.page-MediaWiki_Custom-Less_test_less, body.page-MediaWiki_Custom-Less_test_css',
             scripts: 'MediaWiki:Less/code.2.js',
@@ -233,44 +202,38 @@
                 };
             }
         },
-
-        LightGlobalNav: {
-            page: 'LightGlobalNav',
-            styles: 'MediaWiki:LightGlobalNav.css'
-        },
-
-        ListGroupMembers: {
-            page: 'Special:BlankPage',
-            scripts: 'MediaWiki:ListGroupMembers.js'
-        },
-
-        ListSubpages: {
-            page: 'Special:BlankPage',
-            scripts: 'MediaWiki:ListSubpages.js'
-        },
-
-        MastheadGender: {
-            page: 'User:Kirkburn',
-            scripts: 'MediaWiki:MastheadGender/code.js'
-        },
-
-        MastheadRightsBadge: {
-            page: 'User:Americhino',
-            scripts: 'MediaWiki:MastheadRightsBadge.js'
-        },
-
+        
+	    ListGroupMembers: {
+			page: 'Special:BlankPage',
+			scripts: 'MediaWiki:ListGroupMembers.js'
+		},
+		
+		ListSubpages: {
+			page: 'Special:BlankPage',
+			scripts: 'MediaWiki:ListSubpages.js'
+		},
+		
+		MastheadGender: {
+			page: 'User:Kirkburn',
+			scripts: 'MediaWiki:MastheadGender/code.js'
+		},
+		
+		MastheadRightsBadge: {
+			page: 'User:Americhino',
+			scripts: 'MediaWiki:MastheadRightsBadge.js'
+		},
+		
         Mbox: {
             selector: '.mbox',
             styles: 'MediaWiki:Global_Lua_Modules/Mbox.css'
         },
-
+		
         MiniComplete: {
             page: 'MiniComplete',
             exec: function () {
                 mw.loader.implement( 'minicomplete',
                     [ '/load.php?mode=articles&articles=u%3Acamtest%3AMediaWiki%3ATextareaHelper.js%7Cu%3Adev%3AColors%2Fcode.js%7Cu%3Adev%3AMiniComplete%2Fcode.js&only=scripts' ],
                         {}, {} );
-
                 $( '#minicomplete-demo' )
                 .empty()
                 .append(
@@ -288,7 +251,6 @@
                         padding: '2px 5px'
                     } )
                 );
-
                 mw.loader.using( [ 'mediawiki.api', 'minicomplete' ], function () {
                     dev.minicomplete.load( '#minicomplete-textarea' );
                 } );
@@ -301,29 +263,30 @@
             scripts: 'MediaWiki:MisspelledPage/code.js'
         },
         
-        ModernModals: {
-            page: 'ModernModals',
-            styles: 'MediaWiki:ModernModals.css'
-        },
-        
         ModernWikiNavigation: {
             page: 'ModernWikiNavigation',
             styles: 'MediaWiki:ModernWikiNavigation.css'
         },
-
-        MoreSocialLinks: {
-            page: 'User:KockaAdmiralac',
-            scripts: 'MediaWiki:MoreSocialLinks.js'
-        },
-        
-        MultipleActivity: {
-            page: 'Special:MultipleActivity',
-            scripts: 'MediaWiki:MultipleActivity.js'
-        },
-
+		
+	    MoreSocialLinks: {
+			page: 'User:KockaAdmiralac',
+			scripts: 'MediaWiki:MoreSocialLinks.js'
+		},
+		
+		MultipleActivity: {
+			page: 'Special:MultipleActivity',
+			scripts: 'MediaWiki:MultipleActivity.js'
+		},
+		
         NavboxBuilder: {
             selector: '.navbox .navbox-table-wrapper',
             styles: 'MediaWiki:Global_Lua_Modules/NavboxBuilder.css'
+        },
+        
+        NoGlobalNav: {
+        	page: 'NoGlobalNav',
+        	styles: 'MediaWiki:NoGlobalNav.css',
+        	scripts: 'MediaWiki:NoGlobalNav.js'
         },
         
         OasisRevived: {
@@ -338,73 +301,63 @@
         },
         
         OldWikiaBar: {
-            page: "OldWikiaBar",
-            styles: "MediaWiki:OldWikiaBar.css"
+            page: 'OldWikiaBar',
+            styles: 'MediaWiki:OldWikiaBar.css'
         },
         
         OldFandomColors: {
-            page: "OldFandomColors",
-            styles: "MediaWiki:OldFandomColors.css",
-            scripts: "MediaWiki:OldFandomColors.js",
+            page: 'OldFandomColors',
+            styles: 'MediaWiki:OldFandomColors.css',
+            scripts: 'MediaWiki:OldFandomColors.js'
         },
-        
-        OrganizedNotifs: {
-            page: 'OrganizedNotifs',
-            styles: 'MediaWiki:OrganizedNotifs.css'
-        },
-        
+		
         PortableNavbox: {
             selector: '.portable-infobox.pi-theme-navbox',
             styles: 'MediaWiki:PortableNavbox.css'
         },
- 
-        ProfileTags: {
-            page: 'User:Rappy',
-            scripts: 'MediaWiki:ProfileTags.js'
-        },
-
+		
+	    ProfileTags: {
+			page: 'User:Rappy',
+			scripts: 'MediaWiki:ProfileTags.js'
+		},
+		
+	    ProtectionIcons: {
+			page: 'Module:Sandbox',
+			scripts: 'MediaWiki:ProtectionIcons.js'
+		},
+		
         ProgressBar: {
             page: 'ProgressBar',
             styles: 'MediaWiki:ProgressBar.css'
         },
-
-        ProtectionIcons: {
-            page: 'Module:Sandbox',
-            scripts: 'MediaWiki:ProtectionIcons.js'
-        },
-
+		
         PseudoMonobook: {
             page: 'PseudoMonobook',
             styles: 'MediaWiki:PseudoMonobook.css'
         },
-
+		
         QuickLogs: {
             page: 'Special:Contributions/Wikia',
             scripts: 'MediaWiki:QuickLogs/code.js'
         },
-
+		
         Quote: {
             selector: '.pull-quote',
             styles: 'MediaWiki:Global_Lua_Modules/Quote.css'
         },
-
+		
         ReferencePopups: {
             page: 'ReferencePopups/demo',
             scripts: 'MediaWiki:ReferencePopups/custom.js',
             styles: 'MediaWiki:ReferencePopups/demo.css',
             subpages: false
         },
-
-        RevertOldGlobalNav: {
-            page: 'RevertOldGlobalNav',
-            styles: 'MediaWiki:RevertOldGlobalNav.css'
-        },
-
-        SearchSuggest: {
-            page: 'Special:Search',
-            scripts: 'MediaWiki:SearchSuggest/code.js'
-        },
-
+		
+	    SearchSuggest: {
+			page: 'Special:Search',
+			scripts: 'MediaWiki:SearchSuggest/code.js'
+		},
+		
         ShowHide: {
             page: 'ShowHide',
             scripts: 'MediaWiki:ShowHide/code.js',
@@ -418,24 +371,24 @@
                 } catch (ex) {}
             },
         },
-
+		
         SnowStorm: {
             page: 'SnowStorm/Demo',
             scripts: 'MediaWiki:SnowStorm.js',
             styles: 'MediaWiki:SnowStorm/demo.css'
         },
-
+		
         SnowStorm1: {
             page: 'SnowStorm/Demo1',
             scripts: ['MediaWiki:SnowStorm.js/DemoSettings1.js' , 'MediaWiki:SnowStorm.js'],
             styles: 'MediaWiki:SnowStorm/demo.css'
         },
-
+		
         SnowStormCSS: {
             page: 'SnowStormCSS',
             styles: 'MediaWiki:SnowStormCSS/code.css'
         },
-
+		
         Standard_Edit_Summary: {
             page: 'Standard_Edit_Summary',
             scripts: 'MediaWiki:Standard_Edit_Summary/code.js',
@@ -445,17 +398,12 @@
                 };
             }
         },
-
-        StarRatingsUi: {
-            selector: '.rating-widget',
-            scripts: 'MediaWiki:StarRatings/ui.js'
-        },
         
         Tabber: {
             page: 'Global_Lua_Modules/Tabber',
             styles: 'MediaWiki:Global_Lua_Modules/Tabber.css'
         },
-
+		
         TableHash: {
             page: 'TableHash',
             scripts: 'MediaWiki:TableHash.js',
@@ -467,7 +415,7 @@
             scripts: 'MediaWiki:TimedSlider/code.js',
             styles: 'MediaWiki:TimedSlider/code.css'
         },
-
+		
         Tooltips: {
             page: 'Tooltips',
             scripts: 'MediaWiki:Tooltips.js',
@@ -485,29 +433,18 @@
                 window.tooltips_config = { offsetX: 15, offsetY: 15 };
             }
         },
-
+		
         TZclock: {
             page: 'TZclock',
             scripts: 'MediaWiki:TZclock.js',
             styles: 'MediaWiki:TZclock.css'
         },
-
-        UCX: {
-            page: 'UCX',
-            scripts: 'MediaWiki:UCX.js',
-            styles: 'MediaWiki:UCX.css'
-        },
-
-        UnhideUserMasthead: {
-            page: 'Special:Contributions/UnhideUserMastheadTest',
-            scripts: 'MediaWiki:UnhideUserMasthead/code.js'
-        },
-
+		
         UpgradedToolbar: {
             page: 'UpgradedToolbar',
             styles: 'MediaWiki:UpgradedToolbar.css'
         },
-
+		
         UserActivityTab: {
             page: 'User:' + mw.config.get('wgUserName'),
             scripts: 'MediaWiki:UserActivityTab/code.js'
@@ -522,14 +459,13 @@
             page: 'UserAvatarLink',
             scripts: ['MediaWiki:UserAvatarLink.js', 'MediaWiki:User_Avatar_Finder/code.js']
         },
-
-        UserCheck: {
-            page: 'Special:Contributions/Klopsik600',
-            scripts: 'MediaWiki:UserCheck/code.js'
-        },
-
-        /*
-        // disabled in favour of ProfileTags
+		
+	    UserStatus: {
+			page: 'User:SapphireSonata',
+			scripts: 'MediaWiki:UserStatus/demo.js'
+		},
+		
+        /* // Disabled in Favour of ProfileTags
         UserTags: {
             exec: function () {
                 window.UserTagsJS = {
@@ -542,13 +478,7 @@
                 };
             },
             scripts: 'MediaWiki:UserTags/code.js'
-        },
-        */
-
-        UserStatus: {
-            page: 'User:SapphireSonata',
-            scripts: 'MediaWiki:UserStatus/demo.js'
-        },
+        },*/
 
         WantedPagesFilter: {
             page: 'WantedPagesFilter',
@@ -557,7 +487,12 @@
                 window.wgCanonicalSpecialPageName = 'Wantedpages';
             }
         },
-
+        
+	    WikiActivity: {
+			page: 'Special:WikiActivity',
+	        scripts: 'MediaWiki:WikiActivity.js'
+	    },
+        
         WikiaNotification: {
             page: 'WikiaNotification',
             scripts: 'MediaWiki:WikiaNotification/code.js',
@@ -570,7 +505,7 @@
 
         Wikificator: {
             page: 'Wikificator',
-            scripts: ['MediaWiki:Wikificator.js', 'MediaWiki:TrymeButton.js'],
+            scripts: 'MediaWiki:Wikificator.js',
             exec: function () {
                 if ($.inArray(mw.config.get('wgAction'), ['edit', 'submit']) !== -1) return;
                 mw.loader.load('jquery.textSelection');
@@ -586,6 +521,7 @@
             scripts: [
                 'MediaWiki:WikiForum/core.js',
                 'MediaWiki:WikiForum/theme/default.js',
+                'MediaWiki:WikiForum/loader/default.js'
             ],
             exec: function () {
                 mw.hook('WikiForum').add(function (Core) {
@@ -681,7 +617,6 @@
                     scripts.merge(actions.scripts);
                 }
             });
-
             if (scripts.length) {
                 importArticles({ type: 'script', articles: scripts });
             }

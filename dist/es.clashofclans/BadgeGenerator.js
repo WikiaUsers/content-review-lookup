@@ -200,11 +200,11 @@
         if ( k == 'pg' ) {
             $( '#' + _id ).append(
                 '<div class="container-scroll">' +
-                    '<div class="container-values" />' +
+                    '<div class="container-values"></div>' +
                 '</div>'
             );
         } else {
-            $( '#' + _id ).append( '<div class="container-values" />' );
+            $( '#' + _id ).append( '<div class="container-values"></div>' );
         }
  
         $.each( v, function( i, val ) {
@@ -219,7 +219,7 @@
     $( '#options-container' ).append(
         '<div id="container-lvl" class="container">' +
             '<div class="container-header">Nivel</div>' +
-            '<div class="container-values" />' +
+            '<div class="container-values"></div>' +
         '</div>'
     );
  

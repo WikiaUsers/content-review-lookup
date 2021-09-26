@@ -27,8 +27,7 @@
             'wgNamespaceNumber',
             'wgPageName',
             'wgUserGroups',
-            'wgUserName',
-            'wgVersion'
+            'wgUserName'
         ]),
         // Configuration options
         options: $.extend({
@@ -59,7 +58,6 @@
          */
         init: function() {
             window.lastEditedLoaded = true;
-            this.isUCP = this.config.wgVersion !== '1.19.24';
             this.api = new mw.Api();
             this.pageName = this.config.wgPageName.replace(/_/g, ' ');
             this.insert();
@@ -76,14 +74,10 @@
                 $.when(
                     this.fetch(),
                     window.dev.i18n.loadMessages('LastEdited', i18nOptions),
-                    mw.loader.using(
-                        this.isUCP ?
-                            [
-                                'mediawiki.diff.styles',
-                                'skin.oasis.diff.css'
-                            ] :
-                            'mediawiki.action.history.diff'
-                    )
+                    mw.loader.using([
+                        'mediawiki.diff.styles',
+                        'skin.oasis.diff.css'
+                    ])
                 ).then($.proxy(this.render, this));
             }
         },
@@ -121,15 +115,10 @@
                 id: 'lastEdited',
                 'class': 'lastEdited'
             }).append(
-                this.isUCP ?
-                    $('<span>', {
-                        'class': 'mw-ajax-loader',
-                        'id': 'lastEdited-loading'
-                    }) :
-                    $('<img>', {
-                        id: 'lastEdited-loading',
-                        src: this.config.stylepath + '/common/images/ajax.gif'
-                    })
+                $('<span>', {
+                    'class': 'mw-ajax-loader',
+                    'id': 'lastEdited-loading'
+                })
             );
             var pos = this.options.position;
             if (pos.element && pos.method) {
@@ -255,10 +244,10 @@
 							var e = false;
 							$.timeago.settings.allowFuture && (t < 0 && (e = !0), t = Math.abs(t));
 							var r = t / 1e3, a = r / 60, i = a / 60, n = i / 24, o = n / 365;
-							return r < 45 && u("second", Math.round(r)) || r < 90 && u("minute", 1) || a < 45 && u("minute", Math.round(a)) || a < 90 && u("hour", 1) || i < 24 && u("hour", Math.round(i)) || i < 48 && u("day", 1) || n < 30 && u("day", Math.floor(n)) || n < 60 && u("month", 1) || n < 365 && u("month", Math.floor(n / 30)) || o < 2 && u("year", 1) || u("year", Math.floor(o))
+							return r < 45 && u("second", Math.round(r)) || r < 90 && u("minute", 1) || a < 45 && u("minute", Math.round(a)) || a < 90 && u("hour", 1) || i < 24 && u("hour", Math.round(i)) || i < 48 && u("day", 1) || n < 30 && u("day", Math.floor(n)) || n < 60 && u("month", 1) || n < 365 && u("month", Math.floor(n / 30)) || o < 2 && u("year", 1) || u("year", Math.floor(o));
 						// }
 						function u(t, r) {
-							return mw.message(e ? "timeago-" + t + "-from-now" : "timeago-" + t, r).text()
+							return mw.message(e ? "timeago-" + t + "-from-now" : "timeago-" + t, r).text();
 						}
 					};
 					

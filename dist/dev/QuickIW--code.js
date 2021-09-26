@@ -13,7 +13,6 @@
     var QuickIW = {
         preloads: 2,
         page: mw.config.get('wgPageName'),
-        isUCP: mw.config.get('wgVersion') !== '1.19.24',
         preload: function() {
             if (--this.preloads === 0) {
                 $.when(
@@ -21,8 +20,9 @@
                     mw.loader.using([
                         'mediawiki.api',
                         'mediawiki.user',
-                        'mediawiki.util'
-                    ].concat(this.isUCP ? ['mediawiki.notify'] : []))
+                        'mediawiki.util',
+                        'mediawiki.notify'
+                    ])
                 ).then($.proxy(this.init, this));
             }
         },
@@ -139,16 +139,9 @@
             this.error(this.i18n.msg('ajax-error').plain());
         },
         error: function(text) {
-            if (this.isUCP) {
-                mw.notify(this.i18n.msg('error', text).plain(), {
-                    type: 'error'
-                });
-            } else {
-                new BannerNotification(
-                    this.i18n.msg('error', text).escape(),
-                    'error'
-                ).show();
-            }
+            mw.notify(this.i18n.msg('error', text).plain(), {
+                type: 'error'
+            });
         }
     };
     importArticles({

@@ -25,7 +25,6 @@
             'wgFormattedNamespaces',
             'wgNamespaceNumber',
         ]),
-        isUCP: parseFloat(mw.config.get('wgVersion')) > 1.19,
         modal: null,
         typemap: {
             '1': 'add',
@@ -117,20 +116,10 @@
         },
         preload: function() {
             // Styles
-            var imported = importArticle({
+            importArticle({
                 type: 'style',
                 article: 'u:dev:MediaWiki:MassCategorization.css'
-            });
-
-            if (this.isUCP) {
-                imported.then(this.onload.bind(this, 'css'));
-            } else {
-                if (imported.length === 0) {
-                    this.onload('css');
-                } else {
-                    imported[0].onload = this.onload.bind(this, 'css');
-                }
-            }
+            }).then(this.onload.bind(this, 'css'));
 
             // Dev libs
             importArticles({
@@ -151,11 +140,7 @@
             // Loader modules
             mw.loader.using('mediawiki.api').then(this.onload.bind(this, 'api'));
 
-            if (this.isUCP) {
-                this.getPrefixedModule('lodash').then(this.onload.bind(this, 'lodash'));
-            } else {
-                this.onload('lodash', { lodash: _ });
-            }
+            this.getPrefixedModule('lodash').then(this.onload.bind(this, 'lodash'));
         },
 
         // Functions

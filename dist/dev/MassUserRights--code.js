@@ -27,8 +27,7 @@ mw.loader.using([
     
     var config = mw.config.get([
         'wgUserGroups',
-        'wgUserName',
-        'wgVersion'
+        'wgUserName'
     ]);
     
     if (
@@ -53,18 +52,14 @@ mw.loader.using([
 	        'rollback',
 	    ],
 	    messages = {},
-		customGroups = window.massUserRightsCustom,
-		isUCP = config.wgVersion !== '1.19.24';
+		customGroups = window.massUserRightsCustom;
 		
 	// Message fetch by KockaAdmiralac
 	Api.get({
         action: 'query',
         meta: 'allmessages',
         ammessages: groups.map(function(msg) {
-            return (isUCP ?
-            'userprofile-global-tag-' :
-            'user-identity-box-group-'
-        ) + msg;
+            return 'userprofile-global-tag-' + msg;
         }).join('|')
     }).then(function(d) {
         d.query.allmessages.forEach(function(msg, i) {

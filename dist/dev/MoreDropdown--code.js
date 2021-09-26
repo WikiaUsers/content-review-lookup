@@ -30,8 +30,7 @@
     const CAN_DELETE = /sysop|content-moderator|soap|staff|helper|content-volunteer|wiki-specialist|wiki-representative/.test(usergroups.join()),
          CAN_BLOCK = /sysop|soap|staff|helper|global-discussions-moderator|wiki-representative/.test(usergroups.join()),
          IS_BLOCKED = $('.tag').text() === data.query.allmessages[0]["*"],
-         PAGE_PATHNAME = mw.config.get('wgArticlePath').replace('$1', ''),
-         IS_UCP = mw.config.get('wgVersion') !== "1.19.24";
+         PAGE_PATHNAME = mw.config.get('wgArticlePath').replace('$1', '');
     
     if (namespace === -1 && !pagename.match("/") || window.moreDropdownloaded) {
         return;
@@ -86,7 +85,7 @@
     );
     
 
-        $(IS_UCP?'user-identity-social__icon wds-dropdown':'.masthead-info').prepend(
+        $('user-identity-social__icon wds-dropdown').prepend(
             "<ul class=\"user-identity-box-edit\" style=\"bottom: 0;margin: 15px;\" id=\"more-dropdown-button\">" + 
                 "<li>" + 
                     "<div class=\"wds-dropdown\">" + 
@@ -148,7 +147,7 @@
             "</ul>"
         );
     
-    if ($(IS_UCP?"#userProfileApp":'#UserProfileMasthead').length) {
+    if ($("#userProfileApp").length) {
         $('#more-dropdown-button').after(
         "<ul class=\"user-identity-box-edit\" style=\"bottom: 0;margin: 15px; right: 60px;\" id=\"user-more-dropdown-button\">" + 
                 "<li>" + 

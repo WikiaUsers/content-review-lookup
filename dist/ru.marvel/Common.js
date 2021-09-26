@@ -93,6 +93,8 @@ window.SpoilerAlertJS = {
     fadeDelay: 1600
 };
 
+// Настройка AddRailModule
+window.AddRailModule = ['Template:Проект:Комиксы/Комиксы недели', 'Template:NewPagesModule'];
 
 /* Настройка для dev:PreloadTemplates */ 
 preloadTemplates_subpage =  "case-by-case" ;

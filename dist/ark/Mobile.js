@@ -1,4 +1,6 @@
-/* Any JavaScript here will be loaded for users using the mobile site */
+mw.loader.load("https://ark.fandom.com/wiki/MediaWiki:Gadget-site.js?action=raw\u0026ctype=text/javascript");
+mw.loader.load('/load.php?debug=false&lang=en&modules=ext.Tabber&version=1ckquij', 'text/javascript', false);
+
 /************************************
 /* Main Page Mobile Collapse Script *
 /************************************/
@@ -51,16 +53,3 @@ $( document ).ready( fpmobilecollapse.initialize );
 /****************************************
 /* End Main Page Mobile Collapse Script *
 /****************************************/
-
-/*****************************************
-* Load scripts for collapsible elements *
-******************************************/
-var $collapsible=$('#content').find('.mw-collapsible');
-if($collapsible.length){
-	mw.loader.using('jquery.makeCollapsible',function(){
-		$collapsible.makeCollapsible();
-	});
-}
-/**********************************
-* End collapsible script loading  *
-***********************************/

@@ -53,3 +53,29 @@ var option = {
 observer.observe(Comm, option);
 }
 });
+
+/* correct 'page-header__page-subtitle' in order to link to the correct parent page of the sub-page in the talk namespace  */
+/* until there's an official fix from FANDOM*/
+/*by @Luma.dash */
+$(function() {
+if (mw.config.get('wgPageName').includes('/') == true && mw.config.get('wgCanonicalNamespace') == "Talk") { //if it is the "Talk" namespace
+var back = document.querySelector('.page-header__page-subtitle a'); //and it is a sub page of the talk page, get the 'back' link
+var arr = mw.config.get('wgPageName').split('/'); //split pagename based on forward slash
+var val = arr[0]; //get first title before the first forward slash
+for (var i = 1; i < arr.length - 1; i++) //check if there are sub of sub-pages
+		val += "/" + arr[i]; //add full page name
+var api = new mw.Api().get({ //check if the parent article exists
+	action: 'query', 
+	titles: [val] 
+}).then(function(ret){ //ret is the returned object
+		$.each(ret.query.pages, function(key, value) { //each 'page' is given as an object here (value) of (pages)
+					if (value.missing == "") //No page is created, do end the function with
+						back.href = "/wiki/" + val + "?action=edit&redlink=1"; //set href of the prev link to "Talk:PageName?action=edit&redlink=1"
+					else { //if the parent page exists
+						back.href = "/wiki/" + val; //set href of the prev link to "Talk:PageName"
+						back.removeAttribute('class'); //make the link blue
+					}
+});
+});
+}
+});

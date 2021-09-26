@@ -2987,6 +2987,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"cute": {
+				"name": "Cute",
+				"colors": [
+					"egypt",
+					"pink"
+				],
+				"rarity": "common"
+			},
 			"cutesy": {
 				"name": "Cutesy",
 				"colors": [
@@ -7197,6 +7205,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"white",
 					"yellow",
 					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"jackal": {
+				"name": "Jackal",
+				"colors": [
+					"egypt",
+					"pink"
 				],
 				"rarity": "unbreedable"
 			},
@@ -12792,6 +12808,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"shift": {
+				"name": "Shift",
+				"colors": [
+					"egypt",
+					"rainbow",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"shimmer": {
 				"name": "Shimmer",
 				"colors": [
@@ -12804,6 +12829,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Shining Luck",
 				"colors": [
 					"gold"
+				],
+				"rarity": "unbreedable"
+			},
+			"shiningsand": {
+				"name": "Shining Sand",
+				"colors": [
+					"egypt",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},

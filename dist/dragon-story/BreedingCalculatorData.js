@@ -5775,6 +5775,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "cute": {
+                "name": "Cute",
+                "types": [
+                    "egypt",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "pink"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "blue"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "cutesy": {
                 "name": "Cutesy",
                 "types": [
@@ -14136,6 +14163,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "20_hours_20",
                 "rarity": 3,
                 "offspringeligibility": "worldevent",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "jackal": {
+                "name": "Jackal",
+                "types": [
+                    "egypt",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "20_hours_20",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]
@@ -25706,6 +25749,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ]
             },
+            "shift": {
+                "name": "Shift",
+                "types": [
+                    "egypt",
+                    "rainbow",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "shimmer": {
                 "name": "Shimmer",
                 "types": [
@@ -25734,6 +25794,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 4,
                 "parenteligibility": "goldtype",
                 "offspringeligibility": "marketonly",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "shiningsand": {
+                "name": "Shining Sand",
+                "types": [
+                    "egypt",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
                 "notes": [
                     "feature"
                 ]

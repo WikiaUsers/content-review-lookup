@@ -11,7 +11,7 @@
 */
 
 mw.loader.using(['jquery.makeCollapsible'], function() {
-    var config, i18n, isUCP,                             // configuration
+    var config, i18n,                                    // configuration
         refreshTimer, refreshCycle, itemSince, itemIds;  // state
 
     //
@@ -207,14 +207,13 @@ mw.loader.using(['jquery.makeCollapsible'], function() {
                 var tableUserExtraLinks = '';
 
                 // NB: UCP doesn't always give us the user's groups, so we'll heuristically assume that any username that _doesn't_ look like an IP address is probably a user.
-                if ( config.userRights.canViewAFLDetails && config.userInfo && ((isUCP && !mw.util.isIPAddress(item.user)) || /(user)/.test(item.details.user_groups)) ) {
+                if ( config.userRights.canViewAFLDetails && config.userInfo && ((!mw.util.isIPAddress(item.user)) || /(user)/.test(item.details.user_groups)) ) {
                     var userExtraLinks = [];
 
                     if (item.details.user_editcount != null) {
                         // NB: UCP wikis provide an inaccurate edit count.
-                        userExtraLinks.push(isUCP
-                            ? '<span title="' + i18n.msg('ucpGlobalEditsTooltip').escape() + '">' + i18n.msg('globalEdits').escape() + '&nbsp;&ge;&nbsp;' + item.details.user_editcount + '</span>'
-                            : i18n.msg('globalEdits').escape() + '&nbsp;' + item.details.user_editcount
+                        userExtraLinks.push(
+                            '<span title="' + i18n.msg('ucpGlobalEditsTooltip').escape() + '">' + i18n.msg('globalEdits').escape() + '&nbsp;&ge;&nbsp;' + item.details.user_editcount + '</span>'
                         );
                     }
 
@@ -258,7 +257,7 @@ mw.loader.using(['jquery.makeCollapsible'], function() {
                             '<a href="' + mw.util.getUrl('User_talk:' + item.user) + '" target="_blank">' + mw.msg('talkpagelinktext') + '</a> &bull; ' +
                             '<a href="' + mw.util.getUrl('Special:Contributions/' + item.user) + '" target="_blank">' + mw.msg('contribslink') + '</a> &bull; ' +
                             '<a href="' + alUrl + '?wpSearchUser=' + item.user + '" title="' + mw.msg('abusefilter-log-linkoncontribs-text') + '" target="_blank">' + mw.msg('abusefilter-log-linkoncontribs') + '</a> &bull; ' +
-                            '<a href="//soap.fandom.com/" target="_blank" title="' + i18n.msg('soapTooltip').escape() + '">SOAP</a>' +
+                            '<a href="//soap.fandom.com/wiki/" target="_blank" title="' + i18n.msg('soapTooltip').escape() + '">SOAP</a>' +
                             (config.userRights.canBlock ? (' &bull; <a href="' + mw.util.getUrl('Special:Block/' + item.user) + '" target="_blank">' + mw.msg('blocklink') + '</a>') : '') +
                         '</td>';
 
@@ -543,7 +542,6 @@ mw.loader.using(['jquery.makeCollapsible'], function() {
            'wgUserName',
            'wgVersion',
         ]);
-        isUCP = mwConfig.wgVersion !== '1.19.24';
         // Ensure we're on the right page
         if (mwConfig.wgCanonicalSpecialPageName !== 'Recentchanges') {
             if (mwConfig.debug) {

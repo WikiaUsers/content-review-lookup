@@ -163,33 +163,16 @@
         });
     }
 
-    function patchStyles() {
-        mw.util.addCSS('.wds-banner-notification.wds-alert.error { color: var(--wds-banner-notification-text-color); }');
-    }
+    var bannerModule = getUCPBannerModuleName();
 
-    var isUCP = parseFloat(mw.config.get('wgVersion')) > 1.19;
-    var bannerModule = isUCP
-        ? getUCPBannerModuleName()
-        : 'BannerNotification';
-
-    if (isUCP) {
-        mw.loader.using(bannerModule).then(function(require) {
-            var mod = require(bannerModule);
-            var Wrapper = createBannerNotificationWrapper(mod.BannerNotification);
-
-            window.dev.banners.BannerNotification = Wrapper;
-
-            mw.hook('dev.banners').fire(Wrapper);
-
-            patchStyles();
-        });
-    } else {
-        require([bannerModule], function(BannerNotification) {
-            window.dev.banners.BannerNotification = BannerNotification;
-
-            mw.hook('dev.banners').fire(BannerNotification);
-
-            patchStyles();
-        });
-    }
+	mw.loader.using(bannerModule).then(function(require) {
+		var mod = require(bannerModule);
+		var Wrapper = createBannerNotificationWrapper(mod.BannerNotification);
+		
+		window.dev.banners.BannerNotification = Wrapper;
+		
+		mw.hook('dev.banners').fire(Wrapper);
+		
+		mw.util.addCSS('.wds-banner-notification.wds-alert.error { color: var(--wds-banner-notification-text-color); }');
+	});
 })();

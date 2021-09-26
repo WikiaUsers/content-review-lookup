@@ -127,28 +127,6 @@
                 },
                 id: 'ButtonsModal'
             };
-        },
-        altlinkModal: function() {
-            return {
-                altLink: {
-                    href: mw.util.getUrl('Special:MyPage'),
-                    id: 'my-alt-link',
-                    text: 'An alternative link approaches.',
-                    title: 'This is the alternative link\'s title.'
-                },
-                buttons: [
-                    {
-                        event: 'close',
-                        primary: true,
-                        text: 'Close me'
-                    }
-                ],
-                closeEscape: false,
-                closeTitle: 'Cubes!',
-                content: 'This modal has an alternative link. Also, it doesn\'t close when pressing Escape and the title when you hover over the X button is different. Woo!',
-                id: 'AltLinkModal',
-                size: 'large'
-            };
         }
     };
     importArticles({

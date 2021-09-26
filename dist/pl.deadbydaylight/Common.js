@@ -21,9 +21,11 @@ $(function(){
 		$('#inceptionPerks' + i).click(GetInceptionPerksHandler(i));
 	}
 	/**************************************************************************/
+	//MobileViewHovers(); //Currnently not used, as the Mobile version doesn't load Common.js
 	CreateEditSourceLink();
 	SetAppropriateDimensions();
 	SetHeadersShadows();
+	
 	$.each($(".mw-collapsible-text"), function(index, element){
 		console.log("element #" + index);
 		$(element).click(function(){
@@ -121,6 +123,28 @@ function CreateEditSourceLink(){
 	editSourceNode.setAttribute('class', 'wds-button wds-is-text page-header__action-button has-label');
 	
 	vanillaEdit.parentNode.insertBefore(editSourceNode, vanillaEdit.nextSibling);
+}
+
+function isMobileDevice() {
+    return window.matchMedia("(max-width: 1024px)").matches;
+}
+
+function MobileViewHovers(){
+	//if(!isMobileDevice){
+		////console.log("Preparing tooltips...");
+		////$('.mobileView').hide();
+		/*
+		tooltip = $('.tooltip-value');
+		tooltipValue = tooltip.attr('title');
+		span = $('<span> (' + tooltipValue + ')</span>');
+		span.css(
+			{
+				'font-size': '7pt',
+        	}
+    	);
+    	
+    	tooltip.append(span);*/
+	//}
 }
 /*********************************************************************************************/
 /*********************************************************************************************/

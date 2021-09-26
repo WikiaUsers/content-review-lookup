@@ -70,6 +70,7 @@ importArticles({
         'u:dev:MediaWiki:MassNullEdit/code.js',
         'u:dev:MediaWiki:MassProtect/code.js',
         'u:dev:MediaWiki:MassRename/code.js',
-        'u:dev:MediaWiki:PageRenameAuto-update/code.js'
+        'u:dev:MediaWiki:PageRenameAuto-update/code.js',
+        'u:dev:MediaWiki:DeleteTalkpage.js'
     ]
 });

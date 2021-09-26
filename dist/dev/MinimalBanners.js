@@ -7,7 +7,7 @@
     var placement;
     function click () {
         $('.wds-banner-notification').each(function () {
-            $(this).find('svg:nth-child(3)').click();
+            $(this).find('.wds-banner-notification__close > svg').click();
         });
     }
     function init (i18n) {

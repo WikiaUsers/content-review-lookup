@@ -17,61 +17,55 @@
 	}
 	window.AddToolsDropdown = true;
 
-	var config = mw.config.get([
-		'wgPageName',
-		'wgUserLanguage'
-	]);
+	var pagename = mw.config.get.wgPageName;
+	var url_logs = mw.util.getUrl('Special:Logs', {page: pagename});
+	var url_info = mw.util.getUrl(pagename, {action: 'info'}); 
+	var url_undelete = mw.util.getUrl('Special:Undelete', {target: pagename});
+	var url_whatlinkshere = mw.util.getUrl('Special:WhatLinksHere', {target: pagename});
+/*	var url_diff = mw.util.getUrl(pagename, {diff: 'cur'}); */
+/*	var url_whatleaveshere = mw.util.getUrl('Special:WhatLeavesHere', {target: pagename}); */
+/*	var url_recentchangeslinked = mw.util.getUrl('Special:RecentChangesLinked', {target: pagename}); */
 
-	$.when(
-		mw.loader.using('mediawiki.util')
-	).then(function(text) {
-		var url_logs = mw.util.getUrl('Special:Logs', {page: config.wgPageName});
-		var url_info = mw.util.getUrl(config.wgPageName, {action: 'info'}); 
-/*		var url_diff = mw.util.getUrl(config.wgPageName, {diff: 'cur'}); */
-		var url_undelete = mw.util.getUrl('Special:Undelete', {target: config.wgPageName});
-		var url_whatlinkshere = mw.util.getUrl('Special:WhatLinksHere', {target: config.wgPageName});
-/*		var url_whatleaveshere = mw.util.getUrl('Special:WhatLeavesHere', {target: config.wgPageName}); */
-/*		var url_recentchangeslinked = mw.util.getUrl('Special:RecentChangesLinked', {target: config.wgPageName}); */
-		$list.append(
-			$('<li>', {
-				id: 'ca-logs'
-			}).append(
-				$('<a>', {
-					href: url_logs,
-					text: 'Журналы'
-				})
-			)
-		);
-		$list.append(
-			$('<li>', {
-				id: 'ca-whatlinkshere'
-			}).append(
-				$('<a>', {
-					href: url_whatlinkshere,
-					text: 'Ссылки сюда'
-				})
-			)
-		);
-		$list.append(
-			$('<li>', {
-				id: 'ca-info'
-			}).append(
-				$('<a>', {
-					href: url_info,
-					text: 'Сведения о странице'
-				})
-			)
-		);
-		$list.append(
-			$('<li>', {
-				id: 'ca-undelete'
-			}).append(
-				$('<a>', {
-					href: url_undelete,
-					text: 'Просмотр удаленных версий'
-				})
-			)
-		);
-	});
+	$list.append(
+		$('<li>', {
+			id: 'ca-logs'
+		}).append(
+			$('<a>', {
+				href: url_logs,
+				text: 'Журналы'
+			})
+		)
+	);
+	$list.append(
+		$('<li>', {
+			id: 'ca-whatlinkshere'
+		}).append(
+			$('<a>', {
+				href: url_whatlinkshere,
+				text: 'Ссылки сюда'
+			})
+		)
+	);
+	$list.append(
+		$('<li>', {
+			id: 'ca-info'
+		}).append(
+			$('<a>', {
+				href: url_info,
+				text: 'Сведения о странице'
+			})
+		)
+	);
+	$list.append(
+		$('<li>', {
+			id: 'ca-undelete'
+		}).append(
+			$('<a>', {
+				href: url_undelete,
+				text: 'Просмотр удаленных версий'
+			})
+		)
+	);
+	
 	$('#p-cactions a').attr('target', '_blank');
 })();

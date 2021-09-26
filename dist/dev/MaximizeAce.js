@@ -1,10 +1,8 @@
 /* MaximizeAce by Sophiedp */
 (function() {
     if (
-    	(
-    		window.MaximizeAceLoaded ||
-    		!['edit', 'submit'].includes(mw.config.get('wgAction'))
-    	) &&
+    	window.MaximizeAceLoaded ||
+    	!['edit', 'submit'].includes(mw.config.get('wgAction')) ||
     	mw.config.get('wgPageContentModel') === 'wikitext'
     ) {
         return;

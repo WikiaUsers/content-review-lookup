@@ -26,7 +26,7 @@ var tooltips = {
             return false;
         }
         href = href.split('/wiki/');
-        tooltips.api = href[0]+'/api.php?format=json&action=parse&disablepp=true&prop=text&title='+href[1];
+        tooltips.api = href[0]+'/api.php?format=json&action=parse&disablelimitreport=true&prop=text&title='+href[1];
         if(mw.util.getParamValue('uselang')) tooltips.api += '&uselang='+mw.util.getParamValue('uselang');
         tooltips.api += '&text=';
         

@@ -15,10 +15,8 @@
     const conf = mw.config.get([
         'wgNamespaceNumber',
         'wgPageName',
-        'wgArticleId',
-        'wgVersion'
+        'wgArticleId'
     ]);
-    const isUCP = conf.wgVersion !== '1.19.24';
 
     // Loading restrictions
     if (
@@ -26,9 +24,8 @@
         !window.fdButtons ||
         conf.wgNamespaceNumber === -1 ||
         conf.wgArticleId === 0 ||
-        (conf.wgNamespaceNumber === 2 && isUCP && $('.noarticletext').length) ||
-        (conf.wgNamespaceNumber != 2 && isUCP && !$('#ca-delete').length) ||
-        (!isUCP && !$('#ca-delete').length) ||
+        (conf.wgNamespaceNumber === 2 && $('.noarticletext').length) ||
+        (conf.wgNamespaceNumber != 2 && !$('#ca-delete').length) ||
         !/sysop|staff|helper|wiki-representative|wiki-specialist|content-moderator|soap/.test(mw.config.get('wgUserGroups').join())
     ) {
         return;
@@ -45,13 +42,8 @@
 
                 // Map config object to get buttons' HTML
                 const deleteBtns = window.fdButtons.map(function(btn) {
-                    const btnClass = ((!isUCP && $profile.length)
-                        ? 'wikia-button'
-                        : 'wds-button'
-                    );
-
                     return $('<a>', {
-                        class: btnClass,
+                        class: 'wds-button',
                         title: i18n.msg('delete-title', btn.summary).plain(),
                         text: btn.label,
                         'data-summary': btn.summary,
@@ -71,13 +63,7 @@
                 );
 
                 // Place buttons
-                if (!isUCP && $profile.length) {
-                    $profile.append(buttonsWrapper);
-                } else if (!isUCP && $blogs.length) {
-                    $blogs.append(buttonsWrapper);
-                } else {
-                    $title.append(buttonsWrapper);
-                }
+                $title.append(buttonsWrapper);
 
                 // Handle click events
                 const btnElements = $('a[data-id="fastdelete"]');
@@ -102,16 +88,12 @@
                 mw.hook('fastdelete.init').fire(buttonsWrapper);
             },
             deletePage: function(deleteReason) {
-                const token = mw.user.tokens.get(isUCP
-                    ? 'csrfToken'
-                    : 'editToken'
-                );
                 new mw.Api().post({
                     action: 'delete',
                     title: conf.wgPageName,
                     reason: deleteReason,
                     bot: true,
-                    token: token
+                    token: mw.user.tokens.get('csrfToken')
                 }).done(function(res) {
                     if (res.error) {
                         return alert(

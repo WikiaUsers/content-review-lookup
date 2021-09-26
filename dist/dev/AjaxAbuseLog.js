@@ -14,7 +14,6 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 	"use strict";
  
 	window.ajaxAbuseLog = {};
-	var isUCP = mw.config.get('wgVersion') !== "1.19.24";
 	var userGroups = mw.config.get('wgUserGroups');
  
 	function logMsg(msg) {
@@ -138,20 +137,12 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 						}).always(function(data) {
 							if (data.edit) {
 								var msg = 'Successfully added the filtered edit.';
-								if (isUCP) {
-									mw.notify(msg, { type: 'success' });
-								} else {
-									new BannerNotification(msg, 'confirm').show();
-								}
+								mw.notify(msg, { type: 'success' });
 								console.log(data);
 							} else {
 								var msg = 'Failed to Edit "' + title + '": ' + data;
  
-								if (isUCP) {
-									mw.notify(msg, { type: "warn" });
-								} else {
-									new BannerNotification(msg, 'warn').show();
-								}
+								mw.notify(msg, { type: "warn" });
 								console.warn(msg);
 							}
 						});

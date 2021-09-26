@@ -41,103 +41,68 @@ mw.loader.using('mediawiki.util').then(function(){
         href: mw.util.getUrl('Special:UserProfileActivity/' + mw.config.get('wgUserName')),
         appendTo: $('body > div.global-navigation > div.global-navigation__bottom > div.wds-dropdown.wds-open-to-right.is-attached-to-bottom > div.wds-dropdown__content > ul')
     };
-    $('<a>', settings).wrap('<li></li>');
-});
- 
-/**Links to other wikis**/
- 
-/***ViacomCBS Wiki***/
-mw.loader.using('mediawiki.util').then(function(){
-    var settings = {
-        text:'ViacomCBS Wiki',
-        href: mw.util.getUrl('w:c:viacomcbs:User:Paramount1106'),
-        appendTo: $('body > div.global-navigation > div.global-navigation__bottom > div.wds-dropdown.wds-open-to-right.is-attached-to-bottom > div.wds-dropdown__content > ul')
-    };
-    $('<a>', settings).wrap('<li></li>');
+$('<a>', settings).wrap('<li></li>');
+}); 
+
+importArticle({
+    type: 'script',
+    article: 'u:dev:MediaWiki:Dorui.js'
 });
 
-/***CBS Wiki***/
-mw.loader.using('mediawiki.util').then (function(){
-    var settings = {
-        text:'CBS',
-        href:mw.util.getUrl('w:c:cbs:User:Paramount1106'),
-        appendTo:$('body > div.global-navigation > div.global-navigation__bottom > div.wds-dropdown.wds-open-to-right.is-attached-to-bottom > div.wds-dropdown__content > ul')
-    };
-    $('<a>', settings).wrap('<li></li>');
+mw.hook('doru.ui').add(function(ui) {
+   ui.li({
+    class: 'wds-dropdown-level-nested',
+    children: [
+        ui.a({
+            class: 'wds-dropdown-level-nested__toggle',
+            href: '',
+            children: [
+                ui.span({
+                    text: 'My Wikis'
+                }),
+                ui.svg({
+                    class: 'wds-icon wds-icon-tiny wds-dropdown-chevron',
+                    'data-id': 'wds-icons-menu-control-tiny',
+                    height: '12',
+                    width: '12',
+                    viewBox: '0 0 12 12',
+                    xmlns: 'http://www.w3.org/2000/svg',
+                    child: ui.use({
+                        'xlink:href': '#wds-icons-menu-control-tiny'
+                    })
+                })
+            ]
+        }),
+        ui.div({
+            class: 'wds-dropdown-level-nested__content wds-is-not-scrollable',
+            style: {
+                bottom: '-8px',
+                top: 'unset'
+            },
+            child: ui.ul({
+                class: 'wds-list wds-is-linked',
+                children: [
+                    ui.li({
+                        child: ui.a({
+                            href: mw.util.getUrl('w:c:viacomcbs'),
+                            text: 'ViacomCBS Wiki'
+                        })
+                    }),
+                    ui.li({
+                        child: ui.a({
+                            href: mw.util.getUrl('w:c:theoffice'),
+                            text: 'Dunderpedia'
+                        })
+                    }),
+                    ui.li({
+                        child: ui.a({
+                            href: mw.util.getUrl('w:c:cbs'),
+                            text: 'CBS Wiki'
+                        })
+                    })
+                ]
+            })
+        })
+    ]
 });
-
-/***Paramount Wiki***/
-
-mw.loader.using('mediawiki.util').then (function(){
-    var settings = {
-        text: 'PAR',
-        href: mw.util.getUrl('w:c:paramount:User:Paramount1106'),
-        appendTo:$('body > div.global-navigation > div.global-navigation__bottom > div.wds-dropdown.wds-open-to-right.is-attached-to-bottom > div.wds-dropdown__content > ul')
-    };
-    $('<a>', settings).wrap('<li></li>');
-});
-
-/***The CW Wiki***/
-
-mw.loader.using('mediawiki.util').then(function(){
-    var settings = {
-        text:'TCW',
-        href:mw.util.getUrl('w:c:thecw:User:Paramount1106'),
-        appendTo:$('body > div.global-navigation > div.global-navigation__bottom > div.wds-dropdown.wds-open-to-right.is-attached-to-bottom > div.wds-dropdown__content > ul')
-    };
-    $('<a>', settings).wrap('<li></li>');
-});
-
-/***ABC Wiki***/
-
-mw.loader.using('mediawiki.util').then(function(){
-    var settings = {
-        text:'ABC',
-        href:mw.util.getUrl('w:c:abc:User:Paramount1106'),
-        appendTo:$('body > div.global-navigation > div.global-navigation__bottom > div.wds-dropdown.wds-open-to-right.is-attached-to-bottom > div.wds-dropdown__content > ul')
-    };
-    $('<a>', settings).wrap('<li></li>');
-});
-
-/***CN Wiki***/
-
-mw.loader.using('mediawiki.util').then(function(){
-    var settings = {
-        text:'CNW',
-        href:mw.util.getUrl('w:c:cartoonnetwork:User:Paramount1106'),
-        appendTo:$('body > div.global-navigation > div.global-navigation__bottom > div.wds-dropdown.wds-open-to-right.is-attached-to-bottom > div.wds-dropdown__content > ul')
-    };
-    $('<a>', settings).wrap('<li></li>');
-});
-
-/***Dunderpedia***/
-
-mw.loader.using('mediawiki.util').then(function(){
-    var settings = {
-        text:'DNP',
-        href:mw.util.getUrl('w:c:theoffice:User:Paramount1106'),
-        appendTo:$('body > div.global-navigation > div.global-navigation__bottom > div.wds-dropdown.wds-open-to-right.is-attached-to-bottom > div.wds-dropdown__content > ul')
-    };
-    $('<a>', settings).wrap('<li></li>');
-});
-
-/***20th Century Fox, 20th Century Studios Wiki***/
-
-mw.loader.using('mediawiki.util').then(function(){
-    var settings = {
-        text:'20CS',
-        href:mw.util.getUrl('w:c:20thcenturyfox:User:Paramount1106'),
-        appendTo:$('body > div.global-navigation > div.global-navigation__bottom > div.wds-dropdown.wds-open-to-right.is-attached-to-bottom > div.wds-dropdown__content > ul')
-    };
-    $('<a>', settings).wrap('<li></li>');
-});
-
-/***Kids WB Wiki***/
-mw.loader.using('mediawiki.util').then(function(){
-    var settings = {
-        text:'KWB',
-        href:mw.util.getUrl('w:c:kidswb:User:Paramount1106'),
-        appendTo:$('body > div.global-navigation > div.global-navigation__bottom > div.wds-dropdown.wds-open-to-right.is-attached-to-bottom > div.wds-dropdown__content > ul')
-    };
-    $('<a>', settings).wrap('<li></li>');
 });

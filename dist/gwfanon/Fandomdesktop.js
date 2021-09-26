@@ -31,3 +31,14 @@ $ ( function ( ) { mw.config.get ( 'wgCategories' ).forEach ( function ( el, id 
 
 // File description
 $('textarea[name=wpUploadDescription]').val('{{Informacje\r\n| Opis      = \r\n| Autor     = \r\n| Źródło    = \r\n}}\r\n');
+
+// Template:Top like on Wookieepedia (source: https://starwars.fandom.com/wiki/MediaWiki:Common.css)
+$( function eraIconsOasis() {
+    if ( $( '#kanonicznie' ).length ) {
+    	if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
+    		$( '.page-header__actions' ).first().prepend( $( '#kanonicznie' ).show() );
+    	} else {
+    	    $( '.page-header__contribution > div' ).first().prepend( $( '#kanonicznie' ).show() );
+    	}
+    }
+} );

@@ -99,3 +99,5 @@ window.UserTagsJS = {
         'Pinkgalaxy': ['formerstaff'],
         'Sboy13': ['formerstaff'],
     };
+
+window.lockOldComments.limit = 90;

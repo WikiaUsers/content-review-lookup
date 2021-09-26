@@ -63,6 +63,7 @@ window.RevealAnonIP = {
     permissions : ['threadmoderator', 'rollback', 'content-moderator', 'sysop', 'bureaucrat', 'staff', 'vstf', 'helper']
 };
  
+/*
 function updatetimer(i) {
     var now = new Date();
     var then = timers[i].eventdate;
@@ -95,15 +96,16 @@ function updatetimer(i) {
     timeouts[i] = setTimeout('updatetimer(' + i + ')', 1000);
 }
  
+
 $(function checktimers() {
     //hide 'nocountdown' and show 'countdown'
-    var nocountdowns = getElementsByClassName(document, 'span', 'nocountdown');
+    var nocountdowns = document.getElementsByClassName('nocountdown');
     for (var i in nocountdowns) nocountdowns[i].style.display = 'none';
-    var countdowns = getElementsByClassName(document, 'span', 'countdown');
+    var countdowns = document.getElementsByClassName('countdown');
     for (var i in countdowns) countdowns[i].style.display = 'inline';
  
     //set up global objects timers and timeouts.
-    timers = getElementsByClassName(document, 'span', 'countdowndate'); //global
+    timers = document.getElementsByClassName('countdowndate'); //global
     timeouts = new Array(); // generic holder for the timeouts, global
     if (timers.length === 0) return;
     for (var i in timers) {
@@ -111,7 +113,7 @@ $(function checktimers() {
         updatetimer(i); //start it up
     }
 });
-
+*/
  
 /* Replaces {{USERNAME}} with the name of the user browsing the page.
    Requires copying Template:USERNAME. */

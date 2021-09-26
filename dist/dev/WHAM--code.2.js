@@ -4,8 +4,6 @@
  * deleting of pages, which the original lacks
  * Original "WHAM" - https://dev.fandom.com/wiki/MediaWiki:WHAM/code.js
  * @author Ozank Cx
- * 
- * Used files: [[File:Facebook throbber.gif]]
  */
 
 ;(function($, mw, window) {

@@ -21,4 +21,8 @@ nkch_gst_gadgets = [{
     name: "MultiUpload",
     title: "Выбрать несколько файлов",
     description: "Загрузить несколько файлов на вики"
+}, {
+    name: "UCXSearchBar",
+    title: "Строка поиска",
+    description: "Возвращает строку поиска в FandomDesktop"
 }];
