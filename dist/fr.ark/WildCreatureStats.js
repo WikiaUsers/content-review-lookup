@@ -3,21 +3,21 @@ var stats = null;
 var wildCreatureStats = null;
 var percentiles = null;
 var wildStatCalcStats = {
-    'health': 'Health',
-    'stamina': 'Stamina',
-    'oxygen': 'Oxygen',
-    'food': 'Food',
-    'weight': 'Weight',
-    'damage': 'Melee Damage'
+    'Santé': 'Santé',
+    'Énergie': 'Énergie',
+    'Oxygène': 'Oxygène',
+    'Nourriture': 'Nourriture',
+    'Poids': 'Poids',
+    'Dégâts': 'Dégâts de mêlée'
 };
 
 if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
-    // NOTE: the increase is always given as percentage of the base-stat
-    // NOTE: in this tool damage1 is (in most cases) 100 to represent 100% (as it is seen ingame)
-    // NOTE: if a creature don't have oxygen (aquatics etc.), just leave these parameter out
+    // NOTE: l'augmentation est toujours donnée en pourcentage de la statistique de base
+    // NOTE: dans cet outil damage1 est (dans la plupart des cas) 100 qui représente 100% (tel que vu en jeu)
+    // NOTE: si une créature n'a pas d'oxygène (aquatiques, etc.), enlever ce paramètre
     wildCreatureStats = // Version: 329.3.6806323
 {
-  "Abberant Coelacanth": {
+  "Coelacanthe irradié": {
     "health1": 30,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -29,7 +29,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Aberrant Achatina": {
+  "Achatina irradié": {
     "health1": 75,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -41,7 +41,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Aberrant Anglerfish": {
+  "Baudroie abyssale irradiée": {
     "health1": 450,
     "healthInc": 0.2,
     "stamina1": 240,
@@ -4196,7 +4196,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damageInc": 0.05
   }
 };
-    // if a stat has x levelups, the stat is in the top percentiles[x] %. For 33 or more level, the probability is less than 0.01 %
+    // si une stat gagne x niveaux, elle est dans le top percentile[x] %. Pour 33 niveaux ou plus, la probabilité est inférieure à 0,01 %
     var percentiles = Array(100.00, 100.00, 100.00, 100.00, 99.99, 99.97, 99.89, 99.67, 99.17, 98.13, 96.23, 93.09, 88.39, 81.93, 73.78, 64.28, 53.98, 43.58, 33.76, 25.06, 17.81, 12.11, 7.88, 4.91, 2.92, 1.67, 0.91, 0.48, 0.24, 0.12, 0.05, 0.02, 0.01);
     
     changeCreature(wildStatCalcDiv.innerHTML);
@@ -4216,24 +4216,24 @@ function changeCreature(creature) {
             tableRows += '<tr><td><a href="/' + wildStatCalcStats[id] + '">' + wildStatCalcStats[id] + unit + '</a></td><td><input type="number" min="' + stats[id + '1'] + '" max="100000" maxlength="6" step="0.1" value="' + stats[id + '1'] + '" id="wildStatCalc' + id + 'input" onchange="calcNatStats()" style="width:5em"></td><td id="wildStatCalc' + id + '"></td></tr>';
         }
     }
-    tableRows += '<tr><td><a href="/Speed">Speed [%]</a></td><td title="Wild creatures always and only have 100% Speed">100</td><td id="wildStatCalcSpeed"></td></tr>';
+    tableRows += '<tr><td><a href="/Speed">Vitesse [%]</a></td><td title="Les créatures sauvages ont toujours 100% de vitesse">100</td><td id="wildStatCalcSpeed"></td></tr>';
     var creatureSelect = '<select onchange="changeCreature(this.value)">';
     for (var c in wildCreatureStats) {
-        creatureSelect += '<option' + (c === creature ? ' selected' : '') + '>' + c + '</option>';
+        creatureSelect += '<option' + (c === creature ? ' sélectionnée' : '') + '>' + c + '</option>';
     }
     creatureSelect += '</select>';
     wildStatCalcDiv.innerHTML = '<table class="wikitable">' +
-    '<tr><th colspan="3">' + creatureSelect + ' Level <input type="number" min="1" max="100000" maxlength="6" value="1" id="wildStatCalcLevelInput" onchange="calcNatStats()" style="width:5em"></th></tr>' +
-    '<tr><th>Stat</th><th>Value</th><th>Levelups</th></tr>' +
+    '<tr><th colspan="3">' + creatureSelect + ' Niveau <input type="number" min="1" max="100000" maxlength="6" value="1" id="wildStatCalcLevelInput" onchange="calcNatStats()" style="width:5em"></th></tr>' +
+    '<tr><th>Stat</th><th>Valeur</th><th>Gain de niveaux</th></tr>' +
     tableRows +
     '</table>';
     calcNatStats();
 }
 
 function calcNatStats() {
-    // calculate according level
+    // calcule selon le niveau
     if (stats) {
-        var totallevel = 1; // 1 is first level
+        var totallevel = 1; // 1 est le premier niveau
         var levels = [];
         var stat = 0;
         var levelEl = null;
@@ -4251,7 +4251,7 @@ function calcNatStats() {
                     percentile = 0.01;
                     else
                     percentile = percentiles[level];
-                    levelEl.title = 'This level is in the top ' + percentile + '% compared to all wild level 120 creatures.';
+                    levelEl.title = 'Ce niveau est parmi les ' + percentile + '% plus élevés comparés à toutes les créatures sauvages de niveau 120.';
                     totallevel += level;
                     determinedStatsNr++;
                 }

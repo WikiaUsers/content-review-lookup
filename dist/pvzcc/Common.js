@@ -52,7 +52,7 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
     'BobertTheBoss': ['valen', 'foodfight', 'starrycontest', 'discmod'],
     'PunjiChocoBerry': ['feastivus', 'winterworld', 'warpedcontest', 'discmod'],
-    'AsterWasTaken': ['lawnofdoom', 'winterworld', 'discmod'],
+    'AsterWasTaken': ['lawnofdoom', 'winterworld'],
     'TheFrozenAngel': ['bonvoyage'],
     'Reapeageddon': ['plantcontest'],
     'DigoBlaze12': ['zombiecontest'],

@@ -3,22 +3,6 @@
 if (mw.config.get("wgUserGroups").indexOf('sysop') > -1)
   importScriptPage('MediaWiki:AjaxRedirect/code.js', 'dev');
 
-// ACCESIBILITY - 'Jump to content button' - by User:Polymeric.
-// Allows keyboard users to skip all navigational links and go directly to the
-// page's content, improving the experience for disabled and blind people alike.
-
-// Adds an id to the 'expand' button, since it's the only consistent element
-// before the start of any page for logged-in, logged-out users, and in any
-// version of the page (ex. reading/editing/protecting/viewing history).
-$('.content-size-toggle').attr('id', 'main-content-start');
-
-// Adds 'Jump to content' button.
-$('body').prepend([
-  $('<div>',{ 'class': 'jtc-btn', 'id': 'jumpToContent' }).append([
-    $('<a>',{ 'class': 'jtc-link', 'href': '#main-content-start', 'role': 'link', 'tabindex': '0' }).text('Skip to main content')
-  ])
-]);
-
 /* BandCamp Audio Embeds */
 /** ART BIG TRACKLIST Hollow Knight OST **/
 $("#ArtBigTrackListHollowKnightOST").replaceWith('<iframe style="border: 0; width: 350px; height: 786px;" src="https://bandcamp.com/EmbeddedPlayer/album=2306704082/size=large/bgcol=333333/linkcol=0f91ff/transparent=true/" seamless><a href="http://christopherlarkin.bandcamp.com/album/hollow-knight-original-soundtrack">Hollow Knight (Original Soundtrack) by Christopher Larkin</a></iframe>');

@@ -1,4 +1,4 @@
-// 14:16, 15 September 2021 (UTC) <nowiki>
+// 08:15, 10 October 2021 (UTC) <nowiki>
 
 // AUTO-REFRESH RECENT CHANGES
 window.AjaxRCRefreshText = 'Auto-refresh';
@@ -91,6 +91,10 @@ window.dev.i18n.overrides['AdminDashboard_JS-Button']['tooltip'] = 'Customise yo
 window.RollbackWikiDisable = true;
 // END ROLLBACK SCRIPT PREVENTION
 
+$(function BlogLink() {
+ if (!$('.create-blog').length) {
+        return;
+    }
 //CREATE AN "ADD A BLOG POST" LINK TO THE PROJECT:ADMINISTRATORS' DASHBOARD PAGE
 var $elem = $('.create-blog'),
     $html = $elem.html();
@@ -102,4 +106,19 @@ $elem.html(
     title: "General",
   })
 );
+});
 // END "ADD A BLOG POST" LINK
+
+// CREATE A "MY BLOGS" LINK TO THE ACCOUNT NAVIGATION LINKS PAGE
+mw.loader.using(['mediawiki.util'], function() {
+    var $elem = $('.my-blog');
+    if (!$elem.length) return;
+
+    $elem.html(
+        $('<a>', {
+            href: mw.util.getUrl('User_blog:' + mw.config.get('wgUserName')),
+            text: $elem.text() || "My Blogs",
+        })
+    );
+});
+// END "MY BLOGS" LINK

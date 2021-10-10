@@ -1,4 +1,5 @@
 console.log('testing code execution');
+mw.loader.getScript('https://cdn.jsdelivr.net/gh/mobalyticshq/mobalytics-widgets/build/mobalytics-widgets.js');
 mw.loader.using('mediawiki.api').then(function() {
 	if (mw.config.get('wgPageName') != 'Special:TransferWikis') return;
 	if (!mw.config.get('wgUserGroups').includes('util')) return;

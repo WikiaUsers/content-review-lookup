@@ -386,7 +386,7 @@
 		
         SnowStormCSS: {
             page: 'SnowStormCSS',
-            styles: 'MediaWiki:SnowStormCSS/code.css'
+            styles: 'MediaWiki:SnowStormCSS.css'
         },
 		
         Standard_Edit_Summary: {
@@ -413,7 +413,7 @@
         TimedSlider: {
             page: 'TimedSlider',
             scripts: 'MediaWiki:TimedSlider/code.js',
-            styles: 'MediaWiki:TimedSlider/code.css'
+            styles: 'MediaWiki:TimedSlider.css'
         },
 		
         Tooltips: {

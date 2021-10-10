@@ -1,3 +1,4 @@
-/* This imports the latest version of flashAnchored from Terraria Wiki: https://terraria.gamepedia.com/MediaWiki:Gadget-flashAnchored.js */
+/* This imports the latest version of flashAnchored from the Terraria Wiki. */
 
-mw.loader.load('https://terraria.gamepedia.com/index.php?title=MediaWiki:Gadget-flashAnchored.js&action=raw&ctype=text/javascript');
+// Import JS: https://terraria.fandom.com/MediaWiki:Gadget-flashAnchored.js
+mw.loader.load('https://terraria.fandom.com/index.php?title=MediaWiki:Gadget-flashAnchored.js&action=raw&ctype=text/javascript');

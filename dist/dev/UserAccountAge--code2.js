@@ -41,59 +41,61 @@
       configurable: false,
       value: Object.freeze({
         NAMES: Object.freeze({
-
-          // UAA Id selectors
-          ID_TAG_SPAN: "userAccountAge-span",
+          ID_UAA_SPAN: "userAccountAge-span",
           ID_UAA_LINK: "userAccountAge-a",
-
-          // Tag class selectors
-          CLASS_LEGACY_MASTHEAD_TAG: "tag",
-          CLASS_UCP_MASTHEAD_TAG: "user-identity-header__tag",
+          CLASS_MASTHEAD_TAG: "user-identity-header__tag",
         }),
         TARGETS: Object.freeze({
-          LEGACY_MASTHEAD_HEADER: ".masthead-info h1",
-          LEGACY_MASTHEAD_TAGS: ".masthead-info hgroup",
           UCP_MASTHEAD_TAGS: ".user-identity-header__attributes",
         })
       }),
     },
 
     /**
-     * @description The <code>Dependencies</code> pseudo-enum contains a pair of
-     * <code>string</code> arrays as properties. The <code>GLOBALS</code> array
-     * contains the various <code>wg</code> globals that are fetched and cached
-     * via a <code>mw.config.get</code> invocation later in the application,
-     * while the <code>MODULES</code> array contains the names of ResourceLoader
-     * modules that are loaded via <code>mw.config.get</code> at the start of
-     * the program's execution.
-     * <br />
-     * <br />
-     * Of particular note is the new UCP-specific global called
-     * <code>profileUserName</code>. This global, along with its five similarly
-     * prefixed cousins, only appears as a property of the <code>window</code>
-     * <code>object</code> on pages that display the user masthead. The presence
-     * of this global is a clear indication that the user masthead will be lazy-
-     * loaded at some point after DOM load, allowing the script to know to
-     * <code>setInterval</code> and chill until the masthead deigns to make an
-     * appearance on the page.
+     * @description The <code>Config</code> pseudo-enum is used primarily by
+     * <code>this.validateConfig</code> to ensure that the user's input config
+     * (if applicable) is well-formed and properly defined prior to its usage
+     * by the script. If the user has chosen not to include certain properties
+     * in the config object, the default values established in this enum are
+     * applied instead as default values. The enum contains a single data
+     * <code>object</code> establishing both the formal name of the property as
+     * it exists in the config object and its associated default value.
      *
      * @readonly
      * @enum {object}
      */
-    Dependencies: {
+    Config: {
       enumerable: true,
       writable: false,
       configurable: false,
       value: Object.freeze({
-        GLOBALS: Object.freeze([
-          "profileUserName",
-          "wgVersion",
-        ]),
-        MODULES: Object.freeze([
-          "mediawiki.api",
-          "mediawiki.util"
-        ]),
-      })
+        SHOW_FULL_DATE: Object.freeze({
+          NAME: "showFullDate",
+          DEFAULT: false,
+        }),
+      }),
+    },
+
+    /**
+     * @description The <code>Modules</code> pseudo-enum is a
+     * <code>string</code> array containing the names of the ResourceLoader
+     * modules that are loaded via <code>mw.loader.using</code> at the start of
+     * the program's execution. Previously, this pseudo-enum was named
+     * <code>Dependencies</code> and likewise included an array of window
+     * properties named <code>GLOBALS</code> fetched via
+     * <code>mw.config.get</code> and cached for subsequent use.
+     *
+     * @readonly
+     * @enum {object}
+     */
+    Modules: {
+      enumerable: true,
+      writable: false,
+      configurable: false,
+      value: Object.freeze([
+        "mediawiki.api",
+        "mediawiki.util"
+      ])
     },
 
     /**
@@ -121,6 +123,43 @@
   });
 
   /**
+   * @description This helper function, based on MassEdit's assorted validation
+   * methods, is used to ensure that the user's inputted config has properties
+   * of the proper data type, i.e. <code>boolean</code> for the
+   * <code>showFullDate</code> flag. If no property exists or if the wrong data
+   * type is detected, the default value specified in <code>this.Config</code>
+   * is applied instead.
+   *
+   * @param {object} paramConfig - User config <code>object</code> to validate
+   * @returns {object} config - Frozen well-formed config <code>object</code>
+   */
+  this.validateConfig = function (paramConfig) {
+
+    // Declarations
+    var element, entry, fields, config;
+
+    // Definitions
+    config = {};
+    fields = this.Config;
+
+    // Set to default if user input doesn't exist or if wrong data type
+    for (element in fields) {
+      if (!fields.hasOwnProperty(element)) {
+        continue;
+      }
+      entry = fields[element];
+
+      // Define with default if no property or if input is of wrong data type
+      config[entry.NAME] = (!paramConfig.hasOwnProperty(entry.NAME) ||
+        typeof paramConfig[entry.NAME] !== typeof entry.DEFAULT)
+          ? entry.DEFAULT
+          : paramConfig[entry.NAME];
+    }
+
+    return Object.freeze(config);
+  };
+
+  /**
    * @description This assembly method is used to assemble a link element within
    * an enclosing <code>span</code> exhibiting the requisite user tag class/id
    * selectors specific to the version of MediaWiki in use on the wiki. For the
@@ -136,13 +175,8 @@
    */
   this.assembleUserTag = function (paramText, paramTitle, paramAddress) {
     return mw.html.element("span", {
-      "id": this.Selectors.NAMES.ID_TAG_SPAN,
-      "class": [
-        "CLASS_LEGACY_MASTHEAD_TAG",
-        "CLASS_UCP_MASTHEAD_TAG"
-      ].map(function (paramName) {
-        return this.Selectors.NAMES[paramName];
-      }.bind(this)).join(" "),
+      "id": this.Selectors.NAMES.ID_UAA_SPAN,
+      "class": this.Selectors.NAMES.CLASS_MASTHEAD_TAG
     }, new mw.html.Raw(
       mw.html.element("a", {
         "id": this.Selectors.NAMES.ID_UAA_LINK,
@@ -174,6 +208,61 @@
     });
   };
 
+  /**
+   * @description The <code>buildTimeago</code> function is a helper method that
+   * is little more than a UCP-friendly adapation of the standard
+   * <code>$.timeago.inWords</code> function provided by default. For whatever
+   * reason, the UCP version of this function includes a conditional check for
+   * time values and only provides a fuzzy date for values smaller than 30 days.
+   * To work around this, this function provides the same functionality without
+   * the conditional, a method used in LastEdit to likewise circumvent this
+   * restriction.
+   *
+   * @param {string} paramDate The date timestamp to be fuzzyified
+   * @returns {string} Fuzzy date to be displayed as first revision link text
+   */
+  this.buildTimeago = function (paramDate) {
+
+    // Declarations
+    var t, e, r, a, i, n, o;
+
+    // Definitions 1
+    t = new Date().getTime() - $.timeago.parse(paramDate).getTime();
+    e = false;
+
+    // Determine if system clock is not synced (10 minutes from now)
+    $.timeago.settings.allowFuture && (t < 0 && (e = !0), t = Math.abs(t));
+
+    // Definitions 2
+    r = t / 1e3;
+    a = r / 60;
+    i = a / 60;
+    n = i / 24;
+    o = n / 365;
+
+    // Helper function for mw.message fetching
+    function u(t, r) {
+      return mw.message(e
+        ? "timeago-" + t + "-from-now"
+        : "timeago-" + t, r
+      ).text();
+    }
+
+    return (
+      r < 45 && u("second", Math.round(r)) ||
+      r < 90 && u("minute", 1) ||
+      a < 45 && u("minute", Math.round(a)) ||
+      a < 90 && u("hour", 1) ||
+      i < 24 && u("hour", Math.round(i)) ||
+      i < 48 && u("day", 1) ||
+      n < 30 && u("day", Math.floor(n)) ||
+      n < 60 && u("month", 1) ||
+      n < 365 && u("month", Math.floor(n / 30)) ||
+      o < 2 && u("year", 1) ||
+      u("year", Math.floor(o))
+    );
+  };
+
    /**
    * @description The <code>main</code> method is called once the script
    * initialization process handled by <code>init</code> has completed. This
@@ -191,16 +280,13 @@
   this.main = function () {
 
     // Declarations
-    var $helper, $getEssentials, interval, target, userData, date, dateString,
-      dateInfo, formattedDate, tagText, address, tag;
+    var $helper, $getEssentials, interval, target, user, dateString, dateInfo,
+      formattedDate, tagText, address, tag;
 
     // Definitions
     $helper = new $.Deferred();
     interval = null;
-    target = this.Selectors.TARGETS[(this.info.isUCP)
-      ? "UCP_MASTHEAD_TAGS"
-      : "LEGACY_MASTHEAD_TAGS"
-    ];
+    target = this.Selectors.TARGETS.UCP_MASTHEAD_TAGS;
 
     if (this.Utility.DEBUG) {
       window.console.log("target:", target);
@@ -213,9 +299,7 @@
     );
 
     // Continually check for presence of masthead via setInterval
-    if (this.info.isUCP) {
-      interval = window.setInterval($helper.notify, this.Utility.CHECK_RATE);
-    }
+    interval = window.setInterval($helper.notify, this.Utility.CHECK_RATE);
 
     /**
      * @description The helper <code>$.Deferred</code> is pinged via the use of
@@ -257,25 +341,24 @@
       }
 
       // Specific user registration data
-      userData = paramData[0].query.users[0];
+      user = paramData[0].query.users[0];
 
       // Reject malformed data or errors
       if (
         paramData.error ||
-        userData.registration == null ||
-        userData.hasOwnProperty("missing") ||
-        userData.hasOwnProperty("invalid")
+        user.registration == null ||
+        user.hasOwnProperty("missing") ||
+        user.hasOwnProperty("invalid")
       ) {
         return;
       }
 
       if (this.Utility.DEBUG) {
-        window.console.log(userData.registration);
+        window.console.log(user.registration);
       }
 
-      // Date definitions
-      date = new Date(userData.registration);
-      dateString = date.toString();
+      // Date definition
+      dateString = new Date(user.registration).toString();
 
       // Store date partials in object for piecemeal usage
       dateInfo = {
@@ -288,13 +371,15 @@
       formattedDate = dateInfo.dayWeek + ", " + dateInfo.dayCalendar + ", " +
         dateInfo.time;
 
-      /* For whatever reason, $.timeago when invoked on UCP wikis no longer
-       * returns any value apart from "NaN years ago", "a minute ago", or
-       * undefined. Until this issue is resolved (once the function returns a
-       * word-based summary), the UCP user tag will likely display a shortened
-       * version of the formattedDate so the tag isn't rendered too long.
+      /* On UCP wikis, $.timeago no longer works properly for dates beyond 30
+       * days on account of a conditional check that wasn't present on legacy
+       * wikis. To circumvent this and coerce a fuzzy date for dates with values
+       * greater than 30 days, the $.timeago.inWords function has been recreated
+       * here as is.buildTimeago without the aforementioned check.
        */
-      tagText = $.timeago(date) || dateInfo.dayCalendar;
+      tagText = (this.info.config.showFullDate)
+        ? dateInfo.dayCalendar
+        : this.buildTimeago(user.registration);
 
       // Assemble link to formatted JSON data confirming registration
       address = mw.util.wikiScript("api") + "?" + $.param({
@@ -302,7 +387,7 @@
         action: "query",
         list: "users",
         usprop: "registration",
-        ususers: userData.name,
+        ususers: user.name,
       });
 
       // Build and log custom tag
@@ -355,17 +440,11 @@
     // Object for storage of informational data
     this.info = {};
 
-    // Cache globals
-    this.globals = Object.freeze(mw.config.get(this.Dependencies.GLOBALS));
+    // Validate any user config
+    this.info.config = this.validateConfig(window.customUserAccountAge || {});
 
-    // Determine MW version
-    this.info.isUCP = window.parseFloat(this.globals.wgVersion) > 1.19;
-
-    // Either username if user page (UCP et al.) or empty string if no masthead
-    this.info.userName = (
-      this.globals.profileUserName ||
-      $(this.Selectors.TARGETS.LEGACY_MASTHEAD_HEADER).text()
-    );
+    // Username if user page (UCP et al.)
+    this.info.userName = mw.config.get("profileUserName");
 
     // Determine if masthead exists (indicates presence of userpage)
     this.info.hasMasthead = !!this.info.userName.length;
@@ -397,7 +476,7 @@
   };
 
   // Coordinate loading of all relevant dependencies
-  $.when(mw.loader.using(this.Dependencies.MODULES), $.ready)
+  $.when(mw.loader.using(this.Modules), $.ready)
     .done(this.init.bind(this))
     .fail(window.console.error.bind(null, this.Utility.SCRIPT));
 

@@ -7,7 +7,7 @@ if (($('#ca-addsection').length > 0) && (($('.editButtons').length > 0))
 $('.editCheckboxes').css('margin-bottom','5px');
 var addSigTooltip = 
     'Click the end of your comment, then click this link to add your signature.';
-var addSigText = '<div style="border:1px #ccc solid; width:95%; padding:10px;"> ' +
+var addSigText = '<div style="border:1px var(--theme-border-color) solid; width:95%; padding:10px;"> ' +
     'When you have finished typing your comment, ' + 
     'please place the cursor at the end of your comment and then ' +
     '<a style="font-weight:bold;" href="#ggg" class="addSig" title="' + addSigTooltip + '">' +

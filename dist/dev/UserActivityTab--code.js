@@ -43,12 +43,10 @@
       value: Object.freeze({
         NAMES: Object.freeze({
           DATA_ID_LIST: "user-activity",
-          CLASS_UCP_USERPAGE_TAB: "user-profile-navigation__link false",
+          CLASS_USERPAGE_TAB: "user-profile-navigation__link false",
         }),
         TARGETS: Object.freeze({
-          LEGACY_MASTHEAD_HEADER: ".masthead-info h1",
-          LEGACY_MASTHEAD_TABS: ".WikiaUserPagesHeader ul.tabs",
-          UCP_MASTHEAD_TABS: ".user-profile-navigation",
+          MASTHEAD_TABS: ".user-profile-navigation",
         }),
       }),
     },
@@ -83,8 +81,7 @@
         GLOBALS: Object.freeze([
           "profileUserName",
           "wgUserLanguage",
-          "wgUserName",
-          "wgVersion",
+          "wgUserName"
         ]),
         MODULES: Object.freeze([
           "mediawiki.api",
@@ -134,7 +131,7 @@
    */
   this.assembleTab = function (paramText) {
     return mw.html.element("li", {
-      "class": this.Selectors.NAMES.CLASS_UCP_USERPAGE_TAB,
+      "class": this.Selectors.NAMES.CLASS_USERPAGE_TAB,
       "data-id": this.Selectors.NAMES.DATA_ID_LIST,
     }, new mw.html.Raw(
       mw.html.element("a", {
@@ -159,46 +156,11 @@
    * @returns {object} - Resolved/rejected <code>$.Deferred</code>
    */
   this.getMessage = function (paramMessage) {
-
-    // Declarations
-    var api, config;
-
-    // Definitions
-    api = new mw.Api();
-    config = [
-      { // Legacy: query via allmessages
-        method: "get",
-        args: [
-          {
-            action: "query",
-            meta: "allmessages",
-            ammessages: paramMessage,
-            amlang: this.globals.wgUserLanguage
-          }
-        ],
-        handler: function (paramData) {
-          return paramData.query.allmessages[0]["*"];
-        }
-      },
-      { // UCP: use shorthand getMessages
-        method: "getMessages",
-        args: [
-          [paramMessage],
-          {
-            amlang: this.globals.wgUserLanguage,
-          }
-        ],
-        handler: function (paramData) {
-          return paramData[paramMessage];
-        }.bind(this)
-      }
-    ][+this.info.isUCP];
-
-    if (this.Utility.DEBUG) {
-      window.console.dir(config);
-    }
-
-    return api[config.method].apply(api, config.args).then(config.handler);
+    return new mw.Api().getMessages([paramMessage], {
+      amlang: this.globals.wgUserLanguage,
+    }).then(function (paramData) {
+      return paramData[paramMessage];
+    }.bind(this));
   };
 
   /**
@@ -222,10 +184,7 @@
 
     // Definitions
     $helper = new $.Deferred();
-    target = this.Selectors.TARGETS[(this.info.isUCP)
-      ? "UCP_MASTHEAD_TABS"
-      : "LEGACY_MASTHEAD_TABS"
-    ];
+    target = this.Selectors.TARGETS.MASTHEAD_TABS;
 
     if (this.Utility.DEBUG) {
       window.console.log("target:", target);
@@ -238,9 +197,7 @@
     );
 
     // Continually check for presence of masthead via setInterval
-    if (this.info.isUCP) {
-      interval = window.setInterval($helper.notify, this.Utility.CHECK_RATE);
-    }
+    interval = window.setInterval($helper.notify, this.Utility.CHECK_RATE);
 
     /**
      * @description The helper <code>$.Deferred</code> is pinged via the use of
@@ -323,14 +280,8 @@
     // Cache globals
     this.globals = Object.freeze(mw.config.get(this.Dependencies.GLOBALS));
 
-    // Determine MW version
-    this.info.isUCP = window.parseFloat(this.globals.wgVersion) > 1.19;
-
     // Either username if user page (UCP et al.) or empty string if no masthead
-    this.info.userName = (
-      this.globals.profileUserName ||
-      $(this.Selectors.TARGETS.LEGACY_MASTHEAD_HEADER).text()
-    );
+    this.info.userName = this.globals.profileUserName;
 
     // Determine if masthead exists (indicates presence of userpage)
     this.info.hasMasthead = !!this.info.userName.length;

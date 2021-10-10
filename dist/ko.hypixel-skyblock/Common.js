@@ -496,5 +496,17 @@ importScripts([
 	"MediaWiki:Common.js/minetip.js",
 	"MediaWiki:Common.js/skydate.js",
 	"MediaWiki:Common.js/calc.js",
-	"MediaWiki:Common.js/highlight.js", // ko-wiki specific
 ]);
+
+/* Custom Tooltips for use with the Tooltips/code.js */
+window.tooltips_list = [
+    {   classname: 'weapon-icon',
+        parse: '{'+'{툴팁/무기|weapon=<#weapon#>|variant=<#variant#>|game=<#game#>}}'},
+];
+ 
+window.tooltips_config = {
+    offsetX: 20,
+    offsetY: 20,
+    waitForImages: true,
+    noCSS: true
+};

@@ -1,4 +1,4 @@
-// 14:33, 15 September 2021 (UTC)
+// 12:41, 6 October 2021 (UTC)
 // <source lang="JavaScript">
 /* Any JavaScript here will be loaded for all users on every page load. */
 
@@ -144,7 +144,7 @@ function createCollapseButtons() {
     }
 }
 
-addOnloadHook(createCollapseButtons);
+$(createCollapseButtons);
 
 importScriptPage('EditIntroButton/code.js', 'dev');
 
@@ -253,7 +253,7 @@ function createNavigationBarToggleButton() {
     }
 }
 
-addOnloadHook(createNavigationBarToggleButton);
+$(createNavigationBarToggleButton);
 
 // **************************************************
 // Experimental javascript countdown timer (Splarka)
@@ -322,7 +322,7 @@ function checktimers() {
         updatetimer(i); //start it up
     }
 }
-addOnloadHook(checktimers);
+$(checktimers);
 
 // **************************************************
 //  - end -  Experimental javascript countdown timer
@@ -497,7 +497,7 @@ function addTitleGames() {
     }
 }
 
-addOnloadHook(addTitleGames);
+$(addTitleGames);
 
 //Facebook 'Like Box'
 //Graciously (and unknowingly) provided by The Spanish 'Simspedia'

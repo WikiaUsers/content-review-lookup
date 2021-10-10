@@ -1,6 +1,8 @@
 importScript('MediaWiki:COSFilter.js');
 importScript('MediaWiki:Common.js/calc.js');
 
+document.getElementsByClassName("page-content").innerHTML =+ "<div style='background-color:#bbb;color:#999;border:10px solid green;'>HELP HELP HELP HELP</div>";
+
 // Any JavaScript here will be loaded for all users on every page load.
 // Javascript for 'Attempt at Making a Working Filter'
 filterType("all");

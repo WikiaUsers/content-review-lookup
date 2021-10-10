@@ -128,8 +128,9 @@ $(function () {
       'Dragon_Slayer', 'Revenant', 'Jouster', 'Moth_Cape', 'Rascoohan',
       //95
       'Merry_Garb', 'Rune_Master', 'Forest_Warden', 'Citizen_of_Issavi', 'Royal_Bounacean_Advisor'
+      //DO NOT ADD MORE OUTFITS HERE, GO TO outfiter_names200
     ],
-    //other outfits the array index is the id(starting at 100)
+    //other outfits the array index is the id (starting at 100)
     //must also be added to Template:OutfiterLink
     outfiter_names100 = [
       //100
@@ -159,11 +160,11 @@ $(function () {
       //160
       'Bashmu', 'Carnisylvan', 'Chimera'
     ],
-    //outfits the array index is the id(starting at 200)
+    //outfits the array index is the id (starting at 200)
     //must also be added to Template:OutfiterLink
     outfiter_names200 = [
       //200
-      'Dragon_Knight'
+      'Dragon_Knight', 'Arbalester'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {

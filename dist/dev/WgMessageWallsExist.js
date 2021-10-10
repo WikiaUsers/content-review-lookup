@@ -43,53 +43,21 @@ mw.loader.using([ 'mediawiki.util', 'mediawiki.user' ]).then(function() {
     }
     
     mw.config.set('wgMessageWallsExist', new Promise(function (resolve, reject) {
-        if (mw.config.get('wgVersion') === '1.19.24') {
-            // Anons do not have access to WikiFeaturesController.
-            try {
-                if (mw.user.anonymous()) {
-                    useCssSelectorToCheckForWall(resolve, reject);
-                    return;
-                }
-            } catch(e) {
-                reject(e)
-                console.error(e)
-                
-                return;
+        $.get(mw.util.wikiScript('wikia'), {
+            controller: 'UserProfile',
+            method: 'getUserData',
+            format: 'json',
+            // We assume User:Fandom will continue to exist for some time.
+            userId: 4403388
+        }).done(function (d) {
+            if (d && d.userData && d.userData.messageWallUrl) {
+                resolve();
+            } else {
+                reject();
             }
-            $.nirvana
-                .getJson('WikiFeaturesSpecialController', 'index')
-                .done(function (d) {
-                    var disabled =
-                        d.features.filter(function (t) {
-                            return t.name === 'wgEnableWallExt' && t.enabled;
-                        }).length === 0;
-    
-                    if (disabled) {
-                        reject();
-                    } else {
-                        resolve();
-                    }
-                })
-                .fail(function () {
-                    useCssSelectorToCheckForWall(resolve, reject);
-                });
-        } else {
-            $.get(mw.util.wikiScript('wikia'), {
-                controller: 'UserProfile',
-                method: 'getUserData',
-                format: 'json',
-                // We assume User:Fandom will continue to exist for some time.
-                userId: 4403388
-            }).done(function (d) {
-                if (d && d.userData && d.userData.messageWallUrl) {
-                    resolve();
-                } else {
-                    reject();
-                }
-            }).fail(function () {
-                useCssSelectorToCheckForWall(resolve, reject);
-            });
-        }
+        }).fail(function () {
+            useCssSelectorToCheckForWall(resolve, reject);
+        });
     }));
 
     mw.hook('dev.enablewallext')

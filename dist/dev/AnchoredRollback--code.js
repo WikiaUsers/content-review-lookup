@@ -12,8 +12,7 @@
     
     var config = mw.config.get([
             'stylepath',
-            'wgUserGroups',
-            'wgVersion'
+            'wgUserGroups'
         ]),
         isBot = config.wgUserGroups.indexOf('bot') !== -1 ||
                 window.anchoredRollbackBot,
@@ -37,22 +36,14 @@
             href += '&bot=1';
         }
 
-        if (config.wgVersion === '1.19.24') {
-            $this.html(
-                $('<img>', {
-                    src: config.stylepath + '/common/images/ajax.gif'
-                })
-            );
-        } else {
-            $this.addClass('mw-ajax-loader');
-        }
+        $this.addClass('mw-ajax-loader');
 
         $.ajax(href.toString(), {
             dataType: 'text'
         }).done(function() {
             $this
                 .css({
-                    'color': 'gray',
+                    'color': 'var(--theme-page-text-mix-color, gray)',
                     'text-decoration': 'line-through'
                 })
                 .removeAttr('href title')

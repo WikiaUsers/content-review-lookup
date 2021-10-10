@@ -205,8 +205,7 @@
         NAMES: Object.freeze({
           STANDARD: Object.freeze([
             "Common",
-            "Fandomdesktop",
-            "Wikia"
+            "Fandomdesktop"
           ]),
           CUSTOM: Object.freeze([
             "Global",
@@ -245,8 +244,7 @@
       configurable: false,
       value: Object.freeze([
         "wgFormattedNamespaces",
-        "wgLoadScript",
-        "wgVersion",
+        "wgLoadScript"
       ]),
     },
 
@@ -288,8 +286,8 @@
      * object is used to house assorted values of various data types that don't
      * fit well into other pseudo-enums. It contains the I18n-js language cache
      * version <code>number</code>, a <code>string</code> constant denoting the
-     * name of the script, and another <code>string</code> for the name of the
-     * <code>mw.hook</code> event.
+     * name of the script, another <code>string</code> for the name of the
+     * <code>mw.hook</code> event, and a Boolean flag for debug mode.
      *
      * @readonly
      * @enum {string|boolean|number}
@@ -302,6 +300,7 @@
         SCRIPT: "CodeQuickLinks",
         HOOK_NAME: "dev.cql",
         CACHE_VERSION: 1,
+        DEBUG: false
       }),
     },
   });
@@ -336,29 +335,6 @@
   this.isThisAn = function (paramType, paramTarget) {
     return Object.prototype.toString.call(paramTarget) === "[object " +
       this.capitalize.call(this, paramType.toLowerCase()) + "]";
-  };
-
-  /**
-   * @description This helper function is used to automatically generate an
-   * appropriate contrived ResourceLoader module name for use in loading scripts
-   * via <code>mw.loader.implement</code> on UCP wikis. The use of this function
-   * replaces the previous approach that saw the inclusion of hardcoded module
-   * names as properties of the relevant dependency <code>object</code>s stored
-   * in <code>this.Dependencies.ARTICLES</code>. When passed an argument
-   * formatted as <code>u:dev:MediaWiki:Test/code.js</code>, the function will
-   * extract the subdomain name ("dev") and join it to the name of the script
-   * ("Test") with the article type ("script") as <code>script.dev.Test</code>.
-   *
-   * @param {string} paramType - Either "script" or "style"
-   * @param {string} paramPage - Article formatted as "u:dev:MediaWiki:Test.js"
-   * @returns {string} - ResourceLoader module name formatted "script.dev.Test"
-   */
-  this.generateModuleName = function (paramType, paramPage) {
-    return $.merge([paramType], paramPage.split(/[\/.]+/)[0].split(":").filter(
-      function (paramItem) {
-        return !paramItem.match(/^u$|^mediawiki$/gi);
-      }
-    )).join(".");
   };
 
   /**
@@ -726,6 +702,9 @@
     // Add i18n data as local property
     (this.i18n = paramLang).useContentLang();
 
+    // Fetch, define, and cache globals
+    this.globals = Object.freeze(mw.config.get(this.Globals));
+
     // Expose public methods for external debugging
     Object.defineProperty(module, "exports", {
       enumerable: true,
@@ -741,32 +720,16 @@
   };
 
   /**
-   * @description Originally a pair of functions called <code>init.load</code>
-   * and <code>init.preload</code>, this function is used to load all required
-   * external dependencies from Dev and attach <code>mw.hook</code> listeners.
-   * Once all scripts have been loaded and their events fired, the I18n-js
-   * method <code>loadMessages</code> is invoked, the <code>$.Deferred</code>
-   * promise resolved, and the resultant i18n data passed for subsequent usage
-   * in <code>init.main</code>.
-   * <br />
-   * <br />
-   * As an improvement to the previous manner of loading scripts, this function
-   * first checks to see if the relevant <code>window.dev</code> property of
-   * each script already exists, thus signaling that the script has already been
-   * loaded elsewhere. In such cases, this function will skip that import and
-   * move on to the next rather than blindly reimport the script again as it
-   * did in the previous version.
-   * <br />
-   * <br />
-   * As of the 1st of July update, an extendable framework for the loading of
-   * ResourceLoader modules and Dev external dependencies (scripts and
-   * stylesheets alike) on both UCP wikis and legacy 1.19 wikis has been put
-   * into place, pending UCPification of the aforementioned Dev scripts or the
-   * importation of legacy features to the UCP codebase. To handle the lack of
-   * async callbacks in <code>mw.loader.load</code>, this framework invokes
-   * <code>mw.loader.implement</code> to create temporary, local RL modules that
-   * can then be asynchronously loaded via <code>mw.loader.using</code> and
-   * handled by a dedicated callback.
+   * @description Over its lifetime, the <code>load</code> function has
+   * undergone a number of changes and evolutions to account for the transition
+   * from Wikia's fork of MediaWiki 1.19 to the current MediaWiki 1.33 UCP
+   * platform. During the transition period in which <code>importArticles</code>
+   * only worked for legacy wikis, the function made use of a fallback approach
+   * that created new ResourceLoader modules from external dependencies,
+   * permitting an alternate means of loading required resources. However, with
+   * the reinstitution of <code>importArticles</code> functionality to the UCP,
+   * this approach was scrapped and a simpler implementation employed instead to
+   * load Dev resources via several <code>importArticles</code> calls.
    *
    * @param {object} paramDeferred - <code>$.Deferred</code> instance
    * @returns {void}
@@ -774,163 +737,99 @@
   this.load = function (paramDeferred) {
 
     // Declarations
-    var debug, articles, counter, numArticles, $loadNext, current, isLoaded,
-      article, server, params, resource, moduleName;
+    var articles, numArticles, unloadedScripts, isLoaded;
 
     // Definitions
-    debug = false;
-    counter = 0;
     articles = this.Dependencies.ARTICLES;
     numArticles = articles.length;
-    $loadNext = new $.Deferred();
 
     /**
-     * @description The passed <code>$.Deferred</code> argument instance called
-     * <code>paramDeferred</code> is variously notified during the loading of
-     * dependencies by the <code>$loadNext</code> promise whenever a dependency
-     * has been successfully imported by <code>window.importArticles</code> or
-     * <code>mw.loader.using</code>. The <code>progress</code> handler checks if
-     * all dependencies have been successfully loaded for use before loading the
-     * latest version of cached <code>i18n</code> messages and resolving itself
-     * to pass program execution on to <code>init.main</code>.
+     * @description To collate a listing of unloaded scripts to import en bulk,
+     * three chained higher-order looping functions are called in conjunction.
+     * In addition to assembly a list of unloaded scripts with hooks, these
+     * function callbacks likewise address and handle cases of already-loaded
+     * scripts with hooks, unloaded scripts without hooks, and CSS stylesheets.
+     * The higher-order functions called are a pair of
+     * <code>Array.prototype.filter</code> invocations and a final
+     * <code>Array.prototype.map</code> call.
      */
-    paramDeferred.notify().progress(function () {
-      if (counter === numArticles) {
-        // Resolve helper $.Deferred instance
-        $loadNext.resolve();
-        if (debug) {
-          window.console.log("$loadNext", $loadNext.state());
+    unloadedScripts = articles.filter(function (current) {
+
+      // Determine if the script has been loaded
+      isLoaded = Boolean(
+        (current.DEV && window.dev.hasOwnProperty(current.DEV)) ||
+        (current.WINDOW && window.hasOwnProperty(current.WINDOW))
+      );
+
+      // If script has been loaded and has a dedicated hook
+      if (isLoaded && current.HOOK) {
+        if (this.Utility.DEBUG) {
+          window.console.log("isLoaded", current.ARTICLE);
         }
 
-        // Load latest version of cached i18n messages
+        // Use progress as handler
+        // (coerce to task from microtask w/ setTimeout of 0)
+        mw.hook(current.HOOK).add(window.setTimeout.bind(null,
+          paramDeferred.notify.bind(null, current.ARTICLE)
+        ));
+      }
+
+      // Pass along unloaded scripts
+      return !isLoaded;
+    }.bind(this)).filter(function (current) {
+
+      // Unloaded scripts with dedicated hooks are passed along to map
+      if (current.TYPE === "script" && current.HOOK) {
+
+        // Use progress as handler
+        // (coerce to task from microtask w/ setTimeout of 0)
+        return mw.hook(current.HOOK).add(window.setTimeout.bind(null,
+          paramDeferred.notify.bind(null, current.ARTICLE)
+        ));
+      }
+
+      // Unloaded scripts w/o hooks and stylesheets imported here
+      window.importArticle({
+        type: current.TYPE,
+        article: current.ARTICLE
+      }).then(paramDeferred.notify.bind(null, current.ARTICLE));
+    }.bind(this)).map(function (current) {
+      return current.ARTICLE;
+    });
+
+    // Unloaded scripts with hooks are imported en bulk here
+    if (unloadedScripts.length) {
+      if (this.Utility.DEBUG) {
+        window.console.log("unloadedScripts", unloadedScripts);
+      }
+
+      window.importArticles({
+        type: "script",
+        articles: unloadedScripts
+      });
+    }
+
+    /**
+     * @description The <code>$.Deferred.progress</code> handler is responsible
+     * for determining whether all required external Dev dependencies have been
+     * loaded, thus allowing for the resolution of the <code>$.Deferred</code>
+     * and permitting execution to continue to <code>this.init</code>.
+     */
+    paramDeferred.progress(function (paramArticle) {
+      if (this.Utility.DEBUG) {
+        window.console.log(paramArticle, numArticles);
+      }
+
+      if (--numArticles === 0) {
         window.dev.i18n.loadMessages(this.Utility.SCRIPT, {
           cacheVersion: this.Utility.CACHE_VERSION,
         }).then(paramDeferred.resolve).fail(paramDeferred.reject);
-      } else {
-        if (debug) {
-          window.console.log((counter + 1) + "/" + numArticles);
-        }
-
-        // Load next
-        $loadNext.notify(counter++);
       }
     }.bind(this));
-
-    /**
-    * @description The <code>$loadNext</code> helper <code>$.Deferred</code>
-    * instance is used to load each dependency using methods appropriate to the
-    * version of MediaWiki detected on the wiki. While the standard
-    * <code>importArticle</code> method is used for legacy 1.19 wikis, a local
-    * ResourceLoader module is defined via <code>mw.loader.implement</code> and
-    * loaded via <code>mw.loader.using</code> to sidestep the fact that the
-    * <code>mw.loader.load</code> method traditionally used to load dependencies
-    * has no callback or promise. Once all imports are loaded, the handler
-    * applies a callback to any extant <code>mw.hook</code> events and notifies
-    * the main <code>paramDeferred.progress</code> handler to check if all
-    * dependencies have been loaded.
-    */
-    $loadNext.progress(function (paramCounter) {
-
-      // Selected dependency to load next
-      current = articles[paramCounter];
-
-      // If window has property related to dependency indicating load status
-      isLoaded =
-        (current.DEV && window.dev.hasOwnProperty(current.DEV)) ||
-        (current.WINDOW && window.hasOwnProperty(current.WINDOW));
-
-      // Add hook if loaded; dependencies w/o hooks must always be loaded
-      if (isLoaded && current.HOOK) {
-        if (debug) {
-          window.console.log("isLoaded", current.ARTICLE);
-        }
-        return mw.hook(current.HOOK).add(paramDeferred.notify);
-      }
-
-      // Use standard importArticle approach if legacy wiki
-      if (!this.flags.isUCP) {
-        article = window.importArticle({
-          type: current.TYPE,
-          article: current.ARTICLE,
-        });
-
-        // Log for local debugging (problem spot)
-        if (debug) {
-          window.console.log("importArticle", article);
-        }
-
-        // Styles won't have hooks; notify status with load event if styles
-        return (current.HOOK)
-          ? mw.hook(current.HOOK).add(paramDeferred.notify)
-          : $(article).on("load", paramDeferred.notify);
-
-      }
-
-      // Build url with REST params
-      server = "https://dev.fandom.com";
-      params = "?" + $.param({
-        mode: "articles",
-        only: current.TYPE + "s",
-        articles: current.ARTICLE,
-      });
-      resource = server + this.globals.wgLoadScript + params;
-      moduleName = this.generateModuleName(current.TYPE, current.ARTICLE);
-
-      // Ensure wellformed module name
-      if (debug) {
-        window.console.log(moduleName);
-      }
-
-      // Define local modules to sidestep mw.loader.load's lack of callback
-      try {
-        mw.loader.implement.apply(null, $.merge([moduleName],
-          (current.TYPE === "script")
-            ? [[resource]]
-            : [null, {"url": {"all": [resource]}}]
-        ));
-      } catch (paramError) {
-        if (debug) {
-          window.console.error(paramError);
-        }
-      }
-
-      // Load script/stylesheet once temporary module has been defined
-      mw.loader.using(moduleName)
-        .then((current.HOOK)
-          ? mw.hook(current.HOOK).add(paramDeferred.notify)
-          : paramDeferred.notify)
-        .fail(paramDeferred.reject);
-    }.bind(this));
-  };
-
-  /**
-   * @description This particular loading function is used simply to calculate
-   * and inject some pre-load <code>init</code> object properties prior to the
-   * loading of required external dependencies or ResourceLoader modules. As the
-   * loading process depends on this function's set informational properies, the
-   * function is called prior to the initial <code>init.load</code> invocation
-   * at the start of the script's execution and returns a reference to the
-   * <code>init</code> object (presumably) for use in subsequent method chaining
-   * purposes.
-   *
-   * @returns {object} init - Reference to <code>init</code> object for chaining
-   */
-  this.preload = function () {
-
-    // Fetch, define, and cache globals for use in init and MassEdit instance
-    this.globals = Object.freeze(mw.config.get(this.Globals));
-
-    // Object for informational booleans (extended in MassEdit init method)
-    this.flags = {
-      isUCP: window.parseFloat(this.globals.wgVersion) > 1.19,
-    };
-
-    // Return reference for method chaining purposes
-    return this;
   };
 
   $.when(
-    mw.loader.using((this.preload.call(this)).Dependencies.MODULES),
+    mw.loader.using(this.Dependencies.MODULES),
     new $.Deferred(this.load.bind(this)).promise())
   .then(this.init.bind(this))
   .fail(window.console.error);

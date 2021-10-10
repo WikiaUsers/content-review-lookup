@@ -854,3 +854,6 @@ $(function(){
 		}
 	});
 });
+
+/* Bypassing license check on multiple upload */
+mw.config.set('UMFBypassLicenseCheck',true);

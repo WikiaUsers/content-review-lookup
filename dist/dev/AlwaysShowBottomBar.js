@@ -3,9 +3,6 @@
  * @author Noreplyz
  */
 ;(function() {
-    var isUCP = mw.config.get("wgVersion") !== '1.19.24';
-    if (!isUCP) return;
-    
     var $bar = document.getElementById('WikiaBarWrapper');
     if (!$bar.classList.contains('hidden')) return;
 
@@ -23,7 +20,7 @@
         mw.storage.set(LOCAL_STORAGE_DATA_KEY, 'shown');
 
         // Set the bar to show all the time, on this wiki on all devices
-        fetch('/wikia.php?controller=WikiaBar&method=changeWikiaBarState&format=json', {
+        fetch(mw.util.wikiScript('wikia') + '?controller=WikiaBar&method=changeWikiaBarState&format=json', {
             method: 'POST',
             credentials: 'include',
             headers: {

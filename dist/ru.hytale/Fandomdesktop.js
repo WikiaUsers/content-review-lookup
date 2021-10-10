@@ -5,17 +5,12 @@
 * Для кода только основной мобильной версии вики (FandomMobile) см. MediaWiki:Mobile.js.
 **/
 
-mw.loader.load('https://hytale.fandom.com/ru/index.php?title=MediaWiki:Global.js&action=raw&ctype=text/javascript');
-
 
 ( function() {
 'use strict';
 
-
-
 /**
 * СВОРАЧИВАЕМЫЕ РАЗДЕЛЫ
-* Позволяет созидать скрываемые разделы.
 **/
 
 var hasClass = (function () {

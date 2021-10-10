@@ -19,7 +19,6 @@ window.MessageWallUserTags = {
         //Admins
         'DiscordResistance': 'Administrator',
         'AmyD1': 'Administrator',
-        'AppleNoo69': 'Administrator',
         'Lightning789': 'Administrator',
         //Mods
         'ItsYoBoyJorde': 'Moderator',
@@ -38,6 +37,7 @@ window.MessageWallUserTags = {
         'StormDragon456': 'Former Staff',
         'Evita128': 'Former Staff',
         'Jdoggie14': 'Former Staff',
+        'AppleNoo69': 'Former Staff',
         //Wiki representative
         'Sitb': 'Wiki Representative'
         

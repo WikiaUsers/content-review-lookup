@@ -1,3 +1,7 @@
-/* This imports the latest version of Ajax sysop-AjaxRollback from Terraria Wiki: https://terraria.gamepedia.com/MediaWiki:Gadget-Ajax sysop-AjaxRollback.js */
+/* This imports the latest version of Ajax_sysop-AjaxRollback from the Terraria Wiki. */
 
-mw.loader.load('https://terraria.gamepedia.com/index.php?title=MediaWiki:Gadget-Ajax sysop-AjaxRollback.js&action=raw&ctype=text/javascript');
+// Import CSS (before JS to prevent CSS flash): https://terraria.fandom.com/MediaWiki:Ajax_sysop-AjaxRollback.css
+$('head').first().append('<link rel="stylesheet" type="text/css" href="https://terraria.fandom.com/index.php?title=MediaWiki:Gadget-Ajax_sysop-AjaxRollback.css&action=raw&ctype=text/css" />');
+
+// Import JS: https://terraria.fandom.com/MediaWiki:Gadget-Ajax_sysop-AjaxRollback.js
+mw.loader.load('https://terraria.fandom.com/index.php?title=MediaWiki:Gadget-Ajax_sysop-AjaxRollback.js&action=raw&ctype=text/javascript');

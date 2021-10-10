@@ -5,3 +5,5 @@ window.MessageBlock = {
 };
 window.lockOldComments.limit = 30;
 window.lockOldComments.addNoteAbove = true;
+
+TBL_GROUP = "roblox-en";

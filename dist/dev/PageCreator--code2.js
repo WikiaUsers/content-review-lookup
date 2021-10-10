@@ -147,8 +147,7 @@
         "wgFormattedNamespaces",
         "wgLoadScript",
         "wgNamespaceNumber",
-        "wgPageName",
-        "wgVersion",
+        "wgPageName"
       ]),
     },
 
@@ -179,6 +178,11 @@
           PROPERTY_NAME: "namespaces",
           LEGACY_NAME: "pageCreatorNamespaces",
           DEFAULT_VALUE: Object.freeze([0, 4, 8, 10, 14]),
+        }),
+        Object.freeze({
+          PROPERTY_NAME: "useUsernameAndLinks",
+          LEGACY_NAME: null,
+          DEFAULT_VALUE: true,
         }),
         Object.freeze({
           PROPERTY_NAME: "useAvatar",
@@ -228,7 +232,7 @@
         SCRIPT: "PageCreator",
         HOOK_NAME: "PageCreator.render",
         DEBUG: false,
-        CACHE_VERSION: 1,
+        CACHE_VERSION: 2,
       }),
     },
   });
@@ -292,29 +296,6 @@
   };
 
   /**
-   * @description This helper function is used to automatically generate an
-   * appropriate contrived ResourceLoader module name for use in loading scripts
-   * via <code>mw.loader.implement</code> on UCP wikis. The use of this function
-   * replaces the previous approach that saw the inclusion of hardcoded module
-   * names as properties of the relevant dependency <code>object</code>s stored
-   * in <code>this.Dependencies.ARTICLES</code>. When passed an argument
-   * formatted as <code>u:dev:MediaWiki:Test/code.js</code>, the function will
-   * extract the subdomain name ("dev") and join it to the name of the script
-   * ("Test") with the article type ("script") as <code>script.dev.Test</code>.
-   *
-   * @param {string} paramType - Either "script" or "style"
-   * @param {string} paramPage - Article formatted as "u:dev:MediaWiki:Test.js"
-   * @returns {string} - ResourceLoader module name formatted "script.dev.Test"
-   */
-  this.generateModuleName = function (paramType, paramPage) {
-    return $.merge([paramType], paramPage.split(/[\/.]+/)[0].split(":").filter(
-      function (paramItem) {
-        return !paramItem.match(/^u$|^mediawiki$/gi);
-      }
-    )).join(".");
-  };
-
-  /**
    * @description This helper method is used to assemble a wellformed user
    * config <code>object</code> containing properties related to the display of
    * certain functionality. The method validates any inputted user config
@@ -328,6 +309,7 @@
    * <pre>
    * window.pageCreatorConfig = {
    *   namespaces: [0, 4, 8, 10, 14],
+   *   useUsernameAndLinks: false,
    *   useAvatar: false,
    *   useTimestamp: false,
    *   useUTC: false,
@@ -549,6 +531,61 @@
   };
 
   /**
+   * @description The <code>buildTimeago</code> function is a helper method that
+   * is little more than a UCP-friendly adapation of the standard
+   * <code>$.timeago.inWords</code> function provided by default. For whatever
+   * reason, the UCP version of this function includes a conditional check for
+   * time values and only provides a fuzzy date for values smaller than 30 days.
+   * To work around this, this function provides the same functionality without
+   * the conditional, a method used in LastEdit to likewise circumvent this
+   * restriction.
+   *
+   * @param {string} paramDate The date timestamp to be fuzzyified
+   * @returns {string} Fuzzy date to be displayed as first revision link text
+   */
+  this.buildTimeago = function (paramDate) {
+
+    // Declarations
+    var t, e, r, a, i, n, o;
+
+    // Definitions 1
+    t = new Date().getTime() - $.timeago.parse(paramDate).getTime();
+    e = false;
+
+    // Determine if system clock is not synced (10 minutes from now)
+    $.timeago.settings.allowFuture && (t < 0 && (e = !0), t = Math.abs(t));
+
+    // Definitions 2
+    r = t / 1e3;
+    a = r / 60;
+    i = a / 60;
+    n = i / 24;
+    o = n / 365;
+
+    // Helper function for mw.message fetching
+    function u(t, r) {
+      return mw.message(e
+        ? "timeago-" + t + "-from-now"
+        : "timeago-" + t, r
+      ).text();
+    }
+
+    return (
+      r < 45 && u("second", Math.round(r)) ||
+      r < 90 && u("minute", 1) ||
+      a < 45 && u("minute", Math.round(a)) ||
+      a < 90 && u("hour", 1) ||
+      i < 24 && u("hour", Math.round(i)) ||
+      i < 48 && u("day", 1) ||
+      n < 30 && u("day", Math.floor(n)) ||
+      n < 60 && u("month", 1) ||
+      n < 365 && u("month", Math.floor(n / 30)) ||
+      o < 2 && u("year", 1) ||
+      u("year", Math.floor(o))
+    );
+  };
+
+  /**
    * @description This builder function handles the assembly of the optional
    * timestamp link, a module of the infobar framework that displays either a
    * <code>$.timeago</code>-generated estimation of the time since the page's
@@ -558,6 +595,14 @@
    * when invoked with a well-formed timestamp. Regardless of which version is
    * displayed, the timestamp will also serve as a link to the initial revision
    * of the page.
+   * <br />
+   * <br />
+   * As of the 07/10/2021 update, the <code>$.timeago</code> issue has been
+   * worked around via the helper function <code>this.buildTimeago</code>, which
+   * is little more than a modified version of the standard
+   * <code>$.timeago.inWords</code> function provided by default that removes
+   * the inexplicable restriction preventing values over 30 days from being
+   * rendered as fuzzy dates.
    *
    * @param {string} paramDate - Formatted timestamp for display
    * @param {string} paramRevision - Initial revision id/url
@@ -568,15 +613,15 @@
     // Declarations
     var shouldUseTimeago, linkText, revisionLink;
 
-    // $.timeago will not work as intended on UCP wikis
-    shouldUseTimeago = (this.config.useTimeago && !this.info.isUCP);
+    // Repaired $.timeago may now be used on UCP wikis
+    shouldUseTimeago = this.config.useTimeago;
 
     if (this.Utility.DEBUG) {
       window.console.log("shouldUseTimeago:", shouldUseTimeago);
     }
 
     // Definitions
-    linkText = (shouldUseTimeago) ? $.timeago(paramDate) : paramDate;
+    linkText = (shouldUseTimeago) ? this.buildTimeago(paramDate) : paramDate;
     revisionLink = this.assembleElement(
       ["a", {
         id: this.Selectors.ID_PAGECREATOR_TIMESTAMP,
@@ -620,24 +665,27 @@
         id: this.Selectors.ID_PAGECREATOR_WRAPPER,
         class: this.Selectors.CLASS_PAGECREATOR_WRAPPER,
       },
-        this.i18n.msg("main").escape().replace(/\$1/g,
-          ((paramArgs.hasOwnProperty("avatar"))
-            ? paramArgs.avatar + "&nbsp;"
-            : "") +
-          this.assembleElement(
-            ["a", {
-              id: this.Selectors.ID_PAGECREATOR_USERPAGE,
-              class: this.Selectors.CLASS_PAGECREATOR_LINK,
-              href: mw.util.getUrl(this.globals.wgFormattedNamespaces[2] +
-                ":" + paramUser),
-              title: paramUser,
-            },
-              paramUser
-            ]
-          )
+        ((paramArgs.links)
+          ? this.i18n.msg("main").escape().replace(/\$1/g,
+              ((paramArgs.hasOwnProperty("avatar"))
+                ? paramArgs.avatar + "&nbsp;"
+                : "") +
+              this.assembleElement(
+                ["a", {
+                  id: this.Selectors.ID_PAGECREATOR_USERPAGE,
+                  class: this.Selectors.CLASS_PAGECREATOR_LINK,
+                  href: mw.util.getUrl(this.globals.wgFormattedNamespaces[2] +
+                    ":" + paramUser),
+                  title: paramUser,
+                },
+                  paramUser
+                ]
+              )
+            ) +
+            "&nbsp;" +
+            (paramArgs.links || this.buildUserToolLinks(paramUser))
+          : this.i18n.msg("created").escape()
         ),
-        "&nbsp;",
-        (paramArgs.links || this.buildUserToolLinks(paramUser)),
         ((paramArgs.hasOwnProperty("timestamp"))
           ? "&nbsp;" + paramArgs.timestamp
           : "")
@@ -682,16 +730,18 @@
       window.console.log(revisionURL);
     }
 
-    // Build parenthetical links section
-    args.links = this.buildUserToolLinks(data.user);
+    // Build parenthetical links section if selected
+    if (this.config.useUsernameAndLinks) {
+      args.links = this.buildUserToolLinks(data.user);
+    }
 
     // Avatar is optional, now displayed by default to match LastEdited
-    if (this.config.useAvatar) {
+    if (this.config.useAvatar && this.config.useUsernameAndLinks) {
       args.avatar = this.buildAvatar(data.userid);
     }
 
     // Optional timestamp includes link to first revision
-    if (this.config.useTimestamp) {
+    if (this.config.useTimestamp || !this.config.useUsernameAndLinks) {
 
       // Timestamp in either local or UTC time
       time = new Date(data.timestamp)[
@@ -759,6 +809,9 @@
     // Validate user-input config elements
     this.config = Object.freeze(this.generateValidConfig());
 
+    // Fetch, define, and cache globals
+    this.globals = Object.freeze(mw.config.get(this.Globals));
+
     if (
       this.globals.wgNamespaceNumber === -1 ||
       this.globals.wgArticleId === 0 ||
@@ -789,32 +842,16 @@
   };
 
   /**
-   * @description Originally a pair of functions called <code>init.load</code>
-   * and <code>init.preload</code>, this function is used to load all required
-   * external dependencies from Dev and attach <code>mw.hook</code> listeners.
-   * Once all scripts have been loaded and their events fired, the I18n-js
-   * method <code>loadMessages</code> is invoked, the <code>$.Deferred</code>
-   * promise resolved, and the resultant i18n data passed for subsequent usage
-   * in <code>init.main</code>.
-   * <br />
-   * <br />
-   * As an improvement to the previous manner of loading scripts, this function
-   * first checks to see if the relevant <code>window.dev</code> property of
-   * each script already exists, thus signaling that the script has already been
-   * loaded elsewhere. In such cases, this function will skip that import and
-   * move on to the next rather than blindly reimport the script again as it
-   * did in the previous version.
-   * <br />
-   * <br />
-   * As of the 1st of July update, an extendable framework for the loading of
-   * ResourceLoader modules and Dev external dependencies (scripts and
-   * stylesheets alike) on both UCP wikis and legacy 1.19 wikis has been put
-   * into place, pending UCPification of the aforementioned Dev scripts or the
-   * importation of legacy features to the UCP codebase. To handle the lack of
-   * async callbacks in <code>mw.loader.load</code>, this framework invokes
-   * <code>mw.loader.implement</code> to create temporary, local RL modules that
-   * can then be asynchronously loaded via <code>mw.loader.using</code> and
-   * handled by a dedicated callback.
+   * @description Over its lifetime, the <code>load</code> function has
+   * undergone a number of changes and evolutions to account for the transition
+   * from Wikia's fork of MediaWiki 1.19 to the current MediaWiki 1.33 UCP
+   * platform. During the transition period in which <code>importArticles</code>
+   * only worked for legacy wikis, the function made use of a fallback approach
+   * that created new ResourceLoader modules from external dependencies,
+   * permitting an alternate means of loading required resources. However, with
+   * the reinstitution of <code>importArticles</code> functionality to the UCP,
+   * this approach was scrapped and a simpler implementation employed instead to
+   * load Dev resources via several <code>importArticles</code> calls.
    *
    * @param {object} paramDeferred - <code>$.Deferred</code> instance
    * @returns {void}
@@ -822,161 +859,100 @@
   this.load = function (paramDeferred) {
 
     // Declarations
-    var articles, counter, numArticles, $loadNext, current, isLoaded, article,
-      server, params, resource, moduleName;
+    var articles, numArticles, unloadedScripts, isLoaded;
 
     // Definitions
-    counter = 0;
     articles = this.Dependencies.ARTICLES;
     numArticles = articles.length;
-    $loadNext = new $.Deferred();
 
     /**
-     * @description The passed <code>$.Deferred</code> argument instance called
-     * <code>paramDeferred</code> is variously notified during the loading of
-     * dependencies by the <code>$loadNext</code> promise whenever a dependency
-     * has been successfully imported by <code>window.importArticles</code> or
-     * <code>mw.loader.using</code>. The <code>progress</code> handler checks if
-     * all dependencies have been successfully loaded for use before loading the
-     * latest version of cached <code>i18n</code> messages and resolving itself
-     * to pass program execution on to <code>init.main</code>.
+     * @description To collate a listing of unloaded scripts to import en bulk,
+     * three chained higher-order looping functions are called in conjunction.
+     * In addition to assembly a list of unloaded scripts with hooks, these
+     * function callbacks likewise address and handle cases of already-loaded
+     * scripts with hooks, unloaded scripts without hooks, and CSS stylesheets.
+     * The higher-order functions called are a pair of
+     * <code>Array.prototype.filter</code> invocations and a final
+     * <code>Array.prototype.map</code> call.
      */
-    paramDeferred.notify().progress(function () {
-      if (counter === numArticles) {
-        // Resolve helper $.Deferred instance
-        $loadNext.resolve();
-        if (this.Utility.DEBUG) {
-          window.console.log("$loadNext", $loadNext.state());
-        }
+    unloadedScripts = articles.filter(function (current) {
 
-        // Load latest version of cached i18n messages
-        window.dev.i18n.loadMessages(this.Utility.SCRIPT, {
-          cacheVersion: this.Utility.CACHE_VERSION,
-        }).then(paramDeferred.resolve).fail(paramDeferred.reject);
-      } else {
-        if (this.Utility.DEBUG) {
-          window.console.log((counter + 1) + "/" + numArticles);
-        }
-
-        // Load next
-        $loadNext.notify(counter++);
-      }
-    }.bind(this));
-
-    /**
-    * @description The <code>$loadNext</code> helper <code>$.Deferred</code>
-    * instance is used to load each dependency using methods appropriate to the
-    * version of MediaWiki detected on the wiki. While the standard
-    * <code>importArticle</code> method is used for legacy 1.19 wikis, a local
-    * ResourceLoader module is defined via <code>mw.loader.implement</code> and
-    * loaded via <code>mw.loader.using</code> to sidestep the fact that the
-    * <code>mw.loader.load</code> method traditionally used to load dependencies
-    * has no callback or promise. Once all imports are loaded, the handler
-    * applies a callback to any extant <code>mw.hook</code> events and notifies
-    * the main <code>paramDeferred.progress</code> handler to check if all
-    * dependencies have been loaded.
-    */
-    $loadNext.progress(function (paramCounter) {
-
-      // Selected dependency to load next
-      current = articles[paramCounter];
-
-      // If window has property related to dependency indicating load status
-      isLoaded =
+      // Determine if the script has been loaded
+      isLoaded = Boolean(
         (current.DEV && window.dev.hasOwnProperty(current.DEV)) ||
-        (current.WINDOW && window.hasOwnProperty(current.WINDOW));
+        (current.WINDOW && window.hasOwnProperty(current.WINDOW))
+      );
 
-      // Add hook if loaded; dependencies w/o hooks must always be loaded
+      // If script has been loaded and has a dedicated hook
       if (isLoaded && current.HOOK) {
         if (this.Utility.DEBUG) {
           window.console.log("isLoaded", current.ARTICLE);
         }
-        return mw.hook(current.HOOK).add(paramDeferred.notify);
-      }
 
-      // Use standard importArticle approach if legacy wiki
-      if (!this.info.isUCP) {
-        article = window.importArticle({
-          type: current.TYPE,
-          article: current.ARTICLE,
-        });
-
-        if (this.Utility.DEBUG) {
-          window.console.log("importArticle", article);
-        }
-
-        // Styles won't have hooks; notify status with load event if styles
-        return (current.HOOK)
-          ? mw.hook(current.HOOK).add(paramDeferred.notify)
-          : $(article).on("load", paramDeferred.notify);
-      }
-
-      // Build url with REST params
-      server = "https://dev.fandom.com";
-      params = "?" + $.param({
-        mode: "articles",
-        only: current.TYPE + "s",
-        articles: current.ARTICLE,
-      });
-      resource = server + this.globals.wgLoadScript + params;
-      moduleName = this.generateModuleName(current.TYPE, current.ARTICLE);
-
-      // Ensure wellformed module name
-      if (this.Utility.DEBUG) {
-        window.console.log(moduleName);
-      }
-
-      // Define temp local modules to sidestep mw.loader.load's lack of callback
-      try {
-        mw.loader.implement.apply(null, $.merge([moduleName],
-          (current.TYPE === "script")
-            ? [[resource]]
-            : [null, {"url": {"all": [resource]}}]
+        // Use progress as handler
+        // (coerce to task from microtask w/ setTimeout of 0)
+        mw.hook(current.HOOK).add(window.setTimeout.bind(null,
+          paramDeferred.notify.bind(null, current.ARTICLE)
         ));
-      } catch (paramError) {
-        if (this.Utility.DEBUG) {
-          window.console.error(paramError);
-        }
       }
 
-      // Load script/stylesheet once temporary module has been defined
-      mw.loader.using(moduleName)
-        .then((current.HOOK)
-          ? mw.hook(current.HOOK).add(paramDeferred.notify)
-          : paramDeferred.notify)
-        .fail(paramDeferred.reject);
+      // Pass along unloaded scripts
+      return !isLoaded;
+    }.bind(this)).filter(function (current) {
+
+      // Unloaded scripts with dedicated hooks are passed along to map
+      if (current.TYPE === "script" && current.HOOK) {
+
+        // Use progress as handler
+        // (coerce to task from microtask w/ setTimeout of 0)
+        return mw.hook(current.HOOK).add(window.setTimeout.bind(null,
+          paramDeferred.notify.bind(null, current.ARTICLE)
+        ));
+      }
+
+      // Unloaded scripts w/o hooks and stylesheets imported here
+      window.importArticle({
+        type: current.TYPE,
+        article: current.ARTICLE
+      }).then(paramDeferred.notify.bind(null, current.ARTICLE));
+    }.bind(this)).map(function (current) {
+      return current.ARTICLE;
+    });
+
+    // Unloaded scripts with hooks are imported en bulk here
+    if (unloadedScripts.length) {
+      if (this.Utility.DEBUG) {
+        window.console.log("unloadedScripts", unloadedScripts);
+      }
+
+      window.importArticles({
+        type: "script",
+        articles: unloadedScripts
+      });
+    }
+
+    /**
+     * @description The <code>$.Deferred.progress</code> handler is responsible
+     * for determining whether all required external Dev dependencies have been
+     * loaded, thus allowing for the resolution of the <code>$.Deferred</code>
+     * and permitting execution to continue to <code>this.init</code>.
+     */
+    paramDeferred.progress(function (paramArticle) {
+      if (this.Utility.DEBUG) {
+        window.console.log(paramArticle, numArticles);
+      }
+
+      if (--numArticles === 0) {
+        window.dev.i18n.loadMessages(this.Utility.SCRIPT, {
+          cacheVersion: this.Utility.CACHE_VERSION,
+        }).then(paramDeferred.resolve).fail(paramDeferred.reject);
+      }
     }.bind(this));
-  };
-
-  /**
-   * @description This particular loading function is used simply to calculate
-   * and inject some pre-load <code>init</code> object properties prior to the
-   * loading of required external dependencies or ResourceLoader modules. As the
-   * loading process depends on this function's set informational properies, the
-   * function is called prior to the initial <code>init.load</code> invocation
-   * at the start of the script's execution and returns a reference to the
-   * <code>init</code> object (presumably) for use in subsequent method chaining
-   * purposes.
-   *
-   * @returns {object} init - Reference to <code>init</code> object for chaining
-   */
-  this.preload = function () {
-
-    // Fetch, define, and cache globals for use in init and MassEdit instance
-    this.globals = Object.freeze(mw.config.get(this.Globals));
-
-    // Object for informational booleans (extended in MassEdit init method)
-    this.info = {
-      isUCP: window.parseFloat(this.globals.wgVersion) > 1.19,
-    };
-
-    // Return reference for method chaining purposes
-    return this;
   };
 
   // Coordinate loading of all relevant dependencies
   $.when(
-    mw.loader.using((this.preload.call(this)).Dependencies.MODULES),
+    mw.loader.using(this.Dependencies.MODULES),
     new $.Deferred(this.load.bind(this)).promise())
   .then(this.init.bind(this))
   .fail(window.console.error.bind(null, this.Utility.SCRIPT));

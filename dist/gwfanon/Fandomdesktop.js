@@ -42,3 +42,13 @@ $( function eraIconsOasis() {
     	}
     }
 } );
+
+$( function eraIconsOasis() {
+    if ( $( '#nagrody' ).length ) {
+    	if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
+    		$( '.page-header__actions' ).first().prepend( $( '#nagrody' ).show() );
+    	} else {
+    	    $( '.page-header__contribution > div' ).first().prepend( $( '#nagrody' ).show() );
+    	}
+    }
+} );

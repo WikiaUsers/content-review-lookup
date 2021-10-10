@@ -3,24 +3,6 @@
 if (mw.config.get("wgUserGroups").indexOf('sysop') > -1)
   importScriptPage('MediaWiki:AjaxRedirect/code.js', 'dev');
 
-// Accesibilidad - Botón de 'Ir al contenido prinipal' - por Usuario:Polymeric
-// Permite a los usuarios de teclado saltar todos los enlaces navegatorios e ir
-// directamente al contenido de la página, mejorando la experiencia para tanto
-// para la gente incapacitada como a los ciegos.
-
-// Añade una id al botón de 'Expandir/colapsar', ya que es el único elemento
-// consistente al inicio de cualquier página para usuarios registrados, no
-// registrados, y en cualquier versión de la misma (ej. leyendo, editando,
-// protegiendo, o viendo el historial).
-$('.content-size-toggle').attr('id', 'main-content-start');
-
-// Añade el botón de 'Ir al contenido principal'.
-$('body').prepend([
-  $('<div>',{ 'class': 'jtc-btn', 'id': 'jumpToContent' }).append([
-    $('<a>',{ 'class': 'jtc-link', 'href': '#main-content-start', 'role': 'link', 'tabindex': '0' }).text('Ir al contenido principal')
-  ])
-]);
-
 /* Audios compartidos de BandCamp. */
 /** ART BIG TRACKLIST Hollow Knight OST **/
 $("#ArtBigTrackListHollowKnightOST").replaceWith('<iframe style="border: 0; width: 350px; height: 786px;" src="https://bandcamp.com/EmbeddedPlayer/album=2306704082/size=large/bgcol=333333/linkcol=0f91ff/transparent=true/" seamless><a href="http://christopherlarkin.bandcamp.com/album/hollow-knight-original-soundtrack">Hollow Knight (Original Soundtrack) by Christopher Larkin</a></iframe>');

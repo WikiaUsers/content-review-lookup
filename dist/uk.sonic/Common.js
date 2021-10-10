@@ -10,13 +10,13 @@ window.UserTagsJS = {
 		rollbacker: { u: 'Откатчік' },
 		bureaucrat: { u: 'Бюрократ' },
 		founder: { u: 'Засновник' },
-		moderator: { u: 'Модератор' }
+		exmoderator: { u: 'Почесний модератор' }
 	}
 };
 UserTagsJS.modules.custom = {
 	
 	'Pavle Zgharbishvili': ['founder'],
-	'Златогрудка 2.0.': ['moderator'], 
+	'Златогрудка 2.0.': ['exmoderator'], 
 };
 UserTagsJS.modules.autoconfirmed = true;
 UserTagsJS.modules.newuser = true;

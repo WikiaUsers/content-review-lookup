@@ -17,3 +17,6 @@ $(function () {
         $('#userProfileApp .user-identity-avatar__image').attr('alt', mw.config.get('profileUserName'));
     }, 100);
 });
+
+//EraIcons config
+window.useIncludedStylesheet = true;

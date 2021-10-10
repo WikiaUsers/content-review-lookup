@@ -1,3 +1,8 @@
+//Customise the Rail module to be prepended and use existing template name
+window.AddRailModule = [
+    {page: 'Template:Rail', prepend: true},
+];
+
 // Display 12 hour time followed by day, month (English, full name)
 // and year with "(UTC)" at the end
 window.DisplayClockJS = '%H:%2M:%2S %2d %{January;February;March;April;May;June;July;August;September;October;November;December}m %Y (UTC)';

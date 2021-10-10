@@ -38,6 +38,8 @@ mw.loader.using('mediawiki.api').then(function() {
         "user-identity-box-group-threadmoderator",
         "user-identity-box-group-chatmoderator",
         "user-identity-box-group-staff",
+        "user-identity-box-group-wiki-representative",
+        "user-identity-box-group-wiki-specialist",
         "user-identity-box-group-helper",
         "user-identity-box-group-soap",
         "user-identity-box-group-global-discussions-moderator",
@@ -49,17 +51,21 @@ mw.loader.using('mediawiki.api').then(function() {
             'threadmoderator': m["user-identity-box-group-threadmoderator"],
             'chatmoderator': m["user-identity-box-group-chatmoderator"],
             'staff': m["user-identity-box-group-staff"],
+            'wiki-representative': m["user-identity-box-group-wiki-representative"],
+            'wiki-specialist': m["user-identity-box-group-wiki-specialist"],
             'helper': m["user-identity-box-group-helper"],
             'soap': m["user-identity-box-group-soap"],
             'global-discussions-moderator': m["user-identity-box-group-global-discussions-moderator"]
         };
         // Z-Index variable: user group hierachy
         var groupPriority = {
-            'sysop': '399.7',
-            'content-moderator': '399.6',
-            'threadmoderator': '399.5',
-            'chatmoderator': '399.4',
-            'staff': '399.3',
+            'sysop': '399.9',
+            'content-moderator': '399.8',
+            'threadmoderator': '399.7',
+            'chatmoderator': '399.6',
+            'staff': '399.5',
+            'wiki-representative': '399.4',
+            'wiki-specialist': '399.3',
             'helper': '399.2',
             'soap': '399.1',
             'global-discussions-moderator': '399',
@@ -80,8 +86,10 @@ mw.loader.using('mediawiki.api').then(function() {
             'threadmoderator': 'discussion-moderator',
             'chatmoderator': 'discussion-moderator',
             'staff': 'staff',
+            'wiki-representative': 'staff',
+            'wiki-specialist': 'staff',
             'helper': 'helper',
-            'soap': 'vstf',
+            'soap': 'soap',
             'global-discussions-moderator': 'global-discussions-moderator',
         };
         // Create badge

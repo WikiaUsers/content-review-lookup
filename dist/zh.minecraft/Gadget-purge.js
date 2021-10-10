@@ -4,7 +4,11 @@
 // sending it using POST
 'use strict';
 $( function() {
-	$( '#ca-purge a' ).on( 'click', function( e ) {
+	var el = $('#ca-purge a');
+	if ($('body').hasClass('skin-fandomdesktop')) {
+		el = $('#ca-purge');
+	}
+	el.on( 'click', function( e ) {
 		var $form = $( '<form>' ).attr( {
 			method: 'POST',
 			action: this.href,

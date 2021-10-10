@@ -139,3 +139,4 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.Uri', 'ext.fandom
         )
     );
 });
+//</pre>

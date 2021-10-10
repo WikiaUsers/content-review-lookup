@@ -1,1 +1,0 @@
-/* Any Javascript code put here will affect all pages and all users */

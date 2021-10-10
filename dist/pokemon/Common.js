@@ -5,7 +5,18 @@ AjaxRCRefreshHoverText = 'Automatically refresh the page';
 ajaxPages = ["Special:Watchlist","Special:Log","Special:Contributions"];
 AjaxRCRefreshText = 'Auto-refresh';
 AjaxRCRefreshHoverText = 'Automatically refresh the page';
- 
+
+/* Configure LinkPreview */
+window.pPreview = $.extend(
+    true,
+    window.pPreview,
+    {
+        RegExp: (window.pPreview || {}).RegExp || {}
+    }
+);
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/pokemon/images/e/e3/No_Image.png';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/pokemon/images/e/e3/No_Image.png';
+
 /*
 * Test if an element has a certain class
 * Description: Uses regular expressions and caching for better performance.

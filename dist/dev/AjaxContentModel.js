@@ -51,7 +51,9 @@ $.when.apply($, [
 			});
 		});
 	}),
-	mw.user.getRights(),
+	mw.loader.using('mediawiki.user').then(function() {
+		return mw.user.getRights();
+	}),
 ].concat([
 	'ui',
 	'modal',
@@ -267,8 +269,9 @@ $.when.apply($, [
 		}),
 		MODELS: {
 			wikitext: mw.msg("content-model-wikitext"),
-			GeoJSON: "GeoJSON",
-			Scribunto: "Scribunto",
+			GeoJSON: i18n.msg('content-model-geojson'),
+			Scribunto: i18n.msg('content-model-scribunto'),
+			text: i18n.msg('content-model-text'),
 			css: mw.msg("content-model-css"),
 			javascript: mw.msg("content-model-javascript"),
 			json: mw.msg("content-model-json"),
@@ -287,7 +290,8 @@ $.when.apply($, [
 			href: mw.util.getUrl(this.aliases[0], { pagetitle: this.wg.wgPageName }),
 		}),
 	}));
-	if (this.appendToContentMenu && this.wg.wgNamespaceNumber !== -1) $('#ca-protect, #ca-unprotect').first().parent().after($('<li>', {
+
+	if (this.appendToContentMenu && this.wg.wgNamespaceNumber !== -1) $('#ca-unprotect, #ca-protect').first().parent().after($('<li>', {
 		html: $('<a>', {
 			text: mw.msg('changecontentmodel-legend'),
 			id: "ca-changecontentmodel",

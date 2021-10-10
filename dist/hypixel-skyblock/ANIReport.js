@@ -10,7 +10,7 @@
 	-W082, -W084
 */
 /* global mw */
-// <nowiki>
+// <pre>
 $.when(
 	(function() {
 		var def = new $.Deferred();
@@ -342,3 +342,4 @@ $.when(
 	
 	logger.log('Ready');
 }).catch(console.warn);
+//</pre>

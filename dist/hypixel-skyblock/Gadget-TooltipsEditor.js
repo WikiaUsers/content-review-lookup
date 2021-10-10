@@ -34,9 +34,11 @@ $.when(
 ).then(function() {
 	// Pages
 	var allowedPages = [
-		"Module:Inventory_slot/Tooltips",
-		"Module:Inventory_slot/Test", // used only when testing with user script
-	];
+		"Inventory_slot/Tooltips",
+		"Inventory_slot/Test",
+	].map( function (p) {
+		return mw.config.get("wgFormattedNamespaces")[828] + ":" + p;
+	});
 	if (!allowedPages.includes(mw.config.get("wgPageName")) || (window.TooltipsEditor && window.TooltipsEditor.loaded)) return;
 
 	var api = new mw.Api();
@@ -1140,7 +1142,7 @@ $.when(
 		init: function() {
 			$("<link>", {
 				rel: "stylesheet", 
-				href: "https://hypixel-skyblock.fandom.com/wiki/MediaWiki:Gadget-TooltipsEditor.css?action=raw&ctype=text/css" 
+				href: new mw.Title("Gadget-TooltipsEditor.css", 8).getUrl({ action: "raw", ctype: "text/css" })
 			}).appendTo("head");
 
 			$(".editTooltips").click(function() {
@@ -1151,7 +1153,7 @@ $.when(
 					titles: mw.config.get("wgPageName"),
 					formatversion: 2,
 					rvprop: "content",
-					rvslots: "*"
+					rvslots: "*",
 				}).then(function(d) {
 					var content = d.query.pages[0].revisions[0].slots.main.content;
 

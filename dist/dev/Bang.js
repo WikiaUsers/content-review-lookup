@@ -1,7 +1,7 @@
-(function bang(mw, $, window) {
+(function bang(window, mw, $) {
 
-    if (window.bang) return;
-    window.bang = { loaded: true };
+    if (window.bangLoaded) return;
+    window.bangLoaded = true;
 
 	var ns = mw.config.get('wgFormattedNamespaces'),
 		namespaces = {
@@ -20,7 +20,6 @@
 			fo: ns[110] // Forum
 		};
 
-    if (mw.config.get('skin') === 'fandomdesktop') {
         $(document).on('keyup', '.SearchInput-module_input__1mP-U', function() {
 	        var old = $(this).val(),
                 txt,
@@ -43,16 +42,5 @@
 				    }
 				}, 100);
 		    }
-	    });
-    } else {
-        $('.wds-global-navigation__search-input').on('keyup', function(){
-	        var txt = $(this).val(),
-      		    m = txt.match(/^\!([a-z]+) /);
-
-	        if (m && namespaces.hasOwnProperty(m[1])) {
-			    $(this).val(namespaces[m[1]] + ":" + txt.substr(m[1].length + 2));
-		    }
-	    });
-    }
-    
-}) (mediaWiki, jQuery, window);
+	    });    
+}) (this, mediaWiki, jQuery);

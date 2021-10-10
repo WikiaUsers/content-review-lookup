@@ -121,6 +121,7 @@ function highlightUser(block, name, highlightBool) {
 			case "AkulakhanBot":			
 			case "Arctic's Ludicrous Anti-Spam Bot":
 			case "Catbot":
+			case "CrabBot":
 			case "Default":
 			case "FANDOM":
 			case "Fandom":

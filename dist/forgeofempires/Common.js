@@ -59,6 +59,10 @@ window.dev.editSummaries = {
     ]
 }; 
 
+window.lockOldComments = (window.lockOldComments || {
+	window.lockOldComments.limit = 30
+});
+
 /*spoiler hiding*/
 var myMainSpoilers = document.getElementsByClassName("mainSpoiler");
 if (myMainSpoilers.length > 0)

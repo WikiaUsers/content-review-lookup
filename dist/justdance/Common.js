@@ -97,6 +97,9 @@ window.MastheadRightsBadgeSettings = {
     iconSize: '25px',
 };
 
+//AbuseLogRC
+abuseLogRC_showTo = [ 'content-moderator', 'rollback' ];
+
 //MarkForDeletion
 window.MarkForDeletion = {
     promptedDeleteReason: "Vandalism/Spam",

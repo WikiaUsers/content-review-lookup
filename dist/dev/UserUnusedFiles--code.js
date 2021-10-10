@@ -17,22 +17,21 @@
    }
    
    var filemanage = {
-      isUCP: mw.config.get('wgVersion') !== '1.19.24',
       init: function(i18n) { 
          $(document).prop('title', i18n.msg('heading').escape());
          $('#PageHeader h1').text(i18n.msg('heading').escape());
-         $((mw.config.get('skin') === 'oasis') ? '#mw-content-text' : '#content').html('').append(
+         $('#content').html('').append(
             '<div id="file-userusage">' +
             '<label for="fm-username">' + i18n.msg('username').escape() + '</label>&nbsp;' +
             '<input value="" id="fm-username">' +
-            '<span id="fm-getUsages" class="button">' + i18n.msg('getList').escape() + '</span>' +
+            '<span id="fm-getUsages" class="wds-button">' + i18n.msg('getList').escape() + '</span>' +
             '<div id="file-userusage-wrap"></div>' +
             '</div>'
             );
  
          $('#fm-getUsages').click(function() {
             $('#file-userusage-wrap').empty();
-            filemanage.getFileList(filemanage.isUCP ? 'now' : 0, $('#fm-username').val());
+            filemanage.getFileList('now', $('#fm-username').val());
          });
  
          $('#fm-username').keypress(function (e) {
@@ -89,7 +88,7 @@
                   });
                }
             });
-            var continueParam = filemanage.isUCP ? "rawcontinue" : "query-continue";
+            var continueParam = "rawcontinue";
             if (typeof files[continueParam] !== "undefined") {
                filemanage.getFileList(files[continueParam].logevents.lestart, user);
             }

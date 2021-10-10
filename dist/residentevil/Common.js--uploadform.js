@@ -57,7 +57,7 @@
                 'Resident Evil: Afterlife screenshots': 'Afterlife',
                 'Resident Evil: Retribution screenshots': 'Retribution',
                 'Resident Evil: The Final Chapter screenshots': 'Final Chapter',
-                'Resident Evil reboot screenshots': 'Reboot',
+                'Resident Evil: Welcome to Raccoon City screenshots': 'Resident Evil: Welcome to Raccoon City',
                 'Resident Evil Netflix screenshots': 'Netflix',
                 'Resident Evil: Degeneration screenshots': 'Degeneration',
                 'Resident Evil: Damnation screenshots': 'Damnation',

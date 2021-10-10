@@ -1,8 +1,23 @@
 /* Quick image license - contains the most commonly used licensing criteria */
-if (mw.config.get("wgUserGroups").indexOf('autoconfirmed') != -1) {
-function QLicenseUI() {
-	var options = {
-                ' ': 'Select a license',
+$(function() {
+    var config = mw.config.get([
+    	'wgNamespaceIds', 
+    	'wgNamespaceNumber', 
+    	'wgAction', 
+    	'wgServer', 
+    	'wgPageName',
+    	'wgUserGroups'
+    ]);
+
+    if (
+    	!config.wgUserGroups.includes('autoconfirmed') ||
+        config.wgNamespaceIds.file !== config.wgNamespaceNumber ||
+        config.wgAction !== 'view' ||
+        window.QLicenseLoaded
+    ) return;
+
+    var options = {
+        ' ': 'Select a license',
 		'== Licensing ==\n{{Copyright by EA|fanon}}': 'Fanon image',
 		'== Licensing ==\n{{Copyright by EA|sim1}}': 'Sim from TS1',
                 '== Licensing ==\n{{Copyright by EA|ss1}}': 'Screenshot from TS1',
@@ -48,32 +63,33 @@ function QLicenseUI() {
                 '== Licensing ==\n{{GFDL}}': 'This is licensed under GFDL (free license)',
                 '== Licensing ==\n{{PD}}': 'Public domain',
                 '== Licensing ==\n{{No license}}': 'License unknown'
-		};
-	var optstr = '';
-	for (var i in options ) {
-		if ( options.hasOwnProperty( i ) ) {
-			optstr += '<option value="' + i + '" style="text-align:left;padding-bottom:10px;">' + options[i] + '</option>';
-		}
-	}
- 
-	var html = '<p style="text-align:left;"><select id="QLicenseSelect">' + optstr + '</select>&nbsp;<a class="wikia-button" style="margin:0 1em; cursor:pointer;" id="aSubmit">Add license</a>';
-	if($('#LicensedFile').length || $('#Licensing').length) {
-		html += '&nbsp;<span style="color:green; font-weight:bold; text-align:left;">This page has a license template.</span> (<a href="https://sims.wikia.com/wiki/Help:Quick_license">help</a>)</p>';
-	} else {
-		html += '&nbsp;<span style="color:red; font-weight:bold; text-align:left;">This page does not have a license template! Consider adding one.</span> (<a href="https://sims.wikia.com/wiki/Help:Quick_license">help</a>)</p>';
-	}
-	$(html).insertBefore('#WikiaMainContent');
-	$('#aSubmit').click( function(event) {
-		this.innerHTML = '<img src="https://images.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif" style="vertical-align: baseline;" border="0" />';
-		$.post("/api.php", {action: "edit", title: mw.config.get("wgPageName"), token: mw.user.tokens.values.editToken, bot: true, appendtext: $("#QLicenseSelect").val(), summary: "Adding license template using [[Help:Quick license|Quick license]]"}, function (result) {
-			window.location = wgServer + '/index.php?title=' + mw.config.get("wgPageName") + '&action=purge';
-		});
-	});
-}
- 
-if (mw.config.get('wgNamespaceIds').file === mw.config.get('wgNamespaceNumber') && mw.config.get('wgAction') === 'view' && !window.QLicenseLoaded) {
-    window.QLicenseLoaded = true;
-    addOnloadHook(QLicenseUI);
-}
-}
+    };
+    var optstr = '';
+    for (var i in options) {
+        if (options.hasOwnProperty(i)) {
+            optstr += '<option value="' + i + '" style="text-align:left;padding-bottom:10px;">' + options[i] + '</option>';
+        }
+    }
+
+    var html = '<p style="text-align:left;"><select id="QLicenseSelect">' + optstr + '</select>&nbsp;<a class="wikia-button" style="margin:0 1em; cursor:pointer;" id="aSubmit">Add license</a>';
+    if ($('#LicensedFile').length || $('#Licensing').length) {
+        html += '&nbsp;<span style="color:#008000; font-weight:bold; text-align:left;">This page has a license template.</span> (<a href="https://sims.fandom.com/wiki/Help:Quick_license">help</a>)</p>';
+    } else {
+        html += '&nbsp;<span style="color:#ff0000; font-weight:bold; text-align:left;">This page does not have a license template! Consider adding one.</span> (<a href="https://sims.fandom.com/wiki/Help:Quick_license">help</a>)</p>';
+    }
+    $(html).insertAfter('#filetoc');
+    $('#aSubmit').click(function(event) {
+        this.innerHTML = '<img src="https://images.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif" style="vertical-align: baseline;" border="0" />';
+        $.post("/api.php", {
+            action: "edit",
+            title: config.wgPageName,
+            token: mw.user.tokens.values.editToken,
+            bot: true,
+            appendtext: $("#QLicenseSelect").val(),
+            summary: "Adding license template using [[Help:Quick license|Quick license]]"
+        }, function(result) {
+            window.location = config.wgServer + '/index.php?title=' + config.wgPageName + '&action=purge';
+        });
+    });
+});
 //

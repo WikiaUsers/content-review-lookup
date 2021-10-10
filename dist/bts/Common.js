@@ -13,10 +13,11 @@ $(function(){
     });
 });
 
-//Шаблон:RailModule dev wiki
+//Шаблон:RailModule dev wiki - Credit to Викии Вики
 window.AddRailModule = [
-    { page: 'Template:Rail0', prepend: true },
-    'Template:Rail1',
+    { page: 'Template:RailModule1', prepend: true },
+    'Template:RailModule2',
+    'Template:RailModule3',
 ];
 
 //Стиль бек кнопки dev wiki

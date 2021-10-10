@@ -1,28 +1,18 @@
-/* ======================================================
-// Скрипт основан на dev.fandom.com/wiki/WhatLinksHere
-// Автор: DecabristM
-// Описание: В выпадающем меню около кнопки «Править» скрипт заставляет все ссылки открывать новое окно, а также добавляет дополнительные инструменты для страницы: 
-// * Журналы
-// * Ссылки сюда
-// * Сведения о странице
-// * Просмотр удаленных версий
-========================================================*/
 (function() {
 	'use strict';
 
-	var $list = $('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list, .UserProfileActionButton .WikiaMenuElement');
+	var $list = $('.page-header__actions .wds-list');
 
-	if (!$list.length || window.AddToolsDropdown) {
+	if (!$list.length) {
 		return;
 	}
-	window.AddToolsDropdown = true;
 
-	var pagename = mw.config.get.wgPageName;
+	var pagename = mw.config.values.wgPageName;
 	var url_logs = mw.util.getUrl('Special:Logs', {page: pagename});
-	var url_info = mw.util.getUrl(pagename, {action: 'info'}); 
+	var url_info = mw.util.getUrl(pagename, {action: 'info'});
+	var url_diff = mw.util.getUrl(pagename, {diff: 'cur'}); 
 	var url_undelete = mw.util.getUrl('Special:Undelete', {target: pagename});
 	var url_whatlinkshere = mw.util.getUrl('Special:WhatLinksHere', {target: pagename});
-/*	var url_diff = mw.util.getUrl(pagename, {diff: 'cur'}); */
 /*	var url_whatleaveshere = mw.util.getUrl('Special:WhatLeavesHere', {target: pagename}); */
 /*	var url_recentchangeslinked = mw.util.getUrl('Special:RecentChangesLinked', {target: pagename}); */
 
@@ -58,6 +48,16 @@
 	);
 	$list.append(
 		$('<li>', {
+			id: 'ca-diff'
+		}).append(
+			$('<a>', {
+				href: url_diff,
+				text: 'Последние изменения'
+			})
+		)
+	);
+	$list.append(
+		$('<li>', {
 			id: 'ca-undelete'
 		}).append(
 			$('<a>', {
@@ -66,6 +66,8 @@
 			})
 		)
 	);
-	
-	$('#p-cactions a').attr('target', '_blank');
+})();
+
+(function() {
+	$('.fandom-community-header__local-navigation a, .wiki-tools a, .page-header__actions .wds-list a').attr('target', '_blank');
 })();

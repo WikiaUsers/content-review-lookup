@@ -54,7 +54,7 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api']).then(functi
                         mw.notify('Please try to leave some rationale as to why you want to adopt this wiki and why you would be a good fit as admin.',{tag:'adoption',type:'warn'});
                         return;
                     }
-                    var pagecontent = "{{Forumheader/Adoption requests}}\n\n" + "'''What is your username?'''\n" + userName + "\n\n'''Please link to the wiki here:'''\n" + url + "\n\n'''How many days have you edited the wiki in the past 10 days?'''\n" + numDays + "\n\n'''On the Special Pages  → Special:ListAdmins, how many admins have been active in the past 60 days?'''\n" + numAdmins + "\n\n'''Comments/Reasons for adoption:'''\n" + comments + "\n\n\n[[Category:Adoption requests|{{PAGENAME}}]]";
+                    var pagecontent = "{{Forumheader/Adoption requests}}\n\n" + "'''What is your username?'''\n" + userName + "\n\n'''Please link to the wiki here:'''\n" + url + "\n\n'''How many days have you edited the wiki in the past 10 days?'''\n" + numDays + "\n\n'''On the Special Pages  → Special:ListAdmins, how many admins have been active in the past 60 days?'''\n" + numAdmins + "\n\n'''Comments/Reasons for adoption:'''\n<nowiki>" + comments + "</nowiki>\n\n\n[[Category:Adoption requests|{{PAGENAME}}]]";
                     adoptionModal.hide();
                     new mw.Api().get({
                         action: 'query',

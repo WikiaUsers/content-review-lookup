@@ -79,11 +79,30 @@ $(document).ready(function()
         $('#wpLicense' ).wrap('<div></div>') ;
     }
 	
+	// для мультизагрузки
+	$('.pfd-initialized').val('{{Изображение \n| Описание  = \n| Источник  = \n| Появления = \n| Автор     = \n| Категория = \n| Лицензия  = \n}}');
+	
+	// Форум
 	if (wgCanonicalNamespace === 'Forum')
 	{
 		importScript('MediaWiki:Forum.js');
 	}
 });
+    
+// если открыта страница новых изображений
+// при добавлении нового изображения добавляет описание файла
+document.querySelector(".wds-button.add-new-image").addEventListener("click", function (e) {
+  function checkModal() {
+    switch (document.querySelector("#UploadImageForm .file-description-area .wds-textarea__field") !== null) {
+      case true:
+        $('#UploadImageForm .file-description-area .wds-textarea__field').val('{{Изображение \n| Описание  = \n| Источник  = \n| Появления = \n| Автор     = \n| Категория = \n| Лицензия  = \n}}');
+        return;
+      case false:
+        setTimeout(checkModal, 100);
+      }
+    }
+  setTimeout(checkModal, 100);
+})
 
 // Настройка блокировки статей от спойлеров
 window.SpoilerAlertJS = {
@@ -137,3 +156,9 @@ preloadTemplates_subpage =  "case-by-case" ;
 	// 	    $("#mw-hidden-catlinks").contents()
 	// 	);
 	// });
+
+// Замена изображения для всплывающего окна ссылки
+window.pPreview = $.extend(true, window.pPreview, {
+    defimage: 'https://static.wikia.nocookie.net/marvel/images/c/c5/Noimg.jpg/revision/latest?cb=20120406175848&path-prefix=ru',
+    noimage: 'https://static.wikia.nocookie.net/marvel/images/c/c5/Noimg.jpg/revision/latest?cb=20120406175848&path-prefix=ruru'
+});

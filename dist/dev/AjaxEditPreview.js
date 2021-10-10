@@ -17,12 +17,10 @@ mw.loader.using(['mediawiki.api', 'ext.fandom.ContentReview.legacyLoaders.js'], 
     'wgAction',
     'wgPageContentModel',
     'wgPageName',
-    'wgUserLanguage',
-    'wgVersion'
+    'wgUserLanguage'
   ]);
 
   if (
-    wgConf.wgVersion === '1.19.24' ||
     !(['edit', 'submit'].includes(wgConf.wgAction)) ||
     wgConf.wgPageContentModel !== 'wikitext'
   ) return;

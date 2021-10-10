@@ -31,7 +31,7 @@
         imported: function(i18n) {
             $.when(
                 window.dev.i18n.loadMessages('DiscordIntegrator', {
-                    cacheVersion: 2
+                    cacheVersion: 3
                 }),
                 mw.loader.using('mediawiki.api')
             ).then($.proxy(this.preload, this));
@@ -225,7 +225,8 @@
                 width: config.width || '100%',
                 height: config.height || '400px',
                 allowtransparency: 'true',
-                frameborder: '0'
+                frameborder: '0',
+                title: this.i18n.msg('title').plain()
             });
         }
     };

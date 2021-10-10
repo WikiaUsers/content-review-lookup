@@ -1,1 +1,7 @@
-/* Tout JavaScript ici sera chargé avec chaque page accédée par n’importe quel utilisateur. */
+/* ==============
+   Quiz Extension
+   ============== */
+
+$(function () {
+    $('#WikiaRail').prepend("<div data-tf-widget='pI3BUew8' style='width:100%;height:700px;'></div><script src='//embed.typeform.com/next/embed.js'></script>");
+});

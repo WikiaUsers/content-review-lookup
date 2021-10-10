@@ -2,7 +2,8 @@ $(function() {
 	if ( mw.config.get( 'skin' ) !== 'fandomdesktop' || window.ThemeTogglerLoaded ) return;
 	window.ThemeTogglerLoaded = true;
 	
-
+	var fullBackground = $('.fandom-community-header__background.fullScreen');
+	
 	function toggleWithoutReload() {
 		var theme = $( 'body' ).hasClass( 'theme-fandomdesktop-light' ) ? 'light' : 'dark';
 		var newTheme = theme === 'light' ? 'dark' : 'light';
@@ -16,6 +17,18 @@ $(function() {
 			var css = wikiTheme[0] + brandTheme[0];
 			var $s = $( '#pcjThemeSwitch' )[0] || $( '<style>' ).attr( 'id', 'pcjThemeSwitch' ).appendTo('body');
 			$($s).text(css);
+			
+			if (fullBackground.length) {
+				var bgMatch = wikiTheme[0].match(/--theme-body-background-image\s*?:\s*?url\((.*?)\)/);
+				if (bgMatch) {
+					var bgImage = new Image();
+					bgImage.onload = function() {
+						fullBackground.css('--image-ratio', (this.height / this.width).toString());
+					};
+					bgImage.src = bgMatch[1];
+				}
+			}
+			
 			$( 'body' ).removeClass( 'theme-fandomdesktop-light theme-fandomdesktop-dark' ).addClass( 'theme-fandomdesktop-' + newTheme );
 			mw.config.set( 'isDarkTheme', !mw.config.get( 'isDarkTheme' ) );
 		} );

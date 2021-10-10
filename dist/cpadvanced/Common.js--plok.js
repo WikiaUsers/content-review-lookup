@@ -25,21 +25,13 @@ $(function() {
 	function onTrigger() {
 		console.log("triggered");
 		// once an hour, this shall be triggered
-		var rnd = Math.random();
-		if (rnd < 0.001) {
-			$(container).find(".plok-modal-container").html("").append(
-				'<div style="position: relative;">' +
-					'\t<iframe src="https://www.youtube.com/embed/b1WWpKEPdT4?rel=0&amp;modestbranding=1&amp;autohide=1&amp;showinfo=0&amp;controls=0&amp;autoplay=1" width="120" height="90" />\n' +
-					'\t<div style="width: 120px; height: 90px; position: absolute; top: 0; left: 0;"></div>\n' +
-				'</div>'
-			);
 			horizontalSpeedFactor = 0.25;
 			setTimeout(function() {
 				horizontalSpeedFactor = 1;
 				$(container).find(".plok-modal-container").html(plok); // return back to normal
 			},60000);
 		}
-	}
+	});
 	function setPosition() {
 		requestAnimationFrame(setPosition);
 		var t = new Date(),

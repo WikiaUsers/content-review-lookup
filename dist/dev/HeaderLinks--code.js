@@ -21,7 +21,6 @@
     noarg:true, noempty:true, nonew:true, onevar:true, plusplus:true,
     quotmark:single, strict:true, trailing:true, undef:true, unused:true
 */
-;
 (function($, mw) {
 
     'use strict';
@@ -68,6 +67,7 @@
                         .append(
                             $('<img>')
                             .attr({
+                            	height: '20',
                                 width: '20',
                                 src: '//upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Ambox_padlock_gray.svg/20px-Ambox_padlock_gray.svg.png'
                             })

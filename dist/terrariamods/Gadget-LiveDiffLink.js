@@ -1,3 +1,4 @@
-/* This imports the latest version of LiveDiffLink from Terraria Wiki: https://terraria.gamepedia.com/MediaWiki:Gadget-LiveDiffLink.js */
+/* This imports the latest version of LiveDiffLink from the Terraria Wiki. */
 
-mw.loader.load('https://terraria.gamepedia.com/index.php?title=MediaWiki:Gadget-LiveDiffLink.js&action=raw&ctype=text/javascript');
+// Import JS: https://terraria.fandom.com/MediaWiki:Gadget-LiveDiffLink.js
+mw.loader.load('https://terraria.fandom.com/index.php?title=MediaWiki:Gadget-LiveDiffLink.js&action=raw&ctype=text/javascript');

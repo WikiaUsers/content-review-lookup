@@ -113,6 +113,7 @@ retiredrights = {
 	"Melchizedek1866@legacy41958488"		:1,
 	Midoro									:1,
 	Molldust								:1,
+	Mrbarquero								:1,
 	"Mr. Wiggles@legacy41957504"			:1,
 	"Nathan747@legacy41957787"				:1,
 	"Noble Wrot@legacy41959850"				:1,

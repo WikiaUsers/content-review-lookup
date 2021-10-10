@@ -11,7 +11,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UNKNOWN_GENDER_TYPE = void 0;
 var Utils_1 = require("./Utils");
-var mw = window.mediaWiki;
+var  mw = window.mediaWiki;
 exports.UNKNOWN_GENDER_TYPE = undefined;
 var Global =  (function () {
     function Global() {
@@ -45,7 +45,7 @@ var Global =  (function () {
     };
     Global.initSymbols = function () {
         if (!Global.SVG_SYMBOLS) {
-            return;
+            return "";
         }
         var tSVG = "<svg xmlns:dc=\"http://purl.org/dc/elements/1.1/\" style=\"height: 0px; width: 0px; position: absolute; overflow: hidden;\">'\n\t\t\t" + Global.SVG_SYMBOLS.join("") + "\n\t\t</svg>";
         delete Global.SVG_SYMBOLS;
@@ -77,8 +77,8 @@ var Global =  (function () {
             tButton.style.cssText = "float:right;";
         }
     };
-    Global.version = "2.16b";
-    Global.lastVersionDateString = "Nov 2 2020 00:00:00 GMT";
+    Global.version = "2.16c";
+    Global.lastVersionDateString = "Oct 4 2021 00:00:00 GMT";
     Global.config = mw.config.get([
         "skin",
         "debug",
@@ -123,7 +123,7 @@ var Global =  (function () {
 }());
 exports["default"] = Global;
 
-},{"./Utils":9}],2:[function(require,module,exports){
+},{"./Utils":10}],2:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.previewDiscussionHTML = exports.previewPage = exports.previewImages = exports.previewDiff = void 0;
@@ -132,14 +132,13 @@ var i18n_1 = require("./i18n");
 var Global_1 = require("./Global");
 var RCMModal_1 = require("./RCMModal");
 var rc_data_1 = require("./rc_data");
-var mw = window.mediaWiki;
+var $ = window.jQuery, mw = window.mediaWiki;
 function previewDiff(pPageName, pageID, pAjaxUrl, pDiffLink, pUndoLink, pDiffTableInfo) {
     Utils_1["default"].logUrl("(previewDiff)", pAjaxUrl);
     mw.log(pDiffLink);
     mw.log(pUndoLink);
     var tTitle = pPageName + " - " + i18n_1["default"]('modal-diff-title');
-    var tButtons = [];
-    tButtons.push(modalLinkButton('modal-diff-open', "diff", pDiffLink));
+    var tButtons = [modalLinkButton('modal-diff-open', "diff", pDiffLink)];
     if (pUndoLink != null) {
         tButtons.push(modalLinkButton('modal-diff-undo', "undo", pUndoLink));
     }
@@ -217,9 +216,9 @@ function previewImages(pAjaxUrl, pImageNames, pArticlePath) {
     var tTitle = i18n_1["default"]("images");
     var tButtons = [];
     var tAddLoadMoreButton = function () {
-        if (tImagesInLog.length > 0) {
+        var tModal = document.querySelector("#" + RCMModal_1["default"].MODAL_CONTENT_ID);
+        if (!!tModal && tImagesInLog.length > 0) {
             mw.log("Over 50 images to display; Extra images must be loaded later.");
-            var tModal = document.querySelector("#" + RCMModal_1["default"].MODAL_CONTENT_ID);
             var tGallery_1 = tModal.querySelector(".rcm-gallery");
             var tCont_1 = Utils_1["default"].newElement("center", { style: 'margin-bottom: 8px;' }, tModal);
             var tButton = Utils_1["default"].newElement("button", { innerHTML: i18n_1["default"]('modal-gallery-load-more') }, tCont_1);
@@ -326,6 +325,7 @@ function previewPage(pAjaxUrl, pPageName, pPageHref, pServerLink) {
     ];
     RCMModal_1["default"].showLoadingModal({ title: tTitle, buttons: tButtons }).then(function () {
         $.ajax({ type: 'GET', dataType: 'jsonp', data: {}, url: pAjaxUrl }).then(function (pData) {
+            var _a;
             if (!RCMModal_1["default"].isModalOpen()) {
                 return;
             }
@@ -350,15 +350,15 @@ function previewPage(pAjaxUrl, pPageName, pPageHref, pServerLink) {
                 tCont = tModalCont.querySelector("#mw-content-text");
                 tCont.innerHTML = "";
                 var tPreviewHead = Utils_1["default"].newElement("div", { innerHTML: pData.parse.headhtml["*"] });
-                var tCurPageHead = document.querySelector("head").cloneNode(true);
-                Utils_1["default"].forEach(tCurPageHead.querySelectorAll("link[rel=stylesheet]"), function (o, i, a) {
+                var tCurPageHead = (_a = document.querySelector("head")) === null || _a === void 0 ? void 0 : _a.cloneNode(true);
+                Utils_1["default"].forEach(tCurPageHead.querySelectorAll("link[rel=stylesheet]"), function (o) {
                     tCont.innerHTML += "<style> @import url(" + o.href + "); </style>"; 
                 });
-                Utils_1["default"].forEach(tCurPageHead.querySelectorAll("link"), function (o, i, a) { Utils_1["default"].removeElement(o); });
-                Utils_1["default"].forEach(tPreviewHead.querySelectorAll("link[rel=stylesheet]"), function (o, i, a) {
+                Utils_1["default"].forEach(tCurPageHead.querySelectorAll("link"), function (o) { Utils_1["default"].removeElement(o); });
+                Utils_1["default"].forEach(tPreviewHead.querySelectorAll("link[rel=stylesheet]"), function (o) {
                     tCont.innerHTML += "<style> @import url(" + o.href + "); </style>"; 
                 });
-                Utils_1["default"].forEach(tPreviewHead.querySelectorAll("link"), function (o, i, a) { Utils_1["default"].removeElement(o); });
+                Utils_1["default"].forEach(tPreviewHead.querySelectorAll("link"), function (o) { Utils_1["default"].removeElement(o); });
                 tCont.innerHTML += tCurPageHead.innerHTML;
                 tCont.innerHTML += "\n<!-- Loaded Wiki Styles -->\n";
                 tCont.innerHTML += tPreviewHead.innerHTML;
@@ -366,11 +366,11 @@ function previewPage(pAjaxUrl, pPageName, pPageHref, pServerLink) {
             }
             else if ("scoped" in document.createElement("style")) {
                 var tPreviewHead = Utils_1["default"].newElement("div", { innerHTML: pData.parse.headhtml["*"] });
-                Utils_1["default"].forEach(tPreviewHead.querySelectorAll("link[rel=stylesheet]"), function (o, i, a) {
+                Utils_1["default"].forEach(tPreviewHead.querySelectorAll("link[rel=stylesheet]"), function (o) {
                     tCont.innerHTML += "<style scoped> @import url(" + o.href + "); </style>"; 
                 });
             }
-            Utils_1["default"].forEach(tCont.querySelectorAll("a[href^='/']"), function (o, i, a) {
+            Utils_1["default"].forEach(tCont.querySelectorAll("a[href^='/']"), function (o) {
                 o.href = pServerLink + o.getAttribute("href");
             });
             mw.hook('wikipage.content').fire($(tCont)); 
@@ -456,7 +456,7 @@ function modalLinkButton(text, event, link) {
     return { text: i18n_1["default"](text), event: event, callback: function () { window.open(link, '_blank'); } };
 }
 
-},{"./Global":1,"./RCMModal":5,"./Utils":9,"./i18n":11,"./rc_data":19}],3:[function(require,module,exports){
+},{"./Global":1,"./RCMModal":6,"./Utils":10,"./i18n":12,"./rc_data":20}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var RCMManager_1 = require("./RCMManager");
@@ -465,11 +465,12 @@ var Utils_1 = require("./Utils");
 var i18n_1 = require("./i18n");
 var RCMModal_1 = require("./RCMModal");
 var makeCollapsible_1 = require("./lib/makeCollapsible");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
+var $ = window.jQuery, mw = window.mediaWiki;
 var Notification = window.Notification;
 var Main =  (function () {
     function Main() {
+        this._blinkInterval = 0;
+        this._originalTitle = document.title;
         this._notifications = [];
         this.rcmList = [];
         this.langLoaded = false;
@@ -497,7 +498,7 @@ var Main =  (function () {
             Global_1["default"].useLocalSystemMessages = false;
         }
         if (tDataset.loaddelay) {
-            Global_1["default"].loadDelay = tDataset.loaddelay;
+            Global_1["default"].loadDelay = parseFloat(tDataset.loaddelay);
         }
         if (tDataset.timezone) {
             Global_1["default"].timezone = tDataset.timezone.toLowerCase();
@@ -508,8 +509,6 @@ var Main =  (function () {
         if (tDataset.hiderail !== "false") {
             document.querySelector("body").className += " rcm-hiderail";
         }
-        tDataset = null;
-        tFirstWrapper = null;
         var tLoadPromises = [];
         Utils_1["default"].newElement("link", { rel: "stylesheet", type: "text/css", href: "https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:RecentChangesMultiple.css&only=styles" }, document.head);
         tLoadPromises[tLoadPromises.length] = this.importArticles({
@@ -592,7 +591,6 @@ var Main =  (function () {
                 tRCMManager.init();
             });
         });
-        tWrappers = null;
         $(".rcm-refresh-all").on("click", function () { _this._refreshAllManagers(); });
     };
     Main.prototype._refreshAllManagers = function () {
@@ -665,10 +663,11 @@ var Main =  (function () {
             return;
         }
         clearInterval(this._blinkInterval);
-        this._blinkInterval = null;
+        this._blinkInterval = 0;
         document.title = this._originalTitle;
     };
     Main.prototype.addNotification = function (pTitle, pOptions) {
+        var _a;
         if (Notification.permission !== "granted") {
             return;
         }
@@ -681,9 +680,8 @@ var Main =  (function () {
             window.focus(); 
             this.close();
         };
-        tNotification = null;
         if (this._notifications.length > 1) {
-            this._notifications.shift().close();
+            (_a = this._notifications.shift()) === null || _a === void 0 ? void 0 : _a.close();
         }
     };
     Main.prototype.clearNotifications = function () {
@@ -703,23 +701,237 @@ var Main =  (function () {
 }());
 exports["default"] = new Main();
 
-},{"./Global":1,"./RCMManager":4,"./RCMModal":5,"./Utils":9,"./i18n":11,"./lib/makeCollapsible":13}],4:[function(require,module,exports){
+},{"./Global":1,"./RCMManager":5,"./RCMModal":6,"./Utils":10,"./i18n":12,"./lib/makeCollapsible":14}],4:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var Global_1 = require("./Global");
+var $ = window.jQuery, mw = window.mediaWiki;
+var TIMEOUT = 15000; 
+var MultiLoader =  (function () {
+    function MultiLoader(manager) {
+        this.manager = manager;
+        this.state = "idle";
+        this.ajaxID = this.manager.ajaxID;
+        this.totalItemsToLoad = 0;
+        this.itemsLoaded = 0;
+        this.delayStack = 0;
+        this.maxTries = 0;
+        this.erroredItems = [];
+    }
+    Object.defineProperty(MultiLoader.prototype, "AjaxID", {
+        get: function () { return this.ajaxID; },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(MultiLoader.prototype, "ErroredItems", {
+        get: function () { return this.erroredItems; },
+        enumerable: false,
+        configurable: true
+    });
+    MultiLoader.prototype.multiLoad = function (_a) {
+        var _this = this;
+        var list = _a.list, buildUrl = _a.buildUrl, onCheckInvalid = _a.onCheckInvalid, onProgress = _a.onProgress, onSingleLoadFinished = _a.onSingleLoadFinished, onSingleError = _a.onSingleError, maxTries = _a.maxTries, _b = _a.dataType, dataType = _b === void 0 ? "jsonp" : _b;
+        if (this.state === "running") {
+            console.error("[RCM] Loader started while loader already running");
+            return Promise.reject();
+        }
+        if (list.length == 0) {
+            return Promise.resolve([]);
+        } 
+        this.state = "running";
+        this.ajaxID = this.manager.ajaxID;
+        this.totalItemsToLoad = list.length;
+        this.itemsLoaded = 0;
+        this.delayStack = 0;
+        this.maxTries = maxTries;
+        this.erroredItems = [];
+        onProgress(0);
+        return Promise.all(list.map(function (item) { return new Promise(function (resolve, reject) {
+            var url = buildUrl(item);
+            var doSingleLoad = function (tries) {
+                _this.singleLoadWithRetries({ url: url, item: item, onCheckInvalid: onCheckInvalid, tries: tries, maxTries: _this.maxTries, dataType: dataType })
+                    .then(function (data) {
+                    _this.itemsLoaded++;
+                    onProgress(_this.getProgress());
+                    onSingleLoadFinished(data, item);
+                    resolve();
+                })["catch"](function (e) {
+                    var errorData = { tries: e.tries, item: item, retry: doSingleLoad, remove: function () {
+                            _this.totalItemsToLoad--;
+                            onProgress(_this.getProgress());
+                            resolve();
+                        } };
+                    _this.erroredItems.push(errorData);
+                    onSingleError(e, item, errorData);
+                });
+            };
+            doSingleLoad(0);
+        }); }));
+    };
+    MultiLoader.prototype.singleLoadWithRetries = function (_a) {
+        var _this = this;
+        var url = _a.url, item = _a.item, onCheckInvalid = _a.onCheckInvalid, _b = _a.tries, tries = _b === void 0 ? 0 : _b, maxTries = _a.maxTries, dataType = _a.dataType;
+        return new Promise(function (resolve, reject) {
+            var doSingleLoad = function (tries) {
+                tries++;
+                var doReject = function (reason) { return reject(reason); };
+                _this.ajaxLoad(url, dataType, _this.getNextDelay())
+                    .then(function (data) {
+                    var invalid = onCheckInvalid(data, item);
+                    if (invalid) {
+                        if ("halt" in invalid && invalid.halt === true) {
+                            return doReject({ id: "unknown", error: invalid.error, tries: tries });
+                        }
+                        if ("servername" in item)
+                            mw.log("Error parsing " + item.servername + " (" + tries + "/" + maxTries + " tries)");
+                        if (tries >= maxTries) {
+                            return doReject({ id: "max-tries", erroredItem: item, tries: tries });
+                        }
+                        return doSingleLoad(tries);
+                    }
+                    resolve(data);
+                })["catch"](function (status) {
+                    if (status === "timeout") {
+                        return doReject({ id: "timeout", tries: tries });
+                    }
+                    if ("servername" in item)
+                        mw.log("Error loading " + item.servername + " (" + tries + "/" + maxTries + " tries)");
+                    if (tries >= maxTries) {
+                        return doReject({ id: "max-tries", erroredItem: item, tries: tries, status: status });
+                    }
+                    return doSingleLoad(tries);
+                });
+            };
+            doSingleLoad(tries);
+        });
+    };
+    MultiLoader.prototype.ajaxLoad = function (url, dataType, delay) {
+        var _this = this;
+        if (delay === void 0) { delay = 0; }
+        var id = this.ajaxID;
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                $.ajax({ type: 'GET', url: url, dataType: dataType, timeout: TIMEOUT, data: {} })
+                    .done(function (data) {
+                    if (_this.checkStop(id)) {
+                        return;
+                    }
+                    resolve(data);
+                })
+                    .fail(function (data, status) {
+                    if (_this.checkStop(id)) {
+                        return;
+                    }
+                    reject(status);
+                });
+            }, delay);
+        });
+    };
+    MultiLoader.prototype.retry = function (incMaxTries) {
+        this.maxTries += incMaxTries;
+        this.delayStack = 0; 
+        this.erroredItems.forEach(function (_a) {
+            var tries = _a.tries, retry = _a.retry;
+            return retry(tries);
+        });
+        this.erroredItems = [];
+    };
+    MultiLoader.prototype.removeAllErroredWikis = function () {
+        this.erroredItems.forEach(function (_a) {
+            var remove = _a.remove;
+            return remove();
+        });
+        this.erroredItems = [];
+    };
+    MultiLoader.prototype.getProgress = function () {
+        return Math.round(this.itemsLoaded / this.totalItemsToLoad * 100);
+    };
+    MultiLoader.prototype.checkStop = function (ajaxID) {
+        return ajaxID != this.manager.ajaxID;
+    };
+    MultiLoader.prototype.getNextDelay = function () {
+        return this.delayStack += Global_1["default"].loadDelay;
+    };
+    return MultiLoader;
+}());
+exports["default"] = MultiLoader;
+
+},{"./Global":1}],5:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Main_1 = require("./Main");
-var RCMWikiPanel_1 = require("./RCMWikiPanel");
-var RCMOptions_1 = require("./RCMOptions");
 var Global_1 = require("./Global");
-var RCMModal_1 = require("./RCMModal");
+var i18n_1 = require("./i18n");
 var WikiData_1 = require("./WikiData");
 var rc_data_1 = require("./rc_data");
-var RCList_1 = require("./rc_data/RCList");
+var RCMWikiPanel_1 = require("./RCMWikiPanel");
+var RCMOptions_1 = require("./RCMOptions");
 var Utils_1 = require("./Utils");
-var i18n_1 = require("./i18n");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
+var RCMModal_1 = require("./RCMModal");
+var MultiLoader_1 = require("./MultiLoader");
+var $ = window.jQuery, mw = window.mediaWiki;
 var RCMManager =  (function () {
     function RCMManager(pWrapper, pModID) {
+        var _this = this;
+        this._updateLoadingPercent = function (perc) {
+            $(_this.modID + " .rcm-load-perc").html(perc + "%"); 
+        };
+        this._handleWikiDataLoadError = function (pWikiData, pTries, pID, pErrorMessage, pInc) {
+            var errorCont = $("<div>").appendTo($(_this.statusNode).find(".rcm-status-alerts-cont"));
+            var string = "<div class='rcm-error'>" + i18n_1["default"](pErrorMessage, "[<span class='errored-wiki'>" + pWikiData.servername + "</span>]", pTries) + "</div>";
+            if (pErrorMessage == "error-loading-syntaxhang" && 'https:' == document.location.protocol) {
+                string += "<div class='rcm-error'>" + i18n_1["default"]("error-loading-http") + "</div>";
+            }
+            errorCont.html(string);
+            $("<button class=\"rcm-btn\">" + i18n_1["default"]("error-trymoretimes", pInc) + "</button>").appendTo(errorCont).on("click", function () {
+                _this.currentMultiLoader.retry(pInc);
+                errorCont.remove();
+            });
+            errorCont.append(" ");
+            $("<button class=\"rcm-btn\">" + i18n_1["default"]("ooui-item-remove", pInc) + "</button>").appendTo(errorCont).on("click", function () {
+                _this.currentMultiLoader.ErroredItems.forEach(function (e) {
+                    _this.chosenWikis.splice(_this.chosenWikis.indexOf(e.item), 1);
+                });
+                _this.currentMultiLoader.removeAllErroredWikis();
+                errorCont.remove();
+            });
+        };
+        this._onAllWikiDataParsed = function () {
+            _this.flagWikiDataIsLoaded = true;
+            mw.util.addCSS(_this.chosenWikis.map(function (w) { return w.getWikiRuntimeCSS(); }).join('\n'));
+            _this.wikisNode.onWikiDataLoaded();
+            _this.optionsNode.toggleAbuseLogsFilterVisiblity(_this.chosenWikis.some(function (w) { return w.wikiUsesAbuseLogs; }));
+            _this._start(true);
+        };
+        this._onAllDiscussionsParsed = function () {
+            _this.rcmChunkStart();
+        };
+        this._handleWikiLoadError = function (pWikiData, pTries, pID, pErrorMessage, pInc) {
+            clearTimeout(_this.loadErrorTimeoutID);
+            _this.loadErrorTimeoutID = 0;
+            var errorCont = $("<div>").appendTo($(_this.statusNode).find(".rcm-status-alerts-cont"));
+            errorCont.html("<div class='rcm-error'>" + i18n_1["default"](pErrorMessage, "[<span class='errored-wiki'>" + pWikiData.servername + "</span>]", pTries) + "</div>");
+            _this.addRefreshButtonTo(errorCont[0]);
+            errorCont.append(" ");
+            var retry = function () {
+                clearTimeout(_this.loadErrorTimeoutID);
+                _this.loadErrorTimeoutID = 0;
+                _this.currentMultiLoader.retry(pInc);
+                errorCont.remove();
+            };
+            $("<button class=\"rcm-btn\">" + i18n_1["default"]("error-trymoretimes", pInc) + "</button>").appendTo(errorCont).on("click", retry);
+            if (_this.isAutoRefreshEnabled()) {
+                _this.loadErrorTimeoutID = window.setTimeout(function () { retry === null || retry === void 0 ? void 0 : retry(); }, 20000);
+            }
+        };
+        this._onAllWikisParsed = function () {
+            if (_this.discussionsEnabled) {
+                _this._startDiscussionLoading(_this.ajaxID);
+            }
+            else {
+                _this.rcmChunkStart();
+            }
+        };
         this.modID = "rcm" + pModID;
         this.resultCont = pWrapper;
         this.makeLinksAjax = false;
@@ -731,34 +943,6 @@ var RCMManager =  (function () {
         this._parseWikiList();
         this.resultCont.innerHTML = "<center>" + Global_1["default"].getLoaderLarge() + "</center>";
     }
-    RCMManager.prototype.dispose = function () {
-        this.resultCont = null;
-        this.optionsNode.dispose();
-        this.optionsNode = null;
-        this.statusNode = null;
-        this.wikisNode.dispose();
-        this.wikisNode = null;
-        this.resultsNode = null;
-        this.footerNode = null;
-        this.rcmNewChangesMarker = null;
-        this.rcmNoNewChangesMarker = null;
-        this.hideusers = null;
-        this.onlyshowusers = null;
-        this.rcData = null;
-        this.newRecentChangesEntries = null;
-        if (this.recentChangesEntries) {
-            for (var i = 0; i < this.recentChangesEntries.length; i++) {
-                this.recentChangesEntries[i].dispose();
-                this.recentChangesEntries[i] = null;
-            }
-            this.recentChangesEntries = null;
-        }
-        this.ajaxCallbacks = null;
-        this.erroredWikis = null;
-        this.secondaryWikiData = null;
-        this.lastLoadDateTime = null;
-    };
-    ;
     RCMManager.prototype._parseWikiList = function () {
         var _this = this;
         var tDataset = this.resultCont.dataset;
@@ -786,7 +970,6 @@ var RCMManager =  (function () {
         this.makeLinksAjax = tDataset.ajaxlinks == "true" ? true : false;
         this.chosenWikis = $(this.resultCont).find(">ul>li").toArray().map(function (pNode) { return new WikiData_1["default"](_this).initListData(pNode); });
         this.chosenWikis = Utils_1["default"].uniq_fast_key(this.chosenWikis, "scriptpath"); 
-        tDataset = null;
         this.resultCont.innerHTML = "";
     };
     RCMManager.prototype.init = function () {
@@ -795,7 +978,7 @@ var RCMManager =  (function () {
         this.modID = "." + this.modID;
         this.rcData = [];
         this.recentChangesEntries = [];
-        this.optionsNode = new RCMOptions_1["default"](this).init(Utils_1["default"].newElement("div", { className: "rcm-options" }, this.resultCont));
+        this.optionsNode = new RCMOptions_1["default"](this, Utils_1["default"].newElement("div", { className: "rcm-options" }, this.resultCont));
         this.statusNode = Utils_1["default"].newElement("div", { className: "rcm-status" }, this.resultCont);
         this.wikisNode = new RCMWikiPanel_1["default"](this).init(Utils_1["default"].newElement("div", { className: "rcm-wikis" }, this.resultCont));
         Global_1["default"].showUpdateMessage(this.resultCont);
@@ -812,63 +995,26 @@ var RCMManager =  (function () {
         return this;
     };
     ;
-    RCMManager.prototype._load = function (pWikiData, pUrl, pDataType, pTries, pID, pCallback, pDelayNum) {
-        if (pDelayNum === void 0) { pDelayNum = 0; }
-        ++pTries;
-        setTimeout(function () {
-            $.ajax({ type: 'GET', dataType: pDataType, data: {},
-                timeout: 15000,
-                url: pUrl,
-                success: function (data) { pCallback(data, pWikiData, pTries, pID, null); },
-                error: function (data, status) { pCallback(null, pWikiData, pTries, pID, status); },
-            });
-        }, pDelayNum);
-    };
-    RCMManager.prototype._retryOrError = function (pWikiData, pTries, pID, pFailStatus, pLoadCallback, pHandleErrorCallback) {
-        mw.log("Error loading " + pWikiData.servername + " (" + pTries + "/" + this.loadingErrorRetryNum + " tries)");
-        if (pTries < this.loadingErrorRetryNum) {
-            pLoadCallback(pWikiData, pTries, pID, 0);
+    RCMManager.prototype._addErroredWikiAfterToManyRetries = function (pWikiData, pTries, pID, pFailStatus, pHandleErrorCallback) {
+        if (this.currentMultiLoader.ErroredItems.length === 1 || !this.statusNode.querySelector(".errored-wiki")) {
+            var tMessage = pFailStatus == null ? "error-loading-syntaxhang" : "error-loading-connection";
+            pHandleErrorCallback(pWikiData, pTries, pID, tMessage, RCMManager.LOADING_ERROR_RETRY_NUM_INC);
         }
         else {
-            if (this.erroredWikis.length === 0) {
-                var tMessage = pFailStatus == null ? "error-loading-syntaxhang" : "error-loading-connection";
-                pHandleErrorCallback(pWikiData, pTries, pID, tMessage, RCMManager.LOADING_ERROR_RETRY_NUM_INC);
-            }
-            else {
-                this.erroredWikis.push({ wikiInfo: pWikiData, tries: pTries, id: pID });
-                this.statusNode.querySelector(".errored-wiki").innerHTML += ", " + pWikiData.servername;
-            }
+            this.statusNode.querySelector(".errored-wiki").innerHTML += ", " + pWikiData.servername;
         }
     };
-    RCMManager.prototype._onParsingFinished = function (pCallback) {
-        var _this = this;
-        this.wikisLeftToLoad--;
-        document.querySelector(this.modID + " .rcm-load-perc").innerHTML = this.calcLoadPercent() + "%"; 
-        if (this.wikisLeftToLoad > 0) {
-            if (this.ajaxCallbacks.length > 0) {
-                this.ajaxCallbacks.shift();
-                if (this.ajaxCallbacks.length > 0) {
-                    setTimeout(function () { _this.ajaxCallbacks[0](); }, 0);
-                }
-            }
-        }
-        else {
-            pCallback();
-        }
+    RCMManager.prototype.setupStatusLoadingMode = function (loadingText) {
+        this.statusNode.innerHTML = [
+            "<div class=\"rcm-status-alerts-cont\"></div>",
+            "<div class=\"rcm-status-loading-cont\">" + Global_1["default"].getLoader() + " " + i18n_1["default"](loadingText) + " (<span class='rcm-load-perc'>0%</span>)</div>",
+        ].join("");
     };
     RCMManager.prototype._startWikiDataLoad = function () {
-        var _this = this;
-        this.erroredWikis = [];
-        this.ajaxCallbacks = [];
         this.ajaxID++;
-        this.loadingErrorRetryNum = RCMManager.LOADING_ERROR_RETRY_NUM_INC;
         if (this.chosenWikis.length > 0) {
-            this.chosenWikis.forEach(function (tWikiData, i) {
-                _this._loadWikiData(tWikiData, 0, _this.ajaxID, (i + 1) * Global_1["default"].loadDelay);
-            });
-            this.totalItemsToLoad = this.chosenWikis.length;
-            this.wikisLeftToLoad = this.totalItemsToLoad;
-            this.statusNode.innerHTML = Global_1["default"].getLoader() + " " + i18n_1["default"]('status-loading') + " (<span class='rcm-load-perc'>0%</span>)";
+            this.setupStatusLoadingMode('status-loading');
+            this._loadWikiDataFromList(this.chosenWikis);
         }
         else {
             Utils_1["default"].removeElement(this.statusNode);
@@ -876,194 +1022,60 @@ var RCMManager =  (function () {
             this.resultsNode.innerHTML = "<div class='banner-notification error center'>" + i18n_1["default"]("expand_templates_input_missing") + "</div>";
         }
     };
-    RCMManager.prototype._loadWikiData = function (pWikiData, pTries, pID, pDelayNum) {
-        if (pDelayNum === void 0) { pDelayNum = 0; }
-        this._load(pWikiData, pWikiData.buildWikiDataApiUrl(), 'jsonp', pTries, pID, this._onWikiDataLoaded.bind(this), pDelayNum);
-    };
-    RCMManager.prototype._onWikiDataLoaded = function (pData, pWikiData, pTries, pID, pFailStatus) {
-        var _a;
-        if (pID != this.ajaxID) {
-            return;
-        }
-        if (!!pData && pData.error && pData.query == null) {
-            console.error(pData, pData.error, pData.query == null);
-            this.statusNode.innerHTML = "<div class='rcm-error'><div>ERROR: " + pWikiData.servername + "</div>" + JSON.stringify(pData.error) + "</div>";
-            throw "Wiki returned error";
-        }
-        else if (pFailStatus == "timeout") {
-            this._handleWikiDataLoadError(pWikiData, pTries, pID, "error-loading-syntaxhang", 1);
-            return;
-        }
-        else if (!((_a = pData === null || pData === void 0 ? void 0 : pData.query) === null || _a === void 0 ? void 0 : _a.general)) {
-            this._retryOrError(pWikiData, pTries, pID, pFailStatus, this._loadWikiData.bind(this), this._handleWikiDataLoadError.bind(this));
-            return;
-        }
-        if (pData && pData.warning) {
-            mw.log("WARNING: ", pData.warning);
-        }
-        pWikiData.initAfterLoad(pData.query);
-        this._onWikiDataParsingFinished(pWikiData);
-    };
-    RCMManager.prototype._handleWikiDataLoadError = function (pWikiData, pTries, pID, pErrorMessage, pInc) {
+    RCMManager.prototype._loadWikiDataFromList = function (list) {
         var _this = this;
-        this.statusNode.innerHTML = "<div class='rcm-error'>" + i18n_1["default"](pErrorMessage, "[<span class='errored-wiki'>" + pWikiData.servername + "</span>]", pTries) + "</div>";
-        if (pErrorMessage == "error-loading-syntaxhang" && 'https:' == document.location.protocol) {
-            this.statusNode.innerHTML += "<div class='rcm-error'>" + i18n_1["default"]("error-loading-http") + "</div>";
-        }
-        var tHandler = function (pEvent) {
-            _this.loadingErrorRetryNum += pInc;
-            if (pEvent) {
-                pEvent.target.removeEventListener("click", tHandler);
-            }
-            tHandler = null;
-            _this.erroredWikis.forEach(function (obj) {
-                _this._loadWikiData(obj.wikiInfo, obj.tries, obj.id);
-            });
-            _this.erroredWikis = [];
-            _this.statusNode.innerHTML = Global_1["default"].getLoader() + " " + i18n_1["default"]('status-loading-sorting') + " (<span class='rcm-load-perc'>" + _this.calcLoadPercent() + "%</span>)";
-        };
-        Utils_1["default"].newElement("button", { className: "rcm-btn", innerHTML: i18n_1["default"]("error-trymoretimes", pInc) }, this.statusNode).addEventListener("click", tHandler);
-        var tHandlerRemove = function (pEvent) {
-            if (pEvent) {
-                pEvent.target.removeEventListener("click", tHandlerRemove);
-            }
-            tHandlerRemove = null;
-            _this.chosenWikis.splice(_this.chosenWikis.indexOf(pWikiData), 1);
-            _this.statusNode.innerHTML = Global_1["default"].getLoader() + " " + i18n_1["default"]('status-loading-sorting') + " (<span class='rcm-load-perc'>" + _this.calcLoadPercent() + "%</span>)";
-            _this._onWikiDataParsingFinished(null);
-        };
-        Utils_1["default"].addTextTo(" ", this.statusNode);
-        Utils_1["default"].newElement("button", { className: "rcm-btn", innerHTML: i18n_1["default"]("ooui-item-remove") }, this.statusNode).addEventListener("click", tHandlerRemove);
-        this.erroredWikis.push({ wikiInfo: pWikiData, tries: pTries, id: pID });
-    };
-    RCMManager.prototype._onWikiDataParsingFinished = function (pWikiData) {
-        var _this = this;
-        this._onParsingFinished(function () { _this._onAllWikiDataParsed(); });
-    };
-    RCMManager.prototype._onAllWikiDataParsed = function () {
-        this.flagWikiDataIsLoaded = true;
-        var tCSS = "";
-        this.chosenWikis.forEach(function (wikiInfo) {
-            tCSS += "\n." + wikiInfo.rcClass + " .rcm-tiled-favicon {"
-                + (wikiInfo.bgcolor != null ? "background: " + wikiInfo.bgcolor + ";" : "background-image: url(" + wikiInfo.favicon + ");")
-                + " }";
-        });
-        mw.util.addCSS(tCSS);
-        this.wikisNode.onWikiDataLoaded();
-        this.optionsNode.toggleAbuseLogsFilterVisiblity(this.chosenWikis.some(function (w) { return w.wikiUsesAbuseLogs; }));
-        this._start(true);
-    };
-    RCMManager.prototype._startDiscussionLoading = function (pID) {
-        var _this = this;
-        if (!this.discussionsEnabled) {
-            return;
-        }
-        this.ajaxCallbacks = [];
-        this.loadingErrorRetryNum = RCMManager.LOADING_ERROR_RETRY_NUM_INC;
-        this.totalItemsToLoad = 0;
-        var wikis = this.chosenWikis.filter(function (w) { return !w.hidden; });
-        wikis.forEach(function (tWikiData, i) {
-            if (tWikiData.usesWikiaDiscussions !== false) {
-                _this.totalItemsToLoad++;
-                _this._loadWikiaDiscussions(tWikiData, 0, pID, _this.totalItemsToLoad * Global_1["default"].loadDelay);
-            }
-        });
-        if (this.totalItemsToLoad <= 0) {
-            this.discussionsEnabled = false;
-            this.rcmChunkStart();
-            return;
-        }
-        this.wikisLeftToLoad = this.totalItemsToLoad;
-        this.statusNode.innerHTML = Global_1["default"].getLoader() + " " + i18n_1["default"]('status-discussions-loading') + " (<span class='rcm-load-perc'>0%</span>)";
-    };
-    RCMManager.prototype._loadWikiaDiscussions = function (pWikiData, pTries, pID, pDelayNum) {
-        if (pDelayNum === void 0) { pDelayNum = 0; }
-        this._load(pWikiData, pWikiData.buildWikiDiscussionUrl(), 'json', pTries, pID, this._onWikiDiscussionLoaded.bind(this), pDelayNum);
-    };
-    RCMManager.prototype._onWikiDiscussionLoaded = function (pData, pWikiData, pTries, pID, pFailStatus) {
-        var _this = this;
-        var _a;
-        if (pID != this.ajaxID) {
-            return;
-        }
-        if (pFailStatus == null && ((_a = pData === null || pData === void 0 ? void 0 : pData["_embedded"]) === null || _a === void 0 ? void 0 : _a["doc:posts"])) {
-            pWikiData.usesWikiaDiscussions = true;
-            this.ajaxCallbacks.push(function () {
-                _this._parseWikiDiscussions(pData["_embedded"]["doc:posts"], pWikiData);
-            });
-            if (this.ajaxCallbacks.length === 1) {
-                this.ajaxCallbacks[0]();
-            }
-        }
-        else {
-            if (pWikiData.usesWikiaDiscussions === true) {
-                mw.log("Error loading " + pWikiData.servername + " (" + pTries + "/" + this.loadingErrorRetryNum + " tries)");
-                if (pTries < this.loadingErrorRetryNum && pFailStatus == "timeout") {
-                    this._loadWikiaDiscussions(pWikiData, pTries, pID, 0);
+        var loader = this.currentMultiLoader = new MultiLoader_1["default"](this);
+        loader.multiLoad({
+            list: list,
+            buildUrl: function (w) { return w.buildWikiDataApiUrl(); },
+            dataType: 'jsonp',
+            maxTries: RCMManager.LOADING_ERROR_RETRY_NUM_INC,
+            onProgress: this._updateLoadingPercent,
+            onSingleLoadFinished: function (data, wikiData) {
+                if (data && data.warning) {
+                    mw.log("WARNING: ", data.warning);
                 }
-                else {
-                    this._onDiscussionParsingFinished(pWikiData);
+                wikiData.initAfterLoad(data.query); 
+            },
+            onCheckInvalid: function (data) {
+                var _a;
+                if ((data === null || data === void 0 ? void 0 : data.error) && !(data === null || data === void 0 ? void 0 : data.query)) {
+                    console.error(data.error, data, data.query == null);
+                    return { id: "api-error", halt: true, error: data.error }; 
                 }
-                return;
-            }
-            else {
-                if (pFailStatus != "timeout") {
-                    mw.log("[RCMManager](loadWikiDiscussions) " + pWikiData.servername + " has no discussions.");
-                    pWikiData.usesWikiaDiscussions = false;
+                else if (!((_a = data === null || data === void 0 ? void 0 : data.query) === null || _a === void 0 ? void 0 : _a.general)) {
+                    return { id: "parse-error" }; 
                 }
-                this._onDiscussionParsingFinished(pWikiData);
-            }
-        }
-    };
-    RCMManager.prototype._parseWikiDiscussions = function (pData, pWikiData) {
-        var _this = this;
-        if (pData.length <= 0) {
-            this._onDiscussionParsingFinished(pWikiData);
-            return;
-        }
-        pData.sort(function (a, b) {
-            return (a.modificationDate || a.creationDate).epochSecond < (b.modificationDate || b.creationDate).epochSecond ? 1 : -1;
-        });
-        pWikiData.updateLastDiscussionDate(Utils_1["default"].getFirstItemFromObject(pData));
-        var tNewRC, tDate, tChangeAdded;
-        pData.forEach(function (pRCData) {
-            var tUser = pRCData.createdBy.name;
-            if (_this._changeShouldBePrunedBasedOnOptions(tUser, !!tUser, pWikiData)) {
-                return;
-            }
-            try {
-                if ((pRCData.modificationDate || pRCData.creationDate).epochSecond < Math.round(pWikiData.getEndDate().getTime() / 1000)) {
-                    return;
+                return false;
+            },
+            onSingleError: function (info, wikiData) {
+                var ajaxID = loader.AjaxID;
+                switch (info.id) {
+                    case "timeout": {
+                        _this._handleWikiDataLoadError(wikiData, info.tries, ajaxID, "error-loading-syntaxhang", 1);
+                        break;
+                    }
+                    case "max-tries": {
+                        _this._addErroredWikiAfterToManyRetries(wikiData, info.tries, ajaxID, info.status, _this._handleWikiDataLoadError);
+                        break;
+                    }
+                    case "unknown": {
+                        _this.statusNode.innerHTML = "<div class='rcm-error'><div>ERROR: " + wikiData.servername + "</div>" + JSON.stringify(info.error) + "</div>";
+                        throw "Wiki returned error";
+                        break;
+                    }
                 }
-                var containerType = pRCData._embedded.thread[0].containerType;
-                if (!_this.discNamespaces[containerType]) {
-                    return;
-                }
-            }
-            catch (e) { }
-            _this.itemsToAddTotal++;
-            tNewRC = new rc_data_1.RCDataFandomDiscussion(pWikiData, _this, pRCData);
-            _this._addRCDataToList(tNewRC);
-            pWikiData.discussionsCount++;
-        });
-        mw.log("Discussions:", pWikiData.servername, pData);
-        this._onDiscussionParsingFinished(pWikiData);
-    };
-    RCMManager.prototype._onDiscussionParsingFinished = function (pWikiData) {
-        var _this = this;
-        this._onParsingFinished(function () { _this.rcmChunkStart(); });
+            },
+        })
+            .then(this._onAllWikiDataParsed);
     };
     RCMManager.prototype._start = function (pUpdateParams) {
-        var _this = this;
         if (pUpdateParams === void 0) { pUpdateParams = false; }
         clearTimeout(this.autoRefreshTimeoutID);
         this.wikisNode.clear();
         this.newRecentChangesEntries = [];
-        this.ajaxCallbacks = [];
-        this.erroredWikis = [];
         this.secondaryWikiData = [];
         this.ajaxID++;
-        this.loadingErrorRetryNum = RCMManager.LOADING_ERROR_RETRY_NUM_INC;
         this.itemsAdded = this.itemsToAddTotal = 0;
         var wikis = this.chosenWikis.filter(function (w) { return !w.hidden; });
         if (wikis.length == 0) {
@@ -1071,15 +1083,11 @@ var RCMManager =  (function () {
             this.wikisNode.refresh();
             return;
         }
-        wikis.forEach(function (tWikiData, i) {
-            if (pUpdateParams) {
-                tWikiData.setupRcParams();
-            } 
-            _this._loadWiki(tWikiData, 0, _this.ajaxID, (i + 1) * Global_1["default"].loadDelay);
-        });
-        this.totalItemsToLoad = wikis.length;
-        this.wikisLeftToLoad = this.totalItemsToLoad;
-        this.statusNode.innerHTML = Global_1["default"].getLoader() + " " + i18n_1["default"]('status-loading-sorting') + " (<span class='rcm-load-perc'>0%</span>)";
+        if (pUpdateParams) {
+            wikis.forEach(function (wiki) { return wiki.setupRcParams(); });
+        }
+        this.setupStatusLoadingMode('status-loading-sorting');
+        this._loadRecentChangesFromList(wikis);
     };
     RCMManager.prototype.refresh = function (pUpdateParams) {
         if (pUpdateParams === void 0) { pUpdateParams = false; }
@@ -1096,8 +1104,6 @@ var RCMManager =  (function () {
             Utils_1["default"].removeElement(this.rcmNoNewChangesMarker);
             this.rcmNoNewChangesMarker = null;
         }
-        this.ajaxCallbacks = null;
-        this.secondaryWikiData = null;
         RCMModal_1["default"].closeModal();
         this._start(pUpdateParams);
     };
@@ -1126,87 +1132,169 @@ var RCMManager =  (function () {
                 this.recentChangesEntries[i].dispose();
                 this.recentChangesEntries[i] = null;
             }
-            this.recentChangesEntries = null;
         }
         this.recentChangesEntries = [];
-        this.ajaxCallbacks = null;
-        this.secondaryWikiData = null;
         RCMModal_1["default"].closeModal();
         this._start(pUpdateParams);
     };
-    RCMManager.prototype._loadWiki = function (pWikiData, pTries, pID, pDelayNum) {
-        if (pDelayNum === void 0) { pDelayNum = 0; }
-        this._load(pWikiData, pWikiData.buildApiUrl(), 'jsonp', pTries, pID, this._onWikiLoaded.bind(this), pDelayNum);
+    RCMManager.prototype._startDiscussionLoading = function (pID) {
+        if (!this.discussionsEnabled) {
+            return;
+        }
+        var wikis = this.chosenWikis.filter(function (w) { return !w.hidden; }).filter(function (w) { return w.usesWikiaDiscussions !== false; });
+        if (wikis.length <= 0) {
+            this.discussionsEnabled = false;
+            this.rcmChunkStart();
+            return;
+        }
+        this.setupStatusLoadingMode('status-discussions-loading');
+        this._loadDiscussionsFromList(wikis);
     };
-    RCMManager.prototype._onWikiLoaded = function (pData, pWikiData, pTries, pID, pFailStatus) {
+    RCMManager.prototype._loadDiscussionsFromList = function (list) {
         var _this = this;
-        var _a;
-        if (pID != this.ajaxID) {
+        var loader = this.currentMultiLoader = new MultiLoader_1["default"](this);
+        loader.multiLoad({
+            list: list,
+            buildUrl: function (w) { return w.buildWikiDiscussionUrl(); },
+            dataType: 'json',
+            maxTries: RCMManager.LOADING_ERROR_RETRY_NUM_INC,
+            onProgress: this._updateLoadingPercent,
+            onSingleLoadFinished: function (data, wikiData) {
+                var _a;
+                if (data && data.warning) {
+                    mw.log("WARNING: ", data.warning);
+                }
+                if (wikiData.usesWikiaDiscussions !== false) {
+                    wikiData.usesWikiaDiscussions = true;
+                    _this._parseWikiDiscussions((_a = data === null || data === void 0 ? void 0 : data["_embedded"]) === null || _a === void 0 ? void 0 : _a["doc:posts"], wikiData);
+                }
+            },
+            onCheckInvalid: function (data, wikiData) {
+                var _a;
+                if (data === null || data === void 0 ? void 0 : data.error) {
+                    console.error(data.error, data);
+                    return { id: "api-error", halt: true, error: "[" + data.status + "] " + data.error + " - " + data.details }; 
+                }
+                else if (!((_a = data === null || data === void 0 ? void 0 : data["_embedded"]) === null || _a === void 0 ? void 0 : _a["doc:posts"])) {
+                    if (wikiData.usesWikiaDiscussions === true) {
+                        return { id: "parse-error" }; 
+                    }
+                    else {
+                        mw.log("[RCMManager](loadWikiDiscussions) " + wikiData.servername + " has no discussions.");
+                        wikiData.usesWikiaDiscussions = false;
+                        return false;
+                    }
+                }
+                return false;
+            },
+            onSingleError: function (info, wikiData, errorData) {
+                switch (info.id) {
+                    case "timeout":
+                    case "max-tries": {
+                        errorData.remove();
+                        break;
+                    }
+                    case "unknown": {
+                        _this.statusNode.innerHTML = "<div class='rcm-error'><div>ERROR: " + wikiData.servername + "</div>" + JSON.stringify(info.error) + "</div>";
+                        throw "Wiki returned error";
+                        break;
+                    }
+                }
+            },
+        })
+            .then(this._onAllDiscussionsParsed);
+    };
+    RCMManager.prototype._parseWikiDiscussions = function (pData, pWikiData) {
+        var _this = this;
+        if (!pData || pData.length <= 0) {
             return;
         }
-        if (!!pData && pData.error && pData.query == null) {
-            this.statusNode.innerHTML = "<div class='rcm-error'><div>ERROR: " + pWikiData.servername + "</div>" + JSON.stringify(pData.error) + "</div>";
-            this.addRefreshButtonTo(this.statusNode);
-            throw "Wiki returned error";
-        }
-        else if (pFailStatus == "timeout") {
-            this._handleWikiLoadError(pWikiData, pTries, pID, "error-loading-syntaxhang", 1);
-            return;
-        }
-        else if (((_a = pData === null || pData === void 0 ? void 0 : pData.query) === null || _a === void 0 ? void 0 : _a.recentchanges) == null && !pWikiData.skipLoadingNormalRcDueToFilters()) {
-            this._retryOrError(pWikiData, pTries, pID, pFailStatus, this._loadWiki.bind(this), this._handleWikiLoadError.bind(this));
-            return;
-        }
-        if (pData && pData.warning) {
-            mw.log("WARNING: ", pData.warning);
-        }
-        this.ajaxCallbacks.push(function () {
-            var _a, _b;
-            pWikiData.initAbuseFilterFilters(pData.query);
-            _this._parseWikiAbuseLog((_a = pData.query) === null || _a === void 0 ? void 0 : _a.abuselog, pWikiData);
-            _this._parseWiki((_b = pData.query) === null || _b === void 0 ? void 0 : _b.recentchanges, pWikiData);
+        pData.sort(function (a, b) {
+            return (a.modificationDate || a.creationDate).epochSecond < (b.modificationDate || b.creationDate).epochSecond ? 1 : -1;
         });
-        if (this.ajaxCallbacks.length === 1) {
-            this.ajaxCallbacks[0]();
-        }
-    };
-    RCMManager.prototype._handleWikiLoadError = function (pWikiData, pTries, pID, pErrorMessage, pInc) {
-        var _this = this;
-        clearTimeout(this.loadErrorTimeoutID);
-        this.loadErrorTimeoutID = null;
-        this.statusNode.innerHTML = "<div class='rcm-error'>" + i18n_1["default"](pErrorMessage, "[<span class='errored-wiki'>" + pWikiData.servername + "</span>]", pTries) + "</div>";
-        this.addRefreshButtonTo(this.statusNode);
-        var tHandler = function (pEvent) {
-            clearTimeout(_this.loadErrorTimeoutID);
-            _this.loadErrorTimeoutID = null;
-            _this.loadingErrorRetryNum += pInc;
-            if (pEvent) {
-                pEvent.target.removeEventListener("click", tHandler);
+        pWikiData.updateLastDiscussionDate(Utils_1["default"].getFirstItemFromObject(pData));
+        var tNewRC;
+        pData.forEach(function (pRCData) {
+            var tUser = pRCData.createdBy.name;
+            if (_this._changeShouldBePrunedBasedOnOptions(tUser, !!tUser, pWikiData)) {
+                return;
             }
-            tHandler = null;
-            _this.erroredWikis.forEach(function (obj) {
-                _this._loadWiki(obj.wikiInfo, obj.tries, obj.id);
-            });
-            _this.erroredWikis = [];
-            _this.statusNode.innerHTML = Global_1["default"].getLoader() + " " + i18n_1["default"]('status-loading-sorting') + " (<span class='rcm-load-perc'>" + _this.calcLoadPercent() + "%</span>)";
-        };
-        Utils_1["default"].newElement("button", { className: "rcm-btn", innerHTML: i18n_1["default"]("error-trymoretimes", pInc) }, this.statusNode).addEventListener("click", tHandler);
-        this.erroredWikis.push({ wikiInfo: pWikiData, tries: pTries, id: pID });
-        if (this.isAutoRefreshEnabled()) {
-            this.loadErrorTimeoutID = window.setTimeout(function () { if (tHandler) {
-                tHandler(null);
-            } }, 20000);
-        }
+            try {
+                if ((pRCData.modificationDate || pRCData.creationDate).epochSecond < Math.round(pWikiData.getEndDate().getTime() / 1000)) {
+                    return;
+                }
+                var containerType = pRCData._embedded.thread[0].containerType;
+                if (!_this.discNamespaces[containerType]) {
+                    return;
+                }
+            }
+            catch (e) { }
+            _this.itemsToAddTotal++;
+            tNewRC = new rc_data_1.RCDataFandomDiscussion(pWikiData, _this, pRCData);
+            _this._addRCDataToList(tNewRC);
+            pWikiData.discussionsCount++;
+        });
+        mw.log("Discussions:", pWikiData.servername, pData);
+    };
+    RCMManager.prototype._loadRecentChangesFromList = function (list) {
+        var _this = this;
+        var loader = this.currentMultiLoader = new MultiLoader_1["default"](this);
+        loader.multiLoad({
+            list: list,
+            buildUrl: function (w) { return w.buildApiUrl(); },
+            dataType: 'jsonp',
+            maxTries: RCMManager.LOADING_ERROR_RETRY_NUM_INC,
+            onProgress: this._updateLoadingPercent,
+            onSingleLoadFinished: function (data, wikiData) {
+                var _a, _b;
+                if (data && data.warning) {
+                    mw.log("WARNING: ", data.warning);
+                }
+                wikiData.initAbuseFilterFilters(data.query);
+                _this._parseWikiAbuseLog((_a = data.query) === null || _a === void 0 ? void 0 : _a.abuselog, wikiData);
+                _this._parseWiki((_b = data.query) === null || _b === void 0 ? void 0 : _b.recentchanges, wikiData);
+                _this.wikisNode.onWikiLoaded(wikiData);
+            },
+            onCheckInvalid: function (data, pWikiData) {
+                var _a;
+                if ((data === null || data === void 0 ? void 0 : data.error) && !(data === null || data === void 0 ? void 0 : data.query)) {
+                    console.error(data.error, data, data.query == null);
+                    return { id: "api-error", halt: true, error: data.error }; 
+                }
+                else if (!((_a = data === null || data === void 0 ? void 0 : data.query) === null || _a === void 0 ? void 0 : _a.recentchanges) && !pWikiData.skipLoadingNormalRcDueToFilters()) {
+                    return { id: "parse-error" }; 
+                }
+                return false;
+            },
+            onSingleError: function (info, wikiData) {
+                var ajaxID = loader.AjaxID;
+                switch (info.id) {
+                    case "timeout": {
+                        _this._handleWikiLoadError(wikiData, info.tries, ajaxID, "error-loading-syntaxhang", 1);
+                        break;
+                    }
+                    case "max-tries": {
+                        _this._addErroredWikiAfterToManyRetries(wikiData, info.tries, ajaxID, info.status, _this._handleWikiLoadError);
+                        break;
+                    }
+                    case "unknown": {
+                        _this.statusNode.innerHTML = "<div class='rcm-error'><div>ERROR: " + wikiData.servername + "</div>" + JSON.stringify(info.error) + "</div>";
+                        throw "Wiki returned error";
+                        break;
+                    }
+                }
+            },
+        })
+            .then(this._onAllWikisParsed);
     };
     RCMManager.prototype._parseWiki = function (pData, pWikiData) {
         var _this = this;
         if (!pData || pData.length <= 0) {
-            this._onWikiParsingFinished(pWikiData);
             return;
         }
         mw.log(pWikiData.servername, pData);
         pWikiData.updateLastChangeDate(Utils_1["default"].getFirstItemFromObject(pData));
-        var tNewRC, tDate, tChangeAdded;
+        var tNewRC;
         pData.forEach(function (pRCData) {
             var userEdited = pData.user != "" && pData.anon != "";
             if (_this._changeShouldBePrunedBasedOnOptions(pRCData.user, userEdited, pWikiData)) {
@@ -1222,9 +1310,25 @@ var RCMManager =  (function () {
             _this._addRCDataToList(tNewRC);
             pWikiData.resultsCount++;
         });
-        this._onWikiParsingFinished(pWikiData);
     };
     ;
+    RCMManager.prototype._parseWikiAbuseLog = function (pLogs, pWikiData) {
+        var _this = this;
+        if (!pLogs || pLogs.length <= 0) {
+            return;
+        }
+        pWikiData.updateLastAbuseLogDate(Utils_1["default"].getFirstItemFromObject(pLogs));
+        pLogs.forEach(function (pLogData) {
+            pLogData = rc_data_1.RCDataLog.abuseLogDataToNormalLogFormat(pLogData);
+            var userEdited = pLogData.anon != "";
+            if (_this._changeShouldBePrunedBasedOnOptions(pLogData.user, userEdited, pWikiData)) {
+                return;
+            }
+            _this.itemsToAddTotal++;
+            _this._addRCDataToList(new rc_data_1.RCDataLog(pWikiData, _this, pLogData));
+            pWikiData.abuseLogCount++;
+        });
+    };
     RCMManager.prototype._changeShouldBePrunedBasedOnOptions = function (pUser, pUserEdited, pWikiData) {
         if (Global_1["default"].username && pUser && pWikiData.rcParams.hidemyself && Global_1["default"].username == pUser) {
             return true;
@@ -1246,26 +1350,9 @@ var RCMManager =  (function () {
         }
         return false;
     };
-    RCMManager.prototype._parseWikiAbuseLog = function (pLogs, pWikiData) {
-        var _this = this;
-        if (!pLogs || pLogs.length <= 0) {
-            return;
-        }
-        pWikiData.updateLastAbuseLogDate(Utils_1["default"].getFirstItemFromObject(pLogs));
-        pLogs.forEach(function (pLogData) {
-            pLogData = rc_data_1.RCDataLog.abuseLogDataToNormalLogFormat(pLogData);
-            var userEdited = pLogData.anon != "";
-            if (_this._changeShouldBePrunedBasedOnOptions(pLogData.user, userEdited, pWikiData)) {
-                return;
-            }
-            _this.itemsToAddTotal++;
-            _this._addRCDataToList(new rc_data_1.RCDataLog(pWikiData, _this, pLogData));
-            pWikiData.abuseLogCount++;
-        });
-    };
     RCMManager.prototype._addRCDataToList = function (pNewRC) {
         var _this = this;
-        var tNewRcCombo = { data: pNewRC, list: null };
+        var tNewRcCombo = { data: pNewRC };
         this.rcData.push(tNewRcCombo); 
         var tResultsIsEmpty = this.resultsNode.innerHTML == "", tNewList, tNoChangeAdded;
         if (this.rcParams.hideenhanced) {
@@ -1274,7 +1361,7 @@ var RCMManager =  (function () {
         else if (tResultsIsEmpty) {
             tNoChangeAdded = this.recentChangesEntries.every(function (pRCList, i) {
                 if (pNewRC.date > pRCList.date) {
-                    _this.recentChangesEntries.splice(i, 0, tNewList = new RCList_1["default"](_this).addRC(pNewRC));
+                    _this.recentChangesEntries.splice(i, 0, tNewList = new rc_data_1.RCList(_this).addRC(pNewRC));
                     return false;
                 }
                 else if (pRCList.shouldGroupWith(pNewRC)) {
@@ -1304,7 +1391,7 @@ var RCMManager =  (function () {
                         return false;
                     }
                     else if (tIndexToAddAt_1 > -1 && tNewTimeStamp_1 != Utils_1["default"].formatWikiTimeStamp(pRCList.date, false)) {
-                        _this.recentChangesEntries.splice(tIndexToAddAt_1, 0, tNewList = new RCList_1["default"](_this).addRC(pNewRC));
+                        _this.recentChangesEntries.splice(tIndexToAddAt_1, 0, tNewList = new rc_data_1.RCList(_this).addRC(pNewRC));
                         return false;
                     }
                 }
@@ -1312,22 +1399,9 @@ var RCMManager =  (function () {
             });
         }
         if (tNoChangeAdded) {
-            this.recentChangesEntries.push(tNewList = new RCList_1["default"](this).addRC(pNewRC));
+            this.recentChangesEntries.push(tNewList = new rc_data_1.RCList(this).addRC(pNewRC));
         }
         tNewRcCombo.list = tNewList;
-    };
-    RCMManager.prototype._onWikiParsingFinished = function (pWikiData) {
-        var _this = this;
-        this.wikisNode.onWikiLoaded(pWikiData);
-        this._onParsingFinished(function () { _this._onAllWikisParsed(); });
-    };
-    RCMManager.prototype._onAllWikisParsed = function () {
-        if (this.discussionsEnabled) {
-            this._startDiscussionLoading(this.ajaxID);
-        }
-        else {
-            this.rcmChunkStart();
-        }
     };
     RCMManager.prototype.rcmChunkStart = function () {
         var _this = this;
@@ -1356,7 +1430,6 @@ var RCMManager =  (function () {
             if (!this.rcmNewChangesMarker && this.newRecentChangesEntries.length > 0 && this.lastLoadDateTime != null && this.resultsNode.innerHTML != "") {
                 var tRcSection = this.resultsNode.querySelector("div, ul");
                 this.rcmNewChangesMarker = tRcSection.insertBefore(Utils_1["default"].newElement("div", { className: "rcm-previouslyLoaded", innerHTML: "<strong>" + i18n_1["default"]('previouslyloaded') + "</strong>" }), tRcSection.firstChild);
-                tRcSection = null;
             }
             if (this.lastLoadDateTimeActual != null && this.isAutoRefreshEnabled() && !document.hasFocus()) {
                 if (this.recentChangesEntries[0].date > this.lastLoadDateTimeActual) {
@@ -1364,53 +1437,49 @@ var RCMManager =  (function () {
                 }
             }
         }
-        this.rcmChunk(0, 99, 99, null, this.ajaxID);
+        this.rcmChunk(0, 99, 99, undefined, this.ajaxID);
     };
     RCMManager.prototype.removeOldResults = function (pDate) {
+        var _a;
         var _this = this;
         if (this.resultsNode.innerHTML == "") {
             return;
         }
         var tWikisToCheck = this.chosenWikis.slice(0);
-        var tRcCombo, tDirtyLists = [], tWikiI;
+        var data, list, tDirtyLists = [], tWikiI;
         for (var i = this.rcData.length - 1; i >= 0; i--) {
-            tRcCombo = this.rcData[i];
-            if ((tWikiI = tWikisToCheck.indexOf(tRcCombo.data.wikiInfo)) == -1) {
+            (_a = this.rcData[i], data = _a.data, list = _a.list);
+            if ((tWikiI = tWikisToCheck.indexOf(data.wikiInfo)) == -1) {
                 continue;
             }
-            if (tRcCombo.data.shouldBeRemoved(pDate)) {
-                switch (tRcCombo.data.getRemovalType()) {
+            if (data.shouldBeRemoved(pDate)) {
+                switch (data.getRemovalType()) {
                     case "normal":
-                        tRcCombo.data.wikiInfo.resultsCount--;
+                        data.wikiInfo.resultsCount--;
                         break;
                     case "discussion":
-                        tRcCombo.data.wikiInfo.discussionsCount--;
+                        data.wikiInfo.discussionsCount--;
                         break;
                     case "abuselog":
-                        tRcCombo.data.wikiInfo.abuseLogCount--;
+                        data.wikiInfo.abuseLogCount--;
                         break;
                 }
-                this.rcData[i] = null;
                 this.rcData.splice(i, 1);
-                tRcCombo.list.removeRC(tRcCombo.data);
-                if (this.rcParams.hideenhanced || tDirtyLists.indexOf(tRcCombo.list) == -1) {
-                    tDirtyLists.push(tRcCombo.list);
+                list === null || list === void 0 ? void 0 : list.removeRC(data);
+                if (!!list && (this.rcParams.hideenhanced || tDirtyLists.indexOf(list) == -1)) {
+                    tDirtyLists.push(list);
                 }
-                tRcCombo.data == null;
-                tRcCombo.list = null;
             }
-            else if (tRcCombo.data.wikiInfo.resultsCount <= tRcCombo.data.wikiInfo.rcParams.limit
-                && tRcCombo.data.wikiInfo.discussionsCount <= Math.min(tRcCombo.data.wikiInfo.rcParams.limit, 50)
-                && tRcCombo.data.wikiInfo.abuseLogCount <= tRcCombo.data.wikiInfo.rcParams.limit) {
+            else if (data.wikiInfo.resultsCount <= data.wikiInfo.rcParams.limit
+                && data.wikiInfo.discussionsCount <= Math.min(data.wikiInfo.rcParams.limit, 50)
+                && data.wikiInfo.abuseLogCount <= data.wikiInfo.rcParams.limit) {
                 tWikisToCheck.splice(tWikiI, 1);
                 if (tWikisToCheck.length == 0) {
                     break;
                 }
             }
         }
-        tRcCombo = null;
-        tWikisToCheck = null;
-        var tNewRCList, tOldNode, tListI;
+        var tOldNode, tListI;
         tDirtyLists.forEach(function (pRCList) {
             tListI = _this.recentChangesEntries.indexOf(pRCList);
             if (tListI > -1) {
@@ -1419,7 +1488,6 @@ var RCMManager =  (function () {
                         Utils_1["default"].removeElement(pRCList.htmlNode);
                     }
                     _this.recentChangesEntries[tListI].dispose();
-                    _this.recentChangesEntries[tListI] = null;
                     _this.recentChangesEntries.splice(tListI, 1);
                 }
                 else {
@@ -1434,9 +1502,6 @@ var RCMManager =  (function () {
                 console.warn("[RCMManager](removeOldResults) Failed to remove old list.");
             }
         });
-        tNewRCList = null;
-        tOldNode = null;
-        tDirtyLists = null;
         Utils_1["default"].forEach(this.resultsNode.querySelectorAll(".rcm-rc-cont"), function (o) {
             if (o.innerHTML == "") {
                 Utils_1["default"].removeElement(o.previousSibling);
@@ -1479,10 +1544,10 @@ var RCMManager =  (function () {
                 body: bodyContents.join("\n")
             });
         }
-        tMostRecentEntry = null;
     };
     RCMManager.prototype.rcmChunk = function (pIndex, pLastDay, pLastMonth, pContainer, pID) {
         var _this = this;
+        var _a, _b;
         if (pID != this.ajaxID) {
             return;
         } 
@@ -1491,7 +1556,7 @@ var RCMManager =  (function () {
             return;
         }
         var date = this.newRecentChangesEntries[pIndex].date, tAddToTopOfExistingContainer = false;
-        if (Utils_1["default"].getDate(date) != pLastDay || Utils_1["default"].getMonth(date) != pLastMonth) {
+        if (Utils_1["default"].getDate(date) != pLastDay || Utils_1["default"].getMonth(date) != pLastMonth || !pContainer) { 
             pLastDay = Utils_1["default"].getDate(date);
             pLastMonth = Utils_1["default"].getMonth(date);
             var tTimestamp = Utils_1["default"].formatWikiTimeStamp(date, false);
@@ -1519,9 +1584,7 @@ var RCMManager =  (function () {
                     Utils_1["default"].insertAfter(tNewContainer, tNewHeading);
                 }
                 pContainer = tNewContainer;
-                tNewHeading = null;
             }
-            tNewContainer = null;
         }
         if (this.rcmNewChangesMarker) {
             if (this.newRecentChangesEntries[pIndex].htmlNode) {
@@ -1532,7 +1595,7 @@ var RCMManager =  (function () {
                 pContainer.appendChild(tRcNode);
             }
             else if (tAddToTopOfExistingContainer || pIndex == 0) {
-                pContainer.firstChild.parentNode.insertBefore(tRcNode, pContainer.firstChild);
+                (_b = (_a = pContainer.firstChild) === null || _a === void 0 ? void 0 : _a.parentNode) === null || _b === void 0 ? void 0 : _b.insertBefore(tRcNode, pContainer.firstChild);
             }
             else {
                 if (this.newRecentChangesEntries[pIndex - 1].htmlNode.parentNode != pContainer) {
@@ -1542,14 +1605,13 @@ var RCMManager =  (function () {
                     Utils_1["default"].insertAfter(tRcNode, this.newRecentChangesEntries[pIndex - 1].htmlNode);
                 }
             }
-            tRcNode = null;
         }
         else {
             pContainer.appendChild(this.newRecentChangesEntries[pIndex].toHTML(pIndex));
         }
         this.itemsAdded += this.newRecentChangesEntries[pIndex].list.length;
         if (++pIndex < this.newRecentChangesEntries.length) {
-            document.querySelector(this.modID + " .rcm-content-loading-num").innerHTML = this.itemsAdded.toString();
+            $(this.modID + " .rcm-content-loading-num").html(this.itemsAdded.toString());
             if (pIndex % 5 == 0) {
                 setTimeout(function () { _this.rcmChunk(pIndex, pLastDay, pLastMonth, pContainer, pID); });
             }
@@ -1615,7 +1677,7 @@ var RCMManager =  (function () {
                 if (!skipRefreshSanity && pID != _this.ajaxID) {
                     return;
                 }
-                tCallback.apply(_this, pArgs);
+                tCallback.apply(void 0, pArgs);
             })
                 .fail(function () {
                 tries++;
@@ -1630,11 +1692,10 @@ var RCMManager =  (function () {
         setTimeout(function () { _this._loadExtraInfo(pID); }, Global_1["default"].loadDelay);
     };
     RCMManager.prototype.addRefreshButtonTo = function (pParent) {
-        var self = this;
+        var _this = this;
         pParent.appendChild(document.createTextNode(" "));
-        Utils_1["default"].newElement("button", { className: "rcm-btn", innerHTML: i18n_1["default"]('status-refresh') }, pParent).addEventListener("click", function tHandler(e) {
-            e.target.removeEventListener("click", tHandler);
-            self.refresh();
+        $("<button class=\"rcm-btn\">" + i18n_1["default"]("status-refresh") + "</button>").appendTo(pParent).on("click", function () {
+            _this.refresh();
         });
     };
     ;
@@ -1661,10 +1722,6 @@ var RCMManager =  (function () {
     RCMManager.prototype.isAutoRefreshEnabled = function () {
         return localStorage.getItem(this.autoRefreshLocalStorageID) == "true" || this.autoRefreshEnabledDefault;
     };
-    RCMManager.prototype.calcLoadPercent = function () {
-        return Math.round((this.totalItemsToLoad - this.wikisLeftToLoad) / this.totalItemsToLoad * 100);
-    };
-    ;
     RCMManager.prototype.parseRCParams = function (pData, pExplodeOn, pSplitOn) {
         var tRcParams = {};
         var paramStringArray = [];
@@ -1693,7 +1750,6 @@ var RCMManager =  (function () {
             }
         }
         tRcParams.paramString = paramStringArray.join("&");
-        paramStringArray = null;
         return tRcParams;
     };
     RCMManager.prototype.getDefaultRCParams = function () {
@@ -1710,7 +1766,7 @@ var RCMManager =  (function () {
             hidelogs: false,
             hidenewpages: false,
             hidepageedits: false,
-            namespace: null,
+            namespace: undefined,
         };
     };
     RCMManager.LOADING_ERROR_RETRY_NUM_INC = 5;
@@ -1718,7 +1774,7 @@ var RCMManager =  (function () {
 }());
 exports["default"] = RCMManager;
 
-},{"./Global":1,"./Main":3,"./RCMModal":5,"./RCMOptions":6,"./RCMWikiPanel":7,"./Utils":9,"./WikiData":10,"./i18n":11,"./rc_data":19,"./rc_data/RCList":18}],5:[function(require,module,exports){
+},{"./Global":1,"./Main":3,"./MultiLoader":4,"./RCMModal":6,"./RCMOptions":7,"./RCMWikiPanel":8,"./Utils":10,"./WikiData":11,"./i18n":12,"./rc_data":20}],6:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -1759,8 +1815,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Global_1 = require("./Global");
 var i18n_1 = require("./i18n");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
+var $ = window.jQuery, mw = window.mediaWiki;
 var RCMModal =  (function () {
     function RCMModal() {
     }
@@ -1809,13 +1864,14 @@ var RCMModal =  (function () {
                             event: "close_button",
                             normal: false, primary: false,
                         });
-                        events["close_button"] = function () { RCMModal.modal.close(); };
+                        events["close_button"] = function () { var _a; (_a = RCMModal.modal) === null || _a === void 0 ? void 0 : _a.close(); };
                         pData.buttons && pData.buttons.forEach(function (o, i, a) {
                             buttons.push({ text: o.text, event: o.event, normal: true, primary: true });
                             if (o.closeOnClick !== false) {
                                 events[o.event] = function (e) {
+                                    var _a;
                                     o.callback(e);
-                                    RCMModal.modal.close();
+                                    (_a = RCMModal.modal) === null || _a === void 0 ? void 0 : _a.close();
                                 };
                             }
                             else {
@@ -1870,14 +1926,13 @@ var RCMModal =  (function () {
     };
     RCMModal.MODAL_ID = "rcm-modal";
     RCMModal.MODAL_CONTENT_ID = "rcm-modal-content";
-    RCMModal.modalFactory = null;
     RCMModal.modal = null;
     RCMModal.isOpen = false;
     return RCMModal;
 }());
 exports["default"] = RCMModal;
 
-},{"./Global":1,"./i18n":11}],6:[function(require,module,exports){
+},{"./Global":1,"./i18n":12}],7:[function(require,module,exports){
 "use strict";
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
@@ -1896,10 +1951,10 @@ var Utils_1 = require("./Utils");
 var i18n_1 = require("./i18n");
 var WikiaMultiSelectDropdown_1 = require("./lib/WikiaMultiSelectDropdown");
 var $ = window.jQuery;
-var mw = window.mediaWiki;
 var RCMOptions =  (function () {
-    function RCMOptions(pManager) {
+    function RCMOptions(pManager, pElem) {
         var _this = this;
+        var _a;
         this._onChange_limit = function (pEvent) {
             _this.afterChangeNumber("limit", parseInt(_this.getInput(pEvent).value));
         };
@@ -1972,31 +2027,6 @@ var RCMOptions =  (function () {
         };
         this.manager = pManager;
         this.localStorageID = Global_1["default"].OPTIONS_SETTINGS_LOCAL_STORAGE_ID + "-" + pManager.modID.replace(".", "");
-    }
-    RCMOptions.prototype.dispose = function () {
-        this.removeEventListeners();
-        this.manager = null;
-        this.root = null;
-        this.rcParams = null;
-        this.discNamespaces = null;
-        this.settingsSaveCookieCheckbox = null;
-        this.settingsShowDiscussionsCheckbox = null;
-        this.limitField = null;
-        this.daysField = null;
-        this.minorEditsCheckbox = null;
-        this.botsCheckbox = null;
-        this.anonsCheckbox = null;
-        this.usersCheckbox = null;
-        this.myEditsCheckbox = null;
-        this.groupedChangesCheckbox = null;
-        this.logsCheckbox = null;
-        this.newPagesCheckbox = null;
-        this.pageEditsCheckbox = null;
-        this.abuseLogsCheckbox = null;
-    };
-    RCMOptions.prototype.init = function (pElem) {
-        var _this = this;
-        var _a;
         this.root = pElem;
         var tSave = this.getSave();
         this.rcParams = tSave.options || {}; 
@@ -2007,8 +2037,7 @@ var RCMOptions =  (function () {
         this.manager.discussionsEnabled = Object.keys(this.discNamespaces).filter(function (key) { return _this.discNamespaces[key]; }).length > 0;
         this.manager.abuseLogsEnabled = (_a = tSave.abuseLogsEnabled) !== null && _a !== void 0 ? _a : this.manager.abuseLogsEnabled;
         this._addElements();
-        return this;
-    };
+    }
     RCMOptions.prototype._addElements = function () {
         var tFieldset = Utils_1["default"].newElement("fieldset", { className: "rcoptions collapsible" }, this.root);
         Utils_1["default"].newElement("legend", { innerHTML: i18n_1["default"]('recentchanges-legend') }, tFieldset);
@@ -2178,9 +2207,8 @@ var RCMOptions =  (function () {
         }
     };
     RCMOptions.prototype.getSave = function () {
-        return localStorage.getItem(this.localStorageID)
-            ? JSON.parse(localStorage.getItem(this.localStorageID))
-            : {};
+        var item = localStorage.getItem(this.localStorageID);
+        return item ? JSON.parse(item) : {};
     };
     RCMOptions.prototype.isSaveEnabled = function () {
         return localStorage.getItem(this.localStorageID) != null;
@@ -2189,31 +2217,19 @@ var RCMOptions =  (function () {
 }());
 exports["default"] = RCMOptions;
 
-},{"./Global":1,"./Utils":9,"./i18n":11,"./lib/WikiaMultiSelectDropdown":12}],7:[function(require,module,exports){
+},{"./Global":1,"./Utils":10,"./i18n":12,"./lib/WikiaMultiSelectDropdown":13}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Global_1 = require("./Global");
 var Utils_1 = require("./Utils");
 var i18n_1 = require("./i18n");
 var $ = window.jQuery;
-var mw = window.mediaWiki;
 var RCMWikiPanel =  (function () {
     function RCMWikiPanel(pManager) {
         this.manager = pManager;
         this.singleWiki = this.manager.chosenWikis.length == 1;
         this.loadedWikis = [];
     }
-    RCMWikiPanel.prototype.dispose = function () {
-        this.manager = null;
-        this.root = null;
-        this.wikisNode = null;
-        this.infoNode = null;
-        this.loadedNode = null;
-        this.loadedListNode = null;
-        this.hiddenNode = null;
-        this.hiddenListNode = null;
-        this.loadedWikis = null;
-    };
     RCMWikiPanel.prototype.init = function (pElem) {
         var _this = this;
         this.root = pElem;
@@ -2254,7 +2270,7 @@ var RCMWikiPanel =  (function () {
         var _this = this;
         if (this.singleWiki) {
             if (!this.infoNode.innerHTML) {
-                this.onIconClick(this.manager.chosenWikis[0], null);
+                this.onIconClick(this.manager.chosenWikis[0]);
             }
             return;
         } 
@@ -2308,7 +2324,7 @@ var RCMWikiPanel =  (function () {
             var statsHTML = ""
                 + "<table class='wikitable center statisticstable' style='margin: 0;'>"
                 + "<tr>"
-                + ("<td>" + tLinkNum("Special:AllPages", "articles", pWikiInfo.statistics.articles) + "</td>")
+                + ("<td>" + tLinkNum("Special:AllPages", "statistics-articles", pWikiInfo.statistics.articles) + "</td>")
                 + ("<td>" + tLinkNum("Special:ListFiles", "prefs-files", pWikiInfo.statistics.images) + "</td>")
                 + ("<td>" + tLinkNum("Special:ListUsers", "statistics-users-active", pWikiInfo.statistics.activeusers) + "</td>")
                 + ("<td>" + tLinkNum("Special:ListAdmins", "group-sysop", pWikiInfo.statistics.admins) + "</td>")
@@ -2360,7 +2376,7 @@ var RCMWikiPanel =  (function () {
         }
     };
     RCMWikiPanel.prototype.closeInfo = function () {
-        $(this.infoNode.querySelector(".rcm-wiki-info-banner")).animate({ height: "toggle", opacity: "toggle" }, 200, function () {
+        $(this.infoNode).find(".rcm-wiki-info-banner").animate({ height: "toggle", opacity: "toggle" }, 200, function () {
             $(this).remove();
         });
     };
@@ -2378,31 +2394,25 @@ var RCMWikiPanel =  (function () {
 }());
 exports["default"] = RCMWikiPanel;
 
-},{"./Global":1,"./Utils":9,"./i18n":11}],8:[function(require,module,exports){
+},{"./Global":1,"./Utils":10,"./i18n":12}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Utils_1 = require("./Utils");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
 var UserData =  (function () {
-    function UserData(pWikiInfo, pManager) {
-        this.manager = pManager;
+    function UserData(wikiInfo, manager, userData) {
+        this.manager = manager;
+        this.userid = userData.userid;
+        this.name = userData.name;
+        this.groups = userData.groups || [];
+        Utils_1["default"].removeFromArray(this.groups, "*");
+        if (userData.blockedby) {
+            this.block = { by: userData.blockedby, reason: userData.blockreason, expiration: userData.blockexpiry };
+        }
     }
     UserData.prototype.dispose = function () {
         delete this.manager;
-        delete this.wikiInfo;
-        this.groups = null;
-        this.block = null;
-    };
-    UserData.prototype.init = function (pData) {
-        this.userid = pData.userid;
-        this.name = pData.name;
-        this.groups = pData.groups || [];
-        Utils_1["default"].removeFromArray(this.groups, "*");
-        if (pData.blockedby) {
-            this.block = { by: pData.blockedby, reason: pData.blockreason, expiration: pData.blockexpiry };
-        }
-        return this; 
+        this.groups = undefined;
+        this.block = undefined;
     };
     UserData.prototype.getClassNames = function () {
         return "rcm-usergroup-" + this.groups.join(" rcm-usergroup-") + (this.block ? " rcm-userblocked" : "");
@@ -2418,7 +2428,7 @@ var UserData =  (function () {
 }());
 exports["default"] = UserData;
 
-},{"./Utils":9}],9:[function(require,module,exports){
+},{"./Utils":10}],10:[function(require,module,exports){
 "use strict";
 var __spreadArray = (this && this.__spreadArray) || function (to, from) {
     for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
@@ -2427,8 +2437,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Global_1 = require("./Global");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
+var  mw = window.mediaWiki;
 var Utils =  (function () {
     function Utils() {
     }
@@ -2439,6 +2448,9 @@ var Utils =  (function () {
         var element = document.createElement(tag);
         if (!!attributes) {
             for (var key in attributes) {
+                if (attributes[key] === undefined || attributes[key] === null) {
+                    continue;
+                }
                 if (key == "style") {
                     element.style.cssText = attributes[key];
                 }
@@ -2452,8 +2464,12 @@ var Utils =  (function () {
         return element;
     };
     Utils.removeElement = function (pNode) {
+        var _a;
+        if (!pNode) {
+            return;
+        }
         pNode = pNode;
-        pNode.parentNode.removeChild(pNode);
+        (_a = pNode.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(pNode);
     };
     Utils.addTextTo = function (pText, pNode) {
         pNode.appendChild(document.createTextNode(pText));
@@ -2464,7 +2480,8 @@ var Utils =  (function () {
         return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
     };
     Utils.insertAfter = function (pNewNode, pRef) {
-        return (pRef.nextSibling ? pRef.parentNode.insertBefore(pNewNode, pRef.nextSibling) : pRef.parentNode.appendChild(pNewNode));
+        var _a, _b;
+        return (pRef.nextSibling ? (_a = pRef.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(pNewNode, pRef.nextSibling) : (_b = pRef.parentNode) === null || _b === void 0 ? void 0 : _b.appendChild(pNewNode));
     };
     Utils.prependChild = function (pNewNode, pRef) {
         return (pRef.firstChild ? pRef.insertBefore(pNewNode, pRef.firstChild) : pRef.appendChild(pNewNode));
@@ -2601,7 +2618,7 @@ var Utils =  (function () {
         return ret.join('&');
     };
     Utils.isFileAudio = function (pTitle) {
-        var tExt = null, audioExtensions = ["oga", "ogg", "ogv"]; 
+        var tExt, audioExtensions = ["oga", "ogg", "ogv"]; 
         for (var i = 0; i < audioExtensions.length; i++) {
             tExt = "." + audioExtensions[i];
             if (pTitle.indexOf(tExt, pTitle.length - tExt.length) !== -1) {
@@ -2687,14 +2704,13 @@ var Utils =  (function () {
 }());
 exports["default"] = Utils;
 
-},{"./Global":1}],10:[function(require,module,exports){
+},{"./Global":1}],11:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Global_1 = require("./Global");
 var UserData_1 = require("./UserData");
 var Utils_1 = require("./Utils");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
+var $ = window.jQuery, mw = window.mediaWiki;
 var WikiData =  (function () {
     function WikiData(pManager) {
         this.manager = pManager;
@@ -2716,25 +2732,10 @@ var WikiData =  (function () {
         this.abuseFilters = {};
         this.needsAbuseFilters = false;
         this.hidden = false;
-        this.lastChangeDate = null;
-        this.lastDiscussionDate = null;
-        this.lastAbuseLogDate = null;
         this.resultsCount = 0;
         this.discussionsCount = 0;
         this.abuseLogCount = 0;
     }
-    WikiData.prototype.dispose = function () {
-        this.manager = null;
-        this.hideusers = null;
-        this.onlyshowusers = null;
-        this.rcParamsBase = null;
-        this.rcParams = null;
-        this.namespaces = null;
-        this.user = null;
-        this.lastChangeDate = null;
-        this.lastDiscussionDate = null;
-        this.lastAbuseLogDate = null;
-    };
     WikiData.prototype.initListData = function (pNode) {
         var _a = pNode.textContent.trim().replace(/(\r\n|\n|\r)/gm, "\n").split(/[&\n]/).map(function (s) { return s.trim(); }).filter(function (s) { return !!s; }), tWikiDataRawUrl = _a[0], tWikiDataRaw = _a.slice(1); 
         this.servername = tWikiDataRawUrl.replace(/^https?\:\/\//, "").replace(/(\/$)/g, "");
@@ -2897,33 +2898,32 @@ var WikiData =  (function () {
         return this;
     };
     WikiData.prototype.setupRcParams = function () {
-        this.rcParams = $.extend({}, this.manager.rcParamsBase); 
+        var params = $.extend({}, this.manager.rcParamsBase); 
         if (Object.keys(this.manager.optionsNode.rcParams).length > 0) {
-            this.rcParams = $.extend(this.rcParams, this.manager.optionsNode.rcParams);
+            params = $.extend(params, this.manager.optionsNode.rcParams);
         }
         if (this.rcParamsBase != null) {
-            this.rcParams = $.extend(this.rcParams, this.rcParamsBase);
+            params = $.extend(params, this.rcParamsBase);
         }
-        this.rcParams.paramString = this.createRcParamsString(this.rcParams);
-        this.rcParams = $.extend(this.manager.getDefaultRCParams(), this.rcParams);
+        params.paramString = this.createRcParamsString(params);
+        this.rcParams = $.extend(this.manager.getDefaultRCParams(), params);
         this.lastChangeDate = this.getEndDate();
         this.lastDiscussionDate = this.getEndDate();
         this.lastAbuseLogDate = this.getEndDate();
     };
     WikiData.prototype.createRcParamsString = function (pParams) {
-        var tArray = [];
-        $.each(pParams, function (tKey, tVal) {
-            if (tKey != "paramString") {
-                if (tVal === true) {
-                    tVal = "1";
-                }
-                if (tVal === false) {
-                    tVal = "0";
-                }
-                tArray.push(tKey + "=" + tVal);
+        return $.map(pParams, function (val, key) {
+            if (key == "paramString") {
+                return '';
             }
-        });
-        return tArray.join("&");
+            if (val === true) {
+                val = "1";
+            }
+            else if (val === false) {
+                val = "0";
+            }
+            return key + "=" + val;
+        }).join("&");
     };
     WikiData.prototype.getFaviconHTML = function (pOpenInfoBanner, pSize) {
         if (pOpenInfoBanner === void 0) { pOpenInfoBanner = false; }
@@ -2959,6 +2959,13 @@ var WikiData =  (function () {
         }
         return "data-username=\"" + pUser.replace(/"/g, "&quot;") + "\"";
     };
+    WikiData.prototype.getWikiRuntimeCSS = function () {
+        return [
+            "." + this.rcClass + " .rcm-tiled-favicon { ",
+            (this.bgcolor != null ? "background: " + this.bgcolor + ";" : "background-image: url(" + this.favicon + ");"),
+            " }",
+        ].join("");
+    };
     WikiData.prototype.getPageUrl = function (pageName, params) {
         var query = params ? this.firstSeperator + $.param(params) : "";
         return "" + this.articlepath + pageName + query;
@@ -2988,7 +2995,7 @@ var WikiData =  (function () {
                         Utils_1["default"].removeFromArray(_this.usersNeeded, username);
                         return;
                     }
-                    _this.users[username] = new UserData_1["default"](_this, _this.manager).init(user);
+                    _this.users[username] = new UserData_1["default"](_this, _this.manager, user);
                     Utils_1["default"].removeFromArray(_this.usersNeeded, username);
                     var tNeededClass = "rcm-user-needed";
                     var tUserNodes = _this.manager.resultsNode.querySelectorAll("." + _this.rcClass + " ." + tNeededClass + "[data-username=\"" + username.replace(/"/g, '&quot;') + "\"]");
@@ -3024,7 +3031,7 @@ var WikiData =  (function () {
     };
     WikiData.prototype.buildWikiDataApiUrl = function () {
         if (!this.needsSiteinfoData || !this.needsUserData) {
-            return null;
+            return "";
         }
         var params = {}, tUrlList = [], tMetaList = [], tPropList = [];
         tMetaList.push("siteinfo");
@@ -3052,8 +3059,6 @@ var WikiData =  (function () {
         }
         var tReturnText = "https:" + this.scriptpath + "/api.php?action=query&format=json&continue=&" + Utils_1["default"].objectToUrlQueryData(params);
         tReturnText.replace(/ /g, "_");
-        tMetaList = null;
-        tPropList = null;
         Utils_1["default"].logUrl("[WikiData](buildWikiDataApiUrl)", tReturnText);
         return tReturnText;
     };
@@ -3073,7 +3078,7 @@ var WikiData =  (function () {
         return tReturnText;
     };
     WikiData.prototype.skipLoadingNormalRcDueToFilters = function () {
-        return this.rcParams.hidenewpages && this.rcParams.hidepageedits && this.rcParams.hidelogs;
+        return !!this.rcParams.hidenewpages && !!this.rcParams.hidepageedits && !!this.rcParams.hidelogs;
     };
     WikiData.prototype.buildApiUrl = function () {
         var params = {}, tUrlList = [], tMetaList = [], tPropList = [];
@@ -3097,7 +3102,6 @@ var WikiData =  (function () {
                 tRcShow.push("anon");
             } 
             params["rcshow"] = tRcShow.join("|");
-            tRcShow = null;
             var tRcType = []; 
             if (this.rcParams.hidenewpages == false) {
                 tRcType.push("new");
@@ -3109,8 +3113,7 @@ var WikiData =  (function () {
                 tRcType.push("log");
             }
             params["rctype"] = tRcType.join("|");
-            tRcType = null;
-            var tUserToHide = null;
+            var tUserToHide = void 0;
             if (this.rcParams.hidemyself && this.username) {
                 tUserToHide = this.username;
             }
@@ -3148,10 +3151,6 @@ var WikiData =  (function () {
         }
         var tReturnText = this.scriptpath + "/api.php?action=query&format=json&continue=&" + Utils_1["default"].objectToUrlQueryData(params);
         tReturnText.replace(/ /g, "_");
-        tUrlList = null;
-        tMetaList = null;
-        tPropList = null;
-        tEndDate = null;
         Utils_1["default"].logUrl("[WikiData](buildApiUrl)", tReturnText);
         return tReturnText;
     };
@@ -3160,7 +3159,7 @@ var WikiData =  (function () {
 }());
 exports["default"] = WikiData;
 
-},{"./Global":1,"./UserData":8,"./Utils":9}],11:[function(require,module,exports){
+},{"./Global":1,"./UserData":9,"./Utils":10}],12:[function(require,module,exports){
 "use strict";
 var __spreadArray = (this && this.__spreadArray) || function (to, from) {
     for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
@@ -3169,8 +3168,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Global_1 = require("./Global");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
+var $ = window.jQuery, mw = window.mediaWiki;
 var i18n = function (pKey) {
     var _a;
     var pArgs = [];
@@ -3254,9 +3252,9 @@ var MESSAGES = i18n.MESSAGES = {
     'randompage': 'Random page',
     'group-sysop': 'Administrators',
     'group-user': 'Users',
+    'statistics-articles': 'Content pages',
     'statistics-users-active': 'Active users',
     'prefs-files': 'Files',
-    'articles': 'Articles',
     'edits': 'Edits',
     'filedelete-success': "'''$1''' has been deleted.",
     'redirectto': 'Redirect to:',
@@ -3282,6 +3280,7 @@ var MESSAGES = i18n.MESSAGES = {
     'abusefilter-log': 'Abuse filter log',
     'abuselog': 'Abuse log',
     'log-name-contentmodel': 'Content model change log',
+    'curseprofile_log_name': 'Profile log',
     'logentry-block-block': '$1 {{GENDER:$2|blocked}} {{GENDER:$4|$3}} with an expiration time of $5 $6',
     'logentry-block-reblock': '$1 {{GENDER:$2|changed}} block settings for {{GENDER:$4|$3}} with an expiration time of $5 $6',
     'logentry-block-unblock': '$1 {{GENDER:$2|unblocked}} {{GENDER:$4|$3}}',
@@ -3329,6 +3328,13 @@ var MESSAGES = i18n.MESSAGES = {
     'logentry-rights-rights-legacy': '$1 {{GENDER:$2|changed}} group membership for $3',
     'rightsnone': '(none)',
     'userrenametool-success': 'The user "$1" has been renamed to "$2".',
+    'logentry-curseprofile-comment': 'comment',
+    'logentry-curseprofile-comment-created': '$1 left a $4 on $3\'s profile',
+    'logentry-curseprofile-comment-deleted': '$1 deleted a $4 on $3\'s profile.',
+    'logentry-curseprofile-comment-edited': '$1 edited a $4 on $3\'s profile.',
+    'logentry-curseprofile-comment-purged': '$1 purged a $4 on $3\'s profile.',
+    'logentry-curseprofile-comment-replied': '$1 replied to a $4 on $3\'s profile.',
+    'logentry-curseprofile-profile-edited': '$1 edited the $4 on $3\'s profile.',
     'allmessages-filter-all': 'All',
     'listusers-select-all': 'Select all',
     'socialactivity-page-title': 'Social Activity',
@@ -3680,7 +3686,7 @@ i18n.wiki2html = function (pText) {
     })
         .replace(/{{GENDER:(.*?)}}/g, function (m, l) {
         var p = l.split("|");
-        var user = p.shift(); 
+ p.shift(); 
         return mw.language.gender(Global_1["default"].userOptions.gender, p);
     })
         .replace(/{{PLURAL:(.*?)}}/g, function (m, l) {
@@ -3695,7 +3701,7 @@ i18n.wiki2html = function (pText) {
 };
 exports["default"] = i18n;
 
-},{"./Global":1}],12:[function(require,module,exports){
+},{"./Global":1}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WikiaMultiSelectDropdown = void 0;
@@ -3945,7 +3951,7 @@ var WikiaMultiSelectDropdown =  (function () {
 }());
 exports.WikiaMultiSelectDropdown = WikiaMultiSelectDropdown;
 
-},{"../i18n":11}],13:[function(require,module,exports){
+},{"../i18n":12}],14:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function default_1() {
@@ -4192,14 +4198,12 @@ function default_1() {
 }
 exports["default"] = default_1;
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Utils_1 = require("../Utils");
 var i18n_1 = require("../i18n");
 var _1 = require(".");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
 var RCDataAbstract =  (function () {
     function RCDataAbstract(pWikiInfo, pManager, props) {
         var _a, _b, _c, _d;
@@ -4274,7 +4278,7 @@ var RCDataAbstract =  (function () {
 }());
 exports["default"] = RCDataAbstract;
 
-},{".":19,"../Utils":9,"../i18n":11}],15:[function(require,module,exports){
+},{".":20,"../Utils":10,"../i18n":12}],16:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -4306,8 +4310,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Utils_1 = require("../Utils");
 var i18n_1 = require("../i18n");
 var _1 = require(".");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
 var RCDataArticle =  (function (_super) {
     __extends(RCDataArticle, _super);
     function RCDataArticle(pWikiInfo, pManager, pData) {
@@ -4349,13 +4351,24 @@ var RCDataArticle =  (function (_super) {
         if (pUserHidden) {
             return '<span class="history-deleted">' + i18n_1["default"]("rev-deleted-user") + '</span>';
         }
-        var blockText = pWikiInfo.user.rights.block ? i18n_1["default"]("pipe-separator") + "<a href='{0}Special:Block/{1}'>" + i18n_1["default"]("blocklink") + "</a>" : "";
+        var authorUrlEscaped = Utils_1["default"].escapeCharactersUrl(pAuthor);
+        var userLink, userTools = [];
         if (pUserEdited) {
-            return Utils_1["default"].formatString("<span class='mw-usertoollinks'><a href='{0}User:{1}' class='" + pWikiInfo.getUserClass(pAuthor) + "' " + pWikiInfo.getUserClassDataset(pAuthor) + ">{2}</a> (<a href='{0}User_talk:{1}'>" + i18n_1["default"]("talkpagelinktext") + "</a>" + i18n_1["default"]("pipe-separator") + "<a href='{0}Special:Contributions/{1}'>" + i18n_1["default"]("contribslink") + "</a>" + blockText + ")</span>", pWikiInfo.articlepath, Utils_1["default"].escapeCharactersUrl(pAuthor), pAuthor);
+            userLink = "<a href=\"" + pWikiInfo.getPageUrl("User:" + authorUrlEscaped) + "\" class=\"" + pWikiInfo.getUserClass(pAuthor) + "\" " + pWikiInfo.getUserClassDataset(pAuthor) + ">" + pAuthor + "</a>";
+            userTools.push("<a href=\"" + pWikiInfo.getPageUrl("User_talk:" + authorUrlEscaped) + "\">" + i18n_1["default"]("talkpagelinktext") + "</a>");
+            userTools.push("<a href=\"" + pWikiInfo.getPageUrl("Special:Contributions/" + authorUrlEscaped) + "\">" + i18n_1["default"]("contribslink") + "</a>");
         }
         else {
-            return Utils_1["default"].formatString("<span class='mw-usertoollinks'><a class='rcm-useranon' href='{0}Special:Contributions/{1}'>{2}</a> (<a href='{0}User_talk:{1}'>" + i18n_1["default"]("talkpagelinktext") + "</a>" + blockText + ")</span>", pWikiInfo.articlepath, Utils_1["default"].escapeCharactersUrl(pAuthor), pAuthor);
+            userLink = "<a href=\"" + pWikiInfo.getPageUrl("Special:Contributions/" + authorUrlEscaped) + "\" class='rcm-useranon'>" + pAuthor + "</a>";
+            if (!pWikiInfo.isWikiaWiki) {
+                userTools.push("<a href=\"" + pWikiInfo.getPageUrl("User_talk:" + authorUrlEscaped) + "\">" + i18n_1["default"]("talkpagelinktext") + "</a>");
+            }
         }
+        if (pWikiInfo.user.rights.block) {
+            userTools.push("<a href=\"" + pWikiInfo.getPageUrl("Special:Block/" + authorUrlEscaped) + "\">" + i18n_1["default"]("blocklink") + "</a>");
+        }
+        var userToolsString = userTools.length === 0 ? "" : " " + i18n_1["default"]('parentheses-start') + userTools.join(i18n_1["default"]("pipe-separator")) + i18n_1["default"]('parentheses-end');
+        return "<span class='mw-usertoollinks'>" + userLink + userToolsString + "</span>";
     };
     RCDataArticle.tweakParsedComment = function (pParsedComment, pDeleted, pWikiInfo) {
         if (!pDeleted) {
@@ -4386,7 +4399,7 @@ var RCDataArticle =  (function (_super) {
 }(_1.RCDataAbstract));
 exports["default"] = RCDataArticle;
 
-},{".":19,"../Utils":9,"../i18n":11}],16:[function(require,module,exports){
+},{".":20,"../Utils":10,"../i18n":12}],17:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -4419,8 +4432,7 @@ var Global_1 = require("../Global");
 var _1 = require(".");
 var Utils_1 = require("../Utils");
 var i18n_1 = require("../i18n");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
+var $ = window.jQuery, mw = window.mediaWiki;
 var RCDataFandomDiscussion =  (function (_super) {
     __extends(RCDataFandomDiscussion, _super);
     function RCDataFandomDiscussion(pWikiInfo, pManager, post) {
@@ -4463,10 +4475,10 @@ var RCDataFandomDiscussion =  (function (_super) {
             if (post.poll) {
                 _this.summary = Global_1["default"].getWdsSymbol('rcm-disc-poll') + " " + i18n_1["default"]('activity-social-activity-poll-placeholder');
             }
-            else if (_this.containerType == "ARTICLE_COMMENT" && post.jsonModel) {
+            else if (post.jsonModel) { 
                 _this.summary = _this.jsonModelToSummary(jsonModel, 100);
             }
-            else if (_this.containerType == "ARTICLE_COMMENT" && post.renderedContent) {
+            else if (post.renderedContent) { 
                 _this.summary = $("<div>" + post.renderedContent + "</div>").text();
                 if (_this.summary.length > 100) {
                     _this.summary = _this.summary.slice(0, 100).trim() + "...";
@@ -4490,8 +4502,8 @@ var RCDataFandomDiscussion =  (function (_super) {
         }
         else if (_this.containerType == "ARTICLE_COMMENT") {
             if (!_this.forumName || _this.forumName == "Root Forum") {
-                _this.forumName = null;
-                _this.forumPageName = null;
+                _this.forumName = undefined;
+                _this.forumPageName = undefined;
             }
             if (!_this.threadTitle) {
                 if ((_d = thread === null || thread === void 0 ? void 0 : thread.firstPost) === null || _d === void 0 ? void 0 : _d.jsonModel) {
@@ -4526,7 +4538,7 @@ var RCDataFandomDiscussion =  (function (_super) {
         switch (this.containerType) {
             case 'FORUM': return wikiInfo.scriptpath + "/d/f?catId=" + this.forumId + "&sort=latest";
             case 'WALL': return !this.forumPageName ? "#" : this.wikiInfo.getPageUrl("Message_Wall:" + this.forumPageName);
-            case 'ARTICLE_COMMENT': return !this.forumPageName ? "#" : this.getUrl(null, false); 
+            case 'ARTICLE_COMMENT': return !this.forumPageName ? "#" : this.getUrl(undefined, false); 
         }
     };
  RCDataFandomDiscussion.prototype.userDetails = function () {
@@ -4559,10 +4571,10 @@ var RCDataFandomDiscussion =  (function (_super) {
     };
     RCDataFandomDiscussion.prototype.jsonModelToSummary = function (jsonModel, maxLength) {
         var tJsonToSummary = function (props) {
-            if ("content" in props) {
-                return props.content.map(tJsonToSummary).join("");
+            if ("content" in props && props.content) {
+                return props.content.map(tJsonToSummary).join(" ");
             }
-            if (props.type == "text") {
+            else if (props.type == "text") {
                 return props.text;
             }
             else if (props.type == "image") {
@@ -4584,11 +4596,11 @@ var RCDataFandomDiscussion =  (function (_super) {
             case "FORUM": {
                 var tForumLink = "<a href=\"" + this.getForumUrl() + "\">" + this.forumName + "</a>";
                 var tText = i18n_1["default"].MESSAGES["wall-recentchanges-thread-group"].replace(/(\[\[.*\]\])/g, "$2"); 
-                return i18n_1["default"].wiki2html(tText, "<a href=\"" + this.getUrl(null, pIsHead) + "\">" + this.threadTitle + "</a>" + ajaxIcon, tForumLink); 
+                return i18n_1["default"].wiki2html(tText, "<a href=\"" + this.getUrl(undefined, pIsHead) + "\">" + this.threadTitle + "</a>" + ajaxIcon, tForumLink); 
             }
             case "WALL": {
                 var tText = i18n_1["default"].MESSAGES["wall-recentchanges-thread-group"].replace(/(\[\[.*\]\])/g, "$2"); 
-                return i18n_1["default"].wiki2html(tText, "<a href=\"" + this.getUrl(null, pIsHead) + "\">" + this.threadTitle + "</a>" + ajaxIcon, "<a href=\"" + this.getForumUrl() + "\">" + this.forumName + "</a>");
+                return i18n_1["default"].wiki2html(tText, "<a href=\"" + this.getUrl(undefined, pIsHead) + "\">" + this.threadTitle + "</a>" + ajaxIcon, "<a href=\"" + this.getForumUrl() + "\">" + this.forumName + "</a>");
             }
             case "ARTICLE_COMMENT": {
                 return i18n_1["default"](pIsHead ? "rc-comments" : "rc-comment", this.getCommentForumNameLink(pIsHead) + ajaxIcon);
@@ -4601,7 +4613,7 @@ var RCDataFandomDiscussion =  (function (_super) {
         var text = _a.text, _b = _a.showReply, showReply = _b === void 0 ? true : _b;
         this.updateFromOldCommentFetchDataIfNeeded();
         if (this.forumPageName) {
-            return "<a href='" + this.getUrl(null, !showReply) + "' title='" + this.title + "'>" + (text == "set-to-page-name" ? this.forumName : text) + "</a>";
+            return "<a href='" + this.getUrl(undefined, !showReply) + "' title='" + this.title + "'>" + (text == "set-to-page-name" ? this.forumName : text) + "</a>";
         }
         var uniqID = Utils_1["default"].uniqID();
         this.wikiInfo.discCommentPageNamesNeeded.push({ pageID: this.forumId, uniqID: uniqID, cb: function (articleData) {
@@ -4609,20 +4621,20 @@ var RCDataFandomDiscussion =  (function (_super) {
                     return;
                 }
                 _this.updateDataFromCommentFetch(articleData);
-                $(".rcm" + uniqID).attr("href", _this.getUrl(null, !showReply));
+                $(".rcm" + uniqID).attr("href", _this.getUrl(undefined, !showReply));
                 if (text == "set-to-page-name") {
                     $(".rcm" + uniqID).text(_this.forumName);
                 }
             } });
         this.fetchCommentFeedsAndPostsIfNeeded();
-        return "<a class=\"rcm" + uniqID + "\" href='" + this.getUrl(null, !showReply) + "' title='" + this.title + "'>" + (text == "set-to-page-name" ? null : text) + "</a>";
+        return "<a class=\"rcm" + uniqID + "\" href='" + this.getUrl(undefined, !showReply) + "' title='" + this.title + "'>" + (text == "set-to-page-name" ? null : text) + "</a>";
     };
     RCDataFandomDiscussion.prototype.getCommentForumNameLink = function (pIsHead) {
         var _this = this;
         if (pIsHead === void 0) { pIsHead = false; }
         this.updateFromOldCommentFetchDataIfNeeded();
         if (this.forumName) {
-            return "[" + this.getUrl(null, pIsHead) + " " + this.forumName + "]";
+            return "[" + this.getUrl(undefined, pIsHead) + " " + this.forumName + "]";
         }
         var uniqID = Utils_1["default"].uniqID();
         this.wikiInfo.discCommentPageNamesNeeded.push({ pageID: this.forumId, uniqID: uniqID, cb: function (articleData) {
@@ -4630,7 +4642,7 @@ var RCDataFandomDiscussion =  (function (_super) {
                     return;
                 }
                 _this.updateDataFromCommentFetch(articleData);
-                $(".rcm" + uniqID + " a").attr("href", _this.getUrl(null, pIsHead)).text(_this.forumName);
+                $(".rcm" + uniqID + " a").attr("href", _this.getUrl(undefined, pIsHead)).text(_this.forumName);
             } });
         this.fetchCommentFeedsAndPostsIfNeeded();
         return "<span class=\"rcm" + uniqID + "\">[[#|" + this.forumName + "]]</span>";
@@ -4659,7 +4671,7 @@ var RCDataFandomDiscussion =  (function (_super) {
     };
     RCDataFandomDiscussion.prototype.updateFromOldCommentFetchDataIfNeeded = function () {
         if (!this.forumName && this.wikiInfo.discCommentPageNames.has(this.forumId)) {
-            var articleData = this.wikiInfo.discCommentPageNames.get(this.forumId);
+            var articleData = this.wikiInfo.discCommentPageNames.get(this.forumId); 
             this.updateDataFromCommentFetch(articleData);
         }
     };
@@ -4691,7 +4703,7 @@ var RCDataFandomDiscussion =  (function (_super) {
     RCDataFandomDiscussion.prototype.actionText = function () {
         var userDetails = this.userDetails();
         var forumLink = "<a href=\"" + this.getForumUrl() + "\">" + this.forumPageName + "</a>";
-        var threadLink = "<a href=\"" + this.getUrl(null, true) + "\">" + this.threadTitle + "</a>";
+        var threadLink = "<a href=\"" + this.getUrl(undefined, true) + "\">" + this.threadTitle + "</a>";
         var viewLink = " " + i18n_1["default"]('parentheses', "<a href=\"" + this.getUrl() + "\">" + i18n_1["default"]('socialactivity-view') + "</a>");
         var summary = i18n_1["default"]('quotation-marks', "<em>" + this.summary + "</em>");
         switch (this.containerType) {
@@ -4758,7 +4770,7 @@ var RCDataFandomDiscussion =  (function (_super) {
 }(_1.RCDataAbstract));
 exports["default"] = RCDataFandomDiscussion;
 
-},{".":19,"../Global":1,"../Utils":9,"../i18n":11}],17:[function(require,module,exports){
+},{".":20,"../Global":1,"../Utils":10,"../i18n":12}],18:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -4791,8 +4803,7 @@ var Utils_1 = require("../Utils");
 var i18n_1 = require("../i18n");
 var _1 = require(".");
 var Global_1 = require("../Global");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
+var  mw = window.mediaWiki;
 var RCDataLog =  (function (_super) {
     __extends(RCDataLog, _super);
     function RCDataLog(pWikiInfo, pManager, pData) {
@@ -4825,14 +4836,14 @@ var RCDataLog =  (function (_super) {
         _super.prototype.dispose.call(this);
     };
     RCDataLog.prototype._initLog = function (pRCData) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
         if (this.actionhidden) {
             return;
         }
         this.logParams = __assign({ type: this.logtype }, ((_a = pRCData.logparams) !== null && _a !== void 0 ? _a : {}));
         switch (this.logParams.type) {
             case "abuse": {
-                var _m = (_b = pRCData.logparams) !== null && _b !== void 0 ? _b : {}, result = _m.result, filter = _m.filter, filter_id = _m.filter_id;
+                var _o = (_b = pRCData.logparams) !== null && _b !== void 0 ? _b : {}, result = _o.result, filter = _o.filter, filter_id = _o.filter_id;
                 this.logParams = {
                     type: "abuse",
                     result: result,
@@ -4842,7 +4853,7 @@ var RCDataLog =  (function (_super) {
                 break;
             }
             case "abusefilter": {
-                var _o = (_c = pRCData.logparams) !== null && _c !== void 0 ? _c : {}, historyId = _o.historyId, newId = _o.newId;
+                var _p = (_c = pRCData.logparams) !== null && _c !== void 0 ? _c : {}, historyId = _p.historyId, newId = _p.newId;
                 this.logParams = {
                     type: "abusefilter",
                     historyId: historyId,
@@ -4851,7 +4862,7 @@ var RCDataLog =  (function (_super) {
                 break;
             }
             case "block": {
-                var _p = (_d = pRCData.logparams) !== null && _d !== void 0 ? _d : {}, duration = _p.duration, flags = _p.flags, expiry = _p.expiry, sitewide = _p.sitewide;
+                var _q = (_d = pRCData.logparams) !== null && _d !== void 0 ? _d : {}, duration = _q.duration, flags = _q.flags, expiry = _q.expiry, sitewide = _q.sitewide;
                 this.logParams = {
                     type: "block",
                     duration: duration,
@@ -4864,7 +4875,7 @@ var RCDataLog =  (function (_super) {
                 break;
             }
             case "contentmodel": {
-                var _q = (_e = pRCData.logparams) !== null && _e !== void 0 ? _e : {}, oldmodel = _q.oldmodel, newmodel = _q.newmodel;
+                var _r = (_e = pRCData.logparams) !== null && _e !== void 0 ? _e : {}, oldmodel = _r.oldmodel, newmodel = _r.newmodel;
                 this.logParams = {
                     type: "contentmodel",
                     oldmodel: oldmodel,
@@ -4872,18 +4883,27 @@ var RCDataLog =  (function (_super) {
                 };
                 break;
             }
+            case "curseprofile": {
+                var _s = (_f = pRCData.logparams) !== null && _f !== void 0 ? _f : {}, section = _s["4:section"], comment_id = _s["4:comment_id"];
+                this.logParams = {
+                    type: "curseprofile",
+                    section: section,
+                    comment_id: comment_id,
+                };
+                break;
+            }
             case "delete": {
-                var _r = (_f = pRCData.logparams) !== null && _f !== void 0 ? _f : {}, count = _r.count, ids = _r.ids, oldMask = _r.old, newMask = _r.new;
+                var _t = (_g = pRCData.logparams) !== null && _g !== void 0 ? _g : {}, count = _t.count, ids = _t.ids,  newMask = _t.new;
                 this.logParams = {
                     type: "delete",
-                    ids_length: (_g = ids === null || ids === void 0 ? void 0 : ids.length) !== null && _g !== void 0 ? _g : 1,
+                    ids_length: (_h = ids === null || ids === void 0 ? void 0 : ids.length) !== null && _h !== void 0 ? _h : 1,
                     new_bitmask: newMask === null || newMask === void 0 ? void 0 : newMask.bitmask,
                     count: count,
                 };
                 break;
             }
             case "merge": {
-                var _s = (_h = pRCData.logparams) !== null && _h !== void 0 ? _h : {}, dest_title = _s.dest_title, mergepoint = _s.mergepoint;
+                var _u = (_j = pRCData.logparams) !== null && _j !== void 0 ? _j : {}, dest_title = _u.dest_title, mergepoint = _u.mergepoint;
                 this.logParams = {
                     type: "merge",
                     destination: dest_title ? Utils_1["default"].escapeCharacters(dest_title) : "",
@@ -4892,7 +4912,7 @@ var RCDataLog =  (function (_super) {
                 break;
             }
             case "move": {
-                var _t = (_j = pRCData.logparams) !== null && _j !== void 0 ? _j : {}, target_title = _t.target_title, suppressredirect = _t.suppressredirect;
+                var _v = (_k = pRCData.logparams) !== null && _k !== void 0 ? _k : {}, target_title = _v.target_title, suppressredirect = _v.suppressredirect;
                 this.logParams = {
                     type: "move",
                     suppressredirect: suppressredirect == "",
@@ -4901,7 +4921,7 @@ var RCDataLog =  (function (_super) {
                 break;
             }
             case "protect": {
-                var _u = (_k = pRCData.logparams) !== null && _k !== void 0 ? _k : {}, description = _u.description, details = _u.details, cascade = _u.cascade, oldtitle_ns = _u.oldtitle_ns, oldtitle_title = _u.oldtitle_title;
+                var _w = (_l = pRCData.logparams) !== null && _l !== void 0 ? _l : {}, description = _w.description,  cascade = _w.cascade,  oldtitle_title = _w.oldtitle_title;
                 this.logParams = {
                     type: "protect",
                     description: description,
@@ -4911,7 +4931,7 @@ var RCDataLog =  (function (_super) {
                 break;
             }
             case "rights": {
-                var _v = (_l = pRCData.logparams) !== null && _l !== void 0 ? _l : {}, oldgroups = _v.oldgroups, newgroups = _v.newgroups;
+                var _x = (_m = pRCData.logparams) !== null && _m !== void 0 ? _m : {}, oldgroups = _x.oldgroups, newgroups = _x.newgroups;
                 this.logParams = {
                     type: "rights",
                     legacy: !newgroups && !oldgroups,
@@ -4932,6 +4952,7 @@ var RCDataLog =  (function (_super) {
             case "abusefilter": return i18n_1["default"]("abusefilter-log");
             case "block": return i18n_1["default"]("blocklogpage");
             case "contentmodel": return i18n_1["default"]("log-name-contentmodel");
+            case "curseprofile": return i18n_1["default"]("curseprofile_log_name");
             case "delete": return i18n_1["default"]("dellogpage");
             case "import": return i18n_1["default"]("importlogpage");
             case "merge": return i18n_1["default"]("mergelog");
@@ -4946,7 +4967,7 @@ var RCDataLog =  (function (_super) {
     };
     RCDataLog.prototype.logActionText = function () {
         var _this = this;
-        var _a, _b;
+        var _a, _b, _c;
         var tLogMessage = "";
         var tAfterLogMessage;
         if (this.actionhidden) {
@@ -4955,7 +4976,7 @@ var RCDataLog =  (function (_super) {
         }
         switch (this.logParams.type) {
             case "abuse": {
-                var _c = this.logParams, result = _c.result, filter_1 = _c.filter, filter_id = _c.filter_id;
+                var _d = this.logParams, result = _d.result, filter_1 = _d.filter;
                 var filterFromDesc_1 = { found: 0 };
                 if (filter_1.trim() != "") {
                     Object.keys(this.wikiInfo.abuseFilters).forEach(function (i) {
@@ -4992,7 +5013,7 @@ var RCDataLog =  (function (_super) {
                 break;
             }
             case "abusefilter": {
-                var _d = this.logParams, filterId = _d.newId, historyId = _d.historyId;
+                var _e = this.logParams, filterId = _e.newId, historyId = _e.historyId;
                 this.wikiInfo.needsAbuseFilters = true;
                 switch (this.logaction) {
                     case "create":
@@ -5005,14 +5026,16 @@ var RCDataLog =  (function (_super) {
                 break;
             }
             case "block": {
-                var _e = this.logParams, duration = _e.duration, flags = _e.flags;
+                var _f = this.logParams, duration = _f.duration, flags = _f.flags;
                 var affectedUser = (_a = this.title.split(/:(.+)/)[1]) !== null && _a !== void 0 ? _a : this.title;
-                tLogMessage += i18n_1["default"](("logentry-block-" + this.logaction), this.userDetails(), Global_1.UNKNOWN_GENDER_TYPE, "<a href='" + this.href + "'>" + affectedUser + "</a>", Global_1.UNKNOWN_GENDER_TYPE, 
+                tLogMessage += i18n_1["default"](("logentry-block-" + this.logaction), this.userDetails(), Global_1.UNKNOWN_GENDER_TYPE, undefined, 
+                Global_1.UNKNOWN_GENDER_TYPE, 
                 duration, flags && i18n_1["default"]('parentheses', flags));
+                tLogMessage = tLogMessage.replace("$3", _1.RCDataArticle.formatUserDetails(this.wikiInfo, affectedUser, false, !mw.util.isIPAddress(affectedUser)));
                 break;
             }
             case 'contentmodel': {
-                var _f = this.logParams, oldmodel = _f.oldmodel, newmodel = _f.newmodel;
+                var _g = this.logParams, oldmodel = _g.oldmodel, newmodel = _g.newmodel;
                 switch (this.logaction) {
                     case "new":
                     case "change":
@@ -5026,8 +5049,28 @@ var RCDataLog =  (function (_super) {
                 }
                 break;
             }
+            case "curseprofile": {
+                var _h = this.logParams, section = _h.section, comment_id = _h.comment_id;
+                var affectedUser = (_b = this.title.split(/:(.+)/)[1]) !== null && _b !== void 0 ? _b : this.title;
+                switch (this.logaction) {
+                    case "profile-edited":
+                        {
+                            tLogMessage += i18n_1["default"]("logentry-curseprofile-" + this.logaction, this.userDetails(), Global_1.UNKNOWN_GENDER_TYPE, "<a href='" + this.href + "'>" + affectedUser + "</a>", section.replace("profile-", ""));
+                            break;
+                        }
+                    default: {
+                        var commentLink = i18n_1["default"]('logentry-curseprofile-comment');
+                        if (comment_id != 0) {
+                            commentLink = "<a href=\"" + this.wikiInfo.getPageUrl("Special:CommentPermalink/" + comment_id + "#comment" + comment_id) + "\">" + commentLink + "</a>";
+                        }
+                        tLogMessage += i18n_1["default"]("logentry-curseprofile-" + this.logaction, this.userDetails(), Global_1.UNKNOWN_GENDER_TYPE, "<a href='" + this.href + "'>" + affectedUser + "</a>", commentLink);
+                        break;
+                    }
+                }
+                break;
+            }
             case "delete": {
-                var _g = this.logParams, ids_length = _g.ids_length, new_bitmask = _g.new_bitmask, count = _g.count;
+                var _j = this.logParams, ids_length = _j.ids_length, new_bitmask = _j.new_bitmask, count = _j.count;
                 var arg4 = undefined;
                 switch (this.logaction) {
                     case 'restore': {
@@ -5048,11 +5091,11 @@ var RCDataLog =  (function (_super) {
                     }
                     case 'revision':
                     case 'event': {
-                        arg4 = (_b = {
+                        arg4 = (_c = {
                             1: i18n_1["default"]("revdelete-content-hid"),
                             2: i18n_1["default"]("revdelete-summary-hid"),
                             3: i18n_1["default"]("revdelete-content-hid") + i18n_1["default"]("and") + i18n_1["default"]("word-separator") + i18n_1["default"]("revdelete-summary-hid"),
-                        }[new_bitmask]) !== null && _b !== void 0 ? _b : "?";
+                        }[new_bitmask]) !== null && _c !== void 0 ? _c : "?";
                         break;
                     }
                 }
@@ -5067,13 +5110,13 @@ var RCDataLog =  (function (_super) {
                 break;
             }
             case "merge": {
-                var _h = this.logParams, destination = _h.destination, mergepoint = _h.mergepoint;
+                var _k = this.logParams, destination = _k.destination, mergepoint = _k.mergepoint;
                 tLogMessage += this.userDetails() + " ";
                 tLogMessage += i18n_1["default"]("pagemerge-logentry", this.href + "|" + this.title, this.wikiInfo.articlepath + destination + "|" + destination, Utils_1["default"].formatWikiTimeStamp(new Date(mergepoint)));
                 break;
             }
             case "move": {
-                var _j = this.logParams, newTitle = _j.newTitle, suppressredirect = _j.suppressredirect;
+                var _l = this.logParams, newTitle = _l.newTitle, suppressredirect = _l.suppressredirect;
                 var noredirect = suppressredirect ? "-noredirect" : "";
                 tLogMessage += i18n_1["default"](("logentry-move-" + this.logaction + noredirect), this.userDetails(), Global_1.UNKNOWN_GENDER_TYPE, "<a href='" + this.getUrl({ redirect: "no" }) + "'>" + this.title + "</a>", "<a href='" + (this.wikiInfo.articlepath + Utils_1["default"].escapeCharactersUrl(newTitle)) + "'>" + newTitle + "</a>");
                 break;
@@ -5083,7 +5126,7 @@ var RCDataLog =  (function (_super) {
                 break;
             }
             case "protect": {
-                var _k = this.logParams, description = _k.description, cascade = _k.cascade, oldtitle_title = _k.oldtitle_title;
+                var _m = this.logParams, description = _m.description, cascade = _m.cascade, oldtitle_title = _m.oldtitle_title;
                 var arg4 = description;
                 switch (this.logaction) {
                     case "move_prot": {
@@ -5099,7 +5142,7 @@ var RCDataLog =  (function (_super) {
                 break;
             }
             case "rights": {
-                var _l = this.logParams, oldgroups = _l.oldgroups, newgroups = _l.newgroups, legacy = _l.legacy;
+                var _o = this.logParams, oldgroups = _o.oldgroups, newgroups = _o.newgroups, legacy = _o.legacy;
                 if (legacy && this.logaction == "rights") {
                     this.logaction += '-legacy';
                 }
@@ -5159,7 +5202,7 @@ var RCDataLog =  (function (_super) {
 }(_1.RCDataAbstract));
 exports["default"] = RCDataLog;
 
-},{".":19,"../Global":1,"../Utils":9,"../i18n":11}],18:[function(require,module,exports){
+},{".":20,"../Global":1,"../Utils":10,"../i18n":12}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Utils_1 = require("../Utils");
@@ -5167,8 +5210,7 @@ var i18n_1 = require("../i18n");
 var Global_1 = require("../Global");
 var GlobalModal_1 = require("../GlobalModal");
 var _1 = require(".");
-var $ = window.jQuery;
-var mw = window.mediaWiki;
+var $ = window.jQuery, mw = window.mediaWiki;
 var RCList =  (function () {
     function RCList(pManager) {
         this.manager = pManager;
@@ -5252,7 +5294,7 @@ var RCList =  (function () {
         var _this = this;
         var contribs = this.list.reduce(function (map, rc) {
             if (map.has(rc.author)) {
-                map.get(rc.author).count++;
+                map.get(rc.author).count++; 
             }
             else {
                 map.set(rc.author, { count: 1, anon: !rc.userEdited, avatar: (rc.type == _1.RC_TYPE.DISCUSSION ? rc.getCreatorAvatarImg() : "") });
@@ -5307,8 +5349,6 @@ var RCList =  (function () {
             newRev: { user: pToRC.userDetails(), summary: pToRC.getSummary(), date: pToRC.date, minor: pToRC.editFlags.minoredit },
         };
         this._addAjaxClickListener(pElem, function () { GlobalModal_1.previewDiff(pageName, pageID, ajaxLink, diffLink, undoLink, diffTableInfo); });
-        pFromRC = null;
-        pToRC = null;
     };
     RCList.prototype.addPreviewImageListener = function (pElem, pImageRCs) {
         if (!pElem) {
@@ -5434,12 +5474,13 @@ var RCList =  (function () {
         return tTable;
     };
     RCList.prototype._toHTMLBlock = function () {
+        var _a;
         if (this.list.length == 1) {
             return this._toHTMLSingle(this.newest);
         }
         var tBlockHead = this._toHTMLBlockHead();
         for (var i = 0; i < this.list.length; i++) {
-            tBlockHead.querySelector("tbody").appendChild(this._toHTMLBlockLine(this.list[i]));
+            (_a = tBlockHead.querySelector("tbody")) === null || _a === void 0 ? void 0 : _a.appendChild(this._toHTMLBlockLine(this.list[i]));
         }
         if ($(tBlockHead).makeCollapsibleRCM) {
             $(tBlockHead).makeCollapsibleRCM();
@@ -5475,7 +5516,7 @@ var RCList =  (function () {
             }
             case _1.RC_TYPE.DISCUSSION: {
                 html += this.newest.getThreadTypeIcon() + " ";
-                html += this.newest.discussionTitleText(null, true);
+                html += this.newest.discussionTitleText(undefined, true);
                 html += " " + i18n_1["default"]('parentheses-start');
                 html += i18n_1["default"]("nchanges", this.list.length);
                 html += i18n_1["default"]('parentheses-end');
@@ -5522,7 +5563,7 @@ var RCList =  (function () {
         var html = "";
         switch (pRC.type) {
             case _1.RC_TYPE.NORMAL: {
-                html += "<span class='mw-enhanced-rc-time'><a href='" + pRC.getRcRevisionUrl(null, pRC.revid) + "' title='" + pRC.title + "'>" + pRC.time() + "</a></span>";
+                html += "<span class='mw-enhanced-rc-time'><a href='" + pRC.getRcRevisionUrl(undefined, pRC.revid) + "' title='" + pRC.title + "'>" + pRC.time() + "</a></span>";
                 var diffs = [
                     "<a href='" + pRC.getRcRevisionUrl(0, pRC.revid) + "'>" + i18n_1["default"]("cur") + "</a>",
                     pRC.editFlags.newpage == false ? "<a href='" + pRC.getRcRevisionUrl(pRC.revid, pRC.old_revid) + "'>" + i18n_1["default"]("last") + "</a>" + this.getAjaxDiffButton() : i18n_1["default"]("last"),
@@ -5658,10 +5699,10 @@ var RCList =  (function () {
 }());
 exports["default"] = RCList;
 
-},{".":19,"../Global":1,"../GlobalModal":2,"../Utils":9,"../i18n":11}],19:[function(require,module,exports){
+},{".":20,"../Global":1,"../GlobalModal":2,"../Utils":10,"../i18n":12}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RC_TYPE = exports.RCDataFandomDiscussion = exports.RCDataLog = exports.RCDataArticle = exports.RCDataAbstract = void 0;
+exports.RC_TYPE = exports.RCList = exports.RCDataFandomDiscussion = exports.RCDataLog = exports.RCDataArticle = exports.RCDataAbstract = void 0;
 var RCDataAbstract_1 = require("./RCDataAbstract");
 exports.RCDataAbstract = RCDataAbstract_1["default"];
 var RCDataArticle_1 = require("./RCDataArticle");
@@ -5670,10 +5711,12 @@ var RCDataLog_1 = require("./RCDataLog");
 exports.RCDataLog = RCDataLog_1["default"];
 var RCDataFandomDiscussion_1 = require("./RCDataFandomDiscussion");
 exports.RCDataFandomDiscussion = RCDataFandomDiscussion_1["default"];
+var RCList_1 = require("./RCList");
+exports.RCList = RCList_1["default"];
 var RC_TYPE_1 = require("../types/RC_TYPE");
 exports.RC_TYPE = RC_TYPE_1["default"];
 
-},{"../types/RC_TYPE":21,"./RCDataAbstract":14,"./RCDataArticle":15,"./RCDataFandomDiscussion":16,"./RCDataLog":17}],20:[function(require,module,exports){
+},{"../types/RC_TYPE":22,"./RCDataAbstract":15,"./RCDataArticle":16,"./RCDataFandomDiscussion":17,"./RCDataLog":18,"./RCList":19}],21:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Main_1 = require("./Main");
@@ -5686,7 +5729,7 @@ else {
     window.dev.RecentChangesMultiple.app = Main_1["default"];
 }
 
-},{"./Main":3}],21:[function(require,module,exports){
+},{"./Main":3}],22:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var RC_TYPE;
@@ -5697,5 +5740,5 @@ var RC_TYPE;
 })(RC_TYPE || (RC_TYPE = {}));
 exports["default"] = RC_TYPE;
 
-},{}]},{},[20]);
+},{}]},{},[21]);
 //</pre>

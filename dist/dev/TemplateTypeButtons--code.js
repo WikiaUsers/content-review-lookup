@@ -8,9 +8,7 @@
     'use strict';
     var config = mw.config.get([
         'wgArticleId',
-        'wgContentLanguage',
-        'wgNamespaceNumber',
-        'wgVersion'
+        'wgNamespaceNumber'
     ]);
     if (
         config.wgNamespaceNumber !== 10 ||

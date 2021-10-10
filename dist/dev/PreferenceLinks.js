@@ -11,8 +11,7 @@ mw.loader.using([
 	'use strict';
 	var config = mw.config.get([
 		'wgUserName',
-		'wgUserLanguage',
-		'wgVersion'
+		'wgUserLanguage'
 	]);
 	if (
 		window.PreferenceLinksLoaded ||

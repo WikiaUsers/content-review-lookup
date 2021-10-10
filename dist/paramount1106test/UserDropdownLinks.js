@@ -1,3 +1,5 @@
+/**Code and comments here supplied by Paramount1106, Friendly Mountain12, Caburum and Joritochip**/
+/**Script created by Friendly Mountain12 (as Paramount1106)**/
 /*User dropdown links for wikis and subpages*/
 /**Guestbook**/
  
@@ -50,59 +52,62 @@ importArticle({
 });
 
 mw.hook('doru.ui').add(function(ui) {
-   ui.li({
-    class: 'wds-dropdown-level-nested',
-    children: [
-        ui.a({
-            class: 'wds-dropdown-level-nested__toggle',
-            href: '',
-            children: [
-                ui.span({
-                    text: 'My Wikis'
-                }),
-                ui.svg({
-                    class: 'wds-icon wds-icon-tiny wds-dropdown-chevron',
-                    'data-id': 'wds-icons-menu-control-tiny',
-                    height: '12',
-                    width: '12',
-                    viewBox: '0 0 12 12',
-                    xmlns: 'http://www.w3.org/2000/svg',
-                    child: ui.use({
-                        'xlink:href': '#wds-icons-menu-control-tiny'
-                    })
-                })
-            ]
-        }),
-        ui.div({
-            class: 'wds-dropdown-level-nested__content wds-is-not-scrollable',
-            style: {
-                bottom: '-8px',
-                top: 'unset'
-            },
-            child: ui.ul({
-                class: 'wds-list wds-is-linked',
-                children: [
-                    ui.li({
-                        child: ui.a({
-                            href: mw.util.getUrl('w:c:viacomcbs'),
-                            text: 'ViacomCBS Wiki'
-                        })
-                    }),
-                    ui.li({
-                        child: ui.a({
-                            href: mw.util.getUrl('w:c:theoffice'),
-                            text: 'Dunderpedia'
-                        })
-                    }),
-                    ui.li({
-                        child: ui.a({
-                            href: mw.util.getUrl('w:c:cbs'),
-                            text: 'CBS Wiki'
-                        })
-                    })
-                ]
-            })
-        })
-    ]
-});
+$('.global-navigation__bottom > .wds-dropdown .wds-dropdown__content').addClass('wds-is-not-scrollable');
+	document.querySelector('.global-navigation__bottom > .wds-dropdown .wds-list').appendChild(
+	   ui.li({
+	    class: 'wds-dropdown-level-nested',
+	    children: [
+	        ui.a({
+	            class: 'wds-dropdown-level-nested__toggle',
+	            href: '',
+	            children: [
+	                ui.span({
+	                    text: 'My Wikis'
+	                }),
+	                ui.svg({
+	                    class: 'wds-icon wds-icon-tiny wds-dropdown-chevron',
+	                    'data-id': 'wds-icons-menu-control-tiny',
+	                    height: '12',
+	                    width: '12',
+	                    viewBox: '0 0 12 12',
+	                    xmlns: 'http://www.w3.org/2000/svg',
+	                    child: ui.use({
+	                        'xlink:href': '#wds-icons-menu-control-tiny'
+	                    })
+	                })
+	            ]
+	        }),
+	        ui.div({
+	            class: 'wds-dropdown-level-nested__content wds-is-not-scrollable',
+	            style: {
+	                bottom: '-8px',
+	                top: 'unset'
+	            },
+	            child: ui.ul({
+	                class: 'wds-list wds-is-linked',
+	                children: [
+	                    ui.li({
+	                        child: ui.a({
+	                            href: mw.util.getUrl('w:c:viacomcbs'),
+	                            text: 'ViacomCBS Wiki'
+	                        })
+	                    }),
+	                    ui.li({
+	                        child: ui.a({
+	                            href: mw.util.getUrl('w:c:theoffice'),
+	                            text: 'Dunderpedia'
+	                        })
+	                    }),
+	                    ui.li({
+	                        child: ui.a({
+	                            href: mw.util.getUrl('w:c:cbs'),
+	                            text: 'CBS Wiki'
+	                        })
+	                    })
+	                ]
+	            })
+	        })
+	    ]
+	})
+	);
 });

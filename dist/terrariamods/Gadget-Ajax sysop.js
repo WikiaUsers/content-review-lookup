@@ -1,6 +1,4 @@
-/**
- * Ajax sysop
- * @see https://github.com/Pathoschild/Wikimedia-contrib#user-scripts
- * @update-token [[File:pathoschild/ajaxsysop.js]]
- */
-mw.loader.load('//tools-static.wmflabs.org/meta/scripts/pathoschild.ajaxsysop.js');
+/* This imports the latest version of Ajax_sysop from the Terraria Wiki. */
+
+// Import JS: https://terraria.fandom.com/MediaWiki:Gadget-Ajax_sysop.js
+mw.loader.load('https://terraria.fandom.com/index.php?title=MediaWiki:Gadget-Ajax_sysop.js&action=raw&ctype=text/javascript');

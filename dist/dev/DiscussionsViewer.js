@@ -15,7 +15,8 @@
   ]);
   if (
     config.wgCanonicalSpecialPageName !== 'Contributions' ||
-    window.dpv
+    window.dpv ||
+    config.profileUserId === '0'
   ) {
     return;
   }

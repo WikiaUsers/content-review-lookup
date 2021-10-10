@@ -39,15 +39,8 @@ window.rwaOptions = window.rwaOptions || { };
         "wgServer",
         "wgUserName",
         "wgUserGroups",
-        "wgScriptPath",
-        "wgVersion" // Temporary
+        "wgScriptPath"
     ] );
-
-    // MediaWiki version (in floating point)
-    const MW_VERSION = parseFloat( conf.mwVersion );
-
-    // TEMPORARY: If this wiki is on the legacy platform, do not run
-    if ( MW_VERSION === 1.19 ) return;
 
     // Creating the UCP object
     window.UCP = window.UCP || { };

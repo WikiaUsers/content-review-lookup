@@ -227,3 +227,7 @@ function createNavigationBarToggleButton() {
 }
  
 $( createNavigationBarToggleButton );
+
+/*enabling the modern button*/
+window.BackToTopModern = true;
+/*enabling the modern button*/

@@ -236,7 +236,7 @@ function buildTableRow(actImgURL, tabIDAttr, rowIDAttr, actJSON) {
 							append: [
 								$("<a>", {
 									href: actImgURL,
-									class: "image image-thumbnail",
+									class: "icon image image-thumbnail",
 									append: [
 										$("<img>", {
 											src: actImgURL,
@@ -264,7 +264,7 @@ function buildTableRow(actImgURL, tabIDAttr, rowIDAttr, actJSON) {
 						}).text(actJSON.reputation),
 						$("<a>", {
 							href: "/wiki/Syndicates",
-							class: "image image-thumbnail link-internal",
+							class: "icon image image-thumbnail link-internal",
 							title: "Syndicates",
 							append: [
 								$("<img>", {

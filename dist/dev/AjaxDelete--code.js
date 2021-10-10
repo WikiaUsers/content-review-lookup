@@ -14,8 +14,7 @@
         'wgContentLanguage',
         'wgFormattedNamespaces',
         'wgNamespaceNumber',
-        'wgUserGroups',
-        'wgVersion'
+        'wgUserGroups'
     ]);
     if (
         window.AjaxDeleteLoaded ||
@@ -61,17 +60,13 @@
                 !this.config.disableShortcut
             ) {
                 var bindShortcut = $.proxy(this.bindShortcut, this);
-                if (config.wgVersion === '1.19.24') {
-                    require(['Mousetrap'], bindShortcut);
-                } else {
-                	var moduleName = mw.loader.getModuleNames().find(function(name) {
-                        return name.indexOf('GlobalShortcuts-') === 0;
-                    });
-                    if (moduleName) {
-                    	mw.loader.using(moduleName).then(function() {
-                    	    bindShortcut(window.Mousetrap);
-                    	});
-                    }
+            	var moduleName = mw.loader.getModuleNames().find(function(name) {
+                    return name.indexOf('GlobalShortcuts-') === 0;
+                });
+                if (moduleName) {
+                	mw.loader.using(moduleName).then(function() {
+                	    bindShortcut(window.Mousetrap);
+                	});
                 }
             }
         },

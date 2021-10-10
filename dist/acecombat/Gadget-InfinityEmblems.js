@@ -1,8 +1,15 @@
 /* child "row" formatting */
 function format(r) {
+	var mvpTheme = r.find(".emblem-mvp").html();
+	if(mvpTheme.length > 0){
+		mvpTheme = "<dt>MVP Theme</dt><dd>"+mvpTheme+"</dd>";
+	} else {
+		mvpTheme = "";
+	}
 	return "<dl>"+
 		"<dt>Description</dt><dd>"+r.find(".emblem-desc").html()+"</dd>"+
 		"<dt>How to Unlock</dt><dd>"+r.find(".emblem-unlock").html()+"</dd>"+
+		mvpTheme+
 	"</dl>";
 }
 

@@ -12,6 +12,6 @@ $(function() {
 	);
 	} else {
 		$( '.WikiaPageHeader' ).append( $( '#icons' ) );
-		$( '#icons' ).css( { 'position' : 'absolute', 'right' : '5.1em', 'bottom' : '-2em' } ).show();
+		$( '#icons' ).css( { 'position' : 'absolute', 'right' : '3.3em', 'bottom' : '-2em', 'top' : '2.9em' } ).show();
 }
 });
