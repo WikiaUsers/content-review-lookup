@@ -78,7 +78,7 @@ window.loot_parser_data = {
 //'Branchy Crawler': '12.50.10135',
 //'Mould Phantom': '12.50.10135',
 // Changes made on July 28, 2020
-'Ancient Lion Knight': '12.10.10043', //Now uses RC instead of regular
+'Ancient Lion Knight': '12.40.10043', //Now uses RC instead of regular
 //'Cobra Assassin': '12.40.10043',
 //'Cobra Scout': '12.40.10043',
 //'Cobra Vizier': '12.40.10043',

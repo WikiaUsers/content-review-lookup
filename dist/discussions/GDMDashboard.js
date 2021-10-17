@@ -1,486 +1,702 @@
+'use strict';
+/* eslint-disable no-invalid-this */
 /**
  * <nowiki>
  * Dashboard for Global Discussions Moderators
- * 
+ * @see https://github.com/kcnotes/GDMDashboard/blob/master/fandom_loaded/gdmdashboard.ts
  * @author Noreplyz
+ *
+ * Hello JS Reviewer! To help you on your quest for secure scripts: this code is most easily viewed in Typescript via
+ * the link above. This script takes in content from wiki pages and relies on Mustache and Chart.js to check and render
+ * content safely to mitigate security risks.
  */
-
-;(function (window, $) {
-    if (window.GDMDashboardLoaded) return;
-    if ($('#gdm-dashboard').length === 0) return;
-    var groups = mw.config.get('wgUserGroups');
-    if (groups.indexOf('staff') < 0 && groups.indexOf('vstf') < 0 &&
-        groups.indexOf('helper') < 0 && groups.indexOf('global-discussions-moderator') < 0) {
-        $('#gdm-dashboard').append('You do not have sufficient rights to use this tool.');
+var __assign = (this && this.__assign) || function() {
+  __assign = Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+      for (var p in s)
+        if (Object.prototype.hasOwnProperty.call(s, p))
+          t[p] = s[p];
     }
-    window.GDMDashboardLoaded = true;
-
-    var GDMD = {};
-
-    /* Pages */
-    GDMD.PAGES = {
-        OVERVIEW: 'Data:Overview/',
-        IGNORE: 'Data:Dashboard/ignore'
+    return t;
+  };
+  return __assign.apply(this, arguments);
+};
+var __spreadArray = (this && this.__spreadArray) || function(to, from) {
+  for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+    to[j] = from[i];
+  return to;
+};
+(function(window, $, mw) {
+  if ('GDMDashboardLoaded' in window)
+    return;
+  if ($('#gdm-dashboard').length === 0 && $('#gdm-dashboard-summary').length === 0)
+    return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  window.GDMDashboardLoaded = true;
+  var isDarkMode = document.body.classList.contains('theme-fandomdesktop-dark');
+  var defaultChartOptions = {
+    legend: {
+      labels: {
+        boxWidth: 12,
+        fontColor: isDarkMode ? '#FFF' : '#000',
+      },
+    },
+  };
+  var pages = {
+    summary: 'Data:Overview/summary',
+    counts: 'Data:Overview/counts',
+    wr: 'Data:Overview/wr',
+    gdm: 'Data:Overview/discussions',
+    ignore: 'Data:Dashboard/ignore',
+  };
+  var schema = [
+    'wikiId',
+    'domain',
+    'sitename',
+    'lang',
+    'vertical',
+    'wikiRepresentative',
+    'articleComment',
+    'forum',
+    'wall',
+    'lastReported',
+  ];
+  var summarySchema = [
+    'lang',
+    'vertical',
+    'articleComment',
+    'forum',
+    'wall',
+    'wikis',
+  ];
+  var countSchema = [ 'articleComment', 'forum', 'wall', 'wikis' ];
+  var colors = [
+    '#520045',
+    '#83004e',
+    '#be0055',
+    '#f9005b',
+    '#fc632e',
+    '#fec600',
+    '#c2cf6e',
+    '#86d7db',
+    '#bfe2db',
+    '#f8eddb',
+  ];
+  var getPage = function(page) {
+    var data = {
+      action: 'query',
+      prop: 'revisions',
+      titles: page,
+      rvprop: 'content',
+      cb: Math.random().toString(),
+      format: 'json',
     };
-    GDMD.MONTHS = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-    ];
-    GDMD.LANGUAGES = [
-        'de',
-        'en',
-        'es',
-        'fr',
-        'id',
-        'it',
-        'ja',
-        'ko',
-        'nl',
-        'pl',
-        'pt',
-        'pt-br',
-        'ru',
-        'vi',
-        'zh',
-        'zh-hk'
-    ];
-    GDMD.wikis = [];
-
-    GDMD.discussionAPI = 'https://services.fandom.com/discussion/';
-
-    /* View */
-    GDMD.templates = {};
-
-    GDMD.templates.search = 
-        '<div class="gdm-dashboard-search">' +
-            '<p class="tag">Search for a Community:</p>' +
-            '<input type="text" id="gdm-dashboard-search-input" placeholder="Community url">' +
-            '<a class="wds-button" id="gdm-dashboard-search-button" value="Search">' +
-                '<img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" class="sprite search" height="17" width="21">' +
-            '</a> ' +
-            '<a class="wds-button" id="gdm-dashboard-clear-search" style="display:none"><span>Clear search</span></a>' +
-        '</div>';
-    GDMD.templates.filters =
-        '<p class="tag">Filter:</p>' +
-        '<div id="filter-languages" class="wds-dropdown">' +
-            '<div class="gdm-dashboard-filter wds-button wds-is-secondary wds-dropdown__toggle">' +
-                'Lang:&nbsp;<span class="filter-default">All</span>' +
-                '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 12 12" class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron" id="wds-icons-dropdown-tiny"><defs><path id="dropdown-tiny-a" d="M6.0001895,8.80004571 C5.79538755,8.80004571 5.5905856,8.72164496 5.43458411,8.56564348 L2.23455364,5.365613 C2.00575146,5.13681083 1.93695081,4.79280755 2.06095199,4.4936047 C2.18415316,4.19440185 2.47695595,4 2.80015903,4 L9.20021997,4 C9.52342305,4 9.81542583,4.19440185 9.93942701,4.4936047 C10.0634282,4.79280755 9.99462754,5.13681083 9.76582536,5.365613 L6.56579489,8.56564348 C6.4097934,8.72164496 6.20499145,8.80004571 6.0001895,8.80004571 Z"></path></defs><use fill-rule="evenodd" xlink:href="#dropdown-tiny-a"></use></svg>' +
-            '</div>' +
-            '<div class="wds-dropdown__content wds-is-left-aligned wds-is-right-aligned">' +
-                '<ul class="wds-list wds-is-linked" style="margin:0;">' +
-                    '<li><label class="filter-language" data-cat="all"><input type="checkbox" checked/>all</label></li>' +
-                    '{{#languages}}<li><label class="filter-language" data-cat="{{.}}"><input type="checkbox" />{{.}}</label></li>{{/languages}}' +
-                '</ul>' +
-            '</div>' +
-        '</div>' +
-        '&nbsp;<div id="filter-hubs" class="wds-dropdown">' +
-            '<div class="gdm-dashboard-filter wds-button wds-is-secondary wds-dropdown__toggle">' +
-                'Hub:&nbsp;<span class="filter-default">All</span>' +
-                '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 12 12" class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron" id="wds-icons-dropdown-tiny"><defs><path id="dropdown-tiny-a" d="M6.0001895,8.80004571 C5.79538755,8.80004571 5.5905856,8.72164496 5.43458411,8.56564348 L2.23455364,5.365613 C2.00575146,5.13681083 1.93695081,4.79280755 2.06095199,4.4936047 C2.18415316,4.19440185 2.47695595,4 2.80015903,4 L9.20021997,4 C9.52342305,4 9.81542583,4.19440185 9.93942701,4.4936047 C10.0634282,4.79280755 9.99462754,5.13681083 9.76582536,5.365613 L6.56579489,8.56564348 C6.4097934,8.72164496 6.20499145,8.80004571 6.0001895,8.80004571 Z"></path></defs><use fill-rule="evenodd" xlink:href="#dropdown-tiny-a"></use></svg>' +
-            '</div>' +
-            '<div class="wds-dropdown__content wds-is-left-aligned">' +
-                '<ul class="wds-list wds-is-linked" style="margin:0;">' +
-                    '<li><label class="filter-hub" data-cat="all"><input type="checkbox" checked />All</label></li>' +
-                    '{{#hubs}}<li><label class="filter-hub" data-cat="{{.}}"><input type="checkbox" />{{.}}</label></li>{{/hubs}}' +
-                '</ul>' +
-            '</div>' +
-        '</div>';
-    GDMD.templates.dashboardTable = 
-        '<table class="article-table sortable">' +
-            '<thead>' +
-                '<th>Wiki </th>' +
-                '<th>Language </th>' +
-                '<th>Hub </th>' +
-                '<th>Local mod actions </th>' +
-                '<th>Global mod actions </th>' +
-                '<th>Unreviewed reports </th>' +
-            '</thead>' +
-            '<tbody>' +
-                '{{#wikis}}' +
-                    '<tr>' +
-                        '{{#exists}}' +
-                            '<td><a href="//{{url}}/d" target="_blank">{{wikiname}}</a> (<a href="//{{url}}/Special:ListUsers/sysop,bureaucrat,threadmoderator" target="_blank">mods</a>)</td>' + 
-                            '<td>{{lang}}</td>' + 
-                            '<td>{{hub}}</td>' + 
-                            '<td><a href="//{{url}}/d/m/insights/moderations" target="_blank">{{modCount}}</a></td>' + 
-                            '<td>{{nonModCount}}</td>' + 
-                            '<td><a href="//{{url}}/d/reported" target="_blank">{{totalReports}}</a></td>' + 
-                        '{{/exists}}' +
-                    '</tr>' +
-                '{{/wikis}}' +
-                '{{#nowikis}}<tr><td colspan="6" style="text-align:center">No wikis found with the filters/search.</td></tr>{{/nowikis}}' +
-            '</tbody>' +
-        '</table>';
-
-    /**
-     * Get a page's wikitext
-     * @param {String} page the page to get wikitext from
-     * @return {Promise} jQuery Promise
-     */
-    GDMD.getPageContents = function (page) {
-        return $.ajax({
-            url: '/api.php',
-            type: 'GET',
-            format: 'json',
-            data: {
-                action: 'query',
-                prop: 'revisions',
-                titles: page,
-                rvprop: 'content',
-                cb: Math.random(),
-                format: 'json'
-            }
-        }).then(function(data) {
-            if (!data.query || !data.query.pages) {
-                console.warn('Could not get page ' + page);
-                return null;
-            }
-            for (var pageid in data.query.pages) {
-                if (!data.query.pages[pageid] || !data.query.pages[pageid].revisions ||
-                    !data.query.pages[pageid].revisions.length) {
-                        console.warn('Could not get page ' + page);
-                        return null;
-                    }
-                return data.query.pages[pageid].revisions[0]['*'];
-            }
-        });
-    };
-
-    /**
-     * Use api.php to get a wiki's URL
-     * @param {String} input a 'partial' (e.g. es.witcher) or a full URL (es.witcher.wikia.com)
-     * @return {Deferred} object returning the wiki ID if found, null otherwise
-     */
-    GDMD.getWikiData = function (input) {
-        var lang = '';
-        var domain = 'fandom.com';
-        input = input.replace(/(^\s*|\s*$)/g, '');
-        var wiki = input;
-
-        if (input.match(/\.(wikia|fandom)\.(org|com)/i)) {
-            input = input.replace(/(https?:)?\/\//g, '');
-            input = input.replace(/$/g, '/').replace(/\/+$/g, '/');
-            if (input.match(/fandom\.com/g)) {
-                // Grab <wiki>.fandom.com/<lang>
-                var fcomponents = input.match(/^([^\.]*)\.fandom\.com\/([^\/]*)\/{0,1}.*/i);
-                if (fcomponents) {
-                    wiki = fcomponents[1];
-                    lang = fcomponents[2];
-                }
-            } else if (input.match(/wikia\.org/g)) {
-                // Grab <wiki>.wikia.org/<lang>
-                var ocomponents = input.match(/^([^\.]*)\.wikia\.org\/([^\/]*)\/{0,1}.*/i);
-                if (ocomponents) {
-                    wiki = ocomponents[1];
-                    lang = ocomponents[2];
-                    domain = 'wikia.org';
-                }
-            } else if (input.match(/wikia\.com/g)) {
-                // Grab <lang>.<wiki>.wikia.com
-                var wcomponents = input.match(/^([^\.]*?)\.*([^\.]*)\.wikia\.com.*/i);
-                if (wcomponents) {
-                    wiki = wcomponents[2];
-                    lang = wcomponents[1];
-                    domain = 'wikia.com';
-                }
-            }
-        } else {
-            var pcomponents = input.match(/^(.+)\.(.+)$/i);
-            if (pcomponents) {
-                lang = pcomponents[1];
-                wiki = pcomponents[2];
-            }
+    return fetch('/api.php?' + new URLSearchParams(data).toString())
+      .then(function(resp) {
+        return resp.json();
+      })
+      .then(function(data) {
+        if (!data.query || !data.query.pages) {
+          console.warn('Could not get page ' + page);
+          return null;
         }
-        var url = 'https://' + wiki + '.' + domain + '/';
-        if (lang !== '') {
-            url += lang + '/';
-        }
-        return $.ajax({
-            url: url + 'api.php',
-            type: 'GET',
-            timeout: 5000,
-            format: 'json',
-            dataType: 'jsonp',
-            crossDomain: 'true',
-            xhrFields: {
-                withCredentials: true
-            },
-            data: {
-                action: 'query',
-                meta: 'siteinfo',
-                siprop: ['general', 'variables', 'category'].join('|'),
-                format: 'json'
-            }
-        }).then(function(data) {
-            var wikiid = $.grep(data.query.variables, function (e) {
-                return e.id === 'wgCityId';
-            })[0]['*'];
-            return {
-                wikiid: wikiid,
-                url: data.query.general.server.replace(/https?:\/\//g, '') + data.query.general.scriptpath,
-                wikiname: data.query.general.sitename,
-                hub: data.query.category.catname ? data.query.category.catname : '',
-                lang: data.query.general.lang,
-                modCount: 0,
-                nonModCount: 0,
-                totalReports: 0,
-                exists: true
-            };
-        }, function() {
-            console.log('Failed to find wiki ' + input);
+        for (var pageid in data.query.pages) {
+          if (!data.query.pages[pageid] ||
+                        !data.query.pages[pageid].revisions ||
+                        !data.query.pages[pageid].revisions.length) {
+            console.warn('Could not get page ' + page);
             return null;
-        });
+          }
+          return data.query.pages[pageid].revisions[0]['*'];
+        }
+        return null;
+      });
+  };
+  var getPageWithHistory = function(page) {
+    var data = {
+      action: 'query',
+      prop: 'revisions',
+      titles: page,
+      rvprop: 'timestamp|content',
+      cb: Math.random().toString(),
+      rvlimit: '90',
+      format: 'json',
     };
-
-    /**
-     * Gets a list of reported posts for a wiki's Discussions
-     */
-    GDMD.getReportedPosts = function(id) {
-        return $.ajax({
-            url: GDMD.discussionAPI + id + '/posts',
-            type: 'GET',
-            format: 'json',
-            crossDomain: 'true',
-            xhrFields: {
-                withCredentials: true
-            },
-            data: {
-                reported: true
-            }
-        });
-    };
-
-    /**
-     * Gets a list of moderator actions for a wiki's Discussions
-     */
-    GDMD.getModActions = function (id, days) {
-        return $.ajax({
-            url: GDMD.discussionAPI + id + '/leaderboard/moderator-actions',
-            type: 'GET',
-            format: 'json',
-            crossDomain: 'true',
-            xhrFields: {
-                withCredentials: true
-            },
-            data: {
-                days: days
-            }
-        });
-    };
-
-    GDMD.showWikis = function(wikis) {
-        if (!wikis) wikis = GDMD.wikis;
-        // Get filters for language
-        var languageFilters = [];
-        var noLanguageFilters = true;
-        $('#filter-languages input:checkbox').each(function() {
-            if ($(this).attr('checked') && $(this).parent().attr('data-cat') !== 'all') {
-                languageFilters.push($(this).parent().attr('data-cat'));
-                noLanguageFilters = false;
-            }
-        });
-
-        // Get filters for hub
-        var hubFilters = [];
-        var noHubFilters = true;
-        $('#filter-hubs input:checkbox').each(function () {
-            if ($(this).attr('checked') && $(this).parent().attr('data-cat') !== 'all') {
-                if ($(this).parent().attr('data-cat') === 'None') {
-                    hubFilters.push("");
-                }
-                hubFilters.push($(this).parent().attr('data-cat'));
-                noHubFilters = false;
-            }
-        });
-
-        var shownWikis = wikis.filter(function(wiki) {
-            if (noLanguageFilters && noHubFilters) return true;
-            if (noLanguageFilters) {
-                return (hubFilters.indexOf(wiki.hub) >= 0);
-            }
-            else if (noHubFilters) {
-                return (languageFilters.indexOf(wiki.lang) >= 0);
-            } else {
-                return (hubFilters.indexOf(wiki.hub) >= 0) && (languageFilters.indexOf(wiki.lang) >= 0);
-            }
-        });
-        var table = $(Mustache.render(GDMD.templates.dashboardTable, {
-            wikis: shownWikis,
-            nowikis: shownWikis.length === 0 ? true : false
-        }));
-        $('#gdm-dashboard').empty().append(table);
-        mw.loader.using('jquery.tablesorter', function () {
-            table.tablesorter();
-        });
-    };
-    
-    GDMD.searchWiki = function(wiki) {
-        GDMD.getWikiData(wiki).then(function(wiki) {
-            $.when(GDMD.getReportedPosts(wiki.wikiid), GDMD.getModActions(wiki.wikiid, 30)).then(function(reports, actions) {
-                wiki.totalReports = reports[0].postCount;
-                var totalCount = 0;
-                var modCount = {
-                    'badge:threadmoderator': 0,
-                    'badge:sysop': 0,
-                    'badge:vstf': 0,
-                    'badge:global-discussions-moderator': 0,
-                    'badge:staff': 0,
-                    'badge:helper': 0
-                };
-                actions[0].users.forEach(function(user) {
-                    totalCount += parseInt(user.totalCount);
-                    if (user.userInfo.badgePermission == '') return;
-                    modCount[user.userInfo.badgePermission] += user.totalCount;
-                });
-                wiki.modCount = modCount['badge:threadmoderator'] + modCount['badge:sysop'];
-                wiki.nonModCount = totalCount - wiki.modCount;
-                GDMD.showWikis([wiki]);
-                $('#gdm-dashboard-loading').hide();
-            }, function() {
-                $('#gdm-dashboard-loading').hide();
-                GDMD.showWikis([]);
+    return fetch('/api.php?' + new URLSearchParams(data).toString())
+      .then(function(resp) {
+        return resp.json();
+      })
+      .then(function(data) {
+        if (!data.query || !data.query.pages) {
+          console.warn('Could not get page ' + page);
+          return null;
+        }
+        for (var pageid in data.query.pages) {
+          if (!data.query.pages[pageid] ||
+                        !data.query.pages[pageid].revisions ||
+                        !data.query.pages[pageid].revisions.length) {
+            console.warn('Could not get page ' + page);
+            return null;
+          }
+          return data.query.pages[pageid].revisions.map(function(rev) {
+            return ({
+              timestamp: rev.timestamp,
+              data: rev['*'],
             });
-        }, function() {
-            $('#gdm-dashboard-loading').hide();
-            GDMD.showWikis([]);
-        });
-    };
-
-    GDMD.init = function () {
-        $('#gdm-dashboard-search').empty().append(Mustache.render(GDMD.templates.search));
-        var year = new Date().getUTCFullYear();
-        var month = new Date().getUTCMonth();
-        $.when(GDMD.getPageContents(GDMD.PAGES.OVERVIEW + '2021 April')).then(function(content) {
-            var badDatePromise = $.Deferred().resolve(content);
-            var ignoreWikisPromise = GDMD.getPageContents(GDMD.PAGES.IGNORE);
-            if (content === null) {
-                month = month === 0 ? 11 : month - 1;
-                if (month == 11) year -= 1;
-                badDatePromise = GDMD.getPageContents(GDMD.PAGES.OVERVIEW + year + ' ' + GDMD.MONTHS[month]);
-            }
-            $.when(badDatePromise, ignoreWikisPromise).then(function (content, ignoreContent) {
-            	// Obtain wikis to ignore
-            	ignoreContent = ignoreContent.split('\n').filter(function(line) {
-            		return line[0] === '*';
-            	});
-            	ignoreContent = ignoreContent.map(function(line) {
-            		return line.slice(1).trim();
-            	});
-            	// Obtain list of wikis
-                var wikis = content.split('\n');
-                var hubs = [];
-                wikis.forEach(function (wiki, i) {
-                    var logComponents = wiki.split('|');
-                    if (!logComponents[0].startsWith('*') || ignoreContent.indexOf(logComponents[1]) >= 0) {
-                        wikis[i] = {
-                            exists: false
-                        };
-                        return;
-                    }
-                    wikis[i] = {
-                        wikiid: logComponents[0].replace('*\s?', ''),
-                        url: logComponents[1],
-                        wikiname: logComponents[2],
-                        hub: logComponents[3] == 'None' ? '' : logComponents[3],
-                        lang: logComponents[4],
-                        modCount: logComponents[5],
-                        nonModCount: logComponents[6],
-                        totalReports: logComponents[7],
-                        exists: true
-                    };
-                    if (hubs.indexOf(logComponents[3]) < 0) {
-                        hubs.push(logComponents[3]);
-                    }
-                });
-                $('#gdm-dashboard-loading').hide();
-                $('#gdm-dashboard-search').append(Mustache.render(GDMD.templates.filters, {
-                    languages: GDMD.LANGUAGES,
-                    hubs: hubs
-                }));
-                GDMD.addFilterEvents();
-                GDMD.addSearchEvents();
-                GDMD.wikis = wikis;
-                GDMD.wikis.sort(function (a, b) {
-                    return parseInt(b.totalReports) - parseInt(a.totalReports);
-                });
-                GDMD.showWikis();
-            });
-        });
-    };
-
-    GDMD.addFilterEvents = function() {
-        $('#gdm-dashboard-search').on('change', '.wds-dropdown__content label[data-cat="all"] input:checkbox', function () {
-            if (!this.checked) {
-                $(this).closest('.wds-dropdown').find('input:checkbox').removeAttr('checked');
-            } else {
-                $(this).closest('.wds-dropdown').find('input:checkbox').removeAttr('checked');
-                $(this).attr('checked', 'checked');
-            }
-        });
-        $('#gdm-dashboard-search').on('change', '.wds-dropdown__content label[data-cat!="all"] input:checkbox', function () {
-            if ($(this).closest('.wds-dropdown').find('label[data-cat="all"] input:checkbox').attr('checked')) {
-                $(this).closest('.wds-dropdown').find('input:checkbox').removeAttr('checked');
-                $(this).attr('checked', 'checked');
-            }
-        });
-        $('#gdm-dashboard-search').on('change', '.wds-dropdown__content input:checkbox', function () {
-            var languageFilters = [];
-            $('#filter-languages input:checkbox').each(function () {
-                if ($(this).attr('checked')) {
-                    languageFilters.push($(this).parent().attr('data-cat'));
-                }
-            });
-            $('#filter-languages .filter-default').text(languageFilters.join(', '));
-            var hubFilters = [];
-            $('#filter-hubs input:checkbox').each(function () {
-                if ($(this).attr('checked')) {
-                    hubFilters.push($(this).parent().attr('data-cat'));
-                }
-            });
-            $('#filter-hubs .filter-default').text(hubFilters.join(', '));
-            GDMD.showWikis();
-        });
-    };
-
-    GDMD.addSearchEvents = function () {
-        $('#gdm-dashboard-clear-search').on('click', function() {
-            $('#gdm-dashboard-search-input').val('');
-            $('#gdm-dashboard-search-button').click();
-        });
-        $('#gdm-dashboard-search-button').on('click', function () {
-            var wiki = $('#gdm-dashboard-search-input').val();
-            if (wiki === '') {
-                GDMD.showWikis();
-                $('#gdm-dashboard-clear-search').hide();
-            } else {
-                $('#gdm-dashboard-clear-search').show();
-                $('#gdm-dashboard-loading').show();
-                $('#gdm-dashboard').empty();
-                GDMD.searchWiki(wiki);
-            }
-        });
-        $('#gdm-dashboard-search-input').keyup(function(e) {
-            if (e.keyCode === 13) {
-                $('#gdm-dashboard-search-button').click();
-            }
-        });
-    };
-
-    mw.loader.using(['mediawiki.template.mustache', 'mediawiki.api'], function() {
-        GDMD.init();
+          });
+        }
+        return null;
+      });
+  };
+  var getUserDetails = function(ids) {
+    return fetch('https://services.fandom.com/user-attribute/user/bulk?id=' + ids.join('&id='))
+      .then(function(resp) {
+        return resp.json();
+      });
+  };
+  var convertCountSchema = function(data) {
+    var entries = data.map(function(entry) {
+      return ({
+        timestamp: entry.timestamp,
+        data: parseFields(entry.data)[0],
+      });
     });
-
-    window.GDMD = GDMD;
-
-})(window, jQuery);
+    return entries.map(function(entry) {
+      if (entry.data.length != countSchema.length) {
+        console.log(entry.data, countSchema);
+        throw new Error('Counts data does not match schema');
+      }
+      return {
+        timestamp: new Date(entry.timestamp),
+        data: {
+          articleComment: Number(entry.data[0]),
+          forum: Number(entry.data[1]),
+          wall: Number(entry.data[2]),
+          wikis: Number(entry.data[3]),
+        },
+      };
+    });
+  };
+  var convertSummarySchema = function(data) {
+    if (data.length != summarySchema.length) {
+      throw new Error('Summary data does not match schema');
+    }
+    return {
+      lang: data[0],
+      vertical: data[1],
+      articleComment: Number(data[2]),
+      forum: Number(data[3]),
+      wall: Number(data[4]),
+      wikis: Number(data[5]),
+    };
+  };
+  var convertWikiSchema = function(data) {
+    if (data.length != schema.length) {
+      throw new Error('Summary data does not match schema');
+    }
+    return {
+      wikiId: Number(data[0]),
+      domain: data[1],
+      sitename: data[2],
+      lang: data[3],
+      vertical: data[4],
+      wikiRepresentative: Number(data[5]),
+      articleComment: Number(data[6]),
+      forum: Number(data[7]),
+      wall: Number(data[8]),
+      lastReported: new Date(data[9]),
+    };
+  };
+  var parseFields = function(data) {
+    return data
+      .split('\n')
+      .filter(function(line) {
+        return line.startsWith('*');
+      }) // Ignore category
+      .map(function(line) {
+        return line.slice(1).split('|');
+      }); // Get fields
+  };
+    // Tracked state
+  var filterStates = {
+    wr: '',
+    lang: '',
+    vertical: '',
+    sortby: 'forum',
+    page: 1,
+    limit: 10,
+  };
+  var previous = __assign({}, filterStates);
+  var renderTable = function(wikiReports, userMap, filter, onPageChange) {
+    var wr = filter.wr,
+      vertical = filter.vertical,
+      lang = filter.lang,
+      page = filter.page,
+      limit = filter.limit;
+    // Filter and render
+    var reports = wikiReports
+      .filter(function(w) {
+        return wr === '' || w.wikiRepresentative.toString() === userMap[wr];
+      })
+      .filter(function(w) {
+        return vertical === '' || w.vertical === vertical;
+      })
+      .filter(function(w) {
+        return lang === '' || w.lang === lang;
+      })
+      .sort(function(a, b) {
+        switch (filter.sortby) {
+        case 'forum':
+          return b.forum - a.forum;
+        case 'wall':
+          return b.wall - a.wall;
+        case 'articleComment':
+          return b.articleComment - a.articleComment;
+        case 'domain':
+          return a.domain.localeCompare(b.domain);
+        }
+      });
+    var table = '\n    <table class="article-table gdmd-report-results">\n      <thead>\n        <th>Wiki</th>\n        <th>Language</th>\n        <th>Vertical</th>\n        <th>WR</th>\n        <th>Posts</th>\n        <th>Messages</th>\n        <th>Comments</th>\n      </thead>\n      <tbody>\n        {{#wikis}}\n          <tr>\n            <td><a href="https://{{domain}}/f" target="_blank">{{sitename}}</a> (<a href="//{{domain}}/Special:ListUsers/sysop" target="_blank">a</a>, <a href="//{{domain}}/Special:ListUsers/threadmoderator" target="_blank">m</a>)</td>\n            <td>{{lang}}</td>\n            <td>{{vertical}}</td>\n            <td>{{wrUsername}}</td>\n            <td><a href="https://{{domain}}/f/reported?type=posts" target="_blank">{{forum}}</a></td>\n            <td><a href="https://{{domain}}/f/reported?type=messages" target="_blank">{{wall}}</a></td>\n            <td><a href="https://{{domain}}/f/reported?type=comments" target="_blank">{{articleComment}}</a></td>\n          </tr>\n        {{/wikis}}\n      </tbody>\n    </table>\n    ';
+    var paginatedReports = reports.slice((page - 1) * limit, page * limit);
+    $('#gdmd-report-table')
+      .empty()
+      .append(Mustache.render(table, {
+        wikis: paginatedReports,
+      }));
+    $('#gdmd-report-table').append($('<div class="gdmd-pagination">').append(renderPageCounts(Math.ceil(reports.length / limit), filter.page, onPageChange).$element));
+  };
+  var memoRenderTable = function(wikiReports, userMap, filter, onPageChange) {
+    if (filter.limit !== previous.limit ||
+            filter.page !== previous.page ||
+            filter.sortby !== previous.sortby ||
+            filter.vertical !== previous.vertical ||
+            filter.lang !== previous.lang ||
+            filter.wr !== previous.wr) {
+      previous = __assign({}, filter);
+      return renderTable(wikiReports, userMap, filter, onPageChange);
+    }
+  };
+  var renderPageCounts = function(pages, currentPage, onClick) {
+    var pageCounts = Array.from({
+      length: pages,
+    }, function(_, i) {
+      return '' + (i + 1);
+    });
+    if (pages > 7) {
+      if (currentPage < 4) {
+        pageCounts = pageCounts.splice(0, 7);
+      } else if (currentPage > pages - 4) {
+        pageCounts = pageCounts.splice(pages - 7, pages - 1);
+      } else {
+        pageCounts = [
+          currentPage - 3,
+          currentPage - 2,
+          currentPage - 1,
+          currentPage,
+          currentPage + 1,
+          currentPage + 2,
+          currentPage + 3,
+        ].map(function(p) {
+          return p.toString();
+        });
+      }
+      pageCounts = __spreadArray(__spreadArray(['first'], pageCounts), ['last']);
+    }
+    var pagination = new OO.ui.ButtonGroupWidget({
+      items: pageCounts.map(function(i) {
+        var button = new OO.ui.ButtonWidget({
+          label: [ 'first', 'last' ].includes(i) ? undefined : '' + i,
+          icon: [ 'first', 'last' ].includes(i) ? i : undefined,
+          flags: i === currentPage.toString() ? ['primary'] : [],
+        });
+        button.on('click', function() {
+          if (i === 'first') {
+            return onClick(1);
+          } else if (i === 'last') {
+            return onClick(pages);
+          }
+          onClick(Number(i));
+        });
+        return button;
+      }),
+    });
+    return pagination;
+  };
+  var renderDropdown = function(options, onClick) {
+    var dropdown = new OO.ui.DropdownInputWidget({
+      required: true,
+      options: options.map(function(option) {
+        return option;
+      }),
+    });
+    dropdown.on('change', onClick);
+    return dropdown;
+  };
+  var chartPromise = importArticles({
+    type: 'script',
+    articles: ['u:dev:MediaWiki:Chart.js'],
+  });
+  var getSums = function(summaries) {
+    var sums = {
+      articleComment: 0,
+      forum: 0,
+      wall: 0,
+      wikis: 0,
+      langs: {},
+      verticals: {},
+    };
+    summaries.forEach(function(summary) {
+      var total = summary.articleComment + summary.forum + summary.wall;
+      sums.articleComment += summary.articleComment;
+      sums.forum += summary.forum;
+      sums.wall += summary.wall;
+      sums.wikis += summary.wikis;
+      if (sums.langs[summary.lang]) {
+        sums.langs[summary.lang].reports += total;
+        sums.langs[summary.lang].wikis += summary.wikis;
+      } else {
+        sums.langs[summary.lang] = {
+          reports: total,
+          wikis: summary.wikis,
+        };
+      }
+      if (sums.verticals[summary.vertical]) {
+        sums.verticals[summary.vertical].reports += total;
+        sums.verticals[summary.vertical].wikis += summary.wikis;
+      } else {
+        sums.verticals[summary.vertical] = {
+          reports: total,
+          wikis: summary.wikis,
+        };
+      }
+    });
+    return sums;
+  };
+  var convertToOther = function(data, max, sortBy) {
+    if (Object.keys(data).length <= max)
+      return data;
+    var sorted = Object.entries(data).sort(function(a, b) {
+      return b[1][sortBy] - a[1][sortBy];
+    });
+    var res = {};
+    sorted.forEach(function(_a, index) {
+      var type = _a[0],
+        sums = _a[1];
+      if (index < max - 1) {
+        res[type] = sums;
+        return;
+      }
+      if (!('other' in res)) {
+        res['other'] = {
+          reports: 0,
+          wikis: 0,
+        };
+      }
+      res['other'].reports += sums.reports;
+      res['other'].wikis += sums.wikis;
+    });
+    return res;
+  };
+  var createChart = function(type, elementId, labels, datasets, options) {
+    if (options === void 0) {
+      options = defaultChartOptions;
+    }
+    new Chart(document.getElementById(elementId).getContext('2d'), {
+      type: type,
+      data: {
+        labels: labels,
+        datasets: datasets.map(function(dataset) {
+          return (__assign({
+            backgroundColor: colors,
+            borderWidth: 0,
+          }, dataset));
+        }),
+      },
+      options: options,
+    });
+  };
+  var renderComboBox = function(options, onChange, placeholder) {
+    var comboBox = new OO.ui.ComboBoxInputWidget({
+      value: '',
+      options: options
+        .map(function(option) {
+          return ({
+            data: option,
+          });
+        })
+        .sort(function(a, b) {
+          return (a.data > b.data) ? 1 : (b.data > a.data) ? -1 : 0;
+        }),
+      menu: {
+        filterFromInput: true,
+      },
+      placeholder: placeholder,
+    });
+    comboBox.on('change', onChange);
+    return comboBox;
+  };
+  var loadSummary = function() {
+    var pagePromise = getPage(pages.summary);
+    var countPromise = getPageWithHistory(pages.counts);
+    Promise.all([ chartPromise, pagePromise, countPromise ]).then(function(_a) {
+      var _ = _a[0],
+        summaryData = _a[1],
+        countsData = _a[2];
+      if (!summaryData || !countsData)
+        return;
+      $('#gdm-dashboard-summary').empty().append('\n      <h2>Total reports</h2>\n      <div class="gdmd-counts-chart"><canvas id="chartCounts" height="100px"/></div>\n      <div class="gdmd-charts">\n        <div class="gdmd-chart">\n          <h2>Wikis with reports, per vertical</h2>\n          <div class="gdmd-chart-container"><canvas id="chartPerVertical"/></div>\n        </div>\n        <div class="gdmd-chart">\n          <h2>Wikis with reports, per language</h2>\n          <div class="gdmd-chart-container"><canvas id="chartPerLang"/></div>\n        </div>\n        <div class="gdmd-chart">\n          <h2>Number of reports, per platform</h2>\n          <div class="gdmd-chart-container"><canvas id="chartPerPlatform"/></div>\n        </div>\n      </div>\n    ');
+      var sums = getSums(parseFields(summaryData).map(convertSummarySchema));
+      var counts = convertCountSchema(countsData);
+      if (Chart) {
+        createChart('line', 'chartCounts', counts.map(function(entry) {
+          return entry.timestamp;
+        }), [ {
+          label: 'Wikis',
+          data: counts.map(function(entry) {
+            return entry.data.wikis;
+          }),
+          backgroundColor: colors[5],
+          fill: false,
+          borderColor: colors[5],
+          borderWidth: 3,
+          borderDash: [ 10, 10 ],
+          yAxisID: 'y',
+        },
+        {
+          label: 'Reports',
+          data: counts.map(function(entry) {
+            return entry.data.forum +
+                                entry.data.wall +
+                                entry.data.articleComment;
+          }),
+          backgroundColor: colors[3],
+          fill: false,
+          borderColor: colors[3],
+          borderWidth: 3,
+          yAxisID: 'y1',
+        },
+        {
+          label: 'Discussions',
+          data: counts.map(function(entry) {
+            return entry.data.forum;
+          }),
+          backgroundColor: colors[0],
+          fill: false,
+          borderColor: colors[0],
+          borderWidth: 3,
+          yAxisID: 'y2',
+        },
+        ], __assign(__assign({}, defaultChartOptions), {
+          scales: {
+            yAxes: [ {
+              id: 'y',
+              type: 'linear',
+              position: 'left',
+            },
+            {
+              id: 'y1',
+              type: 'linear',
+              position: 'right',
+            },
+            {
+              id: 'y2',
+              type: 'linear',
+              position: 'right',
+            },
+            ],
+            xAxes: [{
+              stacked: true,
+              type: 'time',
+              time: {
+                unit: 'day',
+                displayFormats: {
+                  day: 'YY/MM/DD',
+                },
+              },
+            }],
+          },
+          tooltips: {
+            mode: 'x',
+          },
+        }));
+        createChart('pie', 'chartPerVertical', Object.keys(sums.verticals), [{
+          label: '# wikis with reports',
+          data: Object.values(sums.verticals).map(function(v) {
+            return v.wikis;
+          }),
+        }]);
+        var langData = convertToOther(sums.langs, 10, 'wikis');
+        createChart('pie', 'chartPerLang', Object.keys(langData), [{
+          label: '# wikis with reports',
+          data: Object.values(langData).map(function(v) {
+            return v.wikis;
+          }),
+        }]);
+        createChart('pie', 'chartPerPlatform', [ 'Discussions', 'Article comments', 'Wall' ], [{
+          label: '# reports',
+          data: [ sums.forum, sums.articleComment, sums.wall ],
+        }]);
+      }
+    });
+  };
+  var loadReports = function(type, _a) {
+    var user = _a.user,
+      lang = _a.lang,
+      vertical = _a.vertical,
+      limit = _a.limit;
+    var mustacheLoad = mw.loader.using([
+      'oojs-ui-windows',
+      'mediawiki.template.mustache',
+      'mediawiki.api',
+    ]);
+    if (user)
+      filterStates.wr = user;
+    if (lang)
+      filterStates.lang = lang;
+    if (vertical)
+      filterStates.vertical = vertical;
+    if (limit)
+      filterStates.limit = limit;
+    var pagePromise = getPage(pages[type]);
+    Promise.all([ mustacheLoad, pagePromise, chartPromise ]).then(function(_a) {
+      var _ = _a[0],
+        page = _a[1];
+      if (!page)
+        return;
+      var wikiReports = parseFields(page).map(convertWikiSchema);
+      var wrIds = new Set(wikiReports.map(function(wiki) {
+        return wiki.wikiRepresentative;
+      }));
+      var languages = Array.from(new Set(wikiReports.map(function(wiki) {
+        return wiki.lang;
+      })));
+      var verticals = Array.from(new Set(wikiReports.map(function(wiki) {
+        return wiki.vertical;
+      })));
+      getUserDetails(Array.from(wrIds)).then(function(users) {
+        var wikiReportsWithWR = wikiReports.map(function(report) {
+          var _a;
+          return (__assign(__assign({}, report), {
+            wrUsername: ((_a = users.users[report.wikiRepresentative]) === null || _a === void 0 ? void 0 : _a.username) || '',
+          }));
+        });
+        var userMap = {};
+        Object.entries(users.users).forEach(function(_a) {
+          var id = _a[0],
+            username = _a[1].username;
+          userMap[username] = id;
+        });
+        $('#gdm-dashboard').empty().append('<div id="gdmd-search"></div><div id="gdmd-report-table"></div>');
+        var wr = renderComboBox(Object.keys(userMap), function(value) {
+          filterStates.wr = value;
+          if (previous.wr !== value) {
+            filterStates.page = 1; // reset page if wr changed
+          }
+          memoRenderTable(wikiReportsWithWR, userMap, filterStates, onPageChange);
+        }, 'Enter a username');
+        var language = renderComboBox(languages, function(value) {
+          filterStates.lang = value;
+          if (previous.lang !== value) {
+            filterStates.page = 1; // reset page if lang changed
+          }
+          memoRenderTable(wikiReportsWithWR, userMap, filterStates, onPageChange);
+        }, 'Language');
+        var vertical = renderComboBox(verticals, function(value) {
+          filterStates.vertical = value;
+          if (previous.vertical !== value) {
+            filterStates.page = 1; // reset page if vertical changed
+          }
+          memoRenderTable(wikiReportsWithWR, userMap, filterStates, onPageChange);
+        }, 'Vertical');
+        var sort = renderDropdown([ {
+          data: 'forum',
+          label: 'Posts',
+        },
+        {
+          data: 'wall',
+          label: 'Messages',
+        },
+        {
+          data: 'articleComment',
+          label: 'Comments',
+        },
+        {
+          data: 'domain',
+          label: 'URL',
+        },
+        ], function(value) {
+          filterStates.sortby = value;
+          memoRenderTable(wikiReportsWithWR, userMap, filterStates, onPageChange);
+        });
+        var limit = renderDropdown([ 10, 25, 50, 100, 1000 ].map(function(num) {
+          return ({
+            data: num,
+            label: num.toString(),
+          });
+        }), function(value) {
+          if (previous.limit !== value) {
+            filterStates.page = 1; // reset page if limit changed
+          }
+          filterStates.limit = value;
+          memoRenderTable(wikiReportsWithWR, userMap, filterStates, onPageChange);
+        });
+        var topBar = new OO.ui.FieldLayout(new OO.ui.Widget({
+          content: [
+            new OO.ui.HorizontalLayout({
+              items: [
+                new OO.ui.FieldLayout(wr, {
+                  label: 'Filter by wiki representative',
+                  align: 'top',
+                }),
+                new OO.ui.FieldLayout(language, {
+                  label: 'Filter by language',
+                  align: 'top',
+                }),
+                new OO.ui.FieldLayout(vertical, {
+                  label: 'Filter by vertical',
+                  align: 'top',
+                }),
+                new OO.ui.FieldLayout(sort, {
+                  label: 'Sort by',
+                  align: 'top',
+                }),
+                new OO.ui.FieldLayout(limit, {
+                  label: 'Limit',
+                  align: 'top',
+                }),
+              ],
+            }),
+          ],
+        }), {
+          align: 'top',
+        });
+        $('#gdmd-search').append(topBar.$element);
+        var onPageChange = function(page) {
+          filterStates.page = page;
+          memoRenderTable(wikiReportsWithWR, userMap, filterStates, onPageChange);
+        };
+        renderTable(wikiReportsWithWR, userMap, filterStates, onPageChange);
+      });
+    });
+  };
+  var params = {
+    user: mw.util.getParamValue('user'),
+    lang: mw.util.getParamValue('lang'),
+    vertical: mw.util.getParamValue('vertical'),
+    limit: Number(mw.util.getParamValue('limit')),
+  };
+  switch (mw.config.get('wgPageName')) {
+  case 'Data:Dashboard/summary':
+    loadSummary();
+    break;
+  case 'Data:Dashboard/wr':
+    loadReports('wr', params);
+    break;
+  case 'Data:Dashboard':
+    loadReports('gdm', params);
+    break;
+  default:
+    break;
+  }
+})(window, jQuery, mw);

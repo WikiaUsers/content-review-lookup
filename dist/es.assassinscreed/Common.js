@@ -1,3 +1,5 @@
+// Configuración de banners dev:AddRailModule
+window.AddRailModule = [{page: 'Template:RailModule', prepend: true}];
 /****************************************/
 /* sliders using jquery by User:Tierrie */
 /****************************************/

@@ -68,3 +68,13 @@ importArticles({
         'w:dev:WallGreetingButton/code.js'
     ]
 });
+
+/* Autocreate user pages */
+window.AutoCreateUserPagesConfig = {
+            content: {
+             2: '{{sub'+'st:autouserpage}}',
+             3: '{{autowelcome|<span style="font-family:Trollhunters;">[[User:Merlin_the_Immortal|<span style="color:#454427;">Merlin the Immortal</span>]] [[User_talk:Merlin_the_Immortal|<span style="color:#454427;">﴾Talk Page﴿</span>]]</span>}}',
+             1202: false
+},
+            summary: 'Script: Creating profile and talkpage on first edit - automatically by Wiki'
+};

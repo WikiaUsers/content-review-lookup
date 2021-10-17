@@ -10,8 +10,8 @@
 //------------------------------------//
 nkch_gst_gadgets = [{
     name: "RWA", // название гаджета с MediaWiki:Gadget-Название; обязательно
-    title: "Недавняя вики-деятельность", // Название в меню
-    description: "Недавняя вики-деятельность" // Описание гаджета в меню при наведении
+    title: "Недавняя активность", // Название в меню
+    description: "Оформление для свежих правок, соц. активности, страницы истории" // Описание гаджета в меню при наведении
 }, {
     name: "UWStyle",
     title: "Единый стиль вики",
@@ -25,10 +25,18 @@ nkch_gst_gadgets = [{
     title: "Прежние Категории",
     description: "Прежние Категории"
 }, {
-    name: "Cursor",
-    title: "Тематичческий курсор",
-    description: "Тематические курсор"
-}];
+    name: "UCXSearch",
+    title: "Быстрый поиск",
+    description: "Поисковая строка в локальном меню без модального окна"
+}, {
+    name: "ThemeToggler",
+    title: "Переключатель темы",
+    description: "Иконка в левой части страницы для переключения темы"
+}
+];
+
+// Настройка AddRailModule
+window.AddRailModule = ['Template:Проект:Комиксы/Комиксы недели', 'Template:NewPagesModule', 'Template:Уголок'];
 
 // Всплывающая подсказка красных ссылок
 mw.loader.using("mediawiki.api").then(
@@ -59,7 +67,7 @@ $(document).ready(function()
     if (wgCanonicalSpecialPageName === 'Upload') 
     {
         // добавление шаблона в поле краткого описания для загружаемого изображения
-        $('#wpUploadDescription').val('{{Изображение \n| Описание  = \n| Источник  = \n| Появления = \n| Автор     = \n| Категория = \n| Лицензия  = \n}}');
+        $('#wpUploadDescription').val('{{Изображение \n| Описание  = \n| Источник  = [[]]\n| Появления = \n| Автор     = [[]]\n| Категория = Русская обложка\n}}');
         // перемещение выпадающего списка лицензий и блока для шаблона выбранной лицензии 
         $("tr.mw-htmlform-field-HTMLTextAreaField").after( $("tr.mw-htmlform-field-Licenses, tr.mw-htmlform-field-Licenses + tr") );
         
@@ -80,7 +88,7 @@ $(document).ready(function()
     }
 	
 	// для мультизагрузки
-	$('.pfd-initialized').val('{{Изображение \n| Описание  = \n| Источник  = \n| Появления = \n| Автор     = \n| Категория = \n| Лицензия  = \n}}');
+	$('.pfd-initialized').val('{{Изображение \n| Описание  = \n| Источник  = [[]]\n| Появления = \n| Автор     = [[]]\n| Категория = Русская обложка\n}}');
 	
 	// Форум
 	if (wgCanonicalNamespace === 'Forum')
@@ -111,9 +119,6 @@ window.SpoilerAlertJS = {
     no: 'Нет',
     fadeDelay: 1600
 };
-
-// Настройка AddRailModule
-window.AddRailModule = ['Template:Проект:Комиксы/Комиксы недели', 'Template:NewPagesModule'];
 
 /* Настройка для dev:PreloadTemplates */ 
 preloadTemplates_subpage =  "case-by-case" ;

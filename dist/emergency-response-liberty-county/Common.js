@@ -19,23 +19,3 @@ window.lockOldComments.addNoteAbove = true;
 
 InactiveUsers = { text: 'Inactive Editor' };
 window.RollbackWikiDisable = true;
-
-// our config is stored in an array
-window.lessOpts = window.lessOpts || [];
-
-// each target page needs separate configuration
-window.lessOpts.push( {
-    // this is the page that has the compiled CSS
-    target: 'MediaWiki:Common.css',
-    // this is the page that lists the LESS files to compile
-    source: 'MediaWiki:Custom-common.less',
-    // these are the pages that you want to be able to update the target page from
-    // note, you should not have more than one update button per page
-    load: [
-        'MediaWiki:Common.css',
-        'MediaWiki:Custom-common.less'
-    ],
-    // this is the page that contains the comment header for the target page
-    // all other comments are stripped during compilation
-    header: 'MediaWiki:Custom-Css-header/common'
-} );

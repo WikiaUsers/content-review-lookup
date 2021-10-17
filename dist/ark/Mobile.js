@@ -53,3 +53,12 @@ $( document ).ready( fpmobilecollapse.initialize );
 /****************************************
 /* End Main Page Mobile Collapse Script *
 /****************************************/
+
+$(function(){
+  if ($('.countdown').length) {
+      importArticle({
+        type: "script",
+        article: "u:dev:MediaWiki:Countdown/code.js"
+      });
+  }
+})

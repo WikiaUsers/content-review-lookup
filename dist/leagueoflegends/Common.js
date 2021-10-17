@@ -17,6 +17,8 @@ dev:InputUsername/code.js
 dev:OggPlayer.js
 dev:Tooltips.js
 //dev:DiscordModule/code.js //not working yet
+dev:EditorColorPicker.js
+Common.js/OggPlayerDownload.js
 */
 
 mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {

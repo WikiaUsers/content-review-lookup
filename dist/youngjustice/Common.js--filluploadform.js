@@ -2,11 +2,11 @@
  * by: [[User:KettleMeetPot]]
  */
  
-$(document).ready(function() {
-    if ( wgCanonicalSpecialPageName == "Upload" || wgCanonicalSpecialPageName == "MultipleUpload") {
+$(function() {
+    if ( mw.config.get('wgCanonicalSpecialPageName') == "Upload" || mw.config.get('wgCanonicalSpecialPageName') == "MultipleUpload") {
 	    var value = "{"+"{Filebox\n"
 		+ "| description = \n"
-		+ "| season      = 3\n"
+		+ "| season      = 4\n"
 		+ "| episode     = \n"
 		+ "| source      = HD\n"
 		+ "| origin      = \n"

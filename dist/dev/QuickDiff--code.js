@@ -12,7 +12,6 @@
     }
     window.quickDiffLoaded = true;
 
-
     var diffStylesModule = ["mediawiki.diff.styles"];
     var i18n;
     var modal;
@@ -54,6 +53,50 @@
                 localStorage.setItem(storageKeyDiff, special.diff);
                 localStorage.setItem(storageKeyCompare, special.compare);
             } catch (ignore) {}
+        });
+    }
+
+    // support for patrolling edits directly from modal
+    // ideally this wouldn't be needed and we'd rely on MediaWiki's own handler,
+    // but that's run only on document ready and isn't easily reusable
+    function initAjaxPatrolHandler() {
+        var $spinner = mw.libs.QDmodal.getSpinner();
+
+        $spinner.css({
+            "--qdmodal-spinner-size": "2em",
+            position: "relative",
+            top: "-6px",
+            verticalAlign: "top"
+        });
+
+        mw.hook("quickdiff.ready").add(function (modal) {
+            var $patrolLinks = modal.$element.find(".patrollink[data-mw='interface'] > a");
+
+            $patrolLinks.on("click", function (event) {
+                event.preventDefault();
+
+                if ($patrolLinks.is("[disabled]")) {
+                    return;
+                }
+
+                $patrolLinks.find(".qdmodal-spinner-container").remove().end()
+                    .attr("disabled", "").append(" ", $spinner.clone());
+
+                var $spinners = $patrolLinks.find(".qdmodal-spinner-container");
+
+                mw.loader.using("mediawiki.api").done(function () {
+                    new mw.Api().postWithToken("patrol", {
+                        action: "patrol",
+                        rcid: mw.util.getParamValue("rcid", event.target.href)
+                    }).done(function (data) {
+                        $spinners.removeAttr("style").text("✅")
+                            .parent().wrap("<s>");
+                    }).fail(function (data) {
+                        $spinners.removeAttr("style").text("❌")
+                            .parent().removeAttr("disabled");
+                    });
+                });
+            });
         });
     }
 
@@ -126,12 +169,13 @@
             delete url.query.bot;
 
             var data = {
-            	url: url,
+                url: url,
                 buttons: [{
                     text: i18n("link").plain(),
                     href: url.toString(),
                     attr: {"data-disable-quickdiff": ""}
-                }]
+                }],
+                content: i18n("error", url.toString()).escape()
             };
             var $diff;
 
@@ -146,14 +190,15 @@
                 }
             }
 
-            if ($diff && $diff.length) {
-                data.content = $diff;
-                data.hook = "quickdiff.ready";
-                data.onBeforeShow = addDiffActions;
-                data.title = getDiffTitle($diff);
-            } else {
-                data.content = i18n("error", url.toString()).escape();
+            if (!$diff || $diff.length === 0) {
+                // default content is error msg
+                return modal.show(data);
             }
+
+            data.content = $diff;
+            data.hook = "quickdiff.ready";
+            data.onBeforeShow = addDiffActions;
+            data.title = getDiffTitle($diff);
 
             // if a diff, fire the standard MW hook
             if ($diff.is("table.diff[data-mw='interface']")) {
@@ -238,6 +283,7 @@
         $body.on("keydown.quickdiff", keydownHandler);
 
         initSpecialPageStrings();
+        initAjaxPatrolHandler();
     }
 
     function initDependencies() {

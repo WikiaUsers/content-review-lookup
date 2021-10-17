@@ -6,3 +6,6 @@ importArticles({
         "u:dev:ShowHide/code.js",
     ]
 });
+if (wgUserName != 'null') {
+	$('.insertusername').html(wgUserName);
+}

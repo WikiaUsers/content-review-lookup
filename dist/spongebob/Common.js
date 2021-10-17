@@ -298,6 +298,7 @@ window.UserTagsJS = {
 		bureaucrat: { u:'Bureaucrat', order: -1/0 },
 		adopter: { u:'Wiki Adopter', order: -1/0 },
 		usermonth: { u:'User of the Month', order: -1/0 },
+		discord: 'Discord Moderator',
 		facebook: 'Facebook Manager',
 		twitter: 'Twitter Manager',
 		google: 'Google+ Manager',
@@ -311,14 +312,16 @@ window.UserTagsJS = {
 };
 
 UserTagsJS.modules.custom = {
-    '120d': ['youtube'],
     'Alex.sapre': ['skype'],
     'AMK152': ['adopter', 'skype', 'facebook'],
     'AW10': ['captures'],
-    'BSpongeSM02': ['usermonth'],
+    'Chickenkrispies': ['discord'],
+    'Idroppedmypen': ['discord'],
+    'Minnesotaman2007!': ['discord'],
+    'Thelxinoe': ['usermonth'],
     'Golfpecks256': ['instagram'],
-    'Haldir': ['founder'],
-    'Spongebob456': ['skype', 'socialmedia'],
+    'Spongebob456': ['skype', 'socialmedia', 'twitter', 'google'],
+    'TheJasbre202': ['discord'],
 };
 
 UserTagsJS.modules.inactive = 30;
@@ -368,25 +371,26 @@ window.MessageWallUserTags = {
         'Figmeister': 'Bureaucrat • Administrator',
         
         'Anthony2306': 'Administrator',
-        'Kandy Katie': 'Administrator',
+        'Kandy_Katie': 'Administrator',
         'Koolkitty108': 'Administrator',
         'TheKorraFanatic': 'Administrator',
         'Stryker305': 'Administrator',
         'BSpongeSM02':  'Administrator',
-        'The gamer 987654321':  'Administrator',
+        'The_gamer_987654321':  'Administrator',
     
-        'The Smarter, Wiser King Dedede': 'Assistant',
+        'The_Smarter,_Wiser_King_Dedede': 'Assistant',
         'FireMatch': 'Assistant',
         'SPONGEBOBSUPERFANINFINITY': 'Assistant',
 
         'Idroppedmypen': 'Discussion Moderator',
         'SpongeTron D': 'Discussion Moderator',
-        'BookFandumb': 'Discussion Moderator',
-        'Arthur Read fan': 'Discussion Moderator',
+        'Arthur_Read_fan': 'Discussion Moderator',
         'Minnesotaman2007!': 'Discussion Moderator',
 
         'TheJasbre202': 'Rollback',
         'SpongyFanatic2021': 'Rollback',
+        'Arthur_Read_fan': 'Rollback',
+        'Minnesotaman2007!': 'Rollback',
     }
 };
 

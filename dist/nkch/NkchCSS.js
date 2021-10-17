@@ -12,13 +12,13 @@ if (!nkch.css.isActive) {
     const versions = new Object();
     Object.defineProperties(versions, {
         "nkchCSS": {
-            value: "2.6.0",
+            value: "2.7.0",
         },
         "codeMirror": {
-            value: "5.62.3",
+            value: "5.63.3",
         },
         "jQueryUI": {
-            value: "1.12.1",
+            value: "1.13.0",
         },
         "colorPicker": {
             value: "1.9.72",
@@ -83,6 +83,12 @@ if (!nkch.css.isActive) {
         },
         "title": {
             value: "nkchCSS",
+            configurable: true,
+            enumerable: true,
+            writable: true
+        },
+        "useAnimations": {
+            value: false,
             configurable: true,
             enumerable: true,
             writable: true
@@ -167,8 +173,8 @@ if (!nkch.css.isActive) {
                     }
 
                     /* ~ latest jQueryUI (just in case) ~ */
-                    mw.loader.load("https://ajax.googleapis.com/ajax/libs/jqueryui/" + versions.jQueryUI + "/jquery-ui.css", "text/css");
-                    mw.loader.getScript("https://ajax.googleapis.com/ajax/libs/jqueryui/" + versions.jQueryUI + "/jquery-ui.js").then(
+                    mw.loader.load("https://code.jquery.com/ui/" + versions.jQueryUI + "/themes/base/jquery-ui.css", "text/css");
+                    mw.loader.getScript("https://code.jquery.com/ui/" + versions.jQueryUI + "/jquery-ui.js").then(
                         function () {
                             nkch.css.isDisabled = false;
                             nkch.css.cookiesValue = "";
@@ -232,11 +238,12 @@ if (!nkch.css.isActive) {
                                     framed: false,
                                     icon: "info",
                                     popup: {
-                                        $content: $("<div><a href='https://codemirror.net'>CodeMirror</a> v. " + versions.codeMirror +
-                                            "<br><a href='https://jqueryui.com'>jQueryUI</a> v. " + versions.jQueryUI +
-                                            "<br><a href='https://colorpicker.easylogic.studio'>ColorPicker</a> v. " + versions.colorPicker +
-                                            "<br><a href='https://emmet.io'>Emmet</a> v. " + versions.emmet +
-                                            "<br><a href='https://beautifier.io'>js-beautify</a> v. " + versions.jsBeautify +
+                                        $content: $("<div class='nkch-css__dependencies'>" +
+                                            "<a target='_blank' rel='noopener noreferrer' href='https://codemirror.net'>CodeMirror</a> v. " + versions.codeMirror + "<br>" +
+                                            "<a target='_blank' rel='noopener noreferrer' href='https://jqueryui.com'>jQueryUI</a> v. " + versions.jQueryUI + "<br>" +
+                                            "<a target='_blank' rel='noopener noreferrer' href='https://colorpicker.easylogic.studio'>ColorPicker</a> v. " + versions.colorPicker + "<br>" +
+                                            "<a target='_blank' rel='noopener noreferrer' href='https://emmet.io'>Emmet</a> v. " + versions.emmet + "<br>" +
+                                            "<a target='_blank' rel='noopener noreferrer' href='https://beautifier.io'>js-beautify</a> v. " + versions.jsBeautify +
                                             "</div>"),
                                         align: "center",
                                         classes: ["nkch-css__popup"],
@@ -279,7 +286,7 @@ if (!nkch.css.isActive) {
 
                             nkch.css.el.main.menu.tools.close.$e.addEventListener("click", function () {
                                 nkch.css.actions.close();
-                            });
+                            }, false);
 
                             nkch.css.el.main.menu.tools.$e.appendChild(nkch.css.el.main.menu.tools.close.$e);
 
@@ -287,43 +294,6 @@ if (!nkch.css.isActive) {
                             addClasses(nkch.css.el.main.textarea);
 
                             nkch.css.el.main.$e.appendChild(nkch.css.el.main.textarea.$e);
-
-                            switch (mw.config.get("skin")) {
-                                case "fandomdesktop":
-                                case "oasis":
-                                    /* ~ toolbarButton ~ */
-                                    addClasses(nkch.css.el.toolbarButton);
-
-                                    document.querySelector("#WikiaBar .toolbar .tools").appendChild(nkch.css.el.toolbarButton.$e);
-
-                                    /* ~ toolbarButton : link ~ */
-                                    addClasses(nkch.css.el.toolbarButton.link);
-
-                                    nkch.css.el.toolbarButton.link.$e.innerHTML = "nkchCSS";
-
-                                    nkch.css.el.toolbarButton.link.$e.addEventListener("click", function () {
-                                        nkch.css.actions.open();
-                                    });
-
-                                    nkch.css.el.toolbarButton.$e.appendChild(nkch.css.el.toolbarButton.link.$e);
-                                    break;
-                                case "fandommobile":
-                                    /* ~ communityBarButton ~ */
-                                    if (typeof document.querySelector(".wds-community-bar__discussions") !== "null") {
-                                        document.querySelector(".wds-community-bar__discussions").before(nkch.css.el.communityBarButton.$e);
-                                    } else {
-                                        document.querySelector(".wds-community-bar__navigation").before(nkch.css.el.communityBarButton.$e);
-                                    }
-
-                                    addClasses(nkch.css.el.communityBarButton);
-
-                                    nkch.css.el.communityBarButton.$e.addEventListener("click", function () {
-                                        nkch.css.actions.open();
-                                    });
-
-                                    nkch.css.el.communityBarButton.$e.appendChild(wds.icon("preformat-small"));
-                                    break;
-                            }
 
                             /* ~ load CCS ~ */
                             mw.loader.load("https://cdnjs.cloudflare.com/ajax/libs/codemirror/" + versions.codeMirror + "/codemirror.css", "text/css");
@@ -446,18 +416,18 @@ if (!nkch.css.isActive) {
                                             /* ~ some actions ~ */
                                             nkch.css.el.main.menu.tools.toggle.$e.addEventListener("click", function () {
                                                 nkch.css.actions.toggle(editor.getValue());
-                                            });
+                                            }, false);
 
                                             nkch.css.el.main.menu.tools.beautify.$e.addEventListener("click", function () {
                                                 nkch.css.actions.beautify(editor.getValue());
-                                            });
+                                            }, false);
 
                                             const textarea = document.querySelector(".nkch-css .CodeMirror");
                                             textarea.classList.add("nkch-css__editor");
 
                                             textarea.addEventListener("keyup", function () {
                                                 nkch.css.actions.updateCode(editor.getValue());
-                                            });
+                                            }, false);
 
                                             function preventUnload(e) {
                                                 if (editor.getValue().length > 0) {
@@ -490,14 +460,52 @@ if (!nkch.css.isActive) {
                                                     }
                                                 },
                                                 open: function () {
-                                                    nkch.css.el.main.$e.classList.remove("is-disabled");
+                                                    switch (options.useAnimations) {
+                                                        case true:
+                                                            nkch.css.el.main.$e.classList.remove("is-disabled");
+
+                                                            const openAnimation = nkch.css.el.main.$e.animate([{
+                                                                opacity: 0,
+                                                                transform: "translateY(10px)"
+                                                            }, {
+                                                                opacity: 1,
+                                                                transform: "translateY(0)"
+                                                            }], {
+                                                                easing: "ease",
+                                                                duration: 300
+                                                            });
+                                                            break;
+                                                        case false:
+                                                            nkch.css.el.main.$e.classList.remove("is-disabled");
+                                                            break;
+                                                    }
 
                                                     if (options.saveWithCookies === false) {
-                                                        window.addEventListener("beforeunload", preventUnload);
+                                                        window.addEventListener("beforeunload", preventUnload, false);
                                                     };
                                                 },
                                                 close: function () {
-                                                    nkch.css.el.main.$e.classList.add("is-disabled");
+                                                    switch (options.useAnimations) {
+                                                        case true:
+                                                            const closeAnimation = nkch.css.el.main.$e.animate([{
+                                                                opacity: 1,
+                                                                transform: "translateY(0)"
+                                                            }, {
+                                                                opacity: 0,
+                                                                transform: "translateY(10px)"
+                                                            }], {
+                                                                easing: "ease",
+                                                                duration: 300
+                                                            });
+
+                                                            closeAnimation.onfinish = function () {
+                                                                nkch.css.el.main.$e.classList.add("is-disabled");
+                                                            };
+                                                            break;
+                                                        case false:
+                                                            nkch.css.el.main.$e.classList.add("is-disabled");
+                                                            break;
+                                                    };
 
                                                     if (options.saveWithCookies === false) {
                                                         window.removeEventListener("beforeunload", preventUnload);
@@ -533,6 +541,42 @@ if (!nkch.css.isActive) {
                                             if (options.saveWithCookies === true && options.implementOnLoad === true) {
                                                 nkch.css.actions.updateCode(nkch.css.cookiesValue);
                                             };
+
+                                            switch (mw.config.get("skin")) {
+                                                case "fandomdesktop":
+                                                    /* ~ toolbarButton ~ */
+                                                    addClasses(nkch.css.el.toolbarButton);
+
+                                                    document.querySelector("#WikiaBar .toolbar .tools").appendChild(nkch.css.el.toolbarButton.$e);
+
+                                                    /* ~ toolbarButton : link ~ */
+                                                    addClasses(nkch.css.el.toolbarButton.link);
+
+                                                    nkch.css.el.toolbarButton.link.$e.innerHTML = "nkchCSS";
+
+                                                    nkch.css.el.toolbarButton.link.$e.addEventListener("click", function () {
+                                                        nkch.css.actions.open();
+                                                    }, false);
+
+                                                    nkch.css.el.toolbarButton.$e.appendChild(nkch.css.el.toolbarButton.link.$e);
+                                                    break;
+                                                case "fandommobile":
+                                                    /* ~ communityBarButton ~ */
+                                                    if (typeof document.querySelector(".wds-community-bar__discussions") !== "null") {
+                                                        document.querySelector(".wds-community-bar__discussions").before(nkch.css.el.communityBarButton.$e);
+                                                    } else {
+                                                        document.querySelector(".wds-community-bar__navigation").before(nkch.css.el.communityBarButton.$e);
+                                                    }
+
+                                                    addClasses(nkch.css.el.communityBarButton);
+
+                                                    nkch.css.el.communityBarButton.$e.addEventListener("click", function () {
+                                                        nkch.css.actions.open();
+                                                    }, false);
+
+                                                    nkch.css.el.communityBarButton.$e.appendChild(wds.icon("preformat-small"));
+                                                    break;
+                                            }
                                         }
                                     );
                                 }

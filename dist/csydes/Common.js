@@ -1,4 +1,4 @@
-// 08:15, 10 October 2021 (UTC) <nowiki>
+// 05:32, 15 October 2021 (UTC) <nowiki>
 
 // AUTO-REFRESH RECENT CHANGES
 window.AjaxRCRefreshText = 'Auto-refresh';
@@ -6,7 +6,7 @@ window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 window.ajaxPages = ["Special:RecentChanges"];
 // END AUTO-REFRESH
 
-// CREATE THE "DEV" NAMESPACE IF IT DOESN'T EXIST ALREADY
+// CREATE THE 'DEV' NAMESPACE IF IT DOESN'T EXIST ALREADY
 window.dev = window.dev || {};
  
 // CREATE THE SUB-NAMESPACE FOR THIS ADDON AND SET SOME OPTIONS
@@ -84,6 +84,7 @@ window.dev.i18n.overrides = window.dev.i18n.overrides || {};
 window.dev.i18n.overrides['AdminDashboard_JS-Button'] = window.dev.i18n.overrides['AdminDashboard_JS-Button'] || {}
 
 // CUSTOMISE THE DESIRED MESSAGES
+window.dev.i18n.overrides['AdminDashboard_JS-Button']['text'] = 'JavaScript';
 window.dev.i18n.overrides['AdminDashboard_JS-Button']['tooltip'] = 'Customise your wiki with local JavaScript.';
 // END ADMINDASHBOARD JS-BUTTON OVERRIDES
 
@@ -95,7 +96,7 @@ $(function BlogLink() {
  if (!$('.create-blog').length) {
         return;
     }
-//CREATE AN "ADD A BLOG POST" LINK TO THE PROJECT:ADMINISTRATORS' DASHBOARD PAGE
+//CREATE AN 'ADD A BLOG POST' LINK TO THE PROJECT:ADMINISTRATORS' DASHBOARD PAGE
 var $elem = $('.create-blog'),
     $html = $elem.html();
 
@@ -107,9 +108,9 @@ $elem.html(
   })
 );
 });
-// END "ADD A BLOG POST" LINK
+// END 'ADD A BLOG POST' LINK
 
-// CREATE A "MY BLOGS" LINK TO THE ACCOUNT NAVIGATION LINKS PAGE
+// CREATE A 'MY BLOGS' LINK TO THE ACCOUNT NAVIGATION LINKS PAGE
 mw.loader.using(['mediawiki.util'], function() {
     var $elem = $('.my-blog');
     if (!$elem.length) return;
@@ -118,7 +119,8 @@ mw.loader.using(['mediawiki.util'], function() {
         $('<a>', {
             href: mw.util.getUrl('User_blog:' + mw.config.get('wgUserName')),
             text: $elem.text() || "My Blogs",
+    title: "Special:Myblog",            
         })
     );
 });
-// END "MY BLOGS" LINK
+// END 'MY BLOGS' LINK

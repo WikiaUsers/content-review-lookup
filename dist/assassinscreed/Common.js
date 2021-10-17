@@ -1,7 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 // dev:AddRailModule configuration
-window.AddRailModule = [{page: 'Template:AssassinsInNeed', prepend: true}];
+window.AddRailModule = [{page: 'Template:RailModule', prepend: true}];
 
 //THE CODES BELOW DEALS WITH ERA TEMPLATE
 //codes courtesy of silent hill wiki.

@@ -1,5 +1,23 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+//Embed Discussions for front page
+window.discussEmbedForum = "1834995274482165617";
+
+// Dragon anon avatars
+function changeSourceAll() {
+    var images = document.getElementsByTagName('img');
+    for (var i = 0; i < images.length; i++) {
+        if (images[i].src.includes('https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/')) {
+            images[i].src = images[i].src.replace("https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/400/height/400", "https://static.wikia.nocookie.net/wings-of-fire-experimental/images/3/39/Anonymous_SandWing_Wiki.png/revision/latest?cb=20190915000702");
+        }
+    }
+}
+changeSourceAll();
+ 
+setInterval(function(){
+    changeSourceAll();
+}, 1000);
+
 /**
  * Add a css class to user tags based on the tag's text
  */
@@ -56,20 +74,3 @@ window.ajaxPages = [
     'Special:Contributions'
 ];
 window.AjaxRCRefreshText = 'Auto-refresh';
-
-// Dragon anon avatars
-function changeSourceAll() {
-    var images = document.getElementsByTagName('img');
-    for (var i = 0; i < images.length; i++) {
-        if (images[i].src.includes('https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest/scale-to-width-down/')) {
-            images[i].src = images[i].src.replace("https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest/scale-to-width-down/30", "https://vignette.wikia.nocookie.net/wings-of-fire-experimental/images/0/04/Anonymous_NightWing_Wiki.png/revision/latest?cb=20190914235013");
-            images[i].src = images[i].src.replace("https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest/scale-to-width-down/50", "https://vignette.wikia.nocookie.net/wings-of-fire-experimental/images/0/04/Anonymous_NightWing_Wiki.png/revision/latest?cb=20190914235013");
-            images[i].src = images[i].src.replace("https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest/scale-to-width-down/150", "https://vignette.wikia.nocookie.net/wings-of-fire-experimental/images/0/04/Anonymous_NightWing_Wiki.png/revision/latest?cb=20190914235013");
-        }
-    }
-}
-changeSourceAll();
- 
-setInterval(function(){
-    changeSourceAll();
-}, 1000);

@@ -29,7 +29,7 @@ $(checkVerif);
 abuseLogRC_showTo = [ 'content-moderator' ];
 
 /* BackToTopButton */
-//window.BackToTopModern = true;
+window.BackToTopModern = true;
 
 // ClashRoyale-Link (from clashofclans.fandom.com)
 $(document).ready(function() {

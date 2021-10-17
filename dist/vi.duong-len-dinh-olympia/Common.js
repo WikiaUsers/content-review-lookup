@@ -1,19 +1,5 @@
 /* Bất kỳ mã JavaScript ở đây sẽ được tải cho tất cả các thành viên khi tải một trang nào đó lên. */
 
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:ShowHide/code.js',
-        'u:dev:DisplayTimer/code.js',
-        'u:dev:ReferencePopups/code.js',
-        'u:dev:InactiveUsers/code.js',
-        'u:dev:SkinSwitchButton/code.js',
-        'u:dev:WallGreetingButton/code.js',
-        // 'u:dev:FastDelete/code.js',
-        'u:dev:Message/code.js',
-    ]
-});
-
 // Thẻ thành viên (UserTags)
 window.UserTagsJS = {
 	modules: {},

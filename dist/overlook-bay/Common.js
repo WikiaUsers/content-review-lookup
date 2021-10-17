@@ -25,3 +25,8 @@ window.BackToTopStart = 200;
 window.tooltips_config = {
     noCSS: true,
 }
+
+/*** User Account Age tag ***/
+window.customUserAccountAge = {
+  showFullDate: true
+};

@@ -43,7 +43,7 @@ $.when(
 
 	var api = new mw.Api();
 
-	console.log("Loading TooltipsEditor...");
+	console.log("툴팁 편집기 불러오는 중...");
 
 	var that;
 	var TooltipsEditor = window.TooltipsEditor = Object.assign(this, {
@@ -58,9 +58,9 @@ $.when(
 
 		otherInputBoxes: {
 			// <param internal name>: {display: <param display name>, optional?: true/false }
-			"name": { display: "Name", replace: true },
-			"image": { display: "Image", optional: true },
-			"link": { display: "Link", optional: true },
+			"name": { display: "이름", replace: true },
+			"image": { display: "이미지", optional: true },
+			"link": { display: "링크", optional: true },
 		},
 		forEachInputBox: function(callback) {
 			var i = 0;
@@ -259,9 +259,9 @@ $.when(
 			var getEditParams = this.getEditParamPackage.bind(this, "편집", "actions-edit-button");
 			var getUndoPreview = this.getMinetipParamPackage.bind(this, "미리보기 (이전)", "minetip actions-preview-button", this.oldjson);
 			var getCurrentPreview = this.getMinetipParamPackage.bind(this, "미리보기 (현재)", "minetip actions-preview-button", this.json);
-			var getUndoButtonParams = function(k) {return { text: "undo", "class": "actions-undo-button", "data-value": k }};
+			var getUndoButtonParams = function(k) {return { text: "실행 취소", "class": "actions-undo-button", "data-value": k }};
 
-			$log.empty().append($("<li>", {text: len ? "Unsaved changes: " : "No changes were made", "class": "actions-none"}));
+			$log.empty().append($("<li>", {text: len ? "저장되지 않은 편집: " : "아무런 편집도 이루어지지 않았습니다.", "class": "actions-none"}));
 
 			if (len) {
 				Object.keys(this.actions).sort().forEach(function(k) {
@@ -376,9 +376,9 @@ $.when(
 							target: "_blank",
 						}),
 						" (",
-						 $("<a>", this.getEditParamPackage("edit", "TooltipsEditor-editTooltip", this.json, v)),
+						 $("<a>", this.getEditParamPackage("편집", "TooltipsEditor-editTooltip", this.json, v)),
 						"<span class='noselect'> &bull; </span>",
-						$("<span>", this.getMinetipParamPackage("preview", "minetip TooltipsEditor-previewTooltip", this.json, v)),
+						$("<span>", this.getMinetipParamPackage("미리보기", "minetip TooltipsEditor-previewTooltip", this.json, v)),
 						"<span class='noselect'> &bull; </span>",
 						$("<a>", {
 							"class": "TooltipsEditor-removeTooltip", 
@@ -392,7 +392,7 @@ $.when(
 
 			if (!results.length) return $results.html("<p>아무런 툴팁도 검색되지 않았습니다.</p>");
 			else if (abort) $results.append("<p>상위 100개의 검색 결과를 표시합니다.</p>");
-			else $results.append("<p>Total: "+results.length+(results.length > 1 && " 결과" || " 결과" )+".</p>");
+			else $results.append("<p>총 "+results.length+" 개의 결과가 검색되었습니다."+".</p>");
 		},
 
 		// helper functions for this.openEditor
@@ -411,7 +411,7 @@ $.when(
 
 			$("#TooltipsEditor-search").hide();
 			$("#TooltipsEditor-editor").show();
-			$("#TooltipsEditor header h3").text("Edit Panel");
+			$("#TooltipsEditor header h3").text("편집 창");
 
 			ace.tooltipsTextEditor.resize();
 			ace.tooltipsTitleEditor.resize();
@@ -802,12 +802,12 @@ $.when(
 			this.forEachInputBox(function(inter, i, otherinputboxes) {
 				var val = otherinputboxes[inter];
 				otherparams.push(
-					$("<span>", { text: "Tooltip "+val.display+": ", "class": "TooltipsEditor-inputbox-label TooltipsEditor-label" }),
+					$("<span>", { text: "툴팁 "+val.display+": ", "class": "TooltipsEditor-inputbox-label TooltipsEditor-label" }),
 					$("<input>", { id: "TooltipsEditor-"+inter, "class": "TooltipsEditor-inputbox" })
 				);
 
 				if (val.optional)
-					otherparams.push($("<span>", { text: "(*Optional)", "class": "TooltipsEditor-inputbox-note" }));
+					otherparams.push($("<span>", { text: "(*선택 사항)", "class": "TooltipsEditor-inputbox-note" }));
 
 				otherparams.push("<br>");
 			}.bind(this));
@@ -817,7 +817,7 @@ $.when(
 				$("<div>", {
 					id: "TooltipsEditor-search",
 					html: [
-						$("<div>", { text: "Tooltips Editor Main Page", id: "TooltipsEditor-pageTitle" }),
+						$("<div>", { text: "툴팁 편집기 메인 메뉴", id: "TooltipsEditor-pageTitle" }),
 						$("<div>", { id: "TooltipsEditor-totalTooltips" }),
 						$("<div>", { id: "TooltipsEditor-searchRow", html: [
 							$("<div>", { text: "기존 툴팁 검색: ", id: "TooltipsEditor-searchLabel" }),
@@ -1029,8 +1029,8 @@ $.when(
 
 			if (confirm("편집을 저장하고 편집기를 닫으시겠습니까?")) {
 				this.modal.hide();
-				mw.notify("Another popup should indicate a successful edit.", {
-					title: "Processing Your Edit",
+				mw.notify("성공적으로 편집이 진행되면 다른 팝업이 나타납니다.", {
+					title: "편집 진행 중",
 					type: "info",
 				});
 			} else return;
@@ -1070,13 +1070,13 @@ $.when(
 				action: "edit",
 				text: ret,
 				title: mw.config.get("wgPageName"),
-				summary: "Updating tooltips (TooltipsEditor)",
+				summary: "툴팁 업데이트 (TooltipsEditor)",
 				minor: true,
 			}).then(function(d) {
 				console.log(d);
 				var saved = "newrevid" in d.edit;
 				if (saved) {
-					mw.notify("Review your changes now!", {title: "툴팁이 저장되었습니다!", type:"info"});
+					mw.notify("이제 편집한 것을 확인해 보세요!", {title: "툴팁이 저장되었습니다!", type:"info"});
 					location.href = new mw.Title(mw.config.get("wgPageName"), -1).getUrl({
 						type: "revision",
 						diff: d.edit.newrevid,
@@ -1084,7 +1084,7 @@ $.when(
 					});
 				}
 				else {
-					mw.notify("No changes were made.", {title: "툴팁이 저장되었습니다!", type:"info"});
+					mw.notify("아무런 편집도 이루어지지 않았습니다.", {title: "툴팁이 저장되었습니다!", type:"info"});
 				}
 			});
 

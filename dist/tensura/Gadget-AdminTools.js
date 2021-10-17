@@ -50,6 +50,7 @@ importArticles({
         'u:dev:MediaWiki:CategoryRenameAuto-update/code.js',
         'u:dev:MediaWiki:FileUsageAuto-update/code.js',
         'u:dev:MediaWiki:FixWantedFiles/code.js',
+        'u:dev:MediaWiki:MassCategorization/code.js',
         'u:dev:MediaWiki:MassEdit/code.js',
         'u:dev:MediaWiki:MassProtect/code.js',
         'u:dev:MediaWiki:PageRenameAuto-update/code.js',

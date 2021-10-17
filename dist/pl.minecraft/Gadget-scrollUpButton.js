@@ -1,5 +1,4 @@
-/* Dodaje przycisk "Wróć na górę" po lewej stronie */
-var footerId = document.getElementById("footer");
+var footerId = document.getElementsByTagName("footer")[0];
 var scrollTopId = document.createElement("span");
 scrollTopId.setAttribute("id","scroll-top");
 scrollTopId.setAttribute("title","Wróć na górę");

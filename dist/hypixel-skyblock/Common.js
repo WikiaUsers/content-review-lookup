@@ -25,7 +25,20 @@ See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
 	multistr: true, maxerr: 999999,
 	-W082, -W084
 */
-/* global mw, importScripts */
+/* global mw, importScripts, BannerNotification */
+
+// code snippet from https://stackoverflow.com/questions/47207355/copy-to-clipboard-using-jquery
+function copyToClipboard(text) {
+	var $temp = $("<input>");
+	$("body").append($temp);
+	$temp.val(text).select();
+	document.execCommand("copy");
+	$temp.remove();
+	if (BannerNotification)
+		new BannerNotification($("<div>", {
+			html: "<div>Copied to clipboard</div>",
+		}).prop("outerHTML"), "confirm", null, 2000).show();
+}
 
 mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(function() {
 	// Small script to change wall text
@@ -88,80 +101,115 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 		}
 	});
 
-	// Small script to fix article comments links
-	var handlerAdded = false;
-	var inter = setInterval(function() {
-		var userGroups = mw.config.get("wgUserGroups");
-		var canBlock = /sysop|util|staff|helper|global-discussions-moderator|wiki-manager|content-team-member|soap|bureaucrat/.test(userGroups.join("\n"));
+	// Small script to change article comments links and display comment/reply IDs
+	var userGroups = mw.config.get("wgUserGroups");
+	var canBlock = /sysop|util|staff|helper|global-discussions-moderator|wiki-manager|content-team-member|soap|bureaucrat/.test(userGroups.join("\n"));
 
-		function changeCommentLinks() { // jshint ignore:line
-			$("span[class^=\"EntityHeader_header-details\"] > div[class^=\"wds-avatar EntityHeader_avatar\"] > a").each(function() {
-				var user = decodeURIComponent($(this).attr('href')).replace(
-						new RegExp(mw.util.getUrl("") + mw.config.get("wgFormattedNamespaces")[2] + ":|" + new mw.Title("Contributions", -1).getUrl() + "/"), ""
-						),
-					$link = $(this).parent().parent().children("a:last-of-type:not(.mw-user-anon-link)"),
-					$this = $(this);
+	function changeCommentLinks() {
+		$("span[class^=\"EntityHeader_header-details\"] > div[class^=\"wds-avatar EntityHeader_avatar\"] > a").each(function() {
+			var user = decodeURIComponent($(this).attr("href")).replace(
+					new RegExp(mw.util.getUrl("") + mw.config.get("wgFormattedNamespaces")[2] + ":|" + new mw.Title("Contributions", -1).getUrl() + "/"), ""
+					),
+				$link = $(this).parent().parent().children("a:last-of-type:not(.mw-user-anon-link)"),
+				$this = $(this);
 
-				// Dont reveal IP's if the user is not an admin/bureaucrat/global groups
-				if (!canBlock && mw.util.isIPAddress(user, true)) return;
+			// Dont reveal IP's if the user is not an admin/bureaucrat/global groups
+			if (!canBlock && mw.util.isIPAddress(user, true)) return;
 
-				$link
-					.attr("href", new mw.Title("Contributions/" + user, -1).getUrl())
-					.html(user);
+			$link
+				.attr("href", new mw.Title("Contributions/" + user, -1).getUrl())
+				.html(user);
 
-				$this.attr("href", new mw.Title("Contributions/" + user, -1).getUrl());
+			$this.attr("href", new mw.Title("Contributions/" + user, -1).getUrl());
 
-				$link.after(
-					"&nbsp;(",
-					$("<a>", {
-						href: new mw.Title("Message_wall/" + user, -1).getUrl(),
-						html: "wall",
-						title: "Message_wall:" + user,
-						class: "mw-user-anon-link",
-					}),
-					canBlock ? "&nbsp;<b>&bull;</b>&nbsp;" : "",
-					canBlock ? $("<a>", {
-						href: new mw.Title("Block/" + user, -1).getUrl(),
-						html: "block",
-						title: "Special:Block/" + user,
-						class: "mw-user-anon-link",
-					}) : "",
-					")"
-				);
-			});
-		}
+			$link.after(
+				"&nbsp;(",
+				$("<a>", {
+					href: new mw.Title("Message_wall/" + user, -1).getUrl(),
+					html: "wall",
+					title: "Message_wall:" + user,
+					class: "mw-user-anon-link",
+				}),
+				canBlock ? "&nbsp;<b>&bull;</b>&nbsp;" : "",
+				canBlock ? $("<a>", {
+					href: new mw.Title("Block/" + user, -1).getUrl(),
+					html: "block",
+					title: "Special:Block/" + user,
+					class: "mw-user-anon-link",
+				}) : "",
+				")"
+			);
+		});
+	}
 
-		function addCommentId() { // jshint ignore:line
-			$(".Comment_wrapper__2mxBn, .Reply_reply__3O89M").each(function() {
-				var threadID = $(this).attr("data-thread-id") || $(this).attr("data-reply-id");
-				var isComment = $(this).hasClass("Comment_wrapper__2mxBn");
-				$(this).append(
-					$("<div>", {
-						text: (isComment? "Comment": "Reply") + " ID : " + threadID,
-						"class": (isComment? "comment": "reply") + "-id-display",
-					})
-				);
-			});
-		}
+	function addCommentId() {
+		$("[class^=\"Comment_comment\"], [class^=\"Reply_reply\"]").each(function() {
+			if ($(this).append) { // if $(this) is a jquery element
+				var threadIsComment = $(this).is("[class^=\"Comment_comment\"]");
+				var threadClassName = (threadIsComment? "comment": "reply") + "-id-display";
+				switch ($(this).find("." + threadClassName).length) {
+					case 0:
+						var replyID = $(this).attr("data-reply-id");
+						var commentID = $(this).parent().attr("data-thread-id") || $(this).parent().parent().parent().attr("data-thread-id");
+						var threadLink = "commentId=" + commentID + (replyID ? "&replyId=" + replyID : "");
+						$(this).append(
+							$("<div>", {
+								"class": threadClassName,
+								"data-link": threadLink,
+								html: $("<abbr>", {
+									title: "click to copy",
+									text: (threadIsComment? "Comment": "Reply") + " ID : " + (replyID || commentID),
+								}),
+							})
+						);
+						break;
+					case 1:
+						break; // do nothing
+					default:
+						$(this).find("." + threadClassName).each(function (i, elem) {
+							if (i) /* not zero (i.e. not first element) */ elem.remove();
+						});
+				}
+			}
+		});
+	}
 
-		if ($("#articleComments [class*=\"Comment_wrapper\"]").length) {
-			clearInterval(inter);
-			changeCommentLinks();
-			addCommentId();
-		}
+	function mainCommentHandler() {
+		changeCommentLinks();
+		addCommentId();
+	}
 
-		if (!handlerAdded) {
-			handlerAdded = true;
-			$(document.body).on("click", "[class^=\"ReplyList_view-all-replies\"], [class^=\"ArticleCommentsSingleThread_toolbar-button-back__\"], [class*=\"ViewFilter_view-filter-view-option__\"] *", function() {
-				var inter = setInterval(function() {
-					if (!$("#articleComments [class*=\"Comment_wrapper\"]").length) return;
+	if ($("#articleComments").length) {
+		var WikiCommentObserver = new MutationObserver(function(mutationsList) {
+			var operate = false;
+			for(var i in mutationsList) {
+				if (true) { // stops fandom from complaining
+					var mutation = mutationsList[i];
+					if ($(mutation.target).is("[class^=\"CommentList_comment-list\"], [class^=\"ReplyList_container\"], [class^=\"ReplyList_list-wrapper\"]")) {
+						operate = true;
+						break;
+					}
+				}
+			}
+			if (operate) mainCommentHandler();
+	
+			var inter = setInterval(function() {
+				if ($("#articleComments [class*=\"Comment_wrapper\"]").length) {
 					clearInterval(inter);
-					changeCommentLinks();
-					addCommentId();
-				}, 10);
-			});
-		}
-	}, 25);
+					mainCommentHandler();
+				}
+			}, 200);
+		});
+	
+		WikiCommentObserver.observe($("#articleComments").get(0), {
+			childList: true,
+			subtree: true,
+		});
+	
+		$("#articleComments").on("click", ".comment-id-display, .reply-id-display", function() {
+			copyToClipboard(mw.config.get("wgServer") + mw.util.getUrl(mw.config.get("wgPageName")) + "?" + ($(this).attr("data-link") || ""));
+		});
+	}
 
 	//##############################################################
 	/* ==Element animator== (B00)*/

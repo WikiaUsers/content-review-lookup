@@ -14,7 +14,7 @@
 			data: {
 				mode: 'articles',
 				only: 'scripts',
-				articles: 'w:dev:ReferencePopups/code.js'
+				articles: 'u:dev:MediaWiki:ReferencePopups/code.js'
 			},
 			dataType: 'script',
 			cache: true

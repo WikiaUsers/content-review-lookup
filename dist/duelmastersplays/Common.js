@@ -146,14 +146,52 @@ function searchJavaScript() {
 		text += '|ordermethod = title';
 		text += '|noresultsheader = No cards match the search criteria.';
 		text += '}}';
-		console.log(text);
+		console.log("DPL: Query is : " + text);
 		new mw.Api().get({
 			action: 'parse',
 			text: text,
 			contentmodel: 'wikitext',
 		}).then(function(data) {
-			console.log(data);
-			document.getElementById('content-container').innerHTML = data.parse.text['*'];
+			var results = data.parse.text['*'];
+			convertAndApply(results);
+		});
+	}
+	
+	function convertAndApply(input)
+	{
+		if(input.includes("No cards match the search criteria")) 
+		{
+			document.getElementById('content-container').innerHTML = input;
+			return;
+		}
+		
+		var html = '<div><ul>';
+		var lineTemplate = '<li style="display: inline-block; width:185px; vertical-align: top; text-align: center"">{{CardSearchResult|cardName}}[[cardName]]<br><br></li>';
+		var position = -7;
+		var limit = 25;
+		var i = 1;
+		while(true)
+		{
+			position = input.indexOf('title="', position + 7);
+			if(position < 0 || i > limit )
+			{
+				break;
+			}
+			var endPosition = input.indexOf('">', position);
+			var cardTitle = input.substring(position+7, endPosition);
+			html += lineTemplate.replace(/cardName/g, cardTitle);
+			i++;
+		}
+		html += '</ul></div>';
+		
+		var text = html;
+		new mw.Api().get({
+			action: 'parse',
+			text: text,
+			contentmodel: 'wikitext',
+		}).then(function(data) {
+			var final = data.parse.text['*'];
+			document.getElementById('content-container').innerHTML = final; 
 		});
 	}
 	
@@ -271,8 +309,6 @@ function searchJavaScript() {
         input.type = "number";
 		input.className = "comparisonNumber";
 
-
-        
         var label2 = document.createElement("label2");
         label2.setAttribute("for", input.id);
 
@@ -301,7 +337,6 @@ function searchJavaScript() {
 		addSelectList.bind(this, elem, cContainer, "Edition")();
 		
 		//CheckBoxes
-		
 		cContainer = document.getElementById("keywordsContainer");
 		addCheckBox.bind(this, elem, cContainer, "Keywords")();
 		cContainer = document.getElementById("civsContainer");
@@ -356,7 +391,7 @@ function searchJavaScript() {
 	addItems(divBox);	
 }
 switch (mw.config.get('wgPageName')) {
-	case "User:NotoroX/CardSearchV2": //test page
+	case "User:NotoroX/CardSearch": //test page
 	case "Advanced_Card_Search":
 		searchJavaScript();
 		

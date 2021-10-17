@@ -1,9 +1,10 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
+//Стиль кнопки назад dev wiki
+window.BackToTopModern = true;
 
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:AdminDashboard_JS-Button/code.js',
         'u:dev:MediaWiki:UserBadge/code.js',
         'u:dev:MediaWiki:CheckJStatus.js',
     ]

@@ -3,17 +3,26 @@
  * For use in Warframe FANDOM wiki, particularly in the following page:
  * https://warframe.fandom.com/wiki/Nightwave/Acts_Currently_Available
  * 
+ * See https://warframe.fandom.com/wiki/MediaWiki:Custom-NightwaveActs/i18n.json
+ * for script i18n messages.
+ * 
  * Note: As of UCP migration, FANDOM's JS parser still DOES NOT support string
  * interpolation, let keyword, and arrow functions. In addition, keep in mind
  * about JS rendering for anonymous users vs. logged in users.
+ * 
  * Made in JavaScript + jQuery 3.3.1
  * 
  * @author	User:Cephalon Scientia
  * @requires	jQuery
  * @requires	mediawiki
+ * @requires	dev.i18n
  */
 
 /* Cephalon Scientia Nightwave Current Acts */
+
+// TODO: Wrap code around an anonymous function and mimic OOP techniques
+// TODO: Use debug flag to turn toggle some console messages
+var config = mw.config.get([ "debug", "wgContentLanguage", "wgUserLanguage" ]);
 
 /**
  * DO NOT USE ENDPOINT KEY ON https://warframe.fandom.com/wiki/NightwaveActs.json
@@ -22,12 +31,19 @@
  */
 const WIKI_IMG_URL = "https://vignette.wikia.nocookie.net/warframe/images/";
 // All platforms have the same Nightwave acts
-const API_URL = "https://api.warframestat.us/pc/nightwave?language=en";
+// Documentation of API https://docs.warframestat.us/#tag/Worldstate/paths/~1{platform}~1nightwave/get
+// Will fallback to en for unsupported language codes
+// TODO: Update https://warframe.fandom.com/wiki/NightwaveActs.json to replace keys with internal names of acts
+// so that we can determine act type using API's activeChallenges id instead for i18n (decoupling localized act names from data)
+// Would just need to parse out the text from the act ids (e.g. str.match(/[a-z]+/g))
+const API_URL = "https://api.warframestat.us/pc/nightwave?language=" + "en"; // + config.wgUserLanguage;
 // Scaled down reputation icon
 const REP_IMG_URL = WIKI_IMG_URL + "9/92/ReputationLargeBlack.png/" +
 	"revision/latest/scale-to-width-down/20?cb=20141029201703";
 // Contains JSON map to be fetched
 const IMG_MAP_URL = "https://warframe.fandom.com/NightwaveActs.json?action=raw";
+// Full page name where this script's i18n messages are located
+const I18N_MESSAGES = "u:warframe:MediaWiki:Custom-NightwaveActs/i18n.json";
 
 // Page that user is currently on
 const NW_PAGE_NAME = mw.config.get("wgPageName");
@@ -55,19 +71,45 @@ Object.freeze(ActTypeEnum);
 
 // Actual entry point
 if (WHITELIST_PAGES.includes(NW_PAGE_NAME)) {
-	nwActTableInit();
+	// Register the hook before the import to avoid race conditions
+	mw.hook("dev.i18n").add(function (i18n) {
+		// Note that this i18n is a shortcut to window.dev.i18n
+		// Loading messages
+		i18n.loadMessages(I18N_MESSAGES).done(function (i18n) {
+			// i18n object (not the same as window.dev.i18n)
+			// Use wgUserLanguage or override with uselang= parameter in URL
+			i18n.useUserLang();
+			nwActTableInit(i18n);
+		});
+	});
+	importArticle({
+		type: "script",
+		article: "u:dev:MediaWiki:I18n-js/code.js"
+	});
+	
+	// Alternative import statement if not using mediawiki library
+	// $.getScript("https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:I18n-js/code.js&only=scripts")
+	// 	.done(function() {
+	// 		var i18n = window.dev.i18n;
+	// 		// Loading messages
+	// 		i18n.loadMessages("u:warframe:MediaWiki:Custom-NightwaveActs/i18n.json").done(function (i18n) {
+	// 			i18n.useUserLang();
+	// 			nwActTableInit(i18n);
+	// 		});
+	// 	});
 }
 
 /**
  * Initializes fetching and building process for Nightwave act table.
  * 
  * @function	nwActTableInit
+ * @param {object} i18n i18n message handler
  */
-function nwActTableInit() {
-	Promise.all([ getActData(API_URL), getImageMap(IMG_MAP_URL) ])
+function nwActTableInit(i18n) {
+	Promise.all([ getActData(API_URL, i18n), getImageMap(IMG_MAP_URL, i18n) ])
 		.then(function (values) {
 			// DOM preparation and table building done here
-			prepAndBuild(values[0], values[1]);
+			prepAndBuild(values[0], values[1], i18n);
 		})
 		.catch(function (error) {
 			console.error(error);
@@ -81,9 +123,10 @@ function nwActTableInit() {
  * 
  * @function	getImageMap
  * @param {string} url URL endpoint; assumes that url returns text in a JSON format
+ * @param {object} i18n i18n message handler
  * @returns A Promise that contains the image map data if fetch was successful
  */
-function getImageMap(url) {
+function getImageMap(url, i18n) {
 	return fetch(url)
 		.then(function (response) {
 			console.log("GET JSON image map in NightwaveActs.json:", response);
@@ -94,8 +137,7 @@ function getImageMap(url) {
 			return jsonImgMap;
 		})
 		.catch(function (error) {
-			console.log(error);
-			console.error("ERROR: GET request to " + url + " failed.");
+			console.error(i18n.msg("get-fail", url).plain(), error);
 		});
 }
 
@@ -104,9 +146,10 @@ function getImageMap(url) {
  * 
  * @function	getActData
  * @param {string} url URL endpoint; assumes that url returns text in a JSON format
+ * @param {object} i18n i18n message handler
  * @returns A Promise that contains the Nightwave act data if fetch was successful
  */
-function getActData(url) {
+function getActData(url, i18n) {
 	return fetch(API_URL).then(function (response) {
 				console.log("GET Nightwave act data from " + API_URL + ":", response);
 				return response.json();
@@ -116,8 +159,7 @@ function getActData(url) {
 				return actDataJSON;
 			})
 			.catch(function (error) {
-				console.log(error);
-				console.error("ERROR: GET request to " + API_URL + " failed.");
+				console.error(i18n.msg("get-fail", API_URL).plain(), error);
 			});
 }
 
@@ -127,10 +169,11 @@ function getActData(url) {
  * @function	prepAndBuild
  * @param {object} actDataJSON JSON of Nightwave act data
  * @param {object} jsonImgMap JSON of Nightwave image map
+ * @param {object} i18n i18n message handler
  */
-function prepAndBuild(actDataJSON, jsonImgMap) {
+function prepAndBuild(actDataJSON, jsonImgMap, i18n) {
 	$(document).ready(function () {
-		console.info("Ready to build Nightwave act table.");
+		console.log(i18n.msg("build-ready").plain());
 		// These ids will be on Template:NightwaveActs page
 		var $resultDaily = $(document.getElementById("nightwave_daily"));
 		var $resultWeekly = $(document.getElementById("nightwave_weekly"));
@@ -172,10 +215,10 @@ function prepAndBuild(actDataJSON, jsonImgMap) {
 					break;
 			}
 
-			buildTable(tabIDAttr, rowIDAttr);
-			buildTableRow(actImgURL, tabIDAttr, rowIDAttr, actJSON);
+			buildTable(tabIDAttr, rowIDAttr, i18n);
+			buildTableRow(actImgURL, tabIDAttr, rowIDAttr, actJSON, i18n);
 		});
-		console.info("Nightwave act table successfully built.");
+		console.log(i18n.msg("build-done").plain());
 	});
 }
 
@@ -185,8 +228,9 @@ function prepAndBuild(actDataJSON, jsonImgMap) {
  * @function	buildTable
  * @param {string} tabIDAttr ID name of div element with tabber
  * @param {string} rowIDAttr ID name of table row element
+ * @param {object} i18n i18n message handler
  */
-function buildTable(tabIDAttr, rowIDAttr) {
+function buildTable(tabIDAttr, rowIDAttr, i18n) {
 	// Add table if a div element with id associated with act type is not found
 	// One table per act type
 	if ($(document.getElementById(tabIDAttr)).find("#" + rowIDAttr).length === 0) {
@@ -202,10 +246,10 @@ function buildTable(tabIDAttr, rowIDAttr) {
 								append: [
 									$("<tr>", {
 										append: [
-											$("<th>").text("Icon"),
-											$("<th>").text("Name & Description"),
-											$("<th>").text("Reward"),
-											$("<th>").text("End Date")
+											$("<th>").text(i18n.msg("table-header-icon").plain()),
+											$("<th>").text(i18n.msg("table-header-description").plain()),
+											$("<th>").text(i18n.msg("table-header-reward").plain()),
+											$("<th>").text(i18n.msg("table-header-date").plain())
 										]
 									})
 								]
@@ -224,8 +268,9 @@ function buildTable(tabIDAttr, rowIDAttr) {
  * @param {string} tabIDAttr ID name of div element with tabber
  * @param {string} rowIDAttr ID name of table row element
  * @param {object} actJSON JSON data of an active Nightwave act
+ * @param {object} i18n i18n message handler
  */
-function buildTableRow(actImgURL, tabIDAttr, rowIDAttr, actJSON) {
+function buildTableRow(actImgURL, tabIDAttr, rowIDAttr, actJSON, i18n) {
 	$(document.getElementById(tabIDAttr)).find("#" + rowIDAttr)
 		.find(".emodtable").append($("<tr>", {
 			append: [
@@ -263,9 +308,10 @@ function buildTableRow(actImgURL, tabIDAttr, rowIDAttr, actJSON) {
 							class: "sortkey",
 						}).text(actJSON.reputation),
 						$("<a>", {
-							href: "/wiki/Syndicates",
+							// Want to link to this wiki's "Syndicates" page
+							href: "/wiki/" + i18n.inContentLang().msg("syndicates").plain(),
 							class: "icon image image-thumbnail link-internal",
-							title: "Syndicates",
+							title: i18n.msg("syndicates").plain(),
 							append: [
 								$("<img>", {
 									src: REP_IMG_URL,

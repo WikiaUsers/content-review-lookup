@@ -47,7 +47,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 				type: 'encapsulate',
 				options: {
 					pre: "{{Unit Infobox \r|Name           = ",
-					post: "\r|Icon           = \r|Image          = \r|Game           = \r|Epoch          = \r|Trained At     = \r|Built At       = \r|Type           = \r|Attack Type    = \r|HP             = \r|Attack         = \r|Armor          = \r|Arrow          = \r|Pierce         = \r|Shock          = \r|Area Effect    = \r|Gun            = \r|Laser          = \r|Transport      = \r|Speed          = \r|Power          = \r|Range          = \r|Flight Time    = \r|LOS            = \r|Cost           = \r|Pop Count      = \r|Build Time     = \r|Upgrades From  = \r|Upgrades To    = \r}}"
+					post: "\r|Icon           = \r|Image          = \r|Game           = \r|Epoch          = \r|Civilization   = \r|Trained At     = \r|Built At       = \r|Type           = \r|Attack Type    = \r|HP             = \r|Attack         = \r|Armor          = \r|Arrow          = \r|Pierce         = \r|Shock          = \r|Area Effect    = \r|Gun            = \r|Laser          = \r|Transport      = \r|Speed          = \r|Power          = \r|Range          = \r|Flight Time    = \r|LOS            = \r|Hotkey         = \r|Requires       = \r|Abilities      = \r|Cost           = \r|Pop Count      = \r|Build Time     = \r|Upgrades From  = \r|Upgrades To    = \r}}"
 				}
 			}
 		}

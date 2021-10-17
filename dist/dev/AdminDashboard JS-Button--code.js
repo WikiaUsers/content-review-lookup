@@ -20,13 +20,11 @@
                     $('<span>', {
                         'class': 'representation AdminDashboardJSButton'
                     }).append(
-                        $('<div>').append(
-                            $('<span>', {
-                                text: 'JS_'
-                            })
-                        )
+                        $('<span>', {
+                            text: 'JS_'
+                        })
                     ),
-                    'JS'
+                    i18n.msg('text').plain()
                 )
             ).hover($.proxy(this.hover, this), $.proxy(this.unhover, this));
             $('.control a[data-tracking="special-css"]').parent().after(this.$control);

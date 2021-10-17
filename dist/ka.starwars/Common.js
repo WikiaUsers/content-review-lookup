@@ -1,4 +1,18 @@
-/* აქ ნებისმიერი ჯავასკრიპტი ყველა მომხმარებლისთვის ჩაიტვირთება ყველა გვერდზე. */
+// Top icons
+$( function eraIconsFandomdesktop() {
+    if ( $( '#title-eraicons' ).length ) {
+    	if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
+    		$( '.page-header__actions' ).first().prepend( $( '#title-eraicons' ).show() );
+    	} else {
+    	    $( '.page-header__contribution > div' ).first().prepend( $( '#title-eraicons' ).show() );
+    	}
+    }
+} );
+
+// Hotcat script for adding interlang links
+
+mw.loader.load('https://starwars.fandom.com/load.php?mode=articles&articles=MediaWiki:HotCat.js&only=scripts');
+importStylesheetPage('MediaWiki:HotCat.css', 'starwars');
 
 /* Replaces {{USERNAME}} with the name of the user browsing the page.
    Requires copying Template:USERNAME. */

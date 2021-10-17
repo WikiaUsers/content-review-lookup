@@ -1,3 +1,5 @@
+importArticles({    type: 'script',    articles: [        'u:dev:MediaWiki:WikiActivity.js',    ]});
+
 //Ten nowy skrypt, przy którym aktywność powinna działać jak należy... albo nie.
 
 window.rwaOptions = {

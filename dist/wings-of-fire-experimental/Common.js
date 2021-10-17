@@ -4,6 +4,21 @@
 //Embed Discussions for front page
 window.discussEmbedForum = "2144506900120166382";
 
+// Dragon anon avatars
+function changeSourceAll() {
+    var images = document.getElementsByTagName('img');
+    for (var i = 0; i < images.length; i++) {
+        if (images[i].src.includes('https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/')) {
+            images[i].src = images[i].src.replace("https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/400/height/400", "https://static.wikia.nocookie.net/wings-of-fire-experimental/images/d/d4/Anonymous_SilkWing_Wiki.png/revision/latest?cb=20190914234814");
+        }
+    }
+}
+changeSourceAll();
+ 
+setInterval(function(){
+    changeSourceAll();
+}, 1000);
+
 /**
  * Add a css class to user tags based on the tag's text
  */
@@ -101,20 +116,3 @@ var hasClass = (function () {
         return (reCache[className] ? reCache[className] : (reCache[className] = new RegExp("(?:\\s|^)" + className + "(?:\\s|$)"))).test(element.className);
     };
 })();
-
-// Dragon anon avatars
-function changeSourceAll() {
-    var images = document.getElementsByTagName('img');
-    for (var i = 0; i < images.length; i++) {
-        if (images[i].src.includes('https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest/scale-to-width-down/')) {
-            images[i].src = images[i].src.replace("https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest/scale-to-width-down/30", "https://vignette.wikia.nocookie.net/wings-of-fire-experimental/images/0/06/Anonymous_IceWing_Wiki.png/revision/latest?cb=20190914235622");
-            images[i].src = images[i].src.replace("https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest/scale-to-width-down/50", "https://vignette.wikia.nocookie.net/wings-of-fire-experimental/images/0/06/Anonymous_IceWing_Wiki.png/revision/latest?cb=20190914235622");
-            images[i].src = images[i].src.replace("https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest/scale-to-width-down/150", "https://vignette.wikia.nocookie.net/wings-of-fire-experimental/images/0/06/Anonymous_IceWing_Wiki.png/revision/latest?cb=20190914235622");
-        }
-    }
-}
-changeSourceAll();
- 
-setInterval(function(){
-    changeSourceAll();
-}, 1000);

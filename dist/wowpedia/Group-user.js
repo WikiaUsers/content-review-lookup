@@ -414,9 +414,9 @@ $(function() {
       return '<a href="'+link+'">'+split.join(' ')+'</a>';
     });
     $(this).html(adt);
-    var $tempSpan = $("<span>").css({"font-size":"90%","white-space":"nowrap","visibility":"hidden","height":0}).html(adt).appendTo("#content");
-    var targetWidth = parseInt($tempSpan.width()) + 60;
-    if (am = adt.match(/<img/)) targetWidth += (am.length * 60);
+    var $tempSpan = $("<span>").css({"font-size":"90%","white-space":"nowrap","visibility":"hidden","height":0}).html(adt).appendTo(".mw-indicator");
+    var targetWidth = parseInt($tempSpan.width()) + 35;
+    if (am = adt.match(/<img/)) targetWidth += (am.length * 35);
     $tempSpan.remove();
     $(this).parent().css({"--target-width":targetWidth + "px","animation-play-state":"running"});
     $(this).css("animation-play-state","running");

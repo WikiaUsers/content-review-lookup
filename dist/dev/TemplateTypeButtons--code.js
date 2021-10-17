@@ -8,7 +8,8 @@
     'use strict';
     var config = mw.config.get([
         'wgArticleId',
-        'wgNamespaceNumber'
+        'wgNamespaceNumber',
+        'wgUserLanguage'
     ]);
     if (
         config.wgNamespaceNumber !== 10 ||
@@ -23,27 +24,6 @@
      * @classdesc Main TemplateTypeButtons class
      */
     var Main = {};
-    /**
-     * @type {Array}.{String}
-     * @description System messages to get
-     */
-    Main.messages = [
-        'template-classification-type-infobox',
-        'template-classification-type-quote',
-        'template-classification-type-navbox',
-        'template-classification-type-notice',
-        'template-classification-type-context-link',
-        'template-classification-type-infoicon',
-        'template-classification-type-scrollbox', 
-        'template-classification-type-references',
-        'template-classification-type-media',
-        'template-classification-type-data',
-        'template-classification-type-design',
-        'template-classification-type-navigation',
-        'template-classification-type-nonarticle',
-        'template-classification-type-unknown',
-        'template-classification-edit-modal-success'
-    ];
     /**
      * @type {Array}.{String}
      * @description Template types
@@ -67,15 +47,13 @@
     /**
      * @method buttons
      * @description Creates the buttons and changes the type when clicked
-     * @param {Function} i18n - Variable for I18n
      */
-    Main.buttons = function (i18n) {
+    Main.buttons = function () {
         $.each(this.types, function (k, v) {
-            // console.log(k, v);
             $('<span>', {
                 'class': 'wds-button temptype-button',
                 'data-id': v,
-                'text': mw.message(Main.messages[k]).plain()
+                'text': mw.message('template-classification-type-' + v).plain()
             }).insertAfter('#PageHeader, .page-header__bottom');
         });
         $('.temptype-button').click(function () {
@@ -85,7 +63,7 @@
                 that.text()
             ) {
                 $.post(mw.util.wikiScript('wikia') + '?' + $.param({
-                    controller: 'Fandom\\TemplateClassification\\Api\\ClassificationController',
+                    controller: 'Fandom\\TemplateClassification\\Api\\Classification',
                     method: 'classifyTemplate',
                     format: 'json'
                 }), {
@@ -93,7 +71,8 @@
                     pageId: config.wgArticleId,
                     type: that.data().id,
                     editToken: mw.user.tokens.get('editToken'),
-                    token: mw.user.tokens.get('csrfToken')
+                    token: mw.user.tokens.get('csrfToken'),
+                    uselang: config.wgUserLanguage
                 }, function (d) {
                     mw.notify(d.status);
                 });
@@ -104,7 +83,7 @@
      * @method preload
      * @description Preloads the hook
      */
-    mw.loader.using('mediawiki.user').then(
+    mw.loader.using(['ext.fandom.tcs.dialog.js', 'mediawiki.user']).then(
         $.proxy(Main.buttons, Main),
         mw.util.addCSS('.temptype-button { margin: 3px 3px 0 0; padding: 4px 10px; }') // Smaller buttons (more like legacy version)
     );

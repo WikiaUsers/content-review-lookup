@@ -1,9 +1,11 @@
+/* jshint jquery: true, maxerr: 99999999, esversion: 5, undef: true */
+
 // Taken from https://minecraft.gamepedia.com/MediaWiki:Common.js
 // Creates minecraft style tooltips
 // Replaces normal tooltips. Supports minecraft [[formatting codes]] (except k), and a description with line breaks (/).
 $(function() {
 "use strict";
-(window.updateTooltips = function() {
+(window.updateTooltips = (function() {
 	var escapeChars = { "\\&": "&#38;", "<": "&#60;", ">": "&#62;" };
 	var escape = function(text) {
 		// "\" must be escaped first
@@ -25,16 +27,22 @@ $(function() {
 				}
 			}
 
+			var $follow = $elem.find(".slot-image-follow");
+			if ($follow.length !== 0 && $follow.is(":visible")) {
+				$elem.trigger("mouseleave");
+				return;
+			}
+
 			// No title or title only contains formatting codes
 			if (title === undefined || title !== "" && title.replace(/&([0-9a-fl-or])/g, "") === "") {
 				// Find deepest child title
-				var childElem = $elem[0], childTitle;
+				var childElem = $($elem[0]), childTitle;
 				do {
-					if (childElem.hasAttribute("title")) {
+					if (typeof childElem.attr("title") !== 'undefined' && childElem.attr("title") !== false) {
 						childTitle = childElem.title;
 					}
-					childElem = childElem.firstChild;
-				} while(childElem && childElem.nodeType === 1);
+					childElem = childElem.children(":first");
+				} while(childElem.length !== 0);
 				if (childTitle === undefined) {
 					return;
 				}
@@ -76,7 +84,7 @@ $(function() {
 			content = content.replace(/&r/g, "");
 
 			$tooltip = $('<div id="minetip-tooltip">');
-			$tooltip.html(content).appendTo("body");
+			$tooltip.html(content).hide().appendTo("body");
 
 			// Cache current window and tooltip size
 			winWidth = $win.width();
@@ -93,8 +101,16 @@ $(function() {
 				return;
 			}
 
+			var $follow = $(this).find(".slot-image-follow");
+			if ($follow.length !== 0 && $follow.is(":visible")) {
+				$(this).trigger("mouseleave");
+				return;
+			}
+
 			// Get event data from remote trigger
 			e = trigger || e;
+
+			if (typeof e.clientY !== 'number') return;
 
 			// Get mouse position and add default offsets
 			var top = e.clientY - 34;
@@ -123,7 +139,7 @@ $(function() {
 			}
 
 			// Apply the positions
-			$tooltip.css({ top: top, left: left });
+			$tooltip.css({ top: top, left: left }).show();
 		},
 		"mouseleave.minetip": function() {
 			if (!$tooltip.length) {
@@ -137,50 +153,75 @@ $(function() {
 
 	$(document.body).on({
 		"mouseenter.invslot-item": function() {
-			var $links = $(this).find("a");
-			if ($(this).find(".invslot-hover-overlay").length === 0) {
-				$(this).append(
-					$("<a>").addClass("invslot-hover-overlay").attr("href", $($links[0]).attr("href"))
-				);
+			var $links = $(this).find("a:not(.invslot-hover-overlay)");
+			switch ($(this).find(".invslot-hover-overlay").length) {
+				case 0:
+					$(this).append(
+						$("<a>").addClass("invslot-hover-overlay").attr("href", $($links[0]).attr("href"))
+					);
+					break;
+				case 1:
+					break;
+				default:
+					$(this).find(".invslot-hover-overlay").each(function(i, el) {
+						if (i) $(el).remove();
+					});
+					break;
 			}
 		},
-		"mouseleave.invslot-item": function() {
-			$(this).find(".invslot-hover-overlay").remove();
+		// pick up slot item for 300ms
+		// allowed: left/right click
+		"mousedown.invslot-item": function(e) {
+			if (e.which !== 2) {
+				var $source = $(this).find("img:first");
+				if ($source.length !== 0) {
+					var $target;
+					switch ($(this).find(".slot-image-follow").length) {
+						case 0:
+							$target = $source.clone();
+							$target.addClass("slot-image-follow").appendTo($(this).find(".invslot-hover-overlay"));
+							break;
+						case 1:
+							$target = $(this).find(".slot-image-follow");
+							break;
+						default:
+							$(this).find(".slot-image-follow").each(function(i, elm) {
+								if (i) elm.remove();
+								else $target = elm;
+							});
+							break;
+					}
+					var offset = $(this).offset();
+					$target.css({
+						"top": e.pageY - offset.top - 16,
+						"left": e.pageX - offset.left - 16,
+					}).show();
+					$source.hide();
+					var timer = setInterval(function() {
+						$source.show();
+						$target.css({
+							"top": 0,
+							"left": 0,
+						}).hide();
+						clearInterval(timer);
+					}, 300);
+					$(this).trigger("mouseleave");
+				}
+			}
 		},
-		// "mousedown.invslot-item": function(e) {
-		// 	if (e.which !== 2) {
-		// 		// pick up slot item for 300ms
-		// 		// allowed: left/right click
-		// 		var $source = $(this).find("img");
-		// 		if ($source.length !== 0) {
-		// 			var $target = $source.clone();
-		// 			$source.hide();
-		// 			$target.addClass("slot-image-follow").css({
-		// 				"top": e.pageY - 16,
-		// 				"left": e.pageX - 16,
-		// 			}).appendTo("body");
-		// 			var timer = setInterval(function() {
-		// 				$source.show();
-		// 				$target.remove();
-		// 				clearInterval(timer);
-		// 			}, 300);
-		// 		}
-		// 	}
-
-		// 	// ui switching
-		// 	// allowed: all mouse button clicks
-		// 	// $(this).click();
-		// },
 	}, ".invslot-item");
 
-	// $(document.body).on("mousemove", function(e) {
-	// 	$(".slot-image-follow").each(function() {
-	// 		$(this).css({
-	// 			"top": e.pageY - 16,
-	// 			"left": e.pageX - 16,
-	// 		});
-	// 	});
-	// });
+	$(document.body).on("mousemove", function(e) {
+		$(".slot-image-follow").each(function() {
+			if ($(this).is(":visible")) {
+				var offset = $(this).parent().offset();
+				$(this).css({
+					"top": e.pageY - offset.top - 16,
+					"left": e.pageX - offset.left - 16,
+				});
+			}
+		});
+	});
 
-}());
+})());
 });

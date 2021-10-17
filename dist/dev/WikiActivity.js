@@ -243,7 +243,7 @@ window.rwaOptions = window.rwaOptions || { };
                 delete params.rcstart;
             }
 
-            return ( new mw.Api( ) ).get( params );
+            return ( new mw.Api( ) ).post( params );
         } ],
         [ "watchlist", function( p, cont ) {
             const params = {
@@ -279,7 +279,7 @@ window.rwaOptions = window.rwaOptions || { };
                 delete params.wlstart;
             }
 
-            return ( new mw.Api( ) ).get( params );
+            return ( new mw.Api( ) ).post( params );
         } ],
         /* [ "images", function( p, cont ) {
             return ( new mw.Api( ) ).get( {
@@ -1266,7 +1266,7 @@ window.rwaOptions = window.rwaOptions || { };
             // Ajax for comparing revisions to each other
             p.compareRevisionsAjax = function( revids ) {
                 return new Promise( function( res, rej ) {
-                    return ( new mw.Api( ) ).get( {
+                    return ( new mw.Api( ) ).post( {
                         action : "query",
                         prop : "revisions",
                         rvprop : [ "content", "ids" ],
@@ -1309,7 +1309,7 @@ window.rwaOptions = window.rwaOptions || { };
             // generating entry data.
             p.generateDataAjax = function( revid ) {
                 return new Promise( function( res, rej ) {
-                    ( new mw.Api( ) ).get( {
+                    ( new mw.Api( ) ).post( {
                         action : "query",
                         prop : [
                             "categories",
@@ -1408,7 +1408,7 @@ window.rwaOptions = window.rwaOptions || { };
 
             // Ajax for fetching templates from the page content
             p.fetchTemplatesAjax = function( params ) {
-                return ( new mw.Api( ) ).get( {
+                return ( new mw.Api( ) ).post( {
                     action : "query",
                     prop : "revisions",
                     rvprop : "content",
@@ -1422,7 +1422,7 @@ window.rwaOptions = window.rwaOptions || { };
             // Fetches the required AJAX for fetching image info
             p.fetchImageInfoAjax = function( files ) {
                 return new Promise( function( res, rej ) {
-                    return ( new mw.Api( ) ).get( {
+                    return ( new mw.Api( ) ).post( {
                         action : "query",
                         prop : "imageinfo",
                         iiprop : "url",
@@ -1553,7 +1553,7 @@ window.rwaOptions = window.rwaOptions || { };
 
             // Creating required AJAX for generating an avatar
             p.fetchUserDataAjax = function( userid ) {
-                return $.get( mw.util.wikiScript( "wikia" ), {
+                return $.post( mw.util.wikiScript( "wikia" ), {
                     controller : "UserProfile",
                     method : "getUserData",
                     userId : userid,

@@ -1,1 +1,0 @@
-InactiveUsers = { months: 1 };

@@ -1,14 +1,25 @@
-/* scrollUpButton
- * Add a button to scroll up to the top of the current page.
- * @rev 3 (2019-28-07)
- * @author Kwj2772
+/* 
+ * @name        ScrollUpButton
+ * @desc        Add a button to scroll up to the top of the current page.
+ * @rev         3 (2019-28-07)
+ * @fork        fandom-zhcc-1 (2021-06-14)
+ * @author      Kwj2772
  * @contributor Perhelion
+ * @contributor [wikipedia:ko:] Ykhwong
+ * @contributor [wikipedia:zh:] AnYiLin
+ * @contributor [wikia:zh:] Winston Sung
+ * 
  * No internationalisation required
- * [kowiki] Fixed an issue with help-panel-button ([[ko:User:ykhwong]])
- * [zhwiki] Add a timer to autohide button, check more gadgets. Add scrollDownButton
- *   @from https://ko.wikipedia.org/?oldid=25440719
- *   @zhwikipedia_maintainer 安忆 ([[zh:User:AnYiLin]])
+ * 
+ * [kowiki] Fixed an issue with help-panel-button. (wikipedia:ko:User:Ykhwong)
+ * [zhwiki] Add a timer to autohide button, check more gadgets. Add scrollDownButton.
+ * [fandom-zhcc] Adding compatibility with Toolbar/QuickBar. (wikia:zh:User:Winston Sung)
+ * 
+ * @from https://ko.wikipedia.org/?oldid=25440719
+ * @zhwikipedia_maintainer 安忆 (wikipedia:zh:User:AnYiLin)
+ * @fandom-zhcc Winston Sung (wikia:zh:User:Winston Sung)
  */
+
 (function($, mw) {
 	var scrollDownButtonId = 'scrollDownButton',
 		scrollUpButtonId = 'scrollUpButton';

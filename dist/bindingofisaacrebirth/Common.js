@@ -30,7 +30,6 @@ $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
 		}
 		useCustomFont( this, 'TeamMeat' );
 	} );
-
 	$(
 		'.pi-header,' +
 		':not( .pi-group ) > .pi-data > .pi-data-label,' +
@@ -41,6 +40,9 @@ $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
 		'.pi-item[data-source="quote"] > .pi-data-value,' +
 		'.pi-item[data-source="type"] > .pi-data-value'
 	).each( function () { useCustomFont( this, 'TeamMeat' ) } );
+	
+	// Crafting recipes
+	loadCraftingRecipes( 50 );
 } );
 
 var specialCharacters = {
@@ -116,4 +118,34 @@ function useCustomFont( element, name ) {
 		template.innerHTML = '<span class="custom-font custom-font-enabled">' + str2 + '</span>';
 		childNode.replaceWith( template.content.firstChild );
 	}
+}
+
+function loadCraftingRecipes( n, api, e ) {
+	api = api || new mw.Api();
+	e = e || document.getElementsByClassName( 'crafting-recipe-async' );
+	if ( !e[0] ) {
+		return;
+	}
+	var list = [], str = '';
+	for ( var i = 0; i < n; ++i ) {
+		if ( !e[i] ) {
+			break;
+		}
+		list.push( e[i] );
+		str += '{{#invoke:bag of crafting recipes|recipe|' +
+			e[i].dataset.nextCraftingRecipe + '}}';
+	}
+	api.parse( str ).then( function ( text ) {
+		var target, parent, template = document.createElement( 'template' );
+		template.innerHTML = text;
+		for ( i = 0; i < list.length; ++i ) {
+			target = list[i];
+			target.classList.remove( 'crafting-recipe-async' );
+			delete target.dataset.nextCraftingRecipe;
+			parent = target.parentElement.cloneNode();
+			parent.appendChild( template.content.firstChild.firstChild );
+			target.parentElement.insertAdjacentElement( 'afterend', parent );
+		}
+		setTimeout( function() { loadCraftingRecipes( n, api, e ); }, 500 );
+	} );
 }

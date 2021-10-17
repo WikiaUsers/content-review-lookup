@@ -21,6 +21,7 @@
          * - exec: callback to execute when selector or page are detected
          * - styles: stylesheet(s) to load when selector or page are detected
          * - scripts: script(s) to load when selector or page are detected
+         * - disabledByDefault: demo only loads with a `demo` parameter in the URL
          *
          **/
 		
@@ -292,7 +293,8 @@
         OasisRevived: {
             page: 'OasisRevived',
             styles: 'MediaWiki:OasisRevived.css',
-            scripts: 'MediaWiki:OasisRevived.js'
+            scripts: 'MediaWiki:OasisRevived.js',
+            disabledByDefault: true
         },
         
         OldOasisTheme: {
@@ -594,6 +596,10 @@
                 }
 
                 if (actions.disabled) {
+                    return;
+                }
+
+                if (actions.disabledByDefault && !urlVars.get('demo')) {
                     return;
                 }
 

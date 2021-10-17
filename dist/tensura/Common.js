@@ -42,6 +42,9 @@ window.NoLicenseWarning = {
     ]
 };
 
+//PreloadTemplates customization
+preloadTemplates_subpage = "case-by-case";
+
 // User tags
 window.UserTagsJS = {
     tags: {

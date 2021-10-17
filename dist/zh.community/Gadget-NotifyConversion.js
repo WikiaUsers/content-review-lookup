@@ -2,7 +2,7 @@
  * @name NotifyConversion.js
  * @description Display banner notification for users set in a specific language (zh)
  */
-!(function () {
+mw.loader.using('mediawiki.util').then(function () {
  
     // 变量
     var conf = mw.config.get(),
@@ -77,4 +77,4 @@
     })
     */
  
-})();
+});

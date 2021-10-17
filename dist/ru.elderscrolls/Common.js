@@ -9,13 +9,13 @@
 // * Настройки
 // * Блок "Новые страницы"
 // * Кнопка "Back To Top"
-// * Логотип для светлой темы
 // * Случайный фон страницы
 // * Слайдер на jqueryUI - Используется на главной странице
 // * Вспрывающие подсказки при наведении на ссылку
 // * Изменение раскладки выделеного текста в редакторе кода
 // * Fix сворачиваемых, сортируемых таблиц
 // * Fix галереи-слайдшоу после перехода на UCP
+// * Подключение функций после загрузки страницы
 
 /*-------------------------------- Импорт ------------------------------------*/
 // Викификатор
@@ -101,68 +101,76 @@ if( !window.BackToTop  ) {
 var ButtonStart = 800;
 var BackToTop = true; // prevent duplication
 
-/*------------------------ Логотип для светлой темы --------------------------*/
-if (document.getElementsByTagName("body")[0].classList.contains('theme-fandomdesktop-light')) {
-	$(".fandom-community-header__image>img").attr('src', "https://static.wikia.nocookie.net/elderscrolls/images/3/39/Wiki-wordmark_v.2_-_Light.png/revision/latest?cb=20210708065843&path-prefix=ru");
-}
 /*------------------------- Случайный фон страницы ---------------------------*/
-var backgroundLight = [
-'https://static.wikia.nocookie.net/elderscrolls/images/b/b6/Background-13.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/f/f0/Background-14.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/e/eb/Background-15.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/9/9c/Background-16.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/0/0c/Background-17.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/2/2d/Background-18.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/4/4f/Background-19.jpg/revision/latest?path-prefix=ru'
-];
-
-var backgroundDark = [
-'https://static.wikia.nocookie.net/elderscrolls/images/c/cb/Bg1.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/a/a5/Bg2.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/f/ff/Bg3.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/3/32/Bg4.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/7/71/Bg5.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/7/71/Bg6.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/2/28/Bg7.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/c/c4/Bg8.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/6/60/Bg9.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/5/58/Background-04.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/1/13/Background-07.jpg/revision/latest?path-prefix=ru',
-'https://static.wikia.nocookie.net/elderscrolls/images/3/30/Background-08.jpg/revision/latest?path-prefix=ru'
-];
-
-if ((document.getElementsByTagName("body")[0].classList.contains('theme-fandomdesktop-dark'))||(document.getElementsByTagName("body")[0].classList.contains('skin-oasis'))) {
-	document.getElementsByTagName("body")[0].setAttribute("style", 'background-image:url('+ backgroundDark[Math.floor((backgroundDark.length) * Math.random())] + ') !important');
-}
-if (document.getElementsByTagName("body")[0].classList.contains('theme-fandomdesktop-light')) {
-	document.getElementsByTagName("body")[0].setAttribute("style", 'background-image:url('+ backgroundLight[Math.floor((backgroundLight.length) * Math.random())] + ') !important');
+function randomBackground () {
+	var backgroundLight = [
+	'https://static.wikia.nocookie.net/elderscrolls/images/b/b6/Background-13.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/f/f0/Background-14.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/e/eb/Background-15.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/9/9c/Background-16.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/0/0c/Background-17.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/2/2d/Background-18.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/4/4f/Background-19.jpg/revision/latest?path-prefix=ru'
+	];
+	
+	var backgroundDark = [
+/*	'https://static.wikia.nocookie.net/elderscrolls/images/c/cb/Bg1.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/a/a5/Bg2.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/f/ff/Bg3.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/3/32/Bg4.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/7/71/Bg5.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/7/71/Bg6.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/2/28/Bg7.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/c/c4/Bg8.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/6/60/Bg9.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/5/58/Background-04.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/1/13/Background-07.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/3/30/Background-08.jpg/revision/latest?path-prefix=ru',*/
+	'https://static.wikia.nocookie.net/elderscrolls/images/e/e5/Background-20.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/2/29/Background-21.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/b/bd/Background-22.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/4/4f/Background-23.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/b/b0/Background-24.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/d/df/Background-25.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/a/a6/Background-26.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/e/ef/Background-27.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/3/30/Background-28.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/1/10/Background-29.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/f/f6/Background-30.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/4/43/Background-31.jpg/revision/latest?path-prefix=ru'
+	];
+	
+	if ((document.getElementsByTagName("body")[0].classList.contains('theme-fandomdesktop-dark'))||(document.getElementsByTagName("body")[0].classList.contains('skin-oasis'))) {
+		document.getElementsByTagName("body")[0].setAttribute("style", 'background-image:url('+ backgroundDark[Math.floor((backgroundDark.length) * Math.random())] + ') !important');
+	}
+	if (document.getElementsByTagName("body")[0].classList.contains('theme-fandomdesktop-light')) {
+		document.getElementsByTagName("body")[0].setAttribute("style", 'background-image:url('+ backgroundLight[Math.floor((backgroundLight.length) * Math.random())] + ') !important');
+	}
 }
 
 /*------------------------ Sliders на jqueryUI -------------------------------*/
 // by User:Tierrie
+var slideTime = 15000; // Время показа слайда (+1-3 секунды чтобы слайдеры не делали это одновременно)
 mw.loader.using( ['jquery.ui.tabs'], function() {
 	$(document).ready(function() {
-		$('.factions img').hide();
-		$('.factions img').removeAttr('width').removeAttr('height');
-		var l=$('.factions tr').eq(1).find('td').height();
-		$('.factions tr').eq(1).find('img').css('max-height', l);
-		$('.factions img').show();
-		if ($('.factions tr').eq(1).find('td').width()>=$('.factions img').width()) {
-			$('.factions tr').eq(1).find('td').width($('.factions img').width());
-		}
-		$('.id_upper').each(function() { $(this).html($(this).html().toUpperCase()); });
-		var $tabs = $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100} } );
-		$("[class^=portal_sliderlink]").click(function() { // bind click event to link
-			$tabs.tabs('select', this.className.replace("portal_sliderlink_", ""));
-			return false;
-		});
-		$('#portal_next').click(function() {
-			$tabs.tabs('select', ($tabs.tabs('option', 'selected') == ($tabs.tabs('length'))-1) ? 0 : $tabs.tabs('option', 'selected') + 1 ); // switch to next tab
-			return false;
-		});
-		$('#portal_prev').click(function() { // bind click event to link
-			$tabs.tabs('select', ($tabs.tabs('option', 'selected') === 0) ? ($tabs.tabs('length')-1) : $tabs.tabs('option', 'selected') - 1 ); // switch to previous tab
-		return false;
+		$(".portal_slider").each(function(index, portal_slider) {
+			$(portal_slider).tabs({ fx: {opacity:'toggle', duration:100} } );
+			$("[class^=portal_sliderlink]").click(function() {
+				$(portal_slider).tabs('select', this.className.replace("portal_sliderlink_", ""));
+				return false;
+			});
+			$(portal_slider).find('#portal_next').click(function() {
+				$(portal_slider).tabs('select', ($(portal_slider).tabs('option', 'selected') == ($(portal_slider).tabs('length'))-1) ? 0 : $(portal_slider).tabs('option', 'selected') + 1 );
+				return false;
+			});
+			$(portal_slider).find('#portal_prev').click(function() {
+				$(portal_slider).tabs('select', ($(portal_slider).tabs('option', 'selected') === 0) ? ($(portal_slider).tabs('length')-1) : $(portal_slider).tabs('option', 'selected') - 1 );
+				return false;
+			});
+			var timerId = setTimeout(function tick() {
+				$(portal_slider).tabs('select', ($(portal_slider).tabs('option', 'selected') == ($(portal_slider).tabs('length'))-1) ? 0 : $(portal_slider).tabs('option', 'selected') + 1 );
+				timerId = setTimeout(tick, slideTime + Math.floor(Math.random() * 3000));
+			}, slideTime + Math.floor(Math.random() * 3000));
 		});
 	});
 });
@@ -980,8 +988,10 @@ function slideRegenerate(){
 	});
 }
 
+/****************** Подключение функций после загрузки страницы ***************/
 $(document).ready(function() {
-	setTimeout(function(){ switcher(); }, 5000); // Запускаем отложено, т.к. инструменты подгружаются не сразу
+	randomBackground();
 	fixTable();
 	setTimeout(function(){ slideRegenerate(); }, 2000); // Запускаем отложено, т.к. галереи подгружаются не сразу
+	setTimeout(function(){ switcher(); }, 5000); // Запускаем отложено, т.к. инструменты подгружаются не сразу
 });

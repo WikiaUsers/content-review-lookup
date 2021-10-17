@@ -13,18 +13,20 @@ window.ajaxPages = [
     "Special:AllPages"
 ];
 
-// random background image, the first one is always our default. check https://roblox-galaxy-official.fandom.com/wiki/File:Wiki-background for a list of our backgrounds.
+// random background image array. The first one is always our default. check https://roblox-galaxy-official.fandom.com/wiki/File:Wiki-background for a list of our backgrounds.
 var imgs = [
-	'https://vignette.wikia.nocookie.net/roblox-galaxy-official/images/5/50/Wiki-background/revision/latest?cb=20200109030158',
-	'https://static.wikia.nocookie.net/roblox-galaxy-official/images/a/ae/Galaxy_bg.jpg/revision/latest?cb=20210523005538&format=original',
-	'https://static.wikia.nocookie.net/roblox-galaxy-official/images/d/d6/Galaxy_2_bg.jpg/revision/latest?cb=20210523005620&format=original'
+	'url("https://vignette.wikia.nocookie.net/roblox-galaxy-official/images/5/50/Wiki-background/revision/latest?cb=20200109030158")',
+	'var(--theme-body-background-image)',
+	'url("https://static.wikia.nocookie.net/roblox-galaxy-official/images/a/ae/Galaxy_bg.jpg/revision/latest?cb=20210523005538&format=original")',
+	//'url("https://static.wikia.nocookie.net/roblox-galaxy-official/images/d/d6/Galaxy_2_bg.jpg/revision/latest?cb=20210523005620&format=original")'
 	];
+//attempt to randomize background by modifying the URL of the "background" property on the header element
 var random = false;
-window.addEventListener('load',function(){
-	randomBG();
-	console.log('load');
-});
-//check after 500 ms to see if window load event fired, otherwise set background to default
+window.setTimeout(function(){
+		randomBG();
+		console.log('load');
+},1);
+//check after 1500 ms to see if window load event fired, otherwise set background to default
 window.setTimeout(function(){
 	if(!random){
 		randomBG();
@@ -33,10 +35,16 @@ window.setTimeout(function(){
 },1500);
 
 function randomBG(){
-	document.body.style.backgroundImage = 'url(' + imgs[Math.floor(Math.random() * imgs.length)] + ')';
-	document.body.style.backgroundRepeat = "repeat";
-	document.body.style.backgroundSize = "120%";
-	document.body.style.backgroundAttachment = "fixed";
+	//Array.from searches for div elements on page, then narrows them down via the class list to ensure that the header element that we want to change the image property on is selected
+	var bgImgCont = Array.from(document.getElementsByTagName("div")).find(function(obj){
+		return obj.classList !== null && obj.classList.contains('fandom-community-header__background','fitCenter','fullscreen')});
+	
+	bgImgCont.style.backgroundImage = imgs[Math.floor(Math.random() * imgs.length)];
+	/*
+	bgImgCont.style.backgroundRepeat = "repeat";
+	bgImgCont.style.backgroundSize = "120%";
+	bgImgCont.style.backgroundAttachment = "fixed";
+	*/
 	random = true;
 }
 

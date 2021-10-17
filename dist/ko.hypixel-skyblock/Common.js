@@ -502,6 +502,8 @@ importScripts([
 window.tooltips_list = [
     {   classname: 'weapon-icon',
         parse: '{'+'{툴팁/무기|weapon=<#weapon#>|variant=<#variant#>|game=<#game#>}}'},
+    {   classname: 'armor-icon',
+        parse: '{'+'{툴팁/갑옷|armor=<#armor#>|variant=<#variant#>|game=<#game#>}}'},
 ];
  
 window.tooltips_config = {

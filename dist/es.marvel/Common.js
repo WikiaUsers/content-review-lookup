@@ -123,7 +123,6 @@ addOnloadHook(checktimers);
 NOMBRE DEL USUARIO
 ------------------
 Inserta el nombre del usuario donde esté "<span class="insertusername"></span>"
-  o la [[Plantilla:NOMBREUSUARIO]]
  
 Traída de Inciclopedia, inicialmente de Uncyclopedia y corregida por uncyclopedia:es:user:Ciencia Al Poder, para que funcione correctamente usando ''class='' en vez de ''id=''.
 */

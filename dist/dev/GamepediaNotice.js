@@ -29,7 +29,7 @@
                     id: 'gamepedia_notice-images'
                 }).append(
                     $('<img>', {
-                        src: 'https://vignette.wikia.nocookie.net/rappy/images/b/bc/Fandom_logo.png/revision/latest/scale-to-height-down/75'
+                        src: 'https://vignette.wikia.nocookie.net/central/images/3/3d/Fandom_logo_2021_light_font.png/revision/latest/scale-to-height-down/75'
                     }),
                     $('<img>', {
                         src: 'https://vignette.wikia.nocookie.net/rappy/images/3/38/Gamepedia_dark_transparent.png'

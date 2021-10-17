@@ -22,6 +22,14 @@ nkch_gst_gadgets = [{
     name: "RemoveCatSpoiler",
     title: "Прежние Категории",
     description: "Прежние Категории"
+}, {
+    name: "UCXSearch",
+    title: "Быстрый поиск",
+    description: "Поисковая строка в локальном меню без модального окна"
+}, {
+    name: "ThemeToggler",
+    title: "Переключатель темы",
+    description: "Иконка в левой части страницы для переключения темы"
 }];
 
 // Настройка AddRailModule

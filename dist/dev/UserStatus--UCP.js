@@ -16,7 +16,6 @@
  * @author      Americhino
  * @version     1.0.2
  * @license     CC-BY-SA 3.0
- * @notes       Incompatible with legacy wikis; please only use on UCP.
  *
  */
 mw.loader.using('mediawiki.api').then(function() {
@@ -74,22 +73,14 @@ mw.loader.using('mediawiki.api').then(function() {
 		                        'unknown': 'unknown'
 		                    };
 		                    // Colorblind Icons
-		                    var statusIcons = lightTheme
-		                        ? {
-		                            'online': 'https://vignette.wikia.nocookie.net/botkylorens-test/images/4/48/BLANK_ICON.png/revision/latest?cb=20200922225054',
-		                            'away': 'https://discordapp.com/assets/32e7318f451e2c45e3a6593d6e8a418a.svg',
-		                            'dnd': 'https://discordapp.com/assets/7ae003e6cbc0d361fe3953e3c4ae8cc3.svg',
-		                            'offline': 'https://discordapp.com/assets/84bda2ff1eb55a521895c9734de3befb.svg',
-		                            'unknown': 'https://discordapp.com/assets/84bda2ff1eb55a521895c9734de3befb.svg'
-		                        }
-		                        : {
-		                            'online': 'https://vignette.wikia.nocookie.net/botkylorens-test/images/4/48/BLANK_ICON.png/revision/latest?cb=20200922225054',
-		                            'away': 'https://discordapp.com/assets/2cd083e5b360930c23ca95ab6a6073a0.svg',
-		                            'dnd': 'https://discordapp.com/assets/5e6b9355e62148b7f463465fd029ab92.svg',
-		                            'offline': 'https://discordapp.com/assets/7026428ff08042eb805e579bd9aea182.svg',
-		                            'unknown': 'https://discordapp.com/assets/7026428ff08042eb805e579bd9aea182.svg'
-		                        };
-		                     // Create element
+		                    var statusIcons = {
+	                            'online': '',
+	                            'away': '<polygon points="5.254 5.093 8.337 6.922 7.578 8.167 3.758 5.875 3.758 1.5 5.254 1.5" />',
+	                            'dnd': '<polygon points="9 5.8 1 5.8 1 4.2 9 4.2" />',
+	                            'offline': '<path d="M5,8 C6.65685425,8 8,6.65685425 8,5 C8,3.34314575 6.65685425,2 5,2 C3.34314575,2 2,3.34314575 2,5 C2,6.65685425 3.34314575,8 5,8 Z" />',
+	                            'unknown': '<path d="M5,8 C6.65685425,8 8,6.65685425 8,5 C8,3.34314575 6.65685425,2 5,2 C3.34314575,2 2,3.34314575 2,5 C2,6.65685425 3.34314575,8 5,8 Z" />'
+	                        };
+	                    // Create element
 		                if (statusIndicator) {
 		                        $(avatar).append(
 		                            $('<div>', {
@@ -134,19 +125,22 @@ mw.loader.using('mediawiki.api').then(function() {
 		                                }
 		                            })
 		                        ).append(
-		                            $('<img>', {
-		                                'src': statusIcons[status] || 'https://discordapp.com/assets/7026428ff08042eb805e579bd9aea182.svg',
-		                                'title': status_text[status] || i18n.msg('unknown').plain(),
+		                            $('<svg>', {
+		                            	xmlns: 'http://www.w3.org/2000/svg',
+	                                    height: '40px',
+	                                    width: '40px',
+		                            	viewBox: '0 0 10 10',
 		                                css: {
-		                                    height: '40px',
 		                                    position: 'absolute',
 		                                    right: '5px',
 		                                    bottom: '5px',
-		                                    width: '40px',
 		                                    borderRadius: '50%',
 		                                    zIndex: '399'
 		                                }
-		                            })
+		                            }).append(
+		                                $(statusIcons[status] || statusIcons.unknown).attr('fill', lightTheme ? '#f6f6f7' : '#2f3136'),
+		                                $('<title>').text(status_text[status] || i18n.msg('unknown').plain())
+	                            	)
 		                        );
 		                    }
 		                }

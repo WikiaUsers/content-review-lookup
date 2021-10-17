@@ -10,14 +10,18 @@ or direct page title matching. All of this is entered using a form displayed by
 the gadget.
 
 The gadget expects a <div> element with an "id" attribute of "cpl-app", which it
-will use to fill with its content.
+will use to fill with its content. If not present, it appends this element itself
+at the bottom of the page.
+
+The gadget was designed for the Terraria Wiki, but it can be used on other wikis
+as well. Some tweaking might be necessary; see the very bottom of the code.
 */
 
 
 /*
 
 ==============================
-Internationalization
+Internationalization data
 ==============================
 
 */
@@ -57,8 +61,12 @@ const l10nTable = {
     'cpl-input-submit-title': 'Compare the specified set of pages on this wiki with their equivalents on the foreign wiki',
     'cpl-input-submit-debug': 'Debug mode',
 
+    'cpl-input-language': 'Language',
+
     'cpl-input-error-radiomissing': 'Field is required! Please select an option.',
     'cpl-input-error-textinputmissing': 'Field is required! Please enter a value.',
+    'cpl-input-error-invalidcate': 'This category does not exist! Please enter the name of an existing category.',
+    'cpl-input-error-invalidpage': 'This page does not exist! Please enter the title of an existing page.',
 
     'cpl-mainspace': '(Main)',
 
@@ -100,6 +108,7 @@ const l10nTable = {
     'cpl-error-collapse': 'Couldn\'t load the library that enables table collapsing!',
     'cpl-error-sorter': 'Couldn\'t load the library that enables table sorting!',
     'cpl-error-messages': 'Couldn\'t load strings for the recent changes-style output!',
+    'cpl-error-makingoutput': 'Error while displaying the output!',
 
     // Strings in the output area
     'cpl-output-nothingtodisplay': 'All pages are up-to-date!',
@@ -138,8 +147,12 @@ const l10nTable = {
     'cpl-input-submit-title': 'Vergleiche die ausgewählte Menge an Seiten dieses Wikis mit ihren Äquivalenten im fremden Wiki',
     'cpl-input-submit-debug': 'Debug-Modus',
 
+    'cpl-input-language': 'Sprache',
+
     'cpl-input-error-radiomissing': 'Erforderliches Feld! Wähle eine Option aus.',
     'cpl-input-error-textinputmissing': 'Erforderliches Feld! Bitte gib einen Wert ein.',
+    'cpl-input-error-invalidcate': 'Diese Kategorie existiert nicht! Bitte gib den Namen einer existierenden Kategorie ein.',
+    'cpl-input-error-invalidpage': 'Diese Seite existiert nicht! Bitte gib den Namen einer existierenden Seite ein.',
 
     'cpl-mainspace': '(Seiten)',
 
@@ -178,6 +191,7 @@ const l10nTable = {
     'cpl-error-foreigndiff': 'Fehler beim Abrufen der Größe des Unterschieds zwischen zwei Versionen im <code>$1</code>-Wiki!',
     'cpl-error-collapse': 'Konnte die Bibliothek nicht einbinden, die das Einklappen von Tabellen ermöglicht!',
     'cpl-error-messages': 'Konnte Texte für die Ausgabe im Letzte-Änderungen-Stil nicht laden!',
+    'cpl-error-makingoutput': 'Fehler beim Anzeigen des Resultats!',
 
     'cpl-output-nothingtodisplay': 'Alle Seiten sind aktuell!',
     'cpl-output-nothingtodisplay-single': 'Die Seite „$1“ ist aktuell!',
@@ -192,28 +206,6 @@ const l10nTable = {
       'Möchtest du fortfahren?'
   }
 }
-
-// system messages used in the output
-const msgs = [
-  'brackets',
-  'contribslink',
-  'cur',
-  'diff',
-  'enhancedrc-history',
-  'hist',
-  'last',
-  'minoreditletter',
-  'nchanges',
-  'newpageletter',
-  'ntimes',
-  'parentheses',
-  'pipe-separator',
-  'rc-change-size-new',
-  'recentchanges-label-minor',
-  'recentchanges-label-newpage',
-  'semicolon-separator',
-  'talkpagelinktext'
-]
 
 /*
 
@@ -270,6 +262,208 @@ let formInput,
 /*
 
 ==============================
+Internationalization utilities
+==============================
+
+*/
+
+// see https://gerrit.wikimedia.org/g/mediawiki/core/%2B/HEAD/resources/lib/jquery.i18n/
+// for documentation on jquery.i18n
+
+const reparseUponLocalization = {}
+const timestampsToLocalize = { _count: 0 }
+const attributesToPrepareForI18n = []
+
+for (const lang in l10nTable) {
+  // add the ⧼ ⧽ braces around each l10n key so that unregistered keys are displayed
+  // in the format that is familiar from normal MediaWiki system messages
+  for (const key in l10nTable[lang]) {
+    l10nTable[lang]['⧼' + key + '⧽'] = l10nTable[lang][key]
+  }
+  // register the translated language names of all registered languages
+  // (e.g., if "en" and "de" are registered:
+  // "English", "German" for "en", and "Englisch", "Deutsch" for "de")
+  for (const langcode in l10nTable) {
+    try {
+      const translatedLanguage = new Intl.DisplayNames(lang, {type: 'language', fallback: 'none'}).of(langcode)
+      if (translatedLanguage === undefined) {
+        throw new Error()
+      }
+      l10nTable[lang][`⧼cpl-lang-${langcode}⧽`] = translatedLanguage
+    } catch (e) {
+      // either "RangeError: Incorrect locale information provided" from the Intl.DisplayNames constructor
+      // or manual throw
+      l10nTable[lang][`⧼cpl-lang-${langcode}⧽`] = `⧼cpl-lang-${langcode}⧽`
+    }
+  }
+}
+
+// system messages used in the output,
+// will be added to the l10nTable later on
+const msgs = [
+  'brackets',
+  'contribslink',
+  'cur',
+  'diff',
+  'enhancedrc-history',
+  'hist',
+  'last',
+  'minoreditletter',
+  'nchanges',
+  'newpageletter',
+  'ntimes',
+  'parentheses',
+  'pipe-separator',
+  'rc-change-size-new',
+  'recentchanges-label-minor',
+  'recentchanges-label-newpage',
+  'semicolon-separator',
+  'talkpagelinktext'
+]
+
+function getCurrentLang () {
+  return $.i18n().locale
+}
+
+function changeLang (newLang) {
+  $.i18n().locale = newLang
+  $('#cpl-app').attr('lang', getCurrentLang())
+  localizeAll()
+}
+
+function localizeAll (selector = '') {
+  // if selector is empty, localize every single string in the DOM
+  // regular localization
+  localizeAllSimple(selector + '[data-i18n]')
+  // reparse upon localization
+  localizeAllReparse(selector + '[data-i18n-function]')
+}
+
+function localizeAllSimple (selector) {
+  // localize all elements which have a "data-i18n" attribute set
+  $(selector).each((_, elem) => {
+    const l10nData = $(elem).data('i18n')
+    const l10nParams = $(elem).data('i18n-parameters') || []
+    if (l10nData.startsWith('⧼') || l10nData.startsWith('[html]⧼')) {
+      // this element needs localization of its HTML content
+      const l10nKey = l10nData
+      $(elem).html($.i18n(l10nKey, ...l10nParams))
+    } else {
+      // this element needs localization of one of its attributes
+      const attrName = l10nData.slice(1, l10nData.indexOf(']'))
+      const l10nKey = l10nData.slice(l10nData.indexOf('⧼'))
+      $(elem).attr(attrName, $.i18n(l10nKey, ...l10nParams))
+    }
+  })
+}
+
+function localizeAllReparse (selector) {
+  // some elements have nested localization and need to be "re-parsed" after
+  // having been localized, so a simple localization key is not sufficient
+  // for them. therefore, instead of simply setting a "data-i18n"
+  // attribute, they set a function that is to be executed upon
+  // localization, i.e. here
+  $(selector).each((_, elem) => {
+    const fullFunctionName = $(elem).data('i18n-function')
+    const [functionName, index] = fullFunctionName.split('/')
+    $(elem).html(reparseUponLocalization[functionName][index]())
+    localizeAll('[data-i18n-function="' + fullFunctionName + '"] ')
+  })
+}
+
+function localizedTextRaw (key, ...parameters) {
+  return $.i18n(`⧼${key}⧽`, ...parameters)
+}
+
+function localizedText (key, ...parameters) {
+  const spanElem = $('<span>').attr('data-i18n', `⧼${key}⧽`)
+  if (parameters.length > 0) {
+    spanElem.attr('data-i18n-parameters', JSON.stringify(parameters))
+  }
+  return spanElem
+}
+
+function localizedHtmlSnippet (key, ...parameters) {
+  return new OO.ui.HtmlSnippet(localizedText(key, ...parameters)[0].outerHTML)
+}
+
+function localizedAttribute (attrName, key, ...parameters) {
+  // $.i18n recognizes arbitrary HTML attribute names in the brackets
+  // (not just the string "html"; this is not mentioned in the documentation),
+  // see https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/core/+/HEAD/resources/lib/jquery.i18n/src/jquery.i18n.js#242
+  // attributes cannot be localized immediately if their elements
+  // don't exist in the DOM yet (which is often the case with OOUI),
+  // so the l10n information gets stored to a global array first, and
+  // the function that transfers it from that array to the element
+  // needs to be called when the element exists in the DOM
+  if (!attributesToPrepareForI18n.includes(attrName)) {
+    attributesToPrepareForI18n.push(attrName)
+  }
+  return `[${attrName}]⧼${key}⧽${JSON.stringify(parameters)}`
+}
+
+function prepareAttributesForI18n () {
+  // take the information stored in the global array and transfer
+  // it to each element
+  attributesToPrepareForI18n.forEach(attrName => {
+    $(`[${attrName}^="[${attrName}]⧼"]`).each((_, elem) => {
+      const l10nData = $(elem).attr(attrName)
+      // split the l10n information into key and parameters
+      const splitpos = l10nData.indexOf('⧽') + 1
+      const l10nKey = l10nData.slice(0, splitpos)
+      const l10nParams = l10nData.slice(splitpos)
+      $(elem).attr('data-i18n', l10nKey)
+      if (l10nParams !== '[]') {
+        $(elem).attr('data-i18n-parameters', l10nParams)
+      }
+    })
+  })
+}
+
+function localizedTextWithReparse (elemName, func) {
+  if (reparseUponLocalization[elemName] === undefined) {
+    reparseUponLocalization[elemName] = []
+  }
+  const index = reparseUponLocalization[elemName].length
+  reparseUponLocalization[elemName].push(func)
+  const funcName = elemName + '/' + index
+  const span = $('<span>')
+    .attr('data-i18n-function', funcName)
+    .html(func())
+  return span[0].outerHTML
+}
+
+function localizedTimestamp (timestamps) {
+  const newI18nKey = `⧼timestamp-${++timestampsToLocalize['_count']}⧽`
+  for (const lang of Object.keys(timestamps)) {
+    if (timestampsToLocalize[lang] === undefined) {
+      timestampsToLocalize[lang] = {}
+    }
+    timestampsToLocalize[lang][newI18nKey] = timestamps[lang]
+  }
+  return $('<span>')
+    .attr('data-i18n', newI18nKey)
+}
+
+function localizedNumber (number, numberformat) {
+  return localizedTextWithReparse('formatNumber', () => {
+    let numformat
+    switch (numberformat) {
+      case 'withsign':
+        numformat = new Intl.NumberFormat(getCurrentLang(), { signDisplay: 'exceptZero' })
+        break
+      default:
+        numformat = new Intl.NumberFormat(getCurrentLang())
+        break
+    }
+    // return number
+    return numformat.format(number)
+  })
+}
+
+/*
+
+==============================
 Parameters for API queries
 ==============================
 
@@ -307,6 +501,17 @@ class ApiQueryParams {
       action: 'query',
       meta: 'siteinfo',
       siprop: 'namespaces'
+    }
+  }
+
+  static parseTemplate (text) {
+    return {
+      action: 'parse',
+      text: text,
+      contentmodel: 'wikitext',
+      disablelimitreport: true,
+      wrapoutputclass: '',
+      prop: 'text'
     }
   }
 
@@ -433,15 +638,22 @@ class InputFormPreparer {
 // hide the "no JS" text and prepare the DOM structure
 $(document).ready(() => {
   $('.cpl-nojs').hide()
-  $('#cpl-app').html('') // empty the element
-  $('#cpl-app').append(
-    $('<div>').attr('id', 'comparepagelist-inputarea'),
-    $('<div>').attr('id', 'progresslogarea-progresslogarea').append(
-      $('<div>').attr('id', 'comparepagelist-progressbar'),
-      $('<div>').attr('id', 'comparepagelist-progresslog')
-    ),
-    $('<div>').attr('id', 'comparepagelist-outputarea')
-  )
+  if (document.getElementById('cpl-app') === null) {
+    $('.page #content > #mw-content-text > .mw-parser-output').append(
+      $('<div>').attr('id', 'cpl-app')
+    )
+  }
+  $('#cpl-app')
+    .html('') // empty the element
+    .append(
+      $('<div>').attr('id', 'comparepagelist-langbutton'),
+      $('<div>').attr('id', 'comparepagelist-inputarea'),
+      $('<div>').attr('id', 'progresslogarea-progresslogarea').append(
+        $('<div>').attr('id', 'comparepagelist-progressbar'),
+        $('<div>').attr('id', 'comparepagelist-progresslog')
+      ),
+      $('<div>').attr('id', 'comparepagelist-outputarea')
+    )
 })
 
 // load dependencies
@@ -450,15 +662,25 @@ Promise.all([
   mw.loader.using('oojs-ui'),
   // load jquery.i18n and initialize the l10n table
   mw.loader.using('jquery.i18n').done(() => $.i18n().load(l10nTable)),
+  // get the local result of {{lang|}} (terraria-specific, will be skipped on other wikis)
+  new mw.Api().get(ApiQueryParams.parseTemplate('{{lang|}}')),
   // load the category and interwiki lists
   new InputFormPreparer().makeCateAndIwList().then(cateAndIwList => {
-    console.log('[Compare page list] Category and interwiki list on this wiki:', cateAndIwList)
+    console.log(`[Compare page list v${cplVersion}] Category and interwiki list on this wiki:`, cateAndIwList)
     return cateAndIwList
   })
 ]).then(data => {
-  // when done, start making the input form
+  // when done, set the language and start making the input form
   // (data is an array of the results of the promises above)
-  makeInputsAndAddThemToPage(data[2].cateList, data[2].iwList)
+  let initialLang
+  if (data[2].parse !== undefined && data[2].parse.text !== undefined && data[2].parse.text['*'] !== undefined) {
+    let langFromTemplate = $(data[2].parse.text['*']).html().trim()
+    initialLang = (langFromTemplate in l10nTable ? langFromTemplate : '')
+  }
+  $.i18n().locale = initialLang || userLanguage
+  makeInputsAndAddThemToPage(data[3].cateList, data[3].iwList)
+}).catch(error => {
+  console.error(error)
 })
 
 /*
@@ -474,15 +696,18 @@ function makeInputsAndAddThemToPage (cateList, iwList) {
   InputHelper.loadCSS()
 
   /*
-  * Import source of MessageWidget.
-  * The built-in MessageWidget requires OOUI >= v0.33.0. Sources:
-  * - https://phabricator.wikimedia.org/T225282#5290991
-  * - https://github.com/wikimedia/oojs-ui/commit/68a3f1c91f4fc6a501bb28880a7086d221f171e4
-  * Fandom has OOUI v0.6.0, though, at least according to https://github.com/Wikia/app/blob/dev/resources/lib/oojs-ui/oojs-ui.js
+  * Import source of MessageWidget and ButtonMenuSelectWidget.
+  * These widgets are not included in Fandom's OOUI fork, apparently
+  * (though the styles for the MessageWidget are, for some reason).
+  * Sources are minified from:
+  * https://doc.wikimedia.org/mediawiki-core/master/js/source/oojs-ui-core.html#OO-ui-MessageWidget
+  * https://doc.wikimedia.org/mediawiki-core/master/js/source/oojs-ui-widgets.html#OO-ui-ButtonMenuSelectWidget
   */
-  OO.ui.MessageWidget = function (e) { e = e || {}, OO.ui.MessageWidget.super.call(this, e), OO.ui.mixin.IconElement.call(this, e), OO.ui.mixin.LabelElement.call(this, e), OO.ui.mixin.TitledElement.call(this, e), OO.ui.mixin.FlaggedElement.call(this, e), this.setType(e.type), this.setInline(e.inline), e.icon && this.setIcon(e.icon), this.$element.append(this.$icon, this.$label).addClass('oo-ui-messageWidget') }, OO.inheritClass(OO.ui.MessageWidget, OO.ui.Widget), OO.mixinClass(OO.ui.MessageWidget, OO.ui.mixin.IconElement), OO.mixinClass(OO.ui.MessageWidget, OO.ui.mixin.LabelElement), OO.mixinClass(OO.ui.MessageWidget, OO.ui.mixin.TitledElement), OO.mixinClass(OO.ui.MessageWidget, OO.ui.mixin.FlaggedElement), OO.ui.MessageWidget.static.iconMap = { notice: 'infoFilled', error: 'error', warning: 'alert', success: 'check' }, OO.ui.MessageWidget.prototype.setInline = function (e) { e = !!e, this.inline !== e && (this.inline = e, this.$element.toggleClass('oo-ui-messageWidget-block', !this.inline)) }, OO.ui.MessageWidget.prototype.setType = function (e) { -1 === Object.keys(this.constructor.static.iconMap).indexOf(e) && (e = 'notice'), this.type !== e && (this.clearFlags(), this.setFlags(e), this.setIcon(this.constructor.static.iconMap[e]), this.$icon.removeClass('oo-ui-image-' + this.type), this.$icon.addClass('oo-ui-image-' + e), 'error' === e ? (this.$element.attr('role', 'alert'), this.$element.removeAttr('aria-live')) : (this.$element.removeAttr('role'), this.$element.attr('aria-live', 'polite')), this.type = e) } // eslint-disable-line
+  OO.ui.MessageWidget=function(e){e=e||{},OO.ui.MessageWidget.super.call(this,e),OO.ui.mixin.IconElement.call(this,e),OO.ui.mixin.LabelElement.call(this,e),OO.ui.mixin.TitledElement.call(this,e),OO.ui.mixin.FlaggedElement.call(this,e),this.setType(e.type),this.setInline(e.inline),e.icon&&this.setIcon(e.icon),this.$element.append(this.$icon,this.$label).addClass("oo-ui-messageWidget")},OO.inheritClass(OO.ui.MessageWidget,OO.ui.Widget),OO.mixinClass(OO.ui.MessageWidget,OO.ui.mixin.IconElement),OO.mixinClass(OO.ui.MessageWidget,OO.ui.mixin.LabelElement),OO.mixinClass(OO.ui.MessageWidget,OO.ui.mixin.TitledElement),OO.mixinClass(OO.ui.MessageWidget,OO.ui.mixin.FlaggedElement),OO.ui.MessageWidget.static.iconMap={notice:"infoFilled",error:"error",warning:"alert",success:"check"},OO.ui.MessageWidget.prototype.setInline=function(e){e=!!e,this.inline!==e&&(this.inline=e,this.$element.toggleClass("oo-ui-messageWidget-block",!this.inline))},OO.ui.MessageWidget.prototype.setType=function(e){-1===Object.keys(this.constructor.static.iconMap).indexOf(e)&&(e="notice"),this.type!==e&&(this.clearFlags(),this.setFlags(e),this.setIcon(this.constructor.static.iconMap[e]),this.$icon.removeClass("oo-ui-image-"+this.type),this.$icon.addClass("oo-ui-image-"+e),"error"===e?(this.$element.attr("role","alert"),this.$element.removeAttr("aria-live")):(this.$element.removeAttr("role"),this.$element.attr("aria-live","polite")),this.type=e)}
+  OO.ui.ButtonMenuSelectWidget=function(e){e=e||{},OO.ui.ButtonMenuSelectWidget.super.call(this,e),this.$overlay=(!0===e.$overlay?OO.ui.getDefaultOverlay():e.$overlay)||this.$element,this.clearOnSelect=!1!==e.clearOnSelect,this.menu=new OO.ui.MenuSelectWidget($.extend({widget:this,$floatableContainer:this.$element},e.menu)),this.connect(this,{click:"onButtonMenuClick"}),this.getMenu().connect(this,{select:"onMenuSelect",toggle:"onMenuToggle"}),this.$button.attr({"aria-expanded":"false","aria-haspopup":"true","aria-owns":this.menu.getElementId()}),this.$element.addClass("oo-ui-buttonMenuSelectWidget"),this.$overlay.append(this.menu.$element)},OO.inheritClass(OO.ui.ButtonMenuSelectWidget,OO.ui.ButtonWidget),OO.ui.ButtonMenuSelectWidget.prototype.getMenu=function(){return this.menu},OO.ui.ButtonMenuSelectWidget.prototype.onMenuSelect=function(e){this.clearOnSelect&&e&&this.getMenu().selectItem()},OO.ui.ButtonMenuSelectWidget.prototype.onMenuToggle=function(e){this.$element.toggleClass("oo-ui-buttonElement-pressed",e)},OO.ui.ButtonMenuSelectWidget.prototype.onButtonMenuClick=function(){this.menu.toggle()};
 
-  // make fieldsets
+  // make fieldsets and buttons
+  const langButton = InputHelper.makeLangButton()
   const pagelistFieldset = new PagelistFieldset(cateList)
   const foreignwikiFieldset = new ForeignwikiFieldset(iwList)
   const debugButtonFieldset = InputHelper.makeDebugButtonFieldset()
@@ -491,22 +716,28 @@ function makeInputsAndAddThemToPage (cateList, iwList) {
   debugButtonFieldset.toggle(false) // hide initially
 
   // display the input form on the page
+  $('#comparepagelist-langbutton').append(langButton.$element)
   $('#comparepagelist-inputarea').append(
     pagelistFieldset.fieldset.$element,
     foreignwikiFieldset.fieldset.$element,
     debugButtonFieldset.$element,
     new OO.ui.FieldsetLayout({ items: [submitButton] }).$element
   )
+  prepareAttributesForI18n()
+  localizeAll()
 
   makeInterwikiMap(iwList)
 
   // define logic for the submit button
-  submitButton.on('click', () => { onSubmit(pagelistFieldset, foreignwikiFieldset, debugButtonFieldset) })
+  submitButton.on('click', () => {
+    onSubmit(pagelistFieldset, foreignwikiFieldset, debugButtonFieldset)
+  })
 }
 
 class InputHelper {
   static loadCSS () {
     // load CSS used on Special:RecentChanges
+    // TODO: Move to gadget definition
     const modules = [
       'jquery.tablesorter.styles',
       'mediawiki.feedlink', // the short form "mediawiki.feedlink,helplink,icon" doesn't seem to work ("Unknown module")
@@ -515,26 +746,22 @@ class InputHelper {
       'mediawiki.interface.helpers.styles',
       'mediawiki.rcfilters.filters.base.styles',
       'mediawiki.special.changeslist',
-      'mediawiki.special.changeslist.enhanced'
+      'mediawiki.special.changeslist.enhanced',
+      'oojs-ui.styles.icons-location'
     ]
     mw.loader.load(modules, 'text/css')
+
+    const skin = mw.config.get('skin')
 
     // construct URL for logging the load() action above
     const urlParams = {
       only: 'styles',
       modules: modules.join('|'),
-      lang: mw.config.get('wgUserLanguage'),
-      skin: mw.config.get('skin')
+      lang: userLanguage,
+      skin: skin
     }
     const url = mw.config.get('wgServer') + mw.config.get('wgLoadScript') + '?' + $.param(urlParams)
-    console.log('[Compare page list] Loaded modules:', url)
-
-    // load custom CSS for the Hydra and HydraDark skins
-    const skin = mw.config.get('skin')
-    if (skin === 'hydra' || skin === 'hydradark') {
-      const cssText = '.oo-ui-icon-infoFilled{-webkit-mask:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%3E%3Ctitle%3Einfo%3C%2Ftitle%3E%3Cpath%20d%3D%22M10%200C4.477%200%200%204.477%200%2010s4.477%2010%2010%2010%2010-4.477%2010-10S15.523%200%2010%200zM9%205h2v2H9zm0%204h2v6H9z%22%2F%3E%3C%2Fsvg%3E) no-repeat center;mask:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%3E%3Ctitle%3Einfo%3C%2Ftitle%3E%3Cpath%20d%3D%22M10%200C4.477%200%200%204.477%200%2010s4.477%2010%2010%2010%2010-4.477%2010-10S15.523%200%2010%200zM9%205h2v2H9zm0%204h2v6H9z%22%2F%3E%3C%2Fsvg%3E) no-repeat center}.oo-ui-messageWidget{position:relative;-moz-box-sizing:border-box;box-sizing:border-box;font-weight:700}.oo-ui-messageWidget>.oo-ui-labelElement-label{display:block}.oo-ui-messageWidget>.oo-ui-iconElement-icon{-webkit-mask-position:0 0;mask-position:0 0}.oo-ui-messageWidget>.oo-ui-labelElement-label{margin-left:2em}.oo-ui-messageWidget.oo-ui-messageWidget-block{border:1px solid;padding:16px 24px;font-weight:400}.oo-ui-messageWidget.oo-ui-messageWidget-block>.oo-ui-iconElement-icon{-webkit-mask-position:0 16px;mask-position:0 16px}.oo-ui-messageWidget.oo-ui-messageWidget-block.oo-ui-flaggedElement-error{background-color:#fee7e6;border-color:#d33}.oo-ui-messageWidget.oo-ui-messageWidget-block.oo-ui-flaggedElement-warning{background-color:#fef6e7;border-color:#fc3}.oo-ui-messageWidget.oo-ui-messageWidget-block.oo-ui-flaggedElement-success{background-color:#d5fdf4;border-color:#14866d}.oo-ui-messageWidget.oo-ui-messageWidget-block.oo-ui-flaggedElement-notice{background-color:#eaecf0;border-color:#a2a9b1}.oo-ui-messageWidget.oo-ui-flaggedElement-error:not(.oo-ui-messageWidget-block){color:#d33}.oo-ui-messageWidget.oo-ui-flaggedElement-success:not(.oo-ui-messageWidget-block){color:#14866d}.oo-ui-messageWidget+.oo-ui-messageWidget{margin-top:8px}.oo-ui-messageWidget.oo-ui-flaggedElement-error>.oo-ui-iconElement-icon{background-color:#d33}.oo-ui-messageWidget.oo-ui-flaggedElement-warning>.oo-ui-iconElement-icon{background-color:#fc3}.oo-ui-messageWidget.oo-ui-flaggedElement-success>.oo-ui-iconElement-icon{background-color:#14866d;background-image:none}'
-      mw.util.addCSS(cssText)
-    }
+    console.log(`[Compare page list v${cplVersion}] Loaded modules:`, url)
   }
 
   // get the value of a radiobutton group
@@ -548,13 +775,63 @@ class InputHelper {
     return data
   }
 
+  static makeLangButton () {
+    let currentLangOption
+    const langOptions = []
+    for (const lang in l10nTable) {
+      const langOptionLabel = localizedTextWithReparse('langButton', () => {
+        const labelHtml = $('<span>')
+          .append($('<span>')
+            .attr('lang', lang)
+            .text(l10nTable[lang][`⧼cpl-lang-${lang}⧽`])
+          )
+        if (getCurrentLang() !== lang) {
+          labelHtml.append(
+            '&emsp;',
+            $('<small>')
+              .addClass(noteClasses)
+              .html(localizedText(`cpl-lang-${lang}`))
+          )
+        }
+        return labelHtml[0].outerHTML
+      })
+      const newLangOption = new OO.ui.MenuOptionWidget({
+        data: lang,
+        label: new OO.ui.HtmlSnippet(langOptionLabel)
+      })
+      if (lang == getCurrentLang()) {
+        currentLangOption = newLangOption
+      }
+      langOptions.push(newLangOption)
+    }
+
+    const langButtonWidget = new OO.ui.ButtonMenuSelectWidget({
+      icon: 'language',
+      label: localizedText('cpl-input-language'),
+      invisibleLabel: true,
+      clearOnSelect: false,
+      menu: {
+        horizontalPosition: 'end',
+        items: langOptions.sort((a, b) => (a.getData() < b.getData() ? -1 : 1))
+      }
+    })
+
+    langButtonWidget.getMenu().on('select', (selectedItem) => {
+      const newLang = selectedItem.getData()
+      if (debug) { console.log('Changed language to ' + newLang) }
+      changeLang(newLang)
+    })
+    langButtonWidget.getMenu().selectItem(currentLangOption)
+    return langButtonWidget
+  }
+
   static makeDebugButtonFieldset () {
     return new OO.ui.FieldsetLayout({
       items: [
         new OO.ui.ToggleButtonWidget({
-          label: $.i18n('cpl-input-submit-debug'),
+          label: localizedHtmlSnippet('cpl-input-submit-debug'),
           invisibleLabel: true,
-          title: $.i18n('cpl-input-submit-debug'),
+          title: localizedHtmlSnippet('cpl-input-submit-debug'),
           icon: 'robot'
         })
       ]
@@ -563,8 +840,8 @@ class InputHelper {
 
   static makeSubmitButton () {
     return new OO.ui.ButtonWidget({
-      label: $.i18n('cpl-input-submit-label'),
-      title: $.i18n('cpl-input-submit-title'),
+      label: localizedHtmlSnippet('cpl-input-submit-label'),
+      title: localizedHtmlSnippet('cpl-input-submit-title'),
       flags: ['primary', 'progressive']
     })
   }
@@ -576,14 +853,19 @@ class PagelistFieldset {
     this.makeCateInput(cateList) // the category selection text input field
     this.makeNsInput() // the namespace selection dropdown menu
     this.makeSinglePageInput() // the page selection text input field
-    this.makeRadioButtons() // the radio buttons to select "category", "namespace", or "single page"
+    this.makeRadioButtons(cateList) // the radio buttons to select "category", "namespace", or "single page"
     this.combineAll()
   }
 
   makeCateInput (cateList) {
     // see https://www.mediawiki.org/wiki/OOUI/Elements/Lookup
     function LookupTextInputWidget (config) {
-      OO.ui.TextInputWidget.call(this, $.extend({ placeholder: $.i18n('cpl-input-pagelist-cateplaceholder') }, config))
+      OO.ui.TextInputWidget.call(this,
+        $.extend({
+          placeholder: localizedAttribute('placeholder', 'cpl-input-pagelist-cateplaceholder'),
+          validate: catename => cateList.indexOf(catename) != -1
+        }, config)
+      )
       OO.ui.mixin.LookupElement.call(this, config)
     }
 
@@ -624,7 +906,7 @@ class PagelistFieldset {
     this.cateInput = new LookupTextInputWidget()
     this.cateInputWrapper = new OO.ui.HorizontalLayout({
       items: [
-        new OO.ui.LabelWidget({ label: $.i18n('cpl-input-pagelist-catelabel') }),
+        new OO.ui.LabelWidget({ label: localizedHtmlSnippet('cpl-input-pagelist-catelabel') }),
         this.cateInput
       ]
     })
@@ -638,7 +920,7 @@ class PagelistFieldset {
       if (nsIndex >= 0) {
         nsOptions.push({
           data: nsIndex,
-          label: (nsIndex === 0 || nsIndex === '0' ? $.i18n('cpl-mainspace') : data[nsIndex])
+          label: (nsIndex === 0 || nsIndex === '0' ? localizedHtmlSnippet('cpl-mainspace') : data[nsIndex])
         })
       }
     }
@@ -646,14 +928,15 @@ class PagelistFieldset {
 
     this.nsInputWrapper = new OO.ui.HorizontalLayout({
       items: [
-        new OO.ui.LabelWidget({ label: $.i18n('cpl-input-pagelist-nslabel') }),
+        new OO.ui.LabelWidget({ label: localizedHtmlSnippet('cpl-input-pagelist-nslabel') }),
         this.nsInput
       ]
     })
     this.nsInputWrapper.toggle(false) // hide initially
   }
 
-  validateSinglePageInput (pagename) {
+  static checkPageExistence (pagename) {
+    if (debug) { console.log(`Checking existence of the page ${pagename}...`) }
     const deferred = $.Deferred()
     // check if the page exists on the wiki
     new mw.Api().get(ApiQueryParams.pagesExistence(pagename))
@@ -670,13 +953,13 @@ class PagelistFieldset {
     this.singlePageInput = new OO.ui.TextInputWidget({
       icon: 'articleNotFound',
       required: true,
-      placeholder: $.i18n('cpl-input-pagelist-singleplaceholder'),
-      validate: pagename => this.validateSinglePageInput(pagename)
+      placeholder: localizedAttribute('placeholder', 'cpl-input-pagelist-singleplaceholder'),
+      validate: pagename => PagelistFieldset.checkPageExistence(pagename)
     })
 
     this.singlePageInputWrapper = new OO.ui.HorizontalLayout({
       items: [
-        new OO.ui.LabelWidget({ label: $.i18n('cpl-input-pagelist-singlelabel') }),
+        new OO.ui.LabelWidget({ label: localizedHtmlSnippet('cpl-input-pagelist-singlelabel') }),
         this.singlePageInput
       ]
     })
@@ -694,18 +977,18 @@ class PagelistFieldset {
     })
   }
 
-  makeRadioButtons () {
+  makeRadioButtons (cateList) {
     const radioButtonCate = new OO.ui.RadioOptionWidget({
       data: PagelistMethod.Cate,
-      label: $.i18n('cpl-input-pagelist-radiocate')
+      label: localizedHtmlSnippet('cpl-input-pagelist-radiocate')
     })
     const radioButtonNs = new OO.ui.RadioOptionWidget({
       data: PagelistMethod.Ns,
-      label: $.i18n('cpl-input-pagelist-radions')
+      label: localizedHtmlSnippet('cpl-input-pagelist-radions')
     })
     const radioButtonSinglePage = new OO.ui.RadioOptionWidget({
       data: PagelistMethod.SinglePage,
-      label: $.i18n('cpl-input-pagelist-radiosingle')
+      label: localizedHtmlSnippet('cpl-input-pagelist-radiosingle')
     })
 
     this.radiobuttons = new OO.ui.RadioSelectWidget({ items: [radioButtonCate, radioButtonNs, radioButtonSinglePage] })
@@ -714,10 +997,10 @@ class PagelistFieldset {
       this.nsInputWrapper.toggle(radioButtonNs.isSelected()) // show/hide the namespace selection dropdown menu
       this.cateInputWrapper.toggle(radioButtonCate.isSelected()) // show/hide the category selection text input field
       this.cateInput.setRequired(radioButtonCate.isSelected()) // set the category selection text input field to required/optional
-      this.cateInput.setValidation((radioButtonCate.isSelected() ? 'non-empty' : null))
+      this.cateInput.setValidation((radioButtonCate.isSelected() ? catename => cateList.indexOf(catename) != -1 : null))
       this.singlePageInputWrapper.toggle(radioButtonSinglePage.isSelected()) // show/hide the single page selection text input field
       this.singlePageInput.setRequired(radioButtonSinglePage.isSelected()) // set the single page selection text input field to required/optional
-      this.singlePageInput.setValidation((radioButtonSinglePage.isSelected() ? pagename => this.validateSinglePageInput(pagename) : null))
+      this.singlePageInput.setValidation((radioButtonSinglePage.isSelected() ? pagename => PagelistFieldset.checkPageExistence(pagename) : null))
     })
   }
 
@@ -728,8 +1011,14 @@ class PagelistFieldset {
     this.fieldlayout = new OO.ui.FieldLayout(combineRadioLookupAndDropdown, {
       align: 'inline' // to make potential errors appear properly at the bottom
     })
+    this.radiobuttons.on('select', () => {
+      // when the radio button selection changes, remove potentially set error message about missing radio buttion selection
+      // because now a radio button is selected for sure
+      this.fieldlayout.setErrors((this.pagelistInput.method === undefined ? [localizedText('cpl-input-error-radiomissing')] : []))
+      localizeAll(this.fieldlayout.id)
+    })
     this.fieldset = new OO.ui.FieldsetLayout({
-      label: $.i18n('cpl-input-pagelist-heading'),
+      label: localizedHtmlSnippet('cpl-input-pagelist-heading'),
       items: [this.fieldlayout]
     })
   }
@@ -779,7 +1068,9 @@ class ForeignwikiFieldset {
     this.iwInputWrapper = new OO.ui.HorizontalLayout({
       items: [
         new OO.ui.LabelWidget({
-          label: $('<a>').attr('href', getLocalUrl('Special:Interwiki')).text($.i18n('cpl-input-foreign-iwlabel'))
+          label: $('<a>')
+            .attr('href', getLocalUrl('Special:Interwiki'))
+            .append(localizedText('cpl-input-foreign-iwlabel'))
         }),
         this.iwInput
       ]
@@ -789,32 +1080,42 @@ class ForeignwikiFieldset {
   makeRadioButtons () {
     const radioButtonIwlink = new OO.ui.RadioOptionWidget({
       data: MatchingMethod.Iwlink,
-      label: $.i18n('cpl-input-foreign-radioiw')
+      label: localizedHtmlSnippet('cpl-input-foreign-radioiw')
     })
     const radioButtonPagetitle = new OO.ui.RadioOptionWidget({
       data: MatchingMethod.Pagetitle,
-      label: $.i18n('cpl-input-foreign-radiotitle')
+      label: localizedHtmlSnippet('cpl-input-foreign-radiotitle')
     })
-
     this.radiobuttons = new OO.ui.RadioSelectWidget({
       items: [radioButtonIwlink, radioButtonPagetitle]
     })
   }
 
   combineAll () {
-    const helptext = '' +
-      `<p>${$.i18n('cpl-input-foreign-helpintro')}</p>` +
-      `<p>${$.i18n('cpl-input-foreign-helpiw')}</p>` +
-      `<p>${$.i18n('cpl-input-foreign-helptitle')}</p>`
+    const helptext = $('<span>')
+    const helptextkeys = [
+      'cpl-input-foreign-helpintro',
+      'cpl-input-foreign-helpiw',
+      'cpl-input-foreign-helptitle'
+    ]
+    for (const key of helptextkeys) {
+      helptext.append($('<p>').html(localizedText(key)))
+    }
 
     this.fieldlayout = new OO.ui.FieldLayout(this.radiobuttons, {
-      label: $.i18n('cpl-input-foreign-radiolabel'),
-      help: new OO.ui.HtmlSnippet(helptext),
+      label: localizedHtmlSnippet('cpl-input-foreign-radiolabel'),
+      help: new OO.ui.HtmlSnippet(helptext[0].outerHTML),
       align: 'inline'
     })
 
+    this.radiobuttons.on('select', () => {
+      // when the radio button selection changes, remove potentially set error message about missing radio buttion selection
+      // because now a radio button is selected for sure
+      this.fieldlayout.setErrors((this.foreignwikiInput.matchmethod === undefined ? [localizedText('cpl-input-error-radiomissing')] : []))
+      localizeAll(this.fieldlayout.id)
+    })
     this.fieldset = new OO.ui.FieldsetLayout({
-      label: $.i18n('cpl-input-foreign-heading'),
+      label: localizedHtmlSnippet('cpl-input-foreign-heading'),
       items: [this.iwInputWrapper, this.fieldlayout]
     })
   }
@@ -834,21 +1135,27 @@ function makeInterwikiMap (iwList) {
   })
 }
 
-function onSubmit (pagelistFieldset, foreignwikiFieldset, debugButtonFieldset) {
+function updateErrors (pagelistFieldset, foreignwikiFieldset) {
   // display error messages if the radio buttons are not selected
-  const errortext = $.i18n('cpl-input-error-radiomissing')
-  pagelistFieldset.fieldlayout.setErrors((pagelistFieldset.pagelistInput.method === undefined ? [errortext] : []))
-  foreignwikiFieldset.fieldlayout.setErrors((foreignwikiFieldset.foreignwikiInput.matchmethod === undefined ? [errortext] : []))
+  pagelistFieldset.fieldlayout.setErrors((pagelistFieldset.pagelistInput.method === undefined ? [localizedText('cpl-input-error-radiomissing')] : []))
+  foreignwikiFieldset.fieldlayout.setErrors((foreignwikiFieldset.foreignwikiInput.matchmethod === undefined ? [localizedText('cpl-input-error-radiomissing')] : []))
+  localizeAll(pagelistFieldset.fieldlayout.id)
+  localizeAll(foreignwikiFieldset.fieldlayout.id)
 
   // make an additional check if pagelistMethod is "Cate" or "SinglePage"
   // to see if the input is valid
-  new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     switch (pagelistFieldset.pagelistInput.method) {
       case PagelistMethod.Cate:
         pagelistFieldset.cateInput.getValidity()
           .fail(() => {
             pagelistFieldset.cateInput.setValidityFlag(false)
-            pagelistFieldset.fieldlayout.setErrors([$.i18n('cpl-input-error-textinputmissing')])
+            let errortext = 'cpl-input-error-textinputmissing'
+            if (pagelistFieldset.cateInput.getValue() !== '') {
+              errortext = 'cpl-input-error-invalidcate'
+            }
+            pagelistFieldset.fieldlayout.setErrors([localizedText(errortext)])
+            localizeAll(pagelistFieldset.fieldlayout.id)
             pagelistFieldset.cateInput.scrollElementIntoView()
             reject()
           })
@@ -859,7 +1166,12 @@ function onSubmit (pagelistFieldset, foreignwikiFieldset, debugButtonFieldset) {
         pagelistFieldset.singlePageInput.getValidity()
           .fail(() => {
             pagelistFieldset.singlePageInput.setValidityFlag(false)
-            pagelistFieldset.fieldlayout.setErrors([$.i18n('cpl-input-error-textinputmissing')])
+            let errortext = 'cpl-input-error-textinputmissing'
+            if (pagelistFieldset.singlePageInput.getValue() !== '') {
+              errortext = 'cpl-input-error-invalidpage'
+            }
+            pagelistFieldset.fieldlayout.setErrors([localizedHtmlSnippet(errortext)])
+            localizeAll(pagelistFieldset.fieldlayout.id)
             pagelistFieldset.singlePageInput.scrollElementIntoView()
             reject()
           })
@@ -871,20 +1183,26 @@ function onSubmit (pagelistFieldset, foreignwikiFieldset, debugButtonFieldset) {
         resolve()
         break
     }
-  }).then(() => {
-    // input is valid
-    if (pagelistFieldset.pagelistInput.method !== undefined && foreignwikiFieldset.foreignwikiInput.matchmethod !== undefined) {
-      const dataForCompare = {
-        foreignWiki: foreignwikiFieldset.foreignwikiInput.iwprefix,
-        matchingMethod: foreignwikiFieldset.foreignwikiInput.matchmethod,
-        pagelistMethod: pagelistFieldset.pagelistInput.method,
-        debug: debugButtonFieldset.items[0].getValue()
+  })
+}
+
+function onSubmit (pagelistFieldset, foreignwikiFieldset, debugButtonFieldset) {
+  updateErrors(pagelistFieldset, foreignwikiFieldset)
+    .then(() => {
+      // input is valid
+      if (pagelistFieldset.pagelistInput.method !== undefined && foreignwikiFieldset.foreignwikiInput.matchmethod !== undefined) {
+        const dataForCompare = {
+          foreignWiki: foreignwikiFieldset.foreignwikiInput.iwprefix,
+          matchingMethod: foreignwikiFieldset.foreignwikiInput.matchmethod,
+          pagelistMethod: pagelistFieldset.pagelistInput.method,
+          debug: debugButtonFieldset.items[0].getValue()
+        }
+        dataForCompare[dataForCompare.pagelistMethod] = pagelistFieldset.pagelistInput.details
+        if (dataForCompare.debug) { console.log('Starting to compare. Data:', dataForCompare) }
+        startCompare(dataForCompare) // start actions
       }
-      dataForCompare[dataForCompare.pagelistMethod] = pagelistFieldset.pagelistInput.details
-      if (dataForCompare.debug) { console.log('Starting to compare. Data:', dataForCompare) }
-      startCompare(dataForCompare) // start actions
-    }
-  }).catch(() => {}) // input is not valid, do not start actions
+    })
+    .catch(() => {}) // input is not valid, do not start actions
 }
 
 /*
@@ -913,7 +1231,7 @@ function startCompare (data) {
   // display new log box
   msgWidget = new OO.ui.MessageWidget({
     type: 'notice',
-    label: new OO.ui.HtmlSnippet($.i18n('cpl-log-proc-start'))
+    label: localizedHtmlSnippet('cpl-log-proc-start')
   })
   $(logElement).append(msgWidget.$element)
 
@@ -926,8 +1244,15 @@ function startCompare (data) {
 
   // start actions
   doCompare()
-    .then(() => outputLog($.i18n('cpl-log-proc-endsuccess')))
-    .catch(errReason => outputLog($.i18n(errReason)))
+    .then(() => outputLog(localizedText('cpl-log-proc-endsuccess')))
+    .catch(errReason => outputLog(localizedText(errReason)))
+    .finally(() => {
+      if (debug) {
+        console.log($.i18n().messageStore.messages)
+        console.log(timestampsToLocalize)
+        console.log(reparseUponLocalization)
+      }
+    })
 }
 
 // function with the full flow of actions, as a chain of promises
@@ -938,9 +1263,9 @@ function doCompare () {
       // (1) when successfully connected to foreign wiki:
       .then(foreignMainpage => {
         try {
-          outputLog($.i18n('cpl-log-foreignwiki', formInput.foreignWiki, `<a href="${foreignMainpage}">${foreignMainpage}</a>`))
+          outputLog(localizedText('cpl-log-foreignwiki', formInput.foreignWiki, `<a href="${foreignMainpage}">${foreignMainpage}</a>`))
 
-          outputLog($.i18n((formInput.pagelistMethod === PagelistMethod.SinglePage ? 'cpl-log-fetchingpage' : 'cpl-log-fetchingpages')))
+          outputLog(localizedText((formInput.pagelistMethod === PagelistMethod.SinglePage ? 'cpl-log-fetchingpage' : 'cpl-log-fetchingpages')))
 
           progressbar.setProgress(10)
 
@@ -954,15 +1279,15 @@ function doCompare () {
           progressbar.setProgress(20)
           if (debug) { console.log(`Got list of local pages (${pagelist.localPagesCount}):`, pagelist) }
 
-          outputLog($.i18n((formInput.pagelistMethod === PagelistMethod.SinglePage ? 'cpl-log-fetchingpage-done' : 'cpl-log-fetchingpages-done')))
+          outputLog(localizedText((formInput.pagelistMethod === PagelistMethod.SinglePage ? 'cpl-log-fetchingpage-done' : 'cpl-log-fetchingpages-done')))
 
           if (pagelist.localPagesCount <= 0) {
             switch (formInput.pagelistMethod) {
               case PagelistMethod.Cate:
-                addToLastLog($.i18n('cpl-log-emptycate'))
+                addToLastLog(localizedText('cpl-log-emptycate'))
                 break
               case PagelistMethod.Ns:
-                addToLastLog($.i18n('cpl-log-emptyns'))
+                addToLastLog(localizedText('cpl-log-emptyns'))
                 break
               default:
                 break
@@ -972,13 +1297,13 @@ function doCompare () {
 
           switch (formInput.pagelistMethod) {
             case PagelistMethod.Cate:
-              addToLastLog($.i18n('cpl-log-foundpagescate', pagelist.localPagesCount))
+              addToLastLog(localizedText('cpl-log-foundpagescate', pagelist.localPagesCount))
               break
             case PagelistMethod.Ns:
-              addToLastLog($.i18n('cpl-log-foundpagesns', pagelist.localPagesCount))
+              addToLastLog(localizedText('cpl-log-foundpagesns', pagelist.localPagesCount))
               break
             case PagelistMethod.SinglePage:
-              addToLastLog($.i18n('cpl-log-foundpage'))
+              addToLastLog(localizedText('cpl-log-foundpage'))
               break
             default:
               break
@@ -989,10 +1314,10 @@ function doCompare () {
 
           switch (formInput.matchingMethod) {
             case MatchingMethod.Iwlink:
-              outputLog($.i18n('cpl-log-removeinvalidiw', formInput.foreignWiki))
+              outputLog(localizedText('cpl-log-removeinvalidiw', formInput.foreignWiki))
               break
             case MatchingMethod.Pagetitle:
-              outputLog($.i18n('cpl-log-removeinvalidtitle', formInput.foreignWiki))
+              outputLog(localizedText('cpl-log-removeinvalidtitle', formInput.foreignWiki))
               break
             default:
               break
@@ -1020,7 +1345,7 @@ function doCompare () {
           let canContinue = Promise.resolve()
           if (pagelist.localPagesCount > 200) {
             // if there are many pages, then only continue after user gives confirmation
-            canContinue = confirmationDialog($.i18n('cpl-output-warningdialog-text'), $.i18n('cpl-output-warningdialog-title'))
+            canContinue = confirmationDialog(localizedTextRaw('cpl-output-warningdialog-text'), localizedTextRaw('cpl-output-warningdialog-title'))
           }
 
           return canContinue.then(() => pagelist.filterOutPagesWithInvalidForeignTitles())
@@ -1035,22 +1360,22 @@ function doCompare () {
 
           switch (formInput.pagelistMethod) {
             case PagelistMethod.Cate:
-              addToLastLog($.i18n('cpl-log-removeinvalidiw-done'))
+              addToLastLog(localizedText('cpl-log-removeinvalidiw-done'))
               break
             case PagelistMethod.Ns:
-              addToLastLog($.i18n('cpl-log-removeinvalidtitle-done'))
+              addToLastLog(localizedText('cpl-log-removeinvalidtitle-done'))
               break
             default:
               break
           }
 
           if (pagelist.localPagesCount <= 0) {
-            addToLastLog($.i18n('cpl-log-remainingpages', 0))
+            addToLastLog(localizedText('cpl-log-remainingpages', 0))
             return breakOutOfPromiseChain()
           }
 
-          addToLastLog($.i18n('cpl-log-remainingpages', pagelist.localPagesCount))
-          outputLog($.i18n('cpl-log-fetchingrevs', pagelist.localPagesCount))
+          addToLastLog(localizedText('cpl-log-remainingpages', pagelist.localPagesCount))
+          outputLog(localizedText('cpl-log-fetchingrevs', pagelist.localPagesCount))
 
           return pagelist.addForeignRevsAndLocalDiffsizes(new PerPageProgress(40, 75))
         } catch (e) { return breakOutOfPromiseChain(e) }
@@ -1071,19 +1396,19 @@ function doCompare () {
           progressbar.setProgress(80)
           if (debug) { console.log(`Dropped non-outdated pages. pagelist (${pagelist.localPagesCount}):`, pagelist) }
 
-          addToLastLog($.i18n('cpl-log-fetchingrevs-done'))
+          addToLastLog(localizedText('cpl-log-fetchingrevs-done'))
           if (pagelist.localPagesCount <= 0) {
-            addToLastLog($.i18n('cpl-log-outdatedpages', 0))
+            addToLastLog(localizedText('cpl-log-outdatedpages', 0))
             if (formInput.pagelistMethod !== PagelistMethod.SinglePage) {
-              outputSuccess($.i18n('cpl-output-nothingtodisplay'))
+              outputSuccess(localizedText('cpl-output-nothingtodisplay'))
             } else {
-              outputSuccess($.i18n('cpl-output-nothingtodisplay-single', formInput.SinglePage))
+              outputSuccess(localizedText('cpl-output-nothingtodisplay-single', formInput.SinglePage))
             }
             return breakOutOfPromiseChain()
           }
 
-          addToLastLog($.i18n('cpl-log-outdatedpages', pagelist.localPagesCount))
-          outputLog($.i18n('cpl-log-displayingresult', pagelist.localPagesCount))
+          addToLastLog(localizedText('cpl-log-outdatedpages', pagelist.localPagesCount))
+          outputLog(localizedText('cpl-log-displayingresult', pagelist.localPagesCount))
 
           return pagelist.prepareForOutput(new PerPageProgress(80, 90))
         } catch (e) { return breakOutOfPromiseChain(e) }
@@ -1103,7 +1428,7 @@ function doCompare () {
         try {
           if (debug) { console.log('Made output HTML.') }
 
-          addToLastLog($.i18n('cpl-log-displayingresult-done'))
+          addToLastLog(localizedText('cpl-log-displayingresult-done'))
 
           return breakOutOfPromiseChain() // successfully finished all operations
         } catch (e) { return breakOutOfPromiseChain(e) }
@@ -1112,7 +1437,7 @@ function doCompare () {
       .catch(error => {
         // progressbar.popPending(); // doesn't seem to have any effect
         if (error !== undefined) {
-          if (debug) { console.log(error) }
+          if (debug) { console.error(error) }
           progressbar.setDisabled(true)
           reject(error instanceof FailedConfirmationError ? 'cpl-log-proc-enduser' : 'cpl-log-proc-enderror')
         } else {
@@ -1155,7 +1480,7 @@ class Pagelist {
           resolve()
         })
       } else {
-        errorDuringProcess(`The pagelistMethod "${formInput.pagelistMethod}" is not a valid pagelistMethod.`, $.i18n('cpl-error-fetchingpages'))
+        errorDuringProcess(`The pagelistMethod "${formInput.pagelistMethod}" is not a valid pagelistMethod.`, localizedText('cpl-error-fetchingpages'))
         reject(Error(`pagelistMethod "${formInput.pagelistMethod}" is not in ${Object.keys(apiParams)}!`))
       }
     })
@@ -1236,7 +1561,7 @@ class Pagelist {
               if (true) {
                 // activating the delay helps spreading out the requests,
                 // which improves performance and sometimes prevents errors caused by rate limits.
-                apiRequestDelay = Math.random() * 1500 + 1000 // between 1 and 2.5 seconds
+                apiRequestDelay = 1000 + Math.random() * 1500 // between 1 and 2.5 seconds
               }
               setTimeout(() => {
                 getDiffSizesForAllForeignRevsOfOnePage(foreignrevs)
@@ -1282,30 +1607,58 @@ class Pagelist {
 
   // for comparison part 7
   prepareForOutput (perPageProgress) {
-    const dateformat = new Intl.DateTimeFormat(userLanguage, {
-      timeZone: 'UTC',
-      hourCycle: 'h23',
-      dateStyle: 'short',
-      timeStyle: 'short'
-    })
+    // fill the pagelistForOutput array with objects that contain the information
+    // needed for the output, e.g.:
+    /*
+    {
+      local: {
+        revid: x,
+        timestamp: x,
+        isnew: x,
+        username: x
+      },
+      foreign: [
+        {
+          revid: x,
+          timestamp: x,
+          isnew: x,
+          username: x
+        },
+        {
+          revid: x,
+          timestamp: x,
+          isnew: x,
+          username: x
+        }
+      ]
+    */
 
-    const dateformatDate = new Intl.DateTimeFormat(userLanguage, {
-      timeZone: 'UTC',
-      dateStyle: 'short'
-    })
+    // this info also includes timestamps, which require localization like everything else.
+    // we're localizing them differently, though: we're registering the localized format for each
+    // language here, then later (in the output maker functions) store each timestamp instance
+    // (i.e. a specific date or time) as a separate l10n key to the l10nTable
+    const dateformats = {}
+    const dateformatsDate = {}
+    const dateformatsTime = {}
 
-    const dateformatTime = new Intl.DateTimeFormat(userLanguage, {
-      timeZone: 'UTC',
-      hourCycle: 'h23',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-
-    const numberformatForDiffsize = new Intl.NumberFormat(userLanguage, {
-      signDisplay: 'exceptZero'
-    })
-
-    const numberformatForNewsize = new Intl.NumberFormat(userLanguage)
+    for (const lang of Object.keys(l10nTable)) {
+      dateformats[lang] = new Intl.DateTimeFormat(lang, {
+        timeZone: 'UTC',
+        hourCycle: 'h23',
+        dateStyle: 'short',
+        timeStyle: 'short'
+      })
+      dateformatsDate[lang] = new Intl.DateTimeFormat(lang, {
+        timeZone: 'UTC',
+        dateStyle: 'short'
+      })
+      dateformatsTime[lang] = new Intl.DateTimeFormat(lang, {
+        timeZone: 'UTC',
+        hourCycle: 'h23',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    }
 
     perPageProgress.pagecount = pagelist.localPagesCount
     for (const pageid in pagelist.pages) {
@@ -1313,8 +1666,8 @@ class Pagelist {
         const pagedata = pagelist.pages[pageid]
 
         const pagedataForOutput = {
-          local: preparePagedataLocalForOutput(pagedata, dateformatDate, dateformatTime, numberformatForDiffsize, numberformatForNewsize),
-          foreign: preparePagedataForeignForOutput(pagedata, dateformat, dateformatDate, dateformatTime, numberformatForDiffsize, numberformatForNewsize)
+          local: preparePagedataLocalForOutput(pagedata, dateformatsDate, dateformatsTime),
+          foreign: preparePagedataForeignForOutput(pagedata, dateformats, dateformatsDate, dateformatsTime)
         }
 
         pagelistForOutput.push(pagedataForOutput)
@@ -1381,6 +1734,16 @@ function padDateTime (n) {
   return (n < 10 ? '0' + n : n)
 }
 
+function mapForObject (obj, mapFn) {
+  // example usage:
+  /*
+  let originalObj = { 'a': 1, 'b': 2, 'c': 3 }
+  let newObj = mapForObject( originalObj, ([k, v]) => ({[k]: v * v}) )
+  console.log(newObj) // { 'a': 1, 'b': 4, 'c': 9 }
+  */
+  return Object.assign(...Object.entries(obj).map(mapFn))
+}
+
 class PerPageProgress {
   // some functions have a certain amount of progress allotted to them.
   // split this progress evenly across the pages
@@ -1413,7 +1776,7 @@ Specific comparison helper functions
 
 // for comparison part 0
 function pingForeignWiki () {
-  const errortext = $.i18n('cpl-error-foreignwiki', formInput.foreignWiki, `<a href="${getLocalUrl('Special:Interwiki')}">Special:Interwiki</a>`)
+  const errortext = localizedText('cpl-error-foreignwiki', formInput.foreignWiki, `<a href="${getLocalUrl('Special:Interwiki')}">Special:Interwiki</a>`)
 
   return new Promise((resolve, reject) => {
     foreignUrl = interwikiMap[formInput.foreignWiki]
@@ -1446,7 +1809,7 @@ function pingForeignWiki () {
 // for comparison part 2
 function stringAboutLimitIfNecessary () {
   if (pagelist.isCutOffByLimit()) {
-    return $.i18n('cpl-log-cutoff', pagelist.rawApiResult.limits[apiLimitKeyName[formInput.pagelistMethod]])
+    return localizedText('cpl-log-cutoff', pagelist.rawApiResult.limits[apiLimitKeyName[formInput.pagelistMethod]])
   }
   return ''
 }
@@ -1477,7 +1840,7 @@ function loadNamespaces () {
       })
 
       .fail(errordata => {
-        errorDuringProcess(errordata, $.i18n('cpl-error-canonicalns'))
+        errorDuringProcess(errordata, localizedText('cpl-error-canonicalns'))
         reject(Error('getting local namespaces failed!'))
       })
   })
@@ -1601,7 +1964,7 @@ class ValidLocalPageFilterer {
               })
 
               .fail(errordata => {
-                errorDuringProcess(errordata, $.i18n('cpl-error-foreignpages', formInput.foreignWiki))
+                errorDuringProcess(errordata, localizedText('cpl-error-foreignpages', formInput.foreignWiki))
                 reject(Error('getting JSON of foreign page existence API query failed! URL: ' + foreignApiUrl))
               })
           })
@@ -1669,7 +2032,7 @@ function getForeignDiffsizeForOnePage (parentid, revid) {
       })
 
       .fail(errordata => {
-        errorDuringProcess(errordata, $.i18n('cpl-error-foreigndiff', formInput.foreignWiki))
+        errorDuringProcess(errordata, localizedText('cpl-error-foreigndiff', formInput.foreignWiki))
         reject(Error('getting JSON of foreign compare API query failed! URL: ' + foreignApiUrl))
       })
   })
@@ -1729,7 +2092,7 @@ function getDiffSizesForAllForeignRevsOfOnePage (foreignrevs) {
 }
 
 // for comparison part 7
-function preparePagedataLocalForOutput (pagedata, dateformatDate, dateformatTime, numberformatForDiffsize, numberformatForNewsize) {
+function preparePagedataLocalForOutput (pagedata, dateformatsDate, dateformatsTime) {
   const localLatestRev = pagedata.revisions[0]
   const localTimestamp = new Date(localLatestRev.timestamp)
 
@@ -1746,16 +2109,15 @@ function preparePagedataLocalForOutput (pagedata, dateformatDate, dateformatTime
     ].join(''), // 20210610085405
     isnew: localLatestRev.parentid === 0,
     isminor: localLatestRev.minor !== undefined,
-    timestampDateFormatted: dateformatDate.format(localTimestamp), // 07/07/2020
-    timestampTimeFormatted: dateformatTime.format(localTimestamp), // 21:15
+    timestampsDateFormatted: doFormat(dateformatsDate, localTimestamp), // 07/07/2020
+    timestampsTimeFormatted: doFormat(dateformatsTime, localTimestamp), // 21:15
     pagename: pagedata.title,
     pagelink: getLocalUrl(pagedata.title),
     difflink: getLocalUrl(`${pagedata.title}?diff=${localLatestRev.revid}`),
     histlink: getLocalUrl(`${pagedata.title}?action=history`),
     isBigEdit: Math.abs(localLatestRev.diffsize) > 500,
     diffsize: localLatestRev.diffsize,
-    newsizeFormatted: numberformatForNewsize.format(localLatestRev.size),
-    diffsizeFormatted: numberformatForDiffsize.format(localLatestRev.diffsize),
+    newsize: localLatestRev.size,
     userlink: getLocalUrl(`User:${localLatestRev.user}`),
     username: localLatestRev.user,
     usertalklink: getLocalUrl(`User_talk:${localLatestRev.user}`),
@@ -1765,7 +2127,7 @@ function preparePagedataLocalForOutput (pagedata, dateformatDate, dateformatTime
 }
 
 // for comparison part 7
-function preparePagedataForeignForOutput (pagedata, dateformat, dateformatDate, dateformatTime, numberformatForDiffsize, numberformatForNewsize) {
+function preparePagedataForeignForOutput (pagedata, dateformats, dateformatsDate, dateformatsTime) {
   const foreignRevData = []
 
   for (const foreignRevIndex in pagedata.foreignRevisions) {
@@ -1789,17 +2151,16 @@ function preparePagedataForeignForOutput (pagedata, dateformat, dateformatDate, 
         isminor: foreignRev.minor !== undefined,
         pagename: pagedata.foreignTitle,
         permalink: getForeignUrl(`${pagedata.foreignTitle}?oldid=${foreignRev.revid}`),
-        timestampDateFormatted: dateformatDate.format(revTimestamp), // 07/07/2020
-        timestampTimeFormatted: dateformatTime.format(revTimestamp), // 21:15
-        timestampFormatted: dateformat.format(revTimestamp), // 07/07/20, 21:15
+        timestampsDateFormatted: doFormat(dateformatsDate, revTimestamp), // 07/07/2020
+        timestampsTimeFormatted: doFormat(dateformatsTime, revTimestamp), // 21:15
+        timestampsFormatted: doFormat(dateformats, revTimestamp), // 07/07/20, 21:15
         curdifflink: getForeignUrl(`${pagedata.foreignTitle}?diff=0&oldid=${foreignRev.revid}`),
         pagelink: getForeignUrl(pagedata.foreignTitle),
         difflink: getForeignUrl(`${pagedata.foreignTitle}?diff=${foreignRev.revid}`),
         histlink: getForeignUrl(`${pagedata.foreignTitle}?action=history`),
         isBigEdit: Math.abs(foreignRev.diffsize) > 500,
         diffsize: foreignRev.diffsize,
-        newsizeFormatted: numberformatForNewsize.format(foreignRev.size),
-        diffsizeFormatted: numberformatForDiffsize.format(foreignRev.diffsize),
+        newsize: foreignRev.size,
         userlink: getForeignUrl(`User:${foreignRev.user}`),
         username: foreignRev.user,
         usertalklink: getForeignUrl(`User_talk:${foreignRev.user}`),
@@ -1839,9 +2200,8 @@ function preparePagedataForeignForOutput (pagedata, dateformat, dateformatDate, 
     foreignInfo.firstLine = {
       timestamp: foreignRevData[0].timestamp, // 20210610085405
       isminor: foreignRevData.every(revdata => revdata.isminor), // are all edits minor?
-      timestampDateFormatted: foreignRevData[0].timestampDateFormatted, // 07/07/2020
-      timestampTimeFormatted: foreignRevData[0].timestampTimeFormatted, // 21:15
-      timestampFormatted: foreignRevData[0].timestampFormatted, // 07/07/20, 21:15
+      timestampsDateFormatted: foreignRevData[0].timestampsDateFormatted, // 07/07/2020
+      timestampsTimeFormatted: foreignRevData[0].timestampsTimeFormatted, // 21:15
       pagelink: getForeignUrl(pagedata.foreignTitle),
       pagename: pagedata.foreignTitle,
       isnew: foreignRevData.some(revdata => revdata.isnew), // is any edit a new page?
@@ -1850,13 +2210,19 @@ function preparePagedataForeignForOutput (pagedata, dateformat, dateformatDate, 
       histlink: getForeignUrl(`${pagedata.foreignTitle}?action=history`),
       isBigEdit: Math.abs(totalDiffSize) > 500,
       diffsize: totalDiffSize,
-      newsizeFormatted: foreignRevData[0].newsizeFormatted,
-      diffsizeFormatted: numberformatForDiffsize.format(totalDiffSize),
+      newsize: foreignRevData[0].newsize,
       users: users
     }
   }
 
   return foreignInfo
+}
+
+function doFormat (formatsObject, dataToFormat) {
+  return mapForObject(
+    formatsObject,
+    ([lang, format]) => ({[lang]: format.format(dataToFormat)})
+  )
 }
 
 class FailedConfirmationError extends Error {
@@ -1873,29 +2239,49 @@ Display output
 
 */
 
+function jQueryToString (possibleJqueryElement) {
+  if (possibleJqueryElement instanceof jQuery) {
+    return possibleJqueryElement[0].outerHTML
+  }
+  return possibleJqueryElement
+}
+
 function outputLog (logtext) {
+  logtext = jQueryToString(logtext)
   msgWidget.setLabel(new OO.ui.HtmlSnippet(msgWidget.getLabel() + '<br/>' + logtext))
+  localizeAll(msgWidget.id)
 }
 
 function addToLastLog (logtext) {
+  logtext = jQueryToString(logtext)
   msgWidget.setLabel(new OO.ui.HtmlSnippet(msgWidget.getLabel() + logtext))
+  localizeAll(msgWidget.id)
 }
 
 function outputError (errortext, additionaltext) {
-  $(logElement).append(new OO.ui.MessageWidget({
+  errortext = jQueryToString(errortext)
+  additionaltext = jQueryToString(additionaltext)
+  const newMsgWidget = new OO.ui.MessageWidget({
     type: 'error',
-    label: new OO.ui.HtmlSnippet(errortext + (additionaltext === undefined ? '' : '<br/>' + $.i18n('cpl-error-details') + additionaltext))
-  }).$element)
+    label: new OO.ui.HtmlSnippet(errortext + (additionaltext === undefined ? '' : '<br/>' + localizedText('cpl-error-details')[0].outerHTML + additionaltext))
+})
+  $(logElement).append(newMsgWidget.$element)
+  localizeAll(newMsgWidget.id)
 }
 
 function outputSuccess (successtext) {
-  $(logElement).append(new OO.ui.MessageWidget({
+  successtext = jQueryToString(successtext)
+  const newMsgWidget = new OO.ui.MessageWidget({
     type: 'success',
     label: new OO.ui.HtmlSnippet(successtext)
-  }).$element)
+  })
+  $(logElement).append(newMsgWidget.$element)
+  localizeAll(newMsgWidget.id)
 }
 
 function confirmationDialog (text, dialogtitle) {
+  text = jQueryToString(text)
+  dialogtitle = jQueryToString(dialogtitle)
   return new Promise((resolve, reject) => {
     OO.ui.confirm(text, { title: dialogtitle }).done(confirmed => {
       if (confirmed) {
@@ -1907,37 +2293,84 @@ function confirmationDialog (text, dialogtitle) {
   })
 }
 
+function loadMessagesInAllLanguages () {
+  const apiPromises = []
+  for (const lang in l10nTable) {
+    apiPromises.push(
+      new mw.Api().getMessages(msgs, { amlang: lang })
+        .fail(errordata => {
+          errorDuringProcess(errordata, localizedText('cpl-error-messages'))
+          reject(Error('getMessages failed for ' + lang + '!'))
+        })
+    )
+  }
+  return apiPromises
+}
+
+function loadTablesorter () {
+  return mw.loader.using('jquery.tablesorter')
+    .fail(errordata => {
+      errorDuringProcess(errordata, localizedText('cpl-error-sorter'))
+      reject(Error('loading jquery.tablesorter failed!'))
+    })
+}
+
+function loadMakeCollapsible () {
+  return mw.loader.using('jquery.makeCollapsible')
+    .fail(errordata => {
+      errorDuringProcess(errordata, localizedText('cpl-error-collapse'))
+      reject(Error('loading jquery.makeCollapsible failed!'))
+    })
+}
+
+function registerMessagesToL10n (messagesData) {
+  const mwL10nTable = {}
+  let langIndex = -1
+  for (const lang of Object.keys(l10nTable)) {
+    langIndex++
+    mwL10nTable[lang] = {}
+    for (const key in messagesData[langIndex]) {
+      mwL10nTable[lang]['⧼' + key + '⧽'] = messagesData[langIndex][key]
+    }
+  }
+  return $.i18n().load(mwL10nTable)
+}
+
+function registerTimestampsToL10n () {
+  return $.i18n().load(timestampsToLocalize)
+}
+
 function displayOutput () {
   return new Promise((resolve, reject) => {
-    // load "MediaWiki:" system messages (i18n) and library that enables table sorting
+    // load "MediaWiki:" system messages (i18n) and libraries that enables table sorting and collapsing
     Promise.all([
-      new mw.Api().loadMessagesIfMissing(msgs)
-        .fail(errordata => {
-          errorDuringProcess(errordata, $.i18n('cpl-error-messages'))
-          reject(Error('loadMessagesIfMissing failed!'))
-        }),
-      mw.loader.using('jquery.tablesorter')
-        .fail(errordata => {
-          errorDuringProcess(errordata, $.i18n('cpl-error-sorter'))
-          reject(Error('loading jquery.tablesorter failed!'))
-        })
-    ]).then(() => {
-      // with the loaded messages and table sortability, make the output
-      const outputNodes = OutputMaker.make(new PerPageProgress(90, 96))
+      ...loadMessagesInAllLanguages(),
+      loadTablesorter(), // TODO: Move to gadget definition
+      loadMakeCollapsible() // TODO: Move to gadget definition
+    ])
+    .then(data => registerMessagesToL10n(data.slice(0, -2))) // remove the last array elements, which are the promise results of loadTablesorter() and loadMakeCollapsible()
 
-      // load the library that enables table collapsing
-      mw.loader.using('jquery.makeCollapsible')
-        .done(() => {
-          // once loaded, make the output visible
-          $(outputElement).append(...outputNodes)
-          progressbar.setProgress(98)
-          $('.comparepagelist-makeCollapsible').makeCollapsible()
-          resolve()
-        })
-        .fail(errordata => {
-          errorDuringProcess(errordata, $.i18n('cpl-error-collapse'))
-          reject(Error('loading jquery.makeCollapsible failed!'))
-        })
+    // with the loaded messages and table sortability, make the output
+    .then(() => OutputMaker.make(new PerPageProgress(90, 96)))
+
+    // add output to DOM in order to localize it
+    .then(outputNodes => {
+      $(outputElement)
+        .hide() // hide it at first, still need to localize it
+        .append(...outputNodes)
+      prepareAttributesForI18n()
+      return registerTimestampsToL10n()
+    })
+    .then(() => {
+      localizeAll()
+      $(outputElement).show() // display the output now
+      progressbar.setProgress(98)
+      $('.comparepagelist-makeCollapsible').makeCollapsible()
+      resolve()
+    })
+    .catch(errordata => {
+      errorDuringProcess(errordata, localizedText('cpl-error-makingoutput'))
+      reject(errordata)
     })
   })
 }
@@ -1945,12 +2378,12 @@ function displayOutput () {
 class OutputMaker {
   static make (perPageProgress) {
     const bigWrapperTable = $('<table>')
-      .addClass(['terraria', 'lined'])
+      .addClass(wrapperTableClasses)
       .append(
         $('<thead>').append(
           $('<tr>').append(
-            $('<th>').html($.i18n('cpl-output-tableheadlocal')),
-            $('<th>').html($.i18n('cpl-output-tableheadforeign', formInput.foreignWiki))
+            $('<th>').html(localizedText('cpl-output-tableheadlocal')),
+            $('<th>').html(localizedText('cpl-output-tableheadforeign', formInput.foreignWiki))
           )
         )
       )
@@ -1961,14 +2394,18 @@ class OutputMaker {
     pagelistForOutput.forEach(pagedata => {
       const tableRow = $('<tr>').attr('valign', 'top')
 
+      // each page row has two cells: local and foreign
+
       // local cell
       // the "expand" arrow cell is not needed for the local page, because there is only one revision in all rows there
       tableRow.append(OutputMaker.cellForSingleRevision(pagedata.local, true))
 
       // foreign cell
       if (pagedata.foreign.isGroup) {
+        // there are multiple revisions to display
         tableRow.append(OutputMaker.cellForRevisionGroup(pagedata.foreign))
       } else {
+        // there is only one revision to display
         tableRow.append(OutputMaker.cellForSingleRevision(pagedata.foreign.revisions[0], false))
       }
 
@@ -1979,8 +2416,8 @@ class OutputMaker {
     bigWrapperTable.tablesorter() // make the table sortable
 
     const note = $('<span>')
-      .addClass('note-text')
-      .text($.i18n('cpl-output-timezone'))
+      .addClass(noteClasses)
+      .html(localizedText('cpl-output-timezone'))
 
     return [bigWrapperTable, note]
   }
@@ -2011,55 +2448,47 @@ class OutputMaker {
   }
 
   static flagsCell (isnew, isminor) {
-    const flagNew = $('<abbr>')
-      .addClass('newpage')
-      .text(mw.msg('newpageletter')) // 'N'
-      .attr('title', mw.msg('recentchanges-label-newpage')) // 'This edit created a new page'
+    let flagNew, flagMinor
 
-    const flagMinor = $('<abbr>')
-      .addClass('minoredit')
-      .text(mw.msg('minoreditletter')) // 'm'
-      .attr('title', mw.msg('recentchanges-label-minor')) // 'This is a minor edit'
+    if (isnew) {
+      flagNew = $('<abbr>')
+        .addClass('newpage')
+        .html(localizedText('newpageletter')) // 'N'
+        .attr('title', localizedAttribute('title', 'recentchanges-label-newpage')) // 'This edit created a new page'
+    } else {
+      flagNew = nbsp()
+    }
+
+    if (isminor) {
+      flagMinor = $('<abbr>')
+        .addClass('minoredit')
+        .html(localizedText('minoreditletter')) // 'm'
+        .attr('title', localizedAttribute('title', 'recentchanges-label-minor')) // 'This is a minor edit'
+    } else {
+      flagMinor = nbsp()
+    }
 
     const cell = $('<td>')
       .addClass('mw-enhanced-rc')
-      .append(
-        (isnew ? flagNew : nbsp()),
-        (isminor ? flagMinor : nbsp()),
-        nbsp(), nbsp()
-      )
+      .append(flagNew, flagMinor, nbsp(), nbsp())
 
     return cell
   }
 
-  static flagsAndTimestamp (isnew, isminor, dateFormatted, timeFormatted) {
+  static flagsAndTimestamp (isnew, isminor, datesFormatted, timesFormatted) {
     const cell = OutputMaker.flagsCell(isnew, isminor)[0]
 
     // remove the last nbsp in the flags cell
     cell.childNodes[cell.childNodes.length - 1].remove()
 
-    cell.append(
-      dateFormatted,
+    $(cell).append(
+      localizedTimestamp(datesFormatted),
       nbsp(),
       br(),
       nbsp(), nbsp(), nbsp(),
-      timeFormatted,
+      localizedTimestamp(timesFormatted),
       nbsp()
     )
-
-    return cell
-  }
-
-  static flagsShort (isnew, isminor) {
-    const [flagNew, flagMinor] = OutputMaker.flagsCell()
-
-    const cell = $('<td>')
-      .addClass('mw-enhanced-rc')
-      .append(
-        (isnew ? flagNew : nbsp()),
-        (isminor ? flagMinor : nbsp()),
-        nbsp(), nbsp()
-      )
 
     return cell
   }
@@ -2088,12 +2517,12 @@ class OutputMaker {
     return articleLinkWrapper
   }
 
-  static revisionLink (permalink, pagename, timestampFormatted) {
+  static revisionLink (permalink, pagename, timestampsFormatted) {
     const revisionLink = $('<span>')
       .addClass('mw-enhanced-rc-time')
       .append(
         $('<a>')
-          .text(timestampFormatted)
+          .html(localizedTimestamp(timestampsFormatted))
           .attr({
             href: permalink,
             title: pagename
@@ -2106,14 +2535,14 @@ class OutputMaker {
   static historyLinks (isnew, difflink, histlink, pagename) {
     // diff link
     const diffLink = $('<span>')
-    const diffText = mw.msg('diff') // 'diff'
+    const diffText = localizedText('diff') // 'diff'
     if (isnew) {
       // new page, no link necessary
-      diffLink.text(diffText)
+      diffLink.html(diffText)
     } else {
       diffLink.append($('<a>')
         .addClass(['mw-changeslist-diff', 'extiw'])
-        .text(diffText)
+        .html(diffText)
         .attr('href', difflink)
       )
     }
@@ -2123,7 +2552,7 @@ class OutputMaker {
       .append(
         $('<a>')
           .addClass('mw-changeslist-history')
-          .text(mw.msg('hist')) // 'hist'
+          .html(localizedText('hist')) // 'hist'
           .attr({
             href: histlink,
             title: pagename
@@ -2147,18 +2576,18 @@ class OutputMaker {
     // cur link
     const curLink = $('<a>')
       .addClass('mw-changeslist-diff-cur')
-      .text(mw.msg('cur')) // 'cur'
+      .html(localizedText('cur')) // 'cur'
       .attr('href', curdifflink)
 
     // prev link
-    const prevText = mw.msg('last') // 'prev'
+    const prevText = localizedText('last') // 'prev'
     let prevLink
     if (isnew) {
       prevLink = prevText
     } else {
       prevLink = $('<a>')
         .addClass('mw-changeslist-diff')
-        .text(prevText)
+        .html(prevText)
         .attr({
           href: difflink,
           title: pagename
@@ -2166,11 +2595,13 @@ class OutputMaker {
       prevLink = prevLink[0].outerHTML
     }
 
-    const textInParen = mw.msg('parentheses').replace('$1',
-      curLink[0].outerHTML +
-      mw.msg('pipe-separator') +
-      prevLink
-    )
+    const textInParen = localizedTextWithReparse('textInParen', () => {
+      return localizedTextRaw('parentheses').replace('$1',
+        curLink[0].outerHTML +
+        localizedTextRaw('pipe-separator') +
+        prevLink
+      )
+    })
 
     const separator = $('<span>').addClass('mw-changeslist-separator')
 
@@ -2188,14 +2619,14 @@ class OutputMaker {
   static groupHistoryLinks (isnew, difflink, pagename, changesCount, histlink) {
     // changes link
     const changesLinkWrapper = $('<span>')
-    const changesLinkText = mw.msg('nchanges', changesCount)
+    const changesLinkText = localizedText('nchanges', changesCount)
     if (isnew) {
       changesLinkWrapper.append(changesLinkText)
     } else {
       changesLinkWrapper.append(
         $('<a>')
           .addClass('mw-changeslist-groupdiff')
-          .text(changesLinkText)
+          .html(changesLinkText)
           .attr({
             href: difflink,
             title: pagename
@@ -2206,7 +2637,7 @@ class OutputMaker {
     // history link
     const historyLink = $('<a>')
       .addClass('mw-changeslist-history')
-      .text(mw.msg('enhancedrc-history')) // 'history'
+      .html(localizedText('enhancedrc-history')) // 'history'
       .attr({
         href: histlink,
         title: pagename
@@ -2236,22 +2667,20 @@ class OutputMaker {
     return separatorWrapper
   }
 
-  static characterDiff (isBigEdit, diffsize, newsizeFormatted, diffsizeFormatted, noWrapper) {
+  static characterDiff (isBigEdit, diffsize, newsize, noWrapper) {
     const characterDiff = $(isBigEdit ? '<strong>' : '<span>')
       .addClass('mw-diff-bytes')
-      .text(diffsizeFormatted)
+      .html(localizedNumber(diffsize, 'withsign'))
       .attr({
         dir: 'ltr',
-        title: mw.msg('rc-change-size-new', newsizeFormatted)
+        // the newsize number is not localized here because localization would get too convoluted:
+        // a localized number that is the parameter for a localization of an attribute
+        title: localizedAttribute('title', 'rc-change-size-new', newsize)
       })
 
-    if (diffsize === 0) {
-      characterDiff.addClass('mw-plusminus-null')
-    } else if (diffsize > 0) {
-      characterDiff.addClass('mw-plusminus-pos')
-    } else {
-      characterDiff.addClass('mw-plusminus-neg')
-    }
+    let diffClass = 'mw-plusminus-'
+    diffClass += (diffsize === 0 ? 'null' : (diffsize > 0 ? 'pos' : 'neg'))
+    characterDiff.addClass(diffClass)
 
     if (noWrapper) {
       return characterDiff
@@ -2305,17 +2734,21 @@ class OutputMaker {
       if (userinfo.userRevcount > 1) {
         groupUser +=
           ' ' +
-          mw.msg('parentheses',
-            mw.msg('ntimes', userinfo.userRevcount)
-          )
+          localizedTextWithReparse('userNtimes', () => {
+            return localizedTextRaw('parentheses',
+              localizedTextRaw('ntimes', userinfo.userRevcount)
+            )
+          })
       }
 
       groupUsersArray.push(groupUser)
     })
 
-    const textInBrackets = mw.msg('brackets').replace('$1',
-      groupUsersArray.join(mw.msg('semicolon-separator'))
-    )
+    const textInBrackets = localizedTextWithReparse('textInBrackets', () => {
+      return localizedTextRaw('brackets').replace('$1',
+        groupUsersArray.join(localizedTextRaw('semicolon-separator'))
+      )
+    })
 
     const groupUsersWrapper = $('<span>')
       .addClass('changedby')
@@ -2330,10 +2763,10 @@ class OutputMaker {
       .append(
         $('<a>')
           .addClass('mw-usertoollinks-talk')
-          .text(mw.msg('talkpagelinktext'))
+          .html(localizedText('talkpagelinktext'))
           .attr({
             href: usertalklink,
-            title: `${nsData.localNamespacesLocalized[3]}:${username}`
+            title: `${nsData.localNamespacesLocalized[3]}:${username}` // TODO: localize
           })
       )
 
@@ -2342,7 +2775,7 @@ class OutputMaker {
       .append(
         $('<a>')
           .addClass('mw-usertoollinks-contribs')
-          .text(mw.msg('contribslink'))
+          .html(localizedText('contribslink'))
           .attr({
             href: usercontribslink,
             title: `Special:Contributions/${username}` // TODO: localize
@@ -2405,7 +2838,7 @@ class OutputMaker {
     // flags and timestamp
     const secondColumn = OutputMaker.flagsAndTimestamp(
       revdata.isnew, revdata.isminor,
-      revdata.timestampDateFormatted, revdata.timestampTimeFormatted
+      revdata.timestampsDateFormatted, revdata.timestampsTimeFormatted
     )
 
     // ====== Third column ======
@@ -2416,34 +2849,34 @@ class OutputMaker {
 
     thirdColumn.append(
       // article link
-      (OutputMaker.articleLink(revdata.pagelink, revdata.pagename)),
+      OutputMaker.articleLink(revdata.pagelink, revdata.pagename),
 
       // history links
-      (OutputMaker.historyLinks(
+      OutputMaker.historyLinks(
         revdata.isnew, revdata.difflink,
         revdata.histlink, revdata.pagename
-      )),
+      ),
 
       // separator after links
-      (OutputMaker.separator('mw-changeslist-line-inner-separatorAfterLinks')),
+      OutputMaker.separator('mw-changeslist-line-inner-separatorAfterLinks'),
 
       // character diff
-      (OutputMaker.characterDiff(
+      OutputMaker.characterDiff(
         revdata.isBigEdit, revdata.diffsize,
-        revdata.newsizeFormatted, revdata.diffsizeFormatted
-      )),
+        revdata.newsize
+      ),
 
       // separator after character diff
-      (OutputMaker.separator('mw-changeslist-line-inner-separatorAftercharacterDiff')),
+      OutputMaker.separator('mw-changeslist-line-inner-separatorAftercharacterDiff'),
 
       // user link
-      (OutputMaker.userLink(revdata.userlink, revdata.username)),
+      OutputMaker.userLink(revdata.userlink, revdata.username),
 
       // user talk and contribs links
-      (OutputMaker.userToolLinks(revdata.username, revdata.usertalklink, revdata.usercontribslink)),
+      OutputMaker.userToolLinks(revdata.username, revdata.usertalklink, revdata.usercontribslink),
 
       // edit summary
-      (OutputMaker.comment(revdata.summary))
+      OutputMaker.comment(revdata.summary)
     )
 
     const tableInCell = $('<table>')
@@ -2479,7 +2912,7 @@ class OutputMaker {
     // flags and timestamp
     const secondColumn = OutputMaker.flagsAndTimestamp(
       revgroupdata.isnew, revgroupdata.isminor,
-      revgroupdata.timestampDateFormatted, revgroupdata.timestampTimeFormatted
+      revgroupdata.timestampsDateFormatted, revgroupdata.timestampsTimeFormatted
     )
 
     // ====== Third column ======
@@ -2506,7 +2939,7 @@ class OutputMaker {
       // character diff
       OutputMaker.characterDiff(
         revgroupdata.isBigEdit, revgroupdata.diffsize,
-        revgroupdata.newsizeFormatted, revgroupdata.diffsizeFormatted
+        revgroupdata.newsize
       ),
 
       // separator after character diff
@@ -2542,23 +2975,22 @@ class OutputMaker {
 
     thirdColumn.append(
       // revision link
-      (OutputMaker.revisionLink(
+      OutputMaker.revisionLink(
         revdata.permalink, revdata.pagename,
-        revdata.timestampFormatted
-      )),
+        revdata.timestampsFormatted
+      ),
 
       // cur-prev links
-      (OutputMaker.curPrevLinks(
+      OutputMaker.curPrevLinks(
         revdata.curdifflink, revdata.isnew,
         revdata.difflink, revdata.pagename
-      )),
+      ),
 
       // character diff
-      (OutputMaker.characterDiff(
+      OutputMaker.characterDiff(
         revdata.isBigEdit, revdata.diffsize,
-        revdata.newsizeFormatted, revdata.diffsizeFormatted,
-        true
-      )),
+        revdata.newsize, true
+      ),
 
       // separator after character diff
       ' ',
@@ -2570,10 +3002,10 @@ class OutputMaker {
       ' ',
 
       // user talk and contribs links
-      (OutputMaker.userToolLinks(
+      OutputMaker.userToolLinks(
         revdata.username, revdata.usertalklink,
         revdata.usercontribslink, true
-      )),
+      ),
       ' ',
 
       // edit summary
@@ -2624,3 +3056,20 @@ class OutputMaker {
 
 const nbsp = () => document.createTextNode(String.fromCodePoint(0x00A0))
 const br = () => document.createElement('br')
+
+const cplVersion = '3'
+
+
+/*
+
+==============================
+Wiki-specific code
+==============================
+
+*/
+
+// CSS classes for the output table
+const wrapperTableClasses = ['terraria', 'lined']
+
+// CSS classes for an element to make it appear as a less important note
+const noteClasses = ['note-text']

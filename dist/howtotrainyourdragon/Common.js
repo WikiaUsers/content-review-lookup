@@ -97,7 +97,7 @@ window.MessageWallUserTags = {
     users: {
         'Spongebob456': 'Representative',
         'Annabeth_and_Percy': 'Bureaucrat',
-        'HiccstridFan92': 'Admin',
+        'HiccstridFan92': 'Bureaucrat',
         'Tauriel_the_Elf': 'Admin',
         'DublynT': 'Admin',
         'Nuttetuff': 'Moderator',

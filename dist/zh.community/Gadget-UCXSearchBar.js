@@ -1,6 +1,1 @@
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:UCXSearchBar.js',
-    ]
-});
+mw.loader.load( 'https://dev.fandom.com/wiki/MediaWiki:UCXSearchBar.js?action=raw&ctype=text/javascript' );
