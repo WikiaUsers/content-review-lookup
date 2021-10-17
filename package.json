@@ -1,7 +1,7 @@
 {
     "name": "content-review-lookup",
     "description": "Global JavaScript lookup for Fandom",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "keywords": [
         "wikia",
         "fandom",
@@ -22,15 +22,15 @@
         "start": "node main.js"
     },
     "dependencies": {
-        "cli-progress": ">=3.9.0",
+        "cli-progress": ">=3.9.1",
         "got": ">=11.8.2",
         "sanitize-filename": ">=1.6.3",
         "tough-cookie": ">=4.0.0"
     },
     "devDependencies": {
-        "eslint": ">=7.23.0",
-        "eslint-plugin-jsdoc": ">=32.3.0",
+        "eslint": ">=7.32.0",
+        "eslint-plugin-jsdoc": ">=36.1.1",
         "eslint-plugin-node": ">=11.1.0",
-        "eslint-plugin-promise": ">=4.3.1"
+        "eslint-plugin-promise": ">=5.1.0"
     }
 }
