@@ -11,7 +11,7 @@ cd "$1/scripts"
 node wikis.js
 node urls.js
 cd "$2"
-rm "$2/urls.json"
+rm -f "$2/urls.json"
 cp "$1/scripts/urls.json" "$2"
 rm -rf "$2/dist"
 npm start
