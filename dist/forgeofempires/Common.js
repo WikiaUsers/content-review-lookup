@@ -59,9 +59,8 @@ window.dev.editSummaries = {
     ]
 }; 
 
-window.lockOldComments = (window.lockOldComments || {
-	window.lockOldComments.limit = 30
-});
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 30;
 
 /*spoiler hiding*/
 var myMainSpoilers = document.getElementsByClassName("mainSpoiler");
@@ -82,7 +81,7 @@ if (myMainSpoilers.length > 0)
 for(var j=0;j<myMainSpoilers.length;j++)
 {
     var myMainSpoiler = myMainSpoilers[j];
-    myMainSpoiler.onclick = toggleSpoilers
+    myMainSpoiler.onclick = toggleSpoilers;
 }
  
 function toggleSpoilers () {

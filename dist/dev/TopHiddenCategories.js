@@ -18,7 +18,7 @@ $( function() {
     		$('.page-header__meta .page-header__categories').after(
 				$('<div>', {'class': 'page-header__categories', id: 'top-hidden-categories'}).prepend(
 					$('<span>', {'class': 'page-header__categories-in', text: 'hidden: '})
-				).css('filter', 'opacity(0.9)')
+				).css({'filter': 'opacity(0.9)', 'z-index': '2'})
 			);
 			$('#top-hidden-categories').append(
 				$('<a>', { 'class': 'mw-redirect', href: '/wiki/'+cats[0], title: cats[0], text: cats[0].replace('Category:','') } )

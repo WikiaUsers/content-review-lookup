@@ -120,32 +120,43 @@ function useCustomFont( element, name ) {
 	}
 }
 
-function loadCraftingRecipes( n, api, e ) {
-	api = api || new mw.Api();
-	e = e || document.getElementsByClassName( 'crafting-recipe-async' );
-	if ( !e[0] ) {
-		return;
-	}
-	var list = [], str = '';
-	for ( var i = 0; i < n; ++i ) {
-		if ( !e[i] ) {
-			break;
+function loadCraftingRecipes( n ) {
+	var i, j, max, str, parserOutput, element, parent, clonedParent,
+		api      = new mw.Api(),
+		elements = [],
+		template = document.createElement( 'template' );
+
+	function parse() {
+		if ( !elements.length || i >= elements.length ) {
+			elements = document.querySelectorAll( '.crafting-recipe-async' );
+			if ( !elements.length ) {
+				return;
+			}
+			i = j = 0;
 		}
-		list.push( e[i] );
-		str += '{{#invoke:bag of crafting recipes|recipe|' +
-			e[i].dataset.nextCraftingRecipe + '}}';
+		max = Math.min( i + n, elements.length );
+		str = '';
+		for ( ; i < max; ++i ) {
+			str += '{{#invoke:bag of crafting recipes|recipe|' +
+				elements[i].dataset.nextCraftingRecipe + '}}';
+		}
+		api.parse( str ).then( onParsed );
 	}
-	api.parse( str ).then( function ( text ) {
-		var target, parent, template = document.createElement( 'template' );
+
+	function onParsed( text ) {
 		template.innerHTML = text;
-		for ( i = 0; i < list.length; ++i ) {
-			target = list[i];
-			target.classList.remove( 'crafting-recipe-async' );
-			delete target.dataset.nextCraftingRecipe;
-			parent = target.parentElement.cloneNode();
-			parent.appendChild( template.content.firstChild.firstChild );
-			target.parentElement.insertAdjacentElement( 'afterend', parent );
+		parserOutput = template.content.firstChild;
+		for ( ; j < i; ++j ) {
+			element = elements[j];
+			element.classList.remove( 'crafting-recipe-async' );
+			delete element.dataset.nextCraftingRecipe;
+			parent = element.parentElement;
+			clonedParent = parent.cloneNode();
+			clonedParent.appendChild( parserOutput.firstChild );
+			parent.insertAdjacentElement( 'afterend', clonedParent );
 		}
-		setTimeout( function() { loadCraftingRecipes( n, api, e ); }, 500 );
-	} );
+		setTimeout( parse, 500 );
+	}
+
+	parse();
 }

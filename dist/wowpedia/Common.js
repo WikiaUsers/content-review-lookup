@@ -1,9 +1,12 @@
-mw.loader.getScript('https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:ArticlesAsResources.js&only=scripts').then(function() {
+$(function(){
+	if(!mw.config.get("wgUserName")) return;
+
 	importArticles({
-	    type: 'script',
-	    articles: [
-			'u:dev:MediaWiki:CategoryRedLinks.js'
-	    ]
+    	type: "script",
+    	articles: [
+    	    "MediaWiki:Group-user.js",
+    		"u:dev:MediaWiki:CategoryRedLinks.js"
+    	]
 	});
 });
 

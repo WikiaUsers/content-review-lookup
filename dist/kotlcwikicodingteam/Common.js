@@ -1,8 +1,7 @@
-/* // Importing on Common.js for testing purposes
+// Security test
 importArticles({
-    type: 'script',
+    type: 'style',
     articles: [
-         'u:dev:MediaWiki:OrganizedSocialActivity.js'
+         'MediaWiki:SecurityTest.css'
     ]
 });
-*/

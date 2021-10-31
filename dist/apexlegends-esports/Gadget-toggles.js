@@ -33,6 +33,11 @@ window.popupButton = function(e) {
 	// don't use offsetParent() method here, and instead manually calculate offsets using coordinates
 	// of the element itself (the button) and the parent we specified with .popup-window-container
 	var windowContainer = $(this).closest('.popup-window-container');
+	
+	// CASE: we only want the parent to constrain the verticality of the element, but it's ok
+	// to spill out horizontally. An example is the per-game summaries "inside" of the match results
+	var windowContainerY = $(this).closest('.popup-window-container-y');
+	
 	if (windowContainer.length > 0) {
 		// in this case use offset which respects the position of the elements wrt entire document
 		// in theory we should probably support position within window also, but
@@ -46,6 +51,18 @@ window.popupButton = function(e) {
 		// may as well grab y values here too since they're conditional, we'll use them later though
 		topCoord = parseInt(coords.top) - parseInt(parentCoords.top);
 		totalHeight = $(windowContainer).height();
+	}
+	else if (windowContainerY.length > 0) {
+		// this comes from above, verticality stuff is constrained by parent element
+		var coords = $(this).offset();
+		var parentCoords = $(windowContainerY).offset();
+		topCoord = parseInt(coords.top) - parseInt(parentCoords.top);
+		totalHeight = $(windowContainerY).height();
+		
+		// this comes from below, horizontal-ness stuff is constrained only by the window
+		var coords = this.getBoundingClientRect();
+		leftCoord = parseInt(coords.left);
+		totalWidth = $(window).width();
 	}
 	else {
 		// getBoundingClientRect in order to get position within current window
@@ -89,6 +106,14 @@ window.popupButton = function(e) {
 	}
 	else {
 		$wrapper.css('top', '');
+	}
+	
+	// We are now done positioning the thing
+	
+	// Next, we may need to do some height stuff so we can do an overflow:scroll; thing
+	
+	if ($wrapper.hasClass('scrollable-y')) {
+		$inner.css('max-height', totalHeight + 'px');
 	}
 	
 	$(document).click(function(){

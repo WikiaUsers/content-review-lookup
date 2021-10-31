@@ -13,3 +13,6 @@ window.rwaOptions = {
     refreshDelay : 5 * 60 * 1000,
     timeout : 10 * 1000
 };
+
+// AddRailModule Config
+window.AddRailModule = [{prepend: true}];

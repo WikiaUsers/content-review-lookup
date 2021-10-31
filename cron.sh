@@ -8,13 +8,13 @@ then
 fi
 
 cd "$1/scripts"
-node wikis.js
-node urls.js
+/usr/local/bin/node wikis.js
+/usr/local/bin/node urls.js
 cd "$2"
 rm -f "$2/urls.json"
 cp "$1/scripts/urls.json" "$2"
 rm -rf "$2/dist"
-npm start
+/usr/local/bin/node main.js
 git add .
 git commit -m "Updating sitewide JavaScript."
 git push

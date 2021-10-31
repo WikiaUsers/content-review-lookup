@@ -8,9 +8,9 @@ var i18n = {
 	browserActionNotSupported: 'Not supported by your browser.',
 	changesSavedNotice: 'Your changes were saved.',
 	controlNewName: 'New name',
-	ctxDeleteImage: 'Delete image',
-	ctxDownloadImage: 'Download image',
-	ctxReplaceImage: 'Replace image',
+	ctxDeleteImage: 'Delete',
+	ctxDownloadImage: 'Download',
+	ctxReplaceImage: 'Replace',
 	diffError: 'Failed to retrieve diff',
 	diffErrorMissingPage: 'Failed to retrieve page',
 	dupeName: 'This name already exists.',
@@ -24,12 +24,20 @@ var i18n = {
 	luaKeyDeprecated: 'deprecated',
 	luaKeyId: 'id',
 	luaKeyIds: 'ids',
+	luaKeyName: 'name',
 	luaKeyPos: 'pos',
 	luaKeySection: 'section',
 	luaKeySections: 'sections',
+	luaKeySettings: 'settings',
+	luaKeySettingsHeight: 'height',
+	luaKeySettingsPos: 'pos',
+	luaKeySettingsSize: 'size',
+	luaKeySettingsSpacing: 'spacing',
+	luaKeySettingsUrl: 'url',
+	luaKeySettingsWidth: 'width',
 	namePlaceholder: 'Type a name',
 	noPermissionNotice: 'You do not have permission to edit this sprite.',
-	panelChangesIdTitle: 'ID changes',
+	panelChangesIdTitle: 'Data changes',
 	panelChangesNoDiffFromCur: 'No changes from current revision.',
 	panelChangesSheetTitle: 'Spritesheet changes',
 	panelChangesTitle: 'Review your changes',
@@ -48,21 +56,24 @@ var i18n = {
 	panelEcchangesTitle: 'Review your manual changes',
 	sectionPlaceholder: 'Type a section name',
 	sectionUncategorized: 'Uncategorized',
+	titleEditing: 'Sprite editing $1',
+	toolbarHelp: 'Help',
+	toolbarHelpPage: 'Help:Sprite editor',
 	toolbarNewImage: 'New image',
 	toolbarNewSection: 'New section',
 	toolbarRedo: 'Redo',
 	toolbarReviewChanges: 'Review changes',
 	toolbarSave: 'Save',
+	toolbarSummaryLabelTip: 'The number of bytes remaining',
 	toolbarSummaryPlaceholder: 'Summarize the changes you made',
 	toolbarToolDeprecate: 'Deprecate',
 	toolbarToolDeprecateTip: 'Toggle names as deprecated',
 	toolbarTools: 'Tools',
-	toolbarUndo: 'Undo'
+	toolbarUndo: 'Undo',
 };
 var $root = $( document.documentElement );
 var $win = $( window );
-var $doc = $( '#spritedoc' );
-var inlineStyle;
+var $body = $( document.body );
 var URL = window.URL || window.webkitURL;
 var imageEditingSupported = !!( window.FileList &&
 	window.ArrayBuffer &&
@@ -71,13 +82,22 @@ var imageEditingSupported = !!( window.FileList &&
 	window.ProgressEvent &&
 	URL && URL.revokeObjectURL && URL.createObjectURL &&
 	document.createElement( 'canvas' ).getContext );
-var dropSupported = 'draggable' in $root[0];
-var historySupported = window.history && history.pushState;
 // HTML pointer-events is dumb and can't be tested for
 // Just check that we're not IE < 11, old Opera has too little usage to bother checking for
 var pointerEventsSupported = $.client.profile().name !== 'msie' || $.client.profile().versionBase > 10;
-var idsPageId = $doc.data( 'idspage' );
+var originalTitle = document.title;
 
+
+// Start loading OOUI's icons in the background
+mw.loader.load( [
+	'oojs-ui.styles.icons-editing-core',
+	'oojs-ui.styles.icons-editing-styling',
+	'oojs-ui.styles.icons-media',
+	'oojs-ui.styles.icons-moderation',
+	'oojs-ui.styles.icons-interactions',
+	'oojs-ui.styles.icons-movement',
+	'oojs-ui.styles.icons-content',
+] );
 
 // Handle recreating the editor
 $( '#ca-spriteedit' ).find( 'a' ).click( function( e ) {
@@ -88,16 +108,14 @@ $( '#ca-spriteedit' ).find( 'a' ).click( function( e ) {
 	create();
 	e.preventDefault();
 } );
-if ( historySupported ) {
-	$win.on( 'popstate', function() {
-		if (
-			location.search.match( 'spriteaction=edit' ) &&
-			!$root.hasClass( 'spriteedit-loaded' )
-		) {
-			create( 'history' );
-		}
-	} );
-}
+$win.on( 'popstate', function() {
+	if (
+		location.search.match( '[?&]spriteaction=edit' ) &&
+		!$root.hasClass( 'spriteedit-loaded' )
+	) {
+		create( 'history' );
+	}
+} );
 
 
 /** Functions **/
@@ -112,6 +130,8 @@ if ( historySupported ) {
  * "state" is what triggered the creation (e.g. from history navigation)
  */
 var create = function( state ) {
+	var $doc = $( '#spritedoc' );
+	var preventClose;
 	var settings = {};
 	var mouse = {
 		moved: false,
@@ -120,23 +140,30 @@ var create = function( state ) {
 	var sorting = false;
 	var oldHtml;
 	var spritesheet;
+	var spriteSettings = JSON.parse( $doc.attr( 'data-settings' ) );
+	var dataPage = $doc.data( 'datapage' );
 	var changes = [];
 	var undoneChanges = [];
 	var usedNames = {};
 	var loadingImages = [];
 	var panels = {};
+	var canTag = null;
+	
+	// Update the title to say we're editing
+	document.title = i18n.titleEditing.replace( /\$1/g, originalTitle );
+	
 	var revisionsApi = new mw.Api( { parameters: {
 		action: 'query',
 		prop: 'revisions',
 		rvprop: 'content',
-		utf8: true
+		formatversion: 2,
 	} } );
 	var parseApi = new mw.Api( { parameters: {
 		action: 'parse',
 		prop: 'text',
-		disablepp: true,
 		disabletoc: true,
-		utf8: true
+		disablelimitreport: true,
+		formatversion: 2,
 	} } );
 	var $headingTemplate = $( '<h3>' ).html(
 		$( '<span>' )
@@ -153,169 +180,84 @@ var create = function( state ) {
 	addControls( $boxTemplate, 'box' );
 	
 	// Pre-load modules which will be needed later
-	var saveModules = mw.loader.using( [ 'jquery.byteLimit', 'mediawiki.action.history.diff', 'mediawiki.ui.input' ] );
+	var saveModules = mw.loader.using( [
+		'mediawiki.widgets.visibleLengthLimit',
+		'mediawiki.diff.styles',
+	] ).fail( console.warn );
 	
 	$root.addClass( 'spriteedit-loaded' );
 	
-	if ( !state && historySupported ) {
+	if ( !state ) {
 		history.pushState( {}, '', mw.util.getUrl( null, { spriteaction: 'edit' } ) );
 	}
 	if ( state !== 'initial' ) {
 		$( '#ca-view' ).add( '#ca-spriteedit' ).toggleClass( 'selected' );
 	}
 	
-	if ( imageEditingSupported ) {
-		var $sprite = $doc.find( '.sprite' ).first();
-		settings.imageWidth = $sprite.width();
-		settings.imageHeight = $sprite.height();
-		settings.sheet = $doc.data( 'original-url' );
-		if ( !settings.sheet ) {
-			settings.sheet = $sprite.css( 'background-image' )
-				.replace( /^url\(["']?/, '' ).replace( /["']?\)$/, '' );
-			$doc.data( 'original-url', settings.sheet );
-		}
-		settings.sheet += ( settings.sheet.match( /\?/ ) ? '&' : '?' ) + new Date().getTime();
-		
-		// Replace the spritesheet with a fresh uncached one to ensure
-		// we don't save over it with an old version.
-		// XHR is used instead of a CORS Image so a blob URL can
-		// be used for the background image, rather than the real URL.
-		// This works around the image being downloaded twice, probably
-		// caused by the background image not reusing the CORS request.
-		var sheetRequest = retryableRequest( function() {
-			var deferred = $.Deferred();
-			var requestTimeout;
-			var xhr = new XMLHttpRequest();
-			xhr.open( 'GET', settings.sheet, true );
-			xhr.responseType = 'blob';
-			xhr.onload = function() {
-				clearTimeout( requestTimeout );
-				if ( this.status !== 200 ) {
-					deferred.reject( 'http', {
-						textStatus: this.statusText ? this.status + ' ' + this.statusText : 'error'
-					} );
-					return;
-				}
-				
-				spritesheet = new Image();
-				spritesheet.onload = function() {
-					settings.sheetWidth = this.width;
-					settings.sheetHeight = this.height;
-					
-					if ( inlineStyle ) {
-						inlineStyle.disabled = true;
-						URL.revokeObjectURL( inlineStyle.url );
-					}
-					inlineStyle = mw.util.addCSS(
-						'#spritedoc .sprite { background-image: url(' + this.src + ') !important }'
-					);
-					inlineStyle.url = this.src;
-					
-					deferred.resolve();
-				};
-				spritesheet.src = URL.createObjectURL( this.response );
-			};
-			requestTimeout = setTimeout( function() {
-				xhr.abort();
-				deferred.reject( 'http', { textStatus: 'timeout' } );
-			}, 30 * 1000 );
-			
-			var errorCallback = xhr.onerror = function() {
-				if ( deferred.state() === 'pending' ) {
-					deferred.reject( 'http', { textStatus: 'error' } );
-				}
-			};
-			// Support: IE 9 only
-			// Use onreadystatechange to replace onabort
-			// to handle uncaught aborts
-			if ( xhr.onabort !== undefined ) {
-				xhr.onabort = errorCallback;
-			} else {
-				xhr.onreadystatechange = function() {
-					// Check readyState before timeout as it changes
-					if ( xhr.readyState === 4 ) {
-						// Allow onerror to be called first,
-						// but that will not handle a native abort
-						// Also, save errorCallback to a variable
-						// as xhr.onerror cannot be accessed
-						window.setTimeout( function() {
-							errorCallback();
-						} );
-					}
-				};
-			}
-			xhr.send();
-			
-			return deferred.promise( { abort: function() {
-				deferred.reject( 'http', { textStatus: 'abort' } );
-				xhr.abort();
-			} } );
-		} );
-	}
-	
-	// Check if the IDs page has been edited since opening
-	// the page and download the latest version if so
-	var curContentRequest = retryableRequest( function() {
+	// Get some info about this wiki, the user's rights and
+	// block status, and the last edit timestamp for the ids page
+	var infoRequest = retryableRequest( function() {
 		return revisionsApi.get( {
 			rvprop: 'timestamp',
-			pageids: idsPageId
+			titles: dataPage,
+			meta: 'siteinfo|userinfo',
+			uiprop: 'rights|blockinfo',
 		} );
+	} ).done( function( data ) {
+		fixTimestamp.offset = data.query.general.timeoffset;
 	} );
-	var contentRequest = curContentRequest.then( function( data ) {
-		var currentTimestamp = fixTimestamp( data.query.pages[idsPageId].revisions[0].timestamp );
-		if ( currentTimestamp > $doc.data( 'idstimestamp' ) ) {
-			$doc.data( 'idstimestamp', currentTimestamp );
-			
-			curContentRequest = retryableRequest( function() {
+	
+	// Check if the ids page has been edited since opening the
+	// documentation page, and re-download it if necessary
+	var contentRequest = infoRequest.then( function( data ) {
+		var currentTimestamp = fixTimestamp( data.query.pages[0].revisions[0].timestamp );
+		if ( currentTimestamp > $doc.data( 'datatimestamp' ) ) {
+			var newContent = retryableRequest( function() {
 				return parseApi.get( {
 					title: mw.config.get( 'wgPageName' ),
 					text: $( '<i>' ).html(
 						$.parseHTML( $doc.attr( 'data-refreshtext' ) )
 					).html()
 				} );
-			} ).done( function( data ) {
-				oldHtml = data.parse.text['*'];
-				$doc.html( oldHtml );
+			} ).done( function( parseData ) {
+				oldHtml = parseData.parse.text;
+				$doc.replaceWith( oldHtml );
+				$doc = $( '#spritedoc' );
+				spriteSettings = JSON.parse( $doc.attr( 'data-settings' ) );
+				dataPage = $doc.data( 'datapage' );
 			} );
 			
-			return curContentRequest;
+			return newContent;
 		} else {
-			oldHtml = $doc.html();
+			oldHtml = $doc[0].outerHTML;
 		}
-	} ).promise( { abort: curContentRequest.abort } );
-	
-	// Check if we have permission to edit the IDs page and
-	// spritesheet file and that the user isn't blocked
-	var curPermissionsRequest = retryableRequest( function() {
-		return new mw.Api().get( {
-			action: 'query',
-			meta: 'userinfo',
-			uiprop: 'rights|blockinfo',
-			utf8: true
-		} );
 	} );
-	var permissionsRequest = curPermissionsRequest.then( function( data ) {
-		var info = data.query.userinfo;
+	
+	// Check if we have permission to edit the IDs page, spritesheet
+	// file, and use tags, and that the user isn't blocked
+	var permissionsRequest = $.when( infoRequest, contentRequest ).then( function( data ) {
+		var info = data[0].query.userinfo;
 		
 		var canEdit = true;
 		if ( info.blockid ) {
 			canEdit = false;
 			var $blockNotice = $( '<p>' ).text( i18n.blockedNotice );
+			var blockText;
 			if ( info.blockreason ) {
-				curPermissionsRequest = retryableRequest( function() {
+				blockText = retryableRequest( function() {
 					return parseApi.get( { summary: info.blockreason } );
-				} ).done( function( data ) {
+				} ).done( function( parseData ) {
 					$blockNotice.append( '<br>', i18n.blockedReason.replace( /\$1/g,
-						$( '<span>' ).addClass( 'comment' ).html( data.parse.parsedsummary['*'] ).html()
+						$( '<span>' ).addClass( 'comment' ).html( parseData.parse.parsedsummary ).html()
 					) );
 				} );
 			}
-			$.when( curPermissionsRequest ).always( function() {
+			$.when( blockText ).always( function() {
 				mw.notify( $blockNotice, { type: 'error', autoHide: false } );
 			} );
 		} else {
 			var rights = info.rights;
-			$.each( [ 'ids', 'sprite' ], function() {
+			$.each( [ 'data', 'sprite' ], function() {
 				var requiredRights = $doc.data( this + 'protection' ).split( ',' );
 				$.each( requiredRights, function() {
 					if ( rights.indexOf( this ) === -1 ) {
@@ -330,46 +272,114 @@ var create = function( state ) {
 			if ( !canEdit ) {
 				mw.notify( i18n.noPermissionNotice, { type: 'error', autoHide: false } );
 			}
+			
+			/* User doesn't have the right to apply change tags */
+			if ( rights.indexOf( 'applychangetags' ) === -1 ) {
+				canTag = false;
+			}
 		}
 		
 		if ( !canEdit ) {
-			if ( sheetRequest ) {
-				sheetRequest.abort();
-			}
-			contentRequest.abort();
+			sheetRequest && sheetRequest.abort();
+			contentRequest.abort && contentRequest.abort();
 			
-			destroy();
+			destroy( true );
 		}
-	} ).promise( { abort: curPermissionsRequest.abort } );
+	} );
 	
-	$.when( sheetRequest, contentRequest, permissionsRequest ).then( function() {
+	// Replace the spritesheet with a fresh uncached one to ensure
+	// we don't save over it with an old version.
+	var sheetRequest;
+	if ( imageEditingSupported ) {
+		sheetRequest = contentRequest.then( function() {
+			var $sprite = $doc.find( '.sprite' ).first();
+			settings.imageWidth = spriteSettings[i18n.luaKeySettingsWidth] || spriteSettings[i18n.luaKeySettingsSize] || 16;
+			settings.imageHeight = spriteSettings[i18n.luaKeySettingsHeight] || settings.imageWidth || 16;
+			settings.spacing = spriteSettings[i18n.luaKeySettingsSpacing] || 0;
+			settings.sheet = $doc.data( 'original-url' );
+			if ( !settings.sheet ) {
+				// Get a capture of the whole URL, and of the URL minus the query string
+				var urlParts = $sprite.css( 'background-image' )
+					.match( /^url\(["']?(([^?"]+)(?:\?[^"]+)?)["']?\)$/ );
+				$doc.data( 'original-url', urlParts[1] );
+				settings.sheet = urlParts[2] + '?version=' + Date.now();
+				$doc.data( 'url', settings.sheet );
+			}
+			
+			// XHR is used instead of a CORS Image so a blob URL can
+			// be used for the background image, rather than the real URL.
+			// This works around the image being downloaded twice, probably
+			// caused by the background image not reusing the CORS request.
+			return retryableRequest( function() {
+				var deferred = $.Deferred();
+				var requestTimeout;
+				var xhr = new XMLHttpRequest();
+				xhr.open( 'GET', settings.sheet, true );
+				xhr.responseType = 'blob';
+				xhr.onload = function() {
+					clearTimeout( requestTimeout );
+					if ( this.status !== 200 ) {
+						deferred.reject( 'http', {
+							textStatus: this.statusText ? this.status + ' ' + this.statusText : 'error'
+						} );
+						return;
+					}
+					
+					spritesheet = new Image();
+					spritesheet.onload = function() {
+						settings.sheetWidth = this.width;
+						settings.sheetHeight = this.height;
+						
+						overwriteSpritesheet( this.src );
+						
+						deferred.resolve();
+					};
+					spritesheet.src = URL.createObjectURL( this.response );
+				};
+				requestTimeout = setTimeout( function() {
+					xhr.abort();
+					deferred.reject( 'http', { textStatus: 'timeout' } );
+				}, 30 * 1000 );
+				
+				xhr.onabort = xhr.onerror = function() {
+					if ( deferred.state() === 'pending' ) {
+						deferred.reject( 'http', { textStatus: 'error' } );
+					}
+				};
+				xhr.send();
+				
+				return deferred.promise( { abort: function() {
+					deferred.reject( 'http', { textStatus: 'abort' } );
+					xhr.abort();
+				} } );
+			} ).fail( handleError );
+		} );
+	}
+	
+	$.when( contentRequest, permissionsRequest ).then( function() {
 		// Make sure the editor wasn't destroyed while we were waiting
 		if ( $root.hasClass( 'spriteedit-loaded' ) ) {
 			enable();
 		}
 	}, function( code, error ) {
 		// Fatal error, bail
-		if ( sheetRequest ) {
-			sheetRequest.abort();
-		}
-		contentRequest.abort();
-		permissionsRequest.abort();
+		sheetRequest && sheetRequest.abort();
+		infoRequest.abort();
+		contentRequest.abort && contentRequest.abort();
 		
 		handleError( code, error );
-		destroy();
+		destroy( true );
 	} );
 	
 	// Handle closing the editor on navigation
-	if ( historySupported ) {
-		$win.on( 'popstate.spriteEdit', function() {
-			if (
-				!location.search.match( 'spriteaction=edit' ) &&
-				$root.hasClass( 'spriteedit-loaded' )
-			) {
-				close( 'history' );
-			}
-		} );
-	}
+	$win.on( 'popstate.spriteEdit', function() {
+		if (
+			!location.search.match( '[?&]spriteaction=edit' ) &&
+			$root.hasClass( 'spriteedit-loaded' )
+		) {
+			close( 'history' );
+		}
+	} );
 	
 	
 	/**
@@ -393,14 +403,14 @@ var create = function( state ) {
 		
 		$( '.mw-editsection' ).add( '.mw-editsection-like' ).css( 'display', 'none' );
 		
-		// Store previous element and parent
-		// to re-attach to once done.
+		// Store previous element and parent to re-attach to once done
+		// and the current scroll position
 		var $docPrev = $doc.prev();
 		var $docParent = $doc.parent();
+		var initialScroll = $win.scrollTop();
 		$doc.detach();
 		
 		$doc.find( '#toc' ).remove();
-		
 		
 		$doc.append(
 			$( '<div>' ).addClass( 'spriteedit-autoscroll spriteedit-autoscroll-up' ),
@@ -503,7 +513,7 @@ var create = function( state ) {
 				
 				$( this ).css( {
 					height: height,
-					overflow: 'hidden'
+					overflow: 'hidden',
 				} );
 			} );
 			
@@ -523,7 +533,7 @@ var create = function( state ) {
 			
 			$doc.find( '.spritedoc-boxes' ).css( {
 				height: 'auto',
-				overflow: 'visible'
+				overflow: 'visible',
 			} );
 			
 			// If we're sorting boxes, scroll so the box is near the cursor
@@ -547,120 +557,123 @@ var create = function( state ) {
 			handle: 'h3',
 			vertical: true,
 			sortStart: collapseBoxes,
-			sortEnd: expandBoxes
+			sortEnd: expandBoxes,
 		} );
 		makeSortable( {
 			selectors: {
 				container: '.spritedoc-section',
 				parent: '.spritedoc-boxes',
-				elem: '.spritedoc-box'
+				elem: '.spritedoc-box',
 			},
 			autoSort: true,
 			sortStart: collapseBoxes,
-			sortEnd: expandBoxes
-		} );
-		makeSortable( {
-			selectors: {
-				container: '.spritedoc-box',
-				parent: '.spritedoc-names',
-				elem: '.spritedoc-name'
-			},
-			autoSort: true
+			sortEnd: expandBoxes,
 		} );
 		
 		// Create toolbar
 		var contentPadding = {
 			left: $content.css( 'padding-left' ),
-			right: $content.css( 'padding-right' )
+			right: $content.css( 'padding-right' ),
 		};
 		$toolbar = $( '<div>' ).addClass( 'spriteedit-toolbar' ).css( {
 			paddingLeft: contentPadding.left,
 			paddingRight: contentPadding.right,
 			marginLeft: '-' + contentPadding.left,
-			marginRight: '-' + contentPadding.right
+			marginRight: '-' + contentPadding.right,
 		} );
-		$toolbar.append(
-			$( '<span>' ).addClass( 'mw-ui-button-group' ).append(
-				makeButton( i18n.toolbarUndo, {
-					id: 'spriteedit-undo',
-					props: { disabled: true },
-					action: function() {
-						$( this ).blur();
-						
-						var hist = changes.pop();
-						revert( hist );
-						undoneChanges.push( hist );
-						$( '#spriteedit-redo' ).prop( 'disabled', false );
-					}
-				} ),
-				makeButton( i18n.toolbarRedo, {
-					id: 'spriteedit-redo',
-					props: { disabled: true },
-					action: function() {
-						$( this ).blur();
-						
-						var hist = undoneChanges.pop();
-						$.each( hist, function() {
-							change( this.action, this.content, false, true );
-						} );
-						changes.push( hist );
-						
-						if ( !undoneChanges.length ) {
-							$( this ).prop( 'disabled', true );
-						}
-						
-						$.each( [
-							'#spriteedit-undo',
-							'#spriteedit-save',
-							'#spriteedit-summary',
-							'#spriteedit-review-button'
-						], function() {
-							$( this ).prop( 'disabled', false );
-						} );
-					}
-				} )
-			),
-			$( '<span>' ).addClass( 'mw-ui-button-group' ).append(
-				makeButton( i18n.toolbarNewSection, { id: 'spriteedit-add-section' } ),
-				makeButton( i18n.toolbarNewImage, { id: 'spriteedit-add-image' } )
-			),
-			$( '<select>' ).prop( 'id', 'spriteedit-toolbox' ).addClass( 'mw-ui-button' ).append(
-				$( '<option>' ).prop( {
-					disabled: true,
-					selected: true,
-					value: ''
-				} ).css( 'display', 'none' ).text( i18n.toolbarTools )
-			),
-			makeButton( i18n.toolbarSave, {
-				id: 'spriteedit-save',
-				type: 'progressive',
-				props: { disabled: true },
-				css: { right: contentPadding.right }
-			} )
-		);
+		var undoButton = new OO.ui.ButtonInputWidget( {
+			id: 'spriteedit-undo',
+			icon: 'undo',
+			label: i18n.toolbarUndo,
+			disabled: true,
+		} );
+		undoButton.$element.data( 'ooui-object', undoButton );
+		
+		var redoButton = new OO.ui.ButtonInputWidget( {
+			id: 'spriteedit-redo',
+			icon: 'redo',
+			label: i18n.toolbarRedo,
+			disabled: true,
+		} );
+		redoButton.$element.data( 'ooui-object', redoButton );
+		
+		var newSectionButton = new OO.ui.ButtonInputWidget( {
+			id: 'spriteedit-add-section',
+			icon: 'textStyle',
+			label: i18n.toolbarNewSection,
+		} );
+		newSectionButton.$element.data( 'ooui-object', newSectionButton );
+		
+		var newImageButton = new OO.ui.ButtonInputWidget( {
+			id: 'spriteedit-add-image',
+			icon: 'imageAdd',
+			label: i18n.toolbarNewImage,
+		} );
+		newImageButton.$element.data( 'ooui-object', newImageButton );
 		if ( !imageEditingSupported ) {
-			$toolbar.find( '#spriteedit-add-image' ).prop( {
-				disabled: true,
-				title: i18n.browserActionNotSupported
-			} ).css( 'cursor', 'help' );
+			newImageButton.setDisabled( true ).$element
+				.prop( 'title', i18n.browserActionNotSupported )
+				.css( 'cursor', 'help' );
 		}
+		
+		var saveButton = new OO.ui.ButtonInputWidget( {
+			id: 'spriteedit-save',
+			flags: [ 'progressive', 'primary' ],
+			icon: 'expand',
+			label: i18n.toolbarSave,
+			disabled: true,
+		} );
+		saveButton.$element.data( 'ooui-object', saveButton ).css( 'right', contentPadding.right );
+		
+		var toolboxSelect = new OO.ui.DropdownWidget( {
+			id: 'spriteedit-toolbox',
+			label: i18n.toolbarTools,
+			$overlay: $doc,
+		} );
+		toolboxSelect.$element.data( 'ooui-object', toolboxSelect );
+		
+		var helpButton = new OO.ui.ButtonWidget( {
+			id: 'spriteedit-help',
+			framed: false,
+			icon: 'help',
+			title: i18n.toolbarHelp,
+			href: mw.util.getUrl( i18n.toolbarHelpPage ),
+			target: '_blank',
+		} );
+		
+		$toolbar.append(
+			new OO.ui.ButtonGroupWidget( {
+				items: [ undoButton, redoButton ],
+			} ).$element,
+			new OO.ui.ButtonGroupWidget( {
+				items: [ newSectionButton, newImageButton ],
+			} ).$element,
+			toolboxSelect.$element,
+			saveButton.$element,
+			helpButton.$element
+		);
 		
 		// Create tools
 		var $toolbox = $toolbar.find( '#spriteedit-toolbox' );
-		$toolbox.append(
-			$( '<option>' ).prop( {
-				value: 'deprecate',
-				title: i18n.toolbarToolDeprecateTip
-			} ).text( i18n.toolbarToolDeprecate )
-		);
+		var deprecateOption = new OO.ui.MenuOptionWidget( {
+			data: 'deprecate',
+			label: i18n.toolbarToolDeprecate,
+			icon: 'flag',
+		} );
+		deprecateOption.$element.prop( 'title', i18n.toolbarToolDeprecateTip );
+		toolboxSelect.getMenu().addItems( [ deprecateOption ] );
 		
 		var $barContainer = $( '<div>' ).addClass( 'spriteedit-toolbar-container' )
 			.append( $toolbar ).prependTo( $doc );
 		
+		// Re-attach content and reset scroll position
 		if ( $docPrev.length ) {
 			$doc.insertAfter( $docPrev );
 		} else {
 			$doc.prependTo( $docParent );
+		}
+		if ( $win.scrollTop() !== initialScroll ) {
+			scroll( 0, initialScroll );
 		}
 		
 		// Set height now that everything is re-attached
@@ -676,9 +689,26 @@ var create = function( state ) {
 			}
 		} );
 		
+		// Check the editor's change tag exists
+		// Since the tag isn't important, we don't wait for the request to finish
+		// If it isn't done by the time we try to save, we assume we can't tag
+		if ( canTag !== false ) {
+			findChangeTag( 'spriteeditor' ).then( function( result ) {
+				canTag = result;
+			} );
+		}
+		
 		
 		/** Bind events **/
 		/* Outside interface events */
+		// Prevent accidentally closing window if changes have been made
+		preventClose = mw.confirmCloseWindow( {
+			namespace: 'spriteEdit',
+			test: function() {
+				return !saveButton.isDisabled();
+			},
+		} );
+		
 		$( '#ca-view' ).find( 'a' ).on( 'click.spriteEdit', function( e ) {
 			close();
 			e.preventDefault();
@@ -687,10 +717,10 @@ var create = function( state ) {
 		
 		/* Toolbar events */
 		// Manually make the toolbar sticky if position:sticky isn't supported
-		if ( !supports( 'position', 'sticky' ) ) {
+		if ( !supports( 'position', 'sticky' ) && !supports( 'position', '-webkit-sticky' ) ) {
 			var fixedClass = 'spriteedit-toolbar-fixed';
 			var contentOffset = $content.offset().left + 1;
-			$win.on( 'scroll.spriteEdit', $.throttle( 50, function() {
+			$win.on( 'scroll.spriteEdit', $.throttle( 32, function() {
 				var fixed = $toolbar.hasClass( fixedClass ),
 					scrollTop = $win.scrollTop(),
 					offset = $barContainer.offset().top;
@@ -702,8 +732,57 @@ var create = function( state ) {
 			} ) );
 		}
 		
-		$( '#spriteedit-add-section' ).on( 'click.spriteEdit', function() {
-			$( this ).blur();
+		$( '#spriteedit-undo' ).find( 'button' ).on( 'click.spriteEdit', function() {
+			$( this ).focus().blur();
+			
+			// We're not meant to be editing
+			if ( $root.hasClass( 'spriteedit-hidecontrols' ) ) {
+				return;
+			}
+			
+			var hist = changes.pop();
+			revert( hist );
+			undoneChanges.push( hist );
+			redoButton.setDisabled( false );
+		} );
+		
+		$( '#spriteedit-redo' ).find( 'button' ).on( 'click.spriteEdit', function() {
+			$( this ).focus().blur();
+			
+			// We're not meant to be editing
+			if ( $root.hasClass( 'spriteedit-hidecontrols' ) ) {
+				return;
+			}
+			
+			var hist = undoneChanges.pop();
+			$.each( hist, function() {
+				change( this.action, this.content, false, true );
+			} );
+			changes.push( hist );
+			
+			if ( !undoneChanges.length ) {
+				redoButton.setDisabled( true );
+			}
+			
+			$.each( [
+				'#spriteedit-undo',
+				'#spriteedit-save',
+				'#spriteedit-summary',
+				'#spriteedit-review-button',
+			], function() {
+				if ( $( this ).length ) {
+					$( this ).data( 'ooui-object' ).setDisabled( false );
+				}
+			} );
+		} );
+		
+		$( '#spriteedit-add-section' ).find( 'button' ).on( 'click.spriteEdit', function() {
+			$( this ).focus().blur();
+			
+			// We're not meant to be editing
+			if ( $root.hasClass( 'spriteedit-hidecontrols' ) ) {
+				return;
+			}
 			
 			var $newHeading = $headingTemplate.clone();
 			change( 'insert', {
@@ -712,32 +791,56 @@ var create = function( state ) {
 					$( '<ul>' ).addClass( 'spritedoc-boxes' )
 				),
 				index: $( nearestSection() ).index() - 1,
-				$parent: $doc
+				$parent: $doc,
 			}, true );
 			
 			$newHeading.find( '.mw-headline' ).focus();
 		} );
 		
-		$( '#spriteedit-add-image' ).on( 'click.spriteEdit', function() {
+		$( '#spriteedit-add-image' ).find( 'button' ).on( 'click.spriteEdit', function() {
+			$( this ).focus().blur();
+			
+			// We're not meant to be editing
+			if ( $root.hasClass( 'spriteedit-hidecontrols' ) ) {
+				return;
+			}
+			
 			$( '<input type="file">' )
 				.attr( {
 					accept: 'image/*',
-					multiple: true
+					multiple: true,
 				} )
 				.one( 'change.spriteEdit', function() {
 					insertSprites( this.files );
 				} ).click();
-			
-			$( this ).blur();
 		} );
 		
 		// Toolbox functions
+		// Modify click event to not open menu when we're not meant to be editing,
+		// or a tool is already selected
+		toolboxSelect.origOnClick = toolboxSelect.onClick;
+		toolboxSelect.onClick = function( e ) {
+			if ( $root.hasClass( 'spriteedit-hidecontrols' ) ) {
+				this.$handle.blur();
+				return;
+			}
+			
+			toolboxSelect.origOnClick.call( toolboxSelect, e );
+		};
+		toolboxSelect.$handle.off( 'click' ).on( 'click', toolboxSelect.onClick.bind( toolboxSelect ) );
+		
+		toolboxSelect.on( 'labelChange', function() {
+			if ( !toolboxSelect.getLabel() ) {
+				toolboxSelect.setLabel( i18n.toolbarTools );
+			}
+		} );
+		
 		var toolNamespace = '.spriteEdit.spriteEditTool.spriteEditTool';
 		var tool;
 		// Bind events for each tool's function
-		$toolbox.on( 'change.spriteEdit', function() {
-			tool = $toolbox.val();
-			$root.addClass( 'spriteedit-hidecontrols spriteedit-tool-' + tool );
+		toolboxSelect.getMenu().on( 'choose', function( item ) {
+			tool = item.getData();
+			$root.addClass( 'spriteedit-hidecontrols spriteedit-tool spriteedit-tool-' + tool );
 			
 			switch ( tool ) {
 				case 'deprecate':
@@ -749,39 +852,29 @@ var create = function( state ) {
 		} );
 		// Clear tool when clicking a toolbar button, the toolbox itself, or pressing escape
 		var clearTool = function( e ) {
-			if ( !$toolbox.val() ) {
+			if ( !$root.hasClass( 'spriteedit-tool' ) ) {
 				return;
 			}
-			
-			$toolbox.val( '' );
+			toolboxSelect.getMenu().selectItem();
 			$doc.off( '.spriteEditTool' );
-			$root.removeClass( 'spriteedit-hidecontrols spriteedit-tool-' + tool );
+			$root.removeClass( 'spriteedit-hidecontrols spriteedit-tool spriteedit-tool-' + tool );
 			tool = null;
-			
-			// If clicking on the toolbox itself
-			if ( e ) {
-				e.preventDefault();
-				$toolbox.blur();
-				$win.focus();
-			}
 		};
 		$toolbar.on( 'mouseup.spriteEdit', 'button', function() {
 			clearTool();
 		} );
-		$toolbox.on( 'mousedown.spriteEdit', function( e ) {
-			if ( e.which == 1 && $toolbox.is( e.target ) ) {
-				clearTool( e );
-			}
+		$toolbox.on( 'click.spriteEdit', function() {
+			clearTool();
 		} );
 		$( document ).on( 'keydown.spriteEdit', function( e ) {
 			// Esc
 			if ( e.keyCode === 27 ) {
-				clearTool( e );
+				clearTool();
 			}
 		} );
 		
 		// Drag and drop functionality
-		if ( dropSupported && imageEditingSupported ) {
+		if ( imageEditingSupported ) {
 			var dragTimeout, dragEnded;
 			var endDrag = function() {
 				$root.removeClass( 'spriteedit-dragging' );
@@ -861,12 +954,14 @@ var create = function( state ) {
 			} );
 		}
 		
-		$( '#spriteedit-save' ).on( 'click.spriteEdit', function() {
+		$( '#spriteedit-save' ).find( 'button' ).on( 'click.spriteEdit', function() {
 			var $button = $( this );
-			$button.blur();
+			$button.focus().blur();
 			
-			// Prevent saving and notify if there are duplicate names
-			if ( $doc.find( '.spriteedit-dupe' ).length ) {
+			// Prevent saving and notify if there are duplicate names, but only
+			// if there's more than one. If there's only one, it's clearly been
+			// incorrectly marked as a duplicate
+			if ( $doc.find( '.spriteedit-dupe' ).length > 1 ) {
 				mw.notify( i18n.dupeNamesNotice, { type: 'warn', autoHide: false } );
 				
 				return;
@@ -890,7 +985,7 @@ var create = function( state ) {
 					return;
 				}
 				
-				saveChanges( $( '#spriteedit-summary' ).val() );
+				saveChanges( $( '#spriteedit-summary' ).data( 'ooui-object' ).getValue() );
 				
 				return;
 			}
@@ -898,22 +993,26 @@ var create = function( state ) {
 			saveModules.done( function() {
 				$toolbar.addClass( 'spriteedit-saveform-open' );
 				$button
-					.addClass( 'mw-ui-constructive' )
-					.removeClass( 'mw-ui-progressive spriteedit-processing' )
+					.removeClass( 'spriteedit-processing' )
 					// Prevent accidental double-click saving
 					.css( 'pointer-events', 'none' );
 				
+				$button.parent().data( 'ooui-object' ).setIcon( 'check' );
+				
 				if ( !$toolbar.find( '#spriteedit-saveform' ).length ) {
+					var summaryInput = new OO.ui.TextInputWidget( {
+						id: 'spriteedit-summary',
+						name: 'wpSummary',
+						spellcheck: true,
+						placeholder: i18n.toolbarSummaryPlaceholder,
+					} );
+					summaryInput.$element.data( 'ooui-object', summaryInput );
+					mw.widgets.visibleByteLimit( summaryInput, mw.config.get( 'wgCommentByteLimit' ) );
 					$( '<div>' )
 						.attr( 'id', 'spriteedit-saveform' )
 						.css( 'margin-right', $( '#spriteedit-save' )[0].getBoundingClientRect().width )
 						.append(
-							$( '<input type="text">' ).addClass( 'mw-ui-input' ).attr( {
-								id: 'spriteedit-summary',
-								name: 'wpSummary', // For autocomplete
-								placeholder: i18n.toolbarSummaryPlaceholder,
-								spellcheck: true
-							} ).byteLimit( 255 ),
+							summaryInput.$element,
 							makeButton( i18n.toolbarReviewChanges, { id: 'spriteedit-review-button' } )
 					).appendTo( $toolbar );
 				}
@@ -926,7 +1025,7 @@ var create = function( state ) {
 					.transitionEnd( function() {
 						$button.css( 'pointer-events', '' );
 						$barContainer.height( openedToolbarHeight );
-						$( '#spriteedit-summary' ).focus();
+						$( '#spriteedit-summary' ).data( 'ooui-object' ).focus();
 						
 						// Do this after the transition so there is no stutter
 						names.getDiff();
@@ -942,36 +1041,40 @@ var create = function( state ) {
 			}
 			
 			$( this ).blur();
-			$( '#spriteedit-save' ).click();
+			$( '#spriteedit-save' ).find( 'button' ).click();
 			e.preventDefault();
 		} );
 		
-		$doc.on( 'click.spriteEdit', '#spriteedit-review-button', function() {
+		$doc.on( 'click.spriteEdit', '#spriteedit-review-button > button', function() {
 			var $button = $( this );
 			if ( $button.hasClass( 'spriteedit-processing' ) ) {
 				return;
 			}
-			$button.blur().addClass( 'spriteedit-processing' );
+			$button.focus().blur().addClass( 'spriteedit-processing' );
 			
-			var changesPanel = panels.changes || panel(
-				'changes',
-				i18n.panelChangesTitle,
-				[
+			var sheetUrl;
+			var changesPanel = panels.changes || panel( 'changes', {
+				title: i18n.panelChangesTitle,
+				content: [
 					$( '<div>' ).addClass( 'spriteedit-sheet-changes' ),
-					$( '<div>' ).addClass( 'spriteedit-id-changes' )
-				]
-			);
+					$( '<div>' ).addClass( 'spriteedit-id-changes' ),
+				],
+				onClose: function() {
+					URL.revokeObjectURL( sheetUrl );
+				},
+			} );
 			var $changesText = changesPanel.$text;
 			
-			$.when( names.getDiff(), sheet.getData() ).then( function( diff, sheetData ) {
+			$.when( names.getDiff(), sheet.getData() ).then( function( diff, sheetBlob ) {
 				var sheetChanges;
-				if ( !diff && !sheetData ) {
+				if ( !diff && !sheetBlob ) {
 					$changesText.text( i18n.panelChangesNoDiffFromCur );
 				} else {
-					if ( sheetData ) {
+					if ( sheetBlob ) {
 						sheetChanges = $.Deferred();
 						var newSpritesheet = new Image();
 						newSpritesheet.onload = function() {
+							newSpritesheet.onload = null;
 							$changesText.find( '.spriteedit-sheet-changes' ).append(
 								$( '<div>' ).text( i18n.panelChangesSheetTitle ),
 								$( '<div>' ).addClass( 'spriteedit-sheet-diff' ).append(
@@ -982,7 +1085,8 @@ var create = function( state ) {
 							
 							sheetChanges.resolve();
 						};
-						newSpritesheet.src = sheetData;
+						sheetUrl = URL.createObjectURL( sheetBlob );
+						newSpritesheet.src = sheetUrl;
 					}
 					if ( diff ) {
 						$changesText.find( '.spriteedit-id-changes' ).append(
@@ -1014,7 +1118,7 @@ var create = function( state ) {
 			change( 'insert', {
 				$elem: $item,
 				index: $names.length - 1,
-				$parent: $names.first().parent()
+				$parent: $names.first().parent(),
 			}, true );
 			
 			$name.focus();
@@ -1035,9 +1139,11 @@ var create = function( state ) {
 					$.each( [
 						'#spriteedit-save',
 						'#spriteedit-summary',
-						'#spriteedit-review-button'
+						'#spriteedit-review-button',
 					], function() {
-						$( this ).prop( 'disabled', false );
+						if ( $( this ).length ) {
+							$( this ).data( 'ooui-object' ).setDisabled( false );
+						}
 					} );
 				} );
 			}
@@ -1049,9 +1155,17 @@ var create = function( state ) {
 			
 			var $this = $( this );
 			var text = $this.text();
-			var trimmedText = $.trim( text ).replace( /  +/g, ' ' );
+			var trimmedText = text.trim().replace( /  +/g, ' ' );
 			var origText = $this.attr( 'data-original-text' );
 			$this.removeAttr( 'data-original-text' ).off( 'keypress.spriteEdit' );
+			
+			// Can't make a change if we don't know what the original text was
+			// This can happen when Edge calls the blur event on elements that
+			// that aren't focused, which it does when moving the highlight
+			// when using the find in browser feature
+			if ( origText === undefined ) {
+				return;
+			}
 			
 			if ( text !== trimmedText ) {
 				text = trimmedText;
@@ -1062,12 +1176,8 @@ var create = function( state ) {
 				var $remove, $parent;
 				if ( $this.hasClass( 'mw-headline' ) ) {
 					if ( $doc.find( '.spritedoc-section' ).length === 1 ) {
-						change( 'text', {
-							$elem: $this,
-							oldText: origText,
-							text: i18n.sectionUncategorized
-						} );
-						return;
+						text = i18n.sectionUncategorized;
+						$this.text( text );
 					} else {
 						$remove = $this.closest( '.spritedoc-section' );
 						$parent = $doc;
@@ -1083,22 +1193,24 @@ var create = function( state ) {
 					}
 				}
 				
-				if ( $this.hasClass( 'spriteedit-new' ) ) {
-					// Just pretend it never happened
-					$remove.remove();
-					change.discard();
+				if ( $remove ) {
+					if ( $this.hasClass( 'spriteedit-new' ) ) {
+						// Just pretend it never happened
+						$remove.remove();
+						change.discard();
+						return;
+					}
+					
+					// Restore original text before deleting so undo works
+					$this.text( origText );
+					
+					change( 'delete', {
+						$elem: $remove,
+						index: $remove.index() - 1,
+						$parent: $parent,
+					} );
 					return;
 				}
-				
-				// Restore original text before deleting so undo works
-				$this.text( origText );
-				
-				change( 'delete', {
-					$elem: $remove,
-					index: $remove.index() - 1,
-					$parent: $parent
-				} );
-				return;
 			}
 			
 			if ( text === origText ) {
@@ -1106,9 +1218,11 @@ var create = function( state ) {
 					$.each( [
 						'#spriteedit-save',
 						'#spriteedit-summary',
-						'#spriteedit-review-button'
+						'#spriteedit-review-button',
 					], function() {
-						$( this ).prop( 'disabled', true );
+						if ( $( this ).length ) {
+							$( this ).data( 'ooui-object' ).setDisabled( true );
+						}
 					} );
 				}
 				
@@ -1126,7 +1240,7 @@ var create = function( state ) {
 			change( 'edit', {
 				$elem: $this,
 				oldText: origText,
-				text: text
+				text: text,
 			} );
 			
 			if ( $this.hasClass( 'spriteedit-new' ) ) {
@@ -1141,22 +1255,12 @@ var create = function( state ) {
 			}
 		} );
 		// Make pastes plain text
-		$doc.on( 'paste.spriteEdit', '[contenteditable]', function() {
-			var $this = $( this );
-			var hasFocus = $this.has( ':focus' );
-			if ( !hasFocus ) {
-				$this.focus();
-			}
-			setTimeout( function() {
-				var text = $this.text().replace( /\n/g, ' ' );
-				if ( $this.html() !== $( '<i>' ).text( text ).html() ) {
-					$this.text( text );
-					
-					if ( !hasFocus ) {
-						$this.blur();
-					}
-				}
-			}, 0 );
+		$doc.on( 'paste.spriteEdit', '[contenteditable]', function( e ) {
+			var text = ( e.originalEvent.clipboardData || window.clipboardData ).getData( 'Text' );
+			text = text.replace( /\n/g, ' ' ).trim();
+			window.document.execCommand( 'insertText', false, text );
+			
+			e.preventDefault();
 		} );
 		var isText = function( e ) {
 			var types = e.originalEvent.dataTransfer.types;
@@ -1201,99 +1305,102 @@ var create = function( state ) {
 				
 				tooltip( $parent, [
 					makeButton( i18n.ctxReplaceImage, {
-						type: 'progressive',
-						css: {
-							display: 'block',
-							width: '100%'
-						},
+						type: [ 'progressive', 'primary' ],
+						icon: 'imageGallery',
 						action: function() {
-							$( this ).blur();
-							
 							$( '<input type="file">' )
 								.attr( 'accept', 'image/*' )
 								.one( 'change', function() {
 									tooltip.hide();
 									
 									scaleImage( this.files[0] ).done( function( $img ) {
+										$img.addClass( 'spriteedit-replacing-image' );
 										change( 'replace image', {
 											$elem: $img,
 											$parent: $parent,
-											$oldImg: $parent.find( 'img' )
+											$oldImg: $parent.find( 'img' ),
 										} );
 									} );
 								} ).click();
-						}
+						},
 					} ),
 					makeButton( i18n.ctxDownloadImage, {
-						css: {
-							display: 'block',
-							width: '100%'
-						},
+						icon: 'download',
 						action: function() {
-							$( this ).blur();
-							
-							var url;
+							var $button = $( this );
+							var data;
 							var $box = $parent.parent();
-							// Already an image, just pass on the URL
+							// Already an image, just pass on the object URL
 							if ( $box.hasClass( 'spriteedit-new' ) ) {
-								url = $parent.find( '> img' ).attr( 'src' );
+								data = $parent.find( '> img' ).attr( 'src' );
 							} else {
-								// Individual sprite needs to be extracted from the spritesheet
-								var width = settings.imageWidth;
-								var height = settings.imageHeight;
-								var posPx = posToPx( $box.data( 'pos' ) );
-								var imgCanv = getCanvas( 'image' );
-								
-								imgCanv.clear();
-								imgCanv.ctx.drawImage( spritesheet,
-									posPx.left, posPx.top, width, height,
-									0, 0, width, height
-								);
-								
-								url = imgCanv.canvas.toDataURL();
+								$button.addClass( 'spriteedit-processing' );
+								data = sheetRequest.then( function() {
+									// Individual sprite needs to be extracted from the spritesheet
+									var width = settings.imageWidth;
+									var height = settings.imageHeight;
+									var posPx = posToPx( $box.data( 'pos' ) );
+									var imgCanv = getCanvas( 'image' );
+									
+									imgCanv.clear();
+									imgCanv.ctx.drawImage( spritesheet,
+										posPx.left, posPx.top, width, height,
+										0, 0, width, height
+									);
+									
+									var d = $.Deferred();
+									imgCanv.canvas.toBlob( d.resolve );
+									
+									return d.promise();
+								} );
 							}
 							
-							var dlLink = $( '<a>' ).attr( {
-								href: url,
-								download: $box.data( 'sort-key' ) + '.png'
-							} ).appendTo( 'body' );
-							dlLink[0].click();
-							dlLink.remove();
-						}
+							$.when( data ).then( function( blob ) {
+								$button.removeClass( 'spriteedit-processing' );
+								var name = $box.data( 'sort-key' ) + '.png';
+								// IE10+: (has Blob, but not a[download])
+								if ( navigator.msSaveBlob ) {
+									return navigator.msSaveBlob( blob, name );
+								}
+								
+								var dlLink = $( '<a>' ).attr( {
+									href: URL.createObjectURL( blob ),
+									download: name,
+								} ).appendTo( 'body' );
+								dlLink[0].click();
+								dlLink.remove();
+							} );
+						},
 					} ),
 					makeButton( i18n.ctxDeleteImage, {
-						type: 'destructive',
-						css: {
-							display: 'block',
-							width: '100%'
-						},
+						type: [ 'destructive', 'primary' ],
+						icon: 'trash',
 						action: function() {
 							tooltip.hide( function() {
 								var $box = $parent.parent();
 								change( 'delete', {
 									$elem: $box,
 									$parent: $box.parent(),
-									index: $box.index() - 1
+									index: $box.index() - 1,
 								} );
 							} );
-						}
-					} )
-				], true );
+						},
+					} ),
+				], { horizontal: true, class: 'spriteedit-tooltip-controls' } );
 			} );
 		}
 		
 		
 		/* Window events */
-		$win.on( 'resize.spriteEdit', function() {
-			var $dialog = $( '.spriteedit-dialog' );
-			if ( $dialog.length && $dialog.is( ':visible' ) ) {
-				$dialog.css( { width: '', height: '' } );
-				$dialog.css( {
-					width: $dialog.width(),
-					height: $dialog.height()
-				} );
+		$win.on( 'resize.spriteEdit', $.throttle( 32, function() {
+			var $conflict = $( '#spriteedit-dialog-conflict' );
+			if ( $conflict.length && $conflict.is( ':visible' ) ) {
+				var $textarea = $conflict.find( 'textarea' );
+				$textarea.css( 'max-height', (
+					$conflict.find( '.spriteedit-dialog-text' ).height() - $textarea.parent()[0].offsetTop
+				) + 'px' );
 			}
-		} );
+		} ) );
 		
 		var updateMouse = function( e ) {
 			mouse.moved = true;
@@ -1318,12 +1425,6 @@ var create = function( state ) {
 		$win.on( 'scroll.spriteEdit', $.debounce( 250, function() {
 			$root.removeClass( 'spriteedit-smoothscroll' );
 		} ) );
-		
-		$win.on( 'beforeunload.spriteEdit', function( e ) {
-			if ( !$( '#spriteedit-save' ).is( '[disabled]' ) ) {
-				e.preventDefault();
-			}
-		} );
 	};
 	
 	
@@ -1337,29 +1438,29 @@ var create = function( state ) {
 	 * "state" is what triggered the editor to close (e.g. from history navigation)
 	 */
 	var close = function( state ) {
-		if ( !$root.hasClass( 'spriteedit-enabled' ) || $( '#spriteedit-save' ).is( '[disabled]' ) ) {
+		if ( !$root.hasClass( 'spriteedit-enabled' ) || $( '#spriteedit-save' ).data( 'ooui-object' ).isDisabled() ) {
 			destroy( true, state === 'history' );
 		} else {
-			var discardPanel = panels.discard || panel(
-				'discard',
-				i18n.panelDiscardTitle,
-				$( '<p>' ).text( i18n.panelDiscardText ),
-				{ right: [
+			var discardPanel = panels.discard || panel( 'discard', {
+				title: i18n.panelDiscardTitle,
+				content: $( '<p>' ).text( i18n.panelDiscardText ),
+				actions: { right: [
 					{ text: i18n.panelDiscardContinue, config: {
 						action: function() {
 							discardPanel.hide();
 						}
 					} },
 					{ text: i18n.panelDiscardDiscard, config: {
-						type: 'destructive',
+						type: [ 'destructive', 'primary' ],
+						icon: 'trash',
 						action: function() {
 							discardPanel.hide( function() {
 								destroy( true, state === 'history' );
 							} );
 						}
-					} }
-				] }
-			);
+					} },
+				] },
+			} );
 			discardPanel.show();
 		}
 	};
@@ -1376,12 +1477,11 @@ var create = function( state ) {
 			return i18n.genericError;
 		}
 		
-		var pages = data.query.pages;
-		var page = pages[idsPageId];
+		var page = data.query.pages[0];
 		if ( !page ) {
 			return i18n.diffErrorMissingPage;
 		}
-		var diff = page.revisions[0].diff['*'];
+		var diff = page.revisions[0].diff.body;
 		if ( diff === undefined ) {
 			return i18n.diffError;
 		}
@@ -1436,12 +1536,12 @@ var create = function( state ) {
 				}
 			},
 			/**
-			 * Returns the names Lua table
+			 * Returns the names object
 			 */
-			getTable: function() {
-				var deferred = makeDeferred( 'table' );
+			getObject: function() {
+				var deferred = makeDeferred( 'object' );
 				if ( !deferred ) {
-					return promises.table;
+					return promises.object;
 				}
 				
 				sheet.updatePositions().done( function() {
@@ -1483,9 +1583,10 @@ var create = function( state ) {
 						var $section = $( this );
 						var sectionId = $section.data( 'section-id' ) || getSectionId();
 						var sectionName = $section.find( '.mw-headline' ).text().replace( /\s+/g, ' ' );
-						headingRows.push(
-							'{ ' + luaStringQuote( sectionName ) + ', ' + luaKeyQuote( i18n.luaKeyId ) + ' = ' + sectionId + ' },'
-						);
+						var row = {};
+						row[i18n.luaKeyName] = sectionName;
+						row[i18n.luaKeyId] = sectionId;
+						headingRows.push( row );
 						
 						$section.find( '.spritedoc-box' ).each( function() {
 							var $box = $( this );
@@ -1501,7 +1602,7 @@ var create = function( state ) {
 									id: id,
 									pos: pos,
 									section: sectionId,
-									deprecated: $this.hasClass( 'spritedoc-deprecated' )
+									deprecated: $this.hasClass( 'spritedoc-deprecated' ),
 								} );
 							} );
 						} );
@@ -1510,32 +1611,64 @@ var create = function( state ) {
 						return a.sortKey > b.sortKey ? 1 : -1;
 					} );
 					
-					var idsRows = [];
+					var idsRows = {};
 					$.each( ids, function() {
-						var idData = [
-							luaKeyQuote( i18n.luaKeyPos ) + ' = ' + this.pos,
-							luaKeyQuote( i18n.luaKeySection ) + ' = ' + this.section
-						];
+						var idData = {};
+						idData[i18n.luaKeyPos] = this.pos;
+						idData[i18n.luaKeySection] = this.section;
 						if ( this.deprecated ) {
-							idData.push( luaKeyQuote( i18n.luaKeyDeprecated ) + ' = true' );
+							idData[i18n.luaKeyDeprecated] = this.deprecated;
 						}
-						
-						idsRows.push(
-							'[' + luaStringQuote( this.id ) + '] = ' +
-							'{ ' + idData.join( ', ' ) + ' },'
-						);
+						idsRows[this.id] = idData;
 					} );
 					
-					deferred.resolve( [
-						'return {',
-						'	' + luaKeyQuote( i18n.luaKeySections ) + ' = {',
-						'		' + headingRows.join( '\n\t\t' ),
-						'	},',
-						'	' + luaKeyQuote( i18n.luaKeyIds ) + ' = {',
-						'		' + idsRows.join( '\n\t\t' ),
-						'	}',
-						'}'
-					].join( '\n' ) );
+					// Sort the settings object so it doesn't change order
+					// everytime due to lua not supporting ordered tables
+					var sortedSettings = {};
+					Object.keys( spriteSettings ).sort().forEach( function( key ) {
+						sortedSettings[key] = spriteSettings[key];
+					} );
+					
+					var table = {};
+					table[i18n.luaKeySettings] = sortedSettings;
+					table[i18n.luaKeySections] = headingRows;
+					table[i18n.luaKeyIds] = idsRows;
+					
+					deferred.resolve( table );
+				} );
+				
+				return promises.object;
+			},
+			/**
+			 * Returns the names Lua table
+			 * 
+			 * Updates the URL timestamp if URLs are being used and the sheet
+			 * has been modified. As such, this always generates a new table if
+			 * there isn't one already pending.
+			 */
+			getTable: function() {
+				if ( promises.table && promises.table.state() === 'resolved' ) {
+					promises.table = null;
+				}
+				var deferred = makeDeferred( 'table' );
+				if ( !deferred ) {
+					return promises.table;
+				}
+				
+				names.getObject().then( function( obj ) {
+					if ( spriteSettings[i18n.luaKeySettingsUrl] ) {
+						var url = $doc.data( 'original-url' ).split( '?' );
+						// Update the version parameter if the sheet was modified
+						// or if there's no version parameter
+						if ( sheet.modified || !url[1] ) {
+							url[1] = 'version=' + Date.now();
+							$doc.data( 'url', url.join( '?' ) );
+						}
+						
+						obj[i18n.luaKeySettings][i18n.luaKeySettingsUrl] =
+							luaTable.func( $doc.data( 'urlfunc' ).replace( /\$1/, url[1] ) );
+					}
+					deferred.resolve( 'return ' + luaTable.create( obj ) );
 				} );
 				
 				return promises.table;
@@ -1560,15 +1693,15 @@ var create = function( state ) {
 				names.getTable().then( function( table ) {
 					return retryableRequest( function() {
 						return new mw.Api( {
-							ajax: { contentType: 'multipart/form-data' }
+							ajax: { contentType: 'multipart/form-data' },
 						} ).post( {
 							action: 'query',
 							prop: 'revisions',
-							pageids: idsPageId,
+							titles: dataPage,
 							rvprop: '',
 							rvdifftotext: table,
 							rvlimit: 1,
-							utf8: true
+							formatversion: 2,
 						} );
 					} );
 				} ).then( function( data ) {
@@ -1587,7 +1720,7 @@ var create = function( state ) {
 			 *
 			 * "summary" is the edit summary for the edit.
 			 */
-			save: function( summary ) {
+			save: function( summary, conflict ) {
 				var deferred = makeDeferred( 'save' );
 				if ( !deferred ) {
 					return promises.save;
@@ -1597,15 +1730,19 @@ var create = function( state ) {
 					// TODO: Check if edit actually succeeded on failure or null edit
 					return retryableRequest( function() {
 						return new mw.Api( {
-							ajax: { contentType: 'multipart/form-data' }
-						} ).postWithToken( 'edit', {
+							ajax: { contentType: 'multipart/form-data' },
+						} ).postWithToken( 'csrf', {
 							action: 'edit',
 							nocreate: true,
-							pageid: idsPageId,
+							title: dataPage,
 							text: table,
-							basetimestamp: $doc.data( 'idstimestamp' ),
+							// If there's already been an edit conflict, just allow the edit
+							// through conflict-free, as it's already annoying enough to
+							// deal with one conflict.
+							basetimestamp: !conflict ? $doc.data( 'datatimestamp' ) : undefined,
 							summary: summary,
-							utf8: true
+							tags: canTag ? 'spriteeditor' : undefined,
+							formatversion: 2,
 						} );
 					} );
 				} ).then( deferred.resolve, function( code, data ) {
@@ -1614,7 +1751,7 @@ var create = function( state ) {
 				} );
 				
 				return promises.save;
-			}
+			},
 		};
 	}() );
 	
@@ -1653,6 +1790,9 @@ var create = function( state ) {
 				if ( modified !== undefined ) {
 					sheet.modified = modified;
 				}
+				if ( spriteSettings[i18n.luaKeySettingsUrl] ) {
+					names.invalidate( true );
+				}
 			},
 			/**
 			 * Invalidates just the stash's promise
@@ -1670,44 +1810,46 @@ var create = function( state ) {
 					return promises.pos;
 				}
 				
-				var lastPos = $doc.data( 'pos' );
-				var usedPos = {};
-				usedPos[lastPos] = true;
-				
-				var newImgs = [];
-				$doc.find( '.spritedoc-box' ).each( function() {
-					var $box = $( this );
-					var pos = $box.data( 'pos' );
-					if ( pos === undefined ) {
-						newImgs.push( $box );
-					} else {
-						usedPos[pos] = true;
-						if ( pos > lastPos ) {
-							lastPos = pos;
-						}
-					}
-				} );
-				
-				if ( newImgs.length ) {
-					var unusedPos = [];
-					for ( var i = 1; i <= lastPos; i++ ) {
-						if ( !usedPos[i] ) {
-							unusedPos.push( i );
-						}
-					}
+				sheetRequest.then( function() {
+					var lastPos = spriteSettings[i18n.luaKeySettingsPos] || 1;
+					var usedPos = {};
+					usedPos[lastPos] = true;
 					
-					newImgs.forEach( function( $box ) {
-						$box.data( 'new-pos', unusedPos.length ? unusedPos.shift() : ++lastPos );
+					var newImgs = [];
+					$doc.find( '.spritedoc-box' ).each( function() {
+						var $box = $( this );
+						var pos = $box.data( 'pos' );
+						if ( pos === undefined ) {
+							newImgs.push( $box );
+						} else {
+							usedPos[pos] = true;
+							if ( pos > lastPos ) {
+								lastPos = pos;
+							}
+						}
 					} );
 					
-					if ( !unusedPos.length ) {
-						var imagesPerRow = settings.sheetWidth / settings.imageWidth;
-						settings.sheetHeight = Math.ceil( lastPos / imagesPerRow ) * settings.imageHeight;
-						getCanvas( 'sheet' ).resize();
+					if ( newImgs.length ) {
+						var unusedPos = [];
+						for ( var i = 1; i <= lastPos; i++ ) {
+							if ( !usedPos[i] ) {
+								unusedPos.push( i );
+							}
+						}
+						
+						newImgs.forEach( function( $box ) {
+							$box.data( 'new-pos', unusedPos.length ? unusedPos.shift() : ++lastPos );
+						} );
+						
+						if ( !unusedPos.length ) {
+							var imagesPerRow = ( settings.sheetWidth + settings.spacing ) / ( settings.imageWidth + settings.spacing );
+							settings.sheetHeight = Math.ceil( lastPos / imagesPerRow ) * ( settings.imageHeight + settings.spacing ) - settings.spacing;
+							getCanvas( 'sheet' ).resize();
+						}
 					}
-				}
-				
-				deferred.resolve();
+					
+					deferred.resolve();
+				} );
 				
 				return promises.pos;
 			},
@@ -1725,6 +1867,10 @@ var create = function( state ) {
 					sheetCanvas.clear();
 					sheetCanvas.ctx.drawImage( spritesheet, 0, 0 );
 					
+					// TODO: Clear deleted images so when new images fill their place
+					// the original images don't show up while the old sheet is cached
+					
+					// Insert new images into sheet
 					$doc.find( '.spriteedit-new' ).each( function() {
 						var $box = $( this );
 						var img = $box.find( 'img' )[0];
@@ -1734,15 +1880,18 @@ var create = function( state ) {
 						}
 						
 						var posPx = posToPx( pos );
+						// Clear previous image including spacing, just in-case
+						// someone manually uploaded an image overlapping the spacing
 						sheetCanvas.ctx.clearRect(
-							posPx.left,
-							posPx.top,
-							settings.imageWidth,
-							settings.imageHeight
+							posPx.left - settings.spacing,
+							posPx.top - settings.spacing,
+							settings.imageWidth + settings.spacing * 2,
+							settings.imageHeight + settings.spacing * 2
 						);
+						
 						sheetCanvas.ctx.drawImage( img, posPx.left, posPx.top );
 					} );
-					deferred.resolve( sheetCanvas.canvas.toDataURL() );
+					sheetCanvas.canvas.toBlob( deferred.resolve );
 					
 					loadingImages = [];
 				}, function() {
@@ -1761,25 +1910,17 @@ var create = function( state ) {
 					return promises.stash;
 				}
 				
-				sheet.getData().then( function( sheetData ) {
-					var sheetByteString = atob( sheetData.split( ',' )[1] );
-					var sheetByteStringLen = sheetByteString.length;
-					var buffer = new ArrayBuffer( sheetByteStringLen );
-					var intArray = new Uint8Array( buffer );
-					for ( var i = 0; i < sheetByteStringLen; i++) {
-						intArray[i] = sheetByteString.charCodeAt( i );
-					}
-					var sheetBytes = new Blob( [buffer], { type: 'image/png' } );
-					
+				sheet.getData().then( function( blob ) {
 					return retryableRequest( function() {
 						return new mw.Api( {
-							ajax: { contentType: 'multipart/form-data' }
-						} ).postWithToken( 'edit', {
+							ajax: { contentType: 'multipart/form-data' },
+						} ).postWithToken( 'csrf', {
 							action: 'upload',
 							stash: true,
 							ignorewarnings: true,
 							filename: $doc.data( 'spritesheet' ),
-							file: sheetBytes
+							file: blob,
+							formatversion: 2,
 						} );
 					} );
 				} ).then( function( data ) {
@@ -1809,12 +1950,14 @@ var create = function( state ) {
 				sheet.stash().then( function( key ) {
 					// TODO: Check if upload actually succeeded on failure
 					return retryableRequest( function() {
-						return new mw.Api().postWithToken( 'edit', {
+						return new mw.Api().postWithToken( 'csrf', {
 							action: 'upload',
 							ignorewarnings: true,
 							comment: summary,
 							filename: $doc.data( 'spritesheet' ),
-							filekey: key
+							filekey: key,
+							tags: canTag ? 'spriteeditor' : undefined,
+							formatversion: 2,
 						} );
 					} );
 				} ).then( deferred.resolve, function( code, data ) {
@@ -1831,7 +1974,7 @@ var create = function( state ) {
 				} );
 				
 				return promises.save;
-			}
+			},
 		};
 	}() );
 	
@@ -1849,35 +1992,50 @@ var create = function( state ) {
 	 * "summary" is the text from the summary field.
 	 * "refresh" is a boolean, which when true will cause the sprite documentation
 	 * to be reparsed after saving (e.g. in the event of an edit conflict).
+	 * "conflict" is a boolean which specifies if this is saving an edit conflict or not
 	 */
-	var saveChanges = function( summary, refresh ) {
-		var idsEdit, sheetEdit;
-		if ( names.modified ) {
-			// Wait for image upload before uploading text
-			idsEdit = sheet.stash().then( function() {
-				return names.save( summary );
-			} ).then( function( data ) {
-				// Null edit, nothing to do here
-				if ( data.edit.nochange === '' ) {
-					return;
-				}
-				
-				$doc.data( 'idstimestamp', fixTimestamp( data.edit.newtimestamp ) );
-				
-				// Purge this page so the changes show up immediately
-				retryableRequest( function() {
-					return new mw.Api().get( {
-						action: 'purge',
-						pageids: mw.config.get( 'wgArticleId' )
-					} );
-				} );
-			}, handleSaveError );
-		}
-		if ( sheet.modified ) {
-			sheetEdit = sheet.save( summary ).fail( handleSaveError );
+	var saveChanges = function( summary, refresh, conflict ) {
+		// No more editing
+		$root.addClass( 'spriteedit-hidecontrols' );
+		
+		// Have to refresh if a new image is added to get the sprite HTML
+		if ( refresh !== false ) {
+			refresh = !!$( '.spriteedit-new-image' ).length;
 		}
 		
-		$.when( idsEdit, sheetEdit ).done( function() {
+		sheet.save( summary ).then( function() {
+			return names.save( summary, conflict );
+		} ).then( function( data ) {
+			if ( sheet.modified ) {
+				if ( spriteSettings[i18n.luaKeySettingsUrl] ) {
+					var url = $doc.data( 'url' );
+					overwriteSpritesheet( url );
+					$doc.data( 'original-url', url );
+				} else {
+					sheet.getData().then( function( blob ) {
+						overwriteSpritesheet( URL.createObjectURL( blob ) );
+					} );
+				}
+			}
+			// Prevent disabling, otherwise we'd end up with the old
+			// spritesheet if the editor was restarted and closed
+			overwriteSpritesheet.style = null;
+			
+			// Null edit, nothing to do here
+			if ( !data || data.edit.nochange ) {
+				return;
+			}
+			
+			$doc.data( 'datatimestamp', fixTimestamp( data.edit.newtimestamp ) );
+			
+			// Purge this page so the changes show up immediately
+			retryableRequest( function() {
+				return new mw.Api().post( {
+					action: 'purge',
+					pageids: mw.config.get( 'wgArticleId' ),
+				} );
+			} );
+		} ).then( function() {
 			var newContent;
 			if ( refresh ) {
 				newContent = retryableRequest( function() {
@@ -1885,21 +2043,21 @@ var create = function( state ) {
 						title: mw.config.get( 'wgPageName' ),
 						text: $( '<i>' ).html(
 							$.parseHTML( $doc.attr( 'data-refreshtext' ) )
-						).html()
+						).html(),
 					} );
 				} );
 			}
 			
 			$.when( newContent ).done( function( data ) {
 				if ( refresh ) {
-					$doc.html( data.parse.text['*'] );
+					$doc.replaceWith( data.parse.text );
 				}
 			} ).always( function() {
 				destroy();
 				
 				mw.hook( 'postEdit' ).fire( { message: i18n.changesSavedNotice } );
 			} );
-		} );
+		}, handleSaveError );
 	};
 	
 	/**
@@ -1913,17 +2071,19 @@ var create = function( state ) {
 	 * "code" and "data" are the standard variables returned by a mw.Api promise rejection.
 	 */
 	var handleSaveError = function( code, data ) {
+		// Allow editing again
+		$root.removeClass( 'spriteedit-hidecontrols' );
+		$( '#spriteedit-save' ).find( 'button' ).removeClass( 'spriteedit-processing' );
+		
 		if ( code !== 'editconflict' ) {
-			$( '#spriteedit-save' ).removeClass( 'spriteedit-processing' );
 			handleError( code, data );
 			return;
 		}
 		
-		var conflictPanel = panels.conflict || panel(
-			'conflict',
-			i18n.panelConflictTitle,
-			$( '<p>' ).text( i18n.panelConflictText ),
-			{
+		var conflictPanel = panels.conflict || panel( 'conflict', {
+			title: i18n.panelConflictTitle,
+			content: $( '<p>' ).text( i18n.panelConflictText ),
+			actions: {
 				left: { text: i18n.panelConflictReview, config: {
 					id: 'review-conflict-changes',
 					action: function() {
@@ -1933,20 +2093,22 @@ var create = function( state ) {
 						}
 						$button.blur().addClass( 'spriteedit-processing' );
 						
-						var changesPanel = panels.ecchanges || panel(
-							'ecchanges',
-							i18n.panelEcchangesTitle,
-							$( '<div>' ).addClass( 'spriteedit-id-changes' ),
-							{ right: { text: i18n.panelEcchangesReturn, config: {
+						var changesPanel = panels.ecchanges || panel( 'ecchanges', {
+							title: i18n.panelEcchangesTitle,
+							content: $( '<div>' ).addClass( 'spriteedit-id-changes' ),
+							actions: { right: { text: i18n.panelEcchangesReturn, config: {
 								id: 'spriteedit-return-edit',
-								type: 'progressive',
+								type: [ 'progressive', 'primary' ],
 								action: function() {
 									conflictPanel.show();
-								}
-							} } }
-						);
+								},
+							} } },
+							onClose: function() {
+								names.invalidate( true );
+							},
+						} );
 						
-						names.setTable( conflictPanel.$text.find( 'textarea:first' ).val() );
+						names.setTable( $( '#spriteedit-ec-curText' ).data( 'ooui-object' ).getValue() );
 						names.getDiff().then( function( diff ) {
 							changesPanel.clean();
 							
@@ -1963,7 +2125,7 @@ var create = function( state ) {
 				} },
 				right: { text: i18n.panelConflictSave, config: {
 					id: 'save-conflict',
-					type: 'constructive',
+					type: [ 'progressive', 'primary' ],
 					action: function() {
 						var $button = $( this );
 						if ( $button.hasClass( 'spriteedit-processing' ) ) {
@@ -1971,48 +2133,64 @@ var create = function( state ) {
 						}
 						$button.blur().addClass( 'spriteedit-processing' );
 						
-						names.setTable( conflictPanel.$text.find( 'textarea:first' ).val() );
-						saveChanges( $( '#spriteedit-summary' ).val(), true );
-					}
-				} }
+						names.setTable( $( '#spriteedit-ec-curText' ).data( 'ooui-object' ).getValue() );
+						saveChanges( $( '#spriteedit-summary' ).data( 'ooui-object' ).getValue(), true, true );
+					},
+				} },
 			},
-			function() {
+			onShow: function() {
 				this.$actions.find( 'button' ).removeClass( 'spriteedit-processing' );
-			}
-		);
+				
+				var $textarea = this.$text.find( 'textarea' );
+				$textarea.css( 'max-height', ( this.$text.height() - $textarea.parent()[0].offsetTop ) + 'px' );
+			},
+			onClose: function() {
+				names.invalidate( true );
+			},
+		} );
 		
 		$.when(
 			names.getTable(),
 			names.getDiff(),
 			retryableRequest( function() {
-				return revisionsApi.get( { pageids: idsPageId } );
+				return revisionsApi.get( { titles: dataPage } );
 			} )
 		).then( function( table, diff, curTextData ) {
-			var opt = mw.user.options.get( [ 'rows', 'cols' ] );
-			var $textbox = $( '<textarea>' ).addClass( 'mw-ui-input' ).prop( {
-				rows: opt.rows,
-				cols: opt.cols
+			// TODO: Change to MultilineTextInputWidget on MW 1.30
+			var curEditbox = new OO.ui.TextInputWidget( {
+				id: 'spriteedit-ec-curText',
+				multiline: true,
+				value: curTextData[0].query.pages[0].revisions[0].content,
 			} );
+			curEditbox.$element.data( 'ooui-object', curEditbox );
+			var oldEditbox = new OO.ui.TextInputWidget( {
+				id: 'spriteedit-ec-oldText',
+				multiline: true,
+				readOnly: true,
+				value: table,
+			} );
+			oldEditbox.$element.data( 'ooui-object', oldEditbox );
 			
 			var $curText = $( '<div>' ).append(
-				$textbox.clone().val( curTextData.query.pages[idsPageId].revisions[0]['*'] )
+				$( '<p>' ).text( i18n.panelConflictCurText ),
+				curEditbox.$element
 			);
 			var $oldText = $( '<div>' ).append(
-				$textbox.clone().prop( 'readonly', true ).val( table )
+				$( '<p>' ).text( i18n.panelConflictYourText ),
+				oldEditbox.$element
 			);
 			
-			var $diff = $( '<div>' ).append( diff );
-			
-			conflictPanel.$text
-				.append( $( '<p>' ).text( i18n.panelConflictCurText ) )
-				.append( $curText )
-				.append( $diff )
-				.append( $( '<p>' ).text( i18n.panelConflictYourText ) )
-				.append( $oldText );
+			conflictPanel.$text.append(
+				$( '<div>' ).addClass( 'spriteedit-ec-editboxes' ).append(
+					$curText,
+					$oldText
+				),
+				diff
+			);
 			
 			conflictPanel.show();
 		}, function( code, data ) {
-			$( '#spriteedit-save' ).removeClass( 'spriteedit-processing' );
+			$( '#spriteedit-save' ).find( 'button' ).removeClass( 'spriteedit-processing' );
 			handleError( code, data );
 		} );
 	};
@@ -2021,11 +2199,12 @@ var create = function( state ) {
 	 * Converts a position to pixel co-ordinates on the sheet
 	 */
 	var posToPx = function( pos ) {
+		settings.imagesPerRow = settings.imagesPerRow ||
+			( settings.sheetWidth + settings.spacing ) / ( settings.imageWidth + settings.spacing );
 		pos -= 1;
-		var imagesPerRow = settings.sheetWidth / settings.imageWidth;
 		return {
-			left: pos % imagesPerRow * settings.imageWidth,
-			top: Math.floor( pos / imagesPerRow ) * settings.imageHeight
+			left: pos % settings.imagesPerRow * ( settings.imageWidth + settings.spacing ),
+			top: Math.floor( pos / settings.imagesPerRow ) * ( settings.imageHeight + settings.spacing ),
 		};
 	};
 	
@@ -2048,8 +2227,9 @@ var create = function( state ) {
 			}
 			
 			var $newBox = $boxTemplate.clone();
-			$newBox.find( 'code' ).text( $.trim( this.name ).replace( /\.[^\.]+$/, '' ) );
+			$newBox.find( 'code' ).text( this.name.trim().replace( /\.[^\.]+$/, '' ).replace( /_/g, ' ' ) );
 			scaleImage( this ).done( function( $img ) {
+				$img.addClass( 'spriteedit-new-image' );
 				$newBox.find( '.spritedoc-image' ).html( $img );
 			} );
 			
@@ -2060,7 +2240,7 @@ var create = function( state ) {
 			change( 'insert', {
 				$elem: $newBox,
 				index: index - 1,
-				$parent: $parent
+				$parent: $parent,
 			} );
 		} );
 	};
@@ -2085,7 +2265,7 @@ var create = function( state ) {
 			
 			var $canvas = $( '<canvas>' ).attr( {
 				width: settings[type + 'Width'],
-				height: settings[type + 'Height']
+				height: settings[type + 'Height'],
 			} ).appendTo( $doc );
 			var canvas = $canvas[0];
 			var ctx = canvas.getContext( '2d' );
@@ -2096,12 +2276,12 @@ var create = function( state ) {
 				resize: function() {
 					$canvas.attr( {
 						width: settings[type + 'Width'],
-						height: settings[type + 'Height']
+						height: settings[type + 'Height'],
 					} );
 				},
 				clear: function() {
 					ctx.clearRect( 0, 0, canvas.width, canvas.height );
-				}
+				},
 			};
 			canvases[type] = funcs;
 			return funcs;
@@ -2145,7 +2325,9 @@ var create = function( state ) {
 				scaledImg.onload = function() {
 					deferred.resolve( $( scaledImg ) );
 				};
-				scaledImg.src = scaler.canvas.toDataURL();
+				scaler.canvas.toBlob( function( blob ) {
+					scaledImg.src = URL.createObjectURL( blob );
+				} );
 			};
 			img.src = URL.createObjectURL( file );
 			
@@ -2159,17 +2341,48 @@ var create = function( state ) {
 	 *
 	 * If this is the first panel, the dialog window is created.
 	 * Panels are stored in the "panels" object, which should be checked for
-	 * for panel id prior to calling this function to create a new panel,
+	 * panel id prior to calling this function to create a new panel,
 	 * so duplicates are not made.
 	 * E.g: `var myPanel = panels.myPanel || panel( 'myPanel', ... );`
 	 *
+	 * "id" is the unique ID that identifies this panel
+	 * "config" is an object of config options for this panel
+	 *  "title" is the string to use for the panel's title
+	 *  "content" is HTML to use for the panel's text area,
+	 *   it can be in any format $().append takes (jQuery, nodes, HTML strings, array)
+	 *   The panel will reset to this HTML whenever the dialog box is closed
+	 *   (if "cached" isn't specified)
+	 *  "actions" is an object to specify which buttons to place.
+	 *   It has a "left" and "right" key to specify which side of the
+	 *   dialog to place the buttons which accept an array of objects
+	 *   which are passed to `makeButton`
+	 *  "onShow" is a callback which is called whenever the dialog is
+	 *   opened, or this panel is shown
+	 *  "onHide" is a callback which is called whenever the dialog is
+	 *   closed, or this panel is hidden
+	 *  "onClose" is a callback which is called whenever the dialog is
+	 *   closed, regardless of which panel is currently shown
+	 *  "cached" is a boolean specifying if the panel's HTML should be
+	 *   retained after the dialog is closed, or should be reset to the
+	 *   value of "config.content"
+	 *
 	 * Returns the panel object for the new panel (or the currently displayed
 	 * panel if called with no arguments).
-	 * The panel object contains jQuery objects of the panel's parts, and methods
-	 * for controlling the panel/dialog window.
+	 * The panel object contains jQuery objects of the panel's parts, some of
+	 * the config options, and methods for controlling the panel/dialog window.
+	 * 
+	 * panel.show shows the panel, opening the dialog if it isn't already
+	 *  It accepts a callback function which is called once the dialog/panel
+	 *  opening animation is finished
+	 * panel.hide closes the dialog
+	 *  It accepts a callback function which is called once the dialog closing
+	 *  animation is finished
+	 * panel.clean deletes the panel's text and resets it to the initial
+	 *  value specified in "config.content"
 	 */
-	var panel = function( id, title, content, actions, onShow, cached ) {
-		var $overlay, $dialog = $( '.spriteedit-dialog' );
+	var panel = function( id, config ) {
+		var $overlay;
+		var $dialog = $( '.spriteedit-dialog' );
 		if ( !id ) {
 			return panels[$dialog.data( 'active-panel' )];
 		}
@@ -2182,37 +2395,42 @@ var create = function( state ) {
 		if ( !$dialog.length ) {
 			$overlay = $( '<div>' ).addClass( 'spriteedit-dialog-overlay' ).css( 'display', 'none' );
 			$dialog = $( '<div>' ).addClass( 'spriteedit-dialog' ).append(
-				makeButton( '×', {
+				makeButton( '', {
 					id: 'spriteedit-dialog-close',
-					props: { title: i18n.panelCloseTip },
+					icon: 'close',
+					title: i18n.panelCloseTip,
 					action: function() {
-						panel().hide();
-					}
+						var closingPanel = panel();
+						closingPanel.hide();
+						if ( closingPanel.onClose ) {
+							closingPanel.onClose.call( closingPanel );
+						}
+					},
 				} )
 			).appendTo( $overlay );
 		}
 		
-		if ( content && !$.isArray( content ) ) {
-			content = [ content ];
+		if ( config.content && !Array.isArray( config.content ) ) {
+			config.content = [ config.content ];
 		}
 		
 		var $panel = $( '<div>' )
 			.prop( 'id', 'spriteedit-dialog-' + id )
 			.addClass( 'spriteedit-dialog-panel' );
 		
-		var $title = $( '<div>' ).addClass( 'spriteedit-dialog-title' ).text( title ).appendTo( $panel );
+		var $title = $( '<div>' ).addClass( 'spriteedit-dialog-title' ).text( config.title ).appendTo( $panel );
 		
 		var $text = $( '<div>' ).addClass( 'spriteedit-dialog-text' ).appendTo( $panel );
 		
-		if ( content ) {
-			$text.append( content );
+		if ( config.content ) {
+			$text.append( config.content );
 			
-			// Keep content as the inital HTML for resetting
-			content = $text.html();
+			// Keep content as the initial HTML for resetting
+			config.content = $text.html();
 		}
 		
 		var $actions;
-		if ( actions ) {
+		if ( config.actions ) {
 			$actions = $( '<div>' ).addClass( 'spriteedit-dialog-actions' ).appendTo( $panel );
 			var $leftActions = $( '<span>' ).appendTo( $actions );
 			var $rightActions = $( '<span>' ).css( 'float', 'right' ).appendTo( $actions );
@@ -2222,7 +2440,7 @@ var create = function( state ) {
 				}
 				
 				var $area = right ? $rightActions : $leftActions;
-				if ( !$.isArray( buttons ) ) {
+				if ( !Array.isArray( buttons ) ) {
 					buttons = [ buttons ];
 				}
 				$.each( buttons, function() {
@@ -2230,32 +2448,20 @@ var create = function( state ) {
 				} );
 			};
 			
-			addButtons( actions.left );
-			addButtons( actions.right, true );
+			addButtons( config.actions.left );
+			addButtons( config.actions.right, true );
 		}
 		
 		$dialog.append( $panel );
 		
 		if ( $overlay ) {
-			$doc.append( $overlay );
+			$body.append( $overlay );
 		} else {
 			$overlay = $dialog.parent();
 		}
 		
 		$overlay.show();
-		var titleHeight = $title.innerHeight();
-		var actionsHeight;
-		if ( actions ) {
-			actionsHeight = $actions.innerHeight();
-		}
-		$panel.css( {
-			paddingTop: titleHeight,
-			paddingBottom: actionsHeight
-		} );
-		$title.css( 'margin-top', -titleHeight );
-		if ( actions ) {
-			$actions.css( 'margin-bottom', -actionsHeight );
-		}
+		
 		if ( $overlay.css( 'opacity' ) === '0' ) {
 			$overlay.hide();
 		}
@@ -2267,7 +2473,7 @@ var create = function( state ) {
 			$text: $text,
 			$actions: $actions,
 			show: function( callback ) {
-				$dialog.css( { width: '', height: '', transform: 'none', transition: 'none' } );
+				$dialog.css( { transform: 'none', transition: 'none' } );
 				
 				var prevPanel;
 				if ( $overlay.css( 'opacity' ) === '1' ) {
@@ -2275,6 +2481,9 @@ var create = function( state ) {
 					// Remember to cleanup previous panel when the dialog is closed
 					if ( prevPanel && !prevPanel.cached ) {
 						prevPanel.cleanup = true;
+					}
+					if ( prevPanel.onHide ) {
+						prevPanel.onHide.call( prevPanel );
 					}
 				}
 				
@@ -2285,41 +2494,23 @@ var create = function( state ) {
 				}
 				$overlay.css( 'display', '' );
 				$panel.css( 'display', '' );
-				var newRect = $dialog[0].getBoundingClientRect();
-				$dialog.css( 'transform', '' ).redraw().css( 'transition', '' );
-				
-				$dialog.transitionEnd( function() {
-					if ( onShow ) {
-						onShow.call( thisPanel );
-					}
-					if ( callback ) {
-						callback.call( thisPanel );
-					}
-				} );
-				
 				if ( prevPanel ) {
+					var newRect = $dialog[0].getBoundingClientRect();
+					$dialog.css( 'transform', 'scale(1)' ).redraw().css( 'transition', '' );
 					if ( oldRect.width === newRect.width && oldRect.height === newRect.height ) {
 						// No transition to be made
-						$dialog.css( {
-							width: newRect.width,
-							height: newRect.height
-						} );
-						
 						$dialog.trigger( 'transitionend' );
 					} else {
 						$panel.css( 'display', 'none' );
 						$dialog.css( {
 							width: oldRect.width,
-							height: oldRect.height
-						} );
-						$dialog.redraw();
-						$dialog.css( {
+							height: oldRect.height,
+						} ).redraw().css( {
 							width: newRect.width,
-							height: newRect.height
-						} );
-						
-						$dialog.transitionEnd( function() {
+							height: newRect.height,
+						} ).transitionEnd( function() {
 							panelShown = true;
+							$dialog.css( { width: '', height: '' } );
 							$panel.css( 'display', '' );
 						} );
 						
@@ -2334,14 +2525,11 @@ var create = function( state ) {
 						}, 1000 );
 					}
 				} else {
+					$dialog.css( 'transform', '' ).redraw().css( 'transition', '' );
 					$overlay.css( 'opacity', 1 );
 					$dialog
 						.addClass( 'spriteedit-elastic' )
-						.css( {
-							transform: 'scale(1)',
-							width: newRect.width,
-							height: newRect.height
-						} )
+						.css( 'transform', 'scale(1)' )
 						.transitionEnd( function() {
 							$dialog.removeClass( 'spriteedit-elastic' );
 						} );
@@ -2349,11 +2537,22 @@ var create = function( state ) {
 				
 				$dialog.data( 'active-panel', id );
 				
+				if ( config.onShow ) {
+					config.onShow.call( thisPanel );
+				}
+				if ( callback ) {
+					callback.call( thisPanel );
+				}
+				
 				return this;
 			},
 			hide: function( callback ) {
 				if ( !$overlay.is( ':visible' ) ) {
 					return this;
+				}
+				
+				if ( config.onHide ) {
+					config.onHide.call( thisPanel );
 				}
 				
 				$dialog.css( 'transform', 'scale(0)' );
@@ -2365,7 +2564,7 @@ var create = function( state ) {
 					$overlay.css( 'display', 'none' );
 					thisPanel.$panel.css( 'display', 'none' );
 					
-					if ( !cached ) {
+					if ( !config.cached ) {
 						thisPanel.cleanup = true;
 					}
 					$.each( panels, function() {
@@ -2384,14 +2583,16 @@ var create = function( state ) {
 			clean: function() {
 				$text.empty();
 				
-				if ( content ) {
-					$text.append( content );
+				if ( config.content ) {
+					$text.append( config.content );
 				}
 				
 				thisPanel.cleanup = false;
 			},
-			onShow: onShow,
-			cached: cached
+			onShow: config.onShow,
+			onHide: config.onHide,
+			onClose: config.onClose,
+			cached: config.cached,
 		};
 		return thisPanel;
 	};
@@ -2407,9 +2608,11 @@ var create = function( state ) {
 	 * "$elem" is a jQuery object which the tooltip should be anchored to.
 	 * "content" is the content to go in the tooltip, and can be in whatever format can
 	 * go into jQuery().append (jQuery objects, elements, HTML strings, etc.).
-	 * "horizontal" is a boolean determining if the tooltip should open horizontally or vertically
-	 * relative to its anchor.
-	 * "callback" is a function called once the tooltip finishes its opening animation.
+	 * "config" contains key-value pairs of the following configuration options:
+	 *   "horizontal" is a boolean determining if the tooltip should open horizontally or vertically
+	 *   relative to its anchor.
+	 *   "callback" is a function called once the tooltip finishes its opening animation.
+	 *   "class" is a classname to add to the tooltip
 	 *
 	 * In the tooltip.hide function:
 	 * "callback" is a function called once the tooltip finishes its closing animation.
@@ -2427,7 +2630,8 @@ var create = function( state ) {
 			}
 		} );
 		
-		var func = function( $elem, content, horizontal, callback ) {
+		var func = function( $elem, content, config ) {
+			config = config || {};
 			if ( $tooltip.length ) {
 				if ( $elem.is( $anchor ) ) {
 					func.hide();
@@ -2441,30 +2645,34 @@ var create = function( state ) {
 			$tooltip = $( '<div>' ).addClass( 'spriteedit-tooltip' ).append(
 				$( '<div>' ).addClass( 'spriteedit-tooltip-text' ).append( content ),
 				$( '<div>' ).addClass( 'spriteedit-tooltip-arrow' )
-			).appendTo( $doc );
+			).appendTo( document.body );
+			
+			if ( config.class ) {
+				$tooltip.addClass( config.class );
+			}
 			
 			var anchorPos = $anchor.offset();
-			var docPos = $doc.offset();
-			if ( horizontal ) {
+			var bodyPos = $body.offset();
+			if ( config.horizontal ) {
 				$tooltip.addClass( 'spriteedit-tooltip-horizontal' ).css( {
-					top: anchorPos.top - docPos.top + $anchor.outerHeight() / 2,
-					left: anchorPos.left - docPos.left - $tooltip.outerWidth()
+					top: anchorPos.top - bodyPos.top + $anchor.outerHeight() / 2,
+					left: anchorPos.left - bodyPos.left - $tooltip.outerWidth(),
 				} );
 			} else {
 				$tooltip.css( {
-					top: anchorPos.top - docPos.top - $tooltip.outerHeight(),
-					left: anchorPos.left - docPos.left + $anchor.outerWidth() / 2
+					top: anchorPos.top - bodyPos.top - $tooltip.outerHeight(),
+					left: anchorPos.left - bodyPos.left + $anchor.outerWidth() / 2,
 				} );
 			}
 			
 			$tooltip.addClass( 'spriteedit-elastic' ).css( {
 				opacity: 1,
-				transform: 'scale(1)'
+				transform: 'scale(1)',
 			} ).transitionEnd( function() {
 				$( this ).removeClass( 'spriteedit-elastic' );
 				
-				if ( callback ) {
-					callback.call( this );
+				if ( config.callback ) {
+					config.callback.call( this );
 				}
 			} );
 		};
@@ -2475,7 +2683,7 @@ var create = function( state ) {
 			
 			$tooltip.off( 'transitionend.spriteEdit' ).css( {
 				opacity: 0,
-				transform: 'scale(0)'
+				transform: 'scale(0)',
 			} ).transitionEnd( function() {
 				$( this ).remove();
 				
@@ -2560,7 +2768,7 @@ var create = function( state ) {
 				$ghost = $( this ).parent();
 			}
 			
-			if ( $ghost.find( '.spriteedit-new' ).length && $.trim( $ghost.text() ) === '' ) {
+			if ( $ghost.find( '.spriteedit-new' ).length && $ghost.text().trim() === '' ) {
 				$ghost = $();
 				return;
 			}
@@ -2584,19 +2792,19 @@ var create = function( state ) {
 			var ghostRect = ghostElem.getBoundingClientRect();
 			var cursorOffset = {
 				top: ( ghostRect.top - e.clientY ) / ghostRect.height,
-				left: ( ghostRect.left - e.clientX ) / ghostRect.width
+				left: ( ghostRect.left - e.clientX ) / ghostRect.width,
 			};
 			
 			$ghost.addClass( 'spriteedit-ghost' ).css( {
 				top: e.clientY,
-				left: e.clientX
+				left: e.clientX,
 			} );
 			
 			// Apply offsets
 			var newGhostRect = ghostElem.getBoundingClientRect();
 			$ghost.css( {
 				marginTop: newGhostRect.height * cursorOffset.top,
-				marginLeft: newGhostRect.width * cursorOffset.left
+				marginLeft: newGhostRect.width * cursorOffset.left,
 			} );
 			
 			if ( options.sortStart ) {
@@ -2609,11 +2817,6 @@ var create = function( state ) {
 			}
 			
 			$ghost.parent().mouseenter();
-			
-			// HACK: Fix IE8 selecting things while dragging
-			$( document ).on( 'selectstart', function( e ) {
-				e.preventDefault();
-			} );
 			
 			sorting = true;
 			$root.addClass( 'spriteedit-sorting spriteedit-hidecontrols' );
@@ -2692,7 +2895,7 @@ var create = function( state ) {
 					change( 'delete', {
 						$elem: $box,
 						index: $box.index() - 1,
-						$parent: $box.parent()
+						$parent: $box.parent(),
 					}, true );
 				}
 				
@@ -2702,7 +2905,7 @@ var create = function( state ) {
 					$oldParent: $ghost.parent(),
 					index: index - 1,
 					$parent: $hoverParent.length && $hoverParent.find( selectors.parent ) ||
-						$placeholder.parent()
+						$placeholder.parent(),
 				} );
 			}
 			
@@ -2716,9 +2919,6 @@ var create = function( state ) {
 			
 			$placeholder.remove();
 			$ghost = $placeholder = $hover = $hoverParent = $();
-			
-			// Remove IE8 hack
-			$( document ).off( 'selectstart' );
 			
 			sorting = false;
 			$root.removeClass( 'spriteedit-sorting spriteedit-hidecontrols' );
@@ -2752,6 +2952,9 @@ var create = function( state ) {
 	var change = ( function() {
 		var queue = [];
 		var func = function( action, content, queueChange, oldChange ) {
+			var isBox;
+			var $box;
+			var $code;
 			switch ( action ) {
 				case 'edit':
 					if ( oldChange ) {
@@ -2767,7 +2970,7 @@ var create = function( state ) {
 				
 				case 'insert':
 					var moved = content.$elem.parent().length;
-					var isBox = content.$elem.hasClass( 'spritedoc-box' );
+					isBox = content.$elem.hasClass( 'spritedoc-box' );
 					var $oldBox = !isBox && content.$elem.closest( '.spritedoc-box' );
 					
 					if ( content.index === -1 ) {
@@ -2785,13 +2988,13 @@ var create = function( state ) {
 						}
 					} else if ( content.$elem.hasClass( 'spritedoc-name' ) ) {
 						if ( moved ) {
-							var $box = content.$elem.closest( '.spritedoc-box' );
+							$box = content.$elem.closest( '.spritedoc-box' );
 							if ( !$box.is( $oldBox ) ) {
 								updateBoxSorting( $oldBox );
 							}
 							updateBoxSorting( $box );
 						} else {
-							var $code = content.$elem.find( 'code' );
+							$code = content.$elem.find( 'code' );
 							updateName( undefined, $code.text(), $code );
 						}
 					}
@@ -2804,8 +3007,8 @@ var create = function( state ) {
 				break;
 				
 				case 'delete':
-					var isBox = content.$elem.hasClass( 'spritedoc-box' );
-					var $box = !isBox && content.$elem.closest( '.spritedoc-box' );
+					isBox = content.$elem.hasClass( 'spritedoc-box' );
+					$box = !isBox && content.$elem.closest( '.spritedoc-box' );
 					
 					content.$elem.detach();
 					
@@ -2815,7 +3018,7 @@ var create = function( state ) {
 						} );
 						sheet.invalidate( !!$doc.find( '.spriteedit-new' ).length );
 					} else if ( content.$elem.hasClass( 'spritedoc-name' ) ) {
-						var $code = content.$elem.find( 'code' );
+						$code = content.$elem.find( 'code' );
 						updateName( $code.text(), undefined, $code );
 						updateBoxSorting( $box );
 					}
@@ -2824,12 +3027,12 @@ var create = function( state ) {
 				break;
 				
 				case 'replace image':
-					var $box = content.$parent.parent();
+					$box = content.$parent.parent();
 					if ( content.$oldImg && content.$oldImg.length ) {
 						content.$oldImg.detach();
 					} else {
 						$box.addClass( 'spriteedit-new' );
-						content.$parent.children().css( 'display', 'none' );
+						content.$parent.find( '.sprite' ).addClass( 'spriteedit-replaced-image' );
 					}
 					content.$parent.append( content.$elem );
 					sheet.invalidate( true );
@@ -2837,7 +3040,7 @@ var create = function( state ) {
 				
 				case 'reset image':
 					content.$elem.detach();
-					content.$parent.children().css( 'display', '' );
+					content.$parent.find( '.sprite' ).removeClass( 'spriteedit-replaced-image' );
 					content.$parent.parent().removeClass( 'spriteedit-new' );
 					
 					if ( !$doc.find( '.spriteedit-new' ).length ) {
@@ -2849,6 +3052,10 @@ var create = function( state ) {
 					content.$elem.toggleClass( 'spritedoc-deprecated' );
 					
 					names.invalidate( true );
+				break;
+				
+				default:
+					console.error( 'Invalid action: `%s`', action );
 				break;
 			}
 			
@@ -2878,9 +3085,11 @@ var create = function( state ) {
 				$.each( [
 					'#spriteedit-save',
 					'#spriteedit-summary',
-					'#spriteedit-review-button'
+					'#spriteedit-review-button',
 				], function() {
-					$( this ).prop( 'disabled', true );
+					if ( $( this ).length ) {
+						$( this ).data( 'ooui-object' ).setDisabled( true );
+					}
 				} );
 			}
 		};
@@ -2907,16 +3116,18 @@ var create = function( state ) {
 			
 			undoneChanges = [];
 			
-			$( '#spriteedit-redo' ).prop( 'disabled', true );
+			$( '#spriteedit-redo' ).data( 'ooui-object' ).setDisabled( true );
 		}
 		
 		$.each( [
 			'#spriteedit-undo',
 			'#spriteedit-save',
 			'#spriteedit-summary',
-			'#spriteedit-review-button'
+			'#spriteedit-review-button',
 		], function() {
-			$( this ).prop( 'disabled', false );
+			if ( $( this ).length ) {
+				$( this ).data( 'ooui-object' ).setDisabled( false );
+			}
 		} );
 	};
 	
@@ -2937,7 +3148,7 @@ var create = function( state ) {
 					change( 'edit', {
 						$elem: content.$elem,
 						text: content.oldText,
-						oldText: content.text
+						oldText: content.text,
 					}, false, true );
 				break;
 				
@@ -2946,12 +3157,12 @@ var create = function( state ) {
 						change( 'insert', {
 							$elem: content.$elem,
 							index: content.oldIndex,
-							$parent: content.$oldParent
+							$parent: content.$oldParent,
 						}, false, true );
 					} else {
 						change( 'delete', {
 							$elem: content.$elem,
-							$parent: content.$parent
+							$parent: content.$parent,
 						}, false, true );
 					}
 				break;
@@ -2960,7 +3171,7 @@ var create = function( state ) {
 					change( 'insert', {
 						$elem: content.$elem,
 						index: content.index,
-						$parent: content.$parent
+						$parent: content.$parent,
 					}, false, true );
 				break;
 				
@@ -2969,7 +3180,7 @@ var create = function( state ) {
 						change( 'replace image', {
 							$elem: content.$oldImg,
 							$parent: content.$parent,
-							$oldImg: content.$elem
+							$oldImg: content.$elem,
 						}, false, true );
 					} else {
 						change( 'reset image', content, false, true );
@@ -2997,9 +3208,11 @@ var create = function( state ) {
 				'#spriteedit-undo',
 				'#spriteedit-save',
 				'#spriteedit-summary',
-				'#spriteedit-review-button'
+				'#spriteedit-review-button',
 			], function() {
-				$( this ).prop( 'disabled', true );
+				if ( $( this ).length ) {
+					$( this ).data( 'ooui-object' ).setDisabled( true );
+				}
 			} );
 		}
 	};
@@ -3050,7 +3263,7 @@ var create = function( state ) {
 					oldIndex: oldIndex - 1,
 					$oldParent: $parent,
 					index: index - 1,
-					$parent: $parent
+					$parent: $parent,
 				}, false, true );
 			} else if ( index === 0 ) {
 				updateBoxSorting( $item.closest( '.spritedoc-box' ) );
@@ -3079,9 +3292,40 @@ var create = function( state ) {
 				oldIndex: oldIndex - 1,
 				$oldParent: $parent,
 				index: index - 1,
-				$parent: $parent
+				$parent: $parent,
 			}, false, true );
 		}
+	};
+	
+	/**
+	 * Picks the section which is probably the section the user wants to put things
+	 *
+	 * Mainly based on the section closest to the top of the screen,
+	 * but prefers elements which are not at all going off the screen
+	 * (accounting for the space taken up by the toolbar).
+	 *
+	 * Returns the section element
+	 */
+	var nearestSection = function() {
+		var offscreen, prox, elem;
+		$doc.find( '.spritedoc-section' ).each( function() {
+			var curPos = this.getBoundingClientRect().top - 35;
+			var curProx = Math.abs( curPos );
+			if ( prox && curProx > prox ) {
+				// Prefer on-screen section, even if it is further from the top
+				if ( offscreen ) {
+					elem = this;
+				}
+				
+				return false;
+			}
+			
+			offscreen = curPos < 0;
+			prox = curProx;
+			elem = this;
+		} );
+		
+		return elem;
 	};
 	
 	/**
@@ -3096,26 +3340,31 @@ var create = function( state ) {
 	 * spriteedit action. Used for when the editor is destroyed due to history navigation.
 	 */
 	var destroy = function( restore, leaveUrl ) {
+		document.title = originalTitle;
+		
+		// Disable close confirm dialog
+		preventClose && preventClose.release();
+		
 		$win.add( document ).off( '.spriteEdit' );
 		
 		if ( !leaveUrl ) {
-			if ( historySupported ) {
-				history.pushState( {}, '', mw.util.getUrl() );
-			} else if ( location.search.match( 'spriteaction=edit' ) ) {
-				location = mw.util.getUrl();
-			}
+			history.pushState( {}, '', mw.util.getUrl() );
 		}
 		
 		var enabled = $root.hasClass( 'spriteedit-enabled' );
 		
-		$root.removeClass( 'spriteedit-loaded spriteedit-enabled spriteedit-imageeditingenabled' );
+		$root.removeClass( 'spriteedit-loaded spriteedit-enabled spriteedit-imageeditingenabled spriteedit-hidecontrols' );
 		
 		var $viewTab = $( '#ca-view' );
 		$viewTab.add( '#ca-spriteedit' ).toggleClass( 'selected' );
 		
 		$doc.add( $viewTab.find( 'a' ) ).off( '.spriteEdit' );
 		
-		// No furthur cleanup necessary
+		if ( restore ) {
+			overwriteSpritesheet.disable();
+		}
+		
+		// No further cleanup necessary
 		if ( !enabled ) {
 			return;
 		}
@@ -3139,7 +3388,7 @@ var create = function( state ) {
 				} );
 			}
 			
-			$doc.html( oldHtml );
+			$doc.replaceWith( oldHtml );
 			return;
 		}
 		
@@ -3151,17 +3400,20 @@ var create = function( state ) {
 			'.spriteedit-handle',
 			'.spriteedit-add-name',
 			'.spriteedit-tooltip',
-			'.spriteedit-dialog-overlay'
+			'.spriteedit-dialog-overlay',
 		], function() {
 			$( this ).remove();
 		} );
 		
-		$( '.spriteedit-new' ).removeClass( '.spriteedit-new' ).each( function() {
+		$( '.spriteedit-new' ).removeClass( 'spriteedit-new' ).each( function() {
 			var newPos = $( this ).data( 'new-pos' );
 			if ( newPos !== undefined ) {
 				$( this ).data( 'pos', newPos ).removeData( 'new-pos' );
 			}
 		} );
+		
+		$doc.find( '.spriteedit-replaced-image' ).removeClass( 'spriteedit-replaced-image' );
+		$doc.find( '.spriteedit-replacing-image' ).remove();
 	};
 };
 
@@ -3284,75 +3536,21 @@ var scrollIntoView = function( $elem, instant ) {
 };
 
 /**
- * Picks the section which is probably the section the user wants to put things
- *
- * Mainly based on the section closest to the top of the screen,
- * but prefers elements which are not at all going off the screen
- * (accounting for the space taken up by the toolbar).
- *
- * Returns the section element
- */
-var nearestSection = function() {
-	var offscreen, prox, elem;
-	$doc.find( '.spritedoc-section' ).each( function() {
-		var curPos = this.getBoundingClientRect().top - 35;
-		var curProx = Math.abs( curPos );
-		if ( prox && curProx > prox ) {
-			// Prefer on-screen section, even if it is further from the top
-			if ( offscreen ) {
-				elem = this;
-			}
-			
-			return false;
-		}
-		
-		offscreen = curPos < 0;
-		prox = curProx;
-		elem = this;
-	} );
-	
-	return elem;
-};
-
-/**
- * Converts the extended ISO timestamp returned by the API
- * into the basic version used by the rest of MediaWiki
+ * Converts the extended ISO UTC timestamp returned by the API
+ * into the MediaWiki format in the wiki's timezone
  *
  * YYYY-MM-DDTHH:MM:SSZ -> YYYYMMDDHHMMSS
  */
 var fixTimestamp = function( timestamp ) {
-	return timestamp.replace( /[\-T:Z]/g, '' );
+	// Make UTC date
+	var date = new Date( timestamp );
+	// Convert to wiki's timezone
+	date.setTime( date.getTime() + fixTimestamp.offset * 60 * 1000 );
+	// Return MW timestamp format
+	return date.toISOString().replace( /[\-T:]|\.\d+Z/g, '' );
 };
-
-/**
- * Quote a string for lua table
- *
- * Uses either ' or " as the delimiter (depending on which is least used in the string),
- * then escapes \ and the chosen delimiter within the string.
- */
-var luaStringQuote = function( str ) {
-	var quotes = ( str.match( /"/g ) || [] ).length;
-	var apostrophies = ( str.match( /'/g ) || [] ).length;
-	var delim = "'";
-	var delimRegex = /'/g;
-	if ( apostrophies > quotes ) {
-		delim = '"';
-		delimRegex = /"/g;
-	}
-	
-	return delim + str.replace( /\\/g, '\\\\' ).replace( delimRegex, '\\' + delim ) + delim;
-};
-
-/**
- * Returns a lua key with quotes and brackets if necessary
- */
-var luaKeyQuote = function( str ) {
-	if ( str.match( /^[a-z_]\w*$/i ) ) {
-		return str;
-	}
-	
-	return '[' + luaStringQuote( str ) + ']';
-};
+// This will be set when the editor is created and a siteinfo request is made
+fixTimestamp.offset = 0;
 
 /**
  * Add various types of in-page controls to a set of elements
@@ -3367,55 +3565,57 @@ var addControls = function( $elems, type ) {
 				.find( '.mw-headline' ).attr( 'contenteditable', true );
 		break;
 		case 'box':
-			$elems.prepend(
-				$( '<span>' ).addClass( 'spriteedit-handle' ),
-				$( '<span>' ).addClass( 'spriteedit-add-name' ).append(
-					makeButton( i18n.controlNewName, { type: 'progressive' } )
-				)
-			);
+			$elems.each( function(){
+				var addNameButton = new OO.ui.ButtonInputWidget( {
+					classes: [ 'spriteedit-add-name' ],
+					framed: false,
+					icon: 'add',
+					title: i18n.controlNewName,
+				} );
+				addNameButton.$element.data( 'ooui-object', addNameButton );
+				$( this ).prepend(
+					$( '<span>' ).addClass( 'spriteedit-handle' ),
+					addNameButton.$element
+				);
+			} );
 			addControls( $elems.find( '.spritedoc-name' ), 'name' );
 		break;
 		case 'name':
-			$elems.prepend( $( '<span>' ).addClass( 'spriteedit-handle' ) )
-				.find( 'code' ).attr( 'contenteditable', true );
+			$elems.find( 'code' ).attr( 'contenteditable', true );
 		break;
 	}
 };
 
 /**
- * Create a MW UI button element
+ * Create an OOUI button widget
  *
  * "text" is the string displayed on the button.
  * "config" is an object defining various properties of the button:
- * * "type" is a string or array of strings defining the MW UI types
- *   this button should be (e.g.: progressive, destructive, constructive, quiet).
+ * * "type" is a string or array of strings defining the OOUI flags
+ *   this button should use (e.g.: progressive, destructive, primary).
  * * "id" is the id attribute applied to the button.
- * * "props" is an object of properties applied to the button.
- * * "css" is the inline styling applied to the button.
+ * * "icon" is the OOUI icon to use
  * * "action" is a function called when the button is clicked.
  */
 var makeButton = function( text, config ) {
-	var $button = $( '<button>' ).addClass( 'mw-ui-button' );
-	var type = config.type || [];
-	
-	if ( !$.isArray( type ) ) {
-		type = [ type ];
-	}
-	$.each( type, function() {
-		$button.addClass( 'mw-ui-' + this );
+	var button = new OO.ui.ButtonInputWidget( {
+		flags: config.type,
+		id: config.id,
+		label: text,
+		icon: config.icon,
+		title: config.title,
 	} );
 	
-	if ( config.id ) {
-		$button.prop( 'id', config.id );
+	if ( config.action ) {
+		button.$button.on( 'click.spriteEdit', function( e ) {
+			$( this ).focus().blur();
+			config.action.call( this, e );
+		} );
 	}
 	
-	$button
-		.prop( config.props || {} )
-		.css( config.css || {} )
-		.text( text )
-		.click( config.action );
+	button.$element.data( 'ooui-object', button );
 	
-	return $button;
+	return button.$element;
 };
 
 /**
@@ -3510,67 +3710,214 @@ var handleError = function( code, data ) {
 	mw.notify( errorText, { title: errorTitle, type: 'error', autoHide: false } );
 };
 
+/**
+ * Looks for the specified change tag
+ * 
+ * Returns a promise which resolves to a boolean stating if the tag is active or not,
+ * or null if the tag doesn't exist.
+ * 
+ * "tag" is the tag to search for.
+ * "options" is an object of additional values to add to the request.
+ */
+var findChangeTag = function( tag, options ) {
+	return retryableRequest( function() {
+		return new mw.Api().get( $.extend( {
+			action: 'query',
+			list: 'tags',
+			tgprop: 'active',
+			tglimit: 'max',
+			formatversion: 2,
+		}, options || {} ) );
+	} ).then( function( data ) {
+		var foundActive = null;
+		$.each( data.query.tags, function() {
+			if ( this.name === tag ) {
+				foundActive = this.active;
+				return false;
+			}
+		} );
+		
+		// XXX: MW JS requires ES5 support, but JavascriptMinifier doesn't
+		// support ES5, so these have to remain strings. See T96901
+		if ( foundActive === null && data['continue'] ) {
+			return findChangeTag( tag, data['continue'] );
+		}
+		
+		return foundActive;
+	} );
+};
+
+/**
+ * Replaces the spritesheet with the provided URL
+ * 
+ * It's assumed the URL will be an object URL, which it handles revoking
+ * if the spritesheet is replaced again or disabled.
+ * 
+ * The current style element can be accessed from `overwriteSpritesheet.style`.
+ */
+var overwriteSpritesheet = function( url ) {
+	overwriteSpritesheet.disable();
+	overwriteSpritesheet.style = mw.util.addCSS(
+		'#spritedoc .sprite { background-image: url(' + url + ') !important }'
+	);
+	overwriteSpritesheet.style.url = url;
+};
+/**
+ * Disables the current style so its styles don't apply
+ * and revokes the object URL.
+ */
+overwriteSpritesheet.disable = function() {
+	var inlineStyle = overwriteSpritesheet.style;
+	if ( inlineStyle ) {
+		inlineStyle.disabled = true;
+		URL.revokeObjectURL( inlineStyle.url );
+	}
+};
+
+var luaTable = {};
+/** Recursively creates a pretty printed lua table from an object
+ * 
+ * Supports only the value which `luaTable.createValue` supports, and
+ * only numbers and strings as keys.
+ * 
+ * Objects with less than 4 keys and with no sub-objects will be
+ * on a single line, otherwise will be one line per value.
+ */
+luaTable.create = function( obj, indent ) {
+	indent = indent || 1;
+	var out = [ '{' ];
+	var isArray = Array.isArray( obj );
+	var size = isArray ? obj.length : Object.keys( obj ).length;
+	var containsObject;
+	$.each( obj, function( k, v ) {
+		if ( typeof v === 'object' ) {
+			containsObject = true;
+			return false;
+		}
+	} );
+	var multiline = containsObject || size > 3;
+	
+	$.each( obj, function( k, v ) {
+		if ( v === null || v === undefined ) {
+			return;
+		}
+		var key = isArray ? '' : luaTable.createKey( k ) + ' = ';
+		out.push( '\t'.repeat( multiline * indent ) + key + luaTable.createValue( v, indent + 1 ) + ',' );
+	} );
+	// No trailing commas for single line objects
+	if ( !multiline ) {
+		out.push( out.pop().slice( 0, -1 ) );
+	}
+	out.push( '\t'.repeat( multiline * --indent ) + '}' );
+	
+	return out.join( multiline ? '\n' : ' ' );
+};
+/** Allows creating a string that should be considered a lua function
+ * 
+ * "funcStr" should be the exact value to be output as
+ * in the table.
+ * 
+ * Returns a function that will be converted back in to
+ * the specified string when building the table.
+ */
+luaTable.func = function( funcStr ) {
+	var f = function() {
+		return funcStr;
+	};
+	f.luaFunc = true;
+	return f;
+};
+/**
+ * List of reserved keywords in lua
+ */
+luaTable.keywords = [
+	'and', 'break', 'do', 'else', 'elseif', 'end', 'false', 'for', 'function',
+	'if', 'in', 'local', 'nil', 'not', 'or', 'repeat', 'return', 'then',
+	'true', 'until', 'while',
+];
+/**
+ * Returns a lua key with quotes and brackets if necessary
+ * 
+ * Only supports numbers and strings.
+ */
+luaTable.createKey = function( key ) {
+	if ( key.match( /^-?\d+(\.\d+)?$/ ) ) {
+		return '[' + Number( key ) + ']';
+	}
+	if ( luaTable.keywords.indexOf( key ) < 0 && !key.match( /^[^a-z_]|\W/i ) ) {
+		return key;
+	}
+	
+	return '[' + luaTable.createString( key ) + ']';
+};
+/**
+ * Create a lua table value
+ * 
+ * Only supports the types in the switch, and only functions created with
+ * `luaTable.func` are supported.
+ * Will recursively resolve object values.
+ */
+luaTable.createValue = function( val, indent ) {
+	switch ( typeof val ) {
+		case 'number':
+		case 'boolean':
+			return val;
+		case 'string':
+			return luaTable.createString( val );
+		case 'object':
+			return luaTable.create( val, indent );
+		case 'function':
+			// If the function is supposed to be a lua function,
+			// execute it to get the lua function string and
+			// return it directly, otherwise invalid type
+			if ( val.luaFunc ) {
+				return val();
+			}
+		default:
+			throw new TypeError( 'Lua table: Invalid value type: ' + typeof val );
+	}
+};
+/**
+ * Quote a string for lua table
+ *
+ * Uses either ' or " as the delimiter (depending on which is least used in the string),
+ * then escapes \ and the chosen delimiter within the string.
+ */
+luaTable.createString = function( str ) {
+	if ( !str ) {
+		return "''";
+	}
+	var delim, delimRegex;
+	var quotes = ( str.match( /"/g ) || '' ).length;
+	var apostrophies = ( str.match( /'/g ) || '' ).length;
+	if ( apostrophies > quotes ) {
+		delim = '"';
+		delimRegex = /"/g;
+	} else {
+		delim = "'";
+		delimRegex = /'/g;
+	}
+	
+	return delim + str.replace( /\\/g, '\\\\' ).replace( delimRegex, '\\' + delim ) + delim;
+};
 
 /** Polyfills **/
-// requestAnimationFrame
-( function() {
-	var vendors = [ 'webkit', 'moz' ];
-	for ( var i = 0; i < vendors.length && !window.requestAnimationFrame; ++i ) {
-		var vp = vendors[i];
-		window.requestAnimationFrame = window[vp + 'RequestAnimationFrame'];
-		window.cancelAnimationFrame = window[vp + 'CancelAnimationFrame'] ||
-			window[vp + 'CancelRequestAnimationFrame'];
-	}
-	if ( !window.requestAnimationFrame || !window.cancelAnimationFrame ) {
-		var lastTime = 0;
-		window.requestAnimationFrame = function( callback ) {
-			var now = +new Date();
-			var nextTime = Math.max( lastTime + 16, now );
-			return setTimeout(
-				function() { callback( lastTime = nextTime ); },
-				nextTime - now
-			);
-		};
-		window.cancelAnimationFrame = clearTimeout;
-	}
-}() );
-
-// Add width and height to Element.getBoundingClientRect() in IE < 8
-if ( window.TextRectangle && !TextRectangle.prototype.width ) {
-	Object.defineProperty( TextRectangle.prototype, 'width', {
-		get: function() { return this.right - this.left; }
-	} );
-	Object.defineProperty( TextRectangle.prototype, 'height', {
-		get: function() { return this.bottom - this.top; }
-	} );
-}
-
-// Element.firstElementChild and Element.nextElementSibling
-if ( !( 'firstElementChild' in $root[0] ) ) {
-	Object.defineProperty( Element.prototype, 'firstElementChild', {
-		get: function() {
-			var el = this.firstChild;
-			while ( el ) {
-				if ( el.nodeType === 1 ) {
-					return el;
+if ( !HTMLCanvasElement.prototype.toBlob ) {
+	Object.defineProperty( HTMLCanvasElement.prototype, 'toBlob', {
+		value: function( callback, type, quality ) {
+			var canvas = this;
+			setTimeout( function() {
+				var binStr = atob( canvas.toDataURL( type, quality ).split( ',' )[1] );
+				var len = binStr.length;
+				var arr = new Uint8Array( len );
+				
+				for ( var i = 0; i < len; i++ ) {
+					arr[i] = binStr.charCodeAt( i );
 				}
-				el = el.nextSibling;
-			}
-			return null;
-		}
-	} );
-	
-	Object.defineProperty( Element.prototype, 'nextElementSibling', {
-		get: function() {
-			var el = this.nextSibling;
-			while ( el ) {
-				if ( el.nodeType === 1 ) {
-					return el;
-				}
-				el = el.nextSibling;
-			}
-			return null;
-		}
+				
+				callback( new Blob( [arr], { type: type || 'image/png' } ) );
+			} );
+		},
 	} );
 }
 

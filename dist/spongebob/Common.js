@@ -388,7 +388,6 @@ window.MessageWallUserTags = {
         'Minnesotaman2007!': 'Discussion Moderator',
 
         'TheJasbre202': 'Rollback',
-        'SpongyFanatic2021': 'Rollback',
         'Arthur_Read_fan': 'Rollback',
         'Minnesotaman2007!': 'Rollback',
     }

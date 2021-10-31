@@ -2,6 +2,7 @@
 Mediawiki:Common.js/DynamicStats.js
 Mediawiki:Common.js/gridfiltering.js
 Mediawiki:Common.js/itemGridfiltering.js
+Mediawiki:Common.js/writemGridfiltering.js
 Mediawiki:Common.js/avatarGridfiltering.js
 Mediawiki:Common.js/esportsGridfiltering.js
 Mediawiki:Common.js/levelselect.js
@@ -11,13 +12,13 @@ Mediawiki:Common.js/DynamicFontSize.js
 Mediawiki:Common.js/Banner.js
 Mediawiki:Common.js/rosterFilter.js
 Mediawiki:Common.js/CustomTab.js
-dev:DiscordModule/code.js
+dev:InactiveUsers/code.js
 dev:InputUsername/code.js
 dev:OggPlayer.js
-dev:RCStats.js
 dev:Tooltips.js
-dev:TabViewEditLinks/code.js
-dev:WikiManager_Nameplate.js
+//dev:DiscordModule/code.js //not working yet
+dev:EditorColorPicker.js
+Common.js/OggPlayerDownload.js
 */
 
 mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
@@ -27,36 +28,38 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
     gridContainer = '#champion-grid';
     gridFilters = {
         'search': 'search',
-        'game': ['- Game -',
+        /*'game': ['- Game -',
             ['LOL','League of Legends'],
             ['TFT','Teamfight Tactics'],
             ['TFT1','• Set 1 - Faction Wars'],
             ['TFT2','• Set 2 - Rise of the Elements'],
             ['TFT3','• Set 3 - Galaxies'],
+            ['TFT3.5','• Set 3.5 - Galaxies II'],
+            ['TFT4','• Set 4 - Fates'],
             ['LOR','Legends of Runeterra'],
             ['WR','Wild Rift']
-        ],
-        'role': ['- Role -',
+        ],*/
+        'role': ['- Class -',
             ['Controller','Controller'],
-            ['Catcher','• Catcher'],
-            ['Enchanter','• Enchanter'],
+            	['Catcher','• Catcher'],
+            	['Enchanter','• Enchanter'],
             ['Fighter','Fighter'],
-            ['Diver','• Diver'],
-            ['Juggernaut','• Juggernaut'],
+            	['Diver','• Diver'],
+            	['Juggernaut','• Juggernaut'],
             ['Mage','Mage'],
-            ['Artillery','• Artillery'],
-            ['Battlemage','• Battlemage'],
-            ['Burst','• Burst'],
+            	['Artillery','• Artillery'],
+            	['Battlemage','• Battlemage'],
+            	['Burst','• Burst'],
             ['Marksman','Marksman'],
             ['Slayer','Slayer'],
-            ['Assassin','• Assassin'],
-            ['Skirmisher','• Skirmisher'],
-            ['Specialist','Specialist'],
+            	['Assassin','• Assassin'],
+            	['Skirmisher','• Skirmisher'],
+            	['Specialist','Specialist'],
             ['Tank','Tank'],
-            ['Vanguard','• Vanguard'],
-            ['Warden','• Warden']
+            	['Vanguard','• Vanguard'],
+            	['Warden','• Warden']
         ],
-        'type': ['- Attacktype -',
+        'type': ['- Range type -',
             ['Melee','Melee'],
             ['Ranged','Ranged']
         ]
@@ -72,7 +75,13 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             ['FGM', '• FGM Exclusive']
         ]
     };
-    
+
+    /* Config for [[MediaWiki:Common.js/writemGridfiltering.js]] */
+    writemGridContainer = '#writem-grid';
+    writemGridFilters = {
+        'search': 'search'
+    };
+
     /* Config for [[MediaWiki:Common.js/avatarGridfiltering.js]] */
     avatarGridContainer = '#avatar-grid';
     avatarGridFilters = {
@@ -95,6 +104,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             ['Merch Store','• Merch Store']
         ],
         'release': ['- Year -',
+            ['2021release', '• 2021'],
             ['2020release', '• 2020'],
             ['2019release', '• 2019'],
             ['2018release', '• 2018'],
@@ -186,50 +196,50 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 });
 
 /* Custom Tooltips for use with the Tooltips/code.js */
-var tooltips_list = [
+window.tooltips_list = [
     {   classname: 'ability-icon',
-        parse: '{'+'{Tooltip/Ability|champion=<#champion#>|ability=<#ability#>}}'},
+        parse: '{'+'{Tooltip/Ability|champion=<#champion#>|ability=<#ability#>|variant=<#variant#>|game=<#game#>}}'},
     {   classname: 'buff-icon', 
-        parse: '{'+'{Tooltip/Buff|<#param#>}}'},
+        parse: '{'+'{Tooltip/Buff|<#param#>|buff=<#buff#>|variant=<#variant#>|game=<#game#>}}'},
     {   classname: 'champion-icon',
-        parse: '{'+'{Tooltip/Champion|champion=<#champion#>|skin=<#skin#>|variant=<#variant#>}}'},
+        parse: '{'+'{Tooltip/Champion|champion=<#champion#>|skin=<#skin#>|variant=<#variant#>|game=<#game#>}}'},
     {   classname: 'glossary',
-        parse: '{'+'{Tooltip/Glossary|<#param#>}}'},
+        parse: '{'+'{Tooltip/Glossary|<#param#>|tip=<#tip#>|game=<#game#>}}'},
     {   classname: 'item-icon', 
-        parse: '{'+'{Tooltip/Item|<#param#>}}'},
+        parse: '{'+'{Tooltip/Item|item=<#item#>|enchantment=<#enchantment#>|variant=<#variant#>|game=<#game#>}}'},
     {   classname: 'mastery-icon', 
-        parse: '{'+'{Tooltip/Mastery|<#param#>}}'},
+        parse: '{'+'{Tooltip/Mastery|<#param#>|mastery=<#mastery#>|variant=<#variant#>}}'},
     {   classname: 'pp-tooltip',
-        parse: '{'+'{Tooltip/Pp|<#size#>|<#values#>|values1=<#values1#>|values2=<#values2#>|label1=<#label1#>|label2=<#label2#>|displayformula=<#displayformula#>|useformula=<#useformula#>|key1=<#key1#>|key2=<#key2#>|start1=<#start1#>|start2=<#start2#>|end1=<#end1#>|end2=<#end2#>|round1=<#round1#>|round2=<#round2#>}}'},
-    {   classname: 'pp-tooltip2',
-        parse: '{'+'{Tooltip/Pp2|bot_values=<#bot_values#>|top_values=<#top_values#>|start=<#start#>|finish=<#finish#>|bot_label=<#bot_label#>|top_label=<#top_label#>|displayformula=<#displayformula#>|useformula=<#useformula#>|bot_key=<#bot_key#>|top_key=<#top_key#>|bot_round=<#bot_round#>|top_round=<#top_round#>|top_fill=<#top_fill#>}}'},
+        parse: '{'+'{Tooltip/Pp|bot_values=<#bot_values#>|top_values=<#top_values#>|start=<#start#>|finish=<#finish#>|bot_label=<#bot_label#>|top_label=<#top_label#>|displayformula=<#displayformula#>|useformula=<#useformula#>|bot_key=<#bot_key#>|top_key=<#top_key#>|bot_round=<#bot_round#>|top_round=<#top_round#>|top_fill=<#top_fill#>}}'},
     {   classname: 'rune-icon', 
-        parse: '{'+'{Tooltip/Rune|<#param#>}}'},
+        parse: '{'+'{Tooltip/Rune|<#param#>|rune=<#rune#>|variant=<#variant#>|game=<#game#>}}'},
     {   classname: 'skin-icon', 
-        parse: '{'+'{Tooltip/Skin|champion=<#champion#>|skin=<#skin#>|variant=<#variant#>}}'},
+        parse: '{'+'{Tooltip/Skin|champion=<#champion#>|skin=<#skin#>|variant=<#variant#>|game=<#game#>}}'},
     {   classname: 'skinloading-icon', 
-        parse: '{'+'{Tooltip/Skin/Loading|champion=<#champion#>|skin=<#skin#>|variant=<#variant#>}}'},
+        parse: '{'+'{Tooltip/Skin/Loading|champion=<#champion#>|skin=<#skin#>|variant=<#variant#>|game=<#game#>}}'},
     {   classname: 'chroma-icon', 
-        parse: '{'+'{Tooltip/Chroma|champion=<#champion#>|skin=<#skin#>|chromas=<#chromas#>}}'},
+        parse: '{'+'{Tooltip/Chroma|champion=<#champion#>|skin=<#skin#>|chromas=<#chromas#>|game=<#game#>}}'},
     {   classname: 'avatar-icon', 
-        parse: '{'+'{Tooltip/Icon|<#param#>}}'},
+        parse: '{'+'{Tooltip/Icon|<#param#>|icon=<#icon#>}}'},
     {   classname: 'esports-icon', 
-        parse: '{'+'{Tooltip/Icon|<#param#>}}'},
+        parse: '{'+'{Tooltip/Icon|<#param#>|icon=<#icon#>}}'},
     {   classname: 'ward-icon', 
-        parse: '{'+'{Tooltip/Ward|<#param#>}}'},
+        parse: '{'+'{Tooltip/Ward|<#param#>|ward=<#ward#>}}'},
     {   classname: 'spell-icon', 
-        parse: '{'+'{Tooltip/Spell|<#param#>}}'},
+        parse: '{'+'{Tooltip/Spell|spell=<#spell#>|variant=<#variant#>|game=<#game#>}}'},
     {   classname: 'sandbox-tooltip', 
         parse: '{'+'{Tooltip/Sandbox|<#v0#>|<#v1#>|<#v2#>|<#v3#>|<#v4#>|<#v5#>|<#v6#>|<#v7#>|<#v8#>|<#v9#>|<#v10#>|<#v11#>|<#v12#>}}'},
     {   classname: 'tft-icon', 
         parse: '{'+'{Tooltip/TFT|<#param#>|set=<#set#>|type=<#type#>}}'},
     {   classname: 'rp-icon', 
-        parse: '{'+'{Tooltip/RP|<#param#>}}'},
+        parse: '{'+'{Tooltip/RP|<#param#>|rp=<#rp#>}}'},
+    {   classname: 'wc-icon', 
+        parse: '{'+'{Tooltip/WC|wc=<#wc#>}}'},
     {   classname: 'lor-tooltip', 
         parse: '{'+'{Tooltip/LOR|<#param#>}}'}
 ];
  
-var tooltips_config = {
+window.tooltips_config = {
     offsetX: 20,
     offsetY: 20,
     waitForImages: true,

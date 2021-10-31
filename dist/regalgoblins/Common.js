@@ -56,3 +56,7 @@ importArticles({
         'u:dev:RandomBackground/code.js'
     ]
 });
+
+// Desktop Google calender embed - Styled per theme
+if ($('body').hasClass('theme-fandomdesktop-dark')) $("#googleCal").html("<iframe src='https://k-miksic.com/cookie/arcadia-wiki-calendar-dark-theme.php'></iframe>");
+else if ($('body').hasClass('theme-fandomdesktop-light')) $("#googleCal").html("<iframe src='https://k-miksic.com/cookie/arcadia-wiki-calendar-light-theme.php'></iframe>");

@@ -43,17 +43,19 @@ if (mw.config.get("wgUserGroups").indexOf('sysop', 'content-moderator') > -1)
   importScriptPage('MediaWiki:AjaxRedirect/code.js', 'dev');
  
 /* Imports */
-importArticles({
-    type: 'script',
-    articles: [
-    	'u:dev:MediaWiki:AjaxBatchDelete.js',
-        'u:dev:MediaWiki:CategoryRenameAuto-update/code.js',
-        'u:dev:MediaWiki:FileUsageAuto-update/code.js',
-        'u:dev:MediaWiki:FixWantedFiles/code.js',
-        'u:dev:MediaWiki:MassCategorization/code.js',
-        'u:dev:MediaWiki:MassEdit/code.js',
-        'u:dev:MediaWiki:MassProtect/code.js',
-        'u:dev:MediaWiki:PageRenameAuto-update/code.js',
-        'u:dev:MediaWiki:ReferencePopups/code.js'
-    ]
+mw.loader.using('ext.fandom.ContentReview.legacyLoaders.js', function() {
+    importArticles({
+        type: 'script',
+        articles: [
+            'u:dev:MediaWiki:AjaxBatchDelete.js',
+            'u:dev:MediaWiki:CategoryRenameAuto-update/code.js',
+            'u:dev:MediaWiki:FileUsageAuto-update/code.js',
+            'u:dev:MediaWiki:FixWantedFiles/code.js',
+            'u:dev:MediaWiki:MassCategorization/code.js',
+            'u:dev:MediaWiki:MassEdit/code.js',
+            'u:dev:MediaWiki:MassProtect/code.js',
+            'u:dev:MediaWiki:PageRenameAuto-update/code.js',
+            'u:dev:MediaWiki:ReferencePopups/code.js'
+        ]
+    });
 });

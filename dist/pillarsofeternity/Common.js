@@ -24,18 +24,6 @@ if (document.querySelector(".loot-container-table") != null)
 	mw.loader.load('/index.php?title=MediaWiki:ContainerTable.js&action=raw&ctype=text/javascript');
 }
 
-// Load ContainerList.js (only if a loot-container-list is present on the page)
-if (document.querySelector(".loot-container-list") != null)
-{
-	mw.loader.load('/index.php?title=MediaWiki:ContainerList.js&action=raw&ctype=text/javascript');
-}
-
-// Collectible map example
-if (mw.config.get("wgPageName") == "Map:CollectiblesTest")
-{
-	mw.loader.load('/index.php?title=MediaWiki:MapExtensions.js&action=raw&ctype=text/javascript');
-}
-
 // ======
 /*
     This snippet allows placing class="unsortable" on table rows "|-" in order to hide

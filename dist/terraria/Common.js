@@ -5,6 +5,27 @@
  * See [https://terraria.fandom.com/zh/wiki/MediaWiki:Common.js zh wiki] for example.
  */
  
+
+//original image
+$(function(){
+	//Infobox images
+	$(".pi-image-thumbnail").each(function(){
+		var srcsetvar = $(this).attr("srcset");
+		var srcarray = srcsetvar.split(" ");
+		$(this).attr("srcset", srcarray[0]+"&format=original");
+	});
+	//other images
+	var pattern = /(?:static|vignette|images)\.wikia\.nocookie\.net/;
+	$("img").each(function(){
+		var $this = $(this);
+		var srcattr = $this.hasClass('lazyload') ? 'data-src' : 'src';
+		var srcvar = $this.attr(srcattr);
+		if (srcvar && !srcvar.endsWith('format=original') && pattern.exec(srcvar)) {
+			$this.attr(srcattr, srcvar+(srcvar.includes('?')?'&':'?')+'format=original');
+		}
+	});
+});
+
 // login status mark
 if(mw.config.get("wgUserName") !== null){
 	$('body').addClass('logged-in');

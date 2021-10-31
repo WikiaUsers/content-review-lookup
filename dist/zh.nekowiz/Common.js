@@ -133,6 +133,7 @@ window.scriptMap = {
 	'題庫/搜尋': ['MediaWiki:Search.js'],
 	'題庫搜尋器': ['MediaWiki:Search.js'],
 	'卡片資料/編輯': ['MediaWiki:Cardedit.js'],
+	'卡片資料/編輯/preact': ['MediaWiki:Cardedit.preact.js'],
 	'題庫/新增/四選一': ['MediaWiki:create4select.js'],
 	'題庫/新增/排序': ['MediaWiki:createorder.js'],
 	'題庫/新增/每日': ['MediaWiki:createdaily.js'],

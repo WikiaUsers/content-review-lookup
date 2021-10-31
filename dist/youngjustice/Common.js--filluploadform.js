@@ -9,7 +9,6 @@ $(function() {
 		+ "| season      = 4\n"
 		+ "| episode     = \n"
 		+ "| source      = HD\n"
-		+ "| origin      = \n"
 		+ "| license     = screenshot\n"
 		+ "}"+"}";
 		$('#wpUploadDescription').val(value);

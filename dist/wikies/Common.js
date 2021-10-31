@@ -121,8 +121,8 @@ window.AddRailModule = [
                     parseRatings(ratings.seasonal);
 
                     if (typeof ratings.global.current != "undefined" || typeof ratings.seasonal.current != "undefined") {
-                        const ratingIndocators = document.createElement("div");
-                        ratingIndocators.classList.add("nkch-profile-rating");
+                        const ratingIndicators = document.createElement("div");
+                        ratingIndicators.classList.add("nkch-profile-rating");
 
                         mw.util.addCSS(
                             ".nkch-profile-rating { display: flex; gap: 5px; justify-content: center; inline-size: 138px; }" +
@@ -151,77 +151,89 @@ window.AddRailModule = [
                         );
 
                         function setupIndicator(type) {
-                            var ratingIndocator = document.createElement("a");
-                            ratingIndocator.classList.add("nkch-profile-rating__indicator");
+                            var ratingIndicator = document.createElement("a");
+                            ratingIndicator.classList.add("nkch-profile-rating__indicator");
 
                             switch (type) {
                                 case "global":
-                                    ratingIndocator.title = "Участник занимает " + ratings.global.current.place + "-е место в постоянном рейтинге конкурсов со счётом в " + ratings.global.current.score + " очк.";
-                                    ratingIndocator.classList.add("nkch-profile-rating__indicator--global");
-                                    ratingIndocator.href = mw.util.getUrl(rating_global);
+                                    ratingIndicator.title = "Участник занимает " + ratings.global.current.place + "-е место в постоянном рейтинге конкурсов со счётом в " + ratings.global.current.score + " очк.";
+                                    ratingIndicator.classList.add("nkch-profile-rating__indicator--global");
+                                    ratingIndicator.href = mw.util.getUrl(rating_global);
+
+                                    switch (ratings.global.current.place) {
+                                        case 1:
+                                            ratingIndicator.classList.add("nkch-profile-rating__indicator--first");
+                                            break;
+                                        case 2:
+                                            ratingIndicator.classList.add("nkch-profile-rating__indicator--second");
+                                            break;
+                                        case 3:
+                                            ratingIndicator.classList.add("nkch-profile-rating__indicator--third");
+                                            break;
+                                    }
                                     break;
                                 case "seasonal":
-                                    ratingIndocator.title = "Участник занимает " + ratings.seasonal.current.place + "-е место в рейтинге текущего конкурсного сезона со счётом в " + ratings.seasonal.current.score + " очк.";
-                                    ratingIndocator.classList.add("nkch-profile-rating__indicator--seasonal");
-                                    ratingIndocator.href = mw.util.getUrl(rating_seasonal);
+                                    ratingIndicator.title = "Участник занимает " + ratings.seasonal.current.place + "-е место в рейтинге текущего конкурсного сезона со счётом в " + ratings.seasonal.current.score + " очк.";
+                                    ratingIndicator.classList.add("nkch-profile-rating__indicator--seasonal");
+                                    ratingIndicator.href = mw.util.getUrl(rating_seasonal);
+
+                                    switch (ratings.seasonal.current.place) {
+                                        case 1:
+                                            ratingIndicator.classList.add("nkch-profile-rating__indicator--first");
+                                            break;
+                                        case 2:
+                                            ratingIndicator.classList.add("nkch-profile-rating__indicator--second");
+                                            break;
+                                        case 3:
+                                            ratingIndicator.classList.add("nkch-profile-rating__indicator--third");
+                                            break;
+                                    }
                                     break;
                             }
 
-                            switch (ratings.global.current.place) {
-                                case 1:
-                                    ratingIndocator.classList.add("nkch-profile-rating__indicator--first");
-                                    break;
-                                case 2:
-                                    ratingIndocator.classList.add("nkch-profile-rating__indicator--second");
-                                    break;
-                                case 3:
-                                    ratingIndocator.classList.add("nkch-profile-rating__indicator--third");
-                                    break;
-                            }
+                            var ratingIndicatorContent = document.createElement("div");
+                            ratingIndicatorContent.classList.add("nkch-profile-rating__indicator-content");
 
-                            var ratingIndocatorContent = document.createElement("div");
-                            ratingIndocatorContent.classList.add("nkch-profile-rating__indicator-content");
+                            ratingIndicator.appendChild(ratingIndicatorContent);
 
-                            ratingIndocator.appendChild(ratingIndocatorContent);
+                            var ratingIndicatorIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                            ratingIndicatorIcon.classList.add("nkch-profile-rating__indicator-icon");
 
-                            var ratingIndocatorIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                            ratingIndocatorIcon.classList.add("nkch-profile-rating__indicator-icon");
+                            ratingIndicatorIcon.setAttribute("height", 20);
+                            ratingIndicatorIcon.setAttribute("width", 20);
+                            ratingIndicatorIcon.setAttribute("viewBox", "0 0 24 24");
 
-                            ratingIndocatorIcon.setAttribute("height", 20);
-                            ratingIndocatorIcon.setAttribute("width", 20);
-                            ratingIndocatorIcon.setAttribute("viewBox", "0 0 24 24");
-
-                            var ratingIndocatorIconSrc = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                            var ratingIndicatorIconSrc = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
                             switch (type) {
                                 case "global":
-                                    ratingIndocatorIconSrc.setAttribute("d", "M20.25 2c.966 0 1.75.783 1.75 1.75v3.042a2.75 2.75 0 0 1-1.477 2.438l-6.282 3.28a5 5 0 1 1-4.482 0L3.477 9.23A2.75 2.75 0 0 1 2 6.792V3.75C2 2.783 2.784 2 3.75 2h16.5ZM12 13.48a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7ZM15.5 3.5h-7v6.662l3.384 1.767a.25.25 0 0 0 .232 0L15.5 10.16V3.5Zm-8.5 0H3.75a.25.25 0 0 0-.25.25v3.043c0 .466.259.893.671 1.108L7 9.377V3.499Zm13.25 0H17v5.878L19.829 7.9a1.25 1.25 0 0 0 .671-1.108V3.75a.25.25 0 0 0-.25-.25Z");
+                                    ratingIndicatorIconSrc.setAttribute("d", "M20.25 2c.966 0 1.75.783 1.75 1.75v3.042a2.75 2.75 0 0 1-1.477 2.438l-6.282 3.28a5 5 0 1 1-4.482 0L3.477 9.23A2.75 2.75 0 0 1 2 6.792V3.75C2 2.783 2.784 2 3.75 2h16.5ZM12 13.48a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7ZM15.5 3.5h-7v6.662l3.384 1.767a.25.25 0 0 0 .232 0L15.5 10.16V3.5Zm-8.5 0H3.75a.25.25 0 0 0-.25.25v3.043c0 .466.259.893.671 1.108L7 9.377V3.499Zm13.25 0H17v5.878L19.829 7.9a1.25 1.25 0 0 0 .671-1.108V3.75a.25.25 0 0 0-.25-.25Z");
                                     break;
                                 case "seasonal":
-                                    ratingIndocatorIconSrc.setAttribute("d", "M13.238 3.272a1.75 1.75 0 0 0-2.475 0L7.05 6.984A6.999 6.999 0 0 0 11.25 18.89v2.359a.75.75 0 0 0 1.5 0V18.89a6.999 6.999 0 0 0 4.199-11.907l-3.712-3.712ZM12.75 17.38v-5.63a.75.75 0 0 0-1.5 0v5.63a5.499 5.499 0 0 1-3.138-9.336l3.711-3.711a.25.25 0 0 1 .354 0l3.711 3.711a5.499 5.499 0 0 1-3.138 9.336Z");
+                                    ratingIndicatorIconSrc.setAttribute("d", "M13.238 3.272a1.75 1.75 0 0 0-2.475 0L7.05 6.984A6.999 6.999 0 0 0 11.25 18.89v2.359a.75.75 0 0 0 1.5 0V18.89a6.999 6.999 0 0 0 4.199-11.907l-3.712-3.712ZM12.75 17.38v-5.63a.75.75 0 0 0-1.5 0v5.63a5.499 5.499 0 0 1-3.138-9.336l3.711-3.711a.25.25 0 0 1 .354 0l3.711 3.711a5.499 5.499 0 0 1-3.138 9.336Z");
                                     break;
                             }
 
-                            ratingIndocatorIconSrc.setAttribute("fill", "var(--theme-accent-label-color)");
+                            ratingIndicatorIconSrc.setAttribute("fill", "var(--theme-accent-label-color)");
 
-                            ratingIndocatorIcon.appendChild(ratingIndocatorIconSrc);
+                            ratingIndicatorIcon.appendChild(ratingIndicatorIconSrc);
 
-                            var ratingIndocatorLabel = document.createElement("div");
-                            ratingIndocatorLabel.classList.add("nkch-profile-rating__indicator-label");
+                            var ratingIndicatorLabel = document.createElement("div");
+                            ratingIndicatorLabel.classList.add("nkch-profile-rating__indicator-label");
 
                             switch (type) {
                                 case "global":
-                                    ratingIndocatorLabel.innerHTML = "№&nbsp;" + ratings.global.current.place;
+                                    ratingIndicatorLabel.innerHTML = "№&nbsp" + ratings.global.current.place;
                                     break;
                                 case "seasonal":
-                                    ratingIndocatorLabel.innerHTML = "#" + ratings.seasonal.current.place;
+                                    ratingIndicatorLabel.innerHTML = "#" + ratings.seasonal.current.place;
                                     break;
                             }
 
-                            ratingIndocatorContent.appendChild(ratingIndocatorIcon);
-                            ratingIndocatorContent.appendChild(ratingIndocatorLabel);
+                            ratingIndicatorContent.appendChild(ratingIndicatorIcon);
+                            ratingIndicatorContent.appendChild(ratingIndicatorLabel);
 
-                            ratingIndocators.appendChild(ratingIndocator);
+                            ratingIndicators.appendChild(ratingIndicator);
                         }
 
                         if (typeof ratings.global.current != "undefined") {
@@ -235,7 +247,7 @@ window.AddRailModule = [
                         function mastheadCheck() {
                             switch (document.querySelectorAll(".user-identity-avatar").length > 0) {
                                 case true:
-                                    document.querySelector(".user-identity-avatar").appendChild(ratingIndocators);
+                                    document.querySelector(".user-identity-avatar").appendChild(ratingIndicators);
                                     return;
                                 case false:
                                     setTimeout(mastheadCheck, 500);
@@ -247,7 +259,7 @@ window.AddRailModule = [
                     }
                 }
             )
-        });
+        })
     }
 })();
 

@@ -1,1 +1,0 @@
-/// This code belongs to this wiki. By taking it, you must credit it on the template page and the wikia.js page ///

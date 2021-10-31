@@ -42,7 +42,10 @@ window.NoLicenseWarning = {
     ]
 };
 
-//PreloadTemplates customization
+// Custom text for adding a new section to articles
+window.AddSectionButtonText = "Add new section";
+
+// PreloadTemplates customization
 preloadTemplates_subpage = "case-by-case";
 
 // User tags

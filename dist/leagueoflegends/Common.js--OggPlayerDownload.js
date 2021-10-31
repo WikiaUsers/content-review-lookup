@@ -10,13 +10,15 @@
 	window.hotkeyDownload = true;
 	
 	// var config = mw.config.get([
-	// 	'wgPageName'
+	// 	'wgSiteName',
+	// 	'wgPageName',
 	// ]);
 	
 	$(function () {
 		document.addEventListener('click', function (e) {
 	        if (e.altKey && e.target.classList.contains('audio-button') && e.target.parentElement.tagName.toLowerCase() !== 'a') {
 	        	var src = e.target.querySelector('audio.OggPlayer-Audio').getAttribute('src');
+	        	if (!src.startsWith('https://static.wikia.nocookie.net/leagueoflegends/images/')) return;
 				var link = document.createElement('a');
 				link.setAttribute('href', src);
 				e.target.before(link);

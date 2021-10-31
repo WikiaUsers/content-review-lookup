@@ -1,4 +1,9 @@
 // <nowiki>
+
+// Author: Majr
+// imported from Minecraft wiki
+// some modifications made by RheingoldRiver
+
 ( function() {
 'use strict';
 
@@ -37,6 +42,7 @@ var i18n = {
 	luaKeySettingsPos: 'pos',
 	luaKeySettingsSpacing: 'spacing',
 	luaKeySettingsUrl: 'url',
+	luaKeySettingsVersion: 'version',
 	luaKeySettingsWidth: 'width',
 	namePlaceholder: 'Type a name',
 	noPermissionNotice: 'You do not have permission to edit this sprite.',
@@ -315,7 +321,7 @@ var create = function( state ) {
 			settings.sheet = $doc.data( 'original-url' );
 			if ( !settings.sheet ) {
 				// Get a capture of the whole URL, and of the URL minus the query string
-				var urlParts = $sprite.css( 'background-image' )
+				var urlParts = $doc.data( 'urlpath' )
 					.match( /^url\(["']?(([^?"]+)(?:\?[^"]+)?)["']?\)$/ );
 				$doc.data( 'original-url', urlParts[1] );
 				settings.sheet = urlParts[2] + '?version=' + Date.now();
@@ -1724,7 +1730,7 @@ var create = function( state ) {
 				}
 				
 				names.getObject().then( function( obj ) {
-					if ( spriteSettings[i18n.luaKeySettingsUrl] ) {
+					if ( spriteSettings[i18n.luaKeySettingsUrl] || spriteSettings[i18n.luaKeySettingsVersion] ) {
 						var url = $doc.data( 'original-url' ).split( '?' );
 						// Update the version parameter if the sheet was modified
 						if ( sheet.modified ) {
@@ -1732,8 +1738,15 @@ var create = function( state ) {
 							$doc.data( 'url', url.join( '?' ) );
 						}
 						
-						obj[i18n.luaKeySettings][i18n.luaKeySettingsUrl] =
-							luaTable.func( $doc.data( 'urlfunc' ).replace( /\$1/, url[1] ) );
+						// let's not save the urlfunc anymore
+						// obj[i18n.luaKeySettings][i18n.luaKeySettingsUrl] =
+						// 	luaTable.func( $doc.data( 'urlfunc' ).replace( /\$1/, url[1] ) );
+						
+						// save raw version parameter from url string
+						// this will allow us to call getUrl() in the SpriteDoc
+						// by pulling settings.version that we saved here in isolation
+						// without having to save the entire urlfunc string
+						obj[i18n.luaKeySettings][i18n.luaKeySettingsVersion] = url[1];
 					}
 					deferred.resolve( 'return ' + luaTable.create( obj ) );
 				} );
@@ -1857,7 +1870,7 @@ var create = function( state ) {
 				if ( modified !== undefined ) {
 					sheet.modified = modified;
 				}
-				if ( spriteSettings[i18n.luaKeySettingsUrl] ) {
+				if ( spriteSettings[i18n.luaKeySettingsUrl] || spriteSettings[i18n.luaKeySettingsVersion] ) {
 					names.invalidate( true );
 				}
 			},
@@ -2074,7 +2087,7 @@ var create = function( state ) {
 			return names.save( summary, conflict );
 		} ).then( function( data ) {
 			if ( sheet.modified ) {
-				if ( spriteSettings[i18n.luaKeySettingsUrl] ) {
+				if ( spriteSettings[i18n.luaKeySettingsUrl] || spriteSettings[i18n.luaKeySettingsVersion] ) {
 					var url = $doc.data( 'url' );
 					overwriteSpritesheet( url );
 					$doc.data( 'original-url', url );

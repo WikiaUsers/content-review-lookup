@@ -161,3 +161,13 @@ $(function UserNameReplace() {
 });
  
 /* End of the {{USERNAME}} replacement */
+
+// Randomize wiki logo: http://community.wikia.com/wiki/Thread:578801
+$(function() {
+	var images = [
+		'https://static.wikia.nocookie.net/middlemost-post/images/3/37/MPW_Halloween_Logo.png/revision/latest?cb=20211021152419',
+		'https://static.wikia.nocookie.net/middlemost-post/images/e/e6/Site-logo.png/revision/latest/scale-to-width-down/250?cb=20211017042513',
+	];
+
+	$('.fandom-community-header__image img').attr('src', images[Math.floor(Math.random() * images.length)]);
+});

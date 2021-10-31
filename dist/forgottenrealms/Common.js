@@ -19,6 +19,7 @@ window.UserTagsJS = {
 	    'videogames': { u:'Video Game Curator' },
 	    'eom-320':    { u:'Fandom Editor of the Month–March 2020' },
 	    'eom-720':    { u:'Fandom Editor of the Month–July 2020' },
+	    'eom-1021':   { u:'Fandom Editor of the Month–October 2021' },
 	},
 	oasisPlaceBefore: ''
 };
@@ -32,6 +33,7 @@ UserTagsJS.modules.custom = {
     'BadCatMan': ['chiefscribe'],
     'Regis87': ['comics'],
     'SunderedShor': ['eom-720'],
+    'Artemaz': ['eom-1021'],
 };
 
 /* This conditionally loads the javascript necessary for Tools pages */
@@ -211,3 +213,9 @@ $( function() {
 		e.preventDefault();
 	} );
 } );
+
+/* Configuring ReferencePopups */
+((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).defaults = {
+	animate: false,
+	hoverDelay: 600,
+};

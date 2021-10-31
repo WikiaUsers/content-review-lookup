@@ -116,6 +116,9 @@ $('.fandom-sticky-header').remove();
     }
 })();
 
+// js review gadget:
+$('.content-review__widget').insertBefore($('#content')).wrap('<div class="wrap-content-review__widget"></div>');
+
 //index wiki nav sections:(for collapsed/expanded status memory)
 $(".fandom-community-header__local-navigation .extra-large-navigation > .wds-dropdown").each(function(index, div){
 	div.dataset.index = index;
@@ -244,14 +247,15 @@ var $topbar = (function(){
 					'</li>').appendTo($left);
 				return;
 			}
-			if(key === 'edit' || key === 'viewsource'){
+			if(key === 'edit' || key === 'viewsource' || key === 'history' || key === 'addsection'){
 				$target = $right;
-			}else if(!item.primary && key !== 'history'){
+			}else if(!key.startsWith('nstab-') && !item.primary){
 				$target = $more;
 			}
 			var $z = $cactions.find('#'+item.id);
 			if($z.length){
-				$z.closest('li').appendTo($target); //reuse the item from the dropdown list
+				//reuse the item from the dropdown list
+				$z.closest('li').attr('class', $z.attr('class')).appendTo($target); 
 			}
 			else{
 				//build a new one

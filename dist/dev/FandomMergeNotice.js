@@ -52,13 +52,12 @@
         }
 
         // Render banner's HTML
-        $( '<a>', {
-            href: fandomURL,
+        $( '<div>', {
             id: 'banner_notice'
         } ).append(
             $( '<div>', { id: 'fandom_notice' } ).append(
                 $( '<div>', { id: 'fandom_notice-images' } ).append(
-                    $( '<a>', { href: fandomURL } )
+                    $( '<a>' )
                 ),
                 $( '<span>', { html: content } )
             )

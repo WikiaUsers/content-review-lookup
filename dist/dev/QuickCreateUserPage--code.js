@@ -42,7 +42,7 @@
         init: function (i18nData) {
             i18n = i18nData;
             Api = new mw.Api();
-            $('.wds-list:has(#global-navigation-user-signout)').append(
+            $('.wds-list:has(#global-navigation-user-signout)').prepend(
                 $('<li>', {
                     'id': 'quick-cup',
                     'class': 'QuickCreateUserPage'

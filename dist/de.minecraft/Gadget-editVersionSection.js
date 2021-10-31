@@ -14,7 +14,7 @@ $( document ).ready( function( $ ) {
 				for ( var i = 0; i < sections.length; i++ ) {
 					if ( sections[i].anchor.localeCompare( mw.config.get("wgPageName") ) === 0 ) {
 						var sectionLink = '/de/index.php?title=' + editPage + '&action=edit&section=';
-						$( '#ca-edit a' ).attr( 'href', sectionLink + sections[i].index ).html( 'Bearbeiten' );
+						$( 'a#ca-edit' ).attr( 'href', sectionLink + sections[i].index );
 						
 						var edittopHTML = '<span class="mw-editsection">' +
 							'<span class="mw-editsection-bracket" style="margin-right: 0.25em;color: #555555;">[</span>' +

@@ -37,11 +37,6 @@ $( function () {
     }
 } );
 
-/*Keeps staff blogs from locking after 30 days of no commenting */
-window.LockOldBlogs = {
-    nonexpiryCategory: "Staff Blogs"
-};
-
 /* Randomize wiki word-marks */
 $(function() {
     var images = [

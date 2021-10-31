@@ -7,6 +7,9 @@ $(function() {
 	const l10n_text = {
 		en: "copy unsigned"
 	};
+	const l10n_notification = {
+		en: "Copied template to clipboard"
+	}
 	const l10n_timestamp = {
 		en: function(date){
 			return padTime(date.getUTCHours())
@@ -38,26 +41,16 @@ $(function() {
 
 		const user = revision.user;
 		const date = new Date(revision.timestamp);
-	
+
 		const timestamp = (l10n_timestamp[mw.config.get("wgContentLanguage")] || l10n_timestamp["en"])(date);
 			
 		const textToCopy = "{{unsigned|" + user + "|UTC=" + timestamp + "}}";
 
-		var copyUnsignedA = document.createElement("a");
-		copyUnsignedA.href = "javascript:void(0);";
-		copyUnsignedA.textContent = l10n_text[mw.config.get("wgUserLanguage")] || l10n_text["en"];
-		$(copyUnsignedA).click(function() {
-			navigator.clipboard.writeText(textToCopy);
-		});
-
-		var copyUnsignedSpan = document.createElement("span");
-		copyUnsignedSpan.classList.add("copy-unsigned");
-		copyUnsignedSpan.append("(");
-		copyUnsignedSpan.append(copyUnsignedA);
-		copyUnsignedSpan.append(")");
-	
-		const diffTopOptions = document.querySelector(".diff .diff-ntitle strong");
-		diffTopOptions.append(" ");
-		diffTopOptions.append(copyUnsignedSpan);
+        $(".diff .diff-ntitle strong").append(' <span id="copy-unsigned">(<a href="javascript:void(0);">' + (l10n_text[mw.config.get("wgUserLanguage")] || l10n_text["en"]) + '</a>)</span>');
+        $("#copy-unsigned a").click(function() {
+            navigator.clipboard.writeText(textToCopy).then(function() {
+                mw.notify(l10n_notification[mw.config.get("wgUserLanguage")] || l10n_text["en"])
+            });
+        });
 	});
 });

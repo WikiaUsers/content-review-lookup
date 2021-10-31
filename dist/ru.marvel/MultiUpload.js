@@ -1,5 +1,9 @@
 (function () {
-    if (mw.config.get("wgNamespaceNumber") === -1 && mw.config.get("wgTitle") === "MultiUpload") {
+	if (mw.config.get("wgNamespaceNumber") === -1 && mw.config.get("wgTitle") === "MultiUpload") {
+		var title = 'Мультизагрузка файлов';
+		$('#firstHeading').html(title);
+		$('title').text(title);
+	    
         window.nkch_multiupload = {};
         window.nkch_multiupload.files = [];
         window.nkch_multiupload.fileNameFields = [];
@@ -179,6 +183,8 @@
                                 items.push(file_panel);
                             });
 
+							$('.nkch-multiupload__common-description .oo-ui-inputWidget-input').val('{{Изображение\n| Описание  = \n| Источник  = [[]]\n| Появления = \n| Автор     = [[]]\n| Категория = Русская обложка\n}}');
+
                             mu_uploadedFiles.clearItems();
                             mu_uploadedFiles.addItems(items);
                             break;
@@ -231,7 +237,7 @@
                                         )
                                         .fail(
                                             function (data) {
-                                                console.log(data);
+                                                console.log(data.upload.filename) + ' error download.';
                                                 reject();
                                             }
                                         );

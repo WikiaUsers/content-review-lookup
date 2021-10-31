@@ -114,7 +114,7 @@ function randomBackground () {
 	];
 	
 	var backgroundDark = [
-/*	'https://static.wikia.nocookie.net/elderscrolls/images/c/cb/Bg1.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/c/cb/Bg1.jpg/revision/latest?path-prefix=ru',
 	'https://static.wikia.nocookie.net/elderscrolls/images/a/a5/Bg2.jpg/revision/latest?path-prefix=ru',
 	'https://static.wikia.nocookie.net/elderscrolls/images/f/ff/Bg3.jpg/revision/latest?path-prefix=ru',
 	'https://static.wikia.nocookie.net/elderscrolls/images/3/32/Bg4.jpg/revision/latest?path-prefix=ru',
@@ -125,19 +125,12 @@ function randomBackground () {
 	'https://static.wikia.nocookie.net/elderscrolls/images/6/60/Bg9.jpg/revision/latest?path-prefix=ru',
 	'https://static.wikia.nocookie.net/elderscrolls/images/5/58/Background-04.jpg/revision/latest?path-prefix=ru',
 	'https://static.wikia.nocookie.net/elderscrolls/images/1/13/Background-07.jpg/revision/latest?path-prefix=ru',
-	'https://static.wikia.nocookie.net/elderscrolls/images/3/30/Background-08.jpg/revision/latest?path-prefix=ru',*/
+	'https://static.wikia.nocookie.net/elderscrolls/images/3/30/Background-08.jpg/revision/latest?path-prefix=ru',
 	'https://static.wikia.nocookie.net/elderscrolls/images/e/e5/Background-20.jpg/revision/latest?path-prefix=ru',
-	'https://static.wikia.nocookie.net/elderscrolls/images/2/29/Background-21.jpg/revision/latest?path-prefix=ru',
 	'https://static.wikia.nocookie.net/elderscrolls/images/b/bd/Background-22.jpg/revision/latest?path-prefix=ru',
 	'https://static.wikia.nocookie.net/elderscrolls/images/4/4f/Background-23.jpg/revision/latest?path-prefix=ru',
-	'https://static.wikia.nocookie.net/elderscrolls/images/b/b0/Background-24.jpg/revision/latest?path-prefix=ru',
-	'https://static.wikia.nocookie.net/elderscrolls/images/d/df/Background-25.jpg/revision/latest?path-prefix=ru',
 	'https://static.wikia.nocookie.net/elderscrolls/images/a/a6/Background-26.jpg/revision/latest?path-prefix=ru',
-	'https://static.wikia.nocookie.net/elderscrolls/images/e/ef/Background-27.jpg/revision/latest?path-prefix=ru',
-	'https://static.wikia.nocookie.net/elderscrolls/images/3/30/Background-28.jpg/revision/latest?path-prefix=ru',
-	'https://static.wikia.nocookie.net/elderscrolls/images/1/10/Background-29.jpg/revision/latest?path-prefix=ru',
-	'https://static.wikia.nocookie.net/elderscrolls/images/f/f6/Background-30.jpg/revision/latest?path-prefix=ru',
-	'https://static.wikia.nocookie.net/elderscrolls/images/4/43/Background-31.jpg/revision/latest?path-prefix=ru'
+	'https://static.wikia.nocookie.net/elderscrolls/images/1/10/Background-29.jpg/revision/latest?path-prefix=ru'
 	];
 	
 	if ((document.getElementsByTagName("body")[0].classList.contains('theme-fandomdesktop-dark'))||(document.getElementsByTagName("body")[0].classList.contains('skin-oasis'))) {

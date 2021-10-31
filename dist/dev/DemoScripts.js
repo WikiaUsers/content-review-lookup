@@ -279,6 +279,11 @@
 			scripts: 'MediaWiki:MultipleActivity.js'
 		},
 		
+        Navbox: {
+            page: 'Global_Lua_Modules/Navbox',
+            styles: 'MediaWiki:Global_Lua_Modules/Navbox.css',
+        },
+        
         NavboxBuilder: {
             selector: '.navbox .navbox-table-wrapper',
             styles: 'MediaWiki:Global_Lua_Modules/NavboxBuilder.css'
@@ -297,6 +302,12 @@
             disabledByDefault: true
         },
         
+        OldFandomColors: {
+            page: 'OldFandomColors',
+            styles: 'MediaWiki:OldFandomColors.css',
+            scripts: 'MediaWiki:OldFandomColors.js'
+        },
+        
         OldOasisTheme: {
             page: 'OldOasisTheme',
             styles: 'MediaWiki:OldOasisTheme.css'
@@ -305,12 +316,6 @@
         OldWikiaBar: {
             page: 'OldWikiaBar',
             styles: 'MediaWiki:OldWikiaBar.css'
-        },
-        
-        OldFandomColors: {
-            page: 'OldFandomColors',
-            styles: 'MediaWiki:OldFandomColors.css',
-            scripts: 'MediaWiki:OldFandomColors.js'
         },
 		
         PortableNavbox: {

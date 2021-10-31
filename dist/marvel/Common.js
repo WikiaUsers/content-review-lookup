@@ -402,7 +402,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Marvel Database: Item Template\r| Image                   = ",
+					pre: "{{Marvel Database:Item Template\r| Image                   = ",
 					post: "\r| Name                    = \r| Aliases                 = \r\r| CurrentOwner            = \r| PreviousOwners          = \r| AlternateOwners         = \r\r| Type                    = \r| Material                = \r| Dimensions              = \r| Weight                  = \r\r| Origin                  = \r| Reality                 = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r\r| Creators                = \r| First                   = \r\r| History                 = \r| Properties              = \r| AlternateVersions       = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 				}
 			}
@@ -459,7 +459,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Marvel Database: Vehicle Template\r| Image                   = ",
+					pre: "{{Marvel Database:Vehicle Template\r| Image                   = ",
 					post: "\r| Name                    = \r| Aliases                 = \r\r| CurrentOwner            = \r| PreviousOwners          = \r\r| TransportMethod         = \r| CurrentModel            = \r| PreviousModels          = \r| Dimensions              = \r\r| Origin                  = \r| Reality                 = \r| Status                  = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 				}
 			}
@@ -574,7 +574,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 				type: 'encapsulate',
 				options: {
 					pre: "{{Marvel Database:Staff Template\r| Image                   = ",
-					post: "\r| Name                    = \r| Pseudonyms              = \r| Employers               = \r| Titles                  = \r\r| Gender                  = \r| YearOfBirth             = \r| MonthOfBirth            = \r| DayOfBirth              = \r| CityOfBirth             = \r| StateOfBirth            = \r| CountryOfBirth          = \r| Creations               = \r| First                   = \r\r| PersonalHistory         = \r| ProfessionalHistory     = \r\r| Notes                   = \r| Trivia                  = \r| OfficialWebsite         = \r| Links                   = \r}}"
+					post: "\r| Name                    = \r| Pseudonyms              = \r\r| Gender                  = \r| DateOfBirth             = \r| PlaceOfBirth            = \r\r| Employers               = \r| Titles                  = \r| First                   = \r| Last                    = \r| NotableCreations        = \r\r| PersonalHistory         = \r| ProfessionalHistory     = \r\r| Notes                   = \r| Trivia                  = \r| OfficialWebsite         = \r| Links                   = \r}}"
 				}
 			}
 		}

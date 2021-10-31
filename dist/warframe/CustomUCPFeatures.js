@@ -56,6 +56,7 @@ function highlightUser(block, name, highlightBool) {
 			case "Dioniso7":
 			case "JAlbor":
 			case "Kirkburn":
+			case "Magiczocker01":
 			case "MarkvA":
 			case "Mr Pie 5":
 			case "NinjaFatGuy":

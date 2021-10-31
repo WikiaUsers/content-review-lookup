@@ -29,7 +29,7 @@ mw.loader.using('mediawiki.api').then(
 				var i = -1;
 				// non-existent pages return as negative numbers in order
 				while(d.query.pages[i]){
-					var missingCatLink = $("#articleCategories a[title='"+d.query.pages[i].title+"'");
+					var missingCatLink = $("#articleCategories a[title=\""+d.query.pages[i].title+"\"]");
 					missingCatLink.addClass("new");
 					missingCatLink.attr("href", missingCatLink.attr("href")+"?action=edit&redlink=1");
 					anyCats = true;

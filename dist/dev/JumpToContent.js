@@ -14,11 +14,11 @@
 $(function() {
   'use strict';
   importArticles({
-    type: "script",
-    article: "u:dev:MediaWiki:I18n-js/code.js"
+    type: 'script',
+    article: 'u:dev:MediaWiki:I18n-js/code.js'
   }, {
-    type: "style",
-    article: "u:dev:MediaWiki:JumpToContent.css"
+    type: 'style',
+    article: 'u:dev:MediaWiki:JumpToContent.css'
   });
   if (window.JumpToContentLoaded) {
     return;
@@ -29,7 +29,16 @@ $(function() {
       $('body').prepend([
         $('<div>', {
           'class': 'jtc-btn',
-          'id': 'jumpToContent'
+          'id': 'jumpToContent',
+          'css': {
+            'clip': 'rect(1px, 1px, 1px, 1px)',
+            'clip-path': 'inset(50%)', // Modern browsers.
+            'height': '1px',
+            'overflow': 'hidden',
+            'position': 'absolute',
+            'white-space': 'nowrap', // Prevents screen readers from skipping white spaces.
+            'width': '1px',
+          }
         }).append([
           $('<a>', {
             'class': 'jtc-link',

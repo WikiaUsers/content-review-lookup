@@ -5,11 +5,6 @@ function main () { //TODO: Figure out some way to do this that's not a bunch of 
         document.title = 'Social Activity for ' + mw.config.get('profileUserName') + ' ' + document.title;
     }
 
-    //Add "delete" option to edit dropdown on user pages
-    if (mw.config.get('profileIsUserPage')) {
-        window.Sofix.modules.push('UserPageEditDropdownDelete');
-    }
-
     //Remove the black circles around the "moved" indicators in diffs when selecting the text
     window.Sofix.modules.push('FixDiffIndicators');
 

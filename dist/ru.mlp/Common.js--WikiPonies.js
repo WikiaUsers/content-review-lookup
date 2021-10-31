@@ -1843,10 +1843,10 @@
         'Тэнк': 'tank'
     };
 
-    var start_top = Math.floor( 100 * Math.random() ),
-        start_left = Math.floor( 300 * Math.random() ) + 100;
+    var start_top = Math.floor( 125 * Math.random() ) + 46,
+        start_left = Math.floor( 500 * Math.random() ) + 100;
 
-    $( 'body' ).append( '<div id="pony" style="position: absolute; top: ' + start_top + 'px; left: ' + start_left + 'px; z-index: 9999; pointer-events: none;" />' );
+    $( 'body' ).append( '<div id="pony" style="position: absolute; top: ' + start_top + 'px; left: ' + start_left + 'px; z-index: 490; pointer-events: none;" />' );
 
     var status = wpReadCookie(),
         btn_text = 'Скрыть пони',
@@ -1858,8 +1858,8 @@
         btn_act = 'show';
     }
 
-    $( '.page-header__contribution-buttons' ).append(
-        '<a id="pony-hide" class="wds-button wds-is-squished" data-action="' + btn_act + '">' + btn_text + '</a>'
+    $( '#p-views' ).prepend(
+        '<a id="pony-hide" class="wds-button wds-is-text page-header__action-button has-label" data-action="' + btn_act + '">' + btn_text + '</a>'
     );
 
     $( '#pony-hide' ).on( 'click', function() {
@@ -1957,9 +1957,9 @@
 
                 var move_x = off.left - move_to_x_px;
 
-                if ( move_x < 80 ) {
+                if ( move_x < 100 ) {
                     $( '#pony' ).css( 'transform', 'scaleX(1)' );
-                    move_x = off.left + 50;
+                    move_x = off.left;
                 }
             } else {
                 $( '#pony' ).css( 'transform', 'scaleX(1)' );

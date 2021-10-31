@@ -1,4 +1,9 @@
 // <nowiki>
+
+// Author: Majr
+// imported from Minecraft wiki
+// some modifications made by RheingoldRiver
+
 ( function() {
 'use strict';
 

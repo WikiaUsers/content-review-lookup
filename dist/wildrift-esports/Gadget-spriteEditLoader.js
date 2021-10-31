@@ -1,3 +1,6 @@
+// Author: Majr
+// imported from Minecraft wiki
+
 $( function() {
 'use strict';
 

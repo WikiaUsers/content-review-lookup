@@ -28,16 +28,10 @@ window.SignatureCheckJS = {
     ]
 };//End SC*/
 
-/* Article Rating Config */
-window.ArticleRating = {
-  title: 'Rate This Article',
-  values: ['Awful', 'Bad', 'Average', 'Good', 'Great'],
-  starSize: [24, 24],
-  starColor: ['#ccc', '#ffba01'],
-  starStroke: '#000',
-  exclude: ['Project:Rules', 'Project:Rules/Discord Rules', 'Project:Staff', 'Project:Staff/Demotions', 'Project:Staff/Applications'],
-  location: 'top-rail'
-};/*End AR*/
+/* LockOldComments Config */
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 90;
+//End LOC */
 
 /* Skin Switch */
 window.oasisText = "Switch to Oasis";

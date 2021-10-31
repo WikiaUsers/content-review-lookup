@@ -23,7 +23,7 @@ $(function(){
 			var anyCats = false;
 			var i = -1;
 			while(d.query.pages[i]){
-				var missingCatLink = $("#articleCategories a[title='"+d.query.pages[i].title+"'");
+				var missingCatLink = $("#articleCategories a[title=\""+d.query.pages[i].title+"\"]");
 				missingCatLink.addClass("new");
 				missingCatLink.attr("href", missingCatLink.attr("href")+"?action=edit&redlink=1");
 				anyCats = true;

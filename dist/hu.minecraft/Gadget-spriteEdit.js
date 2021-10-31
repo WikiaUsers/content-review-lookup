@@ -89,7 +89,15 @@ var originalTitle = document.title;
 
 
 // Start loading OOUI's icons in the background
-mw.loader.load( [ 'oojs-ui.styles.icons-content', 'oojs-ui.styles.icons-editing-advanced', 'oojs-ui.styles.icons-media', 'oojs-ui.styles.icons-moderation' ] );
+mw.loader.load( [
+	'oojs-ui.styles.icons-editing-core',
+	'oojs-ui.styles.icons-editing-styling',
+	'oojs-ui.styles.icons-media',
+	'oojs-ui.styles.icons-moderation',
+	'oojs-ui.styles.icons-interactions',
+	'oojs-ui.styles.icons-movement',
+	'oojs-ui.styles.icons-content',
+] );
 
 // Handle recreating the editor
 $( '#ca-spriteedit' ).find( 'a' ).click( function( e ) {
@@ -172,7 +180,10 @@ var create = function( state ) {
 	addControls( $boxTemplate, 'box' );
 	
 	// Pre-load modules which will be needed later
-	var saveModules = mw.loader.using( [ 'jquery.byteLimit', 'mediawiki.action.history.diff' ] );
+	var saveModules = mw.loader.using( [
+		'mediawiki.widgets.visibleLengthLimit',
+		'mediawiki.diff.styles',
+	] ).fail( console.warn );
 	
 	$root.addClass( 'spriteedit-loaded' );
 	
@@ -588,7 +599,7 @@ var create = function( state ) {
 		
 		var newSectionButton = new OO.ui.ButtonInputWidget( {
 			id: 'spriteedit-add-section',
-			icon: 'tableAddRowAfter',
+			icon: 'textStyle',
 			label: i18n.toolbarNewSection,
 		} );
 		newSectionButton.$element.data( 'ooui-object', newSectionButton );
@@ -994,14 +1005,9 @@ var create = function( state ) {
 						name: 'wpSummary',
 						spellcheck: true,
 						placeholder: i18n.toolbarSummaryPlaceholder,
-						maxLength: 255,
-						label: '255',
 					} );
 					summaryInput.$element.data( 'ooui-object', summaryInput );
-					summaryInput.$label.prop( 'title', i18n.toolbarSummaryLabelTip );
-					summaryInput.on( 'change', function( value ) {
-						summaryInput.setLabel( String( 255 - $.byteLength( value ) ) );
-					} );
+					mw.widgets.visibleByteLimit( summaryInput, mw.config.get( 'wgCommentByteLimit' ) );
 					$( '<div>' )
 						.attr( 'id', 'spriteedit-saveform' )
 						.css( 'margin-right', $( '#spriteedit-save' )[0].getBoundingClientRect().width )

@@ -6,8 +6,6 @@
 // Heavily modified by Paradox-
 
 //---------------------------------------- Floatheader
-//--- non-UCP
-var ucp = mw.config.get("wgVersion") != "1.19.24";
 
 $("table.floatheader").each(function() {
   $(this).wrap("<div class=\"divTableWithFloatingHeader\" style=\"position:relative\"></div>");
@@ -41,10 +39,6 @@ $("table.floatheader").each(function() {
     //--- Remove Sort Buttons
     if ($(this).hasClass("headerSort")) {
       $(this).removeClass("headerSort").removeAttr("tabindex").removeAttr("title");
-      //--- non-UCP
-      if (!ucp) {
-        $("span.chevron", this).parent().remove();
-      }
     }
     
     //--- Remove mw-collapsible Toggle Button
@@ -75,14 +69,13 @@ function UpdateTableHeaders() {
       //--- Copy cell width & horizontal padding from original header -- only way to make the cells obey their width
       $("th", floatingHeader).each(function(i) {
         var oh = $("th", originalHeader).eq(i);
-        //--- non-UCP -- Add "border-right-width" to the cell width
-        $(this).width(ucp ? oh.css("width") : oh.width() + +oh.css("border-right-width").replace("px", ""));
+        $(this).width(oh.css("width"));
         $(this).css("padding-left", oh.css("padding-left"));
         $(this).css("padding-right", oh.css("padding-right"));
       });
       
       //--- Copy width from original thead -- Add 1px to wikitables
-      floatingHeader.css("width", originalHeader.width() + +$("> table", this).hasClass("wikitable") + "px");
+      floatingHeader.css("width", originalHeader.width() + $("> table", this).hasClass("wikitable") + "px");
     }
     else {
       floatingHeader.hide();

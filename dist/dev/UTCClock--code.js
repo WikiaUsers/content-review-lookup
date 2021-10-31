@@ -15,344 +15,353 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-/*jshint curly:false, laxbreak:true, smarttabs:true, jquery:true, es5:true */
+/*jshint curly:false, laxbreak:true, smarttabs:true, jquery:true*/
 /*global mediaWiki */
 
-// Prevent double runs
-if (!window.DisplayClockJS || typeof(window.DisplayClockJS.kill) !== 'function')
-(function($, mw, window, Date) {
+( function( $, mw, window, Date ) { 
 	"use strict";
-
-	// The default emulates the old appearance
-	var config = {
-		format: '%2H:%2M:%2S %d %b %Y (UTC)',
-		location: 'header',
-		// Shannon's Sampling Theorem: Signal=1Hz, sample it at 2Hz for 100% accuracy
-		interval: 500,
-		monofonts: "Monaco, Consolas, 'Lucida Console', monospace",
-		offset: 0
-	};
-
-	// Config comes in 2 flavours: Backwards compat raw format string and object conf.
-	if ($.isPlainObject(window.DisplayClockJS)) {
-		$.extend(config, window.DisplayClockJS);
-	} else if (window.DisplayClockJS) {
-		config.format = window.DisplayClockJS;
-	}
-	window.DisplayClockJS = config;
-
-	// We need mw.util to build this so it's created later on.
-	var $link;
-
-	// Day names are available from MediaWiki:Monday, Mon.
-	// We can bulk AJAX all of them but I really don't want to do that.
-
-	// NOTE: Index 0 of these arrays are an empty string, hence the slice
-	// NOTE: These are Wiki Content Language months, not user language
-	var printDateFormatted = makePrintDateFormatted(
-		mw.config.get('wgMonthNames').slice(1),
-		mw.config.get('wgMonthNamesShort').slice(1)
+	
+	// Double-run protection
+	if ( window.UTCClock ) return;
+	
+	// Creating the UTCClock
+	window.UCX = $.extend( { }, window.UCX );
+	
+	// Creating the configuration object
+	const config = $.extend( 
+		{ },  
+		window.DisplayClockJS, // For compatibility purposes
+		window.UTCClockConfig
 	);
-	var clockInterval = null;
-
-	// Public function to remove the clock from the UI
-	function killClock() {
-		if (clockInterval !== null) {
-			window.clearInterval(clockInterval);
-			clockInterval = null;
-			$('#DisplayClockJS').remove();
-		}
-		delete config.kill;
-	}
+	
 	config.kill = $.noop;
-
-	var startUp = function($) {
-		// Prevent double runs and avoid two clocks at once.
-		if ($('#DisplayClockJS, #displayTimer, #showdate').length) return;
-
-		var $parent, css, mode = 'append';
-		css = { // Common styles
-			position: 'absolute',
-			fontFamily: config.monofonts,
-			lineHeight: 'normal'
-		};
-		$parent = config.location === 'toolbar' ?
-			$('.toolbar > .tools') :
-			$('.wds-community-header__local-navigation');
-		if ($parent.length) {
-			if (config.location === 'toolbar') {
-				delete css.position;
-			} else {
-				css.color = $('.wds-community-header .wds-community-header__sitename a').css('color');
-				css.top = '5em';
-				css.right = '20px';
+	
+	// Creating the UTCClock object
+	window.UTCClock = { 
+		defaults: Object.freeze( { 
+			format: "%2H:%2M:%2S %d %b %Y (UTC)",
+			location: "navigation",
+			// Shannon's Sampling Theorem: Signal=1Hz, sample it at 2Hz for 100% accuracy
+			interval: 500,
+			fontFamily: "Rubik, Helvetica, Arial, sans-serif",
+			offset: 0,
+			hoverText: "UTC Clock",
+			render: null
+		} ),
+		interval: null,
+		killClock: function( ) { 
+			if ( this.interval !== null ) { 
+				clearInterval( this.interval );
+				this.interval = null;
+				this.$el.remove( );
 			}
-		} else { // Try an edit page
-			$parent = $('#EditPageHeader');
-			if ($parent.length) (function($, $parent, css) {
-				var $sibling = $parent.find('#HelpLink'),
-				    $container = $sibling.offsetParent(), // Should be === $parent
-				    helpOffset = $sibling.position(); // WARN: Reflow
-				if (!helpOffset) helpOffset = { left: $container.innerWidth() };
-				// Position ourself a few px left of the HelpLink
-				helpOffset = $container.innerWidth() - helpOffset.left + 10;
-				// In case the Help Link is missing for some reason...
-				$sibling = $sibling.find('a').add($parent.find('#NotificationsLink > a'));
-				// Don't try to purge an edit page
-				$link.removeAttr('href').removeAttr('title');
-				// More CSS rules
-				css.right = helpOffset + 'px';
-				css.top = '5px';
-				css.fontSize = '11px';
-				// For consistency, match color with header
-				css.color = $sibling.css('color');
-			})($, $parent, css);
+			
+			delete this.config.kill;
+		},
+		init: function( ) { 
+			this.config = $.extend( 
+				{ },
+				config,
+				this.defaults
+			);
+			
+			if ( typeof this.config.hoverText === "string" ) 
+				return this.load( );
+			
+			const c = this;
+			
+			importArticle( { 
+				type: "script",
+				article: "u:dev:MediaWiki:I18n-js/code.js"
+			} ).then( function( ) { 
+				mw.hook( "dev.i18n" ).add( c.loadMsg.bind( c ) );
+			} );
+		},
+		loadMsg: function( i18n ) { 
+			i18n.loadMessages( this.name )
+				.then( this.setMsg.bind( this ) );
+		},
+		setMsg: function( i18n ) { 
+			this.config.hoverText = i18n.msg( "hoverText" ).escape( );
+			return this.load( );
+		},
+		load: function( ) { 
+			const $el = $( "<a>" ).prop( { 
+				href: "?action=purge",
+				title: this.config.hoverText
+			} ).data( "UTCClock", this.config );
+			
+			this.create( $el );
+		},
+		create: function( $el ) { 
+			if ( $( "#displayClock, #displayTimer, #showdate" ).length ) return;
+			
+			const append = Object.freeze( [ "toolbar", "navigation" ] );
+			
+			const parents = Object.freeze( { 
+				toolbar: $( ".toolbar > .tools" ),
+				navigation: $( ".fandom-community-header" ),
+				header: $( ".page-header" )
+			} );
+			
+			const location = 
+				parents.hasOwnProperty( this.config.location ) ?
+					this.config.location :
+					"toolbar";
+				
+			const $parent = parents[ location ];
+			
+			if ( !$parent.length ) { 
+				return console.error( "UTCClock: Cannot find an attachment point. Aborting script." );
+			}
+			
+			const $result = $parent.is( "ul" ) ? 
+				$( "<li>" ).append( $el ) :
+				$el;
+			
+			if ( $parent.is( ".tools" ) ) $result.css( { 
+				"float": "right" ,
+				"border-right": "0"
+			} );
+			
+			if (location === "navigation") {
+				mw.util.addCSS("\
+					.fandom-community-header__top-container {\
+						grid-column: 2 / span 2;\
+					}\
+					.has-no-logo .fandom-community-header__top-container {\
+						grid-column: 1 / span 3;\
+					}\
+				");
+			}
+			
+			if ( append.includes( location ) ) 
+				$parent.append( $result.prop( "id", "UTCClock" ) );
+			else
+				$parent.prepend( $result.prop( "id", "UTCClock" ) );
+				
+			this.$el = $el;
+			
+			this.$el.css( { 
+				fontFamily: this.config.fontFamily
+			} );
+			
+			this.update( $el );
+			
+			$el.data( "location", location );
+			
+			const interval = Math.max( 
+				500, 
+				Math.min( this.config.interval , Infinity ) 
+			) || 500;
+			
+			this.interval = window.setInterval( 
+				this.update.bind( this, $el ), 
+				interval 
+			);
+			
+			this.config.kill = this.killClock;
+		},
+		update: function( $el ) { 
+			if ( !$el.data( "UTCClock" ) ) return this.killClock( );
+			
+			const d = new Date( );
+			d.setMinutes( 
+				d.getMinutes( ) + 
+				d.getTimezoneOffset( ) + 
+				this.config.offset
+			);
+			
+			const format = this.getFormatted( );
+			
+			$el.text( format( d, this.config.format + "" ) );
+		},
+		getFormatted: function( ) { 
+			return this.format( 
+				mw.config.get( "wgMonthNames" ).slice( 1 ),
+				mw.config.get( "wgMonthNamesShort" ).slice( 1 )
+			);
+		},
+		format: function( monthsLong, monthsShort, daysLong, daysShort ) {
+			/* jshint bitwise: false */
+			const cases = { 
+				// Double percent (insert percent character)
+				"%": function( ) { return "%"; },
+				// Day of month (1-31)
+				d: function( d ) { 
+					const r = d.getDate( );
+					return { v: r, i: r - 1 };
+				},
+				// ISO 8601 Year, used in conjunction with %V
+				G: function( d ) { 
+					var r = d.getFullYear,
+						day = d.getDate( ),
+						month = d.getMonth;
+						
+					if ( month === 0 && day < 4 ) { 
+						day = d.getDay( );
+						
+						if ( day === 0 || day > 4 ) r--;
+					} else if ( month === 11 && day > 28 ) { 
+						month = d.getDay( );
+						
+						if ( month !== 0 && month < day - 27 ) ++r;
+					}
+					
+					return r;
+				},
+				// ISO 8601 Short 2 digit year
+				g: function( d ) { return cases.G( d ) % 100; },
+				// Hour number (0-23)
+				H: function( d ) { return d.getHours( ); },
+				// Hour number (1-12)
+				I: function( d ) { 
+					const r = d.getHours( ) % 12;
+					return { i: r, v: r || 12 };
+				},
+				// Day of year (1-366)
+				j: function( d, ys ) { 
+					const r = ( d - ys ) / 864e5 | 0;
+					return { i: r, v: r + 1 };
+				},
+				// Month (0-12)
+				m: function( d ) { 
+					const r = d.getMonth( );
+					return { i: r, v: r + 1 };
+				},
+				// Minute (0-59)
+				M: function( d ) { return d.getMinutes( ); },
+				// AM/PM
+				p: function( d ) { return d.getHours( ) < 12 ? "AM" : "PM"; },
+				// Seconds (0-59)
+				S: function( d ) { return d.getSeconds( ); },
+				// Day of the week (1-7) [1=Monday]
+				u: function( d ) { 
+					const r = ( d.getDay( ) + 6 ) % 7;
+					return { i: r, v: r + 1 };
+				},
+				// Week o;f year using Sunday as the first day of the week (0-53)
+				U: function( d, ys ) { 
+					var doy = cases.j( d, ys ).i;
+					doy += ys.getDay( ) || 7;
+					return ( doy / 7 ) | 0;
+				},
+				// ISO 8601 Week (Monday is first day, Week 1 is the one with the first Thursday)
+				// Range: 1-53
+				V: function calculateISOWeek( d, ys ) { 
+					var r = { v: cases.W( d, ys ) }, thurs = ys.getDay( );
+					
+					if ( thurs > 1 && thurs < 5 ) { 
+						++r.v;
+					} else if ( r.v === 0 ) { 
+						r = d.getFullYear( ) - 1;
+						return calculateISOWeek( new Date( r, 11, 31 ), new Date( r, 0, 1 ) );
+					}
+					
+					r.i = r.v - 1;
+					return r;
+				},
+				// Day of the week (1-7) [1=Sunday]
+				w: function( d ) { 
+					const r = d.getDay( );
+					return { i: r, v: r + 1 };
+				},
+				// Week of the year using Monday as the first day of the week (0-53)
+				W: function( d, ys ) { 
+					var doy = cases.j( d, ys ).i;
+					doy += ( ys.getDay( ) + 6 ) % 7 || 7;
+					
+					return ( doy / 7 ) | 0;
+				},
+				// Locale dependent time string
+				X: function( d ) { 
+					return d.toLocaleTimeString( );
+				},
+				// Locale dependent date string
+				x: function( d ) { 
+					return d.toLocaleDateString( );
+				},
+				// Year (last two digits only)
+				y: function( d ) { return d.getFullYear( ) % 100; },
+				// Full year
+				Y: function( d ) { return d.getFullYear( ); }
+			};
+			
+			if ( daysLong ) cases.A = function( d ) { 
+				return daysLong[ d.getDay( ) ]; 
+			};
+			
+			if ( daysShort ) cases.a = function( d ) { 
+				return daysShort[ d.getDay( ) ]; 
+			};
+			
+			if ( monthsLong ) cases.B = function( d ) { 
+				return monthsLong[ d.getMonth( ) ]; 
+			};
+			
+			if ( monthsShort ) cases.b = function( d ) { 
+				return monthsShort[ d.getMonth( ) ]; 
+			};
+			
+			function pad( s, l, c ) { 
+				c = c || ( typeof s === "number" ? "0" : " " );
+				l = l - ( s += "" ).length | 0;
+				if ( l <= 0 ) return s;
+				
+				do { 
+					if ( ( l & 1 ) === 1 ) s = c + s;
+					c += c;
+				} while ( ( l >>>= 1 ) !== 0 );
+				
+				return s;
+			}
+			
+			function format( date, string ) { 
+				const pattern = /%([0-9]*)(?:\{([^\}]*)\})?([A-Za-z%])/gi;
+				
+				var result = "",
+					start = new Date( date.getFullYear( ), 0, 1 ),
+					lastIndex = 0,
+					match, list, parsed, dispatcher;
+				
+				while ( ( match = pattern.exec( string ) ) !== null ) { 
+					result += string.substring( lastIndex, match.index );
+					lastIndex = pattern.lastIndex;
+					
+					dispatcher = cases[ match[ 3 ] ];
+					if ( typeof dispatcher !== "function" ) { 
+						result += '¿' + match[3] + '?';
+						continue;
+					}
+					
+					parsed = dispatcher( date, start );
+					
+					if ( match[ 2 ] ) { 
+						if ( typeof parsed === "object" ) { 
+							parsed = parsed.i === void 0 ? parsed.v : parsed.i;
+						}
+						
+						if ( typeof parsed === "number" ) { 
+							list = match[ 2 ].split( ";" );
+							if ( !( parsed > 1 && parsed < list.length ) ) parsed = list.length - 1;
+							parsed = list[ parsed ];
+						}
+					} else if ( typeof parsed === "object" ) { 
+						parsed = parsed.v;
+					}
+					
+					result += pad( parsed, parseInt( match[ 1 ], 10 ) );
+				}
+				
+				result += string.substr( lastIndex );
+				return result;
+			}
+			
+			return format;
 		}
-
-		// Unable to find any acceptable attachment point
-		if (!$parent.length) {
-			if (window.console) window.console.error('DISPLAYCLOCK: Failed to attach to page!');
-			return;
-		}
-
-		// Attach everything
-		$link.css(css);
-		var $node = ($parent.is('ul') ? $(document.createElement('li')).append($link) : $link);
-		if ($parent.is('.tools')) $node.css({ float: 'right', borderRight: '0' });
-		$parent[mode]($node.prop('id', 'DisplayClockJS'));
-
-		// Start
-		updateTime();
-		// 500ms is the floor, negative or tiny values will be lifted up to 500 as
-		// anything smaller than that is a waste of CPU power
-		var interval = config.interval > 500 ? config.interval : 500;
-		clockInterval = window.setInterval(updateTime, interval);
-		config.kill = killClock;
 	};
-
-	function initialise() {
-		mw.loader.using('mediawiki.util', function() {
-			$link = $(document.createElement('a'))
-				.prop({
-					href: '?action=purge',
-					title: config.hoverText
-				})
-				.data('DisplayClockJS', config); // Magic flag to help detect removal
-			$(startUp);
-			startUp = null;
-		});
-	}
-
-	if (typeof config.hoverText === 'string') {
-		initialise();
-	} else {
-		// No text was configured, so load it via [[I18n-js]]
-		mw.hook('dev.i18n').add(function(i18njs) {
-			i18njs.loadMessages('UTCClock').done(function (i18n) {
-				config.hoverText = i18n.msg('hoverText').plain();
-				initialise();
-			});
-		});
-		mw.loader.load("https://dev.wikia.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js");
-	}
-
-	function updateTime() {
-		// Check for removed from DOM, data is deleted when .remove() is called
-		if (!$link.data('DisplayClockJS')) return killClock();
-
-		var d = new Date();
-		d.setMinutes(d.getMinutes() + d.getTimezoneOffset() + config.offset);
-		$link.text(printDateFormatted(d, config.format + ''));
-	}
-
-	// Based on C strftime but without the parts we can't get at (because the JS
-	// calendar functions suck)
-	// NOT supported: [%a %A %b %B] %c %Z
-	// POSIX Extra: %u (Monday as Day 1 instead of Sunday)
-	//     %V %G %g (ISO 8601 Week/Year)
-	// It also adds a 'select from list using index' feature
-	// '%{Day 1;Day 2;Day 3;Day Any}d', if first day of month then 'Day 1', etc
-	function makePrintDateFormatted(monthsLong, monthsShort, daysLong, daysShort) {
-		/*jshint bitwise:false */
-		var Cases = {
-			// Double percent (insert percent char)
-			'%': function() { return '%'; },
-			// Day of month number (1-31)
-			d: function(d) {
-				var r = d.getDate();
-				return { v: r, i: r - 1 };
-			},
-			// ISO 8601 Year, used in conjunction with %V
-			G: function(d) {
-				var r = d.getFullYear(), day = d.getDate(), month = d.getMonth();
-				// If we're in the first 3 days of the year then we need to see if we are
-				// in the ISO week of this year, or last ISO week of last year.
-				if (month === 0 && day < 4) {
-					day = d.getDay();
-					// Sunday, Friday, Saturday means we're in last year
-					if (day === 0 || day > 4) --r;
-				} else if (month === 11 && day > 28) { // Last 3 days
-					// If the last week is only 3 or less days long then this week is
-					// actually part of next year
-					// Next Year: 29=M 30=M,T 31=M,T,W
-					month = d.getDay();
-					if (month !== 0 && month < day - 27) ++r;
-				}
-				return r;
-			},
-			// ISO 8601 Short 2 digit Year
-			g: function(d) { return Cases.G(d) % 100; },
-			// Hour number (0-23)
-			H: function(d) { return d.getHours(); },
-			// Hour number (1-12)
-			I: function(d) {
-				var r = d.getHours() % 12;
-				return { i: r, v: r || 12 }; // 0 becomes 12
-			},
-			// Day of year (1-366)
-			j: function(d, ys) {
-				// Calculation is 'get first day of year' subtract that from our date
-				// (the result is milliseconds) then divide by ms in a day and floor.
-				var r = (d - ys) / 864e5 | 0;
-				return { i: r, v: r + 1 };
-			},
-			// Month (0-12)
-			m: function(d) {
-				var r = d.getMonth();
-				return { i: r, v: r + 1 };
-			},
-			// Minute (0-59)
-			M: function(d) { return d.getMinutes(); },
-			// AM/PM
-			p: function(d) { return d.getHours() < 12 ? 'AM' : 'PM'; },
-			// Seconds (0-59)
-			S: function(d) { return d.getSeconds(); },
-			// Day of week (1-7) [1=Monday]
-			u: function(d) {
-				var r = (d.getDay() + 6) % 7;
-				return { i: r, v: r + 1 };
-			},
-			// Week of year using Sunday as first day of week (0-53)
-			U: function(d, ys) {
-				// Week 0 = Everything up to first Sunday, first Sunday = Week 1
-				// This is important, if first day is Sunday, there is no Week 0
-				var doy = Cases.j(d, ys).i;	// Day of year
-				doy += ys.getDay() || 7;
-				return doy / 7 | 0;
-			},
-			// ISO 8601 Week (Monday is first day, Week 1 is the one with the first Thursday)
-			// Range: 1-53
-			V: function calculateISOWeek(d, ys) {
-				var r = { v: Cases.W(d, ys) }, thurs = ys.getDay();
-				if (thurs > 1 && thurs < 5) {
-					// If the first day is a monday then the week count is already right.
-					// If the day is Tuesday, Wednesday, Thursday then we have to correct
-					// for an extra week here.
-					++r.v;
-				} else if (r.v === 0) {
-					// Week 0 Friday / Saturday / Sunday is part of last year
-					// (This recursion is safe since r.v won't be 0 again)
-					r = d.getFullYear() - 1;
-					return calculateISOWeek(new Date(r, 11, 31), new Date(r, 0, 1));
-				}
-				r.i = r.v - 1;
-				return r;
-			},
-			// Day of week (1-7) [1=Sunday]
-			w: function(d) {
-				var r = d.getDay();
-				return { i: r, v: r + 1 };
-			},
-			// Week of year using Monday as first day of week (0-53)
-			W: function(d, ys) {
-				var doy = Cases.j(d, ys).i;
-				doy += (ys.getDay() + 6) % 7 || 7;
-				return doy / 7 | 0;
-			},
-			// Locale dependent time string (arbitrary text)
-			X: function(d) {
-				return d.toLocaleTimeString();
-			},
-			// Locale dependent date string (arbitrary text)
-			x: function(d) {
-				return d.toLocaleDateString();
-			},
-			// Year (last 2 digits only)
-			y: function(d) { return d.getFullYear() % 100; },
-			// Year (Full)
-			Y: function(d) { return d.getFullYear(); }
-		};
-
-		// Optional features that must be provided by an external data source
-		if  (daysLong) {
-			Cases.A = function(d) {
-				return daysLong[d.getDay()];
-			};
-		}
-		if (daysShort) {
-			Cases.a = function(d) {
-				return daysShort[d.getDay()];
-			};
-		}
-		if  (monthsLong) {
-			Cases.B = function(d) {
-				return monthsLong[d.getMonth()];
-			};
-		}
-		if (monthsShort) {
-			Cases.b = function(d) {
-				return monthsShort[d.getMonth()];
-			};
-		}
-
-		function padString(s, l, c) {
-			c = c || (typeof(s) === 'number' ? '0' : ' ');
-			l = l - (s += '').length | 0; // Floor/NaN->0
-			if (l <= 0) return s;
-			do { // Power-of-2, max 32 iterations (run out of RAM before that)
-				if ((l & 1) === 1) s = c + s;
-				c += c;
-			} while ((l >>>= 1) !== 0);
-			return s;
-		}
-
-		// NOTE: This code has been profiled and optimised. It can attain 100,000+
-		//	executions per second using reasonably complex format strings in Chrome.
-		function printDateFormatted(date, format) {
-			var regex = /%([0-9]*)(?:\{([^\}]*)\})?([A-Za-z%])/g,
-			    result = '', yearstart = new Date(date.getFullYear(), 0, 1),
-			    li = 0, m, list, pass, passFn,
-			    cases = Cases, pad = padString, toInt = window.parseInt;
-
-			while ((m = regex.exec(format)) !== null) {
-				result += format.substring(li, m.index);
-				li = regex.lastIndex;
-
-				passFn = cases[m[3]];
-				if (typeof(passFn) !== 'function') {
-					result += '¿' + m[3] + '?';
-					continue;
-				}
-				pass = passFn(date, yearstart);
-
-				// Look for a 'choose' list
-				if (m[2]) {
-					if (typeof(pass) === 'object') {
-						pass = pass.i === void 0 ? pass.v : pass.i;
-					}
-					if (typeof(pass) === 'number') {
-						list = m[2].split(';');
-						if (!(pass > -1 && pass < list.length)) pass = list.length - 1;
-						pass = list[pass];
-					}
-				} else if (typeof(pass) === 'object') {
-					pass = pass.v;
-				}
-				result += pad(pass, toInt(m[1], 10));
-			}
-			result += format.substr(li);
-			return result;
-		}
-		return printDateFormatted;
-	}
-})(jQuery, mediaWiki, window, Date);
+	
+	UTCClock.init( );
+	window.UTCClock = window.UCX.UTCClock = UTCClock;
+	mw.hook( "dev.utc-clock" ).fire( window.UTCClock );
+} )( jQuery, mediaWiki, window, Date );

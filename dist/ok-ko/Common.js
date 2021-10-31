@@ -1,4 +1,4 @@
-//Add border color to PIs
+//Portable infobox border colors
 $('.portable-infobox').each(function () {
     var cls = $(this).attr('class').match(/pi-theme-_(\S+)/);
     if (cls) {
@@ -6,19 +6,16 @@ $('.portable-infobox').each(function () {
     }
 });
 
-//TZclock config
-window.TZclockSimpleFormat = true;
-
-//AddRailModule config
-window.AddRailModule = [{prepend: true}];
-
-//EraIcons config
-window.useIncludedStylesheet = true;
-
-//BackToTopButton config
+//Modern BackToTopButton
 window.BackToTopModern = true;
 
-//Add username alt attribute to masthead profile so highlight css works there
+//TZclock format
+window.TZclockSimpleFormat = true;
+
+//RailModule template location
+window.AddRailModule = [{prepend: true}];
+
+//Staff highlight profile icons
 $(function () {
     if (!mw.config.get('profileUserName')) {
         return;

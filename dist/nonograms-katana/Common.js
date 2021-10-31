@@ -14,6 +14,9 @@ function delete_table(){
 	document.getElementById("unlocks3").innerHTML = "";
 	document.getElementById("unlocks4").innerHTML = "";
 	document.getElementById("unlocks5").innerHTML = "";
+	document.getElementById("add_reward1").innerHTML = "";
+	document.getElementById("add_reward2").innerHTML = "";
+	document.getElementById("add_reward3").innerHTML = "";
 }
 //Calculates rewards for levels on page "Levelling".
 function calculate() {
@@ -63,38 +66,53 @@ function calculate() {
 		["0",""],
 		["0",""]];
 	var unlocks = [["Workshop lvl. 1","","","",""],
-					["Shop lvl. 1","Warrior","","",""],
-					["Pagoda lvl. 1","","","",""],
-					["Warehouse lvl. 1","","","",""],
-					["Alchemist's Hut lvl. 1","Wizard","","",""],
-					["Pagoda lvl. 2","Logistician lvl. 1","Weapon Collector lvl. 1","Treasure Hunter lvl. 1",""],
-					["Furnace lvl. 1","","","",""],
-					["Smithy lvl. 1","Rouge","","",""],
-					["Gong (building) lvl. 1","Pagoda lvl. 3","Logistician lvl. 2","Athlete lvl. 1","Antiquarian lvl. 1"],
-					["Lumber Mill lvl. 1","Intellectual lvl. 1","","",""],
-					["Garden lvl. 1","Monk","","",""],
-					["Rock Garden lvl. 1","Logistician lvl. 3","Weapon Collector lvl. 2","Treasure Hunter lvl. 2",""],
-					["Pagoda lvl. 4","","","",""],
-					["Geologist","Athlete lvl. 2","","",""],
-					["Logistician lvl. 4","Antiquarian lvl. 2","","",""],
-					["Intellectual lvl. 2","","","",""],
-					["Pagoda lvl. 5","Archeologist","","",""],
-					["Logistician lvl. 5","Weapon Collector lvl. 3","Treasure Hunter lvl. 3","",""],
-					["Onsen lvl. 1","Athlete lvl. 3","","",""],
-					["Coffee Bonsai lvl. 1","Samurai","Gardener lvl. 1","Rock Garden Contemplator lvl. 1",""],
-					["Ship lvl. 1","Pier lvl. 1","Carpenter lvl. 1","Metallurgist lvl. 1",""],
-					["Pagoda lvl. 6","Mechanic lvl. 1","Blacksmith lvl. 1","ship expedition type: Exploring",""],
-					["Food Stall lvl. 1","Ninja","Alchemist lvl. 1","ship expedition type: Fishing",""],
-					["Athlete lvl. 4","ship expedition type: Prospecting","","",""],
-					["Gardener lvl. 2","Rock Garden Contemplator lvl. 2","Boatswain lvl. 1","ship expedition type: Patrolling",""],
-					["Adventurer","Carpenter lvl. 2","Metallurgist lvl. 2","",""],
-					["Pagoda lvl. 7","Mechanic lvl. 2","Blacksmith lvl. 2","",""],
-					["Alchemist lvl. 2","","","",""],
-					["Scientist","Athlete lvl. 5","","",""],
-					["Boatswain lvl. 2","","","",""],
-					["Carpenter lvl. 3","Metallurgist lvl. 3","","",""],
-					["Mechanic lvl. 3","Blacksmith lvl. 3","","",""],
-					["Alchemist lvl. 3","","","",""]];
+		/*lvl. 3*/	["Shop lvl. 1","Warrior","","",""],
+		/*lvl. 4*/	["Pagoda lvl. 1","","","",""],
+		/*lvl. 5*/	["Warehouse lvl. 1","","","",""],
+		/*lvl. 6*/	["Alchemist's Hut lvl. 1","Wizard","","",""],
+		/*lvl. 7*/	["Pagoda lvl. 2","Logistician lvl. 1","Weapon Collector lvl. 1","Treasure Hunter lvl. 1",""],
+		/*lvl. 8*/	["Furnace lvl. 1","","","",""],
+		/*lvl. 9*/	["Smithy lvl. 1","Rouge","","",""],
+		/*lvl. 10*/	["Gong (building) lvl. 1","Pagoda lvl. 3","Logistician lvl. 2","Athlete lvl. 1","Antiquarian lvl. 1"],
+		/*lvl. 11*/	["Lumber Mill lvl. 1","Intellectual lvl. 1","","",""],
+		/*lvl. 12*/	["Garden lvl. 1","Monk","","",""],
+		/*lvl. 13*/	["Rock Garden lvl. 1","Logistician lvl. 3","Weapon Collector lvl. 2","Treasure Hunter lvl. 2",""],
+		/*lvl. 14*/	["Pagoda lvl. 4","","","",""],
+		/*lvl. 15*/	["Geologist","Athlete lvl. 2","","",""],
+		/*lvl. 16*/	["Logistician lvl. 4","Antiquarian lvl. 2","","",""],
+		/*lvl. 17*/	["Intellectual lvl. 2","","","",""],
+		/*lvl. 18*/	["Pagoda lvl. 5","Archeologist","","",""],
+		/*lvl. 19*/	["Logistician lvl. 5","Weapon Collector lvl. 3","Treasure Hunter lvl. 3","",""],
+		/*lvl. 20*/	["Onsen lvl. 1","Athlete lvl. 3","","",""],
+		/*lvl. 21*/	["Coffee Bonsai lvl. 1","Samurai","Gardener lvl. 1","Rock Garden Contemplator lvl. 1",""],
+		/*lvl. 22*/	["Ship lvl. 1","Pier lvl. 1","Carpenter lvl. 1","Metallurgist lvl. 1",""],
+		/*lvl. 23*/	["Pagoda lvl. 6","Mechanic lvl. 1","Blacksmith lvl. 1","ship expedition type: Exploring",""],
+		/*lvl. 24*/	["Food Stall lvl. 1","Ninja","Alchemist lvl. 1","ship expedition type: Fishing",""],
+		/*lvl. 25*/	["Athlete lvl. 4","ship expedition type: Prospecting","","",""],
+		/*lvl. 26*/	["Gardener lvl. 2","Rock Garden Contemplator lvl. 2","Boatswain lvl. 1","ship expedition type: Patrolling",""],
+		/*lvl. 27*/	["Adventurer","Carpenter lvl. 2","Metallurgist lvl. 2","",""],
+		/*lvl. 28*/	["Pagoda lvl. 7","Mechanic lvl. 2","Blacksmith lvl. 2","",""],
+		/*lvl. 29*/	["Alchemist lvl. 2","","","",""],
+		/*lvl. 30*/	["Bridge lvl. 1","Caravan lvl. 1","Scientist","Athlete lvl. 5",""],
+		/*lvl. 31*/	["Outpost lvl. 1","Boatswain lvl. 2","","",""],
+		/*lvl. 32*/	["Alchemist's Hut lvl. 6","Tailor lvl. 1","Carpenter lvl. 3","Metallurgist lvl. 3",""],
+		/*lvl. 33*/	["Mechanic lvl. 3","Blacksmith lvl. 3","","",""],
+		/*lvl. 34*/	["Alchemist lvl. 3","","","",""],
+		/*lvl. 35*/	["Athlete lvl. 6","Intellectual lvl. 3","","",""]];
+	
+	var firework = "https://static.wikia.nocookie.net/nonograms-katana/images/2/24/Firework.png/revision/latest?cb=20211025160230";
+	var ramen = "https://static.wikia.nocookie.net/nonograms-katana/images/f/f8/Ramen.png/revision/latest?cb=20210614184327";
+	var curry = "https://static.wikia.nocookie.net/nonograms-katana/images/d/dd/Curry.png/revision/latest?cb=20210716171827";
+	var date_cake = "https://static.wikia.nocookie.net/nonograms-katana/images/1/12/Date_cake.png/revision/latest?cb=20211025160247";
+	var kimono = "https://static.wikia.nocookie.net/nonograms-katana/images/8/85/Kimono.png/revision/latest?cb=20211026102346";
+	var ninja_suit = "https://static.wikia.nocookie.net/nonograms-katana/images/3/3d/Ninja_suit.png/revision/latest?cb=20211026102357";
+	var samurai_armor = "https://static.wikia.nocookie.net/nonograms-katana/images/5/51/Samurai_armor.png/revision/latest?cb=20211026102409";
+	//Additional rewards for levels: 30, 50, 80 and 100.
+	var add_level = [30, 50, 80, 100];
+	var add_rewards = [["3", firework, "0", "0", "0", "0"],
+						["1", ramen, "1", curry, "1", date_cake],
+						["1", kimono, "1", ninja_suit, "1", samurai_armor],
+						["3", firework, "1", date_cake, "1", samurai_armor]];
 	
 	//Calculates experience.
 	for (i = 2; i < level; i++) {
@@ -129,7 +147,11 @@ function calculate() {
 	//Displays everything in the table.
 	document.getElementById("xp").innerHTML = xp;
 	
-	document.getElementById("coin").innerHTML = level*2 + " x ";
+	var coins = level*2;
+	if (coins > 200){
+		coins = 200;
+	}
+	document.getElementById("coin").innerHTML = coins + " x ";
 	var imgCoin = document.createElement("img");
 	imgCoin.src = "https://static.wikia.nocookie.net/nonograms-katana/images/6/6d/Coin.png/revision/latest?cb=20210710184706";
 	imgCoin.width = "30";
@@ -183,7 +205,7 @@ function calculate() {
 		document.getElementById("tr_map").innerHTML = "0";
 	}
 	
-	if (level < 35){
+	if (level < 36){
 		document.getElementById("unlocks1").innerHTML = unlocks[level-2][0];
 		document.getElementById("unlocks2").innerHTML = unlocks[level-2][1];
 		document.getElementById("unlocks3").innerHTML = unlocks[level-2][2];
@@ -196,6 +218,51 @@ function calculate() {
 		document.getElementById("unlocks4").innerHTML = "";
 		document.getElementById("unlocks5").innerHTML = "";
 	}
+	if (level == 80){
+		document.getElementById("unlocks1").innerHTML = "Zen Master";
+	}
+	
+	var ar = -1;
+	for (i = 0; i < add_level.length; i++){
+		if (level == add_level[i]){
+			var ar = i;
+		}
+	}
+	
+	if (ar != -1){
+		document.getElementById("add_reward1").innerHTML = add_rewards[ar][0] + " x ";
+		var imgAddItem1 = document.createElement("img");
+		imgAddItem1.src = add_rewards[ar][1];
+		imgAddItem1.width = "30";
+		imgAddItem1.height = "30";
+		document.getElementById("add_reward1").appendChild(imgAddItem1);
+		
+		if (add_rewards[ar][2] != "0"){
+			document.getElementById("add_reward2").innerHTML = add_rewards[ar][2] + " x ";
+			var imgAddItem2 = document.createElement("img");
+			imgAddItem2.src = add_rewards[ar][3];
+			imgAddItem2.width = "30";
+			imgAddItem2.height = "30";
+			document.getElementById("add_reward2").appendChild(imgAddItem2);
+		} else {
+			document.getElementById("add_reward2").innerHTML = "0";
+		}
+		
+		if (add_rewards[ar][4] != "0"){
+			document.getElementById("add_reward3").innerHTML = add_rewards[ar][4] + " x ";
+			var imgAddItem3 = document.createElement("img");
+			imgAddItem3.src = add_rewards[ar][5];
+			imgAddItem3.width = "30";
+			imgAddItem3.height = "30";
+			document.getElementById("add_reward3").appendChild(imgAddItem3);
+		} else {
+			document.getElementById("add_reward3").innerHTML = "0";
+		}
+	} else {
+		document.getElementById("add_reward1").innerHTML = "0";
+		document.getElementById("add_reward2").innerHTML = "0";
+		document.getElementById("add_reward3").innerHTML = "0";
+	}
 }
 
 //Creates the input box and button on page "Levelling".
@@ -205,8 +272,15 @@ if (mw.config.get("wgPageName") === "Levelling") {
 	input.id = "level";
 	var getAnswer = document.createElement("button");
 	getAnswer.innerHTML = "Calculate"; 
+	getAnswer.id = "myBtn";
 	getAnswer.addEventListener("click", calculate); 
 	inputBox.appendChild(input);
 	inputBox.appendChild(getAnswer);
+	inputBox.addEventListener("keyup", function(event) {
+		if (event.keyCode === 13) {
+			event.preventDefault();
+			document.getElementById("myBtn").click();
+		}
+	});
 	document.getElementById("reward_calculator").appendChild(inputBox); 
 }

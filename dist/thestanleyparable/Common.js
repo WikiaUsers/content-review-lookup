@@ -77,16 +77,18 @@ window.UserTagsJS = {
         newuser: {days: 6, edits: 15},
         explode: {'bannedfromchat': ['blocked']},
         metafilter: {
-        // Remove tags like "Inactive" and "New Editor" from blocked users
-        'inactive': ['blocked'],
-        'neweditor': ['blocked'],
-        // Make autoconfirmed tag not appear unless otherwise stated
-        'autoconfirmed': ['autoconfirmed']},
+	        // Remove tags like "Inactive" and "New Editor" from blocked users
+	        'inactive': ['blocked'],
+	        'neweditor': ['blocked'],
+	        // Make autoconfirmed tag not appear unless otherwise stated
+	        'autoconfirmed': ['autoconfirmed']
+        },
         // Custom tags
         custom: {
             'Withersoul 235': ['wiki-adopter', 'wikicoder'],
 	    'Alex.sapre': ['fadmin'],
-	    'Ghhghgh': ['founder']}
+	    'Ghhghgh': ['founder']
+        }
     }, tags: {
         ontrial: {
             u: 'On Repent Trial',
@@ -128,10 +130,10 @@ window.UserTagsJS = {
            title: "This user has been on FANDOM / Wikia for at least four days and have therefore been bestowed the full toolbox and privileges of the registered user group.",
            order: 1/0,
        },
-       'emailconfirmed': {
+       /*'emailconfirmed': {
            title: "This user has confirmed their registration per e-mail and are therefore no longer affected by certain restrictions from non-emailconfirmed users.",
            order: 1/0
-       },
+       },*/
        'fadmin': {
            u: 'Former Admin',
            title: 'This admin has lost their rights, due to inactivity, misbehaviour or user request.',
@@ -159,28 +161,8 @@ UserTagsJS.modules.mwGroups = [
     'vstf',
     // Import some wikispecific tags
     'bannedfromchat',
-    'autoconfirmed',
-    'emailconfirmed'
+    'autoconfirmed'
 ];
-
-window.MessageWallUserTags = {
-    tagColor: 'orange',
-    txtSize: '16px',
-    glow: true,
-    glowSize: '15px',
-    glowColor: 'gold',
-    users: {
-        'Ghhghgh': 'Founder',
-        'Withersoul 235': 'Bureaucrat',
-        'UltraUser78': 'Bureaucrat',
-        'Jody Bartosiewicz': 'Bureaucrat',
-        "Breakin'Benny": "Admin",
-        'Adriano2002': 'Admin',
-        'TheD3xus': 'Admin',
-        'VenT-rexBrennenburg': 'Admin',
-        "Renato_Lopes": "Admin"
-    }
-};
 
 /**-----------------------**/
 /** Username highlighting **/
@@ -252,7 +234,6 @@ importArticles({
         "u:dev:WallGreetingButton/code.js",
         "u:dev:MediaWiki:ArchiveBoards/code.js",
         'w:c:dev:MediaWiki:EditBoardDescription/code.js',
-        "u:dev:MessageWallUserTags/code.js",
         'u:dev:MediaWiki:HeaderLinks/code.js',
         "w:c:dev:GlobalEditcount/code.js",
         "u:dev:AdminDashboard JS-Button/code.js"
