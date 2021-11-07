@@ -3,9 +3,11 @@
         return;
     }
 
-    // WikiaNotification deprecation message in console for wiki admins
-    console.warn('[WikiaNotification] This custom script is obsolete! Please convert content of "MediaWiki:Custom-WikiaNotifications" on this wiki to MediaWiki\'s built-in Sitenotice feature.\nMore information about this can be found here: https://community.fandom.com/wiki/User_blog:MisterWoodhouse/Site_Notice_and_Anon_Notice_return_to_Fandom');
+    // WikiaNotification archival message
+    // Core functionality of the script has been commented out
+    console.warn('[WikiaNotification] This custom script has been archived! Read more about switching to the current notices at https://community.fandom.com/wiki/Help:Site_notice and consider removing WikiaNotification from this wiki\'s JavaScript');
 
+/*
     var storageKey = 'ls-wikianotifications';
  
     function log(error) {
@@ -117,4 +119,5 @@
             }
         }).fail(log);
     });
+    */
 }(jQuery, mediaWiki));

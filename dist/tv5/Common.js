@@ -1,20 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/* siteSub */
-$(function() {
-	if (mw.config.get('wgIsMainPage') || mw.config.get('wgNamespaceNumber') === -1) return;
-var siteSub = document.createElement('div'); 
-var siteSubReplace = document.querySelector('.mw-parser-output .siteSubReplace');
-siteSub.id = 'siteSub';
-siteSub.className = 'noprint'; 
-if (siteSubReplace){
-	siteSub.innerHTML = siteSubReplace.innerHTML;
-} else {
-	siteSub.innerHTML = 'From the ' + mw.config.get( 'wgSiteName' ) + ', the <i>Kapatid</i> encyclopedia';
-}
-document.getElementsByClassName('page-header__title-wrapper')[0].append(siteSub);
-}());
-
 /* Custom block message send with dev script MessageBlock */
 window.MessageBlock = {
   title : 'Blocked',

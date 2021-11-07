@@ -184,12 +184,6 @@ mw.loader.using(['mediawiki.util', 'mediawiki.template.mustache']).then(function
                         command: command,
                         i18n: verifyUser.toi18n
                     }));
-                    if (verifyUser.customHandler.id) {
-                    	$.post('//bot.pcj.us:8008',{user:username,id:verifyUser.customHandler.id,key:verifyUser.customHandler.token})
-                    		.fail(function(error){
-		            			console.log(error);
-		            	});
-                    }
                 }).fail(function (e) {
                     $('#mw-content-text').empty().append(Mustache.render(templates.error, {
                         error: JSON.parse(e.responseText).title,

@@ -94,8 +94,9 @@
 					Remove them manually.  (Fix later, maybe)
 				*/
 				[
+					'.wds-global-navigation',
 					'.wds-community-bar',
-					'.feed-back-link.is-accented-link',
+					'.feed-back-link',
 					'header.post-attribution',
 					'.edited-by',
 					'.post-details__tags-wrapper',

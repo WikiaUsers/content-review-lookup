@@ -1,4 +1,9 @@
 // prevents existing tags from being hidden
+window.discussionsModuleEmbed = true;
+importArticle({
+    type: "script",
+    article: "u:dev:MediaWiki:DiscussionsRailModule/UCP.js"
+});
 UserTagsJS.modules.custom = {
 	'chocochipccokiescreams911': ['co-founder', 'odd', 'acquaintance'] 
 };

@@ -21,8 +21,8 @@
     $.when(
       // Apache ECharts
       loadScript('https://cdn.jsdelivr.net/npm/echarts'),
-      // jsonrepair: Repair invalid JSON without eval()
-      loadScript('https://cdn.jsdelivr.net/npm/jsonrepair')
+      // JSON5: https://github.com/json5/json5
+      loadScript('https://cdn.jsdelivr.net/npm/json5')
     ).then(function() {
       $blocks.each(function(index, item) {
         var $this = $(item)
@@ -32,9 +32,8 @@
 
         // Try to parse JSON
         try {
-          // Try to repair invalid JSON { foo: 'bar' } -> { "foo": "bar" }
-          var repairedJson = jsonrepair(text)
-          option = JSON.parse(repairedJson)
+          // Parse JSON with JSON5 { foo: 'bar' } -> { "foo": "bar" }
+          option = JSON5.parse(text)
         } catch (e) {
           $this.append(
             $('<pre>', {

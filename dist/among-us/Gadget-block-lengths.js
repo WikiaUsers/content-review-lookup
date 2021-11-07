@@ -5,7 +5,7 @@
  * Description: Displays the table from [[Project:Rules#Block Lengths]] when blocking a user
 **/
 
-mw.loader.using('mediawiki.api', function() {
+mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 	if (mw.config.get('wgCanonicalSpecialPageName') !== 'Block' || window['gadget-block-lengths-loaded']) return;
 	window['gadget-block-lengths-loaded'] = true;
 
@@ -27,10 +27,11 @@ mw.loader.using('mediawiki.api', function() {
 	');
 
 	// Fetch table
-	var api = new mw.Api();
+	var api = new mw.Api(),
+		page = new mw.Title('Rules', 4);
 	api.get({
 		action: 'parse',
-		text: '{{#lst: Project:Rules|blocklengths}}', // [[mw:Extension:Labeled Section Transclusion]]
+		text: '{{#lst: ' + page.toText() + '|blocklengths}}', // [[mw:Extension:Labeled Section Transclusion]]
 		contentmodel: 'wikitext'
 	}).done(function (data) {
 		var text = data.parse.text['*'];
@@ -39,6 +40,6 @@ mw.loader.using('mediawiki.api', function() {
 		$('.mw-htmlform-ooui-wrapper').append(text);
 
 		// Add link to rules
-		$('.mw-ipb-conveniencelinks').prepend('<a href="' + mw.util.getUrl('Project:Rules') + '" title="Project:Rules">Rules</a> | ');
+		$('.mw-ipb-conveniencelinks').prepend('<a href="' + page.getUrl() + '" title="' + page.toText() + '">Rules</a> | ');
 	});
 });

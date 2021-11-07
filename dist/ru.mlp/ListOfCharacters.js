@@ -7,14 +7,14 @@ if (wgPageName == 'Список_пони') {
     var listOfItems = [];
     var sortOrder = 'normal';
     var searchNameData = "";
-    var searchKindData = ['единорог', 'пегас', 'земнопони', 'аликорн'];
+    var searchKindData = ['единорог', 'пегас', 'земнопони', 'кристальный', 'перевёртыш', 'аликорн'];
     var searchGroupData = ['женвзр', 'мужвзр', 'жендет', 'муждет'];
     var searchSeason = "";
     var searchEpisode = "";
     var searchSeriesData = "";
     /*Создание управляющих элементов*/
     var searcNameInput = '<input id="searchCharactersTextArea" type="text" style="width:70%; display:inline-block" autofocus placeholder="Введите имя персонажа"/><button style="display:inline-block" type="button" id="searchCharactersButton">Поиск</button>';
-    var searchSeasonsInput = '<select id="searchSeasons"><option value="">Все сезоны</option><option value="s1">1 сезон</option><option value="s2">2 сезон</option><option value="s3">3 сезон</option><option value="s4">4 сезон</option><option value="s5">5 сезон</option><option value="s6">6 сезон</option><option value="s7">7 сезон</option><option value="s8">8 сезон</option><option value="eg">EqG</option></select>';
+    var searchSeasonsInput = '<select id="searchSeasons"><option value="">Все сезоны</option><option value="s1">1 сезон</option><option value="s2">2 сезон</option><option value="s3">3 сезон</option><option value="s4">4 сезон</option><option value="s5">5 сезон</option><option value="s6">6 сезон</option><option value="s7">7 сезон</option><option value="s8">8 сезон</option><option value="s9">9 сезон</option><option value="eg">EqG</option></select>';
     var searchEpisodesInput = '<select id="searchEpisodes" disabled><option value="">Все серии</option><option value="01">Серия 1</option><option value="02">Серия 2</option><option value="03">Серия 3</option><option value="04">Серия 4</option><option value="05">Серия 5</option><option value="06">Серия 6</option><option value="07">Серия 7</option><option value="08">Серия 8</option><option value="09">Серия 9</option><option value="10">Серия 10</option><option value="11">Серия 11</option><option value="12">Серия 12</option><option value="13">Серия 13</option><option value="14">Серия 14</option><option value="15">Серия 15</option><option value="16">Серия 16</option><option value="17">Серия 17</option><option value="18">Серия 18</option><option value="19">Серия 19</option><option value="20">Серия 20</option><option value="21">Серия 21</option><option value="22">Серия 22</option><option value="23">Серия 23</option><option value="24">Серия 24</option><option value="25">Серия 25</option><option value="26">Серия 26</option></select>';
     var sortingCharactersInput = '<br/><b>Сортировка:</b><select id="sortingCharacters"><option value="defaultSort">По умолчанию</option><option value="rusAlSort">По рус. алфавиту</option><option value="enAlSort">По англ. алфавиту</option><option value="fAppearance">По первому появлению</option></select>';
     var sortingOrderInput = '<b>Порядок:</b><select id="sortingOrder"><option value="normalOrder">Прямой</option><option value="reversOrder">Обратный</option></select>';
@@ -216,7 +216,7 @@ if (wgPageName == 'Список_пони') {
         document.getElementById('searchCharactersTextArea').value = '';
         sortOrder = 'normal';
         searchNameData = "";
-        searchKindData = ['единорог', 'пегас', 'земнопони', 'аликорн'];
+        searchKindData = ['единорог', 'пегас', 'земнопони', 'кристальный', 'перевёртыш', 'аликорн'];
         searchGroupData = ['женвзр', 'мужвзр', 'жендет', 'муждет'];
         searchSeason = ""
         searchEpisode = ""
@@ -234,7 +234,9 @@ if (wgPageName == 'Список_пони') {
     document.getElementById('unicornSearchButton').onclick = function() {searchKindProcessing(0, "единорог", this.id)};
     document.getElementById('pegasusSearchButton').onclick = function() {searchKindProcessing(1, "пегас", this.id)};
     document.getElementById('earthSearchButton').onclick = function() {searchKindProcessing(2, "земнопони", this.id)};
-    document.getElementById('alicornSearchButton').onclick = function() {searchKindProcessing(3, "аликорн", this.id)};
+    document.getElementById('сristalSearchButton').onclick = function() {searchKindProcessing(3, "кристальный", this.id)};
+    document.getElementById('сhangelingSearchButton').onclick = function() {searchKindProcessing(4, "перевёртыш", this.id)};
+    document.getElementById('alicornSearchButton').onclick = function() {searchKindProcessing(5, "аликорн", this.id)};
     document.getElementById('femaleSearchButton').onclick = function() {searchGroupProcessing(0, 2, "жен", "муж", "взр", "дет", "женвзр", "жендет", this.id)};
     document.getElementById('maleSearchButton').onclick = function() {searchGroupProcessing(1, 3, "муж", "жен", "взр", "дет", "мужвзр", "муждет", this.id)};
     document.getElementById('adultSearchButton').onclick = function() {searchGroupProcessing(0, 1, "взр", "дет", "жен", "муж", "женвзр", "мужвзр", this.id)};

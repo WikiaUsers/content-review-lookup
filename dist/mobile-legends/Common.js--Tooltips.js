@@ -12,8 +12,8 @@ var tooltips = {
  
     offsetX: 20,
     offsetY: 20,
-    waitForImages: false,
-    noCSS: false,
+    waitForImages: true,
+    noCSS: true,
  
     flip: false,
  

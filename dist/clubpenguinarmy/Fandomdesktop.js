@@ -172,3 +172,20 @@ importArticles({
     ]
 });
 /*======================================================================================*/
+
+// Create the "dev" namespace if it doesn't exist already:
+
+window.dev = window.dev || {};
+
+// Create the sub-namespace for this addon and set some options:
+
+window.dev.editSummaries = {
+     css: '#stdSummaries { ... }',
+     select: 'MediaWiki:Custom-StandardEditSummaries'
+};
+
+// The options need to be set before the import! Otherwise they may not work.
+
+importArticles({ type: 'script', articles: [ 
+    'u:dev:MediaWiki:Standard Edit Summary/code.js'
+]});

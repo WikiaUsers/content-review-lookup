@@ -104,3 +104,5 @@ if (mw.config.get("wgUserGroups").indexOf('sysop') > -1) {
   massRenameSummary = 'automatic';
   importScriptPage('MediaWiki:MassRename/code.js', 'dev');
 }
+
+/* Hopefully adding this line triggers a code review by Fandom. */

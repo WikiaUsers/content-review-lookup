@@ -32,6 +32,10 @@ nkch_gst_gadgets = [{
     name: "ThemeToggler",
     title: "Переключатель темы",
     description: "Иконка в левой части страницы для переключения темы"
+}, {
+    name: "SnowStorm",
+    title: "Падение снега",
+    description: "Снежинки зимой на вики. Помните, было такое?"
 }
 ];
 

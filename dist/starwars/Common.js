@@ -101,6 +101,7 @@ function loadFunc() {
 	// replaceSearchIcon(); this is now called from MediaWiki:Monobook.js
 	fixSearch();
 	hideContentSub();
+	addTalkheaderPreload();
 
 	var body = document.getElementsByTagName('body')[0];
 	var bodyClass = body.className;
@@ -827,6 +828,15 @@ function hideContentSub() {
                 $wikiaHeader.hide();
             }
         }
+	}
+}
+
+/**
+ * Adds {{Talkheader}} template to preload parameter on new talk page links
+ **/
+function addTalkheaderPreload() {
+	if (mw.config.get('wgNamespaceNumber') === 0) {
+		document.querySelector('#ca-talk.new').href += '&preload=Template:Talkheader/preload';
 	}
 }
 

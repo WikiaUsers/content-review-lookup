@@ -98,6 +98,7 @@ importArticles({
 		'u:dev:DupImageList/code.js', //Adds duplicate image page
 		'u:dev:Message/code.js', //Adds mass message function
 		'dev:WikiActivity.js' , //Adds WikiActivity
-		'MediaWiki:Common.js/CEB.js' //Adds custom edit buttons
+		'MediaWiki:Common.js/CEB.js', //Adds custom edit buttons
+		'u:dev:MediaWiki:ReferencePopups/code.js' //Reference popups
     ]
 });

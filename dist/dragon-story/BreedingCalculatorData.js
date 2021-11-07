@@ -3237,6 +3237,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "brightsky": {
+                "name": "Brightsky",
+                "types": [
+                    "fairytale",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "25_hours_25",
+                "rarity": 4,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "brightsteel": {
                 "name": "Brightsteel",
                 "types": [
@@ -3724,6 +3740,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                             ]
                         ]
                     ]
+                ]
+            },
+            "capricious": {
+                "name": "Capricious",
+                "types": [
+                    "fairytale",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
                 ]
             },
             "capricorn": {
@@ -6645,6 +6677,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "dazzlestar": {
+                "name": "Dazzlestar",
+                "types": [
+                    "fairytale",
+                    "rainbow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "deadwood": {
                 "name": "Deadwood",
                 "types": [
@@ -7268,6 +7316,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "18_hours_18",
                 "rarity": 3,
                 "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "doze": {
+                "name": "Doze",
+                "types": [
+                    "fairytale",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]
@@ -16235,6 +16299,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "lucid": {
+                "name": "Lucid",
+                "types": [
+                    "fairytale",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "luck": {
                 "name": "Luck",
                 "types": [
@@ -24277,6 +24357,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "restful": {
+                "name": "Restful",
+                "types": [
+                    "fairytale",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "reticulum": {
                 "name": "Reticulum",
                 "types": [
@@ -30189,6 +30285,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "10_hours_10",
                 "rarity": 2,
                 "offspringeligibility": "expired"
+            },
+            "torpor": {
+                "name": "Torpor",
+                "types": [
+                    "fairytale",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "green"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ]
+                    ]
+                ]
             },
             "toucan": {
                 "name": "Toucan",

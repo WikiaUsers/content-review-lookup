@@ -1639,6 +1639,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"brightsky": {
+				"name": "Brightsky",
+				"colors": [
+					"fairytale",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"brightsteel": {
 				"name": "Brightsteel",
 				"colors": [
@@ -1876,6 +1884,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "common"
+			},
+			"capricious": {
+				"name": "Capricious",
+				"colors": [
+					"fairytale",
+					"pink"
+				],
+				"rarity": "unbreedable"
 			},
 			"capricorn": {
 				"name": "Capricorn",
@@ -3402,6 +3418,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"dazzlestar": {
+				"name": "Dazzlestar",
+				"colors": [
+					"fairytale",
+					"rainbow"
+				],
+				"rarity": "unbreedable"
+			},
 			"deadwood": {
 				"name": "Deadwood",
 				"colors": [
@@ -3725,6 +3749,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Downpour",
 				"colors": [
 					"black",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"doze": {
+				"name": "Doze",
+				"colors": [
+					"fairytale",
 					"blue"
 				],
 				"rarity": "unbreedable"
@@ -8231,6 +8263,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"lucid": {
+				"name": "Lucid",
+				"colors": [
+					"fairytale",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"luck": {
 				"name": "Luck",
 				"colors": [
@@ -12098,6 +12138,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"restful": {
+				"name": "Restful",
+				"colors": [
+					"fairytale",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
 			"reticulum": {
 				"name": "Reticulum",
 				"colors": [
@@ -15009,6 +15057,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "rare"
+			},
+			"torpor": {
+				"name": "Torpor",
+				"colors": [
+					"fairytale",
+					"green"
+				],
+				"rarity": "common"
 			},
 			"toucan": {
 				"name": "Toucan",

@@ -19,14 +19,16 @@
   var userList = []
   // Default badges
   var defaultBadgeList = {
-    staff: 'https://vignette.wikia.nocookie.net/central/images/0/06/Badge-Staff.svg/revision/latest?cb=20181230095915',
-    helper: 'https://vignette.wikia.nocookie.net/central/images/c/c8/Badge-Helper.svg/revision/latest?cb=20181230101409',
-    sysop: 'https://vignette.wikia.nocookie.net/central/images/1/12/Badge-Admin.svg/revision/latest?cb=20181230095355',
-    'content-moderator': 'https://vignette.wikia.nocookie.net/central/images/e/ef/Badge-ContentModerator.svg/revision/latest?cb=20181230094934',
-    'discussions-moderator': 'https://vignette.wikia.nocookie.net/central/images/5/50/Badge-DiscussionsModerator.svg/revision/latest?cb=20181230095305',
-    /* vstf */soap: 'https://vignette.wikia.nocookie.net/central/images/9/93/Badge-VSTF.svg/revision/latest?cb=20181230101029',
-    vanguard: 'https://vignette.wikia.nocookie.net/central/images/b/b2/Badge-Vanguard-small.svg/revision/latest?cb=20171111112441',
-    'global-discussions-moderator': 'https://vignette.wikia.nocookie.net/central/images/4/40/Badge-GlobalDiscussionsModerator.svg/revision/latest?cb=20181230212405',
+    sysop: 'https://vignette.wikia.nocookie.net/central/images/1/12/Badge-Admin.svg',
+    'content-moderator': 'https://vignette.wikia.nocookie.net/central/images/e/ef/Badge-ContentModerator.svg',
+    threadmoderator: 'https://vignette.wikia.nocookie.net/central/images/5/50/Badge-DiscussionsModerator.svg',
+    staff: 'https://vignette.wikia.nocookie.net/central/images/0/06/Badge-Staff.svg',
+    'wiki-representative': 'https://vignette.wikia.nocookie.net/central/images/0/06/Badge-Staff.svg',
+    'wiki-specialist': 'https://vignette.wikia.nocookie.net/central/images/0/06/Badge-Staff.svg',
+    helper: 'https://vignette.wikia.nocookie.net/central/images/c/c8/Badge-Helper.svg',
+    soap: 'https://vignette.wikia.nocookie.net/central/images/9/9a/Badge-SOAP.svg',
+    'global-discussions-moderator': 'https://vignette.wikia.nocookie.net/central/images/4/40/Badge-GlobalDiscussionsModerator.svg',
+    vanguard: 'https://vignette.wikia.nocookie.net/central/images/8/81/Vanguard.svg',
     // ...
   }
   // Disabled users

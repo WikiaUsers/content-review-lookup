@@ -38,7 +38,7 @@
             }).append(
                 $('<img>', {
                     'class': 'twitch-preview',
-                    'src': 'https://static-cdn.jtvnw.net/previews-ttv/live_user_gopiratesoftware-280x200.jpg?cb=' + Date.now()
+                    'src': 'https://static-cdn.jtvnw.net/previews-ttv/live_user_piratesoftware-280x200.jpg?cb=' + Date.now()
                 }),
                 $('<div>', {
                     'class': 'twitch-stats'
@@ -54,7 +54,7 @@
                 ),
                 $('<a>', {
                     'class': 'twitch-button',
-                    'href': 'https://twitch.tv/gopiratesoftware',
+                    'href': 'https://twitch.tv/piratesoftware',
                     'target': '_blank',
                     'text': 'Watch'
                 })

@@ -12,13 +12,19 @@ mw.loader.using('mediawiki.util').then(function() {
     var config = mw.config.get([
         'wgCanonicalSpecialPageName',
         'wgTitle',
+        'wgFormattedNamespaces'
     ]);
     if (config.wgCanonicalSpecialPageName !== 'InfoboxBuilder') {
         return;
     }
     var n = config.wgTitle.substr(config.wgTitle.indexOf('/') + 1);
-    window.location.href = mw.util.getUrl('Template:' + n, {
-        'action': 'edit',
-        'useeditor': 'source'
-    });
+    window.location.href = mw.util.getUrl(
+    	new RegExp('^([Tt]emplate|' + config.wgFormattedNamespaces[10] + '):')
+    		.test(n) ? n : 'Template:' + n,
+    	{
+        	'action': 'edit',
+        	'useeditor': 'source',
+        	'templateType': 'infobox'
+    	}
+    );
 });

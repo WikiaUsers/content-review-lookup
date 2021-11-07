@@ -1,4 +1,5 @@
 $( function() {
+function init(i18n) {
 	var cats = [];
 	new mw.Api().get({
 		action: "query",
@@ -17,7 +18,7 @@ $( function() {
     	if (cats.length > 0) {
     		$('.page-header__meta .page-header__categories').after(
 				$('<div>', {'class': 'page-header__categories', id: 'top-hidden-categories'}).prepend(
-					$('<span>', {'class': 'page-header__categories-in', text: 'hidden: '})
+					$('<span>', {'class': 'page-header__categories-in', text: i18n.msg('hidden').plain()+': '})
 				).css({'filter': 'opacity(0.9)', 'z-index': '2'})
 			);
 			$('#top-hidden-categories').append(
@@ -35,7 +36,7 @@ $( function() {
 				);
 				$('#top-hidden-categories').append(
 					$('<div>', { 'class': 'wds-dropdown page-header__categories-dropdown'}).append(
-						('&nbsp;and '), $('<a>', {'class': 'wds-dropdown__toggle', text: (cats.length-2)+' more'}),
+						('&nbsp;'+i18n.msg('and').plain()+' '), $('<a>', {'class': 'wds-dropdown__toggle', text: i18n.msg('more', (cats.length-2)).plain() }),
 						$('<div>', {'class': 'wds-dropdown__content page-header__categories-dropdown-content wds-is-left-aligned'}).append(	
 							$('<ul>', { id: 'top-hidden-cat-dropdown', 'class': 'wds-list wds-is-linked'}) 
 						)
@@ -52,4 +53,11 @@ $( function() {
     	}
 	});
 
+}
+
+mw.hook('dev.i18n').add(function (i18n) {
+	i18n.loadMessages('TopHiddenCategories').then(init);
+});
+    
+importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });	
 } );

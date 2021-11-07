@@ -11,20 +11,38 @@
 			return;
 		}
 		
+		// Initialise counter for timeout
+		var i = 0;
 		// Repeat until tabber finishes loading
 		var interval = setInterval(function() {
 			// Check for nav buttons ready, or wait
-			var tabberNav = tabber.querySelector('.tabbernav');
+			var tabberNav = tabber.querySelector('.wds-tabs');
 			if(!tabberNav) {
+				i++;
+				if(i > 120) { // 30 seconds
+					clearInterval(interval);
+				}
 				// Repeat if not ready
 				return;
 			}
 			
 			// Make sure our default exists
-			var defaultTab = tabberNav.querySelector('li [title="' + defaultName + '"]');
+			var defaultTab;
+			[].some.call(tabberNav.querySelectorAll('li.wds-tabs__tab a'), function(tab) {
+				if(tab.textContent == defaultName) {
+					defaultTab = tab;
+					return true;
+				}
+				
+				return false;
+			});
+
 			if(defaultTab) {
-				// Set default
+				var currentHash = window.location.hash;
+				// Trigger tabber change
 				defaultTab.click();
+				// Remove tabber hash from url
+				window.history.replaceState({}, '', window.location.pathname + currentHash);
 			}
 			
 			// Stop

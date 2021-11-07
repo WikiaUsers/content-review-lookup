@@ -5,6 +5,7 @@ nkch.tt = typeof nkch.tt != "undefined" ? nkch.tt : new Object();
 
 if (!nkch.tt.isActive) {
     nkch.tt.isActive = true;
+    nkch.tt.inStickyNav = false;
 
     mw.loader.using(["mediawiki.api", "mediawiki.util"], function () {
         const api = new mw.Api();
@@ -31,7 +32,10 @@ if (!nkch.tt.isActive) {
                     ".nkch-theme-toggler__button.is-active .wds-icon-small { fill: var(--theme-body-background-color); transition: .7s; }" +
 
                     ".nkch-theme-toggler__pointer-wrapper { align-items: center; display: flex; height: 28px; justify-content: center; position: absolute; top: 0; transition: .3s; width: 28px; z-index: 1; will-change: transform, z-index ;}" +
-                    ".nkch-theme-toggler__pointer { background: var(--theme-community-header-color); border-radius: 15px; height: 26px; margin: 1px; width: 26px; }"
+                    ".nkch-theme-toggler__pointer { background: var(--theme-community-header-color); border-radius: 15px; height: 26px; margin: 1px; width: 26px; }" +
+
+                    ".fandom-sticky-header .nkch-theme-toggler__wrapper { margin-inline-start: auto; }" +
+                    ".fandom-sticky-header .nkch-theme-toggler__wrapper +  .wiki-tools { margin-inline-start: 0; }"
                 );
 
                 nkch.tt.el = {
@@ -300,7 +304,30 @@ if (!nkch.tt.isActive) {
 
                 setInterval(checkIfActive, 100);
 
-                document.querySelector(".page-counter").after(nkch.tt.el.wrapper.$e);
+                const $togglerElement = $(nkch.tt.el.wrapper.$e);
+
+                function checkIfStickyNavIsVisible() {
+                    switch (document.querySelector(".fandom-sticky-header.is-visible") !== null) {
+                        case true:
+                            if (nkch.tt.inStickyNav === false) {
+                                $togglerElement.detach();
+                                $(".fandom-sticky-header > .wiki-tools").before($togglerElement);
+                                nkch.tt.inStickyNav = true;
+                            }
+                            break;
+                        case false:
+                            if (nkch.tt.inStickyNav === true) {
+                                $togglerElement.detach();
+                                $(".page-counter").after($togglerElement)
+                                nkch.tt.inStickyNav = false;
+                            }
+                            break;
+                    }
+                }
+
+                setInterval(checkIfStickyNavIsVisible, 100);
+
+                $(".page-counter").after($togglerElement);
             }
         );
 

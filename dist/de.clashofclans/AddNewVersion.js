@@ -4,6 +4,8 @@
  * @author DarkBarbarian
  *
  * @license: CC-BY-NC-SA
+ * 
+ * @version 1.0.1
  */
 mw.loader.using('mediawiki.api', function() {
 	var conf = mw.config.get([
@@ -94,6 +96,8 @@ mw.loader.using('mediawiki.api', function() {
 	 * add entered content to the page
 	 */
 	function addNewVersion(newVersion) {
+		var footer = '|}<noinclude>[[Kategorie:Versionsgeschichte]]</noinclude>';
+		
 		//get old page content to concatenate it with new one
 		api.get({
 			action: 'query',
@@ -111,12 +115,12 @@ mw.loader.using('mediawiki.api', function() {
 						return;
 					}
 					var content = data.pages[i].revisions[0].slots.main['*'];
-					if (content.length < 60) {
+					if (content.length < footer.length + 1) {
 						console.log(conf.wgPageName + ': Vorhandener Wikitext zu kurz! Bitte füge deine Änderung manuell ein.');
 						notification('error', 'Vorhandener Wikitext zu kurz! Bitte füge deine Änderung manuell ein.');
 						return;
 					}
-					text = content.slice(0,-60) + newVersion + content.slice(-60);
+					text = content.slice(0, -(footer.length + 1)) + newVersion + content.slice(-(footer.length + 1));
 					break;
 				}
 				

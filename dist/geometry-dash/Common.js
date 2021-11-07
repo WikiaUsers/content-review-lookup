@@ -1,7 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 /***************************/
-/* Interface Modifications */
+/* Interface Modification **/
 /***************************/
 
 /* Template:USERNAME Substitution */
@@ -18,7 +18,7 @@ window.dev = window.dev || {};
 window.dev.editSummaries = {
     css: '#edit-summaries',
     select: [
-        'select',
+        '(browse edit summaries)',
         '1. General editing', [
             'Updated information',
             'Corrected spelling/grammar',
@@ -32,7 +32,7 @@ window.dev.editSummaries = {
         ],
         '3. Maintenance', [
             'Updated category',
-            'Added notice template',
+            'Included notice template',
             'Removed/fixed link(s)',
             'Removed/replaced file(s)',
             'Removed/corrected template(s)'
@@ -54,7 +54,7 @@ UserTagsJS.modules.inactive = 60;
 UserTagsJS.modules.metafilter = {'sysop': ['bureaucrat']};
 UserTagsJS.modules.newuser = {
     days: 7,
-    edits: 5,
+    edits: 10,
     namespace: 0
 };
 

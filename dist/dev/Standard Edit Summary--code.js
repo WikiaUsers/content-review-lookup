@@ -1,7 +1,7 @@
 /**
  * Standard edit summaries
  *
- * see https://dev.wikia.com/wiki/Standard_Edit_Summary
+ * see https://dev.fandom.com/wiki/Standard_Edit_Summary
  * for documentation and examples
  *
  * Originally written by User:Sikon for Wookiepedia
