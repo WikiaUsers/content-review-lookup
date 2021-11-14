@@ -1796,6 +1796,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"calm": {
+				"name": "Calm",
+				"colors": [
+					"fairytale",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
 			"calmheart": {
 				"name": "Calmheart",
 				"colors": [
@@ -6593,6 +6601,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"hibernation": {
+				"name": "Hibernation",
+				"colors": [
+					"fairytale",
+					"green"
+				],
+				"rarity": "unbreedable"
+			},
 			"hibiscus": {
 				"name": "Hibiscus",
 				"colors": [
@@ -9292,6 +9308,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "unbreedable"
+			},
+			"nap": {
+				"name": "Nap",
+				"colors": [
+					"fairytale",
+					"white"
+				],
+				"rarity": "common"
 			},
 			"nature": {
 				"name": "Nature",
@@ -12110,6 +12134,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"beast",
 					"black",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"repose": {
+				"name": "Repose",
+				"colors": [
+					"fairytale",
+					"purple"
 				],
 				"rarity": "unbreedable"
 			},
@@ -16017,6 +16049,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"tarot",
 					"white",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"whimsy": {
+				"name": "Whimsy",
+				"colors": [
+					"fairytale",
+					"green",
+					"purple"
 				],
 				"rarity": "unbreedable"
 			},

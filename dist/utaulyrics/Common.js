@@ -2,7 +2,7 @@
 
 // redirect from unsupported page titles when searching
 if (mw.config.get("wgPageName") === "Special:Search") {
-	switch (document.getElementById("search-v2-input").value) {
+	switch (document.querySelector('.unified-search__input__query')['value']) {
 		case ".":
 			window.location = "/wiki/．";
 			break;

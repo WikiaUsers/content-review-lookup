@@ -1,4 +1,3 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
 /* DiscussionsProfile: a replacement for LinkToDiscussionsProfileIfTheyDontHaveLivePosts
 * https://dev.fandom.com/wiki/LinkToDiscussionsProfileIfTheyDontHaveLivePosts
 * Written by TyA, used with permission: https://elderscrolls.fandom.com/wiki/User:TyA

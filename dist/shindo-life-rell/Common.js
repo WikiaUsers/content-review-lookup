@@ -83,10 +83,36 @@ importArticles({
 	}
 	
 	function ESTTime12() {
-		var d = new Date(), curTime;
+		var d = new Date(),
+		    offsetH = d.getTimezoneOffset() - 5 * 60, // EST timezone
+		    curTime;
 
-        // EST timezone (UTC - 5 hours), EDT (Daylight Savings) timezone (UTC - 4 hours)
-        d.setTime(d.valueOf() + (d.getTimezoneOffset() - 4 * 60) * 60 * 1000);
+        // Switch to EDT from second Sunday of March 2am EST,
+        // to first Sunday of November 2am EDT
+        switch (d.getMonth() + 1) {
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            	// April to October are always EDT
+            	offsetH++;
+            	break;
+            case 3:
+                if (d.getDate() - d.getDay() < 8) break;
+                if (d.getDate() > 14 || d.getDay() > 0 ||
+                    d.getHours() > 1) offsetH++;
+                break;
+            case 11:
+                if (d.getDate() > 7) break;
+                if (d.getDate() - d.getDay() < 0 ||
+                   (d.getDay() === 0 && d.getHours() < 1)) offsetH++;
+                break;
+        }
+
+        d.setTime(d.valueOf() + offsetH * 60 * 1000);
 
         // Hours are converted to 12-hours base
         // Minutes are treated as 1/100 for convenience with the
@@ -98,7 +124,7 @@ importArticles({
         
         return curTime;
 	}
-
+	
 	function update(curTime) {
 		var curTimeStr = curTime.toFixed(2).replace('.', ':'),
 		    startTime, stopTime,

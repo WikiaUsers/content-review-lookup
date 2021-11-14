@@ -41,7 +41,7 @@ for (var i = 0; i<tabImages.length; i++) {
  * Voir [[Modèle:Spoiler/Bureau]]
  */
 tabSpoiler = Array.from(document.getElementsByClassName('spoiler'));
-tabLivres = ["animale1", "animale2", "lecasjackspark1", "lecasjackspark2", "lecasjackspark3", "lecasjackspark4", "cogito", "extincta", "phobos0", "phobos1", "phobos2", "phobos3", "phobos4", "vampyria1", "vampyria2"];
+tabLivres = ["animale1", "animale2", "casjackspark1", "casjackspark2", "casjackspark3", "casjackspark4", "cogito", "extincta", "phobos0", "phobos1", "phobos2", "phobos3", "phobos4", "vampyria1", "vampyria2"];
 
 function pasModeleJailu() {
     for (var i = 0; i<tabSpoiler.length; i++) {

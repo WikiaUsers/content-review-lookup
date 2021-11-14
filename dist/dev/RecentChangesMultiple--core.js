@@ -535,9 +535,8 @@ var Main =  (function () {
             'mediawiki.special.recentchanges',
             'mediawiki.special.changeslist',
             'mediawiki.special.changeslist.enhanced',
-            'skin.oasis.recentChanges.css',
             'ext.fandom.photoGallery.gallery.css',
-            "mediawiki.diff.styles", "skin.oasis.diff.css", 
+            "mediawiki.diff.styles", 
         ])
             .then(function () {
             makeCollapsible_1["default"]();
@@ -561,6 +560,7 @@ var Main =  (function () {
                 _this.rcParamsURL[key] = tParam == "1";
             }
         });
+        tLoadPromises.forEach(function (p) { p["catch"](console.error); });
         tLoadPromises = tLoadPromises.map(function (p) { var d = $.Deferred(); p.then(d.resolve); return d; });
         var initDef = $.when.apply($, tLoadPromises);
         this._start(initDef);

@@ -129,16 +129,8 @@ $(function UserNameReplace() {
 /* End of the {{USERNAME}} replacement */
  
 importArticles({
-	type: 'style',
-    articles: [
-        'u:dev:MediaWiki:FandomIcons/code.css',
-	    'u:dev:MediaWiki:TZclock.css'
-    ]
-}, {
 	type: 'script',
 	articles: [
-	    'u:dev:TZclock.js',
- 
         'u:onceuponatime:MediaWiki:CollapsibleTables.js',
         'u:onceuponatime:MediaWiki:Common.js/DuplicateImages.js',
  

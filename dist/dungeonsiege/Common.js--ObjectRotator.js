@@ -1,4 +1,3 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
 /**
 * @author: Flightmare (http://elderscrolls.fandom.com/wiki/User:Flightmare)
 * @version: 1.0

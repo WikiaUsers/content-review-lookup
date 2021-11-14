@@ -18,6 +18,7 @@ UserTagsJS.modules.custom = {
     'MarsDy': ['Mara1'],
     'Cherrybombed': ['Cas1'],
     'ChicChick336': ['ContentMod','Designer'],
+    'Rayvena': ['Rollback'],
 };
 
  

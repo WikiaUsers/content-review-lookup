@@ -27,7 +27,8 @@ mw.hook('wikipage.content').add(function($content) {
                     $('<iframe>', {
                         src: 'https://www.facebook.com/video/embed?video_id=' + id,
                         frameboder: 0,
-                        css: css
+                        width: $this.attr('data-width') || 1280,
+                        height: $this.attr('data-height') || 720
                     })
                  );
                 break;

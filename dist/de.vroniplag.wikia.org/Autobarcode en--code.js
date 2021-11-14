@@ -265,7 +265,7 @@ function generateCaption(svg, prefix)
 	svg.text(LEFTRIGHTMARGIN + 4*SKIP, HEADER+HEIGHT+2*CHIPLENGTH + 7*SKIP + MIDDLE_FIX, TEXTD, fontProp);
 	svg.rect(LEFTRIGHTMARGIN + SKIP + WIDTH/2, HEADER+HEIGHT+2*CHIPLENGTH + 6*SKIP, 1.5*SKIP, 1.5*SKIP, {fill: BRIGHTRED});
 	svg.text(LEFTRIGHTMARGIN + 4*SKIP + WIDTH/2, HEADER+HEIGHT+2*CHIPLENGTH + 7*SKIP + MIDDLE_FIX, TEXTE, fontProp);
-	svg.text(svg.link("https://vroniplag.wikia.org/de/wiki/Vroniplag_Wiki:Grundlagen/Barcode"), 630, 240, "Wie liest man diese Grafik?", {fontFamily: FONT, fontSize: "8pt", textAnchor: "end", fill: "#0A3073"});
+	svg.text(svg.link("https://vroniplag.wikia.org/de/wiki/Vroniplag_Wiki:Grundlagen/Barcode"), 630, 240, "How to read this graphic?", {fontFamily: FONT, fontSize: "8pt", textAnchor: "end", fill: "#0A3073"});
 }
  
 function doubleZeroPrefix(x) {

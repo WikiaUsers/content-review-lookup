@@ -3550,6 +3550,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "23_hours_23",
                 "rarity": 2
             },
+            "calm": {
+                "name": "Calm",
+                "types": [
+                    "fairytale",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "calmheart": {
                 "name": "Calmheart",
                 "types": [
@@ -13009,6 +13025,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "hibernation": {
+                "name": "Hibernation",
+                "types": [
+                    "fairytale",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "hibiscus": {
                 "name": "Hibiscus",
                 "types": [
@@ -18383,6 +18415,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "36_hours_36",
                 "rarity": 3
+            },
+            "nap": {
+                "name": "Nap",
+                "types": [
+                    "fairytale",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "pink"
+                            ]
+                        ]
+                    ]
+                ]
             },
             "nature": {
                 "name": "Nature",
@@ -24304,6 +24363,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "15_hours_15",
                 "rarity": 3,
                 "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "repose": {
+                "name": "Repose",
+                "types": [
+                    "fairytale",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]
@@ -32307,6 +32382,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "15_hours_15",
                 "rarity": 3,
                 "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "whimsy": {
+                "name": "Whimsy",
+                "types": [
+                    "fairytale",
+                    "green",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]

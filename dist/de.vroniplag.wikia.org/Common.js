@@ -71,7 +71,7 @@ importArticles({
         'MediaWiki:Badges/code.js',
         'MediaWiki:Fragcolors/code.js',     // Farbige Fragmente
         'MediaWiki:Autobarcode/code.js',    // Automatic barcodes
-        'MediaWiki:Autobarcode_en/code.js', // Automatic barcodes
+           //  'MediaWiki:Autobarcode_en/code.js', // Automatic barcodes english ... needs further adjustments
         // 'Mediawiki:Timeline/code.js',       // Timeline does not work for more than 50 cases....
         'u:dev:AjaxRC/code.js',
         'u:dev:DisplayClock/code.js',       // Cache Purge Clock

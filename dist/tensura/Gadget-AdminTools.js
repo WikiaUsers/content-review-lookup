@@ -36,7 +36,7 @@ if (mw.config.get('wgUserGroups').indexOf('sysop', 'content-moderator') > -1) {
 }
  
 /* MassRename */
-massRenameSummary = '[[w:c:dev:MassRename|automatic]]';
+massRenameSummary = '[[w:c:dev:MassRename|Tool Link]]';
 
 /* Redirect Button */
 if (mw.config.get("wgUserGroups").indexOf('sysop', 'content-moderator') > -1)
@@ -54,6 +54,7 @@ mw.loader.using('ext.fandom.ContentReview.legacyLoaders.js', function() {
             'u:dev:MediaWiki:MassCategorization/code.js',
             'u:dev:MediaWiki:MassEdit/code.js',
             'u:dev:MediaWiki:MassProtect/code.js',
+            'u:dev:MediaWiki:MassRename/code.js',
             'u:dev:MediaWiki:PageRenameAuto-update/code.js',
             'u:dev:MediaWiki:ReferencePopups/code.js'
         ]

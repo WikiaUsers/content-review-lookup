@@ -35,6 +35,8 @@ $(function() {
     });
 });
 
+window.BackToTopModern = true;
+
 /* Приход циклопа */
 var cyclopeIsGone = null;
 window.cyclopeGone = function(){

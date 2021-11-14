@@ -1,5 +1,25 @@
 //Adapted from Terraria Wiki MediaWiki:Common.js
 
+//original image
+$(function(){
+	//Infobox images
+	$(".pi-image-thumbnail").each(function(){
+		var srcsetvar = $(this).attr("srcset");
+		var srcarray = srcsetvar.split(" ");
+		$(this).attr("srcset", srcarray[0]+"&format=original");
+	});
+	//other images
+	var pattern = /(?:static|vignette|images)\.wikia\.nocookie\.net/;
+	$("img").each(function(){
+		var $this = $(this);
+		var srcattr = $this.hasClass('lazyload') ? 'data-src' : 'src';
+		var srcvar = $this.attr(srcattr);
+		if (srcvar && !srcvar.endsWith('format=original') && pattern.exec(srcvar)) {
+			$this.attr(srcattr, srcvar+(srcvar.includes('?')?'&':'?')+'format=original');
+		}
+	});
+});
+
 $(function() {
 // Disable triggering of new browser tab when clicking URL links that point to internal wiki addresses (purge, edit, etc)
 $('a[href^="//thoriummod.fandom.com/"]').removeAttr('target');

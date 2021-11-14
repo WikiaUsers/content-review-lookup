@@ -49,6 +49,11 @@
             styles: 'MediaWiki:BlendGlobalNav.css'
         },
 		
+		ClassicDevWikiTheme: {
+			page: 'ClassicDevWikiTheme',
+			styles: 'MediaWiki:ClassicDevWikiTheme.css'
+		},
+		
         Contextlink: {
             selector: '.context-link',
             styles: 'MediaWiki:Global_Lua_Modules/Context-link.css'
@@ -493,6 +498,11 @@
             exec: function () {
                 window.wgCanonicalSpecialPageName = 'Wantedpages';
             }
+        },
+        
+        WikiaCommunityCentralTheme: {
+        	page: 'WikiaCommunityCentralTheme',
+        	scripts: 'MediaWiki:WikiaCommunityCentralTheme.css'
         },
         
 	    WikiActivity: {

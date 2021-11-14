@@ -7,6 +7,27 @@ window.AutoCreateUserPagesConfig = {
     summary: 'Script: Creating user profile'
 };
 
+
+/* DiscussionsModuleEmbed */
+window.discussionsModuleEmbed = true;
+window.discussionsModuleConfig = {
+	'size' : 'number 3',
+	'mostrecent' : 'true',
+}
+
+    mw.hook('discussionsModule.added').add(function($module) {
+        // Module addition
+        if ($('.insights-module').exists()) {
+            $module.insertBefore('.insights-module');
+        } else {
+            $module.appendTo('#WikiaRail');
+        }
+    });
+/* DiscussionsEmbed */
+window.discussEmbedLimit = 3;
+window.discussEmbedForum = "1779114017030656532";
+window.discussEmbedSortTrending = 1;
+
 /* Standard edit summaries
  * jQuery version of Sikon's fillEditSummaries
  * @author Grunny - taken from Wookieepedia */

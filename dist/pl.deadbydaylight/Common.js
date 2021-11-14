@@ -22,9 +22,9 @@ $(function(){
 	}
 	/**************************************************************************/
 	//MobileViewHovers(); //Currnently not used, as the Mobile version doesn't load Common.js
-	CreateEditSourceLink();
 	SetAppropriateDimensions();
 	SetHeadersShadows();
+	SetPerkCheckBoxes();
 	
 	$.each($(".mw-collapsible-text"), function(index, element){
 		console.log("element #" + index);
@@ -35,6 +35,9 @@ $(function(){
 			1); //Must be delayed because the real height is 0 at the time of executing the script. This is due to table is collapsed (basically height of all TR elements are set to 0)
 		});
 	});
+	
+	//I think this needs to try catch block as the .getAttribute() throws the error when you don't have the visual edit button present, thus moving to the end
+	CreateEditSourceLink();
 });
 
 
@@ -145,6 +148,17 @@ function MobileViewHovers(){
     	
     	tooltip.append(span);*/
 	//}
+}
+function SetPerkCheckBoxes(){
+	console.log("Checkboxes Function initiallised");
+	$.each(document.getElementsByClassName("switchArea"), 
+		function(index, el){
+	        var x = document.createElement("INPUT");
+	        x.setAttribute("class", "switchBox");
+	        x.setAttribute("type", "checkbox");
+	        el.parentNode.insertBefore(x, el.nextSibling);
+	    }
+    );
 }
 /*********************************************************************************************/
 /*********************************************************************************************/

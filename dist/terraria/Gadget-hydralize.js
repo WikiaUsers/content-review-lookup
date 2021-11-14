@@ -57,19 +57,27 @@ $('.fandom-sticky-header').remove();
 	var $netbar = $('.global-navigation__links');
 	//move gp logo to top bar
 	$('.fandom-community-header__top-container').appendTo($netbar);
-	//move wiki tools to aside, 
-	var $box = $('.fandom-community-header__local-navigation .extra-large-navigation > :first-child .wds-list');
-	var $themeswitch = $('.wiki-tools').first()
-		.find('a').removeClass('wds-button')
-		.appendTo($box).wrap('<li></li>')
-		.filter('.wiki-tools__theme-switch')
-		.appendTo($netbar);
-	var $recent = $box.find('a[data-tracking="recent-changes"]');
-	$('<span></span>', {text: $recent.attr('title').split('[')[0]}).appendTo($recent);
+	//move wiki tools to aside:
+	var $box = $('.fandom-community-header__local-navigation > ul').find('.explore-menu');
+	var $wikitools = $('.wiki-tools').first().find('a').removeClass('wds-button');
+	// theme switch to top bar
+	var $themeswitch = $wikitools.filter('.wiki-tools__theme-switch').appendTo($netbar);
+	
+		// .appendTo($netbar);   $('.wiki-tools').first()
+		// .find('a').removeClass('wds-button')
+		// .appendTo($box).wrap('<li></li>')
+		// .filter('.wiki-tools__theme-switch')
+		// .appendTo($netbar);
+	var $recent = $wikitools.filter('[data-tracking="recent-changes"]').first().wrap('<li></li>');
+	
+	$('<span></span>', {text: $recent.attr('title').split('[')[0]}).appendTo($recent.empty());
+	// sort in this way: main - recent - random - all 
 	$box.find('a[data-tracking="explore-main-page"]').parent().after(
 		$recent.parent(),
 		$box.find('a[data-tracking="explore-random"]').parent()
 	);
+	$wikitools.not('.wiki-tools__theme-switch, [data-tracking="recent-changes"]').appendTo($box.find('.wds-list')).wrap('<li></li>');
+	
 	//theme switch without reloading:
 	var s = document.createElementNS('http://www.w3.org/2000/svg', 'symbol');
 	if(!$('#wds-icons-moon-small').length){
@@ -120,7 +128,7 @@ $('.fandom-sticky-header').remove();
 $('.content-review__widget').insertBefore($('#content')).wrap('<div class="wrap-content-review__widget"></div>');
 
 //index wiki nav sections:(for collapsed/expanded status memory)
-$(".fandom-community-header__local-navigation .extra-large-navigation > .wds-dropdown").each(function(index, div){
+$(".fandom-community-header__local-navigation > ul > .wds-dropdown").each(function(index, div){
 	div.dataset.index = index;
 	if($.cookie('hydra-nav-'+index) === "y"){
 		$(div).addClass('collapsed').find('.wds-dropdown__content').css('display', 'none');
@@ -140,7 +148,7 @@ $(".fandom-community-header__local-navigation .extra-large-navigation > .wds-dro
 	delete tools.upload;
 	delete tools.specialpages;
 	var $box = $(
-		'<div class="wds-dropdown" data-index="pagetools">'+
+		'<li class="wds-dropdown" data-index="pagetools">'+
 		'<div class="wds-tabs__tab-label wds-dropdown__toggle first-level-item">'+
 		'<a href="#"><span>'+l10n('pagetools')+'</span></a>'+
 		'<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg>'+
@@ -148,8 +156,8 @@ $(".fandom-community-header__local-navigation .extra-large-navigation > .wds-dro
 		'<div class="wds-dropdown__content wds-is-not-scrollable">'+
 		'<ul class="wds-list wds-is-linked"></ul>'+
 		'</div>'+
-		'</div>')
-		.appendTo($('.fandom-community-header__local-navigation .extra-large-navigation'))
+		'</li>')
+		.appendTo($('.fandom-community-header__local-navigation > ul'))
 		.find('ul.wds-list');
 	$.each(tools, function(key, item){
 		if(!item){
@@ -180,19 +188,22 @@ $(".fandom-community-header__local-navigation .extra-large-navigation > .wds-dro
 (function(){
 	var $languages = $('.page-footer__languages');
 	if(!$languages.length){ return; }
-	$languages.removeClass().addClass('wds-dropdown page-footer__languages').attr('data-index', 'languages')
-		.appendTo($('.fandom-community-header__local-navigation .extra-large-navigation'));
 	var $header = $languages.find('.wds-collapsible-panel__header');
-	$('<div class="wds-tabs__tab-label wds-dropdown__toggle first-level-item">'+
+	var $box = $(
+		'<li class="wds-dropdown" data-index="languages">'+
+		'<div class="wds-tabs__tab-label wds-dropdown__toggle first-level-item">'+
 		'<a href="#"><span>'+$header.text()+'</span></a>'+
 		'<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg>'+
-		'</div>').prependTo($languages);
+		'</div>'+
+		'<div class="wds-dropdown__content wds-is-not-scrollable">'+
+		'<ul class="wds-list wds-is-linked"></ul>'+
+		'</div>'+
+		'</li>')
+		.appendTo($('.fandom-community-header__local-navigation > ul'))
+		.find('ul.wds-list');
 	$header.remove();
-	$languages.find('.wds-collapsible-panel__content')
-		.removeClass().addClass('wds-dropdown__content wds-is-not-scrollable')
-		.find('a').wrap('<li></li>');
-	$languages.find('.wds-dropdown__content li')
-		.wrapAll('<ul class="wds-list wds-is-linked"></ul>');
+	$languages.find('.wds-collapsible-panel__content a')
+		.appendTo($box).wrap('<li></li>');
 	if($.cookie('hydra-nav-languages') === "y"){
 		$languages.addClass('collapsed')
 			.find('.wds-dropdown__content').css('display', 'none');

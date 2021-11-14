@@ -75,8 +75,7 @@
                     this.fetch(),
                     window.dev.i18n.loadMessages('LastEdited', i18nOptions),
                     mw.loader.using([
-                        'mediawiki.diff.styles',
-                        'skin.oasis.diff.css'
+                        'mediawiki.diff.styles'
                     ])
                 ).then($.proxy(this.render, this));
             }

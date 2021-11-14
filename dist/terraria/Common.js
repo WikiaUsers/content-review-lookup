@@ -26,6 +26,29 @@ $(function(){
 	});
 });
 
+//gallery image size fix
+$(function(){
+	$(".mw-gallery-traditional .thumb").each(function(){
+		var $this = $(this);
+		/* $this.css('display', 'flex'); // do this in common.css: .mw-gallery-traditional .thumb{ display: flex; } */
+		$this.css('height', $this.height()+'px').find('>div').css('margin', 'auto');
+		var $img = $this.find('img').first();
+		if(!$img.length){
+			return;
+		}
+		var $width = $img.attr('width') - 0; //cast to number.
+		var $filewidth = $img.attr('data-file-width') - 0;
+		if($filewidth < $width){
+			var $fileheight = $img.attr('data-file-height');
+			if( $filewidth * 2 > $width){
+				$img.attr({'width': $filewidth, 'height': $fileheight});
+			}else{
+				$img.attr({'width': $filewidth*2, 'height': $fileheight*2});
+			}
+		}
+	});
+});
+
 // login status mark
 if(mw.config.get("wgUserName") !== null){
 	$('body').addClass('logged-in');

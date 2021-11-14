@@ -1,4 +1,3 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
 /*Imports - Full credits on imported pages*/
 
 /* https://dev.wikia.com/wiki/RevealAnonIP This must be placed above all imports. */
@@ -11,7 +10,8 @@ importArticles({
     articles: [
         "MediaWiki:Common.js/PersistentHeaders.js", /* Scrolling table headers ~Flightmare*/
         "u:dev:MediaWiki:RevealAnonIP/code.js",
-        "MediaWiki:Common.js/collapse.js" /*Collapsibles ~HaLo2FrEeEk*/
+        "MediaWiki:Common.js/collapse.js", /*Collapsibles ~HaLo2FrEeEk*/
+        "MediaWiki:Common.js/DiscussionsProfile.js" /* If user's posts are all deleted */
     ]
 });
 

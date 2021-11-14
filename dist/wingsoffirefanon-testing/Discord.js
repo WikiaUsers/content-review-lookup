@@ -14,7 +14,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(function () {
 
 	const inviteId = "fqxbymC";
 	const title = "WoFF Wiki Discord";
-	const callToAction = "Join our server!";
+	const callToAction = "Join the server!";
 
 	const buildModule = function buildModule(ui) {
 		return ui.a({

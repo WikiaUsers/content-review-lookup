@@ -228,7 +228,7 @@
 				}
 				if (colorRes) {
 					if (typeof nick2 !== "undefined") {
-						ColorSelector += 'a[href$="/' + nick + '"],\na[href$=":' + nick + '"]\n' + 'a[href$="/' + nick2 + '"],\na[href$=":' + nick2 + '"]' + CodeGenCSSEnding;
+						ColorSelector += 'a[href$="/' + nick + '"],\na[href$=":' + nick + '"],\n' + 'a[href$="/' + nick2 + '"],\na[href$=":' + nick2 + '"]' + CodeGenCSSEnding;
 					} else {
 						ColorSelector += 'a[href$="/' + nick + '"],\na[href$=":' + nick + '"]' + CodeGenCSSEnding;
 					}

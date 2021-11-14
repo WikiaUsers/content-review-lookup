@@ -29,7 +29,10 @@ function customizeComments() {
 		$('#MessageWall .EntityHeader_name__2oRXg, #articleComments .EntityHeader_name__2oRXg').filter(function() {
 		       $(this).parents(elements).attr('data-user', $(this).text()).addClass('user-comment');
 			});
-		$('.message-wall-app a > .wds-avatar__image[title="User avatar"], .article-comments-app a > .wds-avatar__image[title="User avatar"], .message-wall-app a > .wds-avatar__image[title="wds-avatar__image"], .article-comments-app a > .wds-avatar__image[title="wds-avatar__image"]').attr('title', function(){
+		$('.message-wall-app a > .wds-avatar__image[title="User avatar"],' + 
+		  '.article-comments-app a > .wds-avatar__image[title="User avatar"],' +
+		  '.message-wall-app a > svg.wds-avatar__image:not([title]),' +
+		  '.article-comments-app a > svg.wds-avatar__image:not([title])').attr('title', function(){
 			return $(this).parent('a').attr('href').split(':')[1].replace(/%20/g, ' ').replace(/_/g, ' ')}).attr('alt', function(){
 			return $(this).parent('a').attr('href').split(':')[1].replace(/%20/g, ' ').replace(/_/g, ' ')});
 		$('.message-wall-app .EntityHeader_header-details__1bZ7- a[href*="%20"], .article-comments-app .EntityHeader_header-details__1bZ7- a[href*="%20"]').each(function(){
@@ -56,9 +59,12 @@ function customizeContribsTools() {
 		 });
 }
 function customizeReplyBoxAvatars() {
-	username = config.wgUserName;
+	var username = config.wgUserName;
 		var interval = setInterval(function () {
-			$('#MessageWall .wds-avatar > .wds-avatar__image[alt="User avatar"], #articleComments .wds-avatar > .wds-avatar__image[alt="User avatar"]').attr('alt', username).attr('title', username);
+			$('#MessageWall .wds-avatar > .wds-avatar__image[alt="User avatar"],' + 
+			'#articleComments .wds-avatar > .wds-avatar__image[alt="User avatar"],' +
+			'#MessageWall .wds-avatar > svg.wds-avatar__image:not([title]),' + 
+			'#articleComments .wds-avatar > svg.wds-avatar__image:not([title])').attr('alt', username).attr('title', username);
 		}, 100 );
 }
 function customizeUserProfileApp() {

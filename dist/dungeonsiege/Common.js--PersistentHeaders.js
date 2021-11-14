@@ -1,4 +1,3 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
 // Core functionality of the table.persistent class.
 // Makes table headers stick to the top of the screen when scrolling.
 // Adapted from https://css-tricks.com/persistent-headers/

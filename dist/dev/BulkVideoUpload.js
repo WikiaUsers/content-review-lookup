@@ -151,7 +151,7 @@
 			url: 'https://youtube.googleapis.com/youtube/v3/playlistItems'
 		})
 		.done(function(d) {
-			if (d.error.code) return outputError(d.error.code + ': ' + d.error.message);
+			if (d.error) return outputError(d.error.code + ': ' + d.error.message);
 			var playlist = d.items;
 			processPlaylist(playlist);
 		})

@@ -265,6 +265,53 @@ function calculate() {
 	}
 }
 
+//Changes every output cell in the table to "0" or "".
+function delete_table_m(){
+	document.getElementById("mosaic").innerHTML = "#0";
+	document.getElementById("collected").innerHTML = "0";
+	document.getElementById("needed").innerHTML = "0";
+	document.getElementById("percent").innerHTML = "0";
+}
+
+//Calculates how many fragments are still needed to complete a mosaic, plus some other useful information.
+function mosaic_calculator_f(){
+	var fragments = document.getElementById("fragments").value;
+	//If the input is not a number or if the number is not between 0 and 13,808, clears the table.
+	if(isNaN(fragments)){
+    	document.getElementById("wrong_number").innerHTML = "Please enter a number.";
+		delete_table_m();
+		return;
+        }
+	if (fragments < 0){
+		document.getElementById("wrong_number").innerHTML = "You have enter a number smaller than 0.";
+		delete_table_m();
+		return;
+	}
+	if (fragments > 13808){
+		document.getElementById("wrong_number").innerHTML = "You have enter a number bigger than 13,808.";
+		delete_table_m();
+		return;
+	}
+	if (fragments == 13808){
+		document.getElementById("wrong_number").innerHTML = "Congratulations, you have completed all mosaics.";
+		delete_table_m();
+		return;
+	}
+	document.getElementById("wrong_number").innerHTML = "";
+	
+	//Logic of the calculator..
+	var mosaics_f = [0, 368, 1008, 1648, 2288, 3568, 6128, 8688, 11248, 13808];
+	for (i = 1; i < mosaics_f.length; i++){
+		if (fragments < mosaics_f[i]){
+			document.getElementById("mosaic").innerHTML = "#" + i;
+			var collected = document.getElementById("collected").innerHTML = fragments - mosaics_f[i-1];
+			document.getElementById("needed").innerHTML = mosaics_f[i] - fragments;
+			document.getElementById("percent").innerHTML = Math.round((collected/(mosaics_f[i] - mosaics_f[i-1])) * 10000)/100 + "%";
+			break;
+		}
+	}
+}
+
 //Creates the input box and button on page "Levelling".
 if (mw.config.get("wgPageName") === "Levelling") {
 	var inputBox = document.createElement("div");
@@ -283,4 +330,24 @@ if (mw.config.get("wgPageName") === "Levelling") {
 		}
 	});
 	document.getElementById("reward_calculator").appendChild(inputBox); 
+}
+
+//Creates the input box and button on page "Mosaic".
+if (mw.config.get("wgPageName") === "Mosaic") {
+	var inputBox = document.createElement("div");
+	var input = document.createElement("input");
+	input.id = "fragments";
+	var getAnswer = document.createElement("button");
+	getAnswer.innerHTML = "Calculate"; 
+	getAnswer.id = "myBtn";
+	getAnswer.addEventListener("click", mosaic_calculator_f); 
+	inputBox.appendChild(input);
+	inputBox.appendChild(getAnswer);
+	inputBox.addEventListener("keyup", function(event) {
+		if (event.keyCode === 13) {
+			event.preventDefault();
+			document.getElementById("myBtn").click();
+		}
+	});
+	document.getElementById("mosaic_calculator").appendChild(inputBox); 
 }
