@@ -42,32 +42,37 @@ nkch_gst_gadgets = [{
 // Настройка AddRailModule
 window.AddRailModule = ['Template:Проект:Комиксы/Комиксы недели', 'Template:NewPagesModule', 'Template:Уголок'];
 
-// Всплывающая подсказка красных ссылок
-mw.loader.using("mediawiki.api").then(
-	function() {
-		if (mw.config.get("skin") !== "fandomdesktop"){
-			return;
-			} else {
-				document.querySelectorAll("a.new").forEach(
-				    function (i) {
-				        i.setAttribute("title", decodeURI(new mw.Uri(i.href).path.replace(mw.config.get("wgScriptPath"), "").replace("/wiki/", "").replace(/_/g, " ")));
-				    }
-				);
-			}
-		}
-);
-
-// Случайная надпись
-var wiki_name_number=Math.floor(Math.random() * 12);
-var wiki_name_text=["Эксельсиор!", "Мстители, общий сбор!", "Ко мне, мои Люди-Х!", "С великой силой...", "Халк крушить!", "Пламя!", "Ваканда навсегда!", "Я - железный человек", "Я есть Грут", "Твип!", "Великая сила, никакой ответственности!" ][wiki_name_number];
-var elements=document.getElementsByClassName('fandom-community-header__community-name');
-var wiki_name=elements[0];
-wiki_name.textContent=wiki_name_text;
-
 // выполнение при готовности страницы
 $(document).ready(function()
-{      
-    // если открыта страница загрузки изображения
+{
+	// Перемещение эпиграфа в верх на страницах выпуска
+	$('.autopream').each(function() {
+	    $(this).insertAfter($(this).parent().find('.autopream + div'));
+	});
+	
+	// Всплывающая подсказка красных ссылок
+	// mw.loader.using("mediawiki.api").then(
+	// 	function() {
+	// 		if (mw.config.get("skin") !== "fandomdesktop"){
+	// 			return;
+	// 			} else {
+	// 				document.querySelectorAll("a.new").forEach(
+	// 				    function (i) {
+	// 				        i.setAttribute("title", decodeURI(new mw.Uri(i.href).path.replace(mw.config.get("wgScriptPath"), "").replace("/wiki/", "").replace(/_/g, " ")));
+	// 				    }
+	// 				);
+	// 			}
+	// 		}
+	// );
+
+	// Случайная надпись
+	var wiki_name_number=Math.floor(Math.random() * 12);
+	var wiki_name_text=["Эксельсиор!", "Мстители, общий сбор!", "Ко мне, мои Люди-Х!", "С великой силой...", "Халк крушить!", "Пламя!", "Ваканда навсегда!", "Я - железный человек", "Я есть Грут", "Твип!", "Великая сила, никакой ответственности!", 'Посмотри правде в глаза, Тигр ... ты только что сорвал джекпот!' ][wiki_name_number];
+	var elements=document.getElementsByClassName('fandom-community-header__community-name');
+	var wiki_name=elements[0];
+	wiki_name.textContent=wiki_name_text;
+
+	// если открыта страница загрузки изображения
     if (wgCanonicalSpecialPageName === 'Upload') 
     {
         // добавление шаблона в поле краткого описания для загружаемого изображения

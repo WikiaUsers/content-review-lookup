@@ -3001,6 +3001,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "super"
 			},
+			"cuddle": {
+				"name": "Cuddle",
+				"colors": [
+					"fairytale",
+					"rainbow"
+				],
+				"rarity": "unbreedable"
+			},
 			"cultivated": {
 				"name": "Cultivated",
 				"colors": [
@@ -3397,6 +3405,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"tropic",
 					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"daydream": {
+				"name": "Daydream",
+				"colors": [
+					"fairytale",
+					"pink"
 				],
 				"rarity": "unbreedable"
 			},
@@ -10008,6 +10024,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "super"
 			},
+			"nightmist": {
+				"name": "Nightmist",
+				"colors": [
+					"fairytale",
+					"red"
+				],
+				"rarity": "common"
+			},
 			"nightsky": {
 				"name": "Nightsky",
 				"colors": [
@@ -13341,6 +13365,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"white",
 					"blue",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"slumbersoul": {
+				"name": "Slumbersoul",
+				"colors": [
+					"fairytale",
 					"yellow"
 				],
 				"rarity": "unbreedable"

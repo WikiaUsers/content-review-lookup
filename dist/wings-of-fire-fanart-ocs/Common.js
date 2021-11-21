@@ -3,7 +3,7 @@
 /* Auto create user pages */
 window.AutoCreateUserPagesConfig = {
     content: {
-        2: '{{sub'+'st:Welcome}}',
+        2: '{{Welcome}}',
         3: false
     },
     summary: 'Script: Welcoming user.'

@@ -1,3 +1,10 @@
+/**
+ * This script adds a link to an English page with the same name to the header
+ * if the name of the page you're viewing uses only single-byte characters.
+ * 
+ * Author: otokoume
+ */
+
 $(function() {
     'use strict';
 
@@ -6,17 +13,15 @@ $(function() {
     var specialPagename = mw.config.get('wgCanonicalSpecialPageName');
     var uploadAutoFill  = mw.config.get('wgUploadAutoFill');
     var filledFilename  = $('#wpDestFile').val();
-    var urlParamas      = location.search;
+    var urlParams       = location.search;
 
     // Only run on pages that pagename is only alphanumeric characters
-    if (!/^[\x01-\x7E]+$/.test(title) && !specialPagename) return;
-
-    var isFandomDesktop = mw.config.get('skin') === 'fandomdesktop';
+    if (!isSingleByteOnly(title) && !specialPagename) return;
 
     var encodedTitle = encodeURIComponent(title);
     var resultPagename;
 
-    if (uploadAutoFill === false && /^[\x01-\x7E]+$/.test(filledFilename)) {
+    if (uploadAutoFill === false && isSingleByteOnly(filledFilename)) {
         resultPagename = 'File:' + filledFilename;
     } else if (specialPagename) {
         resultPagename = namespace + ':' + specialPagename;
@@ -26,33 +31,38 @@ $(function() {
 
     var html = genLinkHtml(resultPagename, '対応する英語版ページに移動', '英語版');
 
-    if (urlParamas) {
+    if (urlParams) {
         var suffix                   = parseParamsList() || '';
         var resultPagenameWithParams = resultPagename + suffix;
         html += genLinkHtml(resultPagenameWithParams, '正確に対応する英語版ページに移動', '英語版 (A)');
     }
 
     // Rendering
-    if (isFandomDesktop) {
-        // For normal header
-        $('.fandom-community-header')
-            .find('.wds-tabs.extra-large-navigation')
-            .append(html);
+    // For normal header
+    $('.fandom-community-header')
+        .find('.wds-tabs')
+        .append(html);
 
-        // For sticky header
-        $('.fandom-sticky-header')
-            .find('.wds-tabs.large-navigation')
-            .find('.wds-dropdown')
-            .not('.more-menu')
-            .last()
-            .after(html);
-    } else {
-        $('#left-navigation ul').append(html);
+    // For sticky header
+    $('.fandom-sticky-header')
+        .find('.wds-tabs')
+        .find('.wds-dropdown')
+        .not('.more-menu')
+        .last()
+        .after(html);
+
+    /**
+     * Check that the string contains only single-byte characters.
+     * @param {string} str
+     * @return {boolean}
+     */
+    function isSingleByteOnly(str) {
+        return /^[\x01-\x7E]+$/.test(str);
     }
 
     function parseParamsList() {
-        var paramsPos = urlParamas.indexOf('?');
-        var params    = urlParamas.slice(paramsPos);
+        var paramsPos = urlParams.indexOf('?');
+        var params    = urlParams.slice(paramsPos);
 
         if (paramsPos !== -1) return params;
 
@@ -60,28 +70,15 @@ $(function() {
     }
 
     function genLinkHtml(pagename, title, label) {
-        var link = '<a href="/wiki/' + pagename + '" title="' + title + '">';
-
-        if (isFandomDesktop) {
-            link += '<span>' + label + '</span></a>';
-
-            return [
-                '<div>',
-                '<div class="wds-tabs__tab-label first-level-item">',
-                link,
-                '</div>',
-                '</div>'
-            ].join('');
-        }
-
-        link += label + '</a>';
+        var link = '<a href="/wiki/' + pagename + '" title="' + title + '">' +
+            '<span>' + label + '</span></a>';
 
         return [
-            '<li id="ca-englishlink">',
-            '<span>',
+            '<div>',
+            '<div class="wds-tabs__tab-label first-level-item">',
             link,
-            '</span>',
-            '</li>'
+            '</div>',
+            '</div>'
         ].join('');
     }
 });

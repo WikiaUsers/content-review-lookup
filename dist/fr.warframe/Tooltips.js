@@ -32,8 +32,8 @@ var tooltips_list = [
 		parse: '{' + '{Tooltip/Pet|<#param#>|<#param2#>}}',
 	},
 	{
-		classname: 'relic-tooltip',
-		parse: '{' + '{Tooltip/Relic|<#param#>}}',
+		classname: 'relic-tooltip', 
+		parse: '{'+'{Tooltip/Relic|<#param#>}}',
 	},
 	{
 		classname: 'weapon-tooltip',

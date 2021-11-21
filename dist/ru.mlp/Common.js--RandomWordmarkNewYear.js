@@ -1,10 +1,10 @@
 // Random New Year wordmark
 !function( $ ) {
-    if ( !$( '.wds-community-header__wordmark' ).length ) return;
+    if ( !$( '.fandom-community-header__image' ).length ) return;
 
     var _img1, _img3, _can, _ctx, _i1, _i2, _i3;
 
-    $( '.wds-community-header__wordmark' ).html( 
+    $( '.fandom-community-header__image' ).html( 
         '<canvas id="canvas_wordmark" style="display: inline; width: 150px; height: 65px;"></canvas>'
     );
 

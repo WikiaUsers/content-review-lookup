@@ -8,10 +8,22 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api']).then(function () {
         config.list = [];
     }
     var msg;
-
+	var counter = 0;
+	
+	// Helperfunction for setTypes
+	function checkAllDone1 () {
+		if (counter === config.list.length) {
+        	setTimeout(function () {
+                alert(msg('done').plain());
+            }, 10);
+        }
+	}
     function setTypes () {
+    	counter = 0;
         config.list.forEach(function (item) {
             if (item.id === null) {
+            	counter++;
+            	checkAllDone1();
                 return;
             }
 
@@ -27,7 +39,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api']).then(function () {
                 token: mw.user.tokens.get('csrfToken'),
                 type: item.type
             }).fail(function (error) {
-                if (error.responseJSON.status === 400) {
+                if (error.responseJSON.status === 400) { // Retry
                     $.post(mw.util.wikiScript('wikia') + '?' + $.param({
                         controller: 'Fandom\\TemplateClassification\\Api\\ClassificationController',
                         format: 'json',
@@ -39,60 +51,67 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api']).then(function () {
                         token: mw.user.tokens.get('csrfToken'),
                         type: item.type
                     }).fail(function (error) {
+                    	counter++;
                         $('#mw-content-text #progress').append(msg('failed', item.link).parse() + '\n');
                         console.error(error);
                     }).done(function () {
+                    	counter++;
                         $('#mw-content-text #progress').append(msg('success', item.link, item.type).parse() + '\n');
                     });
                 } else {
+                	counter++;
                     $('#mw-content-text #progress').append(msg('failed', item.link).parse() + '\n');
                     console.error(error);
                 }
             }).done(function () {
+            	counter++;
                 $('#mw-content-text #progress').append(msg('success', item.link, item.type).parse() + '\n');
             });
         });
+        new MutationObserver(function () {
+            checkAllDone1();
+        }).observe(document.querySelector('#mw-content-text #progress'), {
+            childList: true
+        });
     }
 
+	// Helperfunction for run
+	function checkAllDone2 () {
+		if (counter === config.list.length) {
+			setTypes();
+		}
+	}
     function run () {
         config.list.forEach(function (item, index) {
             config.list[index].link = item.link = '[[' + item.name + '|' + item.name.split(':')[1] + ']]';
-
+			config.list[index].id = 0;
+			
             new mw.Api().get({
                 action: 'query',
                 titles: item.name,
                 prop: 'info'
             }).fail(function (error) {
+            	counter++;
                 $('#mw-content-text #progress').append(msg('failed', item.link).parse() + '\n');
                 console.error(error);
                 config.list[index].id = null;
+                checkAllDone2();
             }).done(function (data) {
+            	counter++;
                 if (data.error) {
                     $('#mw-content-text #progress').append(msg('failed', item.link).parse() + '\n');
                     console.error(data.error);
                     config.list[index].id = null;
-                    return;
-                }
-                if (Object.keys(data.query.pages)[0] === '-1') {
+                } else if (Object.keys(data.query.pages)[0] === '-1') {
                     $('#mw-content-text #progress').append(msg('missing', item.link).parse() + '\n');
                     config.list[index].id = null;
-                    return;
                 }
-
-                config.list[index].id = Number(Object.keys(data.query.pages)[0]);
+				
+				if (config.list[index].id !== null) {
+					config.list[index].id = Number(Object.keys(data.query.pages)[0]);	
+				}
+                checkAllDone2();
             });
-        });
-
-        setTypes();
-
-        new MutationObserver(function () {
-            if ($('#mw-content-text #progress a').length === config.list.length) {
-                setTimeout(function () {
-                    alert(msg('done').plain());
-                }, 10);
-            }
-        }).observe(document.querySelector('#mw-content-text #progress'), {
-            childList: true
         });
     }
 

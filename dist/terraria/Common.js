@@ -8,17 +8,17 @@
 
 //original image
 $(function(){
-	//Infobox images
+	//portable infobox images
 	$(".pi-image-thumbnail").each(function(){
 		var srcsetvar = $(this).attr("srcset");
 		var srcarray = srcsetvar.split(" ");
 		$(this).attr("srcset", srcarray[0]+"&format=original");
 	});
-	//other images
+	//other images, image links
 	var pattern = /(?:static|vignette|images)\.wikia\.nocookie\.net/;
-	$("img").each(function(){
+	$("img, a.image").each(function(){
 		var $this = $(this);
-		var srcattr = $this.hasClass('lazyload') ? 'data-src' : 'src';
+		var srcattr = ($this.prop('tagName')=='A') ? 'href' : ($this.hasClass('lazyload') ? 'data-src' : 'src');
 		var srcvar = $this.attr(srcattr);
 		if (srcvar && !srcvar.endsWith('format=original') && pattern.exec(srcvar)) {
 			$this.attr(srcattr, srcvar+(srcvar.includes('?')?'&':'?')+'format=original');

@@ -99,6 +99,9 @@ $(document).ready(function ()
     {
     	var carousel = $(carouselWrapper).find(".sbls-carousel");
         var imageBox = carousel.find(".slideboxlightshow");
+        var noCaptionOverlap = carouselWrapper.hasClass("carousel-no-caption-overlap");
+
+        console.log("No caption overlap: " + noCaptionOverlap, carouselWrapper);
 
 		// Create and style an element to contain the header (if needed).
 		var headlineText = $(carouselWrapper).attr("data-headline");
@@ -127,7 +130,17 @@ $(document).ready(function ()
             }
         }
 
-        counter.textContent = (index + 1) + "/" + children.length;
+        var carouselCaption = undefined;
+        var counterText = document.createTextNode((index + 1) + "/" + children.length);
+
+        if (noCaptionOverlap)
+        {
+            carouselCaption = document.createElement("div");
+            carouselCaption.classList.add("carousel-caption");
+            counter.appendChild(carouselCaption);
+        }
+
+        counter.appendChild(counterText);
         carousel.append(counter);
 
         var backwards = carousel.find(".sbls-prev");
@@ -135,19 +148,46 @@ $(document).ready(function ()
 
         var updateCounter = function (adjustment)
         {
-            index += adjustment;
-
-            if (index < 0)
+            if (adjustment !== undefined)
             {
-                index = children.length - 1;
+                index += adjustment;
+
+                if (index < 0)
+                {
+                    index = children.length - 1;
+                }
+                else if (index >= children.length)
+                {
+                    index = 0;
+                }
             }
-            else if (index >= children.length)
+            else
             {
-                index = 0;
+                for (index = 0; index < children.length; index++)
+                {
+                    if (children[index].style.display != "none")
+                    {
+                        break;
+                    }
+                }
             }
 
-            counter.textContent = (index + 1) + "/" + children.length;
+            var caption = $(children[index]).find(".sbls-description").text();
+
+            if (noCaptionOverlap)
+            {
+                carouselCaption.textContent = caption;
+            }
+
+            counterText.textContent = (index + 1) + "/" + children.length;
         };
+
+        var interval = $(carouselWrapper).attr("data-interval");
+
+        if (interval !== undefined)
+        {
+            setInterval(function () { updateCounter(); }, parseInt(interval));
+        }
 
         backwards.click(function ()
         {
@@ -157,6 +197,8 @@ $(document).ready(function ()
         {
             updateCounter(1);
         });
+
+        updateCounter();
     };
 
     for (var cIndex = 0; cIndex < carousels.length; cIndex++)

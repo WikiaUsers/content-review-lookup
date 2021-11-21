@@ -23,3 +23,49 @@ rollback: { link:'Project:Rollback' }
 };
 window.UserTagsJS.modules.inactive = 30;
 window.UserTagsJS.modules.mwGroups = ['rollback', 'sysop', 'bot', 'bot-global'];
+
+//Link FA
+
+var FA_enabled  = true;
+
+function addfaicon() {
+	// if disabled
+	if (!FA_enabled) return;
+	var pLang = document.getElementById("p-lang");
+	if (!pLang) return;
+	var lis = pLang.getElementsByTagName("li");
+	for (var i = 0; i < lis.length; i++) {
+		var li = lis[i];
+		// only links with a corresponding Link_FA template are interesting
+		if (!document.getElementById(li.className + "-fa"))   continue;
+		// additional class so the template can be hidden with CSS
+		li.className += " FA";
+		// change title (mouse over)
+		li.title = "This article is rated as featured article.";
+	}
+}
+$(addfaicon);
+
+// Adds icons to page header bottom border
+// Credits to https://avatar.wikia.com/wiki/MediaWiki:Common.js/icons.js
+$( function eraIcons() {
+    if ( $( '#icons' ).length ) {
+    	$( '.page-header__actions' ).first().prepend( $( '#icons' ).show() );
+    }
+} );
+/* Spoiler Alert, credits to Marvel Cinematic Universe Wiki */
+SpoilerAlert = {
+    isSpoiler: function () {
+        return -1 !== wgCategories.indexOf('Spoiler');
+  },
+    back: true
+};
+importScriptPage('SpoilerAlert/code.js', 'dev');
+importScriptPage('BackToTopButton/code.js', 'dev');
+
+$(function(){
+	importArticles({
+		type: "script",
+		articles: ["u:pad.wikia.com:MediaWiki:FilterTable.js"]
+	});
+});

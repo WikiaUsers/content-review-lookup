@@ -170,7 +170,7 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 
 /*---------------- Вспрывающие подсказки при наведении на ссылку -------------*/
 // Скрипт при наведении на ссылку анализирует целевую статью. Если он находит там текст с css-классом linkPreviewText, то создаётся окно предпросмотра.
-// В окне предпросмотра обображается текст с css-классом linkPreviewText и изображение из контейнера с css-классом linkPreviewImage.
+// В окне предпросмотра отображается текст с css-классом linkPreviewText и изображение из контейнера с css-классом linkPreviewImage.
 // Данные классы добавлены в большинство шаблонов. Изображения-ссылки не обрабатываются.
 // Основано на скрипте LinkPreview.
 // Автор: VitaZheltyakov
@@ -211,7 +211,7 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 
 	mw.loader.using(['mediawiki.util', 'mediawiki.Uri'], init);
 
-	// Служебная функция
+	// Служебная функция - Запуск обработки целевой страницы
 	pp.start = function (e) {
 		if (e) {
 				if (pp.sync.indexOf(e) > -1) {
@@ -223,7 +223,7 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 		return true;
 	};
 	
-	// Служебная функция
+	// Служебная функция - Остановка обработки целевой страницы
 	pp.stop = function (e) {
 		hlpaHover();
 		var epos = pp.sync.indexOf(e);
@@ -279,8 +279,6 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 		Settings.scale = Settings.scale !== undefined ? Settings.scale : {r: '?', t: '/scale-to-width-down/250?'};
 		//container (#WikiaMainContent, #mw-content-text etc)
 		Settings.dock = !!Settings.dock ? Settings.dock : Defaults.dock;
-		//parse whole page. debug purposes mainly
-		Settings.wholepage = urlVars.get('wholepage') || (Settings.wholepage !== undefined ? Settings.wholepage : false);
 		Settings.RegExp = Settings.RegExp || {}; //regexps
 		//links 2 ignore
 		Settings.RegExp.ilinks = Settings.RegExp.ilinks || [];
@@ -406,12 +404,7 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 		}
 		return h;
 	}
-		
-	// Неизвестная функция!!!!!!!!! - может вырезать
-	function escapeRegExp(str) {
-		return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-	} //escapeRegExp
-	
+
 	// Служебная функция - Помошник обработки hover-а
 	function hlpaHover () {
 		if (Settings.throttling) {
@@ -558,7 +551,6 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 		apipage = new mw.Uri({path: nuri.interwiki + '/api.php'});
 		apipage.extend({action: 'parse', page: nuri.truepath,
 						prop: 'images|text', format: 'json', disablepp: '', redirects: ''});
-		if (!Settings.wholepage) apipage.extend({section: 0});
 		$.getJSON(apipage).done(function(data) {
 				//parse: {text: {*: text}, images: []}
 				if (!data.parse) {
@@ -567,7 +559,14 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 					return this;
 				}
 				var img = $(data.parse.text['*']).find(Settings.RegExp.includeImage).attr('data-image-name');
-				var text = $(data.parse.text['*']).find(Settings.RegExp.includeText)[0].outerHTML;
+				// Проверяем сущестование выборки чтобы избежать ошибки
+				if ($(data.parse.text['*']).find(Settings.RegExp.includeText).length != 0) {
+					var text = $(data.parse.text['*']).find(Settings.RegExp.includeText)[0].outerHTML;
+				}
+				else {
+					pp.stop(nuri.truepath);
+					return;
+				}
 				if (!img && !text) {
 					pp.stop(nuri.truepath);
 					if (Settings.apid || withD) {

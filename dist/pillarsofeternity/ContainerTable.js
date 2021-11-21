@@ -45,6 +45,18 @@
         });
     });
     
+    // Highlight the row if one was anchored to
+    if (location.hash)
+    {
+        var row = document.getElementById(location.hash.slice(1));
+
+        if (row)
+        {
+            row.style.backgroundColor = "rgb(242 196 98 / 12.5%)";
+            row.style.transition = "background-color 0.5s";
+        }
+    }
+    
 // ContainerTable functions
 
     // Collects all .lootlist-results-day and .lootlist-results-day-header for a table

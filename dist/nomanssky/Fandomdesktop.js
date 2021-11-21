@@ -47,11 +47,4 @@ $(function(){
 	$(".nms-back-to-top").click(function(){
 		document.getElementsByClassName("community-header-wrapper")[0].scrollIntoView();
 	});
-	
-	/* Add link to scroll to categories section in bottom-right toolbar */
-	$("#WikiaBar .tools li:last-of-type").before("<li><a onclick='scrollToCats()' style='cursor:pointer' title='Scroll to list of categories'>Categories</a></li>");
 });
-function scrollToCats(){
-	$(".page-footer__categories.wds-is-collapsed .wds-collapsible-panel__header").click();
-	document.getElementsByClassName("page-footer")[0].scrollIntoView();
-}

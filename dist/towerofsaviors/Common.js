@@ -24,17 +24,16 @@ $(document).ready( function() {
 });
 
 function stageData(){
-    $('.stageMobile').remove();
     $('.stageData td.special').each(function(){
         var t = $(this).parent().nextUntil('tr:not(:has(td.specspan))');
         if(t.length == 0) return true;
-        $(this).attr('rowSpan',t.length+1);
+        $(this).attr('rowSpan',(t.length)/2+1);
         t.each(function(){$(this).children().eq(1).remove();});
     });
     $('.stageData td.stage').each(function(){
         var t = $(this).parent().nextUntil('tr:not(:has(td.span))');
         if(t.length == 0) return true;
-        $(this).attr('rowSpan',t.length+1);
+        $(this).attr('rowSpan',(t.length)/2+1);
         t.each(function(){$(this).children().eq(0).remove();});
     });
  

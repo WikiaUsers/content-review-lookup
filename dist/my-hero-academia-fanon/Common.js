@@ -1,16 +1,3 @@
-/* Replaces {{USERNAME}} with the name of the user browsing the page.
-   Requires copying Template:USERNAME. */ 
- 
-function UserNameReplace() {
-    if (typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
-    $("span.insertusername").text(wgUserName);
-}
-$(UserNameReplace);
- 
-/* End of the {{USERNAME}} replacement */
- 
-// </syntax>
-
 window.AutoCreateUserPagesConfig = {
     content: {
         2: '{{sub'+'st:DefaultUserPage}}',

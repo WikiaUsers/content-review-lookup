@@ -7,6 +7,10 @@
 * https://github.com/stowball/jQuery-rwdImageMaps
 * http://mattstow.com
 * Licensed under the MIT license
+*
+*
+* Modified by HumansCanWinElves to fit better for Fandom wikis
+*
 */
 
 /*
@@ -32,73 +36,76 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/*
-* Slightly modified by HumansCanWinElves to be compatible with imagemaps
-* created by the ImageMap MediaWiki extension
-*/
+;(function(window, $, mw) {
+	if (window.responsiveImageMapLoaded) return;
+	window.responsiveImageMapLoaded = true;
+	
+	function rwdImageMap($img) {
+		$img.each(function() {
+			if (typeof($(this).attr('usemap')) == 'undefined')
+				return;
 
-;(function($) {
-	$.fn.rwdImageMaps = function() {
-		var $img = this;
+			var that = this,
+				$that = $(that);
 
-		var rwdImageMap = function() {
-			$img.each(function() {
-				if (typeof($(this).attr('usemap')) == 'undefined')
-					return;
+			// Since WebKit doesn't know the height until after the image has loaded, perform everything in an onload copy
+			$('<img />').on('load', function() {
+				var attrW = 'width',
+					attrH = 'height',
+					w = $that.attr(attrW),
+					h = $that.attr(attrH);
 
-				var that = this,
-					$that = $(that);
+				if (!w || !h) {
+					var temp = new Image();
+					temp.src = $that.attr('src');
+					if (!w)
+						w = temp.width;
+					if (!h)
+						h = temp.height;
+				}
 
-				// Since WebKit doesn't know the height until after the image has loaded, perform everything in an onload copy
-				$('<img />').on('load', function() {
-					var attrW = 'width',
-						attrH = 'height',
-						w = $that.attr(attrW),
-						h = $that.attr(attrH);
+				var wPercent = $that.width()/100,
+					hPercent = $that.height()/100,
+					map = $that.attr('usemap').replace('#', ''),
+					c = 'coords';
 
-					if (!w || !h) {
-						var temp = new Image();
-						temp.src = $that.attr('src');
-						if (!w)
-							w = temp.width;
-						if (!h)
-							h = temp.height;
+				// The ImageMap MediaWiki extension uses the same map name for
+				// identical maps on different images (probably the resulf of
+				// a hash function). As such, the manipulation must be limited
+				// not only by the map name but also to only sibling map
+				$that.siblings('map[name="' + map + '"]').find('area').each(function() {
+					var $this = $(this);
+					if (!$this.data(c))
+						$this.data(c, $this.attr(c));
+
+					var coords = $this.data(c).split(','),
+						coordsPercent = new Array(coords.length);
+
+					for (var i = 0; i < coordsPercent.length; ++i) {
+						if (i % 2 === 0)
+							coordsPercent[i] = parseInt(((coords[i]/w)*100)*wPercent);
+						else
+							coordsPercent[i] = parseInt(((coords[i]/h)*100)*hPercent);
 					}
+					$this.attr(c, coordsPercent.toString());
+				});
+			}).attr('src', $that.attr('src'));
+		});
+	}
 
-					var wPercent = $that.width()/100,
-						hPercent = $that.height()/100,
-						map = $that.attr('usemap').replace('#', ''),
-						c = 'coords';
-
-					$that.siblings('map[name="' + map + '"]').find('area').each(function() {
-						var $this = $(this);
-						if (!$this.data(c))
-							$this.data(c, $this.attr(c));
-
-						var coords = $this.data(c).split(','),
-							coordsPercent = new Array(coords.length);
-
-						for (var i = 0; i < coordsPercent.length; ++i) {
-							if (i % 2 === 0)
-								coordsPercent[i] = parseInt(((coords[i]/w)*100)*wPercent);
-							else
-								coordsPercent[i] = parseInt(((coords[i]/h)*100)*hPercent);
-						}
-						$this.attr(c, coordsPercent.toString());
-					});
-				}).attr('src', $that.attr('src'));
-			});
-		};
-		$(window).resize(rwdImageMap).trigger('resize');
-
-		return this;
-	};
-
-	$(document).ready(function(e) {
-	    $('.responsive-imagemap .noresize').css({
-	        'width': '',
-	        'height': ''
-	    });
-	    $('.responsive-imagemap .noresize img[usemap]').rwdImageMaps();
+	mw.hook('wikipage.content').add(function($e) {
+	    var $img =
+		    $e.find('.responsive-imagemap .noresize:not(.made-responsive)').css({
+		        'width': '',
+		        'height': ''
+		    })
+		    .addClass('made-responsive')
+		    .find('img[usemap]');
+		rwdImageMap($img);
 	});
-})(jQuery);
+	
+	$(window).resize(function() {
+		rwdImageMap($('.responsive-imagemap .made-responsive img[usemap]'));
+	});
+
+})(this, jQuery, mediaWiki);

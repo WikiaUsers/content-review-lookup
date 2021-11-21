@@ -351,3 +351,6 @@ importArticle({
 });
 
 importArticle({type:'script', article:'w:c:dev:UserBadges/code.js'});
+
+// prevents existing tags from being hidden
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };

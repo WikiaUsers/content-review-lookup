@@ -374,13 +374,14 @@ window.MessageWallUserTags = {
         'Kandy_Katie': 'Administrator',
         'Koolkitty108': 'Administrator',
         'TheKorraFanatic': 'Administrator',
+        'SPONGEBOBSUPERFANINFINITY': 'Administrator',
         'Stryker305': 'Administrator',
         'BSpongeSM02':  'Administrator',
         'The_gamer_987654321':  'Administrator',
     
         'The_Smarter,_Wiser_King_Dedede': 'Assistant',
         'FireMatch': 'Assistant',
-        'SPONGEBOBSUPERFANINFINITY': 'Assistant',
+        'Thelxinoe': 'Assistant',
 
         'Idroppedmypen': 'Discussion Moderator',
         'SpongeTron D': 'Discussion Moderator',
@@ -389,7 +390,6 @@ window.MessageWallUserTags = {
 
         'TheJasbre202': 'Rollback',
         'Arthur_Read_fan': 'Rollback',
-        'Minnesotaman2007!': 'Rollback',
     }
 };
 

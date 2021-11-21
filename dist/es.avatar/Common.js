@@ -18,21 +18,6 @@ importArticles({
 	]
 });
 
-/* Adds icons to page header bottom border
- * by: [[User:The 888th Avatar]], adapted to new header by [[User:Thailog]]
- */
- 
-$(function() {
-	if( $( '.wds-community-header' ).length ) {
-		$( '#PageHeader' ).prepend(
-		$( '#icons' ).attr( 'style', 'position: absolute; right: 65px;' )
-	);
-	} else {
-		$( '.WikiaPageHeader' ).append( $( '#icons' ) );
-		$( '#icons' ).css( { 'position' : 'absolute', 'right' : '5.1em', 'bottom' : '-2em' } ).show();
-}
-});
-
 /* Automatically fills the summary field in upload form with imagebox
  * by: [[User:Xiao Qiao]]
  */
@@ -193,3 +178,11 @@ function fillEditSummaries() {
  
 }
 addOnloadHook(fillEditSummaries);
+
+// Íconos
+$(document).ready(function() {
+	var $WikiaPageHeader = $( '.WikiaPageHeader' );
+	if ( $WikiaPageHeader.length > 0 ) {
+		$( '.WikiaPageHeader' ).append( $( '#icons' ) );
+	}
+});

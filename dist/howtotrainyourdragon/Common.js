@@ -100,7 +100,10 @@ window.MessageWallUserTags = {
         'DublynT': 'Bureaucrat',
         'HiccstridFan92': 'Admin',
         'Tauriel_the_Elf': 'Admin',
+        'NarendraMartosudarmo': 'Moderator',
+        'Thorndrum': 'Moderator',
         'Nuttetuff': 'Moderator',
-        'Clodaghelm': 'Moderator'
+        'How To Train Your Deathsong': 'Moderator',
+        'Ladybrasa': 'Moderator'
     }
 };

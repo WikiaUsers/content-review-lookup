@@ -505,22 +505,13 @@ function betterSocialActivity() {
 					span = document.createElement("SPAN");
 					span.className = "mw-usertoollinks";
 					activityChildren = activity[1].children;
-					
-					if (activityChildren[0] !== undefined) {
-						node = document.createElement("A");
-						textnode = document.createTextNode(activityChildren[0].innerHTML);
-						node.appendChild(textnode); node.href = activityChildren[0].href;
-						node.title = activityChildren[0].title; node.className = "mw-usertoollinks-wall";
-						span.appendChild(node);
-					}
-					
-					if (activityChildren.length == 2) {
-						node = document.createElement("A");
-						textnode = document.createTextNode("Contribs");
-						node.appendChild(textnode); node.href = activityChildren[1].href;
-						node.title = activityChildren[1].title; node.className = "mw-usertoollinks-contribs";
-						span.innerHTML = span.innerHTML + " | ";
-						span.appendChild(node);
+
+					// move the children (user links) to the new parent
+					while(activityChildren.length > 0) {
+						bigNode.append(activityChildren[0]);
+						if(activityChildren.length > 0) {
+							bigNode.append(" | ");
+						}
 					}
 					
 					bigNode.appendChild(span); bigNode.innerHTML = bigNode.innerHTML + ")";

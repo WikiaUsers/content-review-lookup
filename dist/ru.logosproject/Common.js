@@ -14,18 +14,13 @@ articles: [
 "u:dev:MediaWiki:Discord.js", // Виджет Дискорда
 "u:dev:MediaWiki:Tooltips.js", // Възплывающие подсказки
 "u:dev:MediaWiki:Wikificator.js", // Викировщик
-"u:dev:MediaWiki:UCXSearchBar.js", // Улучшенный поиск и окно поиска в заглавии вики
 "u:dev:MediaWiki:OggPlayer.js", // Улучшенный звуковъзпроизводитель
 "u:dev:MediaWiki:EditorColorPicker.js", // Светоподборщик в окне изправителя страницы
-"u:dev:MediaWiki:LastEdited/code.js", // Сведения о последних правках и их авторах под заголовком страницы
-"u:dev:MediaWiki:PageCreator/code2.js", // Сведения о создателе страницы под заголовком страницы
 "u:dev:MediaWiki:Toggler.js",
 "u:dev:MediaWiki:NewImages.js",
-"u:dev:MediaWiki:ThemeToggler.js",
 "u:dev:MediaWiki:StickyRailToggler.js",
 "u:dev:MediaWiki:GadgetsStateToggler.js",
 "u:dev:MediaWiki:DiscordIntegrator/code.js",
-"u:dev:MediaWiki:ModernProfile/EditButton.js",
 "u:dev:MediaWiki:AdaptiveCategoryFilter.js",
 "u:dev:MediaWiki:CommunityPageHeaderLinks.js",
 "u:dev:MediaWiki:InfoboxEditorPreview.js",
@@ -34,8 +29,6 @@ articles: [
 "u:dev:MediaWiki:CustomSlider.js",
 "u:dev:MediaWiki:NewPagesModule.js",
 "u:dev:MediaWiki:SummaryButtonsCore.js",
-"u:dev:MediaWiki:CategorizedNotifications.js",
-"u:dev:MediaWiki:PortableCSSPad/code.js",
 "u:onepiece:MediaWiki:AddCatInPreview.js",
 "u:dev:MediaWiki:RelatedDiscussionsPosts.js",
 "u:dev:MediaWiki:AllPagesHideRedirect/code.js",
