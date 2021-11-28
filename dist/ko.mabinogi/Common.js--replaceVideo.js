@@ -8,42 +8,39 @@
 	'use strict';
 
 	function replaceVideo(containerSelector, originalSelector, controlSelector) {
-		for (var $container of document.querySelectorAll(containerSelector)) {
+		document.querySelectorAll(containerSelector).forEach( function ( $container) {
 			var $original = $container.querySelector(originalSelector);
 			if (!$original) {
-				continue;
+				return;
 			}
 			$container.classList.add('replacedVideoContainer');
 			var src =
 				$original.getAttribute('src') || $original.getAttribute('poster');
 			if (!src.endsWith('mp4.jpg')) {
-				continue;
+				return;
 			}
 			var $video = document.createElement('video');
 			// $video.classList.remove('kskin', 'playerPoster', 'pi-image-thumbnail');
 			$video.setAttribute('src', src);
-			for (var attr of ['width', 'height']) {
-				$video.setAttribute(attr, $original.getAttribute(attr));
-			}
-			for (var [k, v] of Object.entries({
-				autoplay: true,
-				muted: true,
-				loop: true,
-				playsinline: true,
-			})) {
-				$video[k] = v;
-			}
+			$video.setAttribute('width', $original.getAttribute('width'));
+			$video.setAttribute('height', $original.getAttribute('height'));
+			
+			$video['autoplay'] = true;
+			$video['muted'] = true;
+			$video['loop'] = true;
+			$video['playsinline'] = true;
+			
 			$container.append($video);
 			$original.parentElement.removeChild($original);
 			var $controls = $container.querySelectorAll(controlSelector);
-			for (var $ctr of $controls) {
+			$controls.forEach(function($ctr) {
 				$ctr.parentElement.removeChild($ctr);
-			} 
+			});
 			
 			$video.onloadeddata = function (e) {
 				e.target.play();
 			};
-		}
+		});
 	}
 
 	// For portable infobox

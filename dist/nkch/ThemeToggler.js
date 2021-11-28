@@ -23,7 +23,8 @@ if (!nkch.tt.isActive) {
                 }
 
                 mw.util.addCSS(
-                    ".nkch-theme-toggler__wrapper { background: var(--theme-body-background-color); border: 1px solid var(--theme-community-header-color); border-radius: 15px; display: flex; height: 30px; justify-content: center; margin-inline-end: 6px; position: relative; }" +
+                    /* ~ basic ~ */
+                    ".nkch-theme-toggler__wrapper { background-color: var(--theme-body-background-color); border: 1px solid var(--theme-community-header-color); border-radius: 15px; display: flex; height: 30px; justify-content: center; margin-inline-end: 6px; position: relative; }" +
                     ".nkch-theme-toggler { border-radius: 15px; display: flex; overflow: hidden; position: relative; z-index: 2; }" +
 
                     ".nkch-theme-toggler__button { align-items: center; background: none; border: none; cursor: pointer; display: flex; height: 28px; justify-content: center; width: 28px; z-index: 2; }" +
@@ -32,10 +33,16 @@ if (!nkch.tt.isActive) {
                     ".nkch-theme-toggler__button.is-active .wds-icon-small { fill: var(--theme-body-background-color); transition: .7s; }" +
 
                     ".nkch-theme-toggler__pointer-wrapper { align-items: center; display: flex; height: 28px; justify-content: center; position: absolute; top: 0; transition: .3s; width: 28px; z-index: 1; will-change: transform, z-index ;}" +
-                    ".nkch-theme-toggler__pointer { background: var(--theme-community-header-color); border-radius: 15px; height: 26px; margin: 1px; width: 26px; }" +
+                    ".nkch-theme-toggler__pointer { background-color: var(--theme-community-header-color); border-radius: 15px; height: 26px; margin: 1px; width: 26px; }" +
 
-                    ".fandom-sticky-header .nkch-theme-toggler__wrapper { margin-inline-start: auto; }" +
-                    ".fandom-sticky-header .nkch-theme-toggler__wrapper +  .wiki-tools { margin-inline-start: 0; }"
+                    /* ~ sticky header ~ */
+                    ".fandom-sticky-header .nkch-theme-toggler__wrapper { background-color: var(--theme-sticky-nav-background-color); border-color: var(--theme-sticky-nav-text-color); margin-inline-start: auto; }" +
+                    ".fandom-sticky-header .nkch-theme-toggler__wrapper +  .wiki-tools { margin-inline-start: 0; }" +
+
+                    ".fandom-sticky-header .nkch-theme-toggler__button-icon .wds-icon-small { fill: var(--theme-sticky-nav-text-color); }" +
+                    ".fandom-sticky-header .nkch-theme-toggler__button.is-active .wds-icon-small { fill: var(--theme-sticky-nav-background-color); }" +
+
+                    ".fandom-sticky-header .nkch-theme-toggler__pointer { background-color: var(--theme-sticky-nav-text-color); }"
                 );
 
                 nkch.tt.el = {

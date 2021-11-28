@@ -248,7 +248,7 @@ var mips = {
     },
     
     isRegister: function(str) {
-        if ('ra' == str || 'sp' == str) {
+        if (str === 'ra' || str === 'sp') {
             return true;
         }
         var matches = mips.registerRe.exec(str);
@@ -259,7 +259,7 @@ var mips = {
     },
 
     isDataChannel: function(str) {
-        if ('db' == str) {
+        if (str === 'db') {
             return true;
         }
         var matches = mips.channelRe.exec(str);
@@ -302,20 +302,20 @@ var mips = {
         }
         for (l = 0; l < lines.length; l++) {
             cmd = lines[l].trim().replace(/\u200B/g, '');
-            if ('' === cmd) {
+            if (cmd === '') {
                 result.push('');
                 continue;
             }
             comment = '';
-            if (null !== (matches = mips.commentRe.exec(cmd))) {
+            if ((matches = mips.commentRe.exec(cmd)) !== null) {
                 cmd = matches[1].trim();
                 comment = mips.color(matches[2].trimEnd(), 'rem');
             }
-            if ('' === cmd) {
+            if (cmd === '') {
                 result.push(comment);
                 continue;
             }
-            if (':' == cmd.substr(-1)) {
+            if (cmd.substr(-1) === ':') {
                 tag = cmd.substr(0, cmd.length-1);
                 result.push(mips.color(cmd, 'tag') + comment);
                 continue;
@@ -328,7 +328,7 @@ var mips = {
                     break;
                 }
             }
-            if (-1 == cmdIdx) {
+            if (cmdIdx === -1) {
                 result.push(mips.color(cmd, 'error') + comment);
                 continue;
             }
@@ -337,29 +337,29 @@ var mips = {
                 result.push(str + ' ' + mips.color(words.join(' '), 'error') + comment);
                 continue;
             }
-            for (i = 0; i < mips.commands[cmdIdx].args.length; i++) {
+            for (i = 0; i < mips.commands[cmdIdx].args.length; i += 1) {
                 type = 'error';
                 switch(mips.commands[cmdIdx].args[i]) {
                     case 'n': // alias name
                         type = 'alias';
                         break;
                     case 'rc': //register | value
-                        if ('r' == words[i][0]) {
+                        if (words[i][0] === 'r') {
                             type = 'register';
-                            if (-1 == regAliases.indexOf(words[0])) {
+                            if (regAliases.indexOf(words[0]) === -1) {
                                 regAliases.push(words[0]);
                             }
-                        } else if ('d' == words[i][0]) {
+                        } else if (words[i][0] === 'd') {
                             type = 'data';
-                            if (-1 == dcAliases.indexOf(words[0])) {
+                            if (dcAliases.indexOf(words[0]) === -1) {
                                 dcAliases.push(words[0]);
                             }
                         }
                         break;
                     case 'c':
-                        if (null !== mips.floatRe.exec(words[i])) {
+                        if (mips.floatRe.exec(words[i]) !== null) {
                             type = 'num';
-                            if (-1 == defines.indexOf(words[0])) {
+                            if (defines.indexOf(words[0]) === -1) {
                                 defines.push(words[0]);
                             }
                         }
@@ -367,50 +367,50 @@ var mips = {
                     case 'R':
                         if (mips.isRegister(words[i])) {
                             type = 'register';
-                        } else if (fragment || -1 != regAliases.indexOf(words[i])) {
+                        } else if (fragment || regAliases.indexOf(words[i]) !== -1) {
                             type = '';
                         }
                         break;
                     case 'M':
-                        if (-1 != mips.reagentModes.indexOf(words[i])) {
+                        if (mips.reagentModes.indexOf(words[i]) !== -1) {
                             type = 'rmode';
                         }
                         // no break
                     case 'V':
                         if (mips.isRegister(words[i])) {
                             type = 'register';
-                        } else if (null !== mips.floatRe.exec(words[i])) {
+                        } else if (mips.floatRe.exec(words[i]) !== null) {
                             type = 'num';
-                        } else if (-1 != tags.indexOf(words[i])) {
+                        } else if (tags.indexOf(words[i]) !== -1) {
                             type = 'tag';
                         } else if (mips.isEnum(words[i])) {
                             type = 'enum';
-                        } else if (fragment || -1 != regAliases.indexOf(words[i])
-                                   || -1 != defines.indexOf(words[0])) {
+                        } else if (fragment || regAliases.indexOf(words[i]) !== -1
+                                   || defines.indexOf(words[0]) !== -1) {
                             type = '';
                         }
                         break;
                     case 'C':
                         if (mips.isDataChannel(words[i])) {
                             type = 'data'
-                        } else if (fragment || -1 != dcAliases.indexOf(words[i])) {
+                        } else if (fragment || dcAliases.indexOf(words[i]) !== -1) {
                             type = '';
                         }
                         break;
                     case 'P':
-                        if (null !== mips.floatRe.exec(words[i])
-                            || -1 != mips.parameters.indexOf(words[i])) {
+                        if (mips.floatRe.exec(words[i]) !== null
+                            || mips.parameters.indexOf(words[i]) !== -1) {
                             type = 'param';
                         }
                         break;
                     case 'S':
-                        if (null !== mips.floatRe.exec(words[i])
-                            || -1 != mips.slotParameters.indexOf(words[i])) {
+                        if (mips.floatRe.exec(words[i]) !== null
+                            || mips.slotParameters.indexOf(words[i]) !== -1) {
                             type = 'param';
                         }
                         break;
                     case 'G':
-                        if (-1 != mips.reagents.indexOf(words[i])) {
+                        if (mips.reagents.indexOf(words[i]) !== -1) {
                             type = 'reagent';
                         }
                         break;
@@ -419,15 +419,15 @@ var mips = {
             }
             result.push(' ' + str + comment);
         }
-        for (i = result.length - 1; i > 0; i--) {
-            if ('' == result[i].trim()) {
+        for (i = result.length - 1; i > 0; i -= 1) {
+            if (result[i].trim() === '') {
                 result.pop();
             } else {
                 break;
             }
         }
         if (linenum) {
-            for (var i = 0; i < result.length; i++) {
+            for (var i = 0; i < result.length; i += 1) {
                 result[i] = mips.color(('   ' + (i + 1)).substr(-3) + '.', 'linenum') + ' ' + result[i];
             }
         }
@@ -436,13 +436,16 @@ var mips = {
 
     doAll: function()
     {
+    	alert('mips.doAll()');
+    	console.log('mips.doAll()');
         var mipses = document.querySelectorAll('code[lang="mips"]');
+        console.log(mipses);
         var linenum, fragment, text;
-        for (var i = 0; i < mipses.length; i++) {
+        for (var i = 0; i < mipses.length; i += 1) {
             text = mipses[i].innerText.trim();
-            if ('' !== text) {
-                linenum = ('yes' === mipses[i].dataset.linenum);
-                fragment = ('yes' === mipses[i].dataset.fragment);
+            if (text !== '') {
+                linenum = (mipses[i].dataset.linenum === 'yes');
+                fragment = (mipses[i].dataset.fragment === 'yes');
                 mipses[i].innerHTML = '<pre>' + mips.doOne(text, fragment, linenum) + '</pre>';
                 mipses[i].addEventListener('copy', mips.doCopy);
             }
@@ -454,9 +457,9 @@ var mips = {
         e.preventDefault();
         var text = window.getSelection().toString().split("\n");
         var matches;
-        for (var i = 0; i  < text.length; i++) {
+        for (var i = 0; i  < text.length; i += 1) {
             text[i] = text[i].trim();
-            if (null !== (matches = mips.linenumRe.exec(text[i]))) {
+            if ((matches = mips.linenumRe.exec(text[i])) !== null) {
                 text[i] = matches[1].trim();
             }
         }

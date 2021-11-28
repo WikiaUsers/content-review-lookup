@@ -16,7 +16,7 @@ $(function(){
 	});
 	//other images, image links
 	var pattern = /(?:static|vignette|images)\.wikia\.nocookie\.net/;
-	$("img, a.image").each(function(){
+	$("img").add($("a>img").parent()).each(function(){
 		var $this = $(this);
 		var srcattr = ($this.prop('tagName')=='A') ? 'href' : ($this.hasClass('lazyload') ? 'data-src' : 'src');
 		var srcvar = $this.attr(srcattr);
@@ -94,6 +94,13 @@ $(function() {
 			hide: 'Esconder',
 			show: 'Mostrar',
 			error: 'Não é possível a carregar tabela; o artigo fonte pode não existir.'
+		},
+		uk: {
+			wait: 'Будь ласка, зачекайте вміст завантажиться…',
+			edit: 'редагувати',
+			hide: 'згорнути',
+			show: 'розгорнути',
+			error: 'Неможливо завантажити вміст; можливо, цільова сторінка не існує.'
 		},
 		zh: {
 			showData: '显示数据',

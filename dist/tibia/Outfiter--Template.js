@@ -81,7 +81,9 @@ $(function () {
       //170
       'Merry_Mammoth', 'Void_Watcher', 'Rune_Watcher', 'Rift_Watcher', 'Dandelion',
       //175
-      'Hyacinth', 'Peony', 'Singeing_Steed', 'Shellodon', 'Phant'
+      'Hyacinth', 'Peony', 'Singeing_Steed', 'Shellodon', 'Phant',
+      //180
+      'Rustwurm', 'Bogwurm', 'Gloomwurm'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -153,12 +155,15 @@ $(function () {
       //150
       'Lost_Soul', 'Phantom', 'Lion_(A)', 'Lion_(B)', 'Werehyaena',
       //155
-      'Werelion', 'Pirat', 'Raccoon'
+      'Werelion', 'Pirat', 'Raccoon', 'Tyrant', 'Girtablilu',
+      //160
+      'Bashmu', 'Carnisylvan', 'Chimera'
     ],
     //outfits the array index is the id(starting at 200)
     //must also be added to Template:OutfiterLink
     outfiter_names200 = [
       //200
+      'Dragon_Knight', 'Arbalester', 'Royal Costume'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -181,7 +186,9 @@ $(function () {
       Golden_Outfit: 8,
       Energy_Wisp: 8,
       Trailblazer: 8,
-      Revenant: 8
+      Revenant: 8,
+      Rune_Master: 8,
+      Tyrant: 8
     },
     outfiter_sprites_walking = {
       CM: 2,
@@ -333,6 +340,11 @@ $(function () {
       Werelion: true,
       Pirat: true,
       Raccoon: true,
+      Tyrant: true,
+      Bashtu: true,
+      Girtablilu: true,
+      Carnisylvan: true,
+      Chimera: true,
       None: true
     },
     //no mount
@@ -393,7 +405,12 @@ $(function () {
       Werehyaena: true,
       Werelion: true,
       Pirat: true,
-      Raccoon: true
+      Raccoon: true,
+      Tyrant: true,
+      Girtablilu: true,
+      Bashmu: true,
+      Carnisylvan: true,
+      Chimera: true
     },
     //no addon
     outfiter_a_names = {
@@ -498,7 +515,12 @@ $(function () {
       Werehyaena: true,
       Werelion: true,
       Pirat: true,
-      Raccoon: true
+      Raccoon: true,
+      Tyrant: true,
+      Girtablilu: true,
+      Bashmu: true,
+      Carnisylvan: true,
+      Chimera: true
     },
     //outfits with no floor movement
     outfiter_no_floor_move_names = {

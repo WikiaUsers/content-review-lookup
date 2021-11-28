@@ -10,7 +10,7 @@ $(function () {
 			switch (elements[i].dataset.type) {
 				// Amazon Music
 				case 'amazonmusic':
-					iframe.src = 'https://music.amazon.in/embed/' + elements[i].dataset.id;
+					iframe.src = 'https://music.amazon.com/embed/' + elements[i].dataset.id;
 
 					if (elements[i].dataset.width) {
 						iframe.width = elements[i].dataset.width + 'px';
@@ -28,7 +28,7 @@ $(function () {
 
 				// Apple Music: Album
 				case 'applemusic:album':
-					iframe.src = 'https://embed.music.apple.com/ru/album/' + elements[i].dataset.id;
+					iframe.src = 'https://embed.music.apple.com/us/album/' + elements[i].dataset.id;
 
 					if (elements[i].dataset.width) {
 						iframe.width = elements[i].dataset.width + 'px';
@@ -48,7 +48,7 @@ $(function () {
 				case 'applemusic:track':
 					var data = elements[i].dataset.id.split(':');
 
-					iframe.src = 'https://embed.music.apple.com/ru/album/' + data[0] + '/?i=' + data[1];
+					iframe.src = 'https://embed.music.apple.com/us/album/' + data[0] + '/?i=' + data[1];
 
 					if (elements[i].dataset.width) {
 						iframe.width = elements[i].dataset.width + 'px';

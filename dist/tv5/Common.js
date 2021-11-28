@@ -69,3 +69,19 @@ $(function(){
 		articles: ["u:pad.wikia.com:MediaWiki:FilterTable.js"]
 	});
 });
+
+/* For the live YouTube view count of the
+   TV5 Christmas Station ID "Atin Ang Pasko, Kapatid"
+   on Template:RailModule */
+function iframe($el) {
+    $el.find('.youtube-views').append($('<iframe>').attr({
+        height: '80px',
+        width: '300px',
+        frameborder: '0',
+        src: 'https://livecounts.io/embed/youtube-live-view-counter/0hRA0DXuQsw',
+        style: 'border: 0; width:300px; height:80px;'
+    }));
+}
+
+mw.hook('wikipage.content').add(iframe);
+iframe($(document));

@@ -368,7 +368,6 @@ window.MessageWallUserTags = {
         'username': 'usergroup',
         'AMK152': 'Wiki Adopter • Bureaucrat • Administrator',
         'Spongebob456': 'Bureaucrat • Administrator',
-        'Figmeister': 'Bureaucrat • Administrator',
         
         'Anthony2306': 'Administrator',
         'Kandy_Katie': 'Administrator',

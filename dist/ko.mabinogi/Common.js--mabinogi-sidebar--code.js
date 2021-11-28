@@ -61,6 +61,9 @@
 	}
 
 	function main() {
+		if (!mw.Api) {
+			return;
+		}
 		new mw.Api()
 			.get({
 				action: 'query',
@@ -82,5 +85,5 @@
 				startTime();
 			});
 	}
-	main();
+	$(main);
 })();

@@ -444,7 +444,7 @@ mw.loader.using('mediawiki.util').then(function() {
                 {
                     type: 'a',
                     attr: {
-                        href: new mw.Title(user, 2).getUrl()
+                        href: mw.util.getUrl('User:' + user)
                     },
                     text: user
                 }
@@ -456,14 +456,14 @@ mw.loader.using('mediawiki.util').then(function() {
                       ? {
                             type: 'a',
                             attr: {
-                                href: new mw.Title(user, 1200).getUrl()
+                                href: mw.util.getUrl('Message Wall:' + user)
                             },
                             text: this.i18n.msg('wall').plain()
                         }
                       : {
                             type: 'a',
                             attr: {
-                                href: new mw.Title(user, 3).getUrl()
+                                href: mw.util.getUrl('User talk:' + user)
                             },
                             text: this.i18n.msg('talk').plain()
                         },
@@ -471,7 +471,7 @@ mw.loader.using('mediawiki.util').then(function() {
                     {
                         type: 'a',
                         attr: {
-                            href: new mw.Title('Contributions/' + user, -1).getUrl()
+                            href: mw.util.getUrl('Special:Contributions/' + user)
                         },
                         text: this.i18n.msg('contribs').plain()
                     }
@@ -482,7 +482,7 @@ mw.loader.using('mediawiki.util').then(function() {
                         {
                             type: 'a',
                             attr: {
-                                href: new mw.Title('Block/' + user, -1).getUrl()
+                                href: mw.util.getUrl('Special:Block/' + user)
                             },
                             text: this.i18n.msg('block').plain()
                         }

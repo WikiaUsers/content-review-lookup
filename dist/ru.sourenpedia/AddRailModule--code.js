@@ -164,7 +164,7 @@
             purgeCache()
                 .then(fetchFromCache, fallback)
                 .then(fetchMissingFromOriginAndResolve, fallback);
-        });
+        }, fallback);
 
         return deferred;
     }
@@ -192,6 +192,7 @@
                 pagesToMods[page].forEach(function (mod) {
                     mod.section = document.createElement('section');
                     mod.section.className = 'railModule rail-module';
+                    mod.section.dataset.addRailModulePage = mod.page;
                     mod.section.innerHTML = html;
                     // Per <https://html.spec.whatwg.org/commit-snapshots/f476180797e6124074b3cfeaf1973ea39eb6c499/#the-script-element>,
                     // script tags generated via innerHTML don't execute when inserted into the DOM.
@@ -217,14 +218,11 @@
     function attachMods(mods, attachFragment) {
         var fragment = document.createDocumentFragment();
         mods.forEach(function (mod) { fragment.appendChild(mod.section); });
-        // If [[Rewire]] is loaded, perform ID collision mitigations against the detached trees prior to insertion.
-        if (window.dev && window.dev.rewire) {
-            window.dev.rewire.prepare(fragment);
-        }
         attachFragment(fragment);
         mods.forEach(function (mod) {
-            mw.hook('wikipage.content').fire($(mod.section));
-            mw.hook('AddRailModule.module').fire(mod.page);
+            var $section = $(mod.section);
+            mw.hook('wikipage.content').fire($section);
+            mw.hook('AddRailModule.module').fire(mod.page, $section);
         });
     }
 

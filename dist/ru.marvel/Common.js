@@ -49,6 +49,9 @@ $(document).ready(function()
 	$('.autopream').each(function() {
 	    $(this).insertAfter($(this).parent().find('.autopream + div'));
 	});
+	// Удаление дубля
+	$('.autopream + p > span.lang').parent().css({'display' : 'none'});
+	$('.autopream + p > b').parent().css({'display' : 'none'});
 	
 	// Всплывающая подсказка красных ссылок
 	// mw.loader.using("mediawiki.api").then(

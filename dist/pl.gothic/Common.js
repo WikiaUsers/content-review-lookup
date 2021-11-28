@@ -1,6 +1,14 @@
 /* JavaScript umieszony w tym pliku dotyczy wszystkich skórek */
 
 /**
+ * Konfiguracja podświetlenia w ImageMapach
+ */
+window.imagemap = {
+	hightlightcolor: '#bea771',
+	hightlightfill: 'rgba(0, 0, 0, 0.35)'
+};
+
+/**
  * Import Change.js z The Elser Scrolls Wiki
  * Odpowiada za przełączanie zakładek z infoboksach
  */

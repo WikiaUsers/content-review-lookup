@@ -190,7 +190,7 @@ mw.loader.using('ext.fandom.ContentReview.legacyLoaders.js').then(function() {
                                 items.push(file_panel);
                             });
 
-							$('.nkch-multiupload__common-description .oo-ui-inputWidget-input').val(' == Лицензирование == {{CopyrightedEA|\n}}');
+							$('.nkch-multiupload__common-description .oo-ui-inputWidget-input').val('== Лицензирование ==\n{{CopyrightedEA|}}');
 
                             mu_uploadedFiles.clearItems();
                             mu_uploadedFiles.addItems(items);

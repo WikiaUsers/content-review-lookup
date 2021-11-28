@@ -1,6 +1,22 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-window.dev = window.dev || {};
-window.dev.i18n = window.dev.i18n || {};
-window.dev.i18n.overrides = window.dev.i18n.overrides || {};
-window.dev.i18n.overrides['SandboxTab'] = window.dev.i18n.overrides['SandboxTab'] || {};
-window.dev.i18n.overrides['SandboxTab']['sandbox'] = 'Staff Nomination';
+/* User Tags */
+window.UserTagsJS = {
+    tags: {
+        discordmod: { u: 'Discord Moderator' },
+        wikidev: { u: 'Wiki Developer' },
+        exec: { u: 'Executive' },
+        themedesigner: { u: 'Theme Designer' },
+        imagelead: { u: 'Image Lead' }
+    },
+    modules: {
+        inactive: {
+            days: 60,
+            namespaces: [0],
+            zeroIsInactive: true
+        },
+        mwGroups: [
+            'imagelead',
+            'rollback',
+            'bot'
+        ]
+    }
+};

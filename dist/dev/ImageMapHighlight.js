@@ -13,9 +13,8 @@ $(document).ready(function() {
 		// Every imagemap that wants highlighting, should reside in a div of this 'class':
 		hilightDivMarker = '.imageMapHighlighter',
 		hideLegend = window.imagemap.hidelegend || false,
-		// Specifically for wikis - redlinks tooltip adds this message
-		expandLegend = 'Show Legend',
-		collapseLegend = 'Hide Legend'
+		// Register i18n variable
+		i18n
 		;
 
 	function drawMarker(context, areas) { // mthis is where the magic is done.
@@ -103,7 +102,7 @@ $(document).ready(function() {
 		if (hideLegend !== true) {
 			var ol = $('<ol>', { 'class': myClassName })
 				.css({ clear: 'both', margin: 0, listStyle: 'none', maxWidth: w + 'px', float: 'left', position: 'relative', zIndex: '500' })
-				.attr({ 'data-expandtext': expandLegend, 'data-collapsetext': collapseLegend })
+				.attr({ 'data-expandtext': i18n.msg('show').plain(), 'data-collapsetext': i18n.msg('hide').plain() })
 				.data(specialAreaMark, specialHighlight)
 				.data('context', context);
 
@@ -136,7 +135,9 @@ $(document).ready(function() {
 		}
 	}
 
-	function init() {
+	function init(i18no) {
+		i18n = i18no;
+
 		mw.util.addCSS('li.' + myClassName + '{ white-space: nowrap; border: solid 1px transparent; border-radius: 6px; }\n' + // css for li element
 			'li.' + myClassName + '.' + liHighlightClass + '{ background-color: rgba(var(--theme-link-color--rgb, 255,255,0), 0.1); }\n' + // css for highlighted li element.
 			'.rtl li.' + myClassName + '{ float: right; margin-left: 3em; }\n' +
@@ -144,7 +145,20 @@ $(document).ready(function() {
 		$(hilightDivMarker + ' img').each(handleOneMap);
 	}
 
-	// has at least one "imagehighlight" div, and canvas-capable browser:
-	if ($(hilightDivMarker).length && $('<canvas>')[0].getContext)
-		mw.loader.using(['jquery.makeCollapsible', 'mediawiki.util']).done(init);
+	mw.hook('dev.i18n').add(function(i18no) {
+		// has at least one "imagehighlight" div, and canvas-capable browser:
+		if ($(hilightDivMarker).length && $('<canvas>')[0].getContext) {
+			$.when(
+				i18no.loadMessages('ImageMapHighlight'),
+				mw.loader.using(['jquery.makeCollapsible', 'mediawiki.util'])
+			).then(init);
+		}
+	});
+
+	if (!window.dev || !window.dev.i18n) {
+		importArticle({
+			type: 'script',
+			article: 'u:dev:MediaWiki:I18n-js/code.js'
+		});
+	}
 });

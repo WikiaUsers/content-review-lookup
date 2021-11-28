@@ -186,7 +186,7 @@ $(function preloadUploadDesc() {
 		return;
 }
  
-	document.getElementById('wpUploadDescription').appendChild(document.createTextNode("{{Fair use rationale\r| Description       = \r| Source            = \r| Portion           = \r| Purpose           = \r| Resolution        = \r| Replaceability    = \r| Other Information = \r}}"));
+	document.getElementById('wpUploadDescription').appendChild(document.createTextNode("{{Fair use rationale\r| Description       = \r| Source            = \r| Replaceability    = \r| Other Information = \r}}"));
 	
 });
 

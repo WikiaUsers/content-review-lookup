@@ -42,10 +42,9 @@ mw.loader.using(['site', 'mediawiki.util']).then(function() {
 			alert(i18n.nolicense);
 			return false;
 		}
-		summary = $("#wpUploadDescription").val();
-		if (summary !== "") summary = "== "+i18n.summary+" ==\n"+summary;
+		comment = $("#wpUploadDescription").val();
 		license = ($("#wpLicense option:selected").val() === "")?"":"\n== "+i18n.license+" ==\n"+$("#wpLicense option:selected").prop("title");
-		text = summary + license;
+		text = (comment !== "" ? "== " + i18n.summary + " ==\n" + comment : "") + license;
 		watch = "preferences";
 		if ($("#wpWatchthis").is(":checked")) watch = "watch";
 		else watch = "nochange";
@@ -67,6 +66,7 @@ mw.loader.using(['site', 'mediawiki.util']).then(function() {
 			fd.append("token",mw.user.tokens.get('editToken'));
 			fd.append("filename",files[curFile].name);
 			fd.append("file",files[curFile]);
+			fd.append("comment",comment);
 			fd.append("text",text);
 			fd.append("watchlist",watch);
 			fd.append("ignorewarnings",1);

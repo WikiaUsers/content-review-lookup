@@ -235,3 +235,35 @@ $("#OSTFracturedShrines8bit").replaceWith('<iframe style="border: 0; width: 100%
 $("#OSTUndyingShores8bit").replaceWith('<iframe style="border: 0; width: 100%; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/album=2727466516/size=small/bgcol=333/linkcol=f7735c/track=831895668/transparent=true/" seamless><a href="https://valmontderagondas.bandcamp.com/album/dead-cells-soundtrack-part-2-demake">Dead Cells - Soundtrack Part 2 (Demake) by Yoann Laulan</a></iframe>');
 $("#OSTMausoleum8bit").replaceWith('<iframe style="border: 0; width: 100%; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/album=2727466516/size=small/bgcol=333/linkcol=f7735c/track=1782288654/transparent=true/" seamless><a href="https://valmontderagondas.bandcamp.com/album/dead-cells-soundtrack-part-2-demake">Dead Cells - Soundtrack Part 2 (Demake) by Yoann Laulan</a></iframe>');
 $("#OSTKeepOffTheFlowers8bit").replaceWith('<iframe style="border: 0; width: 100%; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/album=2727466516/size=small/bgcol=333/linkcol=f7735c/track=1221252580/transparent=true/" seamless><a href="https://valmontderagondas.bandcamp.com/album/dead-cells-soundtrack-part-2-demake">Dead Cells - Soundtrack Part 2 (Demake) by Yoann Laulan</a></iframe>');
+
+/* Hide spoiler replacement script */
+$(function() {
+	$.when( 
+		$('.spoiler').each(function() {
+			var position = $(this).css('position');
+			if (!position || (position == 'static')) $(this).css({'position': 'relative'});
+			$(this).append(
+				$('<div>').append(
+					$('<div>', {
+						text: ' Spoiler alert!'
+					}).prepend(
+						$('<img>', {
+							'src': 'https://static.wikia.nocookie.net/deadcells_gamepedia_en/images/c/c0/Exclamation.png/revision/latest/scale-to-width-down/15?cb=20210304214608'
+						})
+					).css({'color': '#d1394e', 'font-weight': 'bold', 'font-size': '20px'}),
+					$('<a>', {
+						'class': 'spoiler-text',
+						href: 'javascript:void(0)',
+						text: 'Tap to reveal'
+					})
+				).css({'position': 'absolute', 'inset': '0px', 'background-color': 'black', 'display': 'flex', 'justify-content': 'center', 'flex-flow': 'column wrap', 'align-items': 'center'})
+			);
+		})
+	).done(function() {
+       $('.spoiler-text').click(function() {
+			$(this).parent().fadeOut("400", function() {
+        		$(this).remove();
+    		});
+		});
+	});
+} );

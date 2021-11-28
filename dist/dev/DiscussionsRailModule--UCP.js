@@ -1,5 +1,7 @@
 /* from https://nkch.fandom.com/wiki/MediaWiki:DiscussionsRailModule.js */
 (function () {
+    if (!$(".fandom-community-header .explore-menu a[data-tracking='explore-discuss']").length) return;
+
     if (typeof window.nkch === "undefined") {
         const nkch = {};
         window.nkch = nkch;
@@ -64,7 +66,7 @@
 
                         nkch.drm.el.section.header.$e.classList.add("rail-module__header", "has-icon");
 
-                        nkch.drm.el.section.header.$e.innerHTML = i18n.msg("title").plain();;
+                        nkch.drm.el.section.header.$e.innerHTML = i18n.msg("title").plain();
 
                         nkch.drm.el.section.$e.appendChild(nkch.drm.el.section.header.$e);
 
@@ -77,7 +79,7 @@
 
                         /* - section : header : icon : src - */
 
-                        nkch.drm.el.section.header.icon.src.$e.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#wds-icons-comment-small");
+                        nkch.drm.el.section.header.icon.src.$e.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#wds-icons-discussions-small");
 
                         nkch.drm.el.section.header.icon.$e.appendChild(nkch.drm.el.section.header.icon.src.$e);
 
@@ -282,7 +284,7 @@
                                     color: "var(--theme-alert-color)"
                                 });
 
-                                nkch.drm.el.section.error.$e.innerHTML = "Произошла ошибка. Невозможно получить список сообщений.";
+                                nkch.drm.el.section.error.$e.innerHTML = i18n.msg("error").plain();
 
                                 nkch.drm.el.section.$e.appendChild(nkch.drm.el.section.error.$e);
 

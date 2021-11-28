@@ -226,17 +226,14 @@ window.MessageWallUserTags = {
     users: {
         'Jackboog21': 'Head Bureaucrat',
         'A_random_student': 'Head Mini-Admin',
-        'KawaiiKunWolf': 'Head Discussion Mod',
-        'AoiRyugokuTSFG1': 'Discussion Mod',
+        'AoiRyugokuTSFG1': 'Head Discussion Mod',
         'Tsuzuro_Yamazaki': 'Head Content Mod',
         'GalaxE': 'Content Mod',
         'SeiShii': 'Head Chat Mod',
+        'GhoulGirls90': 'Head Helper',
         'Littleslinky': 'Helper',
-        'RedLightningStrike': 'Helper',
-        'S0ul245Official': 'Helper',
-        'GhoulGirls90': 'Helper',
         'UltimateGamer899': 'Helper',
-        'Thekoolgal11': 'Intern',
+        'Placeholder': 'Intern',
     }
 };
 

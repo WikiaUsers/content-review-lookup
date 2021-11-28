@@ -1,8 +1,8 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
-Redptich|Парторг
-Pdtplfs|Комиссар
-Такос2|Ответственный работник
-GrilledTheorist|Смотрящий
+// AddRailModule config options
+window.AddRailModule = ['Template:NewPagesModule'];
+
+// Flags import statement
 importArticles({
     type: 'script',
     articles: [

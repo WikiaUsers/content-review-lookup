@@ -3,19 +3,6 @@ if (mw.config.get('wgPageName') === 'Интерактивная_таблица_�
     importArticle({ type: 'script', article: 'MediaWiki:Items.js' });
 }
 
-
-//рецепты мешка
-$(function(){
-    $('.tt3').each(function(){
-        $(this).click(function() {
-            $('.tt4').removeClass('defaultCraft');
-            $('.tt3').removeClass('defaultButton');
-            $(this).find('.tt4').addClass('defaultCraft');
-            $(this).addClass('defaultButton');
-        });
-    });
-});
-
 //Шаблон:RailModule dev wiki
 window.AddRailModule = [
     { page: 'Template:Rail0', prepend: true },
@@ -33,7 +20,6 @@ window.BackToTopModern = true;
 if ($('#blight').length) {
    $('#blight .sn[data-title="' + mw.config.get('wgPageName') + '"]').addClass("snlight");
 }
-
 
 
 //Подсветка кнопок сортировки
@@ -58,7 +44,6 @@ $(document).on('click', '.rentable_sort span', function(){
             $($(this).attr('data-id')).addClass('bl-hide');
         });
     });
-    
 //********конец интерактивной   
 
 

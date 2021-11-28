@@ -31,9 +31,9 @@ $(function () {
 
 //------------------------------------//
 nkch_gst_gadgets = [{
-    name: "RWA", // название гаджета с MediaWiki:Gadgets-definition; обязательно
-    title: "Недавняя вики-деятельность", // Название в меню
-    description: "Недавняя вики-деятельность" // Описание гаджета в меню при наведении
+    name: "RWA", // название гаджета с MediaWiki:Gadget-Название; обязательно
+    title: "Недавняя активность", // Название в меню
+    description: "Оформление для свежих правок, соц. активности, страницы истории" // Описание гаджета в меню при наведении
 }, {
     name: "UWStyle",
     title: "Единый стиль вики",
@@ -47,10 +47,22 @@ nkch_gst_gadgets = [{
     title: "Прежние Категории",
     description: "Прежние Категории"
 }, {
-    name: "Cursor",
-    title: "Тематичческий курсор",
-    description: "Тематические курсор"
-}];
+    name: "UCXSearch",
+    title: "Быстрый поиск",
+    description: "Поисковая строка в локальном меню без модального окна"
+}, {
+    name: "ThemeToggler",
+    title: "Переключатель темы",
+    description: "Иконка в левой части страницы для переключения темы"
+}, {
+    name: "SnowStorm",
+    title: "Падение снега",
+    description: "Снежинки зимой на вики. Помните, было такое?"
+}
+];
+
+// Настройка AddRailModule
+window.AddRailModule = ['Template:Foo', 'Template:Bar', 'Template:Baz', 'Template:NewPagesModule', 'Template:Уголок'];
 
 // Настройка блокировки статей от спойлеров
 window.SpoilerAlertJS = {
