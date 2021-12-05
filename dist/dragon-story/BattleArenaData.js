@@ -2814,6 +2814,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"couture": {
+				"name": "Couture",
+				"colors": [
+					"holiday",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"cove": {
 				"name": "Cove",
 				"colors": [
@@ -3473,6 +3481,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"spooky",
 					"pink"
+				],
+				"rarity": "unbreedable"
+			},
+			"decoration": {
+				"name": "Decoration",
+				"colors": [
+					"holiday",
+					"green",
+					"red"
 				],
 				"rarity": "unbreedable"
 			},
@@ -5479,6 +5496,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"black",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"gathering": {
+				"name": "Gathering",
+				"colors": [
+					"holiday",
+					"blue"
 				],
 				"rarity": "unbreedable"
 			},
@@ -8184,6 +8209,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"loststar": {
+				"name": "Lost Star",
+				"colors": [
+					"holiday",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"lotus": {
 				"name": "Lotus",
 				"colors": [
@@ -9001,6 +9034,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "unbreedable"
+			},
+			"mint": {
+				"name": "Mint",
+				"colors": [
+					"holiday",
+					"red"
+				],
+				"rarity": "common"
 			},
 			"mirage": {
 				"name": "Mirage",
@@ -13343,6 +13384,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"sleet": {
+				"name": "Sleet",
+				"colors": [
+					"holiday",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"sleigh": {
 				"name": "Sleigh",
 				"colors": [
@@ -13555,6 +13604,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"blue"
 				],
 				"rarity": "rare"
+			},
+			"snowtide": {
+				"name": "Snowtide",
+				"colors": [
+					"holiday",
+					"blue"
+				],
+				"rarity": "unbreedable"
 			},
 			"snug": {
 				"name": "Snug",
@@ -14459,6 +14516,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"gemstone",
 					"white"
+				],
+				"rarity": "unbreedable"
+			},
+			"sundown": {
+				"name": "Sundown",
+				"colors": [
+					"holiday",
+					"red"
 				],
 				"rarity": "unbreedable"
 			},

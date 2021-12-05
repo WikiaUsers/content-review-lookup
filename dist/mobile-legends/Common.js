@@ -70,4 +70,8 @@ window.countdownTimer = {
     Zodiac12: function () {
        $(this).text('12');
     }
+};
+
+if (wgUserName != 'null') {
+	$('.insertusername').html(wgUserName);
 }

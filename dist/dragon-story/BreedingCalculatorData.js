@@ -5432,6 +5432,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "couture": {
+                "name": "Couture",
+                "types": [
+                    "holiday",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "cove": {
                 "name": "Cove",
                 "types": [
@@ -6787,6 +6803,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "16_hours_16",
                 "rarity": 3,
                 "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "decoration": {
+                "name": "Decoration",
+                "types": [
+                    "holiday",
+                    "green",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]
@@ -10707,6 +10740,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "6_hours_6",
                 "rarity": 3,
                 "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "gathering": {
+                "name": "Gathering",
+                "types": [
+                    "holiday",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]
@@ -16156,6 +16205,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "loststar": {
+                "name": "Lost Star",
+                "types": [
+                    "holiday",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "lotus": {
                 "name": "Lotus",
                 "types": [
@@ -17822,6 +17887,32 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
+                ]
+            },
+            "mint": {
+                "name": "Mint",
+                "types": [
+                    "holiday",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ]
+                    ]
                 ]
             },
             "mirage": {
@@ -26867,6 +26958,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "sleet": {
+                "name": "Sleet",
+                "types": [
+                    "holiday",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "25_hours_25",
+                "rarity": 4,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "sleigh": {
                 "name": "Sleigh",
                 "types": [
@@ -27296,6 +27403,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "6_hours_6",
                 "rarity": 2,
                 "offspringeligibility": "expired"
+            },
+            "snowtide": {
+                "name": "Snowtide",
+                "types": [
+                    "holiday",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
             },
             "snug": {
                 "name": "Snug",
@@ -29121,6 +29244,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "14_hours_14",
                 "rarity": 3,
                 "offspringeligibility": "expired",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "sundown": {
+                "name": "Sundown",
+                "types": [
+                    "holiday",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
                 "notes": [
                     "feature"
                 ]

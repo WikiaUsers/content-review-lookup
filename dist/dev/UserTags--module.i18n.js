@@ -305,17 +305,17 @@ UserTagsJS.extensions.i18n = {
 			inactive: {u: 'nyaktywny'}
 		},
 		tr: {
-			inactive: { u: 'Aktif Değil', order: 1/0 }, // End
+			inactive: { u: 'Aktif Değil', order: 1/0 },
 			nonuser: { u: 'Hiç Düzenlemedi', order: 1e101 },
-			newuser: { u: 'Yeni Editör', order: 1e101 },
+			newuser: { u: 'Yeni Düzenleyici', order: 1e101 },
 			notautoconfirmed: { u: 'Yeni Hesap', order: 1e101 },
-			sysop: { u: 'Yönetici', order: 0 },
-			checkuser: { u: 'KullanıcıKontrolü', order: 0 },
+			sysop: { u: 'Hizmetli', order: 0 },
+			checkuser: { u: 'Denetçi', order: 0 },
 			patroller: { u: 'Devriyeci', order: 0 },
-			autopatrolled: { u: 'Otomatik Devriyeli', order: 0 },
-			// Rollback is in English
-			autoconfirmed: { u: 'Otomatik Onaylanmış', order: 0 },
-			'bot-global': { u: 'Küresel Bot', order: 0 }
+			autopatrolled: { u: 'Oto-devriyeli', order: 0 },
+			rollback: { u: 'Geri döndürme', order: 0 },
+			autoconfirmed: { u: 'Otomatik onaylanmış', order: 0 },
+			'bot-global': { u: 'Küresel bot', order: 0 }
 		},
 		uk: {
 			inactive: { f: 'неактивна', u: 'неактивний', order: 1/0 }, // End

@@ -1,6 +1,6 @@
 /* Any JavaScript here will be loaded for users using the Hydra Dark skin */
 
-// Изменение цветовой гаммы для SyntaxHighlighter в тёмной теме
+// Dark variant of colors for SyntaxHighlighter gadget in Hydra Dark skin
 syntaxHighlighterConfig = {
 	boldOrItalicColor: "#777",
 	wikilinkColor: "#77777F",

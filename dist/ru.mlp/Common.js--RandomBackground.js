@@ -21,7 +21,7 @@
 	  , n = ( is_d ) ? d.n : d.d
 	  , i = Math.floor( Math.random() * n.length );
 
-    $( ':root .theme-fandomdesktop-' + s ).css({
+    $( '.theme-fandomdesktop-' + s ).css({
         'background-image': 'url("https://static.wikia.nocookie.net/mlp/ru/images/' + n[ i ] + '")',
         'background-position': 'center center', // Или 'top center', как выриант
         'background-repeat': 'no-repeat',

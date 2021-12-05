@@ -49,10 +49,10 @@ function logToConsole(message){
 function pageContainsColorGuide(){
     var requiredElementStructure = {
         'colorPreviewCanvasHolder': ['detailImgSrc', 'colorImgSrc', 'canvasWidth', 'canvasHeight', 'style'],
-        'primaryColorPickerHolder': ['style'],
-        'secondaryColorPickerHolder': ['style'],
-        'tertiaryColorPickerHolder': ['style'],
-        'backgroundColorPickerHolder': ['style'],
+        'primaryColorPickerHolder': ['style', 'defaultValue'],
+        'secondaryColorPickerHolder': ['style', 'defaultValue'],
+        'tertiaryColorPickerHolder': ['style', 'defaultValue'],
+        //'backgroundColorPickerHolder': ['style', 'defaultValue'],
         'colorGuideApplyColorButtonHolder': ['style'],
     };
 
@@ -78,9 +78,9 @@ function pageContainsColorGuide(){
     return true;
 }
 
-function addColorPicker(divID, targetID, value){
-    var div = document.getElementById(divID);
-    if(!div){
+function addColorPicker(divID, targetID){
+    var pickerDiv = document.getElementById(divID);
+    if(!pickerDiv){
         //div does not exist!
         return;
     }
@@ -94,9 +94,9 @@ function addColorPicker(divID, targetID, value){
     var picker = document.createElement("input");
     picker.id = targetID;
     picker.type = "color";
-    picker.value = value;
-    picker.style = div.dataset.style;
-    div.appendChild(picker);
+    picker.value = pickerDiv.dataset.defaultValue;
+    picker.style.cssText = pickerDiv.dataset.style;
+    pickerDiv.appendChild(picker);
 }
 
 function addImageHolder(divID, targetID, srcAttr, onloadCallback){
@@ -118,13 +118,13 @@ function addImageHolder(divID, targetID, srcAttr, onloadCallback){
     image.id = targetID;
 
     queryImageSource(div.dataset[srcAttr], function(data){
-        if(data == null){
+        if(data === null){
             logToConsole("image query callback data was undefined or null!");
             return;
         }
 
         var imageSource = getImageSource(data);
-        if(imageSource == null){
+        if(imageSource === null){
             logToConsole("unabled to find imageSource in query result! (probably invalid fileName specified)");
             return;
         }
@@ -169,10 +169,10 @@ function colorGuide_initialize(){
     addImageHolder("colorPreviewCanvasHolder", "detailRenderImage", "detailImgSrc", onloadCallback);
     addImageHolder("colorPreviewCanvasHolder", "colorRenderImage", "colorImgSrc", onloadCallback);
 
-    addColorPicker("primaryColorPickerHolder", "primaryColorPicker", "#ff0000");
-    addColorPicker("secondaryColorPickerHolder", "secondaryColorPicker", "#00ff00");
-    addColorPicker("tertiaryColorPickerHolder", "tertiaryColorPicker", "#0000ff");
-    addColorPicker("backgroundColorPickerHolder", "backgroundColorPicker", "transparent");
+    addColorPicker("primaryColorPickerHolder", "primaryColorPicker");
+    addColorPicker("secondaryColorPickerHolder", "secondaryColorPicker");
+    addColorPicker("tertiaryColorPickerHolder", "tertiaryColorPicker");
+    addColorPicker("backgroundColorPickerHolder", "backgroundColorPicker");
 }
 
 function colorGuide_updateCanvas(){
@@ -208,7 +208,12 @@ function colorGuide_updateCanvas(){
             return;
         }
 
-        canvas.style.backgroundColor = document.getElementById("backgroundColorPicker").value;
+        var backgroundPicker = document.getElementById("backgroundColorPicker");
+        if (backgroundPicker != null) {
+            canvas.style.backgroundColor = backgroundPicker.value;
+        } else {
+            canvas.style.backgroundColor = "transparent";
+        }
         colorGuide_buildResultCanvasData(detailCanvas, colorCanvas, canvas, color1, color2, color3);
     }
 }
@@ -242,9 +247,9 @@ function colorGuide_buildResultCanvasData(detailCanvas, colorCanvas, displayCanv
         detailGreen = detailData.data[i + 1];
         detailBlue = detailData.data[i + 2];
 
-        displayData.data[i] = detailRed * lerp(targetRed, detailRed, redFactor) / 255;
-        displayData.data[i + 1] = detailGreen * lerp(targetGreen, detailGreen, redFactor) / 255;
-        displayData.data[i + 2] = detailBlue * lerp(targetBlue, detailBlue, redFactor) / 255;
+        displayData.data[i] = detailRed * lerp(targetRed, 255, redFactor) / 255;
+        displayData.data[i + 1] = detailGreen * lerp(targetGreen, 255, redFactor) / 255;
+        displayData.data[i + 2] = detailBlue * lerp(targetBlue, 255, redFactor) / 255;
         displayData.data[i + 3] = detailData.data[i + 3];
     }
 

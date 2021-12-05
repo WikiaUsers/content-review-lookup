@@ -64,6 +64,13 @@ nkch_gst_gadgets = [{
 // Настройка AddRailModule
 window.AddRailModule = ['Template:Foo', 'Template:Bar', 'Template:Baz', 'Template:NewPagesModule', 'Template:Уголок'];
 
+/*кастом модули*/
+window.AddRailModule = [
+    { page: 'Template:RailModule1', prepend: true },
+    'Template:RailModule2',
+    'Template:RailModule3',
+];
+
 // Настройка блокировки статей от спойлеров
 window.SpoilerAlertJS = {
     question: 'Эта статья содержит спойлеры. Вы уверены, что хотите продолжить чтение?',

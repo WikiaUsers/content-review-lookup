@@ -1,171 +1,25 @@
-mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(
-    function () {
-        /* Load i18n messages */
-        mw.hook('dev.i18n').add(
-            function (i18n) {
-                i18n.loadMessages('RelatedDiscussionsPosts').done(
-                    function (i18n) {
-                        if (mw.config.get("wgNamespaceNumber") === 0) {
-                            mw.util.addCSS('.ve-activated * #rdp-base { display: none !important }');
+var nkch = typeof window.nkch != "undefined" ? window.nkch : new Object();
+window.nkch = nkch;
 
-                            var rdp_base = document.createElement("div");
-                            rdp_base.id = "rdp-base";
-                            rdp_base.className = "rdp rdp-base";
+nkch.rdp = typeof nkch.rdp != "undefined" ? nkch.rdp : new Object();
 
-                            Object.assign(rdp_base.style, {
-                                background: "rgba(186, 205, 216, 0.1)",
-                                border: "1px solid rgba(191, 191, 191, 0.5)",
-                                borderRadius: "5px",
-                                clear: "both",
-                                margin: "10px 0",
-                                padding: "18px"
-                            });
+if (!nkch.rdp.isActive && mw.config.get("wgNamespaceNumber") === 0) {
+    nkch.rdp.isActive = true;
 
-                            if (mw.config.get("skin") == "fandomdesktop") {
-                                document.querySelector(".license-description").after(rdp_base);
-                            } else {
-                                document.querySelector("#articleCategories").after(rdp_base);
-                            };
-
-                            var rdp_wrapper = document.createElement("div");
-                            rdp_wrapper.id = "rdp-wrapper";
-                            rdp_wrapper.className = "rdp-wrapper";
-
-                            Object.assign(rdp_wrapper.style, {
-                                display: "flex",
-                                gap: "18px"
-                            });
-
-                            rdp_base.appendChild(rdp_wrapper);
-
-                            var rdp_thumb = document.createElement("div");
-                            rdp_thumb.id = "rdp-thumb";
-                            rdp_thumb.className = "rdp-thumb";
-
-                            var rdp_image = document.createElement("div");
-                            rdp_image.id = "rdp-image";
-                            rdp_image.className = "rdp-image";
-
-                            Object.assign(rdp_image.style, {
-                                border: "2px solid gray",
-                                borderRadius: "40px",
-                                height: "40px",
-                                width: "40px"
-                            });
-
-                            var rdp_bg = document.createElement("div");
-                            rdp_bg.id = "rdp-bg";
-                            rdp_bg.className = "rdp-bg";
-
-                            Object.assign(rdp_bg.style, {
-                                backgroundSize: "contain",
-                                borderRadius: "40px",
-                                height: "100%",
-                                width: "100%"
-                            });
-
-                            var rdp_header = document.createElement("div");
-                            rdp_header.id = "rdp-header";
-                            rdp_header.className = "rdp-header";
-
-                            Object.assign(rdp_header.style, {
-                                display: "flex",
-                                flexDirection: "column",
-                                width: "100%"
-                            });
-
-                            rdp_wrapper.appendChild(rdp_thumb);
-
-                            rdp_thumb.appendChild(rdp_image);
-                            rdp_image.appendChild(rdp_bg);
-
-                            rdp_wrapper.appendChild(rdp_header);
-
-                            var rdp_header_text = document.createElement("span");
-                            rdp_header_text.id = "rdp-header-text";
-                            rdp_header_text.className = "rdp-header-text";
-
-                            Object.assign(rdp_header_text.style, {
-                                fontSize: "18px",
-                                fontWeight: "bold"
-                            });
-
-                            rdp_header_text.innerHTML = i18n.msg('headerText').plain();
-
-                            var rdp_header_linkWrapper = document.createElement("span");
-                            rdp_header_linkWrapper.id = "rdp-header-linkWrapper";
-                            rdp_header_linkWrapper.className = "rdp-header-linkWrapper";
-
-                            rdp_header.appendChild(rdp_header_text);
-                            rdp_header.appendChild(rdp_header_linkWrapper);
-
-                            var rdp_header_link = document.createElement("a");
-                            rdp_header_link.id = "rdp-header-link";
-                            rdp_header_link.className = "rdp-header-link";
-
-                            Object.assign(rdp_header_link.style, {
-                                fontSize: "14px"
-                            });
-
-                            rdp_header_link.href = mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/f/t/" + encodeURIComponent(mw.config.get("wgPageName").replace(/_/g, ' '));
-                            rdp_header_link.innerHTML = i18n.msg('headerLink', mw.config.get("wgPageName").replace(/_/g, " ")).plain();
-
-                            rdp_header_linkWrapper.appendChild(rdp_header_link);
-
-                            var rdp_list = document.createElement("ul");
-                            rdp_list.id = "rdp-list";
-                            rdp_list.className = "rdp-list";
-
-                            Object.assign(rdp_list.style, {
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: "10px",
-                                marginTop: "10px",
-                                width: "100%"
-                            });
-
-                            rdp_wrapper.after(rdp_list);
-
+    mw.loader.using(["mediawiki.api", "mediawiki.util"],
+        function () {
+            mw.hook("dev.i18n").add(
+                function (i18n) {
+                    i18n.loadMessages("RelatedDiscussionsPosts").done(
+                        function (i18n) {
                             $.ajax({
-                                url: encodeURI(mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/api/v1/Articles/Details"),
+                                url: mw.util.wikiScript("wikia"),
                                 type: "GET",
                                 data: {
-                                    ids: mw.config.get("wgArticleId")
-                                }
-                            }).done(
-                                function (data) {
-                                    if (data.items[mw.config.get("wgArticleId")].thumbnail !== null) {
-                                        rdp_bg.style.backgroundImage = "url(" + data.items[mw.config.get("wgArticleId")].thumbnail + ")";
-                                    } else {
-                                        rdp_bg.style.backgroundColor = "#222";
-
-                                        var rdp_bg_icon = document.createElement("div");
-                                        rdp_bg_icon.id = "rdp-bg-icon";
-                                        rdp_bg_icon.className = "rdp-bg-icon";
-
-                                        Object.assign(rdp_bg_icon.style, {
-                                            backgroundImage: "url('/extensions/wikia/DesignSystem/node_modules/design-system/dist/svg/wds-icons-tag.svg')",
-                                            width: "100%",
-                                            height: "100%",
-                                            backgroundSize: "50%",
-                                            backgroundRepeat: "no-repeat",
-                                            backgroundPosition: "center",
-                                            filter: "invert(1)"
-                                        });
-
-                                        rdp_bg.appendChild(rdp_bg_icon);
-                                    }
-                                }
-                            );
-
-                            $.ajax({
-                                url: mw.util.wikiScript('wikia'),
-                                type: "GET",
-                                data: {
-                                    controller: 'DiscussionThread',
-                                    method: 'getThreads',
+                                    controller: "DiscussionThread",
+                                    method: "getThreads",
                                     tag: mw.config.get("wgPageName").replace(/_/g, ' '),
-                                    format: 'json'
+                                    format: "json"
                                 }
                             }).done(
                                 function (data) {
@@ -180,183 +34,201 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(
                                             rdp_threads.length = 3;
                                         }
 
-                                        for (i in rdp_threads) {
-                                            var rdp_item = document.createElement("li");
-                                            rdp_item.id = "rdp-item-" + i;
-                                            rdp_item.className = "rdp-item";
+                                        mw.util.addCSS(
+                                            ".nkch-rdp { background-color: var(--theme-page-background-color--secondary); border: 1px solid var(--theme-border-color); border-radius: 3px; margin-block: 10px; padding: 18px; }" +
+                                            ".nkch-rdp__content { display: flex; flex-direction: column; gap: 10px; }" +
+                                            ".nkch-rdp__header { align-items: center; display: flex; gap: 18px; }" +
+                                            ".nkch-rdp__header-thumb { background-color: black; border: 2px solid var(--theme-border-color); border-radius: 50%; height: 50px; overflow: hidden; width: 50px; }" +
+                                            ".nkch-rdp__header-thumb--no-image { align-items: center; background-color: var(--theme-accent-color); border: none; color: var(--theme-accent-label-color); display: flex; justify-content: center; }" +
+                                            ".nkch-rdp__header-text-wrapper { display: flex; flex-direction: column; }" +
+                                            ".nkch-rdp__header-text { font-size: 16px; }" +
+                                            ".nkch-rdp__list { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }" +
+                                            ".nkch-rdp__item-content { background-color: var(--theme-page-background-color); border: 1px solid var(--theme-border-color); border-radius: 3px; color: var(--theme-page-text-color); display: flex; min-height: 60px; transition: .3s; }" +
+                                            ".nkch-rdp__item-content:hover { background-color: var(--theme-page-background-color--secondary); }" +
+                                            ".nkch-rdp__item-content:hover { color: var(--theme-page-text-color); text-decoration: none; }" +
+                                            ".nkch-rdp__item-text { display: flex; flex-direction: column; flex: 1; justify-content: center; overflow: hidden; }" +
+                                            ".nkch-rdp__item-title { font-weight: bold; }" +
+                                            ".nkch-rdp__item-title, .nkch-rdp__item-author-link { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }" +
+                                            ".nkch-rdp__item-author { line-height: 14px; }" +
+                                            ".nkch-rdp__item-author-link { font-size: 12px; }" +
+                                            ".nkch-rdp__item-user-wrapper { align-items: center; display: flex; justify-content: center; width: 60px; }" +
+                                            ".nkch-rdp__item-user { align-items: center; border-radius: 50%; display: flex; height: 30px; justify-content: center; width: 30px; }" +
+                                            ".nkch-rdp__item-extra { align-items: center; display: flex; justify-content: center; }" +
+                                            ".nkch-rdp__item-extra-content { align-items: center; background-color: rgba(var(--theme-accent-color--rgb), .3); border-radius: 3px; display: flex; height: 40px; justify-content: center; margin-inline: 9px; overflow: hidden; width: 40px; }" +
+                                            ".nkch-rdp__item-extra-content-icon { color: var(--theme-accent-color); }" +
+                                            ".nkch-rdp__item-extra-attachment { background-position: center; background-size: cover; }" +
+                                            ".nkch-rdp__view-more-link-container { float: right; }"
+                                        );
 
-                                            Object.assign(rdp_item.style, {
-                                                background: "rgba(186, 205, 216, 0.1)",
-                                                border: "1px solid rgba(191, 191, 191, 0.5)",
-                                                borderRadius: "5px",
-                                                textDecoration: "none",
-                                                width: "100%"
-                                            });
+                                        var tagLink = "/f/t/" + encodeURIComponent(mw.config.get("wgPageName").replace(/_/g, " "));
 
-                                            var rdp_item_content = document.createElement("a");
-                                            rdp_item_content.className = "rdp-item-content";
-
-                                            Object.assign(rdp_item_content.style, {
-                                                display: "grid",
-                                                gridTemplateAreas: "'avatar text additional'",
-                                                gridTemplateColumns: "60px 1fr 60px",
-                                                gridTemplateRows: "auto"
-                                            });
-
-                                            rdp_item_content.href = mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/f/p/" + rdp_threads[i].id;
-
-                                            var rdp_item_avatar = document.createElement("a");
-                                            rdp_item_avatar.id = "rdp-item-avatar";
-                                            rdp_item_avatar.className = "rdp-item-avatar";
-
-                                            Object.assign(rdp_item_avatar.style, {
-                                                gridArea: "avatar",
-                                                margin: "13px auto",
-                                                borderRadius: "20px"
-                                            });
-
-                                            if (rdp_threads[i].createdBy.name !== null) {
-                                                rdp_item_avatar.href = mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/wiki/User:" + rdp_threads[i].createdBy.name;
-                                            }
-
-                                            var rdp_item_text = document.createElement("div");
-                                            rdp_item_text.id = "rdp-item-text";
-                                            rdp_item_text.className = "rdp-item-text";
-
-                                            Object.assign(rdp_item_text.style, {
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                gridArea: "text",
-                                                justifyContent: "center",
-                                                margin: "10px 0"
-                                            });
-
-                                            var rdp_item_additional = document.createElement("div");
-                                            rdp_item_additional.id = "rdp-item-additional";
-                                            rdp_item_additional.className = "rdp-item-additional";
-
-                                            Object.assign(rdp_item_additional.style, {
-                                                gridArea: "additional"
-                                            });
-
-                                            rdp_list.appendChild(rdp_item);
-                                            rdp_item.appendChild(rdp_item_content);
-
-                                            rdp_item_content.appendChild(rdp_item_avatar);
-                                            rdp_item_content.appendChild(rdp_item_text);
-                                            rdp_item_content.appendChild(rdp_item_additional);
-
-                                            var rdp_item_avatar_image = document.createElement("div");
-
-                                            rdp_item_avatar_image.style.height = "30px";
-                                            rdp_item_avatar_image.style.width = "30px";
-                                            rdp_item_avatar_image.style.borderRadius = "20px";
-
-                                            if (rdp_threads[i].createdBy.avatarUrl !== null) {
-                                                rdp_item_avatar_image.style.border = "2px solid gray"
-                                                rdp_item_avatar_image.style.backgroundSize = "100%";
-                                                rdp_item_avatar_image.style.backgroundImage = "url('" + rdp_threads[i].createdBy.avatarUrl + "')";
-                                            } else {
-                                                rdp_item_avatar_image.style.filter = "invert(.5)";
-                                                rdp_item_avatar_image.style.backgroundImage = "url('/extensions/wikia/DesignSystem/node_modules/design-system/dist/svg/wds-icons-avatar.svg')";
-                                            }
-
-                                            rdp_item_avatar.appendChild(rdp_item_avatar_image)
-
-                                            var rdp_item_title = document.createElement("span");
-                                            rdp_item_title.className = "rdp-item-title";
-
-                                            Object.assign(rdp_item_title.style, {
-                                                fontWeight: "bold"
-                                            });
-
-                                            rdp_item_title.innerHTML = rdp_threads[i].title;
-
-                                            var rdp_item_author = document.createElement("span");
-
-                                            Object.assign(rdp_item_author.style, {
-                                                lineHeight: "14px"
-                                            });
-
-                                            rdp_item_author_link = document.createElement("a");
-
-                                            if (rdp_threads[i].createdBy.name !== null) {
-                                                rdp_item_author_link.innerHTML = rdp_threads[i].createdBy.name;
-                                                rdp_item_author_link.href = mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/wiki/User:" + rdp_threads[i].createdBy.name;
-                                            } else {
-                                                rdp_item_author_link.innerHTML = mw.message("oasis-anon-user").parse();
-                                            }
-
-                                            rdp_item_author_link.style = "font-size: 12px; margin-top: 2px";
-
-                                            var rdp_item_additional_content = document.createElement("div");
-                                            rdp_item_additional_content.style = "background: #8080809e; width: 40px; height: 40px; margin: 10px auto; border-radius: 5px; background-repeat: no-repeat"
-
-                                            if (rdp_threads[i]._embedded.attachments[0].polls.length !== 0) {
-                                                rdp_item_additional.appendChild(rdp_item_additional_content);
-
-                                                Object.assign(rdp_item_additional_content.style, {
-                                                    backgroundImage: "url('https://wikies.fandom.com/extensions/wikia/DesignSystem/node_modules/design-system/dist/svg/wds-icons-poll.svg')",
-                                                    backgroundPosition: "center",
-                                                    backgroundSize: "20px"
-                                                });
-                                            } else if (rdp_threads[i]._embedded.attachments[0].contentImages.length !== 0) {
-                                                rdp_item_additional.appendChild(rdp_item_additional_content);
-
-                                                Object.assign(rdp_item_additional_content.style, {
-                                                    backgroundImage: "url(" + rdp_threads[i]._embedded.attachments[0].contentImages[0].url + ")",
-                                                    backgroundPosition: "center",
-                                                    backgroundSize: "cover"
-                                                });
-                                            }
-
-                                            rdp_item_text.appendChild(rdp_item_title);
-                                            rdp_item_text.appendChild(rdp_item_author);
-                                            rdp_item_author.appendChild(rdp_item_author_link);
-                                        }
-
-                                        var rdp_viewMore = document.createElement("span");
-                                        rdp_viewMore.id = "rdp_viewMore";
-                                        rdp_viewMore.className = "rdp_viewMore";
-
-                                        Object.assign(rdp_viewMore.style, {
-                                            display: "inline-block",
-                                            marginTop: "5px",
-                                            textAlign: "right",
-                                            width: "100%"
+                                        const rdp__base = $("<div>", {
+                                            class: "nkch-rdp"
                                         });
 
-                                        var rdp_viewMore_link = document.createElement("a");
-                                        rdp_viewMore_link.id = "rdp_viewMore-link";
-                                        rdp_viewMore_link.className = "rdp_viewMore-link";
+                                        document.querySelector(".license-description").after(rdp__base[0]);
 
-                                        Object.assign(rdp_viewMore_link.style, {
-                                            fontSize: "14px",
-                                            fontWeight: "bold",
-                                            lineHeight: "30px"
-                                        });
+                                        const rdp__content = $("<div>", {
+                                            class: "nkch-rdp__content"
+                                        }).appendTo(rdp__base);
 
-                                        rdp_viewMore_link.href = mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/f/t/" + encodeURIComponent(mw.config.get("wgPageName").replace(/_/g, ' '));
-                                        rdp_viewMore_link.innerHTML = i18n.msg('viewMoreLink').plain() + " (" + rdp_threads_stack + ")";
+                                        const rdp__header = $("<header>", {
+                                            class: "nkch-rdp__header"
+                                        }).appendTo(rdp__content);
 
-                                        if (rdp_threads_stack !== 0) {
-                                            rdp_list.after(rdp_viewMore);
-                                            rdp_viewMore.appendChild(rdp_viewMore_link);
+                                        const rdp__header_thumb = $("<div>", {
+                                            class: "nkch-rdp__header-thumb"
+                                        }).appendTo(rdp__header);
+
+                                        $.ajax({
+                                            url: encodeURI(mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/api/v1/Articles/Details"),
+                                            type: "GET",
+                                            data: {
+                                                ids: mw.config.get("wgArticleId")
+                                            }
+                                        }).done(
+                                            function (details) {
+                                                switch (details.items[mw.config.get("wgArticleId")].thumbnail !== null) {
+                                                    case true:
+                                                        $("<img>", {
+                                                                src: details.items[mw.config.get("wgArticleId")].thumbnail,
+                                                                class: "nkch-rdp__header-thumb-image",
+                                                            })
+                                                            .attr("width", 46)
+                                                            .appendTo(rdp__header_thumb);
+                                                        break;
+                                                    case false:
+                                                        rdp__header_thumb[0].classList.add("nkch-rdp__header-thumb--no-image");
+
+                                                        $("<svg class='nkch-rdp__header-thumb-icon wds-icon'><use xlink:href='#wds-icons-tag-small'></use></svg>").appendTo(rdp__header_thumb);
+                                                        break;
+                                                }
+                                            }
+                                        );
+
+                                        const rdp__header_text_wrapper = $("<div>", {
+                                            class: "nkch-rdp__header-text-wrapper"
+                                        }).appendTo(rdp__header);
+
+                                        const rdp__header_text = $("<h2>", {
+                                            class: "nkch-rdp__header-text",
+                                            text: i18n.msg("headerText").plain()
+                                        }).appendTo(rdp__header_text_wrapper);
+
+                                        const rdp__header_link_container = $("<span>", {
+                                            class: "nkch-rdp__header-link-container"
+                                        }).appendTo(rdp__header_text_wrapper);
+
+                                        const rdp__header_link = $("<a>", {
+                                            class: "nkch-rdp__header-link",
+                                            href: tagLink,
+                                            text: i18n.msg("headerLink", mw.config.get("wgPageName").replace(/_/g, " ")).plain()
+                                        }).appendTo(rdp__header_link_container);
+
+                                        const rdp__list = $("<ul>", {
+                                            class: "nkch-rdp__list"
+                                        }).appendTo(rdp__content);
+
+                                        for (var i in rdp_threads) {
+                                            var rdp__item = $("<li>", {
+                                                class: "nkch-rdp__item " + mw.util.escapeIdForAttribute("nkch-rdp__item--created-by-" + rdp_threads[i].createdBy.name)
+                                            }).appendTo(rdp__list);
+
+                                            var rdp__item_content = $("<a>", {
+                                                class: "nkch-rdp__item-content",
+                                                href: mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/f/p/" + rdp_threads[i].id
+                                            }).appendTo(rdp__item);
+
+                                            var rdp__item_user_wrapper = $("<a>", {
+                                                class: "nkch-rdp__item-user-wrapper"
+                                            }).appendTo(rdp__item_content);
+
+                                            var rdp__item_user = $("<a>", {
+                                                class: "nkch-rdp__item-user wds-avatar",
+                                                href: mw.util.getUrl(new mw.Title(rdp_threads[i].createdBy.name, 2).getPrefixedText()),
+                                                title: new mw.Title(rdp_threads[i].createdBy.name, 2)
+                                            }).appendTo(rdp__item_user_wrapper);
+
+                                            switch (rdp_threads[i].createdBy.avatarUrl !== null) {
+                                                case true:
+                                                    $("<img>", {
+                                                            src: rdp_threads[i].createdBy.avatarUrl,
+                                                            class: "nkch-rdp__item-avatar wds-avatar__image",
+                                                        })
+                                                        .attr("width", 46)
+                                                        .appendTo(rdp__item_user);
+                                                    break;
+                                                case false:
+                                                    $("<svg class='nkch-rdp__item-no-avatar wds-icon'><use xlink:href='#wds-icons-avatar'></use></svg>").appendTo(rdp__item_user);
+                                                    break;
+                                            }
+
+                                            var rdp__item_text = $("<div>", {
+                                                class: "nkch-rdp__item-text",
+                                            }).appendTo(rdp__item_content);
+
+                                            var rdp__item_text_title = $("<span>", {
+                                                class: "nkch-rdp__item-title",
+                                                text: rdp_threads[i].title
+                                            }).appendTo(rdp__item_text);
+
+                                            var rdp__item_text_author = $("<span>", {
+                                                class: "nkch-rdp__item-author",
+                                            }).appendTo(rdp__item_text);
+
+                                            var rdp__item_text_author_link = $("<a>", {
+                                                class: "nkch-rdp__item-author-link",
+                                                title: new mw.Title(rdp_threads[i].createdBy.name, 2)
+                                            }).appendTo(rdp__item_text_author);
+
+                                            if (rdp_threads[i].createdBy.name !== null) {
+                                                rdp__item_text_author_link.html(rdp_threads[i].createdBy.name);
+                                                rdp__item_text_author_link.attr("href", mw.util.getUrl(new mw.Title(rdp_threads[i].createdBy.name, 2).getPrefixedText()));
+                                            } else {
+                                                rdp__item_text_author_link.innerHTML = mw.message("fd-notifications-anon-user").parse();
+                                            }
+
+                                            var rdp__item_extra = $("<div>", {
+                                                class: "nkch-rdp__item-extra"
+                                            }).appendTo(rdp__item_content);
+
+                                            if (rdp_threads[i]._embedded.attachments[0].polls.length > 0) {
+                                                var rdp__item_extra_content = $("<div>", {
+                                                    class: "nkch-rdp__item-extra-content nkch-rdp__item-extra-poll"
+                                                }).appendTo(rdp__item_extra);
+
+                                                $("<svg class='nkch-rdp__item-extra-content-icon wds-icon wds-icon-small'><use xlink:href='#wds-icons-poll-small'></use></svg>").appendTo(rdp__item_extra_content);
+                                            } else if (rdp_threads[i]._embedded.attachments[0].contentImages.length > 0) {
+                                                var rdp__item_extra_content = $("<div>", {
+                                                    class: "nkch-rdp__item-extra-content nkch-rdp__item-extra-attachment"
+                                                }).appendTo(rdp__item_extra);
+
+                                                rdp__item_extra_content[0].style.backgroundImage = "url(" + rdp_threads[i]._embedded.attachments[0].contentImages[0].url + ")";
+                                            }
                                         }
-                                    } else {
-                                        rdp_list.style.display = "none";
+
+                                        if (rdp_threads_stack > 0) {
+                                            const rdp__viewmore = $("<div>", {
+                                                class: "nkch-rdp__view-more"
+                                            }).appendTo(rdp__content);
+
+                                            const rdp__viewmore_link_container = $("<span>", {
+                                                class: "nkch-rdp__view-more-link-container"
+                                            }).appendTo(rdp__viewmore);
+
+                                            const rdp__viewmore_link = $("<a>", {
+                                                class: "nkch-rdp__view-more-link",
+                                                href: tagLink,
+                                                text: i18n.msg("viewMoreLink").plain()
+                                            }).appendTo(rdp__viewmore_link_container);
+                                        }
                                     }
                                 }
                             );
                         }
-                    }
-                );
-            }
-        );
-
-        importArticle({
-            type: 'script',
-            article: 'u:dev:MediaWiki:I18n-js/code.js'
-        });
-    }
-);
+                    )
+                }
+            )
+        }
+    );
+}

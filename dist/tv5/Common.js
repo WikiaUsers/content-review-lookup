@@ -70,18 +70,17 @@ $(function(){
 	});
 });
 
-/* For the live YouTube view count of the
-   TV5 Christmas Station ID "Atin Ang Pasko, Kapatid"
-   on Template:RailModule */
-function iframe($el) {
-    $el.find('.youtube-views').append($('<iframe>').attr({
-        height: '80px',
-        width: '300px',
-        frameborder: '0',
-        src: 'https://livecounts.io/embed/youtube-live-view-counter/0hRA0DXuQsw',
-        style: 'border: 0; width:300px; height:80px;'
-    }));
-}
-
-mw.hook('wikipage.content').add(iframe);
-iframe($(document));
+/*******************************************************************************
+** Re-add proper namespace prefix to titles where it has been removed "by design"
+* Credits to Memory Alpha
+*******************************************************************************/
+$('.ns-5 .page-header__title').prepend('TV5 Wiki ');
+$('.ns-6 .page-header__title').prepend('File:');
+$('.ns-7 .page-header__title').prepend('File ');
+$('.ns-8 .page-header__title').prepend('MediaWiki:');
+$('.ns-9 .page-header__title').prepend('MediaWiki ');
+$('.ns-10 .page-header__title').prepend('Template:');
+$('.ns-11 .page-header__title').prepend('Template ');
+$('.ns-13 .page-header__title').prepend('Help ');
+$('.ns-14 .page-header__title').prepend('Category:');
+$('.ns-15 .page-header__title').prepend('Category ');

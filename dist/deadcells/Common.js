@@ -267,3 +267,10 @@ $(function() {
 		});
 	});
 } );
+
+/* Tooltips configuration */
+window.tooltips_config = {
+    offsetX: 7,
+    offsetY: 7,
+    noCSS: true,
+}

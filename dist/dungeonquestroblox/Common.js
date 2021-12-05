@@ -1,29 +1,21 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		former_staff: { u: 'Former DQ Wiki Staff', order: 100 },
-		contributor: { u: 'Contributor', order: 101 },
-		impactful: { u: 'Impactful User', order: 102 },
+		helper: { u: 'Helper', order: 100 },
+		trusted: { u: 'Trusted', order: 101 },
+		active: { u: 'Active', order: 102 },
 		bureaucrat: { order: 1 }
 	}
 };
 UserTagsJS.modules.custom = {
-	'MeboX': ['former_staff'],
-	'DankRendezvous': ['former_staff'],
-	'Bloodywalsh': ['former_staff'],
-	'Ghostman1856': ['former_staff'],
-	'TopKaps': ['former_staff'],
-	'HaxMagician': ['former_staff'],
-	"It'sABidoof": ['former_staff'],
-	'ObviouslyHidden': ['former_staff'],
-	'LilyKillyKitty': ['former_staff'],
-	'TheTreasureHunter': ['contributor'],
-	'Hellogillyface': ['impactful'],
-	'Iceslasher123': ['impactful'],
-	'010010000110100I': ['impactful'],
-	'SaltyNoobz': ['impactful'],
-	'GetTrolld': ['impactful'],
-	'Jack1o7': ['impactful'],
+	'Oofydidinamemyselfnoob': ['active'],
+	'Hellogillyface': ['helper'],
+	'Iceslasher123': ['helper'],
+	'010010000110100I': ['helper'],
+	'SaltyNoobz': ['helper'],
+	'DontReadMePls10': ['helper'],
+	'GetTrolld': ['helper'],
+	'Jack1o7': ['active'],
 };
 
 UserTagsJS.modules.autoconfirmed = false;

@@ -3,9 +3,10 @@ importArticles({
 	type: 'script',
 	articles: [
         'w:c:spottra:MediaWiki:Common.js/Numeral.js', // Defines num.format('<fmt>')
-		'w:c:clashofclans:MediaWiki:Common.js/ModeToggle.js',
-		'w:c:clashofclans:MediaWiki:Common.js/GemCalculators.js',
-		'MediaWiki:Common.js/HeroSkins.js',
+        'u:dev:UserTags/code.js',
+		'w:c:clashofclans:MediaWiki:ModeToggle.js',
+		'w:c:clashofclans:MediaWiki:GemCalculators.js',
+		'w:c:clashofclans:MediaWiki:Common.js/HeroSkins.js',
         'MediaWiki:Common.js/Usernames.js',
         'MediaWiki:Common.js/Experience.js',
         'MediaWiki:BadgeGenerator.js',

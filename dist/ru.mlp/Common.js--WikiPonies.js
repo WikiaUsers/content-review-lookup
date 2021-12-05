@@ -18,6 +18,53 @@
         [ 'edit' ].indexOf( mw.config.get( 'wgAction' ) ) !== -1
     ) return;
 
+    var status = wpReadCookie(),
+        btn_text = 'Скрыть пони',
+        btn_act = 'hide';
+
+    if ( typeof( status ) == 'undefined' ) {
+    	btn_text = 'Показать пони';
+        btn_act = 'show';
+
+    	wpSetCookie( 'hide' );
+    }
+
+    if ( status == 'hide' ) {
+        btn_text = 'Показать пони';
+        btn_act = 'show';
+    }
+
+    $( '#p-views' ).prepend(
+        '<a id="pony-hide" class="wds-button wds-is-text page-header__action-button has-label" data-action="' + btn_act + '">' + btn_text + '</a>'
+    );
+
+    $( '#pony-hide' ).on( 'click', function() {
+    var act = $( this ).attr( 'data-action' );
+
+    switch ( act ) {
+        case 'hide':
+            $( this )
+              .attr( 'data-action', 'show' )
+              .text( 'Показать пони' );
+            $( '#pony' ).hide();
+
+            wpSetCookie( 'hide' );
+
+            break;
+        case 'show':
+            $( this )
+              .attr( 'data-action', 'hide' )
+              .text( 'Скрыть пони' );
+            $( '#pony' ).show();
+
+            wpSetCookie( 'show' );
+            // Сюда надо будешь ещё вкрутить перезагрузку страницы для поддержания штанов
+            break;
+        } 
+    });
+
+    if ( status == 'hide' || typeof( status ) == 'undefined' ) return;
+
     var pers_list = {
         /* Луна */
         'luna': {
@@ -1654,7 +1701,7 @@
             }
         }
     };
-    
+
     var page = mw.config.get( 'wgTitle' ).replace( /\/.*/g, '' );
 
     var page_list = {
@@ -1848,45 +1895,6 @@
 
     $( 'body' ).append( '<div id="pony" style="position: absolute; top: ' + start_top + 'px; left: ' + start_left + 'px; z-index: 490; pointer-events: none;" />' );
 
-    var status = wpReadCookie(),
-        btn_text = 'Скрыть пони',
-        btn_act = 'hide';
-
-    if ( status == 'hide' ) {
-        $( '#pony' ).hide();
-        btn_text = 'Показать пони';
-        btn_act = 'show';
-    }
-
-    $( '#p-views' ).prepend(
-        '<a id="pony-hide" class="wds-button wds-is-text page-header__action-button has-label" data-action="' + btn_act + '">' + btn_text + '</a>'
-    );
-
-    $( '#pony-hide' ).on( 'click', function() {
-        var act = $( this ).attr( 'data-action' );
-
-        switch ( act ) {
-            case 'hide':
-                $( this )
-                  .attr( 'data-action', 'show' )
-                  .text( 'Показать пони' );
-                $( '#pony' ).hide();
-
-                wpSetCookie( 'hide' );
-
-                break;
-            case 'show':
-                $( this )
-                  .attr( 'data-action', 'hide' )
-                  .text( 'Скрыть пони' );
-                $( '#pony' ).show();
-
-                wpSetCookie( 'show' );
-
-                break;
-        } 
-    });
-
     var frm_width = $( 'body' ).width() - 100,
         frm_height = $( window ).height();
 
@@ -2005,7 +2013,7 @@
         var d = new Date();
         d.setTime( d.getTime() + (30*24*60*60*1000) );
 
-        document.cookie = "mlpponies=" + encodeURIComponent( val ) + "; path=/wiki/; expires=" + d.toUTCString() + "; domain=.wikia.com;";
+        document.cookie = "mlpponies=" + encodeURIComponent( val ) + "; path=/ru/wiki/; expires=" + d.toUTCString() + "; domain=.fandom.com;";
     }
 
     function wpReadCookie() {

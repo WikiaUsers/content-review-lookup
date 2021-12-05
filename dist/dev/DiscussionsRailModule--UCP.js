@@ -66,7 +66,7 @@
 
                         nkch.drm.el.section.header.$e.classList.add("rail-module__header", "has-icon");
 
-                        nkch.drm.el.section.header.$e.innerHTML = i18n.msg("title").plain();
+                        nkch.drm.el.section.header.$e.innerHTML = i18n.msg("title").escape();
 
                         nkch.drm.el.section.$e.appendChild(nkch.drm.el.section.header.$e);
 
@@ -178,7 +178,7 @@
                                                         item.content.title.link.$e.href = encodeURI(mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/f/p/" + post.threadId);
 
                                                         if (discussionsThreads[i].title.length === 0) {
-                                                            item.content.title.link.$e.innerHTML = i18n.msg("post-by", discussionsThreads[i].createdBy.name).plain();
+                                                            item.content.title.link.$e.innerHTML = i18n.msg("post-by", discussionsThreads[i].createdBy.name).escape();
                                                         } else {
                                                             item.content.title.link.$e.innerHTML = discussionsThreads[i].title;
                                                         }
@@ -284,7 +284,7 @@
                                     color: "var(--theme-alert-color)"
                                 });
 
-                                nkch.drm.el.section.error.$e.innerHTML = i18n.msg("error").plain();
+                                nkch.drm.el.section.error.$e.innerHTML = i18n.msg("error").escape();
 
                                 nkch.drm.el.section.$e.appendChild(nkch.drm.el.section.error.$e);
 

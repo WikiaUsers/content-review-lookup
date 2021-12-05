@@ -79,7 +79,7 @@ $(document).ready(function()
     if (wgCanonicalSpecialPageName === 'Upload') 
     {
         // добавление шаблона в поле краткого описания для загружаемого изображения
-        $('#wpUploadDescription').val('{{Изображение \n| Описание  = \n| Источник  = [[]]\n| Появления = \n| Автор     = [[]]\n| Категория = Русская обложка\n}}');
+        $('#wpUploadDescription').val('{{Изображение \n| Описание  = \n| Источник  = [[]]\n| Появления = \n| Автор     = [[]]\n| Категория = \n}}');
         // перемещение выпадающего списка лицензий и блока для шаблона выбранной лицензии 
         $("tr.mw-htmlform-field-HTMLTextAreaField").after( $("tr.mw-htmlform-field-Licenses, tr.mw-htmlform-field-Licenses + tr") );
         

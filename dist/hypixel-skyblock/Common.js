@@ -596,6 +596,9 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 		"MediaWiki:Common.js/minetip.js",
 		"MediaWiki:Common.js/skydate.js",
 		"MediaWiki:Common.js/calc.js",
+		"MediaWiki:Common.js/staff-tagger.js",
+		// "MediaWiki:Common.js/lua-doc.js",
+		"MediaWiki:HighlightTable.js",
 	]);
 });
 

@@ -24,8 +24,9 @@ window.HalloweenEffects = HalloweenEffects = that = Object.assign(this, {
 	MAXTRIES: 200, // maximum tries for program to allocate position for sprite, until displaying on original position again instead; the safeguard for performance
 	X_BOUNDARIES: false, // whether sprites are restricted to appear very close to top-bottom edges (recommend false)
 	Y_BOUNDARIES: true, // whether sprites are restricted to appear very close to left-right edges
-	avoidElements: [".global-navigation", ".main-container .page", "#mixed-content-footer", ".wds-global-footer"], // selectors for elements to avoid setting sprites onto
-	// avoidElements: [".test"],
+	avoidElements: [ // selectors for elements to avoid setting sprites onto
+		".global-navigation", ".main-container .page", "#mixed-content-footer", ".wds-global-footer", ".top-ads-container",
+	],
 	pause: false,
 	DEBUG: false,
 	debuggerReady: false,
@@ -73,8 +74,8 @@ window.HalloweenEffects = HalloweenEffects = that = Object.assign(this, {
 		var boundSep = this.H * 0.6, // minimum separation to screen boundaries
 			centerSep = this.H * (this.MORESEP + 1); // minimum separation between centers of sprites
 
-		var w = this.canvas.width(),
-			h = this.canvas.height();
+		var w = this.$window.width(),
+			h = this.$window.height();
 
 		// only for debugging purpose
 

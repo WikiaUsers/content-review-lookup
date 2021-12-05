@@ -5,16 +5,19 @@ See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
 
 /* Table of Contents
 -----------------------
- * (B00) Element animator
+ Deferred [mw.loader.using]
  * (W00) Small scripts
+ * (B00) Element animator
  * (Y00) importArticles
+
+ Immediately Executed
  * (X00) importArticle pre-script actions
  * * (X01) Less
 */
 
-/* jshint 
-	esversion: 5, forin: true, 
-	immed: true, indent: 4, 
+/* jshint
+	esversion: 5, forin: true,
+	immed: true, indent: 4,
 	latedef: true, newcap: true,
 	noarg: true, undef: true,
 	undef: true, unused: true,
@@ -23,6 +26,7 @@ See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
 	multistr: true, maxerr: 999999,
 	-W082, -W084
 */
+
 /* global mw, importScripts, BannerNotification */
 
 // code snippet from https://stackoverflow.com/questions/47207355/copy-to-clipboard-using-jquery
@@ -39,6 +43,10 @@ function copyToClipboard(text) {
 }
 
 mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(function () {
+
+	//##############################################################
+	/* ==Small scripts== (W00)*/
+
 	// Small script to change wall text
 	$("a[title=\"Message Wall\"]").html("wall");
 	$("a.external, a[rel^=\"noreferrer\"]").removeAttr("target");
@@ -238,82 +246,18 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 		});
 	}
 
-	//##############################################################
-	/* ==Element animator== (B00)*/
-	// Taken from https://minecraft.gamepedia.com/MediaWiki:Gadget-site.js
-	/**
-	 * Element animator
-	 *
-	 * Cycles through a set of elements (or "frames") on a 2 second timer per frame
-	 * Add the "animated" class to the frame containing the elements to animate.
-	 * Optionally, add the "animated-active" class to the frame to display first.
-	 * Optionally, add the "animated-subframe" class to a frame, and the
-	 * "animated-active" class to a subframe within, in order to designate a set of
-	 * subframes which will only be cycled every time the parent frame is displayed.
-	 * Animations with the "animated-paused" class will be skipped each interval.
-	 *
-	 * Requires some styling in wiki's CSS.
-	 */
-
-	$(function () {
-
-		(function () {
-			var $content = $("#mw-content-text");
-			var advanceFrame = function (parentElem, parentSelector) {
-				var curFrame = parentElem.querySelector(parentSelector + " > .animated-active");
-				$(curFrame).removeClass("animated-active");
-				var $nextFrame = $(curFrame && curFrame.nextElementSibling || parentElem.firstElementChild);
-				return $nextFrame.addClass("animated-active");
-			};
-
-			// Set the name of the hidden property
-			var hidden;
-			if (typeof document.hidden !== "undefined") {
-				hidden = "hidden";
-			} else if (typeof document.msHidden !== "undefined") {
-				hidden = "msHidden";
-			} else if (typeof document.webkitHidden !== "undefined") {
-				hidden = "webkitHidden";
-			}
-
-			setInterval(function () {
-				if (hidden && document[hidden]) {
-					return;
-				}
-				$content.find(".animated").each(function () {
-					if ($(this).hasClass("animated-paused")) {
-						return;
-					}
-
-					var $nextFrame = advanceFrame(this, ".animated");
-					if ($nextFrame.hasClass("animated-subframe")) {
-						advanceFrame($nextFrame[0], ".animated-subframe");
-					}
-				});
-			}, 2000);
-		}());
-
-		/**
-		 * Pause animations on mouseover of a designated container (.animated-container and .mcui)
-		 *
-		 * This is so people have a chance to look at the image and click on pages they want to view.
-		 */
-		$("#mw-content-text").on("mouseenter mouseleave", ".animated-container, .mcui", function (e) {
-			$(this).find(".animated").toggleClass("animated-paused", e.type === "mouseenter");
-		});
-
-		// A work around to force wikia's lazy loading to fire
-		setTimeout(function () {
-			$(".animated .lzy[onload]").load();
-		}, 1000);
-
+	var clickCopyCooldown = false;
+	// small script to allow copying of text inside class "article-click-copy"
+	$(".mw-parser-output").on("click", ".article-click-copy", function () {
+		if (!clickCopyCooldown) {
+			copyToClipboard($(this).text().trim());
+			clickCopyCooldown = true;
+			var clickCopyCooldownInterval = setInterval(function () {
+				clickCopyCooldown = false;
+				clearInterval(clickCopyCooldownInterval);
+			}, 30);
+		}
 	});
-
-
-
-	//##############################################################
-	/* ==Small scripts== (W00)*/
-
 
 	/* Moves ID from {{Text anchor}} onto a parent tr tag (if it exists), allowing the whole row to be styliszed in CSS (using the :target seloector) */
 	$((function () {
@@ -551,6 +495,77 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 	$(".pi-image-thumbnail").removeAttr("srcset");
 
 	//##############################################################
+	/* ==Element animator== (B00)*/
+	// Taken from https://minecraft.gamepedia.com/MediaWiki:Gadget-site.js
+	/**
+	 * Element animator
+	 *
+	 * Cycles through a set of elements (or "frames") on a 2 second timer per frame
+	 * Add the "animated" class to the frame containing the elements to animate.
+	 * Optionally, add the "animated-active" class to the frame to display first.
+	 * Optionally, add the "animated-subframe" class to a frame, and the
+	 * "animated-active" class to a subframe within, in order to designate a set of
+	 * subframes which will only be cycled every time the parent frame is displayed.
+	 * Animations with the "animated-paused" class will be skipped each interval.
+	 *
+	 * Requires some styling in wiki's CSS.
+	 */
+
+	$(function () {
+
+		(function () {
+			var $content = $("#mw-content-text");
+			var advanceFrame = function (parentElem, parentSelector) {
+				var curFrame = parentElem.querySelector(parentSelector + " > .animated-active");
+				$(curFrame).removeClass("animated-active");
+				var $nextFrame = $(curFrame && curFrame.nextElementSibling || parentElem.firstElementChild);
+				return $nextFrame.addClass("animated-active");
+			};
+
+			// Set the name of the hidden property
+			var hidden;
+			if (typeof document.hidden !== "undefined") {
+				hidden = "hidden";
+			} else if (typeof document.msHidden !== "undefined") {
+				hidden = "msHidden";
+			} else if (typeof document.webkitHidden !== "undefined") {
+				hidden = "webkitHidden";
+			}
+
+			setInterval(function () {
+				if (hidden && document[hidden]) {
+					return;
+				}
+				$content.find(".animated").each(function () {
+					if ($(this).hasClass("animated-paused")) {
+						return;
+					}
+
+					var $nextFrame = advanceFrame(this, ".animated");
+					if ($nextFrame.hasClass("animated-subframe")) {
+						advanceFrame($nextFrame[0], ".animated-subframe");
+					}
+				});
+			}, 2000);
+		}());
+
+		/**
+		 * Pause animations on mouseover of a designated container (.animated-container and .mcui)
+		 *
+		 * This is so people have a chance to look at the image and click on pages they want to view.
+		 */
+		$("#mw-content-text").on("mouseenter mouseleave", ".animated-container, .mcui", function (e) {
+			$(this).find(".animated").toggleClass("animated-paused", e.type === "mouseenter");
+		});
+
+		// A work around to force wikia's lazy loading to fire
+		setTimeout(function () {
+			$(".animated .lzy[onload]").load();
+		}, 1000);
+
+	});
+
+	//##############################################################
 	/* ==importArticles== (Y00)*/
 	// Imports scripts from other pages/wikis.
 	// NOTE: importAricles() is currently broken.
@@ -581,6 +596,9 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 		"MediaWiki:Common.js/minetip.js",
 		"MediaWiki:Common.js/skydate.js",
 		"MediaWiki:Common.js/calc.js",
+		"MediaWiki:Common.js/staff-tagger.js",
+		// "MediaWiki:Common.js/lua-doc.js",
+		"MediaWiki:HighlightTable.js",
 	]);
 });
 

@@ -55,12 +55,12 @@ $(function() {
     $('body').addClass('hydra-revived-ready');
 
     /* Make sidebar dropdowns collapsible */
-    $('.fandom-community-header .extra-large-navigation .wds-dropdown').each(function(index, element) {
+    $('.fandom-community-header .fandom-community-header__local-navigation .wds-dropdown').each(function(index, element) {
         var $element = $(element);
         $element.addClass('wds-collapsible-panel');
-        $element.find('.wds-dropdown__toggle').addClass('wds-collapsible-panel__header');
-        $element.find('.wds-dropdown__content').addClass('wds-collapsible-panel__content');
-        $element.find('.wds-dropdown__toggle .wds-dropdown__toggle-chevron').replaceWith(
+        $element.find('.wds-dropdown__toggle.first-level-item').addClass('wds-collapsible-panel__header');
+        $element.find('.wds-dropdown__content').attr('class', 'wds-is-not-scrollable wds-collapsible-panel__content');
+        $element.find('.wds-dropdown__toggle.first-level-item > .wds-dropdown__toggle-chevron').replaceWith(
             $('<svg class="wds-icon wds-icon-tiny wds-collapsible-panel__chevron"><use xlink:href="#wds-icons-menu-control-tiny"></use></svg>')
         );
     });

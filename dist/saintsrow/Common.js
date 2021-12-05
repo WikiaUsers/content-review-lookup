@@ -1,5 +1,5 @@
-var debugcolour = 'purple';  //Change the colour to confirm cache updates
-var debugversion = '1631569684220';
+var debugcolour = 'yellow';  //Change the colour to confirm cache updates
+var debugversion = '1638235270989';
 
 window.test452 = { ready:false, complete:false};
 window.debug452 = function(out, alert) { if (mw.config.get("wgUserName") == "452") { if ( ["object", "null", "function"].indexOf(typeof out) == -1) console.log(new Date().toJSON()+" "+out); else { console.log(new Date().toJSON()+" object:"); console.log(out); } if (typeof alert != "undefined") window.alert(out); } }
@@ -436,7 +436,7 @@ window.initScripts = function() {
     loadScripts.push('u:sr:MediaWiki:Common.js/View_Source.js');	/* "view source" link */
     loadScripts.push('u:sr:MediaWiki:Common.js/PageRefresh.js');	// "purge" and "null edit" links -rewritten
   }
-//  importArticles({ type: 'script', articles: loadScripts });
+  importArticles({ type: 'script', articles: loadScripts });
 
   loadScripts.forEach(function(v){
     vArr = v.split(":");
@@ -447,7 +447,7 @@ window.initScripts = function() {
 
     if (vW == "sr") vW = "saintsrow";
 
-    importScriptPage(vPage, vW);
+//    importScriptPage(vPage, vW);
 
   //  importScriptURI('https://'+vW+'.fandom.com/'+ vPage+"?action=raw&ctype=text/javascript");
 

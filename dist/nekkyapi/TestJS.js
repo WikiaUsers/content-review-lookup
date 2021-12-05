@@ -1,0 +1,1 @@
+/* #REDIRECT */mw.loader.load("https://nekkyapi.fandom.com/de/wiki/TestJS.js?action=raw\u0026ctype=text/javascript");

@@ -4,7 +4,12 @@
 
     var _img0, _img1, _img2, _img3, _can, _ctx, _b0, _m0, _p1, _p2;
 
-    $( '.fandom-community-header__image' ).html( '<canvas id="canvas_wordmark" style="display: inline; width: 250px; height: 100px; cursor: pointer;"></canvas>' );
+    $( '.fandom-community-header__image' )
+      .css({
+      	width: 250,
+      	height: 100
+      })
+      .html( '<canvas id="canvas_wordmark" style="display: none; width: 250px; height: 100px; cursor: pointer;"></canvas>' );
 
 	_b0 = new Image();
     _p1 = new Image();
@@ -63,6 +68,8 @@
             		_ctx.drawImage( _m0, 0, 0 );
                 	_ctx.drawImage( _p1, _img1[ _i1_img ][ 1 ], _img1[ _i1_img ][ 2 ]);
                 	_ctx.drawImage( _p2, _img3[ _i3_img ][ 1 ], _img3[ _i3_img ][ 2 ]);
+
+                    $( '#canvas_wordmark' ).fadeIn( 1000 );
             	});
             	_p2.src = 'https://images.wikia.nocookie.net/mlp/ru/images/' + _img3[ _i3_img ][ 0 ];
         	});
@@ -71,9 +78,4 @@
     	_m0.src = 'https://images.wikia.nocookie.net/mlp/ru/images/' + _img2[ _i2_img ];
 	});
 	_b0.src = 'https://images.wikia.nocookie.net/mlp/ru/images/' + _img0[ _i0_img ];
-
-    // Restoring link function
-    _can.addEventListener( 'click', function() {
-        window.location = '/ru';
-    });
 }( jQuery );

@@ -4,10 +4,10 @@ if (typeof debug452 == "function") debug452("start of ResizeSlideshow");
 $(function() {
   $(".gallerytabber .wikia-slideshow").after($('<button>').addClass("center button").css({"display":"block","width": "10em"}).on("click", function() { ResizeSlideshow(); }).html("Resize to fit"));
 
-  $(".wikia-slideshow").on("click", function(e){e.stopPropagation();});  /* The slideshow lightbox has been broken for over 3 months, this enables images in the slideshow to be clicked. */
+  $(".wikia-slideshow-image").on("click", function(e){e.stopPropagation();});  /* The slideshow lightbox has been broken for over a year, this enables images in the slideshow to be clicked again. */
 
   $(document).on('readystatechange', function() {
-    debug452("readystate (ResizeSlideshow) : '"+document.readyState+"'"); 
+    if (typeof debug452 == "function") debug452("readystate (ResizeSlideshow) : '"+document.readyState+"'"); 
     if (document.readyState == "complete") initResizeSlideshow();
   });
   $(document).trigger('readystatechange');
@@ -20,7 +20,7 @@ window.initResizeSlideshow = function() {
 }
 
 window.ResizeSlideshow = function() {
-  $(".gallerytabber .wikia-slideshow-wrapper").each(function() {
+  $(".wikia-slideshow-wrapper").each(function() {
     var aspectRatio = 3/4;  //the aspect ratio of the entire slideshow is always 4:3
 
     if ($(this).width()) {
@@ -40,12 +40,12 @@ window.ResizeSlideshow = function() {
       var srcAttr = $(this).attr("src")?"src":"data-src";
       var srcurl = $(this).attr(srcAttr);
 
-      $(this).next("a").attr("href", "/wiki/File:"+encodeURIComponent($(this).attr("data-image-key"))); //add missing href to link.
+      $(this).next("a").attr("href", "/wiki/File:"+$(this).attr("data-image-key")); //add missing href to link.
 
-      if (srcurl.indexOf(escape($(this).attr("data-image-key")+"/")) == -1) return; //skip actual size.
+      if (srcurl.indexOf($(this).attr("data-image-key")+"/") == -1) return; //skip actual size.
       if (srcurl.indexOf("latest/") == -1) return; //skip actual size for vignette images.
 
-      var baseurl = srcurl.split(escape($(this).attr("data-image-key")))[0];
+      var baseurl = srcurl.split($(this).attr("data-image-key"))[0];
 
       //at this point, attr("width") is decimal.  height is fine.
 
@@ -59,8 +59,8 @@ window.ResizeSlideshow = function() {
 
       //using "thumbnail-down" instead of "scale-to-width" prevents images from being bigger than the original
 
-      if ($(this).attr("src") != baseurl+escape(newurl)) $(this).attr("src", baseurl+escape(newurl));
-      if ($(this).attr("data-src") != baseurl+escape(newurl)) $(this).attr("data-src", baseurl+escape(newurl));
+      if ($(this).attr("src") != baseurl+newurl) $(this).attr("src", baseurl+newurl);
+      if ($(this).attr("data-src") != baseurl+newurl) $(this).attr("data-src", baseurl+newurl);
     });
   });
 }

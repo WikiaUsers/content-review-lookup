@@ -198,6 +198,7 @@
     'very old piece of paper': {},
     'snowball': {'yeti': '', 'grynch clan goblin': '', 'animated snowman': ''},
     'silver raid token': {},
+    'sliver': {},
     'old rag': {},
     'orc tusk': {}
   },

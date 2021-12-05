@@ -15,6 +15,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/6/69/Wiki-wordmark-kotonoha-akane.png',
 	    'https://images.wikia.nocookie.net/synthv/images/c/ca/Wiki-wordmark-kotonoha-aoi.png',
 	    'https://images.wikia.nocookie.net/synthv/images/3/33/Wiki-wordmark-muxin.png',
+	    'https://images.wikia.nocookie.net/synthv/images/0/0e/Wiki-wordmark-Qingsu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/4/40/Wiki-wordmark-saki.png',
 	    'https://images.wikia.nocookie.net/synthv/images/8/8b/Wiki-wordmark-shian.png',
 	    'https://images.wikia.nocookie.net/synthv/images/4/43/Wiki-wordmark-shian_svs.png',

@@ -40,11 +40,14 @@
             dda.i18n = i18n;
 
             var element = $('<a>', {
-                href: '#',
-                click: function () {
+                click: function (e) {
+                	e.preventDefault();
                     if (window.ddaDoNotConfirm || confirm(dda.i18n.msg('confirm').plain())) {
                         dda.deleteAll();
                     }
+                },
+                css: {
+                	cursor: 'pointer'
                 },
                 id: 'DeleteAllDiscussionsPostsByUser',
                 text:  dda.i18n.msg('delete').plain(),

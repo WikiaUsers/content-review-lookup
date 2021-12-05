@@ -3,14 +3,21 @@
 $( document ).ready( function( $ ) {
 	'use strict';
 
-  $('#WikiaBar .toolbar .tools > :first-child').after(
-      $('<li>', {
-          append: $('<a>', {
-              text: 'Outdated Pages',
-              href: mw.util.getUrl('Special:BlankPage/Outdated Pages')
-          })
-      })
-  );
+	var $link = $('<li>').append(
+        $('<a>').attr({
+            href: mw.util.getUrl('Special:BlankPage/Outdated Pages')
+        }).text("Outdated Pages")
+    );
+
+    $('#my-tools-menu, #p-tb ul').prepend($link);
+  //$('#WikiaBar .toolbar .tools > :first-child').after(
+  //    $('<li>', {
+  //        append: $('<a>', {
+  //            text: 'Outdated Pages',
+  //            href: mw.util.getUrl('Special:BlankPage/Outdated Pages')
+  //        })
+  //    })
+  //);
   if (mw.config.get('wgCanonicalSpecialPageName') !== 'Blankpage' || !mw.config.get('wgTitle').endsWith('/Outdated Pages')) {
     return;
   }
@@ -18,7 +25,8 @@ $( document ).ready( function( $ ) {
   document.getElementsByClassName("page-header__title")[0].innerText = "Outdated pages";
   document.title = document.title.replace(d, 'Outdated pages');
 
-  var parentWikiURL = "https://undermine.fandom.com/api.php";
+  var parentWikiURL = "https://undermine.fandom.com";
+  var parentWikiApiURL = "https://undermine.fandom.com/api.php";
 
   var contentElement = document.getElementById("mw-content-text").lastChild;
 
@@ -45,26 +53,38 @@ $( document ).ready( function( $ ) {
   var cargoData;
   var getDataRunning = 0;
 
+  function newHeaderEntry(name) {
+  	var a = document.createElement("th");
+  	a.appendChild(document.createTextNode(name));
+  	return a;
+  }
   // Create table
   var t = document.createElement("table");
   t.className="wikitable";
   contentElement.replaceWith(t);
   var tb = t.createTBody();
   var tHeaderRow = tb.insertRow(0);
-  tHeaderRow.appendChild(document.createElement("th")).appendChild(document.createTextNode("Page (Local)"));
-  tHeaderRow.appendChild(document.createElement("th")).appendChild(document.createTextNode("Rev.-ID"));
-  tHeaderRow.appendChild(document.createElement("th")).appendChild(document.createTextNode("Page (Parent)"));
-  tHeaderRow.appendChild(document.createElement("th")).appendChild(document.createTextNode("Rev.-ID"));
+  tHeaderRow.appendChild(newHeaderEntry("Page (Local)"));
+  tHeaderRow.appendChild(newHeaderEntry("Rev.-ID"));
+  tHeaderRow.appendChild(newHeaderEntry("Page (EN)"));
+  tHeaderRow.appendChild(newHeaderEntry("Rev.-ID"));
 
+  function addEntry_(row, name, url) {
+    var a = document.createElement("a");
+    a.href = url;
+    a.innerText = name;
+    row.insertCell().appendChild(a);
+  }
   function addEntry(data) { // Add entry to table
     var row = tb.insertRow();
-    var a = document.createElement("a");
-    a.href = mw.config.get("wgArticlePath").replace("$1", data.title.SeiteI);
-    a.innerText = data.title.SeiteI;
-    row.insertCell().appendChild(a);
-    row.insertCell().appendChild(document.createTextNode(data.title.revision || ''));
-    row.insertCell().appendChild(document.createTextNode(data.title.en));
-    row.insertCell().appendChild(document.createTextNode(pages[data.title.en] || ''));
+    // Local URL
+    addEntry_(row, data.title.SeiteI, mw.config.get("wgArticlePath").replace("$1", data.title.SeiteI));
+    // Original Source + Diff to latest Revision
+    addEntry_(row, data.title.revision || '', parentWikiURL + "/?type=revision&oldid=" + (data.title.revision || '') + "&diff=" + (pages[data.title.en] || ''));
+    // Parent Wiki URL
+    addEntry_(row, data.title.en, parentWikiURL + "/" + data.title.en);
+    // Latest Revision
+    addEntry_(row, pages[data.title.en] || '', parentWikiURL + "/?oldid=" + (pages[data.title.en] || ''));
   }
 
   function processPages() { // Process data
@@ -86,7 +106,7 @@ $( document ).ready( function( $ ) {
   function getParentPages(cont) {
     getDataRunning++;
     dataForAllENPages.gapcontinue = cont || '';
-    $.getJSON( parentWikiURL, dataForAllENPages ).done(
+    $.getJSON( parentWikiApiURL, dataForAllENPages ).done(
       function( data ) {
         var allPages = data.query.pages;
         console.log(allPages);
