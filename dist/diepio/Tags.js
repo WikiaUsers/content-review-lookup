@@ -247,7 +247,8 @@ UserTagsJS.modules.custom = {
     'AJ (QA)'           : ['st'],
     'Briskmetal007'     : ['st'],
     'GeoScoph'          : ['st'],
-    'Somerandom222'     : ['threadmoderator'],
+    'CyberDGun'         : ['st'],
+    'Somerandom222'     : ['st'],
     'Anonymoususer12321': ['st', 'sa'],
     'MrMewshmallow'     : ['founder'],
 

@@ -2,11 +2,7 @@
 /* User Tags */
 window.UserTagsJS = {
     tags: {
-        discordmod: { u: 'Discord Moderator' },
-        wikidev: { u: 'Wiki Developer' },
-        exec: { u: 'Executive' },
-        themedesigner: { u: 'Theme Designer' },
-        imagelead: { u: 'Image Lead' }
+        bureaucrat: { u: 'Bureaucrat and Administrator' },
     },
     modules: {
         inactive: {

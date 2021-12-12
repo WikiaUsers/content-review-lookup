@@ -72,6 +72,14 @@
                 appendTo: $poll,
             });
 
+            poll.answers.push({
+                id: 0,
+                text: getMsg("cancel").plain(),
+                position: -1,
+                votes: -1,
+                image: null
+            });
+
             $(poll.answers).each(function () {
                 var percent = this.votes / poll.totalVotes * 100;
                 percent = isNaN(percent) ? "0%" : percent.toFixed(2) + "%";
@@ -87,7 +95,7 @@
                 });
                 var $vote = $("<div>", {
                     class: "d-poll__answerVotes",
-                    text: this.votes,
+                    text: this.votes >= 0 ? this.votes : "",
                     title: percent,
                     hover: function () {
                         var text = this.textContent;
@@ -100,7 +108,7 @@
                     append: $("<div>").width(percent),
                 });
                 $("<div>", {
-                    class: "d-poll__answer",
+                    class: "d-poll__answer" + (this.position < 0 ? " d-poll__answer-alt" : ""),
                     append: [$label, $vote, $bar],
                     appendTo: $poll,
                 });

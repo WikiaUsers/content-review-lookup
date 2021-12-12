@@ -174,6 +174,7 @@ window.rwaOptions = window.rwaOptions || { };
         "sysop",
         "staff",
         "wiki-representative",
+        "wiki-specialist",
         "helper",
         "soap",
         "global-discussions-moderator"

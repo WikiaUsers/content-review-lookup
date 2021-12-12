@@ -2,7 +2,7 @@
 
 /*Locking Comments*/
 window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 15;
+window.lockOldComments.limit = 30;
 window.lockOldComments.addNoteAbove = true;
 
 /*Link Preview*/

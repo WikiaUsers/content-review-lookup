@@ -60,7 +60,7 @@ if (!nkch.rdp.isActive && mw.config.get("wgNamespaceNumber") === 0) {
                                             ".nkch-rdp__view-more-link-container { float: right; }"
                                         );
 
-                                        var tagLink = "/f/t/" + encodeURIComponent(mw.config.get("wgPageName").replace(/_/g, " "));
+                                        var tagLink = mw.config.get("wgScriptPath") + "/f/t/" + encodeURIComponent(mw.config.get("wgPageName").replace(/_/g, " "));
 
                                         const rdp__base = $("<div>", {
                                             class: "nkch-rdp"
@@ -80,31 +80,32 @@ if (!nkch.rdp.isActive && mw.config.get("wgNamespaceNumber") === 0) {
                                             class: "nkch-rdp__header-thumb"
                                         }).appendTo(rdp__header);
 
-                                        $.ajax({
-                                            url: encodeURI(mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/api/v1/Articles/Details"),
-                                            type: "GET",
-                                            data: {
-                                                ids: mw.config.get("wgArticleId")
-                                            }
-                                        }).done(
-                                            function (details) {
-                                                switch (details.items[mw.config.get("wgArticleId")].thumbnail !== null) {
-                                                    case true:
+                                    	rdp__header_thumb[0].classList.add("nkch-rdp__header-thumb--no-image");
+                                        $("<svg class='nkch-rdp__header-thumb-icon wds-icon'><use xlink:href='#wds-icons-tag-small'></use></svg>").appendTo(rdp__header_thumb);
+
+                                        if (nkch.rdp.showThumb) {
+                                            $.ajax({
+                                                url: encodeURI(mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/api/v1/Articles/Details"),
+                                                type: "GET",
+                                                data: {
+                                                    ids: mw.config.get("wgArticleId")
+                                                }
+                                            }).done(
+                                                function (details) {
+                                                    if (details.items[mw.config.get("wgArticleId")].thumbnail !== null) {
+                                                    	rdp__header_thumb[0].classList.remove("nkch-rdp__header-thumb--no-image");
+                                                    	$(".nkch-rdp__header-thumb-icon").remove();
+
                                                         $("<img>", {
                                                                 src: details.items[mw.config.get("wgArticleId")].thumbnail,
                                                                 class: "nkch-rdp__header-thumb-image",
                                                             })
                                                             .attr("width", 46)
                                                             .appendTo(rdp__header_thumb);
-                                                        break;
-                                                    case false:
-                                                        rdp__header_thumb[0].classList.add("nkch-rdp__header-thumb--no-image");
-
-                                                        $("<svg class='nkch-rdp__header-thumb-icon wds-icon'><use xlink:href='#wds-icons-tag-small'></use></svg>").appendTo(rdp__header_thumb);
-                                                        break;
+                                                    }
                                                 }
-                                            }
-                                        );
+                                            );
+                                        }
 
                                         const rdp__header_text_wrapper = $("<div>", {
                                             class: "nkch-rdp__header-text-wrapper"

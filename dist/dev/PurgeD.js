@@ -10,6 +10,7 @@
         ttl: 1000 * 60 * 10,
         wg: mw.config.get([
             'wgUserGroups',
+            'wgScriptPath',
             'wgServer'
         ]),
         canRun: function() {
@@ -19,6 +20,7 @@
                 'helper',
                 'global-discussions-moderator',
                 'wiki-representative',
+                'wiki-specialist',
                 'soap'
             ]);
         },
@@ -46,7 +48,7 @@
                     r._embedded.threads.forEach(function(thread, i) {
                         setTimeout(function() {
                             var xhr = new XMLHttpRequest();
-                            xhr.open('PUT', this.wg.wgServer + '/wikia.php?controller=DiscussionThread&method=delete&threadId=' + thread.id, true);
+                            xhr.open('PUT', this.wg.wgServer + this.wg.wgScriptPath + '/wikia.php?controller=DiscussionThread&method=delete&threadId=' + thread.id, true);
                             xhr.withCredentials = true;
                             xhr.send();
                         }.bind(this), i * 2000);
@@ -58,7 +60,7 @@
             return new Promise(function(res) {
                 var xhr = new XMLHttpRequest();
 
-                xhr.open('GET', this.wg.wgServer + '/wikia.php?controller=DiscussionThread&method=getThreads&sortKey=trending&limit=100&responseGroup=small&viewableOnly=true', true);
+                xhr.open('GET', this.wg.wgServer + this.wg.wgScriptPath + '/wikia.php?controller=DiscussionThread&method=getThreads&sortKey=trending&limit=100&responseGroup=small&viewableOnly=true', true);
 
                 xhr.onload = function() {
                     res(JSON.parse(xhr.response));

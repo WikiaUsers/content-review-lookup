@@ -10,7 +10,7 @@
         'wgUserName'
     ]);
     if (
-        !/bot|soap|bureaucrat|sysop|staff|helper|wiki-representative/.test(config.wgUserGroups.join()) ||
+        !/bot|soap|bureaucrat|sysop|staff|helper|wiki-representative|wiki-specialist/.test(config.wgUserGroups.join()) ||
         window.BotManagementLoaded
     ) {
         return;

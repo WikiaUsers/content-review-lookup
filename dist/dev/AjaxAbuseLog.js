@@ -20,7 +20,7 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 		console.log('[AjaxAbuseLog V0.4.1] [LOG]:', msg);
 	}
  
-	if (!/sysop|util|staff|helper|wiki-representative|soap/.test(userGroups.join('\n')) ||
+	if (!/sysop|util|staff|helper|wiki-representative|wiki-specialist|soap/.test(userGroups.join('\n')) ||
 		window.ajaxAbuseLogInit
 	) {
 		logMsg('Script Double loaded, or user rights requirements not met, skipping import.');

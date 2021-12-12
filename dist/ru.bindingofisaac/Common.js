@@ -83,6 +83,45 @@ $('.cardb2').click(function(){
 });
 
 
+//================================================================
+// Кнопка открытия попапа создания блога
+
+$(function () {
+    /* Based on dev:CreateNewBlogButton.js */
+    var user = mw.config.get('wgUserName');
+    if ((user !== null) && $('.create_new_blog').length) {
+        $('.create_new_blog').html('<div class="new-blog-btn create_new_blog"><span>Создать свой</span></div>');
+        var editurl = 'placeholder';
+        if ((mw.user.options.get('editor') === "2") && (mw.user.options.get('editortype') === "2")) {
+            editurl = "?veaction=edit";    
+        }
+        else {
+            editurl = "?action=edit";
+        }
+        $('.create_new_blog').click(function t() {
+            OO.ui.prompt('Написать блог', {
+                textInput: {
+                    placeholder: 'Введите заголовок'
+                }
+            }).done((function(t) {
+                t && (window.location.href = function(t) {
+                const e = mw.config.get("wgArticlePath").replace("$1", 'User_blog:'+user);
+                return "".concat(e, "/").concat(encodeURIComponent(t), editurl);
+                }(t));
+            }));
+        } );    
+    }
+} );
+
+/*preview blogmod*/
+importArticles({
+    type: "script",
+    articles: [
+        "u:nkch:MediaWiki:OpenGraph.js",
+    ]
+});
+
+
 //Slider for my DC wiki
 mw.loader.load('https://dead-cells.fandom.com/ru/wiki/MediaWiki:HSlider.js?action=raw&ctype=text/javascript');
 
@@ -101,4 +140,22 @@ addLinkInActivityModule()
 $(function(){
     var config = mw.config.get(['wgScriptPath']);
     $('.fandom-community-header__local-navigation .wds-dropdown:first-child ul.wds-list').prepend('<li><a href="' + config.wgScriptPath + '/wiki/Special:RecentChanges"><svg class="wds-icon wds-icon-tiny navigation-item-icon"><use xlink:href="#wds-icons-activity-small"></use></svg>Свежие правки</a></li>');
+});
+
+
+//lw
+$(function(){   
+    switch ( mw.config.get('wgPageName') ) {
+        case 'Таблица_артефактов':
+            $('body').addClass('is-content-expanded')
+        break;
+    }
+});
+
+$(function(){   
+    switch ( mw.config.get('wgPageName') ) {
+        case 'Шаблон:Полотно_сервера':
+            $('body').addClass('is-content-expanded')
+        break;
+    }
 });

@@ -19,6 +19,10 @@ $(function() {
   $("#RCUbutton").on("click", function(){ RCUrefresh("click"); });
   $(document).on('RecentChangesComplete', function(){
     if (typeof $(".mw-collapsible").makeCollapsible == "function") $(".mw-collapsible").makeCollapsible();
+    $('a[data-uncrawlable-url], span[data-uncrawlable-url]').off().each(function () {
+      $(this).replaceWith($(this).prop('outerHTML').replace("span", "a"));
+      $(this).attr('href', window.atob($(this).attr('data-uncrawlable-url')));
+    });
   });
   $(window)
    .off("blur").on("blur", function() { window.hasFocus = false; })

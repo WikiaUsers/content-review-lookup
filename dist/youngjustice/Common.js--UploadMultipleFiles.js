@@ -46,7 +46,7 @@
 		}
 		comment = $("#wpUploadDescription").val();
 		license = ($("#wpLicense option:selected").val() === "")?"":"\n== "+i18n.license+" ==\n"+$("#wpLicense option:selected").prop("title");
-		text = (comment !== "" ? "== " + i18n.summary + " ==\n" + comment : "") + license;
+		text = comment + license;
 		watch = "preferences";
 		if ($("#wpWatchthis").is(":checked")) watch = "watch";
 		else watch = "nochange";

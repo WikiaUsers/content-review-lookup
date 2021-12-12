@@ -1,48 +1,21 @@
 //from Warframe (en) wiki
-var tooltips_list = [
-	{
-        classname: 'ability-tooltip', 
-        parse: '{'+'{Tooltip/Ability|<#param#>|<#param2#>}}',
+window.tooltips_list = [
+	{	classname: 'mod-tooltip',
+        parse: '{'+'{Тултип/Мод|<#param#>}}',
     },
-	{
-        classname: 'arcane-tooltip', 
-        parse: '{'+'{Tooltip/Arcane|<#param#>|<#name#>}}',
+	{	classname: 'resource-tooltip',
+        parse: '{'+'{Тултип/Ресурс|<#param#>}}',
     },
-    {
-        classname: 'avionic-tooltip', 
-        parse: '{'+'{Tooltip/Avionic|<#param#>|<#name#>}}',
+    {	classname: 'relic-tooltip',
+    
+        parse: '{'+'{Тултип/Релик|<#tier#>|<#name#>}}',
     },
-    {
-        classname: 'damagetype-tooltip', 
-        parse: '{'+'{Tooltip/DamageType|<#param#>|<#param2#>}}',
+    {	classname: 'test-tooltip',
+        parse: '{'+'{Тултип/Тест|<#param#>}}',
     },
-    {
-        classname: 'dropchance-tooltip', 
-        parse: '{'+'{Tooltip/DropChance|<#param#>|<#param2#>}}',
-    },
-    {
-        classname: 'mod-tooltip', 
-        parse: '{'+'{Tooltip/Mod|<#param#>}}',
-    },
-    {
-        classname: 'relic-tooltip', 
-        parse: '{'+'{Tooltip/Relic|<#param#>}}',
-    },
-    {
-        classname: 'weapon-tooltip', 
-        parse: '{'+'{Tooltip/Weapon|<#param#>|<#param2#>|<#param3#>}}',
-    },
-    {
-        classname: 'warframe-tooltip', 
-        parse: '{'+'{Tooltip/Warframe|<#param#>|<#param2#>}}',
-    },
-    {
-        classname: 'test-tooltip', 
-        parse: '{'+'{Tooltip/Test|<#param#>|<#param2#>|<#param3#>|<#param4#>}}',
-    }
 ];
 
-var tooltips_config = {
+window.tooltips_config = {
     offsetX: 10,
     offsetY: 10,
     waitForImages: true

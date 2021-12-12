@@ -4379,6 +4379,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "chillstar": {
+                "name": "Chillstar",
+                "types": [
+                    "holiday",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "chime": {
                 "name": "Chime",
                 "types": [
@@ -5705,6 +5721,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "25_hours_25",
                 "rarity": 4,
                 "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "cryosphinx": {
+                "name": "Cryosphinx",
+                "types": [
+                    "holiday",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]
@@ -8642,6 +8674,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "23_hours_23",
                 "rarity": 2,
                 "offspringeligibility": "expired"
+            },
+            "evergreen": {
+                "name": "Evergreen",
+                "types": [
+                    "holiday",
+                    "white",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
             },
             "evergrowth": {
                 "name": "Evergrowth",
@@ -25249,6 +25298,32 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "crafted",
                 "notes": [
                     "feature"
+                ]
+            },
+            "runoff": {
+                "name": "Runoff",
+                "types": [
+                    "holiday",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ]
+                    ]
                 ]
             },
             "rushlight": {

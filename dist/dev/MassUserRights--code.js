@@ -32,7 +32,7 @@ mw.loader.using([
     
     if (
         window.MassUserRightsLoaded ||
-        !/sysop|bureaucrat|staff|helper|wiki-representative|util/.test(config.wgUserGroups.join())
+        !/sysop|bureaucrat|staff|helper|wiki-representative|wiki-specialist|util/.test(config.wgUserGroups.join())
     ) {
         return;
     }

@@ -11,7 +11,6 @@
         var counter = 0;
  
         $.each( d.query.querypage.results, function( i, v ) {
-            if ( v.ns !== 0 ) return;
             counter++;
         });
  

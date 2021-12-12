@@ -130,8 +130,8 @@ $(function() {
     	/*Armor*/
     (function() {
         $('#calculator_armor').append(
-            '<table class="wikitable" width="100%">' +
-            '<tr><td style="vertical-align:middle;width:132px">' +
+            '<div style="display:grid;grid-template-columns: 1fr 1fr 1fr 1fr;column-gap:2px">' +
+            '<div style="background-color: rgba(255, 255, 255, .1);">' +
             '<div id="calculator_armor_body_main">' +
             '  <div style="top:2px;left:39px;"><img id="calculator_armor_body_helmet" alt="" src="" width="32" height="32" /></div>' +
             '  <div style="top:39px;left:39px;"><img id="calculator_armor_body_armor" alt="" src="" width="32" height="32" /></div>' +
@@ -143,13 +143,12 @@ $(function() {
             '  <div style="top:91px;left:2px;"><img id="calculator_armor_body_ring" alt="" src="" width="32" height="32" /></div>' +
             '  <div style="top:91px;left:76px;"><img id="calculator_armor_body_belt" alt="" src="" width="32" height="32" /></div>' +
             '</div>' +
-            '</td><td colspan="3">' +
-            '  <div id="calculator_armor_items_div" class="text_align_left" style="overflow:auto;width:100%;height:165px;"></div>' +
-            '</td></tr><tr><td>' +
-            '  <div></div>' +
+            '</div><div style="grid-column: 2 / 5;">' +
+            '  <div id="calculator_armor_items_div" class="text_align_left" style="overflow:auto;height:165px;background-color: rgba(255, 255, 255, .1);"></div>' +
+            '</div><div>' +
             '  <div id="calculator_armor_links"><b>Links to items</b></div>' +
             '</td><td class="text_align_left" style="width:180px;">' +
-            '  <table>' +
+            '  </div><div style="min-width:180px;"><table>' +
             '  <tr><th colspan="2">Sort by:</th></tr>' +
             '  <tr><td colspan="2"><input type="radio" value="name" name="calculator_armor_items_sort" />Name <input type="radio" value="oz" name="calculator_armor_items_sort" />Oz <input type="radio" value="arm" name="calculator_armor_items_sort" />Armor' +
             '  </td></tr><tr><th colspan="2">Protection:</th></tr>' +
@@ -158,7 +157,7 @@ $(function() {
             '  <tr><td><input type="radio" value="ice" name="calculator_armor_items_sort" />Ice</td><td><input type="radio" value="holy" name="calculator_armor_items_sort" />Holy</td></tr>' +
             '  <tr><td><input type="radio" value="death" name="calculator_armor_items_sort" />Death</td><td><input type="radio" value="manadrain" name="calculator_armor_items_sort" />Mana Drain</td></tr>' +
             '  <tr><td></td><td><input type="radio" value="lifedrain" name="calculator_armor_items_sort" />Life Drain</td></tr></table>' +
-            '</td><td style="width:115px;">' +
+            '</div><div>' +
             '  <b>Damage type:</b><br /><select id="calculator_armor_damage_type" size="1"><option value="physical" selected="selected">Physical</option><option value="fire">Fire</option><option value="earth">Earth</option><option value="energy">Energy</option><option value="ice">Ice</option><option value="holy">Holy</option><option value="death">Death</option><option value="manadrain">Mana Drain</option><option value="lifedrain">Life Drain</option></select>' +
             '  <br /><br />' +
             '  <b>Show items for:</b><br />' +
@@ -166,7 +165,7 @@ $(function() {
             '  <br /><br />' +
             '  <input type="checkbox" value="1" id="calculator_armor_np" /> Show non <br />protective items' +
 
-            '</td><td style="width:179px;">' +
+            '</div><div">' +
             '  <b>Defensive Imbuements:</b><br/>' +
             '  Armor: <select style="width:85px;" id="calculator_armor_imbue_1" size="1" disabled><option value="none" selected="selected">None</option><option value="basic">Basic</option><option value="intricate">Intricate</option><option value="powerful">Powerful</option></select><br />' +
             '  Shield: <select style="width:85px;" id="calculator_armor_imbue_2" size="1" disabled><option value="none" selected="selected">None</option><option value="basic">Basic</option><option value="intricate">Intricate</option><option value="powerful">Powerful</option></select><br /><br />' +
@@ -175,8 +174,8 @@ $(function() {
             '  Needed Cap: <span id="calculator_armor_set_oz">0.00 oz</span><br />' +
             '  Total Armor: <span id="calculator_armor_set_arm">0</span><br />' +
             '  <span id="calculator_armor_set_prot">Physical protection: 0%</span>' +
-            '</td></tr></table>' +
-            '<table id="calculator_armor_damages" class="wikitable">' +
+            '</div></div>' +
+            '<table id="calculator_armor_damages">' +
             '<tr><th>Hit with <span id="calculator_armor_damage_type_ind">Physical</span></th><td>10</td><td>20</td><td>50</td><td>100</td><td>200</td><td>300</td><td>400</td><td>800</td><td><input type="text" id="calculator_armor_custom_damage" value="100" size="5" maxlength="5" /></td></tr>' +
             '<tr><th>Will hit</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>' +
             '</table>'
@@ -424,7 +423,7 @@ $(function() {
                     for (x = 0; x < dmg_prot.length; x++) {
                         tmpa.push(dmg_prot[x] + '%');
                     }
-                    tmp = dmg_type + ' protection:<br />' + (!tmpa.length ? '0%' : tmpa.join(', '));
+                    tmp = dmg_type + ' protection: ' + (!tmpa.length ? '0%' : tmpa.join(', '));
                     if ($(this).is('div')) {
                         $('#calculator_armor_req_level').html(lvl);
                         $('#calculator_armor_set_oz').html(oz);
@@ -722,8 +721,7 @@ $(function() {
                     });
                     if ($('#calculator_armor_compare').size() === 0) {
                         $('#calculator_armor_damages').after($('<table>', {
-                            'id': 'calculator_armor_compare',
-                            'class': 'wikitable'
+                            'id': 'calculator_armor_compare'
                         }));
                     }
                     $('#calculator_armor_compare th').each(function() {
@@ -773,6 +771,7 @@ $(function() {
                                         'type': 'hidden',
                                         'value': $('#calculator_armor_voc').val()
                                     }),
+                                    '<br/>',
                                     $('#calculator_armor_links').children().clone(true)
                                 ),
                                 $('<td>').html('&nbsp;'), $('<td>').html('&nbsp;'), $('<td>').html('&nbsp;'), $('<td>').html('&nbsp;'),

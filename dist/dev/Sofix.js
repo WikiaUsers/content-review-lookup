@@ -7,6 +7,9 @@ function main () { //TODO: Figure out some way to do this that's not a bunch of 
 
     //Remove the black circles around the "moved" indicators in diffs when selecting the text
     window.Sofix.modules.push('FixDiffIndicators');
+    
+    //Fix Go search not working from chrome's omnibox
+    window.Sofix.modules.push('FixGoSearch');
 
     //Load all modules
     if (window.Sofix.modules.length) {

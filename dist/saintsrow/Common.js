@@ -1,5 +1,5 @@
-var debugcolour = 'yellow';  //Change the colour to confirm cache updates
-var debugversion = '1638235270989';
+var debugcolour = 'red';  //Change the colour to confirm cache updates
+var debugversion = '1639243003115';
 
 window.test452 = { ready:false, complete:false};
 window.debug452 = function(out, alert) { if (mw.config.get("wgUserName") == "452") { if ( ["object", "null", "function"].indexOf(typeof out) == -1) console.log(new Date().toJSON()+" "+out); else { console.log(new Date().toJSON()+" object:"); console.log(out); } if (typeof alert != "undefined") window.alert(out); } }
@@ -304,6 +304,10 @@ $(document).on('readystatechange', function() {
 		$(window).scrollTop(0); 
 		$($("#wikiPreview .mw-parser-output")).on('DOMNodeInserted', function(event) { event.stopPropagation(); });
 		if ($(".tabber").length && typeof tabberInit == "function") tabberInit();
+		$('span[data-uncrawlable-url]').off().each(function () {
+		  $(this).attr('href', window.atob($(this).attr('data-uncrawlable-url')));
+		  $(this).replaceWith($(this).prop('outerHTML').replace("span", "a"));
+		});
 	});
      }
 	$("#mw-content-text img").each(function() { 

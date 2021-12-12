@@ -1,2 +1,0 @@
-/* linking background skin for Wikia Adventskalender 2014 */
-$('body').bind('click', function(e) { var obj = (e.target ? e.target : e.srcElement); if (obj.tagName != 'BODY') return true; window.location.href = 'http://bit.ly/WikiaAdventskalender2014-corp'; return false; });

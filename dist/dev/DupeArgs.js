@@ -397,6 +397,7 @@
     function doEdit(title, newContent) {
         // console.log(newContent);
         // window.nc = newContent;
+        var ug = mw.config.get('wgUserGroups');
 
         var summary = prompt('Hit me with your edit summary, baby', lastSummary);
         if (summary === null) return null;
@@ -409,6 +410,11 @@
             text: newContent,
             summary: summary,
             minor: true,
+            // The user group check is intentional. We do not want groups that
+            // have the right to mark their edits as bot edits, but aren't
+            // explicitly in one of the bot groups, to hide their edits using
+            // this script from RecentChanges.
+            bot: (ug.includes('bot') || ug.includes('bot-global')),
             token: mw.user.tokens.get('editToken')
         });
     }

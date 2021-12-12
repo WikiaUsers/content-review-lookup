@@ -6,7 +6,9 @@
 	See http://www.zeldawiki.org/MediaWiki_talk:Tabs.js for examples and documentation
 */
 
-$(document).ready(function(){
+console.log('cachebreak');
+
+$(function(){
   // When a tab is clicked
   $(".tab").click(function () {
     var $siblings= $(this).parent().children();

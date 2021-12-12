@@ -1,5 +1,3 @@
-// Rewrite in progress, please don't submit for review
-
 // OrganizedSocialActivity
 
 (function organizedSocialActivity(window, $, mw) {
@@ -30,26 +28,38 @@
     
     // Script-level values and variables
 	var $feed = $('.social-activity-feed'),
-	    $origFeed,
 	    $lists,
-	    tree = {
-	    	__keys: []
-	    },
-	    keys = tree.__keys,
-	    threads = {
-	    	merged: {
-	    		__keys: []
-	    	}
-	    },
+	    $origFeed,
 	    groupThreadsActive, groupAllActive,
 	    i18n;
 
-	// Extracts thread data out of a log entry, and stores it with jQuery .data()
+    // Dealing with a bug that when someone puts {{TemplateName}} in a Feeds
+    // post, the template is actually transcluded into Special:SocialActivity,
+    // ending up breaking the HTML structure if the template contains
+    // unclosed or extra-closed tags.
+    function fixBug() {
+    	$lists = $feed.find('.social-activity-list');
+		$lists.each(function (index) {
+			var $list = $(this);
+			$list.find(':not(ul.social-activity-list) > li[data-content-type]')
+			    .appendTo($list);
+			if (index === ($lists.length - 1)) {
+				$(':not(ul) > li[data-content-type]')
+				.appendTo($list);
+			}
+			if ($list.parent('section.social-activity-feed').length === 0) {
+				$('section.social-activity-feed')
+				    .append($list.prev('h4'), $list);
+			}
+		});
+		$origFeed = $feed.clone(true);
+    }
+
+	// Extracts thread data from a log entry, and stores it with jQuery .data()
 	//     place: posts / messages / comments
 	//     subplace: Discussions category ID / wall name / page name
 	//     thread: thread ID
 	//     href: the link to the thread (not the specific reply)
-	//     $dateList: The original <li> which the entry belongs to. Date-based
 	function extractData(e) {
 		var $e = $(e);
 		var data, href;
@@ -86,7 +96,6 @@
 				    .attr('href') || ' ';
 				data = {
 					place: 'messages',
-					// Stripping the part prior to the username and the query
 					subplace: href.replace(/.*:/, '').replace(/\?.*/, ''),
 					thread: href.replace(/.*\?threadId=/, ''),
 					href: href
@@ -109,7 +118,6 @@
 					.attr('href') || ' ';
 				data = {
 					place: 'comments',
-					// Stripping the part prior to the page name and the query
 					subplace: href.replace('/wiki/', '').replace(/\?.*/, ''),
 					thread: href.replace(/.*\?commentId=/, ''),
 					href: href
@@ -127,107 +135,16 @@
 				};
 				break;
 		}
-		
-		data.$dateList = $e.parent('.social-activity-list');
-		data.date = data.$dateList.prev('h4').text() || 'Unknown date';
-		
 		$e.data(data);
 		return $e.data();
-	}
-	
-	// 1. Extracting and attaching data for each entry
-	// 2. Creating a sorted object with references to all entries
-	// Shouldn't have any visible effect on the page
-	function preProcess() {
-        $feed.find('li[data-content-type]').each(function() {
-        	var myData = extractData(this),
-	    	    place = myData.place,
-	    	    subplace = myData.subplace,
-	    	    thread = myData.thread,
-	    	    date = myData.date,
-	    	    // A pointer to browse through the tree
-	    	    a;
-	    	    
-    	    a  = tree[date];
-        	if (a) {
-        		a = a[place];
-	        	if (a) {
-	        		a = a[subplace];
-	        		if (a) {
-	        			a = a[thread];
-	        			if (a) {
-	        				a.push(this);
-	        			} else {
-	        				a = tree[date][place][subplace];
-	        				a[thread] = [this];
-	        				a.__keys.push(thread);
-	        			}
-	        		} else {
-	        			a = tree[date][place];
-	        			(a[subplace] = {
-	        				__keys: [thread]
-	        			})[thread] = [this];
-	        			a.__keys.push(subplace);
-	        		}
-	        	} else {
-	        		a = tree[date];
-	        		((a[place] = {
-	        			__keys: [subplace]
-	        		})[subplace] = {
-	        			__keys: [thread]
-	        		})[thread] = [this];
-	        		a.__keys.push(place);
-	        	}
-        	} else {
-        		a = tree;
-        		(((a[date] = {
-        			__keys: [place]
-        		})[place] = {
-        			__keys: [subplace]
-        		})[subplace] = {
-        			__keys: [thread]
-        		})[thread] = [this];
-        		keys.push(date);
-        	}
-        	
-        	a = threads[date];
-        	if (a) {
-        		a.push(tree[date][place][subplace][thread]);
-        	} else {
-        		threads[date] = [ tree[date][place][subplace][thread] ];
-        	}
-        	
-        	a = threads.merged[place + '__' + subplace + '__' + thread];
-        	if (a) {
-        		if (!a.indexOf(date)) {
-        			a.push(date);
-        		}
-        	} else {
-        		threads.merged[place + '__' + subplace + '__' + thread] = [date];
-        	}
-        	threads.merged.__keys.push(place + '__' + subplace + '__' + thread);
-        });
 	}
 
 	// Creates a thread header based on the most recent entry of the thread
 	function makeHeader(e, o) {
-		var $e, data;
-		
-		switch (typeof e) {
-		case 'object':
-			$e = $(e);
+		var $e = $(e),
 		    data = $e.data();
-		    break;
-		    
-		case 'string':
-			o = e;
-			break;
-			
-		default:
-		    return '';
-		}
 		
-		if ($e && !data.title) {
+		if (!data.title) {
 			switch ($e.attr('data-content-type')) {
 				case 'post':
 					data = {
@@ -321,11 +238,7 @@
 					return $('<h4>Comments on article and user blog pages</h4>');
 			}
 			
-			// Making subplace header requires a social entry element to retrive
-			// the information from
-			if (!$e) { return ''; }
-			
-			switch (o.replace(/__.*/, '')) {
+			switch (o.replace(/_.*/, '')) {
 				case 'posts':
 					return $('<h4>Category </h4>').append(
 						$('<a>')
@@ -360,195 +273,151 @@
 				data.prefix,
 				$('<a>').attr('href', data.on_href).text(data.on + data.suffix)
 			]
-		); 
+		);
 	}
     
     function groupThreads() {
-    	var mergeDates = $('#social-activity-filters__merge-dates-checkbox')
-    		    .prop('checked'),
-    	    i, i1, i2, i3, keys1, keys2, keys3,
-            date, place, subplace, thread,
-            dateUl, placeUl, subplaceUl,
-            a, b;
-
-        // Resetting the feed if it was previously altered
-        // If not - keeping a backup for future reset
-        if ($origFeed) {
-        	$feed.before($feed = $origFeed.clone()).remove();
-        	if (groupAllActive) {
-        		groupAllActive = false;
-        		$feed.removeClass('social-activity-feed-group-all');
-        	}
+        if (groupThreadsActive || groupAllActive) {
+        	$feed.before($feed = $origFeed.clone(true)).remove();
+        	$lists = $feed.find('.social-activity-list');
+        	groupAllActive = false;
         } else {
-        	$origFeed = $feed.clone();
+            fixBug();
         }
-    	
+        
         groupThreadsActive = true;
 	    $feed.addClass('social-activity-feed-grouped');
-	    
-	    for (i = 0; i < keys.length; i++) {
-	    	date = keys[i];
-	    	for (i1 = 0; i1 < threads[date].length; i1++) {
-	    		
-	    	}
-	    }
 
+	    $lists.each(function() {
+	        var threads = {},
+	    	      $list = $(this),
+	    	      $listE = $list.children('li[data-content-type]');
+	            
+	        var keys = [],
+	            key;
+	        
+	        $listE.each(function() {
+	        	var myData = extractData(this),
+	        	    threadKey = myData.place + '_' +
+	        	                myData.subplace + '_' +
+	        	                myData.thread;
+	        	                
+	        	if (threads[threadKey]) {
+	        		threads[threadKey].push(this);
+	        	} else {
+	        		threads[threadKey] = [this];
+	        		// Needed to keep track on the order of threads, since
+	        		// object keys won't necessarily keep the order.
+	        		keys.push(threadKey);
+	        	}
+	        });
+	        
+	        keys.forEach(function(key) {
+	        	$('<li class="social-activity-thread">')
+	        	    .appendTo($list)
+	        	    .append(
+	        	    	makeHeader(threads[key][0]),
+	        	    	$('<ul>').append(threads[key])
+	        	    );
+	        });
+	    });
 	    makeCollapsibles();
     }
 	    
     function groupAll() {
-    	var mergeDates = $('#social-activity-filters__merge-dates-checkbox')
-    		    .prop('checked'),
-    	    i, i1, i2, i3, keys1, keys2, keys3,
-            date, place, subplace, thread,
-            dateUl, placeUl, subplaceUl,
-            a, b;
-
-        // Resetting the feed if it was previously altered
-        // If not - keeping a backup for future reset
-        if ($origFeed) {
-        	$feed.before($feed = $origFeed.clone()).remove();
+        if (groupThreadsActive || groupAllActive) {
+        	$feed.before($feed = $origFeed.clone(true)).remove();
+        	$lists = $feed.find('.social-activity-list');
         	groupThreadsActive = false;
         } else {
-        	$origFeed = $feed.clone();
+        	fixBug();
         }
-    	
+        
         groupAllActive = true;
 	    $feed.addClass([
 	    	'social-activity-feed-grouped',
 	    	'social-activity-feed-group-all'
 	    	]);
-    	
-        if (mergeDates) {
-	        var places = [], subplaces = {};
-	        
-	        // Iterating trough dates
-	        for (i = 0; i < keys.length; i++) {
-	        	date = keys[i];
-	        	
-	        	//  Iterating through social places
-	        	for (i1 = 0, keys1 = tree[date].__keys;
-	        	    i1 < keys1.length; i1++) {
-		        	
-		        	place = keys1[i1];
-		        	if (places.indexOf(place) !== -1) {
-		        		placeUl = $('.social-activity__' + place + ' > ul');
-		        	} else {
-		        		places.push(place);
-			        	placeUl = $('<ul>')
-			        	    .appendTo(
-			        		$('<li class="social-activity__' + place + '">')
-			        		    .appendTo(
-			        		    	$('<ul class="social-activity-list">')
-			        		    	    .appendTo($feed)
-			        		    	)
-			        		)
-			        		.before(makeHeader(place));
-		        	}
-		        	
-		        	// Iterating through subplaces
-		        	for (i2 = 0, keys2 = tree[date][place].__keys;
-		        	        i2 < keys2.length; i2++) {
-		        		
-		        		subplace = keys2[i2];
-		        		// Those are not identified by a class so they need an
-		        		// object to keep track on
-		        		if (subplaces[place + '__' + subplace]) {
-		        			subplaceUl = $(subplaces[place + '__' + subplace]);
-		        		} else {
-		        			subplaces[place + '__' + subplace] = subplaceUl =
-		        			    $('<ul>').appendTo(
-		        			    $('<li class="social-activity-subplace">')
-		        			    	.appendTo(placeUl)
-		        			    )
-		        			    .before(makeHeader(
-			        	    	    tree[date][place][subplace][
-			        	    	    	tree[date][place][subplace].__keys[0]
-			        	    	    ][0],
-			        	    	    place + '__' + subplace)
-			        	    	);
-		        		}
+	    	
+	    $lists.each(function() {
+	        var $list = $(this),
+	    	    $listE = $list.children('li[data-content-type]'),
+	    	    threads = {},
+	    	    keys = [],
+	    	    i, i2, i3, keys2, keys3,
+	            placeKey, subplaceKey, threadKey,
+	            placeE, subplaceE;
 	
-		        		//  Iterating thorugh threads
-		        		for (i3 = 0, keys3 = tree[date][place][subplace].__keys;
-		        		        i3 < keys3.length; i3++) {
-		        			thread = keys3[i3];
-		        			a = tree[date][place][subplace][thread];
-		        			
-		        			if ((b = threads[place + '__' + subplace + '__' + thread])[0] !==
-		        			date) {
-		        				// Concating threads when needed
-		        				$(tree[b[0]][place][subplace][thread][0]
-		        				.parentElement.parentElement).append(
-		        					$('<h5>').text($(a[0]).data('date')),
-		        					$('<ul>').append(a)
-		        				);
-		        			} else {
-			        			subplaceUl.append(
-			        				$('<li class="social-activity-thread">').append(
-			        					makeHeader(a[0]),
-			        					$('<h5>').text($(a[0]).data('date')),
-			        					$('<ul>').append(a)
-			        				)
-			        			);
-		        			}
-		        		}
-		        	}
-	        	}
-	        	$feed.children('h4:not(:last-of-type), .social-activity-list:not(:last-of-type)').remove();
-	        }
-        } else {
-        	
-        	// Iterating through dates
-	        for (i = 0; i < keys.length; i++) {
-	        	date = keys[i];
-	        	dateUl = $('.social-activity-list').filter(function() {
-	        		return $(this).prev('h4').text() === date;
-	        	});
+	        $listE.each(function() {
+	        	var myData = extractData(this);
+	        	    
+        	    placeKey = myData.place;
+        	    subplaceKey = myData.place + '_' + myData.subplace;
+        	    threadKey = myData.subplace + '_' + myData.thread;
 	        	
-	        	// Iterating through social places (features)
-	        	for (i1 = 0, keys1 = tree[date].__keys;
-	        	    i1 < keys1.length; i1++) {
-		        	place = keys1[i1];
-		        	placeUl = $('<ul>').appendTo(
-		        		    $('<li class="social-activity__' + place + '">')
-		        		        .appendTo(dateUl)
-		        		)
-		        		.before(makeHeader(place));
-		        	
-		        	// Iterating through subplaces
-		        	for (i2 = 0, keys2 = tree[date][place].__keys;
-		        	        i2 < keys2.length; i2++) {
-		        		subplace = keys2[i2];
-		        		subplaceUl = $('<ul>').appendTo(
-		        			$('<li class="social-activity-subplace">')
-		        			    .appendTo(placeUl)
-		        			)
-	        			    .before(makeHeader(
-		        	    	    tree[date][place][subplace][
-		        	    	    	tree[date][place][subplace].__keys[0]
-		        	    	    ][0],
-		        	    	    place + '__' + subplace)
-		        	    	);
-
-		        		// Iterating through threads
-		        		for (i3 = 0, keys3 = tree[date][place][subplace].__keys;
-		        		        i3 < keys3.length; i3++) {
-		        			thread = keys3[i3];
-		        			a = tree[date][place][subplace][thread];
-		        			
-			        		subplaceUl.append(
-			        			$('<li class="social-activity-thread">').append(
-			        				makeHeader(a[0]),
-			        				$('<ul>').append(a)
-			        			)
-			        		);
-		        		}
-		        	}
+	        	if (threads[placeKey]) {
+	        		if (threads[placeKey][subplaceKey]) {
+	        			if (threads[placeKey][subplaceKey][threadKey]) {
+	        				threads[placeKey][subplaceKey][threadKey].push(this);
+	        			} else {
+	        				threads[placeKey][subplaceKey][threadKey] = [this];
+	        				threads[placeKey][subplaceKey].__keys.push(threadKey);
+	        			}
+	        		} else {
+	        			threads[placeKey][subplaceKey] = {
+	        				__keys: [threadKey]
+	        			};
+	        			threads[placeKey][subplaceKey][threadKey] = [this];
+	        			threads[placeKey].__keys.push(subplaceKey);
+	        		}
+	        	} else {
+	        		threads[placeKey] = {
+	        			__keys: [subplaceKey]
+	        		};
+	        		threads[placeKey][subplaceKey] = {
+	        			__keys: [threadKey]
+	        		};
+	        		threads[placeKey][subplaceKey][threadKey] = [this];
+	        		keys.push(placeKey);
 	        	}
-	        }
-        }
+	        	
+	        });
+	        
+	        for (i = 0; i < keys.length; i++) {
+	        	placeKey = keys[i];
+	        	placeE = $('<li class="social-activity__' + placeKey + '">')
+	        	    .appendTo($list);
+	        	placeE = ($('<ul>')).appendTo(placeE);
+	        	for (i2 = 0, keys2 = threads[placeKey].__keys;
+	        	        i2 < keys2.length; i2++) {
+	        		subplaceKey = keys2[i2];
+	        		subplaceE = $('<li class="social-activity-subplace">')
+	        		    .appendTo(placeE);
+	        		subplaceE = ($('<ul>')).appendTo(subplaceE);
+	        		for (i3 = 0, keys3 = threads[placeKey][subplaceKey].__keys;
+	        		        i3 < keys3.length; i3++) {
+	        			threadKey = keys3[i3];
+	        			subplaceE.append(
+	        				$('<li class="social-activity-thread">').append(
+	        					makeHeader(
+	        					    threads[placeKey][subplaceKey][threadKey][0]
+	        				    ),
+	        				    $('<ul>').append(
+	        					    threads[placeKey][subplaceKey][threadKey]
+	        				    )
+	        				)
+	        			);
+	        		}
+	        		subplaceE.before(makeHeader(
+	        	    	threads[placeKey][subplaceKey][threadKey][0],
+	        	    	subplaceKey));
 
+	        	}
+	        	placeE.before(makeHeader(
+	        	    	threads[placeKey][subplaceKey][threadKey][0],
+	        	    	placeKey));
+	        }
+	    });
 	    makeCollapsibles();
     }
     
@@ -585,11 +454,10 @@
     }
     
     function init() {
-	    // Activation controls
-	    $('.social-activity-filters').append(
-		    $('<button>')
+	    // Activation buttons
+	    $('<button>')
 	        .addClass([
-	        	'social-activity-filters__group-threads-button',
+	        	'social-activity-filters__live-group-threads-button',
 	            'wds-button',
 	            'wds-is-secondary'
 	        ])
@@ -601,11 +469,12 @@
 			     </svg>'),
 			    $('<span>Group Threads</span>')
 			)
-	        .click(groupThreads),
-		
-		    $('<button>')
+	        .click(groupThreads)
+	        .appendTo($('.social-activity-filters'));
+	
+	    $('<button>')
 	        .addClass([
-	        	'social-activity-filters__group-all-button',
+	        	'social-activity-filters__live-group-all-button',
 	            'wds-button',
 	            'wds-is-secondary'
 	        ])
@@ -617,21 +486,10 @@
 			     </svg>'),
 			    $('<span>Group All</span>')
 			)
-	        .click(groupAll),
-	        
-	        $('<form> \
-		        <input type="checkbox" \
-		        class="social-activity-filters__merge-dates-checkbox" \
-		        id="social-activity-filters__merge-dates-checkbox" \
-		        checked> \
-	        	Merge all dates \
-	        </form>'),
-	        
-	        '{{subst:RepSubst|&nbsp;2021 Apr 08, 00:21:12&nbsp;}}'.split('&nbsp;')[1] // Embedding saving timestamp
-	    );
+	        .click(groupAll)
+	        .appendTo($('.social-activity-filters'));
     }
     
-	preProcess();
 	// i18n
 	mw.hook('dev.i18n').add(function (_i18n) {
 		i18n = _i18n;

@@ -77,7 +77,8 @@
                     "staff",
                     "helper",
                     "soap",
-                    "wiki-representative"
+                    "wiki-representative",
+                    "wiki-specialist"
                 ] );
                 const isAllowed = allowedGroups.some( function( g ) { 
                     return conf.wgUserGroups.includes( g );

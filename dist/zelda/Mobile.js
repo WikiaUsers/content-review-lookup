@@ -1,6 +1,3 @@
-/* Any JavaScript here will be loaded for users using the mobile site */
-
-/* Tabs */
 /*
 	Simple but flexible javascript tabs
 	v0.3
@@ -8,7 +5,10 @@
 	Contact: http://www.zeldawiki.org/User:Abdullah
 	See http://www.zeldawiki.org/MediaWiki_talk:Tabs.js for examples and documentation
 */
-$(document).ready(function(){
+
+console.log('cachebreak');
+
+$(function(){
   // When a tab is clicked
   $(".tab").click(function () {
     var $siblings= $(this).parent().children();

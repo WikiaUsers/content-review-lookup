@@ -2,12 +2,13 @@
 $(function() {
 	var images = [
 	    'https://images.wikia.nocookie.net/synthv/images/0/06/Wiki-wordmark-aiko.png',
+	    'https://images.wikia.nocookie.net/synthv/images/b/b5/Wiki-wordmark-anri.png.png',
 	    'https://images.wikia.nocookie.net/synthv/images/8/87/Wiki-wordmark-cangqiong.png',
 	    'https://images.wikia.nocookie.net/synthv/images/2/22/Wiki-wordmark-cangqiong-svs.png',
 	    'https://images.wikia.nocookie.net/synthv/images/2/24/Wiki-wordmark-chiyu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/0/05/Wiki-wordmark-chiyu-svs.png',
-	    'https://images.wikia.nocookie.net/synthv/images/5/51/Wiki-wordmark-eleanor-forte.png',
 	    'https://images.wikia.nocookie.net/synthv/images/2/2a/Wiki-wordmark-eleanor-forte-sv1.png',
+	    'https://images.wikia.nocookie.net/synthv/images/f/f1/Wiki-wordmark-Eleanor-Forte-AI.png',
 	    'https://images.wikia.nocookie.net/synthv/images/8/8a/Wiki-wordmark-genbu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/c/c3/Wiki-wordmark-haiyi.png',
 	    'https://images.wikia.nocookie.net/synthv/images/f/f3/Wiki-wordmark-haiyi-svs.png',

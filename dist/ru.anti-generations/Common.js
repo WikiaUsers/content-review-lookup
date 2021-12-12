@@ -1,7 +1,10 @@
-/* Плашки */
+/* Авторы Anti Sonic Forces и Arhhhat. Брать без разрешения Anti Sonic Forces запрещено! */
 $(function () {
-    if ($(".tally > em").length && $('#UserProfileMasthead').length && mw.config.get('wgAction') === 'view') {
-        var editCount = $(".tally > em").text();
+    var intervaleditCount = setInterval(editcountcalc, 500)
+    function editcountcalc(){
+    if ($(".user-identity-stats li:first-child strong").length && $('#userProfileApp').length && mw.config.get('wgAction') === 'view') {
+        clearInterval(intervaleditCount)
+        var editCount = $(".user-identity-stats li:first-child strong").text();
         var title = '';
         if (editCount <= 100) {
             title = "Котёнок/Волчонок";
@@ -17,8 +20,9 @@ $(function () {
             title = "Старейшина";
         }
         $('<span />', {
-            class: 'tag',
+            class: 'user-identity-header__tag',
             text: title
-        }).appendTo('.masthead-info hgroup');
+        }).appendTo('.user-identity-box__info .user-identity-header__attributes');
     }
+}
 });

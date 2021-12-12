@@ -47,7 +47,7 @@ $(document).ready(function()
 {
 	// Перемещение эпиграфа в верх на страницах выпуска
 	$('.autopream').each(function() {
-	    $(this).insertAfter($(this).parent().find('.autopream + div'));
+	    $(this).insertAfter($(this).parent().find('.autopream + .epigraph'));
 	});
 	// Удаление дубля
 	$('.autopream + p > span.lang').parent().css({'display' : 'none'});

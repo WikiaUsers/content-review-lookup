@@ -89,6 +89,7 @@
                 'helper',
                 'global-discussions-moderator',
                 'wiki-representative',
+                'wiki-specialist',                
                 'soap'
             ]);
         },

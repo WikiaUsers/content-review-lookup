@@ -140,7 +140,7 @@ function initFeed(content, isMod, canBlock) {
 function createDiscussionsFeed() {
     if(wgNamespaceNumber == -1 && wgTitle == "DiscussionsFeed") { //TODO: i18n make dictionary
         document.title = 'Discussions Feed - ' + wgSiteName;
-        var canBlock = Boolean(wgUserGroups.indexOf('sysop') > -1 || wgUserGroups.indexOf('staff') > -1 || wgUserGroups.indexOf('wiki-representative') > -1 || wgUserGroups.indexOf('helper') > -1 || wgUserGroups.indexOf('soap') > -1 || wgUserGroups.indexOf('global-discussions-moderator') > -1),
+        var canBlock = Boolean(wgUserGroups.indexOf('sysop') > -1 || wgUserGroups.indexOf('staff') > -1 || wgUserGroups.indexOf('wiki-representative') > -1 || wgUserGroups.indexOf('wiki-specialist') > -1 || wgUserGroups.indexOf('helper') > -1 || wgUserGroups.indexOf('soap') > -1 || wgUserGroups.indexOf('global-discussions-moderator') > -1),
             isMod = Boolean(canBlock || wgUserGroups.indexOf('threadmoderator') > -1);
         if (window.skin == "oasis") {
             document.getElementById("PageHeader").getElementsByTagName("h1")[0].textContent = "Discussions Feed"; //Oasis skin title

@@ -7,17 +7,10 @@ importArticles({
 		'w:c:clashofclans:MediaWiki:ModeToggle.js',
 		'w:c:clashofclans:MediaWiki:GemCalculators.js',
 		'w:c:clashofclans:MediaWiki:Common.js/HeroSkins.js',
-        'MediaWiki:Common.js/Usernames.js',
-        'MediaWiki:Common.js/Experience.js',
-        'MediaWiki:BadgeGenerator.js',
-        'MediaWiki:Protection.js',
-        'MediaWiki:Common.js/AvailableBuildings.js',
-        'MediaWiki:Common.js/GoldPass.js',
-        'MediaWiki:Common.js/Toggle.js',
-        'MediaWiki:Custom-TZclock.js'
 		]
 });
-/*Eliminar el botón de Editar Saludo en el Muro a menos que sea el suyo propio o si es personal*/
+/* Eliminar el botón de Editar Saludo en el Muro a menos que sea el suyo propio o si es personal 
+   --------------------------------------------------------------------------------------------- */
 $(function() {
 	var config = mw.config.get([
 	'wgCanonicalNamespace',

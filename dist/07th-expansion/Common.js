@@ -180,13 +180,13 @@ $(function createNavigationBarToggleButton() {
     }
 });
  
-// Fair Use/Source addon for image uploading. Copied from https://community.fandom.com/wiki/User_blog:Godisme/Fair_Use_and_Image_Licensing
+// Adds ocode to photo uploads
 $(function preloadUploadDesc() {
 	if (wgPageName.toLowerCase() != 'special:upload') {
 		return;
 }
  
-	document.getElementById('wpUploadDescription').appendChild(document.createTextNode("{{Fair use rationale\r| Description       = \r| Source            = \r| Replaceability    = \r| Other Information = \r}}"));
+	document.getElementById('wpUploadDescription').appendChild(document.createTextNode("== Source ==\r\n\r\n== Licensing ==\r{{Fairuse}}"));
 	
 });
 

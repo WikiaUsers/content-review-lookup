@@ -35,3 +35,11 @@ UserTagsJS.modules.custom = {
 $(function UserContribsMenuItem() {
 	$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Special:Contributions/'+ encodeURIComponent (wgUserName) +'">My contributions</a></li>');
 });
+
+/* SpoilerAlert */
+window.SpoilerAlertJS = {
+    question: 'Whoa there! This page contains spoilers. Would you still like to proceed?',
+    yes: 'Yes',
+    no: 'No',
+    fadeDelay: 500
+};

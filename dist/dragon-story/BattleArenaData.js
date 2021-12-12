@@ -2198,6 +2198,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"chillstar": {
+				"name": "Chillstar",
+				"colors": [
+					"holiday",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"chime": {
 				"name": "Chime",
 				"colors": [
@@ -2954,6 +2962,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"cosmic",
 					"purple"
+				],
+				"rarity": "unbreedable"
+			},
+			"cryosphinx": {
+				"name": "Cryosphinx",
+				"colors": [
+					"holiday",
+					"pink"
 				],
 				"rarity": "unbreedable"
 			},
@@ -4434,6 +4450,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "rare"
+			},
+			"evergreen": {
+				"name": "Evergreen",
+				"colors": [
+					"holiday",
+					"white",
+					"green"
+				],
+				"rarity": "unbreedable"
 			},
 			"evergrowth": {
 				"name": "Evergrowth",
@@ -12543,6 +12568,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "unbreedable"
+			},
+			"runoff": {
+				"name": "Runoff",
+				"colors": [
+					"holiday",
+					"red"
+				],
+				"rarity": "common"
 			},
 			"rushlight": {
 				"name": "Rushlight",

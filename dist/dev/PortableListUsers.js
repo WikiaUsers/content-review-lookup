@@ -41,7 +41,7 @@
         //'global-discussions-moderator': {},
         //'helper': {},
         //'imagereviewer': {},
-        'interface-admin': {},
+        //'interface-admin': {},
         //'request-to-be-forgotten-admin': {},
         //'restricted-login': {},
         //'restricted-login-exempt': {},

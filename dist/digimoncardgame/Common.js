@@ -61,6 +61,11 @@ function searchJavaScript() {
 		containerLabel.textContent = cat + ":";
 		container.appendChild(containerLabel);
 		
+		/*
+		var br = document.createElement("br");
+		container.appendChild(br);
+		*/
+		
 		for (var i = 0; i < subcats.length; i++) {
 			var checkbox = document.createElement("input");
 			checkbox.type = 'checkbox';
@@ -110,20 +115,30 @@ function searchJavaScript() {
 	function addItems(elem) {
 		//Lists
 		var archetypeContainer = document.getElementById("archetypeContainer");
-		addList.bind(this, elem, archetypeContainer, "Archetype")();
+		addList.bind(this, elem, archetypeContainer, "Name contains")();
 		var cTypeContainer = document.getElementById("cTypeContainer");
-		addList.bind(this, elem, cTypeContainer, "Type")();
-		var levelContainer = document.getElementById("levelContainer");
-		addList.bind(this, elem, levelContainer, "Level")();
+		addList.bind(this, elem, cTypeContainer, "Card Type")();
 		var colourContainer = document.getElementById("colourContainer");
 		addList.bind(this, elem, colourContainer, "Colour")();
+		var colour2Container = document.getElementById("colour2Container");
+		addList.bind(this, elem, colour2Container, "Colour 2")();
+		var levelContainer = document.getElementById("levelContainer");
+		addList.bind(this, elem, levelContainer, "Level")();
+		var formContainer = document.getElementById("formContainer");
+		addList.bind(this, elem, attributeContainer, "Form")();
 		var attributeContainer = document.getElementById("attributeContainer");
 		addList.bind(this, elem, attributeContainer, "Attribute")();
+		var digiTypeContainer = document.getElementById("digiTypeContainer");
+		addList.bind(this, elem, digiTypeContainer, "Type")();
+		var digiType2Container = document.getElementById("digiType2Container");
+		addList.bind(this, elem, digiType2Container, "Type 2")();
+		var digiType3Container = document.getElementById("digiType3Container");
+		addList.bind(this, elem, digiType3Container, "Type 3")();
 		//CheckBoxes
 		var keywordsContainer = document.getElementById("keywordsContainer");
 		addCheckBox.bind(this, elem, keywordsContainer, "Keywords")();
-		var digiTypeContainer = document.getElementById("digiTypeContainer");
-		addCheckBox.bind(this, elem, digiTypeContainer, "DigiType")();
+		var blockContainer = document.getElementById("blocksContainer");
+		addCheckBox.bind(this, elem, blockContainer, "Blocks")();
 		
 		//Other
 		var nameContainer = document.getElementById("nameContainer");

@@ -1,3 +1,30 @@
+/* User Tags */
+
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		// group: { associated tag data }
+		usermonth: { u:'User of the Month', order: -1/0 },
+		discord: 'Discord Moderator',
+		assistant: 'Assistant'
+	}
+};
+
+UserTagsJS.modules.custom = {
+    'The_Smarter,_Wiser_King_Dedede': ['assistant'],
+    'FireMatch': ['assistant'],
+    'Thelxinoe': ['assistant'],
+    'Chickenkrispies': ['discord'],
+    'Idroppedmypen': ['discord'],
+    'Minnesotaman2007!': ['discord'],
+    'TheJasbre202': ['discord']
+};
+
+UserTagsJS.modules.inactive = 30;
+UserTagsJS.modules.newuser = true;
+UserTagsJS.modules.autoconfirmed = true;
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'patroller', 'rollback', 'bannedfromchat', 'bot', 'bot-global', 'assistant', 'moderator'];
+
 // ============================================================
 // BEGIN Dynamic Navigation Bars (experimantal)
 // This script is from Wikipedia. For author attribution, please see https://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
@@ -287,49 +314,6 @@ addOnloadHook(checktimers);
 // **************************************************
 //  - end -  Experimental javascript countdown timer
 // **************************************************
-
-/* User Tags */
-
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		// group: { associated tag data }
-		founder: { u:'Founder', order: -1/0 },
-		bureaucrat: { u:'Bureaucrat', order: -1/0 },
-		adopter: { u:'Wiki Adopter', order: -1/0 },
-		usermonth: { u:'User of the Month', order: -1/0 },
-		discord: 'Discord Moderator',
-		facebook: 'Facebook Manager',
-		twitter: 'Twitter Manager',
-		google: 'Google+ Manager',
-		assistant: 'Assistant',
-		skype: 'Skype Admin',
-		captures: 'SpongeBob Captures Manager',
-		youtube: 'YouTube Manager',
-		socialmedia: 'Social Media Manager',
-		instagram: 'Instagram Manager'
-	}
-};
-
-UserTagsJS.modules.custom = {
-    'Alex.sapre': ['skype'],
-    'AMK152': ['adopter', 'skype', 'facebook'],
-    'AW10': ['captures'],
-    'Chickenkrispies': ['discord'],
-    'Idroppedmypen': ['discord'],
-    'Minnesotaman2007!': ['discord'],
-    'Thelxinoe': ['usermonth'],
-    'Golfpecks256': ['instagram'],
-    'Spongebob456': ['skype', 'socialmedia', 'twitter', 'google'],
-    'TheJasbre202': ['discord'],
-};
-
-UserTagsJS.modules.inactive = 30;
-UserTagsJS.modules.newuser = true;
-UserTagsJS.modules.autoconfirmed = true;
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'patroller', 'rollback', 'bannedfromchat', 'bot', 'bot-global', 'assistant', 'moderator'];
-
-/* End of User Tags */
 
 /* AjaxRC */
 

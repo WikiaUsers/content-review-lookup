@@ -23,8 +23,6 @@ adminrights = {
 
 traineerights = {
 	Ceiling_Master	:1,
-	Htwretched      :1,
-	Magicmason1000  :1,
 	Weirdguy42      :1,
 };
 

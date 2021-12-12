@@ -186,6 +186,7 @@
 			"staff",
 			"helper",
 			"wiki-representative",
+			"wiki-specialist",
 			"soap",
 			"global-discussions-moderator",
 			"sysop"
