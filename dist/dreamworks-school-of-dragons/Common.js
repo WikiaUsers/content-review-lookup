@@ -380,3 +380,6 @@ function loadImageToCanvas(image, canvas, dimensions){
     var context = canvas.getContext("2d");
     context.drawImage(image, 0, 0, dimensions.width, dimensions.height);
 }
+
+/* UploadMultipleFiles */
+mw.config.set('UMFBypassLicenseCheck',true);

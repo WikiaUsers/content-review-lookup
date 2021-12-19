@@ -261,6 +261,7 @@ $(function(){
 **					MA rail module for Ten Forward posts				      **
 *******************************************************************************/
 window.AddRailModule = [
+    'Template: RailModule',
     'Template:Ten Forward rail module'
 ];
 

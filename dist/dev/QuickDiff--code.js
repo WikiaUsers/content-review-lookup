@@ -12,10 +12,15 @@
     }
     window.quickDiffLoaded = true;
 
-    var diffStylesModule = ["mediawiki.diff.styles"];
     var i18n;
     var modal;
     var special = {};
+
+    function isElementOrChildFrontmost(element) {
+        var pos = element.getBoundingClientRect();
+        var frontmostElement = document.elementFromPoint(pos.left, pos.top);
+        return element.contains(frontmostElement);
+    }
 
     // "Special:Diff/12345" and "Special:ComparePages" link detection
     function initSpecialPageStrings() {
@@ -162,7 +167,7 @@
 
         $.when(
             $.get(url.getRelativePath()),
-            mw.loader.using(diffStylesModule)
+            mw.loader.using("mediawiki.diff.styles")
         ).always(function (response) {
             delete url.query.action;
             delete url.query.diffonly;
@@ -210,7 +215,8 @@
     }
 
     function keydownHandler(event) {
-        if (!modal.visible) {
+        // only handle key presses if QuickDiff is frontmost
+        if (!isElementOrChildFrontmost(modal.$container[0])) {
             return;
         }
 
@@ -270,10 +276,6 @@
         // always show modal footer for UI consistency
         css += "#quickdiff-modal > footer { display: flex }";
         mw.util.addCSS(css);
-
-        if (mw.config.get("skin") === "oasis" && mw.loader.getState("skin.oasis.diff.css")) {
-            diffStylesModule.push("skin.oasis.diff.css");
-        }
 
         // attach to body for compatibility with ajax-loaded content
         // also, one attached event handler is better than hundreds!

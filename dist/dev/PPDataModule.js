@@ -6,17 +6,17 @@ function sep(number) {
 	return (number.toString()).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function convertb(number, check) {
-	if (number > 1048576) {
+function convertb(number) {
+	if (number >= 1048576) {
 		number = (number/1048576).toFixed(3).replace(/\.?0+$/g, '');
-		if (check === 0) return sep(number);
-		else return sep(number)+'MB';
+		return sep(number)+'MB';
 	}
-	if (number > 1024) {
+	if (number >= 1024) {
 		number = (number/1024).toFixed(3).replace(/\.?0+$/g, '');
 		return sep(number)+'KB';
 	}
 	if (number === 0) return number;
+	if (number === 1) return number + ' byte';
 	return sep(number) + ' bytes';
 }
 
@@ -31,7 +31,8 @@ new mw.Api().get({
     format: "json"
 }).done(function(data){
 	var messages = data.query.allmessages;
-	$('.page__right-rail div.right-rail-wrapper').prepend(
+	var container = ($('.page__right-rail div.right-rail-wrapper').length > 0) ? '.page__right-rail div.right-rail-wrapper' : '.page .page-footer';
+	$(container).prepend(
 		$('<div>', {
 			id: 'PPData-Rightrail',
 			'class': 'rail-module wds-collapsible-panel wds-is-collapsed' 
@@ -61,10 +62,10 @@ new mw.Api().get({
 						text: messages[4]['*'] + ': ' + sep(limitr.ppgeneratednodes.value) + '/' + sep(limitr.ppgeneratednodes.limit)
 					}),
 					$('<li>', {
-						text: messages[5]['*'] + ': ' + convertb(limitr.postexpandincludesize.value,0) + '/' + convertb(limitr.postexpandincludesize.limit,1)
+						text: messages[5]['*'] + ': ' + convertb(limitr.postexpandincludesize.value) + '/' + convertb(limitr.postexpandincludesize.limit)
 					}),
 					$('<li>', {
-						text: messages[6]['*'] + ': ' + convertb(limitr.templateargumentsize.value,0) + '/' + convertb(limitr.templateargumentsize.limit,1)
+						text: messages[6]['*'] + ': ' + convertb(limitr.templateargumentsize.value) + '/' + convertb(limitr.templateargumentsize.limit)
 					}),
 					$('<li>', {
 						text: messages[7]['*'] + ': ' + limitr.expansiondepth.value + '/' + limitr.expansiondepth.limit
@@ -85,10 +86,10 @@ new mw.Api().get({
 	if (!$.isEmptyObject(scrib)) {
 		$('#PPData-Rightrail .wds-collapsible-panel__content ul').append(
 			$('<li>', {
-				text: messages[11]['*'] + ': ' + scrib['limitreport-timeusage'].value + '/' + scrib['limitreport-timeusage'].limit + 's'
+				text: messages[11]['*'] + ': ' + scrib['limitreport-timeusage'].value + 's/' + scrib['limitreport-timeusage'].limit + 's'
 			}),
 			$('<li>', {
-				text: messages[12]['*'] + ': ' + convertb(scrib['limitreport-memusage'].value,0) + '/' + convertb(scrib['limitreport-memusage'].limit,1)
+				text: messages[12]['*'] + ': ' + convertb(scrib['limitreport-memusage'].value) + '/' + convertb(scrib['limitreport-memusage'].limit)
 			})
 		);
 	}

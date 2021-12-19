@@ -4699,6 +4699,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"festive": {
+				"name": "Festive",
+				"colors": [
+					"holiday",
+					"red"
+				],
+				"rarity": "common"
+			},
 			"festivelight": {
 				"name": "Festive Light",
 				"colors": [
@@ -4766,6 +4774,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "rare"
+			},
+			"finery": {
+				"name": "Finery",
+				"colors": [
+					"holiday",
+					"green"
+				],
+				"rarity": "unbreedable"
 			},
 			"fir": {
 				"name": "Fir",
@@ -5903,6 +5919,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"glowstorm": {
+				"name": "Glowstorm",
+				"colors": [
+					"holiday",
+					"white",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"goblin": {
 				"name": "Goblin",
 				"colors": [
@@ -6877,6 +6902,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "super"
+			},
+			"host": {
+				"name": "Host",
+				"colors": [
+					"holiday",
+					"yellow"
+				],
+				"rarity": "unbreedable"
 			},
 			"hotchocolate": {
 				"name": "Hot Chocolate",
@@ -10005,6 +10038,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "super"
+			},
+			"newleaf": {
+				"name": "Newleaf",
+				"colors": [
+					"holiday",
+					"green"
+				],
+				"rarity": "unbreedable"
 			},
 			"night": {
 				"name": "Night",

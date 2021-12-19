@@ -9173,6 +9173,32 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "4_hours_4",
                 "rarity": 1
             },
+            "festive": {
+                "name": "Festive",
+                "types": [
+                    "holiday",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "green"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "festivelight": {
                 "name": "Festive Light",
                 "types": [
@@ -9315,6 +9341,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ],
                 "offspringeligibility": "expired"
+            },
+            "finery": {
+                "name": "Finery",
+                "types": [
+                    "holiday",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
             },
             "fir": {
                 "name": "Fir",
@@ -11603,6 +11645,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "glowstorm": {
+                "name": "Glowstorm",
+                "types": [
+                    "holiday",
+                    "white",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "goblin": {
                 "name": "Goblin",
                 "types": [
@@ -13541,6 +13600,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "14_hours_14",
                 "rarity": 3
+            },
+            "host": {
+                "name": "Host",
+                "types": [
+                    "holiday",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
             },
             "hotchocolate": {
                 "name": "Hot Chocolate",
@@ -20008,6 +20083,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ],
                 "offspringeligibility": "expired"
+            },
+            "newleaf": {
+                "name": "Newleaf",
+                "types": [
+                    "holiday",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
             },
             "night": {
                 "name": "Night",

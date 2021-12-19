@@ -30,7 +30,8 @@ $.when(
 	getAll('||')
 ).done(function() {
 	$.merge( tu, tu2 );
-	$('.page__right-rail div.right-rail-wrapper').prepend(
+	var container = ($('.page__right-rail div.right-rail-wrapper').length > 0) ? '.page__right-rail div.right-rail-wrapper' : '.page .page-footer';
+	$(container).prepend(
 		$('<div>', {
 			id: 'TU-Module',
 			'class': 'rail-module wds-collapsible-panel wds-is-collapsed' 

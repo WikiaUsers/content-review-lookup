@@ -83,7 +83,9 @@ $(function () {
       //175
       'Hyacinth', 'Peony', 'Singeing_Steed', 'Shellodon', 'Phant',
       //180
-      'Rustwurm', 'Bogwurm', 'Gloomwurm'
+      'Rustwurm', 'Bogwurm', 'Gloomwurm', 'New_1', 'New_2',
+      //185
+      'New_3'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -271,7 +273,10 @@ $(function () {
       Void_Watcher: 8,
       Rune_Watcher: 8,
       Rift_Watcher: 8,
-      Singeing_Steed: 8
+      Singeing_Steed: 8,
+      New_1: 8,
+      New_2: 8,
+      New_3: 8
     },
     outfiter_sprites_mount_walking = {
     },

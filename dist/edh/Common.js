@@ -22,8 +22,13 @@
    window.onload = function() {
    //Find all spans with 'ShowCard'...
    var toShow = document.getElementsByClassName("ShowCard");
+   console.log('FOUND ' + toShow.length + ' CARDS!');
+   if (false) {
+	//alert('FOUND ' + toShow.length + ' CARDS!');
+   }
    for (count = 0; count < toShow.length; count++) {
    		//And make them show the Card of the same name ONLY when HOVERED
         toShow[count].addEventListener("mouseenter", HoverAndLoad);
    	}
+   	alert('DONE!');
    }

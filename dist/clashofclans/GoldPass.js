@@ -57,6 +57,148 @@ $(document).ready(function() {
 	  var deathDamage = $(this).text().replace(/,/g,"") * 1;
 	  deathDamageArray.push(deathDamage);
    });
+   // New implementation as of December 2021: creating general functions for the Gold Pass modifier
+   // here, cost is in units (not thousands or millions of units)
+   function discountCost(cost, percent) {
+   		return Math.ceil(cost * (1- percent/100));
+   }
+   // for time, we'll make functions to read in the strings, outputting a "seconds" value we'll use
+   function readTime(str) {
+   		/* Check if the string contains "d" for days. If so,
+       	set the days parameter equal to the number preceding it. */
+		if (str.includes("d") === true) {
+  			var daysIndex = str.indexOf("d");
+  			var days = str.slice(0,daysIndex) * 1;
+		// Discard the string corresponding to days
+  			var strHours = str.slice(daysIndex+1).trim();
+  		} else {
+  			var days = 0;
+		// If "d" is not there, then leave the string unchanged, but on a new variable
+  			var strHours = str;
+  		}
+		/* Check similarly if the string contains "h" for hours.
+       	Similarly also for "m" (for minutes), "s" (for seconds). */
+  		if (strHours.includes("h") === true) {
+  			var hoursIndex = strHours.indexOf("h");
+  			var hours = strHours.slice(0,hoursIndex) * 1;
+  			var strMinutes = strHours.slice(hoursIndex+1).trim();
+  		} else {
+  			var hours = 0;
+  			var strMinutes = strHours;
+  		}
+  		if (strMinutes.includes("m") === true) {
+  			var minutesIndex = strMinutes.indexOf("m");
+  			var minutes = strMinutes.slice(0,minutesIndex) * 1;
+  			var strSeconds = strMinutes.slice(minutesIndex+1).trim();
+  		} else {
+  			var minutes = 0;
+  			var strSeconds = strMinutes;
+  		}
+  		if (strSeconds.includes("s") === true) {
+  			var secondsIndex = strSeconds.indexOf("s");
+  			var seconds = strSeconds.slice(0,secondsIndex) * 1;
+		// no need to cut the string any more
+  		} else {
+  			var seconds = 0;
+  		}
+		return days * 86400 + hours * 3600 + minutes * 60 + seconds;
+   }
+   // here, time is in seconds (not minutes, hours or days)
+   function discountTime(time, percent) {
+   		if (time < 1800 || percent === 0) /* no rounding if percent is 0 */ {
+  			return Math.ceil(time * (1 - percent/100));
+  		} else if (time <= 86400) {
+  			return Math.floor((time * (1 - percent/100))/600) * 600;
+  		} else {
+  			return Math.floor((time * (1 - percent/100))/3600) * 3600;
+ 		}
+   }
+   function discountTrainTime(time, percent) {
+   		return Math.ceil(time * (1 - percent/100));
+   }
+   // and make one function to output discounted time as a string
+   function outputTime(time) {
+   		var days = Math.floor(time/86400);
+  		var hours = Math.floor((time - 86400*days)/3600);
+  		var minutes = Math.floor((time - 86400*days - 3600*hours)/60);
+  		var seconds = time - 86400*days - 3600*hours - 60*minutes;
+ 
+  		if (days != 0) {
+  			var outputDay = days + "d ";
+  		} else {
+  			var outputDay = "";
+  		}
+  		if (hours != 0) {
+  			var outputHour = hours + "h ";
+  		} else {
+  			var outputHour = "";
+  		}
+  		if (minutes != 0) {
+  			var outputMinute = minutes + "m ";
+  		} else {
+  			var outputMinute = "";
+  		}
+  		if (seconds != 0) {
+  			var outputSecond = seconds + "s ";
+  		} else {
+  			var outputSecond = "";
+  		}
+  		return outputDay + outputHour + outputMinute + outputSecond;
+   }
+   // A new code for HV lab tables: converting a string of text containing slashes (/) to an array containing each block of text between slashes
+   function labStringToArray(str) {
+   		var array = [];
+		while (str.search("/") != -1) {
+  			array.push(str.slice(0,str.indexOf("/")).trim());
+  			str = str.slice(str.indexOf("/")+1);
+    	}
+    	array.push(str.trim());
+    	return array;
+   }
+   // Functions to convert costs in short-form to long-form and vice versa. Note that exactly one of K or M is assumed
+   function labCostShortToLong(cost) {
+		if (cost.indexOf("K") != -1) {
+			var num = cost.slice(0,cost.indexOf("K")).trim() * 1;
+			return num * 1000;
+		} else if (cost.indexOf("M") != -1) {
+			var num = cost.slice(0,cost.indexOf("M")).trim() * 1;
+			return num * 1000000;
+		} else {
+			return cost * 1;
+		}
+   }
+   function labCostLongToShort(cost) {
+   		if (cost >= 1000000) {
+   			var num = cost / 1000000;
+   			return num.toString() + "M";
+   		} else if (cost >= 1000) {
+   			var num = cost / 1000;
+   			return num.toString() + "K";
+   		} else {
+   			return cost;
+   		}
+   }
+   function labArrayToString(array) {
+		str = "";
+        for (x in array) {
+        	str += array[x] + " / ";
+        }
+        // Remove the extra slash
+        return str.slice(0,-3);
+   }
+   // Discounts for HV lab tables
+   function arrayCostDiscount(array, percent) {
+   		for (x in array) {
+   			array[x] = discountCost(array[x], percent);
+   		}
+   		return array;
+   }
+   function arrayTimeDiscount(array, percent) {
+   		for (x in array) {
+   			array[x] = discountTime(array[x], percent);
+   		}
+   		return array;
+   }
    // When Submit button is pressed...
    $("#changeBonusButton").click(function() {
        // Change its text to "Update"
@@ -79,7 +221,7 @@ $(document).ready(function() {
 		if (isNaN(boostPercent) === true) {
 		    boostPercent = 0;
 		}
-        var calcNewCost = Math.round(cellValueCost * (1-(boostPercent/100)));
+        var calcNewCost = discountCost(cellValueCost,boostPercent);
         $(this).text(calcNewCost.format("#,##0[.]###"));
         if (calcNewCost == cellValueCost) {
             $(".bCost").removeClass("StatModifiedGP");
@@ -93,7 +235,7 @@ $(document).ready(function() {
 		if (isNaN(boostPercent) === true) {
 		    boostPercent = 0;
 		}
-        var calcNewCost = Math.ceil(cellValueCost * (1-(boostPercent/100)));
+        var calcNewCost = discountCost(cellValueCost,boostPercent);
         $(this).text(calcNewCost.format("#,##0[.]###"));
         if (calcNewCost == cellValueCost) {
             $(".tCost").removeClass("StatModifiedGP");
@@ -107,7 +249,7 @@ $(document).ready(function() {
 		if (isNaN(boostPercent) === true) {
 		    boostPercent = 0;
 		}
-		var calcNewCost = Math.round(cellValueCost * (1-(boostPercent/100)));
+		var calcNewCost = discountCost(cellValueCost,boostPercent);
 		$(this).text(calcNewCost.format("#,##0[.]###"));
 		if (calcNewCost == cellValueCost) {
 			$(".rCost").removeClass("StatModifiedGP");
@@ -121,52 +263,9 @@ $(document).ready(function() {
 		if (isNaN(reducePercent) === true) {
 		    reducePercent = 0;
 		}
-		/* Check if the string contains "d" for days. If so,
-       	set the days parameter equal to the number preceding it. */
-		if (str.includes("d") == true) {
-  			var daysIndex = str.indexOf("d");
-  			var days = str.slice(0,daysIndex) * 1;
-		// Discard the string corresponding to days
-  			var strHours = str.slice(daysIndex+1).trim();
-  		} else {
-  			var days = 0;
-		// If "d" is not there, then leave the string unchanged, but on a new variable
-  			var strHours = str;
-  		}
-		/* Check similarly if the string contains "h" for hours.
-       	Similarly also for "m" (for minutes), "s" (for seconds). */
-  		if (strHours.includes("h") == true) {
-  			var hoursIndex = strHours.indexOf("h");
-  			var hours = strHours.slice(0,hoursIndex) * 1;
-  			var strMinutes = strHours.slice(hoursIndex+1).trim();
-  		} else {
-  			var hours = 0;
-  			var strMinutes = strHours;
-  		}
-  		if (strMinutes.includes("m") == true) {
-  			var minutesIndex = strMinutes.indexOf("m");
-  			var minutes = strMinutes.slice(0,minutesIndex) * 1;
-  			var strSeconds = strMinutes.slice(minutesIndex+1).trim();
-  		} else {
-  			var minutes = 0;
-  			var strSeconds = strMinutes;
-  		}
-  		if (strSeconds.includes("s") == true) {
-  			var secondsIndex = strSeconds.indexOf("s");
-  			var seconds = strSeconds.slice(0,secondsIndex) * 1;
-		// no need to cut the string any more
-  		} else {
-  			var seconds = 0;
-  		}
-		var timeSeconds = days * 86400 + hours * 3600 + minutes * 60 + seconds;
+		var timeSeconds = readTime(str);
+		var newtimeSeconds = discountTime(timeSeconds,reducePercent);
  
-  		if (timeSeconds < 1800 || reducePercent == 0) /* no rounding if percent is 0 */ {
-  			var newtimeSeconds = Math.ceil(timeSeconds * (1 - reducePercent/100));
-  		} else if (timeSeconds <= 86400) {
-  			var newtimeSeconds = Math.floor((timeSeconds * (1 - reducePercent/100))/600) * 600;
-  		} else {
-  			var newtimeSeconds = Math.floor((timeSeconds * (1 - reducePercent/100))/3600) * 3600;
- 		}
 		// Calculate the EXP gain and put into the xpArray
 		var xpGain = Math.floor(Math.sqrt(newtimeSeconds));
 		xpArray.push(xpGain);
@@ -175,33 +274,7 @@ $(document).ready(function() {
 		buildTimes.push(timeSeconds);
 		newbuildTimes.push(newtimeSeconds);
  
-  		var reducedDays = Math.floor(newtimeSeconds/86400);
-  		var reducedHours = Math.floor((newtimeSeconds - 86400*reducedDays)/3600);
-  		var reducedMinutes = Math.floor((newtimeSeconds - 86400*reducedDays - 3600*reducedHours)/60);
-  		var reducedSeconds = newtimeSeconds - 86400*reducedDays - 3600*reducedHours - 60*reducedMinutes;
- 
-  		if (reducedDays != 0) {
-  			var outputDay = reducedDays + "d ";
-  		} else {
-  			var outputDay = "";
-  		}
-  		if (reducedHours != 0) {
-  			var outputHour = reducedHours + "h ";
-  		} else {
-  			var outputHour = "";
-  		}
-  		if (reducedMinutes != 0) {
-  			var outputMinute = reducedMinutes + "m ";
-  		} else {
-  			var outputMinute = "";
-  		}
-  		if (reducedSeconds != 0) {
-  			var outputSecond = reducedSeconds + "s ";
-  		} else {
-  			var outputSecond = "";
-  		}
- 
-  		var output = outputDay + outputHour + outputMinute + outputSecond;
+  		var output = outputTime(newtimeSeconds);
 		$(this).text(output.trim());
 		if (str.trim() == output.trim()) {
 			$(this).removeClass("StatModifiedGP");
@@ -217,77 +290,10 @@ $(document).ready(function() {
 		}
 		/* Check if the string contains "d" for days. If so,
        	set the days parameter equal to the number preceding it. */
-		if (str.includes("d") == true) {
-  			var daysIndex = str.indexOf("d");
-  			var days = str.slice(0,daysIndex) * 1;
-		// Discard the string corresponding to days
-  			var strHours = str.slice(daysIndex+1).trim();
-  		} else {
-  			var days = 0;
-		// If "d" is not there, then leave the string unchanged, but on a new variable
-  			var strHours = str;
-  		}
-		/* Check similarly if the string contains "h" for hours.
-       	Similarly also for "m" (for minutes), "s" (for seconds). */
-  		if (strHours.includes("h") == true) {
-  			var hoursIndex = strHours.indexOf("h");
-  			var hours = strHours.slice(0,hoursIndex) * 1;
-  			var strMinutes = strHours.slice(hoursIndex+1).trim();
-  		} else {
-  			var hours = 0;
-  			var strMinutes = strHours;
-  		}
-  		if (strMinutes.includes("m") == true) {
-  			var minutesIndex = strMinutes.indexOf("m");
-  			var minutes = strMinutes.slice(0,minutesIndex) * 1;
-  			var strSeconds = strMinutes.slice(minutesIndex+1).trim();
-  		} else {
-  			var minutes = 0;
-  			var strSeconds = strMinutes;
-  		}
-  		if (strSeconds.includes("s") == true) {
-  			var secondsIndex = strSeconds.indexOf("s");
-  			var seconds = strSeconds.slice(0,secondsIndex) * 1;
-		// no need to cut the string any more
-  		} else {
-  			var seconds = 0;
-  		}
-		var timeSeconds = days * 86400 + hours * 3600 + minutes * 60 + seconds;
- 
-  		if (timeSeconds < 1800 || reducePercent == 0) /* no rounding if percent is 0 */ {
-  			var newtimeSeconds = Math.ceil(timeSeconds * (1 - reducePercent/100));
-  		} else if (timeSeconds <= 86400) {
-  			var newtimeSeconds = Math.floor((timeSeconds * (1 - reducePercent/100))/600) * 600;
-  		} else {
-  			var newtimeSeconds = Math.floor((timeSeconds * (1 - reducePercent/100))/3600) * 3600;
- 		}
-  		var reducedDays = Math.floor(newtimeSeconds/86400);
-  		var reducedHours = Math.floor((newtimeSeconds - 86400*reducedDays)/3600);
-  		var reducedMinutes = Math.floor((newtimeSeconds - 86400*reducedDays - 3600*reducedHours)/60);
-  		var reducedSeconds = newtimeSeconds - 86400*reducedDays - 3600*reducedHours - 60*reducedMinutes;
- 
-  		if (reducedDays != 0) {
-  			var outputDay = reducedDays + "d ";
-  		} else {
-  			var outputDay = "";
-  		}
-  		if (reducedHours != 0) {
-  			var outputHour = reducedHours + "h ";
-  		} else {
-  			var outputHour = "";
-  		}
-  		if (reducedMinutes != 0) {
-  			var outputMinute = reducedMinutes + "m ";
-  		} else {
-  			var outputMinute = "";
-  		}
-  		if (reducedSeconds != 0) {
-  			var outputSecond = reducedSeconds + "s ";
-  		} else {
-  			var outputSecond = "";
-  		}
- 
-  		var output = outputDay + outputHour + outputMinute + outputSecond;
+		var timeSeconds = readTime(str);
+		var newtimeSeconds = discountTime(timeSeconds,reducePercent);
+  		var output = outputTime(newtimeSeconds);
+  		
 		$(this).text(output.trim());
 		if (str.trim() == output.trim()) {
 			$(this).removeClass("StatModifiedGP");
@@ -301,25 +307,9 @@ $(document).ready(function() {
 			if (isNaN(reducePercent) === true) {
 		    reducePercent = 0;
 		}
-		// Read training time
-		if (str.includes("m") == true) {
-  			var minutesIndex = str.indexOf("m");
-  			var minutes = str.slice(0,minutesIndex) * 1;
-  			var strSeconds = str.slice(minutesIndex+1).trim();
-  		} else {
-  			var minutes = 0;
-  			var strSeconds = str;
-  		}
-  		if (strSeconds.includes("s") == true) {
-  			var secondsIndex = strSeconds.indexOf("s");
-  			var seconds = strSeconds.slice(0,secondsIndex) * 1;
-  		} else {
-  			var seconds = 0;
-  		}
-		// Obtain the base training time and new base training time
-		var baseTrainTime = minutes * 60 + seconds;
-		var newTrainTime = Math.ceil(baseTrainTime * (1-(reducePercent/100)));
- 
+		var baseTrainTime = readTime(str);
+		var newTrainTime = discountTrainTime(baseTrainTime,reducePercent);
+		
 		// Obtain new training times for 2, 3, 4 barracks
 		var newTrainTime2 = Math.floor(newTrainTime/2);
 		var newTrainTime3 = Math.floor(newTrainTime/3);
@@ -342,22 +332,8 @@ $(document).ready(function() {
 		fourBarracksTimes.push(newTrainTime4);
  
 		// Convert back to original format
-		var reducedMinutes = Math.floor(newTrainTime/60);
-		var reducedSeconds = newTrainTime - reducedMinutes * 60;
- 
-		if (reducedMinutes != 0) {
-			var outputMinutes = reducedMinutes + "m ";
-		} else {
-			var outputMinutes = "";
-		}
-		if (reducedSeconds != 0) {
-			var outputSeconds = reducedSeconds + "s ";
-		} else {
-			var outputSeconds = "";
-		}
- 
-		var output = outputMinutes + outputSeconds;
- 
+		var output = outputTime(newTrainTime);
+
 		$(this).text(output.trim());
  
 		if (str.trim() == output.trim()) {
@@ -378,22 +354,9 @@ $(document).ready(function() {
 			var cellTrainTime = $(this).attr("title");
 			// Now take the first element of the array
 			var newTrainTime = twoBarracksTimes[0];
-			// Convert to the required format
-			var minutes = Math.floor(newTrainTime/60);
-			var seconds = newTrainTime - minutes * 60;
 			var armyBoostCheckBox = document.getElementById("armyBoost");
- 
-			if (minutes != 0) {
-				var outputMinute = minutes + "m ";
-			} else {
-				var outputMinute = "";
-			}
-			if (seconds != 0) {
-				var outputSecond = seconds + "s ";
-			} else {
-				var outputSecond = "";
-			}
-			var output = outputMinute + outputSecond;
+			// Convert to the required format
+			var output = outputTime(newTrainTime);
 			$(this).text(output.trim());
 			twoBarracksTimes.shift();
 			if (cellTrainTime.trim() == output.trim()) {
@@ -414,22 +377,9 @@ $(document).ready(function() {
 			var cellTrainTime = $(this).attr("title");
 			// Now take the first element of the array
 			var newTrainTime = threeBarracksTimes[0];
-			// Convert to the required format
-			var minutes = Math.floor(newTrainTime/60);
-			var seconds = newTrainTime - minutes * 60;
 			var armyBoostCheckBox = document.getElementById("armyBoost");
- 
-			if (minutes != 0) {
-				var outputMinute = minutes + "m ";
-			} else {
-				var outputMinute = "";
-			}
-			if (seconds != 0) {
-				var outputSecond = seconds + "s ";
-			} else {
-				var outputSecond = "";
-			}
-			var output = outputMinute + outputSecond;
+			// Convert to the required format
+			var output = outputTime(newTrainTime);
 			$(this).text(output.trim());
 			threeBarracksTimes.shift();
 			if (cellTrainTime.trim() == output.trim()) {
@@ -450,22 +400,9 @@ $(document).ready(function() {
 			var cellTrainTime = $(this).attr("title");
 			// Now take the first element of the array
 			var newTrainTime = fourBarracksTimes[0];
-			// Convert to the required format
-			var minutes = Math.floor(newTrainTime/60);
-			var seconds = newTrainTime - minutes * 60;
 			var armyBoostCheckBox = document.getElementById("armyBoost");
- 
-			if (minutes != 0) {
-				var outputMinute = minutes + "m ";
-			} else {
-				var outputMinute = "";
-			}
-			if (seconds != 0) {
-				var outputSecond = seconds + "s ";
-			} else {
-				var outputSecond = "";
-			}
-			var output = outputMinute + outputSecond;
+			// Convert to the required format
+			var output = outputTime(newTrainTime);
 			$(this).text(output.trim());
 			fourBarracksTimes.shift();
 			if (cellTrainTime.trim() == output.trim()) {
@@ -500,71 +437,14 @@ $(document).ready(function() {
 		newbuildTimes.shift();
 		$(".catchUp").each(function() {
 			var str = $(this).attr("title");
-			// Extract the duration
-			if (str.includes("d") == true) {
-  				var daysIndex = str.indexOf("d");
-  				var days = str.slice(0,daysIndex) * 1;
-  				var strHours = str.slice(daysIndex+1).trim();
-  			} else {
-  				var days = 0;
-  				var strHours = str;
-  			}
-  			if (strHours.includes("h") == true) {
-  				var hoursIndex = strHours.indexOf("h");
-  				var hours = strHours.slice(0,hoursIndex) * 1;
-  				var strMinutes = strHours.slice(hoursIndex+1).trim();
-  			} else {
-  				var hours = 0;
-  				var strMinutes = strHours;
-  			}
-  			if (strMinutes.includes("m") == true) {
-  				var minutesIndex = strMinutes.indexOf("m");
-  				var minutes = strMinutes.slice(0,minutesIndex) * 1;
-  				var strSeconds = strMinutes.slice(minutesIndex+1).trim();
-  			} else {
-  				var minutes = 0;
-  				var strSeconds = strMinutes;
-  			}
-  			if (strSeconds.includes("s") == true) {
-  				var secondsIndex = strSeconds.indexOf("s");
-  				var seconds = strSeconds.slice(0,secondsIndex) * 1;
-  			} else {
-  				var seconds = 0;
-  			}
-			var oldCatchUp = days * 86400 + hours * 3600 + minutes * 60 + seconds;
+  			var oldCatchUp = readTime(str);
 			// Now extract the old and new build times. New catch up is based on the ratio
 			var oldBuildTime = buildTimes[0] * 1;
 			var newBuildTime = newbuildTimes[0] * 1;
  
 			var newCatchUp = Math.ceil(oldCatchUp * newBuildTime / oldBuildTime);
  
-			var reducedDays = Math.floor(newCatchUp/86400);
-  			var reducedHours = Math.floor((newCatchUp - 86400*reducedDays)/3600);
-  			var reducedMinutes = Math.floor((newCatchUp - 86400*reducedDays - 3600*reducedHours)/60);
-  			var reducedSeconds = newCatchUp - 86400*reducedDays - 3600*reducedHours - 60*reducedMinutes;
- 
-  			if (reducedDays != 0) {
-  				var outputDay = reducedDays + "d ";
-  			} else {
-  				var outputDay = "";
-  			}
-  			if (reducedHours != 0) {
-  				var outputHour = reducedHours + "h ";
-  			} else {
-  				var outputHour = "";
-  			}
-  			if (reducedMinutes != 0) {
-  				var outputMinute = reducedMinutes + "m ";
-  			} else {
-  				var outputMinute = "";
-  			}
-  			if (reducedSeconds != 0) {
-  				var outputSecond = reducedSeconds + "s ";
-  			} else {
-  				var outputSecond = "";
-  			}
- 
-  			var output = outputDay + outputHour + outputMinute + outputSecond;
+  			var output = outputTime(newCatchUp);
 			$(this).text(output.trim());
 			//Now discard the first entry in the array (they've been used):
 			buildTimes.shift();
@@ -575,6 +455,72 @@ $(document).ready(function() {
 				$(this).addClass("StatModifiedGP");
 			}
 	  });
+		$(".labRCost").each(function() {
+			var init = $(this).attr("title");
+			var hasAsterisk = false;
+			// Check if we contain an asterisk in the string (corresponding to items that could be upgraded early)
+			if (init.indexOf("*") != -1) {
+				hasAsterisk = true;
+				init = init.slice(1);
+			}
+			var initArray = labStringToArray(init);
+			var boostPercent = $("#researchBoost").val() * 1;
+			if (isNaN(boostPercent) === true) {
+		    	boostPercent = 0;
+			}
+			var costArray = [];
+			for (x in initArray) {
+				costArray.push(labCostShortToLong(initArray[x]));
+			}
+			var discountArray = arrayCostDiscount(costArray,boostPercent);
+			var outputArray = [];
+			for (x in discountArray) {
+				outputArray.push(labCostLongToShort(discountArray[x]));
+			}
+			var output = labArrayToString(outputArray);
+			if (hasAsterisk === true) {
+				output = "*" + output;
+			}
+			$(this).text(output.trim());
+			if (init.trim() == output.trim() || boostPercent === 0) {
+				$(this).removeClass("StatModifiedGP");
+			} else {
+				$(this).addClass("StatModifiedGP");
+			}
+		});
+		$(".labRTime").each(function() {
+			var init = $(this).attr("title");
+			var hasAsterisk = false;
+			// Check if we contain an asterisk in the string (corresponding to items that could be upgraded early)
+			if (init.indexOf("*") != -1) {
+				hasAsterisk = true;
+				init = init.slice(1);
+			}
+			var initArray = labStringToArray(init);
+			var boostPercent = $("#researchBoost").val() * 1;
+			if (isNaN(boostPercent) === true) {
+		    	boostPercent = 0;
+			}
+			var timeArray = [];
+			for (x in initArray) {
+				timeArray.push(readTime(initArray[x]));
+			}
+			var discountArray = arrayTimeDiscount(timeArray,boostPercent);
+			var outputArray = [];
+			for (x in discountArray) {
+				outputArray.push(outputTime(discountArray[x]));
+			}
+			var output = labArrayToString(outputArray);
+			if (hasAsterisk === true) {
+				output = "*" + output;
+			}
+			$(this).text(output.trim());
+			if (init.trim() == output.trim() || boostPercent === 0) {
+				$(this).removeClass("StatModifiedGP");
+			} else {
+				$(this).addClass("StatModifiedGP");
+			}
+		});
 	  // Create an array of attack frequencies. This is because we may have two or more speeds on the same page
 	  // We later use this array to calculate DPS if required
 	  var attackFreqArray = [];

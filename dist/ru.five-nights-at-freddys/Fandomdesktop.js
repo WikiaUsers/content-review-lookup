@@ -78,7 +78,7 @@ if (mw.config.get("wgCanonicalNamespace") == "") {
 // @author: Kopcap94
 // @not_author_but_just_a_random_guy: Никто,просто никто.
 !function( $ ) {
-    var i = Math.floor( ( Math.random() * 20 ) );
+    var i = Math.floor( ( Math.random() * 25 ) );
     var anim = {};
     var categories = mw.config.get("wgCategories");
     for (var c = 0; c < categories.length; c++) {

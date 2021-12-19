@@ -58,11 +58,25 @@ function loadOptions(optionsObject, dialoguename) {
     }
     
     if (options[dialoguename].textSound) {
-    	textSounds[dialoguename].src = '/wiki/Special:Filepath/' + options[dialoguename].textSound;
+    	if (!(textSounds[dialoguename].src.endsWith(options[dialoguename].textSound))) {
+    		textSounds[dialoguename].src = '/wiki/Special:Filepath/' + options[dialoguename].textSound;
+    	}
     }
     
     if (options[dialoguename].startSound) {
-    	startSounds[dialoguename].src = '/wiki/Special:Filepath/' + options[dialoguename].startSound;
+    	if (!(startSounds[dialoguename].src.endsWith(options[dialoguename].startSound))) {
+    		startSounds[dialoguename].src = '/wiki/Special:Filepath/' + options[dialoguename].startSound;
+    	}
+    }
+    
+    if (options[dialoguename].loopStartSound !== undefined) {
+    	startSounds[dialoguename].loop = options[dialoguename].loopStartSound || false;
+    }
+
+    var name = options[dialoguename].name;
+   
+    if (typeof (name) == 'object') {
+    	name = name[Math.floor(Math.random() * name.length)];
     }
 
 	dialogueNPCName[dialoguename].innerHTML = options[dialoguename].name;
@@ -86,10 +100,6 @@ function change_text(time, string, dialoguename) {
 		dialogueText[dialoguename].innerHTML = string;
 		textSounds[dialoguename].currentTime = 0;
 		textSounds[dialoguename].play().catch(function () { });
-        if (options[dialoguename].stopStartSound) {
-            startSounds[dialoguename].pause();
-            startSounds[dialoguename].currentTime = 0;
-        }
 	}, time);
 }
 
@@ -100,7 +110,7 @@ function display_question(question, dialoguename) {
         totalduration += options[dialoguename].startDelay;
     }
 
-	if (options[dialoguename].startSound) {
+	if (options[dialoguename].startSound && options[dialoguename].playStartSound) {
         startSounds[dialoguename].currentTime = 0;
 		startSounds[dialoguename].play().catch(function () { });
 	}
@@ -111,13 +121,41 @@ function display_question(question, dialoguename) {
 		question = question[Math.floor(Math.random() * question.length)];
 	}
 
-	for (var s = 1; s <= question.length; s++) {
-		var string = question.substring(0, s);
+    var characters = [];
 
-		change_text(totalduration, string, dialoguename);
-		totalduration += options[dialoguename].waitTime || 25;
+	for (var s = 0; s < question.length; s++) {
+		var string = question.substring(s);
+		var htmlMatch = string.match(/^&#?\w+;|^<.+>/);
+		
+        if (htmlMatch) {
+        	characters.push(htmlMatch[0]);
+        	s += htmlMatch[0].length - 1;
+        } else {
+            characters.push(string[0]);
+        }
 	}
-	
+
+    var string = '';
+    
+    if (options[dialoguename].stopStartSound) {
+        startSounds[dialoguename].pause();
+        startSounds[dialoguename].currentTime = 0;
+    }
+
+    for (var i in characters) {
+    	var character = characters[i];
+    	
+    	string += character;
+    	change_text(totalduration, string, dialoguename);
+    	totalduration += options[dialoguename].waitTime || 25;
+    }
+    
+    setTimeout(function() {
+		textSounds[dialoguename].pause();
+		textSounds[dialoguename].currentTime = 0;
+		endSounds[dialoguename].currentTime = 0;
+		endSounds[dialoguename].play().catch(function() { });
+    }, totalduration)
 	
 	return totalduration;
 }
@@ -125,7 +163,7 @@ function display_question(question, dialoguename) {
 function append_button(v, dialoguename) {
 	var btn = document.createElement('div');
 	btn.classList.add('idfsgsdialogueoption');
-	btn.innerHTML = '<div class="idfsgsdialogueoptiontext" style="font-weight: 900;font-size:15px;color:white;text-shadow:-1px -1px 0 black,0 -1px 0 black,1px -1px 0 black,1px 0 0 black,1px 1px 0 black, 0 1px 0 black,-1px 1px 0 black,-1px 0 0 black;text-align: center;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);width: 100%;line-height: normal;">' + v.option + '</div>';
+	btn.innerHTML = '<div class="idfsgsdialogueoptiontext">' + v.option + '</div>';
 	if (v.btnstyle) {
 	    var btnText = btn.querySelector('.idfsgsdialogueoptiontext');
 	    for (var name in v.btnstyle) {
@@ -141,10 +179,10 @@ function append_button(v, dialoguename) {
 	});
 }
 
-function removefish(fish) {
+function remove_element(element, wait) {
 	setTimeout(function () {
-		fish.remove();
-	}, 2000);
+		element.remove();
+	}, wait);
 }
 
 function display_answers(current, dialoguename) {
@@ -179,7 +217,16 @@ function display_answers(current, dialoguename) {
 			    	fish.appendChild(brap);
 			    	dialogues[dialoguename].appendChild(fish);
 			    	brap.play().catch(function () { });
-			    	removefish(fish);
+			    	remove_element(fish, 2000);
+			    },
+			
+			    popup: function (args) {
+			    	close_prompt(dialoguename);
+			    	var popup = document.createElement('img');
+			    	popup.classList.add('popup');
+			    	popup.src = '/wiki/Special:Filepath/' + args[0];
+			    	dialogueText[dialoguename].appendChild(popup);
+			    	remove_element(popup, 500);
 			    }
 			};
 
@@ -187,18 +234,18 @@ function display_answers(current, dialoguename) {
 				for (var i in current.answers) {
 					var action = current.answers[i];
 
-					var barindex = action.indexOf("|");
+					var barindex = action.indexOf("+");
 
-					var args = action.substring(barindex > -1 ? barindex + 1 : 0, action.length).split("|");
+					var args = action.substring(barindex > -1 ? barindex + 1 : 0, action.length).split("+");
 
 					actions[action.substring(0, barindex > -1 ? barindex : action.length)](args);
 				}
 			} else {
 				var action = current.answers;
 
-				var barindex = action.indexOf("|");
+				var barindex = action.indexOf("+");
 
-				var args = action.substring(barindex > -1 ? barindex + 1 : 0, action.length).split("|");
+				var args = action.substring(barindex > -1 ? barindex + 1 : 0, action.length).split("+");
 
 				actions[action.substring(0, barindex > -1 ? barindex : action.length)](args);
 			}
@@ -208,6 +255,10 @@ function display_answers(current, dialoguename) {
 		
 function next_dialogue(current, dialoguename) {
 	current = current || dialogue_path[dialoguename];
+	
+	if (typeof (current) == 'object' && current[0] !== undefined) {
+		current = current[Math.floor(Math.random() * current.length)]
+	}
 	
 	var waittime = 0;
 
@@ -222,10 +273,6 @@ function next_dialogue(current, dialoguename) {
 	}
 
 	setTimeout(function() {
-		textSounds[dialoguename].pause();
-		textSounds[dialoguename].currentTime = 0;
-		endSounds[dialoguename].currentTime = 0;
-		endSounds[dialoguename].play().catch(function() { });
 		display_answers(current, dialoguename);
 	}, waittime)
 }
@@ -254,7 +301,9 @@ function create_dialogue(idfsgsdialogue, dialoguename) {
 	idfsgsdialogue.appendChild(startSound)
 	startSounds[dialoguename] = startSound;
 	
-	dialogue_path[dialoguename] = JSON.parse(dialogueNPCName[dialoguename].innerHTML.replace(/<.+>/g, '').replace(/\{quot\}/g, '\\"'));
+	dialogue_path[dialoguename] = JSON.parse(dialogueNPCName[dialoguename].innerHTML.replace(/<.+>/g, '').replace(/\{quot\}/g, '\\"').replace(/\{break\}/g, '<br/>'));
+	
+	console.log(dialogue_path[dialoguename]);
 	
 	restartMessage[dialoguename].addEventListener('click', function () {
 		restartMessage[dialoguename].style.display = 'none';

@@ -277,8 +277,8 @@ if (!nkch.nm.isActive && mw.config.get("wgCanonicalNamespace") === "Special" && 
                         if (!button_AN_save.isDisabled()) {
                             api.postWithToken("csrf", {
                                 action: "edit",
-                                title: "MediaWiki:Sitenotice",
-                                text: input_SN.getValue(),
+                                title: "MediaWiki:Anonnotice",
+                                text: input_AN.getValue(),
                                 format: "json"
                             }).done(
                                 function (data) {
@@ -412,7 +412,7 @@ if (!nkch.nm.isActive && mw.config.get("wgCanonicalNamespace") === "Special" && 
                     }).done(
                         function (data) {
                             var wikitext = data.parse.wikitext["*"];
-                            input_SN.setValue(wikitext);
+                            input_AN.setValue(wikitext);
                         }
                     ).fail(
                         function () {

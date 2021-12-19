@@ -345,7 +345,7 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 		});
 
 		if (allowedPages.includes(mw.config.get("wgPageName"))) {
-			$("#mw-content-text").before($("<a>", {
+			$("#mw-content-text").prepend($("<a>", {
 				class: "wds-button",
 				html: $("<div>", {
 					click: function () {
@@ -362,7 +362,7 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 				title: "Update Staff Colors",
 				css: {
 					cursor: "pointer",
-					"margin-bottom": "5px",
+					"margin": "0 0 5px 5px",
 				}
 			}));
 		}

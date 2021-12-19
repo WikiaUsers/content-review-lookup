@@ -50,13 +50,3 @@ var DisableArchiveEditConfig = {
    textColor: '#D9D9D9',
    userLang: true
 };
-
-//************************************************
-// Archive Old Blog Posts
-//************************************************
-window.LockOldBlogs = {
-    expiryDays: 30,
-    expiryMessage: "This blog is considered archived because it hasn\'t been commented on in over <expiryDays> days, please don\'t bump this blog!"
-};
-
-//TAG CONFIG//

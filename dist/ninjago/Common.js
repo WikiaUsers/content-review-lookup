@@ -20,10 +20,14 @@ window.LockOldBlogs = {
     expiryMessage: "This blog hasn't been commented on for over <expiryDays> days. There is no need to reply."
 };
 
-
 importArticles({
     type: "script",
     articles: [
         "u:dev:MediaWiki:LockOldBlogs/code.js"
     ]
 });
+
+// Configuration for NoLicenseWarning
+window.NoLicenseWarning = {
+    forceLicense: true,
+};

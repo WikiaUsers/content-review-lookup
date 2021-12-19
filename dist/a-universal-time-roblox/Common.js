@@ -26,3 +26,8 @@ window.MessageBlock = {
   message : 'You have been blocked for $2 because you have $1',
   autocheck : true
 };
+window.UserTagsJS = {
+	modules: {},
+	tags: {},
+	oasisPlaceBefore: ''
+};

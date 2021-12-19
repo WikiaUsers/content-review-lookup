@@ -28,3 +28,14 @@ spoiler.onclick = function() {
   let name = prompt('Quel est votre pseudonyme sur Fandom ?');
   alert('Bienvenue sur le wiki,  ' + name + ', passez un bon moment !');
 };
+
+/*** Sous-titre (provient de https://fr.wikipedia.org/wiki/MediaWiki:Common.js) ***/
+function sousTitreH1( $content ) {
+	$( '#firstHeading > #sous_titre_h1' ).remove();
+	var $span = $content.find( '#sous_titre_h1' );
+	if ( $span.length ) {
+		$span.prepend( ' ' );
+		$( '#firstHeading' ).append( $span );
+	}
+}
+mw.hook( 'wikipage.content' ).add( sousTitreH1 );

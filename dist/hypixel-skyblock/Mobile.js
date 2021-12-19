@@ -1,18 +1,6 @@
 /* 
-Any JavaScript here will be loaded for all users on every page load.
-See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
-*/
-
-/* Table of Contents
------------------------
- Deferred [mw.loader.using]
- * (W00) Small scripts
- * (B00) Element animator
- * (Y00) importArticles
-
- Immediately Executed
- * (X00) importArticle pre-script actions
- * * (X01) Less
+This script is a simplified version of [[MediaWiki:Common.js]] intended to be imported
+through [[Special:MyPage/fandommobile.js]]
 */
 
 /* jshint
@@ -27,15 +15,10 @@ See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
 	-W082, -W084
 */
 
-/* global mw, importScripts, BannerNotification */
+/* global mw, BannerNotification */
 
-// code snippet from https://stackoverflow.com/questions/47207355/copy-to-clipboard-using-jquery
 function copyToClipboard(text) {
-	var $temp = $("<input>");
-	$("body").append($temp);
-	$temp.val(text).select();
-	document.execCommand("copy");
-	$temp.remove();
+	window.navigator.clipboard.writeText(text);
 	if (BannerNotification)
 		new BannerNotification($("<div>", {
 			html: "<div>Copied to clipboard</div>",
@@ -348,45 +331,6 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 		});
 	})());
 
-	$("a[href=\"#ajaxundo\"]").attr("title", "Instantly undo this edit without leaving the page");
-
-	/* Temp fix to force scrollbars to appear on very wide tables when they are collapsed by default */
-	$("div[class^=\"mw-customtoggle-\"],div[class*=\" mw-customtoggle-\"]").on("click", function () {
-		$(".mw-collapsible").resize();
-	});
-
-	/* Arbitrator Icon */
-	$.when(
-		$.getJSON(new mw.Title("Custom-ArbitratorsList.json", 8).getUrl({
-			action: "raw",
-			ctype: "text/json"
-		})),
-		$.getJSON(new mw.Title("Gadget-StaffColorsUpdater.js/staff-colors.json", 8).getUrl({
-			action: "raw",
-			ctype: "text/json"
-		}))
-	).then(function () {
-		var json = arguments[0][0];
-		var selector = arguments[1][0].selectors.ICONS;
-
-		json.forEach(function (user) {
-			$(selector.replace(/\$1/, user).replace(/::before/, "").replace(/,$/, "")).after($("<a>", {
-				href: new mw.Title("Arbitration Committe", 4).getUrl(),
-				title: "This User is an Arbitrator",
-				html: $("<img>", {
-					src: "https://static.wikia.nocookie.net/hypixel-skyblock/images/4/41/Scale_of_justice.png/revision/latest/scale-to-width-down/16",
-				}),
-			}));
-		});
-	}).catch(console.warn);
-
-	// Change profile links
-	var count = 0;
-	var inter2 = setInterval(function () {
-		if (count > 12000) return;
-		if (mw.config.get("profileUserId") && $("#userProfileApp").length) $("#userProfileApp .user-identity-stats a[href*=\"" + new mw.Title("UserProfileActivity", -1).getUrl() + "\"]").attr("href", "/f/u/" + mw.config.get("profileUserId")), clearInterval(inter2);
-	}, 5);
-
 	// Script to respond to ANI reports
 	if (
 		mw.config.get("wgUserGroups").find(function (v) {
@@ -487,13 +431,6 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 		window.location.replace(mw.util.getUrl("Special:" + mw.config.get("wgPageName").match(/^S:(.+)$/i)[1]));
 	}
 
-	// if (mw.config.get("wgPageName").match(/^HSW:(.+)$/i) && mw.config.get("wgAction") === "view") {
-	// 	window.location.replace(mw.util.getUrl("Project:" + mw.config.get("wgPageName").match(/^HSW:(.+)$/i)[1]));
-	// }
-
-	// Code to compromise "srcset" in order to display images in infoboxes with maximum width
-	$(".pi-image-thumbnail").removeAttr("srcset");
-
 	//##############################################################
 	/* ==Element animator== (B00)*/
 	// Taken from https://minecraft.gamepedia.com/MediaWiki:Gadget-site.js
@@ -512,7 +449,6 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 	 */
 
 	$(function () {
-
 		(function () {
 			var $content = $("#mw-content-text");
 			var advanceFrame = function (parentElem, parentSelector) {
@@ -566,44 +502,43 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 		setTimeout(function () {
 			$(".animated .lzy[onload]").load();
 		}, 1000);
-
 	});
 
 	//##############################################################
 	/* ==importArticles== (Y00)*/
 	// Imports scripts from other pages/wikis.
 	// NOTE: importAricles() is currently broken.
-	window.importScripts = function (pages) {
-		if (!Array.isArray(pages)) {
-			pages = [pages];
-		}
 
-		pages.forEach(function (v) {
-			var wiki;
-			var match = v.match(/^(?:u|url):(.+?):(.+)$/);
-			(match || []).shift();
+	// window.importScripts = function (pages) {
+	// 	if (!Array.isArray(pages)) {
+	// 		pages = [pages];
+	// 	}
 
-			wiki = wiki || mw.config.get("wgServer").replace("https://", "").replace(".fandom.com", "");
-			match = match || v;
+	// 	pages.forEach(function (v) {
+	// 		var wiki;
+	// 		var match = v.match(/^(?:u|url):(.+?):(.+)$/);
+	// 		(match || []).shift();
 
-			$.ajax({
-				url: "https://" + (Array.isArray(match) ? match[0] : wiki) + ".fandom.com" + mw.util.getUrl(Array.isArray(match) ? match[1] : match) + "?action=raw&ctype=text/javascript",
-				dataType: "script",
-				cache: true,
-			}).then(function () {
-				console.log(v + ": Imported Successfuly!");
-			});
-		});
-	};
+	// 		wiki = wiki || mw.config.get("wgServer").replace("https://", "").replace(".fandom.com", "");
+	// 		match = match || v;
 
-	importScripts([
-		"MediaWiki:Common.js/minetip.js",
-		"MediaWiki:Common.js/skydate.js",
-		"MediaWiki:Common.js/calc.js",
-		"MediaWiki:Common.js/staff-tagger.js",
-		// "MediaWiki:Common.js/lua-doc.js",
-		"MediaWiki:HighlightTable.js",
-	]);
+	// 		$.ajax({
+	// 			url: "https://" + (Array.isArray(match) ? match[0] : wiki) + ".fandom.com" + mw.util.getUrl(Array.isArray(match) ? match[1] : match) + "?action=raw&ctype=text/javascript",
+	// 			dataType: "script",
+	// 			cache: true,
+	// 		}).then(function () {
+	// 			console.log(v + ": Imported Successfuly!");
+	// 		});
+	// 	});
+	// };
+
+	// importScripts([
+	// 	"MediaWiki:Common.js/minetip.js",
+	// 	"MediaWiki:Common.js/skydate.js",
+	// 	"MediaWiki:Common.js/calc.js",
+	// 	"MediaWiki:Common.js/staff-tagger.js",
+	// 	"MediaWiki:HighlightTable.js",
+	// ]);
 });
 
 //##############################################################

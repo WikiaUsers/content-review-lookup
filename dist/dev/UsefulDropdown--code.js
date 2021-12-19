@@ -85,21 +85,23 @@ $(function() {
                     buttonTitle: '快捷工具',
                     protect: '保护页面',
                     ajaxContent: 'AJAX刷新',
-                    quickDelete: '快速删除',
-                    stubTemplate: '+小作品模板',
-                    deleteTemplate: '+删除模板',
-                    addCustomTemplate: '自定义模板',
-                    contentRefreshed: '内容刷新成功！'
+                    quickDelete: '快速删除页面',
+                    stubTemplate: '在页面内添加 {{stub}}',
+                    deleteTemplate: '在页面内添加 {{delete}}',
+                    addCustomTemplate: '在页面内添加自定义模板',
+                    contentRefreshed: '内容刷新成功！',
+                    quickMove: '快速移动页面'
                 },
                 'zh-hans': { // Chinese-Simplified
                     buttonTitle: '快捷工具',
                     protect: '保护页面',
                     ajaxContent: 'AJAX刷新',
-                    quickDelete: '快速删除',
-                    stubTemplate: '+小作品模板',
-                    deleteTemplate: '+删除模板',
-                    addCustomTemplate: '自定义模板',
-                    contentRefreshed: '内容刷新成功！'
+                    quickDelete: '快速删除页面',
+                    stubTemplate: '在页面内添加 {{stub}}',
+                    deleteTemplate: '在页面内添加 {{delete}}',
+                    addCustomTemplate: '在页面内添加自定义模板',
+                    contentRefreshed: '内容刷新成功！',
+                    quickMove: '快速移动页面'
                 },
                 'zh-hant': { // Chinese-Traditional
                     buttonTitle: '快捷工具',

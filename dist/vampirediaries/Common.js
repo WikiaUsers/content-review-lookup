@@ -101,15 +101,7 @@ addOnloadHook(checktimers);
     Requires copying Template:USERNAME.
 */
 
-function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
-    $("span.insertusername").text(wgUserName);
- }
-$(UserNameReplace);
-
 //ListFiles//
-
-$(UserNameReplace);
 
 // Have categories added to images from upload description
 // Code written by @Original Authority based on code by @UltimateSupreme

@@ -267,12 +267,11 @@ console.log("vote:"+vote);
 			SRWpollwinner = SRWvotes[SRWpollwinner] > SRWvotes[SRWvote]?SRWpollwinner:SRWvote;
 		}
 		$("div[data-pll='"+SRWpoll+"'][data-opt]").removeClass("myVote");
-		if(typeof SRWvotes[SRWpollwinner] != "undefined") {
-			$("div[data-pll='"+SRWpoll+"'][data-opt="+SRWpollwinner+"]").prepend('<div class="sprite ok" title="Leading"></div>')
-		}
 		if(typeof SRWpollvotes[userID] != "undefined") {
 			$("div[data-pll='"+SRWpoll+"'][data-opt="+SRWpollvotes[userID]+"]").addClass("myVote");
-//			$("div[data-pll='"+SRWpoll+"'][data-opt="+SRWpollvotes[userID]+"]").prepend('<div class="sprite ok" title="your vote"></div>')
+			if(typeof SRWvotes[SRWpollwinner] != "undefined") {
+				$("div[data-pll='"+SRWpoll+"'][data-opt="+SRWpollwinner+"]").prepend('<div class="sprite ok" title="Leading"></div>')
+			}
 		} else {
 			$("div[data-pll='"+SRWpoll+"'] .votes").remove();
 			$("div[data-pll='"+SRWpoll+"'] .pollstatus").append(" (You have not voted in this poll.  Results are shown after you vote.)");

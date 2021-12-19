@@ -30,7 +30,7 @@
     onevar:true
 */
 
-/*global less:true */
+/*global less:true importArticles */
 
 // disable indent warning
 /*jshint -W015*/
@@ -244,7 +244,7 @@
              * Inserts update button
              */
             addUpdate: function () {
-                $('#content').prepend(
+                $('#mw-content-text').prepend(
                     $('<a>')
                         .addClass('wds-is-squished wds-button')
                         .attr({

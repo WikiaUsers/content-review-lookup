@@ -95,10 +95,10 @@ $("#resultcyclope").html("<p>Привет. Я съел булочку.</p>");
 $("#resultcyclope").html("<p>Выберите условие!</p>");
 }
 };
-$('<input id="gone" class="buttona" onclick="cyclopeGone()" type="button" value="Ушёл">').appendTo( "#cyclopecalc" );
-$('<input id="ngone" class="buttona" onclick="cyclopeNotGone()" type="button" value="Убит">').appendTo( "#cyclopecalc" );
+$('<input id="gone" class="wds-button buttona" onclick="cyclopeGone()" type="button" value="Ушёл">').appendTo( "#cyclopecalc" );
+$('<input id="ngone" class="wds-button buttona" onclick="cyclopeNotGone()" type="button" value="Убит">').appendTo( "#cyclopecalc" );
 $('<p><input type="text" placeholder="31" size="5" maxlength="8" required id="dayscyclope" value=""> день</input> ').appendTo( "#cyclopecalc" );
-$('<input id="cyclopecalculate" class="buttona" onclick="cyclopecalculater()" type="button" name="button" value="Рассчитать">').appendTo( "#cyclopecalc" );
+$('<input id="cyclopecalculate" class="wds-button buttona" onclick="cyclopecalculater()" type="button" name="button" value="Рассчитать">').appendTo( "#cyclopecalc" );
 
 /*Изменяет цвет у рамок в ответаx администраторов*/
 /*I'm not sure if it's possible not to clear the interval*/
