@@ -2,9 +2,22 @@
 <source lang=javascript>
 */
 
+console.log("loading JobsInfo script");
+console.log("jQuery version", jQuery.fn.jquery);
+
+// may need to switch jQuery UI to OOUI, see https://dev.fandom.com/wiki/UCP_JavaScript_changes#OOUI
+//console.log("switched to OOUI for autocomplete, did not work");
+
+
+// this allows page elements to be loaded before the rest of the script is executed
+//$(function() {
+// mw.loader.using( 'oojs-ui-core' ).done( function () {
+$(document).ready( function() {
+
+
 if ($('div.Jobs-UI').length) {
     var ver = 'UWO Jobs Search UI v0rc.4.46';
-    //alert('Work in Progress - ' + ver);
+    console.log('Work in Progress - ' + ver);
     var nfo = '<span style="font-size:10px; font-weight:bold; float:right; clear:right;">' + ver + '</span><br/>';
     var form = '' +
             '<form id="form1-search-jobs" style="float:right; vertical-align:middle; clear:right;">' +
@@ -16,6 +29,7 @@ if ($('div.Jobs-UI').length) {
                 '</span><br/>' +
                 '<div class="ui-widget" style="position:relative;">' +
                     '<img id="search-sign" src="http://slot2.images.wikia.nocookie.net/__cb59082/common/skins/common/images/ajax.gif" style="display:none; position:absolute; left:-25px; top:3px;" />' +
+                    '<div class="ooui-textbox"></div>' +
                     '<input id="search-jobs" placeholder="search jobs" style="width:250px; vertical-align:middle;" /> ' +
                     '<a id="search-jobs" class="wikia-button" onclick="JobsInfo(\'searchjobs\')" style="font-size:11px; font-weight:bold; vertical-align:middle;">search</a>' +
                 '</div>' +
@@ -142,9 +156,10 @@ if ($('div.Jobs-UI').length) {
     }
 
     setTimeout(function () {
-        $('input#search-jobs')
-        // don't navigate away from the field on tab when selecting an item
-                .bind('keydown', function (e) {
+        mw.loader.using('jquery.ui.autocomplete').then(function() {
+            $('input#search-jobs')
+            // don't navigate away from the field on tab when selecting an item
+                .on('keydown', function (e) {
                     if (e.keyCode === $.ui.keyCode.TAB && $(this).data('autocomplete').menu.active) {
                         e.preventDefault();
                     } else if (e.which == 13) {
@@ -175,6 +190,8 @@ if ($('div.Jobs-UI').length) {
                         return false;
                     }
                 });
+            });
+                
 
         $tdl = $('td.jobskills').length;
         for (i = 0; i < $tdl; i++) {
@@ -281,6 +298,7 @@ if ($('div.Jobs-UI').length) {
         }
     });
 }
+});
 
 
 function searchJobs() {

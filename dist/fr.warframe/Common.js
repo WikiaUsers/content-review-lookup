@@ -4,7 +4,10 @@
 importArticles({
 	type: 'script',
 	articles: [
-		'u:dev:ExtendedNavigation/code.js'
+		'u:dev:ExtendedNavigation/code.js',
+		'u:dev:MediaWiki:LangSetup.js',
+		'u:dev:MediaWiki:I18nEdit.js',
+		'u:dev:MediaWiki:MultiUpload.js',
 	]
 });
 

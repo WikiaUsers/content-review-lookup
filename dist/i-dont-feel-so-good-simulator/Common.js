@@ -103,6 +103,11 @@ function change_text(time, string, dialoguename) {
 	}, time);
 }
 
+function play_sound(dialoguename) {
+    startSounds[dialoguename].currentTime = 0;
+	startSounds[dialoguename].play().catch(function () { });
+}
+
 function display_question(question, dialoguename) {
 	var totalduration = 0;
 
@@ -111,8 +116,13 @@ function display_question(question, dialoguename) {
     }
 
 	if (options[dialoguename].startSound && options[dialoguename].playStartSound) {
-        startSounds[dialoguename].currentTime = 0;
-		startSounds[dialoguename].play().catch(function () { });
+		if (options[dialoguename].playAfterDelay) {
+			setTimeout(function() {
+				play_sound();
+			}, options[dialoguename].startDelay);
+		} else {
+			play_sound();
+		}
 	}
 	
     dialogueText[dialoguename].innerHTML = '';

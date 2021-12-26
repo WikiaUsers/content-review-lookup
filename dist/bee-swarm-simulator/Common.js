@@ -73,3 +73,7 @@ importArticles({
         'u:dev:Quiz/code.js'
     ]
 });
+
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 14;
+window.lockOldComments.addNoteAbove = true;

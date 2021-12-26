@@ -226,7 +226,7 @@ window.MessageWallUserTags = {
     users: {
         'Jackboog21': 'Head Bureaucrat',
         'A_random_student': 'Head Mini-Admin',
-        'AoiRyugokuTSFG1': 'Head Discussion Mod',
+        'AoiRyugokuTSFG1': 'Mini-Admin',
         'Tsuzuro_Yamazaki': 'Head Content Mod',
         'GalaxE': 'Content Mod',
         'SeiShii': 'Head Chat Mod',

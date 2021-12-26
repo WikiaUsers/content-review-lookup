@@ -28,6 +28,7 @@ new mw.Api().get({
 	action: "query",
 	meta: "allmessages",
 	ammessages: "limitreport-title|limitreport-cputime|limitreport-walltime|limitreport-ppvisitednodes|limitreport-ppgeneratednodes|limitreport-postexpandincludesize|limitreport-templateargumentsize|limitreport-expansiondepth|limitreport-expensivefunctioncount|limitreport-unstrip-depth|limitreport-unstrip-size|scribunto-limitreport-timeusage|scribunto-limitreport-memusage",
+    amlang: mw.config.get("wgUserLanguage"),
     format: "json"
 }).done(function(data){
 	var messages = data.query.allmessages;

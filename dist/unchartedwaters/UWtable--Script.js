@@ -1,7 +1,9 @@
 /* <source lang=javascript> */
 
+console.log("loading UWtable script");
+
 if ($('table.UWtable').length) {
-    $('table.UWtable > tbody > tr > td').live({
+    $('table.UWtable > tbody > tr > td').on({
         'mouseover': function() {
             $(this).addClass('hover').siblings().addClass('hover');
         },

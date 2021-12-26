@@ -20,6 +20,7 @@ window.UserTagsJS = {
 	    'eom-320':    { u:'Fandom Editor of the Month–March 2020' },
 	    'eom-720':    { u:'Fandom Editor of the Month–July 2020' },
 	    'eom-1021':   { u:'Fandom Editor of the Month–October 2021' },
+	    'eoy-2021':   { u:'Fandom Editor of the Year–2021' },
 	},
 	oasisPlaceBefore: ''
 };
@@ -33,7 +34,7 @@ UserTagsJS.modules.custom = {
     'BadCatMan': ['chiefscribe'],
     'Regis87': ['comics'],
     'SunderedShor': ['eom-720'],
-    'Artemaz': ['eom-1021'],
+    'Artemaz': ['eom-1021','eoy-2021'],
 };
 
 /* This conditionally loads the javascript necessary for Tools pages */

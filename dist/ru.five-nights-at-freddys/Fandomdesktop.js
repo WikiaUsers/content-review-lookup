@@ -61,6 +61,9 @@ if (mw.config.get("wgCanonicalNamespace") == "") {
         } else if ((BGcategories[ct] == "Книги") || (BGcategories[ct] == "Персонажи книг")) {
             BGbackground = BG('FNaF Books BG.png');
             break;
+        } else if (BGcategories[ct] == "Five Nights at Freddy's: Security Breach") {
+            BGbackground = BG('FNaF SB BG.png');
+            break;
         }
     }
 

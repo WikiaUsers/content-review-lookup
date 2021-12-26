@@ -2,6 +2,8 @@
 <source lang=javascript>
 */
 
+console.log("loading NPCprod script");
+
 if ($('div.tabberlive ul li a').length) {
     w = 16;
     h = w + 4;

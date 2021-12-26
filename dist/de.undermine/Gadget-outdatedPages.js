@@ -113,7 +113,7 @@ $( document ).ready( function( $ ) {
         for (var a in allPages) {
           pages[allPages[a].title] = allPages[a].revisions[0].revid;
         }
-        if (data.continue) { // Continue, if there is more data available.
+        if (data.continue && data.continue.gapcontinue) { // Continue, if there is more data available.
           console.log("Continue:" + data.continue.gapcontinue);
           getParentPages(data.continue.gapcontinue);
         }

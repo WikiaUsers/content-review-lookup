@@ -1,5 +1,7 @@
 /* <syntaxhighlight lang="javascript"> */
 
+console.log("loading TGnfo script");
+
 $n = $('div.TGnfoinv').length;
 if ($n) {
     for (i = 0; i <= $n; i++) {

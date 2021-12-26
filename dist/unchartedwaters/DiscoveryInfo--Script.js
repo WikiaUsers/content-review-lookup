@@ -1,8 +1,10 @@
 /* <syntaxhighlight lang="javascript"> */
 
+console.log("loading DiscoveryInfo script");
+
 $tdcvery = $('.dcvery');
-$tdcvery.live({ 'mouseover': showtip });
-$('p.close').live({ 'click': hidetip });
+$tdcvery.on({ 'mouseover': showtip });
+$('p.close').on({ 'click': hidetip });
 
 
 function showtip() {

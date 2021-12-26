@@ -34,7 +34,6 @@ nkch_gst_gadgets = [{
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:UserBadge/code.js',
         'u:dev:MediaWiki:CheckJStatus.js',
     ]
 });

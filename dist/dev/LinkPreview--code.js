@@ -108,6 +108,8 @@
         Settings.tlen = Settings.tlen !== undefined ? Settings.tlen : 1000; //max text length
         //do not remove portable infobox on preprocess stage
         Settings.pibox = Settings.pibox !== undefined ? Settings.pibox : false;
+        // do not remove infobox siblings
+        Settings.piboxkeepprev = Settings.piboxkeepprev !== undefined ? Settings.piboxkeepprev : false;
         //cache size
         Settings.csize = Settings.csize !== undefined ? Settings.csize : 100;
         Settings.defimage = Settings.defimage !== undefined ? Settings.defimage : Defaults.defimage; //default image path
@@ -537,7 +539,10 @@
             text = preprocess(text);
             text = $('<div/>', {class: 'tmpdivclass', style: 'visibility:hidden;display:none;'}).html(text);
             if (!Settings.pibox) { //remove portable infobox
-                text.find('aside').prevAll().remove();
+                // assume infobox as 1st item
+                // and remove all preceding info- templates
+                //   if needed
+                if (!Settings.piboxkeepprev) text.find('aside').prevAll().remove();
                 text.find('aside').remove();
             }
             //convert 2 text

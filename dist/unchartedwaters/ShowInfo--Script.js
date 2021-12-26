@@ -3,7 +3,9 @@
 // ShowInfo-Tooltip Script v1.2.2
 */
 
-$('.nfo').live({
+console.log("loading ShowInfo script");
+
+$('.nfo').on({
     'mouseover': showtip,
     'mouseout': hidetip,
     'mousemove': movetip

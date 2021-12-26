@@ -34,18 +34,22 @@ function downloadAudio(url, filename) {
 //Create <div> menu with button
 var menu = document.createElement("div");
 menu.setAttribute("id", "context-menu");
-menu.innerHTML = '<ul><li><div id="download">Download</div></li><li><div id="cLink">Copy Link</div></li></ul>';
+menu.innerHTML = '<ul><li><div class="sm2button" id="audio-download">Download</div></li><li><div class="sm2button" id="cLink">Copy Link</div></li></ul>';
 document.getElementsByTagName('body')[0].appendChild(menu);
 
+function sm2b (id) {
+    return document.getElementById(id);
+}
+
 //Download file using Blob URL instead of external URL
-$('download').onclick = function (e) {
+sm2b('audio-download').onclick = function (e) {
   var audioLink = menu.dataset.link;
   audioLink = audioLink.split('/revision')[0];
   downloadAudio(audioLink);
 };
 
 //Copy audio link to clipboard
-$('cLink').onclick = function (e) {
+sm2b('cLink').onclick = function (e) {
   var audioLink = menu.dataset.link;
   audioLink = audioLink.split('/revision')[0];
   navigator.clipboard.writeText(audioLink);
@@ -69,8 +73,4 @@ for (var i = 0; i < buttons.length; i++) {
     menu.style.display = 'block';
     menu.dataset.link = this.previousElementSibling.getElementsByTagName("source")[0].src;
   };
-}
-
-function $ (id) {
-    return document.getElementById(id);
 }

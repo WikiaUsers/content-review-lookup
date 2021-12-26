@@ -1,4 +1,4 @@
-/*COUNTDOWN TIMER FOR FEATURED ROTATION*/
+    /*COUNTDOWN TIMER FOR FEATURED ROTATION*/
 
 let days = 5; //starting number of days
 let hours = 9; // starting number of hours

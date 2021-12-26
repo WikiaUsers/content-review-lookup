@@ -11,7 +11,7 @@ $( function() {
 				$('<li>').prepend(
 					$('<a>', {
 						id: 'custom-ca-ve-edit',
-						href: '/wiki/' + conf.wgPageName + '?veaction=edit',
+						href: mw.util.getUrl(conf.wgPageName) + '?veaction=edit',
 						text: 'VisualEditor'
 					})
 				)

@@ -64,6 +64,7 @@ function highlightUser(block, name, highlightBool) {
 			case "Raylan13":
 			case "Shareif":
 			case "Yatalu":
+			case "Kuzura":
 				block.style.backgroundColor = "rgba(0,220,250,0.25)";
 				break;
 			

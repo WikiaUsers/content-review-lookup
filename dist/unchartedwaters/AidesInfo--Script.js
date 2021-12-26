@@ -2,6 +2,9 @@
 <source lang=javascript>
 */
 
+console.log("loading AidesInfo script");
+console.log("jQuery version", jQuery.fn.jquery);
+
 var $n = $('table.AidesTable').length;
 var roundness = '6px';
 
@@ -19,11 +22,14 @@ for (i = 0; i < $n; i++) {
         $('table.AidesTable:eq(' + i + ')').css('border-bottom-right-radius', roundness);
 }
 
-$('.aidskl').live({
+$('.aidskl').on({
     'mouseover': showaidetip,
     'mouseout': hideaidetip,
     'mousemove': moveaidetip
 });
+
+
+$(document).ready( function() {
 
 if ($('div.Aides-UI').length) {
     var ver = 'UWO Aides Search UI v0rc.2.10';
@@ -179,9 +185,12 @@ if ($('div.Aides-UI').length) {
     }
 
     setTimeout(function () {
-        $('input#search-aides')
-        // don't navigate away from the field on tab when selecting an item
-            .bind('keydown', function (e) {
+        mw.loader.using('jquery.ui.autocomplete').then(function() {
+           console.log("aides autocomplete");
+
+           $('input#search-aides')
+           // don't navigate away from the field on tab when selecting an item
+            .on('keydown', function (e) {
                 if (e.keyCode === $.ui.keyCode.TAB && $(this).data('autocomplete').menu.active) {
                     e.preventDefault();
                 } else if (e.which == 13) {
@@ -212,6 +221,7 @@ if ($('div.Aides-UI').length) {
                     return false;
                 }
             });
+        });
 
         $tdl = $('td.aideskills').length;
         for (i = 0; i < $tdl; i++) {
@@ -293,6 +303,7 @@ if ($('div.Aides-UI').length) {
     });
 }
 
+});
 
 function searchaides() {
     needles = document.getElementById('form1-search-aides').elements[2].value;

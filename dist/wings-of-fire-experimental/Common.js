@@ -4,7 +4,7 @@
 //Embed Discussions for front page
 window.discussEmbedForum = "2144506900120166382";
 
-// Dragon anon avatars
+// Dragon anon avatars png
 function changeSourceAll() {
     var images = document.getElementsByTagName('img');
     for (var i = 0; i < images.length; i++) {
