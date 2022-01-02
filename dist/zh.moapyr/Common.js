@@ -4,4 +4,6 @@ window.railWAM = {
 };
 
 //自动展开分类
-document.getElementsByClassName("page-footer__categories")[0].classList.remove("wds-is-collapsed");//电脑端
+$(document).ready(function() { 
+ document.getElementsByClassName("page-footer__categories")[0].classList.remove("wds-is-collapsed");//电脑端
+});

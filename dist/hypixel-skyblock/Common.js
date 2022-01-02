@@ -544,11 +544,11 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 					var $nextFrame = advanceFrame(this, ".animated");
 					if ($nextFrame.hasClass("animated-subframe")) {
 						advanceFrame($nextFrame[0], ".animated-subframe");
-					}
 
-					var hov = $(".invslot-item").filter(function() { return $(this).is(":hover"); });
-					if (hov.length)
-						hov.eq(0).trigger("mouseenter");
+						var hov = $(".invslot-item").filter(function() { return $(this).is(":hover"); });
+						if (hov.length)
+							hov.eq(0).trigger("mouseenter");
+					}
 				});
 			}, 2000);
 		}());
@@ -600,9 +600,8 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 		"MediaWiki:Common.js/minetip.js",
 		"MediaWiki:Common.js/skydate.js",
 		"MediaWiki:Common.js/calc.js",
-		"MediaWiki:Common.js/staff-tagger.js",
 		// "MediaWiki:Common.js/lua-doc.js",
-		"MediaWiki:HighlightTable.js",
+		"MediaWiki:Common.js/highlight.js",
 	]);
 });
 

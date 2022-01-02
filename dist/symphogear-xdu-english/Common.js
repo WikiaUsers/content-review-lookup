@@ -561,7 +561,7 @@ if (mw.config.get('wgCategories').includes('Effect')) {
 	                    splitString = entry[1].split('['); //[[File:{{#replace:{{#explode:{{{1|}}}|[|5}}|]|}}.png|25px]]
 	                    recombinedString = splitString[0];
 	                    for (var index2 = 1; index2 < splitString.length; index2++) {
-	                        charElement = splitString[index2].replace("]", "");
+	                        memElement = splitString[index2].replace("]", "");
                             recombinedString += "[[File:" + memElement + ".png|25px|link=" + memElement + "]]";
 	                    }
 	                    html_content += "<tr id='memoriaResult" + index + "'><td>[[File:No_" + entry[0].split(" ")[1] + ".png|53px|link=" + entry[0] + "]]</td><td>" + recombinedString + "</td></tr>";

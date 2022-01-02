@@ -346,7 +346,7 @@ $(function () {
       Pirat: true,
       Raccoon: true,
       Tyrant: true,
-      Bashtu: true,
+      Bashmu: true,
       Girtablilu: true,
       Carnisylvan: true,
       Chimera: true,

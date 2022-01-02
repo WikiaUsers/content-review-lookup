@@ -351,7 +351,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database:Location Template\r| Image                   = ",
-post: "\r| OfficialName            = \r| Aliases                 = \r\r| Status                  =  \r| Preceded                = \r| Succeeded               = \r\r| Capital                 = \r| Demonym                 = \r| Area                    = \r| Population              = \r| Language                = \r| Religion                = \r| Government              = \r| RulerLabel              = \r| Ruler                   = \r| Currency                = \r\r| Universe                = Earth-\r| Dimension               = \r| Galaxy                  = \r| StarSystem              = \r| Planet                  = \r| Continent               = \r| Country                 = \r| State                   = \r| Province                = \r| Territory               = \r| Region                  = \r| District                = \r| Prefecture              = \r| Division                = \r| City                    = \r| Locale                  = \r\r| Creators                = \r| First                   = \r| Last                    = \r| Destruction             = \r\r| HistoryText             = \r\r| PointsOfInterest        = \r| Residents               = \r\r| MajorResources          = \r| NationalDefense         = \r| InternationalRelations  = \r| ExtTerrestrialRelations = \r| DomesticCrime           = \r| InternationalCrime      = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+post: "\r| OfficialName            = \r| Aliases                 = \r\r| Status                  =  \r| Preceded                = \r| Succeeded               = \r\r| Capital                 = \r| Demonym                 = \r| Area                    = \r| Population              = \r| Language                = \r| Religion                = \r| Government              = \r| RulerLabel              = \r| Ruler                   = \r| Currency                = \r\r| Universe                = Earth-\r| Dimension               = \r| Galaxy                  = \r| StarSystem              = \r| Planet                  = \r| Continent               = \r| Country                 = \r| State                   = \r| Province                = \r| Territory               = \r| Region                  = \r| District                = \r| County             = \r| Division                = \r| City                    = \r| Locale                  = \r\r| Creators                = \r| First                   = \r| Last                    = \r| Destruction             = \r\r| HistoryText             = \r\r| PointsOfInterest        = \r| Residents               = \r\r| MajorResources          = \r| NationalDefense         = \r| InternationalRelations  = \r| ExtTerrestrialRelations = \r| DomesticCrime           = \r| InternationalCrime      = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 }
 }
 }
@@ -477,14 +477,14 @@ section: 'advanced',
 group: 'infoboxes',
 tools: {
 "image": {
-label: 'Power',
+label: 'Disambig',
 type: 'button',
 icon: 'https://images.wikia.nocookie.net/marveldatabase/images/d/dc/Image_Button.png',
 action: {
 type: 'encapsulate',
 options: {
-pre: "<includeonly>{{Power Grid\r| Reference         = ",
-post: "\r| Intelligence      = \r\| Strength          = \r| Speed             = \r\| Durability        = \r| Energy Projection = \r| Fighting Skills   = \r}}</includeonly>"
+pre: "{{DisambiguationFull\r|type         = Character ",
+post: "\r\r|logo         = \r|main_image   = \r|noimage      = No Image Male.jpg\r|main         = \r|main_name    = \r|main_title   = \r|description  = \r\r|alternative1 = \r\r|include1     = \r\r|exclude1     = \r\r|includeComic1= \r|includeMovie1= \r|includeTV1   = \r|includeGame1 = \r|Teams1       = \r\r|Others1      = \r\r|Related1     = \r\r|New Header1  = \r|New Header1_1= \r}}"
 }
 }
 }
@@ -502,7 +502,7 @@ icon: 'https://images.wikia.nocookie.net/marveldatabase/images/5/5a/Images_Butto
 action: {
 type: 'encapsulate',
 options: {
-pre: "{{Marvel Database:Gallery Template\r| GalleryType             = \r| GalleryData             = \r<gallery position=\"center\" captionalign=\"center\">\r",
+pre: "{{Marvel Database:Gallery Template\r| GalleryType             = Character\r| GalleryData             = \r<gallery position=\"center\" captionalign=\"center\">\r",
 post: "\r</gallery>\r| SeeAlso                 = \r}}"
 }
 }

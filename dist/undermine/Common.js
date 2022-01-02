@@ -1,5 +1,8 @@
 /* Hide noscript class */
-document.querySelector(".noscript").style.display = 'none';
+var noscript = document.querySelectorAll(".noscript");
+for (var i = 0; i < noscript.length; i++){
+	noscript[i].style.display = 'none';
+}
 
 !function( $, mw ) {
 	'use strict';

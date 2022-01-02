@@ -1,7 +1,7 @@
 /* esversion: 5 */
 mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 	if (mw.config.get('wgArticleId') === 0) return;
-		
+
 	var api = new mw.Api();
 	var parserReport = mw.config.get('wgPageParseReport');
 	var messageKeys = Object.keys(parserReport.limitreport)
@@ -10,18 +10,27 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 
 	return $.when(
 		api,
+		importArticles({ type: 'script', articles: []
+			.concat(window.dev && window.dev.i18n ? [] : 'u:dev:MediaWiki:I18n-js/code.js')
+			.concat(mw.libs.QDmodal ? [] : 'u:dev:MediaWiki:QDmodal.js')
+		}),
 		api.loadMessagesIfMissing(messageKeys
 			.concat(
 				messageKeys.map(function(key) { return key + "-value" }), 
-				['size-kilobytes', 'size-megabytes', 'scribunto-limitreport-profile-percent', 'scribunto-limitreport-profile-ms']
+				['size-kilobytes', 'size-megabytes', 'scribunto-limitreport-profile-percent', 'scribunto-limitreport-profile-ms', 'whatlinkshere']
 			)
 		)
 	);
 }).then(function(api) {
+	return $.when(
+		api,
+		window.dev.i18n.loadMessages('PageReport')
+	);
+}).then(function(api, i18n) {
 	if (window.PageReportLoaded) return console.warn('[PageReport] Script was double loaded, exiting...');
 	window.PageReportLoaded = 1;
 	if (!api) return;
-	
+
 	var modal = new mw.libs.QDmodal("PageReportModal");
 	var luaErrors = mw.config.get('ScribuntoErrors');
 	var parserReport = mw.config.get('wgPageParseReport');
@@ -42,7 +51,7 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 	}
 
 	function onTabClick() {
-		var $this = $(this)
+		var $this = $(this);
 		var index = $this.parent().children().index(this);
 
 		if ($this.hasClass('wds-is-current')) return;
@@ -98,7 +107,7 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 			$('<caption>', { 
 				html: ['(', $('<a>', {
 					href: mw.util.getUrl('Special:WhatLinksHere/' + mw.config.get('wgPageName')),
-					text: "What links here",
+					text: mw.msg("whatlinkshere"),
 					title: 'Special:WhatLinksHere/' + mw.config.get('wgPageName'),
 				}), ')'],
 			}),
@@ -117,7 +126,7 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 			$('<caption>', { 
 				html: ['(', $('<a>', {
 					href: mw.util.getUrl('Special:AllPages', { namespace: 828 }),
-					text: "All modules",
+					text: i18n.msg('all-modules').plain(),
 					title: 'Special:AllPages',
 				}), ')'],
 			}),
@@ -135,9 +144,9 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 							html: [
 								$('<tr>', {
 									html: [
-										$('<th>', { text: "Lua function" }),
-										$('<th>', { text: "Time usage" }),
-										$('<th>', { text: "Time percentage" }),
+										$('<th>', { text: i18n.msg('lua-function').plain() }),
+										$('<th>', { text: i18n.msg('lua-time-usage').plain() }),
+										$('<th>', { text: i18n.msg('lua-time-percentage').plain() }),
 									]	
 								}),
 							].concat(parserReport.scribunto['limitreport-profile'].map(function(d) {
@@ -179,7 +188,7 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 			$('<caption>', { 
 				html: $('<a>', {
 					href: mw.util.getUrl('Category:Pages with script errors'),
-					text: "Script errors on this page",
+					text: i18n.msg('script-errors-description').plain(),
 					title: "Category:Pages with script errors",
 				}),
 			}),
@@ -193,14 +202,14 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 		var nextRefreshDate = new Date(+date + parserReport.cachereport.ttl);
 
 		modal.show({
-			title: "Page Parser Report",
+			title: i18n.msg('title').escape(),
 			content: [
 				$('<div>', {
 					html: [
-						"Page last cached at " + date.toLocaleDateString() + " " + date.toLocaleTimeString(),
+						i18n.msg('last-cache', date.toLocaleDateString() + " " + date.toLocaleTimeString()).escape(),
 						'<br>',
-						"Next cache refresh at " + nextRefreshDate.toLocaleDateString() + " " + nextRefreshDate.toLocaleTimeString(),
-						'&nbsp;(', $('<a>', { href: "?action=purge", title: mw.config.get('wgPageName'), text: "Refresh now" }), ")",
+						i18n.msg('next-cache', nextRefreshDate.toLocaleDateString() + " " + nextRefreshDate.toLocaleTimeString()).escape(),
+						'&nbsp;(', $('<a>', { href: "?action=purge", title: mw.config.get('wgPageName'), text: i18n.msg('refresh-now').plain() }), ")",
 					],
 				}),
 				$('<div>', {
@@ -220,27 +229,30 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 								class: "wds-tabs",
 								html: [
 									$('<li>', {
-										id: "PageReport-limitreport wds-tabs__tab wds-is-current",
+										class: "wds-tabs__tab wds-is-current",
+										id: "PageReport-limitreport",
 										html: $('<span>', {
 											class: 'wds-tabs__tab-label',
-											title: "Transclusion Report",
-											text: "Transclusion Report",
+											title: i18n.msg('transclusion-report').plain(),
+											text: i18n.msg('transclusion-report').plain(),
 										}),
 									}),
 									$scribuntoReport ? $('<li>', {
-										id: "PageReport-limitreport wds-tabs__tab",
+										class: "wds-tabs__tab",
+										id: "PageReport-limitreport",
 										html: $('<span>', {
 											class: 'wds-tabs__tab-label',
-											title: "Scribunto Report",
-											text: "Scribunto Report",
+											title: i18n.msg('scribunto-report').plain(),
+											text: i18n.msg('scribunto-report').plain(),
 										}),
 									}) : "",
 						 			$scribuntoErrors ? $('<li>', {
-										id: "PageReport-limitreport wds-tabs__tab",
+										class: "wds-tabs__tab",
+										id: "PageReport-limitreport",
 										html: $('<span>', {
 											class: 'wds-tabs__tab-label',
-											title: "Script Errors",
-											text: "Script Errors",
+											title: i18n.msg('script-errors').plain(),
+											text: i18n.msg('script-errors').plain(),
 										}),
 									}) : "",
 								],
@@ -265,8 +277,8 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 	}
 
 	$('#t-info').after($('<a>', {
-		text: "Parser Report",
-		title: "View the parser report for this page",
+		text: i18n.msg('tools-title').plain(),
+		title: i18n.msg('tools-description').plain(),
 		css: {
 			cursor: "pointer",
 		},

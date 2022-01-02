@@ -348,7 +348,7 @@ $(function () {
       Pirat: true,
       Raccoon: true,
       Tyrant: true,
-      Bashtu: true,
+      Bashmu: true,
       Girtablilu: true,
       Carnisylvan: true,
       Chimera: true,
@@ -544,7 +544,7 @@ $(function () {
       Yalaharian: true
     },
     //outfits not on the main list
-    outfiter_names_extra = [105, 103, 106, 107, 108, 109, 128, 134, 104, 140, 111, 112, 113, 114, 115, 116, 130, 117, 131, 102, 142, 101, 124, 125, 120, 100, 118, 110, 129, 135, 137, 139, 138, 136, 141, 143, 146, 147, 148, 152, 153, 150, 145, 149, 121, 151, 156, 119, 157, 122, 132, 133, 144, 127, 123, 126, 154, 155],
+    outfiter_names_extra = [105, 103, 106, 107, 108, 109, 160, 128, 161, 134, 162, 104, 140, 111, 112, 113, 114, 115, 116, 130, 117, 131, 102, 142, 101, 124, 125, 120, 100, 118, 159, 110, 129, 135, 137, 139, 138, 136, 141, 143, 146, 147, 148, 152, 153, 150, 145, 149, 121, 151, 156, 119, 157, 122, 132, 133, 144, 127, 123, 126, 158, 154, 155],
     //outfits with separator on list
     outfiter_separator = {None: true},
     //mounts with separator on list

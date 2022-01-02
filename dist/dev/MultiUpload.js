@@ -63,7 +63,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
         */
         function setLimit() {
             if (limit < 0 ||
-                limit > 101 ||
+                limit > 100 ||
                 typeof limit !== 'number') {
                 if (/staff|helper|util|bot-global|wiki-representative|wiki-specialist/.test(config.wgUserGroups.join())) {
                     limit = 200;
@@ -90,7 +90,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
                     var element = files[index];
                     var filedesc = $("#mw-upload-form > fieldset:nth-child(2)").clone();
                     filedesc.attr("id", "file-" + index);
-                    filedesc.children("legend").text(i18n.msg('imagename').escape() + index);
+                    filedesc.children("legend").text(i18n.msg('imagename').escape() + (index + 1));
                     filedesc.find("#mw-htmlform-description > tbody > tr.mw-htmlform-field-HTMLTextField > td.mw-label > label").attr("for", "wpDestFile" + index);
                     filedesc.find("#mw-htmlform-description > tbody > tr.mw-htmlform-field-HTMLTextAreaField > td.mw-label > label").attr("for", "wpUploadDescription" + index);
                     filedesc.find("#wpDestFile").attr("name", "wpDestFile" + index).attr("id", "wpDestFile" + index).val(element.name);

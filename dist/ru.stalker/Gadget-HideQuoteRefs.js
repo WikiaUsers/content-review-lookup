@@ -4,7 +4,7 @@
 
     refs.forEach(
         function (ref) {
-            if (ref.firstChild.innerHTML.split(' ').includes('[цитата')) {
+            if (ref.firstChild.innerHTML.split(' ').includes('[цит.')) {
                 ref.style.display = 'none';
             }
         }

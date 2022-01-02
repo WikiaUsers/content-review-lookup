@@ -1,5 +1,5 @@
 /**
- * This is currently maintained by the admins of this wiki and Gamepedia.
+ * This is currently maintained by the admins of this wiki and Fandom.
  * Please request any changes on MediaWiki talk:Common.js
  * 
  * Please test any changes made to this file.

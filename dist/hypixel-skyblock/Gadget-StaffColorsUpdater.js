@@ -344,7 +344,7 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 			return mw.config.get("wgFormattedNamespaces")[8] + ":" + p;
 		});
 
-		if (allowedPages.includes(mw.config.get("wgPageName"))) {
+		if (allowedPages.includes(mw.config.get("wgPageName")) && mw.config.get("wgAction") === "view") {
 			$("#mw-content-text").prepend($("<a>", {
 				class: "wds-button",
 				html: $("<div>", {

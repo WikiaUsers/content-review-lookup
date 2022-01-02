@@ -143,7 +143,7 @@ noteTAViewer = ( function() { $( function() {
 		var $noteTAlocal = $dom.find( '.noteTA-local' );
 		if ( $noteTAlocal.length ) {
 			collapse = true;
-			wikitext += '<span style="float: right;">{{edit|' + actualTitle + '|section=0}}</span>\n';
+			wikitext += '<span style="float: right;"><span class="noprint" style="white-space:nowrap; font-size:smaller">[{{fullurl:' + actualTitle + '|action=edit&section=0}} {{int:edit}}]</span></span>\n';
 			wikitext += '; 本文使用全文手工转换\n';
 			var $noteTAlocals = $noteTAlocal.children( '*[data-noteta-code]' );
 			$noteTAlocals.each( function() {

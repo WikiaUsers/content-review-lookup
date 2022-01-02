@@ -45,12 +45,7 @@
       'mobile-app': true,
     })
 
-    $(
-      [
-        '.wds-community-header__wiki-buttons .wds-dropdown__content .wds-list',
-        '.fandom-community-header .wiki-tools .wds-dropdown .wds-list',
-      ].join(',')
-    ).append(
+    $('.wds-global-navigation__user-menu .wds-list, .wiki-tools .wds-dropdown__content .wds-list').append(
       // 添加按钮
       $('<li>').append(
         $('<a>')

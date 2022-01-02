@@ -738,7 +738,11 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
             if (armedPop.element.is(newTarget)) {
                 return;
             }
-            armedPop.destroy();
+            // (EXPERIMENTAL) When nesting is allowed, we don't want to destroy
+            // our old popup, but we do want to create the next one
+            if (!module.allowNesting) {
+                armedPop.destroy();
+            }
         }
         return (armedPop = constructPopup($(newTarget)));
     }
@@ -779,13 +783,15 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
             // across references
             'referencepopupopen.RefPopups': function () {
                 // Only react to popups created by us, not ones by other scripts
-                if (!armedPop || !armedPop.element.is(this)) {
+                // Also don't react when nesting popups is (experimentally) allowed
+                if (!armedPop || !armedPop.element.is(this) || module.allowNesting) {
                     return;
                 }
                 var oldOpen = openPop;
                 openPop = armedPop;
                 armedPop = null;
-                if (oldOpen) { // Kill existing so only one is open
+                if (oldOpen) {
+                    // Kill existing so only one is open
                     // IMPORTANT: The destroy MAY trigger a close event which will
                     //	invoke the handler below, that can cause TWO calls to
                     //	destroy() which is bad. We switch the value of openPop
@@ -794,7 +800,7 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
                 }
             },
             'referencepopupclose.RefPopups': function () {
-                if (!openPop || !openPop.element.is(this)) {
+                if (!openPop || !openPop.element.is(this) || module.allowNesting) {
                     return;
                 }
                 // If there is an armed popup then we just drop dead, otherwise
@@ -970,6 +976,11 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
 
         // We need to get just the reference body itself, without the backreference links
         $content.append($cite.find('.reference-text').clone());
+        // We want to allow the experimental reference popup nesting,
+        // so we install hover/click hooks on our currently opening popup
+        if (module.allowNesting) {
+            installHooks($content);
+        }
 
         // And away we go
         // NOTE: We're not using the $.fn.referencePopup wrapper as it's safer to stay

@@ -53,13 +53,11 @@ mw.loader.using('mediawiki.api').then(function () {
     }
 
     function actuallyConstructBanner(skeleton, serverId, inviteCode, bannerStyle) {
-    	var style2 = '';
-    	if (bannerStyle === '2') style2 = '100%';
         return skeleton.attr('style', 'transform: scale(0.9); margin-left: -2px;').html($('<a>', {
             href: 'https://discord.gg/' + inviteCode,
         }).append($('<img>', {
             src: 'https://discord.com/api/guilds/' + serverId + '/widget.png?style=banner' + bannerStyle,
-        }).css('width', style2)));
+        }).css('width', '100%')));
     }
 
     function constructBanner(skeleton, serverId, inviteCode, bannerStyle) {

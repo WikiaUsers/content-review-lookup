@@ -36,7 +36,7 @@ function init(i18n) {
 				);
 				$('#top-hidden-categories').append(
 					$('<div>', { 'class': 'wds-dropdown page-header__categories-dropdown'}).append(
-						('&nbsp;'+i18n.msg('and').plain()+' '), $('<a>', {'class': 'wds-dropdown__toggle', text: i18n.msg('more', (cats.length-2)).plain() }),
+						('&nbsp;'+i18n.msg('and').plain()+' '), $('<a>', {'class': 'wds-dropdown__toggle', text: i18n.msg('more', (cats.length-2)).parse() }),
 						$('<div>', {'class': 'wds-dropdown__content page-header__categories-dropdown-content wds-is-left-aligned'}).append(	
 							$('<ul>', { id: 'top-hidden-cat-dropdown', 'class': 'wds-list wds-is-linked'}) 
 						)

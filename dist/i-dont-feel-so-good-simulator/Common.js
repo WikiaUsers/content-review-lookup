@@ -118,10 +118,10 @@ function display_question(question, dialoguename) {
 	if (options[dialoguename].startSound && options[dialoguename].playStartSound) {
 		if (options[dialoguename].playAfterDelay) {
 			setTimeout(function() {
-				play_sound();
+				play_sound(dialoguename);
 			}, options[dialoguename].startDelay);
 		} else {
-			play_sound();
+			play_sound(dialoguename);
 		}
 	}
 	

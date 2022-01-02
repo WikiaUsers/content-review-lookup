@@ -2,8 +2,9 @@ $(function() {
     
     // Valid invite codes for our Discord server. Example: ff -> https://discord.gg/ff
     var INVITE_CODES = {
-        "main": "ff",
-        "wikia": "4jw57cR"
+        "main": { "code": "ff", "name": "Fantastic Frontier" },
+        "wikia": { "code": "4jw57cR", "name": "Fantastic Frontier Wikia" },
+        "banappeal": { "code": "FZUUuxUFcd", "name": "FF Ban Appeals" }
     };
     
     // Function to make sure the data we get from Discord (3rd party website) is a number, as to be super-safe.
@@ -21,12 +22,12 @@ $(function() {
     function loadWidgets(invType) {
         // Our Discord invite widgets will use this classname.
         var inviteWidgets = $(".discord-invite-widget[data-invcode='" + invType + "']");
-        var invCode = INVITE_CODES[invType];
+        var invCode = INVITE_CODES[invType].code;
         
         // We'll only load data if there are any Discord invite widgets on the current page.
         if (inviteWidgets.length > 0) {
             // Gets JSON data about our Discord server, such as online member count & total member count.
-            $.getJSON("https://discordapp.com/api/v6/invites/" + invCode + "?with_counts=1", function(data) {
+            $.getJSON("https://discordapp.com/api/v9/invites/" + invCode + "?with_counts=1", function(data) {
                 // Our Discord server image.
                 var icon = "https://cdn.discordapp.com/icons/" + data.guild.id + "/" + data.guild.icon + ".webp";
                 // 1,234 online
@@ -39,7 +40,7 @@ $(function() {
                 
                 // Safely sets the Discord server image.
                 widget.find("img").attr("src", icon);
-                widget.find(".discord-title").text(data.guild.name);
+                widget.find(".discord-title").text(INVITE_CODES[invType].name);
                 
                 // Updates the placeholders to use the actual data.
                 inviteWidgets.replaceWith(widget);
@@ -51,4 +52,5 @@ $(function() {
     // Load our widgets.
     loadWidgets("main");
     loadWidgets("wikia");
+    loadWidgets("banappeal");
 });

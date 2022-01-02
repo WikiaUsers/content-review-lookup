@@ -263,7 +263,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     }
 
     function calculateDMG(wep, arm, helm, skill) {
-        return Math.floor(wep * (0.6597 + 0.013202 * skill) * (arm + helm) * 0.0028 * 107);
+        return Math.floor(wep * (0.6597 + 0.013202 * skill) * (arm + helm) * 0.0028 * 119);
     }
 
     function truncate(num) {
@@ -274,7 +274,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
         var units = ["", "K", "M", "B", "T", "Q", "Qi", "sx", "Sp", "O", "N", "de"];
         // Get index of unit above (1 = K, 2 = M)
-        var index = Math.floor((num.toFixed() - 1) / 3);
+        var index = Math.floor((num.toFixed().length - 1) / 3);
         // Calculate the significant figures
         var sig = (+(num + 'e-' + index * 3)).toFixed(2);
         var unit = units[index];

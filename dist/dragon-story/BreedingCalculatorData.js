@@ -9661,6 +9661,21 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "11_hours_11",
                 "rarity": 2
             },
+            "flatfoot": {
+                "name": "Flatfoot",
+                "types": [
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 4,
+                "offspringeligibility": "gift",
+                "notes": [
+                    "feature"
+                ]
+            },
             "flawless": {
                 "name": "Flawless",
                 "types": [
@@ -11837,6 +11852,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 3,
                 "parenteligibility": "goldtype",
                 "offspringeligibility": "marketonly",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "goldvine": {
+                "name": "Goldvine",
+                "types": [
+                    "holiday",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]
@@ -26923,6 +26954,32 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "skyguide": {
+                "name": "Skyguide",
+                "types": [
+                    "holiday",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "black"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "skyheight": {
                 "name": "Skyheight",
                 "types": [
@@ -28661,6 +28718,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ],
                 "offspringeligibility": "expired"
+            },
+            "starbright": {
+                "name": "Starbright",
+                "types": [
+                    "holiday",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
             },
             "starcrossed": {
                 "name": "Starcrossed",
@@ -32069,6 +32142,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "16_hours_16",
                 "rarity": 2,
                 "offspringeligibility": "expired"
+            },
+            "vintage": {
+                "name": "Vintage",
+                "types": [
+                    "holiday",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
             },
             "vinum": {
                 "name": "Vinum",

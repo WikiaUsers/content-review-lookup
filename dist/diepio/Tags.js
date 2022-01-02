@@ -245,7 +245,7 @@ UserTagsJS.modules.custom = {
     'JustLeafy'         : ['st'],
     'Banarama'          : ['st'],
     'AJ (QA)'           : ['st'],
-    'Briskmetal007'     : ['st'],
+    'EXPLODINGLLAMA'    : ['st'],
     'GeoScoph'          : ['st'],
     'CyberDGun'         : ['st'],
     'Somerandom222'     : ['st'],

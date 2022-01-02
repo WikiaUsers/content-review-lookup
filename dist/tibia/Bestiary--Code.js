@@ -71,7 +71,7 @@ $(function(){
                             propv = propv.replace(/\[\[([^\]]+?)\|(.+?)\]\]/g, '<a href="' + path1 + '$1">$2</a>'); //Replace [[page|display]] with link tags
                             propv = propv.replace(/\[\[(.+?)\]\]/g, '<a href="' + path1 + '$1">$1</a>'); //Replace [[page]] with link tags
                             if (propn == 'location') {
-                                propv = propv.replace(/{{Mapper Coords\|(.+?)\|text=([\w ]+)}}/g, '<a href="' + path1 + 'Mapper?coords=$1">$2</a>').replace(/\|/g, '-'); //Replace Mapper template links
+                                propv = propv.replace(/{{Mapper Coords\|?([0-9.|]+)?\|text=([\w ]+)\|?([0-9.|]+)?}}/g, '<a href="' + path1 + 'Mapper?coords=$1$3">$2</a>').replace(/\|/g, '-'); //Replace Mapper template links
                                 propv = propv.replace(/\s\[(http.+?)\s(.+?)\]/g, ' <a href="$1">$2</a>'); //Replace mapper direct links
                             }
                             creaturedata[propn] = propv;

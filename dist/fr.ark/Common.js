@@ -7,7 +7,7 @@
 $(function() { // wait for content load (DOMContentLoaded)
   $('.copy-clipboard').each(function () {
     var $this = $(this);
-    var $button = $('<button title="Copy to Clipboard">&#xf0ea;</button>');
+    var $button = $('<button title="Copier vers le presse-papier">&#xf0ea;</button>');
     $this.append($button);
     $button.click(function () {
       var $content = $this.find('.copy-content');
@@ -17,9 +17,9 @@ $(function() { // wait for content load (DOMContentLoaded)
       try {
         if (!document.execCommand('copy'))
           throw 42;
-        mw.notify('Successfully copied to Clipboard.');
+        mw.notify('Copié avec succès vers le presse-papier.');
       } catch (err) {
-        mw.notify('Copy to Clipboard failed. Please do it yourself.', {type:'error'});
+        mw.notify('Échec de la copie vers le presse-papier. Veuillez copier vous-même.', {type:'error'});
       }
     });
   });
@@ -54,9 +54,19 @@ $(function() {
 /* Fires when DOM is ready */
 $( function() {
 
-// load js for calculating wild creature level stats
+// Load js for calculating wild creature level stats
 if(document.getElementById('wildStatCalc')){
-    mw.loader.load('/index.php?title=MediaWiki:WildCreatureStats.js&action=raw&ctype=text/javascript','text/javascript',false);
+	importScriptPage("MediaWiki:WildCreatureStats.js");
+}
+
+// Temporary: load our experimental cloning calculator if one has been added to the page
+if(document.getElementById('wildStatCalc')){
+	importScriptPage("MediaWiki:CloningCalculator.js");
+}
+
+// Load data map scripts if one has been added to the page
+if (document.getElementsByClassName('data-map-container')) {
+	importScriptPage("MediaWiki:ResourceMaps.js");
 }
 
 /**
@@ -97,8 +107,8 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
   /* Config for gridFiltering */
   gridContainer = '#creature-grid';
   gridFilters = {
-	'creature': 'search',
-	'map': [ '- Content -',
+	'creature': 'rechercher',
+	'map': [ '- Contenu -',
 		['The Island','The Island'],
 		['The Center','The Center'],
 		['Scorched Earth','Scorched Earth'],
@@ -109,49 +119,50 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 		['Genesis: Part 1','Genesis: Part 1'],
 		['Crystal Isles','Crystal Isles'],
 		['Genesis: Part 2','Genesis: Part 2'],
+		['Lost Island','Lost Island'],
 		['Mobile','ARK: Survival Evolved Mobile'],
-		['Unreleased','Unreleased'],
-		['Removed','Removed'],
+		['Non diffusé','Non diffusé'],
+		['Supprimé','Supprimé'],
 	],
-	'group': [ '- Group -',
-		['Alpha Creatures','Alpha Creatures'],
-		['Amphibians','Amphibians'],
-		['Birds','Birds'],
+	'group': [ '- Groupe -',
+		['Créatures alphas','Créatures alphas'],
+		['Amphibiens','Amphibiens'],
+		['Oiseaux','Oiseaux'],
 		['Bosses','Bosses'],
-		['Dinosaurs','Dinosaurs'],
-		['Enraged Creatures','Enraged Creatures'],
-		['Event Creatures','Event Creatures'],
-		['Fantasy Creatures','Fantasy Creatures'],
-		['Fish','Fish'],
-		['Invertebrates','Invertebrates'],
-		['Mammals','Mammals'],
-		['Mechanical Creatures','Mechanical Creatures'],
+		['Dinosaures','Dinosaures'],
+		['Créatures enragées','Créatures enragées'],
+		['Créatures d\'événements','Créatures d\'événements'],
+		['Créatures fantastiques','Créatures fantastiques'],
+		['Poissons','Poissons'],
+		['Invertébrés','Invertébrés'],
+		['Mammifères','Mammifères'],
+		['Créatures mécaniques','Créatures mécaniques'],
 		['Reptiles','Reptiles'],
-		['Synapsids','Synapsids'],
-		['Tek Creatures','Tek Creatures'],
+		['Synapsides','Synapsides'],
+		['Créatures Tek','Créatures Tek'],
 		['Titans','Titans'],
 	],
 	'habitat': [ '- Habitat -',
-		['Arboreal','Arboreal (Trees)'],
-		['Aerial','Aerial'],
-		['Aquatic','Aquatic'],
-		['Fossorial','Fossorial (Burrowing)'],
-		['Terrestrial','Terrestrial'],
-		['Subterranean','Subterranean'],
-		['Boss','Bosses (Summoned)'],
+		['Arboricole','Arboricole'],
+		['Aérien','Aérien'],
+		['Aquatique','Aquatique'],
+		['Fouisseur','Fouisseur'],
+		['Terrestre','Terrestre'],
+		['Souterrain','Souterrain'],
+		['Boss','Bosses (invoqué)'],
 	],
-	'diet': [ '- Diet -',
+	'diet': [ '- Régime -',
 		['Carnivore','Carnivores'],
 		['Piscivore','Piscivores'],
 		['Herbivore','Herbivores'],
 		['Omnivore','Omnivores'],
-		['Carrion-Feeder','Carrion Feeders'],
-		['Coprophagic', 'Coprophagics'],
-		['Sanguinivore', 'Sanguinivores'],
-		['Flame Eater', 'Flame Eaters'],
-		['Minerals', 'Minerals'],
-		['Bottom Feeder', 'Bottom Feeders'],
-		['Sweet Tooth', 'Sweet Tooths'],
+		['Charognard','Charognards'],
+		['Coprophage', 'Coprophages'],
+		['Hématophage', 'Hématophages'],
+		['Mangeur de flammes', 'Mangeurs de flammes'],
+		['Minéraux', 'Minéraux'],
+		['Benthique', 'Benthiques'],
+		['Dent sucrée', 'Dents sucrées'],
 	],
   };
 /* End of mw.loader.using callback */
@@ -187,7 +198,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 			flag = true
  
 			if(gridFilters[x] == 'search') {
-				var field = $('<input type="text" placeholder="Search..." />').appendTo(container).attr('id', container.attr('id')+'-field').data('type', 'search')
+				var field = $('<input type="text" placeholder="Chercher..." />').appendTo(container).attr('id', container.attr('id')+'-field').data('type', 'search')
  
 				field.keyup(function() {
 					gridFilteringApply()
@@ -227,7 +238,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 				var value = field.val().toLowerCase()
 				if(value == '') continue;
  
-				var type = field.data('type')
+					var type = field.data('type')
 				if(type == 'search') {
 					var rx = new RegExp('^.*?(' + value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + ').*?$','i');
 					var flag = rx.test(gridElements[x][y].join(', '))

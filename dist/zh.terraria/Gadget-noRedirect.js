@@ -1,10 +1,12 @@
 $(function() {
 	$("a").click(function(event) { 
-		console.log('click');
+		h = $(event.target).attr("href");
+		if (h.indexOf("#") != -1){
+			return;
+		}  
 		if($(event.target).hasClass("external")){
 			return;
 		}
-		h = $(event.target).attr("href");
 		if (h.indexOf("?")==-1){
 			h+="?redirect=no";
 		}  

@@ -95,13 +95,14 @@ function setupModule(data) {
 
 
 mw.loader.using('mediawiki.util').then(function() {
-    
+    var IndexClick = 0;
 function zselector( $content ) {
     var ActiveID = '';
     $(function () {
         $('[class|="cc"]').click(function () {
             var cn = $(this).attr('class');
-            if (typeof cn !== 'undefined') {
+			 IndexClick = IndexClick+1;
+            if (typeof cn !== 'undefined' && (+IndexClick)%2 === 0) {
                 ZContent(cn, '0');
             }
         });
@@ -126,18 +127,18 @@ function zselector( $content ) {
     function ZContent(classValue, effect) {
         if (classValue.split) {
             var ID = '';
-            var fl = false;
-            var fl1 = false;
+            var flagElem = false;
+            var flagElem1 = false;
             var elemClasses = classValue.split(' ');
-            for (var i = 0; i < elemClasses.length; i++) {
+            for (var j = 0; j < elemClasses.length; j++) {
+            	flagElem = flagElem || elemClasses[j] == 'sy';
+            	flagElem1 = flagElem1 || elemClasses[j] == 'default';
+            }
+            var oldID = ActiveID;
+            for (var i = elemClasses.length-1; i >= 0; i--) {
                 var elemClass = elemClasses[i];
-                fl = fl || (elemClass == 'default' && effect == '0');
-                if (elemClass.substring(0, 3) == 'hh-' || fl || elemClass.substring(0, 3) == 'cc-' || (fl1 && fl && elemClass == 'sy')) {
-                	if(elemClass == 'sy')
-                		ID = 'default';
-                	else
-                    	ID = elemClass.substring(3);
-                    fl1 = ActiveID == ID;
+                if (elemClass.substring(0, 3) == 'hh-' || elemClass.substring(0, 3) == 'cc-') {
+                	ID = elemClass.substring(3);
                     if (effect == '0') {
                         ActiveID = ID;
                         ZEffect(ID);
@@ -152,6 +153,13 @@ function zselector( $content ) {
                     }
                 }
             }
+            if(flagElem)
+            	if(flagElem1 && (ID == oldID && oldID != 'default'))
+            	{
+                    ActiveID = 'default';
+                    ZEffect('default');
+                    SelectElem('cc', 'default');
+            	}
         }
     }
     function ZEffect(ID) {

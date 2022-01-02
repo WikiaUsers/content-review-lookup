@@ -42,26 +42,34 @@ $( document ).ready( function( $ ) {
   var dataForAllENPages = {
   	action: "query",
   	format: "json",
-  	prop: "revisions",
+  	prop: "revisions|info",
   	generator: "allpages",
   	rvprop: "ids",
     gaplimit: "max",
-  	gapnamespace: 0
+  	gapnamespace: 0,
   };
 
   var pages = {};
   var cargoData;
   var getDataRunning = 0;
+  var cargoData2 = [];
 
   function newHeaderEntry(name) {
   	var a = document.createElement("th");
   	a.appendChild(document.createTextNode(name));
   	return a;
   }
-  // Create table
+  // Create tables
+  var t2 = document.createElement("table");
+  t2.className="wikitable";
+  contentElement.replaceWith(t2);
+  var tb2 = t2.createTBody();
+  tHeaderRow = tb2.insertRow(0);
+  tHeaderRow.appendChild(newHeaderEntry("Page"));
+  
   var t = document.createElement("table");
   t.className="wikitable";
-  contentElement.replaceWith(t);
+  t2.parentElement.insertBefore(t, t2);
   var tb = t.createTBody();
   var tHeaderRow = tb.insertRow(0);
   tHeaderRow.appendChild(newHeaderEntry("Page (Local)"));
@@ -80,17 +88,29 @@ $( document ).ready( function( $ ) {
     // Local URL
     addEntry_(row, data.title.SeiteI, mw.config.get("wgArticlePath").replace("$1", data.title.SeiteI));
     // Original Source + Diff to latest Revision
-    addEntry_(row, data.title.revision || '', parentWikiURL + "/?type=revision&oldid=" + (data.title.revision || '') + "&diff=" + (pages[data.title.en] || ''));
+    addEntry_(row, data.title.revision || '', parentWikiURL + "/?type=revision&oldid=" + (data.title.revision || '') + "&diff=" + (pages[data.title.en][0] || ''));
     // Parent Wiki URL
     addEntry_(row, data.title.en, parentWikiURL + "/" + data.title.en);
     // Latest Revision
-    addEntry_(row, pages[data.title.en] || '', parentWikiURL + "/?oldid=" + (pages[data.title.en] || ''));
+    addEntry_(row, pages[data.title.en][0] || '', parentWikiURL + "/?oldid=" + (pages[data.title.en][0] || ''));
+  }
+
+  function addEntry2(data) { // Add entry to table
+    var row = tb2.insertRow();
+    // Local URL
+    addEntry_(row, data, parentWikiURL + "/" + data);
   }
 
   function processPages() { // Process data
-    for (var a=0; a<cargoData.length; a++) {
-      if (cargoData[a].title.revision === 0 || Number(cargoData[a].title.revision) !== Number(pages[cargoData[a].title.en] || 0)) { // If the revision is empty, isn't the latest or page not existing on parent-wiki.
+    for (var a = 0; a < cargoData.length; a++) {
+      cargoData2[cargoData[a].title.en] = true;
+      if (cargoData[a].title.revision === 0 || Number(cargoData[a].title.revision) !== Number(pages[cargoData[a].title.en] && pages[cargoData[a].title.en][0] || 0)) { // If the revision is empty, isn't the latest or page not existing on parent-wiki.
         addEntry(cargoData[a]);
+      }
+    }
+    for (var b in pages) {
+      if (!pages[b][1] && !cargoData2[b]) {
+        addEntry2(b);
       }
     }
   }
@@ -111,7 +131,7 @@ $( document ).ready( function( $ ) {
         var allPages = data.query.pages;
         console.log(allPages);
         for (var a in allPages) {
-          pages[allPages[a].title] = allPages[a].revisions[0].revid;
+          pages[allPages[a].title] = [allPages[a].revisions[0].revid, allPages[a].redirect === ""];
         }
         if (data.continue && data.continue.gapcontinue) { // Continue, if there is more data available.
           console.log("Continue:" + data.continue.gapcontinue);

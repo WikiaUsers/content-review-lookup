@@ -54,7 +54,7 @@ $(function() {
 /* Fires when DOM is ready */
 $( function() {
 
-// load js for calculating wild creature level stats
+// Load js for calculating wild creature level stats
 if(document.getElementById('wildStatCalc')){
 	importScriptPage("MediaWiki:WildCreatureStats.js");
 }
@@ -62,6 +62,11 @@ if(document.getElementById('wildStatCalc')){
 // Temporary: load our experimental cloning calculator if one has been added to the page
 if(document.getElementById('wildStatCalc')){
 	importScriptPage("MediaWiki:CloningCalculator.js");
+}
+
+// Load data map scripts if one has been added to the page
+if (document.getElementsByClassName('data-map-container')) {
+	importScriptPage("MediaWiki:ResourceMaps.js");
 }
 
 /**

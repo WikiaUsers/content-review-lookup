@@ -322,11 +322,13 @@ window.mapper = (function mapper(ns) {
         ((minimap_map_data[0] * 256) + minimap_map_data[1]) + ',' + ((minimap_map_data[2] * 256) + minimap_map_data[3]) + ',' +
         minimap_map_data[4] + ':' + (minimap_map_data[5] > 7 ? 8 : (minimap_map_data[5] > 3 ? 7 : (minimap_map_data[5] > 2 ? 6 : 5)));
     } else if (type == 5) { //Mapper Coords template
-      ret = ret = document.getElementById('minimap_tcode3').value.replace(/\s|%20/gi, '_');
-      ret = '{{Mapper Coords|text=' + ret + '|' +
-        minimap_map_data[0] + '.' + minimap_map_data[1] + '|' + minimap_map_data[2] + '.' + minimap_map_data[3] + '|' +
-        minimap_map_data[4] + '|' + minimap_map_data[5] + '|' +
-        minimap_map_data[6] + '|' + (1 / minimap_map_data[5]) + (1 / minimap_map_data[5]) + '}}';
+      ret = document.getElementById('minimap_tcode3').value.replace(/\s|%20/gi, '_');
+      ret = '{{Mapper Coords|' + 
+        minimap_map_data[0] + '.' + minimap_map_data[1] + '|' + //x
+        minimap_map_data[2] + '.' + minimap_map_data[3] + '|' + //y
+        minimap_map_data[4] + '|' + //z
+        minimap_map_data[5] +  //zoom
+        '|text=' + ret + '}}';
     }
     return ret;
   }

@@ -4947,6 +4947,13 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"flatfoot": {
+				"name": "Flatfoot",
+				"colors": [
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
 			"flawless": {
 				"name": "Flawless",
 				"colors": [
@@ -6021,6 +6028,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Goldleaf",
 				"colors": [
 					"gold"
+				],
+				"rarity": "unbreedable"
+			},
+			"goldvine": {
+				"name": "Goldvine",
+				"colors": [
+					"holiday",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},
@@ -13353,6 +13368,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"skyguide": {
+				"name": "Skyguide",
+				"colors": [
+					"holiday",
+					"yellow"
+				],
+				"rarity": "common"
+			},
 			"skyheight": {
 				"name": "Skyheight",
 				"colors": [
@@ -14208,6 +14231,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "super"
+			},
+			"starbright": {
+				"name": "Starbright",
+				"colors": [
+					"holiday",
+					"white"
+				],
+				"rarity": "unbreedable"
 			},
 			"starcrossed": {
 				"name": "Starcrossed",
@@ -15912,6 +15943,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "rare"
+			},
+			"vintage": {
+				"name": "Vintage",
+				"colors": [
+					"holiday",
+					"black"
+				],
+				"rarity": "unbreedable"
 			},
 			"vinum": {
 				"name": "Vinum",

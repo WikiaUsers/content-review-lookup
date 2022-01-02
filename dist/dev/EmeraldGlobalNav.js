@@ -51,3 +51,9 @@
         });
     });
 })(jQuery);
+importArticles({
+    type: "style",
+    articles: [
+		"u:dev:MediaWiki:FontAwesome.css",
+    ]
+});

@@ -239,6 +239,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Uri', 'ext.fandom
             articles: [
                 'u:dev:MediaWiki:MassBlock/code.js',
                 'MediaWiki:Common.js/AjaxBlock.js',
+                'MediaWiki:Common.js/staff-tagger.js',
                 'u:dev:MediaWiki:AdminDashboard JS-Button/code.js',
                 'u:dev:MediaWiki:AdminDashboard block/code.js',
                 'u:dev:MediaWiki:AjaxAbuseLog.js',

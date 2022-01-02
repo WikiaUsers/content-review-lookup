@@ -447,7 +447,7 @@
     this.info.userName = mw.config.get("profileUserName");
 
     // Determine if masthead exists (indicates presence of userpage)
-    this.info.hasMasthead = !!this.info.userName.length;
+    this.info.hasMasthead = !!this.info.userName;
 
     // Expose public methods for external debugging
     Object.defineProperty(module, "exports", {
