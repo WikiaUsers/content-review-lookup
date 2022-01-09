@@ -1,5 +1,5 @@
-var debugcolour = 'red';  //Change the colour to confirm cache updates
-var debugversion = '1639243003115';
+var debugcolour = 'purple';  //Change the colour to confirm cache updates
+var debugversion = '1641527000115';
 
 window.test452 = { ready:false, complete:false};
 window.debug452 = function(out, alert) { if (mw.config.get("wgUserName") == "452") { if ( ["object", "null", "function"].indexOf(typeof out) == -1) console.log(new Date().toJSON()+" "+out); else { console.log(new Date().toJSON()+" object:"); console.log(out); } if (typeof alert != "undefined") window.alert(out); } }
@@ -80,7 +80,7 @@ $(function() { /* Run when page has loaded */
 	$("img", this).attr("height", "" );
   });
 
-  if ($(".noarticletext").length && mw.config.get("wgPageName").indexOf("User_blog") == 0) $(".noarticletext").html("<p>You have followed an invalid link.<br><br>There are no Blogs.<br><br>Try the <a href='/Forum'>Forum</a>.<br><br>Please inform the person who linked you here to correct their link.<br /><br />");
+  if ($(".noarticletext").length && mw.config.get("wgPageName").indexOf("User_blog") == 0) $(".noarticletext").html("<p>You have followed an invalid link.<br><br>There are no Blogs.<br><br>Try <a href='/Forum:"+mw.config.get("wgTitle").substring(mw.config.get("wgTitle").indexOf("/")+1)+"'>Forum:"+mw.config.get("wgTitle").substring(mw.config.get("wgTitle").indexOf("/")+1)+"</a>, or the <a href='/Forum:All'>Forum Index</a>.<br><br>Please inform the person who linked you here to correct their link.<br /><br />");
 
   /*  Add links to Explore tab
       Permission explicitly stated on help page: https://c.wikia.com/Help:Navigation?diff=2217695&oldid=2216918
@@ -129,6 +129,8 @@ $(function() { /* Run when page has loaded */
   $(".RandomHoing").html(h1[Math.floor((Math.random()*h1.length))]+" "+h2[Math.floor((Math.random()*h2.length))]+' <a style="cursor: pointer;">(Refresh)</a>'); });
 
   $(".mw-special-Search .unified-search__profiles li:last").before('<li class="unified-search__profiles__profile"><a title="Search in all discussions" href="/Special:Search?search='+$(".unified-search__input__query").val() +'&amp;ns[0]=1&amp;ns[1]=3&amp;ns[2]=5&amp;ns[3]=7&amp;ns[4]=9&amp;ns[5]=11&amp;ns[6]=13&amp;ns[7]=15&amp;ns[8]=110&amp;ns[9]=111&amp;ns[10]=113&amp;ns[11]=500&amp;ns[12]=501&amp;ns[13]=502&amp;ns[14]=503&amp;ns[15]=700&amp;ns[16]=701&amp;ns[17]=1201&amp;discussions=1">Discussions</a></li>'); //Add "Discussions" link to search options
+
+  $(".mw-special-Search .unified-search__profiles li:last").after('<li>&nbsp;</li><li class="unified-search__profiles__profile"><a title="Index" href="/Index">Or use the Index</a></li>'); //Add link to "Index" on search results page
 
   $(".mw-special-Search a[href*='Saints_Row_Wiki:Disambiguation:']").each(function() { $(this).html($(this).html().replace("Saints Row Wiki:Disambiguation:","Disambiguation:")); }); //Fix links to disambiguation pages.
 
@@ -260,8 +262,8 @@ $(document).on('readystatechange', function() {
 	  based on tardis.wikia.com/MediaWiki:Common.js/mosbox.js
 	  Permission given in https://support.wikia-inc.com/tickets/103511  
 	  Reaffirmed publicly: https://community.wikia.com/Thread:720672#6
-	  While Wikia staff may later change their mind, 
-	  this edit cannot be regarded as a TOU violation as it was valid at the time it was made
+	  While Wikia staff may later change their mind, this edit cannot be regarded as a TOU violation as it was valid at the time it was made
+	  A landlord can cancel your lease, but cannot retroactively claim you were squatting for the duration of the lease.
 	*/
 	if ($('.WikiaRail section').length && !$('#JoinModule').length) { 
 /*
@@ -395,11 +397,11 @@ window.initScripts = function() {
   var loadScripts = new Array(); //cut down on unnecessary scripts being loaded.
 
   if ($("#SRWmap").length) loadScripts.push('u:sr:MediaWiki:Common.js/SRWMaps.js');
+  if ($(".ns-2").length || $(".ns-3").length || $(".mw-special-UserProfileActivity").length || $(".mw-special-Contributions").length)	
+    loadScripts.push('u:sr:MediaWiki:Common.js/usericons.js');	// Import custom usericons -custom.
 
   if (mw.util.getParamValue('action') == "edit" || mw.util.getParamValue('action') == "submit") {
-    if (!$(".mw-editform").length) {
-      debug452(".mw-editform missing", 1);
-    }
+    if (!$(".mw-editform").length) debug452(".mw-editform missing", 1);
     $(".mw-editform").before("<div id='editToolbar'></div>");
 
     $(".ve-oasis-header__label").html("Editing <a href='/"+mw.config.get("wgPageName")+"'>"+mw.config.get("wgCanonicalNamespace")+(mw.config.get("wgCanonicalNamespace") && ":")+mw.config.get("wgTitle")+"</a>");
@@ -409,23 +411,11 @@ window.initScripts = function() {
     loadScripts.push('u:sr:MediaWiki:Common.js/htmlentities.js'); // button to encode htmlentities  -custom
     loadScripts.push('u:sr:MediaWiki:Common.js/tabber.js');
 
-  } else if (mw.config.get("wgPageName") == "Special:Search") {
-
-  //  loadScripts.push('u:sr:MediaWiki:Common.js/SearchSuggest.js');	// add "search suggestions" to search results 
-  // this is almost completely useless now that Opensearch has been neutered.  Consider coding a DPL-based replacement.
-
   } else if (mw.config.get("wgPageName") == "Special:RecentChanges") {
 
     loadScripts.push('u:sr:MediaWiki:Common.js/RecentChangesUpdate.js'); // Autoload new Recentchanges -rewritten
 
   } else {
-
-    debug452("usericons debug - ns2:"+$(".ns-2").length +", ns3:"+$(".ns-3").length+", profile: "+$(".mw-special-UserProfileActivity").length+", contribs: "+$(".mw-special-Contributions").length);
-    if ($(".ns-2").length || $(".ns-3").length || $(".mw-special-UserProfileActivity").length || $(".mw-special-Contributions").length)	
-	loadScripts.push('u:sr:MediaWiki:Common.js/usericons.js');	// Import custom usericons -custom.
-
-//    if (mw.config.get("wgPageName") == "Special:DeadVideos")
-//	loadScripts.push('u:sr:MediaWiki:Common.js/DeadVideos.js');	// little use now
 
     if (mw.config.get("wgPageName").indexOf("Saints_Row_Wiki:Polls") != -1 || $(".SRWpoll").length)
 	  loadScripts.push('u:sr:MediaWiki:Common.js/polls.js');        // -custom
@@ -440,22 +430,23 @@ window.initScripts = function() {
     loadScripts.push('u:sr:MediaWiki:Common.js/View_Source.js');	/* "view source" link */
     loadScripts.push('u:sr:MediaWiki:Common.js/PageRefresh.js');	// "purge" and "null edit" links -rewritten
   }
-  importArticles({ type: 'script', articles: loadScripts });
+  if (1)
+	importArticles({ type: 'script', articles: loadScripts });
+  else {
+    loadScripts.forEach(function(v){
+      vArr = v.split(":");
+      vArr.shift();
+      vW = vArr.shift();
+      vPage = vArr.join(":");
+      console.log("loading "+vPage+" from "+vW);
+      if (vW == "sr") vW = "saintsrow";
 
-  loadScripts.forEach(function(v){
-    vArr = v.split(":");
-    vArr.shift();
-    vW = vArr.shift();
-    vPage = vArr.join(":");
-    console.log("loading "+vPage+" from "+vW);
+      importScriptPage(vPage, vW);
 
-    if (vW == "sr") vW = "saintsrow";
+      //importScriptURI('https://'+vW+'.fandom.com/'+ vPage+"?action=raw&ctype=text/javascript");
 
-//    importScriptPage(vPage, vW);
-
-  //  importScriptURI('https://'+vW+'.fandom.com/'+ vPage+"?action=raw&ctype=text/javascript");
-
-  });
+    });
+  }
 }
 //These functions are not used anywhere, but exist so anyone can use them for testing.
 window.toggleCSS = function() { $("link[rel='stylesheet'][href*='modules=site']").attr( "disabled",function(idx, oldAttr){return !oldAttr;});  $(window).trigger('resize'); }

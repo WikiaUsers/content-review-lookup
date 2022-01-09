@@ -528,7 +528,7 @@
                                     type: "div",
                                     attr: {
                                         id: "StaffTagger-user-wrapper",
-                                        attr: "staff-components resign-components",
+                                        class: "staff-components resign-components",
                                     },
                                     children: [{
                                         type: "label",
@@ -594,7 +594,7 @@
                                     type: "div",
                                     attr: {
                                         id: "StaffTagger-date-wrapper",
-                                        attr: "staff-components resign-components",
+                                        class: "staff-components resign-components",
                                     },
                                     children: [{
                                         type: "label",

@@ -2,15 +2,15 @@
 
 /** Loading UserTags from a predefined Json Page **/
 mw.loader.using('mediawiki.api').then(function() {
-    new mw.Api().get({
-        action: 'query',
-        titles: 'MediaWiki:Custom-UserTags.json',
-        prop: 'revisions',
-        rvprop: 'content',
-        rvslots: 'main'
-    }).then(function(data) {
-        window.UserTagsJS = JSON.parse(data.query.pages[183267].revisions[0].slots.main['*']);
-    });
+	new mw.Api().get({
+		action: 'query',
+		titles: 'MediaWiki:Custom-UserTags.json',
+		prop: 'revisions',
+		rvprop: 'content',
+		rvslots: 'main'
+	}).then(function(data) {
+		window.UserTagsJS = JSON.parse(data.query.pages[183267].revisions[0].slots.main['*']);
+	});
 });
 
 // Disables the Rollback Script 

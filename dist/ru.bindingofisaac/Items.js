@@ -3,9 +3,14 @@
 !function($, mw) {
     'use strict';
 
-	function stage2() {
-        var searchDiv = document.querySelector('.search');
-        searchDiv.innerHTML = '<input type="text" class="search-item" autocomplete="off" placeholder="Найти предмет&hellip;">';
+	function init() {
+    if (window.ItemsInvoked) {
+        return;
+    }
+    window.ItemsInvoked = true;
+
+    var searchDiv = document.querySelector('.search');
+        searchDiv.innerHTML = '<input type="text" class="search-item" autocomplete="off" placeholder="Выбери фильтр или впиши предмет&hellip;">';
  
         var itemsList = document.querySelectorAll('.items');
         var items = document.querySelectorAll('.item');
@@ -52,7 +57,7 @@
         });    
  
         // Кнопки сортировки
-        var rentableSort = document.querySelector('.rentable_sort > center > p');
+        var rentableSort = document.querySelector('.rentable_sort > p');
         rentableSort.addEventListener('click', sortBy);
  
         function sortBy(e) {
@@ -78,28 +83,6 @@
         }
 	}
 	
-	function stage() {
-		if (window.ItemsInvoked) {
-			return;
-		}
-		window.ItemsInvoked = true;
 
-		var params = {
-            action: "parse",
-            page: "Шаблон:Ita/Sort",
-            prop: "text",
-            formatversion: "2",
-            format: "json"
-        };
-
-        var api = new mw.Api();
-        api.get(params).done(function (data) {
-            var res = data.parse.text;
-            $('#WikiaRail').prepend('<div class="rail-module">' + res + '</div>');
-			
-			stage2();
-        });
-	}
-
-	stage();
+    init();
 }( this.jQuery, this.mediaWiki );

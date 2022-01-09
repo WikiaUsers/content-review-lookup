@@ -118,7 +118,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                    }
 	     
 	                    if (!$.trim($customRows.find('#descriptionBox').val())) {
-	                        $.showModal('Description Incomplète', 'Merci de renseigner une descriptioin correcte pour votre image. Décrire ce qu’il se produit et pourquoi est-elle importante.');
+	                        $.showModal('Description Incomplète', 'Merci de renseigner une description correcte pour votre image. Décrivez ce qu’il se produit et en quoi elle est importante.');
 	                        return false;
 	                    }
 	     
@@ -171,7 +171,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	     
 	                // Autocomplete links
 	                $.getScript(mw.util.wikiScript('load') + 
-	                    '?debug=false&lang=en&mode=articles&skin=oasis&missingCallback=importArticleMissing&articles=u%3Acamtest%3AMediaWiki%3ATextareaHelper.js%7Cu%3Adev%3AMediaWiki%3AColors%2Fcode.js%7Cu%3Adev%3AMediaWiki%3AMiniComplete%2Fcode.js&only=scripts', function () {
+	                    '?debug=false&lang=en&mode=articles&skin=fandomdesktop&missingCallback=importArticleMissing&articles=u%3Acamtest%3AMediaWiki%3ATextareaHelper.js%7Cu%3Adev%3AMediaWiki%3AColors%2Fcode.js%7Cu%3Adev%3AMediaWiki%3AMiniComplete%2Fcode.js&only=scripts', function () {
 	                    dev.minicomplete.load(
 	                        $customRows.find('#descriptionBox'), $customRows.find('#sourceBox'),$customRows.find('#characterBox'), $customRows.find('#jutsuBox')
 	                    );

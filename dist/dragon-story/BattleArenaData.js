@@ -1189,6 +1189,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "super"
 			},
+			"birch": {
+				"name": "Birch",
+				"colors": [
+					"fey",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"birthday": {
 				"name": "Birthday",
 				"colors": [
@@ -2062,6 +2070,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "super"
+			},
+			"ceremony": {
+				"name": "Ceremony",
+				"colors": [
+					"fey",
+					"purple",
+					"black"
+				],
+				"rarity": "unbreedable"
 			},
 			"chakra": {
 				"name": "Chakra",
@@ -4198,6 +4215,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"royal",
 					"pink"
+				],
+				"rarity": "unbreedable"
+			},
+			"elmblue": {
+				"name": "Elmblue",
+				"colors": [
+					"fey",
+					"blue"
 				],
 				"rarity": "unbreedable"
 			},
@@ -6824,6 +6849,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"holt": {
+				"name": "Holt",
+				"colors": [
+					"fey",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"homunculus": {
 				"name": "Homunculus",
 				"colors": [
@@ -9091,6 +9124,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"mindcone": {
+				"name": "Mindcone",
+				"colors": [
+					"fey",
+					"blue"
+				],
+				"rarity": "common"
+			},
 			"mindvolt": {
 				"name": "Mindvolt",
 				"colors": [
@@ -10695,6 +10736,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"fey",
 					"white",
 					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"palebark": {
+				"name": "Palebark",
+				"colors": [
+					"fey",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},
@@ -13018,6 +13067,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"seedling": {
+				"name": "Seedling",
+				"colors": [
+					"fey",
+					"pink",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
 			"seeker": {
 				"name": "Seeker",
 				"colors": [
@@ -14002,6 +14060,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"arcane",
 					"black",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"spellgrain": {
+				"name": "Spellgrain",
+				"colors": [
+					"fey",
+					"pink"
 				],
 				"rarity": "unbreedable"
 			},

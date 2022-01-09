@@ -218,7 +218,7 @@
     str = String(str).replace(/\((.)/g, function ($1) { return $1.toUpperCase(); }).replace(/^(.)|\s(.)|-(.)/g, function ($1) { return $1.toUpperCase(); });
     //str = String(str).replace(/\b(.)/g, function ($1) { return $1.toUpperCase(); });
     /*jslint regexp: false */
-    return str.replace(/( To The | In The | In A | Of The | Of A | On A | Of | The | From The | From | And | With A | With )/, function ($1) { return $1.toLowerCase(); });
+    return str.replace(/( To The | In The | In A | Of The | Of A | Of An | On A | Of | The | From The | From | And | With A | With )/, function ($1) { return $1.toLowerCase(); });
   },
   lootparser_numcs = function (n) { n = String(n); while ((/\d{4}/).test(n)) { n = n.replace(/(\d{3},|\d{3}$)/, ',$1'); } return n; },
   stripslashes = function (str) {

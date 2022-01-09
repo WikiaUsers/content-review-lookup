@@ -7,10 +7,8 @@ window.debug452 = function(out, alert) { if (mw.config.get("wgUserName") == "452
 debug452("start of stdTemplates");
 
 function initStdTemplates() {
-        if (!$("#wpTextbox1").length) return; //only run on edit pages.
-	if ($('#stdTemplates').length) { //this is a redundant check
-		return;
-	}
+        if (!$("#wpTextbox1").length || $('#stdTemplates').length) return; //only run on edit pages.
+
 	window.insertTags = function (tagOpen, tagClose, sampleText, selectText) {
 		$("#wpTextbox1").textSelection('encapsulateSelection', {
 			'pre': tagOpen,
@@ -37,11 +35,11 @@ function initStdTemplates() {
 			else if (lineparts.length == 3)	insertTags(lineparts[0], lineparts[2], lineparts[1]);
 
 			recentTemplates = localStorage.getItem('recentTemplates');
-			if (!recentTemplates) rTArray = new Array(); 
-			if (recentTemplates != null) rTArray = recentTemplates.split("\t");
+			if (!recentTemplates) var rTArray = new Array(); 
+			if (recentTemplates != null) var rTArray = recentTemplates.split("\t");
 			var text = $('#stdTemplates :selected').text();
 			var val = $('#stdTemplates :selected').val();
-			rTArray.unshift(text);
+			if (rTArray.indexOf(text) == -1) rTArray.unshift(text);
 			if (rTArray.length > 15) rTArray.pop();
 			recentTemplates = unique(rTArray).join("\t");
 			localStorage.setItem( 'recentTemplates', recentTemplates);
@@ -62,31 +60,26 @@ function initStdTemplates() {
 	  return result;
 	}
 	function loadStdTemplates() {
-	  StdTemplates = localStorage.getItem('StdTemplates');
 	  StdTemplatesVersion = localStorage.getItem('StdTemplatesVersion');
-	  if (StdTemplatesVersion != 2) localStorage.removeItem('StdTemplates');
-	  localStorage.setItem('StdTemplatesVersion', 2);
+	  localStorage.setItem('StdTemplatesVersion', 3);
+	  if (StdTemplatesVersion != 3) localStorage.removeItem('StdTemplates');
+	  else StdTemplates = localStorage.getItem('StdTemplates');
 
-	  localStorage.removeItem('StdTemplates22-1-26'); //leave this until 2022
 	  if (StdTemplates) {
 		sTArray = StdTemplates.split("\t");
-		for (i in sTArray ) {
-			var $delim  = sTArray[i].indexOf(' -- ');
-			var tName   = ($delim == -1) ? sTArray[i] : sTArray[i].substring(0, $delim );
-			var val     = ($delim == -1) ? sTArray[i] : sTArray[i].substring($delim+4);
-			var disable = ($delim == -1) ? 'disabled' : '';
-			var $opt = '<option name="'+tName+'" value="' + val + '" ' + disable + '>'+(disable?'':'&nbsp;&nbsp;') + tName + '</option>';
-			$("#stdTemplates").append($opt);
+		for (i in sTArray) {
+			var sTsplit = sTArray[i].split(' -- ');
+			var tName   = sTsplit[0];
+			var val     = sTsplit[1] || tName;
+			var disable = (typeof sTsplit[1] == "undefined")?'disabled':'';
+			$("#stdTemplates").append('<option name="'+tName+'" value="'+val+'" '+disable+'>'+(disable?'':'&nbsp;&nbsp;')+tName+'</option>');
 		}
 		recentTemplates= localStorage.getItem('recentTemplates');
 		if (recentTemplates) {
-			rTArray = recentTemplates.split("\t");
+			var rTArray = recentTemplates.split("\t");
 			recentTemplatesOptions = new Array("<option value='' disabled=''>Recently used</option>");
 			for (i in rTArray) {
-				var $delim = rTArray[i].indexOf(' -- ');
-				if ($delim != -1) var tName = rTArray[i].substring(0, $delim);
-				else var tName = rTArray[i];
-				tName = tName.replace(/\u00a0/g, "");
+				var tName = rTArray[i].split(' -- ')[0].replace(/\u00a0/g, "");
 				var val = $("#stdTemplates option[name='"+tName+"']").val();
 				if (typeof val == "undefined") {
 					debug452("Recent template missing "+tName);
@@ -99,15 +92,7 @@ function initStdTemplates() {
 		$('#stdTemplates option:first-child').prop('selected', true); //reset selection
 
 	  } else {
-		$.ajax({
-		'dataType': 'text',
-		'data': {
-			'title': 'Template:StdTemplates',
-			'action': 'raw',
-			'ctype': 'text/plain'
-		},
-		'url': mw.config.get("wgScript"),
-		'success': function(data) {
+		$.get(mw.util.getUrl('Template:StdTemplates', {action: 'raw'})).done(function (data) {
 			var lines = data.split("\n"), ignore = { ':': 1, '*': 1,  '<': 1 };
 			sSArray = new Array(); 
 			for (var i in lines) {
@@ -117,7 +102,6 @@ function initStdTemplates() {
 			StdTemplates = sSArray.join("\t");
 			localStorage.setItem( 'StdTemplates', StdTemplates);
 			loadStdTemplates();
-		}
 		});
 	  }
 	}

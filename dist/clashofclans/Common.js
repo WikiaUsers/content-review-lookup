@@ -26,7 +26,8 @@
         'MediaWiki:AvailableBuildings.js',
         'MediaWiki:GoldPass.js',
         'MediaWiki:HeroSkins.js',
-        'MediaWiki:Toggle.js'
+        'MediaWiki:Toggle.js',
+        'MediaWiki:WikiNotification.js'
     	]
     });
 	

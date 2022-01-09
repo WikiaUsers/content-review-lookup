@@ -54,15 +54,8 @@ $(function() {
 /* End of the {{USERNAME}} replacement */
 
 /*Necropost stopper*/
-window.LockForums = {
-    lockMessageWalls: true,
-    expiryDays: 30,
-    expiryMessage: "This thread hasn't been commented on for over <expiryDays> days. This thread has been closed. If you think further discussion is needed, please contact an admin.",
-    warningDays: 15,
-    warningMessage: "This thread hasn't been commented on for over <warningDays> days. Please reply ONLY if a response is really needed as it will notify everyone following this message.",
-    warningPopup: true,
-    boxHeight: 50
-};
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 30;
 
 /* AjaxRC */
 window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Contributions"];

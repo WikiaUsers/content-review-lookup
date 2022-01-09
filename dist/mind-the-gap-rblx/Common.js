@@ -10,3 +10,7 @@ window.MessageWallUserTags = {
 			'Pxthfinder': 'Administrator'
     }
 };
+
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 365;
+window.lockOldComments.addNoteAbove = true;

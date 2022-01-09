@@ -9,16 +9,16 @@
 if (typeof debug452 == "function") debug452("start of stdSummaries");
 
 $(function() {
-	if ($("label[for=wpSummary]").html() == "Subject/headline:") return;
+	if (mw.util.getParamValue('section') == "new") return;
 	if (!$('#wpSummary').length) { debug452("No #wpSummary"); return; }
 	$(document).on('readystatechange', function() {
-		debug452("stdSummaries: '"+$('#wpSummary').attr('tabindex')+"'=3? '"+$('#wpMinoredit').attr('tabindex')+"'=4?");
 		$('#wpSummary').attr('tabindex', '3'); //set tabindex for summaries text area
 		$('#wpMinoredit').attr('tabindex', '4'); //set tabindex for minor edit checkbox
-		debug452("stdSummaries: '"+$('#wpSummary').attr('tabindex')+"'=3? '"+$('#wpMinoredit').attr('tabindex')+"'=4?");
 	});
 	$(document).trigger('readystatechange');
-	$combo = $('<select />')
+	$("#wpSummary").attr("placeholder", "Summarise your edit, or choose from the list below"); 
+
+	$('#wpSummaryLabel').after($('<select />')
 	  .attr('id', 'stdSummaries')
 	  .attr('tabindex', '2')
 	  .blur(function() {  $("#stdSummaries").change(); })
@@ -28,16 +28,14 @@ $(function() {
 			$('#stdSummaries').attr("last", $('#stdSummaries').val());
 			$('#wpSummary').val($("#wpSummary").html()+$(this).val()); 
 		}
-	  });
-	$("#wpSummary").attr("placeholder", "Summarise your edit, or choose from the list below"); 
-
-	$('#wpSummaryLabel').after($combo);
+	  })
+	);
 
 	function loadStdSummaries() {
-	  stdSummaries = localStorage.getItem('stdSummaries');
 	  stdSummariesVersion = localStorage.getItem('stdSummariesVersion');
-	  localStorage.setItem('stdSummariesVersion', 1);
-	  if (stdSummariesVersion != 1) localStorage.removeItem('stdSummaries');
+	  localStorage.setItem('stdSummariesVersion', 2);
+	  if (stdSummariesVersion != 2) localStorage.removeItem('stdSummaries');
+	  else stdSummaries = localStorage.getItem('stdSummaries');
 
 	  if (stdSummaries) {
 		sSArray = stdSummaries.split("\t");
@@ -45,8 +43,7 @@ $(function() {
 			var val = (sSArray[i].indexOf('-- ') == 0) ? sSArray[i].substring(3) : '';
 			var text = (sSArray[i].indexOf('-- ') == 0) ? '&nbsp;&nbsp;' + sSArray[i].substring(3) : sSArray[i];
 			var disable = (sSArray[i].indexOf('-- ') == 0 || sSArray[i].indexOf('(') == 0) ? '' : 'disabled';
-			var $opt = '<option value="' + val + '" ' + disable + '>' + text + '</option>';
-			$combo.append($opt);
+			$("#stdSummaries").append('<option value="' + val + '" ' + disable + '>' + text + '</option>');
 		}
 		recentSummaries = localStorage.getItem('recentsummaries');
 		if (recentSummaries) {
@@ -62,15 +59,7 @@ $(function() {
 		}
 
 	  } else {
-	    $.ajax({
-		'dataType': 'text',
-		'data': {
-			'title': 'Template:Stdsummaries',
-			'action': 'raw',
-			'ctype': 'text/plain'
-		},
-		'url': mw.config.get("wgScript"),
-		'success': function(data) {
+	    $.get(mw.util.getUrl('Template:StdSummaries', {action: 'raw'})).done(function (data) {
 			var lines = data.split("\n"), ignore = { ':': 1, '*': 1,  '<': 1 };
 			sSArray = new Array(); 
 			for (var i in lines) {
@@ -80,7 +69,6 @@ $(function() {
 			stdSummaries = sSArray.join("\t");
 			localStorage.setItem( 'stdSummaries', stdSummaries);
 			loadStdSummaries();
-		}
 	    });
 	  }
 	}

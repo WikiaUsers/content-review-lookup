@@ -13,21 +13,32 @@ $(function () {
 		}
 	}
 
+	function tryGuardCssValue(test) {
+		return (test && /^([\w-]+|\d+px \w+ #[0-9a-fA-F]{2,6}|#[0-9a-fA-F]{2,6}|\d+)$/.test(test)) ? test : null;
+	}
+
+	var GeneratedCssMarkerTypes = {};
+
 	// Make the map legend interactive.
 	$('.data-map-container').each(function () {
+		if (this._resourceMapInitialised) {
+			return;
+		}
+		this._resourceMapInitialised = true;
+		
 		var $this = $(this);
-		var $map = $this.find('.resourcemaptable');
+		var $map = $this.find('.map-container');
 		var $legendTable = $this.find('.map-legend');
-		var baseId = $map.attr('id');
+		var baseId = $this.attr('id');
 
 		// Create checkboxes for toggles, which can't be prerendered with wikitext.
 		// Caves:
 		var toggleCavesCheckboxId = baseId + '-toggle-cave';
-		$legendTable.prepend('<tr><td></td><td><input type="checkbox" id="'+toggleCavesCheckboxId+'" class="toggle-cave" checked>'
+		$legendTable.prepend('<tr class="no-icon"><td colspan=2><input type="checkbox" id="'+toggleCavesCheckboxId+'" class="toggle-cave" checked>'
 						   + '<label for="'+toggleCavesCheckboxId+'">'+Strings.ToggleCaves+'</label></td></tr>');
 		// All:
 		var toggleAllCheckboxId = baseId + '-toggle-all';
-		$legendTable.prepend('<tr><td></td><td><input type="checkbox" id="'+toggleAllCheckboxId+'" class="toggle-all" checked>'
+		$legendTable.prepend('<tr class="no-icon"><td colspan=2><input type="checkbox" id="'+toggleAllCheckboxId+'" class="toggle-all" checked>'
 						   + '<label for="'+toggleAllCheckboxId+'">'+Strings.ToggleAll+'</label></td></tr>');
 		// Convert resource placeholders:
 		$legendTable.find('td.map-legend-checkbox').each(function() {
@@ -49,6 +60,35 @@ $(function () {
 		$('#' + toggleCavesCheckboxId).on('click', function() {
 			setVisibility($map, 'cave', this.checked);
 		});
+		// Unhide elements that are hidden from view before scripts are loaded.
+		$legendTable.find('.data-map-needs-js').each(function() {
+			$(this).removeClass('data-map-needs-js');
+		});
+
+		// Generate CSS with marker styling (to save on manual maintenance work + CSS downloads everywhere).
+		var $style = $('<style type="text/css">');
+		var fragments = [];
+		$legendTable.find('td.map-legend-checkbox').each(function() {
+			var markerType = tryGuardCssValue(this.dataset.markerName);
+			var markerColour = tryGuardCssValue(this.dataset.markerColor);
+			var markerSize = tryGuardCssValue(this.dataset.markerSize);
+			var markerBorder = tryGuardCssValue(this.dataset.markerBorderSettings);
+
+			if (markerType && !GeneratedCssMarkerTypes[markerType]) {
+				fragments.push('.hide-' + markerType + ' .' + markerType + '{display:none}');
+
+				if ((markerColour || markerSize || markerBorder)) {
+					fragments.push('.map-legend .' + markerType + ',.' + markerType + '.dots > div{')
+					if (markerColour) fragments.push('background-color:' + markerColour + ';');
+					if (markerSize) fragments.push('width:'+markerSize+'px;height:'+markerSize+'px;');
+					if (markerBorder) fragments.push('border:'+markerBorder+';');
+					fragments.push('}')
+					GeneratedCssMarkerTypes[markerType] = true;
+				}
+			}
+		});
+		$style.text(fragments.join(''));
+		$this.append($style);
 	});
 	
 
@@ -76,7 +116,7 @@ $(function () {
 			borderL = parseFloat($this.data('border-left'));
 
 		$mapContainer.mousemove(function(e) {
-			var pos = $mapContainer.offset(),
+			var pos = $this.offset(),
 				top = pos.top,
 				left = pos.left,
 				lon = ((e.clientX + $(document).scrollLeft() - left) * widthCoords / $mapContainer.width() + borderL).toFixed(1),

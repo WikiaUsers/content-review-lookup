@@ -60,13 +60,17 @@ if(document.getElementById('wildStatCalc')){
 }
 
 // Temporary: load our experimental cloning calculator if one has been added to the page
-if(document.getElementById('wildStatCalc')){
+if(document.getElementsByClassName('cloningcalc')){
 	importScriptPage("MediaWiki:CloningCalculator.js");
 }
 
 // Load data map scripts if one has been added to the page
 if (document.getElementsByClassName('data-map-container')) {
 	importScriptPage("MediaWiki:ResourceMaps.js");
+	// Load spawn map scripts.
+	if (document.querySelector('.data-map-container[data-spawn-data-page-name]')) {
+		importScriptPage("MediaWiki:SpawnMaps.js");
+	}
 }
 
 /**

@@ -2,6 +2,7 @@
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
     window.pPreview.tlen = 200;
     window.pPreview.RegExp.iimages = [/Grabbit_Stub\.png/, /Grabbit_Store\.png/, /Grabbit_Spoiler\.png/, /Grabbit_Skulls\.png/, /Grabbit_Protect\.png/, /Grabbit_Notice\.png/, /Grabbit_Missing\.png/, /Grabbit_Icetide\.png/, /Grabbit_Help\.png/, /Grabbit_Heart\.png/, /Grabbit_Echoes\.png/, /Grabbit_Disambiguation\.png/, /Divider\.png/];
+    window.pPreview.RegExp.noinclude = ['.quotebackground', '.hatnote', '.Quote', '.Quote2'];
     window.pPreview.defimage = 'https://static.wikia.nocookie.net/anthemgame/images/5/55/Anthem_Loading_Image.gif/revision/latest?cb=20211219190407';
     window.pPreview.noimage = 'https://static.wikia.nocookie.net/anthemgame/images/6/6a/Default_Anthem_Image.png/revision/latest?cb=20200825204924';
     window.pPreview.delay = 200;

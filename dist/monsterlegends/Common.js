@@ -26,7 +26,7 @@ if (mw.config.get('wgPageName') === 'Calculators' || mw.config.get('wgPageName')
 }
 
 /* Calculators */
-if (mw.config.get('wgPageName') === 'Breeding_Calculator' || mw.config.get('wgPageName') === 'Monster_Legends_Wiki:Breeding_Calculator') {
+if (mw.config.get('wgPageName') === 'Breeding_Calculator' || mw.config.get('wgPageName') === 'Monster_Legends_Wiki:Breeding_Calculator' || mw.config.get('wgPageName') === 'User:Sonnorcteer/sandbox') {
     $(function () {
         importScriptPage('MediaWiki:BreedingCalculator/Code.js');
     });

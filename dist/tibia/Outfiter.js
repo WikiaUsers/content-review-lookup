@@ -85,7 +85,7 @@ $(function () {
       //180
       'Rustwurm', 'Bogwurm', 'Gloomwurm', 'Emerald_Raven', 'Mystic_Raven',
       //185
-      'Radiant_Raven'
+      'Radiant_Raven', 'Gloothomotive'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -166,7 +166,7 @@ $(function () {
     //must also be added to Template:OutfiterLink
     outfiter_names200 = [
       //200
-      'Dragon_Knight', 'Arbalester', 'Royal Costume'
+      'Dragon_Knight', 'Arbalester', 'Royal Costume', 'Formal_Dress'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -276,7 +276,8 @@ $(function () {
       Singeing_Steed: 8,
       Emerald_Raven: 8,
       Mystic_Raven: 8,
-      Radiant_Raven: 8
+      Radiant_Raven: 8,
+      Gloothomotive: 8
     },
     outfiter_sprites_mount_walking = {
     },

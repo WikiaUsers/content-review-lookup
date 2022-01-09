@@ -2,7 +2,7 @@
 
 //Global Show/Hide
 //Author: Princess Platinum
- var tooltips_list = [
+ window.tooltips_list = [
     {
         classname: 'Monster-Tooltip',
       parse: '{' + '{<#name#>|<#form#>}}',

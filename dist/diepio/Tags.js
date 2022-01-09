@@ -241,7 +241,6 @@ UserTagsJS.modules.mwGroups      = [
 /* Custom Tags */
 UserTagsJS.modules.custom = {
     /** Staff Ranks **/
-    'GellyPop'          : ['st', 'sa'],
     'JustLeafy'         : ['st'],
     'Banarama'          : ['st'],
     'AJ (QA)'           : ['st'],

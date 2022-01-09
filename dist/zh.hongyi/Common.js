@@ -17,6 +17,13 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
   var $tabs = $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100} } );
   $("[class*=portal_sliderlink]").click(function() { // bind click event to link
     $tabs.tabs('select', this.className.match(/portal_sliderlink-(\d+)/)[1]);
+    
+    // Allow links as tabs
+    $(".ui-tabs li a.ui-tabs-anchor").each(function(_, e) {
+      if (!$(e).attr("href").startsWith("#"))
+        $(e).unbind("click");
+    });
+    
     console.log("Sliding to " + this.className.match(/portal_sliderlink-(\d+)/)[1]);
     return false;
   });

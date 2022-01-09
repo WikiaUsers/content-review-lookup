@@ -13,7 +13,6 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
     'The_Smarter,_Wiser_King_Dedede': ['assistant'],
     'FireMatch': ['assistant'],
-    'Thelxinoe': ['assistant'],
     'Chickenkrispies': ['discord'],
     'Idroppedmypen': ['discord'],
     'Minnesotaman2007!': ['discord'],
@@ -361,10 +360,10 @@ window.MessageWallUserTags = {
         'Stryker305': 'Administrator',
         'BSpongeSM02':  'Administrator',
         'The_gamer_987654321':  'Administrator',
+        'Thelxinoe': 'Administrator',
     
         'The_Smarter,_Wiser_King_Dedede': 'Assistant',
         'FireMatch': 'Assistant',
-        'Thelxinoe': 'Assistant',
 
         'Idroppedmypen': 'Discussion Moderator',
         'SpongeTron D': 'Discussion Moderator',

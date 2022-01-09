@@ -274,7 +274,7 @@
 				    	applyreborn(reborn, 1, skill);
 						api.get( {
 							action: 'parse',
-							text: herodata.skill1_desc.replace('%s',skill.value),
+							text: herodata.skill1_desc.replace('%s',skill.value).replace('%%','%'),
 							contentmodel: 'wikitext',
 							disablelimitreport: 1,
 							format: 'json',
@@ -293,7 +293,7 @@
 				    	applyreborn(reborn, 2, skill);
 						api.get( {
 							action: 'parse',
-							text: herodata.skill2_desc.replace('%s',skill.value),
+							text: herodata.skill2_desc.replace('%s',skill.value).replace('%%','%'),
 							contentmodel: 'wikitext',
 							disablelimitreport: 1,
 							format: 'json',
@@ -312,7 +312,7 @@
 				    	applyreborn(reborn, 3, skill);
 						api.get( {
 							action: 'parse',
-							text: herodata.skill3_desc.replace('%s',skill.value),
+							text: herodata.skill3_desc.replace('%s',skill.value).replace('%%','%'),
 							contentmodel: 'wikitext',
 							disablelimitreport: 1,
 							format: 'json',
@@ -331,7 +331,7 @@
 				    	applyreborn(reborn, 4, skill);
 						api.get( {
 							action: 'parse',
-							text: herodata.skill4_desc.replace('%s',skill.value),
+							text: herodata.skill4_desc.replace('%s',skill.value).replace('%%','%'),
 							contentmodel: 'wikitext',
 							disablelimitreport: 1,
 							format: 'json',

@@ -18,13 +18,9 @@
 	var $period;
 	var $time;
 
-	/**
-	 * https://stackoverflow.com/a/35385518/10916512
-	 */
 	function htmlToElement(html) {
-		var template = document.createElement('template');
-		template.innerHTML = html;
-		return template.content.firstChild;
+		var template = mw.template.compile(html, 'html');
+		return template.render()[0];
 	}
 
 	function getErinnTime() {
@@ -79,11 +75,15 @@
 				)[0].main['*'];
 
 				var wrapper = document.querySelector('.sticky-modules-wrapper');
-				wrapper.insertBefore(htmlToElement(templateSource), wrapper.firstChild);
+				var element = htmlToElement(templateSource);
+				wrapper.insertBefore(element, wrapper.firstChild);
 				$period = document.querySelector('.mabinogi-clock-period');
 				$time = document.querySelector('.mabinogi-clock-time');
 				startTime();
 			});
 	}
-	$(main);
+	
+	mw.loader.using('mediawiki.template').then(function() {
+		$(main);
+	});
 })();

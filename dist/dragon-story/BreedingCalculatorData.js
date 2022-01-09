@@ -2373,6 +2373,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ]
             },
+            "birch": {
+                "name": "Birch",
+                "types": [
+                    "fey",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "birthday": {
                 "name": "Birthday",
                 "types": [
@@ -4107,6 +4123,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "18_hours_18",
                 "rarity": 3
+            },
+            "ceremony": {
+                "name": "Ceremony",
+                "types": [
+                    "fey",
+                    "purple",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
             },
             "chakra": {
                 "name": "Chakra",
@@ -8177,6 +8210,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "20_hours_20",
                 "rarity": 4,
                 "offspringeligibility": "worldevent",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "elmblue": {
+                "name": "Elmblue",
+                "types": [
+                    "fey",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]
@@ -13473,6 +13522,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "18_hours_18",
                 "rarity": 2
             },
+            "holt": {
+                "name": "Holt",
+                "types": [
+                    "fey",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "homunculus": {
                 "name": "Homunculus",
                 "types": [
@@ -18014,6 +18079,32 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "mindcone": {
+                "name": "Mindcone",
+                "types": [
+                    "fey",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "blue"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "mindvolt": {
                 "name": "Mindvolt",
                 "types": [
@@ -21432,6 +21523,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "6_hours_6",
                 "rarity": 3,
                 "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "palebark": {
+                "name": "Palebark",
+                "types": [
+                    "fey",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "25_hours_25",
+                "rarity": 4,
+                "offspringeligibility": "crafted",
                 "notes": [
                     "feature"
                 ]
@@ -26247,6 +26354,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "seedling": {
+                "name": "Seedling",
+                "types": [
+                    "fey",
+                    "pink",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "seeker": {
                 "name": "Seeker",
                 "types": [
@@ -28256,6 +28380,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "15_hours_15",
                 "rarity": 3,
                 "offspringeligibility": "worldevent",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "spellgrain": {
+                "name": "Spellgrain",
+                "types": [
+                    "fey",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]

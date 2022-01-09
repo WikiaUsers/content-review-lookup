@@ -2,7 +2,7 @@
 
 /** Discord banner invite fixed **/
 window.DiscordBannerSettings = {
-  inviteLink: 'eR67sjC'
+  inviteLink: '2K5gqJ5Wt6'
 }
 
 /** Embed music list **/

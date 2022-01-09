@@ -602,38 +602,3 @@ if (typeof tabberOptions == 'undefined') {
   }
  
 }
-
-
-
-/**
- * Convert the page title inside the VisualEditor into a link pointing
- * back to the original page.
- */
-(function () {
-// Don't run unless the VisualEditor has loaded
-mw.hook('ve.activationComplete').add(function () {
-// Get the name of the page and replace underscores with spaces
-var currentPageName = mw.config.get('wgPageName').replace(/_/g, ' ');
-// Find the VisualEditor Page Title
-var VETitle = document.getElementsByClassName(
-'ve-init-mw-desktopArticleTarget-title'
-)[0];
- 
-// Create a link to the current page
-var link = document.createElement('a');
-// Set the href to be
-link.href = window.location.pathname;
-// Set the title for mouseover
-link.title = currentPageName;
-// Always open in a new tab
-link.target = '_blank';
-link.rel = 'noreferrer noopener';
-// Set the text to be the page name
-link.textContent = currentPageName;
- 
-// Remove the original title
-VETitle.textContent = '';
-// Add the link to the title
-VETitle.appendChild(link);
-});
-})();

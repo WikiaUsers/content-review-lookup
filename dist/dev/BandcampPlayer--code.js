@@ -10,7 +10,7 @@ mw.hook('wikipage.content').add(function($content) {
 			data_src = elem.attr( 'data-src' );
  
 		if ( !/^https?:\/\/bandcamp\.com\//.test( data_src ) ) return;
-
+		elem.empty();
 		var is_px = [ true, true ]; // width, height
  
 		if ( /%/.test( width ) || !/\d+/.test( width ) ) is_px[ 0 ] = false;
