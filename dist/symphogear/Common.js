@@ -31,4 +31,17 @@ $(function() {
 		$(this).parents('.article-tabs').last().css('margin-bottom' , '+=' + $TabsHeight);
 	});
 });
+
+/* 
+////////////////////////////////////////////////////////////////////
+// THE BELOW CODE randomly changes text above top navigation from "Symphogear Wiki" to one from the list -  From Marvel Database Fandom
+////////////////////////////////////////////////////////////////////
+*/
+var wiki_name_number=Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + 1;
+var wiki_name_text=["Meteoroid-falling, burning, and disappear, then…", "In the distance, that day, when the star became music...", "Believe in justice and hold a determination to fist.", "By shedding many tears, the reality you face is...", "Create a history, with the light God could not know" ][wiki_name_number];
+var elements=document.getElementsByClassName('fandom-community-header__community-name');
+var wiki_name=elements[0];
+wiki_name.textContent=wiki_name_text;
+
+
 // END of Template:Tabs

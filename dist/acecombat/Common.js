@@ -13,7 +13,7 @@ window.globalFileUsageConfig = {
 /*** dev:AddRailModule ***/
 window.AddRailModule = [
 	{page: 'Template:DiscordRailModule', prepend: true, maxAge: 86400},
-	{page: 'Template:NewPagesRailModule', maxAge: 0}
+	//{page: 'Template:NewPagesRailModule', maxAge: 0}
 ];
 
 /*** dev:Tooltips ***/

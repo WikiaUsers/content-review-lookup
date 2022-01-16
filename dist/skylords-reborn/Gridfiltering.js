@@ -33,7 +33,7 @@ gridFilters = {
         ['Legendary', 'Legendary'],
     ],
     size: ['- Size -', ['S', 'S'], ['M', 'M'], ['L', 'L'], ['XL', 'XL']],
-    special: ['- Special -', ['Non-Legendary', 'Non-Legendary'], ['Promo', 'Promo'], ['Starter', 'Starter (PvE)']],
+    special: ['- Special -', ['Non-Legendary', 'Non-Legendary'], ['Promo', 'Promo'], ['Starter', 'Starter (PvE)'], ['Male', 'Male'], ['Female', 'Female'], ['None', 'None (Gender)']],
     weapontype: ['- Range -', ['Melee', 'Melee'], ['Ranged', 'Ranged'], ['Special', 'Special']],
 
     orbs: ['Fire', 'Frost', 'Nature', 'Shadow', 'Neutral'],
@@ -304,7 +304,8 @@ gridFilters = {
             if (
                 ($('#grid-filter-affinities-field')[0].selectedIndex > 0 &&
                     $('#grid-filter-affinities-field')[0].selectedIndex < 5) ||
-                $('#grid-filter-special-field')[0].selectedIndex > 1
+                $('#grid-filter-special-field')[0].selectedIndex > 1 &&
+                    $('#grid-filter-special-field')[0].selectedIndex < 4
             ) {
                 var len = $('#card-grid > span:visible').length;
                 if (len === 1) {

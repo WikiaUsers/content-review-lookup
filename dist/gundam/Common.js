@@ -1,17 +1,23 @@
+// register hook before import to avoid race conditions
+mw.hook('dev.wds').add(function(wds) {
+	$('.sub-wds-icons-pages-small').append(
+		$('<span>', {
+			'id': 'dev-wds-icons-pages-small'
+		})
+	);
+	wds.render('.sub-wds-icons-pages-small');
+});
+
 /* Include Global Anime-Common.js Information */
 importArticles({
     type: 'script',
     articles: [
+    	'u:dev:MediaWiki:WDSIcons/code.js',
         'u:anime:MediaWiki:Anime-Common.js',
         'MediaWiki:Common.js/FairUseUpload.js',
         'u:dev:MediaWiki:ReferencePopups/code.js',
     ]
 });
-
-if ($('#gallery-background').length) {
-    var galleryBackground = document.getElementById('gallery-background').innerHTML;
-    $('.pi-image').css('background-color', galleryBackground);
-}
 
 // Copied from http://avatar.wikia.com/wiki/MediaWiki:Common.js/icons.js
 $(function IconsOasis() {

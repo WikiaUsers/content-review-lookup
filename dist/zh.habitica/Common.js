@@ -41,3 +41,14 @@ SpoilerAlert = {
     },
     back:true
 };
+
+// DiscussionTemplates.js 来自 https://dev.fandom.com/wiki/DiscussionTemplates
+
+window.DiscussionTemplates = {
+    templates: {
+        'Welcome': {
+            name: 'Template:Welcome',
+            title: '欢迎'
+        }
+    },
+};

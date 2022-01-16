@@ -553,3 +553,9 @@ if (mwCustomEditButtons) {
      "tagClose": "\r| RealName                = \r| Pseudonyms              = \r| Employers               = \r| Titles                  = \r\r| Gender                  = \r| YearOfBirth             = \r| MonthOfBirth            = \r| DayOfBirth              = \r| CityOfBirth             = \r| StateOfBirth            = \r| CountryOfBirth          = \r| Creations               = \r| First                   = \r\r| PersonalHistory         = \r| ProfessionalHistory     = \r\r| Notes                   = \r| Trivia                  = \r| OfficialWebsite         = \r| Links                   = \r\}\}",
      "sampleText": ""};
 }
+/* from marvel.fancom.com */
+var wiki_name_number=Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + 1;
+var wiki_name_text=["Excelsior!", "Avengers Uniti!", "A Me, Miei X-Men!", "Da Grandi Poteri...", "Hulk Spacca!", "Snikt!", "Fiamma!", "Wakanda Per Sempre!", "Io Sono Iron Man", "Io Sono Groot", "Bamf!", "Chiunque Impugnerà Questo Martello, Se Ne Sarà Degno...", "Imperius Rex!", "Thwip!" ][wiki_name_number];
+var elements=document.getElementsByClassName('fandom-community-header__community-name');
+var wiki_name=elements[0];
+wiki_name.textContent=wiki_name_text;

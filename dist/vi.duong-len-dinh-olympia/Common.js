@@ -117,18 +117,20 @@ $(function() {
  
 /* Kết thúc {{USERNAME}} thủ tục thay thế */
 
-/* Nhập khẩu không ảnh hưởng đến Oasis Skin (Chỉ monobook skins) */
-$(function () {
-    if (skin === 'oasis' || skin === 'wikia' ) {
-        /* Không có gì để nhập */}
-    else {
-    importArticles({
+/* AutoCreateUserPages */
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2: '{{sub'+'st:MediaWiki:Welcome-user-page}}',
+        3: '{{autowelcome}}',
+    1202: false
+},
+    summary: 'Auto creating user page',
+    notify: '<a href="/wiki/User:$2">Here is a link to your userpage, $1!</a>'
+};
+
+importArticles({
     type: 'script',
     articles: [
-        'u:dev:UTCClock/code.js',
-        'u:dev:DisplayTimer/code.js',
-        'u:dev:LastEdited/code.js'
+        'u:dev:MediaWiki:AutoCreateUserPages.js',
     ]
-});
-    }
 });

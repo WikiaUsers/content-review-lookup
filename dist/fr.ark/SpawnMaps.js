@@ -1,9 +1,6 @@
 $(function () {
 
-	var NameTranslations = {};
-	var GeneralUntamability = {
-		"Aberrant Cnidaria":1,"Aberrant Meganeura":1,"Alpha Basilisk":1,"Alpha Carnotaurus":1,"Alpha Deathworm":1,"Alpha Fire Wyvern":1,"Alpha Karkinos":1,"Alpha Leedsichthys":1,"Alpha Megalodon":1,"Alpha Mosasaur":1,"Alpha Raptor":1,"Alpha Surface Reaper King":1,"Alpha T-Rex":1,"Alpha Tusoteuthis":1,"Ammonite":1,"Broodmother Lysrix":1,"Cnidaria":1,"Corrupted Arthropluera":1,"Corrupted Carnotaurus":1,"Corrupted Chalicotherium":1,"Corrupted Dilophosaur":1,"Corrupted Giganotosaurus":1,"Corrupted Paraceratherium":1,"Corrupted Pteranodon":1,"Corrupted Raptor":1,"Corrupted Reaper King":1,"Corrupted Rex":1,"Corrupted Rock Drake":1,"Corrupted Spino":1,"Corrupted Stegosaurus":1,"Corrupted Triceratops":1,"Corrupted Wyvern":1,"Deathworm":1,"Defense Unit":1,"Deinonychus":1,"Enforcer":1,"Enraged Corrupted Rex":1,"Eurypterid":1,"Fire Wyvern":1,"Glowbug":1,"Ice Wyvern":1,"Iceworm Male":1,"Insect Swarm":1,"Leedsichthys":1,"Lightning Wyvern":1,"Macrophage":1,"Magmasaur":1,"Meganeura":1,"Nameless":1,"Oil Jug Bug":1,"Parakeet Fish School":1,"Poison Wyvern":1,"Polar Bear":1,"Purlovia":1,"R-Reaper King":1,"R-Reaper Queen":1,"Reaper Queen":1,"Rock Drake":1,"Rubble Golem":1,"Scout":1,"Seeker":1,"Summoner":1,"Surface Reaper King":1,"Titanomyrma Drone":1,"Titanomyrma Soldier":1,"Water Jug Bug":1,"Yeti":1
-	};
+    var SharedDataPage = 'Data:Spawn Map/Shared';
 	var RarityClasses = [
 		'cr-region-map-very-rare',
 		'cr-region-map-rare',
@@ -27,6 +24,8 @@ $(function () {
 		TooltipUntameableLocal: 'les créatures de ce lieu ne sont pas apprivoisables',
 	};
 	var RE_CONTAINER_NAME = /DinoSpawnEntries_?|SpawnEntries_?/i;
+    var CACHE_NAME = 'ArkDataMaps';
+    var CACHE_EXPIRY_TIME = 24 * 60 * 60;
 
 
 	function formatPercent(v, precision, threshold) {
@@ -37,14 +36,43 @@ $(function () {
 		return v + '%';
 	}
 
-	function fetchSpawnData(context, onSuccess, onFailure) {
-		// TODO: caching
-		$.getJSON(mw.util.getUrl(context.pageName, {
-			action: 'raw',
-		})).done(function(data) {
-			context.data = data;
-			onSuccess();
-		}).fail(onFailure);
+	function fetchSpawnDataPages(context) {
+        return caches.open(CACHE_NAME).then(function (cache) {
+            function fetchDataPageInternal(pageName, outFieldName) {
+                var timeNow = new Date().getTime();
+                var url = mw.util.getUrl(pageName, {
+                    action: 'raw',
+                    ctype: 'application/json'
+                });
+                var request = new Request(url);
+                return cache.match(request).then(function (response) {
+                    // Check if cache entry is recent and valid.
+                    if (response && response.ok && (Date.parse(response.headers.get('Expires')) > timeNow)) {
+                        return response;
+                    }
+
+                    // Fetch the page from API.
+                    return fetch(request).then(function (response) {
+                        response.clone().blob().then(function(body) {
+                            cache.put(request, new Response(body, { headers: {
+                                'Expires': (new Date(timeNow + (CACHE_EXPIRY_TIME))).toUTCString(),
+                            }}));
+                        });
+                        return response;
+                    });
+                }).then(function (response) {
+                    return response.json().then(function(data) {
+                        context[outFieldName] = data;
+                    });
+                });
+            }
+
+            // Retrieve shared and map-specific data.
+            return Promise.all([
+                fetchDataPageInternal(SharedDataPage, 'shared'),
+                fetchDataPageInternal(context.pageName, 'data')
+            ]);
+        });
 	}
 
 	function populateCreatureSelector(context) {
@@ -53,7 +81,7 @@ $(function () {
 
 		var $creatureGroup = $('<optgroup label="' + Strings.OptionGroupCreatures +'">');
 		context.creatures.forEach(function (name) {
-			var displayName = NameTranslations[name] ? NameTranslations[name] : name;
+			var displayName = context.shared.NameTranslations[name] ? context.shared.NameTranslations[name] : name;
 			$creatureGroup.append($('<option>').text(displayName).val(name));
 		});
 		context.$select.append($creatureGroup);
@@ -180,7 +208,7 @@ $(function () {
 					var localProbability = containerProbabilities[container.n] ? containerProbabilities[container.n] : 0;
 					var amount = localProbability * spawner.f;
 					// Tamability.
-					var tamable = !(spawner.u || GeneralUntamability[name]);
+					var tamable = !(spawner.u || context.shared.GeneralUntamability[name]);
 					if (!tamable) {
 						tooltipExtra = '\n' + (!spawner.u ? Strings.TooltipUntameable : Strings.TooltipUntameableLocal);
 					}
@@ -239,6 +267,7 @@ $(function () {
 	var isFandomMobile = document.body.classList.contains('skin-fandommobile');
 
 	$('.data-map-container').each(function () {
+        // Do not double-initialise the map.
 		if (this.__spawnMapInitialised) {
 			return;
 		}
@@ -257,8 +286,10 @@ $(function () {
 			offsetBottom: parseFloat($this.data('border-bottom')),
 
 			pageName: $(this).data('spawn-data-page-name'),
+
 			data: null,
 			creatures: [],
+            shared: null,
 		};
 		context.$resourceMap = isFandomMobile ? context.$map.find('img.resourcemap') : context.$map.children().last();
 
@@ -277,7 +308,7 @@ $(function () {
 		}
 
 		// Request spawn data from browser cache or server.
-		fetchSpawnData(context, function() {
+		fetchSpawnDataPages(context).then(function() {
 
 			context.$select = $('<select>')
 							  .change(function () {

@@ -71,9 +71,9 @@ $(function () {
       //145
       'Antelope', 'Haze', 'Snow_Strider', 'Dusk_Pryer', 'Dawn_Strayer',
       //150
-      'Cold_Percht_Sleigh_Variant', 'Bright_Percht_Sleigh_Variant', 'Dark_Percht_Sleigh_Variant', 'Cold_Percht_Sleigh_Final', 'Bright_Percht_Sleigh_Final',
+      'Cold_Percht_Sleigh_Variant', 'Bright_Percht_Sleigh_Variant', 'Dark_Percht_Sleigh_Variant', 'Finished_Cold_Percht_Sleigh', 'Finished_Bright_Percht_Sleigh',
       //155
-      'Dark_Percht_Sleigh_Final', 'Benevolent_Coral_Rhea', 'Benevolent_Eventide_Nandu', 'Benevolent_Savanna_Ostrich', 'Coral_Rhea',
+      'Finished_Dark_Percht_Sleigh', 'Benevolent_Coral_Rhea', 'Benevolent_Eventide_Nandu', 'Benevolent_Savanna_Ostrich', 'Coral_Rhea',
       //160
       'Eventide_Nandu', 'Savanna_Ostrich', 'Phantasmal_Jade', 'White_Lion_(Mount)', 'Cunning_Hyaena',
       //165
@@ -85,7 +85,11 @@ $(function () {
       //180
       'Rustwurm', 'Bogwurm', 'Gloomwurm', 'Emerald_Raven', 'Mystic_Raven',
       //185
-      'Radiant_Raven', 'Gloothomotive'
+      'Radiant_Raven', 'Gloothomotive', 'Dreadhare', 'Ember_Saurian', 'Emerald_Sphinx',
+      //190
+      'Floating_Augur', 'Floating_Sage', 'Floating_Scholar', 'Gold_Sphinx', 'Jackalope',
+      //195
+      'Jungle_Saurian', 'Lagoon_Saurian', 'Shadow_Sphinx', 'Wolpertinger'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -166,7 +170,7 @@ $(function () {
     //must also be added to Template:OutfiterLink
     outfiter_names200 = [
       //200
-      'Dragon_Knight', 'Arbalester', 'Royal Costume', 'Formal_Dress'
+      'Dragon_Knight', 'Arbalester', 'Royal_Costume', 'Formal_Dress'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -277,7 +281,10 @@ $(function () {
       Emerald_Raven: 8,
       Mystic_Raven: 8,
       Radiant_Raven: 8,
-      Gloothomotive: 8
+      Gloothomotive: 8,
+      Floating_Augur: 8,
+      Floating_Sage: 8,
+      Floating_Scholar: 8
     },
     outfiter_sprites_mount_walking = {
     },

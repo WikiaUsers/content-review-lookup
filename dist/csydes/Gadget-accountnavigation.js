@@ -12,7 +12,7 @@
         },
         blogs: {
             text: 'My Blogs',
-            url: '/wiki/User_blog:' + user
+            url: '/wiki/Special:Myblog'
         }
     },
         html = '',

@@ -107,7 +107,7 @@ function calculate() {
 	var kimono = "https://static.wikia.nocookie.net/nonograms-katana/images/8/85/Kimono.png/revision/latest?cb=20211026102346";
 	var ninja_suit = "https://static.wikia.nocookie.net/nonograms-katana/images/3/3d/Ninja_suit.png/revision/latest?cb=20211026102357";
 	var samurai_armor = "https://static.wikia.nocookie.net/nonograms-katana/images/5/51/Samurai_armor.png/revision/latest?cb=20211026102409";
-	//Additional rewards for levels: 30, 50, 80 and 100.
+	//Additional rewards for levels: 30, 50, 80 and 100 (and 150, 200, 250, etc.).
 	var add_level = [30, 50, 80, 100];
 	var add_rewards = [["3", firework, "0", "0", "0", "0"],
 						["1", ramen, "1", curry, "1", date_cake],
@@ -228,7 +228,7 @@ function calculate() {
 			var ar = i;
 		}
 	}
-	
+	//Displays additional rewards for jubilee levels.
 	if (ar != -1){
 		document.getElementById("add_reward1").innerHTML = add_rewards[ar][0] + " x ";
 		var imgAddItem1 = document.createElement("img");
@@ -257,7 +257,30 @@ function calculate() {
 			document.getElementById("add_reward3").appendChild(imgAddItem3);
 		} else {
 			document.getElementById("add_reward3").innerHTML = "0";
-		}
+		} 
+	
+	//Displays additional rewards for levels above 150.
+	} else if (level%50 == 0 && level >= 150) {
+		document.getElementById("add_reward1").innerHTML = add_rewards[3][0] + " x ";
+		var imgAddItem1 = document.createElement("img");
+		imgAddItem1.src = add_rewards[3][1];
+		imgAddItem1.width = "30";
+		imgAddItem1.height = "30";
+		document.getElementById("add_reward1").appendChild(imgAddItem1);
+		
+		document.getElementById("add_reward2").innerHTML = add_rewards[3][2] + " x ";
+		var imgAddItem2 = document.createElement("img");
+		imgAddItem2.src = add_rewards[3][3];
+		imgAddItem2.width = "30";
+		imgAddItem2.height = "30";
+		document.getElementById("add_reward2").appendChild(imgAddItem2);
+		
+		document.getElementById("add_reward3").innerHTML = add_rewards[3][4] + " x ";
+		var imgAddItem3 = document.createElement("img");
+		imgAddItem3.src = add_rewards[3][5];
+		imgAddItem3.width = "30";
+		imgAddItem3.height = "30";
+		document.getElementById("add_reward3").appendChild(imgAddItem3);
 	} else {
 		document.getElementById("add_reward1").innerHTML = "0";
 		document.getElementById("add_reward2").innerHTML = "0";

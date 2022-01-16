@@ -27,5 +27,8 @@ window.tooltips_list = [
     },	{
         classname: 'glossary',
         parse: '{' + '{Template:Glossary tip|1=<#name#>|2=<#text1#>|3=<#text2#>|4=<#text3#>|title=<#title#>}}',
+    },	{
+        classname: 'sticker-tooltip',
+        parse: '{' + '{Template:Sticker tip|1=<#name#>|2=<#text1#>|3=<#text2#>|u=<#use#>|r=<#rarity#>|o=<#obtain#>}}',
     }
 ];

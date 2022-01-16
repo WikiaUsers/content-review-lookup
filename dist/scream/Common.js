@@ -15,11 +15,9 @@ importArticles({
         ]
 });
 
-window.SpoilerAlert = {
-        question: 'This page contains upcoming content of Scream (TV Series). Are you sure you want to continue?',
-        yes: 'Yes, continue',
-        no: 'No, I want it to be a surprise',
-        isSpoiler: function () {
-            return (-1 !== wgCategories.indexOf('Approaching Content','Approaching Content'));
-        }
-    };
+window.SpoilerAlertJS = {
+    question: 'This area contains spoilers for Scream (2022). Are you sure you want to read it?',
+    yes: 'Yes',
+    no: 'No',
+    fadeDelay: 1000
+};

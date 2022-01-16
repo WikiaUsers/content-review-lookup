@@ -37,6 +37,28 @@ if (mw.config.get('wgPageName') === 'Интерактивная_таблица')
     importArticle({ type: 'script', article: 'MediaWiki:Items.js' });
 }
 
+//и ещё кусочек комфорта!
+!function( $, mw ) {
+	var page  = mw.config.get( 'wgTitle' )
+	  , pages = [
+	  	    'Таблица артефактов',
+	  	    'Таблица брелоков',
+	  	    'Интерактивная таблица'
+	  	]; 
+
+	if ( pages.indexOf( page ) == -1 ) return;
+
+    $( 'img.lazyload' ).each( function() {
+		$( this )
+          .attr( 'src', $( this ).attr( 'data-src' ) )
+          .attr( 'class', 'lazyloaded' );
+    });
+}( jQuery, mediaWiki );
+
+
+
+
+
 //Подсветка активной статьи
 if ($('#blight').length) {
    $('#blight .sn[data-title="' + mw.config.get('wgPageName') + '"]').addClass("snlight");

@@ -18,6 +18,7 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+'Morshabaal': '12.85.11508',
 // Changes made on August 24, 2021
 'Venerable Girtablilu': '12.71.11017',
 'Girtablilu Warrior': '12.71.11017',

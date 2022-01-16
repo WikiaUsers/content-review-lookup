@@ -1,5 +1,5 @@
-var debugcolour = 'purple';  //Change the colour to confirm cache updates
-var debugversion = '1641527000115';
+var debugcolour = 'yellow';  //Change the colour to confirm cache updates
+var debugversion = '1642224996703';
 
 window.test452 = { ready:false, complete:false};
 window.debug452 = function(out, alert) { if (mw.config.get("wgUserName") == "452") { if ( ["object", "null", "function"].indexOf(typeof out) == -1) console.log(new Date().toJSON()+" "+out); else { console.log(new Date().toJSON()+" object:"); console.log(out); } if (typeof alert != "undefined") window.alert(out); } }
@@ -220,6 +220,7 @@ $(document).on('readystatechange', function() {
 
   if (document.readyState == "complete") {
     $(".CategoryTreeHover .CategoryTreeToggle").eq(0).trigger("click").trigger("click");
+    if (location.hash && $(location.hash).length) { $(location.hash)[0].scrollIntoView(); debug452("scrollIntoView"); }
 
     $('.WikiaRail').on('DOMNodeInserted', function(event) { //fires after lazy-loading takes place.
 	//It is important not to unbind this event, because #wikia-recent-activity is replaced twice when logged out.

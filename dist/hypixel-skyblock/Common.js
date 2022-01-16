@@ -16,15 +16,15 @@ See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
 */
 
 /* jshint
-	esversion: 5, forin: true,
-	immed: true, indent: 4,
-	latedef: true, newcap: true,
-	noarg: true, undef: true,
-	undef: true, unused: true,
-	browser: true, jquery: true,
-	onevar: true, eqeqeq: true,
-	multistr: true, maxerr: 999999,
-	-W082, -W084
+    esversion: 5, forin: true,
+    immed: true, indent: 4,
+    latedef: true, newcap: true,
+    noarg: true, undef: true,
+    undef: true, unused: true,
+    browser: true, jquery: true,
+    onevar: true, eqeqeq: true,
+    multistr: true, maxerr: 999999,
+    -W082, -W084
 */
 
 /* global mw, importScripts, BannerNotification */
@@ -179,15 +179,16 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
     function addCommentId() {
         $("[class^=\"Comment_comment\"], [class^=\"Reply_reply\"]").each(function () {
-            if ($(this).append) { // if $(this) is a jquery element
-                var threadIsComment = $(this).is("[class^=\"Comment_comment\"]");
+            var $this = $(this);
+            if ($this.append) { // if $this is a jquery element
+                var threadIsComment = $this.is("[class^=\"Comment_comment\"]");
                 var threadClassName = (threadIsComment ? "comment" : "reply") + "-id-display";
-                switch ($(this).find("." + threadClassName).length) {
+                switch ($this.find("." + threadClassName).length) {
                     case 0:
-                        var replyID = $(this).attr("data-reply-id");
-                        var commentID = $(this).parent().attr("data-thread-id") || $(this).parent().parent().parent().attr("data-thread-id");
+                        var replyID = $this.attr("data-reply-id");
+                        var commentID = $this.parent().attr("data-thread-id") || $this.parent().parent().parent().attr("data-thread-id");
                         var threadLink = "commentId=" + commentID + (replyID ? "&replyId=" + replyID : "");
-                        $(this).append(
+                        $this.append(
                             $("<div>", {
                                 "class": threadClassName,
                                 "data-link": threadLink,
@@ -201,7 +202,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                     case 1:
                         break; // do nothing
                     default:
-                        $(this).find("." + threadClassName).each(function (i, elem) {
+                        $this.find("." + threadClassName).each(function (i, elem) {
                             if (i) /* not zero (i.e. not first element) */ elem.remove();
                         });
                 }
@@ -301,14 +302,14 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         }
         $("tr .text-anchor").each(function () {
             var $textAnchor = $(this);
-            var id = $(this).attr("id");
-            $(this).removeAttr("id");
-            $(this).closest("tr").attr("id", id);
+            var id = $textAnchor.attr("id");
+            $textAnchor.removeAttr("id");
+            $textAnchor.closest("tr").attr("id", id);
 
             // Re-trigger hash tag
             if (location.hash.replace("#", "") === id) {
                 // Show table if collapsed:
-                var inCollapseTable = $(this).parents(".mw-collapsed");
+                var inCollapseTable = $textAnchor.parents(".mw-collapsed");
                 setTimeout(function () {
                     if (inCollapseTable.length) {
                         var parentTable = $(inCollapseTable[0]);
@@ -316,10 +317,10 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                         parentTable.find("tr").stop().show();
 
                         /*if(parentTable.hasClass("mw-made-collapsible")) {
-                        	var collapseID = parentTable.attr("id").replace("mw-customcollapsible-", "");
-                        	$(".mw-customtoggle-"+collapseID).click();
+                            var collapseID = parentTable.attr("id").replace("mw-customcollapsible-", "");
+                            $(".mw-customtoggle-"+collapseID).click();
                         } else {
-                        	parentTable.removeClass("mw-collapsed");
+                            parentTable.removeClass("mw-collapsed");
                         }*/
                     }
                     _pushHashAndFixTargetSelector(location.hash);
@@ -425,15 +426,16 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         }
 
         function clickTab(id) {
+            var $parent = $(this).parents(".sbw-ui-tabber").eq(0);
             id = "ui-" + id;
             if (!$("#" + id).length) {
                 console.warn("No such tab ID \"" + id + "\"");
                 return;
             }
-            $(".sbw-ui-tab-content#" + id).siblings().addClass("hidden").hide();
-            $(".sbw-ui-tab-content#" + id).removeClass("hidden").show();
+            $parent.find(".sbw-ui-tab-content#" + id).siblings(".sbw-ui-tab-content").addClass("hidden").hide();
+            $parent.find(".sbw-ui-tab-content#" + id).removeClass("hidden").show();
             // Since images don't load on hidden tabs, force them to load
-            $(".sbw-ui-tab-content#" + id + " .lzy[onload]").load();
+            $parent.find(".sbw-ui-tab-content#" + id + " .lzy[onload]").load();
         }
 
         // .hidden works on mobile, but not on desktop
@@ -450,7 +452,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                     .replace("ui-", "");
 
                 $(this).click(function () {
-                    clickTab(className);
+                    clickTab.call(this, className);
                 });
             }
         });
@@ -461,7 +463,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
             var id = $(this).data("tab");
             if (id) {
-                clickTab(id);
+                clickTab.call(this, id);
             }
         });
 
@@ -477,7 +479,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                 $("<div>").addClass("mcui-returnbutton text-zoom-independent noselect")
                 .attr("data-font-size", "22").text("↻")
                 .click(function () {
-                    clickTab(className);
+                    clickTab.call(this, className);
                 })
             );
         });
@@ -488,7 +490,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     }
 
     // if (mw.config.get("wgPageName").match(/^HSW:(.+)$/i) && mw.config.get("wgAction") === "view") {
-    // 	window.location.replace(mw.util.getUrl("Project:" + mw.config.get("wgPageName").match(/^HSW:(.+)$/i)[1]));
+    //     window.location.replace(mw.util.getUrl("Project:" + mw.config.get("wgPageName").match(/^HSW:(.+)$/i)[1]));
     // }
 
     // Code to compromise "srcset" in order to display images in infoboxes with maximum width

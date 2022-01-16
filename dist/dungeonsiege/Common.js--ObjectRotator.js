@@ -6,8 +6,8 @@
 */
 $(document).ready(function() {
     if(wgCategories.indexOf("3D Enabled") > -1) {
-        $("img.pi-image-thumbnail").first().replaceWith("<div id=\"object-rotator\"><img src=\"http://elderscrolls.fandom.com/wiki/Special:FilePath/3Ddef.png?width=214px\" style=\"position: absolute; bottom: 0; left: 0; opacity: 0.1\" /></div>");
-        $("#object-rotator").css("background-image", "url(\"http://elderscrolls.fandom.com/wiki/Special:FilePath/" + wgPageName + "_3D.png\")");
+        $("img.pi-image-thumbnail").first().replaceWith("<div id=\"object-rotator\"><img src=\"http://dungeonsiege.fandom.com/wiki/Special:FilePath/3Ddef.png?width=214px\" style=\"position: absolute; bottom: 0; left: 0; opacity: 0.1\" /></div>");
+        $("#object-rotator").css("background-image", "url(\"http://dungeonsiege.fandom.com/wiki/Special:FilePath/" + wgPageName + "_3D.png\")");
 
         //Mouse event listener (movement + mouse 1 down)
         $("#object-rotator").on("mousemove", function(e) {

@@ -3,7 +3,7 @@
  * 17:15, July 2, 2017 (UTC)
  * <source lang = "JavaScript">
  * Origin: https://naruto.fandom.com/wiki/MediaWiki:Common.js/FairUseUpload.js
- * ScriptPage: https://lanoire.fandom.com/fr/wiki/MediaWiki:Common.js
+ * ScriptPage: https://bully.fandom.com/fr/wiki/MediaWiki:Common.js
  * Builds a form for easy uploading of images
  * and to ensure proper rationale and licensing
  * @author: UltimateSupreme (https://naruto.fandom.com/wiki/User:UltimateSupreme)

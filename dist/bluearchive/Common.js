@@ -42,3 +42,20 @@ mw.loader.using('mediawiki.util').then(function () {
 
 mw.hook('wikipage.content').add(expandAll_Buttons);
 expandAll_Buttons($('#content'));
+window.lastEdited = {
+	size: false,
+	diff: false,
+	position: {
+		element: document.getElementById('mw-content-text'),
+		method: 'prepend'
+	},    
+
+}
+
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:LastEdited/code.js',
+    ]
+});

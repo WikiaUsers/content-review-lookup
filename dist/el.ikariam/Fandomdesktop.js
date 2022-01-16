@@ -1,3 +1,4 @@
+$('.page-content').css('overflow-x','unset');
 // Patching in changes to table sorting and alt rows.
 $(function changeTS() {
     window['ts_alternate'] = function (table) {

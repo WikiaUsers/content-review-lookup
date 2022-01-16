@@ -14,19 +14,19 @@
 
 ;(function ($, mw) {
 
-    'use strict';
+    "use strict";
 
     function highlightTable() {
 
         // requires CSS classes named in lightOnClass and mouseOverClass
-        var wgPageName = mw.config.get('wgPageName'),
-            cookiePrefix = 'lightTable',
-            tableClass = 'lighttable',
-            lightOnClass = 'highlight-on',
-            mouseOverClass = 'highlight-over',
-            base64url = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_',
-            pageSeparator = '!',
-            tableSeparator = '.',
+        var wgPageName = mw.config.get("wgPageName"),
+            cookiePrefix = "lightTable",
+            tableClass = "lighttable",
+            lightOnClass = "highlight-on",
+            mouseOverClass = "highlight-over",
+            base64url = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_",
+            pageSeparator = "!",
+            tableSeparator = ".",
             hashPageName,
             rows = [],
             columns,
@@ -66,7 +66,7 @@
                 retVal += 4294967296;
             }
             // 32-bit hex string, padded on the left
-            retVal = '0000000' + retVal.toString(16).toUpperCase();
+            retVal = "0000000" + retVal.toString(16).toUpperCase();
             retVal = retVal.substr(retVal.length - 8);
 
             return retVal;
@@ -76,13 +76,13 @@
         function setHighlight(el, val) {
             $(el).removeClass(mouseOverClass).removeClass(lightOnClass);
             switch (val) {
-            case 1:  // light on
-                $(el).addClass(lightOnClass);
-                break;
-            case 2:  // mouse-over
-                $(el).addClass(mouseOverClass);
-                break;
-            default: // same as case 0, light off
+                case 1: // light on
+                    $(el).addClass(lightOnClass);
+                    break;
+                case 2: // mouse-over
+                    $(el).addClass(mouseOverClass);
+                    break;
+                default: // same as case 0, light off
             }
         }
 
@@ -91,7 +91,7 @@
         // global cookie[][] supports multiple tables and multiple pages
         // uses global hashPageName
         function loadCookie(numTables) {
-            var cookieName = cookiePrefix + '-' + hashPageName.charAt(0),
+            var cookieName = cookiePrefix + "-" + hashPageName.charAt(0),
                 pageCookies,
                 tableCookies,
                 iPage,
@@ -140,7 +140,7 @@
         // global cookie[][] supports multiple tables and multiple pages
         // uses global hashPageName
         function saveCookie() {
-            var cookieName = cookiePrefix + '-' + hashPageName.charAt(0),
+            var cookieName = cookiePrefix + "-" + hashPageName.charAt(0),
                 pageCookies,
                 tableCookies,
                 iPage,
@@ -188,22 +188,22 @@
             // set path to / so it works for /wiki/, /index.php, etc
             $.cookie(cookieName, pageCookies.join(pageSeparator), {
                 expires: 7,
-                path: '/'
+                path: "/"
             });
         }
-        
+
         // This hook forces it to apply script even in TabViews
-		mw.hook('wikipage.content').add(function(pSection){
-            tables = $(pSection[0]).find('table.' + tableClass);
+        mw.hook("wikipage.content").add(function (pSection) {
+            tables = $(pSection[0]).find("table." + tableClass);
             // don't bother doing anything unless there's really something to do
             if (tables.length > 0) {
                 // hash the page name to an 8-char hex string
                 hashPageName = crc32c(wgPageName);
                 loadCookie(tables.length);
-    
+
                 tables.each(function (iTable) {
-                    rows[iTable] = $(this).find('tr:has(td)'); // data rows
-    
+                    rows[iTable] = $(this).find("tr:has(td)"); // data rows
+
                     // init or trim the cookie array of rows, if needed
                     while (cookie[iTable].length < rows[iTable].length) {
                         cookie[iTable].push(0);
@@ -211,19 +211,19 @@
                     while (cookie[iTable].length > rows[iTable].length) {
                         cookie[iTable].pop();
                     }
-    
+
                     // don't rely on headers to find # of columns
                     // count them dynamically
                     columns = 1;
-    
+
                     rows[iTable].each(function (iRow) {
                         // update column count as we go
                         // a smarter approach would count colspans, but this is good for now
-                        columns = Math.max(columns, $(this).children('th,td').length);
-    
+                        columns = Math.max(columns, $(this).children("th,td").length);
+
                         // initialize highlighting based on the cookie
                         setHighlight(this, cookie[iTable][iRow]);
-    
+
                         // set mouse events
                         $(this).mouseover(function () {
                             setHighlight(this, 2);
@@ -231,39 +231,39 @@
                             setHighlight(this, cookie[iTable][iRow]);
                         }).click(function (e) {
                             // don't toggle highlight when clicking links
-                            if ((e.target.tagName !== 'A') && (e.target.tagName !== 'IMG')) {
+                            if ((e.target.tagName !== "A") && (e.target.tagName !== "IMG")) {
                                 cookie[iTable][iRow] = 1 - cookie[iTable][iRow];
                                 setHighlight(this, cookie[iTable][iRow]);
                                 saveCookie();
                             }
                         });
                     });
-    
+
                     // add a button for reset
                     $(this).append(
-                        $('<tfoot/>')
+                        $("<tfoot/>")
+                        .append(
+                            $("<tr/>")
                             .append(
-                                $('<tr/>')
-                                    .append(
-                                        $('<th/>')
-                                            .attr('colspan', columns)
-                                            .append(
-                                                $('<input>')
-                                                    .attr({
-                                                        'type': 'button',
-                                                        'value': 'Reset'
-                                                    })
-                                                    .click(function () {
-                                                        rows[iTable].each(function (iRow) {
-                                                            cookie[iTable][iRow] = 0;
-                                                            setHighlight(this, 0);
-                                                        });
-                                                        saveCookie();
-                                                    })
-                                            )
-                                    )
+                                $("<th/>")
+                                .attr("colspan", columns)
+                                .append(
+                                    $("<input>")
+                                    .attr({
+                                        "type": "button",
+                                        "value": "Reset"
+                                    })
+                                    .click(function () {
+                                        rows[iTable].each(function (iRow) {
+                                            cookie[iTable][iRow] = 0;
+                                            setHighlight(this, 0);
+                                        });
+                                        saveCookie();
+                                    })
+                                )
                             )
-                        );
+                        )
+                    );
                 });
             }
         });

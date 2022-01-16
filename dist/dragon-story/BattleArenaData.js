@@ -6732,6 +6732,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"hex": {
+				"name": "Hex",
+				"colors": [
+					"fey",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"hibernation": {
 				"name": "Hibernation",
 				"colors": [
@@ -7845,15 +7853,6 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
-			"laceleaf": {
-				"name": "Laceleaf",
-				"colors": [
-					"flower",
-					"yellow",
-					"red"
-				],
-				"rarity": "super"
-			},
 			"labyrinth": {
 				"name": "Labyrinth",
 				"colors": [
@@ -7863,6 +7862,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"laceleaf": {
+				"name": "Laceleaf",
+				"colors": [
+					"flower",
+					"yellow",
+					"red"
+				],
+				"rarity": "super"
+			},
 			"lacewing": {
 				"name": "Lacewing",
 				"colors": [
@@ -7870,6 +7878,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"purple"
 				],
 				"rarity": "super"
+			},
+			"lacquered": {
+				"name": "Lacquered",
+				"colors": [
+					"fey",
+					"red"
+				],
+				"rarity": "common"
 			},
 			"lady": {
 				"name": "Lady",
@@ -7932,6 +7948,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"world",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"lark": {
+				"name": "Lark",
+				"colors": [
+					"fey",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},
@@ -16075,6 +16099,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"purple",
 					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"vivid": {
+				"name": "Vivid",
+				"colors": [
+					"fey",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},

@@ -364,6 +364,11 @@
             styles: 'MediaWiki:ReferencePopups/demo.css',
             subpages: false
         },
+        
+        ResponsiveMobile: {
+            page: 'ResponsiveMobile',
+            styles: 'MediaWiki:ResponsiveMobile.css'
+        },
 		
 	    SearchSuggest: {
 			page: 'Special:Search',
@@ -420,6 +425,11 @@
             page: 'TableHash',
             scripts: 'MediaWiki:TableHash.js',
             styles: 'MediaWiki:TableHash.css'
+        },
+        
+        ThemeColorClasses: {
+        	page: 'ThemeColorClasses',
+        	styles: 'MediaWiki:ThemeColorClasses.css'
         },
         
         TimedSlider: {

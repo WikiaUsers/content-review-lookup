@@ -86,6 +86,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
             reset();
             files = $("#multiupload")[0].files;
             if (files.length <= limit) {
+            	var watchuploads = mw.user.options.get('watchuploads') == "1" ? 'checked=\"checked\"' : '';
                 for (var index = 0; index < files.length; index++) {
                     var element = files[index];
                     var filedesc = $("#mw-upload-form > fieldset:nth-child(2)").clone();
@@ -97,7 +98,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
                     filedesc.find("#wpUploadDescription").attr("name", "wpUploadDescription" + index).attr("id", "wpUploadDescription" + index);
                     filedesc.find("#wpLicense").attr("name", "wpLicense" + index).attr("id", "wpLicense" + index).val(defaultlicense);
                     filedesc.append("<hr />");
-                    filedesc.append("<td class=\"mw-input\"><input name=\"wpWatchthis" + index + "\" type=\"checkbox\" value=\"1\" checked=\"checked\" id=\"wpWatchthis" + index + "\">&nbsp;<label for=\"wpWatchthis" + index + "\">" + i18n.msg('watchthisupload').escape() + "</label></td>");
+                    filedesc.append("<td class=\"mw-input\"><input name=\"wpWatchthis" + index + "\" type=\"checkbox\" value=\"1\" " + watchuploads + " id=\"wpWatchthis" + index + "\">&nbsp;<label for=\"wpWatchthis" + index + "\">" + i18n.msg('watchthisupload').escape() + "</label></td>");
                     filedesc.append("<td class=\"mw-input\"><input name=\"wpIgnoreWarning" + index + "\" type=\"checkbox\" value=\"1\" id=\"wpIgnoreWarning" + index + "\">&nbsp;<label for=\"wpIgnoreWarning" + index + "\">" + i18n.msg('ignorewarnings').escape() + "</label></td>");
                     $("#mw-upload-form > span").before(filedesc.show());
                 }

@@ -4,9 +4,7 @@
     Made by KockaAdmiralac upon request. ~
         Works in tandem with the Topic template. **/
  
-$('#mw-content-text,\
-   #WikiaRail,\
-   .background-fixed').attr('data-topic', 
+$('body').attr('data-topic', 
             $('#mw-content-text .article-topic').attr('data-topic')
 );
 
@@ -16,13 +14,17 @@ window.ajaxPages = [
     "Special:RecentChanges",
     "Special:RecentChangesLinked",
     "Special:WikiActivity",
+    "Special:MultipleActivity",
+    "Special:SocialActivity",
+    "Special:DoscussionsActivity",
     "Special:Images",
     "Special:Log",
     "Special:Contributions", 
     "Special:NewPages",
     "Special:Watchlist",
-    "Blog:Recent posts"
+    "Blog:Recent_posts"
 ];
+
 window.ajaxRefresh = 30000;
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
@@ -64,12 +66,8 @@ window.UserTagsJS = {
        'autoconfirmed': {
            title: "This user has been on FANDOM / Wikia for at least four days and have therefore been bestowed the full toolbox and privileges of the registered user group.",
            order: 1/0,
-       },
-       'emailconfirmed': {
-           title: "This user has confirmed their registration per e-mail and are therefore no longer affected by certain restrictions from non-emailconfirmed users.",
-           order: 1/0
        }
-}
+	}
 };
  
 // Add tags to users
@@ -104,14 +102,11 @@ UserTagsJS.modules.mwGroups = [
     'checkuser-global',
     'council',
     'helper',
+    'soap',
     'util',
     'voldev',
     'vanguard',
-    'vstf',
-    // Import some wikispecific tags
-    'bannedfromchat',
-    'autoconfirmed',
-    'emailconfirmed'
+    'vstf'
 ];
  
 // Tag users with zero edits in Oasis
@@ -136,15 +131,15 @@ UserTagsJS.modules.isblocked = true;
 // Add tags to all users within a group without touching their other tags
  
 UserTagsJS.modules.explode = {
-    // Add Banned from Chat tag to all blocked users
-    'bannedfromchat': ['blocked']
+    // Currently empty
 };
  
 // Inactive Users Tag Configuration
  
-UserTagsJS.modules.inactive = 80;
+UserTagsJS.modules.inactive = 90;
+
 /* If a user has not contributed at all for 
-80 days, they will be marked as Inactive. */
+3 months, they will be marked as Inactive. */
  
 // Keep most tags of blocked users
  

@@ -55,10 +55,22 @@ $( document ).ready( fpmobilecollapse.initialize );
 /****************************************/
 
 $(function(){
-  if ($('.countdown').length) {
-      importArticle({
-        type: "script",
-        article: "u:dev:MediaWiki:Countdown/code.js"
-      });
-  }
-})
+	// Load Dev:Countdown if any countdowns are found on the page.
+	if ($('.countdown').length) {
+    	importArticle({
+    		type: "script",
+			article: "u:dev:MediaWiki:Countdown/code.js"
+		});
+	}
+
+	// Load our experimental cloning calculator if one has been added to the page
+	if (document.getElementsByClassName('cloningcalc')) {
+		importScriptPage("MediaWiki:CloningCalculator.js");
+	}
+	
+	// Load data map scripts if one has been added to the page
+	if (document.getElementsByClassName('data-map-container')) {
+		importArticles({ type: 'script', articles: [ 'MediaWiki:ResourceMaps.js', 'MediaWiki:SpawnMaps.js' ] });
+	}
+	
+});

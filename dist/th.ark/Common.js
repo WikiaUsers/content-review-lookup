@@ -54,9 +54,29 @@ $(function() {
 /* Fires when DOM is ready */
 $( function() {
 
-// load js for calculating wild creature level stats
-if(document.getElementById('wildStatCalc')){
-    mw.loader.load('/index.php?title=MediaWiki:WildCreatureStats.js&action=raw&ctype=text/javascript','text/javascript',false);
+function importScriptRL(page) {
+	// importScriptPage doesn't utilise the resource loader (which minifies scripts). Workaround!
+	importArticle({ type: 'script', article: page });
+}
+
+// Load js for calculating wild creature level stats
+if (document.getElementById('wildStatCalc')) {
+	importScriptRL("MediaWiki:WildCreatureStats.js");
+}
+
+// Load our experimental cloning calculator if one has been added to the page
+if (document.getElementsByClassName('cloningcalc')) {
+	importScriptRL("MediaWiki:CloningCalculator.js");
+}
+
+// Load kill XP calculator if one has been added to the page
+if (document.getElementById('creatureKillXP')) {
+	importScriptRL("MediaWiki:Killxp.js");
+}
+
+// Load data map scripts if one has been added to the page
+if (document.getElementsByClassName('data-map-container')) {
+	importArticles({ type: 'script', articles: [ 'MediaWiki:ResourceMaps.js', 'MediaWiki:SpawnMaps.js' ] });
 }
 
 /**
@@ -109,6 +129,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 		['Genesis: Part 1','Genesis: Part 1'],
 		['Crystal Isles','Crystal Isles'],
 		['Genesis: Part 2','Genesis: Part 2'],
+		['Lost Island','Lost Island'],
 		['Mobile','ARK: Survival Evolved Mobile'],
 		['Unreleased','Unreleased'],
 		['Removed','Removed'],

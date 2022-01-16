@@ -184,7 +184,7 @@ mw.hook( 'wikipage.content' ).add( function( $wikipageContent ) {
 		.append( '[', $( '<span>' ).addClass( 'jslink' ).text( i18n.hideText ), ']' );
 	
 	var extractList = function( $contentContainer, listClass ) {
-		var $content = $contentContainer.find( '.mw-parser-output > ul > li > ul' ).children( ':not(.nbttree-inherited)' );
+		var $content = $contentContainer.find( '.mw-parser-output > ul > li > ul' ).children();
 		if ( listClass ) {
 			$content.addClass( listClass );
 		}
@@ -241,6 +241,9 @@ mw.hook( 'wikipage.content' ).add( function( $wikipageContent ) {
 					$buttonLink.text( i18n.hideText );
 				} else {
 					if ( treeview ) {
+						$content.children(".load-page-button").children(".jslink").each(function() {
+							 if ($(this).text() === i18n.hideText) this.click();
+						});
 						$content.detach();
 					} else {
 						$contentContainer.hide();
@@ -289,12 +292,12 @@ mw.hook( 'wikipage.content' ).add( function( $wikipageContent ) {
 				action: 'parse',
 				prop: 'text|modules|jsconfigvars'
 			};
-			//if ( template ) {
+			if ( template ) {
 				requestData.page = page;
-			//} else {
-			//	requestData.title = mw.config.get( 'wgPageName' );
-			//	requestData.text = '{' + '{:' + page + '}}';
-			//}
+			} else {
+				requestData.title = mw.config.get( 'wgPageName' );
+				requestData.text = '{' + '{:' + page + '}}';
+			}
 			new mw.Api().get( requestData ).done( function( data ) {
 				// Add config and modules
 				if ( data.parse.jsconfigvars ) {

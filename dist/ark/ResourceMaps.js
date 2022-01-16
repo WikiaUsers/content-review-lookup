@@ -14,7 +14,7 @@ $(function () {
 	}
 
 	function tryGuardCssValue(test) {
-		return (test && /^([\w-]+|\d+px \w+ #[0-9a-fA-F]{2,6}|#[0-9a-fA-F]{2,6}|\d+)$/.test(test)) ? test : null;
+		return (test && /^([\w-]+|\d+px \w+ (#[0-9a-fA-F]{2,6}|\w+)|#[0-9a-fA-F]{2,6}|\d+)$/.test(test)) ? test : null;
 	}
 
 	var GeneratedCssMarkerTypes = {};
@@ -30,12 +30,15 @@ $(function () {
 		var $map = $this.find('.map-container');
 		var $legendTable = $this.find('.map-legend');
 		var baseId = $this.attr('id');
+        var hasCaveMarkers = $map.find('.dots.cave').length > 0;
 
 		// Create checkboxes for toggles, which can't be prerendered with wikitext.
 		// Caves:
 		var toggleCavesCheckboxId = baseId + '-toggle-cave';
-		$legendTable.prepend('<tr class="no-icon"><td colspan=2><input type="checkbox" id="'+toggleCavesCheckboxId+'" class="toggle-cave" checked>'
-						   + '<label for="'+toggleCavesCheckboxId+'">'+Strings.ToggleCaves+'</label></td></tr>');
+        if (hasCaveMarkers) {
+		    $legendTable.prepend('<tr class="no-icon"><td colspan=2><input type="checkbox" id="'+toggleCavesCheckboxId+'" class="toggle-cave" checked>'
+						         + '<label for="'+toggleCavesCheckboxId+'">'+Strings.ToggleCaves+'</label></td></tr>');
+        }
 		// All:
 		var toggleAllCheckboxId = baseId + '-toggle-all';
 		$legendTable.prepend('<tr class="no-icon"><td colspan=2><input type="checkbox" id="'+toggleAllCheckboxId+'" class="toggle-all" checked>'
@@ -57,9 +60,11 @@ $(function () {
 				setVisibility($map, this.value, this.checked);
 			});
 		});
-		$('#' + toggleCavesCheckboxId).on('click', function() {
-			setVisibility($map, 'cave', this.checked);
-		});
+        if (hasCaveMarkers) {
+    		$('#' + toggleCavesCheckboxId).on('click', function() {
+	    		setVisibility($map, 'cave', this.checked);
+		    });
+        }
 		// Unhide elements that are hidden from view before scripts are loaded.
 		$legendTable.find('.data-map-needs-js').each(function() {
 			$(this).removeClass('data-map-needs-js');
@@ -72,7 +77,7 @@ $(function () {
 			var markerType = tryGuardCssValue(this.dataset.markerName);
 			var markerColour = tryGuardCssValue(this.dataset.markerColor);
 			var markerSize = tryGuardCssValue(this.dataset.markerSize);
-			var markerBorder = tryGuardCssValue(this.dataset.markerBorderSettings);
+			var markerBorder = tryGuardCssValue(this.dataset.markerBorder);
 
 			if (markerType && !GeneratedCssMarkerTypes[markerType]) {
 				fragments.push('.hide-' + markerType + ' .' + markerType + '{display:none}');
@@ -87,6 +92,19 @@ $(function () {
 				}
 			}
 		});
+        // Generate CSS for local marker icons if standardisation is impossible.
+        var iconDefs = $legendTable.data('marker-icons');
+        if (iconDefs) {
+            iconDefs.split(';').forEach(function (kvpair) {
+                kvpair = kvpair.split(':');
+                if (/^[\w\d]+$/.test(kvpair[0]) && /^[a-f0-9]\/[a-f0-9]{2}\/[\w\d]+\.svg$/.test(kvpair[1])) {
+                    fragments.push('.map-container .' + kvpair[0] + '.dots > div{background-image:url(');
+                    fragments.push('//ark.fandom.com/media/' + kvpair[1]);
+                    fragments.push(')}');
+                }
+            });
+        }
+        // Write the generated styles to the document tree.
 		$style.text(fragments.join(''));
 		$this.append($style);
 	});
@@ -126,8 +144,7 @@ $(function () {
 				left: e.clientX + 20,
 				top: e.clientY
 			}).show();
-		}).
-		mouseleave(function() {
+		}).mouseleave(function() {
 			$tooltipCoords.hide();
 		});
 	});

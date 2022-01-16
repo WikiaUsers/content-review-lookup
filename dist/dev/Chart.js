@@ -38,9 +38,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 ;(function () {
   (function () {
     !function (t) {
-      if ('object' == (typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) && 'undefined' != typeof module) module.exports = t();else {
+      var o = t();
+      if ('object' == (typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) && 'undefined' != typeof module) module.exports = o;else {
         var e;
-        e = 'undefined' != typeof window ? window : 'undefined' != typeof global ? global : 'undefined' != typeof self ? self : this, e.Chart = t();
+        e = 'undefined' != typeof window ? window : 'undefined' != typeof global ? global : 'undefined' != typeof self ? self : this, e.Chart = o;
+      }
+      if (typeof mw === 'object' && typeof mw.hook === 'function') {
+        mw.hook('dev.chart').fire(o);
       }
     }(function () {
       var t;

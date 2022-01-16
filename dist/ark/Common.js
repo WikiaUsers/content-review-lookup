@@ -54,23 +54,29 @@ $(function() {
 /* Fires when DOM is ready */
 $( function() {
 
-// Load js for calculating wild creature level stats
-if(document.getElementById('wildStatCalc')){
-	importScriptPage("MediaWiki:WildCreatureStats.js");
+function importScriptRL(page) {
+	// importScriptPage doesn't utilise the resource loader (which minifies scripts). Workaround!
+	importArticle({ type: 'script', article: page });
 }
 
-// Temporary: load our experimental cloning calculator if one has been added to the page
-if(document.getElementsByClassName('cloningcalc')){
-	importScriptPage("MediaWiki:CloningCalculator.js");
+// Load js for calculating wild creature level stats
+if (document.getElementById('wildStatCalc')) {
+	importScriptRL("MediaWiki:WildCreatureStats.js");
+}
+
+// Load our experimental cloning calculator if one has been added to the page
+if (document.getElementsByClassName('cloningcalc')) {
+	importScriptRL("MediaWiki:CloningCalculator.js");
+}
+
+// Load kill XP calculator if one has been added to the page
+if (document.getElementById('creatureKillXP')) {
+	importScriptRL("MediaWiki:Killxp.js");
 }
 
 // Load data map scripts if one has been added to the page
 if (document.getElementsByClassName('data-map-container')) {
-	importScriptPage("MediaWiki:ResourceMaps.js");
-	// Load spawn map scripts.
-	if (document.querySelector('.data-map-container[data-spawn-data-page-name]')) {
-		importScriptPage("MediaWiki:SpawnMaps.js");
-	}
+	importArticles({ type: 'script', articles: [ 'MediaWiki:ResourceMaps.js', 'MediaWiki:SpawnMaps.js' ] });
 }
 
 /**
