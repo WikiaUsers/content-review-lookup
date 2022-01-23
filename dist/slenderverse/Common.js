@@ -90,9 +90,7 @@ window.UserTagsJS = {
         }
     },
     // Add tags to all users within a group without touching their other tags
-    /** Add Banned from Chat tag to all banned users **/
     implode: {
-        'bannedfromchat': ['blocked'], 
         // If user has these, combine all three Moderator tags into one
 	    'moderator': [
 	        'content-moderator',
@@ -107,7 +105,7 @@ window.UserTagsJS = {
     autoconfirmed: true, //Tag users with new accounts
     inactive: 80, /**Tag users as inactive after 80 days of no 
                     contributing**/
-    stopblocked: Boolean}, //Keep tags of banned users
+    stopblocked: false}, //Keep tags of banned users
     tags: {
         'ontrial': {
             u: 'On Repent Trial',
@@ -178,26 +176,23 @@ UserTagsJS.modules.mwGroups = Array(
     'checkuser-global',
     'council',
     'helper',
+    'soap',
     'util',
     'voldev',
-    'vanguard',
-    'vstf',
- 
-    // Import some wikispecific tags
- 
-    'bannedfromchat'
+    'vanguard'
 );
 
 /** --------------------------------- **/
 /** Script configurations and imports **/
 /** --------------------------------- **/
 
-jQuery.extend(window, {
+jQuery.extend(true, window, {
     
     /** AJAX Auto-Refresh **/ 
  
     ajaxPages: Array(
         "Special:WikiActivity",
+        "Special:MultipleActivity",
         "Special:RecentChanges",
         "Special:RecentChangesLinked",
         "Special:Log",
@@ -216,7 +211,7 @@ jQuery.extend(window, {
         "Special:DeadendPages",
         "Special:Disambiguation",
         "Special:Withoutimages",
-        "Blog:Recent posts"
+        "Blog:Recent_posts"
     ),
     ajaxRefresh: 30000,
     AjaxRCRefreshText: 'Auto-refresh',
@@ -238,7 +233,7 @@ jQuery.extend(window, {
     
     MessageWallUserTags: {
         tagColor: 'orangered',
-        glow: Boolean(true),
+        glow: true,
         glowSize: '8px',
         glowColor: 'red',
         users: {
@@ -325,7 +320,7 @@ function checktimers() {
     Requires copying of Template:Username **/
  
 jQuery(function UserNameReplace() {
-    if (typeof(disableUsernameReplace) !== String('undefined') && 
+    if (typeof(disableUsernameReplace) !== 'undefined' && 
     disableUsernameReplace || wgUserName === null) {return}
     $("span.insertusername").text(wgUserName);
 });
@@ -336,8 +331,12 @@ new function($) {
     if (wgCanonicalSpecialPageName !== 'Whatlinkshere') {return}
     var sorted_list, $list = $('#mw-whatlinkshere-list');
     sorted_list = $list.children('li').sort(function (a, b) {
-        return ($(a).find('a:first').attr('title') > 
-        $(b).find('a:first').attr('title')) ? 1 : -1;});
+        return ($(a)
+        	.find('a:first')
+        	.attr('title') > $(b)
+        	.find('a:first')
+        	.attr('title')) ? 1: -1;
+    });
     $list.children('li').remove(); $list.append(sorted_list);
 }(jQuery);
 
@@ -348,8 +347,8 @@ new function($) {
 $(function () {
     if (
         document.location.search.indexOf("undo=") !== -1 && 
-        document.getElementsByName('wpAutoSummary')[Number]
-    ) {document.getElementsByName('wpAutoSummary')[Number].value = '1'}
+        document.getElementsByName('wpAutoSummary')[0]
+    ) {document.getElementsByName('wpAutoSummary')[0].value = '1'}
 });
 
 /** ----------------------------------------------------------------- **/

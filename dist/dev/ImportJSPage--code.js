@@ -34,7 +34,7 @@ mw.loader.using('mediawiki.util').then(function() {
             $li.append(
                 $('<a>', {
                     'href': mw.util.getUrl(page),
-                    'text': pageName
+                    'text': script
                 })
             );
         }

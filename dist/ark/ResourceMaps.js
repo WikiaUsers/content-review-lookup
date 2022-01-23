@@ -30,6 +30,7 @@ $(function () {
 		var $map = $this.find('.map-container');
 		var $legendTable = $this.find('.map-legend');
 		var baseId = $this.attr('id');
+		var hasAnyMarkers = $map.find('.dots').length > 0;
         var hasCaveMarkers = $map.find('.dots.cave').length > 0;
 
 		// Create checkboxes for toggles, which can't be prerendered with wikitext.
@@ -41,8 +42,10 @@ $(function () {
         }
 		// All:
 		var toggleAllCheckboxId = baseId + '-toggle-all';
-		$legendTable.prepend('<tr class="no-icon"><td colspan=2><input type="checkbox" id="'+toggleAllCheckboxId+'" class="toggle-all" checked>'
-						   + '<label for="'+toggleAllCheckboxId+'">'+Strings.ToggleAll+'</label></td></tr>');
+		if (hasAnyMarkers) {
+			$legendTable.prepend('<tr class="no-icon"><td colspan=2><input type="checkbox" id="'+toggleAllCheckboxId+'" class="toggle-all" checked>'
+							    + '<label for="'+toggleAllCheckboxId+'">'+Strings.ToggleAll+'</label></td></tr>');
+		}
 		// Convert resource placeholders:
 		$legendTable.find('td.map-legend-checkbox').each(function() {
 			var nodeName = this.innerText;
@@ -55,11 +58,13 @@ $(function () {
 		$legendTable.on('change', 'input.toggle-one', function() {
 			setVisibility($map, this.value, this.checked);
 		});
-		$('#' + toggleAllCheckboxId).on('click', function() {
-			$legendTable.find('input.toggle-one').prop('checked', this.checked).each(function() {
-				setVisibility($map, this.value, this.checked);
+		if (hasAnyMarkers) {
+			$('#' + toggleAllCheckboxId).on('click', function() {
+				$legendTable.find('input.toggle-one').prop('checked', this.checked).each(function() {
+					setVisibility($map, this.value, this.checked);
+				});
 			});
-		});
+		}
         if (hasCaveMarkers) {
     		$('#' + toggleCavesCheckboxId).on('click', function() {
 	    		setVisibility($map, 'cave', this.checked);
@@ -134,7 +139,7 @@ $(function () {
 			borderL = parseFloat($this.data('border-left'));
 
 		$mapContainer.mousemove(function(e) {
-			var pos = $this.offset(),
+			var pos = $mapContainer.offset(),
 				top = pos.top,
 				left = pos.left,
 				lon = ((e.clientX + $(document).scrollLeft() - left) * widthCoords / $mapContainer.width() + borderL).toFixed(1),

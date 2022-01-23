@@ -720,7 +720,7 @@ var create = function( state ) {
 		if ( !supports( 'position', 'sticky' ) && !supports( 'position', '-webkit-sticky' ) ) {
 			var fixedClass = 'spriteedit-toolbar-fixed';
 			var contentOffset = $content.offset().left + 1;
-			$win.on( 'scroll.spriteEdit', $.throttle( 32, function() {
+			$win.on( 'scroll.spriteEdit', OO.ui.throttle( 32, function() {
 				var fixed = $toolbar.hasClass( fixedClass ),
 					scrollTop = $win.scrollTop(),
 					offset = $barContainer.offset().top;
@@ -1392,7 +1392,7 @@ var create = function( state ) {
 		
 		
 		/* Window events */
-		$win.on( 'resize.spriteEdit', $.throttle( 32, function() {
+		$win.on( 'resize.spriteEdit', OO.ui.throttle( 32, function() {
 			var $conflict = $( '#spriteedit-dialog-conflict' );
 			if ( $conflict.length && $conflict.is( ':visible' ) ) {
 				var $textarea = $conflict.find( 'textarea' );
@@ -1422,7 +1422,7 @@ var create = function( state ) {
 		} );
 		
 		// Disable smooth scrolling once scrolling ends so it does not interfere with user scrolling.
-		$win.on( 'scroll.spriteEdit', $.debounce( 250, function() {
+		$win.on( 'scroll.spriteEdit', OO.ui.debounce( 250, function() {
 			$root.removeClass( 'spriteedit-smoothscroll' );
 		} ) );
 	};

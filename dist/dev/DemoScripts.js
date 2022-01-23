@@ -49,6 +49,11 @@
             styles: 'MediaWiki:BlendGlobalNav.css'
         },
 		
+        CalendarWidget: {
+            page: 'Global_Lua_Modules/Calendar_widget',
+            styles: 'MediaWiki:Global_Lua_Modules/Calendar_widget.css'
+        },
+
 		ClassicDevWikiTheme: {
 			page: 'ClassicDevWikiTheme',
 			styles: 'MediaWiki:ClassicDevWikiTheme.css'

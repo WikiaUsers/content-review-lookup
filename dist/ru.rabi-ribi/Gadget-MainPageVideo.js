@@ -11,6 +11,7 @@
 	const source = document.createElement("source");
 	source.classList.add("rbrbw-home-hero__video-source");
 	source.setAttribute("src", "/ru/wiki/Special:Filepath/File:Microtrailer.webm");
+	source.setAttribute("type", "video/webm");
 
 	video.append(source);
 

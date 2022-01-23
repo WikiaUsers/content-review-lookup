@@ -13,26 +13,10 @@ window.ajaxPages = [
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 
-/* NOTE: this script has been disabled temporarily due to migration to Discussions
+// Lock comments script settings
 
-// Lock Forums script settings
-
-window.LockForums = {
-    lockMessageWalls: false,
-    expiryDays: 60,
-    expiryMessage: "This thread has not been commented on in <expiryDays> days. Therefore, it has been locked indefinitely to prevent necrobumping. If you have a valid reason to comment on this thread, contact a wiki admin to unlock it.",
-    warningDays: 30,
-    warningMessage: "This thread has not been commented on in <warningDays> days. Please only comment if absolutely necessary.",
-    disableOn: ["1184513", "1166044", "1054671"], // Add the ID numbers of threads that shouldn't be locked here in an array.
-    banners: false,
-    expiryBannerMessage: "Vampy [7 GRAND UMP] is gonna get you if you post on this thread. Continue and face the fiery consequences.",
-    expiryBannerStyle: {'border': '2px solid #f66', 'background-color': 'whitesmoke', 'margin': '0.8em 0px', 'padding': '0.5em 12px', 'color': 'black'},
-    warningBannerMessage: "Vampy [7 GRAND UMP] is gonna get you if you post on this thread. And maybe TULO.",
-    warningBannerStyle: {'border': '2px solid #f66', 'background-color': 'whitesmoke', 'margin': '0.8em 0px', 'padding': '0.5em 12px', 'color': 'black'},
-    warningPopup: true,
-    warningPopupMessage: "You are about to necrobump a thread that hasn't been posted on in <warningDays>! Continue and face the fiery consequences?",
-    boxHeight: 50
-}; */
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 30;
 
 /* Special Pages config script - Add special pages to the wiki here */
 window.pageNames = [
@@ -73,28 +57,6 @@ window.pagePurpose = [
    'PURPOSEOFLASTPAGE'
 
 ];
-
-/* Mass block */
-
-//if (mw.config.get('wgUserGroups').indexOf('sysop') > -1) {
-//    window.massBlockDelay = 1000;
-//    importArticles({
-//        type: 'script',
-//        articles: [
-//            'u:dev:ViewRemoved/code.js'
-//        ]
-//    });
-//}
-
-//window.chatBlockReason = 'ToU violation';
-//window.chatBlockExpiry = '3 months';
-
-//window.ArchiveToolConfig = {
-//    archiveListTemplate: 'Archives',
-//    archivePageTemplate: 'Archivepage',
-//    archiveSubpage: 'Archive',
-//    userLang: true
-//};
 
 // http://dev.wikia.com/wiki/RevealAnonIP
 window.RevealAnonIP = {

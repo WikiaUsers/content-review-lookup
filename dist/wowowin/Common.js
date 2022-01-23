@@ -8,7 +8,6 @@ SpoilerAlert = {
     back: true
 };
 importScriptPage('SpoilerAlert/code.js', 'dev');
-importScriptPage('BackToTopButton/code.js', 'dev');
 
 $(function(){
 	importArticles({

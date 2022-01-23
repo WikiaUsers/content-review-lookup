@@ -76,5 +76,26 @@ window.AutoCreateUserPagesConfig = {
              3: '{{autowelcome|<span style="font-family:Trollhunters;">[[User:Merlin_the_Immortal|<span style="color:#454427;">Merlin the Immortal</span>]] [[User_talk:Merlin_the_Immortal|<span style="color:#454427;">﴾Talk Page﴿</span>]]</span>}}',
              1202: false
 },
-            summary: 'Script: Creating profile and talkpage on first edit - automatically by Wiki'
+            summary: '<span class="script">Script: Creating profile and talkpage on first edit - automatically by Wiki</script>'
 };
+function hide(){
+	var line = document.getElementsByClassName("mw-changeslist-line");
+	for (let i = 0; i < line.length; i++) {
+		if (line[i].innerHTML.search("Script: Creating profile and talkpage on first edit - automatically by Wiki") != -1) {
+			line[i].classList.add("hidden-script");
+		}
+	}
+	setInterval(function(){
+		if (document.getElementsByClassName("mw-rcfilters-ui-filterTagItemWidget")[0] === undefined) {
+			var hidden = document.getElementsByClassName("hidden-script");
+			for (let i = 0; i < hidden.length; i++) {
+				hidden[i].classList.remove("hidden-script");
+			}
+		}
+	},840);
+	
+}
+
+setTimeout(function(){
+	if (document.getElementsByClassName("mw-rcfilters-ui-filterTagItemWidget")[0] !== undefined) {hide()}
+},3000);

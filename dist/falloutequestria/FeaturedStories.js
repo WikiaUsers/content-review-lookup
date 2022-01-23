@@ -34,7 +34,7 @@ jQuery(document).ready(function($) {
          title.css('font-weight', '700');
          title.css('color', 'whitesmoke');
 
-         var img = $('<img u="image" src="'+_this.find('.image-thumbnail').attr('href')+'">');
+         var img = $('<img u="image" src="'+_this.find('img').attr('src')+'">'));
 
         // $.ajax({
         //    url: _this.find('.image-thumbnail').attr('href'),

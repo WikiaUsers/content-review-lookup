@@ -1,6 +1,6 @@
 $(function () {
 
-    var SharedDataPage = 'Data:Spawn Map/Shared';
+	var SharedDataPage = 'Data:Spawn Map/Shared';
 	var RarityClasses = [
 		'cr-region-map-very-rare',
 		'cr-region-map-rare',
@@ -24,8 +24,8 @@ $(function () {
 		TooltipUntameableLocal: 'creatures at this location are not tameable',
 	};
 	var RE_CONTAINER_NAME = /DinoSpawnEntries_?|SpawnEntries_?/i;
-    var CACHE_NAME = 'ArkDataMaps';
-    var CACHE_EXPIRY_TIME = 24 * 60 * 60;
+	var CACHE_NAME = 'ArkDataMaps';
+	var CACHE_EXPIRY_TIME = 24 * 60 * 60;
 
 
 	function formatPercent(v, precision, threshold) {
@@ -37,42 +37,53 @@ $(function () {
 	}
 
 	function fetchSpawnDataPages(context) {
-        return caches.open(CACHE_NAME).then(function (cache) {
-            function fetchDataPageInternal(pageName, outFieldName) {
-                var timeNow = new Date().getTime();
-                var url = mw.util.getUrl(pageName, {
-                    action: 'raw',
-                    ctype: 'application/json'
-                });
-                var request = new Request(url);
-                return cache.match(request).then(function (response) {
-                    // Check if cache entry is recent and valid.
-                    if (response && response.ok && (Date.parse(response.headers.get('Expires')) > timeNow)) {
-                        return response;
-                    }
+		return caches.open(CACHE_NAME).then(function (cache) {
+			function fetchDataPageInternal(pageName, outFieldName) {
+                // Construct a URL of the page.
+                // On translations if prefixed with "en:", this'll slice off the script path.
+                var isRequestingMain = pageName.startsWith('en:') && mw.config.get('wgContentLanguage') != 'en';
+                var scriptPath = mw.config.get('wgScriptPath');
+				var url = mw.util.getUrl((isRequestingMain ? pageName.slice(3) : pageName), {
+					action: 'raw',
+					ctype: 'application/json'
+				});
+                if (isRequestingMain && url.startsWith(scriptPath)) {
+                    url = url.slice(scriptPath.length);
+                }
 
-                    // Fetch the page from API.
-                    return fetch(request).then(function (response) {
-                        response.clone().blob().then(function(body) {
-                            cache.put(request, new Response(body, { headers: {
-                                'Expires': (new Date(timeNow + (CACHE_EXPIRY_TIME))).toUTCString(),
-                            }}));
-                        });
-                        return response;
-                    });
-                }).then(function (response) {
-                    return response.json().then(function(data) {
-                        context[outFieldName] = data;
-                    });
-                });
-            }
+				var timeNow = new Date().getTime();
+				var request = new Request(url);
+				return cache.match(request).then(function (response) {
+					// Check if cache entry is recent and valid.
+					if (response && response.ok
+					    && (Date.parse(response.headers.get('Expires')) > timeNow)
+					    && (parseInt(response.headers.get('X-ARK-Cache-Index')) == context.cacheIndex)) {
+						return response;
+					}
 
-            // Retrieve shared and map-specific data.
-            return Promise.all([
-                fetchDataPageInternal(SharedDataPage, 'shared'),
-                fetchDataPageInternal(context.pageName, 'data')
-            ]);
-        });
+					// Fetch the page from API.
+					return fetch(request).then(function (response) {
+						response.clone().blob().then(function(body) {
+							cache.put(request, new Response(body, { headers: {
+								'Expires': (new Date(timeNow + (CACHE_EXPIRY_TIME))).toUTCString(),
+								'X-ARK-Cache-Index': context.cacheIndex,
+							}}));
+						});
+						return response;
+					});
+				}).then(function (response) {
+					return response.json().then(function(data) {
+						context[outFieldName] = data;
+					});
+				});
+			}
+
+			// Retrieve shared and map-specific data.
+			return Promise.all([
+				fetchDataPageInternal(SharedDataPage, 'shared'),
+				fetchDataPageInternal(context.pageName, 'data')
+			]);
+		});
 	}
 
 	function populateCreatureSelector(context) {
@@ -179,8 +190,7 @@ $(function () {
 					// Walk over each member, add them to list and update their probability.
 					group.s.forEach(function (npc) {
 						// Roll the NPC's chance into 1 if negative.
-						// TODO: Legacy code. This is no longer needed with the new data source.
-						var thisChance = npc.c <= -0.01 ? 1 : npc.c;
+						var thisChance = npc.c;
 						// Update probability inside the container.
 						if (npc.n == name) {
 							localProbability += thisChance * group.c;
@@ -213,50 +223,55 @@ $(function () {
 						tooltipExtra = '\n' + (!spawner.u ? Strings.TooltipUntameable : Strings.TooltipUntameableLocal);
 					}
 
-					// Render points.
-					spawner.p.forEach(function (point) {
-						// Rarity.
-						var rarity = Math.min(5, Math.round(1.5 * Math.log(1 + 2 * amount)));
-						var rarityClass = RarityClasses[rarity];
-						// Coordinates.
-						var left = Math.max(0, 100 * ((point.x - context.offsetLeft) / mapWidth - context.pointSize / (2 * mapWidth)));
-						var top = Math.max(0, 100 * ((point.y - context.offsetTop) / mapHeight - context.pointSize / (2 * mapWidth)));
-						// Tooltip.
-						var tooltipText = Strings.TooltipLat + ' ' + point.y + ', ' + Strings.TooltipLong + ' ' + point.x + tooltipExtra;
-						// Display.
-						$container.append($('<div class="dot point">').addClass(rarityClass + (!tamable ? ' untameable' : '')).css({
-							left: left.toFixed(1) + '%',
-							top: top.toFixed(1) + '%',
-						}).prop('title', tooltipText));
-					});
-
 					// Render locations.
 					spawner.l.forEach(function (location) {
-						// Rarity.
-						var area = (location.x2 - location.x1) * (location.y2 - location.y1);
-						var rarity = Math.min(5, Math.round(1.5 * Math.log(1 + 50 * amount/area)));
-						var rarityClass = RarityClasses[rarity];
-						// Display location adjustments.
-						var widthAdjust = (location.x2 - location.x1) / mapWidth < 0.01 ? 0.5 : 0;
-						var heightAdjust = (location.y2 - location.y1) / mapHeight < 0.01 ? 0.5 : 0;
-						// Coordinates.
-						var left = Math.max(0, 100 * (location.x1 - context.offsetLeft) / mapWidth - widthAdjust);
-						var top = Math.max(0, 100 * (location.y1 - context.offsetTop) / mapHeight - heightAdjust);
-						var bottom = Math.min(100, 100 * (100 - location.y2 - (100 - context.offsetBottom)) / mapHeight - heightAdjust);
-						var right = Math.min(100, 100 * (100 - location.x2 - (100 - context.offsetRight)) / mapWidth - widthAdjust);
-						// Tooltip.
-						var tooltipText = Strings.TooltipFrom + ' ' +
-										  Strings.TooltipLat + ' ' + location.y1 + ', ' + Strings.TooltipLong  + ' ' + location.x1 +
-										  '\n' + Strings.TooltipTo + ' ' +
-										  Strings.TooltipLat + ' ' + location.y2 + ', ' + Strings.TooltipLong  + ' ' + location.x2 +
-										  tooltipExtra;
-						// Display.
-						$container.append($('<div class="square">').addClass(rarityClass + (!tamable ? ' untameable' : '')).css({
-							left: left.toFixed(1) + '%',
-							top: top.toFixed(1) + '%',
-							bottom: bottom.toFixed(1) + '%',
-							right: right.toFixed(1) + '%',
-						}).prop('title', tooltipText));
+						if (location.length == 2) {
+							/// XY point.
+							var x = location[0], y = location[1];
+							// Rarity.
+							var rarity = Math.min(5, Math.round(1.5 * Math.log(1 + 2 * amount)));
+							var rarityClass = RarityClasses[rarity];
+							// Coordinates.
+							var left = Math.max(0, 100 * ((x - context.offsetLeft) / mapWidth - context.pointSize / (2 * mapWidth)));
+							var top = Math.max(0, 100 * ((y - context.offsetTop) / mapHeight - context.pointSize / (2 * mapWidth)));
+							// Tooltip.
+							var tooltipText = Strings.TooltipLat + ' ' + y + ', ' + Strings.TooltipLong + ' ' + x + tooltipExtra;
+							// Display.
+							$container.append($('<div class="dot point">').addClass(rarityClass + (!tamable ? ' untameable' : '')).css({
+								left: left.toFixed(1) + '%',
+								top: top.toFixed(1) + '%',
+							}).prop('title', tooltipText));
+						} else {
+							/// XYXY rectangle.
+							var x1 = location[0], y1 = location[1],
+							    x2 = location[2], y2 = location[3];
+							// Rarity.
+							var area = (x2 - x1) * (y2 - y1);
+							var rarity = Math.min(5, Math.round(1.5 * Math.log(1 + 50 * amount/area)));
+							var rarityClass = RarityClasses[rarity];
+							// Display location adjustments.
+							var widthAdjust = (x2 - x1) / mapWidth < 0.01 ? 0.5 : 0;
+							var heightAdjust = (y2 - y1) / mapHeight < 0.01 ? 0.5 : 0;
+							// Coordinates.
+							var left = Math.max(0, 100 * (x1 - context.offsetLeft) / mapWidth - widthAdjust);
+							var top = Math.max(0, 100 * (y1 - context.offsetTop) / mapHeight - heightAdjust);
+							var bottom = Math.min(100, 100 * (100 - y2 - (100 - context.offsetBottom)) / mapHeight - heightAdjust);
+							var right = Math.min(100, 100 * (100 - x2 - (100 - context.offsetRight)) / mapWidth - widthAdjust);
+							// Tooltip.
+							var tooltipText = Strings.TooltipFrom + ' ' +
+											  Strings.TooltipLat + ' ' + y1 + ', ' + Strings.TooltipLong  + ' ' + x1 +
+											  '\n' + Strings.TooltipTo + ' ' +
+											  Strings.TooltipLat + ' ' + y2 + ', ' + Strings.TooltipLong  + ' ' + x2 +
+											  tooltipExtra;
+							// Display.
+							$container.append($('<div class="square">').addClass(rarityClass + (!tamable ? ' untameable' : '')).css({
+								left: left.toFixed(1) + '%',
+								top: top.toFixed(1) + '%',
+								bottom: bottom.toFixed(1) + '%',
+								right: right.toFixed(1) + '%',
+							}).prop('title', tooltipText));
+						}
+
 					});
 				});
 			});
@@ -267,7 +282,7 @@ $(function () {
 	var isFandomMobile = document.body.classList.contains('skin-fandommobile');
 
 	$('.data-map-container').each(function () {
-        // Do not double-initialise the map.
+		// Do not double-initialise the map.
 		if (this.__spawnMapInitialised) {
 			return;
 		}
@@ -286,10 +301,11 @@ $(function () {
 			offsetBottom: parseFloat($this.data('border-bottom')),
 
 			pageName: $(this).data('spawn-data-page-name'),
+			cacheIndex: $(this).data('spawn-data-cache-id') || 1,
 
 			data: null,
 			creatures: [],
-            shared: null,
+			shared: null,
 		};
 		context.$resourceMap = isFandomMobile ? context.$map.find('img.resourcemap') : context.$map.children().last();
 

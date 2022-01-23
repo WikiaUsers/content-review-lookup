@@ -1,3 +1,4 @@
+//<nowiki>
 /** Staff Tagger
  * 
  * Code to automate some part of administrator's actions for staff promotion/demotion
@@ -763,3 +764,4 @@
         that.init();
     });
 })();
+//</nowiki>

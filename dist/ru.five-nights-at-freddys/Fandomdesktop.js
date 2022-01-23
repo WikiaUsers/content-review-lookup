@@ -21,59 +21,84 @@ function BG(file) {
 if (mw.config.get("wgCanonicalNamespace") == "") {
     var BGbackground;
     var BGcategories = mw.config.get("wgCategories");
-    for (var ct = 0; ct < BGcategories.length; ct++) {
+        for (var ct = 0; ct < BGcategories.length; ct++) {
         if (BGcategories[ct] == "Five Nights at Freddy's") {
-            BGbackground = BG('FNaF 1 BG.png');
+            BGbackgroundD = BG('FNaF 1 BG.png');
+            BGbackgroundL = BG('FNaF 1 BG L.png');
             break;
         } else if (BGcategories[ct] == "Five Nights at Freddy's 2") {
-            BGbackground = BG('FNaF 2 BG.png');
+            BGbackgroundD = BG('FNaF 2 BG.png');
+            BGbackgroundL = BG('FNaF 2 BG L.jpg');
             break;
         } else if (BGcategories[ct] == "Five Nights at Freddy's 3") {
-            BGbackground = BG('FNaF 3 BG.png');
+            BGbackgroundD = BG('FNaF 3 BG.png');
+            BGbackgroundL = BG('FNaF 3 BG L.png');
             break;
         } else if (BGcategories[ct] == "Five Nights at Freddy's 4") {
-            BGbackground = BG('FNaF 4 BG.png');
+            BGbackgroundD = BG('FNaF 4 BG.png');
+            BGbackgroundL = BG('FNaF 4 BG L.png');
             break;
         } else if (BGcategories[ct] == "Five Nights at Freddy's World") {
-            BGbackground = BG('FNaF W BG.png');
+            BGbackgroundD = BG('FNaF W BG.png');
+            BGbackgroundL = BG('FNaF World BG L.jpeg');
             break;
         } else if (BGcategories[ct] == "Five Nights at Freddy's: Sister Location") {
-            BGbackground = BG('FNaF SL BG.png');
+            BGbackgroundD = BG('FNaF SL BG.png');
+            BGbackgroundL = BG('FNaF SL BG L.png');
             break;
         } else if (BGcategories[ct] == "Freddy Fazbear's Pizzeria Simulator") {
-            BGbackground = BG('FFPS BG.png');
+            BGbackgroundD = BG('FFPS BG.png');
+            BGbackgroundL = BG('FFPS BG L.jpeg');
             break;
         } else if (BGcategories[ct] == "Ultimate Custom Night") {
-            BGbackground = BG('UCN BG.png');
+            BGbackgroundD = BG('UCN BG.png');
+            BGbackgroundL = BG('UCN BG L.jpeg');
             break;
         } else if (BGcategories[ct] == "Five Nights at Freddy's: Help Wanted") {
-            BGbackground = BG('FNaF HW BG.jpg');
+            BGbackgroundD = BG('FNaF HW BG.jpg');
+            BGbackgroundL = BG('FNaF HW BG L.jpeg');
             break;
         } else if (BGcategories[ct] == "Freddy in Space 2") {
-            BGbackground = BG('FiS 2 BG.png');
+            BGbackgroundD = BG('FiS 2 BG.png');
+            BGbackgroundL = BG('FiS 2 BG L.jpeg');
             break;
         } else if (BGcategories[ct] == "Five Nights at Freddy's AR: Special Delivery") {
-            BGbackground = BG('FNaF AR BG.jpg');
-            break;
+            BGbackgroundD = BG('FNaF AR BG.jpg');
+            BGbackgroundL = BG('FNaF AR BG L.jpeg');
+            break;    
         } else if (BGcategories[ct] == "Security Breach: Fury's Rage") {
-            BGbackground = BG('SB FR BG.png');
-            break;
-        } else if ((BGcategories[ct] == "Книги") || (BGcategories[ct] == "Персонажи книг")) {
-            BGbackground = BG('FNaF Books BG.png');
+            BGbackgroundD = BG('SB FR BG.png');
+            BGbackgroundL = BG('SB FR BG L.png');
+            break;    
+       } else if ((BGcategories[ct] == "Книги") || (BGcategories[ct] == "Персонажи книг")) {
+            BGbackgroundD = BG('FNaF Books BG.png');
+            BGbackgroundL = BG('B BG L.jpeg');
             break;
         } else if (BGcategories[ct] == "Five Nights at Freddy's: Security Breach") {
-            BGbackground = BG('FNaF SB BG.png');
-            break;
-        }
+            BGbackgroundD = BG('FNaF SB BG.png');
+            BGbackgroundL = BG('FNaF SB BG L.jpeg');
+            break;    
+        }    
+}            
+         
+if ($('body').hasClass('theme-fandomdesktop-light')) {
+        $("body.skin-fandomdesktop").css("background", '#000 url(' + BGbackgroundL + ')');
     }
+else if ($('body').hasClass('theme-fandomdesktop-dark')) {
+        $("body.skin-fandomdesktop").css("background", '#000 url(' + BGbackgroundD + ')');
+    }
+}
 
-    if (BGbackground) {
-        $("body.skin-fandomdesktop").css("background", '#000 url(' + BGbackground + ')');
+if (BGbackgroundL) {
         $("body.skin-fandomdesktop").css("background-size", 'cover');
         $("body.skin-fandomdesktop").css("background-attachment", 'fixed');
         $(".fandom-community-header__background").css("display", 'none');
     }
-}
+if (BGbackgroundD) {
+        $("body.skin-fandomdesktop").css("background-size", 'cover');
+        $("body.skin-fandomdesktop").css("background-attachment", 'fixed');
+        $(".fandom-community-header__background").css("display", 'none');
+    }
 
 /* ========== Fantom.js ========== */
 // Код на аниматроников v0.21b
@@ -454,7 +479,9 @@ setInterval(function () {
     $('.wds-avatar a[href$="BroSafari"]').closest('.Reply, .Reply_body__3woA9').addClass('Bur');
     $('.wds-avatar a[href$="Cyberpunk%20Ginger"]').closest('.Reply, .Reply_body__3woA9').addClass('Admin');
     $('.wds-avatar a[href$="MasterKart"]').closest('.Reply, .Reply_body__3woA9').addClass('Admin');
+    $('.wds-avatar a[href$="Luchezze"]').closest('.Reply, .Reply_body__3woA9').addClass('Admin');
     $('.wds-avatar a[href$="3Di-games"]').closest('.Reply, .Reply_body__3woA9').addClass('Contmod');
-    $('.wds-avatar a[href$="Luchezze"]').closest('.Reply, .Reply_body__3woA9').addClass('Dismod');
     $('.wds-avatar a[href$="%D0%95%D0%BB%D0%B5%D0%BD%D0%B0%20%D0%A1%D0%BE%D0%BD"]').closest('.Reply, .Reply_body__3woA9').addClass('Dismod');
+    $('.wds-avatar a[href$="Professor_Fris"]').closest('.Reply, .Reply_body__3woA9').addClass('Dismod');
+    $('.wds-avatar a[href$="%D0%95%D0%BB%D0%B5%D0%BD%D0%B0_%D0%A1%D0%BE%D0%BD"]').closest('.Reply, .Reply_body__3woA9').addClass('Dismod');
 }, 500 );

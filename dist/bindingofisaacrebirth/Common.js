@@ -1,4 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+//style backbutton dev wiki
+window.BackToTopModern = true;
 
 $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
 	return mw.loader.getScript( 'https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:ArticlesAsResources.js&only=scripts' );
@@ -160,3 +162,30 @@ function loadCraftingRecipes( n ) {
 
 	parse();
 }
+
+//Collection fast load icon
+!function( $, mw ) {
+	var page  = mw.config.get( 'wgTitle' )
+	  , pages = [
+	  	    'Collection Page (Rebirth)',
+  'Collection Page (Afterbirth)',
+  'Collection Page (Afterbirth †)',
+  'Collection Page (Repentance)'
+	  	]; 
+
+	if ( pages.indexOf( page ) == -1 ) return;
+
+    $( 'img.lazyload' ).each( function() {
+		$( this )
+          .attr( 'src', $( this ).attr( 'data-src' ) )
+          .attr( 'class', 'lazyloaded' );
+    });
+}( jQuery, mediaWiki );
+
+$(function(){   
+    switch ( mw.config.get('wgPageName') ) {
+        case 'Collection_Page_(Repentance)':
+            $('body').addClass('is-content-expanded')
+        break;
+    }
+});

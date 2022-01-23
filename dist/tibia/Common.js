@@ -636,7 +636,7 @@ function clearElement() {
         }
         return obj;
     }(game.worlds));
-    game.getHouseUrl = function (w, id) {
+    game.getHouseUrl = function (w, id, type) {
         if (!isNaN(w)) {
             // input is an index, we want a name
             if (w < 0 || w > game.worlds.length) {
@@ -644,7 +644,7 @@ function clearElement() {
             }
             w = game.worlds[w];
         }
-        return 'https://www.tibia.com/community/?subtopic=houses&page=view&houseid=' + id + '&world=' + w;
+        return 'https://www.tibia.com/community/?subtopic=houses&page=view&houseid=' + id + '&world=' + w + '&type=' + type;
     };
     window.game = game;
 }(window));
@@ -694,7 +694,7 @@ function clearElement() {
     commands = {
         'get-house-url': function (e) {
             var $span, href;
-            href = game.getHouseUrl(getCookie("TW_gameworld") || "0", e.getAttribute('data-houseid') || "0");
+            href = game.getHouseUrl(getCookie("TW_gameworld") || "0", e.getAttribute('data-houseid') || "0", e.getAttribute('data-housetype') || "0");
             $span = $('<span>View the <a class="external text" href="' + href + '">Tibia.com house page</a>. (<a href="/wiki/Project:Settings">change settings</a>)</span>)');
             clearElement.call(e);
             $(e).append($span);
@@ -776,6 +776,13 @@ $(function () {
     if (e.style.textShadow !== "") {
         $(document.body).addClass("nosupport-textShadow");
     }
+});
+
+/* Animation starter for the daylight viewport in combination with 'day_cycle' class and keyframes*/
+$(function () {
+	if (document.getElementById("dayview")) {
+		document.getElementById("dayview").style.setProperty('--g', 80+(new Date().getMinutes()*2.21) + "%");
+	}
 });
 
 $(function () {

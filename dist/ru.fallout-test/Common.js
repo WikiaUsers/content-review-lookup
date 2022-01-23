@@ -5,6 +5,12 @@
 /* [[MediaWiki:Wikia.js]] для скриптов вне основного блока (.mw-parser-output) */
 
 //================================================================
+
+$('.mbox2__footer-toggler').click(function() {
+    $(this).closest('.mbox2').find('.mbox2__footer').toggle();
+});
+
+//================================================================
 // Вставка пользовательского имени для [[Template:Username]]
 $(function() {
 	if (mw.config.values.wgUserName != 'null') {

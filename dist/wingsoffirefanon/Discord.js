@@ -46,7 +46,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(function () {
 				}),
 				// Call to action
 				ui.div({
-					class: "discord-module__call-to-action",
+					class: "discord-module__cta",
 					text: callToAction,
 				}),
 				// Chevron
@@ -73,11 +73,11 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(function () {
 	mw.hook("doru.ui").add(function (ui) {
 		mw.util.addCSS(
 			[
-				'.discord-module  {display: grid; grid-template-areas: "logo title chevron" "logo call-to-action chevron"; grid-template-columns: min-content 1fr min-content; grid-template-rows: min-content min-content; align-items: center; gap: 10px 20px; padding: 20px; border-radius: 3px; background-color: #5966f2; font-size: 16px; line-height: 1; color: #fff; }',
-				".discord-module:hover, .discord-module:focus {text-decoration: none; color: #fff; }",
+				".discord-module { display: grid; grid-template-areas: 'logo title chevron' 'logo call-to-action chevron'; grid-template-columns: min-content 1fr min-content; grid-template-rows: min-content min-content; align-items: center; gap: 10px 20px; padding: 20px; border-radius: 3px; background-color: #5966f2; font-size: 16px; line-height: 1; color: #fff; }",
+				".discord-module:hover, .discord-module:focus { text-decoration: none; color: #fff; }",
 				".discord-module__logo { grid-area: logo; }",
 				".discord-module__title { grid-area: title; font-weight: 700; }",
-				".discord-module__call-to-action { grid-area: call-to-action; font-weight: 300; }",
+				".discord-module__cta { grid-area: call-to-action; font-weight: 300; }",
 				".discord-module__chevron { grid-area: chevron; transition-duration: 0.3s; transition-property: transform; transition-timing-function: ease-out; }",
 				".discord-module:hover .discord-module__chevron { transform: translateX(50%); }",
 			].join("")

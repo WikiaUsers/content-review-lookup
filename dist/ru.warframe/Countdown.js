@@ -1,3 +1,120 @@
+/*
+ * Таймер обратного отсчета с точностью до секунды, учитывающий настройки
+ * перевода на летнее время (DST), если не указано иное. Любой элемент
+ * использующий CSS-класс ".customcountdown" будет предназначен для создания
+ * таймера обратного отсчета
+ * 
+ * Простой сценарий: Таймер обратного отсчета со следующими параметрами:
+ * loopTime=30с и delayTime=10с
+ * заставит сначала отсчитать время "таймера задержки" (delayTime) с 9 до 0 секунд
+ * а затем "таймер события" отсчитает с 19 до 0 секунд до общего времени
+ * цикла (loopTime) 30 секунд.
+ * 
+ * @author	User:FINNER (original author) from warframe.fandom.com (en)
+ * @author	User:Cephalon Scientia (refactor) from warframe.fandom.com (en)
+ * @author	User:Max.Archy (traslator) from warframe.fandom.com (ru)
+ * @requires	mediawiki
+ * 
+ * Reference: https://www.w3schools.com/howto/howto_js_countdown.asp
+ */
+
+//далее будут прописаны комментарии для облегчения понимания
+/*
+ * Массив классов CSS, которые должны присутствовать на странице,
+ * чтобы работал таймер обратного отсчета.
+ * @constant	COUNTDOWN_CLASSES
+ * @type {string[]}
+ */
+const COUNTDOWN_CLASSES = ["seedDate", "bText", "bDelayText", "timer",
+		"aText", "aDelayText", "loopTime", "loopLimit", "endText", 
+		"delayTime", "delayDisplay", "dst", "dateFormat", "dateLabels"];
+Object.freeze(COUNTDOWN_CLASSES); //защита от случайного изменения
+
+/*
+ * Определение единиц измерения для "single" и "full". 
+ * @constant	TIME_UNIT_ABBR
+ * @constant	TIME_UNIT_ABBR_RUS
+ * @constant	TIME_UNIT_ABBR_RUS_FULL
+ * @type {Object.<string,.., string>}
+ * в отличии от английского языка в русском наименование зависит от числительного
+ * @type {Object.<{string,.., string},..,{string,.., string}>}
+ */
+const TIME_UNIT_ABBR = { //используется в функциях
+	Year: "Y",
+	Month: "M",
+	Day: "D",
+	Hour: "h",
+	Minute: "m",
+	Second: "s"
+};
+Object.freeze(TIME_UNIT_ABBR); //защита от случайного изменения
+
+//применяется для вывода единиц времени на страницу с "таймером"
+//подмассивы для определения корректных окончаний единиц времени функции plural()
+const TIME_UNIT_ABBR_RUS_FULL = {
+	Year: {one:" год", few:" года", many:" лет"},
+	Month: {one:" месяц", few:" месяца", many:" месяцев"},
+	Day: {one:" день", few:" дня", many:" дней"},
+	Hour: {one:" час", few:" часа", many:" часов"},
+	Minute: {one:" минута", few:" минуты", many:" минут"},
+	Second: {one:" секунда", few:" секунды", many:" секунд"},
+};
+Object.freeze(TIME_UNIT_ABBR_RUS_FULL); //защита от случайного изменения
+
+const TIME_UNIT_ABBR_RUS = { 
+	Year: {one:" Г", few:" Г", many:" Л"},
+	Month: {one:" М", few:" М", many:" М"},
+	Day: {one:" Д", few:" Д", many:" Д"},
+	Hour: {one:" ч", few:" ч", many:" ч"},
+	Minute: {one:" м", few:" м", many:" м"},
+	Second: {one:" с", few:" с", many:" с"},
+};
+Object.freeze(TIME_UNIT_ABBR_RUS); //защита от случайного изменения
+
+/*
+ * Определение длительности в миллисекндах.
+ * @constant	TIME_IN_MILLISECONDS
+ * @type {Object.<string, number>}
+ */
+const TIME_IN_MILLISECONDS = {
+	Y: 31536000000, // без привязки к високосному году (миллисекунд за один день * 365)
+	M: 2628000000,  // среднее количество на месяц (миллисекунд в году / 12)
+	D: 86400000,
+	h: 3600000,
+	m: 60000,
+	s: 1000,
+// используется для loopTime и delayTime с русскими окончаниями
+	Г: 31536000000,  
+	М: 2628000000,
+	Д: 86400000,
+	ч: 3600000,
+	м: 60000,
+	с: 1000,
+};
+Object.freeze(TIME_IN_MILLISECONDS); //защита от случайного изменения
+
+var countdownTimers;
+
+/*
+ * Имя страницы на которой находится Пользователь.
+ * @constant	PAGE_NAME
+ * @type {string}
+ */
+const PAGE_NAME = mw.config.get("wgPageName");
+
+// Точка входа "таймера"
+if (document.getElementsByClassName("customcountdown").length > 0) {
+	countdownInit();
+}
+
+/*
+ * Определение корректных обозначений наименований аббривиатур,
+ * например, "1 год", "2 года", "5 лет".
+ * @function	plural
+ * @param {string} one	- единицы времени для единиц
+ * @param {string} few	- единицы времени для нескольких
+ * @param {string} many	- единицы времени для остальных
+ */
 function plural(n, one, few, many) {
     // @see http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html
     if (n % 10 === 1 && n % 100 !== 11) return one;
@@ -5,486 +122,314 @@ function plural(n, one, few, many) {
     else return many;
 }
 
-function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit, dateFormat, dateLabels, separators) {
-     const oneYear = 31536000000,
-         oneMonth = oneYear / 12,
-         oneDay = oneYear / 365;
-     const oneHour = 3600000,
-         oneMinute = 60000,
-         oneSecond = 1000;
-     var count = document.getElementsByClassName("customcountdown");
-     var s = 0,
-         r = 0,
-         t = 0,
-         u = 0;
-     for (var k = 0; k < count.length; k++) {
-         var now = new Date();
-         var i = 0,
-             i2 = 0,
-             loopConv = 0,
-             delayConv = 0;
-         var loopTime1 = Number(loopTime[k].innerHTML),
-             loopLimit1 = Number(loopLimit[k].innerHTML),
-             delayTime1 = Number(delayTime[k].innerHTML);
-         if (seedDate[k].innerHTML === '') seedDate[k].innerHTML = 'December 3, 2015 00:00:00 UTC';
-         if (isNaN(loopTime[k].innerHTML)) loopTime1 = 0;
-         if (loopUnit[k].innerHTML === '') loopUnit[k].innerHTML = 's';
-         if (isNaN(loopLimit[k].innerHTML)) loopLimit1 = 0;
-         if (isNaN(delayTime[k].innerHTML)) delayTime1 = 0;
-         if (delayUnit[k].innerHTML === '') delayUnit[k].innerHTML = 's';
-         var nextDate = new Date(seedDate[k].innerHTML);
- 
-         // convert inputted loop/delay time to specified time period in milliseconds
-         switch (loopUnit[k].innerHTML) {
-             case 'Y':
-                 loopConv = loopTime1 * oneYear;
-                 break;
-             case 'M':
-                 loopConv = loopTime1 * oneMonth;
-                 break;
-             case 'D':
-                 loopConv = loopTime1 * oneDay;
-                 break;
-             case 'h':
-                 loopConv = loopTime1 * oneHour;
-                 break;
-             case 'm':
-                 loopConv = loopTime1 * oneMinute;
-                 break;
-             case 's':
-                 loopConv = loopTime1 * oneSecond;
-                 break;
-         }
-         switch (delayUnit[k].innerHTML) {
-             case 'Y':
-                 delayConv = delayTime1 * oneYear;
-                 break;
-             case 'M':
-                 delayConv = delayTime1 * oneMonth;
-                 break;
-             case 'D':
-                 delayConv = delayTime1 * oneDay;
-                 break;
-             case 'h':
-                 delayConv = delayTime1 * oneHour;
-                 break;
-             case 'm':
-                 delayConv = delayTime1 * oneMinute;
-                 break;
-             case 's':
-                 delayConv = delayTime1 * oneSecond;
-                 break;
-         }
-         var nextDate2 = new Date(nextDate.getTime() + delayConv);
- 
-         while (nextDate.getTime() <= now.getTime()) {
-             i += 1;
-             if (i === (loopLimit1 + 1)) break;
-             else nextDate.setTime(nextDate.getTime() + loopConv);
-         }
-         while (nextDate2.getTime() <= now.getTime()) {
-             i2 += 1;
-             if (i2 === (loopLimit1 + 1)) break;
-             else nextDate2.setTime(nextDate2.getTime() + loopConv);
-         }
- 
-         // accounts for DST between now and target date unless otherwise specified
-         var dst_offset = 0,
-             dst_offset2 = 0;
-         if (document.getElementById('dst_' + k).innerHTML === '') {
-             dst_offset = (now.getTimezoneOffset() - nextDate.getTimezoneOffset()) * 60 * 1000;
-             dst_offset2 = (now.getTimezoneOffset() - nextDate2.getTimezoneOffset()) * 60 * 1000;
-         }
- 
-         // total time between now and target date in milliseconds converted
-         // to certain time period
-         // (i.e. for 120 minutes: years = 0; months = 0; days = 0;
-         // hours = 2; minutes = 120; seconds = 7200)
-         // time string will result in "00021207200" thus far
-         var diff = (nextDate.getTime() - now.getTime()) + dst_offset;
-         var diff2 = (nextDate2.getTime() - now.getTime()) + dst_offset2;
-         var yearsleft = Math.floor(diff / oneYear);
-         var yearsleft2 = Math.floor(diff2 / oneYear);
-         var monthsleft = Math.floor(diff / oneMonth);
-         var monthsleft2 = Math.floor(diff2 / oneMonth);
-         var daysleft = Math.floor(diff / oneDay);
-         var daysleft2 = Math.floor(diff2 / oneDay);
-         var hoursleft = Math.floor(diff / oneHour);
-         var hoursleft2 = Math.floor(diff2 / oneHour);
-         var minutesleft = Math.floor(diff / oneMinute);
-         var minutesleft2 = Math.floor(diff2 / oneMinute);
-         var secondsleft = Math.floor(diff / oneSecond);
-         var secondsleft2 = Math.floor(diff2 / oneSecond);
- 
-         // finds what time periods the specified date format wants
-         var Y_Count = 0,
-             M_Count = 0,
-             D_Count = 0,
-             h_Count = 0,
-             m_Count = 0,
-             s_Count = 0;
-         if (dateFormat[k].innerHTML === '') dateFormat[k].innerHTML = 'YY MM DD hh mm ss';
-         for (var position = 0; position < dateFormat[k].innerHTML.length; position++) {
-             switch (dateFormat[k].innerHTML.charAt(position)) {
-                 case 'Y':
-                     Y_Count += 1;
-                     break;
-                 case 'M':
-                     M_Count += 1;
-                     break;
-                 case 'D':
-                     D_Count += 1;
-                     break;
-                 case 'h':
-                     h_Count += 1;
-                     break;
-                 case 'm':
-                     m_Count += 1;
-                     break;
-                 case 's':
-                     s_Count += 1;
-                     break;
-             }
-         }
- 
-         // based on the specified time periods desired, sets the time periods to
-         // account for the other time periods
-         // (i.e. for 120 minutes & "hh mm ss": years = 0; months = 0; days = 0;
-         // hours = 2; minutes = 0; seconds = 0)
-         // time string will result in "000200" thus far
-         if (Y_Count === 0) {
-             yearsleft = 0;
-             yearsleft2 = 0;
-         }
-         if (M_Count === 0) {
-             monthsleft = 0;
-             monthsleft2 = 0;
-         } else {
-             monthsleft = (monthsleft * oneMonth - yearsleft * oneYear) / oneMonth;
-             monthsleft2 = (monthsleft2 * oneMonth - yearsleft2 * oneYear) / oneMonth;
-         }
-         if (D_Count === 0) {
-             daysleft = 0;
-             daysleft2 = 0;
-         } else {
-             daysleft = (daysleft * oneDay - yearsleft * oneYear - monthsleft * oneMonth) / oneDay;
-             daysleft2 = (daysleft2 * oneDay - yearsleft2 * oneYear - monthsleft2 * oneMonth) / oneDay;
-         }
-         if (h_Count === 0) {
-             hoursleft = 0;
-             hoursleft2 = 0;
-         } else {
-             hoursleft = (hoursleft * oneHour - yearsleft * oneYear - monthsleft * oneMonth - daysleft * oneDay) / oneHour;
-             hoursleft2 = (hoursleft2 * oneHour - yearsleft2 * oneYear - monthsleft2 * oneMonth - daysleft2 * oneDay) / oneHour;
-         }
-         if (m_Count === 0) {
-             minutesleft = 0;
-             minutesleft2 = 0;
-         } else {
-             minutesleft = (minutesleft * oneMinute - yearsleft * oneYear - monthsleft * oneMonth - daysleft * oneDay - hoursleft * oneHour) / oneMinute;
-             minutesleft2 = (minutesleft2 * oneMinute - yearsleft2 * oneYear - monthsleft2 * oneMonth - daysleft2 * oneDay - hoursleft2 * oneHour) / oneMinute;
-         }
-         if (s_Count === 0) {
-             secondsleft = 0;
-             secondsleft2 = 0;
-         } else {
-             secondsleft = (secondsleft * oneSecond - yearsleft * oneYear - monthsleft * oneMonth - daysleft * oneDay - hoursleft * oneHour - minutesleft * oneMinute) / oneSecond;
-             secondsleft2 = (secondsleft2 * oneSecond - yearsleft2 * oneYear - monthsleft2 * oneMonth - daysleft2 * oneDay - hoursleft2 * oneHour - minutesleft2 * oneMinute) / oneSecond;
-         }
- 
-         // based on the specified time periods' desired format, gives time string
-         // leading zeroes
-         // (i.e. for 120 minutes & "hh mm ss": years = 0; months = 0; days = 0;
-         // hours = 02; minutes = 00; seconds = 00)
-         // time string will result in "000020000" thus far
-         var Y_zeros = '',
-             M_zeros = '',
-             D_zeros = '',
-             h_zeros = '',
-             m_zeros = '',
-             s_zeros = '';
-         var Y_zeros2 = '',
-             M_zeros2 = '',
-             D_zeros2 = '',
-             h_zeros2 = '',
-             m_zeros2 = '',
-             s_zeros2 = '';
-         for (var j = 1; j < s_Count; j++) {
-             if (secondsleft < Math.pow(10, s_Count - j)) s_zeros = '0' + s_zeros;
-             if (secondsleft2 < Math.pow(10, s_Count - j)) s_zeros2 = '0' + s_zeros2;
-         }
-         for (j = 1; j < m_Count; j++) {
-             if (minutesleft < Math.pow(10, m_Count - j)) m_zeros = '0' + m_zeros;
-             if (minutesleft2 < Math.pow(10, m_Count - j)) m_zeros2 = '0' + m_zeros2;
-         }
-         for (j = 1; j < h_Count; j++) {
-             if (hoursleft < Math.pow(10, h_Count - j)) h_zeros = '0' + h_zeros;
-             if (hoursleft2 < Math.pow(10, h_Count - j)) h_zeros2 = '0' + h_zeros2;
-         }
-         for (j = 1; j < D_Count; j++) {
-             if (daysleft < Math.pow(10, D_Count - j)) D_zeros = '0' + D_zeros;
-             if (daysleft2 < Math.pow(10, D_Count - j)) D_zeros2 = '0' + D_zeros2;
-         }
-         for (j = 1; j < M_Count; j++) {
-             if (monthsleft < Math.pow(10, M_Count - j)) M_zeros = '0' + M_zeros;
-             if (monthsleft2 < Math.pow(10, M_Count - j)) M_zeros2 = '0' + M_zeros2;
-         }
-         for (j = 1; j < Y_Count; j++) {
-             if (yearsleft < Math.pow(10, Y_Count - j)) Y_zeros = '0' + Y_zeros;
-             if (yearsleft2 < Math.pow(10, Y_Count - j)) Y_zeros2 = '0' + Y_zeros2;
-         }
- 
-         // based on the specified time periods' desired units, gives each time
-         // period in the string certain units
-         // (i.e. for 120 minutes & "hh mm ss" & "single": years = 0Y; months = 0M;
-         // days = 0D; hours = 02h; minutes = 00m; seconds = 00s)
-         // time string will result in "0Y0M0D02h00m00s" thus far
-         var yearunit = '',
-             monthunit = '',
-             dayunit = '',
-             yearunit2 = '',
-             monthunit2 = '',
-             dayunit2 = '';
-         var hourunit = '',
-             minuteunit = '',
-             secondunit = '',
-             hourunit2 = '',
-             minuteunit2 = '',
-             secondunit2 = '';
-         if (dateLabels[k].innerHTML === 'full') {
-             yearunit = plural(yearsleft, 'год', 'года', 'лет');
-             monthunit = plural(monthsleft, 'месяц', 'месяца', 'месяцев');
-             dayunit = plural(daysleft, 'день', 'дня', 'дней');
-             hourunit = plural(hoursleft, 'час', 'часа', 'часов');
-             minuteunit = plural(minutesleft, 'минута', 'минуты', 'минут');
-             secondunit = plural(secondsleft, 'секунда', 'секунды', 'секунд');
-               // ---------событие------------------------
-             yearunit2 = plural(yearsleft2, 'год', 'года', 'лет');
-             monthunit2 = plural(monthsleft2, 'месяц', 'месяца', 'месяцев');
-             dayunit2 = plural(daysleft2, 'день', 'дня', 'дней');
-             hourunit2 = plural(hoursleft2, 'час', 'часа', 'часов');
-             minuteunit2 = plural(minutesleft2, 'минута', 'минуты', 'минут');
-             secondunit2 = plural(secondsleft2, 'секунда', 'секунды', 'секунд');
+/*
+ * Инициализация счетчика обратного отсчета.
+ * @function	countdownInit
+ */
+function countdownInit() {
+	// Сохраняет innerHTML элементы из CSS-класса
+	// каждый элемент содержит объект, определяющий параметры "таймера"
+	countdownTimers = getTimersElements();
+	console.log("Элементы таймера обратного отсчета определены.");
 
-         } else if (dateLabels[k].innerHTML === 'single') {
-             yearunit = 'г';
-             monthunit = 'м';
-             dayunit = 'д';
-             hourunit = 'ч';
-             minuteunit = 'м';
-             secondunit = 'с';
-             yearunit2 = 'г';
-             monthunit2 = 'м';
-             dayunit2 = 'д';
-             hourunit2 = 'ч';
-             minuteunit2 = 'м';
-             secondunit2 = 'с';
-         }
- 
-         // separates each time period in the time string by the specified separators
-         // (i.e. for 120 minutes & "hh mm ss" & "single" & " " or "&nbsp;": 
-         // years = 0Y ; months = 0M ; days = 0D ; hours = 02h ;
-         // minutes = 00m ; seconds = 00s)
-         // time string will result in "0Y 0M 0D 02h 00m 00s" thus far
-         var sep = separators[k].innerHTML;
-         if (separators[k].innerHTML === '') sep = '';
- 
-         var counttext = document.getElementsByClassName("customcountdown")[k].innerHTML;
-         var n = counttext.search(/loopCount/i),
-             m = counttext.search(/countXinterval/i);
-         var o = counttext.search(/loopCount2/i),
-             p = counttext.search(/countXinterval2/i);
- 
-         // when loop iterations reaches loop limit, hide normal text, hide delay
-         // text, hide normal/delay time periods, and only show end of loop text
-         if ((i === (loopLimit1 + 1)) && (nextDate.getTime() <= now.getTime())) {
-             document.getElementById('endText_' + k).setAttribute("style", "display:visible");
-             document.getElementById('bText_' + k).setAttribute("style", "display:none");
-             document.getElementById('aText_' + k).setAttribute("style", "display:none");
-             document.getElementById('aDelayText_' + k).setAttribute("style", "display:none");
-             document.getElementById('bDelayText_' + k).setAttribute("style", "display:none");
-             $('#years_' + k).html('');
-             $('#months_' + k).html('');
-             $('#days_' + k).html('');
-             $('#hours_' + k).html('');
-             $('#minutes_' + k).html('');
-             $('#seconds_' + k).html('');
-             if ($('.loopCount').length > 0) {
-                 if (n !== -1) document.getElementById('loopCount_' + (k - s)).innerHTML = i - 1;
-                 else s += 1;
-             }
-             if ($('.countXinterval').length > 0) {
-                 if (m !== -1) document.getElementById('countXinterval_' + (k - r)).innerHTML = (i - 1) * loopTime[k].innerHTML;
-                 else r += 1;
-             }
-             if ($('.loopCount2').length > 0) {
-                 if (o !== -1) document.getElementById('loopCount2_' + (k - t)).innerHTML = i - 1;
-                 else t += 1;
-             }
-             if ($('.countXinterval2').length > 0) {
-                 if (p !== -1) document.getElementById('countXinterval2_' + (k - u)).innerHTML = (i - 1) * loopTime[k].innerHTML;
-                 else u += 1;
-             }
-         } else {
-             // when delay time reaches inputted delay time show delay text, hide normal
-             // text, and only show delay time periods specified by date format
-             if ((Math.floor(diff2 / oneSecond) * oneSecond) < delayConv) {
-                 document.getElementById('endText_' + k).setAttribute("style", "display:none");
-                 document.getElementById('bText_' + k).setAttribute("style", "display:none");
-                 document.getElementById('aText_' + k).setAttribute("style", "display:none");
-                 document.getElementById('aDelayText_' + k).setAttribute("style", "display:visible");
-                 document.getElementById('bDelayText_' + k).setAttribute("style", "display:visible");
-                 if (document.getElementById('delayCountDisplay_' + k).innerHTML === '') {
-                     if (Y_Count !== 0) $('#years_' + k).html(Y_zeros2 + Math.floor(yearsleft2) + yearunit2 + sep);
-                     if (M_Count !== 0) $('#months_' + k).html(M_zeros2 + Math.floor(monthsleft2) + monthunit2 + sep);
-                     if (D_Count !== 0) $('#days_' + k).html(D_zeros2 + Math.floor(daysleft2) + dayunit2 + sep);
-                     if (h_Count !== 0) $('#hours_' + k).html(h_zeros2 + Math.floor(hoursleft2) + hourunit2 + sep);
-                     if (m_Count !== 0) $('#minutes_' + k).html(m_zeros2 + Math.floor(minutesleft2) + minuteunit2 + sep);
-                     if (s_Count !== 0) $('#seconds_' + k).html(s_zeros2 + Math.floor(secondsleft2) + secondunit2);
-                 } else {
-                     $('#years_' + k).html('');
-                     $('#months_' + k).html('');
-                     $('#days_' + k).html('');
-                     $('#hours_' + k).html('');
-                     $('#minutes_' + k).html('');
-                     $('#seconds_' + k).html('');
-                 }
-                 if ($('.loopCount').length > 0) {
-                     if (n !== -1) document.getElementById('loopCount_' + (k - s)).innerHTML = i - 1;
-                     else s += 1;
-                 }
-                 if ($('.countXinterval').length > 0) {
-                     if (m !== -1) document.getElementById('countXinterval_' + (k - r)).innerHTML = (i - 1) * loopTime[k].innerHTML;
-                     else r += 1;
-                 }
-                 if ($('.loopCount2').length > 0) {
-                     if (o !== -1) document.getElementById('loopCount2_' + (k - t)).innerHTML = i - 1;
-                     else t += 1;
-                 }
-                 if ($('.countXinterval2').length > 0) {
-                     if (p !== -1) document.getElementById('countXinterval2_' + (k - u)).innerHTML = (i - 1) * loopTime[k].innerHTML;
-                     else u += 1;
-                 }
-             }
-             // while delay time has yet to reach inputted delay time show normal text,
-             // hide delay text, and only show normal time periods specified by date 
-             // format
-             // (i.e. for 120 minutes & "hh mm ss" & "single" & " " or "&nbsp;": 
-             // years = ; months = ; days = ; hours = 02h ;
-             // minutes = 00m ; seconds = 00s)
-             // time string will result in "02h 00m 00s" thus far
-             else {
-                 document.getElementById('endText_' + k).setAttribute("style", "display:none");
-                 document.getElementById('bDelayText_' + k).setAttribute("style", "display:none");
-                 document.getElementById('aDelayText_' + k).setAttribute("style", "display:none");
-                 document.getElementById('aText_' + k).setAttribute("style", "display:visible");
-                 document.getElementById('bText_' + k).setAttribute("style", "display:visible");
-                 if (Y_Count !== 0) $('#years_' + k).html(Y_zeros + Math.floor(yearsleft) + yearunit + sep);
-                 if (M_Count !== 0) $('#months_' + k).html(M_zeros + Math.floor(monthsleft) + monthunit + sep);
-                 if (D_Count !== 0) $('#days_' + k).html(D_zeros + Math.floor(daysleft) + dayunit + sep);
-                 if (h_Count !== 0) $('#hours_' + k).html(h_zeros + Math.floor(hoursleft) + hourunit + sep);
-                 if (m_Count !== 0) $('#minutes_' + k).html(m_zeros + Math.floor(minutesleft) + minuteunit + sep);
-                 if (s_Count !== 0) $('#seconds_' + k).html(s_zeros + Math.floor(secondsleft) + secondunit);
-                 if ($('.loopCount').length > 0) {
-                     if (n !== -1) document.getElementById('loopCount_' + (k - s)).innerHTML = i;
-                     else s += 1;
-                 }
-                 if ($('.countXinterval').length > 0) {
-                     if (m !== -1) document.getElementById('countXinterval_' + (k - r)).innerHTML = i * loopTime[k].innerHTML;
-                     else r += 1;
-                 }
-                 if ($('.loopCount2').length > 0) {
-                     if (o !== -1) document.getElementById('loopCount2_' + (k - t)).innerHTML = i;
-                     else t += 1;
-                 }
-                 if ($('.countXinterval2').length > 0) {
-                     if (p !== -1) document.getElementById('countXinterval2_' + (k - u)).innerHTML = i * loopTime[k].innerHTML;
-                     else u += 1;
-                 }
-             }
-         }
-     }
- }
- 
- 
- var count = document.getElementsByClassName("customcountdown");
- var loopCount = 0;
- if ($('.loopCount').length > 0) {
-     loopCount = document.getElementsByClassName('loopCount');
-     for (var k = 0; k < loopCount.length; k++) {
-         loopCount[k].id = 'loopCount_' + k;
-     }
- }
- var countXinterval = 0;
- if ($('.countXinterval').length > 0) {
-     countXinterval = document.getElementsByClassName('countXinterval');
-     for (k = 0; k < countXinterval.length; k++) {
-         countXinterval[k].id = 'countXinterval_' + k;
-     }
- }
- var loopCount2 = 0;
- if ($('.loopCount2').length > 0) {
-     loopCount2 = document.getElementsByClassName('loopCount2');
-     for (var k = 0; k < loopCount2.length; k++) {
-         loopCount2[k].id = 'loopCount2_' + k;
-     }
- }
- var countXinterval2 = 0;
- if ($('.countXinterval2').length > 0) {
-     countXinterval2 = document.getElementsByClassName('countXinterval2');
-     for (k = 0; k < countXinterval2.length; k++) {
-         countXinterval2[k].id = 'countXinterval2_' + k;
-     }
- }
- var endText = document.getElementsByClassName('endText');
- var bText = document.getElementsByClassName('bText');
- var bDelayText = document.getElementsByClassName('bDelayText');
- var years = document.getElementsByClassName('years');
- var months = document.getElementsByClassName('months');
- var days = document.getElementsByClassName('days');
- var hours = document.getElementsByClassName('hours');
- var minutes = document.getElementsByClassName('minutes');
- var seconds = document.getElementsByClassName('seconds');
- var aText = document.getElementsByClassName('aText');
- var aDelayText = document.getElementsByClassName('aDelayText');
- var seedDate = document.getElementsByClassName('seedDate');
- var loopTime = document.getElementsByClassName('loopTime');
- var loopUnit = document.getElementsByClassName('loopTimeUnit');
- var loopLimit = document.getElementsByClassName('loopLimit');
- var delayTime = document.getElementsByClassName('delayTime');
- var delayUnit = document.getElementsByClassName('delayTimeUnit');
- var delayDisplay = document.getElementsByClassName('delayCountDisplay');
- var dst = document.getElementsByClassName('dst');
- var dateFormat = document.getElementsByClassName('dateFormat');
- var dateLabels = document.getElementsByClassName('dateLabels');
- var separators = document.getElementsByClassName('separators');
- 
- // gives each instance of repeating elements of same class unique id's
- for (k = 0; k < count.length; k++) {
-     endText[k].id = 'endText_' + k;
-     bText[k].id = 'bText_' + k;
-     bDelayText[k].id = 'bDelayText_' + k;
-     years[k].id = 'years_' + k;
-     months[k].id = 'months_' + k;
-     days[k].id = 'days_' + k;
-     hours[k].id = 'hours_' + k;
-     minutes[k].id = 'minutes_' + k;
-     seconds[k].id = 'seconds_' + k;
-     aText[k].id = 'aText_' + k;
-     aDelayText[k].id = 'aDelayText_' + k;
-     seedDate[k].id = 'seedDate_' + k;
-     loopTime[k].id = 'loopTime_' + k;
-     loopUnit[k].id = 'loopTimeUnit_' + k;
-     loopLimit[k].id = 'loopLimit_' + k;
-     delayTime[k].id = 'delayTime_' + k;
-     delayUnit[k].id = 'delayTimeUnit_' + k;
-     delayDisplay[k].id = 'delayCountDisplay_' + k;
-     dst[k].id = 'dst_' + k;
-     dateFormat[k].id = 'dateFormat_' + k;
-     dateLabels[k].id = 'dateLabels_' + k;
-     separators[k].id = 'separators_' + k;
- }
- Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit, dateFormat, dateLabels, separators);
- setInterval(function() {
-     Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit, dateFormat, dateLabels, separators)
- }, 1000);
+	updateTimers();
+	console.log("Таймер запущен.");
+
+	// Обновление "таймера" каждую секунду.
+	// Уменьшать время не рекомендуется, так как приводит к повышенной нагрузке на сервер
+	setInterval(function() {
+		updateTimers();
+	}, 1000);
+}
+
+/*
+ * Обновление каждого "таймера" на странице.
+ * @function	updateTimers
+ */
+function updateTimers() {
+	// проходит по всем "таймерам" класса .customcountdown на странице
+	for (var i = 0; i < countdownTimers.length; i++) {
+		updateTimer(countdownTimers[i], i);
+	}
+}
+
+/*
+ * Расчет разницы во времени и обновление "таймера" каждую секунду.
+ * @function	updateTimer
+ * @param {Object.<string, string>} timerParams - список, содержащий параметры "таймера"
+ * @param {number} - экземпляр "таймера".
+ */
+function updateTimer(timerParams, num) {
+	var now = new Date();
+
+	// Параметры, сохранённые в innerHTML
+	var seedDate = new Date((timerParams.seedDate === "") ? "December 3, 2015 00:00:00 UTC" 
+		: timerParams.seedDate);
+
+	if (isNaN(seedDate.getTime())) {
+		throw "ОШИБКА: некорректный формат даты параметра seedDate (д.б. \"December 3, 2015 00:00:00 UTC\").";
+	}
+
+	// Время между итерациями цикла (т.е. продолжительность цикла)
+	var loopTime = convertTimeToMilliseconds(timerParams.loopTime);
+	// Максимальное количество итераций цикла; 
+	// если loopLimit меньше 0, то предполагается что должно работать бесконечное количество циклов
+	var loopLimit = (isNaN(timerParams.loopLimit)) ? 0 : 
+		(timerParams.loopLimit < 0) ? Number.MAX_SAFE_INTEGER 
+		: Number(timerParams.loopLimit);
+
+	// Разбивает общее время цикла на два периода времени, один из которых является "таймером задержки"
+	// (т.е. время до наступления "события"), а другой — временем "таймера события";
+	// переключение между ними происходит при достижении нуля (например, если 
+	// delayTime == 20 с и loopTime = 60 с, то первые 20 с будут 20-секундным "таймером задержки" с её
+	// собственными текстами, а следующие 40 с будут временем "таймера события" и его текстами) 
+	var delayTime = convertTimeToMilliseconds(timerParams.delayTime);
+
+	// Отображение "таймера задержки" если "ИСТИНА"
+	var delayDisplay = timerParams.delayDisplay === "";
+
+	// параметр delayTime должен быть всегда меньше чем loopTime
+	if (delayTime >= loopTime) {
+		throw "ОШИБКА: Параметр \"delayTime\" должен быть меньше параметра \"loopTime\".";
+	}
+
+	var numLoops = calculateNumLoops(now, seedDate, 0, loopTime, loopLimit);
+	var numLoopsDelay = calculateNumLoops(now, seedDate, delayTime, loopTime, loopLimit);
+
+	var endDate = findEndDate(seedDate, 0, numLoops, loopTime);
+	var endDateDelay = findEndDate(seedDate, delayTime, numLoopsDelay, loopTime);
+
+	// Для Пользователей с региональными настройками, где есть "летнее время" (DST)
+	// между "now" и необходимой "endDate" если не указано иное
+	var dstOffset = (timerParams.dst === "") ? 
+		(now.getTimezoneOffset() - endDate.getTimezoneOffset()) * 60 * 1000 : 0;
+	var dstOffsetDelay = (timerParams.dst === "") ? 
+		(now.getTimezoneOffset() - endDateDelay.getTimezoneOffset()) * 60 * 1000 : 0;
+	
+	// Общее время между "now" и "endDate" в миллисекундах преобразованное в определённый период
+	// времени (например, для 120 минут: лет = 0; месяцев = 0; дней = 0; часов = 2; минут = 120; секунд = 7200)
+	// time string будет иметь результат "00021207200" для данного примера
+	var timeDiff = calculateTimeDiff(now, endDate, dstOffset);  // в миллисекундах, округлённое до ближайшей "тысячи"
+	var timeDiffDelay = calculateTimeDiff(now, endDateDelay, dstOffsetDelay);
+	// console.log("Время цикла: " + loopTime + 
+	//	 " | Период \"таймера\": " + timeDiff + 
+	//	 " | Время \"таймера задержки\": " + timeDiffDelay + 
+	//	 " | Время \"таймера события\" " + (loopTime - timeDiff)
+	// );
+
+	var dateFormat = (timerParams.dateFormat === "") ? "YY MM DD hh mm ss" 
+		: timerParams.dateFormat;
+
+	// В зависимости от заданных параметров отображения результат присоединяет к каждому времени
+	// определённые единицы (например, для 120 минут & "hh mm ss" & "single":
+	// лет = 0Г; месяцев = 0М; дней = 0Д; часов = 02ч; минут = 00м; секунд = 00с)
+	// будет иметь результат "0Г 0М 0Д 02ч 00м 00с" для данного примера
+	var timeUnits = getDisplayUnits(timerParams.dateLabels);
+
+	// Когда число циклов доходит до заданного параметра "loopLimit", 
+	// скрыть тексты "таймера события", "таймера задержки", время "таймера события"
+	// и "таймера задержки" и отобразить только текст окончания работы цикла "endText"
+	if ((numLoops === loopLimit) && (endDate.getTime() <= now.getTime())) {
+		document.getElementById("endText_" + num).setAttribute("style", "display:visible");
+		document.getElementById("bText_" + num).setAttribute("style", "display:none");
+		document.getElementById("aText_" + num).setAttribute("style", "display:none");
+		document.getElementById("bDelayText_" + num).setAttribute("style", "display:none");
+		document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
+		$("#timer_" + num).html("");
+
+	// После окончания работы "таймера задержки" отображать тексты "таймера события", скрыть тексты
+	// "таймера задержки", отобразить время "таймера события" в заданных единицах
+	} else if (Math.min(timeDiff, timeDiffDelay) === timeDiffDelay) {
+		document.getElementById("endText_" + num).setAttribute("style", "display:none");
+		document.getElementById("bText_" + num).setAttribute("style", "display:visible");
+		document.getElementById("aText_" + num).setAttribute("style", "display:visible");
+		document.getElementById("bDelayText_" + num).setAttribute("style", "display:none");
+		document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
+		// Отображение времени "таймера события" на странице 
+		$("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffDelay, timeUnits));
+	
+	// В течение "таймера задержки" отображать тексты "таймера задержки", скрыть тексты
+	// "таймера события", отобразить время "таймера задержки" в заданных единицах
+	} else {
+		document.getElementById("endText_" + num).setAttribute("style", "display:none");
+		document.getElementById("bText_" + num).setAttribute("style", "display:none");
+		document.getElementById("aText_" + num).setAttribute("style", "display:none");
+		document.getElementById("bDelayText_" + num).setAttribute("style", "display:visible");
+		document.getElementById("aDelayText_" + num).setAttribute("style", "display:visible");
+		// Отображение времени "таймера задержки" на странице
+		if (delayDisplay) {
+			$("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiff, timeUnits));
+		} else {
+			$("#timer_" + num).html("");
+		}
+	}
+}
+
+/*
+ * Проверка наличия всех необходимых параметров каждого "таймера" на странице.
+ * Предполагается что для каждого элемента .customcountdown все необходимые 
+ * параметры будут определены
+ * @function	getTimersElements
+ */
+function getTimersElements() {
+	var count = document.getElementsByClassName("customcountdown");
+	countdownTimers = [];
+
+	for (var i = 0; i < count.length; i++) {
+		// Перебираем все таймеры, каждый записывается как отдельный элемент
+		countdownTimers[i] = {};
+		for (var index in COUNTDOWN_CLASSES) {
+			var className = COUNTDOWN_CLASSES[index];
+			var element = document.getElementsByClassName(className)[i];
+			if (element === null) {
+				throw "ОШИБКА: " + className + " CSS class имеет недостающий параметр #" + i + " для корректной работы.";
+			}
+			// Задаем идентичному параметру каждого "таймера" уникальный идентификатор
+			// (например, #seedDate_1)
+			element.id = className + "_" + i;
+			countdownTimers[i][className] = element.innerHTML;
+		}
+	}
+	return countdownTimers;
+}
+
+/*
+ * Преобразует введённое время в миллисекунды. Игнорирует знак и дробную часть. 
+ * По умолчанию единицы времени в секундах ("с"), а число по умолчанию равно 0.
+ * @function	convertTimeToMilliseconds
+ * @param {string} time - строка с "числом" и "единицами" измерения времени 
+ *						(например, "50с" это 50 секунд) 
+ * @returns {number} - число переведённое в миллисекунды
+ */
+function convertTimeToMilliseconds(time) {
+	var number = parseFloat(time);
+	var unit = time.match(/[A-Za-zА-Яа-я]+/);
+	if (unit === null) {
+		unit = "s";
+	}
+	if (isNaN(number)) {
+		number = 0;
+	}
+	if (TIME_IN_MILLISECONDS[unit] !== undefined) {
+		return number * TIME_IN_MILLISECONDS[unit];
+	}
+	throw "ОШИБКА: Введён некорректный тип единиц времени (" + unit + ") в .loopTime и/или .delayTime CSS class. " + 
+			"Требуется один из типов определенных шабоном \"Счетчики\"";
+}
+
+/*
+ * Рассчитывает количество циклов между введёнными датами.
+ * @function	calculateNumLoops
+ * @param {Date} now - текущий момент
+ * @param {Date} seedDate		- заданная дата начала работы "таймера"
+ * @param {number} delayTime	- "время задержки" в миллисекундах
+ * @param {number} loopTime		- "время цикла" в миллисекундах
+ * @param {number} loopLimit	- предел количества циклов
+ * @returns {number} - количество циклов, которое проработал "таймер"
+ */
+function calculateNumLoops(now, seedDate, delayTime, loopTime, loopLimit) {
+	// Math.ceil() is needed to account for the fact that timer can reach 0 
+	// during an unfinished loop
+	var numLoops = Math.ceil((now.getTime() - seedDate.getTime() + delayTime) / loopTime);
+	if (numLoops > loopLimit) {
+		return loopLimit;
+	}
+	return numLoops;
+}
+
+/*
+ * Определение конечной даты на основе начальной даты, продолжительности цикла и
+ * количества циклов, которые заданы для "таймера".
+ * @function	findEndDate
+ * @param {Date} seedDate		- Заданная дата начала работы "таймера
+ * @param {number} delayTime	- "время задержки" в миллисекундах
+ * @param {number} loopTime		- "время цикла" в миллисекундах
+ * @param {number} numLoops		- количество циклов, которое проработает "таймер"
+ * @returns {Date} - конечная дата
+ */
+function findEndDate(seedDate, delayTime, numLoops, loopTime) {
+	return new Date(seedDate.getTime() - delayTime + (numLoops * loopTime));
+}
+
+/*
+ * Общее время между текущим моментом и конечной датой в миллисекундах,
+ * преобразованное в определенный период времени.
+ * @function	calculateTimeDiff
+ * @param {Date} now			- текущий момент
+ * @param {Date} endDate		- дата окончания работы "таймера"
+ * @param {number} dstOffset	- "летнее время" в миллисекундах
+ * @returns {number} - разница времени в миллисекундах, округленное до тысяч
+ */
+function calculateTimeDiff(now, endDate, dstOffset) {
+	// Помнить, что изредка возможен пропуск секунд
+	// особенно если предыдущий подсчет был близок к "нулю" очередной секунды
+	// поскольку вызовы функций не являются мгновенными и требуют времени для запуска
+	// (например: 7041 миллисекунд => 5999 миллисекунд)
+	var timeDiff = (endDate.getTime() - now.getTime()) + dstOffset;
+	return timeDiff;
+}
+
+/*
+ * Определение окончания для каждого разряда "таймера"
+ * @function	getDisplayUnits
+ * @param {string} dateLabels - параметр, который задаёт форму записи единиц времени
+ * @returns {Object.<string,..,string>} - список, содержащий все "таймеры" страницы
+ */
+function getDisplayUnits(dateLabels) {
+	var timeUnits = {};
+	var unitAbbr;
+
+	switch(dateLabels) {
+		case "full":
+			for (var unit in TIME_UNIT_ABBR) { 
+				unitAbbr = TIME_UNIT_ABBR[unit];
+				timeUnits[unitAbbr] = TIME_UNIT_ABBR_RUS_FULL[unit];
+			}
+			break;
+		case "single":
+			for (var unit in TIME_UNIT_ABBR) {
+				unitAbbr = TIME_UNIT_ABBR[unit];
+				timeUnits[unitAbbr] = TIME_UNIT_ABBR_RUS[unit];
+			}
+			break;
+		default:
+			for (var unit in TIME_UNIT_ABBR) {
+				unitAbbr = TIME_UNIT_ABBR[unit];
+				//так как окончания в русском - подмассив, то задается так
+				timeUnits[unitAbbr] = {one:" ", few:" ", many:" "}; 
+			}
+			break;
+	}
+	return timeUnits;
+}
+
+/*
+ * Преобразование "таймера" с присоединением единиц времени
+ * @function	formatTimerNumbers
+ * @param {string} dateFormat - строка "таймер" в date format; каждый блок цифр
+ * разделён единицами времени (например "YY-MM-DD hh:mm:ss")
+ * @param {number} timeDiff - разница в миллисекундах
+ * @param {Object.<{string,.., string},..,{string,.., string}>} timeUnits - список
+ *						содержащий все единицы времени
+ * @returns {string} - отформатированный текст
+ */
+function formatTimerNumbers(dateFormat, timeDiff, timeUnits) {
+	var timerText = dateFormat;
+	var formatArr = dateFormat.split(/[^A-Za-z]/);  // то есть ["YYYY", "MM", "DD"]
+	for (var index in formatArr) {
+		var elem = formatArr[index];
+		var unitAbbr = elem.charAt(0);
+		// подсчитывает блок цифр очередного разряда
+		var timeInMilliseconds = TIME_IN_MILLISECONDS[unitAbbr];
+		var numTimeUnits = Math.floor(timeDiff / timeInMilliseconds);
+		timeDiff -= numTimeUnits * timeInMilliseconds;
+		// запись в "строку" для вывода на экран
+		var text = numTimeUnits + "";
+		text = text.padStart(elem.length, "0");  // отбрасывание "0" в начале "строки"
+		 // добавление корректный единиц времени (например "1 год" или "5 лет")
+		text += plural(numTimeUnits, timeUnits[elem.charAt(0)].one, timeUnits[elem.charAt(0)].few, timeUnits[elem.charAt(0)].many);
+		var regex = new RegExp(elem);
+		timerText = timerText.replace(regex, text);
+	}
+	return timerText;
+}

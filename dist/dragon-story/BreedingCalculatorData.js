@@ -3329,6 +3329,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "broadleaf": {
+                "name": "Broadleaf",
+                "types": [
+                    "fey",
+                    "purple",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "brokenheart": {
                 "name": "Broken Heart",
                 "types": [
@@ -6621,6 +6638,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "25_hours_25",
                 "rarity": 3,
                 "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "dawnleaf": {
+                "name": "Dawnleaf",
+                "types": [
+                    "fey",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]
@@ -12398,6 +12431,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                             ]
                         ]
                     ]
+                ]
+            },
+            "greenwood": {
+                "name": "Greenwood",
+                "types": [
+                    "fey",
+                    "green",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
                 ]
             },
             "griffin": {
@@ -26534,6 +26584,32 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "16_hours_16",
                 "rarity": 2
             },
+            "shade": {
+                "name": "Shade",
+                "types": [
+                    "fey",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "black"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "shadow": {
                 "name": "Shadow",
                 "types": [
@@ -31796,6 +31872,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 4,
                 "parenteligibility": "goldtype",
                 "offspringeligibility": "marketonly",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "umbrage": {
+                "name": "Umbrage",
+                "types": [
+                    "fey",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]

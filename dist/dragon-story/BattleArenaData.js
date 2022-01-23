@@ -1680,6 +1680,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"broadleaf": {
+				"name": "Broadleaf",
+				"colors": [
+					"fey",
+					"purple",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"brokenheart": {
 				"name": "Broken Heart",
 				"colors": [
@@ -3397,6 +3406,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"white",
 					"blue",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"dawnleaf": {
+				"name": "Dawnleaf",
+				"colors": [
+					"fey",
+					"green"
 				],
 				"rarity": "unbreedable"
 			},
@@ -6269,6 +6286,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "common"
+			},
+			"greenwood": {
+				"name": "Greenwood",
+				"colors": [
+					"fey",
+					"green",
+					"red"
+				],
+				"rarity": "unbreedable"
 			},
 			"griffin": {
 				"name": "Griffin",
@@ -13157,6 +13183,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"shade": {
+				"name": "Shade",
+				"colors": [
+					"fey",
+					"black"
+				],
+				"rarity": "common"
+			},
 			"shadow": {
 				"name": "Shadow",
 				"colors": [
@@ -15767,6 +15801,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Umberglow",
 				"colors": [
 					"gold"
+				],
+				"rarity": "unbreedable"
+			},
+			"umbrage": {
+				"name": "Umbrage",
+				"colors": [
+					"fey",
+					"black"
 				],
 				"rarity": "unbreedable"
 			},

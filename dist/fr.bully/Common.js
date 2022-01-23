@@ -93,7 +93,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                         + '</tr>\n';
 	                }
 	                customRows += fromTemplate('Origine', 'origineBox', true, '[REQUIS] IG/URL source.');
-	                customRows += fromTemplate('Source', 'jeuBox', true, '[REQUIS] L.A. Noire/L.A. Noire: The VR Case Files.');
+	                customRows += fromTemplate('Source', 'jeuBox', true, '[REQUIS] Canis Canem Edit/Bully: Scholarship Edition/Bully: Anniversary Edition.');
 	                customRows += fromTemplate('Quoi', 'quoiBox', true, '[REQUIS] Modèle 3D/Capture IG/Image officielle.');
 	                customRows += fromTemplate('Type', 'typeBox', true, '[REQUIS] Personnages/Objets/...');
 	     

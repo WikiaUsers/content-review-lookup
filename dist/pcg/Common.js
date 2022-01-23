@@ -7,3 +7,17 @@ importArticles({
         // ...
     ]
 });
+
+window.SpoilerAlertJS = {
+    question: 'Spoilers Ahead! Proceed Anyway?',
+    yes: 'Yes',
+    no: 'No',
+    fadeDelay: 1600
+};
+
+importArticles({
+	type: 'script',
+	articles: [
+		'u:dev:MediaWiki:CollapsiblePageTools.js',
+		]
+});

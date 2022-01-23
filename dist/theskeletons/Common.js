@@ -11,3 +11,11 @@ importArticles({
           'u:dev:MediaWiki:MassBlock/code.js',
        ]
 });
+
+/* Message Wall Greeting for all users */
+importArticles({    
+	type: 'script',    
+	articles: [        
+		'u:dev:MediaWiki:WallGreeting.js',    
+		]
+});

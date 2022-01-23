@@ -31,47 +31,4 @@ var tooltips_config = {
     waitForImages: true,
     noCSS: true
 };
-
-/*(Test) Unknown where to place, since that plugin tutorial did not said where to place it*/ 
-window.countdownTimer = {
-    Zodiac1: function () {
-       $(this).text('1');
-    }
-    Zodiac2: function () {
-       $(this).text('2');
-    }
-    Zodiac3: function () {
-       $(this).text('3');
-    }
-    Zodiac4: function () {
-       $(this).text('4');
-    }
-    Zodiac5: function () {
-       $(this).text('5');
-    }
-    Zodiac6: function () {
-       $(this).text('6');
-    }
-    Zodiac7: function () {
-       $(this).text('7');
-    }
-    Zodiac8: function () {
-       $(this).text('8');
-    }
-    Zodiac9: function () {
-       $(this).text('9');
-    }
-    Zodiac10: function () {
-       $(this).text('10');
-    }
-    Zodiac11: function () {
-       $(this).text('11');
-    }
-    Zodiac12: function () {
-       $(this).text('12');
-    }
-};
-
-if (wgUserName != 'null') {
-	$('.insertusername').html(wgUserName);
-}
+window.DisplayClockJS = '%Y-%M-%d %2I-8:%2M:%2S (Server Time)';

@@ -30,19 +30,22 @@
 		var $map = $this.find('.map-container');
 		var $legendTable = $this.find('.map-legend');
 		var baseId = $this.attr('id');
-	var hasCaveMarkers = $map.find('.dots.cave').length > 0;
-	
-	// Create checkboxes for toggles, which can't be prerendered with wikitext.
-	// Caves:
-	var toggleCavesCheckboxId = baseId + '-toggle-cave';
-	if (hasCaveMarkers) {
-		$legendTable.prepend('<tr class="no-icon"><td colspan=2><input type="checkbox" id="'+toggleCavesCheckboxId+'" class="toggle-cave" checked>'
-						   + '<label for="'+toggleCavesCheckboxId+'">'+Strings.ToggleCaves+'</label></td></tr>');
-	}
-	// All:
-	var toggleAllCheckboxId = baseId + '-toggle-all';
-	$legendTable.prepend('<tr class="no-icon"><td colspan=2><input type="checkbox" id="'+toggleAllCheckboxId+'" class="toggle-all" checked>'
-						     + '<label for="'+toggleAllCheckboxId+'">'+Strings.ToggleAll+'</label></td></tr>');
+		var hasAnyMarkers = $map.find('.dots').length > 0;
+        var hasCaveMarkers = $map.find('.dots.cave').length > 0;
+
+		// Create checkboxes for toggles, which can't be prerendered with wikitext.
+		// Caves:
+		var toggleCavesCheckboxId = baseId + '-toggle-cave';
+        if (hasCaveMarkers) {
+		    $legendTable.prepend('<tr class="no-icon"><td colspan=2><input type="checkbox" id="'+toggleCavesCheckboxId+'" class="toggle-cave" checked>'
+						         + '<label for="'+toggleCavesCheckboxId+'">'+Strings.ToggleCaves+'</label></td></tr>');
+        }
+		// All:
+		var toggleAllCheckboxId = baseId + '-toggle-all';
+		if (hasAnyMarkers) {
+			$legendTable.prepend('<tr class="no-icon"><td colspan=2><input type="checkbox" id="'+toggleAllCheckboxId+'" class="toggle-all" checked>'
+							    + '<label for="'+toggleAllCheckboxId+'">'+Strings.ToggleAll+'</label></td></tr>');
+		}
 		// Convert resource placeholders:
 		$legendTable.find('td.map-legend-checkbox').each(function() {
 			var nodeName = this.innerText;
@@ -55,16 +58,18 @@
 		$legendTable.on('change', 'input.toggle-one', function() {
 			setVisibility($map, this.value, this.checked);
 		});
-		$('#' + toggleAllCheckboxId).on('click', function() {
-			$legendTable.find('input.toggle-one').prop('checked', this.checked).each(function() {
-				setVisibility($map, this.value, this.checked);
+		if (hasAnyMarkers) {
+			$('#' + toggleAllCheckboxId).on('click', function() {
+				$legendTable.find('input.toggle-one').prop('checked', this.checked).each(function() {
+					setVisibility($map, this.value, this.checked);
+				});
 			});
-		});
-		 if (hasCaveMarkers) {
-	    	$('#' + toggleCavesCheckboxId).on('click', function() {
-		    	setVisibility($map, 'cave', this.checked);
-		   });
-		 }
+		}
+        if (hasCaveMarkers) {
+    		$('#' + toggleCavesCheckboxId).on('click', function() {
+	    		setVisibility($map, 'cave', this.checked);
+		    });
+        }
 		// Unhide elements that are hidden from view before scripts are loaded.
 		$legendTable.find('.data-map-needs-js').each(function() {
 			$(this).removeClass('data-map-needs-js');
@@ -92,7 +97,7 @@
 				}
 			}
 		});
-		 // Generate CSS for local marker icons if standardisation is impossible.
+        // Generate CSS for local marker icons if standardisation is impossible.
         var iconDefs = $legendTable.data('marker-icons');
         if (iconDefs) {
             iconDefs.split(';').forEach(function (kvpair) {

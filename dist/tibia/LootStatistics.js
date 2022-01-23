@@ -159,7 +159,8 @@
     'Usurper Commander': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Usurper Warlock': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Unwanted': {'Candy Floss': 'Candy Floss (Large)', 'Ice Cream Cone': 'Ice Cream Cone (Sprinkles)'},
-    'Vibrant Phantom': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'}
+    'Vibrant Phantom': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
+    'Retros Treasure': {'Watermelon Tourmaline': 'Watermelon Tourmaline (Slice)'}
   },
 
   //singular exceptions

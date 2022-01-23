@@ -27,5 +27,6 @@ importArticles({
         'u:dev:SignatureCheck/code.js',
         'u:dev:MessageWallUserTags/code.js',
         'u:dev:ReferencePopups/code.js',
+        'u:dev:MediaWiki:MassEdit/code.js',
     ]
 });
