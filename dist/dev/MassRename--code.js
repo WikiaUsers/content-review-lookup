@@ -195,12 +195,12 @@ mw.loader.using('mediawiki.api', function () {
                 if (!d.error) {
                     console.log(i18n.msg('renameDone', oldName, newName).plain());
                 } else {
-                    console.log(i18n.msg('renameFail', oldName, newName).escape() + ': ' + d.error.code);
+                    console.error(i18n.msg('renameFail', oldName, newName).escape() + ': ' + d.error.code);
                     $('#text-error-output').append(i18n.msg('renameFail', oldName, newName).escape() + ': ' + d.error.code + '<br/>');
                 }
             })
-            .fail(function () {
-                console.log(i18n.msg('renameFail2', oldName, newName).plain());
+            .fail(function (error) {
+                console.error(i18n.msg('renameFail', oldName, newName).plain() + ': ' + error);
                 $('#text-error-output').append(i18n.msg('renameFail2', oldName, newName).escape() + '<br/>');
             });
         }

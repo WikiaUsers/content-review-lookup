@@ -1,4 +1,4 @@
-mw.loader.load("https://ark.fandom.com/wiki/MediaWiki:Gadget-site.js?action=raw\u0026ctype=text/javascript");
+importArticle({ type: "script", article: "MediaWiki:Gadget-site.js" });
 mw.loader.load('/load.php?debug=false&lang=en&modules=ext.Tabber&version=1ckquij', 'text/javascript', false);
 
 /************************************
@@ -54,22 +54,28 @@ $( document ).ready( fpmobilecollapse.initialize );
 /* End Main Page Mobile Collapse Script *
 /****************************************/
 
-$(function(){
+$(function() {
 	// Load Dev:Countdown if any countdowns are found on the page.
-	if ($('.countdown').length) {
+	if (document.getElementsByClassName("countdown").length > 0) {
     	importArticle({
     		type: "script",
 			article: "u:dev:MediaWiki:Countdown/code.js"
 		});
 	}
 
-	// Load our experimental cloning calculator if one has been added to the page
-	if (document.getElementsByClassName('cloningcalc')) {
-		importScriptPage("MediaWiki:CloningCalculator.js");
+	// Conditionally load creature article scripts.
+	if (document.querySelectorAll('.cloningcalc, .killxpcalc').length > 0) {
+		importArticles({ type: 'script',
+						 articles: [
+						 	// Kill XP calculator
+						 	'MediaWiki:Killxp.js',
+						 	// Experimental cloning calculator
+						 	'MediaWiki:CloningCalculator.js' 
+						 ] });
 	}
 	
 	// Load data map scripts if one has been added to the page
-	if (document.getElementsByClassName('data-map-container')) {
+	if (document.getElementsByClassName('data-map-container').length > 0) {
 		importArticles({ type: 'script', articles: [ 'MediaWiki:ResourceMaps.js', 'MediaWiki:SpawnMaps.js' ] });
 	}
 	

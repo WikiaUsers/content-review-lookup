@@ -702,6 +702,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"arrowpoint": {
+				"name": "Arrowpoint",
+				"colors": [
+					"valentine",
+					"white",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"artemis": {
 				"name": "Artemis",
 				"colors": [
@@ -742,6 +751,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"arcane",
 					"yellow",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"assurance": {
+				"name": "Assurance",
+				"colors": [
+					"valentine",
+					"black"
 				],
 				"rarity": "unbreedable"
 			},
@@ -2191,6 +2208,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"blue"
 				],
 				"rarity": "rare"
+			},
+			"cherubic": {
+				"name": "Cherubic",
+				"colors": [
+					"valentine",
+					"yellow"
+				],
+				"rarity": "unbreedable"
 			},
 			"cheshire": {
 				"name": "Cheshire",
@@ -12323,6 +12348,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"regal": {
+				"name": "Regal",
+				"colors": [
+					"valentine",
+					"red"
+				],
+				"rarity": "common"
+			},
 			"regalmoon": {
 				"name": "Regal Moon",
 				"colors": [
@@ -13882,6 +13915,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"softwing": {
+				"name": "Softwing",
+				"colors": [
+					"valentine",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"sol": {
 				"name": "Sol",
 				"colors": [
@@ -14101,6 +14142,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"spooky",
 					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"speedheart": {
+				"name": "Speedheart",
+				"colors": [
+					"valentine",
+					"pink"
 				],
 				"rarity": "unbreedable"
 			},
@@ -15698,6 +15747,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"pink",
 					"purple",
 					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"tune": {
+				"name": "Tune",
+				"colors": [
+					"valentine",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},

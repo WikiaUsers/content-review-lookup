@@ -102,57 +102,7 @@ $('.CommunityCornerModule').prepend('<div align="center"><font size= "5" face="B
 $(communityheader);	
 // END Custom headers for Hot Spots and Community Messages
 
-/* Ratings/Stars widget code
-      You can add more Rating-Widgets in your site,
-      just pick some new rating-widget-unique-id (must be positive integer).
-      For example (rating-widget-unique-id = 38):
-      <div class="rw-ui-container rw-urid-38"></div>
-    IMPORTANT: The number must be unique across the entire wiki. [One number = one page]
- */
-jQuery(function($) {
-        "use strict";
 
-        // Disable on pages without a ratings widget, since it just crashes.
-        if (!$('.rw-ui-container').length) return;
-
-        // Async Rating-Widget initialization.
-        window.RW_Async_Init = function(){
-            RW.init("4893AEDA8BA1095BEEA0C43249CDD374", // WARNING: This key is wiki-specific DO NOT COPY THIS. You must generate your OWN key for each separate wiki to avoid mixing ratings together. Go to http://rating-widget.com/ and generate a user key using the "Get Widget" tool at the bottom.
-            {
-                advanced: {
-                    star: {
-                        stars: 10
-                    },
-                    font: {
-                        color: "#000"
-                    },
-                    layout: {
-                        align: {
-                            hor: "center",
-                            ver: "top"
-                        },
-                        dir: "ltr"
-                    }
-                },
-                size: "medium",
-                color: "yellow",
-                type: "star"
-            });
-            RW.render();
-        };
-
-        // Append Rating-Widget JavaScript library.
-        if (typeof(window.RW) === "undefined"){
-            // <div class="rw-js-container"> (Part of the interface contract)
-            var rw = document.createElement('div');
-            rw.className = 'rw-js-container';
-            var rw2 = document.createElement("script");
-            rw2.type = "text/javascript";
-            rw2.src = "http://js.rating-widget.com/external.min.js?t=js";
-            rw.appendChild(rw2);
-            document.body.appendChild(rw);
-        }
-});
 
 /*Easy Dropdown Buttons - by ShermanTheMythran (special thanks to Mathmagician)*/
 $('.drop-button').click(function(){

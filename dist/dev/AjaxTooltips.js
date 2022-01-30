@@ -81,7 +81,7 @@ $(function() {
 		}
         $(".page-content").append('<div id="tfb" class="htt"></div>');
         $tfb = $("#tfb");
-        $(".page-content span.ajaxttlink").each(bindTT);
+        $(".page-content .ajaxttlink").each(bindTT);
     }
 });
 // END OF TOOLTIP CODE

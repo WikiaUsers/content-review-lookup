@@ -1,4 +1,4 @@
-// Randomize wiki logo: http://community.wikia.com/wiki/Thread:578801 ; credit to VOCALOID Wiki and Community Central
+// Randomize wiki logo: https://community.wikia.com/wiki/Thread:578801 ; credit to VOCALOID Wiki and Community Central
 $(function() {
 	var images = [
 	    'https://images.wikia.nocookie.net/synthv/images/0/06/Wiki-wordmark-aiko.png',
@@ -15,6 +15,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/a/ab/Wiki-wordmark-koharu-rikka.png',
 	    'https://images.wikia.nocookie.net/synthv/images/6/69/Wiki-wordmark-kotonoha-akane.png',
 	    'https://images.wikia.nocookie.net/synthv/images/c/ca/Wiki-wordmark-kotonoha-aoi.png',
+	    'https://images.wikia.nocookie.net/synthv/images/b/b6/Wiki-wordmark-kyomachi-seika.png',
 	    'https://images.wikia.nocookie.net/synthv/images/3/33/Wiki-wordmark-muxin.png',
 	    'https://images.wikia.nocookie.net/synthv/images/0/0e/Wiki-wordmark-Qingsu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/4/40/Wiki-wordmark-saki.png',

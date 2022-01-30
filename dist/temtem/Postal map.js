@@ -1,41 +1,48 @@
 // This was reverse-engineered from https://ark.gamepedia.com/Widget:SpawnMap
-// It is used to create an interactive target finder on [[Postal service]]
+ 
+$( function () {
+
+  if ( !document.getElementById("postal-map") ) return; // Early exit
   
-RLQ.push(['jquery', function () {
-  
-  if(document.getElementById("postal-map")){
+  mw.loader.using('mediawiki.api').then(function() {
+    var api = new mw.Api();
+
     var input = document.createElement("input");
     input.setAttribute("id", "postal-input");
     input.setAttribute("placeholder", "Delivery target");
   
-	  mw.loader.getScript("https://temtem.fandom.com/wiki/Mediawiki:Postal_map.js/data.js?action=raw\u0026ctype=text/javascript").then(function() {  
+    api.get({
+        "action": "parse",
+        "format": "json",
+        "pageid": 8119, // at time of writing, [[Postal_service/data.json]]
+        "prop": "wikitext",
+        "formatversion": "2"
+      }).then(function(data){
+      
+      var targets = JSON.parse(data.parse.wikitext);
 
       var $select = $('<select id="postal-dropdown">')
-          .append($('<option>').val('').text('Select a delivery target'))
-          .change(function () {
-              // when the dropdown updates, update the map and the input
-              showLocation($(this).val());
-              input.value = $(this).val();
-          });
+        .append($('<option>').val('').text('Select a delivery target'))
+        .change(function () {
+            // when the dropdown updates, update the map and the input
+            showLocation($(this).val());
+            input.value = $(this).val();
+        });
     
       // When the input updates, update the map and the dropdown
       input.addEventListener("input", function (e) {
         showLocation(this.value);
         $select.val(this.value);
       });
-
-      // sort the target list by name
-      targets.sort(function(a,b) {
-        (a.name > b.name) ? 1 : -1;
-      })
     
       // Create the list of names
-      names = []
-      targets.forEach(function (target) {
-        names.push(target.name);
+      var names = []
+      Object.keys(targets).forEach(function(target){
+        names.push(String(target));
       });
+      names.sort(function(a, b){return a.localeCompare(b);});
       // Add the list of names to the dropdown menu
-      names.forEach(function (name) {
+      names.forEach(function(name) {
         $select.append($('<option>').text(name));
       });
     
@@ -55,7 +62,6 @@ RLQ.push(['jquery', function () {
       
       function showLocation(name) {
         var $mapContainer = $('#postal-map').find('#map-container');
-    
       
         // clear notes
         var description = document.querySelector("#legend-container .description");
@@ -78,7 +84,7 @@ RLQ.push(['jquery', function () {
       
         // draw point to the map
       
-        var $target = targets.find(function(t){return t.name === name});
+        var $target = targets[name];
         var pointSize = 10;
       
       // Remove all spaces and question marks (for The Highbelow?) in the target's location so we can get a valid HTML id
@@ -92,10 +98,22 @@ RLQ.push(['jquery', function () {
             'height': pointSize})
         );
     
-        locationLabel.innerHTML = $target.map;
+        locationLabel.textContent = $target.map;
     
         if ($target.note != undefined){
-          description.innerHTML=$target.note;
+          // send this through the parser so that we can allow valid wikitext while disallowing any other html
+          api.get({
+            "action": "parse",
+            "format": "json",
+            "text": $target.note,
+            "prop": "text",
+            "wrapoutputclass": "",
+            "disablelimitreport": 1,
+            "contentmodel": "wikitext",
+            "formatversion": "2"
+          }).then(function(data){
+           description.innerHTML = data.parse.text;
+          });
         }
     
         window.location.hash = name;
@@ -131,10 +149,11 @@ RLQ.push(['jquery', function () {
             var bottomStart = null
             // for each item in the array...
             for (i = 0; i < arr.length; i++) {
-              var currentName = arr[i].toLowerCase();
-              if(targets[i].normalized){
-                currentName = targets[i].normalized.toLowerCase();
+              var currentName = arr[i];
+              if(targets[currentName].normalized){
+                currentName = targets[currentName].normalized;
               }
+              currentName = currentName.toLowerCase();
               // check if the item starts with or contains the same letters as the text field value:
               if (currentName.substr(0, val.length) == val || currentName.includes(val)) {
                 // create a div element for each matching element:
@@ -142,11 +161,18 @@ RLQ.push(['jquery', function () {
     
                 // make the matching letters bold:
                 var index = currentName.indexOf(val);
-                b.innerHTML = arr[i].substr(0, index) + "<strong>" + arr[i].substr(index, val.length) + "</strong>" + arr[i].substr(index + val.length);
+                b.appendChild( document.createTextNode( arr[ 1 ].substr( 0, index ) ) );
+                var strong = document.createElement( 'strong' );
+                strong.textContent = arr[ i ].substr( index, val.length );
+                b.appendChild( strong );
+                b.appendChild( document.createTextNode( arr[ i ].substr( index + val.length ) ) );
     
                 // insert an input field that will hold the current array item's value:
                 // Replace apostrophes with their html entity so they don't end the string
-                b.innerHTML += "<input type='hidden' value='" + arr[i].replace("\'", "&#39;") + "'>";
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.value = arr[i].replace("\'", "&#39;");
+                b.appendChild(input);
     
                 // execute a function when someone clicks on the item value (DIV element):
                 b.addEventListener("click", function(e) {
@@ -244,5 +270,5 @@ RLQ.push(['jquery', function () {
         });
       }
     });
-  }
-}]);
+  });
+});

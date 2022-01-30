@@ -42,6 +42,14 @@ nkch_gst_gadgets = [{
 // Настройка AddRailModule
 window.AddRailModule = ['Template:Проект:Комиксы/Комиксы недели', 'Template:NewPagesModule', 'Template:Уголок'];
 
+/* Подключение страниц */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:fallout:MediaWiki:Gadget-InterlanguageChecker.js', // InterlanguageChecker
+    ]
+});
+
 // выполнение при готовности страницы
 $(document).ready(function()
 {

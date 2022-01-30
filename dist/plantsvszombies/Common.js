@@ -16,7 +16,7 @@ window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 // Lock comments script settings
 
 window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 30;
+window.lockOldComments.limit = 90;
 
 /* Special Pages config script - Add special pages to the wiki here */
 window.pageNames = [

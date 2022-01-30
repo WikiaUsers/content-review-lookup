@@ -1,105 +1,138 @@
 /**
- * WikiActivity
- *
- * Recreates the legacy Special:WikiActivity page on the Unified
- * Community platform with a modernized appearance and a few
- * upgrades.
- *
- * Note: This script is a community project and is high-traffic.
- * If you know what you're doing and need to make any changes
- * that will impact the users of the script, you are welcome
- *
+ * WikiActivity v2.0.0
+ * -------------------
+ * This script recreates the legacy Special:WikiActivity page for the Unified Community
+ * Platform (UCP) with a modernized appearance, updates, and new features.
+ * 
+ * This is a high-traffic script and is a community project. If you feel the need to
+ * make changes to the script, you are welcome to.
+ * 
  * Author: Ultimate Dark Carnage
- * Version: v1.2
  **/
-
-( function( window, $, mw ) { 
+( function( window, $, mw, rwaOptions ) { 
 	"use strict";
+	if ( rwaOptions.noop || window.rwaLoaded ) return;
+	window.rwaLoaded = true;
 	
-	// Fetching the MediaWiki configuration variables
-	const mediaWikiConfig = mw.config.get( );
+	const mwc = mw.config.get( );
 	
-	// Creating the defaults function
-	function defaults( target ) { 
-		const args = Array.from( arguments ).slice( 1 );
-		args.forEach( function( currentObject ) { 
-			const keys = currentObject === Object( currentObject ) ? 
-				Object.keys( currentObject ) : [ ];
+	const WikiActivity = {
+		// Dependency objects
+		dependencies: Object.freeze( [
+			"mediawiki.util",
+			"mediawiki.api",
+			"mediawiki.Title"
+		] ),
+		devScripts: Object.freeze( [
+			{ name: "i18n",  source: "MediaWiki:I18n-js/code.js" },
+			{ name: "colors", source: "MediaWiki:Colors/code.js" },
+			{ name: "wds", source: "MediaWiki:WDSIcons/code.js" },
+			{ name: "dorui", source: "MediaWiki:Dorui.js" }
+		] ),
+		scripts: Object.freeze( [
+			mwc.wgUserName + "/wikiactivity.js"
+		] ),
+		stylesheets: Object.freeze( [
+			"u:dev:MediaWiki:WikiActivity.css",
+			mwc.wgUserName + "/wikiactivity.css"
+		] ),
+		// State objects
+		state: {
+			loaded: false,
+			isActivityPage: false,
+			currentSubpage: ""
+		},
+		// Default configurations
+		defaults: Object.freeze( { 
+			limit: 50, // The maximum number of pages to show
+			theme: "main", // The theme to display
+			showBotEdits: false, // Determines whether to show bot edits
+			loadModule: false, // Determines whether to load the activity feed module
+			headerLink: false, // Determines whether to change the RC link to Wiki Activity (set to false by default for sitewide use)
+			refresh: false, // Determines whether to refresh the activity feed
+			refreshDelay: 5 * 60 * 1000, // Delay for refreshing the activity feed
+			timeout: 10 * 1000 // The timeout for loading the activity feed
+		} ),
+		// Canonical subpages
+		subpages: Object.freeze( [ 
+			"main", // The main activity page
+			"watchlist", // Watched (followed) pages and posts only
+			"feeds", // Feeds activity only
+			"media" // Media activity only
+		] ),
+		// Conditions
+		conditions: Object.freeze( {
+			can_phalanx: Object.freeze( [ 
+				"staff",
+				"helper",
+				"wiki-representative",
+				"wiki-specialist",
+				"soap"
+			] ),
+			can_block: Object.freeze( [ 
+				"staff",
+				"helper",
+				"wiki-representative",
+				"wiki-specialist",
+				"soap",
+				"global-discussions-moderator",
+				"sysop"
+			] ),
+			is_mod: Object.freeze( [
+				"staff",
+				"helper",
+				"wiki-representative",
+				"wiki-specialist",
+				"soap",
+				"global-discussions-moderator",
+				"sysop",
+				"discussion-moderator",
+				"threadmoderator"
+			] ),
+			can_rollback: Object.freeze( [
+				"staff",
+				"helper",
+				"wiki-representative",
+				"wiki-specialist",
+				"soap",
+				"global-discussions-moderator",
+				"sysop",
+				"discussion-moderator",
+				"threadmoderator",
+				"rollback"
+			] ),
+			can_patrol: Object.freeze( [
+				"staff",
+				"helper",
+				"wiki-representative",
+				"wiki-specialist",
+				"soap",
+				"global-discussions-moderator",
+				"sysop",
+				"discussion-moderator",
+				"threadmoderator",
+				"patroller"
+			] )
+		} ),
+		iconNames: Object.freeze( { 
+			edit: "pencil",
+			"new": "add",
+			comment: "comment",
+			talk: "bubble",
+			categorize: "tag",
+			diff: "clock",
+			options: "gear",
+			more: "more"
+		} ),
+		avatarCache: new Map( ),
+		feedItems: [ ],
+		init: function( ) {
+			// If the namespace is not a special page, skip to loading the header link
+			if ( mwc.wgCanonicalNamespace !== -1 ) return this.loadHeaderLink( );
+			// Fetches the current subpage (if it is defined)
+			const subpage = mwc.wgTitle.split( "/" ).length > 1 ? mwc.wgTitle.split( "/" )[ 1 ] : "";
 			
-			keys.forEach( function( key ) { 
-				if ( target[ key ] !== void 0 ) return;
-				target[ key ] = currentObject[ key ];
-			} );
-		} );
-		return target;
-	}
-	
-	// Core scripts and modules
-	const scripts = Object.freeze( { 
-		i18n: "u:dev:MediaWiki:I18n-js/code.js",
-		colors: "u:dev:MediaWiki:Colors/code.js",
-		wds: "u:dev:MediaWiki:WDSIcons/code.js",
-		dorui: "u:dev:MediaWikki:UI-js/code.js"
-	} );
-	
-	// Core stylesheets
-	const stylesheets = Object.freeze( [ 
-		"u:carnage-test:MediaWiki:WikiActivity.css"
-	] );
-	
-	// Core MediaWiki dependencies
-	const dependencies = Object.freeze( [ 
-		"mediawiki.util",
-		"mediawiki.api",
-		"mediawiki.Title"
-	] );
-	
-	function init( callback ) { 
-		const importedScripts = Object.keys( scripts ).map( function( scriptId ) { 
-			const scriptName = scripts[ scriptId ];
-			if ( window.dev.hasOwnProperty( scriptId ) ) return Promise.resolve( window.dev[ scriptId ] );
-			return importArticle( { type: "script", article: scriptName } );
-		} );
-		
-		const importedStylesheets = Array.from( stylesheets ).map( function( stylesheet ) { 
-			return importArticle( { type: "style", article: stylesheet } );
-		} );
-		
-		const resources = [ mw.loader.using( dependencies ) ].concat( importedScripts, importStylesheets );
-		
-		return Promise.all( resources ).then( callback );
-	}
-	
-	function start( ) { 
-		// User group objects
-		const CAN_PHALANX = Object.freeze( [ "staff", "helper", "wiki-representative", "wiki-specialist", "soap" ] );
-		const CAN_BLOCK = Object.freeze( CAN_PHALANX.concat( [ "global-discussions-moderator", "sysop" ] ) );
-		const IS_MOD = Object.freeze( CAN_BLOCK.concat( [ "discussion-moderator", "threadmoderator" ] ) );
-		const CAN_ROLLBACK = Object.freeze( IS_MOD.concat( "rollback" ) );
-		
-		// Create the core Wiki Activity object
-		const wikiActivity = { 
-			// Constants
-			LIMITS: Object.freeze( [ 5, 10, 25, 50, 100, 250, 500 ] ),
-			SUPPORTED_NAMESPACES: Object.freeze( [ 0, 1, 2, 3, 4, 5, 6, 7, 110, 111, 500, 828, 829 ] ),
-			IS_TALK: Object.freeze( [ 3, 5, 111, 829 ] ),
-			// User rights objects
-			CAN_PHALANX: CAN_PHALANX,
-			CAN_BLOCK: CAN_BLOCK,
-			IS_MOD: IS_MOD,
-			CAN_ROLLBACK: CAN_ROLLBACK,
-			// Caches
-			AVATAR_CACHE: new Map( ),
-			// Core objects
-			loading: false,
-			loaded: false
-			// Methods
-		};
-		
-		// Returning the WikiActivity object
-		return wikiActivity;
-	}
-	
-	mw.hook( "wikiactivity.init" ).add( init( start ) );
-	
-} )( window, jQuery, mediaWiki );
+			
+		}
+	};
+}( window, jQuery, mediaWiki, $.extend( { }, window.rwaOptions ) ) );

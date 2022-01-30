@@ -421,6 +421,11 @@
             }
         },
         
+        Stella: {
+        	page: 'Special:BlankPage',
+        	scripts: 'MediaWiki:Stella.js'
+        },
+        
         Tabber: {
             page: 'Global_Lua_Modules/Tabber',
             styles: 'MediaWiki:Global_Lua_Modules/Tabber.css'

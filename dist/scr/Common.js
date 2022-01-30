@@ -10,3 +10,7 @@ importArticles({
 		'u:dev:MediaWiki:WallGreeting.js', 
 	]
 });
+
+// LockOldComments
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 28;

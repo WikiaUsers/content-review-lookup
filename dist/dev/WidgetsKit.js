@@ -160,7 +160,7 @@ $(function () {
 						iframe.src = 'https://store.steampowered.com/widget/' + id;
 					}
 
-					iframe.width = '646px';
+					iframe.width = elements[i].dataset.width ? elements[i].dataset.width + 'px' : '646px';
 					iframe.height = '190px';
 					break;
 

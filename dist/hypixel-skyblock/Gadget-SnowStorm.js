@@ -3,7 +3,6 @@ mw.loader.using(["mediawiki.util", "mediawiki.Uri", "ext.fandom.ContentReview.le
 		type: "script",
 		articles: [
 			"u:dev:MediaWiki:SnowStorm.js",
-			"MediaWiki:Gadget-FireworkEffects.js",
 		]
 	});
 });

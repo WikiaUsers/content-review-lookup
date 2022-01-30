@@ -139,8 +139,20 @@
             if (content === false) {
                 return false;
             }
-            if (v.missing !== '' && v.revisions[0].user !== 'FANDOM' && v.revisions[0].user !== 'Wikia') {
-                // Our userpage exists and the last revision wasn't by a bot.
+            if (
+                // If the page existed before
+                v.missing !== '' &&
+                (
+                    // and it was not last edited by either of the bots
+                    (
+                        v.revisions[0].user !== 'FANDOM' &&
+                        v.revisions[0].user !== 'Wikia'
+                    ) ||
+                    // or contains a comment that implies it was moved during a rename
+                    (v.revisions[0].comment || '').indexOf(this.mwconfig.wgUserName + ']]') !== -1
+                )
+            ) {
+                // do not process this page.
                 return false;
             }
             console.info('[AutoCreateUserPages] Creating', v.title, '...');

@@ -1,5 +1,5 @@
 "use strict";
-console.log("Infobox Script loaded");
+console.log("Infobox Script loaded.\nBuild:\t1/23/22");
 $(function () {
     $(".infobox").each(function (_i, elem) {
         var e = $(elem);
@@ -18,18 +18,18 @@ $(function () {
                 }
             });
         }
-        e.find('img[alt="Strength"]').on("click",clickFunction("atk"));
-        e.find('img[alt="Dexterity"]').on("click",clickFunction("dex"));
-        e.find('img[alt="Defence"]').on("click",clickFunction("def"));
-        e.find('img[alt="Speed"]').on("click",clickFunction("spe"));
+        e.find('img[alt="Strength"]').on("click", clickFunction("atk"));
+        e.find('img[alt="Dexterity"]').on("click", clickFunction("dex"));
+        e.find('img[alt="Defence"]').on("click", clickFunction("def"));
+        e.find('img[alt="Speed"]').on("click", clickFunction("spe"));
         
-        e.find(".infobox-swapper-button-pose").on("click", function () {
-            e.find(".infobox-swapper-pose").show();
-            e.find(".infobox-swapper-art").hide();
+        e.find(".infobox-swapper-button.pose").on("click", function () {
+            e.find(".infobox-swapper.pose").show();
+            e.find(".infobox-swapper.art").hide();
         });
-        e.find(".infobox-swapper-button-art").on("click", function () {
-            e.find(".infobox-swapper-pose").hide();
-            e.find(".infobox-swapper-art").show();
+        e.find(".infobox-swapper-button.art").on("click", function () {
+            e.find(".infobox-swapper.pose").hide();
+            e.find(".infobox-swapper.art").show();
         });
     });
 });

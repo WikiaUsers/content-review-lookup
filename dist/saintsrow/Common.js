@@ -1,5 +1,5 @@
 var debugcolour = 'blue';  //Change the colour to confirm cache updates
-var debugversion = '1642435616842';
+var debugversion = '1643337906440';
 
 window.test452 = { ready:false, complete:false};
 window.debug452 = function(out, alert) { if (mw.config.get("wgUserName") == "452") { if ( ["object", "null", "function"].indexOf(typeof out) == -1) console.log(new Date().toJSON()+" "+out); else { console.log(new Date().toJSON()+" object:"); console.log(out); } if (typeof alert != "undefined") window.alert(out); } }
@@ -175,11 +175,18 @@ $(function() { /* Run when page has loaded */
 	});
   }
 
-  //from https://dev.wikia.com/wiki/DISPLAYTITLE - required for category and template namespaces.
-  $('.changePageTitle').eq(0).each(function() {
-	var $h1 = $('#PageHeader h1, h1#firstHeading').eq(0);
-	$h1.prop('title', $h1.text()).empty().append(this.childNodes);
-  }).end().remove();
+  //Template:DISPLAYTITLE - required for category and template namespaces.
+  if ($(".displayTitle").length) {
+      $('#PageHeader h1, h1#firstHeading').html($(".displayTitle").attr("data-title"));
+  }
+  //Template:FixLinks
+  if ($('.fixLinks').length) {
+    $('.page__main a[href*="'+$(".fixLinks").attr("data-old").replace(" ","_")+'"]').each(function(){
+      if($(this).html() == $(this).text() && $(this).text().indexOf($(".fixLinks").attr("data-old")) != -1) {
+         $(this).html($(this).html().replace($(".fixLinks").attr("data-old"), $(".fixLinks").attr("data-new")));
+      }
+    })
+  }
 
   if (mw.config.get("wgCanonicalNamespace") == "Category") { /* Default category images for pages without images, previously handled by CSS */
 	$(".category-page__member-left").addClass("empty");

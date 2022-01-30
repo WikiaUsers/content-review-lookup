@@ -1,4 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+//style backbutton dev wiki
+window.BackToTopModern = true;
 
 /* Slider quotes . */
 if($('.hslider')[0]){

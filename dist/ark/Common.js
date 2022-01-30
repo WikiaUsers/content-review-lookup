@@ -64,18 +64,19 @@ if (document.getElementById('wildStatCalc')) {
 	importScriptRL("MediaWiki:WildCreatureStats.js");
 }
 
-// Load our experimental cloning calculator if one has been added to the page
-if (document.getElementsByClassName('cloningcalc')) {
-	importScriptRL("MediaWiki:CloningCalculator.js");
-}
-
-// Load kill XP calculator if one has been added to the page
-if (document.getElementById('creatureKillXP')) {
-	importScriptRL("MediaWiki:Killxp.js");
+// Conditionally load creature article scripts.
+if (document.querySelectorAll('.cloningcalc, .killxpcalc').length > 0) {
+	importArticles({ type: 'script',
+					 articles: [
+					 	// Kill XP calculator
+					 	'MediaWiki:Killxp.js',
+					 	// Experimental cloning calculator
+					 	'MediaWiki:CloningCalculator.js' 
+					 ] });
 }
 
 // Load data map scripts if one has been added to the page
-if (document.getElementsByClassName('data-map-container')) {
+if (document.getElementsByClassName('data-map-container').length > 0) {
 	importArticles({ type: 'script', articles: [ 'MediaWiki:ResourceMaps.js', 'MediaWiki:SpawnMaps.js' ] });
 }
 
@@ -175,10 +176,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 		['Sweet Tooth', 'Sweet Tooths'],
 	],
   };
-/* End of mw.loader.using callback */
-});
- 
-( function( $ ) {
+
 	function gridFiltering() {
 		if(typeof gridContainer === 'undefined' || !gridContainer) return
 		var grid = $(gridContainer)
@@ -270,6 +268,6 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 		$(elem).fadeTo(200, 1);
 	}
 	$( gridFiltering )
-} )( jQuery );
+});
 
 /* End Grid Filtering */

@@ -42,7 +42,7 @@ const REP_IMG_URL = WIKI_IMG_URL + "e/ed/Очки_Синдиката_иконк�
 // Contains JSON map to be fetched
 const IMG_MAP_URL = "https://warframe.fandom.com/ru/wiki/NightwaveActs.json?action=raw";
 // Full page name where this script's i18n messages are located
-const I18N_MESSAGES = "u:ru.warframe:MediaWiki:i18n.json";
+const I18N_MESSAGES = "u:ru.warframe:MediaWiki:Custom-NightwaveActs/i18n.json";
 
 // Page that user is currently on
 const NW_PAGE_NAME = mw.config.get("wgPageName");

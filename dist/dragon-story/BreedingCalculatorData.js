@@ -1401,6 +1401,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "17_hours_17",
                 "rarity": 2
             },
+            "arrowpoint": {
+                "name": "Arrowpoint",
+                "types": [
+                    "valentine",
+                    "white",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "artemis": {
                 "name": "Artemis",
                 "types": [
@@ -1476,6 +1493,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "6_hours_6",
                 "rarity": 2,
                 "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "assurance": {
+                "name": "Assurance",
+                "types": [
+                    "valentine",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
                 "notes": [
                     "feature"
                 ]
@@ -4358,6 +4391,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "26_hours_26",
                 "rarity": 2,
                 "offspringeligibility": "expired"
+            },
+            "cherubic": {
+                "name": "Cherubic",
+                "types": [
+                    "valentine",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
             },
             "cheshire": {
                 "name": "Cheshire",
@@ -24793,6 +24842,34 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "regal": {
+                "name": "Regal",
+                "types": [
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ]
+                    ]
+                ],
+                "notes": [
+                    "hidden"
+                ]
+            },
             "regalmoon": {
                 "name": "Regal Moon",
                 "types": [
@@ -28019,6 +28096,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "softwing": {
+                "name": "Softwing",
+                "types": [
+                    "valentine",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "sol": {
                 "name": "Sol",
                 "types": [
@@ -28485,6 +28578,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "15_hours_15",
                 "rarity": 3,
                 "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "speedheart": {
+                "name": "Speedheart",
+                "types": [
+                    "valentine",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "10_hours_10",
+                "rarity": 2,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]
@@ -31656,6 +31765,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "21_hours_21",
                 "rarity": 3,
                 "offspringeligibility": "worldevent",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "tune": {
+                "name": "Tune",
+                "types": [
+                    "valentine",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "25_hours_25",
+                "rarity": 4,
+                "offspringeligibility": "crafted",
                 "notes": [
                     "feature"
                 ]

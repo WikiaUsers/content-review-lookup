@@ -19,3 +19,17 @@ window.lockOldComments.addNoteAbove = true;
 
 InactiveUsers = { text: 'Inactive Editor' };
 window.RollbackWikiDisable = true;
+
+window.DiscussionTemplates = {
+    templates: {
+        'Warning': {
+            name: 'Template:Warning',
+            title: '[Warning]'
+        }
+
+allowedGroups: ['sysop', 'threadmoderator', 'content-moderator']
+
+}
+   
+
+    };

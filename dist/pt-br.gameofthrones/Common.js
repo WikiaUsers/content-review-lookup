@@ -76,3 +76,8 @@ $( function eraIconsOasis() {
     	}
     }
 } );
+
+//* Username, créditos da Avatar Wiki *//
+if (wgUserName != 'null') {
+	$('.insertusername').html(wgUserName);
+}

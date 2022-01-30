@@ -64,14 +64,15 @@ if (document.getElementById('wildStatCalc')) {
 	importScriptRL("MediaWiki:WildCreatureStats.js");
 }
 
-// load our experimental cloning calculator if one has been added to the page
-if (document.getElementById('wildStatCalc')) {
-	importScriptRL("MediaWiki:CloningCalculator.js");
-}
-
-// Load kill XP calculator if one has been added to the page
-if (document.getElementById('creatureKillXP')) {
-	importScriptPage("MediaWiki:Killxp.js");
+// Conditionally load creature article scripts.
+if (document.querySelectorAll('.cloningcalc, .killxpcalc').length > 0) {
+	importArticles({ type: 'script',
+					 articles: [
+					 	// Kill XP calculator
+					 	'MediaWiki:Killxp.js',
+					 	// Experimental cloning calculator
+					 	'MediaWiki:CloningCalculator.js' 
+					 ] });
 }
 
 // Load data map scripts if one has been added to the page
@@ -116,7 +117,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
   /* Config for gridFiltering */
   gridContainer = '#creature-grid';
   gridFilters = {
-	'creature': 'rechercher',
+	'creature': 'search',
 	'map': [ '- Contenu -',
 		['The Island','The Island'],
 		['The Center','The Center'],
@@ -174,10 +175,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 		['Dent sucrée', 'Dents sucrées'],
 	],
   };
-/* End of mw.loader.using callback */
-});
  
-( function( $ ) {
 	function gridFiltering() {
 		if(typeof gridContainer === 'undefined' || !gridContainer) return
 		var grid = $(gridContainer)
@@ -269,6 +267,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 		$(elem).fadeTo(200, 1);
 	}
 	$( gridFiltering )
-} )( jQuery );
+/* End of mw.loader.using callback */
+});
 
 /* End Grid Filtering */

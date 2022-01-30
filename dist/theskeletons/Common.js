@@ -19,3 +19,23 @@ importArticles({
 		'u:dev:MediaWiki:WallGreeting.js',    
 		]
 });
+
+/* Custom Status */
+window.UserStatusSettings = {
+    colorBlindMode: 1,
+    lightTheme: 1,
+    statusIndicator: 0,
+    online: '#43b581',
+    away: '#faa61a',
+    dnd: '#f04747',
+    offline: '#747f8d',
+};
+// Prepare custom messages for NoLicenseWarning
+window.dev = window.dev || {};
+window.dev.i18n = window.dev.i18n || {};
+window.dev.i18n.overrides = window.dev.i18n.overrides || {};
+window.dev.i18n.overrides['NoLicenseWarning'] = window.dev.i18n.overrides['NoLicenseWarning'] || {};
+
+// Add custom content instead of default messages
+window.dev.i18n.overrides['NoLicenseWarning']['warning-text'] = 'Your custom warning message';
+window.dev.i18n.overrides['NoLicenseWarning']['rejected-text'] = 'Your custom rejected message';

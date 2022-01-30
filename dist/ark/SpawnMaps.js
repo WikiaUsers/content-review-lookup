@@ -14,6 +14,8 @@ $(function () {
 		SelectCreature: 'Select a creature', // WIP T66: Select a creature or container
 		OptionGroupCreatures: 'Creatures',
 		OptionGroupContainers: 'Group Containers',
+		DataLoadErrorAnon: 'Failed to load data; try refreshing the page',
+		DataLoadErrorSigned: 'Failed to load the data page - check if it exists and is a valid JSON:',
 		ToggleDetails: ' full spawn groups details',
 		DeselectGroups: 'deselect all containers',
 		TooltipFrom: 'from',
@@ -357,7 +359,9 @@ $(function () {
 			}
 
 		}, function() {
-			// TODO: handle error, somehow?
+			displayError(context, mw.config.get('wgUserName') != null
+				? (Strings.DataLoadErrorSigned + ' [[' + context.pageName + ']]')
+				: Strings.DataLoadErrorAnon);
 		});
 	});
 

@@ -14,7 +14,7 @@
     var cache   = {},
         aliases = {},
         events  = {},
-        theme   = $(document.body).hasClass('oasis-dark-theme')
+        theme   = $(document.body).hasClass('theme-fandomdesktop-dark')
             ? 'solarized-dark'
             : 'solarized-light';
 
@@ -918,7 +918,7 @@
     hljs.registry = {};
     hljs.registry.init = function() {
         this.api = new mw.Api({ ajax: {
-            url: 'https://dev.wikia.com/api.php',
+            url: 'https://dev.fandom.com/api.php',
             dataType: 'jsonp'
         }});
         // Caching.

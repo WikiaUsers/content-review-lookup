@@ -5,20 +5,6 @@
     window.ModalLogsLoaded = true;
     var preloads = 3;
 
-    function style () {
-        mw.util.addCSS('\
-            #ModalLogs li {\
-                padding: 0.5em;\
-            }\
-            #ModalLogs li:nth-child(odd) {\
-                background-color: var(--theme-page-text-mix-color-95);\
-            }\
-            #ModalLogs li:nth-child(even) {\
-                background-color: var(--theme-page-background-color--secondary);\
-            }\
-        ');
-    }
-
     function modal (data) {
         new mw.libs.QDmodal('ModalLogs').show({
             title: $(data).find('.page-header__title').text(),
@@ -31,7 +17,17 @@
     }
 
     function init (selector) {
-    	style();
+    	mw.util.addCSS('\
+            #ModalLogs li {\
+                padding: 0.5em;\
+            }\
+            #ModalLogs li:nth-child(odd) {\
+                background-color: var(--theme-page-text-mix-color-95);\
+            }\
+            #ModalLogs li:nth-child(even) {\
+                background-color: var(--theme-page-background-color--secondary);\
+            }\
+        ');
         $('.mw-contributions-user-tools').find(selector).click(function (e) {
             e.preventDefault();
             var url = $(e.target).attr('href');
@@ -44,7 +40,7 @@
         var prefix = '.mw-changeslist-links';
 
         if (window.ModalLogsCustomSelectors && !(window.ModalLogsCustomSelectors instanceof jQuery)) {
-            console.error('[ModalLogs] `window.ModalLogsCustomSelectors` was not set to a jQuery selector object, falling back to default selectors.');
+            console.warn('[ModalLogs] `window.ModalLogsCustomSelectors` was not set to a jQuery selector object, falling back to default selectors.');
         }
 
         if (window.ModalLogsCustomSelectors && window.ModalLogsCustomSelectors instanceof jQuery) {
