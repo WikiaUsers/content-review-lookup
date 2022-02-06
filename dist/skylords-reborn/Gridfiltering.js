@@ -33,7 +33,15 @@ gridFilters = {
         ['Legendary', 'Legendary'],
     ],
     size: ['- Size -', ['S', 'S'], ['M', 'M'], ['L', 'L'], ['XL', 'XL']],
-    special: ['- Special -', ['Non-Legendary', 'Non-Legendary'], ['Promo', 'Promo'], ['Starter', 'Starter (PvE)'], ['Male', 'Male'], ['Female', 'Female'], ['None', 'None (Gender)']],
+    special: [
+        '- Special -',
+        ['Non-Legendary', 'Non-Legendary'],
+        ['Promo', 'Promo'],
+        ['Starter', 'Starter (PvE)'],
+        ['Male', 'Male'],
+        ['Female', 'Female'],
+        ['None', 'None (Gender)'],
+    ],
     weapontype: ['- Range -', ['Melee', 'Melee'], ['Ranged', 'Ranged'], ['Special', 'Special']],
 
     orbs: ['Fire', 'Frost', 'Nature', 'Shadow', 'Neutral'],
@@ -47,16 +55,18 @@ gridFilters = {
     var incrH = $('body').hasClass('mainpage') || $('#card-grid').hasClass('increased-height') || false;
     // whether we're talking about a list of card viewer instances or card icons
     var isList = $('#card-grid').hasClass('list-of-cards');
+    var isStats = $('#grid-filter-container').hasClass('card-stats-table');
+    if (isStats) gridFilters.special.push(['Non-N/A', 'Non-N/A']);
 
     $('#card-grid').css('max-height', incrH ? '400px' : isList ? '500px' : '230px');
 
     function gridFiltering() {
-        var grid = $('#card-grid');
+        var grid = isStats ? $('#grid-filter-container > tbody') : $('#card-grid');
         if (!grid.length) return;
         if (!gridFilteringSwitches()) return;
 
         window.gridElements = [];
-        grid.children('.custom-tooltip').each(function () {
+        grid.children('.custom-tooltip,.search-item').each(function () {
             var obj = {};
             var elem = $(this);
             obj['*'] = elem;
@@ -69,7 +79,7 @@ gridFilters = {
             window.gridElements.push(obj);
         });
 
-        gridFilteringApply();
+        gridFilteringApply(isStats);
     }
 
     function gridFilteringSwitches() {
@@ -127,49 +137,74 @@ gridFilters = {
             }
         }
 
-        $(
-            '<select><option value="nameasc">- Sort by -</option><option value="nameasc">Name ▲</option><option value="namedesc">Name ▼</option><option value="orbsasc">#Orbs ▲</option><option value="orbsdesc">#Orbs ▼</option><option value="costasc">Cost ▲</option><option value="costdesc">Cost ▼</option><option value="rarasc">Rarity ▲</option><option value="rardesc">Rarity ▼</option></select>'
-        )
-            .change(gridFilteringSort)
-            .appendTo($('#grid-filter-sort'));
-
         $('<a id="grid-filter-reset-btn" title="Reset sorting and filters"></a>')
             .click(function () {
                 gridFilteringClear();
             })
             .appendTo($('#grid-filter-reset'));
 
-        $('<button type="button">Show more</button>')
-            .click(function () {
-                if ($(this).text() === 'Show more') {
-                    $(this).text('Show less');
-                    $('#card-grid').removeClass('collapsed').addClass('expanded');
-                } else {
-                    $(this).text('Show more');
-                    if ($('#grid-filter-container')[0].getBoundingClientRect().top <= 0) {
-                        window.scrollBy({
-                            top: $('#grid-filter-container')[0].getBoundingClientRect().top - 100,
-                            behavior: 'smooth',
-                        });
-                    }
-                    $('#card-grid').removeClass('expanded').addClass('collapsed');
-                }
-                var visibleCards = $('#card-grid > .custom-tooltip:visible').length;
-                var perRow = Math.floor($('#card-grid').width() / (isList ? 203 : 58));
-                if (visibleCards <= perRow * (incrH ? 6 : isList ? 1 : 3)) {
-                    $('#grid-collapse').hide();
-                } else {
-                    $('#grid-collapse').show();
-                }
-            })
-            .on(
-                'mousedown',
-                // prevent focus
-                function (event) {
-                    event.preventDefault();
-                }
+        if (isStats) {
+            $(
+                '<select><option value="0">U - 0</option><option value="1">U - 1</option><option value="2">U - 2</option><option value="3">U - 3</option></select>'
             )
-            .appendTo($('#grid-collapse'));
+                .val('3')
+                .change(function () {
+                    var lvl = parseInt($(this).val());
+                    $('#grid-filter-container > tbody')
+                        .children()
+                        .each(function (_, row) {
+                            $(row)
+                                .children()
+                                .each(function (i, e) {
+                                    if (i === 0) return;
+                                    var e = $(e);
+                                    var values = e.data('values');
+                                    if (values) {
+                                        e.text(values[lvl]);
+                                    }
+                                });
+                        });
+                })
+                .appendTo($('#grid-filter-upgrade'));
+        } else {
+            $(
+                '<select><option value="nameasc">- Sort by -</option><option value="nameasc">Name ▲</option><option value="namedesc">Name ▼</option><option value="orbsasc">#Orbs ▲</option><option value="orbsdesc">#Orbs ▼</option><option value="costasc">Cost ▲</option><option value="costdesc">Cost ▼</option><option value="rarasc">Rarity ▲</option><option value="rardesc">Rarity ▼</option></select>'
+            )
+                .change(gridFilteringSort)
+                .appendTo($('#grid-filter-sort'));
+
+            $('<button type="button">Show more</button>')
+                .click(function () {
+                    if ($(this).text() === 'Show more') {
+                        $(this).text('Show less');
+                        $('#card-grid').removeClass('collapsed').addClass('expanded');
+                    } else {
+                        $(this).text('Show more');
+                        if ($('#grid-filter-container')[0].getBoundingClientRect().top <= 0) {
+                            window.scrollBy({
+                                top: $('#grid-filter-container')[0].getBoundingClientRect().top - 100,
+                                behavior: 'smooth',
+                            });
+                        }
+                        $('#card-grid').removeClass('expanded').addClass('collapsed');
+                    }
+                    var visibleCards = $('#card-grid > .custom-tooltip:visible').length;
+                    var perRow = Math.floor($('#card-grid').width() / (isList ? 203 : 58));
+                    if (visibleCards <= perRow * (incrH ? 6 : isList ? 1 : 3)) {
+                        $('#grid-collapse').hide();
+                    } else {
+                        $('#grid-collapse').show();
+                    }
+                })
+                .on(
+                    'mousedown',
+                    // prevent focus
+                    function (event) {
+                        event.preventDefault();
+                    }
+                )
+                .appendTo($('#grid-collapse'));
+        }
 
         return flag;
     }
@@ -179,12 +214,17 @@ gridFilters = {
             if (el.attr('type') === 'checkbox') el.prop('checked', true);
             else el.val('');
         }
-        $('#grid-filter-sort > select').prop('selectedIndex', 0);
-        $('#card-grid.expanded + #grid-collapse > button').click();
+        if (isStats) {
+            $('#grid-filter-upgrade > select').val('3').change();
+        } else {
+            $('#grid-filter-sort > select').prop('selectedIndex', 0);
+            $('#card-grid.expanded + #grid-collapse > button').click();
+        }
         gridFilteringApply();
         gridFilteringSort();
     }
     function gridFilteringSort() {
+        if (isStats) return;
         var $container = $('#card-grid');
         var comp, asc;
         var val = $('#grid-filter-sort > select').val();
@@ -197,6 +237,7 @@ gridFilters = {
         };
 
         function sort(comp, asc) {
+            if (isStats) return;
             $('#card-grid > .custom-tooltip')
                 .sort(function (a, b) {
                     var $a = $(a).data(comp);
@@ -256,7 +297,8 @@ gridFilters = {
         $('#card-grid').append($('#grid-matches'));
         $(window).scroll();
     }
-    function gridFilteringApply() {
+    function gridFilteringApply(firstRunAndIsStats) {
+        if (firstRunAndIsStats === true) return;
         for (var x = 0; x < gridElements.length; x++) {
             var elem = $(gridElements[x]['*']);
             var active = true;
@@ -293,62 +335,70 @@ gridFilters = {
             else gridFilteringHide(elem);
         }
 
-        if ($('#card-grid').hasClass('list-of-cards')) {
-            var len = $('#card-grid > .custom-tooltip:visible').length;
-            if (len === 1) {
-                $('#grid-matches').text('1 matching card');
-            } else {
-                $('#grid-matches').text(len + ' matching cards');
-            }
-        } else {
-            if (
-                ($('#grid-filter-affinities-field')[0].selectedIndex > 0 &&
-                    $('#grid-filter-affinities-field')[0].selectedIndex < 5) ||
-                $('#grid-filter-special-field')[0].selectedIndex > 1 &&
-                    $('#grid-filter-special-field')[0].selectedIndex < 4
-            ) {
-                var len = $('#card-grid > span:visible').length;
+        if (!isStats) {
+            if ($('#card-grid').hasClass('list-of-cards')) {
+                var len = $('#card-grid > .custom-tooltip:visible').length;
                 if (len === 1) {
                     $('#grid-matches').text('1 matching card');
                 } else {
                     $('#grid-matches').text(len + ' matching cards');
                 }
             } else {
-                var i = 0;
-                var edIdx = $('#grid-filter-edition-field')[0].selectedIndex;
-                var ed = $('#grid-filter-edition-field')[0].value;
-                $('#card-grid > span:visible').each(function () {
-                    if ($(this).data('affinities') !== 'None') i += 2;
-                    if ($(this).data('special').includes('Promo')) i++;
-                    //if ($(this).data('special').includes('Starter')) i++;
-                    if ($(this).data('special').includes('Normal')) i++;
-                    if (edIdx > 0) i -= $(this).data('edition').split(',').filter(function(e) {return e!==ed}).length;
-                });
-                if (i === 1) {
-                    $('#grid-matches').text('1 matching card');
+                if (
+                    ($('#grid-filter-affinities-field')[0].selectedIndex > 0 &&
+                        $('#grid-filter-affinities-field')[0].selectedIndex < 5) ||
+                    ($('#grid-filter-special-field')[0].selectedIndex > 1 &&
+                        $('#grid-filter-special-field')[0].selectedIndex < 4)
+                ) {
+                    var len = $('#card-grid > span:visible').length;
+                    if (len === 1) {
+                        $('#grid-matches').text('1 matching card');
+                    } else {
+                        $('#grid-matches').text(len + ' matching cards');
+                    }
                 } else {
-                    $('#grid-matches').text(i + ' matching cards');
+                    var i = 0;
+                    var edIdx = $('#grid-filter-edition-field')[0].selectedIndex;
+                    var ed = $('#grid-filter-edition-field')[0].value;
+                    $('#card-grid > span:visible').each(function () {
+                        if ($(this).data('affinities') !== 'None') i += 2;
+                        if ($(this).data('special').includes('Promo')) i++;
+                        //if ($(this).data('special').includes('Starter')) i++;
+                        if ($(this).data('special').includes('Normal')) i++;
+                        if (edIdx > 0)
+                            i -= $(this)
+                                .data('edition')
+                                .split(',')
+                                .filter(function (e) {
+                                    return e !== ed;
+                                }).length;
+                    });
+                    if (i === 1) {
+                        $('#grid-matches').text('1 matching card');
+                    } else {
+                        $('#grid-matches').text(i + ' matching cards');
+                    }
                 }
             }
-        }
-        $('#card-grid').append($('#grid-matches'));
+            $('#card-grid').append($('#grid-matches'));
 
-        var visibleCards = $('#card-grid > .custom-tooltip:visible').length;
-        var perRow = Math.floor($('#card-grid').width() / (isList ? 203 : 58));
-        if (visibleCards <= perRow * (incrH ? 6 : isList ? 1 : 3)) {
-            $('#grid-collapse').hide();
-        } else {
-            $('#grid-collapse').show();
+            var visibleCards = $('#card-grid > .custom-tooltip:visible').length;
+            var perRow = Math.floor($('#card-grid').width() / (isList ? 203 : 58));
+            if (visibleCards <= perRow * (incrH ? 6 : isList ? 1 : 3)) {
+                $('#grid-collapse').hide();
+            } else {
+                $('#grid-collapse').show();
+            }
+            $(window).scroll();
         }
-        $(window).scroll();
     }
     function gridFilteringHide(elem) {
         $(elem).stop(true);
-        $(elem).hide();
+        $(elem).addClass('tr-force-hide');
     }
     function gridFilteringShow(elem) {
         $(elem).stop(true);
-        $(elem).show();
+        $(elem).removeClass('tr-force-hide');
     }
     $(gridFiltering);
 })();

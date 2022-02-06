@@ -161,7 +161,7 @@ $( function () {
     
                 // make the matching letters bold:
                 var index = currentName.indexOf(val);
-                b.appendChild( document.createTextNode( arr[ 1 ].substr( 0, index ) ) );
+                b.appendChild( document.createTextNode( arr[ i ].substr( 0, index ) ) );
                 var strong = document.createElement( 'strong' );
                 strong.textContent = arr[ i ].substr( index, val.length );
                 b.appendChild( strong );
@@ -171,7 +171,7 @@ $( function () {
                 // Replace apostrophes with their html entity so they don't end the string
                 var input = document.createElement('input');
                 input.type = 'hidden';
-                input.value = arr[i].replace("\'", "&#39;");
+                input.value = arr[i];
                 b.appendChild(input);
     
                 // execute a function when someone clicks on the item value (DIV element):

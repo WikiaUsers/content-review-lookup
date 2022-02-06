@@ -9,8 +9,8 @@ function changeSourceAll() {
     var images = document.getElementsByTagName('img');
     for (var i = 0; i < images.length; i++) {
         if (images[i].src.includes('https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/')) {
-            images[i].src = images[i].src.replace("https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/28/height/28", "https://static.wikia.nocookie.net/wings-of-fire-experimental/images/d/d4/Anonymous_SilkWing_Wiki.png/revision/latest?cb=20190914234814");
-            images[i].src = images[i].src.replace("https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/400/height/400", "https://static.wikia.nocookie.net/wings-of-fire-experimental/images/d/d4/Anonymous_SilkWing_Wiki.png/revision/latest?cb=20190914234814");
+            images[i].src = images[i].src.replace("https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/28/height/28", "https://static.wikia.nocookie.net/wings-of-fire-experimental/images/4/4e/Anonymous_MudWing_Wiki.png/revision/latest?cb=20190915000857");
+            images[i].src = images[i].src.replace("https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/400/height/400", "https://static.wikia.nocookie.net/wings-of-fire-experimental/images/4/4e/Anonymous_MudWing_Wiki.png/revision/latest?cb=20190915000857");
         }
     }
 }

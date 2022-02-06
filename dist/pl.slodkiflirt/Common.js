@@ -10,3 +10,10 @@ importArticles({
         'u:dev:MediaWiki:Quiz/code.js',
     ]
 });
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MultiUpload.js',
+    ]
+});

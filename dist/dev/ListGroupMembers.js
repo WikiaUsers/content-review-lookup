@@ -85,7 +85,6 @@
 			"wiki-specialist",
 			"soap",
 			"global-discussions-moderator",
-			"vanguard",
 			"voldev",
 			"council",
 			"bureaucrat",
@@ -104,7 +103,6 @@
 				"wiki-specialist",
 				"soap",
 				"global-discussions-moderator",
-				"vanguard",
 				"voldev",
 				"council"
 			] ),

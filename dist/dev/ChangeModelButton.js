@@ -18,7 +18,7 @@ $.when(mw.loader.using(['mediawiki.api', 'mediawiki.jqueryMsg']), mw.hook('wikip
 	if (
 		!config.wgIsArticle ||
 		window.ChangeModelButtonLoaded ||
-		!/content-moderator|sysop|vanguard|content-volunteer|soap|helper|wiki-specialist|wiki-representative|staff/.test(config.wgUserGroups.join('\n'))
+		!/content-moderator|sysop|content-volunteer|soap|helper|wiki-specialist|wiki-representative|staff/.test(config.wgUserGroups.join('\n'))
 	) {
 		return;
 	}

@@ -229,3 +229,8 @@ var username = wgUserName;
 if (username !== null) { 
     $('#InputUsername').html(username); 
 }
+//********************************************************************
+// Added Multiple Upload Functionality, credit to Gamepedia wiki
+//********************************************************************
+
+mw.loader.load('https://help.gamepedia.com/index.php?title=MediaWiki:Gadget-multiupload.js&action=raw&ctype=text/javascript');

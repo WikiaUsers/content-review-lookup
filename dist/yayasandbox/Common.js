@@ -10,3 +10,13 @@ window.AutoCreateUserPagesConfig = {
 },
             summary: 'Script: Creating profile and talk page on first edit'
 };
+
+function character(infbox) {
+  document.getElementById("character-box").textContent = infbox;
+}
+
+function stats(num){
+  const bar="█ ";
+  const statString=bar.repeat(parseInt(num))+num;
+  return statString;
+}

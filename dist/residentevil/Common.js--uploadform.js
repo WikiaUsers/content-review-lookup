@@ -64,7 +64,7 @@
                 'Resident Evil: Vendetta screenshots': 'Vendetta',
                 'Resident Evil: Infinite Darkness screenshots': 'Infinite Darkness',
                 'Stage play screenshots': 'Stage play',
-                'Other movie screenshots': 'Other/Behind the sceens',
+                'Other movie screenshots': 'Other/Behind the scenes',
             },
             'Other media': {
                 'Artbook or guide book images': 'Artbook or guide book',

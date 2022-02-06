@@ -2,6 +2,7 @@
 
 ===== Status Effect buttons for Statistics section tables =====
     by King Dragonhoff
+    adapted for Chinese by LittlePaw365
 
 Maintenance
     This file should only need to be updated if the amount that
@@ -75,62 +76,62 @@ Maintenance
 	            // Apply rage effect and color the text affected after saving initial values
 	            $('#unit-attributes-table tr:eq(0) th').each(function(b) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "speed") {
-	                    movementSpeedName = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
+	                if (attributeName === "移动速度") {
+	                    movementSpeedName = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[0-9（）]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
 	                    unitAttributeValues[0] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectUp(unitAttributeValues[0])).addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "hit speed") {
+	                } else if (attributeName === "攻击速度") {
 	                    unitAttributeValues[1] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[1]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
+	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[1]) + "秒").addClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "出兵速度") {
 	                    unitAttributeValues[2] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[2]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
+	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[2]) + "秒").addClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "生产速度") {
 	                    unitAttributeValues[3] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[3]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
+	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[3]) + "秒").addClass("EnragedStat").removeClass("SlowedStat");
 	                }
 	            });
 	            // Repeat for a secondary attributes table (e.g. Golem)
 	            $('#unit-attributes-table-secondary tr:eq(0) th').each(function(e) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "speed") {
-	                    movementSpeedName2 = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
+	                if (attributeName === "移动速度") {
+	                    movementSpeedName2 = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[0-9（）]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
 	                    unitAttributeValues2[0] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectUp(unitAttributeValues2[0])).addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "hit speed") {
+	                } else if (attributeName === "攻击速度") {
 	                    unitAttributeValues2[1] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[1]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
+	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[1]) + "秒").addClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "出兵速度") {
 	                    unitAttributeValues2[2] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[2]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
+	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[2]) + "秒").addClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "生产速度") {
 	                    unitAttributeValues2[3] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[3]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
+	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[3]) + "秒").addClass("EnragedStat").removeClass("SlowedStat");
 	                }
 	            });
 	            // Repeat for a tertiary attributes table (e.g. Elixir Golem)
 	            $('#unit-attributes-table-tertiary tr:eq(0) th').each(function(e) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "speed") {
-	                    movementSpeedName3 = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
+	                if (attributeName === "移动速度") {
+	                    movementSpeedName3 = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[0-9（）]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
 	                    unitAttributeValues3[0] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(rageEffectUp(unitAttributeValues3[0])).addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "hit speed") {
+	                } else if (attributeName === "攻击速度") {
 	                    unitAttributeValues3[1] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(rageEffectDown(unitAttributeValues3[1]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
+	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(rageEffectDown(unitAttributeValues3[1]) + "秒").addClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "出兵速度") {
 	                    unitAttributeValues3[2] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(rageEffectDown(unitAttributeValues3[2]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
+	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(rageEffectDown(unitAttributeValues3[2]) + "秒").addClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "生产速度") {
 	                    unitAttributeValues3[3] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(rageEffectDown(unitAttributeValues3[3]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
+	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(rageEffectDown(unitAttributeValues3[3]) + "秒").addClass("EnragedStat").removeClass("SlowedStat");
 	                }
 	            });
 	            // Damage per second
 	            loopHitCount = 0;
 	            $('#unit-statistics-table tr:eq(0) th').each(function(c) {
 	                statName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (statName.includes("damage per second") === true && loopHitCount === 0) {
+	                if (statName.includes("每秒伤害值") === true && loopHitCount === 0) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        // Save
 	                        unitDPSValues.push($('td:eq(' + c + ')', this).text());
@@ -145,7 +146,7 @@ Maintenance
 	                        }
 	                    });
 	                    loopHitCount++;
-	                } else if (statName.includes("damage per second") === true && loopHitCount === 1) {
+	                } else if (statName.includes("每秒伤害值") === true && loopHitCount === 1) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        // Save
 	                        unitDPSValues2.push($('td:eq(' + c + ')', this).text());
@@ -160,7 +161,7 @@ Maintenance
 	                        }
 	                    });
 	                    loopHitCount++;
-	                } else if (statName.includes("damage per second") === true && loopHitCount === 2) {
+	                } else if (statName.includes("每秒伤害值") === true && loopHitCount === 2) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        // Save
 	                        unitDPSValues3.push($('td:eq(' + c + ')', this).text());
@@ -181,62 +182,62 @@ Maintenance
 	            // Apply slow effect and color the text affected after saving initial values
 	            $('#unit-attributes-table tr:eq(0) th').each(function(b) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "speed") {
-	                    movementSpeedName = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the slow button is inactivated
+	                if (attributeName === "移动速度") {
+	                    movementSpeedName = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[0-9（）]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the slow button is inactivated
 	                    unitAttributeValues[0] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectDown(unitAttributeValues[0])).removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "hit speed") {
+	                } else if (attributeName === "攻击速度") {
 	                    unitAttributeValues[1] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[1]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
+	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[1]) + "秒").removeClass("EnragedStat").addClass("SlowedStat");
+	                } else if (attributeName === "出兵速度") {
 	                    unitAttributeValues[2] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[2]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
+	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[2]) + "秒").removeClass("EnragedStat").addClass("SlowedStat");
+	                } else if (attributeName === "生产速度") {
 	                    unitAttributeValues[3] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[3]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
+	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[3]) + "秒").removeClass("EnragedStat").addClass("SlowedStat");
 	                }
 	            });
 	            // Repeat for a secondary attributes table (e.g. Golem)
 	            $('#unit-attributes-table-secondary tr:eq(0) th').each(function(e) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "speed") {
-	                    movementSpeedName2 = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
+	                if (attributeName === "移动速度") {
+	                    movementSpeedName2 = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[0-9（）]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
 	                    unitAttributeValues2[0] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectDown(unitAttributeValues2[0])).removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "hit speed") {
+	                } else if (attributeName === "攻击速度") {
 	                    unitAttributeValues2[1] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[1]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
+	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[1]) + "秒").removeClass("EnragedStat").addClass("SlowedStat");
+	                } else if (attributeName === "出兵速度") {
 	                    unitAttributeValues2[2] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[2]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
+	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[2]) + "秒").removeClass("EnragedStat").addClass("SlowedStat");
+	                } else if (attributeName === "生产速度") {
 	                    unitAttributeValues2[3] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[3]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
+	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[3]) + "秒").removeClass("EnragedStat").addClass("SlowedStat");
 	                }
 	            });
 	            // Repeat for a tertiary attributes table (e.g. Elixir Golem)
 	            $('#unit-attributes-table-tertiary tr:eq(0) th').each(function(e) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "speed") {
-	                    movementSpeedName3 = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
+	                if (attributeName === "移动速度") {
+	                    movementSpeedName3 = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[0-9（）]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
 	                    unitAttributeValues3[0] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(slowEffectDown(unitAttributeValues3[0])).removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "hit speed") {
+	                } else if (attributeName === "攻击速度") {
 	                    unitAttributeValues3[1] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(slowEffectUp(unitAttributeValues3[1]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
+	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(slowEffectUp(unitAttributeValues3[1]) + "秒").removeClass("EnragedStat").addClass("SlowedStat");
+	                } else if (attributeName === "出兵速度") {
 	                    unitAttributeValues3[2] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(slowEffectUp(unitAttributeValues3[2]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
+	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(slowEffectUp(unitAttributeValues3[2]) + "秒").removeClass("EnragedStat").addClass("SlowedStat");
+	                } else if (attributeName === "生产速度") {
 	                    unitAttributeValues3[3] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
-	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(slowEffectUp(unitAttributeValues3[3]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
+	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(slowEffectUp(unitAttributeValues3[3]) + "秒").removeClass("EnragedStat").addClass("SlowedStat");
 	                }
 	            });
 	            // Damage per second
 	            loopHitCount = 0;
 	            $('#unit-statistics-table tr:eq(0) th').each(function(c) {
 	                statName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (statName.includes("damage per second") === true && loopHitCount === 0) {
+	                if (statName.includes("每秒伤害值") === true && loopHitCount === 0) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        // Save
 	                        unitDPSValues.push($('td:eq(' + c + ')', this).text());
@@ -251,7 +252,7 @@ Maintenance
 	                        }
 	                    });
 	                    loopHitCount++;
-	                } else if (statName.includes("damage per second") === true && loopHitCount === 1) {
+	                } else if (statName.includes("每秒伤害值") === true && loopHitCount === 1) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        // Save
 	                        unitDPSValues2.push($('td:eq(' + c + ')', this).text());
@@ -266,7 +267,7 @@ Maintenance
 	                        }
 	                    });
 	                    loopHitCount++;
-	                } else if (statName.includes("damage per second") === true && loopHitCount === 2) {
+	                } else if (statName.includes("每秒伤害值") === true && loopHitCount === 2) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        // Save
 	                        unitDPSValues3.push($('td:eq(' + c + ')', this).text());
@@ -287,57 +288,57 @@ Maintenance
 	            // Remove effects and remove the color from the text affected
 	            $('#unit-attributes-table tr:eq(0) th').each(function(b) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "speed") {
-	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(movementSpeedName + " (" + unitAttributeValues[0] + ")").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "hit speed") {
-	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[1] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
-	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[2] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
-	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[3] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
+	                if (attributeName === "移动速度") {
+	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(movementSpeedName + "（" + unitAttributeValues[0] + "）").removeClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "攻击速度") {
+	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[1] + "秒").removeClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "出兵速度") {
+	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[2] + "秒").removeClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "生产速度") {
+	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[3] + "秒").removeClass("EnragedStat").removeClass("SlowedStat");
 	                }
 	            });
 	            // Repeat for a secondary attributes table (e.g. Golem)
 	            $('#unit-attributes-table-secondary tr:eq(0) th').each(function(e) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "speed") {
-	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(movementSpeedName2 + " (" + unitAttributeValues2[0] + ")").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "hit speed") {
-	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[1] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
-	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[2] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
-	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[3] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
+	                if (attributeName === "移动速度") {
+	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(movementSpeedName2 + "（" + unitAttributeValues2[0] + "）").removeClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "攻击速度") {
+	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[1] + "秒").removeClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "出兵速度") {
+	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[2] + "秒").removeClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "生产速度") {
+	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[3] + "秒").removeClass("EnragedStat").removeClass("SlowedStat");
 	                }
 	            });
 	            // Repeat for a tertiary attributes table (e.g. Elixir Golem)
 	            $('#unit-attributes-table-tertiary tr:eq(0) th').each(function(e) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "speed") {
-	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(movementSpeedName3 + " (" + unitAttributeValues3[0] + ")").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "hit speed") {
-	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(unitAttributeValues3[1] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
-	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(unitAttributeValues3[2] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
-	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(unitAttributeValues3[3] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
+	                if (attributeName === "移动速度") {
+	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(movementSpeedName3 + "（" + unitAttributeValues3[0] + "）").removeClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "攻击速度") {
+	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(unitAttributeValues3[1] + "秒").removeClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "出兵速度") {
+	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(unitAttributeValues3[2] + "秒").removeClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "生产速度") {
+	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(unitAttributeValues3[3] + "秒").removeClass("EnragedStat").removeClass("SlowedStat");
 	                }
 	            });
 	            // Damage per second
 	            loopHitCount = 0;
 	            $('#unit-statistics-table tr:eq(0) th').each(function(c) {
 	                statName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (statName.includes("damage per second") === true && loopHitCount === 0) {
+	                if (statName.includes("每秒伤害值") === true && loopHitCount === 0) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        $('td:eq(' + c + ')', this).text(unitDPSValues[d]).removeClass("EnragedStat").removeClass("SlowedStat");
 	                    });
 	                    loopHitCount++;
-	                } else if (statName.includes("damage per second") === true && loopHitCount === 1) {
+	                } else if (statName.includes("每秒伤害值") === true && loopHitCount === 1) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        $('td:eq(' + c + ')', this).text(unitDPSValues2[d]).removeClass("EnragedStat").removeClass("SlowedStat");
 	                    });
 	                    loopHitCount++;
-	                } else if (statName.includes("damage per second") === true && loopHitCount === 2) {
+	                } else if (statName.includes("每秒伤害值") === true && loopHitCount === 2) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        $('td:eq(' + c + ')', this).text(unitDPSValues3[d]).removeClass("EnragedStat").removeClass("SlowedStat");
 	                    });

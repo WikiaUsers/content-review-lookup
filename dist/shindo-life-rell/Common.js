@@ -1,4 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+
+
 var MessageBlock = {
   title : 'Blocked',
   message : '{'+'{subst:#invoke:BlockMessages|main|reason=$1|expiry=$2}'+'}',
@@ -212,3 +214,7 @@ importArticles({
 	xhttp.send();
 	
 }) (mediaWiki, jQuery, window);
+
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+
+window.pPreview.delay = 100;

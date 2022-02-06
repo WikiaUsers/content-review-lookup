@@ -18,6 +18,27 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+// Changes made on February 01, 2022 - 12.85.11525 (2)
+'Brachiodemon': '12.85.11525',
+'Infernal Demon': '12.85.11525',
+'Infernal Phantom': '12.85.11525',
+'Branchy Crawler': '12.85.11525',
+'Rotten Golem': '12.85.11525',
+'Mould Phantom': '12.85.11525',
+'Werelion': '12.85.11525',
+'Werelioness': '12.85.11525',
+'Hulking Carnisylvan': '12.85.11525',
+'Poisonous Carnisylvan': '12.85.11525',
+'Dark Carnisylvan': '12.85.11525',
+'Eyeless Devourer': '12.85.11525',
+'Blemished Spawn': '12.85.11525',
+'Afflicted Strider': '12.85.11525',
+'Lavaworm': '12.85.11525',
+'Streaked Devourer': '12.85.11525',
+'Lavafungus': '12.85.11525',
+'Tremendous Tyrant': '12.85.11525',
+'Varnished Diremaw': '12.85.11525',
+'Cave Chimera': '12.85.11525',
 'Morshabaal': '12.85.11508',
 // Changes made on August 24, 2021
 'Venerable Girtablilu': '12.71.11017',
@@ -25,9 +46,9 @@ window.loot_parser_data = {
 'Bashmu': '12.71.11017',
 'Juvenile Bashmu': '12.71.11017',
 // Changes made on July 06, 2021 - 12.67.10934 (2)
-'Brachiodemon': '12.67.10934',
-'Infernal Demon': '12.67.10934',
-'Infernal Phantom': '12.67.10934',
+//'Brachiodemon': '12.67.10934',
+//'Infernal Demon': '12.67.10934',
+//'Infernal Phantom': '12.67.10934',
 'Bony Sea Devil': '12.67.10934',
 'Turbulent Elemental': '12.67.10934',
 'Capricious Phantom': '12.67.10934',
@@ -48,9 +69,9 @@ window.loot_parser_data = {
 'Cloak of Terror': '12.66.10866',
 'Courage Leech': '12.66.10866',
 'Vibrant Phantom': '12.66.10866',
-'Rotten Golem': '12.66.10866',
-'Branchy Crawler': '12.66.10866',
-'Mould Phantom': '12.66.10866',
+//'Rotten Golem': '12.66.10866',
+//'Branchy Crawler': '12.66.10866',
+//'Mould Phantom': '12.66.10866',
 // Changes made on April 15, 2021 - documented in [[Updates/12.65.10733 (2)]]
 'Cobra Vizier': '12.65.10733',
 'Cobra Assassin': '12.65.10733',

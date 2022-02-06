@@ -33,8 +33,8 @@ $(function() {
 
 	function loadStdSummaries() {
 	  stdSummariesVersion = localStorage.getItem('stdSummariesVersion');
-	  localStorage.setItem('stdSummariesVersion', 2);
-	  if (stdSummariesVersion != 2) localStorage.removeItem('stdSummaries');
+	  localStorage.setItem('stdSummariesVersion', 3);
+	  if (stdSummariesVersion != 3) localStorage.removeItem('stdSummaries');
 	  else stdSummaries = localStorage.getItem('stdSummaries');
 
 	  if (stdSummaries) {

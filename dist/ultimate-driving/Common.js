@@ -6,4 +6,8 @@
 // Disables the Rollback Script 
 window.RollbackWikiDisable = true;
 
+/*Necropost stopper*/
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 300;
+
 // </nowiki>

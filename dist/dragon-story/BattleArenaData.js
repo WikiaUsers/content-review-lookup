@@ -3425,6 +3425,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"darling": {
+				"name": "Darling",
+				"colors": [
+					"valentine",
+					"white"
+				],
+				"rarity": "common"
+			},
 			"dawn": {
 				"name": "Dawn",
 				"colors": [
@@ -5130,6 +5138,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"fond": {
+				"name": "Fond",
+				"colors": [
+					"valentine",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"fool": {
 				"name": "Fool",
 				"colors": [
@@ -6658,6 +6674,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"heartfelt": {
+				"name": "Heartfelt",
+				"colors": [
+					"valentine",
+					"black",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"hearth": {
 				"name": "Hearth",
 				"colors": [
@@ -7395,6 +7420,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Inquisitor",
 				"colors": [
 					"champion"
+				],
+				"rarity": "unbreedable"
+			},
+			"intimate": {
+				"name": "Intimate",
+				"colors": [
+					"valentine",
+					"pink"
 				],
 				"rarity": "unbreedable"
 			},
@@ -13349,6 +13382,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Showy",
 				"colors": [
 					"world",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"shyness": {
+				"name": "Shyness",
+				"colors": [
+					"valentine",
 					"yellow"
 				],
 				"rarity": "unbreedable"

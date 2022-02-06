@@ -34,7 +34,6 @@
         'staff',
         'util',
         'helper',
-        'vanguard',
         'content-volunteer',
         'wiki-specialist',
         'wiki-representative',

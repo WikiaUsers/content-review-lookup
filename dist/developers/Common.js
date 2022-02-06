@@ -5,3 +5,4 @@ importArticle({
 	type: 'script',
 	article: 'u:developers:MediaWiki:Test.js'
 });
+console.log('this is test mode');

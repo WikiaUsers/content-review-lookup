@@ -554,6 +554,6 @@ var slideshows = {
 	}
 };
 
-if ( window !== this && !window.slideshows ) {
+if ( !window.slideshows ) {
 	window.slideshows = slideshows;
 }

@@ -1,4 +1,4 @@
-$(function () {
+mw.loader.using([(mw.config.get('wgIsTestModeEnabled') ? 'test:' : '') + 'MediaWiki:DataFetch.js'], function() { $(function () {
 
 	var SharedDataPage = 'Data:Spawn Map/Shared';
 	var RarityClasses = [
@@ -26,7 +26,6 @@ $(function () {
 		TooltipUntameableLocal: 'creatures at this location are not tameable',
 	};
 	var RE_CONTAINER_NAME = /DinoSpawnEntries_?|SpawnEntries_?/i;
-	var CACHE_NAME = 'ArkDataMaps';
 	var CACHE_EXPIRY_TIME = 24 * 60 * 60;
 
 
@@ -39,53 +38,15 @@ $(function () {
 	}
 
 	function fetchSpawnDataPages(context) {
-		return caches.open(CACHE_NAME).then(function (cache) {
-			function fetchDataPageInternal(pageName, outFieldName) {
-                // Construct a URL of the page.
-                // On translations if prefixed with "en:", this'll slice off the script path.
-                var isRequestingMain = pageName.startsWith('en:') && mw.config.get('wgContentLanguage') != 'en';
-                var scriptPath = mw.config.get('wgScriptPath');
-				var url = mw.util.getUrl((isRequestingMain ? pageName.slice(3) : pageName), {
-					action: 'raw',
-					ctype: 'application/json'
-				});
-                if (isRequestingMain && url.startsWith(scriptPath)) {
-                    url = url.slice(scriptPath.length);
-                }
-
-				var timeNow = new Date().getTime();
-				var request = new Request(url);
-				return cache.match(request).then(function (response) {
-					// Check if cache entry is recent and valid.
-					if (response && response.ok
-					    && (Date.parse(response.headers.get('Expires')) > timeNow)
-					    && (parseInt(response.headers.get('X-ARK-Cache-Index')) == context.cacheIndex)) {
-						return response;
-					}
-
-					// Fetch the page from API.
-					return fetch(request).then(function (response) {
-						response.clone().blob().then(function(body) {
-							cache.put(request, new Response(body, { headers: {
-								'Expires': (new Date(timeNow + (CACHE_EXPIRY_TIME))).toUTCString(),
-								'X-ARK-Cache-Index': context.cacheIndex,
-							}}));
-						});
-						return response;
-					});
-				}).then(function (response) {
-					return response.json().then(function(data) {
-						context[outFieldName] = data;
-					});
-				});
-			}
-
-			// Retrieve shared and map-specific data.
-			return Promise.all([
-				fetchDataPageInternal(SharedDataPage, 'shared'),
-				fetchDataPageInternal(context.pageName, 'data')
-			]);
-		});
+		// Retrieve shared and map-specific data.
+		return fetchDataPagesARK(
+            [ SharedDataPage, context.pageName ],
+            context.cacheIndex, CACHE_EXPIRY_TIME
+        ).then(function (results) {
+            // Unpack.
+            context.shared = results[SharedDataPage];
+            context.data = results[context.pageName];
+        });
 	}
 
 	function populateCreatureSelector(context) {
@@ -365,4 +326,4 @@ $(function () {
 		});
 	});
 
-});
+}) });

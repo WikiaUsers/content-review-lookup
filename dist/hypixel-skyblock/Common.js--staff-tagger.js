@@ -394,14 +394,15 @@
             },
 
             // #5: Update staff-colors.less
-            updateStaffColors: function () {
-                return $.Deferred(function (def) {
-                    mw.util.StaffUtil.updateStaffColors(function () {
-                        console.log("[StaffTagger #5]: Successfully updated staff-colors.less");
-                        def.resolve();
-                    });
-                });
-            },
+            // Disabled to reduce wait time for handling multiple staff; maybe added as an option later when update CSS is included
+            // updateStaffColors: function () {
+            //     return $.Deferred(function (def) {
+            //         mw.util.StaffUtil.updateStaffColors(function () {
+            //             console.log("[StaffTagger #5]: Successfully updated staff-colors.less");
+            //             def.resolve();
+            //         });
+            //     });
+            // },
 
             // #6: Null Edit Pages
             nullEditPages: function (user, bots) {
@@ -535,7 +536,8 @@
                 Promise.all([
                     that.changeStaffData(opts.user, opts.ranklist, opts.formerlist, opts.date, opts.resignDate, opts.bots, opts.activity, opts.reason), // #2
                     that.addMsgBox(opts.user, opts.reason, hasMsgBox), // #3
-                    that.updateStaffColors(), // #5
+                    // that.updateStaffColors(), // #5
+                    // ^ Disabled to reduce wait time for handling multiple staff; maybe added as an option later when update CSS is included
                 ].concat(
                     that.protectStaffPage(opts.user, opts.addbots, opts.removebots, opts.highLevel) // #4
                 ).concat(
@@ -555,7 +557,7 @@
 
             onResolve: function () {
                 new BannerNotification($("<div>", {
-                    html: "<div><b>All subprocesses completed. Horray!</b><br>Please check the Console for all the results/errors.<br>You may now <a href=\"/wiki/CSS\">Update CSS</a>.</div>",
+                    html: "<div><b>All subprocesses completed. Horray!</b><br>Please check the Console for all the results/errors.<br>You may now <a href=\"/wiki/CSS\">Update Staff Colors and Update CSS</a>.</div>",
                 }).prop("outerHTML"), "confirm").show();
             },
 
@@ -569,8 +571,8 @@
                     <li>Grant/Remove selected rights to the user on wiki (if applicable) <i>†</i></li>\
                     <li>Change staff data on <a href=\"/wiki/Module:Staff/Members\">Module:Staff/Members</a></li>\
                     <li>Add StaffMsgBox to the user page (if applicable) <i>†</i></li>\
-                    <li>Increase/Decrease protection of the user page <i>†</i></li>\
-                    <li>Update <a href=\"/wiki/MediaWiki:Custom-common.less/staff-colors.less\">staff-color.less</a></li>\
+                    <li>Increase/Decrease protection of the user page <i>†</i></li><!--\
+                    <li>Update <a href=\"/wiki/MediaWiki:Custom-common.less/staff-colors.less\">staff-color.less</a> and <a href=\"/wiki/CSS\">site CSS</a></li>-->\
                     <li>Null Edit <code>Message_Wall</code> and <code>User_talk</code> for the user <i>†</i></li>\
                     </ol>\
                     <small><i>†: Also applies for associated/disassociated bot accounts</i></small>\

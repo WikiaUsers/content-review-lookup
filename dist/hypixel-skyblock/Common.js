@@ -194,7 +194,9 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                                 "data-link": threadLink,
                                 html: $("<abbr>", {
                                     title: "click to copy",
+                                    class: "article-click-copy",
                                     text: (threadIsComment ? "Comment" : "Reply") + " ID : " + (replyID || commentID),
+                                    "data-copy": mw.config.get("wgServer") + mw.util.getUrl(mw.config.get("wgPageName")) + "?" + (threadLink || ""),
                                 }),
                             })
                         );
@@ -241,17 +243,13 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
             childList: true,
             subtree: true,
         });
-
-        $("#articleComments").on("click", ".comment-id-display, .reply-id-display", function () {
-            copyToClipboard(mw.config.get("wgServer") + mw.util.getUrl(mw.config.get("wgPageName")) + "?" + ($(this).attr("data-link") || ""));
-        });
     }
 
     var clickCopyCooldown = false;
     // small script to allow copying of text inside class "article-click-copy"
-    $(".mw-parser-output").on("click", ".article-click-copy", function () {
+    $("body").on("click", ".article-click-copy", function () {
         if (!clickCopyCooldown) {
-            copyToClipboard($(this).text().trim());
+            copyToClipboard($(this).attr("data-copy") || $(this).text().trim());
             clickCopyCooldown = true;
             var clickCopyCooldownInterval = setInterval(function () {
                 clickCopyCooldown = false;
@@ -668,3 +666,64 @@ window.lessConfig = {
     // allowed groups
     allowed: ["codeeditor"],
 };
+
+// Special:MyBlockID
+
+if (mw.config.values.wgPageName.toLowerCase() === "special:myblockid") {
+    document.title = "My Block ID | " + mw.config.values.wgSiteName + " | Fandom";
+    $("#firstHeading").text("My Block ID");
+    mw.util.$content
+        .empty()
+        .html(
+            $("<div>", {
+                html: [
+                    $("<h3>", {
+                        text: "Loading..."
+                    }),
+                ],
+            })
+        );
+
+    var api = new mw.Api();
+    api.get({
+        action: "query",
+        meta: "userinfo",
+        uiprop: ["name", "blockinfo"],
+    }).then(function (r) {
+        r = r.query.userinfo;
+        var name = r.name;
+
+        mw.messages.set("", r.blockreason || "");
+        var parsedReason = mw.message("").parse();
+
+        console.log(r);
+        mw.messages.set("");
+        mw.util.$content.html([
+            $("<h3>", {
+                html: [
+                    "Displaying block information for \"", $("<a>", {
+                        href: mw.util.getUrl("Special:Contribs/" + name),
+                        text: name
+                    }), "\".",
+                ],
+            }),
+            r.blockreason ? "You are currently blocked, your Block ID is " : "You are not currently blocked. If you are still sure you're blocked, please try again with a different account, or contact an admin via discord for assistance.",
+            r.blockreason ? $("<a>", {
+                href: mw.util.getUrl("Special:BlockList", {
+                    wpTarget: "%23" + r.blockid
+                }),
+                text: "#" + r.blockid
+            }) : "",
+            r.blockreason ? $("<small>", {
+                html: [" (", $("<a>", {
+                    href: "#",
+                    click: function () {
+                        copyToClipboard("#" + r.blockid);
+                    },
+                    text: "click to copy"
+                }), ")"]
+            }) : "",
+            r.blockreason ? "." : "",
+        ]);
+    });
+}

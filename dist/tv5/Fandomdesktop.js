@@ -1,0 +1,1 @@
+// All the JS are located at Common.js.

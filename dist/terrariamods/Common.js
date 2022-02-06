@@ -1,4 +1,14 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+
+/**
+ * common l10n factory
+ */
+var l10nFactory = function($lang, $data) {
+    return function ($key) {
+        return $data[$key] && ($data[$key][$lang] || $data[$key]['en']) || '';
+    };
+};
+
 // AJAX tables
 function addAjaxDisplayLink() {
 	$("table.ajax").each(function (i) {
@@ -94,3 +104,56 @@ $(function() {
 	});
 	
 });
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * custom control for {{Template:sound}}
+ * Original ported from https://minecraft.gamepedia.com/MediaWiki:Gadget-sound.js.
+ */
+$(function(){
+    var l10n = l10nFactory(mw.config.get( 'wgUserLanguage' ),{
+        'playTitle': {
+            'en': 'Click to play',
+            'de': 'Zum Abspielen anklicken',
+            'fr': 'Cliquer pour jouer',
+            'pt': 'Clique para jogar',
+            'pl': 'Naciśnij by odtworzyć',
+            'ru': 'Щёлкните, чтобы воспроизвести',
+            'zh': '点击播放',
+            'zh-cn': '点击播放'
+        },
+        'stopTitle': {
+            'en': 'Click to stop',
+            'de': 'Zum Beenden anklicken',
+            'fr': 'Cliquer pour arrêter',
+            'pt': 'Clique para parar',
+            'pl': 'Naciśnij by zatrzymać',
+            'ru': 'Щёлкните, чтобы остановить',
+            'zh': '点击停止',
+            'zh-cn': '点击停止'
+        }
+    });
+
+    $('.mw-parser-output .sound').prop('title', l10n('playTitle')).on('click', function(e){
+        // Ignore links
+        if (e.target.tagName === 'A') {
+            return;
+        }
+        var audio = $(this).find('.sound-audio')[0];
+        if (audio) {
+            audio.paused ? audio.play() : audio.pause();
+        }
+    }).find('.sound-audio').on('play', function(){
+        // Stop any already playing sounds
+        var playing = $('.sound-playing .sound-audio')[0];
+        playing && playing.pause();
+        $(this).closest('.sound').addClass('sound-playing').prop('title', l10n('stopTitle'));
+    }).on('pause', function(){
+        // Reset back to the start
+        this.currentTime = 0;
+        $(this).closest('.sound').removeClass('sound-playing').prop('title', l10n('playTitle'));
+    });
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////

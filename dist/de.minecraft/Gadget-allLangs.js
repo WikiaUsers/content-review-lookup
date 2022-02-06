@@ -27,6 +27,7 @@ $( document ).ready( function( $ ) {
 		'it': 'Italiano',
 		'ja': '日本語',
 		'ko': '한국어',
+		'lzh': '文言',
 		'nl': 'Nederlands',
 		'pl': 'Polski',
 		'pt': 'Português',

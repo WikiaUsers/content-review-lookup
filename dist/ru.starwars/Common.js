@@ -11,7 +11,19 @@ function AddLink_WatchList (){
 
 // выполнение при готовности страницы
 $(document).ready(function()
-{  
+{
+	// скрыть заголовок на Заглавной
+	if (wgTitle === 'Заглавная страница')
+	{
+	  $('.page-header__bottom').css('display', 'none');
+	}
+	
+	// если на странице есть слайд-шоу
+	if ( $("#SlideShowGallery").length > 0)
+	{
+		importScript('MediaWiki:SlideShow.js');
+	}
+	
 	addHideButtons();
 
 	// случайный пункт из списка ссылок

@@ -52,7 +52,6 @@
         'threadmoderator': {},
         //'translator': {},
         //'util': {},
-        //'vanguard': {},
         //'voldev': {},
         //'wiki-representative': {},
         //'wiki-specialist': {}

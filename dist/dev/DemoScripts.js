@@ -44,11 +44,6 @@
             }
         },
 		
-        BlendGlobalNav: {
-            page: 'BlendGlobalNav',
-            styles: 'MediaWiki:BlendGlobalNav.css'
-        },
-		
         CalendarWidget: {
             page: 'Global_Lua_Modules/Calendar_widget',
             styles: 'MediaWiki:Global_Lua_Modules/Calendar_widget.css'
@@ -318,11 +313,6 @@
             scripts: 'MediaWiki:OldFandomColors.js'
         },
         
-        OldOasisTheme: {
-            page: 'OldOasisTheme',
-            styles: 'MediaWiki:OldOasisTheme.css'
-        },
-        
         OldWikiaBar: {
             page: 'OldWikiaBar',
             styles: 'MediaWiki:OldWikiaBar.css'
@@ -379,20 +369,6 @@
 			page: 'Special:Search',
 			scripts: 'MediaWiki:SearchSuggest/code.js'
 		},
-		
-        ShowHide: {
-            page: 'ShowHide',
-            scripts: 'MediaWiki:ShowHide/code.js',
-            styles: 'MediaWiki:ShowHide.css',
-            exec: function() {
-                // allow to show the banner on the doc page
-                window.ShowHideDisplayWarning = true;
-                // show the banner every time
-                try {
-                    window.localStorage.removeItem('ShowHide-warning');
-                } catch (ex) {}
-            },
-        },
 		
         SnowStorm: {
             page: 'SnowStorm/Demo',
@@ -529,16 +505,6 @@
 			page: 'Special:WikiActivity',
 	        scripts: 'MediaWiki:WikiActivity.js'
 	    },
-        
-        WikiaNotification: {
-            page: 'WikiaNotification',
-            scripts: 'MediaWiki:WikiaNotification/code.js',
-            exec: function () {
-                try {
-                    window.localStorage.removeItem('ls-wikianotifications');
-                } catch (ex) {}
-            }
-        },
 
         Wikificator: {
             page: 'Wikificator',

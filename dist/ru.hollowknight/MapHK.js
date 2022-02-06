@@ -531,7 +531,6 @@ mw.hook('wikipage.content').add(function() {
             L.marker([2172.0, 761.0], {icon: izote}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/Зот Могучий">Зот Могучий</a>').openPopup().addTo(gNPC);
             L.marker([1411.0, 2314.0], {icon: izote}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/Зот Могучий">Зот Могучий</a>').openPopup().addTo(gNPC);
             L.marker([966.0, 1078.0], {icon: izote}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/Зот Могучий">Зот Могучий</a>').openPopup().addTo(gNPC);
-            L.marker([1939.0, 1770.0], {icon: izote}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/Зот Могучий">Зот Могучий</a>').openPopup().addTo(gNPC);
         //Тряпочка
             L.marker([1089.0, 1096.0], {icon: icloth}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/Тряпочка">Тряпочка</a>').openPopup().addTo(gNPC);
             L.marker([1453.0, 1845.0], {icon: icloth}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/Тряпочка">Тряпочка</a>').openPopup().addTo(gNPC);

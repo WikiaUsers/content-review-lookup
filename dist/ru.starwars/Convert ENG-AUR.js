@@ -87,18 +87,14 @@ $(document).ready(function()
 	arrGlyphs['ш'] =  ['https://vignette.wikia.nocookie.net/ru.starwars/images/b/be/ShenArial.svg','SH'] ;
 	arrGlyphs['щ'] =  ['https://vignette.wikia.nocookie.net/ru.starwars/images/b/b2/TheshArial.svg','TH'] ;
 	sKeyLine =
-	'<p><b>Текст на английском</b></p> '+
-	'<textarea name="ENGtext2" id="ENGtext2"  class="div_EnglishText"  onKeyup ="EngText2_OnKeyup()"  ></textarea> '+
-	'<p><b>Текст на ауребеше</b><br /><span class="text_Hint">(максимум 340 символов) </span></p> '+
-	'<div class="div_EnglishText" id="div_AurebeshText2" ></div> '+
+	'<p class="text_Hint"><b>Текст на английском</b></p>'+
+	'<textarea name="ENGtext2" id="ENGtext2" class="NewStyleMemo BlockEnglishText" onkeyup="EngText2_OnKeyup()" style="height: 100px;"></textarea>'+
+	'<p class="text_Hint"><b>Текст на ауребеше</b> (максимум 340 символов)</p>'+
+	'<div class="NewStyleMemo BlockEnglishText" id="div_AurebeshText2" ></div> '+
 	'<div style="clear:both; "> </div>'+
 	'<p id="Canv_StatusBar" class="text_Hint"></p>'+
-
-	'<div class="AddMarginTop">'+
-		'<div class="ico_key2 " id="btn_ClearENG" title="Очистить текст" onClick="EngText2_Clear()"></div>'+
-		'<div class="ico_key2 " id="btn_ToggleKB" title="Показать/скрыть экранную клавиатуру" onClick="KB_Toggle()"></div>'+
-		'<div class="ico_key2 " id="btn_TextToImg" title="Преобразовать текст в картинку" onClick="EngText2_CopyAsPicture()"></div>'+
-		'<div style="clear:both; "> </div>'+
+	'<div class="AddSpaceTop">'+
+		'<span class="wds-button" id="btn_ClearENG" title="Очистить текст" onclick="EngText2_Clear()">Очистить</span> <span class="wds-button" id="btn_ToggleKB" title="Показать/скрыть экранную клавиатуру" onclick="KB_Toggle()">Клавиатура</span> <span class="wds-button" id="btn_TextToImg" title="Преобразовать текст в картинку" onclick="EngText2_CopyAsPicture()">Преобразовать</span>'+
 	'</div>'+
 	'<div  id="div_ScreenKB" >'+
 		'<table width="100%" border="0" cellpadding="0" cellspacing="0" >'+
@@ -178,8 +174,8 @@ $(document).ready(function()
 	// добавляем на страницу окно со сгенерированныой картинкой и полупрозрачным чёрным фоном
 	$('body').prepend(
 		'<div id="div_BlackBG" onClick="ImageWindow_Сlose()"></div>'+
-		'<div class="div_EnglishText" id="div_AurPicture" >'+
-			'<p class="text_Hint">Нажмите правой кнопкой по картинке и выберите пункт "Сохранить изображение..."</p>'+
+		'<div class="BlockRounded" id="div_AurPicture">'+
+			'<p>Нажмите правой кнопкой по картинке и выберите пункт "Сохранить изображение..."</p>'+
 			'<hr/>'+
 			'<canvas id="Canv_AurText" title="Текст на ауребеше, преобразованный в картинку" ></canvas>'+
 		'</div>'

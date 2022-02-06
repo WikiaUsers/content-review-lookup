@@ -37,6 +37,7 @@ function calculate() {
 		delete_table();
 		return;
 	}
+	document.getElementById("level_display").innerHTML = level;
 	document.getElementById("wrong_number").innerHTML = "";
 	var xp = 1000, ruby = 1, bt_ram = 1, tr_map = 3;
 	var items1 = [
@@ -97,8 +98,12 @@ function calculate() {
 		/*lvl. 31*/	["Outpost lvl. 1","Boatswain lvl. 2","","",""],
 		/*lvl. 32*/	["Alchemist's Hut lvl. 6","Tailor lvl. 1","Carpenter lvl. 3","Metallurgist lvl. 3",""],
 		/*lvl. 33*/	["Mechanic lvl. 3","Blacksmith lvl. 3","","",""],
-		/*lvl. 34*/	["Alchemist lvl. 3","","","",""],
-		/*lvl. 35*/	["Athlete lvl. 6","Intellectual lvl. 3","","",""]];
+		/*lvl. 34*/	["Alchemist lvl. 3","Cameleer lvl. 1?","","",""],
+		/*lvl. 35*/	["Athlete lvl. 6","Intellectual lvl. 3","","",""],
+		/*lvl. 36*/	["","","","",""],
+		/*lvl. 37*/	["","","","",""],
+		/*lvl. 38*/	["","","","",""],
+		/*lvl. 39*/	["Cameleer lvl. 2","","","",""]];
 	
 	var firework = "https://static.wikia.nocookie.net/nonograms-katana/images/2/24/Firework.png/revision/latest?cb=20211025160230";
 	var ramen = "https://static.wikia.nocookie.net/nonograms-katana/images/f/f8/Ramen.png/revision/latest?cb=20210614184327";
@@ -205,7 +210,7 @@ function calculate() {
 		document.getElementById("tr_map").innerHTML = "0";
 	}
 	
-	if (level < 36){
+	if (level < 40){
 		document.getElementById("unlocks1").innerHTML = unlocks[level-2][0];
 		document.getElementById("unlocks2").innerHTML = unlocks[level-2][1];
 		document.getElementById("unlocks3").innerHTML = unlocks[level-2][2];

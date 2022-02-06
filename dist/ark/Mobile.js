@@ -54,29 +54,32 @@ $( document ).ready( fpmobilecollapse.initialize );
 /* End Main Page Mobile Collapse Script *
 /****************************************/
 
+// Load our other scripts conditionally
 $(function() {
-	// Load Dev:Countdown if any countdowns are found on the page.
-	if (document.getElementsByClassName("countdown").length > 0) {
-    	importArticle({
-    		type: "script",
-			article: "u:dev:MediaWiki:Countdown/code.js"
-		});
-	}
-
-	// Conditionally load creature article scripts.
-	if (document.querySelectorAll('.cloningcalc, .killxpcalc').length > 0) {
-		importArticles({ type: 'script',
-						 articles: [
-						 	// Kill XP calculator
-						 	'MediaWiki:Killxp.js',
-						 	// Experimental cloning calculator
-						 	'MediaWiki:CloningCalculator.js' 
-						 ] });
-	}
 	
-	// Load data map scripts if one has been added to the page
-	if (document.getElementsByClassName('data-map-container').length > 0) {
-		importArticles({ type: 'script', articles: [ 'MediaWiki:ResourceMaps.js', 'MediaWiki:SpawnMaps.js' ] });
-	}
+	[
+		// Dev:Countdown
+		[ '.countdown', [ 'u:dev:MediaWiki:Countdown/code.js' ] ],
+		// Cooking calculator
+		[ '#cookingCalc', [ 'MediaWiki:Cooking calculator.js' ] ],
+		// Creature article scripts
+		[ '.cloningcalc, .killxpcalc', [
+			// Kill XP calculator
+			'MediaWiki:Killxp.js',
+			// Experimental cloning calculator
+			'MediaWiki:CloningCalculator.js' 
+		] ],
+		// Common Data page fetch function if a spawn map or an interactive region map are present.
+		// Separate request for cache efficiency (load once, not every time for a combination).
+		[ '.data-map-container[data-spawn-data-page-name], .interactive-regionmap', [ 'MediaWiki:DataFetch.js' ] ],
+		// Interactive region map
+		[ '.interactive-regionmap', [ 'MediaWiki:RegionMaps.js' ] ],
+		// Data map scripts
+		[ '.data-map-container', [ 'MediaWiki:ResourceMaps.js', 'MediaWiki:SpawnMaps.js' ] ],
+	].forEach(function (req) {
+		if (document.querySelectorAll(req[0]).length > 0) {
+			importArticles({ type: 'script', articles: req[1] })
+		}
+	});
 	
 });

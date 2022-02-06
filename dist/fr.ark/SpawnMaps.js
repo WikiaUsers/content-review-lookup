@@ -1,4 +1,4 @@
-$(function () {
+mw.loader.using([(mw.config.get('wgIsTestModeEnabled') ? 'test:' : '') + 'MediaWiki:DataFetch.js'], function() { $(function () {
 
     var SharedDataPage = 'Donnée:Spawn Map/Shared';
 	var RarityClasses = [

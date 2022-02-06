@@ -1,106 +1,87 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-( function() {
-'use strict';
-
-// copy to clipboard
-$(function() { // wait for content load (DOMContentLoaded)
-  $('.copy-clipboard').each(function () {
-    var $this = $(this);
-    var $button = $('<button title="Copier vers le presse-papier">&#xf0ea;</button>');
-    $this.append($button);
-    $button.click(function () {
-      var $content = $this.find('.copy-content');
-      $content.children().remove();
-      selectElementText($content[0]);
-  
-      try {
-        if (!document.execCommand('copy'))
-          throw 42;
-        mw.notify('Copié avec succès vers le presse-papier.');
-      } catch (err) {
-        mw.notify('Échec de la copie vers le presse-papier. Veuillez copier vous-même.', {type:'error'});
-      }
-    });
-  });
-});
-
-function selectElementText(element) {
-  var range, selection;    
-  if (document.body.createTextRange) {
-    range = document.body.createTextRange();
-    range.moveToElementText(element);
-    range.select();
-  } else if (window.getSelection) {
-    selection = window.getSelection();        
-    range = document.createRange();
-    range.selectNodeContents(element);
-    selection.removeAllRanges();
-    selection.addRange(range);
-  }
-}
-
-// redirect to language version if url contains querystring iwredirect (for Dododex)
-$(function() {
-  var match = location.search.match(/iwredirect=([^;&]*)/);
-  if (match && match[1]) {
-    var $langlink = $('.interlanguage-link-target[hreflang="' + encodeURIComponent(match[1]) + '"]');
-    if ($langlink && $langlink[0] && $langlink[0].href) {
-      window.location.replace($langlink[0].href);
-    }
-  }
-});
-
 /* Fires when DOM is ready */
 $( function() {
 
-function importScriptRL(page) {
-	// importScriptPage doesn't utilise the resource loader (which minifies scripts). Workaround!
-	importArticle({ type: 'script', article: page });
-}
+	// Helper function for copy to clipboard - selects text
+	function selectElementText(element) {
+		var range, selection;    
+		if (document.body.createTextRange) {
+			range = document.body.createTextRange();
+			range.moveToElementText(element);
+			range.select();
+		} else if (window.getSelection) {
+			selection = window.getSelection();        
+			range = document.createRange();
+			range.selectNodeContents(element);
+			selection.removeAllRanges();
+			selection.addRange(range);
+		}
+	}
+	// Copy to clipboard
+	$('.copy-clipboard').each(function () {
+		var $this = $(this);
+		var $button = $('<button title="Copier vers le presse-papier">&#xf0ea;</button>');
+		$this.append($button);
+		$button.click(function () {
+			var $content = $this.find('.copy-content');
+			$content.children().remove();
+			selectElementText($content[0]);
+		
+			try {
+				if (!document.execCommand('copy'))
+					throw 42;
+				mw.notify('Copié avec succès vers le presse-papier.');
+			} catch (err) {
+				mw.notify('Échec de la copie vers le presse-papier. Copiez vous-même.', {type:'error'});
+			}
+		});
+	});
 
-// Load js for calculating wild creature level stats
-if (document.getElementById('wildStatCalc')) {
-	importScriptRL("MediaWiki:WildCreatureStats.js");
-}
+	// Redirect to language version if url contains querystring iwredirect (for Dododex)
+	var match = location.search.match(/iwredirect=([^;&]*)/);
+	if (match && match[1]) {
+		var $langlink = $('.interlanguage-link-target[hreflang="' + encodeURIComponent(match[1]) + '"]');
+		if ($langlink && $langlink[0] && $langlink[0].href) {
+			window.location.replace($langlink[0].href);
+		}
+	}
 
-// Conditionally load creature article scripts.
-if (document.querySelectorAll('.cloningcalc, .killxpcalc').length > 0) {
-	importArticles({ type: 'script',
-					 articles: [
-					 	// Kill XP calculator
-					 	'MediaWiki:Killxp.js',
-					 	// Experimental cloning calculator
-					 	'MediaWiki:CloningCalculator.js' 
-					 ] });
-}
+	// Load our other scripts conditionally
+	[
+		// Cooking calculator
+		[ '#cookingCalc', [ 'MediaWiki:Cooking calculator.js' ] ],
+		// Wild creature stats calculator
+		[ '.wildstatscalc, #wildStatCalc', [ 'MediaWiki:WildCreatureStats.js' ] ],
+		// Creature article scripts
+		[ '.cloningcalc, .killxpcalc', [
+			// Kill XP calculator
+			'MediaWiki:Killxp.js',
+			// Experimental cloning calculator
+			'MediaWiki:CloningCalculator.js' 
+		] ],
+		// Common Data page fetch function if a spawn map or an interactive region map are present.
+		// Separate request for cache efficiency (load once, not every time for a combination).
+		[ '.data-map-container[data-spawn-data-page-name], .interactive-regionmap', [ 'MediaWiki:DataFetch.js' ] ],
+		// Data map scripts
+		[ '.data-map-container', [ 'MediaWiki:ResourceMaps.js', 'MediaWiki:SpawnMaps.js' ] ],
+	].forEach(function (req) {
+		if (document.querySelectorAll(req[0]).length > 0) {
+			importArticles({ type: 'script', articles: req[1] })
+		}
+	});
 
-// Load data map scripts if one has been added to the page
-if (document.getElementsByClassName('data-map-container')) {
-	importArticles({ type: 'script', articles: [ 'MediaWiki:ResourceMaps.js', 'MediaWiki:SpawnMaps.js' ] });
-}
-/**
- * Pause animations on mouseover of a designated container (.animated-container and .mcui)
- *
- * This is so people have a chance to look at the image and click on pages they want to view.
- */
-$( '#mw-content-text' ).on( 'mouseenter mouseleave', '.animated-container, .mcui', function( e ) {
-	$( this ).find( '.animated' ).toggleClass( 'animated-paused', e.type === 'mouseenter' );
-} );
+	/**
+	 * Pause animations on mouseover of a designated container (.animated-container and .mcui)
+	 *
+	 * This is so people have a chance to look at the image and click on pages they want to view.
+	 */
+	$('#mw-content-text').on('mouseenter mouseleave', '.animated-container, .mcui', function (e) {
+		$(this).find('.animated').toggleClass('animated-paused', e.type === 'mouseenter');
+	});
 
-
-} );
-/* End DOM ready */
-
-}() );
-
-/* for Module:layerMap to toggle visibility of the layers */
-$(".layerMapToggleButton").click(function(){
-  var id = $(this).attr('data-forid');
-  $('#' + id).toggle();
 });
-
-
+/* End DOM ready */
 
 /**
  * Grid Filtering
@@ -112,11 +93,10 @@ $(".layerMapToggleButton").click(function(){
  *
  * ARK Compatibility:   [[User:3mptylord]].
 */
-
 mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
-  /* Config for gridFiltering */
-  gridContainer = '#creature-grid';
-  gridFilters = {
+	/* Config for gridFiltering */
+	gridContainer = '#creature-grid';
+	gridFilters = {
 	'creature': 'search',
 	'map': [ '- Contenu -',
 		['The Island','The Island'],
@@ -174,8 +154,8 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 		['Benthique', 'Benthiques'],
 		['Dent sucrée', 'Dents sucrées'],
 	],
-  };
- 
+	};
+
 	function gridFiltering() {
 		if(typeof gridContainer === 'undefined' || !gridContainer) return
 		var grid = $(gridContainer)
@@ -205,7 +185,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 			flag = true
  
 			if(gridFilters[x] == 'search') {
-				var field = $('<input type="text" placeholder="Chercher..." />').appendTo(container).attr('id', container.attr('id')+'-field').data('type', 'search')
+				var field = $('<input type="text" placeholder="Search..." />').appendTo(container).attr('id', container.attr('id')+'-field').data('type', 'search')
  
 				field.keyup(function() {
 					gridFilteringApply()
@@ -245,7 +225,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 				var value = field.val().toLowerCase()
 				if(value == '') continue;
  
-					var type = field.data('type')
+				var type = field.data('type')
 				if(type == 'search') {
 					var rx = new RegExp('^.*?(' + value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + ').*?$','i');
 					var flag = rx.test(gridElements[x][y].join(', '))
@@ -267,7 +247,5 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 		$(elem).fadeTo(200, 1);
 	}
 	$( gridFiltering )
-/* End of mw.loader.using callback */
 });
-
 /* End Grid Filtering */

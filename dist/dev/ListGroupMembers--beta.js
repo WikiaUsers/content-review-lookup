@@ -31,7 +31,6 @@
 	            "wiki-specialist",
 	            "soap",
 	            "global-discussion-moderator",
-	            "vanguard",
 	            "voldev",
 	            "council"
 	        ] ),

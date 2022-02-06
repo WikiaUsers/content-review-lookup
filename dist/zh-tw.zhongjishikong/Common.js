@@ -39,6 +39,6 @@ $(document).ready(function() {
 		return;
 	}
 
-	$('#wpUploadDescription').text("{{文件資訊\r\n|注意=\r\n|描述=\r\n|來源=    ※必填，我們需要知道這個檔案的來源處\r\n|作者=    ※必填，我們需要知道這個檔案的創作者是誰\r\n|文件規格=\r\n|授權協議=\r\n}}");
+	$('#wpUploadDescription').text("{{文件資訊\r\n|注意=    \r\n|描述=    \r\n|來源=    ※必填，我們需要知道這個檔案的來源處\r\n|作者=    ※必填，我們需要知道這個檔案的創作者是誰\r\n|文件規格=\    r\n|授權協議=\r\n}}");
 
 });

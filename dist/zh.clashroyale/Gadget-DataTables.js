@@ -14,6 +14,9 @@
             $table.prepend($tableHeader);
             $table.find('> tbody > tr').first().appendTo($tableHeader);
             $table.DataTable({
+            	lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "所有"]],
+            	order: [],
+            	autoWidth: false,
 		        language: {
 		            url: '//cdn.datatables.net/plug-ins/1.11.4/i18n/zh.json'
 		        }

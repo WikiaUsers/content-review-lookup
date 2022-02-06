@@ -3,7 +3,7 @@
 $(document).ready(function() {
 	
     // Change Random Page button to only go to pages in the mainspace
-    $('.wds-dropdown a[data-tracking=explore-random], ul.tools li a[data-name=random]').attr("href", "/wiki/Special:Random/main");
+    $('.wds-dropdown a[data-tracking=explore-random], ul.tools li a[data-name=random]').attr("href", "/zh/wiki/Special:Random/main");
 
     // Clash of Clans and Brawl Stars topic interwiki links
     $("#CoCLink, #BrawlStarsLink").prependTo(".page-header__contribution > div:first-child").css({"display": "inline-block"});

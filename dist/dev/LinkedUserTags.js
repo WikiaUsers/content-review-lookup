@@ -48,10 +48,6 @@ window.UserTagsJS = {
             link:  'Help:Community Team',
             title: 'Help:Community Team'
         },
-        'vanguard': {
-            link:  'Help:Vanguard',
-            title: 'Help:Vanguard'
-        },
         'voldev': {
             link:  'Help:Volunteer Developers',
             title: 'Help:Volunteer Developers'
