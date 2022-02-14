@@ -1088,7 +1088,11 @@
                         ]
                     }),
                     ui.div({
-                        classes: ['wds-dropdown__content'],
+                        classes: {
+                            'wds-dropdown__content': true,
+                            'wds-is-left-aligned': newProps.alignment === 'left',
+                            'wds-is-right-aligned': newProps.alignment === 'right'
+                        },
                         child: ui.ul({
                             classes: ['wds-list', 'wds-is-linked'],
                             children: newProps.children.map(function(child, index) {
@@ -1197,6 +1201,7 @@
                         this.buildDropdown({
                             toggle: this.getLanguageFromCode(this.state.selectedFrom),
                             id: 'I18nEdit-picker-fromDropdown',
+                            alignment: 'left',
                             click: this.onClickChangeFrom.bind(this, page),
                             children: completeLangs.map(function(lang) {
                                 return ui.a({
@@ -1241,6 +1246,7 @@
             event.preventDefault();
             this.state.selectedFrom = $(event.currentTarget).find('a').attr('data-lang');
             $('#I18nEdit-picker-fromDropdown')
+                .parent()
                 .replaceWith(this.buildPickerFrom(page, this.state.selectedFrom));
             this.replacePickerLanguages();
         },

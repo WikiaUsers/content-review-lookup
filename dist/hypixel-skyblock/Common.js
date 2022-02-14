@@ -603,11 +603,6 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     };
 
     importScripts([
-        "MediaWiki:Common.js/minetip.js",
-        "MediaWiki:Common.js/skydate.js",
-        "MediaWiki:Common.js/calc.js",
-        // "MediaWiki:Common.js/lua-doc.js",
-        "MediaWiki:Common.js/highlight.js",
     ]);
 });
 

@@ -10,3 +10,8 @@ window.LockForums = {
 window.LockOldBlogs = {
     expiryDays: 90
 };
+
+/* Inserts viewing user's name into <span class="insertusername"></span> */
+if (wgUserName != 'null') {
+	$('.insertusername').html(wgUserName);
+}

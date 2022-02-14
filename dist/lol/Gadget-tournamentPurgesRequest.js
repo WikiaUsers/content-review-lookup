@@ -6,6 +6,7 @@ $(function() {
 			logtype: "tournamentpurge",
 			title: mw.config.get("wgPageName"),
 			publish: 1,
+			custom1: 0,
 		}).then(function(data) {
 			displayColor("gadget-action-success");
 		});

@@ -9,6 +9,11 @@ mw.hook('wikipage.content').add(function () {
 	if (mw.user.options.get("editortype") !== "4") return;
 	// Make sure the user is actually editing a page
 	if (currentAction !== "edit" && currentAction !== "submit") return;
+	// Don't run on the main page or in the mediawiki namespace where the rail doesn't show up
+	if (
+		mw.config.get("wgMainPageTitle") === mw.config.get("wgMainPageTitle") ||
+		mw.config.get("wgNamespaceNumber") === 8
+	) return;
 	// Make sure the script hasn't already run
 	if (document.body.dataset.hasPseudoRail === "true") return;
 

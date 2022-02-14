@@ -12,6 +12,15 @@ function AddLink_WatchList (){
 // выполнение при готовности страницы
 $(document).ready(function()
 {
+	// щелчок по самодельному переключателю
+	$('.btn_Trigger').unbind().click(function( )
+	{
+	  $(this).parent().find('.btn_Trigger').removeClass('Active');
+	  $(this).addClass('Active');
+	  $('#'+ $(this).attr('data-id') ).parent().children().hide();
+	  $('#'+ $(this).attr('data-id') ).show( 400 );
+	});
+
 	// скрыть заголовок на Заглавной
 	if (wgTitle === 'Заглавная страница')
 	{

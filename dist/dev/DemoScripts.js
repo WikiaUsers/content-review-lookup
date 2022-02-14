@@ -263,6 +263,15 @@
             }
         },
         
+        MinimalTestModeAlert: {
+            page: 'MinimalTestModeAlert',
+            scripts: 'MediaWiki:MinimalTestModeAlert.js',
+            exec: function() {
+                // This variable doesn't seem to affect anything else
+                mw.config.set('wgIsTestModeEnabled', true);
+            }
+        },
+        
         MisspelledPage: {
             // Cannot be moved to JSON, does not match base page name.
             page: 'MisspelledPlge',

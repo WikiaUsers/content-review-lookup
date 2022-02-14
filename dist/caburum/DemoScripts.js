@@ -99,7 +99,7 @@
 					actions.exec();
 				}
 
-				if (actions.styles && !actions.restricted) {
+				if (actions.styles) {
 					styles.merge(actions.styles);
 				}
 

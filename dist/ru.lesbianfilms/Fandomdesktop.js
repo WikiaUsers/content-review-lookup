@@ -186,8 +186,8 @@ if (wgAction == 'edit' || wgAction == 'submit') {
 
 
 function H2style() {
-    $('#WikiaArticle h2').prepend('<a style="padding-right:5px;"><img src="https://images.wikia.nocookie.net/__cb20140318092401/lesbianfilms/ru/images/8/8d/Filigree-right.svg"></a>');
-    $('#WikiaArticle h2').append('<a style="padding-left:5px;"><img src="https://images.wikia.nocookie.net/__cb20140318092310/lesbianfilms/ru/images/d/da/Filigree-left.svg"></a>');
+    $('#page-content h2').prepend('<a style="padding-right:5px;"><img src="https://images.wikia.nocookie.net/__cb20140318092401/lesbianfilms/ru/images/8/8d/Filigree-right.svg"></a>');
+    $('#page-content h2').append('<a style="padding-left:5px;"><img src="https://images.wikia.nocookie.net/__cb20140318092310/lesbianfilms/ru/images/d/da/Filigree-left.svg"></a>');
 }
 addOnloadHook(H2style);
 

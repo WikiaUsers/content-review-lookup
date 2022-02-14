@@ -1,16 +1,16 @@
-importArticles({
-type: 'script',
-articles: [
-        'u:dev:MediaWiki:AjaxRC/code.js',
-        'u:dev:MediaWiki:Countdown/code.js', // http://dev.fandom.com/wiki/Countdown
-        'u:dev:MediaWiki:BackToTopButton/code.js', // http://dev.fandom.com/wiki/BackToTopButton
-        'u:dev:MediaWiki:DiscordIntegrator/code.js', // http://dev.fandom.com/wiki/DiscordIntegrator
-        'u:dev:MediaWiki:DiscussionsFeed/code.js', // http://dev.fandom.com/wiki/DiscussionsFeed
-        'u:dev:MediaWiki:AddRailModule/code.js', // http://dev.fandom.com/wiki/AddRailModule
-]
-});
- 
+// <nowiki>
+
+// Prevents existing tags from being hidden
+window.dev.profileTags = { noHideTags: true };
+
+// Insert Username Span JS
 $(function () {
     if (!wgUserName) return;
     $('span.insertusername').html(wgUserName);
 });
+
+/* Prevents Necroposting */
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 300;
+
+// </nowiki>

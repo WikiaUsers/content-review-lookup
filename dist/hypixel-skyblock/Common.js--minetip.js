@@ -3,6 +3,9 @@
 // Taken from https://minecraft.gamepedia.com/MediaWiki:Common.js
 // Creates minecraft style tooltips
 // Replaces normal tooltips. Supports minecraft [[formatting codes]] (except k), and a description with line breaks (/).
+
+/* global mw */
+
 $(function () {
     "use strict";
     (window.updateTooltips = (function () {
@@ -47,7 +50,7 @@ $(function () {
                 }
 
                 // No title or title only contains formatting codes
-                if (title === undefined || title !== "" && title.replace(/&([0-9a-fl-or])/g, "") === "") {
+                if (title === undefined || title !== "" && title.replace(/&([0-9a-fk-or])/g, "") === "") {
                     // Find deepest child title
                     var childElem = $($elem[0]),
                         childTitle;
@@ -91,8 +94,8 @@ $(function () {
                 }
 
                 // Add classes for minecraft formatting codes
-                while (content.search(/&[0-9a-fl-o]/) > -1) {
-                    content = content.replace(/&([0-9a-fl-o])(.*?)(&r|$)/g, "<span class=\"format-$1\">$2&r</span>");
+                while (content.search(/&[0-9a-fk-o]/) > -1) {
+                    content = content.replace(/&([0-9a-fk-o])(.*?)(&r|$)/g, "<span class=\"format-$1\">$2&r</span>");
                 }
                 // Remove reset formatting
                 content = content.replace(/&r/g, "");
@@ -249,4 +252,43 @@ $(function () {
             });
         });
     })());
+    (function () {
+        // The following list is taken from https://obfuscator.uo1.net/js/obfuscator.js
+        var strongObfuscator = "AÀÁÂÃÄÅĀĂĄǍǞǠȀȂȦΆΑАѦӐӒḀẠẢẤẦẨẬẶἈἉᾈᾉᾸᾹᾺᾼ₳ÅȺẮẰẲẴἌἎἏᾌΆǺẪBƁΒВḂḄḆCÇĆĈĊČƇʗСҪḈ₢₵ℂⅭϹϾҀDÐĎĐƉƊḊḌḎḐḒⅮEÈÉÊËĒĔĖĘĚȄȆȨΕЀЁЕӖḘḚḜẸẺẼẾỀỆḔḖỂỄԐℇƐἙῈЄFϜḞ₣ҒƑϝғҒ₣GĜĞĠĢƓǤǦǴḠ₲HĤĦȞΗНҢҤӇӉḢḤḦḨḪῌꜦIΊÌÍÎÏĨĪĬĮİƖƗǏȈȊΙΪІЇӀӏḬḮỈỊἸἹῘῙῚǐ1JĴʆЈʃKĶƘǨΚЌКԞḰḲḴ₭KLĹĻĽĿŁԼḶḸḺḼℒⅬ˪MΜМӍḾṀṂⅯNÑŃŅŇǸΝṄṆṈṊ₦ƝO0θϑ⍬ÒÓÔÕÖØŌŎŐƆƟƠǑǪǬǾȌȎȪȬȮȰΘΟϴОѲӦӨӪՕỌỎỐỒỔỘỚỜỞỠỢΌΌṌṐṒὈʘṎỖPƤΡРҎṔṖῬ₱ℙQԚℚRŔŖŘȐȒṘṚṜṞ℞ɌⱤSŚŜŞŠȘЅՏṠṢṨṤṦTŢŤŦƮȚΤТҬṪṬṮṰ₮ȾΊΊꚌUÙÚÛÜŨŪŬŮŰŲƯǓǕǗǛȔȖԱՍṲṴṶṸỤỦỨỪỬỮỰǙ⊍⊎Մ⊌ṺVѴѶṼṾ⋁ⅤƲWŴԜẀẂẄẆẈ₩ƜШXΧХҲẊẌⅩY¥ÝŶŸƳȲΥΫϓУҮҰẎỲỴỶỸῨῩZŹŻŽƵȤΖẐẒẔaàáâãäåāăąǎǟǡǻȁȃȧаӑӓḁẚạảấầẩẫậắằẳẵặɑάαἀἁἂἃἄἅἆἇὰάᾀᾁᾂᾃᾄᾅᾆᾇᾰᾱᾲᾳᾴᾶᾷ⍶⍺ɑbƀƃƅɒɓḃḅḇþϸƄьҍcçćĉċčƈςϛсҫḉⅽ¢ϲҁdďđɖɗḋḍḏḑḓⅾƌժ₫ðeèéêëēĕėęěȅȇȩеѐёҽҿӗḕḗḙḛḝẹẻẽếềểễệεɛϵєϱѳөӫɵfſḟẛƒғϝ£ƒgĝğġģǥǧǵɠɡգզցḡɕʛɢhĥħȟɦɧћիհḣḥḧḩḫẖℏһʜӊiį¡ìíîïĩīĭįıǐȉȋɨɩΐίιϊіїɪḭḯỉịἰἱἲἳὶίῑΐῐῒῖὶjĵǰȷɟʝјյϳkķĸƙǩκкҝҟḱḳḵlŀĺļľłƚǀɫɬɭḷḹḻḽŀ⎩ḹmɱḿṁṃ₥ⅿnɴñńņňŉŋƞǹɲɳήηπпբդըղոռրṅṇṉṋἠἡἢἣἤἥἦἧὴήᾐᾑᾒᾓᾔᾕᾖᾗῂῃῄῆῇიoòóôõöōŏőơǒǫǭȍȏȫȭȯȱʘοόоӧծձօṍṏṑṓọỏốồổỗộớờởỡợὀὁὂὃὄὅὸόσ๐pþρрҏթṕṗῤῥ⍴qʠԛգզϙrŕŗřȑȓɼɽгѓґӷṙṛṝṟгѓґӷsśŝşšșʂѕԑṡṣṥṧṩtţťŧƫțʈṫṭṯṱẗȶէե†ԷՒէȽҭuµùúûüũūŭůűųưǔǖǘǚǜȕȗɥμυцկմնսվևṳṵṷṹṻụủứừửữựvʋνѵѷүұṽṿⅴ∨ΰϋύὐὑὒὓὔὕὖὗὺύῠῡῢΰῦῧʋwŵԝẁẃẅẇẉẘxϰхҳẋẍⅹyýÿŷƴȳγуўӯӱӳẏẙỳỵỷỹʏzźżžƶȥʐʑẑẓẕ2ƻƨշ3ЗҘӞƷӠЗҘӞՅɜɝзҙӟ4ЧЧӴ5Ƽ6əǝә8ՑБƂГΓЃҐӶЖҖӜИЍӢӤЙҊЛӅԒΛПΠЦҴЬƄЫӸЪѢՒЭӬвʙʙɞжҗӂӝзƨɜɝӟиѝӥйҋӣкĸκќқҝҟҡԟлӆԓмӎнʜңҥӈӊцџҵчҷҹӌӵшɯաъѣыӹэǝɘəӭэӭ";
+
+        var availableInMinecraftFont = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,:;\'\"(!?)+-*/=";
+
+        // var listChoice = strongObfuscator; // due to some texts not displaying in Minecraft font I have to disable this
+        var listChoice = availableInMinecraftFont,
+            listLength = listChoice.length;
+
+        function genObfuscatedText() {
+            var pos = Math.floor(Math.random() * listLength);
+            return listChoice.substring(pos, pos + 1);
+        }
+
+        function obfuscateText(element) {
+            $(element || ".format-k").contents().each(function () {
+                if (this.nodeType === 3) {
+                    var text = "";
+                    this.wholeText.split("").forEach(function (ch, i) {
+                        if (/\S/.test(ch))
+                            text += genObfuscatedText();
+                        else
+                            text += ch;
+                    });
+                    this.textContent = text;
+                } else if (this.nodeType === 1) {
+                    obfuscateText(this);
+                }
+            });
+        }
+
+        setInterval(obfuscateText, 70);
+
+        // This hook forces it to apply script even in TabViews
+        mw.hook("wikipage.content").add(function (pSection) {
+            $(pSection).find(".format-k .format-k").removeClass("format-k");
+        });
+    }());
 });

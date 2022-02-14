@@ -197,7 +197,7 @@ function remove_element(element, wait) {
 
 function display_answers(current, dialoguename) {
 	if (current.answers) {
-		if (current.question && typeof (current.answers) == "object" && typeof (current.answers[0]) != "string") {
+		if (current.question !== undefined && typeof (current.answers) == "object" && typeof (current.answers[0]) != "string") {
 			if (typeof (current.answers[0]) == "object") {
 				for (var i in current.answers) {
 					var v = current.answers[i];
@@ -210,7 +210,7 @@ function display_answers(current, dialoguename) {
 			    append_button(v, dialoguename);
 			}
 			optionsList[dialoguename].style.display = 'flex';
-		} else if (typeof (current.answers) == "string" || (typeof (current.answers) == "object" && type(current.answers[1]) == "string")) {
+		} else if (typeof (current.answers) == "string" || (typeof (current.answers) == "object" && typeof(current.answers[1]) == "string")) {
 			var actions = {
 				close_dialog: function () {
 					close_prompt(dialoguename);
@@ -237,6 +237,11 @@ function display_answers(current, dialoguename) {
 			    	popup.src = '/wiki/Special:Filepath/' + args[0];
 			    	dialogueText[dialoguename].appendChild(popup);
 			    	remove_element(popup, 500);
+			    },
+			
+			    poop: function () {
+			    	close_prompt(dialoguename);
+			    	document.body.innerHTML = '<video src="https://media.tenor.co/videos/58147dc15518626f279f75193167756d/mp4" controls autoplay loop></video>'
 			    }
 			};
 
@@ -278,7 +283,7 @@ function next_dialogue(current, dialoguename) {
 		loadOptions(current.options, dialoguename);
 	}
 
-	if (current.question) {
+	if (current.question !== undefined) {
 		waittime = display_question(current.question, dialoguename);
 	}
 

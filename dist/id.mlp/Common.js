@@ -801,7 +801,7 @@ $(function() {
 //   Only needed if nearly none of the toggles work.
 // Multi-section songs are detected automatically by commas in the length column.
 $(function() {
-    if (mw.config.get('wgPageName') !== 'Songs') {
+    if (mw.config.get('wgPageName') !== 'Lagu') {
         return;
     }
     
@@ -852,6 +852,87 @@ $(function() {
                         parseText += section.split('|')[i] + '}}';
                     } else {
                         parseText += 'song' + (i + 1) + '}}';
+                    }
+                }
+            }
+            $.getJSON('/id/api.php?action=parse&format=json&prop=text&disablepp=true&text=' +
+                parseText.replace(/&/g, '%26'),
+              function(data) {
+                var $newRow = $('#lyrics-row-' + safeTitle);
+                if ($newRow.length) {
+                    data = data.parse.text['*'];
+                    $newRow.children('td').html('<h4 style="padding-left:0;">' +
+                      display + '</h4>' + data);
+                }
+            });
+        } else if (action === 'Ciutkan') {
+            $this.text('Kembangkan');
+            var $removeRow = $('#lyrics-row-' + safeTitle);
+            if (+$removeRow.find('td').eq(0).attr('colspan') !== colspan) {
+                while ($spanCell.children('td').length !== colspan) {
+                    $spanCell = $spanCell.prev();
+                }
+                $spanCell = $spanCell.children('td').eq(0);
+                $spanCell.attr('rowspan', +$spanCell.attr('rowspan') - 1);
+            }
+            $removeRow.remove();
+        }
+    });
+});
+
+/* Untuk lirik bahasa Indonesia */
+$(function() {
+    if (mw.config.get('wgPageName') !== 'Lagu') {
+        return;
+    }
+    
+    $('.lirik-beralih').click(function() {
+        var $this = $(this), action = $this.text(), parseText = '',
+            hasSection = !!$this.attr('data-lyric-section'),
+            $row = $this.closest('tr'), $spanCell = $row,
+            colspan = $this.closest('table').find('tr').eq(0).children('th').length,
+            hasRowspan = (colspan !== $row.find('td').length),
+            linkCol = $this.closest('table').attr('data-lyric-linkcol'),
+            $link = $this.closest('tr').find('td').eq(
+                    (hasRowspan ? 0 : (linkCol ? linkCol : (colspan !== 7 ? 0 : 1)))
+                ).children('a').eq(0),
+            title = $link.attr('title'),
+            display = $link.text(),
+            safeTitle = title.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/ /g, '-') + 
+                (hasSection ? $('.lirik-beralih').index($this) : ''),
+            section = $this.attr('data-lyric-section') || 'lagu',
+            numParts = (hasSection ?
+                section.split('|').length :
+                $this.parent().prev().prev().text().split(',').length// "Length" column
+            );
+
+        if (action === 'Kembangkan') {
+            $this.text('Ciutkan');
+            while ($spanCell.children('td').length !== colspan) {
+                $spanCell = $spanCell.prev();
+            }
+            $spanCell = $spanCell.children('td').eq(0);
+            if ($spanCell.attr('rowspan')) {
+                $spanCell.attr('rowspan', +$spanCell.attr('rowspan') + 1);
+            }
+            $row.after($('<tr />', {
+                'id': 'lyrics-row-' + safeTitle,
+                'html': '<td colspan="' + ($spanCell.attr('rowspan') ? colspan - 1 : colspan) + '"></td>'
+            }));
+            for (var i = 0; i < numParts; i++) {
+                if (numParts === 1) {
+                    parseText = '{{%23lst:' + title + '|' + section + '}}';
+                } else {
+                    if (i > 0) {
+                        parseText += '<br /><br /><hr style="margin-left:-24px;" /><br />';
+                    }
+                    parseText += '{{%23lst:' + title + '|';
+                    if (numParts === 2 && !hasSection) {
+                        parseText += (i ? 'ulangan' : 'lagu') + '}}';
+                    } else if (hasSection) {
+                        parseText += section.split('|')[i] + '}}';
+                    } else {
+                        parseText += 'lagu' + (i + 1) + '}}';
                     }
                 }
             }

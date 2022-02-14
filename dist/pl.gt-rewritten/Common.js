@@ -8,3 +8,11 @@ window.pPreview.RegExp.iparents = ['.myclass', '#myid', 'div[data-ignore-me=1]']
 
 /*BackToTopButton*/
 window.BackToTopModern = true;
+
+/*Copy Text*/
+function copyEvent(id)
+    {
+        var str = document.getElementById(id);
+        window.getSelection().selectAllChildren(str);
+        document.execCommand("Copy")
+    }

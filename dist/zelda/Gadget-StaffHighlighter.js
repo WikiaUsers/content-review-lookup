@@ -15,15 +15,17 @@ var adminrights		= {},
 adminrights = {
 	Ceiling_Master	:1,
 	Chuck			:1,
-	Htwretched      :1,
+	Crocsandsocks	:1,
+	Htwretched		:1,
 	JumbledLimes	:1,
-	Magicmason1000  :1,
+	Magicmason1000	:1,
 	MannedTooth		:1,
 	Weirdguy42      :1
 };
 
 traineerights = {
 	Ceiling_Master	:1,
+	Crocsandsocks	:1,
 	JumbledLimes	:1,
 	Weirdguy42      :1,
 };

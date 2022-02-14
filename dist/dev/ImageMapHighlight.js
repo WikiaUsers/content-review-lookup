@@ -1,23 +1,23 @@
 $(document).ready(function() {
-
 	window.imagemap = window.imagemap || {};
 
-	var
-		// add this class to all elements created by the script. the reason is that we call the script again on window resize, and use the class to remove all the "artifacts" we created in the previous run.
-		myClassName = 'imageMapHighlighterArtifact',
-		liHighlightClass = 'liHighlighting',
-		specialAreaMark = 'area_mark',
-		specialLiClassesMark = 'list_classes',
-		// "2d context" attributes used for highlighting.
-		areaHighLighting = { fillStyle: window.imagemap.hightlightfill || 'rgba(0, 0, 0, 0.35)', strokeStyle: window.imagemap.hightlightcolor || '#FFC500', lineJoin: 'round', lineWidth: 2 },
-		// Every imagemap that wants highlighting, should reside in a div of this 'class':
-		hilightDivMarker = '.imageMapHighlighter',
-		hideLegend = window.imagemap.hidelegend || false,
-		// Register i18n variable
-		i18n
-		;
+	var i18n,
+		// Added to all elements created by the script that should be removed when recreating
+		artifactClass = 'imageMapHighlighterArtifact',
 
-	function drawMarker(context, areas) { // mthis is where the magic is done.
+		// Default "2d context" attributes used for highlighting
+		// Some can be overridden by data properties, see handleOneMap()
+		// Set from either global CSS variable, JS property, or default
+		cssProps = window.getComputedStyle(document.body),
+		defaultAreaHighlight = {
+			fillStyle: cssProps.getPropertyValue('--imagemaphighlight-fill') || window.imagemap.hightlightfill || 'rgba(0, 0, 0, 0.35)',
+			strokeStyle: cssProps.getPropertyValue('--imagemaphighlight-stroke') || window.imagemap.hightlightcolor || '#FFC500',
+			lineJoin: 'round',
+			lineWidth: cssProps.getPropertyValue('--imagemaphighlight-stroke-width') || window.imagemap.hightlightstrokewidth || 2
+		};
+
+	// Convert ImageMap area(s) to highlights on the canvas
+	function drawMarker(context, areas) {
 		function drawPoly(coords) {
 			context.moveTo(coords.shift(), coords.shift());
 			while (coords.length)
@@ -38,116 +38,125 @@ $(document).ready(function() {
 		}
 	}
 
+	// Add highlighting on hover
 	function mouseAction(e) {
 		var $this = $(this),
 			activate = e.type == 'mouseover',
 			caption = $this.text(),
 			ol = $this.parent(),
 			context = ol.data('context'),
-			special = ol.data(specialAreaMark);
+			areaHighlight = ol.data('area-highlight'); // Contains styles for the highlights
 
-		$this.toggleClass(liHighlightClass, activate); // mark/unmark the list item. 
+		$this.toggleClass('liHighlighting', activate); // Mark/unmark the list item
 
-		context.clearRect(0, 0, context.canvas.width, context.canvas.height); // prepare for a new day.
+		context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clear previous highlights from the canvas
 
 		ol.find('li').each(function() {
 			var $li = $(this);
 			var licap = $li.text();
-			var param;
-			if (activate && licap === caption) { // highlight!!!
-				param = special && special.hover || areaHighLighting;
-			} else {
-				param = special && special.nover && (special.nover[licap] || special.nover.default);
-			}
-			if (param) {
-				$.extend(context, param);
+			if (activate && licap === caption) { // Highlight!!!
+				$.extend(context, areaHighlight || defaultAreaHighlight);
 				drawMarker(context, $li.data('areas'));
 			}
 		});
 	}
 
+	// Add highlighting to an ImageMap
 	function handleOneMap() {
 		var img = $(this),
 			w = img.width(),
 			h = img.height(),
 			map = img.siblings('map:first'),
 			dims = { position: 'absolute', width: w + 'px', height: h + 'px', border: 0, top: 0, left: 0 },
-			specialHighlight = img.closest(hilightDivMarker).data(specialAreaMark),
-			specialLiClasses = img.closest(hilightDivMarker).data(specialLiClassesMark);
+			parentMarker = img.closest('.imageMapHighlighter'),
+			liClasses = parentMarker.data('list-classes');
 
+		if (!('area', map).length) return; // not an ImageMap
+		img.addClass('highlighted');
 
-		if (!('area', map).length)
-			return;	//not an imagemap. inside "each" anonymous function, 'return' means "continue".
-
-		var jcanvas = $('<canvas>', { 'class': myClassName })
+		var jcanvas = $('<canvas>', { 'class': artifactClass })
 			.css(dims)
 			.attr({ width: w, height: h });
-		var bgimg = $('<img>', { 'class': myClassName, src: img.attr('src') })
-			.css(dims);//completely inert image. this is what we see.
-		var context = $.extend(jcanvas[0].getContext("2d"), areaHighLighting);
+		var bgimg = $('<img>', { 'class': artifactClass, src: img.attr('src') })
+			.css(dims); // completely inert the original image
 
-		// this is where the magic is done: prepare a sandwich of the inert bgimg at the bottom,
+		// Extend area highlighting with data attributes
+		var areaHighlight = $.extend({}, defaultAreaHighlight, {
+			fillStyle: parentMarker.data('fill'), // data-fill
+			strokeStyle: parentMarker.data('stroke') // data-stroke
+		});
+
+		var context = $.extend(jcanvas[0].getContext('2d'), areaHighlight);
+
+		// This is where the magic is done: prepare a sandwich of the inert bgimg at the bottom,
 		// the canvas above it, and the original image on top,
 		// so canvas won't steal the mouse events.
-		// pack them all TIGHTLY in a newly minted "relative" div, so when page chnage
+		// Pack them all TIGHTLY in a newly minted "relative" div, so when page changes
 		// (other scripts adding elements, window resize etc.), canvas and imagese remain aligned.
 		var div = $('<div>').css({ position: 'relative', width: w + 'px', height: h + 'px' });
-		img.before(div);	// put the div just above the image, and ...
-		div.append(bgimg)	// place the background image in the div
-			.append(jcanvas)// and the canvas. both are "absolute", so they don't occupy space in the div
-			.append(img);	// now yank the original image from the window and place it on the div.
-		img.fadeTo(1, 0);	// make the image transparent - we see canvas and bgimg through it. 
-		// the original, now transparent image is creating our mouse events
+		img.before(div); // put the div just above the image
+		div.append(bgimg) // place the background image in the div
+			.append(jcanvas) // and the canvas. both are "absolute", so they don't occupy space in the div
+			.append(img); // now yank the original image from the window and place it on the div.
+		img.fadeTo(1, 0); // make the image transparent - we see canvas and bgimg through it, but it still creates the mouse events
 
-		if (hideLegend !== true) {
-			var ol = $('<ol>', { 'class': myClassName })
-				.css({ clear: 'both', margin: 0, listStyle: 'none', maxWidth: w + 'px', float: 'left', position: 'relative', zIndex: '500' })
-				.attr({ 'data-expandtext': i18n.msg('show').plain(), 'data-collapsetext': i18n.msg('hide').plain() })
-				.data(specialAreaMark, specialHighlight)
-				.data('context', context);
+		var ol = $('<ol>', { 'class': artifactClass })
+			.css({ maxWidth: w + 'px' })
+			.attr({ 'data-expandtext': i18n.msg('show').plain(), 'data-collapsetext': i18n.msg('hide').plain() })
+			.data('area-highlight', areaHighlight)
+			.data('context', context);
 
-			// ol below image, hr below ol. original caption pushed below hr.
-			div.after($('<hr>', { 'class': myClassName }).css('clear', 'both'))
-				.after(ol);
-			var lis = {};	//collapse areas with same caption to one list item
-			var someli; // select arbitrary one
-			$('area', map).each(function() {
-				var text = this.title;
-				var li = lis[text];	// title already met? use the same li
-				if (!li) {			//no? create a new one.
-					var href = this.href;
-					lis[text] = li = $('<li>', { 'class': myClassName })
-						.append($('<a>', { href: href, text: text }))
-						.on('mouseover mouseout', mouseAction)
-						.data('areas', [])
-						.addClass(specialLiClasses && (specialLiClasses[text] || specialLiClasses['default']))
-						.appendTo(ol);
-				}
-				li.data('areas').push(this);	//add the area to the li
-				someli = li; // whichever - we just want one...
-				$(this).on('mouseover mouseout', function(e) { li.trigger(e.type); });
-			});
-			if (someli) someli.trigger('mouseout');
+		if (![0, false, 'no'].includes(parentMarker.data('legend'))) { // data-legend
 			mw.loader.using('jquery.makeCollapsible').then(function() {
-				ol.addClass('mw-collapsed')
-					.makeCollapsible();
+				ol.addClass('mw-collapsed').makeCollapsible();
 			});
+		} else {
+			ol.css('display', 'none');
 		}
+		div.after(ol);
+
+		var lis = {}; // collapse areas with same caption to one list item
+		var someli; // select arbitrary one
+		$('area', map).each(function() {
+			var text = this.title;
+			var li = lis[text];	// title already met? use the same li
+			if (!li) {			// no? create a new one.
+				var href = this.href;
+				lis[text] = li = $('<li>', { 'class': artifactClass })
+					.append($('<a>', { href: href, text: text }))
+					.on('mouseover mouseout', mouseAction)
+					.data('areas', [])
+					.addClass(liClasses && (liClasses[text] || liClasses['default']))
+					.appendTo(ol);
+			}
+			li.data('areas').push(this); // add the area to the li
+			someli = li; // whichever - we just want one...
+			$(this).on('mouseover mouseout', function(e) { li.trigger(e.type); });
+		});
+		if (someli) someli.trigger('mouseout');
 	}
 
 	function init(i18no) {
 		i18n = i18no;
 
-		mw.util.addCSS('li.' + myClassName + '{ white-space: nowrap; border: solid 1px transparent; border-radius: 6px; }\n' + // css for li element
-			'li.' + myClassName + '.' + liHighlightClass + '{ background-color: rgba(var(--theme-link-color--rgb, 255,255,0), 0.1); }\n' + // css for highlighted li element.
-			'.rtl li.' + myClassName + '{ float: right; margin-left: 3em; }\n' +
-			'.ltr li.' + myClassName + '{ float: left; margin-right: 3em; }');
-		$(hilightDivMarker + ' img').each(handleOneMap);
+		mw.util.addCSS(
+			'ol.' + artifactClass + ' { columns: 2; margin: 0; list-style: none; z-index: 500; }' +
+			'li.' + artifactClass + ' { white-space: nowrap; border: solid 1px transparent; border-radius: 6px; }' + // css for li element
+			'li.' + artifactClass + '.liHighlighting { background-color: var(--imagemaphighlight-legend-highlight, rgba(var(--theme-link-color--rgb, 255,255,0), 0.1)); }' // css for highlighted li element.
+		);
+
+		var selector = '.imageMapHighlighter:not(.highlighted) img';
+		$(selector).each(handleOneMap);
+
+		// Highlight maps added later on
+		mw.hook('wikipage.content').add(function($content) {
+			$content.find(selector).each(handleOneMap);
+		});
 	}
 
 	mw.hook('dev.i18n').add(function(i18no) {
-		// has at least one "imagehighlight" div, and canvas-capable browser:
-		if ($(hilightDivMarker).length && $('<canvas>')[0].getContext) {
+		// Only run if there is at least one marker div and the browser supports canvas
+		if ($('.imageMapHighlighter').length && !!window.CanvasRenderingContext2D) {
 			$.when(
 				i18no.loadMessages('ImageMapHighlight'),
 				mw.loader.using(['jquery.makeCollapsible', 'mediawiki.util'])

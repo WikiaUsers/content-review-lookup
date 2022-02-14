@@ -63,6 +63,8 @@ $( function() {
 		// Common Data page fetch function if a spawn map or an interactive region map are present.
 		// Separate request for cache efficiency (load once, not every time for a combination).
 		[ '.data-map-container[data-spawn-data-page-name], .interactive-regionmap', [ 'MediaWiki:DataFetch.js' ] ],
+		// Interactive region map
+		[ '.interactive-regionmap', [ 'MediaWiki:RegionMaps.js' ] ],
 		// Data map scripts
 		[ '.data-map-container', [ 'MediaWiki:ResourceMaps.js', 'MediaWiki:SpawnMaps.js' ] ],
 	].forEach(function (req) {

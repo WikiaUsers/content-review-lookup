@@ -66,3 +66,15 @@ $(function() {
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
+
+
+
+/****************************/
+/* Lastedit */
+/****************************/
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:LastEdited/code.js',
+    ]
+});

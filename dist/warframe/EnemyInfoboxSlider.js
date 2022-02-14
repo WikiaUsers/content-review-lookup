@@ -51,7 +51,17 @@ $(".type-enemyBox").each(
 					$(enemyVar).find("#armor")[0].innerHTML		   = (Math.round(this.armor_v * armor_multi * 100) / 100).toLocaleString();
 					$(enemyVar).find("#damage_redux")[0].innerHTML = ((Math.round((1 - 300 / (this.armor_v * armor_multi + 300)) * 10000) / 10000) * 100).toLocaleString();
 
-					$(enemyVar).find("#out_ehp")[0].innerHTML = (Math.round((this.health_v * health_multi * (1 + this.armor_v * armor_multi / 300) + this.shield_v * shield_multi)* 100) / 100).toLocaleString();
+					if (curr_lvl < this.spawn_lvl_v) {
+						$(enemyVar).find("#out_ehp")[0].innerHTML = "&ndash;&ndash;";
+					} else {
+						$(enemyVar).find("#out_ehp")[0].innerHTML = (Math.round((this.health_v * health_multi * (1 + this.armor_v * armor_multi / 300) + this.shield_v * shield_multi)* 100) / 100).toLocaleString();
+					}
+					
+					if (curr_lvl < 100 + this.spawn_lvl_v) {
+						$(enemyVar).find("#out_sp_ehp")[0].innerHTML = "&ndash;&ndash;";
+					} else {
+						$(enemyVar).find("#out_sp_ehp")[0].innerHTML = (Math.round((2.5 * this.health_v * health_multi * (1 + 2.5 * this.armor_v * armor_multi / 300) + 2.5 * this.shield_v * shield_multi)* 100) / 100).toLocaleString();
+					}
 
 					$(enemyVar).find("#affinity")[0].innerHTML = (Math.floor(this.affinity_v * (1 + Math.sqrt(curr_lvl) * 0.1425))).toLocaleString();
 				}
@@ -67,24 +77,23 @@ $(".type-enemyBox").each(
 			}
 
 			if (navigator.userAgent.indexOf("Firefox") != -1) {
-				slider.innerHTML = "<input type='range' min='" + scaler.base_lvl_v + "' max='" + $(enemyVar).find("#slider_max")[0].innerHTML + "' value='" + scaler.spawn_lvl_v + "' id=" + ehp_slider_id + " style='height:3px; background:#3a3a3a; position:absolute; right:18px; -moz-appearance:none; width:" + slider_width + "%;' oninput='ehp_input.value = ehp_slider.value; slider_div.enemyVarInfoboxScaler.update();'/><div style='position:absolute; margin-top:-6px; left:-8px; font-size:11px; white-space:nowrap;'>" + scaler.base_lvl_v + "</div><div style='position: absolute;margin-top: -6px;left:234px;font-size:11px;white-space:nowrap;'>" + $(enemyVar).find("#slider_max")[0].innerHTML + "</div>";
-			} else if ((navigator.userAgent.indexOf("MSIE") != -1) || (document.documentMode !== undefined)) {
-				slider.innerHTML = "<input type='range' min='" + scaler.base_lvl_v + "' max='" + $(enemyVar).find("#slider_max")[0].innerHTML + "' value='" + scaler.spawn_lvl_v + "' id=" + ehp_slider_id + " style='background:transparent; position:absolute; right:20px; top:-17px; -ms-appearance:none; width:" + slider_width + "%; height:6px;' onchange='ehp_input.value = ehp_slider.value; slider_div.enemyVarInfoboxScaler.update();'/><div style='position:absolute; margin-top:-6px; left:-8px; font-size:11px; white-space:nowrap;'>" + scaler.base_lvl_v + "</div><div style='position:absolute; margin-top:-6px; left:234px; font-size:11px; white-space:nowrap;'>" + $(enemyVar).find("#slider_max")[0].innerHTML + "</div>";
+				slider.innerHTML = "<input type='range' min='" + scaler.base_lvl_v + "' max='" + $(enemyVar).find("#slider_max")[0].innerHTML + "' value='" + scaler.spawn_lvl_v + "' id='" + ehp_slider_id + "' style='position:absolute; right:20px; top:-14px; width:" + slider_width + "%;' oninput='ehp_input.value = ehp_slider.value; slider_div.enemyVarInfoboxScaler.update();'/><div style='position:absolute; top:-9px; left:-8px; white-space:nowrap;'>" + scaler.base_lvl_v + "</div><div style='position:absolute; top:-9px; left:234px; white-space:nowrap;'>" + $(enemyVar).find("#slider_max")[0].innerHTML + "</div>";
 			} else {
-				slider.innerHTML = "<input type='range' min='" + scaler.base_lvl_v + "' max='" + $(enemyVar).find("#slider_max")[0].innerHTML + "' value='" + scaler.spawn_lvl_v + "' id=" + ehp_slider_id + " style='height:3px; background:#3a3a3a; position:absolute; right:18px; -webkit-appearance:none; width:" + slider_width + "%;' />	<div style='position:absolute; margin-top:-6px; left:-8px; font-size:11px; white-space:nowrap;'>" + scaler.base_lvl_v + "</div><div style='position:absolute; margin-top:-6px; left:234px; font-size:11px; white-space:nowrap;'>" + $(enemyVar).find("#slider_max")[0].innerHTML + "</div>";
+				slider.innerHTML = "<input type='range' min='" + scaler.base_lvl_v + "' max='" + $(enemyVar).find("#slider_max")[0].innerHTML + "' value='" + scaler.spawn_lvl_v + "' id='" + ehp_slider_id + "' style='position:absolute; right:20px; top:-11px; width:" + slider_width + "%;' />	<div style='position:absolute; top:-9px; left:-8px; white-space:nowrap;'>" + scaler.base_lvl_v + "</div><div style='position:absolute; top:-9px; left:234px; white-space:nowrap;'>" + $(enemyVar).find("#slider_max")[0].innerHTML + "</div>";
 			}
+
 			$(slider).find("#" + ehp_slider_id)[0].oninput = function () {
 				$("#" + ehp_input_id)[0].value = $("#" + ehp_slider_id)[0].value;
 				slider.enemyVarInfoboxScaler.update();
 			};
 
-			$(enemyVar).find("#out_lvl")[0].innerHTML = "<input type='number' min='" + scaler.base_lvl_v + "' max='9999' value='" + scaler.spawn_lvl_v + "' id=" + ehp_input_id + "  style='width:50px; height:18px;'/>";
+			$(enemyVar).find("#out_lvl")[0].innerHTML = "<input type='number' min='" + scaler.base_lvl_v + "' max='10000' value='" + scaler.spawn_lvl_v + "' id='" + ehp_input_id + "' style='max-width:70%'/>";
 			$($(enemyVar).find("#out_lvl")[0]).find("#" + ehp_input_id)[0].oninput = function () {
 				$("#" + ehp_slider_id)[0].value = $("#" + ehp_input_id)[0].value;
 				slider.enemyVarInfoboxScaler.update();
 			};
 
-			$(enemyVar).find("#reset_btn")[0].innerHTML = "<button id=" + reset_id + " type='button' onclick='ehp_slider.value = " + scaler.spawn_lvl_v + "; ehp_input.value = " + scaler.spawn_lvl_v + "; slider_div.enemyVarInfoboxScaler.update();' style='height:20px; padding:0 5px 0 5px; float:right;'>Reset</button>";
+			$(enemyVar).find("#reset_btn")[0].innerHTML = "<button id='" + reset_id + "' type='button' onclick='ehp_slider.value = " + scaler.spawn_lvl_v + "; ehp_input.value = " + scaler.spawn_lvl_v + "; slider_div.enemyVarInfoboxScaler.update();' style='float:right;'>Reset</button>";
 			$($(enemyVar).find("#reset_btn")[0]).find("#" + reset_id)[0].onclick = function () {
 				$("#" + ehp_slider_id)[0].value = scaler.spawn_lvl_v ;
 				$("#" + ehp_input_id)[0].value  = scaler.spawn_lvl_v ;

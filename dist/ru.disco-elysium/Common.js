@@ -4,7 +4,8 @@ window.BackToTopModern = true;
 
 /* Прогресс-бар */
 window.AddRailModule = [
-    { page: 'Template:ProgressBar', maxAge: 60 },
+    { page: 'Template:RailModule1', maxAge: 60 },
+    { page: 'Template:RailModule2', maxAge: 60 },
 ];
 
 /* Настройка тултипов */

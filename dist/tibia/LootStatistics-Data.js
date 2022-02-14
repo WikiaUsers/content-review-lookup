@@ -18,6 +18,32 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+// Changes made on February 08, 2022 - 12.85.11542
+'Retros Treasure': '12.85.11542',
+'Memory of a Banshee': '12.85.11542',
+'Memory of a Book': '12.85.11542',
+'Memory of a Carnisylvan': '12.85.11542',
+'Memory of a Dwarf': '12.85.11542',
+'Memory of a Faun': '12.85.11542',
+'Memory of a Frazzlemaw': '12.85.11542',
+'Memory of a Fungus': '12.85.11542',
+'Memory of a Golem': '12.85.11542',
+'Memory of a Hero': '12.85.11542',
+'Memory of a Hydra': '12.85.11542',
+'Memory of a Lizard': '12.85.11542',
+'Memory of a Mammoth': '12.85.11542',
+'Memory of a Manticore': '12.85.11542',
+'Memory of a Pirate': '12.85.11542',
+'Memory of a Scarab': '12.85.11542',
+'Memory of a Shaper': '12.85.11542',
+'Memory of a Vampire': '12.85.11542',
+'Memory of a Werelion': '12.85.11542',
+'Memory of a Wolf': '12.85.11542',
+'Memory of a Yalahari': '12.85.11542',
+'Memory of an Amazon': '12.85.11542',
+'Memory of an Elf': '12.85.11542',
+'Memory of an Insectoid': '12.85.11542',
+'Memory of an Ogre': '12.85.11542',
 // Changes made on February 01, 2022 - 12.85.11525 (2)
 'Brachiodemon': '12.85.11525',
 'Infernal Demon': '12.85.11525',

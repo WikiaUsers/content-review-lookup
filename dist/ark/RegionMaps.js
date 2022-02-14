@@ -58,7 +58,7 @@ mw.loader.using([(mw.config.get('wgIsTestModeEnabled') ? 'test:' : '') + 'MediaW
 
                 // Highlight the region layer if name matches
                 if (highlightRegion == region) {
-                    $svg.attr('class', 'svgRegion svgRegionHighlight');
+                    $link.attr('class', 'svgRegion svgRegionHighlight');
                 }
 
                 // Construct rectangles for every region zone.

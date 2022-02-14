@@ -77,3 +77,50 @@ $(function UserNameReplace() {
     if (typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
     $("span.insertusername").text(wgUserName);
 });
+
+    /* --- Template:Portal/navigation slider --- */
+    $(".portal.navigation").addClass("hub");
+    $(".portal__navigation__aux a").on("click", function(e) {
+        e.preventDefault();
+        var id = $(this).parent().attr("id");
+        $(".portal__navigation__slide.active").removeClass("active");
+        $(".portal__navigation__slide#" + id).addClass("active");
+        $(".portal.navigation").removeClass("hub");
+        $(".portal.navigation").removeClass("IRL");
+        $(".portal.navigation").removeClass("Solo");
+        $(".portal.navigation").addClass(id);
+    });
+    
+    $(".portal__navigation__navigator .previous").on("click", function() {
+        if( $(".portal__navigation__slide.active").attr("id") == "hub" ) {
+            console.log("Attempted to access previous slide when none exists in the stack (no operation).");
+        } else {
+            var active = $(".portal__navigation__slide.active");
+            active.removeClass("active");
+            active.prev().addClass("active");
+            var newid = active.prev().attr("id");
+            $(".portal.navigation").removeClass().addClass("portal navigation " + newid);
+        }
+    });
+    
+    $(".portal__navigation__navigator .next").on("click", function() {
+        if( $(".portal__navigation__slide.active").attr("id") == "Solo" ) {
+            console.log("Attempted to access next slide when none exists in the stack (recycled back to slide 1).");
+            var active = $(".portal__navigation__slide.active");
+            active.removeClass("active");
+            $(".portal__navigation__slide#hub").addClass("active");
+            $(".portal.navigation").removeClass().addClass("portal navigation hub");
+        } else {
+            var active = $(".portal__navigation__slide.active");
+            active.removeClass("active");
+            active.next().addClass("active");
+            var newid = active.next().attr("id");
+            $(".portal.navigation").removeClass().addClass("portal navigation " + newid);
+        }
+    });
+    
+    $(".portal__navigation__navigator .index").on("click", function() {
+       $(".portal__navigation__slide.active").removeClass("active");
+       $(".portal__navigation__slide#hub").addClass("active");
+       $(".portal.navigation").removeClass().addClass("portal navigation hub");
+    });

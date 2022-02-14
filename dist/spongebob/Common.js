@@ -24,6 +24,14 @@ UserTagsJS.modules.newuser = true;
 UserTagsJS.modules.autoconfirmed = true;
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'patroller', 'rollback', 'bannedfromchat', 'bot', 'bot-global', 'assistant', 'moderator'];
 
+/* LockOldComments */
+
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 90;
+window.lockOldComments.addNoteAbove = true;
+
+/* End of LockOldComments */
+
 // ============================================================
 // BEGIN Dynamic Navigation Bars (experimantal)
 // This script is from Wikipedia. For author attribution, please see https://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
@@ -321,18 +329,6 @@ AjaxRCRefreshHoverText = 'Auto-refreshes the page.';
 ajaxPages = ["Special:RecentChanges", "Special:WikiActivity"];
 
 /* End of AjaxRC */
-
-/* LockOldBlogs and LockOldComments */
-
-window.LockOldBlogs = {
-    expiryDays: 90
-};
-
-window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 90;
-window.lockOldComments.addNoteAbove = true;
-
-/* End of LockOldBlogs and LockOldComments */
 
 /*
 importArticles({ type: 'script', articles: [ 

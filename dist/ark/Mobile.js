@@ -1,5 +1,4 @@
 importArticle({ type: "script", article: "MediaWiki:Gadget-site.js" });
-mw.loader.load('/load.php?debug=false&lang=en&modules=ext.Tabber&version=1ckquij', 'text/javascript', false);
 
 /************************************
 /* Main Page Mobile Collapse Script *
@@ -53,6 +52,16 @@ $( document ).ready( fpmobilecollapse.initialize );
 /****************************************
 /* End Main Page Mobile Collapse Script *
 /****************************************/
+
+// Tabbers are not available in the mobile skin, and scripts are blocked from being served to mobile user agents:
+// mw.loader.load('/load.php?debug=false&lang=en&modules=ext.Tabber&*', 'text/javascript', false);
+// As a workaround (as we're tabber-heavy and replacing them is not as easy as it seems), add a bold text block
+// with a tab's title before each tab.
+$(function() {
+	$('.tabber .tabbertab').each(function () {
+		$('<b style="display:block">').text($(this).attr('title')).insertBefore($(this));
+	});
+});
 
 // Load our other scripts conditionally
 $(function() {

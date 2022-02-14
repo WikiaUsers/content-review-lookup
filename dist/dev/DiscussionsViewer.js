@@ -14,8 +14,8 @@
     'profileUserId'
   ]);
   if (
-    config.wgCanonicalSpecialPageName !== 'Contributions' ||
     window.dpv ||
+    !config.profileUserId ||
     config.profileUserId === '0'
   ) {
     return;
@@ -115,7 +115,7 @@
       ' &bull; <a href="{{wiki}}/wiki/Special:Contributions/{{post.createdBy.name}}">{{i18nContribs}}</a>' +
       ' &bull; <a href="{{postUrl}}">{{i18nPosts}}</a>' +
       ' &bull; {{i18nIn}} <a href="{{boardUrl}}">{{boardName}}</a></div>' +
-      '<div class="dpv-post-date"><a href="{{wiki}}/f/p/{{post.threadId}}">{{date}}</a></div>' +
+      '<div class="dpv-post-date"><a href="{{postUrl}}">{{date}}</a></div>' +
       '<h2>{{post.title}}</h2>' +
       '<div class="dpv-post-content">{{post.rawContent}}{{{post.renderedContent}}}' +
       '{{#img}}<br><img class="dpv-post-image" srv="{{img}}" srcset="{{img}}/scale-to-width-down/420 420w, {{img}}/scale-to-width-down/520 520w, {{img}} 600w" sizes="(min-width: 1575px) 640px, (min-width:1064px) 520px, 100vw">{{/img}}</div>' +
