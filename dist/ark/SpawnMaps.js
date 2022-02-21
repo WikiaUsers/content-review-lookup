@@ -21,7 +21,7 @@ mw.loader.using([(mw.config.get('wgIsTestModeEnabled') ? 'test:' : '') + 'MediaW
 		TooltipFrom: 'from',
 		TooltipTo: 'to',
 		TooltipLat: 'lat',
-		TooltipLong: 'long',
+		TooltipLong: 'lon',
 		TooltipUntameable: 'untameable',
 		TooltipUntameableLocal: 'creatures at this location are not tameable',
 	};

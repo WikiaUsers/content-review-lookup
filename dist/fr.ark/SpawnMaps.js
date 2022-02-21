@@ -14,14 +14,14 @@ mw.loader.using([(mw.config.get('wgIsTestModeEnabled') ? 'test:' : '') + 'MediaW
 		SelectCreature: 'Sélectionnez une créature', // WIP T66: Select a creature or container
 		OptionGroupCreatures: 'Créatures',
 		OptionGroupContainers: 'Contenants de groupes',
-		DataLoadErrorAnon: 'Failed to load data; try refreshing the page',
-		DataLoadErrorSigned: 'Failed to load the data page - check if it exists and is a valid JSON',
+		DataLoadErrorAnon: 'Échec du chargement des données; esssayez de rafraîchir la page',
+		DataLoadErrorSigned: 'Échec du chargement des données de la page - vérifez si elles existent et s\'il existe un JSON valide',
 		ToggleDetails: ' détails complets des contenants de groupes',
 		DeselectGroups: 'désélectionnez tous les contenants',
 		TooltipFrom: 'depuis',
 		TooltipTo: 'vers',
 		TooltipLat: 'lat',
-		TooltipLong: 'long',
+		TooltipLong: 'lon',
 		TooltipUntameable: 'non apprivoisable',
 		TooltipUntameableLocal: 'les créatures de ce lieu ne sont pas apprivoisables',
 	};

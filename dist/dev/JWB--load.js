@@ -2,8 +2,13 @@
  *  All other code is located at that page.
  */
 //Idea by [[User:Epicgenius]]
-mw.loader.using('mediawiki.util').then(function() {
-	mw.util.addPortletLink("p-tb", mw.config.get('wgArticlePath').replace('$1', "Project:AutoWikiBrowser/Script"), "JS Wiki Browser", "tb-awbscript", "Run Javascript Wiki Browser");
+$('<li>', {
+	append: $('<a>', {
+		href: mw.config.get('wgArticlePath').replace('$1', 'Project:AutoWikiBrowser/Script'),
+		text: 'JS Wiki Browser',
+		title: 'Run Javascript Wiki Browser'
+	}),
+	prependTo: $('#WikiaBar .toolbar .tools')
 });
 if (mw.config.get('wgCanonicalNamespace')+':'+mw.config.get('wgTitle') === 'Project:AutoWikiBrowser/Script') {
     importArticle({

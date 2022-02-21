@@ -93,7 +93,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                         + '</tr>\n';
 	                }
 	                customRows += fromTemplate('Origine', 'origineBox', true, '[REQUIS] IG/URL source.');
-	                customRows += fromTemplate('Source', 'jeuBox', true, '[REQUIS] Canis Canem Edit/Bully: Scholarship Edition/Bully: Anniversary Edition.');
+	                customRows += fromTemplate('Jeu', 'jeuBox', true, '[REQUIS] Canis Canem Edit/Bully: Scholarship Edition/Bully: Anniversary Edition.');
 	                customRows += fromTemplate('Quoi', 'quoiBox', true, '[REQUIS] Modèle 3D/Capture IG/Image officielle.');
 	                customRows += fromTemplate('Type', 'typeBox', true, '[REQUIS] Personnages/Objets/...');
 	     
@@ -112,7 +112,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                        $.showModal('Origine Incomplète', 'Merci de renseigner l\'origine correcte pour votre image.');
 	                        return false;
 	                    }else if (/google/i.test($customRows.find('#sourceBox').val())) {
-	                        $.showModal('Source Incorrecte', 'Google n’est pas une source valide pour les images. Merci de saisir l\'origine concrète du fichier .');
+	                        $.showModal('Source Incorrecte', 'Google n\'est pas une source valide pour les images. Merci de saisir l\'origine concrète du fichier .');
 	                        $customRows.find('#origineBox').val('');
 	                        return false;
 	                    }

@@ -1,6 +1,6 @@
 // toggle for Template:SpoilerButton
 $(".mw-customtoggle-Spoiler").click(function() {
-  $(this).toggleClass("spoiler-button_active");
+  $('.mw-customtoggle-Spoiler').toggleClass("spoiler-button_active");
 });
 
 // Slider (Template:ChapterGuide)
@@ -16,7 +16,7 @@ mw.loader.using(['jquery.ui.tabs'], function() {
 			duration: 100
 		}
 	});
-	$(".chapterslider_nav").click(function () {
+	$("[class^=chapterslider_nav]").click(function () {
 		$tabs.tabs('select', this.className.replace("chapterslider_nav_", ""));
 	return false;
 	});

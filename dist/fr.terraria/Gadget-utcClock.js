@@ -8,11 +8,11 @@ var i18n = {
 	fr: {
 		linkTitle: 'Cliquez pour purger le cache du serveur de la page actuelle du wiki'
 	},
-	ru: {
-		linkTitle: 'Щёлкните здесь, чтобы очистить кэш сервера на текущей вики-странице'
-	},
 	pt: {
 		linkTitle: 'Clique para limpar o cache do servidor para a página da wiki atual'
+	},
+	ru: {
+		linkTitle: 'Щёлкните здесь, чтобы очистить кэш сервера на текущей вики-странице'
 	}
 };
 
@@ -47,12 +47,6 @@ window.showTime = function() {
 }
 
 $(function() {
-	/* Add to the QuickBar on FandomDesktop, netbar on Hydra/Hydradark */
-	if (mw.config.get("skin") === 'fandomdesktop') {
-		$('.wikia-bar .toolbar .tools').append('<li id="gadget-utc-clock" style="width: 70px;"><a class="dateNode" style="margin: auto;" href="' + linkPurge + '" title="' + lang('linkTitle') + '"></a></li>');
-	} else {
-		$('.netbar-box.right:first').before('<div style="margin-right:1em;margin-top: -3px;"><a title="' + lang('linkTitle') + '" href="' + linkPurge + '" class="dateNode" style="' + clockStyle + '"></a></div>');
-	}
-
+	$('.wikia-bar .toolbar .tools').append('<li id="gadget-utc-clock" style="width: 70px;"><a class="dateNode" style="margin: auto;" href="' + linkPurge + '" title="' + lang('linkTitle') + '"></a></li>');
 	showTime();
 });

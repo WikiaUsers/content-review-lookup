@@ -1,8 +1,9 @@
 (function () {
-    var tt = '<span style="cursor:help; border-bottom:1px dotted;" title="Power Cost can\'t be 0">NaN</span>';
+    var tt =
+        '<span style="cursor:help; border-bottom:1px dotted;" title="Required inputs must not be left blank or set to 0.">Error</span>';
 
     function round(num) {
-        return +(Math.round(num + 'e+2') + 'e-2');
+        return +(Math.round(num + 'e+2') + 'e-2') || num;
     }
 
     function getRatio(ratio, dmg, hp, cost) {
@@ -26,20 +27,29 @@
         var cost = parseFloat(container.querySelector('.cost > input').value);
         container.querySelectorAll('.ratio1,.ratio2,.ratio3,.ratio4').forEach(function (el) {
             var ratio = getRatio(el.className, dmg, hp, cost);
-            el.innerText = ratio === 'NaN' ? tt : ratio;
+            if (ratio === Infinity) {
+            	el.innerHTML = tt;
+            } else if (ratio < 0.01) {
+            	el.innerHTML = '<0.01';
+            } else {
+            	el.innerHTML = ratio || tt;
+            }
         });
     }
 
     function init(container, _index) {
+        setTimeout(function () {
+            container.parentElement.appendChild(container);
+        }, 0);
         container.querySelectorAll('.cost,.dmg,.hp').forEach(function (el) {
             var inp = document.createElement('input');
             inp.type = 'number';
             inp.min = 0;
             inp.max = 99999;
-            inp.value = 0;
+            inp.placeholder = 'Input...';
             inp.addEventListener('input', function (e) {
                 var v = parseFloat(this.value) || 0;
-                if (v < 0 || v > 99999) {
+                if (v < 0 || v.toString().length > 5) {
                     this.value = this.getAttribute('data-old') || 0;
                 } else {
                     this.setAttribute('data-old', v);
@@ -48,7 +58,6 @@
             });
             el.appendChild(inp);
         });
-        container.parentElement.parentElement.querySelector('thead').appendChild(container);
     }
 
     mw.hook('wikipage.content').add(function () {

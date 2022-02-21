@@ -72,6 +72,16 @@ window.railWAM = {
 /****************************/
 /* Lastedit */
 /****************************/
+window.lastEdited = {
+	size: false,
+	diff: false,
+	position: {
+		element: document.getElementById('mw-content-text'),
+		method: 'prepend'
+	},    
+
+}
+
 importArticles({
     type: 'script',
     articles: [

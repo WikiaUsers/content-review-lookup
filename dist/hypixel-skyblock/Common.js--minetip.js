@@ -30,7 +30,7 @@ $(function () {
         };
 
         $(document.body).on({
-            "mouseenter.minetip": function (e, trigger, x, y) {
+            "mouseenter": function (e, trigger, x, y) {
                 $tooltip.remove();
 
                 var $elem = $(this),
@@ -112,7 +112,7 @@ $(function () {
                 // Trigger a mouse movement to position the tooltip
                 $elem.trigger("mousemove", [e || trigger, x, y]);
             },
-            "mousemove.minetip": function (e, trigger, x, y) {
+            "mousemove": function (e, trigger, x, y) {
                 if (!$tooltip.length) {
                     $(this).trigger("mouseenter", [e || trigger, x, y]);
                     return;
@@ -165,7 +165,7 @@ $(function () {
                     left: left
                 }).show();
             },
-            "mouseleave.minetip": function () {
+            "mouseleave": function () {
                 if (!$tooltip.length) {
                     return;
                 }
@@ -176,7 +176,7 @@ $(function () {
         }, ".minetip, .invslot-item");
 
         $(document.body).on({
-            "mouseenter.invslot-item": function () {
+            "mouseenter": function () {
                 var $links = $(this).find("a:not(.invslot-hover-overlay)");
                 switch ($(this).find(".invslot-hover-overlay").length) {
                     case 0:
@@ -195,7 +195,7 @@ $(function () {
             },
             // pick up slot item for 300ms
             // allowed: left/right click
-            "mousedown.invslot-item": function (e) {
+            "mousedown": function (e) {
                 var $this = $(this);
                 if (e.which !== 2) {
                     var $source = $this.find("img:first");

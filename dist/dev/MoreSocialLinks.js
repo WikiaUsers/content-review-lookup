@@ -235,10 +235,10 @@
         type: 'script',
         articles: [
             'u:dev:MediaWiki:I18n-js/code.js',
-            'u:dev:MediaWiki:Modal.js',
-            'u:dev:MediaWiki:UI-js/code.js'
+            'u:dev:MediaWiki:UI-js/code.js',
+            'u:dev:MediaWiki:Modal.js'
         ]
-    }).then($.proxy(MoreSocialLinks.loaded, MoreSocialLinks));
+    });
     importArticles({
         type: 'style',
         articles: [
@@ -246,4 +246,8 @@
             'u:dev:MediaWiki:MoreSocialLinks.css'
         ]
     });
+    // I18n-js and UI-js fire their hooks immediately after loading, while Modal
+    // needs to wait for ooui-js-windows to load, so it is guaranteed to load
+    // last.
+    mw.hook('dev.modal').add($.proxy(MoreSocialLinks.loaded, MoreSocialLinks));
 })();

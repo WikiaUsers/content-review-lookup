@@ -184,6 +184,11 @@
             scripts: 'MediaWiki:InfoWidgets/demo.js'
         },
 		
+		InterlanguageFlags: {
+			page: 'InterlanguageFlags',
+			styles: 'MediaWiki:InterlanguageFlags.css'
+		},
+		
         Katsuragi: {
             page: 'Katsuragi',
             styles: 'MediaWiki:Katsuragi.css'
@@ -270,6 +275,11 @@
                 // This variable doesn't seem to affect anything else
                 mw.config.set('wgIsTestModeEnabled', true);
             }
+        },
+        
+        MinutelyWider: {
+        	page: 'MinutelyWider',
+        	scripts: 'MediaWiki:MinutelyWider.css'
         },
         
         MisspelledPage: {
@@ -513,6 +523,11 @@
 	    WikiActivity: {
 			page: 'Special:WikiActivity',
 	        scripts: 'MediaWiki:WikiActivity.js'
+	    },
+	    
+	    WikiaNavigationBarStyle: {
+	    	page: 'WikiaNavigationBarStyle',
+	    	scripts: 'MediaWiki:WikiaNavigationBarStyle.css'
 	    },
 
         Wikificator: {

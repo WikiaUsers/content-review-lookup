@@ -117,14 +117,13 @@
             },
             makeButton: function (pagename) {
                 var button = $("<div>", {
-                    class: "page-header__actions",
                     style: "text-align: center; width: 100%; clear: both; display: block;",
                     html: $("<a>", {
                         href: "#",
                         html: "Load This Part Of Content",
                         "data-page": pagename,
                         click: that.buttonclick,
-                        class: "wds-button wds-is-text page-header__action-button has-label",
+                        class: "wds-button",
                     }),
                 });
                 return button;

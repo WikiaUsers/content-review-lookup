@@ -8,16 +8,16 @@
  */
 
 /* jshint
-	esversion: 5, forin: true,
-	immed: true, indent: 4,
-	latedef: true, newcap: true,
-	noarg: true, undef: true,
-	undef: true, unused: true,
-	browser: true, jquery: true,
-	onevar: true, eqeqeq: true,
-	multistr: true, maxerr: 999999,
-	sub: true, forin: false,
-	-W082, -W084
+    esversion: 5, forin: true,
+    immed: true, indent: 4,
+    latedef: true, newcap: true,
+    noarg: true, undef: true,
+    undef: true, unused: true,
+    browser: true, jquery: true,
+    onevar: true, eqeqeq: true,
+    multistr: true, maxerr: 999999,
+    sub: true, forin: false,
+    -W082, -W084
 */
 
 /* global mw, BannerNotification */
@@ -298,10 +298,16 @@
                     delete newStaffData[user].rank;
                 if (!formershorts.length)
                     delete newStaffData[user].former;
-                if (!bots || bots === "")
+                if (!bots)
                     delete newStaffData[user].bot;
-                if (!activity || bots === "")
+                if (!activity)
                     delete newStaffData[user].activity;
+
+                // runs check on the whole data set and removes any blank data
+                for (var u in newStaffData)
+                    for (var entry in newStaffData[u])
+                        if (newStaffData[u][entry] === "")
+                            delete newStaffData[u][entry];
 
                 return that.saveToWiki(newStaffData, reason, that.staffDataPage).always(function (data) {
                     if (data.edit)

@@ -21,13 +21,15 @@ UserTagsJS.modules.custom = {
 	'Genuis1': ['pawikiteam'],
 	'TacticalFedorine': ['founder', 'pawikiteam'],
 	'XBunbunny': ['pawikiteam'],
-	'Sir_mANT': ['pawikiteam'],
+	'Sir mANT': ['pawikiteam'],
 	'PLANET23K': ['pawikiteam'],
 	'K1401986': ['pawikiteam'],
 	'Piixelgamercat': ['pawikiteam'],
-	'AnthonyRose1': ['pawikiteam'],
-	'TKD_Kedis': ['pawikiteam'],
+	'User:AnthonyRose1': ['pawikiteam'],
+	'KonstTheo': ['pawikiteam'],
+	'TKD Kedis': ['pawikiteam'],
 };
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'founder', 'inactive'];
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'blocked', 'content-moderator'];
+UserTagsJS.modules.inactive = 30; // 30 days
 
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };

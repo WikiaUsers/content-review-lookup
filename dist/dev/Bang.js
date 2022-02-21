@@ -20,7 +20,7 @@
 			fo: ns[110] // Forum
 		};
 
-        $(document).on('keyup', '.SearchInput-module_input__1mP-U', function() {
+        $(document).on('keyup', '[class*="SearchInput-module_input"]', function() {
 	        var old = $(this).val(),
                 txt,
 		        m = old.match(/^\!([a-z]+) /),

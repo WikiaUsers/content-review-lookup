@@ -17,7 +17,7 @@
 	-W082, -W084
 */
 /* global mw */
-mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user']).then(function() {
+mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user', 'mediawiki.notify']).then(function() {
 	var api = new mw.Api();
 	
 	return $.when(
@@ -88,7 +88,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user']).then(func
 		},
 		
 		msg: function(name) {
-			return mw.message.apply(mw, [name].concat(Array.from(arguments).slice(1))).parse();
+			return mw.message.apply(mw, [name].concat(Array.from(arguments).slice(1))).parse().replace(/'{3}(.+?)'{3}/g, '<b>$1</b>');
 		},
 		
 		rcSubmit: function() {
@@ -133,7 +133,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user']).then(func
 			$('.nuke-submit, .nuke-check-all, .nuke-invert, #nuke-protect').attr('disabled', true);
 			$('#nuke-status').html('Deleting pages... please wait <img src="https://static.wikia.nocookie.net/dev/images/c/c5/Circle_throbber.gif/revision/latest"/>');
 			$('.nuke-title-check:checked').each(function(i) {
-				var title = $(this).parent().find('a').first().text();
+				var title = $(this).parent().find('a:not(:has(> img))').first().text();
 				setTimeout(function() {
 					api.post({
 						action: 'delete',
@@ -160,7 +160,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user']).then(func
 							this.notify('warn', 'Failed to protect ' + title + ':', data.error.info);
 						}.bind(this)) : undefined;
 					}.bind(this), function(_, data) {
-						this.notify('warn', this.msg('nuke-not-deleted').replace(/\.$/, ': ' + data.error.info));
+						this.notify('warn', this.msg('nuke-not-deleted', title).replace(/\.$/, ': ' + data.error.info));
 					}.bind(this));
 					
 					if (i === $('.nuke-title-check:checked').length - 1) {

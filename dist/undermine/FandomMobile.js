@@ -1,1 +1,0 @@
-mw.loader.load("//undermine.gamepedia.com/index.php?title=MediaWiki:Common.js&action=raw&ctype=text/javascript");

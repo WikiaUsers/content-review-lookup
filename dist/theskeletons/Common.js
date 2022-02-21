@@ -39,3 +39,13 @@ window.dev.i18n.overrides['NoLicenseWarning'] = window.dev.i18n.overrides['NoLic
 // Add custom content instead of default messages
 window.dev.i18n.overrides['NoLicenseWarning']['warning-text'] = 'Your custom warning message';
 window.dev.i18n.overrides['NoLicenseWarning']['rejected-text'] = 'Your custom rejected message';
+// Configuration for NoLicenseWarning
+window.NoLicenseWarning = {
+    forceLicense: true,
+    excludedGroups: [
+        'sysop',
+        'threadmoderator',
+        'content-moderator',
+        'rollback'
+    ]
+};

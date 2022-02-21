@@ -9,7 +9,10 @@ $(function () {
     $('span.insertusername').html(wgUserName);
 });
 
-/* Prevents Necroposting */
+/* BackToTop Button Config */
+window.BackToTopModern = true;
+
+/* LockOldComments Config - Prevents Necroposting */
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 300;
 

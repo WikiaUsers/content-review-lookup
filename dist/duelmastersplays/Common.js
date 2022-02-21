@@ -9,8 +9,10 @@ window.tooltips_list = [
 ];
 
 //=============== Card Database Test / Advanced Card Search ==================
-function searchJavaScript() {
-	function createRegEx(str){
+function searchJavaScript() 
+{
+	function createRegEx(str)
+	{
 		var result = ".*";
 		var i, char, char2;
 		for(i = 0; i<str.length; i++){
@@ -23,7 +25,9 @@ function searchJavaScript() {
 		result+=".*";
 		return result;
 	}
-	function updateContent(elem) {
+
+	function updateContent(elem, textSearch) 
+	{
 		var categories = [];
 		var exCategories = [];
         var matchTitles = null;
@@ -44,7 +48,7 @@ function searchJavaScript() {
 		///CheckBox Categories
 		var checkboxes = elem.querySelectorAll('input[type="checkbox"]');
 		checkboxes.forEach(function(checkbox) {
-			if (checkbox.checked) {
+			if (checkbox.checked && checkbox.id != "textSearchOnly") {
 				categories.push(checkbox.getAttribute('data-cat'));
 			}
 		});
@@ -142,7 +146,7 @@ function searchJavaScript() {
 		if(exCategories.length > 0) text += '|notcategory = ' + exCategories.join('|notcategory = ');
 		if(set !== "Any" && set !== null) text += '|linksfrom=' + set;
 		text += '|allowcachedresults = true';
-		text += '|count = 100';
+		text += '|count = 150';
 		text += '|ordermethod = title';
 		text += '|noresultsheader = No cards match the search criteria.';
 		text += '}}';
@@ -153,7 +157,12 @@ function searchJavaScript() {
 			contentmodel: 'wikitext',
 		}).then(function(data) {
 			var results = data.parse.text['*'];
-			convertAndApply(results);
+			var textOnly = document.getElementById("textSearchOnly").checked;
+			console.log("DPL: textSearchOnly is : " + textOnly);
+			if(textOnly) 
+				document.getElementById('content-container').innerHTML = results;
+			else 
+				convertAndApply(results);
 		});
 	}
 	
@@ -168,7 +177,7 @@ function searchJavaScript() {
 		var html = '<div><ul>';
 		var lineTemplate = '<li style="display: inline-block; width:185px; vertical-align: top; text-align: center"">{{CardSearchResult|cardName}}[[cardName]]<br><br></li>';
 		var position = -7;
-		var limit = 25;
+		var limit = 30;
 		var i = 1;
 		while(true)
 		{
@@ -241,7 +250,6 @@ function searchJavaScript() {
 		}
 	}
 	
-	
 	function addSelectList(elem, container, cat) {
 		if(container === null) return;
 		container.setAttribute("class", "paddedCardSearchDiv");
@@ -266,8 +274,6 @@ function searchJavaScript() {
 			option.textContent = subcats[i].trim();
             dropdown.appendChild(option);
         }
-        
-        
 
         var label = document.createElement("label");
         label.setAttribute("for", dropdown.id);
@@ -378,22 +384,34 @@ function searchJavaScript() {
 		if(cContainer===null) break;
 		addInput.bind(this, elem, cContainer, "Excluded"+i)();
 		}
+
+		var textSearchCB = document.createElement('input');
+    	textSearchCB.type = "checkbox";
+    	textSearchCB.id = "textSearchOnly";
+		document.getElementById("filters").appendChild(textSearchCB);
+		
+		var cbLabel = document.createElement('label');
+		cbLabel.for = "textSearchOnly";
+		cbLabel.innerHTML = "Text Results Only";
+		document.getElementById("filters").appendChild(cbLabel);
+		
+		var linebreak = document.createElement("br");
+		document.getElementById("filters").appendChild(linebreak);
 		
 		var searchButton = document.createElement("button");
 		searchButton.type = "button";
 		searchButton.innerHTML = "Search";
-		searchButton.addEventListener("click", updateContent.bind(this, elem));
-		
+		searchButton.addEventListener("click", updateContent.bind(this, elem, false));
 		document.getElementById("filters").appendChild(searchButton);
 	}
 	
 	var divBox = document.getElementById("search-in-cats");
 	addItems(divBox);	
 }
+
 switch (mw.config.get('wgPageName')) {
 	case "User:NotoroX/CardSearch": //test page
 	case "Advanced_Card_Search":
 		searchJavaScript();
-		
 }
 //======================= End of card data dsearch code =============================

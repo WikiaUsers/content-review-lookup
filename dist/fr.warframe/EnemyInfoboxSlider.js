@@ -1,163 +1,107 @@
-if ($('#slider_div').length) {
 
-	slider_div.enemyinfoboxscaler = {};
-	var scaler = slider_div.enemyinfoboxscaler;
+// Feuille de script permettant de gérer l'échelle des niveaux du Module:Ennemi/infobox (level scaling)
+$(".type-enemyBox").each(
+	function(count, enemyVar) {
+		var slider = $(enemyVar).find("#slider_div")[0];
+		if(slider !== null){
+			var ehp_input_id = "ehp_input_" + count;
+			var ehp_slider_id = "ehp_slider_" + count;
+			var reset_id = "reset_" + count;
 
-	scaler.init = function () {
-		//Sum types de santes
-		this.flesh_v = 0;
-		if (document.getElementById("flesh") != null) {
-			this.flesh_v = parseInt(flesh.innerHTML, 10);
-		}
-		this.clonedflesh_v = 0;
-		if (document.getElementById("clonedFlesh") != null) {
-			this.clonedflesh_v = parseInt(clonedFlesh.innerHTML, 10);
-		}
-		this.infestedflesh_v = 0;
-		if (document.getElementById("infestedFlesh") != null) {
-			this.infestedflesh_v = parseInt(infestedFlesh.innerHTML, 10);
-		}
-		this.infested_v = 0;
-		if (document.getElementById("infested") != null) {
-			this.infested_v = parseInt(infested.innerHTML, 10);
-		}
-		this.fossilized_v = 0;
-		if (document.getElementById("fossilized") != null) {
-			this.fossilized_v = parseInt(fossilized.innerHTML, 10);
-		}
-		this.machinery_v = 0;
-		if (document.getElementById("machinery") != null) {
-			this.machinery_v = parseInt(machinery.innerHTML, 10);
-		}
-		this.robotic_v = 0;
-		if (document.getElementById("robotic") != null) {
-			this.robotic_v = parseInt(robotic.innerHTML, 10);
-		}
-		this.health_v = this.flesh_v + this.clonedflesh_v + this.infestedflesh_v + this.infested_v + this.fossilized_v + this.machinery_v + this.robotic_v;
-		//Sum types d'armures
-		this.ferritearmor_v = 0;
-		if (document.getElementById("ferriteArmor") != null) {
-			this.ferritearmor_v = parseInt(ferriteArmor.innerHTML, 10);
-		}
-		this.alloyarmor_v = 0;
-		if (document.getElementById("alloyArmor") != null) {
-			this.alloyarmor_v = parseInt(alloyArmor.innerHTML, 10);
-		}
-		this.sinewarmor_v = 0;
-		if (document.getElementById("infestedSinew") != null) {
-			this.sinewarmor_v = parseInt(infestedSinew.innerHTML, 10);
-		}
-		this.armor_v = this.ferritearmor_v + this.alloyarmor_v + this.sinewarmor_v;
-		//Sum types boucliers
-		this.protoshield_v = 0;
-		if (document.getElementById("shield") != null) {
-			this.shieldx_v = parseInt(shield.innerHTML, 10);
-		}
-		this.protoshield_v = 0;
-		if (document.getElementById("protoshield") != null) {
-			this.protoshield_v = parseInt(protoshield.innerHTML, 10);
-		}
-		this.shield_v = this.shieldx_v + this.protoshield_v;
-		//Stats
-		this.affinity_v = 0;
-		if (document.getElementById("affinity") != null) {
-			this.affinity_v = parseInt(affinity.innerHTML, 10);
-		}
-		this.base_lvl_v = parseInt(baseLevel.innerHTML, 10);
-		this.spawn_lvl_v = this.base_lvl_v;
-		if (document.getElementById("spawnLevel") != null) {
-			this.spawn_lvl_v = parseInt(spawnLevel.innerHTML, 10);
-		}
-	};
+			slider.enemyVarInfoboxScaler = {};
+			var scaler = slider.enemyVarInfoboxScaler;
 
-	scaler.trans = function (start, end, curr_lvl) {
-		var transition = Math.min(1, (Math.max(curr_lvl, start + this.base_lvl_v) - (start + this.base_lvl_v)) / (end - start));
-		return transition;
-	};
+			scaler.init = function() {
+				if (shield !== null) { this.shield_v = parseInt($(enemyVar).find("#shield")[0].innerHTML, 10); } else { this.shield_v = 0; }
+				if (health !== null) { this.health_v = parseInt($(enemyVar).find("#health")[0].innerHTML, 10); } else { this.health_v = 0; }
+				if (armor !== null)  { this.armor_v  = parseInt($(enemyVar).find("#armor")[0].innerHTML, 10);  } else { this.armor_v  = 0; }
 
-	scaler.update = function () {
-		if ((curr_lvl = ehp_input.value) >= this.base_lvl_v) {
-			var old_health = 1 + 0.015 * Math.pow(curr_lvl - this.base_lvl_v, 2);
-			var old_shield = 1 + 0.0075 * Math.pow(curr_lvl - this.base_lvl_v, 2);
-			var old_armor = 1 + 0.005 * Math.pow(curr_lvl - this.base_lvl_v, 1.75);
+				if (affinity !== null)	 { this.affinity_v	= parseInt($(enemyVar).find("#affinity")[0].innerHTML, 10);   } else { this.affinity_v	= 0; }
+				if (baselevel !== null)	 { this.base_lvl_v	= parseInt($(enemyVar).find("#baselevel")[0].innerHTML, 10);  } else { this.base_lvl_v	= 0; }
+				if (spawnlevel !== null) { this.spawn_lvl_v = parseInt($(enemyVar).find("#spawnlevel")[0].innerHTML, 10); } else { this.spawn_lvl_v = 0; }
 
-			var new_health = 1 + 10.7332 * Math.pow(curr_lvl - this.base_lvl_v, 0.5);
-			var new_shield = 1 + 1.6 * Math.pow(curr_lvl - this.base_lvl_v, 0.75);
-			var new_armor = 1 + 0.4 * Math.pow(curr_lvl - this.base_lvl_v, 0.75);
+				if (this.spawn_lvl_v === 0) {
+					this.spawn_lvl_v = this.base_lvl_v;
+				}
+			};
 
-			health_multi = 1 + (1 - this.trans(70, 85, curr_lvl)) * (old_health - 1) + this.trans(70, 85, curr_lvl) * (new_health - 1);
-			shield_multi = 1 + (1 - this.trans(70, 85, curr_lvl)) * (old_shield - 1) + this.trans(70, 85, curr_lvl) * (new_shield - 1);
-			armor_multi = 1 + (1 - this.trans(60, 80, curr_lvl)) * (old_armor - 1) + this.trans(60, 80, curr_lvl) * (new_armor - 1);
-			//Update Health types
-			if (this.flesh_v > 0) {
-				flesh.innerHTML = (Math.round(this.flesh_v * health_multi * 100) / 100).toLocaleString();
-			}
-			if (this.clonedflesh_v > 0) {
-				clonedFlesh.innerHTML = (Math.round(this.clonedflesh_v * health_multi * 100) / 100).toLocaleString();
-			}
-			if (this.infestedflesh_v > 0) {
-				infestedFlesh.innerHTML = (Math.round(this.infestedflesh_v * health_multi * 100) / 100).toLocaleString();
-			}
-			if (this.infested_v > 0) {
-				infested.innerHTML = (Math.round(this.infested_v * health_multi * 100) / 100).toLocaleString();
-			}
-			if (this.fossilized_v > 0) {
-				fossilized.innerHTML = (Math.round(this.fossilized_v * health_multi * 100) / 100).toLocaleString();
-			}
-			if (this.machinery_v > 0) {
-				machinery.innerHTML = (Math.round(this.machinery_v * health_multi * 100) / 100).toLocaleString();
-			}
-			if (this.robotic_v > 0) {
-				robotic.innerHTML = (Math.round(this.robotic_v * health_multi * 100) / 100).toLocaleString();
-			}
-			//Update Armor Types
-			if (this.ferritearmor_v > 0) {
-				ferriteArmor.innerHTML = (Math.round(this.ferritearmor_v * armor_multi * 100) / 100).toLocaleString();
-			}
-			if (this.alloyarmor_v > 0) {
-				alloyArmor.innerHTML = (Math.round(this.alloyarmor_v * armor_multi * 100) / 100).toLocaleString();
-			}
-			if (this.sinewarmor_v > 0) {
-				infestedSinew.innerHTML = (Math.round(this.sinewarmor_v * armor_multi * 100) / 100).toLocaleString();
+			scaler.trans = function(start, end, curr_lvl) {
+				if (curr_lvl - this.base_lvl_v < start) { return 0; }
+				if (curr_lvl - this.base_lvl_v > end) { return 1; }
+
+				var T = (curr_lvl - this.base_lvl_v - start) / (end - start);
+				return 3*Math.pow(T, 2) - 2*Math.pow(T, 3);
+			};
+
+			scaler.update = function() {
+				if((curr_lvl = $("#" + ehp_input_id)[0].value) >= this.base_lvl_v) {
+					var old_shield = 1 + 0.020*Math.pow(curr_lvl - this.base_lvl_v, 1.75);
+					var old_health = 1 + 0.015*Math.pow(curr_lvl - this.base_lvl_v, 2);
+					var old_armor  = 1 + 0.005*Math.pow(curr_lvl - this.base_lvl_v, 1.75);
+
+					var new_shield = 1 + 1.60*Math.pow(curr_lvl - this.base_lvl_v, 0.75);
+					var new_health = 1 + 24.0*Math.sqrt(curr_lvl - this.base_lvl_v)*Math.sqrt(5)/5;
+					var new_armor  = 1 + 0.40*Math.pow(curr_lvl - this.base_lvl_v, 0.75);
+
+					shield_multi = old_shield*(1 - this.trans(70, 80, curr_lvl)) + new_shield*this.trans(70, 80, curr_lvl);
+					health_multi = old_health*(1 - this.trans(70, 80, curr_lvl)) + new_health*this.trans(70, 80, curr_lvl);
+					armor_multi  = old_armor*(1 - this.trans(70, 80, curr_lvl)) + new_armor*this.trans(70, 80, curr_lvl);
+
+					$(enemyVar).find("#shield")[0].innerHTML	   = (Math.round(this.shield_v * shield_multi * 100) / 100).toLocaleString();
+					$(enemyVar).find("#health")[0].innerHTML	   = (Math.round(this.health_v * health_multi * 100) / 100).toLocaleString();
+					$(enemyVar).find("#armor")[0].innerHTML		   = (Math.round(this.armor_v * armor_multi * 100) / 100).toLocaleString();
+					$(enemyVar).find("#damage_redux")[0].innerHTML = ((Math.round((1 - 300 / (this.armor_v * armor_multi + 300)) * 10000) / 10000) * 100).toLocaleString();
+
+					if (curr_lvl < this.spawn_lvl_v) {
+						$(enemyVar).find("#out_ehp")[0].innerHTML = "&ndash;&ndash;";
+					} else {
+						$(enemyVar).find("#out_ehp")[0].innerHTML = (Math.round((this.health_v * health_multi * (1 + this.armor_v * armor_multi / 300) + this.shield_v * shield_multi)* 100) / 100).toLocaleString();
+					}
+					
+					if (curr_lvl < 100 + this.spawn_lvl_v) {
+						$(enemyVar).find("#out_sp_ehp")[0].innerHTML = "&ndash;&ndash;";
+					} else {
+						$(enemyVar).find("#out_sp_ehp")[0].innerHTML = (Math.round((2.5 * this.health_v * health_multi * (1 + 2.5 * this.armor_v * armor_multi / 300) + 2.5 * this.shield_v * shield_multi)* 100) / 100).toLocaleString();
+					}
+
+					$(enemyVar).find("#affinity")[0].innerHTML = (Math.floor(this.affinity_v * (1 + Math.sqrt(curr_lvl) * 0.1425))).toLocaleString();
+				}
+			};
+
+			scaler.init();
+
+			var slider_width = 86;
+			if (scaler.base_lvl_v > 99) {
+				slider_width = 81;
+			} else if (scaler.base_lvl_v > 9) {
+				slider_width = 81;
 			}
 
-			if (this.ferritearmor_v > 0 || this.alloyarmor_v > 0 || this.sinewarmor_v > 0) {
-				damage_redux.innerHTML = ((Math.round((1 - 300 / (this.armor_v * armor_multi + 300)) * 10000) / 10000) * 100).toLocaleString();
-			}
-			//Update Shield Types
-			if (this.shieldx_v > 0) {
-				shield.innerHTML = (Math.round(this.shieldx_v * shield_multi * 100) / 100).toLocaleString();
-			}
-			if (this.protoshield_v > 0) {
-				protoshield.innerHTML = (Math.round(this.protoshield_v * shield_multi * 100) / 100).toLocaleString();
+			if (navigator.userAgent.indexOf("Firefox") != -1) {
+				slider.innerHTML = "<input type='range' min='" + scaler.base_lvl_v + "' max='" + $(enemyVar).find("#slider_max")[0].innerHTML + "' value='" + scaler.spawn_lvl_v + "' id='" + ehp_slider_id + "' style='position:absolute; right:20px; top:0; width:" + slider_width + "%;' oninput='ehp_input.value = ehp_slider.value; slider_div.enemyVarInfoboxScaler.update();'/><div style='position:absolute; top:0; left:0; white-space:nowrap;'>" + scaler.base_lvl_v + "</div><div style='position:absolute; top:0; right:0; white-space:nowrap;'>" + $(enemyVar).find("#slider_max")[0].innerHTML + "</div>";
+			} else {
+				slider.innerHTML = "<input type='range' min='" + scaler.base_lvl_v + "' max='" + $(enemyVar).find("#slider_max")[0].innerHTML + "' value='" + scaler.spawn_lvl_v + "' id='" + ehp_slider_id + "' style='position:absolute; right:20px; top:0; width:" + slider_width + "%;' />	<div style='position:absolute; top:0; left:0; white-space:nowrap;'>" + scaler.base_lvl_v + "</div><div style='position:absolute; top:0; right:0; white-space:nowrap;'>" + $(enemyVar).find("#slider_max")[0].innerHTML + "</div>";
 			}
 
-			out_ehp.innerHTML = (Math.round((this.health_v * health_multi * (1 + this.armor_v * armor_multi / 300) + this.shield_v * shield_multi) * 100) / 100).toLocaleString();
-			if (this.affinity_v > 0) {
-				affinity.innerHTML = (Math.round(this.affinity_v * (1 + Math.pow(curr_lvl, 0.5) * 0.1425) * 100) / 100).toLocaleString();
-			}
+			$(slider).find("#" + ehp_slider_id)[0].oninput = function () {
+				$("#" + ehp_input_id)[0].value = $("#" + ehp_slider_id)[0].value;
+				slider.enemyVarInfoboxScaler.update();
+			};
+
+			$(enemyVar).find("#out_lvl")[0].innerHTML = "<input type='number' min='" + scaler.base_lvl_v + "' max='10000' value='" + scaler.spawn_lvl_v + "' id='" + ehp_input_id + "' style='max-width:70%'/>";
+			$($(enemyVar).find("#out_lvl")[0]).find("#" + ehp_input_id)[0].oninput = function () {
+				$("#" + ehp_slider_id)[0].value = $("#" + ehp_input_id)[0].value;
+				slider.enemyVarInfoboxScaler.update();
+			};
+
+			$(enemyVar).find("#reset_btn")[0].innerHTML = "<button id='" + reset_id + "' type='button' onclick='ehp_slider.value = " + scaler.spawn_lvl_v + "; ehp_input.value = " + scaler.spawn_lvl_v + "; slider_div.enemyVarInfoboxScaler.update();' style='float:right;'>Réinitialiser</button>";
+			$($(enemyVar).find("#reset_btn")[0]).find("#" + reset_id)[0].onclick = function () {
+				$("#" + ehp_slider_id)[0].value = scaler.spawn_lvl_v ;
+				$("#" + ehp_input_id)[0].value  = scaler.spawn_lvl_v ;
+				slider.enemyVarInfoboxScaler.update();
+			};
+
+			scaler.update();
 		}
-	};
-
-	scaler.init();
-
-	if (scaler.base_lvl_v > 9) {
-		var slider_width = 89;
-	} else {
-		var slider_width = 92;
 	}
-
-	if (navigator.userAgent.indexOf("Firefox") != -1) {
-		slider_div.innerHTML = "<input type='range' min='" + scaler.base_lvl_v + "' max='" + slider_max.innerHTML + "' value='" + scaler.spawn_lvl_v + "' id='ehp_slider' style='height:3px; background:#3a3a3a; position:absolute; right:18px; -moz-appearance:none; width:" + slider_width + "%;' oninput='ehp_input.value = ehp_slider.value; slider_div.enemyinfoboxscaler.update();'/><div style='position:absolute; margin-top:-6px; left:-8px; font-size:11px; white-space:nowrap;'>" + scaler.base_lvl_v + "</div><div style='position: absolute;margin-top: -6px;left:234px;font-size:11px;white-space:nowrap;'>" + slider_max.innerHTML + "</div>";
-	} else if ((navigator.userAgent.indexOf("MSIE") != -1) || (document.documentMode !== undefined)) {
-		slider_div.innerHTML = "<input type='range' min='" + scaler.base_lvl_v + "' max='" + slider_max.innerHTML + "' value='" + scaler.spawn_lvl_v + "' id='ehp_slider' style='background:transparent; position:absolute; right:20px; top:-17px; -ms-appearance:none; width:" + slider_width + "%; height:6px;' onchange='ehp_input.value = ehp_slider.value; slider_div.enemyinfoboxscaler.update();'/><div style='position:absolute; margin-top:-6px; left:-8px; font-size:11px; white-space:nowrap;'>" + scaler.base_lvl_v + "</div><div style='position:absolute; margin-top:-6px; left:234px; font-size:11px; white-space:nowrap;'>" + slider_max.innerHTML + "</div>";
-	} else {
-		slider_div.innerHTML = "<input type='range' min='" + scaler.base_lvl_v + "' max='" + slider_max.innerHTML + "' value='" + scaler.spawn_lvl_v + "' id='ehp_slider' style='height:3px; background:#3a3a3a; position:absolute; right:18px; -webkit-appearance:none; width:" + slider_width + "%;' oninput='ehp_input.value = ehp_slider.value; slider_div.enemyinfoboxscaler.update();'/><div style='position:absolute; margin-top:-6px; left:-8px; font-size:11px; white-space:nowrap;'>" + scaler.base_lvl_v + "</div><div style='position:absolute; margin-top:-6px; left:234px; font-size:11px; white-space:nowrap;'>" + slider_max.innerHTML + "</div>";
-	}
-
-	out_lvl.innerHTML = "<input type='number' min='" + scaler.base_lvl_v + "' max='9999' value='" + scaler.spawn_lvl_v + "' id='ehp_input' oninput='ehp_slider.value = ehp_input.value; slider_div.enemyinfoboxscaler.update();' style='width:50px; height:18px;'/>";
-
-	reset_btn.innerHTML = "<button type='button' onclick='ehp_slider.value = " + scaler.spawn_lvl_v + "; ehp_input.value = " + scaler.spawn_lvl_v + "; slider_div.enemyinfoboxscaler.update();' style='height:20px; padding:0 5px 0 5px; float:right;'>Reset</button>";
-
-	scaler.update();
-}
+);

@@ -30,8 +30,24 @@ window.JWB = {}; //The main global object for the script.
 		JWB.allowed = false;
 		return;
 	}
-	mw.loader.load('https://en.wikipedia.org/w/index.php?title=User:Joeytje50/JWB.css&action=raw&ctype=text/css');
+	mw.loader.load('https://en.wikipedia.org/w/index.php?title=User:Joeytje50/JWB.css&action=raw&ctype=text/css', 'text/css');
 	mw.loader.load('mediawiki.diff.styles');
+	
+	//temp? diff color fix
+	mw.loader.using('mediawiki.util').then(function () {
+		mw.util.addCSS('\
+			.diff td.diff-context {\
+			    color: unset;\
+			    border-color: #eaecf0;\
+			}\
+			.diff td.diff-deletedline {\
+			    background-color: unset;\
+			}\
+			.diff td.diff-addedline {\
+			    background-color: unset;\
+			}\
+		');
+	});
 	
 	mw.loader.getScript('https://dev.fandom.com/wiki/MediaWiki:JWB/i18n.js?action=raw&ctype=text/javascript').then(function() {
 		if (JWB.allowed === true) {

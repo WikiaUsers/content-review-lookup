@@ -14,3 +14,9 @@ UserTagsJS.modules.custom = {
 	'River_That_Crashes_Onshore': ['designer'],
 	'River%20That%20Crashes%20Onshore': ['designer']
 };
+
+window.dev = window.dev || {};
+window.dev.i18n = window.dev.i18n || {};
+window.dev.i18n.overrides = window.dev.i18n.overrides || {};
+window.dev.i18n.overrides['SandboxTab'] = window.dev.i18n.overrides['SandboxTab'] || {};
+window.dev.i18n.overrides['SandboxTab']['editcount'] = 'EditCount';

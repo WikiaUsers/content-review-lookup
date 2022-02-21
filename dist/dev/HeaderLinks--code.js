@@ -24,7 +24,9 @@
 (function($, mw) {
 
     'use strict';
-
+	
+	if (window.HeaderLinksLoaded) { return; }
+	window.HeaderLinksLoaded = true;
     var headerLinks = {
         /**
          * Loading function
@@ -86,6 +88,15 @@
                     $h.append($span);
 
                 });
+                if (window.HeaderLinksCopyOnClick) {
+                	$('.mw-header-link > a').click(function() {
+                		var $temp = $('<input>');
+						$('body').append($temp);
+						$temp.val('[[' + mw.config.get('wgPageName') + $(this).attr('href') + ']]').select();
+						document.execCommand('copy');
+						$temp.remove();
+                	});
+                }
             }
             mw.hook('dev.i18n').add(function(i18n) {
                 i18n.loadMessages('HeaderLinks').then(init);

@@ -34,8 +34,6 @@
  
 				field.keyup(function() {
 					esportsGridFilteringApply()
-					if(window.esportsGridFiltersTimeout) window.clearTimeout(window.esportsGridFiltersTimeout)
-					window.esportsGridFiltersTimeout = window.setTimeout(esportsGridFilteringClear, 30000)
 				})
 			} else if(esportsGridFilters[x] instanceof Array) {
 				var field = $('<select></select>').appendTo(container).attr('id', container.attr('id')+'-field').data('type', 'select')
@@ -47,8 +45,6 @@
  
 				field.change(function() {
 					esportsGridFilteringApply()
-					if(window.esportsGridFiltersTimeout) window.clearTimeout(window.esportsGridFiltersTimeout)
-					window.esportsGridFiltersTimeout = window.setTimeout(esportsGridFilteringClear, 30000)
 				})
 			}
 		}

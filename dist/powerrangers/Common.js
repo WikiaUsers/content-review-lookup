@@ -4,7 +4,8 @@ importArticles(
     {    
         type: 'script',
         articles: [   
-            'u:pad:MediaWiki:FilterTable.js'
+            'u:pad:MediaWiki:FilterTable.js',
+            'u:dev:MediaWiki:MassEdit/code.js',
         ]
     }
 );

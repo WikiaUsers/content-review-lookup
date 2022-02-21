@@ -216,6 +216,19 @@ gridFilters = {
         }
         if (isStats) {
             $('#grid-filter-upgrade > select').val('3').change();
+            document.querySelectorAll('.stats-calculator input').forEach(function (el) {
+                el.value = null;
+            });
+            document.querySelectorAll('.ratio1,.ratio2,.ratio3,.ratio4').forEach(function (el) {
+                el.innerText = '---';
+            });
+            if (document.querySelector('#grid-filter-container .headerSortUp,#grid-filter-container .headerSortDown')) {
+            	var sort = document.querySelector('#grid-filter-container .headerSort');
+            	if (!sort.classList.contains('headerSortUp')) {
+            		sort.click();
+            	}
+            }
+            
         } else {
             $('#grid-filter-sort > select').prop('selectedIndex', 0);
             $('#card-grid.expanded + #grid-collapse > button').click();

@@ -101,7 +101,7 @@ $(function() {
             disablepp: '',
             format: 'json'
         }, function(data) {
-            $('.right-rail-wrapper').prepend(
+            $('#WikiaRail').prepend(
                 $('<section>')
                     .addClass('rail-module')
                     .attr('id', 'welcome-module')

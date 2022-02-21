@@ -687,6 +687,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"aria": {
+				"name": "Aria",
+				"colors": [
+					"valentine",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"aries": {
 				"name": "Aries",
 				"colors": [
@@ -2313,6 +2321,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "unbreedable"
+			},
+			"chorus": {
+				"name": "Chorus",
+				"colors": [
+					"valentine",
+					"black"
+				],
+				"rarity": "common"
 			},
 			"christmastree": {
 				"name": "Christmas Tree",
@@ -13225,6 +13241,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"serenade": {
+				"name": "Serenade",
+				"colors": [
+					"valentine",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
 			"serious": {
 				"name": "Serious",
 				"colors": [
@@ -16122,6 +16146,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "common"
+			},
+			"verse": {
+				"name": "Verse",
+				"colors": [
+					"valentine",
+					"yellow",
+					"pink"
+				],
+				"rarity": "unbreedable"
 			},
 			"vibrant": {
 				"name": "Vibrant",

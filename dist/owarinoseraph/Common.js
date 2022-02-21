@@ -23,7 +23,7 @@ importArticles({
     type: 'script',
     articles: [
         'u:dev:Toggler.js',
-        'u:dev:AjaxBatchDelete/code.2.js',
+        'u:dev:AjaxBatchDelete.js',
         'u:dev:AjaxRC/code.js',
         'u:dev:AllPagesHideRedirect/code.js',
         'u:dev:AutoEditDropdown/code.js',

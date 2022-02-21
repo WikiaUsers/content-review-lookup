@@ -17,6 +17,8 @@ dev:InputUsername/code.js
 dev:OggPlayer.js
 dev:Tooltips.js
 //dev:DiscordModule/code.js //not working yet
+dev:EditorColorPicker.js
+Common.js/OggPlayerDownload.js
 */
 
 mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
@@ -62,15 +64,15 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             ['Cuerpo a cuerpo','Cuerpo a cuerpo']
         ]
     };
- 
-    /* Configuración para [[MediaWiki:Common.js/itemGridfiltering.js]] */
+    
+    /* Config for [[MediaWiki:Common.js/itemGridfiltering.js]] */
     itemGridContainer = '#item-grid';
     itemGridFilters = {
         'search': 'search',
         'modes' : ['- Modos de juego - ',
-            ['Clásico 5v5', '• Clásico 5v5'],
+            ['Clasico 5v5', '• Classic 5v5'],
             ['ARAM', '• ARAM'],
-            ['MJT', '• Exclusivo MJT']
+            ['FGM', '• FGM Exclusive']
         ]
     };
 

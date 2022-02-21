@@ -25,3 +25,7 @@ window.tooltips_list = [
 window.BackToTopModern = true;
 
 window.ajaxSpecialPages = ["Recentchanges", "WikiActivity"];
+
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 100;
+window.lockOldComments.addNoteAbove = true;

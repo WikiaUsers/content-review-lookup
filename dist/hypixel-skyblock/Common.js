@@ -12,7 +12,7 @@ See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
 
  Immediately Executed
  * (X00) importArticle pre-script actions
- * * (X01) Less
+ ** (X01) Less
 */
 
 /* jshint
@@ -354,31 +354,6 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         $(".mw-collapsible").resize();
     });
 
-    /* Arbitrator Icon */
-    $.when(
-        $.getJSON(new mw.Title("Custom-ArbitratorsList.json", 8).getUrl({
-            action: "raw",
-            ctype: "text/json"
-        })),
-        $.getJSON(new mw.Title("Gadget-StaffColorsUpdater.js/staff-colors.json", 8).getUrl({
-            action: "raw",
-            ctype: "text/json"
-        }))
-    ).then(function () {
-        var json = arguments[0][0];
-        var selector = arguments[1][0].selectors.ICONS;
-
-        json.forEach(function (user) {
-            $(selector.replace(/\$1/, user).replace(/::before/, "").replace(/,$/, "")).after($("<a>", {
-                href: new mw.Title("Arbitration Committe", 4).getUrl(),
-                title: "This User is an Arbitrator",
-                html: $("<img>", {
-                    src: "https://static.wikia.nocookie.net/hypixel-skyblock/images/4/41/Scale_of_justice.png/revision/latest/scale-to-width-down/16",
-                }),
-            }));
-        });
-    }).catch(console.warn);
-
     // Change profile links
     var count = 0;
     var inter2 = setInterval(function () {
@@ -603,6 +578,9 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     };
 
     importScripts([
+    	// Please note that ES5 script imports are moved to MediaWiki:ImportJS
+    	// (for convenience to promptly disable any script at any time)
+    	"MediaWiki:Common.js/skydate.js", // seems like ES6 scripts needs to be here
     ]);
 });
 

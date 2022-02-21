@@ -8,43 +8,72 @@
  * and the actual timer start a count down from 19 to 0 seconds for a total 
  * countdown loop time of 30 seconds.
  * 
+ * Timer formatting strings will loosely follow ISO 8601 in terms of tokens used:
+ * - Y: number of years left
+ * - M: number of months left
+ * - D: number of days left
+ * - h: number of hours left
+ * - m: number of minutes left
+ * - s: number of seconds left
+ * 
  * @author	User:FINNER (original author)
- * @author	User:Cephalon Scientia (refactor)
+ * @author	User:Cephalon Scientia (refactor, i18n)
+ * @requires	jQuery
  * @requires	mediawiki
  * 
  * Reference: https://www.w3schools.com/howto/howto_js_countdown.asp
  */
 
+(function($, mw) {
+/**
+ * Current wiki's locale for i18n.
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl
+ * @constant	WIKI_LOCALE
+ * @type {string}
+ */
+// TODO: Can move locale detection to a new I18n JS module/MediaWiki page
+const WIKI_LOCALE = (function() {
+	var config = mw.config.get([ "wgContentLanguage", "wgUserLanguage" ]);
+	// Allow logged-in user's language settings to override the wiki's content language
+	return (config.wgUserLanguage !== config.wgContentLanguage) ? config.wgUserLanguage : config.wgContentLanguage;
+})();
+
 /**
  * Array of CSS classes that must be present on page in order for countdown timer to function.
  * @constant	COUNTDOWN_CLASSES
  * @type {string[]}
-*/
+ */
 const COUNTDOWN_CLASSES = ["seedDate", "bText", "bDelayText", "timer",
 		"aText", "aDelayText", "loopTime", "loopLimit", "endText", 
 		"delayTime", "delayDisplay", "dst", "dateFormat", "dateLabels"];
 Object.freeze(COUNTDOWN_CLASSES);
 
 /**
- * All dictionaries related to time use the abbreviated time units as keys.
- * @constant	TIME_UNIT_ABBR
+ * Contains datetime formatting string tokens for iterating over as well as
+ * mapping these tokens to their unit name counterpart for i18n and pluralization.
+ * See possible values for unit argument of Intl.RelativeTimeFormat.prototype.formatToParts()
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/formatToParts
+ * 
+ * All objects related to time will use these tokens as key names
+ * (e.g. TIME_IN_MILLISECONDS).
+ * @constant	DATETIME_FORMAT_TOKENS
  * @type {Object.<string, string>}
-*/
-const TIME_UNIT_ABBR = {
-	Year: "Y",
-	Month: "M",
-	Day: "D",
-	Hour: "h",
-	Minute: "m",
-	Second: "s"
+ */
+const DATETIME_FORMAT_TOKENS = {
+	Y: "year",
+	M: "month",
+	D: "day",
+	h: "hour",
+	m: "minute",
+	s: "second"
 };
-Object.freeze(TIME_UNIT_ABBR);
+Object.freeze(DATETIME_FORMAT_TOKENS);
 
 /**
  * Maps time units to milliseconds.
  * @constant	TIME_IN_MILLISECONDS
  * @type {Object.<string, number>}
-*/
+ */
 const TIME_IN_MILLISECONDS = {
 	Y: 31536000000,  // assuming leap years are irrelevant (milliseconds in a day * 365)
 	M: 2628000000,   // average milliseconds per month (milliseconds in a year / 12)
@@ -55,14 +84,30 @@ const TIME_IN_MILLISECONDS = {
 };
 Object.freeze(TIME_IN_MILLISECONDS);
 
-var countdownTimers;
-
 /**
  * The name of the article page that the client is currently on.
  * @constant	PAGE_NAME
  * @type {string}
-*/
+ */
 const PAGE_NAME = mw.config.get("wgPageName");
+
+/**
+ * An array of objects that store the innerHTML of elements with the CSS class
+ * associated with the key.
+ * Each element contains an object representing all the countdown elements
+ * for a particular timer.
+ * A sample element would look like:
+ * {
+ *  seedDate: some html,
+ *  bText: some html,
+ *  bDelayText: some html,
+ *  ...
+ *  dateLabels: some html
+ * }
+ * @var		countdownTimers
+ * @type {Object{Object.<string, string>}}
+ */
+var countdownTimers;
 
 // Countdown timer entry point
 if (document.getElementsByClassName("customcountdown").length > 0) {
@@ -74,14 +119,11 @@ if (document.getElementsByClassName("customcountdown").length > 0) {
  * @function	countdownInit
  */
 function countdownInit() {
-	// Stores the innerHTML of elements with the CSS class associated with the key;
-	// each element contains an object representing all the countdown elements
-	// for a particular timer.
 	countdownTimers = getTimersElements();
-	console.log("Countdown timer elements recognized.");
+	console.log(PAGE_NAME + ": Countdown timer elements recognized.");
 
 	updateTimers();
-	console.log("Countdown timers started.");
+	console.log(PAGE_NAME + ": Countdown timers started.");
 
 	// Update timers every second
 	setInterval(function() {
@@ -169,13 +211,6 @@ function updateTimer(timerParams, num) {
 	var dateFormat = (timerParams.dateFormat === "") ? "YY MM DD hh mm ss" 
 		: timerParams.dateFormat;
 
-	// Based on the specified time periods' desired units, gives each time
-	// period in the string certain units
-	// (i.e. for 120 minutes & "hh mm ss" & "single": years = 0Y; months = 0M;
-	// days = 0D; hours = 02h; minutes = 00m; seconds = 00s)
-	// time string will result in "0Y0M0D02h00m00s" thus far
-	var timeUnits = getDisplayUnits(timerParams.dateLabels);
-
 	// When loop iterations reaches loop limit, hide normal text, hide delay
 	// text, hide normal/delay time periods, and only show end of loop text
 	if ((numLoops === loopLimit) && (endDate.getTime() <= now.getTime())) {
@@ -190,17 +225,18 @@ function updateTimer(timerParams, num) {
 	// hide delay text, and only show normal time periods specified by date 
 	// format
 	// (i.e. for 120 minutes & "hh mm ss" & "single" & " " or "&nbsp;": 
-	// years = ; months = ; days = ; hours = 02h ;
-	// minutes = 00m ; seconds = 00s)
-	// Time string will result in "02h 00m 00s" thus far
+	// years = ""; months = ""; days = ""; hours = "02h" ;
+	// minutes = "00m" ; seconds = "00s")
+	// Time string will result in "02h 00m 00s" after this if/else block
 	} else if (Math.min(timeDiff, timeDiffDelay) === timeDiffDelay) {
 		document.getElementById("endText_" + num).setAttribute("style", "display:none");
 		document.getElementById("bText_" + num).setAttribute("style", "display:visible");
 		document.getElementById("aText_" + num).setAttribute("style", "display:visible");
 		document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
 		document.getElementById("bDelayText_" + num).setAttribute("style", "display:none");
+		
 		// Adding the time values onto the page for "true" countdown
-		$("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffDelay, timeUnits));
+		$("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffDelay, timerParams.dateLabels));
 	
 	// When delay time reaches inputted delay time show delay text, hide normal
 	// text, and only show delay time periods specified by date format
@@ -212,7 +248,7 @@ function updateTimer(timerParams, num) {
 		document.getElementById("aDelayText_" + num).setAttribute("style", "display:visible");
 		// Adding the time values onto the page for delayed time period
 		if (delayDisplay) {
-			$("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiff, timeUnits));
+			$("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiff, timerParams.dateLabels));
 		} else {
 			$("#timer_" + num).html("");
 		}
@@ -324,35 +360,21 @@ function calculateTimeDiff(now, endDate, dstOffset) {
 }
 
 /**
- * Get display units for each time unit.
- * @function	getDisplayUnits
- * @param {string} dateLabels - a string
- * @returns {Object.<string, string>} a dictionary that contains display strings per time unit
+ * Gets the localized displayed text for a single timestamp unit. Includes pluralization.
+ * @function	getDisplayUnit
+ * @param {Object} i18n - Intl.RelativeTimeFormat object or null
+ * @param {string} timestampFormatToken - "Y", "M", "D", "h", "m", or "s"
+ * @param {number} numberUnits - number of a particular timestamp unit for pluralization
+ * @returns {string} Localized timestamp unit text or an empty string if i18n is null
  */
-function getDisplayUnits(dateLabels) {
-	var timeUnits = {};
-	var unitAbbr;
-	switch(dateLabels) {
-		case "full":
-			for (var unit in TIME_UNIT_ABBR) {
-				unitAbbr = TIME_UNIT_ABBR[unit];
-				timeUnits[unitAbbr] = " " + unit + "s";
-			}
-			break;
-		case "single":
-			for (var unit in TIME_UNIT_ABBR) {
-				unitAbbr = TIME_UNIT_ABBR[unit];
-				timeUnits[unitAbbr] = TIME_UNIT_ABBR[unit];
-			}
-			break;
-		default:
-			for (var unit in TIME_UNIT_ABBR) {
-				unitAbbr = TIME_UNIT_ABBR[unit];
-				timeUnits[unitAbbr] = "";
-			}
-			break;
+function getDisplayUnit(i18n, timestampFormatToken, numberUnits) {
+	if (i18n === null) {
+		return "";
 	}
-	return timeUnits;
+	var timeFormatPartsArr = i18n.formatToParts(numberUnits, DATETIME_FORMAT_TOKENS[timestampFormatToken]);
+	// Pluralization process will also include a space before timestamp unit
+	// Actual unit text will typically be the value of the last element of the array returned by formatToParts()
+	return timeFormatPartsArr[timeFormatPartsArr.length - 1].value;
 }
 
 /**
@@ -361,27 +383,48 @@ function getDisplayUnits(dateLabels) {
  * @param {string} dateFormat - string that represents date format; each unit is 
  * separated by a non-alphabetical character (e.g. "YY-MM-DD hh:mm:ss")
  * @param {number} timeDiff - time difference in milliseconds
- * @param {Object.<string, string>} timeUnits - dictionary of display text per time unit
+ * @param {string} dateLabel - a flag to show full timestamp unit text or abbreviated text;
+ * can be "full" for long timestamp unit text, "single" for short unit text, or other values for no unit text
  * @returns {string} a string of the formatted text
  */
-function formatTimerNumbers(dateFormat, timeDiff, timeUnits) {
+function formatTimerNumbers(dateFormat, timeDiff, dateLabel) {
+	/**
+	 * Enables consistent translation of datetime unit names through the Intl.RelativeTimeFormat object.
+	 * I18n object is also used for pluralization of both long and short datetime units (e.g. "1 day" vs. "2 days").
+	 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
+	 */
+	var i18n = null;
+	
+	switch(dateLabel) {
+		case "full":	// TODO: Should be renamed to "long" to match style key in options table of I18n
+			i18n = new Intl.RelativeTimeFormat(WIKI_LOCALE, { style: "long", numeric: "always" });
+			break;
+		case "single":	// TODO: Should be renamed to "short" to match style key in options table of I18n
+			i18n = new Intl.RelativeTimeFormat(WIKI_LOCALE, { style: "short", numeric: "always" });
+			break;
+		default:
+			// Keep i18n as null since we won't be using it
+	}
+
 	var timerText = dateFormat;
-	var formatArr = dateFormat.split(/[^A-Za-z]/);  // e.g. ["YYYY", "MM", "DD"]
+	var formatArr = dateFormat.split(/[^A-Za-z]/);	// e.g. ["YYYY", "MM", "DD"]
+	
 	for (var index in formatArr) {
 		var elem = formatArr[index];
-		var unitAbbr = elem.charAt(0);
+		var timestampFormatToken = elem.charAt(0);	// e.g. "Y"
 
-		// calculating how many of a time unit can fit in this time frame
-		var timeInMilliseconds = TIME_IN_MILLISECONDS[unitAbbr];
+		// Calculating how many of a time unit can fit in this time frame
+		var timeInMilliseconds = TIME_IN_MILLISECONDS[timestampFormatToken];
 		var numTimeUnits = Math.floor(timeDiff / timeInMilliseconds);
 		timeDiff -= numTimeUnits * timeInMilliseconds;
 
-		// building display
+		// Building display
 		var text = numTimeUnits + "";
-		text = text.padStart(elem.length, "0");  // padding zeroes for uniformity
-		text += timeUnits[elem.charAt(0)];  // adding unit display (e.g. "5 Years")
+		text = text.padStart(elem.length, "0");		// Padding zeroes for uniformity
+		text += getDisplayUnit(i18n, timestampFormatToken, numTimeUnits);		// Adding unit display (e.g. "5 years")
 		var regex = new RegExp(elem);
 		timerText = timerText.replace(regex, text);
 	}
 	return timerText;
 }
+})(jQuery, mediaWiki);
