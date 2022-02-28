@@ -7,7 +7,9 @@ See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
 -----------------------
  Deferred [mw.loader.using]
  * (W00) Small scripts
+ * (W01) Scripts that are attached to wikipage content load
  * (B00) Element animator
+ * (C00) My Block ID
  * (Y00) importArticles
 
  Immediately Executed
@@ -43,6 +45,7 @@ function copyToClipboard(text) {
 }
 
 mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(function () {
+    var api = new mw.Api();
 
     //##############################################################
     /* ==Small scripts== (W00)*/
@@ -54,33 +57,8 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     // Add custom "focusable" class
     $(".focusable").attr("tabindex", 0);
 
-    /* Script to make page-specific styling (see [[Project:Page Styles]]) */
-    $("#mw-content-text > .mw-parser-output").find(".pageStyles").each(function () {
-        var $this = $(this);
-        var css = $this.text();
-        var id = $this.attr("id");
-
-        /* For security purposes, DO NOT REMOVE! */
-        function validateCSS(css) {
-            return css
-                .replaceAll(/([\t ]*)[a-z0-9\-]+\s*:.*url\(["']?(.*?)["']?\)[^;}]*;?[\t ]*/gi, "$1/* url() is not allowed */") // url()
-                .replaceAll(/([\t ]*)[a-z0-9\-]+\s*:.*expression\(["']?(.*?)["']?\)[^;}]*;?[\t ]*/gi, "$1/* expression() is not allowed */") // expression()
-                .replaceAll(/([\t ]*)@import.*/gi, "$1/* @import is not allowed */") // @import
-                .replaceAll(/([\t ]*)[a-z0-9\-]+\s*:[ \t]*["']?javascript:([^;\n]*)?;?[\t ]*/gi, '$1/* javascript: is not allowed */') // javascript:
-                .replaceAll(/^([\t ]*)@font-face\s*{[^\0]*?}/gi, "$1/* @font-face is not allowed */"); // @font-face
-        }
-
-        $("<style>", {
-            text: validateCSS(css),
-            type: "text/css",
-            class: $this.attr("class") && $this.attr("class").replaceAll(/^pageStyles\s*|pageStyles\s*$/g, ""),
-            id: id,
-        }).appendTo("head");
-    });
-
     // Add comment guidelines notice (wiki/fandom staff/users with > 100 edits exempt)
     if (!/bureaucrat|content-moderator|threadmoderator|rollback|sysop|util|staff|helper|global-discussions-moderator|wiki-manager|soap/.test(mw.config.get("wgUserGroups").join("\n")) && mw.config.get("wgEditCount") < 100) {
-        var api = new mw.Api();
         api.get({
                 action: "parse",
                 text: "{{MediaWiki:Custom-comment-guidelines-notice}}",
@@ -382,7 +360,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
                 if (message === null) return;
 
-                new mw.Api().postWithEditToken({
+                api.postWithEditToken({
                     action: "edit",
                     appendtext: "\n:\{\{AIV|done\}\} " + message + " \{\{Subst:sig\}\}",
                     title: mw.config.get("wgPageName"),
@@ -391,72 +369,6 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                 }).then(console.log, console.warn);
             },
         }));
-
-    // Code to allow making {{Slot}} clickable to show different content
-    $(function () {
-        if (!$(".sbw-ui-tabber").length) {
-            return;
-        }
-
-        function clickTab(id) {
-            var $parent = $(this).parents(".sbw-ui-tabber").eq(0);
-            id = "ui-" + id;
-            if (!$("#" + id).length) {
-                console.warn("No such tab ID \"" + id + "\"");
-                return;
-            }
-            $parent.find(".sbw-ui-tab-content#" + id).siblings(".sbw-ui-tab-content").addClass("hidden").hide();
-            $parent.find(".sbw-ui-tab-content#" + id).removeClass("hidden").show();
-            // Since images don't load on hidden tabs, force them to load
-            $parent.find(".sbw-ui-tab-content#" + id + " .lzy[onload]").load();
-        }
-
-        // .hidden works on mobile, but not on desktop
-        $(".sbw-ui-tab-content.hidden").hide();
-
-        $(".sbw-ui-tabber .invslot").each(function () {
-            var classes = Array.from($(this)[0].classList).filter(function (c) {
-                return c.indexOf("goto-") === 0 || c.indexOf("ui-") === 0;
-            });
-
-            if (classes.length) {
-                var className = classes[(classes.length) - 1]
-                    .replace("goto-", "")
-                    .replace("ui-", "");
-
-                $(this).click(function () {
-                    clickTab.call(this, className);
-                });
-            }
-        });
-
-        $(".sbw-ui-tabber .sbw-ui-tab").click(function (e) {
-            e.preventDefault();
-            e.stopImmediatePropagation();
-
-            var id = $(this).data("tab");
-            if (id) {
-                clickTab.call(this, id);
-            }
-        });
-
-        // makes an extra button to go back to the first UI tab
-        $(".sbw-ui-tabber").each(function () {
-            var elementId = $(this).find(":first-child").attr("id");
-
-            if (!elementId) return;
-
-            var className = elementId.replace("ui-", "");
-
-            $(this).find(".mcui").append(
-                $("<div>").addClass("mcui-returnbutton text-zoom-independent noselect")
-                .attr("data-font-size", "22").text("↻")
-                .click(function () {
-                    clickTab.call(this, className);
-                })
-            );
-        });
-    });
 
     if (mw.config.get("wgPageName").match(/^S:(.+)$/i)) {
         window.location.replace(mw.util.getUrl("Special:" + mw.config.get("wgPageName").match(/^S:(.+)$/i)[1]));
@@ -472,6 +384,99 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     // Script to change the displayed text for Lua Errors
     $(".scribunto-error").text("There was a problem when loading this.");
     $(".scribunto-error").eq(0).text("There was a problem when loading this. Refresh and contact the admins if the issue persists.");
+
+    // Code to allow making {{Slot}} clickable to show different content [Part 1/2]
+    function clickTab(id) {
+        var $parent = $(this).parents(".sbw-ui-tabber").eq(0);
+        id = "ui-" + id;
+        if (!$("#" + id).length) {
+            console.warn("No such tab ID \"" + id + "\"");
+            return;
+        }
+        $parent.find(".sbw-ui-tab-content#" + id).siblings(".sbw-ui-tab-content").addClass("hidden").hide();
+        $parent.find(".sbw-ui-tab-content#" + id).removeClass("hidden").show();
+        // Since images don't load on hidden tabs, force them to load
+        $parent.find(".sbw-ui-tab-content#" + id + " .lzy[onload]").load();
+    }
+
+    $(document.body).on("click", ".sbw-ui-tabber .sbw-ui-tab", function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        var id = $(this).data("tab");
+        if (id)
+            clickTab.call(this, id);
+    });
+
+    //##############################################################
+    /* ==Scripts that are attached to wikipage content load== (W01)*/
+
+    // This hook forces it to apply script even in TabViews and page preview
+    mw.hook("wikipage.content").add(function (pSection) {
+
+        /* Script to make page-specific styling (see [[Project:Page Styles]]) */
+        pSection.find(".pageStyles").each(function () {
+            var $this = $(this);
+            var css = $this.text();
+            var id = $this.attr("id");
+
+            /* For security purposes, DO NOT REMOVE! */
+            function validateCSS(css) {
+                return css
+                    .replaceAll(/([\t ]*)[a-z0-9\-]+\s*:.*url\(["']?(.*?)["']?\)[^;}]*;?[\t ]*/gi, "$1/* url() is not allowed */") // url()
+                    .replaceAll(/([\t ]*)[a-z0-9\-]+\s*:.*expression\(["']?(.*?)["']?\)[^;}]*;?[\t ]*/gi, "$1/* expression() is not allowed */") // expression()
+                    .replaceAll(/([\t ]*)@import.*/gi, "$1/* @import is not allowed */") // @import
+                    .replaceAll(/([\t ]*)[a-z0-9\-]+\s*:[ \t]*["']?javascript:([^;\n]*)?;?[\t ]*/gi, '$1/* javascript: is not allowed */') // javascript:
+                    .replaceAll(/^([\t ]*)@font-face\s*{[^\0]*?}/gi, "$1/* @font-face is not allowed */"); // @font-face
+            }
+
+            $("<style>", {
+                text: validateCSS(css),
+                type: "text/css",
+                class: $this.attr("class") && $this.attr("class").replaceAll(/^pageStyles\s*|pageStyles\s*$/g, ""),
+                id: id,
+            }).appendTo("head");
+        });
+
+        // Code to allow making {{Slot}} clickable to show different content [Part 2/2]
+        (function () {
+            if (!pSection.find(".sbw-ui-tabber").length) {
+                return;
+            }
+
+            // .hidden works on mobile, but not on desktop
+            pSection.find(".sbw-ui-tab-content.hidden").hide();
+
+            pSection.find(".sbw-ui-tabber .invslot").each(function () {
+                var classes = Array.from($(this).get(0).classList).filter(function (c) {
+                    return c.indexOf("goto-") === 0 || c.indexOf("ui-") === 0;
+                });
+                if (classes.length) {
+                    var className = classes[(classes.length) - 1]
+                        .replace("goto-", "")
+                        .replace("ui-", "");
+                    $(this).click(clickTab.bind(this, className));
+                }
+            });
+
+            // makes an extra button to go back to the first UI tab
+            pSection.find(".sbw-ui-tabber").each(function () {
+                var elementId = $(this).find(":first-child").attr("id");
+
+                if (!elementId) return;
+
+                var className = elementId.replace("ui-", "");
+
+                $(this).find(".mcui").append(
+                    $("<div>").addClass("mcui-returnbutton text-zoom-independent noselect")
+                    .attr("data-font-size", "22").text("↻")
+                    .click(function () {
+                        clickTab.call(this, className);
+                    })
+                );
+            });
+        })();
+    });
 
     //##############################################################
     /* ==Element animator== (B00)*/
@@ -551,6 +556,70 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     });
 
     //##############################################################
+    /* ==My Block ID== (C00)*/
+    // Special:MyBlockID
+    if (mw.config.values.wgPageName.toLowerCase() === mw.config.get("wgFormattedNamespaces")[-1].toLowerCase() + ":myblockid") {
+        document.title = "My Block ID | " + mw.config.values.wgSiteName + " | Fandom";
+        $("#firstHeading").text("My Block ID");
+        var $content = mw.util.$content || $('#mw-content-text');
+        $content.empty()
+            .html(
+                $("<div>", {
+                    html: [
+                        $("<h3>", {
+                            text: "Loading..."
+                        }),
+                    ],
+                })
+            );
+
+        api.get({
+            action: "query",
+            meta: "userinfo",
+            uiprop: ["name", "blockinfo"],
+        }).then(function (r) {
+            r = r.query.userinfo;
+            var name = r.name;
+
+            mw.messages.set("", r.blockreason || "");
+            var parsedReason = mw.message("").parse();
+
+            console.log(r);
+            mw.messages.set("");
+            $content.html([
+                $("<h3>", {
+                    html: [
+                        "Displaying block information for \"", $("<a>", {
+                            href: mw.util.getUrl("Special:Contribs/" + name),
+                            text: name
+                        }), "\".",
+                    ],
+                })
+            ].concat(r.blockreason ? [
+                "You are currently blocked, your Block ID is ",
+                $("<a>", {
+                    href: mw.util.getUrl("Special:BlockList", {
+                        wpTarget: name
+                    }),
+                    text: "#" + r.blockid
+                }),
+                $("<small>", {
+                    html: [" (", $("<a>", {
+                        href: "#",
+                        click: function () {
+                            copyToClipboard("#" + r.blockid);
+                        },
+                        text: "click to copy"
+                    }), ")"]
+                }),
+                "."
+            ] : [
+                "You are not currently blocked. If you are still sure you're blocked, please try again with a different account, or contact an admin via discord for assistance."
+            ]));
+        });
+    }
+
+    //##############################################################
     /* ==importArticles== (Y00)*/
     // Imports scripts from other pages/wikis.
     // NOTE: importAricles() is currently broken.
@@ -578,9 +647,9 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     };
 
     importScripts([
-    	// Please note that ES5 script imports are moved to MediaWiki:ImportJS
-    	// (for convenience to promptly disable any script at any time)
-    	"MediaWiki:Common.js/skydate.js", // seems like ES6 scripts needs to be here
+        // Please note that ES5 script imports are moved to MediaWiki:ImportJS
+        // (for convenience to promptly disable any script at any time)
+        "MediaWiki:Common.js/skydate.js", // seems like ES6 scripts needs to be here
     ]);
 });
 
@@ -639,64 +708,3 @@ window.lessConfig = {
     // allowed groups
     allowed: ["codeeditor"],
 };
-
-// Special:MyBlockID
-
-if (mw.config.values.wgPageName.toLowerCase() === "special:myblockid") {
-    document.title = "My Block ID | " + mw.config.values.wgSiteName + " | Fandom";
-    $("#firstHeading").text("My Block ID");
-    mw.util.$content
-        .empty()
-        .html(
-            $("<div>", {
-                html: [
-                    $("<h3>", {
-                        text: "Loading..."
-                    }),
-                ],
-            })
-        );
-
-    var api = new mw.Api();
-    api.get({
-        action: "query",
-        meta: "userinfo",
-        uiprop: ["name", "blockinfo"],
-    }).then(function (r) {
-        r = r.query.userinfo;
-        var name = r.name;
-
-        mw.messages.set("", r.blockreason || "");
-        var parsedReason = mw.message("").parse();
-
-        console.log(r);
-        mw.messages.set("");
-        mw.util.$content.html([
-            $("<h3>", {
-                html: [
-                    "Displaying block information for \"", $("<a>", {
-                        href: mw.util.getUrl("Special:Contribs/" + name),
-                        text: name
-                    }), "\".",
-                ],
-            }),
-            r.blockreason ? "You are currently blocked, your Block ID is " : "You are not currently blocked. If you are still sure you're blocked, please try again with a different account, or contact an admin via discord for assistance.",
-            r.blockreason ? $("<a>", {
-                href: mw.util.getUrl("Special:BlockList", {
-                    wpTarget: "%23" + r.blockid
-                }),
-                text: "#" + r.blockid
-            }) : "",
-            r.blockreason ? $("<small>", {
-                html: [" (", $("<a>", {
-                    href: "#",
-                    click: function () {
-                        copyToClipboard("#" + r.blockid);
-                    },
-                    text: "click to copy"
-                }), ")"]
-            }) : "",
-            r.blockreason ? "." : "",
-        ]);
-    });
-}

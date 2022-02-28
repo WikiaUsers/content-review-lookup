@@ -487,14 +487,17 @@ function SetToolbar()
 			'<span onclick="ShowEditTools();" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_EditTools"><a class="oo-ui-buttonElement-button" role="button" title="Вставка вики-текста" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon"></span></a></span>'
 		); 
 		// добавление чёрной подложки для панели [Больше+]
-		$('div.mw-editTools').after('<div id="EditTools_LayerBG"></div>').addClass('EditTools_FadeIn');
+		$('div.mw-editTools').after('<div id="BlockScreenBG" class="BlockHideable"></div>').addClass('Restandart').addClass('BlockHideable');
 		// добавление заголовка на панель [Больше+]
-		$('#editpage-specialchars').prepend('<h2 class="TextOrange">Вставка вики-текста</h2>');
-		$('div.mw-editTools a, #EditTools_LayerBG').click(function()
+		$('div.mw-editTools a, #BlockScreenBG, #pnl_InfoboxInsertWindow .btn_Charinsert').click(function()
 		{
-			$('div.mw-editTools, #EditTools_LayerBG').css('display', 'none');
+			$('.BlockHideable').fadeOut();
 		})
 	}
+	$('#wikiEditor-section-main div.group-codemirror').append(
+		'<span onclick="ShowInfoboxInsertWindow();" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_InfoboxInsert"><a class="oo-ui-buttonElement-button" role="button" title="Вставка инфобокса" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon"></span></a></span>'
+	); 
+	
 }
 
 function CheckINUSE() 

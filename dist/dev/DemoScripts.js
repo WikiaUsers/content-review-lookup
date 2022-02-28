@@ -167,6 +167,15 @@
             styles: 'MediaWiki:FloatingTitle.css'
         },
 		
+		GamepediaNav: {
+			page: 'GamepediaNav',
+			scripts: 'MediaWiki:GamepediaNav.js',
+			styles: 'MediaWiki:GamepediaNav.css',
+			exec: function () {
+				$('body').addClass('is-gamepedia');
+			}
+		},
+		
         GlobalNavigationIcons: {
             page: 'GlobalNavigationIcons',
             styles: 'MediaWiki:GlobalNavigationIcons.css'
@@ -382,6 +391,11 @@
         ResponsiveMobile: {
             page: 'ResponsiveMobile',
             styles: 'MediaWiki:ResponsiveMobile.css'
+        },
+        
+        SpoilerBlur: {
+        	page: 'SpoilerBlur',
+        	styles: 'MediaWiki:SpoilerBlur.css'
         },
 		
 	    SearchSuggest: {

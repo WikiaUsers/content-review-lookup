@@ -3,8 +3,8 @@
  * 
  * Code to automate some part of administrator's actions for staff promotion/demotion
  * 
- * Staff "tag" option appears on the template {{User rights request}}
- * This template is commonly used on [[HSW:STFREQS]]
+ * Staff "tag" option appears on the template {{User rights request}} - This template is commonly used on [[HSW:STFREQS]]
+ * Also can be launched by clicking "staff tagger" on the dropdown menu on any user page
  */
 
 /* jshint
@@ -563,7 +563,7 @@
 
             onResolve: function () {
                 new BannerNotification($("<div>", {
-                    html: "<div><b>All subprocesses completed. Horray!</b><br>Please check the Console for all the results/errors.<br>You may now <a href=\"/wiki/CSS\">Update Staff Colors and Update CSS</a>.</div>",
+                    html: "<div><b>All subprocesses completed. Horray!</b><br>Please check the Console for all the results/errors.<br>You may now <a href=\"/wiki/HSW:Maintenance#Staff_Abuse_Filter_Change\">Update Abuse Filter</a>, <a href=\"/wiki/CSS\">Update Staff Colors and Update CSS</a>.</div>",
                 }).prop("outerHTML"), "confirm").show();
             },
 

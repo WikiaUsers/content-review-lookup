@@ -8,7 +8,7 @@ $(function() {
 		$('link[href*="/wikia.php"][href*="controller=ThemeApi"][href*="method=themeVariables"]').attr('href', function(i, v) { // Based on [[w:c:dev:MediaWiki:ThemeSelector.js]]
 			return !paramRegExp.test(v) ? v + '&variant=' + newTheme : v.replace(paramRegExp, function(m, p1, p2) { return p1 + 'variant=' + newTheme + p2; });
 		});
-		$('link#caburum-theme-switchee').attr('href', mw.util.wikiScript('load') + '?modules=ext.fandom.DesignSystem.GlobalNavigation.brand.' + newTheme + '.css%7Cext.fandom.DesignSystem.brand.' + newTheme + '.css&only=styles');
+		$('link#caburum-theme-switchee').attr('href', mw.util.wikiScript('load') + '?modules=ext.fandom.GlobalComponents.GlobalComponentsTheme.' + newTheme + '.css|ext.fandom.GlobalComponents.GlobalComponentsTheme.nav-' + newTheme + '.css&only=styles');
 		$('body').removeClass('theme-fandomdesktop-light theme-fandomdesktop-dark').addClass('theme-fandomdesktop-' + newTheme);
 
 		mw.config.set('isDarkTheme', newTheme === 'dark');
@@ -23,7 +23,7 @@ $(function() {
 			return new mw.Api().loadMessagesIfMissing(['fd-community-header-light-theme', 'fd-community-header-dark-theme']);
 		})
 		.then(function() {
-			$('.wiki-tools .wds-dropdown').before('<a class="wds-button wds-is-secondary caburum-theme-switcher" title="' + mw.msg('fd-community-header-' + (mw.config.get('isDarkTheme') ? 'light' : 'dark') + '-theme') + '" />');
+			$('.wiki-tools .wiki-tools__theme-switch').after('<a class="wds-button wds-is-secondary caburum-theme-switcher" title="' + mw.msg('fd-community-header-' + (mw.config.get('isDarkTheme') ? 'light' : 'dark') + '-theme') + '" />');
 			$('.caburum-theme-switcher').append(window.dev.wds.icon((mw.config.get('isDarkTheme') ? 'sun' : 'moon') + '-small'));
 			$('head').append('<link rel="stylesheet" id="caburum-theme-switchee" />');
 

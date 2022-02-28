@@ -1,4 +1,4 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+/* Automatically fills the summary field in upload form with imagebox
  * by: [[User:KettleMeetPot]]
  */
  
@@ -6,13 +6,15 @@ $(function() {
     if ( mw.config.get('wgCanonicalSpecialPageName') == "Upload" || mw.config.get('wgCanonicalSpecialPageName') == "MultipleUpload") {
 	    var value = "{"+"{Imagebox\n"
 		+ "| description = \n"
-		+ "| chapter     = \n"
-	    + "| Volume      = \n"
+		+ "| film        = \n"
 		+ "| series      = \n"
 		+ "| season      = \n"
+		+ "| Chapter     = \n"
+    	+ "| Volume      = \n"
 		+ "| episode     = \n"
 		+ "| source      = \n"
 		+ "| origin      = \n"
+		+ "| cats        = \n"
 		+ "| license     = \n"
 		+ "}"+"}";
 		$('#wpUploadDescription').val(value);

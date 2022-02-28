@@ -70,7 +70,7 @@ KXMX_anticheat();
     function showGratters(wish) {
         $('#WikiaRail').prepend(
             '<div id="newyearwishes" style="width:98%; position:relative; margin:13px auto; font-size:15px;">' +
-                '<div style="background-color:white; padding:20px 10px 10px 10px; border-radius:5px; border:2px Salmon; box-shadow:0 0 10px #2DCF66; min-height:45px;">' +
+                '<div class="wishes">' +
                     '<div style="width:100%; text-align:center;">«' + wish[1] + '»</div>' +
                     '<hr style="margin:5px 0;"/>' +
                     '<div style="text-align:right; font-style:italic; margin-right:5px;">' +

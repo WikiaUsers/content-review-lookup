@@ -143,7 +143,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                    
 	                    //Ajout du lien interwiki
 	                    var enfilename = "",
-	                    narutopediafile = document.getElementById('narutopediafileBox').value;
+	                    narutopediafile = document.getElementById('narutopediafileBox').value.trim();
 	    
 	                    if (narutopediafile !== "") {
 	                        enfilename = '\n[[en:File:' + narutopediafile + ']]';
@@ -173,12 +173,12 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                $.getScript(mw.util.wikiScript('load') + 
 	                    '?debug=false&lang=en&mode=articles&skin=fandomdesktop&missingCallback=importArticleMissing&articles=u%3Acamtest%3AMediaWiki%3ATextareaHelper.js%7Cu%3Adev%3AMediaWiki%3AColors%2Fcode.js%7Cu%3Adev%3AMediaWiki%3AMiniComplete%2Fcode.js&only=scripts', function () {
 	                    dev.minicomplete.load(
-	                        $customRows.find('#descriptionBox'), $customRows.find('#sourceBox'),$customRows.find('#characterBox'), $customRows.find('#jutsuBox')
+	                        $customRows.find('#descriptionBox'), $customRows.find('#sourceBox'), $customRows.find('#characterBox'), $customRows.find('#jutsuBox')
 	                    );
 	                });
 	            });
 	        } else { // Old style form just needs Information template in the summary box
-	            $('#wpUploadDescription').val('{{Information Fichier\n|Description = \n|Source= \n|Objet = \n|Personnages dans image = \n|Jutsu dans image = \n|Portion = \n|Résolution = \n|Remplaçabilité = \n|Autre Information = \n}}'); // Add link to guided form
+	            $('#wpUploadDescription').val('{{Information Fichier\n|Description = \n|Source = \n|Objet = \n|Personnages dans image = \n|Jutsu dans image = \n|Portion = \n|Résolution = \n|Remplaçabilité = \n|Autre Information = \n}}'); // Add link to guided form
 	            $("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://naruto.fandom.com/fr/index.php?title=Spécial:Téléverser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancé</a></div>');
 	        }
 	    }

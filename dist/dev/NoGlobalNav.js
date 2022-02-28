@@ -10,7 +10,8 @@
 $(function() {
 	if (mw.config.get('skin') !== 'fandomdesktop' || window.NoGlobalNavLoaded) return;
 	window.NoGlobalNavLoaded = true;
-	
+
+	$('body').addClass('noglobalnav-loaded');
 	$('.global-navigation__bottom').clone().addClass('user-navigation-moved').removeClass('global-navigation__bottom').appendTo('.wiki-tools.wds-button-group');
 	$('.user-navigation-moved .notifications').attr('class', 'moved-notifications');
 	$('.user-navigation-moved .notifications__toggle svg').addClass('wds-icon-small');
@@ -24,13 +25,6 @@ $(function() {
 		e.stopPropagation();
 		$('.global-navigation .notifications .global-navigation__icon').click();
 	});
-	
-	/* Add classes/variables for notification dropdown when sticky nav is not visible */
-	if ($('.fandom-community-header__image').length) {
-		var height = $('.fandom-community-header__image img').attr('height');
-		$('body').addClass('user-navigation-moved__has-header-image');
-		$(':root').css('--theme-icon-height', height+'px');
-	}
 	
 	/* Propagate unread notification count to cloned counters */
 	var counter = $('.global-navigation .notifications__counter');

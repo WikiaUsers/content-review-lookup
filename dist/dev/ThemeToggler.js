@@ -11,7 +11,7 @@ $(function() {
 		// Implementation by [[User:Pcj]] from ThemeSwitcher
 		$.when(
 			$.get(mw.util.wikiScript( 'wikia' ) + '?controller=ThemeApi&method=themeVariables&variant=' + newTheme + '&cb=' + ( new Date().getTime() ) ),
-			$.get( mw.util.wikiScript( 'load' ) + '?modules=ext.fandom.DesignSystem.GlobalNavigation.brand.' + newTheme + '.css%7Cext.fandom.DesignSystem.brand.' + newTheme + '.css&only=styles' )
+			$.get( mw.util.wikiScript( 'load' ) + '?modules=ext.fandom.GlobalComponents.GlobalComponentsTheme.' + newTheme + '.css%7Cext.fandom.GlobalComponents.GlobalComponentsTheme.nav-' + newTheme + '.css&only=styles' )
 		)
 		.done( function( wikiTheme, brandTheme ) {
 			var css = wikiTheme[0] + brandTheme[0];

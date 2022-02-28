@@ -155,12 +155,12 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                $.getScript(mw.util.wikiScript('load') + 
 	                    '?debug=false&lang=en&mode=articles&skin=oasis&missingCallback=importArticleMissing&articles=u%3Acamtest%3AMediaWiki%3ATextareaHelper.js%7Cu%3Adev%3AMediaWiki%3AColors%2Fcode.js%7Cu%3Adev%3AMediaWiki%3AMiniComplete%2Fcode.js&only=scripts', function () {
 	                    dev.minicomplete.load(
-	                        $customRows.find('#origineBox'), $customRows.find('#jeuBox'),$customRows.find('#cibleBox'), $customRows.find('#quoiBox')
+	                        $customRows.find('#origineBox'),$customRows.find('#jeuBox'),$customRows.find('#quoiBox')
 	                    );
 	                });
 	            });
 	        } else { // Old style form just needs Information template in the summary box
-	            $('#wpUploadDescription').val('{{Fichier\n|origine = \n|jeu= \n|année= \n|type = \n|cible = \n|quoi = \n}}'); // Add link to guided form
+	            $('#wpUploadDescription').val('{{Fichier\n|origine = \n|jeu= \n|année= \n|type = \n|quoi = \n}}'); // Add link to guided form
 	            $("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://reddead.fandom.com/fr/index.php?title=Spécial:Téléverser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancé</a></div>');
 	        }
 	    }

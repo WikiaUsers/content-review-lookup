@@ -21,6 +21,7 @@ importScriptURI('http://anime.wikia.com/index.php?title=MediaWiki:Anime-Common.j
 // indexed array of toggler ids to array of associated toggle operations
 // each operation is a two element array, the first being the type, the second a class name or array of elements
 // operation types are strings like "_reset" or "" for the default toggle operation
+
 var togglers = new Array();     
 var allClasses = new Object(); // associative map of class names to page elements
  
@@ -192,7 +193,11 @@ function owwsitesearch(f){
 		"tagClose": "",
 		"sampleText": ""
 	}; 
- 
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.defimage = "https://static.wikia.nocookie.net/worldtrigger/images/3/3b/Anime_Logo.png";
+window.pPreview.noimage = "https://static.wikia.nocookie.net/worldtrigger/images/3/3b/Anime_Logo.png";
+window.pPreview.RegExp.noinclude = [".hide-from-preview", ".reference", ".caption", ".toc", "sup", ".nihongo", ".references" ];
+
 addOnloadHook(toggleInit);
- 
+
 // </syntax>

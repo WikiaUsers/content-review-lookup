@@ -1,5 +1,5 @@
 /*
-Config File for script stored at [[MediaWiki:Gadget-StaffColorsUpdater.js/staff-colors.json]]
+Config File for script stored at [[MediaWiki:Gadget-StaffColorsUpdater.json]]
 The CSS Page for staff colors stored at [[MediaWiki:Custom-common.less/staff-colors.less]]
 
 Methods/Properties loaded to the mw.util object
@@ -51,7 +51,7 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 			}).join("\n") + "\n\n" +
 			"File Updated: Custom-common.less/staff-colors.less\n" +
 			"Script: Gadget-StaffColorsUpdater.js\n" +
-			"Configs: Gadget-StaffColorsUpdater.js/staff-colors.json\n\n" +
+			"Configs: Gadget-StaffColorsUpdater.json\n\n" +
 			"Remark: To see the changes, you still have to update CSS."
 		);
 	}
@@ -190,7 +190,7 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 		mw.util.StaffUtil.fetchStaffList = function () {
 			var def = new $.Deferred();
 
-			$.getJSON(new mw.Title("Gadget-StaffColorsUpdater.js/staff-colors.json", 8).getUrl({
+			$.getJSON(new mw.Title("Gadget-StaffColorsUpdater.json", 8).getUrl({
 				action: "raw",
 				ctype: "text/json"
 			})).then(function (data) {

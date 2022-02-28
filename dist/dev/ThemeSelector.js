@@ -6,8 +6,8 @@ $(function() {
 	
 	//initialize script-wide variables
 	var paramRegExp = /(\?|&)variant(?:=[^&]*)?(&|$)/g,
-		extRegExp = new RegExp('((?:=|%7[Cc])ext\\.fandom\\.DesignSystem\\.'
-			+ '(?:GlobalNavigation\\.)?brand\\.(?:wikiaorg-)?)(dark|default|light)'
+		extRegExp = new RegExp('((?:=|%7[Cc])ext\\.fandom\\.GlobalComponents\\.GlobalComponentsTheme\\.'
+			+ '(?:nav-)?)(dark|default|light)'
 			+ '(?:\\.css(?:%7[Cc]|&|$))', 'g'),
 		now = Math.floor(Date.now() / 1000),
 		scriptsReady = $.Deferred(),
@@ -43,7 +43,7 @@ $(function() {
 		if (newTheme === 'wiki') newTheme = themes.wiki;
 		
 		if ((newTheme === 'dark') != mw.config.get('isDarkTheme')) {
-			$('link[href*="/load.php"][href*=".brand."]').attr('href', function(i, v) {
+			$('link[href*="/load.php"][href*=".GlobalComponentsTheme."]').attr('href', function(i, v) {
 				var match = extRegExp.exec(v),
 					repIdx;
 				while (match) {

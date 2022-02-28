@@ -351,7 +351,6 @@ window.MessageWallUserTags = {
         'Anthony2306': 'Administrator',
         'Kandy_Katie': 'Administrator',
         'Koolkitty108': 'Administrator',
-        'TheKorraFanatic': 'Administrator',
         'SPONGEBOBSUPERFANINFINITY': 'Administrator',
         'Stryker305': 'Administrator',
         'BSpongeSM02':  'Administrator',
@@ -364,7 +363,6 @@ window.MessageWallUserTags = {
         'Idroppedmypen': 'Discussion Moderator',
         'SpongeTron D': 'Discussion Moderator',
         'Arthur_Read_fan': 'Discussion Moderator',
-        'Minnesotaman2007!': 'Discussion Moderator',
 
         'TheJasbre202': 'Rollback',
         'Arthur_Read_fan': 'Rollback',

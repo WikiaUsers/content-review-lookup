@@ -7,10 +7,23 @@ var activeFilters = {};
 $(".queryButton").each(function() {
     activeFilters[$(this).data("group")] = [];
 });
+var searchString = "";
 
 function filterCards() {
     $("#monsterData > div").each(function() {
+        var stringFound = true;
         var isVisible = false;
+        
+        if (searchString != "") {
+            stringFound = $(this).find("a:first").attr("title").toLowerCase().indexOf(searchString.trim()) > -1;
+            if (!stringFound) {
+                $(this).toggle(isVisible);
+                return;
+            } else {
+                isVisible = true;
+            }
+        }
+        
         for (var filterType in activeFilters) {
             var filterValues = activeFilters[filterType];
             if (filterValues.length) {
@@ -31,7 +44,7 @@ function filterCards() {
                 }
             }
         }
-                
+        
         $(this).toggle(isVisible);
     });
 }
@@ -63,6 +76,8 @@ function sortCards(sortBy) {
     });
 }
 
+$("#inputArea").append('<input id="searchInput" type="text" placeholder="Search by card name..">');
+
 $(".queryButton[data-group=order]").filter("[data-value=monsterid]").addClass("queryButtonActive");
 $(".queryButton").click(function(){
     if ($(this).data("group") == "order") {
@@ -78,6 +93,8 @@ $(".queryButton").click(function(){
             for (var filterType in activeFilters) {
                 activeFilters[filterType] = [];
             }
+            $("#searchInput").val("");
+            searchString = "";
         } else {
             $(".queryButtonActive").filter("[data-group=" + filterToClear + "]").removeClass("queryButtonActive");
             activeFilters[filterToClear] = [];
@@ -94,4 +111,9 @@ $(".queryButton").click(function(){
         });
         filterCards();
     }
+});
+
+$("#searchInput").on("keyup", function() {
+    searchString = $(this).val().toLowerCase();
+    filterCards();
 });

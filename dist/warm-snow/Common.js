@@ -1,7 +1,17 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* Tooltips config */
+window.tooltips_list = [
+   {
+       classname: 'glossary-tooltip',
+       parse: '{'+'{#lst:Glossary|<#section#>}}',
+   }
+];
+
 /* FlashAnchored script (slightly modified), from terraria.fandom.com */
 
+$( function() {
+	
 if (window.location.hash.length > 0){
 	var hash = window.location.hash.replace(/\./g,'\\.');
 	flash($(hash));
@@ -47,3 +57,15 @@ function flash(obj){
 		},3000);
 	},1);
 }
+});
+
+/* Makes the links to fake header of "Lore" page jumps after the Collapsible js has loaded */
+$( function() {
+	mw.hook('wikipage.content').add( function() {
+		var oldHash = location.hash;
+		if (oldHash != '') {
+			location.hash = '';
+			location.hash = oldHash;
+		}
+	});
+});

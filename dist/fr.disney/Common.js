@@ -16,10 +16,17 @@
  // END import Onlyifediting-functions
  // ============================================================
 
-/* Prévisualisation des articles */
+/* Prévisualisation des articles (import du script) */
 importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:LinkPreview/code.js',
     ]
+});
+
+/* Prévisualisation des articles (paramètres de personnalisation) */
+window.pPreview = $.extend(true, window.pPreview, {
+    defimage: 'https://vignette.wikia.nocookie.net/borderlands/images/0/05/Ajax.gif/revision/latest?cb=20170626182120&path-prefix=ru',
+    noimage: 'https://vignette.wikia.nocookie.net/lemondededisney/images/e/e6/Site-logo.png/revision/latest?cb=20210511194537&path-prefix=fr',
+    window.pPreview.scale: {r: '?', t: '/scale-to-width-down/350?'}
 });

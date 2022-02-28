@@ -48,7 +48,7 @@ function showTip(e) {
     if ($parent.hasClass("selflink") === false) {
         $t.removeAttr("title");
         $parent.removeAttr("title");
-        var url = "/index.php?title=" + $t.data("tt").replace(/ /g, "_").replace(/\+/g, "%2B").replace(/\?/g, "%3F") + "&action=render div.tooltip-content";
+        var url = mw.util.wikiScript('index') + "?title=" + $t.data("tt").replace(/ /g, "_").replace(/\+/g, "%2B").replace(/\?/g, "%3F") + "&action=render div.tooltip-content";
         if (tipCache[url] !== undefined) {
             $tfb.html(tipCache[url]);
             displayTip(e);

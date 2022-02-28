@@ -434,7 +434,8 @@
     };
     mw.loader.using([
         'mediawiki.api',
-        'mediawiki.util'
+        'mediawiki.util',
+        (mw.config.get('isGamepedia') ? 'jquery.timeago' : 'jquery')
     ]).then(function() {
         if (lastEdited.shouldRun()) {
             $($.proxy(lastEdited.init, lastEdited));

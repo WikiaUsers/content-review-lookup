@@ -58,3 +58,10 @@ window.LockOldBlogs = {
 };
  
 $('#mw-upload-form').submit(function(e) {return emptyLicenseAlert(this);});
+
+importArticles ({ 
+    type :  'script' , 
+    article :  [ 
+        'u:dev:MediaWiki:Quiz/code.js' , 
+    ] 
+});

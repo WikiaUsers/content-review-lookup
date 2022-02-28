@@ -157,7 +157,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                });
 	            });
 	        } else { // Old style form just needs Information template in the summary box
-	            $('#wpUploadDescription').val('{{Fichier\n|origine = \n|jeu= \n|type = \n|cible = \n|quoi = \n}}'); // Add link to guided form
+	            $('#wpUploadDescription').val('{{Fichier\n|origine=\n|jeu=\n|quoi=\n|type=\n}}\n'); // Add link to guided form
 	            $("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://bully.fandom.com/fr/index.php?title=Spécial:Téléverser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancé</a></div>');
 	        }
 	    }

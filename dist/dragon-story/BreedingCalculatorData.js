@@ -1513,6 +1513,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "aspiration": {
+                "name": "Aspiration",
+                "types": [
+                    "valentine",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "assurance": {
                 "name": "Assurance",
                 "types": [
@@ -7165,6 +7181,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "20_hours_20",
                 "rarity": 4,
                 "offspringeligibility": "worldevent",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "delightful": {
+                "name": "Delightful",
+                "types": [
+                    "valentine",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]
@@ -13276,6 +13308,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "15_hours_15",
                 "rarity": 3,
                 "offspringeligibility": "wheel",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "heartstruck": {
+                "name": "Heartstruck",
+                "types": [
+                    "valentine",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]
@@ -25168,6 +25216,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "resolve": {
+                "name": "Resolve",
+                "types": [
+                    "valentine",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "restful": {
                 "name": "Restful",
                 "types": [
@@ -26280,6 +26344,35 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 3,
                 "level": 4,
                 "offspringeligibility": "expired"
+            },
+            "scoundrel": {
+                "name": "Scoundrel",
+                "types": [
+                    "valentine",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "green"
+                            ]
+                        ]
+                    ]
+                ] ,
+                "notes": [
+                    "hidden"
+                ]
             },
             "scrying": {
                 "name": "Scrying",

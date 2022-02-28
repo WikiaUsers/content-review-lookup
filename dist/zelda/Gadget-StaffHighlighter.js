@@ -24,7 +24,6 @@ adminrights = {
 };
 
 traineerights = {
-	Ceiling_Master	:1,
 	Crocsandsocks	:1,
 	JumbledLimes	:1,
 	Weirdguy42      :1,

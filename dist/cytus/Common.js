@@ -23,10 +23,6 @@ importArticles({
  ajaxPages = ["Special:RecentChanges","Special:WikiActivity","Special:UncategorizedPages","Special:AllPages"];
  importScriptPage('AjaxRC/code.js', 'dev');
 
-importScriptPage('InactiveUsers/code.js', 'dev');
-
-InactiveUsers = { months: 2 };
-
 /* Code for OA image maps */
 $(document).ready(function() {
 	if (mw.config.get("wgCategories").includes("OA")) {

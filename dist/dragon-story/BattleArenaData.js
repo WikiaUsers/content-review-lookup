@@ -762,6 +762,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"aspiration": {
+				"name": "Aspiration",
+				"colors": [
+					"valentine",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"assurance": {
 				"name": "Assurance",
 				"colors": [
@@ -3659,6 +3667,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"world",
 					"white",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"delightful": {
+				"name": "Delightful",
+				"colors": [
+					"valentine",
+					"blue"
 				],
 				"rarity": "unbreedable"
 			},
@@ -6705,6 +6721,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"black",
 					"yellow",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"heartstruck": {
+				"name": "Heartstruck",
+				"colors": [
+					"valentine",
+					"purple"
 				],
 				"rarity": "unbreedable"
 			},
@@ -12497,6 +12521,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"resolve": {
+				"name": "Resolve",
+				"colors": [
+					"valentine",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"restful": {
 				"name": "Restful",
 				"colors": [
@@ -13002,6 +13034,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "super"
+			},
+			"scoundrel": {
+				"name": "Scoundrel",
+				"colors": [
+					"valentine",
+					"green"
+				],
+				"rarity": "common"
 			},
 			"scrying": {
 				"name": "Scrying",

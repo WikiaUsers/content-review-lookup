@@ -101,7 +101,7 @@ function ShowForumMessageWindow(SenderID, CaptionID)
 				}
 				
 				// добавление на страницу окна сообщения и тёмного фона
-        		$('body').append('<div id="EditTools_LayerBG" style="display: block;" onclick="CloseForumMessageWindow()"></div>')
+        		$('body').append('<div id="BlockScreenBG" style="display: block;" onclick="CloseForumMessageWindow()"></div>')
 					     .append(sMessageWindow);
 					     
 				// при создании новой темы в окне сообщения показывать поле для ввода заголовка
@@ -142,7 +142,7 @@ function ShowForumMessageWindow(SenderID, CaptionID)
 	// если окна сообщения уже есть на странице, оно просто становистя видимым 
 	else
 	{
-		$('#pnl_ForumMessageWindow, #EditTools_LayerBG').toggle();
+		$('#pnl_ForumMessageWindow, #BlockScreenBG').toggle();
 		$('#pnl_ForumMessageWindow').attr('data-SenderID', SenderID);
 		$('#pnl_ForumMessageWindow th').text(sCaption[CaptionID]);
 	}
@@ -151,7 +151,7 @@ function ShowForumMessageWindow(SenderID, CaptionID)
 // сокрытие окна сообщения без удаления его со страницы
 function CloseForumMessageWindow()
 {
-	$('#pnl_ForumMessageWindow, #EditTools_LayerBG').toggle();
+	$('#pnl_ForumMessageWindow, #BlockScreenBG').toggle();
 }
 
 // отображение блока с предосмотром

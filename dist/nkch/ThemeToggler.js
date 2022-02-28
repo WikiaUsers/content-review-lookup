@@ -256,7 +256,7 @@ if (!nkch.tt.isActive) {
                             $.get({
                                 url: mw.util.wikiScript("load"),
                                 data: {
-                                    modules: "ext.fandom.DesignSystem.GlobalNavigation.brand." + theme + ".css" + "|" + "ext.fandom.DesignSystem.brand." + theme + ".css",
+                                    modules: ["ext.fandom.GlobalComponents.GlobalComponentsTheme.nav-" + theme + ".css", "ext.fandom.GlobalComponents.GlobalComponentsTheme." + theme + ".css"].join("|"),
                                     only: "styles"
                                 }
                             })

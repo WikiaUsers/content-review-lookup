@@ -110,6 +110,7 @@
         'Misso5': ['retiredstaff'],
         'Misssupersal': ['retiredstaff'],
         'Moseezator': ['retiredstaff'],
+        'Reverb frost': ['retiredstaff'],
         'O8el1x': ['retiredstaff'],
         'Spirits of nature': ['retiredstaff'],
         'Stan890': ['retiredstaff'],

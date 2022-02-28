@@ -476,8 +476,8 @@
         // get data
         var apipage,
             iwrap = $('<img>', {src: Settings.defimage}),
-            twrap = $('<div/>'),
-            div = $('<div/>', {class: 'npage-preview'});
+            twrap = $('<div>'),
+            div = $('<div>', {class: 'npage-preview'});
         if (Settings.apid || withD) {
             apipage = new mw.Uri(nuri.interwiki + '/api/v1/Articles/Details');
             apipage.extend({titles: nuri.truepath, abstract: Math.min(Settings.tlen, 500)});
@@ -546,7 +546,7 @@
             }
             // preprocess (cleanup)
             text = preprocess(text);
-            text = $('<div/>', {class: 'tmpdivclass', style: 'visibility:hidden;display:none;'}).html(text);
+            text = $('<div>', {class: 'tmpdivclass', style: 'visibility:hidden;display:none;'}).html(text);
             if (!Settings.pibox) { // remove portable infobox
                 // assume infobox as 1st item
                 // and remove all preceding info- templates

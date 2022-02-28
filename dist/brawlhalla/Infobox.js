@@ -1,11 +1,10 @@
 "use strict";
-console.log("Infobox Script loaded.\nBuild:\t2/14/22");
+console.log("Infobox Script loaded.\nBuild:\t2/26/22");
 $(function () {
     $(".infobox").each(function (_i, elem) {
         var e = $(elem);
-        var infoData = $(".infobox-data-hidden");
 
-        if(!(infoData.length && infoData.hasClass("no-stances"))){
+        if(!e.hasClass("no-stances")){
 	        function clickFunction(stat) {
 	            return (function () {
 	                if ($(this).parent().attr("active")) {

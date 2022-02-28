@@ -130,7 +130,7 @@
 
                 var indent = false;
                 for(var x=0;x<PFD.templates.length;x++) {
-                    var opt = $('<option />').appendTo('#fileDescriptionTemplate');
+                    var opt = $('<option>').appendTo('#fileDescriptionTemplate');
                     opt.val(x);
 
                     if(typeof PFD.templates[x] == 'string') {
@@ -168,13 +168,13 @@
             } else $('#fileDescTemplatesTip').html('');
             if(PFD.templates[id].altdesc) {
                 $('#fileDescTemplatesMoreInfo').html(PFD.msg('multiple-versions')+' ');
-                $('#fileDescTemplatesMoreInfo').append($('<span class="button" />').html(PFD.templates[id].buttonlabel || PFD.msg('basic-version')).data('id', id).click(function(){
+                $('#fileDescTemplatesMoreInfo').append($('<span class="button">').html(PFD.templates[id].buttonlabel || PFD.msg('basic-version')).data('id', id).click(function(){
                     if(PFD.isAlt && PFD.textarea.val() != PFD.templates[$(this).data('id')].altdesc && !confirm(PFD.msg('confirm-overwrite')))
                         return false;
                     PFD.textarea.val(PFD.templates[$(this).data('id')].desc)
                     PFD.isAlt = false;
                 })).append(' ');
-                $('#fileDescTemplatesMoreInfo').append($('<span class="button" />').html(PFD.templates[id].altbuttonlabel || PFD.msg('alternative-version')).data('id', id).click(function(){
+                $('#fileDescTemplatesMoreInfo').append($('<span class="button">').html(PFD.templates[id].altbuttonlabel || PFD.msg('alternative-version')).data('id', id).click(function(){
                     if(!PFD.isAlt && PFD.textarea.val() != PFD.templates[$(this).data('id')].desc && !confirm(PFD.msg('confirm-overwrite')))
                         return false;
                     PFD.textarea.val(PFD.templates[$(this).data('id')].altdesc)

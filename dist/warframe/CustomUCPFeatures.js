@@ -69,7 +69,7 @@ function highlightUser(block, name, highlightBool) {
 				break;
 			
 			// DE Staff
-			case "DE_Glen":			
+			case "DE Glen":			
 			case "DEDrew":
 			case "DEHelen":
 			case "Rebulast":

@@ -46,7 +46,12 @@ function CopyEngImgInfo()
 
 function ShowEditTools()
 {
-  $('div.mw-editTools, #EditTools_LayerBG').fadeIn(150);
+  $('div.mw-editTools, #BlockScreenBG').fadeIn(150);
+}
+
+function ShowInfoboxInsertWindow()
+{
+  $('#pnl_InfoboxInsertWindow, #BlockScreenBG').fadeIn(150);
 }
 
 function InsertText( sPre, sPost){

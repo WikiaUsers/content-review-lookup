@@ -70,7 +70,6 @@
             frame.style.overflow = 'hidden';
             frame.contentDocument.querySelector('html').style.overflow = 'hidden';
             frameBody.style.overflow = 'hidden';
-            frameBody.querySelector('.wds-fandom-content-well').style.margin = 0; // Remove gutters
             frameBody.querySelector('.post-details-desktop,.post-details-mobile').style.setProperty('margin-top', 0, 'important');
             frameBody.querySelector('.post-details-desktop,.post-details-mobile').style.setProperty('margin-bottom', 0, 'important');
             frame.setAttribute('height', frameBody.clientHeight + 'px');
@@ -94,8 +93,8 @@
 					Remove them manually.  (Fix later, maybe)
 				*/
 				[
-					'.wds-global-navigation',
-					'.wds-community-bar',
+					'.mobile-global-navigation__wrapper',
+					'.mobile-community-bar',
 					'.feed-back-link',
 					'header.post-attribution',
 					'.edited-by',
