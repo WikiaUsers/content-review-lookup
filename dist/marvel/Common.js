@@ -298,7 +298,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{DisambiguationFull",
+					pre: "{{Disambiguation",
 					post: "\r|main         = \r|main_name    = \r|main_title   = \r|main_image   = \r|noimage      = \r\r|alternative1 = \r|include1     = \r|exclude1     = \r}}"
 				}
 			}

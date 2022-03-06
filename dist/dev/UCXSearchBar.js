@@ -50,10 +50,10 @@ $.when(mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg"])).then(function(
 
 	function update_linksuggest(container_selector){
 		var search_query = $(container_selector + " .wiki-tools__search-input").val().trim();
+		scroll_index = -1;
+		$(".wiki-tools__search-linksuggest-list-selected").removeClass("wiki-tools__search-linksuggest-list-selected");
 		if(!search_query){
 			$(container_selector + " .wiki-tools__search-linksuggest-list").attr("style", "display: none !important;");
-			scroll_index = -1;
-			$(".wiki-tools__search-linksuggest-list-selected").removeClass("wiki-tools__search-linksuggest-list-selected");
 			return;
 		}
 		new mw.Api().get({

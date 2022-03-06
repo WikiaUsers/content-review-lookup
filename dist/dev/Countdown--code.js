@@ -47,7 +47,7 @@
 		if (countdowns[i].opts & SHORT_FORMAT) result = result.charAt(1);
 		parts.unshift(delta + result);
 		diff = Math.floor(diff / 24);
-		result = ' ' + i18n.msg(delta === 1 ? 'day' : 'days').plain();
+		result = ' ' + i18n.msg(diff === 1 ? 'day' : 'days').plain();
 		if (countdowns[i].opts & SHORT_FORMAT) result = result.charAt(1);
 		parts.unshift(diff  + result);
 		result = parts.pop();

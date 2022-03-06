@@ -14,14 +14,6 @@ var customizeToolbar = function () {
 		}
 	} );
 	$( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-		'section': 'templates',
-		'groups': {
-			'selective-trasclusion': {
-				'label': 'Selective transclusion'
-			}
-		}
-	} );
-	$( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 		section: 'templates',
 		groups: {
 			list: {

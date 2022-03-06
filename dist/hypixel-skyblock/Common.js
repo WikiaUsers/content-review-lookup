@@ -1,6 +1,6 @@
 /* 
-Any JavaScript here will be loaded for all users on every page load.
-See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
+Any JavaScript here will be loaded for all users on every page load. 
+See MediaWiki:Wikia.js for scripts that only affect the oasis skin. 
 */
 
 /* Table of Contents

@@ -456,15 +456,15 @@ $(function(){
     /* Select links to new tabs for [[Template:ilnt]] and [[Template:elnt]] */
     $('.linkNewTab a').attr('target','_blank');
 
-    /* mode tabs switch for [[Template:npcinfobox]] and [[Template:npcinfobtable]] */
-    $('.infobox .modetabs .tab, .infotable.npc .modetabs .tab').on('click', function(){
+    /* mode tabs switch for [[Template:npcinfobox]] and [[Template:npcinfobtable]] and so on */
+    $('.modesbox .modetabs .tab').on('click', function(){
         var $this = $(this);
         if($this.hasClass('current')){
             return;
         }
         $this.parent().children().removeClass('current');
         $this.addClass('current');
-        $this.closest('.infobox, .infotable').removeClass('c-expert c-master c-normal').addClass($this.hasClass('normal')?'c-normal':($this.hasClass('expert')?'c-expert':'c-master'));
+        $this.closest('.modesbox').removeClass('c-expert c-master c-normal').addClass($this.hasClass('normal')?'c-normal':($this.hasClass('expert')?'c-expert':'c-master'));
     });
 
     /* [[template:spoiler]] */

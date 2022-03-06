@@ -20,7 +20,7 @@ console.log('MediaWiki:Common.js last updated: 13:33, July 3, 2015 (UTC)');
 mw.hook('dev.i18n').add(function (i18n) {
     i18n.loadMessages('CopyText').done(function (i18n) {
         $('body').on('click', '.copy-to-clipboard-button', function(e){
-            var text = $(this).data('text'),
+            let text = $(this).data('text'),
             $input = $('<textarea>', { type: 'text' })
                 .val($('.copy-to-clipboard-text').filter(function() {
                     return $(this).data('text') == text;
@@ -57,20 +57,16 @@ $('.articleid').text(mw.config.get('wgArticleId'));
  */
 
 function disableEditLink() {
-    if ( mw.config.get('wgNamespaceNumber') !== 110 && mw.config.get('wgNamespaceNumber') % 2 !== 1 ) { return; }
-    var skin = mw.config.get('skin');
-    if ( ( skin !== 'oasis' && skin !== 'monaco' && skin !== 'monobook' ) || // might be unnecessary, other skins haven't been checked
-         $.inArray( 'sysop', mw.config.get('wgUserGroups') ) > -1 || // disable completely for admins
-         typeof enableOldForumEdit !== 'undefined' ||
-         !$('#archived-edit-link')[0] ) { return; }
+    if ( mw.config.get('wgNamespaceNumber') !== 110 && mw.config.get('wgNamespaceNumber') % 2 !== 1 ) {
+        return;
+    }
+    let isOldArticle = $("#isOldArticle").text();
 
-    var editLink = ( skin === 'oasis' || skin === 'monaco' ) ? $('#ca-edit') : $('#ca-edit a');
-    if ( !editLink[0] ) { return; }
-
-    editLink.html('Archived').removeAttr('href').removeAttr('title').css({'color':'gray','cursor':'auto'});
-
-    $('span.editsection-upper').remove();
-
+    if (isOldArticle == "1") {
+        $(".page-header__actions").hide();
+        $(".page-side-edit").hide();
+    }
+    
 }
 $( disableEditLink );
 
@@ -82,20 +78,20 @@ $( disableEditLink );
  * Maintainers: [[wikipedia:User:R. Koot]]
  */
 
-var autoCollapse = 2;
-var collapseCaption = 'hide';
-var expandCaption = 'show';
+let autoCollapse = 2;
+let collapseCaption = 'hide';
+let expandCaption = 'show';
 
 window.collapseTable = function ( tableIndex ) {
-    var Button = document.getElementById( 'collapseButton' + tableIndex );
-    var Table = document.getElementById( 'collapsibleTable' + tableIndex );
+    let Button = document.getElementById( 'collapseButton' + tableIndex );
+    let Table = document.getElementById( 'collapsibleTable' + tableIndex );
 
     if ( !Table || !Button ) {
         return false;
     }
 
-    var Rows = Table.rows;
-    var i;
+    let Rows = Table.rows;
+    let i;
 
     if ( Button.firstChild.data === collapseCaption ) {
         for ( i = 1; i < Rows.length; i++ ) {
@@ -111,10 +107,10 @@ window.collapseTable = function ( tableIndex ) {
 };
 
 function createCollapseButtons() {
-    var tableIndex = 0;
-    var NavigationBoxes = {};
-    var Tables = document.getElementsByTagName( 'table' );
-    var i;
+    let tableIndex = 0;
+    let NavigationBoxes = {};
+    let Tables = document.getElementsByTagName( 'table' );
+    let i;
 
     function handleButtonLink( index, e ) {
         window.collapseTable( index );
@@ -125,17 +121,17 @@ function createCollapseButtons() {
         if ( $( Tables[i] ).hasClass( 'collapsible' ) ) {
 
             /* only add button and increment count if there is a header row to work with */
-            var HeaderRow = Tables[i].getElementsByTagName( 'tr' )[0];
+            let HeaderRow = Tables[i].getElementsByTagName( 'tr' )[0];
             if ( !HeaderRow ) { continue; }
-            var Header = HeaderRow.getElementsByTagName( 'th' )[0];
+            let Header = HeaderRow.getElementsByTagName( 'th' )[0];
             if ( !Header ) { continue; }
 
             NavigationBoxes[ tableIndex ] = Tables[i];
             Tables[i].setAttribute( 'id', 'collapsibleTable' + tableIndex );
 
-            var Button     = document.createElement( 'span' );
-            var ButtonLink = document.createElement( 'a' );
-            var ButtonText = document.createTextNode( collapseCaption );
+            let Button     = document.createElement( 'span' );
+            let ButtonLink = document.createElement( 'a' );
+            let ButtonText = document.createTextNode( collapseCaption );
 
             Button.className = 'collapseButton';  /* Styles are declared in Common.css */
 
@@ -159,7 +155,7 @@ function createCollapseButtons() {
             window.collapseTable( i );
         }
         else if ( $( NavigationBoxes[i] ).hasClass ( 'innercollapse' ) ) {
-            var element = NavigationBoxes[i];
+            let element = NavigationBoxes[i];
             while ((element = element.parentNode)) {
                 if ( $( element ).hasClass( 'outercollapse' ) ) {
                     window.collapseTable ( i );

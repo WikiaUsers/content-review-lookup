@@ -25,7 +25,7 @@
         var srcvar = $target.attr("src");
         var pattern = /(?:static|vignette|images)\.wikia\.nocookie\.net/;
         if (srcvar && !srcvar.endsWith("format=original") && pattern.exec(srcvar)) {
-            if ($target.attr("width") || $target.attr("height"))
+            if ($target.attr("width") || $target.attr("height") || $target.parents(".wikia-gallery-item").length > 0)
                 srcvar = srcvar.replace(/\/scale\-to\-width\-down\/\d+/g, "");
 
             if (srcvar.includes("?"))

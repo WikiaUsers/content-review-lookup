@@ -66,16 +66,24 @@ function UpdateTableHeaders() {
       
       floatingHeader.css("top", Math.min(scrollTop - offset.top + topNavOffset, $(this).height() - floatingHeader.height() - $("tr:last", this).height()) + "px").show();
       
+    /* hack for cellpadding and cellspacing attributes: tr's width is increased by 2*cellspacing, and each header cell is reduced by 2*cellpadding */
+    var insidetable = $(this).find($('.floatheader')).first();
+    var cellspacing = $(insidetable).attr('cellspacing');
+    if (typeof cellspacing === 'undefined') cellspacing = 0; 
+    else cellspacing = Number(cellspacing);
+    var cellpadding = $(insidetable).attr('cellpadding');
+    if (typeof cellpadding === 'undefined') cellpadding = 0; 
+    else cellpadding = Number(cellpadding);
       //--- Copy cell width & horizontal padding from original header -- only way to make the cells obey their width
       $("th", floatingHeader).each(function(i) {
         var oh = $("th", originalHeader).eq(i);
-        $(this).width(oh.css("width"));
+        $(this).width((Number(oh.css("width").replace("px","")) - 2*cellpadding) + 'px');
         $(this).css("padding-left", oh.css("padding-left"));
         $(this).css("padding-right", oh.css("padding-right"));
       });
       
       //--- Copy width from original thead -- Add 1px to wikitables
-      floatingHeader.css("width", originalHeader.width() + $("> table", this).hasClass("wikitable") + "px");
+      floatingHeader.css("width", originalHeader.width() + 2*cellspacing + $("> table", this).hasClass("wikitable") + "px");
     }
     else {
       floatingHeader.hide();

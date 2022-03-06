@@ -20,3 +20,9 @@ if (disclaimerNs.indexOf(wgNamespaceNumber) !== -1) {
 	  boxShadow: "0 0 5px 0 rgba(58,81,86,.39)",
 	})
 }
+
+// Faire descendre le script AddRailModule
+if (mw.config.get('skin') === 'fandomdesktop') 
+		$(".page-content").append(legaldiv);
+	else
+		$(".WikiaArticle").append(legaldiv);

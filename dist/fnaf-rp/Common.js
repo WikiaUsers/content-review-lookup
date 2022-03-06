@@ -29,6 +29,8 @@ window.UserTagsJS = {
         test: {u:'Coding Test'},
         yeetmod: {u:'Yeet Mod'},
         burn: {u:'Awesome-est guy'},
+        owner: {u:'Owner'},
+        coowner: {u:'Co-owner'},
 	}
 };
 UserTagsJS.modules.custom = {
@@ -38,7 +40,7 @@ UserTagsJS.modules.custom = {
     'Fireburn12': ['founder', 'burn'],
     'Foxdini': ['yeetmod','bureaucrat'],
     'Jillips Entertainment': ['yeetmod'],
-    'HugeClockTowerFan': ['co-owner'],
+    'HugeClockTowerFan': ['coowner'],
     'LeTesla': ['owner'],
 };
 UserTagsJS.modules.metafilter = {
@@ -54,12 +56,17 @@ window.MessageWallUserTags = {
     glowColor: '#3104B4',
     users: {
         'Fireburn12': 'Founder',
-        'Xersin': 'Owner',
-        'Foxdini': 'Bureaucrat',
-        'HugeClockTowerFan': 'Bureaucrat',
+        'LeTesla': 'Owner',
+        'HugeClockTowerFan': 'Co-owner',
         'Vyris': 'Admin',
+        'AwesomeChic88': 'Admin',
+        'Kyogreswimming': 'Admin',
+        'RoyalVenus': 'Admin',
+        'Uberthief': 'Admin',
+        'IchxrF0x': 'Moderator',
+        'Neon1Umbreon': 'Moderator',
+        'Terrainsponge23theory': 'Moderator',
         'The_Name_Is_Nick': 'Rollback',
         'Jillips_Entertainment': 'Moderator',
-        'Springy_Boy': 'Chat Moderator',
     }
 };

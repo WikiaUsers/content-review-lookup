@@ -1,0 +1,1 @@
+/* La piel Monobook fue desactivada, usar Wikia.js para un mayor orden */

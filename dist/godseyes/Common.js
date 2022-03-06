@@ -68,3 +68,16 @@ $(".layerMapToggleButton").click(function(){
   var id = $(this).attr('data-forid');
   $('#' + id).toggle();
 });
+
+/* Rail WAM */
+window.railWAM = {
+    logPage:"Project:WAM Log"
+};
+
+/* RailWAM */
+window.railWAM = {
+    logPage:"Project:WAM Log/Auto-Statistics",
+    loadOnPage:'Special:WikiActivity',
+    autoLogForUsers:["User:Kusuo1412"],
+    loadOnNamespace:[-1],
+};

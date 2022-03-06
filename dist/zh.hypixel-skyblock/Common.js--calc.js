@@ -37,7 +37,7 @@
 // Load Styles 
 $('<link>', { 
 	rel: 'stylesheet', 
-	href: 'https://hypixel-skyblock.fandom.com/zh/wiki/MediaWiki:Common.js/calc.css?action=raw&ctype=text/css'
+	href: 'https://hypixel-skyblock.fandom.com/wiki/MediaWiki:Common.js/calc.css?action=raw&ctype=text/css'
 }).appendTo('head');
 
 /*global mediaWiki, hsbwiki */

@@ -250,6 +250,8 @@ $(function () {
                     });
                 }
             });
+            if ($(".minetip:hover, .invslot-item:hover").length < 1 && $("#minetip-tooltip").length > 0)
+            	$("#minetip-tooltip").remove();
         });
     })());
     (function () {

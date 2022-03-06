@@ -1222,6 +1222,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "super"
 			},
+			"bioluminescent": {
+				"name": "Bioluminescent",
+				"colors": [
+					"tropic",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"birch": {
 				"name": "Birch",
 				"colors": [
@@ -1659,6 +1667,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"rainbow",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"brightfin": {
+				"name": "Brightfin",
+				"colors": [
+					"tropic",
+					"yellow",
+					"pink"
 				],
 				"rarity": "unbreedable"
 			},
@@ -3054,6 +3071,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"white",
 					"purple",
 					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"cryptid": {
+				"name": "Cryptid",
+				"colors": [
+					"tropic",
+					"white",
+					"blue"
 				],
 				"rarity": "unbreedable"
 			},
@@ -6912,6 +6938,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Highland",
 				"colors": [
 					"champion"
+				],
+				"rarity": "unbreedable"
+			},
+			"hippocampus": {
+				"name": "Hippocampus",
+				"colors": [
+					"tropic",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},
@@ -13135,6 +13169,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"seagarden": {
+				"name": "Seagarden",
+				"colors": [
+					"tropic",
+					"red"
+				],
+				"rarity": "common"
+			},
 			"seaglass": {
 				"name": "Seaglass",
 				"colors": [
@@ -13392,6 +13434,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"tropic"
 				],
 				"rarity": "rare"
+			},
+			"shellswap": {
+				"name": "Shellswap",
+				"colors": [
+					"tropic",
+					"purple"
+				],
+				"rarity": "unbreedable"
 			},
 			"shift": {
 				"name": "Shift",
@@ -14711,6 +14761,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"white",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"stormcaller": {
+				"name": "Stormcaller",
+				"colors": [
+					"tropic",
+					"green",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},

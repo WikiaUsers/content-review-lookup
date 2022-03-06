@@ -143,9 +143,9 @@ UserTagsJS.modules.custom = {
     ],
     'ConTraZ VII': [
         'sysop',
+        'gm',
         'bureaucrat',
         'hier',
-        'anadmin',
         'seni',
     ],
     'Athener': ['night'],

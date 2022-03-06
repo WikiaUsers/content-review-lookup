@@ -2438,6 +2438,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ]
             },
+            "bioluminescent": {
+                "name": "Bioluminescent",
+                "types": [
+                    "tropic",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "25_hours_25",
+                "rarity": 4,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "birch": {
                 "name": "Birch",
                 "types": [
@@ -3273,6 +3289,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "types": [
                     "rainbow",
                     "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "brightfin": {
+                "name": "Brightfin",
+                "types": [
+                    "tropic",
+                    "yellow",
+                    "pink"
                 ],
                 "environments": [
                     "dragon_islands"
@@ -5914,6 +5947,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "7_hours_7",
                 "rarity": 2,
                 "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "cryptid": {
+                "name": "Cryptid",
+                "types": [
+                    "tropic",
+                    "white",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
                 "notes": [
                     "feature"
                 ]
@@ -13685,6 +13735,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "9_hours_9",
                 "rarity": 3,
                 "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "hippocampus": {
+                "name": "Hippocampus",
+                "types": [
+                    "tropic",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]
@@ -26550,6 +26616,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 1,
                 "level": 15
             },
+            "seagarden": {
+                "name": "Seagarden",
+                "types": [
+                    "tropic",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "seaglass": {
                 "name": "Seaglass",
                 "types": [
@@ -27071,6 +27164,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                             ]
                         ]
                     ]
+                ]
+            },
+            "shellswap": {
+                "name": "Shellswap",
+                "types": [
+                    "tropic",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
                 ]
             },
             "shift": {
@@ -29754,6 +29863,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "12_hours_12",
                 "rarity": 2,
                 "offspringeligibility": "gift",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "stormcaller": {
+                "name": "Stormcaller",
+                "types": [
+                    "tropic",
+                    "green",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
                 "notes": [
                     "feature"
                 ]

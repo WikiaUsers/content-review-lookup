@@ -1,10 +1,3 @@
-/* Spoiler alert */
-window.SpoilerAlert = {
-    isSpoiler: function () {
-        return -1 != $.inArray('Spoiler', wgCategories);
-    }
-};
-
 /* User Tags */
 window.UserTagsJS = {
     tags: {
@@ -35,21 +28,16 @@ if (mw.config.get('wgCanonicalSpecialPageName') == 'WikiActivity' || mw.config.g
     .prependTo('.toolbar .tools');
 }
 
-/* Adds icons to page header
- * by: The 888th Avatar, adapted to new header by Thailog
- */
-$(function() {
-    if ( mw.config.get( 'wgVersion' ) !== '1.19.24' && $( '#title-eraicons' ).length ) {
-        $( '.page-header__contribution > div' ).first().append( $( '#title-eraicons' ).show() );
-    } else if ( $( '.wds-community-header' ).length ) {
-        $( '#PageHeader' ).prepend(
-            $( '#icons' ).attr( 'style', 'position: absolute; right: 65px;' )
-        );
-    } else {
-        $( '.WikiaPageHeader' ).append( $( '#icons' ) );
-        $( '#icons' ).css( { 'position' : 'absolute', 'right' : '5.1em', 'bottom' : '-2em' } ).show();
+/*For [[Template:Icons]] */
+$( function () {
+    if ( $( '#icons' ).length ) {
+        if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
+            $( '.page-header__actions' ).prepend( $( '#icons' ).show() );
+        } else {
+            $( '.page-header__contribution > div' ).first().append( $( '#icons' ).show() );
+        }
     }
-});
+} );
 
 /*Keeps staff blogs from locking after 30 days of no commenting */
 window.LockOldBlogs = {
@@ -80,3 +68,20 @@ $(function () {
 
 	button.click(toggleText);
 });
+
+/* Episode Guide International hides headings on Desktop */
+const
+    epgPages = "Episode_guide/International/",
+    epgTabber = "wds-tabber",
+    epgTabContent = "wds-tab__content";
+
+if (mw.config.get('wgPageName').startsWith(epgPages)) {
+    const tabs = document.getElementsByClassName(epgTabber);
+    if (tabs) {
+        Array.prototype.forEach.call(document.getElementsByClassName(epgTabContent), function(tab) {
+            Array.prototype.forEach.call(tab.getElementsByTagName("h2"), function(i) {
+                i.remove();
+            });
+        });
+    }
+}

@@ -10,9 +10,9 @@ var descriptionString = new String("This list contains %d items"); //%d is where
 var smallTreeCount = 4; // less leaves than this, the tree will be open at first
 var interactiveTrees = 1; // set this to 0 in user.js to turn this off
 
-function $button(text,id,toggle) {
+function $button(text,myClass,toggle) {
 	var $b = $('<a>');
-	$b.html(text).attr('id',id).css('cursor','pointer');
+	$b.html(text).attr('class',myClass).css('cursor','pointer');
 	if (toggle.length > 0) {
 		$b.data('toggle',toggle.join(' '));
 		$b.on('click.appear',function() {
@@ -48,28 +48,30 @@ function recursiveCountAndMark(e, depth, nocount) {
 				}
 		        var ds = (nocount) ? "" : descriptionString.replace(/\%d/g, subtotal);
 				
-		        $(si).before($('<div>').attr('id','listTreeHeader').html(ds));
+		        $(si).before($('<div>').attr('class','listTreeHeader').html(ds));
 
-				$(si).parent().children().eq(0).append(' (').append($button('show all', 'listAllButton', [])).append(')');
+                var $currentButton = $button('show all', 'listAllButton', []);
 
-				$('#listAllButton').data('toggle',paneListForThisTree.join(' '));
-				$("#listAllButton").on('click.appear',function() {
+				$(si).parent().children().eq(0).append(' (').append($currentButton).append(')');
+
+				$currentButton.data('toggle',paneListForThisTree.join(' '));
+				$currentButton.on('click.appear',function() {
 					var tSplit = $(this).data('toggle').split(' ');
 					for (var i in tSplit) $('#' + tSplit[i]).removeClass('hiddenlist').addClass('visiblelist');
 		        });
-				$("#listAllButton").click(function () {
-				    if ( $("#listAllButton").html() === "show all") {
-				        $("#listAllButton").html("hide all");
-				        $('#listAllButton').off('click.appear');
-				        $("#listAllButton").on('click.appear',function() {
+				$currentButton.click(function () {
+				    if ( $currentButton.html() === "show all") {
+				        $currentButton.html("hide all");
+				        $currentButton.off('click.appear');
+				        $currentButton.on('click.appear',function() {
 				        	var tSplit = $(this).data('toggle').split(' ');
 							for (var i in tSplit) $('#' + tSplit[i]).removeClass('visiblelist').addClass('hiddenlist');
 				        });
 				    }
 				    else {
-				        $("#listAllButton").html("show all");
-				        $("#listAllButton").off('click.appear');
-				        $("#listAllButton").on('click.appear',function() {
+				        $currentButton.html("show all");
+				        $currentButton.off('click.appear');
+				        $currentButton.on('click.appear',function() {
 				        	var tSplit = $(this).data('toggle').split(' ');
 							for (var i in tSplit) $('#' + tSplit[i]).removeClass('hiddenlist').addClass('visiblelist');
 				        });

@@ -132,13 +132,15 @@ $.when(
 			 var $this = $(this);
 
 			 if (!$this.find('.mw-user-report-link').length) {
-				 $this.find('.mw-changeslist-links > span:last-of-type').after(' | ', $('<a>', {
-					class: "mw-user-report-link",
-					text: "report",
-					title: "Report " + $this.find('.mw-userlink bdi').html() + " To the administrators",
-					'data-user': $this.find('.mw-userlink bdi').html(),
-					'data-diff': $this.find('.mw-changeslist-diff').attr('href'),
-					css: { cursor: "pointer" },
+				 $this.find('.mw-changeslist-links > span:last-of-type').after($("<span>", {
+					 html: $('<a>', {
+						class: "mw-user-report-link",
+						text: "report",
+						title: "Report " + $this.find('.mw-userlink bdi').html() + " To the administrators",
+						'data-user': $this.find('.mw-userlink bdi').html(),
+						'data-diff': $this.find('.mw-changeslist-diff').attr('href'),
+						css: { cursor: "pointer" },
+					 }),
 				 }));
 			 }
 		 });
@@ -148,13 +150,15 @@ $.when(
 		$('[data-mw-revid]').each(function() {
 			var $this = $(this);
 
-			$this.find('.mw-history-histlinks').append(' | ', $('<a>', {
-				class: "mw-user-report-link",
-				text: "report",
-				title: "Report " + $this.find('.history-user bdi').html() + " To the administrators",
-				'data-user': $this.find('.history-user bdi').html(),
-				'data-diff': $this.find('.mw-history-histlinks > span:nth-of-type(2) > a').attr('href'),
-				css: { cursor: "pointer" },
+			$this.find('.mw-history-histlinks').append($("<span>", {
+				html: $('<a>', {
+					class: "mw-user-report-link",
+					text: "report",
+					title: "Report " + $this.find('.history-user bdi').html() + " To the administrators",
+					'data-user': $this.find('.history-user bdi').html(),
+					'data-diff': $this.find('.mw-history-histlinks > span:nth-of-type(2) > a').attr('href'),
+					css: { cursor: "pointer" },
+				}),
 			}));
 		});
 	}
@@ -163,13 +167,15 @@ $.when(
 		$('#mw-content-text > ul > li').each(function() {
 			var $this = $(this);
 			
-			$this.find('a[href*="diff"]:last-of-type').after(' | ', $('<a>', {
-				class: "mw-user-report-link",
-				text: "report",
-				title: "Report " + $this.find('.mw-userlink bdi').html() + " To the administrators",
-				'data-user': $this.find('.mw-userlink bdi').html(),
-				'data-diff': $this.find('a[href*="diff"]:last-of-type').attr('href'),
-				css: { cursor: "pointer" },
+			$this.find('a[href*="diff"]:last-of-type').after($("<span>", {
+				html: $('<a>', {
+					class: "mw-user-report-link",
+					text: "report",
+					title: "Report " + $this.find('.mw-userlink bdi').html() + " To the administrators",
+					'data-user': $this.find('.mw-userlink bdi').html(),
+					'data-diff': $this.find('a[href*="diff"]:last-of-type').attr('href'),
+					css: { cursor: "pointer" },
+				}),
 			}));
 		});
 	}
@@ -177,24 +183,28 @@ $.when(
 	function addContribsLinks() {
 		var $user = $('h1[itemprop="name"]').html();
 		// Report top
-		$('.mw-contributions-user-tools > span > span:last-of-type > a:last-of-type').after(' | ', $('<a>', {
-			title: "Report " + $user + " To the administrators",
-			class: "mw-user-report-link",
-			'data-user': $user,
-			text: "report",
-			css: { cursor: "pointer" },
+		$('.mw-contributions-user-tools > span > span:last-of-type > a:last-of-type').parent().after($("<span>", {
+			html: $('<a>', {
+				title: "Report " + $user + " To the administrators",
+				class: "mw-user-report-link",
+				'data-user': $user,
+				text: "report",
+				css: { cursor: "pointer" },
+			}),
 		}));
 		// Edit List
 		$('ul.mw-contributions-list > li').each(function() {
 			var $this = $(this);
 			
-			$this.find('.mw-changeslist-links > span:last-of-type').after(' | ', $('<a>', {
-				class: "mw-user-report-link",
-				text: "report",
-				title: "Report " + $user + " To the administrators",
-				'data-user': $user,
-				'data-diff': $this.find('.mw-changeslist-diff').attr('href'),
-				css: { cursor: "pointer" },
+			$this.find('.mw-changeslist-links > span:last-of-type').after($("<span>", {
+				html: $('<a>', {
+					class: "mw-user-report-link",
+					text: "report",
+					title: "Report " + $user + " To the administrators",
+					'data-user': $user,
+					'data-diff': $this.find('.mw-changeslist-diff').attr('href'),
+					css: { cursor: "pointer" },
+				}),
 			}));
 		});
 	}

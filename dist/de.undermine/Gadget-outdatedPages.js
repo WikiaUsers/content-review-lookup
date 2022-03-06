@@ -56,6 +56,7 @@ $( document ).ready( function( $ ) {
 
   function newHeaderEntry(name) {
   	var a = document.createElement("th");
+	a.className="sticky";
   	a.appendChild(document.createTextNode(name));
   	return a;
   }
