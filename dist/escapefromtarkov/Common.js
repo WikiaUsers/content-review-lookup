@@ -123,3 +123,10 @@ $.when( mw.loader.using( 'mediawiki.util' ), $.ready ).then( function () {
 		}
 	});
 });
+
+/* Temporary add 'Random page' for anons under 'Explore' menu */
+$(document).ready(function() {
+	if(mw.config.get("wgUserName")) return;
+
+    $(".explore-menu .wds-list").append('<li><a href="/wiki/Special:Random"><span>Random Page</span></a></li>');
+});

@@ -5,12 +5,20 @@
 
 mw.loader.using(['mediawiki.template.mustache']).then(function () {
 	glnbutt = {};
+	glnbutt.config = $.extend({
+		keepLinks: [] // tracking ids of top-level links to keep
+	}, window.GlobalNavButtonsConf);
 
 	if (mw.config.get('skin') !== 'fandomdesktop') return console.error('[GlobalNavButtons] Unrecognized skin:', mw.config.get('skin'));
 
 	glnbutt.init = function () {
 		if (window.globalNavButtons) {
-			$('.global-navigation__nav .global-navigation__links').empty(); // Remove current links
+			$('.global-navigation__nav .global-navigation__links > *').each(function () { // Remove Fandom links
+				if (!glnbutt.config.keepLinks.includes(
+					$(this).data('tracking-label')
+					|| $(this).first().data('tracking-label') // for dropdowns
+				)) $(this).remove();
+			});
 			$.each(window.globalNavButtons, function(i, glnbutton) {
 				if (!glnbutton.isMain && !glnbutton.whoIsMain) { // Normal
 					$('.global-navigation__nav .global-navigation__links').append(glnbutt.createTemplate('normal', {
@@ -36,6 +44,7 @@ mw.loader.using(['mediawiki.template.mustache']).then(function () {
 				}
 				i++;
 			});
+			mw.hook('dev.GlobalNavButtons').fire(); // for anyone needing to implement additional logic
 		}
 	};
 

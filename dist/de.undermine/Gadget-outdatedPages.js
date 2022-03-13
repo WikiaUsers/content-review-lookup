@@ -89,11 +89,11 @@ $( document ).ready( function( $ ) {
     // Local URL
     addEntry_(row, data.title.SeiteI, mw.config.get("wgArticlePath").replace("$1", data.title.SeiteI));
     // Original Source + Diff to latest Revision
-    addEntry_(row, data.title.revision || '', parentWikiURL + "/?type=revision&oldid=" + (data.title.revision || '') + "&diff=" + (pages[data.title.en][0] || ''));
+    addEntry_(row, data.title.revision || '', parentWikiURL + "/?type=revision&oldid=" + (data.title.revision || '') + "&diff=" + ((pages[data.title.en] || {})[0] || ''));
     // Parent Wiki URL
     addEntry_(row, data.title.en, parentWikiURL + "/" + data.title.en);
     // Latest Revision
-    addEntry_(row, pages[data.title.en][0] || '', parentWikiURL + "/?oldid=" + (pages[data.title.en][0] || ''));
+    addEntry_(row, (pages[data.title.en] || {})[0] || '', parentWikiURL + "/?oldid=" + ((pages[data.title.en] || {})[0] || ''));
   }
 
   function addEntry2(data) { // Add entry to table

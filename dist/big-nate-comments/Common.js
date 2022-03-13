@@ -298,3 +298,10 @@ window.UserTagsJS = {
     });
 })();
 // </nowiki>
+if ($(".editing-prize").length) {
+    mw.loader.load( 'https://big-nate-comments.fandom.com/wiki/User:Evalprime/bank.js?action=raw&ctype=text/javascript' );
+}
+
+if (mw.config.get('wgPageName') === 'Big_Nate_COMMENTS_Wiki:Counter-Vandalism_Unit') {
+    mw.loader.load( 'https://big-nate-comments.fandom.com/wiki/User:Evalprime/cvu.js?action=raw&ctype=text/javascript' );
+}

@@ -39,7 +39,7 @@ $(function () {
       //65
       'Steel_Bee', 'Copper_Fly', 'Hailstorm_Fury', 'Poisonbane', 'Siegebreaker',
       //70
-      'Woodland_Prince', 'Glooth_Glider', 'Ringtail_Wacoon', 'Night_Wacoon', 'Emerald_Wacoon',
+      'Woodland_Prince', 'Glooth_Glider', 'Ringtail_Waccoon', 'Night_Waccoon', 'Emerald_Waccoon',
       //75
       'Flitterkatzen', 'Venompaw', 'Batcat', 'Sea_Devil', 'Coralripper',
       //80
@@ -89,7 +89,9 @@ $(function () {
       //190
       'Floating_Augur', 'Floating_Sage', 'Floating_Scholar', 'Gold_Sphinx', 'Jackalope',
       //195
-      'Jungle_Saurian', 'Lagoon_Saurian', 'Shadow_Sphinx', 'Wolpertinger'
+      'Jungle_Saurian', 'Lagoon_Saurian', 'Shadow_Sphinx', 'Wolpertinger', 'Topaz_Shrine',
+      //200
+      'Jade_Shrine', 'Obsidian_Shrine'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink

@@ -26,16 +26,14 @@ if (mw.config.get('wgCanonicalSpecialPageName') == 'WikiActivity' || mw.config.g
     .prependTo('.toolbar .tools');
 }
 
-/*For [[Template:Icons]] */
-$( function () {
-    if ( $( '#icons' ).length ) {
-        if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
-            $( '.page-header__actions' ).prepend( $( '#icons' ).show() );
-        } else {
-            $( '.page-header__contribution > div' ).first().append( $( '#icons' ).show() );
-        }
+/* For [[Template:Icons]] */
+$(function () {
+	var icons = $('#icons');
+    if (icons.length) {
+        $('.page-header__meta').after(icons);
+        icons.show();
     }
-} );
+});
 
 /* Randomize wiki word-marks */
 $(function() {

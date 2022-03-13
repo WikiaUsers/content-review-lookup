@@ -77,6 +77,9 @@ function mapStringToAge(string) {
     case 'SAV':
 	case 'Space Age Venus':
 	  return "ColorSAV";
+    case 'SAJM':
+	case 'Space Age Jupiter Moon':
+	  return "ColorSAJM";	  
   }
   return undefined;
 }

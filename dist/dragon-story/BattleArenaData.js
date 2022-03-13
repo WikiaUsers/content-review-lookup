@@ -479,6 +479,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"apex": {
+				"name": "Apex",
+				"colors": [
+					"tropic",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"aphrodite": {
 				"name": "Aphrodite",
 				"colors": [
@@ -1828,6 +1836,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "rare"
+			},
+			"cache": {
+				"name": "Cache",
+				"colors": [
+					"tropic",
+					"yellow"
+				],
+				"rarity": "common"
 			},
 			"cackle": {
 				"name": "Cackle",
@@ -11728,6 +11744,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"predator": {
+				"name": "Predator",
+				"colors": [
+					"tropic",
+					"black",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"preppy": {
 				"name": "Preppy",
 				"colors": [
@@ -12472,6 +12497,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"regalwave": {
+				"name": "Regalwave",
+				"colors": [
+					"tropic",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"regeneration": {
 				"name": "Regeneration",
 				"colors": [
@@ -12794,6 +12827,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Rosebloom",
 				"colors": [
 					"flower",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
+			"rosefish": {
+				"name": "Rosefish",
+				"colors": [
+					"tropic",
 					"pink"
 				],
 				"rarity": "unbreedable"

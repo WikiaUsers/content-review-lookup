@@ -413,4 +413,5 @@ function addToolbarButton(name, onclick, id, tooltip, accesskey) {
     toolbar.appendChild(btn);
     return btn;
 }
+
 // ******************************************************END Quick Preview

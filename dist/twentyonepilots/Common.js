@@ -107,3 +107,8 @@ importArticles({
         'u:dev:MessageWallUserTags/code.js'
     ]
 });
+$(function() {
+    mw.hook('DiscordIntegrator.added').add(function($el) {
+        $el.appendTo('#WikiaRail');
+    });
+});

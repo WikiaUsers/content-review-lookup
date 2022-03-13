@@ -958,6 +958,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "apex": {
+                "name": "Apex",
+                "types": [
+                    "tropic",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "aphrodite": {
                 "name": "Aphrodite",
                 "types": [
@@ -3621,6 +3637,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "11_hours_11",
                 "rarity": 2,
                 "level": 4
+            },
+            "cache": {
+                "name": "Cache",
+                "types": [
+                    "tropic",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "black"
+                            ]
+                        ]
+                    ]
+                ]
             },
             "cackle": {
                 "name": "Cackle",
@@ -23535,6 +23578,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "predator": {
+                "name": "Predator",
+                "types": [
+                    "tropic",
+                    "black",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "preppy": {
                 "name": "Preppy",
                 "types": [
@@ -25124,6 +25184,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "regalwave": {
+                "name": "Regalwave",
+                "types": [
+                    "tropic",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "regeneration": {
                 "name": "Regeneration",
                 "types": [
@@ -25809,6 +25885,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "6_hours_6",
                 "rarity": 3,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "rosefish": {
+                "name": "Rosefish",
+                "types": [
+                    "tropic",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
                 "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"

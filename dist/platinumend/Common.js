@@ -17,3 +17,10 @@ importArticles({
         'u:dev:MediaWiki:FileUsageAuto-update/code.js',
     ]
 });
+
+/* Turns back-to-top button to the modern version */
+window.BackToTopModern = true;
+
+/* Changes number of days on locked comments */
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 100;

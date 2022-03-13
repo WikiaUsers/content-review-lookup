@@ -7,3 +7,10 @@
  AjaxRCRefreshHoverText = 'Päivittää automaattisesti sivua';
  ajaxPages = ["Special:RecentChanges","Special:WikiActivity","Special:UncategorizedPages","Special:AllPages"];
  importScriptPage('AjaxRC/code.js', 'dev');
+
+importArticles({
+	type: 'script',
+	articles: [
+		'u:dev:MediaWiki:ReferencePopups/code.js',
+		]
+});

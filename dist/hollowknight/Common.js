@@ -1,7 +1,4 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* Imports (for admins only). */
-if (mw.config.get("wgUserGroups").indexOf('sysop') > -1)
-  importScriptPage('MediaWiki:AjaxRedirect/code.js', 'dev');
 
 /* BandCamp Audio Embeds */
 /** ART BIG TRACKLIST Hollow Knight OST **/
@@ -140,9 +137,8 @@ $("#LacePlayer").replaceWith('<iframe style="border: 0; width: 100%; height: 42p
 /*** Bonebottom ***/
 $("#BonebottomPlayer").replaceWith('<iframe style="border: 0; width: 100%; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/album=3074030884/size=small/bgcol=ffffff/linkcol=0687f5/track=979710051/transparent=true/" seamless><a href="https://christopherlarkin.bandcamp.com/album/hollow-knight-silksong-ost-sample">Hollow Knight: Silksong (OST Sample) by Christopher Larkin</a></iframe>');
 
-/* Allow direct link to tabber content (https://community.fandom.com/wiki/Thread:790781) */
-//<tabber> extension req
-//v2.0, 2017, user:fngplg.
+/* Allow direct link to tabber content (https://c.fandom.com/Thread:790781) */
+// <tabber> extension req v2.0, 2017, User:fngplg.
 (function ($){
     var nstarget = window.location.hash.replace('#', '');
     if (nstarget === '') return;
@@ -157,13 +153,3 @@ $("#BonebottomPlayer").replaceWith('<iframe style="border: 0; width: 100%; heigh
         }, 100);//settimeout
     });//doc.rdy    
 })(jQuery);
-
-/* Special:Upload template preload. */
-var matches = window.location.href.match(/wpForReUpload/);
-
-if( matches && matches.length ) {
-	var mwct;
-} else {
-	$("#mw-content-text #mw-upload-form fieldset #mw-htmlform-description tbody .mw-htmlform-field-HTMLTextAreaField .mw-input #wpUploadDescription").html("{{infobox file\n|description = \n|source      = \n}}\n\n[[Category:]]");
-	$("#mw-upload-form fieldset table#mw-htmlform-description tbody tr.mw-htmlform-field-Licenses").hide();
-}

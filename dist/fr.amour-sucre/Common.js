@@ -4,10 +4,7 @@ var disclaimerNs=[0,1,4,5,6,7,14,15,110,111,400,401,500,502,503,-1];
 if (disclaimerNs.indexOf(wgNamespaceNumber) !== -1) {
 	var legaltext="Amour Sucré est un jeu du studio de création Beemoov. Le wiki Amour Sucré est un site indépendant non sponsorisé par le groupe Beemoov. Les images proviennent en majorité du jeu.";
 	var legaldiv='<div id="lcowiki_legal"><div style="clear:both"></div><br><center><div class="legaldisclaimer">'+legaltext+"</div></center></div>";
-	if (mw.config.get('skin') === 'fandomdesktop') 
-		$(".page-content").append(legaldiv);
-	else
-		$(".WikiaArticle").append(legaldiv);
+	$(".page-content").append(legaldiv);
 		
 	$(".legaldisclaimer").css({
 	  padding:"2px 5px",
@@ -20,9 +17,3 @@ if (disclaimerNs.indexOf(wgNamespaceNumber) !== -1) {
 	  boxShadow: "0 0 5px 0 rgba(58,81,86,.39)",
 	})
 }
-
-// Faire descendre le script AddRailModule
-if (mw.config.get('skin') === 'fandomdesktop') 
-		$(".page-content").append(legaldiv);
-	else
-		$(".WikiaArticle").append(legaldiv);

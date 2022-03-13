@@ -137,14 +137,14 @@ $(function() {
   }
   
 //-------------------- Special
-//-------------------- Rusted Key
-  else if (pagename == "Rusted_Key") {
+//-------------------- Shipping Request Form
+  else if (pagename == "Shipping_Request_Form") {
     $("#calc-table tr:last").after('<tr><td><input id="mx-calc" type="number" min="1" style="width:54px"></td><td><span id="mx-out1"></span></td><td><span id="mx-out2"></span></td><td><span id="mx-out3"></span></td></tr>')
     
     $("#mx-calc").on("input", function() {
       x = Number($("#mx-calc").val())
-      y = 80 + 20*x + Math.pow(x, 2)
-      $("#mx-out1").text((80 / y * 100).toFixed(2) + "%")
+      y = 79 + 20*x + Math.pow(x, 2)
+      $("#mx-out1").text((79 / y * 100).toFixed(2) + "%")
       $("#mx-out2").text((20*x / y * 100).toFixed(2) + "%")
       $("#mx-out3").text((Math.pow(x, 2) / y * 100).toFixed(2) + "%")
     })

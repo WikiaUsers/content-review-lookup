@@ -475,6 +475,10 @@
             }
         },
 		
+        TopGlobalNav: {
+            page: 'TopGlobalNav', 
+            styles: 'MediaWiki:TopGlobalNav.css'
+        },
         TZclock: {
             page: 'TZclock',
             scripts: 'MediaWiki:TZclock.js',

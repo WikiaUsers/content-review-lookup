@@ -1402,7 +1402,7 @@
       lootmatch = theline.match(loot_regexps[0]);
       //regular loot
       if (lootmatch) {
-        lootignore = theline.match(/\b(?:active prey bonus|gut charm|increased loot|boosted loot|active wealth duplex|due to low stamina)\b/i);
+        lootignore = theline.match(/\b(?:active prey bonus|gut charm|increased loot|boosted loot|active wealth duplex|due to low stamina|goshnar's tribute)\b/i);
         if (!lootignore) {
           lootparser_loot_process_loot(lootmatch[1], lootmatch[2], monsters, loot_exp, loot_tem);
         }
@@ -1411,7 +1411,7 @@
         //reward container loot
         lootmatch_rc = theline.match(loot_regexps[1]);
         if (lootmatch_rc) {
-          lootignore = theline.match(/\b(?:active prey bonus|gut charm|increased loot|boosted loot|active wealth duplex|due to low stamina)\b/i);
+          lootignore = theline.match(/\b(?:active prey bonus|gut charm|increased loot|boosted loot|active wealth duplex|due to low stamina|goshnar's tribute)\b/i);
           if (!lootignore) {
             lootparser_loot_process_loot(lootmatch_rc[1], lootmatch_rc[2], monsters, loot_exp_rc, loot_tem_rc, true, stats_rc);
           }

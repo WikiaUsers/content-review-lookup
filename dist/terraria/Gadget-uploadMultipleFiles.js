@@ -17,7 +17,7 @@ mw.loader.using(["site", "mediawiki.util"]).then(function() {
 			no: "No",
 			sourcefiles: "Source files:",
 			categoryname: "Category name:",
-			categorynamehint: "Page name of the category, e.g. Item images",
+			categorynamehint: "Page name of the category the files will automatically be added to, e.g. Item images",
 			categorynamespace: "Category",
 			uploadfiles: "Upload files",
 			nofiles: "Please select some files first.",

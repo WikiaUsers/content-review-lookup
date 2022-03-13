@@ -41,7 +41,7 @@
 
     // User parrot status.
     VAN.parrot = VAN.mw.wgUserGroups.some(function(ug) {
-        return ['vanguard', 'staff', 'helper', 'wiki-representative', 'wiki-specialist'].indexOf(ug) > -1;
+        return ['vanguard', 'staff', 'helper', 'soap', 'wiki-representative', 'wiki-specialist'].indexOf(ug) > -1;
     });
 
     // Script configuration.

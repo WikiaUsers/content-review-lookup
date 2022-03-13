@@ -8,11 +8,6 @@
     });
 });
 
-/*
-return require('Dev:Calculator')
-//Clashes with server clock
-*/
-
 /* Countdown Clock for Event Banners */
 /* importArticles({
     type: "script",

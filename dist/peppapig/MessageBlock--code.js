@@ -12,7 +12,7 @@
     talkpage,
     config = $.extend({
         title: 'Blocked',
-        message: 'You have been blocked for $2 because you have $1. If you wish to get unblocked, please read [[Rules and guidelines|our rules]] before continue editing on our wiki.'
+        message: 'You have been blocked for $2 because the reason: $1. If you wish to get unblocked, please read [[Rules and guidelines|our rules]] before continue editing on our wiki.'
     }, window.MessageBlock),
     token = mw.user.tokens.get('editToken');
     function init(i18nd) {

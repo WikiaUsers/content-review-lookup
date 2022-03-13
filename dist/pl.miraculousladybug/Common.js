@@ -23,3 +23,12 @@ mw.loader.using(['mediawiki.util', 'mediawiki.notification'], function() {
         }
     });
 });
+
+// Blokada odpowiadania na stare komentarze dla użytkowników, którzy nie są automatycznie zatwierdzeni
+if (!(mw.config.get('wgUserGroups').includes('autoconfirmed'))) {
+    importArticles({
+        type: 'script',
+        articles: [
+            'u:dev:MediaWiki:LockOldComments.js',
+    ]});
+}

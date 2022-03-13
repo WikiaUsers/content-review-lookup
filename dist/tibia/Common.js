@@ -636,7 +636,7 @@ function clearElement() {
         }
         return obj;
     }(game.worlds));
-    game.getHouseUrl = function (w, id, type) {
+    game.getHouseUrl = function (w, id) {
         if (!isNaN(w)) {
             // input is an index, we want a name
             if (w < 0 || w > game.worlds.length) {
@@ -644,7 +644,7 @@ function clearElement() {
             }
             w = game.worlds[w];
         }
-        return 'https://www.tibia.com/community/?subtopic=houses&page=view&houseid=' + id + '&world=' + w + '&type=' + type;
+        return 'https://www.tibia.com/community/?subtopic=houses&page=view&houseid=' + id + '&world=' + w;
     };
     window.game = game;
 }(window));
@@ -694,7 +694,7 @@ function clearElement() {
     commands = {
         'get-house-url': function (e) {
             var $span, href;
-            href = game.getHouseUrl(getCookie("TW_gameworld") || "0", e.getAttribute('data-houseid') || "0", e.getAttribute('data-housetype') || "0");
+            href = game.getHouseUrl(getCookie("TW_gameworld") || "0", e.getAttribute('data-houseid') || "0");
             $span = $('<span>View the <a class="external text" href="' + href + '">Tibia.com house page</a>. (<a href="/wiki/Project:Settings">change settings</a>)</span>)');
             clearElement.call(e);
             $(e).append($span);
@@ -784,7 +784,24 @@ $(function () {
 		document.getElementById("dayview").style.setProperty('--g', 80+(new Date().getMinutes()*2.21) + "%");
 	}
 });
-
+/* gets the current minute / day value on page load for [[Time]]*/
+$(function () {
+	if (document.getElementById("minutes")) {
+		var minutes = new Date().getMinutes();
+		if (minutes < 10) {minutes = "0" + minutes}
+		document.getElementById("minutes").innerHTML = "hh:"+ minutes;
+	}
+});
+$(function () {
+	if (document.getElementById("daytime")) {
+		var minutes = new Date().getMinutes();
+			if (minutes>=15 && minutes<=45) {
+				document.getElementById("daytime").innerHTML = "(Day)";
+			} else {
+				document.getElementById("daytime").innerHTML = "(Night)";
+			}
+	}
+});
 $(function () {
 	/* Load /wiki/Creature_Ranks.css */
 	importArticles({

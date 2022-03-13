@@ -27,7 +27,8 @@ if (roll || cmod || admin) {
             "u:dev:MediaWiki:AjaxRename/code.js",
             "u:dev:MediaWiki:CategoryRenameAuto-update/code.js",
             "u:dev:MediaWiki:FileUsageAuto-update/code.js",
-            "u:dev:MediaWiki:AjaxUndo/code.js"
+            "u:dev:MediaWiki:AjaxUndo/code.js",
+            "u:dev:MediaWiki:MassCategorization/code.js"
         ]
     });
 }

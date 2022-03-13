@@ -1,473 +1,511 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-/* Navigation popups here.*/
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:Tooltips.js',
-    ]
+$(function(){
+	if(!mw.config.get("wgUserName")) return;
+
+	importArticles({
+    	type: "script",
+    	articles: [
+    	    "MediaWiki:Group-user.js",
+    		"u:dev:MediaWiki:CategoryRedLinks.js"
+    	]
+	});
 });
-/* Configuration for dev:Tooltips.js */
-var tooltips_config = {
-    waitForImages: true,
-    noCSS: true,
+
+function setStoredValue(key, value, expiredays) {
+	if (typeof(localStorage) == "undefined") {
+		var exdate = new Date();
+		exdate.setDate(exdate.getDate() + (expiredays ? expiredays : 30));
+		document.cookie = key + "=" + escape(value) + ";expires=" + exdate.toGMTString();
+	} else {
+		try {
+			localStorage[key] = value;
+		} catch (e) {
+			// Usually QUOTA_EXCEEDED_ERR
+		}
+	}
+}
+function getStoredValue(key, defaultValue) {
+	if (typeof(localStorage) == "undefined") {
+		if (document.cookie && document.cookie.length) {
+			var varr = document.cookie.match("(?:^|;)\\s*" + key + "=([^;]*)");
+			if (varr.length == 2) return varr[1];
+		}
+		return defaultValue;
+	}
+	return localStorage[key] == null ? defaultValue : localStorage[key];
+}
+
+function quoteSelectorName(name) {
+	return name.replace(/[:.'"]/g, function(s) { return '\\' + s; });
+}
+function tocLinkToSelector(link) {
+	return quoteSelectorName(link.href.match(/#.+$/)[0]);
+}
+
+
+var article = ".page-content";
+
+// See [[Help:Tooltips]]
+var Tooltips = {hideClasses:[], cache:{}, activeHover: false, enabled: true, activeVersion: ''};
+var $tfb, $ttfb, $htt;
+
+function hideTip() {
+	$tfb.removeClass("tooltip-ready").addClass("hidden").css("visibility","hidden"); 
+	$tfb.children().remove();
+	if ($(this).data('ahl-id') == Tooltips.activeHover) Tooltips.activeHover = null;
+}
+function displayTip(e) {
+	$htt.not(":empty").removeClass("hidden").addClass("tooltip-ready");
+	moveTip(e);
+	$htt.not(":empty").css("visibility","visible");
+	moveTip(e);
+}
+function moveTip(e) {
+	var $ct = $htt.not(":empty");
+	var eh = $ct.innerHeight() + 20, wh = $(window).height();
+	var newTop = e.clientY + ((e.clientY > (wh/2)) ? -eh : 20);
+	var newLeft = e.clientX + ((e.clientX > ($(window).width()/2)) ? -($ct.innerWidth()+20):20);
+	newTop = Math.max(105, Math.min(wh - eh, newTop));
+	$ct.css({"position":"fixed","top":newTop + "px","left":newLeft + "px"});
+}
+
+// AJAX tooltips
+function showTipFromCacheEntry(e, url, tag) {
+	var h = Tooltips.cache[url + " " + tag];
+	if (!h) {
+		h = Tooltips.cache[url].find(tag);
+		if (h.length) Tooltips.cache[url + " " + tag] = h;
+	}
+	if (!h.length) {
+		$tfb.html('<div class="tooltip-content"><b>Error</b><br />This target either has no tooltip<br />or was not intended to have one.</div>');
+	} else {
+		h.css("display", "").addClass("tooltip-content");
+		$tfb.html(h);
+	}
+	displayTip(e);
+}
+function showTip(e) {
+	if (!Tooltips.enabled) return;
+	var $t = $(this), ks = Tooltips.hideClasses, $p = $t.parent();
+	if ($p.hasClass("selflink") == false) {
+		for (var j = 0; j < ks.length; j++) {
+			if ($t.hasClass(ks[j])) return;
+		}
+		var tooltipIdentifier = "div.tooltip-content", tooltipTag = $t.attr("class").match(/taggedttlink(-[^\s]+)/);
+		if ($t.hasClass("versionsttlink")) tooltipIdentifier += Tooltips.activeVersion;
+		else if (tooltipTag) tooltipIdentifier += tooltipTag[1];
+		var url = "/index.php?title=" + encodeURIComponent(decodeURIComponent($t.data("tt"))) + "&action=render " + 'div[class*="tooltip-content"]';
+		var tipId = url + " " + tooltipIdentifier;
+		Tooltips.activeHover = tipId;
+		$t.data('ahl-id', tipId);
+		if (Tooltips.cache[url] != null) return showTipFromCacheEntry(e, url, tooltipIdentifier);
+		$('<div style="display: none"/>').load(url, function(text) {
+			if (!text) return; // Occurs when navigating away from the page cancels the XHR
+			Tooltips.cache[url] = $(this);
+			if (tipId != Tooltips.activeHover) return;
+			showTipFromCacheEntry(e, url, tooltipIdentifier);
+		});
+	}
+}
+
+Tooltips.toggleTooltipClassDisplay = function(className, setTo) {
+	var ci = this.hideClasses.indexOf(className);
+	if (setTo === undefined) setTo = ci < 0;
+	if (ci < 0 && setTo === false) {
+		this.hideClasses.push(className);
+	} else if (ci >= 0 && setTo === true) {
+		this.hideClasses.splice(ci, 1);
+	}
+};
+Tooltips.setActivePageVersion = function(versionName) {
+	this.activeVersion = versionName;
 };
 
-var tooltips_list = [
-    {
-        classname: 'lunaria-small-tooltip',
-        parse: '{'+'{<#template#>|show=tip}}',
-    },
-    {
-        classname: 'lunaria-medium-tooltip',
-        parse: '{'+'{<#template#>|show=tip}}',
-    },
-    {
-        classname: 'lunaria-large-tooltip',
-        parse: '{'+'{<#template#>|show=tip}}',
-    },
-    {
-        classname: 'lunaria-dynamic-tooltip',
-        parse: '{'+'{<#template#>|show=tip|size=<#size#>}}',
-    },
-    {
-        classname: 'lunaria-wiki-tooltip',
-        parse: '<#wiki#>',        
-    }
-];
+// quick tooltips
+function hideTemplateTip() {
+	$ttfb.html("").removeClass("tooltip-ready").addClass("hidden");
+}
+function showTemplateTip(e) {
+	$ttfb.html('<div class="tooltip-content">' + $(this).next().html() + '</div>');
+	displayTip(e);
+}
 
-window.tooltips_config = {
-    waitForImages: true,
-    noCSS: true,
-};
+function eLink(db,nm) {
+	dbs = new Array("http://www.wowhead.com/?search=","http://www.wowdb.com/search?search=");
+	dbTs = new Array("Wowhead","Wowdb");
+	dbHs = new Array("&omega; ","&thorn; ");
+	return '<a href="'+ dbs[db]+nm + '" target="_blank" title="'+ dbTs[db] +'">'+ dbHs[db] + '</a>';
+}
+function bindTT() {
+	var $t=$(this), $p=$t.parent();
+	if ($p.hasClass("selflink") == false) {
+		$t.data("tt", $p.attr("title").replace(" (page does not exist)","").replace("?","%3F")).on("mouseenter",showTip).on("mouseleave",hideTip).mousemove(moveTip);
+		if ($p.hasClass("new")) {
+			els = '<sup><span class="plainlinks">';
+			for (x=0;x<2;x++) els += eLink(x,$t.data("tt").replace("Quest:",""));
+			$p.after(els+'</span></sup>');
+		} else {
+			$t.removeAttr("title");
+			$p.removeAttr("title");
+		}
+	}
+}
+function tooltipsInit(root) {
+	if ($tfb == null) {
+		$(article).append('<div id="tfb" class="htt"></div><div id="templatetfb" class="htt"></div>');
+		$tfb = $("#tfb");
+		$ttfb = $("#templatetfb");
+		$htt = $("#tfb,#templatetfb");
+	}
+	root.find(".ajaxoutertt > a").wrapInner('<span class="ajaxttlink" />');
+	root.find(".ajaxoutertt, .ajaxoutertt-soft").each(function() {
+		var cn = this.className.replace(/(?:^|\s)ajaxoutertt[^\s]*/, "").replace(/^\s+|\s+$/g, "");
+		if (cn) $(this).find("span.ajaxttlink").addClass(cn);
+	});
+	root.find("span.ajaxttlink").each(bindTT);
+	root.find("span.tttemplatelink").on("mouseenter",showTemplateTip).on("mouseleave",hideTemplateTip).mousemove(moveTip).children("a").removeAttr("title");
+}
 
 
-window.tooltips_list = [
-    {
-        classname: 'lunaria-small-tooltip',
-        parse: '{'+'{<#template#>|show=tip}}',
-    },
-    {
-        classname: 'lunaria-medium-tooltip',
-        parse: '{'+'{<#template#>|show=tip}}',
-    },
-    {
-        classname: 'lunaria-large-tooltip',
-        parse: '{'+'{<#template#>|show=tip}}',
-    },
-    {
-        classname: 'lunaria-dynamic-tooltip',
-        parse: '{'+'{<#template#>|show=tip|size=<#size#>}}',
-    },
-    {
-        classname: 'lunaria-wiki-tooltip',
-        parse: '<#wiki#>',        
-    }
-];
+function requireImageLicense() {
+	if (mw.config.get("wgPageName") == "Special:Upload" && mw.util.getParamValue("wpDestFile") == null) {
+		var $wpu = $("#mw-upload-form").find("[name=wpUpload]").not("#wpUpload");
+		$wpu.attr("disabled","true");
+		$("#wpLicense").change(function () {
+			if ($("#wpLicense").val()) {
+				$wpu.removeAttr("disabled");
+			} else {
+				$wpu.attr("disabled","true");
+			}
+		});
+	}
+}
 
-var tooltips = {
-    debug: false,
-    
-    api: false,
-    types: [],
-    classes: ['basic-tooltip', 'advanced-tooltip'],
-    advancedCounter: 1,
-    
-    events: [],
-    timeouts: [],
-    
-    offsetX: 20,
-    offsetY: 20,
-    waitForImages: false,
-    noCSS: false,
-    
-    flip: false,
-    
-    init: function() {
-        if($(document.body).hasClass('mw-special-InfoboxBuilder')) return;
-        if(location.search.search(/ttdebug=(1|[Tt]rue)/) != -1 || (typeof tooltips_debug != 'undefined' && tooltips_debug)) tooltips.debug = true;
-        var href = (new mw.Uri($('link[rel="canonical"]').attr('href'))).path;
-        if(typeof href == 'undefined' || !href) {
-            console.log('Tooltips: script couldn\'t find required  link[rel="canonical"]  tag');
-            tooltips.disabled = true;
-            return false;
-        }
-        href = href.split('/wiki/');
-        tooltips.api = href[0]+'/api.php?format=json&action=parse&disablelimitreport=true&prop=text&title='+href[1];
-        if(mw.util.getParamValue('uselang')) tooltips.api += '&uselang='+mw.util.getParamValue('uselang');
-        tooltips.api += '&text=';
-        
-        tooltips.types['basic-tooltip'] = {};
-        tooltips.types['advanced-tooltip'] = {};
-        
-        if(!tooltips.config()) {
-            console.log('Tooltips: missing config');
-            tooltips.disabled = true;
-            return false;
-        }
-        
-        var content = $('#WikiaMainContent');
-        if(!content.length) content = $('#mw-content-text');
-        
-        if(!tooltips.noCSS) {
-            var cssImport = importArticle({
-                type: 'style',
-                article: 'u:dev:MediaWiki:Tooltips.css'
-            });
-            if (Array.isArray(cssImport)) {
-                // MW 1.19
-                $(cssImport).prependTo('head');
-            } else {
-                // UCP
-                cssImport.then(function () {
-                    var expectedSource = mw.loader.moduleRegistry['u:dev:MediaWiki:Tooltips.css'].style.css[0];
-                    for (var node = document.querySelector('head > meta[name="ResourceLoaderDynamicStyles"]').previousElementSibling; node.tagName === 'STYLE'; node = node.previousElementSibling) {
-                        if (node.textContent === '\n' + expectedSource) {
-                            document.head.prepend(node);
-                            return;
-                        }
-                    }
-                    throw new Error('WTF? Failed to find RL-inserted style!');
-                });
-            }
-        }
-        
-        if($('#tooltip-wrapper').length === 0) $('<div id="tooltip-wrapper" class="WikiaArticle"></div>').appendTo(document.body);
-        if($('#tooltip-storage').length === 0) $('<div id="tooltip-storage" class="WikiaArticle"></div>').append('<div class="main-tooltip tt-basic-tooltip" id="tooltip-basic-tooltip">Lorem ipsum dolor sit amet</div>').appendTo(content);
-        
-        $('#tooltip-wrapper')
-            .css({'margin':'0px','position':'fixed','height':'auto','min-height':'0','z-index': 6000000,'font-size':'14px'})
-            .hide();
-        
-        $('#tooltip-storage')
-            .css({'height':'0px','min-height':'0','visibility':'hidden','overflow':'hidden','position':'static','font-size':'14px'});
-            
-        
-        $('#tooltip-basic-tooltip').data('type', 'basic-tooltip');
-        
-        tooltips.applyTooltips(document);
-        
-        mw.hook('wikipage.content').add(function(elem) {
-            tooltips.applyTooltips($(elem));
-        });
-        
-        if(typeof tooltips.events == 'string') tooltips.events = [tooltips.events];
-        for(var x=0; x<tooltips.events.length; x++) { $(window).on(tooltips.events[x], function(ev, elem) { tooltips.applyTooltips(elem || this) }) }
-        
-        if(tooltips.debug) {
-            $('#tooltip-wrapper').css({'background-color':'rgba(255,0,0,0.2)'});
-            $('#tooltip-storage').css({'background-color':'rgba(0,255,0,0.2)','height':'500px','overflow-y':'scroll','visibility':'visible'});
-        }
-    },
-    config: function() {
-        if(typeof tooltips_list != 'undefined') {
-            $(tooltips_list).each(function(i, v) { tooltips.addType(v) });
-        }
-        if(typeof tooltips_config == 'object') {
-            tooltips.offsetX = tooltips_config.offsetX || tooltips.offsetX;
-            tooltips.offsetY = tooltips_config.offsetY || tooltips.offsetY;
-            tooltips.waitForImages = (tooltips_config.waitForImages || tooltips.waitForImages) && true;
-            tooltips.noCSS = tooltips_config.noCSS || tooltips.noCSS;
-            tooltips.events = tooltips_config.events || tooltips.events;
-        }
-        
-        return true;
-    },
-    applyTooltips: function(elem) {
-        $(elem).find('.'+tooltips.classes.join(', .')).each(function() {
-            $this = $(this);
-            if($this.hasClass('tooltips-init-complete')) return;
-            
-            $this.find('*').removeAttr('title');
-            $this.mouseover(tooltips.handlers.mouseOver);
-            $this.mouseout(tooltips.handlers.mouseOut);
-            $this.mousemove(tooltips.handlers.mouseMove);
-            
-            $this.data('tooltip-contents', $(this).attr('title'));
-            $this.removeAttr('title');
-            
-            tooltips.advancedTooltip($this);
-            
-            $(this).addClass('tooltips-init-complete');
-        });
-    },
-    advancedTooltip: function(elem) {
-        elem = $(elem);
-        if(!elem.hasClass('advanced-tooltip')) return;
-        var tips = elem.find('.tooltip-contents');
-        if(!tips.length) return;
-        var tip = $('<div class="main-tooltip tt-advanced-tooltip"></div>').attr('id', 'tooltip-advanced-tooltip-'+tooltips.advancedCounter).appendTo('#tooltip-storage').data('type', 'advanced-tooltip').append($(tips[0]).contents()).each(tooltips.calcSize);
-        tips.remove();
-        elem.data('tooltip-id-advanced-tooltip', tooltips.advancedCounter);
-        tooltips.advancedCounter++;
-    },
-    addType: function(tt) {
-        if(typeof tooltips.types[tt.classname] == 'undefined') {
-            var obj = {};
-            
-            if(typeof tt.parse == 'string' || typeof tt.parse == 'function') var parse = tt.parse; else var parse = false;
-            if(typeof tt.text == 'string' || typeof tt.text == 'function') var text = tt.text; else var text = false;
-            
-            if(parse) {
-                obj.text = parse;
-                obj.parse = true;
-            } else if(text) {
-                obj.text = text;
-                obj.parse = false;
-            } else return;
-            
-            if(typeof obj.text == 'string') obj.parameters = tooltips.getParameters(obj.text); else obj.parameters = [];
-            
-            if(typeof tt.delay == 'string' || typeof tt.delay == 'number') obj.delay = parseInt(tt.delay); else obj.delay = false;
-            if(typeof tt.onParsed == 'function') obj.onParsed = tt.onParsed;
-            if(typeof tt.onShow == 'function') obj.onShow = tt.onShow;
-            if(typeof tt.onHide == 'function') obj.onHide = tt.onHide;
-            
-            tooltips.types[tt.classname] = obj;
-            if(tooltips.classes.indexOf(tt.classname) == -1) tooltips.classes.push(tt.classname);
-        } else {
-            if(typeof tt.delay == 'string' || typeof tt.delay == 'number') tooltips.types[tt.classname].delay = parseInt(tt.delay);
-            if(typeof tt.onParsed == 'function') tooltips.types[tt.classname].onParsed = tt.onParsed;
-            if(typeof tt.onShow == 'function') tooltips.types[tt.classname].onShow = tt.onShow;
-            if(typeof tt.onHide == 'function') tooltips.types[tt.classname].onHide = tt.onHide;
-        }
-    },
-    getParameters: function(text) {
-        var list = [];
-        var matches = text.match(/<#\s*[a-z0-9_\-]+?\s*#>/gi);
-        if(matches) {
-            for(var x=0; x<matches.length; x++) {
-                list.push(/<#\s*([a-z0-9_\-]+?)\s*#>/i.exec(matches[x])[1]);
-            }
-        }
-        return list;
-    },
-    getAPI: function(text) {
-        return tooltips.api+encodeURIComponent(text);
-    },
-    getText: function(type, elem) {
-        if(typeof tooltips.types[type].text == 'function') {
-            var text = tooltips.types[type].text($(elem)[0]);
-        } else {
-            var text = tooltips.types[type].text;
-            for(var x=0; x<tooltips.types[type].parameters.length; x++) {
-                var param = tooltips.types[type].parameters[x];
-                var value = $(elem).data(param);
-                if(typeof value == 'undefined') value = '';
-                var rx = new RegExp('<#\\s*'+param.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")+'\\s*#>', 'g');
-                text = text.replace(rx, value);
-            }
-        }
-        return text;
-    },
-    getTooltip: function(type, elem) {
-        elem = $(elem);
-        if(elem.data('tooltip-id-'+type)) return $('#tooltip-'+type+'-'+elem.data('tooltip-id-'+type));
-        
-        var text = tooltips.getText(type, elem);
-        var id = tooltips.hash(text);
-        elem.data('tooltip-id-'+type, id);
-        
-        var tip = $('#tooltip-'+type+'-'+elem.data('tooltip-id-'+type));
-        if(tip.length) return tip;
-        
-        tip = $('<div class="main-tooltip"></div>').attr('id', 'tooltip-'+type+'-'+id).appendTo('#tooltip-storage').data('type', type).addClass('tt-'+type);
-        
-        tooltips.wrapperPosition(tooltips.lastKnownMousePos[0], tooltips.lastKnownMousePos[1]);
-        tooltips.sameWidth();
-        
-        if(!tooltips.types[type].parse) {
-            tip.html(text).each(tooltips.calcSize);
-            tooltips.wrapperPosition(tooltips.lastKnownMousePos[0], tooltips.lastKnownMousePos[1]);
-            tooltips.sameWidth();
-        } else {
-            tip.addClass('tooltip-loading');
-            var api = tooltips.getAPI(text);
-            if(tooltips.debug) tip.html('<pre style="padding:2px 3px;font-size:11px;">'+api+'</pre>');
-            tip.attr('title', api);
-            $.ajax({
-                url: api,
-                dataType: 'json',
-                context: tip,
-                success: function(data, textStatus, jqXHR) {
-                    $(this).html(data['parse']['text']['*']).each(tooltips.calcSize);
-                    tooltips.wrapperPosition(tooltips.lastKnownMousePos[0], tooltips.lastKnownMousePos[1]);
-                    tooltips.sameWidth();
-                    var images = $(this).find('img');
-                    images.fadeTo(0, 0).one('load', function() {
-                        if(tooltips.waitForImages) {
-                            $(this).fadeTo(0,1);
-                            $(this).addClass('image-loaded');
-                            tip = $(this).closest('.main-tooltip');
-                            if(tip.find('img').length == tip.find('img.image-loaded').length) {
-                                tip.removeClass('tooltip-loading').each(tooltips.calcSize);
-                                tooltips.wrapperPosition(tooltips.lastKnownMousePos[0], tooltips.lastKnownMousePos[1]);
-                                tooltips.sameWidth();
-                            }
-                        } else $(this).fadeTo(100,1);
-                    });
-                    if(tooltips.waitForImages) {
-                        if(images.length === 0) {
-                            $(this).removeClass('tooltip-loading').each(tooltips.calcSize);
-                        }
-                    } else {
-                        $(this).removeClass('tooltip-loading').each(tooltips.calcSize);
-                    }
-                    var type = $(this).data('type') || false;
-                    if(type && typeof tooltips.types[type].onParsed == 'function') {
-                        tooltips.types[type].onParsed.call(this);
-                        tip.each(tooltips.calcSize);
-                    }
-                    if($(this).find('a.new').length > 0) $(this).addClass('has-redlinks');
-                    tooltips.wrapperPosition(tooltips.lastKnownMousePos[0], tooltips.lastKnownMousePos[1]);
-                    tooltips.sameWidth();
-                }
-            });
-        }
-        return tip;
-    },
-    getBasicTooltip: function(elem) {
-        return $("#tooltip-basic-tooltip").html($(elem).data('tooltip-contents').replace(/\\n/g,'<br />')).each(tooltips.calcSize);
-    },
-    getAdvancedTooltip: function(elem) {
-        return $("#tooltip-advanced-tooltip-"+$(elem).data('tooltip-id-advanced-tooltip'));
-    },
-    getTooltips: function(elem) {
-        elem = $(elem);
-        var classes = elem.attr('class').split(' ');
-        var tips = [];
-        for(var i=0;i<classes.length;i++) {
-            var tip = false;
-            if(classes[i] == 'advanced-tooltip') tip = tooltips.getAdvancedTooltip(elem);
-            else if(classes[i] == 'basic-tooltip') tip = tooltips.getBasicTooltip(elem);
-            else if(typeof tooltips.types[classes[i]] != 'undefined') tip = tooltips.getTooltip(classes[i], elem);
-            if(tip) tips.push(tip[0]);
-        }
-        return $(tips);
-    },
-    setOwnWidth: function() {
-        $this = $(this);
-        if(typeof $this.data('width') != 'undefined') $this.css('width', $this.data('width')+'px');
-        else $this.css('width', '');
-    },
-    calcSize: function() {
-        $this = $(this);
-        $this.css('position', 'absolute');
-        var temp = $this.css('width');
-        $this.css('width', '');
-        $this.data('width', parseFloat(window.getComputedStyle($this[0]).width));
-        $this.data('height', parseFloat(window.getComputedStyle($this[0]).height));
-        $this.data('outerwidth', $this.outerWidth(true));
-        $this.data('outerheight', $this.outerHeight(true));
-        $this.css('width', $this.data('width')+'px');
-        $this.css('position', '');
-        $this.css('width', temp);
-    },
-    sameWidth: function() {
-        if($("#tooltip-wrapper").find('.main-tooltip').length == 1) {
-            $("#tooltip-wrapper").find('.main-tooltip').each(tooltips.setOwnWidth);
-        } else {
-            var width = 0;
-            $("#tooltip-wrapper").find('.main-tooltip').each(function() { width = Math.max(width, $(this).data('width') || 0); });
-            $("#tooltip-wrapper").find('.main-tooltip').each(function() { $(this).css('width', width+'px'); });
-        }
-    },
-    wrapperPosition: function(mouseX, mouseY) {
-        var tipH = parseInt($("#tooltip-wrapper").css('padding-top')) + parseInt($("#tooltip-wrapper").css('padding-bottom'));
-        var tipW = 0;
-        var barH = $('#WikiaBarWrapper').height();
-       
-        $("#tooltip-wrapper").find('.main-tooltip').each( function(){ if(typeof $(this).data('outerheight') != 'undefined') tipH += $(this).data('outerheight'); });
-        $("#tooltip-wrapper").find('.main-tooltip').each( function(){ if(typeof $(this).data('outerwidth') != 'undefined') tipW = Math.max(tipW, $(this).data('outerwidth') + parseInt($("#tooltip-wrapper").css('padding-left')) + parseInt($("#tooltip-wrapper").css('padding-right'))); });
-        
-        var spaceTop = mouseY - tooltips.offsetY;
-        var spaceLeft = mouseX - tooltips.offsetX;
-        var spaceRight = $(window).width() - mouseX - tooltips.offsetX;
-        var spaceBottom = $(window).height() - barH - mouseY - tooltips.offsetY;
-        
-        var coordX = mouseX + tooltips.offsetX;
-        var coordY = mouseY + tooltips.offsetY;
-        
-        if(spaceRight < tipW && spaceBottom < tipH) {
-            if(spaceLeft >= tipW && tooltips.flip != 'h') {
-                coordX = mouseX - tipW - tooltips.offsetX;
-                tooltips.flip = 'v';
-            } else if(spaceTop >= tipH) {
-                coordY = mouseY - tipH - tooltips.offsetY;
-                tooltips.flip = 'h';
-            } else {
-                coordX = mouseX - tipW - tooltips.offsetX;
-                coordY = mouseY - tipH - tooltips.offsetY;
-                tooltips.flip = 'vh';
-            }
-        } else {
-            tooltips.flip = false;
-        }
-        if ($("#tooltip-wrapper").css('position') == 'fixed') {
-            coordX = coordX-$(window).scrollLeft();
-            coordY = coordY-$(window).scrollTop();
-            
-            coordX = Math.min(coordX, $(window).width() - tipW);
-            coordY = Math.min(coordY, $(window).height() - tipH - barH);
-        } else {
-            coordX = Math.min(coordX, $(window).width() - tipW);
-            coordY = Math.min(coordY, $(window).height() - tipH - barH + $(window).scrollTop());
-        }
-        $("#tooltip-wrapper").css({left: coordX + 'px', top: coordY + 'px'});
-    },
-    handlers: {
-        mouseOver: function(e) {
-            tooltips.lastKnownMousePos = [e.pageX, e.pageY];
-            tooltips.wrapperPosition(e.pageX, e.pageY);
-            
-            var tips = tooltips.getTooltips(this);
-            $("#tooltip-wrapper").prepend(tips).show();
-            tooltips.sameWidth();
-            
-            var handle = this;
-            tips.each(function() {
-                var $this = $(this);
-                var type = $(this).data('type') || false;
-                
-                $this.show();
-                $(window).trigger('scroll');// trigger image lazy loader
-                if(type && typeof tooltips.types[type] != 'undefined' && tooltips.types[type].delay) {
-                    $this.hide();
-                    tooltips.timeouts[$(this).attr('id')] = setTimeout(function(){
-                        $this.show();
-                        if(type && typeof tooltips.types[type].onShow == 'function') tooltips.types[type].onShow.call($this[0], handle);
-                    }, tooltips.types[type].delay);
-                } else if(type && typeof tooltips.types[type].onShow == 'function') tooltips.types[type].onShow.call(this, handle);
-            });
-        },
-        mouseOut: function(e) {
-            tooltips.lastKnownMousePos = [e.pageX, e.pageY];
-            tooltips.wrapperPosition(e.pageX, e.pageY);
-            
-            var handle = this;
-            $("#tooltip-wrapper").hide();
-            $("#tooltip-wrapper").find('.main-tooltip').appendTo('#tooltip-storage').each(function() {
-                var type = $(this).data('type') || false;
-                if(type && typeof tooltips.types[type].onHide == 'function') tooltips.types[type].onHide.call(this, handle);
-                $(this).show();
-                clearTimeout(tooltips.timeouts[$(this).attr('id')]);
-                delete tooltips.timeouts[$(this).attr('id')];
-            });
-        },
-        mouseMove: function(e) {
-            tooltips.lastKnownMousePos = [e.pageX, e.pageY];
-            tooltips.wrapperPosition(e.pageX, e.pageY);
-        },
-    },
-    hash: function(text) {
-        /* Source: https://archive.is/nq2F9 */
-        var hash = 0, i, char;
-        if (text.length === 0) return hash;
-        for (i = 0, l = text.length; i < l; i++) {
-            char  = text.charCodeAt(i);
-            hash  = ((hash<<5)-hash)+char;
-            hash |= 0; // Convert to 32bit integer
-        }
-        return hash;
-    },
-};
-$(tooltips.init);
+function handleAutocollapse(root) {
+	var $ct = root.find(".mw-collapsible");
+	var $es = $ct.filter(".mw-autocollapse").not($ct.first()).not(".mw-collapsed, .mw-uncollapsed, .mw-expanded");
+	$es.filter(function() {
+		var link = $(this).find(".mw-collapsible-toggle a");
+		if (link.length) link.first().click();
+		return !link.length;
+	}).toggleClass("mw-collapsed mw-autocollapse");
+}
+
+
+// [[Portal:*]] tab switch.
+function doPortalTabs() {
+	var cTab = $("#ptabs .activetab").parent().prevAll().length + 1;
+	var ptabs = $("#ptabs>*");
+	ptabs.css("cursor","pointer");
+	$("#ptab-extra").attr("id", "ptab" + ptabs.length);
+	ptabs.click(function (e) {
+		var $pt = $(e.target);
+		if ($pt.hasClass("inactivetab")) e.preventDefault();
+		if ($pt.parent().not("#ptabs").html()) $pt = $pt.parent();
+		var sp = $pt.prevAll().length;
+		ptabs.eq(cTab-1).children("*").removeClass("activetab").addClass("inactivetab");
+		$("#ptab"+cTab).hide();
+		cTab = sp+1;
+		ptabs.eq(sp).children("*").removeClass("inactivetab").addClass("activetab");
+		$("#ptab"+cTab).show();
+	});
+}
+
+// [[Template:ajax]]
+function addAjaxDisplayLink() {
+	$("table.ajax").each(function (i) {
+		var table = $(this).attr("id", "ajaxTable" + i);
+		table.find(".nojs-message").remove();
+		var headerLinks = $('<span style="float: right;">').appendTo(table.find('th').first());
+		var cell = table.find("td").first(), needLink = true;
+		cell.parent().show();
+		if (cell.hasClass("showLinkHere")) {
+			var old = cell.html(), rep = old.replace(/\[link\](.*?)\[\/link\]/, '<a href="javascript:;" class="ajax-load-link">$1</a>');
+			if (rep != old) {
+				cell.html(rep);
+				needLink = false;
+			}
+		}
+		if (needLink) headerLinks.html('[<a href="javascript:;" class="ajax-load-link">show data</a>]');
+		table.find(".ajax-load-link").parent().addBack().filter('a').click(function(event) {
+			event.preventDefault();
+			var sourceTitle = table.data('ajax-source-page'), baseLink = mw.config.get('wgScript') + '?';
+			cell.text('Please wait, the content is being loaded...');
+			$.get(baseLink + $.param({ action: 'render', title: sourceTitle }), function (data) {
+				if (data) {
+					cell.html(data);
+					cell.find('.ajaxHide').remove();
+					cell.find('.darktable').removeClass('darktable');
+					if (cell.find("table.sortable").length) {
+						mw.loader.using('jquery.tablesorter', function() {
+							cell.find("table.sortable").tablesorter();
+						});
+					}
+					headerLinks.text('[');
+					headerLinks.append($('<a>edit</a>').attr('href', baseLink + $.param({ action: 'edit', title: sourceTitle })));
+					headerLinks.append(document.createTextNode(']\u00A0['));
+					var shown = true;
+					$("<a href='javascript:;'>hide</a>").click(function() {
+						shown = !shown;
+						shown ? cell.show() : cell.hide();
+						$(this).text(shown ? "hide" : "show");
+					}).appendTo(headerLinks);
+					headerLinks.append(document.createTextNode(']'));
+					tooltipsInit(cell);
+				}
+			}).error(function() {
+				cell.text('Unable to load table; the source article for it might not exist.');
+			});
+		});
+	});
+}
+
+// [[Template:classnav]]
+var cls = "";
+function classNavShowAll() {
+	$("table.classnav .long").hide();
+	$("table.classnav tr>*:not(:first-child):not(:has('.cc-"+cls+"'))").show();
+	$("table.classnav .classNavShow").html("&nbsp;&lt;&lt;").click(classNav);
+}
+function classNav() {
+	var c = ["death knight","demon hunter","druid","hunter","mage","monk","paladin","priest","rogue","shaman","warlock","warrior"];
+	var wgTitle = mw.config.get("wgTitle");
+	for (var x=0;x<c.length;x++) {
+		if (wgTitle.toLowerCase().indexOf(c[x]) != -1) {
+			cls = c[x].replace(" ","");
+			break;
+		}
+	}
+	if (cls) {
+		$("table.classnav tr>*:not(:first-child):not(:has('.cc-"+cls+"'))").hide();
+		$("table.classnav .cc-"+cls+" .long").show();
+		if (!$("table.classnav .classNavShow").length) $("table.classnav th:has('.cc-"+cls+"')").append('<span class="classNavShow" style="cursor:pointer;"></span>');
+		$("table.classnav .classNavShow").html("&nbsp;&gt;&gt;").click(classNavShowAll);
+	}
+}
+
+// [[Template:Faction disambiguation]], [[Template:Versions]] and [[Template:cv]]
+function versionsInit() {
+	var iv = $("#item-versions");
+	if (iv.length == 0) return;
+	var sec = iv.prevAll("h2").first().nextUntil("h2").addBack();
+	sec.wrapAll('<div id="versions-section" style="display: none"/>');
+	var tocentry = $('#toc a[href="#'+ sec.first().find(".mw-headline").attr("id") +'"]').parent();
+	tocentry.nextAll().find(".tocnumber").each(function(i) {
+		var t = $(this).text();
+		$(this).text(t.replace(/^\d+/, parseInt(t.match(/^\d+/))-1));
+	});
+	tocentry.remove();
+
+	var baseEditLink = $("#content div.wtooltip").first().parentsUntil("#content").addBack().prev("h2, h3").first().find(".editsection a").attr("href");
+	baseEditLink = baseEditLink ? baseEditLink : (mw.config.get("wgScript") + "?action=edit&title=" + mw.util.wikiUrlencode(mw.config.get("wgTitle")) + "&section=0");
+	var ttstore = {'#': $("#content div.wtooltip").first()}, editlinks = {}, conditionals = {'#': 'default'};
+	var tips = $("#item-versions div.wtooltip").not(".wtooltip .wtooltip"), headers = tips.prev("h3").find(".mw-headline");
+	var tabs = '<span id="versions-header-tabs" class="item-versions">';
+	for (var i = 0; i < headers.length; i++) {
+		ttstore['#' + headers[i].id] = tips.eq(i);
+		editlinks['#' + headers[i].id] = headers.eq(i).prev().find("a").attr("href");
+		conditionals['#' + headers[i].id] = headers[i].id.toLowerCase().replace(/\.27/g, "'").replace(/[ _]/g, '-');
+		tabs += ' <a href="#' + headers[i].id + '" class="inactivetab">' + $.trim(headers.eq(i).text()) +'</a>';
+	}
+	tabs = $(tabs + "</span>");
+
+	var baseName = iv.data("base-name") || "Base", basePos = iv.data("base-pos") || 0;
+	var defaultTab = ' <a href="#" class="inactivetab">' + baseName + '</a> ';
+
+	if (basePos >= headers.length) {
+		tabs.append(defaultTab);
+	} else {
+		tabs.children().eq(basePos).before(defaultTab);
+	}
+	tabs.children("a").click(function(e) {
+		var target = $(this).attr("href");
+		e.preventDefault();
+		if ($(this).hasClass("activetab")) {
+			window.location = editlinks[target] ? editlinks[target] : baseEditLink;
+			return;
+		}
+		if (history && history.replaceState) {
+			history.replaceState(null, $("title").text(), target);
+		} else {
+			window.location.hash = target;
+		}
+		versionsShow(target);
+	});
+	if ((mw.config.get('wgAction') != "edit" && mw.config.get('wgAction') != "submit")) {
+		tabs.appendTo(".page-header__title");
+	}
+	else {
+		tabs.appendTo(".ve-fd-header__title");
+	}
+	
+	if ((window.location.hash && ttstore[window.location.hash])) {
+		versionsShow(window.location.hash);
+		$("html, body").scrollTop(0);
+	} else {
+		versionsShow('#');
+	}
+
+	$("body").addClass("versions-active");
+	
+	function versionsShow(key) {
+		$(".versions-cv").hide();
+		$(".versions-cv-" + quoteSelectorName(conditionals[key])).show();
+		if ($("#content div.wtooltip").first()[0] != ttstore[key][0])
+			$("#content div.wtooltip").first().replaceWith(ttstore[key]);
+
+		$("#versions-header-tabs .activetab").toggleClass("activetab inactivetab");
+		$('#versions-header-tabs a[href="'+key+'"]').toggleClass("activetab inactivetab");
+		if (Tooltips && Tooltips.setActivePageVersion)
+			Tooltips.setActivePageVersion(key == '#' ? '' : conditionals[key]);
+		$(".versionsttlink").parent("a").each(function() {
+			$(this).attr("href", $(this).attr("href").replace(/(?:#.*)|$/, key));
+		});
+	}
+}
+function inlineVersionsInit() {
+	var iv = $("#versions-inline");
+	if (iv.length == 0) return;
+	$(".versions-inline-wrap").each(function() {
+		var $t = $(this);
+		$t.parentsUntil(iv).addBack().nextUntil(".versions-inline-wrap").appendTo($t);
+	}).not(iv.children()).appendTo(iv);
+
+	var i, ofs, ch, name, chld = iv.children(), toc = $("#toc"),
+	    cls = (iv.data('switch-classes') || '').split(' '),
+	    tabs = $('<span>').attr('id', 'versions-header-tabs').addClass(cls[0] || ''),
+	    aid = 0, lhash = ((window.location && window.location.hash) || '').substring(1),
+	    pref = iv.data('switch-pref');
+	if (!lhash && pref) lhash = getStoredValue('vsp-' + pref) || '';
+
+	for (i = 0; i < chld.length; i++) {
+		ch = chld.eq(i); name = ch.data('version-name');
+		if (i) tabs.append('&#32;');
+		if (name == lhash || (!!lhash && ch.find('#' + quoteSelectorName(lhash)).length)) aid = i;
+		$('<a>').attr('href', '#' + name).text(ch.data('version-name')).addClass('inactivetab ' + (cls[1+i] || '')).data('version-content', ch).appendTo(tabs);
+	}
+	i = ofs = 0; ch = chld.eq(0);
+	toc.find('li a').each(function() {
+		var n = $(this).find('.tocnumber'), nt = n.text(), v = nt.match(/\d+/);
+		var h = tocLinkToSelector(this);
+		while (!ch.find(h).length && ch.length) {
+			ch = chld.eq(++i); ofs = v - 1;
+		}
+		if (ofs) n.text(nt.replace(/\d+/, v - ofs));
+	});
+
+	if ((mw.config.get('wgAction') != "edit" && mw.config.get('wgAction') != "submit")) {
+		tabs.appendTo('.page-header__title');
+	}
+	else {
+		tabs.appendTo('.ve-fd-header__title');
+	}
+	tabs.children('a').click(function(e) {
+		var $t = $(this), target = $t.attr("href"), $cnt = $t.data('version-content');
+		e.preventDefault();
+		if ($t.hasClass("activetab")) {
+			if ($cnt.data('version-source'))
+				window.location = mw.util.wikiGetlink($cnt.data('version-source'));
+			return;
+		}
+		if (history && history.replaceState) {
+			history.replaceState(null, $("title").text(), target);
+		} else {
+			window.location.hash = target;
+		}
+		if (pref) setStoredValue('vsp-' + pref, target.substring(1));
+		$t.siblings('a.activetab').toggleClass('inactivetab activetab');
+		$t.removeClass('inactivetab').addClass('activetab');
+		showInlineVersion($cnt);
+	});
+
+	var cur = tabs.children('a').eq(aid);
+	cur.toggleClass('activetab inactivetab');
+	showInlineVersion(cur.data('version-content'));
+
+	$("body").addClass("versions-active-inline");
+	function showInlineVersion(ch) {
+		var toc = $("#toc"), h1 = ch.find(":header"), sock = ch.find(".toc-socket");
+		if ((toc.length && h1.length)) {
+			toc.find('li a').filter(function() {
+				var show = ch.find(tocLinkToSelector(this)).length, $t = $(this);
+				$t.closest('li').toggle(!!show);
+			});
+			if (!ch.find("#toc").length) {
+				if (sock.length) { toc.appendTo(sock.first()); } else { toc.insertBefore(h1.first()); }
+			}
+		}
+		chld.hide();
+		ch.show();
+	}
+}
+
+// [[Template:Time]], [[Template:Countdown]]
+function timeInit() {
+	function getDate(s) {
+		s = s && s.match(/(\d{4})-(\d{2})-(\d{2}) (\d{1,2}):(\d{2})/);
+		return s && Date.UTC(parseInt(s[1]), parseInt(s[2])-1, parseInt(s[3]), parseInt(s[4]), parseInt(s[5]));
+	}
+	function updateCountdown() {
+		var $this = $(this), t = getDate($this.data("jst-time")), now = new Date();
+		if (t && (t > now)) {
+			var $d = $this.find(".jst-days"), $h = $this.find(".jst-hours"), $m = $this.find(".jst-minutes"), $s = $this.find(".jst-seconds");
+			var ofs = (t - now)/1000 | 0 + ($s.length ? 0 : 60), d = (ofs / 86400) | 0, h = (ofs / 3600) | 0, m = (ofs / 60) | 0, s = ofs % 60;
+			if ($d.length) h %= 24;
+			if ($h.length) m %= 60;
+			$d.toggleClass("jst-active", d).find(".jst-value").text(d);
+			$h.toggleClass("jst-active", d || h).find(".jst-value").text(h);
+			$m.toggleClass("jst-active", d || h || m).find(".jst-value").text(m);
+			$s.toggleClass("jst-active", true).find(".jst-value").text(s);
+			$this.addClass("jst-active");
+		} else {
+			$this.removeClass("jst-active");
+			$this.text($this.data('jst-text-over') || "");
+		}
+	}
+	function updateCountdowns() {
+		$(".jst-countdown.jst-active").each(updateCountdown);
+		if ($(".jst-countdown.jst-active").length) setTimeout(updateCountdowns, 1001);
+	}
+	$(".jst-countdown").addClass("jst-active");
+	$(".jst-countdown .jst-alternative").remove();
+	$(".jst-days > .jst-label").text("days");
+	$(".jst-hours > .jst-label").text("hours");
+	$(".jst-minutes > .jst-label").text("minutes");
+	$(".jst-seconds > .jst-label").text("seconds");
+	updateCountdowns();
+
+	$(".jst-abstime").each(function() {
+		var $this = $(this), t1 = getDate($this.data("jst-time")), t2 = getDate($this.data("jst-time2")), ta = getDate($this.data("jst-anchor"));
+		if (!t1) return;
+		var t1d = new Date(t1), nowDate = ta ? (new Date(ta)).toDateString() : (new Date()).toDateString();
+		$this.text((t1d.toDateString() == nowDate ? t1d.toLocaleTimeString() : (t1d.toLocaleDateString() + ", " + t1d.toLocaleTimeString())) + (t2 ? " – " + (new Date(t2)).toLocaleTimeString() : ""));
+	});
+}
+
+$(function() {
+	$('#firstHeading').addClass('page-header__title');
+	$('#bodyContent').addClass('page-content');
+
+	if ($("table.classnav").length) classNav();
+	if ($("#ptabs").length) doPortalTabs();
+
+	tooltipsInit($(article));
+	addAjaxDisplayLink();
+	timeInit();
+
+	handleAutocollapse($(article));
+	$("td.collapse-next-row").each(function() {if ($(this).parent().next().height()>300) $(this).append("<span style='float:right;'>[<a>show</a>]</span>").children("span").children("a").click(function(){$(this).text($(this).text()=="hide"?"show":"hide").parent().parent().parent().next().slideToggle();}).parent().parent().parent().next().hide();});
+	requireImageLicense();
+	if (mw.config.get("wgUserName") != null) $("span.insertusername").html(mw.config.get("wgUserName"));
+	$(article+" .quote").prepend("<span class='quotemark' style='float:right;'>&#8221;</span><span class='quotemark' style='float:left;'>&#8220;</span>").css("max-width","75%").after("<br clear='left' />");
+	$(".mw-mpt-link").html("<a href='/Special:WhatLinksHere/"+$(".page-header__title").text().replace("Move ","").replace(/'/g,"%27")+"'>Links to the old page title</a>");
+	$(".coords-link").each(function() {
+		if ($(this).next().find("a.new").length)
+			$(this).addClass('broken');
+	});
+
+	if (!(window.location.hash && window.location.hash.match(/!noversions/))) {
+		versionsInit();
+		inlineVersionsInit();
+	}
+});
