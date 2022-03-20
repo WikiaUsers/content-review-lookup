@@ -4,7 +4,7 @@
  * and https://lotrminecraftmod.fandom.com/wiki/MediaWiki:Common.js?oldid=630207 (lines 176-200)
  */
 
-(function (window, $) {
+$(function () {
     if (window.imagesReplaced) {
         return;
     }
@@ -46,4 +46,4 @@
             reload_imgs(this);
         }
     });
-})(this, jQuery);
+});

@@ -1,55 +1,24 @@
 /**
- * 23:19, July 4, 2021 (UTC)
- * http://naruto.wikia.com/wiki/MediaWiki:Common.js
+ * 06:20, 27 November 2020 (UTC)
+ * http://naruto.fandom.com/wiki/MediaWiki:Common.js
  * This is the central JavaScript file for the Wiki. Any code placed in here will
  * run on every page for every user (logged in or not) on every skin (Oasis or
- * Fandomdesktop).
+ * Monobook).
+ * Scripts imported in MediaWiki:ImportJS
  */
 
 (function (window, $, mw) {
 	"use strict";
-	
+
 	// ArchiveTool
 	window.archiveListTemplate = 'ArchiveList';
 	window.archivePageTemplate = 'ArchivePage';
 
-	// User tags
-	window.UserTagsJS = {
-		tags: {
-			bureaucrat: {
-				link: 'Project:Birokrat'
-			},
-			sysop: {
-				link: 'Project:Sysop',
-				title: 'Operator Sistem (Pengurus)'
-			},
-			rollback: {
-				link: 'Project:Rollback'
-			},
-			inactive: {
-				title: 'Pengguna belum disunting selama 30 hari terakhir'
-			}
-		},
-		modules: {
-			inactive: 30,
-			mwGroups: [
-				'bureaucrat', 'rollback', 'sysop', 'bot', 'bot-global'
-			],
-			autoconfirmed: false,
-			newuser: true,
-			metafilter: {
-				sysop: ['bureaucrat'],
-				bot: ['bot-global']
-			},
-			userfilter: {
-				Dimas_Rizward_H: ['bureaucrat'] // Hide bureaucrat from inactive founder
-			}
-		}
-	};
-
+	
 	// Add custom class for styling long list of refs
 	if ($('.references li').length > 9)
         $('.references').addClass('compactreferences');
+
 
 	// Oasis-only scripts
 	if (mw.config.get('skin') === 'oasis') {
@@ -61,16 +30,16 @@
 		});
 
         // Template adder on file pages
-        if (mw.config.get('wgCanonicalNamespace') === 'File')
+        if (mw.config.get('wgCanonicalNamespace') === 'Berkas')
         $(function() {
             if ($.inArray("autoconfirmed", mw.config.get("wgUserGroups")) === -1)
                 return;
 
             var Options = {
-                    '{{Tidak ada lisensi}}': 'Gambar tidak berlisensi',
-                    '{{Tidak ada alasan}}': 'Tidak ada info penggunaan adil',
-                    '{{Tidak digunakan}}': 'Gambar tidak digunakan',
-                    '{{Nama berkas buruk}}': 'Nama buruk'
+                    '{\{Tidak ada lisensi}}': 'Gambar tanpa izin',
+                    '{\{Tidak ada alasan}}': 'Tidak ada info penggunaan wajar',
+                    '{\{Tidak digunakan}}': 'Gambar yang tidak digunakan',
+                    '{\{Nama berkas buruk}}': 'Nama buruk'
                 },
                 tempOptStr = '';
          
@@ -78,7 +47,7 @@
                 tempOptStr += '<option value="' + i + '" style="text-align:center;">' + Options[i] + '</option>';
             }
          
-            var html = '<select id="FileTemplateAdder">' + tempOptStr + '</select>&nbsp;<a class="wikia-button" style="margin:0 1em; cursor:pointer;" id="templateSubmit">Tambah templat</a>';
+            var html = '<select id="FileTemplateAdder">' + tempOptStr + '</select>&nbsp;<a class="wikia-button" style="margin:0 1em; cursor:pointer;" id="templateSubmit">Tambahkan templat</a>';
             $('.comments').after(html);
             $('#templateSubmit').click(function() {
                 $(this).html('<img src="https://images.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif" style="vertical-align: baseline;" border="0" />');
@@ -87,19 +56,30 @@
                         action: 'edit',
                         title: mw.config.get('wgPageName'),
                         token: mw.user.tokens.get('editToken'),
-                        summary: 'Menambahkan templat: ' + $('#FileTemplateAdder').val(),
+                        summary: 'Adding template: ' + $('#FileTemplateAdder').val(),
                         minor: true,
                         prependtext: $('#FileTemplateAdder').val() + "\n"
                     })
                     .done(function() {
-                        $('#templateSubmit').text('Tambah templat ini juga!!');
-                        new BannerNotification('Template: ' + $('#FileTemplateAdder').val() + ' Added Successfully', 'confirm').show();
+                        $('#templateSubmit').text('Tambahkan Templat ini juga!');
+                        new BannerNotification('Templat: ' + $('#FileTemplateAdder').val() + ' Berhasil Ditambahkan', 'confirm').show();
                     })
                     .fail(function() {
-                        new BannerNotification('Penambahan templat gagal!', 'error').show();
+                        new BannerNotification('Tambahan templat gagal!', 'error').show();
                     });
             });
         });
 	}
+
+    /*
+	// Make edit with form as default when available 
+    var $edit = $('#ca-edit'),
+        $pencil = $edit.find('img'),
+        $formedit = $('#ca-formedit');
+        
+    if ($formedit.length) {
+        $edit.attr('href', '?action=formedit').text('Edit with form').prepend($pencil);
+        $formedit.attr('href', '?action=edit').text('Edit this page');
+    } //*/
 
 }(window, jQuery, mediaWiki));

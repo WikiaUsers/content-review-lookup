@@ -4,7 +4,7 @@ importArticles({
     type: "script",
     articles: [
         'w:c:dev:Countdown/code.js',
-        'w:c:dev:InputUsername/code.js',
+        'u:dev:MediaWiki:InputUsername/code.js',
         'u:dev:ExtendedNavigation/code.js'
     ]
 });

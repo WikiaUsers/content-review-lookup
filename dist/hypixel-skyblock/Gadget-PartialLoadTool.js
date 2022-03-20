@@ -34,7 +34,7 @@
             api: new mw.Api(),
             getSpinner: function () {
                 return $("<div>", {
-                    style: "justify-content: center; display: flex; margin: 3em 0;",
+                    class: "partialLoad-spinner",
                     html: mw.libs.QDmodal.getSpinner(),
                 });
             },
@@ -115,12 +115,12 @@
                         });
                 }
             },
-            makeButton: function (pagename) {
+            makeButton: function (pagename, customButtonName) {
                 var button = $("<div>", {
-                    style: "text-align: center; width: 100%; clear: both; display: block;",
+                    class: "partialLoad-loadContent",
                     html: $("<a>", {
                         href: "#",
-                        html: "Load This Part Of Content",
+                        html: customButtonName || "Load This Part Of Content",
                         "data-page": pagename,
                         click: that.buttonclick,
                         class: "wds-button",
@@ -135,7 +135,7 @@
                     var data = JSON.parse(el.attr("data-tabs"));
                     if (!data.tabs.length) return;
                     if (data.tabs.length === 1) {
-                        el.after(that.makeButton(data.tabs[0].pagename));
+                        el.after(that.makeButton(data.tabs[0].pagename, data.customButtonName));
                         el.remove();
                     } else {
                         var tabLabels = $("<div>", {
@@ -160,10 +160,10 @@
                             }),
                         });
                         var tabLinks = $("<div>", {
-                            class: "partialLoad-actionLinks noselect",
-                        });
-                        var tabSep = $("<hr>", {
-                            class: "partialLoad-separator"
+                            class: "partialLoad-actionLinks__wrapper noselect",
+                            html: $("<div>", {
+                                class: "partialLoad-actionLinks",
+                            })
                         });
                         var tabFrame = $("<div>", {
                             class: "partialLoad-frame",
@@ -173,7 +173,6 @@
                             html: [
                                 tabLabels,
                                 tabLinks,
-                                tabSep,
                                 tabFrame,
                             ],
                         }));

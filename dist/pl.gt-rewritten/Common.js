@@ -1,4 +1,7 @@
 /* Umieszczony tutaj kod JavaScript zostanie załadowany przez każdego użytkownika, podczas każdego ładowania strony. */
+/*AddRailModule*/
+window.AddRailModule = ['Template:RailModule'];
+
 /*HeaderLinks*/
 window.HeaderLinksCopyOnClick = true
 

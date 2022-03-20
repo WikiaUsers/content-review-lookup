@@ -1082,12 +1082,29 @@ $.when(
 						diff: d.edit.newrevid,
 						oldid: d.edit.oldrevid,
 					});
+					
+					// Auto refresh lua cache on exit
+					refreshLuaCache();
 				}
 				else {
 					mw.notify("No changes were made.", {title: "Tooltips Saved!", type:"info"});
 				}
 			});
-
+		},
+		
+		refreshLuaCache: function(){
+			var api = new mw.Api();
+			api.get({
+				action : 'parse',
+				text : '{{#invoke:Cache|refreshSlotAliasesCache}}'
+			}).then(function(data) {
+				console.log('Cache Refreshed!', data);
+			})
+			// Fandom doesn't like catch as a method name
+			["catch"](function(err) {
+				mw.notify("Error refreshing lua cache", { title: "Uncaught Error", type: "error" });
+				console.error(err);
+			});
 		},
 
 		// main function this.onClick

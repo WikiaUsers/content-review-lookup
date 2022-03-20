@@ -35,7 +35,7 @@ $(function() {
 		if (name.startsWith("Module:")) {
 			var target = name.replace(/ /g,'%20');
 			var url = mw.config.get('wgServer') + '/' + target;
-			var str = quote + '<a href="' + url + '">' + name + '</a>' + quote;
+			var str = quote + mw.html.element('a', {href: url}, name) + quote;
 			$(this).html(str);
 		}
 	});

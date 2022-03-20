@@ -11,24 +11,6 @@ window.AutoCreateUserPagesConfig = {
 // Actually require a license to be picked instead of just making a suggestion
 window.NoLicenseWarning = { forceLicense: true };
 
-(function () {
-	'use strict';
-
-	const fixSoundcloudIframes = function ($content) {
-		const embedVideoIframes = $content.find('.embedvideowrap iframe');
-		embedVideoIframes.each(function (_, iframe) {
-			if (iframe.src.startsWith('https://w.soundcloud.com/player') && iframe.src.includes('&visual=true')) {
-				iframe.src = iframe.src.replace('&visual=true', '');
-			}
-		});
-	};
-
-	mw.hook('wikipage.content').add(function ($content) {
-		fixSoundcloudIframes($content);
-	});
-})();
-
-
 // Only import these scripts for content mods and admins so we don't waste the
 // bandwith of users who can't actually use them.
 if (

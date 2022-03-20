@@ -223,6 +223,11 @@
             }
         },
         
+        LeafyStrap: {
+        	page: 'LeafyStrap/demo',
+        	styles: 'MediaWiki:LeafyStrap.css'
+        },
+        
 	    ListGroupMembers: {
 			page: 'Special:BlankPage',
 			scripts: 'MediaWiki:ListGroupMembers.js'
@@ -333,6 +338,11 @@
             styles: 'MediaWiki:OasisRevived.css',
             scripts: 'MediaWiki:OasisRevived.js',
             disabledByDefault: true
+        },
+        
+        Obfuscator: {
+        	page: 'Obfuscator/demo',
+        	styles: 'MediaWiki:Obfuscator.css'
         },
         
         OldFandomColors: {

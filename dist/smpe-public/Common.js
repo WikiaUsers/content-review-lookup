@@ -6,17 +6,42 @@ window.tooltips_config = {
     noCSS: true,
     waitForImages: true,
 };
-//creates custom classes for tooltips
-window.tooltips_list = [
-    {
-        classname: 'mapguitooltip',
-        parse: "<div class='fadein'><#parameter#></div>",
-    },
-    {
-    	classname: 'mctooltip',
-    	parse:'{'+'{MCTooltip|Item=<#Itemname#>}}',
+window.dev = window.dev || [];
+window.dev.userBadge = {
+
+};
+window.MessageWallUserTags = {
+    tagColor: 'red',
+    txtSize: '10px',
+    glow: true,
+    glowSize: '15px',
+    glowColor: '#f77',
+    users: {
+        'TripleLuxen': 'Administrator',
     }
-];
+    
+};
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		bureaucrat: { order: 1 },
+		sysop: { order: 2 },
+		treadmoderator: { u: 'Wiki Moderator', order: 3},
+		supereditor: { u: 'Wiki Editor', order: 4},
+	},
+};
+UserTagsJS.modules.inactive = 30;
+UserTagsJS.modules.newuser = true;
+UserTagsJS.modules.autoconfirmed = true;
+UserTagsJS.modules.mwGroups =  ['bureaucrat', 'threadmoderator', 'content-moderator', 'sysop', 'supereditor' ];
+UserTagsJS.modules.metafilter = {
+	sysop: ['bureaucrat'], // Remove administrator group from bureaucrats
+	threadmoderator: ['sysop', 'bureaucrat'],
+	'content-moderator': ['sysop', 'threadmoderator' ,'bureaucrat'],
+	supereditor: ['threadmoderator', 'content-moderator' , 'sysop', 'bureaucrat'],
+};
+
+
 
 $(document).ready(function() {
     $('.loadwait').show();
@@ -53,11 +78,4 @@ $( function() {
 	}, 2000 );
 }() );
 });
-});
-
-importArticles({   
-	type: 'script',    
-	articles: [        
-		'u:dev:MediaWiki:MassCategorization/code.js',    
-		]
 });

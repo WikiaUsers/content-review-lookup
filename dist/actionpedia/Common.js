@@ -27,3 +27,8 @@ importArticles({
         "u:dev:MediaWiki:LockOldBlogs/code.js"
     ]
 });
+
+// Configuration for NoLicenseWarning
+window.NoLicenseWarning = {
+    forceLicense: true,
+};

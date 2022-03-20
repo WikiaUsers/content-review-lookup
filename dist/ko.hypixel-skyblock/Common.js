@@ -1,18 +1,20 @@
 /* 
 Any JavaScript here will be loaded for all users on every page load.
-See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
 */
 
 /* Table of Contents
 -----------------------
  Deferred [mw.loader.using]
  * (W00) Small scripts
+ * (W01) Scripts that are attached to wikipage content load
  * (B00) Element animator
- * (Y00) importArticles
+ * (C00) My Block ID
+ * (Y00) importScripts
+ ** (Y01) Less
+ ** (Y02) Less Source Updater
 
  Immediately Executed
- * (X00) importArticle pre-script actions
- * * (X01) Less
+ * (X00) importJS pre-script actions
 */
 
 /* jshint
@@ -43,6 +45,18 @@ function copyToClipboard(text) {
 }
 
 mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(function () {
+    var api = new mw.Api();
+    var conf = mw.config.get([
+        "wgUserGroups",
+        "wgEditCount",
+        "wgPageName",
+        "wgFormattedNamespaces",
+        "wgServer",
+        "profileUserId",
+        "wgNamespaceNumber",
+        "wgAction",
+        "wgContentLanguage",
+    ]);
 
     //##############################################################
     /* ==Small scripts== (W00)*/
@@ -54,33 +68,8 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     // Add custom "focusable" class
     $(".focusable").attr("tabindex", 0);
 
-    /* Script to make page-specific styling (see [[Project:Page Styles]]) */
-    $("#mw-content-text > .mw-parser-output").find(".pageStyles").each(function () {
-        var $this = $(this);
-        var css = $this.text();
-        var id = $this.attr("id");
-
-        /* For security purposes, DO NOT REMOVE! */
-        function validateCSS(css) {
-            return css
-                .replaceAll(/([\t ]*)[a-z0-9\-]+\s*:.*url\(["']?(.*?)["']?\)[^;}]*;?[\t ]*/gi, "$1/* url() is not allowed */") // url()
-                .replaceAll(/([\t ]*)[a-z0-9\-]+\s*:.*expression\(["']?(.*?)["']?\)[^;}]*;?[\t ]*/gi, "$1/* expression() is not allowed */") // expression()
-                .replaceAll(/([\t ]*)@import.*/gi, "$1/* @import is not allowed */") // @import
-                .replaceAll(/([\t ]*)[a-z0-9\-]+\s*:[ \t]*["']?javascript:([^;\n]*)?;?[\t ]*/gi, '$1/* javascript: is not allowed */') // javascript:
-                .replaceAll(/^([\t ]*)@font-face\s*{[^\0]*?}/gi, "$1/* @font-face is not allowed */"); // @font-face
-        }
-
-        $("<style>", {
-            text: validateCSS(css),
-            type: "text/css",
-            class: $this.attr("class") && $this.attr("class").replaceAll(/^pageStyles\s*|pageStyles\s*$/g, ""),
-            id: id,
-        }).appendTo("head");
-    });
-
     // Add comment guidelines notice (wiki/fandom staff/users with > 100 edits exempt)
-    if (!/bureaucrat|content-moderator|threadmoderator|rollback|sysop|util|staff|helper|global-discussions-moderator|wiki-manager|soap/.test(mw.config.get("wgUserGroups").join("\n")) && mw.config.get("wgEditCount") < 100) {
-        var api = new mw.Api();
+    if (!/bureaucrat|sysop|codeeditor|content-moderator|threadmoderator|rollback|util|staff|helper|global-discussions-moderator|wiki-manager|soap/.test(conf.wgUserGroups.join("\n")) && conf.wgEditCount < 100) {
         api.get({
                 action: "parse",
                 text: "{{MediaWiki:Custom-comment-guidelines-notice}}",
@@ -94,8 +83,8 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     }
 
     // Script to make linking comments easier
-    if (mw.config.get("wgPageName").startsWith(new mw.Title("Comment", -1))) {
-        var split = mw.config.get("wgPageName").split("/").slice(1);
+    if (conf.wgPageName.startsWith(new mw.Title("Comment", -1))) {
+        var split = conf.wgPageName.split("/").slice(1);
         if (!split.length) return;
         window.location.replace(new mw.Uri(mw.util.getUrl(split[0]) + "?" + $.param({
             commentId: split[1],
@@ -110,18 +99,17 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
             var el = $(e.target).parents("[class^=\"Comment_wrapper__\"]");
             var replyId = el.attr("data-reply-id");
 
-            window.navigator.clipboard.writeText("[[Special:Comment/" + mw.config.get("wgPageName") + "/" + el.attr("data-thread-id") + (replyId ? "/" + replyId : "") + "|comment]]");
+            window.navigator.clipboard.writeText("[[Special:Comment/" + conf.wgPageName + "/" + el.attr("data-thread-id") + (replyId ? "/" + replyId : "") + "|comment]]");
         }
     });
 
     // Small script to change wiki activity/article comments links, and display comment/reply IDs
-    var userGroups = mw.config.get("wgUserGroups");
-    var canBlock = /sysop|util|staff|helper|global-discussions-moderator|wiki-manager|content-team-member|soap|bureaucrat/.test(userGroups.join("\n"));
+    var canBlock = /bureaucrat|sysop|util|staff|helper|global-discussions-moderator|wiki-manager|content-team-member|soap/.test(conf.wgUserGroups.join("\n"));
 
     function changeActivityLinks() {
         $(".recent-wiki-activity__details a:contains('A Fandom user')").each(function () {
             var user = decodeURIComponent($(this).attr("href")).replace(
-                new RegExp(mw.util.getUrl("") + mw.config.get("wgFormattedNamespaces")[2] + ":|" + new mw.Title("Contributions", -1).getUrl() + "/"), ""
+                new RegExp(mw.util.getUrl("") + conf.wgFormattedNamespaces[2] + ":|" + new mw.Title("Contributions", -1).getUrl() + "/"), ""
             );
 
             // Don't reveal IP's if the user is not an admin/bureaucrat/global groups
@@ -143,7 +131,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     function changeCommentLinks() {
         $("span[class^=\"EntityHeader_header-details\"] > div[class^=\"wds-avatar EntityHeader_avatar\"] > a").each(function () {
             var user = decodeURIComponent($(this).attr("href")).replace(
-                    new RegExp(mw.util.getUrl("") + mw.config.get("wgFormattedNamespaces")[2] + ":|" + new mw.Title("Contributions", -1).getUrl() + "/"), ""
+                    new RegExp(mw.util.getUrl("") + conf.wgFormattedNamespaces[2] + ":|" + new mw.Title("Contributions", -1).getUrl() + "/"), ""
                 ),
                 $link = $(this).parent().parent().children("a:last-of-type:not(.mw-user-anon-link)"),
                 $this = $(this);
@@ -196,7 +184,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                                     title: "click to copy",
                                     class: "article-click-copy",
                                     text: (threadIsComment ? "Comment" : "Reply") + " ID : " + (replyID || commentID),
-                                    "data-copy": mw.config.get("wgServer") + mw.util.getUrl(mw.config.get("wgPageName")) + "?" + (threadLink || ""),
+                                    "data-copy": conf.wgServer + mw.util.getUrl(conf.wgPageName) + "?" + (threadLink || ""),
                                 }),
                             })
                         );
@@ -358,16 +346,16 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     var count = 0;
     var inter2 = setInterval(function () {
         if (count > 12000) return;
-        if (mw.config.get("profileUserId") && $("#userProfileApp").length) $("#userProfileApp .user-identity-stats a[href*=\"" + new mw.Title("UserProfileActivity", -1).getUrl() + "\"]").attr("href", "/f/u/" + mw.config.get("profileUserId")), clearInterval(inter2);
+        if (conf.profileUserId && $("#userProfileApp").length) $("#userProfileApp .user-identity-stats a[href*=\"" + new mw.Title("UserProfileActivity", -1).getUrl() + "\"]").attr("href", "/f/u/" + conf.profileUserId), clearInterval(inter2);
     }, 5);
 
     // Script to respond to ANI reports
     if (
-        mw.config.get("wgUserGroups").find(function (v) {
+        conf.wgUserGroups.find(function (v) {
             return ["bureaucrat", "sysop"].includes(v);
         }) &&
-        mw.config.get("wgPageName").includes("Administrator's_Noticeboard") &&
-        mw.config.get("wgNamespaceNumber") === 4
+        conf.wgPageName.includes("Administrator's_Noticeboard") &&
+        conf.wgNamespaceNumber === 4
     )
         $(".mw-editsection").append(" | ", $("<a>", {
             class: "mw-complete-report",
@@ -382,88 +370,22 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
                 if (message === null) return;
 
-                new mw.Api().postWithEditToken({
+                api.postWithEditToken({
                     action: "edit",
                     appendtext: "\n:\{\{AIV|done\}\} " + message + " \{\{Subst:sig\}\}",
-                    title: mw.config.get("wgPageName"),
+                    title: conf.wgPageName,
                     summary: "Marking report of [[Special:Contributions/" + user + "|" + user + "]] as completed",
                     section: new mw.Uri($(this).parent().find("a[href*=\"&section=\"]").attr("href")).query.section,
                 }).then(console.log, console.warn);
             },
         }));
 
-    // Code to allow making {{Slot}} clickable to show different content
-    $(function () {
-        if (!$(".sbw-ui-tabber").length) {
-            return;
-        }
-
-        function clickTab(id) {
-            var $parent = $(this).parents(".sbw-ui-tabber").eq(0);
-            id = "ui-" + id;
-            if (!$("#" + id).length) {
-                console.warn("No such tab ID \"" + id + "\"");
-                return;
-            }
-            $parent.find(".sbw-ui-tab-content#" + id).siblings(".sbw-ui-tab-content").addClass("hidden").hide();
-            $parent.find(".sbw-ui-tab-content#" + id).removeClass("hidden").show();
-            // Since images don't load on hidden tabs, force them to load
-            $parent.find(".sbw-ui-tab-content#" + id + " .lzy[onload]").load();
-        }
-
-        // .hidden works on mobile, but not on desktop
-        $(".sbw-ui-tab-content.hidden").hide();
-
-        $(".sbw-ui-tabber .invslot").each(function () {
-            var classes = Array.from($(this)[0].classList).filter(function (c) {
-                return c.indexOf("goto-") === 0 || c.indexOf("ui-") === 0;
-            });
-
-            if (classes.length) {
-                var className = classes[(classes.length) - 1]
-                    .replace("goto-", "")
-                    .replace("ui-", "");
-
-                $(this).click(function () {
-                    clickTab.call(this, className);
-                });
-            }
-        });
-
-        $(".sbw-ui-tabber .sbw-ui-tab").click(function (e) {
-            e.preventDefault();
-            e.stopImmediatePropagation();
-
-            var id = $(this).data("tab");
-            if (id) {
-                clickTab.call(this, id);
-            }
-        });
-
-        // makes an extra button to go back to the first UI tab
-        $(".sbw-ui-tabber").each(function () {
-            var elementId = $(this).find(":first-child").attr("id");
-
-            if (!elementId) return;
-
-            var className = elementId.replace("ui-", "");
-
-            $(this).find(".mcui").append(
-                $("<div>").addClass("mcui-returnbutton text-zoom-independent noselect")
-                .attr("data-font-size", "22").text("↻")
-                .click(function () {
-                    clickTab.call(this, className);
-                })
-            );
-        });
-    });
-
-    if (mw.config.get("wgPageName").match(/^S:(.+)$/i)) {
-        window.location.replace(mw.util.getUrl("Special:" + mw.config.get("wgPageName").match(/^S:(.+)$/i)[1]));
+    if (conf.wgPageName.match(/^S:(.+)$/i)) {
+        window.location.replace(mw.util.getUrl("Special:" + conf.wgPageName.match(/^S:(.+)$/i)[1]));
     }
 
-    // if (mw.config.get("wgPageName").match(/^HSW:(.+)$/i) && mw.config.get("wgAction") === "view") {
-    //     window.location.replace(mw.util.getUrl("Project:" + mw.config.get("wgPageName").match(/^HSW:(.+)$/i)[1]));
+    // if (conf.wgPageName.match(/^HSW:(.+)$/i) && conf.wgAction === "view") {
+    //     window.location.replace(mw.util.getUrl("Project:" + conf.wgPageName.match(/^HSW:(.+)$/i)[1]));
     // }
 
     // Code to compromise "srcset" in order to display images in infoboxes with maximum width
@@ -472,6 +394,99 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     // Script to change the displayed text for Lua Errors
     $(".scribunto-error").text("There was a problem when loading this.");
     $(".scribunto-error").eq(0).text("There was a problem when loading this. Refresh and contact the admins if the issue persists.");
+
+    // Code to allow making {{Slot}} clickable to show different content [Part 1/2]
+    function clickTab(id) {
+        var $parent = $(this).parents(".sbw-ui-tabber").eq(0);
+        id = "ui-" + id;
+        if (!$("#" + id).length) {
+            console.warn("No such tab ID \"" + id + "\"");
+            return;
+        }
+        $parent.find(".sbw-ui-tab-content#" + id).siblings(".sbw-ui-tab-content").addClass("hidden").hide();
+        $parent.find(".sbw-ui-tab-content#" + id).removeClass("hidden").show();
+        // Since images don't load on hidden tabs, force them to load
+        $parent.find(".sbw-ui-tab-content#" + id + " .lzy[onload]").load();
+    }
+
+    $(document.body).on("click", ".sbw-ui-tabber .sbw-ui-tab", function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        var id = $(this).data("tab");
+        if (id)
+            clickTab.call(this, id);
+    });
+
+    //##############################################################
+    /* ==Scripts that are attached to wikipage content load== (W01)*/
+
+    // This hook forces it to apply script even in TabViews and page preview
+    mw.hook("wikipage.content").add(function (pSection) {
+
+        /* Script to make page-specific styling (see [[Project:Page Styles]]) */
+        pSection.find(".pageStyles").each(function () {
+            var $this = $(this);
+            var css = $this.text();
+            var id = $this.attr("id");
+
+            /* For security purposes, DO NOT REMOVE! */
+            function validateCSS(css) {
+                return css
+                    .replaceAll(/([\t ]*)[a-z0-9\-]+\s*:.*url\(["']?(.*?)["']?\)[^;}]*;?[\t ]*/gi, "$1/* url() is not allowed */") // url()
+                    .replaceAll(/([\t ]*)[a-z0-9\-]+\s*:.*expression\(["']?(.*?)["']?\)[^;}]*;?[\t ]*/gi, "$1/* expression() is not allowed */") // expression()
+                    .replaceAll(/([\t ]*)@import.*/gi, "$1/* @import is not allowed */") // @import
+                    .replaceAll(/([\t ]*)[a-z0-9\-]+\s*:[ \t]*["']?javascript:([^;\n]*)?;?[\t ]*/gi, '$1/* javascript: is not allowed */') // javascript:
+                    .replaceAll(/^([\t ]*)@font-face\s*{[^\0]*?}/gi, "$1/* @font-face is not allowed */"); // @font-face
+            }
+
+            $("<style>", {
+                text: validateCSS(css),
+                type: "text/css",
+                class: $this.attr("class") && $this.attr("class").replaceAll(/^pageStyles\s*|pageStyles\s*$/g, ""),
+                id: id,
+            }).appendTo("head");
+        });
+
+        // Code to allow making {{Slot}} clickable to show different content [Part 2/2]
+        (function () {
+            if (!pSection.find(".sbw-ui-tabber").length) {
+                return;
+            }
+
+            // .hidden works on mobile, but not on desktop
+            pSection.find(".sbw-ui-tab-content.hidden").hide();
+
+            pSection.find(".sbw-ui-tabber .invslot").each(function () {
+                var classes = Array.from($(this).get(0).classList).filter(function (c) {
+                    return c.indexOf("goto-") === 0 || c.indexOf("ui-") === 0;
+                });
+                if (classes.length) {
+                    var className = classes[(classes.length) - 1]
+                        .replace("goto-", "")
+                        .replace("ui-", "");
+                    $(this).click(clickTab.bind(this, className));
+                }
+            });
+
+            // makes an extra button to go back to the first UI tab
+            pSection.find(".sbw-ui-tabber").each(function () {
+                var elementId = $(this).find(":first-child").attr("id");
+
+                if (!elementId) return;
+
+                var className = elementId.replace("ui-", "");
+
+                $(this).find(".mcui").append(
+                    $("<div>").addClass("mcui-returnbutton text-zoom-independent noselect")
+                    .attr("data-font-size", "22").text("↻")
+                    .click(function () {
+                        clickTab.call(this, className);
+                    })
+                );
+            });
+        })();
+    });
 
     //##############################################################
     /* ==Element animator== (B00)*/
@@ -551,24 +566,100 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     });
 
     //##############################################################
+    /* ==My Block ID== (C00)*/
+    // Special:MyBlockID
+    if (mw.config.values.wgPageName.toLowerCase() === conf.wgFormattedNamespaces[-1].toLowerCase() + ":myblockid") {
+        document.title = "My Block ID | " + mw.config.values.wgSiteName + " | Fandom";
+        $("#firstHeading").text("My Block ID");
+        var $content = mw.util.$content || $('#mw-content-text');
+        $content.empty()
+            .html(
+                $("<div>", {
+                    html: [
+                        $("<h3>", {
+                            text: "Loading..."
+                        }),
+                    ],
+                })
+            );
+
+        api.get({
+            action: "query",
+            meta: "userinfo",
+            uiprop: ["name", "blockinfo"],
+        }).then(function (r) {
+            r = r.query.userinfo;
+            var name = r.name;
+
+            mw.messages.set("", r.blockreason || "");
+            var parsedReason = mw.message("").parse();
+
+            console.log(r);
+            mw.messages.set("");
+            $content.html([
+                $("<h3>", {
+                    html: [
+                        "Displaying block information for \"", $("<a>", {
+                            href: mw.util.getUrl("Special:Contribs/" + name),
+                            text: name
+                        }), "\".",
+                    ],
+                })
+            ].concat(r.blockreason ? [
+                "You are currently blocked, your Block ID is ",
+                $("<a>", {
+                    href: mw.util.getUrl("Special:BlockList", {
+                        wpTarget: name
+                    }),
+                    text: "#" + r.blockid
+                }),
+                $("<small>", {
+                    html: [" (", $("<a>", {
+                        href: "#",
+                        click: function () {
+                            copyToClipboard("#" + r.blockid);
+                        },
+                        text: "click to copy"
+                    }), ")"]
+                }),
+                "."
+            ] : [
+                "You are not currently blocked. If you are still sure you're blocked, please try again with a different account, or contact an admin via discord for assistance."
+            ]));
+        });
+    }
+
+    //##############################################################
     /* ==importArticles== (Y00)*/
     // Imports scripts from other pages/wikis.
     // NOTE: importAricles() is currently broken.
+    function getJsonOrEmpty(url, dontLoadForEnglishWiki) {
+        return $.Deferred(function (def) {
+            if (dontLoadForEnglishWiki && conf.wgContentLanguage === "en")
+                def.resolve([]);
+            $.getJSON(url + "?action=raw&ctype=text/json")
+                .done(function (dt) {
+                    def.resolve(dt);
+                })
+                .fail(function () {
+                    def.resolve([]);
+                });
+        });
+    }
     window.importScripts = function (pages) {
         if (!Array.isArray(pages)) {
             pages = [pages];
         }
-
         pages.forEach(function (v) {
-            var wiki;
             var match = v.match(/^(?:u|url):(.+?):(.+)$/);
-            (match || []).shift();
-
-            wiki = wiki || mw.config.get("wgServer").replace("https://", "").replace(".fandom.com", "");
-            match = match || v;
-
+            var wiki = match && match[1] || (conf.wgServer.replace("https://", "").replace(".fandom.com", ""));
+            var match2 = (match && match[2] || v).match(/^(\w\w):(.+)$/);
+            var serverlang = conf.wgContentLanguage;
+            var langcode = match2 ? ("/" + match2[1]) : (match ? "" : serverlang === "en" ? "" : ("/" + serverlang));
+            var page = "/" + (match2 ? match2[2] : match ? match[2] : v);
+            var url = "https://" + wiki + ".fandom.com" + langcode + page + "?action=raw&ctype=text/javascript";
             $.ajax({
-                url: "https://" + (Array.isArray(match) ? match[0] : wiki) + ".fandom.com" + mw.util.getUrl(Array.isArray(match) ? match[1] : match) + "?action=raw&ctype=text/javascript",
+                url: url,
                 dataType: "script",
                 cache: true,
             }).then(function () {
@@ -577,11 +668,134 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         });
     };
 
+    // Please note that ES5 script imports are moved to MediaWiki:ImportJS
+    // ES6 scripts needs to be imported here
+    // (for convenience to promptly disable any script at any time)
     importScripts([
-    	// Please note that ES5 script imports are moved to MediaWiki:ImportJS
-    	// (for convenience to promptly disable any script at any time)
-    	"MediaWiki:Common.js/skydate.js", // seems like ES6 scripts needs to be here
+        "MediaWiki:Common.js/skydate.js"
     ]);
+
+    //###########################################
+    /* ===Less=== (Y01) */
+    $.when(
+        // get list of pages from the English Wiki
+        getJsonOrEmpty("https://hypixel-skyblock.fandom.com/wiki/MediaWiki:Custom-Less.json", false),
+        // also enable for pages from local wiki [[MediaWiki:Custom-Less.json]]
+        getJsonOrEmpty(mw.util.getUrl("MediaWiki:Custom-Less.json"), true)
+    ).then(function (lessJson, lessJsonLocal) {
+        var lessPages = lessJson.concat(lessJsonLocal);
+        var mwns = conf.wgFormattedNamespaces[8] + ":"; // localized mw namespace
+        lessPages = ["Common.css", "Custom-common.less"].concat(lessPages).map(function (s) {
+            return mwns + s;
+        });
+        window.lessOpts = window.lessOpts || [];
+        window.lessOpts.push({
+            // this is the page that has the compiled CSS
+            target: mwns + "Common.css",
+            // this is the page that lists the LESS files to compile
+            source: mwns + "Custom-common.less",
+            // these are the pages that you want to be able to update the target page from
+            // note, you should not have more than one update button per page
+            load: lessPages,
+            // target page header
+            header: mwns + "Custom-css-header/common",
+        });
+        window.lessConfig = window.lessConfig || [];
+        window.lessConfig = {
+            // reloads the page after the target page has successfully been updated
+            reload: true,
+            // wraps the parsed CSS in pre tags to prevent any unwanted links to templates, pages or files
+            wrap: true,
+            // allowed groups
+            allowed: ["codeeditor"],
+        };
+        importScripts("u:dev:Less/code.2.js");
+    }).catch(console.warn);
+
+    //###########################################
+    /* ===Less Source Updater=== (Y02) */
+    function updateLessSource() {
+        return $.get("https://hypixel-skyblock.fandom.com/api.php", {
+            action: "query",
+            format: "json",
+            prop: "revisions",
+            titles: "MediaWiki:Custom-common.less",
+            formatversion: 2,
+            rvprop: "content",
+            rvslots: "*",
+        }).then(function (d) {
+            if (d.query)
+                if (d.query.pages[0].missing !== true)
+                    // also replaces @lang with the local variable code
+                    return d.query.pages[0].revisions[0].slots.main.content
+                        .replace(/@lang: ".*?"/g, "@lang: \"/" + conf.wgContentLanguage + "\"");
+                else {
+                    new BannerNotification($("<div>", {
+                        html: "<div>Update failed. Failed to fetch source.</div>",
+                    }).prop("outerHTML"), "warn", null, 5000).show();
+                    return false;
+                }
+            else {
+                new BannerNotification($("<div>", {
+                    html: "<div>Update failed. See console for error.</div>",
+                }).prop("outerHTML"), "warn", null, 5000).show();
+                console.warn(d);
+            }
+        }).then(function (content) {
+            if (content) {
+                api.postWithEditToken({
+                        action: "edit",
+                        format: "json",
+                        watchlist: "nochange",
+                        title: "MediaWiki:Custom-common.less",
+                        text: content,
+                        summary: "Updated Less Source (source: [[:en:MediaWiki:Custom-common.less]])",
+                    }).done(function () {
+                        new BannerNotification($("<div>", {
+                            html: "<div>Update successful!</div>",
+                        }).prop("outerHTML"), "confirm", null, 5000).show();
+                    })
+                    .fail(function (err) {
+                        new BannerNotification($("<div>", {
+                            html: "<div>Update failed. See console for error.</div>",
+                        }).prop("outerHTML"), "warn", null, 5000).show();
+                        console.warn(err);
+                    });
+            }
+        });
+    }
+    var allowedPages = [conf.wgFormattedNamespaces[8] + ":" + "Custom-common.less", conf.wgFormattedNamespaces[8] + ":" + "Common.css"];
+    if (allowedPages.includes(conf.wgPageName) &&
+        conf.wgAction === "view" &&
+        conf.wgContentLanguage !== "en" &&
+        /bureaucrat|sysop|codeeditor|util|staff|helper|global-discussions-moderator|wiki-manager|content-team-member|soap/.test(conf.wgUserGroups.join("\n"))) {
+        $("#mw-content-text").prepend($("<a>", {
+            class: "wds-button",
+            html: $("<div>", {
+                click: function () {
+                    var $this = $(this);
+                    if (confirm("Update Less Source from English Wiki?")) {
+                        $this.text("Updating...");
+                        $this.attr({
+                            disabled: true
+                        });
+                        updateLessSource().then(function () {
+                            $this.text("Update Less Source");
+                            $this.removeAttr("disabled");
+                        });
+                    }
+                },
+                text: "Update Less Source",
+                title: "Update Less Source from English Wiki",
+            }),
+            title: "Update Less Source from English Wiki",
+            css: {
+                cursor: "pointer",
+                "margin": "0 0 5px 5px",
+            }
+        }));
+    }
+
 });
 
 //##############################################################
@@ -590,13 +804,13 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
 // AjaxRC
 window.ajaxRefresh = 30000;
-window.ajaxPages = [
-    "Special:RecentChanges",
-    "Special:WikiActivity",
-    "Special:Watchlist",
-    "Special:Log",
-    "Special:Contributions",
-    "Special:AbuseLog",
+window.ajaxSpecialPages = [
+    "RecentChanges",
+    "WikiActivity",
+    "Watchlist",
+    "Log",
+    "Contributions",
+    "AbuseLog",
 ];
 $.extend(true, window, {
     dev: {
@@ -610,94 +824,6 @@ $.extend(true, window, {
         }
     }
 });
-
-//###########################################
-/* ===Less=== (X01) */
-window.lessOpts = window.lessOpts || [];
-window.lessOpts.push( {
-	// this is the page that has the compiled CSS
-	target: '미디어위키:Common.css',
-	// this is the page that lists the LESS files to compile
-	source: '미디어위키:Custom-common.less',
-	// these are the pages that you want to be able to update the target page from
-	// note, you should not have more than one update button per page
-	load: [ '미디어위키:Common.css', '미디어위키:Custom-common.less' ],
-	// target page header
-	header: '미디어위키:Custom-css-header/common',
-	// allowed groups
-	allowed: [],
-});
-
-window.lessConfig = window.lessConfig || [];
-window.lessConfig = {
-    // reloads the page after the target page has successfully been updated
-    reload: true,
-    // wraps the parsed CSS in pre tags to prevent any unwanted links to templates, pages or files
-    wrap: true,
-    // allowed groups
-    allowed: ["codeeditor"],
-};
-
-// Special:MyBlockID
-
-if (mw.config.values.wgPageName.toLowerCase() === "special:myblockid") {
-    document.title = "My Block ID | " + mw.config.values.wgSiteName + " | Fandom";
-    $("#firstHeading").text("My Block ID");
-    mw.util.$content
-        .empty()
-        .html(
-            $("<div>", {
-                html: [
-                    $("<h3>", {
-                        text: "Loading..."
-                    }),
-                ],
-            })
-        );
-
-    var api = new mw.Api();
-    api.get({
-        action: "query",
-        meta: "userinfo",
-        uiprop: ["name", "blockinfo"],
-    }).then(function (r) {
-        r = r.query.userinfo;
-        var name = r.name;
-
-        mw.messages.set("", r.blockreason || "");
-        var parsedReason = mw.message("").parse();
-
-        console.log(r);
-        mw.messages.set("");
-        mw.util.$content.html([
-            $("<h3>", {
-                html: [
-                    "Displaying block information for \"", $("<a>", {
-                        href: mw.util.getUrl("Special:Contribs/" + name),
-                        text: name
-                    }), "\".",
-                ],
-            }),
-            r.blockreason ? "You are currently blocked, your Block ID is " : "You are not currently blocked. If you are still sure you're blocked, please try again with a different account, or contact an admin via discord for assistance.",
-            r.blockreason ? $("<a>", {
-                href: mw.util.getUrl("Special:BlockList", {
-                    wpTarget: "%23" + r.blockid
-                }),
-                text: "#" + r.blockid
-            }) : "",
-            r.blockreason ? $("<small>", {
-                html: [" (", $("<a>", {
-                    href: "#",
-                    click: function () {
-                        copyToClipboard("#" + r.blockid);
-                    },
-                    text: "click to copy"
-                }), ")"]
-            }) : "",
-            r.blockreason ? "." : "",
-        ]);
-    });
-}
 
 // Scripts for ko wiki only
 

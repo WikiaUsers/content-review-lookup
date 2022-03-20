@@ -13,7 +13,6 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
     'The_Smarter,_Wiser_King_Dedede': ['assistant'],
     'FireMatch': ['assistant'],
-    'Chickenkrispies': ['discord'],
     'Idroppedmypen': ['discord'],
     'Minnesotaman2007!': ['discord'],
     'TheJasbre202': ['discord']

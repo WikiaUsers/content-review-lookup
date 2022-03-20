@@ -4,7 +4,7 @@ $( function() {
     	'wgNamespaceNumber',
     	'wgPageContentModel',
 	]);
-	if ((conf.wgNamespaceNumber === 4) || (conf.wgNamespaceNumber === 10) || (conf.wgPageContentModel != 'wikitext')) return;
+	if ( ($('#ca-edit').length === 0) || (conf.wgNamespaceNumber === 4) || (conf.wgNamespaceNumber === 10) || (conf.wgPageContentModel != 'wikitext') ) return;
 	if ((mw.user.options.get('editor') === "2") && (mw.user.options.get('editortype') === "2")) return;
 	if (($('#p-cactions #ca-ve-edit').length === 0) && ($('#custom-ca-ve-edit').length === 0)) {
 		$('#p-cactions > ul').prepend(

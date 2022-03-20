@@ -45,6 +45,7 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 
 	function finalAlert($this) {
 		$this.text("Update Staff Colors");
+		$this.removeAttr("disabled");
 		alert("Staff Color Updater: Successful updated LESS for staff colors.\n\n" +
 			Object.keys(mw.util.StaffUtil.membersList).map(function (i) {
 				return mw.util.StaffUtil.membersList[i].rank + ": " + mw.util.StaffUtil.membersList[i].users.length;
@@ -85,16 +86,15 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 
 				var overrides = data.overrides;
 				var overridesList = {
-					ICONS: [],
-					LINKS: [],
-					TAGS: [],
+					ICONS: {},
+					LINKS: {},
+					TAGS: {},
 				};
 
 				forKeys(overrides, function (state, v) {
 					forKeys(v, function (rank_, list) {
 						list.forEach(function (user) {
-							overridesList[state].push(user);
-							if (!mw.util.StaffUtil.groupsList[rank_].includes(user)) mw.util.StaffUtil.groupsList[rank_].push(user);
+							overridesList[state][user] = rank_;
 						});
 					});
 				});
@@ -103,7 +103,7 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 					var temp = [];
 					var done = {};
 
-					for (var j in mw.util.StaffUtil.membersList) {
+					for (var j in mw.util.StaffUtil.membersList) { // for each rank
 						if (mw.util.StaffUtil.membersList[j].parse) {
 							var rank = mw.util.StaffUtil.membersList[j].rank,
 								validusers = mw.util.StaffUtil.membersList[j].users;
@@ -113,28 +113,36 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 							var ruleType = [];
 							temp.push("\n/* " + rank + "*/");
 
-							function each(user) {
+							function each(isOverride, user) {
+								if (!user)
+									console.error("NO USER?", isOverride, user);
 								if (data.ignore.includes(user)) return;
-								if (user.includes(" ")) each(user.replace(/ /g, "_"));
+								if (user.includes(" ")) each(isOverride, user.replace(/ /g, "_"));
 								var sel = data.selectors[state].replace(/\$1/g, user);
 
-								if (!done[user] && !overridesList[state].includes(user)) {
+								if (isOverride) { // no need to check "done"
+									if (overridesList[state][user] === rank) {
+										ruleType.push("override");
+										userList.push(sel);
+										// note: "done" is not applied here; only applied when "crossing" the highest actual rank
+									}
+									// else: do not do anything
+								} else if (!done[user] && !overridesList[state][user]) {
 									ruleType.push("normal");
 									userList.push(sel);
-								} else if (overrides[state][rank].includes(user) && !done[user]) {
-									ruleType.push("override");
-									userList.push(sel);
-								} else if (!done[user] && overridesList[state].includes(user)) {
+									done[user] = true;
+								} else if (!done[user] && overridesList[state][user]) {
 									ruleType.push("overridden");
 									userList.push("/* " + sel + " */");
+									done[user] = true;
+								} else {
+									// equivalent to done[user] && !isOverride
+									hidden.push("  " + sel); // showed as "with higher ranks removed"
 								}
-
-								if (done[user]) hidden.push("  " + sel);
-
-								if (!overridesList[state].includes(user)) done[user] = true;
 							}
 
-							validusers.forEach(each);
+							validusers.forEach(each.bind(null, false));
+							Object.keys(overridesList[state]).forEach(each.bind(null, true));
 
 							var lastElem = -1;
 							for (var index = ruleType.length - 1; index >= 0; index--) {
@@ -350,11 +358,13 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 				html: $("<div>", {
 					click: function () {
 						var $this = $(this);
-						$this.text("Updating...");
-						$this.attr({
-							disabled: true
-						});
-						mw.util.StaffUtil.updateStaffColors(finalAlert.bind(null, $this));
+						if (!$this.is("[disabled]")) {
+							$this.text("Updating...");
+							$this.attr({
+								disabled: true
+							});
+							mw.util.StaffUtil.updateStaffColors(finalAlert.bind(null, $this));
+						}
 					},
 					text: "Update Staff Colors",
 					title: "Update Staff Colors",

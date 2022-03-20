@@ -1,81 +1,78 @@
 /*
-* NotabilityMove v1.1 (rev 6/13/2017)
+* NotabilityMove v2 (rev 3/17/2022)
 * @description Allows for quick moving of pages deemed non-notable.
-* @authors "The JoTS", "Ozuzanna"
+* @authors "Joritochip", "The JoTS", "Ozuzanna"
 *
-* Based off of
-*     [[w:c:dev:AjaxRedirect]] by Ozuzanna
+* Based off of [[w:c:dev:AjaxRedirect]] by Ozuzanna
 */
 
-// todo: option to move to "User blog" namespace (sysop ONLY) + modal
+mw.loader.using(['mediawiki.api', 'mediawiki.notify']).then(function() {
+    var config = mw.config.get([
+        'skin',
+        'wgUserGroups',
+        'wgCanonicalNamespace',
+        'wgCanonicalSpecialPageName',
+        'wgPageName',
+    ]);
+    var token = mw.user.tokens.get('editToken');
+    var api = new mw.Api();
 
-var ug = mw.config.get("wgUserGroups").join(' ');
-if (ug.indexOf('sysop') + ug.indexOf('content-moderator') > -2) {
-
-    ;(function($, mw) {
-      if ($('#ca-ncu').length // already exists
-      || mw.config.get('wgCanonicalNamespace') === "Thread"
-      || mw.config.get('wgCanonicalNamespace') === "File"
-      || mw.config.get('wgCanonicalNamespace') === "MediaWiki"
-      || mw.config.get('wgCanonicalSpecialPageName')) return;
-    
-      if (({"oasis": 1, "wikia": 1})[mw.config.get('skin')] === 1) {
-        $('.page-header__contribution-buttons').append(
-          '<a class="wds-button wds-is-squished wds-is-secondary" id="ca-ncu" href><span>NCU Move</span></a>');
-      } else if (mw.config.get('wgNamespaceNumber') !== -1 && mw.config.get('wgAction') === 'view') {
-        $('#p-cactions > .pBody > ul > li:last-child').after(
-          $('<li/>').append('<a style="cursor:pointer" id="ca-ncu">NCU move</a>')
-        );
-      }
+    if (
+        $('#ca-ncu').length ||
+        config.skin != 'fandomdesktop' ||
+        ['Thread', 'File', 'MediaWiki'].includes(config.wgCanonicalNamespace) ||
+        config.wgCanonicalSpecialPageName
+    ) return;
       
-      function respHandler (res, type) {
+    function respHandler (res, type, msg) {
         if (res === true) {
-          console.log(type + ' successful!');
-          new BannerNotification(type + ' succesful!','confirm').show();
-          
-          if (type === "Protect")
-              setTimeout((function() { window.location.reload(); }), 3000);
+            mw.notify(type + ' successful!', {
+                type: 'success'
+            });
+            
+            //if (type === "Protect")
+                //setTimeout((function() { window.location.reload(); }), 3000);
         } else {
-          console.log('Failiure: ' + type);
-          new BannerNotification('Failiure: ' + type,'error').show();
+            var errors = {
+                // Move failures
+                articleexists: 'A page already exists in the target location.'
+            };
+            mw.notify(errors[msg] || (type + ' failed.'), {
+                type: 'error'
+            });
         }
-      }
-    
-      // Declare vars
-      var api,token;
-      var oldPageName,basePageName;
-      var newPageName;
-    
-      $('#ca-ncu').click(function() {
+    }
+
+    $('<a>', {
+        id: 'ca-ncu',
+        href: '#',
+        html: 'NCU Move',
+        prependTo: $('<li>').appendTo($('#p-cactions .wds-list'))
+    }).click(function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
         var targUser = prompt('Please enter the target user:');
-          
-        if (!targUser) {
-          console.log('You need to specify the target user!');
-          return;
-        }
-        
-        // Initialize vars
-        token = mw.user.tokens.get('editToken');
-        oldPageName = mw.config.get('wgPageName');
-        basePageName = /^(?:[A-Za-z]*:)?(.+)/.exec(oldPageName)[1]; // removes namespace
-        newPageName  = 'User:' + targUser + '/' + basePageName;
-        api = new mw.Api();
-        
-        // Confirm move
+        if (!targUser) return;
+
+        var oldPageName = mw.config.get('wgPageName');
+        var basePageName = /^(?:[A-Za-z]*:)?(.+)/.exec(oldPageName)[1];
+        var newPageName  = 'User:' + targUser + '/' + basePageName;
+
+        // Prompt confirmation
         if (!confirm('"'
             + oldPageName.replace(/_/g, ' ') + '" will be moved to\n"'
             + newPageName.replace(/_/g, ' ') + '".')) return;
-        
-        // Move page
+
         api.post({
-          action: 'move',
-          from: oldPageName,
-          to:   newPageName,
-          noredirect: '',
-          reason: '[[RW:NCU|Does not meet notability policies]]. ([[Help:Why was the page I created deleted?|why?]])',
-          token: token
-        }).done(function(d) {
-            respHandler(!d.error, "Move"); // move succesful
+            action: 'move',
+            from: oldPageName,
+            to: newPageName,
+            noredirect: '',
+            reason: '[[RW:NCU|Does not meet notability policies]]. ([[Help:Why was the page I created deleted?|why?]])',
+            token: token
+        }).then(function(d) {
+            respHandler(!d.error, "Move");
             
             // Temporarily protect page
             api.post({
@@ -87,15 +84,15 @@ if (ug.indexOf('sysop') + ug.indexOf('content-moderator') > -2) {
                 title: oldPageName,
                 reason: 'Automatically protected page when moving to user space.',
                 token: token
-            })
-            .done(function(d) { respHandler(!d.error, "Protect"); })
-            .fail(function()  { resphandler(false,    "Protect"); });
+            }).then(function(d) {
+                respHandler(!d.error, "Protect");
+            }).catch(function(err) {
+                respHandler(false, "Protect", err);
+            });
             
-        }).fail(function() {
-          respHandler(false, "Move");
+        }).catch(function(err) {
+            respHandler(false, "Move", err);
         });
-      });
-      
-    })(this.jQuery, this.mediaWiki);
-    
-}
+
+    });
+});

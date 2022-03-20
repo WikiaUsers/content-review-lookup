@@ -28,7 +28,7 @@
                 'Other TV images': 'Other',
             }, 
             'Concept art': {
-                'TNS concept art': 'TNS',
+                'TRS concept art': 'TRS',
                 'Caprica concept art': 'Caprica',
                 'Blood & Chrome concept art': 'Blood & Chrome',
                 'Other concept art': 'Other',

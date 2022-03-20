@@ -112,7 +112,6 @@
     'Memory of an Insectoid': {'Candy Floss': 'Candy Floss (Large)'},
     'Memory of an Ogre': {'Candy Floss': 'Candy Floss (Large)'},
     'Mindmasher': {'Dung Ball': 'Dung Ball (Quest)'},
-    'Morshabaal': {'Watermelon Tourmaline': 'Watermelon Tourmaline (Pear)'},
     'Novice of the Cult': {'Book': 'Book (Orange)', 'Music Sheet': 'Music Sheet (First Verse)'},
     'Ogre Rowdy': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Ogre Savage': {'Jalapeño Pepper': 'Jalapeno Pepper', 'Jalapeńo Pepper': 'Jalapeno Pepper', 'Jalape\uFFFDo Pepper': 'Jalapeno Pepper'},

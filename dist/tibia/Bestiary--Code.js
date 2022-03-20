@@ -142,7 +142,7 @@ $(function(){
         //Clears all data to avoid flickering before loading new creature
         $('#bestiary_creature_name').html('<a href="#" style="color: inherit;" target="_blank">?</a>'); //Empty string removes the bar name height
         
-        $('#bestiary_creature_img, #bestiary_creature_hp, #bestiary_creature_exp, #bestiary_creature_speed, #bestiary_creature_armor, #bestiary_creature_bestiarylevel, #bestiary_creature_occurrence, #bestiary_creature_charms, #bestiary_kills2, #bestiary_creature_locations').html('?');
+        $('#bestiary_creature_img, #bestiary_creature_hp, #bestiary_creature_exp, #bestiary_creature_speed, #bestiary_creature_armor, #bestiary_creature_bestiarylevel, #bestiary_creature_occurrence, #bestiary_creature_attack #bestiary_creature_charms, #bestiary_kills2, #bestiary_creature_locations').html('?');
         $.each(dmgMods, function (i, v) {
             var tmp = '#bestiary_creature_' + v;
             var val = 100;
@@ -192,6 +192,25 @@ $(function(){
             $('#bestiary_creature_charms').html(charmPtsvr[creaturedata.bestiarylevel.toLowerCase()]);
         } else {
             $('#bestiary_creature_charms').html(charmPts[creaturedata.bestiarylevel.toLowerCase()]);
+        }
+        if (creaturedata.attacktype !== "") {
+        	var attackimg = fpath + "Logout_Block_Icon.gif";
+        	var attacktitle = "Creature attacks in melee range.";
+        	if (creaturedata.attacktype.toLowerCase() == "distance") {
+        		attackimg = fpath + "Distance_Fighting_Icon.png";
+        		attacktitle = "Creature attacks from a distance.";
+        	} else if (creaturedata.attacktype.toLowerCase() == "none") {
+        		attackimg = fpath + "No_Attack.png";
+        		attacktitle = "Creature does not attack.";
+        	}
+            $('#bestiary_creature_attack').html('<img src="' + attackimg + '">');
+            $('#bestiary_creature_attack').find('img:eq(0)').attr('title', attacktitle);
+            if (creaturedata.usespells.toLowerCase() == "yes") {
+            	$('#bestiary_creature_attack').append('<img src="' + fpath + 'Magic_Level_Icon.png' + '" style="margin-left:2px;">');
+            	$('#bestiary_creature_attack').find('img:eq(1)').attr('title', 'Creature casts spells or uses skills.');
+            }
+        } else {
+            $('#bestiary_creature_attack').empty();
         }
         //
         $('#bestiary_kills2').html(creaturedata.occurrence == "Very Rare" ? 5 : minKills[creaturedata.bestiarylevel.toLowerCase()]);

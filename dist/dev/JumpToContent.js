@@ -42,14 +42,14 @@ $(function() {
         }).append([
           $('<a>', {
             'class': 'jtc-link',
-            'href': '#main-content-start',
+            'href': '#jump-content',
             'role': 'link',
             'tabindex': '0',
             'text': i18n.msg('jtc-btn-text').plain()
           })
         ])
       ]);
-      $('.content-size-toggle').attr('id', 'main-content-start');
+      $('.page__main').attr('id', 'jump-content');
     });
   });
 });

@@ -1,1 +1,0 @@
-/* #REDIRECT */mw.loader.load("https://arrowverse.fandom.com/it/wiki/MediaWiki:Fandomdesktop.js?action=raw\u0026ctype=text/javascript");

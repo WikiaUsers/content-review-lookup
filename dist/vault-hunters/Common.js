@@ -1,67 +1,11 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* ==importArticles== (Y00)*/
-// Imports scripts from other pages/wikis.
-// NOTE: importAricles() is currently broken.
-window.importScripts = function(pages) {
-    if (!Array.isArray(pages)) {
-        pages = [pages];
-    }
-
-    pages.forEach(function(v) {
-        var wiki;
-        var match = v.match(/^(?:u|url):(.+?):(.+)$/);
-        (match|| []).shift();
-    
-        wiki = wiki || mw.config.get('wgServer').replace('https://', '').replace('.fandom.com', '');
-        match = match || v;
-    
-        $.ajax({
-            url: 'https://' + (Array.isArray(match) ? match[0] : wiki) + '.fandom.com/wiki/' + (Array.isArray(match) ? match[1] : match) + '?action=raw&ctype=text/javascript',
-            dataType: "script",
-            cache: true,
-        }).then(function() {
-            console.log(v + ': Imported Successfuly!');
-        });
-    });
-};
-
+/* Any JavaScripts here are copied from either [[w:c:minecraft:MediaWiki:Gadget-site.js]] or [[w:c:minecraft:Common.js]]*/
 $( function() {
 
-( function() {
-	var $content = $( '#mw-content-text' );
-	var advanceFrame = function( parentElem, parentSelector ) {
-		var curFrame = parentElem.querySelector( parentSelector + ' > .animated-active' );
-		$( curFrame ).removeClass( 'animated-active' );
-		var $nextFrame = $( curFrame && curFrame.nextElementSibling || parentElem.firstElementChild );
-		return $nextFrame.addClass( 'animated-active' );
-	};
-	
-	// Set the name of the hidden property
-	var hidden; 
-	if ( typeof document.hidden !== 'undefined' ) {
-		hidden = 'hidden';
-	} else if ( typeof document.msHidden !== 'undefined' ) {
-		hidden = 'msHidden';
-	} else if ( typeof document.webkitHidden !== 'undefined' ) {
-		hidden = 'webkitHidden';
-	}
-	
-	setInterval( function() {
-		if ( hidden && document[hidden] ) {
-			return;
-		}
-		$content.find( '.animated' ).each( function() {
-			if ( $( this ).hasClass( 'animated-paused' ) ) {
-				return;
-			}
-			
-			var $nextFrame = advanceFrame( this, '.animated' );
-			if ( $nextFrame.hasClass( 'animated-subframe' ) ) {
-				advanceFrame( $nextFrame[0], '.animated-subframe' );
-			}
-		} );
-	}, 2000 );
-}() );
+// A work around to force wikia's lazy loading to fire
+setTimeout(function(){
+	$(".animated .lzy[onload]").load();
+}, 1000);
 
 /**
  * Pause animations on mouseover of a designated container (.animated-container and .mcui)
@@ -72,13 +16,11 @@ $( '#mw-content-text' ).on( 'mouseenter mouseleave', '.animated-container, .mcui
 	$( this ).find( '.animated' ).toggleClass( 'animated-paused', e.type === 'mouseenter' );
 } );
 
-// A work around to force wikia's lazy loading to fire
-setTimeout(function(){
-	$(".animated .lzy[onload]").load();
-}, 1000);
-
-} );
-
+/**
+ * Creates minecraft style tooltips
+ * 
+ * Replaces normal tooltips. Supports minecraft [[w:c:minecraft:formatting codes]] (except k), and a description with line breaks (/).
+ */
 $(function() {
 'use strict';
 (window.updateTooltips = function() {
@@ -138,13 +80,13 @@ $(function() {
 				return;
 			}
 			
-			var content = '<span class="minetip-title format-7">&7' + escape(title) + '&r</span>';
+			var content = '<span class="minetip-title">' + escape(title) + '&r</span>';
 			
 			var description = $.trim($elem.attr('data-minetip-text'));
 			if (description) {
 				// Apply normal escaping plus "/"
 				description = escape(description).replace(/\\\//g, '&#47;');
-				content += '<span class="minetip-description format-7">&7' + description.replace(/\//g, '<br>') + '&r</span>';
+				content += '<span class="minetip-description">' + description.replace(/\//g, '<br>') + '&r</span>';
 			}
 			
 			// Add classes for minecraft formatting codes
@@ -214,4 +156,62 @@ $(function() {
 		}
 	}, '.minetip, .invslot-item');
 }());
+
+} );
+
+/* Fires when DOM is ready */
+$( function() {
+
+/**
+ * Element animator
+ *
+ * Cycles through a set of elements (or "frames") on a 2 second timer per frame
+ * Add the "animated" class to the frame containing the elements to animate.
+ * Optionally, add the "animated-active" class to the frame to display first.
+ * Optionally, add the "animated-subframe" class to a frame, and the
+ * "animated-active" class to a subframe within, in order to designate a set of
+ * subframes which will only be cycled every time the parent frame is displayed.
+ * Animations with the "animated-paused" class will be skipped each interval.
+ *
+ * Requires some styling from [[MediaWiki:Common.css]].
+ */
+( function() {
+	var $content = $( '#mw-content-text' );
+	var advanceFrame = function( parentElem, parentSelector ) {
+		var curFrame = parentElem.querySelector( parentSelector + ' > .animated-active' );
+		$( curFrame ).removeClass( 'animated-active' );
+		var $nextFrame = $( curFrame && curFrame.nextElementSibling || parentElem.firstElementChild );
+		return $nextFrame.addClass( 'animated-active' );
+	};
+	
+	// Set the name of the hidden property
+	var hidden; 
+	if ( typeof document.hidden !== 'undefined' ) {
+		hidden = 'hidden';
+	} else if ( typeof document.msHidden !== 'undefined' ) {
+		hidden = 'msHidden';
+	} else if ( typeof document.webkitHidden !== 'undefined' ) {
+		hidden = 'webkitHidden';
+	}
+	
+	setInterval( function() {
+		if ( hidden && document[hidden] ) {
+			return;
+		}
+		$content.find( '.animated' ).each( function() {
+			if ( $( this ).hasClass( 'animated-paused' ) ) {
+				return;
+			}
+			
+			var $nextFrame = advanceFrame( this, '.animated' );
+			if ( $nextFrame.hasClass( 'animated-subframe' ) ) {
+				advanceFrame( $nextFrame[0], '.animated-subframe' );
+			}
+		} );
+	}, 2000 );
+}() );
+
+} );
+/* End DOM ready */
+
 });

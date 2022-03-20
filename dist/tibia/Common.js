@@ -777,6 +777,17 @@ $(function () {
         $(document.body).addClass("nosupport-textShadow");
     }
 });
+/* purging the cache of the pages in the array showing time sensitive data */
+var purge_pages = ['Rashid','Main Page','TibiaWiki:New website skin and new features','Tibiadrome/Rotation','Tibiadrome','Dream Scar/Boss of the Day','Template:Eventviewer'];
+if ( purge_pages.includes(mw.config.get('wgPageName')) ) {
+    $(function () {
+        var api = new mw.Api();
+        api.post({
+            action: 'purge',
+            titles: mw.config.get('wgPageName')
+        });
+    });
+}
 
 /* Animation starter for the daylight viewport in combination with 'day_cycle' class and keyframes*/
 $(function () {
