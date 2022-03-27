@@ -1,3 +1,6 @@
+// Author: westgrass
+// imported from Terraria wiki
+
 $(document).ready(function (){
 
 	if(((mw.config.get('wgAction') != 'edit')&&(mw.config.get('wgAction') != 'submit'))||(mw.config.get('wgPageContentModel')) != 'wikitext'){

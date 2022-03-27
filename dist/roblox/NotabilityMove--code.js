@@ -69,7 +69,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.notify']).then(function() {
             from: oldPageName,
             to: newPageName,
             noredirect: '',
-            reason: '[[RW:NCU|Does not meet notability policies]]. ([[Help:Why was the page I created deleted?|why?]])',
+            reason: '[[RW:NOTABLE|Does not meet notability policies]]. ([[Help:Why was the page I created deleted?|why?]])',
             token: token
         }).then(function(d) {
             respHandler(!d.error, "Move");

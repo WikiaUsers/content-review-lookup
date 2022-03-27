@@ -15,7 +15,8 @@ UserTagsJS.modules.custom = {
     'FireMatch': ['assistant'],
     'Idroppedmypen': ['discord'],
     'Minnesotaman2007!': ['discord'],
-    'TheJasbre202': ['discord']
+    'TheJasbre202': ['discord'],
+    'The_Krusty_Krab': ['discord']
 };
 
 UserTagsJS.modules.inactive = 30;

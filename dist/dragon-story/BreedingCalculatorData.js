@@ -8202,6 +8202,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 3,
                 "offspringeligibility": "expired"
             },
+            "ebb": {
+                "name": "Ebb",
+                "types": [
+                    "tropic",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "blue"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "eclipse": {
                 "name": "Eclipse",
                 "types": [
@@ -25520,6 +25547,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "41_hours_41",
                 "rarity": 4
             },
+            "ridgewave": {
+                "name": "Ridgewave",
+                "types": [
+                    "tropic",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "rightheart": {
                 "name": "RightHeart",
                 "types": [
@@ -26648,6 +26691,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "9_hours_9",
                 "rarity": 3,
                 "offspringeligibility": "expired"
+            },
+            "seabringer": {
+                "name": "Seabringer",
+                "types": [
+                    "tropic",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
             },
             "seacrypt": {
                 "name": "Seacrypt",
@@ -31335,6 +31394,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "6_hours_6",
                 "rarity": 3,
                 "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "tide": {
+                "name": "Tide",
+                "types": [
+                    "tropic",
+                    "green",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]

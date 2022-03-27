@@ -1,17 +1,6 @@
 if (document.URL.indexOf("action=edit") > 0 || document.URL.indexOf("action=submit") > 0)
 {
-        if (wgCanonicalNamespace != "Special")
-        {
-              document.write('<script type="text/javascript" src="' 
-              + 'http://uk.vijskpens.wikia.com/index.php?title=MediaWiki:Onlyifediting.js' 
-              + '&action=raw&ctype=text/javascript&dontcountme=s"></script>'); 
-              addOnloadHook(function(){
-              if (mwEditButtons.length < 3) return;
-              mwEditButtons[0].imageFile = 'http://upload.wikimedia.org/wikipedia/commons/f/fa/Button_bold_ukr.png';
-              mwEditButtons[1].imageFile = 'http://upload.wikimedia.org/wikipedia/commons/f/f3/Button_italic_ukr.png';
-              mwEditButtons[2].imageFile = 'http://upload.wikimedia.org/wikipedia/commons/0/03/Button_internal_link_ukr.png';
-              })
-        }
+       
 }
  if (mwCustomEditButtons) {
 //Перенаправлення 

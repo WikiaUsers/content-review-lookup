@@ -32,7 +32,7 @@ window.popupButton = function(e) {
 	// because there might be a more immediate positioned parent of the popup button, we
 	// don't use offsetParent() method here, and instead manually calculate offsets using coordinates
 	// of the element itself (the button) and the parent we specified with .popup-window-container
-	var windowContainer = $(this).closest('.popup-window-container');
+	var windowContainer = $(this).closest('.popup-window-container, .page-content');
 	
 	// CASE: we only want the parent to constrain the verticality of the element, but it's ok
 	// to spill out horizontally. An example is the per-game summaries "inside" of the match results
@@ -341,9 +341,9 @@ mw.hook('wikipage.content').add(function() {
 	$('.popup-button-lazy').click(function(e) {
 		e.preventDefault();
 		e.stopPropagation();
-		var $this = $(this);
+		var $button = $(this);
 		var button = this;
-		var text = '{{' + $this.attr('data-parse-text') + '}}';
+		var text = '{{' + $button.attr('data-parse-text') + '}}';
 		new mw.Api().get({
 			action : "parse",
 			text : text,
@@ -354,9 +354,10 @@ mw.hook('wikipage.content').add(function() {
 			var result = data.parse.text["*"];
 			result = result.replace('\\"','"');
 			var resultBody = $(result).html();
-			$this.find('.popup-content-inner-action').html(resultBody);
-			$this.off('click')
-			$this.click(window.popupButton);
+			$button.find('.popup-content-inner-action').html(resultBody);
+			$button.off('click')
+			$button.click(window.popupButton);
+			mw.hook('wikipage.content').fire($button);
 			return $.Deferred().resolve();
 		}).then(function() {
 			return window.popupButton.bind(button)(e);

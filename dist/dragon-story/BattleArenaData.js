@@ -4193,6 +4193,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"ebb": {
+				"name": "Ebb",
+				"colors": [
+					"tropic",
+					"blue"
+				],
+				"rarity": "common"
+			},
 			"eclipse": {
 				"name": "Eclipse",
 				"colors": [
@@ -12661,6 +12669,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "ultra"
 			},
+			"ridgewave": {
+				"name": "Ridgewave",
+				"colors": [
+					"tropic",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"rightheart": {
 				"name": "RightHeart",
 				"colors": [
@@ -13172,6 +13188,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Seabreeze",
 				"colors": [
 					"yellow",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"seabringer": {
+				"name": "Seabringer",
+				"colors": [
+					"tropic",
 					"blue"
 				],
 				"rarity": "unbreedable"
@@ -15494,6 +15518,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"elemental",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"tide": {
+				"name": "Tide",
+				"colors": [
+					"tropic",
+					"green",
+					"purple"
 				],
 				"rarity": "unbreedable"
 			},

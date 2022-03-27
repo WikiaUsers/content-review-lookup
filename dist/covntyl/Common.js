@@ -12,5 +12,7 @@ window.pPreview = $.extend(
         RegExp: (window.pPreview || {}).RegExp || {}
     }
 );
-window.pPreview.defimage = 'https://static.wikia.nocookie.net/covntyl/images/3/31/Soleil_Umbreon.png';
-window.pPreview.noimage = 'https://static.wikia.nocookie.net/covntyl/images/3/31/Soleil_Umbreon.png';
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/covntyl/images/4/45/Sestres.jpg';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/covntyl/images/4/45/Sestres.jpg';
+
+mw.config.set('UMFBypassLicenseCheck', true);

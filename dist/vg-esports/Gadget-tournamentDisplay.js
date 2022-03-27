@@ -77,3 +77,17 @@ $(function() {
 		});
 	});	
 });
+
+$(function() {
+	$('.player-distribution').each(function() {
+		var $dist = $(this);
+		$dist.find('.distribution-cell').hover(function() {
+			console.log('kittens');
+			var key = $(this).attr('data-distribution-key');
+			console.log(key);
+			$dist.find('[data-distribution-key="' + key + '"]').addClass('team-highlighted');
+		}, function() {
+			$dist.find('td').removeClass('team-highlighted');
+		});
+	});
+});

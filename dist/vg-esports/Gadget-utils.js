@@ -33,3 +33,36 @@ window.startSpinnerChild = function(el) {
 window.endSpinner = function() {
 	$('#wip-spinner').remove();
 }
+
+window.displayOutputText = function(str, highlight) {
+	var el = document.createElement('textarea');
+	el.value = str;
+	$(el).css('height', '200px')
+		.attr('readonly', '')
+		.attr('id', 'gadget-output-display');
+	$(el).insertAfter('#contentSub');
+	if (highlight) {
+		el.select();
+	}
+}
+
+window.clearOutputText = function() {
+	$('#gadget-output-display').detach();
+}
+
+window.ucfirst = function(str) {
+	return str[0].toUpperCase() + str.slice(1)
+}
+
+window.reportError = function(text) {
+	var el = document.createElement('div');
+	$(el).html(text).insertAfter($('#firstHeading'));
+}
+
+window.moveToPViews = function($el) {
+	// fix for FandomDesktop not respecting pviews proper add to p-cactions
+	if ($('.page__main').length) {
+		$el.detach();
+		$el.insertAfter($('#p-views #ca-edit'));
+	}
+}

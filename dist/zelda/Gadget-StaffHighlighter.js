@@ -15,7 +15,7 @@ var adminrights		= {},
 adminrights = {
 	Ceiling_Master	:1,
 	Chuck			:1,
-	Crocsandsocks	:1,
+	Croxodile		:1,
 	Htwretched		:1,
 	JumbledLimes	:1,
 	Magicmason1000	:1,

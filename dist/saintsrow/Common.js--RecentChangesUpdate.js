@@ -147,7 +147,7 @@ $(function() {
             $("tr",this).addClass("mw-collapsed");
             $(".mw-collapsible-arrow",this).removeClass("mw-collapsible-arrow");
           } 
-          if($("table.mw-changeslist-line.mw-collapsible[data-mw-ts="+$(this).attr("data-mw-ts")+"]").length > 1) { //should never happen.
+          if($("table.mw-changeslist-line.mw-collapsible[data-mw-ts="+$(this).attr("data-mw-ts")+"]").length > 1) { //should never happen. ...except when performing a move over an existing page, the delete and move logs get the same timestamp.
             if(mw.config.get("wgUserName") == "452") $(this).css({"background":"yellow"});
           }
         });

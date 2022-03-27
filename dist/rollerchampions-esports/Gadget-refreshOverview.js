@@ -258,7 +258,7 @@ $(function () {
 				logtype: 'ro-tournament',
 				title: mw.config.get('wgPageName'),
 				publish: 1,
-				'custom-1': overviewPage,
+				'custom1': overviewPage,
 			});
 		}
 		
@@ -351,8 +351,8 @@ $(function() {
 				logtype: 'ro-news',
 				title: mw.config.get('wgPageName'),
 				publish: 1,
-				'custom-1': $inner.closest('.news-data-sentence-div').find('.news-data-sentence-wrapper').text(),
-				'custom-2': $container.attr('data-ro-team')
+				'custom1': $inner.closest('.news-data-sentence-div').find('.news-data-sentence-wrapper').text(),
+				'custom2': $container.attr('data-ro-team')
 			});
 		}).then(function() {
 			console.log(pageListTouch);

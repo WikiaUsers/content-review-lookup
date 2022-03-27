@@ -118,7 +118,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                    }
 	     
 	                    if (!$.trim($customRows.find('#jeuBox').val())) {
-	                        $.showModal('Jeu Incomplète', 'Merci de saisir le jeu concerné part votre image.');
+	                        $.showModal('Jeu Incomplète', 'Merci de saisir le jeu concerné par votre image.');
 	                        return false;
 	                    }
 

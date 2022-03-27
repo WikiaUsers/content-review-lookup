@@ -2,6 +2,27 @@ var i18n = {
 	reload_confirmation : 'This will reload the page. Continue?'
 }
 
+//*******************
+// Helper
+//*******************
+window.pagifyAndRunAll = function(f, pagelist, size) {
+	size = size ? size : 20;
+	var sectionsOfPages = [];
+	for (i=0; i < pagelist.length; i+= size) {
+		sectionsOfPages.push(pagelist.slice(i,i+size));
+	}
+	function runSome() {
+		if (sectionsOfPages.length == 0) return $.Deferred().resolve();
+		var promises = sectionsOfPages.pop().map(f);
+		return Promise.all(promises).then(runSome);
+	}
+	return runSome();
+}
+
+//*************************************
+// purge functions
+//*************************************
+
 window.purgeTitle = function(title) {
 	title = title ? title : mw.config.get('wgPageName');
 	return new mw.Api().postWithToken('csrf', {
@@ -22,17 +43,7 @@ window.purgeWithConfirmationAndReload = function(title) {
 }
 
 window.purgeAll = function(pagelist, size) {
-	size = size ? size : 10;
-	var sectionsOfPages = [];
-	for (i=0; i < pagelist.length; i+= size) {
-		sectionsOfPages.push(pagelist.slice(i,i+size));
-	}
-	function purgeSome() {
-		if (sectionsOfPages.length == 0) return $.Deferred().resolve();
-		var promises = sectionsOfPages.pop().map(window.purgeTitle);
-		return Promise.all(promises).then(purgeSome);
-	}
-	return purgeSome();
+	return window.pagifyAndRunAll(window.purgeTitle, pagelist, size);
 }
 
 //*************************************
@@ -44,6 +55,20 @@ window.blankEdit = function(title) {
 		action : 'edit',
 		title : title,
 		appendtext : '',
+		nocreate : 1,
+	}).then(function(data) {
+		// normal case
+		return $.Deferred().resolve(data);
+	}, function(code, data) {
+		// if the action fails because page doesn't exist, that's not actually an error
+		// so in that case let's just resolve
+		if (code === 'missingtitle') {
+			return $.Deferred().resolve(data);
+		}
+		// but if it fails for another reason, then reject here too
+		else {
+			return $.Deferred().reject(code, data);
+		}
 	});
 }
 
@@ -59,17 +84,7 @@ window.blankEditWithConfirmationAndReload = function(title) {
 }
 
 window.blankEditAll = function(pagelist, size) {
-	size = size ? size : 20;
-	var sectionsOfPages = [];
-	for (i=0; i < pagelist.length; i+= size) {
-		sectionsOfPages.push(pagelist.slice(i,i+size));
-	}
-	function blankEditSome() {
-		if (sectionsOfPages.length == 0) return $.Deferred().resolve();
-		var promises = sectionsOfPages.pop().map(window.blankEdit);
-		return Promise.all(promises).then(blankEditSome);
-	}
-	return blankEditSome();
+	return window.pagifyAndRunAll(window.blankEdit, pagelist, size);
 }
 
 window.doesPageExist = function(title) {
@@ -109,5 +124,35 @@ window.savePage = function(title, text) {
 		action : 'edit',
 		title : title,
 		text : text
+	});
+}
+
+
+window.blankEditAndPurge = function(title) {
+	var promises = [window.blankEdit(title), window.purgeTitle(title)];
+	return Promise.all(promises);
+}
+
+window.blankEditAndPurgeAll = function(pagelist, size) {
+	// if we don't specify a size, default to 10 rather than 20
+	// since we do 2 actions per function call instead of just 1 in this call
+	size = size ? size : 10;
+	return window.pagifyAndRunAll(window.blankEditAndPurge, pagelist, size);
+}
+
+//*************************************
+// cargo
+//*************************************
+
+window.cargoQuery = function(params) {
+	params.action = 'cargoquery';
+	console.log(params);
+	return new mw.Api().get(params).then(function(data) {
+		var ret = [];
+		for (i in data.cargoquery) {
+			ret.push(data.cargoquery[i].title);
+		}
+		console.log(data);
+		return $.Deferred().resolve(ret);
 	});
 }

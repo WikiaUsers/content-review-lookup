@@ -86,7 +86,7 @@ importArticles({
 	
 	function ESTTime12() {
 		var d = new Date(),
-		    offsetH = d.getTimezoneOffset() - 5 * 60, // EST timezone
+		    offsetH = d.getTimezoneOffset() - 4 * 60 - 1, // EST timezone
 		    curTime;
 
         // Switch to EDT from second Sunday of March 2am EST,

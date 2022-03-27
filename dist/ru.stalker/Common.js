@@ -1,4 +1,31 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
+
+/**
+ * Локальная функция загрузки скриптов с поддержкой указания проекта
+ */
+var importScript_ = importScript;
+importScript = function (page, proj) {
+	if (!proj) {
+		importScript_(page);
+	} else {
+		if (proj.indexOf( '.' ) === -1) {
+			proj += '.fandom.com';
+		}
+		mw.loader.using('mediawiki.util').done( function () {
+			mw.loader.load('//' + proj + '/wiki/' + mw.util.wikiUrlencode(page) +
+				'?action=raw&ctype=text/javascript');
+		} );
+	}
+};
+
+/**
+ * Часто те или иные манипуляции со страницей нужно выполнить как можно раньше, но нет гарантии, что
+ * к моменту выполнения кода нужный участок DOM готов, а событие полной загрузки страницы происходит
+ * слишком поздно. В этой функции проверяется наличие элемента $testElement и в случае успеха
+ * функция-колбэк выполняется, иначе же её выполнение поручается другой функции. Если элемент
+ * в $testElement имеет содержимое, правильнее указать следующий за ним элемент, чтобы быть
+ * уверенным, что он загрузился до конца.
+ */
 function runAsEarlyAsPossible(callback, $testElement, func) {
 	func = func || $;
 	$testElement = $testElement || $('.page-footer');
@@ -10,7 +37,37 @@ function runAsEarlyAsPossible(callback, $testElement, func) {
 	}
 }
 
+/**
+ * Загрузка стилей, скриптов и гаджетов, указанных в URL
+ * См. также https://www.mediawiki.org/wiki/Snippets/Load_JS_and_CSS_by_URL
+ */
+mw.loader.using( ['mediawiki.util'], function () {
+	var withCSS    = mw.util.getParamValue('withCSS'),
+		withJS     = mw.util.getParamValue('withJS'),
+		withGadget = mw.util.getParamValue('withGadget');
+
+	if (withCSS) {
+		mw.loader.load( '/ru/wiki/MediaWiki:' + encodeURIComponent(withCSS) + 
+			'?action=raw&ctype=text/css', 'text/css' );
+	}
+
+	if (withJS) {
+		importScript( 'MediaWiki:' + encodeURIComponent(withJS) );
+	}
+
+	if (withGadget) {
+		mw.loader.load( 'ext.gadget.' + encodeURIComponent(withGadget) );
+	}
+});
+
+
+/**
+ * Код, который нужно выполнить как можно раньше. Он выполняется, если загружен подвал страницы,
+ * иначе же ждёт наступления события wikipage.content (см. выше определение runAsEarlyAsPossible
+ * и ниже про wikipage.content).
+ */
 runAsEarlyAsPossible(function () {
+
 	/**
 	 * {{executeJS}}
 	 */
@@ -22,17 +79,40 @@ runAsEarlyAsPossible(function () {
 				name = name.replace( /[^\w_-]/g, '' );
 				if (name && !namesExempt[name]) {
 					namesExempt[name] = true;
-					mw.loader.load( '/ru/wiki/MediaWiki:Script/' + name + '.js?action=raw&ctype=text/javascript');
+					importScript('MediaWiki:Script/' + name + '.js');
 				}
 			} );
 		}
 	} );
+	
+	// Очистка кэша по клику (без перехода на страницу очистки кэша)
+	$('.purgelink a, #ca-purge').click( function (e) {
+		mw.loader.using([
+			'mediawiki.api', 
+			'mediawiki.util' 
+		]).done( function () {
+			var pageName = $(this).parent('.purgelink').data('pagename') || mw.config.get('wgPageName');
+			new mw.Api().post({
+				action: 'purge',
+				titles: pageName
+			}).then( function () {
+				var url = mw.util.getUrl(pageName);
+				if (e.ctrlKey) {
+					if ( !window.open(url) ) {
+						location.assign(url);
+					}
+				} else {
+					location.assign(url);
+				}
+			}, function () {
+				new BannerNotification('Не удалось очистить кэш.', 'error').show();
+			} );
+			e.preventDefault();
+		} );
+	} );
 
 
-}, $( '.page-footer' ), mw.hook( 'wikipage.content' ).add );
+}, $('.page-footer'), mw.hook('wikipage.content').add );
 
-/* Inactive users */
-window.InactiveUsers = { 
-    months: 1,
-    text: 'НЕАКТИВЕН'
-};
+/* Настройка скриптов */
+window.InactiveUsers = {months: 1, text: 'Неактивен'};

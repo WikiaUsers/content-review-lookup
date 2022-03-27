@@ -1,4 +1,8 @@
-window.allWikis = ['lol', 'cod-esports', 'fortnite-esports', 'teamfighttactics', 'smite-esports', 'halo-esports', 'rl-esports', 'vg-esports', 'gears-esports', 'pubg-esports', 'paladins-esports', 'siege-esports', 'nba2k-esports', 'default-loadout-esports', 'esports', 'commons-esports', 'fifa-esports', 'apexlegends-esports'];
+// window.allWikis = ['lol', 'cod-esports', 'fortnite-esports', 'valorant-esports', 'wildrift-esports', 'rollerchampions-esports', 'legendsofruneterra-esports', 'splatoon2-esports', 'tft-esports', 'smite-esports', 'halo-esports', 'rl-esports', 'gears-esports', 'pubg-esports', 'paladins-esports', 'siege-esports', 'nba2k-esports', 'default-loadout-esports', 'help-esports', 'fifa-esports', 'apexlegends-esports'];
+
+window.allWikis = ['vg-esports'];
+
+// author: pcj
 
 window.syncPages = function(sourcePages) {
 	var a = new mw.Api();
@@ -44,13 +48,13 @@ window.syncPages = function(sourcePages) {
 			console.log("Done!");
 			return $.Deferred().resolve();
 		}
-		if (allWikis[cw]+".gamepedia.com" == mw.config.get("wgServerName")) { 
+		if (allWikis[cw]+".fandom.com" == mw.config.get("wgServerName")) { 
 			cw++;
 			nextWiki();
 			return;
 		}
 		console.log("Starting next wiki: " + allWikis[cw]);
-		fa = new mw.ForeignApi("https://"+allWikis[cw]+".gamepedia.com/api.php");
+		fa = new mw.ForeignApi("https://"+allWikis[cw]+".fandom.com/api.php");
 		editPage();
 		return;
 	}

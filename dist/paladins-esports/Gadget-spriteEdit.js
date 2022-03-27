@@ -2075,6 +2075,7 @@ var create = function( state ) {
 	 * "conflict" is a boolean which specifies if this is saving an edit conflict or not
 	 */
 	var saveChanges = function( summary, refresh, conflict ) {
+		console.log('Saving...');
 		// No more editing
 		$root.addClass( 'spriteedit-hidecontrols' );
 		
@@ -2084,9 +2085,11 @@ var create = function( state ) {
 		}
 		
 		sheet.save( summary ).then( function() {
+			console.log('Saved file!');
 			return names.save( summary, conflict );
 		} ).then( function( data ) {
 			if ( sheet.modified ) {
+				console.log('Lua was modified');
 				if ( spriteSettings[i18n.luaKeySettingsUrl] || spriteSettings[i18n.luaKeySettingsVersion] ) {
 					var url = $doc.data( 'url' );
 					overwriteSpritesheet( url );

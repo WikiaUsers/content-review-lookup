@@ -14,27 +14,30 @@ $(function() {
 				tbl.push(data.query.categorymembers[page].title);
 			}
 			var str = tbl.join('\n');
-			var el = document.createElement('textarea');
-			el.value = str;
-			el.setAttribute('readonly', '');
-			$(el).insertAfter('#contentSub');
-			el.select();
+			displayOutputText(str, true);
 		});
 	});
 });
 
+/* copy titles from search, recentchanges, contribs */
 $(function() {
-	if (mw.config.get('wgTitle') != 'Search') return;
-	$(mw.util.addPortletLink('p-cactions', 'javascript:;', '!Copy Results', 'ca-copy-search-results', 'Copy Search Results', null, '#ca-move-to-user')).click(function() {
-		var pageList = [];
-		$('.mw-search-result-heading a:first-of-type').each(function() {
-			pageList.push($(this).attr('title'));
+	var selectors = [
+		{ pattern: 'Special:Search', selector: '.unified-search__result__title', attr: 'data-title' },
+		{ pattern: 'Special:Contributions/', selector: '.mw-contributions-title', attr: 'title' },
+		{ pattern: 'Special:RecentChanges', selector: '.mw-changeslist-line-inner .mw-title a', attr: 'title' },
+	];
+	var pageName = mw.config.get('wgPageName');
+	for (i in selectors) {
+		if (!pageName.includes(selectors[i].pattern)) continue;
+		$(mw.util.addPortletLink('p-cactions', 'javascript:;', '!Copy Titles', 'ca-copy-search-results', 'Copy Titles', null, '#ca-move-to-user')).click(function() {
+			var pageList = [];
+			$(selectors[i].selector).each(function() {
+				pageList.push($(this).attr(selectors[i].attr));
+			});
+			var str = pageList.join('\n');
+			displayOutputText(str, true);
 		});
-		var str = pageList.join('\n');
-		var el = document.createElement('textarea');
-		el.value = str;
-		el.setAttribute('readonly', '');
-		$(el).insertAfter('#contentSub');
-		el.select();
-	});
+		// don't let i keep incrementing
+		return;
+	}
 });

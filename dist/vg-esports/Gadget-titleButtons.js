@@ -39,12 +39,17 @@ $(function() {
 	
 	if (overviewDiv || dataDiv) {
 	
-		function addLink(text, target) {
+		function addLink(text, target, heading) {
 			var editlink = document.createElement('a');
 			var edittext = document.createTextNode(text);
+			var extraClass = heading == '#firstHeading' ? '' : 'mw-editsection';
 			editlink.appendChild(edittext);
 			editlink.href = wgServer + '/' + target;
-			$(editlink).addClass('editlink').appendTo('#firstHeading');
+			$(editlink).addClass('editlink').addClass(extraClass).appendTo(heading);
+		}
+		
+		function addTitleLink(text, target) {
+			addLink(text, target, '#firstHeading');
 		}
 		
 		if (overviewDiv) {
@@ -52,10 +57,16 @@ $(function() {
 			var overviewPage = $overviewDiv.attr('data-overviewpage');
 			var wgServer = mw.config.get('wgServer');
 			var maxPages = parseInt($overviewDiv.attr('data-datapages'));
-			addLink('view data', 'Data:' + overviewPage);
+			var firstText = maxPages > 0 ? 'edit data' : 'create data';
+			addTitleLink(firstText, 'Data:' + overviewPage);
 			for (i = 2; i <= maxPages; i++) {
-				addLink('page ' + i, 'Data:' + overviewPage + '/' + i);
+				addTitleLink('page ' + i, 'Data:' + overviewPage + '/' + i);
 			}
+			if ($overviewDiv.attr('data-has-participants-datapage')) {
+				addLink('edit data', 'Data:' + overviewPage + '/Participants', $('#Participants').closest('h2'));
+				addLink('edit data', 'Data:' + overviewPage + '/Participants', $('#Notable_Participants').closest('h2'));
+			}
+			
 		}
 		else {
 			var $dataDiv = $(dataDiv);
@@ -65,10 +76,10 @@ $(function() {
 			var overviewPage = $dataDiv.attr('data-overviewpage');
 			
 			if (wgNamespace == 'Data') {
-				addLink('view event', overviewPage);
+				addTitleLink('view event', overviewPage);
 			}
 			else if (overviewPage) {
-				addLink('view data', 'Data:' + overviewPage);
+				addTitleLink('view data', 'Data:' + overviewPage);
 			}
 		}
 	}

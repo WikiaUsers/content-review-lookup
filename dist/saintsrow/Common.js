@@ -1,5 +1,5 @@
-var debugcolour = 'blue';  //Change the colour to confirm cache updates
-var debugversion = '1643337906440';
+var debugcolour = 'pink';  //Change the colour to confirm cache updates
+var debugversion = '1648155117322';
 
 window.test452 = { ready:false, complete:false};
 window.debug452 = function(out, alert) { if (mw.config.get("wgUserName") == "452") { if ( ["object", "null", "function"].indexOf(typeof out) == -1) console.log(new Date().toJSON()+" "+out); else { console.log(new Date().toJSON()+" object:"); console.log(out); } if (typeof alert != "undefined") window.alert(out); } }
@@ -59,6 +59,8 @@ $(function() { /* Run when page has loaded */
 	}
   });
   if (mw.config.get("wgCanonicalSpecialPageName") == "Movepage" && $("#wpNewTitleNs select").val() == 6) $('#wpLeaveRedirect input[name=wpLeaveRedirect]').attr('checked', false); //uncheck redirect box by default when moving files.
+
+  $("#wpUploadDescription").focus();
 
   //Display count at the top of unordered lists on special pages for easier counting (whatlinkshere, and others.)
   $(".ns-special .page-content ul:not(.counted)").each(function(){  

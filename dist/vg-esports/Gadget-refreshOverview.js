@@ -1,29 +1,13 @@
 // <nowiki>
-$(function () {	
+$(function () {
 	var dataDiv = document.getElementById('data-ns-pageinfo');
 	if (! dataDiv) return;
 	var $dataDiv = $(dataDiv);
 	var overviewPage = $dataDiv.attr('data-overviewpage');
 	// add refresh data link
-	$(mw.util.addPortletLink('p-views', 'javascript:;', 'Refresh Overview', 'ca-refresh-overview', 'Refresh event overview page')).click(function() {
+	$(mw.util.addPortletLink('p-views', 'javascript:;', 'Refresh Overview', 'ca-refresh-overview', 'Refresh event overview page', '2')).click(function() {
+		$('body').css('cursor', 'wait');
 		var a = new mw.Api();
-		
-		function refreshPage(page) {
-			if (! overviewPage) {
-				return $.Deferred().resolve();
-			}
-			return a.postWithToken('csrf', {
-				action : 'purge',
-				titles : page
-			}).then(function(data){
-				console.log('refreshed');
-				return page;
-			}, function(code, data){
-				console.log(data);
-				statuscolor = 'gadget-action-fail';
-				return page;
-			});
-		}
 		
 		function getWikitextFromTemplateAndSave() {
 			if (! flPages.length ) return $.Deferred().resolve();
@@ -66,6 +50,11 @@ $(function () {
 				prop : 'text'
 			}).then(function(data) {
 				var str = data.parse.text['*'];
+				if (str.includes('Lua error')) {
+					window.reportError("Error updating pick-ban, it's likely that the order doesn't match the MatchSchedule! Perhaps you need to add a |notab=yes? We will now print the error that was detected.");
+					window.reportError(str);
+					return $.Deferred().reject();
+				}
 				console.log(str);
 				var tbl1 = str.split('*****');
 				str = tbl1[1];
@@ -90,6 +79,7 @@ $(function () {
 			while (tbl.length > 0 && tbl[0][0] == page) {
 				templatesToChange.push(makeGameDict(tbl.shift()));
 			}
+			console.log(templatesToChange);
 			return a.get({
 				action : 'query',
 				prop : 'revisions',
@@ -110,7 +100,7 @@ $(function () {
 					template = template.replace(/\|winner=(\s*)\|/,'|winner=' + thisgame.winner + ' $1|');
 					listOfTemplates[thisgame.N] = template;
 					if (thisgame.bestof && thisgame.serieswinner) {
-						deleteExtraGames(listOfTemplates, thisgame);
+						deleteExtraGames(listOfTemplates, thisgame, template);
 					}
 				}
 				
@@ -134,6 +124,7 @@ $(function () {
 		function raiseError(code, data) {
 			console.log(data);
 			statuscolor = 'gadget-action-fail';
+			$('body').css('cursor', '');
 			return $.Deferred().reject(code);
 		}
 		
@@ -144,24 +135,41 @@ $(function () {
 				score2 : game[3],
 				winner : game[4],
 				bestof : parseInt(game[5]),
-				serieswinner : parseInt(game[6])
+				serieswinner : parseInt(game[6]),
+				team1name: game[7], // only for debugging purposes
+				team2name: game[8], // only for debugging purposes
 			}
 		}
 		
-		function deleteExtraGames(listOfTemplates, thisgame) {
+		function deleteExtraGames(listOfTemplates, thisgame, template) {
 			var score1 = parseInt(thisgame.score1);
 			var score2 = parseInt(thisgame.score2);
 			score1 = score1 ? score1 : 0;
 			score2 = score2 ? score2 : 0;
-			if (Math.max(score1, score2) > thisgame.bestof / 2) {
+			var largerScore = Math.max(score1, score2);
+			if (largerScore > thisgame.bestof / 2) {
+				// console.log('Game to delete found!');
+				// console.log(template);
+				// console.log(thisgame);
+				if (template.toLowerCase().search('box') !== -1) {
+					// this means that there's a box|break or box|end immediately after the last pick-ban game
+					// this occurs if someone manually prunes some games not using RO
+					console.log('It appears deletion has already occurred for this series.');
+					return;
+				}
 				for (j = 1; j <= thisgame.bestof - score1 - score2; j++) {
 					var indexToDelete = thisgame.N + j;
 					var templateToDelete = listOfTemplates[indexToDelete];
 					if (templateToDelete && templateToDelete.match(/game1\s*=\s*Yes/i)) {
-						console.log("Won't delete " + indexToDelete + " because it contains a game 1");
+						// I'm pretty sure this condition will never occur anymore because the
+						// deletion already occurred for this series check is actually the correct
+						// check for whether we should be skipping or not, and it supercedes
+						// but I'm not about to delete a check that was previously needed when there's
+						// no unit tests in place so this is staying here forever lol
+						console.log("Won't delete " + indexToDelete + " because it contains a game 1. Score: " + largerScore + ', bestof: ' + thisgame.bestof);
 					}
 					else if (templateToDelete) {
-						console.log('Will delete ' + indexToDelete);
+						console.log('Will delete ' + indexToDelete + ', score: ' + largerScore + ', bestof: ' + thisgame.bestof);
 						templateToDelete = templateToDelete.replace(/[^\}]*\}\}/,'DELETE');
 						listOfTemplates[indexToDelete] = templateToDelete;
 					}
@@ -209,6 +217,12 @@ $(function () {
 				// require that the row has a non-empty value (but it might be padded by a space at the start)
 				return getAllMatches(tl, /(\|row\d+=(?:.*[^ \n]+))/g);
 			});
+			console.log(standingsTemplates.length);
+			console.log("standingsTemplates.length");
+			if (standingsTemplates.length != timelineTemplates.length) {
+				window.reportError('Number of standings templates doesn\'t match number of timeline templates!');
+				return $.Deferred().reject();
+			}
 			return a.get({
 				action : 'cargoquery',
 				tables : 'MatchSchedule',
@@ -237,28 +251,49 @@ $(function () {
 			});
 		}
 		
+		function logAction() {
+			console.log('writing custom log...');
+			return new mw.Api().postWithToken('csrf', {
+				action: 'customlogswrite',
+				logtype: 'ro-tournament',
+				title: mw.config.get('wgPageName'),
+				publish: 1,
+				'custom1': overviewPage,
+			});
+		}
+		
 		clearDisplayColor('ca-refresh-overview');
 		// make sure to include : before the template name in the attr if needed
 		var flTemplates = $dataDiv.attr('data-template-link') ? $dataDiv.attr('data-template-link').split(',') :[];
 		var flPages = $dataDiv.attr('data-page-link') ? $dataDiv.attr('data-page-link').split(',') : [];
+		var pagesToPurge = $dataDiv.attr('data-extra-purges') ? $dataDiv.attr('data-extra-purges').split(',') : [];
+		pagesToPurge.unshift(overviewPage);
 		var statuscolor = 'gadget-action-success';
-		refreshPage(overviewPage)
+		window.purgeAll(pagesToPurge)
 		//.then(window.blankEdit)
 		.then(getWikitextFromTemplateAndSave)
+		.then(function() {
+			window.purgeAll([mw.config.get('wgMainPageTitle')]);
+		})
 		.then(getPBData)
 		.then(updatePB)
 		.then(updateTimeline)
+		.then(logAction)
 		.then(function() {
 			console.log('Done!');
+			$('body').css('cursor', '');
 			displayColor(statuscolor, 'ca-refresh-overview');
 		})
-		.fail(function(code) {
+		['catch'](function(code) {
 			console.log('failed rip');
 			if (code) console.log(code);
+			$('body').css('cursor', '');
 			displayColor(statuscolor, 'ca-refresh-overview');
 		});
 	});
 	
+	// move RO button into place in FandomDesktop
+	moveToPViews($('#ca-refresh-overview'));
 });
 
 $(function() {
@@ -289,25 +324,39 @@ $(function() {
 		e.stopPropagation();
 		var $container = $(this).closest('.news-data-ro');
 		var $inner = $(this).closest('.popup-content-inner-action');
-		var pageList = $container.attr('data-to-refresh').split(',');
+		
+		// get list of pages to touch
+		var pageListTouch = [];
+		if ($container.attr('data-to-touch')) {
+			pageListTouch = $container.attr('data-to-touch').split(',')
+		}
+		var touches = pageListTouch.map(window.blankEdit);
+		
+		// construct full list of pages to purge
+		var pageListPurge = $container.attr('data-to-refresh').split(',');
 		$container.find('input').each(function() {
 			if (this.checked) {
-				pageList.push($(this).attr('name'));
-				pageList.push($(this).attr('name') + '/Current Rosters');
+				pageListPurge.push($(this).attr('name'));
+				pageListPurge.push($(this).attr('name') + '/Current Rosters');
 			}
 		});
-		var promises = pageList.map(window.purgeTitle);
-		return Promise.all(promises).then(function() {
+		var purges = pageListPurge.map(window.purgeTitle);
+		
+		
+		return Promise.all(touches).then(function() {
+			return Promise.all(purges);
+		}).then(function() {
 			return new mw.Api().postWithToken('csrf', {
 				action: 'customlogswrite',
 				logtype: 'ro-news',
 				title: mw.config.get('wgPageName'),
 				publish: 1,
-				'custom-1': $inner.closest('.news-data-sentence-div').find('.news-data-sentence-wrapper').text(),
-				'custom-2': $container.attr('data-ro-team')
+				'custom1': $inner.closest('.news-data-sentence-div').find('.news-data-sentence-wrapper').text(),
+				'custom2': $container.attr('data-ro-team')
 			});
 		}).then(function() {
-			console.log(pageList);
+			console.log(pageListTouch);
+			console.log(pageListPurge);
 			console.log('done!');
 			displayResultStatus('gadget-action-success', $inner);
 		});

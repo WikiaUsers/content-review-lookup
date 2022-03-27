@@ -1,7 +1,7 @@
 /* 
 Any JavaScript here will be loaded for all users on every page load.
 */	
-	 
+
 /* Table of Contents
 -----------------------
  Deferred [mw.loader.using]
@@ -15,7 +15,7 @@ Any JavaScript here will be loaded for all users on every page load.
 
  Immediately Executed
  * (X00) importJS pre-script actions
-*/ 
+*/
 
 /* jshint
     esversion: 5, forin: true,
@@ -26,9 +26,10 @@ Any JavaScript here will be loaded for all users on every page load.
     browser: true, jquery: true,
     onevar: true, eqeqeq: true,
     multistr: true, maxerr: 999999,
+    forin: false,
     -W082, -W084
 */
-	
+
 /* global mw, importScripts, BannerNotification */
 
 // code snippet from https://stackoverflow.com/questions/47207355/copy-to-clipboard-using-jquery
@@ -50,6 +51,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         "wgUserGroups",
         "wgEditCount",
         "wgPageName",
+        "wgSiteName",
         "wgFormattedNamespaces",
         "wgServer",
         "profileUserId",
@@ -71,15 +73,14 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     // Add comment guidelines notice (wiki/fandom staff/users with > 100 edits exempt)
     if (!/bureaucrat|sysop|codeeditor|content-moderator|threadmoderator|rollback|util|staff|helper|global-discussions-moderator|wiki-manager|soap/.test(conf.wgUserGroups.join("\n")) && conf.wgEditCount < 100) {
         api.get({
-                action: "parse",
-                text: "{{MediaWiki:Custom-comment-guidelines-notice}}",
-                contentmodel: "wikitext"
-            })
-            .done(function (data) {
-                if (!data.error) {
-                    $("#articleComments").before($(data.parse.text["*"]));
-                }
-            });
+            action: "parse",
+            text: "{{MediaWiki:Custom-comment-guidelines-notice}}",
+            contentmodel: "wikitext"
+        })
+        .done(function (data) {
+            if (!data.error)
+                $("#articleComments").before($(data.parse.text["*"]));
+        });
     }
 
     // Script to make linking comments easier
@@ -178,7 +179,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                         var threadLink = "commentId=" + commentID + (replyID ? "&replyId=" + replyID : "");
                         $this.append(
                             $("<div>", {
-                                "class": threadClassName,
+                                class: threadClassName,
                                 "data-link": threadLink,
                                 html: $("<abbr>", {
                                     title: "click to copy",
@@ -209,12 +210,10 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         var WikiCommentObserver = new MutationObserver(function (mutationsList) {
             var operate = false;
             for (var i in mutationsList) {
-                if (true) { // stops fandom from complaining
-                    var mutation = mutationsList[i];
-                    if ($(mutation.target).is("[class^=\"CommentList_comment-list\"], [class^=\"ReplyList_container\"], [class^=\"ReplyList_list-wrapper\"]")) {
-                        operate = true;
-                        break;
-                    }
+                var mutation = mutationsList[i];
+                if ($(mutation.target).is("[class^=\"CommentList_comment-list\"], [class^=\"ReplyList_container\"], [class^=\"ReplyList_list-wrapper\"]")) {
+                    operate = true;
+                    break;
                 }
             }
             if (operate) mainCommentHandler();
@@ -255,9 +254,8 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         }
         // If the element passed is inside of a tabber, the tabber will open to the tab it belongs in
         function _openTabberTabBelongingToChild(element) {
-            if (!element) {
-                return;
-            }
+            if (!element) return;
+
             var closestTabber = element.closest(".wds-tabber");
             var closestTabberContent = element.closest(".wds-tab__content");
 
@@ -450,9 +448,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
         // Code to allow making {{Slot}} clickable to show different content [Part 2/2]
         (function () {
-            if (!pSection.find(".sbw-ui-tabber").length) {
-                return;
-            }
+            if (!pSection.find(".sbw-ui-tabber").length) return;
 
             // .hidden works on mobile, but not on desktop
             pSection.find(".sbw-ui-tab-content.hidden").hide();
@@ -472,11 +468,8 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
             // makes an extra button to go back to the first UI tab
             pSection.find(".sbw-ui-tabber").each(function () {
                 var elementId = $(this).find(":first-child").attr("id");
-
                 if (!elementId) return;
-
                 var className = elementId.replace("ui-", "");
-
                 $(this).find(".mcui").append(
                     $("<div>").addClass("mcui-returnbutton text-zoom-independent noselect")
                     .attr("data-font-size", "22").text("↻")
@@ -518,22 +511,18 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
             // Set the name of the hidden property
             var hidden;
-            if (typeof document.hidden !== "undefined") {
+            if (typeof document.hidden !== "undefined")
                 hidden = "hidden";
-            } else if (typeof document.msHidden !== "undefined") {
+            else if (typeof document.msHidden !== "undefined")
                 hidden = "msHidden";
-            } else if (typeof document.webkitHidden !== "undefined") {
+            else if (typeof document.webkitHidden !== "undefined")
                 hidden = "webkitHidden";
-            }
 
             setInterval(function () {
-                if (hidden && document[hidden]) {
-                    return;
-                }
+                if (hidden && document[hidden]) return;
+
                 $content.find(".animated").each(function () {
-                    if ($(this).hasClass("animated-paused")) {
-                        return;
-                    }
+                    if ($(this).hasClass("animated-paused")) return;
 
                     var $nextFrame = advanceFrame(this, ".animated");
                     if ($nextFrame.hasClass("animated-subframe")) {
@@ -568,20 +557,19 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     //##############################################################
     /* ==My Block ID== (C00)*/
     // Special:MyBlockID
-    if (mw.config.values.wgPageName.toLowerCase() === conf.wgFormattedNamespaces[-1].toLowerCase() + ":myblockid") {
-        document.title = "My Block ID | " + mw.config.values.wgSiteName + " | Fandom";
+    if (conf.wgPageName.toLowerCase() === conf.wgFormattedNamespaces[-1].toLowerCase() + ":myblockid") {
+        document.title = "My Block ID | " + conf.wgSiteName + " | Fandom";
         $("#firstHeading").text("My Block ID");
         var $content = mw.util.$content || $('#mw-content-text');
-        $content.empty()
-            .html(
-                $("<div>", {
-                    html: [
-                        $("<h3>", {
-                            text: "Loading..."
-                        }),
-                    ],
-                })
-            );
+        $content.empty().html(
+            $("<div>", {
+                html: [
+                    $("<h3>", {
+                        text: "Loading..."
+                    }),
+                ],
+            })
+        );
 
         api.get({
             action: "query",
@@ -638,12 +626,12 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
             if (dontLoadForEnglishWiki && conf.wgContentLanguage === "en")
                 def.resolve([]);
             $.getJSON(url + "?action=raw&ctype=text/json")
-                .done(function (dt) {
-                    def.resolve(dt);
-                })
-                .fail(function () {
-                    def.resolve([]);
-                });
+            .done(function (dt) {
+                def.resolve(dt);
+            })
+            .fail(function () {
+                def.resolve([]);
+            });
         });
     }
     window.importScripts = function (pages) {
@@ -744,23 +732,23 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         }).then(function (content) {
             if (content) {
                 api.postWithEditToken({
-                        action: "edit",
-                        format: "json",
-                        watchlist: "nochange",
-                        title: "MediaWiki:Custom-common.less",
-                        text: content,
-                        summary: "Updated Less Source (source: [[:en:MediaWiki:Custom-common.less]])",
-                    }).done(function () {
-                        new BannerNotification($("<div>", {
-                            html: "<div>Update successful!</div>",
-                        }).prop("outerHTML"), "confirm", null, 5000).show();
-                    })
-                    .fail(function (err) {
-                        new BannerNotification($("<div>", {
-                            html: "<div>Update failed. See console for error.</div>",
-                        }).prop("outerHTML"), "warn", null, 5000).show();
-                        console.warn(err);
-                    });
+                    action: "edit",
+                    format: "json",
+                    watchlist: "nochange",
+                    title: "MediaWiki:Custom-common.less",
+                    text: content,
+                    summary: "Updated Less Source (source: [[:en:MediaWiki:Custom-common.less]])",
+                }).done(function () {
+                    new BannerNotification($("<div>", {
+                        html: "<div>Update successful!</div>",
+                    }).prop("outerHTML"), "confirm", null, 5000).show();
+                })
+                .fail(function (err) {
+                    new BannerNotification($("<div>", {
+                        html: "<div>Update failed. See console for error.</div>",
+                    }).prop("outerHTML"), "warn", null, 5000).show();
+                    console.warn(err);
+                });
             }
         });
     }
@@ -791,7 +779,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
             title: "Update Less Source from English Wiki",
             css: {
                 cursor: "pointer",
-                "margin": "0 0 5px 5px",
+                margin: "0 0 5px 5px",
             }
         }));
     }

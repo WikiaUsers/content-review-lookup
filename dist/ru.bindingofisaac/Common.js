@@ -162,3 +162,11 @@ $(function(){
         break;
     }
 });
+
+$(function(){   
+    switch ( mw.config.get('wgPageName') ) {
+        case 'The_Binding_of_Isaac_вики:Небосвод_почёта':
+            $('body').addClass('is-content-expanded')
+        break;
+    }
+});

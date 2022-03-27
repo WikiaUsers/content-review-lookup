@@ -1,7 +1,7 @@
 /*
 Этот скрипт формируется из содержимого страницы [[Википедия:AutoWikiBrowser/Typos]].
 Для обновления cкопируйте текст из поля по ссылке:
-https://ru.wikipedia.org/?title=Project:AutoWikiBrowser/Typos&action=edit&withJs=Gadget-wfTypos/update.js
+https://ru.wikipedia.org/?title=Project:AutoWikiBrowser/Typos&action=edit&withgadget=wfTyposUpdate
 */
 
 window.wfPlugins = window.wfPlugins || [];
@@ -210,6 +210,7 @@ r( /((?:^|\s)[Лл])а[дн]{1,2}шафт/g, '$1андшафт' );
 r( /(Л|л)егетимн/g, '$1егитимн' );
 r( /((?:^|\s)[Лл])екго(?=[^A-ZА-ЯЁa-zа-яё́]|$)/g, '$1егко' );
 r( /((?:^|\s)[Лл])ей?т[еий]нн?ат?н?т/g, '$1ейтенант' );
+r( /((?:^|\s)[Лл])ибретист/g, '$1ибреттист' );
 r( /((?:^|\s)[Лл])иьш(?=[^A-ZА-ЯЁa-zа-яё́]|$)/g, '$1ишь' );
 r( /((?:^|\s)[Лл])у(чщ|шш|шщ|щщ|шч|щч)ш?/g, '$1учш' );
 r( /((?:^|\s)[Лл])юбтиь(?=[^A-ZА-ЯЁa-zа-яё́]|$)/g, '$1юбить' );
