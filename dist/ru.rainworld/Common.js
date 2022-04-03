@@ -8,6 +8,11 @@ $(function () {
 	$("span.insertusername").html(wgUserName);
 });
 
+//Кастом блок в рельсе
+window.AddRailModule = [
+    { page: 'Template:RailModule1', prepend: true },
+];
+
 //Добавление обложки для страниц Клен и Лиса
 $(function () {
 	var class_value = $(document.body)[0].classList.value;

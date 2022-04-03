@@ -10,6 +10,7 @@ $(function () {
     }
 
     window.imagesReplaced = true;
+    window.wikiImageRenderOpts = window.wikiImageRenderOpts || {};
 
     // Infobox images
     // Disabled due to this wiki's setting of removing all srcset attributes
@@ -21,19 +22,24 @@ $(function () {
 
     //Other images
     function reload_imgs(target) {
-        var $target = $(target);
-        var srcvar = $target.attr("src");
+        var $target = $(target), srcvar0, srcvar;
+        srcvar0 = srcvar = $target.attr("src");
         var pattern = /(?:static|vignette|images)\.wikia\.nocookie\.net/;
-        if (srcvar && !srcvar.endsWith("format=original") && pattern.exec(srcvar)) {
-            if ($target.attr("width") || $target.attr("height") || $target.parents(".wikia-gallery-item").length > 0)
-                srcvar = srcvar.replace(/\/scale\-to\-width\-down\/\d+/g, "");
+        if (srcvar && pattern.exec(srcvar)) {
+            if (!window.wikiImageRenderOpts.allowDownscaling)
+                if ($target.attr("width") || $target.attr("height") || $target.parents(".wikia-gallery-item").length > 0)
+                    srcvar = srcvar.replace(/\/scale\-to\-width\-down\/\d+/g, "");
 
-            if (srcvar.includes("?"))
-                $target.attr("src", srcvar + "&format=original");
-            else
-                $target.attr("src", srcvar + "?format=original");
+            if (window.wikiImageRenderOpts.formatOriginal && !/format=original/.test(srcvar)) {
+                if (srcvar.includes("?"))
+                    srcvar = srcvar + "&format=original";
+                else
+                    srcvar = srcvar + "?format=original";
+            }
+
+            if (srcvar !== srcvar0)
+                $target.attr("src", srcvar);
         }
-        return;
     }
     document.body.addEventListener("load", function (event) {
         const target = event.target;

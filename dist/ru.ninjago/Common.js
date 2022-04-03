@@ -16,3 +16,9 @@ importArticles({
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
+
+/* 3. Отображение никнейма в шаблоне */
+(function($, mw) {
+    if (!$('.insertusername').length) return;
+    $('.insertusername').html( (wgUserName != 'null') ? wgUserName : 'Участник ФЭНДОМА' );
+})(this.jQuery, this.mediaWiki);

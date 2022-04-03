@@ -915,6 +915,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"awakening": {
+				"name": "Awakening",
+				"colors": [
+					"world",
+					"yellow",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"award": {
 				"name": "Award",
 				"colors": [
@@ -1794,6 +1803,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"budding": {
+				"name": "Budding",
+				"colors": [
+					"world",
+					"green",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"bundled": {
 				"name": "Bundled",
 				"colors": [
@@ -1910,6 +1928,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "super"
+			},
+			"cameo": {
+				"name": "Cameo",
+				"colors": [
+					"world",
+					"blue",
+					"yellow"
+				],
+				"rarity": "unbreedable"
 			},
 			"cancer": {
 				"name": "Cancer",
@@ -2882,6 +2909,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"white"
 				],
 				"rarity": "unbreedable"
+			},
+			"coronation": {
+				"name": "Coronation",
+				"colors": [
+					"world",
+					"black"
+				],
+				"rarity": "common"
 			},
 			"cosmic": {
 				"name": "Cosmic",
@@ -4216,6 +4251,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "super"
+			},
+			"ecological": {
+				"name": "Ecological",
+				"colors": [
+					"world",
+					"green",
+					"red"
+				],
+				"rarity": "unbreedable"
 			},
 			"ectoplasm": {
 				"name": "Ectoplasm",
@@ -7739,6 +7783,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "super"
 			},
+			"jeweled": {
+				"name": "Jeweled",
+				"colors": [
+					"world",
+					"red",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"jewelry": {
 				"name": "Jewelry",
 				"colors": [
@@ -8148,6 +8201,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "rare"
+			},
+			"lattice": {
+				"name": "Lattice",
+				"colors": [
+					"world",
+					"white",
+					"blue"
+				],
+				"rarity": "unbreedable"
 			},
 			"lavender": {
 				"name": "Lavender",
@@ -13059,6 +13121,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"scalloped": {
+				"name": "Scalloped",
+				"colors": [
+					"world",
+					"purple",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"scandinavian": {
 				"name": "Scandinavian",
 				"colors": [
@@ -14107,7 +14178,8 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 			"soccer": {
 				"name": "Soccer",
 				"colors": [
-					"soccer"
+					"soccer",
+					"blue"
 				],
 				"rarity": "unbreedable"
 			},

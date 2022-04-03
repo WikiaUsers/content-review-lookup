@@ -8,6 +8,7 @@ debug452("start of stdTemplates");
 
 function initStdTemplates() {
         if (!$("#wpTextbox1").length || $('#stdTemplates').length) return; //only run on edit pages.
+        var StdTemplatesVer = 3;
 
 	window.insertTags = function (tagOpen, tagClose, sampleText, selectText) {
 		$("#wpTextbox1").textSelection('encapsulateSelection', {
@@ -61,8 +62,8 @@ function initStdTemplates() {
 	}
 	function loadStdTemplates() {
 	  StdTemplatesVersion = localStorage.getItem('StdTemplatesVersion');
-	  localStorage.setItem('StdTemplatesVersion', 3);
-	  if (StdTemplatesVersion != 3) localStorage.removeItem('StdTemplates');
+	  localStorage.setItem('StdTemplatesVersion', StdTemplatesVer);
+	  if (StdTemplatesVersion != StdTemplatesVer) localStorage.removeItem('StdTemplates');
 	  else StdTemplates = localStorage.getItem('StdTemplates');
 
 	  if (StdTemplates) {

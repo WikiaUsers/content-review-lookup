@@ -1,6 +1,6 @@
 $(function() {
 	'use strict';
-	if ( window.iosp_loaded || mw.config.get( 'skin' ) !== 'fandomdesktop' )  return; 
+	if ( window.iosp_loaded || mw.config.get( 'skin' ) !== 'fandomdesktop' || (mw.config.get( 'wgNamespaceNumber' ) == -1 && !mw.config.get( 'wgCanonicalSpecialPageName' )) )  return; 
 	window.iosp_loaded = true;
 	var pagename = '';
 	if ( mw.config.get( 'wgNamespaceNumber' ) == 8 // MediaWiki

@@ -422,7 +422,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 				type: 'encapsulate',
 				options: {
 					pre: "{{Marvel Database:Reality Template\r| Title                   = \r| Image                   = ",
-					post: "\r| EarthNumber             = \r| Aliases                 = \r| Status                  = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| Residents               = \r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+					post: "\r| EarthNumber             = \r| EarthNumberRef          = \r| Aliases                 = \r| Status                  = \r\r| Creators                = \r| First                   = \r\r| History                 = \r\r| Residents               = \r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 				}
 			}
 		}

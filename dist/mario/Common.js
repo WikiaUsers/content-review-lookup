@@ -453,6 +453,20 @@ window.AutoCreateUserPagesConfig = {
     summary: 'Creating my pages',
     notify: '<a href="/wiki/User:$2">Here is a link to your userpage, $1!</a>'
 };
+/***********************/
+/ * PreloadTemplates **/
+/**********************/
+// 1. AjaxRC configuration option
+window.ajaxRefresh = 30000;
+
+// 2. AjaxRC import statement
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AjaxRC.js'
+    ]
+});
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // END OF CODE

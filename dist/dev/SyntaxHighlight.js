@@ -676,7 +676,7 @@ mw.loader.using("jquery.client", function() {
         wpTextbox0.style.fontFamily              = wpTextbox1Style.fontFamily;
         wpTextbox0.style.fontSize                = wpTextbox1Style.fontSize;
         wpTextbox0.style.lineHeight              = "normal";
-        wpTextbox0.style.marginBottom            = "0";
+        wpTextbox0.style.marginBottom            = document.querySelector(".permissions-errors") ? "-1.75em" : "0";
         wpTextbox0.style.marginLeft              = "0";
         wpTextbox0.style.marginRight             = "0";
         wpTextbox0.style.marginTop               = "0";

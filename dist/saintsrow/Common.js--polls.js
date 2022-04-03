@@ -208,7 +208,7 @@ console.log("vote:"+vote);
 							title:mw.config.get("wgSiteName").replace(/ /g, "_")+":Polls/"+$(this).attr("data-pll"),
 							token:mw.user.tokens.get("editToken"),
 							summary: "Voting"+(vote == 0?'!':''),
-							appendtext: '\n<span data-pll="{{{1|{{SUBPAGENAME}}}}}" data-usr="'+localStorage.getItem('userID')+'" data-vt="'+vote+'"></span>',
+							appendtext: $(".SRWpoll").attr("data-lock")?'':'\n<span data-pll="{{{1|{{SUBPAGENAME}}}}}" data-usr="'+localStorage.getItem('userID')+'" data-vt="'+vote+'"></span>',
 							minor:1,
 						  },
 						  error: function() {
@@ -256,7 +256,7 @@ console.log("vote:"+vote);
 			if($("div[data-pll='"+SRWpoll+"'][data-opt="+$(this).attr("data-vt")+"]"))
 				SRWpollvotes[$(this).attr("data-usr")] = $(this).attr("data-vt");
 		});		
-//		$(".SRWpoll[data-pll='"+SRWpoll+"'] .pollstatus").html("Total votes: "+Object.keys(SRWpollvotes).length);
+		if ($(".SRWpoll").attr("data-totals")) $(".SRWpoll[data-pll='"+SRWpoll+"'] .pollstatus").html("Total votes: "+Object.keys(SRWpollvotes).length);
 
 		for(SRWpollvote in SRWpollvotes) {
 			if (typeof SRWvotes[SRWpollvotes[SRWpollvote]] == "undefined") SRWvotes[SRWpollvotes[SRWpollvote]] = 0;
@@ -267,12 +267,12 @@ console.log("vote:"+vote);
 			SRWpollwinner = SRWvotes[SRWpollwinner] > SRWvotes[SRWvote]?SRWpollwinner:SRWvote;
 		}
 		$("div[data-pll='"+SRWpoll+"'][data-opt]").removeClass("myVote");
+		if(typeof SRWvotes[SRWpollwinner] != "undefined")
+			$("div[data-pll='"+SRWpoll+"'][data-opt="+SRWpollwinner+"]").prepend('<div class="sprite ok" title="Leading"></div>')
 		if(typeof SRWpollvotes[userID] != "undefined") {
 			$("div[data-pll='"+SRWpoll+"'][data-opt="+SRWpollvotes[userID]+"]").addClass("myVote");
-			if(typeof SRWvotes[SRWpollwinner] != "undefined") {
-				$("div[data-pll='"+SRWpoll+"'][data-opt="+SRWpollwinner+"]").prepend('<div class="sprite ok" title="Leading"></div>')
-			}
-		} else {
+		} else if (!$(".SRWpoll").attr("data-show")) {
+			$("div[data-pll='"+SRWpoll+"'] .sprite.ok").remove();
 			$("div[data-pll='"+SRWpoll+"'] .votes").remove();
 			$("div[data-pll='"+SRWpoll+"'] .pollstatus").append(" (You have not voted in this poll.  Results are shown after you vote.)");
 		}

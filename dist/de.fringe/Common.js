@@ -16,9 +16,7 @@ importScriptPage('http://code.jquery.com/jquery-1.11.1.min.js');
 
  // Import [[MediaWiki:Onlyifuploading.js]] 
  
- if ( wgCanonicalSpecialPageName == "Upload" ) {
-      document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Onlyifuploading.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
- }
+
 
 /* Schneescript */
 var date = new Date();

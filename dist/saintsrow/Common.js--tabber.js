@@ -1,7 +1,7 @@
 // https://www.mediawiki.org/wiki/Extension:Tabber
 
 $(function() {
-    window.tabberInit = function() {
+  window.tabberInit = function() {
 	$.fn.tabber = function() {
 		return this.each(function() {
 			var $this = $(this),
@@ -82,6 +82,6 @@ $(function() {
 		$(".tabber.tabberlive").removeClass("tabberlive"); 
 	}
 	if ($(".tabber").length) $('.tabber').tabber();
-    };
-    if ($(".tabber").length) tabberInit();
+  };
+  if ($(".tabber").length) tabberInit();
 });

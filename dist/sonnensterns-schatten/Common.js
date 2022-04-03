@@ -17,10 +17,6 @@ importArticles({
 // and year with "(UTC)" at the end
 window.DisplayClockJS = '%2H:%2M:%2S %2d. %B %Y (UTC)';
 
-if ( wgCanonicalSpecialPageName == "Upload" ) {
-      document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Onlyifuploading.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
-}
-
 var ShowHideConfig = { 
     autoCollapse: 3, 
     userLang: false, 

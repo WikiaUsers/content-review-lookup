@@ -31,10 +31,28 @@ function downloadAudio(url, filename) {
   });
 }
 
+//Localization
+var loc = {
+	i18n: {
+		en: {
+			download: 'Download',
+			copylink: 'Copy Link'
+		},
+		ru: {
+			download: 'Скачать',
+			copylink: 'Скопировать ссылку'
+		}
+	}
+}
+
+lng = mw.config.values.wgUserLanguage;
+
+loc.lng = ( typeof loc.i18n[ lng ] === 'undefined' ) ? loc.i18n.en : loc.i18n[ lng ];
+
 //Create <div> menu with button
 var menu = document.createElement("div");
 menu.setAttribute("id", "context-menu");
-menu.innerHTML = '<ul><li><div class="sm2button" id="audio-download">Download</div></li><li><div class="sm2button" id="cLink">Copy Link</div></li></ul>';
+menu.innerHTML = '<ul><li><div class="sm2button" id="audio-download">' + loc.lng.download + '</div></li><li><div class="sm2button" id="cLink">' + loc.lng.copylink + '</div></li></ul>';
 document.getElementsByTagName('body')[0].appendChild(menu);
 
 function sm2b (id) {

@@ -16,3 +16,8 @@ window.pPreview.defimage = 'https://static.wikia.nocookie.net/covntyl/images/4/4
 window.pPreview.noimage = 'https://static.wikia.nocookie.net/covntyl/images/4/45/Sestres.jpg';
 
 mw.config.set('UMFBypassLicenseCheck', true);
+
+window.dev.editSummaries = {
+	css: '#stdSummaries { ... }',
+	select: 'MediaWiki:Custom-StandardEditSummaries'
+};

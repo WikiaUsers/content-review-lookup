@@ -1,5 +1,5 @@
 var debugcolour = 'pink';  //Change the colour to confirm cache updates
-var debugversion = '1648155117322';
+var debugversion = '1648747155530';
 
 window.test452 = { ready:false, complete:false};
 window.debug452 = function(out, alert) { if (mw.config.get("wgUserName") == "452") { if ( ["object", "null", "function"].indexOf(typeof out) == -1) console.log(new Date().toJSON()+" "+out); else { console.log(new Date().toJSON()+" object:"); console.log(out); } if (typeof alert != "undefined") window.alert(out); } }
@@ -136,7 +136,7 @@ $(function() { /* Run when page has loaded */
 
   $(".mw-special-Search a[href*='Saints_Row_Wiki:Disambiguation:']").each(function() { $(this).html($(this).html().replace("Saints Row Wiki:Disambiguation:","Disambiguation:")); }); //Fix links to disambiguation pages.
 
-  if (mw.config.get("wgCanonicalNamespace") == "Forum") {
+  if (mw.config.get("wgCanonicalNamespace") == "Forum" && typeof mw.util.getParamValue('action') != "string") {
     $("#mw-content-text").append("<a class='wds-button' href='?section=new&action=submit&nosummary=1'>Add new comment</button>");
   }
 

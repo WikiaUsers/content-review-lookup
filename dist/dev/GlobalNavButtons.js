@@ -20,7 +20,8 @@ mw.loader.using(['mediawiki.template.mustache']).then(function () {
 				)) $(this).remove();
 			});
 			$.each(window.globalNavButtons, function(i, glnbutton) {
-				if (!glnbutton.isMain && !glnbutton.whoIsMain) { // Normal
+				if (typeof glnbutton !== 'object') {} // Do nothing
+				else if (!glnbutton.isMain && !glnbutton.whoIsMain) { // Normal
 					$('.global-navigation__nav .global-navigation__links').append(glnbutt.createTemplate('normal', {
 						text: glnbutton.text,
 						url: glnbutton.url,

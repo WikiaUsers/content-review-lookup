@@ -15,11 +15,10 @@ jQuery.extend(true, window, {
         glowColor: 'lightgrey',
         users: {
             'CriticizerHere': 'Bureaucrat',
-            'IrrelevantViewer': 'Bureaucrat',
-            'Withersoul 235': 'Admin',
-            'Halfdevilhalfgoddess': 'Admin',
-            'Messenger of Heaven': 'Admin',
-            'RaeLotte': 'Admin'
+            'Likemea': 'Admin',
+            'Black Bullet235': 'Admin',
+            'IllBeYourFriend': 'Moderator',
+            'LavenderLowd': 'Rollback',
     }},
     
     //Spoiler alert
@@ -113,3 +112,21 @@ if (jQuery(String("#ca-edit")).length ||
           "external:dev:EditIntroButton/code.js"
        ));
 }
+
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		bureaucrat: { u:'Bureaucrat Tag', link:'Project:Bureaucrats', order:0 },
+		sysop: {u:'Administrator Tag', link:'Project:Administrators', order:1 },
+		contentmoderator: { u:'Content-Moderator Tag', link:'Project:Moderators', order:2 },
+		rollback: { u:'Rollback Tag', link:'Project:Rollback', order:3 },
+		inactive: { u: 'Has not edited recently', order:4 }
+	}
+	oasisPlaceBefore: ''
+};
+
+UserTagsJS.modules.inactive = {
+	days: 30,
+	zeroIsInactive: true
+	namespaces: [0, 'Talk', 'User talk', 'Forum'] // Edits must be to articles or talk pages or user talk pages or the forum to count, others don't count
+};

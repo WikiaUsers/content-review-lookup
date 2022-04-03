@@ -123,7 +123,6 @@ setInterval(function () {
     $('.wds-avatar a[href$="Cyberpunk%20Ginger"]').closest('.Reply, .Reply_body__3woA9').addClass('Admin');
     $('.wds-avatar a[href$="MasterKart"]').closest('.Reply, .Reply_body__3woA9').addClass('Admin');
     $('.wds-avatar a[href$="Luchezze"]').closest('.Reply, .Reply_body__3woA9').addClass('Admin');
-    $('.wds-avatar a[href$="3Di-games"]').closest('.Reply, .Reply_body__3woA9').addClass('Contmod');
     $('.wds-avatar a[href$="Stal0ker"]').closest('.Reply, .Reply_body__3woA9').addClass('Contmod');
     $('.wds-avatar a[href$="%D0%95%D0%BB%D0%B5%D0%BD%D0%B0%20%D0%A1%D0%BE%D0%BD"]').closest('.Reply, .Reply_body__3woA9').addClass('Dismod');
     $('.wds-avatar a[href$="Professor_Fris"]').closest('.Reply, .Reply_body__3woA9').addClass('Dismod');

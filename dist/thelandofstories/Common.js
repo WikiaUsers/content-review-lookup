@@ -1,112 +1,51 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-/* User Tags */
+/*code from wookiepedia*/function fillPreloads() {
 
-window.UserTagsJS = {
-    modules: {},
-    tags: {
-        /** Global FANDOM Groups **/
-        staff: {
-            link:  'Help:Community Team',
-            title: 'Help:Community Team'
-        },
-        helper: {
-            link:  'Help:Volunteers and Helpers#Helpers',
-            title: 'Help:Volunteers and Helpers'
-        },
-        vstf: {
-            link:  'Help:SpamTaskForce',
-            title: 'Help:SpamTaskForce'
-        },
-        'wiki-manager': {
-            link:  'Help:Wiki Managers',
-            title: 'Help:Wiki Managers'
-        },
-        'content-team-member': {
-            link:  'Help: Content Team Members',
-            title: 'Help: Content Team Members'
-        },
-        'global-discussions-moderator': {
-            link:  'Project:Global Discussions Moderator',
-            title: 'Project:Global Discussions Moderator'
-        },
-        voldev: {
-            link:  'Help:Volunteer Developers',
-            title: 'Help:Volunteer Developers'
-        },
-        vanguard: {
-            link:  'Help:Vanguard',
-            title: 'Help:Vanguard'
-        },
-        council: {
-            link:  'Project:Council',
-            title: 'Project:Council'
-        },
-        'content-volunteer': {
-            link:  'w:c:community:Thread:1401657',
-            title: 'February 26th 2018 Technical Update'
-        },
-        authenticated: {
-            link:  'w:c:community:Help:User rights#Authenticated',
-            title: 'Help:User rights'
-        },
-        'bot-global': {
-            link:  'w:c:community:Help:Bots',
-            title: 'Help:Bots'
-        },
+	if( !$( '#lf-preload' ).length ) {
+		return;
+	}
 
+	$( '#lf-preload' ).attr( 'style', 'display: block' );
 
-        /** Fully Automated **/
-        autoconfirmed: {
-            u:     'Verified',
-            link:  'Project:Tags',
-            title: 'Project:Tags',
-            order: 925
-        },
-        inactive: {
-            link:  'Project:Tags',
-            title: 'Project:Tags',
-            order: 500
-        },
-        newuser: {
-            u:     'User',
-            link:  'Project:Tags',
-            title: 'Project:Tags',
-            order: 950
-        },
-        nonuser: {
-            u:     'Non-User',
-            link:  'Project:Tags',
-            title: 'Project:Tags',
-            order: 975
-        },
-        notautoconfirmed: {
-            u:     'New Account',
-            link:  'Project:Tags',
-            title: 'Project:Tags',
-            order: 1000
-        },
+	$.get( wgScript, { title: 'Template:Stdpreloads', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+		var	$preloadOptionsList,
+			lines = data.split( '\n' );
 
+		$preloadOptionsList = $( '<select />' ).attr( 'id', 'stdSummaries' ).change( function() {
+			var templateName = $( this ).val();
+			if ( templateName !== '' ) {
+				templateName = 'Template:' + templateName + '/preload';
+				templateName = templateName.replace( ' ', '_' );
+				$.get( wgScript, { title: templateName, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+					if ($('.CodeMirror').length > 0) {
+						WikiEditorCodeMirror.doc.replaceSelection(data);
+						return;
+					}
+					insertAtCursor( document.getElementById( 'wpTextbox1' ), data );
+				} );
+			}
+		} );
 
-        /** Externally Dependent **/
-        blocked: {
-            link:  'Help:Blocking',
-            title: 'Help:Block',
-            order: 100
-        },
-        'check-user': {
-            link:  'Help:CheckUser',
-            title: 'Help:CheckUser',
-            order: 325
-        },
-        bot: {
-            link:  'Project:Bots',
-            title: 'Project:Bots',
-            order: 400
-        },
-        designer: {
-            u:     'Designer',
-            link:  'User blog:River That Crashes Onshore/About Designers',
-            order: 350
-        },
-    }
-};
+		for ( var i = 0; i < lines.length; i++ ) {
+			var templateText = ( lines[i].indexOf( '-- ' ) === 0 ) ? lines[i].substring(3) : '';
+			$preloadOptionsList.append( $( '<option>' ).val( templateText ).text( lines[i] ) );
+		}
+
+		$( '#lf-preload-cbox' ).html( $preloadOptionsList );
+	} );
+
+	$( '#lf-preload-pagename' ).html( '<input type="text" class="textbox" />' );
+	$( '#lf-preload-button' ).html( '<input type="button" class="button" value="Insert" onclick="doCustomPreload()" />' );
+
+}
+
+function doCustomPreload() {
+	var value = $( '#lf-preload-pagename > input' ).val();
+	value = value.replace( ' ', '_' );
+	$.get( wgScript, { title: value, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+		if ($('.CodeMirror').length > 0) {
+			WikiEditorCodeMirror.doc.replaceSelection(data);
+			return;
+		}
+		insertAtCursor( document.getElementById( 'wpTextbox1' ), data );
+	} );
+}

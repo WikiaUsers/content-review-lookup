@@ -103,7 +103,8 @@ $(function() {
     });
 
     RCUstatus(" Checking", 1);
-    $.getJSON('/api.php?action=query&format=json&rclimit=1&list=recentchanges&rcend='+z, function(result) {
+    incbots = mw.util.getParamValue('hidebots') == 0?"":"&rcshow=!bot";
+    $.getJSON('/api.php?action=query&format=json&rclimit=1&list=recentchanges&rcend='+z+incbots, function(result) {
       RCUstatus(" Checked: ", -1);
       if(!result.query.recentchanges.length) return RCUend("No new RC logs");
       if($("#RCUui").attr("timestamp") == result.query.recentchanges[0].timestamp) return RCUend("Duplicate RC logs");

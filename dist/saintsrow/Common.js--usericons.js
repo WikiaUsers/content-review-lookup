@@ -33,6 +33,32 @@ window.UserIconsInit = function(source) {
   icons.add("TheMoonLightman", "Gold", "adding screenshots of all secret areas");
   icons.add("TheMoonLightman", "Photo", "creating vehicle gallery of one of every vehicle from the same angle in Saints Row IV");
   icons.add("TheMoonLightman", "Satchel", "figuring out how to get 10 Satchel Charges");
+  icons.add("Azaram", "Gold", "adding links, uploading images and using talk pages");
+  icons.add("Danthepest", "Photo", "being DanTheAwesomeImageReplacer");
+  icons.add("Destopesto", "Gold", "using the word 'Unbeknownst'");
+  icons.add("Dynamo128", "Gold", "translating");
+  icons.add("Erewon", "Photo", "uploading 900+ screenshots in one month");
+  icons.add("GMRE", "Gold", "determining the name of the Gawalek A36");
+  icons.add("HackerMattMiller", "Cheers", "crashing our helicopter");
+  icons.add("Kaileighblue", "Gold", "adding scans of information from printed game guide");
+  icons.add("Kar33m368", "Photo", "being a great photographer");
+  icons.add("Miracle Max", "Saints", "bringing long-term false information to light");
+  icons.add("Moozipan Cheese", "Angel", "suggesting this text be changed from 'deserves' to 'was awarded'.");
+  icons.add("Moozipan Cheese", "Gold", "some improvements to many mission articles.");
+  icons.add("OAndersson", "Photo", "taking 570 screenshots of every single vehicle variant in Saints Row 2");
+  icons.add("OAndersson", "Ronin", "updating SRTT mission articles with images and navboxes");
+  icons.add("PrinceCreeper", "Ultor", "determining that The Brotherhood Bulldog is obtainable");
+  icons.add("Rhonin Magus", "Gold", "completing the Saints Row IV homie conversation transcripts as well as transcribing more of them than anyone else");
+  icons.add("Scarfacemperor", "Gold", "determining that the New Planet in the Gat out of Hell ending is fairly uninhabitable.");
+  icons.add("Sentinel Jake", "Photo", "being a superb photographer");
+  icons.add("Sentinel Jake", "Saints", "adding excellent captions");
+  icons.add("Sentinel Jake", "Gold", "adding links where links are needed");
+  icons.add("Sentinel Jake", "Shaundi4", "making 1000 edits");
+  icons.add("Six18", "Six18", "updating a bunch of weapon infoboxes");
+  icons.add("Soul reaper magnum", "Gold", "reporting several bugs in the site style");
+  icons.add("WildBrick142", "Gold", "creating an fantastic article for the mission 'The Fundamentals' in a single edit");
+  icons.add("WildBrick142", "Gold", "helping with New Hades map");
+  icons.add("WildBrick142", "Gold", "uploading extracted UI images");
 
 /*** Add tags. ***/
 /* currently all tags are for official purposes only. non-official purposes should probably use icons instead */
@@ -102,7 +128,6 @@ function iconList(user, targetelement) {
   this.addIcon("Satchel", "Satchel Charge", "9/93/Weap_thrown_satchel.png");
   this.addIcon("Broom", "Broom", "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Broom_icon.svg/100px-Broom_icon.svg.png");
   this.addIcon("Shaundi4", "Shaundi's severed head", "6/60/Homie_icon_-_Shaundi_in_Saints_Row_IV.png");  
-  this.addIcon("Salute", "Salute from The President", "e/ec/Sr4playa.jpg");  
   this.addIcon("Cid", "Cid", "c/c0/Homie_icon_-_CID_in_Saints_Row_IV.png");
   this.addIcon("Cheers", "Cheers", "thumb/7/76/Live%21_With_Killbane_-_Matt_Miller_smart_phone_message.png/100px-Live%21_With_Killbane_-_Matt_Miller_smart_phone_message.png");
   this.addIcon("Vehicle", "Vehicle Homie","b/b6/Ui_homie_vehicle.png");

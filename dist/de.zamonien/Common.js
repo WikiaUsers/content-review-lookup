@@ -1,9 +1,5 @@
 // Import [[MediaWiki:Onlyifuploading.js]] 
  
- if ( wgCanonicalSpecialPageName == "Upload" ) {
-	document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Gadget-Hotcat.js&action=raw&ctype=text/javascript"></script>');
-	document.write('<script type="text/javascript" src="/index.php?title=MediaWiki:Onlyifuploading.js&action=raw&ctype=text/javascript&dontcountme=s"></script>');
- }
 //------------------------- Kopiert von http://www.jedipedia.net/wiki/MediaWiki:Common.js ---------------------------
 /** Collapsible tables *********************************************************
   *

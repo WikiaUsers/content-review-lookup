@@ -442,7 +442,7 @@ window.hsbwiki = window.hsbwiki || {}
                         action: 'parse',
                         text: code,
                         prop: 'text',
-                        title: self.template,
+                        title: mw.config.get('wgPageName'),
                         disablepp: 'true'
                     };
                 
