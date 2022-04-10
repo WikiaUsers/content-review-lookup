@@ -4,13 +4,13 @@
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
 
 /** UserTags **/
-window.MessageWallUserTags = {
-    tagColor: 'red',
-    txtSize: '10px',
-    glow: true,
-    glowSize: '15px',
-    glowColor: '#f77',
-    users: {
-        'BlackLord101': 'Test'
-    }
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		winnermarchq: { u: 'Winner of March Quality Award', order: 100 }
+	}
 };
+UserTagsJS.modules.custom = {
+	'BlackLord101': ['winnermarchq'] // NOTE: order of list here does NOT matter
+};
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];

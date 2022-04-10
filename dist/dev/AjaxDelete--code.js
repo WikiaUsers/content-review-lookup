@@ -30,13 +30,14 @@
         type: 'script',
         articles: [
             'u:dev:MediaWiki:I18n-js/code.js',
-            'u:dev:MediaWiki:Modal.js'
+            'u:dev:MediaWiki:ShowCustomModal.js',
+            'u:dev:MediaWiki:BannerNotification.js'
         ]
     });
     var AjaxDelete = {
         config: window.AjaxDelete || {},
         undelete: ['Undelete'],
-        toLoad: 2,
+        toLoad: 3,
         preload: function() {
             if (--this.toLoad === 0) {
                 $.when(
@@ -51,7 +52,7 @@
                 mw.user.options.get('watchdeletion') :
                 this.config.autoCheckWatch;
             this.api = new mw.Api();
-            this.createModal();
+            this.BannerNotification = dev.banners.BannerNotification;
             this.buildDeleteReasons();
             this.fetchUndeleteAliases();
             $(document).click($.proxy(this.click, this));
@@ -60,38 +61,15 @@
                 !this.config.disableShortcut
             ) {
                 var bindShortcut = $.proxy(this.bindShortcut, this);
-            	var moduleName = mw.loader.getModuleNames().find(function(name) {
+                var moduleName = mw.loader.getModuleNames().find(function(name) {
                     return name.indexOf('GlobalShortcuts-') === 0;
                 });
                 if (moduleName) {
-                	mw.loader.using(moduleName).then(function() {
-                	    bindShortcut(window.Mousetrap);
-                	});
+                    mw.loader.using(moduleName).then(function() {
+                        bindShortcut(window.Mousetrap);
+                    });
                 }
             }
-        },
-        createModal: function() {
-            this.modals = {};
-            ['delete', 'undelete'].forEach(function(action) {
-                var cap = action.charAt(0).toUpperCase() + action.substring(1);
-                var events = {};
-                events[action] = this['handle' + cap];
-                this.modals[action] = new window.dev.modal.Modal({
-                    buttons: [
-                        {
-                            event: action,
-                            id: 'Ajax' + cap + 'Button',
-                            primary: true,
-                            text: this.msg(action)
-                        }
-                    ],
-                    content: '',
-                    context: this,
-                    events: events,
-                    id: 'Ajax' + cap + 'Modal'
-                });
-                this.modals[action].create();
-            }, this);
         },
         buildDeleteReasons: function() {
             var dr = this.config.deleteReasons,
@@ -133,7 +111,7 @@
         },
         cbAliasFetch: function(d) {
             var aliases = d.query.specialpagealiases;
-            
+
             for (var i in aliases) {
                 if (aliases[i].realname == 'Undelete') {
                     this.undelete = aliases[i].aliases;
@@ -161,16 +139,16 @@
             // and some other stuff jQuery will interpret it
             // as an array and bad things can happen
             for (var key in obj) {
-            	var value = obj[key];
+                var value = obj[key];
 
-            	if (typeof value === 'string') {
+                if (typeof value === 'string') {
                     $select.append(
                         $('<option>', {
                             value: key,
                             text: value
                         })
                     );
-            	} else {
+                } else {
                     var children = [];
 
                     for (var subKey in value) {
@@ -185,12 +163,12 @@
                     }
 
                     $select.append(
-                    	$('<optgroup>', {
-	                        label: key,
-	                        html: children
+                        $('<optgroup>', {
+                            label: key,
+                            html: children
                         })
                     );
-            	}
+                }
             }
             return $select;
         },
@@ -253,11 +231,11 @@
                     url.path === mw.util.getUrl('Special:' + alias) ||
                     url.path === mw.util.getUrl(special + ':' + alias)
                 ) &&
-                url.query.target;
+                    url.query.target;
             }) &&
-            !this.config.noUndelete &&
-            // URLs on undeletion history should not open the modal
-            !url.query.timestamp;
+                !this.config.noUndelete &&
+                // URLs on undeletion history should not open the modal
+                !url.query.timestamp;
         },
         doDelete: function(url, $target) {
             this.action = 'delete';
@@ -274,7 +252,7 @@
             this.showModal([
                 $('<p>', {
                     id: 'AjaxDeleteText',
-                    text: text.plain()  
+                    text: text.plain()
                 }),
                 $('<label>', {
                     id: 'AjaxDeleteReasonLabel',
@@ -301,10 +279,22 @@
             $('#AjaxDeleteWatch').prop('checked', this.acw);
         },
         showModal: function(elements) {
-            this.modals[this.action]
-                .setTitle(this.i18n.msg('title-' + this.action, this.page).plain())
-                .setContent($('<div>').append(elements).html())
-                .show();
+            var cap = this.action.charAt(0).toUpperCase() + this.action.substring(1);
+
+            this.$currentModal = dev.showCustomModal(this.i18n.msg('title-' + this.action, this.page).plain(), {
+                id: 'Ajax' + cap + 'Modal',
+                content: $('<div>').append(elements),
+                buttons: [
+                    {
+                        defaultButton: true,
+                        message: this.i18n.msg(this.action).escape(),
+                        handler: function() {
+                            this['handle' + cap]();
+                        }.bind(this)
+                    }
+                ]
+            });
+
             // User who wanted to delete something would probably
             // want these focused
             var $reason = $('#AjaxDeleteCustomReason, #AjaxUndeleteReason');
@@ -387,18 +377,11 @@
             } else if (code) {
                 msg += ' (' + code + ')';
             }
-            if (window.BannerNotification) {
-                new BannerNotification(msg, type).show();
-            } else {
-                mw.loader.using('mediawiki.notify').then(function () {
-                    mw.notify($(msg), {
-                        type: type
-                    });
-                });
-            }
+
+            new this.BannerNotification(msg, type).show();
         },
         close: function() {
-            this.modals[this.action].close();
+            dev.showCustomModal.closeModal(this.$currentModal);
         },
         doUndelete: function(url) {
             this.action = 'undelete';
@@ -440,5 +423,6 @@
     };
     var preload = $.proxy(AjaxDelete.preload, AjaxDelete);
     mw.hook('dev.i18n').add(preload);
-    mw.hook('dev.modal').add(preload);
+    mw.hook('dev.showCustomModal').add(preload);
+    mw.hook('dev.banners').add(preload);
 })();

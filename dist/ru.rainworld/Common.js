@@ -9,9 +9,7 @@ $(function () {
 });
 
 //Кастом блок в рельсе
-window.AddRailModule = [
-    { page: 'Template:RailModule1', prepend: true },
-];
+window.AddRailModule = [{ prepend: true }];
 
 //Добавление обложки для страниц Клен и Лиса
 $(function () {

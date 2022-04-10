@@ -1,13 +1,4 @@
-// Mao Discord
-window.DiscordIntegratorConfig = {
-    siderail: {
-        title: "Mao Discord",
-        id: "582291601062101018",
-        theme: "light"
-    }
-};
-
-//Add border color to PIs
+//Border color to PIs
 $('.portable-infobox').each(function () {
     var cls = $(this).attr('class').match(/pi-theme-_(\S+)/);
     if (cls) {
@@ -15,7 +6,7 @@ $('.portable-infobox').each(function () {
     }
 });
 
-//Add username alt attribute to masthead profile so highlight css works there
+//Username alt attribute to masthead profile so highlight css works there
 $(function () {
     if (!mw.config.get('profileUserName')) {
         return;

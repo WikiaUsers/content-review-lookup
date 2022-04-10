@@ -60,6 +60,9 @@ window.lastEdited = {
 
 }
 
+/*******************/
+/* LastEdit     */
+/*******************/
 
 importArticles({
     type: 'script',
@@ -67,3 +70,14 @@ importArticles({
         'u:dev:MediaWiki:LastEdited/code.js',
     ]
 });
+
+/*******************/
+/* Tooltip     */
+/*******************/
+
+window.tooltips_list = [
+	{
+		classname: 'advanced-tooltip',
+		delay: 1000
+	}
+];

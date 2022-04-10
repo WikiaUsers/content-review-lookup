@@ -86,3 +86,17 @@ $( window ).resize( fp.equalizeColumns );
 /*********************************************
 /* End Front Page column height equalization *
 /*********************************************/
+/* FloatingTableHeader Make table headers always visible when viewing large tables *
+/*****************************************/
+// Author:  mfaizsyahmi
+// Code: Craig McQueen (bitbucket.org)
+// Updated: March 21, 2022
+importArticles({
+	    type: 'script',
+	    articles: [
+	    	'u:dev:MediaWiki:FloatingTableHeader/Code.js',
+	    	]
+});
+/*********************************************
+/* End FloatingTableHeader *
+/*********************************************/

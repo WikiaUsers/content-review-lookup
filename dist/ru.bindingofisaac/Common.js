@@ -1,3 +1,14 @@
+//Шаблон:Nav - alt comm
+$(function(){
+    function navtemplateload(){
+        if ( mw.config.get('wgNamespaceNumber') == 0) {
+                    $('<div id="navtemplateload"></div>').prependTo(".page-footer");
+                    $('#navtemplateload').load('https://bindingofisaac.fandom.com/ru/wiki/Шаблон:Nav .tbnavcomm');
+        }
+    }
+$(navtemplateload);
+});
+
 //Шаблон:RailModule dev wiki
 window.AddRailModule = [
     { page: 'Template:Rail0', prepend: true },
@@ -35,6 +46,10 @@ window.tooltips_list = [{
 //Интерактивная таблица
 if (mw.config.get('wgPageName') === 'Интерактивная_таблица') {
     importArticle({ type: 'script', article: 'MediaWiki:Items.js' });
+}
+//hof
+if (mw.config.get('wgPageName') === 'Шаблон:Hof') {
+    importArticle({ type: 'script', article: 'MediaWiki:Hof.js' });
 }
 
 //и ещё кусочек комфорта!
@@ -126,14 +141,11 @@ importArticles({
     ]
 });
 
-//Slider for my DC wiki
-mw.loader.load('https://dead-cells.fandom.com/ru/wiki/MediaWiki:HSlider.js?action=raw&ctype=text/javascript');
-
 //Кликабельная деятельность
 
 function addLinkInActivityModule() {
     if ($("#WikiaRail section").length >= 2)
-        $("#wikia-recent-activity .has-icon").wrap("<a href='https://"+ window.location.host +"/ru/wiki/Служебная:RecentChanges'>")
+        $("#wikia-recent-activity .has-icon").wrap("<a href='https://"+ window.location.host +"/ru/wiki/Служебная:Свежие_правки'>")
     else
         setTimeout(addLinkInActivityModule, 500)
 }
@@ -163,9 +175,10 @@ $(function(){
     }
 });
 
+//Шаблон:Hof
 $(function(){   
     switch ( mw.config.get('wgPageName') ) {
-        case 'The_Binding_of_Isaac_вики:Небосвод_почёта':
+        case 'Шаблон:Hof':
             $('body').addClass('is-content-expanded')
         break;
     }

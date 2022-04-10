@@ -171,7 +171,9 @@ $(function () {
     //must also be added to Template:OutfiterLink
     outfiter_names200 = [
       //200
-      'Dragon_Knight', 'Arbalester', 'Royal_Costume', 'Formal_Dress'
+      'Dragon_Knight', 'Arbalester', 'Royal_Costume', 'Formal_Dress', 'Ghost_Blade',
+      //205
+      'Nordic_Chieftain_Outfit'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -196,7 +198,8 @@ $(function () {
       Trailblazer: 8,
       Revenant: 8,
       Rune_Master: 8,
-      Tyrant: 8
+      Tyrant: 8,
+      Ghost_Blade: 8
     },
     outfiter_sprites_walking = {
       CM: 2,

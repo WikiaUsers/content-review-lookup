@@ -13,7 +13,6 @@
  */
 var mcw = window.mcw = {};
 
-
 /* Variables for interface text used throughout the script, for ease of translating */
 mcw.i18n = {
 	// Collapsible tables and page loader
@@ -474,7 +473,7 @@ if ( document.location.search.indexOf( "undo=" ) !== -1 && document.getElementsB
 
 
 /**
- * Pause grid GUI templates (e.g. [[Template:Grid/Crafting Table]]) on mouseover
+ * Pause grid GUI templates (e.g. [[Plantilla:Mesa de trabajo]]) on mouseover
  *
  * This is so people have a chance to look at each image on the cell
  * and click on pages they want to view.
@@ -524,171 +523,142 @@ if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'Upload' ) {
  * Replaces normal tooltips. Supports minecraft [[formatting codes]] (except k), and a description with line breaks (/).
  * Use mcw.useNativeMinetip = true to use normal tooltips, with the description added
  */
-mcw.minetip = {
-	// Add normal minetip events, removing legacy tooltip
-	create: function() {
-		var tooltip;
-		
-		$( '#mw-content-text' ).on( {
-			'mouseenter.minetip': function( e ) {
-				var $elem = $( this ),
-					title = $elem.data( 'minetip-title' ),
-					description = $elem.data( 'minetip-text' );
-				
-				// No title or title only contains formatting codes
-				if ( title === undefined || title && title.replace( /&([0-9a-fl-o])|\s+/g, '' ) === '' ) {
-					// Use title attribute of the element or the first link directly under it
-					var attrTitle = $elem.attr( 'title' ) || $elem.find( '> a:first' ).attr( 'title' );
-					if ( title === undefined ) {
-						title = attrTitle;
-					} else {
-						title += attrTitle;
-					}
-					
-					if ( title ) {
-						// Set the retrieved title as data for future use
-						$elem.data( 'minetip-title', title );
-					} else {
-						return;
-					}
-				}
-				
-				$elem.add( '*', $elem ).filter( '[title]' ).removeAttr( 'title' );
-				
-				if ( title === 0 ) {
-					return;
-				}
-				
-				var text = '<span class="title">' + title + '&f</span>';
-				if ( description ) {
-					text += '\n<span class="description">' +
-						description.replace( /\\\//g, '&#47;' ).replace( /\//g, '<br>' ) +
-						'&f</span>';
-				}
-				
-				if ( !$( '#minetip-tooltip' ).length ) {
-					$( 'body' ).append( '<div id="minetip-tooltip"/>' );
-				}
-				tooltip = $( '#minetip-tooltip' );
-				
-				// Add classes for minecraft formatting codes
-				while ( text.match( /&[0-9a-el-o]/ ) ) {
-					text = text.replace( /&([0-9a-el-o])(.*?)(&f|$)/g, '<span class="format-$1">$2</span>&f' );
-				}
-				// Remove reset formatting
-				text = text.replace( /&f/g, '' );
-				
-				tooltip.html( text );
-				
-				// Trigger a mouse movement to position the tooltip
-				$elem.trigger( 'mousemove', e );
-			},
-			'mousemove.minetip': function( e, trigger ) {
-				if ( !$( '#minetip-tooltip' ).length ) {
-					$( this ).trigger( 'mouseenter' );
-					return;
-				}
-				
-				// Get event data from remote trigger
-				e = trigger || e;
-				
-				var top = e.clientY - 34,
-					left = e.clientX + 14,
-					width = tooltip.outerWidth( true ),
-					height = tooltip.outerHeight( true ),
-					
-					$win = $( window ),
-					winWidth = $win.width(),
-					winHeight = $win.height();
-				
-				// If going off the right of the screen, go to the left of the cursor
-				if ( left + width > winWidth ) {
-					left -= width + 36;
-				}
-				
-				// If now going off to the left of the screen, resort to going below the cursor
-				if ( left < 0 ) {
-					left = 0;
-					top += 82;
-					
-					// Go above the cursor if too low
-					if ( top + height > winHeight ) {
-						top -= 77 + height;
-					}
-				// Don't go off the top of the screen
-				} else if ( top < 0 ) {
-					top = 0;
-				// Don't go off the bottom of the screen
-				} else if ( top + height > winHeight ) {
-					top = winHeight - height;
-				}
-				
-				// Apply the positions
-				tooltip.css( {
-					top: top,
-					left: left
-				} );
-			},
-			'mouseleave.minetip': function() {
-				if ( !tooltip ) {
-					return;
-				}
-				
-				tooltip.remove();
-			}
-		}, '.minetip, .grid .image, .grid .item, .grid2 .item' ).off( '.minetipNative' );
-	},
-	// Remove all events
-	destroy: function() {
-		$( '#mw-content-text' ).off( '.minetip .minetipNative' );
-		$( '#minetip-tooltip' ).remove();
-	},
-	// Add native browser tooltip events, removing normal minetip
-	native: function() {
-		$( '#mw-content-text' ).on( 'mouseenter.minetipNative', '.minetip, .grid .image, .grid .item, .grid2 .item', function() {
-			var title = $( this ).data( 'minetip-title' ),
-				description = $( this ).data( 'minetip-text' ),
-				existingTitle = $( this ).attr( 'title' ) || $( this ).find( '> a:first' ).attr( 'title' );
+( function() {
+	var escapeChars = { '\\&': '&#38;', '<': '&#60;', '>': '&#62;' };
+	var escape = function( text ) {
+		// "\" must be escaped first
+		return text.replace( /\\\\/g, '&#92;' )
+			.replace( /\\&|[<>]/g, function( char ) { return escapeChars[char]; } );
+	};
+	var $tooltip = $();
+	var $win = $( window ), winWidth, winHeight, width, height;
+	
+	$( '#mw-content-text' ).on( {
+		'mouseenter.minetip': function( e ) {
+			$tooltip.remove();
 			
-			if ( title || title === 0 || $( this ).attr( 'title' ) ) {
-				// Remove titles within so they don't interfere
-				$( this ).find( '[title]' ).removeAttr( 'title' );
+			var $elem = $( this ), title = $elem.attr( 'data-minetip-title' );
+			if ( title === undefined ) {
+				title = $elem.attr( 'title' );
+				if ( title !== undefined ) {
+					title = $.trim( title.replace( /&/g, '\\&' ) );
+					$elem.attr( 'data-minetip-title', title );
+				}
 			}
 			
-			if ( title === 0 ) {
-				$( this ).removeAttr( 'title' );
+			// No title or title only contains formatting codes
+			if ( title === undefined || title !== '' && title.replace( /&([0-9a-fl-or])/g, '' ) === '' ) {
+				// Find deepest child title
+				var childElem = $elem[0], childTitle;
+				do {
+					if ( childElem.hasAttribute( 'title' ) ) {
+						childTitle = childElem.title;
+					}
+					childElem = childElem.firstChild;
+				} while( childElem && childElem.nodeType === 1 );
+				if ( childTitle === undefined ) {
+					return;
+				}
+				
+				// Append child title as title may contain formatting codes
+				if ( !title ) {
+					title = '';
+				}
+				title += $.trim( childTitle.replace( /&/g, '\\&' ) );
+				
+				// Set the retrieved title as data for future use
+				$elem.attr( 'data-minetip-title', title );
+			}
+			
+			if ( !$elem.data( 'minetip-ready' ) ) {
+				// Remove title attributes so the native tooltip doesn't get in the way
+				$elem.find( '[title]' ).addBack().removeAttr( 'title' );
+				$elem.data( 'minetip-ready', true );
+			}
+			
+			if ( title === '' ) {
 				return;
-			} else if ( !title && ( !existingTitle || !description ) ) {
-				return;
-			} else if ( !title && existingTitle ) {
-				$( this ).data( 'minetip-title', existingTitle );
 			}
 			
-			var text = title || existingTitle;
+			var content = '<span class="minetip-title">' + escape( title ) + '&r</span>';
+			
+			var description = $.trim( $elem.attr( 'data-minetip-text' ) );
 			if ( description ) {
-				text += '\n' + description;
+				// Apply normal escaping plus "/"
+				description = escape( description ).replace( /\\\//g, '&#47;' );
+				content += '<span class="minetip-description">' + description.replace( /\//g, '<br>' ) + '&r</span>';
 			}
 			
-			// Remove formatting
-			text = text.replace( /&([0-9a-fl-o])/g, '' )
-				.replace( /\\\//g, '&#47;' )
-				.replace( /\//g, '\n' )
-				.replace( /&#47;/g, '/' );
+			// Add classes for minecraft formatting codes
+			while ( content.search( /&[0-9a-fl-o]/ ) > -1 ) {
+				content = content.replace( /&([0-9a-fl-o])(.*?)(&r|$)/g, '<span class="format-$1">$2</span>&r' );
+			}
+			// Remove reset formatting
+			content = content.replace( /&r/g, '' );
 			
-			$( this ).attr( 'title', text );
-		} ).off( '.minetip' );
-	}
-};
-
-if ( mcw.useNativeMinetip ) {
-	mcw.minetip.native();
-} else {
-	mcw.minetip.create();
-}
+			$tooltip = $( '<div id="minetip-tooltip">' );
+			$tooltip.html( content ).appendTo( 'body' );
+			
+			// Cache current window and tooltip size
+			winWidth = $win.width();
+			winHeight = $win.height();
+			width = $tooltip.outerWidth( true );
+			height = $tooltip.outerHeight( true );
+			
+			// Trigger a mouse movement to position the tooltip
+			$elem.trigger( 'mousemove', e );
+		},
+		'mousemove.minetip': function( e, trigger ) {
+			if ( !$tooltip.length ) {
+				$( this ).trigger( 'mouseenter' );
+				return;
+			}
+			
+			// Get event data from remote trigger
+			e = trigger || e;
+			
+			// Get mouse position and add default offsets
+			var top = e.clientY - 34;
+			var left = e.clientX + 14;
+			
+			// If going off the right of the screen, go to the left of the cursor
+			if ( left + width > winWidth ) {
+				left -= width + 36;
+			}
+			
+			// If now going off to the left of the screen, resort to going above the cursor
+			if ( left < 0 ) {
+				left = 0;
+				top -= height - 22;
+				
+				// Go below the cursor if too high
+				if ( top < 0 ) {
+					top += height + 47;
+				}
+			// Don't go off the top of the screen
+			} else if ( top < 0 ) {
+				top = 0;
+			// Don't go off the bottom of the screen
+			} else if ( top + height > winHeight ) {
+				top = winHeight - height;
+			}
+			
+			// Apply the positions
+			$tooltip.css( { top: top, left: left } );
+		},
+		'mouseleave.minetip': function() {
+			if ( !$tooltip.length ) {
+				return;
+			}
+			
+			$tooltip.remove();
+			$tooltip = $();
+		}
+	}, '.minetip, .invslot-item' );
+}() );
 
 
 } );
 /* End DOM ready */
-
 
 }() );

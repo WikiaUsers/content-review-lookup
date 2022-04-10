@@ -41,7 +41,7 @@
             'wgNamespaceIds',
             'wgArticlePath'
         ]),
-        currentModal: null,
+        $currentModal: null,
 
         // Resource management
         loading: [
@@ -49,7 +49,8 @@
             'api',
             'i18n',
             'i18n-js',
-            'modal-js',
+            'scm',
+            'banners',
             'dorui',
             'expiry-times',
             'block-reasons',
@@ -71,6 +72,9 @@
                 case 'dorui':
                     ui = arg;
                     break;
+                case 'banners':
+                    this.BannerNotification = arg;
+                    break;
             }
 
             var index = this.loading.indexOf(key);
@@ -89,7 +93,7 @@
                 'helper',
                 'global-discussions-moderator',
                 'wiki-representative',
-                'wiki-specialist',                
+                'wiki-specialist',
                 'soap'
             ]);
         },
@@ -113,12 +117,14 @@
                 type: 'script',
                 articles: [
                     'u:dev:MediaWiki:I18n-js/code.js',
-                    'u:dev:MediaWiki:Modal.js',
+                    'u:dev:MediaWiki:ShowCustomModal.js',
+                    'u:dev:MediaWiki:BannerNotification.js',
                     'u:dev:MediaWiki:Dorui.js',
                 ]
             });
 
-            mw.hook('dev.modal').add(this.onload.bind(this, 'modal-js'));
+            mw.hook('dev.showCustomModal').add(this.onload.bind(this, 'scm'));
+            mw.hook('dev.banners').add(this.onload.bind(this, 'banners'));
             mw.hook('dev.i18n').add(this.onload.bind(this, 'i18n-js'));
             mw.hook('doru.ui').add(this.onload.bind(this, 'dorui'));
 
@@ -400,9 +406,8 @@
             });
         },
         showBlockModal: function(username) {
-            var modal = this.showModal({
+            var $modal = this.showModal(this.i18n.msg('block-title', username).plain(), {
                 id: 'BlockModal',
-                title: this.i18n.msg('block-title', username).plain(),
                 content: ui.div({
                     id: 'AjaxBlockModalContent',
                     children: [
@@ -461,60 +466,59 @@
                 }),
                 buttons: [
                     {
-                        event: 'block',
-                        primary: true,
-                        text: this.i18n.msg('block-button').plain()
-                    },
-                    {
-                        event: 'close',
-                        primary: false,
-                        text: this.i18n.msg('cancel-button').plain()
-                    }
-                ],
-                events: {
-                    block: function() {
-                        var state = this.getModalState(username);
+                        defaultButton: true,
+                        message: this.i18n.msg('block-button').escape(),
+                        handler: function() {
+                            var state = this.getModalState(username);
 
-                        if (state.expiry === '') {
-                            this.notify({
-                                type: 'warn',
-                                text: this.i18n.msg('error-no-expiry').plain()
-                            });
-                            return;
-                        }
+                            if (state.expiry === '') {
+                                this.notify({
+                                    type: 'warn',
+                                    text: this.i18n.msg('error-no-expiry').plain()
+                                });
+                                return;
+                            }
 
-                        this.block(state).then(function(data) {
-                            modal.close();
+                            this.block(state).then(function(data) {
+                                dev.showCustomModal.closeModal($modal);
 
-                            if (data.error) {
+                                if (data.error) {
+                                    this.notify({
+                                        type: 'error',
+                                        text: this.i18n.msg('error-block', username, data.error.info).plain()
+                                    });
+                                } else {
+                                    this.notify({
+                                        type: 'confirm',
+                                        text: this.i18n.msg('success-block', username).plain()
+                                    });
+
+                                    setTimeout(function() {
+                                        dev.showCustomModal.closeModal($modal);
+                                    }, 3000);
+                                }
+                            }.bind(this)).fail(function(code, data) {
+                                var error = data.error && data.error.info || code;
+
                                 this.notify({
                                     type: 'error',
-                                    text: this.i18n.msg('error-block', username, data.error.info).plain()
+                                    text: this.i18n.msg('error-block', username, error).plain()
                                 });
-                            } else {
-                                this.notify({
-                                    type: 'confirm',
-                                    text: this.i18n.msg('success-block', username).plain()
-                                });
-                            }
-                        }.bind(this)).fail(function(code, data) {
-                            modal.close();
-
-                            var error = data.error && data.error.info || code;
-
-                            this.notify({
-                                type: 'error',
-                                text: this.i18n.msg('error-unblock', username, error).plain()
-                            });
-                        }.bind(this));
-                    }.bind(this)
-                }
+                            }.bind(this));
+                        }.bind(this)
+                    },
+                    {
+                        message: this.i18n.msg('cancel-button').escape(),
+                        handler: function() {
+                            dev.showCustomModal.closeModal($modal);
+                        }
+                    }
+                ]
             });
         },
         showUnblockModal: function(username) {
-            var modal = this.showModal({
+            var $modal = this.showModal(this.i18n.msg('unblock-title', username).plain(), {
                 id: 'UnblockModal',
-                title: this.i18n.msg('unblock-title', username).plain(),
                 content: ui.div({
                     id: 'AjaxUnblockModalContent',
                     children: [
@@ -535,72 +539,56 @@
                 }),
                 buttons: [
                     {
-                        event: 'unblock',
-                        primary: true,
-                        text: this.i18n.msg('unblock-button').plain()
-                    },
-                    {
-                        event: 'close',
-                        primary: false,
-                        text: this.i18n.msg('cancel-button').plain()
-                    }
-                ],
-                events: {
-                    unblock: function() {
-                        var state = this.getModalState(username);
+                        defaultButton: true,
+                        message: this.i18n.msg('unblock-button').escape(),
+                        handler: function() {
+                            var state = this.getModalState(username);
 
-                        this.unblock(state).then(function(data) {
-                            modal.close();
+                            this.unblock(state).then(function(data) {
 
-                            if (data.error) {
+                                if (data.error) {
+                                    this.notify({
+                                        type: 'error',
+                                        text: this.i18n.msg('error-unblock', username, data.error.info).plain()
+                                    });
+                                } else {
+                                    this.notify({
+                                        type: 'confirm',
+                                        text: this.i18n.msg('success-unblock', username).plain()
+                                    });
+
+                                    setTimeout(function() {
+                                        dev.showCustomModal.closeModal($modal);
+                                    }, 3000);
+                                }
+                            }.bind(this)).fail(function(code, data) {
+                                var error = data.error && data.error.info || code;
+
                                 this.notify({
                                     type: 'error',
-                                    text: this.i18n.msg('error-unblock', username, data.error.info).plain()
+                                    text: this.i18n.msg('error-unblock', username, error).plain()
                                 });
-                            } else {
-                                this.notify({
-                                    type: 'confirm',
-                                    text: this.i18n.msg('success-unblock', username).plain()
-                                });
-                            }
-                        }.bind(this)).fail(function(code, data) {
-                            modal.close();
-
-                            var error = data.error && data.error.info || code;
-
-                            this.notify({
-                                type: 'error',
-                                text: this.i18n.msg('error-unblock', username, error).plain()
-                            });
-                        }.bind(this));
-                    }.bind(this)
-                }
+                            }.bind(this));
+                        }.bind(this)
+                    },
+                    {
+                        message: this.i18n.msg('cancel-button').escape(),
+                        handler: function() {
+                            dev.showCustomModal.closeModal($modal);
+                        }
+                    }
+                ]
             });
         },
-        showModal: function(options) {
-            if (dev.modal.modals.hasOwnProperty(options.id)) {
-                dev.modal.modals[options.id]._modal.$element.closest('.modal-blackout, .oo-ui-window').remove();
-                delete dev.modal.modals[options.id];
-            }
+        showModal: function(title, options) {
+            var $modal = dev.showCustomModal(title, options);
 
-            var modal = new dev.modal.Modal({
-                id: options.id,
-                size: 'medium',
-                title: options.title,
-                content: options.content,
-                buttons: options.buttons,
-                events: options.events
-            });
+            this.$currentModal = $modal;
 
-            this.currentModal = modal;
-
-            modal.create();
-            modal.show();
-
-            return modal;
+            return $modal;
         },
         getModalState: function(username) {
-            var $modal = this.currentModal._modal.$element;
+            var $modal = this.$currentModal;
             var $reason = $modal.find('#AjaxBlockReasonWrapper');
             var $expiry = $modal.find('#AjaxBlockExpiryWrapper');
             var $checkboxes = $modal.find('input[type="checkbox"]');
@@ -639,13 +627,7 @@
             return data;
         },
         notify: function(data) {
-            if (this.isUCP) {
-                mw.notify(data.text, {
-                    type: data.type
-                });
-            } else {
-                new BannerNotification(data.text, data.type).show();
-            }
+            new this.BannerNotification(data.text, data.type).show();
         },
         block: function(data) {
             var query = {

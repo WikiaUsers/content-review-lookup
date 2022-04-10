@@ -54,7 +54,8 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'MultipleUpload') {
 				  '|année=\n' +
 				  '|jeu=\n' +
 				  '|quoi=\n' +
-				  '|type=\n' + '}}'
+				  '|type=\n' + 
+				  '}}\N'
 		);
 	});
 }
@@ -129,7 +130,6 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 																		   { value: 'Modèle 3D'       }
 																		] );
 					customRows += fromListboxTemplate('Type', 'typeBox', [ { value: '',           label: '-' },
-																		   { value: 'Logo'                   },
 																		   { value: 'Animaux'                },
 																		   { value: 'Armes'                  },
 																		   { value: 'Factions'               },
@@ -137,6 +137,9 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 																		   { value: 'Missions'               },
 																		   { value: 'Objets'                 },
 																		   { value: 'Personnages'            },
+																		   { value: 'Plantes'                },
+																		   { value: 'Rockstar Games'         },
+																		   { value: 'Succès et trophées'     },
 																		   { value: 'Systèmes'               }
                                         								 ] );
 		 
@@ -164,12 +167,12 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 		 
 						var strBuilder = template;
 						strBuilder += '{{Fichier\n';
-						strBuilder += '|origine=' + $.trim($customRows.find('#origineBox').val()) + '\n';
-						strBuilder += '|jeu=' + $.trim($customRows.find('#jeuBox').val()) + '\n';
-						strBuilder += '|année=' + $.trim($customRows.find('#anneeBox').val()) + '\n';
-						strBuilder += '|type=' + $.trim($customRows.find('#typeBox').val()) + '\n';
-						strBuilder += '|quoi=' + $.trim($customRows.find('#quoiBox').val()) + '\n';
-						strBuilder += '}}';
+						strBuilder += '| origine = ' + $.trim($customRows.find('#origineBox').val()) + '\n';
+						strBuilder += '| jeu = ' + $.trim($customRows.find('#jeuBox').val()) + '\n';
+						strBuilder += '| année = ' + $.trim($customRows.find('#anneeBox').val()) + '\n';
+						strBuilder += '| type = ' + $.trim($customRows.find('#typeBox').val()) + '\n';
+						strBuilder += '| quoi = ' + $.trim($customRows.find('#quoiBox').val()) + '\n';
+						strBuilder += '}}\n';
 						$description.val(strBuilder);
 						return true;
 					}
@@ -186,7 +189,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 					});
 				});
 			} else { // Old style form just needs Information template in the summary box
-				$('#wpUploadDescription').val('{{Fichier\n|origine=\n|jeu=\n|année=\n|quoi=\n|type=\n}}\n'); // Add link to guided form
+				$('#wpUploadDescription').val('{{Fichier\n| origine = \n| jeu = \n| année = \n| quoi = \n| type = \n}}\n'); // Add link to guided form
 				$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://reddead.fandom.com/fr/index.php?title=Spécial:Téléverser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancé</a></div>');
 			}
 		}

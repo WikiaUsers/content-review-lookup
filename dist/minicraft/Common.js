@@ -12,3 +12,18 @@ function WikiActivity2RecentChanges() {
  
 addOnloadHook(WikiActivity2RecentChanges);
 /* */
+/* Fires when DOM is ready */
+$( function() {
+
+
+/**
+ * Pause animations on mouseover of a designated container (.animated-container and .mcui)
+ *
+ * This is so people have a chance to look at the image and click on pages they want to view.
+ */
+$( '#mw-content-text' ).on( 'mouseenter mouseleave', '.animated-container, .mcui', function( e ) {
+	$( this ).find( '.animated' ).toggleClass( 'animated-paused', e.type === 'mouseenter' );
+} );
+/* End DOM ready */
+
+}() );

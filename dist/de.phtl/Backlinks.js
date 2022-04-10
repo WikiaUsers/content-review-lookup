@@ -1,4 +1,6 @@
 /**
+ * ARCHIVED
+ * 
  * Script to find backlinks and replace them
  * (regardless of whether the linked page exists or not)
  * 

@@ -1,3 +1,4 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
 /*
  * Original idea and code can be found here: http://communaute.wikia.com/wiki/MediaWiki:Common.js/Requests.js
  *
@@ -65,6 +66,21 @@
         }
 	}
 	
+	requests.addMore = function() {
+		if ( requests.count === 9 ) {
+			$( '.request-limit' ).show();
+			$( '#addMore' ).attr( 'disabled', true );
+
+			return;
+		}
+
+		if ( $( '.request-additional-field' ).css( 'display' ) === 'none' ) {
+			$( '.request-additional-field' ).fadeIn(500);
+		}
+    
+
+		requests.count++;
+	}
 
 	requests.checkAndSubmit = function( t ) {
 		if ( requests.onPending ) return;
@@ -78,66 +94,14 @@
 				allFieldsAreSet = false;
 			}
 		});
-
-		var text = "";
-
-		if ( t ) {
-			var first_wiki = $( '#PrimaryWiki' ).val().toString().replace(/(^https?:..|\.fandom\.com)/g, '' ).split( '/' ),
-                second_wiki = $( '#SecondaryWiki' ).val().toString().replace(/(^https?:..|\.fandom\.com)/g, '' ).split( '/' );
-                
-            var first_short = ( first_wiki.length == 1 || first_wiki[ 1 ] === "" ) ? first_wiki[ 0 ] : first_wiki[ 1 ] + '.' + first_wiki[ 0 ],
-            	second_short = ( second_wiki.length == 1 || second_wiki[ 1 ] === "" ) ? second_wiki[ 0 ] : second_wiki[ 1 ] + '.' + second_wiki[ 0 ];
-
-			text += '== [[w:c:' + first_short + '|' + first_short + ']] ==\n* Участник: ' + mw.config.get( 'wgUserName' ) + '\n' +
-                    '* Связываемые википроекты:\n{{InterwikiLink|' + first_short + '|' + second_short + '}}\n';
-
-			$( '.request-additional' ).each(function() {
-				var first = $( this ).find( '.request-first' ).val().toString().replace( /(^https?:..|\.fandom\.com)/g, '' ),
-					second = $( this ).find( '.request-second' ).val().toString().replace( /(^https?:..|\.fandom\.com)/g, '' );
-
-				if ( first.length === 0 || second.length === 0 ) return;
-
-				first = first.split( '/' );
-				second = second.split( '/' );
-
-				first_short = ( first.length == 1 || first[ 1 ] === "" ) ? first[ 0 ] : first[ 1 ] + '.' + first[ 0 ];
-            	second_short = ( second.length == 1 || second[ 1 ] === "" ) ? second[ 0 ] : second[ 1 ] + '.' + second[ 0 ];
-
-				text += '{{InterwikiLink|' + first_short + '|' + second_short + '}}\n';
-			});
-		} else {
-			var link = $( '#Link' ).val(),
-				lang = $( '#WikiLang' ).val(),
-				wiki = ( lang === "" ) ? link : lang + "." + link;
-
-			text += '== ' + $( '#Name' ).val().toString() + ' ==\n' +
-                    '* Вклад участника ' + '[[w:c:' + wiki + ':Special:Contributions/' + mw.config.get( 'wgUserName' ).replace( /\s/g, '_' ) + '|' + mw.config.get( 'wgUserName' ) + ']]\n' +
-                    '* Кол-во правок на вики: ' + $( '#NumberOfEdits' ).val().toString() + '\n' +
-                    '* Кол-во новых статей: ' + $( '#NumberOfArticles' ).val().toString() + '\n';
-
-			if ( $( '#Comments' ).val() ) {
-                text += '* Дополнительная информация : ' + '\'\'\'' + $( '#Comments' ).val().toString() + '\'\'\'' + '\n';
-            }
-		}
-
-		text += '~~\~~\n';
+		
 
 		if ( allFieldsAreSet ) {
-			$( '.request-status' ).attr( 'class', 'request-status' ).text( 'Записываю запрос [1/2]' );
-			requests.onPending = true;
-
 			$.ajax({
-				url: '/ru/wiki/' + mw.config.get( 'wgPageName' ),
-				type: 'GET',
-				data: {
-					action: 'raw',
-					nocache: 1,
-					allinone: 1
-				},
 				dataType: 'text',
 				success: function ( data ) {
 					if ( data ) {
-						$( '.request-status' ).text( 'Записываю запрос [2/2]' );
+						$( '.request-status' ).text( 'Записываю запрос [1/1]' );
 
 						$.ajax({
 							url: mw.util.wikiScript( 'api' ),
@@ -181,7 +145,7 @@
 
 	requests.init = function() {
 		switch( mw.config.get( 'wgTitle' ) ) {
-		case "Запросы на статус администратора/бюрократа":
+		case "Приём заявок":
 			var requestForm =
                 '<form method="" name="">' +
                   '<fieldset style="margin: 0;">' +
@@ -191,7 +155,7 @@
                     '<p class="request-field must-be-filled" style="margin-bottom: 5px;">' +
                         '<b>' +
                             '<span style="color:red">*</span>' +
-                            'Название вики : ' +
+                            'Названия проектов с наибольшим кол-вом вашего вклада: ' +
                         '</b>' +
                         '<span class="unfilled-warning" style="color:red;display:none">Вы должны заполнить это поле.</span>' +
                         '<input type="text" style="align:center;height:20px; width:300px" id="Name" placeholder="Например : Гарри Поттер Вики"/>' +
@@ -199,20 +163,7 @@
                     '<p class="request-field must-be-filled" style="margin-bottom: 5px;">' +
                         '<b>' +
                             '<span style="color:red">*</span>' +
-                            'URL вики : ' +
-                        '</b>' +
-                        '<span class="unfilled-warning" style="color:red;display:none">Вы должны заполнить это поле.</span>' +
-                        'https://<input type="text" style="align:center;height:20px; width:100px" id="Link" placeholder="harrypotter"/>.fandom.com/' +
-                        '<select id="WikiLang" style="border: none;font-size: 14px;border-bottom: 1px solid #bfbfbf;">' +
-                        	'<option value="ru">ru</option>' +
-                        	'<option value="uk">uk</option>' +
-                        	'<option value="">-</option>' +
-                        '</select>' +
-                    '</p>' +
-                    '<p class="request-field must-be-filled" style="margin-bottom: 5px;">' +
-                        '<b>' +
-                            '<span style="color:red">*</span>' +
-                            'Кол-во ваших правок на данной вики : ' +
+                            'Примерное кол-во ваших правок на Фэндоме: ' +
                         '</b>' +
                         '<span class="unfilled-warning" style="color:red;display:none">Вы должны заполнить это поле.</span>' +
                         '<input type="text" maxlength="6" style="align:center;height:20px; width:150px" id="NumberOfEdits"/>' +
@@ -220,14 +171,14 @@
                     '<p class="request-field must-be-filled" style="margin-bottom: 5px;">' +
                         '<b>' +
                             '<span style="color:red">*</span>' +
-                            'Кол-во новых статей, которые вы создали на данной вики: ' +
+                            'Примерное кол-во созданных вами статей: ' +
                         '</b>' +
                         '<span class="unfilled-warning" style="color:red;display:none">Вы должны заполнить это поле.</span>' +
-                        '<input type="text" style="height:20px; width:200px" id="NumberOfArticles" placeholder="Нужно НЕ менее 10 статей"/>' +
+                        '<input type="text" style="height:20px; width:200px" id="NumberOfArticles" placeholder="Нужно НЕ менее 1 статьи"/>' +
                     '</p>' +
                     '<p class="request-field"">' +
                         '<b>Дополнительная информация: </b>' +
-                        '<input type="text" style="height:20px; width:100%" id="Comments" placeholder="Любая дополнительная информация о вики или о себе"/>' +
+                        '<input type="text" style="height:20px; width:100%" id="Comments" placeholder="Любая дополнительная информация о каком-либо ином виде помощи или о себе"/>' +
                     '</p>' +
                   '</fieldset>' +
                   '<div class="request-status-div" style="margin: 5px 0; text-align: center;">' +
@@ -235,53 +186,12 @@
                 	'<span class="request-status" style="font-weight: bold;">Ожидает отправки формы</span>' +
                   '</div>' +
                 '</form>';
-				var title = "Форма запроса на права администратора";
+				var title = "Форма запроса на Трудбригадника";
 				var f = false;
-				break;
-			case "Запросы на межъязыковые ссылки":
-				var requestForm =
-                '<form method="" name="" style="height:480px;">' +
-                    '<fieldset style="margin: 0;">' +
-                        '<p style="padding:5px; border:1px solid grey; margin: 5px 0;">' +
-                            'Пожалуйста, заполните поля этой карточки, чтобы оставить запрос. Обратите внимание, что поля, помеченные (<span style="color:red">*</span>), обязательны для заполнения.' +
-                        '</p>' +
-                        '<p class="request-field must-be-filled">' +
-                            '<b>' +
-                                '<span style="color:red">*</span>' +
-                                'URL вики №1 :' +
-                            '</b> ' +
-                            '<span class="unfilled-warning" style="color:red;display:none">Вы должны заполнить это поле.</span>' +
-                            '<br /> ' + 
-                            'https://<input type="text" style="align:center;height:20px; width:300px" id="PrimaryWiki" placeholder="Например : harrypotter.fandom.com/ru"/>' +
-                        '</p>' +
-                        '<p class="request-field must-be-filled">' +
-                            '<b>' +
-                                '<span style="color:red">*</span>' +
-                                'URL вики №2 :' +
-                            '</b> ' +
-                            '<span class="unfilled-warning" style="color:red;display:none">Вы должны заполнить это поле.</span>' +
-                            '<br /> ' +
-                            'https://<input type="text" style="align:center;height:20px; width:300px" id="SecondaryWiki" placeholder="Например : harrypotter.fandom.com/pl"/>' +
-                        '</p>' +
-                        '<div class="request-additional-field" style="height: 300px; border:1px solid grey; margin-top:5px;">' +
-                            '<div style="text-align:center; padding:5px; font-weight: bold; border-bottom: 1px solid grey;">' +
-                                'Дополнительные секции' +
-                                ' <span class="request-limit" style="display: none; color: red;">(превышен лимит)</span>' +
-                            '</div>' +
-                            '<div class="request-additional-section" style="overflow-y: auto; height: 265px;" />' +
-                        '</div>' +
-                    '</fieldset>' +
-					'<div class="request-status-div" style="margin: 5px 0; text-align: center;">' +
-						'Текущий статус формы: ' +
-						'<span class="request-status" style="font-weight: bold;">Ожидает отправки формы</span>' +
-					'</div>' +
-                '</form>';
-				var title = "Форма запроса на интервики";
-				var f = true;
 				break;
 		}
 
-        requests.callDiag( title, requestForm, f );
+	requests.callDiag( title, requestForm, f );
 	}
 
 	$( '#request' ).on( 'click', function() {

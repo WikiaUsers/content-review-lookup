@@ -8,6 +8,7 @@
 
 $(function () {
     "use strict";
+    window.minetipConfig = window.minetipConfig || {};
     (window.updateTooltips = (function () {
         var escapeChars = {
             "\\&": "&#38;",
@@ -84,18 +85,18 @@ $(function () {
                     return;
                 }
 
-                var content = "<span class=\"minetip-title format-7\">&7" + escape(title) + "&r</span>";
+                var content = "<span class=\"minetip-title\">&f" + escape(title) + "&r</span>";
 
                 var description = $.trim($elem.attr("data-minetip-text"));
                 if (description) {
                     // Apply normal escaping plus "/"
                     description = escape(description).replace(/\\\\/g, "&#92;").replace(/\\\//g, "&#47;");
-                    content += "<span class=\"minetip-description format-7\">&7" + description.replace(/\//g, "&r<br>") + "&r</span>";
+                    content += "<span class=\"minetip-description\">&f" + description.replace(/\//g, "&r<br>") + "&r</span>";
                 }
 
                 // Add classes for minecraft formatting codes
                 while (content.search(/&[0-9a-fk-o]/) > -1) {
-                    content = content.replace(/&([0-9a-fk-o])(.*?)(&r|$)/g, "<span class=\"format-$1\">$2&r</span>");
+                    content = content.replace(/&([0-9a-fk-o])(.*?)(&[0-9a-fr]|$)/g, "<span class=\"format-$1\">$2&r</span>$3");
                 }
                 // Remove reset formatting
                 content = content.replace(/&r/g, "");
@@ -177,20 +178,23 @@ $(function () {
 
         $(document.body).on({
             "mouseenter": function () {
-                var $links = $(this).find("a:not(.invslot-hover-overlay)");
-                switch ($(this).find(".invslot-hover-overlay").length) {
-                    case 0:
-                        $(this).append(
-                            $("<a>").addClass("invslot-hover-overlay").attr("href", $($links[0]).attr("href"))
-                        );
-                        break;
-                    case 1:
-                        break;
-                    default:
-                        $(this).find(".invslot-hover-overlay").each(function (i, el) {
-                            if (i) $(el).remove();
-                        });
-                        break;
+                if (!window.minetipConfig.noOverlay) {
+                    var $links = $(this).find("a:not(.invslot-hover-overlay)");
+                    switch ($(this).find(".invslot-hover-overlay").length) {
+                        case 0:
+                            $(this).append(
+                                $("<a>").addClass("invslot-hover-overlay")
+                                .attr("href", $($links[2] || $links[1] || $links[0]).attr("href"))
+                            );
+                            break;
+                        case 1:
+                            break;
+                        default:
+                            $(this).find(".invslot-hover-overlay").each(function (i, el) {
+                                if (i) $(el).remove();
+                            });
+                            break;
+                    }
                 }
             },
             // pick up slot item for 300ms
@@ -201,20 +205,22 @@ $(function () {
                     var $source = $this.find("img:first");
                     if ($source.length !== 0) {
                         var $target;
-                        switch ($this.find(".slot-image-follow").length) {
-                            case 0:
-                                $target = $source.clone();
-                                $target.addClass("slot-image-follow").appendTo($this.find(".invslot-hover-overlay"));
-                                break;
-                            case 1:
-                                $target = $this.find(".slot-image-follow");
-                                break;
-                            default:
-                                $this.find(".slot-image-follow").each(function (i, elm) {
-                                    if (i) elm.remove();
-                                    else $target = elm;
-                                });
-                                break;
+                        if (!window.minetipConfig.noOverlay) {
+                            switch ($this.find(".slot-image-follow").length) {
+                                case 0:
+                                    $target = $source.clone();
+                                    $target.addClass("slot-image-follow").appendTo($this.find(".invslot-hover-overlay"));
+                                    break;
+                                case 1:
+                                    $target = $this.find(".slot-image-follow");
+                                    break;
+                                default:
+                                    $this.find(".slot-image-follow").each(function (i, elm) {
+                                        if (i) elm.remove();
+                                        else $target = elm;
+                                    });
+                                    break;
+                            }
                         }
                         var offset = $this.offset();
                         $target.css({
@@ -251,7 +257,7 @@ $(function () {
                 }
             });
             if ($(".minetip:hover, .invslot-item:hover").length < 1 && $("#minetip-tooltip").length > 0)
-            	$("#minetip-tooltip").remove();
+                $("#minetip-tooltip").remove();
         });
     })());
     (function () {

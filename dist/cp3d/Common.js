@@ -14,6 +14,7 @@ importArticles({
 	type: "script",
 	articles: [
 		"MediaWiki:Common.js/plok.js",
+		mw.config.get("wgPageName") == "Template:HomepageClock" ? "MediaWiki:Common.js/homepageclock.js" : ""
 	]
 });
 
@@ -29,7 +30,7 @@ var sidebarVisible = getElement("WikiaRail") ? true : false;
 if(sidebarVisible) {
 	var pstClockElement = document.createElement("div");
 	pstClockElement.id = "pst-clock-wrapper";
-	pstClockElement.innerHTML = "<section class='rail-module'><h2>IST Clock</h2><div class='border-radius-5 padding-10'id=pst-clock><br><div><span id=time-wrapper class='border-radius-5 padding-10 text-align-center'><span id=time>NOW</span>&nbsp;<span id=am_pm></span></span></div><br><div><span id=day class='border-radius-5 padding-10'>Today</span><button aria-label='Fix date/time accuracy'id=power-clock-button title='Fix date/time accuracy'></button></div></div></section>";
+	pstClockElement.innerHTML = "<section class='rail-module'><h2>IST Clock</h2><div class='border-radius-5 padding-10'id=pst-clock><br><div><span id=time-wrapper class='border-radius-5 padding-10 text-align-center'><span id=time>NOW</span>&nbsp;<span id=am_pm></span></span></div><br><div><span id=day class='border-radius-5 padding-10 text-align-center'>Today</span><button aria-label='Fix date/time accuracy'id=power-clock-button title='Fix date/time accuracy'></button></div></div></section>";
 	getElement("WikiaRail").appendChild(pstClockElement);
 
 	var powerClockButton = getElement("power-clock-button");

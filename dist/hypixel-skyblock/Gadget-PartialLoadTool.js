@@ -29,7 +29,7 @@
         })
     ).then(function () {
         var that;
-        var private_cache = {}; // data security: do not add this to window.partialLoadTool
+        var private_cache = {};
         var partialLoadTool = window.partialLoadTool = Object.assign(this, {
             api: new mw.Api(),
             getSpinner: function () {
@@ -41,6 +41,25 @@
             getFullPageName: function (page) {
                 var pref = /^\//.test(page) && mw.config.get("wgPageName") || "";
                 return pref + page;
+            },
+            doesNotExist: function (page) {
+                return $("<div>", {
+                    class: "partialLoaded",
+                    html: "<span class=\"error italic\">Page does not exist, but you can <a href=\"/wiki/" + page + "?action=edit\">create it</a>.</span>",
+                });
+            },
+            checkExists: function (pagename) {
+                return new mw.Api().get({
+                    action: "query",
+                    format: "json",
+                    prop: "revisions",
+                    titles: pagename,
+                    formatversion: 2,
+                    rvprop: "content",
+                    rvslots: "*",
+                }).then(function (d) {
+                    return d.query.pages[0].missing !== true;
+                });
             },
             parsePage: function (pagename) {
                 return that.api.post({
@@ -56,20 +75,27 @@
                     button = $this.parent(),
                     requested_page = that.getFullPageName($this.attr("data-page"));
                 $this.text("Loading...");
-                that.parsePage(requested_page)
-                    .done(function (d) {
-                        var out = $("<div>", {
-                            class: "partialLoaded",
-                            html: d.parse.text,
-                        });
-                        mw.hook("wikipage.content").fire(out);
-                        button.after(out);
+                that.checkExists(requested_page).then(function (exist) {
+                    if (!exist) {
+                        button.after(that.doesNotExist(requested_page));
                         button.remove();
-                    })
-                    .catch(function (d, err) {
-                        console.warn("[PartialLoad/Tabview] Failed to parse page " + requested_page + ". See below for error log.");
-                        console.warn(d, err);
-                    });
+                        return;
+                    }
+                    that.parsePage(requested_page)
+                        .done(function (d) {
+                            var out = $("<div>", {
+                                class: "partialLoaded",
+                                html: d.parse.text,
+                            });
+                            mw.hook("wikipage.content").fire(out);
+                            button.after(out);
+                            button.remove();
+                        })
+                        .catch(function (d, err) {
+                            console.warn("[PartialLoad/Tabview] Failed to parse page " + requested_page + ". See below for error log.");
+                            console.warn(d, err);
+                        });
+                });
             },
             tabclick: function (event) {
                 event.preventDefault();
@@ -102,17 +128,24 @@
                     $frame.empty().append(requested_content);
                 } else {
                     $frame.empty().append(that.getSpinner());
-                    that.parsePage(requested_page)
-                        .done(function (d) {
-                            private_cache[requested_page] = $(d.parse.text);
-                            var requested_content = private_cache[requested_page].clone();
-                            mw.hook("wikipage.content").fire(requested_content);
-                            $frame.empty().append(requested_content);
-                        })
-                        .catch(function (d, err) {
-                            console.warn("[PartialLoad/Tabview] Failed to parse page " + requested_page + ". See below for error log.");
-                            console.warn(d, err);
-                        });
+                    that.checkExists(requested_page).then(function (exist) {
+                        if (!exist) {
+                            private_cache[requested_page] = that.doesNotExist(requested_page);
+                            $frame.empty().append(private_cache[requested_page].clone());
+                            return;
+                        }
+                        that.parsePage(requested_page)
+                            .done(function (d) {
+                                private_cache[requested_page] = $(d.parse.text);
+                                var requested_content = private_cache[requested_page].clone();
+                                mw.hook("wikipage.content").fire(requested_content);
+                                $frame.empty().append(requested_content);
+                            })
+                            .catch(function (d, err) {
+                                console.warn("[PartialLoad/Tabview] Failed to parse page " + requested_page + ". See below for error log.");
+                                console.warn(d, err);
+                            });
+                    });
                 }
             },
             makeButton: function (pagename, customButtonName) {
@@ -139,7 +172,7 @@
                         el.remove();
                     } else {
                         var tabLabels = $("<div>", {
-                            class: "partialLoad-tabs__wrapper",
+                            class: "partialLoad-tabs__wrapper article-scrollable",
                             html: $("<ul>", {
                                 class: "partialLoad-tabs",
                                 html: data.tabs.map(function (tab) {
@@ -166,7 +199,7 @@
                             })
                         });
                         var tabFrame = $("<div>", {
-                            class: "partialLoad-frame",
+                            class: "partialLoad-frame article-scrollable",
                         });
                         el.after($("<div>", {
                             class: "partialLoad-tabber",

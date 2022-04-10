@@ -7,7 +7,7 @@ function clock_init(clock_resync, clock_update) {
     
     // - clock_sync() - Sync the clock with the server and get timezone info
     function clock_sync() {
-        jQuery.get("//gt-api.tommyhub.com/api/v1/event", function(a) {
+        jQuery.get("//gt.tommyhub.com/api/game/info", function(a) {
         	resyncOnNextTick = false;
         	eventObject = a;
             localTime = +new Date();

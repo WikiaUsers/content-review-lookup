@@ -212,8 +212,20 @@ window.railWAM = {
     logPage:"Project:WAM Log"
 };
 
+// Configuración para blogs antiguos //
+
 window.LockOldBlogs = {
     expiryDays: 20,
     expiryMessage: "Este blog se considera archivado porque no ha sido editado desde hace <expiryDays> días, por favor no lo edites!",
     nonexpiryCategory: "Blogs nunca archivados"
+};
+
+// Configuración para bloquear comentarios antiguos  //
+
+window.lockOldComments = (window.lockOldComments || {});
+
+// Configuración para advertencia de ausencia de licencia //
+window.NoLicenseWarning = {
+    forceLicense: true,
+    ]
 };

@@ -1,9 +1,11 @@
 $.when(mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg"])).then(function(){
+	importArticle({type: 'style', article: 'u:dev:MediaWiki:UCXSearchBar.css'});
     return new mw.Api().loadMessagesIfMissing(["searchsuggest-search", "tooltip-search", "tooltip-search-go", "search-modal-see-all-results"]);
 }).then(function(){
 	if(window.UCXSEARCHBARLoaded || mw.config.get("skin") !== "fandomdesktop"){
 		return;
 	}
+
 	window.UCXSEARCHBARLoaded = true;
 
 	var ScriptPath = mw.config.get("wgScriptPath");

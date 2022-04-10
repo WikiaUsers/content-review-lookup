@@ -452,3 +452,21 @@ function toggleToc() {
 		document.cookie = "hidetoc=1";
 	}
 }
+
+$(function()
+{
+    $("#VisibleTo").each(function(mimeisanub, el)
+    {
+        el = $(el);
+        if(el.data().user && el.data().user === mw.config.get('wgUserName')) el.show();
+    });
+});
+
+$(function()
+{
+    mw.util.addCSS(
+        "#VisibleTo { display: none; } \
+         #VisibleTo[data-user=" + mw.config.get('wgUserName') + "] { display: block !important; } \
+         #InvisibleTo[data-user=" + mw.config.get('wgUserName') + "] { display: none !important; }"
+    );
+});

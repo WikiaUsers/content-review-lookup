@@ -249,7 +249,7 @@ UserTagsJS.modules.custom = {
     'ShieldsPlus': ['former-calc', 'former-sysop'],
     'Assaltwaffle': ['former-calc', 'former-sysop'],
     'ScarletFirefly': ['former-threadmoderator'],
-    'Promestein': ['human-resources'],
+    'Promestein': ['former-bureaucrat', 'former-human-resources'],
     'Reppuzan': ['former-sysop', 'former-human-resources'],
     'Celestial Pegasus': ['human-resources'],
     'Kaltias': ['former-sysop', 'former-human-resources'],

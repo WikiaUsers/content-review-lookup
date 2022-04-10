@@ -1,0 +1,1 @@
+console.log('Testing CATS-2416 on GP wiki');

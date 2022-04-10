@@ -354,7 +354,6 @@ window.MessageWallUserTags = {
         'SPONGEBOBSUPERFANINFINITY': 'Administrator',
         'Stryker305': 'Administrator',
         'BSpongeSM02':  'Administrator',
-        'The_gamer_987654321':  'Administrator',
         'Thelxinoe': 'Administrator',
     
         'The_Smarter,_Wiser_King_Dedede': 'Assistant',

@@ -8,7 +8,8 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 	    'bureaucrat': { u:'Archmage', link:'Archmage', title:'This user is a Forgotten Realms Wiki bureaucrat.' },
-	    'sysop':      { u:'Wizard', link: 'Wizard', title:'This user is a Forgotten Realms Wiki administrator.' },
+	    'sysop':      { u:'High Wizard', link: 'High Wizard', title:'This user is a Forgotten Realms Wiki administrator.' },
+	    'content-moderator': { u:'Wizard', link: 'Wizard', title:'This user is a Forgotten Realms Wiki content-moderator.' },
 	    'templates':  { u:'Templates Guru' },
 	    'stars':      { u:'Astromancer' },
 	    'ruffian':    { u:'Ruffian' },
@@ -28,12 +29,13 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
     'Moviesign' : ['templates'],
     'Sirwhiteout': ['stars'],
-    'Ruf67': ['ruffian', 'eom-320'],
+    'Ruf67': ['content-moderator', 'ruffian', 'eom-320'],
     'Lhynard': ['alchemist'],
-    'Possessed Priest': ['cleric','videogames'],
+    'Possessed Priest': ['content-moderator', 'cleric','videogames'],
     'BadCatMan': ['chiefscribe'],
-    'Regis87': ['comics'],
-    'SunderedShor': ['eom-720'],
+    'Regis87': ['content-moderator', 'comics'],
+    'SunderedShor': ['content-moderator', 'eom-720'],
+    'Artyom.pavlov': ['content-moderator'],
     'Artemaz': ['eom-1021','eoy-2021'],
 };
 

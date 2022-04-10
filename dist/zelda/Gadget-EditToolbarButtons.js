@@ -34,7 +34,7 @@ var customizeClassicToolbar = function(){
 	mw.toolbar.addButton( {
 		imageFile: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/9/91/Button_cite_web.png',
 		speedTip: 'Web Citation',
-		tagOpen: '<ref>{{Cite web|quote= ',
+		tagOpen: '<ref>{{Cite Web|quote= ',
 		tagClose: "|author= |published= |retrieved=" + nowmonth + " " + nowday + ", " + nowyear + "|url= |title= |site= |type=}}</ref>",
 		sampleText: '',
 		imageId: ''
@@ -80,11 +80,11 @@ var customizeClassicToolbar = function(){
 		imageId: ''
 	} );
 	
-	// Cite manual
+	// Cite Manual
 	mw.toolbar.addButton( {
 		imageFile: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/5/5d/Button_cite_manual.png',
-		speedTip: 'Cite manual',
-		tagOpen: '<ref>{{Cite manual|quote= ',
+		speedTip: 'Cite Manual',
+		tagOpen: '<ref>{{Cite Manual|quote= ',
 		tagClose: '|game= |page= }}</ref>',
 		sampleText: '',
 		imageId: ''
@@ -159,14 +159,14 @@ var customizeWikiEditor = function () {
 					}
 				}
 			},
-			'Cite manual': {
-				label: 'Cite manual',
+			'Cite Manual': {
+				label: 'Cite Manual',
 				type: 'button',
 				icon: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/5/5d/Button_cite_manual.png',
 				'action': {
 					'type': 'encapsulate',
 					'options': {
-						'pre': '<ref>{{Cite manual|quote= ',
+						'pre': '<ref>{{Cite Manual|quote= ',
 						'peri': '',
 						'post': '|game= |page= }}</ref>'
 					}

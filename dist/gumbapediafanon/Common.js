@@ -1,25 +1,14 @@
 
-// Tags
+/ Tags
 window.UserTagsJS = {
     tags: {
-        bureaucrat: {
-            link: 'Special:ListUsers/bureaucrat'
-        },
-        bot: {
-           link: 'Special:Listusers/bot'
-        },
-        chatmoderator: {
-            link: 'Special:ListUsers/chatmoderator'
-        },
-        patroller: {
-            link: 'Special:ListUsers/patroller'
-        },
-        rollback: {
-            link: 'Special:ListUsers/rollback'
-        },
-        sysop: {
-            link: 'Special:ListUsers/sysop'
-        }
+        bureaucrat: { link: 'Special:ListUsers/bureaucrat' },
+        bot: { link: 'Special:Listusers/bot' },
+        chatmoderator: { link: 'Special:ListUsers/chatmoderator' },
+        patroller: { link: 'Special:ListUsers/patroller' },
+        rollback: { link: 'Special:ListUsers/rollback' },
+        sysop: { link: 'Special:ListUsers/sysop' },
+        imagecontroller: { link: 'Special:ListUsers/imagecontroller' }
     },
     modules: {
         autoconfirmed: true,
@@ -34,7 +23,9 @@ window.UserTagsJS = {
             'chatmoderator',
             'sysop',
             'rollback',
-            'patroller'
+            'patroller',
+            'bot',
+            'imagecontroller'
         ],
         newuser: true
     }
@@ -277,15 +268,14 @@ var Tabs = {
 Tabs.init();
  
 // Show username
-function userNameReplace() {
+$(function userNameReplace() {
     "use strict";
     var disableUsernameReplace;
     if (typeof (disableUsernameReplace) !== 'undefined' && disableUsernameReplace || mw.config.get('wgUserName') === null) {
         return;
     }
     $("span.insertusername").html(mw.config.get('wgUserName'));
-}
-addOnloadHook(userNameReplace);
+});
  
 // Add custom edit buttons
 if (mw.config.get('mwCustomEditButtons')) {
@@ -319,23 +309,6 @@ if (mw.config.get('mwCustomEditButtons')) {
     };
 }
  
-// Chat description
-if ($('section.ChatModule').length > 0) {
-    $.get('/wiki/MediaWiki:Chat-headline?action=raw', function (result) {
-        "use strict";
-        if ($('p.chat-name').length > 0) {
-            $('p.chat-name').html(result);
-        } else {
-            var chatDescInt = setInterval(function () {
-                if ($('p.chat-name').length > 0) {
-                    $('p.chat-name').html(result);
-                    clearInterval(chatDescInt);
-                }
-            }, 50);
-        }
-    });
-}
- 
 $(function () {
     "use strict";
     // Change title
@@ -349,7 +322,6 @@ $(function () {
     $('.firstHeading, #WikiaUserPagesHeader h1, #WikiaPageHeader h1').html(newTitle);
     $('.#user_masthead_head h2').html(newTitle + '<small id="user_masthead_since">' + edits + '</small>');
 });
- 
 // Message wall icons
 // By [[User:AnimatedCartoons]]
 setInterval(function () {
@@ -362,18 +334,96 @@ setInterval(function () {
     });
 }, 1);
  
-// Import scripts from Wikia Developers' Wiki
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:Countdown/code.js',
-        'u:dev:FloatingToc/code.js',
-        'u:dev:LockOldBlogs/code.js',
-        'u:dev:ReferencePopups/code.js',
-        'u:dev:SexyUserPage/code.js',
-        'u:dev:UserTags/code.js',
-        'u:dev:WallGreetingButton/code.js'
-    ]
-});
+// MessageWallUserTags config
+// Use underscores to substitute for spaces in long usernames
+window.MessageWallUserTags = {
+    tagColor: '#47fcf0',  //Tag color – The color of the tag's text
+    glow: true,           //Glow effect toggle – Value of 'true' turns on the glow effect, 'false' turns it off
+    glowSize: '15px',     //Glow size – The default radius of the text-shadow glow effect
+    glowColor: '#47fcf0', //Glow color
+    users: {
+        'Iloveyoutothemoonandback': 'Administrator'
+    }
+};
  
-importScriptPage('AjaxRC/code.js', 'dev');
+window.AjaxRCRefreshText = 'Auto-Refresh';
+window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
+window.ajaxPages = [
+    "Special:RecentChanges",
+    "Special:WikiActivity",
+    "Special:UncategorizedPages",
+    "Special:AllPages"
+];
+
+// Image slider
+
+$(function() {
+  var slideTotal = $(".cslider ul li").length;
+  var slideWidth = $(".cslider ul li").width();
+  var slideVideo = $(".cslider").find("figure").parent().index();
+  var slideIndex = 0;
+  var slideshow = setInterval(function() {
+    slideIndex += 1;
+    showSlide();
+  }, 5500);
+
+  function showSlide() {
+    if (slideIndex > slideTotal - 1) {
+      slideIndex = 0;
+    }
+
+    if (slideIndex < 0) {
+      slideIndex = slideTotal - 1;
+    }
+
+    $(".cslider-thumbs img").removeClass("active");
+    $(".cslider-thumbs img").eq(slideIndex).addClass('active');
+
+    $(".cslider-caption").children().hide();
+    $(".cslider").css("background-color", "#000").animate({
+      height: "415px"
+    }, 400);
+    $(".cslider ul").stop(true, true).animate({
+      left: '-' + slideWidth * slideIndex + 'px'
+    }, 600).queue(function(next) {
+      $(".cslider-caption").children().fadeToggle('fast');
+
+      if (slideIndex == slideVideo) {
+        $(".cslider").css("background-color", "transparent").animate({
+          height: "506px"
+        }, 400);
+      }
+
+      next();
+    });
+  }
+
+  $(".cslider").mouseover(function() {
+    clearInterval(slideshow);
+  });
+
+  $(".cslider-prev").click(function() {
+    clearInterval(slideshow);
+    slideIndex -= 1;
+    showSlide();
+  });
+
+  $(".cslider-next").click(function() {
+    clearInterval(slideshow);
+    slideIndex += 1;
+    showSlide();
+  });
+
+  for (var i = 0; i < slideTotal; i++) {
+    var thumbnail = $(".cslider ul li img").eq(i).attr("data-src");
+    $(".cslider-thumbs").append("<img src=" + thumbnail + "/>").children().first().addClass("active");
+  }
+
+  $(".cslider-thumbs img").click(function() {
+    clearInterval(slideshow);
+    slideIndex = $(this).index();
+    $(".cslider-thumbs img").removeClass("active");
+    $(this).addClass("active");
+    showSlide(slideIndex);
+  });
+});

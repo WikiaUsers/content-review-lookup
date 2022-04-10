@@ -1,22 +1,22 @@
 /* 
 Any JavaScript here will be loaded for all users on every page load.
-*/	
+*/	  
 
 /* Table of Contents
 -----------------------
  Deferred [mw.loader.using]
- * (W00) Small scripts
+ * (W00) Small scripts 
  * (W01) Scripts that are attached to wikipage content load
  * (B00) Element animator
  * (C00) My Block ID
- * (Y00) importScripts
- ** (Y01) Less
- ** (Y02) Less Source Updater
+ * (Y00) importScripts 
+ ** (Y01) Less 
+ ** (Y02) Less Source Updater  
 
  Immediately Executed
  * (X00) importJS pre-script actions
 */
-
+ 
 /* jshint
     esversion: 5, forin: true,
     immed: true, indent: 4,
