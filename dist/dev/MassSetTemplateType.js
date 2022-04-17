@@ -29,24 +29,22 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api']).then(function () {
 
             //Orginally from VanguardTools
             $.post(mw.util.wikiScript('wikia') + '?' + $.param({
-                controller: 'Fandom\\TemplateClassification\\Api\\ClassificationController',
+                controller: 'Fandom\\TemplateClassification\\Api\\Classification',
                 format: 'json',
                 method: 'classifyTemplate'
             }), {
                 articleId: item.id,
-                editToken: mw.user.tokens.get('editToken'),
                 pageId: item.id,
                 token: mw.user.tokens.get('csrfToken'),
                 type: item.type
             }).fail(function (error) {
                 if (error.responseJSON.status === 400) { // Retry
                     $.post(mw.util.wikiScript('wikia') + '?' + $.param({
-                        controller: 'Fandom\\TemplateClassification\\Api\\ClassificationController',
+                        controller: 'Fandom\\TemplateClassification\\Api\\Classification',
                         format: 'json',
                         method: 'classifyTemplate'
                     }), {
                         articleId: item.id,
-                        editToken: mw.user.tokens.get('editToken'),
                         pageId: item.id,
                         token: mw.user.tokens.get('csrfToken'),
                         type: item.type

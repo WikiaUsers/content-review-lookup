@@ -1,6 +1,6 @@
 window.MessageBlock = {
   title : 'Block',
-  message : 'You have been blocked for not following our local rules or continuing to break our rules, to appeal, please contact us on Community Central or reply to this message. Note: This action is carried out just as after your block was added.'
+  message : 'You have been blocked for not following our local rules or continuing to break our rules.'
 };
 
 window.lockOldComments = (window.lockOldComments || {});

@@ -18,6 +18,11 @@
                         icon.classList.add("navigation-item-icon");
                         navDropdownLinks[i].querySelector("span").before(icon);
                         break
+                    case "interactive-maps":
+                        var icon = wds.icon("map-tiny");
+                        icon.classList.add("navigation-item-icon");
+                        navDropdownLinks[i].querySelector("span").before(icon);
+                        break
                     case "explore-blogs":
                         var icon = wds.icon("blocks-tiny");
                         icon.classList.add("navigation-item-icon");

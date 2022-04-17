@@ -10,7 +10,6 @@
 (function($, mw) {
 	var userGroups = mw.config.get("wgUserGroups"),
 		specialPage = mw.config.get("wgCanonicalSpecialPageName"),
-		token = mw.user.tokens.get("editToken"),
 		supportedPages = [
 			[
 				'Listredirects',
@@ -302,13 +301,12 @@
 	function apiDelete(page, reason, $link, cur, count) {
 		page = decodeURIComponent(page); // Api doesn't like percent encodes page names
 
-	   	api.post({
+	   	api.postWithEditToken({
 			format: 'json',
 			action: 'delete',
 			title: page,
 			reason: reason,
-			bot: true,
-			token: token
+			bot: true
 		}).then(function(d) {
 			mw.notify('Successfully deleted ' + page);
 			logger.log('Successfully deleted ' + page);

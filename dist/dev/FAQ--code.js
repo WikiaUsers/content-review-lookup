@@ -41,7 +41,7 @@ function postQuestions(questions, summary) {
         format: 'json',
         indexpageids: true,
         q: Math.random(),
-        token: mw.user.tokens.get('editToken')
+        token: mw.user.tokens.get('csrfToken')
     }, 'json').then(function(res) {
         if (res.edit.hasOwnProperty('result') && res.edit.result.toLowerCase() === 'success') {
             window.location.reload();

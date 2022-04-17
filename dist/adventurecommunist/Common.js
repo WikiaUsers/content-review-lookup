@@ -8,6 +8,7 @@ window.UserTagsJS = {
 		inactive: { u: 'Has not edited recently' }, //Inactive tag
 		blocked:{ u: 'Capitalist', }, //Who needs blocked people
 		sysop: { u:'Supreme Officer', link:'Project:Administrators' }, // Change "Administrator" to "Supreme Officer"
+		bureaucrat: { u:'Supreme Leader', }, // Change "Bureaucrat" to "Supreme Leader"
 		
 	}
 };

@@ -37,7 +37,7 @@
                 action: 'edit',
                 title: config.wgPageName,
                 summary: i18n.inContentLang().msg('summaryPrefix').plain() + ': ' + deleteReason,
-                token: mw.user.tokens.get('editToken'),
+                token: mw.user.tokens.get('csrfToken'),
                 format: 'json'
             };
             params[

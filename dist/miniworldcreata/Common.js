@@ -122,19 +122,20 @@ function hideFade () {
 	});
 }
  
+function addBackToTop() {
+	if(skin == 'fandomdesktop') {
+		$('<div id="backtotop"><div style="background: var(--theme-accent-color);color: var(--theme-accent-label-color);right: 55px;bottom: 40px;"><svg data-id="wds-icons-menu-control" height="24" width="24" viewBox="0 0 24 24" class="wds-icon" xmlns="http://www.w3.org/2000/svg"><svg id="wds-icons-menu-control" viewBox="0 0 24 24"><path d="M12 19a.997.997 0 0 1-.707-.293l-11-11a.999.999 0 1 1 1.414-1.414L12 16.586 22.293 6.293a.999.999 0 1 1 1.414 1.414l-11 11A.997.997 0 0 1 12 19"></path></svg></svg></div></div>').appendTo(document.body);
+		document.getElementById("backtotop").onclick = function() {goToTop()};
+		hideFade();
+	}	
+}
+
 function goToTop(){
 	// scroll body to 0px on click
 	$('body,html').animate ({
 		scrollTop: 0
 	}, ScrollSpeed);
 	return false;
-}
- 
-function addBackToTop() {
-	if(skin == 'fandomdesktop') {
-		$('<div id="backtotop" onClick="goToTop();"><div style="background: var(--theme-accent-color);color: var(--theme-accent-label-color);right: 55px;bottom: 40px;"><svg data-id="wds-icons-menu-control" height="24" width="24" viewBox="0 0 24 24" class="wds-icon" xmlns="http://www.w3.org/2000/svg"><svg id="wds-icons-menu-control" viewBox="0 0 24 24"><path d="M12 19a.997.997 0 0 1-.707-.293l-11-11a.999.999 0 1 1 1.414-1.414L12 16.586 22.293 6.293a.999.999 0 1 1 1.414 1.414l-11 11A.997.997 0 0 1 12 19"></path></svg></svg></div></div>').appendTo(document.body);	
-		hideFade();
-	}	
 }
  
 var ButtonStart = 600;

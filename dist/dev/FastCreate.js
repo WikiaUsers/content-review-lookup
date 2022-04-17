@@ -77,13 +77,7 @@
          * @returns {void}
          */
         createPage: function (target, summary, content) {
-            Api.post({
-                action: 'edit',
-                title: target,
-                summary: summary,
-                text: content,
-                token: mw.user.tokens.get('editToken')
-            }).done(function(res) {
+            Api.create(target, {summary: summary}, content).done(function(res) {
                 window.location.href = mw.util.getUrl(target);
             });
         }

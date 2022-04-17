@@ -18,13 +18,12 @@
     var config = $.extend({}, window.DeleteUserpage);
     
     function doProtect () {
-        new mw.Api().post({
+        new mw.Api().postWithEditToken({
             action: 'protect',
             expiry: config.expiry || 'infinite',
             protections: 'create=' + (config.level || 'sysop'),
             title: userpage,
             reason: config.protectReason || config.reason || '',
-            token: mw.user.tokens.get('editToken'),
             format: 'json'
         }).done(function () {
             window.location.reload();
@@ -34,11 +33,10 @@
     }
     
     function doDelete () {
-        new mw.Api().post({
+        new mw.Api().postWithEditToken({
             action: 'delete',
             title: userpage,
             reason: config.deleteReason || config.reason || '',
-            token: mw.user.tokens.get('editToken'),
             format: 'json'
         }).done(function () {
             if (config.protect && (config.noConfirm || confirm(msgs[2]))) {

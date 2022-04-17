@@ -32,25 +32,22 @@ mw.loader.using('mediawiki.api').then(function() {
     // Preform deletion
     function doDelete() {
         var api = new mw.Api();
-        const token = mw.user.tokens.get('editToken');
-        api.post({
+        api.postWithEditToken({
             action: 'delete',
             reason: $('#delete-reason').val(),
-            title: page,
-            token: token
+            title: page
         }).done(function(d) {
             if (d.error) {
                 console.error(i18n.msg('delete-error', d.error.code).plain());
             } else {
                 console.log(i18n.msg('delete-success', page).plain());
-                api.post({
+                api.postWithEditToken({
                     action: 'protect',
                     expiry: $('#protection-expiry').val() || $('#protection-expiry').attr('placeholder'),
                     protections: $('#protection-type').val(),
                     watchlist: 'nochange',
                     title: page,
-                    reason: $('#protection-reason').val() || $('#delete-reason').val(),
-                    token: token
+                    reason: $('#protection-reason').val() || $('#delete-reason').val()
                 }).done(function(d) {
                     if (d.error) {
                         console.error(i18n.msg('protect-error', d.error.code).plain());

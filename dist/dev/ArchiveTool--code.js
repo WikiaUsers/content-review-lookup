@@ -316,11 +316,10 @@
             this.$m = $('<p>', {
                 text: this.i18n.msg('saving').plain()
             }).appendTo(this.$container);
-            this.api.post({
+            this.api.postWithEditToken({
                 action: 'edit',
                 title: this.archiveTitle,
                 text: this.archiveContent,
-                token: mw.user.tokens.get('editToken'),
                 summary: this.i18n
                     .inContentLang()
                     .msg('summary-from', config.wgPageName)
@@ -358,11 +357,10 @@
             this.$m = $('<p>', {
                 text: this.i18n.msg('updating').plain()
             }).appendTo(this.$container);
-            this.api.post({
+            this.api.postWithEditToken({
                 action: 'edit',
                 title: config.wgPageName,
                 text: this.talkContent,
-                token: mw.user.tokens.get('editToken'),
                 summary: this.i18n
                     .inContentLang()
                     .msg('summary-to', this.archiveTitle)

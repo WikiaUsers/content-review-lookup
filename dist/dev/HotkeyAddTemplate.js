@@ -31,12 +31,11 @@ var api = new mw.Api(), i18n;
         if (templateName === null) {
             return;
         }
-        api.post({
+        api.postWithEditToken({
             title: wgPageName,
             action: 'edit',
             prependtext: '{{' + templateName + '}} \n',
-            summary: i18n.msg('summary').plain() + '[[Template:' + templateName + '|]]',
-            token: mw.user.tokens.get('editToken')
+            summary: i18n.msg('summary').plain() + '[[Template:' + templateName + '|' + templateName + ']]'
         }).done(function (a) {
             if (a.error) {
                 alert(i18n.msg('error-prepend').plain() + a.error.code);
@@ -56,12 +55,11 @@ var api = new mw.Api(), i18n;
         if (templateName === null) {
             return;
         }
-        api.post({
+        api.postWithEditToken({
             title: wgPageName,
             action: 'edit',
             appendtext: '{{' + templateName + '}} \n',
-            summary: i18n.msg('summary').plain() + '[[Template:' + templateName + '|]]',
-            token: mw.user.tokens.get('editToken')
+            summary: i18n.msg('summary').plain() + '[[Template:' + templateName + '|' + templateName + ']]'
         }).done(function (a) {
             if (a.error) {
                 alert(i18n.msg('error-append').plain() + a.error.code);

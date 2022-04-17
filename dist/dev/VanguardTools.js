@@ -211,14 +211,14 @@
                     .appendTo(document.body);
             // Create infobox.
             $.post(mw.util.wikiScript('wikia') + '?' + $.param({
-                controller: 'PortableInfoboxBuilderController',
+                controller: 'PortableInfoboxBuilder',
                 format: 'json',
                 method: 'publish'
             }), {
                 data: VAN.redirect.infobox(),
                 title: VAN.redirect.template,
                 oldTitle: VAN.redirect.template,
-                token: mw.user.tokens.get('editToken')
+                token: mw.user.tokens.get('csrfToken')
             }, VAN.redirect.callback);
         },
         // Infobox data object.
@@ -428,12 +428,11 @@
             VAN.template.type = VAN.template.types[e.which].type,
             VAN.template.label = VAN.template.labels[VAN.template.type];
             $.post(mw.util.wikiScript('wikia') + '?' + $.param({
-                controller: 'Fandom\\TemplateClassification\\Api\\ClassificationController',
+                controller: 'Fandom\\TemplateClassification\\Api\\Classification',
                 format: 'json',
                 method: 'classifyTemplate'
             }), {
                 articleId: VAN.mw.wgArticleId,
-                editToken: mw.user.tokens.get('editToken'),
                 pageId: VAN.mw.wgArticleId,
                 token: mw.user.tokens.get('csrfToken'),
                 type: VAN.template.type

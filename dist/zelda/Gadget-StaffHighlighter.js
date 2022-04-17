@@ -8,7 +8,6 @@
 
 var adminrights		= {},
 	traineerights	= {},
-	execrights		= {},
 	botrights		= {},
 	retiredrights	= {};
 
@@ -20,6 +19,8 @@ adminrights = {
 	JumbledLimes	:1,
 	Magicmason1000	:1,
 	MannedTooth		:1,
+	Tony			:1,
+	TriforceTony	:1,
 	Weirdguy42      :1
 };
 
@@ -27,11 +28,6 @@ traineerights = {
 	Crocsandsocks	:1,
 	JumbledLimes	:1,
 	Weirdguy42      :1,
-};
-
-execrights = {
-	Tony			:1,
-	TriforceTony	:1,
 };
 
 botrights = {
@@ -180,7 +176,6 @@ if (  canonicalNamespace == 'Special'
 				if (u !== null) {
 					if      (traineerights[u] === 1) n.addClass("trainee admin").removeClass("gamepedia_pro_user");
 					else if (adminrights[u] === 1)   n.addClass("admin");
-					else if (execrights[u] === 1)    n.addClass("executive");
 					else if (botrights[u] === 1)     n.addClass("bot");
 					else if (retiredrights[u] === 1) n.addClass("retired");
 				}

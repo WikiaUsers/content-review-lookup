@@ -347,13 +347,13 @@ window.MessageWallUserTags = {
         'username': 'usergroup',
         'AMK152': 'Wiki Adopter • Bureaucrat • Administrator',
         'Spongebob456': 'Bureaucrat • Administrator',
+        'BSpongeSM02':  'Bureaucrat • Administrator',
         
         'Anthony2306': 'Administrator',
         'Kandy_Katie': 'Administrator',
         'Koolkitty108': 'Administrator',
         'SPONGEBOBSUPERFANINFINITY': 'Administrator',
         'Stryker305': 'Administrator',
-        'BSpongeSM02':  'Administrator',
         'Thelxinoe': 'Administrator',
     
         'The_Smarter,_Wiser_King_Dedede': 'Assistant',

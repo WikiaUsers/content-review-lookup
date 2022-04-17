@@ -48,7 +48,7 @@ if (mw.config.get('wgPageName') === 'Интерактивная_таблица')
     importArticle({ type: 'script', article: 'MediaWiki:Items.js' });
 }
 //hof
-if (mw.config.get('wgPageName') === 'Шаблон:Hof') {
+if (mw.config.get('wgPageName') === 'Блог_участника:TRJ-VoRoN/Небосвод_почёта') {
     importArticle({ type: 'script', article: 'MediaWiki:Hof.js' });
 }
 
@@ -178,7 +178,7 @@ $(function(){
 //Шаблон:Hof
 $(function(){   
     switch ( mw.config.get('wgPageName') ) {
-        case 'Шаблон:Hof':
+        case 'Блог_участника:TRJ-VoRoN/Небосвод_почёта':
             $('body').addClass('is-content-expanded')
         break;
     }

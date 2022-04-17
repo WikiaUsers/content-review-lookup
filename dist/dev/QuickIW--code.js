@@ -113,13 +113,12 @@
                 return;
             }
             this.editing = true;
-            this.api.post({
+            this.api.postWithEditToken({
                 action: 'edit',
                 title: this.page,
                 summary: $summary.val() || $summary.attr('placeholder'),
                 appendtext: '\n[[' + language + ':' +
                     ($('#QuickIWPage').val() || this.page) + ']]',
-                token: mw.user.tokens.get('editToken'),
                 minor: true,
                 bot: true
             })

@@ -44,7 +44,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user']).then(func
 		i18n: i18n,
 		limit: Number(mw.util.getParamValue('reconstlimit') || 500),
 		label: i18n.msg('reconst').plain(),
-		token: mw.user.tokens.values.editToken,
+		token: mw.user.tokens.get('csrfToken'),
 		
 		init: function() {
 			$('.page-header__title').text(this.label);

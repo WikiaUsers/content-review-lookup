@@ -28,6 +28,7 @@ UserTagsJS.modules.custom = {
 	'User:AnthonyRose1': ['pawikiteam'],
 	'KonstTheo': ['pawikiteam'],
 	'TKD Kedis': ['pawikiteam'],
+	'Jdiejwnixo': ['pawikiteam'],
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'blocked', 'content-moderator'];
 UserTagsJS.modules.inactive = 30; // 30 days

@@ -40,6 +40,7 @@ var oggPlayerButtonOnly = true;
 // Настройки викификатора
 window.wfPluginsT = window.wfPluginsT || [];
 window.wfPluginsT.push(function (txt, r) {
+	r( /\*\[/g, '* [' );
 	r( /<br>/g, '<br />' );
 	r( /\{\{примечания\}\}/g, '<references />' );
 });

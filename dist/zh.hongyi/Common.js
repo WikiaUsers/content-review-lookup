@@ -1,4 +1,38 @@
 /* 这里的任何JavaScript将为所有用户在每次页面载入时加载。 */
+var titles = document.getElementById('tab-header').getElementsByTagName('li');
+var divs = document.getElementById('tab-content').getElementsByClassName('dom');
+$(document).on('click', '#zero',function(){ 
+           for(var j=0; j<titles.length; j++){
+                titles[j].className = '';
+                divs[j].style.display = 'none';
+            }
+            titles[0].className = 'selected';
+            divs[0].style.display = 'block';
+});
+$(document).on('click', '#one',function(){ 
+           for(var j=0; j<titles.length; j++){
+                titles[j].className = '';
+                divs[j].style.display = 'none';
+            }
+            titles[1].className = 'selected';
+            divs[1].style.display = 'block';
+});
+$(document).on('click', '#two',function(){ 
+           for(var j=0; j<titles.length; j++){
+                titles[j].className = '';
+                divs[j].style.display = 'none';
+            }
+            titles[2].className = 'selected';
+            divs[2].style.display = 'block';
+});
+$(document).on('click', '#three',function(){ 
+           for(var j=0; j<titles.length; j++){
+                titles[j].className = '';
+                divs[j].style.display = 'none';
+            }
+            titles[3].className = 'selected';
+            divs[3].style.display = 'block';
+});
 
 /* Any JavaScript here will be loaded for all users on every page load. */
 /*模板来自 CyberPunk

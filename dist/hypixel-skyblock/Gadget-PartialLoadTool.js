@@ -87,8 +87,8 @@
                                 class: "partialLoaded",
                                 html: d.parse.text,
                             });
-                            mw.hook("wikipage.content").fire(out);
                             button.after(out);
+                            mw.hook("wikipage.content").fire(out);
                             button.remove();
                         })
                         .catch(function (d, err) {
@@ -124,8 +124,8 @@
                 $actionLinks.html(pageActions);
                 if (cache_enabled && (requested_page in private_cache)) {
                     var requested_content = private_cache[requested_page].clone();
-                    mw.hook("wikipage.content").fire(requested_content);
                     $frame.empty().append(requested_content);
+                    mw.hook("wikipage.content").fire(requested_content);
                 } else {
                     $frame.empty().append(that.getSpinner());
                     that.checkExists(requested_page).then(function (exist) {
@@ -138,8 +138,8 @@
                             .done(function (d) {
                                 private_cache[requested_page] = $(d.parse.text);
                                 var requested_content = private_cache[requested_page].clone();
-                                mw.hook("wikipage.content").fire(requested_content);
                                 $frame.empty().append(requested_content);
+                                mw.hook("wikipage.content").fire(requested_content);
                             })
                             .catch(function (d, err) {
                                 console.warn("[PartialLoad/Tabview] Failed to parse page " + requested_page + ". See below for error log.");
@@ -167,7 +167,7 @@
                     var el = $(this);
                     var data = JSON.parse(el.attr("data-tabs"));
                     if (!data.tabs.length) return;
-                    if (data.tabs.length === 1) {
+                    if (data.tabs.length === 1 && !data.forceTabber) {
                         el.after(that.makeButton(data.tabs[0].pagename, data.customButtonName));
                         el.remove();
                     } else {
@@ -175,6 +175,7 @@
                             class: "partialLoad-tabs__wrapper article-scrollable",
                             html: $("<ul>", {
                                 class: "partialLoad-tabs",
+                                style: data.noTabs && "display:none",
                                 html: data.tabs.map(function (tab) {
                                     return $("<li>", {
                                         class: "partialLoad-tabs__tab",

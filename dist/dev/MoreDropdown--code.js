@@ -7,7 +7,7 @@
 ;(function($, mw, window) {
     //Global Variables
     var page_name = mw.html.escape(mw.config.get("wgPageName")),
-        token = mw.user.tokens.values.editToken,
+        token = mw.user.tokens.get('csrfToken'),
         fullpage = mw.html.escape(mw.config.get("wgPageName")),
         pagename = mw.html.escape(mw.config.get("wgTitle")),
         namespace = mw.config.get("wgNamespaceNumber"),

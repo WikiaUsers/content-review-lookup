@@ -18,12 +18,11 @@
     }
 
     function template(i18n) {
-        new mw.Api().post({
+        new mw.Api().postWithEditToken({
             action: 'edit',
             title: mw.config.get('wgPageName'),
             summary: i18n.inContentLang().msg('summary').plain(),
-            prependtext: '{{' + $('#QuickTemplateInput').val() + '}}',
-            token: mw.user.tokens.get('editToken')
+            prependtext: '{{' + $('#QuickTemplateInput').val() + '}}'
         }).done(function(d) {
             if (d.error) {
                 notification(i18n.msg('fail', d.error.code), 'error');

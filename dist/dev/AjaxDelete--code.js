@@ -334,7 +334,7 @@
                 bot: true,
                 reason: reason,
                 title: this.page,
-                token: mw.user.tokens.get('editToken')
+                token: mw.user.tokens.get('csrfToken')
             };
             if (this.rev) {
                 params.oldimage = this.rev;

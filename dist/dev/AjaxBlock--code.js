@@ -635,7 +635,7 @@
                 user: data.username,
                 expiry: data.expiry,
                 reason: data.reason,
-                token: mw.user.tokens.get('editToken'),
+                token: mw.user.tokens.get('csrfToken'),
             };
 
             if (!data.checkboxes.AjaxBlockDisableWall) {
@@ -664,7 +664,7 @@
             var query = {
                 action: 'unblock',
                 reason: data.reason,
-                token: mw.user.tokens.get('editToken')
+                token: mw.user.tokens.get('csrfToken')
             };
 
             if (data.username.charAt(0) == '#') {

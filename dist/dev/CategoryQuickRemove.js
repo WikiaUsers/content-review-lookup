@@ -47,7 +47,7 @@
             summary: 'category removed',
             minor: 'true',
             format: 'json',
-            token: mw.user.tokens.get('editToken')
+            token: mw.user.tokens.get('csrfToken')
         });
     }// savePage
     

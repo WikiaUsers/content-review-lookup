@@ -29,3 +29,8 @@ importArticles({
         'w:c:dev:ReferencePopups/code.js',
     ]
 });
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/dragonballssd/images/e/e6/Site-logo.png/revision/latest?cb=20210702202824&path-prefix=ru';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/dragonballssd/images/e/ec/Dragon_Ball_Z_-_274-0-19-59-826.png/revision/latest?cb=20191231091216&path-prefix=ru';
+window.pPreview.tlen = 1000;
+window.pPreview.RegExp.iparents = ['.myclass', '#myid', 'div[data-ignore-me=1]'];

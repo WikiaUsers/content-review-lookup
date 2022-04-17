@@ -60,7 +60,7 @@ mw.loader.using([
                 i18n.msg('confirm', titleText).plain()
             ) === true
         ) {
-            api.post({
+            api.postWithEditToken({
                 action: 'edit',
                 title: titleText,
                 watchlist: 'nochange',
@@ -68,7 +68,6 @@ mw.loader.using([
                     isLua ?
                     '-- <nowiki>\nreturn {}' :
                     '{}',
-                token: mw.user.tokens.get('editToken'),
                 summary: 'Creating via [[I18nLink|Script]]'
             }).done(function (d) {
                 window.location.href = mw.util.getUrl(titleText);

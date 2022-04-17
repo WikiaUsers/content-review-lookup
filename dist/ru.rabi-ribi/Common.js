@@ -7,7 +7,6 @@ importArticles({
 	type: "script",
 	articles: [
 		"u:nkch:MediaWiki:Snippet/ExternalLinksInNewWindow.js",
-		"u:nkch:MediaWiki:Snippet/SpecificLinksInNewWindow.js",
-		"u:nkch:MediaWiki:ExploreMenuIcons.js"
+		"u:nkch:MediaWiki:Snippet/SpecificLinksInNewWindow.js"
 	]
 });

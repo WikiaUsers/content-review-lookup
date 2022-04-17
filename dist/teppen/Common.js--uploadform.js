@@ -26,6 +26,7 @@
                 'Mega Man images': 'Mega Man',
                 'Darkstalkers images': 'Darkstalkers',
                 'Ōkami images': 'Ōkami',
+                'Onimusha images': 'Onimusha',
                 'Sengoku BASARA images': 'Sengoku BASARA',
                 'Unknown series': 'I don’t know',
                 'Full illustrations': 'Full card illustration'

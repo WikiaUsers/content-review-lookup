@@ -622,7 +622,7 @@
                         text: newContent,
                         bot: true,
                         minor: true,
-                        token: mw.user.tokens.get('editToken')
+                        token: mw.user.tokens.get('csrfToken')
                     }).then(function(res) {
                         this.removeStatus(currentStep, this.i18n.msg('status-published-waiting', title).plain());
 

@@ -26,7 +26,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
         var api = new mw.Api(),
             i18n,
             preloads = 1,
-            token = mw.user.tokens.get('editToken'),
+            token = mw.user.tokens.get('csrfToken'),
             files = [],
             stdmsgs = ['filedesc', 'license-header', 'fileexists-no-change', 'fileexists-duplicate-version', 'verification-error', 'fileexists-shared-forbidden', 'permissiondenied', 'watchthisupload', 'ignorewarnings', 'filewasdeleted'].join('|'),
             limit = (window.MultiUploadoption && window.MultiUploadoption.max) ? window.MultiUploadoption.max : -1,
@@ -178,7 +178,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
                 watchlist: watch,
                 ignorewarnings: '1',
                 format: 'json'
-            }
+            };
             if (!warning) {
                 delete params.ignorewarnings;
             }

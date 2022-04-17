@@ -1,8 +1,20 @@
-/*DiscussionTemplates*/
+// DiscussionTemplates
 window.DiscussionTemplates = {
     templates: {
-        'Menor a 1000 subs': {
+        'Youtuber irrelevante': {
             name: 'Plantilla:Advertencia/menor',
+            title: 'Advertencia'
+        },
+        'Ediciones basura': {
+            name: 'Plantilla:Advertencia/basura',
+            title: 'Advertencia'
+        },
+        'Nombre de usuario ofensivo': {
+            name: 'Plantilla:Advertencia/nombre',
+            title: 'Advertencia'
+        },
+        'Artículo muy corto o en blanco': {
+            name: 'Plantilla:Advertencia/artículo',
             title: 'Advertencia'
         },
     },

@@ -438,7 +438,7 @@
                     title: opts.page,
                     appendtext: '\n' + opts.submitText,
                     summary: opts.summary,
-                    token: mw.user.tokens.get('editToken')
+                    token: mw.user.tokens.get('csrfToken')
             })
             .done(function (res) {
                 location.replace('https://soap.fandom.com/wiki/' + opts.page);
@@ -452,7 +452,7 @@
                     sectiontitle: opts.sectionTitle,
                     text: opts.submitText,
                     summary: opts.summary,
-                    token: mw.user.tokens.get('editToken')
+                    token: mw.user.tokens.get('csrfToken')
 
             })
             .done(function (res) {

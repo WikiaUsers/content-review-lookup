@@ -11,7 +11,7 @@ mw.loader.using(['mediawiki.api','mediawiki.base','mediawiki.util']).then(functi
       if (!($('#wpDestFile').val() && ($('#mw-input-wpSessionKey').val() || $('#wpUploadFile')[0].files[0]))) return true;
       var fd = new FormData();
       fd.append('action','upload');
-      fd.append('token',mw.user.tokens.get('editToken'));
+      fd.append('token',mw.user.tokens.get('csrfToken'));
       fd.append('filename',$('#wpDestFile').val());
       if ($('#mw-input-wpSessionKey').val()) {
         fd.append('sessionkey',$('#mw-input-wpSessionKey').val());

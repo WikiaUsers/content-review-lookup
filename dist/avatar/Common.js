@@ -60,7 +60,7 @@ $(fillEditSummaries);
 /* Custom block message send with dev script MessageBlock */
 window.MessageBlock = {
   title : 'Blocked',
-  message : 'You have violated Avatar Wiki policy. As a preventative measure, you have been blocked from editing for $2 due to $1. If you believe this block is unjustified or that there has been a mistake, you may contest this this block on my wall on Community Central.',
+  message : 'You have violated Avatar Wiki policy. As a preventative measure, you have been blocked from editing for $2 due to $1. If you believe this block is unjustified or that there has been a mistake, you may contest this block here or on my wall on Community Central.',
   autocheck : true
 };
 importArticles({

@@ -70,7 +70,6 @@
                     articleId: config.wgArticleId,
                     pageId: config.wgArticleId,
                     type: that.data().id,
-                    editToken: mw.user.tokens.get('editToken'),
                     token: mw.user.tokens.get('csrfToken'),
                     uselang: config.wgUserLanguage
                 }, function (d) {

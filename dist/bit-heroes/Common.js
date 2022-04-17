@@ -11,3 +11,9 @@ if (wgPageName === 'Bonuses') {
         importScriptPage('MediaWiki:Calculators/BonusCode.js');
     });
 }
+
+if (wgPageName === 'Sandbox') {
+    $(function () {
+        importScriptPage('MediaWiki:Sandbox.js');
+    });
+}

@@ -187,7 +187,7 @@
 		$.ajax({
 			data: {
 				url: url,
-				token: mw.user.tokens.get('editToken')
+				token: mw.user.tokens.get('csrfToken')
 			},
 			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
 			dataType: 'json',

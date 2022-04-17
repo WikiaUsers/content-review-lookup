@@ -55,7 +55,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user', 'mediawiki
 		deleteDelay: window.nukeDelay || 1000,
 		label: mw.msg('nuke'),
 		contribsLabel: mw.msg('nuke-linkoncontribs'),
-		token: mw.user.tokens.values.editToken,
+		token: mw.user.tokens.get('csrfToken'),
 		
 		init: function() {
 			$('.page-header__title').text(this.label);

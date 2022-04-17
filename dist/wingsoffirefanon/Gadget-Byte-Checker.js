@@ -1,153 +1,146 @@
-mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
-	window.byteCounter = {
-		/**
-		 * Default regular expressions
-		 */
-		defaultRegexp: [
-			// Remove most html tags supported by fandom and comments
-			{
-				find:
-					'<(/)?' +
-					'(abbr|b|big|blockquote|br|center|code|dd|div|dt|em|font|h1|h2|h3|h4|h5|h6|hr|i|li|ol|p|pre|q|s|small|span|strike|strong|sub|sup|table|td|th|tr|tt|u|ul|!--)' +
-					'([^>]+)?>',
-				replaceWith: '',
-			},
-			// Remove the style attribute
-			{
-				find: 'style="([^"]*)"( )?(\\|)?',
-				replaceWith: '',
-			},
-			// Remove files and categories
-			{
-				find: '(\\[\\[)?(File|Category):.*(\\]\\])?',
-				replaceWith: '',
-			},
-			// Remove zalgo text (with the side effect of removing all diacritics)
-			{
-				find: '[\u0300-\u036f]',
-				replaceWith: '',
-			},
-			// Two+ new spaces, replace with a space
-			{
-				find: '[  ]{2,}',
-				replaceWith: ' ',
-			},
-			// Two+ new lines, replace with a two newlines
-			{
-				find: '(?:\h*\n){2,}',
-				replaceWith: '\n\n',
-			},
-			// Remove (most of) external links 
-			{
-				find: '\\[(http|https):\/\/([^\\s]+)',
-				replaceWith: '',
-			},
-		],
+mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(function () {
+	"use strict";
 
-		/**
-		 * Create and add the button to the wiki toolbar
-		 */
-		button: function button() {
-			const context = this;
-			const toolbar = document.querySelector('#WikiaBarWrapper .tools');
-			const button = {
-				type: 'li',
-				children: [
-					{
-						type: 'a',
-						attr: { href: '#?' },
-						text: 'Get byte count',
-						events: {
-							click: function () {
-								context.checkPage();
-							},
-						},
-					},
-				],
-			};
+	// don't run more than once
+	if (window.byteCounter) return;
+	window.byteCounter = true;
 
-			toolbar.append(dev.ui(button));
-		},
-
-		/**
-		 * Filter out page data
-		 * @param {String} data - Page data
-		 * @param {Object} context - Object containing the `this` from the f
-		 */
-		filterData: function filterData(data, context) {
-			var filteredData = data;
-			var regexp;
-			if (window.bcRegexp) regexp = window.bcRegexp;
-			else regexp = context.defaultRegexp;
-
-			regexp.forEach(function (i) {
-				const regexp = new RegExp(i.find, 'gim');
-
-				filteredData = filteredData.replace(regexp, i.replaceWith);
-			});
-
-			return filteredData;
-		},
-
-		/**
-		 * Display a notification containing size of the trimmed page
-		 * @param {Number} size - Size of the trimmed page
-		 */
-		notification: function notification(size) {
-			if (size < 2500) {
-				dev.toasts.warning('Page is smaller than 2500 bytes: ' + size, { timeout: 10000 });
-			} else {
-				dev.toasts.success('Page is larger than 2500 bytes: ' + size, { timeout: 10000 });
-			}
-		},
-
-		/**
-		 * Get the page contents and its size
-		 */
-		checkPage: function checkPage() {
-			// Only run if we're (probably) on an actual page
-			if (!mw.config.get('wgIsArticle')) {
-				dev.toasts.error("This isn't an article page!", { timeout: 10000 });
-				return;
-			}
-
-			// Fetch the current page's context as wikitext
-			new mw.Api()
-				.get({
-					action: 'parse',
-					format: 'json',
-					page: mw.config.get('wgPageName'),
-					prop: 'wikitext',
-					formatversion: 'latest',
-				})
-				.then(
-					function (data) {
-						const page = data.parse.wikitext;
-
-						// String is broken up to prevent this page being categorised
-						if (page.includes('[[' + 'Category:Genre (Comic)]]')) {
-							return dev.toasts.success("This page is a comic and shouldn't be deleted!", { timeout: 10000 });
-						}
-
-						const filteredPage = this.filterData(page, this);
-
-						const pageSize = new Blob([filteredPage]).size;
-
-						this.notification(pageSize);
-					}.bind(this)
-				)
-				.catch(function () {
-					console.error;
-				});
-		},
-	};
+	if (mw.config.get("wgIsArticle") === false) return;
 
 	importArticles({
-		type: 'script',
-		articles: ['u:dev:MediaWiki:Toasts.js', 'u:dev:MediaWiki:UI-js/code.js'],
+		type: "script",
+		articles: ["u:dev:MediaWiki:Toasts.js", "u:dev:MediaWiki:Dorui.js"],
 	});
 
-	mw.hook('dev.ui').add(function () {
-		window.byteCounter.button();
+	const regularExpressions = [
+		// Remove most html tags supported by fandom and comments
+		{
+			target: "<(/)?" + "(abbr|b|big|blockquote|br|center|code|dd|div|dt|em|font|h1|h2|h3|h4|h5|h6|hr|i|li|ol|p|pre|q|s|small|span|strike|strong|sub|sup|table|td|th|tr|tt|u|ul|!--)" + "([^>]+)?>",
+			replacement: "",
+		},
+		// Remove the style attribute
+		{
+			target: 'style="([^"]*)"( )?(\\|)?',
+			replacement: "",
+		},
+		// Remove files and categories
+		{
+			target: "(\\[\\[)?(File|Category):.*(\\]\\])?",
+			replacement: "",
+		},
+		// Two+ new spaces, replace with a space
+		{
+			target: "[  ]{2,}",
+			replacement: " ",
+		},
+		// Two+ new lines, replace with two newlines
+		{
+			target: "(?:h*\n){2,}",
+			replacement: "\n\n",
+		},
+		// Remove (most of) external links
+		{
+			target: "\\[(http|https)://([^\\s]+)",
+			replacement: "",
+		},
+	];
+
+	/**
+	 * Add the button to the page side tool list
+	 */
+	const addButton = function (ui) {
+		const editSideTool = document.querySelector("#ca-edit-side-tool");
+		const sideToolBar = document.querySelector(".page-side-tools");
+
+		const button = ui.button({
+			classes: ["page-side-tool", "byte-checker-button"],
+			text: "BC",
+			events: {
+				click: main,
+			},
+			child: ui.div({
+				classes: ["wds-tooltip", "is-right", "byte-checker-tooltip"],
+				text: "Check page size",
+			}),
+		});
+
+		if (editSideTool) {
+			editSideTool.insertAdjacentElement("afterend", button);
+		} else {
+			sideToolBar.append(button);
+		}
+	};
+
+	const sendToast = function (type, message) {
+		switch (type) {
+			case "success":
+				dev.toasts.success(message, { timeout: 10000 });
+				break;
+			case "warning":
+				dev.toasts.warning(message, { timeout: 10000 });
+				break;
+			case "error":
+				dev.toasts.error(message, { timeout: 10000 });
+				break;
+		}
+	};
+
+	const getPage = function () {
+		return new mw.Api().get({
+			action: "parse",
+			prop: "wikitext",
+			page: mw.config.get("wgPageName"),
+			format: "json",
+			formatversion: "latest",
+		});
+	};
+
+	const checkPage = function (data) {
+		const pageContents = data.parse.wikitext;
+
+		// wrap in nowiki tags to prevent the source page from being categorized
+		// <nowiki>
+		if (pageContents.includes("[[Category:Genre (Comic)]]")) {
+			sendToast("success", "This page is a comic and should not be deleted.");
+		}
+		// </nowiki>
+
+		return pageContents;
+	};
+
+	const filterPage = function (pageContents) {
+		// put the page in an object to get around no `let`
+		const page = { contents: pageContents };
+
+		regularExpressions.forEach(function (i) {
+			const regexp = new RegExp(i.target, "gim");
+
+			page.contents = page.contents.replaceAll(regexp, i.replacement);
+		});
+
+		return page.contents;
+	};
+
+	const main = function () {
+		getPage()
+			.then(checkPage)
+			.then(filterPage)
+			.then(function (pageContents) {
+				const size = new TextEncoder().encode(pageContents).length;
+
+				if (size < 2500) {
+					sendToast("warning", "Page is smaller than 2500 bytes: " + size);
+				} else {
+					sendToast("success", "Page is larger than 2500 bytes: " + size);
+				}
+			})
+			.catch(function (error) {
+				console.error(error);
+				sendToast("error", "Something went wrong. Check console for details.");
+			});
+	};
+
+	mw.hook("doru.ui").add(function (ui) {
+		addButton(ui);
 	});
 });

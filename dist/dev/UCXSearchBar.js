@@ -1,5 +1,4 @@
 $.when(mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg"])).then(function(){
-	importArticle({type: 'style', article: 'u:dev:MediaWiki:UCXSearchBar.css'});
     return new mw.Api().loadMessagesIfMissing(["searchsuggest-search", "tooltip-search", "tooltip-search-go", "search-modal-see-all-results"]);
 }).then(function(){
 	if(window.UCXSEARCHBARLoaded || mw.config.get("skin") !== "fandomdesktop"){
@@ -45,7 +44,7 @@ $.when(mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg"])).then(function(
 		]
 	});
 
-	$(".wiki-tools").addClass("wiki-tools__ucxsearch"); // trigger hiding of fake search box to prevent content shift
+	importArticle({type: 'style', article: 'u:dev:MediaWiki:UCXSearchBar.css'});
 	$(".wiki-tools__search").replaceWith(search_form);
 
 	var scroll_index = -1;

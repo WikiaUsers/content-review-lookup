@@ -46,14 +46,13 @@
             return;
         }
 
-        new mw.Api().post({
+        new mw.Api().postWithEditToken({
             action: 'edit',
             watchlist: 'nochange',
             title: config.wgPageName,
             minor: true,
             bot: true,
-            text: '#REDIRECT [[' + redir.charAt(0).toUpperCase() + redir.slice(1) + ']]',
-            token: mw.user.tokens.get('editToken')
+            text: '#REDIRECT [[' + redir.charAt(0).toUpperCase() + redir.slice(1) + ']]'
         }).done(function(d) {
             respHandler(!d.error);
         }).fail(function() {

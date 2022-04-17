@@ -1,10 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 // Report Forms
-//importScript("MediaWiki:ReportV.js");
-//importScript("MediaWiki:ReportS.js");
-//importScript("MediaWiki:ReportF.js");
-//importScript("MediaWiki:ReportP.js");
 importScript("MediaWiki:Reports.js");
 
 /* IRC webchat */

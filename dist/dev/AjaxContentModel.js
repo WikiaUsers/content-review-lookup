@@ -79,7 +79,7 @@ $.when.apply($, [
 					pagetitle: decodeURIComponent(page),
 					model: model,
 					reason: reason,
-					wpEditToken: mw.user.tokens.values.editToken,
+					wpEditToken: mw.user.tokens.get("csrfToken"),
 				}),
 				headers: {
 					"content-type": "application/x-www-form-urlencoded; charset=UTF-8",

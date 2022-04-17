@@ -29,7 +29,6 @@
                 options = {
                     action: 'edit',
                     title: this.config.wgPageName,
-                    token: mw.user.tokens.get('editToken'),
                     summary: this.i18n
                         .inContentLang()
                         .msg('reason')
@@ -41,7 +40,7 @@
                 options.appendtext = '<br /><br /> {{subst:' + text + '}}~~' + '~~';
             }
             this.api
-                .post(options)
+                .postWithEditToken(options)
                 .then($.proxy(this.callback, this));
         },
         callback: function(d) {

@@ -1054,6 +1054,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"basket": {
+				"name": "Basket",
+				"colors": [
+					"world",
+					"pink",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"bastet": {
 				"name": "Bastet",
 				"colors": [
@@ -1855,6 +1864,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"buzzing": {
+				"name": "Buzzing",
+				"colors": [
+					"world",
+					"yellow",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"cache": {
 				"name": "Cache",
 				"colors": [
@@ -2362,6 +2380,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"world",
 					"white"
+				],
+				"rarity": "unbreedable"
+			},
+			"chirping": {
+				"name": "Chirping",
+				"colors": [
+					"world",
+					"yellow",
+					"pink"
 				],
 				"rarity": "unbreedable"
 			},
@@ -4186,6 +4213,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"eared": {
+				"name": "Eared",
+				"colors": [
+					"world",
+					"blue",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"earth": {
 				"name": "Earth",
 				"colors": [
@@ -4275,6 +4311,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"world",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"egg-hunt": {
+				"name": "Egg-Hunt",
+				"colors": [
+					"world",
+					"blue",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},
@@ -5164,6 +5209,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"fledgling": {
+				"name": "Fledgling",
+				"colors": [
+					"world",
+					"blue"
+				],
+				"rarity": "common"
+			},
 			"flopsy": {
 				"name": "Flopsy",
 				"colors": [
@@ -5236,6 +5289,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Flutterglint",
 				"colors": [
 					"gold"
+				],
+				"rarity": "unbreedable"
+			},
+			"fluttering": {
+				"name": "Fluttering",
+				"colors": [
+					"world",
+					"purple",
+					"green"
 				],
 				"rarity": "unbreedable"
 			},
@@ -7168,6 +7230,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"hopping": {
+				"name": "Hopping",
+				"colors": [
+					"world",
+					"white",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"horizon": {
 				"name": "Horizon",
 				"colors": [
@@ -7775,6 +7846,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "common"
+			},
+			"jellybean": {
+				"name": "Jellybean",
+				"colors": [
+					"world",
+					"red",
+					"blue"
+				],
+				"rarity": "unbreedable"
 			},
 			"jester": {
 				"name": "Jester",

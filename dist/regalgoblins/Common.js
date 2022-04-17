@@ -35,6 +35,10 @@ switch (true) {
     	//Backgrounds for page "Gnomes,_Tomes_%26_Catacombs"
         window.bgrandom_list = ["https://static.wikia.nocookie.net/regalgoblins/images/d/dc/ChadBarbo%26GeraldKnott.jpg"];
         break;
+    case /Misscliks:_Devotion/.test(mw.config.get('wgPageName')):
+    	//Backgrounds for page "Misscliks:_Devotion"
+        window.bgrandom_list = ["https://static.wikia.nocookie.net/regalgoblins/images/8/82/Ransom%26Olivia.jpg"];
+        break;
     default:
         //Backgrounds for all the other pages
         window.bgrandom_list = [
@@ -46,7 +50,8 @@ switch (true) {
         "https://static.wikia.nocookie.net/regalgoblins/images/7/70/Scoria_Background.jpg/revision/latest",
         "https://static.wikia.nocookie.net/regalgoblins/images/6/6e/Nevets%26Vicho.jpg/revision/latest",
         "https://static.wikia.nocookie.net/regalgoblins/images/6/6b/FroFro_Background.jpg/revision/latest",
-        "https://static.wikia.nocookie.net/regalgoblins/images/d/dc/ChadBarbo%26GeraldKnott.jpg"];
+        "https://static.wikia.nocookie.net/regalgoblins/images/d/dc/ChadBarbo%26GeraldKnott.jpg",
+        "https://static.wikia.nocookie.net/regalgoblins/images/8/82/Ransom%26Olivia.jpg"];
         break;
 }
 // Import always after you declare your variables or in MediaWiki:ImportJS

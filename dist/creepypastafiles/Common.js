@@ -88,10 +88,10 @@ var hasClass = (function () {
 /** ----------------- **/
 
 var MessageBlock = {
-  title: 'YOU HAVE BEEN BANNED',
+  title: 'Your Account Has Been Blocked',
   message: 'Greetings. I am an admin for the Creepypasta Files Wiki. I am here \
   to inform you that you have been banned for a duration of $2 for the \
-  following reason: "$1". <br /><b>Do not attempt to evade a ban.</b> \
+  following reason: $1. <br /><b>Do not attempt to evade a ban.</b> \
   Evading a ban, regardless of your intentions, is a punishable offence \
   and will likely extend your block if you have not been permanently \
   banned. If you feel like you have been blocked for an incorrect reason, \
@@ -122,11 +122,11 @@ window.UserTagsJS = {
 		rollback: { u:'Rollback Tag', link:'Project:Rollback', order:3 },
 		inactive: { u: 'Has not edited recently', order:4 }
 	}
-	oasisPlaceBefore: ''
 };
 
 UserTagsJS.modules.inactive = {
 	days: 30,
 	zeroIsInactive: true
-	namespaces: [0, 'Talk', 'User talk', 'Forum'] // Edits must be to articles or talk pages or user talk pages or the forum to count, others don't count
+	namespaces: [0, 'Talk', 'User talk', 'Forum']
+	}
 };

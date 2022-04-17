@@ -17,3 +17,15 @@ if (wgPageName === 'Loot_Statistics') {
     });
 }
 /* End of Loot Statistics */
+
+
+$(function () {
+	/* TibiaWiki:Reward_Container_Statistics */
+	if (mw.config.get('wgPageName') === 'TibiaWiki:Reward_Container_Statistics') {
+		importArticles({
+			type: 'script',
+			article: 'MediaWiki:RewardContainerStatistics.js'
+		});
+	}
+	/* TibiaWiki:Reward_Container_Statistics End */
+});

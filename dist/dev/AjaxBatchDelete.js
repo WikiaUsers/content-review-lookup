@@ -193,24 +193,21 @@ mw.loader.using('mediawiki.api', function() {
     }
  
     function performAction(page,reason) {
-        var token = mw.user.tokens.get('editToken');
-        api.post({
+        api.postWithEditToken({
             action: 'delete',
             watchlist: 'preferences',
             title: page,
             reason: reason,
-            token: token,
             bot: true
         }).done(function(d) {
             if (document.getElementById('protect-check').checked) {
-                api.post({
+                api.postWithEditToken({
                     action: 'protect',
                     expiry: 'infinite',
                     protections: 'create=sysop',
                     watchlist: 'preferences',
                     title: page,
-                    reason: reason,
-                    token: token
+                    reason: reason
                 }).fail(function() {
                     outputError('Protect', page, i18n.msg('ajaxError').plain());
                 });

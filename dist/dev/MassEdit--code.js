@@ -1456,7 +1456,7 @@
         format: "json",
       }),
       data: $.extend(false, {
-        token: mw.user.tokens.get("editToken"),
+        token: mw.user.tokens.get("csrfToken"),
         attachments:
           "{\"contentImages\":[],\"openGraphs\":[],\"atMentions\":[]}"
       }, paramConfig),
@@ -1481,7 +1481,7 @@
       type: "POST",
       url: mw.util.wikiScript("api"),
       data: $.extend(false, {
-        token: mw.user.tokens.get("editToken"),
+        token: mw.user.tokens.get("csrfToken"),
         action: "edit",
         section: "new",
         format: "json",
@@ -1599,7 +1599,7 @@
       type: "GET",
       url: mw.util.wikiScript("api"),
       data: $.extend(false, {
-        token: mw.user.tokens.get("editToken"),
+        token: mw.user.tokens.get("csrfToken"),
         action: "query",
         list: "embeddedin",
         einamespace: "*",
@@ -1656,7 +1656,7 @@
       type: "POST",
       url: mw.util.wikiScript("api"),
       data: $.extend(false, {
-        token: mw.user.tokens.get("editToken"),
+        token: mw.user.tokens.get("csrfToken"),
         action: "edit",
         minor: true,
         bot: true,
@@ -3408,7 +3408,7 @@
           handler: "postPageContent",
           parameters: {
             title: pages[counter],
-            token: mw.user.tokens.get("editToken"),
+            token: mw.user.tokens.get("csrfToken"),
             summary: $summary,
           }
         };

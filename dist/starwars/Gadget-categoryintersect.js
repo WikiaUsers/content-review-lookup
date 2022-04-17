@@ -74,11 +74,13 @@ $(function () {
 
 			// Build DPL query
 			const count = 200;
-			var offset = Number.parseInt(searchParams.get('offset')) || 0;
-			if (!Number.isInteger(offset) || offset < 0) offset = 0;
+			var currentPage = Number.parseInt(searchParams.get('page')) || 1;
+			if (!Number.isInteger(currentPage) || currentPage < 1) currentPage = 1;
+			const offset = (currentPage - 1) * count;
 			const headerTitle = '==Pages in categories "[[:Category:' + category1 + '|' + category1.replaceAll('_', ' ') + ']]" and "[[:Category:' + category2 + '|' + category2.replaceAll('_', ' ') + ']]"==';
-			const previousLink = offset > 0 ? '[' + pageUrl + '?category1=' + category1 + '&category2=' + category2 + '&offset=' + (offset - count) + ' previous page]' : 'previous page';
-			const nextLink = '[' + pageUrl + '?category1=' + category1 + '&category2=' + category2 + '&offset=' + (offset + count) + ' next page]';
+			const basePaginationLink = pageUrl + '?category1=' + category1 + '&category2=' + category2;
+			const previousLink = currentPage > 1 ? '[' + basePaginationLink + '&page=' + (currentPage - 1) + ' previous page]' : 'previous page';
+			const nextLink = '[' + basePaginationLink + '&page=' + (currentPage + 1) + ' next page]';
 			const headerLinks = '{{#ifeq:{{#expr:%TOTALPAGES%>' + count + '}}|1|(' + previousLink + ') ({{#ifeq:{{#expr:%TOTALPAGES%>' + (offset + count) + '}}|1|' + nextLink + '|next page}})|}}';
 			var dpl = '<DPL>\n';
 			dpl += '  category = ' + category1 + '\n';
@@ -90,7 +92,7 @@ $(function () {
 			dpl += '  oneresultheader = \\n' + headerTitle + '\\nThese categories contain only the following page in common.\n';
 			dpl += '  ordermethod = sortkey\n';
 			dpl += '  resultsfooter = ' + headerLinks + '\n';
-			dpl += '  resultsheader = \\n' + headerTitle + '\\nThe following %PAGES% pages are common to these categories, out of %TOTALPAGES% total.\\n\\n' + headerLinks + '\n';
+			dpl += '  resultsheader = \\n' + headerTitle + '\\nThe following %PAGES% pages are common to these categories, out of <span class="dpl-total-pages">%TOTALPAGES%</span> total.\\n\\n' + headerLinks + '\n';
 			dpl += '</DPL>';
 
 			// Get results from API
@@ -113,6 +115,45 @@ $(function () {
 			Promise.all([apiPromise, importPromise]).then(function (results) {
 				$('#mw-content-text').html(results[0].parse.text['*']);
 				$('#mw-content-text a[target="_blank"]').removeAttr('target');
+				const totalPages = Number.parseInt($('#mw-content-text .dpl-total-pages').eq(0).html()) || 0;
+				if (totalPages > count) {
+					const pagesToShow = 21;
+					const pagesLeft = Math.round(pagesToShow / 2) - 1;
+					const pagesRight = pagesToShow % 2 === 0 ? Math.round(pagesToShow / 2) : Math.round(pagesToShow / 2) - 1;
+					const maxPage = Math.ceil(totalPages / count);
+					var startPage, endPage;
+					if (maxPage >= pagesToShow) {
+						if (currentPage <= pagesLeft) {
+							startPage = 1;
+							endPage = pagesToShow;
+						} else if (currentPage >= maxPage - pagesLeft) {
+							startPage = maxPage - pagesToShow + 1;
+							endPage = maxPage;
+						} else {
+							startPage = currentPage - pagesLeft;
+							endPage = currentPage + pagesRight;
+						}
+					} else {
+						startPage = 1;
+						endPage = maxPage;
+					}
+					const pageSeparator = ' <b>·</b> ';
+					var pagination = '<div class="dpl-pagination">';
+					pagination += '<b>Go to page:</b> ';
+					if (currentPage > 2 && startPage > 1) {
+						pagination += '<a href="' + basePaginationLink + '" aria-label="Page 1">1</a>';
+						pagination += startPage > 2 ? pageSeparator : ' ';
+					}
+					for (var page = startPage; page <= endPage; page++) {
+						pagination += '<a href="' + basePaginationLink + '&page=' + page + '" aria-label="Page ' + page + (page === currentPage ? ' (current)' : '') + '">' + (page === currentPage ? '<b>' + page + '</b>' : page) + '</a> ';
+					}
+					if (currentPage < maxPage - 1 && endPage < maxPage) {
+						pagination += endPage < maxPage - 1 ? pageSeparator : ' ';
+						pagination += '<a href="' + basePaginationLink + '&page=' + maxPage + '" aria-label="Page ' + maxPage + '">' + maxPage + '</a>';
+					}
+					pagination += '</div>';
+					$('#mw-content-text').prepend(pagination);
+				}
 			});
 		}
 		

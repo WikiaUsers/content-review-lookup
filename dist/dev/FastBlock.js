@@ -101,15 +101,14 @@
          * @returns {void}
          */
         blockUser: function (d) {
-            new mw.Api().post({
+            new mw.Api().postWithEditToken({
                 action: 'block',
                 user: $user,
                 expiry: d.expiry,
                 nocreate: d.nocreate || 0,
                 autoblock: d.autoblock || 0,
                 reason: d.reason,
-                bot: true,
-                token: mw.user.tokens.get('editToken')
+                bot: true
             }).done(function (d) {
                 if (d.error) {
                     Main.notif(

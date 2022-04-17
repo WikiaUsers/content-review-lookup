@@ -13,7 +13,6 @@
     window.LangSetupLoaded = true;
     var api, languages,
         contentLang = mw.config.get('wgContentLanguage'),
-        token = mw.user.tokens.get('editToken'),
         notCustom = /soap|helper|wiki-specialist|wiki-representative|staff|util/.test(mw.config.get('wgUserGroups').join('|')),
         // [[MediaWiki:Custom-language-codes.json]]
         languageCodeSortingId = 33075,
@@ -35,13 +34,12 @@
                 (notCustom ? 'Lang' : 'Custom-lang') +
                 (language === contentLang ? '' : '/' + language);
         if (language) {
-            api.post({
+            api.postWithEditToken({
                 action: 'edit',
                 title: title,
                 text: language,
                 bot: true,
                 minor: true,
-                token: token,
                 summary: 'Creating page required for [[Template:LangSelect]] to work'
             }).done(function(d) {
                 var link = mw.html.element('a', {

@@ -9,6 +9,7 @@ Any JavaScript here will be loaded for all users on every page load.
  * (W01) Scripts that are attached to wikipage content load
  * (B00) Element animator
  * (C00) My Block ID
+ * (D00) Anchor Hash Links
  * (Y00) importScripts 
  ** (Y01) Less 
  ** (Y02) Less Source Updater  
@@ -245,94 +246,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         }
     });
 
-    /* Moves ID from {{Text anchor}} onto a parent tr tag (if it exists), allowing the whole row to be styliszed in CSS (using the :target seloector) */
-    $((function () {
-        function _goToID(id) {
-            $("html, body").animate({
-                scrollTop: $("#" + id).offset().top - 65
-            }, 500);
-        }
-        // If the element passed is inside of a tabber, the tabber will open to the tab it belongs in
-        function _openTabberTabBelongingToChild(element) {
-            if (!element) return;
-
-            var closestTabber = element.closest(".wds-tabber");
-            var closestTabberContent = element.closest(".wds-tab__content");
-
-            // If table row is in a tabber
-            if (closestTabber && closestTabberContent && closestTabberContent.parentNode) {
-                // Get a list of tab sections and find out the index of ours in that list
-                var indexOfTab = Array.from(closestTabberContent.parentNode.querySelectorAll(":scope > .wds-tab__content")).indexOf(closestTabberContent);
-
-                // Using the index from above, change all tab states to point to the tab containing the element passed in to this function
-                closestTabber.querySelectorAll(":scope > .wds-tab__content").forEach(function (elem, i) {
-                    elem.classList.toggle("wds-is-current", indexOfTab === i);
-                });
-                closestTabber.querySelectorAll(":scope > .wds-tabs__wrapper .wds-tabs__tab").forEach(function (elem, i) {
-                    elem.classList.toggle("wds-is-current", indexOfTab === i);
-                });
-            }
-        }
-        // Let's you re-add `:target` css without messing anything else up
-        // https://stackoverflow.com/a/59013961/1411473
-        function _pushHashAndFixTargetSelector(hash) {
-            history.pushState({}, document.title, hash); //called as you would normally
-            var onpopstate = window.onpopstate; //store the old event handler to restore it later
-            window.onpopstate = function () { //this will be called when we call history.back()
-                window.onpopstate = onpopstate; //restore the original handler
-                history.forward(); //go forward again to update the CSS
-            };
-            history.back(); //go back to trigger the above function
-        }
-        $("tr .text-anchor").each(function () {
-            var $textAnchor = $(this);
-            var id = $textAnchor.attr("id");
-            $textAnchor.removeAttr("id");
-            $textAnchor.closest("tr").attr("id", id);
-
-            // Re-trigger hash tag
-            if (location.hash.replace("#", "") === id) {
-                // Show table if collapsed:
-                var inCollapseTable = $textAnchor.parents(".mw-collapsed");
-                setTimeout(function () {
-                    if (inCollapseTable.length) {
-                        var parentTable = $(inCollapseTable[0]);
-                        parentTable.removeClass("mw-collapsed");
-                        parentTable.find("tr").stop().show();
-
-                        /*if(parentTable.hasClass("mw-made-collapsible")) {
-                            var collapseID = parentTable.attr("id").replace("mw-customcollapsible-", "");
-                            $(".mw-customtoggle-"+collapseID).click();
-                        } else {
-                            parentTable.removeClass("mw-collapsed");
-                        }*/
-                    }
-                    _pushHashAndFixTargetSelector(location.hash);
-                    _openTabberTabBelongingToChild($textAnchor[0]);
-                    _goToID(id);
-                }, 1000);
-            }
-        });
-
-        $(window).on("hashchange", function () {
-            var hash = location.hash.replace("#", "");
-            $("tr[id]").each(function () {
-                var $row = $(this);
-                var id = $row.attr("id");
-                if (id === hash) {
-                    var inCollapseTable = $row.parents(".mw-collapsed");
-                    if (inCollapseTable.length) {
-                        var $parentTable = $(inCollapseTable[0]);
-                        var collapseID = $parentTable.attr("id").replace("mw-customcollapsible-", "");
-                        $(".mw-customtoggle-" + collapseID).click();
-                    }
-                    _openTabberTabBelongingToChild($row[0]);
-                    _goToID(id);
-                }
-            });
-        });
-    })());
-
+	// QOL tooltip on ajax link
     $("a[href=\"#ajaxundo\"]").attr("title", "Instantly undo this edit without leaving the page");
 
     /* Temp fix to force scrollbars to appear on very wide tables when they are collapsed by default */
@@ -616,6 +530,116 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
             ]));
         });
     }
+    
+    //##############################################################
+    /* ==Anchor Hash Links== (D00)*/
+    // 1) Moves ID from {{Text anchor}} onto a parent tr tag (if it exists), allowing the whole row to be styliszed in CSS (using the :target seloector)
+    // 2) If links are hidden in a collapsed area / tab, automatically open it so element can be accessed
+    $((function () {
+        function _goToID(id) {
+        	var $elem = $("#" + id);
+        	// If this is called when an element is hidden prevent scrolling top top of page
+        	if(!$elem.length || $elem.offset().top <= 0) { return; }
+        	
+            $("html, body").animate({
+                scrollTop: $elem.offset().top - 65
+            }, {
+            	step: function(now, fx){
+            		if($elem.offset().top > 0) {
+            			// this updates the animation postion encase page shifts (due to page load) while we're animating
+            			fx.end = $elem.offset().top - 65
+            		}
+            	}
+            });
+        }
+        // If the element passed is inside of a tabber, the tabber will open to the tab it belongs in
+        function _openTabberTabBelongingToChild(element) {
+            if (!element) return;
+
+            var closestTabber = element.closest(".wds-tabber");
+            var closestTabberContent = element.closest(".wds-tab__content");
+
+            // If table row is in a tabber
+            if (closestTabber && closestTabberContent && closestTabberContent.parentNode) {
+                // Get a list of tab sections and find out the index of ours in that list
+                var indexOfTab = Array.from(closestTabberContent.parentNode.querySelectorAll(":scope > .wds-tab__content")).indexOf(closestTabberContent);
+
+                // Using the index from above, change all tab states to point to the tab containing the element passed in to this function
+                closestTabber.querySelectorAll(":scope > .wds-tab__content").forEach(function (elem, i) {
+                    elem.classList.toggle("wds-is-current", indexOfTab === i);
+                });
+                closestTabber.querySelectorAll(":scope > .wds-tabs__wrapper .wds-tabs__tab").forEach(function (elem, i) {
+                    elem.classList.toggle("wds-is-current", indexOfTab === i);
+                });
+            }
+        }
+        function _openCollapsedElementBelongingToChild($element) {
+            if (!$element) return;
+        	var $collapsedParent = $element.closest(".mw-collapsed");
+            if ($collapsedParent) {
+            	// if JS for collapsed sections already parsed them, auto click to open them
+            	if($collapsedParent.hasClass('mw-made-collapsible')) {
+		            var collapseID = $collapsedParent.attr("id").replace("mw-customcollapsible-", "");
+		            $(".mw-customtoggle-" + collapseID).click();
+            	} else {
+            		// otherwise if not collapsible yet, just secretly change css to have it not be collapsed
+		            $collapsedParent.removeClass("mw-collapsed");
+		            $collapsedParent.find("tr").stop().show();
+            	}
+            }
+        }
+        
+        function _doHashIdCheck($content, doHashFix) {
+        	var hash = location.hash.replace("#", "");
+            $content.find("tr[id]").each(function () {
+                var $row = $(this), id = $row.attr("id");
+                if (id === hash) {
+					// hash fix should only be needed right after new content is added to the page
+                    if(doHashFix) _pushHashAndFixTargetSelector(location.hash);
+                    
+                    _openCollapsedElementBelongingToChild($row);
+                    _openTabberTabBelongingToChild($row[0]);
+                    _goToID(id);
+                }
+            });
+        }
+        
+        // Let's you re-add `:target` css without messing up browser history
+        // Needed when wanting to have a row highlighted after waiting for text anchors and such to be setup
+        // https://stackoverflow.com/a/59013961/1411473
+        function _pushHashAndFixTargetSelector(hash) {
+            history.pushState({}, document.title, hash); //called as you would normally
+            var onpopstate = window.onpopstate; //store the old event handler to restore it later
+            window.onpopstate = function () { //this will be called when we call history.back()
+                window.onpopstate = onpopstate; //restore the original handler
+                history.forward(); //go forward again to update the CSS
+            };
+            history.back(); //go back to trigger the above function
+        }
+        
+        // do hook here to also re-run code on tabviews/lazy loaded content
+        mw.hook("wikipage.content").add(function ($content) {
+        	// Convert any text anchors to row IDs
+	        $content.find("tr .text-anchor").each(function () {
+	            var $textAnchor = $(this);
+	            var id = $textAnchor.attr("id");
+	            $textAnchor.removeAttr("id");
+	            $textAnchor.closest("tr").attr("id", id);
+	        });
+	        
+	        // Now dectect if hash matches any row IDs
+	        
+            // Delay check so that scroll doesn't happen until page layout has settled
+            // Otherwise the scroll to the id will be incorrect as other loaded content has moved the position before we get to it
+	        setTimeout(function () {
+	        	_doHashIdCheck($content, true);
+			}, 150);
+        });
+
+        $(window).on("hashchange", function () {
+			_doHashIdCheck($("#mw-content-text"));
+        });
+    })());
 
     //##############################################################
     /* ==importArticles== (Y00)*/

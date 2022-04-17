@@ -22,8 +22,7 @@
             action: 'delete',
             format: 'json',
             pageid: page.talkid,
-            reason: msgs[1],
-            token: mw.user.tokens.get('editToken')
+            reason: msgs[1]
         };
         $('#deleteconfirm').click(function (e) {
             if (e.target.id === 'wpConfirmB' || $(e.target).closest('#wpConfirmB').length) {
@@ -31,7 +30,7 @@
                     params.watchlist = 'watch';
                 }
                 if (checkbox.isSelected()) {
-                    new mw.Api().post(params);
+                    new mw.Api().postWithEditToken(params);
                 }
             }
         });

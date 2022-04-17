@@ -1,3 +1,7 @@
+/** HalloweenEffects
+ * Script for adding effects to celebrate halloween.
+ */
+
 /* jshint
 	esversion: 5, forin: false,
 	immed: true, indent: 4,
@@ -14,6 +18,43 @@
 console.log("[Halloween Effects] Script Loading..");
 
 var that, HalloweenEffects;
+var config = window.HalloweenEffectsConfig = Object.assign({
+	autoStart: true,
+	excludeMobile: true,
+	onlyStartOnViewMode: true,
+}, window.HalloweenEffectsConfig || {});
+/* Set Up Dimmer */
+if (!(window.HswSiteDimmer && window.HswSiteDimmer.loaded)) {
+    window.HswSiteDimmer = Object.assign({
+        loaded: true,
+        siteDimmed: false,
+        dimClass: "hsw-site-dimmer",
+    }, window.HswSiteDimmer || {});
+    window.HswSiteDimmer.dim = function () {
+        if (window.HswSiteDimmer.siteDimmed)
+            return;
+    	var el = window.HswSiteDimmer.element || $("." + window.HswSiteDimmer.dimClass);
+        if (el.length > 0) {
+        	el.css("opacity", 0.8);
+        }
+        else {
+	        var themeBgCol = $("body").css("--theme-body-background-color");
+	        if (!["#000", "#000000", "black"].includes(themeBgCol)) {
+	            window.HswSiteDimmer.element = $("<div>", {
+	                class: window.HswSiteDimmer.dimClass,
+	            }).appendTo("body");
+	            setTimeout(function () {
+	            	window.HswSiteDimmer.element.css("opacity", 0.8);
+	            }, 20);
+	        }
+        }
+        window.HswSiteDimmer.siteDimmed = true;
+    };
+    window.HswSiteDimmer.undim = function () {
+		(window.HswSiteDimmer.element || $("." + window.HswSiteDimmer.dimClass)).css("opacity", 0);
+        window.HswSiteDimmer.siteDimmed = false;
+    };
+}
 window.HalloweenEffects = HalloweenEffects = that = Object.assign(this, {
 	N: 5, // number of sprites
 	H: 80, // width and height of a sprite in pixels
@@ -25,43 +66,56 @@ window.HalloweenEffects = HalloweenEffects = that = Object.assign(this, {
 	X_BOUNDARIES: false, // whether sprites are restricted to appear very close to top-bottom edges (recommend false)
 	Y_BOUNDARIES: true, // whether sprites are restricted to appear very close to left-right edges
 	avoidElements: [ // selectors for elements to avoid setting sprites onto
-		".global-navigation", ".main-container .page", "#mixed-content-footer", ".wds-global-footer", ".top-ads-container",
+		".global-navigation", ".main-container .page", "#mixed-content-footer", ".global-footer", ".top-ads-container",
 	],
 	pause: false,
 	DEBUG: false,
 	debuggerReady: false,
 	$window: $(window),
 	$document: $(document),
+	isMobile: navigator.userAgent.match(/mobile|opera m(ob|in)/i),
 	init: function () {
+		console.log("[Halloween Effects] Initializing..");
 		$(":root").css("--halloween-sprite-size", this.H + "px");
 		$(":root").css("--halloween-animation-time", this.T + "ms");
 
-		this.loaded = true,
-			this.debugCounter = [0, 0, this.MAXTRIES + 999, -999],
-			this.x = Array.apply(null, Array(this.N)), // empty array
-			this.y = Array.apply(null, Array(this.N)), // empty array
-			this.bounds = this.avoidElements.map(function (v) {
-				return {
-					selector: v,
-					debug: $("<div class='halloween-bound-debug halloween-debug-area'>"),
-				};
-			}),
-			this.borders = Array.apply(null, Array(this.X_BOUNDARIES * 2 + this.Y_BOUNDARIES * 2)).map(function () {
-				return {
-					debug: $("<div class='halloween-border-debug halloween-debug-area'>"),
-				};
-			}),
-			this.regions = Array.apply(null, Array(this.N)).map(function () {
-				return {
-					debug: $("<div class='halloween-region-debug halloween-debug-area'>"),
-				};
-			}),
-			this.sprites = Array.apply(null, Array(this.N)).map(function () {
-				return $("<div class='halloween-sprite'>");
-			}),
-			this.canvas = $("<div class='halloween-canvas'>").append(this.sprites);
+		this.loaded = true;
+		if (config.optionalDeferredRegister)
+			config.optionalDeferredRegister.resolve(window.HalloweenEffects);
+		if (config.autoStart)
+			this.start();
+	},
+	start: function () {
+    	if (config.onlyStartOnViewMode && mw.config.get("wgAction") !== "view")
+    		return;
+    	if (config.excludeMobile && this.isMobile)
+    		return;
+		this.debugCounter = [0, 0, this.MAXTRIES + 999, -999];
+		this.x = Array.apply(null, Array(this.N)); // empty array
+		this.y = Array.apply(null, Array(this.N)); // empty array
+		this.bounds = this.avoidElements.map(function (v) {
+			return {
+				selector: v,
+				debug: $("<div class='halloween-bound-debug halloween-debug-area'>"),
+			};
+		});
+		this.borders = Array.apply(null, Array(this.X_BOUNDARIES * 2 + this.Y_BOUNDARIES * 2)).map(function () {
+			return {
+				debug: $("<div class='halloween-border-debug halloween-debug-area'>"),
+			};
+		});
+		this.regions = Array.apply(null, Array(this.N)).map(function () {
+			return {
+				debug: $("<div class='halloween-region-debug halloween-debug-area'>"),
+			};
+		});
+		this.sprites = Array.apply(null, Array(this.N)).map(function () {
+			return $("<div class='halloween-sprite'>");
+		});
+		this.canvas = $("<div class='halloween-canvas'>").append(this.sprites);
 
 		$("body").prepend(this.canvas);
+		window.HswSiteDimmer.dim();
 		for (var i in this.x)
 			this.calculate(i);
 	},
@@ -80,25 +134,25 @@ window.HalloweenEffects = HalloweenEffects = that = Object.assign(this, {
 		// only for debugging purpose
 
 		if (this.Y_BOUNDARIES) {
-			this.borders[0].left = 0,
-				this.borders[0].top = 0,
-				this.borders[0].width = w,
-				this.borders[0].height = boundSep;
-			this.borders[1].left = 0,
-				this.borders[1].top = h - boundSep,
-				this.borders[1].width = w,
-				this.borders[1].height = boundSep;
+			this.borders[0].left = 0;
+			this.borders[0].top = 0;
+			this.borders[0].width = w;
+			this.borders[0].height = boundSep;
+			this.borders[1].left = 0;
+			this.borders[1].top = h - boundSep;
+			this.borders[1].width = w;
+			this.borders[1].height = boundSep;
 		}
 		if (this.X_BOUNDARIES) {
 			var off = this.Y_BOUNDARIES * 2;
-			this.borders[off + 0].left = 0,
-				this.borders[off + 0].top = 0,
-				this.borders[off + 0].width = boundSep,
-				this.borders[off + 0].height = h;
-			this.borders[off + 1].left = w - boundSep,
-				this.borders[off + 1].top = 0,
-				this.borders[off + 1].width = boundSep,
-				this.borders[off + 1].height = h;
+			this.borders[off + 0].left = 0;
+			this.borders[off + 0].top = 0;
+			this.borders[off + 0].width = boundSep;
+			this.borders[off + 0].height = h;
+			this.borders[off + 1].left = w - boundSep;
+			this.borders[off + 1].top = 0;
+			this.borders[off + 1].width = boundSep;
+			this.borders[off + 1].height = h;
 		}
 		var centerX = -1,
 			centerY = -1,
@@ -108,8 +162,8 @@ window.HalloweenEffects = HalloweenEffects = that = Object.assign(this, {
 
 		var allBounds = [].concat(this.bounds, this.regions);
 		do {
-			centerX = this.X_BOUNDARIES ? this.rand(boundSep, w - boundSep) : this.rand(0, w),
-				centerY = this.Y_BOUNDARIES ? this.rand(boundSep, h - boundSep) : this.rand(0, h);
+			centerX = this.X_BOUNDARIES ? this.rand(boundSep, w - boundSep) : this.rand(0, w);
+			centerY = this.Y_BOUNDARIES ? this.rand(boundSep, h - boundSep) : this.rand(0, h);
 		} while (this.withinBounds(allBounds, centerX, centerY) && (++tries) < this.MAXTRIES);
 
 		this.debugCounter[1] += tries;
@@ -119,18 +173,19 @@ window.HalloweenEffects = HalloweenEffects = that = Object.assign(this, {
 			if (this.DEBUG)
 				console.log("[HalloweenEffects Debug Mode] Last 10 Tries Average: " + this.debugCounter[1] / 10 + " Min: " + this.debugCounter[2] + " Max: " + this.debugCounter[3]);
 			// reset counters
-			this.debugCounter[0] = this.debugCounter[1] = 0,
-				this.debugCounter[2] = this.MAXTRIES + 999,
-				this.debugCounter[3] = -999;
+			this.debugCounter[0] = this.debugCounter[1] = 0;
+			this.debugCounter[2] = this.MAXTRIES + 999;
+			this.debugCounter[3] = -999;
 		}
 
-		if (tries < this.MAXTRIES)
-			this.x[index] = centerX,
-			this.y[index] = centerY,
-			this.regions[index].top = centerY - centerSep * 1,
-			this.regions[index].left = centerX - centerSep * 1,
-			this.regions[index].width = centerSep * 2,
+		if (tries < this.MAXTRIES) {
+			this.x[index] = centerX;
+			this.y[index] = centerY;
+			this.regions[index].top = centerY - centerSep * 1;
+			this.regions[index].left = centerX - centerSep * 1;
+			this.regions[index].width = centerSep * 2;
 			this.regions[index].height = centerSep * 2;
+		}
 		else
 			console.log("[HalloweenEffects] Setting Element " + index + " to previous position.\nTry resizing your browser and/or use the 'collapse' view to get a better performance.");
 
@@ -177,10 +232,10 @@ window.HalloweenEffects = HalloweenEffects = that = Object.assign(this, {
 				if (!(offset.top > scrolltop + screenHeight || offset.top + elmHeight < scrolltop)) {
 					var top = Math.max(offset.top - scrolltop, 0),
 						bottom = Math.min(offset.top + elmHeight - scrolltop, screenHeight);
-					this.bounds[i].top = top,
-						this.bounds[i].left = offset.left,
-						this.bounds[i].width = elmWidth,
-						this.bounds[i].height = bottom - top;
+					this.bounds[i].top = top;
+					this.bounds[i].left = offset.left;
+					this.bounds[i].width = elmWidth;
+					this.bounds[i].height = bottom - top;
 					if (this.prepareDebug())
 						this.bounds[i].debug.show().css({
 							top: top,
@@ -275,10 +330,12 @@ window.HalloweenEffects = HalloweenEffects = that = Object.assign(this, {
 	},
 });
 
-mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(function () {
-	if (mw.config.get("wgAction") !== "view" || HalloweenEffects.loaded)
+mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"], function () {
+	if (HalloweenEffects.loaded) {
+		if (config.optionalDeferredRegister)
+			config.optionalDeferredRegister.resolve(window.HalloweenEffects);
 		return;
-	console.log("[Halloween Effects] Initializing..");
+	}
 	$("<link>", {
 		rel: "stylesheet",
 		href: new mw.Title("Gadget-HalloweenEffects.css", 8).getUrl({

@@ -51,10 +51,9 @@
                     reason = summary
                         .replace(/\$1/g, page)
                         .replace(/\$2/g, newpage);
-                this.api.post($.extend({
+                this.api.postWithEditToken($.extend({
                     title: page,
                     watchlist: 'nochange',
-                    token: mw.user.tokens.get('editToken'),
                     bot: true
                 }, this.double ? {
                     action: 'edit',

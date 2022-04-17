@@ -95,3 +95,12 @@ if (mw.config.get('wgPageName').startsWith(epgPages)) {
         });
     }
 }
+
+// Template:Stext JS
+$('.spoiler_on').click(function () {
+    if ($(this).hasClass('spoiler_on')) {
+        $(this).switchClass('spoiler_on', 'spoiler_off');
+    } else {
+        $(this).switchClass('spoiler_off', 'spoiler_on');
+    }
+});

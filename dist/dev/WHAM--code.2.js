@@ -18,7 +18,7 @@
             'wgUserName'
         ]);
         if (
-            config.wgCanonicalSpecialPageName !== 'Contributions' ||
+            (!['UserProfileActivity', 'Contributions'].includes(config.wgCanonicalSpecialPageName)) ||
             !/rollback|content-moderator|threadmoderator|sysop|soap|staff|helper|global-discussions-moderator|wiki-representative|wiki-specialist/.test(config.wgUserGroups.join()) ||
             window.WHAMLoaded
         ) {
@@ -549,7 +549,7 @@
                 title: i18n.msg('contribs-wham-title').plain(),
                 text: i18n.msg('contribs-wham').plain()
             });
-            $('.mw-contributions-user-tools .mw-changeslist-links').append($('<span>').append($button));
+            $('.mw-changeslist-links').append($('<span>').append($button));
             mw.hook('dev.wham.button').fire($button);
             mw.hook('QuickLogs.loaded').add(qlIntegration);
         }

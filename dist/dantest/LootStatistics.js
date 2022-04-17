@@ -1,3 +1,4 @@
+
 /*jslint browser: true, devel: true, plusplus: true, white: true, indent: 2 */
 /*global $, wgUserName, wgUserGroups */
 (function () {
@@ -11,7 +12,7 @@
   current_tibia_version = window.loot_parser_data.current_tibia_version,
   //from MediaWiki:LootStatistics-Data.js
   lootparser_versions_ex = window.loot_parser_data.versions,
-  //to generate list: "-", "player", {{#dpl:include={Infobox Creature}:name|format=,","&#44; ,|category=Creatures|category=Bosses|notcategory=Tibia History|notcategory=Lists|namespace=|nottitlematch=Vampire Lords}}{{#dpl:include={Infobox Creature}:name|format=,","&#44; ,|category=Creatures|category=Arena Bosses|notcategory=Tibia History|notcategory=Lists|namespace=|nottitlematch=Vampire Lords}}
+  //to generate list: "-", "player", {{#dpl:include={Infobox Creature}:name|format=,","&#44; ,|category=Creatures|category=Bosses|notcategory=Lists|namespace=|nottitlematch=Vampire Lords}}{{#dpl:include={Infobox Creature}:name|format=,","&#44; ,|category=Creatures|category=Arena Bosses|notcategory=Lists|namespace=|nottitlematch=Vampire Lords}}
   //remove the comma at the end, text inside parenthesis should be removed if it doesn't appear on the server log: e.g.: "Owin (Creature)" should be "Owin"
   not_player_names = [
     "-", "player", "A Shielded Astral Glyph", "Abyssador", "Aftershock", "Alptramun", "An Astral Glyph", "An Observer Eye", "Ancient Spawn of Morgathla", "Anmothra", "Annihilon", "Anomaly", "Apocalypse", "Apprentice Sheng", "Arachir the Ancient One", "Arkhothep", "Armenius", "Arthei", "Arthom the Hunter", "Ascending Ferumbras", "Azerus", "Bane Lord", "Barbaria", "Bazir", "Bibby Bloodbath", "Big Boss Trolliver", "Black Vixen", "Bloodback", "Bloom of Doom", "Bones", "Boogey", "Boreth", "Bretzecutioner", "Brokul", "Brother Chill", "Brother Freeze", "Bruise Payne", "Brutus Bloodbeard", "Bullwark", "Burster", "Captain Jones", "Cave Spider", "Charged Anomaly", "Charged Disruption", "Charging Outburst", "Chayenne", "Chikhaton", "Chizzoron the Distorter", "Chopper", "Cocoon", "Count Tofifti", "Countess Sorrow", "Craban", "Cublarc the Plunderer", "Damage Resonance", "Darkfang", "Deadeye Devious", "Death Priest Shargon", "Deathbine", "Deathstrike", "Deep Terror", "Demodras", "Denson Larika", "Destabilized Ferumbras", "Devovorga", "Dharalion", "Diblis the Fair", "Dirtbeard", "Diseased Bill", "Diseased Dan", "Diseased Fred", "Doctor Perhaps", "Dragonking Zyrtarch", "Dreadmaw", "Earth Overlord", "Ekatrix", "Elvira Hammerthrust", "Energized Raging Mage", "Energy Overlord", "Eradicator", "Esmeralda", "Essence of Malice", "Ethershreck", "Evil Mastermind", "Faceless Bane", "Fahim the Wise", "Fazzrah", "Fernfang", "Feroxa", "Ferumbras Essence", "Ferumbras Mortal Shell", "Ferumbras Soul Splinter", "Fire Overlord", "Flameborn", "Flamecaller Zazrak", "Fleabringer", "Fleshcrawler", "Fleshslicer", "Fluffy", "Football", "Foreman Kneebiter", "Foreshock", "Freegoiz", "Frenzy", "Fury of the Emperor", "Furyosa", "Gaz'haragoth", "Gelidrazah the Frozen", "General Murius", "Ghazbaran", "Ghulosh", "Ghulosh' Deathgaze", "Glitterscale", "Glooth Bomb", "Glooth Fairy", "Gnomevil", "Golgordan", "Gorgo", "Gorzindel", "Grand Canon Dominus", "Grand Chaplain Gaunder", "Grand Commander Soeren", "Grand Master Oberon", "Grand Mother Foulscale", "Grandfather Tridian", "Gravelord Oshuran", "Greed", "Grimrat", "Groam", "Grorlam", "Hairman the Huge", "Hatebreeder", "Hellgorak", "Hemming", "Heoni", "Hide", "High Templar Cobrass", "Hirintror", "Horadron", "Horestis", "Ice Overlord", "Infernatil", "Inky", "Irahsae", "Izcandar Champion of Summer", "Izcandar Champion of Winter", "Izcandar the Banished", "Jailer", "Jaul", "Jesse the Wicked", "Kalyassa", "Kerberos", "Koshei the Deathless", "Kraknaknork", "Kraknaknork's Demon", "Kroazur", "Lady Tenebris", "Lagatos", "Last Planegazer", "Latrivan", "Leiden", "Lersatio", "Lethal Lissy", "Leviathan", "Lisa", "Lizard Abomination", "Lizard Gate Guardian", "Lloyd", "Lokathmor", "Lord of the Elements", "Lyxoph", "Mad Technomancer", "Madareth", "Mahatheb", "Malofur Mangrinder", "Mamma Longlegs", "Marziel", "Massacre", "Maw", "Mawhawk", "Maxxenius", "Mazoran", "Mazzinor", "Melting Frozen Horror", "Mephiles", "Merikh the Slaughterer", "Mindmasher", "Minishabaal", "Monstor", "Mooh'Tah Master", "Moohtant Wallbreaker", "Morik the Gladiator", "Mornenion", "Mounted Thorn Knight", "Mr. Punish", "Munster", "Mutated Zalamon", "Necropharus", "Obujos", "Ocyakao", "Oodok Witchmaster", "Orshabaal", "Outburst", "Overcharged Disruption", "Owin", "Paiz the Pauperizer", "Penciljack", "Phrodomo", "Plagirath", "Plagueroot", "Preceptor Lazare", "Prince Drazzak", "Professor Maxxen", "Pythius the Rotten", "Ragiaz", "Raging Mage", "Ravennous Hunger", "Raxias", "Razzagorn", "Realityquake", "Reflection of Obujos", "Renegade Orc", "Ribstride", "Robby the Reckless", "Ron the Ripper", "Rotspit", "Rottie the Rotworm", "Rotworm Queen", "Rukor Zad", "Rupture", "Scorn of the Emperor", "Shadow of Boreth", "Shadow of Lersatio", "Shadow of Marziel", "Shadowpelt", "Shadowstalker", "Shard of Corruption", "Shardhead", "Sharpclaw", "Sharptooth", "Shlorg", "Shulgrax", "Sir Valorcrest", "Skyrr", "Smuggler Baron Silvertoe", "Snake God Essence", "Snake Thing", "Solid Frozen Horror", "Soul of Dragonking Zyrtarch", "Spite of the Emperor", "Splasher", "Stonecracker", "Sulphur Scuttler", "Supercharged Mazzinor", "Tanjis", "Tarbaz", "Tazhadur", "Teleskor", "Teneshpar", "Terofar", "The Abomination", "The Armored Voidborn", "The Astral Source", "The Baron from Below", "The Big Bad One", "The Blazing Rose", "The Blazing Time Guardian", "The Blightfather", "The Bloodtusk", "The Bloodweb", "The Book of Death", "The Collector", "The Corruptor of Souls", "The Count", "The Count of the Core", "The Destruction", "The Devourer of Secrets", "The Diamond Blossom", "The Distorted Astral Source", "The Duke of the Depths", "The Enraged Thorn Knight", "The Evil Eye", "The False God", "The Fettered Shatterer", "The Fire Empowered Duke", "The First Dragon", "The Flaming Orchid", "The Freezing Time Guardian", "The Frog Prince", "The Handmaiden", "The Horned Fox", "The Hunger", "The Hungry Baron from Below", "The Imperor", "The Keeper", "The Last Lore Keeper", "The Lily of Night", "The Manhunter", "The Many", "The Mean Masher", "The Nightmare Beast", "The Noxious Spawn", "The Old Whopper", "The Old Widow", "The Pale Count", "The Plasmother", "The Rage", "The Ravager", "The Remorseless Corruptor", "The Sandking", "The Scion of Havoc", "The Scourge of Oblivion", "The Shatterer", "The Shielded Thorn Knight", "The Sinister Hermit", "The Snapper", "The Souldespoiler", "The Source of Corruption", "The Spellstealer", "The Time Guardian", "The Unarmored Voidborn", "The Voice of Ruin", "The Weakened Count", "The Welter", "Tiquandas Revenge", "Tjured", "Tormentor", "Tromphonyte", "Tyrn", "Tzumrah the Dazzler", "Ungreez", "Ushuriel", "Verminor", "Versperoth", "Vulnerable Cocoon", "Warlord Ruzad", "Weakened Shlorg", "White Pale", "Willi Wasp", "World Devourer", "Wrath of the Emperor", "Xenia", "Yaga the Crone", "Yakchal", "Zamulosh", "Zanakeph", "Zarabustor", "Zarcorix of Yalahar", "Zavarash", "Zevelon Duskbringer", "Zomba", "Zoralurk", "Zorvorax", "Zugurosh", "Zulazza the Corruptor", "Zushuka", "Achad", "Avalanche", "Axeitus Headbanger", "Baron Brute", "Bloodpaw", "Bovinus", "Coldheart", "Colerian the Barbarian", "Cursed Gladiator", "Darakan the Executioner", "Deathbringer", "Doomhowl", "Drasilla", "Dreadwing", "Fallen Mooh'Tah Master Ghar", "Fatality", "Frostfur", "Gnorre Chyllson", "Grimgor Guteater", "Haunter", "Incineron", "Kreebosh the Exile", "Menace", "Norgle Glacierbeard", "Orcus the Cruel", "Rocko", "Rocky", "Slim", "Spirit of Earth", "Spirit of Fire", "Spirit of Water", "Svoren the Mad", "The Axeorcist", "The Dark Dancer", "The Dreadorian", "The Hag", "The Hairy One", "The Masked Marauder", "The Obliverator", "The Pit Lord", "Tirecz", "Tremorak", "Webster"
@@ -23,6 +24,7 @@
     'Avalanche': 'Avalanche (Creature)',
     'Fish': 'Fish (Creature)',
     'Gamemaster': 'Gamemaster (Creature)',
+    'Goshnar\'s Greed (Feeding)': 'Goshnar\'s Greed',
     'Hacker': 'Hacker (Creature)',
     'Mooh\'tah Warrior': 'Mooh\'Tah Warrior',
     'Nomad': 'Nomad (Basic)',
@@ -38,18 +40,19 @@
     'Acolyte of the Cult': {'Book': 'Book (Orange)', 'Music Sheet': 'Music Sheet (Second Verse)'},
     'Adept of the Cult': {'Book': 'Book (Orange)', 'Music Sheet': 'Music Sheet (Third Verse)'},
     'Barbarian Brutetamer': {'Book': 'Book (Grey)'},
+    'Blemished Spawn': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Blightwalker': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Blue Djinn': {'Book': 'Book (Blue)'},
     'Bony Sea Devil': {'Rod': 'Rod (Creature Product)'},
     'Brachiodemon': {'Head': 'Head (Brachiodemon)'},
     'Bragrumol': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Brain Squid': {'Inkwell': 'Inkwell (Black)'},
+    'Cave Chimera': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Chopper': {'Dung Ball': 'Dung Ball (Quest)'},
     'Cloak of Terror': {'Crown': 'Crown (Plant)'},
-    'Crazed Summer Rearguard': {'Egg With Dream Essence': 'Egg with Dream Essence'},
-    'Crazed Summer Vanguard': {'Egg With Dream Essence': 'Egg with Dream Essence'},
-    'Crazed Winter Rearguard': {'Egg With Dream Essence': 'Egg with Dream Essence', 'Ice Flower': 'Ice Flower (Item)'},
-    'Crazed Winter Vanguard': {'Egg With Dream Essence': 'Egg with Dream Essence', 'Ice Flower': 'Ice Flower (Item)'},
+    'Cobra Vizier': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
+    'Crazed Winter Rearguard': {'Ice Flower': 'Ice Flower (Item)'},
+    'Crazed Winter Vanguard': {'Ice Flower': 'Ice Flower (Item)'},
     'Deepworm': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Demodras': {'Book': 'Book (Gemmed)'},
     'Dharalion': {'Parchment': 'Parchment (Rewritable)'},
@@ -73,16 +76,44 @@
     'Hellflayer': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Hive Overseer': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Ink Blob': {'Inkwell': 'Inkwell (Black)', 'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
-    'Insane Siren': {'Egg With Dream Essence': 'Egg with Dream Essence'},
     'Juggernaut': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Killer Caiman': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Kollos': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
+    'Last Lore Keeper': {'Key To Knowledge': 'Key to Knowledge'},
+    'Lady Tenebris': {'Part of a Rune': 'Part of a Rune (Four)'},
+    'Lloyd': {'Part of a Rune': 'Part of a Rune (Six)'},
     'Lumbering Carnivor': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Many Faces': {'Head': 'Head (Many Faces)'},
     'Maw': {'Dung Ball': 'Dung Ball (Quest)'},
     'Mean Lost Soul': {'Lost Soul': 'Lost Soul (Item)'},
+    'Melting Frozen Horror': {'Part of a Rune': 'Part of a Rune (Five)'},
+    'Memory of a Banshee': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Book': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Carnisylvan': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Dwarf': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Faun': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Frazzlemaw': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Fungus': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Golem': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Hero': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Hydra': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Lizard': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Mammoth': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Manticore': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Pirate': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Scarab': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Shaper': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Vampire': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Werelion': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Wolf': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of a Yalahari': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of an Amazon': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of an Elf': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of an Insectoid': {'Candy Floss': 'Candy Floss (Large)'},
+    'Memory of an Ogre': {'Candy Floss': 'Candy Floss (Large)'},
     'Mindmasher': {'Dung Ball': 'Dung Ball (Quest)'},
     'Novice of the Cult': {'Book': 'Book (Orange)', 'Music Sheet': 'Music Sheet (First Verse)'},
+    'Ogre Rowdy': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Ogre Savage': {'Jalapeño Pepper': 'Jalapeno Pepper', 'Jalapeńo Pepper': 'Jalapeno Pepper', 'Jalape\uFFFDo Pepper': 'Jalapeno Pepper'},
     'Orc Shaman': {'Book': 'Book (Grey)'},
     'Piñata Dragon': {'Costume Bag': 'Costume Bag (Retro)'},
@@ -90,37 +121,50 @@
     'Pirate Cutthroat': {'Treasure Map': 'Treasure Map (Pirate)'},
     'Pirate Ghost': {'Parchment': 'Parchment (Rewritable)'},
     'Pirate Marauder': {'Treasure Map': 'Treasure Map (Pirate)'},
+    'Poisonous Carnisylvan': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Priestess': {'Book': 'Book (Orange)'},
     'Prince Drazzak': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Rage Squid': {'Inkwell': 'Inkwell (Black)'},
+    'Renegade Quara Hydromancer': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Renegade Quara Pincher': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
+    'Rotten Golem': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Rotspit': {'Dung Ball': 'Dung Ball (Quest)'},
     'Seacrest Serpent': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Shadowpelt': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Shadowstalker': {'Dung Ball': 'Dung Ball (Quest)'},
     'Shark': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
-    'Soul-Broken Harbinger': {'Egg With Dream Essence': 'Egg with Dream Essence', 'Ice Flower': 'Ice Flower (Item)'},
+    'Soul of Dragonking Zyrtarch': {'Part of a Rune': 'Part of a Rune (Two)'},
+    'Soul-Broken Harbinger': {'Ice Flower': 'Ice Flower (Item)'},
+    'Sorcerer\'s Apparition': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Spidris': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Spidris Elite': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
+    'Srezz Yellow Eyes': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Squid Warden': {'Inkwell': 'Inkwell (Black)'},
     'Tarnished Spirit': {'Book': 'Book (Orange)'},
     'Thaian': {'Amber': 'Amber (Item)'},
     'Thawing Dragon Lord': {'Ice Cream Cone': 'Ice Cream Cone (Blue-Barian)'},
-    'The Baron from Below': {'Chitinous Mouth': 'Chitinous Mouth (Baron from Below)'},
-    'The Dread Maiden': {'Amber': 'Amber (Item)', 'Amber With A Bug': 'Amber with a Bug', 'Amber With A Dragonfly': 'Amber with a Dragonfly', 'Dark Bell': 'Dark Bell (Silver)'},
+    'The Baron from Below': {'Chitinous Mouth': 'Chitinous Mouth (Baron from Below)', 'Plan For A Makeshift Armour': 'Plan for a Makeshift Armour'},
+    'The Dread Maiden': {'Amber': 'Amber (Item)', 'Dark Bell': 'Dark Bell (Silver)'},
     'The Count of the Core': {'Chitinous Mouth': 'Chitinous Mouth (Count of the Core)'},
     'The Enraged Thorn Knight': {'Part of a Rune': 'Part of a Rune (One)'},
-    
     'The False God': {'Blood of the Mountain': 'Blood of the Mountain (Item)'},
-    'The Fear Feaster': {'Amber': 'Amber (Item)', 'Amber With A Dragonfly': 'Amber with a Dragonfly'},
+    'The Fear Feaster': {'Amber': 'Amber (Item)'},
     'The Many': {'Egg of the Many': 'Egg of The Many'},
-    'The Pale Worm': {'Amber': 'Amber (Item)', 'Amber With A Bug': 'Amber with a Bug'},
+    'The Pale Worm': {'Amber': 'Amber (Item)'},
     'The Percht Queen': {'Icicle': 'Icicle (Percht)', 'Fly Agaric': 'Fly Agaric (Item)'},
     'The Sandking': {'Heart of the Mountain': 'Heart of the Mountain (Item)'},
-    'The Unwelcome': {'Amber': 'Amber (Item)', 'Amber With A Dragonfly': 'Amber with a Dragonfly'},
-    'Thieving Squirrel': {'Flask With Beaver Bait': 'Flask with Beaver Bait'},
+    'The Scourge of Oblivion': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
+    'The Time Guardian': {'Part of a Rune': 'Part of a Rune (Three)'},
+    'The Unwelcome': {'Amber': 'Amber (Item)'},
+    'Unexpected': {'Candy Floss': 'Candy Floss (Large)', 'Ice Cream Cone': 'Ice Cream Cone (Sprinkles)'},
+    'Uninvited': {'Candy Floss': 'Candy Floss (Large)', 'Ice Cream Cone': 'Ice Cream Cone (Sprinkles)'},
+    'Unsolicited': {'Candy Floss': 'Candy Floss (Large)', 'Ice Cream Cone': 'Ice Cream Cone (Sprinkles)'},
     'Usurper Archer': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
-    'Usurper Warlock': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'}
+    'Usurper Commander': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
+    'Usurper Warlock': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
+    'Unwanted': {'Candy Floss': 'Candy Floss (Large)', 'Ice Cream Cone': 'Ice Cream Cone (Sprinkles)'},
+    'Vibrant Phantom': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
+    'Retros Treasure': {'Watermelon Tourmaline': 'Watermelon Tourmaline (Slice)'}
   },
 
   //singular exceptions
@@ -142,6 +186,7 @@
     'Bunches of *': 'Bunch of ',
     'Cookies': 'Cookie',
     'Flasks of *': 'Flask of ',
+    'Clusters of *': 'Cluster of ',
     'Gooey Masses' : 'Gooey Mass',
     'Haunches of *': 'Haunch of ',
     'Huge Chunks *': 'Huge Chunk ',
@@ -187,6 +232,7 @@
     'very old piece of paper': {},
     'snowball': {'yeti': '', 'grynch clan goblin': '', 'animated snowman': ''},
     'silver raid token': {},
+    'sliver': {},
     'old rag': {},
     'orc tusk': {}
   },
@@ -206,7 +252,7 @@
     str = String(str).replace(/\((.)/g, function ($1) { return $1.toUpperCase(); }).replace(/^(.)|\s(.)|-(.)/g, function ($1) { return $1.toUpperCase(); });
     //str = String(str).replace(/\b(.)/g, function ($1) { return $1.toUpperCase(); });
     /*jslint regexp: false */
-    return str.replace(/( To The | In The | In A | Of The | Of A | On A | Of | The | From The | From | And )/, function ($1) { return $1.toLowerCase(); });
+    return str.replace(/( To The | In The | In A | Of The | Of A | Of An | On A | Of | The | From The | From | And | With A | With )/, function ($1) { return $1.toLowerCase(); });
   },
   lootparser_numcs = function (n) { n = String(n); while ((/\d{4}/).test(n)) { n = n.replace(/(\d{3},|\d{3}$)/, ',$1'); } return n; },
   stripslashes = function (str) {
@@ -681,7 +727,7 @@
     }
   },
   upload_to_wikia = function (div_id) {
-    var $tmp, tmp, off_cont, off_tmp, parser_text, user_modified = false, creature, token, basetimestamp, page_text, new_page_text, summary,
+    var $tmp, tmp, off_cont, off_tmp, parser_text, user_modified = false, creature, token = mw.user.tokens.get('editToken'), basetimestamp, page_text, new_page_text, summary,
     ta_multi_version_no_ok_wrong = 0, ta_version_ok = false, cvtext, vdata,
     request_st, request_end = function (msg, is_error) {
       if (is_error === undefined) { is_error = true; }
@@ -694,7 +740,7 @@
       var errort = 'There was a problem uploading statistics for ' + creature.replace(/_/g, ' ') + ', try again.',
       captcha = '';
       page_text = $.trim(page_text);
-      parser_text = parser_text.slice(parser_text.search('{' + '{'), parser_text.search('}' + '}') + 2); //take only the Template part
+      parser_text = (parser_text.match(/\{\{[\s\S]*?\}\}/g) || []).join('\n'); //take only the Template(s) part
       new_page_text = lootparser_add(page_text, parser_text);
       if (new_page_text === false) { request_end(errort); }
       else {
@@ -702,11 +748,18 @@
         new_page_text = new_page_text[0];
         request_st = $.now();
         $.ajax({
-          url: '/api.php', type: 'POST', dataType: 'json',
+          url: '/api.php',
+          type: 'POST',
+          dataType: 'json',
           data : {
-            action: 'edit', title: 'Loot_Statistics:' + lootparser_pagename(creature, true, false), format: 'json',
-            summary: summary, text: new_page_text,
-            token: token, basetimestamp: basetimestamp, minor: 'minor'
+            action: 'edit',
+            title: 'Loot_Statistics:' + lootparser_pagename(creature, true, false),
+            format: 'json',
+            summary: summary,
+            text: new_page_text,
+            token: token,
+            basetimestamp: basetimestamp,
+            minor: 'minor'
           },
           error: function () { request_end(errort); },
           success: function (obj) {
@@ -750,8 +803,11 @@
       $.ajax({
         url: '/api.php', type: 'GET', dataType: 'json',
         data : {
-          action: 'query', titles: 'Loot_Statistics:' + lootparser_pagename(creature, true, false), format: 'json',
-          rvprop: 'content', prop: 'info|revisions', intoken: 'edit'
+          action: 'query',
+          titles: 'Loot_Statistics:' + lootparser_pagename(creature, true, false),
+          format: 'json',
+          rvprop: 'content',
+          prop: 'info|revisions'
         },
         error: function () { request_end(errort); },
         success: function (obj) {
@@ -776,17 +832,20 @@
       var errort = 'There was a problem getting current statistics for ' + creature.replace(/_/g, ' ') + ', try again.';
       request_st = $.now();
       $.ajax({
-        url: '/api.php', type: 'GET', dataType: 'json',
+        url: '/api.php',
+        type: 'GET',
+        dataType: 'json',
         data : {
-          action: 'query', titles: 'Loot_Statistics:' + lootparser_pagename(creature, true, false), format: 'json',
-          prop: 'info|revisions', intoken: 'edit'
+          action: 'query',
+          titles: 'Loot_Statistics:' + lootparser_pagename(creature, true, false),
+          format: 'json',
+          prop: 'info|revisions'
         },
         error: function () { request_end(errort); },
         success: function (obj) {
           var x;
           if (obj) {
             for (x in obj.query.pages) { if (obj.query.pages.hasOwnProperty(x)) {
-              token = obj.query.pages[x].edittoken;
               if (obj.query.pages[x].missing !== undefined) {
                 basetimestamp = '';
                 page_text = '';
@@ -881,7 +940,7 @@
     loot_stats_rc;
     //loot
     loot_tmp = {};
-    loot =  loot_o.split(',');
+    loot = loot_o.split(',');
     if (reward_chest) { loot_stats_rc = ''; }
     //monster
     amonster = amonster_o;
@@ -1052,22 +1111,29 @@
     $.ajax({
       url: '/api.php', type: 'GET', dataType: 'json',
       data : {
-        action: 'query', titles: page_name, format: 'json',
-        prop: 'info', intoken: 'edit'
+        action: 'query',
+        titles: page_name,
+        format: 'json',
+        prop: 'info'
       },
       error: request_error, success: function (obj) {
-        var xe, token;
+        var xe, token = mw.user.tokens.get('editToken');
         if (obj) {
           for (xe in obj.query.pages) { if (obj.query.pages.hasOwnProperty(xe)) {
-            token = obj.query.pages[xe].edittoken;
             break;
           } }
           $.ajax({
-            url: '/api.php', type: 'POST', dataType: 'json',
+            url: '/api.php',
+            type: 'POST',
+            dataType: 'json',
             data : {
-              action: 'edit', title: page_name, format: 'json',
-              section: 'new', text: $('#' + id_prefix + '_t').val(),
-              token: token, minor: 'minor'
+              action: 'edit',
+              title: page_name,
+              format: 'json',
+              section: 'new',
+              text: $('#' + id_prefix + '_t').val(),
+              token: token,
+              minor: 'minor'
             },
             error: request_error, success: function (obj) {
               if (
@@ -1164,11 +1230,11 @@
     '</textarea></td>' +
     '<td style="vertical-align: bottom; text-align: center;">' +
     (
-      (wgUserName !== null && wgUserName !== '') ?
+      (mw.config.get('wgUserName') !== null && mw.config.get('wgUserName') !== '') ?
       '<div>' +
       '<span>' +
       (
-        ($.inArray('autoconfirmed', wgUserGroups) !== -1) ?
+        ($.inArray('autoconfirmed', mw.config.get('wgUserGroups')) !== -1) ?
         '<input type="checkbox" value="1" checked="checked" id="' + id_prefix + '_c" /><span> Include in "Upload All"</span>' +
         '<br />or<br />' :
         ''
@@ -1238,11 +1304,11 @@
       in_tmp += '</textarea></td>' +
       '<td style="vertical-align: bottom; text-align: center;">' +
       (
-        (wgUserName !== null && wgUserName !== '') ?
+        (mw.config.get('wgUserName') !== null && mw.config.get('wgUserName') !== '') ?
         '<div>' +
         '<span>' +
         (
-          ($.inArray('autoconfirmed', wgUserGroups) !== -1) ?
+          ($.inArray('autoconfirmed', mw.config.get('wgUserGroups')) !== -1) ?
           '<input type="checkbox" value="1" checked="checked" id="lootparser_loot_combined_c' + id_inc + '" /><span> Include in "Upload All"</span>' +
           '<br />or<br />' :
           ''
@@ -1324,8 +1390,8 @@
     /*jslint regexp: true */
     not_player_names_regexp_remove = /\((.+)\)/g;
     loot_regexps = [
-      /Loot of (.+?): (.+)/,
-      /(?:Your deeds have been noticed and )?[tT]he following items dropped by (.+?) are available in your reward chest: (.+)/
+      /Loot of (.+?): (.+?)\.?$/,
+      /(?:Your deeds have been noticed and )?[tT]he following items dropped by (.+?) are available in your reward chest: (.+?)\.?$/
     ];
     /*jslint regexp: false */
     //read lines
@@ -1335,7 +1401,7 @@
       lootmatch = theline.match(loot_regexps[0]);
       //regular loot
       if (lootmatch) {
-        lootignore = theline.match(/\b(?:active prey bonus|gut charm|increased loot|boosted loot)\b/i);
+        lootignore = theline.match(/\b(?:active prey bonus|gut charm|increased loot|boosted loot|active wealth duplex|due to low stamina|goshnar's tribute)\b/i);
         if (!lootignore) {
           lootparser_loot_process_loot(lootmatch[1], lootmatch[2], monsters, loot_exp, loot_tem);
         }
@@ -1344,7 +1410,7 @@
         //reward container loot
         lootmatch_rc = theline.match(loot_regexps[1]);
         if (lootmatch_rc) {
-          lootignore = theline.match(/\b(?:active prey bonus|gut charm|increased loot|boosted loot)\b/i);
+          lootignore = theline.match(/\b(?:active prey bonus|gut charm|increased loot|boosted loot|active wealth duplex|due to low stamina|goshnar's tribute)\b/i);
           if (!lootignore) {
             lootparser_loot_process_loot(lootmatch_rc[1], lootmatch_rc[2], monsters, loot_exp_rc, loot_tem_rc, true, stats_rc);
           }
@@ -1454,7 +1520,7 @@
       lootparser_loot_process_contents_html(got_stats, got_stats_rc, monsters_list);
       //upload all
       if (got_stats || got_stats_rc || got_kills || got_kills_rc) {
-        if (wgUserName !== null && wgUserName !== '' && $.inArray('autoconfirmed', wgUserGroups) !== -1) {
+        if (mw.config.get('wgUserName') !== null && mw.config.get('wgUserName') !== '' && $.inArray('autoconfirmed', mw.config.get('wgUserGroups')) !== -1) {
           lootparser_loot_process_uploadall_html();
         }
       }

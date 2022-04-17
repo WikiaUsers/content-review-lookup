@@ -162,13 +162,12 @@ $(function() {
                 var protectiontime = prompt('Expiry:');
                 var protectionreason = prompt('Protection Reason:');
                 if (protectiontime) {
-                    new mw.Api().post({
+                    new mw.Api().postWithEditToken({
                         action: 'protect',
                         title: mw.config.get('wgPageName'),
                         reason: protectionreason,
                         expiry: protectiontime,
-                        protections: 'edit=sysop',
-                        token: mw.user.tokens.get('editToken')
+                        protections: 'edit=sysop'
                     }).done(function(d) {
                         if (d.error) {
                             new BannerNotification('Error while protecting article: ' + d.error.code, 'error').show();
@@ -201,12 +200,11 @@ $(function() {
 
             // Adding stub template
             $('a#num3').click(function() {
-                new mw.Api().post({
+                new mw.Api().postWithEditToken({
                     action: 'edit',
                     title: wgPageName,
                     summary: "Adding to help needed.",
-                    prependtext: "{{stub}} \n",
-                    token: mw.user.tokens.get('editToken')
+                    prependtext: "{{stub}} \n"
                 }).done(function(d) {
                     if (d.error) {
                         new BannerNotification('Error adding template: ' + d.error.code, 'error').show();
@@ -220,12 +218,11 @@ $(function() {
 
             // adding deletion template 
             $('a#num4').click(function() {
-                new mw.Api().post({
+                new mw.Api().postWithEditToken({
                     action: 'edit',
                     title: wgPageName,
                     summary: "Adding to candiates for deletion",
-                    prependtext: "{{delete}} \n",
-                    token: mw.user.tokens.get('editToken')
+                    prependtext: "{{delete}} \n"
                 }).done(function(d) {
                     if (d.error) {
                         new BannerNotification('Error adding template: ' + d.error.code, 'error').show();
@@ -245,12 +242,11 @@ $(function() {
                 if (templateName === null) {
                     return;
                 }
-                new mw.Api().post({
+                new mw.Api().postWithEditToken({
                     action: 'edit',
                     title: wgPageName,
                     summary: "Adding template",
-                    prependtext: "{{" + templateName + "}} \n",
-                    token: mw.user.tokens.get('editToken')
+                    prependtext: "{{" + templateName + "}} \n"
                 }).done(function(d) {
                     if (d.error) {
                         new BannerNotification('Error adding template: ' + d.error.code, 'error').show();
@@ -264,11 +260,10 @@ $(function() {
 
             // Quick Deletion of article
             $('a#num7').click(function() {
-                new mw.Api().post({
+                new mw.Api().postWithEditToken({
                         action: 'delete',
                         title: wgPageName,
-                        reason: "Housekeeping",
-                        token: mw.user.tokens.get('editToken')
+                        reason: "Housekeeping"
                     })
                     .done(function() {
                         location.reload();
@@ -290,14 +285,13 @@ $(function() {
                 if (moveReason === null) {
                     return;
                 }
-                new mw.Api().post({
+                new mw.Api().postWithEditToken({
                     action: 'move',
                     from: mw.config.get('wgPageName'),
                     to: articleDestination,
                     reason: moveReason,
                     movetalk: 'no',
-                    noredirect: '1',
-                    token: mw.user.tokens.get('editToken')
+                    noredirect: '1'
                 }).done(function() {
                     modalBox();
                     window.setTimeout(function() {
