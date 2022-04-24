@@ -1,6 +1,56 @@
 /* 这里的任何JavaScript将为所有用户在每次页面载入时加载。 */
 var titles = document.getElementById('tab-header').getElementsByTagName('li');
 var divs = document.getElementById('tab-content').getElementsByClassName('dom');
+
+$('toc').each(function () {
+	dragElement($this);
+})
+
+function dragElement(elmnt) {
+  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  if (document.getElementById(elmnt.id + "header")) {
+    /* if present, the header is where you move the DIV from:*/
+    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+  } else {
+    /* otherwise, move the DIV from anywhere inside the DIV:*/
+    elmnt.onmousedown = dragMouseDown;
+  }
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+  }
+
+  function closeDragElement() {
+    /* stop moving when mouse button is released:*/
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
+
+
+
+
+
+  
 $(document).on('click', '#zero',function(){ 
            for(var j=0; j<titles.length; j++){
                 titles[j].className = '';
@@ -73,7 +123,9 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 
 /* lockdown for reference popup configuration */
 ((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;
-/* 模板来自 碧蓝航线 冒险蜗牛 */
+/* -- 为页面加载JS脚本或CSS样式表 -- */
+/* 参见[[模板:ResourceLoader]]*/
+/* 来源：碧蓝航线WIKI*/
 $('.resourceLoader').each(function () {
   var $x = $(this);
   var text = $.trim($x.text());
@@ -93,7 +145,7 @@ $('.resourceLoader').each(function () {
   if (mime == "text/css") {
     if (text.slice(-4).toLowerCase() !== '.css') text = text + '.css';
     //if ($x.data('debug') !== true) text = text + '&debug=false';
-    return mw.loader.load("//wiki.biligame.com/zqwn/index.php?title=" + text + "&action=raw&ctype=text/css", "text/css");
+    return mw.loader.load("//wiki.biligame.com/ys/index.php?title=" + text + "&action=raw&ctype=text/css", "text/css");
   }
 
   //加载JS脚本
@@ -102,5 +154,5 @@ $('.resourceLoader').each(function () {
   }
   if (text.slice(-3).toLowerCase() !== '.js') text = text + '.js';
   //if ($x.data('debug') !== true) text = text + '&debug=false';
-  return mw.loader.load("//wiki.biligame.com/zqwn/index.php?title=" + text + "&action=raw&ctype=text/javascript", "text/javascript");
+  return mw.loader.load("//wiki.biligame.com/ys/index.php?title=" + text + "&action=raw&ctype=text/javascript", "text/javascript");
 });

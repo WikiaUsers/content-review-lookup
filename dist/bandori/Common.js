@@ -98,11 +98,14 @@ window.DiscordBannerSettings = {
     prependToRail: false
 };
 
-/* For card details on card icon hover */
+/* For card icon hovers*/
 window.tooltips_list = [
     {
         classname: 'card-images',
         parse: '{{CardImages|<#cardname#>}}'
+    }, {
+        classname: 'card-details',
+        parse: '{{CardHoverDetails|<#name#>}}'
     }
 ];
 window.tooltips_config = {

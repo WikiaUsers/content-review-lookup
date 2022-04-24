@@ -186,19 +186,20 @@ $(function () { if ($("#mw-dupimages").length) findDupImages(); });
 /*
 ////////////////////////////////////////////////////////////////////
 // Release date sortkey display script by User:Bobogoobo (from https://community.wikia.com/wiki/Thread:918005)
+// fixed and modified by User:Harasar on 21/04/2022 to work again
 ////////////////////////////////////////////////////////////////////
 */
 $(function() {
     if (!(
         mw.config.get('wgCanonicalNamespace') === 'Category' &&
-        ['Appearances', 'Mentions'].indexOf(mw.config.get('wgPageName').split('/').slice(-1)[0]) !== -1
+        ['Appearances', 'Handbook Appearances', 'Minor Appearances', 'Mentions', 'Handbook Mentions', 'Invocations'].indexOf(mw.config.get('wgTitle').split('/').slice(-1)[0]) !== -1
     )) {
         return;
-    }
- 
+    } 
+
     // API requires titles 50 at a time, will be 200 titles per category page
     var requests,
-        $links = $('#mw-pages').find('table').find('a');
+        $links = $('.mw-category-generated').find('a');
         pages = $links.toArray().map(function(value) {
             return encodeURIComponent($(value).attr('title'));
         });
@@ -212,13 +213,18 @@ $(function() {
                     if (!data[val].pageprops) {
                         return true;// continue
                     }
-                    var sort = data[val].pageprops.defaultsort,
-                        title = data[val].title;
-                        date = sort.match(/\d{8}/);
-                    if (date) {
-                        $links.filter('[title="' + title + '"]').after(
-                            ' (' + date[0].replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') + ')'
-                        );
+                    var sort = data[val].pageprops.defaultsort;
+                    var title = data[val].title;
+                    var cover_date = sort.match(/^&nbsp;\d{4}\-\d{2}/);
+                    var release_date = sort.match(/^&nbsp;\d{4}\-\d{2}  \d{8}/);
+                    var date_tag = ''
+                    if (release_date) {
+                    	release_date = release_date[0].match(/\d{8}/)
+                    	date_tag = ', release: ' + release_date[0].replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')
+                    }
+                    if (cover_date) {
+                    	date_tag = ' (cover: ' + cover_date[0].replace('&nbsp;', '') + date_tag + ')'
+                        $links.filter('[title="' + title + '"]').after(date_tag);
                     }
                 });
             }

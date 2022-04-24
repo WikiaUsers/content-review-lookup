@@ -31,7 +31,7 @@
 						$('.filehistory tr:nth-of-type(n + 3) td:nth-child(1) > a:first-child').each(function() {
 							$(this).after(
 								'<center>' +
-									'<button class="wds-button delete">' + msg('button_delete').plain() + '</button>' +
+									'<button class="wds-button delete">' + msg('button_delete').escape() + '</button>' +
 								'</center>');
 							$(this).parent().find('br').remove();
 						});
@@ -41,7 +41,7 @@
 						$('.filehistory tr:nth-of-type(n + 3) td:nth-child(2) > a:first-child').each(function() {
 							$(this).after(
 							'<center>' +
-								'<button class="wds-button revert">' + msg('button_revert').plain() + '</button>' +
+								'<button class="wds-button revert">' + msg('button_revert').escape() + '</button>' +
 							'</center>');
 						});
 					}
@@ -57,11 +57,11 @@
 					if ($('.wds-button.deleteAll').length === 0) {
 						var content = '';
 						if (d.query.userinfo.rights.includes('delete')) {
-							content += '<button class="wds-button deleteAll">' + msg('button_delete_all').plain() + '</button>&nbsp&nbsp';
+							content += '<button class="wds-button deleteAll">' + msg('button_delete_all').escape() + '</button>&nbsp;&nbsp;';
 						}
-						content += '<button class="wds-button refresh">' + msg('button_refresh').plain() + '</button>&nbsp&nbsp';
+						content += '<button class="wds-button refresh">' + msg('button_refresh').escape() + '</button>&nbsp;&nbsp;';
 						if (d.query.userinfo.rights.includes('protect')) {
-							content += '<button class="wds-button protect">' + msg('button_protect').plain() + '</button>';
+							content += '<button class="wds-button protect">' + msg('button_protect').escape() + '</button>';
 						}
 						$('[data-tab-body="history"] h2, #filehistory').after(
 							content
@@ -108,7 +108,7 @@
 							reason: summary,
 							expiry: '2 weeks'
 						}).done(function() {
-							$('#filehistory').after('<div class="mw-warning-with-logexcerpt" style="margin:5px 0; text-align:center;">' + msg('status_protected').plain() + '</div>');
+							$('#filehistory').after('<div class="mw-warning-with-logexcerpt" style="margin:5px 0; text-align:center;">' + msg('status_protected').escape() + '</div>');
 						});
 					});
 					$('.wds-button.revert').click(function(that) {

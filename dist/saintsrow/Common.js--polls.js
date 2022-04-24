@@ -90,13 +90,13 @@ function newPoll() {
 
 	$("#SRWpollSave").on("click", function(){
 		var newpoll = '{{#ifexpr:{{#ifeq:{{NAMESPACE}}:{{BASEPAGENAME}}|Saints Row Wiki:Polls|0|1}} and {{#if:{{{1|}}}|0|1}}|Parameter missing, see [[Template:Poll]].}}<div class="SRWpoll" data-pll="{{#if:{{{1|}}}|{{{1|}}}|{{#ifeq:{{NAMESPACE}}|Saints Row Wiki|{{SUBPAGENAME}}|Error}}}}" data-dsc="'+$("#newPolldesc").val().replace(/"/g, "'")+'"';
-		if ($("#newPolllink").val().length) newpoll += ' data-lnk="'+$("#newPolllink").val()+'"';
+		if ($("#newPolllink").val().length) newpoll += ' data-lnk="'+$("#newPolllink").val().replace(/_/g, " ")+'"';
 		if ($("#newPollimage").val().length) newpoll += ' data-img="'+$("#newPollimage").val()+'"';
 		newpoll += '><span class="pollstatus">Please wait for poll to load</span></div><noinclude>[\[Category:Polls|{{SUBPAGENAME}}]]</noinclude>'
 
 		$(".newPolloption").each(function(){ 
 			if (!$(this).val().length) return;
-			newpoll += '\n<span data-pll="{{{1|{{SUBPAGENAME}}}}}" data-opt="'+$(this).attr("data-index")+'" data-txt="'+$(this).val()+'"';
+			newpoll += '<span data-pll="{{{1|{{SUBPAGENAME}}}}}" data-opt="'+$(this).attr("data-index")+'" data-txt="'+$(this).val()+'"';
 			if ($("#"+$(this).attr("id")+"image").val().length)
 				newpoll += ' data-img="'+$("#"+$(this).attr("id")+"image").val()+'"';
 			newpoll += '></span>';

@@ -64,9 +64,9 @@ function initStdTemplates() {
 	  StdTemplatesVersion = localStorage.getItem('StdTemplatesVersion');
 	  localStorage.setItem('StdTemplatesVersion', StdTemplatesVer);
 	  if (StdTemplatesVersion != StdTemplatesVer) localStorage.removeItem('StdTemplates');
-	  else StdTemplates = localStorage.getItem('StdTemplates');
+	  StdTemplates = localStorage.getItem('StdTemplates');
 
-	  if (StdTemplates) {
+	  if (typeof StdTemplates == "string") { //StdTemplates is either is string, or null
 		sTArray = StdTemplates.split("\t");
 		for (i in sTArray) {
 			var sTsplit = sTArray[i].split(' -- ');

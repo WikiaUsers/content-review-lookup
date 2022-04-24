@@ -37,9 +37,9 @@ $(function() {
 	  stdSummariesVersion = localStorage.getItem('stdSummariesVersion');
 	  localStorage.setItem('stdSummariesVersion', stdSummariesVer);
 	  if (stdSummariesVersion != stdSummariesVer) localStorage.removeItem('stdSummaries');
-	  else stdSummaries = localStorage.getItem('stdSummaries');
+	  stdSummaries = localStorage.getItem('stdSummaries');
 
-	  if (stdSummaries) {
+	  if (typeof stdSummaries == "string") { //stdSummaries is either is string, or null
 		sSArray = stdSummaries.split("\t");
 		for (i in sSArray ) {
 			var val = (sSArray[i].indexOf('-- ') == 0) ? sSArray[i].substring(3) : '';

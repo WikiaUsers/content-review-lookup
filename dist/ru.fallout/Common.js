@@ -160,3 +160,10 @@ $(function () {
 		} );	
 	}
 } );
+
+//================================================================
+// Mbox2
+
+$('.mbox2__footer-toggler').click(function() {
+    $(this).closest('.mbox2').find('.mbox2__footer').toggle();
+});

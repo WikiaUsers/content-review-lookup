@@ -295,17 +295,28 @@ var char_poke_str = ".char-poke";
 var char_poke_function = function() {
 	if(check_element_exists(char_poke_str)){
 		var char_poke = document.querySelectorAll(char_poke_str);
-		var char_poke_class;
+		var char_poke_table;
 
 		for(var i = 0; i < char_poke.length; i++){
-	    	char_poke_class = char_poke[i].classList;
-	    	char_poke_colors = type_compare(char_poke_class);
+			char_poke_table = [];
+			// Extra first class that can be ignored
+			for(var j = 1; j < char_poke[i].classList.length; j++)
+				char_poke_table.push(char_poke[i].classList[j]);
+			// Extra last class, if not type, should become the type (second last class)
+			if(char_poke_table[char_poke_table.length - 1] == "tooltips-init-complete")
+				char_poke_table[char_poke_table.length - 1] = char_poke_table[char_poke_table.length - 2]
+	    	char_poke_colors = type_compare(char_poke_table);
 
     		char_poke[i].style.background = "linear-gradient(" +
     			char_poke_colors[0] + ", " + char_poke_colors[1] + ")";
 		}
 	}
 };
+function type_compare(class_list){
+	return (class_list.length > 2 && class_list[1] !== class_list[2])
+		? [poke_type(class_list[1]), poke_type(class_list[2])]
+		: [poke_type(class_list[1]), poke_type(class_list[1])];
+}
 page_load(char_poke_function);
 
 /* This function is used only for Movebox template. It takes the css class to paint borders and backgrounds. */

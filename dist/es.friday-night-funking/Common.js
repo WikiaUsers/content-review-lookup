@@ -15,7 +15,8 @@ window.UserTagsJS = {
 		Administradora: { u: 'Administradora' },
 		sysop: { u:'Administrador' },
 		cofun: { u:'Co-fundadora' },
-		Fundador: { u:'Fundador' },		
+		Fundador: { u:'Fundador' },	
+		rollback: { u:'Reversor' },			
 	}
 };
 
@@ -24,5 +25,6 @@ UserTagsJS.modules.custom = {
 		'MelooChan': ['bureaucrat', 'Administradora'],
 		'InTheCode': ['bureaucrat', 'Administradora', 'cofun'],
 		'Rey273': ['sysop'],
-		'RaphaelFenix': ['Fundador']			
+		'RaphaelFenix': ['Fundador'],
+		'Sora896': ['rollback'],	
 };

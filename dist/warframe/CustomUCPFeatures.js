@@ -133,6 +133,7 @@ function highlightUser(block, name, highlightBool) {
 			case "JoeBot":
 			case "Owlbot":
 			case "ScientiaBot":
+			case "Погрузочный бот":
 			case "Wikia":
 			case "WikiaBot":
 				block.style.backgroundColor = "rgba(250,90,0,0.25)";

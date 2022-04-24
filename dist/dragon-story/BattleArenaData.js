@@ -2390,7 +2390,7 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow",
 					"pink"
 				],
-				"rarity": "unbreedable"
+				"rarity": "common"
 			},
 			"chitter": {
 				"name": "Chitter",

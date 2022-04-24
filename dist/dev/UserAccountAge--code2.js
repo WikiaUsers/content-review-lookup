@@ -41,12 +41,14 @@
       configurable: false,
       value: Object.freeze({
         NAMES: Object.freeze({
-          ID_UAA_SPAN: "userAccountAge-span",
+          ID_UAA_CONTAINER: "userAccountAge-container",
           ID_UAA_LINK: "userAccountAge-a",
-          CLASS_MASTHEAD_TAG: "user-identity-header__tag",
+          CLASS_MASTHEAD_TAG: "user-identity-header__tag"
         }),
         TARGETS: Object.freeze({
+          GAMEPEDIA_MASTHEAD: ".userinfo .mw-headline",
           UCP_MASTHEAD_TAGS: ".user-identity-header__attributes",
+          GAMEPEDIA_MASTHEAD_TAGS: ".userinfo .grouptags"
         })
       }),
     },
@@ -74,6 +76,28 @@
           DEFAULT: false,
         }),
       }),
+    },
+
+    /*
+     * @description The <code>Globals</code> pseudo-enum is used to
+     * compartmentalize the various "wg" global <code>window</code> variables
+     * used by the script to determine information about the presently viewed
+     * page, such as whether it exists on a Gamepedia wiki or whether it is a
+     * userpage with a masthead. This was originally part of the
+     * <code>Utility</code> enum, but was moved to its own property for ease in
+     * fetching and caching these values via <code>mw.config.get</code>.
+     *
+     * @readonly
+     * @enum {object}
+     */
+    Globals: {
+      enumerable: true,
+      writable: false,
+      configurable: false,
+      value: Object.freeze([
+        "profileUserName",
+        "isGamepedia"
+      ])
     },
 
     /**
@@ -174,10 +198,21 @@
    * @returns {string} - Assembled <code>string</code> HTML for appending
    */
   this.assembleUserTag = function (paramText, paramTitle, paramAddress) {
-    return mw.html.element("span", {
-      "id": this.Selectors.NAMES.ID_UAA_SPAN,
-      "class": this.Selectors.NAMES.CLASS_MASTHEAD_TAG
-    }, new mw.html.Raw(
+
+    // Declarations
+    var element, attributes, isGamepedia;
+
+    // Definitions
+    isGamepedia = this.info.globals.isGamepedia; // Alias
+    element = (isGamepedia) ? "li" : "span";
+    attributes = {"id": this.Selectors.NAMES.ID_UAA_CONTAINER};
+
+    // Gamepedia tags require no styling class, only Fandom wikis
+    if (!isGamepedia) {
+      attributes.class = this.Selectors.NAMES.CLASS_MASTHEAD_TAG;
+    }
+
+    return mw.html.element(element, attributes, new mw.html.Raw(
       mw.html.element("a", {
         "id": this.Selectors.NAMES.ID_UAA_LINK,
         "href": paramAddress,
@@ -286,7 +321,9 @@
     // Definitions
     $helper = new $.Deferred();
     interval = null;
-    target = this.Selectors.TARGETS.UCP_MASTHEAD_TAGS;
+    target = (this.info.globals.isGamepedia)
+      ? this.Selectors.TARGETS.GAMEPEDIA_MASTHEAD_TAGS
+      : this.Selectors.TARGETS.UCP_MASTHEAD_TAGS;
 
     if (this.Utility.DEBUG) {
       window.console.log("target:", target);
@@ -396,12 +433,14 @@
         window.console.log(tag);
       }
 
-      // Inject CSS styling after assembly and prior to appending
-      mw.util.addCSS(
-        "#" + this.Selectors.NAMES.ID_UAA_LINK + "{" +
-          "color: inherit !important;" +
-        "}"
-      );
+      // Inject CSS styling after assembly and prior to appending (Fandom only)
+      if (!this.info.globals.isGamepedia) {
+        mw.util.addCSS(
+          "#" + this.Selectors.NAMES.ID_UAA_LINK + "{" +
+            "color: inherit !important;" +
+          "}"
+        );
+      }
 
       // Add tag to target tags group
       $(target).append(tag);
@@ -443,11 +482,30 @@
     // Validate any user config
     this.info.config = this.validateConfig(window.customUserAccountAge || {});
 
-    // Username if user page (UCP et al.)
-    this.info.userName = mw.config.get("profileUserName");
+    // Fetch and cache wg globals
+    this.info.globals = Object.freeze(mw.config.get(this.Globals));
+
+    /*
+     * Username if viewing user page (UCP et al.)
+     *
+     * Note: <code>profileUserName</code> exists on both Gamepedia and Fandom,
+     * but is defined by the former even on pages where the masthead is not
+     * present, such as user subpages/talk pages. The only reliable way to check
+     * for the masthead is to look for the element, which works because the
+     * masthead is not lazy loaded. On Fandom wikis,
+     * <code>profileUserName</code> is only defined if the masthead is also
+     * present.
+     */
+    this.info.userName = (!this.info.globals.isGamepedia)
+      ? this.info.globals.profileUserName
+      : $(this.Selectors.TARGETS.GAMEPEDIA_MASTHEAD).text();
 
     // Determine if masthead exists (indicates presence of userpage)
     this.info.hasMasthead = !!this.info.userName;
+
+    if (this.Utility.DEBUG) {
+      window.console.log(this.info.userName, this.info.hasMasthead);
+    }
 
     // Expose public methods for external debugging
     Object.defineProperty(module, "exports", {

@@ -4774,10 +4774,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "4_hours_4",
                 "rarity": 1,
-                "offspringeligibility": "dragontales",
-                "notes": [
-                    "feature"
-                ],
                 "parents": [
                     [
                         [

@@ -1,4 +1,4 @@
-// 05:32, 15 October 2021 (UTC) <nowiki>
+// 02:26, 19 April 2022 (UTC) <nowiki>
 
 // AUTO-REFRESH RECENT CHANGES
 window.AjaxRCRefreshText = 'Auto-refresh';
@@ -124,3 +124,17 @@ mw.loader.using(['mediawiki.util'], function() {
     );
 });
 // END 'MY BLOGS' LINK
+
+// REPLACE ASTERISKS WITH ARABIC STARS FOR USER RIGHTS PAGE
+$(function () {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'Userrights') {
+        return;
+    }
+
+    $('label.mw-userrights-groupcheckbox:contains(*)').each(function () {
+        $(this).text(function (_, txt) {
+            return txt.replace('*', '٭');
+        });
+    });
+});
+// END REPLACE ASTERISKS WITH ARABIC STARS

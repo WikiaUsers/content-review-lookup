@@ -703,20 +703,29 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user', 'mediawiki
 		case "Specialpages": {
 			var link = mw.util.getUrl('Special:Blankpage', { blankspecial: 'nuke' });
 			var canNuke = rights.includes('nuke');
-			
+			var nukeItem = $('<li>', {
+				class: "mw-specialpagerestricted",
+				html: $('<a>', {
+					title: "Special:Nuke",
+					href: link,
+					text: this.label + (canNuke ? ' (JavaScript)' : ""),
+				}),
+			});
 			$(canNuke
 				? '#mw-content-text a[href*="Special:Nuke"]'
 				: '#mw-content-text a[title="Special:Undelete"]'
-			).after(
-				$('<li>', { 
-					class: "mw-specialpagerestricted",
-					html: $('<a>', {
-						title: "Special:Nuke",
-						href: link,
-						text: this.label + (canNuke ? ' (JavaScript)' : ""),
-					}),
-				})
-			);
+			).parent().after(nukeItem);
+			var pageToolsTable = nukeItem.closest('.mw-specialpages-table');
+			var pageTools = $('li', pageToolsTable).toArray().sort(function (a, b) {
+				return a.textContent.localeCompare(b.textContent);
+			});
+			var uls = $('td[width="45%"] ul', pageToolsTable);
+			if (uls.length > 0) { // Avoid divide by zero error.
+				var perChunk = Math.ceil(pageTools.length / uls.length);
+				uls.each(function(i, ul) {
+					$(ul).append(pageTools.slice(i * perChunk, (i + 1) * perChunk));
+				});
+			}
 			break;
 		}
 		case "Blankpage": {

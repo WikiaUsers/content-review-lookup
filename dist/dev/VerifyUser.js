@@ -71,11 +71,6 @@ mw.loader.using(['mediawiki.util', 'mediawiki.template.mustache']).then(function
             '{{#i18n}}error-general{{/i18n}} <br/>' +
             '{{error}}' +
         '</div>';
-        
-    templates.customhandlercomplete = 
-        '<div style="text-align:center;line-height:180%;font-family:\'Rubik\';">' +
-        '{{#i18n}}verify-customhandler-complete{{/i18n}}'+
-        '</div>';
 
     verifyUser.servicesHost = 'https://services.fandom.com/';
 
@@ -92,19 +87,9 @@ mw.loader.using(['mediawiki.util', 'mediawiki.template.mustache']).then(function
         });
     };
 
-    verifyUser._clearProfileCache = function() {
-        return $.nirvana.postJson('UserProfilePage', 'saveUserData', {
-            userId: mw.config.get('wgUserId'),
-            data: '{"birthday":""}',
-            token: mw.user.tokens.get('editToken')
-        });
-    };
-
     verifyUser.toi18n = function () {
         return function (text, render) {
-            if (text === 'verify-complete') {
-                var customChannel = verifyUser.customChannel || 'verification';
-            }
+            var customChannel = (text === 'verify-complete') ? (verifyUser.customChannel || 'verification') : undefined;
             var message = verifyUser.i18n.msg(text, customChannel).plain();
             return render(mw.html.escape(message));
         };
@@ -145,11 +130,6 @@ mw.loader.using(['mediawiki.util', 'mediawiki.template.mustache']).then(function
             } else if (window.dev.VerifyUser.channel) {
                 verifyUser.customChannel = window.dev.VerifyUser.channel;
             }
-            
-            verifyUser.customHandler = {
-            	id: mw.util.getParamValue('cdid'),
-            	token: mw.util.getParamValue('cdToken')
-            };
 
             // Place the form into the main content section of the page
             $('#mw-content-text').empty().append(Mustache.render(templates.main, {
@@ -179,7 +159,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.template.mustache']).then(function
             // On click of verify, set Discord handle
             $('#verify').on('click', function () {
                 verifyUser._setDiscordHandle(userid, $('#verify-input').val()).done(function (data) {
-                    $('#mw-content-text').empty().append(Mustache.render(verifyUser.customHandler.id ? templates.customhandlercomplete : templates.complete, {
+                    $('#mw-content-text').empty().append(Mustache.render(templates.complete, {
                         username: username,
                         command: command,
                         i18n: verifyUser.toi18n

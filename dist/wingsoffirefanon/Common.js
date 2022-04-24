@@ -1,3 +1,4 @@
+//<nowiki>
 // Configuration for the script that replaces the removed welcome bot
 window.AutoCreateUserPagesConfig = {
 	content: {
@@ -6,6 +7,7 @@ window.AutoCreateUserPagesConfig = {
 	},
 	summary: "Script: Automatically creating user profile",
 };
+//</nowiki>
 
 
 // Only import these scripts for content mods and admins so we don't waste the

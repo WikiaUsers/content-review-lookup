@@ -81,6 +81,8 @@ var fp = fp || {
   }
 };
 
+
+
 $( document ).ready( fp.equalizeColumns );
 $( window ).resize( fp.equalizeColumns );
 /*********************************************

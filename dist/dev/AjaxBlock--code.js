@@ -406,7 +406,7 @@
             });
         },
         showBlockModal: function(username) {
-            var $modal = this.showModal(this.i18n.msg('block-title', username).plain(), {
+            var $modal = this.showModal(this.i18n.msg('block-title', username).escape(), {
                 id: 'BlockModal',
                 content: ui.div({
                     id: 'AjaxBlockModalContent',
@@ -517,7 +517,7 @@
             });
         },
         showUnblockModal: function(username) {
-            var $modal = this.showModal(this.i18n.msg('unblock-title', username).plain(), {
+            var $modal = this.showModal(this.i18n.msg('unblock-title', username).escape(), {
                 id: 'UnblockModal',
                 content: ui.div({
                     id: 'AjaxUnblockModalContent',

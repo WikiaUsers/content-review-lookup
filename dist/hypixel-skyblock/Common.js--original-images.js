@@ -27,7 +27,7 @@ $(function () {
         var pattern = /(?:static|vignette|images)\.wikia\.nocookie\.net/;
         if (srcvar && pattern.exec(srcvar)) {
             if (!window.wikiImageRenderOpts.allowDownscaling)
-                if ($target.attr("width") || $target.attr("height") || $target.parents(".wikia-gallery-item").length > 0)
+                if (($target.attr("width") || $target.attr("height") || $target.parents(".wikia-gallery-item").length > 0) && !/\.svg/.test(srcvar))
                     srcvar = srcvar.replace(/\/scale\-to\-width\-down\/\d+/g, "");
 
             if (window.wikiImageRenderOpts.formatOriginal && !/format=original/.test(srcvar)) {

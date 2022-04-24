@@ -195,11 +195,12 @@
         var result = false, m, radix = false, c = false;
         if (typeof str === 'string') {
             str = str.toLowerCase().trim();
-            if ((m = str.match(/^(?:#([\da-f])([\da-f])([\da-f])|#([\da-f]{2})([\da-f]{2})([\da-f]{2})|rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*|rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(1|\d+\.?\d*%?)\s*\))$/)) !== null) {
+            if ((m = str.match(/^(?:#([\da-f])([\da-f])([\da-f])|#([\da-f]{2})([\da-f]{2})([\da-f]{2})|#([\da-f]{2})([\da-f]{2})([\da-f]{2})([\da-f]{2})|rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*|rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(1|\d+\.?\d*%?)\s*\))$/)) !== null) {
                      if (m[1])  { c = m.slice(1,  4);  radix = 16; $.each(c, function (i,v) { c[i] += v; }); }
                 else if (m[4])  { c = m.slice(4,  7);  radix = 16; }
-                else if (m[7])  { c = m.slice(7, 10);  radix = 10; }
-                else if (m[10]) { c = m.slice(10, 13); radix = 10; }
+                else if (m[7])  { c = m.slice(7, 10);  radix = 16; }
+                else if (m[11]) { c = m.slice(11, 14); radix = 10; }
+                else if (m[14]) { c = m.slice(14, 17); radix = 10; }
                 if (radix) {
                     result = [ parseInt(c[0], radix), parseInt(c[1], radix), parseInt(c[2], radix) ];
                 }

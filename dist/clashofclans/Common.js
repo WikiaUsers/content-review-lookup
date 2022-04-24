@@ -136,6 +136,14 @@
 			$(elements).appendTo(".page-header__top").css({"display": "inline-block"});
 		}
 	});
+	
+	//Random Event
+	$(document).ready(function() {
+	var randomnumber = Math.floor(Math.random() * (100) + 1);
+		if (randomnumber == 1) {
+			$('.fandom-community-header__top-container').addClass('has-event');
+		}
+	});
 
     console.log('Site-wide JavaScript in MediaWiki:Common.js will load the ' +
                 'following JavaScript files:\n   ' + articles.join('\n   '));

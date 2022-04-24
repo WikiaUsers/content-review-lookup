@@ -48,13 +48,13 @@ $(function() {
         for (i = 0; i < nombres.length; i++) { //Change pages list, sort by similarity
             $(".noarticletext ul li:contains(" + nombres[i] + ")").appendTo('.noarticletext ul');
             if (nombres[i] >= 90) {
-                $(".noarticletext ul li:contains(" + nombres[i] + ") *").css('color', 'green');
+                $(".noarticletext ul li:contains(" + nombres[i] + ") *").css('color', 'var(--theme-success-color)');
             } else if (nombres[i] >= 80) {
-                $(".noarticletext ul li:contains(" + nombres[i] + ") *").css('color', 'orange');
+                $(".noarticletext ul li:contains(" + nombres[i] + ") *").css('color', 'var(--theme-warning-color)');
             } else if (nombres[i] >= 70) {
-                $(".noarticletext ul li:contains(" + nombres[i] + ") *").css('color', 'blue');
+                $(".noarticletext ul li:contains(" + nombres[i] + ") *").css('color', 'dodgerblue');
             } else if (nombres[i] >= 60) {
-                $(".noarticletext ul li:contains(" + nombres[i] + ") *").css('color', 'black');
+                $(".noarticletext ul li:contains(" + nombres[i] + ") *").css('color', 'var(--theme-page-text-color)');
             }
         }
     }

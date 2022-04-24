@@ -228,3 +228,20 @@ function createCollapseButtons() {
 }
  
 addOnloadHook( createCollapseButtons );
+
+/* Automated Profile Template */
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2:false,
+        3:'{{sub'+'st:MediaWiki:Welcome-message-user}}'
+    },
+    summary:'Automatische Begrüßungsnachricht'
+    notify: '<a href="/wiki/Benutzer_Diskussion:$2">Herzlich willkommen im Wiki, $1! Du hast eine neue Nachricht.</a>'
+};
+
+importArticles({ 
+    type: 'script', 
+    articles: [ 
+        'u:dev:MediaWiki:AutoCreateUserPages.js', 
+    ]
+});

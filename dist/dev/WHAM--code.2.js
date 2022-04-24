@@ -549,7 +549,7 @@
                 title: i18n.msg('contribs-wham-title').plain(),
                 text: i18n.msg('contribs-wham').plain()
             });
-            $('.mw-changeslist-links').append($('<span>').append($button));
+            $('.mw-contributions-user-tools .mw-changeslist-links, .UserProfileActivityModeration .mw-changeslist-links').append($('<span>').append($button));
             mw.hook('dev.wham.button').fire($button);
             mw.hook('QuickLogs.loaded').add(qlIntegration);
         }

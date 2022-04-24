@@ -1,3 +1,4 @@
+/* Any JavaScripts here are copied from [[w:c:minecraft:MediaWiki:Gadget-sound.js]]*/
 // jshint jquery:true, esversion:5
 /* globals require, module, mediaWiki, mw, OO */
 'use strict';

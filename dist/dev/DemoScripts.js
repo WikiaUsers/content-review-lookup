@@ -92,6 +92,11 @@
             page: 'DiscordGlobalFooter',
             styles: 'MediaWiki:DiscordGlobalFooter.css'
         },
+        
+        Doqs: {
+        	page: 'Doqs/demo',
+        	styles: 'MediaWiki:Doqs.css'
+        },
 		
         DropdownMenu: {
             selector: '.custom-dropdown',
@@ -170,10 +175,15 @@
 		GamepediaNav: {
 			page: 'GamepediaNav',
 			scripts: 'MediaWiki:GamepediaNav.js',
-			styles: 'MediaWiki:GamepediaNav.css',
+			styles: ['MediaWiki:GamepediaNav.css', 'MediaWiki:GamepediaToolbar.css'],
 			exec: function () {
 				$('body').addClass('is-gamepedia');
 			}
+		},
+		
+		GlobalNavDarkTheme: {
+			page: 'GlobalNavDarkTheme',
+			styles: 'MediaWiki:GlobalNavDarkTheme.css'
 		},
 		
         GlobalNavigationIcons: {
@@ -545,7 +555,7 @@
         
         WikiaCommunityCentralTheme: {
         	page: 'WikiaCommunityCentralTheme',
-        	scripts: 'MediaWiki:WikiaCommunityCentralTheme.css'
+        	styles: 'MediaWiki:WikiaCommunityCentralTheme.css'
         },
         
 	    WikiActivity: {
@@ -555,7 +565,7 @@
 	    
 	    WikiaNavigationBarStyle: {
 	    	page: 'WikiaNavigationBarStyle',
-	    	scripts: 'MediaWiki:WikiaNavigationBarStyle.css'
+	    	styles: 'MediaWiki:WikiaNavigationBarStyle.css'
 	    },
 
         Wikificator: {
@@ -589,6 +599,11 @@
                 });
             },
         },
+    	YouTubeModal: {
+        	'page': 'YouTubeModal',
+        	'scripts': 'MediaWiki:YouTubeModal/code.js',
+        	'styles': 'MediaWiki:YouTubeModal.css'
+    	}
     };
 
     function merge (other) {
