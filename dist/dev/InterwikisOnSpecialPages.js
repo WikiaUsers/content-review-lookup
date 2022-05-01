@@ -1,33 +1,40 @@
-$(function() {
+;(function($, mw) {
 	'use strict';
-	if ( window.iosp_loaded || mw.config.get( 'skin' ) !== 'fandomdesktop' || (mw.config.get( 'wgNamespaceNumber' ) == -1 && !mw.config.get( 'wgCanonicalSpecialPageName' )) )  return; 
+	const config = mw.config.get([
+		'wgCanonicalSpecialPageName',
+		'wgCanonicalNamespace',
+		'wgContentLanguage',
+		'wgNamespaceNumber',
+		'wgUserLanguage',
+		'wgScriptPath',
+		'wgTitle',
+		'skin'
+	]);
+	if ( window.iosp_loaded || config.skin !== 'fandomdesktop' || (config.wgNamespaceNumber == -1 && !config.wgCanonicalSpecialPageName) ) return; 
 	window.iosp_loaded = true;
 	var pagename = '';
-	if ( mw.config.get( 'wgNamespaceNumber' ) == 8 // MediaWiki
-	|| mw.config.get( 'wgNamespaceNumber' ) == 9 // Discussion
-	|| mw.config.get( 'wgNamespaceNumber' ) == 202 // Gamepedia User Profile
-	) {
-		pagename = mw.config.get( 'wgCanonicalNamespace' ) + ':' + mw.config.get( 'wgTitle' );
-	} 
-	else if ( mw.config.get( 'wgNamespaceNumber' ) == -1 ) { // Special pages
-		pagename = mw.config.get( 'wgCanonicalNamespace' ) + ':' + mw.config.get( 'wgCanonicalSpecialPageName' );
-		var subpageIdx = mw.config.get( 'wgTitle' ).indexOf( '/' );
+	if ( [8, 9, 202].includes(config.wgNamespaceNumber)) { // MediaWiki, Discussion, Gamepedia User Profile
+		pagename = config.wgCanonicalNamespace + ':' + config.wgTitle;
+	} else if ( config.wgNamespaceNumber == -1 ) { // Special pages
+		pagename = config.wgCanonicalNamespace + ':' + config.wgCanonicalSpecialPageName;
+		var subpageIdx = config.wgTitle.indexOf( '/' );
 		if ( subpageIdx >= 0 )
-		pagename = pagename + mw.config.get( 'wgTitle' ).substr( subpageIdx );
+		pagename = pagename + config.wgTitle.substr( subpageIdx );
 	}
 	
 	if ( pagename.length && $( '.page-header__languages' ).length === 0 && $( '.article-footer-languages').length === 0 ) {
-		new mw.Api().get({
+		$.post(config.wgScriptPath + '/api.php', {
 			action: 'query',
-			amlang: mw.config.get( 'wgUserLanguage' ),
-			ammessages: 'page-footer-languages-header',
 			format: 'json',
 			meta: 'siteinfo|allmessages',
+			formatversion: 2,
+			ammessages: 'page-footer-languages-header',
+			amlang: config.wgUserLanguage,
 			siprop: 'interwikimap|languages',
 			sifilteriw: 'local'
 		}).done(function (d) {
 			
-			const langs = [];
+			var langs = [];
 			var wiki_lang = 'English';
 			
 			d.query.interwikimap.forEach(function(entry){
@@ -42,48 +49,29 @@ $(function() {
 				
 				// Searching for current-language
 				d.query.languages.forEach(function(entry){
-					if(entry.code === mw.config.get( 'wgContentLanguage' )){
-						wiki_lang = entry["*"];
+					if(entry.code === config.wgContentLanguage){
+						wiki_lang = entry.name;
 					}
 				});
 				
 				// Header
 				$( '.page-header__top' ).append(
-					$( '<div>' )
-					.addClass( 'page-header__languages' )
-					.append(
-						$( '<div>' )
-						.addClass( 'wds-dropdown' )
-						.append(
-							$( '<div>' )
-							.addClass ('wds-dropdown__toggle iosp-icon-header' )
-							.text( wiki_lang )
-						)
-						.append(
-							$( '<div>' )
-							.addClass( 'wds-dropdown__content' )
-							.append(
-								$( '<ul>' )
-								.addClass( 'wds-list' )
-								.addClass( 'wds-is-linked' )
-							)
-						)
-					)
+					'<div class="page-header__languages">' +
+						'<div class="wds-dropdown">' +
+							'<div class="wds-dropdown__toggle iosp-icon-header">' + wiki_lang + '</div>' +
+							'<div class="wds-dropdown__content">' +
+								'<ul class="wds-list wds-is-linked"></ul>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
 				);
 				
 				// Footer
 				$( '.page-footer' ).prepend(
-					$( '<div>' )
-					.addClass( 'wds-collapsible-panel wds-is-collapsed page-footer__languages' )
-					.append(
-						$( '<header>' )
-						.addClass( 'wds-collapsible-panel__header iosp-icon-footer' )
-						.text( d.query.allmessages[0]['*'] )
-					)
-					.append(
-						$( '<div>' )
-						.addClass( 'wds-collapsible-panel__content' )
-					)
+					'<div class="wds-collapsible-panel wds-is-collapsed page-footer__languages">' +
+						'<header class="wds-collapsible-panel__header iosp-icon-footer">' + d.query.allmessages[0].content + '</header>' +
+						'<div class="wds-collapsible-panel__content"></div>' +
+					'</div>'
 				);
 				
 				// Adding hook for arrow-icon
@@ -96,30 +84,22 @@ $(function() {
 				
 				// Adding language-entries
 				for ( var lang in langs ) {
+					const link_ele = '<a href="'+ langs[lang].url.replace('$1', pagename) +'">' + langs[lang].language + '</a>';
 					$( '.page-header__languages .wds-dropdown__content .wds-list' ).append(
-						$( '<li>' )
-						.append(
-							$( '<a>' )
-							.attr( 'href', langs[lang].url.replace('$1', pagename) )
-							.attr( 'data-tracking-label', 'lang-' + langs[lang].prefix )
-							.text( langs[lang].language )
-						)
+						'<li>' + link_ele + '</li>'
 					);
 					$( '.page-footer__languages .wds-collapsible-panel__content' ).append(
-						$( '<a>' )
-						.attr( 'href', langs[lang].url.replace('$1', pagename) )
-						.attr( 'data-tracking-label', 'lang-' + langs[lang].prefix )
-						.text( langs[lang].language )
+						link_ele
 					);
 				}
 			}
 		});
 	}
 	
-	importArticle( {
+	importArticle({
 		type: 'script',
 		articles: [
 			'u:dev:MediaWiki:WDSIcons/code.js'
 		]
-	} );
-} );
+	});
+})( this.jQuery, this.mediaWiki );

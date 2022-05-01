@@ -145,7 +145,6 @@
         "wgArticleId",
         "wgArticlePath",
         "wgFormattedNamespaces",
-        "wgLoadScript",
         "wgNamespaceNumber",
         "wgPageName"
       ]),

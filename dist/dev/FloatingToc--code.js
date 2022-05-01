@@ -9,7 +9,6 @@
  */
 
 (function (mw, $, window) {
-  if (mw.config.get('skin') === 'fandomdesktop') return;
   var root = $("#toc");
   if (window.FloatingTocLoaded || !root.length) return;
   window.FloatingTocLoaded = true;
@@ -95,9 +94,9 @@
       );
 
       var win = $(window),
-        page = $("#WikiaPage"),
-        rail = $("#WikiaRail"),
-        navHeight = $("#globalNavigation").height(),
+        page = $(".page__main"),
+        rail = $(".page__right-rail"),
+        navHeight = $(".fandom-sticky-header").height(),
         barHeight = $("#WikiaBarWrapper").height(),
         speed = 250,
         i18n = _i18n.msg,

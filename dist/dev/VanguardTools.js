@@ -28,7 +28,6 @@
         'wgCanonicalSpecialPageName',
         'wgCityId',
         'wgDBname',
-        'wgLoadScript',
         'wgMessages',
         'wgReviewedScriptsTimestamp',
         'wgServer',
@@ -161,7 +160,7 @@
             }
             if (navigator.serviceWorker) {
                 // Create notification service worker.
-                VAN.redirect.worker = navigator.serviceWorker.register(new mw.Uri(VAN.mw.wgLoadScript).extend({
+                VAN.redirect.worker = navigator.serviceWorker.register(new mw.Uri(mw.util.wikiScript('load')).extend({
                     'debug': VAN.mw.debug,
                     'lang': VAN.mw.wgUserLanguage,
                     'mode': 'articles',

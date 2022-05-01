@@ -1,21 +1,24 @@
-$( document ).ready( function( $ ) {
+;(function($, mw) {
 	'use strict';
 	var pagename = '';
+	const config = mw.config.get([
+		'wgNamespaceNumber',
+		'wgCanonicalNamespace',
+		'wgCanonicalSpecialPageName',
+		'wgTitle'
+	]);
 
-	if ( mw.config.get( 'wgNamespaceNumber' ) == 8 // MediaWiki
-	|| mw.config.get( 'wgNamespaceNumber' ) == 9 // Diskussion
-	|| mw.config.get( 'wgNamespaceNumber' ) == 202 // Profil
-	) {
-		pagename = mw.config.get( 'wgCanonicalNamespace' ) + ':' + mw.config.get( 'wgTitle' );
+	if ( [8, 9, 202].includes(config.wgNamespaceNumber)) { // MediaWiki, Diskussion, Profil
+		pagename = config.wgCanonicalNamespace + ':' + config.wgTitle;
 	} 
-	else if ( mw.config.get( 'wgNamespaceNumber' ) == -1 ) { // Spezialseiten
-		pagename = mw.config.get( 'wgCanonicalNamespace' ) + ':' + mw.config.get( 'wgCanonicalSpecialPageName' );
-		var subpageIdx = mw.config.get( 'wgTitle' ).indexOf( '/' );
+	else if ( config.wgNamespaceNumber == -1 ) { // Spezialseiten
+		pagename = config.wgCanonicalNamespace + ':' + config.wgCanonicalSpecialPageName;
+		const subpageIdx = config.wgTitle.indexOf( '/' );
 		if ( subpageIdx >= 0 )
-		pagename = pagename + mw.config.get( 'wgTitle' ).substr( subpageIdx );
+		pagename = pagename + config.wgTitle.substr( subpageIdx );
 	}
 
-	var langs = {
+	const langs = {
 		'technik': 'Technik Wiki',
 		'cs': 'Čeština',
 		// 'de': 'Deutsch',
@@ -40,37 +43,22 @@ $( document ).ready( function( $ ) {
 
 	if ( pagename.length ) {
 		$( '.page-header__top' ).append(
-			$( '<div>' )
-			.addClass( 'page-header__languages' )
-			.append(
-				$( '<div>' )
-				.addClass( 'wds-dropdown' )
-				.append(
-					$( '<div>' )
-					.addClass ('wds-dropdown__toggle' )
-					.text( 'Deutsch' )
-				)
-				.append(
-					$( '<div>')
-					.addClass( 'wds-dropdown__content' )
-					.append(
-						$( '<ul>' )
-						.addClass( 'wds-list' )
-						.addClass( 'wds-is-linked' )
-					)
-				)
-			)
+			'<div class="page-header__languages">' +
+				'<div class="wds-dropdown">' +
+					'<div class="wds-dropdown__toggle iosp-icon-header">Deutsch</div>' +
+					'<div class="wds-dropdown__content">' +
+						'<ul class="wds-list wds-is-linked"></ul>' +
+					'</div>' +
+				'</div>' +
+			'</div>'
 		);
 		
 		for ( var lang in langs ) {
 			$( '.page-header__languages .wds-dropdown__content .wds-list' ).append(
-				$( '<li>')
-				.append(
-					$( '<a>')
-					.attr( 'href', 'https://minecraft' + ( lang == 'technik' ? '-technik.fandom.com/de' : '.fandom.com' + (lang == 	'en' ? '' : '/' + lang ) ) + '/wiki/' + pagename )
-					.text( langs[lang] )
-				)
+				'<li>' +
+					'<a href="https://minecraft' + ( lang == 'technik' ? '-technik.fandom.com/de' : '.fandom.com' + (lang == 	'en' ? '' : '/' + lang ) ) + '/wiki/' + pagename + '">' + langs[lang] + '</a>' +
+				'</li>'
 			);
 		}
 	}
-} );
+})(this.jQuery, this.mediaWiki);

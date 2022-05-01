@@ -269,7 +269,7 @@ mw.loader.using([
             watchlist: 'preferences',
             title: page,
             reason: $('#protect-reason').val(),
-            token: mw.user.tokens.get('editToken')
+            token: mw.user.tokens.get('csrfToken')
         })
         .done(function (d) {
             console.log(i18n.msg('success', page).plain());

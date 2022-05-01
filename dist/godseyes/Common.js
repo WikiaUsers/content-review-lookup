@@ -171,3 +171,49 @@ window.railWAM = {
     autoLogForUsers:["User:Kusuo1412"],
     loadOnNamespace:[-1],
 };
+
+/* The code below randomly changes text above top navigation from "God's Eyes Wiki" to one from the list */
+var wiki_name_number=Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + 1;
+var wiki_name_text=["getz meh le duck and u getz nuthin", "Looks like someone didn't follow the rules.", "Ho ho ho! You better have been good!", "Gaze upon my miraculous chocolate.", "How do you like my tricks?", "Your last moments will be...very pleasurable.", "Oh? Who do we have here...? Your energy looks delicious! Won't you share it with me?", "Thanks for visiting our wiki!", "Come again soon...", "Hope you're having a nice stay!", "Make sure to read our guidelines!", "Don't break any rule!", "Check out our affiliates", "Stop by our Community Portal to see what's going on around the wiki", "Read our weekly news article", "Have fun!", "Well, I guess we won't be seeing you again...", "See you! Never!", "Haha", "Oh, My Stars and Garters!", "It seems we have attracted a fellow gamer, I see", "Did you know, Lunime was originally called Cyan Productions?", "Hope you're doing well! Wherever you are...", "Hello!", "Now what do we have here?", "And There Came a Day Unlike Any Other...", "Thwip!", "Champions Charge!"
+][wiki_name_number];
+var elements=document.getElementsByClassName('fandom-community-header__community-name');
+var wiki_name=elements[0];
+wiki_name.textContent=wiki_name_text;
+
+/* Translator Credit. Dev Fandom*/
+$(function() {
+    var config = mw.config.get([
+        'wgAction',
+        'wgPageContentLanguage',
+        'wgUserLanguage'
+    ]);
+    if (window.UseTranslator === false || config.wgAction !== 'view') {
+        return;
+    }
+    window.UseTranslator = false;
+
+    function click() {
+        window.open(new mw.Uri('https://translate.google.com/translate').extend({
+            hl: config.wgUserLanguage,
+            sl: config.wgPageContentLanguage,
+			tl: config.wgUserLanguage,
+            u: location.href
+        }).toString());
+    }
+    $('#content').prepend(
+        $('<button>', {
+            id: 'TranslateButton',
+            'class': 'wds-button',
+            css: {
+                'font-weight': 800,
+                width: '6em',
+                margin: '5px 0 11px',
+                background: 'linear-gradient(to right, #00cdd0, #058d9d, #00cdd0)',
+                color:'white',
+                textShadow:'0 0 5px #ffffff, 0 0 5px #00cdd0'
+            },
+            click: click,
+            text: 'Translate'
+        })
+    );
+});

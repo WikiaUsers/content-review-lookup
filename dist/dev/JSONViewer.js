@@ -1,4 +1,4 @@
-$(function () {
+mw.loader.using('mediawiki.util').then(function () {
     //Don't run if:
     //-we've already ran
     //-we're not viewing or editing the page

@@ -158,7 +158,7 @@ mw.loader.using('mediawiki.api', function() {
             timestamps: '',
             title: page,
             reason: reason,
-            token: mw.user.tokens.get('editToken')
+            token: mw.user.tokens.get('csrfToken')
         }).done(function(d) { 
             if (!d.error) {
                 console.log(i18n.msg('success', page).escape());

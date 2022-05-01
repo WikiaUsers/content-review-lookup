@@ -24,92 +24,142 @@ if (document.querySelector(".loot-container-table") != null)
 	mw.loader.load('/index.php?title=MediaWiki:ContainerTable.js&action=raw&ctype=text/javascript');
 }
 
-// ======
-/*
-    This snippet allows placing class="unsortable" on table rows "|-" in order to hide
-    them when sorting. One instance where this may be useful is when using colspans
-    to denote table sections. When the user clicks sort on a column, these colspans
-    shift around and may no longer make sense in the sorted context.
-*/
-
-// Defer until JQuery UI (specifically the tablesorter) has been loaded
-function deferUntilJQueryUILoaded(callback)
+(function() // <- Immediately invoked function expression to scope variables and functions to this script
 {
-    if (window.jQuery != null && window.jQuery.tablesorter != null)
-        callback();
-    else
-        setTimeout(function() { deferUntilJQueryUILoaded(callback) }, 200);
-}
-
-var sortableTables = document.querySelectorAll(".wikitable.sortable");
-if (sortableTables.length > 0) deferUntilJQueryUILoaded(removeUnsortableRowsOnSort);
-
-function removeUnsortableRowsOnSort()
-{
-    sortableTables.forEach(function(t)
-    {
-        var unsortableRows = t.querySelectorAll("tr.unsortable");
-
-        // Don't continue if the table has no unsortable rows
-        if (unsortableRows.length == 0) return;
-
-        // I don't think you can .bind to a tablesorter after it has been initialized
-        // so we perform this on the click event of all headerSort cells instead
-        var headerSorts = t.querySelectorAll(".headerSort");
-        headerSorts.forEach(function(h){ h.addEventListener("click", removeAllUnsortableRows); });
-
-        function removeAllUnsortableRows()
-        {
-            for (var i = 0; i < unsortableRows.length; i++)
-            {
-                // Don't just hide the row - delete it.
-                unsortableRows[i].remove();
-            }
-
-            // Remove all headerSort even listeners and free up resources for GC
-            headerSorts.forEach(function(h){ h.removeEventListener("click", removeAllUnsortableRows); });
-            headerSorts = null;
-            unsortableRows = null;
-        }
-    });
-}
-
-// ======
-/*
-	This snippet moves elements with the class res-img-overlay so that they are
-	within the parent element of the first img of res-img.
-	It also ensures that said parent element has position:relative
-	See Template:Res-img for more info
-*/
-var resImgOverlays = document.querySelectorAll(".res-img .res-img-overlay");
-
-if (resImgOverlays.length > 0)
-{
-	resImgOverlays.forEach(function(o)
+	// ======
+	/*
+	    This snippet allows placing class="unsortable" on table rows "|-" in order to hide
+	    them when sorting. One instance where this may be useful is when using colspans
+	    to denote table sections. When the user clicks sort on a column, these colspans
+	    shift around and may no longer make sense in the sorted context.
+	*/
+	
+	// Defer until JQuery UI (specifically the tablesorter) has been loaded
+	function deferUntilJQueryUILoaded(callback)
 	{
-		var imgParent = o.closest(".res-img").querySelector("img").parentNode;
-		
-		if (imgParent != null)
+	    if (window.jQuery != null && window.jQuery.tablesorter != null)
+	        callback();
+	    else
+	        setTimeout(function() { deferUntilJQueryUILoaded(callback) }, 200);
+	}
+	
+	var sortableTables = document.querySelectorAll(".wikitable.sortable");
+	if (sortableTables.length > 0) deferUntilJQueryUILoaded(removeUnsortableRowsOnSort);
+	
+	function removeUnsortableRowsOnSort()
+	{
+	    sortableTables.forEach(function(t)
+	    {
+	        var unsortableRows = t.querySelectorAll("tr.unsortable");
+	
+	        // Don't continue if the table has no unsortable rows
+	        if (unsortableRows.length == 0) return;
+	
+	        // I don't think you can .bind to a tablesorter after it has been initialized
+	        // so we perform this on the click event of all headerSort cells instead
+	        var headerSorts = t.querySelectorAll(".headerSort");
+	        headerSorts.forEach(function(h){ h.addEventListener("click", removeAllUnsortableRows); });
+	
+	        function removeAllUnsortableRows()
+	        {
+	            for (var i = 0; i < unsortableRows.length; i++)
+	            {
+	                // Don't just hide the row - delete it.
+	                unsortableRows[i].remove();
+	            }
+	
+	            // Remove all headerSort even listeners and free up resources for GC
+	            headerSorts.forEach(function(h){ h.removeEventListener("click", removeAllUnsortableRows); });
+	            headerSorts = null;
+	            unsortableRows = null;
+	        }
+	    });
+	}
+	
+	// ======
+	/*
+	    This snippet re-anchors the page to rows in a table when the page loads.
+	    It works on both rows (tr) and cells (td + th) that have been assigned an ID.
+	    Since UCX, anchoring to a position in a really long page almost never works
+	*/
+	
+	var lastAnchoredRow = null;
+	
+	function onAnchor(fromHashChange = false)
+	{
+	    if (!location.hash) return;
+	    var anchor = document.getElementById(location.hash.slice(1));
+	    if (!anchor) return;
+	    
+	    // Anchor to row or cell
+	    if (anchor.tagName == "TR" || anchor.tagName == "TD" || anchor.tagName == "TH")
+	    {
+	        if (anchor.tagName == "TD" || anchor.tagName == "TH")
+	            anchor = anchor.parentElement;
+	
+	        // Highlight the row if one was anchored to
+	        anchor.classList.add("anchored-row");
+	        lastAnchoredRow?.classList.remove("anchored-row");
+	
+	        // Scroll the row into view
+	        anchor.scrollIntoView({behavior: fromHashChange ? "auto" : "smooth", block: "center", inline: "nearest"});
+	        lastAnchoredRow = anchor;
+	    }
+	    
+	    // Anchor to section
+	    else if (anchor.classList.contains("mw-headline"))
+	    {
+	        var headerOffset = 50;
+	        var elementPosition = anchor.getBoundingClientRect().top;
+	        var offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+	        window.scrollTo({
+	             top: offsetPosition,
+	             behavior: "auto"
+	        });
+	    }
+	}
+	
+	onAnchor();
+	window.addEventListener("hashchange", function() { onAnchor(true); });
+	
+	// ======
+	/*
+		This snippet moves elements with the class res-img-overlay so that they are
+		within the parent element of the first img of res-img.
+		It also ensures that said parent element has position:relative
+		See Template:Res-img for more info
+	*/
+	var resImgOverlays = document.querySelectorAll(".res-img .res-img-overlay");
+	
+	if (resImgOverlays.length > 0)
+	{
+		resImgOverlays.forEach(function(o)
 		{
-			imgParent.insertBefore(o, imgParent.firstChild);
-			imgParent.style.position = "relative";
-		}
+			var imgParent = o.closest(".res-img").querySelector("img").parentNode;
+			
+			if (imgParent != null)
+			{
+				imgParent.insertBefore(o, imgParent.firstChild);
+				imgParent.style.position = "relative";
+			}
+		});
+	}
+	
+	// ======
+	/*
+		Because new lines are stripped from portable infoboxes, it means we can't have
+		multiline tooltips anymore. This snippet fixes that, and replaces all instances
+		of "\n" in ALL tooltips (to maintain consistency and expectations) with a new
+		line character. Previously tooltips could use the LINE FEED entity - &#10;
+	*/
+	var tooltips = document.querySelectorAll(".page-content span.tooltip");
+	tooltips.forEach(function(t)
+	{
+	   var title = t.getAttribute("title");
+	   t.setAttribute("title", title.replaceAll("\\n", "\n"));
 	});
-}
 
-// ======
-/*
-	Because new lines are stripped from portable infoboxes, it means we can't have
-	multiline tooltips anymore. This snippet fixes that, and replaces all instances
-	of "\n" in ALL tooltips (to maintain consistency and expectations) with a new
-	line character. Previously tooltips could use the LINE FEED entity - &#10;
-*/
-var tooltips = document.querySelectorAll(".page-content span.tooltip");
-tooltips.forEach(function(t)
-{
-   var title = t.getAttribute("title");
-   t.setAttribute("title", title.replaceAll("\\n", "\n"));
-});
+})();
 
 // ======
 

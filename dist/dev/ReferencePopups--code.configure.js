@@ -531,11 +531,11 @@ dev.ReferencePopups = dev.ReferencePopups || {};
     mw.loader.load(mwDeps, null, true);
     mw.loader.using(mwDeps, mwReady.resolve, mwReady.reject);
     var colors = window.dev.colors || $.ajax({
-        url: mw.config.get('wgLoadScript'),
+        url: 'https://dev.fandom.com/load.php',
         data: {
             mode: 'articles',
             only: 'scripts',
-            articles: 'w:dev:Colors/code.js'
+            articles: 'MediaWiki:Colors/code.js'
         },
         dataType: 'script',
         cache: true

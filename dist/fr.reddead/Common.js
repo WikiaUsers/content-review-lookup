@@ -50,12 +50,12 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'MultipleUpload') {
 		var $desc = $('#wpUploadDescription');
 		if ($desc.val()) return; // If not empty then don't do anything (i.e. error message confirm page)
 		$desc.val('{{Fichier\n' +
-				  '|origine=\n' +
-				  '|année=\n' +
-				  '|jeu=\n' +
-				  '|quoi=\n' +
-				  '|type=\n' + 
-				  '}}\N'
+				  '| origine = \n' +
+				  '| année = \n' +
+				  '| jeu = \n' +
+				  '| quoi = \n' +
+				  '| type = \n' + 
+				  '}}\n'
 		);
 	});
 }
@@ -157,7 +157,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 						if (!$.trim($customRows.find('#origineBox').val())) {
 							$.showModal('Origine Incomplète', 'Merci de renseigner l\'origine correcte pour votre image.');
 							return false;
-						}else if (/google/i.test($customRows.find('#sourceBox').val())) {
+						}else if (/google/i.test($customRows.find('#origineBox').val())) {
 							$.showModal('Source Incorrecte', 'Google n’est pas une source valide pour les images. Merci de saisir l\'origine concrète du fichier.');
 							$customRows.find('#origineBox').val('');
 							return false;
@@ -182,7 +182,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 		 
 					// Autocomplete links
 					$.getScript(mw.util.wikiScript('load') + 
-						'?debug=false&lang=en&mode=articles&skin=oasis&missingCallback=importArticleMissing&articles=u%3Acamtest%3AMediaWiki%3ATextareaHelper.js%7Cu%3Adev%3AMediaWiki%3AColors%2Fcode.js%7Cu%3Adev%3AMediaWiki%3AMiniComplete%2Fcode.js&only=scripts', function () {
+						'?debug=false&lang=en&mode=articles&skin=fandomdesktop&missingCallback=importArticleMissing&articles=u%3Acamtest%3AMediaWiki%3ATextareaHelper.js%7Cu%3Adev%3AMediaWiki%3AColors%2Fcode.js%7Cu%3Adev%3AMediaWiki%3AMiniComplete%2Fcode.js&only=scripts', function () {
 						dev.minicomplete.load(
 							$customRows.find('#origineBox'),$customRows.find('#jeuBox'),$customRows.find('#quoiBox')
 						);

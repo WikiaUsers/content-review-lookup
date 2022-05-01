@@ -138,15 +138,12 @@ function initFeed(content, isMod, canBlock) {
 }
 
 function createDiscussionsFeed() {
-    if(wgNamespaceNumber == -1 && wgTitle == "DiscussionsFeed") { //TODO: i18n make dictionary
-        document.title = 'Discussions Feed - ' + wgSiteName;
-        var canBlock = Boolean(wgUserGroups.indexOf('sysop') > -1 || wgUserGroups.indexOf('staff') > -1 || wgUserGroups.indexOf('wiki-representative') > -1 || wgUserGroups.indexOf('wiki-specialist') > -1 || wgUserGroups.indexOf('helper') > -1 || wgUserGroups.indexOf('soap') > -1 || wgUserGroups.indexOf('global-discussions-moderator') > -1),
-            isMod = Boolean(canBlock || wgUserGroups.indexOf('threadmoderator') > -1);
-        if (window.skin == "oasis") {
-            document.getElementById("PageHeader").getElementsByTagName("h1")[0].textContent = "Discussions Feed"; //Oasis skin title
-        } else if (window.skin == "monobook") {
-             document.getElementById("firstHeading").textContent = "Discussions Feed"; //Monobook skin title
-        }
+    if(mw.config.get('wgNamespaceNumber') == -1 && mw.config.get('wgTitle') == "DiscussionsFeed") { //TODO: i18n make dictionary
+        document.title = 'Discussions Feed - ' + mw.config.get('wgSiteName');
+        var ug = mw.config.get('wgUserGroups');
+        var canBlock = Boolean(ug.indexOf('sysop') > -1 || ug.indexOf('staff') > -1 || ug.indexOf('wiki-representative') > -1 || ug.indexOf('wiki-specialist') > -1 || ug.indexOf('helper') > -1 || ug.indexOf('soap') > -1 || ug.indexOf('global-discussions-moderator') > -1),
+            isMod = Boolean(canBlock || ug.indexOf('threadmoderator') > -1);
+        document.getElementById("firstHeading").textContent = "Discussions Feed";
         var content = document.getElementById("mw-content-text");
         content.innerHTML = 'Loading feed... <img src="https://images.wikia.nocookie.net/wlb/images/7/74/WIP.gif" /></div>';
         initFeed(content, isMod, canBlock);

@@ -1,30 +1,33 @@
 // SOAP script to add quick action buttons on file pages
 // @author Kopcap94, Noreplyz, magiczocker
  
-;(function($, mw) {
+;(function($, mw, window) {
 	"use strict";
-	var config = mw.config.get([
+	const config = mw.config.get([
+		'wgScriptPath',
 		'wgArticlePath',
 		'wgPageName',
 		'wgCanonicalNamespace',
 		'wgUserLanguage'
 	]);
-	if (config.wgCanonicalNamespace !== 'File') return;
-
+	if (config.wgCanonicalNamespace !== 'File' || window.FileToolsLoaded) return;
+	window.FileToolsLoaded = true;
+	
 	var last_summary = "";
-	var api = new mw.Api();
+	const token = mw.user.tokens.values.csrfToken;
 	var msg;
-
-	api.get({
+	
+	$.post( config.wgScriptPath + '/api.php', {
 		action: 'query',
 		format: 'json',
-		meta: 'userinfo',
-		uiprop: 'rights',
 		prop: 'imageinfo',
+		meta: 'userinfo',
 		titles: config.wgPageName,
-		iilocalonly: 1
+		formatversion: 2,
+		iilocalonly: 1,
+		uiprop: 'rights'
 	}).done(function (d) {
-		if (Object.values(d.query.pages)[0].imagerepository.length > 0) {
+		if (d.query.pages[0].imagerepository === 'local') {
 			var FT = {
 				buttons: function() {
 					if (d.query.userinfo.rights.includes('delete')) {
@@ -63,13 +66,11 @@
 						if (d.query.userinfo.rights.includes('protect')) {
 							content += '<button class="wds-button protect">' + msg('button_protect').escape() + '</button>';
 						}
-						$('[data-tab-body="history"] h2, #filehistory').after(
-							content
-						);
+						$('[data-tab-body="history"] h2, #filehistory').after(content);
 					}
 					FT.buttons();
 					$('.wds-button.deleteAll').click(function(that) {
-						var leng = $('#mw-imagepage-section-filehistory tr').length;
+						const leng = $('#mw-imagepage-section-filehistory tr').length;
 						var summary = prompt(msg('summary_title', msg('summary_default_clean').plain() ).parse(), last_summary);
 						if (summary === null) return null;
 						last_summary = summary;
@@ -79,11 +80,13 @@
 						for (var i=3;i<=leng;i++) {
 							var rev = $('#mw-imagepage-section-filehistory tr:nth-child(' + i + ') > td:first-child > a:first-child').attr('href').replace(/.*oldimage=(.+)(&.*)?/,'$1'),
 							num = i;
-							api.postWithEditToken({
+							$.post( config.wgScriptPath + '/api.php', {
 								action: 'delete', 
 								title: config.wgPageName, 
 								oldimage: decodeURIComponent(rev), 
-								reason: summary, 
+								reason: summary,
+								token: token,
+								formatversion: 2
 							}).done(function() {
 								if (num==leng) { 
 									FT.refresh();
@@ -101,12 +104,14 @@
 						if (summary.length === 0) {
 							summary = msg('summary_default_protect').plain();
 						}
-						api.postWithEditToken({
+						$.post( config.wgScriptPath + '/api.php', {
 							action: 'protect',
 							title: config.wgPageName,
 							protections: 'upload=sysop', 
 							reason: summary,
-							expiry: '2 weeks'
+							expiry: '2 weeks',
+							token: token,
+							formatversion: 2
 						}).done(function() {
 							$('#filehistory').after('<div class="mw-warning-with-logexcerpt" style="margin:5px 0; text-align:center;">' + msg('status_protected').escape() + '</div>');
 						});
@@ -120,11 +125,13 @@
 						if (summary.length === 0) {
 							summary = msg('summary_default_revert').plain();
 						}
-						api.postWithEditToken({
+						$.post( config.wgScriptPath + '/api.php', {
 							action: 'filerevert',
 							filename: config.wgPageName.replace(/^[^:]+:(.+)/,'$1'), 
 							archivename: decodeURIComponent(archname), 
-							comment: summary, 
+							comment: summary,
+							token: token,
+							formatversion: 2
 						}).done(function() {
 							FT.refresh();
 						});
@@ -137,11 +144,13 @@
 						if (summary.length === 0) {
 							summary = msg('summary_default_deletea').plain();
 						}
-						api.postWithEditToken({
+						$.post( config.wgScriptPath + '/api.php', {
 							action: 'delete', 
 							title: config.wgPageName,
 							oldimage: decodeURIComponent(delname), 
-							reason: summary, 
+							reason: summary,
+							token: token,
+							formatversion: 2
 						}).done(function() {
 							$(that).parents('tr').css('opacity','0.2');
 						});
@@ -158,4 +167,4 @@
 			});
 		}
 	});
-})(this.jQuery, this.mediaWiki);
+})(this.jQuery, this.mediaWiki, window);

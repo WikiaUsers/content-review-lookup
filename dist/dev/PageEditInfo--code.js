@@ -1,7 +1,7 @@
 ;(function() {
     // Make a function to prepend the items to the article
     function prependContent ($el) {
-        $el.insertBefore('.WikiaArticle');
+        $el.insertBefore('#content');
     }
     
     // Run said function

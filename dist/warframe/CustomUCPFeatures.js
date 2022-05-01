@@ -17,7 +17,7 @@ function twelveHourTime(time, timeBool) {
 				if (num < 100) {
 					num = num + 1200;
 				}
-						
+				
 				if (num - 100*Math.floor(num/100) < 10) {
 					newTime = Math.floor(num/100) + ":0" + (num - 100*Math.floor(num/100));
 				} else {
@@ -28,7 +28,7 @@ function twelveHourTime(time, timeBool) {
 				if (num >= 1300) {
 					num = Math.abs(num - 1200);
 				}
-					
+				
 				if (num - 100*Math.floor(num/100) < 10) {
 					newTime = Math.floor(num/100) + ":0" + (num - 100*Math.floor(num/100));
 				} else {
@@ -139,7 +139,7 @@ function highlightUser(block, name, highlightBool) {
 				block.style.backgroundColor = "rgba(250,90,0,0.25)";
 				break;
 		}
-	
+		
 		if (window.CustomUCPFeatures && window.CustomUCPFeatures.highlightNames && window.CustomUCPFeatures.highlightColors && (window.CustomUCPFeatures.highlightNames.length === window.CustomUCPFeatures.highlightColors.length)) {
 			for (m = 0; m < window.CustomUCPFeatures.highlightNames.length; m++) {
 				if (name == window.CustomUCPFeatures.highlightNames[m]) {
@@ -196,7 +196,7 @@ function betterHistory() {
 /* Better Difference START */
 $(function() {			// Highlights admin/mod contributions, and converts
 	betterDifference(); // time from 24h to 12h in page difference comparison.
-});					    // Requires twelveHourTime() and highlightUser()
+});						// Requires twelveHourTime() and highlightUser()
 
 function betterDifference() {
 	var oldVer = document.getElementById("mw-diff-otitle1");
@@ -273,7 +273,7 @@ function betterComments() {
 				commentHeader = comment.getElementsByClassName("EntityHeader_header-details__1bZ7-")[0];
 				
 				posterName = commentHeader.children[0].children[0].href;
-				posterName = posterName.replace(/https|warframe\.fandom\.com|zh-tw|wiki|User|Special|Contributions|\%E4\%BD\%BF\%E7\%94\%A8\%E8\%80\%85|\:|\//g, "");
+				posterName = posterName.replace(/https|warframe\.fandom\.com|zh-tw|wiki|User|Special:Contributions|\%E4\%BD\%BF\%E7\%94\%A8\%E8\%80\%85|\:|\//g, "");
 				posterName = posterName.replace(/\%20/g, " ");
 				posterName = posterName.replace(/\%3A/g, ":");
 				
@@ -301,7 +301,7 @@ function betterComments() {
 						commentHeader = comment.getElementsByClassName("EntityHeader_header-details__1bZ7-")[0];
 						
 						posterName = commentHeader.children[0].children[0].href;
-						posterName = posterName.replace(/https|warframe\.fandom\.com|zh-tw|wiki|User|Special|Contributions|\%E4\%BD\%BF\%E7\%94\%A8\%E8\%80\%85|\:|\//g, "");
+						posterName = posterName.replace(/https|warframe\.fandom\.com|zh-tw|wiki|User|Special:Contributions|\%E4\%BD\%BF\%E7\%94\%A8\%E8\%80\%85|\:|\//g, "");
 						posterName = posterName.replace(/\%20/g, " ");
 						posterName = posterName.replace(/\%3A/g, ":");
 						
@@ -337,13 +337,14 @@ function fixCommentHeader(commentID, replyID, commentHeader, poster, posterName,
 	
 	node1 = document.createElement("A"); node1.className = "EntityHeader_name__2oRXg";
 	node1.href = link;
-if ((window.CustomUCPFeatures && window.CustomUCPFeatures.revealAnonIP) || (poster !== "A Fandom user" && poster !== "A Lone Tenno")) {
-        node1.innerText = posterName;
-    } else if (poster === "A Fandom user") {
-        node1.innerText = "A Lone Tenno";
-    } else {
-        node1.innerText = poster;
-    }
+	if ((window.CustomUCPFeatures && window.CustomUCPFeatures.revealAnonIP) ||
+			(poster !== "A Fandom user" && poster !== "A Lone Tenno")) {
+		node1.innerText = posterName;
+	} else if (poster === "A Fandom user") {
+		node1.innerText = "A Lone Tenno";
+	} else {
+		node1.innerText = poster;
+	}
 	commentHeader.appendChild(node1);
 	
 	node1 = document.createElement("SPAN"); node1.className = "EntityHeader_middot__2f4XC";
@@ -365,7 +366,7 @@ if ((window.CustomUCPFeatures && window.CustomUCPFeatures.revealAnonIP) || (post
 $(function() {							  // Highlights admin/mod activity and converts
 	betterWikiActivity();				  // time from 24h to 12h.
 	setInterval(betterWikiActivity, 500); // Requires twelveHourTime() and highlightUser()
-});					    								 
+});
 
 function betterWikiActivity() {
 	var activityList = document.querySelectorAll("table.mw-enhanced-rc");

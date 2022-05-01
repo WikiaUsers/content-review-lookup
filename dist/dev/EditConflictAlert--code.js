@@ -12,7 +12,6 @@ $(function() {
         'wgArticleId',
         'wgContentLanguage',
         'wgCurRevisionId',
-        'wgLoadScript',
         'wgNamespaceIds',
         'wgNamespaceNumber',
         'wgPageName',
@@ -52,7 +51,7 @@ $(function() {
     	if (diff_css_loaded || config.skin !== 'fandomdesktop') return;
     	diff_css_loaded = true;
     	/* Re-importing skin.fandomdesktop.css because VE loads in other CSS that overrides diff css */
-    	$.get(config.wgLoadScript + '?modules=mediawiki.diff.styles%7Cskin.fandomdesktop.css&only=styles').done(function(data) {
+    	$.get(mw.util.wikiScript('load') + '?modules=mediawiki.diff.styles%7Cskin.fandomdesktop.css&only=styles').done(function(data) {
     		$('#EditConflictAlert_css').append(data);
     	});
     }
@@ -190,7 +189,8 @@ $(function() {
 		        });
 		    });
     	}),
-    	mw.loader.using('mediawiki.api')
+    	mw.loader.using('mediawiki.api'),
+    	mw.loader.using('mediawiki.util')
     ]).then(init);
     
     importArticles({

@@ -228,3 +228,11 @@
 /* End main page layout */
 /* ******************** */
 /* CSS placed here will be applied to all skins */
+
+
+window.DiscordBannerSettings = {
+    bannerStyle: '3',
+    inviteLink: 'wShqyYe3gM',
+    prependToRail: true
+    noRail: false
+};

@@ -10,12 +10,7 @@
 	// Double-loading prevention
 	if ( document.querySelector( 'meta[name="theme-color"]' ) ) return;
 
-	var color;
-	if (mw.config.get('skin') === 'oasis') {
-		color = getComputedStyle( document.documentElement ).getPropertyValue( '--theme-header-background-color' );
-	} else {
-		color = getComputedStyle( document.documentElement ).getPropertyValue( '--theme-sticky-nav-background-color' );
-	}
+	var color = getComputedStyle( document.documentElement ).getPropertyValue( '--theme-sticky-nav-background-color' );
 
 	if (!color) return;
 

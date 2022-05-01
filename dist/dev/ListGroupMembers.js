@@ -27,7 +27,7 @@
             var r = ( ( z << 16 ) + ( w & 65535 ) ) >>> 0;
             r /= 4294967296;
             return r;
-        }
+        };
     }
 
 	// Creating the defaults function
@@ -960,7 +960,7 @@
 			toolbar.insertAdjacentElement( "afterbegin", this.ui.li( {
 				classes: [ "overflow" ],
 				child: this.ui.a( { 
-					href: mw.util.getUrl( this.mwConfig.wgCanonicalNamespace[ -1 ] + ":" + this.msg( "page" ).parse( ) ),
+					href: mw.util.getUrl( this.mwConfig.wgFormattedNamespaces[ -1 ] + ":" + this.msg( "page" ).parse( ) ),
 					text: this.msg( "page-title" ).escape( )
 				} )
 			} ) );

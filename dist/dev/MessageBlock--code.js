@@ -1,6 +1,4 @@
 mw.loader.using('mediawiki.api', function() {
-	'use strict';
- 
 	if (
 		window.MessageBlockLoaded ||
 		mw.config.get('wgCanonicalSpecialPageName') !== 'Block'
@@ -80,7 +78,7 @@ mw.loader.using('mediawiki.api', function() {
 					type: 'POST',
 					url: mw.util.wikiScript('wikia') + '?controller=Fandom%5CMessageWall%5CMessageWall&method=createThread&format=json',
 					data: {
-						token: mw.user.tokens.get('editToken'),
+						token: mw.user.tokens.get('csrfToken'),
 						wallOwnerId: users[0].userid,
 						title: config.title,
 						rawContent: messages,

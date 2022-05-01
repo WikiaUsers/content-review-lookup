@@ -83,7 +83,7 @@ setTimeout(function() {
 					// Build animation
 					var animations = 'fall ' + fallTime + 's linear 0s 1' + ', ' + blowAnimation + ' ' + (((fallTime > 30 ? fallTime : 30) - 20) + randomInt(0, 20)) + 's linear 0s infinite' + ', ' + swayAnimation + ' ' + randomInt(2, 4) + 's linear 0s infinite';
 					// Create petal and randomize size
-					var petal = $('<div class="' + options.className + '" />');
+					var petal = $('<div class="' + options.className + '">');
 					var height = randomInt(options.minSize, options.maxSize);
 					var width = height - Math.floor(randomInt(0, options.minSize) / 3);
 					// Apply Event Listener to remove petals that reach the bottom of the page

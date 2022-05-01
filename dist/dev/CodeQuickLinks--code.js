@@ -243,8 +243,7 @@
       writable: false,
       configurable: false,
       value: Object.freeze([
-        "wgFormattedNamespaces",
-        "wgLoadScript"
+        "wgFormattedNamespaces"
       ]),
     },
 

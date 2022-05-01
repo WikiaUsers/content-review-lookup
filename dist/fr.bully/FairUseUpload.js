@@ -1,14 +1,14 @@
+/* Tout JavaScript ici sera chargé avec chaque page accédée par n'importe quel utilisateur. */
 /**
  * 17:15, July 2, 2017 (UTC)
  * <source lang = "JavaScript">
  * Origin: https://naruto.fandom.com/wiki/MediaWiki:Common.js/FairUseUpload.js
- * ScriptPage: https://bully.fandom.com/fr/wiki/MediaWiki:Common.js
+ * ScriptPage: https://reddead.fandom.com/fr/wiki/MediaWiki:Common.js
  * Builds a form for easy uploading of images
  * and to ensure proper rationale and licensing
  * @author: UltimateSupreme (https://naruto.fandom.com/wiki/User:UltimateSupreme)
  * @author: Celdrøn (https://naruto.fandom.com/fr/wiki/User:Celdrøn)
  * @author: Thegamer1604 (https://bully.fandom.com/fr/wiki/user:Thegamer1604 [Adaptation de la version de Celdrøn])
- * @author: Celdrøn (https://bully.fandom.com/fr/wiki/User:Celdrøn [Adaptation de la version de Thegamer1604])
  * @License: CC-BY-SA - http://creativecommons.org/licenses/by-sa/3.0/
 */
 /**
@@ -50,7 +50,7 @@ window.setCookie = function(c_name, value, expiredays) {
 		var FairUseUpload = {
 			preload: function() {
 				this.api = new mw.Api();
-				this.getContent(3125).then(this.init.bind(this));
+				this.getContent(3125).then(this.init.bind(this));//mw.config.get('wgArticleId')
 			},
 			init: function(content) {
 				this.api = new mw.Api();
@@ -96,7 +96,7 @@ window.setCookie = function(c_name, value, expiredays) {
 					if (!mw.util.getParamValue('wpForReUpload')) {
 		
 						if (formstyle == "guided" || (formstyle == "" && window.location.search.indexOf('basic=true') == -1)) { // Add link to basic form
-							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://bully.fandom.com/fr/index.php?title=Spécial:Téléverser&basic=true" onclick="javascript:setCookie(\'uploadform\', \'basic\', 30)">Basculer vers le formulaire basique</a></div>'); // Stretch table to full width			
+							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://thegamerbatmanguys.fandom.com/fr/index.php?title=Spécial:Téléverser&basic=true" onclick="javascript:setCookie(\'uploadform\', \'basic\', 30)">Basculer vers le formulaire basique</a></div>'); // Stretch table to full width			
 							
 								var $description = $('#wpUploadDescription'),
 									customRows = '',
@@ -156,7 +156,7 @@ window.setCookie = function(c_name, value, expiredays) {
 								});
 						} else { // Old style form just needs Information template in the summary box
 							$('#wpUploadDescription').val('{{Fichier\n| origine = \n| jeu = \n| quoi = \n| type = \n}}\n'); // Add link to guided form
-							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://bully.fandom.com/fr/index.php?title=Spécial:Téléverser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancé</a></div>');
+							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://thegamerbatmanguys.fandom.com/fr/index.php?title=Spécial:Téléverser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancé</a></div>');
 						}
 					}
 				}

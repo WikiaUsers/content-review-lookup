@@ -125,19 +125,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api']).then(function () {
             if (config.usedefaults) {
                 var lang = mw.config.get('wgContentLanguage');
                 var page;
-                if (lang === 'de'
-                 || lang === 'en'
-                 || lang === 'es'
-                 || lang === 'fr'
-                 || lang === 'it'
-                 || lang === 'ja'
-                 || lang === 'ko'
-                 || lang === 'nl'
-                 || lang === 'pl'
-                 || lang === 'ru'
-                 || lang === 'vi'
-                 || lang === 'zh'
-                 || lang === 'zh-tw') {
+                if (['de', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'nl', 'pl', 'ru', 'vi', 'zh', 'zh-tw'].includes(lang)) {
                     page = 'MediaWiki:Custom-MassSetTemplateType/' + lang + '.json';
                 } else { // AR, BG, CA, CS, ET, FA, HR, HU, ID, MS, NO, PT, PT-BR, RO, SV, TH, TL, TR, UK
                     page = 'MediaWiki:Custom-MassSetTemplateType/default.json';

@@ -1542,6 +1542,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"botanical": {
+				"name": "Botanical",
+				"colors": [
+					"world",
+					"green",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"botanist": {
 				"name": "Botanist",
 				"colors": [
@@ -2776,6 +2785,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"arcane",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"conservation": {
+				"name": "Conservation",
+				"colors": [
+					"world",
+					"white",
+					"green"
 				],
 				"rarity": "unbreedable"
 			},
@@ -12696,6 +12714,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"renewable": {
+				"name": "Renewable",
+				"colors": [
+					"world",
+					"blue",
+					"green"
+				],
+				"rarity": "unbreedable"
+			},
 			"renewal": {
 				"name": "Renewal",
 				"colors": [
@@ -15337,6 +15364,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "unbreedable"
+			},
+			"sustainable": {
+				"name": "Sustainable",
+				"colors": [
+					"world",
+					"green"
+				],
+				"rarity": "common"
 			},
 			"swamp": {
 				"name": "Swamp",

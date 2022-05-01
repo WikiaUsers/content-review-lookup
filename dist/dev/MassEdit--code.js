@@ -651,7 +651,6 @@
       value: Object.freeze([
         "wgFormattedNamespaces",
         "wgLegalTitleChars",
-        "wgLoadScript",
         "wgScriptPath",
         "wgServer",
         "wgUserGroups",
@@ -4296,13 +4295,13 @@
         }
 
         // Build url with REST params
-        server = "https://dev.fandom.com";
+        server = "https://dev.fandom.com/load.php";
         params = "?" + $.param({
           mode: "articles",
           only: current.TYPE + "s",
           articles: current.ARTICLE,
         });
-        resource = server + this.globals.wgLoadScript + params;
+        resource = server + params;
         moduleName = this.generateModuleName(current.TYPE, current.ARTICLE);
 
         // Ensure wellformed module name

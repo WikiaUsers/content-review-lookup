@@ -2,8 +2,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api'], function() {
     var config = mw.config.get([
         'wgNamespaceNumber',
         'wgTitle',
-        'wgPageName',
-		'skin'
+        'wgPageName'
     ]);
 	
     if (
@@ -12,8 +11,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api'], function() {
     ) return;
     window.AddArticleToCategoryLoaded = true;
 	
-	var isUCX = config.skin == 'fandomdesktop',
-		lastSearch = 0,
+	var lastSearch = 0,
 		api,
 		timeout,
 		modal,
@@ -97,7 +95,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api'], function() {
             title: page,
             summary: i18n.inContentLang().msg('summary').plain(),
             appendtext: '\n[[' + config.wgPageName + ']]',
-            token: mw.user.tokens.get('editToken'),
+            token: mw.user.tokens.get('csrfToken'),
             format: 'json'
         };
         $.post(mw.util.wikiScript('api'), options, function() {
@@ -154,7 +152,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api'], function() {
 		modal.create();
 		callback();
 		
-        $('.page-header__' + (isUCX ? 'actions' : 'contribution-buttons') + ' .wds-dropdown .wds-list').append(
+        $('.page-header__actions .wds-dropdown .wds-list').append(
             $('<li>').append(
                 $('<a>', {
                     id: 'ca-add2cat',

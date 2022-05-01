@@ -48,7 +48,7 @@ function removeLazyLoad(lazyIcon) {
 /* ### Description: Add icons to article title                          ### */
 /* ### Credit:      User:Porter21                                       ### */
 /* ######################################################################## */
-
+/* Commenting out titleIcons js since we no longer use it.
 $(function() {
     if (window.wgIsMainpage)
         return;
@@ -78,7 +78,7 @@ $(function() {
     
     removeLazyLoad(document.getElementById("va-titleicons-preview"));
     removeLazyLoad(document.getElementById("va-titleicons-fullsize"));
-});
+});*/
 
 /* ############################################################################# */
 /* ### TICKER                                                                ### */

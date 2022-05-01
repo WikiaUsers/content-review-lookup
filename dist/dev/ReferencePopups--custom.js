@@ -10,11 +10,11 @@
 	var popups = window.dev && window.dev.ReferencePopups && window.dev.ReferencePopups.Popup;
 	if (!popups) {
 		popups = $.ajax({
-			url: mw.config.get('wgLoadScript'),
+			url: 'https://dev.fandom.com/load.php',
 			data: {
 				mode: 'articles',
 				only: 'scripts',
-				articles: 'u:dev:MediaWiki:ReferencePopups/code.js'
+				articles: 'MediaWiki:ReferencePopups/code.js'
 			},
 			dataType: 'script',
 			cache: true
