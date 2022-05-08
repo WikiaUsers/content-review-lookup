@@ -633,7 +633,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
             // Otherwise the scroll to the id will be incorrect as other loaded content has moved the position before we get to it
 	        setTimeout(function () {
 	        	_doHashIdCheck($content, true);
-			}, 150);
+			}, 250);
         });
 
         $(window).on("hashchange", function () {

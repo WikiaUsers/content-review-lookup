@@ -69,12 +69,14 @@ Known issues:
  * What happens if 2 people are editing at the same time?  Does the save function check for edit conflicts?  ... No, it just appends to the page, which can result in duplicate pinids.  Solution: use temp pin ids, starting from pintemp1. on save: get page, renumber all uses of temp pins starting at the new most recent pin, then write to page.  Can potentially just do the replacement after converting dirty pins  to string, then reload the page after saving?  possible issue: unsure how agnostic pin handling functions are in regard to pinid format.  it should be neutral, but could potentially require "pin#". 
 * Cats hidden by default are sometimes shown - Pin39 at Wardill Airport are in both category "misc" and "stairs", and while "stairs" are hidden, "misc" is not.  Additional consideration needs to be given to whether multiple cats are necessary, and how to prioritise hidden cats.  But in this specific case, "misc" is supposed to be deleted from pin39, so this is still a bug.  fixed?
 * Changing category image does not change default image on existing pins. This indicates that the pin image is saved for each pin. Solve by not copying pin image to pin on creation, leave blank and refer to pin image when loading - do not copy, just look up category image. Also solve by looping existing pins when the category image is changed.
+**That's not the cause.  The problem is the order things are loaded - default icons are assigned when the pin is loaded, and if a cat icon change is after the pin is defined comes later, then it uses the previous icon.  5 ways to fix this: 1. get rid of inheritance, explicitly set each pin field.  When a cat field is changed, propagate to all pins (bad solution, requires more space).  2. only look up default pin when the information is displayed (bad solution, requires more lookups).  3. Parse input data twice, first load all cats, then load all pins.  4. Parse loaded data twice, after loading all other data, then parse the loaded data to set default data.  5.  Parse input data once, but always propagate inherited changes.
 * Pin numbering messes up when previous deleted pins are purged, because it just counts the pins, and ignores the max pin number.  Solution:  Find the highest pin number on load, and increment from that.
 * to-do: When creating and immediately deleting a pin, skip delete pin entry
 * to-do: validate manual links in addition to main link
 * to-do: add close link when editing
 * to-do: abandon changes confirmations for edits
 * to-do: trim whitespace
+* to-do: change setval loading
 
 
 Solved issues:
@@ -146,11 +148,11 @@ function createContainer() {
        }, function() {
         $("#MapInfo").html(" ");
       }).bind("click", function() {
-        if ($(".unvalidatedPin").size()) {
+        if ($(".unvalidatedPin").length) {
           mapError("Pin must be completed or deleted.");
           return;
         }
-        if($(".NewCat .failed").size() || $(".NewCat .pending").size()) {
+        if($(".NewCat .failed").length || $(".NewCat .pending").length) {
           mapError("Category must be completed or deleted.");
           return;
         }
@@ -168,7 +170,7 @@ function createContainer() {
             format:"json",
             action:"edit",
             title:$("#SRWmap").attr("title"),
-            token:mw.user.tokens.get("editToken"),
+            token:mw.user.tokens.get("csrfToken"),
             summary: "Updating "+(savestring.match(/\n/g) || []).length+" items",
             appendtext: savestring,
             minor:1,
@@ -182,16 +184,15 @@ function createContainer() {
                 $.ajax({
                   type: "POST",
                   url: "/api.php",
-                  data: {
+                    data: {
                     format: "json",
                     action: "query",
-                    titles: wgPageName,
-                    prop: 'info',
-                    intoken: 'edit',
+                    meta: 'tokens',
+                    type: 'csrf',
                   },
                   'success': function(result) {
-                    mw.user.tokens.set("editToken", result.query.pages[Object.keys(result.query.pages)].edittoken);
                     console.log("Edit token expired, new token obtained");
+                    mw.user.tokens.set("csrfToken", result.query.tokens["csrftoken"]);
                     $("#SaveButton").click();
                   }
                 });
@@ -242,21 +243,21 @@ function createContainer() {
         class:"MapControls",
         html:$("<img>", { src:"https://vignette.wikia.nocookie.net/saintsrow/images/5/5e/Ui_map_marker.png" })
       }).hover( function() {
-        if ($("#ClickLayer").size()) $("#MapInfo").html("Click to cancel new pin placement");
+        if ($("#ClickLayer").length) $("#MapInfo").html("Click to cancel new pin placement");
         else $("#MapInfo").html("Click to place new pin");
        }, function() {
         $("#MapInfo").html(" ");
       }).bind("click", function() {
-        if ($("#ClickLayer").size()) {
+        if ($("#ClickLayer").length) {
           $("#ClickLayer").remove();
           $("#MapInfo").html("New pin cancelled.");
           return;
         };
-        if ($(".unvalidatedPin").size()) {
+        if ($(".unvalidatedPin").length) {
           mapError("Pin must be completed or deleted.");
           return;
         }
-        if($(".NewCat .failed").size() || $(".NewCat .pending").size()) {
+        if($(".NewCat .failed").length || $(".NewCat .pending").length) {
           mapError("Category must be completed or deleted.");
           return;
         }
@@ -310,7 +311,7 @@ function createContainer() {
       )
     ).bind("click", function(e) {
       if (["MapFull","MapSmall"].indexOf(e.target.id) == -1) return;
-      if ($(".unvalidatedPin").size())
+      if ($(".unvalidatedPin").length)
         mapError("Pin must be completed or deleted.");
       else
         $("#PinInfo").remove();
@@ -533,7 +534,7 @@ function Pin(params) {
   this.setParams(params);
 }
 function editCats() {
-  if ($(".unvalidatedPin").size()) {
+  if ($(".unvalidatedPin").length) {
     mapError("Pin must be completed or deleted.");
     return;
   }
@@ -546,9 +547,9 @@ function editCats() {
         title:"Close category editor",
         html:"close"
       }).bind("click", function(){
-        if($(".NewCat .failed").size() || $(".NewCat .pending").size()) {
+        if($(".NewCat .failed").length || $(".NewCat .pending").length) {
           mapError("Category must be completed or deleted.");
-        } else if (!$("#CatEditDone.pending").size() && !$("#CatEditDone.failed").size() && !$("#CatEditDone.ok").size()) {
+        } else if (!$("#CatEditDone.pending").length && !$("#CatEditDone.failed").length && !$("#CatEditDone.ok").length) {
           //no changes, no reload
           $("#CatEditBox").remove();
         } else {
@@ -614,7 +615,7 @@ function editCats() {
                 $("#CatEditDone").removeClass("nothing").addClass("pending");
                 if (field == "image" && !$(target).val()) { /* allow blank image */
                   $(target).removeClass("pending").addClass("ok");
-                  if (!$("#CatEditBox input.pending").size()) $("#CatEditDone").removeClass("pending").addClass("ok");
+                  if (!$("#CatEditBox input.pending").length) $("#CatEditDone").removeClass("pending").addClass("ok");
 
                   SRW.Cats[CatID]["image"] = "";
                   dirty("Cats",CatID,field);
@@ -643,7 +644,7 @@ function editCats() {
                     $("#CatEditDone").removeClass("pending").removeClass("ok").addClass("failed");
                   } else {
                     $(target).removeClass("pending").removeClass("failed").addClass("ok");
-                    if (!$("#CatEditBox input.pending").size()) $("#CatEditDone").removeClass("pending").addClass("ok");
+                    if (!$("#CatEditBox input.pending").length) $("#CatEditDone").removeClass("pending").addClass("ok");
                     newImage = SRW.Map.filePrefix+data.image.imageserving.split("/revision/latest").shift().split("/saintsrow/images/").pop();
 
                     $(target).val( decodeURIComponent(newImage.split("/").pop()));
@@ -687,7 +688,7 @@ function editCats() {
                       $("#CatEditDone").removeClass("pending").removeClass("ok").addClass("failed");
                     } else {
                       $(target).removeClass("pending").removeClass("failed").addClass("ok");
-                      if (!$("#CatEditBox input.pending").size()) $("#CatEditDone").removeClass("pending").addClass("ok");
+                      if (!$("#CatEditBox input.pending").length) $("#CatEditDone").removeClass("pending").addClass("ok");
                       SRW.Cats[CatID][field] = $(target).val();
                       dirty("Cats",CatID,field);
 
@@ -705,7 +706,7 @@ function editCats() {
                   });
                 } else {
                   $(target).removeClass("pending").removeClass("failed").addClass("ok");
-                  if (!$("#CatEditBox input.pending").size()) $("#CatEditDone").removeClass("pending").addClass("ok");
+                  if (!$("#CatEditBox input.pending").length) $("#CatEditDone").removeClass("pending").addClass("ok");
                   SRW.Cats[CatID][field] = $(target).val();
                   dirty("Cats",CatID,field);
                 }
@@ -741,7 +742,7 @@ function showEditCat(CatID) {
         if (Object.keys(SRW.Cats[CatID].pins).length) {
           alert("Cannot delete: Pins exist for this Category.");
         } else if (confirm('Delete this category?')) {
-          if($("#edit"+CatID+".NewCat").size()) {
+          if($("#edit"+CatID+".NewCat").length) {
             delete SRW.Cats[CatID];
             delete SRW.CatOrder[SRW.CatOrder.indexOf(CatID)];
           } else {
@@ -868,7 +869,7 @@ function showPin(pin) {
   );
 }
 function pinclick(target) {
-  if ($(".unvalidatedPin").size()) {
+  if ($(".unvalidatedPin").length) {
     mapError("Pin must be completed or deleted.");
     return;
   }
@@ -981,7 +982,7 @@ function pinclick(target) {
                   if ($(target).prop("type") == "text") $(target).val( $(target).val().trim());
 
                   if (field == "type") {
-                    if ($("#"+field+PinID+" option").size() != Object.keys(SRW.Cats).length) $("#PinInfo").remove(); //triggers if html has been edited. But it doesn't delete the pin, it places the with no fields. FIX THIS.
+                    if ($("#"+field+PinID+" option").length != Object.keys(SRW.Cats).length) $("#PinInfo").remove(); //triggers if html has been edited. But it doesn't delete the pin, it places the with no fields. FIX THIS.
                     sCatID = SRW.CatOrder[$(target).prop("selectedIndex")];
                     if(sCatID == SRW.Pins[PinID].cats[0]) continue; //to-do: change this to allow resetting without revalidating.
 
@@ -1017,7 +1018,7 @@ function pinclick(target) {
                     }
 
                     $(target).removeClass("pending").addClass("ok");
-                    if (!$(".PinEdit input.pending").size()) $("#PinEditDone").removeClass("pending").addClass("ok");
+                    if (!$(".PinEdit input.pending").length) $("#PinEditDone").removeClass("pending").addClass("ok");
 
                   } else if (field == "icon" || field == "image") {
                     /* Image validation done via API, strip url and file: parts. */
@@ -1030,12 +1031,12 @@ function pinclick(target) {
                        $("#PinEditDone").removeClass("nothing").addClass("pending");
                        if (!$(target).val()) { /* allow blank image */
                          $(target).removeClass("pending").addClass("ok");
-                         if (!$(".PinEdit input.pending").size()) $("#PinEditDone").removeClass("pending").addClass("ok");
+                         if (!$(".PinEdit input.pending").length) $("#PinEditDone").removeClass("pending").addClass("ok");
 
                          SRW.Pins[PinID]["image"] = "";
                          dirty("Pins",PinID,field);
                          $(".PinEdit #"+field+"Preview").attr("src","");
-                         if ($(".unvalidatedPin").size() && !$(".PinInfo .pending").size() && !$(".PinInfo .failed").size()) $(".unvalidatedPin").removeClass("unvalidatedPin");
+                         if ($(".unvalidatedPin").length && !$(".PinInfo .pending").length && !$(".PinInfo .failed").length) $(".unvalidatedPin").removeClass("unvalidatedPin");
                          continue;
                        }
                        if ($(target).val().indexOf("/revision/latest/") != -1)
@@ -1060,7 +1061,7 @@ function pinclick(target) {
                             $("#PinEditDone").removeClass("pending").removeClass("ok").addClass("failed");
                          } else {
                             $(target).removeClass("pending").removeClass("failed").addClass("ok");
-                            if (!$(".PinEdit input.pending").size()) $("#PinEditDone").removeClass("pending").addClass("ok");
+                            if (!$(".PinEdit input.pending").length) $("#PinEditDone").removeClass("pending").addClass("ok");
 
                             newImage = SRW.Map.filePrefix+data.image.imageserving.split("/revision/latest").shift().split("/saintsrow/images/").pop();
 
@@ -1077,7 +1078,7 @@ function pinclick(target) {
                             SRW.Pins[PinID][field] = newImage;
                             dirty("Pins",PinID,field);
                             $(target).val( decodeURIComponent(newImage.split("/").pop()));
-                            if ($(".unvalidatedPin").size() && !$(".PinInfo .pending").size() && !$(".PinInfo .failed").size()) $(".unvalidatedPin").removeClass("unvalidatedPin");
+                            if ($(".unvalidatedPin").length && !$(".PinInfo .pending").length && !$(".PinInfo .failed").length) $(".unvalidatedPin").removeClass("unvalidatedPin");
                          }
                        });
                     }
@@ -1112,7 +1113,7 @@ function pinclick(target) {
                               $("#PinEditDone").removeClass("pending").removeClass("ok").addClass("failed");
                             } else {
                               $(target).removeClass("pending").removeClass("failed").addClass("ok");
-                              if (!$(".PinEdit input.pending").size()) $("#PinEditDone").removeClass("pending").addClass("ok");
+                              if (!$(".PinEdit input.pending").length) $("#PinEditDone").removeClass("pending").addClass("ok");
                               SRW.Pins[PinID][field] = $(target).val();
                               dirty("Pins",PinID,field);
 
@@ -1128,17 +1129,17 @@ function pinclick(target) {
                                  $(".PinEdit #imagePreview").parent().parent().parent().removeClass("thin");
                                  $(".PinEdit #imagePreview[src='']").parent().parent().parent().addClass("thin");
                               }
-                              if ($(".unvalidatedPin").size() && !$(".PinInfo .pending").size() && !$(".PinInfo .failed").size()) $(".unvalidatedPin").removeClass("unvalidatedPin");
+                              if ($(".unvalidatedPin").length && !$(".PinInfo .pending").length && !$(".PinInfo .failed").length) $(".unvalidatedPin").removeClass("unvalidatedPin");
                             }
                          });
                        } else {
                          $(target).removeClass("pending").removeClass("failed").addClass("ok");
-                         if (!$(".PinEdit input.pending").size()) $("#PinEditDone").removeClass("pending").addClass("ok");
+                         if (!$(".PinEdit input.pending").length) $("#PinEditDone").removeClass("pending").addClass("ok");
 
                          SRW.Pins[PinID][field] = $(target).val();
                          dirty("Pins",PinID,field);
                          if (field=="name") $("#"+PinID+" img").attr("title",$(target).val());
-                         if ($(".unvalidatedPin").size() && !$(".PinInfo .pending").size() && !$(".PinInfo .failed").size()) $(".unvalidatedPin").removeClass("unvalidatedPin");
+                         if ($(".unvalidatedPin").length && !$(".PinInfo .pending").length && !$(".PinInfo .failed").length) $(".unvalidatedPin").removeClass("unvalidatedPin");
                        }
                     }
                   }
@@ -1155,7 +1156,7 @@ function pinclick(target) {
               .bind("click", function() {
                 PinID = $(this).attr("for");
                 if (confirm('Delete this pin?')) {
-                  if($("#edit"+PinID+".NewPin").size()) {
+                  if($("#edit"+PinID+".NewPin").length) {
                     delete SRW.Pins[PinID];
                     delete SRW.Map.dirty.Pins[PinID];
                   } else {
@@ -1185,7 +1186,7 @@ function pinclick(target) {
     )
   );
   $("#imagePreview[src='']").parent().parent().parent().addClass("thin");
-  if ($("#SRWmap.readonly").size()) $("#PinEdit").remove();
+  if ($("#SRWmap.readonly").length) $("#PinEdit").remove();
   $("#PinInfoInner").css("zoom",1/getZoom());
   flipCheck();
 }
@@ -1261,7 +1262,7 @@ function loadData() {
       'ctype': 'text/plain',
       'c':Math.random()
     },
-    'url': wgScript,
+    'url': mw.config.get("wgScript"),
     'success': function(data) {
       console.log("loadData success");
       parseData(data);
@@ -1287,7 +1288,7 @@ function afterInit() {
   zoom(0); //temp fix for positioning problem
   if (navigator.userAgent.indexOf("Firefox") != -1) $("#SRWmap").before("Zoom controls are not available in Firefox, because Firefox sucks. Please consider using a better browser.")
 
-  if ($("#SRWmap.readonly").size()) {
+  if ($("#SRWmap.readonly").length) {
     $("#PinEdit").remove();
     $("#CatEdit").remove();
     $("#NewPin").remove();
@@ -1301,7 +1302,7 @@ $(function() {
   SRW = {Map:{}, Cats:{}, Pins:{}, CatOrder:[]};
   console.log("script init 1.0.11");
   $(".page-header h1").html($(".page-header h1").html().replace("Saints Row Wiki:Maps/","Map:"))
-  if (wgPageName == $("#SRWmap").attr("title")) $(".page-content").css("margin",0);
+  if (mw.config.get("wgPageName") == $("#SRWmap").attr("title")) $(".page-content").css("margin",0);
 
   //reset for testing
     $("#SRWmap").removeClass("dirty");

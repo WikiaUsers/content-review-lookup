@@ -10,6 +10,7 @@ $(document).ready(function() {
 	$("span#normalAbilityHarness").html('<div id="normalAbilityInput">Toggle Ability? <input type="checkbox" name="normalAbilityBoost" id="normalAbilityBoost"></input></div>');
 	$("span#heroAbilityHarness").html('<div id="heroAbilityInput">Toggle Hero Ability? <input type="checkbox" name="heroAbilityBoost" id="heroAbilityBoost"></input></div>');
 	$("span#rageSpellHarness").html('<div id="rageSpellInput">Rage Spell Level: <select name="rageSpellLevel" id="rageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> </select></div>');
+	$("span#capitalRageSpellHarness").html('<div id="capitalRageSpellInput">Rage Spell Level: <select name="capitalRageSpellLevel" id="capitalRageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Haste Spell Level: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> </select></div>');
 	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
@@ -610,8 +611,12 @@ $(document).ready(function() {
 		$(".DPH").each(function() {
 			var initialDPH = $(this).attr("title") * 1;
 			var rageSpellLevel = $("#rageSpellLevel").val() * 1;
+			var capitalRageSpellLevel = $("#capitalRageSpellLevel").val() * 1;
 			if (isNaN(rageSpellLevel) === true) {
 		    rageSpellLevel = 0;
+		    }
+		    if (isNaN(capitalRageSpellLevel) === true) {
+		    capitalRageSpellLevel = 0;
 		    }
 			var calcNewDPH = initialDPH;
 			var rageMultiplier = 1;
@@ -621,6 +626,8 @@ $(document).ready(function() {
 				} else {
 					rageMultiplier = (rageSpellLevel + 22)/10;
 				}
+			} else if (capitalRageSpellLevel > 0) {
+				rageMultiplier = (capitalRageSpellLevel + 18)/10;
 			}
 			var rageDamage = initialDPH * rageMultiplier;
 			
@@ -830,6 +837,10 @@ $(document).ready(function() {
 			if (isNaN(rageSpellLevel) === true) {
 		    rageSpellLevel = 0;
 		    }
+		    var capitalRageSpellLevel = $("#capitalRageSpellLevel").val() * 1;
+			if (isNaN(capitalRageSpellLevel) === true) {
+		    capitalRageSpellLevel = 0;
+		    } 
 			var hasteSpellLevel = $("#hasteSpellLevel").val() * 1;
 			if (isNaN(rageSpellLevel) === true) {
 		    hasteSpellLevel = 0;
@@ -853,6 +864,8 @@ $(document).ready(function() {
                 } else {
                     rageBoost = (2 * rageSpellLevel) + 18;
                 }
+            } else if (capitalRageSpellLevel > 0) {
+            	rageBoost = (2 * capitalRageSpellLevel) + 8;
             }
 			if (hasteSpellLevel > 0) {
                 if ($(this).hasClass("Hero") == true) {
@@ -972,7 +985,7 @@ $(document).ready(function() {
     // Reset form when Reset button is clicked
     $("#resetBonusButton").click(function() {
         $("#changeBonusButton").text("Apply");
-		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #lifeAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #hasteSpellLevel").val("0").change();
+		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #hasteSpellLevel").val("0").change();
 		if (document.getElementById("armyBoost") != null) {
 			document.getElementById("armyBoost").checked = false;
 		}

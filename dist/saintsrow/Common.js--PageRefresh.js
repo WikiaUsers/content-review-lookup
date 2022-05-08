@@ -23,7 +23,7 @@ $(function() {
 	  'format': 'json',
 	  'action': 'edit',
 	  'title': mw.config.get("wgPageName"),
-	  'token': mw.user.tokens.get("editToken"),
+	  'token': mw.user.tokens.get("csrfToken"),
 	  'prependtext': '',
 	  'nocreate': '1'
 	})
@@ -35,17 +35,20 @@ $(function() {
 	  SRWpopup("PageRefreshPopup", method, "Failed! Retrying...", "error");
 	  if(code == "badtoken") {
 		console.log("Getting new token...");
-		new mw.Api().get({
-		  'format': 'json',
-		  'action': 'query',
-		  'titles': '452',
-		  'prop': 'info',
-		  'intoken': 'edit',
-		})
-		.done(function(result) {
-		  console.log("Got new token.");
-		  mw.user.tokens.set("editToken", result.query.pages[Object.keys(result.query.pages)].edittoken);
-		  setTimeout(function(){ PageRefresh(method); }, 452);
+                $.ajax({
+                  type: "POST",
+                  url: "/api.php",
+                    data: {
+                    format: "json",
+                    action: "query",
+                    meta: 'tokens',
+                    type: 'csrf',
+                  },
+                  'success': function(result) {
+  		    console.log("Got new token.");
+                    mw.user.tokens.set("csrfToken", result.query.tokens["csrftoken"]);
+		    setTimeout(function(){ PageRefresh(method); }, 452);
+                  }
 		});
 	  } else {
 		setTimeout(function(){ PageRefresh(method); }, 904);

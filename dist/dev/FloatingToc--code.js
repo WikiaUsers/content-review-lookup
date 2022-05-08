@@ -13,36 +13,32 @@
   if (window.FloatingTocLoaded || !root.length) return;
   window.FloatingTocLoaded = true;
 
-  function importArticle(page) {
-    const isScript = page.split(".").pop() === "js";
-    return $.ajax({
-      url: mw.config.get("wgLoadScript"),
-      data: {
-        mode: "articles",
-        only: isScript ? "scripts" : "styles",
-        articles: "u:dev:MediaWiki:" + page,
-      },
-    }).then(function (content) {
-      $("head").append($(isScript ? "<script>" : "<style>").html(content));
-    });
-  }
-
-  var css = importArticle("FloatingToc.css");
+  var css = importArticle({
+  	type: 'style',
+  	article: 'u:dev:MediaWiki:FloatingToc.css'
+  });
 
   var colors = (window.dev || {}).colors
     ? $.Deferred().resolve()
-    : importArticle("Colors/code.js");
+    : importArticle({
+    	type: 'script',
+    	article: 'u:dev:MediaWiki:Colors/code.js'
+    });
 
   var i18n = ((window.dev || {}).i18n || {}).loadMessages
     ? $.Deferred().resolve()
-    : importArticle("I18n-js/code.js");
+    : importArticles({
+    	type: 'script',
+    	article: 'u:dev:MediaWiki:I18n-js/code.js'
+    });
 
-  var jQueryUI = mw.loader.using([
+  var mwDeps = mw.config.get('wgVersion').includes('1.33') ? [
     "jquery.ui.dialog",
     "jquery.ui.draggable",
     "jquery.ui.resizable",
     "jquery.effects.slide",
-  ]);
+  ] : 'jquery.ui';
+  var jQueryUI = mw.loader.using(mwDeps);
 
   $.when(i18n, css, colors, jQueryUI)
     .then(function () {

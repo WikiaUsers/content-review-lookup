@@ -2739,6 +2739,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"compassionate": {
+				"name": "Compassionate",
+				"colors": [
+					"flower",
+					"rainbow",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"confection": {
 				"name": "Confection",
 				"colors": [
@@ -4910,6 +4919,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"world",
 					"elemental",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"fearless": {
+				"name": "Fearless",
+				"colors": [
+					"flower",
+					"purple"
 				],
 				"rarity": "unbreedable"
 			},
@@ -7654,6 +7671,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"inspirational": {
+				"name": "Inspirational",
+				"colors": [
+					"flower",
+					"pink",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"intimate": {
 				"name": "Intimate",
 				"colors": [
@@ -8983,6 +9009,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"blue"
 				],
 				"rarity": "unbreedable"
+			},
+			"lupine": {
+				"name": "Lupine",
+				"colors": [
+					"flower",
+					"beast",
+					"purple"
+				],
+				"rarity": "common"
 			},
 			"lush": {
 				"name": "Lush",
@@ -11171,6 +11206,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"paperflower": {
+				"name": "Paper Flower",
+				"colors": [
+					"flower",
+					"arcane",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"paperlantern": {
 				"name": "Paper Lantern",
 				"colors": [
@@ -12160,6 +12204,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "common"
+			},
+			"protective": {
+				"name": "Protective",
+				"colors": [
+					"flower",
+					"red"
+				],
+				"rarity": "unbreedable"
 			},
 			"protector": {
 				"name": "Protector",
@@ -15263,6 +15315,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"sunrisebegonia": {
+				"name": "Sunrise Begonia",
+				"colors": [
+					"flower",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"sunset": {
 				"name": "Sunset",
 				"colors": [
@@ -16555,6 +16615,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"black",
 					"blue",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"vinca": {
+				"name": "Vinca",
+				"colors": [
+					"flower",
+					"white",
 					"red"
 				],
 				"rarity": "unbreedable"

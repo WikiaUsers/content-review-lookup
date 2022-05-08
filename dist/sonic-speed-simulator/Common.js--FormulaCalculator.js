@@ -42,7 +42,7 @@ $(document).ready(function() {
 	var i = 1;
 	var length = document.querySelectorAll('.FormulaTable').length;
 	while(i <= length) {
-		$("span#OrbBox-"+i).html('<select class="Orb oo-ui-dropdownWidget-handle"><option value="10">White</option><option value="15">Blue</option><option value="30">Purple</option><option value="40">Red</option><option value="50">Golden</option></select>');
+		$("span#OrbBox-"+i).html('<select class="Orb oo-ui-dropdownWidget-handle"><option value="10">White</option><option value="15">Blue</option><option value="30">Purple</option><option value="40">Red</option><option value="150">Golden</option></select>');
 
 		$("span#RebirthBox-"+i).html('<input onClick="this.select();" type="number" value="0" class="Rebirth oo-ui-inputWidget-input"></input>');
 		

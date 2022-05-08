@@ -2308,7 +2308,7 @@ var RCMWikiPanel =  (function () {
                 tLink_1("Special:Log", "log"),
                 pWikiInfo.isWikiaWiki && pWikiInfo.user.rights.analytics && tLink_1("Special:Analytics", "admindashboard-control-analytics-label"),
                 tLink_1("Special:Random", "randompage"),
-                pWikiInfo.usesWikiaDiscussions && "<a href='" + pWikiInfo.scriptpath + "/d'>" + i18n_1["default"]("discussions") + "</a>",
+                pWikiInfo.usesWikiaDiscussions && "<a href='" + pWikiInfo.scriptpath + "/f'>" + i18n_1["default"]("discussions") + "</a>",
             ].filter(function (o) { return !!o; });
             var buttons = [];
             if (!this.singleWiki) {
@@ -4528,7 +4528,7 @@ var RCDataFandomDiscussion =  (function (_super) {
         var _a = this, threadId = _a.threadId, id = _a.id, isReply = _a.isReply, wikiInfo = _a.wikiInfo;
         var showReply = isReply && !ignoreReply;
         switch (this.containerType) {
-            case 'FORUM': return wikiInfo.scriptpath + "/d/p/" + threadId + (showReply ? "/r/" + id : '') + (params ? '?' + $.param(params) : '');
+            case 'FORUM': return wikiInfo.scriptpath + "/f/p/" + threadId + (showReply ? "/r/" + id : '') + (params ? '?' + $.param(params) : '');
             case 'WALL': return "" + wikiInfo.getPageUrl("Message_Wall:" + Utils_1["default"].escapeCharactersUrl(this.forumPageName), __assign({ threadId: threadId }, params)) + (showReply ? "#" + id : '');
             case 'ARTICLE_COMMENT': return wikiInfo.getPageUrl(Utils_1["default"].escapeCharactersUrl(this.forumPageName), __assign(__assign({ commentId: threadId }, showReply && { replyId: id }), params));
         }
@@ -4536,7 +4536,7 @@ var RCDataFandomDiscussion =  (function (_super) {
     RCDataFandomDiscussion.prototype.getForumUrl = function () {
         var wikiInfo = this.wikiInfo;
         switch (this.containerType) {
-            case 'FORUM': return wikiInfo.scriptpath + "/d/f?catId=" + this.forumId + "&sort=latest";
+            case 'FORUM': return wikiInfo.scriptpath + "/f?catId=" + this.forumId + "&sort=latest";
             case 'WALL': return !this.forumPageName ? "#" : this.wikiInfo.getPageUrl("Message_Wall:" + this.forumPageName);
             case 'ARTICLE_COMMENT': return !this.forumPageName ? "#" : this.getUrl(undefined, false); 
         }
@@ -4547,7 +4547,7 @@ var RCDataFandomDiscussion =  (function (_super) {
             "<a href='" + articlepath + "User_talk:" + author + "'>" + i18n_1["default"]("talkpagelinktext") + "</a>",
         ];
         if (this.userEdited) {
-            var tUserContribsLink = this.containerType === "FORUM" ? this.wikiInfo.scriptpath + "/d/u/" + this.user_id : this.wikiInfo.articlepath + "Special:Contributions/" + this.author;
+            var tUserContribsLink = this.containerType === "FORUM" ? this.wikiInfo.scriptpath + "/f/u/" + this.user_id : this.wikiInfo.articlepath + "Special:Contributions/" + this.author;
             toolLinks.push("<a href='" + tUserContribsLink + "'>" + i18n_1["default"]("contribslink") + "</a>");
         }
         if (this.wikiInfo.user.rights.block) {

@@ -165,18 +165,12 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
 
     // Deps
     var mwReady = $.Deferred(),
-        mwDeps = ['jquery.ui.position', 'jquery.effects.fold', 'jquery.ui.core', 'jquery.ui.widget'];
+        mwDeps = mw.config.get('wgVersion').includes('1.33') ? ['jquery.ui.position', 'jquery.effects.fold', 'jquery.ui.core', 'jquery.ui.widget'] : 'jquery.ui';
     mw.loader.load(mwDeps, null, true);
     mw.loader.using(mwDeps, mwReady.resolve, mwReady.reject);
-    var colors = window.dev.colors || $.ajax({
-        url: 'https://dev.fandom.com/load.php',
-        data: {
-            mode: 'articles',
-            only: 'scripts',
-            articles: 'MediaWiki:Colors/code.js'
-        },
-        dataType: 'script',
-        cache: true
+    var colors = window.dev.colors || importArticle({
+    	type: 'script',
+    	article: 'u:dev:MediaWiki:Colors/code.js'
     });
 
     // Support CSS
@@ -932,21 +926,23 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
 
         // Do lazy load. This would be a hell of a lot easier if we had an explicit
         // dependency system. Then I could just require() and wait for the promise.
-        $.ajax({
-            url: mw.config.get('wgLoadScript'),
-            data: {
-                mode: 'articles',
-                only: 'scripts',
-                articles: 'w:dev:ReferencePopups/code.configure.js'
-            },
-            dataType: 'script',
-            cache: true
-        }).then(function () {
-            // WARN: This only works with same origin because browsers suck.
-            //	Cross-origin fires done immediately before the code runs.
-            // Chain promise
-            $.when(module.configure).done(interfaceFunc).fail(closeFunc);
-        }).fail(closeFunc);
+        mw.loader.using('mediawiki.util').then(function () {
+	        $.ajax({
+	            url: mw.util.wikiScript('load'),
+	            data: {
+	                mode: 'articles',
+	                only: 'scripts',
+	                articles: 'u:dev:MediaWiki:ReferencePopups/code.configure.js'
+	            },
+	            dataType: 'script',
+	            cache: true
+	        }).then(function () {
+	            // WARN: This only works with same origin because browsers suck.
+	            //	Cross-origin fires done immediately before the code runs.
+	            // Chain promise
+	            $.when(module.configure).done(interfaceFunc).fail(closeFunc);
+	        }).fail(closeFunc);
+        });
     }
 
     function constructPopup ( $ref ) {

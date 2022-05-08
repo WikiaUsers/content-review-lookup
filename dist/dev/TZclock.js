@@ -294,7 +294,7 @@
     }
 
     // hook into dynamic content changes
-    mw.loader.using('mediawiki.util').then(function() {
+    $.when( mw.loader.using('mediawiki.util'), $.ready ).then(function() {
         init(mw.util.$content);
     });
     mw.hook('wikipage.content').add(init);

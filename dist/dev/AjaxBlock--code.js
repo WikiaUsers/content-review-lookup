@@ -480,8 +480,6 @@
                             }
 
                             this.block(state).then(function(data) {
-                                dev.showCustomModal.closeModal($modal);
-
                                 if (data.error) {
                                     this.notify({
                                         type: 'error',

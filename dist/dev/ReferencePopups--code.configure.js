@@ -527,19 +527,24 @@ dev.ReferencePopups = dev.ReferencePopups || {};
         return $.noop;
     }
 
-    var mwReady = $.Deferred(), mwDeps = ['jquery.ui.slider', 'jquery.ui.button', 'wikia.mustache'];
+    var mwReady = $.Deferred();
+    var mwDeps = mw.config.get('wgVersion').includes('1.33') ? ['jquery.ui.slider', 'jquery.ui.button'] : ['jquery.ui'];
+    mw.loader.getModuleNames().forEach(function (item) {
+	    if (item.startsWith('mustache')) {
+	        mwDeps.push(item);
+	    }
+	});
     mw.loader.load(mwDeps, null, true);
     mw.loader.using(mwDeps, mwReady.resolve, mwReady.reject);
-    var colors = window.dev.colors || $.ajax({
-        url: 'https://dev.fandom.com/load.php',
-        data: {
-            mode: 'articles',
-            only: 'scripts',
-            articles: 'MediaWiki:Colors/code.js'
-        },
-        dataType: 'script',
-        cache: true
+    var colors = window.dev.colors || importArticles({
+    	type: 'script',
+    	article: 'u:dev:MediaWiki:Colors/code.js'
     });
+    
+    var showCustomModal = window.dev.showCustomModal || importArticle({
+	    type: 'script',
+	    article: 'u:dev:MediaWiki:ShowCustomModal.js'
+	});
 
     // Support CSS
     if (!module.cssLoaded) {
@@ -549,13 +554,17 @@ dev.ReferencePopups = dev.ReferencePopups || {};
 
     var dfd = $.Deferred();
     module.configure = dfd.promise();
-    $.when(mwReady, colors).done(function() {
-        dfd.resolve(module.configure = callback(module, window, $, mw, window.dev.colors, window.Mustache));
+    $.when(mwReady, colors, showCustomModal).done(function() {
+    	mw.hook('dev.colors').add(function () {
+    		mw.hook('dev.showCustomModal').add(function () {
+		        dfd.resolve(module.configure = callback(module, window, $, mw, window.dev.colors, window.Mustache, window.dev.showCustomModal));
+    		});
+    	});
     }).fail(function() {
         delete module.configure;
         dfd.reject();
     });
-})(window, jQuery, mediaWiki, function(module, window, $, mw, Colors, Mustache) {
+})(window, jQuery, mediaWiki, function(module, window, $, mw, Colors, Mustache, showCustomModal) {
 "use strict";
 
 // Custom CSS. Try to make the popup fit into the skin by adapting to the color scheme
@@ -601,7 +610,7 @@ return function(settings, onSave, onClose) {
     var msg = module.messages;
 
     // Construct the interface's UI
-    var $modal = $.showCustomModal(
+    var $modal = showCustomModal(
         msg.confTitle,
         Mustache.render('<form onsubmit="return false">' +
         '<button id="refpopups-disable" type="button"></button>' +

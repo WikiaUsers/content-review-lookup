@@ -5,3 +5,11 @@ importArticles({
         'w:c:clashofclans:MediaWiki:Common.js/Sliders.js'
     ]
 });
+
+window.pPreview = $.extend(true, window.pPreview, {
+  RegExp: (window.pPreview || {}).RegExp || {}
+});
+
+window.pPreview.tlen = 200;
+window.pPreview.apid = true;
+window.pPreview.RegExp.iclasses = ["msgbox", "mbox", "reference"];

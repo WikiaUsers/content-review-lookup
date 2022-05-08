@@ -92,7 +92,7 @@ function newPoll() {
 		var newpoll = '{{#ifexpr:{{#ifeq:{{NAMESPACE}}:{{BASEPAGENAME}}|Saints Row Wiki:Polls|0|1}} and {{#if:{{{1|}}}|0|1}}|Parameter missing, see [[Template:Poll]].}}<div class="SRWpoll" data-pll="{{#if:{{{1|}}}|{{{1|}}}|{{#ifeq:{{NAMESPACE}}|Saints Row Wiki|{{SUBPAGENAME}}|Error}}}}" data-dsc="'+$("#newPolldesc").val().replace(/"/g, "'")+'"';
 		if ($("#newPolllink").val().length) newpoll += ' data-lnk="'+$("#newPolllink").val().replace(/_/g, " ")+'"';
 		if ($("#newPollimage").val().length) newpoll += ' data-img="'+$("#newPollimage").val()+'"';
-		newpoll += '><span class="pollstatus">Please wait for poll to load</span></div><noinclude>[\[Category:Polls|{{SUBPAGENAME}}]]</noinclude>'
+		newpoll += '><div class="pollstatus">Please wait for poll to load</div></div><noinclude>[\[Category:Polls|{{SUBPAGENAME}}]]</noinclude>'
 
 		$(".newPolloption").each(function(){ 
 			if (!$(this).val().length) return;
@@ -111,12 +111,12 @@ function newPoll() {
 			format:"json",
 			action:"edit",
 			title:mw.config.get("wgSiteName").replace(/ /g, "_")+":Polls/"+$("#newPollname").val().ucfirst(),
-			token:mw.user.tokens.get("editToken"),
+			token:mw.user.tokens.get("csrfToken"),
 			summary: "creating poll",
 			appendtext: newpoll
 		  },
 		  error: function(data) {
-			$(".SRWpoll[data-pll='"+SRWpoll+"'] .pollstatus").html("Failed to save poll, please try again.");
+			$(".pollstatus", SRWpoll).html("Failed to save poll, please try again.");
 			console.log(data);
 		  },
 		  success: function() {
@@ -130,12 +130,12 @@ function newPoll() {
 				format:"json",
 				action:"edit",
 				title:"Forum:"+$("#newPollname").val().ucfirst(),
-				token:mw.user.tokens.get("editToken"),
+				token:mw.user.tokens.get("csrfToken"),
 				summary: "creating poll discussion page",
 				appendtext: "{"+"{forumheader|Polls}}\n{"+"{poll|{{PAGENAME}}}}\n"
 			  },
 			  error: function(data) {
-				$(".SRWpoll[data-pll='"+SRWpoll+"'] .pollstatus").html("Failed to create forum page.");
+				$(".pollstatus", SRWpoll).html("Failed to create forum page.");
 				console.log(data);
 			  },
 			  success: function() {
@@ -147,7 +147,7 @@ function newPoll() {
 					format:"json",
 					action:"edit",
 					title:"Saints_Row_Wiki:Forums/Polls",
-					token:mw.user.tokens.get("editToken"),
+					token:mw.user.tokens.get("csrfToken"),
 					summary: "",
 					appendtext: ""
 				  }
@@ -162,37 +162,39 @@ function newPoll() {
 window.SRWpollInit = function() {
     if ($(".SRWpoll").length) {
 	$(".SRWpoll").each(function(){ 
-		var SRWpoll = $(this).attr("data-pll"); 
+		var SRWpoll = $(this); 
+		var SRWpollname = $(this).attr("data-pll"); 
                 window.userID = mw.config.get("wgUserId") == null?0:mw.config.get("wgUserId");
-                if (SRWpoll == "Error") { $(this).remove(); return;}
-                if ($("div[data-opt][data-pll='"+SRWpoll+"']").length) { $(this).remove(); return;}
+                if (SRWpollname == "Error") { $(this).remove(); return;}
+                if ($("div[data-opt][data-pll='"+SRWpollname+"']").length) { $(this).remove(); return;}
 
-		$(".SRWpoll[data-pll='"+SRWpoll+"']").prepend("<h3><a href='/Forum:"+$(".SRWpoll[data-pll='"+SRWpoll+"']").attr("data-pll")+"'>"+$(".SRWpoll[data-pll='"+SRWpoll+"']").attr("data-pll")+"</a></h3>");
+		if(!SRWpoll.attr("data-qz")) SRWpoll.prepend("<h3><a href='/Forum:"+SRWpoll.attr("data-pll")+"'>"+SRWpoll.attr("data-pll")+"</a></h3>");
 
-		if (typeof $(".SRWpoll[data-pll='"+SRWpoll+"']").attr("data-img") != "undefined" && $(".SRWpoll[data-pll='"+SRWpoll+"']").attr("data-img").length) {
-			var tmpimg = $(".SRWpoll[data-pll='"+SRWpoll+"']").attr("data-img");
+		if (typeof SRWpoll.attr("data-img") != "undefined" && SRWpoll.attr("data-img").length) {
+			var tmpimg = SRWpoll.attr("data-img");
 			if (tmpimg.indexOf("http") == -1) tmpimg = 'https://vignette.wikia.nocookie.net/'+mw.config.get("wgDBname")+'/images/'+tmpimg+'/revision/latest/scale-to-width-down/200';
-			$(".SRWpoll[data-pll='"+SRWpoll+"']").prepend('<figure style="float: right;"><img src="'+tmpimg+'" alt="poll image"></figure>');
+			SRWpoll.prepend('<figure style="float: right;"><img src="'+tmpimg+'" alt="poll image"></figure>');
 		}
-		$(".SRWpoll[data-pll='"+SRWpoll+"']").append("<dl><dd>"+$(".SRWpoll[data-pll='"+SRWpoll+"']").attr("data-dsc")+"</dd></dl>");
+		$(".pollstatus", SRWpoll).before("<dl><dd><b>"+SRWpoll.attr("data-dsc")+"</b></dd></dl>");
 
-		if (typeof $(".SRWpoll[data-pll='"+SRWpoll+"']").attr("data-lnk") != "undefined" && $(".SRWpoll[data-pll='"+SRWpoll+"']").attr("data-lnk").length) {
-			$(".SRWpoll[data-pll='"+SRWpoll+"']").append("<dl><dd>Related article: <a href='/"+$(".SRWpoll[data-pll='"+SRWpoll+"']").attr("data-lnk")+"'>"+decodeURIComponent($(".SRWpoll[data-pll='"+SRWpoll+"']").attr("data-lnk"))+"</a></dd></dl>");
+		if (typeof SRWpoll.attr("data-lnk") != "undefined" && SRWpoll.attr("data-lnk").length) {
+			SRWpoll.append("<dl><dd>Related article: <a href='/"+SRWpoll.attr("data-lnk")+"'>"+decodeURIComponent(SRWpoll.attr("data-lnk"))+"</a></dd></dl>");
 		}
-		$("span[data-pll='"+SRWpoll+"'][data-opt]").each(function(){ 
-			if ($("div[data-pll='"+SRWpoll+"'][data-opt="+$(this).attr('data-opt')+"]").length) { console.log("error: dupe "+$(this).attr("data-opt")); return; }
-			$(".SRWpoll[data-pll='"+SRWpoll+"']").append(
+		$("span[data-pll='"+SRWpollname+"'][data-opt]").each(function(){ 
+			if ($("div[data-pll='"+SRWpollname+"'][data-opt="+$(this).attr('data-opt')+"]").length) { console.log("error: dupe "+$(this).attr("data-opt")); return; }
+			SRWpoll.append(
 				$("<div>", { "data-opt":$(this).attr("data-opt"), "data-pll":$(this).attr("data-pll") })
 					.click(function(){
+						var SRWpoll = $(".SRWpoll[data-pll='"+SRWpollname+"']");
 						if (userID == 0) {
-							$(".SRWpoll[data-pll='"+SRWpoll+"'] .pollstatus").html("You are not signed in.").css({"color":"red"});
+							$(".pollstatus", SRWpoll).html("You are not signed in.").css({"color":"red"});
 							return;
 						}
 						
-						if (typeof $(".SRWpoll[data-pll='"+SRWpoll+"']").attr("data-voted") != "undefined") return;
-						if($("div[data-pll='"+SRWpoll+"'][data-opt="+$(this).attr("data-opt")+"].myVote").length) { $(".SRWpoll[data-pll='"+SRWpoll+"'] .pollstatus").html("Thanks for voting!"); return;}
-						$(".SRWpoll[data-pll='"+SRWpoll+"'] .pollstatus").html("Saving vote...");
-						$("span[data-pll='"+SRWpoll+"']").filter(":last").after('<span data-pll="'+SRWpoll+'" data-usr="'+userID+'" data-vt="'+$(this).attr("data-opt")+'"></span>');
+						if (typeof SRWpoll.attr("data-voted") != "undefined") return;
+						if($("div[data-pll='"+SRWpollname+"'][data-opt="+$(this).attr("data-opt")+"].myVote").length) { $(".pollstatus", SRWpoll).html("Thanks for voting!"); return;}
+						$(".pollstatus", SRWpoll).html("Saving vote...");
+						$("span[data-pll='"+SRWpollname+"']").filter(":last").after('<span data-pll="'+SRWpollname+'" data-usr="'+userID+'" data-vt="'+$(this).attr("data-opt")+'"></span>');
 						var vote = $(this).attr("data-opt");
 console.log("vote:"+vote);
 						
@@ -205,22 +207,24 @@ console.log("vote:"+vote);
 						  data: { 
 							format:"json",
 							action:"edit",
-							title:mw.config.get("wgSiteName").replace(/ /g, "_")+":Polls/"+$(this).attr("data-pll"),
-							token:mw.user.tokens.get("editToken"),
+							title:mw.config.get("wgSiteName").replace(/ /g, "_")+":Polls/"+$(this).attr("data-pll").split("#")[0],
+							token:mw.user.tokens.get("csrfToken"),
 							summary: "Voting"+(vote == 0?'!':''),
-							appendtext: $(".SRWpoll").attr("data-lock")?'':'\n<span data-pll="{{{1|{{SUBPAGENAME}}}}}" data-usr="'+localStorage.getItem('userID')+'" data-vt="'+vote+'"></span>',
+							appendtext: SRWpoll.attr("data-lock")?'':'\n<span data-pll="'+$(this).attr("data-pll")+'" data-usr="'+localStorage.getItem('userID')+'" data-vt="'+vote+'"></span>',
 							minor:1,
+							nocreate:1
 						  },
 						  error: function() {
-							$(".SRWpoll[data-pll='"+SRWpoll+"'] .pollstatus").html("Voting failed, please try again.");
+							$(".pollstatus", SRWpoll).html("Voting failed, please try again.");
 						  },
 						  success: function() {
-						  	$(".SRWpoll[data-pll='"+SRWpoll+"'] .pollstatus").html("Vote saved. Thanks for voting!");
-							$(".SRWpoll[data-pll='"+SRWpoll+"']").attr("data-voted", 1);
-							$("div[data-pll='"+SRWpoll+"'] .sprite").remove();
-							$("div[data-pll='"+SRWpoll+"'] .votes").remove();
+						  	$(".pollstatus", SRWpoll).html("Vote saved. Thanks for voting!");
+							SRWpoll.attr("data-voted", 1);
+							$("div[data-pll='"+SRWpollname+"'] .sprite").remove();
+							$("div[data-pll='"+SRWpollname+"'] .votes").remove();
 
-							calcVotes(SRWpoll);
+							calcVotes(SRWpollname);
+							/* nulledit current page to ensure embedded poll is updated - problem: other embeds? Primary purpose is for people refreshing the page they're on. */
 							$.ajax({
 							  type: "POST",
 							  url: "/api.php",
@@ -228,7 +232,7 @@ console.log("vote:"+vote);
 								format:"json",
 								action:"edit",
 								title:mw.config.get("wgPageName"),
-								token:mw.user.tokens.get("editToken"),
+								token:mw.user.tokens.get("csrfToken"),
 								summary: "",
 								appendtext: ""
 							  }
@@ -240,41 +244,50 @@ console.log("vote:"+vote);
 			if (typeof $(this).attr("data-img") != "undefined" && $(this).attr("data-img").length) {
 				var tmpimg = $(this).attr("data-img");
 				if (tmpimg.indexOf("http") == -1) tmpimg = 'https://vignette.wikia.nocookie.net/'+mw.config.get("wgDBname")+'/images/'+tmpimg+'/revision/latest/scale-to-width-down/200';
-				$("div[data-pll='"+SRWpoll+"'][data-opt="+$(this).attr("data-opt")+"]").append('<figure><img src="'+tmpimg+'" alt="SRWpoll image"></figure>');
+				$("div[data-pll='"+SRWpollname+"'][data-opt="+$(this).attr("data-opt")+"]").append('<figure><img src="'+tmpimg+'" alt="SRWpoll image"></figure>');
 			}
 
-			$("div[data-pll='"+SRWpoll+"'][data-opt="+$(this).attr("data-opt")+"]").append('<p>'+$(this).attr("data-txt")+'</p>');
+			$("div[data-pll='"+SRWpollname+"'][data-opt="+$(this).attr("data-opt")+"]").append('<p>'+$(this).attr("data-txt")+'</p>');
 		});
-		if (mw.config.get("wgNamespaceNumber") != mw.config.get("wgNamespaceIds")["forum"]) $(".SRWpoll[data-pll='"+SRWpoll+"']").after("<p><br>Discuss this poll on <a href='/Forum:"+$(".SRWpoll[data-pll='"+SRWpoll+"']").attr("data-pll")+"'>Forum:"+$(".SRWpoll[data-pll='"+SRWpoll+"']").attr("data-pll")+"</a></p>");
-		$(".SRWpoll[data-pll='"+SRWpoll+"'] .pollstatus").empty();
-		calcVotes(SRWpoll);
+		if (mw.config.get("wgNamespaceNumber") != mw.config.get("wgNamespaceIds")["forum"] && !SRWpoll.attr("data-qz")) SRWpoll.after("<p><br>Discuss this poll on <a href='/Forum:"+SRWpoll.attr("data-pll")+"'>Forum:"+SRWpoll.attr("data-pll")+"</a></p>");
+		$(".pollstatus", SRWpoll).empty();
+		calcVotes(SRWpollname);
 	});
 
-	function calcVotes(SRWpoll) {
+	function calcVotes(SRWpollname) {
+		var SRWpoll = $(".SRWpoll[data-pll='"+SRWpollname+"']");
 		var SRWpollvotes = new Array(), SRWvotes = new Array(), SRWpollwinner = 0;
-		$("span[data-pll='"+SRWpoll+"'][data-usr][data-vt]").each(function() {
-			if($("div[data-pll='"+SRWpoll+"'][data-opt="+$(this).attr("data-vt")+"]"))
+		$("span[data-pll='"+SRWpollname+"'][data-usr][data-vt]").each(function() {
+			if($("div[data-pll='"+SRWpollname+"'][data-opt="+$(this).attr("data-vt")+"]"))
 				SRWpollvotes[$(this).attr("data-usr")] = $(this).attr("data-vt");
 		});		
-		if ($(".SRWpoll").attr("data-totals")) $(".SRWpoll[data-pll='"+SRWpoll+"'] .pollstatus").html("Total votes: "+Object.keys(SRWpollvotes).length);
+		if (SRWpoll.attr("data-totals")) $(".pollstatus", SRWpoll).html("Total votes: "+Object.keys(SRWpollvotes).length);
 
 		for(SRWpollvote in SRWpollvotes) {
 			if (typeof SRWvotes[SRWpollvotes[SRWpollvote]] == "undefined") SRWvotes[SRWpollvotes[SRWpollvote]] = 0;
 			SRWvotes[SRWpollvotes[SRWpollvote]]++;
 		}
 		for(SRWvote in SRWvotes) {
-			$("div[data-pll='"+SRWpoll+"'][data-opt="+SRWvote+"]").prepend("<div class='votes'>"+Math.round(100 * SRWvotes[SRWvote] / Object.keys(SRWpollvotes).length )+"%</div>");
+			$("div[data-pll='"+SRWpollname+"'][data-opt="+SRWvote+"]").prepend("<div class='votes'>"+Math.round(100 * SRWvotes[SRWvote] / Object.keys(SRWpollvotes).length )+"%</div>");
 			SRWpollwinner = SRWvotes[SRWpollwinner] > SRWvotes[SRWvote]?SRWpollwinner:SRWvote;
 		}
-		$("div[data-pll='"+SRWpoll+"'][data-opt]").removeClass("myVote");
-		if(typeof SRWvotes[SRWpollwinner] != "undefined")
-			$("div[data-pll='"+SRWpoll+"'][data-opt="+SRWpollwinner+"]").prepend('<div class="sprite ok" title="Leading"></div>')
+		if(SRWpoll.attr("data-qz"))
+			$("div[data-pll='"+SRWpollname+"'][data-opt="+String.fromCharCode(SRWpoll.attr("data-qz"))+"]").prepend('<div class="sprite ok" title="Correct Answer"></div>');
+		else if(typeof SRWvotes[SRWpollwinner] != "undefined" )
+			$("div[data-pll='"+SRWpollname+"'][data-opt="+SRWpollwinner+"]").prepend('<div class="sprite ok" title="Leading"></div>');
+		$("div[data-pll='"+SRWpollname+"'][data-opt]").removeClass("myVote");
 		if(typeof SRWpollvotes[userID] != "undefined") {
-			$("div[data-pll='"+SRWpoll+"'][data-opt="+SRWpollvotes[userID]+"]").addClass("myVote");
-		} else if (!$(".SRWpoll").attr("data-show")) {
-			$("div[data-pll='"+SRWpoll+"'] .sprite.ok").remove();
-			$("div[data-pll='"+SRWpoll+"'] .votes").remove();
-			$("div[data-pll='"+SRWpoll+"'] .pollstatus").append(" (You have not voted in this poll.  Results are shown after you vote.)");
+			$("div[data-pll='"+SRWpollname+"'][data-opt="+SRWpollvotes[userID]+"]").addClass("myVote");
+			if(SRWpoll.attr("data-qz")) {
+				SRWpoll.attr("data-voted", 1);
+console.log(SRWpollvotes[userID] + " ? " + String.fromCharCode(SRWpoll.attr("data-qz")));
+				if (SRWpollvotes[userID] != String.fromCharCode(SRWpoll.attr("data-qz")))
+				$("div[data-pll='"+SRWpollname+"'][data-opt="+SRWpollvotes[userID]+"]").prepend('<div class="sprite error" title="Wrong Answer"></div>');
+			}
+		} else if (!SRWpoll.attr("data-show")) {
+			$(".sprite.ok", SRWpoll).remove();
+			$(".votes", SRWpoll).remove();
+			if(SRWpoll.attr("data-qz") != 0) $(".pollstatus", SRWpoll).append(" (You have not voted.  Results are shown after you vote.)");
 		}
 	}	
     }

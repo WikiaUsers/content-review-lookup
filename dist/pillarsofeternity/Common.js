@@ -85,7 +85,7 @@ if (document.querySelector(".loot-container-table") != null)
 	
 	var lastAnchoredRow = null;
 	
-	function onAnchor(fromHashChange = false)
+	function onAnchor(fromHashChange)
 	{
 	    if (!location.hash) return;
 	    var anchor = document.getElementById(location.hash.slice(1));
@@ -99,7 +99,8 @@ if (document.querySelector(".loot-container-table") != null)
 	
 	        // Highlight the row if one was anchored to
 	        anchor.classList.add("anchored-row");
-	        lastAnchoredRow?.classList.remove("anchored-row");
+	        
+	        if (lastAnchoredRow != null) lastAnchoredRow.classList.remove("anchored-row");
 	
 	        // Scroll the row into view
 	        anchor.scrollIntoView({behavior: fromHashChange ? "auto" : "smooth", block: "center", inline: "nearest"});
@@ -119,7 +120,7 @@ if (document.querySelector(".loot-container-table") != null)
 	    }
 	}
 	
-	onAnchor();
+	deferUntilJQueryUILoaded(onAnchor);
 	window.addEventListener("hashchange", function() { onAnchor(true); });
 	
 	// ======

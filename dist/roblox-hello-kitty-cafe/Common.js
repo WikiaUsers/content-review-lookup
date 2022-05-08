@@ -33,3 +33,32 @@ $(function() {
 
     sliderContainer.append(label, slider);
 });
+
+/* Daily Reset Timer */
+/* User:Joritochip */
+$(function() {
+    var timer = $('#daily-reset-timer').not('.timer-started');
+    if (!timer.length) return;
+    timer.addClass('timer-started');
+
+    function format(n) {
+        return (n < 10 ? '0' : '') + n;
+    }
+
+    function update() {
+        var dateNow = new Date();
+        
+        var dateThen = new Date();
+        dateThen.setUTCHours(dateNow.getUTCHours() < 4 ? 4 : 28, 0, 0, 0);
+
+        var diff = dateThen - dateNow;
+        var hours = diff / 3.6e6 | 0;
+        var mins = diff % 3.6e6 / 6e4 | 0;
+        var secs = Math.round(diff % 6e4 / 1e3);
+
+        timer.text(format(hours) + ':' + format(mins) + ':' + format(secs));
+    }
+
+    update();
+    setInterval(update, 1000);
+});

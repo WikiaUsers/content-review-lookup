@@ -194,7 +194,7 @@ if (!nkch.ma.isActive) {
 						const module_wiki_details__stat_edits_text = document.createElement("div");
 						module_wiki_details__stat_edits_text.classList.add("nkch-ma__right-rail-module-wiki-stat-text");
 
-						module_wiki_details__stat_edits_text.innerText = i18n.msg("edits").plain();
+						module_wiki_details__stat_edits_text.innerText = i18n.msg("ma-v2-edits").plain();
 
 						module_wiki_details__stat_edits.append(module_wiki_details__stat_edits_text);
 
@@ -213,7 +213,7 @@ if (!nkch.ma.isActive) {
 						const module_wiki_details__stat_pages_text = document.createElement("div");
 						module_wiki_details__stat_pages_text.classList.add("nkch-ma__right-rail-module-wiki-stat-text");
 
-						module_wiki_details__stat_pages_text.innerText = i18n.msg("pages").plain();
+						module_wiki_details__stat_pages_text.innerText = i18n.msg("ma-v2-pages").plain();
 
 						module_wiki_details__stat_pages.append(module_wiki_details__stat_pages_text);
 
@@ -305,7 +305,7 @@ if (!nkch.ma.isActive) {
 
 						const module_community_corner__header = document.createElement("h2");
 						module_community_corner__header.classList.add("rail-module__header", "nkch-ma__right-rail-module-header");
-						module_community_corner__header.innerText = i18n.msg("communityCorner").plain();
+						module_community_corner__header.innerText = i18n.msg("ma-v2-community-corner").plain();
 
 						ma__rail_sticky_module_community_corner.append(module_community_corner__header);
 
@@ -400,6 +400,7 @@ if (!nkch.ma.isActive) {
 						".nkch-ma-entry__icon--move { background-color: blue; }" +
 						".nkch-ma-entry__icon--block { background-color: darkorange; }" +
 						".nkch-ma-entry__icon--unblock { background-color: darkcyan; }" +
+						".nkch-ma-entry__icon--reblock { background-color: #b34607; }" +
 						".nkch-ma-entry__icon--rights { background-color: darkkhaki; }" +
 						".nkch-ma-entry__icon--import { background-color: #b151a5; }" +
 
@@ -800,6 +801,29 @@ if (!nkch.ma.isActive) {
 																	ma__list_item__main.append(ma__list_item__details);
 
 																	ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + logsCase[0].comment + "<br>";
+																}
+																break;
+                                                            case "reblock":
+																ma__list_item.classList.add("nkch-ma-entry--reblock");
+
+																/* ~ icon ~ */
+																ma__list_item__icon.classList.add("nkch-ma-entry__icon--reblock");
+																$(ma__list_item__icon).append(wds.icon("lock-small"));
+
+																/* ~ subtitle ~ */
+																var authorLink = !mw.util.isIPAddress(logsCase[0].user) ? new mw.Title(logsCase[0].user, 2).getPrefixedText() : new mw.Title("Contributions/" + logsCase[0].user, -1).getPrefixedText();
+
+																ma__list_item__subtitle.innerHTML = i18n.msg("ma-v2-type-reblock", "[[" + authorLink + "|" + logsCase[0].user + "]]").parse();
+
+																/* ~ details ~ */
+																if (
+																	(multipleArray[loopIndex].parsedcomment != undefined && multipleArray[loopIndex].parsedcomment != "") ||
+																	(logsCase[0].params.duration != undefined && logsCase[0].params.duration != "")
+																) {
+																	ma__list_item__main.append(ma__list_item__details);
+
+																	if (multipleArray[loopIndex].parsedcomment != undefined && multipleArray[loopIndex].parsedcomment != "") ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + logsCase[0].comment + "<br>";
+																	if (logsCase[0].params.duration != undefined && logsCase[0].params.duration != "") ma__list_item__details.innerHTML += "<b>" + i18n.msg("ma-v2-details-duration").plain() + "</b>: " + logsCase[0].params.duration;
 																}
 																break;
 															case "rights":

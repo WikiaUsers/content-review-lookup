@@ -1,5 +1,5 @@
 // codes from FR CC
-//Request filling system using popups by Gguigui1, Hulothe, Wyz, Fubuki風吹 and Celdrøn
+// Request filling system using popups by Gguigui1, Hulothe, Wyz, Fubuki風吹 and Celdrøn
 // <nowiki>
 
 importArticle({

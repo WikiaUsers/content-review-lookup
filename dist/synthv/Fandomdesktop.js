@@ -3,6 +3,7 @@ $(function() {
 	var images = [
 	    'https://images.wikia.nocookie.net/synthv/images/0/06/Wiki-wordmark-aiko.png',
 	    'https://images.wikia.nocookie.net/synthv/images/b/b5/Wiki-wordmark-anri.png',
+	    'https://images.wikia.nocookie.net/synthv/images/9/9a/Wiki-wordmark-an-xiao.png',
 	    'https://images.wikia.nocookie.net/synthv/images/8/87/Wiki-wordmark-cangqiong.png',
 	    'https://images.wikia.nocookie.net/synthv/images/2/22/Wiki-wordmark-cangqiong-svs.png',
 	    'https://images.wikia.nocookie.net/synthv/images/2/24/Wiki-wordmark-chiyu.png',

@@ -34,6 +34,7 @@ $(function() {
 		});
 		$('.mw-parser-output a.mw-redirect').each(function() {
 			link = $(this).attr('href').replace('/wiki/', '').trim();
+			link = link.replace('_', ' ');
 			for (i = 0; i < list_of_redirects.length; i++) {
 				if (list_of_redirects[i] == link) {
 					txt = $(this).text();

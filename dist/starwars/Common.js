@@ -958,8 +958,3 @@ $( function eraIconsOasis() {
     	}
     }
 } );
-
- /* May the Fourth 2021 fun! */
-   $(function () {
-        $('#fourth').append("<iframe width='100%'  height='1200px' style='background-color:transparent!important' src='https://gleam.io/Rz3FG/win-stars-wars-day-prizes-with-fanatical'></iframe>");
-    });

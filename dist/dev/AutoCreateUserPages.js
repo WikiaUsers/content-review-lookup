@@ -74,7 +74,7 @@
             deferreds = deferreds.concat([
                 $.get(mw.util.wikiScript('wikia'), $.extend({type: 'posts'}, socialActivity)),
                 $.get(mw.util.wikiScript('wikia'), $.extend({type: 'messages'}, socialActivity)),
-                (this.mwconfig.wgCityId === 7931 ? null : $.get(mw.util.wikiScript('wikia'), $.extend({type: 'comments'}, socialActivity)))
+                $.get(mw.util.wikiScript('wikia'), $.extend({type: 'comments'}, socialActivity))
             ]);
             
             $.when.apply($, deferreds).done($.proxy(this.cbContribs, this)).fail($.proxy(this.cbContribsFail, this));

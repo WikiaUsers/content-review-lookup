@@ -892,3 +892,55 @@ $(function(){
 
 /* Bypassing license check on multiple upload */
 mw.config.set('UMFBypassLicenseCheck',true);
+
+/* Process Average Loot Value data */
+$(function(){
+	if (wgPageName === 'List_of_Creatures_by_Average_Loot_Value') {
+		var baseurl = 'https://tibia.fandom.com/wiki/',
+		fileurl = 'https://tibia.fandom.com/wiki/Special:Filepath?file=',
+		looturl = 'https://tibia.fandom.com/wiki/Loot_Statistics:',
+		lootValueData = [];
+		
+		$.each($('#lootValueData').text().split('|'), function() {
+			if (this.length > 0) {
+				var vals = this.split("/"),
+				creature = vals[0],
+				kills =  parseInt(vals[1], 10),
+				value = parseFloat(vals[2]);
+				if (kills > 100 && value > 0) {
+					lootValueData.push({n: creature, k: kills, v:value});	
+				}
+			}
+		});
+		
+		lootValueData.sort(function(x,y){return (y.v - x.v)})
+		
+		//$('#lootValueTable > tbody > tr')[1].remove();
+		
+		$.each(lootValueData, function() {
+			$('#lootValueTable > tbody')
+				.append($('<tr>')
+        			.append($('<td>')
+        				.append($('<a>')
+        					.attr('href', baseurl + this.n)
+        					.text(this.n))
+    					.append('<br/>')
+    					.append($('<small>')
+    						.append($('<a>')
+    							.attr('href', looturl + this.n)
+        						.text('Loot Statistics'))))
+    				.append($('<td>')
+        				.append($('<img>')
+        					.attr('src', fileurl + this.n + '.gif')
+        					.attr('class', 'lazyloaded')))
+        			.append($('<td>')
+        				.text(this.k))
+    				.append($('<td>')
+        				.text(this.v))
+    			)	
+		});
+		
+		$('#lootValueLoading').remove();
+		$('#lootValueTable').show();
+	}
+});

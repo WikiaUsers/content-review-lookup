@@ -9,18 +9,20 @@
 	// Load the reference popups then wait for the loaded event to fire
 	var popups = window.dev && window.dev.ReferencePopups && window.dev.ReferencePopups.Popup;
 	if (!popups) {
-		popups = $.ajax({
-			url: 'https://dev.fandom.com/load.php',
-			data: {
-				mode: 'articles',
-				only: 'scripts',
-				articles: 'MediaWiki:ReferencePopups/code.js'
-			},
-			dataType: 'script',
-			cache: true
-		}).then(function() {
-			// Chain promises
-			return window.dev.ReferencePopups.Popup;
+		mw.loader.load('mediawiki.util').then(function () {
+			popups = $.ajax({
+				url: mw.util.wikiScript('load'),
+				data: {
+					mode: 'articles',
+					only: 'scripts',
+					articles: 'u:dev:MediaWiki:ReferencePopups/code.js'
+				},
+				dataType: 'script',
+				cache: true
+			}).then(function() {
+				// Chain promises
+				return window.dev.ReferencePopups.Popup;
+			});
 		});
 	}
 

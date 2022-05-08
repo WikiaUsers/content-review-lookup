@@ -505,7 +505,7 @@ function createTable(jsn)
 			rest += '<th rowspan="2">Ελάχιστο '+img('Minimum.gif','Ελάχιστο επίπεδο Στρατώνων','Ελάχιστο επίπεδο Στρατώνων','image',20,20,'Στρατώνες')+'<br>κατασκευής</th>';
 			break;
 		case 'Ταβέρνα':
-			rest += '<th rowspan="2">Μέγιστο<br>'+icon(1)+'<br><small>για<br>Προσφορά<small></th>';
+			rest += '<th rowspan="2">Μέγιστο '+icon(1)+'<br><small>για Προσφορά<br>(<b>Μέγιστη μείωση<br>από '+lnk('Αποστακτήριο','Αποστακτήριο','Αποστακτήριο')+'</b>)<small></th>';
 			wps = ['<th colspan="3">Επιβράβευση '+lnk('Ευτυχία','Ευτυχίας','Ευτυχία')+'<cite name="happiness">Οι Ταβέρνες θα αυξήσουν την '+lnk('Ευτυχία','Ευτυχία')+' στην πόλη σας απλώς μέσω: <ol><li>της Κατασκευής μιας Ταβέρνας ή αυξάνοντας το επίπεδό της.</li><li>Προσφέροντας περισσότερο '+lnk('Κρασί','Κρασί')+'.</li></ol></cite></th>','<th class="title6">Βάση<br><cite name="base">Για κάθε επίπεδο της Ταβέρνας σας:<dd><dl>Η '+lnk('Ευτυχία','Ευτυχία')+' στην πόλη σας αυξάνεται κατά <b>12</b> πόντους.</dl></dd></cite></th><th class="title6">Μέγιστη<br>'+icon(1)+' <cite name="wine">Για κάθε επίπεδο που προσφέρετε την <b>ΜΕΓΙΣΤΗ</b> ποσότητα κρασιού '+icon(1)+':<dd><dl>Η '+lnk('Ευτυχία','Ευτυχία')+' στην πόλη σας αυξάνεται κατά <b>60</b> πόντους.</dl></dd></cite></th><th class="title6">Μέγιστη<br>Συνολική <cite name="max">Μια Ταβέρνα 1ου επιπέδου με πλήρη κατανάλωση δίνει συνολικά <b>72</b> πόντους '+lnk('Ευτυχία','Ευτυχίας','Ευτυχία')+'.<dd><dl>12 από το επίπεδο της Ταβέρνας (βάση).</dl><dl>60 από την μέγιστη προσφερόμενη ποσότητα κρασιού '+icon(1)+'.</dl></dd></cite></th>'];
 			break;
 		case 'Τείχη της πόλης':
@@ -750,7 +750,19 @@ function createTable(jsn)
 				tr += '<td>'+(anames[(y+parseInt(ps[0]))-1]!=undefined?lnk('Μονάδα-Πλοίο#'+anames[(y+parseInt(ps[0]))-1],'<span style="height:36px !important;width:36px !important;display:inline-block;background-image:url(https://ikariam.fandom.com/el/wiki/Special:Filepath/Units_small.png);background-repeat:no-repeat;background-position:'+(-resources.units[(y+parseInt(ps[0]))-1])+'px -36px;"></span><br>'+anames[(y+parseInt(ps[0]))-1],anames[(y+parseInt(ps[0]))-1]):'')+'</td>';
 				break;
 			case 'Ταβέρνα':
-				tr += '<td>'+FrmtNumToStr(resources.maxwine[(y+parseInt(ps[0]))-1])+'</td><td>'+FrmtNumToStr((y+parseInt(ps[0]))*12)+'</td><td>'+FrmtNumToStr((y+parseInt(ps[0]))*60)+'</td><td>'+FrmtNumToStr((y+parseInt(ps[0]))*(12+60))+'</td>';
+				var txt = '';
+				var hd = '';
+				for(var rows=0;rows<8;rows++)
+				{
+					txt += '<tr style="font-weight:bold;border:1px solid black;border-left:2px solid black">';
+					for(var cols=0;cols<8;cols++)
+					{
+						hd += rows==0 && cols%2==0?'<th style="border-left:2px solid black">'+img('Minimum.gif','Επίπεδο Αποστακτηρίου','Επίπεδο Αποστακτηρίου','image',20,20,'Αποστακτήριο')+'</th><th style="border-right:2px solid black">'+icon(1,20,15)+'</th>':'';
+						txt += '<td'+(cols%2==1?' style="border-right:2px solid black"':'')+'>'+FrmtNumToStr(cols%2==1 ? Math.round(resources.maxwine[(y+parseInt(ps[0]))-1]*(100-((4*cols-4)+rows+1))/100) : ((4*cols)+rows+1))+'</td>';
+					}
+					txt += '</tr>';
+				}
+				tr += '<td>'+FrmtNumToStr(resources.maxwine[(y+parseInt(ps[0]))-1])+'<br><div class="ikariam-tooltip" data-tooltip="'+('<table class=&quot;darktable zebra&quot; style=&quot;text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto&quot;><thead><tr style="border-top:2px solid black;border-bottom:2px solid black">'+hd+'</tr></thead><tbody>'+txt+'</tbody><tfoot><tr style="border-top:2px solid black;border-bottom:2px solid black">'+hd+'</tr></tfoot></table>').replace(/"/g,'&quot;')+'">(<b>'+FrmtNumToStr(Math.round(resources.maxwine[(y+parseInt(ps[0]))-1]*0.68))+'</b>)</div></td><td>'+FrmtNumToStr((y+parseInt(ps[0]))*12)+'</td><td>'+FrmtNumToStr((y+parseInt(ps[0]))*60)+'</td><td>'+FrmtNumToStr((y+parseInt(ps[0]))*(12+60))+'</td>';
 				break;
 			case 'Τείχη της πόλης':
 				var txt = '';

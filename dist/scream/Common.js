@@ -11,7 +11,8 @@ importArticles({
     "u:dev:SpoilerAlert/code.js",
     "u:dev:PurgeButton/code.js",
     "u:dev:DisplayClock/code.js",
-    'u:dev:QuickDelete/multiCats.js'
+    'u:dev:QuickDelete/multiCats.js',
+    'u:dev:MediaWiki:MassProtect/code.js'
         ]
 });
 

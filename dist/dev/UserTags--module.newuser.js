@@ -58,7 +58,7 @@ UserTagsJS.extensions.newuser = (function($, mw, Date) {
 			// counter instead of AJAXing which is WAY faster (especially since we're manually
 			// AJAXing instead of using Sledge)
 			if ((typeof(namespace) === 'number' && namespace === namespace) // n === n is false for NaN
-			 || ({oasis:1, wikia:1})[mw.config.get('skin')] !== 1
+			 || ({fandomdesktop:1})[mw.config.get('skin')] !== 1
 			   ) {
 				this._doCustomAjax(username, namespace);
 			} else {
@@ -118,7 +118,8 @@ UserTagsJS.extensions.newuser = (function($, mw, Date) {
 					uselang: 'en', // Force English so we don't have to deal with non-English digit chars
 					text: text,
 					prop: 'text',
-					disablepp: 1 // Disable the preprocessor report (HTML comment at end)
+					disablelimitreport: 1, // Disable the preprocessor report (HTML comment at end)
+					contentmodel: 'wikitext'
 				},
 				dataType: 'json'
 			})

@@ -5,13 +5,10 @@
 // @author: Noreplyz
 (function() {
   var config = mw.config.get([
-    'wgCanonicalSpecialPageName',
-    'wgCityId',
-    'wgMonthNames',
-    'wgUserGroups',
     'wgServer',
     'wgScriptPath',
-    'profileUserId'
+    'profileUserId',
+    'wgUserLanguage'
   ]);
   if (
     window.dpv ||
@@ -138,11 +135,6 @@
     );
   };
 
-  // Pad numbers if 0-9 with an extra 0
-  dpv.timePad = function(n) {
-    return (n < 10) ? '0' + n : n;
-  };
-
   dpv.typeToContainerType = {
     'comments': 'ARTICLE_COMMENT',
     'discussions': 'FORUM',
@@ -211,8 +203,10 @@
         var option = "none",
             imgURL;
         // Format date
-        var date = new Date(post.creationDate.epochSecond * 1000);
-        date = dpv.timePad(date.getHours()) + ':' + dpv.timePad(date.getMinutes()) + ', ' + date.getDate() + ' ' + config.wgMonthNames[date.getMonth() + 1] + ' ' + date.getFullYear();
+        var date = new Date(post.creationDate.epochSecond * 1000).toLocaleString(config.wgUserLanguage, {
+        	dateStyle: 'medium',
+        	timeStyle: 'short'
+        });
         // Fix avatar
         if (!post.createdBy.avatarUrl) {
           post.createdBy.avatarUrl = 'https://images.wikia.com/messaging/images/1/19/Avatar.jpg';

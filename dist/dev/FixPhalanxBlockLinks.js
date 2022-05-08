@@ -17,17 +17,17 @@
         data.query.specialpagealiases.forEach(function (x) {
             mapping[x.realname] = specialNamespace + ':' + x.aliases[0];
         });
-        var unblockelement = $('.mw-contributions-user-tools a[href^="' + mw.util.getUrl(mapping.Unblock) + '/"]');
+        var unblockelement = $('.mw-contributions-user-tools a[title^="' + mapping.Unblock + '/"]');
 
         if (!unblockelement.length) {
             return;
         }
 
-        $('.mw-contributions-user-tools a[href^="' + mw.util.getUrl(mapping.Block) + '"]').text(data.query.allmessages[0]["*"]);
+        $('.mw-contributions-user-tools a[title^="' + mapping.Block + '"]').text(data.query.allmessages[0]['*']);
         unblockelement.parent().hide();
     }
 
-    function init () {
+    mw.loader.using('mediawiki.api').then(function () {
         new mw.Api().get({
             action: 'query',
             meta: 'userinfo|allmessages|siteinfo',
@@ -36,11 +36,8 @@
             bkusers: mw.config.get('profileUserName'),
             bklimit: 1,
             ammessages: 'blocklink',
-            amlanguage: mw.config.get('wgUserLanguage'),
-            siprop: 'namespaces|specialpagealiases',
-            format: 'json'
+            amlang: mw.config.get('wgUserLanguage'),
+            siprop: 'namespaces|specialpagealiases'
         }).done(handler);
-    }
-
-    mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(init);
+    });
 })();

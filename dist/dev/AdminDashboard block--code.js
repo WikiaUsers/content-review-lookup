@@ -22,11 +22,11 @@
                     }).append(
                         $('<div>').append(
                             $('<span>', {
-                                text: 'block'
+                                text: '🛇'
                             })
                         )
                     ),
-                    'Block'
+                    i18n.msg('block').escape()
                 )
             ).hover($.proxy(this.hover, this), $.proxy(this.unhover, this));
             $('section.wiki ul.controls').append(this.$control);

@@ -5466,6 +5466,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "compassionate": {
+                "name": "Compassionate",
+                "types": [
+                    "flower",
+                    "rainbow",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "confection": {
                 "name": "Confection",
                 "types": [
@@ -9644,6 +9661,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "35_hours_35",
                 "rarity": 4,
                 "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "fearless": {
+                "name": "Fearless",
+                "types": [
+                    "flower",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]
@@ -15150,6 +15183,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "inspirational": {
+                "name": "Inspirational",
+                "types": [
+                    "flower",
+                    "pink",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "intimate": {
                 "name": "Intimate",
                 "types": [
@@ -17808,6 +17858,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "tournament",
                 "notes": [
                     "feature"
+                ]
+            },
+            "lupine": {
+                "name": "Lupine",
+                "types": [
+                    "flower",
+                    "beast",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "purple"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "flower"
+                            ]
+                        ]
+                    ]
                 ]
             },
             "lush": {
@@ -22446,6 +22523,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "paperflower": {
+                "name": "Paper Flower",
+                "types": [
+                    "flower",
+                    "arcane",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "25_hours_25",
+                "rarity": 4,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "paperlantern": {
                 "name": "Paper Lantern",
                 "types": [
@@ -24476,6 +24570,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                             ]
                         ]
                     ]
+                ]
+            },
+            "protective": {
+                "name": "Protective",
+                "types": [
+                    "flower",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
                 ]
             },
             "protector": {
@@ -30872,6 +30982,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "24_hours_24",
                 "rarity": 1
             },
+            "sunrisebegonia": {
+                "name": "Sunrise Begonia",
+                "types": [
+                    "flower",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "sunset": {
                 "name": "Sunset",
                 "types": [
@@ -33495,6 +33621,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "17_hours_17",
                 "rarity": 3,
                 "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "vinca": {
+                "name": "Vinca",
+                "types": [
+                    "flower",
+                    "white",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
                 "notes": [
                     "feature"
                 ]
