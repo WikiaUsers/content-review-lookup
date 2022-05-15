@@ -164,13 +164,20 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
     }
 
     // Deps
+    var isMediaWiki133 = mw.config.get('wgVersion').includes('1.33');
     var mwReady = $.Deferred(),
-        mwDeps = mw.config.get('wgVersion').includes('1.33') ? ['jquery.ui.position', 'jquery.effects.fold', 'jquery.ui.core', 'jquery.ui.widget'] : 'jquery.ui';
+        mwDeps = isMediaWiki133 ? ['jquery.ui.position', 'jquery.effects.fold', 'jquery.ui.core', 'jquery.ui.widget'] : 'jquery.ui';
     mw.loader.load(mwDeps, null, true);
     mw.loader.using(mwDeps, mwReady.resolve, mwReady.reject);
     var colors = window.dev.colors || importArticle({
     	type: 'script',
     	article: 'u:dev:MediaWiki:Colors/code.js'
+    });
+    var effects = isMediaWiki133 || $.when(mwReady).then(function () {
+        return importArticle({
+            type: 'script',
+            article: 'u:dev:MediaWiki:ReferencePopups/jquery.effects.js'
+        });
     });
 
     // Support CSS
@@ -185,7 +192,7 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
     var dfd = $.Deferred();
     module.Popup = dfd.promise();
     return function ( callback ) {
-        $.when(mwReady, colors).done(function () {
+        $.when(mwReady, colors, effects).done(function () {
             dfd.resolve(module.Popup = callback(module, window, $, mw, window.dev.colors));
         }).fail(function () {
             delete module.Popup;

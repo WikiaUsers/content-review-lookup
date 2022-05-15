@@ -16,8 +16,20 @@
   function init() {
     const HTML = mw.html;
     const all = document.getElementsByClassName(searchClass);
-    const cantPlayOgv = document.createElement('video').canPlayType('video/ogg') === '';
+    const vid_master = document.createElement('video');
+
+    // Test if this code should run
+    const cantPlayOgv = vid_master.canPlayType('video/ogg') === '';
     if (cantPlayOgv || opts.mode === 'off') return;
+
+    // Prep master components for cloneNode (more optimal than createElement)
+    // if (opts.mode === 'autoplay')
+      vid_master.autoplay = true;
+    vid_master.loop = true;
+    vid_master.muted = true;
+    const source_master = document.createElement('source');
+    source_master.type = 'video/ogg';
+
     while (0 < all.length) {
       // Ingest Values
       const focus = all.item(0);
@@ -43,27 +55,23 @@
       focus.classList.remove(searchClass);
 
       // Video Body
-      const vid_b = document.createElement('video');
+      const vid_body = vid_master.cloneNode();
       if (width)
-        vid_b.width = width;
+        vid_body.width = width;
       if (height)
-        vid_b.height = height;
-      // if (opts.mode === 'autoplay')
-        vid_b.autoplay = true;
-      vid_b.loop = true;
-      vid_b.muted = true;
+        vid_body.height = height;
 
       // Source Body (for Video)
-      const source = document.createElement('source');
+      const source = source_master.cloneNode();
       source.src = video.href;
-      source.type = 'video/ogg';
-      vid_b.appendChild(source);
+      
+      vid_body.appendChild(source);
 
       // Replace Magic
-      vid_b.addEventListener('loadeddata',function(){
+      vid_body.addEventListener('loadeddata',function(){
         const container = focus.querySelector('a.image');
         container.href = video.href;
-        container.appendChild(vid_b);
+        container.appendChild(vid_body);
         const icon = focus.querySelector('figure figcaption a.info-icon');
         if (icon)
           icon.href = '/wiki/' + video.innerText;
@@ -73,14 +81,14 @@
             container.querySelector('img').style.display = 'none';
             break;
           case'hover':
-            vid_b.style.display = 'none';
+            vid_body.style.display = 'none';
             container.addEventListener("mouseover", function(){
               container.querySelector('img').style.display = 'none';
-              vid_b.style.display = 'block';
+              vid_body.style.display = 'block';
             });
             container.addEventListener("mouseout", function(){
               container.querySelector('img').style.display = 'block';
-              vid_b.style.display = 'none';
+              vid_body.style.display = 'none';
             });
         }
       },{

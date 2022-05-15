@@ -1,5 +1,12 @@
-// SOAP script to add quick action buttons on file pages
-// @author Kopcap94, Noreplyz, magiczocker
+/**
+ * FileTools.js
+ * SOAP script to add quick action buttons on file pages
+ * @summary Quick file actions
+ * @see https://dev.fandom.com/wiki/FileTools
+ * @author Kopcap94
+ * @author Noreplyz
+ * @author magiczocker
+ */
  
 ;(function($, mw, window) {
 	"use strict";

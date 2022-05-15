@@ -47,3 +47,13 @@ window.adoptInternational = {
                     "| 7-community_vote      = {{{communityVote}}}\n" +
                     "{{bEnd}}"
 };
+
+window.interwikiInternational = {
+        namespace: 'Richiesta',
+    	namespaceId: 118,
+    	mainPage: 'Wiki_della_Community:Richieste_di_link_interlingua',
+		interwikiSchema: '{{bStart}}Richiesta di link interlingua|{{from}}|{{to}}{{bEnd}}',
+		pageSchema: '{{bStart}}Titolo richiesta di link interlingua{{bEnd}}\n\n' +
+			'{{interwikis}}\n\n' +
+			'~~' + '~~',
+};

@@ -45,8 +45,8 @@
 	
 	// Aperçu des liens
 	window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} }); 
-    window.pPreview.defimage = 'https://vignette.wikia.nocookie.net/naruto/images/8/89/Wiki-wordmark.png/revision/latest?cb=20130629170436&path-prefix=fr';
-    window.pPreview.noimage = 'https://vignette.wikia.nocookie.net/naruto/images/8/89/Wiki-wordmark.png/revision/latest?cb=20130629170436&path-prefix=fr';
+    window.pPreview.defimage = 'https://static.wikia.nocookie.net/5hanayome/images/e/e6/Site-logo.png/revision/latest?cb=20210705112918&format=original&path-prefix=fr';
+    window.pPreview.noimage = 'https://static.wikia.nocookie.net/5hanayome/images/e/e6/Site-logo.png/revision/latest?cb=20210705112918&format=original&path-prefix=fr';
 
  
 	/* Scripts de pages spécifiques */

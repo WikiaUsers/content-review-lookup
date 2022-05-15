@@ -10,7 +10,6 @@
  * @author: Thegamer1604 (https://reddead.fandom.com/fr/wiki/user:Thegamer1604 [Adaptation de la version de Celdrøn])
  * @License: CC-BY-SA - http://creativecommons.org/licenses/by-sa/3.0/
 **/
- 
 
 /**
  * Gets the cookie

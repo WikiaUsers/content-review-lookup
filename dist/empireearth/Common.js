@@ -17,8 +17,8 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Resources|wood= ",
-					post: "|food= |gold= |stone= |iron= |oil= |tin= |saltpeter= |uranium= }}"
+					pre: "{{Resources|game= ",
+					post: "|food= |wood= |stone= |gold= |iron= |oil= |tin= |saltpeter= |uranium= |raw materials= |wealth= |tech points= }}"
 				}
 			}
 		}

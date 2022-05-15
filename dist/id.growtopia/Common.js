@@ -8,7 +8,7 @@ function clock_init(clock_resync, clock_update) {
     
     // - clock_sync() - Sync the clock with the server and get timezone info
     function clock_sync() {
-        jQuery.get("//gt-api.tommyhub.com/api/v1/event", function(a) {
+        jQuery.get("//gt.tommyhub.com/api/game/info", function(a) {
         	resyncOnNextTick = false;
         	eventObject = a;
             localTime = +new Date();
@@ -47,7 +47,7 @@ function clock_init(clock_resync, clock_update) {
     __public.format = function(format) {
         var clock = new Date(realTime+eventObject.time.offset*1000);
         
-        var month_short_arr = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        var month_short_arr = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
         
 		var get = "getUTC";
 		// Year
@@ -76,7 +76,7 @@ function clock_init(clock_resync, clock_update) {
 $(function() {
     var _pagename = mw.config.get('wgPageName');
     
-    if(_pagename == "Growtopia_Wiki") {
+    if(_pagename == "Testing") {
         var _clock = clock_init(function(event) {
         	for(var i in event) {
         		switch(event[i].name) {
@@ -86,9 +86,9 @@ $(function() {
         			default: continue;
         		}
         		if(+new Date() < event[i].startTime*1000)
-        			$t.html("Starts in <span data-to='"+event[i].startTime+"'></span>");
+        			$t.html("Akan dimulai pada <span data-to='"+event[i].startTime+"'></span>");
         		else
-        			$t.html("Ends in <span data-to='"+event[i].endTime+"'></span>");
+        			$t.html("Akan berakhir pada <span data-to='"+event[i].endTime+"'></span>");
         	}
         	$("#gtw-clock #c-event").removeClass("loading");
         }, function(time) {

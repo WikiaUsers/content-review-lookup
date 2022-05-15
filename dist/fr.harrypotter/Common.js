@@ -248,3 +248,14 @@ $( ".accueil-parts .partbox" ).hover(
 		$( ".partboxselp" ).css('background', 'rgba( 255, 0, 0, 0.1)').css('opacity', '1');
 	}
 );
+
+//=================================================================================================
+//                                            MassEdit
+//=================================================================================================
+window.MassEditConfig = {
+  interval: 750,
+  placement: {
+    element: "toolbar",
+    type: "append"
+  }
+};

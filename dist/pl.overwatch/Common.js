@@ -2,7 +2,7 @@
 	window.tooltips_list = [
 	{
 		classname: 'hero-tooltip',
-		parse: "{"+"{#dpl:|title=<#hero#>|count={"+"{#if:<#hero#>|1|0}}|uses=Szablon:Infobox/Bohatera|include={Infobox/Bohatera¦Bohater/Tooltip}|secseparators=,,<div style='text-align:center;border:2px solid #00c4ff;border-width:0 2px 2px;width:248px;'>[[File:,.svg¦50px]] , [[File:,.svg¦50px]]</div>|multisecseparators=,.svg¦50px]] [[File:,,]]|format=,|suppresserrors=true}}",
+		parse: "{"+"{#dpl:|title=<#hero#>|count={"+"{#if:<#hero#>|1|0}}|uses=Szablon:Infobox/Bohatera|include={Infobox/Bohatera¦Bohater/Tooltip}|secseparators=,,<div style='width:248px;'>[[File:,.svg¦50px]] , [[File:,.svg¦50px]]</div>|multisecseparators=,.svg¦50px]] [[File:,,]]|format=,|suppresserrors=true}}",
 	},
 ];
 

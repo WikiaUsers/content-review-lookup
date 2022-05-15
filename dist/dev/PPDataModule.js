@@ -59,9 +59,10 @@ new mw.Api().get({
 					$('<li>', {
 						text: messages[3]['*'] + ': ' + sep(limitr.ppvisitednodes.value) + '/' + sep(limitr.ppvisitednodes.limit)
 					}),
+					/*
 					$('<li>', {
 						text: messages[4]['*'] + ': ' + sep(limitr.ppgeneratednodes.value) + '/' + sep(limitr.ppgeneratednodes.limit)
-					}),
+					}), */
 					$('<li>', {
 						text: messages[5]['*'] + ': ' + convertb(limitr.postexpandincludesize.value) + '/' + convertb(limitr.postexpandincludesize.limit)
 					}),

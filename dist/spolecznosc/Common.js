@@ -72,20 +72,6 @@ window.UserTagsJS = {
 	}
 };
 
-// Pomoc:Zawartość – klikalne boksy
-;( function() {
-	if ( mw.config.get( 'wgPageName' ) !== 'Pomoc:Zawartość' ) return;
-
-	const boxes = document.getElementsByClassName( 'centralhelpbox' );
-
-	Array.from( boxes ).forEach( function( box ) {
-		box.addEventListener( 'click', function() {
-			const link = box.getElementsByTagName( 'a' )[0].href;
-			location.href = link;
-		} );
-	} );
-} )();
-
 /*
  * Funkcja eksportująca frontend rozszerzenia BannerNotifications
  *

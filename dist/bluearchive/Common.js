@@ -81,3 +81,14 @@ window.tooltips_list = [
 		delay: 1000
 	}
 ];
+
+/*********************/
+/* BackToTopButton     */
+/*********************/
+
+importArticle({
+    type: 'script',
+    article: 'u:dev:MediaWiki:BackToTopButton/code.js'
+});
+
+window.BackToTopModern = true;

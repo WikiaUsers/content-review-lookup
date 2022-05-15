@@ -10,7 +10,7 @@ if (document.querySelector('.cook-recipe')) {
 	mw.loader.load('/ko/wiki/MediaWiki:Common.js/CookRecipe.js?action=raw&ctype=text/javascript');
 }
  
-// 메인 페이지에 더 보기 버튼 추가하기
+// 메인 페이지에 문서 카드(미리보기)들과 더 보기 버튼 추가하기
 if (mw.config.get('wgIsMainPage')) {
 	mw.loader.load('/ko/wiki/MediaWiki:Common.js/MainPage/SeeMore.js?action=raw&ctype=text/javascript');
 }

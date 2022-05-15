@@ -275,6 +275,8 @@
         var css = "#quickdiff-modal { height: 100%; width: 100% }";
         // always show modal footer for UI consistency
         css += "#quickdiff-modal > footer { display: flex }";
+        // hide square brackets around rollback link in footer
+        css += "#quickdiff-modal > footer .mw-rollback-link::before, #quickdiff-modal > footer .mw-rollback-link::after { content: none }";
         mw.util.addCSS(css);
 
         // attach to body for compatibility with ajax-loaded content

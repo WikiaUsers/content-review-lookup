@@ -9912,6 +9912,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "fiesta": {
+                "name": "Fiesta",
+                "types": [
+                    "flower",
+                    "purple",
+                    "rainbow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "flower"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "rainbow"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "filigree": {
                 "name": "Filigree",
                 "types": [
@@ -10544,6 +10571,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "15_hours_15",
                 "rarity": 3,
                 "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "folklorico": {
+                "name": "Folklorico",
+                "types": [
+                    "flower",
+                    "fey",
+                    "rainbow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]
@@ -18529,6 +18573,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "14_hours_14",
                 "rarity": 3,
                 "offspringeligibility": "worldevent",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "matador": {
+                "name": "Matador",
+                "types": [
+                    "flower",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
                 "notes": [
                     "feature"
                 ]
@@ -27534,6 +27594,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "16_hours_16",
                 "rarity": 2,
                 "offspringeligibility": "expired",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "serape": {
+                "name": "Serape",
+                "types": [
+                    "flower",
+                    "black",
+                    "world"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]

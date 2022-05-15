@@ -26,3 +26,14 @@ window.adoptInternational = {
 		"| 7-Diskussion          = {{{communityVote}}}\n" +
 	"{{bEnd}}"
 };
+// Interwiki configuration
+window.interwikiInternational = {
+  namespace: 'Antrag',
+  namespaceId: 118,
+  mainPage: 'Interwiki-Anfragen',
+  
+  interwikiSchema: '{{bStart}}InterwikiLink|{{from}}|{{to}}{{bEnd}}',
+  pageSchema: '{{bStart}}Interwiki-Header{{bEnd}}\n\n' +
+    '{{interwikis}}\n\n' +
+    '~~' + '~~'
+};

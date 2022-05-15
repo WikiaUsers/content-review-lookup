@@ -44,6 +44,8 @@ if (mw.config.get('wgCanonicalNamespace') == 'Map')
   	  static: {
   	  	popupTitle: '.leaflet-popup .leaflet-popup-content-wrapper [class^="MarkerPopup-module_popupTitle"]',
   	  	popupLink: '.leaflet-popup .leaflet-popup-content-wrapper a',
+  	  	infoboxImage: '.leaflet-popup .leaflet-popup-content-wrapper figure.pi-item.pi-image[data-result="success"]',
+  	  	DatExpSrc: new RegExp(/^(\S*\/)\d*(\?\S*)$/),
   	  	time: 200
   	  },
   	  dynamic: {
@@ -51,18 +53,56 @@ if (mw.config.get('wgCanonicalNamespace') == 'Map')
   	    lastTitle: '',
   	    href: '',
   	    lastHref: '',
+  	    ibxImgMainLink: '',
+  	    ibxImgMatchLinkFull: '',
+  	    ibxImgMatchLinkStart: '',
+  	    ibxImgMatchLinkEnd: '',
+  	    ibxImgDataImageName: '',
+  	    ibxImgDataImageKey: '',
+  	    ibxImgMatchLinkArr: [],
   	    timerId: null
   	  },
   	  $: {
-  	  	popupLink: $()
+  	  	popupLink: $(),
+  	  	infoboxImage: $(),
+  	  	fullImageLink: $(),
+  	  	imgLinkChild: $(),
+  	  	imgLinkChildImg: $()
   	  }
   	};
   	const m = {
+  	  createInfoboxImage: function()
+  	  {
+  	  	v.$.imgLinkChild = v.$.fullImageLink.children('a');
+  	  	v.$.imgLinkChildImg = v.$.imgLinkChild.find('img');
+  	  	v.dynamic.ibxImgMainLink = v.$.imgLinkChild.attr('href');
+  	  	v.dynamic.ibxImgMatchLinkFull = v.$.imgLinkChildImg.attr('src');
+  	  	v.dynamic.ibxImgDataImageName = v.$.imgLinkChildImg.attr('data-image-name');
+  	  	v.dynamic.ibxImgDataImageKey = v.$.imgLinkChildImg.attr('data-image-key');
+  	  	v.dynamic.ibxImgMatchLinkArr = v.dynamic.ibxImgMatchLinkFull.match(v.static.DatExpSrc);
+  	  	v.dynamic.ibxImgMatchLinkStart = v.dynamic.ibxImgMatchLinkArr[1];
+  	  	v.dynamic.ibxImgMatchLinkEnd = v.dynamic.ibxImgMatchLinkArr[2];
+  	    return [
+  	      v.dynamic.ibxImgMainLink,
+  	      v.dynamic.ibxImgMatchLinkFull,
+  	      v.dynamic.ibxImgMatchLinkStart,
+  	      v.dynamic.ibxImgMatchLinkEnd,
+  	      v.dynamic.ibxImgDataImageName,
+  	      v.dynamic.ibxImgDataImageKey
+  	    ];
+  	  },
   	  mainLogic: function()
   	  {
-        v.$.popupLink = $(v.static.popupLink);
-        v.$.popupLink.load(v.dynamic.lastHref+" .fullMedia a");
-  	  	//console.log();
+  	  	v.$.infoboxImage = $(v.static.infoboxImage);
+  	  	if (v.$.infoboxImage.length == 0)
+  	  	{
+          v.$.popupLink = $(v.static.popupLink);
+          v.$.popupLink.parent().load(v.dynamic.lastHref+" .fullMedia a", function(html)
+          {
+          	v.$.fullImageLink = $(html).find('.fullImageLink');
+            console.log(m.createInfoboxImage());
+          });
+  	  	}
   	  }
   	};
     $('.leaflet-popup-pane').on('DOMNodeChanged', function(e)

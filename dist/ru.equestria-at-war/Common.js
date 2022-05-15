@@ -1,9 +1,11 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
 /* Спойлеры */
 $(function(){
-    $('.spoil').click(function() {
-        $('.spoil').addClass('spoilopen')
-        $('.spoil').removeClass('spoil')
+    $('.spoil').each(function(){
+        $(this).click(function() {
+            $(this).addClass('spoilopen')
+            $(this).removeClass('spoil')
+        });
     });
 });
 

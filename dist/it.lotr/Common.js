@@ -1,5 +1,16 @@
 /* Il codice JavaScript inserito qui viene caricato da tutti gli utenti ad ogni visualizzazione di pagina. */
 
+/* Configuration for LinkPreview (from Dev Wiki) */
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+
+//default/missing images -> wiki logo
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/tolkien/images/e/e6/Site-logo.png/revision/latest?cb=20210603212958&format=original&path-prefix=it';
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/tolkien/images/e/e6/Site-logo.png/revision/latest?cb=20210603212958&format=original&path-prefix=it';
+//ignore templates in preview
+window.pPreview.RegExp.noinclude = ['.quote', ".notice", ".notice_message", ".notice_alert", ".notice_warning", ".toc", ".navbox_content"];
+//fix for chronology pages
+window.pPreview.wholepage = true;
+
 /* Automated Profile Template 
 Script from dev wiki to automatically create new user pages
 Needed to replace the welcome tool currently missing in UCP 

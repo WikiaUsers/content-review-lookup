@@ -44,3 +44,6 @@ window.RevealAnonIP = {
 AjaxRCRefreshText = 'Auto-Refresh';
 AjaxRCRefreshHoverText = 'Automatically refresh the page';
 ajaxPages = ["Special:RecentChanges","Special:WikiActivity"];
+
+/* Slider */
+dev:CustomSlider.js

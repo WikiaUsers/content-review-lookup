@@ -393,8 +393,7 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api', 'mediawiki.t
 								new mw.Api().postWithEditToken({
 									action: 'edit',
 									title: adoptConf.pageConfig.namespace + ':' + wikiname+suffix,
-									text: pagecontent,
-									tags: 'adoptionsform'
+									text: pagecontent
 								}).done(function (data) {
 									if (data.edit) {
 										if (data.edit.warning) {

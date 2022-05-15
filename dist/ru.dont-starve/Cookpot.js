@@ -46,9 +46,6 @@ function timer() {
 		"display": "none"
 	});
 	$("#buttonds").addClass("buttoncb");
-	$(".ds").css({
-		"height": "400px"
-	});
 	$("#buttonrog, #buttonsw, #buttonh, #buttondst").removeClass("buttoncb");
 	cookpotDeleteAll();
 	dlc = 'DS';
@@ -56,9 +53,6 @@ function timer() {
 $('#buttonrog').click(function sortrog() {
 	$(".rog").css({
 		"display": ""
-	});
-	$(".rog").css({
-		"height": "420"
 	});
 	$(".ds, .sw, .h, .dst, .warlydst").css({
 		"display": "none"
@@ -72,9 +66,6 @@ $('#buttonsw').click(function sortsw() {
 	$(".sw").css({
 		"display": ""
 	});
-	$(".cookpot").css({
-		"height": ""
-	});
 	$(".ds, .rog, .h, .dst, .warlydst").css({
 		"display": "none"
 	});
@@ -87,9 +78,6 @@ $('#buttonh').click(function sorth() {
 	$(".h").css({
 		"display": ""
 	});
-	$(".cookpot").css({
-		"height": ""
-	});
 	$(".ds, .rog, .sw, .dst, .warlydst").css({
 		"display": "none"
 	});
@@ -101,9 +89,6 @@ $('#buttonh').click(function sorth() {
 $('#buttondst').click(function sortdst() {
 	$(".dst").css({
 		"display": ""
-	});
-	$(".cookpot").css({
-		"height": ""
 	});
 	$(".ds, .sw, .h, .rog, .warlydst").css({
 		"display": "none"

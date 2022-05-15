@@ -1,8 +1,21 @@
 /**
+ * 17:15, July 2, 2017 (UTC)
+ * <source lang = "JavaScript">
+ * Origin: https://naruto.fandom.com/wiki/MediaWiki:Common.js/FairUseUpload.js
+ * ScriptPage: https://lanoire.fandom.com/fr/wiki/MediaWiki:Common.js
+ * Builds a form for easy uploading of images
+ * and to ensure proper rationale and licensing
+ * @author: UltimateSupreme (https://naruto.fandom.com/wiki/User:UltimateSupreme)
+ * @author: Celdrøn (https://naruto.fandom.com/fr/wiki/User:Celdrøn)
+ * @author: Thegamer1604 (https://lanoire.fandom.com/fr/wiki/user:Thegamer1604 [Adaptation de la version de Celdrøn])
+ * @License: CC-BY-SA - http://creativecommons.org/licenses/by-sa/3.0/
+**/
+
+/**
  * Gets the cookie
  * @param c_name string Cookie name
  * @return The cookie name or empty string
- */
+**/
 window.getCookie = function(c_name) {
 	if (document.cookie.length > 0) {
 		var c_start = document.cookie.indexOf(c_name + "=");
@@ -22,7 +35,7 @@ window.getCookie = function(c_name) {
  * @param c_name string Name of the cookie
  * @param value string 'on' or 'off'
  * @param expiredays integer Expiry time of the cookie in days
- */
+**/
 window.setCookie = function(c_name, value, expiredays) {
 	var exdate = new Date();
 	exdate.setDate(exdate.getDate() + expiredays);
@@ -31,9 +44,7 @@ window.setCookie = function(c_name, value, expiredays) {
 
 (function () {
 	'use strict';
-
 	jQuery(function ($) {
-
 		var FairUseUpload = {
 			preload: function() {
 				this.api = new mw.Api();
@@ -56,9 +67,7 @@ window.setCookie = function(c_name, value, expiredays) {
 				});
 			},
 			loadForm: function() {
-				
 				if (mw.config.get('wgCanonicalSpecialPageName') === 'MultipleUpload') {
-					
 					var $desc = $('#wpUploadDescription');
 					if ($desc.val()) return; // If not empty then don't do anything (i.e. error message confirm page)
 					$desc.val('{{Fichier\n' +
@@ -75,61 +84,29 @@ window.setCookie = function(c_name, value, expiredays) {
 				 */
 				if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 					// Check if cookie has been set for form style. Overrides URL parameter if set.
-				
 					var formstyle = getCookie("uploadform");
 					$("#uploadBasicLinkJS").show();
 					$("#uploadTemplateNoJS").hide();
-				
 					if (!mw.util.getParamValue('wpForReUpload')) {
-		
 						if (formstyle == "guided" || (formstyle == "" && window.location.search.indexOf('basic=true') == -1)) { // Add link to basic form
-							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://thegamerbatmanguys.fandom.com/fr/index.php?title=Spécial:Téléverser&basic=true" onclick="javascript:setCookie(\'uploadform\', \'basic\', 30)">Basculer vers le formulaire basique</a></div>'); // Stretch table to full width			
-							
+							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://lanoire.fandom.com/fr/index.php?title=Spécial:Téléverser&basic=true" onclick="javascript:setCookie(\'uploadform\', \'basic\', 30)">Basculer vers le formulaire basique</a></div>'); // Stretch table to full width
 								var $description = $('#wpUploadDescription'),
-									customRows = '',
-									$customRows;
+									$customRows,
+									customRows = '';
 					
 								if ($description.val()) {
 									return; // error message confirm page
 								}
-															
+
 								customRows += this.fromTemplate('Origine', 'origineBox', true, '[REQUIS] IG/URL source.');
 								customRows += this.fromListboxTemplate('Jeu', 'jeuBox');
 								customRows += this.fromListboxTemplate('Quoi', 'quoiBox');
 								customRows += this.fromListboxTemplate('Type', 'typeBox');
-					
+
 								// To real DOM
 								$customRows = $(customRows);
 								$description.closest('tr').hide().after($customRows);
 								$customRows.find("textarea").tooltip({trigger: 'focus'});
-					
-								function verifySummary() {
-									if (!$('#wpLicense').val()) {
-										$.showModal('Licence Incomplète', 'Choisir la bonne licence depuis la liste.');
-										return false;
-									}
-					
-									if (!$.trim($customRows.find('#origineBox').val())) {
-										$.showModal('Origine Incomplète', 'Merci de renseigner l\'origine correcte pour votre image.');
-										return false;
-									} else if (/google/i.test($customRows.find('#sourceBox').val())) {
-										$.showModal('Source Incorrecte', 'Google n’est pas une source valide pour les images. Merci de saisir l\'origine concrète du fichier.');
-										$customRows.find('#origineBox').val('');
-										return false;
-									}
-					
-									var template = '';
-					
-									var strBuilder = template;
-									strBuilder += '{{Fichier\n';
-									strBuilder += '| origine = ' + $.trim($customRows.find('#origineBox').val()) + '\n';
-									strBuilder += '| jeu = ' + $.trim($customRows.find('#jeuBox').val()) + '\n';
-									strBuilder += '| type = ' + $.trim($customRows.find('#typeBox').val()) + '\n';
-									strBuilder += '| quoi = ' + $.trim($customRows.find('#quoiBox').val()) + '\n';
-									strBuilder += '}}\n';
-									$description.val(strBuilder);
-									return true;
-								}
 					
 								// Bind submit to verify function
 								$description.closest('form').submit(this.verifySummary);
@@ -143,10 +120,39 @@ window.setCookie = function(c_name, value, expiredays) {
 								});
 						} else { // Old style form just needs Information template in the summary box
 							$('#wpUploadDescription').val('{{Fichier\n| origine = \n| jeu = \n| quoi = \n| type = \n}}\n'); // Add link to guided form
-							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://thegamerbatmanguys.fandom.com/fr/index.php?title=Spécial:Téléverser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancé</a></div>');
+							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://lanoire.fandom.com/fr/index.php?title=Spécial:Téléverser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancé</a></div>');
 						}
 					}
 				}
+			},
+			verifySummary: function () {
+				var $description = $('#wpUploadDescription');
+
+				if (!$('#wpLicense').val()) {
+					$.showModal('Licence Incomplète', 'Choisir la bonne licence depuis la liste.');
+					return false;
+				}
+	
+				if (!$.trim($('#origineBox').val())) {
+					$.showModal('Origine Incomplète', 'Merci de renseigner l\'origine correcte pour votre image.');
+					return false;
+				} else if (/google/i.test($('#sourceBox').val())) {
+					$.showModal('Source Incorrecte', 'Google n’est pas une source valide pour les images. Merci de saisir l\'origine concrète du fichier.');
+					$('#origineBox').val('');
+					return false;
+				}
+	
+				var template = '';
+	
+				var strBuilder = template;
+				strBuilder += '{{Fichier\n';
+				strBuilder += '| origine = ' + $.trim($('#origineBox').val()) + '\n';
+				strBuilder += '| jeu = ' + $.trim($('#jeuBox').val()) + '\n';
+				strBuilder += '| quoi = ' + $.trim($('#quoiBox').val()) + '\n';
+				strBuilder += '| type = ' + $.trim($('#typeBox').val()) + '\n';
+				strBuilder += '}}\n';
+				$description.val(strBuilder);
+				return true;
 			},
 			fromTemplate: function(name, id, required, title, elem) {
 				elem = elem || '<textarea style="resize: none; overflow: auto;" rows="1" cols="60" id="' + id + (required ? '" required="required' : '') + (title ? '" title="' + title : '') + '"></textarea>';

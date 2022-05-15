@@ -3,7 +3,7 @@
 // Originally from: https://loomian-legacy.fandom.com/wiki/MediaWiki:Common.js/StatCalculator.js
 // Formula Calculator
 // Calculator Functions
-function calcXpPlr(Orb, Rebirth, World, Boost, Chao, Trail) {
+function calcXpPlr(Orb, Rebirth, World, Boost, Chao, Trail, Event) {
 	if(isNaN(Rebirth)) {
 		Rebirth = 1;
 	} else {
@@ -15,14 +15,14 @@ function calcXpPlr(Orb, Rebirth, World, Boost, Chao, Trail) {
 	if(isNaN(Trail)) {
 		Trail = 0;
 	}
-	return Math.floor((Orb * Rebirth * World * Boost) + Chao + Trail);
+	return Math.floor((Orb * Rebirth * World * Boost * Event) + Chao + Trail);
 }
 
 function calcXpPet(Orb, World) {
 	return Math.floor(Orb * World);
 }
 
-function calcRing(Rebirth, World, Boost, Chao, Trail) {
+function calcRing(Rebirth, World, Boost, Chao, Trail, Event) {
 	if(isNaN(Rebirth)) {
 		Rebirth = 1;
 	} else {
@@ -34,7 +34,7 @@ function calcRing(Rebirth, World, Boost, Chao, Trail) {
 	if(isNaN(Trail)) {
 		Trail = 0;
 	}
-	return Math.floor((Rebirth * World * Boost) + Chao + Trail);
+	return Math.floor((Rebirth * World * Boost * Event) + Chao + Trail);
 }
 
 // Input box creator
@@ -46,7 +46,7 @@ $(document).ready(function() {
 
 		$("span#RebirthBox-"+i).html('<input onClick="this.select();" type="number" value="0" class="Rebirth oo-ui-inputWidget-input"></input>');
 		
-		$("span#WorldBox-"+i).html('<select class="World oo-ui-dropdownWidget-handle"><option value="1">Green Hill</option><option value="2">Lost Valley</option><option value="3">Emerald Hill</option><option value="4">Snow Valley</option></select>');
+		$("span#WorldBox-"+i).html('<select class="World oo-ui-dropdownWidget-handle"><option value="1">Green Hill</option><option value="2">Lost Valley</option><option value="3">Emerald Hill</option><option value="4">Snow Valley</option><option value="1">Hill Top</option></select>');
 		
 		$("span#BoostBox-"+i).html('<select class="Boost oo-ui-dropdownWidget-handle"><option value="1">Disabled</option><option value="3">Enabled</option></select>');
 		
@@ -57,6 +57,10 @@ $(document).ready(function() {
 		$("span#TrailXpBox-"+i).html('<input onClick="this.select();" type="number" value="0" class="TrailXp oo-ui-inputWidget-input"></input>');
 		
 		$("span#TrailRingBox-"+i).html('<input onClick="this.select();" type="number" value="0" class="TrailRing oo-ui-inputWidget-input"></input>');
+		
+		$("span#EventXpBox-"+i).html('<select class="EventXp oo-ui-dropdownWidget-handle"><option value="1">No Event</option><option value="2">2x</option></select>');
+		
+		$("span#EventRingBox-"+i).html('<select class="EventRing oo-ui-dropdownWidget-handle"><option value="1">No Event</option></select>');
 		
 		i++;
 	}
@@ -102,9 +106,12 @@ $(document).ready(function() {
     	var TrailXp = parseInt($("#TrailXpBox-" + id + " > .TrailXp")[0].value);
     	var TrailRing = parseInt($("#TrailRingBox-" + id + " > .TrailRing")[0].value);
     	
-		document.getElementById("displayXpPlr-"+id).innerHTML = calcXpPlr(Orb, Rebirth, World, Boost, ChaoXp, TrailXp);
+    	var EventXp = parseInt($("#EventXpBox-" + id + " > .EventXp")[0].value);
+    	var EventRing = parseInt($("#EventRingBox-" + id + " > .EventRing")[0].value);
+    	
+		document.getElementById("displayXpPlr-"+id).innerHTML = calcXpPlr(Orb, Rebirth, World, Boost, ChaoXp, TrailXp, EventXp);
 		document.getElementById("displayXpPet-"+id).innerHTML = calcXpPet(Orb, World);
-		document.getElementById("displayRing-"+id).innerHTML = calcRing(Rebirth, World, Boost, ChaoRing, TrailRing);
+		document.getElementById("displayRing-"+id).innerHTML = calcRing(Rebirth, World, Boost, ChaoRing, TrailRing, EventRing);
 		
     });
     

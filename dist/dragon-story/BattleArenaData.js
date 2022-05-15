@@ -5040,6 +5040,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"fiesta": {
+				"name": "Fiesta",
+				"colors": [
+					"flower",
+					"purple",
+					"rainbow"
+				],
+				"rarity": "common"
+			},
 			"filigree": {
 				"name": "Filigree",
 				"colors": [
@@ -5358,6 +5367,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"black",
 					"white"
+				],
+				"rarity": "unbreedable"
+			},
+			"folklorico": {
+				"name": "Folklorico",
+				"colors": [
+					"flower",
+					"fey",
+					"rainbow"
 				],
 				"rarity": "unbreedable"
 			},
@@ -9314,6 +9332,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"purple",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"matador": {
+				"name": "Matador",
+				"colors": [
+					"flower",
+					"green"
 				],
 				"rarity": "unbreedable"
 			},
@@ -13606,6 +13632,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Sentinel",
 				"colors": [
 					"champion"
+				],
+				"rarity": "unbreedable"
+			},
+			"serape": {
+				"name": "Serape",
+				"colors": [
+					"flower",
+					"black",
+					"world"
 				],
 				"rarity": "unbreedable"
 			},

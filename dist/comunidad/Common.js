@@ -29,3 +29,14 @@ window.adoptInternational = {
 		"| 7-votación                     = {{{communityVote}}}\n" +
 	"{{bEnd}}"
 };
+
+window.interwikiInternational = {
+  namespace: 'Solicitud',
+  namespaceId: 116,
+  mainPage: 'Comunidad_Central:Interwikis',
+  
+  interwikiSchema: '* {{bStart}}EnlaceInterwiki|{{from}}|{{to}}{{bEnd}}',
+  pageSchema: '{{bStart}}Solicitud/encabezado|Interwikis{{bEnd}}\n\n' +
+    '{{interwikis}}\n\n' +
+    '~~' + '~~'
+};

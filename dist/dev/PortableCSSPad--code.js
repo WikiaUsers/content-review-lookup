@@ -357,8 +357,9 @@
 		$link.one('click', function (event) {
 			event.stopPropagation();
 
+			var is137Wiki = mw.config.get('wgVersion') !== '1.33.3';
 			// install draggable and resizable from MediaWiki's version of jQuery UI
-			mw.loader.using(['jquery.ui.draggable', 'jquery.ui.resizable'], function () {
+			mw.loader.using(is137Wiki ? ['jquery.ui'] : ['jquery.ui.draggable', 'jquery.ui.resizable'], function () {
 				var $window = $(window);
 
 				// initialize the pad

@@ -3,9 +3,10 @@
 $(function () {
     "use strict";
 
-    // Search for talk link id only within edit dropdown to avoid unexpected results if layout is not as we expect
-    var $editDropdown = $(".page-header__actions .wds-list");
-    var $talkLink = $editDropdown.find("#ca-talk");
+    // search for talk link only within actions dropdown to avoid unexpected results if layout is not as we expect
+    var $actionsDropdown = $(".page-header__actions .wds-list");
+    var $talkLink = $actionsDropdown.find("#ca-talk");
+    var editCountBrackets = /[(（].*?[\d ,.]+.*?[)）]/;
 
     if (!$talkLink.length) {
         return;
@@ -16,7 +17,7 @@ $(function () {
 
     // remove the talk edit count from button text and add it as a tooltip instead
     var oldLabel = $talkLink.text().trim();
-    var newLabel = oldLabel.replace(/[(（].*?[\d ,.]+.*?[)）]/, '');
+    var newLabel = oldLabel.replace(editCountBrackets, '');
     $talkLink.text(newLabel);
     $talkLink.attr("title", oldLabel);
 
@@ -25,5 +26,21 @@ $(function () {
         .prepend('<svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-bubble-small"></use></svg>')
         .addClass("wds-button wds-is-text page-header__action-button has-label");
 
-    $editDropdown.parents(".wds-dropdown").before($talkLink);
+    $actionsDropdown.parents(".wds-dropdown").before($talkLink);
+
+    // support for editor views
+    function initEditorView() {
+        var $editorActionsDropdown = $('.ve-fd-header__actions > .ve-ui-pageActionsPopupButtonWidget');
+        var $currentTalkLink =  $('.ve-fd-header__actions > #ca-talk');
+
+        // no dropdown or talk link already exists
+        if (!$editorActionsDropdown.length || $currentTalkLink.length ) {
+            return;
+        }
+
+        $editorActionsDropdown.find('#ca-talk').hide();
+        $editorActionsDropdown.before($talkLink.clone(true));
+    }
+    initEditorView();
+    mw.hook('ve.activationComplete').add(initEditorView);
 });

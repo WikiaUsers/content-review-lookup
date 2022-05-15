@@ -4,24 +4,9 @@
 window.tooltips_config = {
 	offsetX: -5,
     offsetY: 20,
-    noCSS: true,
-    waitForImages: true,
+    noCSS: true
 };
-window.dev = window.dev || [];
-window.dev.userBadge = {
 
-};
-window.MessageWallUserTags = {
-    tagColor: 'red',
-    txtSize: '10px',
-    glow: true,
-    glowSize: '15px',
-    glowColor: '#f77',
-    users: {
-        'TripleLuxen': 'Administrator',
-    }
-    
-};
 window.UserTagsJS = {
 	modules: {},
 	tags: {
@@ -44,9 +29,9 @@ UserTagsJS.modules.metafilter = {
 
 
 
-$(document).ready(function() {
-    $('.loadwait').show();
-});
+window.onload = function(){
+  $('.advanced-tooltip').show();
+};
 mw.hook( 'wikipage.content' ).add( function( $wikipageContent ) {
 $( function() {
 /**

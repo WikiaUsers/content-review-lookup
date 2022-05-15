@@ -221,7 +221,6 @@
          */
         luaFetcher: [
             'local p = {}                                           ',
-            'require(\'Dev:No interwiki access\')                   ',
             'require(\'Dev:No globals\')                            ',
             'function p.main()                                      ',
             '    local frame = mw.getCurrentFrame()                 ',

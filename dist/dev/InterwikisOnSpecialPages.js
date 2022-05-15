@@ -1,4 +1,4 @@
-;(function($, mw) {
+;(function(window, $, mw) {
 	'use strict';
 	const config = mw.config.get([
 		'wgCanonicalSpecialPageName',
@@ -10,8 +10,8 @@
 		'wgTitle',
 		'skin'
 	]);
-	if ( window.iosp_loaded || config.skin !== 'fandomdesktop' || (config.wgNamespaceNumber == -1 && !config.wgCanonicalSpecialPageName) ) return; 
-	window.iosp_loaded = true;
+	if ( window.InterwikisOnSpecialPagesLoaded || config.skin !== 'fandomdesktop' || (config.wgNamespaceNumber == -1 && !config.wgCanonicalSpecialPageName) ) return; 
+	window.InterwikisOnSpecialPagesLoaded = true;
 	var pagename = '';
 	if ( [8, 9, 202].includes(config.wgNamespaceNumber)) { // MediaWiki, Discussion, Gamepedia User Profile
 		pagename = config.wgCanonicalNamespace + ':' + config.wgTitle;
@@ -102,4 +102,4 @@
 			'u:dev:MediaWiki:WDSIcons/code.js'
 		]
 	});
-})( this.jQuery, this.mediaWiki );
+})( window, this.jQuery, this.mediaWiki );

@@ -11,6 +11,7 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api', 'mediawiki.t
 	});
 
 	function shortUrl(url) {
+		if (!url) return;
 		var sUrl = "";
 	  
 		// Delete protocol and not main community url
@@ -40,8 +41,32 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api', 'mediawiki.t
 
 		mw.hook('dev.modal').add(function(modal) {
 			mw.hook('dev.ui').add(function(ui) {
+				const formSectionCSS = {
+					display: 'flex',
+					'align-items': 'start', 
+					margin: 'auto',
+					width: '95%',
+					'justify-content': 'center',
+					gap: '5px'
+				};
+				const labelCSS = {
+					'font-weight': 'bold',
+					'font-variant': 'small-caps',
+					'flex-basis': '30%'
+				};
+				const inputCSS = {
+					padding: '10px',
+					border: '0',
+					'box-shadow': '0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)',
+					'border-radius': '.1em',
+					'margin-top': '5px',
+					'flex-grow': 1,
+					resize: 'vertical',
+					width: '30em'
+				};
+
 				var modal = new window.dev.modal.Modal({
-					title: 'Interwiki request',//i18n.msg('modalTitle').plain(),
+					title: i18n.msg('title').plain(),
 					content: {
 						type: 'form',
 						attr: {
@@ -54,26 +79,30 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api', 'mediawiki.t
 							{
 								type: 'div',
 								classes: ['form-section'],
-								text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas non malesuada lorem. In facilisis augue et mauris vulputate finibus. Vivamus accumsan volutpat consectetur. Ut mattis facilisis porta. Praesent pulvinar ornare erat at efficitur. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam in enim elit. Nulla maximus maximus augue, id interdum odio dapibus sit amet. Vivamus aliquam convallis lorem, at faucibus leo faucibus eget. '
+								style: { padding: '0 2em 1em' },
+								html: i18n.msg('description').plain()
 							},
 							{
 								type: 'div',
 								classes: ['form-section'],
+								style: formSectionCSS,
 								children: [
 									{
 										type: 'label',
-										text: 'Wiki name',//i18n.msg('linkLabel').plain(),
+										style: labelCSS,
+										text: i18n.msg('nameLabel').plain(),
 										attr: {
 											'for': 'wikiname'
 										}
 									},
 									{
 										type: 'input',
+										style: inputCSS,
 										attr: {
 											'id': 'wikiname',
 											'type': 'text',
 											'required': '',
-											'placeholder': 'Example Wiki',//i18n.msg('placeholderUrl').plain()
+											'placeholder': i18n.msg('namePlaceholder').plain()
 										}
 									}
 								]
@@ -81,20 +110,23 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api', 'mediawiki.t
 							{
 								type: 'div',
 								classes: ['form-section'],
+								style: formSectionCSS,
 								children: [
 									{
 										type: 'label',
-										text: 'Interwikis (per line)',//i18n.msg('linkLabel').plain(),
+										style: labelCSS,
+										text: i18n.msg('interwikisLabel').plain(),
 										attr: {
 											'for': 'interwikisLines'
 										}
 									},
 									{
 										type: 'textarea',
+										style: inputCSS,
 										attr: {
 											'id': 'interwikisLines',
 											'required': '',
-											'placeholder': 'wiki.fandom.com/fr -> wiki.fandom.com/es',//i18n.msg('placeholderUrl').plain()
+											'placeholder': i18n.msg('interwikisPlaceholder').plain()
 										}
 									}
 								]
@@ -105,11 +137,11 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api', 'mediawiki.t
 					size: 'large',
 					buttons: [{
 						id: 'submitButton',
-						text: 'Submit', //i18n.msg('submitLabel').plain(),
+						text: i18n.msg('submitLabel').plain(),
 						primary: true,
 						event: 'submitForm'
 					}],
-					closeTitle: 'Close', //i18n.msg('closeLabel').plain(),
+					closeTitle: i18n.msg('closeLabel').plain(),
 					events: {
 						submitForm: function () {
 							var $form = $('#interwikiForm'),
@@ -117,18 +149,31 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api', 'mediawiki.t
 								lines = $form.find('#interwikisLines').val();
 							
 							if (wikiname.trim() === '') {
-								mw.notify('No wikiname');
+								mw.notify(i18n.msg('noNameError').plain());
 								return;
 							}
 							if (lines.trim() === '') {
-								mw.notify('No lines');
+								mw.notify(i18n.msg('noLinesError').plain());
 								return;
 							}
 
-							const interwikis = lines.split('\n').map(function (i) {
-								const items = i.trim().split( ' ' );
-								return [ items.shift(), items.pop() ].map(shortUrl);
-							});
+							const splitLines = lines.trim().split('\n');
+							const interwikis = [];
+							for (var i = 0; i < splitLines.length; i++) {
+								const line = splitLines[i];
+								const items = line.trim().split( ' ' );
+								const first = shortUrl(items.shift());
+								const last = shortUrl(items.pop());
+								if (!first || !last) continue;
+								interwikis.push([first, last]);
+							}
+
+							const linesCount = lines.trim().split('\n').length;
+							const interwikisCount = interwikis.length;
+							if (linesCount !== interwikisCount) {
+								mw.notify(i18n.msg('interwikisCountError', linesCount, interwikisCount).plain());
+								return;
+							}
 
 							const interwikiLines = [];
 							for (var i = 0; i < interwikis.length; i++) {
@@ -171,10 +216,10 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api', 'mediawiki.t
 									}
 									location.href = mw.util.getUrl(config.namespace + ':' + wikiname + suffix);
 								}).fail(function () {
-									mw.notify('An unexpected error occurred. Please try again later.', {tag: 'interwiki', type: 'error'});
+									mw.notify(i18n.msg('error').plain(), {tag: 'interwiki', type: 'error'});
 								})
 							}).fail(function () {
-								mw.notify('An unexpected error occurred. Please try again later.', {tag: 'interwiki', type: 'error'});
+								mw.notify(i18n.msg('error').plain(), {tag: 'interwiki', type: 'error'});
 							})
 						}
 					}
@@ -182,8 +227,7 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api', 'mediawiki.t
 				modal.create();
 				$('#interwiki')
 					.attr('class', 'wds-button btn-large')
-					.text('Request interwikis')
-					//.text(i18n.msg('adoptionButtonLabel').plain())
+					.text(i18n.msg('buttonLabel').plain())
 					.wrap($('<div>').css('text-align', 'center'))
 					.css('cursor', 'pointer')
 					.on('click', function() {
@@ -202,17 +246,9 @@ mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api', 'mediawiki.t
 		]
 	});
 
-	init();
-	/*
 	function preload(i18no) {
-		$.when(
-			i18no.loadMessages('Adoptions_International'),
-			new mw.Api().loadMessagesIfMissing(window.adoptInternational.adoptionConfig.permissionTypes.map(function(group) {
-				return 'group-' + group + '-member'
-			}))
-		).then(init)
+		$.when(i18no.loadMessages('Interwikis_International')).then(init)
 	}
 
 	mw.hook('dev.i18n').add(preload);
-	*/
 });

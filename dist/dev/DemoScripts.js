@@ -25,16 +25,15 @@
          *
          **/
 		
+		AccentColorButtons: {
+			page: 'AccentColorButtons',
+			styles: 'AccentColorButtons.css'
+		},
+		
         ActivityFeedMimic: {
             page: 'ActivityFeedMimic',
             styles: 'MediaWiki:ActivityFeedMimic.css'
         },
-		
-		AjaxRename: {
-			page: 'AjaxRename',
-			styles: 'MediaWiki:AjaxRename.css',
-			scripts: 'MediaWiki:AjaxRename/code.js'
-		},
 		
         BackToTopButton: {
             page: 'BackToTopButton',
@@ -359,6 +358,11 @@
             page: 'OldFandomColors',
             styles: 'MediaWiki:OldFandomColors.css',
             scripts: 'MediaWiki:OldFandomColors.js'
+        },
+        
+        OldOasisTheme: {
+            page: 'OldOasisTheme',
+            styles: 'MediaWiki:OldOasisTheme.css'
         },
         
         OldWikiaBar: {

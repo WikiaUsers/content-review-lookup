@@ -70,21 +70,6 @@ $(function(){
 	});
 });
 
-/*******************************************************************************
-** Re-add proper namespace prefix to titles where it has been removed "by design"
-* Credits to Memory Alpha
-*******************************************************************************/
-$('.ns-5 .page-header__title').prepend('TV5 Wiki ');
-$('.ns-6 .page-header__title').prepend('File:');
-$('.ns-7 .page-header__title').prepend('File ');
-$('.ns-8 .page-header__title').prepend('MediaWiki:');
-$('.ns-9 .page-header__title').prepend('MediaWiki ');
-$('.ns-10 .page-header__title').prepend('Template:');
-$('.ns-11 .page-header__title').prepend('Template ');
-$('.ns-13 .page-header__title').prepend('Help ');
-$('.ns-14 .page-header__title').prepend('Category:');
-$('.ns-15 .page-header__title').prepend('Category ');
-
 /*Welcome Module (Credits to (G)I-dle Wiki and Sia Wiki)*/
 $(function() {
     var welcome;

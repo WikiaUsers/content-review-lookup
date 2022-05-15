@@ -65,52 +65,6 @@ function submit(type) {
  
   switch (type) {
  
-   case 'interwikis':
- 
-     if(!$('#Name').val() || !$('#Names').val()) {
-         // Alert user to fill needed inputs.
-         alert('Vous devez remplir les champs obligatoires.');
-         return false;
-     }
- 
-     //namespace     
-     namespace = 'Demande_interwiki';
- 
-     //content without empty lines
-     var lines = $('#Names').val().split('\n').filter(function(line){ return line.trim().length > 0; });
- 
-     content = '{{' + 'Demande' + '}}\n\n';
-     for (var i = 0; i < lines.length; i++) {
-        var links = lines[i].split(' -> ');
-        
-        //check the line could be splitted previously
-        if ( !links[0] || !links[1]) {
-        	alert('La liste des liens interwikis semble avoir été mal renseignée. Veuillez corriger votre saisie.');
-        	return false;
-        }
-        
-        content = content + '{{LienInterwiki|' + 
-                  shortUrl( links[0] ) + 
-                  '|' + 
-                  shortUrl( links[1] ) + 
-                  '}}\n';
-     }
-    
- 
-     //adding comment if provided
-     if ($('#Comments').val())
-     {
-       content = content + $('#Comments').val() + '\n';
-     }
-
-     //adding signature
-     content = content + '~~' + '~~';
- 
-     //message
-     message = 'Demande de liens interwiki postée avec succès.';
- 
-     break;
- 
   case 'spotlights':
  
     if (!$('#Name').val() || !$('#Link').val() || !$('#Picture').val() ) { 
@@ -149,47 +103,6 @@ function submit(type) {
  
     //message
     message = 'Demande de spotlight postée avec succès.'; 
- 
-    break;
- 
-  case 'adoptions':
- 
-    if (!$('#Name').val() || !$('#Link').val() || !$('#Number').val() || !$('#Time').val() || !$('#Last').val()) {
-       alert('Vous devez remplir les champs obligatoires.');
-       return false;
-    }
-
-    
-    if (!$('#Link')[0].checkValidity() && !confirm($('#Link')[0].validationMessage + ".\nConfirmez-vous l'URL saisie ?")) {
-        return false;
-    }
-
-    //namespace
-    namespace = 'Demande_adoption';
-    
-    url = shortUrl($('#Link').val());
- 
-    //content
-    content = '{{' + 'Demande' + '}}<br />\n' +
-              '<!-- Veuillez saisir votre demande sous cette ligne. Veuillez signer votre demande avec quatre tildes. -->\n' +
-              '*Nom d\'utilisateur : ' + '\'\'\'' + un + '\'\'\'\n' +
-              '*Nom du wiki : ' + '\'\'\'' + $('#Name').val() + '\'\'\'\n' +
-              '*Lien du wiki : ' + '\'\'\'' + '[[w:c:' + url + ']]' + '\'\'\'\n' +
-              '*Nombre de modifications sur le wiki : ' + '\'\'\'' + $('#Number').val() + '\'\'\'\n' +
-              '*Contribue sur le wiki depuis : ' + '\'\'\'' + $('#Time').val() + '\'\'\'\n' + 
-              '*' + '[[w:c:' + url + ':Special:Listadmins' + '|' + 'Dernier administrateur actif' + ']]' + ' : ' + '\'\'\'' + $('#Last').val() + '\'\'\'\n';
-
-    //adding comment if provided
-    if ($('#Comments').val())
-    {
-      content = content + '*Informations complémentaires : ' + '\'\'\'' + $('#Comments').val() + '\'\'\'' + '\n';
-    }
-
-    //adding signature
-    content = content + '~~' + '~~';
- 
-    //message
-    message = 'Demande d\'adoption postée avec succès.'; 
  
     break;
   }
@@ -390,33 +303,6 @@ mw.hook('dev.showCustomModal').add(function(showCustomModal) {
 	}
 	 
 	//setting form to display for each button 
-	$('#interwiki').click(function() {
-	  if (wgUserName === null) {
-	    alert('Vous devez être connecté pour créer une demande de liens interwiki.');
-	    window.location.href = wgServer + '/wiki/Special:UserLogin';
-	    return false;
-	  }
-	 
-	  var popup_interwiki =
-	    '<form method="" name="" class="WikiaForm">' +
-	    '  <fieldset>' +
-	    '      <p style="padding:5px; border:1px solid grey;">' +
-	    'Pour faire une nouvelle demande, remplissez les champs ci-dessous. Les champs marqués d\'une astérisque (<span style="color:red">*</span>) sont obligatoires.<br/>' + 
-	    '       Par exemple, pour lier <b>harrypotter.fandom.com/fr</b> et <b>harrypotter.fandom.com</b>, remplissez la zone de texte "Liens interwikis" avec&nbsp;:<br /><code>harrypotter.fandom.com/fr -> harrypotter.fandom.com</code>. <br/>' + 
-	    '       Pour faire plusieurs demandes simultanément, écrivez une demande par ligne. Par exemple, pour lier <b>harrypotter.fandom.com/fr</b> à <b>harrypotter.fandom.com</b> et <b>harrypotter.fandom.com/de</b>, ' + 
-	    '       écrivez&nbsp;: <br/><code>harrypotter.fandom.com/fr -> harrypotter.fandom.com</code><br /><code>harrypotter.fandom.com/fr -> harrypotter.fandom.com/de</code><br />' + 
-	    '       Cela génèrera un lien facile à utiliser par n\'importe quel <a title="Staff" class="extiw" href="https://community.fandom.com/wiki/Staff">membre du staff</a> ou ' + 
-	    '       <a title="Assistants" href="/wiki/Aide:Assistants">Assistant</a> qui créera le lien entre les deux wikis très rapidement.<br></p><br /> '+
-	    '       <p><b><span style="color:red">*</span>Nom du wiki&nbsp;:</b></p> <input type="text" style="align:center;height:20px; width:300px" id="Name" placeholder="Ex&nbsp;: Wiki Harry Potter"/>' +
-	    '       <p><b><span style="color:red">*</span>Liens interwikis&nbsp;:</b></p>' +
-	    '           <textarea style="width:500px; height:150px" id="Names" placeholder="Ex&nbsp;: wiki.fandom.com/fr -> wiki.fandom.com/es"></textarea>' +
-	    '       <p><b>Description / Commentaires&nbsp;:</b></p> <input type="text" style="height:20px; width:400px" id="Comments" placeholder="Ex&nbsp;: Merci d\'avance&nbsp;!"/>' +
-	    '   </fieldset>' +
-	    '</form>';
-	 
-	  modal('Demande liens interwikis', popup_interwiki, 'interwikis');
-	});
-	 
 	$('#spotlight').click(function() {
 	  if (wgUserName === null) {
 	    alert('Vous devez être connecté pour créer une demande de spotlight.');
@@ -441,33 +327,6 @@ mw.hook('dev.showCustomModal').add(function(showCustomModal) {
 	    '</form>';
 	 
 	  modal('Demande de spotlight', popup_spotlight, 'spotlights');
-	});
-	 
-	$('#adoption').click(function() {
-	  if (wgUserName === null) {
-	    alert('Vous devez être connecté pour créer une demande d\'adoption.');
-	    window.location.href = wgServer + '/wiki/Special:UserLogin';
-	    return false;
-	  }
-	 
-	  var popup_adoption =
-	    '<form method="" name="" class="WikiaForm">' +
-	    '  <fieldset>' +
-	    '      <p style="padding:5px; border:1px solid grey;">' +
-	    'Pour faire une nouvelle demande, remplissez les champs ci-dessous. Les champs marqués d\'une astérisque (<span style="color:red">*</span>) sont obligatoires.</p><br />' +
-	    '      <p><b><span style="color:red">*</span>Nom du wiki à adopter&nbsp;:</b></p><input type="text" style="align:center;height:20px; width:300px" id="Name" placeholder="Ex&nbsp;: Wiki Harry Potter"/>' +
-	    '      <p><b><span style="color:red">*</span>Url du wiki à adopter&nbsp;:</b></p>' + 
-	    '     https://<input type="text" id="Link" style="align:center;height:20px; width:400px" placeholder="Ex&nbsp;: &quot;harrypotter.fandom.com/fr&quot;" oninput="isValidURL(this.value.trim())" ' + 
-	    '   title="Saisissez une adresse en fandom.com ou wikia.org" pattern="' + getURLPattern() + '" />' +
-	    '      <p><b><span style="color:red">*</span>Nombre de modifications sur le wiki</b></p>' +
-	    '          <input type="text" maxlength="6" style="align:center;height:20px; width:150px" id="Number" placeholder="Ex&nbsp;: 120"/>' +
-	    '      <p><b><span style="color:red">*</span>Depuis combien de temps contribuez-vous sur le wiki&nbsp;:</b></p> <input type="text" style="height:20px; width:400px" id="Time" placeholder="Ex&nbsp;: 2 semaines"/>' +
-	    '      <p><b><span style="color:red">*</span>Dans les pages spéciales → Spécial:Liste_des_utilisateurs/sysop quelle est la dernière fois qu\'un administrateur a effectué des modifications et qui était-ce&nbsp;?</b></p> <input type="text" style="height:20px; width:400px" id="Last" placeholder="Ex&nbsp;: Gguigui1 le 14 septembre 2013"/>' +
-	    '      <p><b>Informations complémentaires&nbsp;:</b></p> <input type="text" style="height:20px; width:400px" id="Comments"/>' +
-	    '  </fieldset>' +
-	    '</form>';
-	 
-	  modal('Adoption de wiki', popup_adoption, 'adoptions');
 	});
 });
 

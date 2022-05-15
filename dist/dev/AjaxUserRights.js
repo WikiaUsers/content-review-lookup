@@ -70,13 +70,11 @@ $(function() {
             if (config.wgUserGroups.includes(rightsCanon[1])) {
                 if (target == config.wgUserName) {
                     $('#aur-group-sysop').removeAttr('disabled');
-                    $('#aur-group-chatmoderator').removeAttr('disabled');
                     $('#aur-group-threadmoderator').removeAttr('disabled');
                     config.wgUserGroups.forEach(function(e) {
                         $('#aur-group-' + e).removeAttr('disabled');
                     });
                 } else { // но это не ты
-                    $('#aur-group-chatmoderator').removeAttr('disabled');
                     $('#aur-group-threadmoderator').removeAttr('disabled');
                 }
             }
