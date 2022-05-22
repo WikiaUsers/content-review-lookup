@@ -8,7 +8,7 @@
  */
 
 /* jshint
-    esversion: 5, forin: true,
+    esversion: 5, forin: true, esnext: false,
     immed: true, indent: 4,
     latedef: true, newcap: true,
     noarg: true, undef: true,
@@ -339,7 +339,7 @@
                         title: userpage,
                         minor: true,
                         prependtext: newtext,
-                        token: mw.user.tokens.values.editToken,
+                        token: mw.user.tokens.get("csrfToken"),
                     };
                     if (!hasMsgBox) {
                         delete options.prependtext;
@@ -370,7 +370,7 @@
                         protections: highLevel ? "edit=sysop|move=sysop" : "edit=autoconfirmed|move=autoconfirmed",
                         expiry: "infinite",
                         reason: "Protecting wiki staff userpage",
-                        token: mw.user.tokens.values.editToken,
+                        token: mw.user.tokens.get("csrfToken"),
                     }).always(function (data) {
                         if (data.protect)
                             console.log("[StaffTagger #4]: Successfully protected", account + "\'s userpage");
@@ -388,7 +388,7 @@
                         protections: "edit=autoconfirmed|move=autoconfirmed",
                         expiry: "infinite",
                         reason: "Unprotecting userpage for disassociated bot account",
-                        token: mw.user.tokens.values.editToken,
+                        token: mw.user.tokens.get("csrfToken"),
                     }).always(function (data) {
                         if (data.protect)
                             console.log("[StaffTagger #4]: Successfully protected", account + "\'s userpage");
@@ -415,10 +415,10 @@
                 var promises = [];
                 [user].concat(bots).forEach(function (account) {
                     promises.push(that.api.post({
-                        action: 'edit',
+                        action: "edit",
                         title: "Message_Wall:" + account,
-                        token: mw.user.tokens.get('csrfToken') || mw.user.tokens.get('editToken'),
-                        prependtext: '',
+                        token: mw.user.tokens.get("csrfToken") || mw.user.tokens.get("csrfToken"),
+                        prependtext: "",
                     }).always(function (data) {
                         if (data.edit)
                             console.log("[StaffTagger #6]: Successfully null edited Message_Wall:" + account);
@@ -427,10 +427,10 @@
                     }));
                     promises.push(
                         that.api.post({
-                            action: 'edit',
+                            action: "edit",
                             title: "User_talk:" + account,
-                            token: mw.user.tokens.get('csrfToken') || mw.user.tokens.get('editToken'),
-                            prependtext: '',
+                            token: mw.user.tokens.get("csrfToken") || mw.user.tokens.get("csrfToken"),
+                            prependtext: "",
                         }).always(function (data) {
                             if (data.edit)
                                 console.log("[StaffTagger #6]: Successfully null edited User_talk:" + account);

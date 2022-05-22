@@ -4,7 +4,7 @@
  * Modified to work in both the Wikia and Monobook skins
  */
 $( function($) {
-    if((wgNamespaceNumber != 0) && (wgNamespaceNumber != 2)) {
+    if((mw.config.get( 'wgNamespaceNumber' ) != 0) && (mw.config.get( 'wgNamespaceNumber' ) != 2)) {
         // only check links in mainspace and userspace (for userspace drafts)
         return;
     }

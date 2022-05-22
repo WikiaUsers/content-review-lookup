@@ -415,7 +415,7 @@
             // explicitly in one of the bot groups, to hide their edits using
             // this script from RecentChanges.
             bot: (ug.includes('bot') || ug.includes('bot-global')),
-            token: mw.user.tokens.get('editToken')
+            token: mw.user.tokens.get('csrfToken')
         });
     }
 

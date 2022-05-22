@@ -5,7 +5,7 @@ function Accordion() {
     $(".accordion > :header:not(:last-child)").each(function () {   
       $(this).nextUntil(":header").wrapAll("<div></div>");
     });
-    mw.loader.using( ['jquery.ui.core', 'jquery.ui.widget'], function () {
+    mw.loader.using( 'jquery.ui', function () {
       $('.accordion').accordion({
         active:false,
         collapsible:true

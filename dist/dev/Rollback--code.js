@@ -226,7 +226,7 @@
                 summary: summary,
                 text: text,
                 title: page,
-                token: mw.user.tokens.get('editToken')
+                token: mw.user.tokens.get('csrfToken')
             }).done(this.performRollbackCallback).fail(
                 this.outputError.bind(this, 'editFail')
             );

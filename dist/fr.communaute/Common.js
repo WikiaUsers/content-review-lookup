@@ -44,6 +44,25 @@ window.interwikiInternational = {
 			'~~' + '~~',
 };
 
+window.botFlagInternational = {
+	pageConfig: {
+		namespace: 'Demande_bot',
+		namespaceId: 122,
+		requestsPage: 'Centre_des_communautés:Bot'
+	},
+	titleSchema: '$1 sur $2',
+	wikitextSchema: '{{bStart}}Demande|bot{{bEnd}}\n\n' +
+		'{{bStart}}Demande bot\n' +
+		'| 0-Statut        = \n' +
+		'| 1-Nom_wiki      = {{wikiName}}\n' +
+		'| 2-Lien_bot      = {{{botUrl}}}\n' +
+		'| 3-Nom_bot       = {{botName}}\n' +
+		'| 4-Nom_demandeur = {{requesterName}}\n' +
+		'| 5-Discussion    = {{{communityVote}}}\n' +
+		'| 6-Raisons       = {{comments}}\n' +
+	'{{bEnd}}'
+};
+
 importArticles({
     type: "script",
     articles: [ 

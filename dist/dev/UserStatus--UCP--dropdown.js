@@ -99,7 +99,7 @@ if (config.profileUserName && ($user[1] ? $user[1] : $user[0]) === config.wgUser
                             summary: '[UserStatus] ' + i18n.msg('edit-status').plain(),
                             text: content,
                             format: 'json',
-                            token: mw.user.tokens.get('editToken')
+                            token: mw.user.tokens.get('csrfToken')
                         }
                     }).done(function (data) {
                         if (data.edit.result === 'Success') {

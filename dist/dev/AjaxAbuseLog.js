@@ -40,7 +40,7 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 			"afllimit": "1",
 			"afllogid": Number(entry),
 		}).then(function(afData) {
-			return !(afData.query.abuselog[0].id < Number(entry));
+			return afData.query.abuselog[0].id >= Number(entry);
 		}).catch(function(error) {
 			console.warn(error);
 			return false;
@@ -133,14 +133,15 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 							watchlist: "nochange",
 							bot: true,
 							minor: true,
-							token: mw.user.tokens.get('editToken'),
+							token: mw.user.tokens.get('csrfToken'),
 						}).always(function(data) {
+							var msg;
 							if (data.edit) {
-								var msg = 'Successfully added the filtered edit.';
+								msg = 'Successfully added the filtered edit.';
 								mw.notify(msg, { type: 'success' });
 								console.log(data);
 							} else {
-								var msg = 'Failed to Edit "' + title + '": ' + data;
+								msg = 'Failed to Edit "' + title + '": ' + data;
  
 								mw.notify(msg, { type: "warn" });
 								console.warn(msg);

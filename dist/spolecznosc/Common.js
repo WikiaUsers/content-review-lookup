@@ -1,3 +1,4 @@
+// <nowiki>
 // Konfiguracja skryptu odpowiedzialnego za formularz adopcji
 window.adoptInternational = {
 	unsupportedLanguages: ['en','es','de','fr','ru','it','nl','pt','pt-br','zh'],
@@ -24,6 +25,36 @@ window.adoptInternational = {
 		"| 6-Powód               = {{comments}}\n" +
 		"| 7-URL Dyskusja        = {{{communityVote}}}\n" +
 	"{{bEnd}}"
+};
+
+// Konfiguracja skryptu odpowiedzialnego za formularz linków językowych
+window.interwikiInternational = {
+	namespace: 'Linki_językowe',
+	namespaceId: 116,
+	mainPage: 'Centrum_Społeczności:Linki_językowe',
+	interwikiSchema: '{{bStart}}InterwikiLink|{{from}}|{{to}}{{bEnd}}',
+	pageSchema: '{{bStart}}Prośba o linki językowe{{bEnd}}\n' +
+	'{{interwikis}}\n\n' +
+	'~~' + '~~'
+};
+
+// Konfiguracja skryptu odpowiedzialnego za formularz flag bota
+window.botFlagInternational = {
+	pageConfig: {
+		namespace: 'Flaga_bota',
+		namespaceId: 118,
+		requestsPage: 'Centrum_Społeczności:Oflagowanie_bota'
+	},
+	titleSchema: '$1 na $2',
+	wikitextSchema: '{{bStart}}Prośba o flagę bota\n' +
+		'| 0-Status          = Otwarta\n' +
+		'| 1-Nazwa wiki      = {{wikiName}}\n' +
+		'| 2-URL bota        = {{{botUrl}}}\n' +
+		'| 3-Nazwa bota      = {{botName}}\n' +
+		'| 4-Nazwa operatora = {{requesterName}}\n' +
+		'| 5-URL Dyskusja    = {{{communityVote}}}\n' +
+		'| 6-Powód           = {{comments}}\n' +
+	'{{bEnd}}'
 };
 
 // Konfiguracja skryptu UserTags

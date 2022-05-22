@@ -727,7 +727,7 @@
     }
   },
   upload_to_wikia = function (div_id) {
-    var $tmp, tmp, off_cont, off_tmp, parser_text, user_modified = false, creature, token = mw.user.tokens.get('editToken'), basetimestamp, page_text, new_page_text, summary,
+    var $tmp, tmp, off_cont, off_tmp, parser_text, user_modified = false, creature, token = mw.user.tokens.get('csrfToken'), basetimestamp, page_text, new_page_text, summary,
     ta_multi_version_no_ok_wrong = 0, ta_version_ok = false, cvtext, vdata,
     request_st, request_end = function (msg, is_error) {
       if (is_error === undefined) { is_error = true; }
@@ -1117,7 +1117,7 @@
         prop: 'info'
       },
       error: request_error, success: function (obj) {
-        var xe, token = mw.user.tokens.get('editToken');
+        var xe, token = mw.user.tokens.get('csrfToken');
         if (obj) {
           for (xe in obj.query.pages) { if (obj.query.pages.hasOwnProperty(xe)) {
             break;

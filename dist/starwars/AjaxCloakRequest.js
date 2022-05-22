@@ -23,7 +23,7 @@
 		/* Initialize the script */
 		init: function () {
 
-			if ( wgPageName === 'Wookieepedia:IRC/Cloak_requests' || wgPageName === 'User:Darth_Culator/cloaksignupprototype' ) {
+			if ( mw.config.get('wgPageName') === 'Wookieepedia:IRC/Cloak_requests' || mw.config.get('wgPageName') === 'User:Darth_Culator/cloaksignupprototype' ) {
 
 				$( '<a />' ).text( 'Make Request' ).attr( 'href', '#' ).click( function () {
 
@@ -96,7 +96,7 @@
 			if( !nick ) {
 				return;
 			}
-			var url = wgServer + wgScriptPath + '/api.php?action=query&prop=info|revisions&intoken=edit&titles=Main%20Page&format=json';
+			var url = mw.config.get('wgServer') + mw.config.get('wgScriptPath') + '/api.php?action=query&prop=info|revisions&intoken=edit&titles=Main%20Page&format=json';
 			$.getJSON( url, function ( data ) {
 				for ( var p in data.query.pages ) {
 					break;
@@ -123,7 +123,7 @@
 				}
 			}
 
-			requestText = '\n*{{U|' + wgUserName + '}}\n**Format or abbreviate username as: ' + ( ( abbrUserName === '' ) ? wgUserName : abbrUserName ) +
+			requestText = '\n*{{U|' + mw.config.get('wgUserName') + '}}\n**Format or abbreviate username as: ' + ( ( abbrUserName === '' ) ? mw.config.get('wgUserName') : abbrUserName ) +
 				'\n**IRC nick: ' + nick + '\n***Existing cloak to be ' + ( keepOrReplace === 'keep' ? 'kept' : 'replaced' ) + ': "' + oldCFormat + ( newCFormat !== '' ? '" replace with "' + newCFormat : '"' ) +
 				'\n**Cloak type: ' + cloakType + '\n**~~' + '~~';
 
@@ -132,8 +132,8 @@
 
 		makeAPIEdit: function ( summary, content, editToken ) {
 			$.ajax( {
-				url: wgScriptPath + '/api.php?',
-				data: 'action=edit&title=' + encodeURIComponent( wgPageName ) + '&summary=' + encodeURIComponent( summary ) + '&section=1&appendtext=' + encodeURIComponent( content ) + '&format=json&token=' + encodeURIComponent( editToken ),
+				url: mw.config.get('wgScriptPath') + '/api.php?',
+				data: 'action=edit&title=' + encodeURIComponent( mw.config.get('wgPageName') ) + '&summary=' + encodeURIComponent( summary ) + '&section=1&appendtext=' + encodeURIComponent( content ) + '&format=json&token=' + encodeURIComponent( editToken ),
 				dataType: 'json',
 				type: 'POST',
 				success: function( data ) {

@@ -18,9 +18,8 @@ $.when(mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg"])).then(function(
 				type: "search",
 				name: "search",
 				placeholder: mw.msg("searchsuggest-search"),
-				title: mw.msg("tooltip-search"),
-				autocomplete: "off"
-			}),
+				title: mw.msg("tooltip-search")
+			}).attr("autocomplete", "off"),
 			$("<input>", {
 				type: "hidden",
 				name: "title",
@@ -44,7 +43,7 @@ $.when(mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg"])).then(function(
 		]
 	});
 
-	importArticle({type: 'style', article: 'u:dev:MediaWiki:UCXSearchBar.css'});
+	importArticle({type: "style", article: "u:dev:MediaWiki:UCXSearchBar.css"});
 	$(".wiki-tools__search").replaceWith(search_form);
 
 	var scroll_index = -1;

@@ -637,7 +637,7 @@
 					summary: reason,
 					action: "edit",
 					title: page,
-					token: mw.user.tokens.get("editToken"),
+					token: mw.user.tokens.get("csrfToken"),
 					watchlist: "nochange",
 					text: replacedContent
 				};

@@ -3,6 +3,9 @@
 
 Используется преимущественно на страницах пространства Forum, но также может работать и на других пространствах.
 */
+// страница-хранилище, с разметкой окна в HTML-виде
+sTemplateSource = 'Шаблон:GIF';
+sSection = 'new';
 
 // кнопка для вызова окна нового сообщения. Добавляет на страницу новый раздел с заголовком (невидимым) в котором хранится дата и время сообшения + и id автора сообщения
 $('.btn_ForumMessage').unbind('click').click(function()
@@ -64,8 +67,6 @@ CaptionID - id заголовка в окне
 */
 function ShowForumMessageWindow(SenderID, CaptionID)
 {
-	// страница-хранилище, с разметкой окна в HTML-виде
-	sTemplateSource = 'Шаблон:GIF';
 	// массив заголовков окна
 	sCaption = new Array();
 	sCaption[0] = '';
@@ -77,7 +78,7 @@ function ShowForumMessageWindow(SenderID, CaptionID)
 	if ( $('#pnl_ForumMessageWindow').length=== 0 )
 	{
 		// запрос на чтение HTML-разметки окна со страницы-хранилища
-		$.get( wgScript, { title: sTemplateSource, action: 'raw', ctype: 'text/plain' } ).then( 
+		$.get( mw.config.values.wgScript, { title: sTemplateSource, action: 'raw', ctype: 'text/plain' } ).then( 
 			function( data ) // данные, полученные при чтении
 			{
 				// подстановка заголовка окна в HTML-разметку
@@ -184,9 +185,9 @@ function ClosePreview()
 
 /*
 чтение HTML-разметки для ячейки с текстом новой темы или сообшения/ответа
-i - id ячейки
-sPage - название страницы-хранилища
-data - скоп данных, заранее полученных со страницы-хранилища
+- i -- id ячейки
+- sPage -- название страницы-хранилища
+- data -- скоп данных, заранее полученных со страницы-хранилища
 */
 function LoadCell(i, sPage, data)
 {
@@ -209,8 +210,12 @@ function LoadCell(i, sPage, data)
 	return sMessage;
 }
 
-// запись темы/сообщения/ответа
-function SaveForumMessage()
+/*
+запись темы/сообщения/ответа
+- sMessageText -- текст сообщения
+- sPageName -- страница, куда нужно внести текст
+*/
+function SaveForumMessage(sMessageText, sPage)
 {
 	// если тест сообщения не введен -- сообщение об ошибке, выход
 	if ( $('#wpTextbox1').val() === '' )
@@ -218,9 +223,23 @@ function SaveForumMessage()
 		mw.notify( 'Введите текст сообщения!', { title: 'Внимание!', type: 'warn' } ); 
 		return;
 	}
+  
+	//текст темы/сообщения/ответа
+	if (sMessageText === undefined)
+	{
+		// если не указан, берется из поля wpTextbox1 ИЛИ присваивается пустой текст
+		sMessageText = $('#wpTextbox1').val() || '';
+	}
 	
+	//страница для записи
+	if (sPage === undefined)
+	{
+		// если не указана, берется текущая
+		sPage = mw.config.values.wgPageName;
+	}
+
 	// запрос на чтение HTML-разметки окна со страницы-хранилища
-	$.get( wgScript, { title: sTemplateSource, action: 'raw', ctype: 'text/plain' } )
+	$.get( mw.config.values.wgScript, { title: sTemplateSource, action: 'raw', ctype: 'text/plain' } )
 	.then( function( data ) // данные, полученные при чтении
 	{
 		// текущие дата и время
@@ -234,9 +253,7 @@ function SaveForumMessage()
 	    // текущие дата и время одной строкой
 		sMessageDateTime= iDay+'.'+ iMon +'.'+ iYear +' в '+ iHour +':'+ iMin;
 		// добавление в строку id автора темы/сообщения/ответа
-		sMessageID= 'mes_'+ wgUserId +'-'+ iHour +'-'+ iMin +'-'+ iSec;
-		//текст темы/сообщения/ответа
-		sMessageText = $('#wpTextbox1').val();
+		sMessageID= 'mes_'+ mw.config.values.wgUserId +'-'+ iHour +'-'+ iMin +'-'+ iSec;
 		// токен автора темы/сообщения/ответа
 		sToken= mw.user.tokens.get('csrfToken');
 		
@@ -252,11 +269,12 @@ function SaveForumMessage()
 			}
 			
 			// подстановка id. имения автора сообщения, текста сообщения и пр. в HTML-разметку ячейки
-			sMessage= sMessage.replace(/\{MessageID}/g, sMessageID).replace(/\{UserName}/g, '[[Участник:'+wgUserName+'|'+wgUserName+']]').replace(/\{DateTime}/g, sMessageDateTime).replace(/\{MessageText}/g, sMessageText).replace(/<tbody>|<\/tbody>/g,'');
-			// вывод сообщения о записи
+			sMessage= sMessage.replace(/\{MessageID}/g, sMessageID).replace(/\{UserName}/g, '[[Участник:'+mw.config.values.wgUserName+'|'+mw.config.values.wgUserName+']]').replace(/\{DateTime}/g, sMessageDateTime).replace(/\{MessageText}/g, sMessageText).replace(/<tbody>|<\/tbody>/g,'');
+
+      // вывод сообщения о записи
 			mw.notify( 'Обновите страницу.', { title: 'Сообщение успешно добавлено!', type: 'info' } ); 
 			// запрос на запись сообщения в БД вики
-			$.post("https://starwars.fandom.com/ru/api.php", {action: "edit", title: wgPageName, section: sSection, appendtext: sMessage, token: sToken}); 	
+			$.post("https://starwars.fandom.com/ru/api.php", {action: "edit", title: sPage, section: sSection, appendtext: sMessage, token: sToken}); 	
 		}
 		
 		// если в sSection хранится число -- ответ на сообшение
@@ -282,7 +300,7 @@ function SaveForumMessage()
 			iLevel = Math.min(iLevel+1, iLevelMax);
 			
 			// подстановка id., имени автора ответа и пр. в HTML-разметку ячейки ответа
-			sMessage= sMessage.replace(/\{MessageID}/g, sMessageID).replace(/\{UserName}/g, '[[Участник:'+wgUserName+'|'+wgUserName+']]').replace(/\{DateTime}/g, sMessageDateTime).replace(/\{MessageText}/g, sMessageText).replace(/<tbody>|<\/tbody>/g,'');
+			sMessage= sMessage.replace(/\{MessageID}/g, sMessageID).replace(/\{UserName}/g, '[[Участник:'+mw.config.values.wgUserName+'|'+mw.config.values.wgUserName+']]').replace(/\{DateTime}/g, sMessageDateTime).replace(/\{MessageText}/g, sMessageText).replace(/<tbody>|<\/tbody>/g,'');
 			// подстановка номер вложенности в HTML-разметку ячейки
 			sMessage= '\n'+ sMessage.replace(/BlockForumMessage/g, 'BlockForumReply').replace(/Level\d/, 'Level'+iLevel ).replace(/data-level="\d"/, 'data-level="'+iLevel+ '"' );
 			
@@ -307,7 +325,7 @@ function SaveForumMessage()
 			// вывод сообщения о записи
 			mw.notify( 'Обновите страницу.', { title: 'Ответ успешно добавлен!', type: 'info' } ); 
 			// запрос на запись ответа в БД вики
-			$.post("https://starwars.fandom.com/ru/api.php", {action: "edit", title: wgPageName, section: sSection, appendtext: sMessage, token: sToken}); 	
+			$.post("https://starwars.fandom.com/ru/api.php", {action: "edit", title: mw.config.values.wgPageName, section: sSection, appendtext: sMessage, token: sToken}); 	
 		}
 		
 		// если в sSection хранится "new_topic" -- создание новой темы
@@ -332,7 +350,7 @@ function SaveForumMessage()
 			}
 			
 			// подстановка id., имени автора ответа и пр. в HTML-разметку ячейки темы
-			sMessage= sMessage.replace(/\{MessageID}/g, sMessageID).replace(/\{UserName}/g, '[[Участник:'+wgUserName+'|'+wgUserName+']]').replace(/\{DateTime}/g, sMessageDateTime).replace(/\{MessageText}/g, sMessageText).replace(/<tbody>|<\/tbody>/g,'').replace(/\{Topic}/g, sTopic).replace(/\{TopicCategory}/g, wgTitle).replace(/\{TopicLevelName}/g, wgTitle);
+			sMessage= sMessage.replace(/\{MessageID}/g, sMessageID).replace(/\{UserName}/g, '[[Участник:'+mw.config.values.wgUserName+'|'+mw.config.values.wgUserName+']]').replace(/\{DateTime}/g, sMessageDateTime).replace(/\{MessageText}/g, sMessageText).replace(/<tbody>|<\/tbody>/g,'').replace(/\{Topic}/g, sTopic).replace(/\{TopicCategory}/g, mw.config.values.wgTitle).replace(/\{TopicLevelName}/g, mw.config.values.wgTitle);
 			
 			// вывод сообщения о записи
 			mw.notify( 'Обновите страницу.', { title: 'Тема успешно создана!', type: 'info' } );

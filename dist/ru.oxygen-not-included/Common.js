@@ -55,7 +55,7 @@ $('.oni-database > .database-list li').click(function() {
 
 // Цвета админов в комментариях, код взят с Don't Starve вики
 setInterval(function () {
-	$('.wds-avatar a[href$="Ksarfax"]').closest('.Reply, .Reply_body__3woA9').addClass('Ksarfax');
-	$('.wds-avatar a[href$="MarisFrance"]').closest('.Reply, .Reply_body__3woA9').addClass('MarisFrance');
-	$('.wds-avatar a[href$="%D0%9D%D0%B8%D0%B2%D0%B0%D0%BB%D1%8C"]').closest('.Reply, .Reply_body__3woA9').addClass('Nival');
+	$('.wds-avatar a[href$="Ksarfax"]').closest('.Reply, .Reply_body__PM9kM').addClass('Ksarfax');
+	$('.wds-avatar a[href$="MarisFrance"]').closest('.Reply, .Reply_body__PM9kM').addClass('MarisFrance');
+	$('.wds-avatar a[href$="%D0%9D%D0%B8%D0%B2%D0%B0%D0%BB%D1%8C"]').closest('.Reply, .Reply_body__PM9kM').addClass('Nival');
 }, 500 );

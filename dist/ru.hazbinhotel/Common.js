@@ -30,5 +30,6 @@ UserTagsJS.modules.custom = {
 	'LeraBE': ['discordMod'],
 	'Lubitel obnimashek': ['intern'],
 	'JustAccount': ['intern'],
-	'Swit4er': ['translator']
+	'Swit4er': ['translator'],
+	'JekaKud': ['intern']
 }

@@ -37,7 +37,7 @@
 	config.kill = $.noop;
 	
 	// Creating the UTCClock object
-	window.UTCClock = { 
+	const UTCClock = { 
 		defaults: Object.freeze( { 
 			format: "%2H:%2M:%2S %d %b %Y (UTC)",
 			location: "navigation",
@@ -172,14 +172,18 @@
 				this.config.offset
 			);
 			
-			const format = this.getFormatted( );
+			const c = this;
 			
-			$el.text( format( d, this.config.format + "" ) );
+			mw.loader.using( "mediawiki.language.months", function( ) { 
+				const format = c.getFormatted( );
+				
+				$el.text( format( d, c.config.format + "" ) );
+			} );
 		},
 		getFormatted: function( ) { 
 			return this.format( 
-				mw.config.get( "wgMonthNames" ).slice( 1 ),
-				mw.config.get( "wgMonthNamesShort" ).slice( 1 )
+				mw.language.months.names,
+				mw.language.months.abbrev
 			);
 		},
 		format: function( monthsLong, monthsShort, daysLong, daysShort ) {
@@ -240,7 +244,7 @@
 					const r = ( d.getDay( ) + 6 ) % 7;
 					return { i: r, v: r + 1 };
 				},
-				// Week o;f year using Sunday as the first day of the week (0-53)
+				// Week of year using Sunday as the first day of the week (0-53)
 				U: function( d, ys ) { 
 					var doy = cases.j( d, ys ).i;
 					doy += ys.getDay( ) || 7;

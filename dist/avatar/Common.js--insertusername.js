@@ -5,8 +5,8 @@
  * This (jQuery) version by [[wikia:User:Joeyaa]], written to be backwards compatible
  */
 
-if (wgUserName != 'null') {
-  $('.insertusername').html(wgUserName);
+if (mw.config.get('wgUserName') != 'null') {
+  $('.insertusername').html(mw.config.get('wgUserName'));
 }
 
 /* Modification of class="insertusername" mechanic; crucial for some templates
@@ -15,7 +15,7 @@ if (wgUserName != 'null') {
  */
 
 $(document).ready(function () {
-  if ( $.inArray("user", wgUserGroups) == -1 ) {
+  if ( $.inArray("user", mw.config.get('wgUserGroups')) == -1 ) {
     $('.insertusername').each(function () {
       var id = $(this).prop("id");
       $(this).html(id);

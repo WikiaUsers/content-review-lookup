@@ -23,10 +23,11 @@
             queue.push($content);
         }
     }
-    mw.loader.load('https://cdn.datatables.net/v/dt/dt-1.10.23/fc-3.3.2/r-2.2.7/rg-1.1.2/sc-2.0.3/sp-1.2.2/sl-1.3.2/datatables.css', 'text/css');
-    mw.loader.getScript('https://cdn.datatables.net/v/dt/dt-1.10.23/fc-3.3.2/r-2.2.7/rg-1.1.2/sc-2.0.3/sp-1.2.2/sl-1.3.2/datatables.js').then(function() {
+    mw.loader.load('https://cdn.datatables.net/v/dt/dt-1.12.0/b-2.2.3/b-colvis-2.2.3/date-1.1.2/fc-4.1.0/r-2.3.0/rg-1.2.0/sc-2.0.6/sp-2.0.1/sl-1.4.0/datatables.css', 'text/css');
+    mw.loader.getScript('https://cdn.datatables.net/v/dt/dt-1.12.0/b-2.2.3/b-colvis-2.2.3/date-1.1.2/fc-4.1.0/r-2.3.0/rg-1.2.0/sc-2.0.6/sp-2.0.1/sl-1.4.0/datatables.js').then(function() {
         initialized = true;
         queue.forEach(process);
     });
     mw.hook('wikipage.content').add(initialize);
+    mw.hook('datatables.loaded').fire();
 })(jQuery, mediaWiki);

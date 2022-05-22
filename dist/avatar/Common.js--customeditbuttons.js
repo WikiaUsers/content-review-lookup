@@ -2,7 +2,7 @@
  * by: [[User:Thailog|Thailog]]
  */
  
-if ((wgAction == 'submit' || wgAction == 'edit') && mwCustomEditButtons) {
+if ((mw.config.get('wgAction') == 'submit' || mw.config.get('wgAction') == 'edit') && mwCustomEditButtons) {
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/marvel_dc/images/2/29/Character_Button.png",
 		"speedTip": "Insert character infobox template",

@@ -64,7 +64,7 @@ var $user = mw.config.get('wgTitle').split('/');
                             );
                 $('.user-identity-header__actions').append($statusLink);
                 $statusLink.append($statusDropdown);
-                setTimeout(() => {$('body').on('click', '.wds-button modal-wrapper__cta-button', function(e) {$('.user-identity-header__actions').append($statusLink);$statusLink.append($statusDropdown)})}, 500) //attempted fix
+                setTimeout(() => {$('body').on('click', '.wds-button modal-wrapper__cta-button', function(e) {$('.user-identity-header__actions').append($statusLink);$statusLink.append($statusDropdown)})}, 500); //attempted fix
                 $('body').on('click', 'a[id^="StatusMenu-"]', function(e) {
                     e.preventDefault();
                     var content;
@@ -92,7 +92,7 @@ var $user = mw.config.get('wgTitle').split('/');
                             summary: '[UserStatus] ' + i18n.msg('edit-status').plain() + ' (demo)',
                             text: content,
                             format: 'json',
-                            token: mw.user.tokens.get('editToken')
+                            token: mw.user.tokens.get('csrfToken')
                         }
                     }).done(function (data) {
                         if (data.edit.result === 'Success') {

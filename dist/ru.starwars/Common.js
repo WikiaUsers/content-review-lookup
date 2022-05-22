@@ -22,7 +22,7 @@ $(document).ready(function()
 	});
 
 	// скрыть заголовок на Заглавной
-	if (wgTitle === 'Заглавная страница')
+	if (RLCONF.wgPageName === 'Заглавная страница')
 	{
 	  $('.page-header__bottom').css('display', 'none');
 	}
@@ -165,7 +165,7 @@ $(document).ready(function()
     substUsername();
     
     // если открыта страница загрузки изображения
-    if (wgCanonicalSpecialPageName === 'Upload') 
+    if (RLCONF.wgCanonicalSpecialPageName === 'Upload') 
     {
         importScript('MediaWiki:Wikificator.js');
         
@@ -230,7 +230,7 @@ $(document).ready(function()
     }
     
     // если страница переименована
-    if (wgCanonicalSpecialPageName === 'Movepage') 
+    if (RLCONF.wgCanonicalSpecialPageName === 'Movepage') 
     {
         $('input[name=wpMove]').click(function() {
             alert('Не забудьте переименовать страницу изображений!');
@@ -253,13 +253,13 @@ $(document).ready(function()
 	// если на странице открыта интерактивная карта галактики (шаблон {{GM}} )
 	if ( $("#GalaxyMapDatabase").length > 0) {importScript('MediaWiki:GalMap.js');}
 	
-	if (wgCanonicalNamespace === 'Forum')
+	if (RLCONF.wgCanonicalNamespace === 'Forum')
 	{
 		importScript('MediaWiki:OldForum.js');
 	}
 	
 	// если страница редактируется
-	if (wgAction == 'edit' || wgAction == 'submit') 
+	if (RLCONF.wgAction == 'edit' || RLCONF.wgAction == 'submit') 
 	{
 		$.when( mw.loader.using( 'ext.wikiEditor' ), $.ready).then( SetToolbar );
 		
@@ -328,7 +328,7 @@ function toggleHidable(bypassStorage)
 /* замена на странице шаблона {{USERNAME}} на имя участника, открывшего страницу */
 function substUsername() 
 {
-    $('.insertusername').html(wgUserName);
+    $('.insertusername').html(RLCONF.wgUserName);
 }
 
 function ClassTester(className) 
@@ -502,11 +502,11 @@ function SetToolbar()
 
 function CheckINUSE() 
 {
-    if (wgCategories.includes('Активно редактирующиеся статьи') == true 
+    if (RLCONF.wgCategories.includes('Активно редактирующиеся статьи') == true 
         && ( 
-            ($('#iduser').text()!== wgUserName || wgUserName=== null) 
+            ($('#iduser').text()!== RLCONF.wgCategorieswgUserName || RLCONF.wgCategorieswgUserName=== undefined) 
             &&
-            ($('#iduser').text()!== null)
+            ($('#iduser').text()!== undefined)
             &&
       		(['sysop', 'content-moderator' ].indexOf( mw.config.get( 'wgUserGroups' ) ) !== -1)
            )

@@ -268,7 +268,7 @@
                     user: name,
                     reason: $reason.val() || $reason.attr('placeholder'),
                     expiry: $expiry.val() || $expiry.attr('placeholder'),
-                    token: mw.user.tokens.get('editToken')
+                    token: mw.user.tokens.get('csrfToken')
                 };
             if ($('#block-auto').prop('checked')) {
                 params.autoblock = true;

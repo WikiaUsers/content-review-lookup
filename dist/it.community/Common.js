@@ -57,3 +57,21 @@ window.interwikiInternational = {
 			'{{interwikis}}\n\n' +
 			'~~' + '~~',
 };
+
+window.botFlagInternational = {
+	pageConfig: {
+		namespace: 'Richiesta',
+		namespaceId: 118,
+		requestsPage: 'Wiki_della_Community:Richieste_di_flag_bot'
+	},
+	titleSchema: '$1 su $2', // $1 = nome bot, $2 = nome wiki
+	wikitextSchema: '{{bStart}}Richiesta_di_flag_bot\n' +
+		'| 0-Status         = nuova\n' +
+		'| 1-Wiki name      = {{wikiName}}\n' +
+		'| 2-Bot URL        = {{{botUrl}}}\n' +
+		'| 3-Bot name       = {{botName}}\n' +
+		'| 4-Requester name = {{requesterName}}\n' +
+		'| 5-Community vote = {{{communityVote}}}\n' +
+		'| 6-Comments       = {{comments}}\n' +
+	'{{bEnd}}'
+};

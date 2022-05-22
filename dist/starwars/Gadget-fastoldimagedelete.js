@@ -3,7 +3,7 @@
  * @author Grunny
  */
 function fdImageCheckdelete() {
-	if( wgCanonicalNamespace === 'File' && wgAction === 'delete' ) {
+	if( mw.config.get('wgCanonicalNamespace') === 'File' && mw.config.get('wgAction') === 'delete' ) {
 		if( window.location.href.match( /&oldimage=/ ) ) {
 			$( '#mw-filedelete-submit' ).click();
 		}

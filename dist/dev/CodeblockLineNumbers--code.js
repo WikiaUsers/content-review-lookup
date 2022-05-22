@@ -1,6 +1,6 @@
 /**
  * Adds numbers to each line of code in a codeblock.
- * 
+ * // current update is to account for mw version `1.37.2` and the introduction of `.mw-highlight-lines` to codeblocks
  * @name CodeblockLineNumbers
  * @author Arashiryuu0
  */
@@ -15,6 +15,9 @@
     'use strict';
 	
     if (window.dev && window.dev.CodeblockLineNumbers) return;
+    
+    var min = parseInt(mw.config.get('wgVersion').split('.')[1]),
+	    classes = ['lineNumbers', min < 37 ? null : 'obs'].filter(Boolean);
 	
     var codeblocks = [
         ['de1', 'hljs'],
@@ -93,11 +96,11 @@
     }
 	
     function isInlineComment (child) {
-        var classes = ['coMULTI', 'hljs-comment'],
+        var blockClasses = ['coMULTI', 'hljs-comment'],
             hasClass = function () {
-                var a = Boolean(child.className) && classes.includes(child.className),
+                var a = Boolean(child.className) && blockClasses.includes(child.className),
                     b = Boolean(child.firstElementChild) 
-                        && classes.includes(child.firstElementChild.className);
+                        && blockClasses.includes(child.firstElementChild.className);
                 return a || b;
             },
             starts = child.textContent.trim().startsWith('/*'),
@@ -203,7 +206,7 @@
         var ol = document.createElement('ol'),
             matched = match(block, codeblocks[2][1]);
 			
-        ol.setAttribute('class', 'lineNumbers');
+        ol.classList.add.apply(ol.classList, classes);
         wrapInner(addLines(block), ol);
 		
         if (matched || !mw.user.getRights) parseComments(ol);
@@ -258,7 +261,7 @@
         if (document.readyState !== 'complete') return setTimeout(ready, 1000);
         setTimeout(fire, 1);
     }
-	
+    
     ready();
 })();
 	

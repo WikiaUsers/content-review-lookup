@@ -454,6 +454,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"anthurium": {
+				"name": "Anthurium",
+				"colors": [
+					"flower",
+					"pink",
+					"green"
+				],
+				"rarity": "unbreedable"
+			},
 			"antique": {
 				"name": "Antique",
 				"colors": [
@@ -5572,6 +5581,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"freesia": {
+				"name": "Freesia",
+				"colors": [
+					"flower",
+					"green",
+					"yellow"
+				],
+				"rarity": "common"
+			},
 			"freespirit": {
 				"name": "Free Spirit",
 				"colors": [
@@ -6124,6 +6142,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"yellow",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"gladiolus": {
+				"name": "Gladiolus",
+				"colors": [
+					"flower",
+					"white",
+					"pink"
 				],
 				"rarity": "unbreedable"
 			},
@@ -7394,6 +7421,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"hydrangea": {
+				"name": "Hydrangea",
+				"colors": [
+					"flower",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"hypercosmic": {
 				"name": "Hyper Cosmic",
 				"colors": [
@@ -8588,6 +8623,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"spooky",
 					"purple",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"lisianthus": {
+				"name": "Lisianthus",
+				"colors": [
+					"flower",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},

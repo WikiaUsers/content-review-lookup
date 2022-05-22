@@ -34,3 +34,8 @@ $(function () {
         $('#userProfileApp .user-identity-avatar__image').attr('alt', mw.config.get('profileUserName'));
     }, 100);
 });
+
+// LockOldComments limit
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 30;
+window.lockOldComments.addNoteAbove = true;

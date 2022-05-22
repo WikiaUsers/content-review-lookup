@@ -76,7 +76,7 @@ function clock_init(clock_resync, clock_update) {
 $(function() {
     var _pagename = mw.config.get('wgPageName');
     
-    if(_pagename == "Testing") {
+    if(_pagename == "Growtopia_Wikia") {
         var _clock = clock_init(function(event) {
         	for(var i in event) {
         		switch(event[i].name) {
@@ -116,7 +116,7 @@ $(function() {
 	$(".gtw-tabview").on("click","a", function() {
 		var $parent = $(this).parents(".gtw-tabview");
 		var $href = $(this).attr("href");
-		if(!/^\/wiki\//.test($href)) return false; // Only allow wiki interlink for security reason
+		if(!/^\/id\/wiki\//.test($href)) return false; // Only allow wiki interlink for security reason
 		$parent.find("a").removeClass("active");
 		$(this).addClass("active");
 		$parent.next(".gtw-tabpage").remove();

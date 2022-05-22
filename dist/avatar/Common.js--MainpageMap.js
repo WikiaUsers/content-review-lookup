@@ -91,10 +91,10 @@ function makeMap (isTrusted) {
             container.disabled = true;
             container.onclick = function () {
                 mapData = 'The information for the pins and markers used on the [[User:KettleMeetPot/WorldMap|mainpage map]] are stored here.\n<!-- Page content demarcation for parser -->\n' + mapData + '\n<!-- Page content demarcation for parser -->'; 
-                var edittoken = mw.user.tokens.get( 'editToken' );
+                var csrfToken = mw.user.tokens.get( 'editToken' );
                 $('.EditToolCommit').prop("disabled", true);
                 $.ajax({
-                    type: "POST",
+                    type: "GET",
                     url: "https://avatar.fandom.com/api.php",
                     data: { action:'edit', title:'Avatar_Wiki:MainpageMapData', text: mapData, token: edittoken, summary:'Visual editing tool: committing changes.' },
                     success: function () {
@@ -450,7 +450,7 @@ function markerListControlFunction (i, iconNameOrder) {
 }
 
 $(document).ready(function() {
-    if (wgPageName == "Avatar_Wiki" || wgPageName == "User:KettleMeetPot/WorldMap")  {
+    if (wgPageName == "Avatar_Wiki" || mw.config.get('wgPageName') == "User:KettleMeetPot/WorldMap")  {
         var isTrusted;
         var head  = document.getElementsByTagName('head')[0];
         var style  = document.createElement('link');
@@ -459,7 +459,7 @@ $(document).ready(function() {
         style.href = '//maps.wikimedia.org/leaflet/leaflet.css';
         head.appendChild(style);
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: "https://avatar.fandom.com/api.php",
             data: { action:'query', prop:'revisions', titles:'Avatar_Wiki:MainpageMapData', rvprop:'content' },
         success: function (data) {
@@ -468,7 +468,7 @@ $(document).ready(function() {
             } 
         });
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: "https://avatar.fandom.com/api.php",
             data: { action:'query', prop:'revisions', titles:'Avatar_Wiki:MainpageMapData/CheckPage', rvprop:'content' },
             success: function ( data ) {

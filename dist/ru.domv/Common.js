@@ -1,14 +1,7 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
-
-/* Для шаблона "Твоё имя" */
-$(function UserNameReplace() {
-    if(typeof(disableUsernameReplace) !== 'undefined' && disableUsernameReplace || mw.config.values.wgUserName === null) return;
-    $("span.yourname").text(mw.config.values.wgUserName);
-});
-
 /*Рамка администраторов*/
 setInterval(function () {
-	$('.wds-avatar a[href$="Arhhhat"]').closest('.Reply, .Reply_body__3woA9').addClass('Arhhhat');
+	$('.wds-avatar a[href$="Arhhhat"]').closest('.Reply, .Reply_body__PM9kM').addClass('Arhhhat');
 }, 500 );
 
 /*Обложки на заглавной*/
@@ -28,8 +21,10 @@ $(this).removeAttr('title');
 
 /*Discord  Spoiler >.<*/
 $(function(){
-    $('.discordspoiler').click(function() {
-        $('.discordspoiler').addClass('discordspoileropen')
-        $('.discordspoiler').removeClass('discordspoiler')
+    $('.discordspoiler').each(function(){
+        $(this).click(function() {
+            $(this).addClass('discordspoileropen');
+            $(this).removeClass('discordspoiler');
+        });
     });
 });

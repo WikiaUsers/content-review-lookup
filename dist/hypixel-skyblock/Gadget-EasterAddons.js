@@ -41,7 +41,7 @@ mw.loader.using(["mediawiki.util", "mediawiki.Uri"], function () {
         T: 12000, // animation time in ms
         NORM_IMAGE: 6,
         ANIM_IMAGE: [
-            "https://raw.githubusercontent.com/skyblock-wiki/skyblock-wiki.github.io/main/wiki-assets/gifegg-1.gif"
+            "https://raw.githubusercontent.com/skyblock-wiki/wiki-assets/main/images/gifegg-1.gif"
         ],
         ANIM_CLASS: "gifeggs",
         MINWAIT: 3000, // minimum delay time in ms

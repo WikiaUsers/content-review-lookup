@@ -1,35 +1,12 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-
-/* Fair use rationale */
-
-function preloadUploadDesc() {
-    if (wgPageName.toLowerCase() != 'special:upload') {
-    return;
-}
- 
-document.getElementById('wpUploadDescription').appendChild(document.createTextNode("{{Fair use rationale\r| Description       = \r| Source            = \r| Portion           = \r| Purpose           = \r| Resolution        = \r| Replaceability    = \r| Other Information = \r}}"));
- 
-}
-addOnloadHook (preloadUploadDesc);
-
-AjaxRCRefreshText = 'Auto-refresh';
-AjaxRCRefreshHoverText = 'Automatically refresh the page'; 
-ajaxPages = ["Special:RecentChanges","Special:WikiActivity"]; 
-
-PurgeButtonText = 'Purge';
-
 /* importScriptPages-start */
 importArticles({
     type: 'script',
     articles: [
         'u:dev:Toggler.js',
-        'u:dev:AjaxBatchDelete.js',
-        'u:dev:AjaxRC/code.js',
         'u:dev:AllPagesHideRedirect/code.js',
         'u:dev:AutoEditDropdown/code.js',
         'u:dev:MediaWiki:BackToTopButton/code.js',
         'u:dev:Countdown/code.js',
-        'u:dev:ExternalImageLoader/code.js',
         'u:dev:ListFiles/code.js', // ListFiles from Dev Wiki
         'u:dev:PurgeButton/code.js',
         'u:dev:MediaWiki:ReferencePopups/code.js',

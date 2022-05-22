@@ -3,7 +3,7 @@
 var auto_comment = 0;
 
 /* Для шаблона "Ник" */
-if (wgUserName != 'null') {
+if ( mw.config.get('wgUserName') != 'null') {
     $('.insertusername').text(wgUserName);
 }
  
@@ -18,7 +18,7 @@ function addWikifButton() {
         toolbar.appendChild(i);
 }
 
-if (wgAction == 'edit' || wgAction == 'submit') {
+if (mw.config.get('wgAction') == 'edit' || mw.config.get('wgAction') == 'submit') {
         importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Wikificator.js&action=raw&ctype=text/javascript');
         $(addWikifButton);
 }

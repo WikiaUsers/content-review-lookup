@@ -112,7 +112,6 @@
 			]),
 			await: [
 				'mediawiki.api',
-				'mediawiki.notify',
 				'mediawiki.util',
 				'mediawiki.user',
 				'oojs-ui',
@@ -685,9 +684,9 @@
 		 * @returns {Node} - The link element
 		 */
 		makeLink: function(page, alt, options) {
-			var page = page || this.wg.wgPageName;
+			page = page || this.wg.wgPageName;
 			var origPage = page;
-			var options = options || {};
+			options = options || {};
 
 			var wiki, specials = {
 				'^(m|meta):': 'meta.wikimedia.org',
@@ -760,8 +759,8 @@
 		 */
 		getUrlState: function() {
 			var ret = {
-					users: this.urlVars['users'] || this.urlVars['wpTarget'] || this.wg.wgPageName.split('/').slice(1).join('/') || '',
-					limit: this.urlVars['limit'] || this.urlVars['loglimit'] || this.cachedInputs.limit || 15,
+					users: this.urlVars.users || this.urlVars.wpTarget || this.wg.wgPageName.split('/').slice(1).join('/') || '',
+					limit: this.urlVars.limit || this.urlVars.loglimit || this.cachedInputs.limit || 15,
 				},
 				keys = {
 					'nsInvert': false,

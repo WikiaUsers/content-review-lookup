@@ -1,5 +1,5 @@
 /* jshint
-	esversion: 5, forin: true,
+	esversion: 5, esnext: false, forin: true,
 	immed: true, indent: 4,
 	latedef: true, newcap: true,
 	noarg: true, undef: true,
@@ -370,7 +370,7 @@ $.when(
         searchArray: function (arr, search) {
             var splitSearch = function (str) {
                 var pattern = str.split("").map(function (v) {
-                    return "(?=.*" + mw.RegExp.escape(v) + ")";
+                    return "(?=.*" + mw.util.escapeRegExp(v) + ")";
                 }).join("");
                 var regex = new RegExp(pattern, "i");
                 var match = str.match(regex);

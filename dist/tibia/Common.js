@@ -895,7 +895,7 @@ mw.config.set('UMFBypassLicenseCheck',true);
 
 /* Process Average Loot Value data */
 $(function(){
-	if (wgPageName === 'List_of_Creatures_by_Average_Loot_Value') {
+	if (mw.config.get('wgPageName') === 'List_of_Creatures_by_Average_Loot_Value') {
 		var baseurl = 'https://tibia.fandom.com/wiki/',
 		fileurl = 'https://tibia.fandom.com/wiki/Special:Filepath?file=',
 		looturl = 'https://tibia.fandom.com/wiki/Loot_Statistics:',

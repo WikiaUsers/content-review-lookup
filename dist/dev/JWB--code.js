@@ -340,7 +340,7 @@ JWB.api.submit = function(page) {
 		'summary': summary,
 		'action': 'edit',
 		'basetimestamp': JWB.page.revisions ? JWB.page.revisions[0].timestamp : '',
-		'token': JWB.page.edittoken,
+		'token': JWB.page.edittoken || mw.user.tokens.get("csrfToken"),
 		'text': $('#editBoxArea').val(),
 		'watchlist': $('#watchPage').val()
 	};
@@ -662,7 +662,7 @@ JWB.setup.submit = function() {
 		'title': 'User:'+JWB.username+'/'+JWB.settingspage+'-settings.'+JWB.configext,
 		'summary': JWB.msg(['setup-summary', mw.config.get('wgContentLanguage')]),
 		'action': 'edit',
-		'token': JWB.setup.edittoken,
+		'token': JWB.setup.edittoken || mw.user.tokens.get("csrfToken"),
 		'text': JWB.setup.getObj(),
 		'minor': true
 	}, function(response) {
@@ -739,7 +739,7 @@ JWB.setup.load = function() {
 		if (JWB === false) return; //user is not allowed to use JWB
 		var firstrun =  JWB.setup.edittoken ? false : true;
 		var page = response.query.pages[response.query.pageids[0]];
-		JWB.setup.edittoken = page.edittoken;
+		JWB.setup.edittoken = page.edittoken || mw.user.tokens.get("csrfToken");
 		if (response.query.pageids[0] === '-1') {
 			if (JWB.allowed && firstrun) JWB.setup.save('default'); //this runs when this callback returns after the init has loaded.
 			return;

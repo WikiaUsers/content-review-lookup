@@ -371,7 +371,7 @@ window.mapper = (function mapper(ns) {
     tmp = -1 * (minimap_map_data[4] - 7);
     $('#minimap_current_floor').val((tmp < 1 ? '' : '+') + tmp);
     $('#minimap_current_coords').val(minimap_data_to_url(3));
-    if ($('#minimap_tcode1').size()) {
+    if ($('#minimap_tcode1').length) {
       $('#minimap_tcode1').val(minimap_data_to_url(0));
       $('#minimap_tcode2').val(minimap_data_to_url(1));
       //$('#minimap_tcode4').val(minimap_data_to_url(2));
@@ -524,7 +524,7 @@ window.mapper = (function mapper(ns) {
     if ($('#minimap_marks_enabled').is(':checked')) {
       while (pars['mark' + i]) {
         tmpm = pars['mark' + i];
-        if (!$('#minimap_mark' + i).size()) {
+        if (!$('#minimap_mark' + i).length) {
           $('<div id="minimap_mark' + i + '">&nbsp</div>')
             .css({
               'display': 'block',
@@ -619,7 +619,7 @@ window.mapper = (function mapper(ns) {
     if (document.getElementById('minimap_loading').style.display == 'block') {
       return;
     }
-    if (!$('#mapper_list :selected').size()) {
+    if (!$('#mapper_list :selected').length) {
       return;
     }
     $('#mapper_mark_remove').attr('disabled', true);
@@ -643,11 +643,11 @@ window.mapper = (function mapper(ns) {
     var tid = 'minimap_w' + (mw.config.get('wgPageName') == 'Mapper' ? 'f' : 'p');
     minimap_change_src(); // bypass image cache if the user opts to
     if (mw.config.get('wgPageName') != 'Mapper') {
-      if (!$('#minimap_blackout').size()) {
+      if (!$('#minimap_blackout').length) {
         $('body').append(
           '<div id="minimap_blackout" class="minimap_blackout" onclick="$(\'.minimap_wp, #minimap_blackout\').css(\'display\', \'none\').html(\'&nbsp;\'); return false;">&nbsp;</div>');
       }
-      if (!$('#minimap_wp').size()) {
+      if (!$('#minimap_wp').length) {
         $('body').append('<div id="minimap_wp" class="minimap_wp minimap_w"></div>');
       }
       $('#minimap_blackout').css('display', 'block').height($(document).height());
@@ -813,7 +813,7 @@ window.mapper = (function mapper(ns) {
     if (mw.config.get('wgPageName') != 'Mapper') {
       minimap_center_div();
     }
-    $('#minimap_img').load(function() {
+    $('#minimap_img').on('load', function() {
       $('#minimap_loading').css('display', 'none');
       $('#minimap_maindiv').css('display', 'block');
     });

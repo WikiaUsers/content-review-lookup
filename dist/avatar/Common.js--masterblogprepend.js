@@ -18,10 +18,10 @@ function masterblog () {
       var blog = $(this).parent().parent().html();
       blog = blog.replace(/'/g,"\'");
       blog = "$('#WikiaArticle').append('<ul style=\"padding:0 10px; list-style:none outside none !important;\"><li class=\"WikiaBlogListingPost stickiedBlog\">" + blog + "<li><ul>\');";
-      var edittoken = mw.user.tokens.get( 'editToken' );
+      var csrfToken = mw.user.tokens.get( 'csrfToken' );
       $.ajax({ 
-        type: "POST",
-        url: mw.util.wikiScript('api'),
+        type: "GET",
+        url: mw.loader.using('mediawiki.util'),
         data: { action:'query', prop:'revisions', titles:'MediaWiki:Common.js/masterblogprepend.js', rvprop:'content' },
         success: function (data) {
           var zero = "123* Stickied blogs *123";
@@ -35,7 +35,7 @@ function masterblog () {
           content = content.replace(/&amp;lt;/g,"<").replace(/&amp;quot;/g,'"').replace(/&amp;gt;/g,">").replace(/&amp;amp;/g,"&").replace(/="<a href/,"").replace(/">http:\/\/images.wikia.com\/avatar\/images\/4\/46\/128px-Padlock-silver.svg.png"<\/a>/,"");
           $.ajax({
             type: "POST",
-            url: mw.util.wikiScript('api'),
+            url: mw.loader.using('mediawiki.util'),
             data: { action:'edit', title:'MediaWiki:Common.js/masterblogprepend.js', text: content, summary:'Adding stickied blog', token: edittoken },
           });
         }

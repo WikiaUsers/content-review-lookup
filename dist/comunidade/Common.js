@@ -1,3 +1,14 @@
+window.interwikiInternational = {
+  namespace: 'Interwiki',
+  namespaceId: 120,
+  mainPage: 'Central_da_Comunidade:Pedidos_de_link_interlíngua',
+  
+  interwikiSchema: '{{bStart}}Solicitação de link interlingua|{{from}}|{{to}}{{bEnd}}',
+	pageSchema: '{{bStart}}Título solicitação de link interlingua{{bEnd}}\n\n' +
+			'{{interwikis}}\n\n' +
+			'~~' + '~~',
+};
+
 window.AddRailModule = [{prepend: true}];
 
 mw.hook('AddRailModule.module').add(function() {
@@ -62,4 +73,22 @@ window.adoptInternational = {
         submitLabel: 'Submeter',
         userActivityLabel: 'Número de dias editados nos últimos 10 dias'
     }
+};
+
+window.botFlagInternational = {
+	pageConfig: {
+		namespace: 'Bot_request',
+		namespaceId: 122,
+		requestsPage: 'Central_da_Comunidade:Pedidos_de_Bot'
+	},
+	titleSchema: '$1 at $2', 
+	wikitextSchema: '{{bStart}}Pedido_de_Bandeira_bot\n' +
+		'| 0-Status             = novo\n' +
+		'| 1-Nome Wiki          = {{wikiName}}\n' +
+		'| 2-URL Bot            = {{{botUrl}}}\n' +
+		'| 3-Nome Bot           = {{botName}}\n' +
+		'| 4-Nome solicitante   = {{requesterName}}\n' +
+		'| 5-Voto da Comunidade = {{{communityVote}}}\n' +
+		'| 6-Comentarios        = {{comments}}\n' +
+	'{{bEnd}}'
 };

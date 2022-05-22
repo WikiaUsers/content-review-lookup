@@ -1,11 +1,11 @@
 // <pre> 
-/* jshint esversion: 5, undef: true, jquery: true */
+/* jshint esversion: 5, esnext: false, undef: true, jquery: true */
 /* global mw */
-mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.Uri', 'ext.fandom.ContentReview.legacyLoaders.js'], function() {
+mw.loader.using(["mediawiki.util", "mediawiki.api", "mediawiki.Uri", "ext.fandom.ContentReview.legacyLoaders.js"], function () {
     var config = mw.config.get([
-        'wgCanonicalNamespace',
-        'wgCanonicalSpecialPageName',
-        'wgPageName'
+        "wgCanonicalNamespace",
+        "wgCanonicalSpecialPageName",
+        "wgPageName"
     ]);
 
     if (
@@ -15,31 +15,31 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.Uri', 'ext.fandom
     ) {
         return;
     }
-    
-    const logger = (function() { // jshint ignore:line
-    	Object.keys(this).forEach(function(method) {
-    		var oldMethod = this[method];
-    		this[method] = function() {
-    			var args = Array.from(arguments);
-    			
-    			if (args[args.length-1] === true) {
-    				args.pop();
-    				
-    				mw.notify(args.join(' '), {
-    					type: method,
-    				});
-    				oldMethod.apply(null, ['[AjaxTextureID] [' + method.toUpperCase() + ']:'].concat(args));
-    			} else {
-    				oldMethod.apply(null, ['[AjaxTextureID] [' + method.toUpperCase() + ']:'].concat(args));
-    			}
-    		}.bind(this);
-    	}, this);
-    	
-    	return this;
+
+    const logger = (function () { // jshint ignore:line
+        Object.keys(this).forEach(function (method) {
+            var oldMethod = this[method];
+            this[method] = function () {
+                var args = Array.from(arguments);
+
+                if (args[args.length - 1] === true) {
+                    args.pop();
+
+                    mw.notify(args.join(" "), {
+                        type: method,
+                    });
+                    oldMethod.apply(null, ["[AjaxTextureID] [" + method.toUpperCase() + "]:"].concat(args));
+                } else {
+                    oldMethod.apply(null, ["[AjaxTextureID] [" + method.toUpperCase() + "]:"].concat(args));
+                }
+            }.bind(this);
+        }, this);
+
+        return this;
     }).call({
-    	log: console.log,
-    	warn: console.warn,
-    	error: console.error,
+        log: console.log,
+        warn: console.warn,
+        error: console.error,
     });
     const api = new mw.Api(); // jshint ignore:line
 
@@ -48,7 +48,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.Uri', 'ext.fandom
     function respHandler(res, d) {
         if (res === true) {
             logger.log("Successfully added the ID to the file!", true);
-            setTimeout(function() {
+            setTimeout(function () {
                 window.location.reload();
             }, 3000);
         } else {
@@ -60,81 +60,95 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.Uri', 'ext.fandom
         var texture = prompt("Enter " + msg.name);
 
         if (!texture) {
-            logger.warn('Input box empty', true);
+            logger.warn("Input box empty", true);
             return;
         } else if (!/^[a-f0-9]{59,64}$/i.test(texture.trim())) {
-            logger.warn('Not a valid ID: ' + texture, true);
+            logger.warn("Not a valid ID: " + texture, true);
             return;
-	    }
+        }
 
-		texture = texture.trim().toLowerCase();
+        texture = texture.trim().toLowerCase();
 
-		api.get({
-			action: "query",
-			format: "json",
-			prop: "revisions",
-			titles: config.wgPageName,
-			formatversion: 2,
-			rvprop: "content",
-			rvslots: "*",
-		}).then(function(d) {
-			var content = d.query.pages[0].revisions[0].slots.main.content;
-			var regex = new RegExp("\\{\\{" + msg.template + "\\|?.*?\\}\\}\\s*", "ig");
-			var options = {
-	            action: 'edit',
-	            watchlist: 'nochange',
-	            summary: "Updated " + msg.name + " for [[" + config.wgPageName + "]]",
-	            title: config.wgPageName,
-	            minor: true,
-	            prependtext: '{{' + msg.template + '|' + texture + '}}\n',
-	            token: mw.user.tokens.get('editToken'),
-	        };
-			
-			if (content.match(regex)) {
-				delete options.prependtext;
-				options.text = '{{' + msg.template + '|' + texture + '}}\n' + content.replace(regex, '');
-				console.log("Replaced existing ID(s)");
-			}
-			
-			return api.post(options);
-		}).then(function(r) {
+        api.get({
+            action: "query",
+            format: "json",
+            prop: "revisions",
+            titles: config.wgPageName,
+            formatversion: 2,
+            rvprop: "content",
+            rvslots: "*",
+        }).then(function (d) {
+            var content = d.query.pages[0].revisions[0].slots.main.content;
+            var regex = new RegExp("\\{\\{" + msg.template + "\\|?.*?\\}\\}\\s*", "ig");
+            var options = {
+                action: "edit",
+                watchlist: "nochange",
+                summary: "Updated " + msg.name + " for [[" + config.wgPageName + "]]",
+                title: config.wgPageName,
+                minor: true,
+                prependtext: "{{" + msg.template + "|" + texture + "}}\n",
+                token: mw.user.tokens.get("csrfToken"),
+            };
+
+            if (content.match(regex)) {
+                delete options.prependtext;
+                options.text = "{{" + msg.template + "|" + texture + "}}\n" + content.replace(regex, "");
+                console.log("Replaced existing ID(s)");
+            }
+
+            return api.post(options);
+        }).then(function (r) {
             respHandler(true, r);
-        }).catch(function(_, e) {
-			 respHandler(false, e);
-		});
-    }
-    
-    function textureId() {
-    	click({
-    		name: 'Texture ID',
-    		template: 'HeadRender',
-    	});
-    }
-    
-    function skinId() {
-    	click({
-    		name: 'Skin ID',
-    		template: 'SkinRender',
-    	});
+        }).catch(function (_, e) {
+            respHandler(false, e);
+        });
     }
 
-    $('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list').first().append(
-        $('<li>').append(
-            $('<a>', {
+    function textureId() {
+        click({
+            name: "Texture ID",
+            template: "HeadRender",
+        });
+    }
+    function skinId() {
+        click({
+            name: "Skin ID",
+            template: "SkinRender",
+        });
+    }
+    function spriteId() {
+        click({
+            name: "Sprite ID",
+            template: "SpriteRender",
+        });
+    }
+
+    $(".page-header__contribution-buttons .wds-list, .page-header__actions .wds-list").first().append(
+        $("<li>").append(
+            $("<a>", {
                 css: {
-                    cursor: 'pointer'
+                    cursor: "pointer"
                 },
-                text: 'Add Texture ID',
+                text: "Add Texture ID",
                 click: textureId
             })
         ),
-        $('<li>').append(
-            $('<a>', {
+        $("<li>").append(
+            $("<a>", {
                 css: {
-                    cursor: 'pointer'
+                    cursor: "pointer"
                 },
-                text: 'Add Skin ID',
+                text: "Add Skin ID",
                 click: skinId
+            })
+        ),
+        $("<li>").append(
+            $("<a>", {
+                css: {
+                    cursor: "pointer"
+                },
+                text: "Add Sprite ID",
+                click: spriteId
             })
         )
     );

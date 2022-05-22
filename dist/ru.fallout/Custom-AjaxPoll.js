@@ -5,7 +5,7 @@
 
 	function importScript(page) {
 		return $.ajax({
-			url: mw.config.get('wgLoadScript'),
+			url: mw.util.wikiScript('load'),
 			data: {
 			  mode: 'articles',
 			  only: 'scripts',

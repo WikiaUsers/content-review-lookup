@@ -74,7 +74,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 					var params = {
 						wpComment: reason,
 						target: mw.config.get('wgPageName'),
-						wpEditToken: mw.user.tokens.values.editToken,
+						wpEditToken: mw.user.tokens.get("csrfToken"),
 						restore: 1,
 					};
 					

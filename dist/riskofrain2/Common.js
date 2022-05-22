@@ -185,7 +185,7 @@ $(function() {
 $(function() {
   if (pagename == "Lore") {
     //--- Create input & button
-    $("#toc").after('<br><input id="search" style="width:15em"> <button id="filter" style="width:4em">Filter</button> <span id="count" style="color:#808080"></span>')
+    $("#filter-hook").after('<br><br><input id="search" style="width:15em"> <button id="filter" style="width:4em">Filter</button> <span id="count" style="color:#808080"></span>')
     var total = $(".lore").length
     
     //--- Get URL "?s=" param & filter it

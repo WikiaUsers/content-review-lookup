@@ -46,7 +46,7 @@ function importStylesheet( page ) {
 // This is based on the original code on Wikipedia:Tools/Editing tools
 // To disable this script, add <code>mwCustomEditButtons = [];<code> to [[Special:Mypage/monobook.js]]
 
-if (mwCustomEditButtons) {
+if (typeof mwCustomEditButton !== 'undefined') {
 mwCustomEditButtons[mwCustomEditButtons.length] = {
 	"imageFile": "http://upload.wikimedia.org/wikipedia/en/c/c8/Button_redirect.png",
 	"speedTip": "Redirect",
@@ -179,7 +179,7 @@ function checktimers() {
     updatetimer(i);  //start it up
   }
 }
-addOnloadHook(checktimers);
+$(checktimers);
 
 // **************************************************
 //  - end -  Experimental javascript countdown timer
@@ -397,7 +397,7 @@ function owwsitesearch(f){
 }
  
  
-addOnloadHook(toggleInit);
+$(toggleInit);
 
 // Additional UserRights Icons in profile mastheads
 importScript('MediaWiki:Wikia.js/userRightsIcons.js');

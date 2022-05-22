@@ -7,9 +7,11 @@ window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {
 window.pPreview.noimage = 'https://static.wikia.nocookie.net/tolkien/images/e/e6/Site-logo.png/revision/latest?cb=20210603212958&format=original&path-prefix=it';
 window.pPreview.defimage = 'https://static.wikia.nocookie.net/tolkien/images/e/e6/Site-logo.png/revision/latest?cb=20210603212958&format=original&path-prefix=it';
 //ignore templates in preview
-window.pPreview.RegExp.noinclude = ['.quote', ".notice", ".notice_message", ".notice_alert", ".notice_warning", ".toc", ".navbox_content"];
+window.pPreview.RegExp.noinclude = ['.quote', ".notice", ".notice_message", ".notice_alert", ".notice_warning", ".toc", ".navbox_content", ".mw-headline", ".mw-editsection"];
 //fix for chronology pages
 window.pPreview.wholepage = true;
+//text length
+window.pPreview.tlen = 500;
 
 /* Automated Profile Template 
 Script from dev wiki to automatically create new user pages

@@ -1,4 +1,4 @@
-var _is_editpage = wgAction == "edit" || wgAction == "submit";
+var _is_editpage = mw.config.get('wgAction') == "edit" || mw.config.get('wgAction') == "submit";
 var Queue = {
     _once: [],
     _each: [],
@@ -188,7 +188,7 @@ Queue.addEachFragment(createMorphObjects);
                 $("#toolbar").before($(".mw-editTools"))
             }
         };
-    Queue.addOnce(MyEditTools.init, _is_editpage || (wgNamespaceNumber == -1 && wgCanonicalSpecialPageName == "Upload"))
+    Queue.addOnce(MyEditTools.init, _is_editpage || (mw.config.get('wgNamespaceNumber') == -1 && mw.config.get('wgCanonicalSpecialPageName') == "Upload"))
 })();
 Queue.addEachFragment(function(c) {
     var e = $('<div style="text-align:center;"><img src="https://images.wikia.nocookie.net/common/skins/common/images/ajax.gif" alt="l" /></div>'),

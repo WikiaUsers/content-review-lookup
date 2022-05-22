@@ -18,63 +18,6 @@
 		});
 	} // array_uniq
 
-	function preload() {
-		// preload: cg<var>=<value1>[|value2]
-		// example: ?cgtab=css&cgusr=fngplg&cgwhat=cn|cc&cgcnc=black&cgccc=green
-		// vars:
-		// tab: <css|cssv>
-		// css:
-		//  usr: username1[|username2]
-		//  what: <what1>[|what2]
-		//      cn: цветные ники
-		//          cnc: цвет ника
-		//  wikiurl: ссылка на вики
-		var vars = $.getUrlVars();
-
-		// 1st chk
-		if (!vars) return;
-		// 1.5th chk
-		switch (vars.cgtab) {
-			case 'css':
-				$('#SwitchToCSS').click();
-				break;
-			case 'cssv':
-				$('#SwitchToVar').click();
-				break;
-			default:
-				return;
-		}
-		// 2nd chk
-		vars.cgwhat = decodeURIComponent(vars.cgwhat || '');
-		if (!vars.cgwhat || !/cn|ft|cb|cc|ms|cr/.test(vars.cgwhat)) return;
-
-		vars.cgwhat = vars.cgwhat.split('|');
-		vars.cgwhat = array_uniq(vars.cgwhat);
-
-		// at this point it's considered officially preloaded
-		isPreloaded = true;
-
-		// разрешена только одна вкладка, поэтому проверка имени не нужна
-		vars.cguser = decodeURIComponent(vars.cguser || '');
-		var cssParams = $('#CSSParams');
-
-		// kis
-		if (vars.cguser) cssParams.find('#CSSNick').val(vars.cguser);
-		vars.cgwhat.forEach(function(what) {
-			var currentElement;
-			switch (what) {
-				case 'cn':
-					currentElement = cssParams.find('input.codegenerator-option[data-section="ColorNames"]');
-					if (vars.cgcnc) cssParams.find('#CSSColor').val(decodeURIComponent(vars.cgcnc));
-					break;
-				default:
-					return;
-			} // switch what
-			if (currentElement && currentElement.length && !currentElement.get(0).checked) currentElement.click();
-		}); // each cgwhat
-		cssParams.find('#CSSSubmit').click();
-	} // preload
-
 	$('#CodeGenerator2').replaceWith(
 		'<div id="GeneratorBody">' +
 		'<fieldset>' +
@@ -82,10 +25,10 @@
 		'<div id="SwitchToCSS" class="codegenerator-field-switch active">CSS</div>' +
 		'<div id="SwitchToVar" class="codegenerator-field-switch" style="width: 120px;">Переменные</div>' +
 		'</legend>' +
-		'<div id="CSSParams" />' +
-		'<div id="VarParams" style="display:none;" />' +
+		'<div id="CSSParams"></div>' +
+		'<div id="VarParams" style="display:none;"></div>' +
 		'<div style="text-align:center;">' +
-		'<textarea id="CodeGenOutput" type="text" placeholder="Результат" />' +
+		'<textarea id="CodeGenOutput" type="text" placeholder="Результат"></textarea>' +
 		'</div>' +
 		'<div class="result-main"><button class="wds-button codegenerator-copy-css">Копировать</button></div>' +
 		'</fieldset>' +
@@ -235,9 +178,9 @@
 				}
 				if (CommText) {
 					if (typeof nick2 !== "undefined") {
-						CommSelector += 'a[href$=":' + nick2 + '"] ~ .EntityHeader_middot__2f4XC:after' + CodeGenCSSEnding;
+						CommSelector += 'a[href$=":' + nick2 + '"] ~ .EntityHeader_middot__39-65:after' + CodeGenCSSEnding;
 					} else {
-						CommSelector += 'a[href$=":' + nick + '"] ~ .EntityHeader_middot__2f4XC:after' + CodeGenCSSEnding;
+						CommSelector += 'a[href$=":' + nick + '"] ~ .EntityHeader_middot__39-65:after' + CodeGenCSSEnding;
 					}
 				}
 			});
@@ -317,5 +260,4 @@
 			}
 		});
 	});
-	preload();
 });

@@ -4,25 +4,23 @@
 
 // This script uses ReferencePopups to display stuff other than references. It works in
 // conjunction with a template to turn arbitrary elements into popables.
-(function(window, $, mw) {
+;(function(window, $, mw) {
 	"use strict";
 	// Load the reference popups then wait for the loaded event to fire
 	var popups = window.dev && window.dev.ReferencePopups && window.dev.ReferencePopups.Popup;
 	if (!popups) {
-		mw.loader.load('mediawiki.util').then(function () {
-			popups = $.ajax({
-				url: mw.util.wikiScript('load'),
-				data: {
-					mode: 'articles',
-					only: 'scripts',
-					articles: 'u:dev:MediaWiki:ReferencePopups/code.js'
-				},
-				dataType: 'script',
-				cache: true
-			}).then(function() {
-				// Chain promises
-				return window.dev.ReferencePopups.Popup;
-			});
+		popups = $.ajax({
+			url: mw.config.get('wgScriptPath') + '/load.php',
+			data: {
+				mode: 'articles',
+				only: 'scripts',
+				articles: 'u:dev:MediaWiki:ReferencePopups/code.js'
+			},
+			dataType: 'script',
+			cache: true
+		}).then(function() {
+			// Chain promises
+			return window.dev.ReferencePopups.Popup;
 		});
 	}
 
@@ -33,7 +31,7 @@
 			});
 		});
 	};
-}(window, jQuery, mediaWiki))(function(window, $, mw) {
+}(window, window.jQuery, window.mediaWiki))(function(window, $, mw) {
 	"use strict";
 	// Start actual module.
 	// This is pretty straightforward, we just find all the relevant elements and
@@ -134,4 +132,4 @@
 	// Register the function so external code can invoke it manually if needed due to weird stuff
 	// (Merlin uses it on their dynamically loaded footer)
 	window.dev.ReferencePopups.loadCustom = findPopups;
-});
+})(window, window.jQuery, window.mediaWiki);

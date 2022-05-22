@@ -769,7 +769,7 @@
 					nocreate: true,
 					bot: true,
 					summary: summary,
-					token: mw.user.tokens.get( 'editToken' )
+					token: mw.user.tokens.get( 'csrfToken' )
 				} ).then( function ( r ) {
 					if ( r.error ) {
 						alert( 'Error occurred during publishing an edit: ' + JSON.stringify( r ) );

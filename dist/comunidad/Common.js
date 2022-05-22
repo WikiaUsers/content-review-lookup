@@ -30,6 +30,24 @@ window.adoptInternational = {
 	"{{bEnd}}"
 };
 
+window.botFlagInternational = {
+	pageConfig: {
+		namespace: 'Solicitud',
+		namespaceId: 116,
+		requestsPage: 'Comunidad_Central:Rango_de_bot'
+	},
+	titleSchema: '$2', // Page title schema for request pages. $1 is bot's name, $2 is wiki name
+	wikitextSchema: '{{bStart}}Solicitud de bot\n' +
+		'| 0-estado      = p\n' + // Optional
+		'| 1-wiki        = {{wikiName}}\n' + // Optional
+		'| 2-bot_url     = {{{botUrl}}}\n' +
+		'| 3-bot         = {{botName}}\n' + // Optional
+		'| 4-usuario     = {{requesterName}}\n' +
+		'| 5-votación    = {{{communityVote}}}\n' +
+		'| 6-comentarios = {{comments}}\n' +
+	'{{bEnd}}'
+};
+
 window.interwikiInternational = {
   namespace: 'Solicitud',
   namespaceId: 116,

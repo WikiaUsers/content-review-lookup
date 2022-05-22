@@ -168,7 +168,7 @@
 								title: mw.config.get( 'wgPageName' ),
 								summary: 'Новый запрос',
 								text: data + '\n' + text,
-								token: mw.user.tokens.get( 'editToken' ),
+								token: mw.user.tokens.get( 'csrfToken' ),
 								format: 'json'
 							},
 							dataType: 'json',

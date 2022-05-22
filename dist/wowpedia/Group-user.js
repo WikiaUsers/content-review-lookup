@@ -415,8 +415,9 @@ $(function() {
     });
     $(this).html(adt);
     var $tempSpan = $("<span>").css({"font-size":"90%","white-space":"nowrap","visibility":"hidden","height":0}).html(adt).appendTo(".mw-indicator");
-    var targetWidth = parseInt($tempSpan.width()) + 35;
+    var targetWidth = parseInt($tempSpan.width()) + 30;
     if (am = adt.match(/<img/)) targetWidth += (am.length * 35);
+    if(targetWidth > 450 ) targetWidth = 450;
     $tempSpan.remove();
     $(this).parent().css({"--target-width":targetWidth + "px","animation-play-state":"running"});
     $(this).css("animation-play-state","running");

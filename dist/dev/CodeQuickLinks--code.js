@@ -551,18 +551,19 @@
   this.buildDefaultFiles = function () {
 
     // Declarations
-    var assembledFiles, fileNames, prefix, suffixes, prefixes, divisions,
-      ccPrefix;
+    var assembledFiles, fileNames, prefix, suffixes, prefixes, divisions;
 
     // Definitions
     assembledFiles = {};
-    ccPrefix = "w:Special:MyPage/";
 
     // Define prefixes using wgFormattedNamespaces
     $.each(prefixes = {mw: 8, sp: -1}, function (paramName, paramId) {
       prefixes[paramName] = this.globals.wgFormattedNamespaces[paramId] + ":";
     }.bind(this));
+
+    // Custom prefixes
     prefixes.my = prefixes.sp + "MyPage/";
+    prefixes.cc = "//community.fandom.com/wiki/Special:MyPage/";
 
     // Aliases
     fileNames = this.Files.NAMES;
@@ -594,8 +595,7 @@
         suffixes.forEach(function (paramSuffix) {
           assembledFiles.userFiles.push({
             name: paramFile + paramSuffix,
-            href: mw.util.getUrl(ccPrefix + paramFile.toLowerCase() +
-              paramSuffix)
+            href: prefixes.cc + paramFile.toLowerCase() + paramSuffix
           });
         }.bind(this));
       } else {

@@ -3,14 +3,14 @@
  */
 
 $(function() { 
-	if (-1 < $.inArray("Hide comments", wgCategories)) {
+	if (-1 < $.inArray("Hide comments", mw.config.get('wgCategories'))) {
 		$('.WikiaArticleComments #article-comments').remove();
 		$('a.wikia-button.comments.secondary').html('Comments hidden');
 	}
 });
  
 $(function() {
-	if (-1 < $.inArray("Disable comments", wgCategories)) {
+	if (-1 < $.inArray("Disable comments", mw.config.get('wgCategories'))) {
 		$('#article-comm').attr('disabled','disabled').text('Comments on this article have temporarily been disabled.');
 		$('#article-comm-submit').attr('disabled','disabled');
 		$('.article-comm-reply').remove();

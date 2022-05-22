@@ -17,9 +17,11 @@
 // * Fix галереи-слайдшоу после перехода на UCP
 // * Подключение функций после загрузки страницы
 
+// Переопределение переменных wiki, чтобы скрипты ниже использовали общие значения
+window.wikiconfig = mw.config.values;
 /*-------------------------------- Импорт ------------------------------------*/
 // Викификатор
-if (wgAction == 'edit' || wgAction == 'submit') {
+if (wikiconfig.wgAction == 'edit' || wikiconfig.wgAction == 'submit') {
 	importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Gadget-wikificator.js&action=raw&ctype=text/javascript');
 }
 
@@ -58,8 +60,8 @@ window.wfPlugins.push(function (txt, r) {
 $(function(){
 	if (
 		$('#WikiaRail').length
-		&& mw.config.values.wgCanonicalNamespace != 'Special'
-		&& mw.config.values.wgCanonicalNamespace != 'MediaWiki'
+		&& wikiconfig.wgCanonicalNamespace != 'Special'
+		&& wikiconfig.wgCanonicalNamespace != 'MediaWiki'
 	)
 	$('<section class="rail-module"></section>')
 		.appendTo('#WikiaRail')
@@ -84,10 +86,7 @@ function hideFade () {
 }
 
 function addBackToTop () {
-	if ( skin == 'oasis' ) {
-		$('<li id="backtotop"><button type="button" value="Наверх" onClick="$( &#39;body,html&#39; ).animate ({scrollTop: 0}, 600 );">Наверх</button></li>').appendTo('#WikiaBarWrapper .toolbar > .tools'); 
-	}
-	if ( skin == 'fandomdesktop' ) {
+	if ( wikiconfig.skin == 'fandomdesktop' ) {
 		$('<div id="backtotop" onClick="$( &#39;body,html&#39; ).animate ({scrollTop: 0}, 600 );">&#11014;</div>').appendTo('#WikiaBar'); 
 	}
 	hideFade();
@@ -134,7 +133,7 @@ function randomBackground () {
 	'https://static.wikia.nocookie.net/elderscrolls/images/1/10/Background-29.jpg/revision/latest?path-prefix=ru'
 	];
 	
-	if ((document.getElementsByTagName("body")[0].classList.contains('theme-fandomdesktop-dark'))||(document.getElementsByTagName("body")[0].classList.contains('skin-oasis'))) {
+	if (document.getElementsByTagName("body")[0].classList.contains('theme-fandomdesktop-dark')) {
 		document.getElementsByTagName("body")[0].setAttribute("style", 'background-image:url('+ backgroundDark[Math.floor((backgroundDark.length) * Math.random())] + ') !important');
 	}
 	if (document.getElementsByTagName("body")[0].classList.contains('theme-fandomdesktop-light')) {
@@ -145,7 +144,7 @@ function randomBackground () {
 /*------------------------ Sliders на jqueryUI -------------------------------*/
 // by User:Tierrie
 var slideTime = 15000; // Время показа слайда (+1-3 секунды чтобы слайдеры не делали это одновременно)
-mw.loader.using( ['jquery.ui.tabs'], function() {
+mw.loader.using( ['oojs-ui-windows'], function() {
 	$(document).ready(function() {
 		$(".portal_slider").each(function(index, portal_slider) {
 			$(portal_slider).tabs({ fx: {opacity:'toggle', duration:100} } );
@@ -737,7 +736,7 @@ function switcher() {
 	}
 
 	// Добавляем новуй инструмент на страницах редактирования
-	if (wgAction == 'edit' || wgAction == 'submit') {
+	if (wikiconfig.wgAction == 'edit' || wikiconfig.wgAction == 'submit') {
 		registerSwitcher();
 	}
 

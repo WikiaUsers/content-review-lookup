@@ -3,7 +3,7 @@
  */
 
 $(function() {
-	if (wgNamespaceNumber === 112) {
-		$('<div id="fanonpromotioncontainer"/>').appendTo($("#WikiaArticle")).load("/wiki/Template:FanonPromotion .fanonpromotionbox");
+	if (mw.config.get('wgNamespaceNumber') === 112) {
+		$('<div id="fanonpromotioncontainer"/>').appendTo($("#page-content")).load("/wiki/Template:FanonPromotion .fanonpromotionbox");
 	}
 });

@@ -77,7 +77,7 @@ function Wikify()
     // извлечение выделенного текста 
     txt = txtarea.val().substring(startPos, endPos) ||  txtarea.val();
 
-    if (wgNamespaceNumber % 2 || wgNamespaceNumber==4) 
+    if (mw.config.values.wgNamespaceNumber % 2 || mw.config.values.wgNamespaceNumber==4) 
     {
         var sigs = txt.match(/\d\d:\d\d, \d\d? \S{3,9} 20\d\d \(UTC\)/g);
  
@@ -237,12 +237,12 @@ function Wikify()
     txt = txt.replace(/^([#\*:]+)([ \t\f\v]*)([^ \t\f\v\*#:])/gm, "$1 $3");
 
 	// загрузка пар автозамены для основного пространства имён
-    $.get( wgScript, { title: 'Шаблон:Wikificator-source', action: 'raw', ctype: 'text/plain' } ).done( function( data )
+    $.get( mw.config.values.wgScript, { title: 'Шаблон:Wikificator-source', action: 'raw', ctype: 'text/plain' } ).done( function( data )
     {
 		oTermSource = data;
 
         // загрузка пар автозамены для категорий
-        $.get( wgScript, { title: 'Шаблон:Wikificator-source-categ', action: 'raw', ctype: 'text/plain' } ).done( function( data )
+        $.get( mw.config.values.wgScript, { title: 'Шаблон:Wikificator-source-categ', action: 'raw', ctype: 'text/plain' } ).done( function( data )
         {
 			oTermSource = oTermSource + data;	
 			// счётчик пар автозамены

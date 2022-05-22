@@ -6,3 +6,10 @@ window.SpoilerAlertJS = {
     no: 'No',
     fadeDelay: 1600
 };
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassCategorization/code.js',
+    ]
+});

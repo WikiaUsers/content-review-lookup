@@ -203,15 +203,15 @@ function addWikifButton() {
         i.style.cursor = 'pointer';
         toolbar.appendChild(i);
 }
-if (wgAction == 'edit' || wgAction == 'submit') {
+if (mw.config.get('wgAction') == 'edit' || mw.config.get('wgAction') == 'submit') {
         importScriptURI('https://ru.wikipedia.org/w/index.php?title=MediaWiki:Gadget-wikificator.js&action=raw&ctype=text/javascript');
         addOnloadHook(addWikifButton);
 }
  
 /** Код для работы шаблона "УЧАСТНИК" **/
 $(function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
-    $("span.insertusername").html(wgUserName);
+    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || mw.config.get('wgUserName') == null) return;
+    $("span.insertusername").html(mw.config.get('wgUserName'));
 });
  
 /* Конец кода */
@@ -3403,7 +3403,7 @@ addOnloadHook(makePopupBalloons);
         '<fieldset style="border:solid 1px #36759c; margin:0; padding:1em;">' +
             '<div style="display:none;">' +
                 'Никнейм: ' +
-                    '<input class="Buyer" style="float:right; width:75%; margin:0 5px;" value="' + wgUserName + '"/>' +
+                    '<input class="Buyer" style="float:right; width:75%; margin:0 5px;" value="' + mw.config.get('wgUserName') + '"/>' +
             '</div>' +
             '<div style="margin-top:5px;">' +
                 'Что покупаем? ' +
@@ -3502,7 +3502,7 @@ addOnloadHook(makePopupBalloons);
         '<fieldset style="border:solid 1px #36759c; margin:0; padding:1em;">' +
             '<div style="display:none;">' +
                 'Никнейм: ' +
-                    '<input class="Seller" style="float:right; width:75%; margin:0 5px;" value="' + wgUserName + '"/>' +
+                    '<input class="Seller" style="float:right; width:75%; margin:0 5px;" value="' + mw.config.get('wgUserName') + '"/>' +
             '</div>' +
             '<div style="margin-top:5px;">' +
                 'Что продаём? ' +
@@ -3601,7 +3601,7 @@ addOnloadHook(makePopupBalloons);
         '<fieldset style="border:solid 1px #36759c; margin:0; padding:1em;">' +
             '<div style="display:none;">' +
                 'Никнейм: ' +
-                    '<input class="NewServerNickname" style="float:right; width:75%; margin:0 5px;" value="' + wgUserName + '"/>' +
+                    '<input class="NewServerNickname" style="float:right; width:75%; margin:0 5px;" value="' + mw.config.get('wgUserName') + '"/>' +
             '</div>' +
             '<div style="margin-top:5px;">' +
                 'Причина поиска: ' +

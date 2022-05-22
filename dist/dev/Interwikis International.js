@@ -1,254 +1,336 @@
-mw.loader.using(['jquery.client', 'mediawiki.base','mediawiki.api', 'mediawiki.template.mustache']).then(function() {
+mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki.template.mustache'] ).then( function() {
 	// Export global configuration
-	const config = (window.interwikiInternational || {
-		namespace: 'Interwiki',
-		namespaceId: 0,
-		mainPage: 'Interlanguage_test',
-		interwikiSchema: '{{bStart}}Interwiki request|{{from}}|{{to}}{{bEnd}}',
-		pageSchema: '{{bStart}}Interwiki request header{{bEnd}}\n\n' +
-			'{{interwikis}}\n\n' +
-			'~~' + '~~'
-	});
+	window.interwikiInternational = ( window.interwikiInternational || {} );
+	window.interwikiInternational.namespace = ( window.interwikiInternational.namespace || 'Interwiki' );
+	window.interwikiInternational.namespaceId = ( window.interwikiInternational.namespaceId || 0 );
+	window.interwikiInternational.mainPage = ( window.interwikiInternational.mainPage || 'Interlanguage_requests' );
+	window.interwikiInternational.interwikiSchema = ( window.interwikiInternational.interwikiSchema || '{{bStart}}Interwiki request|{{from}}|{{to}}{{bEnd}}' );
+	window.interwikiInternational.pageSchema = ( window.interwikiInternational.pageSchema ||
+		'{{bStart}}Interwiki request header{{bEnd}}\n\n' +
+		'{{interwikis}}\n\n' +
+		'~~' + '~~'
+	);
 
-	function shortUrl(url) {
-		if (!url) return;
-		var sUrl = "";
-	  
-		// Delete protocol and not main community url
-		url = url.replace(/https?:\/{2}/g, '').replace(/\/wiki\/(.*)/g, '');
-	  
-		//Find parts: community name + language code
-		var linkParts = /([\w.-]*)\.(?:wikia|fandom)?(?:\.(?:com|org)\/?)([\w-]{0,})/g.exec(url);
-	  
-		// No parts found, maybe already short form, e.g. "fr.community"
-		if ( !linkParts ) {
-		  linkParts = /([\w.-]*)/.exec(url);
+	const conf = window.interwikiInternational;
+
+	const userName = mw.config.get( 'wgUserName' );
+	if (
+		mw.config.get( 'wgPageName' ) !== conf.mainPage ||
+		window.interwikiInternationalLoaded ||
+		!userName
+	) {
+		return;
+	}
+	window.interwikiInternationalLoaded = true;
+
+	var preloads = 3;
+	function preload() {
+		if ( --preloads === 0 ) {
+			window.dev.i18n.loadMessages( 'Interwikis_International' ).then( init );
 		}
-		if ( linkParts[2] ) {
-		  sUrl = linkParts[2] + ".";
-		}
-	  
-		sUrl += linkParts[1];
-		return sUrl;
 	}
 
-	function init(i18n) {
-		var exception = '';
-		const userName = mw.config.get('wgUserName');
-		if (mw.config.get('wgPageName') !== config.mainPage || !userName) {
-			return;
-		}
-
-		mw.hook('dev.modal').add(function(modal) {
-			mw.hook('dev.ui').add(function(ui) {
-				const formSectionCSS = {
-					display: 'flex',
-					'align-items': 'start', 
-					margin: 'auto',
-					width: '95%',
-					'justify-content': 'center',
-					gap: '5px'
-				};
-				const labelCSS = {
-					'font-weight': 'bold',
-					'font-variant': 'small-caps',
-					'flex-basis': '30%'
-				};
-				const inputCSS = {
-					padding: '10px',
-					border: '0',
-					'box-shadow': '0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)',
-					'border-radius': '.1em',
-					'margin-top': '5px',
-					'flex-grow': 1,
-					resize: 'vertical',
-					width: '30em'
-				};
-
-				var modal = new window.dev.modal.Modal({
-					title: i18n.msg('title').plain(),
-					content: {
+	function init( i18n ) {
+		const modal = new window.dev.modal.Modal( {
+			title: i18n.msg( 'title' ).plain(),
+			id: 'requestWindow',
+			size: 'large',
+			buttons: [
+				{
+					id: 'submitButton',
+					text: i18n.msg( 'submitLabel' ).plain(),
+					primary: true,
+					event: 'submitForm'
+				}
+			],
+			closeTitle: i18n.msg( 'closeLabel' ).plain(),
+			content: {
+				type: 'div',
+				classes: ['formWrapper'],
+				children: [
+					{
+						type: 'div',
+						classes: ['formDescription'],
+						html: i18n.msg( 'description' ).plain()
+					},
+					{
 						type: 'form',
+						classes: ['interwikiForm', 'fandomCCForm'],
 						attr: {
-							'class': 'WikiaForm',
-							'id': 'interwikiForm',
-							'method': '',
-							'name': ''
+							method: '',
+							name: '',
+							id: 'interwikiForm'
 						},
 						children: [
 							{
 								type: 'div',
-								classes: ['form-section'],
-								style: { padding: '0 2em 1em' },
-								html: i18n.msg('description').plain()
-							},
-							{
-								type: 'div',
-								classes: ['form-section'],
-								style: formSectionCSS,
+								classes: ['formSection'],
 								children: [
 									{
-										type: 'label',
-										style: labelCSS,
-										text: i18n.msg('nameLabel').plain(),
-										attr: {
-											'for': 'wikiname'
-										}
+										type: 'div',
+										classes: ['sectionHeaderWrapper'],
+										children: [
+											{
+												type: 'h3',
+												classes: ['sectionHeader'],
+												text: i18n.msg( 'nameLabel' ).plain()
+											}
+										]
 									},
 									{
-										type: 'input',
-										style: inputCSS,
-										attr: {
-											'id': 'wikiname',
-											'type': 'text',
-											'required': '',
-											'placeholder': i18n.msg('namePlaceholder').plain()
-										}
+										type: 'div',
+										classes: ['sectionContent'],
+										children: [
+											{
+												type: 'input',
+												classes: ['formInput'],
+												attr: {
+													id: 'wikiname',
+													required: '',
+													type: 'text',
+													placeholder: i18n.msg( 'namePlaceholder' ).plain()
+												}
+											}
+										]
 									}
 								]
 							},
 							{
 								type: 'div',
-								classes: ['form-section'],
-								style: formSectionCSS,
+								classes: ['formSection'],
 								children: [
 									{
-										type: 'label',
-										style: labelCSS,
-										text: i18n.msg('interwikisLabel').plain(),
-										attr: {
-											'for': 'interwikisLines'
-										}
+										type: 'div',
+										classes: ['sectionHeaderWrapper'],
+										children: [
+											{
+												type: 'h3',
+												classes: ['sectionHeader'],
+												text: i18n.msg( 'interwikisLabel' ).plain()
+											}
+										]
 									},
 									{
-										type: 'textarea',
-										style: inputCSS,
-										attr: {
-											'id': 'interwikisLines',
-											'required': '',
-											'placeholder': i18n.msg('interwikisPlaceholder').plain()
-										}
+										type: 'div',
+										classes: ['sectionContent'],
+										children: [
+											{
+												type: 'textarea',
+												classes: ['formInput'],
+												attr: {
+													id: 'interwikisLines',
+													required: '',
+													type: 'text',
+													placeholder: i18n.msg( 'interwikisPlaceholder' ).plain()
+												}
+											}
+										]
 									}
 								]
-							}
-						]
-					},
-					id: 'requestWindow',
-					size: 'large',
-					buttons: [{
-						id: 'submitButton',
-						text: i18n.msg('submitLabel').plain(),
-						primary: true,
-						event: 'submitForm'
-					}],
-					closeTitle: i18n.msg('closeLabel').plain(),
-					events: {
-						submitForm: function () {
-							var $form = $('#interwikiForm'),
-								wikiname = $form.find('#wikiname').val(),
-								lines = $form.find('#interwikisLines').val();
+							},
 							
-							if (wikiname.trim() === '') {
-								mw.notify(i18n.msg('noNameError').plain());
-								return;
-							}
-							if (lines.trim() === '') {
-								mw.notify(i18n.msg('noLinesError').plain());
-								return;
-							}
-
-							const splitLines = lines.trim().split('\n');
-							const interwikis = [];
-							for (var i = 0; i < splitLines.length; i++) {
-								const line = splitLines[i];
-								const items = line.trim().split( ' ' );
-								const first = shortUrl(items.shift());
-								const last = shortUrl(items.pop());
-								if (!first || !last) continue;
-								interwikis.push([first, last]);
-							}
-
-							const linesCount = lines.trim().split('\n').length;
-							const interwikisCount = interwikis.length;
-							if (linesCount !== interwikisCount) {
-								mw.notify(i18n.msg('interwikisCountError', linesCount, interwikisCount).plain());
-								return;
-							}
-
-							const interwikiLines = [];
-							for (var i = 0; i < interwikis.length; i++) {
-								const interwiki = interwikis[i];
-								const line = Mustache.render(config.interwikiSchema, {
-									bStart: '{{',
-									bEnd: '}}',
-									from: interwiki[0],
-									to: interwiki[1]
-								});
-								interwikiLines.push(line);
-							}
-
-							const wikitext = Mustache.render(config.pageSchema, {
-								bStart: '{{',
-								bEnd: '}}',
-								interwikis: interwikiLines.join( '\n' )
-							});
-
-							modal.hide();
-
-							const api = new mw.Api();
-							api.get({
-								action: 'query',
-								list: 'allpages',
-								apnamespace: config.namespaceId,
-								apprefix: wikiname,
-								aplimit: 'max'
-							}).done(function (data) {
-								const number = data.query.allpages.length + 1;
-								const suffix = number === 1 ? '' : ' (' + number + ')';
-								api.postWithEditToken({
-									action: 'edit',
-									title: config.namespace + ':' + wikiname + suffix,
-									text: wikitext
-								}).done(function (data) {
-									if (data.edit && data.edit.warning) {
-										mw.notify(data.edit.warning, {tag: 'interwiki', type: 'error'});
-										return;
-									}
-									location.href = mw.util.getUrl(config.namespace + ':' + wikiname + suffix);
-								}).fail(function () {
-									mw.notify(i18n.msg('error').plain(), {tag: 'interwiki', type: 'error'});
-								})
-							}).fail(function () {
-								mw.notify(i18n.msg('error').plain(), {tag: 'interwiki', type: 'error'});
-							})
-						}
+						]
 					}
-				});
-				modal.create();
-				$('#interwiki-form')
-					.attr('class', 'wds-button btn-large')
-					.text(i18n.msg('buttonLabel').plain())
-					.wrap($('<div>').css('text-align', 'center'))
-					.css('cursor', 'pointer')
-					.on('click', function() {
-						modal.show();
-					});
-			});
-		});
+				]
+			},
+			events: {
+				submitForm: function () {
+					function getVal( id ) {
+						return $( '#interwikiForm' ).find( '#' + id ).val().trim();
+					}
+
+					const formValues = {
+						wikiName: getVal( 'wikiname' ),
+						lines: getVal( 'interwikisLines' )
+					};
+					
+					if ( formValues.wikiName === '' ) {
+						return mw.notify( i18n.msg( 'noNameError' ).plain(), {
+							tag: 'interwiki',
+							type: 'warn'
+						} );
+					}
+
+					if ( formValues.lines === '' ) {
+						return mw.notify( i18n.msg( 'noLinesError' ).plain(), {
+							tag: 'interwiki',
+							type: 'warn'
+						} );
+					}
+
+					const splitLines = formValues.lines.split( '\n' );
+					const interwikis = [];
+
+					function shortUrl( url ) {
+						if ( !url ) {
+							return;
+						}
+						var sUrl = '';
+				
+						// Delete protocol and not main community url
+						url = url.replace( /https?:\/{2}/g, '' ).replace( /\/wiki\/(.*)/g, '' );
+				
+						// Find parts: community name + language code
+						var linkParts = /([\w.-]*)\.(?:wikia|fandom)?(?:\.(?:com|org)\/?)([\w-]{0,})/g.exec( url );
+				
+						// No parts found, maybe already short form, e.g. "fr.community"
+						if ( !linkParts ) {
+							linkParts = /([\w.-]*)/.exec(url);
+						}
+						if ( linkParts[2] ) {
+							sUrl = linkParts[2] + '.';
+						}
+				
+						sUrl += linkParts[1];
+				
+						return sUrl;
+					}
+
+					for ( var i = 0; i < splitLines.length; i++ ) {
+						const line = splitLines[i];
+						const items = line.trim().split( ' ' );
+						const first = shortUrl( items.shift() );
+						const last = shortUrl( items.pop() );
+
+						if ( !first || !last ) {
+							continue;
+						}
+
+						interwikis.push( [first, last] );
+					}
+
+					const linesCount = formValues.lines.split( '\n' ).length;
+					const interwikisCount = interwikis.length;
+
+					if ( linesCount !== interwikisCount ) {
+						return mw.notify( i18n.msg( 'interwikisCountError', linesCount, interwikisCount ).plain(), {
+							tag: 'interwiki',
+							type: 'warn'
+						} );
+					}
+
+					const interwikiLines = [];
+					for ( var i = 0; i < interwikis.length; i++ ) {
+						const interwiki = interwikis[i];
+						const line = Mustache.render( conf.interwikiSchema, {
+							bStart: '{{',
+							bEnd: '}}',
+							from: interwiki[0],
+							to: interwiki[1]
+						} );
+
+						interwikiLines.push( line );
+					}
+
+					const wikitext = Mustache.render( conf.pageSchema, {
+						bStart: '{{',
+						bEnd: '}}',
+						interwikis: interwikiLines.join( '\n' )
+					} );
+					const api = new mw.Api();
+
+					modal.hide();
+
+					api.get( {
+						action: 'query',
+						list: 'allpages',
+						apnamespace: conf.namespaceId,
+						apprefix: formValues.wikiName,
+						aplimit: 'max'
+					} ).done( function( data ) {
+						const suffixRE = /.*\((\d+)\)/;
+
+						var suffix = '';
+						var highestIWRequest = 0;
+
+						if ( data.query ) {
+							if ( data.query.allpages.length > 0 ) {
+								highestIWRequest = 1;
+							}
+
+							for ( var p in data.query.allpages ) {
+								if ( data.query.allpages[p].title === undefined ) {
+									continue;
+								}
+
+								const match = data.query.allpages[p].title.match( suffixRE );
+
+								if ( !match ) {
+									continue;
+								}
+
+								if ( parseInt( match[1] ) > highestIWRequest ) {
+									highestIWRequest = parseInt( match[1] );
+								}
+							}
+
+							if ( highestIWRequest > 0 ) {
+								suffix = ' (' + ( highestIWRequest + 1 ) + ')';
+							}
+						}
+
+						const pageName =  conf.namespace + ':' + formValues.wikiName + suffix;
+
+						api.postWithEditToken( {
+							action: 'edit',
+							title: pageName,
+							text: wikitext,
+							createonly: true
+						} ).done( function( data ) {
+							if ( data.edit && data.edit.warnings ) {
+								return mw.notify( data.edit.warnings.main['*'], {
+									tag: 'interwiki',
+									type: 'error'
+								} );
+							}
+
+							location.href = mw.util.getUrl( pageName );
+						} ).fail( function () {
+							mw.notify( i18n.msg( 'error' ).plain(), {
+								tag: 'interwiki',
+								type: 'error'
+							} );
+						} );
+					}).fail( function () {
+						mw.notify( i18n.msg( 'error' ).plain(), {
+							tag: 'interwiki',
+							type: 'error'
+						} );
+					} );
+				}
+			}
+		} );
+
+		modal.create();
+		
+		$( '#interwiki-form' )
+			.attr( 'class', 'wds-button btn-large' )
+			.text( i18n.msg( 'buttonLabel' ).plain() )
+			.wrap( $( '<div>' ).css( 'text-align', 'center' ) )
+			.css( 'cursor', 'pointer' )
+			.on( 'click', function() {
+				modal.show();
+			} );
 	}
 
-	importArticles({
-		type: 'script',
-		articles: [
-			'u:dev:MediaWiki:Modal.js',
-			'u:dev:MediaWiki:UI-js/code.js',
-			'u:dev:MediaWiki:I18n-js/code.js'
-		]
-	});
+	importArticles(
+		{
+			type: 'script',
+			articles: [
+				'u:dev:MediaWiki:Modal.js',
+				'u:dev:MediaWiki:UI-js/code.js',
+				'u:dev:MediaWiki:I18n-js/code.js'
+			]
+		},
+		{
+			type: 'styles',
+			articles: [
+				'u:dev:MediaWiki:International_Requests.css'
+			]
+		}
+	);
 
-	function preload(i18no) {
-		$.when(i18no.loadMessages('Interwikis_International')).then(init)
-	}
-
-	mw.hook('dev.i18n').add(preload);
-});
+	mw.hook( 'dev.i18n' ).add( preload );
+	mw.hook( 'dev.modal' ).add( preload );
+	mw.hook( 'dev.ui' ).add( preload );
+} );

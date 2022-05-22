@@ -1,3 +1,11 @@
+/* Discord Banner settings */
+window.DiscordBannerSettings = {
+    bannerStyle: '3',
+    inviteLink: 'jRSG4VnfwY',
+    prependToRail: true,
+    noRail: false
+};
+
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 $(function () {
@@ -14,8 +22,8 @@ $(function () {
     /******************
     /* CUSTOMIZATIONS *
     /******************/
-/*
-    if(wgNamespaceNumber == 0) {
+
+    /*if(wgNamespaceNumber == 0) {
         // Put edit links on Item tables that point to data modules
         var item_table_headers= {
             'Base': '/Module:Items/Data',
@@ -53,14 +61,6 @@ $(function () {
             var url = item_table_headers[title];
             $(this).append('<a target="_blank" style="font-size: 90%; font-weight: bold; float: right; padding-right: 5px" href="' + url + '">[edit]</a>');
         });
-    }
+    }*/
 
 }());
-*/
-
-window.DiscordBannerSettings = {
-    bannerStyle: '3',
-    inviteLink: 'wShqyYe3gM',
-    prependToRail: true
-    noRail: false
-};

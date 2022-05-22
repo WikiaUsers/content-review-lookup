@@ -1,6 +1,12 @@
 $( function() {
+if ($('#top-hidden-categories').length) return;
+
 function init(i18n) {
 	var cats = [];
+	function createLink(index) {
+		var title = new mw.Title(cats[index]);
+		return $('<a>', { href: title.getUrl(), title: title.getPrefixedText(), text: title.getMainText() } );
+	}
 	new mw.Api().get({
 		action: "query",
 		prop: "categories",
@@ -19,24 +25,24 @@ function init(i18n) {
 			$('.page-header__meta .page-header__categories').after(
 				$('<div>', {'class': 'page-header__categories', id: 'top-hidden-categories'}).prepend(
 					$('<span>', {'class': 'page-header__categories-in', text: i18n.msg('hidden').plain()+': '})
-				).css({'filter': 'opacity(0.9)', 'z-index': '2'})
+				).css({'z-index': '2'})
 			);
 			$('#top-hidden-categories').append(
-				$('<a>', { 'class': 'mw-redirect', href: mw.util.getUrl(cats[0]), title: cats[0], text: cats[0].replace('Category:','') } )
+				createLink(0)
 			);
 			if (cats.length < 4) {
 				for (i = 1; i < cats.length; i++) {
 					$('#top-hidden-categories').append(
-						(', '), $('<a>', { 'class': 'mw-redirect', href: mw.util.getUrl(cats[i]), title: cats[i], text: cats[i].replace('Category:','') } )
+						(', '), createLink(i)
 					);	
 				}	
 			} else {
 				$('#top-hidden-categories').append(
-						(', '), $('<a>', { 'class': 'mw-redirect', href: mw.util.getUrl(cats[1]), title: cats[1], text: cats[1].replace('Category:','') } )
+					(', '), createLink(1), (', ')
 				);
 				$('#top-hidden-categories').append(
 					$('<div>', { 'class': 'wds-dropdown page-header__categories-dropdown'}).append(
-						('&nbsp;'+i18n.msg('and').plain()+' '), $('<a>', {'class': 'wds-dropdown__toggle', text: i18n.msg('more', (cats.length-2)).parse() }),
+						(i18n.msg('and').plain()+' '), $('<a>', {'class': 'wds-dropdown__toggle', text: i18n.msg('more', (cats.length-2)).parse() }),
 						$('<div>', {'class': 'wds-dropdown__content page-header__categories-dropdown-content wds-is-left-aligned'}).append(	
 							$('<ul>', { id: 'top-hidden-cat-dropdown', 'class': 'wds-list wds-is-linked'}) 
 						)
@@ -44,15 +50,12 @@ function init(i18n) {
 				);
 				for (i = 2; i < cats.length; i++) {
 					$('#top-hidden-cat-dropdown').append(
-						$('<li>').append(
-							 $('<a>', { 'class': 'mw-redirect', href: mw.util.getUrl(cats[i]), title: cats[i], text: cats[i].replace('Category:','') } )
-						)
+						$('<li>').append(createLink(i))
 					);
 				}
 			}
 		}
 	});
-
 }
 
 mw.hook('dev.i18n').add(function (i18n) {

@@ -1,12 +1,9 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-/* For card details on card icon hover */
-window.tooltips_list = [
-    {
-        classname: 'card-images',
-        parse: '{{CardImages|<#cardname#>}}'
-    }
-];
-window.tooltips_config = {
-    offsetX: 10,
-    offsetY: 10
-};
+/* Love Live topic interwiki links */
+$(function() {
+var elements = '#LoveLiveLink';
+if ($('.page-header__languages').length) {
+	$(elements).prependTo(".page-header__languages").css({"display": "inline-block"});
+}else {
+	$(elements).appendTo(".page-header__top").css({"display": "inline-block"});
+}
+});

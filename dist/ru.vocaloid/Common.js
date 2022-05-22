@@ -2,6 +2,18 @@
 // Кастом модуль
 window.AddRailModule = ['Template:NewPagesModule'];
 
+/*Adds "Create a Project SEKAI article" button in wiki tools since project sekai wiki is now a part of this wiki */
+$( function (){
+	$('.wiki-tools .wds-dropdown__content ul.wds-list.wds-is-linked').append(
+		$('<li>').append(
+			$('<a>',{
+				href: '/ru/wiki/MediaWiki:Custom-CreateProjectsekai',
+				text: 'Создать статью Project SEKAI'
+			})
+		)
+	);	
+});
+
 /* to convert a date/time in one timezone to user's local time, code copied from u:valkyriecrusade:MediaWiki:Common.js */
 function jstzConvertAll() {
     var l = document.querySelectorAll("[data-jstz]");

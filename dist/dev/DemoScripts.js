@@ -27,7 +27,7 @@
 		
 		AccentColorButtons: {
 			page: 'AccentColorButtons',
-			styles: 'AccentColorButtons.css'
+			styles: 'MediaWiki:AccentColorButtons.css'
 		},
 		
         ActivityFeedMimic: {
@@ -42,6 +42,31 @@
                 window.BackToTopModern = true;
             }
         },
+        
+        BalancedDiscord: {
+			page: 'BalancedDiscord',
+			styles: 'MediaWiki:BalancedDiscord.css'
+		},
+		
+		BalancedGlobalNavigation: {
+			page: 'BalancedGlobalNavigation',
+			styles: 'MediaWiki:BalancedGlobalNavigation.css'
+		},
+		
+		BalancedPageBottom: {
+			page: 'BalancedPageBottom',
+			styles: 'MediaWiki:BalancedPageBottom.css'
+		},
+		
+		BalancedScrollbar: {
+			page: 'BalancedScrollbar',
+			styles: 'MediaWiki:BalancedScrollbar.css'
+		},
+		
+		BalancedUCX: {
+			page: 'BalancedUCX',
+			styles: 'MediaWiki:BalancedUCX.css'
+		},
 		
         CalendarWidget: {
             page: 'Global_Lua_Modules/Calendar_widget',
@@ -56,6 +81,11 @@
         Contextlink: {
             selector: '.context-link',
             styles: 'MediaWiki:Global_Lua_Modules/Context-link.css'
+        },
+		
+		CSS3Tooltip: {
+            page: 'CSS3Tooltip',
+            styles: 'MediaWiki:CSS3Tooltip.css'
         },
 		
         CSSForTheColorBlind: {
@@ -171,11 +201,11 @@
             styles: 'MediaWiki:FloatingTitle.css'
         },
 		
-		GamepediaNav: {
-			page: 'GamepediaNav',
+		GamepediaTheme: {
+			page: 'GamepediaTheme',
 			scripts: 'MediaWiki:GamepediaNav.js',
-			styles: ['MediaWiki:GamepediaNav.css', 'MediaWiki:GamepediaToolbar.css'],
-			exec: function () {
+			styles: ['MediaWiki:GamepediaNav.css','MediaWiki:GamepediaToolbar.css','MediaWiki:GamepediaDiscord.css'],
+			exec: function() {
 				$('body').addClass('is-gamepedia');
 			}
 		},

@@ -299,3 +299,8 @@ importArticles({    type: 'script',    articles: [        'u:dev:MediaWiki:AutoC
         article: 'u:dev:MediaWiki:I18n-js/code.js'
     }).then($.proxy(DiscordIntegrator.imported, DiscordIntegrator));
 })();
+
+/* Taken from One Punch Man Wikia */
+$(function addPageBottom() {
+        $("#WikiaRail").append('<div class="noticebox3"><div style="width:auto; height:auto; margin-bottom:10px; border:0px solid #0D2139; background-color: trasparent; padding:2px 5px; text-align:center; color: white; font-size:90%;"><div style="color: #721410; font-size: 150%; font-weight: bold; margin-bottom:-15px;">¡Atención!</div><br><div class="noticebox2">Para la gente nueva, esta es una traducción de la wiki original, si necesita ayuda, por favor contacte a los administradores a cargo, gracias.<br><br><span style="font-style:bold;"><center>Bienvenido a Los Backrooms.</center></spn></div></div></div>');
+});

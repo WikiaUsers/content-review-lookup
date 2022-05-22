@@ -13,7 +13,7 @@ window.adoptInternational = {
     pageConfig: {
         namespace: 'Antrag',
         namespaceId: 118,
-        adoptionsPage: 'Rechte-Antrag'
+        adoptionsPage: 'Wiki-Adoptionen'
     },
     wikitextSchema: "{{bStart}}Wiki-Adoption\n" +
 		"| 0-Status              = \n" +
@@ -36,4 +36,21 @@ window.interwikiInternational = {
   pageSchema: '{{bStart}}Interwiki-Header{{bEnd}}\n\n' +
     '{{interwikis}}\n\n' +
     '~~' + '~~'
+};
+window.botFlagInternational = {
+	pageConfig: {
+		namespace: 'Antrag',
+		namespaceId: 118,
+		requestsPage: 'Bot-Rechte'
+	},
+	titleSchema: '$1 (Bot für $2)',
+	wikitextSchema: '{{bStart}}Bot-Rechte-Antrag\n' +
+		'| 0-Status         = \n' +
+		'| 1-Wikiname       = {{wikiName}}\n' +
+		'| 2-BotURL         = {{{botUrl}}}\n' +
+		'| 3-Botname        = {{botName}}\n' +
+		'| 4-Antragsteller  = {{requesterName}}\n' +
+		'| 5-Erlaubnis      = {{{communityVote}}}\n' +
+		'| 6-Kommentar      = {{comments}}\n' +
+	'{{bEnd}}'
 };

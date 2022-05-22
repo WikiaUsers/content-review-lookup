@@ -118,7 +118,7 @@ mw.loader.using('mediawiki.api', function() {
 			}
 		}
 		
-		var token = mw.user.tokens.get('editToken');
+		var token = mw.user.tokens.get('csrfToken');
 		api.post({
 			action: 'edit',
 			title: toDoList.page,

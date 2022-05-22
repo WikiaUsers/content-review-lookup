@@ -4,7 +4,7 @@
  */
 
 $(document).ready(function () {
- if ( wgPageName == "Avatar_Wiki:FanonSubModule" ) {
+ if ( mw.config.get('wgPageName') == "Avatar_Wiki:FanonSubModule" ) {
   var allowCheck;
   var cooldown;
   $.ajax({
@@ -12,15 +12,15 @@ $(document).ready(function () {
     url: "https://avatar.fandom.com/api.php",
     data: { action:'query', prop:'revisions', titles:'Avatar_Wiki:FanonSubModule/CheckPage', rvprop:'content' },
     success: function ( data ) {
-      var match = data.search( wgUserName );
-      if ( match == -1 || wgUserName == null ) {
+      var match = data.search( mw.config.get('wgUserName') );
+      if ( match == -1 || mw.config.get('wgUserName') == null ) {
         allowCheck = false;
       }
       else {
         allowCheck = true;
         var months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
         var days = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ];
-        var searchTerm = "* '''" + wgUserName + "''': On " + days[new Date().getUTCDay()] + ", " + new Date().getUTCDate() + " " + months[new Date().getUTCMonth()] + " " + new Date().getUTCFullYear();
+        var searchTerm = "* '''" + mw.config.get('wgUserName') + "''': On " + days[new Date().getUTCDay()] + ", " + new Date().getUTCDate() + " " + months[new Date().getUTCMonth()] + " " + new Date().getUTCFullYear();
         $.ajax({
           type: "GET",
           url: "https://avatar.fandom.com/api.php",
@@ -86,7 +86,7 @@ $(document).ready(function () {
           var finalList = usersList.slice(0,50);
           $("#submassform").animate({height:"81px"});
           $("#submassform").html('<table cellspacing="0" style="background-color:#FFEBCD; border-radius:13px 13px 13px 13px;"> <tbody><tr> <th style="background-color:#F5DEB3; padding-left:8px; padding-right:25px; border-radius:13px 0px 20px 0px" colspan="2">Fanon Mass Subscription Module </th><td style="width:60%"> </td></tr> <tr> <td colspan="3" style="padding-top:3px; padding-right:8px; padding-left:8px"> <div class="floatleft"><img alt="Information" src="http://i1338.photobucket.com/albums/o690/KettleMeetPot/ajax-loader_zps9261ad29.gif" width="35" height="35" style="margin-top:8px"></div> <div style="margin-left:45px"><big><b>Working:</b></big><br> <p> Do not refresh your web browser or leave the page. Thank you for your patience. </p></div> </td></tr></tbody></table>');
-          var token = mw.user.tokens.get( 'editToken' );
+          var token = mw.user.tokens.get( 'csrfToken' );
           for (var i = 0; i < finalList.length; i++) {
             var userToMessage = finalList[i].slice(5);
             $.ajax({
@@ -96,7 +96,7 @@ $(document).ready(function () {
             });
           }
             $.ajax({
-              type: "POST",
+              type: "GET",
               url: "https://avatar.fandom.com/api.php",
               data: { action:'query', prop:'revisions', titles: 'Avatar_Wiki:FanonSubModule', rvprop:'content'},
               success: function( data ) {
@@ -111,14 +111,14 @@ $(document).ready(function () {
                 }
                 var usersLogger = finalList.join(", ").replace(/User:/g,"");
                 var lister = content.split('<!-- Demarcation -->');
-                var logger = lister[0] + "\n* '''" + wgUserName + "''': On {{subst:" + "#time:l, d F Y}}, at " + "{{subst:" + "#time:H:i}}. '''Message''': '" + messageTitle + ": <i>" + messageValue + "</i>', '''To''': " + usersLogger  + ".\n<!-- Demarcation -->\n}}";
+                var logger = lister[0] + "\n* '''" + mw.config.get('wgUserName') + "''': On {{subst:" + "#time:l, d F Y}}, at " + "{{subst:" + "#time:H:i}}. '''Message''': '" + messageTitle + ": <i>" + messageValue + "</i>', '''To''': " + usersLogger  + ".\n<!-- Demarcation -->\n}}";
                 $.ajax({
                   type: "POST",
                   url: "https://avatar.fandom.com/api.php",
                   data: { action:'edit', title: 'Avatar_Wiki:FanonSubModule', text:logger, bot:'true', summary:'Usage of FanonSubModule: adding entry', token: token },
                   success: function( data ) {
                     $("#submassform").removeAttr("style");
-                    $("#submassform").html('<table cellspacing="0" style="background-color:#FFEBCD; border-radius:13px 13px 13px 13px;"> <tbody><tr> <th style="background-color:#F5DEB3; padding-left:8px; padding-right:25px; border-radius:13px 0px 20px 0px" colspan="2">Fanon Mass Subscription Module </th><td style="width:60%"> </td></tr> <tr> <td colspan="3" style="padding-top:3px; padding-right:8px; padding-left:8px"> <div class="floatleft"><img alt="Information" src="https://images.wikia.nocookie.net/__cb20090105233017/avatar/images/thumb/5/54/Information.png/90px-Information.png"></div> <div style="margin-left:45px"><big><b>Action Complete:</b></big><br> <p>' + wgUserName + ', your message has successfully been sent to the following users: ' + usersLogger + '. Due to a cooldown period, you will be able to use the module again in 24 hours. Thank you for using Avatar Wiki' + "'" + 's Fanon Subscription Module!</p></div> </td></tr></tbody></table></div>');
+                    $("#submassform").html('<table cellspacing="0" style="background-color:#FFEBCD; border-radius:13px 13px 13px 13px;"> <tbody><tr> <th style="background-color:#F5DEB3; padding-left:8px; padding-right:25px; border-radius:13px 0px 20px 0px" colspan="2">Fanon Mass Subscription Module </th><td style="width:60%"> </td></tr> <tr> <td colspan="3" style="padding-top:3px; padding-right:8px; padding-left:8px"> <div class="floatleft"><img alt="Information" src="https://images.wikia.nocookie.net/__cb20090105233017/avatar/images/thumb/5/54/Information.png/90px-Information.png"></div> <div style="margin-left:45px"><big><b>Action Complete:</b></big><br> <p>' + mw.config.get('wgUserName') + ', your message has successfully been sent to the following users: ' + usersLogger + '. Due to a cooldown period, you will be able to use the module again in 24 hours. Thank you for using Avatar Wiki' + "'" + 's Fanon Subscription Module!</p></div> </td></tr></tbody></table></div>');
                   }
                 });
               }
@@ -126,12 +126,12 @@ $(document).ready(function () {
         });
       }
       else if ( allowCheck == true && cooldown != false ) {
-      $("#submassform").html('<table cellspacing="0" style="background-color:#FFEBCD; border-radius:13px 13px 13px 13px;"> <tbody><tr> <th style="background-color:#F5DEB3; padding-left:8px; padding-right:25px; border-radius:13px 0px 20px 0px" colspan="2">Fanon Mass Subscription Module </th><td style="width:60%"> </td></tr> <tr> <td colspan="3" style="padding-top:3px; padding-right:8px"> <div class="floatleft"><a href="https://images.wikia.nocookie.net/__cb20090105233017/avatar/images/5/54/Information.png" class="image" data-image-name="Information.png"><img alt="Information" src="https://images.wikia.nocookie.net/__cb20090105233017/avatar/images/thumb/5/54/Information.png/100px-Information.png" width="100" height="100"></a></div> <big><b>Notice:</b></big><br> <p>Hello ' + wgUserName + '. Unfortunately, you have already used the services of the Fanon Subscription Module within the last 24 hours. As this system is limited to a one use per day policy, you will be required to wait until the relevant cooldown time has lapsed. If you have any queries, please contact a local <a href="/wiki/Avatar_Wiki:Administrators" title="Avatar Wiki:Administrators">administrator</a> for further information. </p> </td></tr></tbody></table>');
+      $("#submassform").html('<table cellspacing="0" style="background-color:#FFEBCD; border-radius:13px 13px 13px 13px;"> <tbody><tr> <th style="background-color:#F5DEB3; padding-left:8px; padding-right:25px; border-radius:13px 0px 20px 0px" colspan="2">Fanon Mass Subscription Module </th><td style="width:60%"> </td></tr> <tr> <td colspan="3" style="padding-top:3px; padding-right:8px"> <div class="floatleft"><a href="https://images.wikia.nocookie.net/__cb20090105233017/avatar/images/5/54/Information.png" class="image" data-image-name="Information.png"><img alt="Information" src="https://images.wikia.nocookie.net/__cb20090105233017/avatar/images/thumb/5/54/Information.png/100px-Information.png" width="100" height="100"></a></div> <big><b>Notice:</b></big><br> <p>Hello ' + mw.config.get('wgUserName') + '. Unfortunately, you have already used the services of the Fanon Subscription Module within the last 24 hours. As this system is limited to a one use per day policy, you will be required to wait until the relevant cooldown time has lapsed. If you have any queries, please contact a local <a href="/wiki/Avatar_Wiki:Administrators" title="Avatar Wiki:Administrators">administrator</a> for further information. </p> </td></tr></tbody></table>');
       }
-      else if ( wgPageName == "Avatar_Wiki:FanonSubModule" && wgUserName != null ) {
-        $("#submassform").html('<table cellspacing="0" style="background-color:#FFEBCD; border-radius:13px 13px 13px 13px;"> <tbody><tr> <th style="background-color:#F5DEB3; padding-left:8px; padding-right:25px; border-radius:13px 0px 20px 0px" colspan="2">Fanon Mass Subscription Module </th><td style="width:60%"> </td></tr> <tr> <td colspan="3" style="padding-top:3px; padding-right:8px"> <div class="floatleft"><a href="https://images.wikia.nocookie.net/__cb20090105233017/avatar/images/5/54/Information.png" class="image" data-image-name="Information.png"><img alt="Information" src="https://images.wikia.nocookie.net/__cb20090105233017/avatar/images/thumb/5/54/Information.png/100px-Information.png" width="100" height="100"></a></div> <big><b>Notice:</b></big><br> <p>Hello ' + wgUserName + '. Unfortunately, you are not listed on our local <a href="/wiki/Avatar_Wiki:FanonSubModule/CheckPage" title="Avatar Wiki:FanonSubModule/CheckPage">checkpage</a> as a user to be granted access to the Fanon Subscription Module. Please contact a local <a href="/wiki/Avatar_Wiki:Administrators" title="Avatar Wiki:Administrators">administrator</a> for further information. </p> </td></tr></tbody></table>');
+      else if ( mw.config.get('wgPageName') == "Avatar_Wiki:FanonSubModule" && mw.config.get('wgUserName') != null ) {
+        $("#submassform").html('<table cellspacing="0" style="background-color:#FFEBCD; border-radius:13px 13px 13px 13px;"> <tbody><tr> <th style="background-color:#F5DEB3; padding-left:8px; padding-right:25px; border-radius:13px 0px 20px 0px" colspan="2">Fanon Mass Subscription Module </th><td style="width:60%"> </td></tr> <tr> <td colspan="3" style="padding-top:3px; padding-right:8px"> <div class="floatleft"><a href="https://images.wikia.nocookie.net/__cb20090105233017/avatar/images/5/54/Information.png" class="image" data-image-name="Information.png"><img alt="Information" src="https://images.wikia.nocookie.net/__cb20090105233017/avatar/images/thumb/5/54/Information.png/100px-Information.png" width="100" height="100"></a></div> <big><b>Notice:</b></big><br> <p>Hello ' + mw.config.get('wgUserName') + '. Unfortunately, you are not listed on our local <a href="/wiki/Avatar_Wiki:FanonSubModule/CheckPage" title="Avatar Wiki:FanonSubModule/CheckPage">checkpage</a> as a user to be granted access to the Fanon Subscription Module. Please contact a local <a href="/wiki/Avatar_Wiki:Administrators" title="Avatar Wiki:Administrators">administrator</a> for further information. </p> </td></tr></tbody></table>');
       }
-      else if ( wgPageName == "Avatar_Wiki:FanonSubModule") {
+      else if ( mw.config.get('wgPageName') == "Avatar_Wiki:FanonSubModule") {
         $("#submassform").html('<table cellspacing="0" style="background-color:#FFEBCD; border-radius:13px 13px 13px 13px;"> <tbody><tr> <th style="background-color:#F5DEB3; padding-left:8px; padding-right:25px; border-radius:13px 0px 20px 0px" colspan="2">Fanon Mass Subscription Module </th><td style="width:60%"> </td></tr> <tr> <td colspan="3" style="padding-top:3px; padding-right:8px"> <div class="floatleft"><a href="https://images.wikia.nocookie.net/__cb20090105233017/avatar/images/5/54/Information.png" class="image" data-image-name="Information.png"><img alt="Information" src="https://images.wikia.nocookie.net/__cb20090105233017/avatar/images/thumb/5/54/Information.png/100px-Information.png" width="100" height="100"></a></div> <big><b>Notice:</b></big><br> <p>Hello anonymous user. Unfortunately, in order to use this service, you must have an account and be listed on our local <a href="/wiki/Avatar_Wiki:FanonSubModule/CheckPage" title="Avatar Wiki:FanonSubModule/CheckPage">checkpage</a> for the Fanon Subscription Module. Please contact a local <a href="/wiki/Avatar_Wiki:Administrators" title="Avatar Wiki:Administrators">administrator</a> for further information. </p> </td></tr></tbody></table>');
       }
     }
@@ -146,7 +146,7 @@ function checkSum () {
   }
   else {
     $.ajax({
-      type: "POST",
+      type: "GET",
       url: "https://avatar.fandom.com/api.php",
       data: { action:'query', list:'allusers', aufrom: value, aurights:'autoconfirmed', auwitheditsonly:'true', aulimit:'7', format:'wddxfm' },
       success: function ( data ) {
@@ -173,7 +173,7 @@ function checkSum () {
 
 /*
 $(document).ready(function () { 
-  if ( wgPageName == "Special:RecentChanges" ) {
+  if ( mw.config.get('wgPageName') == "Special:RecentChanges" ) {
    return;
   }
 });

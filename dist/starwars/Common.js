@@ -180,7 +180,7 @@ function fillPreloads() {
 
 	$( '#lf-preload' ).attr( 'style', 'display: block' );
 
-	$.get( wgScript, { title: 'Template:Stdpreloads', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+	$.get( mw.config.get( 'wgScript' ), { title: 'Template:Stdpreloads', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
 		var	$preloadOptionsList,
 			lines = data.split( '\n' );
 
@@ -189,7 +189,7 @@ function fillPreloads() {
 			if ( templateName !== '' ) {
 				templateName = 'Template:' + templateName + '/preload';
 				templateName = templateName.replace( ' ', '_' );
-				$.get( wgScript, { title: templateName, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+				$.get( mw.config.get( 'wgScript' ), { title: templateName, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
 					if ($('.CodeMirror').length > 0) {
 						WikiEditorCodeMirror.doc.replaceSelection(data);
 						return;
@@ -215,7 +215,7 @@ function fillPreloads() {
 function doCustomPreload() {
 	var value = $( '#lf-preload-pagename > input' ).val();
 	value = value.replace( ' ', '_' );
-	$.get( wgScript, { title: value, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+	$.get( mw.config.get( 'wgScript' ), { title: value, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
 		if ($('.CodeMirror').length > 0) {
 			WikiEditorCodeMirror.doc.replaceSelection(data);
 			return;

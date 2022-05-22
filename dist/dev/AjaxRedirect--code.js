@@ -82,7 +82,6 @@
             lib.loadMessages('AjaxRedirect'),
             mw.loader.using([
                 'mediawiki.api',
-                'mediawiki.notify',
                 'mediawiki.user'
             ])
         ).then(init);

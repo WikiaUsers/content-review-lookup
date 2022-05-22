@@ -1,12 +1,13 @@
-(function($) {
+;(function($, mw) {
 	"use strict";
-	if ((mw.config.get("wgCanonicalSpecialPageName") === "Contributions")) {
-		var username = mw.config.get("wgRelevantUserName");
-		if (username === null) {
-			// Do nothing if only on Special:Contributions and not a subpage
-			return;
-		}
-
+	if (mw.config.get("wgCanonicalSpecialPageName") != "Contributions") return;
+	
+	var username = mw.config.get("wgRelevantUserName");
+	if (username === null) {
+		// Do nothing if only on Special:Contributions and not a subpage
+		return;
+	}
+	mw.hook( 'dev.wds' ).add( function( wds ) {
 		mw.loader.using(["mediawiki.user", "mediawiki.util"]).then(function() {
 			if (!mw.user.getRights) { return $.Deferred().rejectWith(this, arguments).promise(); } // Disable for non-updated MediaWiki to avoid throwing errors
 			return mw.user.getRights();
@@ -15,7 +16,7 @@
 				//Only do anything if the user has undeletion rights and is on the contributions page
 				
 				var api = new mw.Api();
-				var optionalNotificationsSystemPromise = mw.loader.using("mediawiki.notify");
+				var optionalNotificationsSystemPromise = mw.loader.using("mw.notify");
 
 				function errorMessageNotification(errorMessage) {
 					mw.log.error(errorMessage);
@@ -77,16 +78,18 @@
 						return _undeleteAll(0);
 					}
 					
-					var restorationButton = new OO.ui.ButtonWidget( {
-						label: "Restore all posts",
-						active: true,
-						icon: "restore",
-					} );
-
-					$( ".mw-contributions-user-tools" ).append( $( document.createElement("div") ).append( restorationButton.$element ) );
+					// var restorationButton = new OO.ui.ButtonWidget( {
+					// 	label: "Restore all posts",
+					// 	active: true
+					// } );
+					var restorationButton = $('<button class="wds-button">');
+						restorationButton.append(wds.icon( 'trash-open-small' ));
+						restorationButton.append('<span>Restore all posts</span>');
+					
+					$( ".mw-contributions-user-tools" ).append( $( document.createElement("div") ).append( restorationButton ) );
 
 					restorationButton.on("click", function() {
-						restorationButton.setDisabled(true);
+						restorationButton.prop("disabled", true); 
 						optionalNotificationsSystemPromise.then(function() {
 							mw.notify("Restoration in progress...", { type: "info" });
 						});
@@ -98,11 +101,17 @@
 							})
 							.catch(errorMessageNotification)
 							.always(function() {
-							restorationButton.setDisabled(false);
+							restorationButton.prop("disabled", false);
 						});
 					});
 				}).catch(errorMessageNotification);
 			}
 		});
-	}
-})(jQuery);
+	});
+	importArticle( {
+		type: 'script',
+		articles: [
+			'u:dev:MediaWiki:WDSIcons/code.js'
+		]
+	} );
+})(window.jQuery, window.mediaWiki);

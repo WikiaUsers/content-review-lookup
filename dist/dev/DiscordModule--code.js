@@ -629,7 +629,7 @@ mw.loader.using('mediawiki.util').done(function() {
                     data: {
                         action: "edit",
                         title: "MediaWiki:Custom-Discord-Module-Settings",
-                        token: mw.user.tokens.get('editToken'),
+                        token: mw.user.tokens.get('csrfToken'),
                         text: JSON.stringify(v2s($form)),
                         summary: "Editing settings",
                         recreate: true

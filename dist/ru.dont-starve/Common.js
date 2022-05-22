@@ -103,9 +103,9 @@ $('<input id="cyclopecalculate" class="wds-button buttona" onclick="cyclopecalcu
 /*Изменяет цвет у рамок в ответаx администраторов*/
 /*I'm not sure if it's possible not to clear the interval*/
 setInterval(function () {
-	$('.wds-avatar a[href$="Arhhhat"]').closest('.Reply, .Reply_body__3woA9').addClass('Arhhhat');
-	$('.wds-avatar a[href$="FruitShakeSB"]').closest('.Reply, .Reply_body__3woA9').addClass('FruitShakeSB');
-	$('.wds-avatar a[href$="TheZhab"]').closest('.Reply, .Reply_body__3woA9').addClass('TheZhab');
+	$('.wds-avatar a[href$="Arhhhat"]').closest('.Reply, .Reply_body__PM9kM').addClass('Arhhhat');
+	$('.wds-avatar a[href$="FruitShakeSB"]').closest('.Reply, .Reply_body__PM9kM').addClass('FruitShakeSB');
+	$('.wds-avatar a[href$="TheZhab"]').closest('.Reply, .Reply_body__PM9kM').addClass('TheZhab');
 }, 500 );
 
 /*Страница администрации*/
@@ -237,4 +237,12 @@ $(function(){
                 });
             };
         }
+});
+
+/*Для виджета вк в темной теме*/
+$(function(){
+if ($('body').hasClass('theme-fandomdesktop-dark')) {
+     $('.vk-widget').attr('data-color-bg', '3c2f28);
+     $('.vk-widget').attr('data-color-button', 'ded3be')
+}
 });

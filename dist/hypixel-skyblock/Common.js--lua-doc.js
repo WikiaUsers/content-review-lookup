@@ -10,7 +10,7 @@
  */
 /*
 mw.loader.using([ 'mediawiki.api', 'jquery', 'mediawiki.user' ]).then(function() {
-    var token = mw.user.tokens.values.editToken,
+    var token = mw.user.tokens.get("csrfToken"),
         fullpagename = mw.config.get("wgPageName"),
         pagename = mw.html.escape(mw.config.get("wgTitle")),
         namespace = mw.config.get("wgNamespaceNumber"),

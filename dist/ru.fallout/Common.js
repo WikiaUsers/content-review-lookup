@@ -2,27 +2,29 @@
 /* т.е. не зависящие от скина проекта                                                     */
 
 /* [[MediaWiki:ImportJS]] для импорта скриптов */
-/* [[MediaWiki:Wikia.js]] для скриптов вне основного блока (.mw-parser-output) */
+/* [[MediaWiki:Fandomdesktop.js]] для скриптов вне основного блока (.mw-parser-output) */
+/* <del>[[MediaWiki:Wikia.js]]</del> неиспользуемая страница удалённого скина */
 
 //================================================================
 // Костыль для удаление пустого тега <p> перед инфобоксами
-$('#mw-content-text .mw-parser-output > .portable-infobox').prev('p').each(function() {
-    var pLength = $(this).text().replace(/(\n|\s)/g, '').length;
-    if (pLength === 0) $(this).hide();
-});
+// $('#mw-content-text .mw-parser-output > .portable-infobox').prev('p').each(function() {
+//     var pLength = $(this).text().replace(/(\n|\s)/g, '').length;
+//     if (pLength === 0) $(this).hide();
+// });
 
 //================================================================
 // Настройки скриптов
 
 //--------------------------------
 // Неактивные пользователи (InactiveUsers)
-InactiveUsers = {
+InactiveUsers = { /*Вообще-то это нужно через Window передавать, а не плодить глобальные переменные*/
 	months: 3,
 	text: 'Неактивен'
 };
 
 //--------------------------------
 // Проверка подписей (SignatureCheck)
+// А где вообще этот скрипт?
 // window.SignatureCheckJS = {
 // 	// Parts of the confirm prompt
 // 	preamble: '',
@@ -34,11 +36,12 @@ InactiveUsers = {
 
 //--------------------------------
 // Что-то про ReferencePopups
-( (window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {} ).lockdown = true;
+// ( (window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {} ).lockdown = true;
 
 //--------------------------------
 // Кастомные теги участников не перезатирают обычные
-(window.dev = window.dev || {}).profileTags = { noHideTags: true };
+// Кажется, так по-умолчанию
+// (window.dev = window.dev || {}).profileTags = { noHideTags: true };
 
 //--------------------------------
 // Полу-автоматическая архивация (ArchiveTool)
@@ -135,30 +138,31 @@ $(function() {
 // Кнопка открытия попапа создания блога
 
 $(function () {
-    /* Based on dev:CreateNewBlogButton.js */
-	var user = mw.config.get('wgUserName');
-	if ((user !== null) && $('.create_new_blog').length) {
-		$('.create_new_blog').html('<div class="main-btn create_new_blog"><span>Написать блог</span></div>');
-		var editurl = 'placeholder';
-		if ((mw.user.options.get('editor') === "2") && (mw.user.options.get('editortype') === "2")) {
-			editurl = "?veaction=edit";	
+	/* Based on dev:CreateNewBlogButton.js */
+	mw.loader.using(['oojs-ui-windows']).then(function() {
+		var user = mw.config.get('wgUserName');
+		if ((user !== null) && $('.create_new_blog').length) {
+			$('.create_new_blog').html('<div class="main-btn create_new_blog"><span>Написать блог</span></div>');
+			var editurl = 'placeholder';
+			if ((mw.user.options.get('editor') === "2") && (mw.user.options.get('editortype') === "2")) {
+				editurl = "?veaction=edit";	
+			} else {
+				editurl = "?action=edit";
+			}
+			$('.create_new_blog').click(function t() {
+				OO.ui.prompt('Написать блог', {
+					textInput: {
+						placeholder: 'Введите заголовок'
+					}
+				}).done((function(t) {
+					t && (window.location.href = function(t) {
+					const e = mw.config.get("wgArticlePath").replace("$1", 'User_blog:'+user);
+					return "".concat(e, "/").concat(encodeURIComponent(t), editurl);
+					}(t));
+				}));
+			});
 		}
-		else {
-			editurl = "?action=edit";
-		}
-		$('.create_new_blog').click(function t() {
-			OO.ui.prompt('Написать блог', {
-    			textInput: {
-    				placeholder: 'Введите заголовок'
-    			}
-			}).done((function(t) {
-    			t && (window.location.href = function(t) {
-    			const e = mw.config.get("wgArticlePath").replace("$1", 'User_blog:'+user);
-    			return "".concat(e, "/").concat(encodeURIComponent(t), editurl);
-    			}(t));
-			}));
-		} );	
-	}
+	});
 } );
 
 //================================================================

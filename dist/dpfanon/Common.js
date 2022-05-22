@@ -25,15 +25,15 @@ window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
  
 /* LockForums */
 window.LockForums = {
-    expiryDays: 30,
+    expiryDays: 50,
     lockMessageWalls: true,
-    expiryMessage: 'This thread has been archived due to inactivity.'
+    expiryMessage: 'This thread has been archived due to inactivity, please start a new discussion if you have something to add on.'
 }; 
  
 /* LockOldBlogs */
 window.LockOldBlogs = {
-    expiryDays: 30,
-    expiryMessage: "This blog hasn\'t been commented on for over 30 days. There is no need to comment."
+    expiryDays: 50,
+    expiryMessage: "This blog hasn\'t been commented on for over 50 days. There is no need to comment. Please make a new discussion if you have something to add on."
 };
  
 //UserTags config

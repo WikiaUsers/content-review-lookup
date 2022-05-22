@@ -396,7 +396,7 @@ $(function() {
                         $link, $this = $(this);
                     for (x = 0; x < calculator_armor_parts_names.length; x++) {
                         $link = $this.children('a[title="' + calculator_armor_parts_names[x] + '"]');
-                        if ($link.size()) {
+                        if ($link.length) {
                             tmpa = $link.attr('href').split(/\//);
                             tmp = decodeURIComponent(tmpa[tmpa.length - 1].replace(/_/g, ' ').toLowerCase());
                             if (calculator_armor_items_data[x].hasOwnProperty(tmp)) {
@@ -454,7 +454,7 @@ $(function() {
                     }
                 });
                 if (!update_links) {
-                    if ($('#calculator_armor_compare tr').size() > 1) {
+                    if ($('#calculator_armor_compare tr').length > 1) {
                         $('#calculator_armor_compare tr').each(function() {
                             $(this).children('td').each(function(col) {
                                 var tmp = $(this).text().match(/\([\d\.]+\)/),
@@ -634,7 +634,7 @@ $(function() {
                     .mouseout(function() {
                         $('#calculator_armor_tt_items').hide();
                     });
-                if ($('#calculator_armor_tt_items').size() === 0) {
+                if ($('#calculator_armor_tt_items').length === 0) {
                     $('body:eq(0)').append($('<div id="calculator_armor_tt_items">&nbsp;</div>'));
                 }
             })
@@ -669,8 +669,8 @@ $(function() {
 
         $('#calculator_armor_links').after(
             '<hr />Code for your ',
-            (wgUserName ?
-                $('<a href="https://tibia.fandom.com/wiki/User:' + wgUserName + '?action=edit">user page</a>').click(function() {
+            (mw.config.get('wgUserName') ?
+                $('<a href="https://tibia.fandom.com/wiki/User:' + mw.config.get('wgUserName') + '?action=edit">user page</a>').click(function() {
                     window.open($(this).attr('href'));
                     return false;
                 }) :
@@ -685,7 +685,7 @@ $(function() {
                 });
                 /*jslint unparam: false */
                 calculator_armor_template += '\n}}';
-                if ($('#calculator_armor_code_div').size() < 1) {
+                if ($('#calculator_armor_code_div').length < 1) {
                     $(this).after(
                         $('<div />', {
                             'id': 'calculator_armor_code_div'
@@ -715,11 +715,11 @@ $(function() {
             }).click(function() {
                 var set_text = [],
                     already_on_list = false;
-                if ($('#calculator_armor_links a').size() > 0) {
+                if ($('#calculator_armor_links a').length > 0) {
                     $('#calculator_armor_links a').each(function() {
                         set_text.push($(this).html());
                     });
-                    if ($('#calculator_armor_compare').size() === 0) {
+                    if ($('#calculator_armor_compare').length === 0) {
                         $('#calculator_armor_damages').after($('<table>', {
                             'id': 'calculator_armor_compare'
                         }));
@@ -746,7 +746,7 @@ $(function() {
                                                 $link = $td.children('a[title="' + calculator_armor_parts_names[i] + '"]'),
                                                 tmp, tmpa, tmpo;
                                             $('#calculator_armor_body_' + v).attr('src', calculator_armor_get_link_for_name(x, i)).attr('alt', '');
-                                            if ($link.size()) {
+                                            if ($link.length) {
                                                 tmpa = $link.attr('href').split(/\//);
                                                 tmp = decodeURIComponent(tmpa[tmpa.length - 1].replace(/_/g, ' ').toLowerCase());
                                                 if (calculator_armor_items_data[i].hasOwnProperty(tmp)) {

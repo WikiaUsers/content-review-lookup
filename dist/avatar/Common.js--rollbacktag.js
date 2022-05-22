@@ -3,8 +3,8 @@
  */
 
 $(function() {
-	if (wgNamespaceNumber == 2) {
-		if (-1 < $.inArray("Rollback users", wgCategories)) {
+	if (mw.config.get('wgNamespaceNumber') == 2) {
+		if (-1 < $.inArray("Rollback users", mw.config.get('wgCategories'))) {
 			$('.masthead-info hgroup').append('<span class="tag">rollback</span>');
 		}
 	}

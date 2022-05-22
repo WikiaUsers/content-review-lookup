@@ -672,7 +672,7 @@
              * @param {string} text Content to update the target page with
              */
             postCss: function (text) {
-                var token = mw.user.tokens.get('editToken'),
+                var token = mw.user.tokens.get('csrfToken'),
                     summary = i18n
                         .inContentLang()
                         .msg('edit-summary', opts.source)

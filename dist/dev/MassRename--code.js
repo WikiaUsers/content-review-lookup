@@ -185,7 +185,7 @@ mw.loader.using('mediawiki.api', function () {
                         window.massRenameSummary ||
                         i18n.inContentLang().msg('summary').plain(),
                     bot: true,
-                    token: mw.user.tokens.get('editToken')
+                    token: mw.user.tokens.get('csrfToken')
                 };
             if (document.getElementById('redirect-check').checked) {
                 delete config.noredirect;

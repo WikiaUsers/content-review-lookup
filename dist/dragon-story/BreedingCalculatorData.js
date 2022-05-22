@@ -912,6 +912,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "anthurium": {
+                "name": "Anthurium",
+                "types": [
+                    "flower",
+                    "pink",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "antique": {
                 "name": "Antique",
                 "types": [
@@ -10953,6 +10970,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "freesia": {
+                "name": "Freesia",
+                "types": [
+                    "flower",
+                    "green",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "flower"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "green"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "freespirit": {
                 "name": "Free Spirit",
                 "types": [
@@ -12107,6 +12151,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 3,
                 "level": 30,
                 "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "gladiolus": {
+                "name": "Gladiolus",
+                "types": [
+                    "flower",
+                    "white",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
                 "notes": [
                     "feature"
                 ]
@@ -14628,6 +14689,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "17_hours_17",
                 "rarity": 3
             },
+            "hydrangea": {
+                "name": "Hydrangea",
+                "types": [
+                    "flower",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "hypercosmic": {
                 "name": "Hyper Cosmic",
                 "types": [
@@ -17062,6 +17139,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "18_hours_18",
                 "rarity": 4,
                 "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "lisianthus": {
+                "name": "Lisianthus",
+                "types": [
+                    "flower",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]

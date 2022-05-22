@@ -99,7 +99,7 @@ function closeAppear() {
         modeAll = 0;
       }
     });
-    if ( $.inArray("sysop", wgUserGroups) != -1) {
+    if ( $.inArray("sysop", mw.config.get('wgUserGroups')) != -1) {
       $(".Dates").replaceWith(' • <span class="cDelete"><a href="javascript:void(0)">delete</a></span>');
       $(".cDiscuss").html('<a href="javascript:void(0)">close</a>');
       $(".tool-descriptor").html("Administrator toolbar");
@@ -208,7 +208,7 @@ function closeClick() {
       var ID = rawID.replace(/_/g," ");
       var demarcationID = $(".FRow:last").attr("id");
       $.ajax({
-        type: "POST",
+        type: "GET",
         url: "https://avatar.fandom.com/api.php",
         data: { action:'query', prop:'revisions', titles:'Avatar_Wiki:Votes_for_deletion', rvprop:'content' },
         success: function (data) {
@@ -223,7 +223,7 @@ function closeClick() {
              article: "MediaWiki:Communitydiscussionpages.css"
            });
            $('<div id="dialog-confirm" title="Measure of consensus">What was the outcome of the discussion?</br></br>Note: Maximum of 20 closed discussions allowed display space on VfD page.</div>').appendTo('body');
-           mw.loader.using( ['jquery.ui.dialog', 'jquery.ui.core', 'jquery.ui.position', 'jquery.ui.button', 'jquery.ui.widget'], function () {
+           mw.loader.using( ['jquery.ui'], function () {
              if ( $.attrFn ) { $.attrFn.text = true; }
              $("#dialog-confirm").dialog({
                resizable: false,
@@ -257,7 +257,7 @@ function closeClick() {
                 } },
              ],
                 close: function(event, ui) {
-                  var edittoken = mw.user.tokens.get( 'editToken' );
+                  var csrfToken = mw.user.tokens.get( 'csrfToken' );
                   content = "{{Discussion navigation}}" + Sliced[0] + "| T" + demarcation + " = " + ID + " | " + demarcation + " =\n{{Discussion Closed|" + consensus + "}}\n{{subst:Avatar Wiki:Votes for deletion/" + ID + "}}" + "\n<!-- Demarcation: Do NOT remove this notice -->" + Sliced[1] + "</dpl>";
                   $.ajax({
                     type: "POST",
@@ -287,7 +287,7 @@ $(closeClick);
  */
 
 $(document).ready(function actionSubmit() {
-  if ( mw.config.get('wgPageName').slice(0,31) == "Avatar_Wiki:Votes_for_deletion/" && mw.config.get('wgPageName').slice(31,38) != "Archive" && wgAction == "view" && window.opener === null) {
+  if ( mw.config.get('wgPageName').slice(0,31) == "Avatar_Wiki:Votes_for_deletion/" && mw.config.get('wgPageName').slice(31,38) != "Archive" && mw.config.get('wgAction') == "view" && window.opener === null) {
     window.location = "https://avatar.fandom.com/wiki/Avatar_Wiki:Votes_for_deletion?action=purge";
     //When publish is clicked, target location is then redirected
   }
@@ -305,7 +305,7 @@ function archiveClick() {
         article: "MediaWiki:Communitydiscussionpages.css"
       });
       $('<div id="dialog-confirm" title="archive all">Are you sure you would like to archive all closed discussions?</div>').appendTo('body');
-      mw.loader.using( ['jquery.ui.dialog', 'jquery.ui.core', 'jquery.ui.position', 'jquery.ui.button', 'jquery.ui.widget'], function () {
+      mw.loader.using( ['jquery.ui'], function () {
         if ( $.attrFn ) { $.attrFn.text = true; }
         $("#dialog-confirm").dialog({
           resizable: false,
@@ -317,13 +317,13 @@ function archiveClick() {
             text:"Yes", 
             click: function () {
               $.ajax({
-                type: "POST",
+                type: "GET",
                 url: "https://avatar.fandom.com/api.php",
                 data: { action:'query', prop:'revisions', titles:'Avatar_Wiki:Votes_for_deletion', rvprop:'content' },
                 success: function (data) {
                   var split = data.split("|}\n{{Format");
                   var content = split[1].split("&amp;lt;!-- Demarcation: Do NOT remove this notice --&amp;gt;")
-                  var edittoken = mw.user.tokens.get( 'editToken' );
+                  var csrfToken = mw.user.tokens.get( 'csrfToken' );
                   var archive = split[0].split("}}\n&amp;lt;div")
                   var fsplit = split[0].split("{{Discussion navigation}}");
                   var archiveNum = fsplit[1].split("}}");
@@ -364,7 +364,7 @@ function archiveClick() {
  */
 
 /* function sysdate() {
-  if ( wgPageName == "Avatar_Wiki:Votes_for_deletion" ) {
+  if ( mw.config.get('wgPageName') == "Avatar_Wiki:Votes_for_deletion" ) {
     mw.api.post( {
       action:"query",
       prop:"revisions"
