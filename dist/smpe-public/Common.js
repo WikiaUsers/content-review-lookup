@@ -14,6 +14,7 @@ window.UserTagsJS = {
 		sysop: { order: 2 },
 		treadmoderator: { u: 'Wiki Moderator', order: 3},
 		supereditor: { u: 'Wiki Editor', order: 4},
+		acswinner: { u: 'Article Competition Winner', order: 99}
 	},
 };
 UserTagsJS.modules.inactive = 30;
@@ -27,7 +28,9 @@ UserTagsJS.modules.metafilter = {
 	supereditor: ['threadmoderator', 'content-moderator' , 'sysop', 'bureaucrat'],
 };
 
-
+UserTagsJS.modules.custom = {
+    'ByteHD': ['acswinner']
+};
 
 window.onload = function(){
   $('.advanced-tooltip').show();

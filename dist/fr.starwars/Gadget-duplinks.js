@@ -3,6 +3,7 @@
  * Obtenu sur https://starwars.fandom.com/es/wiki/MediaWiki:Gadget-duplinks.js
  */
 $( function($) {
+	wgNamespaceNumber = mw.config.get('wgNamespaceNumber');
     if((wgNamespaceNumber != 0) && (wgNamespaceNumber != 2)) {
         // only check links in mainspace and userspace (for userspace drafts)
         return;

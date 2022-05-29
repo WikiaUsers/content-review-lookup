@@ -41,7 +41,7 @@ InactiveUsers = { /*Вообще-то это нужно через Window пер
 //--------------------------------
 // Кастомные теги участников не перезатирают обычные
 // Кажется, так по-умолчанию
-// (window.dev = window.dev || {}).profileTags = { noHideTags: true };
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };
 
 //--------------------------------
 // Полу-автоматическая архивация (ArchiveTool)

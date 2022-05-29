@@ -48,7 +48,7 @@ function createOrderQuest() {
 				title: "模板:題庫/排序",
 				summary: problem,
 				text: new_problem_id.toString(),
-				token: mw.user.tokens.get('editToken'),
+				token: mw.user.tokens.get('csrfToken'),
 				starttimestamp: starttimestamp
 			},
 			dataType: 'json',
@@ -65,7 +65,7 @@ function createOrderQuest() {
 							title: title,
 							summary: problem,
 							appendtext: new_content,
-							token: mw.user.tokens.get('editToken')
+							token: mw.user.tokens.get('csrfToken')
 						},
 						dataType: 'json',
 						type: 'POST',

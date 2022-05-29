@@ -84,9 +84,9 @@ $( function () {
 /* Stuff for add HideButton/Hide stuff */
 
 $(function() {
+	window.pageName = mw.config.get('wgPageName');
     window.storagePresent = (typeof(localStorage) != 'undefined');
-    window.pageName = wgPageName;
-    
+
     addHideButtons();
     
     if( window.storagePresent ) {

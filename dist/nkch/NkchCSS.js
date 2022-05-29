@@ -1,20 +1,14 @@
-var nkch = typeof window.nkch != "undefined" ? window.nkch : new Object();
+var nkch = window.nkch ? window.nkch : {};
 window.nkch = nkch;
 
-nkch.css = typeof nkch.css != "undefined" ? nkch.css : new Object();
+nkch.css = nkch.css ? nkch.css : {};
 
 if (!nkch.css.isActive) {
     nkch.css.isActive = true;
     nkch.css.isDisabled = false;
     nkch.css.currentTheme = "";
 
-    nkch.css.cookiePath = "/";
-
-    if (mw.config.get("wgScriptPath") !== "") {
-        nkch.css.cookiePath = mw.config.get("wgScriptPath");
-    } else {
-        nkch.css.cookiePath = "/wiki";
-    }
+    nkch.css.cookiePath = mw.config.get("wgScriptPath") !== "" ? mw.config.get("wgScriptPath") : "/wiki";
 
     function preventUnload(e) {
         if (editor.getValue().length > 0) {
@@ -33,12 +27,12 @@ if (!nkch.css.isActive) {
         });
     };
 
-    setVersion("nkchCSS", "3.0.1");
-    setVersion("codeMirror", "5.64.0");
-    setVersion("jQueryUI", "1.13.0");
+    setVersion("nkchCSS", "3.0.2");
+    setVersion("codeMirror", "5.65.4");
+    setVersion("jQueryUI", "1.13.1");
     setVersion("colorPicker", "1.9.72");
     setVersion("emmet", "1.2.5");
-    setVersion("jsBeautify", "1.14.0");
+    setVersion("jsBeautify", "1.14.3");
     setVersion("less", "4.1.2");
     setVersion("sass", "0.11.1");
 
@@ -185,7 +179,7 @@ if (!nkch.css.isActive) {
     document.head.append(nkch.css.el.styles.css.$e);
 
     /* ~ --- ~ style : less ~ --- ~ */
-    if (options.useLess !== false) {
+    if (options.useLess) {
         addClasses(nkch.css.el.styles.less);
         nkch.css.el.styles.less.$e.setAttribute("type", "text/x-less");
         nkch.css.el.styles.less.$e.setAttribute("media", "not all");
@@ -194,7 +188,7 @@ if (!nkch.css.isActive) {
     }
 
     /* ~ --- ~ style : sass ~ --- ~ */
-    if (options.useSass !== false) {
+    if (options.useSass) {
         addClasses(nkch.css.el.styles.sass);
         nkch.css.el.styles.sass.$e.setAttribute("type", "text/x-scss");
         nkch.css.el.styles.sass.$e.setAttribute("media", "not all");
@@ -210,12 +204,12 @@ if (!nkch.css.isActive) {
 
     /* ~ --- ~ load these useless sassy preprocessors (or do not) ~ --- ~ */
     mw.loader.using(["mediawiki.cookie", "mediawiki.notification", "mediawiki.util", "oojs-ui"], function () {
-        switch (options.useLess !== false || options.useSass !== false) {
+        switch (options.useLess || options.useSass) {
             case true:
                 const loadPreprocessors = [];
 
-                if (options.useLess !== false) loadPreprocessors.push(mw.loader.getScript("https://cdnjs.cloudflare.com/ajax/libs/less.js/" + versions.less + "/less.js"));
-                if (options.useSass !== false) loadPreprocessors.push(mw.loader.getScript("https://cdnjs.cloudflare.com/ajax/libs/sass.js/" + versions.sass + "/sass.js"),
+                if (options.useLess) loadPreprocessors.push(mw.loader.getScript("https://cdnjs.cloudflare.com/ajax/libs/less.js/" + versions.less + "/less.js"));
+                if (options.useSass) loadPreprocessors.push(mw.loader.getScript("https://cdnjs.cloudflare.com/ajax/libs/sass.js/" + versions.sass + "/sass.js"),
                     mw.loader.getScript("https://cdnjs.cloudflare.com/ajax/libs/sass.js/" + versions.sass + "/sass.worker.js")
                 );
 
@@ -246,13 +240,13 @@ if (!nkch.css.isActive) {
                     function (wds) {
                         nkch.css.actions = {
                             updateCode: function (css, type) {
-                                if (nkch.css.isDisabled === false) {
+                                if (!nkch.css.isDisabled) {
                                     switch (type) {
                                         default:
                                         case "css":
                                             nkch.css.el.styles.css.$e.innerHTML = css;
 
-                                            if (options.saveWithCookies === true) {
+                                            if (options.saveWithCookies) {
                                                 mw.cookie.set("savedValue", css, {
                                                     prefix: "nkchCSS_",
                                                     domain: mw.config.get("wgServerName"),
@@ -263,7 +257,7 @@ if (!nkch.css.isActive) {
                                         case "less":
                                             nkch.css.el.styles.less.$e.innerHTML = css;
 
-                                            if (options.saveWithCookies === true) {
+                                            if (options.saveWithCookies) {
                                                 mw.cookie.set("savedValue_less", css, {
                                                     prefix: "nkchCSS_",
                                                     domain: mw.config.get("wgServerName"),
@@ -274,7 +268,7 @@ if (!nkch.css.isActive) {
                                         case "sass":
                                             nkch.css.el.styles.sass.$e.innerHTML = css;
 
-                                            if (options.saveWithCookies === true) {
+                                            if (options.saveWithCookies) {
                                                 mw.cookie.set("savedValue_sass", css, {
                                                     prefix: "nkchCSS_",
                                                     domain: mw.config.get("wgServerName"),
@@ -309,7 +303,7 @@ if (!nkch.css.isActive) {
                                         break;
                                 }
 
-                                if (options.saveWithCookies === false) {
+                                if (!options.saveWithCookies) {
                                     window.addEventListener("beforeunload", preventUnload, false);
                                 };
 
@@ -339,7 +333,7 @@ if (!nkch.css.isActive) {
                                         break;
                                 };
 
-                                if (options.saveWithCookies === false) {
+                                if (!options.saveWithCookies) {
                                     window.removeEventListener("beforeunload", preventUnload);
                                 };
 
@@ -428,7 +422,7 @@ if (!nkch.css.isActive) {
                         nkch.css.el.main.menu.title.$e.append(nkch.css.el.main.menu.title.text.$e);
 
                         /* ~ --- ~ main : menu : title : info ~ --- ~ */
-                        if (options.hideInfo === false) {
+                        if (!options.hideInfo) {
                             nkch.css.el.main.menu.title.info.$e = new OO.ui.PopupButtonWidget({
                                 classes: ["nkch-css__title-info"],
                                 framed: false,
@@ -468,7 +462,7 @@ if (!nkch.css.isActive) {
                         nkch.css.el.main.menu.tools.$e.append(nkch.css.el.main.menu.tools.beautify.$e);
 
                         nkch.css.el.main.menu.tools.beautify.$e.addEventListener("click", function () {
-                            if (options.useLess !== false || options.useSass !== false) {
+                            if (options.useLess || options.useSass) {
                                 switch (tabs.getCurrentTabPanelName()) {
                                     case "css":
                                         nkch.css.actions.beautify(nkch.css.editors.css.getValue(), nkch.css.editors.css);
@@ -524,7 +518,7 @@ if (!nkch.css.isActive) {
                             content: [inputCSS]
                         });
 
-                        if (options.useLess !== false) {
+                        if (options.useLess) {
                             var inputLess = new OO.ui.MultilineTextInputWidget({
                                 autosize: true,
                                 classes: ["nkch-css__textarea"]
@@ -542,7 +536,7 @@ if (!nkch.css.isActive) {
                             });
                         }
 
-                        if (options.useSass !== false) {
+                        if (options.useSass) {
                             var inputSass = new OO.ui.MultilineTextInputWidget({
                                 autosize: true,
                                 classes: ["nkch-css__textarea"]
@@ -560,14 +554,14 @@ if (!nkch.css.isActive) {
                             });
                         }
 
-                        if (options.useLess !== false || options.useSass !== false) {
+                        if (options.useLess || options.useSass) {
                             var tabs = new OO.ui.IndexLayout({
                                 expanded: false
                             });
 
                             tabs.addTabPanels([tabCSS]);
-                            if (options.useLess !== false) tabs.addTabPanels([tabLess]);
-                            if (options.useSass !== false) tabs.addTabPanels([tabSass]);
+                            if (options.useLess) tabs.addTabPanels([tabLess]);
+                            if (options.useSass) tabs.addTabPanels([tabSass]);
 
                             $(nkch.css.el.main.content.$e).append(tabs.$element);
                         } else {
@@ -634,7 +628,7 @@ if (!nkch.css.isActive) {
                                             colorpicker: {
                                                 mode: "edit",
                                                 onChange: function () {
-                                                    if (options.useLess !== false || options.useSass !== false) {
+                                                    if (options.useLess || options.useSass) {
                                                         switch (tabs.getCurrentTabPanelName()) {
                                                             case "css":
                                                                 nkch.css.actions.updateCode(nkch.css.editors.css.getValue(), "css");
@@ -651,7 +645,7 @@ if (!nkch.css.isActive) {
                                                     }
                                                 },
                                                 onLastUpdate: function () {
-                                                    if (options.useLess !== false || options.useSass !== false) {
+                                                    if (options.useLess || options.useSass) {
                                                         switch (tabs.getCurrentTabPanelName()) {
                                                             case "css":
                                                                 nkch.css.actions.updateCode(nkch.css.editors.css.getValue(), "css");
@@ -710,7 +704,7 @@ if (!nkch.css.isActive) {
                                         };
 
                                         /* ~ --- ~ tasty cookies ~ --- ~ */
-                                        if (options.saveWithCookies === true) {
+                                        if (options.saveWithCookies) {
                                             nkch.css.cookiesValue = {};
 
                                             switch (mw.cookie.get("savedValue", "nkchCSS_") != null) {
@@ -746,7 +740,7 @@ if (!nkch.css.isActive) {
 
                                         nkch.css.editors.css = CodeMirror.fromTextArea(inputCSS.$element[0].querySelector("textarea"), editorOptions);
                                         nkch.css.editors.css.setOption("mode", "css");
-                                        if (options.saveWithCookies === true) nkch.css.editors.css.setValue(nkch.css.cookiesValue.css);
+                                        if (options.saveWithCookies) nkch.css.editors.css.setValue(nkch.css.cookiesValue.css);
                                         emmetCodeMirror(nkch.css.editors.css);
                                         nkch.css.editors.css.refresh();
 
@@ -754,13 +748,13 @@ if (!nkch.css.isActive) {
                                             nkch.css.actions.updateCode(nkch.css.editors.css.getValue(), "css");
                                         }, false);
 
-                                        if (options.useLess !== false) {
+                                        if (options.useLess) {
                                             tabLess.on("active", function () {
                                                 if (typeof nkch.css.editors.less == "undefined") {
                                                     setTimeout(function () {
                                                         nkch.css.editors.less = CodeMirror.fromTextArea(inputLess.$element[0].querySelector("textarea"), editorOptions);
                                                         nkch.css.editors.less.setOption("mode", "text/x-less");
-                                                        if (options.saveWithCookies === true) nkch.css.editors.less.setValue(nkch.css.cookiesValue.less);
+                                                        if (options.saveWithCookies) nkch.css.editors.less.setValue(nkch.css.cookiesValue.less);
                                                         emmetCodeMirror(nkch.css.editors.less);
                                                         nkch.css.editors.less.refresh();
 
@@ -772,7 +766,7 @@ if (!nkch.css.isActive) {
                                             });
 
                                             compileLess.on("click", function (ev) {
-                                                if (ev !== null) {
+                                                if (ev) {
                                                     less.render(nkch.css.editors.less.getValue())
                                                         .then(
                                                             function (output) {
@@ -796,13 +790,13 @@ if (!nkch.css.isActive) {
                                             });
                                         }
 
-                                        if (options.useSass !== false) {
+                                        if (options.useSass) {
                                             tabSass.on("active", function () {
                                                 if (typeof nkch.css.editors.sass == "undefined") {
                                                     setTimeout(function () {
                                                         nkch.css.editors.sass = CodeMirror.fromTextArea(inputSass.$element[0].querySelector("textarea"), editorOptions);
                                                         nkch.css.editors.sass.setOption("mode", "text/x-scss");
-                                                        if (options.saveWithCookies === true) nkch.css.editors.sass.setValue(nkch.css.cookiesValue.sass);
+                                                        if (options.saveWithCookies) nkch.css.editors.sass.setValue(nkch.css.cookiesValue.sass);
                                                         emmetCodeMirror(nkch.css.editors.sass);
                                                         nkch.css.editors.sass.refresh();
 
@@ -872,11 +866,11 @@ if (!nkch.css.isActive) {
                                             );
                                         };
 
-                                        if (options.saveWithCookies === true && options.implementOnLoad === true) {
+                                        if (options.saveWithCookies && options.implementOnLoad) {
                                             nkch.css.actions.updateCode(nkch.css.cookiesValue, "css");
 
-                                            if (options.useLess !== false) nkch.css.actions.updateCode(nkch.css.cookiesValue, "less")
-                                            if (options.useSass !== false) nkch.css.actions.updateCode(nkch.css.cookiesValue, "sass")
+                                            if (options.useLess) nkch.css.actions.updateCode(nkch.css.cookiesValue, "less")
+                                            if (options.useSass) nkch.css.actions.updateCode(nkch.css.cookiesValue, "sass")
                                         };
 
                                         var loadEvent = new Event("nkch-css-load");

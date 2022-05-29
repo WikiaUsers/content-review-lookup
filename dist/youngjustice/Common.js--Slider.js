@@ -1,6 +1,6 @@
 /* Slider effect by User:Tierrie modified by User:KettleMeetPot*/
 
-mw.loader.using(['jquery.ui.tabs'], function() {
+mw.loader.using( ['jquery.ui'], function() {
     $(function() {
         var $tabs = $("#portal_slider").tabs({
             fx: {

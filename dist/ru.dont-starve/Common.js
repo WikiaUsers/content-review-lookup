@@ -19,21 +19,6 @@ function replaceTitle() {
     }
 }
 replaceTitle();
-$(function(){
-    importArticles({
-        type: "script",
-        articles: ["u:pad.wikia.com:MediaWiki:FilterTable.js"]
-    });
-});
-/* костыль для отображения иконки в цитатах  */
-$(function() {
-    $(".DSWHoverTabContainer img.lzy").each(function() {
-        var dataSrc = $(this).attr('data-src');
-        if (dataSrc) {
-            $(this).attr('src', dataSrc);
-        }
-    });
-});
 
 window.BackToTopModern = true;
 
@@ -242,7 +227,7 @@ $(function(){
 /*Для виджета вк в темной теме*/
 $(function(){
 if ($('body').hasClass('theme-fandomdesktop-dark')) {
-     $('.vk-widget').attr('data-color-bg', '3c2f28);
-     $('.vk-widget').attr('data-color-button', 'ded3be')
+     $('.vk-widget').attr('data-color-bg', 'bdaea5');
+     $('.vk-widget').attr('data-color-button', '2f2d2b')
 }
 });

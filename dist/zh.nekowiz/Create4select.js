@@ -54,7 +54,7 @@ function createSelectQuest() {
 				title: "模板:題庫/四選一",
 				text: new_problem_id.toString(),
 				summary: problem,
-				token: mw.user.tokens.get('editToken'),
+				token: mw.user.tokens.get('csrfToken'),
 				starttimestamp: starttimestamp
 			},
 			dataType: 'json',
@@ -71,7 +71,7 @@ function createSelectQuest() {
 							title: title,
 							summary: problem,
 							appendtext: new_content,
-							token: mw.user.tokens.get('editToken')
+							token: mw.user.tokens.get('csrfToken')
 						},
 						dataType: 'json',
 						type: 'POST',

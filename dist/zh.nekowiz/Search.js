@@ -110,7 +110,7 @@ function editQuestionSelect(q_id) {
 								title: title,
 								summary: $(".questFinder .problem").val(),
 								text: new_content,
-								token: mw.user.tokens.get('editToken'),
+								token: mw.user.tokens.get('csrfToken'),
 								starttimestamp: starttimestamp
 							},
 							dataType: 'json',
@@ -232,7 +232,7 @@ function editQuestionSort(q_id) {
 								title: title,
 								summary: $(".questFinder .problem").val(),
 								text: new_content,
-								token: mw.user.tokens.get('editToken'),
+								token: mw.user.tokens.get('csrfToken'),
 								starttimestamp: starttimestamp
 							},
 							dataType: 'json',
@@ -364,7 +364,7 @@ function editQuestionDaily(q_id) {
 								title: title,
 								summary: $(".questFinder .problem").val(),
 								text: new_content,
-								token: mw.user.tokens.get('editToken'),
+								token: mw.user.tokens.get('csrfToken'),
 								starttimestamp: starttimestamp
 							},
 							dataType: 'json',

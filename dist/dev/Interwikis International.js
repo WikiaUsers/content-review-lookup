@@ -1,3 +1,6 @@
+/**
+ * <nowiki>
+ */
 mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki.template.mustache'] ).then( function() {
 	// Export global configuration
 	window.interwikiInternational = ( window.interwikiInternational || {} );
@@ -334,3 +337,6 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 	mw.hook( 'dev.modal' ).add( preload );
 	mw.hook( 'dev.ui' ).add( preload );
 } );
+/**
+ * </nowiki>
+ */

@@ -107,7 +107,8 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 								.html()
 								.replace(/&lt;/g, '<')
 								.replace(/&gt;/g, '>')
-								.replace(/&amp;/g, '&'),
+								.replace(/&amp;/g, '&')
+								.replace(/^'|'$/g, ''),
 							userSummary = $('mw-abuselog-details-summary.mw-abuselog-value')
 								.children()
 								.last()

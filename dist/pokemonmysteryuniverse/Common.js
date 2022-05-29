@@ -1,5 +1,5 @@
 /**
-    🙝 Super Epic Boss Dialogue js That Took 2 Novice Coders to Even Figure Out
+    🙝 Super epic boss dialogue js that took 2 novice coders to even figure out
                                                                                 **/
 $('.BossDialogueBefore').click(function() {
   $(this).closest(".BossDialogueBefore").toggleClass('uncollapse');
@@ -10,3 +10,9 @@ $('.BossDialogueAfter').click(function() {
   $(this).closest(".BossDialogueAfter").toggleClass('uncollapse');
   $(this).next("#AfterCollapse").toggleClass('uncollapse');
 });
+
+
+/* WdsTooltips fix ( probably) */
+
+$(".custom-tooltip").next("p").css("display","inline");
+$(".custom-tooltip").prev("p").css("display","inline");

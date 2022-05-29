@@ -190,7 +190,7 @@ function saveLeaderData(leaderData) {
 			action: 'edit',
 			title: 'Template:Leader/Data',
 			text: leaderData,
-			token: mw.user.tokens.get('editToken')
+			token: mw.user.tokens.get('csrfToken')
 		},
 		dataType: 'json',
 		type: 'POST',

@@ -9,7 +9,7 @@ $(function() {
     
     var i18n = {
         en: {
-            otherspages: "Or perhaps are you looking for one of this page:",
+            otherspages: "Perhaps you are looking for one of the following pages instead:",
             similitude: "% similarity"
         },
         es: {

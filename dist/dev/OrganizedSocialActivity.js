@@ -1,5 +1,5 @@
 // OrganizedSocialActivity
-
+// <nowiki>
 (function organizedSocialActivity(window, $, mw) {
 	"use strict";
 	
@@ -497,3 +497,4 @@
 	});
     
 }) (this, jQuery, mediaWiki);
+// </nowiki>

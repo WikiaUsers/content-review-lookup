@@ -792,7 +792,7 @@ function getCardDataDone(data) {
 				action: 'edit',
 				title: 'Template:Card/Data/' + card_id.toString(),
 				text: card_text,
-				token: mw.user.tokens.get('editToken')
+				token: mw.user.tokens.get('csrfToken')
 			},
 			dataType: 'json',
 			type: 'POST',

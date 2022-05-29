@@ -11,10 +11,19 @@
         lang = mw.config.get( 'wgContentLanguage' );// use rules by content;
             
     p.isUcp = parseFloat( mw.config.get( 'wgVersion' ) ) > 1.19;
-    p.debug = /*p.isUcp || */mw.config.get( 'debug' ) || urlVars.get('debug1');// ucp have problems with debug mode, so...
+    p.debug = mw.config.get( 'debug' ) || urlVars.get('debug1');// ucp have problems with debug mode, so...
     // these ((())) are made for reasons
-    if ((( wikificator && wikificator.loaded === true ) || ( !wikificator.forced && ( !p.isUcp && $.inArray( mw.config.get( 'wgAction' ), [ 'edit', 'submit' ] ) === -1) ) ) ) return;
-
+    if ((( wikificator && wikificator.loaded === true ) || 
+	    ( !wikificator.forced && (
+	    	!$( '#wpSave' ).length// totally unsaveable pages
+	    	|| 
+	    	$.inArray( mw.config.get( 'wgAction' ), [ 'edit', 'submit' ] ) === -1
+	    ) ) ) ) 
+	{
+	    // we need more stopping power here, i guess
+	    wikificator.loaded = true;
+	    return;
+	}// if loaded
     wikificator.loaded = true;
     p.loaded = true;
 

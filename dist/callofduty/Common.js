@@ -139,9 +139,3 @@ $(function () {
 });
 
 $('a:contains(An Anonymous user)').append(function(){return ' (' + this.href.match(/(\d{1,3}\.){3}\d{1,3}/)[0] + ')'})
-
-//********************************************************************
-// Added Multiple Upload Functionality, credit to Gamepedia wiki
-//********************************************************************
-
-mw.loader.load('https://help.gamepedia.com/index.php?title=MediaWiki:Gadget-multiupload.js&action=raw&ctype=text/javascript');

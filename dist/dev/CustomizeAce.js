@@ -42,7 +42,7 @@
     function aceHook( callback ) {
         mw.hook( 'codeEditor.configure' ).add( function() {
             const fandomAddTheme = setInterval( function() {
-                if ( !!document.querySelector( '.ace_editor.ace-twilight,.ace_editor.ace-dawn' ) ) {
+                if ( !!document.querySelector( '.ace_editor.ace-tm,.ace_editor.ace-twilight,.ace_editor.ace-dawn' ) ) {
                     clearInterval( fandomAddTheme );
                     callback();
                 }

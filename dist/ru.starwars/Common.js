@@ -463,16 +463,11 @@ function SetToolbar()
 		'<span onclick="InsertText(\'—\',\'\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_dash"><a class="oo-ui-buttonElement-button" role="button" title="Тире" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon"></span></a></span>'+
 		'<span onclick="InsertText(\'[[/Канон|\',\']]\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_postscript_canon"><a class="oo-ui-buttonElement-button" role="button" title="Приписка /Канон для ссылок" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon"></span></a></span>'+
 		'<span onclick="InsertText(\'[[\|\',\']]\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_square_brackets"><a class="oo-ui-buttonElement-button" role="button" title="Квадратные скобки с разделителем" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon"></span></a></span>'
-	  );
-	
-	$('#wikiEditor-section-main div.group-insert').append(
+	  ).append(
 		'<span onclick="InsertText(\'{{Цитата|\',\'||}}\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_quote"><a class="oo-ui-buttonElement-button" role="button" title="Шаблон цитаты" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon" ></span></a></span>'+
-		'<span onclick="InsertText(\'\\n{{Interlang\\n|en=\',\'\\n}}\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_interlang"><a class="oo-ui-buttonElement-button" role="button" title="Шаблон межъязыковых ссылок" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon" ></span></a></span>'
-	);
-	$('#wikiEditor-section-main div.group-codemirror').prepend(
-		'<span onclick="Wikify(\'WIKIFY\');" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_wikifikator2"><a class="oo-ui-buttonElement-button" role="button" title="Вукификатор" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon oo-ui-icon-link"></span></a></span>'
-	);
-	
+		'<span onclick="InsertText(\'\\n{{Interlang\\n|en=\',\'\\n}}\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_interlang"><a class="oo-ui-buttonElement-button" role="button" title="Шаблон межъязыковых ссылок" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon" ></span></a></span>'+
+		'<span onclick="Wikify(\'WIKIFY\');" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_wikifikator2"><a class="oo-ui-buttonElement-button" role="button" title="Вукификатор" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon oo-ui-icon-link"></span></a></span>');
+
 	// добавление кнопки "Подпись"
 	if ($('span.oo-ui-icon-signature').length===0 ) 
 	{
@@ -483,7 +478,7 @@ function SetToolbar()
 	// добавление панели [Больше+]
 	if (mw.user.getName()!== 'Starit')
 	{
-		$('#wikiEditor-section-main div.group-codemirror').prepend(
+		$('#wikiEditor-section-main div.group-insert').append(
 			'<span onclick="ShowEditTools();" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_EditTools"><a class="oo-ui-buttonElement-button" role="button" title="Вставка вики-текста" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon"></span></a></span>'
 		); 
 		// добавление чёрной подложки для панели [Больше+]

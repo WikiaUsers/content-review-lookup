@@ -15,6 +15,7 @@ function hideTip() {
 
 // displays the tooltip
 function displayTip(e) {
+ $('.gold').attr('style','visibility: visible');
   $tfb.not(":empty").removeClass("hidden").addClass("tooltip-ready");
   moveTip(e);
   $tfb.not(":empty").css("visibility","visible");

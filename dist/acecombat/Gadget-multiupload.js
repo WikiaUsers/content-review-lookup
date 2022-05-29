@@ -57,7 +57,7 @@ mw.loader.using(['site', 'mediawiki.util']).then(function() {
 			}
 			fd = new FormData();
 			fd.append("action","upload");
-			fd.append("token",mw.user.tokens.get('editToken'));
+			fd.append("token",mw.user.tokens.get('csrfToken'));
 			fd.append("filename",files[curFile].name);
 			fd.append("file",files[curFile]);
 			fd.append("text",text);

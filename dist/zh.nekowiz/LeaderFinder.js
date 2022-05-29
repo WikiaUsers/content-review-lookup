@@ -244,7 +244,7 @@ function saveSearchData(searchData) {
 			action: 'edit',
 			title: 'Template:Leader/SearchData',
 			text: searchData,
-			token: mw.user.tokens.get('editToken')
+			token: mw.user.tokens.get('csrfToken')
 		},
 		dataType: 'json',
 		type: 'POST',

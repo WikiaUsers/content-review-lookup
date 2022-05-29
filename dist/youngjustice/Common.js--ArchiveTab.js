@@ -7,7 +7,7 @@
  * Oasis support by [[User:Uberfuzzy|Uberfuzzy]]
  */
 
-if (wgNamespaceNumber == 110) {
+if (mw.config.get('wgNamespaceNumber') == 110) {
     addOnloadHook(disableOldForumEdit);
 }
 

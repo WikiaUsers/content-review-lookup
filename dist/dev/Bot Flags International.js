@@ -1,4 +1,4 @@
-/**
+/** <nowiki>
  * @name Bot Flag Form
  * @description Script for universal bot flag request modals on Community Central wikis
  * @author Rail
@@ -393,3 +393,6 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 	mw.hook( 'dev.modal' ).add( preload );
 	mw.hook( 'dev.ui' ).add( preload );
 } );
+/*
+ * </nowiki>
+ */

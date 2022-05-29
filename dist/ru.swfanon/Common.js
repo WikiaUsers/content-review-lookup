@@ -391,7 +391,7 @@ function loadFunc() {
     Нужно для шаблона {{USERNAME}}
     */
 function substUsername() {
-	$('.insertusername').html(wgUserName);
+    $('.insertusername').html(RLCONF.wgUserName);
 }
 
 function substUsernameTOC() {
@@ -788,9 +788,11 @@ $(document).ready(function()
 });	
 
 // если страница редактируется
-if (wgAction == 'edit' || wgAction == 'submit') 
-{
-	$.when( mw.loader.using( 'ext.wikiEditor' ), $.ready).then( SetToolbar );
+	if (RLCONF.wgAction == 'edit' || RLCONF.wgAction == 'submit') 
+	{
+		$.when( mw.loader.using( 'ext.wikiEditor' ), $.ready).then( SetToolbar );
+		
+	    importScript('MediaWiki:Wikificator.js');
 
     // добавление заголовка редактируемой статьи
 	$('#content').prepend('<h3 class="" style="text-align: center;padding: 5px 0 2px;margin: 0;margin-bottom: 5px;">'+wgTitle+'</h3>');

@@ -66,7 +66,7 @@ function createDailyQuest() {
 				title: "模板:題庫/每日",
 				summary: problem,
 				text: new_problem_id.toString(),
-				token: mw.user.tokens.get('editToken'),
+				token: mw.user.tokens.get('csrfToken'),
 				starttimestamp: starttimestamp
 			},
 			dataType: 'json',
@@ -80,7 +80,7 @@ function createDailyQuest() {
 					var formdata = new FormData();
 					formdata.append("action", "upload");
 					formdata.append("filename", image_name);
-					formdata.append("token", mw.user.tokens.get('editToken'));
+					formdata.append("token", mw.user.tokens.get('csrfToken'));
 					formdata.append("file", file);
 					formdata.append("ignorewarnings", "1");
 
@@ -109,7 +109,7 @@ function createDailyQuest() {
 							title: title,
 							summary: problem,
 							appendtext: new_content,
-							token: mw.user.tokens.get('editToken')
+							token: mw.user.tokens.get('csrfToken')
 						},
 						dataType: 'json',
 						type: 'POST',

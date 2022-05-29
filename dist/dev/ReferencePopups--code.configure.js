@@ -704,3 +704,4 @@ return function(settings, onSave, onClose) {
 };
 
 });
+// </nowiki>
