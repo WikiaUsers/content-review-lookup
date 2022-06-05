@@ -34,3 +34,7 @@ UserTagsJS.modules.custom = {
 	'WOF Fanatic': ['specialroleforfun'],
 	'LeahForsea': ['headventmod']
 };
+window.MessageBlock = {
+	title: 'Blocked',
+	message: 'Hello! You have been blocked for a duration of $2 for the following reasons: $1. If you are blocked indefinitely but believe you can improve/have improved on your behavior, feel free to reply to this message with a properly made ban appeal: the admin who blocked you will have followed this message, so they will be notified. If you were blocked for a certain amount of time, feel free to either wait it out and think on your behavior, or reply with an appeal as well.'
+};

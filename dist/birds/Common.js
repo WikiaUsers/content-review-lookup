@@ -1,22 +1,16 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-// Bird anon avatars
-function changeSourceAll() {
+//Bird anon avatars
+function changeAnon() {
     var images = document.getElementsByTagName('img');
     for (var i = 0; i < images.length; i++) {
-        if (images[i].src.includes('https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest/')) {
-            images[i].src = images[i].src.replace("https://images.wikia.nocookie.net/birds/images/b/b1/Silhouettes.png/revision/latest?cb=20190915144938");
-            images[i].src = images[i].src.replace("https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest/");
-            images[i].src = images[i].src.replace("https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest/");
+        if (images[i].src.includes('https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/')) {
+            images[i].src = images[i].src.replace("https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/28/height/28", "https://static.wikia.nocookie.net/birds/images/0/0b/Pngwing.com_%2868%29.png/revision/latest?cb=20220530210348");
+            images[i].src = images[i].src.replace("https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/400/height/400", "https://static.wikia.nocookie.net/birds/images/0/0b/Pngwing.com_%2868%29.png/revision/latest?cb=20220530210348");
+            images[i].src = images[i].src.replace("https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/16/height/16", "https://static.wikia.nocookie.net/birds/images/0/0b/Pngwing.com_%2868%29.png/revision/latest?cb=20220530210348");
         }
     }
 }
-
-//UserTagsJS.modules.inactive = 30;
-//UserTagsJS.modules.newuser = true;
-//UserTagsJS.modules.autoconfirmed = true;
-
-$(function() {
-    mw.hook('DiscordIntegrator.added').add(function() {
-        $('.DiscordIntegratorModule').insertAfter('.ChatModule');
-    }
-});
+changeAnon();
+ 
+setInterval(function(){
+    changeAnon();
+}, 1000);

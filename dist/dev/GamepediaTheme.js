@@ -1,6 +1,10 @@
 // GamepediaTheme, by Aeywoo
 // Inspired by Gamepedia's Second to last Footer Design
 mw.loader.using(['mediawiki.api']).then(function() {
+	// Checks is the Wiki has is-gamepedia in the websites document body class
+	if($(document.body).hasClass("is-gamepedia") !== true) {
+		return;
+	}
 	// Prevents double loading
     if (window.GamepediaFooterLoaded) {
         return;

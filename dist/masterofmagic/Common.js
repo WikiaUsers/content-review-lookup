@@ -1,10 +1,10 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-if (wgPageName == 'Damage_Calculator') {
+if (mw.config.get('wgPageName') == 'Damage_Calculator') {
   importScript('MediaWiki:Common.js/DamageCalculator.js');
-} else if (wgPageName == 'Advanced_Damage_Calculator') {
+} else if (mw.config.get('wgPageName') == 'Advanced_Damage_Calculator') {
   importScript('MediaWiki:Common.js/AdvancedDamageCalculator.js');
-} else if (wgPageName == 'Combat_Simulator') {
+} else if (mw.config.get('wgPageName') == 'Combat_Simulator') {
   importScript('MediaWiki:Common.js/CombatSimulator.js');
 }
 

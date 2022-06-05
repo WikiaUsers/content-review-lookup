@@ -254,8 +254,10 @@
         ],
         /**
          * List of languages supported by Fandom. Last updated 2021-07-25.
+         * Please note that some languages use different locale file from its code.
          * @type {string[]}
          * @see https://c.fandom.com/wiki/Help:Language_code
+         * @see wikimedia/translatewiki b52f4b4 /mw-config/TranslateSettings.php#L161
          */
         whitelist: [
             'ar',
@@ -296,9 +298,12 @@
             'tr',
             'uk',
             'vi',
-            'zh',
-            'zh-hk',
-            'zh-tw'
+            // wikimedia/translatewiki b52f4b4 /mw-config/TranslateSettings.php#L202
+            // 'zh', // This language code should remain unused. Localise in zh-hans or zh-hant please.
+            'zh-hans', // for zh
+            'zh-hant', // for zh, zh-tw
+            'zh-hk'
+            // 'zh-tw' // This language code should remain unused. Localise in zh-hant please.
         ],
         /**
          * Wiki global variable cache
@@ -2868,6 +2873,20 @@
                 question: '=p.main()',
                 title: 'Module:I18nEdit',
                 content: this.luaFetcher
+            }).then(function(data) {
+                var pages = JSON.parse(data.return);
+                for (var title in pages) {
+                    var page = pages[title];
+                    for (var lang in page) {
+                        // Handle mw.text.jsonEncode limitation of empty tables.
+                        // Ensure language entries are always objects.
+                        if (Array.isArray(page[lang])) {
+                            page[lang] = {};
+                        }
+                    }
+                }
+                data.return = JSON.stringify(pages);
+                return data;
             }).fail(this.onGenericAPIError.bind(this));
         },
         /**

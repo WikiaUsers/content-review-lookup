@@ -104,3 +104,8 @@ $('.spoiler_on').click(function () {
         $(this).switchClass('spoiler_off', 'spoiler_on');
     }
 });
+
+/* Clock Configuration */ 
+window.UTCClockConfig = {
+    format: '%2I:%2M:%2S %p %{Sunday;Monday;Tuesday;Wednesday;Thursday;Friday;Saturday}w,  %{January;Febuary;March;April;May;June;July;August;September;October;November;December}m %2d, %Y (UTC)',
+}

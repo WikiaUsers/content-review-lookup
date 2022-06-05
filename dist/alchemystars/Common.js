@@ -5,6 +5,19 @@
  * Originally by [[wikia:User:Splarka|Splarka]], then by [[User:Spang|Spang]],
  * This (jQuery) version by [[wikia:User:Joeyaa]], written to be backwards compatible
  */
-if (wgUserName != 'null') {
-	$('.insertusername').html(wgUserName);
-}
+$(function() {
+    if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) { return; }
+    $('span.insertusername').text(mw.config.get('wgUserName'));
+});
+
+/* For Aurorian Icon Hover */
+window.tooltips_list = [
+    {
+        classname: 'chartooltip',
+        parse: '{{CharTooltip|<#aurorian#>}}'
+    }
+];
+window.tooltips_config = {
+    offsetX: 10,
+    offsetY: 10
+};

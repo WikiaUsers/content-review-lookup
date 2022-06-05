@@ -19,7 +19,7 @@ window.hsbwiki = window.hsbwiki || {};
   /**
    * Internal variable to store references to each calculator on the page.
    */
-  const calcStore = {};
+  const searchStore = {};
 
   /**
    * Private helper methods for `Calc`
@@ -86,18 +86,17 @@ window.hsbwiki = window.hsbwiki || {};
       const config = this.$container.data();
       this.template = config.template;
       this.resultId = config.resultId;
+      this.placeholder = config.placeholder;
+      this.suggestions = config.suggestions ? config.suggestions.split(",") : [];
 
       if(!this.template) {
         this.configError = "Must specify a template the handle search results!";
       }
 
-      this.$input = undefined; // added in build()
+      this.comboBox = undefined; // added in build()
       this.$result = undefined; // added in build()
     }
 
-    /**
-     * @todo document
-     */
     getInput(id) {
       if (id) {
         id = this.getId(id);
@@ -133,47 +132,72 @@ window.hsbwiki = window.hsbwiki || {};
      * Build the search form
      */
     build() {
-      let $form = $("<form>")
-        .addClass("hsb-custom-search")
-        .attr({ action: "#" })
-        .submit((e) => {
-          e.preventDefault();
-          this.submitForm();
-        });
+		const suggestions = this.suggestions;
+		let $form = $("<form>")
+			.addClass("hsb-custom-search")
+			.attr({ action: "#" })
+			.submit((e) => {
+			  e.preventDefault();
+			  this.submitForm();
+			});
+        
+        this.comboBox = new OO.ui.ComboBoxInputWidget({
+        	icon: 'search',
+			placeholder: this.placeholder,
+			options: suggestions.sort().map((item)=>({ label: item, data: item }))
+		});
+		this.comboBox.on('change', () => {
+			this.comboBox.setOptions(
+				suggestions
+				.filter((s)=>s.toLowerCase().indexOf(this.comboBox.getValue().toLowerCase()) > -1)
+				.sort()
+				.map((item)=>({ label: item, data: item }))
+			);
+			
+	      	// Auto search if text matches a suggestion (mostly so selecting a suggestion auto-searches)
+	      	if(suggestions.map(s=>s.toLowerCase()).indexOf(this.comboBox.getValue().toLowerCase()) > -1) {
+	          $form.submit();
+	      	}
+		});
+		this.comboBox.$element.find('.oo-ui-comboBoxInputWidget-dropdownButton .oo-ui-buttonElement-button').on("click", ()=>{
+	      	this.comboBox.setValue('');
+			this.comboBox.setOptions( suggestions.sort().map((item)=>({ label: item, data: item })) );
+		});
+		$form.append(this.comboBox.$element);
 
-      this.$input = $("<input>").appendTo($form);
+		$("<button>").appendTo($form)
+	        .addClass("noselect")
+	        .append('<svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-magnifying-glass-small"></use></svg>')
+	        .click(function () {
+	          $form.submit();
+	        });
 
-      $("<button>").appendTo($form)
-        .addClass("noselect")
-        .append(
-          $("<div>").text("↵").css({
-            "font-size": "2em",
-            padding: "0 0.3em",
-            "text-align": "center",
-          })
-        )
-        .click(function () {
-          $form.submit();
-        });
+		this.$container.empty().append($form);
 
-      this.$container.empty().append($form);
-
-      this.$result = this.resultId
-        ? $("#"+this.resultId)
-        : $("<div>").appendTo(this.$container);
-
-      if (this.configError) {
-        this.$result.append(this.configError);
+		this.$result = this.resultId
+			? $("#"+this.resultId)
+			: $("<div>").appendTo(this.$container);
+	
+		if (this.configError) {
+			this.$result.append(this.configError);
+		}
+      
+      if(location.hash) {
+      	const search = decodeURI(location.hash.replace("#", "").replace("_", " "));
+      	if(this.suggestions.map(s=>s.toLowerCase()).indexOf(search.toLowerCase()) > -1) {
+	      	this.comboBox.setValue(search);
+	        $form.submit();
+	        
+	        $("html, body").animate({ scrollTop: this.comboBox.$element.offset().top - 100 });
+      	}
       }
-
-      this.enableSuggestions();
     }
 
     /**
      * Form submission handler
      */
     submitForm() {
-      let searchTerm = this.$input.val();
+      let searchTerm = this.comboBox.getValue();
 
       if (!searchTerm) {
         this.showError("Search must not be blank.");
@@ -218,39 +242,6 @@ window.hsbwiki = window.hsbwiki || {};
       });
     }
 
-    enableSuggestions() {
-      // Enable suggest on article fields
-      mw.loader.using(["mediawiki.api", "jquery.ui.autocomplete"], function () {
-        self.acInputs.forEach(function (input) {
-          $("#" + input).autocomplete({
-            // matching wikia's search min length
-            minLength: 3,
-            source: function (request, response) {
-              var term = request.term;
-
-              if (term in cache) {
-                response(cache[term]);
-                return;
-              }
-
-              new mw.Api()
-                .get({
-                  action: "opensearch",
-                  search: term,
-                  // default to main namespace
-                  namespace: self.suggestns.join("|") || 0,
-                  suggest: "",
-                })
-                .done(function (data) {
-                  cache[term] = data[1];
-                  response(data[1]);
-                });
-            },
-          });
-        });
-      });
-    }
-
     toggleSubmitButton(on) {
       const $button = this.$container.find("form button div");
       if(on) {
@@ -265,7 +256,7 @@ window.hsbwiki = window.hsbwiki || {};
    * @todo
    */
   function lookupSearch(calcId) {
-    return calcStore[calcId];
+    return searchStore[calcId];
   }
 
   /**
@@ -276,7 +267,7 @@ window.hsbwiki = window.hsbwiki || {};
       var c = new CustomSearch(this);
       c.build();
 
-      calcStore[c.form] = c;
+      searchStore[c.form] = c;
     });
 
     // allow scripts to hook into calc setup completion

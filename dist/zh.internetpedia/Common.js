@@ -77,5 +77,7 @@
 	});
 	$scrollUpButton.on('mouseenter', function() {
 		window.clearTimeout(scrollButtonTimer)
-	})
-})(jQuery, mw);
+	});
+	$showFullDate.on('mouseenter', function() {
+		window.customUserAccountAge(showFullDate)
+    });

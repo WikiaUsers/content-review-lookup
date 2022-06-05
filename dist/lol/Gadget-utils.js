@@ -63,6 +63,11 @@ window.moveToPViews = function($el) {
 	// fix for FandomDesktop not respecting pviews proper add to p-cactions
 	if ($('.page__main').length) {
 		$el.detach();
-		$el.insertAfter($('#p-views #ca-edit'));
+		if ($('#p-views #ca-formedit').length === 0) {
+			$el.insertAfter($('#p-views #ca-edit'));
+		}
+		else {
+			$el.insertAfter($('#p-views #ca-formedit'));
+		}
 	}
 }

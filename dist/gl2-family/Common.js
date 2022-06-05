@@ -6,3 +6,10 @@ importArticles({
         "w:c:dev:MediaWiki:Countdown/code.js"
     ]
 });
+
+/*DISCORD BANNER*/
+window.DiscordBannerSettings = {
+    bannerStyle: '3',
+    inviteLink: 'dRVEsXd8yC',
+    prependToRail: false
+};

@@ -43,7 +43,7 @@ $(function(){
 	$("html").css("scroll-behavior", "smooth");
 	
 	/* Add button to scroll back to top when sticky header is visible */
-	$("#WikiaBar").before("<div class='nms-back-to-top' title='Scroll to top of page'>↑</div>");
+	$("#WikiaBar").before("<div class='nms-back-to-top' title='Zum Anfang der Seite scrollen'>↑</div>");
 	$(".nms-back-to-top").click(function(){
 		document.getElementsByClassName("community-header-wrapper")[0].scrollIntoView();
 	});

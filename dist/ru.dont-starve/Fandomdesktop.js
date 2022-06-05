@@ -22,11 +22,11 @@ $(function(){
 
 var intervalCPH = setInterval(customph, 500)
 function customph() {
-    if ($(".Comment_wrapper__2mxBn").length) {
+    if ($(".CommentList_comment-list__SA8FA").length) {
         clearInterval(intervalCPH)
-        commentSection = document.getElementsByClassName('CommentList_comment-list__2eFaY')
+        commentSection = document.getElementsByClassName('CommentList_comment-list__SA8FA')
         commentSection[0].onclick = function(event) {
-            if (event.target.classList.contains('FormEntryPoint_form-entry-point__1Ohw9')) {
+            if (event.target.classList.contains('FormEntryPoint_form-entry-point__E4Elr')) {
                 var intervalCPH2 = setInterval(customph2, 200)
 
                 function customph2() {

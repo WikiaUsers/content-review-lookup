@@ -46,12 +46,12 @@ function formulate() {
     var individualmodhp = +($(this).parents('.statcalc .stat-container').find('.individualmodhp').text());
     var individualmodatk = +($(this).parents('.statcalc .stat-container').find('.individualmodattack').text());
 	//Multi hit ratio
-	var multihit1 = +($(this).parents('.statcalc .stat-container').find('.multihit1').text());
-	var multihit2 = +($(this).parents('.statcalc .stat-container').find('.multihit2').text());
-	var multihit3 = +($(this).parents('.statcalc .stat-container').find('.multihit3').text());
-	var multihit4 = +($(this).parents('.statcalc .stat-container').find('.multihit4').text());
-	var multihit5 = +($(this).parents('.statcalc .stat-container').find('.multihit5').text());
-	var multihit6 = +($(this).parents('.statcalc .stat-container').find('.multihit6').text());
+	var multihit1 = +($(this).parents('.statcalc .stat-container').find('.multihit1').text().replace(/,/g,''));
+	var multihit2 = +($(this).parents('.statcalc .stat-container').find('.multihit2').text().replace(/,/g,''));
+	var multihit3 = +($(this).parents('.statcalc .stat-container').find('.multihit3').text().replace(/,/g,''));
+	var multihit4 = +($(this).parents('.statcalc .stat-container').find('.multihit4').text().replace(/,/g,''));
+	var multihit5 = +($(this).parents('.statcalc .stat-container').find('.multihit5').text().replace(/,/g,''));
+	var multihit6 = +($(this).parents('.statcalc .stat-container').find('.multihit6').text().replace(/,/g,''));
 	var sumhitratio = multihit1 + multihit2 + multihit3 + multihit4 + multihit5 + multihit6;
     //Attack speed frames
     var attackspeed = +($(this).parents('.statcalc .stat-container').find('.attackspeed').text());

@@ -255,11 +255,11 @@
             
             $('body').append(
                 '<div class="badgetooltip" style="position:absolute; z-index:5000;">' +
-                    '<div class="badgetooltiparrow" style="width:0; height:0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 10px solid black; margin: 0 auto;" />' +
+                    '<div class="badgetooltiparrow" style="width:0; height:0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 10px solid black; margin: 0 auto;"></div>' +
                     '<div class="badgetootipwindow" style="width: 160px; background-color:white; border:2px solid black; border-radius:5px; text-align:center; padding:5px;">' +
-                        $('<span style="font-weight:bold;" />').text(badgename).prop('outerHTML') +
+                        $('<span style="font-weight:bold;">').text(badgename).prop('outerHTML') +
                         '<hr />' +
-                        $('<span />').text(title).prop('outerHTML') +
+                        $('<span>').text(title).prop('outerHTML') +
                     '</div>' +
                 '</div>'
             );
@@ -307,13 +307,13 @@
                             medalBorderLeft +
                         '</div>' +
                         // Title
-                        $('<h2 class="activity-heading" />').text(MedalSettings.module_title).prop('outerHTML') +
+                        $('<h2 class="activity-heading">').text(MedalSettings.module_title).prop('outerHTML') +
                         // Medal's section
                         '<div class="RewardSection" style="margin:0 5px;">' + 
-                            '<div class="in" style="text-align:center;" />' +
+                            '<div class="in" style="text-align:center;"></div>' +
                         '</div>' +
                         // Additional section
-                        '<div class="MedalAdditionalSection" style="width:100%; text-align:center;" />' +
+                        '<div class="MedalAdditionalSection" style="width:100%; text-align:center;"></div>' +
                     '</div>' +
                 '</section>'
             );
@@ -321,16 +321,16 @@
             if (MedalSettings.dataUser[user].length > 12) {
                 medalModal = true;
                 
-                medalModalForm.append('<div class="ModalMedalCollection"><div class="in" style="text-align:center;"/></div>');
+                medalModalForm.append('<div class="ModalMedalCollection"><div class="in" style="text-align:center;"></div></div>');
             
                 $('.MedalAdditionalSection').append(
-                        $('<button type="button" class="MedalMore" style="cursor:pointer;" />').text((MedalSettings.module_more === '' || typeof(MedalSettings.module_more) === 'undefined') ? 'Show more' : MedalSettings.module_more).prop('outerHTML')
+                        $('<button type="button" class="MedalMore" style="cursor:pointer;">').text((MedalSettings.module_more === '' || typeof(MedalSettings.module_more) === 'undefined') ? 'Show more' : MedalSettings.module_more).prop('outerHTML')
                 );
             }
             
             if (MedalSettings.module_info !== '' && typeof(MedalSettings.module_info) !== 'undefined') {
                 $('.MedalAdditionalSection').append(
-                    $('<a class="button" style="margin-left:1px; cursor:info;"/>')
+                    $('<a class="button" style="margin-left:1px; cursor:info;">')
                         .text(MedalSettings.module_info_title)
                         .attr('href', mw.config.get('wgServer') + mw.config.get('wgScriptPath') + '/wiki/' + MedalSettings.module_info)
                         .prop('outerHTML')
@@ -348,7 +348,7 @@
                 if (v.indexOf(':') > -1) {
                     count = v.replace(/.+:(.+)/g, '$1');
                     v = v.replace(/(.+):.+/g, '$1');
-                    imgBody += $('<div class="RewardCount" style="position:absolute; bottom:0; right:0; padding:0 4px; background-color:white; border:1px solid black; border-radius:10px; cursor:help; color:black;" />').text('x' + count).attr('title', MedalSettings.module_count_info).prop('outerHTML');
+                    imgBody += $('<div class="RewardCount" style="position:absolute; bottom:0; right:0; padding:0 4px; background-color:white; border:1px solid black; border-radius:10px; cursor:help; color:black;">').text('x' + count).attr('title', MedalSettings.module_count_info).prop('outerHTML');
                 }
                 
                 // Additional protect (if file not from Wikia image hosting)
@@ -387,7 +387,7 @@
             // Variables for this function
             medalCollect = [];
             medalDeleteImg = '<img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" class="sprite trash" />';
-            medalCollectForm = $('<div class="medalCollectForm" style="display:none; text-align:left; margin-top:5px; border-top:1px solid black;" />');
+            medalCollectForm = $('<div class="medalCollectForm" style="display:none; text-align:left; margin-top:5px; border-top:1px solid black;">');
         
             if (typeof MedalSettings === "undefined") {
                 // If settings not exists or broken: ask to create new!
@@ -425,7 +425,7 @@
                             'Users' +
                             '<button onclick="medalFunctions.addUserForm()" style="padding:0 4px; margin:0 10px 0 0; float:right;">Add user form</button>' +
                         '</h2>' +
-                        '<div class="MedalUser" style="height:240px; overflow-y:scroll; border-bottom:solid 1px #36759c;"/>' +
+                        '<div class="MedalUser" style="height:240px; overflow-y:scroll; border-bottom:solid 1px #36759c;"></div>' +
                     '</div>' +
                     // Medal's settings menu
                     '<div class="MedalListDialog MedalSetMenu" style="display:none;">' +
@@ -433,7 +433,7 @@
                             'Medals' +
                             '<button onclick="medalFunctions.addMedalForm()" style="padding:0 4px; margin:0 10px 0 0; float:right;">Add medal form</button>' +
                         '</h2>' +
-                        '<div class="MedalList" style="height:240px; overflow-y:scroll; border-bottom:solid 1px #36759c;" />' +
+                        '<div class="MedalList" style="height:240px; overflow-y:scroll; border-bottom:solid 1px #36759c;"></div>' +
                     '</div>' +
                 '</div>'
             );
@@ -473,7 +473,7 @@
                 medalCollectForm.append(
                     $('<div class="medalCollectBox" style="display:inline-block; margin:5px 0 0 10px;">' +
                         '<input type="checkbox">' + 
-                        $('<span />').text(v + ' ').prop('outerHTML') + 
+                        $('<span>').text(v + ' ').prop('outerHTML') + 
                         '<input class="MedalCollectAmount" style="width:30px; text-align:center;"/>' +
                     '</div>').attr('data-section', v).prop('outerHTML')
                 );
@@ -566,7 +566,7 @@
                         return;
                     }
                     
-                    medalModalForm = $('<fieldset style="border:solid 1px #36759c; margin:0; padding:1em;" />');
+                    medalModalForm = $('<fieldset style="border:solid 1px #36759c; margin:0; padding:1em;">');
                     
                     // Checking if we're on settings window or not
                     if (namespace != 4) {

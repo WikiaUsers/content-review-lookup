@@ -231,3 +231,8 @@ if ($('body').hasClass('theme-fandomdesktop-dark')) {
      $('.vk-widget').attr('data-color-button', '2f2d2b')
 }
 });
+
+/*Шаблон:Меню создания*/
+$(function(){
+    $('.craft-menu, .craft-menu2').find('img[alt="Фильтр ' +mw.config.get('wgPageName').split("/")[1].replaceAll("_"," ") + '.png"]').css({"box-shadow": "1px 1px 2px 1px var(--theme-accent-color) inset"});
+});

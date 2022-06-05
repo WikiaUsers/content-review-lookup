@@ -14,7 +14,7 @@
         var bg = $(elem).data('background');
         if(!bg) return;
         
-        summaryAddCSS('.champion-summary-v2[data-background="' + bg.replace('"', '\\"') + '"] .pi-theme-champion-summary > .pi-title::before { background-image: url(\'' + wgScriptPath + '/wiki/Special:Filepath/' + bg.replace('?', '%3F') + '?width=900\'); }');
+        summaryAddCSS('.champion-summary-v2[data-background="' + bg.replace('"', '\\"') + '"] .pi-theme-champion-summary > .pi-title::before { background-image: url(\'' + mw.config.get('wgScriptPath') + '/wiki/Special:Filepath/' + bg.replace('?', '%3F') + '?width=900\'); }');
         
         var offset = $(elem).data('offset');
         if(!isNaN(parseInt(offset))) {

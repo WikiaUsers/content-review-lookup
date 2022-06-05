@@ -439,7 +439,7 @@ function MainPage() {
 ( function ( $, mw ) {
     var nsNr = mw.config.get( 'wgNamespaceNumber' ),
         theText = '\u56de\u5831\u9801\u9762\u932f\u8aa4';
-        if ($.isArray(wgUserGroups) && !(0 > $.inArray("autoconfirmed", wgUserGroups))) {
+        if ($.isArray(mw.config.values.wgUserGroups) && !(0 > $.inArray("autoconfirmed", mw.config.values.wgUserGroups))) {
             $( addReportButton );
         }
     

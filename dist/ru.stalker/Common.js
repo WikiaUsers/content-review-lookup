@@ -1,4 +1,5 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
+/* <nowiki> */
 
 /**
  * Локальная функция загрузки скриптов с поддержкой указания проекта
@@ -12,8 +13,7 @@ importScript = function (page, proj) {
 			proj += '.fandom.com';
 		}
 		mw.loader.using('mediawiki.util').done( function () {
-			mw.loader.load('//' + proj + '/wiki/' + mw.util.wikiUrlencode(page) +
-				'?action=raw&ctype=text/javascript');
+			mw.loader.load('//' + proj + '/wiki/' + mw.util.wikiUrlencode(page) + '?action=raw&ctype=text/javascript');
 		} );
 	}
 };
@@ -26,7 +26,7 @@ importScript = function (page, proj) {
  * в $testElement имеет содержимое, правильнее указать следующий за ним элемент, чтобы быть
  * уверенным, что он загрузился до конца.
  */
-function runAsEarlyAsPossible(callback, $testElement, func) {
+window.runAsEarlyAsPossible = function (callback, $testElement, func) {
 	func = func || $;
 	$testElement = $testElement || $('.page-footer');
 
@@ -35,26 +35,25 @@ function runAsEarlyAsPossible(callback, $testElement, func) {
 	} else {
 		func(callback);
 	}
-}
+};
 
 /**
  * Загрузка стилей, скриптов и гаджетов, указанных в URL
- * См. также https://www.mediawiki.org/wiki/Snippets/Load_JS_and_CSS_by_URL
+ * См. также: https://www.mediawiki.org/wiki/Snippets/Load_JS_and_CSS_by_URL
  */
 mw.loader.using( ['mediawiki.util'], function () {
-	var withCSS    = mw.util.getParamValue('withCSS'),
-		withJS     = mw.util.getParamValue('withJS'),
-		withGadget = mw.util.getParamValue('withGadget');
+	var withCSS    = mw.util.getParamValue('withcss'),
+		withJS     = mw.util.getParamValue('withjs'),
+		withGadget = mw.util.getParamValue('withgadget');
 
 	if (withCSS) {
-		mw.loader.load( '/ru/wiki/MediaWiki:' + encodeURIComponent(withCSS) + 
-			'?action=raw&ctype=text/css', 'text/css' );
+		mw.loader.load( '/ru/wiki/MediaWiki:' + encodeURIComponent(withCSS) + '?action=raw&ctype=text/css', 'text/css' );
 	}
-
+	
 	if (withJS) {
-		importScript( 'MediaWiki:' + encodeURIComponent(withJS) );
+		mw.loader.load( '/ru/wiki/MediaWiki:' + encodeURIComponent(withJS) + '?action=raw&ctype=text/javascript' );
 	}
-
+	
 	if (withGadget) {
 		mw.loader.load( 'ext.gadget.' + encodeURIComponent(withGadget) );
 	}
@@ -114,5 +113,14 @@ runAsEarlyAsPossible(function () {
 
 }, $('.page-footer'), mw.hook('wikipage.content').add );
 
-/* Настройка скриптов */
-window.InactiveUsers = {months: 1, text: 'Неактивен'};
+// Число раскрытых по умолчанию навигационных шаблонов, 
+// если им задан параметр autocollapse. 
+mw.hook( 'wikipage.collapsibleContent' ).add( function() {
+	if ( 
+		$('.navbox-inner:not(.navbox-subgroup).mw-collapsed').length <= 1
+	) {
+		$('.navbox-inner.autocollapse > tbody > tr:first-child .mw-collapsible-toggle').click();
+	}
+});
+
+/* </nowiki> */

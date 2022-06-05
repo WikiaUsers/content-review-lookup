@@ -8,7 +8,7 @@ $(function() {
 		$('link[href*="/wikia.php"][href*="controller=ThemeApi"][href*="method=themeVariables"]').attr('href', function(i, v) { // Based on [[w:c:dev:MediaWiki:ThemeSelector.js]]
 			return !paramRegExp.test(v) ? v + '&variant=' + newTheme : v.replace(paramRegExp, function(m, p1, p2) { return p1 + 'variant=' + newTheme + p2; });
 		});
-		$('link#caburum-theme-switchee').attr('href', mw.util.wikiScript('load') + '?modules=ext.fandom.GlobalComponents.GlobalComponentsTheme.' + newTheme + '.css|ext.fandom.GlobalComponents.GlobalComponentsTheme.nav-' + newTheme + '.css&only=styles');
+		$('link#caburum-theme-switchee').attr('href', mw.util.wikiScript('load') + '?modules=ext.fandom.GlobalComponents.GlobalComponentsTheme.' + newTheme + '.css|ext.fandom.GlobalComponents.GlobalNavigationTheme.' + newTheme + '.css&only=styles');
 		$('body').removeClass('theme-fandomdesktop-light theme-fandomdesktop-dark').addClass('theme-fandomdesktop-' + newTheme);
 
 		mw.config.set('isDarkTheme', newTheme === 'dark');
@@ -18,7 +18,7 @@ $(function() {
 		$('.caburum-theme-switcher').attr('title', mw.msg('fd-community-header-' + (newTheme === 'light' ? 'dark' : 'light') + '-theme'));
 	}
 
-	$.when(mw.hook('dev.wds').add(), mw.loader.using(['mediawiki.api', 'mediawiki.jqueryMsg']), mw.hook('wikipage.content').add())
+	$.when(mw.hook('dev.wds').add(), mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.jqueryMsg']), mw.hook('wikipage.content').add())
 		.then(function() {
 			return new mw.Api().loadMessagesIfMissing(['fd-community-header-light-theme', 'fd-community-header-dark-theme']);
 		})

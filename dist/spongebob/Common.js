@@ -13,6 +13,7 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
     'The_Smarter,_Wiser_King_Dedede': ['assistant'],
     'FireMatch': ['assistant'],
+    'SpongyFanatic2021': ['assistant'],
     'Idroppedmypen': ['discord'],
     'Minnesotaman2007!': ['discord'],
     'TheJasbre202': ['discord'],
@@ -348,8 +349,8 @@ window.MessageWallUserTags = {
         'AMK152': 'Wiki Adopter • Bureaucrat • Administrator',
         'Spongebob456': 'Bureaucrat • Administrator',
         'BSpongeSM02':  'Bureaucrat • Administrator',
+        'Anthony2306':  'Bureaucrat • Administrator',
         
-        'Anthony2306': 'Administrator',
         'Kandy_Katie': 'Administrator',
         'Koolkitty108': 'Administrator',
         'SPONGEBOBSUPERFANINFINITY': 'Administrator',
@@ -357,6 +358,7 @@ window.MessageWallUserTags = {
     
         'The_Smarter,_Wiser_King_Dedede': 'Assistant',
         'FireMatch': 'Assistant',
+        'SpongyFanatic2021': 'Assistant',
 
         'ItzSpongeBob_1999': 'Discussion Moderator',
         'SpongeTron D': 'Discussion Moderator',

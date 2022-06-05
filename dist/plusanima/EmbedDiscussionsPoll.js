@@ -15,7 +15,7 @@
         frame.setAttribute('border', 0);
         frame.setAttribute('frameborder', 0);
         frame.style.width = '100%';
-        frame.setAttribute('src', wgServer + '/f/p/' + pollID);
+        frame.setAttribute('src', window.location.protocol + '//' + window.location.host + '/f/p/' + pollID);
         // Hide until we are finished
         frame.style.position = 'absolute';
         frame.style.opacity = 0;

@@ -9,4 +9,18 @@ window.SpoilerAlertJS = {
     no: 'No',
     fadeDelay: 500
 };
+/* Youtube Link Integrator */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:YouTubeModal/code.js',
+    ]
+});
+/* Article Previews */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ArticlePreview/code.js',
+    ]
+});
 // </nowiki>

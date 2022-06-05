@@ -23,7 +23,7 @@ $(function() {
         type: 'script',
         article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
-    var place = '.page-header__actions .wds-dropdown__content .wds-list, .page-header__contribution-buttons .wds-dropdown__content .wds-list, .UserProfileActionButton .WikiaMenuElement';
+    var place = '.wds-global-navigation__user-menu .wds-list, .wiki-tools .wds-dropdown__content .wds-list';
     mw.hook('dev.i18n').add(function(i18no) {
         i18no.loadMessages('ViewInContentLang').then(function(i18n) {
             $(

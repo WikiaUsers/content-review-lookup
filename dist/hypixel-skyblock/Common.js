@@ -11,8 +11,8 @@ Any JavaScript here will be loaded for all users on every page load.
  * (B00) Element animator
  * (C00) My Block ID
  * (D00) Anchor Hash Links
- ** (Y01) Less 
- ** (Y02) Less Source Updater  
+ * (Y01) Less
+ * (Y02) Less Source Updater
 
  Immediately Executed
  * (X00) importJS pre-script actions
@@ -75,7 +75,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
             var serverlang = conf.wgContentLanguage;
             var langcode = match2 ? ("/" + match2[1]) : (match ? "" : serverlang === "en" ? "" : ("/" + serverlang));
             var page = "/" + (match2 ? match2[2] : match ? match[2] : v);
-            var url = "https://" + wiki + ".fandom.com" + langcode + page + "?action=raw&ctype=text/javascript";
+            var url = "https://" + wiki + ".fandom.com" + langcode + page + "?action=raw&ctype=text/javascript&redirect=no";
             $.ajax({
                 url: url,
                 dataType: "script",

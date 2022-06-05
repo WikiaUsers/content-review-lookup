@@ -2,6 +2,32 @@ if ($('.interactive-maps-container').length != 0)
 {
   (function($)
   {
+  	var m = {
+      isjQueryEvent: function(elem, event, fun)
+      {
+        var events = $._data(elem, "events");
+        return !!events && !!(events = events[event]) && (!fun || events.some(function(data)
+        {
+           return data.handler == fun;
+        }));
+      }
+  	};
+    $.fn.onParent = function(evt, target, fn)
+    {
+      var $th = $(this);
+      $(document).on(evt, function()
+      {
+      	if ($(target).parents().length != 0)
+      	{
+          var tgt = $th.find(target);
+          if (tgt.length != 0)
+          {
+            var fltTgt = tgt.filter(function(i,e){return !m.isjQueryEvent(e, evt, fn);});
+            if (fltTgt.length != 0) fltTgt.on(evt, fn);
+          }
+      	}
+      });
+    };
     $.event.special.DOMNodeChanged = {
       m: {
         observer: function(){}
@@ -118,7 +144,7 @@ if ($('.interactive-maps-container').length != 0)
         });
   	  }
   	};
-    $('.leaflet-popup-pane').on('DOMNodeChanged', function(e)
+    $('.interactive-maps-container').onParent('DOMNodeChanged', '.leaflet-popup-pane', function(e)
     {
       if (e.detail[0].removedNodes.length == 0)
       {

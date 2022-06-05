@@ -2,9 +2,6 @@
 	
 	"use strict";
 
-    // Temporarily keep Oasis support
-    var isOasis = mw.config.get('skin') === 'oasis';
-
 	window.lockOldComments = window.lockOldComments || {};
 	if (window.lockOldComments.loaded) return;
 	window.lockOldComments.loaded = true;
@@ -21,9 +18,7 @@
 	// The element matching this selector is part of the original HTML,
 	// so it should be safe to check for it just once.
 	var commentSection = document.querySelector(
-		isOasis ?
-			  '#WikiaMainContentContainer > #mw-data-after-content > #articleComments'
-			: '.page-footer > #mw-data-after-content > #articleComments');
+		'.page-footer > #mw-data-after-content > #articleComments');
 
 	if (!commentSection) return;
 
@@ -81,7 +76,7 @@
 	function lockBox(target) {
 		$(target)
 		.addClass('LockOldComments-locked')
-		.find('.FormEntryPoint_form-entry-point__1Ohw9')
+		.find('[class*="FormEntryPoint_form-entry-point__"]')
 			.after(
 				addMsg(
 					$('<div>'),
@@ -97,7 +92,7 @@
 					.css({
 						padding: '12px',
 						'text-align': 'center',
-						color: isOasis ? 'var(--theme-warning-color)' : 'var(--theme-alert-color)'
+						color: 'var(--theme-alert-color)'
 					})
 					.append(addMsg(
 						$('<strong>'),
@@ -153,13 +148,12 @@
 			// (No strict mode violation here, 'this' is passed by .each() )
 			var $this = $(this);
 
-            if ($this.hasClass('Comment_wrapper__2mxBn')) {
+            if (($this.attr('class') || '').indexOf('Comment_wrapper__') !== -1) {
                 addedComments.push(this);
-            } else if (
-            	['article-comments-app', 'CommentList_comment-list__2eFaY']
-            	.indexOf($this.attr('class')) >= 0) {
+            } else if ($this.is(
+            	'.article-comments-app, [class*="CommentList_comment-list__"')) {
                 addedComments = addedComments.concat(
-                	$this.find('.Comment_wrapper__2mxBn').toArray());
+                	$this.find('[class*="Comment_wrapper__"]').toArray());
             }
         }
 
@@ -219,7 +213,7 @@
 			observer = new MutationObserver(checkAddedNodes);
 			observer.observe(commentSection, { childList: true, subtree: true });
 		
-			lock($(commentSection).find('.Comment_wrapper__2mxBn'));
+			lock($(commentSection).find('[class*="Comment_wrapper__"]'));
 		});
 			
 	}

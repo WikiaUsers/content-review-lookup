@@ -21,7 +21,7 @@ if (!nkch.tt.isActive) {
 
             mw.util.addCSS(
                 /* ~ basic ~ */
-                ".nkch-theme-toggler__wrapper { background-color: var(--theme-body-background-color); border: 1px solid var(--theme-community-header-color); border-radius: 15px; display: flex; height: 30px; justify-content: center; margin-inline-end: 6px; position: relative; }" +
+                ".nkch-theme-toggler__wrapper { background-color: var(--theme-body-background-color); border: 1px solid var(--theme-community-header-color); border-radius: 15px; display: flex; height: 30px; justify-content: center; margin-inline-end: 6px; position: relative; width: 86px; }" +
                 ".nkch-theme-toggler { border-radius: 15px; display: flex; overflow: hidden; position: relative; z-index: 2; }" +
 
                 ".nkch-theme-toggler__button { align-items: center; background: none; border: none; cursor: pointer; display: flex; height: 28px; justify-content: center; width: 28px; z-index: 2; }" +
@@ -39,7 +39,13 @@ if (!nkch.tt.isActive) {
                 ".fandom-sticky-header .nkch-theme-toggler__button-icon .wds-icon-small { fill: var(--theme-sticky-nav-text-color); }" +
                 ".fandom-sticky-header .nkch-theme-toggler__button.is-active .wds-icon-small { fill: var(--theme-sticky-nav-background-color); }" +
 
-                ".fandom-sticky-header .nkch-theme-toggler__pointer { background-color: var(--theme-sticky-nav-text-color); }"
+                ".fandom-sticky-header .nkch-theme-toggler__pointer { background-color: var(--theme-sticky-nav-text-color); }" + 
+
+                /* ~ FandomMobile ~ */
+                ".skin-fandommobile .nkch-theme-toggler__wrapper { background-color: var(--fandom-global-nav-background-color); border: 1px solid var(--fandom-global-nav-text-color); margin: 9px auto 0 auto; }" +
+                ".skin-fandommobile .nkch-theme-toggler__button-icon .wds-icon-small { fill: var(--fandom-global-nav-text-color); }" +
+                ".skin-fandommobile .nkch-theme-toggler__button.is-active .wds-icon-small { fill: var(--fandom-global-nav-background-color); }" +
+                ".skin-fandommobile .nkch-theme-toggler__pointer { background-color: var(--fandom-global-nav-text-color); }"
             );
 
             nkch.tt.el = {
@@ -158,14 +164,39 @@ if (!nkch.tt.isActive) {
                 document.head.append(nkch.tt.el.theme.nav.$e);
 
                 function changeTheme(theme) {
-                    if (theme === "light" && document.body.classList.contains("theme-fandomdesktop-dark")) {
-                        document.body.classList.remove("theme-fandomdesktop-dark");
-                        document.body.classList.add("theme-fandomdesktop-light");
-                        mw.config.set("isDarkTheme", false);
-                    } else if (theme === "dark" && document.body.classList.contains("theme-fandomdesktop-light")) {
-                        document.body.classList.remove("theme-fandomdesktop-light");
-                        document.body.classList.add("theme-fandomdesktop-dark");
-                        mw.config.set("isDarkTheme", true);
+                    var modules = [];
+
+                    switch (mw.config.get("skin")) {
+                        case "fandomdesktop":
+                            if (theme === "light" && document.body.classList.contains("theme-fandomdesktop-dark")) {
+                                document.body.classList.remove("theme-fandomdesktop-dark");
+                                document.body.classList.add("theme-fandomdesktop-light");
+
+                                mw.config.set("isDarkTheme", false);
+                            } else if (theme === "dark" && document.body.classList.contains("theme-fandomdesktop-light")) {
+                                document.body.classList.remove("theme-fandomdesktop-light");
+                                document.body.classList.add("theme-fandomdesktop-dark");
+
+                                mw.config.set("isDarkTheme", true);
+                            }
+
+                            modules.push("ext.fandom.GlobalComponents.GlobalNavigationTheme." + theme + ".css", "ext.fandom.GlobalComponents.GlobalComponentsTheme." + theme + ".css");
+                            break;
+                        case "fandommobile":
+                            if (theme === "light" && document.body.classList.contains("theme-fandommobile-dark")) {
+                                document.body.classList.remove("theme-fandommobile-dark");
+                                document.body.classList.add("theme-fandommobile-light");
+                                
+                                mw.config.set("isDarkTheme", false);
+                            } else if (theme === "dark" && document.body.classList.contains("theme-fandommobile-light")) {
+                                document.body.classList.remove("theme-fandommobile-light");
+                                document.body.classList.add("theme-fandommobile-dark");
+
+                                mw.config.set("isDarkTheme", true);
+                            }
+                            
+                            modules.push("ext.fandom.GlobalComponents.GlobalNavigationTheme." + theme + ".css", "ext.fandom.GlobalComponents.GlobalComponentsTheme.nav-" + theme + ".css", "ext.fandom.GlobalComponents.GlobalComponentsTheme." + theme + ".css", "skin.fandommobile.fandom." + theme + ".css");
+                            break;
                     }
 
                     if (theme !== "wiki" && (theme === "light" || theme === "dark")) {
@@ -181,8 +212,9 @@ if (!nkch.tt.isActive) {
                             $.get({
                                 url: mw.util.wikiScript("load"),
                                 data: {
-                                    modules: [mw.config.get("wgVersion") === "1.37.2" ? "ext.fandom.GlobalComponents.GlobalNavigationTheme." + theme + ".css" : "ext.fandom.GlobalComponents.GlobalComponentsTheme.nav-" + theme + ".css", "ext.fandom.GlobalComponents.GlobalComponentsTheme." + theme + ".css"].join("|"),
-                                    only: "styles"
+                                    modules: modules.join("|"),
+                                    only: "styles",
+                                    skin: mw.config.get("skin")
                                 }
                             })
                         ]).then(
@@ -257,9 +289,17 @@ if (!nkch.tt.isActive) {
                     }
                 }
 
-                setInterval(checkIfStickyNavIsVisible, 100);
-
-                $(".page-counter").after($togglerElement);
+                
+                switch (mw.config.get("skin")) {
+                    case "fandomdesktop":
+                        setInterval(checkIfStickyNavIsVisible, 100);
+        
+                        $(".page-counter").after($togglerElement);
+                        break;
+                    case "fandommobile":
+                        $(".mobile-community-bar__navigation .mobile-community-bar__level-1").after($togglerElement);
+                        break;
+                }
         });
 
         importArticle({

@@ -2825,6 +2825,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "blooming": {
+                "name": "Blooming",
+                "types": [
+                    "flower",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "blossom": {
                 "name": "Blossom",
                 "types": [
@@ -10329,6 +10345,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "15_hours_15",
                 "rarity": 4,
                 "offspringeligibility": "gift",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "flavus": {
+                "name": "Flavus",
+                "types": [
+                    "flower",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]
@@ -26074,6 +26106,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ]
             },
+            "revitalizing": {
+                "name": "Revitalizing",
+                "types": [
+                    "flower",
+                    "white",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "blue"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "rex": {
                 "name": "Rex",
                 "types": [
@@ -31870,6 +31929,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "15_hours_15",
                 "rarity": 3,
                 "offspringeligibility": "worldevent",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "terrananemone": {
+                "name": "Terran Anemone",
+                "types": [
+                    "flower",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]

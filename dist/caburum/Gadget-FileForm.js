@@ -1,81 +1,278 @@
 (function() {
-	// Variables
-	var page = mw.config.get('wgCanonicalSpecialPageName'),
-	file = {
-		description: '',
-		type: '',
-		source: '',
-		author: '',
-		license: ''
-	};
+	// Only run on Special:Upload
+	if (
+		mw.config.get('wgCanonicalSpecialPageName') !== 'Upload'
+		|| mw.util.getParamValue('wpForReUpload')
+		|| $('.mw-destfile-warning').length // ignore if there is a warning for now (@todo: needs to persist better)
+	) return;
 
-	// Only run on Upload page
-	if (page != 'Upload') { return; }
+	var config,
+		// Preact shorthands
+		preact, h /* h('div', props) */, tags /* tags.div(props) */, useState, useEffect, useReducer;
 
-	// Disable original form fields
-	$('.mw-special-Upload tr.mw-htmlform-field-Licenses').css('display', 'none');
-	$('.mw-special-Upload tr.mw-htmlform-field-HTMLTextAreaField').css('display', 'none');
+	// The root component of the app
+	function App() {
+		var fieldState = useState({});
 
-	// Create new form fields
-	var $formDescription = $(`<tr class="fileform-description">
-		<td class="mw-label"><label for="fileform-description">File description:</label></td>
-		<td class="mw-input"><textarea name="fileform-description" id="fileform-description" cols="80" rows="2" placeholder="Please enter a brief description of the file"></textarea></td>
-	</tr>`);
-	var $formType = $(`<tr class="fileform-type">
-		<td class="mw-label"><label for="fileform-type">File type:</label></td>
-		<td><select name="fileform-type" id="fileform-type">
-			<option value="Screenshot">Screenshot: for screenshots from the game itself</option>
-			<option value="Announcement">Announcement: for screenshots of in-game announcements</option>
-			<option value="Concept Art">Concept Art: for concept artwork</option>
-			<option value="Promotional">Promotional: for promotional artwork</option>
-			<option value="Developer">Developer: for pictures of Innersloth developers</option>
-			<option value="Hat">Hat: for hats that players can customize their character with</option>
-			<option value="Pet">Pet: for pets that players can customize their character with</option>
-			<option value="Skin">Skin: for skins that players can customize their character with</option>
-			<option value="Color">Color: for colors that players can select from</option>
-			<option value="Audio">Audio: for audio files</option>
-			<option value="Video">Video: for video files</option>
-			<option value="Game Asset">Game Asset: for assets (mainly images) extracted from the game files that don't belong in a different category</option>
-			<option value="Merchandise">Merchandise: for merchandise that can be/could have been bought in the Innersloth Merchandise Store</option>
-		</select></td>
-	</tr>`);
-	var $formSource = $(`<tr class="fileform-source">
-		<td class="mw-label"><label for="fileform-source">File source:</label></td>
-		<td class="mw-input"><input name="fileform-source" id="fileform-source" size="80" value="[[Among Us]]"></input></td>
-	</tr>`);
-	var $formAuthor = $(`<tr class="fileform-author">
-		<td class="mw-label"><label for="fileform-author">File author:</label></td>
-		<td class="mw-input"><input name="fileform-author" id="fileform-author" size="80" value="[[Innersloth]]"></input></td>
-	</tr>`);
-	var $formLicense = $('.mw-htmlform-field-Licenses').css('display', '').addClass('fileform-license');
+		var previousTemplate = useState('');
+		var tabberState = useReducer(function(state, newState) {
+			var mwSummary = $('#mw-htmlform-description .mw-htmlform-field-HTMLTextAreaField');
+			switch (newState) {
+				case 'fileform':
+					// When going back, tell the user that their custom changes won't be saved
+					if (
+						previousTemplate.value != $('#wpUploadDescription').val().trim()
+						&& !confirm('Returning to the form will overwrite your changes. Do you want to go back?')
+					) return state;
 
-	var $form = $formDescription.add($formType).add($formSource).add($formAuthor).add($formLicense);
+					mwSummary.css('display', 'none');
+					break;
+				case 'mw':
+					previousTemplate.set(generateTemplate(fieldState.value));
+					mwSummary.css('display', '');
+					break;
+			}
+			return newState;
+		}, 'fileform');
 
-	// Insert new form fields into old form
-	$('.mw-special-Upload #mw-htmlform-description > tbody').append($form);
-	
-	// Events to update summary
-	$('#fileform-type').change(updateSummary());
-	$('#fileform-type').change(updateSummary());
-	$('#fileform-source').change(updateSummary());
-	$('#fileform-author').change(updateSummary());
-	$('#wpLicense').change(updateSummary());
+		// Generate field elements
+		return tags.td({ colspan: 2, child: tags.table({ children: [
+			h(Tabber, {
+				items: [
+					{ label: 'FileForm', id: 'fileform' },
+					{ label: 'Summary', id: 'mw' }
+				],
+				state: tabberState
+			}),
+			tags.tr({ // for debugging
+				child: 'Form state: ' + JSON.stringify(fieldState.value),
+				style: { display: 'none' }
+			}),
+			tabberState.state === 'fileform' ? h(FormElements, {
+				config: config,
+				state: fieldState
+			}) : null
+		]})});
+	}
 
-	// Update summary
-	function updateSummary() {
-		// Populate summary
-		file = $.extend({}, file, {
-			description: $.trim($('#fileform-description').val()),
-			type: $('#fileform-type').val(),
-			source: $('#fileform-source').val(),
-			author: $('#fileform-author').val(),
-			license: $('#wpLicense').val()
+	function shouldHide(data, state) { // hide if data.if doesn't match the current state
+		return data.if && !Object.keys(data.if).every(function(key) {
+			return data.if[key].includes(state[key]);
 		});
+	}
 
-		// Generate summary
-		description = `{{File\n|description = ${file.description}\n|type = ${file.type}\n|source = ${file.source}\n|author = ${file.author}\n|license = ${file.license}\n}}`
+	function generateTemplate(params) {
+		// Generate template
+		var template = '{{File\n';
+		var isFilledOut = false;
+		config.forEach(function(param) { // so it is in the order of the config
+			var value = params[param.id];
+			if (
+				value // not blank
+				&& param.default != value // not the default
+				&& !shouldHide(param, params) // not hidden by an if
+			) {
+				template += '|' + param.id + ' = ' + value + '\n';
+				isFilledOut = true;
+			}
+		});
+		return isFilledOut ? (template + '}}') : '';
+	}
 
-		// Set summary
-		$('#wpUploadDescription').val(description);
-	};
+	function FormElements(props) {
+		useEffect(function() {
+			// console.log('FileForm state change:', props.state.value);
+			$('#wpUploadDescription').val(generateTemplate(props.state.value));
+		}, [props.state.value]);
+
+		return tags.div({
+			id: 'fileform-fields',
+			children: props.config.map(function(data) {
+				data.state = props.state;
+	
+				return tags.tr({
+					style: {
+						display: shouldHide(data, props.state.value) ? 'none': null
+					},
+					children: [
+						tags.td({ child: tags.label({
+							for: 'fileform-' + data.id,
+							child: data.label + ' '
+						})}),
+						tags.td({ child: h(InputElement, data)})
+					]
+				});
+			})
+		});
+	}
+
+	// Creates various input elements
+	function InputElement(props) {
+		function onFieldChange(e) {
+			props.state.set(function(state) {
+				// we need to create a new object in order to trigger a state update
+				return Object.assign({}, state, {
+					[props.id]: e.target.value
+				});
+			});
+		}
+
+		// Initialize state if it hasn't already
+		useEffect(function() {
+			if (!props.state.value[props.id]) onFieldChange({ target: {
+				value: props.type === 'select' ? props.default : ''
+			} });
+		}, []);
+
+		var id = 'fileform-' + props.id;
+		switch (props.type) {
+			// multiline input
+			case 'textarea': return tags.textarea({
+				id: id,
+				value: props.state.value[props.id],
+				onInput: onFieldChange,
+				rows: 1
+			});
+			// plain one-line input
+			case 'input': return tags.input({
+				id: id,
+				value: props.state.value[props.id],
+				onInput: onFieldChange,
+				type: 'text',
+				placeholder: props.default
+			});
+			// dropdown with values
+			case 'select': return tags.select({
+				id: id,
+				value: props.state.value[props.id],
+				onInput: onFieldChange,
+				children: Object.keys(props.options).map(function(option) {
+					return tags.option({
+						value: option,
+						child: props.options[option],
+						// selected: props.default === option // set in initial useEffect
+					});
+				})
+			});
+			// one-line input with suggested values
+			case 'datalist': return preact.frag([
+				tags.input({
+					id: id,
+					value: props.state.value[props.id],
+					onInput: onFieldChange,
+					list: id + '-list',
+					placeholder: props.options[props.default]
+				}),
+				tags.datalist({
+					id: id + '-list',
+					children: Object.keys(props.options).map(function(option) {
+						return tags.option({
+							value: option,
+							child: props.options[option]
+						});
+					})
+				})
+			]);
+			// error
+			default: return tags.div({
+				class: 'error',
+				child: 'Unknown type'
+			});
+		}
+	}
+
+	function Tabber(props) {
+		return tags.div({
+			class: 'wds-tabs__wrapper with-bottom-border',
+			child: tags.ul({
+				class: 'wds-tabs',
+				children: props.items.map(function(item) {
+					return tags.li({
+						onClick: function() {
+							props.state.dispatch(item.id);
+						},
+						class: 'wds-tabs__tab ' + (props.state.state === item.id ? 'wds-is-current' : ''),
+						child: tags.div({
+							class: 'wds-tabs__tab-label',
+							child: tags.a({
+								child: item.label,
+								href: '#!' + item.id
+							})
+						})
+					});
+				})
+			})
+		});
+	}
+
+	function init() {
+		// Remove original form
+		$('#mw-htmlform-description .mw-htmlform-field-HTMLTextAreaField').css('display', 'none'); // summary
+		$('.mw-htmlform-field-Licenses, #mw-htmlform-description tr:has(#mw-license-preview), .mw-upload-editlicenses').remove(); // license stuff
+
+		// Add container for our form
+		$('#fileform').remove();
+		$('#mw-htmlform-description .regularFileSelect').after('<tr id="fileform"></tr>');
+
+		var container = document.getElementById('fileform');
+		container.innerHTML = '';
+		preact.render(
+			h(App),
+			container
+		);
+	}
+
+	var preactDefer = $.Deferred(), configDefer = $.Deferred();
+
+	mw.hook('dev.preact').add(function(_preact) {
+		// Assign to our shorthands
+		preact = _preact;
+		h = preact.h;
+		tags = preact.tags;
+		useState = preact.useState;
+		useEffect = preact.useEffect;
+		useReducer = preact.useReducer;
+
+		preactDefer.resolve();
+	});
+
+	mw.hook('dev.fetch').add(function(fetch) {
+		fetch({
+			request: function(resolve, reject) {
+				var page = 'MediaWiki:Gadget-FileForm/data.json';
+				new mw.Api().get({
+					formatversion: 2,
+					action: 'query',
+					prop: 'revisions',
+					rvslots: 'main',
+					rvprop: 'content',
+					titles: page
+				}).done(function (d) {
+					if (d.error) reject(console.error(d.error));
+					if (d.query.pages[0].missing) reject(console.error('FileForm: Config not found at ' + page));
+					else try {
+						config = JSON.parse(d.query.pages[0].revisions[0].slots.main.content);
+						if (!config.length) return reject(console.error('FileForm: Empty config'));
+						resolve(config);
+					} catch(e) { reject(console.error('FileForm: Failed to load config: ' + e)) }
+				}).fail(function(e) {
+					reject(console.error(e));
+				});
+			},
+			name: 'FileForm'
+		}).then(function(_config) {
+			config = _config;
+			configDefer.resolve();
+		});
+	});
+
+	$.when(preactDefer, configDefer).then(init);
+
+	importArticles({
+		type: 'script',
+		articles: [
+			'u:dev:MediaWiki:Preact.js',
+			'u:dev:MediaWiki:Fetch.js'
+		]
+	});
 })();

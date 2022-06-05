@@ -5,3 +5,6 @@ importArticles({
         'MediaWiki:Common.js/FormulaCalculator.js'
     ]
 });
+
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.addNoteAbove = true;

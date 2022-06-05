@@ -6,8 +6,8 @@ $(function() {
 	
 	//initialize script-wide variables
 	var paramRegExp = /(\?|&)variant(?:=[^&]*)?(&|$)/g,
-		extRegExp = new RegExp('((?:=|%7[Cc])ext\\.fandom\\.GlobalComponents\\.GlobalComponentsTheme\\.'
-			+ '(?:nav-)?)(dark|default|light)'
+		extRegExp = new RegExp('((?:=|%7[Cc])ext\\.fandom\\.GlobalComponents\\.(?:GlobalComponentsTheme|GlobalNavigationTheme)\\.)'
+			+ '(dark|default|light)'
 			+ '(?:\\.css(?:%7[Cc]|&|$))', 'g'),
 		now = Math.floor(Date.now() / 1000),
 		scriptsReady = $.Deferred(),

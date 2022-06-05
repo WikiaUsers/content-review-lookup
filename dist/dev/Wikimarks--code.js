@@ -282,6 +282,8 @@
 
                 if (['string', 'number'].indexOf(typeof test) > -1) {
                     return test;
+                } else {
+                	return mw.config.get(p1);
                 }
             });
 

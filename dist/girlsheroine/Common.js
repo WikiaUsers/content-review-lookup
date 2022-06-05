@@ -12,3 +12,10 @@ $(function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
     $("span.insertusername").html(wgUserName);
 });
+
+/*DISCORD BANNER*/
+window.DiscordBannerSettings = {
+    bannerStyle: '3',
+    inviteLink: 'dRVEsXd8yC',
+    prependToRail: false
+};

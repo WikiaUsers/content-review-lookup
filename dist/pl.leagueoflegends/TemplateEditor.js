@@ -1,4 +1,6 @@
 $(function() {
+	var wg = mw.config.get(['wgRestrictionEdit', 'wgUserGroups', 'wgPageName', 'wgArticleId', 'wgScriptPath']);
+	
     dataTemplates = [
         {
             'match':/(Szablon|Template)\:Dane\/.+/ig,
@@ -9,21 +11,21 @@ $(function() {
     function dataTemplateEditor() {
         window.templateEditorReady = false;
         var permision = true;
-        if(typeof(wgRestrictionEdit) != 'undefined') {
-            if(wgRestrictionEdit[0] == 'autoconfirmed') {
+        if(typeof(wg.wgRestrictionEdit) != 'undefined') {
+            if(wg.wgRestrictionEdit[0] == 'autoconfirmed') {
                 permision = false;
                 var groups = ['adminmentor', 'bot', 'autoconfirmed', 'helper', 'staff', 'sysop', 'vstf'];
                 for(var x=0;x<groups.length;x++) {
-                    if(wgUserGroups.indexOf(groups[x]) != -1) {
+                    if(wg.wgUserGroups.indexOf(groups[x]) != -1) {
                         permision = true;
                         break;
                     }
                 }
-            } else if(wgRestrictionEdit[0] == 'sysop') {
+            } else if(wg.wgRestrictionEdit[0] == 'sysop') {
                 permision = false;
                 var groups = ['adminmentor', 'helper', 'staff', 'sysop', 'vstf'];
                 for(var x=0;x<groups.length;x++) {
-                    if(wgUserGroups.indexOf(groups[x]) != -1) {
+                    if(wg.wgUserGroups.indexOf(groups[x]) != -1) {
                         permision = true;
                         break;
                     }
@@ -33,7 +35,7 @@ $(function() {
         if(!permision) return;
         
         for(var i=0;i<dataTemplates.length;i++)
-            if(dataTemplates[i]['match'].test(wgPageName))
+            if(dataTemplates[i]['match'].test(wg.wgPageName))
                 return dataTemplateHandle(i);
     }
     function dataTemplateMenu(index) {
@@ -84,7 +86,7 @@ $(function() {
         var retry = $('<input type="button" class="button" id="te-retry-button" style="display: none;" value="Spróbuj ponownie" />')
             .data('template', index)
             .click(function() {
-                dataTemplateGetToken(wgArticleId);
+                dataTemplateGetToken(wg.wgArticleId);
             });
         var msg = $('<span id="te-error" style="display: none;"></span>');
         $('.te-controls').append([msg,' ',edit,' ',retry,' ',savespan]);
@@ -94,7 +96,7 @@ $(function() {
     }
     function dataTemplateGetToken(pageid) {
         $('#te-error, #te-retry-button').fadeOut('slow');
-        var url = wgScriptPath+'/api.php?format=json&action=query&prop=info%7Crevisions&intoken=edit&pageids='+pageid;
+        var url = wg.wgScriptPath+'/api.php?format=json&action=query&prop=info%7Crevisions&intoken=edit&pageids='+pageid;
         $.ajax({
             url: url,
             dataType: 'json',
@@ -119,7 +121,7 @@ $(function() {
             $(document.body).addClass('te-active');
             template = dataTemplates[index];
             $('#te-edit-button').fadeOut('slow', function() {
-                window.teEditToken = dataTemplateGetToken(wgArticleId);
+                window.teEditToken = dataTemplateGetToken(wg.wgArticleId);
             });
             var inputs = $('#mw-content-text .te-input');
             inputs.each(function() {
@@ -138,7 +140,7 @@ $(function() {
         if($('#te-summary').val()) var summ = '[[MediaWiki:TemplateEditor.js|Edycja skryptem]]: '+$('#te-summary').val();
         else var summ = '[[MediaWiki:TemplateEditor.js|Edycja skryptem]]';
         $.ajax({
-            url: wgScriptPath + '/api.php',
+            url: wg.wgScriptPath + '/api.php',
             data: {
                 'format': 'json',
                 'action': 'edit',

@@ -1419,6 +1419,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"rarity": "rare",
 				"unusable": true
 			},
+			"blooming": {
+				"name": "Blooming",
+				"colors": [
+					"flower",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"blossom": {
 				"name": "Blossom",
 				"colors": [
@@ -5250,6 +5258,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Flatfoot",
 				"colors": [
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"flavus": {
+				"name": "Flavus",
+				"colors": [
+					"flower",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},
@@ -12918,6 +12934,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"revitalizing": {
+				"name": "Revitalizing",
+				"colors": [
+					"flower",
+					"white",
+					"blue"
+				],
+				"rarity": "common"
+			},
 			"rex": {
 				"name": "Rex",
 				"colors": [
@@ -15741,6 +15766,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"elemental",
 					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"terrananemone": {
+				"name": "Terran Anemone",
+				"colors": [
+					"flower",
+					"red"
 				],
 				"rarity": "unbreedable"
 			},

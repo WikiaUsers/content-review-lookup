@@ -46,7 +46,7 @@ $(document).ready(function() {
 
 		$("span#RebirthBox-"+i).html('<input onClick="this.select();" type="number" value="0" class="Rebirth oo-ui-inputWidget-input"></input>');
 		
-		$("span#WorldBox-"+i).html('<select class="World oo-ui-dropdownWidget-handle"><option value="1">Green Hill</option><option value="2">Lost Valley</option><option value="3">Emerald Hill</option><option value="4">Snow Valley</option><option value="5">Hill Top</option></select>');
+		$("span#WorldBox-"+i).html('<select class="World oo-ui-dropdownWidget-handle"><option value="1">Green Hill</option><option value="2">Lost Valley</option><option value="3">Emerald Hill</option><option value="4">Snow Valley</option><option value="5">Hill Top</option><option value="7">Chemical Plant</option></select>');
 		
 		$("span#BoostBox-"+i).html('<select class="Boost oo-ui-dropdownWidget-handle"><option value="1">Disabled</option><option value="3">Enabled</option></select>');
 		

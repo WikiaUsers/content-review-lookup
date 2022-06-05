@@ -33,7 +33,7 @@ $(function () {
         $.ajax({
             // cache: true,
             dataType: "script",
-            url: url + "?action=raw&ctype=text/javascript"
+            url: url + "?action=raw&ctype=text/javascript&redirect=no"
         }).done(function () {
             if (def) {
                 def.resolve(window[name]);

@@ -8,10 +8,12 @@ window.pPreview.noimage = 'https://static.wikia.nocookie.net/tolkien/images/e/e6
 window.pPreview.defimage = 'https://static.wikia.nocookie.net/tolkien/images/e/e6/Site-logo.png/revision/latest?cb=20210603212958&format=original&path-prefix=it';
 //ignore templates in preview
 window.pPreview.RegExp.noinclude = ['.quote', ".notice", ".notice_message", ".notice_alert", ".notice_warning", ".toc", ".navbox_content", ".mw-headline", ".mw-editsection", ".caption"];
+//ignore images in notice templates
+window.pPreview.RegExp.iimages = ['Boromir2.jpg', 'Exquisite-kfind.png', 'Galadriel specchio Cate Blanchett.png'];
 //ignore link to non-artice namespaces
-window.pPreview.RegExp.ilinks = [ new RegExp('Template\:.*'), new RegExp('File\:.*'), new RegExp('Categoria\:.*'), new RegExp('Map\:.*'), new RegExp('Utente\:.*'), new RegExp('MediaWiki\:.*') ];
-//fix for chronology pages
-window.pPreview.wholepage = true;
+window.pPreview.RegExp.ilinks = [ new RegExp('Template\:.*'), new RegExp('File\:.*'), new RegExp('Categoria\:.*'), new RegExp('Map\:.*'), new RegExp('Utente\:.*'), new RegExp('MediaWiki\:.*'), new RegExp('^PE.*'), new RegExp('^SE.*'), new RegExp('^TE.*'), new RegExp('^QE.*'), new RegExp('^AA.*'), new RegExp('^CC.*') ];
+//stop at introduction
+window.pPreview.wholepage = false;
 //text length
 window.pPreview.tlen = 500;
 

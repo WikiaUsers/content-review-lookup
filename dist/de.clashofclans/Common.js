@@ -4,6 +4,8 @@ function checkVerif(){
 	    	'Stefan - Clash of Clans CM'
 	    ];
 	
+	if (!users.includes(mw.config.get('wgTitle'))) return;
+	
 	for(var i = 0; i < users.length; i++) {
 		if (new RegExp(/^(.*?\/)?/.source + users[i] + /$/.source).test(mw.config.get('wgTitle'))) {
 			var verif=document.createElement('img');
