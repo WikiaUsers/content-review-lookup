@@ -288,10 +288,11 @@
             'pt-br',
             'ro',
             'ru',
-            'sr',
+            // wikimedia/translatewiki b52f4b4 /mw-config/TranslateSettings.php#L198
+            // 'sr', // This language code should remain unused. Localise in sr-ec please.
             // These variants exist, but aren't selectable in the language dropdown
-            'sr-ec',
-            'sr-el',
+            'sr-ec', // For sr
+            'sr-el', // For sr
             'sv',
             'th',
             'tl',
@@ -300,8 +301,8 @@
             'vi',
             // wikimedia/translatewiki b52f4b4 /mw-config/TranslateSettings.php#L202
             // 'zh', // This language code should remain unused. Localise in zh-hans or zh-hant please.
-            'zh-hans', // for zh
-            'zh-hant', // for zh, zh-tw
+            'zh-hans', // For zh
+            'zh-hant', // For zh, zh-tw, zh-hk
             'zh-hk'
             // 'zh-tw' // This language code should remain unused. Localise in zh-hant please.
         ],

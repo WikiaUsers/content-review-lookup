@@ -5,20 +5,21 @@ Any JavaScript here will be loaded for all users on every page load.
 /* Table of Contents
 -----------------------
  Deferred [mw.loader.using]
+ * (Y00) importScripts (at top, so it doesn't get affected by other scripts)
  * (W00) Small scripts
  * (W01) Scripts that are attached to wikipage content load
  * (B00) Element animator
  * (C00) My Block ID
- * (Y00) importScripts
- ** (Y01) Less
- ** (Y02) Less Source Updater
+ * (D00) Anchor Hash Links
+ * (Y01) Less
+ * (Y02) Less Source Updater
 
  Immediately Executed
  * (X00) importJS pre-script actions
 */
 
 /* jshint
-    esversion: 5, forin: true,
+    esversion: 5, esnext: false, forin: true,
     immed: true, indent: 4,
     latedef: true, newcap: true,
     noarg: true, undef: true,
@@ -26,6 +27,7 @@ Any JavaScript here will be loaded for all users on every page load.
     browser: true, jquery: true,
     onevar: true, eqeqeq: true,
     multistr: true, maxerr: 999999,
+    forin: false,
     -W082, -W084
 */
 
@@ -50,12 +52,44 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         "wgUserGroups",
         "wgEditCount",
         "wgPageName",
+        "wgSiteName",
         "wgFormattedNamespaces",
         "wgServer",
         "profileUserId",
         "wgNamespaceNumber",
         "wgAction",
         "wgContentLanguage",
+    ]);
+
+    //##############################################################
+    /* ==importArticles== (Y00)*/
+    // Imports scripts from other pages/wikis.
+    window.importScripts = function (pages) {
+        if (!Array.isArray(pages)) {
+            pages = [pages];
+        }
+        pages.forEach(function (v) {
+            var match = v.match(/^(?:u|url):(.+?):(.+)$/);
+            var wiki = match && match[1] || (conf.wgServer.replace("https://", "").replace(".fandom.com", ""));
+            var match2 = (match && match[2] || v).match(/^(\w\w):(.+)$/);
+            var serverlang = conf.wgContentLanguage;
+            var langcode = match2 ? ("/" + match2[1]) : (match ? "" : serverlang === "en" ? "" : ("/" + serverlang));
+            var page = "/" + (match2 ? match2[2] : match ? match[2] : v);
+            var url = "https://" + wiki + ".fandom.com" + langcode + page + "?action=raw&ctype=text/javascript&redirect=no";
+            $.ajax({
+                url: url,
+                dataType: "script",
+                cache: true,
+            }).then(function () {
+                console.log(v + ": Imported Successfully!");
+            });
+        });
+    };
+    // Please note that ES5 script imports are moved to MediaWiki:ImportJS
+    // ES6 scripts needs to be imported here
+    // (for convenience to promptly disable any script at any time)
+    importScripts([
+        "MediaWiki:Common.js/skydate.js"
     ]);
 
     //##############################################################
@@ -76,20 +110,20 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                 contentmodel: "wikitext"
             })
             .done(function (data) {
-                if (!data.error) {
+                if (!data.error)
                     $("#articleComments").before($(data.parse.text["*"]));
-                }
             });
     }
 
     // Script to make linking comments easier
     if (conf.wgPageName.startsWith(new mw.Title("Comment", -1))) {
         var split = conf.wgPageName.split("/").slice(1);
-        if (!split.length) return;
-        window.location.replace(new mw.Uri(mw.util.getUrl(split[0]) + "?" + $.param({
-            commentId: split[1],
-            replyId: split[2]
-        })));
+        if (split.length) {
+            window.location.replace(new mw.Uri(mw.util.getUrl(split[0]) + "?" + $.param({
+                commentId: split[1],
+                replyId: split[2]
+            })));
+        }
     }
 
     $(document.body).on("click", "ul[class^=\"ActionDropdown_list__\"] > li:first-of-type, [class^=\"Comment_wrapper__\"]", function (e) {
@@ -178,7 +212,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                         var threadLink = "commentId=" + commentID + (replyID ? "&replyId=" + replyID : "");
                         $this.append(
                             $("<div>", {
-                                "class": threadClassName,
+                                class: threadClassName,
                                 "data-link": threadLink,
                                 html: $("<abbr>", {
                                     title: "click to copy",
@@ -209,12 +243,10 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         var WikiCommentObserver = new MutationObserver(function (mutationsList) {
             var operate = false;
             for (var i in mutationsList) {
-                if (true) { // stops fandom from complaining
-                    var mutation = mutationsList[i];
-                    if ($(mutation.target).is("[class^=\"CommentList_comment-list\"], [class^=\"ReplyList_container\"], [class^=\"ReplyList_list-wrapper\"]")) {
-                        operate = true;
-                        break;
-                    }
+                var mutation = mutationsList[i];
+                if ($(mutation.target).is("[class^=\"CommentList_comment-list\"], [class^=\"ReplyList_container\"], [class^=\"ReplyList_list-wrapper\"]")) {
+                    operate = true;
+                    break;
                 }
             }
             if (operate) mainCommentHandler();
@@ -246,95 +278,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         }
     });
 
-    /* Moves ID from {{Text anchor}} onto a parent tr tag (if it exists), allowing the whole row to be styliszed in CSS (using the :target seloector) */
-    $((function () {
-        function _goToID(id) {
-            $("html, body").animate({
-                scrollTop: $("#" + id).offset().top - 65
-            }, 500);
-        }
-        // If the element passed is inside of a tabber, the tabber will open to the tab it belongs in
-        function _openTabberTabBelongingToChild(element) {
-            if (!element) {
-                return;
-            }
-            var closestTabber = element.closest(".wds-tabber");
-            var closestTabberContent = element.closest(".wds-tab__content");
-
-            // If table row is in a tabber
-            if (closestTabber && closestTabberContent && closestTabberContent.parentNode) {
-                // Get a list of tab sections and find out the index of ours in that list
-                var indexOfTab = Array.from(closestTabberContent.parentNode.querySelectorAll(":scope > .wds-tab__content")).indexOf(closestTabberContent);
-
-                // Using the index from above, change all tab states to point to the tab containing the element passed in to this function
-                closestTabber.querySelectorAll(":scope > .wds-tab__content").forEach(function (elem, i) {
-                    elem.classList.toggle("wds-is-current", indexOfTab === i);
-                });
-                closestTabber.querySelectorAll(":scope > .wds-tabs__wrapper .wds-tabs__tab").forEach(function (elem, i) {
-                    elem.classList.toggle("wds-is-current", indexOfTab === i);
-                });
-            }
-        }
-        // Let's you re-add `:target` css without messing anything else up
-        // https://stackoverflow.com/a/59013961/1411473
-        function _pushHashAndFixTargetSelector(hash) {
-            history.pushState({}, document.title, hash); //called as you would normally
-            var onpopstate = window.onpopstate; //store the old event handler to restore it later
-            window.onpopstate = function () { //this will be called when we call history.back()
-                window.onpopstate = onpopstate; //restore the original handler
-                history.forward(); //go forward again to update the CSS
-            };
-            history.back(); //go back to trigger the above function
-        }
-        $("tr .text-anchor").each(function () {
-            var $textAnchor = $(this);
-            var id = $textAnchor.attr("id");
-            $textAnchor.removeAttr("id");
-            $textAnchor.closest("tr").attr("id", id);
-
-            // Re-trigger hash tag
-            if (location.hash.replace("#", "") === id) {
-                // Show table if collapsed:
-                var inCollapseTable = $textAnchor.parents(".mw-collapsed");
-                setTimeout(function () {
-                    if (inCollapseTable.length) {
-                        var parentTable = $(inCollapseTable[0]);
-                        parentTable.removeClass("mw-collapsed");
-                        parentTable.find("tr").stop().show();
-
-                        /*if(parentTable.hasClass("mw-made-collapsible")) {
-                            var collapseID = parentTable.attr("id").replace("mw-customcollapsible-", "");
-                            $(".mw-customtoggle-"+collapseID).click();
-                        } else {
-                            parentTable.removeClass("mw-collapsed");
-                        }*/
-                    }
-                    _pushHashAndFixTargetSelector(location.hash);
-                    _openTabberTabBelongingToChild($textAnchor[0]);
-                    _goToID(id);
-                }, 1000);
-            }
-        });
-
-        $(window).on("hashchange", function () {
-            var hash = location.hash.replace("#", "");
-            $("tr[id]").each(function () {
-                var $row = $(this);
-                var id = $row.attr("id");
-                if (id === hash) {
-                    var inCollapseTable = $row.parents(".mw-collapsed");
-                    if (inCollapseTable.length) {
-                        var $parentTable = $(inCollapseTable[0]);
-                        var collapseID = $parentTable.attr("id").replace("mw-customcollapsible-", "");
-                        $(".mw-customtoggle-" + collapseID).click();
-                    }
-                    _openTabberTabBelongingToChild($row[0]);
-                    _goToID(id);
-                }
-            });
-        });
-    })());
-
+    // QOL tooltip on ajax link
     $("a[href=\"#ajaxundo\"]").attr("title", "Instantly undo this edit without leaving the page");
 
     /* Temp fix to force scrollbars to appear on very wide tables when they are collapsed by default */
@@ -406,7 +350,8 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         $parent.find(".sbw-ui-tab-content#" + id).siblings(".sbw-ui-tab-content").addClass("hidden").hide();
         $parent.find(".sbw-ui-tab-content#" + id).removeClass("hidden").show();
         // Since images don't load on hidden tabs, force them to load
-        $parent.find(".sbw-ui-tab-content#" + id + " .lzy[onload]").load();
+        var onloadEl = $parent.find(".sbw-ui-tab-content#" + id + " .lzy[onload]");
+        if (onloadEl.length) onloadEl.load();
     }
 
     $(document.body).on("click", ".sbw-ui-tabber .sbw-ui-tab", function (e) {
@@ -450,9 +395,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
         // Code to allow making {{Slot}} clickable to show different content [Part 2/2]
         (function () {
-            if (!pSection.find(".sbw-ui-tabber").length) {
-                return;
-            }
+            if (!pSection.find(".sbw-ui-tabber").length) return;
 
             // .hidden works on mobile, but not on desktop
             pSection.find(".sbw-ui-tab-content.hidden").hide();
@@ -472,11 +415,8 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
             // makes an extra button to go back to the first UI tab
             pSection.find(".sbw-ui-tabber").each(function () {
                 var elementId = $(this).find(":first-child").attr("id");
-
                 if (!elementId) return;
-
                 var className = elementId.replace("ui-", "");
-
                 $(this).find(".mcui").append(
                     $("<div>").addClass("mcui-returnbutton text-zoom-independent noselect")
                     .attr("data-font-size", "22").text("↻")
@@ -518,22 +458,18 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
             // Set the name of the hidden property
             var hidden;
-            if (typeof document.hidden !== "undefined") {
+            if (typeof document.hidden !== "undefined")
                 hidden = "hidden";
-            } else if (typeof document.msHidden !== "undefined") {
+            else if (typeof document.msHidden !== "undefined")
                 hidden = "msHidden";
-            } else if (typeof document.webkitHidden !== "undefined") {
+            else if (typeof document.webkitHidden !== "undefined")
                 hidden = "webkitHidden";
-            }
 
             setInterval(function () {
-                if (hidden && document[hidden]) {
-                    return;
-                }
+                if (hidden && document[hidden]) return;
+
                 $content.find(".animated").each(function () {
-                    if ($(this).hasClass("animated-paused")) {
-                        return;
-                    }
+                    if ($(this).hasClass("animated-paused")) return;
 
                     var $nextFrame = advanceFrame(this, ".animated");
                     if ($nextFrame.hasClass("animated-subframe")) {
@@ -560,7 +496,8 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
         // A work around to force wikia's lazy loading to fire
         setTimeout(function () {
-            $(".animated .lzy[onload]").load();
+            var onloadEl = $(".animated .lzy[onload]");
+            if (onloadEl.length) onloadEl.load();
         }, 1000);
 
     });
@@ -568,20 +505,19 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     //##############################################################
     /* ==My Block ID== (C00)*/
     // Special:MyBlockID
-    if (mw.config.values.wgPageName.toLowerCase() === conf.wgFormattedNamespaces[-1].toLowerCase() + ":myblockid") {
-        document.title = "My Block ID | " + mw.config.values.wgSiteName + " | Fandom";
+    if (conf.wgPageName.toLowerCase() === conf.wgFormattedNamespaces[-1].toLowerCase() + ":myblockid") {
+        document.title = "My Block ID | " + conf.wgSiteName + " | Fandom";
         $("#firstHeading").text("My Block ID");
         var $content = mw.util.$content || $('#mw-content-text');
-        $content.empty()
-            .html(
-                $("<div>", {
-                    html: [
-                        $("<h3>", {
-                            text: "Loading..."
-                        }),
-                    ],
-                })
-            );
+        $content.empty().html(
+            $("<div>", {
+                html: [
+                    $("<h3>", {
+                        text: "Loading..."
+                    }),
+                ],
+            })
+        );
 
         api.get({
             action: "query",
@@ -592,7 +528,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
             var name = r.name;
 
             mw.messages.set("", r.blockreason || "");
-            var parsedReason = mw.message("").parse();
+            // var parsedReason = mw.message("").parse();
 
             console.log(r);
             mw.messages.set("");
@@ -630,9 +566,121 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     }
 
     //##############################################################
-    /* ==importArticles== (Y00)*/
-    // Imports scripts from other pages/wikis.
-    // NOTE: importAricles() is currently broken.
+    /* ==Anchor Hash Links== (D00)*/
+    // 1) Moves ID from {{Text anchor}} onto a parent tr tag (if it exists), allowing the whole row to be styliszed in CSS (using the :target seloector)
+    // 2) If links are hidden in a collapsed area / tab, automatically open it so element can be accessed
+    $((function () {
+        function _goToID(id) {
+            var $elem = $("#" + id);
+            // If this is called when an element is hidden prevent scrolling top top of page
+            if (!$elem.length || $elem.offset().top <= 0) {
+                return;
+            }
+
+            $("html, body").animate({
+                scrollTop: $elem.offset().top - 65
+            }, {
+                step: function (now, fx) {
+                    if ($elem.offset().top > 0) {
+                        // this updates the animation postion encase page shifts (due to page load) while we're animating
+                        fx.end = $elem.offset().top - 65;
+                    }
+                }
+            });
+        }
+        // If the element passed is inside of a tabber, the tabber will open to the tab it belongs in
+        function _openTabberTabBelongingToChild(element) {
+            if (!element) return;
+
+            var closestTabber = element.closest(".wds-tabber");
+            var closestTabberContent = element.closest(".wds-tab__content");
+
+            // If table row is in a tabber
+            if (closestTabber && closestTabberContent && closestTabberContent.parentNode) {
+                // Get a list of tab sections and find out the index of ours in that list
+                var indexOfTab = Array.from(closestTabberContent.parentNode.querySelectorAll(":scope > .wds-tab__content")).indexOf(closestTabberContent);
+
+                // Using the index from above, change all tab states to point to the tab containing the element passed in to this function
+                closestTabber.querySelectorAll(":scope > .wds-tab__content").forEach(function (elem, i) {
+                    elem.classList.toggle("wds-is-current", indexOfTab === i);
+                });
+                closestTabber.querySelectorAll(":scope > .wds-tabs__wrapper .wds-tabs__tab").forEach(function (elem, i) {
+                    elem.classList.toggle("wds-is-current", indexOfTab === i);
+                });
+            }
+        }
+
+        function _openCollapsedElementBelongingToChild($element) {
+            if (!$element) return;
+            var $collapsedParent = $element.closest(".mw-collapsed");
+            if ($collapsedParent) {
+                // if JS for collapsed sections already parsed them, auto click to open them
+                if ($collapsedParent.hasClass('mw-made-collapsible')) {
+                    var collapseID = $collapsedParent.attr("id").replace("mw-customcollapsible-", "");
+                    $(".mw-customtoggle-" + collapseID).click();
+                } else {
+                    // otherwise if not collapsible yet, just secretly change css to have it not be collapsed
+                    $collapsedParent.removeClass("mw-collapsed");
+                    $collapsedParent.find("tr").stop().show();
+                }
+            }
+        }
+
+        // Let's you re-add `:target` css without messing up browser history
+        // Needed when wanting to have a row highlighted after waiting for text anchors and such to be setup
+        // https://stackoverflow.com/a/59013961/1411473
+        function _pushHashAndFixTargetSelector(hash) {
+            history.pushState({}, document.title, hash); //called as you would normally
+            var onpopstate = window.onpopstate; //store the old event handler to restore it later
+            window.onpopstate = function () { //this will be called when we call history.back()
+                window.onpopstate = onpopstate; //restore the original handler
+                history.forward(); //go forward again to update the CSS
+            };
+            history.back(); //go back to trigger the above function
+        }
+
+        function _doHashIdCheck($content, doHashFix) {
+            var hash = location.hash.replace("#", "");
+            $content.find("tr[id]").each(function () {
+                var $row = $(this),
+                    id = $row.attr("id");
+                if (id === hash) {
+                    // hash fix should only be needed right after new content is added to the page
+                    if (doHashFix) _pushHashAndFixTargetSelector(location.hash);
+
+                    _openCollapsedElementBelongingToChild($row);
+                    _openTabberTabBelongingToChild($row[0]);
+                    _goToID(id);
+                }
+            });
+        }
+
+        // do hook here to also re-run code on tabviews/lazy loaded content
+        mw.hook("wikipage.content").add(function ($content) {
+            // Convert any text anchors to row IDs
+            $content.find("tr .text-anchor").each(function () {
+                var $textAnchor = $(this);
+                var id = $textAnchor.attr("id");
+                $textAnchor.removeAttr("id");
+                $textAnchor.closest("tr").attr("id", id);
+            });
+
+            // Now dectect if hash matches any row IDs
+
+            // Delay check so that scroll doesn't happen until page layout has settled
+            // Otherwise the scroll to the id will be incorrect as other loaded content has moved the position before we get to it
+            setTimeout(function () {
+                _doHashIdCheck($content, true);
+            }, 250);
+        });
+
+        $(window).on("hashchange", function () {
+            _doHashIdCheck($("#mw-content-text"));
+        });
+    })());
+
+    //###########################################
+    /* ===Less=== (Y01) */
     function getJsonOrEmpty(url, dontLoadForEnglishWiki) {
         return $.Deferred(function (def) {
             if (dontLoadForEnglishWiki && conf.wgContentLanguage === "en")
@@ -646,37 +694,6 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                 });
         });
     }
-    window.importScripts = function (pages) {
-        if (!Array.isArray(pages)) {
-            pages = [pages];
-        }
-        pages.forEach(function (v) {
-            var match = v.match(/^(?:u|url):(.+?):(.+)$/);
-            var wiki = match && match[1] || (conf.wgServer.replace("https://", "").replace(".fandom.com", ""));
-            var match2 = (match && match[2] || v).match(/^(\w\w):(.+)$/);
-            var serverlang = conf.wgContentLanguage;
-            var langcode = match2 ? ("/" + match2[1]) : (match ? "" : serverlang === "en" ? "" : ("/" + serverlang));
-            var page = "/" + (match2 ? match2[2] : match ? match[2] : v);
-            var url = "https://" + wiki + ".fandom.com" + langcode + page + "?action=raw&ctype=text/javascript";
-            $.ajax({
-                url: url,
-                dataType: "script",
-                cache: true,
-            }).then(function () {
-                console.log(v + ": Imported Successfuly!");
-            });
-        });
-    };
-
-    // Please note that ES5 script imports are moved to MediaWiki:ImportJS
-    // ES6 scripts needs to be imported here
-    // (for convenience to promptly disable any script at any time)
-    importScripts([
-        "MediaWiki:Common.js/skydate.js"
-    ]);
-
-    //###########################################
-    /* ===Less=== (Y01) */
     $.when(
         // get list of pages from the English Wiki
         getJsonOrEmpty("https://hypixel-skyblock.fandom.com/wiki/MediaWiki:Custom-Less.json", false),
@@ -791,7 +808,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
             title: "Update Less Source from English Wiki",
             css: {
                 cursor: "pointer",
-                "margin": "0 0 5px 5px",
+                margin: "0 0 5px 5px",
             }
         }));
     }
@@ -801,6 +818,10 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 //##############################################################
 /* ==importArticle pre-script actions== (X00)*/
 // The code in this section is for a script imported below
+
+// preconnect: only do for external resources that are very frequently used
+$('head').append('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>');
+$('head').append('<link rel="preconnect" href="https://cdn.githubraw.com" crossorigin>');
 
 // AjaxRC
 window.ajaxRefresh = 30000;
@@ -812,6 +833,7 @@ window.ajaxSpecialPages = [
     "Contributions",
     "AbuseLog",
 ];
+// Custom text
 $.extend(true, window, {
     dev: {
         i18n: {

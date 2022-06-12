@@ -193,10 +193,7 @@
             });
         }
     };
-    mw.loader.using([
-        'mediawiki.api',
-        'mediawiki.notify'
-    ]).then(
+    mw.loader.using('mediawiki.api').then(
         $.proxy(Main.hooks, Main)
     );
 })();

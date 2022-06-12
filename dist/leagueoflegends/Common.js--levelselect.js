@@ -11,7 +11,8 @@ mw.loader.using('site').then(function(){
         'Armor',
         'MagicResist',
         'Range',
-        'MovementSpeed'
+        'MovementSpeed',
+        'AttackWindup'
     ], MAX_LVL = 18, data = {};
 
     function toLvl(champ, index, lvl) {
@@ -63,7 +64,7 @@ mw.loader.using('site').then(function(){
                         $plus.text(
                             plus ?
                                 base + ' – ' + toLvl(champ, index, MAX_LVL) :
-                                ''
+                                ($base.length ? '' : base)
                         );
                     }
                     break;

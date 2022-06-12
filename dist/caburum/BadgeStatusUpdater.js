@@ -14,8 +14,7 @@
 	]);
 
 	mw.loader.using([
-		'mediawiki.api',
-		'mediawiki.notify',
+		'mediawiki.api'
 	]).then(function() {
 		if (config.wgNamespaceNumber == 2 && config.profileUserName == config.wgUserName) {
 			button = $('<a>').append($('<br>'), $('<span>', {

@@ -12,9 +12,9 @@ mw.loader.using('mediawiki.api').then(function() {
 	
 	function setGroup(name, group) {
 		var type = mw.config.get('wgNamespaceNumber') === 1200 ? 'message' : 'comment';
-		var all = Array.from(document.querySelectorAll('.Comment_comment__sASOd, .Reply_body__3woA9, .Message, .Reply'));
+		var all = Array.from(document.querySelectorAll('[class^="Comment_comment__"], [class^="Reply_reply__"], .Message, .Reply'));
 		all.forEach(function(i) {
-			if (i.querySelector('.EntityHeader_name__2oRXg').innerText === name) {
+			if (i.querySelector('[class^="EntityHeader_name__"]').innerText === name) {
 				if (!i.classList.contains(type + '-' + group)) {
 					i.classList.add(type + '-' + group);
 				}

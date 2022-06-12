@@ -184,9 +184,5 @@
             }
         }
     };
-    mw.loader.using([
-        'mediawiki.api.edit',
-        'mediawiki.util',
-        'mediawiki.notify'
-    ]).then($.proxy(AutoCreateUserPages.preload, AutoCreateUserPages));
+    mw.loader.using(['mediawiki.util', 'mediawiki.api']).then($.proxy(AutoCreateUserPages.preload, AutoCreateUserPages));
 })();

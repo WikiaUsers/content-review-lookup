@@ -34,6 +34,8 @@
  
 				field.keyup(function() {
 					itemGridFilteringApply()
+					if(window.itemGridFiltersTimeout) window.clearTimeout(window.itemGridFiltersTimeout)
+					window.itemGridFiltersTimeout = window.setTimeout(itemGridFilteringClear, 120000)
 				})
 			} else if(itemGridFilters[x] instanceof Array) {
 				var field = $('<select></select>').appendTo(container).attr('id', container.attr('id')+'-field').data('type', 'select')
@@ -45,6 +47,8 @@
  
 				field.change(function() {
 					itemGridFilteringApply()
+					if(window.itemGridFiltersTimeout) window.clearTimeout(window.itemGridFiltersTimeout)
+					window.itemGridFiltersTimeout = window.setTimeout(itemGridFilteringClear, 120000)
 				})
 			}
 		}

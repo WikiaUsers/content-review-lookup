@@ -11,16 +11,10 @@
     var parentId = mw.config.get('articleHasCommentingEnabled') ? 'articleComments' : 'MessageWall';
 
     function showIPs () {
-        var list = $('#' + parentId + ' a[class^="EntityHeader_name__"][title]');
-
-        list.each(function () {
-            var title = $(this).attr('title');
-            if (!title) {
-                return;
-            }
-
+    	//IP comments/messages have a `title` attribute, whereas user comments/messages don't, might be better to use `mw.util.isIPAddress` rather than rely on a quirk/bug/something of Fandom
+        $('#' + parentId + ' a[class^="EntityHeader_name__"][title]').each(function () {
+			$(this).text($(this).attr('title'));
             $(this).removeAttr('title');
-            $(this).text(title);
         });
     }
 

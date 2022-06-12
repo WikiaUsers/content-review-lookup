@@ -1,4 +1,4 @@
-require(['jquery','mw'], function($, mw) {
+mw.loader.using('site').then(function(){
     'use strict';
     var stats = [
         'Health',

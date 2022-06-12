@@ -15,7 +15,6 @@ UserTagsJS.modules.custom = {
     'FireMatch': ['assistant'],
     'SpongyFanatic2021': ['assistant'],
     'Idroppedmypen': ['discord'],
-    'Minnesotaman2007!': ['discord'],
     'TheJasbre202': ['discord'],
     'The_Krusty_Krab': ['discord']
 };

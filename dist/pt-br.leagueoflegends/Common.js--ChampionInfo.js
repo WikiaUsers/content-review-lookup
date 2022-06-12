@@ -1,4 +1,4 @@
-$(function() {
+;(function() {
     function init(elem) {
         var group = elem.find('.portable-infobox [data-damage-value]').closest('.pi-group'),
             keys = ['dano', 'durabilidade', 'controle', 'mobilidade', 'utilidade'];
@@ -18,4 +18,4 @@ $(function() {
     mw.hook('wikipage.content').add(function(elem) {
         init($(elem));
     });
-});
+})();

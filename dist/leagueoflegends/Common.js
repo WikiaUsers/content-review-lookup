@@ -236,7 +236,9 @@ window.tooltips_list = [
     {   classname: 'wc-icon', 
         parse: '{'+'{Tooltip/WC|wc=<#wc#>}}'},
     {   classname: 'lor-tooltip', 
-        parse: '{'+'{Tooltip/LOR|<#param#>}}'}
+        parse: '{'+'{Tooltip/LOR|<#param#>}}'},
+    {   classname: 'challenge-tooltip', 
+        parse: '{'+'{Tooltip/Challenge|<#param#>|challenge=<#challenge#>}}'}
 ];
  
 window.tooltips_config = {

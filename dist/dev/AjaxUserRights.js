@@ -178,7 +178,7 @@ $(function() {
         'u:dev:MediaWiki:I18n-js/code.js'
     ]});
 
-    mw.loader.using(['mediawiki.api', 'mediawiki.notify']).then(function() {
+    mw.loader.using('mediawiki.api').then(function() {
         mw.hook('dev.i18n').add(function(i18np) {
             i18np.loadMessages('AjaxUserRights').then(function(i18np) {
                 i18n = i18np;

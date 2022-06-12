@@ -1,1 +1,3 @@
-/ * De JavaScript-code die hier wordt geplaatst, wordt door alle gebruikers geladen bij het openen van elke pagina * /
+// 18:41, 9 juni 2022 (UTC)
+/* Snelle licentie */
+importScript('MediaWiki:Fandomdesktop.js/quicklicense.js');

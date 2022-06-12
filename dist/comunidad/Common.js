@@ -37,7 +37,8 @@ window.botFlagInternational = {
 		requestsPage: 'Comunidad_Central:Rango_de_bot'
 	},
 	titleSchema: '$2', // Page title schema for request pages. $1 is bot's name, $2 is wiki name
-	wikitextSchema: '{{bStart}}Solicitud de bot\n' +
+	wikitextSchema: '{{bStart}}Solicitud/encabezado|Rango de bot{{bEnd}}\n"' +
+		'{{bStart}}Solicitud de bot\n' +
 		'| 0-estado      = p\n' + // Optional
 		'| 1-wiki        = {{wikiName}}\n' + // Optional
 		'| 2-bot_url     = {{{botUrl}}}\n' +

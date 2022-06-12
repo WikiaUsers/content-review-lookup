@@ -186,19 +186,20 @@ $(function () { if ($("#mw-dupimages").length) findDupImages(); });
 /*
 ////////////////////////////////////////////////////////////////////
 // Release date sortkey display script by User:Bobogoobo (from https://community.wikia.com/wiki/Thread:918005)
+// fixed and modified by User:Harasar on 21/04/2022 to work again
 ////////////////////////////////////////////////////////////////////
 */
 $(function() {
     if (!(
         mw.config.get('wgCanonicalNamespace') === 'Category' &&
-        ['Appearances', 'Mentions'].indexOf(mw.config.get('wgPageName').split('/').slice(-1)[0]) !== -1
+        ['Appearances', 'Handbook Appearances', 'Minor Appearances', 'Mentions', 'Handbook Mentions', 'Flashback'].indexOf(mw.config.get('wgTitle').split('/').slice(-1)[0]) !== -1
     )) {
         return;
-    }
- 
+    } 
+
     // API requires titles 50 at a time, will be 200 titles per category page
     var requests,
-        $links = $('#mw-pages').find('table').find('a');
+        $links = $('.mw-category-generated').find('a');
         pages = $links.toArray().map(function(value) {
             return encodeURIComponent($(value).attr('title'));
         });
@@ -212,13 +213,18 @@ $(function() {
                     if (!data[val].pageprops) {
                         return true;// continue
                     }
-                    var sort = data[val].pageprops.defaultsort,
-                        title = data[val].title;
-                        date = sort.match(/\d{8}/);
-                    if (date) {
-                        $links.filter('[title="' + title + '"]').after(
-                            ' (' + date[0].replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') + ')'
-                        );
+                    var sort = data[val].pageprops.defaultsort;
+                    var title = data[val].title;
+                    var cover_date = sort.match(/^&nbsp;\d{4}\-\d{2}/);
+                    var release_date = sort.match(/^&nbsp;\d{4}\-\d{2}  \d{8}/);
+                    var date_tag = ''
+                    if (release_date) {
+                    	release_date = release_date[0].match(/\d{8}/)
+                    	date_tag = ', release: ' + release_date[0].replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')
+                    }
+                    if (cover_date) {
+                    	date_tag = ' (cover: ' + cover_date[0].replace('&nbsp;', '') + date_tag + ')'
+                        $links.filter('[title="' + title + '"]').after(date_tag);
                     }
                 });
             }
@@ -227,69 +233,102 @@ $(function() {
 });
 
 
+
+/* 
+////////////////////////////////////////////////////////////////////
+// THE BELOW CODE randomly changes text above top navigation from "Marvel Database" to one from the list
+////////////////////////////////////////////////////////////////////
+*/
+var wiki_name_number=Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + 1;
+var wiki_name_text=["Whosoever Holds This Hammer, If They Be Worthy...", "By the Bristling Beard of Odin!", "Have at Thee!" ][wiki_name_number];
+var elements=document.getElementsByClassName('fandom-community-header__community-name');
+var wiki_name=elements[0];
+wiki_name.textContent=wiki_name_text;
+
+
 /* 
 ////////////////////////////////////////////////////////////////////
 // THE BELOW CODE ADDS CUSTOM BUTTONS TO THE JAVASCRIPT EDIT TOOLBAR
 ////////////////////////////////////////////////////////////////////
 */
 
-var customizeToolbar = function () {
+
+var customizeToolbar2 = function () {
 /* Strike-through text */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'main',
-group: 'format',
-tools: {
-"strike": {
-label: 'Strike-through text',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/central/images/c/c9/Button_strike.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "<s>",
-post: "</s>"
-}
-}
-}
-}
+	section: 'main',
+	group: 'format',
+	tools: {
+		"strike": {
+			label: 'Strike-through text',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/central/images/c/c9/Button_strike.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "<s>",
+					post: "</s>"
+				}
+			}
+		}
+	}
 } );
 /* Comment */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'main',
-group: 'format',
-tools: {
-"comment": {
-label: 'Comment',
-type: 'button',
-icon: 'https://images.wikia.nocookie.net/central/images/7/74/Button_comment.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "<!-- ",
-post: " -->"
-}
-}
-}
-}
+	section: 'main',
+	group: 'format',
+	tools: {
+		"comment": {
+			label: 'Comment',
+			type: 'button',
+			icon: 'https://images.wikia.nocookie.net/central/images/7/74/Button_comment.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "<!-- ",
+					post: " -->"
+				}
+			}
+		}
+	}
+} );
+/* disambiguation */
+$( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
+	section: 'main',
+	group: 'insert',
+	tools: {
+		"disambiguation": {
+			label: 'Disambiguation',
+			type: 'button',
+			icon: 'https://upload.wikimedia.org/wikipedia/commons/6/62/Button_desambig.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Disambiguation",
+					post: "\r|main         = \r|main_name    = \r|main_title   = \r|main_image   = \r|noimage      = \r\r|alternative1 = \r|include1     = \r|exclude1     = \r}}"
+				}
+			}
+		}
+	}
 } );
 /* subst:Cat */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-section: 'main',
-group: 'insert',
-tools: {
-"cat": {
-label: 'Quick categorization',
-type: 'button',
-icon: 'https://upload.wikimedia.org/wikipedia/commons/b/b4/Button_category03.png',
-action: {
-type: 'encapsulate',
-options: {
-pre: "{{subst:Cat",
-post: "}}"
-}
-}
-}
-}
+	section: 'main',
+	group: 'insert',
+	tools: {
+		"cat": {
+			label: 'Quick categorization',
+			type: 'button',
+			icon: 'https://upload.wikimedia.org/wikipedia/commons/b/b4/Button_category03.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{subst:Cat",
+					post: "}}"
+				}
+			}
+		}
+	}
 } );
 /*-------- INFOBOXES --------*/
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
@@ -542,10 +581,10 @@ type: 'encapsulate',
 options: {
 pre: "{{Marvel Database:Staff Template\r| Image                   = ",
 post: "\r| RealName                = \r| Pseudonyms              = \r| Employers               = \r| Titles                  = \r\r| Gender                  = \r| YearOfBirth             = \r| MonthOfBirth            = \r| DayOfBirth              = \r| CityOfBirth             = \r| StateOfBirth            = \r| CountryOfBirth          = \r| Creations               = \r| First                   = \r\r| PersonalHistory         = \r| ProfessionalHistory     = \r\r| Notes                   = \r| Trivia                  = \r| OfficialWebsite         = \r| Links                   = \r}}"
-}
-}
-}
-}
+				}
+			}
+		}
+	}
 } );
 };
 /* Check if view is in edit mode and that the required modules are available. Then, customize the toolbar … */
@@ -555,7 +594,7 @@ mw.loader.using( 'user.options' ).then( function () {
 if ( mw.user.options.get( 'usebetatoolbar' ) == 1 ) {
 $.when(
 mw.loader.using( 'ext.wikiEditor' ), $.ready
-).then( customizeToolbar );
+).then( customizeToolbar2 );
 }
 } );
 }

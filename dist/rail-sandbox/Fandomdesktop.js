@@ -245,7 +245,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 										attr: {
 											for: 'adoptionUrl'
 										},
-										text: 'Wiki URL' // @todo i18n
+										text: 'Provide a full wiki URL' // @todo i18n
 									},
 									{
 										type: 'input',
@@ -281,13 +281,13 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 								type: 'div',
 								classes: ['sectionContent'],
 								children: [
-									{
+									/*{
 										type: 'label',
 										attr: {
 											for: 'wikiname'
 										},
 										text: 'Wiki name' // @todo i18n
-									},
+									},*/
 									{
 										type: 'input',
 										classes: ['formInput', 'adoptionPrefill'],
@@ -328,7 +328,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 										attr: {
 											for: 'permissionstype'
 										},
-										text: 'Permissions' // @todo i18n
+										text: 'Permissions you want to get after request is completeds' // @todo i18n
 									},
 									{
 										type: 'select',
@@ -452,7 +452,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 										attr: {
 											for: 'communityvote'
 										},
-										text: 'Discussion' // @todo i18n
+										text: 'Provide a full URL to discussion\'s page' // @todo i18n
 									},
 									{
 										type: 'input',
@@ -492,7 +492,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 										attr: {
 											for: 'comment'
 										},
-										text: 'Notes' // @todo i18n
+										text: 'Additional notes' // @todo i18n
 									},
 									{
 										type: 'textarea',

@@ -2,6 +2,8 @@
 // Edit page tool selector
 //  -> modified from http://commons.wikimedia.org/wiki/MediaWiki:Edittools.js
 
+var mw = window.mediawWiki;
+var $ = window.jQuery;
 function queryString(p) {
     var re = RegExp('[&?]' + p + '=([^&]*)');
     var matches;
@@ -120,7 +122,7 @@ function chooseCharSubset(seld) {
 /* infobox sidebar toggle */
 $(function () {
     'use strict';
-    if (skin !== 'oasis') {
+    if (mw.config.get('skin') !== 'fandomdesktop') {
         return;
     }
     var read_cookie = function (name) {
@@ -337,8 +339,17 @@ $(function () {
 	        });
 		 });
 	}
-	
 	/* End of Calculators */
+	
+	if (mw.config.get('wgPageName').includes('User') || mw.config.get('wgPageName').includes('Special:')) {
+	    $(function () {
+	        importArticles({
+	            type: 'script',
+	            article: 'u:dev:MediaWiki:UserAccountAge/code2.js'
+	        });
+	    });
+	}
+
 	/* Bestiary */
 	if (mw.config.get('wgPageName') === 'Bestiary/Simulator') {
 	    $(function () {
@@ -494,7 +505,8 @@ $(function () {
 });
 /* Quest transcript linker end */
 /* Updates toggle changes start */
-if (mw.config.get('wgPageName') === 'Major_Updates' || mw.config.get('wgPageName') === 'Winter_Updates' || mw.config.get('wgPageName') === 'Summer_Updates' || mw.config.get('wgPageName') === 'Spring_Updates' || mw.config.get('wgPageName') === 'Autumn_Updates' || mw.config.get('wgPageName') === 'Patch_Updates' || mw.config.get('wgPageName') === 'Minor_Updates' || mw.config.get('wgPageName') === 'Version_6_Updates' || mw.config.get('wgPageName') === 'Version_7_Updates' || mw.config.get('wgPageName') === 'Version_8_Updates' || mw.config.get('wgPageName') === 'Version_9_Updates' || mw.config.get('wgPageName') === 'Version_10_Updates' || mw.config.get('wgPageName') === 'Version_11_Updates' || mw.config.get('wgPageName') === 'Version_12_Updates') {
+var updatePages = ['Major_Updates', 'Winter_Updates', 'Summer_Updates', 'Spring_Updates', 'Autumn_Updates', 'Patch_Updates', 'Minor_Updates', 'Version_6_Updates', 'Version_7_Updates', 'Version_8_Updates', 'Version_9_Updates', 'Version_10_Updates', 'Version_11_Updates', 'Version_12_Updates'];
+if (updatePages.includes(mw.config.get('wgPageName'))) {
     $(function () {
         $('#Updates_Toggle_Changes td:nth-child(6),#Updates_Toggle_Changes th:nth-child(6)').hide();
         $('#Updates_Toggle_Changes').prepend(
@@ -779,7 +791,7 @@ $(function () {
 });
 /* purging the cache of the pages in the array showing time sensitive data */
 var purge_pages = ['Rashid','Main Page','TibiaWiki:New website skin and new features','Tibiadrome/Rotation','Tibiadrome','Dream Scar/Boss of the Day','Template:Eventviewer'];
-if ( purge_pages.includes(mw.config.get('wgPageName')) ) {
+if ( purge_pages.includes(mw.config.get('wgPageName')) || game.worlds.includes(mw.config.get('wgPageName')) ) {
     $(function () {
         var api = new mw.Api();
         api.post({
@@ -913,7 +925,7 @@ $(function(){
 			}
 		});
 		
-		lootValueData.sort(function(x,y){return (y.v - x.v)})
+		lootValueData.sort(function(x,y){return (y.v - x.v)});
 		
 		//$('#lootValueTable > tbody > tr')[1].remove();
 		
@@ -924,7 +936,7 @@ $(function(){
         				.append($('<a>')
         					.attr('href', baseurl + this.n)
         					.text(this.n))
-    					.append('<br/>')
+    					.append('<br />')
     					.append($('<small>')
     						.append($('<a>')
     							.attr('href', looturl + this.n)
@@ -937,7 +949,7 @@ $(function(){
         				.text(this.k))
     				.append($('<td>')
         				.text(this.v))
-    			)	
+    			);
 		});
 		
 		$('#lootValueLoading').remove();

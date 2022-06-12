@@ -17,7 +17,7 @@
 	-W082, -W084
 */
 /* global mw */
-mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user', 'mediawiki.notify']).then(function() {
+mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user']).then(function() {
 	var api = new mw.Api();
 	
 	return $.when(

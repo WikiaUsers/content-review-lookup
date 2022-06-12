@@ -3,15 +3,18 @@
 importArticles({
     type: "script",
     articles: [
+        "MediaWiki:CollapsibleTables.js",
         "MediaWiki:Common.js/Countdown.js",
         "w:runescape:MediaWiki:Common.js/WLH_edit.js",
-        'u:dev:MediaWiki:PurgeButton/code.js',
-        'u:dev:MediaWiki:AllPagesHideRedirect/code.js',
-        'u:dev:MediaWiki:ReferencePopups/code.js',
-        'u:dev:MediaWiki:UTCClock/code.js',
-        'u:dev:MediaWiki:YoutubePlayer/code.js',
-        'u:dev:ExtendedNavigation/code.js',
-        "u:dev:MediaWiki:InputUsername/code.js",
+        'w:dev:MediaWiki:PurgeButton/code.js',
+        'w:dev:MediaWiki:AllPagesHideRedirect/code.js',
+        'w:dev:MediaWiki:ReferencePopups/code.js',
+        'w:dev:MediaWiki:UTCClock/code.js',
+        'w:dev:MediaWiki:YoutubePlayer/code.js',
+        'w:dev:ExtendedNavigation/code.js',
+        "w:dev:MediaWiki:InputUsername/code.js",
+        "w:dev:ShowHide/code.js",
+
     ]
 });
  

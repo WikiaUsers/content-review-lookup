@@ -9,9 +9,7 @@
                 if (window.BannerNotification) {
                     new BannerNotification(i18n.msg('success').escape(), 'confirm').show();
                 } else {
-                    mw.loader.using('mediawiki.notify').then(function () {
-                        mw.notify(i18n.msg('success').plain());
-                    });
+                    mw.notify(i18n.msg('success').plain());
                 }
             }
             $('body').on('click', '.copy-to-clipboard-button', function(e){

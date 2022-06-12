@@ -2,7 +2,7 @@ if ($('.interactive-maps-container').length != 0)
 {
   (function($)
   {
-  	var m = {
+    var m = {
       isjQueryEvent: function(elem, event, fun)
       {
         var events = $._data(elem, "events");
@@ -11,28 +11,12 @@ if ($('.interactive-maps-container').length != 0)
            return data.handler == fun;
         }));
       }
-  	};
-    $.fn.onParent = function(evt, target, fn)
-    {
-      var $th = $(this);
-      $(document).on(evt, function()
-      {
-      	if ($(target).parents().length != 0)
-      	{
-          var tgt = $th.find(target);
-          if (tgt.length != 0)
-          {
-            var fltTgt = tgt.filter(function(i,e){return !m.isjQueryEvent(e, evt, fn);});
-            if (fltTgt.length != 0) fltTgt.on(evt, fn);
-          }
-      	}
-      });
     };
     $.event.special.DOMNodeChanged = {
       m: {
         observer: function(){}
       },
-  	  setup: function()
+      setup: function()
       {
         var sel = this,
         MutationRecord = [],
@@ -44,14 +28,48 @@ if ($('.interactive-maps-container').length != 0)
         });
         $.event.special.DOMNodeChanged.m.observer = observer;
         observer.observe(sel, {attributes: false, childList: true, subtree: true});
-  	    $(this).on('MutationObserver', MutationRecord, $.event.special.DOMNodeChanged.handler);
-  	  },
-  	  teardown: function()
+        $(this).on('MutationObserver', MutationRecord, $.event.special.DOMNodeChanged.handler);
+      },
+      add: function(arg)
+      {
+        if (arg.selector != undefined)
+        {
+          var $th = $(this),
+          evt = 'DOMNodeChanged',
+          target = arg.selector,
+          fn = arg.handler,
+          timerId = setTimeout(function tick()
+          {
+            var thFlt = $th.filter(function(i,e){return m.isjQueryEvent(e, evt, fn);});
+            if (thFlt.length != 0)
+            {
+              clearTimeout(timerId);
+              $th.off(evt, fn);
+            } else
+              {
+                timerId = setTimeout(tick, 200);
+              }
+          }, 200);
+          $th.on(evt, function(x)
+          {
+            if (x.detail[0].addedNodes.length != 0 && $(target).parents().length != 0)
+            {
+              var tgt = $th.find(target);
+              if (tgt.length != 0)
+              {
+                var fltTgt = tgt.filter(function(i,e){return !m.isjQueryEvent(e, evt, fn);});
+                if (fltTgt.length != 0) fltTgt.on(evt, fn);
+              }
+            }
+          });
+        }
+      },
+      teardown: function()
       {
         var observer = $.event.special.DOMNodeChanged.m.observer;
         observer.disconnect();
-  	    $(this).off('MutationObserver');
-  	  },
+        $(this).off('MutationObserver', $.event.special.DOMNodeChanged.handler);
+      },
       handler: function(e)
       {
         var evt = $.Event(e.data[0], {
@@ -144,7 +162,7 @@ if ($('.interactive-maps-container').length != 0)
         });
   	  }
   	};
-    $('.interactive-maps-container').onParent('DOMNodeChanged', '.leaflet-popup-pane', function(e)
+    $('.interactive-maps-container').on('DOMNodeChanged', '.leaflet-popup-pane', function(e)
     {
       if (e.detail[0].removedNodes.length == 0)
       {
@@ -209,5 +227,83 @@ if ($('.interactive-maps-container').length != 0)
           }
       }
     });
+  });
+}
+if (mw.config.get('wgPageName') == 'Шаблон:Interactive-Maps-2.0/PatchNotes')
+{
+  //PatchNotes
+  $(function()
+  {
+  	//v = variables
+    const v = {
+      static: {
+        ul: '.patch-notes-parent',
+        li: '.patch-notes-parent > .patch-notes-item',
+        curTime: '' //property is defined after initialization
+      },
+      dynamic: {
+        patchTime: ''
+      },
+      $: {
+        li: $(),
+        span: $()
+      }
+    };
+    /**[Properties defined after initialization]**/
+    /********************[Start]******************/
+    v.static.curTime = $(v.static.ul).attr('data-current-time');
+    v.$.li = $(v.static.li).has('span[data-patch-time]');
+    /********************[End]********************/
+    //md = method
+    const m = {
+      year: function(date)
+      {
+        let d = new Date(date);
+        return d.getFullYear();
+      },
+      tmst: function(date)
+      {
+        let d = new Date(date);
+        return d.getTime();
+      },
+      gmcase: function(number, words)
+      {
+        return words[(number % 100 > 4 && number % 100 < 20) ? 2 : [2, 0, 1, 1, 1, 2][(number % 10 < 5) ? Math.abs(number) % 10 : 5]];
+      }/*,
+      timeDifference: function(firstDate, secondDate)
+      {
+        let yearStart = m.year(firstDate),
+        yearEnd = m.year(secondDate);
+        if (yearStart == yearEnd)
+        {
+          let tmstStart = m.tmst(firstDate),
+          tmstEnd = m.tmst(secondDate),
+          hourDiff = (tmstEnd - tmstStart),
+          minutes = Math.abs(hourDiff/60/1000),
+          hours = Math.floor(hourDiff/3600/1000),
+          days = Math.round(hours/24);
+          if (hours >= 24)
+          {
+            return days+' '+m.gmcase(days, ['день', 'дня', 'дней']);
+          } else if (hours > 0)
+            {
+              return hours+' '+m.gmcase(hours, ['час', 'часа', 'часов']);
+            } else
+              {
+                return minutes+' '+m.gmcase(minutes, ['минута', 'минуты', 'минут']);
+              }
+        } else
+          {
+            let years = (yearEnd - yearStart);
+            return years+' '+m.gmcase(years, ['год', 'года', 'лет']);
+          }
+      }*/
+    };
+    /*v.$.li.each(function(i, elm)
+    {
+      v.$.span = $(elm).find('.patch-time-passed');
+      v.dynamic.patchTime = v.$.span.attr('data-patch-time');
+      v.$.span.text(m.timeDifference(v.static.curTime, v.dynamic.patchTime));
+    });*/
   });
 }

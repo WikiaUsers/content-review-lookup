@@ -1,5 +1,5 @@
 /* jshint
-	esversion: 6, forin: true, 
+	esversion: 6, forin: true, esnext: false,
 	immed: true, indent: 4, 
 	latedef: true, newcap: true,
 	noarg: true, undef: true,
@@ -309,7 +309,7 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 		});
 	}
  
-	mw.loader.load([ "mediawiki.diff.styles", 'skin.oasis.diff.css', 'ext.abuseFilter']);
+	mw.loader.load([ "mediawiki.diff.styles", 'ext.abuseFilter']);
 	$(document.body).on("click", "a[href^=\"/wiki/Special:AbuseLog/\"]", main);
 	$(document.body).on('keydown', null, function(event) {
 		if (event.key === "ArrowLeft" && $("#ajax-abuselog-modal").length) {

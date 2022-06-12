@@ -31,6 +31,7 @@ $(function() {
 			
 			$( 'body' ).removeClass( 'theme-fandomdesktop-light theme-fandomdesktop-dark' ).addClass( 'theme-fandomdesktop-' + newTheme );
 			mw.config.set( 'isDarkTheme', !mw.config.get( 'isDarkTheme' ) );
+			mw.hook('dev.themeToggler.toggled').fire(newTheme);
 		} );
 	}
 	

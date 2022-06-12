@@ -193,7 +193,6 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 				}
 			],
 			closeTitle: i18n.msg( 'closeLabel' ).plain(),
-			// @todo Fandom 2.0 design
 			content: {
 				type: 'form',
 				classes: ['adoptionForm', 'fandomCCForm'],
@@ -214,7 +213,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: i18n.msg( 'linkLabel' ).plain()
+										text: i18n.msg( 'linkHeader' ).plain()
 									}
 								]
 							},
@@ -223,10 +222,18 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 								classes: ['sectionContent'],
 								children: [
 									{
+										type: 'label',
+										attr: {
+											for: 'adoptionUrl'
+										},
+										text: i18n.msg( 'linkLabel' ).plain()
+									},
+									{
 										type: 'input',
 										classes: ['formInput'],
 										attr: {
 											id: 'adoptionUrl',
+											name: 'adoptionUrl',
 											type: 'text',
 											required: '',
 											placeholder: i18n.msg( 'placeholderUrl' ).plain()
@@ -247,7 +254,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: i18n.msg( 'nameLabel' ).plain()
+										text: i18n.msg( 'nameHeader' ).plain()
 									}
 								]
 							},
@@ -260,10 +267,11 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 										classes: ['formInput', 'adoptionPrefill'],
 										attr: {
 											id: 'wikiname',
+											name: 'wikiname',
 											type: 'text',
 											disabled: '',
 											required: '',
-											placeholder: i18n.msg( 'nameLabel' ).plain()
+											placeholder: i18n.msg( 'nameHeader' ).plain()
 										}
 									}
 								]
@@ -281,7 +289,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: i18n.msg( 'permissionLabel' ).plain()
+										text: i18n.msg( 'permissionHeader' ).plain()
 									}
 								]
 							},
@@ -290,10 +298,18 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 								classes: ['sectionContent'],
 								children: [
 									{
+										type: 'label',
+										attr: {
+											for: 'permissionstype'
+										},
+										text: i18n.msg( 'permissionLabel' ).plain()
+									},
+									{
 										type: 'select',
 										classes: ['formInput'],
 										attr: {
 											id: 'permissionstype',
+											name: 'permissionstype',
 											required: ''
 										},
 										children: availableGroups
@@ -313,7 +329,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: i18n.msg( 'userActivityLabel', conf.adoptionConfig.activityDays ).plain()
+										text: i18n.msg( 'userActivityHeader', conf.adoptionConfig.activityDays ).plain()
 									}
 								]
 							},
@@ -321,11 +337,19 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 								type: 'div',
 								classes: ['sectionContent'],
 								children: [
+									{
+										type: 'label',
+										attr: {
+											for: 'numDays'
+										},
+										text: i18n.msg( 'userActivityLabel' ).plain()
+									},
 									{
 										type: 'input',
 										classes: ['formInput', 'adoptionPrefill'],
 										attr: {
 											id: 'numDays',
+											name: 'numDays',
 											type: 'number',
 											value: '0',
 											disabled: '',
@@ -347,7 +371,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: i18n.msg( 'adminsActivityLabel', conf.adoptionConfig.adminsDays ).plain()
+										text: i18n.msg( 'adminsActivityHeader', conf.adoptionConfig.adminsDays ).plain()
 									}
 								]
 							},
@@ -355,11 +379,19 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 								type: 'div',
 								classes: ['sectionContent'],
 								children: [
+									{
+										type: 'label',
+										attr: {
+											for: 'numAdmins'
+										},
+										text: i18n.msg( 'adminsActivityLabel' ).plain()
+									},
 									{
 										type: 'input',
 										classes: ['formInput', 'adoptionPrefill'],
 										attr: {
 											id: 'numAdmins',
+											name: 'numAdmins',
 											type: 'number',
 											value: '0',
 											disabled: '',
@@ -381,7 +413,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: i18n.msg( 'communityVoteLabel' ).plain()
+										text: i18n.msg( 'communityVoteHeader' ).plain()
 									}
 								]
 							},
@@ -390,10 +422,18 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 								classes: ['sectionContent'],
 								children: [
 									{
+										type: 'label',
+										attr: {
+											for: 'communityvote'
+										},
+										text: i18n.msg( 'communityVoteLabel' ).plain()
+									},
+									{
 										type: 'input',
 										classes: ['formInput'],
 										attr: {
 											id: 'communityvote',
+											name: 'communityvote',
 											type: 'text',
 											placeholder: i18n.msg( 'placeholderCommunityVote' ).plain()
 										}
@@ -413,7 +453,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: i18n.msg( 'commentsLabel' ).plain()
+										text: i18n.msg( 'commentsHeader' ).plain()
 									}
 								]
 							},
@@ -422,10 +462,18 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 								classes: ['sectionContent'],
 								children: [
 									{
+										type: 'label',
+										attr: {
+											for: 'comment'
+										},
+										text: i18n.msg( 'commentsLabel' ).plain()
+									},
+									{
 										type: 'textarea',
 										classes: ['formInput'],
 										attr: {
 											id: 'comment',
+											name: 'comment',
 											name: '',
 											placeholder: i18n.msg( 'placeholderComments' ).plain()
 										}

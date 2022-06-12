@@ -25,7 +25,7 @@ var config = mw.config.get([
 
 function customizeComments() {
 		var interval = setInterval(function () {
-		var elements = ".Reply:not([data-user]), .Reply_body__3woA9:not([data-user]), .Message:not([data-user]), .Comment_body__7p3np:not([data-user])";
+		var elements = ".Reply:not([data-user]), .Reply_body__PM9kM:not([data-user]), .Message:not([data-user]), .Comment_body__Dw-zH:not([data-user])";
 		$('#MessageWall .EntityHeader_name__2oRXg, #articleComments .EntityHeader_name__2oRXg').filter(function() {
 		       $(this).parents(elements).attr('data-user', $(this).text()).addClass('user-comment');
 			});
@@ -35,7 +35,7 @@ function customizeComments() {
 		  '.article-comments-app a > svg.wds-avatar__image:not([title])').attr('title', function(){
 			return $(this).parent('a').attr('href').split(':')[1].replace(/%20/g, ' ').replace(/_/g, ' ')}).attr('alt', function(){
 			return $(this).parent('a').attr('href').split(':')[1].replace(/%20/g, ' ').replace(/_/g, ' ')});
-		$('.message-wall-app .EntityHeader_header-details__1bZ7- a[href*="%20"], .article-comments-app .EntityHeader_header-details__1bZ7- a[href*="%20"]').each(function(){
+		$('.message-wall-app a.EntityHeader_name__PAxYW[href*="%20"], .article-comments-app a.EntityHeader_name__PAxYW[href*="%20"]').each(function(){
 			var site = config.wgServer;
 	    	this.href = this.href.replace(/%20/g, '_').replace(site, '');
 		});

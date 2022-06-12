@@ -229,7 +229,7 @@ $(document).ready(function() {
     // Форма скидання при натисканні кнопки скидання
     $("#resetBonusButton").click(function() {
         $(".bonusInput").attr("value", "0");
-        $("#changeBonusButton").text("Apply");
+        $("#changeBonusButton").text("Застосувати");
         $("#numOfAmps, #numOfGenerators").val("0").change();
         $(".StatueStat").each(function() {
             var returnInitial = $(this).attr("title") * 1;

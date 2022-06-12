@@ -89,7 +89,8 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     // ES6 scripts needs to be imported here
     // (for convenience to promptly disable any script at any time)
     importScripts([
-        "MediaWiki:Common.js/skydate.js"
+        "MediaWiki:Common.js/skydate.js",
+        "MediaWiki:Common.js/search.js"
     ]);
 
     //##############################################################

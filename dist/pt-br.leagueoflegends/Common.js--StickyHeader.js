@@ -1,17 +1,15 @@
-// @preserve jQuery.floatThead 2.1.4 - https://mkoryak.github.io/floatThead/
-// Copyright (c) 2012 - 2019 Misha Koryak
+/** @preserve jQuery.floatThead 2.2.1 - https://mkoryak.github.io/floatThead/ - Copyright (c) 2012 - 2020 Misha Koryak **/
 // @license MIT
-
 
 /* @author Misha Koryak
  * @projectDescription position:fixed on steroids. Lock a table header in place while scrolling.
  *
  * Dependencies:
- * jquery 1.9.0 + [required] OR jquery 1.7.0 + jquery UI core
+ * jquery 1.9.0+ [required] OR jquery 1.7.0+ jquery UI core
  *
  * https://mkoryak.github.io/floatThead/
  *
- * Tested on FF13+, Chrome 21+, IE8, IE9, IE10, IE11
+ * Tested on FF13+, Chrome 21+, IE9, IE10, IE11, EDGE
  */
 (function( $ ) {
   /**
@@ -23,7 +21,7 @@
     headerCellSelector: 'tr:visible:first>*:visible', //thead cells are this.
     zIndex: 1001, //zindex of the floating thead (actually a container div)
     position: 'auto', // 'fixed', 'absolute', 'auto'. auto picks the best for your table scrolling type.
-    top: 0, //String or function($table) - offset from top of window where the header should not pass above
+    top: 55, //String or function($table) - offset from top of window where the header should not pass above
     bottom: 0, //String or function($table) - offset from the bottom of the table where the header should stop scrolling
     scrollContainer: function($table) { // or boolean 'true' (use offsetParent) | function -> if the table has horizontal scroll bars then this is the container that has overflow:auto and causes those scroll bars
       return $([]);
@@ -106,7 +104,7 @@
     return that;
   })();
 
-  var canObserveMutations = typeof MutationObserver !== 'undefined';
+  var globalCanObserveMutations = typeof MutationObserver !== 'undefined';
 
 
   //browser stuff
@@ -262,8 +260,6 @@
       return this; //no more crappy browser support.
     }
 
-    var mObs = null; //mutation observer lives in here if we can use it / make it
-
     if(util.isFunction(isTableWidthBug)) {
       isTableWidthBug = isTableWidthBug();
     }
@@ -311,7 +307,8 @@
       if(!$table.is('table')){
         throw new Error('jQuery.floatThead must be run on a table element. ex: $("table").floatThead();');
       }
-      canObserveMutations = opts.autoReflow && canObserveMutations; //option defaults to false!
+      var canObserveMutations = opts.autoReflow && globalCanObserveMutations; //option defaults to false!
+      var mObs = null; //mutation observer lives in here if we can use it / make it
       var $header = $table.children('thead:first');
       var $tbody = $table.children('tbody:first');
       if($header.length === 0 || $tbody.length === 0){
@@ -393,6 +390,7 @@
         $tableColGroup = $("<colgroup/>");
         existingColGroup = false;
       }
+      var colSelector = existingColGroup ? "col:visible" : "col";
       var $fthRow = $('<fthtr>').css({ //created unstyled elements (used for sizing the table because chrome can't read <col> width)
         'display': 'table-row',
         'border-spacing': 0,
@@ -533,7 +531,7 @@
         var count;
         var $headerColumns = $header.find(opts.headerCellSelector);
         if(existingColGroup){
-          count = $tableColGroup.find('col').length;
+          count = $tableColGroup.find(colSelector).length;
         } else {
           count = 0;
           $headerColumns.each(function () {
@@ -559,7 +557,11 @@
             );
           }
 
-          cols = cols.join('');
+          if(existingColGroup){
+            cols = $tableColGroup.html();
+          } else {
+            cols = cols.join('');
+          }
   
           if(createElements){
             $fthRow.empty();
@@ -571,9 +573,9 @@
           if(!existingColGroup){
             $tableColGroup.html(cols);
           }
-          $tableCells = $tableColGroup.find('col');
+          $tableCells = $tableColGroup.find(colSelector);
           $floatColGroup.html(cols);
-          $headerCells = $floatColGroup.find("col");
+          $headerCells = $floatColGroup.find(colSelector);
 
         }
         return count;
@@ -647,7 +649,7 @@
         return function(){
           //Cache the current scrollLeft value so that it can be reset post reflow
           var scrollLeft = $floatContainer.scrollLeft();
-          $tableCells = $tableColGroup.find('col');
+          $tableCells = $tableColGroup.find(colSelector);
           var $rowCells = getSizingRow($table, $tableCells, $fthCells, ieVersion);
 
           if($rowCells.length === numCols && numCols > 0){

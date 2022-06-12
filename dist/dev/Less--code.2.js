@@ -22,7 +22,7 @@
  *       meaning a more substantial rewrite of less.js source
  */
 
-/*jshint bitwise:true, camelcase:true, curly:true, eqeqeq:true, es3:false,
+/* jshint bitwise:true, camelcase:true, curly:true, eqeqeq:true, es3:false,
     forin:true, immed:true, indent:4, latedef:true, newcap:true,
     noarg:true, noempty:true, nonew:true, plusplus:true, quotmark:single,
     undef:true, unused:true, strict:true, trailing:true,
@@ -30,12 +30,13 @@
     onevar:true
 */
 
-/*global less:true importArticles */
+/* global less:true, importArticles */
 
 // disable indent warning
 /*jshint -W015*/
+
 ;(function (window, location, $, mw, dev, undefined) {
-/*jshint +W015*/
+    /*jshint +W015*/
 
     'use strict';
 
@@ -52,9 +53,9 @@
     }];
     */
 
-        /**
-         * Cache mw.config values
-         */
+    /**
+     * Cache mw.config values
+     */
     var conf = mw.config.get([
             'debug',
             'skin',
@@ -108,7 +109,10 @@
                     });
                 });
 
-                importArticles({type: 'script', articles: ['u:dev:MediaWiki:I18n-js/code.js']});
+                importArticles({
+                    type: 'script',
+                    articles: ['u:dev:MediaWiki:I18n-js/code.js']
+                });
             },
 
             /**
@@ -136,7 +140,7 @@
 
                 $content.append($p);
 
-                if ($content.prop('scrollHeight' ) > $content.prop('clientHeight')) {
+                if ($content.prop('scrollHeight') > $content.prop('clientHeight')) {
                     // the text is longer than the content
                     // so scroll down to the bottom
                     $content.scrollTop($content.prop('scrollHeight'));
@@ -163,22 +167,21 @@
                     run = false,
                     // usergroups that can edit mediawiki pages
                     allowed = ['sysop', 'vanguard', 'content-volunteer', 'soap', 'helper', 'wiki-specialist', 'wiki-representative', 'staff']
-                        .concat(config.allowed),
-                    ns,
+                    .concat(config.allowed),
                     mwi,
                     i;
-                
+
                 mw.util.addCSS(
                     // put any additional css rules here
                 );
-                
+
                 if (profile.name === 'msie' && profile.versionNumber < 9) {
                     // we're not going to support anything below ie9
                     // so stop here rather than cause any errors
                     // by using stuff ie8 doesn't support
                     return;
                 }
-                
+
                 if (conf.wgAction !== 'view') {
                     return;
                 }
@@ -205,34 +208,25 @@
                     mw.loader.using(['mediawiki.api'], function () {
                         util.loadMessages(self.addUpdate);
                     });
-
                     return;
                 }
 
-                // get localised name for mediawiki namespace
-                for (ns in conf.wgNamespaceIds) {
-                    if (conf.wgNamespaceIds.hasOwnProperty(ns)) {
-                        if (conf.wgNamespaceIds[ns] === 8) {
-                            mwi = ns;
-                        }
-                    }
-                }
+                // get all localised names for mediawiki namespace
+                mwi = Object.entries(conf.wgNamespaceIds).filter(function (v) {
+                    return v[1] === 8;
+                }).map(function (v) {
+                    return v[0];
+                });
 
-                // if we're trying to update a mediawiki page
+                // if target CSS page is a mediawiki page
                 // check the user can edit them
-                if (opts.target.toLowerCase().indexOf(mwi) === 0) {
-                    run = false;
-
-                    for (i = 0; i < allowed.length; i += 1) {
-                        if (conf.wgUserGroups.indexOf(allowed[i]) > -1) {
-                            run = true;
-                            break;
-                        }
-                    }
-
-                    if (!run) {
-                        return;
-                    }
+                if (mwi.filter(function (v) {
+                        return opts.target.toLowerCase().startsWith(v);
+                    }).length > 0 && // if target page starts with any of the localized MW names
+                    conf.wgUserGroups.filter(function (v) {
+                        return allowed.includes(v);
+                    }).length < 1) { // and if none of the user's groups is allowed
+                    return; // exit script
                 }
 
                 mw.loader.using(['mediawiki.api'], function () {
@@ -246,17 +240,17 @@
             addUpdate: function () {
                 $('#mw-content-text').prepend(
                     $('<a>')
-                        .addClass('wds-is-squished wds-button')
-                        .attr({
-                            title: i18n.msg('update-css').escape(),
-                            href: '#',
-                            id: 'less-update-button'
-                        })
-                        .css({
-                            'margin-bottom': '5px'
-                        })
-                        .text(i18n.msg('update-css').plain())
-                        .click(self.modal)
+                    .addClass('wds-is-squished wds-button')
+                    .attr({
+                        title: i18n.msg('update-css').escape(),
+                        href: '#',
+                        id: 'less-update-button'
+                    })
+                    .css({
+                        'margin-bottom': '5px'
+                    })
+                    .text(i18n.msg('update-css').plain())
+                    .click(self.modal)
                 );
             },
 
@@ -281,13 +275,13 @@
                     // createmodal
                     $('body').append(
                         '<div id="less-overlay">' +
-                            '<div id="less-modal">' +
-                                '<div id="less-header">' +
-                                    '<span id="less-title">' + i18n.msg( 'less-title' ).escape() + '</span>' +
-                                    '<span id="less-close" title="' + i18n.msg('less-close').escape() + '"></span>' +
-                                '</div>' +
-                                '<div id="less-content"></div>' +
-                            '</div>' +
+                        '<div id="less-modal">' +
+                        '<div id="less-header">' +
+                        '<span id="less-title">' + i18n.msg('less-title').escape() + '</span>' +
+                        '<span id="less-close" title="' + i18n.msg('less-close').escape() + '"></span>' +
+                        '</div>' +
+                        '<div id="less-content"></div>' +
+                        '</div>' +
                         '</div>'
                     );
 
@@ -305,7 +299,7 @@
                 // set modal height
                 $('#less-modal').css(
                     'margin-top',
-                    (($( window ).height() - 400) / 3)
+                    (($(window).height() - 400) / 3)
                 );
 
                 self.getSource();
@@ -487,7 +481,7 @@
                     // if there's an import error, less.js will throw an error at the end parsing
                     // not as soon as it encounters them
                     mw.hook('less.200').add(function (url) {
-                        var uri = new mw.Uri( url ),
+                        var uri = new mw.Uri(url),
                             path = uri.path.replace(conf.wgArticlePath, '');
 
                         util.addLine({
@@ -495,7 +489,7 @@
                         });
                     });
 
-                    mw.hook( 'less.404' ).add(function (url) {
+                    mw.hook('less.404').add(function (url) {
                         var uri = new mw.Uri(url),
                             path = uri.path.replace(conf.wgArticlePath, '');
 
@@ -564,7 +558,7 @@
                     }
                 });
             },
-            
+
             /**
              * Formats resulting CSS so it's readable after parsing
              *
@@ -590,7 +584,7 @@
 
                     // add consistent newlines between rules
                     .replace(/(\})\n+/g, '$1\n\n')
-                    
+
                     // 4 space indentation
                     // do it this way to account for rules inside media queries, keyframes, etc.
                     // the 8 space indent replace should never really be used
@@ -606,7 +600,7 @@
                     .replace(
                         /@font-face\s*\{([\s\S]*?\n)(\s*)src:\s*([\s\S]*?);([\s\S]*?\})/g,
                         function (_, p1, p2, p3, p4) {
-                            return  '@font-face { ' +
+                            return '@font-face { ' +
                                 p1 +
                                 p2 +
                                 'src: ' + p3.split(', ').join(',\n' + p2 + '     ') + ';' +
@@ -651,7 +645,7 @@
                     self.wrap(css);
                 }
             },
-            
+
             /**
              * If set in config, wraps the css in pre tags
              *
@@ -674,9 +668,9 @@
             postCss: function (text) {
                 var token = mw.user.tokens.get('csrfToken'),
                     summary = i18n
-                        .inContentLang()
-                        .msg('edit-summary', opts.source)
-                        .plain(),
+                    .inContentLang()
+                    .msg('edit-summary', opts.source)
+                    .plain(),
                     params = {
                         action: 'edit',
                         summary: summary,
@@ -729,7 +723,7 @@
             }
         };
 
-	conf.wgArticlePath = conf.wgArticlePath.replace(/\$1/, '');
+    conf.wgArticlePath = conf.wgArticlePath.replace(/\$1/, '');
 
     if (conf.debug) {
         dev.less = self;
@@ -740,5 +734,5 @@
     mw.loader.using('jquery.client', function () {
         $(self.init);
     });
-    
+
 }(this, this.location, this.jQuery, this.mediaWiki, this.dev = this.dev || {}));

@@ -4,3 +4,7 @@
  
 ((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;
 ((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).defaults = { animate: false };
+
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 50;
+window.lockOldComments.addNoteAbove = true;

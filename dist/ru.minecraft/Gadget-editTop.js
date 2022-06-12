@@ -9,7 +9,7 @@ if (wgNamespaceNumber > -1){
 
 var edittopHTML = '<span class="mw-editsection">' +
     '<span class="mw-editsection-bracket" style="margin-right: 0.25em;color: #555555;">[</span>' +
-    '<a href="/ru/index.php?title=' + wgPageName + '&amp;action=edit&amp;section=0" title="Править «введение» этой страницы">править введение</a>' +
+    '<a href="/ru/index.php?title=' + wgPageName + '&amp;action=edit&amp;section=0" title="Править «введение» этой страницы"><svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-pencil-small"></use></svg></a>' +
     '<span class="mw-editsection-bracket" style="margin-left: 0.25em;color: #555555;">]</span>' +
     '</span>';
     

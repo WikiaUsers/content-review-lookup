@@ -22,3 +22,10 @@
         });
     });
 })();
+
+window.SpoilerAlertJS = {
+    question: '不好意思！這個部分含有劇透內容。您確定要繼續瀏覽？',
+    yes: '好呀',
+    no: '不想',
+    fadeDelay: 500
+};

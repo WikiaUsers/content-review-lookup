@@ -13,16 +13,14 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             ['Publicado','Publicado'],
             ['Desatualizado','Desatualizado'],
             ['Retirado','Retirado'],
-            ['Adotado','Adotado'],
-            ['Não especificado','Não especificado']
+            ['Não especificado','N/D']
         ],
         'tipo': ['- Tipo -',
             ['Qualidade','Alterações de balanço'],
             ['Retrabalho','Atualização da jogabilidade'],
             ['Relançado','Campeão relançado'],
             ['Original','Personagem original'],
-            ['Portado','Personagem importado'],
-            ['Não especificado','Não especificado']
+            ['Não especificado','N/D']
         ],
         'classe': ['- Classe -',
             ['Lutador','Lutador'],
@@ -38,13 +36,16 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             ['Suporte','Suporte'],
             ['Disruptor','• Disruptor'],
             ['Encantador','• Encantador'],
-            ['Protetor','• Warden'],
-            ['Não especificado','Não especificado']
+            ['Protetor','• Protetor'],
+            ['Não especificado','N/D']
         ],
-        'alcance': ['- Alcance -',
-            ['Corpo a corpo','Corpo a corpo'],
-            ['À distância','À distância'],
-            ['Não especificado','Não especificado']
+        'tema': ['- Direção Temática -',
+            ['Atual','Tema atual'],
+            ['Revisitado','Tema revisitado'],
+            ['Misturado','Tema misturado'],
+            ['Novel','Tema de novel'],
+            ['Importado','Tema importado'],
+            ['Não especificado','N/D']
         ]
     };
 /* End of mw.loader.using callback */

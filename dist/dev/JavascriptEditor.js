@@ -5,7 +5,7 @@
  * @license                 CC-BY-SA 3.0
 */
 (function () {
-    mw.loader.using(['mediawiki.util', 'mediawiki.notify']).then(function () {
+    mw.loader.using('mediawiki.util').then(function () {
         var page = mw.config.get('wgPageName');
         var ext = new mw.Title(page).getExtension();
         if (

@@ -126,11 +126,6 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 				'dev.i18n',
 				'dev.ui',
 			]),
-			await: Object.freeze([
-				'mediawiki.api',
-				'mediawiki.notify',
-				'mediawiki.util',
-			]),
 			otherOnloadPromises: [],
 		}),
 
@@ -377,7 +372,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 		 * Checks if the user has the groups for the requested level.
 		 *
 		 * @method					hasRights
-		 * @class				   UserAndIPTools
+		 * @class					UserAndIPTools
 		 * @returns {Boolean}		Whether the user has the requested rights
 		 * @param {String} level	The action to request
 		 */

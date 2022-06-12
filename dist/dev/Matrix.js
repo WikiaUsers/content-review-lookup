@@ -129,7 +129,6 @@
     };
     mw.loader.using([
         'mediawiki.api',
-        'mediawiki.notify',
         'mediawiki.Uri'
     ]).then($.proxy(Matrix.init, Matrix));
 })(jQuery, mediaWiki);

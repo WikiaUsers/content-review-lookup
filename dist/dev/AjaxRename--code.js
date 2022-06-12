@@ -241,7 +241,6 @@ mw.loader.using('mediawiki.api').then(function() {
 			]),
 			await: [
 				'mediawiki.api',
-				'mediawiki.notify',
 				'mediawiki.util',
 			],
 			otherOnloadPromises: [

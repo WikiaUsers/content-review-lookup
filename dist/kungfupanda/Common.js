@@ -7,22 +7,14 @@ importArticles({
       "u:dev:MediaWiki:FixWantedFiles/code.js", /* Fix red links to files */
       "u:dev:MediaWiki:DupImageList/code.js", /* Duplicate image list */
       "u:dev:MediaWiki:ReferencePopups/code.js", /* Reference popups */
-      "u:dev:MediaWiki:Countdown/code.js", /* Countdown timer 
-      "u:dev:MediaWiki:RailWAM/code.js", /* WAM display on rail (DISABLED until UCP adds back)
-      "u:dev:MediaWiki:DiscussionsRailModule/code.js", /* DiscussionsRailModule (DISABLED until UCP adds back) */
+      "u:dev:MediaWiki:Countdown/code.js", /* Countdown timer */
+      "u:dev:MediaWiki:DiscussionsRailModule/UCP.js", /* Discussions rail module */
       "u:dev:MediaWiki:PurgeButton/code.js", /* Purge button
       "u:avatar:MediaWiki:Common.js/icons.js", /* Add icons to page header bottom border (DISABLED, looking for alternative)*/
       "MediaWiki:Common.js/Stdsummaries.js", /* Summary filler */
 
     ]
 });
-
-/* 'RailWAM' variables
- * DISABLED
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
- */
 
 /* Inactive users list */
 InactiveUsers = { 

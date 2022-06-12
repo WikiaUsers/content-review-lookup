@@ -8,24 +8,6 @@ var i18n = {
 	defaultLicense: 'License'
 };
 
-// Make the purge tab work as it used to without a confirmation page by
-// sending it using POST
-'use strict';
-$( function() {
-	$( '#ca-purge a' ).on( 'click', function( e ) {
-		var $form = $( '<form>' ).attr( {
-			method: 'POST',
-			action: this.href,
-		} ).appendTo( document.body );
-		
-		$form.submit();
-		
-		e.preventDefault();
-	} );
-} );
-
-
-
 /* Fires when DOM is ready */
 $( function() {
 	

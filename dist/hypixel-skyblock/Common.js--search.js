@@ -133,6 +133,9 @@ window.hsbwiki = window.hsbwiki || {};
      */
     build() {
 		const suggestions = this.suggestions;
+		
+		const sugToOpt = (item)=>({ label: item, data: item });
+		
 		let $form = $("<form>")
 			.addClass("hsb-custom-search")
 			.attr({ action: "#" })
@@ -140,39 +143,37 @@ window.hsbwiki = window.hsbwiki || {};
 			  e.preventDefault();
 			  this.submitForm();
 			});
+		this.$container.empty().append($form);
         
         this.comboBox = new OO.ui.ComboBoxInputWidget({
         	icon: 'search',
 			placeholder: this.placeholder,
-			options: suggestions.sort().map((item)=>({ label: item, data: item }))
+			options: suggestions.sort().map(sugToOpt),
 		});
 		this.comboBox.on('change', () => {
-			this.comboBox.setOptions(
-				suggestions
-				.filter((s)=>s.toLowerCase().indexOf(this.comboBox.getValue().toLowerCase()) > -1)
-				.sort()
-				.map((item)=>({ label: item, data: item }))
-			);
+			const val = this.comboBox.getValue().toLowerCase();
+			const filtered = suggestions.filter((s)=>s.toLowerCase().indexOf(val) > -1).sort().map(sugToOpt);
+			this.comboBox.setOptions(filtered.length > 0 ? filtered : suggestions);
 			
 	      	// Auto search if text matches a suggestion (mostly so selecting a suggestion auto-searches)
-	      	if(suggestions.map(s=>s.toLowerCase()).indexOf(this.comboBox.getValue().toLowerCase()) > -1) {
-	          $form.submit();
+	      	const matchI = suggestions.map(s=>s.toLowerCase()).indexOf(val);
+	      	if(matchI > -1) {
+				this.comboBox.setValue(suggestions[matchI]); // set to exact suggestion just encase
+				$form.submit();
 	      	}
 		});
 		this.comboBox.$element.find('.oo-ui-comboBoxInputWidget-dropdownButton .oo-ui-buttonElement-button').on("click", ()=>{
 	      	this.comboBox.setValue('');
-			this.comboBox.setOptions( suggestions.sort().map((item)=>({ label: item, data: item })) );
+			this.comboBox.setOptions( suggestions.sort().map(sugToOpt) );
 		});
 		$form.append(this.comboBox.$element);
 
 		$("<button>").appendTo($form)
 	        .addClass("noselect")
-	        .append('<svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-magnifying-glass-small"></use></svg>')
 	        .click(function () {
 	          $form.submit();
 	        });
-
-		this.$container.empty().append($form);
+	    this.toggleSubmitButton(true);
 
 		this.$result = this.resultId
 			? $("#"+this.resultId)
@@ -212,7 +213,7 @@ window.hsbwiki = window.hsbwiki || {};
         .loadTemplate(code)
         .then((html) => {
           this.toggleSubmitButton(true);
-          this.dispResult(html);
+          this.displayResult(html);
         })
         .catch((error) => {
           this.toggleSubmitButton(true);
@@ -225,7 +226,7 @@ window.hsbwiki = window.hsbwiki || {};
      *
      * @param response {String} A string representing the HTML to be added to the page
      */
-    dispResult(html) {
+    displayResult(html) {
       this.$result
         .empty()
         .html(html)
@@ -243,11 +244,11 @@ window.hsbwiki = window.hsbwiki || {};
     }
 
     toggleSubmitButton(on) {
-      const $button = this.$container.find("form button div");
+      const $button = this.$container.find("form button");
       if(on) {
-        $button.text("↵").css("color", "white");
+        $button.html('<svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-magnifying-glass-small"></use></svg>');
       } else {
-        $button.text('..').css('color','gray');
+        $button.html('<div style="width:18px; text-align:center; font-size:24px;">··</div>');
       }
     }
   }
@@ -263,15 +264,17 @@ window.hsbwiki = window.hsbwiki || {};
    * @todo
    */
   function init() {
-    $(".jsCustomSearch").each(function () {
-      var c = new CustomSearch(this);
-      c.build();
-
-      searchStore[c.form] = c;
+  	mw.loader.using(["oojs-ui-core"]).then(function(){
+	    $(".jsCustomSearch").each(function () {
+	      var c = new CustomSearch(this);
+	      c.build();
+	
+	      searchStore[c.form] = c;
+	    });
+	
+	    // allow scripts to hook into calc setup completion
+	    mw.hook(`${HOOK_ID}.setupComplete`).fire();
     });
-
-    // allow scripts to hook into calc setup completion
-    mw.hook(`${HOOK_ID}.setupComplete`).fire();
   }
 
   $(init);

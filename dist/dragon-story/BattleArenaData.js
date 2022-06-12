@@ -175,6 +175,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"alabaster": {
+				"name": "Alabaster",
+				"colors": [
+					"white",
+					"black"
+				],
+				"rarity": "common"
+			},
 			"aladdin": {
 				"name": "Aladdin",
 				"colors": [
@@ -1982,6 +1990,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"canary": {
+				"name": "Canary",
+				"colors": [
+					"yellow",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"cancer": {
 				"name": "Cancer",
 				"colors": [
@@ -2076,6 +2092,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"fey",
 					"white",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"carmine": {
+				"name": "Carmine",
+				"colors": [
+					"red",
+					"black"
 				],
 				"rarity": "unbreedable"
 			},
@@ -3247,6 +3271,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"blue"
 				],
 				"rarity": "super"
+			},
+			"crystalline": {
+				"name": "Crystalline",
+				"colors": [
+					"blue",
+					"gemstone",
+					"white"
+				],
+				"rarity": "unbreedable"
 			},
 			"cuddle": {
 				"name": "Cuddle",
@@ -10000,6 +10033,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"navy": {
+				"name": "Navy",
+				"colors": [
+					"blue",
+					"white",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"nebula": {
 				"name": "Nebula",
 				"colors": [
@@ -14174,6 +14216,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"slate": {
+				"name": "Slate",
+				"colors": [
+					"stone",
+					"blue",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"sled": {
 				"name": "Sled",
 				"colors": [
@@ -15376,6 +15427,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"sunglow": {
+				"name": "Sunglow",
+				"colors": [
+					"red",
+					"yellow",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"sunken": {
 				"name": "Sunken",
 				"colors": [
@@ -15659,6 +15719,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"green",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"taffy": {
+				"name": "Taffy",
+				"colors": [
+					"pink",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},

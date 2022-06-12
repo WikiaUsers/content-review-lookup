@@ -1,5 +1,5 @@
 /* ShowHide deprecation warning */
-mw.loader.using(['mediawiki.notify']).then(function() {
+(function() {
     var config = mw.config.get([
             'wgCanonicalSpecialPageName',
             'wgNamespaceNumber',
@@ -64,7 +64,7 @@ mw.loader.using(['mediawiki.notify']).then(function() {
         banner('being imported on this wiki');
     }
 
-});
+})();
 
 /*
  * Copyright © 2009, Daniel Friesen

@@ -2,19 +2,6 @@
 
 var xhrSummaries, xhrReasons;
 
-document.write("<scr" + "ipt type=\"text/javascript\" src=\"http://ru.perfectworld.wikia.com/index.php?title=MediaWiki:Wikifier.js&action=raw&ctype=text/javascript&dontcountme=s\"></script>");
-
-/* Импорт дополнительных скриптов. Взято с изменениями из рувики, автор Alex Smotrov */
- function importScript(page) {
-     var url = wgScriptPath + '/index.php?title='
-                            + encodeURIComponent(page.replace(' ','_'))
-                            + '&action=raw&ctype=text/javascript&dontcountme=s';
-     var s = document.createElement('script');
-     s.src = url;
-     s.type='text/javascript';
-     document.getElementsByTagName('head')[0].appendChild(s);
- }
-
 function onPageInit()
 {
     fillDeleteReasons();
@@ -380,7 +367,7 @@ addOnloadHook(onPageInit);
      }
    
   } 
-  addOnloadHook( createNavigationBarToggleButton );
+  $(createNavigationBarToggleButton);
 
 /* tooltips and access keys */
 ta = new Object();

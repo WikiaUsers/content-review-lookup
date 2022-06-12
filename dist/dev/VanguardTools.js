@@ -444,9 +444,7 @@
             $('.template-classification-entry-point__wrapper')
                 .attr('data-type', VAN.template.type);
             var message = VAN.i18n.msg('templatetypechange', VAN.template.label).plain();
-            mw.loader.using('mediawiki.notify').then(function () {
-                mw.notify(message);
-            });
+            mw.notify(message);
         },
         // Template type map for keyboard shortkeys.
         types: {

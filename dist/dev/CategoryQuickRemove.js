@@ -216,5 +216,5 @@
         i18nLoad: i18nLoad,
     };
     importArticle({type: 'style', article: 'u:dev:MediaWiki:CategoryQuickRemove.css'});
-    mw.loader.using(['mediawiki.notify', 'mediawiki.util']);
+    mw.loader.using('mediawiki.util');
 }((window.fng = window.fng || {}).cqr = window.fng.cqr || {});

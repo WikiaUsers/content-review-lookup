@@ -1,7 +1,7 @@
 var tooltips_list = [
 	{
         classname: 'tooltip', 
-        parse: '{'+'{Tooltip|<#param#>|<#param2#>}}',
+        parse: '{'+'{#invoke:Tooltips|getTip|<#param#>|<#param2#>|<#param3#>}}',
     },
     {
         classname: 'zoneRP-perso-tooltip',

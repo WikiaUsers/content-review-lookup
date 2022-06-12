@@ -2,6 +2,7 @@
 Mediawiki:Common.js/DynamicStats.js
 Mediawiki:Common.js/gridfiltering.js
 Mediawiki:Common.js/itemGridfiltering.js
+Mediawiki:Common.js/writemGridfiltering.js
 Mediawiki:Common.js/avatarGridfiltering.js
 Mediawiki:Common.js/esportsGridfiltering.js
 Mediawiki:Common.js/levelselect.js
@@ -11,13 +12,13 @@ Mediawiki:Common.js/DynamicFontSize.js
 Mediawiki:Common.js/Banner.js
 Mediawiki:Common.js/rosterFilter.js
 Mediawiki:Common.js/CustomTab.js
-dev:DiscordModule/code.js
+dev:InactiveUsers/code.js
 dev:InputUsername/code.js
 dev:OggPlayer.js
-dev:RCStats.js
 dev:Tooltips.js
-dev:TabViewEditLinks/code.js
-dev:WikiManager_Nameplate.js
+//dev:DiscordModule/code.js //
+dev:EditorColorPicker.js
+Common.js/OggPlayerDownload.js
 */
 
 mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
@@ -30,34 +31,36 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
         'jogo': ['- Jogo -',
             ['LOL','League of Legends'],
             ['TFT','Teamfight Tactics'],
-            ['TFT1','• Setor 1 - Guerras das Facções'],
-            ['TFT2','• Setor 2 - A Ascensão dos Elementos'],
-            ['TFT3','• Set 3 - Galáxias'],
+            ['TFT1','• Conjunto 1 - Guerras das Facções'],
+            ['TFT2','• Conjunto 2 - Ascensão dos Elementos'],
+            ['TFT3','• Conjunto 3 - Galáxias'],
+            ['TFT3.5','• Conjunto 3.5 - Galáxias II'],
+            ['TFT4','• Conjunto 4 - Destinos'],
             ['LOR','Legends of Runeterra'],
             ['WR','Wild Rift']
         ],
         'função': ['- Função -',
-            ['Suporte','Suporte'],
-            ['Disruptor','• Disruptor'],
-            ['Encantador','• Encantador'],
+            ['Controlador','Controlador'],
+            	['Disruptor','• Disruptor'],
+            	['Encantador','• Encantador'],
             ['Lutador','Lutador'],
-            ['Investidor','• Investidor'],
-            ['Colosso','• Colosso'],
+            	['Lutador de Investida','• Lutador de Investida'],
+            	['Colosso','• Colosso'],
             ['Mago','Mago'],
-            ['Artilharia','• Artilharia'],
-            ['Mago de Batalha','• Mago de Batalha'],
-            ['Obliterador','• Obliterador'],
+            	['Mago de Artilharia','• Mago de Artilharia'],
+            	['Mago de Batalha','• Mago de Batalha'],
+            	['Obliterador','• Obliterador'],
             ['Atirador','Atirador'],
             ['Retalhador','Retalhador'],
-            ['Assassino','• Assassino'],
-            ['Duelista','• Duelista'],
-            ['Especialista','Especialista'],
-            ['Tanque','Tanque'],
-            ['Vanguarda','• Vanguarda'],
-            ['Protetor','• Protetor']
+            	['Assassino','• Assassino'],
+            	['Duelista','• Duelista'],
+            	['Especialista','Especialista'],
+            ['Tank','Tanque'],
+            	['Vanguarda','• Vanguarda'],
+            	['Protetor','• Protetor']
         ],
-        'tipo': ['- Tipodeataque -',
-            ['Corpo a corpo','Corpo a corpo'],
+        'tipo': ['- Tipo de ataque -',
+            ['Corpo-a-corpo','Corpo-a-corpo'],
             ['À distância','À distância']
         ]
     };
@@ -65,12 +68,18 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
     /* Config para [[MediaWiki:Common.js/itemGridfiltering.js]] */
     itemGridContainer = '#item-grid';
     itemGridFilters = {
-        'pesquisa': 'pesquisa',
+        'search': 'search',
         'modos' : ['- Modos de Jogo - ',
             ['Clássico 5v5', '• Clássico 5v5'],
             ['ARAM', '• ARAM'],
-            ['FGM', '• FGM Exclusivo']
+            ['MJR', '• Exclusivo de MJR']
         ]
+    };
+    
+    /* Config para [[MediaWiki:Common.js/writemGridfiltering.js]] */
+    writemGridContainer = '#writem-grid';
+    writemGridFilters = {
+        'search': 'search'
     };
     
     /* Config para [[MediaWiki:Common.js/avatarGridfiltering.js]] */
@@ -85,16 +94,17 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             ['Desbloqueado','• Criação de Conta'],
             ['Não Lançado','• Não Lançado']
         ],
-        'pesquisa': ['- Pesquisa -',
+        'fonte': ['- Fonte -',
             ['Loja','• Loja do Cliente'],
             ['Riot','• Distribuição da Riot'],
             ['Missões','• Missões'],
             ['Pacote','• Pacotes'],
             ['Código','• Código de Redenção'],
             ['Criação de Conta','• Criação de Conta'],
-            ['Loja de Mercadorias','• Loja de Mercadorias']
+            ['Loja de Merch','• Loja de Merch']
         ],
         'lançamento': ['- Ano -',
+            ['2021lançamento', '• 2021'],
             ['2020lançamento', '• 2020'],
             ['2019lançamento', '• 2019'],
             ['2018lançamento', '• 2018'],
@@ -131,7 +141,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             ['CN','China'],
             ['KR','Coréia do Sul'],
             ['LAN','América Latina do Norte'],
-                ['CO','• ColÔmbia'],
+                ['CO','• Colômbia'],
                 ['CR','• Costa Rica'],
                 ['MX','• México'],
                 ['PE','• Peru'],
@@ -156,7 +166,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
         'competição': ['- Competição -',
             ['Internacional','Internacional'],
                 ['MSI','• Mid-Season Invitational'],
-                ['Worlds','• World Championship'],
+                ['Mundial','• Campeonato Mundial'],
                 ['All-Star','• All-Stars'],
                 ['Rift Rivals','• Rift Rivals'],
             ['Regional','Regional'],
@@ -185,51 +195,51 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 /* Fim do mw.loader.using retorno da chamada */
 });
 
-/* Dicas de ferramentas personalizadas para uso com o Dicas de ferramentas/code.js */
-var tooltips_list = [
+/* Tooltips personalizadas para uso com o Tooltips/code.js */
+window.tooltips_list = [
     {   classname: 'ability-icon',
-        parse: '{'+'{Dicas de ferramentas/Habilidade|champion=<#champion#>|ability=<#ability#>}}'},
+        parse: '{'+'{Tooltip/Habilidade|champion=<#champion#>|habilidade=<#ability#>|variante=<#variante#>|jogo=<#jogo#>}}'},
     {   classname: 'buff-icon', 
-        parse: '{'+'{Dicas de ferramentas/Buff|<#param#>}}'},
+        parse: '{'+'{Tooltip/Fortalecimento|<#param#>|fortalecimento=<#fortalecimento#>|variant=<#variant#>|jogo=<#jogo#>}}'},
     {   classname: 'champion-icon',
-        parse: '{'+'{Dicas de ferramentas/Campeão|champion=<#champion#>|skin=<#skin#>|variant=<#variant#>}}'},
-    {   classname: 'glossary',
-        parse: '{'+'{Dicas de ferramentas/Glossário|<#param#>}}'},
+        parse: '{'+'{Tooltip/Campeão|champion=<#champion#>|skin=<#skin#>|variante=<#variant#>|jogo=<#jogo#>}}'},
+    {   classname: 'glossário',
+        parse: '{'+'{Tooltip/Glossário|<#param#>|dica=<#dica#>|jogo=<#jogo#>}}'},
     {   classname: 'item-icon', 
-        parse: '{'+'{Dicas de ferramentas/Item|<#param#>}}'},
+        parse: '{'+'{Tooltip/Item|item=<#item#>|encantamento=<#enchantment#>|variant=<#variant#>|jogo=<#jogo#>}}'},
     {   classname: 'mastery-icon', 
-        parse: '{'+'{Dicas de ferramentas/Maestria|<#param#>}}'},
+        parse: '{'+'{Tooltip/Talento|<#param#>|talento=<#talento#>|variante=<#variante#>}}'},
     {   classname: 'pp-tooltip',
-        parse: '{'+'{Dicas de ferramentas/Pp|<#size#>|<#values#>|values1=<#values1#>|values2=<#values2#>|label1=<#label1#>|label2=<#label2#>|displayformula=<#displayformula#>|useformula=<#useformula#>|key1=<#key1#>|key2=<#key2#>|start1=<#start1#>|start2=<#start2#>|end1=<#end1#>|end2=<#end2#>|round1=<#round1#>|round2=<#round2#>}}'},
-    {   classname: 'pp-tooltip2',
-        parse: '{'+'{Dicas de ferramentas/Pp2|bot_values=<#bot_values#>|top_values=<#top_values#>|start=<#start#>|finish=<#finish#>|bot_label=<#bot_label#>|top_label=<#top_label#>|displayformula=<#displayformula#>|useformula=<#useformula#>|bot_key=<#bot_key#>|top_key=<#top_key#>|bot_round=<#bot_round#>|top_round=<#top_round#>|top_fill=<#top_fill#>}}'},
+        parse: '{'+'{Tooltip/Pp|bot_values=<#bot_values#>|top_values=<#top_values#>|start=<#start#>|finish=<#finish#>|bot_label=<#bot_label#>|top_label=<#top_label#>|displayformula=<#displayformula#>|useformula=<#useformula#>|bot_key=<#bot_key#>|top_key=<#top_key#>|bot_round=<#bot_round#>|top_round=<#top_round#>|top_fill=<#top_fill#>}}'},
     {   classname: 'rune-icon', 
-        parse: '{'+'{Dicas de ferramentas/Runa|<#param#>}}'},
+        parse: '{'+'{Tooltip/Runa|<#param#>|runa=<#runa#>|variante=<#variante#>|jogo=<#jogo#>}}'},
     {   classname: 'skin-icon', 
-        parse: '{'+'{Dicas de ferramentas/Skin|champion=<#champion#>|skin=<#skin#>|variant=<#variant#>}}'},
+        parse: '{'+'{Tooltip/Skin|champion=<#champion#>|skin=<#skin#>|variante=<#variante#>|jogo=<#jogo#>}}'},
     {   classname: 'skinloading-icon', 
-        parse: '{'+'{Dicas de ferramentas/Skin/Carregamento|champion=<#champion#>|skin=<#skin#>|variant=<#variant#>}}'},
+        parse: '{'+'{Tooltip/Skin/Carregamento|champion=<#champion#>|skin=<#skin#>|variante=<#variante#>|jogo=<#jogo#>}}'},
     {   classname: 'chroma-icon', 
-        parse: '{'+'{Dicas de ferramentas/Croma|champion=<#champion#>|skin=<#skin#>|chromas=<#chromas#>}}'},
+        parse: '{'+'{Tooltip/Croma|champion=<#champion#>|skin=<#skin#>|cromas=<#cromas#>|jogo=<#jogo#>}}'},
     {   classname: 'avatar-icon', 
-        parse: '{'+'{Dicas de ferramentas/Ícone|<#param#>}}'},
+        parse: '{'+'{Tooltip/Ícone|<#param#>|ícone=<#ícone#>}}'},
     {   classname: 'esports-icon', 
-        parse: '{'+'{Dicas de ferramentas/Ícone|<#param#>}}'},
+        parse: '{'+'{Tooltip/Ícone|<#param#>|ícone=<#ícone#>}}'},
     {   classname: 'ward-icon', 
-        parse: '{'+'{Dicas de ferramentas/Sentinela|<#param#>}}'},
+        parse: '{'+'{Tooltip/Sentinela|<#param#>|sentinela=<#sentinela#>}}'},
     {   classname: 'spell-icon', 
-        parse: '{'+'{Dicas de ferramentas/Feitiço|<#param#>}}'},
+        parse: '{'+'{Tooltip/Feitiço|spell=<#spell#>|variante=<#variante#>|jogo=<#jogo#>}}'},
     {   classname: 'sandbox-tooltip', 
-        parse: '{'+'{Dicas de ferramentas/Sandbox|<#v0#>|<#v1#>|<#v2#>|<#v3#>|<#v4#>|<#v5#>|<#v6#>|<#v7#>|<#v8#>|<#v9#>|<#v10#>|<#v11#>|<#v12#>}}'},
+        parse: '{'+'{Tooltip/Sandbox|<#v0#>|<#v1#>|<#v2#>|<#v3#>|<#v4#>|<#v5#>|<#v6#>|<#v7#>|<#v8#>|<#v9#>|<#v10#>|<#v11#>|<#v12#>}}'},
     {   classname: 'tft-icon', 
-        parse: '{'+'{Dicas de ferramentas/TFT|<#param#>|set=<#set#>|type=<#type#>}}'},
+        parse: '{'+'{Tooltip/TFT|<#param#>|set=<#set#>|type=<#type#>}}'},
     {   classname: 'rp-icon', 
-        parse: '{'+'{Dicas de ferramentas/RP|<#param#>}}'},
+        parse: '{'+'{Tooltip/RP|<#param#>|rp=<#rp#>}}'},
+    {   classname: 'wc-icon', 
+        parse: '{'+'{Tooltip/WC|wc=<#wc#>}}'},
     {   classname: 'lor-tooltip', 
-        parse: '{'+'{Dicas de ferramentas/LOR|<#param#>}}'}
+        parse: '{'+'{Tooltip/LOR|<#param#>}}'}
 ];
  
-var tooltips_config = {
+window.tooltips_config = {
     offsetX: 20,
     offsetY: 20,
     waitForImages: true,
@@ -279,4 +289,4 @@ mw.hook('wikipage.content').add(function(elem) {
     });
 });
 
-/* DO NOT ADD CODE BELOW THIS LINE */
+/* NÃO ADICIONE CÓDIGO ABAIXO DESSA LINHA */

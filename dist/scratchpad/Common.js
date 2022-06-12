@@ -1,4 +1,4 @@
-// 18:14, September 10, 2020 (UTC)
+// 02:35, June 11, 2022 (UTC)
 // <source lang="JavaScript">
 
 // Test if an Element has a Certain Class
@@ -259,5 +259,36 @@ importScriptPage('MediaWiki:Common.js/CEB.js', 'admintools');
     });
 }();
 // END Bureaucrat promotion warning message
+
+/* Toggle spolier button text */
+$(function () {
+    var button = $('.mw-customtoggle-ShowSpoiler');
+    if (button.length !== 1) {
+        return;
+    }
+
+    function toggleText () {
+        if ($(this).hasClass('shown')) {
+            $(this).removeClass('shown');
+            $(this).text('Show spoilers');
+        } else {
+            $(this).addClass('shown');
+            $(this).text('Hide spoilers');
+        }
+    }
+
+    button.text('Show spoilers');
+
+	button.click(toggleText);
+});
+
+// Template:Stext JS
+$('.spoiler_on').click(function () {
+    if ($(this).hasClass('spoiler_on')) {
+        $(this).switchClass('spoiler_on', 'spoiler_off');
+    } else {
+        $(this).switchClass('spoiler_off', 'spoiler_on');
+    }
+});
 
 // </source>
