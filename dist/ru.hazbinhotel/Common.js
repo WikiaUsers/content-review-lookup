@@ -17,11 +17,9 @@ window.UserTagsJS = {
 
 
 UserTagsJS.modules.custom = {
-	'P4kaidu': ['technician'],
 	'Voidan Dether': ['founder'],
 	'Terabait24': ['technician'],
 	'Никитин Арсений': ['technician'],
-	'Алластор': ['intern'],
 	'Merzlyak': ['discordMod'],
 	'Kostinger': ['discordMod'],
 	'TimurKhan': ['discordMod'],

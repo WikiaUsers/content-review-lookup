@@ -306,6 +306,25 @@
     initMenu(ui);
   }
 
+  /* Mutation Observer - re-adds the "fandom-sticky-header-visible" class */
+  function returnStickyHeaderClass() {
+    const stickyHeader = $(".fandom-sticky-header");
+const observer = new MutationObserver(function(mutations) {
+  mutations.forEach(function(mutation) {
+    if (stickyHeader.hasClass("is-visible")) {
+      $("body").addClass("fandom-sticky-header-visible")
+    } else {
+      $("body").removeClass("fandom-sticky-header-visible");
+    } 
+  });
+});
+
+observer.observe(stickyHeader[0], {
+  attributes: true,
+  attributeFilter: ['class']
+});
+  }
+
   /* Initialzes the script */
   function init(lib) {
     const ui = lib;
@@ -317,6 +336,7 @@
     // Init stuff
     createWikiMenu(ui);
     createWikiName(ui);
+    returnStickyHeaderClass()
     
     /*
  // Will do soon™

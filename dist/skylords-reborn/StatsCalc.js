@@ -40,7 +40,7 @@
     function init(container, _index) {
         setTimeout(function () {
             container.parentElement.appendChild(container);
-        }, 0);
+        }, 10);
         container.querySelectorAll('.cost,.dmg,.hp').forEach(function (el) {
             var inp = document.createElement('input');
             inp.type = 'number';

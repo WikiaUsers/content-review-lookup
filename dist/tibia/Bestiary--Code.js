@@ -39,7 +39,7 @@ $(function(){
                         creaturedata.loot = [];
                     } else if (v.includes('{{Loot Item|')) {
                         item = v.replace(/\s?\|\s?{{Loot Item\|/, '');
-                        item = item.replace('}}', '');
+                        item = item.replace(/}}\s?/, '');
                         item = item.split('|');
                         propv = {};
                         propn = 'loot';

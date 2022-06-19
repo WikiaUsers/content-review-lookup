@@ -1,3 +1,5 @@
+@import url("https://cdn.jsdelivr.net/npm/fontawesome-free/css/solid.min.css");
+
 importArticles({
     type: 'script',
     articles: [

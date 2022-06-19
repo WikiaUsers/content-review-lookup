@@ -23,7 +23,21 @@ mw.hook('AddRailModule.module').add(function() {
 
 window.adoptInternational = {
     // Please *remove* your language from the list
-    unsupportedLanguages: ['en','es','de','fr','ru','it','nl','pl','zh'],
+    unsupportedLanguages: [
+        'de',
+        'en',
+        'es',
+        'fr',
+        'id',
+        'it',
+        'ja',
+        'nl',
+        'pl',
+        'ru',
+        'zh',
+        'zh-tw',
+        'zh-hk'
+    ],
     // Self-explanatory, you need to replace this with page and namespace config of your wiki
     pageConfig: {
         namespace: 'Pedido de adoção',

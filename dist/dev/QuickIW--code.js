@@ -20,8 +20,7 @@
                     mw.loader.using([
                         'mediawiki.api',
                         'mediawiki.user',
-                        'mediawiki.util',
-                        'mediawiki.notify'
+                        'mediawiki.util'
                     ])
                 ).then($.proxy(this.init, this));
             }

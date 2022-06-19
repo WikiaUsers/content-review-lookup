@@ -9,8 +9,8 @@ var commentDate, year, month, date, oldDate, currentDate, diffMilliseconds, comm
 currentCommentsNumber = $('#articleComments .Comment_wrapper__VysRy').length;
 for (var i = 0; i < currentCommentsNumber; i++) {
 comment = $($('#articleComments .Comment_wrapper__VysRy')[i]);
-if (comment.find('.ReplyList_list-wrapper__cuHYs').attr('class') != undefined) {
-commentDate = comment.find('.ReplyList_list-wrapper__cuHYs').children().last().find('time').attr('dateTime');
+if (comment.find('.ReplyList_list-wrapper__2Cm6p').attr('class') != undefined) {
+commentDate = comment.find('.ReplyList_list-wrapper__2Cm6p').children().last().find('time').attr('dateTime');
 year = +commentDate.substring(6, 10);
 month = +commentDate.substring(3, 5) - 1;
 date = +commentDate.substring(0, 2);
@@ -33,7 +33,7 @@ comment.find('.ReplyCreate_reply-create__aSd5g').remove();
 }
 }
 }
-$('.LoadMoreButton_load-more__15sOz').click(function() {
+$('.LoadMoreButton_load-more__9yEV2').click(function() {
 function checkCommentsNumber() {
 setTimeout(function() {
 if(currentCommentsNumber < $('#articleComments .Comment_wrapper__VysRy').length) {

@@ -6,42 +6,50 @@
  * @param {nkchCSS.Options} options
 */
 function nkchCSS(options) {
-    /** @type {nkchCSS.Options} */
+
+    /** @type {nkchCSS.DefaultOptions} */
     this.defaultOptions = {
-        features: {
-            localStorage: false,
-            less: false,
-            colorPicker: false,
-            emmet: false,
-        },
         themes: {
             light: "default",
             dark: "default"
         },
-        title: "nkchCSS 4<sup style='font-size: 10px; vertical-align: super;'>OBT 2</sup>"
+        title: "nkchCSS 4<sup style='font-size: 10px; vertical-align: super;'>OBT 3</sup>"
     }
 
-    /** @type {nkchCSS.Options} */
+    /** @type {nkchCSS.EditorOptions} */
     this.options = {
-        features: Object.assign(this.defaultOptions.features, options.features),
-        themes: Object.assign(this.defaultOptions.themes, options.themes),
-        title: options.title ? options.title : this.defaultOptions.title
+        themes: {},
+        title: this.defaultOptions.title
     };
 
-    /** @type {CodeMirror.Editor} */
-    this.editor;
+    if (options.themes) {
+        this.options.themes.light = options.themes.light ? options.themes.light : this.defaultOptions.themes.light;
+        this.options.themes.dark = options.themes.dark ? options.themes.dark : this.defaultOptions.themes.dark;
+    }
 
-    /** @type {boolean} */
-    this.isEditorInitialized = false;
-    /** @type {boolean} */
-    this.isEditorShown = false;
-    /** @type {boolean} */
-    this.isEditorEnabled = true;
-    /** @type {boolean} */
-    this.isErrorVisible = false;
+    /** @type {CodeMirror.Editor | null} */
+    this.editor = null;
 
+    /** @type {Object<string, HTMLElement | SVGElement| OO.ui.Element>} */
     this.elements = {};
 
+    
+    /** @type {Object<string, any>} */
+    this.env = {
+        skin: mw.config.get("skin")
+    }
+
+    /** @type { nkchCSS.Checks } */
+    this.checks = {
+        editor: {
+            isInitialized: false,
+            isEnabled: true,
+            isShown: false
+        },
+        isCodeInvalid: false,
+    };
+
+    /** @type {Object<string, string>} */
     this.svgPath = {
         star: "M6.15008 5.30832C6.06799 5.48263 5.90933 5.60345 5.72578 5.63141L0.4831 6.42984C0.0208923 6.50023 " +
             "-0.163665 7.09555 0.170791 7.43724L3.96443 11.3129C4.09725 11.4486 4.15785 11.6441 4.1265 11.8357L3.23094 17.3082C3.15199 " +
@@ -83,166 +91,222 @@ function nkchCSS(options) {
     this.Element = function (tag, options) {
         const _this = this;
 
-        _this.element =
-            tag.toLowerCase() === "svg" ?
-                document.createElementNS("http://www.w3.org/2000/svg", "svg") :
-            tag.toLowerCase() === "path" ?
-                document.createElementNS("http://www.w3.org/2000/svg", "path") :
-                document.createElement(tag);
+        if (tag === "svg" || tag === "path") throw new Error("Use SvgElement instead");
+
+        _this.element = document.createElement(tag);
         _this.options = options;
 
-        if (_this.element instanceof HTMLElement || _this.element instanceof SVGElement) {
-            if (_this.options.classes)
-                _this.options.classes.forEach(function(el) {
-                    _this.element.classList.add(el);
-                });
-
-            if (_this.options.id)
-                _this.element.id = _this.options.id;
-
-            if (_this.options.add)
-                if (_this.options.add.append) {
-                    _this.options.add.append.forEach(function(el) {
-                        el.append(_this.element);
-                    });
-                } else if (_this.options.add.prepend) {
-                    _this.options.add.prepend.forEach(function(el) {
-                        el.prepend(_this.element);
-                    });
-                } else if (_this.options.add.after) {
-                    _this.options.add.after.forEach(function(el) {
-                        el.after(_this.element);
-                    });
-                } else if (_this.options.add.before) {
-                    _this.options.add.before.forEach(function(el) {
-                        el.before(_this.element);
-                    });
+        if (_this.element instanceof HTMLElement) {
+            if (_this.options) {
+                if (_this.options.classes) {
+                    for (const c in _this.options.classes)
+                        _this.element.classList.add(_this.options.classes[c]);
                 }
 
-            if (_this.options.html)
-                _this.element.innerHTML = _this.options.html;
+                if (_this.options.id) _this.element.id = _this.options.id;
 
-            if (_this.options.text && _this.element instanceof HTMLElement)
-                _this.element.innerText = _this.options.text;
+                if (_this.options.attributes) {
+                    for (const a in _this.options.attributes)
+                        _this.element.setAttribute(a, _this.options.attributes[a]);
+                }
 
-            if (_this.options.href && _this.element instanceof HTMLAnchorElement)
-                _this.element.href = _this.options.href;
+                if (_this.options.html) _this.element.innerHTML = _this.options.html;
+
+                if (_this.options.text) _this.element.innerText = _this.options.text;
+
+                if (_this.options.styles) {
+                    for (const s in _this.options.styles)
+                        _this.element.style[s] = _this.options.styles[s];
+                }
+                
+                if (_this.options.href)
+                    if (_this.element instanceof HTMLAnchorElement) _this.element.href = _this.options.href;
+
+                if (_this.options.events) {
+                    for (const e in _this.options.events) {
+                        _this.element.addEventListener(e, _this.options.events[e], false);
+                    }
+                }
+
+                if (_this.options.add) {
+                    if (_this.options.add.append)
+                        _this.options.add.append.append(_this.element);
+
+                    if (_this.options.add.prepend)
+                        _this.options.add.prepend.prepend(_this.element);
+
+                    if (_this.options.add.before)
+                        _this.options.add.before.before(_this.element);
+
+                    if (_this.options.add.after)
+                        _this.options.add.after.after(_this.element);
+                }
+            }
+        } else
+            throw new Error("Could not create element");
+
+        return _this;
+    }
+
+    /** @constructor */
+    /**
+     * @param {nkchCSS.SvgElementOptions} [options]
+     */
+    this.SvgElement = function (options) {
+        const _this = this;
+
+        _this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        _this.path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        _this.options = options;
+
+        _this.svg.append(_this.path);
+        
+        if (_this.options) {
+            if (_this.options.classes) {
+                for (const c in _this.options.classes)
+                    _this.svg.classList.add(_this.options.classes[c]);
+            }
+
+            if (_this.options.svgAttributes) {
+                for (const a in _this.options.svgAttributes)
+                    _this.svg.setAttribute(a, _this.options.svgAttributes[a]);
+            }
+
+            if (_this.options.pathAttributes) {
+                for (const a in _this.options.pathAttributes)
+                    _this.path.setAttribute(a, _this.options.pathAttributes[a]);
+            }
+
+            if (_this.options.add) {
+                if (_this.options.add.append)
+                    _this.options.add.append.append(_this.svg);
+
+                if (_this.options.add.prepend)
+                    _this.options.add.prepend.prepend(_this.svg);
+
+                if (_this.options.add.before)
+                    _this.options.add.before.before(_this.svg);
+
+                if (_this.options.add.after)
+                    _this.options.add.after.after(_this.svg);
+            }
         }
+
+        return _this;
     }
 
     this.initialize();
-}
+};
 
 /** @returns {void} */
-nkchCSS.prototype.initialize = function() {
+nkchCSS.prototype.initialize = function () {
     /** @type {nkchCSS} */
     const _this = this;
 
-    switch (mw.config.get("skin")) {
+    switch (_this.env.skin) {
         case "fandomdesktop":
             /* ~ quickbar item ~ */
+            /** @type {HTMLElement | HTMLLIElement} */
             const quickbarItem = new _this.Element("li", {
                 classes: ["nkch-css4__quickbar-button"],
-                add: {
-                    append: [document.querySelector("#WikiaBar .toolbar .tools")]
-                }
+                add: { append: document.querySelector("#WikiaBar .toolbar .tools") }
             }).element;
 
             _this.elements.quickbarItem = quickbarItem;
 
-            
+
             /* ~ quickbar item : spinner ~ */
+            /** @type {HTMLElement | HTMLSpanElement} */
             const quickbarItem_spinner = new _this.Element("span", {
                 classes: ["nkch-css4__quickbar-button-spinner", "is-hidden"],
-                add: {
-                    append: [quickbarItem]
-                }
+                add: { append: quickbarItem }
             }).element;
 
             _this.elements.quickbarItem_spinner = quickbarItem_spinner;
 
 
             /* ~ quickbar item : link ~ */
+            /** @type {HTMLElement | HTMLAnchorElement} */
             const quickbarItem_link = new _this.Element("a", {
                 classes: ["nkch-css4__quickbar-button-link"],
-                text: "nkchCSS 4",
                 href: "#",
-                add: {
-                    append: [quickbarItem]
-                }
+                text: "nkchCSS 4",
+                events: {
+                    click: _this.show.bind(_this)
+                },
+                add: { append: quickbarItem }
             }).element;
 
-            quickbarItem_link.addEventListener("click", _this.show.bind(_this), false);
-            
             _this.elements.quickbarItem_link = quickbarItem_link;
             break;
-
+        
         case "vector":
         case "vector-2022":
             /* ~ sidebar item ~ */
-            const vectorMenuItem = new _this.Element("li", {
+            /** @type {HTMLElement | HTMLLIElement} */
+            const sidebarItem = new _this.Element("li", {
                 classes: ["nkch-css4__sidebar-button", "mw-list-item"],
                 id: "n-nkchcss",
-                href: "#",
-                add: {
-                    append: [document.querySelector("#mw-panel .vector-menu-content-list")]
-                }
+                add: { append: document.querySelector("#mw-panel .vector-menu-content-list") }
             }).element;
 
-            _this.elements.vectorMenuItem = vectorMenuItem;
+            _this.elements.sidebarItem = sidebarItem;
 
-            
             /* ~ sidebar item : spinner ~ */
-            const vectorMenuItem_spinner = new _this.Element("span", {
+            /** @type {HTMLElement | HTMLSpanElement} */
+            const sidebarItem_spinner = new _this.Element("span", {
                 classes: ["nkch-css4__sidebar-button-spinner", "is-hidden"],
-                add: {
-                    append: [vectorMenuItem]
-                }
+                add: { append: sidebarItem }
             }).element;
 
-            _this.elements.vectorMenuItem_spinner = vectorMenuItem_spinner;
-
+            _this.elements.sidebarItem_spinner = sidebarItem_spinner;
 
             /* ~ sidebar item : link ~ */
-            const vectorMenuItem_link = new _this.Element("a", {
+            /** @type {HTMLElement | HTMLAnchorElement} */
+            const sidebarItem_link = new _this.Element("a", {
                 classes: ["nkch-css4__sidebar-button-link"],
-                text: "nkchCSS 4",
                 href: "#",
-                add: {
-                    append: [vectorMenuItem]
-                }
+                text: "nkchCSS 4",
+                events: {
+                    click: _this.show.bind(_this)
+                },
+                add: { append: sidebarItem }
             }).element;
 
-            vectorMenuItem_link.addEventListener("click", _this.show.bind(_this), false);
-
-            _this.elements.vectorMenuItem_link = vectorMenuItem_link;
+            _this.elements.sidebarItem_link = sidebarItem_link;
             break;
     }
 }
 
 /** @returns {void} */
-nkchCSS.prototype.initializeEditor = function() {
+nkchCSS.prototype.initializeEditor = function () {
     /** @type {nkchCSS} */
     const _this = this;
 
     mw.loader.using(["oojs-ui"]).then(
-        function() {
-            switch (mw.config.get("skin")) {
+        function () {
+            var targetSpinner;
+
+            switch (_this.env.skin) {
                 case "fandomdesktop":
-                    _this.elements.quickbarItem_spinner.classList.remove("is-hidden");
+                    if (_this.elements.quickbarItem_spinner instanceof HTMLSpanElement)
+                        targetSpinner = _this.elements.quickbarItem_spinner;
                     break;
 
                 case "vector":
                 case "vector-2022":
-                    _this.elements.vectorMenuItem_spinner.classList.remove("is-hidden");
+                    if (_this.elements.sidebarItem_spinner instanceof HTMLSpanElement)
+                        targetSpinner = _this.elements.sidebarItem_spinner;
                     break;
             }
+            
+            if (targetSpinner) targetSpinner.classList.remove("is-hidden");
 
             mw.loader.load("https://code.jquery.com/ui/" + "1.13.1" + "/themes/base/jquery-ui.css", "text/css");
             mw.loader.load(_this.getUnpkgLink("codemirror", "5.65.5", "lib/codemirror.css"), "text/css");
 
             mw.loader.getScript(_this.getUnpkgLink("codemirror", "5.65.5")).then(
-                function() {
+                function () {
                     Promise.all([
                         mw.loader.getScript("https://code.jquery.com/ui/" + "1.13.1" + "/jquery-ui.js"),
 
@@ -257,241 +321,218 @@ nkchCSS.prototype.initializeEditor = function() {
                 }
             )
         }
-    );
+    )
 
     function OnModuleLoad() {
-        /* ~ style ~ */
-        const style = new _this.Element("style", {
-            classes: ["nkch-css4__style", "nkch-css4__style--css"],
-            add: {
-                append: [document.head]
-            }
-        }).element;
+        const windowManager = new OO.ui.WindowManager({
+            classes: ["nkch-css4__window-manager"]
+        });
 
-        style.setAttribute("type", "text/css");
+        $(document.body).append(windowManager.$element);
+
+        _this.elements.windowManager = windowManager;
+
+
+        /* ~ style ~ */
+        /** @type {HTMLElement | HTMLStyleElement} */
+        const style = new _this.Element("style", {
+            classes: ["nkch-css4__style"],
+            add: { append: document.head }
+        }).element;
 
         _this.elements.style = style;
 
 
         /* ~ main ~ */
+        /** @type {HTMLElement | HTMLDivElement} */
         const main = new _this.Element("div", {
-            classes: ["nkch-css4", "is-disabled"],
-            add: {
-                after: [document.body]
-            }
+            classes: ["nkch-css4"],
+            add: { after: document.body }
         }).element;
 
+        /** @param {HTMLElement} element_elementArray */
         $(main).draggable({
             cancel: ".nkch-css4__content, .nkch-css4__popup, .nkch-css4__header-button, .nkch-css4__compile, .nkch-css4__statusbar, .nkch-css4__error",
             opacity: 0.8,
             start: function() {
-                $(main).css({
-                    "right": "auto",
-                    "bottom": "auto"
-                });
+                main.classList.add("is-dragging");
+
+                main.style.right = "auto";
+                main.style.bottom = "auto";
             }
         }).css({
             position: "fixed"
         });
 
-        document.body.classList.add("nkch-css4__is-added");
-
         _this.elements.main = main;
 
 
-        /* ~ main : notice ~ */
-        const main_notice = new _this.Element("div", {
-            classes: ["nkch-css4__notice"],
-            add: {
-                append: [main]
-            }
-        }).element;
-
-        _this.elements.main_notice = main_notice;
-
-
         /* ~ main : header ~ */
+        /** @type {HTMLElement | HTMLDivElement} */
         const main_header = new _this.Element("div", {
             classes: ["nkch-css4__header"],
-            add: {
-                append: [main]
-            }
+            add: { append: main }
         }).element;
-        
+
         _this.elements.main_header = main_header;
 
 
         /* ~ main : header left ~ */
+        /** @type {HTMLElement | HTMLDivElement} */
         const main_headerLeft = new _this.Element("div", {
             classes: ["nkch-css4__header-left"],
-            add: {
-                append: [main_header]
-            }
+            add: { append: main_header }
         }).element;
 
         _this.elements.main_headerLeft = main_headerLeft;
 
 
         /* ~ main : header title ~ */
+        /** @type {HTMLElement | HTMLDivElement} */
         const main_headerTitle = new _this.Element("div", {
             classes: ["nkch-css4__header-title"],
-            html: _this.options.title,
-            add: {
-                append: [main_headerLeft]
-            }
+            text: _this.options.title,
+            add: { append: main_headerLeft }
         }).element;
 
         _this.elements.main_headerTitle = main_headerTitle;
 
 
         /* ~ main : header info ~ */
+        /** @type {HTMLElement | HTMLDivElement} */
         const main_headerInfo = new _this.Element("div", {
             classes: ["nkch-css4__header-info"],
-            add: {
-                append: [main_headerLeft]
-            }
+            add: { append: main_headerLeft }
         }).element;
 
         _this.elements.main_headerInfo = main_headerInfo;
 
 
         /* ~ main : header right ~ */
+        /** @type {HTMLElement | HTMLDivElement} */
         const main_headerRight = new _this.Element("div", {
             classes: ["nkch-css4__header-right"],
-            add: {
-                append: [main_header]
-            }
+            add: { append: main_header }
         }).element;
 
         _this.elements.main_headerRight = main_headerRight;
-    
+
 
         /* ~ main : header button group ~ */
+        /** @type {HTMLElement | HTMLDivElement} */
         const main_headerButtonGroup = new _this.Element("div", {
             classes: ["nkch-css4__header-button-group"],
-            add: {
-                append: [main_headerRight]
-            }
+            add: { append: main_headerRight }
         }).element;
 
         _this.elements.main_headerButtonGroup = main_headerButtonGroup;
 
 
         /* ~ main : header button (beautify) ~ */
+        /** @type {HTMLElement | HTMLButtonElement} */
         const main_headerButton__beautify = new _this.Element("button", {
             classes: ["nkch-css4__header-button", "nkch-css4__header-button--beautify"],
-            add: {
-                append: [main_headerButtonGroup]
-            }
+            events: {
+                click: function () {
+                    if (_this.editor) _this.beautify(_this.editor.getValue());
+                }
+            },
+            add: { append: main_headerButtonGroup }
         }).element;
 
-        main_headerButton__beautify.addEventListener("click", function() {
-            _this.beautify(_this.editor.getValue());
-        }, false);
-
-        _this.elements.main_headerButton__beautify = main_headerButton__beautify;
+        _this.elements.main_headerButton_beautify = main_headerButton__beautify;
 
 
-        /** @type {SVGSVGElement} */
-        const main_headerButton__beautifyIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        _this.elements.main_headerButton__beautifyIcon = main_headerButton__beautifyIcon;
+        /* ~ [svg] main : header button icon (beautify) ~ */
+        /** @type {SVGElement} */
+        const main_headerButtonIcon = new _this.SvgElement({
+            classes: ["nkch-css4__header-icon"],
+            svgAttributes: {
+                viewBox: "0 0 18 18",
+                "aria-hidden": "true"
+            },
+            pathAttributes: {
+                d: _this.svgPath.star,
+                "fill-rule": "evenodd",
+                "clip-rule": "evenodd"
+            },
+            add: { append: main_headerButton__beautify }
+        }).svg;
 
-        main_headerButton__beautifyIcon.classList.add("nkch-css4__header-icon");
-        main_headerButton__beautifyIcon.setAttribute("viewBox", "0 0 18 18");
-        main_headerButton__beautifyIcon.setAttribute("aria-hidden", "true");
-
-        main_headerButton__beautify.append(main_headerButton__beautifyIcon);
+        _this.elements.main_headerButtonIcon = main_headerButtonIcon;
 
 
-        /** @type {SVGPathElement} */
-        const main_headerButton__beautifyIconPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        _this.elements.main_headerButton__beautifyIconPath = main_headerButton__beautifyIconPath;
-
-        main_headerButton__beautifyIconPath.setAttribute("d", _this.svgPath.star);
-        main_headerButton__beautifyIconPath.setAttribute("fill-rule", "evenodd");
-        main_headerButton__beautifyIconPath.setAttribute("clip-rule", "evenodd");
-
-        main_headerButton__beautifyIcon.append(main_headerButton__beautifyIconPath);
-
-        
         /* ~ main : header button (toggle) ~ */
+        /** @type {HTMLElement | HTMLButtonElement} */
         const main_headerButton__toggle = new _this.Element("button", {
-            classes: ["nkch-css4__header-button", "nkch-css4__header-button--toggle", _this.isEditorEnabled ? "is-enabled" : "is-disabled"],
-            add: {
-                append: [main_headerButtonGroup]
-            }
+            classes: ["nkch-css4__header-button", "nkch-css4__header-button--toggle", _this.checks.editor.isEnabled ? "is-enabled" : "is-disabled"],
+            events: {
+                click: function() {
+                    _this.toggle(!_this.checks.editor.isEnabled);
+                }
+            },
+            add: { append: main_headerButtonGroup }
         }).element;
-
-        main_headerButton__toggle.addEventListener("click", function() {
-            _this.toggle(!_this.isEditorEnabled);
-        }, false);
 
         _this.elements.main_headerButton__toggle = main_headerButton__toggle;
 
 
-        /** @type {SVGSVGElement} */
-        const main_headerButton__toggleIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        _this.elements.main_headerButton__toggleIcon = main_headerButton__toggleIcon;
+        /* ~ [svg] main : header button icon (toggle) ~ */
+        /** @type {SVGElement} */
+        const main_headerButtonIcon__toggle = new _this.SvgElement({
+            classes: ["nkch-css4__header-icon"],
+            svgAttributes: {
+                viewBox: "0 0 18 18",
+                "aria-hidden": "true"
+            },
+            pathAttributes: {
+                d: _this.checks.editor.isEnabled ? _this.svgPath.eye : _this.svgPath.eyeCrossed,
+                "fill-rule": "evenodd",
+                "clip-rule": "evenodd"
+            },
+            add: { append: main_headerButton__toggle }
+        }).svg;
 
-        main_headerButton__toggleIcon.classList.add("nkch-css4__header-icon");
-        main_headerButton__toggleIcon.setAttribute("viewBox", "0 0 18 18");
-        main_headerButton__toggleIcon.setAttribute("aria-hidden", "true");
-
-        main_headerButton__toggle.append(main_headerButton__toggleIcon);
+        _this.elements.main_headerButtonIcon__toggle = main_headerButtonIcon__toggle;
 
 
-        /** @type {SVGPathElement} */
-        const main_headerButton__toggleIconPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        _this.elements.main_headerButton__toggleIconPath = main_headerButton__toggleIconPath;
-
-        main_headerButton__toggleIconPath.setAttribute("d", _this.isEditorEnabled ? _this.svgPath.eye : _this.svgPath.eyeCrossed);
-        main_headerButton__toggleIconPath.setAttribute("fill-rule", "evenodd");
-        main_headerButton__toggleIconPath.setAttribute("clip-rule", "evenodd");
-
-        main_headerButton__toggleIcon.append(main_headerButton__toggleIconPath);
-
-        
         /* ~ main : header button (close) ~ */
+        /** @type {HTMLElement | HTMLButtonElement} */
         const main_headerButton__close = new _this.Element("button", {
             classes: ["nkch-css4__header-button", "nkch-css4__header-button--close"],
-            add: {
-                append: [main_headerButtonGroup]
-            }
+            events: {
+                click: _this.hide.bind(_this)
+            },
+            add: { append: main_headerButtonGroup }
         }).element;
 
-        main_headerButton__close.addEventListener("click", _this.hide.bind(_this), false);
-
-        _this.elements.main_headerButton__close = main_headerButton__close;
-
-
-        /** @type {SVGSVGElement} */
-        const main_headerButton__closeIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        _this.elements.main_headerButton__closeIcon = main_headerButton__closeIcon;
-
-        main_headerButton__closeIcon.classList.add("nkch-css4__header-icon");
-        main_headerButton__closeIcon.setAttribute("viewBox", "0 0 18 18");
-        main_headerButton__closeIcon.setAttribute("aria-hidden", "true");
-
-        main_headerButton__close.append(main_headerButton__closeIcon);
+        _this.elements.main_headerButton_close = main_headerButton__close;
 
         
-        /** @type {SVGPathElement} */
-        const main_headerButton__closeIconPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        _this.elements.main_headerButton__closeIconPath = main_headerButton__closeIconPath;
+        /* ~ [svg] main : header button icon (close) ~ */
+        /** @type {SVGElement} */
+        const main_headerButtonIcon_close = new _this.SvgElement({
+            classes: ["nkch-css4__header-icon"],
+            svgAttributes: {
+                viewBox: "0 0 18 18",
+                "aria-hidden": "true"
+            },
+            pathAttributes: {
+                d: _this.svgPath.close,
+                "fill-rule": "evenodd",
+                "clip-rule": "evenodd"
+            },
+            add: { append: main_headerButton__close }
+        }).svg;
 
-        main_headerButton__closeIconPath.setAttribute("d", _this.svgPath.close);
-        main_headerButton__closeIconPath.setAttribute("fill-rule", "evenodd");
-        main_headerButton__closeIconPath.setAttribute("clip-rule", "evenodd");
+        _this.elements.main_headerButtonIcon_close = main_headerButtonIcon_close;
 
-        main_headerButton__closeIcon.append(main_headerButton__closeIconPath);
 
-        
         /* ~ main : compile ~ */
+        /** @type {HTMLElement | HTMLDivElement} */
         const main_compile = new _this.Element("div", {
             classes: ["nkch-css4__compile"],
-            add: {
-                append: [main]
-            }
+            add: { append: main }
         }).element;
 
         var compile_less = new OO.ui.ButtonWidget({
@@ -500,25 +541,26 @@ nkchCSS.prototype.initializeEditor = function() {
             framed: false
         });
 
-        _this.elements.compile_less = compile_less;
         compile_less.toggle(false);
-        
+
         compile_less.on("click", function() {
-            if (!compile_less.isDisabled()) _this.compile(_this.editor.getValue(), "text/x-less");
+            if (_this.editor && !compile_less.isDisabled())
+                _this.compile(_this.editor.getValue(), "text/x-less");
         });
+        
+        _this.elements.compile_less = compile_less;
 
         const compileLayout = new OO.ui.HorizontalLayout({ items: [compile_less] });
         $(main_compile).append(compileLayout.$element);
-        
+
         _this.elements.main_compile = main_compile;
 
-        
+
         /* ~ main : content ~ */
+        /** @type {HTMLElement | HTMLDivElement} */
         const main_content = new _this.Element("div", {
             classes: ["nkch-css4__content"],
-            add: {
-                append: [main]
-            }
+            add: { append: main }
         }).element;
 
         var panel_css = new OO.ui.TabPanelLayout("css", { label: "CSS" }),
@@ -536,145 +578,174 @@ nkchCSS.prototype.initializeEditor = function() {
         _this.elements.main_content = main_content;
 
 
-        /** @type {HTMLTextAreaElement} */
-        const main_contentTextArea = document.createElement("textarea");
-        _this.elements.main_contentTextArea = main_contentTextArea;
+        /* ~ main : content textarea ~ */
+        /** @type {HTMLElement | HTMLTextAreaElement} */
+        const main_contentTextArea = new _this.Element("textarea", {
+            classes: ["nkch-css4__textarea"],
+            add: { append: main_content }
+        }).element;
 
-        main_contentTextArea.classList.add("nkch-css4__textarea");
-
-        main_content.append(main_contentTextArea);
-
+        if (!(main_contentTextArea instanceof HTMLTextAreaElement)) return;
         _this.editor = self.CodeMirror.fromTextArea(main_contentTextArea, {
-            indentUnit: 4,
-            lineWrapping: true,
+            mode: "text/css",
             lineNumbers: true,
-            autoCloseBrackets: true
-        });
+            lineWrapping: true,
+            indentUnit: 4,
+            indentWithTabs: false,
+            smartIndent: true,
 
-        _this.editor.setOption("mode", "css");
+            extraKeys: {
+                "Ctrl-Space": "autocomplete"
+            }
+        });
 
         emmetCodeMirror(_this.editor);
 
-        tabs.on("set", function(event) {
-            switch (event.name) {
+        tabs.on("set", function(tab) {
+            if (!_this.editor) return;
+
+            switch (tab.name) {
                 case "css":
-                    _this.editor.setOption("mode", "css");
-
+                    _this.editor.setOption("mode", "text/css");
                     compile_less.toggle(false);
-                    _this.updateCode(_this.editor.getValue(), _this.editor.getOption("mode"));
-
-                    _this.editor.refresh();
                     break;
-
                 case "less":
                     _this.editor.setOption("mode", "text/x-less");
-
                     compile_less.toggle(true);
-                    _this.updateCode(_this.editor.getValue(), _this.editor.getOption("mode"));
-
-                    _this.editor.refresh();
                     break;
             }
-        });
+
+            _this.updateCode(_this.editor.getValue(), _this.editor.getOption("mode"));
+            _this.editor.refresh();
+        })
+
+        _this.elements.main_contentTextArea = main_contentTextArea;
 
         _this.editor.setSize(450, 220);
         _this.editor.refresh();
 
-        _this.editor.on("keyup", function () {
-            _this.updateCode(_this.editor.getValue(), _this.editor.getOption("mode"));
+        _this.editor.on("keyup", function() {
+            if (_this.editor) _this.updateCode(_this.editor.getValue(), _this.editor.getOption("mode"));
         });
 
-        /** @type {HTMLDivElement} */
-        const main_statusbar = document.createElement("div");
-        _this.elements.main_statusbar = main_statusbar;
 
-        main_statusbar.classList.add("nkch-css4__statusbar");
-
-        main.append(main_statusbar);
-
-        /** @type {HTMLDivElement} */
-        const main_statusbarContainer__left = document.createElement("div");
-        _this.elements.main_statusbarContainer__left = main_statusbarContainer__left;
-
-        main_statusbarContainer__left.classList.add("nkch-css4__statusbar-container", "nkch-css4__statusbar-container--left");
-
-        main_statusbar.append(main_statusbarContainer__left);
-
-        /** @type {HTMLAnchorElement} */
-        const main_statusbarItem__fileDownload = document.createElement("a");
-        _this.elements.main_statusbarItem__fileDownload = main_statusbarItem__fileDownload;
-
-        main_statusbarItem__fileDownload.classList.add("nkch-css4__statusbar-item", "nkch-css4__status-item--download");
-        main_statusbarItem__fileDownload.setAttribute("role", "button");
-        main_statusbarItem__fileDownload.setAttribute("role", "button");
-
-        main_statusbarItem__fileDownload.addEventListener("click", function() {
-            if (_this.editor.getValue() === "") return;
-
-            var date = new Date(),
-                filetype = "",
-                filename =
-                    mw.config.get("wgWikiID") + " " +
-                    date.getFullYear() + "-" + (date.getMonth() + 1).toString().padStart(2, "0") + "-" + date.getDate().toString().padStart(2, "0") + " " +
-                    date.getHours().toString().padStart(2, "0") + "-" + date.getMinutes().toString().padStart(2, "0") + "-" + date.getSeconds().toString().padStart(2, "0");
-
-                switch (_this.editor.getOption("mode")) {
-                    case "css":
-                        filetype = "text/css";
-                        filename += ".css";
-                        break;
-                    case "text/x-less":
-                        filetype = "text/x-less";
-                        filename += ".less";
-                        break;
-                }
-
-            main_statusbarItem__fileDownload.setAttribute("download", filename);
-            main_statusbarItem__fileDownload.href = URL.createObjectURL(new Blob([_this.editor.getValue()], {
-                type: filetype,
-            }));
-        }, false);
-
-        main_statusbarContainer__left.append(main_statusbarItem__fileDownload);
-
-
-        /** @type {SVGSVGElement} */
-        const main_statusbarItem__fileDownloadIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        _this.elements.main_statusbarItem__fileDownloadIcon = main_statusbarItem__fileDownloadIcon;
-
-        main_statusbarItem__fileDownloadIcon.classList.add("nkch-css4__statusbar-item-icon");
-        main_statusbarItem__fileDownloadIcon.setAttribute("viewBox", "0 0 18 18");
-        main_statusbarItem__fileDownloadIcon.setAttribute("aria-hidden", "true");
-
-        main_statusbarItem__fileDownload.append(main_statusbarItem__fileDownloadIcon);
-
-        
-        /** @type {SVGPathElement} */
-        const main_statusbarItem__fileDownloadIconPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        _this.elements.main_statusbarItem__fileDownloadIconPath = main_statusbarItem__fileDownloadIconPath;
-
-        main_statusbarItem__fileDownloadIconPath.setAttribute("d", _this.svgPath.download);
-        main_statusbarItem__fileDownloadIconPath.setAttribute("fill-rule", "evenodd");
-        main_statusbarItem__fileDownloadIconPath.setAttribute("clip-rule", "evenodd");
-
-        main_statusbarItem__fileDownloadIcon.append(main_statusbarItem__fileDownloadIconPath);
-
-
-        const main_statusbarItem__fileUploadInput = new _this.Element("input", {
-            add: {
-                append: [main_statusbarContainer__left]
-            }
+        /* ~ main : statusbar ~ */
+        /** @type {HTMLElement | HTMLDivElement} */
+        const main_statusbar = new _this.Element("div", {
+            classes: ["nkch-css4__statusbar"],
+            add: { append: main }
         }).element;
 
-        main_statusbarItem__fileUploadInput.setAttribute("type", "file");
-        main_statusbarItem__fileUploadInput.setAttribute("accept", "text/css,.less");
+        _this.elements.main_statusbar = main_statusbar;
 
-        main_statusbarItem__fileUploadInput.style.display = "none";
 
-        main_statusbarItem__fileUploadInput.addEventListener("change", function() {
-            if (main_statusbarItem__fileUploadInput.files.length < 1) return;
+        /* ~ main : statusbar container (left) ~ */
+        /** @type {HTMLElement | HTMLDivElement} */
+        const main_statusbarContainer__left = new _this.Element("div", {
+            classes: ["nkch-css4__statusbar-container", "nkch-css4__statusbar-container--left"],
+            add: { append: main_statusbar }
+        }).element;
 
-            var file = main_statusbarItem__fileUploadInput.files[0];
+        _this.elements.main_statusbarContainer__left = main_statusbarContainer__left;
+
+
+        /* ~ main : statusbar item (file download) ~ */
+        /** @type {HTMLElement | HTMLAnchorElement} */
+        const main_statusbarItem__fileDownload = new _this.Element("a", {
+            classes: ["nkch-css4__statusbar-item", "nkch-css4__statusbar-item--file-download"],
+            attributes: {
+                role: "button",
+            },
+            events: {
+                click: function () { downloadFile(); }
+            },
+            add: { append: main_statusbarContainer__left }
+        }).element;
+
+        var downloadFile = function () {
+            if (!_this.editor) return;
+
+            if (_this.editor.getValue().replaceAll(" ", "").replaceAll("\n", "").length < 1) {
+                main_statusbarItem__fileDownload.removeAttribute("download");
+                main_statusbarItem__fileDownload.removeAttribute("href");
+                return;
+            }
+
+            var now = new Date(),
+                date = {
+                    year: now.getFullYear(),
+                    month: now.getMonth() + 1,
+                    day: now.getDate(),
+                    hour: now.getHours(),
+                    minute: now.getMinutes(),
+                    second: now.getSeconds()
+                },
+                fileName = 
+                    mw.config.get("wgWikiID") + " " +
+                    date.year + "-" + date.month + "-" + date.day + " " + date.hour + "-" + date.minute + "-" + date.second,
+                fileType = "";
+
+            switch (_this.editor.getOption("mode")) {
+                case "text/css":
+                    fileName += ".css";
+                    fileType = "text/css";
+                    break;
+                case "text/x-less":
+                    fileName += ".less";
+                    fileType = "text/x-less";
+                    break;
+            }
+
+            var fileUrl = URL.createObjectURL(new Blob([_this.editor.getValue()], { type: fileType }));
+
+            main_statusbarItem__fileDownload.setAttribute("download", fileName);
+            main_statusbarItem__fileDownload.setAttribute("href", fileUrl);
+        }
+
+        _this.elements.main_statusbarItem_fileDownload = main_statusbarItem__fileDownload;
+
+        /* ~ [svg] main : statusbar item icon (file download) ~ */
+        /** @type {SVGElement} */
+        const main_statusbarItemIcon__fileDownload = new _this.SvgElement({
+            classes: ["nkch-css4__statusbar-item-icon", "nkch-css4__statusbar-item-icon--file-download"],
+            svgAttributes: {
+                viewBox: "0 0 18 18",
+                "aria-hidden": "true"
+            },
+            pathAttributes: {
+                d: _this.svgPath.download,
+                "fill-rule": "evenodd",
+                "clip-rule": "evenodd"
+            },
+            add: { append: main_statusbarItem__fileDownload }
+        }).svg;
+
+        _this.elements.main_statusbarItemIcon__fileDownload = main_statusbarItemIcon__fileDownload;
+
+
+        /* ~ main : statusbar item input (file upload) ~ */
+        /** @type {HTMLElement | HTMLInputElement} */
+        const main_statusbarItemInput__fileUpload = new _this.Element("input", {
+            classes: ["nkch-css4__statusbar-item-input", "nkch-css4__statusbar-item-input--file-download"],
+            attributes: {
+                type: "file",
+                accept: "text/css,.less",
+                name: "nkch-css4__statusbar-item-input--file-download"
+            },
+            styles: {
+                display: "none"
+            },
+            events: {
+                change: function () { uploadFile(); }
+            },
+            add: { append: main_statusbarContainer__left }
+        }).element;
+
+        var uploadFile = function() {
+            if (!(main_statusbarItemInput__fileUpload instanceof HTMLInputElement)) return;
+            if (!main_statusbarItemInput__fileUpload.files || main_statusbarItemInput__fileUpload.files.length < 1) return;
+
+            var file = main_statusbarItemInput__fileUpload.files[0];
 
             file.text().then(
                 function(text) {
@@ -683,340 +754,505 @@ nkchCSS.prototype.initializeEditor = function() {
                     else if (file.name.endsWith(".less")) 
                         tabs.setTabPanel("less");
 
-                    _this.editor.setValue(text);
-                    _this.updateCode(_this.editor.getValue(), _this.editor.getOption("mode"));
-                    main_statusbarItem__fileUploadInput.value = "";
+                    if (_this.editor) {
+                        _this.editor.setValue(text);
+                        _this.updateCode(_this.editor.getValue(), _this.editor.getOption("mode"));
+                    }
+
+                    main_statusbarItemInput__fileUpload.value = "";
                 }
             );
-        }, false);
+        }
 
-        _this.elements.main_statusbarItem__fileUploadInput = main_statusbarItem__fileUploadInput;
-
-
-        /** @type {HTMLAnchorElement} */
-        const main_statusbarItem__fileUpload = document.createElement("a");
-        _this.elements.main_statusbarItem__fileUpload = main_statusbarItem__fileUpload;
-
-        main_statusbarItem__fileUpload.classList.add("nkch-css4__statusbar-item", "nkch-css4__status-item--upload");
-        main_statusbarItem__fileUpload.setAttribute("role", "button");
-
-        main_statusbarItem__fileUpload.addEventListener("click", function() {
-            if (main_statusbarItem__fileUploadInput)
-                main_statusbarItem__fileUploadInput.click();
-        }, false);
-
-        main_statusbarContainer__left.append(main_statusbarItem__fileUpload);
+        _this.elements.main_statusbarItemInput__fileUpload = main_statusbarItemInput__fileUpload;
 
 
-        /** @type {SVGSVGElement} */
-        const main_statusbarItem__fileUploadIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        _this.elements.main_statusbarItem__fileUploadIcon = main_statusbarItem__fileUploadIcon;
+        /* ~ main : statusbar item (file upload) ~ */
+        /** @type {HTMLElement | HTMLAnchorElement} */
+        const main_statusbarItem__fileUpload = new _this.Element("a", {
+            classes: ["nkch-css4__statusbar-item", "nkch-css4__statusbar-item--file-upload"],
+            attributes: {
+                role: "button",
+            },
+            events: {
+                click: function() {
+                    main_statusbarItemInput__fileUpload.click();
+                }
+            },
+            add: { append: main_statusbarContainer__left }
+        }).element;
 
-        main_statusbarItem__fileUploadIcon.classList.add("nkch-css4__statusbar-item-icon");
-        main_statusbarItem__fileUploadIcon.setAttribute("viewBox", "0 0 18 18");
-        main_statusbarItem__fileUploadIcon.setAttribute("aria-hidden", "true");
-
-        main_statusbarItem__fileUpload.append(main_statusbarItem__fileUploadIcon);
-
-
-        /** @type {SVGPathElement} */
-        const main_statusbarItem__fileUploadIconPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        _this.elements.main_statusbarItem__fileUploadIconPath = main_statusbarItem__fileUploadIconPath;
-
-        main_statusbarItem__fileUploadIconPath.setAttribute("d", _this.svgPath.upload);
-        main_statusbarItem__fileUploadIconPath.setAttribute("fill-rule", "evenodd");
-        main_statusbarItem__fileUploadIconPath.setAttribute("clip-rule", "evenodd");
-
-        main_statusbarItem__fileUploadIcon.append(main_statusbarItem__fileUploadIconPath);
+        _this.elements.main_statusbarItem_fileUpload = main_statusbarItem__fileUpload;
 
 
-        /** @type {HTMLDivElement} */
-        const main_statusbarContainer__right = document.createElement("div");
+        /* ~ [svg] main : statusbar item icon (file upload) ~ */
+        /** @type {SVGElement} */
+        const main_statusbarItemIcon__fileUpload = new _this.SvgElement({
+            classes: ["nkch-css4__statusbar-item-icon", "nkch-css4__statusbar-item-icon--file-upload"],
+            svgAttributes: {
+                viewBox: "0 0 18 18",
+                "aria-hidden": "true"
+            },
+            pathAttributes: {
+                d: _this.svgPath.upload,
+                "fill-rule": "evenodd",
+                "clip-rule": "evenodd"
+            },
+            add: { append: main_statusbarItem__fileUpload }
+        }).svg;
+
+        _this.elements.main_statusbarItemIcon__fileUpload = main_statusbarItemIcon__fileUpload;
+
+
+        /* ~ main : statusbar container (right) ~ */
+        /** @type {HTMLElement | HTMLDivElement} */
+        const main_statusbarContainer__right = new _this.Element("div", {
+            classes: ["nkch-css4__statusbar-container", "nkch-css4__statusbar-container--right"],
+            add: { append: main_statusbar }
+        }).element;
+
         _this.elements.main_statusbarContainer__right = main_statusbarContainer__right;
 
-        main_statusbarContainer__right.classList.add("nkch-css4__statusbar-container", "nkch-css4__statusbar-container--right");
 
-        main_statusbar.append(main_statusbarContainer__right);
-
-        /** @type {HTMLAnchorElement} */
-        const main_statusbarItem__selection = document.createElement("a");
-        _this.elements.main_statusbarItem__selection = main_statusbarItem__selection;
-
-        main_statusbarItem__selection.classList.add("nkch-css4__statusbar-item", "nkch-css4__status-item--selection");
-        main_statusbarItem__selection.setAttribute("role", "button");
-        main_statusbarItem__selection.innerText = "L: 1 • C: 1";
-
+        /* ~ main : statusbar item (selection) ~ */
+        /** @type {HTMLElement | HTMLDivElement} */
+        const main_statusbarItem__selection = new _this.Element("a", {
+            classes: ["nkch-css4__statusbar-item", "nkch-css4__statusbar-item--selection"],
+            text: "L: 1 • C: 1",
+            attributes: {
+                role: "button",
+            },
+            events: {
+                click: function() { moveSelection(); }
+            },
+            add: { append: main_statusbarContainer__right }
+        }).element;
+        
         _this.editor.on("cursorActivity", function() {
+            if (!_this.editor) return;
+
             var cursor = _this.editor.getCursor(),
                 selection = _this.editor.getSelection();
 
                 main_statusbarItem__selection.innerText = "L: " + (cursor.line + 1) + " • C: " + (cursor.ch + 1);
                 
             if (selection.length > 0) main_statusbarItem__selection.innerText += " • S: " + selection.length;
-        })
+        });
 
-        main_statusbarContainer__right.append(main_statusbarItem__selection);
+        var goToSelectionDialog = new OO.ui.MessageDialog({
+            classes: ["nkch-css4__message-dialog", "nkch-css4__message-dialog--go-to-selection"]
+        });
 
-        /** @type {HTMLDivElement} */
-        const main_error = document.createElement("div");
+        _this.elements.windowManager.addWindows([goToSelectionDialog]);
+
+        var moveSelection = function () {
+            if (!_this.editor) return;
+
+            const goToSelectionDialog_textInput__line = new OO.ui.TextInputWidget({
+                placeholder: _this.editor.lineCount(),
+                icon: "tableMoveRowAfter",
+                validate: getLineTextInputValidity
+            });
+
+            const goToSelectionDialog_textField__line = new OO.ui.FieldLayout(goToSelectionDialog_textInput__line, {
+                label: "L"
+            });
+
+            function getLineTextInputValidity(value) {
+                if (!_this.editor) return false;
+                if (!new RegExp(/^\d+$/).test(value)) return false;
+
+                value = Number(value);
+                return (value > 0 && value <= _this.editor.lineCount());
+            }
+
+            const goToSelectionDialog_textInput__character = new OO.ui.TextInputWidget({
+                placeholder: _this.editor.getLine(_this.editor.lineCount() - 1).length + 1,
+                icon: "tableMoveColumnAfter",
+                disabled: true,
+                validate: getCharacterTextInputValidity
+            });
+
+            const goToSelectionDialog_textField__character = new OO.ui.FieldLayout(goToSelectionDialog_textInput__character, {
+                label: "C"
+            });
+
+            function getCharacterTextInputValidity(value) {
+                if (!_this.editor) return false;
+                if (!getLineTextInputValidity(goToSelectionDialog_textInput__line.getValue())) return false;
+
+                value = Number(value);
+                return (value > 0 && value <= _this.editor.getLine(goToSelectionDialog_textInput__line.getValue() - 1).length + 1);
+            }
+
+            goToSelectionDialog_textInput__line.on("change", function(value) {
+                if (value.length > 0) {
+                    goToSelectionDialog_textInput__character.setDisabled(false);
+
+                    goToSelectionDialog_textInput__character.setValidityFlag(
+                        getCharacterTextInputValidity(goToSelectionDialog_textInput__character.getValue())
+                    );
+                } else goToSelectionDialog_textInput__character.setDisabled(true);  
+            });
+
+            const goToSelectionDialog_fieldset = new OO.ui.FieldsetLayout({
+                items: [goToSelectionDialog_textField__line, goToSelectionDialog_textField__character]
+            });
+
+            const instance = windowManager.openWindow(goToSelectionDialog, {
+                message: goToSelectionDialog_fieldset.$element
+            });
+
+            instance.opened.then(
+                function() {
+                    const acceptAction = goToSelectionDialog.actions.list.find(function (el) { return el.action === "accept" }),
+                        rejectAction = goToSelectionDialog.actions.list.find(function (el) { return el.action === "reject" });
+
+                    acceptAction.setDisabled(true);
+
+                    var timer = setInterval(function() {
+                        var valid = (
+                            getLineTextInputValidity(goToSelectionDialog_textInput__line.getValue()) &&
+                            getCharacterTextInputValidity(goToSelectionDialog_textInput__character.getValue())
+                        );
+
+                        if (acceptAction.isDisabled() === valid) acceptAction.setDisabled(!valid);
+                    }, 100);
+
+                    acceptAction.on("click", function() {
+                        if (!_this.editor) return;
+                        clearInterval(timer);
+
+                        _this.editor.focus();
+                        _this.editor.setCursor(goToSelectionDialog_textInput__line.getValue() - 1, goToSelectionDialog_textInput__character.getValue() - 1);
+                    });
+
+                    rejectAction.on("click", function() {
+                        clearInterval(timer);
+                    });
+                }
+            );
+        }
+
+        _this.elements.main_statusbarItem__selection = main_statusbarItem__selection;
+
+        
+        /* ~ main : error ~ */
+        /** @type {HTMLElement | HTMLDivElement} */
+        const main_error = new _this.Element("div", {
+            classes: ["nkch-css4__error"],
+            add: { append: main }
+        }).element;
+
         _this.elements.main_error = main_error;
 
-        main_error.classList.add("nkch-css4__error");
 
-        main.append(main_error);
+        /* ~ main : error title ~ */
+        /** @type {HTMLElement | HTMLSpanElement} */
+        const main_errorTitle = new _this.Element("span", {
+            classes: ["nkch-css4__error-title"],
+            add: { append: main_error }
+        }).element;
 
-        /** @type {HTMLSpanElement} */
-        const main_errorTitle = document.createElement("span");
         _this.elements.main_errorTitle = main_errorTitle;
 
-        main_errorTitle.classList.add("nkch-css4__error-title");
 
-        main_error.append(main_errorTitle);
+        /* ~ main : error content ~ */
+        /** @type {HTMLElement | HTMLSpanElement} */
+        const main_errorContent = new _this.Element("span", {
+            classes: ["nkch-css4__error-content"],
+            add: { append: main_error }
+        }).element;
 
-        /** @type {HTMLSpanElement} */
-        const main_errorContent = document.createElement("span");
         _this.elements.main_errorContent = main_errorContent;
 
-        main_errorContent.classList.add("nkch-css4__error-content");
 
-        main_error.append(main_errorContent);
-        
         switch (mw.config.get("skin")) {
             case "fandomdesktop":
-                _this.elements.quickbarItem_spinner.classList.add("is-hidden");
+                if (_this.elements.quickbarItem_spinner instanceof HTMLSpanElement) 
+                    _this.elements.quickbarItem_spinner.classList.add("is-hidden");
                 break;
 
             case "vector":
             case "vector-2022":
-                _this.elements.vectorMenuItem_spinner.classList.add("is-hidden");
+                if (_this.elements.sidebarItem_spinner instanceof HTMLSpanElement) 
+                    _this.elements.sidebarItem_spinner.classList.add("is-hidden");
                 break;
         }
 
-        _this.isEditorInitialized = true;
+        _this.checks.editor.isInitialized = true;
         _this.show();
-    } 
+    }
 }
 
-/** 
+
+/**
  * @param {Event} [event]
  * @returns {void}
  */
-nkchCSS.prototype.show = function(event) {
+nkchCSS.prototype.show = function (event) {
     /** @type {nkchCSS} */
     const _this = this;
     
     if (event) event.preventDefault();
 
-    if (!_this.isEditorInitialized) return _this.initializeEditor();
-    else if (_this.isEditorShown) return;
+    if (!_this.checks.editor.isInitialized) return _this.initializeEditor();
+    else if (_this.checks.editor.isShown) return;
 
-    _this.elements.main.classList.remove("is-disabled");
+    if (_this.elements.main instanceof HTMLElement) {
+        _this.elements.main.classList.remove("is-disabled");
 
-    const openAnimation = _this.elements.main.animate([{
-        opacity: 0,
-        transform: "translateY(10px)"
-    }, {
-        opacity: 1,
-        transform: "translateY(0)"
-    }], {
-        easing: "ease",
-        duration: 300
-    });
+        const showAnimation = _this.elements.main.animate([{
+            opacity: 0,
+            transform: "translateY(10px)"
+        }, {
+            opacity: 1,
+            transform: "translateY(0)"
+        }], {
+            duration: 300,
+            easing: "ease"
+        });
 
-    _this.elements.main.dispatchEvent(new Event("nkch-css-open"));
-    _this.isEditorShown = true;
+        _this.elements.main.dispatchEvent(new CustomEvent("nkch-css4-show", {
+            cancelable: true,
+            detail: _this
+        }));
+    }
+
+    _this.checks.editor.isShown = true;
 }
 
-/** 
+
+/**
  * @param {Event} [event]
  * @returns {void}
  */
-nkchCSS.prototype.hide = function(event) {
+nkchCSS.prototype.hide = function (event) {
     /** @type {nkchCSS} */
     const _this = this;
-
+    
     if (event) event.preventDefault();
 
-    if (!_this.isEditorInitialized) return;
-    else if (!_this.isEditorShown) return;
+    if (!_this.checks.editor.isInitialized) return;
+    else if (!_this.checks.editor.isShown) return;
 
-    const closeAnimation = _this.elements.main.animate([{
-        opacity: 1,
-        transform: "translateY(0)"
-    }, {
-        opacity: 0,
-        transform: "translateY(10px)"
-    }], {
-        easing: "ease",
-        duration: 300
-    });
+    if (_this.elements.main instanceof HTMLElement) {
+        const hideAnimation = _this.elements.main.animate([{
+            opacity: 1,
+            transform: "translateY(0)"
+        }, {
+            opacity: 0,
+            transform: "translateY(10px)"
+        }], {
+            duration: 300,
+            easing: "ease"
+        });
 
-    closeAnimation.onfinish = function () {
-        _this.elements.main.classList.add("is-disabled");
-    };
+        hideAnimation.onfinish = function () {
+            if (_this.elements.main instanceof HTMLElement)
+                _this.elements.main.classList.add("is-disabled");
+        };
 
-    _this.elements.main.dispatchEvent(new Event("nkch-css-close"));
-    _this.isEditorShown = false;
+        _this.elements.main.dispatchEvent(new CustomEvent("nkch-css4-hide", {
+            cancelable: true,
+            detail: _this
+        }));
+    }
+
+    _this.checks.editor.isShown = false;
 }
 
-/** 
+
+/**
  * @param {string} code
- * @param {string | CodeMirror.ModeSpec<CodeMirror.ModeSpecOptions> } mode
+ * @param {string | CodeMirror.ModeSpec<CodeMirror.ModeSpecOptions> | undefined } mode
  * @returns {void}
  */
-nkchCSS.prototype.updateCode = function(code, mode) {
+nkchCSS.prototype.updateCode = function (code, mode) {
     /** @type {nkchCSS} */
     const _this = this;
 
-    if (_this.isEditorEnabled) {
+    if (_this.checks.editor.isEnabled) {
         switch (mode) {
             default:
-            case "css":
-                if (_this.isErrorVisible) {
-                    _this.elements.main_error.classList.remove("is-visible");
+            case "text/css":
+                if (_this.checks.isCodeInvalid) {
+                    if (_this.elements.main_error instanceof HTMLDivElement &&
+                        _this.elements.main_errorTitle instanceof HTMLSpanElement &&
+                        _this.elements.main_errorContent instanceof HTMLSpanElement) {
+                        _this.elements.main_error.classList.remove("is-visible");
 
-                    _this.elements.main_errorTitle.innerText = "";
-                    _this.elements.main_errorContent.innerText = "";
+                        _this.elements.main_errorTitle.innerText = "";
+                        _this.elements.main_errorContent.innerText = "";
+                    }
                 }
 
-                _this.elements.style.innerHTML = code;
+                if (_this.elements.style instanceof HTMLStyleElement)
+                    _this.elements.style.innerHTML = code;
                 break;
+
             case "text/x-less":
                 less.render(code)
                     .then(
                         function (output) {
-                            if (_this.isErrorVisible) {
-                                _this.elements.main_error.classList.remove("is-visible");
+                            if (_this.checks.isCodeInvalid) {
+                                if (_this.elements.main_error instanceof HTMLDivElement &&
+                                    _this.elements.main_errorTitle instanceof HTMLSpanElement &&
+                                    _this.elements.main_errorContent instanceof HTMLSpanElement) {
+                                    _this.elements.main_error.classList.remove("is-visible");
 
-                                _this.elements.main_errorTitle.innerText = "";
-                                _this.elements.main_errorContent.innerText = "";
-
-                                _this.isErrorVisible = false;
+                                    _this.elements.main_errorTitle.innerText = "";
+                                    _this.elements.main_errorContent.innerText = "";
+                                }
                             }
 
-                            _this.elements.compile_less.setDisabled(false);
+                            if (_this.elements.compile_less instanceof OO.ui.ButtonWidget)
+                                _this.elements.compile_less.setDisabled(false);
                             _this.updateCode(output.css, "css");
                         }
                     )
                     .catch(
                         function (error) {
-                            _this.elements.main_error.classList.add("is-visible");
+                            if (_this.elements.main_error instanceof HTMLDivElement &&
+                                _this.elements.main_errorTitle instanceof HTMLSpanElement &&
+                                _this.elements.main_errorContent instanceof HTMLSpanElement &&
+                                _this.elements.compile_less instanceof OO.ui.ButtonWidget) {
+                                _this.elements.main_error.classList.add("is-visible");
 
-                            _this.elements.main_errorTitle.innerText = "Less (" + error.line + ":" + (error.column + 1) + ")";
-                            _this.elements.main_errorContent.innerText = error.message;
+                                _this.elements.main_errorTitle.innerText = "Less (" + error.line + ":" + (error.column + 1) + ")";
+                                _this.elements.main_errorContent.innerText = error.message;
 
-                            _this.elements.compile_less.setDisabled(true);
-                            _this.isErrorVisible = true;
+                                _this.elements.compile_less.setDisabled(true);
+                                _this.checks.isCodeInvalid = true;
+                            }
                         }
                     );
                 break;
         }
 
-        _this.elements.main.dispatchEvent(new Event("nkch-css-update"));
+        if (_this.elements.main instanceof HTMLDivElement)
+            _this.elements.main.dispatchEvent(new CustomEvent("nkch-css4-update", {
+                cancelable: true,
+                detail: _this
+            }));
     }
 }
 
-/** 
+
+/**
  * @param {string} code
  * @param {string} mode
  * @returns {void}
  */
-nkchCSS.prototype.compile = function(code, mode) {
+nkchCSS.prototype.compile = function (code, mode) {
     /** @type {nkchCSS} */
     const _this = this;
 
     switch (mode) {
         case "text/x-less":
             less.render(code)
-                .then(
-                    function (output) {
+                .then(function(output) {
+                    if (_this.elements.tabs instanceof OO.ui.IndexLayout)
                         _this.elements.tabs.setTabPanel("css");
-                        _this.beautify(output.css);
+
+                    _this.beautify(output.css);
+
+                    if (_this.editor)
                         _this.updateCode(_this.editor.getValue(), "css");
-                    }
-                )
+                }
+            )
     }
 }
 
-/** 
+
+/**
  * @param {string} code
  * @returns {void}
  */
-nkchCSS.prototype.beautify = function(code) {
+nkchCSS.prototype.beautify = function (code) {
     /** @type {nkchCSS} */
     const _this = this;
 
     var codeBeautified = css_beautify(code, {
-        indent_size: "4",
-        indent_char: " "
+        indent_size: 4,
+        indent_char: " ",
     });
 
-    _this.editor.setValue(codeBeautified);
+    if (_this.editor) _this.editor.setValue(codeBeautified);
 }
 
-/** 
+
+/**
  * @param {boolean} state
  * @returns {void}
  */
-nkchCSS.prototype.toggle = function(state) {
+nkchCSS.prototype.toggle = function (state) {
     /** @type {nkchCSS} */
     const _this = this;
 
-    var classList = _this.elements.main_headerButton__toggle.classList;
-    switch (state) {
-        case true:
-            if (!_this.isEditorEnabled) {
-                classList.add("is-enabled");
-                classList.remove("is-disabled");
+    if (_this.elements.main_headerButton__toggle instanceof HTMLButtonElement &&
+        _this.elements.main_headerButtonIcon__toggle instanceof SVGElement) {
+        var classList = _this.elements.main_headerButton__toggle.classList,
+            path = _this.elements.main_headerButtonIcon__toggle.querySelector("path");
 
-                _this.elements.main_headerButton__toggleIconPath.setAttribute("d", _this.svgPath.eye);
-                _this.isEditorEnabled = true;
+        switch (state) {
+            case true:
+                if (!_this.checks.editor.isEnabled) {
+                    classList.add("is-enabled");
+                    classList.remove("is-disabled");
 
-                _this.updateCode(_this.editor.getValue(), _this.editor.getOption("mode"));
-            }
-            break;
-        case false:
-            if (_this.isEditorEnabled) {
-                classList.add("is-disabled");
-                classList.remove("is-enabled");
+                    if (path) path.setAttribute("d", _this.svgPath.eye);
+                    _this.checks.editor.isEnabled = true;
 
-                _this.elements.main_headerButton__toggleIconPath.setAttribute("d", _this.svgPath.eyeCrossed);
-                _this.isEditorEnabled = false;
+                    if (_this.editor)
+                        _this.updateCode(_this.editor.getValue(), _this.editor.getOption("mode"));
+                }
+                break;
 
-                _this.elements.style.innerHTML = "";
-            }
-            break;
+            case false:
+                if (_this.checks.editor.isEnabled) {
+                    classList.add("is-disabled");
+                    classList.remove("is-enabled");
+
+                    if (path) path.setAttribute("d", _this.svgPath.eyeCrossed);
+                    _this.checks.editor.isEnabled = false;
+
+                    if (_this.elements.style instanceof HTMLStyleElement)
+                        _this.elements.style.innerHTML = "";
+                }
+                break;
+        }
     }
 }
 
+
 /** 
  * @param {string} module
- * @param {string} [version]
+ * @param {string | null} [version]
  * @param {string} [path]
  * @returns {string | never}
  */
-nkchCSS.prototype.getUnpkgLink = function(module, version, path) {
+nkchCSS.prototype.getUnpkgLink = function (module, version, path) {
     if (!module) throw new Error("Module is not specified");
     if (module.includes("/")) module.replaceAll(/^\/?|\/?$/, "");
 
-    var string = ("https://unpkg.com/" + module) + (version ? "@" + version : "") + (path ? "/" + path : "");
-    return string;
+    return "https://unpkg.com/" + module + (version ? "@" + version : "") + (path ? "/" + path : "");
 }
 
-/**
- * @param {nkchCSS.Options} [options]
- * @returns {void}
-*/
-function nkchCSS__setup(options) {
+
+function setup() {
     /** @type {nkch} */
     var nkch = window.nkch ? window.nkch : {};
     window.nkch = nkch;
 
+    /** @type {nkchCSS.Options} */
+    var options = typeof nkch_css_configs !== "undefined" ? nkch_css_configs : {};
+
     mw.loader.load("https://nkch.fandom.com/wiki/MediaWiki:NkchCSS4.css?action=raw&ctype=text/css", "text/css");
-    
-    if (nkch.css4 && nkch.css4 instanceof nkchCSS) {
+
+    if (nkch.css4 && nkch.css4 instanceof nkchCSS)
         return mw.log.warn("nkchCSS is already in use.");
-    } else nkch.css4 = new nkchCSS(options ? options : {});
+    else nkch.css4 = new nkchCSS(options);
 }
 
-nkchCSS__setup();
+setup();

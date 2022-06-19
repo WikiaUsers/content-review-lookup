@@ -822,7 +822,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
 // preconnect: only do for external resources that are very frequently used
 $('head').append('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>');
-$('head').append('<link rel="preconnect" href="https://cdn.githubraw.com" crossorigin>');
+$('head').append('<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>');
 
 // AjaxRC
 window.ajaxRefresh = 30000;

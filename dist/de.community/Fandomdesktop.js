@@ -1,6 +1,21 @@
 // Configuration for adoptions form
 window.adoptInternational = {
-    unsupportedLanguages: ['en','es','fr','ru','it','nl','pl','pt','pt-br','zh'],
+	unsupportedLanguages: [
+		'en',
+		'es',
+		'fr',
+		'id',
+		'it',
+		'ja',
+		'nl',
+		'pl',
+		'pt',
+		'pt-br',
+		'ru',
+		'zh',
+		'zh-tw',
+		'zh-hk'
+	],
 	adoptionConfig: {
 		activityDays: 7,
 		adminsDays: 30,

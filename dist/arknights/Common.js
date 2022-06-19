@@ -8,10 +8,10 @@
 window.tooltips_list = [
         {
         classname: 'item-tooltip',
-        parse: '{' + '{Template:Item tip|1=<#name#>|2=<#color#>|3=<#text#>|4=<#text2#>|o=<#obtain#>|o1=<#obtain1#>|o1a=<#a#>|o1b=<#b#>|o1c=<#c#>|o1d=<#d#>|o2=<#obtain2#>|title=<#title#>|link=<#link#>}}',
+        parse: '{' + '{Template:Item tip|1=<#name#>|2=<#color#>|3=<#text#>|4=<#text2#>|5=<#text2b#>|6=<#text2c#>|o=<#obtain#>|o1=<#obtain1#>|o1a=<#a#>|o1b=<#b#>|o1c=<#c#>|o1d=<#d#>|o2=<#obtain2#>|title=<#title#>|link=<#link#>}}',
     },  {
         classname: 'enemy-tooltip',
-        parse: '{' + '{Template:Enemy tip|1=<#name#>|2=<#codename#>|3=<#hp#>|4=<#atk#>|5=<#def#>|6=<#res#>|type=<#type#>|title=<#title#>|link=<#link#>}}',
+        parse: '{' + '{Template:Enemy tip|1=<#name#>|2=<#codename#>|3=<#hp#>|4=<#atk#>|5=<#def#>|6=<#res#>|race=<#race#>|type=<#type#>|title=<#title#>|link=<#link#>}}',
     },  {
         classname: 'character-tooltip',
         parse: '{' + '{Template:Character tip|1=<#name#>|2=<#class#>|3=<#rarity#>|4=<#faction#>|5=<#left#>|6=<#top#>|title=<#title#>|link=<#link#>}}',

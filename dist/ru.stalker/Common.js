@@ -17,7 +17,7 @@ importScript = function (page, proj) {
 		}
 		mw.loader.using('mediawiki.util').done( function () {
 			mw.loader.load('//' + proj + '/wiki/' + mw.util.wikiUrlencode(page) + '?action=raw&ctype=text/javascript');
-		} );
+		});
 	}
 };
 
@@ -50,15 +50,15 @@ mw.loader.using( ['mediawiki.util'], function () {
 		withGadget = mw.util.getParamValue('withgadget');
 
 	if (withCSS) {
-		mw.loader.load( '/ru/wiki/MediaWiki:' + encodeURIComponent(withCSS) + '?action=raw&ctype=text/css', 'text/css' );
+		mw.loader.load( '/ru/wiki/MediaWiki:' + mw.util.wikiUrlencode(withCSS) + '.css?action=raw&ctype=text/css', 'text/css' );
 	}
 	
 	if (withJS) {
-		mw.loader.load( '/ru/wiki/MediaWiki:' + encodeURIComponent(withJS) + '?action=raw&ctype=text/javascript' );
+		mw.loader.load( '/ru/wiki/MediaWiki:' + mw.util.wikiUrlencode(withJS) + '.js?action=raw&ctype=text/javascript' );
 	}
 	
 	if (withGadget) {
-		mw.loader.load( 'ext.gadget.' + encodeURIComponent(withGadget) );
+		mw.loader.load( 'ext.gadget.' + mw.util.wikiUrlencode(withGadget) );
 	}
 });
 
@@ -116,11 +116,24 @@ runAsEarlyAsPossible(function () {
 
 }, $('.page-footer'), mw.hook('wikipage.content').add );
 
+/**
+ * Код, выполняемый по событию wikipage.content (его обработчики выполняются раньше колбэков для $,
+ * хотя в глубине это одно и то же событие, просто колбэк, инициирующий wikipage.content, становится
+ * в очередь раньше). Так как wikipage.content инициируется после обновления страницы в результате
+ * Ajax-запросов (например, гаджетом динамической навигации), не добавляйте сюда коды, которые
+ * должны гарантированно выполниться не более одного раза на странице.
+ */
+mw.hook('wikipage.content').add( function () {
+	$('#toc h2 svg').each(function() {
+		$(this).remove();
+	});
+});
+
 // Число раскрытых по умолчанию навигационных шаблонов, 
 // если им задан параметр autocollapse. 
 mw.hook( 'wikipage.collapsibleContent' ).add( function() {
 	if ( 
-		$('.navbox-inner:not(.navbox-subgroup).mw-collapsed').length <= 1
+		$('.navbox-inner.mw-collapsed').length == 1
 	) {
 		$('.navbox-inner.autocollapse > tbody > tr:first-child .mw-collapsible-toggle').click();
 	}

@@ -1,7 +1,22 @@
 // <nowiki>
 // Konfiguracja skryptu odpowiedzialnego za formularz adopcji
 window.adoptInternational = {
-	unsupportedLanguages: ['en','es','de','fr','ru','it','nl','pt','pt-br','zh'],
+	unsupportedLanguages: [
+		'de',
+		'en',
+		'es',
+		'fr',
+		'id',
+		'it',
+		'ja',
+		'nl',
+		'pt',
+		'pt-br',
+		'ru',
+		'zh',
+		'zh-tw',
+		'zh-hk'
+	],
 	adoptionConfig: {
 		activityDays: 7,
 		adminsDays: 60,

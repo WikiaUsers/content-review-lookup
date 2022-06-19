@@ -22,7 +22,22 @@ UserTagsJS.modules.metafilter = {
 //==============================================
 
 window.adoptInternational = {
-    unsupportedLanguages: ['de','en','es','fr','nl','pl','pt','pt-br','ru','zh'],
+    unsupportedLanguages: [
+        'de',
+        'en',
+        'es',
+        'fr',
+        'id',
+        'ja',
+        'nl',
+        'pl',
+        'pt',
+        'pt-br',
+        'ru',
+        'zh',
+        'zh-tw',
+        'zh-hk'
+    ],
     adoptionConfig: {
         activityDays: 30,
         adminsDays: 60,

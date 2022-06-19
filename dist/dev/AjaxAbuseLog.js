@@ -40,7 +40,7 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 			"afllimit": "1",
 			"afllogid": Number(entry),
 		}).then(function(afData) {
-			return afData.query.abuselog[0].id >= Number(entry);
+			return (afData.query.abuselog.length > 0) && (afData.query.abuselog[0].id >= Number(entry));
 		}).catch(function(error) {
 			console.warn(error);
 			return false;

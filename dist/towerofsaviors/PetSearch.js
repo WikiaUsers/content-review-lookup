@@ -76,7 +76,7 @@ function sortCards(sortBy) {
     });
 }
 
-$("#inputArea").append('<input id="searchInput" type="text" placeholder="Search by card name..">');
+$("#inputArea").append('<input id="nameInput" type="text" placeholder="Search by card name..">');
 
 $(".queryButton[data-group=order]").filter("[data-value=monsterid]").addClass("queryButtonActive");
 $(".queryButton").click(function(){
@@ -93,7 +93,7 @@ $(".queryButton").click(function(){
             for (var filterType in activeFilters) {
                 activeFilters[filterType] = [];
             }
-            $("#searchInput").val("");
+            $("#nameInput").val("");
             searchString = "";
         } else {
             $(".queryButtonActive").filter("[data-group=" + filterToClear + "]").removeClass("queryButtonActive");
@@ -113,7 +113,7 @@ $(".queryButton").click(function(){
     }
 });
 
-$("#searchInput").on("keyup", function() {
+$("#nameInput").on("keyup", function() {
     searchString = $(this).val().toLowerCase();
     filterCards();
 });

@@ -31,7 +31,7 @@
 			});
 		});
 	};
-}(window, window.jQuery, window.mediaWiki))(function(window, $, mw) {
+}(window, window.jQuery, window.mediaWiki));(function(window, $, mw) {
 	"use strict";
 	// Start actual module.
 	// This is pretty straightforward, we just find all the relevant elements and

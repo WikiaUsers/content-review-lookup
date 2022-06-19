@@ -15,7 +15,22 @@ window.AddRailModule = [{
 
 // Configuration for adoptions form
 window.adoptInternational = {
-    unsupportedLanguages: ['es','de','fr','ru','it','nl','pl','pt','pt-br','zh'],
+    unsupportedLanguages: [
+        'de',
+        'es',
+        'fr',
+        'id',
+        'it',
+        'ja',
+        'nl',
+        'pl',
+        'pt',
+        'pt-br',
+        'ru',
+        'zh',
+        'zh-tw',
+        'zh-hk'
+    ],
     adoptionConfig: {
         activityDays: 10,
         adminsDays: 60,

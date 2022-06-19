@@ -1,47 +1,72 @@
-// Custom message wall tags
+// Time template
 
-window.wallTags = {
-    color: '#ff0a0a',
-    size: 80,
-    glow: true,
-    glowColor: '#c30000',
-    glowSize: 30,
-    tags: [
-        {
-            user: 'Mario&LuigiBowser\'sInsideStory',
-            text: 'Bureaucrat'
-        }
-    ]
-};
+(function() {
+	function updateTime() {
+		var elements = document.querySelectorAll('.display-time');
+		var date = new Date();
+		var month = date.getMonth();
+		elements.forEach(function(i) {
+			var dst = i.getAttribute('data-dst') === "true";
+			var timeZone = Number(i.getAttribute('data-timezone'));
+			if (isNaN(timeZone)) {
+				return;
+			}
+			if (dst && month >= 2 && month <= 10) {
+				timeZone = timeZone + 1;
+			}
+			var utc = new Date(date.getTime() + (new Date().getTimezoneOffset() * 60 * 1000)).getTime();
+			var userDate = new Date(utc + (timeZone * 3600 * 1000));
+			var hour = userDate.getHours();
+			var minute = userDate.getMinutes().toString();
+			minute = minute.length === 1 ? '0' + minute : minute;
+			i.innerText = (hour % 12 === 0 ? '12' : (hour % 12).toString()) + ':' + (minute) + ' ' + (hour >= 12 ? 'PM' : 'AM');
+		});
+	}
+	setInterval(updateTime, 1000);
+})();
 
+// Edit count template
 
-function loadWallTags() {
-    if ([1200, 1201].indexOf(mw.config.get('wgNamespaceNumber')) == -1) return;
-    window.wallTags.tags.forEach(function(i) {
-        $('.edited-by a').each(function() {
-            if ($(this).text() == i.user) {
-                $(this).parent().find('a.subtle').replaceWith(
-                    $('<span>', {
-                        class: 'WallTag', 
-                        style: 'color: ' + (window.wallTags.color || 'white') + '; font-size: ' + (window.wallTags.size ? String(window.wallTags.size) : '100') + '%;' + (window.wallTags.glow === true ? 'text-shadow: ' + (window.wallTags.glowColor ? window.wallTags.glowColor +' 0px 0px ' + (window.wallTags.glowSize ? String(window.wallTags.glowSize) : '10') + 'px' : (window.wallTags.color ? window.wallTags.color : 'white') + ' 0px 0px 10px;') : ''),
-                        text: '(' + i.text + ')'
-                    })
-                );
-            }
-        });
-    });
-}
+(function() {
+	var elements = document.querySelectorAll('.editcount');
+	elements.forEach(function(i) {
+		var username = i.getAttribute('data-user');
+		if (username) {
+			fetch('/api.php?action=query&format=json&list=users&ususers=' + encodeURIComponent(username)).then(function(response) {
+				response.json().then(function(obj) {
+					var userId = obj.query.users[0] ? obj.query.users[0].userid : null;
+					if (userId) {
+						fetch('/wikia.php?controller=UserProfile&method=getUserData&format=json&userId=' + userId.toString()).then(function(response2) {
+							response2.json().then(function(obj2) {
+								i.innerText = obj2.userData.localEdits ? obj2.userData.localEdits.toString() : '0';
+							});
+						});
+					}
+				});
+			});
+		}
+	});
+})();
 
-$(document).click(function(e) {
-    if ($(e.target).is('.Pagination a')) {
-        var interval = setInterval(function() {
-            if ($('a.subtle').exists()) {
-                clearInterval(interval);
-                // Make absolutely sure that a.subtle exists
-                setTimeout(loadWallTags, 500);
-            }
-        }, 900);
-    }
-});
+// Active since template
 
-$(window).load(loadWallTags);
+(function() {
+	var elements = document.querySelectorAll('.user-active-since');
+	elements.forEach(function(i) {
+		var username = i.getAttribute('data-user');
+		if (username) {
+			fetch('/api.php?action=query&format=json&list=users&ususers=' + encodeURIComponent(username)).then(function(response) {
+				response.json().then(function(obj) {
+					var userId = obj.query.users[0] ? obj.query.users[0].userid : null;
+					if (userId) {
+						fetch('/wikia.php?controller=UserProfile&method=getUserData&format=json&userId=' + userId.toString()).then(function(response2) {
+							response2.json().then(function(obj2) {
+								i.innerText = obj2.userData.registration ? obj2.userData.registration : '';
+							});
+						});
+					}
+				});
+			});
+		}
+	});
+})();

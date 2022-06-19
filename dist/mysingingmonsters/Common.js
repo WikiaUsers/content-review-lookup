@@ -5,7 +5,6 @@ window.ArchiveBoards = {
 
 (window.dev = window.dev || {}).fastFileDelete = window.dev.fastFileDelete || {};
 window.dev.fastFileDelete.groups = 'content\-moderator';
-
 importArticles({
     type: "script",
     articles: [

@@ -1,1 +1,0 @@
-$('#WikiaArticle').prepend('<div id="js-notice">This wiki is currently undergoing both an expansion and a redesign.<br>Please bear with us as we try to get it finished. <a href="http://queerasfolk.wikia.com/wiki/Message_Wall:SmallerOnTheOutside" style=color:#aae3f2;font-weight:900>Comments?</div></div>');

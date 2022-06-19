@@ -25,7 +25,7 @@ window.discussionsModuleConfig = {
     });
 /* DiscussionsEmbed */
 window.discussEmbedLimit = 3;
-window.discussEmbedForum = "1779114017030656532";
+window.discussEmbedForum = "4400000000000008664";
 window.discussEmbedSortTrending = 1;
 
 /* Standard edit summaries

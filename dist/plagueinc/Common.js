@@ -59,3 +59,38 @@ $( function () {
 		}
 	} );
 } );
+
+/* Slideshow (Credit: Chocòωólina)*/
+mw.hook('wikipage.content').add(function() {
+    const slider_content = document.querySelectorAll('.slider_content');
+    const next = document.querySelector('.next');
+    const prev = document.querySelector('.prev');
+    if (slider_content.length === 0 || !next || !prev) {
+        // One or more of these elements don't exist. Exit early.
+        return;
+    }
+    var index = 0;
+
+    const mount = function() { slider_content[index].classList.add('active'); };
+    const unmount = function() { slider_content[index].classList.remove('active'); };
+    next.addEventListener('click', function() {
+        unmount();
+        if (index >= slider_content.length - 1){
+            index = 0;
+        } else {
+            index++;
+        }
+        mount();
+    });
+
+    prev.addEventListener('click', function() {
+        unmount();
+        if (index <= 0) {
+            index = slider_content.length - 1;
+        } else {
+            index--;
+        }
+        mount();
+    });
+    mount();
+});

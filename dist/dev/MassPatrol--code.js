@@ -46,7 +46,7 @@
 				//If history page, fork off
 				if (pageConfig.wgAction==='history')
 					return MassPatrol.history(rcArray.filter(function(e){
-						return "unpatrolled" in e;
+						return !("unpatrolled" in e);
 					}));
 
 				//Bulk of Mass Patrol Code
@@ -55,11 +55,12 @@
 				var capture = false;
 				for (var i = 0; i < rcArray.length; i++) {
 					var each = rcArray[i];
-					if (capture && each.unpatrolled==="") //Capturing starts, and unpatrolled
-						MassPatrol.rcids.push(each.rcid);
-					if (each.revid == pageConfig.wgDiffOldId)
+
+					if (each.revid >= pageConfig.wgDiffOldId)
 						capture = true; //Start Capture
-					if (each.revid == pageConfig.wgDiffNewId)
+					if (capture && !("patrolled" in each)) //Capturing starts, and unpatrolled
+						MassPatrol.rcids.push(each.rcid);
+					if (each.revid >= pageConfig.wgDiffNewId)
 						break; //End Early
 				}
 

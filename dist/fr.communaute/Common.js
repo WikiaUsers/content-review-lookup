@@ -7,7 +7,22 @@ $('.centralhelpbox').click(function(){
 //===================================
 // Configuration for adoptions form
 window.adoptInternational = {
-    unsupportedLanguages: ['en','es','de','ru','it','nl','pl','pt','pt-br','zh'],
+    unsupportedLanguages: [
+        'de',
+        'en',
+        'es',
+        'id',
+        'it',
+        'ja',
+        'nl',
+        'pl',
+        'pt',
+        'pt-br',
+        'ru',
+        'zh',
+        'zh-tw',
+        'zh-hk'
+    ],
     adoptionConfig: {
         activityDays: 14,
         adminsDays: 60,

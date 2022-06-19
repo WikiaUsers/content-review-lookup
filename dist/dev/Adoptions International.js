@@ -10,7 +10,21 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 
 	// Wikis in those languages will *error* when user tries to adopt them
 	window.adoptInternational.unsupportedLanguages = ( window.adoptInternational.unsupportedLanguages || [
-		'en', 'es', 'de', 'fr', 'ru', 'it', 'nl', 'pl', 'pt', 'pt-br', 'zh'
+		'de',
+		'en',
+		'es',
+		'fr',
+		'id',
+		'it',
+		'ja',
+		'nl',
+		'pl',
+		'pt',
+		'pt-br',
+		'ru',
+		'zh',
+		'zh-tw',
+		'zh-hk'
 	] );
 
 	window.adoptInternational.adoptionConfig = ( window.adoptInternational.adoptionConfig || {} );
@@ -47,6 +61,18 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 	 * Above are used because Mustache.js syntax collided with wikitext templates
 	 */
 	window.adoptInternational.wikitextSchema = ( window.adoptInternational.wikitextSchema || "{{bStart}}Forumheader/Adoption requests{{bEnd}}\n\n'''What is your username?'''\n{{userName}}\n\n'''Please link to the wiki here:'''\n{{{wikiURL}}}\n\n'''How many days have you edited the wiki in the past 10 days?'''\n{{numDays}}\n\n'''On the Special Pages  → Special:ListAdmins, how many admins have been active in the past 60 days?'''\n{{numAdmins}}\n\n'''Comments/Reasons for adoption:'''\n<nowiki>{{comments}}</nowiki>\n\n\n[[Category:Adoption requests|{{bStart}}PAGENAME{{bEnd}}]]" );
+
+	// Officially supported language central wikis
+	const languageAdoptForms = {
+		'de': 'https://community.fandom.com/de/wiki/Wiki-Adoptionen',
+		'en': 'https://community.fandom.com/wiki/Adoption:Requests',
+		'es': 'https://comunidad.fandom.com/wiki/Comunidad_Central:Adopciones',
+		'fr': 'https://communaute.fandom.com/fr/wiki/Centre_des_communaut%C3%A9s:Adoption',
+		'it': 'https://community.fandom.com/it/wiki/Wiki_della_Community:Richieste_di_diritti',
+		'pl': 'https://spolecznosc.fandom.com/wiki/Centrum_Spo%C5%82eczno%C5%9Bci:Adoptuj_wiki',
+		'pt': 'https://comunidade.fandom.com/wiki/Ado%C3%A7%C3%A3o:Pedidos',
+		'pt-br': 'https://comunidade.fandom.com/wiki/Ado%C3%A7%C3%A3o:Pedidos' // fallback
+	};
 
 	// All Fandom-branded wikis
 	const fandomWikis = [
@@ -501,7 +527,8 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 					};
 
 					if ( exception !== '' ) {
-						return mw.notify( exception, {
+						// Pass a jQuery object to allow HTML in notification
+						return mw.notify( $( '<span>', { html: exception } ), {
 							tag: 'adoption',
 							type: 'error'
 						} );
@@ -589,7 +616,8 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 						api.postWithEditToken( {
 							action: 'edit',
 							title: pageTitle,
-							text: pageContent
+							text: pageContent,
+							summary: i18n.inContentLang().msg( 'editSummary', formValues.wikiName ).plain()
 						} ).done( function( data ) {
 							if ( data.edit ) {
 								if ( data.edit.warnings ) {
@@ -675,18 +703,30 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 						tag: 'adoption',
 						type: 'error'
 					} );
-					$('.adoptionPrefill').prop('disabled',false);
+					$('.adoptionPrefill').prop( 'disabled', false );
 
 					return;
 				}
 
+				// Handle wikis in unsupported languages
 				if ( data.query.general ) {
-					if ( conf.unsupportedLanguages.indexOf( data.query.general.lang ) !== -1 ) {
-						mw.notify( i18n.msg( 'invalidLanguageError' ).plain(), {
+					const wikiLanguage = data.query.general.lang;
+					
+					if ( conf.unsupportedLanguages.includes( wikiLanguage ) ) {
+						// Point to adoption form if wiki is oficially supported by Fandom as of 2022 (does not include Helper program)
+						if ( Object.keys( languageAdoptForms ).includes( wikiLanguage ) ) {
+							exception = i18n.msg( 'invalidLanguageError_supported', languageAdoptForms[wikiLanguage] ).parse();
+						} else {
+							exception = i18n.msg( 'invalidLanguageError' ).plain();
+						}
+
+						// Pass a jQuery object to allow HTML in notification
+						return mw.notify( $( '<span>', { html: exception } ), {
 							tag: 'adoption',
 							type: 'warn'
 						} );
 					}
+
 					$( '#wikiname' ).val( data.query.general.sitename );
 				}
 

@@ -2,8 +2,6 @@
 // Edit page tool selector
 //  -> modified from http://commons.wikimedia.org/wiki/MediaWiki:Edittools.js
 
-var mw = window.mediawWiki;
-var $ = window.jQuery;
 function queryString(p) {
     var re = RegExp('[&?]' + p + '=([^&]*)');
     var matches;
@@ -119,81 +117,6 @@ function chooseCharSubset(seld) {
 }());
 /* Force Preview  JavaScript code - End */
 
-/* infobox sidebar toggle */
-$(function () {
-    'use strict';
-    if (mw.config.get('skin') !== 'fandomdesktop') {
-        return;
-    }
-    var read_cookie = function (name) {
-        var i, c, cl = document.cookie.split(';');
-        for (i = 0; i < cl.length; i++) {
-            c = $.trim(cl[i]);
-            if (c.indexOf(name + '=') === 0) {
-                return c.substring(name.length + 1);
-            }
-        }
-        return null;
-    },
-    write_cookie = function (name, val) {
-        var date = new Date();
-        date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
-        date = date.toGMTString();
-        document.cookie = name + '=' + val + '; expires=' + date + '; path=/';
-    },
-    infobox_sidebar_hide,
-    $infobox_sidebar_toggler,
-    $infobox_sidebar = $('#WikiaArticle #infobox_sidebar'),
-        $infobox_bottom = $('#WikiaArticle #infobox_bottom'),
-        $infobox_topleft = $('#WikiaArticle #infobox_topleft'),
-        $infobox_topright = $('#WikiaArticle #infobox_topright'),
-        version_pos = function () {
-            $infobox_topleft.css('width', 'auto');
-            $infobox_topleft.css(
-            $infobox_topleft.width() + $infobox_topright.width() + 10 > $infobox_topleft.parent().width() ? {
-                'top': '18px',
-                    'width': '63'
-            } : {
-                'top': '5px',
-                    'width': 'auto'
-            });
-        };
-    if ($infobox_sidebar.length === 1) {
-        infobox_sidebar_hide = read_cookie('infobox_sidebar_hide') === '1';
-        $infobox_sidebar_toggler = $('<span />', {
-            'id': 'infobox_sidebar_toggler',
-                'href': '#'
-        }).css({
-            'position': 'absolute',
-                'right': '1px',
-                'top': '40px',
-                'width': '1em',
-                'text-align': 'center',
-                'font-size': 'smaller',
-                'line-height': '0.8em',
-                'color': '#006CB0',
-                'cursor': 'pointer'
-        }).html('T<br />o<br />g<br />g<br />l<br />e<br /><br />S<br />i<br />d<br />e<br />b<br />a<br />r')
-            .data('shown', true).click(function () {
-            var $this = $(this),
-                data = !$this.data('shown');
-            $this.data('shown', data);
-            $infobox_sidebar.toggle(data);
-            $infobox_bottom.attr({
-                colspan: data ? 2 : 1
-            });
-            write_cookie('infobox_sidebar_hide', data ? 0 : 1);
-            version_pos();
-        });
-        $infobox_sidebar.siblings('td:first').children('div').append($infobox_sidebar_toggler);
-        if (infobox_sidebar_hide) {
-            $infobox_sidebar_toggler.click();
-        }
-        version_pos();
-    }
-});
-/* infobox sidebar toggle end */
-
 /* Color Transcripts */
 $(function () {
     $('table.npc_chat_div_r div.m3, table.npc_chat_div div.m3').each(function () {
@@ -208,8 +131,7 @@ $(function () {
 	    importArticles({
 	        type: 'script',
 	        article: 'MediaWiki:Outfiter.js'
-	    });
-	    importArticles({
+	    }, {
 	        type: 'style',
 	        article: 'MediaWiki:Outfiter.css'
 	    });
@@ -243,15 +165,11 @@ $(function () {
 	/* Loot Statistics data + LootPercentages + LootValue */
 	importArticles({
 	    type: 'script',
-	    articles: 'MediaWiki:LootStatistics-Data.js'
-	});
-	importArticles({
-	    type: 'script',
-	    articles: 'MediaWiki:LootPercentages.js'
-	});
-	importArticles({
-	    type: 'script',
-	    articles: 'MediaWiki:LootValue.js'
+	    articles: [
+	    	'MediaWiki:LootStatistics-Data.js',
+	    	'MediaWiki:LootPercentages.js',
+	    	'MediaWiki:LootValue.js'
+	    ]
 	});
 	/* End of Loot Statistics data + LootPercentages */
 	/* Show/hide Template:Scene when inside Template:Ability */
@@ -340,7 +258,7 @@ $(function () {
 		 });
 	}
 	/* End of Calculators */
-	
+	/* UserAccountAge */
 	if (mw.config.get('wgPageName').includes('User') || mw.config.get('wgPageName').includes('Special:')) {
 	    $(function () {
 	        importArticles({
@@ -349,15 +267,13 @@ $(function () {
 	        });
 	    });
 	}
-
 	/* Bestiary */
 	if (mw.config.get('wgPageName') === 'Bestiary/Simulator') {
 	    $(function () {
 	        importArticles({
 	            type: 'script',
 	            article: 'MediaWiki:Bestiary/Code.js'
-	        });
-	        importArticles({
+	        }, {
 	            type: 'style',
 	            article: 'MediaWiki:Bestiary.css'
 	        });
@@ -391,7 +307,6 @@ $(function () {
         });
     }
 });
-
 
 /* NPC Chat Windows */
 $(function () {
@@ -505,45 +420,49 @@ $(function () {
 });
 /* Quest transcript linker end */
 /* Updates toggle changes start */
-var updatePages = ['Major_Updates', 'Winter_Updates', 'Summer_Updates', 'Spring_Updates', 'Autumn_Updates', 'Patch_Updates', 'Minor_Updates', 'Version_6_Updates', 'Version_7_Updates', 'Version_8_Updates', 'Version_9_Updates', 'Version_10_Updates', 'Version_11_Updates', 'Version_12_Updates'];
-if (updatePages.includes(mw.config.get('wgPageName'))) {
-    $(function () {
-        $('#Updates_Toggle_Changes td:nth-child(6),#Updates_Toggle_Changes th:nth-child(6)').hide();
-        $('#Updates_Toggle_Changes').prepend(
-            $('<button />', {
-            'class': 'button'
-            }).text('Toggle change list').css({
-                float: 'right'
-            }).data('shown', false).click(function () {
-                $('#Updates_Toggle_Changes td:nth-child(6),#Updates_Toggle_Changes th:nth-child(6)').toggle();
-            })
-        );
-    });
-}
+$(function () {
+	var updatePages = ['Major_Updates', 'Winter_Updates', 'Summer_Updates', 'Spring_Updates', 'Autumn_Updates', 'Patch_Updates', 'Minor_Updates', 'Version_5_Updates', 'Version_6_Updates', 'Version_7_Updates', 'Version_8_Updates', 'Version_9_Updates', 'Version_10_Updates', 'Version_11_Updates', 'Version_12_Updates'];
+	if (updatePages.includes(mw.config.get('wgPageName'))) {
+	    $(function () {
+	        $('#Updates_Toggle_Changes td:nth-child(6),#Updates_Toggle_Changes th:nth-child(6)').hide();
+	        $('#Updates_Toggle_Changes').prepend(
+	            $('<button />', {
+	            'class': 'button'
+	            }).text('Toggle change list').css({
+	                float: 'right'
+	            }).data('shown', false).click(function () {
+	                $('#Updates_Toggle_Changes td:nth-child(6),#Updates_Toggle_Changes th:nth-child(6)').toggle();
+	            })
+	        );
+	    });
+	}
+});
 /* Updates toggle changes end */
 
 /* Achievements toggle spoilers start */
-if (mw.config.get('wgPageName') === 'Achievements') {
-    $(function () {
-        var
-        $table = $('#achievements_title_table'),
-            $top_div = $('caption:first', $table),
-            $els = $table.siblings('table').add($table).find('.achievements_spoilers');
-        $top_div.append(
-        $('<button />', {
-            'class': 'button'
-        }).text('Toggle spoiler info').css({
-            float: 'right'
-        }).data('shown', false).click(function () {
-            var $this = $(this),
-                data = !$this.data('shown');
-            $this.data('shown', data);
-            $els.toggle(data);
-        })).css({
-            position: 'relative'
-        });
-    });
-}
+$(function () {
+	if (mw.config.get('wgPageName') === 'Achievements') {
+	    $(function () {
+	        var
+	        $table = $('#achievements_title_table'),
+	            $top_div = $('caption:first', $table),
+	            $els = $table.siblings('table').add($table).find('.achievements_spoilers');
+	        $top_div.append(
+	        $('<button />', {
+	            'class': 'button'
+	        }).text('Toggle spoiler info').css({
+	            float: 'right'
+	        }).data('shown', false).click(function () {
+	            var $this = $(this),
+	                data = !$this.data('shown');
+	            $this.data('shown', data);
+	            $els.toggle(data);
+	        })).css({
+	            position: 'relative'
+	        });
+	    });
+	}
+});
 /* Achievements toggle spoilers end */
 
 (function () {
@@ -639,7 +558,7 @@ function clearElement() {
     /* Data to be used by any script */
     var game;
     game = {};
-    game.worlds = ["Adra", "Alumbra", "Antica", "Ardera", "Astera", "Bastia", "Batabra", "Belobra", "Bona", "Cadebra", "Calmera", "Celebra", "Celesta", "Collabra", "Damora", "Descubra", "Dibra", "Epoca", "Esmera", "Famosa", "Fera", "Ferobra", "Firmera", "Gentebra", "Gladera", "Harmonia", "Havera", "Honbra", "Illusera", "Impulsa", "Inabra", "Issobra", "Kalibra", "Karna", "Libertabra", "Lobera", "Luminera", "Lutabra", "Marbera", "Marcia", "Menera", "Monza", "Mudabra", "Mykera", "Nadora", "Nefera", "Nossobra", "Ocebra", "Olima", "Ombra", "Optera", "Pacera", "Peloria", "Premia", "Quelibra", "Quintera", "Refugia", "Reinobra", "Seanera", "Secura", "Serdebra", "Solidera", "Suna", "Talera", "Tembra", "Thyria", "Trona", "Utobra", "Venebra", "Versa", "Visabra", "Vunira", "Wintera", "Wizera", "Xandebra", "Yonabra", "Zenobra", "Zuna", "Zunera"];
+    game.worlds = ["Adra", "Alumbra", "Antica", "Ardera", "Astera", "Axera", "Bastia", "Batabra", "Belobra", "Bombra", "Bona", "Cadebra", "Calmera", "Castela", "Celebra", "Celesta", "Collabra", "Damora", "Descubra", "Dibra", "Epoca", "Esmera", "Famosa", "Fera", "Ferobra", "Firmera", "Gentebra", "Gladera", "Harmonia", "Havera", "Honbra", "Illusera", "Impulsa", "Inabra", "Issobra", "Kalibra", "Karna", "Libertabra", "Lobera", "Luminera", "Lutabra", "Marbera", "Marcia", "Menera", "Monza", "Mudabra", "Mykera", "Nadora", "Nefera", "Nossobra", "Ocebra", "Olima", "Ombra", "Optera", "Pacera", "Peloria", "Premia", "Quelibra", "Quintera", "Refugia", "Reinobra", "Seanera", "Secura", "Serdebra", "Solidera", "Suna", "Talera", "Tembra", "Thyria", "Trona", "Utobra", "Venebra", "Versa", "Visabra", "Vunira", "Wintera", "Wizera", "Xandebra", "Yonabra", "Zenobra", "Zuna", "Zunera"];
     game.worldIds = (function (worlds) {
         // Map worlds to IDs
         var obj = {}, len = worlds.length;
@@ -791,7 +710,8 @@ $(function () {
 });
 /* purging the cache of the pages in the array showing time sensitive data */
 var purge_pages = ['Rashid','Main Page','TibiaWiki:New website skin and new features','Tibiadrome/Rotation','Tibiadrome','Dream Scar/Boss of the Day','Template:Eventviewer'];
-if ( purge_pages.includes(mw.config.get('wgPageName')) || game.worlds.includes(mw.config.get('wgPageName')) ) {
+purge_pages = purge_pages.concat(game.worlds);
+if ( purge_pages.includes(mw.config.get('wgPageName')) ) {
     $(function () {
         var api = new mw.Api();
         api.post({

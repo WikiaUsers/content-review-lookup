@@ -204,7 +204,7 @@ window.tooltips_list = [
     {   classname: 'champion-icon',
         parse: '{'+'{Tooltip/Campeão|champion=<#champion#>|skin=<#skin#>|variante=<#variant#>|jogo=<#jogo#>}}'},
     {   classname: 'glossário',
-        parse: '{'+'{Tooltip/Glossário|<#param#>|dica=<#dica#>|jogo=<#jogo#>}}'},
+        parse: '{'+'{Tooltip/Glossário|<#param#>|tip=<#tip#>|jogo=<#jogo#>}}'},
     {   classname: 'item-icon', 
         parse: '{'+'{Tooltip/Item|item=<#item#>|encantamento=<#enchantment#>|variant=<#variant#>|jogo=<#jogo#>}}'},
     {   classname: 'mastery-icon', 

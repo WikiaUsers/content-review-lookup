@@ -1,5 +1,5 @@
 window.adoptInternational = {
-	unsupportedLanguages: [],
+	unsupportedLanguages: ['de'],
 	adoptionConfig: {
 		activityDays: 10,
 		adminsDays: 60,
@@ -28,7 +28,21 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 
 	// Wikis in those languages will *error* when user tries to adopt them
 	window.adoptInternational.unsupportedLanguages = ( window.adoptInternational.unsupportedLanguages || [
-		'en', 'es', 'de', 'fr', 'ru', 'it', 'nl', 'pl', 'pt', 'pt-br', 'zh'
+		'de',
+		'en',
+		'es',
+		'fr',
+		'id',
+		'it',
+		'ja',
+		'nl',
+		'pl',
+		'pt',
+		'pt-br',
+		'ru',
+		'zh',
+		'zh-tw',
+		'zh-hk'
 	] );
 
 	window.adoptInternational.adoptionConfig = ( window.adoptInternational.adoptionConfig || {} );
@@ -65,6 +79,18 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 	 * Above are used because Mustache.js syntax collided with wikitext templates
 	 */
 	window.adoptInternational.wikitextSchema = ( window.adoptInternational.wikitextSchema || "{{bStart}}Forumheader/Adoption requests{{bEnd}}\n\n'''What is your username?'''\n{{userName}}\n\n'''Please link to the wiki here:'''\n{{{wikiURL}}}\n\n'''How many days have you edited the wiki in the past 10 days?'''\n{{numDays}}\n\n'''On the Special Pages  → Special:ListAdmins, how many admins have been active in the past 60 days?'''\n{{numAdmins}}\n\n'''Comments/Reasons for adoption:'''\n<nowiki>{{comments}}</nowiki>\n\n\n[[Category:Adoption requests|{{bStart}}PAGENAME{{bEnd}}]]" );
+
+	// Officially supported language central wikis
+	const languageAdoptForms = {
+		'de': 'https://community.fandom.com/de/wiki/Wiki-Adoptionen',
+		'en': 'https://community.fandom.com/wiki/Adoption:Requests',
+		'es': 'https://comunidad.fandom.com/wiki/Comunidad_Central:Adopciones',
+		'fr': 'https://communaute.fandom.com/fr/wiki/Centre_des_communaut%C3%A9s:Adoption',
+		'it': 'https://community.fandom.com/it/wiki/Wiki_della_Community:Richieste_di_diritti',
+		'pl': 'https://spolecznosc.fandom.com/wiki/Centrum_Spo%C5%82eczno%C5%9Bci:Adoptuj_wiki',
+		'pt': 'https://comunidade.fandom.com/wiki/Ado%C3%A7%C3%A3o:Pedidos',
+		'pt-br': 'https://comunidade.fandom.com/wiki/Ado%C3%A7%C3%A3o:Pedidos' // fallback
+	};
 
 	// All Fandom-branded wikis
 	const fandomWikis = [
@@ -211,7 +237,6 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 				}
 			],
 			closeTitle: i18n.msg( 'closeLabel' ).plain(),
-			// @todo Fandom 2.0 design
 			content: {
 				type: 'form',
 				classes: ['adoptionForm', 'fandomCCForm'],
@@ -232,7 +257,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: i18n.msg( 'linkLabel' ).plain()
+										text: i18n.msg( 'linkHeader' ).plain()
 									}
 								]
 							},
@@ -245,7 +270,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 										attr: {
 											for: 'adoptionUrl'
 										},
-										text: 'Provide a full wiki URL' // @todo i18n
+										text: i18n.msg( 'linkLabel' ).plain()
 									},
 									{
 										type: 'input',
@@ -273,7 +298,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: i18n.msg( 'nameLabel' ).plain()
+										text: i18n.msg( 'nameHeader' ).plain()
 									}
 								]
 							},
@@ -281,13 +306,6 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 								type: 'div',
 								classes: ['sectionContent'],
 								children: [
-									/*{
-										type: 'label',
-										attr: {
-											for: 'wikiname'
-										},
-										text: 'Wiki name' // @todo i18n
-									},*/
 									{
 										type: 'input',
 										classes: ['formInput', 'adoptionPrefill'],
@@ -297,7 +315,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 											type: 'text',
 											disabled: '',
 											required: '',
-											placeholder: i18n.msg( 'nameLabel' ).plain()
+											placeholder: i18n.msg( 'nameHeader' ).plain()
 										}
 									}
 								]
@@ -315,7 +333,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: i18n.msg( 'permissionLabel' ).plain()
+										text: i18n.msg( 'permissionHeader' ).plain()
 									}
 								]
 							},
@@ -328,7 +346,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 										attr: {
 											for: 'permissionstype'
 										},
-										text: 'Permissions you want to get after request is completeds' // @todo i18n
+										text: i18n.msg( 'permissionLabel' ).plain()
 									},
 									{
 										type: 'select',
@@ -355,7 +373,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: i18n.msg( 'userActivityLabel', conf.adoptionConfig.activityDays ).plain()
+										text: i18n.msg( 'userActivityHeader', conf.adoptionConfig.activityDays ).plain()
 									}
 								]
 							},
@@ -368,7 +386,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 										attr: {
 											for: 'numDays'
 										},
-										text: 'Days active' // @todo i18n
+										text: i18n.msg( 'userActivityLabel' ).plain()
 									},
 									{
 										type: 'input',
@@ -397,7 +415,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: i18n.msg( 'adminsActivityLabel', conf.adoptionConfig.adminsDays ).plain()
+										text: i18n.msg( 'adminsActivityHeader', conf.adoptionConfig.adminsDays ).plain()
 									}
 								]
 							},
@@ -410,7 +428,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 										attr: {
 											for: 'numAdmins'
 										},
-										text: 'Admins active' // @todo i18n
+										text: i18n.msg( 'adminsActivityLabel' ).plain()
 									},
 									{
 										type: 'input',
@@ -439,7 +457,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: i18n.msg( 'communityVoteLabel' ).plain()
+										text: i18n.msg( 'communityVoteHeader' ).plain()
 									}
 								]
 							},
@@ -452,7 +470,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 										attr: {
 											for: 'communityvote'
 										},
-										text: 'Provide a full URL to discussion\'s page' // @todo i18n
+										text: i18n.msg( 'communityVoteLabel' ).plain()
 									},
 									{
 										type: 'input',
@@ -479,7 +497,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: i18n.msg( 'commentsLabel' ).plain()
+										text: i18n.msg( 'commentsHeader' ).plain()
 									}
 								]
 							},
@@ -492,7 +510,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 										attr: {
 											for: 'comment'
 										},
-										text: 'Additional notes' // @todo i18n
+										text: i18n.msg( 'commentsLabel' ).plain()
 									},
 									{
 										type: 'textarea',
@@ -527,7 +545,8 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 					};
 
 					if ( exception !== '' ) {
-						return mw.notify( exception, {
+						// Pass a jQuery object to allow HTML in notification
+						return mw.notify( $( '<span>', { html: exception } ), {
 							tag: 'adoption',
 							type: 'error'
 						} );
@@ -615,7 +634,8 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 						api.postWithEditToken( {
 							action: 'edit',
 							title: pageTitle,
-							text: pageContent
+							text: pageContent,
+							summary: i18n.inContentLang().msg( 'editSummary', formValues.wikiName ).plain()
 						} ).done( function( data ) {
 							if ( data.edit ) {
 								if ( data.edit.warnings ) {
@@ -701,18 +721,30 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 						tag: 'adoption',
 						type: 'error'
 					} );
-					$('.adoptionPrefill').prop('disabled',false);
+					$('.adoptionPrefill').prop( 'disabled', false );
 
 					return;
 				}
 
+				// Handle wikis in unsupported languages
 				if ( data.query.general ) {
-					if ( conf.unsupportedLanguages.indexOf( data.query.general.lang ) !== -1 ) {
-						mw.notify( i18n.msg( 'invalidLanguageError' ).plain(), {
+					const wikiLanguage = data.query.general.lang;
+					
+					if ( conf.unsupportedLanguages.includes( wikiLanguage ) ) {
+						// Point to adoption form if wiki is oficially supported by Fandom as of 2022 (does not include Helper program)
+						if ( Object.keys( languageAdoptForms ).includes( wikiLanguage ) ) {
+							exception = i18n.msg( 'invalidLanguageError_supported', languageAdoptForms[wikiLanguage] ).parse();
+						} else {
+							exception = i18n.msg( 'invalidLanguageError' ).plain();
+						}
+
+						// Pass a jQuery object to allow HTML in notification
+						return mw.notify( $( '<span>', { html: exception } ), {
 							tag: 'adoption',
 							type: 'warn'
 						} );
 					}
+
 					$( '#wikiname' ).val( data.query.general.sitename );
 				}
 

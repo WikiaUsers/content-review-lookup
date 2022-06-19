@@ -30,8 +30,9 @@ var ShowHideConfig = {
 };
 
 // Import [[MediaWiki:Onlyifuploading.js]] 
+// Deprecated variable  wgCanonicalSpecialPageName replaced 2022-06-19, WiseWoman
 
-if ( wgCanonicalSpecialPageName == "Upload" ) {
+if ( mw.config.get('wgCanonicalSpecialPageName') == "Upload" ) {
       importScriptUri("MediaWiki:Onlyifuploading.js?action=raw");
 }
 

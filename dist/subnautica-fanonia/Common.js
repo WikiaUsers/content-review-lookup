@@ -22,3 +22,14 @@ UserTagsJS.modules.custom = { // NOTE: order of list here does NOT matter //
 	'Pokemon_was_better': ['headmod'],
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
+
+// User Status
+window.UserStatusSettings = {
+    colorBlindMode: 1,
+    lightTheme: 1,
+    statusIndicator: 1,
+    online: '#0078ff',
+    away: '#cc7',
+    dnd: 'crimson',
+    offline: 'darkgray',
+};

@@ -1,5 +1,20 @@
 window.adoptInternational = {
-	unsupportedLanguages: ['en','de','fr','ru','it','nl','pl','pt','pt-br','zh'],
+	unsupportedLanguages: [
+		'de',
+		'en',
+		'fr',
+		'id',
+		'it',
+		'ja',
+		'nl',
+		'pl',
+		'pt',
+		'pt-br',
+		'ru',
+		'zh',
+		'zh-tw',
+		'zh-hk'
+	],
 	
 	adoptionConfig: {
 		activityDays: 7,
@@ -37,7 +52,7 @@ window.botFlagInternational = {
 		requestsPage: 'Comunidad_Central:Rango_de_bot'
 	},
 	titleSchema: '$2', // Page title schema for request pages. $1 is bot's name, $2 is wiki name
-	wikitextSchema: '{{bStart}}Solicitud/encabezado|Rango de bot{{bEnd}}\n"' +
+	wikitextSchema: '{{bStart}}Solicitud/encabezado|Rango de bot{{bEnd}}\n' +
 		'{{bStart}}Solicitud de bot\n' +
 		'| 0-estado      = p\n' + // Optional
 		'| 1-wiki        = {{wikiName}}\n' + // Optional
