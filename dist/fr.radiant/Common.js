@@ -82,6 +82,35 @@ function setPostInsta(url){
 	});
 }
 
+// Fonction permettant de récupérer le dernier numéro de Tome existant afin d'écrire le total de tomes/chapitres publiés 
+function setNbChapTome() {
+	// Catégorie comprennant tous les tomes existant
+	fetch("https://radiant.fandom.com/fr/wiki/Catégorie:Tomes")
+	.then(function(response) {
+		return response.text();
+	})
+	.then(function(str) {
+		return new window.DOMParser().parseFromString(str, "text/html");
+	})
+	.then(function(data) {
+		// Recupere le morceau voulu contenant chaque tome
+		var tomes = data.getElementsByClassName("mw-category-group")[3].textContent;
+		tomes = tomes.split("Tome ");
+		
+		// Pour chaque tome, prendre le dernier
+		var last = 1;
+		for (var i = 0; i < tomes.length; i++) {
+			var tome = parseInt(tomes[i].split("\n")[0]);
+			if (last < tome)
+				last = tome;
+		}
+		
+		// Puis écrire la valeur dans les balises correspondant
+		document.getElementById("NbTome").innerText = last; // <=> Dernier tome 
+		document.getElementById("NbChap").innerText = 4 + 8 * (last - 1);  // <=> Chaque tome a 8 chapitres sauf le premier qui en a 4
+	});
+}
+
 /************************************************************************/
 /************************************************************************/
 /************************************************************************/
@@ -95,3 +124,6 @@ if(mw.config.get('wgPageName') === "Wiki_Radiant" || mw.config.get('wgPageName')
 			break;
 	}
 }
+
+if(mw.config.get('wgPageName') === "Chapitres_et_Tomes")
+	setNbChapTome();

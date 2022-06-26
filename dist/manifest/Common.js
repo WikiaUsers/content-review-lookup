@@ -8,8 +8,8 @@ importArticles({
 });
 (function() {
     var a = localStorage.getItem('RefPopupsJS');
-    a = a ? JSON.parse(a) : {react: "hover", hoverDelay: 200, animate: false, disabled: false, stick: false};
-    a.animate = false;
+    a = a ? JSON.parse(a) : {react: "hover", hoverDelay: 200, animate: true, disabled: false, stick: false};
+    a.animate = true;
     localStorage.setItem('RefPopupsJS', JSON.stringify(a));
 }());
 importArticles({

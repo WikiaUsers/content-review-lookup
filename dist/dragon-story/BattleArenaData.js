@@ -233,6 +233,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"allsort": {
+				"name": "Allsort",
+				"colors": [
+					"rainbow",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"alphadarkone": {
 				"name": "Alpha Dark One",
 				"colors": [
@@ -1939,6 +1947,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"blue"
 				],
 				"rarity": "unbreedable"
+			},
+			"cadmium": {
+				"name": "Cadmium",
+				"colors": [
+					"green",
+					"white"
+				],
+				"rarity": "common"
 			},
 			"caesar": {
 				"name": "Caesar",
@@ -11493,6 +11509,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"pearlescent": {
+				"name": "Pearlescent",
+				"colors": [
+					"rainbow",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"pearlhorn": {
 				"name": "Pearlhorn",
 				"colors": [
@@ -13456,6 +13480,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green",
 					"yellow",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"scarlet": {
+				"name": "Scarlet",
+				"colors": [
+					"red",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},

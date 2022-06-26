@@ -65,7 +65,7 @@ window.setCookie = function(c_name, value, expiredays) {
 					rvslots: 'main',
 					pageids: pageid
 				}).then(function(data) {
-					return data.query.pages[pageid].revisions[0].slots.main['*'];
+					return data.query.pages[pageid].revisions[0].slots.main['* '];
 				});
 			},
 			loadForm: function() {

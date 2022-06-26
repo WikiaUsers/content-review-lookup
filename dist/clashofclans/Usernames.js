@@ -25,26 +25,32 @@ var config = mw.config.get([
 ]);
 
 function customizeComments() {
-		var interval = setInterval(function () {
-		var elements = ".Reply:not([data-user]), .Reply_body__PM9kM:not([data-user]), .Message:not([data-user]), .Comment_body__Dw-zH:not([data-user])";
-		$('#MessageWall .EntityHeader_name__PAxYW, #articleComments .EntityHeader_name__PAxYW').filter(function() {
-		       $(this).parents(elements).attr('data-user', $(this).text()).addClass('user-comment');
-			});
-		$('.message-wall-app a > .wds-avatar__image[title="User avatar"], .article-comments-app a > .wds-avatar__image[title="User avatar"], .message-wall-app a > .wds-avatar__image[title="wds-avatar__image"], .article-comments-app a > .wds-avatar__image[title="wds-avatar__image"]').attr('title', function(){
-			return $(this).parent('a').attr('href').split(':')[1].replace(/%20/g, ' ').replace(/_/g, ' ')}).attr('alt', function(){
-			return $(this).parent('a').attr('href').split(':')[1].replace(/%20/g, ' ').replace(/_/g, ' ')});
-		$('.message-wall-app a.EntityHeader_name__PAxYW[href*="%20"], .article-comments-app a.EntityHeader_name__PAxYW[href*="%20"]').each(function(){
-			var site = config.wgServer;
-	    	this.href = this.href.replace(/%20/g, '_').replace(site, '');
+	var interval = setInterval(function () {
+		var elements = '.Reply, .Message, .Comment_body__Dw-zH, .Reply_body__PM9kM';
+		var attr = $(this).attr('data-user');
+		var site = config.wgServer;
+		$(elements).not('[data-user]').each(function () {
+				var username = $(this).find('.EntityHeader_name__PAxYW').text();
+				$(this).attr('data-user', username);
+				$(this).find('.wds-avatar__image').attr({
+					alt: username,
+					title: username
+				});
+				$(this).addClass('user-comment');
+				$(this).find('.EntityHeader_name__PAxYW[href*="%20"]').each(function(){ //Fix username links with spaces
+			    	this.href = this.href.replace(/%20/g, '_').replace(site, '');
+				});
 		});
-		}, 100 );
+	}, 100);
 }
 function customizeUserList() {
 	var interval = setInterval(function () {
-		$('.listusers-result-table-rows td:first-child a').each(function(){
+		var elements = '.listusers-result-table-rows td:first-child a';
+		$(elements).each(function(){
 			if ($(this).text() === 'Wall') {
 		    	this.href = this.href.replace("User_talk:", 'Message_Wall:');
-			}this.href = this.href.replace(/%20/g, "_");
+			}
+			this.href = this.href.replace(/%20/g, "_");
 		});
 	}, 100 );
 }
@@ -57,60 +63,89 @@ function customizeContribsTools() {
 		 });
 }
 function customizeReplyBoxAvatars() {
-	username = config.wgUserName;
-		var interval = setInterval(function () {
-			$('#MessageWall .wds-avatar > .wds-avatar__image[alt="User avatar"], #articleComments .wds-avatar > .wds-avatar__image[alt="User avatar"]').attr('alt', username).attr('title', username);
-		}, 100 );
+	var username = config.wgUserName;
+	var elements = '#MessageWall .wds-avatar > .wds-avatar__image[alt="User avatar"], #articleComments .wds-avatar > .wds-avatar__image[alt="User avatar"]';
+	var interval = setInterval(function () {
+		$(elements).attr({
+					alt: username,
+					title: username
+			});
+	}, 100 );
 }
 function customizeUserProfileApp() {
 	var username = config.profileUserName;
-		var interval = setInterval(function () {
+	var interval = setInterval(function () {
         if ($('#userProfileApp .user-identity-avatar__image').length) {
-        clearInterval(interval);
-	
-        $('#userProfileApp .user-identity-avatar__image').attr('alt', username).attr('title', username);
-        $('#userProfileApp').attr('data-user', username);
+	        clearInterval(interval);
+	        $('#userProfileApp .user-identity-avatar__image').attr({
+						alt: username,
+						title: username
+					});
+	        $('#userProfileApp').attr('data-user', username);
         }
     }, 100);
 }
 function customizeLeaderboardAvatars() {
-$('td.user > a').filter(function() {
-		       $(this).siblings('.wds-avatar').find('.wds-avatar__image[src="https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest/scale-to-width-down/50"]').attr('alt', $(this).text()).attr('title', $(this).text());
-		       $(this).siblings('.wds-avatar').find('.wds-avatar__image').wrap("<a href='/wiki/User:"+$(this).text().replace(/ /g, '_')+"'></a>");
+	$('.wds-avatar__image').each(function() {
+		var username = $(this).parents('.wds-avatar').attr('title');
+		var link = $(this).parents('.wds-avatar').siblings('a').attr('href');
+		if (this.tagName == 'svg') {
+			$(this).attr({
+				alt: username,
+				title: username
 			});
+		}
+		$(this).wrap("<a href='" + link + "'></a>");
+	});
 }
 function customizeCommunityPageAvatars() {
 	var interval = setInterval(function () {
-	$('svg.wds-avatar__image:not([alt])').attr('title', function(){
-		return $(this).parent('a').attr('href').split(':')[1].replace(/%20/g, ' ').replace(/_/g, ' ')}).attr('alt', function(){
-		return $(this).parent('a').attr('href').split(':')[1].replace(/%20/g, ' ').replace(/_/g, ' ')});
+		$('svg.wds-avatar__image').not('[alt]').each(function () {
+			var username = $(this).parents('.wds-avatar').attr('title');
+			$(this).attr({
+				alt: username,
+				title: username
+			});
+		});
 	}, 100 );
+}
+function customizeAnnouncementPageAvatars() {
+	$('.wds-avatar__image').not('[title]').each(function () {
+		var username = $(this).parents('.wds-avatar').attr('title');
+		$(this).attr({
+			alt: username,
+			title: username
+		});
+	});
 }
 
 $(function() {
-		if (config.wgCanonicalNamespace === "User" ||
-            config.wgCanonicalNamespace === "Message_Wall" ||
-            config.wgCanonicalNamespace === "User_blog" ) {
-        	customizeUserProfileApp();
-            }
-        if (config.wgCanonicalNamespace === "Message_Wall" ||
-    		config.wgCanonicalNamespace == "User_blog" ||
-            config.wgCanonicalNamespace === "" ) {
-        	customizeComments();
-        	customizeReplyBoxAvatars();
-            }
-		if (config.wgCanonicalSpecialPageName == "Contributions" ||
-        	config.wgCanonicalSpecialPageName == "UserProfileActivity") {
-        	customizeUserProfileApp();
-        	customizeContribsTools();
-        	}
-        if (config.wgPageName == "Special:ListUsers") {
-        	customizeUserList();
-        	}
-        if (config.wgPageName == "Special:Leaderboard") {
-        	customizeLeaderboardAvatars();
-        	}
-        if (config.wgPageName == "Special:Community") {
-        	customizeCommunityPageAvatars();
-        	}
-    });
+	if (config.wgCanonicalNamespace == "User" ||
+        config.wgCanonicalNamespace == "Message_Wall" ||
+        config.wgCanonicalNamespace == "User_blog" ) {
+    	customizeUserProfileApp();
+        }
+    if (config.wgCanonicalNamespace == "Message_Wall" ||
+		config.wgCanonicalNamespace == "User_blog" ||
+        config.wgCanonicalNamespace == "" ) {
+    	customizeComments();
+    	customizeReplyBoxAvatars();
+        }
+	if (config.wgCanonicalSpecialPageName == "Contributions" ||
+    	config.wgCanonicalSpecialPageName == "UserProfileActivity") {
+    	customizeUserProfileApp();
+    	customizeContribsTools();
+    	}
+    if (config.wgPageName == "Special:ListUsers") {
+    	customizeUserList();
+    	}
+    if (config.wgPageName == "Special:Leaderboard") {
+    	customizeLeaderboardAvatars();
+    	}
+    if (config.wgPageName == "Special:Community") {
+    	customizeCommunityPageAvatars();
+    	}
+    if (config.wgPageName == "Special:Announcements") {
+    	customizeAnnouncementPageAvatars();
+    	}
+});

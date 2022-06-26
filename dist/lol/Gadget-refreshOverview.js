@@ -98,6 +98,12 @@ $(function () {
 					template = template.replace(/\|team1score=\s*\|/, '|team1score=' + thisgame.score1 + ' |')
 					template = template.replace(/\|team2score=\s*\|/, '|team2score=' + thisgame.score2 + ' |')
 					template = template.replace(/\|winner=(\s*)\|/,'|winner=' + thisgame.winner + ' $1|');
+					
+					if (thisgame.reorderTeams === true ) {
+						// grab a full template arg ([^\|] won't match the next template arg separator)
+						template = template.replace(/\|blueteam=([^\|]+)\|redteam=([^\|\r\n]+)/, "|blueteam=$2|redteam=$1");
+					}
+					
 					listOfTemplates[thisgame.N] = template;
 					if (thisgame.bestof && thisgame.serieswinner) {
 						deleteExtraGames(listOfTemplates, thisgame, template);
@@ -138,6 +144,9 @@ $(function () {
 				serieswinner : parseInt(game[6]),
 				team1name: game[7], // only for debugging purposes
 				team2name: game[8], // only for debugging purposes
+				blue: game[9], // only for debugging
+				blue: game[10], // only for debugging
+				reorderTeams: game[11] === 'yes', // if the teams were ordered backwards in pb
 			}
 		}
 		

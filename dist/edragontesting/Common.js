@@ -1,7 +1,7 @@
 importArticles({
     type: "script",
     articles: [
-		"MediaWiki:Common.js/Usernames.js",
+		"MediaWiki:Usernames.js",
 		"MediaWiki:Common.js/HeroSkins.js",
 		"MediaWiki:Common.js/Toggle.js",
 		"MediaWiki:Common.js/Protection.js",

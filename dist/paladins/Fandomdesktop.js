@@ -43,18 +43,21 @@ var loc = {
 			copylink: 'Скопировать ссылку'
 		}
 	}
-}
+};
 
 lng = mw.config.values.wgUserLanguage;
 
 loc.lng = ( typeof loc.i18n[ lng ] === 'undefined' ) ? loc.i18n.en : loc.i18n[ lng ];
 
+//Do not create another <div> element if it already exists
+if (!document.getElementById("context-menu")) {
 //Create <div> menu with button
 var menu = document.createElement("div");
 menu.setAttribute("id", "context-menu");
 menu.innerHTML = '<ul><li><div class="sm2button" id="audio-download">' + loc.lng.download + '</div></li><li><div class="sm2button" id="cLink">' + loc.lng.copylink + '</div></li></ul>';
 document.getElementsByTagName('body')[0].appendChild(menu);
-
+}
+    
 function sm2b (id) {
     return document.getElementById(id);
 }
@@ -69,7 +72,6 @@ sm2b('audio-download').onclick = function (e) {
 //Copy audio link to clipboard
 sm2b('cLink').onclick = function (e) {
   var audioLink = menu.dataset.link;
-  audioLink = audioLink.split('/revision')[0];
   navigator.clipboard.writeText(audioLink);
 };
 

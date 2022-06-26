@@ -460,35 +460,25 @@ $(function () {
 
 
 
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:ReferencePopups/code.js',
-    ]
+//Add username alt attribute to masthead profile so highlight css works there
+$(function () {
+    if (!mw.config.get('profileUserName')) {
+        return;
+    }
+
+    if ($('#userProfileApp .user-identity-avatar__image').length) {
+    	$('#userProfileApp .user-identity-avatar__image').attr('alt', mw.config.get('profileUserName'));
+    	return;
+    }
+
+    var interval = setInterval(function () {
+        if (!$('#userProfileApp .user-identity-avatar__image').length) {
+            return;
+        }
+        clearInterval(interval);
+        $('#userProfileApp .user-identity-avatar__image').attr('alt', mw.config.get('profileUserName'));
+    }, 100);
 });
 
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:YoutubePlayer/code.js'
-    ]
-});
-
-
-/* Rail WAM Graph */
-
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
-
-
-
-
-
-
-window.railWAM = {
-    logPage:"Project:WAM Log",
-    showLogAlert: false,
-    autoLogForUsers: "Gideon Bot ",
-    botUsers: "Gideon Bot ",
-};
+//EraIcons config
+window.useIncludedStylesheet = true;

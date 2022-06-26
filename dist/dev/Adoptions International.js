@@ -262,7 +262,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 											name: 'adoptionUrl',
 											type: 'text',
 											required: '',
-											placeholder: i18n.msg( 'placeholderUrl' ).plain()
+											placeholder: i18n.inContentLang().msg( 'placeholderUrl' ).plain()
 										}
 									}
 								]

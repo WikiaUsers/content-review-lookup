@@ -362,6 +362,10 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         if (id)
             clickTab.call(this, id);
     });
+    $(document.body).on("click", ".sbw-ui-tabber .invslot[class*='goto-'] a", function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    });
 
     //##############################################################
     /* ==Scripts that are attached to wikipage content load== (W01)*/
@@ -418,7 +422,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                 if (!elementId) return;
                 var className = elementId.replace("ui-", "");
                 $(this).find(".mcui").append(
-                    $("<div>").addClass("mcui-returnbutton text-zoom-independent noselect")
+                    $("<div>").addClass("mcui-returnbutton noselect")
                     .attr("data-font-size", "22").text("↻")
                     .click(function () {
                         clickTab.call(this, className);

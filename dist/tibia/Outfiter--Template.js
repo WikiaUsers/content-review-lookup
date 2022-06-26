@@ -165,7 +165,7 @@ $(function () {
       //155
       'Werelion', 'Pirat', 'Raccoon', 'Tyrant', 'Girtablilu',
       //160
-      'Bashmu', 'Carnisylvan', 'Chimera'
+      'Bashmu', 'Carnisylvan', 'Chimera', 'Naga_Warrior'
     ],
     //outfits the array index is the id(starting at 200)
     //must also be added to Template:OutfiterLink
@@ -173,7 +173,7 @@ $(function () {
       //200
       'Dragon_Knight', 'Arbalester', 'Royal_Costume', 'Formal_Dress', 'Ghost_Blade',
       //205
-      'Nordic_Chieftain_Outfit'
+      'Nordic_Chieftain_Outfit', 'Fire-Fighter'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {

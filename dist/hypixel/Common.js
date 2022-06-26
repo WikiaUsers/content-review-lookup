@@ -1,23 +1,5 @@
 /**** Any JavaScript here will be loaded for all users on every page load. ****/
 
-/* RailWAM */
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
-/* End of RailWAM */
-
-
-/* Replaces {{USERNAME}} with the name of the user browsing the page.
-   Requires copying Template:USERNAME. */
-
-function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
-    $("span.insertusername").html(wgUserName);
- }
- addOnloadHook(UserNameReplace);
-
-/* End of the {{USERNAME}} replacement */
-
 /* Auto-Refresh */
 window.ajaxPages = [
     'Special:RecentChanges',
@@ -83,31 +65,15 @@ UserTagsJS.modules.inactive = 90; //Sets an inactive tag after 90 days
 /* RevealAnonIP */
 window.RevealAnonIP = {
     permissions: ['bureaucrat', 'sysop', 'moderator']
-}
+};
 
-// Importing from dev.wikia.com
+// Importing from dev.fandom.com
 // See the pages for the code.
  importArticles({
     type: 'script',
     articles: [
         'u:dev:AjaxRC/code.js',
-        'u:dev:BackToTopButton/code.js',
-        'u:dev:Countdown/code.js',
-        'u:dev:FloatingToc/code.js',
-        'u:dev:LockForums/code.js',
-        'u:dev:LockOldBlogs/code.js',
-        'u:dev:MassProtect/code.js',
-        'u:dev:PurgeButton/code.js',
-        'u:dev:ReferencePopups/code.js',
         'u:dev:RevealAnonIP/code.js',
-        'u:dev:SignatureCheck/code.js',
         'u:dev:UserTags/code.js',
-        'u:dev:WallGreetingButton/code.js',
-        'u:dev:YouTubeModal/code.js'
-        ]
-}, {
-    type: 'style',
-    articles: [
-        'MediaWiki:AdminHighlighting.css'
     ]
 });

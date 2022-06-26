@@ -14,7 +14,7 @@
 - Spottra: original version used on Legacy
 - E12Dragon: current and orginal UCP compatible version
 */
-
+/*
 var config = mw.config.get([
     'wgCanonicalNamespace',
     'wgPageName',
@@ -113,4 +113,4 @@ $(function() {
         if (config.wgPageName == "Special:Community") {
         	customizeCommunityPageAvatars();
         	}
-    });
+    });*/

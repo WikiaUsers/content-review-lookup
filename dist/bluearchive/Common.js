@@ -78,7 +78,7 @@ importArticles({
 window.tooltips_list = [
 	{
 		classname: 'advanced-tooltip',
-		delay: 1000
+		delay: 300
 	}
 ];
 

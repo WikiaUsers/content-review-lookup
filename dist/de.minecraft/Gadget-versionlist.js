@@ -79,31 +79,41 @@
 			$('.list_versions_version_loadinfo').click(function() {
 				var info_button = $(this);
 				if ( info_button.hasClass( 'list_versions_version_loadinfo_loaded' ) ) return;
-				$.getJSON( info_button.attr( 'data-versionurl' ) ).done( function( data ) {
-					var assetIndex = data.assetIndex === undefined ? undefined : data.assetIndex.url,
-						client = data.downloads.client === undefined ? undefined : data.downloads.client.url,
-						server = data.downloads.server === undefined ? undefined : data.downloads.server.url,
-						client_obf = data.downloads.client_mappings === undefined ? undefined : data.downloads.client_mappings.url,
-						server_obf = data.downloads.server_mappings === undefined ? undefined : data.downloads.server_mappings.url;
-					
-					var version_info = $('<div class="list_versions_version_info">');
-					
-					if (assetIndex !== undefined) version_info.append( addInfo(assetIndex, 'assets') );
-					if (client !== undefined) version_info.append( addInfo(client, 'client') );
-					if (server !== undefined) version_info.append( addInfo(server, 'server') );
-					if (client_obf !== undefined) version_info.append( addInfo(client_obf, 'client_obf') );
-					if (server_obf !== undefined) version_info.append( addInfo(server_obf, 'server_obf') );
-					
-					info_button.closest( '.list_versions_version_desc' ).after( version_info );
-					info_button.addClass( 'list_versions_version_loadinfo_loaded' ).html( '' );
-				} ).fail( function() {
-					info_button.closest( '.list_versions_version_desc' ).after(
-						'<div class="list_versions_version_info">' +
-							'<div class="list_versions_version_info_fail">' + i18n.loadingFailed + '</div>' +
-						'</div>'
-					);
-					info_button.html( '[' + i18n.load + ']' );
-				} );
+				$.ajax({
+					url: info_button.attr( 'data-versionurl' ),
+					crossDomain: true,
+					method: 'GET',
+					data: {
+						origin: '*'	
+					},
+					dataType: 'json',
+					success: function (data) {
+						var assetIndex = data.assetIndex === undefined ? undefined : data.assetIndex.url,
+							client = data.downloads.client === undefined ? undefined : data.downloads.client.url,
+							server = data.downloads.server === undefined ? undefined : data.downloads.server.url,
+							client_obf = data.downloads.client_mappings === undefined ? undefined : data.downloads.client_mappings.url,
+							server_obf = data.downloads.server_mappings === undefined ? undefined : data.downloads.server_mappings.url;
+						
+						var version_info = $('<div class="list_versions_version_info">');
+						
+						if (assetIndex !== undefined) version_info.append( addInfo(assetIndex, 'assets') );
+						if (client !== undefined) version_info.append( addInfo(client, 'client') );
+						if (server !== undefined) version_info.append( addInfo(server, 'server') );
+						if (client_obf !== undefined) version_info.append( addInfo(client_obf, 'client_obf') );
+						if (server_obf !== undefined) version_info.append( addInfo(server_obf, 'server_obf') );
+						
+						info_button.closest( '.list_versions_version_desc' ).after( version_info );
+						info_button.addClass( 'list_versions_version_loadinfo_loaded' ).html( '' );
+					},
+					error: function() {
+						info_button.closest( '.list_versions_version_desc' ).after(
+							'<div class="list_versions_version_info">' +
+								'<div class="list_versions_version_info_fail">' + i18n.loadingFailed + '</div>' +
+							'</div>'
+						);
+						info_button.html( '[' + i18n.load + ']' );
+					}
+				});
 			info_button.html( i18n.loading );
 		});
 	}).fail( function() {

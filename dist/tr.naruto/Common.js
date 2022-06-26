@@ -1,7 +1,7 @@
 /* Buraya konulacak JavaScript kodu sitedeki her kullanıcı için her sayfa yüklendiğinde çalışacaktır */
 /**
  * 06:20, 27 November 2020 (UTC)
- * http://naruto.fandom.com/wiki/MediaWiki:Common.js
+ * http://naruto.fandom.com/tr/wiki/MediaWiki:Common.js
  * This is the central JavaScript file for the Wiki. Any code placed in here will
  * run on every page for every user (logged in or not) on every skin (Oasis or
  * Monobook).

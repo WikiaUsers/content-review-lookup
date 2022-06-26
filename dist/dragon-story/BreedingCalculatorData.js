@@ -489,6 +489,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "allsort": {
+                "name": "Allsort",
+                "types": [
+                    "rainbow",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "alphadarkone": {
                 "name": "Alpha Dark One",
                 "types": [
@@ -3840,6 +3856,19 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "notes": [
                     "feature"
                 ]
+            },
+            "cadmium": {
+                "name": "Cadmium",
+                "types": [
+                    "green",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15
             },
             "caesar": {
                 "name": "Caesar",
@@ -23100,6 +23129,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "18_hours_18",
                 "rarity": 2
             },
+            "pearlescent": {
+                "name": "Pearlescent",
+                "types": [
+                    "rainbow",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "pearlhorn": {
                 "name": "Pearlhorn",
                 "types": [
@@ -27236,6 +27281,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "13_hours_13",
                 "rarity": 2,
                 "offspringeligibility": "goal",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "scarlet": {
+                "name": "Scarlet",
+                "types": [
+                    "red",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]

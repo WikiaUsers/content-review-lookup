@@ -1,5 +1,6 @@
 mw.loader.using('mediawiki.util').then(function () {
-    if (!$('pre').length || mw.config.get('wgAction') !== 'view' || (
+	var pre = $('pre');
+    if (!pre.length || mw.config.get('wgAction') !== 'view' || (
     	//Don't run on ImportJS, [[ImportJS-Plus]] can be used instead
         mw.config.get('wgNamespaceNumber') === 8 &&
         mw.config.get('wgTitle') === 'ImportJS'
@@ -28,7 +29,11 @@ mw.loader.using('mediawiki.util').then(function () {
     //Apply lang class to pre if possible (rather than highlight.js trying to guess the lang of the pre)
     const ext = new mw.Title(mw.config.get('wgPageName')).getExtension();
     if (ext) {
-        $('pre').addClass(ext);
+        pre.addClass(ext);
+    } else if (pre.parent().attr('class').includes('mw-highlight-lang-')) {
+        pre.addClass(function () {
+        	return $(this).parent().attr('class').match(/mw-highlight-lang-(\S+) /)[1];
+        });
     }
 
     //Import JS from https://cdnjs.com/libraries/highlight.js (via a well known CDN, using SRI and locking to a version)
@@ -44,7 +49,7 @@ mw.loader.using('mediawiki.util').then(function () {
     });
 
     $.when(js).then(function () {
-        $('pre:not(.hljs)').each(function () {
+        pre.each(function () {
         	//Set the text of the pre to the text content to remove pygment's HTML from the pre, so that highlight.js doesn't complain about XSS/security issues
             $(this).text((_, txt) => txt);
 

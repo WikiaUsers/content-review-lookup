@@ -84,7 +84,7 @@ $(document).ready(function()
 	wiki_name.textContent=wiki_name_text;
 
 	// если открыта страница загрузки изображения
-    if (wgCanonicalSpecialPageName === 'Upload') 
+    if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') 
     {
         // добавление шаблона в поле краткого описания для загружаемого изображения
         $('#wpUploadDescription').val('{{Изображение \n| Описание  = \n| Источник  = \n| Появления = \n| Автор     = \n| Категория = \n}}');
@@ -111,7 +111,7 @@ $(document).ready(function()
 	$('.pfd-initialized').val('{{Изображение \n| Описание  = \n| Источник  = \n| Появления = \n| Автор     = \n| Категория = \n}}');
 	
 	// Форум
-	if (wgCanonicalNamespace === 'Forum')
+	if (mw.config.get('wgCanonicalNamespace') === 'Forum')
 	{
 		importScript('MediaWiki:Forum.js');
 	}

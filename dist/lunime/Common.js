@@ -1,5 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* Translator Credit. Dev Fandom*/
+/* Translator Credit. Dev Fandom*
 $(function() {
     var config = mw.config.get([
         'wgAction',
@@ -35,3 +35,4 @@ $(function() {
         })
     );
 });
+*/

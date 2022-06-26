@@ -68,6 +68,7 @@
             action: 'edit',
             title: config.wgPageName,
             token: mw.user.tokens.get('csrfToken') || mw.user.tokens.get('editToken'),
+            watchlist: 'nochange',
             prependtext: ''
         }).done(getPage).fail(onError);
         return false;

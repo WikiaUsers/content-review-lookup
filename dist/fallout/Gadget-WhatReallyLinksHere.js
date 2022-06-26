@@ -2,7 +2,7 @@
 	if (window.WhatReallyLinksHereLoaded) return;
 	window.WhatReallyLinksHereLoaded = true;
 	
-	mw.loader.using( 'mw.Api' ).then(function() {
+	mw.loader.using( 'mediawiki.api' ).then(function() {
 		var api = new mw.Api();
 		var actualPageLinks = "No Links Found";
 		var linkBase = location.protocol + '//' + location.host + '/wiki/';
@@ -17,6 +17,7 @@
 		var RedirectArea = '#AllRedirectArea';
         var hasRedirects = false;
         var linkData = { links: [], Redirects: [] };
+        var wgPageName = mw.config.get('wgPageName');
 		function generateSpecialPage() {
             var WhatReallyLinksHereContainer = $('<div id="WhatReallyLinksHere" style="width:100%; min-height: 300px; position:relative;">');
 

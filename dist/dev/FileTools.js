@@ -162,7 +162,7 @@
 	}
 	
 	// Init: Query image rights and add buttons
-	$.post( config.wgScriptPath + '/api.php', {
+	$.get( config.wgScriptPath + '/api.php', {
 		action: 'query',
 		format: 'json',
 		prop: 'imageinfo',
@@ -174,18 +174,16 @@
 	}).done(function (data) {
 		if (data.query.pages[0].imagerepository === 'local') {
 			rights = data.query.userinfo.rights;
-			importArticles({
-				type: 'script',
-				articles: [
-					'u:dev:MediaWiki:I18n-js/code.js'
-				]
-			});
 			mw.hook('dev.i18n').add(function (i18n) {
 				i18n.loadMessages('FileTools').done(function (i18no) {
 					msg = i18no.msg;
 					addHeaderButtons();
 					addImageButtons();
 				});
+			});
+			importArticles({
+				type: 'script',
+				articles: 'u:dev:MediaWiki:I18n-js/code.js'
 			});
 		}
 	});

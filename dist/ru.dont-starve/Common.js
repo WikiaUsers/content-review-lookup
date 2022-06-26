@@ -90,7 +90,6 @@ $('<input id="cyclopecalculate" class="wds-button buttona" onclick="cyclopecalcu
 setInterval(function () {
 	$('.wds-avatar a[href$="Arhhhat"]').closest('.Reply, .Reply_body__PM9kM').addClass('Arhhhat');
 	$('.wds-avatar a[href$="FruitShakeSB"]').closest('.Reply, .Reply_body__PM9kM').addClass('FruitShakeSB');
-	$('.wds-avatar a[href$="TheZhab"]').closest('.Reply, .Reply_body__PM9kM').addClass('TheZhab');
 }, 500 );
 
 /*Страница администрации*/

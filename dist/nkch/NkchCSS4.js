@@ -391,7 +391,7 @@ nkchCSS.prototype.initializeEditor = function () {
         /** @type {HTMLElement | HTMLDivElement} */
         const main_headerTitle = new _this.Element("div", {
             classes: ["nkch-css4__header-title"],
-            text: _this.options.title,
+            html: _this.options.title,
             add: { append: main_headerLeft }
         }).element;
 
@@ -850,7 +850,6 @@ nkchCSS.prototype.initializeEditor = function () {
 
             const goToSelectionDialog_textInput__line = new OO.ui.TextInputWidget({
                 placeholder: _this.editor.lineCount(),
-                icon: "tableMoveRowAfter",
                 validate: getLineTextInputValidity
             });
 
@@ -868,7 +867,6 @@ nkchCSS.prototype.initializeEditor = function () {
 
             const goToSelectionDialog_textInput__character = new OO.ui.TextInputWidget({
                 placeholder: _this.editor.getLine(_this.editor.lineCount() - 1).length + 1,
-                icon: "tableMoveColumnAfter",
                 disabled: true,
                 validate: getCharacterTextInputValidity
             });

@@ -1,4 +1,4 @@
-/* jshint jquery: true, maxerr: 99999999, esversion: 5, undef: true */
+/* jshint jquery: true, maxerr: 99999999, esversion: 5, undef: true, esnext: false */
 
 // Taken from https://minecraft.gamepedia.com/MediaWiki:Common.js
 // Creates minecraft style tooltips
@@ -261,13 +261,7 @@ $(function () {
         });
     })());
     (function () {
-        // The following list is taken from https://obfuscator.uo1.net/js/obfuscator.js
-        var strongObfuscator = "AÀÁÂÃÄÅĀĂĄǍǞǠȀȂȦΆΑАѦӐӒḀẠẢẤẦẨẬẶἈἉᾈᾉᾸᾹᾺᾼ₳ÅȺẮẰẲẴἌἎἏᾌΆǺẪBƁΒВḂḄḆCÇĆĈĊČƇʗСҪḈ₢₵ℂⅭϹϾҀDÐĎĐƉƊḊḌḎḐḒⅮEÈÉÊËĒĔĖĘĚȄȆȨΕЀЁЕӖḘḚḜẸẺẼẾỀỆḔḖỂỄԐℇƐἙῈЄFϜḞ₣ҒƑϝғҒ₣GĜĞĠĢƓǤǦǴḠ₲HĤĦȞΗНҢҤӇӉḢḤḦḨḪῌꜦIΊÌÍÎÏĨĪĬĮİƖƗǏȈȊΙΪІЇӀӏḬḮỈỊἸἹῘῙῚǐ1JĴʆЈʃKĶƘǨΚЌКԞḰḲḴ₭KLĹĻĽĿŁԼḶḸḺḼℒⅬ˪MΜМӍḾṀṂⅯNÑŃŅŇǸΝṄṆṈṊ₦ƝO0θϑ⍬ÒÓÔÕÖØŌŎŐƆƟƠǑǪǬǾȌȎȪȬȮȰΘΟϴОѲӦӨӪՕỌỎỐỒỔỘỚỜỞỠỢΌΌṌṐṒὈʘṎỖPƤΡРҎṔṖῬ₱ℙQԚℚRŔŖŘȐȒṘṚṜṞ℞ɌⱤSŚŜŞŠȘЅՏṠṢṨṤṦTŢŤŦƮȚΤТҬṪṬṮṰ₮ȾΊΊꚌUÙÚÛÜŨŪŬŮŰŲƯǓǕǗǛȔȖԱՍṲṴṶṸỤỦỨỪỬỮỰǙ⊍⊎Մ⊌ṺVѴѶṼṾ⋁ⅤƲWŴԜẀẂẄẆẈ₩ƜШXΧХҲẊẌⅩY¥ÝŶŸƳȲΥΫϓУҮҰẎỲỴỶỸῨῩZŹŻŽƵȤΖẐẒẔaàáâãäåāăąǎǟǡǻȁȃȧаӑӓḁẚạảấầẩẫậắằẳẵặɑάαἀἁἂἃἄἅἆἇὰάᾀᾁᾂᾃᾄᾅᾆᾇᾰᾱᾲᾳᾴᾶᾷ⍶⍺ɑbƀƃƅɒɓḃḅḇþϸƄьҍcçćĉċčƈςϛсҫḉⅽ¢ϲҁdďđɖɗḋḍḏḑḓⅾƌժ₫ðeèéêëēĕėęěȅȇȩеѐёҽҿӗḕḗḙḛḝẹẻẽếềểễệεɛϵєϱѳөӫɵfſḟẛƒғϝ£ƒgĝğġģǥǧǵɠɡգզցḡɕʛɢhĥħȟɦɧћիհḣḥḧḩḫẖℏһʜӊiį¡ìíîïĩīĭįıǐȉȋɨɩΐίιϊіїɪḭḯỉịἰἱἲἳὶίῑΐῐῒῖὶjĵǰȷɟʝјյϳkķĸƙǩκкҝҟḱḳḵlŀĺļľłƚǀɫɬɭḷḹḻḽŀ⎩ḹmɱḿṁṃ₥ⅿnɴñńņňŉŋƞǹɲɳήηπпբդըղոռրṅṇṉṋἠἡἢἣἤἥἦἧὴήᾐᾑᾒᾓᾔᾕᾖᾗῂῃῄῆῇიoòóôõöōŏőơǒǫǭȍȏȫȭȯȱʘοόоӧծձօṍṏṑṓọỏốồổỗộớờởỡợὀὁὂὃὄὅὸόσ๐pþρрҏթṕṗῤῥ⍴qʠԛգզϙrŕŗřȑȓɼɽгѓґӷṙṛṝṟгѓґӷsśŝşšșʂѕԑṡṣṥṧṩtţťŧƫțʈṫṭṯṱẗȶէե†ԷՒէȽҭuµùúûüũūŭůűųưǔǖǘǚǜȕȗɥμυцկմնսվևṳṵṷṹṻụủứừửữựvʋνѵѷүұṽṿⅴ∨ΰϋύὐὑὒὓὔὕὖὗὺύῠῡῢΰῦῧʋwŵԝẁẃẅẇẉẘxϰхҳẋẍⅹyýÿŷƴȳγуўӯӱӳẏẙỳỵỷỹʏzźżžƶȥʐʑẑẓẕ2ƻƨշ3ЗҘӞƷӠЗҘӞՅɜɝзҙӟ4ЧЧӴ5Ƽ6əǝә8ՑБƂГΓЃҐӶЖҖӜИЍӢӤЙҊЛӅԒΛПΠЦҴЬƄЫӸЪѢՒЭӬвʙʙɞжҗӂӝзƨɜɝӟиѝӥйҋӣкĸκќқҝҟҡԟлӆԓмӎнʜңҥӈӊцџҵчҷҹӌӵшɯաъѣыӹэǝɘəӭэӭ";
-
-        var availableInMinecraftFont = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,:;\'\"(!?)+-*/=";
-
-        // var listChoice = strongObfuscator; // due to some texts not displaying in Minecraft font I have to disable this
-        var listChoice = availableInMinecraftFont,
+        var listChoice = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÄÅÆÇÈÉÊËÍÑÓÔÕÖÚÜßàáâãäåæçèéêëìíîïñòóôõöùúûüÿğİıŒœŞşŴŵžȇ",
             listLength = listChoice.length;
 
         function genObfuscatedText() {

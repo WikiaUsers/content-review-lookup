@@ -50,17 +50,27 @@
                         nkch.drm.el.section.$e.classList.add("rail-module", "activity-module", "discussions-activity");
                         nkch.drm.el.section.$e.id = "discussions-activity-module";
 
-                        function railCheck() {
-                            if ($(".wikia-rail-inner.is-ready").length) {
-                                $("#wikia-recent-activity").after(nkch.drm.el.section.$e);
-                            } else if ($("#WikiaRail.is-ready").length) {
-                                $("#wikia-recent-activity").after(nkch.drm.el.section.$e);
-                            } else {
-                                setTimeout(railCheck, 500);
-                            };
-                        };
+                        const observer = new MutationObserver(
+                            function(mutationList) {
+                                mutationList.forEach(function(mutation) {
+                                    mutation.addedNodes.forEach(function(node) {
+                                        if (node.classList.contains("sticky-modules-wrapper")) {
+                                            if (!mw.user.isAnon())
+                                                document.querySelector(".sticky-modules-wrapper .recent-wiki-activity").after(nkch.drm.el.section.$e);
+                                            else
+                                                document.querySelector(".sticky-modules-wrapper").append(nkch.drm.el.section.$e);
 
-                        railCheck();
+                                            observer.disconnect();
+                                            return;
+                                        }   
+                                    });
+                                });
+                            }
+                        );
+                        
+                        observer.observe(document.querySelector(".right-rail-wrapper"), {
+                            childList: true
+                        });
 
                         /* - section : header - */
 
@@ -216,14 +226,14 @@
                                                             fontSize: "12px"
                                                         });
 
-                                                        var diff = now * 1000 - discussionsThreads[i].modificationDate.epochSecond * 1000;
-                                                        var createdAgo;
+                                                        var diff = now * 1000 - discussionsThreads[i].modificationDate.epochSecond * 1000,
+                                                            createdAgo;
 
-                                                        var msPerMinute = 60 * 1000;
-                                                        var msPerHour = msPerMinute * 60;
-                                                        var msPerDay = msPerHour * 24;
-                                                        var msPerMonth = msPerDay * 30;
-                                                        var msPerYear = msPerDay * 365;
+                                                        var msPerMinute = 60 * 1000,
+                                                            msPerHour = msPerMinute * 60,
+                                                            msPerDay = msPerHour * 24,
+                                                            msPerMonth = msPerDay * 30,
+                                                            msPerYear = msPerDay * 365;
 
                                                         if (diff < msPerMinute) {
                                                             time = Math.round(diff / 1000);
@@ -250,13 +260,17 @@
                                                         };
 
                                                         item.content.text.timeago.$e.innerHTML = createdAgo;
-                                                        item.content.text.timeago.$e.title = new Date(discussionsThreads[i].modificationDate.epochSecond * 1000).toLocaleString(mw.config.get('wgContentLanguage'), {
-                                                            year: "numeric",
-                                                            month: "long",
-                                                            day: "numeric",
-                                                            hour: "numeric",
-                                                            minute: "numeric"
-                                                        });
+                                                        item.content.text.timeago.$e.title = new Date(
+                                                            discussionsThreads[i].modificationDate.epochSecond * 1000)
+                                                                .toLocaleString(mw.config.get("wgContentLanguage"),
+                                                            {
+                                                                year: "numeric",
+                                                                month: "long",
+                                                                day: "numeric",
+                                                                hour: "numeric",
+                                                                minute: "numeric"
+                                                            }
+                                                        );
 
                                                         item.content.text.$e.appendChild(item.content.text.timeago.$e);
 

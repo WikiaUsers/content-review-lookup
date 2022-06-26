@@ -1,4 +1,3 @@
-/* Any JavaScript here will be loaded for users using the 2 column main page layout */
 /*****************************************
 /* Front Page column height equalization *
 /*****************************************/
@@ -13,10 +12,10 @@ var fp = fp || {
       fp.resetSectionBoxHeights( $( this ).find( '#fptopsection, #fpflexsection, #fpbottomsection' ) );
     } );
     var excludeSel = '';
-    if ( $( window ).width() > 1539 ) {
+    if ( $( '.fpmaybercol' ).css( 'float' ) == 'right' ) {
       excludeSel = '.fpmaybercol'; // at this width, it's necessary to hit those boxes in a separate pass after .fpcontent
     }
-    if ( $( window ).width() > 889 ) {
+    if ( $( '#fpflexsection' ).css( 'float' ) == 'right' ) {
       fp.equalizeColumnsOfBlock( '.fpcontent',
                                  '#fptopsection, #fpbottomsection',
                                  '#fpbottomsection',
@@ -25,7 +24,7 @@ var fp = fp || {
                                  excludeSel
                                );
     }
-    if ( $( window ).width() > 1539 ) {
+    if ( $( '.fpmaybercol' ).css( 'float' ) == 'right' ) {
       fp.equalizeColumnsOfBlock( '.fpmaybecols',
                                  '.fpmaybelcol',
                                  '.fpmaybelcol',

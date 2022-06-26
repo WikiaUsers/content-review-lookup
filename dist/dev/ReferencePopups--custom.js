@@ -4,7 +4,7 @@
 
 // This script uses ReferencePopups to display stuff other than references. It works in
 // conjunction with a template to turn arbitrary elements into popables.
-;(function(window, $, mw) {
+;((function(window, $, mw) {
 	"use strict";
 	// Load the reference popups then wait for the loaded event to fire
 	var popups = window.dev && window.dev.ReferencePopups && window.dev.ReferencePopups.Popup;
@@ -31,7 +31,7 @@
 			});
 		});
 	};
-}(window, window.jQuery, window.mediaWiki));(function(window, $, mw) {
+}(window, window.jQuery, window.mediaWiki))(function(window, $, mw) {
 	"use strict";
 	// Start actual module.
 	// This is pretty straightforward, we just find all the relevant elements and
@@ -49,7 +49,7 @@
 		.filter(':not(:Lunarity-referencePopup)')
 		.filter(function() {
 			var $this = $(this),
-			    $content = $this.find('> .refpopups-custom-content');
+				$content = $this.find('> .refpopups-custom-content');
 
 			// This part is somewhat complicated. We allow detached content to
 			// be loaded into popups so we need to handle clone/move and prevent
@@ -132,4 +132,4 @@
 	// Register the function so external code can invoke it manually if needed due to weird stuff
 	// (Merlin uses it on their dynamically loaded footer)
 	window.dev.ReferencePopups.loadCustom = findPopups;
-})(window, window.jQuery, window.mediaWiki);
+}));

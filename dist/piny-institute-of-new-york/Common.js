@@ -85,3 +85,8 @@ if (mw.config.get('wgPageName').startsWith(epgPages)) {
         });
     }
 }
+
+/* Clock Configuration */ 
+window.UTCClockConfig = {
+    format: '%2I:%2M:%2S %p %{Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Sunday}w,  %{January;Febuary;March;April;May;June;July;August;September;October;November;December}m %2d, %Y (UTC)',
+}

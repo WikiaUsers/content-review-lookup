@@ -3,3 +3,6 @@ window.rwaOptions = {
 	namespaces: [ 0, 1, 2, 3, 4, 5, 6, 7, 110, 111, 500, 501, 828, 829 ],
 	autoInit: true 
 };
+
+// for BackToTopButton from dev Wiki
+window.BackToTopStart = 1500;

@@ -46,7 +46,7 @@
 				//If history page, fork off
 				if (pageConfig.wgAction==='history')
 					return MassPatrol.history(rcArray.filter(function(e){
-						return !("unpatrolled" in e);
+						return !("patrolled" in e);
 					}));
 
 				//Bulk of Mass Patrol Code
@@ -81,8 +81,8 @@
 					}
 				}),']');
 
-				//Can Patrol, and Has more than 1 Patrol, apply built HTML
-				if (MassPatrol.patroltoken.length>2 && MassPatrol.total > 1)
+				//Can Patrol, and Has at least 1 Patrol, apply built HTML
+				if (MassPatrol.patroltoken.length>2 && MassPatrol.total >= 1)
 					$("#mw-diff-ntitle4").append(' ',button);
 			},
 			history:function(data){

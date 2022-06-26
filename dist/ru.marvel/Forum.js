@@ -43,7 +43,7 @@ function ShowForumMessageWindow(SenderID, CaptionID)
 	
 	if ( $('#pnl_ForumMessageWindow').length=== 0 )
 	{
-		$.get( wgScript, { title: sTemplateSource, action: 'raw', ctype: 'text/plain' } ).then( 
+		$.get( mw.config.get('wgScript'), { title: sTemplateSource, action: 'raw', ctype: 'text/plain' } ).then( 
 			function( data )
 			{
 				sMessageWindow= $(data).find( '#temple_ForumMessageWindow').html().replace(/\{caption}/g, sCaption[CaptionID]);
@@ -130,7 +130,7 @@ function SaveForumMessage()
 	
 	SenderID = $('#pnl_ForumMessageWindow').attr('data-SenderID');
 
-    $.get( wgScript, { title: sTemplateSource, action: 'raw', ctype: 'text/plain' } ).then( 
+    $.get( mw.config.get('wgScript'), { title: sTemplateSource, action: 'raw', ctype: 'text/plain' } ).then( 
         function( data )
         {
             sMessage= $(data).find( '#temple_ForumMessageCell').html();
@@ -150,11 +150,11 @@ function SaveForumMessage()
 			iSec = dNow.getSeconds();
 			
 			sMessageDateTime= iDay+'.'+ iMon +'.'+ iYear +' в '+ iHour +':'+ iMin;
-			sMessageID= 'mes_'+ wgUserId +'-'+ iHour +'-'+ iMin +'-'+ iSec;
+			sMessageID= 'mes_'+ mw.config.get('wgUserId') +'-'+ iHour +'-'+ iMin +'-'+ iSec;
 			
 			sMessageText = $('#wpTextbox1').val();
 			
-			sMessage= sMessage.replace(/\{messageid}/g, sMessageID).replace(/\{username}/g, '[[Участник:'+wgUserName+'|'+wgUserName+']]').replace(/\{datetime}/g, sMessageDateTime).replace(/\{messagetext}/g, sMessageText).replace(/<tbody>|<\/tbody>/g,'');
+			sMessage= sMessage.replace(/\{messageid}/g, sMessageID).replace(/\{username}/g, '[[Участник:'+mw.config.get('wgUserName')+'|'+mw.config.get('wgUserName')+']]').replace(/\{datetime}/g, sMessageDateTime).replace(/\{messagetext}/g, sMessageText).replace(/<tbody>|<\/tbody>/g,'');
 			
 			sToken= mw.user.tokens.get('csrfToken');
 					
@@ -190,7 +190,7 @@ function SaveForumMessage()
 				mw.notify( 'Ответ успешно добавлен! Обновите страницу.', { title: 'Ok!', type: 'info' } ); 
 			}
 			
-			$.post("https://marvel.fandom.com/ru/api.php", {action: "edit", title: wgPageName, section: sSection, appendtext: sMessage, token: sToken}); 	
+			$.post("https://marvel.fandom.com/ru/api.php", {action: "edit", title: mw.config.get('wgPageName'), section: sSection, appendtext: sMessage, token: sToken}); 	
 			
 			$('#wpTextbox1').val('');
 			CloseForumMessageWindow();
