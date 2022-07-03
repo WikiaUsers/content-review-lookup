@@ -2,7 +2,7 @@
 $("#artifacts-table").prepend('<fieldset><legend>Параметры фильтра таблицы:</legend><p style="margin-bottom: 0.5em;">Нижеследующие таблицы можно отфильтровать. Несколько фильтров могут быть применены сразу, выбрав несколько параметров.</p><div class="table-filters-hide-option" id="table-filters">Параметры<select><option>Все</option><option value="Максимум хитов">Максимум хитов</option><option value="Точность">Точность</option><option value="Критический урон">Критический урон</option><option value="Осведомленность">Осведомленность</option><option value="Боевое преимущество">Боевое преимущество</option><option value="Вероятность критического удара">Вероятность критического удара</option><option value="Критическое уклонение">Критическое уклонение</option><option value="Оборона">Оборона</option><option value="Уклонение">Уклонение</option><option value="Скорость движения">Скорость движения</option><option value="Могущество">Могущество</option><option value="Восстановление здоровья">Восстановление здоровья</option><option value="Влияние спутника">Влияние спутника</option><option value="Принимаемое лечение">Принимаемое лечение</option><option value="Бонус к контролю">Бонус к контролю</option><option value="Сопротивляемость контролю">Сопротивляемость контролю</option></select><select><option>Все</option><option value="Максимум хитов">Максимум хитов</option><option value="Точность">Точность</option><option value="Критический урон">Критический урон</option><option value="Осведомленность">Осведомленность</option><option value="Боевое преимущество">Боевое преимущество</option><option value="Вероятность критического удара">Вероятность критического удара</option><option value="Критическое уклонение">Критическое уклонение</option><option value="Оборона">Оборона</option><option value="Уклонение">Уклонение</option><option value="Скорость движения">Скорость движения</option><option value="Могущество">Могущество</option><option value="Восстановление здоровья">Восстановление здоровья</option><option value="Влияние спутника">Влияние спутника</option><option value="Принимаемое лечение">Принимаемое лечение</option><option value="Бонус к контролю">Бонус к контролю</option><option value="Сопротивляемость контролю">Сопротивляемость контролю</option></select><select><option>Все</option><option value="Максимум хитов">Максимум хитов</option><option value="Точность">Точность</option><option value="Критический урон">Критический урон</option><option value="Осведомленность">Осведомленность</option><option value="Боевое преимущество">Боевое преимущество</option><option value="Вероятность критического удара">Вероятность критического удара</option><option value="Критическое уклонение">Критическое уклонение</option><option value="Оборона">Оборона</option><option value="Уклонение">Уклонение</option><option value="Скорость движения">Скорость движения</option><option value="Могущество">Могущество</option><option value="Восстановление здоровья">Восстановление здоровья</option><option value="Влияние спутника">Влияние спутника</option><option value="Принимаемое лечение">Принимаемое лечение</option><option value="Бонус к контролю">Бонус к контролю</option><option value="Сопротивляемость контролю">Сопротивляемость контролю</option></select><select><option>Все</option><option value="Максимум хитов">Максимум хитов</option><option value="Точность">Точность</option><option value="Критический урон">Критический урон</option><option value="Осведомленность">Осведомленность</option><option value="Боевое преимущество">Боевое преимущество</option><option value="Вероятность критического удара">Вероятность критического удара</option><option value="Критическое уклонение">Критическое уклонение</option><option value="Оборона">Оборона</option><option value="Уклонение">Уклонение</option><option value="Скорость движения">Скорость движения</option><option value="Могущество">Могущество</option><option value="Восстановление здоровья">Восстановление здоровья</option><option value="Влияние спутника">Влияние спутника</option><option value="Принимаемое лечение">Принимаемое лечение</option><option value="Бонус к контролю">Бонус к контролю</option><option value="Сопротивляемость контролю">Сопротивляемость контролю</option></select><select><option>Все</option><option value="Максимум хитов">Максимум хитов</option><option value="Точность">Точность</option><option value="Критический урон">Критический урон</option><option value="Осведомленность">Осведомленность</option><option value="Боевое преимущество">Боевое преимущество</option><option value="Вероятность критического удара">Вероятность критического удара</option><option value="Критическое уклонение">Критическое уклонение</option><option value="Оборона">Оборона</option><option value="Уклонение">Уклонение</option><option value="Скорость движения">Скорость движения</option><option value="Могущество">Могущество</option><option value="Восстановление здоровья">Восстановление здоровья</option><option value="Влияние спутника">Влияние спутника</option><option value="Принимаемое лечение">Принимаемое лечение</option><option value="Бонус к контролю">Бонус к контролю</option><option value="Сопротивляемость контролю">Сопротивляемость контролю</option></select></div></fieldset>');
 
 $("#equipment-table").wrap($('<div id="fieldset-equipment-table" />"'));
-$("#fieldset-equipment-table").prepend('<fieldset> <legend>Параметры:</legend> <div> <h4>Предмет:</h4> <input type="text" name="search" placeholder="Поиск по имени"> </div> <div> <h4>Уровень:</h4> <label>Мин.:<input type="text" size="1" name="min"></label> - <label>Макс.:<input type="text" size="1" name="max"></label> </div> <div> <h4>Ячейка/Категория:</h4> <select class="category"> <option>Все</option> <option value="Голова">Лицо</option> <option value="Доспехи">Доспех</option> <option value="Руки">Руки</option> <option value="Ноги">Ноги</option> <option value="Рубаха">Рубаха</option> <option value="Пояс">Талия</option> <option value="Штаны">Штаны</option> <option value="Шея">Шея</option> <option value="Кольцо">Кольцо</option> <option value="Правая руки">Правая руки</option> <option value="Левая рука">Левая рука</option> <option value="Только для спутников">Экипировка спутника</option> </select> </div> <div > <h4>Параметры:</h4> <div class="stats"></div> </div> <div > <h4>Класс:</h4> <div class="classes"></div> </div></div></fieldset>');
+$("#fieldset-equipment-table").prepend('<fieldset id="settings"><legend>Параметры:</legend><div style="line-height: 2.5;"><div><span>Предмет: </span><input type="text" name="search" style="width: 180px;" placeholder="Поиск предмета по имени"></div><div><span>Ячейка/Категория: </span><select class="category"><option>Все</option></select></div><div><span>Качество: </span><select class="quality"><option>Любое качество</option></select></div><div><span>Минимальный уровень: </span><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></div><div><span>Уровень предмета: </span><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></div></div><div><span>Параметры:</span><div class="stats"></div></div><div><span>Класс:</span><div class="role"></div></div></fieldset>');
 
 // merges a repeating cell in a table
 /*$(function() {
@@ -205,144 +205,130 @@ $(function() {
 
 //Filter for equipment table
 //Author: Roni (Рони) Thanks to him for this script
-    var tbody = document.querySelector("#equipment-table tbody");
-    var trs = Array.from(tbody.querySelectorAll("tr"));
+$(function() {
+    $(".stats").on("change", "input[type='checkbox']", function() {
+        $(this).closest("label").toggleClass("active", this.checked);
+     });
+
+    var $tbody = $("#equipment-table").children("tbody");
+    var $trs = $("tr", $tbody).toArray();
+    var colCount = $("#equipment-table").find("tr:first th").length;
+    $("#equipment-table").children("tbody").children("tr")
     var temp = {
-      "stats": new Set(),
-      "category": new Set(),
-      "classes": new Set()
-    };
-    trs.forEach(function (tr) {
-
-        var _tr$dataset = tr.dataset,
-        stats = _tr$dataset.stats,
-        category = _tr$dataset.category,
-        classes = _tr$dataset.classes;
-    	
-        if (!tr.dataset.stats) {
-        } else {
-            stats = stats.split(",");
-            stats.forEach(function (e) {
-                return temp.stats.add(e.trim());
-            });
+	    "stats": new Set(),
+	    "category": ["Голова", "Доспехи", "Руки", "Ноги", "Рубаха", "Пояс", "Штаны", "Шея", "Кольцо", "Правая руки", "Левая рука", "Только для спутников"],
+        "role": ["Любой класс", "Клирик", "Варвар", "Чернокнижник", "Плут", "Воин", "Бард", "Паладин", "Следопыт", "Волшебник"],
+	};
+	
+    $.each($trs, function() {
+        if (typeof $(this).data('stats') != 'undefined'){
+            $stats = $(this).data('stats');
+            $stats = $stats.split(",");
+            $.each($stats, function(index, value) { temp.stats.add(value.trim()); });
         }
-        if (!tr.dataset.classes) {
-        } else {
-            classes = classes.split(",");
-            classes.forEach(function (e) {
-                return temp.classes.add(e.trim());
-            });
-        }
-        if (!tr.dataset.category) {
-        } else {  
-            category = category.split(",");
-            category.forEach(function (e) {
-                return temp.category.add(e.trim());
-            });
-        }
-    });
-
-    // Добавляет параметры предмета
-    temp.stats.forEach(function (item) {
-      item = "<label><input type=\"checkbox\" name=\"".concat(item, "\" checked>").concat(item, "</label>");
-      document.querySelector("#fieldset-equipment-table .stats").insertAdjacentHTML("beforeend", item);
-    });
+	});
+	
+	// Добавляет параметры предмета
+	temp.stats.forEach(function (item) {
+	    item = "<label class=\"checkbox\"><input type='checkbox' name='" + item + "'>" + item + "</label>";
+	    $("#settings .stats").append(item);
+	});
 	
 	// Добавляет классы предмета
-	if(document.querySelector("#fieldset-equipment-table .classes")) {
-	    temp.classes.forEach(function (item) {
-	        item = "<label><input type=\"checkbox\" name=\"".concat(item, "\" checked>").concat(item, "</label>");
-	        document.querySelector("#fieldset-equipment-table .classes").insertAdjacentHTML("beforeend", item);
-	    });
-	}
-    
-    //Добавляет категории предмета
-    /*for (let item of temp.category) {
-        item = `<option value="${item}">${item}</option>`;
-        document.querySelector(".category").insertAdjacentHTML("beforeend", item)
-    }*/
+	temp.role.forEach(function (item) {
+	    item = "<label class=\"checkbox\"><input type='checkbox' name='" + item + "'>" + item + "</label>";
+	    $("#settings .role").append(item);
+	});
 
-    // Основной скрипт поиска
-    document.querySelector("#fieldset-equipment-table fieldset").addEventListener("input", function () {
-      tbody.innerHTML = "";
-      tbody.append.apply(tbody, trs);
-      trs.forEach(function (tr) {
-        var _tr$dataset = tr.dataset,
-            subject = _tr$dataset.subject,
-            stats = _tr$dataset.stats,
-            level = _tr$dataset.level,
-            category = _tr$dataset.category,
-            classes = _tr$dataset.classes;
-            
-        // Поиск по параметрам
-        if (!tr.dataset.stats) {
-        } else {
-            stats = stats.split(", ");
-            stats = stats.some(function (e) {
-            return document.querySelector("#fieldset-equipment-table .stats [name=\"".concat(e.trim(), "\"]")).checked;
-            });
-    
-            if (!stats) {
-            tr.remove();
-            return "continue";
-            }
-        }
-
-        if (tr.dataset.classes) {
-            // Поиск по классам
-            classes = classes.split(",");
-            classes = classes.some(function (e) {
-            return document.querySelector("#fieldset-equipment-table .classes [name=\"".concat(e.trim(), "\"]")).checked;
-            });
-    
-            if (!classes) {
-            tr.remove();
-            return "continue";
-            }
-        }
-
-        if (!tr.dataset.category) {
-        } else {
-            // Поиск по категориям
-            category = category.split(",");
-            var txt = document.querySelector("#fieldset-equipment-table .category").value;
-            category = category.some(function (e) {
-            return e.trim() == txt;
-            });
-    
-            if (txt !== "Все" && !category) {
-            tr.remove();
-            return "continue";
-            }
-        }
-
-        if (!tr.dataset.subject) {
-        } else {
-            // Поиск по тексту
-            var search = document.querySelector("[name='search']").value.toLowerCase();
-            if (search && subject.toLowerCase().indexOf(search)) {
-            tr.remove();
-            return "continue";
-            }
-        }
-
-        if (!tr.dataset.level) {
-        } else {
-            // Поиск по уровню
-            var min = document.querySelector("[name='min']").value;
-            if (min && level < +min) {
-            tr.remove();
-            return "continue";
-            }
-
-            var max = document.querySelector("[name='max']").value;
-            if (max && level > +max) {
-            tr.remove();
-            return "continue";
-            }
-        }
-      });
-      
-      // Значение по умолчанию если результатов 0
-      if (tbody.children.length == 0) tbody.insertAdjacentHTML("beforeend", "<tr><th>Нет совпадений</th></tr>");
+	// Добавляет категории предмета в выпадающий список
+    temp.category.forEach(function (item) {
+        item = '<option value="' + item + '">' + item + '</option>';
+        $("#settings .category").append(item);
     });
+
+	// Добавляет категории предмета в выпадающий список
+    item = '<option value="Обычный">Обычный</option><option value="Необычный">Необычный</option><option value="Редкий">Редкий</option><option value="Эпический">Эпический</option><option value="Легендарный">Легендарный</option><option value="Мифический">Мифический</option>';
+    $("#settings .quality").append(item);
+
+	trs = $("#equipment-table").children("tbody").children("tr");
+
+	// Основной скрипт поиска
+	$('#settings').on('input', function() {
+        $tbody.html('')
+        $tbody.append(trs)
+
+	    $.each($trs, function() {
+	        var $subject = $(this).data('subject'), $quality = $(this).data('quality'), $level = $(this).data('level');
+	        // Поиск по параметрам
+            if (typeof $(this).data('stats') != 'undefined'){
+                $stats = $(this).data('stats');
+                $stats = $stats.split(",");
+                $stats = $stats.some(function (e) {
+                   return $("#settings .stats [name=\"" + e.trim() + "\"]").is(':checked');
+                });
+                if (!$stats && $("#settings .stats :checked").get(0)) {
+                    $(this).remove();
+                    return;
+                }
+            }
+
+	        // Поиск по классам
+            if (typeof $(this).data('role') != 'undefined'){
+                $role = $(this).data('role');
+                $role = $role.split(",");
+                $role = $role.some(function (e) {
+                   return $("#settings .role [name=\"" + e.trim() + "\"]").is(':checked');
+                });
+                if (!$role && $("#settings .role :checked").get(0)) {
+                    $(this).remove();
+                    return;
+                }
+            }
+
+	        // Поиск по категориям
+            if (typeof $(this).data('category') != 'undefined'){
+                $category = $(this).data('category');
+                $category = $category.toLowerCase().split(",");
+                var $txt = $("#settings .category").val().toLowerCase();
+                $category = $category.some(function (e) {
+                    return e.trim() == $txt;
+                });
+                if ($txt !== "все" && !$category) {
+                    $(this).remove();
+                    return;
+                }
+            }
+
+	        // Поиск по качеству
+            var $txt = $("#settings .quality").val();
+            if ($txt.toLowerCase() !== "любое качество" && $txt.toLowerCase() !== $quality.toLowerCase()) {
+                $(this).remove();
+                return;
+            }
+
+	        // Поиск по названии
+	        var $search = $("[name='search']").val().toLowerCase();
+	        if ($search && $subject.toLowerCase().indexOf($search)) {
+	            $(this).remove();
+	            return;
+	        }
+	
+	        // Поиск по минимальному уровню
+	        var $min = $("[name='min']").val();
+	        if ($min && $level < +$min) {
+	            $(this).remove();
+	            return;
+	        }
+	        
+	        // Поиск по максимальному уровню
+	        var $max =$("[name='max']").val();
+	        if ($max && $level > +$max) {
+	            $(this).remove();
+	            return;
+	        }
+	    });
+
+	    // Выводит строку "Предметы не найдены", если результатов "0".
+	    if ($tbody.children().length == 0) {$tbody.append("<tr><td colspan=" + colCount + ">Предметы не найдены</td></tr>");}
+	});
+});

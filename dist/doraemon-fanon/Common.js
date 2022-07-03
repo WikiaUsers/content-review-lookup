@@ -27,3 +27,7 @@ importArticles({
         "u:dev:LockForums/code.js"
     ]
 });
+
+window.DiscordBannerSettings = {
+    inviteLink: 'uZsmVX5',
+};

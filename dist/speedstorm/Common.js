@@ -6,3 +6,11 @@ window.DiscordBannerSettings = {
     prependToRail: true,
     noRail: false
 };
+
+/*Multi-upload*/
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:UploadMultipleFiles.js',
+    ]
+});

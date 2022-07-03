@@ -1,1 +1,0 @@
-importArticle({type:'script', article:'u:w:MediaWiki:Snow.js'})

@@ -13,7 +13,7 @@ window.tooltips_config = {
  
 window.tooltips_list = [{
     classname: 'popup-tooltip',
-    parse: '{' + '{<#popup#>|tt=<#tt#>}}'
+    parse: '{' + '{<#popup#>|<#item#>}}'
 }];
 /*! Configure tooltips js module */
 

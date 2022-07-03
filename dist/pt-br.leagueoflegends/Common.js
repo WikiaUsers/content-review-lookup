@@ -27,7 +27,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
     /* Config para [[MediaWiki:Common.js/gridfiltering.js]] */
     gridContainer = '#champion-grid';
     gridFilters = {
-        'search': 'search',
+        'pesquisar': 'pesquisar',
         'jogo': ['- Jogo -',
             ['LOL','League of Legends'],
             ['TFT','Teamfight Tactics'],
@@ -55,7 +55,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             	['Assassino','• Assassino'],
             	['Duelista','• Duelista'],
             	['Especialista','Especialista'],
-            ['Tank','Tanque'],
+            ['Tanque','Tanque'],
             	['Vanguarda','• Vanguarda'],
             	['Protetor','• Protetor']
         ],
@@ -68,7 +68,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
     /* Config para [[MediaWiki:Common.js/itemGridfiltering.js]] */
     itemGridContainer = '#item-grid';
     itemGridFilters = {
-        'search': 'search',
+        'pesquisar': 'pesquisar',
         'modos' : ['- Modos de Jogo - ',
             ['Clássico 5v5', '• Clássico 5v5'],
             ['ARAM', '• ARAM'],
@@ -79,13 +79,13 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
     /* Config para [[MediaWiki:Common.js/writemGridfiltering.js]] */
     writemGridContainer = '#writem-grid';
     writemGridFilters = {
-        'search': 'search'
+        'pesquisar': 'pesquisar'
     };
     
     /* Config para [[MediaWiki:Common.js/avatarGridfiltering.js]] */
     avatarGridContainer = '#avatar-grid';
     avatarGridFilters = {
-        'search': 'search',
+        'pesquisar': 'pesquisar',
         'disponibilidade': ['- Disponibilidade -',
             ['Disponível','• Disponível'],
             ['Legado','• Legado'],
@@ -123,7 +123,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
     /* Config para [[MediaWiki:Common.js/esportsGridfiltering.js]] */
     esportsGridContainer = '#esports-grid';
     esportsGridFilters = {
-        'search': 'search',
+        'pesquisar': 'pesquisar',
         'região': ['- Região -',
             ['INT','Equipe Internacional'],
             ['NA','América do Norte'],
@@ -198,15 +198,15 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 /* Tooltips personalizadas para uso com o Tooltips/code.js */
 window.tooltips_list = [
     {   classname: 'ability-icon',
-        parse: '{'+'{Tooltip/Habilidade|champion=<#champion#>|habilidade=<#ability#>|variante=<#variante#>|jogo=<#jogo#>}}'},
+        parse: '{'+'{Tooltip/Habilidade|champion=<#champion#>|habilidade=<#habilidade#>|variante=<#variante#>|jogo=<#jogo#>}}'},
     {   classname: 'buff-icon', 
-        parse: '{'+'{Tooltip/Fortalecimento|<#param#>|fortalecimento=<#fortalecimento#>|variant=<#variant#>|jogo=<#jogo#>}}'},
+        parse: '{'+'{Tooltip/Fortalecimento|<#param#>|fortalecimento=<#fortalecimento#>|variante=<#variante#>|jogo=<#jogo#>}}'},
     {   classname: 'champion-icon',
-        parse: '{'+'{Tooltip/Campeão|champion=<#champion#>|skin=<#skin#>|variante=<#variant#>|jogo=<#jogo#>}}'},
+        parse: '{'+'{Tooltip/Campeão|champion=<#champion#>|skin=<#skin#>|variante=<#variante#>|jogo=<#jogo#>}}'},
     {   classname: 'glossário',
         parse: '{'+'{Tooltip/Glossário|<#param#>|tip=<#tip#>|jogo=<#jogo#>}}'},
     {   classname: 'item-icon', 
-        parse: '{'+'{Tooltip/Item|item=<#item#>|encantamento=<#enchantment#>|variant=<#variant#>|jogo=<#jogo#>}}'},
+        parse: '{'+'{Tooltip/Item|item=<#item#>|encantamento=<#encantamento#>|variante=<#variante#>|jogo=<#jogo#>}}'},
     {   classname: 'mastery-icon', 
         parse: '{'+'{Tooltip/Talento|<#param#>|talento=<#talento#>|variante=<#variante#>}}'},
     {   classname: 'pp-tooltip',

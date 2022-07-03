@@ -1,4 +1,4 @@
-// 02:26, 19 April 2022 (UTC) <nowiki>
+// 06:53, 27 June 2022 (UTC) <nowiki>
 
 // AUTO-REFRESH RECENT CHANGES
 window.AjaxRCRefreshText = 'Auto-refresh';
@@ -137,4 +137,4 @@ $(function () {
         });
     });
 });
-// END REPLACE ASTERISKS WITH ARABIC STARS
+// END REPLACE ASTERISKS WITH ARABIC STARS </nowiki>

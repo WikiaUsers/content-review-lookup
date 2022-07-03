@@ -1,8 +1,5 @@
-(function () {
+;(function ($, mw) {
 	'use strict';
-
-	// TODO: remove after UCP migration
-	if ( mw.config.get('wgVersion') === "1.19.24" ) return;
 
 	function decode() {
 		var text = $( '#wpTextbox1' ).val();
@@ -39,8 +36,8 @@
 		});
 	}
 
-	importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });
 	mw.hook( 'dev.i18n' ).add(function (i18n) {
 		i18n.loadMessages( 'DecodeURI' ).then(init);
 	});
-})();
+	importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });
+})(window.jQuery, window.mediaWiki);

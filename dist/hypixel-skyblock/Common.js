@@ -33,11 +33,12 @@ Any JavaScript here will be loaded for all users on every page load.
 
 /* global mw, importScripts, BannerNotification */
 
-// code snippet from https://stackoverflow.com/questions/47207355/copy-to-clipboard-using-jquery
+// code snippet from https://stackoverflow.com/questions/46041831/copy-to-clipboard-with-break-line
 function copyToClipboard(text) {
-    var $temp = $("<input>");
+    var $temp = $("<textarea>");
+    var brRegex = /<br\s*[\/]?>/gi;
     $("body").append($temp);
-    $temp.val(text).select();
+    $temp.val(text.replace(brRegex, "\r\n")).select();
     document.execCommand("copy");
     $temp.remove();
     if (BannerNotification)

@@ -11,9 +11,9 @@ function nkchCSS(options) {
     this.defaultOptions = {
         themes: {
             light: "default",
-            dark: "default"
+            dark: "skyline"
         },
-        title: "nkchCSS 4<sup style='font-size: 10px; vertical-align: super;'>OBT 3</sup>"
+        title: "nkchCSS 4<sup style='font-size: 10px; vertical-align: super;'>OBT 4</sup>"
     }
 
     /** @type {nkchCSS.EditorOptions} */
@@ -25,7 +25,7 @@ function nkchCSS(options) {
     if (options.themes) {
         this.options.themes.light = options.themes.light ? options.themes.light : this.defaultOptions.themes.light;
         this.options.themes.dark = options.themes.dark ? options.themes.dark : this.defaultOptions.themes.dark;
-    }
+    } else this.options.themes = this.defaultOptions.themes;
 
     /** @type {CodeMirror.Editor | null} */
     this.editor = null;
@@ -44,7 +44,8 @@ function nkchCSS(options) {
         editor: {
             isInitialized: false,
             isEnabled: true,
-            isShown: false
+            isShown: false,
+            isDarkTheme: false
         },
         isCodeInvalid: false,
     };
@@ -302,20 +303,36 @@ nkchCSS.prototype.initializeEditor = function () {
             
             if (targetSpinner) targetSpinner.classList.remove("is-hidden");
 
-            mw.loader.load("https://code.jquery.com/ui/" + "1.13.1" + "/themes/base/jquery-ui.css", "text/css");
-            mw.loader.load(_this.getUnpkgLink("codemirror", "5.65.5", "lib/codemirror.css"), "text/css");
+            if (_this.options.themes.light) {
+                if (typeof _this.options.themes.light === "string") {
+                    if (_this.options.themes.light !== "default" && _this.options.themes.light !== "skyline")
+                        mw.loader.load("https://codemirror.net/5/theme/" + _this.options.themes.light + ".css", "text/css");
+                }
+            }
 
-            mw.loader.getScript(_this.getUnpkgLink("codemirror", "5.65.5")).then(
+            if (_this.options.themes.dark) {
+                if (typeof _this.options.themes.dark === "string") {
+                    if (_this.options.themes.dark !== "default" && _this.options.themes.dark !== "skyline")
+                        mw.loader.load("https://codemirror.net/5/theme/" + _this.options.themes.dark + ".css", "text/css");
+                }
+            }
+
+            mw.loader.load("https://code.jquery.com/ui/" + "1.13.1" + "/themes/base/jquery-ui.css", "text/css");
+            mw.loader.load(_this.getUnpkgLink("codemirror", "5.65.6", "lib/codemirror.css"), "text/css");
+            mw.loader.load(_this.getUnpkgLink("codemirror-colorpicker", null, "dist/codemirror-colorpicker.css"), "text/css");
+
+            mw.loader.getScript(_this.getUnpkgLink("codemirror", "5.65.6")).then(
                 function () {
                     Promise.all([
                         mw.loader.getScript("https://code.jquery.com/ui/" + "1.13.1" + "/jquery-ui.js"),
 
-                        mw.loader.getScript(_this.getUnpkgLink("codemirror", "5.65.5", "mode/css/css.js")),
-                        mw.loader.getScript(_this.getUnpkgLink("codemirror", "5.65.5", "addon/edit/closebrackets.js")),
+                        mw.loader.getScript(_this.getUnpkgLink("codemirror", "5.65.6", "mode/css/css.js")),
+                        mw.loader.getScript(_this.getUnpkgLink("codemirror", "5.65.6", "addon/edit/closebrackets.js")),
                         
                         mw.loader.getScript(_this.getUnpkgLink("less")),
                         
                         mw.loader.getScript(_this.getUnpkgLink("emmet-codemirror")),
+                        mw.loader.getScript(_this.getUnpkgLink("codemirror-colorpicker")),
                         mw.loader.getScript(_this.getUnpkgLink("js-beautify", null, "js/lib/beautify-css.js"))
                     ]).then(OnModuleLoad);
                 }
@@ -593,11 +610,54 @@ nkchCSS.prototype.initializeEditor = function () {
             indentUnit: 4,
             indentWithTabs: false,
             smartIndent: true,
+            autoCloseBrackets: true,
 
             extraKeys: {
-                "Ctrl-Space": "autocomplete"
+                "Tab": "emmetExpandAbbreviation",
+                "Esc": "emmetResetAbbreviation",
+                "Enter": "emmetInsertLineBreak"
+            },
+
+            colorpicker: {
+                mode: "edit",
+                onChange: function() {
+                    if (_this.editor)
+                        _this.updateCode(_this.editor.getValue(), _this.editor.getOption("mode"));
+                },
+                onLastUpdate: function() {
+                    if (_this.editor)
+                        _this.updateCode(_this.editor.getValue(), _this.editor.getOption("mode"));
+                }
             }
         });
+
+        switch (mw.config.get("isDarkTheme")) {
+            case false:
+                _this.editor.setOption("theme", _this.options.themes.light);
+                _this.checks.editor.isDarkTheme = false;
+                break;
+            case true:
+                _this.editor.setOption("theme", _this.options.themes.dark);
+                _this.checks.editor.isDarkTheme = true;
+                break;
+        }
+
+        setInterval(function() {
+            switch(mw.config.get("isDarkTheme")) {
+                case false:
+                    if (_this.checks.editor.isDarkTheme === true) {
+                        if (_this.editor) _this.editor.setOption("theme", _this.options.themes.light);
+                        _this.checks.editor.isDarkTheme = false;
+                    }
+                    break;
+                case true:
+                    if (_this.checks.editor.isDarkTheme === false) {
+                        if (_this.editor) _this.editor.setOption("theme", _this.options.themes.dark);
+                        _this.checks.editor.isDarkTheme = true;
+                    }
+                    break;
+            }
+        }, 100);
 
         emmetCodeMirror(_this.editor);
 
@@ -856,13 +916,14 @@ nkchCSS.prototype.initializeEditor = function () {
             const goToSelectionDialog_textField__line = new OO.ui.FieldLayout(goToSelectionDialog_textInput__line, {
                 label: "L"
             });
-
+            
+            /** @param {string} value; @returns {boolean} */
             function getLineTextInputValidity(value) {
                 if (!_this.editor) return false;
                 if (!new RegExp(/^\d+$/).test(value)) return false;
 
-                value = Number(value);
-                return (value > 0 && value <= _this.editor.lineCount());
+                var numValue = Number(value);
+                return (numValue > 0 && numValue <= _this.editor.lineCount());
             }
 
             const goToSelectionDialog_textInput__character = new OO.ui.TextInputWidget({
@@ -875,12 +936,13 @@ nkchCSS.prototype.initializeEditor = function () {
                 label: "C"
             });
 
+            /** @param {string} value; @returns {boolean} */
             function getCharacterTextInputValidity(value) {
                 if (!_this.editor) return false;
                 if (!getLineTextInputValidity(goToSelectionDialog_textInput__line.getValue())) return false;
 
-                value = Number(value);
-                return (value > 0 && value <= _this.editor.getLine(goToSelectionDialog_textInput__line.getValue() - 1).length + 1);
+                var numValue = Number(value);
+                return (numValue > 0 && numValue <= _this.editor.getLine(goToSelectionDialog_textInput__line.getValue() - 1).length + 1);
             }
 
             goToSelectionDialog_textInput__line.on("change", function(value) {

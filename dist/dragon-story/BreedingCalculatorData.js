@@ -4507,6 +4507,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "cerulean": {
+                "name": "Cerulean",
+                "types": [
+                    "blue",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "chakra": {
                 "name": "Chakra",
                 "types": [
@@ -11448,6 +11464,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "fuchsia": {
+                "name": "Fuchsia",
+                "types": [
+                    "pink",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "fullmoon": {
                 "name": "Full Moon",
                 "types": [
@@ -15356,6 +15388,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "12_hours_12",
                 "rarity": 3,
                 "offspringeligibility": "expired"
+            },
+            "indigo": {
+                "name": "Indigo",
+                "types": [
+                    "purple",
+                    "blue",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
             },
             "indolent": {
                 "name": "Indolent",
@@ -23116,6 +23165,18 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "notes": [
                     "feature"
                 ]
+            },
+            "pear": {
+                "name": "Pear",
+                "types": [
+                    "green",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1
             },
             "pearl": {
                 "name": "Pearl",
@@ -34145,6 +34206,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                             ]
                         ]
                     ]
+                ]
+            },
+            "violet": {
+                "name": "Violet",
+                "types": [
+                    "purple",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
                 ]
             },
             "violight": {

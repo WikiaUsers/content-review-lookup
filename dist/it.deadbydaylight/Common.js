@@ -21,9 +21,11 @@ $(function(){
 		$('#inceptionPerks' + i).click(GetInceptionPerksHandler(i));
 	}
 	/**************************************************************************/
-	CreateEditSourceLink();
+	//MobileViewHovers(); //Currnently not used, as the Mobile version doesn't load Common.js
 	SetAppropriateDimensions();
 	SetHeadersShadows();
+	SetPerkCheckBoxes();
+	
 	$.each($(".mw-collapsible-text"), function(index, element){
 		console.log("element #" + index);
 		$(element).click(function(){
@@ -33,6 +35,9 @@ $(function(){
 			1); //Must be delayed because the real height is 0 at the time of executing the script. This is due to table is collapsed (basically height of all TR elements are set to 0)
 		});
 	});
+	
+	//I think this needs to try catch block as the .getAttribute() throws the error when you don't have the visual edit button present, thus moving to the end
+	CreateEditSourceLink();
 });
 
 
@@ -121,6 +126,39 @@ function CreateEditSourceLink(){
 	editSourceNode.setAttribute('class', 'wds-button wds-is-text page-header__action-button has-label');
 	
 	vanillaEdit.parentNode.insertBefore(editSourceNode, vanillaEdit.nextSibling);
+}
+
+function isMobileDevice() {
+    return window.matchMedia("(max-width: 1024px)").matches;
+}
+
+function MobileViewHovers(){
+	//if(!isMobileDevice){
+		////console.log("Preparing tooltips...");
+		////$('.mobileView').hide();
+		/*
+		tooltip = $('.tooltip-value');
+		tooltipValue = tooltip.attr('title');
+		span = $('<span> (' + tooltipValue + ')</span>');
+		span.css(
+			{
+				'font-size': '7pt',
+        	}
+    	);
+    	
+    	tooltip.append(span);*/
+	//}
+}
+function SetPerkCheckBoxes(){
+	console.log("Checkboxes Function initiallised");
+	$.each(document.getElementsByClassName("switchArea"), 
+		function(index, el){
+	        var x = document.createElement("INPUT");
+	        x.setAttribute("class", "switchBox");
+	        x.setAttribute("type", "checkbox");
+	        el.parentNode.insertBefore(x, el.nextSibling);
+	    }
+    );
 }
 /*********************************************************************************************/
 /*********************************************************************************************/

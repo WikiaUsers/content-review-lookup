@@ -277,3 +277,7 @@ var Tabs = {
     }
 };
 Tabs.init();
+
+if (wgUserName != 'null') {
+	$('.insertusername').html(wgUserName);
+}

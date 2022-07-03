@@ -1,15 +1,5 @@
-//Код для замены имени участника.
-$(function () {
-	if (
-		(typeof disableUsernameReplace != "undefined" && disableUsernameReplace) ||
-		wgUserName === null
-	)
-		return;
-	$("span.insertusername").html(wgUserName);
-});
-
 //Кастом блок в рельсе
-window.AddRailModule = [{ prepend: true }];
+window.AddRailModule = [{page: 'Template:RailModuleMain', prepend: true}, 'Шаблон:RailModuleBlog'];
 
 //Добавление обложки для страниц Клен и Лиса
 $(function () {

@@ -481,6 +481,12 @@ $(function() {
                                             (val === max_val[col] ? '#F0D2D2' : 'transparent')
                                         )
                                     )
+                                ).css('color',
+                                    (max_val[col] === min_val[col] ? '#E6E6E6' :
+                                        (val === min_val[col] ? '#333333' :
+                                            (val === max_val[col] ? '#333333' : '#E6E6E6')
+                                        )
+                                    )
                                 );
                             });
                         });

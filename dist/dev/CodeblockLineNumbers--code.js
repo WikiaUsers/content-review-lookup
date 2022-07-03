@@ -3,13 +3,14 @@
  * // current update is to account for mw version `1.37.2` and the introduction of `.mw-highlight-lines` to codeblocks
  * @name CodeblockLineNumbers
  * @author Arashiryuu0
+ * @version 1.2.0
  */
 	
 // jshint browser: true, devel: true, jquery: true
 // jshint strict: true, freeze: true, eqeqeq: true, futurehostile: true
 // jshint newcap: true, noarg: true, quotmark: single, shadow: outer
 // jshint latedef: true, undef: true, unused: true
-/* globals mw */
+/* globals mw, Symbol */
 	
 ;(function () {
     'use strict';

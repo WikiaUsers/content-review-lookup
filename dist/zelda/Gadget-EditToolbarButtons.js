@@ -63,8 +63,8 @@ var customizeClassicToolbar = function(){
 	// Cite person
 	mw.toolbar.addButton( {
 		imageFile: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/5/53/Button_cite_person.png',
-		speedTip: 'Cite person',
-		tagOpen: '<ref>{{Cite person|quote= ',
+		speedTip: 'Cite Person',
+		tagOpen: '<ref>{{Cite Person|quote= ',
 		tagClose: '|name= |url= |title= }}</ref>',
 		sampleText: '',
 		imageId: ''
@@ -73,8 +73,8 @@ var customizeClassicToolbar = function(){
 	// Cite episode
 	mw.toolbar.addButton( {
 		imageFile: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/1/1c/Button_cite_episode.png',
-		speedTip: 'Cite episode',
-		tagOpen: '<ref>{{Cite episode|quote= ',
+		speedTip: 'Cite Episode',
+		tagOpen: '<ref>{{Cite Episode|quote= ',
 		tagClose: '|name= |show= |episode= |time= }}</ref>',
 		sampleText: '',
 		imageId: ''
@@ -120,14 +120,14 @@ var customizeWikiEditor = function () {
 					}
 				}
 			},
-			'Cite person': {
-				label: 'Cite person',
+			'Cite Person': {
+				label: 'Cite Person',
 				type: 'button',
 				icon: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/5/53/Button_cite_person.png',
 				'action': {
 					'type': 'encapsulate',
 					'options': {
-						'pre': '<ref>{{Cite person|quote= ',
+						'pre': '<ref>{{Cite Person|quote= ',
 						'peri': '',
 						'post': '|name= |url= |title= }}</ref>'
 					}
@@ -172,27 +172,27 @@ var customizeWikiEditor = function () {
 					}
 				}
 			},
-			'Cite episode': {
-				label: 'Cite episode',
+			'Cite Episode': {
+				label: 'Cite Episode',
 				type: 'button',
 				icon: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/1/1c/Button_cite_episode.png',
 				'action': {
 					'type': 'encapsulate',
 					'options': {
-						'pre': '<ref>{{Cite episode|quote= ',
+						'pre': '<ref>{{Cite Episode|quote= ',
 						'peri': '',
 						'post': '|name= |show= |episode= |time= }}</ref>'
 					}
 				}
 			},
-			'Cite web': {
+			'Cite Web': {
 				label: 'Web Citation',
 				type: 'button',
 				icon: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/9/91/Button_cite_web.png',
 				'action': {
 					'type': 'encapsulate',
 					'options': {
-						'pre': '<ref>{{Cite web|quote= ',
+						'pre': '<ref>{{Cite Web|quote= ',
 						'peri': '',
 						'post': '|author= |published= |retrieved= ' + nowmonth + ' ' + nowday + ', ' + nowyear + '|url= |title= |site= |type= }}</ref>'
 					}

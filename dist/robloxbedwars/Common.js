@@ -27,3 +27,8 @@
 		} );
 	}, 2000 );
 }() );
+
+/* config for dev:LockOldComments.js */
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 30;
+window.lockOldComments.addNoteAbove = true;

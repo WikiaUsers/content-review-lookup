@@ -97,11 +97,20 @@
                         });
                 });
             },
+            reloadclick: function (event) {
+                event.preventDefault();
+                var $this = $(this),
+                    $parent = $this.parents(".partialLoad-tabber").eq(0),
+                    $frame = $parent.find(".partialLoad-frame"),
+                    $tab = $parent.find(".partialLoad-tabs__tab.selected"),
+                    requested_page = that.getFullPageName($tab.find(".partialLoad-tabs__label a").attr("data-page"));
+                that.loadPage($frame, requested_page, $parent, $tab);
+            },
             tabclick: function (event) {
                 event.preventDefault();
                 var $this = $(this),
                     $parent = $this.parents(".partialLoad-tabber").eq(0),
-                    $parenttab = $this.parents(".partialLoad-tabs__tab").eq(0),
+                    $tab = $this.parents(".partialLoad-tabs__tab").eq(0),
                     $frame = $parent.find(".partialLoad-frame"),
                     $actionLinks = $parent.find(".partialLoad-actionLinks"),
                     requested_page = that.getFullPageName($this.attr("data-page")),
@@ -109,44 +118,64 @@
                     pageActions = [
                         "edit",
                         "view",
+                        "history",
                         "purge",
                     ].map(function (act) {
-                        return "[" + $("<a>", {
+                        return $("<a>", {
                             href: new mw.Title(requested_page).getUrl({
                                 action: act,
                             }),
                             title: requested_page + "?action=" + act,
-                            text: act + " page",
-                        }).prop("outerHTML") + "]";
-                    }).join(" • ");
-                $parent.find(".selected").removeClass("selected");
-                $parenttab.addClass("selected");
-                $actionLinks.html(pageActions);
+                            text: act,
+                        });
+                    }).concat([
+                        $("<a>", {
+                            href: "#",
+                            // title: "Reload This Content",
+                            text: "reload tab",
+                            click: that.reloadclick,
+                        }),
+                    ]),
+                    pageActions_ = [];
+
+                pageActions.forEach(function (elm, i) {
+                    pageActions_ = pageActions_.concat([
+                        "[", elm, i < pageActions.length - 1 ? "] • " : "]"
+                    ]);
+                });
+                $actionLinks.html(pageActions_);
                 if (cache_enabled && (requested_page in private_cache)) {
                     var requested_content = private_cache[requested_page].clone();
                     $frame.empty().append(requested_content);
                     mw.hook("wikipage.content").fire(requested_content);
+                    $parent.find(".selected").removeClass("selected");
+                    $tab.addClass("selected");
                 } else {
-                    $frame.empty().append(that.getSpinner());
-                    that.checkExists(requested_page).then(function (exist) {
-                        if (!exist) {
-                            private_cache[requested_page] = that.doesNotExist(requested_page);
-                            $frame.empty().append(private_cache[requested_page].clone());
-                            return;
-                        }
-                        that.parsePage(requested_page)
-                            .done(function (d) {
-                                private_cache[requested_page] = $(d.parse.text);
-                                var requested_content = private_cache[requested_page].clone();
-                                $frame.empty().append(requested_content);
-                                mw.hook("wikipage.content").fire(requested_content);
-                            })
-                            .catch(function (d, err) {
-                                console.warn("[PartialLoad/Tabview] Failed to parse page " + requested_page + ". See below for error log.");
-                                console.warn(d, err);
-                            });
-                    });
+                    that.loadPage($frame, requested_page, $parent, $tab);
                 }
+            },
+            loadPage: function ($frame, requested_page, $parent, $tab) {
+                $frame.empty().append(that.getSpinner());
+                that.checkExists(requested_page).then(function (exist) {
+                    if (!exist) {
+                        private_cache[requested_page] = that.doesNotExist(requested_page);
+                        $frame.empty().append(private_cache[requested_page].clone());
+                        return;
+                    }
+                    that.parsePage(requested_page)
+                        .done(function (d) {
+                            private_cache[requested_page] = $(d.parse.text);
+                            var requested_content = private_cache[requested_page].clone();
+                            $frame.empty().append(requested_content);
+                            mw.hook("wikipage.content").fire(requested_content);
+                            $parent.find(".selected").removeClass("selected");
+                            $tab.addClass("selected");
+                        })
+                        .catch(function (d, err) {
+                            console.warn("[PartialLoad/Tabview] Failed to parse page " + requested_page + ". See below for error log.");
+                            console.warn(d, err);
+                        });
+                });
             },
             makeButton: function (pagename, customButtonName) {
                 var button = $("<div>", {

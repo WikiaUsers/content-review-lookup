@@ -2266,6 +2266,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"cerulean": {
+				"name": "Cerulean",
+				"colors": [
+					"blue",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"chakra": {
 				"name": "Chakra",
 				"colors": [
@@ -5813,6 +5821,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"fuchsia": {
+				"name": "Fuchsia",
+				"colors": [
+					"pink",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"fullmoon": {
 				"name": "Full Moon",
 				"colors": [
@@ -7766,6 +7782,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "super"
+			},
+			"indigo": {
+				"name": "Indigo",
+				"colors": [
+					"purple",
+					"blue",
+					"white"
+				],
+				"rarity": "unbreedable"
 			},
 			"indolent": {
 				"name": "Indolent",
@@ -11500,6 +11525,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "unbreedable"
+			},
+			"pear": {
+				"name": "Pear",
+				"colors": [
+					"green",
+					"black"
+				],
+				"rarity": "common"
 			},
 			"pearl": {
 				"name": "Pearl",
@@ -16869,6 +16902,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"purple"
 				],
 				"rarity": "common"
+			},
+			"violet": {
+				"name": "Violet",
+				"colors": [
+					"purple",
+					"white"
+				],
+				"rarity": "unbreedable"
 			},
 			"violight": {
 				"name": "Violight",

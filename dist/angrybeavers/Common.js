@@ -124,6 +124,20 @@ function showEras(className)
 
 importScriptPage('AjaxRC/code.js', 'dev');
 
-/*Keep favicon as correct The Angry Beavers logo instead of reverting to Wikia logo*/
+/*Keep favicon as correct PF logo instead of reverting to Wikia logo*/
 
 document.write('<link REL="shortcut icon" HREF="/images/6/64/Favicon.ico" />')
+
+/* Courtesy of the My Little Pony Friendship is Magic Wiki */
+ 
+/* IRClogin div */
+$(function() {
+    if ($('#IRClogin').length) {
+        if (typeof wgUserName == 'undefined') {
+            var nick = 'Wikian' + Math.floor(Math.random() * 100);
+        } else {
+            var nick = wgUserName.replace(/ /g, "_");
+        }
+        $('#IRClogin').html('<iframe src="http://webchat.freenode.net/?nick=' + nick + '&channels=phineasandferb&prompt=true" width="660" height="400" style="border:0;"></iframe>');
+    }
+});

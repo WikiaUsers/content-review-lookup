@@ -507,3 +507,8 @@ var Tabs = {
     }
 };
 Tabs.init();
+
+// Diminuir os dias para bloquear os comentários 
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 30;
+window.lockOldComments.addNoteAbove = true;

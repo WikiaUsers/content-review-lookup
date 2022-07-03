@@ -1,6 +1,3 @@
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:LinkPreview/code.js',
-    ]
-});
+window.BackToTopModern = true;
+window.BackToTopArrow = true;
+window.BackToTopSpeed = 650;

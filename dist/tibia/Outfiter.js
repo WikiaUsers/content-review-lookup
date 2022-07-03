@@ -166,7 +166,9 @@ $(function () {
       //155
       'Werelion', 'Pirat', 'Raccoon', 'Tyrant', 'Girtablilu',
       //160
-      'Bashmu', 'Carnisylvan', 'Chimera'
+      'Bashmu', 'Carnisylvan', 'Chimera', 'Naga_(A)', 'Naga_(B)',
+      //170
+      'Naga_(C)', 'Naga_(D)'
     ],
     //outfits the array index is the id (starting at 200)
     //must also be added to Template:OutfiterLink
@@ -201,7 +203,8 @@ $(function () {
       Revenant: 8,
       Rune_Master: 8,
       Tyrant: 8,
-      Ghost_Blade: 8
+      Ghost_Blade: 8,
+      'Fire-Fighter': 8
     },
     outfiter_sprites_walking = {
       CM: 2,
@@ -365,6 +368,10 @@ $(function () {
       Girtablilu: true,
       Carnisylvan: true,
       Chimera: true,
+      'Naga_(A)': true,
+      'Naga_(B)': true,
+      'Naga_(C)': true,
+      'Naga_(D)': true,
       None: true
     },
     //no mount
@@ -430,7 +437,11 @@ $(function () {
       Girtablilu: true,
       Bashmu: true,
       Carnisylvan: true,
-      Chimera: true
+      Chimera: true,
+      'Naga_(A)': true,
+      'Naga_(B)': true,
+      'Naga_(C)': true,
+      'Naga_(D)': true
     },
     //no addon
     outfiter_a_names = {
@@ -540,7 +551,11 @@ $(function () {
       Girtablilu: true,
       Bashmu: true,
       Carnisylvan: true,
-      Chimera: true
+      Chimera: true,
+      'Naga_(A)': true,
+      'Naga_(B)': true,
+      'Naga_(C)': true,
+      'Naga_(D)': true,
     },
     //outfits with no floor movement
     outfiter_no_floor_move_names = {

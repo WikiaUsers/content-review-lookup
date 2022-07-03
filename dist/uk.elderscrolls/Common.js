@@ -10,8 +10,8 @@ $(document).ready(function() {
 $('.factions img').hide(); 	$('.factions img').removeAttr('width').removeAttr('height'); 	var l=$('.factions tr').eq(1).find('td').height(); 	$('.factions tr').eq(1).find('img').css('max-height', l); 	$('.factions img').show(); 	if ($('.factions tr').eq(1).find('td').width()>=$('.factions img').width()) { 		$('.factions tr').eq(1).find('td').width($('.factions img').width()); 	}
   $('.id_upper').each(function() { $(this).html($(this).html().toUpperCase()); });
   var $tabs = $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100} } );
-  $("[class^=portal_sliderlink]").click(function() { // bind click event to link
-    $tabs.tabs('select', this.className.replace("portal_sliderlink_", ""));
+  $("[class*=portal_content-]").click(function() { // bind click event to link
+    $tabs.tabs('select', this.className.replace("portal_content_", ""));
     return false;
   });
   $('#portal_next').click(function() {

@@ -124,9 +124,7 @@ runAsEarlyAsPossible(function () {
  * должны гарантированно выполниться не более одного раза на странице.
  */
 mw.hook('wikipage.content').add( function () {
-	$('#toc h2 svg').each(function() {
-		$(this).remove();
-	});
+	$('#toc h2 svg').remove();
 });
 
 // Число раскрытых по умолчанию навигационных шаблонов, 
@@ -135,7 +133,7 @@ mw.hook( 'wikipage.collapsibleContent' ).add( function() {
 	if ( 
 		$('.navbox-inner.mw-collapsed').length == 1
 	) {
-		$('.navbox-inner.autocollapse > tbody > tr:first-child .mw-collapsible-toggle').click();
+		$('.navbox-autocollapse > tbody > tr:first-child .mw-collapsible-toggle').click();
 	}
 });
 

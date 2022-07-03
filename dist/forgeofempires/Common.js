@@ -60,7 +60,7 @@ window.dev.editSummaries = {
 }; 
 
 window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 30;
+window.lockOldComments.limit = 90;
 
 /*spoiler hiding*/
 var myMainSpoilers = document.getElementsByClassName("mainSpoiler");

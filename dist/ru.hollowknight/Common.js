@@ -6,6 +6,12 @@ if (mw.config.get('wgPageName') === 'Шаблон:Map2') {
     importArticle({ type: 'script', article: 'MediaWiki:MapSS.js' });
 }
 
+/*кастом модули*/
+window.AddRailModule = [
+    { page: 'Template:RailModule1', prepend: true },
+    'Template:RailModule2',
+];
+
 /*Адаптация виджета в лайт скине*/
 $(function(){
 if ($('body').hasClass('theme-fandomdesktop-light')) {
