@@ -2,7 +2,7 @@
 /* Discord Banner settings */
 window.DiscordBannerSettings = {
     bannerStyle: '3',
-    inviteLink: 'Z76UJ8g8Xu',
+    inviteLink: 'disneyspeedstorm',
     prependToRail: true,
     noRail: false
 };
@@ -13,4 +13,19 @@ importArticles({
     articles: [
         'u:dev:MediaWiki:UploadMultipleFiles.js',
     ]
+});
+
+/*Images*/
+$('#content img').bind('contextmenu', function(e) {
+    return false;
+});
+
+$('#content').on('contextmenu', 'img', function(e) {
+    return false;
+});
+
+$('#content img').attr('draggable', false).on({
+    'contextmenu': function(e) {
+        return false;
+    }
 });

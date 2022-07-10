@@ -42,5 +42,6 @@ $(function () {
         $editorActionsDropdown.before($talkLink.clone(true));
     }
     initEditorView();
+    mw.hook('wikiEditor.toolbarReady').add(initEditorView);
     mw.hook('ve.activationComplete').add(initEditorView);
 });

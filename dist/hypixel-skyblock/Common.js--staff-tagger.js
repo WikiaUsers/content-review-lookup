@@ -214,11 +214,11 @@
                     var isBot = i;
                     return that.api.get({
                         action: "query",
-                        list: "users",
-                        ususers: account,
-                        ustoken: "userrights",
+                        format: "json",
+                        meta: "tokens",
+                        type: "userrights",
                     }).always(function (data) {
-                        var usToken = data.query.users[0].userrightstoken;
+                        var usToken = data.query.tokens.userrightstoken;
                         if (data.query) {
                             that.api.post({
                                 "action": "userrights",
@@ -242,11 +242,11 @@
                 }).concat(prevbots.map(function (account) {
                     return that.api.get({
                         action: "query",
-                        list: "users",
-                        ususers: account,
-                        ustoken: "userrights",
+                        format: "json",
+                        meta: "tokens",
+                        type: "userrights",
                     }).always(function (data) {
-                        var usToken = data.query.users[0].userrightstoken;
+                        var usToken = data.query.tokens.userrightstoken;
                         if (data.query) {
                             that.api.post({
                                 "action": "userrights",

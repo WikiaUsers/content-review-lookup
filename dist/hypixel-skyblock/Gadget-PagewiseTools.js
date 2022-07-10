@@ -124,16 +124,16 @@ mw.loader.using(["mediawiki.api"]).then(function () {
         }
 
         // function luaTableToJson(lua) {
-        // 	return api().post({
-        // 		action: "scribunto-console",
-        // 		title: mw.config.get("wgPageName"),
-        // 		question: "=mw.text.jsonEncode(p)",
-        // 		content: lua,
-        // 	})
-        // 	.then(function(response){ return response.return })
-        // 	.then(function(data){
-        // 		return JSON.parse(data);
-        // 	});
+        //     return api().post({
+        //         action: "scribunto-console",
+        //         title: mw.config.get("wgPageName"),
+        //         question: "=mw.text.jsonEncode(p)",
+        //         content: lua,
+        //     })
+        //     .then(function(response){ return response.return })
+        //     .then(function(data){
+        //         return JSON.parse(data);
+        //     });
         // }
 
         function luaTableDataModuleToJson(moduleName) {
@@ -163,8 +163,8 @@ mw.loader.using(["mediawiki.api"]).then(function () {
         function fetchLuaDataAsJson(page) {
             return luaTableDataModuleToJson(page);
             // return api().parse("{{" + LUA_DATA_PAGE + "}}").then(function(response){
-            // 	 var luastr = response.match(new RegExp("<pre>(.*)<\/pre>", "ms"))[1];
-            // 	 return luaTableToJson(luastr);
+            //      var luastr = response.match(new RegExp("<pre>(.*)<\/pre>", "ms"))[1];
+            //      return luaTableToJson(luastr);
             // });
         }
 
@@ -194,22 +194,22 @@ mw.loader.using(["mediawiki.api"]).then(function () {
         }
 
         // function saveToWiki(json, newCount, page) {
-        // 	var lua = "-- <pre>\nreturn " + jsonToLuaTableMin(json);
-        // 	console.log(lua);
+        //     var lua = "-- <pre>\nreturn " + jsonToLuaTableMin(json);
+        //     console.log(lua);
 
-        // 	api().postWithEditToken({
-        // 		action: "edit",
-        // 		text: lua,
-        // 		title: page,
-        // 		summary: "Updating data" + (newCount > 0 ? " - adding " + newCount + " new items" : ""),
-        // 		minor: true,
-        // 	})
-        // 	.then(function() {
-        // 		mw.notify("Refreshing page..", { title: "Save Successful!", type: "info" });
-        // 		window.location.reload();
-        // 	})
-        // 	// Fandom doesn't like catch as a method name
-        // 	["catch"](errorHandler);
+        //     api().postWithEditToken({
+        //         action: "edit",
+        //         text: lua,
+        //         title: page,
+        //         summary: "Updating data" + (newCount > 0 ? " - adding " + newCount + " new items" : ""),
+        //         minor: true,
+        //     })
+        //     .then(function() {
+        //         mw.notify("Refreshing page..", { title: "Save Successful!", type: "info" });
+        //         window.location.reload();
+        //     })
+        //     // Fandom doesn't like catch as a method name
+        //     ["catch"](errorHandler);
         // }
 
         function start() {
@@ -380,13 +380,17 @@ mw.loader.using(["mediawiki.api"]).then(function () {
         if ($(ELECTED_BUTTON).length > 0)
             $(ELECTED_BUTTON).show().click(function () {
                 Promise.all([getElectionData(), getLocalData(), getLocalElections()]).then(function (data) {
-                    var pastElectionData = data[0].mayor.election,
-                        localData = data[1].mayors,
+                    var pastElectionData = data[0].mayor.election;
+                    if (!pastElectionData) {
+                        alert("The API does not provide past election data at the moment.");
+                        return;
+                    }
+                    var localData = data[1].mayors,
                         localElections = data[2].elections,
                         year = Number(pastElectionData.year),
                         existingData = localElections[year - 1] && localElections[year - 1].data || undefined;
                     var candidates = candidatesToArray(pastElectionData.candidates, localData, existingData).map(function (v) {
-                        return "\t\t" + v.name + " = { " + " votes = " + v.votes + ", perks = '" + v.perks + "', order = " + v.order + ", last = " + (v.last || "nil") + " },";
+                        return "\t\t" + v.name + " = { votes = " + v.votes + ", perks = '" + v.perks + "', order = " + v.order + ", last = " + (v.last || "nil") + " },";
                     });
                     copyToClipboard("\t[" + year + "] = { " + "date = nil, ui = true, data = {\n" + candidates.join("\n") + "\n\t}},");
                 });
@@ -395,11 +399,15 @@ mw.loader.using(["mediawiki.api"]).then(function () {
         if ($(CURRENT_BUTTON).length > 0)
             $(CURRENT_BUTTON).show().click(function () {
                 Promise.all([getElectionData(), getLocalData()]).then(function (data) {
-                    var currentElectionData = data[0].current,
-                        localData = data[1].mayors,
+                    var currentElectionData = data[0].current;
+                    if (!currentElectionData) {
+                        alert("The API does not provide current election data at the moment.");
+                        return;
+                    }
+                    var localData = data[1].mayors,
                         year = Number(currentElectionData.year);
                     var candidates = candidatesToArray(currentElectionData.candidates, localData).map(function (v) {
-                        return "\t\t" + v.name + " = { " + " votes = nil, perks = '" + v.perks + "', order = " + v.order + ", last = nil },";
+                        return "\t\t" + v.name + " = { votes = nil, perks = '" + v.perks + "', order = " + v.order + ", last = nil },";
                     });
                     copyToClipboard("\t[" + year + "] = { control = 'in-progress', data = {\n" + candidates.join("\n") + "\n\t}},");
                 });
@@ -415,13 +423,13 @@ mw.loader.using(["mediawiki.api"]).then(function () {
                 "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
             ],
             COLORS_TO_TEMPLATE = [
-                "Black", "Dark Blue", "Dark Green", "Dark Aqua", "Dark Red", "Dark Purple", "Gold", "Gray", "Dark Gray", "Blue", "Green", "Aqua", "Red", "Light Purple", "Yellow", "White"
+                "Black", "DarkBlue", "DarkGreen", "DarkAqua", "DarkRed", "DarkPurple", "Gold", "Gray", "DarkGray", "Blue", "Green", "Aqua", "Red", "LightPurple", "Yellow", "White"
             ],
             DIAGONALS = [0, 6, 12, 18, 24];
 
         // to find diagonals:
         // [0, 1, 2, 3, 4].map(function (n) {
-        // 	return n * 5 + n
+        //     return n * 5 + n
         // });
 
         if (ALLOWED_PAGE !== mw.config.get("wgPageName") || $(BUTTON).length < 1) return;

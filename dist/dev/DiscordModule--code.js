@@ -267,27 +267,27 @@ mw.loader.using('mediawiki.util').done(function() {
                 refreshClass: 'Дополнительные классы для кнопки "Обновить"'
             },
             tr: {
-                description: "[https://discord.com/ Discord], Fandom dışındaki kamuoyu tartışmaları için ücretsiz bir uygulamadır. " +
-                             "[[wikipedia:Discord (software)|Vikipedi'den daha fazlasını alın]]",
+                description: "[https://discord.com/ Discord], Fandom dışındaki herkese açık tartışmalar için ücretsiz bir uygulamadır. " +
+                             "[[wikipedia:tr:Discord|Vikipedi'de daha fazlasını elde edin]]",
                 online: "Çevrimiçi:",
                 join: "Katıl",
-                onlinelist: "Kullanıcılar çevrimiçi",
-                instruction: "Sunucu kimliğini almak için bu yola gitmeniz gerekir (yönetici haklarına ihtiyacınız var):<br/>" +
-                             "Sunucu ayarları> Widget > Sunucu Kimliği<br/>" +
-                             "Ayrıca burada kullanıcıların sunucunuza gelmesini istiyorsanız widget'ı açmanız ve davet edilecek kanalı seçmeniz gerekir.",
+                onlinelist: "Çevrimiçi kullanıcı",
+                instruction: "Sunucu kimliğini almak için bu yola gitmeniz gerekir (hizmetli haklarına ihtiyacınız var):<br/>" +
+                             "Sunucu ayarları > Widget > Sunucu ID'si<br/>" +
+                             "Ayrıca burada, sunucunuza kullanıcıların gelmesini istiyorsanız, widget'ı açmanız ve davet edilecek kanalı seçmeniz gerekir.",
                 descriptionForm: "Modül açıklaması",
-                supportsWikitext: "wiki metnini destekliyor",
+                supportsWikitext: "vikimetin destekler",
                 placeholder: "Varsayılan olarak Discord hakkında bilgi",
-                useSvg: "Özel resim kullan (CSS değişikliği gerekli)",
+                useSvg: "Özel resim kullanın (CSS değişikliği gerekli)",
                 flags: "Diğer parametreler",
                 showGuideline: "Özel açıklama gösterme",
                 showForAnonym: "Anonimler için gösterme",
                 showServerName: "Sunucu adını gösterme",
-                railPosition: "Rayın altına yerleştirin",
+                railPosition: "Rayın altındaki konum",
                 generateHTML: "HTML oluştur",
                 saveSettings: "Kaydet",
                 reset: "Sıfırla",
-                successChange: 'Başarılıyla kaydedildi',
+                successChange: 'Başarıyla kaydedildi',
                 errorChange: 'Bir hata oluştu',
                 refresh: 'Y',
                 refreshTitle: 'Yenile',

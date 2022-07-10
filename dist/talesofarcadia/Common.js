@@ -23,5 +23,5 @@ window.AutoCreateUserPagesConfig = {
              3: '{{autowelcome|<span style="font-family:Trollhunters;">[[User:Merlin_the_Immortal|<span style="color:#454427;">Merlin the Immortal</span>]] [[User_talk:Merlin_the_Immortal|<span style="color:#454427;">﴾Talk Page﴿</span>]]</span>}}',
              1202: false
 },
-            summary: '<span class="script">Script: Creating profile and talkpage on first edit - automatically by Wiki</script>'
+            summary: '<span class="script">Script: Creating profile and talkpage on first edit - automatically by Wiki</span>'
 };

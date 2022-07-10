@@ -2,7 +2,6 @@
  * Apply custom user settings to Ace editor embeds
  *
  * @author Rail
- * @todo Fix AbuseFilter implementation
  */
 ;( function( mw, window ) {
     'use strict';
@@ -32,29 +31,25 @@
 
         return inputSettings;
     }
-
-    /**
-     * Extended `codeEditor.configure` hook
-     * Use this because Fandom loading default themes conflicts with this script
-     *
-     * @param {Function} callback
-     */
-    function aceHook( callback ) {
-        mw.hook( 'codeEditor.configure' ).add( function() {
-            const fandomAddTheme = setInterval( function() {
-                if ( !!document.querySelector( '.ace_editor.ace-tm,.ace_editor.ace-twilight,.ace_editor.ace-dawn' ) ) {
-                    clearInterval( fandomAddTheme );
-                    callback();
-                }
-            }, 150 );
-        } );
-    }
-
-    aceHook( function() {
-        const aceEditArea = document.getElementsByClassName( 'ace_editor' )[0];
+    
+    function aceHook() {
+    	const aceEditArea = document.getElementsByClassName( 'ace_editor' )[0];
         const aceInstance = ace.edit( aceEditArea );
 
         aceInstance.setOptions( aceSettings() );
         window.aceCustomSettingsLoaded = true;
-    } );
+    }
+
+    mw.hook( 'codeEditor.configure' ).add(aceHook);
+    
+    // AbuseFilter doesn't have a hook (yet - https://phabricator.wikimedia.org/T273270)
+    if ( mw.config.get('wgCanonicalSpecialPageName') === 'AbuseFilter' && document.getElementById('wpAceFilterEditor') ) {
+    	const interval = setInterval(function() {
+    		if ( !document.getElementById('wpAceFilterEditor').classList.contains('ace-tm') ) {
+    			return;
+    		}
+    		clearInterval(interval);
+    		aceHook();
+    	}, 100);
+    }
 } )( mediaWiki, this );

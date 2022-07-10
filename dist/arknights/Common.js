@@ -20,7 +20,7 @@ window.tooltips_list = [
         parse: '{' + '{Template:Collection tip|1=<#name#>|2=<#text1#>|3=<#text2#>|4=<#text2b#>|5=<#text2c#>|t=<#type#>|no=<#no#>|e=<#event#>|q=<#quality#>|c=<#condition#>|n=<#note#>}}',
     },	{
         classname: 'furniture-tooltip',
-        parse: '{' + '{Template:Furniture tip|1=<#name#>|2=<#text1#>|3=<#text2#>|title=<#title#>|a=<#ambience#>|t1=<#type#>|t2=<#theme#>|s=<#set#>|o=<#obtain#>|o1a=<#obtain1a#>|o1b=<#obtain1b#>|o1c=<#obtain1c#>}}',
+        parse: '{' + '{Template:Furniture tip|1=<#name#>|2=<#text1#>|3=<#text2#>|4=<#text2b#>|5=<#text2c#>|title=<#title#>|a=<#ambience#>|t1=<#type#>|t2=<#theme#>|s=<#set#>|o=<#obtain#>|o1a=<#obtain1a#>|o1b=<#obtain1b#>|o1c=<#obtain1c#>}}',
     },	{
         classname: 'outfit-tooltip',
         parse: '{' + '{Template:Outfit tip|1=<#name#>|2=<#text1#>|3=<#text2#>|4=<#text3#>|m=<#model#>|s1=<#skin#>|i=<#illustrator#>|s2=<#series#>|o=<#obtain#>}}',

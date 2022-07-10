@@ -112,22 +112,17 @@
            ) {
                 return;
             }
-            this.api.get({
-                action: 'query',
-                list: 'users',
-                ustoken: 'userrights',
-                ususers: config.wgUserName
-            }).done(
+            this.api.getToken('userrights').done(
                 $.proxy(this.changeRights, this)
             );
         },
         /**
          * @method changeRights
          * @description Changes the rights
-         * @param {JSON} d - The token data
+         * @param {string} t - The token
          * @returns {void}
          */
-        changeRights: function (d) {
+        changeRights: function (t) {
             var params = {
                 action: 'userrights',
                 user: config.wgUserName,
@@ -140,12 +135,11 @@
                             options.add ||
                             this.i18n.inContentLang().msg('addReason').plain()
                         ),
-                bot: true,
-                token: d.query.users[0].userrightstoken
+                bot: true
             };
             params[isBot ? 'remove' : 'add'] = 'bot';
             params.expiry = (options.expire || 'infinite');
-            this.api.post(params).done(
+            this.api.postWithToken('userrights', params).done(
                 $.proxy(this.done, this)
             ).fail($.proxy(this.fail, this));
         },

@@ -9,7 +9,7 @@
         new mw.libs.QDmodal('ModalLogs').show({
             title: $(data).find('.page-header__title').text(),
             content: $(data).find('#mw-content-text')
-                        .find('form, fieldset, .mw-specialpage-summary, p:first-child, .mw-warning-with-logexcerpt, .mw-htmlform-ooui-wrapper, noscript, noscript + p')
+                        .find('fieldset, .mw-specialpage-summary, p:first-child, .mw-warning-with-logexcerpt, .mw-htmlform-ooui-wrapper, noscript, noscript + p')
                             .remove()
                             .end()
                         .html()

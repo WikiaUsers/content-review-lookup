@@ -4,6 +4,7 @@
  * deleting of pages, which the original lacks
  * Original "WHAM" - https://dev.fandom.com/wiki/MediaWiki:WHAM/code.js
  * @author Ozank Cx
+ * @uses [[File:Circle_throbber.gif]]
  */
 
 ;(function($, mw, window) {
@@ -91,8 +92,11 @@
                     $.get(href);
                     $('#status-wham').html(
                         i18n.msg('do-rollback-status').escape() +
-                        $('<span>', {
-                            class: 'mw-ajax-loader'
+                        $('<img>', {
+                            src: 'https://static.wikia.nocookie.net/dev/images/c/c5/Circle_throbber.gif',
+                            css: {
+                            	width: '15px'
+                            }
                         }).prop('outerHTML')
                     );
                     if (i === len - 1) {
@@ -153,8 +157,11 @@
                 setTimeout(function() {
                     $('#status-wham').html(
                         i18n.msg('do-delete-status').escape() +
-                        $('<span>', {
-                            class: 'mw-ajax-loader'
+                        $('<img>', {
+                            src: 'https://static.wikia.nocookie.net/dev/images/c/c5/Circle_throbber.gif',
+                            css: {
+                            	width: '15px'
+                            }
                         }).prop('outerHTML')
                     );
                     apiDelete(v, deleteReason);
@@ -388,7 +395,9 @@
                     class: 'error'
                   });
 
-            if (!windowManager) {
+            if (windowManager) {
+                windowManager.openWindow(dialog);
+            } else {
                 function WHAMDialog(config) {
                     WHAMDialog.super.call(this, config);
                 }
@@ -465,52 +474,6 @@
                     }
                 });
                 if (self) $(dialog.$content.find('.oo-ui-window-body').show());
-            }
-            else if (windowManager) {
-                windowManager.openWindow(dialog);
-            }
-            else {
-                $.showCustomModal(i18n.msg('title').escape(), (self ? $self_warn_html : ''), {
-                    id: 'form-main',
-                    width: 285,
-                    height: (self ? 280 : 190),
-                    buttons: [{
-                        message: i18n.msg('do-delete').escape(),
-                        defaultButton: true,
-                        handler: doDelete,
-                        id: 'wham-delete-all'
-                    }, {
-                        message: i18n.msg('start-selective-delete').escape(),
-                        defaultButton: true,
-                        handler: startSelectiveDelete,
-                        id: 'wham-selective-delete'
-                    }, {
-                        message: i18n.msg('do-rollback').escape(),
-                        defaultButton: true,
-                        handler: doRollback,
-                        id: 'wham-rollback'
-                    }, {
-                        message: i18n.msg('do-block').escape(),
-                        defaultButton: true,
-                        handler: doBlock,
-                        id: 'wham-block'
-                    }, {
-                        message: i18n.msg('do-all').escape(),
-                        defaultButton: true,
-                        handler: doAll,
-                        id: 'wham-all'
-                    }, {
-                        message: i18n.msg('close-wham').escape(),
-                        id: 'close-wham'
-                    }]
-                });
-                $('#close-wham').after($('<div>', {
-                    id: 'status-wham'
-                }));
-                $('#close-wham,.close').click(function() {
-                    $('#form-main').closeModal();
-                    window.location.reload();
-                });
             }
 
             // Bot button

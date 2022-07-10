@@ -13,22 +13,26 @@ $(function() {
         window.open(new mw.Uri('https://translate.google.com/translate').extend({
             hl: config.wgUserLanguage,
             sl: config.wgPageContentLanguage,
-			tl: config.wgUserLanguage,
+            tl: config.wgUserLanguage,
             u: location.href
         }).toString());
     }
 
-    $('#content').prepend(
-        $('<button>', {
+    function handler($content) {
+        if ($content.attr('id') !== 'mw-content-text') {
+            return;
+        }
+        $content.prepend($('<button>', {
             id: 'TranslateButton',
             'class': 'wds-button',
             css: {
                 'font-weight': 800,
-                width: '6em',
-                margin: '-11px 0 11px'
+                width: '6em'
             },
             click: click,
             text: 'A / 文'
-        })
-    );
+        }));
+        mw.hook('wikipage.content').remove(handler);
+    }
+    mw.hook('wikipage.content').add(handler);
 });

@@ -91,3 +91,8 @@ $('.GamesArrowRight').click(function () {
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
+
+/* LockOldComments */
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 90;
+window.lockOldComments.addNoteAbove = true;

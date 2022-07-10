@@ -2,12 +2,8 @@
 Title        :   BlockSummary
 Description  :   Displaying a summary of user's block on the blocked user's "User" Namespace pages
 Author       :   Vastmine1029
-Version      :   1.1
+Version      :   1.1.1
 *************/
-
-
-/* https://adoptme.fandom.com/api.php?action=query&list=users&ususers=USERNAME&usprop=blockinfo|groups|editcount|registration|emailable|gender
-*/
 
 mw.loader.using('mediawiki.api', function() {
 	var user = mw.config.get('wgRelevantUserName'); // grabbing username of user blocked
@@ -42,6 +38,14 @@ mw.loader.using('mediawiki.api', function() {
 			meta: 'siteinfo'
 		}).then(function(d) {
 			data = d.query.general;
+			
+			// Ensuring that all necessary information from API has been loaded before proceeding.
+			var interval = setInterval(function() {
+				if ((data["server"] !== undefined) && (data["servername"] !== undefined) && (data["scriptpath"] !== undefined)&& (data["sitename"] !== undefined) && (data["lang"] !== undefined)) {
+					clearInterval(interval);
+				}
+			}, 1000);
+			
 			sitename = data["sitename"]; // e.g., "Community Central"
 			lang = data["lang"];
 			

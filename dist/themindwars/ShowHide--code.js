@@ -172,4 +172,4 @@
 })(jQuery);
 /*</pre>*/
 
-[[Category:Half-Life Wiki]]
+[[Category:Mind Wars Wiki]]

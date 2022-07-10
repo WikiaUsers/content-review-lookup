@@ -498,7 +498,7 @@
 	}
 	
 	function isEditorColorPickerPage() {
-		return config.wgPageName === wgFormattedNamespaces[-1] + ':EditorColorPicker'
+		return config.wgPageName === config.wgFormattedNamespaces[-1] + ':EditorColorPicker'
 			|| config.wgCanonicalSpecialPageName === 'Blankpage' && new URLSearchParams(window.location.search).get('blankspecial') === 'editorcolorpicker';
 	}
 	

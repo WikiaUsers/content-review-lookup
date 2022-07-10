@@ -1,44 +1,68 @@
-$( document ).ready( function( $ ) {
-	var btnData = $( '.enable-extra-edit-button' );
-	if ( btnData.length ) {
-		var editPage = btnData.html();
+;(function($, mw) {
+	'use strict';
+	const config = mw.config.get([
+		'wgPageName',
+		'wgScriptPath',
+		'wgArticlePath'
+	]);
+	const btnData = document.getElementsByClassName('enable-extra-edit-button')[0];
+	var value = 0;
+	var editPage = '';
+	var sections;
+	
+	function updateLinks() {
+		// Ziellink der Bearbeitenschaltfläche ändern
+		document.getElementById('ca-edit').href = config.wgScriptPath + '/index.php?title=' + editPage + '&action=edit&section=' + sections[value].index;
 		
-		$.getJSON( 'https://minecraft.fandom.com/de/api.php', {
+		// Abschnitts-ID und Artikelname ersetzen
+		if ( $( '.mw-editsection a' ).length ) {
+			$( '.mw-editsection a' ).each( function(s) {
+				const url = new URL(this.href);
+				
+				// Abschnitt verändern
+				const sec = Number(url.searchParams.get('section').replace('T-',''));
+				url.searchParams.set('section', sections[value + sec].index);
+
+				// URL verändern
+				url.pathname = config.wgArticlePath.replace('$1', sections[value + sec].fromtitle);
+
+				// Linkdaten ersetzen
+				this.href = url.href;
+				this.title = this.title + sections[value + sec].line;
+			});
+		}
+	}
+		
+	if ( btnData ) {
+		
+		// Pfad zur eingebundenen Seite
+		editPage = btnData.innerHTML;
+		
+		// Quelltext bearbeiten Schaltfläche
+		const edittopHTML = document.createElement('a');
+		edittopHTML.classList = 'wds-button wds-is-text page-header__action-button has-label';
+		edittopHTML.href = config.wgScriptPath + '/index.php?title=' + config.wgPageName + '&action=edit';
+		edittopHTML.title = 'Diese Seite bearbeiten';
+		edittopHTML.innerHTML = 'Quelltext bearbeiten';
+		document.getElementById('p-views').prepend( edittopHTML );
+		
+		// Abschnittsdaten abfragen
+		$.getJSON( config.wgScriptPath + '/api.php', {
 			action: 'parse',
 			page: editPage,
 			prop: 'sections',
 			format: 'json'
 		} ).done( function( data ) {
 			if ( data.parse.sections ) {
-				var sections = data.parse.sections;
+				sections = data.parse.sections;
 				for ( var i = 0; i < sections.length; i++ ) {
-					if ( sections[i].anchor.localeCompare( mw.config.get("wgPageName") ) === 0 ) {
-						var sectionLink = '/de/index.php?title=' + editPage + '&action=edit&section=';
-						$( 'a#ca-edit' ).attr( 'href', sectionLink + sections[i].index );
-						
-						var edittopHTML = '<span class="mw-editsection">' +
-							'<span class="mw-editsection-bracket" style="margin-right: 0.25em;color: #555555;">[</span>' +
-							'<a href="/de/index.php?title=' + mw.config.get("wgPageName") + '&amp;action=edit" title="Diese Seite bearbeiten">Quelltext bearbeiten</a>' +
-							'<span class="mw-editsection-bracket" style="margin-left: 0.25em;color: #555555;">]</span>' +
-							'</span>';
-						
-						if ( $( '#ca-ve-edit' ).length ) $( '#ca-ve-edit' ).remove();
-						if ( $( '.mw-editsection-visualeditor' ).length ) {
-							$( '.mw-editsection-visualeditor' ).remove();
-							$( '.mw-editsection-divider' ).remove();
-						}
-						if ( $( '.mw-editsection a' ).length ) {
-							$( '.mw-editsection a' ).each( function(s) {
-								$( this ).attr( 'href', sectionLink + ( parseInt(sections[i].index, 10) + s + 1 ) ).html( 'Bearbeiten' );
-							} );
-						}
-						
-						$( '#firstHeading' ).append( edittopHTML );
-						
+					if ( sections[i].anchor.localeCompare( config.wgPageName ) === 0 ) {
+						value = i;
+						updateLinks();
 						break;
 					}
 				}
 			}
 		} );
 	}
-} );
+})(window.jQuery, window.mediaWiki);

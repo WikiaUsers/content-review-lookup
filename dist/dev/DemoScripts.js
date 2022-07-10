@@ -277,6 +277,11 @@
 			scripts: 'MediaWiki:ListSubpages.js'
 		},
 		
+		LocalNavExploreIcons: {
+			page: 'LocalNavExploreIcons',
+			scripts: 'MediaWiki:LocalNavExploreIcons.css'
+		},
+		
 		MastheadGender: {
 			page: 'User:Kirkburn',
 			scripts: 'MediaWiki:MastheadGender/code.js'

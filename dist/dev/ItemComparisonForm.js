@@ -52,7 +52,7 @@
 			if ($form.data('formType') === 'duplicate') {
 				var minFields = $form.data('minFields') || 2;
 				var maxFields = $form.data('maxFields') || 2;
-				var $fields = $form.children('.item-comparison-form__field');
+				var $fields = $form.find('.item-comparison-form__field');
 				$fields.each(function (index) {
 					var $field = $(this);
 					var templateName = $field.data('template');
@@ -75,7 +75,7 @@
 						disableeditsection: true,
 						disabletoc: true,
 					}).done(function(data) {
-						$field.children('.item-comparison-form__field-input').each(function (index) {
+						$field.find('.item-comparison-form__field-input').each(function (index) {
 							var $input = $(this);
 							var $menuContent = $('<div>', {'class': 'item-comparison-form__field-menu'}).html(data.parse.text['*']);
 							$menuContent.find('.item-comparison-option').each(function (index) {
@@ -113,13 +113,13 @@
 			}
 			*/
 			
-			$form.children('.item-comparison-submit').on('click', addComparisonContent);
+			$form.find('.item-comparison-submit').on('click', addComparisonContent);
 		});
 		
 	}
 	
 	function isComparisonPage() {
-		console.log(config.wgPageName);
+		// console.log(config.wgPageName);
 		return (window.itemComparisonFormPages && window.itemComparisonFormPages.includes(config.wgPageName)) || !window.itemComparisonFormPages;
 	}
 	
@@ -128,9 +128,8 @@
 		mw.loader.using(['mediawiki.api']).then(addComparisonForm);
 	}
 	
-	mw.hook('wikipage.content').add(function () {
-		if (isComparisonPage()) {
-			addComparisonForm();
-		}
-	});
+	if (isComparisonPage()) {
+		mw.hook('wikipage.content').add(addComparisonForm);
+	}
+	
 })(this, jQuery, mediaWiki);

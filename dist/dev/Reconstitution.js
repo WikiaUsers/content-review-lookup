@@ -2,6 +2,7 @@
  * Reconstitution
  * Mass restores deleted pages for a specific user, or all users. Opposite function of nuke.
  * @author Thundercraft5 <https://dev.fandom.com/wiki/User:Thundercraft5>
+ * @uses [[File:Circle_throbber.gif]]
  */
 /* jshint
 	esversion: 6, forin: true, 
@@ -202,7 +203,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user']).then(func
 						$('<span>', {
 							id: "reconst-status-text",
 						}),
-						'<img src="https://static.wikia.nocookie.net/dev/images/c/c5/Circle_throbber.gif/revision/latest"/>',
+						'&nbsp;<img src="https://static.wikia.nocookie.net/dev/images/c/c5/Circle_throbber.gif" style="width: 15px;"/>',
 					],
 				}),
 				$('<ul>', { id: "reconst-query-results" }),

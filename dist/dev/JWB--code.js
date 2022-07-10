@@ -1462,3 +1462,4 @@ JWB.init = function() {
 };
 //Disable JWB altogether when it's loaded on a page other than Project:AutoWikiBrowser/Script. This script shouldn't be loaded on any other page in the first place.
 if (JWB.allowed === false) JWB = false;
+// </nowiki>

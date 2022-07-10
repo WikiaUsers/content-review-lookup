@@ -75,7 +75,7 @@ $(function () {
       //155
       'Finished_Dark_Percht_Sleigh', 'Benevolent_Coral_Rhea', 'Benevolent_Eventide_Nandu', 'Benevolent_Savanna_Ostrich', 'Coral_Rhea',
       //160
-      'Eventide_Nandu', 'Savanna_Ostrich', 'Phantasmal_Jade', 'White_Lion_(Mount)', 'Cunning_Hyaena',
+      'Eventide_Nandu', 'Savanna_Ostrich', 'Phantasmal_Jade', 'White_Lion', 'Cunning_Hyaena',
       //165
       'Scruffy_Hyaena', 'Voracious_Hyaena', 'Krakoloss', 'Festive_Mammoth', 'Holiday_Mammoth',
       //170
@@ -91,7 +91,9 @@ $(function () {
       //195
       'Jungle_Saurian', 'Lagoon_Saurian', 'Shadow_Sphinx', 'Wolpertinger', 'Topaz_Shrine',
       //200
-      'Jade_Shrine', 'Obsidian_Shrine', 'Poppy_Ibex', 'Mint_Ibex', 'Cinnamon Ibex'
+      'Jade_Shrine', 'Obsidian_Shrine', 'Poppy_Ibex', 'Mint_Ibex', 'Cinnamon Ibex',
+      //205
+      'Giant_Beaver', 'Ripptor'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -109,7 +111,7 @@ $(function () {
       //25
       'Elementalist', 'Deepling', 'Insectoid', 'Entrepreneur', 'Crystal_Warlord',
       //30
-      'Soil_Guardian', 'Demon', 'Cave_Explorer', 'Dream_Warden', 'Jersey',
+      'Soil_Guardian', 'Demon_Outfit', 'Cave_Explorer', 'Dream_Warden', 'Jersey',
       //35
       'Glooth_Engineer', 'Beastmaster', 'Champion', 'Conjurer', 'Chaos_Acolyte',
       //40
@@ -121,7 +123,7 @@ $(function () {
       //55
       'Retro_Warrior', 'Retro_Summoner', 'Retro_Nobleman', 'Retro_Mage', 'Retro_Knight',
       //60
-      'Retro_Hunter', 'Retro_Citizen', 'Festive', 'Grove_Keeper', 'Pharaoh',
+      'Retro_Hunter', 'Retro_Citizen', 'Festive_Outfit', 'Grove_Keeper', 'Pharaoh',
       //65
       'Trophy_Hunter', 'Herbalist', 'Sun_Priest', 'Makeshift_Warrior', 'Siege_Master',
       //70
@@ -176,7 +178,7 @@ $(function () {
       //200
       'Dragon_Knight', 'Arbalester', 'Royal_Costume', 'Formal_Dress', 'Ghost_Blade',
       //205
-      'Nordic_Chieftain_Outfit', 'Fire-Fighter'
+      'Nordic_Chieftain', 'Fire-Fighter', 'Fencer'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -1245,7 +1247,7 @@ $(function () {
               },
               url: window.location.host.match(/(tibia|dantest)\.fandom\.com/) ?
                 //For wikia
-                '/index.php?title=Outfiter/' + utype + '/' + iname + '&action=raw' :
+                '/index.php?title=Outfiter:' + utype + '/' + iname + '&action=raw' :
                 //For local
                 'base64/' + utype + '/' + iname + '.txt'
             });

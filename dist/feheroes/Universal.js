@@ -99,5 +99,43 @@
 			return (new mw.Uri(val)).extend({format: "original"}).toString();
 		});
 	}
+	
+	//Change language
+	(function() {
+		// Change the CSS rule to hide the current language and reset the desired one
+		function changeHiddenLanguage(currLang,newLang) {
+			for (let sheet of document.styleSheets) {
+				try {
+					for (let j = 0; j < sheet.cssRules.length; j++) {
+						const rule = sheet.cssRules[j];
+						if ((rule.selectorText || '').includes('.lang-' + newLang) && rule.style.display == 'none') {
+							const newRule = rule.cssText.replace('.lang-' + newLang,'.lang-' + currLang);
+							sheet.deleteRule(j);
+							sheet.insertRule(newRule);
+							return true;
+						}
+					}
+				// Ignore only DOMException
+				} catch (err) {
+					if (!err.isPrototypeOf(DOMException))
+						throw err;
+				}
+			}
+			return false;
+		}
+		if (mw.cookie.get('text-lang',null,'en') != 'en') {
+			changeHiddenLanguage('en',mw.cookie.get('text-lang'));
+		}
 
+		// Apply boldness and click callback on span.chang-lang
+		$('span.change-lang')
+			.each((i,o) => $(o).css('font-weight', (o.dataset.lang || '') == mw.cookie.get('text-lang',null,'en') ? 'bold' : 'normal'))
+			.on('click', function (o) {
+				const newL = o.target.dataset.lang;
+				if (!newL || newL == mw.cookie.get('text-lang',null,'en')) return;
+				if (!changeHiddenLanguage(mw.cookie.get('text-lang',null,'en'), newL)) return;
+				mw.cookie.set('text-lang', newL);
+				$('span.change-lang').each((i,o) => $(o).css('font-weight', (o.dataset.lang || '') == newL ? 'bold' : 'normal'))
+			});
+	})();
 })();

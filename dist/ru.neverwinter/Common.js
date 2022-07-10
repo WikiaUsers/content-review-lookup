@@ -1,8 +1,8 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
-$("#artifacts-table").prepend('<fieldset><legend>Параметры фильтра таблицы:</legend><p style="margin-bottom: 0.5em;">Нижеследующие таблицы можно отфильтровать. Несколько фильтров могут быть применены сразу, выбрав несколько параметров.</p><div class="table-filters-hide-option" id="table-filters">Параметры<select><option>Все</option><option value="Максимум хитов">Максимум хитов</option><option value="Точность">Точность</option><option value="Критический урон">Критический урон</option><option value="Осведомленность">Осведомленность</option><option value="Боевое преимущество">Боевое преимущество</option><option value="Вероятность критического удара">Вероятность критического удара</option><option value="Критическое уклонение">Критическое уклонение</option><option value="Оборона">Оборона</option><option value="Уклонение">Уклонение</option><option value="Скорость движения">Скорость движения</option><option value="Могущество">Могущество</option><option value="Восстановление здоровья">Восстановление здоровья</option><option value="Влияние спутника">Влияние спутника</option><option value="Принимаемое лечение">Принимаемое лечение</option><option value="Бонус к контролю">Бонус к контролю</option><option value="Сопротивляемость контролю">Сопротивляемость контролю</option></select><select><option>Все</option><option value="Максимум хитов">Максимум хитов</option><option value="Точность">Точность</option><option value="Критический урон">Критический урон</option><option value="Осведомленность">Осведомленность</option><option value="Боевое преимущество">Боевое преимущество</option><option value="Вероятность критического удара">Вероятность критического удара</option><option value="Критическое уклонение">Критическое уклонение</option><option value="Оборона">Оборона</option><option value="Уклонение">Уклонение</option><option value="Скорость движения">Скорость движения</option><option value="Могущество">Могущество</option><option value="Восстановление здоровья">Восстановление здоровья</option><option value="Влияние спутника">Влияние спутника</option><option value="Принимаемое лечение">Принимаемое лечение</option><option value="Бонус к контролю">Бонус к контролю</option><option value="Сопротивляемость контролю">Сопротивляемость контролю</option></select><select><option>Все</option><option value="Максимум хитов">Максимум хитов</option><option value="Точность">Точность</option><option value="Критический урон">Критический урон</option><option value="Осведомленность">Осведомленность</option><option value="Боевое преимущество">Боевое преимущество</option><option value="Вероятность критического удара">Вероятность критического удара</option><option value="Критическое уклонение">Критическое уклонение</option><option value="Оборона">Оборона</option><option value="Уклонение">Уклонение</option><option value="Скорость движения">Скорость движения</option><option value="Могущество">Могущество</option><option value="Восстановление здоровья">Восстановление здоровья</option><option value="Влияние спутника">Влияние спутника</option><option value="Принимаемое лечение">Принимаемое лечение</option><option value="Бонус к контролю">Бонус к контролю</option><option value="Сопротивляемость контролю">Сопротивляемость контролю</option></select><select><option>Все</option><option value="Максимум хитов">Максимум хитов</option><option value="Точность">Точность</option><option value="Критический урон">Критический урон</option><option value="Осведомленность">Осведомленность</option><option value="Боевое преимущество">Боевое преимущество</option><option value="Вероятность критического удара">Вероятность критического удара</option><option value="Критическое уклонение">Критическое уклонение</option><option value="Оборона">Оборона</option><option value="Уклонение">Уклонение</option><option value="Скорость движения">Скорость движения</option><option value="Могущество">Могущество</option><option value="Восстановление здоровья">Восстановление здоровья</option><option value="Влияние спутника">Влияние спутника</option><option value="Принимаемое лечение">Принимаемое лечение</option><option value="Бонус к контролю">Бонус к контролю</option><option value="Сопротивляемость контролю">Сопротивляемость контролю</option></select><select><option>Все</option><option value="Максимум хитов">Максимум хитов</option><option value="Точность">Точность</option><option value="Критический урон">Критический урон</option><option value="Осведомленность">Осведомленность</option><option value="Боевое преимущество">Боевое преимущество</option><option value="Вероятность критического удара">Вероятность критического удара</option><option value="Критическое уклонение">Критическое уклонение</option><option value="Оборона">Оборона</option><option value="Уклонение">Уклонение</option><option value="Скорость движения">Скорость движения</option><option value="Могущество">Могущество</option><option value="Восстановление здоровья">Восстановление здоровья</option><option value="Влияние спутника">Влияние спутника</option><option value="Принимаемое лечение">Принимаемое лечение</option><option value="Бонус к контролю">Бонус к контролю</option><option value="Сопротивляемость контролю">Сопротивляемость контролю</option></select></div></fieldset>');
+$("#artifacts-table").prepend('<fieldset><legend>Параметры фильтра таблицы:</legend><p style="margin-bottom: 0.5em;">Нижеследующие таблицы можно отфильтровать. Несколько фильтров могут быть применены сразу, выбрав несколько параметров.</p><div class="table-filters-hide-option" id="table-filters"><select class="stats"><option>Выбрать...</option></select><select class="stats"><option>Выбрать...</option></select><select class="stats"><option>Выбрать...</option></select><select class="stats"><option>Выбрать...</option></select></div></fieldset>');
 
 $("#equipment-table").wrap($('<div id="fieldset-equipment-table" />"'));
-$("#fieldset-equipment-table").prepend('<fieldset id="settings"><legend>Параметры:</legend><div style="line-height: 2.5;"><div><span>Предмет: </span><input type="text" name="search" style="width: 180px;" placeholder="Поиск предмета по имени"></div><div><span>Ячейка/Категория: </span><select class="category"><option>Все</option></select></div><div><span>Качество: </span><select class="quality"><option>Любое качество</option></select></div><div><span>Минимальный уровень: </span><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></div><div><span>Уровень предмета: </span><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></div></div><div><span>Параметры:</span><div class="stats"></div></div><div><span>Класс:</span><div class="role"></div></div></fieldset>');
+$("#fieldset-equipment-table").prepend('<fieldset id="settings"><legend>Параметры:</legend><table><tbody><tr><td><span>Предмет:</span></td><td><input type="text" name="search" placeholder="Поиск предмета по имени"></div></td></tr><tr><td><span>Ячейка/Категория:</span></td><td><select class="category"><option>Все</option></select></td></tr><tr><td><span>Качество:</span></td><td><select class="quality"><option>Любое качество</option></select></td></tr><tr><td><span>Класс:</span></td><td><select class="role"></select></td></tr><tr><td><span>Минимальный уровень:</span></td><td><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></td></tr><tr><td><span>Уровень предмета:</span></td><td><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></td></tr></tbody></table><div style="float: right;"><span>Параметры (можно выбрать макс. три параметра): </span><div class="stats"></div></div></fieldset>');
 
 // merges a repeating cell in a table
 /*$(function() {
@@ -163,57 +163,69 @@ $(function(){
 // Filter table
 $(function() {
     var pattern = [],
-    tbody = $(".filter-table tbody"),
-    trs = $("[data-stats]", tbody),
-    $selHideOption = $('.table-filters-hide-option select'),
-    $opt = $('option:not(:first-child)', $selHideOption);
+        tbody = $(".filter-table tbody"),
+        trs = $("[data-stats]", tbody),
+        temp = { "stats": new Set() };
+
+    $.each(trs, function() {
+        if (typeof $(this).data('stats') != 'undefined'){
+            $stats = $(this).data('stats');
+            $stats = $stats.split(",");
+            $.each($stats, function(index, value) { temp.stats.add(value.trim()); });
+        }
+	});
+
+    // Adds item parameters
+	temp.stats.forEach(function (item) {
+        item = '<option value="' + item + '">' + item + '</option>';
+	    $("#table-filters .stats").append(item);
+	});
+
+    var $selHideOption = $('#table-filters select'),
+        $opt = $('option:not(:first-child)', $selHideOption);
+
     $("#table-filters select").each(function(i, select) {
         var el = $(select);
         pattern.push(select.value);
         el.change(function() {
         
-       // Скрывает выбранные уже параметры из остальных <select></select>
-        var $chosen = $selHideOption.map(function(i, el){
-            return $(':selected',el);
-        });
-        var $teamId = null;
-        $opt.prop('disabled', false);
-        $chosen.each(function(i, el){0
-            $teamId = $(el).val();
-            $opt.not(el).filter(function(){
-                return $(this).val() == $teamId;
-            }).prop('disabled', true);
+            // Hides already selected options from other <select></select>
+            var $chosen = $selHideOption.map(function(i, el){
+                console.log();
+                return $(':selected',el);
+            });
+            var $teamId = null;
+            $opt.prop('disabled', false);
+            $chosen.each(function(i, el){0
+                $teamId = $(el).val();
+                $opt.not(el).filter(function(){
+                    return $(this).val() == $teamId;
+                }).prop('disabled', true);
+            })
+            
+            pattern[i] = select.value;
+            var rows = trs.hide().filter(function(i, tr) {
+                var data = $(tr).data("stats").split(",");
+                var arr = pattern.slice(0);
+                data.forEach(function(a) {
+                    var i = arr.indexOf(a.trim());
+                    if(i != -1) arr.splice(i,1);
+                })
+                return arr.every(function(txt, k) {
+                    return txt == "Выбрать..."
+                })
+            }).show();
+            // Outputs the string "Items not found" if the results are "0".
+            if (rows.length == 0) {tbody.append("<tr><td colspan=\"3\">Предметы не найдены</td></tr>");}
         })
-        // конец кода
-        
-        pattern[i] = select.value;
-         var rows = trs.hide().filter(function(i, tr) {
-        	var data = $(tr).data("stats").split(", ");
-            var arr = pattern.slice(0);
-            data.forEach(function(a) {
-            var i = arr.indexOf(a);
-            if(i != -1) arr.splice(i,1);
-            })
-            return arr.every(function(txt, k) {
-                return txt == "Все"
-            })
-        }).show();
-        tbody.toggleClass("no-results", !rows.length )
-       })
     })
 });
 
 //Filter for equipment table
 //Author: Roni (Рони) Thanks to him for this script
 $(function() {
-    $(".stats").on("change", "input[type='checkbox']", function() {
-        $(this).closest("label").toggleClass("active", this.checked);
-     });
-
     var $tbody = $("#equipment-table").children("tbody");
     var $trs = $("tr", $tbody).toArray();
-    var colCount = $("#equipment-table").find("tr:first th").length;
-    $("#equipment-table").children("tbody").children("tr")
     var temp = {
 	    "stats": new Set(),
 	    "category": ["Голова", "Доспехи", "Руки", "Ноги", "Рубаха", "Пояс", "Штаны", "Шея", "Кольцо", "Правая руки", "Левая рука", "Только для спутников"],
@@ -228,64 +240,82 @@ $(function() {
         }
 	});
 	
-	// Добавляет параметры предмета
+	// Adds item parameters
 	temp.stats.forEach(function (item) {
-	    item = "<label class=\"checkbox\"><input type='checkbox' name='" + item + "'>" + item + "</label>";
+	    item = "<label class=\"checkbox\" value='" + item + "'><input type='checkbox' name='" + item + "'>" + item + "</label>";
 	    $("#settings .stats").append(item);
 	});
 	
-	// Добавляет классы предмета
+    // Adds item role
 	temp.role.forEach(function (item) {
-	    item = "<label class=\"checkbox\"><input type='checkbox' name='" + item + "'>" + item + "</label>";
+        item = '<option value="' + item + '">' + item + '</option>';
 	    $("#settings .role").append(item);
 	});
 
-	// Добавляет категории предмета в выпадающий список
+	// Adds item categories to the dropdown list
     temp.category.forEach(function (item) {
         item = '<option value="' + item + '">' + item + '</option>';
         $("#settings .category").append(item);
     });
 
-	// Добавляет категории предмета в выпадающий список
     item = '<option value="Обычный">Обычный</option><option value="Необычный">Необычный</option><option value="Редкий">Редкий</option><option value="Эпический">Эпический</option><option value="Легендарный">Легендарный</option><option value="Мифический">Мифический</option>';
     $("#settings .quality").append(item);
 
-	trs = $("#equipment-table").children("tbody").children("tr");
+    //Limit on the number of selected parameters
+    $('#settings .stats input[type=checkbox]').change(function(){
+        if($('#settings .stats input[type=checkbox]:checked').length >= 3){
+            $('#settings .stats input[type=checkbox]:not(:checked)').prop('disabled', true);
+        } else{
+            $('#settings .stats input[type=checkbox]:disabled').prop('disabled', false);
+        }
+    });
 
-	// Основной скрипт поиска
+	// Main search script
 	$('#settings').on('input', function() {
-        $tbody.html('')
-        $tbody.append(trs)
+        // Search by parameters
+        var pattern = [], trs = $("[data-stats]", $tbody), el;
+        $("#settings .stats :checked").each(function(i, checked) {
+            el = $(checked);
+            pattern.push(checked.name);
+        });
+        var rows = trs.hide().filter(function(i, tr) {
+            var data = $(tr).data("stats").split(",");
+            var arr = pattern.slice(0);
+            data.forEach(function(a) {
+                var i = arr.indexOf(a.trim());
+                if(i != -1) arr.splice(i,1);
+            });
 
-	    $.each($trs, function() {
-	        var $subject = $(this).data('subject'), $quality = $(this).data('quality'), $level = $(this).data('level');
-	        // Поиск по параметрам
-            if (typeof $(this).data('stats') != 'undefined'){
-                $stats = $(this).data('stats');
-                $stats = $stats.split(",");
-                $stats = $stats.some(function (e) {
-                   return $("#settings .stats [name=\"" + e.trim() + "\"]").is(':checked');
-                });
-                if (!$stats && $("#settings .stats :checked").get(0)) {
-                    $(this).remove();
-                    return;
-                }
-            }
+            return arr.every(function(txt, k) {
+                return txt == "";
+            });
 
-	        // Поиск по классам
+        }).show();
+
+        // Outputs the string "Items not found" if the results are "0".
+        if (rows.length === 0) {$tbody.append("<tr><td colspan=" + colCount + ">Предметы не найдены</td></tr>");}
+
+	    $.each($trs, function(index, tr) {
+            //ECMAScript 6
+            //let {subject, level, category, quality, role, stats} = $(tr).data();
+            
+            var $level = $(tr).data('level');
+            
+	        // Search by class
             if (typeof $(this).data('role') != 'undefined'){
                 $role = $(this).data('role');
-                $role = $role.split(",");
+                $role = $role.toLowerCase().split(",");
+                var $txt = $("#settings .role").val().toLowerCase();
                 $role = $role.some(function (e) {
-                   return $("#settings .role [name=\"" + e.trim() + "\"]").is(':checked');
+                    return e.trim() == $txt;
                 });
-                if (!$role && $("#settings .role :checked").get(0)) {
-                    $(this).remove();
+                if ($txt !== "любой класс" && !$role) {
+                    $(tr).hide();
                     return;
                 }
             }
 
-	        // Поиск по категориям
+	        // Search by category
             if (typeof $(this).data('category') != 'undefined'){
                 $category = $(this).data('category');
                 $category = $category.toLowerCase().split(",");
@@ -294,41 +324,52 @@ $(function() {
                     return e.trim() == $txt;
                 });
                 if ($txt !== "все" && !$category) {
-                    $(this).remove();
+                    $(tr).hide();
                     return;
                 }
             }
 
-	        // Поиск по качеству
-            var $txt = $("#settings .quality").val();
-            if ($txt.toLowerCase() !== "любое качество" && $txt.toLowerCase() !== $quality.toLowerCase()) {
-                $(this).remove();
-                return;
-            }
-
-	        // Поиск по названии
-	        var $search = $("[name='search']").val().toLowerCase();
-	        if ($search && $subject.toLowerCase().indexOf($search)) {
-	            $(this).remove();
-	            return;
+	        // Search by quality
+			if (typeof $(this).data('quality') != 'undefined'){
+	            var $txt = $("#settings .quality").val().toLowerCase();
+	            if ($txt !== "любое качество" && $txt !== $quality.toLowerCase()) {
+	                $(tr).hide();
+	                return;
+	            }
+			}
+	        // Search by name
+	        if (typeof $(this).data('subject') != 'undefined'){
+		        $subject = $(tr).data('subject')
+		        var $search = $("[name='search']").val().toLowerCase();
+		        if ($search && $subject.toLowerCase().indexOf($search)) {
+		            $(tr).hide();
+		            return;
+		        }
 	        }
 	
-	        // Поиск по минимальному уровню
+	        // Search by minimum level
 	        var $min = $("[name='min']").val();
 	        if ($min && $level < +$min) {
-	            $(this).remove();
+	            $(tr).hide();
 	            return;
 	        }
 	        
-	        // Поиск по максимальному уровню
+	        // Search by max level
 	        var $max =$("[name='max']").val();
 	        if ($max && $level > +$max) {
-	            $(this).remove();
+	            $(tr).hide();
 	            return;
 	        }
 	    });
 
-	    // Выводит строку "Предметы не найдены", если результатов "0".
-	    if ($tbody.children().length == 0) {$tbody.append("<tr><td colspan=" + colCount + ">Предметы не найдены</td></tr>");}
+	    // Outputs the string "Items not found" if the results are "0".
+		//ECMAScript 6
+		//if ($tbody.children().length === 0) {$tbody.append(`<tr><td colspan="${colCount}" style="text-align: center;">Предметы не найдены</td></tr>`);}
+		var colCount = $("#equipment-table > thead > tr > th").length;
+		if ($("#equipment-table > tbody > tr:visible").length === 0) {
+			$tbody.append('<tr id="last"><td colspan=\"' + colCount + '\" style="text-align: center;">Предметы не найдены</td></tr>');
+		}else{
+			$("#equipment-table > tbody > tr#last").remove();
+		}
 	});
 });

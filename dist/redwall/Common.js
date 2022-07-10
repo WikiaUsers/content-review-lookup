@@ -5,81 +5,85 @@
 // Twitter Follow Button
 ////////////////////////////////////////////////////////////////////
 */
-mw.loader.using("mediawiki.api", function() {
-    var config = mw.config.get([
-        'wgArticlePath',
-        'wgServer'
-    ]);
+mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
+    // Pages to fetch from the category.
+    // The number of HTTP requests to make rises with the number of pages to fetch,
+    // so don't set this to a very high number.
+    var NUMBER_OF_PAGES = 10;
     if ($('.bloglist').length + $('.blogimage').length + $('.blogtime').length === 0) {
         return;
     }
-    console.log('hm');
     var Bloglist = {
         init: function() {
-            mw.loader.using('mediawiki.api').then($.proxy(function() {
-                this.api = new mw.Api();
-                this.api.get({
-                    action: 'query',
-                    list: 'categorymembers',
-                    cmtitle: 'Category:News posts',
-                    cmsort: 'timestamp',
-                    cmdir: 'desc',
-                    cmlimit: 10
-                }).done($.proxy(function(d) {
-                    if(!d.error) {
-                        this.data = {};
-                        this.fetchData(d.query.categorymembers.map(function(el) {
-                            return el.title;
-                        }));
-                    }
-                }, this));
-            }, this));
             ['list', 'image', 'time'].forEach(this.initElement, this);
-        },
-        initElement: function(t) {
-            t = 'blog' + t;
-            this[t] = {};
-            $('.' + t).each($.proxy(function(_, el) {
-                el = $(el);
-                this[t][el.text()] = el;
-            }, this));
-            console.log(this);
-        },
-        fetchData: function(d) {
+            this.data = {};
+            this.api = new mw.Api();
+            this.indices = {};
             this.api.get({
                 action: 'query',
-                titles: d.join('|'),
-                prop: 'images|revisions',
-                rvprop: 'timestamp',
-                imlimit: 500
-            }).done($.proxy(function(d) {
-                console.log(d);
-                if(!d.error) {
-                    this.processData(d.query.pages);
-                }
-            }, this));
+                list: 'categorymembers',
+                cmtitle: 'Category:News posts',
+                cmsort: 'timestamp',
+                cmdir: 'desc',
+                cmlimit: NUMBER_OF_PAGES,
+                formatversion: 2
+            }).done(function(data) {
+                data.query.categorymembers.reverse().forEach(function(page, index) {
+                    this.indices[page.title] = index + 1;
+                    this.fetchData(page.title);
+                }, this);
+            }.bind(this));
         },
-        processData: function(d) {
-            var i = 0;
-            $.each(d, $.proxy(function(k, v) {
-                ++i;
-                if(this.bloglist[i]) {
-                    this.bloglist[i].html(mw.html.element('a', {
-                        href: config.wgArticlePath.replace('$1', v.title)
-                    }, v.title.split(':').splice(1).join(':')));
+        initElement: function(type) {
+            this[type] = {};
+            $('.blog' + type).each(function(_, element) {
+                var $element = $(element);
+                var index = $element.text();
+                if (!this[type][index]) {
+                    this[type][index] = [];
                 }
-                if(this.blogimage[i] && v.images && v.images.length > 0) {
-                    this.blogimage[i].html(mw.html.element('img', {
-                        src: config.wgArticlePath.replace('$1', 'Special:FilePath/' + v.images[0].title)
+                this[type][index].push($element);
+            }.bind(this));
+        },
+        fetchData: function(title) {
+            this.api.get({
+                action: 'query',
+                titles: title,
+                prop: 'images|revisions',
+                rvdir: 'newer',
+                rvlimit: 1,
+                rvprop: 'timestamp',
+                imlimit: 500,
+                formatversion: 2
+            }).done(this.processData.bind(this));
+        },
+        processData: function(data) {
+            var page = data.query.pages[0];
+            var index = this.indices[page.title];
+            console.log(page, index, this.list[index], this.image[index], this.time[index])
+            if (this.list[index]) {
+                this.list[index].forEach(function($list) {
+                    $list.html($('<a>', {
+                        href: mw.util.getUrl(page.title),
+                        text: page.title.split(':').splice(1).join(':')
                     }));
-                }
-                if(this.blogtime[i]) {
-                    this.blogtime[i].text(new Date(v.revisions[0].timestamp).toLocaleString());
-                }
-            }, this));
+                }, this);
+            }
+            if (this.image[index] && page.images && page.images.length > 0) {
+                this.image[index].forEach(function($image) {
+                    $image.html($('<img>', {
+                        src: mw.util.getUrl('Special:FilePath/' + page.images[0].title)
+                    }));
+                });
+            }
+            if (this.time[index]) {
+                this.time[index].forEach(function($time) {
+                    $time.text(new Date(page.revisions[0].timestamp).toLocaleString());
+                });
+            }
         }
     };
-    $($.proxy(Bloglist.init, Bloglist));
+    Bloglist.init();
 });
 
 mw.loader.using("mediawiki.api", function() {

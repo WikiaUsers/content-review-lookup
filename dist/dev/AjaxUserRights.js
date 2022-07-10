@@ -100,17 +100,15 @@ $(function() {
         }
         // query itself inspired by GiveChatMod
         api.get({
-            action: 'query',
-            list: 'users',
-            meta: 'tokens',
-            type: 'userrights',
-            ususers: target,
-            ustoken: 'userrights',
+            action: "query",
+            format: "json",
+            meta: "tokens",
+            type: "userrights",
         }).done(function(data) {
             opts = {
                 action: 'userrights',
                 user: target,
-                token: (data.query.tokens || data.query.users[0]).userrightstoken,
+                token: data.query.tokens.userrightstoken,
                 reason: $('#aur-reason').val(),
                 remove: remove.join('|'),
                 add: add.join('|')

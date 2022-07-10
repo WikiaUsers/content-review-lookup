@@ -12,6 +12,17 @@ window.AddRailModule = [
     'Template:RailModule2',
 ];
 
+//Шаблон:Nav - lore
+$(function(){
+    function navtemplateload(){
+        if ( mw.config.get('wgNamespaceNumber') == 0) {
+                    $('<div id="navtemplateload"></div>').prependTo(".page-footer");
+                    $('#navtemplateload').load('https://hollowknight.fandom.com/ru/wiki/Шаблон:Лор .hk-navlore');
+        }
+    }
+$(navtemplateload);
+});
+
 /*Адаптация виджета в лайт скине*/
 $(function(){
 if ($('body').hasClass('theme-fandomdesktop-light')) {

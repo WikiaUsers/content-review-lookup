@@ -38,8 +38,22 @@ $(function(){
 	
 	//I think this needs to try catch block as the .getAttribute() throws the error when you don't have the visual edit button present, thus moving to the end
 	CreateEditSourceLink();
+	SoS2();
 });
 
+function SoS2(){
+	$(".sos2 > .sosPerk").each(function(i){
+	    $(this).hover(
+	        function(){
+	            $(this).addClass("sosPerkHovered");
+	            $(this).parent().children().filter(":not(.sosPerkHovered)").addClass("sosPerkNotHovered");
+	        },
+	        function(){
+	            $(this).removeClass("sosPerkHovered");
+	            $(this).parent().children().filter(":not(.sosPerkHovered)").removeClass("sosPerkNotHovered");
+	     });
+	});
+}
 
 function GetInceptionPerksHandler(year){
 	return function(){

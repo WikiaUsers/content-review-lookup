@@ -20,4 +20,7 @@ window.discussEmbedSortTrending = 0;
 window.BackToTopArrow = true;
 
 
-window.HeaderLinksCopyOnClick = true
+window.HeaderLinksCopyOnClick = true;
+
+
+window.ecpButton = true;

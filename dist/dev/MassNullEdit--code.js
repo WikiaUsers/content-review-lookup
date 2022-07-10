@@ -4,9 +4,6 @@
  * @author Ozuzanna
  */
 
-/*jslint browser, single, long */
-/*global confirm, jQuery, mediaWiki, dev */
-
 (function ($, mw) {
     'use strict';
 
@@ -59,7 +56,8 @@
         action: 'edit',
         summary: 'Null edit (this edit should not be visible)',
         notminor: true,
-        prependtext: ''
+        prependtext: '',
+        nocreate: true
     };
     var i18n;
     // Media, Special, Message Wall, Thread, Board
@@ -156,6 +154,14 @@
             return;
         }
 
+        var delay = Number(window.nullEditDelay) || 1000;
+
+        // assume extremely low custom delays (less than 0.1 seconds) are
+        // meant to be seconds, to avoid being repeatedly rate-limited
+        if (delay < 100) {
+            delay *= 1000;
+        }
+
         var pages = input.value.split('\n');
         var page;
 
@@ -167,7 +173,7 @@
 
         if (page) {
             nullEdit(page.trim());
-            setTimeout(process, window.nullEditDelay || 1000);
+            setTimeout(process, delay);
         } else {
             log(i18n('notice-finished'));
             addToInput(failedPages);
@@ -493,13 +499,13 @@
         var i18nMsgs = new $.Deferred();
         var waitFor = [i18nMsgs];
 
-        mw.loader.load(devLoadUrl.replace('script', 'style') + 'MassNullEdit.css&cb=20210606', 'text/css');
+        mw.loader.load(devLoadUrl.replace('script', 'style') + 'MassNullEdit.css', 'text/css');
 
-        if (!(mw.libs.QDmodal && mw.libs.QDmodal.version >= 20210606)) {
+        if (!mw.libs.QDmodal) {
             waitFor.push($.ajax({
                 cache: true,
                 dataType: 'script',
-                url: devLoadUrl + 'QDmodal.js&cb=20210606'
+                url: devLoadUrl + 'QDmodal.js'
             }));
         }
 

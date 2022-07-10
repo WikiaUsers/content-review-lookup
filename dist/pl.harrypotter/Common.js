@@ -1,29 +1,12 @@
-/* Umieszczony tutaj kod JavaScript zostanie załadowany przez każdego użytkownika, podczas każdego ładowania strony. */
-/* Import skryptów */
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:ReferencePopups/code.js',
-        'u:dev:MediaWiki:AddRailModule/code.js'
-    ]
-});
-
-
 /* Konfiguracja taga nieaktywnych użytkowników */
 window.InactiveUsers = {
     text: {
-        unknown: 'Nieaktywny',
+        unknown: 'Nieaktywny/a',
+        male: 'Nieaktywny',
         female: 'Nieaktywna'
     },
     months: 2
 };
 
-/* Drugi moduł */
-$(function() {
-    $('<section>', {
-        class: 'railModule2 rail-module',
-        id: 'DiscordModule'
-    })
-    .appendTo( '#WikiaRail' )
-    .load( mw.util.getUrl( 'Szablon:DiscordModule', { action: 'render' } ) );
-});
+/* Dodatkowe moduły */
+window.AddRailModule = ['Szablon:Czy wiesz, że', 'Szablon:Discord'];

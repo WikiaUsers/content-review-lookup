@@ -1,1 +1,0 @@
-importScript('MediaWiki:Chat.js/options.js');

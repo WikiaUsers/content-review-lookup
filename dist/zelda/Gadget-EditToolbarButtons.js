@@ -32,7 +32,7 @@ var customizeClassicToolbar = function(){
 	
 	// Start with web cite
 	mw.toolbar.addButton( {
-		imageFile: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/9/91/Button_cite_web.png',
+		imageFile: 'https://zelda.fandom.com/media/zelda.gamepedia.com/9/91/Button_cite_web.png',
 		speedTip: 'Web Citation',
 		tagOpen: '<ref>{{Cite Web|quote= ',
 		tagClose: "|author= |published= |retrieved=" + nowmonth + " " + nowday + ", " + nowyear + "|url= |title= |site= |type=}}</ref>",
@@ -40,29 +40,29 @@ var customizeClassicToolbar = function(){
 		imageId: ''
 	} );
 	
-	// Cite book
+	// Cite Book
 	mw.toolbar.addButton( {
-		imageFile: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/e/ef/Button_cite_book.png',
+		imageFile: 'https://zelda.fandom.com/media/zelda.gamepedia.com/e/ef/Button_cite_book.png',
 		speedTip: 'Cite Book',
-		tagOpen: '<ref>{{Cite Book|quote= ',
+		tagOpen: '<ref>{{Cite Book|type= |quote= ',
 		tagClose: '|book= |publisher= |page= }}</ref>',
 		sampleText: '',
 		imageId: ''
 	} );
 	
-	// Cite guide
+	// Cite Guide
 	mw.toolbar.addButton( {
-		imageFile: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/e/ef/Button_cite_book.png',
+		imageFile: 'https://zelda.fandom.com/media/zelda.gamepedia.com/e/ef/Button_cite_book.png',
 		speedTip: 'Cite Guide',
 		tagOpen: '<ref>{{Cite Guide|quote= ',
-		tagClose: '|game= |publisher= |page= }}</ref>',
+		tagClose: '|game= |publisher= |page= |edition= |year= }}</ref>',
 		sampleText: '',
 		imageId: ''
 	} );
 	
-	// Cite person
+	// Cite Person
 	mw.toolbar.addButton( {
-		imageFile: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/5/53/Button_cite_person.png',
+		imageFile: 'https://zelda.fandom.com/media/zelda.gamepedia.com/5/53/Button_cite_person.png',
 		speedTip: 'Cite Person',
 		tagOpen: '<ref>{{Cite Person|quote= ',
 		tagClose: '|name= |url= |title= }}</ref>',
@@ -70,9 +70,9 @@ var customizeClassicToolbar = function(){
 		imageId: ''
 	} );
 	
-	// Cite episode
+	// Cite Episode
 	mw.toolbar.addButton( {
-		imageFile: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/1/1c/Button_cite_episode.png',
+		imageFile: 'https://zelda.fandom.com/media/zelda.gamepedia.com/1/1c/Button_cite_episode.png',
 		speedTip: 'Cite Episode',
 		tagOpen: '<ref>{{Cite Episode|quote= ',
 		tagClose: '|name= |show= |episode= |time= }}</ref>',
@@ -82,7 +82,7 @@ var customizeClassicToolbar = function(){
 	
 	// Cite Manual
 	mw.toolbar.addButton( {
-		imageFile: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/5/5d/Button_cite_manual.png',
+		imageFile: 'https://zelda.fandom.com/media/zelda.gamepedia.com/5/5d/Button_cite_manual.png',
 		speedTip: 'Cite Manual',
 		tagOpen: '<ref>{{Cite Manual|quote= ',
 		tagClose: '|game= |page= }}</ref>',
@@ -92,7 +92,7 @@ var customizeClassicToolbar = function(){
 	
 	// Regular cite template
 	mw.toolbar.addButton( {
-		imageFile: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/2/20/Button_cite_template.png',
+		imageFile: 'https://zelda.fandom.com/media/zelda.gamepedia.com/2/20/Button_cite_template.png',
 		speedTip: 'Regular citation',
 		tagOpen: '<ref>{{Cite|(Quote)',
 		tagClose: '|(Person)|(Game)}}</ref>',
@@ -110,7 +110,7 @@ var customizeWikiEditor = function () {
 			'Cite': {
 				label: 'Regular Citation',
 				type: 'button',
-				icon: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/2/20/Button_cite_template.png',
+				icon: 'https://zelda.fandom.com/media/zelda.gamepedia.com/2/20/Button_cite_template.png',
 				'action': {
 					'type': 'encapsulate',
 					'options': {
@@ -123,7 +123,7 @@ var customizeWikiEditor = function () {
 			'Cite Person': {
 				label: 'Cite Person',
 				type: 'button',
-				icon: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/5/53/Button_cite_person.png',
+				icon: 'https://zelda.fandom.com/media/zelda.gamepedia.com/5/53/Button_cite_person.png',
 				'action': {
 					'type': 'encapsulate',
 					'options': {
@@ -136,7 +136,7 @@ var customizeWikiEditor = function () {
 			'Cite Book': {
 				label: 'Cite Book',
 				type: 'button',
-				icon: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/e/ef/Button_cite_book.png',
+				icon: 'https://zelda.fandom.com/media/zelda.gamepedia.com/e/ef/Button_cite_book.png',
 				'action': {
 					'type': 'encapsulate',
 					'options': {
@@ -149,7 +149,7 @@ var customizeWikiEditor = function () {
 			'Cite Guide': {
 				label: 'Cite Guide',
 				type: 'button',
-				icon: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/e/ef/Button_cite_book.png',
+				icon: 'https://zelda.fandom.com/media/zelda.gamepedia.com/e/ef/Button_cite_book.png',
 				'action': {
 					'type': 'encapsulate',
 					'options': {
@@ -162,7 +162,7 @@ var customizeWikiEditor = function () {
 			'Cite Manual': {
 				label: 'Cite Manual',
 				type: 'button',
-				icon: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/5/5d/Button_cite_manual.png',
+				icon: 'https://zelda.fandom.com/media/zelda.gamepedia.com/5/5d/Button_cite_manual.png',
 				'action': {
 					'type': 'encapsulate',
 					'options': {
@@ -175,7 +175,7 @@ var customizeWikiEditor = function () {
 			'Cite Episode': {
 				label: 'Cite Episode',
 				type: 'button',
-				icon: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/1/1c/Button_cite_episode.png',
+				icon: 'https://zelda.fandom.com/media/zelda.gamepedia.com/1/1c/Button_cite_episode.png',
 				'action': {
 					'type': 'encapsulate',
 					'options': {
@@ -188,7 +188,7 @@ var customizeWikiEditor = function () {
 			'Cite Web': {
 				label: 'Web Citation',
 				type: 'button',
-				icon: 'https://zelda.gamepedia.com/media/zelda.gamepedia.com/9/91/Button_cite_web.png',
+				icon: 'https://zelda.fandom.com/media/zelda.gamepedia.com/9/91/Button_cite_web.png',
 				'action': {
 					'type': 'encapsulate',
 					'options': {

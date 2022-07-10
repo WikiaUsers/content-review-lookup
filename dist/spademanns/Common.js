@@ -155,7 +155,7 @@
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/da.uncyclopedia/images/4/49/Button_talk.png",
      "speedTip": "Egen signatur",
-     "tagOpen": "~~~",
+     "tagOpen": "[[Bruger:CooperDK|CooperDK]] ([[Brugerdiskussion:CooperDK|diskussion]])",
      "tagClose": "",
      "sampleText": ""};
 }

@@ -13,6 +13,8 @@ $(function() {
 
 		mw.config.set('isDarkTheme', newTheme === 'dark');
 
+		$('.staffSigImage use').attr('xlink:href', '#wds-brand-fandom-logo' + (newTheme === 'dark' ? '-light' : ''));
+
 		$('.caburum-theme-switcher').empty()
 			.append(window.dev.wds.icon((newTheme === 'light' ? 'moon' : 'sun') + '-small'));
 		$('.caburum-theme-switcher').attr('title', mw.msg('fd-community-header-' + (newTheme === 'light' ? 'dark' : 'light') + '-theme'));

@@ -94,7 +94,7 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 					|| $content.find('span.mw-usertoollinks > a:first-of-type').attr('title')).replace(/([Mm]essage[_ ]wall:|<\/?bdi>)/gmi, ''),
 					title = $content.find('span > .mw-usertoollinks + a + a').html();
  
-				var isBlocked = $content.find('p').first().html().match(/Actions taken: .*?block.*?;/gmi) ? true : false;
+				// var isBlocked = $content.find('p').first().html().match(/Actions taken: .*?block.*?;/gmi) ? true : false;
 				var canAddEdit =
 				   $content.find('p').first().html().match(/action "edit"/gmi) ? true : false;
  
@@ -258,9 +258,16 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 								class: "qdmodal-button",
 							}),
 							$('<a>', {
-								html: isBlocked ? "Unblock": "Block",
-								title: (isBlocked ? "Special:Unblock/" : "Special:Block/") + user,
-								href: pagePathname + (isBlocked ? "Special:Unblock/" : "Special:Block/") + user,
+								html: "Block",
+								title: "Special:Block/" + user,
+								href: pagePathname + "Special:Block/" + user,
+								target: "_blank",
+								class: "qdmodal-button",
+							}),
+							$('<a>', {
+								html: "Unblock",
+								title: "Special:Unblock/" + user,
+								href: pagePathname + "Special:Unblock/" + user,
 								target: "_blank",
 								class: "qdmodal-button",
 							}),

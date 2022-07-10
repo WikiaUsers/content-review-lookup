@@ -1,3 +1,4 @@
+// <nowiki>
 /* DupeArgs
  *
  * Finds pages with templates that have duplicate parameters, and reports them
@@ -733,3 +734,4 @@
         loading: loading
     };
 })();
+// </nowiki>

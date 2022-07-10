@@ -1,138 +1,308 @@
 /**
- * WikiActivity v2.0.0
- * -------------------
- * This script recreates the legacy Special:WikiActivity page for the Unified Community
- * Platform (UCP) with a modernized appearance, updates, and new features.
+ * WikiActivity
  * 
- * This is a high-traffic script and is a community project. If you feel the need to
- * make changes to the script, you are welcome to.
+ * Recreates the legacy Special:WikiActivity page on the Unified
+ * Community Platform with a modernized appearance and some upgrades.
  * 
  * Author: Ultimate Dark Carnage
+ * Version: v1.1a
  **/
-( function( window, $, mw, rwaOptions ) { 
+( function( window, $, mw ) { 
 	"use strict";
-	if ( rwaOptions.noop || window.rwaLoaded ) return;
-	window.rwaLoaded = true;
 	
-	const mwc = mw.config.get( );
+	// Escapes RegExp characters
+	function regesc( s ) {
+        return s.replace( /[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, "\\$&" );
+    }
+    
+    // Checks if the value is a plain object
+    function isPlainObject( o ) {
+        const ts = Object.prototype.toString;
+        return ts.call( o ) === "[object Object]";
+    }
+    
+	// Creates the UCX object
+	window.UCX = $.extend( { }, window.UCX );
 	
+	// Creates the Dev object
+	window.dev = $.extend( { }, window.dev );
+	
+	// Creates the WikiActivity object
 	const WikiActivity = {
-		// Dependency objects
-		dependencies: Object.freeze( [
-			"mediawiki.util",
-			"mediawiki.api",
-			"mediawiki.Title"
+		// The current script name
+		NAME: "WikiActivity",
+		// The current script version
+		VERSION: "v1.1a",
+		// WikiActivity options
+		OPTIONS: $.extend( {
+			// A list of namespaces to include
+			includeNamespaces: [ ],
+			// A list of namespaces to exclude
+			excludeNamespaces: [ ],
+			// Determines whether to show bot edits
+			showBotEdits: false,
+			// Determines whether to show minor edits
+			showMinorEdits: false,
+			// Determines whether to show anon edits
+			showAnonEdits: false,
+			// Determines whether to load the right rail
+			loadRail: false,
+			// Limit of entries to show
+			limit: 50,
+			// Determines whether to automatically load newer entries
+			ajaxRefresh: false,
+			// The timeout for loading new entries
+			timeout: 20000,
+			// Changes the RC link back to WikiActivity.
+			// This option has been set to false by default for sitewide use.
+			headerLink: false
+		}, window.rwaOptions, window.wikiActivityOptions ),
+		// A list of default namespaces
+		DEFAULT_NAMESPACES: Object.freeze( [
+			0, // Main/Article namespace
+			1, // Talk namespace
+			2, // User namespace
+			3, // User talk namespace
+			4, // Project (site name) namespace
+			5, // Project (site name) talk namespace
+			6, // File namespace
+			7, // File talk namespace
+			10, // Template namespace
+			11, // Template talk namespace
+			110, // Forum namespace
+			111, // Forum talk namespacce
+			500, // User blog namesapce
+			501, // User blog comment
+			828, // Module namespace
+			829, // Module talk namespace
+			2900, // Map namespace
+			2901 // Map talk namespace
 		] ),
-		devScripts: Object.freeze( [
-			{ name: "i18n",  source: "MediaWiki:I18n-js/code.js" },
-			{ name: "colors", source: "MediaWiki:Colors/code.js" },
-			{ name: "wds", source: "MediaWiki:WDSIcons/code.js" },
-			{ name: "dorui", source: "MediaWiki:Dorui.js" }
+		// A list of talk namespaces
+		TALK_NAMESPACES: Object.freeze( [ 1, 3, 5, 7, 11, 111, 829, 2901 ] ),
+		// A list of canonical subpages
+		SUBPAGES: Object.freeze( [
+			// The main activity feed
+			"main",
+			// Followed pages only
+			"watchlist"
 		] ),
-		scripts: Object.freeze( [
-			mwc.wgUserName + "/wikiactivity.js"
-		] ),
-		stylesheets: Object.freeze( [
-			"u:dev:MediaWiki:WikiActivity.css",
-			mwc.wgUserName + "/wikiactivity.css"
-		] ),
-		// State objects
-		state: {
-			loaded: false,
-			isActivityPage: false,
-			currentSubpage: ""
-		},
-		// Default configurations
-		defaults: Object.freeze( { 
-			limit: 50, // The maximum number of pages to show
-			theme: "main", // The theme to display
-			showBotEdits: false, // Determines whether to show bot edits
-			loadModule: false, // Determines whether to load the activity feed module
-			headerLink: false, // Determines whether to change the RC link to Wiki Activity (set to false by default for sitewide use)
-			refresh: false, // Determines whether to refresh the activity feed
-			refreshDelay: 5 * 60 * 1000, // Delay for refreshing the activity feed
-			timeout: 10 * 1000 // The timeout for loading the activity feed
+		// A group of icon names
+		ICON_NAMES: Object.freeze( { 
+			"pencil": Object.freeze( [ "edit" ] ),
+			"add": Object.freeze( [ "new" ] ),
+			"comment": Object.freeze( [ "comment" ] ),
+			"bubble": Object.freeze( [ "talk" ] ),
+			"tag": Object.freeze( [ "categorize", "tag" ] ),
+			"clock": Object.freeze( [ "diff", "history" ] ),
+			"gear": Object.freeze( [ "options", "settings" ] ),
+			"more": Object.freeze( [ "more" ] )
 		} ),
-		// Canonical subpages
-		subpages: Object.freeze( [ 
-			"main", // The main activity page
-			"watchlist", // Watched (followed) pages and posts only
-			"feeds", // Feeds activity only
-			"media" // Media activity only
+		// A group of default query parameters
+		DEFAULT_QUERY_PARAMS: Object.freeze( { 
+			recentchanges: Object.freeze( { 
+				action: "query",
+				list: "recentchanges",
+				rcprop: [ "comment", "timestamp", "user", "title", "userid", "ids" ],
+				rctype: [ "categorize", "edit", "new" ],
+				rcdir: "older",
+				rcshow: [ ],
+				format: "json"
+			} ),
+			watchlist: Object.freeze( { 
+				action: "query",
+				list: "watchlist",
+				wlprop: [ "comment", "timestamp", "user", "title", "userid", "ids" ],
+				wltype: [ "categorize", "edit", "new" ],
+				wldir: "older",
+				wlshow: [ ],
+				format: "json"
+			} )
+		} ),
+		// Activity type aliases
+		ALIASES: Object.freeze( { 
+			watchlist: Object.freeze( [ "following" ] )
+		} ),
+		// MediaWiki dependencies
+		MW_DEPENDENCIES: Object.freeze( [ 
+			"mediawiki.Title",
+			"mediawiki.api",
+			"mediawiki.Uri",
+			"skin.fandomdesktop.rail.toggle.js"
 		] ),
-		// Conditions
-		conditions: Object.freeze( {
-			can_phalanx: Object.freeze( [ 
-				"staff",
-				"helper",
-				"wiki-representative",
-				"wiki-specialist",
-				"soap"
-			] ),
-			can_block: Object.freeze( [ 
-				"staff",
+		// Local scripts to load
+		LOCAL_SCRIPTS: Object.freeze( [
+			// User script
+			"User:" + mw.config.values.wgUserName + "/wikiactivity.js",
+			// Community-wide script
+			"MediaWiki:Fandomdesktop.js/wikiactivity.js"
+		] ),
+		// Dev scripts
+		DEV_SCRIPTS: Object.freeze( [ 
+			{ name: "dev.i18n", article: "MediaWiki:I18n-js/code.js" },
+			{ name: "dev.colors", article: "MediaWiki:Colors/code.js" },
+			{ name: "dev.wds", article: "MediaWiki:WDSIcons/code.js" },
+			{ name: "doru.ui", article: "MediaWiki:Dorui.js" }
+		] ),
+		// Stylesheets to load
+		STYLESHEETS: Object.freeze( [ 
+			// The required stylesheet to load
+			"u:dev:MediaWiki:WikiActivity.css",
+			// User stylesheet
+			"User:" + mw.config.values.wgUserName + "/wikiactivity.css",
+			// Local stylesheet
+			"MediaWiki:Fandomdesktop.css/wikiactivity.css"
+		] ),
+		// Checks if a user is a member of a list of user groups
+		isMember: function( groups ) { 
+			groups = Array.isArray( groups ) ? groups : [ groups ];
+			return groups.some( function( group ) { 
+				return mw.config.values.wgUserGroups.includes( group );
+			} );
+		},
+		// Sets up the WikiActivity script
+		setup: function( ) { 
+			// Initializes the beforeload hook
+			mw.hook( "wikiactivity.beforeload" ).fire( this );
+			
+			// Checks if the user is a staff member
+			this.isStaff = this.isMember( "staff" );
+			
+			// Checks if the user can block
+			this.canBlock = this.isStaff || this.isMember( [
 				"helper",
 				"wiki-representative",
 				"wiki-specialist",
 				"soap",
 				"global-discussions-moderator",
 				"sysop"
-			] ),
-			is_mod: Object.freeze( [
-				"staff",
-				"helper",
-				"wiki-representative",
-				"wiki-specialist",
-				"soap",
-				"global-discussions-moderator",
-				"sysop",
-				"discussion-moderator",
+			] );
+			
+			// Checks if the user has moderator rights
+			this.isMod = this.canBlock || this.isMember( [
+				"discussions-moderator",
 				"threadmoderator"
-			] ),
-			can_rollback: Object.freeze( [
-				"staff",
-				"helper",
-				"wiki-representative",
-				"wiki-specialist",
-				"soap",
-				"global-discussions-moderator",
-				"sysop",
-				"discussion-moderator",
-				"threadmoderator",
-				"rollback"
-			] ),
-			can_patrol: Object.freeze( [
-				"staff",
-				"helper",
-				"wiki-representative",
-				"wiki-specialist",
-				"soap",
-				"global-discussions-moderator",
-				"sysop",
-				"discussion-moderator",
-				"threadmoderator",
-				"patroller"
-			] )
-		} ),
-		iconNames: Object.freeze( { 
-			edit: "pencil",
-			"new": "add",
-			comment: "comment",
-			talk: "bubble",
-			categorize: "tag",
-			diff: "clock",
-			options: "gear",
-			more: "more"
-		} ),
-		avatarCache: new Map( ),
-		feedItems: [ ],
-		init: function( ) {
-			// If the namespace is not a special page, skip to loading the header link
-			if ( mwc.wgCanonicalNamespace !== -1 ) return this.loadHeaderLink( );
-			// Fetches the current subpage (if it is defined)
-			const subpage = mwc.wgTitle.split( "/" ).length > 1 ? mwc.wgTitle.split( "/" )[ 1 ] : "";
+			] );
 			
+			// Checks if the user can rollback
+			this.canRollback = this.isMod || this.isMember( "rollback" );
 			
+			// Checks if the user can patrol
+			this.canPatrol = this.isMod || this.isMember( "patrol" );
+			
+			// Loads all resources
+			this.loadMwDependencies( )
+				.then( this.loadLocalScripts.bind( this ) )
+				.then( this.loadResources.bind( this ) )
+				.then( this.initialize.bind( this ) );
+		},
+		// Loads all MediaWiki dependencies
+		loadMwDependencies: function( ) { 
+			return mw.loader.using( this.MW_DEPENDENCIES );
+		},
+		// Loads all local scripts
+		loadLocalScripts: function( ) { 
+			return window.importArticles( { 
+				type: "script",
+				articles: this.LOCAL_SCRIPTS
+			} );
+		},
+		// Loads all other resources
+		loadResources: function( ) { 
+			return Promise.all( this.DEV_SCRIPTS.map( function( script ) {
+				const ctx = this;
+				return new Promise( function( resolve, reject ) { 
+					const params = Object.freeze( { 
+						type: "script", 
+						article: script.article 
+					} );
+					
+					importArticle( params )
+						.then( function( ) { 
+							mw.hook( script.name ).add( resolve );
+						} )
+						[ "catch" ]( reject );
+				} );
+			}, this ) );
+		},
+		// Initializes the script
+		initialize: function( resources ) { 
+			this.i18no = resources[ 0 ];
+			this.colors = resources[ 1 ];
+			this.wds = resources[ 2 ];
+			this.ui = resources[ 3 ];
+			
+			mw.hook( "wikiactivity.init" ).fire( this );
+			
+			this.i18no.loadMessages( this.NAME )
+				.then( this.start.bind( this ) );
+		},
+		// Starts the script
+		start: function( i18n ) { 
+			this.i18n = i18n;
+			
+			this.msg = function( ) { 
+				const args = Array.from( arguments );
+				return this.i18n.msg.apply( this.i18n, args );
+			};
+			
+			this.msgFromContentLang = function( ) { 
+				const args = Array.from( arguments );
+				return this.i18n
+					.inContentLang( )
+					.msg.apply( this.i18n, args );
+			};
+			
+			this.matchesPage = function( ) { 
+				// The main page title
+				const title = this.msgFromContentLang( "page-title" ).plain( );
+				// Returns false if the page is not a special page
+				if ( mw.config.values.wgNamespaceNumber !== -1 ) return false;
+				// Splits the title into parts
+				const parts = mw.config.values.wgTitle.split( "/" );
+				// The main canonical title
+				const pageTitle = parts.shift( );
+				return ( title === mainTitle || mainTitle === "WikiActivity" );
+			};
+			
+			mw.hook( "wikiactivity.msgload" ).fire( this );
+			
+			if ( this.matchesPage( ) ) return this.initActivityFeed( );
+			return this.initFallback( );
+		},
+		//
+		initFallback: function( ) { 
+			if ( this.matchesPage( ) ) return false;
+			
+			// Adds a link to the toolbar
+			this.addToolbarLink( );
+			
+			// Converts the header link
+			this.convertHeaderLink( );
+			
+			// Loads the right rail
+			this.loadRail( );
+		},
+		//
+		addToolbarLink: function( ) { 
+			const pageSuffix = this.msgFromContentLang( "page-title" ).plain( );
+			
+			const pageTitle = mw.config.values.wgFormattedNamespaces[ -1 ] + pageSuffix;
+			
+			const link = this.ui.li( { 
+				"class": "overflow",
+				"id": "wikiactivity-link",
+				 child: this.ui.a( { 
+				 	href: mw.util.getUrl( pageTitle ),
+				 	text: this.msg( "link-title" ).plain( )
+				 } )
+			} );
+			
+			const tools = document.querySelector( "#WikiaBarWrapper .tools" );
+			
+			tools.insertAdjacentElement( "afterbegin", link );
 		}
 	};
-}( window, jQuery, mediaWiki, $.extend( { }, window.rwaOptions ) ) );
+	
+	window.WikiActivity = WikiActivity;
+} )( window, jQuery, mediaWiki );

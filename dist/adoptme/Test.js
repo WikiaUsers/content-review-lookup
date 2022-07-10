@@ -2,7 +2,7 @@
 Title        :   BlockSummary
 Description  :   Displaying a summary of user's block on the blocked user's "User" Namespace pages
 Author       :   Vastmine1029
-Version      :   1.0
+Version      :   1.1
 *************/
 
 
@@ -16,8 +16,8 @@ mw.loader.using('mediawiki.api', function() {
 	var parsedBlockReason; // parsed reason stored from parse API output
 	var startDate, startTime, startHour, startMinute, startSecond, start_am_pm, blockStartDateTime, blockStartDateTimeHHMMSS; // start time variables
 	var endDate, endTime, endHour, endMinute, endSecond, blockEndDateTime, blockEndDateTimeHHMMSS; // end time variables
-	var temp; // declaring variables for formatting text
-	var sitename, domain, rootdomain, subdomain;
+	var temp; // declaring variable for formatting text
+	var sitename, lang, langForSiteName = "", domain, rootdomain, subdomain; // cariables for domain-related stuff
 
 	api.get({
 		action: 'query',
@@ -25,6 +25,11 @@ mw.loader.using('mediawiki.api', function() {
 		bkusers: user,
 	}).then(function(d) {
 		data = d.query.blocks;
+		
+		// if the user is not blocked, terminate program
+		if (data === undefined || data.length < 1) { 
+			return;
+		}
 		
 		blockr = data[0].reason; // fetching block reason
 		blockID = data[0].id; // fetching block ID
@@ -37,11 +42,19 @@ mw.loader.using('mediawiki.api', function() {
 			meta: 'siteinfo'
 		}).then(function(d) {
 			data = d.query.general;
-			sitename = data["sitename"];
 			
-			domain = data["server"];
+			var interval = setInterval(function() {
+				if ((data["server"] !== undefined) && (data["servername"] !== undefined) && (data["scriptpath"] !== undefined)&& (data["sitename"] !== undefined) && (data["lang"] !== undefined)) {
+					clearInterval(interval);
+				}
+			}, 1000);
 			
-			rootdomain = data["servername"];
+			sitename = data["sitename"]; // e.g., "Community Central"
+			lang = data["lang"];
+			
+			domain = data["server"] + data["scriptpath"]; // e.g., https://community.fandom.com + /es
+			
+			rootdomain = data["servername"]; // e.g., community
 			var rootDomainBreakdown = rootdomain.split(".");
 			subdomain = rootDomainBreakdown[0];
 		});
@@ -161,9 +174,19 @@ mw.loader.using('mediawiki.api', function() {
 				//----------- | HTML Display of Block Report | -----------//
 				console.log("%c[RUNNING] Creating HTML Display of Block Report...", "background: #F9F983; color: black");
 				
+				// If the wiki is not English, add language code next to the site name.
+				if (lang !== "en") {
+					langForSiteName = " (" + lang + ")";
+				}
+				
 				var Box = document.createElement("div"); // Box
 				Box.style.marginTop = "1em"; // setting top-margin for Box
 				Box.style.marginBottom = "1em"; // setting bottom-margin for Box
+				Box.style.paddingTop = "1em"; // setting padding-top for Box
+				Box.style.paddingLeft = "1em"; // setting padding-left for Box
+				Box.style.paddingRight = "1em"; // setting padding-right for Box
+				Box.style.paddingBottom = "1em"; // setting padding-bottom for Box
+				
 				
 				// adding classes for Box -- these classes are made by Fandom
 				Box.classList.add("warningbox");
@@ -173,15 +196,16 @@ mw.loader.using('mediawiki.api', function() {
 
 				var textParagraph = document.createElement("p"); // create a text paragraph
 				
-				textParagraph.innerHTML = "<center><div style=\"font-size: 14pt; padding: 0.25em; margin: 0.25em;\">" + "<a href=\"" + domain + "/wiki/User:" + user + "\">" + user + "</a> is currently blocked on " + "<a href=\"" + domain + "\">" + sitename + "</a> <span style=\"font-size: 10pt;\">(<code>" + subdomain + "</code>)</span>.</div></center>" + 
-				"<hr style=\"border: 1px solid rgb(var(--theme-alert-color--rgb)); background-color: rgb(var(--theme-alert-color--rgb));\">" + 
-				"<div style =\"font-size: 14pt; text-decoration: underline;\">Block Information</div>" + 
-				"<b>Username: </b>" + user +
-				"<br/><b>Block ID: </b>" + blockID +
-				"<br/><b>Block Performer: </b><a href=\"/wiki/User:" + blockperformer + "\">" + blockperformer + "</a>" +
-				"<br/><b>Block Start: </b>" + blockStartDateTime +
-				"<br/><b>Block Expiry: </b>" + blockEndDateTime +
-				"<br/><b>Block Reason: </b><blockquote style=\"border-left: 5px solid rgba(var(--theme-alert-color--rgb), 0.5); padding-left: 0.5em;\">" + parsedBlockReason + "</blockquote>";
+				textParagraph.innerHTML = "<center><div style=\"font-size: 15pt; line-height: 1em\">" + "<a href=\"" + domain + "/wiki/User:" + user + "\">" + user + "</a> is currently blocked on " + "<a href=\"" + domain + "\">" + sitename + "<span style=\"font-size: 8pt;\">" + langForSiteName + "</a></span>.</div></center>" + 
+				"<center><span style=\"font-size: 8pt; padding: 0 0.25em 0 0.25em;\"><a href=\"" + domain + "/wiki/User:" + user + "\">" + domain + "/wiki/User:" + user + "</a></span></center>" + 
+				"<hr style=\"border: 1px solid rgb(var(--theme-alert-color--rgb)); background-color: rgb(var(--theme-alert-color--rgb));\">" +
+				"<div style =\"font-size: 15pt; text-decoration: underline;\">Block Information</div>" + 
+				"<b><i>Username: </i></b>" + user +
+				"<br/><b><i>Block ID: </b></i>" + blockID +
+				"<br/><b><i>Block Performer: </b></i><a href=\"" + domain + "/wiki/User:" + blockperformer + "\">" + blockperformer + "</a>" +
+				"<br/><b><i>Block Start: </b></i>" + blockStartDateTime +
+				"<br/><b><i>Block Expiry: </b></i>" + blockEndDateTime +
+				"<br/><b><i>Block Reason: </b></i><blockquote style=\"border-left: 5px solid rgba(var(--theme-alert-color--rgb), 0.5); padding-left: 0.5em;\">" + parsedBlockReason + "</blockquote>";
 				
 				//console.log("Parse Output (main): " + parsedBlockReason);
 				
