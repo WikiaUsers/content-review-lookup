@@ -1,7 +1,7 @@
 /* 这里的任何JavaScript将为所有用户在每次页面载入时加载。 */
 
 // 注意有不知道哪里来的js把$占用了, 不要直接引用window.$
-jQuery(function () {
+mw.loader.using(['jquery', 'mediawiki.api']).then(function () {
     "use strict";
 
     const $ = window.jQuery;
@@ -179,9 +179,11 @@ jQuery(function () {
                 }
                 $t.data(dataKey, dataValue);
             });
-            $pp.removeAttr(Object.keys($pp.getAttrs()).filter(function (k) {
+            $pp.removeAttr($.map($pp[0].attributes, function(attr){return attr.name})
+            .filter(function (k) {
                 return k.startsWith('data-tp');
-            }).join(' ')).removeAttr('data-template-name data-template-full data-spell-name');
+            }).join(' '))
+            .removeAttr('data-template-name data-template-full data-spell-name');
             $t.on("mouseenter", showTip)
                 .on("mouseleave", hideTip)
                 .on("mousemove", moveTip);

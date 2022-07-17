@@ -466,7 +466,9 @@ function SetToolbar()
 	  ).append(
 		'<span onclick="InsertText(\'{{Цитата|\',\'||}}\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_quote"><a class="oo-ui-buttonElement-button" role="button" title="Шаблон цитаты" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon" ></span></a></span>'+
 		'<span onclick="InsertText(\'\\n{{Interlang\\n|en=\',\'\\n}}\')" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_interlang"><a class="oo-ui-buttonElement-button" role="button" title="Шаблон межъязыковых ссылок" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon" ></span></a></span>'+
-		'<span onclick="Wikify(\'WIKIFY\');" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_wikifikator2"><a class="oo-ui-buttonElement-button" role="button" title="Вукификатор" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon oo-ui-icon-link"></span></a></span>');
+		'<span onclick="Wikify(\'WIKIFY\');" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_wikifikator2"><a class="oo-ui-buttonElement-button" role="button" title="Вукификатор" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon oo-ui-icon-link"></span></a></span>'+
+		'<span onclick="CopyEngArticleInfo();" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_copy_engcode"><a class="oo-ui-buttonElement-button" role="button" title="Скопировать код оригинальной статьи" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon oo-ui-icon-link"></span></a></span>'
+		);
 
 	// добавление кнопки "Подпись"
 	if ($('span.oo-ui-icon-signature').length===0 ) 

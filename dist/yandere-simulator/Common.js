@@ -233,6 +233,7 @@ window.MessageWallUserTags = {
         'GhoulGirls90': 'Head Helper',
         'Littleslinky': 'Helper',
         'UltimateGamer899': 'Helper',
+        'Keter_Delinquent': 'Helper',
         'Placeholder': 'Intern',
     }
 };

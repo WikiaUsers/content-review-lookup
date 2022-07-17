@@ -9,18 +9,25 @@
 	var value = 0;
 	var editPage = '';
 	var sections;
-	
+
 	function updateLinks() {
 		// Ziellink der Bearbeitenschaltfläche ändern
 		document.getElementById('ca-edit').href = config.wgScriptPath + '/index.php?title=' + editPage + '&action=edit&section=' + sections[value].index;
 		
 		// Abschnitts-ID und Artikelname ersetzen
-		if ( $( '.mw-editsection a' ).length ) {
+		const len = $( '.mw-editsection a' ).length;
+		if ( len ) {
 			$( '.mw-editsection a' ).each( function(s) {
 				const url = new URL(this.href);
-				
-				// Abschnitt verändern
 				const sec = Number(url.searchParams.get('section').replace('T-',''));
+				
+				// Stift bei Einzelnachweise entfernen
+				if (s === len - 1) {
+					this.parentElement.remove();
+					return;
+				}
+
+				// Abschnitt verändern
 				url.searchParams.set('section', sections[value + sec].index);
 
 				// URL verändern

@@ -13,7 +13,7 @@
             list: 'allcategories',
             acprop: 'size',
             aclimit: 500,
-            accontinue: next || ''
+            accontinue: next || undefined
         });
     };
 
@@ -23,7 +23,7 @@
             list: 'querypage',
             qppage: 'Wantedcategories',
             qplimit: 500,
-            qpoffset: next || ''
+            qpoffset: next || undefined
         });
     };
 

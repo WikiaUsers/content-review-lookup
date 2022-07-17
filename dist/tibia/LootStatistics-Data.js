@@ -219,12 +219,12 @@ window.loot_parser_data = {
 'Bashmu': '12.71.11017',
 'Juvenile Bashmu': '12.71.11017',
 // Changes made on July 06, 2021 - 12.67.10934 (2)
-//'Brachiodemon': '12.67.10934',
-//'Infernal Demon': '12.67.10934',
-//'Infernal Phantom': '12.67.10934',
-'Bony Sea Devil': '12.67.10934',
-'Turbulent Elemental': '12.67.10934',
-'Capricious Phantom': '12.67.10934',
+//'Brachiodemon': '12.67.10934 (2)',
+//'Infernal Demon': '12.67.10934 (2)',
+//'Infernal Phantom': '12.67.10934 (2)',
+'Bony Sea Devil': '12.67.10934 (2)',
+'Turbulent Elemental': '12.67.10934 (2)',
+'Capricious Phantom': '12.67.10934 (2)',
 // Changes made on June 01, 2021
 //'Brachiodemon': '12.66.10866',
 //'Infernal Demon': '12.66.10866',

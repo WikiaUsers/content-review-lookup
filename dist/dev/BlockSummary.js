@@ -2,7 +2,7 @@
 Title        :   BlockSummary
 Description  :   Displaying a summary of user's block on the blocked user's "User" Namespace pages
 Author       :   Vastmine1029
-Version      :   1.1.1
+Version      :   1.2.1
 *************/
 
 mw.loader.using('mediawiki.api', function() {
@@ -60,9 +60,9 @@ mw.loader.using('mediawiki.api', function() {
 		var ucp = mw.config.get('wgVersion') !== '1.19.24';
 		var selector = ucp ? $('.page-header__separator') : $('#contentSub > a:last-child');
 		
-		if (window.BlockReport || !user)
+		if (window.BlockSummary || !user)
 			return;
-		window.BlockReport = true;
+		window.BlockSummary = true;
 		
 		
 		//----------- | Main Function for Block Report | -----------//
@@ -196,6 +196,7 @@ mw.loader.using('mediawiki.api', function() {
 				textParagraph.innerHTML = "<center><div style=\"font-size: 15pt; line-height: 1em\">" + "<a href=\"" + domain + "/wiki/User:" + user + "\">" + user + "</a> is currently blocked on " + "<a href=\"" + domain + "\">" + sitename + "<span style=\"font-size: 8pt;\">" + langForSiteName + "</a></span>.</div></center>" + 
 				"<center><span style=\"font-size: 8pt; padding: 0 0.25em 0 0.25em;\"><a href=\"" + domain + "/wiki/User:" + user + "\">" + domain + "/wiki/User:" + user + "</a></span></center>" + 
 				"<hr style=\"border: 1px solid rgb(var(--theme-alert-color--rgb)); background-color: rgb(var(--theme-alert-color--rgb));\">" +
+				"<span style=\"position: relative; float: right; border: 1.5px dotted; padding: 0 0.25em 0 0.25em\"><a href=\"" + domain + "/wiki/Special:Log?type=block&page=" + user + "\">Block Log</a></span>" +
 				"<div style =\"font-size: 15pt; text-decoration: underline;\">Block Information</div>" + 
 				"<b><i>Username: </i></b>" + user +
 				"<br/><b><i>Block ID: </b></i>" + blockID +
@@ -212,7 +213,7 @@ mw.loader.using('mediawiki.api', function() {
 				
 				//----------- | Using setInterval to ensure prepending of Box to content page | -----------//
 				var interval = setInterval(function() {
-					if ($('.ns-2 #content')) {
+					if ($('.ns-2 #content').length) {
 						clearInterval(interval);
 						$(".ns-2 #content").eq(0).before(Box); // prepending Box to ".ns-2 #content"
 					}

@@ -129,11 +129,20 @@ mw.hook('wikipage.content').add( function () {
 
 // Число раскрытых по умолчанию навигационных шаблонов, 
 // если им задан параметр autocollapse. 
-mw.hook( 'wikipage.collapsibleContent' ).add( function() {
+mw.hook( 'wikipage.collapsibleContent' ).add( function ($nodes) {
+	var $navboxes = [];
+	$nodes.each(function () {
+		var $node = $( this );
+		if ( 
+			$node.hasClass('navbox-inner') 
+		) {
+			$navboxes.push($node);
+		} 
+	});
 	if ( 
-		$('.navbox-inner.mw-collapsed').length == 1
+		$navboxes.length == 1 && $navboxes[0].hasClass('navbox-autocollapse')
 	) {
-		$('.navbox-autocollapse > tbody > tr:first-child .mw-collapsible-toggle').click();
+		$navboxes[0].data('mw-collapsible').expand();
 	}
 });
 

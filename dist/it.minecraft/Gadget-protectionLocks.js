@@ -5,14 +5,11 @@
 
 function getImageThumbnailURL(name, store, size) {
 	var encodedName = mw.util.wikiUrlencode(name);
-	return "https://minecraft.gamepedia.com/media/minecraft.gamepedia.com/thumb/"
+	return "https://static.wikia.nocookie.net/minecraft_gamepedia/images/"
 		+ store
 		+ "/"
 		+ encodedName
-		+ "/"
-		+ size
-		+ "px-"
-		+ encodedName;
+		+ "/revision/latest"
 }
 
 function mimicIndicator(id, link, imgName, imgStore, title) {

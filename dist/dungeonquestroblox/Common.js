@@ -12,7 +12,6 @@ UserTagsJS.modules.custom = {
     'DankRendezvous': ['former_staff'],
     'Bloodywalsh': ['former_staff'],
     'Ghostman1856': ['former_staff'],
-    'TopKaps': ['former_staff'],
     'HaxMagician': ['former_staff'],
     "It'sABidoof": ['former_staff'],
     'ObviouslyHidden': ['former_staff'],
@@ -80,8 +79,22 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         };
     }
 
+    var abilities = [
+        { name: "Flame Shuriken / Geyser", multiplier: 119 },
+        { name: "Gale Barrage (3 ticks)", multiplier: 119 / 3 },
+        { name: "Soul Drain (6 ticks)", multiplier: 119 / 6 },
+        { name: "Frost Cone / Flame Strike", multiplier: 112 },
+        { name: "Wind Blast / Crystalline Cannon / Lightning Burst / Agony Orbs", multiplier: 107 },
+        { name: "Piercing Roots", multiplier: 100 },
+        { name: "Fungal Poison (6 ticks)", multiplier: 100 / 6 },
+        { name: "Ice Crash / Ice Barrage / Aquatic Smite / Ice Spikes", multiplier: 92 },
+        { name: "Spear Strike / Water Orb", multiplier: 86 }
+    ];
+    var abilityNames = abilities.map(function (a) { return a.name; });
+    
     function addDamageCalculator(div) {
         createSpan(div).update("DQ Wiki Damage Calculator");
+        var abilityField = createSelectField("ability", "Select ABILITY", abilityNames);
         var helmField = createField("helm", "HELMET power");
         var armorField = createField("armor", "ARMOR power");
         var weaponField = createField("weapon", "WEAPON power");
@@ -92,6 +105,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
         div.append(
             createBr(),
+            abilityField.label, abilityField.select, createBr(),
             helmField.label, helmField.input, createBr(),
             armorField.label, armorField.input, createBr(),
             weaponField.label, weaponField.input, createBr(),
@@ -100,12 +114,20 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         );
 
         submit.onclick = function () {
+            var ability = 0;
+            var selectedAbility = abilityField.select.value;
+            abilities.forEach(function (a) {
+                if (a.name == selectedAbility) {
+                    ability = a.multiplier;
+                }
+            });
+
             var weapon = parseInt(weaponField.input.value);
             var armor = parseInt(armorField.input.value);
             var helm = parseInt(helmField.input.value);
             var skill = parseInt(skillField.input.value);
 
-            var dmg = calculateDMG(weapon, armor, helm, skill);
+            var dmg = calculateDMG(weapon, armor, helm, skill, ability);
             var low = dmg * 0.95;
             var high = dmg * 1.05;
 
@@ -143,7 +165,6 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
                 "Low Damage: " + lowEInnerDamage + "\n" +
                 "Average: " + baseEInnerDamage + "\n" +
                 "High Damage: " + highEInnerDamage + "\n\n" 
-
             ); 
 
         };
@@ -228,6 +249,24 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
         return { label: label, input: input };
     }
+    
+    function createSelectField(name, description, values) {
+        var label = document.createElement("label");
+        label.htmlFor = name;
+        label.append(description);
+
+        var select = document.createElement("select");
+        select.name = select.id = name;
+
+        values.forEach(function (value) {
+            var option = document.createElement("option");
+            option.value = option.label = value;
+            select.append(option);
+        });
+
+        return { label: label, select: select };
+    }
+    
 
     function createSpan(parentElement) {
         var span = document.createElement("span");
@@ -264,8 +303,8 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         return xp;
     }
 
-    function calculateDMG(wep, arm, helm, skill) {
-        return Math.floor(wep * (0.6597 + 0.013202 * skill) * (arm + helm) * 0.0028 * 119);
+    function calculateDMG(wep, arm, helm, skill, ability) {
+        return Math.floor(wep * (0.6597 + 0.013202 * skill) * (arm + helm) * 0.0028 * ability);
     }
 
     function truncate(num) {

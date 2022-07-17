@@ -2,8 +2,8 @@
  * Forked version of "Syntax highlighter" gadget from MediaWiki.org
  * See copyright statement below for more info
  * 
- * Based on revision 4202154 of mediawikiwiki:User:Remember_the_dot/Syntax_highlighter.js
- * https://www.mediawiki.org/wiki/User:Remember_the_dot/Syntax_highlighter.js?oldid=4241961
+ * Based on revision 5135197 of mediawikiwiki:User:Remember_the_dot/Syntax_highlighter.js
+ * https://www.mediawiki.org/wiki/User:Remember_the_dot/Syntax_highlighter.js?oldid=5135197
  *
  * Please note that all changes are marked with "@change" comment
  * Necessary changes made by Rail
@@ -51,6 +51,7 @@ mw.loader.using("jquery.client", function() {
     var highlightSyntaxIfNeededIntervalID;
     var attributeObserver;
     var parentObserver;
+    var i18n; // @change i18n-js support
 
     /* Define context-specific regexes, one for every common token that ends the
        current context.
@@ -448,33 +449,19 @@ mw.loader.using("jquery.client", function() {
             parentObserver.disconnect();
             syntaxStyleTextNode.nodeValue = "";
 
+            /**
+             * @change
+             *
+             * Commented-out original i18n implementation
+             * Instead this version of the script uses i18n-js library with i18n data stored on Dev Wiki
+
             var errorMessage = {
-                be: "Падсьветка сынтаксісу на гэтай старонцы была адключаная, бо заняла шмат часу. Максымальна дапушчальны час апэрацыі — $1мс, а на вашым кампутары яна заняла $2мс. Паспрабуйце зачыніць нейкія закладкі і праграмы і націснуць «Праглядзець» або «Паказаць зьмены». Калі гэта не дапаможа, паспрабуйце іншы броўзэр; калі й гэта не дапаможа, выкарыстайце магутнейшы кампутар.",
-                bn: "সিনটেক্স হাইলাইট এই পৃষ্ঠে অক্ষম করে দেওয়া হয়েছে কারণ এতে একটু বেশিই সময় লেগে গেছে। সর্বাধিক স্বীকৃত সময় হলো $1ms, আর আপনার কম্পিউটার $2ms নিয়েছে। অনুগ্রহ করে কিছু ট্যাব আর প্রোগ্রাম বন্ধ করে \"Show preview\" বা \"Show changes\"তে ক্লিক করে চেষ্টা করুন। যদি এটাতে কিছু হয়না, অন্য ব্রাউসার দিয়ে চেষ্টা করুন, আর যদি তা দিয়েও হয়না, একটি দ্রুত কম্পিউটার দিয়ে চেষ্টা করুন।",
-                ca: "S'ha desactivat el remarcar de sintaxi en aquesta pàgina perquè ha trigat massa temps. El temps màxim permès per a remarcar és $1ms, i el vostre ordinador ha trigat $2ms. Proveu tancar algunes pestanyes i programes i fer clic en \"Mostra la previsualització\" o \"Mostra els canvis\". Si no funciona això, proveu un altre navegador web, i si això no funciona, proveu un ordinador més ràpid.",
-                de: "Die Syntaxhervorhebung wurde auf dieser Seite deaktiviert, da diese zu lange gedauert hat. Die maximal erlaubte Zeit zur Hervorhebung beträgt $1ms und dein Computer benötigte $2ms. Versuche einige Tabs und Programme zu schließen und klicke \"Vorschau zeigen\" oder \"Änderungen zeigen\". Wenn das nicht funktioniert, probiere einen anderen Webbrowser und wenn immer noch nicht, probiere einen schnelleren Computer.",
-                el: "Η έμφαση σύνταξης έχει απενεργοποιηθεί σε αυτήν τη σελίδα γιατί αργούσε πολύ. Ο μέγιστος επιτρεπτός χρόνος για την έμφαση σύνταξης είναι $1ms και ο υπολογιστής σας έκανε $2ms. Δοκιμάστε να κλείσετε μερικές καρτέλες και προγράμματα και να κάνετε κλικ στην «Εμφάνιση προεπισκόπησης» ή στην «Εμφάνιση αλλαγών». Αν αυτό δεν δουλέψει, δοκιμάστε έναν διαφορετικό περιηγητή και αν ούτε αυτό δουλέψει, δοκιμάστε έναν ταχύτερο υπολογιστή.",
-                en: "Syntax highlighting on this page was disabled because it took too long. The maximum allowed highlighting time is $1ms, and your computer took $2ms. Try closing some tabs and programs and clicking \"Show preview\" or \"Show changes\". If that doesn't work, try a different web browser, and if that doesn't work, try a faster computer.",
-                es: "Se desactivó el resaltar de sintaxis en esta página porque tardó demasiado. El tiempo máximo permitido para resaltar es $1ms, y tu ordenador tardó $2ms. Prueba cerrar algunas pestañas y programas y hacer clic en \"Mostrar previsualización\" o \"Mostrar cambios\". Si no funciona esto, prueba otro navegador web, y si eso no funciona, prueba un ordenador más rápido.",
-                fa: "از آنجایی که زمان زیادی صرف آن می‌شد، برجسته‌سازی نحو در این صفحه غیرفعال شده است. بیشینهٔ زمان برجسته‌سازی برای ابزار $1ms تعریف شده در حالی که رایانهٔ شما $2ms زمان نیاز داشت. می‌توانید بستن برخی سربرگ‌ها و برنامه‌ها و سپس کلیک‌کردن دکمهٔ «پیش‌نمایش» یا «نمایش تغییرات» را بیازمایید. اگر جواب نداد مرورگر دیگری را امتحان کنید؛ و اگر باز هم جواب نداد، رایانهٔ سریع‌تری را بیازمایید.",
-                fi: "Syntaksin korostus on pois käytöstä tällä sivulla, koska siinä kesti liian kauan. Suurin sallittu korostukseen käytetty aika on $1ms, ja tietokoneellasi kesti $2ms. Kokeile sulkea joitain välilehtiä tai ohjelmia ja paina \"Esikatsele\" tai \"Näytä muutokset\". Jos se ei toimi, kokeile toista selainta, ja jos se ei toimi, kokeile nopeampaa tietokonetta.",
-                fr: "La coloration syntaxique a été désactivée sur cette page en raison d'un temps de chargement trop important ($2ms). Le temps maximum autorisé est $1ms. Vous pouvez essayer de fermer certains onglets et programmes et cliquez sur \"Prévisualisation\" ou \"Voir mes modifications\". Si cela ne fonctionne pas, essayez un autre navigateur web, et si cela ne fonctionne toujours pas, essayez un ordinateur plus rapide.",
-                hi: "सिंटेक्स हाईलाइट को इस पृष्ठ पर अक्षम कर दिया गया है क्योंकि इस में कुछ ज़्यादा ही समय लगा। अधिकतम स्वीकृत समय-सीमा है $1ms, और आपके कंप्यूटर ने $2ms लिए। कृपया कुछ टैब और प्रोग्राम बंद करके \"Show preview\" या \"Show changes\" पर क्लिक करके कोशिश करें। अगर इससे काम नहीं बनता, एक दूसरा ब्राउज़र चुनिए, और अगर वह भी काम नहीं करता, एक तेज़ कंप्यूटर से कोशिश कीजिए।",
-                hy: "Շարադասության ընդգծումը այս էջում անջատվել է, քանի որ այն չափից շատ է տևել։ Ընդգծման թույլատրելի առավելագույն ժամանակը $1 միլիվայրկյան է, բայց այս էջում տևել է $2 միլիվայրկյան։ Փորձեք անջատել որոշ ներդիրներ կամ ծրագրեր և սեղմել «Նախադիտել» կամ «Կատարված փոփոխությունները»։ Կրկին չաշխատելու դեպքում փորձեք այլ վեբ դիտարկիչ, եթե կրկին չաշխատի, փորձեք ավելի արագ համակարգիչ։",
-                io: "Sintaxo-hailaitar en ca pagino esis nekapabligata pro ke konsumis tro multa tempo. La maxima permisata hailaitala tempo es $1ms, e tua ordinatro konsumis $2ms. Probez klozar kelka tabi e programi e kliktar \"Previdar\" o \"Montrez chanji\". Se to ne funcionas, probez altra brauzero, e se to ne funcionas, probez plu rapida ordinatro.",
-                it: "L'evidenziazione delle sintassi su questa pagina è stata disabilitata perché ha richiesto troppo tempo. Il tempo massimo per l'evidenziazione è di $1ms e al tuo computer sono serviti $2ms. Prova a chiudere alcune schede e programmi e ricarica la pagina cliccando su \"Visualizza anteprima\" o \"Mostra modifiche\". Se non funziona ancora, prova con un web browser differente e, in ultima alternativa, prova ad utilizzare un computer più veloce.",
-                ja: "このページでの構文の強調表示は、時間がかかりすぎたため無効になりました。許容される時間の最大値は$1ミリ秒で、ご利用のコンピューターでは$2ミリ秒かかりました。いくつかのタブやプログラムを閉じて、「プレビューを表示」または「差分を表示」をクリックしてみてください。それが機能しない場合は、別のWebブラウザーをお試しください。それが機能しない場合は、より高速なコンピューターでお試しください。",
-                ko: "이 문서에서의 문법 강조가 너무 오래 걸러서 해제되었습니다. 최대로 할당된 강조 시간은 $1ms인데, 당신의 컴퓨터는 $2ms이나 걸렸습니다. 탭과 프로그램을 일부 닫으신 후에 \"미리 보기\"나 \"차이 보기\"를 클릭하시기 바랍니다. 만약 작동하지 않으면 다른 웹 브라우저로 시도해보시고, 그래도 안되면 더 빠른 컴퓨터를 이용하십시오",
-                pl: "Podświetlanie składni na tej stronie zostało wyłączone, ponieważ wczytywanie trwało zbyt długo. Maksymalny dozwolony czas wynosi $1ms, Twojemu komputerowi zajęło to $2ms. Spróbuj zamknąć kilka zakładek lub programów w tle, a następnie kliknij „Pokaż podgląd” lub „Podgląd zmian”. Jeśli to nie zadziała, wypróbuj inną przeglądarkę internetową lub szybszy komputer.",
-                pt: "O marcador de sintaxe foi desativado nesta página porque demorou demais. O tempo máximo permitido para marcar é de $1ms, e seu computador demorou $2ms. Tente fechar algumas abas e programas e clique em \"Mostrar previsão\" ou \"Mostrar alterações\". Se isso não funcionar, tente usar um outro navegador web, e se ainda não funcionar, tente em um computador mais rápido.",
-                ru: "Подсветка синтаксиса на странице была отключена, так как заняла слишком долго. Максимальное допустимое время операции - $1мс, сейчас на вашем компьютере она заняла $2мс. Попробуйте закрыть несколько вкладок и программ, затем нажать «Предварительный просмотр» или «Внесённые изменения». Если это не поможет, попробуйте другой браузер; если и это не поможет, используйте более быстрый компьютер.",
-                sr: "Истицање синтаксе на овој страници је онемогућено јер се одвија предуго. Максимално дозвољено време истицања је $1ms, а на Вашем рачунару траје $2ms. Покушајте затворити неке картице и програме или кликните на „Прикажи претпреглед” или „Прикажи измене”. Ако то не ради, покушајте са другим веб-прегледачем, а ако и тада не ради, покушајте са бржим рачунаром.",
-                vec: "L'evidensiasion de łe sintasi so sta voxe ła xe dexabiłitada par che ła ga dimandà masa tenpo. El tenpo màsemo par l'evidensiasion ła xe de $1ms e al to dispoxidivo a ghene xe cadesti $2ms. Proa a sarar calche scheda e programa e recarga ła pàjina schiciando so \"Varda ła anteprima\" o \"Mostra canbiaminti\". Se no el funsiona oncora, proa co on altro navegador web difarente e, cofà ùltema alternadiva, proa a doparar on dispoxidivo pì sèłero.",
-                zh: "此頁面上的語法突出顯示被禁用，因為它花費的時間太長。允許的突出顯示時間最長為$1毫秒，而您的計算機則為$2毫秒。請嘗試關閉一些標籤和程序，然後單擊“顯示預覽”或“顯示更改”。如果不起作用，請嘗試使用其他網頁瀏覽器，如果还不起作用，請嘗試使用速度更快的計算機。",
+                ...
             };
             const wgUserLanguage = mw.config.get("wgUserLanguage");
 
             errorMessage = errorMessage[wgUserLanguage] || errorMessage[wgUserLanguage.substring(0, wgUserLanguage.indexOf("-"))] || errorMessage.en;
+            */
 
             wpTextbox1.style.backgroundColor = "";
             wpTextbox1.style.marginTop = "0";
@@ -482,7 +469,8 @@ mw.loader.using("jquery.client", function() {
             wpTextbox0.removeAttribute("lang");
             wpTextbox0.setAttribute("style", "color:red; font-size:small");
 
-            wpTextbox0.textContent = errorMessage.replace("$1", syntaxHighlighterConfig.timeout).replace("$2", endTime - startTime);
+            //wpTextbox0.textContent = errorMessage.replace("$1", syntaxHighlighterConfig.timeout).replace("$2", endTime - startTime);
+            wpTextbox0.textContent = i18n.msg( 'error-message', syntaxHighlighterConfig.timeout, ( endTime - startTime ) ).plain();
             return;
         }
 
@@ -557,8 +545,11 @@ mw.loader.using("jquery.client", function() {
         }
     }
 
-    function setup()
+    function setup( i18no )
     {
+        // @change - export i18n-js object
+        i18n = i18no;
+
         wpTextbox1 = document.getElementById("wpTextbox1");
         if (!wpTextbox1) return; //another script (such as the Visual Editor) has removed the edit box
         
@@ -590,13 +581,8 @@ mw.loader.using("jquery.client", function() {
         window.syntaxHighlighterSiteConfig = window.syntaxHighlighterSiteConfig || {};
         window.syntaxHighlighterConfig = window.syntaxHighlighterConfig || {};
 
-        // @change Implement hook to determine whther wiki is dark or light-themed
-        window.UCP.syntaxHighlight.isDarkWiki = function() {
-            return mw.config.get( 'isDarkTheme' );
-        };
-
         /**
-         * @change Set configuration depending on wiki's theme
+         * @change - set configuration depending on wiki's theme
          *
          * Color configuration taken from Wikia/app repository
          * [[github:Wikia/app/blob/dev/extensions/wikia/EditPageLayout/js/plugins/WikitextSyntaxHighlighterQueueInit.js]]
@@ -604,7 +590,7 @@ mw.loader.using("jquery.client", function() {
         configureColor("backgroundColor", "transparent", false);
         configureColor("foregroundColor", "unset",       false);
 
-        if ( window.UCP.syntaxHighlight.isDarkWiki() ) {
+        if ( mw.config.get( 'isDarkTheme' ) ) {
             configureColor("boldOrItalicColor", "#44466d", true);
             configureColor("commentColor",      "#4d1a19", true);
             configureColor("entityColor",       "#474d23", true);
@@ -739,23 +725,35 @@ mw.loader.using("jquery.client", function() {
         highlightSyntax();
     }
 
+    // @change - load i18n data
+    mw.hook( 'dev.i18n' ).add( function( i18no ) {
+        i18no.loadMessages( 'SyntaxHighlight' ).then( function( i18nz ) {
+            //enable the highlighter only when editing wikitext pages
+            //in the future a separate parser could be added for CSS and JS pages
+            //blacklist Internet Explorer and Edge, they're just too broken
+            const wgAction = mw.config.get("wgAction");
+            const layoutEngine = $.client.profile().layout;
+            if ((wgAction === "edit" || wgAction === "submit") && mw.config.get("wgPageContentModel") === "wikitext" && layoutEngine !== "trident" && layoutEngine !== "edge")
+            {
+                //give other scripts an opportunity to set syntaxHighlighterConfig
+                if (document.readyState === "complete")
+                {
+                    setup( i18nz );
+                }
+                else
+                {
+                    window.addEventListener("load", function() {
+                        setup( i18nz );
+                    });
+                }
+            }
+        } );
+    } );
 
-    //enable the highlighter only when editing wikitext pages
-    //in the future a separate parser could be added for CSS and JS pages
-    //blacklist Internet Explorer and Edge, they're just too broken
-    const wgAction = mw.config.get("wgAction");
-    const layoutEngine = $.client.profile().layout;
-    if ((wgAction === "edit" || wgAction === "submit") && mw.config.get("wgPageContentModel") === "wikitext" && layoutEngine !== "trident" && layoutEngine !== "edge")
-    {
-        //give other scripts an opportunity to set syntaxHighlighterConfig
-        if (document.readyState === "complete")
-        {
-            setup();
-        }
-        else
-        {
-            window.addEventListener("load", setup);
-        }
-    }
+    // @change - load i18n-js library
+    importArticle( {
+        type: 'script',
+        article: 'u:dev:MediaWiki:I18n-js/code.js'
+    } );
 });
 /* </nowiki> */

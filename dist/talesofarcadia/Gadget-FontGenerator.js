@@ -1,4 +1,3 @@
-/*
 //Cookies
 function setCookie(cname,cvalue,exdays) {
   var d = new Date();
@@ -23,7 +22,7 @@ function getCookie(cname) {
 }
 setCookie("test",true, 1/(24*60));
 getCookie("test");
-*/
+
 var d = document.getElementById("fontGenerator");
 setTimeout(function(){
 	if (d != null) {
@@ -40,7 +39,8 @@ setTimeout(function(){
 		fgbg.crossOrigin = "anonymous";
 		fgbg.src = 'https://static.wikia.nocookie.net/trollhunters/images/9/97/Fg_background.png';
 		var ee = document.querySelector("#fgbg div a img");
-		//if (getCookie('fgt') != '') {document.getElementById("fgInput").value = getCookie('fgt');}
+		if (getCookie('fgt') != '') {document.getElementById("fgInput").value = getCookie('fgt');}
+		if (getCookie('fgf') != '') {document.getElementById("fgSelect").value = getCookie('fgf');}
 		document.getElementById("fgButton").addEventListener("click", function() {
 			var canvas = document.getElementById("fgc");
 			var fgc = canvas.getContext("2d");
@@ -115,8 +115,9 @@ setTimeout(function(){
 			}
 			var url = canvas.toDataURL("png");
 			ee.src = url;
-			//setCookie("fgt",document.getElementById("fgInput").value, 7);
+			setCookie("fgt",document.getElementById("fgInput").value, 7);
+			setCookie("fgf", document.getElementById("fgSelect").value, 7)
 			document.write(ee.outerHTML);
-		});
+		});		//Ignore too many errors
 	}
 }, 2750);

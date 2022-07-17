@@ -13,21 +13,22 @@ if (wgNamespaceNumber == 6) {
 		$('div[id$="linkstoimage"]').append($('<ul></ul>', {'class':'interUses'}));
 		var $interUses = $('.interUses');
 		var URLprefix = 'https://', 
-			URLsuffix = '.gamepedia.com/api.php?format=json&callback=?';
-		var msgForeignUses = 'Elenco utilizzi esterni',
-			msgFileLink = 'file page',
+			URLsuffix = '/api.php?format=json&callback=?';
+		var msgForeignUses = 'Utilizzi esterni',
+			msgFileLink = 'pagina del file',
 			msgNoUses = 'Nessun utilizzo esterno rilevato per questo file.';
 		$interUses.append( $('<h2></h2>', {'text':msgForeignUses, 'style':'margin-left:-22px;'}) );
 		var langs = {
-			"Ceco":"minecraft-cs",
-			"Francese":"minecraft-fr",
-			"Greco":"minecraft-el",
-			"Inglese":"minecraft",
-			"Thai":"minecraft-th",
-			"Turco":"minecraft-tr",
-			"Ucraino":"minecraft-uk",
-			"Aether Mod":"aether",
-			"Mo' Creatures Mod": "mocreatures"
+			"Ceco":"minecraft.fandom.com/cs",
+			"Francese":"minecraft.fandom.com/fr",
+			"Greco":"minecraft.fandom.com/el",
+			"Inglese":"minecraft.fandom.com",
+			"Portoghese":"minecraft.fandom.com/pt",
+			"Thai":"minecraft.fandom.com/th",
+			"Turco":"minecraft.fandom.com/tr",
+			"Ucraino":"minecraft.fandom.com/uk",
+			"Aether Mod":"aether.fandom.com",
+			"Mo' Creatures Mod": "mocreatures.fandom.com"
 		};
 		$interUses.append( $('<h3></h3>', {'text': msgNoUses, 'class':'no_foreign_uses'}) );
 		$.each(langs, function(key, value) {
@@ -40,7 +41,7 @@ if (wgNamespaceNumber == 6) {
 						$.getJSON(URLprefix + currentLangCode + URLsuffix, request1, function(response1) {
 							var currentLangName = key;
 							if (response1.query.imageusage.length > 0) {
-								var urlImage = URLprefix + currentLangCode + '.gamepedia.com/' + wgPageName;
+								var urlImage = URLprefix + currentLangCode + '/wiki/' + wgPageName;
 								$('.no_foreign_uses').remove();
 								$interUses.append(
 									$('<h3></h3>', {'style':'margin-left:-20px;', 'text':currentLangName}).append(
@@ -50,7 +51,7 @@ if (wgNamespaceNumber == 6) {
 									)
 								);
 								$.each(response1.query.imageusage, function(index, value) {
-									var urlUse = URLprefix + currentLangCode + '.gamepedia.com/' + value.title;
+									var urlUse = URLprefix + currentLangCode + '/wiki/' + value.title;
 									$interUses.append(
 										$('<li></li>').append(
 											$('<a></a>', {'href': urlUse, 'text':value.title})

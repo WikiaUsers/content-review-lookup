@@ -31,7 +31,6 @@
 			}
 		}
 		wikitext += '}}';
-		console.log(wikitext);
 		new mw.Api().get({
 			action: 'parse',
 			text: wikitext,
@@ -40,7 +39,6 @@
 			disableeditsection: true,
 			disabletoc: true,
 		}).done(function(data) {
-			console.log(data);
 			$('#' + $this.closest('.item-comparison-form').attr('id') + '-content-container').html(data.parse.text['*']);
 		});
 	}
@@ -98,7 +96,6 @@
 						// 	$field.clone(true).after($field.last());
 						// };
 						var $lastField = $field.last();
-						console.log(minFields - $field.length);
 						for (var i = minFields - $field.length; i > 0; i--) {
 							$lastField.after($lastField.clone(true));
 						}

@@ -1441,6 +1441,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "ariadne": {
+                "name": "Ariadne",
+                "types": [
+                    "olympus",
+                    "red",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "aries": {
                 "name": "Aries",
                 "types": [
@@ -4777,6 +4794,34 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "11_hours_11",
                 "rarity": 3
             },
+            "chevron": {
+                "name": "Chevron",
+                "types": [
+                    "olympus",
+                    "white",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "chill": {
                 "name": "Chill",
                 "types": [
@@ -6124,6 +6169,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "25_hours_25",
                 "rarity": 4,
                 "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "crete": {
+                "name": "Crete",
+                "types": [
+                    "olympus",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
                 "notes": [
                     "feature"
                 ]
@@ -14153,6 +14214,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "herculean": {
+                "name": "Herculean",
+                "types": [
+                    "olympus",
+                    "champion",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "hercules": {
                 "name": "Hercules",
                 "types": [
@@ -14718,6 +14796,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "24_hours_24",
                 "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "hubris": {
+                "name": "Hubris",
+                "types": [
+                    "olympus",
+                    "white",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
                 "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
@@ -16981,6 +17076,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 2,
                 "level": 4,
                 "offspringeligibility": "expired"
+            },
+            "lernean": {
+                "name": "Lernean",
+                "types": [
+                    "olympus",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
             },
             "leviathan": {
                 "name": "Leviathan",
@@ -19317,6 +19428,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 2,
                 "offspringeligibility": "expired"
             },
+            "minerva": {
+                "name": "Minerva",
+                "types": [
+                    "diamond",
+                    "olympus",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "25_hours_25",
+                "rarity": 4,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "mingle": {
                 "name": "Mingle",
                 "types": [
@@ -19332,6 +19460,34 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
+                ]
+            },
+            "minotaur": {
+                "name": "Minotaur",
+                "types": [
+                    "olympus",
+                    "purple",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "purple"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "black"
+                            ]
+                        ]
+                    ]
                 ]
             },
             "mint": {
@@ -22230,6 +22386,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "odyssean": {
+                "name": "Odyssean",
+                "types": [
+                    "olympus",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "odyssey": {
                 "name": "Odyssey",
                 "types": [
@@ -23090,6 +23262,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "23_hours_23",
                 "rarity": 3,
                 "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "patina": {
+                "name": "Patina",
+                "types": [
+                    "olympus",
+                    "metal",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
                 "notes": [
                     "feature"
                 ]
@@ -27028,6 +27217,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "4_hours_8",
                 "rarity": 3,
+                "notes": [
+                    "feature"
+                ]
+            },
+            "sage": {
+                "name": "Sage",
+                "types": [
+                    "olympus",
+                    "blue",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]
@@ -32272,6 +32478,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                             ]
                         ]
                     ]
+                ]
+            },
+            "theseus": {
+                "name": "Theseus",
+                "types": [
+                    "olympus",
+                    "white",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
                 ]
             },
             "thoth": {

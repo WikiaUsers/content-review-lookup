@@ -24,7 +24,6 @@ mw.loader.using('ext.fandom.ContentReview.legacyLoaders.js', function() {
     	articles: [
     	    'u:dev:MediaWiki:AjaxRC/code.js',
     	    'u:dev:MediaWiki:CacheCheck/code.js',
-    	    'u:dev:MediaWiki:DiscussionsActivity.js',
     	    'u:dev:MediaWiki:DupImageList/code.js',
     	    'u:dev:MediaWiki:FixWantedFiles/code.js',
     	    'u:dev:MediaWiki:ListFiles/code.js',

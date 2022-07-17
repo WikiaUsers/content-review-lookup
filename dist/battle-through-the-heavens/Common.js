@@ -29,6 +29,12 @@ window.ajaxPages = [
 ];
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ImportJS-Plus.js',
+    ]
+});
  
 window.UserTagsJS = {
     modules: {},

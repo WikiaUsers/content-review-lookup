@@ -44,3 +44,9 @@ mw.hook( 'wikipage.editform' ).add( function ()
         });
     });
 });
+
+// FOR TOOLTIPS.JS
+window.tooltips_config = {
+    waitForImages: true,
+    noCSS: true,
+}

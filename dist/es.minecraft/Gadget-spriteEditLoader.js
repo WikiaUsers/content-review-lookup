@@ -16,14 +16,13 @@ if ( !$( '#spritedoc' ).length && !editPage ) {
 	return;
 }
 
-var $spriteEditLink;
 var $spriteEditLinkDropdown;
 var $spriteEditTab;
 var $editButton = $( '#ca-edit-side-tool' );
 	if ( !$editButton.length ) {
 		$editButton = $( '#ca-viewsource-side-tool' );
 	}
-$spriteEditLink = $( '<a>' )
+var $spriteEditLink = $( '<a>' )
 	.addClass( 'page-side-tool' )
 	.addClass( 'custom-side-tool' )
 	.attr( 'href', mw.util.getUrl() + '?spriteaction=edit' )
@@ -49,7 +48,7 @@ $spriteEditLinkDropdown.insertAfter( $( '#p-cactions .wds-list' )[0].lastElement
 $spriteEditTab = $spriteEditLink;
 
 var tooltips;
-$( '.custom-side-tool' ).mouseenter( function() {
+$spriteEditLink.mouseenter( function() {
 	var topPosition = ( $( this ).offset().top - $( document ).scrollTop() + 20 ) + 'px';
 	var leftPosition = ( $( this ).offset().left + 50 ) + 'px';
 	var tooltip = $( '<div>', {
@@ -63,7 +62,7 @@ $( '.custom-side-tool' ).mouseenter( function() {
 	$( 'body' ).append( tooltip );
 	tooltips = tooltip;
 } );
-$( '.custom-side-tool' ).mouseleave( function() {
+$spriteEditLink.mouseleave( function() {
 	var a = tooltips;
 	tooltips = undefined;
 	if ( a ) {

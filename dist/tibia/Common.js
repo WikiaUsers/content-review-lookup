@@ -876,3 +876,81 @@ $(function(){
 		$('#lootValueTable').show();
 	}
 });
+/* Template:KW */
+$(function(){
+	if ($('.keyword-highlight')[0]) {
+		var notif = '<div id="kw-notification" style="display: none;">' +
+		'<div id="kw-content">' +
+		'<span>Keyword copied to clipboard!</span>' +
+		'</div></div>'
+		
+		$('.resizable-container').before(notif);
+		
+		$('#kw-notification').css({
+			'position': 'sticky',
+			'top': '50px',
+			'height': '0px',
+			'width': '250px',
+			'z-index': '105',
+			'left':'calc(50% - 125px)'
+		});
+		$('#kw-content').css({
+			'width': '250px',
+			'height': '50px',
+	        'text-align': 'center',
+	        'padding': '10px 0px 10px 0px',
+	        'border': '1px solid',
+	        'border-radius': '3px',
+	        'background-color': 'var(--theme-page-background-color--secondary)',
+			'border-color': 'var(--theme-warning-color--secondary)',
+			'color': 'var(--theme-alert-color)',
+			'float': 'left'
+		});
+		
+		$('.keyword-highlight').click(function() {
+			navigator.clipboard.writeText($(this).html());
+			$('#kw-notification').fadeIn('fast', function() {
+				$('#kw-notification').fadeOut(3000);
+			});
+		});
+	}
+});
+/* same as function as Template:KW, here allowing bolded words in Template:Infobox Transcript to be copied to clipboard by clicking them*/
+$(function(){
+	if ($('.npc_chat_div b')[0]) {
+		var notif = '<div id="kw-notification" style="display: none;">' +
+		'<div id="kw-content">' +
+		'<span>Keyword copied to clipboard!</span>' +
+		'</div></div>'
+		
+		$('.resizable-container').before(notif);
+		
+		$('#kw-notification').css({
+			'position': 'sticky',
+			'top': '50px',
+			'height': '0px',
+			'width': '250px',
+			'z-index': '105',
+			'left':'calc(50% - 125px)'
+		});
+		$('#kw-content').css({
+			'width': '250px',
+			'height': '50px',
+	        'text-align': 'center',
+	        'padding': '10px 0px 10px 0px',
+	        'border': '1px solid',
+	        'border-radius': '3px',
+	        'background-color': 'var(--theme-page-background-color--secondary)',
+			'border-color': 'var(--theme-warning-color--secondary)',
+			'color': 'var(--theme-alert-color)',
+			'float': 'left'
+		});
+		
+		$('.npc_chat_div b').click(function() {
+			navigator.clipboard.writeText($(this).html());
+			$('#kw-notification').fadeIn('fast', function() {
+				$('#kw-notification').fadeOut(3000);
+			});
+		});
+	}
+});

@@ -7,7 +7,7 @@ mw.loader.using(['mediawiki.api']).done(function() {
 	if ($links.length === 0) return;
 	var threadLinks = [];
 	$links.each(function() {
-		if ($(this).attr('title').match(/(thread.*@|blog.*\/@comment-\d+)/i)) threadLinks.push($(this).attr('title'));
+		if ($(this).attr('title').match(/(thread.*@|(blog|talk).*\/@comment-\d+)/i)) threadLinks.push($(this).attr('title'));
 	});
 	if (threadLinks.length === 0) return;
 	var target = $('#mw-whatlinkshere-target').val();

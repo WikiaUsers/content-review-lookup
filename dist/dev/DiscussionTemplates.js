@@ -77,11 +77,17 @@
                 }
                 return content;
             });
-            if (selected.text) {
-                alert(i18n.msg('title-not-supported-nocopy').plain());
+            var title = window.DiscussionTemplates.templates[selected.template].title;
+            if (title && !selected.text) {
+                var titleElement = $('.message-wall-app > div > .EditorForm .wds-input input')[0];
+                Object.getOwnPropertyDescriptor(Object.getPrototypeOf(titleElement), 'value').set.call(titleElement, title);
+                titleElement.dispatchEvent(new Event('input', { bubbles: true }));
+                if (titleElement.value !== title) { // failed to set title
+                    alert(i18n.msg('title-not-supported').plain());
+                    navigator.clipboard.writeText(title);
+                }
             } else {
-                alert(i18n.msg('title-not-supported').plain());
-                navigator.clipboard.writeText(window.DiscussionTemplates.templates[selected.template].title);
+                // alert(i18n.msg('title-not-supported-nocopy').plain());
             }
             modal.close();
         });

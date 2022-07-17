@@ -133,8 +133,14 @@ function insertTooltip(context) {
 mw.loader.using(['site','ext.wikiEditor']).done(function() {
 	if ((mw.config.get('wgAction') != "edit" && mw.config.get('wgAction') != "submit") || mw.config.get('wgPageName').indexOf("Quest:") > -1) return;
 	icText = ($("#wpTextbox1").val()) ? "Update item tooltip" : "Create item page";
-	$(".ve-fd-header__actions").prepend('<a class="wds-button wds-is-text page-header__action-button has-label oo-ui-buttonElement-button" href="#" id="ca-create-item" role="button" data-tracking-label="ca-create-item" accesskey="a"><span class="oo-ui-labelElement-label">'+ icText + '</span></a>');
-	$(".ve-fd-header__actions").prepend('<a class="wds-button wds-is-text has-label oo-ui-buttonElement-button" href="#" id="ca-insert-tooltip" role="button" data-tracking-label="ca-insert-tooltip"><span class="oo-ui-labelElement-label">Insert item tooltip</span></a>');
+	const classExists = document.getElementsByClassName('ve-fd-header__actions').length > 0;
+	if (classExists) {
+		$(".ve-fd-header__actions").prepend('<a class="wds-button wds-is-text page-header__action-button has-label oo-ui-buttonElement-button" href="#" id="ca-create-item" role="button" data-tracking-label="ca-create-item" accesskey="a"><span class="oo-ui-labelElement-label">'+ icText + '</span></a>');
+		$(".ve-fd-header__actions").prepend('<a class="wds-button wds-is-text has-label oo-ui-buttonElement-button" href="#" id="ca-insert-tooltip" role="button" data-tracking-label="ca-insert-tooltip"><span class="oo-ui-labelElement-label">Insert item tooltip</span></a>');
+	} else {
+		$(".ve-fd-header").append('<div class="ve-fd-header__actions"><a class="wds-button wds-is-text has-label oo-ui-buttonElement-button" href="#" id="ca-create-item" role="button" data-tracking-label="ca-create-item" accesskey="a"><span class="oo-ui-labelElement-label">'+ icText + '</span></a></div>');
+		$(".ve-fd-header__actions").append('<a class="wds-button wds-is-text page-header__action-button has-label oo-ui-buttonElement-button" href="#" id="ca-insert-tooltip" role="button" data-tracking-label="ca-insert-tooltip"><span class="oo-ui-labelElement-label">Insert item tooltip</span></a>');
+	}
 	$('#ca-create-item').click(function(){ itemCreate(); });
 	$('#ca-insert-tooltip').click(function(){ insertTooltip(); });
 	$('#wpTextbox1').wikiEditor( 'addToToolbar', {

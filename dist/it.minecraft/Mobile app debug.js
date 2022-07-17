@@ -17,7 +17,7 @@ $(document).ready(function() {
           descText = $(this).data('description');
         }
 
-        $(this).before('<button type="button" class="modal-button"><strong>View Table' + ($(this).data('description') ? ": " : "") + descText + '</strong></button>');
+        $(this).before('<button type="button" class="modal-button"><strong>Vedi tabella' + ($(this).data('description') ? ": " : "") + descText + '</strong></button>');
       }
     });
   }

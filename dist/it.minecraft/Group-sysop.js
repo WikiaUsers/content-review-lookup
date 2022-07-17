@@ -24,7 +24,7 @@ $.when( $.ready, mw.loader.using( 'mediawiki.util' ) ).done( function() {
 			}
 			
 			var href = $link.attr( 'href' );
-			var page = mw.util.getParamValue( 'title', href ) || ( href.match( /\/([^?]+)/ || [] )[1] );
+			var page = mw.util.getParamValue( 'title', href ) || ( href.match( /\/wiki\/([^?]+)/ || [] )[1] );
 			if ( page ) {
 				page = decodeURIComponent( page ).replace( /_/g, ' ' );
 				var wikiLink = $link.text();
@@ -37,7 +37,7 @@ $.when( $.ready, mw.loader.using( 'mediawiki.util' ) ).done( function() {
 		
 		var reasonText = $reasonNodes.text();
 		if ( reasonText ) {
-			$( '#ca-delete a' ).prop( 'href', function() {
+			$( '#ca-delete a, a#ca-delete' ).prop( 'href', function() {
 				// Purposly not using wpReason, so the auto-generated reason is still there initially
 				// so the user can press undo to get it back if they want it instead of this one
 				return this.href += '&deleteReason=' + encodeURIComponent( reasonText );

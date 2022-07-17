@@ -1,0 +1,1 @@
+if(mw.config.get("wgNamespaceNumber") == 114 && document.getElementById("toc")) document.getElementById("toctogglecheckbox").checked = true;

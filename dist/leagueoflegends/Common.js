@@ -291,4 +291,9 @@ mw.hook('wikipage.content').add(function(elem) {
     });
 });
 
+/* ItemComparisonForm */
+window.itemComparisonFormPages = [
+	'League_of_Legends_Wiki:Lane_Lookup',
+];
+
 /* DO NOT ADD CODE BELOW THIS LINE */

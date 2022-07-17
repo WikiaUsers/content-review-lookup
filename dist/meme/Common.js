@@ -6,3 +6,4 @@ $('.insertusername').text(mw.config.get('wgUserName'));
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
+/*javascript is SO painful.*/

@@ -36,6 +36,10 @@ nkch_gst_gadgets = [{
     name: "SnowStorm",
     title: "Падение снега",
     description: "Снежинки зимой на вики. Помните, было такое?"
+}, {
+    name: "Calendar",
+    title: "Календарь",
+    description: "Календарь"
 }
 ];
 

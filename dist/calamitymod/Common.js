@@ -16,7 +16,7 @@ function addAjaxDisplayLink() {
 			}
 		}
 		if (needLink) headerLinks.html('[<a href="javascript:;" class="ajax-load-link">show data</a>]');
-		table.find(".ajax-load-link").parent().andSelf().filter('a').click(function(event) {
+		table.find(".ajax-load-link").parent().addBack().filter('a').click(function(event) {
 			event.preventDefault();
 			var sourceTitle = table.data('ajax-source-page'), baseLink = mw.config.get('wgScript') + '?';
 			cell.text('Please wait, the content is being loaded...');
@@ -65,7 +65,7 @@ $(addAjaxDisplayLink);
 
 
 // Recipe finder functionality - by Philo04
-if(wgPageName == "Calamity_Mod_Wiki:Recipe_Finder"){
+if(mw.config.get('wgPageName') == "Calamity_Mod_Wiki:Recipe_Finder"){
 	var RecipeFinderSearchBox = $("<input>")
 		.addClass("mw-inputbox-input mw-ui-input mw-ui-input-inline")
 		.css("vertical-align", "top")
