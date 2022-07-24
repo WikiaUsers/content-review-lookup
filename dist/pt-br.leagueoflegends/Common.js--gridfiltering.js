@@ -29,14 +29,14 @@
 			if(!container.length) continue
 			flag = true
 			
-			if(gridFilters[x] == 'search') {
-				var field = $('<input type="text" placeholder="Search..." />').appendTo(container).attr('id', container.attr('id')+'-field').data('type', 'search')
+			if(gridFilters[x] == 'pesquisar') {
+				var field = $('<input type="text" placeholder="Search..." />').appendTo(container).attr('id', container.attr('id')+'-field').data('tipo', 'pesquisar')
 				
 				field.keyup(function() {
 					gridFilteringApply()
 				})
 			} else if(gridFilters[x] instanceof Array) {
-				var field = $('<select></select>').appendTo(container).attr('id', container.attr('id')+'-field').data('type', 'select')
+				var field = $('<select></select>').appendTo(container).attr('id', container.attr('id')+'-field').data('tipo', 'select')
 				$('<option></option>').appendTo(field).attr('value', '').html(gridFilters[x][0])
 				for(var y=1;y<gridFilters[x].length;y++) {
 					$('<option></option>').appendTo(field).attr('value', gridFilters[x][y][0]).html(gridFilters[x][y][1])
@@ -66,12 +66,12 @@
 				var value = field.val().toLowerCase()
 				if(value == '') continue;
 				
-				var type = field.data('type')
-				if(type == 'search') {
+				var tipo = field.data('tipo')
+				if(tipo == 'pesquisar') {
 					var rx = new RegExp('^.*?(' + value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + ').*?$','i');
 					var flag = rx.test(gridElements[x][y].join(', '))
 					if(!flag) active = false
-				} else if(type == 'select') {
+				} else if(tipo == 'select') {
 					if(gridElements[x][y].indexOf(value) == -1) active = false
 				}
 			}

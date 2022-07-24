@@ -4,7 +4,7 @@
 
 	$(function () {
 	var discordBannerPublic = document.getElementById('discordBannerPublic');
-	discordBannerPublic.innerHTML = '<widgetbot server="957607661434707988" channel="957607662000963626" width="100%" height="550px"></widgetbot>';
+	discordBannerPublic.innerHTML = '<widgetbot server="798537440615727125" channel="891523078570512434" width="100%" height="550px"></widgetbot>';
 	/*!
  * @widgetbot/html-embed v1.1.0
  * MIT Licensed

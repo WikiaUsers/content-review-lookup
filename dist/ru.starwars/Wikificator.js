@@ -25,20 +25,32 @@ $('#wpPreview').click(function()
 /* копировние кода статьи с анг. вики по указанному анг. названию*/
 function CopyEngArticleInfo()
 {
-	let s = prompt('Укажите англоязычную статью');
+	// поиск в адрессной строке переменной sous с названием анг. статьи
+	result = location.search.match(/&sous=(.*)/);
+	
+	if (result != null)
+	{
+	  s = result[0].replace(/.*=/, '');
+	  
+	  console.log(s);
+	}
+	else
+	{
+	  s = prompt('Укажите англоязычную статью');
+	}
 
 	if (s !== null && s !== undefined) 
 	{
 		$.get( 'https://starwars.fandom.com/index.php', { title: s, action: 'raw', ctype: 'text/plain' } )
 		.then(function( data )			
 		{		
-			$('#wpTextbox1').val(data.replace(/\|ru=(.+)?(\n|\})/, '|en='+s+'\n'));
-			mw.notify( 'Исходный код удачно скопирован!' );
+			$('#wpTextbox1').val(data.replace(/\|ru=.+\n/, '' ).replace(/\{\{Interlang/, '{{Interlang\n|en='+s));
+			mw.notify( 'Исходный код статьи "'+ s +'" удачно скопирован!' );
 			Wikify('WIKIFY');
 		},
 		function()
 		{
-			mw.notify( 'Указанная статья на Wookieepedia не найдена!', { title: 'Ошибка!', type: 'error' } );
+			mw.notify( 'Указанная статья "'+ s +'" на Wookieepedia не найдена!', { title: 'Ошибка!', type: 'error' } );
 		}
 		);
 	}

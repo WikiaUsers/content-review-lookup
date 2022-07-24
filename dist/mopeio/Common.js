@@ -13,6 +13,16 @@ $.get(mw.util.wikiScript('load'), {
 /***********************************************************************/
 /************************ Import Configurations ************************/
 /***********************************************************************/
+/* MessageBlock */
+window.MessageBlock = {
+	title : 'Block Notice',
+	message : 'You have been blocked due to: $1. If your block is longer than two weeks, you may appeal it by messaging me on Community Central (https://community.fandom.com), in accordance to the ban appeal policy (https://mopeio.fandom.com/wiki/Rules#Appealing_a_ban). While you are blocked, please review the full list of rules (https://mopeio.fandom.com/wiki/Project:Rules) and adhere to them when you return. Any future rule violations after your block expires will result in harsher action being taken.',
+	autocheck : true
+};
+
+
+// End MessageBlock */
+
 /* Signature Check */
 window.SignatureCheckJS = {
     preamble: 'There are a few potential problems with your edit:\n\n',

@@ -125,6 +125,12 @@ runAsEarlyAsPossible(function () {
  */
 mw.hook('wikipage.content').add( function () {
 	$('#toc h2 svg').remove();
+	$('video.webm').each(function() {
+		this.setAttribute('muted', '');
+		this.setAttribute('autoplay', '');
+		this.setAttribute('loop', '');
+		this.removeAttribute('controls');
+	});
 });
 
 // Число раскрытых по умолчанию навигационных шаблонов, 

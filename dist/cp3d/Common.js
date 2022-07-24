@@ -14,10 +14,9 @@ importArticles({
 	type: "script",
 	articles: [
 		"MediaWiki:Common.js/plok.js",
-		mw.config.get("wgPageName") == "Template:HomepageClock" ? "MediaWiki:Common.js/homepageclock.js" : ""
+		"MediaWiki:Common.js/homepageclock.js"
 	]
 });
-
 /* Visitor's name showing up on a user page */
 $(function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;

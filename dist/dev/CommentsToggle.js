@@ -4,31 +4,20 @@
 		'wgRestrictionComment',
 		'wgScriptPath',
 		'wgPageName',
-		'wgCanonicalNamespace',
 		'wgUserGroups'
 	]);
-	
+
 	if (
 		window.commentsToggleLoaded ||
-		config.wgCanonicalNamespace != '' ||
 		!/threadmoderator|sysop|soap|helper|wiki-specialist|wiki-representative|staff/.test(mw.config.values.wgUserGroups.join())
-	) {
-		return;
-	}
+	) return;
 	window.commentsToggleLoaded = true;
-	
-	var msg;
-	
-	var buttonInput = document.createElement('input');
-		buttonInput.type = 'checkbox';
-		buttonInput.id = 'commentToggle';
-		buttonInput.checked = true;
-		buttonInput.className = 'wds-toggle__input';
-	
-	var buttonLabel = document.createElement('label');
-		buttonLabel.htmlFor = 'commentToggle';
-		buttonLabel.className = 'wds-toggle__label';
-	
+
+	var commentArea = document.getElementById('articleComments');
+	if (!commentArea) return;
+
+	var msg, buttonInput, buttonLabel;
+
 	function protect() {
 		buttonInput.disabled = true;
 		$.get( config.wgScriptPath + '/api.php', {
@@ -70,17 +59,25 @@
 			});
 		});
 	}
-	
+
 	function init() {
-		buttonLabel.innerText = msg.buttonText;
-		if (config.wgRestrictionComment.length) buttonInput.checked = false;
-		
-		var commentArea = document.getElementById('articleComments');
-		if (commentArea) commentArea.before(buttonInput, buttonLabel);
-		
+		buttonInput = document.createElement('input');
+		buttonInput.type = 'checkbox';
+		buttonInput.id = 'commentToggle';
+		buttonInput.checked = true;
+		buttonInput.className = 'wds-toggle__input';
 		buttonInput.addEventListener('change', protect);
+
+		buttonLabel = document.createElement('label');
+		buttonLabel.htmlFor = 'commentToggle';
+		buttonLabel.className = 'wds-toggle__label';
+		buttonLabel.textContent = msg('buttonText').plain();
+
+		if (config.wgRestrictionComment.length) buttonInput.checked = false;
+
+		commentArea.before(buttonInput, buttonLabel);
 	}
-	
+
 	mw.hook('dev.i18n').add(function (i18n) {
 		i18n.loadMessages('CommentsToggle').done(function (i18no) {
 			msg = i18no.msg;

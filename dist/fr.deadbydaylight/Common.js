@@ -4,6 +4,8 @@ var inceptionYear = 2016;
 var currentYear = new Date().getFullYear();
 
 $(function(){
+	console.log("Custom Javascript executed");
+	SoS2();
 	for(i = inceptionYear; i <= currentYear; i++){
 		console.log("Creating handlers for year " + i);
 		$('#inceptionPerks' + i).css('font-weight', 'bold');
@@ -40,6 +42,21 @@ $(function(){
 	CreateEditSourceLink();
 });
 
+function SoS2(){
+	console.log("SoS2 Executed");
+	$(".sos2 > .sosPerk").each(function(i){
+	    $(this).hover(
+	        function(){
+	            $(this).addClass("sosPerkHovered");
+	            $(this).parent().children().filter(":not(.sosPerkHovered):not(.sosPerkDesc)").addClass("sosPerkNotHovered");
+	        },
+	        function(){
+	            $(this).removeClass("sosPerkHovered", 115);
+	            $(this).parent().children().removeClass("sosPerkNotHovered");
+	     });
+	});
+	console.log("SoS2 Initiallised");
+}
 
 function GetInceptionPerksHandler(year){
 	return function(){

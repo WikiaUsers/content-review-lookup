@@ -3,7 +3,7 @@
  * // current update is to account for mw version `1.37.2` and the introduction of `.mw-highlight-lines` to codeblocks
  * @name CodeblockLineNumbers
  * @author Arashiryuu0
- * @version 1.2.0
+ * @version 1.2.1
  */
 	
 // jshint browser: true, devel: true, jquery: true
@@ -23,7 +23,7 @@
     var codeblocks = [
         ['de1', 'hljs'],
         ['theme-solarized-light', 'theme-solarized-dark'],
-        ['.mw-highlight pre', 'code pre']
+        ['.mw-highlight pre', 'code pre', '.pi-data-value pre']
     ],
         slice = Array.prototype.slice,
         ourblocks = slice.call(document.querySelectorAll('pre'));
@@ -205,7 +205,10 @@
         if (block.querySelector('ol.lineNumbers')) return;
 		
         var ol = document.createElement('ol'),
-            matched = match(block, codeblocks[2][1]);
+            matched = match(block, codeblocks[2][1]),
+            ignore = match(block, codeblocks[2][2]);
+		
+        if (ignore) return;
 			
         ol.classList.add.apply(ol.classList, classes);
         wrapInner(addLines(block), ol);

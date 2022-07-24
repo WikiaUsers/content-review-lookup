@@ -116,6 +116,7 @@
     'Ogre Rowdy': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Ogre Savage': {'Jalapeño Pepper': 'Jalapeno Pepper', 'Jalapeńo Pepper': 'Jalapeno Pepper', 'Jalape\uFFFDo Pepper': 'Jalapeno Pepper'},
     'Orc Shaman': {'Book': 'Book (Grey)'},
+    'Parder': {'Parder Teeth': 'Parder Tooth'},
     'Piñata Dragon': {'Costume Bag': 'Costume Bag (Retro)'},
     'Pirate Buccaneer': {'Treasure Map': 'Treasure Map (Pirate)'},
     'Pirate Cutthroat': {'Treasure Map': 'Treasure Map (Pirate)'},
@@ -125,6 +126,8 @@
     'Priestess': {'Book': 'Book (Orange)'},
     'Prince Drazzak': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Rage Squid': {'Inkwell': 'Inkwell (Black)'},
+    'Ratmiral Blackwhiskers': {'Amber': 'Amber (Item)'},
+    'Ravenous Hunger': {'Blood of the Mountain': 'Blood of the Mountain (Item)'},
     'Renegade Quara Hydromancer': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Renegade Quara Pincher': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Rotten Golem': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
@@ -178,7 +181,7 @@
     'Vein of *': 'Veins of ',
     'Bowl of *': 'Bowls of '
   },
-
+  
   //plural exceptions
   lootparser_p_words = {
     '*Pieces of *': 'Piece of ',
@@ -199,6 +202,13 @@
   lootparser_p_ends = {
     'che': 'ch', 'she': 'sh', 'ie': 'y', 've': 'fe', 'oe': 'o', 'ze': 'z'
   },
+  
+  //exceptions for items that should not be changed to singular 
+  
+  lootparser_p_items = [
+  	'Corrupt Naga Scales', 'Rogue Naga Scales', 'Naga Archer Scales', 'Naga Warrior Scales',
+  	'Ripptor Scales', 'Stalking Seeds', 'Fairy Wings'
+  ],
 
   //skip/rename creatures if they drop any of the loot in the list
   lootparser_creature_by_loot = {
@@ -381,6 +391,11 @@
     return list;
   },
   lootparser_to_singular = function (t) {
+  	if (lootparser_p_items.includes(t)) {
+  		//Since SU 22 all items are appearing with amounts before their names
+  		//Some of them have names in the plural even as single units and should not be changed to singular
+  		return t;
+  	}
     var x, lastletter;
     for (x in lootparser_p_words) { if (lootparser_p_words.hasOwnProperty(x)) {
       if ((new RegExp('^' + x.replace(/\*/g, '.*?') + '$')).test(t)) { return t.replace(x.replace(/\*/g, ''), lootparser_p_words[x]); }
@@ -892,7 +907,7 @@
     }
     else {
       creature = ucwords($.trim(tmp[1])).replace(/ /g, '_');
-      ta_multi_version_no_ok_wrong = 0; ta_version_ok = false; vdata = parser_text.match(/version\s*?=\s*?([.\d]{3,})/i);
+      ta_multi_version_no_ok_wrong = 0; ta_version_ok = false; vdata = parser_text.match(/version\s*?=\s*?([.\d]{3,}(\s\(\d\))?)/i);
       if (vdata === null) { request_end('Version info couldn\'t be found, please verify in case you manually edited the statistics.'); }
       else {
         if (lootparser_tibia_versions.hasOwnProperty(vdata[1])) { ta_version_ok = true; }

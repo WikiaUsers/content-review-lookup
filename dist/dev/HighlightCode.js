@@ -14,7 +14,7 @@ mw.loader.using('mediawiki.util').then(function () {
     $('<link>', {
         rel: 'stylesheet',
         href: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/atom-one-' + (isDarkTheme ? 'dark' : 'light') + '.min.css',
-        integrity: isDarkTheme ? 'sha512-Jk4AqjWsdSzSWCSuQTfYRIF84Rq/eV0G2+tu07byYwHcbTGfdmLrHjUSwvzp5HvbiqK4ibmNwdcG49Y5RGYPTg==' : 'sha512-o5v54Kh5PH0dgnf9ei0L+vMRsbm5fvIvnR/XkrZZjN4mqdaeH7PW66tumBoQVIaKNVrLCZiBEfHzRY4JJSMK/Q==',
+        integrity: (isDarkTheme ? 'sha512-Jk4AqjWsdSzSWCSuQTfYRIF84Rq/eV0G2+tu07byYwHcbTGfdmLrHjUSwvzp5HvbiqK4ibmNwdcG49Y5RGYPTg==' : 'sha512-o5v54Kh5PH0dgnf9ei0L+vMRsbm5fvIvnR/XkrZZjN4mqdaeH7PW66tumBoQVIaKNVrLCZiBEfHzRY4JJSMK/Q=='),
         crossorigin: 'anonymous',
         appendTo: $('head')
     });
@@ -51,7 +51,9 @@ mw.loader.using('mediawiki.util').then(function () {
     $.when(js).then(function () {
         pre.each(function () {
         	//Set the text of the pre to the text content to remove pygment's HTML from the pre, so that highlight.js doesn't complain about XSS/security issues
-            $(this).text((_, txt) => txt);
+            $(this).text(function (_, txt) {
+                return txt;
+            });
 
             hljs.highlightElement(this);
         });

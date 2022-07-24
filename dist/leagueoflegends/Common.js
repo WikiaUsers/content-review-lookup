@@ -198,7 +198,14 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 /* Custom Tooltips for use with the Tooltips/code.js */
 window.tooltips_list = [
     {   classname: 'ability-icon',
-        parse: '{'+'{Tooltip/Ability|champion=<#champion#>|ability=<#ability#>|variant=<#variant#>|game=<#game#>}}'},
+        // parse: '{'+'{Tooltip/Ability|champion=<#champion#>|ability=<#ability#>|variant=<#variant#>|game=<#game#>}}',
+        parse: function parse(elem) {
+        	if (window.tooltips_ability_icon_detail) {
+        		return '{' + '{Tooltip/Ability|champion=' + $(elem).data('champion') + '|ability=' + $(elem).data('ability') + '|variant=' + $(elem).data('variant') + '|game=' + $(elem).data('game') + '|detail=true}}';
+        	}
+    		return '{' + '{Tooltip/Ability|champion=' + $(elem).data('champion') + '|ability=' + $(elem).data('ability') + '|variant=' + $(elem).data('variant') + '|game=' + $(elem).data('game') + '}}';
+        }
+    },
     {   classname: 'buff-icon', 
         parse: '{'+'{Tooltip/Buff|<#param#>|buff=<#buff#>|variant=<#variant#>|game=<#game#>}}'},
     {   classname: 'champion-icon',

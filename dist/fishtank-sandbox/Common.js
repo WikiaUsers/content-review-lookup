@@ -39,3 +39,30 @@ $(document).ready(function() {
         }
     } );
 } );
+
+$.fn.changeElementType = function(newType) {
+    var newElements = [];
+
+    $(this).each(function() {
+        var attrs = {};
+
+        $.each(this.attributes, function(idx, attr) {
+            attrs[attr.nodeName] = attr.nodeValue;
+        });
+
+        var newElement = $("<" + newType + "/>", attrs).append($(this).contents());
+
+        $(this).replaceWith(newElement);
+
+        newElements.push(newElement);
+    });
+
+    return $(newElements);
+};
+$("div.hypercard").changeElementType("figure");
+$("div.card-gallery").changeElementType("section");
+$(".card-gallery").before("<p>Click the item title to learn more.</p>");
+
+$('.hypercard .pi-title').click(function(){
+    $(this).closest('.hypercard').toggleClass('active');
+});

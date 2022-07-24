@@ -38,6 +38,11 @@ window.tooltips_list = [{
 {
     classname: 'tooltip-info',
     parse: '{{#invoke:getdata2|div|<#article#>|Инфо}}'
+},
+
+{
+    classname: 'tooltip-ref',
+    parse: '{{#invoke:getdata2|div|<#article#>|Отсылка}}'
 }
 
 ];

@@ -1,5 +1,5 @@
 (function () {
-    if (mw.config.get('wgCanonicalNamespace') !== '' || mw.config.get('wgArticleId') === 3) return
+    if (mw.config.get('wgCanonicalNamespace') !== '' || [ 0, 3 ].includes( mw.config.get('wgArticleId') )) return
 
     mw.hook('dev.wds').add(function(wds) {
         var api = new mw.Api();

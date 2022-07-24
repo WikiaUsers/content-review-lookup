@@ -69,7 +69,7 @@ mw.loader.using('mediawiki.api', function() {
 			}
 			else {
 				if (user === user_logged_in) {
-					textParagraph.innerHTML = "<b><u>Account Age:</u></b> " + Math.floor(account_age_days) + " days<br/><span style=\"color: mediumseagreen;\">You <b><u>can</u> host giveaways</b>.</span> See <a href=\"/wiki/Adopt_Me!_Wiki:Rules_and_Guidelines#Giveaway_Policies\">See Giveaway Policies</a> before hosting.";
+					textParagraph.innerHTML = "<b><u>Account Age:</u></b> " + Math.floor(account_age_days) + " days<br/><span style=\"color: mediumseagreen;\">You <b><u>can</u> host giveaways</b>.</span> <a href=\"/wiki/Adopt_Me!_Wiki:Rules_and_Guidelines#Giveaway_Policies\">See Giveaway Policies</a> before hosting.";
 				}
 				else {
 					textParagraph.innerHTML = "<b><u>Account Age:</u></b> " + Math.floor(account_age_days) + " days<br/><span style=\"color: mediumseagreen;\"><i>" + user + "</i> <b><u>can</u> host giveaways</b>.</span>";

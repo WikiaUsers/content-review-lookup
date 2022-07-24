@@ -224,3 +224,11 @@ window.globalFileUsageConfig = {
     'auto_show': false,
     'on_delete': true
 };
+
+// MultipleFileDelete
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MultipleFileDelete/code.js',
+    ]
+});

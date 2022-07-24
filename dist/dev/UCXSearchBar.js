@@ -1,4 +1,4 @@
-$.when(mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg"])).then(function(){
+$.when(mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg", "mediawiki.util"])).then(function(){
     return new mw.Api().loadMessagesIfMissing(["searchsuggest-search", "tooltip-search", "tooltip-search-go", "search-modal-see-all-results"]);
 }).then(function(){
 	if(window.UCXSEARCHBARLoaded || mw.config.get("skin") !== "fandomdesktop"){
@@ -7,11 +7,9 @@ $.when(mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg"])).then(function(
 
 	window.UCXSEARCHBARLoaded = true;
 
-	var ScriptPath = mw.config.get("wgScriptPath");
-
 	var search_form = $("<form>", {
 		class: "wiki-tools__search-container wds-dropdown",
-		action: ScriptPath + "/wiki/Special:Search",
+		action: mw.util.getUrl("Special:Search"),
 		append: [
 			$("<input>", {
 				class: "wiki-tools__search-input",
@@ -67,14 +65,14 @@ $.when(mw.loader.using(["mediawiki.api", "mediawiki.jqueryMsg"])).then(function(
 				$(container_selector + " .wiki-tools__search-linksuggest-list > ul").append($("<li>", {
 					title: suggestion,
 					"data-search-value": suggestion,
-					append: $('<a href="' + ScriptPath + "/wiki/" + suggestion.replaceAll('"', "&quot;") + '">' + suggestion.replace(new RegExp("(" + search_query + ")", "gi"), "<b>$1</b>") + "</a>")
+					append: $('<a href="' + mw.util.getUrl(suggestion) + '">' + suggestion.replace(new RegExp("(" + search_query + ")", "gi"), "<b>$1</b>") + "</a>")
 				}));
 			});
 			$(container_selector + " .wiki-tools__search-linksuggest-list > ul").append($("<li>", {
 				"data-search-value": search_query,
 				append: $("<a>", {
 					class: "wiki-tools__search-linksuggest-list-see-all",
-					href: ScriptPath + "/wiki/Special:Search?query=" + search_query,
+					href: mw.util.getUrl("Special:Search") + "?query=" + search_query,// intentionally not using mw.util.getUrl's second param
 					text: mw.msg("search-modal-see-all-results", search_query)
 				})
 			}));

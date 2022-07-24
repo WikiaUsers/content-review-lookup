@@ -373,7 +373,7 @@
                 hasInput: !0,
                 inputSize: 7,
                 inputPh: 'skin',
-                inputVal: 'mercury',
+                inputVal: 'fandommobile',
             },
             {
                 id: 'diff',

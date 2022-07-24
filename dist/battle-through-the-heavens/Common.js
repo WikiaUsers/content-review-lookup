@@ -11,6 +11,13 @@ window.AutoEditDropdownConfig = {
     expandedAreaEdit: false
 };
  
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:countdown/code.js'
+    ]
+});
+
 window.ajaxRefresh = 60000;
 window.ajaxPages = [
     'Special:WikiActivity',
@@ -29,12 +36,6 @@ window.ajaxPages = [
 ];
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:ImportJS-Plus.js',
-    ]
-});
  
 window.UserTagsJS = {
     modules: {},
@@ -212,7 +213,7 @@ UserTagsJS.modules.metafilter = {
 // Username script // 
 (function () { 
 if (wgUserName != null) $('span.insertusername').text(wgUserName);
-})()
+})();
  
 // Bureaucrat promotion warning message //
 !function() {

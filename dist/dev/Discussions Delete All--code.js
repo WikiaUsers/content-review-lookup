@@ -1,7 +1,7 @@
 // Discussions Delete All
 // Button from Special:Contribs that deletes all Discussions posts of user
 // @author: Jr Mime
-(function () {
+;(function ($, mw) {
     'use strict';
 
     var config = mw.config.get([
@@ -75,4 +75,4 @@
         type: 'script',
         article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
-})();
+})(window.jQuery, window.mediaWiki);

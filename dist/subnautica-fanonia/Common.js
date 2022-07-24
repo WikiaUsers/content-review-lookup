@@ -9,7 +9,7 @@ window.UserTagsJS = {
 	tags: {
 		winnermarchq: { u: 'Winner of March Quality Award', order: 110 },
 		bestwikiarm: { u: 'Best arm of the Wiki', order: 111 },
-		king: { u: 'The King', order: 102},
+		founder: { u: 'Founder', order: 102},
 		headmod: { u: 'Head Moderator', order: 103 },
 		headadmin: { u: 'Head Admin', order: 103 }
 	}
@@ -17,19 +17,8 @@ window.UserTagsJS = {
 /** Users **/
 UserTagsJS.modules.custom = { // NOTE: order of list here does NOT matter //
 	'SammytheSafetyReaper13': ['winnermarchq', 'bestwikiarm'], 
-	'JokerJetty15': ['winnermarchq', 'headadmin'],
-	'BlackLord101': ['king'],
+	'JokerJetty15': ['winnermarchq', 'founder'],
+	'BlackLord101': ['headadmin'],
 	'Pokemon_was_better': ['headmod'],
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
-
-// User Status
-window.UserStatusSettings = {
-    colorBlindMode: 1,
-    lightTheme: 1,
-    statusIndicator: 1,
-    online: '#0078ff',
-    away: '#cc7',
-    dnd: 'crimson',
-    offline: 'darkgray',
-};

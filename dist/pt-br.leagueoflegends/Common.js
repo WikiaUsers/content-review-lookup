@@ -28,7 +28,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
     gridContainer = '#champion-grid';
     gridFilters = {
         'pesquisar': 'pesquisar',
-        'jogo': ['- Jogo -',
+        /* 'jogo': ['- Jogo -',
             ['LOL','League of Legends'],
             ['TFT','Teamfight Tactics'],
             ['TFT1','• Conjunto 1 - Guerras das Facções'],
@@ -38,7 +38,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             ['TFT4','• Conjunto 4 - Destinos'],
             ['LOR','Legends of Runeterra'],
             ['WR','Wild Rift']
-        ],
+        ],*/
         'função': ['- Função -',
             ['Controlador','Controlador'],
             	['Disruptor','• Disruptor'],

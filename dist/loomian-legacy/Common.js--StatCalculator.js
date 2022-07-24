@@ -205,8 +205,10 @@ $(document).ready(function() {
 		var EnergyUP = parseInt($("#EnergyUPBox-" + id + " > .EnergyUP")[0].value);
 		var EnergyTP = parseInt($("#EnergyTPBox-" + id + " > .EnergyTP")[0].value);
 		var EnergyPersonality = $("#EnergyPersonalityBox-" + id + " > .EnergyPersonality")[0].value;
-		document.getElementById("displayEnergy-"+id).innerHTML = calcEnergy(EnergyB, EnergyUP, EnergyTP, Lvl, EnergyPersonality);
-		
+		try { // try statement for Harvesect case, as displayEnergy is missing due to it not having an Energy stat
+			document.getElementById("displayEnergy-"+id).innerHTML = calcEnergy(EnergyB, EnergyUP, EnergyTP, Lvl, EnergyPersonality);
+		}
+		finally {
 		var MAtkB = parseInt(document.getElementById("mAtkBase-"+id).innerHTML);
 		var MAtkUP = parseInt($("#MAtkUPBox-" + id + " > .MAtkUP")[0].value);
 		var MAtkTP = parseInt($("#MAtkTPBox-" + id + " > .MAtkTP")[0].value);
@@ -236,6 +238,7 @@ $(document).ready(function() {
 		var SpeedTP = parseInt($("#SpeedTPBox-" + id + " > .SpeedTP")[0].value);
 		var SpeedPersonality = $("#SpeedPersonalityBox-" + id + " > .SpeedPersonality")[0].value;
 		document.getElementById("displaySpeed-"+id).innerHTML = calcStat(SpeedB, SpeedUP, SpeedTP, Lvl, SpeedPersonality);
+		}
 		
     });
     

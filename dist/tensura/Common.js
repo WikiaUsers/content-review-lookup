@@ -48,6 +48,11 @@ window.AddSectionButtonText = "Add new section";
 // PreloadTemplates customization
 preloadTemplates_subpage = "case-by-case";
 
+// AddRailModule
+window.AddRailModule = [
+    {page: 'Template:Discord', prepend: true}
+];
+
 // User tags
 window.UserTagsJS = {
     tags: {

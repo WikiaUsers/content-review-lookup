@@ -1,8 +1,12 @@
-/******** This is THE EXACT SAME as the clock in common.js, however modified to properly work in Template:HomepageClock.*******/
-var pstClockElement = document.createElement("div");
-	pstClockElement.id = "pst-clock-wrapper";
-	pstClockElement.innerHTML = "<section class='rail-module'><h2>IST Clock</h2><div class='border-radius-5 padding-10'id=pst-clock><br><div><span id=time-wrapper class='border-radius-5 padding-10 text-align-center'><span id=time>NOW</span>&nbsp;<span id=am_pm></span></span></div><br><div><span id=day class='border-radius-5 padding-10 text-align-center'>Today</span><button aria-label='Fix date/time accuracy'id=power-clock-button title='Fix date/time accuracy'></button></div></div></section>";
-	/*getElement("WikiaRail").*/appendChild(pstClockElement);
+/* Any JavaScript here will be loaded for all users on every page load. */
+ //IST Clock - The majority of this code is borrowed from the CPRewritten Wiki https://clubpenguinrewritten.fandom.com/wiki/MediaWiki:Common.js
+var sidebarVisiblee = getElement("hpc") ? true : false;
+
+if(sidebarVisiblee) {
+	var pstClockElement = document.createElement("div");
+	pstClockElement.id = "pst-clock-wrapper-homepage";
+	pstClockElement.innerHTML = "<section class='rail-module'><div class='border-radius-5'id=pst-clock><div><span id=time-wrapper-homepage class='border-radius-5 padding-10 text-align-center'><span id=time>NOW</span>&nbsp;<span id=am_pm></span></span></div><br><div><span id=day-homepage class='border-radius-5 padding-10 text-align-center'>Today</span><button aria-label='Fix date/time accuracy'id=power-clock-button title='Fix date/time accuracy'></button></div></div></section>";
+	getElement("hpc").appendChild(pstClockElement);
 
 	var powerClockButton = getElement("power-clock-button");
 }
@@ -31,7 +35,7 @@ function updateTime() {
 
 function updateDayNameAndTimePeriod() { // Updates day name + AM/PM portion
 	var days = ["Sun", "Mon", "Tues", "Wednes", "Thurs", "Fri", "Satur"];
-	var day = getElement("day");
+	var day = getElement("day-homepage");
 	var am_pm = getElement("am_pm");
 	var tempDate = new Date();
 	var timeout;
@@ -53,7 +57,7 @@ function updateDayNameAndTimePeriod() { // Updates day name + AM/PM portion
 	}
 }
 
-if(sidebarVisible) {
+if(sidebarVisiblee) {
 	updateTime();
 	setInterval(updateTime, 1000);
 	updateDayNameAndTimePeriod();

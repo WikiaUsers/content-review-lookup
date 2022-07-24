@@ -1,10 +1,3 @@
-// Refrescar la página de la Actividad Reciente y de los Cambios Recientes.
-var AjaxRCRefreshText = 'Act. automática';
-var AjaxRCRefreshHoverText = 'Refrescar automáticamente los cambios de la página.';
-var ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:Registro"];
-var ajaxRefresh = 20000;
-importScriptPage('AjaxRC/code.js', 'dev');
-
 // Custom User Tags, including Inactive
 window.UserTagsJS = {
 	modules: {
@@ -58,13 +51,3 @@ window.UserTagsJS = {
         bot:             { u: 'Bot', link: 'project:Administración' },
     }
 };
-
-// 
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:DupImageList/code.js',
-        'u:dev:RevealAnonIP/code.js',
-    ]
-});

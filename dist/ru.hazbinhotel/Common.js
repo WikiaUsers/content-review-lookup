@@ -31,3 +31,23 @@ UserTagsJS.modules.custom = {
 	'Swit4er': ['translator'],
 	'JekaKud': ['intern']
 }
+
+/* ========== Выделение комментариев статусников ========== */
+setInterval(function () {
+    $('.wds-avatar a[href$="Voidan_Dether"]').closest('.Reply, .Reply_body__PM9kM').addClass('bur');
+    $('.wds-avatar a[href$="Swit4er"]').closest('.Reply, .Reply_body__PM9kM').addClass('bur');
+    $('.wds-avatar a[href$="Terabait24"]').closest('.Reply, .Reply_body__PM9kM').addClass('admin');
+    $('.wds-avatar a[href$="%D0%9D%D0%B8%D0%BA%D0%B8%D1%82%D0%B8%D0%BD_%D0%90%D1%80%D1%81%D0%B5%D0%BD%D0%B8%D0%B9"]').closest('.Reply, .Reply_body__PM9kM').addClass('admin');
+    $('.wds-avatar a[href$="Merzlyak"]').closest('.Reply, .Reply_body__PM9kM').addClass('discordMod');
+    $('.wds-avatar a[href$="Kostinger"]').closest('.Reply, .Reply_body__PM9kM').addClass('discordMod');
+    $('.wds-avatar a[href$="TimurKhan"]').closest('.Reply, .Reply_body__PM9kM').addClass('discordMod');
+    $('.wds-avatar a[href$="%D0%92%D0%BB%D0%B0%D0%B4%D1%8B%D0%BA%D0%B0_%D0%90%D0%BB%D0%B0%D1%80%D0%B0%D0%BA"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
+    $('.wds-avatar a[href$="IamNotFreddy"]').closest('.Reply, .Reply_body__PM9kM').addClass('discordAdmin');
+    $('.wds-avatar a[href$="LeraBE"]').closest('.Reply, .Reply_body__PM9kM').addClass('discordMod');
+    $('.wds-avatar a[href$="Lubitel_obnimashek"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
+    $('.wds-avatar a[href$="JustAccount"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
+    $('.wds-avatar a[href$="JekaKud"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
+    $('.wds-avatar a[href$="Creepy_Owl "]').closest('.Reply, .Reply_body__PM9kM').addClass('contMod');
+    $('.wds-avatar a[href$="Lefsy"]').closest('.Reply, .Reply_body__PM9kM').addClass('contMod');
+    $('.wds-avatar a[href$="Lich_night"]').closest('.Reply, .Reply_body__PM9kM').addClass('threadmod');
+}, 500 );
