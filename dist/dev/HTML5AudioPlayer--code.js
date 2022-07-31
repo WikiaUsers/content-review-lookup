@@ -10,64 +10,78 @@
 window.mw.hook('wikipage.content').add(function (content) {
   'use strict';
 
-  content[0].querySelectorAll('.html5audio:not(.loaded)').forEach(function (div) {
-    var data = div.dataset;
-    var file = data.file;
-    if (!file) {
-      return;
-    }
-    var format = file.split('.').pop();
-    var preload = data.preload;
-    var download = data.download;
-    var options = data.options;
-    var opts = { controls: '' };
-    var volume = Number(Number(data.volume).toFixed(1));
+  var msg;
 
-    if (format === 'mp3') {
-      format = 'mpeg';
-    }
-
-    if (preload !== 'auto' || preload !== 'metadata') {
-      preload = 'none';
-    }
-    opts.preload = preload;
-
-    if (download === 'false') {
-      opts.controlsList = 'nodownload';
-    }
-
-    if (options) {
-      var valid = ['autoplay', 'loop', 'muted'];
-      options.split(',').forEach(function (el) {
-        el = el.trim();
-        if (valid.indexOf(el) !== -1) {
-          opts[el] = '';
-        }
+  function init() {
+    content[0].querySelectorAll('.html5audio:not(.loaded)').forEach(function (div) {
+      var data = div.dataset;
+      var file = data.file;
+      if (!file) {
+        return;
+      }
+      var format = file.split('.').pop();
+      var preload = data.preload;
+      var download = data.download;
+      var options = data.options;
+      var opts = { controls: '' };
+      var volume = Number(Number(data.volume).toFixed(1));
+  
+      if (format === 'mp3') {
+        format = 'mpeg';
+      }
+  
+      if (preload !== 'auto' || preload !== 'metadata') {
+        preload = 'none';
+      }
+      opts.preload = preload;
+  
+      if (download === 'false') {
+        opts.controlsList = 'nodownload';
+      }
+  
+      if (options) {
+        var valid = ['autoplay', 'loop', 'muted'];
+        options.split(',').forEach(function (el) {
+          el = el.trim();
+          if (valid.indexOf(el) !== -1) {
+            opts[el] = '';
+          }
+        });
+      }
+  
+      var audio = document.createElement('audio');
+  
+      Object.keys(opts).forEach(function (attr) {
+        var value = opts[attr];
+        audio.setAttribute(attr, value);
       });
-    }
-
-    var audio = document.createElement('audio');
-
-    Object.keys(opts).forEach(function (attr) {
-      var value = opts[attr];
-      audio.setAttribute(attr, value);
+  
+      var source = document.createElement('source');
+      source.src = file;
+      source.type = 'audio/' + format;
+  
+      audio.append(
+        source,
+        msg('text').plain()
+      );
+  
+      if (volume >= 0 && volume <= 1) {
+        audio.volume = volume;
+      }
+  
+      div.innerHTML = '';
+      div.appendChild(audio);
+      div.classList.add('loaded');
     });
-
-    var source = document.createElement('source');
-    source.src = file;
-    source.type = 'audio/' + format;
-
-    audio.append(
-      source,
-      'Your browser does not support the audio tag.'
-    );
-
-    if (volume >= 0 && volume <= 1) {
-      audio.volume = volume;
-    }
-
-    div.innerHTML = '';
-    div.appendChild(audio);
-    div.classList.add('loaded');
+  }
+  window.mw.hook('dev.i18n').add(function(i18n) {
+    i18n.loadMessages('HTML5AudioPlayer').done(function(i18no) {
+      msg = i18no.msg;
+      init();
+    });
+  });
+  importArticle({
+    type: 'script',
+    article: 'u:dev:MediaWiki:I18n-js/code.js'
   });
 });

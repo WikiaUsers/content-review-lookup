@@ -6,7 +6,5 @@
     usernav.find('a[data-tracking-label="account.preferences"]').text('⚙️');
     usernav.find('a[data-tracking-label="account.contributions"]').text('✏️');
     usernav.find('a[data-tracking-label="bingebot.watchlist"]').text('📺');
-    usernav.find('.wds-sign-out__button').text('👋');
-    usernav.css('display', 'flex');
-    usernav.css('background-image', 'unset');
+    usernav.find('button[data-tracking-label="account.sign-out"]').text('👋');
 })();

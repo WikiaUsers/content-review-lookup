@@ -85,3 +85,17 @@ $( window ).resize( fp.equalizeColumns );
 /*********************************************
 /* End Front Page column height equalization *
 /*********************************************/
+
+/*********************************************
+/* DiscordBannerSettings *
+/*********************************************/
+// Dev Wiki script, imported using "MediaWiki:ImportJS", and located at "https://dev.fandom.com/wiki/MediaWiki:DiscordBanner.js" - https://dev.fandom.com/wiki/DiscordBanner
+window.DiscordBannerSettings = {
+    bannerStyle: '2',
+    inviteLink: 'beforeweleave',
+    prependToRail: false,
+    noRail: true
+};
+/*********************************************
+/* End of DiscordBannerSettings *
+/*********************************************/

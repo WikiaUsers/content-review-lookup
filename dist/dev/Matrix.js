@@ -84,10 +84,10 @@
         cbNirvana: function(d) {
             var urlRegex = /^https?:\/\/(.*)\.(?:wikia|fandom|gamepedia)\.(?:com|org)\/(?:([^/]+)\/?)?$/,
                 str = '{{/header|' + d.total + '}}\n' +
-                      '{| width="100%" class="mw-datatable sortable"\n' +
+                      '{| width="100%" class="wikitable mw-datatable sortable"\n' +
                       '|-\n' +
                       '! {{int:user-activity-table-title}}\n' +
-                      '! data-sort-type="number" | # of edits\n' +
+                      '! data-sort-type="number" | {{#tag:nowiki|{{int:user-activity-table-edits}}}}\n' +
                       '! {{int:user-activity-table-lastedit}}\n' +
                       '! {{int:user-activity-table-rights}}\n' +
                       d.items.filter(function(item) {

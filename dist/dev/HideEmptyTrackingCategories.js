@@ -1,27 +1,28 @@
-;(function (window, mw) {
+;(function (window, $, mw) {
 	'use strict';
 
 	if (window.HideEmptyTrackingCategoriesLoaded ||
 		mw.config.get('wgCanonicalSpecialPageName') !== 'TrackingCategories') return;
 	window.HideEmptyTrackingCategoriesLoaded = true;
 
-	const table = document.getElementById('mw-trackingcategories-table');
+	var table = document.getElementById('mw-trackingcategories-table');
 	if (!table) return;
 
 	var displayEmptyRows = true;
-	var msg, emptyText, disabledText;
+	var msg, emptyText, disabledText, OO;
 
 	function init() {
 		// add button
-		var button = document.createElement('button');
-		button.className = 'wds-button';
-		button.textContent = msg('labelHide').plain();
-		button.title = msg('titleHide').plain();
-		table.before(button);
+		var button = new OO.ui.ButtonWidget( { 
+			label: msg('labelHide').plain(),
+			title: msg('titleHide').plain(),
+			flags: ['primary', 'progressive']
+		} );
+		$(table).before(button.$element);
 
 		var rows = table.querySelectorAll('.mw-trackingcategories-name');
 
-		button.addEventListener('click', function () {
+		button.on('click', function () {
 			// toggle visibility
 			for (var i = 0; i < rows.length; i++) {
 				var td = rows[i],
@@ -33,15 +34,18 @@
 			}
 
 			// update button
-			button.textContent = msg(displayEmptyRows ? 'labelShow' : 'labelHide').plain();
-			button.title = msg(displayEmptyRows ? 'titleShow' : 'titleHide').plain();
+			button.setLabel(msg(displayEmptyRows ? 'labelShow' : 'labelHide').plain())
+				  .setTitle(msg(displayEmptyRows ? 'titleShow' : 'titleHide').plain());
 
 			// update state
 			displayEmptyRows = !displayEmptyRows;
 		});
 	}
 
-	mw.loader.using(['mediawiki.api']).then(function () {
+	mw.loader.using(['mediawiki.api', 'jquery', 'oojs-ui', 'oojs-ui-core', 'oojs-ui-widgets']).then(function(require) {
+		OO = require('oojs');
+		return;
+	}).then(function () {
 		return new mw.Api().loadMessagesIfMissing([
 			'categorytree-member-num',
 			'categorytree-num-empty',
@@ -56,9 +60,8 @@
 				init();
 			});
 		});
-		importArticles({
-			type: 'script',
-			articles: 'u:dev:MediaWiki:I18n-js/code.js'
-		});
+		if (!(window.dev && window.dev.i18n && window.dev.i18n.loadMessages)) {
+			mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js&*');
+		}
 	});
-})(window, window.mediaWiki);
+})(window, window.jQuery, window.mediaWiki);

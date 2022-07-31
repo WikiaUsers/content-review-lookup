@@ -7,9 +7,3 @@
 		});
 	}
 })();
-/** N'afficher l'option "Image du wiki" que pour les admins **/
-(function(){
-	if (!/sysop/.test(mw.config.get('wgUserGroups').join())){
-		document.querySelector("#quoiBox > option:nth-child(6)").style="display: none;";
-	}
-})();

@@ -87,7 +87,7 @@ $.getJSON("https://discordapp.com/api/servers/998244832541683742/widget.json", f
 
 	var invitelink = document.createElement('a');
 	$(invitelink).addClass('widget-btn-connect')
-		.attr("href", "https://discord.gg/pgxGQrEe")
+		.attr("href", "https://discord.gg/yys7mZjJu6")
 		.attr("target", "_blank")
 		.text("Join Now!")
 		.appendTo(widgFooter);

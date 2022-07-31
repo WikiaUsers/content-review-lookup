@@ -72,6 +72,13 @@ window.railWAM = {
 /****************************/
 /* Lastedit */
 /****************************/
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:LastEdited/code.js',
+    ]
+});
+
 window.lastEdited = {
 	size: false,
 	diff: false,
@@ -81,10 +88,3 @@ window.lastEdited = {
 	},    
 
 }
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:LastEdited/code.js',
-    ]
-});

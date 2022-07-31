@@ -4,6 +4,10 @@
 /* ### El JavaScript aquí se carga para todos los usuarios y pieles     ### */
 /* ######################################################################## */
 
+// Back to Top
+window.BackToTopModern = true;
+window.BackToTopArrow = true;
+
 /* ######################################################################### */
 /* ### ARCHIVE TOOL                                                      ### */
 /* ### ----------------------------------------------------------------- ### */
@@ -225,7 +229,13 @@ window.globalFileUsageConfig = {
     'on_delete': true
 };
 
-// MultipleFileDelete
+/* ##################################################################################### */
+/* ### Multiple File Delete                                                          ### */
+/* ### ----------------------------------------------------------------              ### */
+/* ### Description: Es un script que agrega un botón de "Eliminación selectiva" a    ### */
+/* ### las páginas especiales                                                        ### */
+/* ### Credit:      User:Spottra - KhangND (reescrito)                               ### */
+/* ##################################################################################### */
 importArticles({
     type: 'script',
     articles: [

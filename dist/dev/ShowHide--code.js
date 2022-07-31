@@ -96,151 +96,15 @@
 ( function( $ ) {
 
 	// CONFIG
+	var msg;
 	var config = window.ShowHideConfig = $.extend( true, {
 		autoCollapse: 2,
 		userLang: true,
 		brackets: '[]',
-		linkBefore: false,
-		en: {
-			show: "show",
-			hide: "hide",
-			showAll: "show all",
-			hideAll: "hide all"
-		},
-		be: {
-			show: "Адкрыць",
-			hide: "Схаваць",
-			showAll: "Адкрыць усё",
-			hideAll: "Схаваць усё"
-		},
-		cs: {
-			show: "Zobrazit",
-			hide: "Skrýt",
-			showAll: "Zobrazit vše",
-			hideAll: "Skrýt vše"
-		},
-		bg: {
-			show: "Покажи",
-			hide: "Скрий",
-			showAll: "Покажи всички",
-			hideAll: "Скрий всички"
-		},
-		de: {
-			show: "anzeigen",
-			hide: "verbergen",
-			showAll: "alle anzeigen",
-			hideAll: "alle verbergen"
-		},
-		el: {
-			show: "εμφάνιση",
-			hide: "απόκρυψη",
-			showAll: "εμφάνιση όλων",
-			hideAll: "απόκρυψη όλων"
-		},
-		es: {
-			show: "Mostrar",
-			hide: "Ocultar",
-			showAll: "Mostrar todo",
-			hideAll: "Ocultar todo"
-		},
-		fr: {
-			show: "afficher",
-			hide: "masquer",
-			showAll: "tout afficher",
-			hideAll: "tout masquer"
-		},
-		hu: {
-			show: "kibontás",
-			hide: "elrejtés",
-			showAll: "összes kibontása",
-			hideAll: "összes elrejtése"
-		},
-		it: {
-			show: "Mostra",
-			hide: "Nascondi",
-			showAll: "Mostra tutti",
-			hideAll: "Nascondi tutti"
-		},
-		ja: {
-			show: "表示",
-			hide: "非表示",
-			showAll: "すべて表示",
-			hideAll: "すべて非表示"
-		},
-		ko: {
-			show: "보이기",
-			hide: "숨기기",
-			showAll: "모두 보이기",
-			hideAll: "모두 숨기기"
-		},
-		nl: {
-			show: "tonen",
-			hide: "verbergen",
-			showAll: "alles tonen",
-			hideAll: "alles verbergen"
-		},
-		pl: {
-			show: "Pokaż",
-			hide: "Ukryj",
-			showAll: "Pokaż wszystko",
-			hideAll: "Ukryj wszystko"
-		},
-		pt: {
-			show: "Mostrar",
-			hide: "Esconder",
-			showAll: "Expandir Todos",
-			hideAll: "Esconder Todos"
-		},
-		'pt-br': {
-			show: "Mostrar",
-			hide: "Esconder",
-			showAll: "Expandir Todos",
-			hideAll: "Esconder Todos"
-		},
-		ru: {
-			show: "Открыть",
-			hide: "Скрыть",
-			showAll: "Открыть все",
-			hideAll: "Скрыть все"
-		},
-		tr: {
-			show: "göster",
-			hide: "gizle",
-			showAll: "tümünü göster",
-			hideAll: "tümünü gizle"
-		},
-		uk: {
-			show: "Відкрити",
-			hide: "Cховати",
-			showAll: "Відкрити всі",
-			hideAll: "Cховати всі"
-		},
-		vi: {
-			show: "hiện",
-			hide: "ẩn",
-			showAll: "hiện tất cả",
-			hideAll: "ẩn tất cả"
-		},
-		zh: {
-			show: "显示",
-			hide: "隐藏",
-			showAll: "全部显示",
-			hideAll: "全部隐藏"
-		}
+		linkBefore: false
 		// Make a post on the talkpage if you have i18n updates
 	}, window.ShowHideConfig || {} );
 
-	// i18n function
-	function msg( name ) {
-		if ( config.userLang && wgUserLanguage in config && name in config[wgUserLanguage] ) {
-			return config[wgUserLanguage][name];
-		}
-		if ( wgContentLanguage in config && name in config[wgContentLanguage] ) {
-			return config[wgContentLanguage][name];
-		}
-		return config.en[name];
-	}
-	
 	// common
 	$.fn.onLink = function( fn ) {
 		return this.bind( 'click keypress', function(e) {
@@ -269,7 +133,7 @@
 		}
 		var hidden = $table.hasClass( 'collapsed' );
 		$table.find( '> * > tr' ).not( ':first, .nocollapse' )[hidden?"hide":"show"]();
-		$button.text( msg( hidden ? "show" : "hide" ) );
+		$button.text( msg( hidden ? "show" : "hide" ).plain() );
 		return true;
 	}
 
@@ -277,7 +141,7 @@
 		var NavigationBoxes = [];
 		$( 'table.collapsible' ).each( function () {
 			NavigationBoxes.push(this);
-			var	$buttonLink = $( '<span tabIndex=0 class=collapseLink />' ).text( msg( "hide" ) ).css({ cursor: "pointer" }).onLink( function( e ) { collapseTable( $(this).closest('table') ); } ),
+			var	$buttonLink = $( '<span tabIndex=0 class=collapseLink />' ).text( msg( "hide" ).plain() ).css({ cursor: "pointer" }).onLink( function( e ) { collapseTable( $(this).closest('table') ); } ),
 				$button = $( "<span class=collapseButton />" ).css( {
 				"float": "right",
 				textAlign: "right",
@@ -315,7 +179,7 @@
 	
 		$navFrame.toggleClass( 'NavVisible' );
 		$navFrame.find( '.NavPic, .NavContent' ).not( $navFrame.find( '.NavFrame .NavPic' ) ).not( $navFrame.find( '.NavFrame .NavContent' ) ).slideToggle();
-		$navToggle.text( msg( $navFrame.hasClass( 'NavVisible' ) ? "hide" : "show" ) );
+		$navToggle.text( msg( $navFrame.hasClass( 'NavVisible' ) ? "hide" : "show" ).plain() );
 		return true;
 	}
 
@@ -323,7 +187,7 @@
 	function createNavigationBarToggleButton() {
 		var NavFrames = $( '.NavFrame' ).addClass( 'NavVisible' ).each( function () {
 			var	$navHead = $( this ).find( '.NavHead:first' ),
-				$buttonLink = $( '<span tabIndex=0 class=collapseLink />' ).text( msg( "hide" ) ).onLink( function ( e ) { toggleNavigationBar( $( this ).closest( '.NavFrame' ) ); } ),
+				$buttonLink = $( '<span tabIndex=0 class=collapseLink />' ).text( msg( "hide" ).plain() ).onLink( function ( e ) { toggleNavigationBar( $( this ).closest( '.NavFrame' ) ); } ),
 				$button = $( '<span class="NavToggle collapseButton" />' );
 			$navHead.filter( 'legend' ).append( ' - ' );
 			if ( config.brackets ) {
@@ -342,27 +206,38 @@
 		return true;
 	}
 
-	$( createNavigationBarToggleButton );
+	mw.hook('dev.i18n').add(function(i18n) {
+		i18n.loadMessages('ShowHide').done(function(i18no) {
+			msg = i18no.msg;
 
-	$( function () {
-		$( '.NavGlobal' ).each( function () {
-			$( '<span class=NavGlobalShow />' ).append(
-				document.createTextNode( '[' ),
-				$( '<span tabIndex=0 class=collapseLink />' ).text( msg( "showAll" ) ).onLink( function ( e ) {
-					$( '.NavFrame' ).each( function () { if ( !$( this ).hasClass( 'NavVisible' ) ) toggleNavigationBar(this); } );
-				} ),
-				']'
-			).appendTo( this );
-			$( this ).append( ' ' );
-			$('<span class=NavGlobalHide />').append(
-				document.createTextNode( '[' ),
-				$( '<span tabIndex=0 class=collapseLink />' ).text( msg( "hideAll" ) ).onLink( function ( e ) {
-					$( '.NavFrame' ).each( function () { if ( $( this ).hasClass( 'NavVisible' ) ) toggleNavigationBar(this); } );
-				} ),
-				']'
-			).appendTo( this );
-		} );
-	} );
+			$( createNavigationBarToggleButton );
+		
+			$( function () {
+				$( '.NavGlobal' ).each( function () {
+					$( '<span class=NavGlobalShow />' ).append(
+						document.createTextNode( '[' ),
+						$( '<span tabIndex=0 class=collapseLink />' ).text( msg( "showAll" ).plain() ).onLink( function ( e ) {
+							$( '.NavFrame' ).each( function () { if ( !$( this ).hasClass( 'NavVisible' ) ) toggleNavigationBar(this); } );
+						} ),
+						']'
+					).appendTo( this );
+					$( this ).append( ' ' );
+					$('<span class=NavGlobalHide />').append(
+						document.createTextNode( '[' ),
+						$( '<span tabIndex=0 class=collapseLink />' ).text( msg( "hideAll" ).plain() ).onLink( function ( e ) {
+							$( '.NavFrame' ).each( function () { if ( $( this ).hasClass( 'NavVisible' ) ) toggleNavigationBar(this); } );
+						} ),
+						']'
+					).appendTo( this );
+				} );
+			} );
+	
+		});
+	});
+	importArticle({
+		type: 'script',
+		article: 'u:dev:MediaWiki:I18n-js/code.js'
+	});
 
 } )( jQuery );
 /* </nowiki> */

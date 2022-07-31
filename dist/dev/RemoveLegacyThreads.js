@@ -3,13 +3,17 @@ mw.loader.using(['mediawiki.api']).done(function() {
 		return;
 	}
 	if (mw.config.get('wgCanonicalSpecialPageName') !== 'Whatlinkshere') return;
-	var $links = $('#mw-whatlinkshere-list li > a');
-	if ($links.length === 0) return;
+	var $linksall = $('#mw-whatlinkshere-list li > a');
+	if ($linksall.length === 0) return;
+	var $links = $('#mw-whatlinkshere-list > li > a');
 	var threadLinks = [];
 	$links.each(function() {
 		if ($(this).attr('title').match(/(thread.*@|(blog|talk).*\/@comment-\d+)/i)) threadLinks.push($(this).attr('title'));
 	});
-	if (threadLinks.length === 0) return;
+	if (threadLinks.length === 0){
+		if($linksall.length > $links.length) $('#mw-whatlinkshere-target').parent().append('&nbsp;<span>Note: Legacy threads linking to redirects</span>');
+		return;
+	}
 	var target = $('#mw-whatlinkshere-target').val();
 	var $button = $('<button title="Remove legacy threads which link here (listed on this page)">Remove legacy threads</button>');
 	$button.click(function() {
@@ -24,7 +28,7 @@ mw.loader.using(['mediawiki.api']).done(function() {
 				for (var l in pg.linkshere) {
 					var link = pg.linkshere[l];
 					if (threadLinks.indexOf(link.title) === -1) continue;
-					prom.push(a.postWithEditToken({action:'edit',text:'',pageid:link.pageid,reason:'Blanking inaccessible threads',bot:true}));
+					prom.push(a.postWithEditToken({action:'edit',text:'',pageid:link.pageid,summary:'Blanking inaccessible threads',bot:true}));
 				}
 			}
 			Promise.allSettled(prom).then(function(res) {

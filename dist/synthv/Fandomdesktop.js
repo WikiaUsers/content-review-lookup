@@ -34,6 +34,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/5/50/Wiki-wordmark-Tsuina-chan-AI.png',
 	    'https://images.wikia.nocookie.net/synthv/images/7/70/Wiki-wordmark-tsurumaki-maki-eng.png',
 	    'https://images.wikia.nocookie.net/synthv/images/5/52/Wiki-wordmark-tsurumaki-maki-jpn.png',
+	    'https://images.wikia.nocookie.net/synthv/images/6/66/Wiki-wordmark-weina.png',
 	    'https://images.wikia.nocookie.net/synthv/images/1/1e/Wiki-wordmark-Xingchen-Infinity.png',
 	    'https://images.wikia.nocookie.net/synthv/images/7/70/Wiki-wordmark-xingchen-minus.png',
 	    'https://images.wikia.nocookie.net/synthv/images/1/1f/Wiki-wordmark-yamine-renri.png',

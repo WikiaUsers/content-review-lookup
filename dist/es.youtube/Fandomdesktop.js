@@ -20,3 +20,6 @@ window.DiscussionTemplates = {
     },
     allowedGroups: ['sysop', 'content-moderator', 'rollback']
 };
+
+// PreloadTemplates
+preloadTemplates_subpage = "case-by-case";

@@ -98,11 +98,6 @@
             scripts: 'MediaWiki:DataTables.js'
         },
 		
-        DiscussionsActivity: {
-            page: 'Special:DiscussionsActivity',
-            scripts: 'MediaWiki:DiscussionsActivity.js'
-        },
-		
         DiscordBanner: {
             page: 'DiscordBanner',
             scripts: 'MediaWiki:DiscordBanner.js',
@@ -112,14 +107,19 @@
             }
         },
         
+        DiscordGlobalFooter: {
+            page: 'DiscordGlobalFooter',
+            styles: 'MediaWiki:DiscordGlobalFooter.css'
+        },
+        
         DiscordTheme: {
             page: 'DiscordTheme',
             styles: 'MediaWiki:DiscordTheme.css'
         },
         
-        DiscordGlobalFooter: {
-            page: 'DiscordGlobalFooter',
-            styles: 'MediaWiki:DiscordGlobalFooter.css'
+        DiscussionsActivity: {
+            page: 'Special:DiscussionsActivity',
+            scripts: 'MediaWiki:DiscussionsActivity.js'
         },
         
         Doqs: {
@@ -130,6 +130,11 @@
         DropdownMenu: {
             selector: '.custom-dropdown',
             styles: 'MediaWiki:DropdownMenu.css'
+        },
+        
+        DynamicOldNav: {
+            page: 'DynamicOldNav',
+            styles: 'MediaWiki:DynamicOldNav.css'
         },
         
 		EditcountTab: {

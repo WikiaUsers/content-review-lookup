@@ -7,6 +7,3 @@ $(".wikiaPhotoGallery-slider-body .description-background").prepend(Barra1);
 var Barra2=document.createElement("div");
 Barra2.classList.add("BarraRoja");
 $(".BarraGris").append(Barra2);
-
-/* YouTube Search */
-$("span#youtubesearch").replaceWith('<div id="youtubesearch"><img src="https://vignette.wikia.nocookie.net/youtubepedia/images/c/c5/Yt_logo_rgb_dark.png/revision/latest?cb=20191020182843&path-prefix=es" height="20" width="80"><form action="http://www.youtube.com/results" method="get" target="_blank"><input name="search_query" type="text" maxlength="128" /><select name="search_type"><option value="search_videos">Videos</option><option value="search_users">Canales</option></select><input type="submit" value="Buscar" /></form></div>');

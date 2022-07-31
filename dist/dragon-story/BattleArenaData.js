@@ -127,6 +127,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"aegis": {
+				"name": "Aegis",
+				"colors": [
+					"olympus",
+					"red",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"aerial": {
 				"name": "Aerial",
 				"colors": [
@@ -852,6 +861,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "rare"
+			},
+			"athenian": {
+				"name": "Athenian",
+				"colors": [
+					"olympus",
+					"white",
+					"blue"
+				],
+				"rarity": "unbreedable"
 			},
 			"athletic": {
 				"name": "Athletic",
@@ -2367,6 +2385,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Charter",
 				"colors": [
 					"rawmarble"
+				],
+				"rarity": "unbreedable"
+			},
+			"charybdis": {
+				"name": "Charybdis",
+				"colors": [
+					"olympus",
+					"pink",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},
@@ -4046,6 +4073,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "super"
+			},
+			"diplomat": {
+				"name": "Diplomat",
+				"colors": [
+					"olympus",
+					"blue",
+					"white"
+				],
+				"rarity": "common"
 			},
 			"direwolf": {
 				"name": "Dire Wolf",
@@ -7423,6 +7459,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"valentine",
 					"black",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"hoplite": {
+				"name": "Hoplite",
+				"colors": [
+					"olympus",
+					"champion",
+					"red"
 				],
 				"rarity": "unbreedable"
 			},
@@ -11134,6 +11179,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"offering": {
+				"name": "Offering",
+				"colors": [
+					"olympus",
+					"arcane",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"oldhermit": {
 				"name": "Old Hermit",
 				"colors": [
@@ -11443,6 +11497,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "rare"
+			},
+			"pantheon": {
+				"name": "Pantheon",
+				"colors": [
+					"olympus",
+					"rainbow",
+					"pink"
+				],
+				"rarity": "common"
 			},
 			"papa": {
 				"name": "Papa",
@@ -15400,6 +15463,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"strategist": {
+				"name": "Strategist",
+				"colors": [
+					"olympus",
+					"black",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"streamer": {
 				"name": "Streamer",
 				"colors": [
@@ -16431,6 +16503,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"cosmic",
 					"white"
+				],
+				"rarity": "unbreedable"
+			},
+			"triarch": {
+				"name": "Triarch",
+				"colors": [
+					"olympus",
+					"yellow",
+					"blue"
 				],
 				"rarity": "unbreedable"
 			},

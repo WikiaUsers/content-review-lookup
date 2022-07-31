@@ -12,11 +12,11 @@
  * @param {import('types-mediawiki')} mw
  */
 ;(function($, mw) {
-  var conf = mw.config.get(['wgNamespaceNumber', 'wgPageName'])
+  var conf = mw.config.get(['wgNamespaceNumber', 'wgPageName']);
 
   function init(ctx) {
-    var i18n = ctx[0]
-    var Modal = ctx[1].Modal
+    var i18n = ctx[0];
+    var Modal = ctx[1].Modal;
 
     // 过滤不支持Mercury的名字空间
     var skipNamespace = [
@@ -35,15 +35,15 @@
       1200,
       1201,
       1202,
-    ]
+    ];
     if (skipNamespace.includes(conf.wgNameSpaceNumber)) {
-      return console.info('MobilePreview stoped')
+      return console.info('MobilePreview stoped');
     }
 
     var previewSrc = mw.util.getUrl(conf.wgPageName, {
       useskin: 'fandommobile',
       'mobile-app': true,
-    })
+    });
 
     $('.wds-global-navigation__user-menu .wds-list, .wiki-tools .wds-dropdown__content .wds-list').append(
       // 添加按钮
@@ -58,7 +58,7 @@
             // 预览区域的内容
             var $modalTitle = $('<div>', {
               text: i18n.msg('BoxHeader').escape(),
-            })
+            });
             var $modalPlaceholder = $('<div>')
               .attr('id', 'MercuryPreviewLoading')
               .css({
@@ -71,7 +71,7 @@
                   'url(https://vignette.wikia.nocookie.net/dev/images/4/42/Loading.gif/revision/latest?cb=20120218000406)',
                 'background-repeat': 'no-repeat',
                 'background-position': 'center',
-              })
+              });
             var $iframe = $('<iframe>')
               .attr({
                 id: 'MobilePreviewModalIframe',
@@ -80,7 +80,7 @@
               .css({
                 width: 400,
                 height: '100%',
-              })
+              });
             var $modalContent = $('<div>')
               .attr('id', 'MobilePreviewModalContent')
               .css({
@@ -88,9 +88,9 @@
                 width: '100%',
                 height: 'calc(100vh - 8rem)',
               })
-              .append($modalPlaceholder, $iframe)
+              .append($modalPlaceholder, $iframe);
 
-            var modalID = 'MobilePreview-' + Date.now()
+            var modalID = 'MobilePreview-' + Date.now();
 
             // Show Modal
             var $modal = new Modal({
@@ -101,24 +101,24 @@
               isHTML: true,
               buttons: [],
               events: {},
-            })
-            $modal.create()
-            $modal.show()
+            });
+            $modal.create();
+            $modal.show();
 
             // 加载完毕，清除不必要元素
             function cleanIframe() {
-              $iframe.css('background-image', 'none')
-              $modalPlaceholder.remove()
+              $iframe.css('background-image', 'none');
+              $modalPlaceholder.remove();
               $iframe
                 .contents()
                 .find('a')
-                .removeAttr('href')
+                .removeAttr('href');
             }
-            $iframe.on('load', cleanIframe).on('error', cleanIframe)
-            setTimeout(cleanIframe, 15 * 1000)
+            $iframe.on('load', cleanIframe).on('error', cleanIframe);
+            setTimeout(cleanIframe, 15 * 1000);
           })
       )
-    )
+    );
   }
 
   // Await dependencies
@@ -131,20 +131,20 @@
       type: 'script',
       articles: ['u:dev:MediaWiki:I18n-js/code.js', 'u:dev:MediaWiki:Modal.js'],
     }
-  )
+  );
 
   Promise.all([
     new Promise(function(resolve) {
       mw.hook('dev.i18n').add(function(i18no) {
-        i18no.loadMessages('MercuryPreview').then(function(i18n) {
-          resolve(i18n)
-        })
-      })
+        i18no.loadMessages('MobilePreview').then(function(i18n) {
+          resolve(i18n);
+        });
+      });
     }),
     new Promise(function(resolve) {
       mw.hook('dev.modal').add(function(modal) {
-        resolve(modal)
-      })
+        resolve(modal);
+      });
     }),
-  ]).then(init)
-})(jQuery, mediaWiki)
+  ]).then(init);
+})(jQuery, mediaWiki);

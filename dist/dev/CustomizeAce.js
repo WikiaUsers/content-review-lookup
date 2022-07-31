@@ -40,15 +40,22 @@
         window.aceCustomSettingsLoaded = true;
     }
 
-    mw.hook( 'codeEditor.configure' ).add(aceHook);
+    //Fandom breaks loading the theme, but apparently only sometimes?
+    const interval = setInterval(function() {
+        if (!document.querySelector('.ace_editor.ace-tm, .ace_editor.ace-twilight, .ace_editor.ace-dawn')) {
+            return;
+        }
+        clearInterval(interval);
+        mw.hook( 'codeEditor.configure' ).add(aceHook);
+    }, 100);
     
     // AbuseFilter doesn't have a hook (yet - https://phabricator.wikimedia.org/T273270)
     if ( mw.config.get('wgCanonicalSpecialPageName') === 'AbuseFilter' && document.getElementById('wpAceFilterEditor') ) {
-    	const interval = setInterval(function() {
+    	const AFinterval = setInterval(function() {
     		if ( !document.getElementById('wpAceFilterEditor').classList.contains('ace-tm') ) {
     			return;
     		}
-    		clearInterval(interval);
+    		clearInterval(AFinterval);
     		aceHook();
     	}, 100);
     }

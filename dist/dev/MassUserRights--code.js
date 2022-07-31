@@ -350,14 +350,13 @@ mw.loader.using([
                     var params = {
                         action: 'userrights',
                         user: user,
-                        add: $('#user-rights-type').val(),
                         reason: $('#user-rights-reason').val(),
                         bot: true,
                         token: d.query.tokens ?
                             d.query.tokens.userrightstoken :
                             d.query.users[0].userrightstoken
                     };
-                    params[$('#user-rights-mode').val() === 1 ? 'remove' : 'add'] = $('#user-rights-type').val();
+                    params[Number($('#user-rights-mode').val()) === 1 ? 'remove' : 'add'] = $('#user-rights-type').val();
                     Api.post(params).done(function(d2) { 
                         if (!d2.error) {
                             console.log(i18n.msg('success', user).plain());

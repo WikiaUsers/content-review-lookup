@@ -5,6 +5,8 @@
 * @description: Creates a flat feed for discussions module on Special:DiscussionsFeed. Includes moderation tools.
 */
 
+var msg;
+
 function strPad(n) {
     return String("00" + n).slice(-2);
 }
@@ -23,41 +25,37 @@ function updateContent(content, isMod, canBlock, arr) {
             formattedDate = strPad(dt.getHours()) + ":" + strPad(dt.getMinutes()) + ":" + strPad(dt.getSeconds());
 
         //Create HTML for date:
-        var spanDate = document.createElement("span"),
-            spanDateText = document.createTextNode(formattedDate + " — ");
+        var spanDate = document.createElement("span");
         spanDate.className = "df-date";
-        spanDate.appendChild(spanDateText);
+        spanDate.textContent = formattedDate + " — ";
 
         //Create HTML for message body:
-        var aMessage = document.createElement("a"),
-            aMessageText = document.createTextNode(text);
+        var aMessage = document.createElement("a");
         aMessage.className = "df-content";
         aMessage.href = mw.config.get('wgScriptPath') + "/f/p/" + threadID;
         aMessage.target = "_blank";
-        aMessage.appendChild(aMessageText);
+        aMessage.textContent = text;
 
         //Create HTML for user:
-        var aUser = document.createElement("a"),
-            aUserText = document.createTextNode(" — " + user);
+        var aUser = document.createElement("a");
         aUser.className = "df-user";
         aUser.href = mw.config.get('wgScriptPath') + "/f/u/" + userId;
         aUser.target = "_blank";
-        aUser.appendChild(aUserText);
+        aUser.textContent = " — " + user;
 
         //Create HTML for category:
-        var spanCategory = document.createElement("span"),
-            spanCategoryText = document.createTextNode(" in " + forumName);
+        var spanCategory = document.createElement("span");
         spanCategory.className = "df-category";
-        spanCategory.appendChild(spanCategoryText);
+        spanCategory.textContent = " in " + forumName;
 
         //Create block button
+        var aBlock;
         if (canBlock) {
-            var aBlock = document.createElement("a"),
-                aBlockText = document.createTextNode(" (block)");
+            aBlock = document.createElement("a");
             aBlock.className = "df-block";
             aBlock.href = mw.util.getUrl("Special:Block/") + user;
             aBlock.target = "_blank";
-            aBlock.appendChild(aBlockText);
+            aBlock.textContent = " (block)";
         }
 
         //Put everything together
@@ -109,7 +107,7 @@ function initFeed(content, isMod, canBlock) {
         request = new XMLHttpRequest();
     request.timeout = 30000; // 30 seconds
     request.ontimeout = function() {
-        content.innerHTML = "Unable to load discussions: The service is down or is not enabled for this domain.";
+        content.innerHTML = msg('unableToLoad').plain();
     };
     request.onreadystatechange = function() {
         if(request.readyState == 4) {
@@ -123,10 +121,10 @@ function initFeed(content, isMod, canBlock) {
                     setTimeout(updateFeed, 120000, content, isMod, canBlock, epoch); //set new timer (2m)
                     break;
                 case 404:
-                    content.innerHTML = 'There are no posts.';
+                    content.innerHTML = msg('noPosts').plain();
                     break;
                 default:
-                    content.innerHTML = "Unable to load discussions: The service is down or is not enabled for this domain.";
+                    content.innerHTML = msg('unableToLoad').plain();
             }
         }
     };
@@ -139,15 +137,24 @@ function initFeed(content, isMod, canBlock) {
 
 function createDiscussionsFeed() {
     if(mw.config.get('wgNamespaceNumber') == -1 && mw.config.get('wgTitle') == "DiscussionsFeed") { //TODO: i18n make dictionary
-        document.title = 'Discussions Feed - ' + mw.config.get('wgSiteName');
+        document.title = msg('discFeed').plain() + ' - ' + mw.config.get('wgSiteName');
         var ug = mw.config.get('wgUserGroups');
         var canBlock = Boolean(ug.indexOf('sysop') > -1 || ug.indexOf('staff') > -1 || ug.indexOf('wiki-representative') > -1 || ug.indexOf('wiki-specialist') > -1 || ug.indexOf('helper') > -1 || ug.indexOf('soap') > -1 || ug.indexOf('global-discussions-moderator') > -1),
             isMod = Boolean(canBlock || ug.indexOf('threadmoderator') > -1);
-        document.getElementById("firstHeading").textContent = "Discussions Feed";
+        document.getElementById("firstHeading").textContent = msg('discFeed').plain();
         var content = document.getElementById("mw-content-text");
         content.innerHTML = 'Loading feed... <img src="https://images.wikia.nocookie.net/wlb/images/7/74/WIP.gif" /></div>';
         initFeed(content, isMod, canBlock);
     }
 }
 
-mw.loader.using('mediawiki.util').then(createDiscussionsFeed);
+mw.hook('dev.i18n').add(function (i18n) {
+    i18n.loadMessages('DiscussionsFeed').done(function (i18no) {
+        msg = i18no.msg;
+        mw.loader.using('mediawiki.util').then(createDiscussionsFeed);
+	});
+});
+importArticles({
+    type: 'script',
+    articles: 'u:dev:MediaWiki:I18n-js/code.js'
+});

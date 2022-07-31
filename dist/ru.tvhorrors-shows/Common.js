@@ -1,6 +1,8 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
-mw.loader.load('/ru/index.php?title=Mediawiki:' + mw.config.get( 'wgPageName' ).replace(/:/g,'_') + '.css&action=raw&ctype=text/css', 'text/css' );
 
+if (document.querySelector("body").classList.contains('theme-fandomdesktop-dark')){
+    mw.loader.load( '/ru/wiki/Mediawiki:' + mw.config.get( 'wgPageName' ).replace(/:/g,'_') + '.css?action=raw&ctype=text/css', 'text/css' );
+}
 
 //===================================
 // Переключатель стилей работающий с [[Шаблон:serial]]

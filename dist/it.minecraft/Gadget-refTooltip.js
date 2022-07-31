@@ -9,12 +9,12 @@ $( function() {
 		enableLabel: 'Abilita suggerimenti collegamenti',
 		optionsButtonTitle: 'Cambia opzioni suggerimenti collegamenti',
 		referencesSectionName: 'Collegamenti',
-		saveFailedStorageFull: "La memoria locale del tuo browser è piena?",
+		saveFailedStorageFull: 'La memoria locale del tuo browser è piena?',
 		saveFailedTitle: 'Salvataggio opzioni fallito'
 	};
 	
 	var $win = $( window );
-	var $body = $( '.mw-body' );
+	var $body = $( '#content' );
 	var $content = $( '#mw-content-text' );
 	var $tooltip = $();
 	var $tooltipText = $();

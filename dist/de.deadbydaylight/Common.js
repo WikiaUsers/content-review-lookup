@@ -1,10 +1,11 @@
-/* Das folgende JavaScript wird für alle Benutzer geladen. */
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 var inceptionYear = 2016;
 var currentYear = new Date().getFullYear();
 
 $(function(){
+	console.log("Custom Javascript executed");
+	SoS2();
 	for(i = inceptionYear; i <= currentYear; i++){
 		console.log("Creating handlers for year " + i);
 		$('#inceptionPerks' + i).css('font-weight', 'bold');
@@ -22,9 +23,11 @@ $(function(){
 		$('#inceptionPerks' + i).click(GetInceptionPerksHandler(i));
 	}
 	/**************************************************************************/
-	CreateEditSourceLink();
+	//MobileViewHovers(); //Currnently not used, as the Mobile version doesn't load Common.js
 	SetAppropriateDimensions();
 	SetHeadersShadows();
+	SetPerkCheckBoxes();
+	
 	$.each($(".mw-collapsible-text"), function(index, element){
 		console.log("element #" + index);
 		$(element).click(function(){
@@ -34,8 +37,26 @@ $(function(){
 			1); //Must be delayed because the real height is 0 at the time of executing the script. This is due to table is collapsed (basically height of all TR elements are set to 0)
 		});
 	});
+	
+	//I think this needs to try catch block as the .getAttribute() throws the error when you don't have the visual edit button present, thus moving to the end
+	CreateEditSourceLink();
 });
 
+function SoS2(){
+	console.log("SoS2 Executed");
+	$(".sos2 > .sosPerk").each(function(i){
+	    $(this).hover(
+	        function(){
+	            $(this).addClass("sosPerkHovered");
+	            $(this).parent().children().filter(":not(.sosPerkHovered):not(.sosPerkDesc)").addClass("sosPerkNotHovered");
+	        },
+	        function(){
+	            $(this).removeClass("sosPerkHovered", 115);
+	            $(this).parent().children().removeClass("sosPerkNotHovered");
+	     });
+	});
+	console.log("SoS2 Initiallised");
+}
 
 function GetInceptionPerksHandler(year){
 	return function(){
@@ -117,11 +138,44 @@ function CreateEditSourceLink(){
 	var link = document.querySelectorAll('[data-tracking-label="ca-edit-dropdown"]')[0].getAttribute('href');
 	var vanillaEdit = document.querySelectorAll('[data-tracking-label="ca-ve-edit"]')[1];
 	var editSourceNode = document.createElement('a');
-	editSourceNode.appendChild(document.createTextNode('Quelltext bearbeiten'));
+	editSourceNode.appendChild(document.createTextNode('Edit Source'));
 	editSourceNode.setAttribute('href', link);
 	editSourceNode.setAttribute('class', 'wds-button wds-is-text page-header__action-button has-label');
 	
 	vanillaEdit.parentNode.insertBefore(editSourceNode, vanillaEdit.nextSibling);
+}
+
+function isMobileDevice() {
+    return window.matchMedia("(max-width: 1024px)").matches;
+}
+
+function MobileViewHovers(){
+	//if(!isMobileDevice){
+		////console.log("Preparing tooltips...");
+		////$('.mobileView').hide();
+		/*
+		tooltip = $('.tooltip-value');
+		tooltipValue = tooltip.attr('title');
+		span = $('<span> (' + tooltipValue + ')</span>');
+		span.css(
+			{
+				'font-size': '7pt',
+        	}
+    	);
+    	
+    	tooltip.append(span);*/
+	//}
+}
+function SetPerkCheckBoxes(){
+	console.log("Checkboxes Function initiallised");
+	$.each(document.getElementsByClassName("switchArea"), 
+		function(index, el){
+	        var x = document.createElement("INPUT");
+	        x.setAttribute("class", "switchBox");
+	        x.setAttribute("type", "checkbox");
+	        el.parentNode.insertBefore(x, el.nextSibling);
+	    }
+    );
 }
 /*********************************************************************************************/
 /*********************************************************************************************/

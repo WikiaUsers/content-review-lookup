@@ -8,14 +8,14 @@ window.InactiveUsers = {text: 'Неактивен'};
  * Локальная функция загрузки скриптов с поддержкой указания проекта
  */
 var importScript_ = importScript;
-importScript = function (page, proj) {
+importScript = function (page, proj, lang) {
 	if (!proj) {
 		importScript_(page);
 	} else {
 		if (proj.indexOf( '.' ) === -1) {
-			proj += '.fandom.com';
+			proj += '.fandom.com' + (lang ? '/' + lang : '');
 		}
-		mw.loader.using('mediawiki.util').done( function () {
+		mw.loader.using('mediawiki.util', function () {
 			mw.loader.load('//' + proj + '/wiki/' + mw.util.wikiUrlencode(page) + '?action=raw&ctype=text/javascript');
 		});
 	}
@@ -125,12 +125,6 @@ runAsEarlyAsPossible(function () {
  */
 mw.hook('wikipage.content').add( function () {
 	$('#toc h2 svg').remove();
-	$('video.webm').each(function() {
-		this.setAttribute('muted', '');
-		this.setAttribute('autoplay', '');
-		this.setAttribute('loop', '');
-		this.removeAttribute('controls');
-	});
 });
 
 // Число раскрытых по умолчанию навигационных шаблонов, 

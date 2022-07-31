@@ -181,10 +181,9 @@
 					addImageButtons();
 				});
 			});
-			importArticles({
-				type: 'script',
-				articles: 'u:dev:MediaWiki:I18n-js/code.js'
-			});
+			if (!(window.dev && window.dev.i18n && window.dev.i18n.loadMessages)) {
+				mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js&*');
+			}
 		}
 	});
 })(window, window.jQuery, window.mediaWiki);

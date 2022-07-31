@@ -40,7 +40,12 @@
 		$( '.page-header__top' ).append(
 			'<div class="page-header__languages">' +
 				'<div class="wds-dropdown">' +
-					'<div class="wds-dropdown__toggle iosp-icon-header">' + wiki_lang + '</div>' +
+					'<div class="wds-dropdown__toggle">' +
+						wiki_lang +
+						'<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron">' +
+							'<use xlink:href="#wds-icons-dropdown-tiny"></use>' +
+						'</svg>' +
+					'</div>' +
 					'<div class="wds-dropdown__content">' +
 						'<ul class="wds-list wds-is-linked"></ul>' +
 					'</div>' +
@@ -51,18 +56,16 @@
 		// Footer
 		$( '.page-footer' ).prepend(
 			'<div class="wds-collapsible-panel wds-is-collapsed page-footer__languages">' +
-				'<header class="wds-collapsible-panel__header iosp-icon-footer">' + query.allmessages[0].content + '</header>' +
+				'<header class="wds-collapsible-panel__header iosp-icon-footer">' +
+					query.allmessages[0].content +
+					'<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron">' +
+						'<use xlink:href="#wds-icons-menu-control-small"></use>' +
+					'</svg>' +
+					
+					'</header>' +
 				'<div class="wds-collapsible-panel__content"></div>' +
 			'</div>'
 		);
-		
-		// Adding hook for arrow-icon
-		mw.hook( 'dev.wds' ).add( function( wds ) {
-			$( '.iosp-icon-header' ).append( wds.icon( 'dropdown-tiny', {
-				'class': 'wds-dropdown__toggle-chevron'
-			}) );
-			$( '.iosp-icon-footer' ).append( wds.icon( 'menu-control-small' ) );
-		});
 		
 		// Adding language-entries
 		for ( var lang in langs ) {
@@ -77,12 +80,6 @@
 	}
 	
 	if ( pagename.length && $( '.page-header__languages' ).length === 0 && $( '.article-footer-languages').length === 0 ) {
-		importArticle({
-			type: 'script',
-			articles: [
-				'u:dev:MediaWiki:WDSIcons/code.js'
-			]
-		});
 		$.post(config.wgScriptPath + '/api.php', {
 			action: 'query',
 			format: 'json',

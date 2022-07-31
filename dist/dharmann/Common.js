@@ -3,9 +3,9 @@
 //UserTags for Staff Positions.
 window.UserTagsJS = {
 	tags: {
-		moderator: { u : 'Moderator' , link : 'Project:Staff#Moderators_2'},
-		bureaucrat: { u : 'Bureaucrat', link : 'Project:Staff#Bureaucrats_2'},
-		sysop: { u : 'Administrator', link : 'Project:Staff#Administrators_2'}
+		moderator: { u : 'Moderator' , link : 'Project:Staff#Moderators'},
+		bureaucrat: { u : 'Bureaucrat', link : 'Project:Staff#Bureaucrats'},
+		sysop: { u : 'Administrator', link : 'Project:Staff#Administrators'}
 	},
 	modules: {
 		mwGroups: {

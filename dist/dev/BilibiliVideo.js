@@ -56,7 +56,7 @@
         })
       }
       // Run
-      $iframe.load(resizeBilibili)
+      $iframe.ready(resizeBilibili)
       $(window).resize(resizeBilibili)
       $('.mw-collapsible-toggle').click(resizeBilibili)
 

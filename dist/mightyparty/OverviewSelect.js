@@ -46,7 +46,7 @@
 							    	change: showstats
 							    },
 							}));
-				for (i = 0; i <= (herodata.rarity == 'common' || herodata.rarity == 'rare' ? 4 : 5); i++) {
+				for (i = 0; i <= (herodata.rarity == 'common' || herodata.rarity == 'rare' ? 4 : (herodata.rarity == 'epic' ? 5 : 6)); i++) {
 					var r;
 					switch (i) {
 						case 1: r = 'I'; break;
@@ -54,6 +54,7 @@
 						case 3: r = 'III'; break;
 						case 4: r = 'IV'; break;
 						case 5: r = 'V'; break;
+						case 6: r = 'VI'; break;
 						default: r = '0'; break;
 					}
 		        	document.getElementById('reborn-select').appendChild(ui.option({ text: r }));					
@@ -116,6 +117,23 @@
 	        function applyreborn(reborn, skill, s) {
 	        	if (type != 'Hero') return;
 		    	var rSkill;
+				if (reborn >= 6 && herodata.reborn6_skill) {
+					rSkill = herodata.reborn6_skill;
+					if (rSkill[0] == skill) {
+						if (!isNaN(s.value) && (rSkill[1].substring(0,1) == '+') && !isNaN(rSkill[1].substring(1)) ) {
+							s.value = Number(s.value) + Number(rSkill[1].substring(1));
+						}
+						else {
+							if (isNaN(rSkill[1].substring(1))) {
+								s.improvements += 1;
+								s.isStringImprovement = true;
+							}
+							else {
+								s.improvements = Number(s.improvements) + Number(rSkill[1].substring(1));
+							}
+						}
+					}
+				}
 				if (reborn >= 5 && herodata.reborn5_skill) {
 					rSkill = herodata.reborn5_skill;
 					if (rSkill[0] == skill) {
@@ -233,6 +251,10 @@
 						if (document.getElementById('s4-select').checked) {
 							if (herodata.soulbind4_atk)	atk += parseInt(herodata.soulbind4_atk);
 							if (herodata.soulbind4_hp)	hp += parseInt(herodata.soulbind4_hp);
+						}
+						if (reborn >= 6) {
+							if (herodata.reborn6_atk)	atk += parseInt(herodata.reborn6_atk);
+							if (herodata.reborn6_hp)	hp += parseInt(herodata.reborn6_hp);
 						}
 						if (reborn >= 5) {
 							if (herodata.reborn5_atk)	atk += parseInt(herodata.reborn5_atk);
