@@ -171,7 +171,7 @@ function zselector( $content ) {
                 $(this).animate({
                     opacity: 1,
                     queue: false
-                }, 700);
+                }, 10);
             } else {
                 $(this).css('display', 'none');
                 $(this).stop();

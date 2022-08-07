@@ -29,3 +29,11 @@ $('#content img').attr('draggable', false).on({
         return false;
     }
 });
+/*********/
+const wikirules = document.getElementById('wikirules');
+const closeButton = document.getElementById('closeButton');
+if (wikirules){
+	closeButton.onclick = function(){
+        wikirules.classList.toggle('hide');
+    }
+}

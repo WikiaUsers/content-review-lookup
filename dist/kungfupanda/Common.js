@@ -1,21 +1,5 @@
 /* ANY JAVASCRIPT HERE WILL BE LOADED FOR ALL USERS ON EVERY PAGE LOAD */
       
-importArticles({
-   type: 'script',
-   articles: [
-      "u:dev:MediaWiki:InactiveUsers/code.js", /* Inactive users label */
-      "u:dev:MediaWiki:FixWantedFiles/code.js", /* Fix red links to files */
-      "u:dev:MediaWiki:DupImageList/code.js", /* Duplicate image list */
-      "u:dev:MediaWiki:ReferencePopups/code.js", /* Reference popups */
-      "u:dev:MediaWiki:Countdown/code.js", /* Countdown timer */
-      "u:dev:MediaWiki:DiscussionsRailModule/UCP.js", /* Discussions rail module */
-      "u:dev:MediaWiki:PurgeButton/code.js", /* Purge button
-      "u:avatar:MediaWiki:Common.js/icons.js", /* Add icons to page header bottom border (DISABLED, looking for alternative)*/
-      "MediaWiki:Common.js/Stdsummaries.js", /* Summary filler */
-
-    ]
-});
-
 /* Inactive users list */
 InactiveUsers = { 
    days: 30,
@@ -40,10 +24,24 @@ window.twttr = (function(d, s, id) {
   return t;
 }(document, "script", "twitter-wjs"));
 
-/* Wiki message pop-up box
- * Obtained from Wikia Developers Wiki @ w:c:dev:WikiaNotification
- * STATUS: INACTIVE as of June 18, 2015
-var WikiaNotificationMessage = "We have a special announcement to our community regarding the recently released Chinese teaser trailer for Kung Fu Panda 3. Please read through our new procedures to help us keep our wiki spoiler-free. Thanks!<br /><br /><a href='/wiki/Thread:23352'>View announcement</a>";
-var WikiaNotificationexpiry = 5;
-importScriptPage('WikiaNotification/code.js', 'dev');
- */
+/* DiscussionsEmbed variables */
+window.discussEmbedLimit = 4;
+window.discussEmbedForum = "4400000000000011071";
+window.discussEmbedSortTrending = 1;
+
+/* Imports */
+importArticles({
+   type: 'script',
+   articles: [
+      "u:dev:MediaWiki:InactiveUsers/code.js", /* Inactive users label */
+      "u:dev:MediaWiki:FixWantedFiles/code.js", /* Fix red links to files */
+      "u:dev:MediaWiki:DupImageList/code.js", /* Duplicate image list */
+      "u:dev:MediaWiki:ReferencePopups/code.js", /* Reference popups */
+      "u:dev:MediaWiki:Countdown/code.js", /* Countdown timer */
+      "u:dev:MediaWiki:DiscussionsRailModule/UCP.js", /* Discussions rail module */
+      "u:dev:MediaWiki:PurgeButton/code.js", /* Purge button
+      "u:avatar:MediaWiki:Common.js/icons.js", /* Add icons to page header bottom border (DISABLED, looking for alternative)*/
+      "MediaWiki:Common.js/Stdsummaries.js", /* Summary filler */
+
+    ]
+});

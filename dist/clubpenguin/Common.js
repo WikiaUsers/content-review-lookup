@@ -54,14 +54,14 @@ if ($(".hidetoc").length > 0) {
 \* ====================================================================== */
 
 $(document).on("submit", function(e) {
-	if (e.target.id == "mw-upload-form" || e.target.action == "https://clubpenguin.wikia.com/wikia.php?controller=UploadPhotos&method=Upload&format=html") {
+	if (e.target.id == "mw-upload-form") {
 		$(e.target).find('[name="wpLicense"] [value=""]:not([disabled])').attr("value", "No license");
 	}
 });
 
 
 /* ====================================================================== *\
-	# chat log search - using google search
+	# chat logs search - using google search
 	# for [[Club Penguin Wiki:Chat/Logs]]
 \* ====================================================================== */
 
@@ -77,8 +77,8 @@ $(function() {
 
 		function googleSearch() {
 			if ($("input#chatlogs-search-box").val().length > 0) {
-				var google = "https://www.google.com/#q=site:",
-					site = encodeURIComponent("https://clubpenguin.wikia.com/wiki/Club_Penguin_Wiki:Chat/Logs/"),
+				var google = "https://www.google.com/search?q=site:",
+					site = encodeURIComponent("https://clubpenguin.fandom.com/wiki/Club_Penguin_Wiki:Chat/Logs/"),
 					string = encodeURIComponent($("input#chatlogs-search-box").val().replace(/ /g, "+")),
 					searchPage = google + site + "+" + string;
 				open(searchPage, "_blank");
@@ -242,11 +242,10 @@ window.LockOldBlogs = {
 importArticles({
 	type: "script",
 	articles: [
-		"u:dev:MediaWiki:AjaxRC/code.js",
+		"u:dev:MediaWiki:AjaxRC.js",
 		"u:dev:MediaWiki:DisplayTimer/code.js",
 		"u:zh.pad:MediaWiki:CountDown.js",
 		"u:dev:MediaWiki:DupImageList/code.js",
-		"u:dev:MediaWiki:LockOldBlogs/code.js",
 		"MediaWiki:Common.js/chatLogView.js",
 		"MediaWiki:Common.js/plok.js",
 		mw.config.get("wgPageName") == "Club_Penguin_Island/Music" ? "MediaWiki:Common.js/cpi-music.js" : ""
@@ -254,7 +253,7 @@ importArticles({
 }, {
 	type: "style",
 	articles: [
-		"u:zh.pad.wikia.com:MediaWiki:CountDown.css"
+		"u:zh.pad:MediaWiki:CountDown.css"
 	]
 });
 

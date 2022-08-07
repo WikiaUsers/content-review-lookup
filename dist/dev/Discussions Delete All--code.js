@@ -37,16 +37,19 @@
                 i18n.loadMessages('Discussions Delete All').then(dda.init);
             });
         },
+        click: function (e) {
+            if (e.preventDefault) {
+        	    e.preventDefault();
+            }
+            if (window.ddaDoNotConfirm || confirm(dda.i18n.msg('confirm').plain())) {
+                dda.deleteAll();
+            }
+        },
         init: function (i18n) {    
             dda.i18n = i18n;
 
             var element = $('<a>', {
-                click: function (e) {
-                	e.preventDefault();
-                    if (window.ddaDoNotConfirm || confirm(dda.i18n.msg('confirm').plain())) {
-                        dda.deleteAll();
-                    }
-                },
+                click: dda.click,
                 css: {
                 	cursor: 'pointer'
                 },
@@ -55,9 +58,15 @@
                 title: dda.i18n.msg('title').plain()
             });
             var selector = $('.mw-contributions-user-tools > .mw-changeslist-links > span:last-child, .UserProfileActivityModeration__links > span:last-child');
-            
             selector.after(element);
             element.wrap('<span></span>');
+            mw.hook('QuickLogs.loaded').add(function() {
+                element.remove();
+                QuickLogs.addLink('discussions-delete-all', {
+                    click: dda.click,
+                    message: dda.i18n.msg('delete').plain()
+                });
+            });
         },
         deleteAll: function () {
             fetch(mw.util.wikiScript('wikia') + '?controller=DiscussionContribution&method=deleteAll&userId=' + mw.config.get('profileUserId'), {

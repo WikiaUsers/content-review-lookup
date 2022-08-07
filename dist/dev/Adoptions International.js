@@ -1,4 +1,4 @@
-/** <nowiki>
+/** <pre>
  * @name: Adoptions International
  * @description: Forked form for adoptions tweaked for international wikis
  * @author: Pcj (based on work by Unai01, Lil' Miss Rarity, Jr Mime and bola) - original
@@ -857,3 +857,4 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 	mw.hook( 'dev.modal' ).add( preload );
 	mw.hook( 'dev.ui' ).add( preload );
 } );
+// </pre>

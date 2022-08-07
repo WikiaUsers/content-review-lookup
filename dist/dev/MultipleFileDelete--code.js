@@ -213,8 +213,13 @@
 			var $link = $(this).parent().find('a').first();
 			var page;
 
-			if (specialPageType === 3) page = $link.attr('href').replace(wgArticlePath, '');
-			else page = $link.attr('title') || $link.text();
+			if (specialPageType === 3) {
+			    page = $link.attr('href')
+    			    .replace(wgArticlePath, '')
+    			    .replace(mw.config.get('wgServer'), '');
+			} else {
+			    page = $link.attr('title') || $link.text();
+			}
 
 			apiDelete(
 				page,

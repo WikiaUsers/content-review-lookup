@@ -2468,7 +2468,7 @@
         saveTranslation: function(page, summary) {
             var sorted = this.sortObjectKeys(page.json);
             var content = this.state.lua ?
-                '-- <nowiki>\nreturn ' + this.formatJSONIntoLua(sorted) :
+                '-- <nowiki>\nreturn ' + this.formatJSONIntoLua(sorted) + '\n-- </nowiki>' :
                 JSON.stringify(sorted);
             return this.api.postWithToken('csrf', {
                 action: 'edit',

@@ -62,7 +62,7 @@ window.mw.hook('wikipage.content').add(function (content) {
   
       audio.append(
         source,
-        msg('text').plain()
+        msg('text').escape()
       );
   
       if (volume >= 0 && volume <= 1) {

@@ -1,3 +1,4 @@
+$(function(){
 if($('.hslider')[0]){
     var multiItemhslider = (function () {
       return function (selector, config) {
@@ -148,3 +149,4 @@ if($('.hslider')[0]){
       isCycling: true
     })
 }
+});

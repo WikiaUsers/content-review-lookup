@@ -1,10 +1,11 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+/*usertags*/
 window.UserTagsJS = {
 	modules: {},
 	tags: {
 		hello: { m: 'Boy', f:'Girl', u: 'Unknown', order: -1/0, link:'https://en.wikipedia.org/wiki/Gender' },
 		muckraker: 'Muckraker',
-		sysop: { u:'Addermin', link:'Project:Administrators' }, // Change "Administrator" to "Addermin"
+		sysop: { u:'Admin', link:'Project:Administrators' }, // Change "Administrator" to "Addermin"
 		'mini-sysop': { u: 'Half Administrator', link:'Project:HalfAdmins' },
 		'vandal-patrol': { u: 'The meat shield', link:'Project:Janitors' }
 	}
@@ -33,4 +34,11 @@ UserTagsJS.modules.implode = {
 };
 UserTagsJS.modules.explode = {
 	'vandal-patrol': ['patroller', 'rollback'] // Add 'vandal-patrol' to everyone who has BOTH patroller and rollback
+};
+/*spoilers*/
+window.SpoilerAlertJS = {
+    question: '[[Chaotix]] Only found spoilers, do you want to see them?',
+    yes: 'Yes, i wanna know',
+    no: 'No, i do not',
+    fadeDelay: 400
 };

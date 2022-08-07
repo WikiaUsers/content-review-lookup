@@ -12,6 +12,9 @@
     if (window.dev && window.dev.preact) {
         return;
     }
+    
+    // The library will live here... eventually.
+    window.dev.preact = {};
 
     function importScript(args) {
         return new Promise(function(resolve) {

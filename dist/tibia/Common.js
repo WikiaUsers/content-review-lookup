@@ -790,7 +790,9 @@ $("#twbox h1, #twbox h2, #twbox h3, #twbox h4, #twbox h5, #twbox h6").each(funct
     }
 }());
 
+
 /* Fix pixel-art images */
+/*
 $(function(){
 	function reload_imgs(target) {
 		var srcvar = $(target).attr('src');
@@ -821,7 +823,7 @@ $(function(){
 		}
 	});
 });
-
+*/
 /* Bypassing license check on multiple upload */
 mw.config.set('UMFBypassLicenseCheck',true);
 

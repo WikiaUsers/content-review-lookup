@@ -111,11 +111,9 @@ window.fdButtons = [
 /* ========== AddRailModule ========== */
 window.AddRailModule = ['Шаблон:Статья_месяца'];
 
-/* ========== LockOldBlogs ========== */
-window.LockOldBlogs = {
-    expiryDays: 60,
-    expiryMessage: "Доступ к комментариям закрыт, так как блог не комментировали <expiryDays> дней"
-}
+/* ========== LockOldComments ========== */
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 180;
 
 /* ========== Выделение комментариев статусников ========== */
 setInterval(function () {

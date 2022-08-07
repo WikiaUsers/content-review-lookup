@@ -1,7 +1,7 @@
 window.formToDiscussions = [
     {
         id: 'mentoring',
-        specialPage: 'MentoringRequests',
+        specialPage: 'BlankPage/MentoringRequests',
         specialPageTitle: 'Mentoring requests form',
         form: '<p>This form allows you to place a new mentoring request.</p>' +
               '<p>Enter wiki name</p>' +

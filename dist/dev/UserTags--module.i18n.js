@@ -222,17 +222,6 @@ UserTagsJS.extensions.i18n = {
 			autoconfirmed: { u: 'Autobevestigd', order: 0 },
 			'bot-global': { u: 'Globale Bot', order: 0 }
 		},
-		'nl-informal': {
-			inactive: { u: 'inactief' },
-			nonuser: { u: 'Nog nooit bewerkt' },
-			newuser: { u: 'Nieuwe bewerker' },
-			notautoconfirmed: { u: 'Nieuwe gebruiker' },
-			sysop: { u: 'Beheerder' },
-			checkuser: { u: 'Controlegebruiker' },
-			// Rollback is in English
-			autoconfirmed: { u: 'Autobevestigd', order: 0 },
-			'bot-global': { u: 'Globale Bot', order: 0 }
-		},
 		no: {
 			inactive: {u: 'inaktiv'}
 		},

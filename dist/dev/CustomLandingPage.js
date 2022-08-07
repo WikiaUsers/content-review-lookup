@@ -8,10 +8,15 @@
 */
 
 ;(function (window, $, mw) {
-    var page = window.location;
-	var cookies = document.cookie;
-    
-    function getCookie(cname) { //https://www.w3schools.com/js/js_cookies.asp
+	'use strict';
+	var config = mw.config.get([
+		'wgIsMainPage',
+		'wgPageName',
+		'wgSiteName'
+	]);
+	var page = window.location;
+
+	function getCookie(cname) { //https://www.w3schools.com/js/js_cookies.asp
 		var name = cname + "=";
 		var decodedCookie = decodeURIComponent(document.cookie);
 		var ca = decodedCookie.split(';');
@@ -26,19 +31,19 @@
 		}
 		return "";
 	}
-	
-    if(mw.config.get('wgIsMainPage') && !page.toString().includes('?redirect=no')){
-    	page.replace('/wiki/' + getCookie('landingpage'));
-    }
-    
-    if(mw.config.get('wgPageName') == getCookie('landingpage')){
-	    var header = document.getElementsByClassName('page-header__main');
-	    var href = '<div id="CustomLandingPageBack"><a href="'+ mw.config.get('wgSiteName') + '?redirect=no">   Back</a></div>';
-	    while(href.includes('%20')){
-	    	href = href.replace(' ', '_');
-	    }
-	    
-	    $(href).appendTo(header);
-    }
-   
-}(this, this.jQuery, this.mediaWiki));
+
+	if(config.wgIsMainPage && !page.toString().includes('?redirect=no')){
+		page.replace('/wiki/' + getCookie('landingpage'));
+	}
+
+	if(config.wgPageName == getCookie('landingpage')){
+		var header = document.getElementsByClassName('page-header__title-wrapper');
+		var href = '<div id="CustomLandingPageBack"><a href="'+ config.wgSiteName + '?redirect=no">   Back</a></div>';
+		while(href.includes('%20')){
+			href = href.replace(' ', '_');
+		}
+		
+		$(href).appendTo(header);
+	}
+
+}(window, window.jQuery, window.mediaWiki));

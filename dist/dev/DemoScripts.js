@@ -121,7 +121,17 @@
             page: 'Special:DiscussionsActivity',
             scripts: 'MediaWiki:DiscussionsActivity.js'
         },
-        
+
+        DiscussionsFeed: {
+            page: 'Special:DiscussionsFeed',
+            scripts: 'MediaWiki:DiscussionsFeed.js'
+        },
+
+        DiscussionsRC: {
+            page: 'Special:DiscussionsRC',
+            scripts: 'MediaWiki:DiscussionsRC.js'
+        },
+
         Doqs: {
         	page: 'Doqs/demo',
         	styles: 'MediaWiki:Doqs.css'
@@ -145,6 +155,11 @@
 		EditcountTag: {
 			page: 'User:Wikia',
 			scripts: 'MediaWiki:EditcountTag/code.js'
+		},
+		
+		EditorColorPicker: {
+			page: 'Special:EditorColorPicker',
+			scripts: 'MediaWiki:EditorColorPicker.js'
 		},
         
         EmeraldGlobalNav: {
@@ -293,7 +308,7 @@
 		},
 		
 		MastheadRightsBadge: {
-			page: 'User:Americhino',
+			page: 'User:Fandom',
 			scripts: 'MediaWiki:MastheadRightsBadge.js'
 		},
 		
@@ -306,7 +321,7 @@
             page: 'MiniComplete',
             exec: function () {
                 mw.loader.implement( 'minicomplete',
-                    [ '/load.php?mode=articles&articles=u%3Acamtest%3AMediaWiki%3ATextareaHelper.js%7Cu%3Adev%3AColors%2Fcode.js%7Cu%3Adev%3AMiniComplete%2Fcode.js&only=scripts' ],
+                    [ '/load.php?mode=articles&articles=u%3Acamtest%3AMediaWiki%3ATextareaHelper.js%7Cu%3Adev%3AMediaWiki%3AColors%2Fcode.js%7Cu%3Adev%3AMediaWiki%3AMiniComplete%2Fcode.js&only=scripts' ],
                         {}, {} );
                 $( '#minicomplete-demo' )
                 .empty()

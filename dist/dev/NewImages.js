@@ -1,5 +1,7 @@
-(function($, document, mw) {
+;(function(window, $, mw) {
     'use strict';
+
+	var msg;
 
     function newImages() {
 
@@ -25,137 +27,11 @@
             all: 0, // amount of new images on wiki (max: 10)
             img: [],
             body: '',
-            i18n: {
-                en: {
-                    t: 'New Images',
-                    i: 'images on this wiki',
-                    u: 'Upload new image',
-                    m: 'See all images...'
-                },
-                be: {
-                    t: 'Новыя выявы', 
-                    i: 'выяў на вікі',
-                    u: 'Загрузіць',
-                    m: 'Усе выявы...'
-                },
-                bn: {
-                    t: 'নতুন চিত্র',
-                    i: 'এই উইকিতে চিত্রসমূহ',
-                    u: 'নতুন চিত্র আপলোড করুন',
-                    m: 'সব চিত্র দেখুন...'
-                },
-                de: {
-                    t: 'Neue Bilder',
-                    i: 'Bilder in diesem Wiki',
-                    u: 'Neues Bild hochladen',
-                    m: 'Alle Bilder ansehen...'
-                },
-                el: {
-                    t: 'Νέες Εικόνες',
-                    i: 'εικόνες σε αυτό το βίκι',
-                    u: 'Φόρτωση νέας εικόνας',
-                    m: 'Δείτε όλες τις εικόνες...'
-                },
-                es: {
-                    t: 'Nuevas imágenes',
-                    i: 'imágenes en la wiki',
-                    u: 'Subir nueva imagen',
-                    m: 'Ver todas las imágenes...'
-                },
-                fr: {
-                    t: 'Nouvelles images',
-                    i: 'Images sur le wiki',
-                    u: 'Ajouter une nouvelle image',
-                    m: 'Voir toutes les images...'
-                },
-                hi: {
-                    t: 'नई तस्वीरें',
-                    i: 'इस विकि पर तस्वीरें',
-                    u: 'नई तस्वीर अपलोड करें',
-                    m: 'सभी तस्वीरें देखें...'
-                },
-                ja: {
-                    t: '新しい画像', 
-                    i: 'wikiの画像',
-                    u: '画像をアップロード',
-                    m: 'すべての画像を見る...'
-                },
-                it: {
-                    t: 'Nuove immagini',
-                    i: 'immagini su questa wiki',
-                    u: 'Carica nuova',
-                    m: 'Vedi tutte le immagini...'
-                },
-                pl: {
-                    t: 'Nowe grafiki',
-                    i: 'Grafiki na tej wiki',
-                    u: 'Prześlij plik',
-                    m: 'Zobacz wszystkie…'
-                },
-                'pt-br': {
-                    t: 'Novas imagens',
-                    i: 'imagens nesta wiki',
-                    u: 'Carregar imagem',
-                    m: 'Ver todas as imagens...'
-                },
-                ru: {
-                    t: 'Новые изображения',
-                    i: 'изображений на вики',
-                    u: 'Загрузить',
-                    m: 'Все изображения...'
-                },
-                tr: {
-                    t: 'Yeni Resimler',
-                    i: 'bu wikide resimler',
-                    u: 'Yeni resim yükle',
-                    m: 'Tüm resimleri göster...'
-                },
-                uk: {
-                    t: 'Нові зображення',
-                    i: 'зображень на вікі',
-                    u: 'Завантажити',
-                    m: 'Всі зображення...'
-                },
-                zh: {
-                    t: '新图片',
-                    i: '个wiki上的图片',
-                    u: '上传新图片',
-                    m: '查看所有图片…'
-                },
-                'zh-hans': {
-                    t: '新图片',
-                    i: '个wiki上的图片',
-                    u: '上传新图片',
-                    m: '查看所有图片…'
-                },
-                'zh-hant': {
-                    t: '新圖片',
-                    i: '個wiki上的圖片',
-                    u: '上傳新圖片',
-                    m: '查看所有圖片…'
-                },
-                'zh-hk': {
-                    t: '新圖片',
-                    i: '個wiki上的圖片',
-                    u: '上載新圖片',
-                    m: '查看所有圖片…'
-                },
-                'zh-tw': {
-                    t: '新圖片',
-                    i: '個wiki上的圖片',
-                    u: '上傳新圖片',
-                    m: '查看所有圖片…'
-                }
-            },
             placeholder: {
                 'audio': '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 93.038 93.038" xml:space="preserve"><g><path d="M46.547,75.521c0,1.639-0.947,3.128-2.429,3.823c-0.573,0.271-1.187,0.402-1.797,0.402c-0.966,0-1.923-0.332-2.696-0.973 l-23.098-19.14H4.225C1.892,59.635,0,57.742,0,55.409V38.576c0-2.334,1.892-4.226,4.225-4.226h12.303l23.098-19.14 c1.262-1.046,3.012-1.269,4.493-0.569c1.481,0.695,2.429,2.185,2.429,3.823L46.547,75.521L46.547,75.521z M62.784,68.919 c-0.103,0.007-0.202,0.011-0.304,0.011c-1.116,0-2.192-0.441-2.987-1.237l-0.565-0.567c-1.482-1.479-1.656-3.822-0.408-5.504 c3.164-4.266,4.834-9.323,4.834-14.628c0-5.706-1.896-11.058-5.484-15.478c-1.366-1.68-1.24-4.12,0.291-5.65l0.564-0.565 c0.844-0.844,1.975-1.304,3.199-1.231c1.192,0.06,2.305,0.621,3.061,1.545c4.977,6.09,7.606,13.484,7.606,21.38 c0,7.354-2.325,14.354-6.725,20.24C65.131,68.216,64.007,68.832,62.784,68.919z M80.252,81.976 c-0.764,0.903-1.869,1.445-3.052,1.495c-0.058,0.002-0.117,0.004-0.177,0.004c-1.119,0-2.193-0.442-2.988-1.237l-0.555-0.555 c-1.551-1.55-1.656-4.029-0.246-5.707c6.814-8.104,10.568-18.396,10.568-28.982c0-11.011-4.019-21.611-11.314-29.847 c-1.479-1.672-1.404-4.203,0.17-5.783l0.554-0.555c0.822-0.826,1.89-1.281,3.115-1.242c1.163,0.033,2.263,0.547,3.036,1.417 c8.818,9.928,13.675,22.718,13.675,36.01C93.04,59.783,88.499,72.207,80.252,81.976z"/></g></svg>',
                 'file': '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 477.867 477.867" xml:space="preserve"><g><g><path d="M324.267,119.467c-9.426,0-17.067-7.641-17.067-17.067V0H102.4C74.123,0,51.2,22.923,51.2,51.2v375.467c0,28.277,22.923,51.2,51.2,51.2h273.067c28.277,0,51.2-22.923,51.2-51.2v-307.2H324.267z"/></g></g><g><g><polygon points="341.333,10.001 341.333,85.333 416.666,85.333"/></g></g></svg>'
             }
-        },
-
-        lng = mw.config.values.wgUserLanguage;
-
-        f.lng = ( typeof f.i18n[ lng ] === 'undefined' ) ? f.i18n.en : f.i18n[ lng ];
+        };
 
         f.getList = function() {
             $.get( mw.config.values.wgScriptPath + '/api.php', {
@@ -240,16 +116,16 @@
                                 '<path d="M9 10c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2"></path>' +
                             '</g>' +
                         '</svg>' +
-                        f.lng.t + 
+                        msg('t').escape() + 
                     '</h2>' +
                     '<div class="photo-stats">' +
                         '<div class="tally">' +
                             '<em>' + f.amount.toLocaleString(mw.config.values.wgUserLanguage) + '</em>' +
-                            '<span>' + f.lng.i + '</span>' +
+                            '<span>' + msg('i').escape() + '</span>' +
                         '</div>' +
-                        '<a href="' + mw.config.values.wgArticlePath.replace('$1', 'Special:Upload') + '" class="wds-is-secondary wds-button wds-is-squished">' + f.lng.u + '</a>' +
+                        '<a href="' + mw.config.values.wgArticlePath.replace('$1', 'Special:Upload') + '" class="wds-is-secondary wds-button wds-is-squished">' + msg('u').escape() + '</a>' +
                     '</div>' +
-                    '<div class="all-link-container"><a href="' + mw.config.values.wgArticlePath.replace('$1', 'Special:NewFiles') + '" class="all-link">' + f.lng.m + '</a></div>' +
+                    '<div class="all-link-container"><a href="' + mw.config.values.wgArticlePath.replace('$1', 'Special:NewFiles') + '" class="all-link">' + msg('m').escape() + '</a></div>' +
                '</section>'
             );
 
@@ -331,6 +207,16 @@
         $( f.getList );
 
     }
-    mw.hook('wikipage.content').add(newImages);
+    
+    mw.hook('dev.i18n').add(function(i18n) {
+		i18n.loadMessages('NewImages').done(function(i18no) {
+			msg = i18no.msg;
+			mw.hook('wikipage.content').add(newImages);
+		});
+	});
+	importArticle({
+		type: 'script',
+		article: 'u:dev:MediaWiki:I18n-js/code.js'
+	});
  
-})(window.jQuery, document, window.mediaWiki);
+})(window, window.jQuery, window.mediaWiki);

@@ -107,7 +107,7 @@ function initFeed(content, isMod, canBlock) {
         request = new XMLHttpRequest();
     request.timeout = 30000; // 30 seconds
     request.ontimeout = function() {
-        content.innerHTML = msg('unableToLoad').plain();
+        content.innerHTML = msg('unableToLoad').escape();
     };
     request.onreadystatechange = function() {
         if(request.readyState == 4) {
@@ -121,10 +121,10 @@ function initFeed(content, isMod, canBlock) {
                     setTimeout(updateFeed, 120000, content, isMod, canBlock, epoch); //set new timer (2m)
                     break;
                 case 404:
-                    content.innerHTML = msg('noPosts').plain();
+                    content.innerHTML = msg('noPosts').escape();
                     break;
                 default:
-                    content.innerHTML = msg('unableToLoad').plain();
+                    content.innerHTML = msg('unableToLoad').escape();
             }
         }
     };

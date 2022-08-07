@@ -98,7 +98,6 @@
                 window.dev.i18n.loadMessages('QuickTemplate'),
                 mw.loader.using([
                     'mediawiki.api',
-                    'mediawiki.notify',
                     'mediawiki.user',
                     'mediawiki.util'
                 ])

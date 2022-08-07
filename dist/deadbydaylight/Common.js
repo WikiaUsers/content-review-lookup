@@ -6,6 +6,7 @@ var currentYear = new Date().getFullYear();
 $(function(){
 	console.log("Custom Javascript executed");
 	SoS2();
+	CosmeticExpandingButton();
 	for(i = inceptionYear; i <= currentYear; i++){
 		console.log("Creating handlers for year " + i);
 		$('#inceptionPerks' + i).css('font-weight', 'bold');
@@ -56,6 +57,25 @@ function SoS2(){
 	     });
 	});
 	console.log("SoS2 Initiallised");
+}
+
+function CosmeticExpandingButton(){
+	$('span.divButton').click(function() {
+    var expandableArea = $('.' + this.id)
+    var offsetValue = expandableArea.children()
+    var cosmeticTable = $(this).closest('.cosmeticTable')
+    //console.log("click executed - " + parseInt(cosmeticTable.css("height"), 10));//(offsetValue.length * parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) + 'px'));
+    
+    if(parseInt(cosmeticTable.css("height"), 10) > parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) + 2 * parseInt(getComputedStyle(document.body).getPropertyValue('--headerHeight'), 10)){
+        $(this).text("⇓ Expand ⇓")
+        cosmeticTable.css("height", '-=' + (offsetValue.length) * parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) + 'px')
+    }
+    else
+    {
+        $(this).text("⇑ Collapse ⇑")
+        cosmeticTable.css("height", '+=' + (offsetValue.length) * parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) + 'px')
+    }
+});
 }
 
 function GetInceptionPerksHandler(year){

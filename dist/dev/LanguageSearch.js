@@ -128,6 +128,9 @@
                 .match(/lang-([\s\S]+)$/)[1];
         }
         var d = this.data;
+        if (!d[l]) {
+            throw new Error('Unrecognized language code: ' + l);
+        }
         $(li).attr({
              'data-code': l,
              'data-latn': (d[l].latn || '').normalize().toLowerCase(),

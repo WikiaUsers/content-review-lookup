@@ -64,25 +64,3 @@ $(function () {
     }*/
 
 }());
-
-
-
-/* custom user groups*/
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		Lucy: { u:'Goddess', order:-1/0 },
-		Spolly: { u:'Overworked', order:-1/0 },
-		Skykal: { u:'Game Master', order:-1/0 }
-	}
-};
-
-UserTagsJS.modules.custom = {
-	'LucyKuranSKYDOME': ['Goddess'],
-	'Spoletta': ['Overworked'],
-	'Lord Skykal': ['Game Master, Flower']
-};
-
-UserTagsJS.modules.implode = {
-	'Wiki Boss': ['Bureaucrat', 'sysop', 'rollback', 'threadmoderator'] // Remove if ALL 4 exist, and replace with 'Wiki Boss'
-};

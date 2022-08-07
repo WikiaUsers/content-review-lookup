@@ -12,3 +12,20 @@ $(function() {
         $('.insertusername').html(mw.config.get('wgUserName'));
     }
 });
+
+window.SpoilerAlertJS = {
+    question: 'This Entry contains Spoilers to the Lore, or Fate for specific Individuals. Do you wish to Continue?',
+    yes: 'Yes',
+    no: 'No',
+    fadeDelay: 500
+};
+
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		founder: { u:'Founder', order:-1/0 },
+		respected: 'Respected',
+		topwriter: 'Top Writer',
+		ultrachad: 'Ultra Chad'
+	}
+};

@@ -983,3 +983,4 @@
 	    article: 'u:dev:MediaWiki:ShowCustomModal.js'
 	});
 }(window, mw, $));
+// </pre>

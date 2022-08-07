@@ -9,6 +9,6 @@ window.DiscordBannerSettings = {
 
 /* rail modules */
 window.AddRailModule = [
-	{prepend: true},
-    'Template:RailModule',
+	{page:'Template:RailModule', repend: true},
+
 ];

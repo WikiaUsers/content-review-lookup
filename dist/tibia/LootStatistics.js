@@ -31,6 +31,7 @@
     'Northern Pike': 'Northern Pike (Creature)',
     'Owin': 'Owin (Creature)',
     'Pythius the Rotten': 'Pythius the Rotten (Creature)',
+    'Sabretooth': 'Sabretooth (Creature)',
     'Thief': 'Thief (Creature)',
     'The Sinister Hermit': 'The Sinister Hermit (Blue)',
     'Yalahari': 'Yalahari (Creature)'
@@ -64,12 +65,14 @@
     'Ferumbras Mortal Shell': {'Ferumbras\' Staff': 'Ferumbras\' Staff (Blunt)'},
     'Fleshslicer': {'Dung Ball': 'Dung Ball (Quest)'},
     'Flimsy Lost Soul': {'Lost Soul': 'Lost Soul (Item)'},
+    'Foam Stalker': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Freakish Lost Soul': {'Lost Soul': 'Lost Soul (Item)'},
     'Frost Dragon': {'Book': 'Book (Gemmed)'},
     'Fury': {'Jalapeño Pepper': 'Jalapeno Pepper', 'Jalapeńo Pepper': 'Jalapeno Pepper', 'Jalape\uFFFDo Pepper': 'Jalapeno Pepper'},
     'Furyosa': {'Jalapeño Pepper': 'Jalapeno Pepper', 'Jalapeńo Pepper': 'Jalapeno Pepper', 'Jalape\uFFFDo Pepper': 'Jalapeno Pepper'},
     'Ghost': {'Book': 'Book (Orange)'},
     'Glooth Brigand': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
+    'Gore Horn': {'Gore Horn': 'Gore Horn (Item)'},
     'Green Djinn': {'Book': 'Book (Green)'},
     'Grynch Clan Goblin': {'Picture': 'Picture (Landscape)'},
     'Hand of Cursed Fate': {'Book': 'Book (Orange)'},
@@ -147,11 +150,13 @@
     'Thaian': {'Amber': 'Amber (Item)'},
     'Thawing Dragon Lord': {'Ice Cream Cone': 'Ice Cream Cone (Blue-Barian)'},
     'The Baron from Below': {'Chitinous Mouth': 'Chitinous Mouth (Baron from Below)', 'Plan For A Makeshift Armour': 'Plan for a Makeshift Armour'},
+    'The Blazing Time Guardian': {'Part of a Rune': 'Part of a Rune (Three)'},
     'The Dread Maiden': {'Amber': 'Amber (Item)', 'Dark Bell': 'Dark Bell (Silver)'},
     'The Count of the Core': {'Chitinous Mouth': 'Chitinous Mouth (Count of the Core)'},
     'The Enraged Thorn Knight': {'Part of a Rune': 'Part of a Rune (One)'},
     'The False God': {'Blood of the Mountain': 'Blood of the Mountain (Item)'},
     'The Fear Feaster': {'Amber': 'Amber (Item)'},
+    'The Freezing Time Guardian': {'Part of a Rune': 'Part of a Rune (Three)'},
     'The Many': {'Egg of the Many': 'Egg of The Many'},
     'The Pale Worm': {'Amber': 'Amber (Item)'},
     'The Percht Queen': {'Icicle': 'Icicle (Percht)', 'Fly Agaric': 'Fly Agaric (Item)'},
@@ -159,6 +164,7 @@
     'The Scourge of Oblivion': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'The Time Guardian': {'Part of a Rune': 'Part of a Rune (Three)'},
     'The Unwelcome': {'Amber': 'Amber (Item)', 'Amber With A Bug': 'Amber With a Bug'},
+    'Two-Headed Turtle': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Unexpected': {'Candy Floss': 'Candy Floss (Large)', 'Ice Cream Cone': 'Ice Cream Cone (Sprinkles)'},
     'Uninvited': {'Candy Floss': 'Candy Floss (Large)', 'Ice Cream Cone': 'Ice Cream Cone (Sprinkles)'},
     'Unsolicited': {'Candy Floss': 'Candy Floss (Large)', 'Ice Cream Cone': 'Ice Cream Cone (Sprinkles)'},
@@ -207,7 +213,7 @@
   
   lootparser_p_items = [
   	'Corrupt Naga Scales', 'Rogue Naga Scales', 'Naga Archer Scales', 'Naga Warrior Scales',
-  	'Ripptor Scales', 'Stalking Seeds', 'Fairy Wings'
+  	'Ripptor Scales', 'Stalking Seeds', 'Fairy Wings', 'Prehemoth Horns'
   ],
 
   //skip/rename creatures if they drop any of the loot in the list
@@ -1416,7 +1422,7 @@
       lootmatch = theline.match(loot_regexps[0]);
       //regular loot
       if (lootmatch) {
-        lootignore = theline.match(/\b(?:active prey bonus|boss bonus|gut charm|increased loot|boosted loot|active wealth duplex|due to low stamina|goshnar's tribute)\b/i);
+        lootignore = theline.match(/\b(?:active prey bonus|boss bonus|gut charm|increased loot|boosted loot|active wealth duplex|due to low stamina|goshnar's tribute|hazard)\b/i);
         if (!lootignore) {
           lootparser_loot_process_loot(lootmatch[1], lootmatch[2], monsters, loot_exp, loot_tem);
         }

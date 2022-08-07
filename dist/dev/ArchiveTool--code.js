@@ -205,9 +205,7 @@
         },
         clickAbort: function() {
             this.$loading.hide();
-            location.href = mw.util.getUrl(config.wgPageName, {
-                action: 'purge'
-            });
+            location.href = mw.util.getUrl(config.wgPageName);
         },
         clickSelect: function(e) {
             e.preventDefault();

@@ -219,7 +219,7 @@
          if (currDate.getDate() !== e.time.getDate() ||
              currDate.getMonth() !== e.time.getMonth() || 
              currDate.getFullYear() !== e.time.getFullYear()) {
-            $('#discrc-list').append('<h2>' + e.time.getDate() + ' ' + wgMonthNames[e.time.getMonth() + 1] + ' ' + e.time.getFullYear() + '</h2>');
+            $('#discrc-list').append('<h2>' + e.time.getDate() + ' ' + mw.config.get('wgMonthNames')[e.time.getMonth() + 1] + ' ' + e.time.getFullYear() + '</h2>');
          }
          $('#discrc-list').append(e.entry);
          currDate = e.time;
@@ -241,7 +241,7 @@
             console.log('got threads');
             // Format the date
             var date = new Date(thread.creationDate.epochSecond * 1000);
-            date = discRC.timePad(date.getHours()) + ':' + discRC.timePad(date.getMinutes()) + ', ' + date.getDate() + ' ' + wgMonthNames[date.getMonth() + 1] + ' ' + date.getFullYear();
+            date = discRC.timePad(date.getHours()) + ':' + discRC.timePad(date.getMinutes()) + ', ' + date.getDate() + ' ' + mw.config.get('wgMonthNames')[date.getMonth() + 1] + ' ' + date.getFullYear();
             // Fix avatar
             if (!thread.createdBy.avatarUrl) {
                thread.createdBy.avatarUrl = 'https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest';
@@ -265,7 +265,7 @@
             $.each(thread._embedded['doc:posts'], function(i, post) {
                // Format date
                var date = new Date(post.creationDate.epochSecond * 1000);
-               date = discRC.timePad(date.getHours()) + ':' + discRC.timePad(date.getMinutes()) + ', ' + date.getDate() + ' ' + wgMonthNames[date.getMonth() + 1] + ' ' + date.getFullYear();
+               date = discRC.timePad(date.getHours()) + ':' + discRC.timePad(date.getMinutes()) + ', ' + date.getDate() + ' ' + mw.config.get('wgMonthNames')[date.getMonth() + 1] + ' ' + date.getFullYear();
                // Fix avatar
                if (!post.createdBy.avatarUrl) {
                   post.createdBy.avatarUrl = 'https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest';

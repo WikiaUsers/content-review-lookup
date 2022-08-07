@@ -1,4 +1,6 @@
 //<pre>
+// NOTE: This tool should not be updated as it is no longer used on-wiki. Instead the Hypixel SkyBlock Wiki Bot updates the data automatically
+
 console.log("[HypixelItemDataFetcher] Script Loading..");
 
 (function(mw) {

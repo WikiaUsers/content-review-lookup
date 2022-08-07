@@ -212,13 +212,16 @@ UserTagsJS.modules.metafilter = {
 //Manually turn off by changing true -> false
 
 // Username script // 
+	 
 (function () { 
+	 
 if (wgUserName !== null) $('span.insertusername').text(wgUserName);
+	 
 })();
 
 // Bureaucrat promotion warning message //
 !function() {
-    if (wgCanonicalSpecialPageName !== 'Userrights') return;
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'Userrights') return;
     $('#mw-content-text').on('change', '#wpGroup-bureaucrat', function() {
     if ($('#wpGroup-bureaucrat').attr('checked') && !confirm('Do you truly want to appoint a bureaucrat?')) $('#wpGroup-bureaucrat').attr('checked', null);
     });
@@ -233,7 +236,7 @@ window.pPreview.tlen = 1000;
 //==============================================================
  
 (function($) {
-    if (wgCanonicalSpecialPageName !== 'Whatlinkshere') return;
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'Whatlinkshere') return;
     var sorted_list,
         $list = $('#mw-whatlinkshere-list');
     sorted_list = $list.children('li').sort(function (a, b) {
@@ -252,6 +255,9 @@ VSTF, FANDOM Helper, FANDOM Staff */
 /* For more info on those groups; refer to 
 https://community.wikia.com/wiki/Help%3AUser_rights */
 
+(function(){
+const wgUserGroups = mw.config.get('wgUserGroups');
+
 if(wgUserGroups.includes('rollback') || 
    wgUserGroups.includes('content-moderator') ||
    wgUserGroups.includes('sysop') ||
@@ -263,7 +269,7 @@ if(wgUserGroups.includes('rollback') ||
       importArticles({
             type: 'script',
             articles: [
-            'u:dev:MediaWiki:AjaxRename/ucp.js'
+            'u:dev:MediaWiki:AjaxRename/code.js'
         ]
     });
 }
@@ -282,7 +288,7 @@ if(wgUserGroups.includes('sysop') ||
         ]
     });
 }
-
+}());
 //==============================================================
 // Category Sorter Resolution
 //==============================================================

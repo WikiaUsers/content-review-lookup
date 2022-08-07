@@ -51,7 +51,7 @@
                 timeout: 5000
             }).done(function (d) {
                 if (d.error) {
-                    $('#errors').append(
+                    $('#mw-content-text #results').append(
                         mw.html.escape(d.error.info),
                         ': ',
                         $('<a>', {
@@ -63,7 +63,7 @@
                 } else {
                     d.query.allpages.forEach(function (p) {
                         var url = item + 'wiki/' + p.title;
-                        $('#results').append(
+                        $('#mw-content-text #results').append(
                             $('<a>', {
                                 href: url,
                                 text: url
@@ -104,11 +104,7 @@
         $('#mw-content-text').empty();
         $('#mw-content-text').html(
             i18n.msg('notice').escape() +
-            '<br><br>' +
-            i18n.msg('results-header').escape() +
-            '<br><pre id="results"/><br>' +
-            i18n.msg('errors-header').escape() +
-            '<br><pre id="errors"/>'
+            '<pre id="results"></pre>'
         );
         getWikis();
     }

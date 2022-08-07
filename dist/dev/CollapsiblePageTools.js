@@ -14,16 +14,16 @@ $(function() {
 	
 	interval = setInterval(function() {
 		if ($('.WikiaRail .sticky-modules-wrapper').children().length) {
-			if (!$('#page-tools-module').length) return;
+			if (!$('.page-tools-module').length) return;
 			clearInterval(interval);
 			
 			var panel = $('<div class="wds-collapsible-panel' + (doCollapse ? ' wds-is-collapsed' : '') + '"></div>');
 		    $('<div class="wds-collapsible-panel__header" style="padding: 0; align-items: start;"></div>').append(
-				$('#page-tools-module .rail-module__header'), 
+				$('.page-tools-module .rail-module__header'), 
 				$('<svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-menu-control-small"></use></svg>')
 			).appendTo(panel);
-		    $('#page-tools-module .rail-module__list').addClass('wds-collapsible-panel__content').appendTo(panel);
-			$('#page-tools-module').empty().append(panel);
+		    $('.page-tools-module .rail-module__list').addClass('wds-collapsible-panel__content').appendTo(panel);
+			$('.page-tools-module').empty().append(panel);
 		}
 	}, 100);
 });

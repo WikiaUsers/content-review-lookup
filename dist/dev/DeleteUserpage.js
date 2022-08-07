@@ -65,6 +65,14 @@
 
         $('.mw-contributions-user-tools > .mw-changeslist-links > span:last-child').after(element);
         element.wrap('<span></span>');
+        
+        mw.hook('QuickLogs.loaded').add(function () {
+            element.parent().remove();
+            QuickLogs.addLink('deleteuserpage', {
+                click: click,
+                message: msgs[0]
+            });
+        });
     }
 
     function handler (d) {

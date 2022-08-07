@@ -50,18 +50,10 @@
             url: mw.util.wikiScript('api'),
             data: params,
             success: function (d) {
-                if (d && d.error && d.error.code) {
-                    mw.loader.using('mediawiki.notify').then(function () {
-                        mw.notify(i18n.msg('error').plain() + ': ' + d.error.code);
-                    });
-                } else {
-                    window.location.reload();
-                }
+                window.location.reload();
             },
             error: function (code) {
-                mw.loader.using('mediawiki.notify').then(function () {
-                    mw.notify(i18n.msg('error').plain() + ': ' + (code || 'http'));
-                });
+                mw.notify(i18n.msg('error').plain() + ': ' + (code || 'http'));
             }
         });
     }

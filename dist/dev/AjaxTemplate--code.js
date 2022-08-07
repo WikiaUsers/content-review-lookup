@@ -51,10 +51,7 @@
         hook: function(i18n) {
             $.when(
                 i18n.loadMessages('AjaxTemplate'),
-                mw.loader.using([
-                    'mediawiki.api',
-                    'mediawiki.notify'
-                ])
+                mw.loader.using('mediawiki.api')
             ).then($.proxy(this.init, this));
         }
     };

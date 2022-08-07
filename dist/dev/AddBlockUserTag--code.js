@@ -7,7 +7,7 @@
 (function () {
 	if (
 		!/sysop|staff|helper|global-discussions-moderator|wiki-specialist|wiki-representative|soap/.test(mw.config.get('wgUserGroups').join()) ||
-		$('#userProfileApp').length === 0 ||
+		!mw.config.get('profileUserName') ||
 		window.AddBlockUserTagLoaded
 	) {
 		return;

@@ -7,7 +7,7 @@
 
     function main () {
         var pageList = window.FixFeaturedArticlesImagesList;
-        $('#WikiaRail #WikiaAdInContentPlaceHolder a:not(.rail-sponsored-content)').each(function () {
+        $('.WikiaRail .popular-pages .popular-pages__item > a:not(.sponsored-content)').each(function () {
             if (typeof pageList === 'object') {
                 if (pageList.indexOf($(this).text().trim()) !== -1) {
                     editSrc($(this));
@@ -18,9 +18,10 @@
         });
     }
 
-    if ($('#WikiaRail #WikiaAdInContentPlaceHolder').length) {
+    if ($('.WikiaRail .popular-pages').length) {
         main();
     } else {
+        //This uses the element `#WikiaRail` rather than `.WikiaRail` as this still has the `afterLoad.rail` event, therefor even tho `.popular-pages` isn't inside `#WikiaRail`, I can hopefully still use the event as a way to wait for the rail to load
         $('#WikiaRail').on('afterLoad.rail', main);
     }
 })();

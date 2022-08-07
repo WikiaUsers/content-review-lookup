@@ -1,3 +1,4 @@
+// <nowiki>
 ;(function (window, $, mw) {
 	'use strict';
 	var wgPageName = mw.config.values.wgPageName,
@@ -8,7 +9,7 @@
 	function init() {
 		if ( wgPageName.toLowerCase().indexOf("/sandbox") >= 0 ) {
 			$('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list')
-				.append('<li><a id="clear-sandbox">' + msg('button').plain() + '</a></li>');
+				.append('<li><a id="clear-sandbox">' + msg('button').escape() + '</a></li>');
 		}
 	
 		$('#clear-sandbox').click(function(){
@@ -43,3 +44,4 @@
 		articles: 'u:dev:MediaWiki:I18n-js/code.js'
 	});
 }(window, window.jQuery, window.mediaWiki));
+// </nowiki>

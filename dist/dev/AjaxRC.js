@@ -16,6 +16,8 @@
  * - This script has extremely high usage across Fandom, please do not deploy without extensive testing.
  * - Be aware that this script must be ES3 compliant due to the minifier used by ResourceLoader. 
  * - Due to the historic high usage of this script, several decisions have been made to keep it stable. As such, please pay attention to comments relating to this.
+ *
+ * Used files: [[File:Facebook throbber.gif]]
  */
 
 /* jshint
@@ -43,9 +45,7 @@
 			'wgPageName',
 			'wgUserLanguage'
 		]),
-		// use common file as it's very likely to be already cached by user
-		// used in oasis sidebar loading, preview modal, etc.
-		ajaxIndicator = window.ajaxIndicator || config.stylepath + '/common/images/ajax.gif',
+		ajaxIndicator = window.ajaxIndicator || 'https://static.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif',
 		ajaxTimer,
 		ajRefresh = window.ajaxRefresh || 60000,
 		ajPages = window.ajaxPages || [],

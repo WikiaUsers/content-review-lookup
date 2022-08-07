@@ -57,9 +57,10 @@
  *   for all clock configurations, but it is recommended
  *   to stop MediaWiki from interfering with them
  */
-(function ($) {
+;(function ($) {
     'use strict';
 
+    var msg;
     var
         clock = []; // all clock data
 
@@ -202,7 +203,7 @@
                 }
             } else {
                 // error
-                $(e).empty().text('Incorrect number of data for clock');
+                $(e).empty().text(msg('error').plain());
             }
         });
     }
@@ -293,9 +294,19 @@
         }
     }
 
-    // hook into dynamic content changes
-    $.when( mw.loader.using('mediawiki.util'), $.ready ).then(function() {
-        init(mw.util.$content);
+    mw.hook('dev.i18n').add(function(i18n) {
+        i18n.loadMessages('TZclock').done(function(i18no) {
+            msg = i18no.msg;
+		    // hook into dynamic content changes
+		    $.when( mw.loader.using('mediawiki.util'), $.ready ).then(function() {
+		        init(mw.util.$content);
+		    });
+		    mw.hook('wikipage.content').add(init);
+        });
     });
-    mw.hook('wikipage.content').add(init);
-}(jQuery));
+    importArticle({
+        type: 'script',
+        article: 'u:dev:MediaWiki:I18n-js/code.js'
+    });
+
+})(jQuery);

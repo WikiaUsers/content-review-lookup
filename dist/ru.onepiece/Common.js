@@ -40,6 +40,9 @@ nkch_gst_gadgets = [{
 }
 ];
 
+// Настройка AddRailModule
+window.AddRailModule = ['Template:Mainpage-today', 'Template:NewPagesModule'];
+
 // == "Категории" ==
 	// Перемещает ссылки, удаляя ненужный контент
 	$(function() {
@@ -174,6 +177,3 @@ window.pPreview = $.extend(true, window.pPreview, {
     defimage: 'https://static.wikia.nocookie.net/onepiece/images/d/d5/NoPicAvailable.png/revision/latest?cb=20130719054732&path-prefix=ru',
     noimage: 'https://static.wikia.nocookie.net/onepiece/images/d/d5/NoPicAvailable.png/revision/latest?cb=20130719054732&path-prefix=ru'
 });
-
-// Настройка AddRailModule
-window.AddRailModule = ['Template:Mainpage-announcement', 'Template:Mainpage-today', 'Template:NewPagesModule'];

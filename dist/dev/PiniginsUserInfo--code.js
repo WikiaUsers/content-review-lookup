@@ -3,44 +3,99 @@
  * Creates the "Special:UserInfo" page, which allows you to view a little information about the user
  */
 
-function getUserInfo() {
-    var username = $("#username_input").val();
-    $("#userinfobody").html("");
-    $.ajax({
-        type: "get",
-        url: "../api.php?action=query&list=users&ususers=" + username + "&usprop=registration%7Cgender%7Ceditcount%7Cblockinfo%7Cgroups&format=json",
-        success: function(data) {
-            if (username === "") {
-                $("#userinfobody").append("<br><b>You must enter a user name</b>");
-            } else {
-                $("#userinfobody").append("<br>");
-                $("#userinfobody").append("<b>User ID:</b> " + data.query.users[0].userid + "<br>");
-                $("#userinfobody").append("<b>Username:</b> " + data.query.users[0].name + "<br>");
-                $("#userinfobody").append("<b>Number of edits:</b> " + data.query.users[0].editcount + "<br>");
-                if (data.query.users[0].registration !== null)
-                $("#userinfobody").append("<b>Date of registration:</b> " + data.query.users[0].registration.replace('T', ' ').replace('Z', ' ') + "<br>");
-                $("#userinfobody").append("<b>Gender:</b> " + data.query.users[0].gender + "<br>");
-                $("#userinfobody").append("<b>Groups:</b> " + data.query.users[0].groups.join(', ') + "<br>");
-            }
-        }
-    });
-}
+;(function($, mw) {
+	'use strict';
+	var config = mw.config.get([
+		'wgPageName',
+		'wgSiteName',
+		'wgScriptPath',
+		'wgNamespaceNumber'
+	]);
+	
+	if (!(mw.config.values.wgPageName === "Special:UserInfo" || mw.config.values.wgNamespaceNumber === 2)) return;
+	
+	var button, input, info, msg;
 
-if (wgPageName.split(':')[1] == "UserInfo") {
-    $('#mw-content-text').html("");
-    document.title = "User information | " + wgSiteName + " | FANDOM powered by Wikia";
-    $('.page-header__title').text("User information");
-    $('#mw-content-text').append('<input id="username_input" name="username_input" type="text" placeholder="Username"> <button onClick="getUserInfo();">Get user information</button><br><div id="userinfobody"></div>');
-    if (location.hash.replace("#", "") !== "") {
-        $("#username_input").val(location.hash.replace("#", ""));
-        getUserInfo();
-    }
-}
+	function addEntry(data, label, value, join) {
+		var text = "";
+		if (data.query.users[0][value]) {
+			text = "<b>" + label + "</b> ";
+			if (join) {
+				text += data.query.users[0][value].join(', ');
+			} else {
+				text += data.query.users[0][value];
+			}
+			text += "<br />";
+		}
+		return text;
+	}
 
-if(wgNamespaceNumber == 2 && wgPageName.indexOf("/") === -1) {
-    var userName = wgPageName.split(':')[1];
-    var urlWithHash = "./Special:UserInfo#" + userName;
-    $('<li>', { id: "userinfo" })
-    .html('<a href="' + urlWithHash + '">User information</a>')
-    .prependTo('.toolbar .tools');
-}
+	function getUserInfo() {
+		var username = input.value;
+		info.innerHTML = "";
+		$.get(config.wgScriptPath + "/api.php", {
+			action: "query",
+			list: "users",
+			ususers: username,
+			usprop: "registration|gender|editcount|blockinfo|groups",
+			format: "json"
+		})
+		.done(function(data) {
+			if (username === "") {
+				info.innerHTML = "<br><b>" + msg('enterUsername').plain() + "</b>";
+			} else {
+				info.innerHTML =
+					"<br>" +
+					addEntry(data, msg('id').escape(), "userid") +
+					addEntry(data, msg('username').escape(), "name") +
+					addEntry(data, msg('editcount').escape(), "editcount") +
+					addEntry(data, msg('dateRegistered').escape(), "registration") +
+					addEntry(data, msg('gender').escape(), "gender") +
+					addEntry(data, msg('groups').escape(), "groups", true);
+			}
+		});
+	}
+	
+	function init() {
+		document.title = msg('userInfo').plain() + " | " + config.wgSiteName;
+		document.getElementById('firstHeading').textContent = msg('userInfo').plain();
+		document.getElementById('mw-content-text').innerHTML = "";
+
+		input = document.createElement('input');
+		input.type = "text";
+		input.placeholder = "Username";
+
+		button = document.createElement('button');
+		button.innerText = msg('getInfo').plain();
+		button.addEventListener('click', getUserInfo);
+
+		info = document.createElement('div');
+
+		document.getElementById('mw-content-text').append(input, button, info);
+		
+		if (location.hash.replace("#", "") !== "") {
+			input.value = location.hash.replace("#", "");
+			getUserInfo();
+		}
+	}
+	function addTool() {
+		var userName = config.wgPageName.split(':')[1];
+		var urlWithHash = "./Special:UserInfo#" + userName;
+		$('<li>', { id: "userinfo" })
+		.html('<a href="' + urlWithHash + '">' + msg('userInfo').escape() + '</a>')
+		.prependTo('.toolbar .tools');
+	}
+
+	
+	mw.hook('dev.i18n').add(function(i18n) {
+		i18n.loadMessages('PiniginsUserInfo').done(function(i18no) {
+			msg = i18no.msg;
+			if (config.wgPageName === "Special:UserInfo") init();
+			if (config.wgNamespaceNumber === 2 && config.wgPageName.indexOf("/") === -1) addTool();
+		});
+	});
+	importArticle({
+		type: 'script',
+		article: 'u:dev:MediaWiki:I18n-js/code.js'
+	});
+})(window.jQuery, window.mediaWiki);

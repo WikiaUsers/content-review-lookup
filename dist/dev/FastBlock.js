@@ -149,7 +149,6 @@
             Main.findContainer(),
             mw.loader.using([
                 'mediawiki.api',
-                'mediawiki.notify',
                 'mediawiki.user',
                 'mediawiki.util'
             ])

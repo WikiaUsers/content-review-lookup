@@ -2,18 +2,46 @@
 Title        :   BlockSummary
 Description  :   Displaying a summary of user's block on the blocked user's "User" Namespace pages
 Author       :   Vastmine1029
-Version      :   1.2.1
+Version      :   1.3
 *************/
 
 mw.loader.using('mediawiki.api', function() {
-	var user = mw.config.get('wgRelevantUserName'); // grabbing username of user blocked
+	var config = mw.config.get([
+		'wgRelevantUserName',
+		'wgServer', // Wiki URL
+		'wgSiteName', // Wiki Name
+		'wgContentLanguage' // Wiki Language Code
+	]);
+	
+	var wiki_name = config.wgSiteName;
+	var wiki_url = config.wgServer;
+	var wiki_lang = config.wgContentLanguage;
+	var wiki_lang_for_url = "";
+	
+	if (wiki_lang !== "en") {
+		wiki_lang_for_url = "/" + wiki_lang;
+	}
+	
+	wiki_url = wiki_url + wiki_lang_for_url;
+	
+	// If the wiki is not English, add language code next to the site name.
+	if (wiki_lang !== "en") {
+		lang_for_wiki_name = " (" + wiki_lang + ")";
+	}
+	else {
+		lang_for_wiki_name = "";
+	}
+	
+	var user = config.wgRelevantUserName; // grabbing username of user blocked
+	var url_user = user.replace(/ /g, "_");
+	
 	var api = new mw.Api(), data;
 	var blockr, blockID, blockperformer, blocktime, expire; // declaring variables for api.get
 	var parsedBlockReason; // parsed reason stored from parse API output
 	var startDate, startTime, startHour, startMinute, startSecond, start_am_pm, blockStartDateTime, blockStartDateTimeHHMMSS; // start time variables
 	var endDate, endTime, endHour, endMinute, endSecond, blockEndDateTime, blockEndDateTimeHHMMSS; // end time variables
 	var temp; // declaring variable for formatting text
-	var sitename, lang, langForSiteName = "", domain, rootdomain, subdomain; // cariables for domain-related stuff
+	var lang_for_wiki_name;
 
 	api.get({
 		action: 'query',
@@ -30,35 +58,9 @@ mw.loader.using('mediawiki.api', function() {
 		blockr = data[0].reason; // fetching block reason
 		blockID = data[0].id; // fetching block ID
 		blockperformer = data[0].by; // fetching block performer
+		blockperformer_url = blockperformer.replace(/ /g, "_");
 		blocktime = data[0].timestamp; // fetching block start time
 		expire = data[0].expiry; // fetching block expiration
-		
-		api.get({
-			action: 'query',
-			meta: 'siteinfo'
-		}).then(function(d) {
-			data = d.query.general;
-			
-			// Ensuring that all necessary information from API has been loaded before proceeding.
-			var interval = setInterval(function() {
-				if ((data["server"] !== undefined) && (data["servername"] !== undefined) && (data["scriptpath"] !== undefined)&& (data["sitename"] !== undefined) && (data["lang"] !== undefined)) {
-					clearInterval(interval);
-				}
-			}, 1000);
-			
-			sitename = data["sitename"]; // e.g., "Community Central"
-			lang = data["lang"];
-			
-			domain = data["server"] + data["scriptpath"]; // e.g., https://community.fandom.com + /es
-			
-			rootdomain = data["servername"]; // e.g., community
-			var rootDomainBreakdown = rootdomain.split(".");
-			subdomain = rootDomainBreakdown[0];
-		});
-		 
-		// Checking MediaWiki Version
-		var ucp = mw.config.get('wgVersion') !== '1.19.24';
-		var selector = ucp ? $('.page-header__separator') : $('#contentSub > a:last-child');
 		
 		if (window.BlockSummary || !user)
 			return;
@@ -66,7 +68,7 @@ mw.loader.using('mediawiki.api', function() {
 		
 		
 		//----------- | Main Function for Block Report | -----------//
-		function main(user, blockreason, blockID, blockperformer, blocktime, blockexpire) {			
+		function main(user, blockreason, blockID, blockperformer, blockperformer_url, blocktime, blockexpire) {			
 			
 			// Passing wikitext for parsing
 			console.log("%c[RUNNING] Parsing block reason wikitext...", "background: #F9F983; color: black");
@@ -171,11 +173,6 @@ mw.loader.using('mediawiki.api', function() {
 				//----------- | HTML Display of Block Report | -----------//
 				console.log("%c[RUNNING] Creating HTML Display of Block Report...", "background: #F9F983; color: black");
 				
-				// If the wiki is not English, add language code next to the site name.
-				if (lang !== "en") {
-					langForSiteName = " (" + lang + ")";
-				}
-				
 				var Box = document.createElement("div"); // Box
 				Box.style.marginTop = "1em"; // setting top-margin for Box
 				Box.style.marginBottom = "1em"; // setting bottom-margin for Box
@@ -189,23 +186,20 @@ mw.loader.using('mediawiki.api', function() {
 				Box.classList.add("warningbox");
 				Box.classList.add("mw-warning-with-logexcerpt");
 				Box.classList.add("mw-content-ltr");
-
-
+				
 				var textParagraph = document.createElement("p"); // create a text paragraph
 				
-				textParagraph.innerHTML = "<center><div style=\"font-size: 15pt; line-height: 1em\">" + "<a href=\"" + domain + "/wiki/User:" + user + "\">" + user + "</a> is currently blocked on " + "<a href=\"" + domain + "\">" + sitename + "<span style=\"font-size: 8pt;\">" + langForSiteName + "</a></span>.</div></center>" + 
-				"<center><span style=\"font-size: 8pt; padding: 0 0.25em 0 0.25em;\"><a href=\"" + domain + "/wiki/User:" + user + "\">" + domain + "/wiki/User:" + user + "</a></span></center>" + 
+				textParagraph.innerHTML = "<center><div style=\"font-size: 15pt; line-height: 1em\">" + "<a href=\"" + wiki_url + "/wiki/User:" + url_user + "\">" + user + "</a> is currently blocked on " + "<a href=\"" + wiki_url + "\">" + wiki_name + "<span style=\"font-size: 8pt;\">" + lang_for_wiki_name + "</a></span>.</div></center>" + 
+				"<center><span style=\"font-size: 8pt; padding: 0 0.25em 0 0.25em;\"><a href=\"" + wiki_url + "/wiki/User:" + url_user + "\">" + wiki_url + "/wiki/User:" + url_user + "</a></span></center>" + 
 				"<hr style=\"border: 1px solid rgb(var(--theme-alert-color--rgb)); background-color: rgb(var(--theme-alert-color--rgb));\">" +
-				"<span style=\"position: relative; float: right; border: 1.5px dotted; padding: 0 0.25em 0 0.25em\"><a href=\"" + domain + "/wiki/Special:Log?type=block&page=" + user + "\">Block Log</a></span>" +
+				"<span style=\"position: relative; float: right; border: 1.5px dotted; padding: 0 0.25em 0 0.25em\"><a href=\"" + wiki_url + "/wiki/Special:Log?type=block&page=User:" + url_user + "\">Block Log</a></span>" +
 				"<div style =\"font-size: 15pt; text-decoration: underline;\">Block Information</div>" + 
 				"<b><i>Username: </i></b>" + user +
 				"<br/><b><i>Block ID: </b></i>" + blockID +
-				"<br/><b><i>Block Performer: </b></i><a href=\"" + domain + "/wiki/User:" + blockperformer + "\">" + blockperformer + "</a>" +
+				"<br/><b><i>Block Performer: </b></i><a href=\"" + wiki_url + "/wiki/User:" + blockperformer_url + "\">" + blockperformer + "</a>" +
 				"<br/><b><i>Block Start: </b></i>" + blockStartDateTime +
 				"<br/><b><i>Block Expiry: </b></i>" + blockEndDateTime +
 				"<br/><b><i>Block Reason: </b></i><blockquote style=\"border-left: 5px solid rgba(var(--theme-alert-color--rgb), 0.5); padding-left: 0.5em;\">" + parsedBlockReason + "</blockquote>";
-				
-				//console.log("Parse Output (main): " + parsedBlockReason);
 				
 				Box.appendChild(textParagraph); // apply all text configurations into Box
 				
@@ -220,6 +214,6 @@ mw.loader.using('mediawiki.api', function() {
 				}, 1000);	
 			});
 		}
-		main(user, blockr, blockID, blockperformer, blocktime, expire); // executing function
+		main(user, blockr, blockID, blockperformer, blockperformer_url, blocktime, expire); // executing function
 	});
 });

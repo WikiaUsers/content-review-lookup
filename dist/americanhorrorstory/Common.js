@@ -72,8 +72,12 @@ $('table.data:not(.datatable-loaded)', 'table.data:not(.dataTable)').tableTHEAD(
 
 (function($, mw) {
   'use strict';
+  $('.page-Category_Cast #cast-datatable').tableTHEAD();
+  $('.page-American_Horror_Stories #episodes-table').tableTHEAD();
+  $('.page-Category_Cast_of_American_Horror_Stories #storiesCast-datatable').tableTHEAD();
+  $('table.appearances-by-cast').tableTHEAD();
 
-  function initializeDT() {
+  function initializeDT () {
     $.getJSON(
       'https://americanhorrorstory.fandom.com/wiki/MediaWiki:Custom-DataTables.json?action=raw',
       function(dtConfig) {
@@ -83,13 +87,10 @@ $('table.data:not(.datatable-loaded)', 'table.data:not(.dataTable)').tableTHEAD(
             return rowData[i + 1] !== '';
           }
         });
-        $('.page-Category_Cast #cast-datatable').tableTHEAD();
         $('.page-Category_Cast #cast-datatable').not('.dataTable').DataTable(dtConfig.ahsCast);
 
         // [[American Horror Stories]]
-        $('.page-American_Horror_Stories #episodes-table')
-            .tableTHEAD()
-            .collapseExpandedChildRow('Description');
+        $('.page-American_Horror_Stories #episodes-table').collapseExpandedChildRow('Description');
         $('.page-American_Horror_Stories #episodes-table').not('.dataTable').DataTable(dtConfig.storiesEpisodes);
 
         // [[:Category:Cast of American Horror Stories]]
@@ -99,16 +100,29 @@ $('table.data:not(.datatable-loaded)', 'table.data:not(.dataTable)').tableTHEAD(
           }
         });
         $('.page-Category_Cast_of_American_Horror_Stories #storiesCast-datatable')
-            .tableTHEAD();
-        $('.page-Category_Cast_of_American_Horror_Stories #storiesCast-datatable')
             .not('.dataTable').DataTable(dtConfig.storiesCast);
-      }
-    );
+
+        // Cast pages
+        $.each(dtConfig.appearancesByCast.buttons, function(i, v) {
+            v.action = function ( e, dt, node, config ) {
+              e.preventDefault();
+              dt.rowGroup().dataSrc( i );
+              dt.order.fixed( {pre: [[ i, 'asc' ]]} ).draw();
+            }
+        });
+        $('.appearances-by-cast')
+            .not('.dataTable').DataTable(dtConfig.appearancesByCast);
+     });
   };
+  
+  // Opportunities to initialize, due to race condition with dev:DataTable.js ImportJS
   mw.hook('datatables.loaded').add(initializeDT);
-  mw.loader.getScript('https://cdn.datatables.net/v/dt/dt-1.12.0/b-2.2.3/b-colvis-2.2.3/date-1.1.2/fc-4.1.0/r-2.3.0/rg-1.2.0/sc-2.0.6/sp-2.0.1/sl-1.4.0/datatables.js').then(
-        mw.hook('datatables.loaded').fire()
+  $(window).on('load',
+     $(".page-content table:has(thead):not(.dataTable)").each(initializeDT)
   );
+  $(window).on('resize scroll', function() {
+    if ($(".page-content table:has(thead):not(.dataTable)").visible( true )) { initializeDT() }
+  });
 })(jQuery, mediaWiki);
 
 /* Hypercard Project */
