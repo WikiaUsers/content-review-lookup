@@ -2,6 +2,8 @@ $( function() {
 	if (window.RestoreRevButton) { return; }
     window.RestoreRevButton = { loaded: true };
 
+	if ($('#p-views.page-header__actions #ca-viewsource').length > 0) return;
+	
 	var pname = mw.config.get('wgPageName');
 	var revid, revcontainer, backup;
 	
@@ -38,7 +40,7 @@ $( function() {
     		titles: pname,
     		formatversion: '2',
 		}).done( function(data) {
-			summarytext = 'Restored revision #' + revid;
+			var summarytext = 'Restored revision ' + revid;
 			$('body').css('cursor','wait');
 			$(revcontainer).html('loading');
     		api.post({
@@ -52,7 +54,7 @@ $( function() {
     			$('body').css('cursor','');
     			$(revcontainer).html($(revbutton));
     			mw.loader.using('mediawiki.notification', function() {
-        			mw.notification.notify('Revision #' + revid + ' restored', {
+        			mw.notification.notify('Revision ' + revid + ' restored', {
         				tag: 'RestoreRevButton'
         			});
         		});

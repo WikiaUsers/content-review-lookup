@@ -6,10 +6,7 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  *
  */
-mw.loader.using([
-    'jquery.ui.widget',
-    'jquery.ui.mouse'
-], function () {
+mw.loader.using('jquery.ui', function () {
 
   // Detect touch support
   $.support.touch = 'ontouchend' in document;

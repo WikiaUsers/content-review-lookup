@@ -1,7 +1,8 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 window.listUsers = {
     talk: true,
-    customgroups: ['content-moderator','threadmoderator']
+    customgroups: ['content-moderator','threadmoderator'],
+    limit: 50
 }
 /* Move to ImportJS when done testing
 importArticles({

@@ -36,7 +36,6 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
             { name: 'node-count-exceeded-category', msg: 'node-count', isI18nJSMsg: true },
             { name: 'expansion-depth-exceeded-category', msg: 'expansion-depth', isI18nJSMsg: true },
             { name: 'restricted-displaytitle-ignored', msg: 'ignored-display-titles', isI18nJSMsg: true },
-            { name: 'deprecated-self-close-category', msg: 'invalid-selfclosed-tags', isI18nJSMsg: true },
             { name: 'template-loop-category', msg: 'template-loop', isI18nJSMsg: true },
             { name: 'cite-tracking-category-cite-error', msg: 'ref-errors', isI18nJSMsg: true },
             { name: 'math-tracking-category-error', msg: 'math-errors', isI18nJSMsg: true },
@@ -98,9 +97,12 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
     function getItems (i18n) {
         // Map category fullpagename to display name.
         var cats = list.categories.reduce(function (acc, cat) {
-            var pagename = i18n.inContentLang().msg(cat.name).plain(),
-                fullpagename = new mw.Title(pagename, 14).getPrefixedText();
-            acc[fullpagename] = cat.msg || cat.name;
+            var m = i18n.inContentLang().msg(cat.name);
+            if (m.exists) {
+                var pagename = m.plain(),
+                    fullpagename = new mw.Title(pagename, 14).getPrefixedText();
+                acc[fullpagename] = cat.msg || cat.name;
+            }
             return acc;
         }, {});
         // Generate special page cards
@@ -151,7 +153,12 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
         // Displayed names in the user's preferred language.
         return api.loadMessagesIfMissing(msgsToLoad).then(function () {
             msgsToLoad.forEach(function(key) {
-                i18n['_messages'][userLang][key] = mw.message(key).plain();
+                var msg = mw.message(key);
+                if (msg.exists()) {
+                    i18n['_messages'][userLang][key] = msg.plain();
+                } else {
+                    console.log('could not load missing message:', key);
+                }
             });
             if (contentLang === userLang) {
                 return i18n;
@@ -159,8 +166,8 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
             // Localized category pagename.
             return api.getMessages(categoryMessages, { amlang: contentLang }).then(function(result) {
                 Object.entries(result).forEach(function(item) {
-                	var key = item[0],
-                		value = item[1];
+                    var key = item[0],
+                        value = item[1];
                     i18n['_messages'][contentLang][key] = value;
                 });
                 return i18n;

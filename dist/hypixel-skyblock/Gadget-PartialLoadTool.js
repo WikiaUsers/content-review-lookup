@@ -160,6 +160,8 @@
                     if (!exist) {
                         private_cache[requested_page] = that.doesNotExist(requested_page);
                         $frame.empty().append(private_cache[requested_page].clone());
+                        $parent.find(".selected").removeClass("selected");
+                        $tab.addClass("selected");
                         return;
                     }
                     that.parsePage(requested_page)

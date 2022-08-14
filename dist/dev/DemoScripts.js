@@ -88,11 +88,6 @@
             styles: 'MediaWiki:CSS3Tooltip.css'
         },
 		
-        CSSForTheColorBlind: {
-            page: 'CSSForTheColorBlind',
-            styles: 'MediaWiki:CSSForTheColorBlind.css'
-        },
-		
         DataTables: {
             selector: '.datatable',
             scripts: 'MediaWiki:DataTables.js'
@@ -191,6 +186,16 @@
             page: 'FandomXP',
             styles: 'MediaWiki:FandomXP.css'
         },
+        
+        FanFeedEnhancements: {
+            page: 'FanFeedEnhancements',
+            styles: 'MediaWiki:FanFeedEnhancements.css'
+        },
+        
+        FANSUN: {
+            page: 'FANSUN',
+            styles: 'MediaWiki:FANSUN.css'
+        },
 		
         FastFileDelete: {
             page: 'FastFileDelete',
@@ -207,7 +212,7 @@
         },
 		
 		FileLogs: {
-			page: 'File:QQX_Oasis.png',
+			page: 'File:QQX.png',
 			scripts: 'MediaWiki:FileLogs.js'
 		},
 		

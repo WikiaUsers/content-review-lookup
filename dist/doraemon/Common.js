@@ -51,7 +51,11 @@ importArticles({
     ]
 });
 
-/*RailWAM */
+/* RailWAM */
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
+
+/* DiscussionsEmbed */
+window.discussEmbedLimit = 8;
+window.discussEmbedSortTrending = 1;

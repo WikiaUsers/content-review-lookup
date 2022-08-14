@@ -6,19 +6,13 @@
  */
 
 ;(function ($) {
-  if ($('.mw-userlink').length < 1) return
+  // Only registered users
+  if ($('.mw-userlink:not(.mw-anonuserlink)').length < 1) return
 
   // Adjust global variables
   window.dev = window.dev || []
   window.dev.userBadge = window.dev.userBadge || {}
   if (typeof window.dev.userBadge !== 'object') window.dev.userBadge = {}
-  var mwApi = new mw.Api({
-    parameters: {
-      format: 'json',
-      formatversion: 2,
-    },
-  })
-
   /** @type {{ name: string; groups: string[]; missing?: true; invalid?: true }[]} */
   var USERS_CACHE = []
   /** @type {Record<string, string>} */
@@ -64,9 +58,9 @@
 
   var BADGES_LIST = Object.assign({}, BADGES_DEFAULTS, CUSTOM_BADGES)
 
-  // Get all users
+  // Get all registered users
   var _userNames = []
-  $('.mw-userlink').each(function (_, el) {
+  $('.mw-userlink:not(.mw-anonuserlink)').each(function (_, el) {
     var $this = $(el)
     var userName = $this.text().trim()
     _userNames.push(userName)
@@ -78,15 +72,17 @@
     }
   })
 
-  // Get user groups
-  mwApi
-    .get({
+  mw.loader.using(['mediawiki.api', 'mediawiki.Title'], function () {
+    // Get user groups
+    new mw.Api().get({
       action: 'query',
       list: 'users',
       ususers: USERS_CACHE.map(function (i) {
         return i.name
       }),
       usprop: 'groups',
+      format: 'json',
+      formatversion: 2,
     })
     .then(function (data) {
       USERS_CACHE = data.query.users
@@ -96,7 +92,11 @@
         // Variables
         var name = item.name
         var groups = item.groups
-        var $userLink = $('[data-username="' + name + '"]')
+        // Get localized FULLPAGENAME for user
+        // "Foo bar" becomes "User:Foo bar" (English wikis)
+        // "Foo bar" becomes "ユーザー:Foo bar" (Japanese wikis)
+        var fullpagename = new mw.Title(name, 2).getPrefixedText()
+        var $userLink = $('.mw-userlink[title="' + fullpagename + '"]')
 
         // Add group classes
         $userLink.addClass(
@@ -136,4 +136,5 @@
         })
       })
     })
+  })
 })(window.jQuery)

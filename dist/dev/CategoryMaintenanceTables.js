@@ -4,6 +4,7 @@
 
 ;(function(mw) {
     if (mw.config.get('wgNamespaceNumber') !== -1) return;
+    if (!['Categories', 'Wantedcategories'].includes(mw.config.get('wgCanonicalSpecialPageName'))) return;
 
     var api = new mw.Api();
     var cmt = {};

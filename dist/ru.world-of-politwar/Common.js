@@ -15,14 +15,6 @@ importArticles({
     ]
 });
 
-/* SpoilerAlert */
-window.SpoilerAlertJS = {
-    question: 'Эта область содержит спойлеры. Вы уверены, что хотите это прочитать?',
-    yes: 'Да',
-    no: 'Нет',
-    fadeDelay: 1000
-};
-
 /* ChromeToolbarColor */
 importArticles({
     type: 'script',
@@ -52,14 +44,6 @@ importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:AnalyticsShortcut.js',
-    ]
-});
-
-/* CategoryQuickRemove */
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:CategoryQuickRemove.js',
     ]
 });
 

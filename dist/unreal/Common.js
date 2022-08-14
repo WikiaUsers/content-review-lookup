@@ -88,3 +88,36 @@ $(function() {
 End: Highlight pages by category
 ===============================
 */
+
+/* LastEdited */
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:LastEdited/code.js',
+    ]
+});
+
+/* LastEdited */
+
+$('.license-description').append('<br><span id="lastedited" />');
+window.lastEdited = {
+	avatar: false,
+	avatarsize: 0,
+	size: false,
+	diff: false,
+	comment: false,
+	newpage: false,
+	mainpage: false,
+	time: 'timestamp',
+	timezone: 'UTC',
+	lang: 'en',
+	position: {
+		element: 'span#lastedited',
+		method: 'append'
+	},
+	namespaces: {
+		exclude: []
+	},
+	pages: []
+};

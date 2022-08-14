@@ -1,30 +1,16 @@
-/* Tout JavaScript ici sera chargé avec chaque page accédée par n’importe quel utilisateur. */
-
-var inceptionYear = 2016;
-var currentYear = new Date().getFullYear();
+/* Any JavaScript here will be loaded for all users on every page load. */
 
 $(function(){
 	console.log("Custom Javascript executed");
+	
 	SoS2();
-	for(i = inceptionYear; i <= currentYear; i++){
-		console.log("Creating handlers for year " + i);
-		$('#inceptionPerks' + i).css('font-weight', 'bold');
-		$('#inceptionPerks' + i).css('color', '#e2ce97');
-		$('#inceptionPerks' + i).css('display', 'inline');
-		$('#inceptionPerks' + i).html('Show/Hide (only) Introduced Perks this year &#10060;');
-		
-		$('#inceptionPerks' + i).hover(function(){
-			$(this).css('cursor', 'pointer');
-			$(this).css('text-decoration', 'underline');
-		}, function(){
-			$(this).css('text-decoration', 'none');
-		});
-		
-		$('#inceptionPerks' + i).click(GetInceptionPerksHandler(i));
-	}
+	CosmeticExpandingButton();
+	SoSArchiveButton();
+	ForceSourceEditor();
+	
 	/**************************************************************************/
 	//MobileViewHovers(); //Currnently not used, as the Mobile version doesn't load Common.js
-	SetAppropriateDimensions();
+	SetAppropriateDimensions(); //Deprecated but still used until old BP BG cost will be used
 	SetHeadersShadows();
 	SetPerkCheckBoxes();
 	
@@ -39,11 +25,14 @@ $(function(){
 	});
 	
 	//I think this needs to try catch block as the .getAttribute() throws the error when you don't have the visual edit button present, thus moving to the end
-	CreateEditSourceLink();
+	CreateEditSourceLink(); //Deprecated?
 });
+
+/******************************************************************************/
 
 function SoS2(){
 	console.log("SoS2 Executed");
+	
 	$(".sos2 > .sosPerk").each(function(i){
 	    $(this).hover(
 	        function(){
@@ -58,18 +47,63 @@ function SoS2(){
 	console.log("SoS2 Initiallised");
 }
 
+function CosmeticExpandingButton(){
+	console.log("CosmeticExpandingButton Executed");
+	
+	$('span.divButton').click(function() {
+    var expandableArea = $('.' + this.id);
+    var underlyingOutfitPieces = expandableArea.children();
+    var cosmeticTable = $(this).closest('.cosmeticTable');
+    var expandString = $('#expandString').text();
+    var collapseString = $('#collapseString').text();
+    var baseHeight = parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) 
+    				+ 2 * parseInt(getComputedStyle(document.body).getPropertyValue('--headerHeight'), 10);
+    var openedHeight = baseHeight + (underlyingOutfitPieces.length) * parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10);
+    
+    if(parseInt(cosmeticTable.css("height"), 10) > parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) + 2 * parseInt(getComputedStyle(document.body).getPropertyValue('--headerHeight'), 10)){
+        $(this).text("⇓ " + expandString + " ⇓");
+        cosmeticTable.css("height", baseHeight + 'px');
+    }
+    else
+    {
+        $(this).text("⇑ " + collapseString + " ⇑");
+        cosmeticTable.css("height", openedHeight + 'px');
+    }
+});
+}
+
+function SoSArchiveButton(){
+	console.log("Creating handlers for SoS Archives");
+	
+	var inceptionYear = 2016;
+	var currentYear = new Date().getFullYear();
+
+	for(i = inceptionYear; i <= currentYear; i++){
+		$('#inceptionPerks' + i).css('font-weight', 'bold');
+		$('#inceptionPerks' + i).css('color', '#e2ce97');
+		$('#inceptionPerks' + i).css('display', 'inline');
+		$('#inceptionPerks' + i).html('Show/Hide (only) Introduced Perks this year &#10060;');
+		
+		$('#inceptionPerks' + i).hover(function(){
+			$(this).css('cursor', 'pointer');
+			$(this).css('text-decoration', 'underline');
+		}, function(){
+			$(this).css('text-decoration', 'none');
+		});
+		
+		$('#inceptionPerks' + i).click(GetInceptionPerksHandler(i));
+	}
+}
+
 function GetInceptionPerksHandler(year){
 	return function(){
 		var inceptionRows = $('.inception-row' + year);
 		var switcher = $('#inceptionPerks' + year);
 		var rowsDisplayed = inceptionRows.css('display') == 'table-row';
 		var text = 'Show/Hide (only) Introduced Perks this year';
-		//console.log("rowsDisplayed: " + rowsDisplayed);
-		//console.log($('.inception-row' + year));
-		//console.log(year);
-		
+
 		if(rowsDisplayed){
-		inceptionRows.css('display', 'none');
+			inceptionRows.css('display', 'none');
 			switcher.html(text + '&#10060;');
 			rowsDisplayed = false;
 		}else{
@@ -78,6 +112,13 @@ function GetInceptionPerksHandler(year){
 			rowsDisplayed = true;
 		}
 	};
+}
+
+function ForceSourceEditor(){
+	console.log("ForceSourceEditor script Executed");
+	$("a[href*='veaction']").attr("href", function(){
+		return this.href.replace("veaction", "action");
+	});
 }
 /******************************************************************************/
 

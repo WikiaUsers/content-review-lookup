@@ -16,8 +16,8 @@ $(".type-enemyBox").each(
 				if (armor !== null)  { this.armor_v  = parseInt($(enemyVar).find("#armor")[0].innerHTML, 10);  } else { this.armor_v  = 0; }
 
 				if (affinity !== null)	 { this.affinity_v	= parseInt($(enemyVar).find("#affinity")[0].innerHTML, 10);   } else { this.affinity_v	= 0; }
-				if (baselevel !== null)	 { this.base_lvl_v	= parseInt($(enemyVar).find("#baselevel")[0].innerHTML, 10);  } else { this.base_lvl_v	= 0; }
-				if (spawnlevel !== null) { this.spawn_lvl_v = parseInt($(enemyVar).find("#spawnlevel")[0].innerHTML, 10); } else { this.spawn_lvl_v = 0; }
+				if (base_level !== null)	 { this.base_lvl_v	= parseInt($(enemyVar).find("#base_level")[0].innerHTML, 10);  } else { this.base_lvl_v	= 0; }
+				if (spawn_level !== null) { this.spawn_lvl_v = parseInt($(enemyVar).find("#spawn_level")[0].innerHTML, 10); } else { this.spawn_lvl_v = 0; }
 
 				if (this.spawn_lvl_v === 0) {
 					this.spawn_lvl_v = this.base_lvl_v;

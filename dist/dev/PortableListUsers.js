@@ -181,7 +181,8 @@
             limit: 5000,
             order: 'ts_edit',
             sort: 'desc',
-            offset: 0
+            offset: 0,
+            uselang: 'en'
         }).done(
             $.proxy(this.getData, this)
         );
@@ -538,32 +539,7 @@
      */
     LU.timestamp = function (timestamp) {
         if (this.options.time === 'timeago') {
-            var split = timestamp.replace(/,/g, '').split(' '),
-                time = split[0].split(':');
-            var year = split[3],
-                month = split[1],
-                day = split[2],
-                hour = time[0],
-                minute = time[1];
-            var monthIndex = [
-                'January', 
-                'February', 
-                'March', 
-                'April', 
-                'May', 
-                'June', 
-                'July', 
-                'August', 
-                'September', 
-                'October', 
-                'November', 
-                'December'
-            ].indexOf(month);
-            return this.timeAgo(
-                new Date(
-                    Date.UTC(year, monthIndex, day, hour, minute)
-                )
-            );
+            return this.timeAgo(new Date(timestamp.replace(/,/g, '')));
         } else {
             return timestamp;
         }

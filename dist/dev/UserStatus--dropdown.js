@@ -94,7 +94,7 @@ if (config.profileUserName && ($user[1] ? $user[1] : $user[0]) === config.wgUser
                     dataType: 'json',
                     data: {
                         action: 'edit',
-                        title: wgFormattedNamespaces[2] + ':' + wgUserName + '/status',
+                        title: mw.config.get('wgFormattedNamespaces')[2] + ':' + wgUserName + '/status',
                         summary: '[UserStatus] ' + i18n.msg('edit-status').plain(),
                         text: content,
                         format: 'json',

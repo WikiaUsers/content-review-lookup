@@ -39,6 +39,7 @@
         wg: mw.config.get([
             'wgUserGroups',
             'wgNamespaceIds',
+            'wgCanonicalSpecialPageName',
             'wgArticlePath'
         ]),
         $currentModal: null,
@@ -293,6 +294,8 @@
 
             var title = target.slice(specialNamespace.length + 1);
             var lowerTitle = title.toLowerCase();
+            if (this.wg.wgCanonicalSpecialPageName && this.isRootPage(lowerTitle, this.wg.wgCanonicalSpecialPageName.toLowerCase())) return;
+
             var isBlocking = this.blockAliases.some(this.isRootPage.bind(this, lowerTitle));
             var isUnblocking = this.unblockAliases.some(this.isRootPage.bind(this, lowerTitle));
 

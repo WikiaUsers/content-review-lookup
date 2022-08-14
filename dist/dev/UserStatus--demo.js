@@ -36,7 +36,7 @@ mw.hook('dev.i18n').add(function(i18n) {
                 dataType: 'text',
                 url: mw.util.wikiScript('index'),
                 data: {
-                    title: wgFormattedNamespaces[2] + ':' + ($user[1] ? $user[1] : $user[0]) + '/status',
+                    title: mw.config.get('wgFormattedNamespaces')[2] + ':' + ($user[1] ? $user[1] : $user[0]) + '/status',
                     action: 'raw'
                 },
                 complete: function (data) {

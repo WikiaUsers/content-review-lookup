@@ -5,25 +5,6 @@ window.InactiveUsers = {
     text: 'НЕАКТИВНЫЙ УЧАСТНИК'
 };
 
-/* Авто-Обновление */
-
-/* ######################################################################## */
-/* ### AJAX RC                                                          ### */
-/* ### ---------------------------------------------------------------- ### */
-/* ### Description: Automatically refresh "Recent changes" via AJAX     ### */
-/* ### Credit:      User:pcj (http://www.wowpedia.org)                  ### */
-/* ###              Maintenance, cleanup, style and bug fixes by Grunny ### */
-/* ###              (http://community.wikia.com/wiki/User:Grunny)       ### */
-/* ######################################################################## */
- 
-window.ajaxSpecialPages = [
-    "Recentchanges",
-    "WikiActivity",
-    "Images"
-];
-window.AjaxRCRefreshText = 'Авто-Обновление';
-window.AjaxRCRefreshHoverText = 'Включить авто-обновление страницы';
-
 /* ######################################################################## */
 /* ######################################################################## */
  
@@ -49,30 +30,6 @@ function infoboxToggle() {
  
 
 /*************************************************/
-/****************** Слайдеры *********************/
-/*************************************************/
-
-mw.loader.using( ['jquery.ui.tabs'], function() {
-    $( "[class^=portal_vtab]" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
-    $( "[class^=portal_vtab] li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
-    $(function() {
-        var $tabs = $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100} });
-        $("[class^=portal_sliderlink]").click(function() { // bind click event to link
-            $tabs.tabs('select', this.className.replace("portal_sliderlink_", ""));
-            return false;
-        });
-        $('#portal_next').click(function() {
-            $tabs.tabs('select', ($tabs.tabs('option', 'selected') == ($tabs.tabs('length'))-1) ? 0 : $tabs.tabs('option', 'selected') + 1 ); // switch to next tab
-            return false;
-        });
-        $('#portal_prev').click(function() { // bind click event to link
-            $tabs.tabs('select', ($tabs.tabs('option', 'selected') === 0) ? ($tabs.tabs('length')-1) : $tabs.tabs('option', 'selected') - 1 ); // switch to previous tab
-            return false;
-        });
-    });
-});
-
-/*************************************************/
 /****************** Прокрутка ********************/
 /*************************************************/
 
@@ -89,7 +46,7 @@ $('.GamesArrowRight').click(function () {
 /* spoilers by User:Tierrie from Dragon Age Wiki */
 /*************************************************/
 
-var showSpoiler = new Array();
+var showSpoiler = [];
 function showSpoilers(splrType) {
   var Divs= document.getElementsByTagName("div");
   for (i=0;i<Divs.length;i++) {
@@ -167,7 +124,7 @@ function loadSpoilers() {
   if ( mw.config.get( 'wgAction' ) == 'edit' ) return;
   if(spoilers) initSpoilers();
 }
-addOnloadHook(loadSpoilers);
+$(loadSpoilers);
 
 // *****************************************************
 // * Experimental javascript countdown timer (Splarka) *
@@ -178,11 +135,11 @@ addOnloadHook(loadSpoilers);
  //  <span class="countdowndate">March 30 2015 00:00:00 PST</span>
  //  </span>
  //  <span class="nocountdown">Javascript disabled.</span>
- 
+ /*
  function updatetimer(i) {
    var now = new Date();
    var then = timers[i].eventdate;
-   var diff = count=Math.floor((then.getTime()-now.getTime())/1000);
+   var diff = Math.floor((then.getTime()-now.getTime())/1000);
  
    // catch bad date strings
    if(isNaN(diff)) { 
@@ -193,9 +150,7 @@ addOnloadHook(loadSpoilers);
    // determine plus/minus
    if(diff<0) {
      diff = -diff;
-     var tpm = '';''
-   } else {
-     var tpm = '';''
+     var tpm = '';'';
    }
  
    // Calculate the diff - Modified by Eladkse
@@ -251,21 +206,20 @@ addOnloadHook(loadSpoilers);
      updatetimer(i);  //start it up
    }
  }
- addOnloadHook(checktimers);
+$(checktimers);
+*/
  
 // **************************************************
 //  - end -  Experimental javascript countdown timer
 // **************************************************
 
 /* Случайный фон */
-
-if (wgPageName == "Участник:R256S") {
-    function randomBg() {
+$(function(){
+if (mw.config.get('wgPageName') == "Участник:R256S") {
         var imgs = [
         'https://vignette.wikia.nocookie.net/divinity/images/b/b8/R2_%D1%84%D0%BE%D0%BD.png/revision/latest?cb=20150712182256&path-prefix=ru',
         'https://vignette.wikia.nocookie.net/divinity/images/2/25/Divinity_Dragon_Commander_Background.jpg/revision/latest?cb=20150130203919&path-prefix=ru'
         ];
         $('body').css('background-image','url(' + imgs[Math.floor((imgs.length) * Math.random())] + ') no-repeat center center fixed #000000');
     }
-$(randomBg);
-}
+});

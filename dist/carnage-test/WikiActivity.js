@@ -10,31 +10,42 @@
 ( function( window, $, mw ) { 
 	"use strict";
 	
-	// Escapes RegExp characters
-	function regesc( s ) {
-        return s.replace( /[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, "\\$&" );
-    }
-    
-    // Checks if the value is a plain object
-    function isPlainObject( o ) {
-        const ts = Object.prototype.toString;
+	function regesc( s ) { 
+		return s.replace( /[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, "\\$&" );
+	}
+	
+	function truncate( s, l ) { 
+		return ( s.length >= l ) ? 
+			s.substr( 0, l ).replace( /.$/gi, "..." ) :
+			s;
+	}
+	
+	function pad( n ) { 
+		return ( Math.abs( n ) < 10 ) ?
+			( n >= 0 ? "0" + n : "-0" + Math.abs( n ) ) :
+			n;
+	}
+	
+	function isPlainObject( o ) { 
+		const ts = Object.prototype.toString;
         return ts.call( o ) === "[object Object]";
-    }
-    
-	// Creates the UCX object
+	}
+	
+	// Creates the UCX object (if it does not exist)
 	window.UCX = $.extend( { }, window.UCX );
 	
-	// Creates the Dev object
+	// Creates the Dev object (if it does not exist)
 	window.dev = $.extend( { }, window.dev );
 	
-	// Creates the WikiActivity object
-	const WikiActivity = {
-		// The current script name
+	const WikiActivity = Object.create( { 
+		// Current script name/i18n key
 		NAME: "WikiActivity",
-		// The current script version
+		// MediaWiki configuration values
+		MWC: mw.config.values,
+		// Current script version
 		VERSION: "v1.1a",
-		// WikiActivity options
-		OPTIONS: $.extend( {
+		// WikiActivity script options
+		OPTIONS: $.extend( { 
 			// A list of namespaces to include
 			includeNamespaces: [ ],
 			// A list of namespaces to exclude
@@ -85,7 +96,9 @@
 			// The main activity feed
 			"main",
 			// Followed pages only
-			"watchlist"
+			"watchlist",
+			// Feeds activity
+			"feeds"
 		] ),
 		// A group of icon names
 		ICON_NAMES: Object.freeze( { 
@@ -117,6 +130,13 @@
 				wldir: "older",
 				wlshow: [ ],
 				format: "json"
+			} ),
+			feeds: Object.freeze( { 
+				page: 0,
+				responseGroup: "small",
+				reported: false,
+				sortBy: "descending",
+				sortKey: "creation_date"
 			} )
 		} ),
 		// Activity type aliases
@@ -208,10 +228,9 @@
 			} );
 		},
 		// Loads all other resources
-		loadResources: function( ) { 
-			return Promise.all( this.DEV_SCRIPTS.map( function( script ) {
-				const ctx = this;
-				return new Promise( function( resolve, reject ) { 
+		loadResources: function( ) {
+			function initPromiseFromScript( script ) { 
+				return function( resolve, reject ) { 
 					const params = Object.freeze( { 
 						type: "script", 
 						article: script.article 
@@ -222,7 +241,11 @@
 							mw.hook( script.name ).add( resolve );
 						} )
 						[ "catch" ]( reject );
-				} );
+				};
+			}
+			
+			return Promise.all( this.DEV_SCRIPTS.map( function( script ) {
+				return new Promise( initPromiseFromScript( script ).bind( this ) );
 			}, this ) );
 		},
 		// Initializes the script
@@ -268,10 +291,9 @@
 			mw.hook( "wikiactivity.msgload" ).fire( this );
 			
 			if ( this.matchesPage( ) ) return this.initActivityFeed( );
-			return this.initFallback( );
+			return this.fallback( );
 		},
-		//
-		initFallback: function( ) { 
+		fallback: function( ) { 
 			if ( this.matchesPage( ) ) return false;
 			
 			// Adds a link to the toolbar
@@ -279,11 +301,7 @@
 			
 			// Converts the header link
 			this.convertHeaderLink( );
-			
-			// Loads the right rail
-			this.loadRail( );
 		},
-		//
 		addToolbarLink: function( ) { 
 			const pageSuffix = this.msgFromContentLang( "page-title" ).plain( );
 			
@@ -301,8 +319,11 @@
 			const tools = document.querySelector( "#WikiaBarWrapper .tools" );
 			
 			tools.insertAdjacentElement( "afterbegin", link );
-		}
-	};
+		},
+		convertHeaderLink: function( ) { }
+	} );
 	
 	window.WikiActivity = WikiActivity;
+	
+	mw.hook( "wikiactivity.init" ).fire( window.WikiActivity );
 } )( window, jQuery, mediaWiki );

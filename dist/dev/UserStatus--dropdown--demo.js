@@ -87,7 +87,7 @@ var $user = mw.config.get('wgTitle').split('/');
                     dataType: 'json',
                     data: {
                         action: 'edit',
-                        title: wgFormattedNamespaces[2] + ':SapphireSonata/status',
+                        title: mw.config.get('wgFormattedNamespaces')[2] + ':SapphireSonata/status',
                         summary: '[UserStatus] ' + i18n.msg('edit-status').plain() + ' (demo)',
                         text: content,
                         format: 'json',

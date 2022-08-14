@@ -12,6 +12,9 @@ function AddLink_WatchList (){
 // выполнение при готовности страницы
 $(document).ready(function()
 {
+	// окно с напоминаниями об изменениях в обсуждениях страниц
+	ShowRecentChangesWindow();
+
 	// щелчок по самодельному переключателю
 	$('.btn_Trigger').unbind().click(function( )
 	{
@@ -515,4 +518,61 @@ function CheckINUSE()
 	{
 		return 1;
 	}
+}
+
+function ShowRecentChangesWindow()
+{
+	d = new Date();
+
+	if (localStorage.SWRUWikiRC == undefined)
+	{
+		sLastDate = d.getFullYear() +'-'+ ('0' + d.getMonth()).slice(-2) +'-'+ ('0' + d.getDate()).slice(-2) +' 00:00:00'+ d.toString().replace(/.*GMT(.\d\d\d\d).*/, '$1') ;
+	}
+	else
+	{
+		sLastDate = localStorage.SWRUWikiRC;
+	}
+
+	sCurDate = d.getFullYear() +'-'+ ('0' + (d.getMonth()+1)).slice(-2) +'-'+ ('0' + d.getDate()).slice(-2) +' '+ ('0' + d.getHours()).slice(-2) +':'+ ('0' + d.getMinutes()).slice(-2) +':'+ ('0' + d.getSeconds()).slice(-2) + d.toString().replace(/.*GMT(.\d\d\d\d).*/, '$1');
+	
+	api = new mw.Api();
+	
+	api.get( {action: 'query',list: 'recentchanges',rcprop: 'title|user|timestamp',rcnamespace: '1|15|110',rclimit: '100',rctoponly: 'true',rcend: sLastDate,format: 'json'} ).done( function ( data )
+	{
+		rc = data.query.recentchanges,
+		i=0,
+		s='';
+	
+		if (rc.length > 0)
+		{
+			$('body').prepend(
+			'<table id="RecentChangesWindow" class="BlockSpoiler2 ColoredCell">'+
+				'<tr><th>'+
+					'<h2 class="HeaderBlue">'+
+						'<small><small>ОБНОВЛЕНИЯ НА ФОРУМЕ / ОБСУЖДЕНИЯХ СТРАНИЦ</small></small>'+
+						'<div id="btn_MarkAllAsRead" class="mw-toolbar-editbutton-big" title="Отметить всё как прочитанное" data-curdate="'+ sCurDate +'" >✖</div>'+
+					'</h2>'+
+				'</th></tr>'+
+				'<tr>'+
+					'<td><ul id="list_RecentChanges"></ul>'+
+				'</td></tr>'+
+			'</table>'
+			);
+		}
+		
+		for ( i in rc ) 
+		{
+			d = new Date(rc[i].timestamp);
+			s = s + '<li><a href="/ru/wiki/'+ rc[i].title +'">'+ rc[i].title +'</a> <small class="text_Hint">(<a href="/ru/wiki/Участник:'+ rc[i].user +'" class="">'+rc[i].user+'</a> от '+ d.toLocaleString() +')</small></li>'
+		}
+		
+		$('#list_RecentChanges').html(s);
+	
+		// щелчок по кнопке "Отметить всё как прочитанное" окно с напоминаниями 
+		$('#btn_MarkAllAsRead').click(function( )
+		{
+			localStorage.SWRUWikiRC = $(this).attr('data-curdate');
+			$('#RecentChangesWindow').detach();
+		});
+	} );
 }

@@ -64,3 +64,13 @@ $(function () {
     }*/
 
 }());
+/*----------------------------------------------------*/
+const obtainedFrom = document.querySelector('.obtained-from'); //check if it's a skill page with mobs
+const customText = '<div class="text-obtained-from">Obtained from</div>';
+
+const functionObtainedFromText = function (functionObtainedFrom) {
+	obtainedFrom.insertAdjacentHTML('afterbegin', customText); //insert the heading before Syndesia
+};
+if (obtainedFrom) {
+    functionObtainedFromText(); 
+}

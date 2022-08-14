@@ -1,1 +1,0 @@
-// Los scripts insertados en esta página se cargarán en la comunidad.

@@ -4,7 +4,7 @@
  * @author NoWayThisUsernameIsAlreadyOwnedBySomeone (https://dev.fandom.com/User:NoWayThisUsernameIsAlreadyOwnedBySomeone)
  * - Based on DiscussionsFeed (https://dev.fandom.com/wiki/DiscussionsFeed)
  *   by Flightmare (https://elderscrolls.fandom.com/wiki/User:Flightmare)
- * @version 0.10.1
+ * @version 0.10.2
  * @license CC-BY-SA-3.0
  * @description Creates a special page for latest Discussions messages
  */
@@ -34,7 +34,7 @@
   if (window.DiscussionsActivityLoaded) return;
   window.DiscussionsActivityLoaded = true;
   
-  console.log('DiscussionsActivity v0.10.1');
+  console.log('DiscussionsActivity v0.10.2');
 
   const mwConfig = mw.config.get([
     "wgArticlePath",
@@ -54,10 +54,7 @@
     SocialActivity: true,
     Newimages: true,
   };
-  const isDiscussionsActivityPage =
-    (mwConfig.wgNamespaceNumber === -1 && mwConfig.wgTitle === "DiscussionsActivity") ||
-    /* Special case to load a demo on dev wiki */
-    (mwConfig.wgServerName === "dev.fandom.com" && mwConfig.wgPageName == "DiscussionsActivity/Demo");
+  const isDiscussionsActivityPage = mwConfig.wgNamespaceNumber === -1 && mwConfig.wgTitle === "DiscussionsActivity";
   const isOtherActivityPage = otherActivityPages[mwConfig.wgCanonicalSpecialPageName] === true;
 
   if (!isDiscussionsActivityPage && !isOtherActivityPage) return;
@@ -152,6 +149,7 @@
     headerFragment.appendChild(createPageInfo());
     headerFragment.appendChild(createActivityTabList());
     contentElement.appendChild(headerFragment);
+    contentElement.appendChild(createSvgSymobls());
   }
 
   function changeTitle() {
@@ -175,15 +173,12 @@
     const help = document.createElement("div");
     container.appendChild(help);
     const helpLink = document.createElement("a");
-    helpLink.className = "rda-activity-summary__help-link";
+    helpLink.className = "wds-button wds-is-text";
     helpLink.href = "https://dev.fandom.com/DiscussionsActivity";
     help.appendChild(helpLink);
-    const svgLink = "/resources-ucp/dist/svg/wds-icons-question-small.svg#question-small";
-    helpLink.appendChild(createSvg(svgLink, "wds-icon wds-icon-small"));
-    helpLink.appendChild(document.createTextNode(" "));
+    helpLink.appendChild(createSvgUsage("#wds-icons-question-small", "wds-icon wds-icon-small"));
 
     const helpText = document.createElement("span");
-    helpText.className = "rda-activity-summary__help-caption";
     helpText.innerText = "Help";
     helpLink.appendChild(helpText);
 
@@ -424,7 +419,7 @@
       image.src = createThumbnailUrl(post.createdBy.avatarUrl, 30, 30);
       avatarContainer.appendChild(image);
     } else {
-      avatarContainer.appendChild(createSvg("#wds-icons-avatar", "wds-avatar__image rda-avatar"));
+      avatarContainer.appendChild(createSvgUsage("#wds-icons-avatar", "wds-avatar__image rda-avatar"));
     }
     authorLine.appendChild(avatarContainer);
     authorLine.appendChild(document.createTextNode(i18n("created_by").plain() + " "));
@@ -677,13 +672,37 @@
     return link;
   }
   
-  function createSvg(href, className) {
+  function createSvgElement(name) {
     const svgNamespace = "http://www.w3.org/2000/svg";
-    const svg = document.createElementNS(svgNamespace, "svg");
+    const element = document.createElementNS(svgNamespace, name);
+    return element;
+  }
+
+  function createSvgUsage(href, className) {
+    const svg = createSvgElement("svg");
     svg.setAttribute("class", className);
-    const use = document.createElementNS(svgNamespace, "use");
+    const use = createSvgElement("use");
     use.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
     svg.appendChild(use);
+    return svg;
+  }
+  
+  function createSvgSymobls() {
+    function createSymbol(symbolId, href, size) {
+      const symbol = createSvgElement("symbol");
+      symbol.setAttribute("viewBox", "0 0 " + size + " " + size);
+      symbol.id = symbolId;
+      const use = createSvgElement("use");
+      const rootedHref = "/resources-ucp/v2/dist/svg/" + href;
+      use.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", rootedHref);
+      symbol.appendChild(use);
+      return symbol;
+    }
+    var svg = createSvgElement("svg");
+    svg.style = "height: 0px; width: 0px; position: absolute; overflow: hidden;";
+    svg.setAttribute("aria-hidden", true);
+    svg.appendChild(createSymbol("wds-icons-avatar", "wds-icons-avatar.svg#user-avatar-a", 24));
+    svg.appendChild(createSymbol("wds-icons-question-small", "wds-icons-question-small.svg#question-small", 18));
     return svg;
   }
 

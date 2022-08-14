@@ -64,14 +64,14 @@ $(function() {
 		var container = $(".global-navigation__bottom .notifications");
 		
 		new MutationObserver(function() {
-			var content = $('.NotificationsContent-module_tabber__3gSyl');
+			var content = $('[class*="NotificationsContent-module_tabber"]');
 			if (!hasOpened && content.length) {
 				hasOpened = true;
 				content.hide();
 				tabber.appendTo(content.parent()[0]);
 			}
 			
-			var notifications = $('.wds-tabber:not(.categorized-notifications) .NotificationCard-module_card__3kKIi');
+			var notifications = $('.wds-tabber:not(.categorized-notifications) [class*="NotificationCard-module_card"]');
 			
 			notifications.each(function(index, notification) {
 				notification = $(notification);
@@ -79,7 +79,7 @@ $(function() {
 				if (tabData) {
 					var tab = $('.categorized-notifications-' + tabData.icon + ' ul');
 					if (tab.length) {
-						if (notification.find('.NotificationCard-module_unreadStatusDot__30NEx').length) {
+						if (notification.find('[class*="NotificationCard-module_unreadStatusDot"]').length) {
 							tabData.count += 1;
 							tabData.counter.text(tabData.count);
 						}
@@ -88,7 +88,7 @@ $(function() {
 				}
 			});
 			
-			var scroll = $('.NotificationsContent-module_scrollableListWrapper__OyrIR ul');
+			var scroll = $('[class*="NotificationsContent-module_scrollableListWrapper"] ul');
 			if (notifications.length && scroll.length) {
 				scroll[0].dispatchEvent(new CustomEvent('scroll'));
 			}
@@ -125,17 +125,17 @@ $(function() {
 				class: 'wds-tab__content categorized-notifications-' + icon + ' ' + (index === 0 ? ' wds-is-current' : '')
 			}).append(
 				$('<div>', {
-					class: 'NotificationsContent-module_scrollableListWrapper__OyrIR tab-wrapper'
+					class: $('[class*="NotificationsContent-module_scrollableListWrapper"]').attr('class') + ' tab-wrapper'
 				}).append(
 					$('<ul>').append(
 						$('<div>', {
-							class: 'NotificationsZeroState-module_container__2r0n- tab-empty'
+							class: $('[class*="NotificationsZeroState-module_container"]').attr('class') + ' tab-empty'
 						}).append(
 							$('<span>', {
-								class: 'NotificationsZeroState-module_icon__an0Bf'
+								class: $('[class*="NotificationsZeroState-module_icon"]').attr('class')
 							}).append(wds.icon('bell')),
 							$('<div>', {
-								class: 'NotificationsZeroState-module_header__ZlJaN',
+								class: $('[class*="NotificationsZeroState-module_header"]').attr('class'),
 								text: 'You have no notifications.'
 							}),
 							$('<p>', {

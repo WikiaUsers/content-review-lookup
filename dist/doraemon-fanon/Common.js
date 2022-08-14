@@ -31,3 +31,7 @@ importArticles({
 window.DiscordBannerSettings = {
     inviteLink: 'uZsmVX5',
 };
+
+/* Discussions Embed */
+window.discussEmbedLimit = 8;
+window.discussEmbedSortTrending = 1;

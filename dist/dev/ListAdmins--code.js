@@ -13,28 +13,32 @@ mw.hook('wikipage.content').add(function ($content) {
     if (!$adminList.length) {
         return;
     }
-    $.getJSON(mw.util.wikiScript('api'), {
+    $.getJSON(mw.config.get('wgScriptPath') + '/api.php', {
         action: 'query',
-        list: 'allusers|groupmembers',
+        list: 'allusers',
+        meta: 'allmessages',
+        formatversion: 2,
         augroup: 'sysop',
-        aulimit: 'max',
-        gmgroups: 'sysop',
-        gmlimit: 'max',
-        format: 'json'
+        ammessages: 'abusefilter-blocker',
+        format: 'json',
     }, function (data) {
         if (!data.error) {
-            var el = $('<ul>');
-            (data.users || data.query && data.query.allusers).forEach(function(u) {
-                el.append(
-                    $('<li>')
-                        .append(
+            var abusefilter = data.query.allmessages[0].content,
+                allusers = data.query.allusers,
+                el = $('<ul>');
+            for (var i = 0; i < allusers.length; i++) {
+                var name = allusers[i].name;
+                if (name !== abusefilter) {
+                    el.append(
+                        $('<li>').append(
                             $('<a>', {
-                                href: mw.util.getUrl('User:' + u.name)
+                                href: mw.config.get('wgArticlePath').replace('$1', 'User:' + name)
                             })
-                            .text(u.name)
+                            .text(name)
                         )
-                );
-            });
+                    );
+                }
+            }
             $adminList.html(el);
         }
     });

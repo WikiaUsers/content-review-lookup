@@ -29,11 +29,24 @@ $('#content img').attr('draggable', false).on({
         return false;
     }
 });
-/*********/
-const wikirules = document.getElementById('wikirules');
-const closeButton = document.getElementById('closeButton');
-if (wikirules){
-	closeButton.onclick = function(){
-        wikirules.classList.toggle('hide');
-    }
+/***************************************/
+window.AddRailModule = [
+    {page: 'Template:WikiRules', prepend: true},
+    'Template:ExtraDiscord',
+];
+/*************Replace the HOME button with a pic**************************/
+const welcomeCustom = document.querySelector('.welcome'); //check if it's the main page by the class
+const picCustom = '<img alt="Crikee sticker.png" src="https://static.wikia.nocookie.net/speedstorm/images/c/cf/Crikee_sticker.png/revision/latest/scale-to-width-down/150?cb=20220812065820" decoding="async" width="150" height="63" data-image-name="Crikee sticker.png" data-image-key="Crikee_sticker.png" data-src="https://static.wikia.nocookie.net/speedstorm/images/c/cf/Crikee_sticker.png/revision/latest/scale-to-width-down/150?cb=20220812065820" class=" lazyloaded" draggable="false">';
+const headerCustom = document.querySelector('.page-header__title-wrapper'); //find the header
+const headerHide = document.querySelector('.page-header__title');
+const functionCustomVar = function () {
+	headerCustom.insertAdjacentHTML('afterbegin', picCustom); //insert the pic to the header
+};
+const functionDeleteHeader = function() {
+        headerHide.classList.add('hide');
+    };
+    
+if (welcomeCustom) {
+    functionCustomVar(); 
+    functionDeleteHeader();
 }
