@@ -34,6 +34,8 @@ window.AddRailModule = [
     {page: 'Template:WikiRules', prepend: true},
     'Template:ExtraDiscord',
 ];
+
+
 /*************Replace the HOME button with a pic**************************/
 const welcomeCustom = document.querySelector('.welcome'); //check if it's the main page by the class
 const picCustom = '<img alt="Crikee sticker.png" src="https://static.wikia.nocookie.net/speedstorm/images/c/cf/Crikee_sticker.png/revision/latest/scale-to-width-down/150?cb=20220812065820" decoding="async" width="150" height="63" data-image-name="Crikee sticker.png" data-image-key="Crikee_sticker.png" data-src="https://static.wikia.nocookie.net/speedstorm/images/c/cf/Crikee_sticker.png/revision/latest/scale-to-width-down/150?cb=20220812065820" class=" lazyloaded" draggable="false">';
@@ -49,4 +51,50 @@ const functionDeleteHeader = function() {
 if (welcomeCustom) {
     functionCustomVar(); 
     functionDeleteHeader();
+}
+/*----------------------------------------*/
+/**********************Add pic to the top bar*********************************
+const communityHeaderWrapper = document.querySelector('.community-header-wrapper');
+const newPicOnTop = '<div class="pic-on-top"><img alt="MegHercCars.png" src="https://static.wikia.nocookie.net/speedstorm/images/0/0c/MegHercCars.png/revision/latest/scale-to-width-down/300?cb=20220819085733" decoding="async" width="300" height="163" data-image-name="MegHercCars.png" data-image-key="MegHercCars.png" data-src="https://static.wikia.nocookie.net/speedstorm/images/0/0c/MegHercCars.png/revision/latest/scale-to-width-down/300?cb=20220819085733" class=" lazyloaded" draggable="false"></div>';
+const putThePicOnTop = function () {
+    communityHeaderWrapper.insertAdjacentHTML('afterbegin', newPicOnTop);
+};
+
+if (communityHeaderWrapper) {
+    putThePicOnTop();
+}*/
+/***************************************/
+/***************************************/
+/*Social media buttons add links*/
+const checkSocialMediaClass = document.querySelector('.socialMedia');
+const steamButton = document.querySelector('#steam');
+const container = document.querySelector('.sci');
+const addLinks = function () {
+const links = '<li data-text="Steam"><div class="SMbutton steam"><a href="https://store.steampowered.com/app/1537830/Disney_Speedstorm"><i class="fa fa-steam" aria-hidden="true"></i></a></div></li><li data-text="Youtube"><div class="SMbutton yt"><a href="https://www.youtube.com/c/DisneySpeedstorm/"><i class="fa fa-youtube" aria-hidden="true"></i></a></div></li><li data-text="Facebook"><div class="SMbutton facebook"><a href="https://www.facebook.com/disneyspeedstorm/"><i class="fa fa-facebook" aria-hidden="true"></i></a></div></li><li data-text="Twitter"><div class="SMbutton twitter"><a href="https://twitter.com/speedstormgame"><i class="fa fa-twitter" aria-hidden="true"></i></a></div></li>';
+container.insertAdjacentHTML('afterbegin', links); 
+};
+
+if(checkSocialMediaClass) {
+    addLinks();
+}
+
+/***************************************/
+/***************************************/
+/*Hide overflow on skills page*/
+const checkPage = document.querySelector('.back-menu');
+const checkPageFAQ = document.querySelector('.FAQ-border-hover');
+const checkPageRacers = document.querySelector('#unset-me');
+const addHideOverflowClass = function () {
+	document.querySelector('.page-content').classList.add('hide-overflow');
+};
+
+
+if (checkPage) {
+	addHideOverflowClass();
+}
+if (checkPageFAQ) {
+	addHideOverflowClass();
+}
+if (checkPageRacers) {
+	addHideOverflowClass();
 }

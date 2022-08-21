@@ -81,34 +81,34 @@ $.when(
             }
         },
         colorConversions: {
-            0: "black",
-            1: "dark_blue",
-            2: "dark_green",
-            3: "dark_aqua",
-            4: "dark_red",
-            5: "dark_purple",
-            6: "gold",
-            7: "gray",
-            8: "dark_gray",
-            9: "blue",
-            a: "green",
-            b: "aqua",
-            c: "red",
-            d: "light_purple",
-            e: "yellow",
-            f: "white",
-            l: "bold",
-            n: "underline",
-            m: "strikethrough",
-            o: "italic",
-            r: "reset",
+            0: "검은색",
+            1: "짙은 파란색",
+            2: "짙은 초록색",
+            3: "청록색",
+            4: "짙은 빨간색",
+            5: "짙은 보라색",
+            6: "주황색",
+            7: "회색",
+            8: "짙은 회색",
+            9: "파란색",
+            a: "초록색",
+            b: "하늘색",
+            c: "빨간색",
+            d: "옅은 보라색",
+            e: "노란색",
+            f: "흰색",
+            l: "굵음",
+            n: "밑줄",
+            m: "취소선",
+            o: "기울임",
+            r: "효과 초기화",
         },
         colorConvList: "0123456789abcdef",
         conversions: {
-            "l": "bold",
-            "m": "strikethrough",
-            "n": "underline",
-            "o": "italic",
+            "l": "굵음",
+            "m": "밑줄",
+            "n": "취소선",
+            "o": "기울임",
         },
         rarityConversions: {
             "일반": "f",
@@ -342,7 +342,7 @@ $.when(
 
             $("#TooltipsEditor-totalTooltips").html($("<p>", {
                 html: [
-                    "Tooltips Count: " + Object.keys(this.json).length,
+                    "툴팁의 총 개수: " + Object.keys(this.json).length,
                     $("<span>", (function () {
                         var diff = Object.keys(this.json).length - this.oldjsonkeys.length;
                         if (diff < 0) {
@@ -468,7 +468,7 @@ $.when(
                 "class": "oo-ui-buttonElement",
                 html: $("<button>", {
                     id: "TooltipsEditor-save",
-                    text: "Save",
+                    text: "저장",
                     "class": "oo-ui-buttonElement-button",
                     click: this.onSave.bind(this, values.oldKey),
                 }),
@@ -477,7 +477,7 @@ $.when(
                 "class": "oo-ui-buttonElement",
                 html: $("<button>", {
                     id: "TooltipsEditor-cancel",
-                    text: "Cancel",
+                    text: "취소",
                     "class": "oo-ui-buttonElement-button",
                     click: function () {
                         this.reset(confirm("저장하지 않고 메인 메뉴로 돌아가시겠습니까?"));
@@ -568,7 +568,7 @@ $.when(
                 $("#TooltipsEditor-key, #TooltipsEditor-name").val("");
                 $(".qdmodal-button").show();
                 if ($("#TooltipsEditor-searchInput").val().trim() !== "") this.generateSearch();
-                $("#TooltipsEditor header h3").text("Tooltips Editor");
+                $("#TooltipsEditor header h3").text("아이템 툴팁 편집기");
             }
         },
         processColors: function () {
@@ -846,7 +846,7 @@ $.when(
                 var val = otherinputboxes[inter];
                 otherparams.push(
                     $("<span>", {
-                        text: "Tooltip " + val.display + ": ",
+                        text: "툴팁 " + val.display + ": ",
                         "class": "TooltipsEditor-inputbox-label TooltipsEditor-label"
                     }),
                     $("<input>", {
@@ -857,7 +857,7 @@ $.when(
 
                 if (val.optional)
                     otherparams.push($("<span>", {
-                        text: "(*Optional)",
+                        text: "(*선택 사항)",
                         "class": "TooltipsEditor-inputbox-note"
                     }));
 
@@ -1190,15 +1190,15 @@ $.when(
                 console.log(d);
                 var saved = "newrevid" in d.edit;
                 if (saved) {
-                    mw.notify("이제 편집한 것을 확인해 보세요!", {
+                    mw.notify("", {
                         title: "툴팁이 저장되었습니다!",
                         type: "info"
                     });
-                    location.href = new mw.Title(mw.config.get("wgPageName"), -1).getUrl({
-                        type: "revision",
-                        diff: d.edit.newrevid,
-                        oldid: d.edit.oldrevid,
-                    });
+                    // location.href = new mw.Title(mw.config.get("wgPageName"), -1).getUrl({
+                    //    type: "revision",
+                    //    diff: d.edit.newrevid,
+                    //    oldid: d.edit.oldrevid,
+                    //});
 
                     // Auto refresh lua cache on exit
                     that.refreshLuaCache();
@@ -1221,7 +1221,7 @@ $.when(
             }.bind(this));
 
             this.modal.show({
-                title: "Tooltips Editor",
+                title: "툴팁 편집기",
                 onHide: function () {
                     if (!this.closing && confirm("정말 편집기를 닫고 편집을 취소하시겠습니까?")) {
                         this.closing = true;
@@ -1230,7 +1230,7 @@ $.when(
                     else return false;
                 }.bind(this),
                 buttons: [{
-                    text: "Save and Close",
+                    text: "저장하고 닫기",
                     handler: this.editorCloseHandler.bind(this),
                 }],
             });

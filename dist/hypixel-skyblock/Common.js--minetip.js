@@ -44,7 +44,7 @@ $(function () {
                     }
                 }
 
-                var $follow = $elem.find(".slot-image-follow");
+                var $follow = $elem.find(".invslot-pickup");
                 if ($follow.length !== 0 && $follow.is(":visible")) {
                     $elem.trigger("mouseleave");
                     return;
@@ -119,7 +119,7 @@ $(function () {
                     return;
                 }
 
-                var $follow = $(this).find(".slot-image-follow");
+                var $follow = $(this).find(".invslot-pickup");
                 if ($follow.length !== 0 && $follow.is(":visible")) {
                     $(this).trigger("mouseleave");
                     return;
@@ -174,69 +174,31 @@ $(function () {
                 $tooltip.remove();
                 $tooltip = $();
             },
-        }, ".minetip, .invslot-item");
+        }, ".invslot .invslot-item, .minetip");
 
         $(document.body).on({
-            "mouseenter": function () {
-                if (!window.minetipConfig.noOverlay) {
-                    var $links = $(this).find("a:not(.invslot-hover-overlay)");
-                    switch ($(this).find(".invslot-hover-overlay").length) {
-                        case 0:
-                            $(this).append(
-                                $("<a>").addClass("invslot-hover-overlay")
-                                .attr("href", $($links[2] || $links[1] || $links[0]).attr("href"))
-                            );
-                            break;
-                        case 1:
-                            break;
-                        default:
-                            $(this).find(".invslot-hover-overlay").each(function (i, el) {
-                                if (i) $(el).remove();
-                            });
-                            break;
-                    }
-                }
-            },
             // pick up slot item for 300ms
             // allowed: left/right click
             "mousedown": function (e) {
                 var $this = $(this);
-                if (e.which !== 2) {
-                    var $source = $this.find("img:first");
-                    if ($source.length !== 0) {
-                        var $target;
-                        if (!window.minetipConfig.noOverlay) {
-                            switch ($this.find(".slot-image-follow").length) {
-                                case 0:
-                                    $target = $source.clone();
-                                    $target.addClass("slot-image-follow").appendTo($this.find(".invslot-hover-overlay"));
-                                    break;
-                                case 1:
-                                    $target = $this.find(".slot-image-follow");
-                                    break;
-                                default:
-                                    $this.find(".slot-image-follow").each(function (i, elm) {
-                                        if (i) elm.remove();
-                                        else $target = elm;
-                                    });
-                                    break;
-                            }
-                        }
+                if (e.which !== 2 && !window.minetipConfig.noPickup) {
+                    var iid = $this.attr("data-iid");
+                    var $source = $this.find("img");
+                    if ((typeof iid === "string") || ($source.length > 0)) {
+                        var $target = $this;
+                        $target.addClass("invslot-pickup");
                         var offset = $this.offset();
                         $target.css({
                             "top": e.pageY - offset.top - 16,
                             "left": e.pageX - offset.left - 16,
                         }).show();
-                        $source.hide();
                         savedX = e.clientX, savedY = e.clientY;
                         $(document.body).on("mousemove", cacheMousemove);
                         $this.trigger("mouseleave");
                         var timer = setInterval(function () {
-                            $source.show();
-                            $target.css({
-                                "top": 0,
-                                "left": 0,
-                            }).hide();
+                            $target.css("top", ""); // removing top styling
+                            $target.css("left", ""); // removing left styling
+                            $target.removeClass("invslot-pickup");
                             $(document.body).off("mousemove", cacheMousemove);
                             $this.trigger("mousemove", [e, savedX, savedY]);
                             clearInterval(timer);
@@ -244,10 +206,10 @@ $(function () {
                     }
                 }
             },
-        }, ".invslot-item");
+        }, ".invslot .invslot-item");
 
         $(document.body).on("mousemove", function (e) {
-            $(".slot-image-follow").each(function () {
+            $(".invslot-pickup").each(function () {
                 if ($(this).is(":visible")) {
                     var offset = $(this).parent().offset();
                     $(this).css({
@@ -256,7 +218,7 @@ $(function () {
                     });
                 }
             });
-            if ($(".minetip:hover, .invslot-item:hover").length < 1 && $("#minetip-tooltip").length > 0)
+            if ($(".minetip:hover, .invslot .invslot-item:hover").length < 1 && $("#minetip-tooltip").length > 0)
                 $("#minetip-tooltip").remove();
         });
     })());

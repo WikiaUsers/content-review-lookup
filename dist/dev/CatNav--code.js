@@ -6,67 +6,23 @@
 
 // note: the 'section#WikiaPageBackground' selector in the bottom is used for non-ucp wikis. may be removed in the future once all wikis have been transfered to the unified community platform
 /* <nowiki> */
-$(function() {
-	/* ================================== *\
-		# wiki links to [[Special:CatNav]]
-	\* ================================== */
-	if ($("#WikiaBarWrapper .tools").length > 0) {
-		// fandom or fandom desktop
-		$("#WikiaBarWrapper .tools").append('<li><a href="' + mw.config.get("wgArticlePath").replace("$1", "Special:CatNav") + '">CatNav</a></li>');
-	} else {
-		// non-fandom-desktop gamepedia
-		$('#p-tb[role="navigation"] ul').append('<li id="t-catnav"><a href="' + mw.config.get("wgArticlePath").replace("$1", "Special:CatNav") + '">CatNav</a></li>');
-	}
+;(function(window, $, mw) {
+	'use strict';
+	var config = mw.config.get([
+		'wgTitle',
+		'wgNamespaceNumber',
+		'wgArticlePath',
+		'wgScriptPath',
+		'wgBlankImgUrl',
+		'wgUserName'
+	]);
+	// re-add wgBlankImgUrl since it is no longer available as a wg variable in Fandom
+	// from CSS-Tricks
+	// https://css-tricks.com/snippets/html/base64-encode-of-1x1px-transparent-gif/
+	config.wgBlankImgUrl = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+	var msg;
 
-	/* ================================== *\
-		# core objects
-	\* ================================== */
-	var catnav = {
-		fn: {},
-		settings: {
-			rows: 3, // default number of rows
-			itemsInNavigator: Math.floor(($("#mw-content-text").width() - 100) / 154) // number of columns determined by the width of the user's screen
-		}
-	};
-
-	/* ================================== *\
-		# console
-	\* ================================== */
-
-	catnav.console = {
-		logs: [],
-		debug: true // will be changed to 'false' after defining catnav.data, unless 'window.CatNav.debug' is also 'true'
-	};
-	catnav.console.add = function(type, data) {
-		var debug = catnav.console.debug;
-		if (["log", "error", "info", "warn"].indexOf(type) > -1) {
-			type = "log";
-		}
-		catnav.console.logs.push([type, debug, data]);
-		if (debug) {
-			console[type]("[-] CatNav :: ", data);
-		}
-	};
-	catnav.logs = [];
-	catnav.console.log = function(data) {
-		catnav.console.add("log", data);
-	};
-	catnav.console.error = function(data) {
-		catnav.console.add("error", data);
-	};
-	catnav.console.info = function(data) {
-		catnav.console.add("info", data);
-	};
-	catnav.console.warn = function(data) {
-		catnav.console.add("warn", data);
-	};
-	
-	/* ================================== *\
-		# data
-	\* ================================== */
-
-	/* regular data */
-	catnav.data = {
+	var cndata = { // catnav data
 		details: {}, // details about pages
 		pageids: {}, // pageids by titles
 		current: [],
@@ -81,124 +37,158 @@ $(function() {
 		},
 		_g: window.CatNav // global modifiers
 	};
-
-	/* html */
-	catnav.data.markup.html = '<nav id="catnav">\n' +
-		'\t<p>\n' +
-			'\t\tThe following generator allows you to collect pages from multiple categories. Insert the names of the categories that you\'d like to get pages from to the following text area, in order to retreive pages contain all listed categories (see example):\n' +
-		'\t</p>\n' +
-		// categories' input
-		'\t<div class="catnav-gui-group">\n' +
-			'\t\t<div class="catnav-commoncats">\n' +
-				'\t\t\t<h3>\n' +
-					'\t\t\t\tCommon categories' +
-					'&nbsp;<input type="button" class="wikia-button" value="add" id="catnav-commoncats-add" />\n' +
-				'\t\t\t</h3>\n' +
-				'\t\t\t<h5>\n' +
-					'\t\t\t\tImport and merge with&nbsp;<a href="//community.fandom.com/wiki/Special:MyPage/catnav.css">global settings</a>' +
-					'&nbsp;<input type="button" class="wikia-button catnav-commoncats-global" value="import" id="catnav-commoncats-global-import" />\n' +
-					'&nbsp;<input type="button" class="wikia-button catnav-commoncats-global" value="export" id="catnav-commoncats-global-export" />\n' +
-				'\t\t\t</h5>\n' +
-				'\t\t\t<div id="catnav-commoncats-wrapper">\n' +
-				'\t\t\t\t<span style="font-size: smaller;">Left click an item to add it to the included categories list, or right click it to add it to the excluded categories list. Clicking the delete icon would remove the associated item from your favorites from the browser\'s cache. To remove a link from future imports, please manually remove it from your global favorites page.</span>\n' +
-					'\t\t\t\t<div id="catnav-commoncats-container">\n' +
-					'\t\t\t\t</div>\n' +
-				'\t\t\t</div>\n' +
-			'\t\t</div>\n' +
-			'\t\t<table><tbody>\n' +
-				'\t\t\t<tr>\n' +
-					'\t\t\t\t<th>Add from categories:</th>\n' +
-					'\t\t\t\t<th>Don\'t list from categories:</th>\n' +
-				'\t\t\t</tr>\n' +
-				'\t\t\t<tr>\n' +
-					'\t\t\t\t<td><textarea id="catnav-textarea-include"></textarea></td>\n' +
-					'\t\t\t\t<td><textarea id="catnav-textarea-exclude"></textarea></td>\n' +
-				'\t\t\t</tr>\n' +
-			'\t\t</tbody></table>\n' +
-		'\t</div>\n' +
-		// filter options
-		'\t<div class="catnav-gui-group">\n' +
-			'\t\t<p>\n' +
-				'\t\t\t<input type="checkbox" id="catnav-filter-state" /><label for="catnav-filter-state">Filter page titles</label><br />\n' +
-				'\t\t\t<input type="text" id="catnav-filter-text" placeholder="Filter pattern" /><br />\n' +
-				'\t\t\t<input type="checkbox" id="catnav-filter-case" checked /><label for="catnav-filter-case">Case-insensitive search</label><br />\n' +
-				'\t\t\t<input type="checkbox" id="catnav-filter-regex" /><label for="catnav-filter-regex">Regex pattern</label>\n' +
-			'\t\t</p>\n' +
-		'\t</div>\n' +
-		// settings
-		'\t<div class="catnav-gui-group">\n' +
-			'\t\t<p>\n' +
-				'\t\t\tNumber of rows: <input type="text" id="catnav-rows" value="3" /><br />\n' +
-				'\t\t\t<input type="checkbox" id="catnav-ns" checked /><label for="catnav-ns">List mainspace only</label><br />\n' +
-				'\t\t\t<input type="radio" name="catnav-sort" id="catnav-sort-alphabet" value="alphabet" checked /><label for="catnav-sort-alphabet">Sort by alphabetic order</label> <span style="font-size: 66%;">(note that using other modes may dramatically increase loading time)</span><br />\n' +
-				'\t\t\t<input type="radio" name="catnav-sort" id="catnav-sort-bypageid" value="bypageid" /><label for="catnav-sort-bypageid">Sort by page ID (date of creation / restoration for deleted pages)</label><br />\n' +
-				'\t\t\t<!-- <input type="radio" name="catnav-sort" id="catnav-sort-creation" value="creation" /><label for="catnav-sort-creation">Sort by creation date</label><br /> -->\n' +
-				'\t\t\t<input type="radio" name="catnav-sort" id="catnav-sort-lastedit" value="lastedit" /><label for="catnav-sort-lastedit">Sort by last edit</label><br />\n' +
-				'\t\t\t<input type="checkbox" id="catnav-dir" /><label for="catnav-dir">Use descending order</label><br />\n' +
-			'\t\t</p>\n' +
-			'\t\t<input type="button" id="catnav-go" value="generate" /> <span id="catnav-loading">\n' +
-				'\t\t\t<svg width="12" height="12" style="margin-right: 4px;">\n' +
-					'\t\t\t\t<style type="text/css"><![CDATA[@keyframes spin{to{transform:rotate(360deg);}}circle{animation: spin 1s linear infinite;transform-origin:6px 6px;}]]></style>\n' +
-					'\t\t\t\t<circle cx="6" cy="6" r="5.5" fill="none" stroke="#999" stroke-dasharray="8.63937979737193 8.63937979737193" />\n' +
-				'\t\t\t</svg>\n' +
-				'\t\t\tloading...\n' +
-			'\t\t</span>\n' +
-		'\t</div>\n' +
-		// error messages
-		'\t<div id="catnav-noneerror" style="display: none;">\n' +
-			'\t\tNo pages were found!\n' +
-		'\t</div>\n' +
-		// nav result
-		'\t<div id="catnav-container">\n' +
-		'\t</div>\n' +
-		'\t<div id="catnav-resultscounter">\n' +
-		'\t</div>\n' +
-		'\t<div id="catnav-pagenav">\n' +
-		'\t</div>\n' +
-		// lol what is this even...
-		'\t<div id="catnav-generator">\n' +
-		'\t</div>\n' +
-	'</nav>';
-
-	/* global favorites */
-	catnav.data.globalString = 	location.href.match(/^https?\:\/{2}(.+)\.fandom\.com(?:\/(.+))?\/wiki\//);
-	catnav.data.globalString = (typeof catnav.data.globalString[2] === "string" ? catnav.data.globalString[2] + "." : "") + catnav.data.globalString[1];
+	var settings = {
+		rows: 3, // default number of rows
+		itemsInNavigator: Math.floor(($("#mw-content-text").width() - 100) / 146) // number of columns determined by the width of the user's screen
+	};
+	
+	/* ================================== *\
+		# wiki links to [[Special:CatNav]]
+	\* ================================== */
+	$("#WikiaBarWrapper .tools").append('<li><a href="' + config.wgArticlePath.replace("$1", "Special:CatNav") + '">CatNav</a></li>');
 
 	/* ================================== *\
-		# global CatNav object management
+		# console
 	\* ================================== */
-	if (catnav._g instanceof Object) {
-		// global CatNav is an object
-		if (Array.isArray(catnav._g.storage)) {
-			// import+export storage - base url to hosting wiki
-			catnav.data.storage.url = catnav._g.storage[0];
-			catnav.data.storage.scriptPath = catnav._g.storage[1];
-		} else if (catnav._g.hasOwnProperty("storage")) {
-			catnav.console.error("catnav :: global 'CatNav.storage' has been defined, but it is not a valid array");
+
+	var customConsole = {
+		logs: [],
+		debug: true // will be changed to 'false' after defining data, unless 'window.CatNav.debug' is also 'true'
+	};
+	customConsole.add = function(type, data) {
+		var debug = customConsole.debug;
+		if (["log", "error", "info", "warn"].indexOf(type) > -1) {
+			type = "log";
 		}
-	} else {
-		// window.CatNav has not been defined - define it
-		window.CatNav = {};
+		customConsole.logs.push([type, debug, data]);
+		if (debug) {
+			console[type]("[-] CatNav :: ", data);
+		}
+	};
+	customConsole.log = function(data) {
+		customConsole.add("log", data);
+	};
+	customConsole.error = function(data) {
+		customConsole.add("error", data);
+	};
+	customConsole.info = function(data) {
+		customConsole.add("info", data);
+	};
+	customConsole.warn = function(data) {
+		customConsole.add("warn", data);
+	};
+	
+	// error message
+	function errorMsg(bool, msg) {
+		customConsole.error(["'errorMsg' call ::", {bool: bool, msg: msg}]);
+		// if 'bool' show message, otherwise hide
+		// 'msg' is the new html content
+		$("#catnav-noneerror").html(msg)[bool ? "show" : "hide"]();
 	}
-	if (window.CatNav.debug !== true) {
-		catnav.console.debug = false;
+
+	// collaps text
+	function collapseText(s) {
+		return s.replace(/\n+[ ]+\n+|\n{2,}/g, "\n").trim();
 	}
 
-	/* ================================== *\
-		# functions
-	\* ================================== */
-
-	/* functions for getting info about categories */
-
+	// escape string for regex
+	function stringToRegex(s) {
+		return s.replace(/[\\\/\[\]\(\)\?\!\=\-\+\*\.\{\}\<\>\,\^\$]/g, function(a) {
+			return "\\" + a;
+		});
+	}
+	
+	// html
+	function htmlContent() {
+		return '<nav id="catnav">' +
+			'<p>' + msg('instruction').escape() + '</p>' +
+			// categories' input
+			'<div class="catnav-gui-group">' +
+				'<div class="catnav-commoncats">' +
+					'<h3>' +
+						msg('commonCats').escape() +
+						'&nbsp;<input type="button" class="wds-button" value="add" id="catnav-commoncats-add" />' +
+					'</h3>' +
+					'<h5>' +
+						msg('merge').parse() +
+						'&nbsp;<input type="button" class="wds-button catnav-commoncats-global" value="import" id="catnav-commoncats-global-import" />' +
+						'&nbsp;<input type="button" class="wds-button catnav-commoncats-global" value="export" id="catnav-commoncats-global-export" />' +
+					'</h5>' +
+					'<div id="catnav-commoncats-wrapper">' +
+					'<span style="font-size: smaller;">' + msg('click').escape() + '</span>' +
+						'<div id="catnav-commoncats-container">' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+				'<table><tbody>' +
+					'<tr>' +
+						'<th>' + msg('addFrom').escape() + '</th>' +
+						'<th>' + msg('notFrom').escape() + '</th>' +
+					'</tr>' +
+					'<tr>' +
+						'<td><textarea id="catnav-textarea-include"></textarea></td>' +
+						'<td><textarea id="catnav-textarea-exclude"></textarea></td>' +
+					'</tr>' +
+				'</tbody></table>' +
+			'</div>' +
+			// filter options
+			'<div class="catnav-gui-group">' +
+				'<p>' +
+					'<input type="checkbox" id="catnav-filter-state" /><label for="catnav-filter-state">Filter page titles</label><br />' +
+					'<input type="text" id="catnav-filter-text" placeholder="Filter pattern" /><br />' +
+					'<input type="checkbox" id="catnav-filter-case" checked /><label for="catnav-filter-case">Case-insensitive search</label><br />' +
+					'<input type="checkbox" id="catnav-filter-regex" /><label for="catnav-filter-regex">Regex pattern</label>' +
+				'</p>' +
+			'</div>' +
+			// settings
+			'<div class="catnav-gui-group">' +
+				'<p>' +
+					msg('rowsNumber').escape() + ' <input type="text" id="catnav-rows" value="3" /><br />' +
+					'<input type="checkbox" id="catnav-ns" checked /><label for="catnav-ns">' + msg('nsOnly').escape() + '</label><br />' +
+					'<input type="radio" name="catnav-sort" id="catnav-sort-alphabet" value="alphabet" checked /><label for="catnav-sort-alphabet">' + msg('sortAlphabet').escape() + '</label> <span style="font-size: 66%;">' + msg('alphabeticAlert').escape() + '</span><br />' +
+					'<input type="radio" name="catnav-sort" id="catnav-sort-bypageid" value="bypageid" /><label for="catnav-sort-bypageid">' + msg('sortID').escape() + '</label><br />' +
+					'<!-- <input type="radio" name="catnav-sort" id="catnav-sort-creation" value="creation" /><label for="catnav-sort-creation">' + msg('sortCreation').escape() + '</label><br /> -->' +
+					'<input type="radio" name="catnav-sort" id="catnav-sort-lastedit" value="lastedit" /><label for="catnav-sort-lastedit">' + msg('sortLastEdit').escape() + '</label><br />' +
+					'<input type="checkbox" id="catnav-dir" /><label for="catnav-dir">' + msg('descending').escape() + '</label><br />' +
+				'</p>' +
+				'<input type="button" class="wds-button" id="catnav-go" value="generate" /> <span id="catnav-loading">' +
+					'<svg width="12" height="12" style="margin-right: 4px;">' +
+						'<style type="text/css"><![CDATA[@keyframes spin{to{transform:rotate(360deg);}}circle{animation: spin 1s linear infinite;transform-origin:6px 6px;}]]></style>' +
+						'<circle cx="6" cy="6" r="5.5" fill="none" stroke="#999" stroke-dasharray="8.63937979737193 8.63937979737193" />' +
+					'</svg>' +
+					msg('loading').escape() +
+				'</span>' +
+			'</div>' +
+			// error messages
+			'<div id="catnav-noneerror" style="display: none;">' +
+				msg('noPagesFound').escape() +
+			'</div>' +
+			// nav result
+			'<div id="catnav-container">' +
+			'</div>' +
+			'<div id="catnav-resultscounter">' +
+			'</div>' +
+			'<div id="catnav-pagenav">' +
+			'</div>' +
+			// lol what is this even...
+			'<div id="catnav-generator">' +
+			'</div>' +
+		'</nav>';
+	}
+	
+	/* global favorites */
+	var globalString = location.href.match(/^https?\:\/{2}(.+)\.fandom\.com(?:\/(.+))?\/wiki\//);
+	globalString = (typeof globalString[2] === "string" ? globalString[2] + "." : "") + globalString[1];
+	
 	// get members of a given category
-	catnav.fn.catMembers = function(cat, ns, arr, cont, cb) {
+	function catMembers(cat, ns, arr, cont, cb) {
 		/*
-		catnav.fn.getMembersOfCat("Foo", 0, [], "", function(data) {
-			catnav.console.log(data);
+		getMembersOfCat("Foo", 0, [], "", function(data) {
+			customConsole.log(data);
 		});
 		*/
 		var req = new XMLHttpRequest();
-		req.open("GET", mw.config.get("wgScriptPath") + "/api.php?action=query&format=json&list=categorymembers&cmtitle=Category:" + encodeURIComponent(cat) + "&cmnamespace=" + ns + "&cmcontinue=" + encodeURIComponent(cont) + "&rawcontinue=&cmlimit=max&cb=" + new Date().getTime(), true);
+		req.open("GET", config.wgScriptPath + "/api.php?action=query&format=json&list=categorymembers&cmtitle=Category:" + encodeURIComponent(cat) + "&cmnamespace=" + ns + "&cmcontinue=" + encodeURIComponent(cont) + "&rawcontinue=&cmlimit=max&cb=" + new Date().getTime(), true);
 		req.onload = function() {
 			var data = JSON.parse(this.responseText);
 			if (data.hasOwnProperty("query")) {
@@ -207,23 +197,23 @@ $(function() {
 				for (var i in a) {
 					b = a[i];
 					arr.push(b.title);
-					catnav.data.pageids[b.title] = b.pageid;
+					cndata.pageids[b.title] = b.pageid;
 				}
 				if (typeof data["query-continue"] === "object") {
-					return catnav.fn.catMembers(cat, ns, arr, data["query-continue"].categorymembers.cmcontinue, cb);
+					return catMembers(cat, ns, arr, data["query-continue"].categorymembers.cmcontinue, cb);
 				} else {
 					cb(arr);
 				}
 			} else {
-				catnav.fn.onLoadingEnd();
-				catnav.fn.error(1, "An error has occured when looking for pages in the category [[" + cat + "]]. The error message is the following:<br />\nError code: <code>" + data.error.code + "</code><br />\nError info: " + data.error.info + "<br /><hr />Please make sure that you've entered some text to the category input. Do not add empty lines.");
+				onLoadingEnd();
+				errorMsg(1, msg('errorLooking', cat).escape() + "<br />\n" + msg('errorCode').escape() + " <code>" + data.error.code + "</code><br />\n" + msg('errorInfo').escape() + " " + data.error.info + "<br /><hr />" + msg('noEmptyLines').escape());
 			}
 		};
 		req.send();
-	};
+	}
 
 	// get members of multiple categories
-	catnav.fn.catMembersMulti = function(catstr, ns, cb) {
+	function catMembersMulti(catstr, ns, cb) {
 		var cats = catstr.split("|"),
 			completed = 0,
 			allcats = {};
@@ -232,7 +222,7 @@ $(function() {
 				// all requests have been made
 				cb(allcats);
 			} else {
-				catnav.fn.catMembers(cats[completed], ns, [], "", function(data) {
+				catMembers(cats[completed], ns, [], "", function(data) {
 					allcats[cats[completed]] = data;
 					completed++;
 					query();
@@ -240,15 +230,15 @@ $(function() {
 			}
 		}
 		query();
-	};
+	}
 
 	// search for members that exist in all specified categories
-	catnav.fn.joinMembers = function(data, isCommonMembers, fn) {
+	function joinMembers(data, isCommonMembers, fn) {
 		var smallestCat,
 			finalList = [];
 		if (isCommonMembers === true) {
 			// mode for the "find-in-categories" list: only list a page if it has all the listed categories
-			smallestCat = data[catnav.fn.getSmallestCat(data)]; // start from smallest category - should take less time
+			smallestCat = data[getSmallestCat(data)]; // start from smallest category - should take less time
 			for (var i in smallestCat) {
 				var itemLeSmall = smallestCat[i], // current item for check
 				isSharedCommon = true;
@@ -267,9 +257,9 @@ $(function() {
 			}
 		} else {
 			// mode for the "unwanted categories" list: list any categorized page that is categorized at least once
-			for (var cat in data) {
-				for (var i in data[cat]) {
-					var currCat = data[cat][i];
+			for (var cat2 in data) {
+				for (var j in data[cat2]) {
+					var currCat = data[cat2][j];
 					if (finalList.indexOf(finalList) == -1) {
 						// although we categorize all pages, we still don't want a category to repeat- it's time consuming and pointless
 						finalList.push(currCat);
@@ -278,11 +268,11 @@ $(function() {
 			}
 		}
 		fn(finalList);
-	};
+	}
 
 	// find the category with the fewest members
-	catnav.fn.getSmallestCat = function(data) {
-		catnav.console.log("smallest cat!", data);
+	function getSmallestCat(data) {
+		customConsole.log("smallest cat!", data);
 		var small = {
 			cat: null,
 			length: Infinity
@@ -294,85 +284,83 @@ $(function() {
 			}
 		}
 		return small.cat; // return name of property with the smallest number of items
-	};
+	}
 
 	// divide to pages - take a long list of titles, and split them to groups, each with no more than 'n' titles
-	catnav.fn.divideToPages = function(titles) {
+	function divideToPages(titles) {
 		var result = [];
 		while (titles.length > 0) {
-			result.push(titles.splice(0, catnav.settings.itemsInNavigator * catnav.fn.getNumberOfRows()));
+			result.push(titles.splice(0, settings.itemsInNavigator * getNumberOfRows()));
 		}
 		return result;
-	};
+	}
 
 	// get number of rows
-	catnav.fn.getNumberOfRows = function() {
-		var rows = catnav.settings.rows,
+	function getNumberOfRows() {
+		var rows = settings.rows,
 			specified = $("#catnav-rows").val();
 		if ($.isNumeric(specified) && specified > 0 && specified == Math.round(specified)) {
 			// specified number of rows is a valid positive integer
 			rows = specified;
 		}
 		return rows;
-	};
-
-	/* functions for getting info about pages */
-
+	}
+	
 	// implement new members
-	catnav.fn.implementNewTitles = function(titles, categories) { // needs 'categories' parameter if advanced category sorting is desired
+	function implementNewTitles(titles, categories) { // needs 'categories' parameter if advanced category sorting is desired
 		// 'titles' is an array of page titles
-		catnav.fn.sortTitles(titles, categories, $('[name="catnav-sort"]:checked').val(), $('#catnav-dir').prop("checked"), function(sortedTitles) {
-			var asPages = catnav.fn.divideToPages(sortedTitles); // divide the 'titles' array to a list of smaller groups of titles
+		sortTitles(titles, categories, $('[name="catnav-sort"]:checked').val(), $('#catnav-dir').prop("checked"), function(sortedTitles) {
+			var asPages = divideToPages(sortedTitles); // divide the 'titles' array to a list of smaller groups of titles
 			if (asPages.length > 0) {
-				catnav.data.current = asPages;
-				catnav.fn.onLoadingEnd();
-				catnav.fn.error(0, null); // hide error
-				catnav.fn.updatePagesListNav();
-				catnav.fn.gotoPage(0, true);
+				cndata.current = asPages;
+				onLoadingEnd();
+				errorMsg(0, null); // hide error
+				updatePagesListNav();
+				gotoPage(0, true);
 				$("#catnav-resultscounter").text(function() {
 					var n = 0,
-						c = catnav.data.current,
+						c = cndata.current,
 						i;
 					for (i = 0; i < c.length; i++) {
 						n += c[i].length;
 					}
-					return n + " results found";
+					return n + " " + msg('result', n).plain();
 				});
 			} else {
-				catnav.fn.onLoadingEnd();
-				catnav.fn.error(1, "No pages with all specified categories were found!"); // show error
+				onLoadingEnd();
+				errorMsg(1, msg('nothingFound').escape()); // show error
 			}
 		});
-	};
+	}
 
 	// update pages' numbers
-	catnav.fn.updatePagesListNav = function() {
+	function updatePagesListNav() {
 		var a,
 			pagenav = $("#catnav-pagenav");
 		$(pagenav).html("");
-		for (var i = 0; i < catnav.data.current.length; i++) {
+		for (var i = 0; i < cndata.current.length; i++) {
 			a = $('<a data-catnav-page="' + i + '" />').html("(" + (Number(i) + 1) + ")");
 			$(pagenav).append(a);
 			$(a).click(function() {
-				catnav.fn.gotoPage(Number($(this).attr("data-catnav-page")));
+				gotoPage(Number($(this).attr("data-catnav-page")));
 			});
 		}
-	};
+	}
 
 	// clear results
-	catnav.fn.clear = function() {
-		catnav.data.current = [];
-		catnav.fn.updateMarkup();
-		catnav.fn.updatePagesListNav();
+	function clear() {
+		cndata.current = [];
+		updateMarkup();
+		updatePagesListNav();
 	}
 
 	// go to page 'n + 1'
-	catnav.fn.gotoPage = function(n, uponGeneration) {
-		catnav.data.selectedPage = n;
+	function gotoPage(n, uponGeneration) {
+		cndata.selectedPage = n;
 		$("#catnav-pagenav .catnav-pagenav-selected").removeClass("catnav-pagenav-selected");
 		$("#catnav-pagenav a").eq(n).addClass("catnav-pagenav-selected");
-		catnav.fn.queryPages(catnav.data.current[n], function(titles) {
-			catnav.fn.updateMarkup(titles);
+		queryPages(cndata.current[n], function(titles) {
+			updateMarkup(titles);
 			// trigger events
 			var pageloadEvent = new Event("catnavpageload");
 			if (uponGeneration) {
@@ -381,22 +369,22 @@ $(function() {
 			}
 			document.querySelector("#catnav").dispatchEvent(pageloadEvent);
 		});
-	};
+	}
 
 	// get info about pages (url, thumb, etc.)
-	catnav.fn.queryPages = function(titles, cb) {
+	function queryPages(titles, cb) {
 		var req = new XMLHttpRequest(),
 			f = new FormData(),
 			fD,
 			fDProp,
 			missingTitles = [],
 			i;
-		catnav.console.error(titles);
+		customConsole.error(titles);
 		for (i = 0; i < titles.length; i++) {
 			// missingTitles lists all articles that haven't been previously loaded by 'queryPages'
-			// articles already in 'catnav.data.details' will not be requested again
-			if (!catnav.data.details.hasOwnProperty(titles[i])) {
-				missingTitles.push(catnav.data.pageids[titles[i]]);
+			// articles already in 'cndata.details' will not be requested again
+			if (!cndata.details.hasOwnProperty(titles[i])) {
+				missingTitles.push(cndata.pageids[titles[i]]);
 			}
 		}
 		// form data for requestest
@@ -405,14 +393,14 @@ $(function() {
 			width: 140,
 			height: 140,
 			ids: missingTitles.join(",")
-		}
+		};
 		for (fDProp in fD) {
 			f.append(fDProp, fD[fDProp]);
 		}
 		// the actual request
-		req.open("POST", mw.config.get("wgScriptPath") + "/api/v1/Articles/Details", true);
+		req.open("POST", config.wgScriptPath + "/api/v1/Articles/Details", true);
 		req.onload = function() {
-			catnav.fn.parsePagesQuery(JSON.parse(this.responseText));
+			parsePagesQuery(JSON.parse(this.responseText));
 			cb(titles);
 		};
 		if (missingTitles.length > 0) {
@@ -422,14 +410,14 @@ $(function() {
 			// info about those pages has already loaded
 			cb(titles);
 		}
-	};
+	}
 
 	// process info about pages from json
-	catnav.fn.parsePagesQuery = function(data) {
+	function parsePagesQuery(data) {
 		for (var pageid in data.items) {
 			var a = data.items[pageid],
 				title = decodeURIComponent(a.url.replace(/^[^\n]*\/wiki\//, "")).replace(/_/g, " "); // a.title doesn't provide the namespace - easiest method is to do this
-			catnav.data.details[title] = {
+			cndata.details[title] = {
 				id: a.id,
 				title: title,
 				url: a.url,
@@ -437,43 +425,23 @@ $(function() {
 				lastedit: a.revision.timestamp
 			};
 		}
-	};
+	}
 
 	// update markup
-	catnav.fn.updateMarkup = function(titles) {
+	function updateMarkup(titles) {
 		var container = $('<div />');
 		for (var i in titles) {
-			var a = catnav.data.details[titles[i]],
-				item = $('<div class="catnav-item' + (a.img ? "" : " catnav-item-noimage") + '"><a href="' + a.url + '" title="' + a.title.replace(/["'&<>]/g, function(m) {return "&#" + m.charCodeAt(0) + ";";}) + '"><img src="' + (a.img ? a.img : mw.config.get("wgBlankImgUrl")) + '" width="140" height="140" /><span class="catnav-item-label"></span></a></div>');
+			var a = cndata.details[titles[i]],
+				item = $('<div class="catnav-item' + (a.img ? "" : " catnav-item-noimage") + '"><a href="' + a.url + '" title="' + a.title.replace(/["'&<>]/g, function(m) {return "&#" + m.charCodeAt(0) + ";";}) + '"><img src="' + (a.img ? a.img : config.wgBlankImgUrl) + '" width="140" height="140" /><span class="catnav-item-label"></span></a></div>');
 			$(item).find("span").text(a.title);
 			$(container).append(item);
 		}
 		$("#catnav-container").html($(container).html());
 		//window.q = container; // lol why do i always use window.q, i keep finding old lines with this whenever i set it somewhere else in the code for debugging
-	};
-
-	// error message
-	catnav.fn.error = function(bool, msg) {
-		catnav.console.error(["'catnav.fn.error' call ::", {bool: bool, msg: msg}]);
-		// if 'bool' show message, otherwise hide
-		// 'msg' is the new html content
-		$("#catnav-noneerror").html(msg)[bool ? "show" : "hide"]();
-	};
-
-	// collaps text
-	catnav.fn.collapseText = function(s) {
-		return s.replace(/\n+[ \t]+\n+|\n{2,}/g, "\n").trim();
-	};
-
-	// escape string for regex
-	catnav.fn.stringToRegex = function(s) {
-		return s.replace(/[\\\/\[\]\(\)\?\!\=\-\+\*\.\{\}\<\>\,\^\$]/g, function(a) {
-			return "\\" + a;
-		});
 	}
-
+	
 	// sort pages by user preferences
-	catnav.fn.sortTitles = function(titles, categories, mode, reverse, cb) {
+	function sortTitles(titles, categories, mode, reverse, cb) {
 		//window.q = [titles.concat(), mode, reverse];
 		/*
 			modes:
@@ -491,9 +459,9 @@ $(function() {
 				value: $("#catnav-filter-text").val(),
 				ci: $("#catnav-filter-case")[0].checked,
 				re: $("#catnav-filter-regex")[0].checked
-			}
+			};
 			try {
-				filter.pattern = new RegExp(filter.re ? filter.value : catnav.fn.stringToRegex(filter.value), filter.ci ? "i" : "");
+				filter.pattern = new RegExp(filter.re ? filter.value : stringToRegex(filter.value), filter.ci ? "i" : "");
 				// filter patterns
 				titles = titles.filter(function(title) {
 					if (filter.pattern.test(title)) {
@@ -501,16 +469,16 @@ $(function() {
 					}
 				});
 			} catch(err) {
-				alert("Invalid regex- filter was ignored for the current search and all available titles are shown.\nPlease check your filter text (open console to view the full error message).");
+				alert(msg('regex').escape());
 				console.error("[catnav] :: regex error", err);
-				catnav.console.error(err);
+				customConsole.error(err);
 			}
 		}
 
 		/* start sorting */
 		mode = ["bypageid", "lastedit", "alphabet"].indexOf(mode) > -1 ? mode : "alphabet";
 		var sortedTitles;
-		catnav.console.log("sortTitles", arguments);
+		customConsole.log("sortTitles", arguments);
 		switch (mode) {
 			// @ mode == "alphabet"
 			case "alphabet":
@@ -524,18 +492,18 @@ $(function() {
 			// @ mode == "lastedit"
 			case "lastedit":
 				// sort by lastedit
-				catnav.fn.queryPages(titles, function(titles) {
-					// 'catnav.fn.queryPages' is required to know how to sort all titles before splitting into navpages
-					var details = catnav.data.details,
+				queryPages(titles, function(titles) {
+					// 'queryPages' is required to know how to sort all titles before splitting into navpages
+					var details = cndata.details,
 						title,
 						curr,
 						arr = [], // array of values (last edit timestamp)
 						pagesBySortingMethod = {}, // object: key => sorting method value (timestamp, value => array with titles with that associated value (in case 2+ articles have the value)
 						i;
-					// copy data from 'catnav.data.details' about the wanted titles
+					// copy info from 'cndata.details' about the wanted titles
 					for (title in details) {
 						if (titles.indexOf(title) > -1) {
-							curr = details[title]["lastedit"];
+							curr = details[title].lastedit;
 							if (arr.indexOf(Number(curr)) === -1) {
 								arr.push(Number(curr));
 							}
@@ -571,16 +539,16 @@ $(function() {
 			// @ mode == "bypageid"
 			case "bypageid":
 				// sort by pageid (=wgArticleId)
-				catnav.fn.queryPages(titles, function(titles) {
-					// now when 'catnav.fn.queryPages' was used, 'catnav.data.details' has been created
+				queryPages(titles, function(titles) {
+					// now when 'queryPages' was used, 'cndata.details' has been created
 					var pagesByIds = {},
-						details = catnav.data.details,
+						details = cndata.details,
 						title,
 						i,
 						id,
 						ids = [];
 					// 'pagesByIds': key => pageid, value => title
-					catnav.console.info("details as of running: " + JSON.stringify(details));
+					customConsole.info("details as of running: " + JSON.stringify(details));
 					for (title in details) {
 						if (titles.indexOf(title) > -1) {
 							id = details[title].id;
@@ -604,16 +572,16 @@ $(function() {
 				});
 				break;
 		}
-	};
-
+	}
+	
 	// get creation time of pages
-	catnav.fn.getCreationTime = function(titles, cb) {
+	function getCreationTime(titles, cb) {
 		// lol don't use this stupid module, while running it i figured it would be much more efficient to use wgArticleId :P
 		if (titles.length === 0) {
 			cb();
 		} else {
 			var req = new XMLHttpRequest();
-			req.open("GET", mw.config.get("wgScriptPath") + "/api.php?action=query&format=json&prop=revisions&rvprop=timestamp&rvlimit=1&rvdir=newer&titles=" + encodeURIComponent(titles.shift()), true);
+			req.open("GET", config.wgScriptPath + "/api.php?action=query&format=json&prop=revisions&rvprop=timestamp&rvlimit=1&rvdir=newer&titles=" + encodeURIComponent(titles.shift()), true);
 			// can only get 1 title at a time when getting the first revisions :(
 			req.onload = function() {
 				var data = JSON.parse(req.responseText),
@@ -621,37 +589,37 @@ $(function() {
 					page;
 				for (pageid in data.query.pages) {
 					page = data.query.pages[pageid];
-					catnav.data.details[page.title] = catnav.data.details[page.title] || {};
-					catnav.data.details[page.title].creation = page.revisions[0].timestamp;
-					// continue getting data about the remaining titles
-					catnav.fn.getCreationTime(titles, cb);
+					cndata.details[page.title] = cndata.details[page.title] || {};
+					cndata.details[page.title].creation = page.revisions[0].timestamp;
+					// continue getting info about the remaining titles
+					getCreationTime(titles, cb);
 				}
 			};
 			req.send();
 		}
-	};
+	}
 
 	// manipulate storage
-	catnav.fn.storage = function(method, savingData) {
-		var gs = catnav.data.globalString;
+	function storageFn(method, savingData) {
+		var gs = globalString;
 		switch (method) {
 			case "get":
-				var storage = localStorage.getItem("catnav");
-				catnav.console.log(method, storage);
-				storage = storage ? JSON.parse(storage) : {favorites: {}};
-				if (!storage.favorites.hasOwnProperty(gs)) {
-					storage.favorites[gs] = [];
+				var store = localStorage.getItem("catnav");
+				customConsole.log(method, store);
+				store = store ? JSON.parse(store) : {favorites: {}};
+				if (!store.favorites.hasOwnProperty(gs)) {
+					store.favorites[gs] = [];
 				}
-				catnav.console.log(method, storage);
-				return storage;
+				customConsole.log(method, store);
+				return store;
 			case "set":
 				localStorage.setItem("catnav", JSON.stringify(savingData));
 				return true;
 		}
-	};
+	}
 
 	// add favorite to list
-	catnav.fn.insertFavorite = function(category) {
+	function insertFavorite(category) {
 		var item = $('<div class="catnav-commoncats-item"></div>')
 			.data({name: category})
 			.text(category)
@@ -665,7 +633,7 @@ $(function() {
 				$(a).val(b.join("\n").trim());
 			}
 		}).click(function(e) {
-			catnav.console.log(e.target, this);
+			customConsole.log(e.target, this);
 			if ($(e.target).is(this) && e.which === 1) {
 				var a = $("#catnav-textarea-include"),
 					b = $(a).val().split("\n");
@@ -674,24 +642,32 @@ $(function() {
 			}
 		});
 		$(item).find("img").click(function() {
-			var storage = catnav.fn.storage("get"),
-				gs = catnav.data.globalString,
+			var storage = storageFn("get"),
+				gs = globalString,
 				fave = storage.favorites[gs],
 				index = fave.indexOf($(this).parent().data("name"));
 				if (index > -1) {
 					fave.splice(index, 1);
-					storage = catnav.fn.storage("set", storage);
+					storage = storageFn("set", storage);
 					$(this).parent().remove();
 				}
 		});
 		$("#catnav-commoncats-container").append(item);
-	};
+	}
 
 	// import global settings ([[w:Special:MyPage/catnav.css]])
-	catnav.fn.addGlobalFavorites = function() {
-		var user = encodeURIComponent(mw.config.get("wgUserName"));
+	function addGlobalFavorites() {
+		var user = encodeURIComponent(config.wgUserName);
 		$.ajax({
-			url: catnav.data.storage.url + (catnav.data.storage.url === "//community.fandom.com" ? "" : mw.config.get("wgScriptPath")) + "/api.php?action=query&format=json&prop=revisions&rvprop=content&titles=User:" + user + "/catnav.css&callback=catnavcb&" + new Date().getTime(),
+			url: cndata.storage.url + (cndata.storage.url === "//community.fandom.com" ? "" : config.wgScriptPath) + "/api.php?" + new Date().getTime(),
+			data: {
+				action: 'query',
+				format: 'json',
+				prop: 'revisions',
+				rvprop: 'content',
+				titles: 'User:' + user + '/catnav.css',
+				callback: 'catnavcb'
+			},
 			action: "GET",
 			dataType: "jsonp",
 			jsonpCallback: "catnavcb",
@@ -701,15 +677,15 @@ $(function() {
 					content,
 					cities = {},
 					currCity,
-					wiki = catnav.data.globalString,
+					wiki = globalString,
 					storage;
 				for (pageid in pages) {
 					if (pageid == -1) {
-						alert("No data found. Please make sure that 'https://community.fandom.com/wiki/User:" + user + "/catnav.css' exists");
+						alert(msg('checkCSS').escape());
 					} else {
 						content = pages[pageid].revisions[0]["*"];
 						content.split("\n").forEach(function(line, lineNumber) {
-							catnav.console.warn(lineNumber, lineNumber + 1, line);
+							customConsole.warn(lineNumber, lineNumber + 1, line);
 							var temp;
 							switch (line.charAt(0)) {
 								case "@":
@@ -718,7 +694,7 @@ $(function() {
 										currCity = temp;
 										cities[temp] = cities[temp] || [];
 									} catch(err) {
-										alert("Invalid wiki subdomain at line " + (lineNumber + 1) + ": " + temp);
+										alert(msg('invalidSubdomain', lineNumber + 1).escape() + " " + temp);
 									}
 									break;
 								case "#":
@@ -727,7 +703,7 @@ $(function() {
 									if (currCity) {
 										cities[currCity].push(temp);
 									} else {
-										alert("Error at line " + (lineNumber + 1) + ": category listed without first declaring a wiki subdomain");
+										alert(msg('categoryAlert', lineNumber + 1).escape());
 									}
 									break;
 							}
@@ -736,31 +712,31 @@ $(function() {
 					break;
 				}
 				if (cities.hasOwnProperty(wiki)) {
-					storage = catnav.fn.storage("get");
-					catnav.console.info(storage);
+					storage = storageFn("get");
+					customConsole.info(storage);
 					cities[wiki].forEach(function(category) {
-						catnav.console.info(category);
+						customConsole.info(category);
 						if (storage.favorites[wiki].indexOf(category) === -1) {
 							storage.favorites[wiki].push(category);
-							catnav.fn.insertFavorite(category);
+							insertFavorite(category);
 						}
 					});
-					storage = catnav.fn.storage("set", storage);
+					storage = storageFn("set", storage);
 				}
 			}
 		});
-	};
-
+	}
+	
 	// get sizes of categories
-	catnav.fn.getCategorySizes = function(categories, sizelist, cb) {
+	function getCategorySizes(categories, sizelist, cb) {
 		// arguments => ["Foo1", "Foo2", "Fooetc."], {}, function() {}
-		catnav.console.log("inite :: getCategorySizes");
+		customConsole.log("inite :: getCategorySizes");
 		var req = new XMLHttpRequest(),
 			curr = categories.splice(0, 50);
 		for (var i = 0; i < curr.length; i++) {
 			curr[i] = "Category:" + curr[i];
 		}
-		req.open("GET", mw.config.get("wgScriptPath") + "/api.php?action=query&format=json&prop=categoryinfo&titles=" + encodeURIComponent(curr.join("|")) + "&cb=" + new Date().getTime(), true);
+		req.open("GET", config.wgScriptPath + "/api.php?action=query&format=json&prop=categoryinfo&titles=" + encodeURIComponent(curr.join("|")) + "&cb=" + new Date().getTime(), true);
 		req.onload = function() {
 			var data = JSON.parse(req.responseText),
 				cat,
@@ -778,74 +754,74 @@ $(function() {
 			}
 			if (categories.length > 0) {
 				// not done
-				catnav.fn.getCategorySizes(categories, sizelist, cb);
+				getCategorySizes(categories, sizelist, cb);
 			} else {
 				// done
 				cb(sizelist);
 			}
 		};
 		req.send();
-	};
+	}
 
 	// when no further resources are to be loaded
 	// when all required resources have loaded and processed, or when an error prevents the process completion
-	catnav.fn.onLoadingEnd = function() {
-		catnav.fn.unsealUI();
+	function onLoadingEnd() {
+		unsealUI();
 		$("#catnav-loading").hide();
-	};
+	}
 
 	// convert local favorites to global favorites syntax (that the user can copy and paste in their global list)
-	catnav.fn.exportGlobalFavorites = function() {
-		var wiki = catnav.data.globalString,
-			favorites = catnav.fn.storage("get").favorites[wiki],
+	function exportGlobalFavorites() {
+		var wiki = globalString,
+			favorites = storageFn("get").favorites[wiki],
 			lines = ["@" + wiki];
 		for (var i = 0; i < favorites.length; i++) {
 			lines.push("#" + favorites[i]);
 		}
 		return lines.join("\n");
-	};
+	}
 
 	// init
-	catnav.fn.init = function() {
+	function initMain() {
 		// # html
 		// interface markup
-		$("#mw-content-text").html(catnav.data.markup.html);
+		$("#mw-content-text").html(htmlContent());
 
 		// # triggers
 		// 'generate' button
 		$("#catnav-go").click(function() {
-			catnav.fn.clear();
-			catnav.fn.sealUI();
+			clear();
+			sealUI();
 			$("#catnav-loading").show(); // show loading text
-			var incCats = catnav.fn.collapseText($("#catnav #catnav-textarea-include").val()).replace(/\n/g, "|"), // included categories
-				disCats = catnav.fn.collapseText($("#catnav #catnav-textarea-exclude").val()).replace(/\n/g, "|"), // exclude categories
+			var incCats = collapseText($("#catnav #catnav-textarea-include").val()).replace(/\n/g, "|"), // included categories
+				disCats = collapseText($("#catnav #catnav-textarea-exclude").val()).replace(/\n/g, "|"), // exclude categories
 				catList = incCats.split("|"), // array of included categories - needed for advanced page sorting methods
 				nsStr = $("#catnav-ns")[0].checked ? "0" : "";
 			// get included categories (object: key => categoryname, val => array of listed pages in that category)
 			if (incCats.length === 0) {
-				catnav.fn.unsealUI();
+				unsealUI();
 				$("#catnav-loading").hide();
-				catnav.fn.error(1, "Please enter at least one valid category under the \"Add from categories\" field.");
+				errorMsg(1, "Please enter at least one valid category under the \"Add from categories\" field.");
 				return;
 			}
-			catnav.fn.catMembersMulti(incCats, nsStr, function(incData) {
+			catMembersMulti(incCats, nsStr, function(incData) {
 				// sort the pages into a single array
-				catnav.fn.joinMembers(incData, true, function(incTitles) {
+				joinMembers(incData, true, function(incTitles) {
 					if (disCats.length === 0) {
 						// no unwated categories requested - update immediately
-						catnav.fn.implementNewTitles(incTitles, catList);
+						implementNewTitles(incTitles, catList);
 					} else {
 						// unwated categories requiested - get their categorized pages
-						catnav.fn.catMembersMulti(disCats, nsStr, function(disData) {
+						catMembersMulti(disCats, nsStr, function(disData) {
 							// sort the pages into a single array
-							catnav.fn.joinMembers(disData, false, function(disTitles) {
+							joinMembers(disData, false, function(disTitles) {
 								for (var i in disTitles) {
 									if (incTitles.indexOf(disTitles[i]) > -1) {
 										// unwanted page detected - remove from 'incTitles'
 										incTitles.splice(incTitles.indexOf(disTitles[i]), 1);
 									}
 								}
-								catnav.fn.implementNewTitles(incTitles, catList);
+								implementNewTitles(incTitles, catList);
 							});
 						});
 					}
@@ -854,35 +830,35 @@ $(function() {
 		});
 		// adding categories to favorites
 		$("#catnav-commoncats-add").click(function() {
-			var category = prompt("Please insert a name of a category you'd like to add to favorites"),
+			var category = prompt(msg('insertCategory').escape()),
 				storage,
-				gs = catnav.data.globalString;
+				gs = globalString;
 			if (category) {
-				storage = catnav.fn.storage("get");
+				storage = storageFn("get");
 				if (storage.favorites[gs].indexOf(category) === -1) {
 					storage.favorites[gs].push(category);
-					storage = catnav.fn.storage("set", storage);
-					catnav.fn.insertFavorite(category);
+					storage = storageFn("set", storage);
+					insertFavorite(category);
 				}
 			}
 		});
 		// importing global categories
 		$("#catnav-commoncats-global-import").click(function() {
-			catnav.fn.addGlobalFavorites();
+			addGlobalFavorites();
 		});
 		// initiating favorites
 		$(function() {
-			var storage = catnav.fn.storage("get"),
-				gs = catnav.data.globalString,
+			var storage = storageFn("get"),
+				gs = globalString,
 				fave = storage.favorites[gs],
 				i;
 			for (i = 0; i < fave.length; i++) {
-				catnav.fn.insertFavorite(fave[i]);
+				insertFavorite(fave[i]);
 			}
 		});
 		// export global categories
 		$("#catnav-commoncats-global-export").click(function() {
-			$("#catnav-export-modal-textarea").val(catnav.fn.exportGlobalFavorites());
+			$("#catnav-export-modal-textarea").val(exportGlobalFavorites());
 			$("#catnav-export-modal").css("display", "flex");
 			$("#catnav-export-modal-textarea").select();
 		});
@@ -906,10 +882,10 @@ $(function() {
 		});
 		// mark as ready
 		document.body.dispatchEvent(new Event("catnavready"));
-	};
+	}
 
 	// set contrast color
-	catnav.fn.contrastfy = function(colorValue) {
+	function contrastfy(colorValue) {
 		// myst use canvas because apparently sometimes the color value will be a color name and not a convertable hex value
 		var c = document.createElement("canvas"),
 			ctx,
@@ -927,85 +903,107 @@ $(function() {
 		contrast = contrast.toString(16);
 		contrast = contrast.length == 2 ? contrast : "0" + contrast;
 		return "#" + new Array(4).join(contrast);
-	};
+	}
 
 	// seal ui fields while searching
-	catnav.fn.sealUI = function() {
+	function sealUI() {
 		$("nav#catnav .catnav-gui-group").find("textarea, input").attr("disabled", "disabled");
 	}
-	catnav.fn.unsealUI = function() {
+	function unsealUI() {
 		$("nav#catnav .catnav-gui-group").find("textarea, input").removeAttr("disabled");
 	}
-
-	/* ================================== *\
-		# implementations
-	\* ================================== */
-
-	// check if the page is [[Special:CatNav]]
-	if (mw.config.get("wgNamespaceNumber") === -1 && mw.config.get("wgTitle") == "CatNav") {
-		/* css */
-		if (window.importArticle) {
-			// fandom
-			importArticle({
-				type: 'style',
-				article: 'u:dev:MediaWiki:CatNav.css'
-			});
+	
+	function init() {
+		/* ================================== *\
+			# global CatNav object management
+		\* ================================== */
+		var catnav = {};
+		if (catnav._g instanceof Object) {
+			// global CatNav is an object
+			if (Array.isArray(catnav._g.storage)) {
+				// import+export storage - base url to hosting wiki
+				cndata.storage.url = catnav._g.storage[0];
+				cndata.storage.scriptPath = catnav._g.storage[1];
+			} else if (catnav._g.hasOwnProperty("storage")) {
+				customConsole.error("catnav :: global 'CatNav.storage' has been defined, but it is not a valid array");
+			}
 		} else {
-			// gamepedia
-			(function(c) {
-				c.rel = "stylesheet";
-				c.type = "text/css";
-				c.href = "https://dev.fandom.com/wiki/MediaWiki:CatNav.css?action=raw&ctype=text/css";
-				document.head.appendChild(c);
-			}(document.createElement("link")));
+			// window.CatNav has not been defined - define it
+			window.CatNav = {};
 		}
+		if (window.CatNav.debug !== true) {
+			customConsole.debug = false;
+		}
+	
+
+		/* ================================== *\
+			# implementations
+		\* ================================== */
+
+		importArticles({
+			type: 'script',
+			articles: 'u:dev:MediaWiki:I18n-js/code.js'
+		});
+		/* css */
+		importArticle({
+			type: 'style',
+			article: 'u:dev:MediaWiki:CatNav.css'
+		});
 		// redefine results counter
 		mw.util.addCSS(
-			'#catnav-resultscounter {\n' +
+			'#catnav-resultscounter {' +
 				// support for pre-ucp, ucp-compatible, fandom desktop, and legacy gamepedia
 				// intentionally not adding fallback (e.g. 'document.body') as possible layout changes in the future might make detecting style issues problematic
-				'\tcolor: ' + catnav.fn.contrastfy(getComputedStyle(document.querySelector("section#WikiaPageBackground") || document.querySelector(".WikiaPageContentWrapper") || document.querySelector("main.page__main") || document.querySelector("body > #global-wrapper > #pageWrapper > #content")).backgroundColor) + ';\n' +
+				'color: ' + contrastfy(getComputedStyle(document.querySelector("section#WikiaPageBackground") || document.querySelector(".WikiaPageContentWrapper") || document.querySelector("main.page__main") || document.querySelector("body > #global-wrapper > #pageWrapper > #content")).backgroundColor) + ';' +
 			'}' +
-			'#catnav .catnav-gui-group {\n' +
-				'\tborder: 1px solid ' + getComputedStyle(document.body).backgroundColor + ';\n' +
-            '}\n'
+			'#catnav .catnav-gui-group {' +
+				'border: 1px solid ' + getComputedStyle(document.body).backgroundColor + ';' +
+	        '}\n'
 		);
-
+	
 		/* document title */
 		document.title = document.title.split(" | ").map(function(a, b) {
 			return b === 0 ? "CatNav" : a;
 		}).join(" | ");
-
+	
 		/* markup */
-		// export modal (main content loaded using 'catnav.fn.init'
+		// export modal (main content loaded using 'initMain'
 		$("body").append(
-			'<nav id="catnav-export-modal">\n' +
-				'\t<nav id="catnav-export-modal-content">\n' +
-					'\t\t<h3>\n' +
-						'\t\t\tExport favorites\n' +
-						'\t\t\t<span id="catnav-export-modal-close" />\n' +
-					'\t\t</h3>\n' +
-					'\t\t<p>\n' +
-						'\t\t\tCopy the following data and paste it in the bottom of your <a href="//community.fandom.com/wiki/Special:MyPage/catnav.css">global settings</a>.<br />\n' +
-						'\t\t\tIn case you have previously created global favorites list for the current wiki, you might want to merge the two lists.\n' +
-					'\t\t</p>\n' +
-					'\t\t<textarea id="catnav-export-modal-textarea"></textarea>\n' +
-				'\t</nav>'+
+			'<nav id="catnav-export-modal">' +
+				'<nav id="catnav-export-modal-content">' +
+					'<h3>' +
+						msg('exportFavs').escape() +
+						'<span id="catnav-export-modal-close" />' +
+					'</h3>' +
+					'<p>' +
+						msg('copyAndPaste').parse() + '<br />' + msg('mergeTwo').escape() +
+					'</p>' +
+					'<textarea id="catnav-export-modal-textarea"></textarea>' +
+				'</nav>'+
 			'</nav>'
 		);
 		// update titles
 		$(".page-header__title").html("CatNav");
-
+	
 		// init
-		catnav.fn.init();
-
+		initMain();
+	
 		// provide global access
-		CatNav.init = catnav.fn.init;
+		window.CatNav.init = initMain;
+	}
+	// check if the page is [[Special:CatNav]]
+	if (config.wgNamespaceNumber === -1 && config.wgTitle === "CatNav") {
+		mw.hook('dev.i18n').add(function (i18n) {
+			i18n.loadMessages('CatNav').done(function (i18no) {
+				msg = i18no.msg;
+				init();
+			});
+		});
 	} else {
 		// this is not [[Special:CatNav]]
-		CatNav.init = function() {
-			catnav.console.warn("catnav :: 'CatNav.init' was requested, but has not been defined on [[Special:CatNav]]");
+		window.CatNav.init = function() {
+			customConsole.warn("catnav :: 'CatNav.init' was requested, but has not been defined on [[Special:CatNav]]");
 		};
 	}
-});
+})(window, window.jQuery, window.mediaWiki);
 /* </nowiki> */

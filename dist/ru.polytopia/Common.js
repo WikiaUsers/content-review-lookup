@@ -40,14 +40,6 @@ importArticles({
     ]
 });
 
-/* CategoryQuickRemove */
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:CategoryQuickRemove.js',
-    ]
-});
-
 /* UserBadge */
 importArticles({
     type: 'script',

@@ -558,7 +558,7 @@ function clearElement() {
     /* Data to be used by any script */
     var game;
     game = {};
-    game.worlds = ["Adra", "Alumbra", "Antica", "Ardera", "Astera", "Axera", "Bastia", "Batabra", "Belobra", "Bombra", "Bona", "Cadebra", "Calmera", "Castela", "Celebra", "Celesta", "Collabra", "Damora", "Descubra", "Dibra", "Epoca", "Esmera", "Famosa", "Fera", "Ferobra", "Firmera", "Gentebra", "Gladera", "Harmonia", "Havera", "Honbra", "Illusera", "Impulsa", "Inabra", "Issobra", "Kalibra", "Karna", "Libertabra", "Lobera", "Luminera", "Lutabra", "Marbera", "Marcia", "Menera", "Monza", "Mudabra", "Mykera", "Nadora", "Nefera", "Nossobra", "Ocebra", "Olima", "Ombra", "Optera", "Pacera", "Peloria", "Premia", "Quelibra", "Quintera", "Refugia", "Reinobra", "Seanera", "Secura", "Serdebra", "Solidera", "Suna", "Talera", "Tembra", "Thyria", "Trona", "Utobra", "Venebra", "Versa", "Visabra", "Vunira", "Wintera", "Wizera", "Xandebra", "Yonabra", "Zenobra", "Zuna", "Zunera"];
+    game.worlds = ["Adra", "Alumbra", "Antica", "Ardera", "Astera", "Axera", "Bastia", "Batabra", "Belobra", "Bombra", "Bona", "Cadebra", "Calmera", "Castela", "Celebra", "Celesta", "Collabra", "Damora", "Descubra", "Dibra", "Epoca", "Esmera", "Famosa", "Fera", "Ferobra", "Firmera", "Gentebra", "Gladera", "Harmonia", "Havera", "Honbra", "Illusera", "Impulsa", "Inabra", "Issobra", "Kalibra", "Kardera", "Karna", "Libertabra", "Lobera", "Luminera", "Lutabra", "Marbera", "Marcia", "Menera", "Monza", "Mudabra", "Mykera", "Nadora", "Nefera", "Nossobra", "Ocebra", "Olima", "Ombra", "Optera", "Ousabra", "Pacera", "Peloria", "Premia", "Quelibra", "Quintera", "Refugia", "Reinobra", "Seanera", "Secura", "Serdebra", "Solidera", "Suna", "Syrena", "Talera", "Tembra", "Thyria", "Trona", "Utobra", "Venebra", "Versa", "Visabra", "Vunira", "Wintera", "Wizera", "Xandebra", "Yonabra", "Zenobra", "Zuna", "Zunera"];
     game.worldIds = (function (worlds) {
         // Map worlds to IDs
         var obj = {}, len = worlds.length;
@@ -792,7 +792,6 @@ $("#twbox h1, #twbox h2, #twbox h3, #twbox h4, #twbox h5, #twbox h6").each(funct
 
 
 /* Fix pixel-art images */
-/*
 $(function(){
 	function reload_imgs(target) {
 		var srcvar = $(target).attr('src');
@@ -823,7 +822,7 @@ $(function(){
 		}
 	});
 });
-*/
+
 /* Bypassing license check on multiple upload */
 mw.config.set('UMFBypassLicenseCheck',true);
 

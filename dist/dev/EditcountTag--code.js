@@ -5,10 +5,7 @@
  * @author: [[w:User:Slyst]]
  */
 (function() {
-    if (
-        $('#UserProfileMasthead, #userProfileApp').length === 0 ||
-        window.EditcountTagLoaded
-    ) {
+    if (!mw.config.get('profileUserName') || window.EditcountTagLoaded) {
         return;
     }
     window.EditcountTagLoaded = true;

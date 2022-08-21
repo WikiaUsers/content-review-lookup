@@ -1,6 +1,6 @@
 /**
  * @name            PreferenceLinks
- * @version         v1.1
+ * @version         v1.2
  * @author          TheGoldenPatrik1
  * @description     Creates a WDS dropdown menu with links to Preferences.
  */
@@ -36,7 +36,6 @@ mw.loader.using([
 		'prefs-editing',
 		'prefs-rc',
 		'prefs-watchlist',
-		'prefs-auth',
 		'prefs-gadgets',
 		'fd-global-navigation-user-my-preferences'
 	];
@@ -51,7 +50,6 @@ mw.loader.using([
 		'editing',
 		'rc',
 		'watchlist',
-		'auth',
 		'gadgets'
 	];
 	/**

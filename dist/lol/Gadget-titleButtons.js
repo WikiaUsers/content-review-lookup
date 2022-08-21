@@ -7,12 +7,7 @@ $(function() {
 		var text = mw.config.get('wgTitle');
 		text = text.replace(/WhatLinksHere\/(.+?:)?/,'');
 		text = text.replace(/MovePage\/(.+?:)?/,'');
-		var copyEl = document.createElement('textarea');
-		copyEl.value = text.replace(/_/g,' ');
-		document.body.appendChild(copyEl);
-		copyEl.select();
-		document.execCommand('copy');
-		document.body.removeChild(copyEl);
+		navigator.clipboard.writeText(text);
 		$('#title-copy-content').css('color','green');
 		setTimeout(function() {
 			$('#title-copy-content').css('color','');
@@ -22,13 +17,7 @@ $(function() {
 		var text = mw.config.get('wgPageName');
 		text = text.replace(/Special:WhatLinksHere\//,'');
 		text = text.replace(/Special:MovePage\//,'');
-		var copyEl = document.createElement('textarea');
-		copyEl.value = text.replace(/_/g,' ');
-		document.body.appendChild(copyEl);
-		copyEl.select();
-		document.execCommand('copy');
-		document.body.removeChild(copyEl);
-		document.execCommand('copy');
+		navigator.clipboard.writeText(text);
 		$('#title-copy-all').css('color','green');
 		setTimeout(function() {
 			$('#title-copy-all').css('color','');

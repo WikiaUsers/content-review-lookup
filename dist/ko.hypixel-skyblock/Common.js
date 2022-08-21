@@ -8,7 +8,6 @@ Any JavaScript here will be loaded for all users on every page load.
  * (Y00) importScripts (at top, so it doesn't get affected by other scripts)
  * (W00) Small scripts
  * (W01) Scripts that are attached to wikipage content load
- * (B00) Element animator
  * (C00) My Block ID
  * (D00) Anchor Hash Links
  * (Y01) Less
@@ -33,11 +32,12 @@ Any JavaScript here will be loaded for all users on every page load.
 
 /* global mw, importScripts, BannerNotification */
 
-// code snippet from https://stackoverflow.com/questions/47207355/copy-to-clipboard-using-jquery
+// code snippet from https://stackoverflow.com/questions/46041831/copy-to-clipboard-with-break-line
 function copyToClipboard(text) {
-    var $temp = $("<input>");
+    var $temp = $("<textarea>");
+    var brRegex = /<br\s*[\/]?>/gi;
     $("body").append($temp);
-    $temp.val(text).select();
+    $temp.val(text.replace(brRegex, "\r\n")).select();
     document.execCommand("copy");
     $temp.remove();
     if (BannerNotification)
@@ -89,7 +89,8 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     // ES6 scripts needs to be imported here
     // (for convenience to promptly disable any script at any time)
     importScripts([
-        "MediaWiki:Common.js/skydate.js"
+        "MediaWiki:Common.js/skydate.js",
+        "MediaWiki:Common.js/search.js"
     ]);
 
     //##############################################################
@@ -339,34 +340,6 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     $(".scribunto-error").text("There was a problem when loading this.");
     $(".scribunto-error").eq(0).text("There was a problem when loading this. Refresh and contact the admins if the issue persists.");
 
-    // Code to allow making {{Slot}} clickable to show different content [Part 1/2]
-    function clickTab(id) {
-        var $parent = $(this).parents(".sbw-ui-tabber").eq(0);
-        id = "ui-" + id;
-        if (!$("#" + id).length) {
-            console.warn("No such tab ID \"" + id + "\"");
-            return;
-        }
-        $parent.find(".sbw-ui-tab-content#" + id).siblings(".sbw-ui-tab-content").addClass("hidden").hide();
-        $parent.find(".sbw-ui-tab-content#" + id).removeClass("hidden").show();
-        // Since images don't load on hidden tabs, force them to load
-        var onloadEl = $parent.find(".sbw-ui-tab-content#" + id + " .lzy[onload]");
-        if (onloadEl.length) onloadEl.load();
-    }
-
-    $(document.body).on("click", ".sbw-ui-tabber .sbw-ui-tab", function (e) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-
-        var id = $(this).data("tab");
-        if (id)
-            clickTab.call(this, id);
-    });
-    $(document.body).on("click", ".sbw-ui-tabber .invslot[class*='goto-'] a", function (e) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-    });
-
     //##############################################################
     /* ==Scripts that are attached to wikipage content load== (W01)*/
 
@@ -396,114 +369,6 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                 id: id,
             }).appendTo("head");
         });
-
-        // Code to allow making {{Slot}} clickable to show different content [Part 2/2]
-        (function () {
-            if (!pSection.find(".sbw-ui-tabber").length) return;
-
-            // .hidden works on mobile, but not on desktop
-            pSection.find(".sbw-ui-tab-content.hidden").hide();
-
-            pSection.find(".sbw-ui-tabber .invslot").each(function () {
-                var classes = Array.from($(this).get(0).classList).filter(function (c) {
-                    return c.indexOf("goto-") === 0 || c.indexOf("ui-") === 0;
-                });
-                if (classes.length) {
-                    var className = classes[(classes.length) - 1]
-                        .replace("goto-", "")
-                        .replace("ui-", "");
-                    $(this).click(clickTab.bind(this, className));
-                }
-            });
-
-            // makes an extra button to go back to the first UI tab
-            pSection.find(".sbw-ui-tabber").each(function () {
-                var elementId = $(this).find(":first-child").attr("id");
-                if (!elementId) return;
-                var className = elementId.replace("ui-", "");
-                $(this).find(".mcui").append(
-                    $("<div>").addClass("mcui-returnbutton noselect")
-                    .attr("data-font-size", "22").text("↻")
-                    .click(function () {
-                        clickTab.call(this, className);
-                    })
-                );
-            });
-        })();
-    });
-
-    //##############################################################
-    /* ==Element animator== (B00)*/
-    // Taken from https://minecraft.gamepedia.com/MediaWiki:Gadget-site.js
-    /**
-     * Element animator
-     *
-     * Cycles through a set of elements (or "frames") on a 2 second timer per frame
-     * Add the "animated" class to the frame containing the elements to animate.
-     * Optionally, add the "animated-active" class to the frame to display first.
-     * Optionally, add the "animated-subframe" class to a frame, and the
-     * "animated-active" class to a subframe within, in order to designate a set of
-     * subframes which will only be cycled every time the parent frame is displayed.
-     * Animations with the "animated-paused" class will be skipped each interval.
-     *
-     * Requires some styling in wiki's CSS.
-     */
-
-    $(function () {
-
-        (function () {
-            var $content = $("#mw-content-text");
-            var advanceFrame = function (parentElem, parentSelector) {
-                var curFrame = parentElem.querySelector(parentSelector + " > .animated-active");
-                $(curFrame).removeClass("animated-active");
-                var $nextFrame = $(curFrame && curFrame.nextElementSibling || parentElem.firstElementChild);
-                return $nextFrame.addClass("animated-active");
-            };
-
-            // Set the name of the hidden property
-            var hidden;
-            if (typeof document.hidden !== "undefined")
-                hidden = "hidden";
-            else if (typeof document.msHidden !== "undefined")
-                hidden = "msHidden";
-            else if (typeof document.webkitHidden !== "undefined")
-                hidden = "webkitHidden";
-
-            setInterval(function () {
-                if (hidden && document[hidden]) return;
-
-                $content.find(".animated").each(function () {
-                    if ($(this).hasClass("animated-paused")) return;
-
-                    var $nextFrame = advanceFrame(this, ".animated");
-                    if ($nextFrame.hasClass("animated-subframe")) {
-                        advanceFrame($nextFrame[0], ".animated-subframe");
-
-                        var hov = $(".invslot-item").filter(function () {
-                            return $(this).is(":hover");
-                        });
-                        if (hov.length)
-                            hov.eq(0).trigger("mouseenter");
-                    }
-                });
-            }, 2000);
-        }());
-
-        /**
-         * Pause animations on mouseover of a designated container (.animated-container and .mcui)
-         *
-         * This is so people have a chance to look at the image and click on pages they want to view.
-         */
-        $("#mw-content-text").on("mouseenter mouseleave", ".animated-container, .mcui", function (e) {
-            $(this).find(".animated").toggleClass("animated-paused", e.type === "mouseenter");
-        });
-
-        // A work around to force wikia's lazy loading to fire
-        setTimeout(function () {
-            var onloadEl = $(".animated .lzy[onload]");
-            if (onloadEl.length) onloadEl.load();
-        }, 1000);
-
     });
 
     //##############################################################
@@ -825,7 +690,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
 // preconnect: only do for external resources that are very frequently used
 $('head').append('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>');
-$('head').append('<link rel="preconnect" href="https://cdn.githubraw.com" crossorigin>');
+$('head').append('<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>');
 
 // AjaxRC
 window.ajaxRefresh = 30000;

@@ -13576,6 +13576,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "gust": {
+                "name": "Gust",
+                "types": [
+                    "elemental",
+                    "rainbow",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "hades": {
                 "name": "Hades",
                 "types": [
@@ -15405,6 +15422,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "7_hours_7",
                 "rarity": 3,
                 "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "ignition": {
+                "name": "Ignition",
+                "types": [
+                    "elemental",
+                    "yellow",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
                 "notes": [
                     "feature"
                 ]
@@ -22183,6 +22217,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "nordlight": {
+                "name": "Nordlight",
+                "types": [
+                    "elemental",
+                    "arcane",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "northern": {
                 "name": "Northern",
                 "types": [
@@ -24732,6 +24783,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "precious": {
+                "name": "Precious",
+                "types": [
+                    "elemental",
+                    "gemstone",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "predator": {
                 "name": "Predator",
                 "types": [
@@ -26943,6 +27011,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "18_hours_18",
                 "rarity": 4,
                 "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "rock": {
+                "name": "Rock",
+                "types": [
+                    "elemental",
+                    "stone",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
                 "notes": [
                     "feature"
                 ]
@@ -35087,6 +35172,34 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "wave": {
+                "name": "Wave",
+                "types": [
+                    "elemental",
+                    "blue",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "blue"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "waveracer": {
                 "name": "Wave Racer",
                 "types": [
@@ -35755,6 +35868,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "17_hours_17",
                 "rarity": 3,
                 "offspringeligibility": "expired"
+            },
+            "wind": {
+                "name": "Wind",
+                "types": [
+                    "elemental",
+                    "yellow",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "25_hours_25",
+                "rarity": 4,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
             },
             "winddancer": {
                 "name": "Winddancer",

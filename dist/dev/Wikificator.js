@@ -2209,7 +2209,7 @@
         // new ve doesn't have data().origtext
         var wikiEditor = $('#wpTextbox1').wikiEditor ? $('#wpTextbox1').wikiEditor() : null,
             weData = wikiEditor ? wikiEditor.data() : null;
-        return weData && weData.hasOwnProperty('origtext');
+        return weData && weData.hasOwnProperty('origtext') || wikificator.forced;
     };// isOldVeActive
 
     p.activateSourceMode = function activateSourceMode () {

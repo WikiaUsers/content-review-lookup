@@ -30,7 +30,8 @@ mw.loader.using( [
     const conf = mw.config.get( [
         'wgContentLanguage',
         'wgFormattedNamespaces',
-        'wgCityId'
+        'wgCityId',
+        'wgServerName'
     ] );
 
     var self = {};
@@ -62,7 +63,8 @@ mw.loader.using( [
 
         mw.cookie.set( self.cacheKey, cacheValue, {
             prefix: self.cachePrefix,
-            expires: self.cacheDuration
+            expires: self.cacheDuration,
+            domain: conf.wgServerName
         } );
     };
 

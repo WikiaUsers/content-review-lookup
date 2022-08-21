@@ -68,6 +68,11 @@
 			styles: 'MediaWiki:BalancedUCX.css'
 		},
 		
+		BringExternalLinkIconsBack: {
+			page: 'BringExternalLinkIconsBack',
+			styles: 'MediaWiki:BringExternalLinkIconsBack.css'
+		},
+		
         CalendarWidget: {
             page: 'Global_Lua_Modules/Calendar_widget',
             styles: 'MediaWiki:Global_Lua_Modules/Calendar_widget.css'
@@ -76,6 +81,11 @@
 		ClassicDevWikiTheme: {
 			page: 'ClassicDevWikiTheme',
 			styles: 'MediaWiki:ClassicDevWikiTheme.css'
+		},
+		
+		CodeblockLineNumbers: {
+			page: 'MediaWiki:CodeblockLineNumbers/code.js',
+			styles: 'MediaWiki:CodeblockLineNumbers/code.js'
 		},
 		
         Contextlink: {
@@ -97,6 +107,9 @@
             page: 'DiscordBanner',
             scripts: 'MediaWiki:DiscordBanner.js',
             exec: function () {
+                window.DiscordBannerSettings = {
+                    inviteLink: 'wPrVUj4'
+                };
                 console.log('[DemoScripts] We\'re on the DiscordBanner page, so I hid the Discord rail module.');
                 mw.util.addCSS('#WikiaRail .discord-module { display: none; }');
             }
@@ -179,7 +192,8 @@
 		
         Fandom95: {
             page: 'Fandom95',
-            styles: 'MediaWiki:Fandom95.css'
+            styles: 'MediaWiki:Fandom95.css',
+            disabledByDefault: true
         },
 		
         FandomXP: {
@@ -212,7 +226,7 @@
         },
 		
 		FileLogs: {
-			page: 'File:QQX.png',
+			page: 'File:QQX_Oasis.png',
 			scripts: 'MediaWiki:FileLogs.js'
 		},
 		
@@ -295,11 +309,6 @@
 	    ListGroupMembers: {
 			page: 'Special:BlankPage',
 			scripts: 'MediaWiki:ListGroupMembers.js'
-		},
-		
-		ListSubpages: {
-			page: 'Special:BlankPage',
-			scripts: 'MediaWiki:ListSubpages.js'
 		},
 		
 		LocalNavExploreIcons: {
@@ -418,11 +427,6 @@
             page: 'OldFandomColors',
             styles: 'MediaWiki:OldFandomColors.css',
             scripts: 'MediaWiki:OldFandomColors.js'
-        },
-        
-        OldOasisTheme: {
-            page: 'OldOasisTheme',
-            styles: 'MediaWiki:OldOasisTheme.css'
         },
         
         OldWikiaBar: {
@@ -613,7 +617,7 @@
             page: 'WantedPagesFilter',
             scripts: 'MediaWiki:WantedPagesFilter/code.js',
             exec: function () {
-                window.wgCanonicalSpecialPageName = 'Wantedpages';
+                mw.config.set('wgCanonicalSpecialPageName', 'Wantedpages');
             }
         },
         
@@ -662,12 +666,7 @@
                     Core.renderer.fromPage(conf.wgPageName);
                 });
             },
-        },
-    	YouTubeModal: {
-        	'page': 'YouTubeModal',
-        	'scripts': 'MediaWiki:YouTubeModal/code.js',
-        	'styles': 'MediaWiki:YouTubeModal.css'
-    	}
+        }
     };
 
     function merge (other) {

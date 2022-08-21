@@ -114,10 +114,10 @@ mw.loader.using(['mediawiki.util', 'mediawiki.template.mustache']).then(function
             if (mw.util.getParamValue('user') && mw.util.getParamValue('tag')) {
                 discordHandle = mw.util.getParamValue('user') + '#' + mw.util.getParamValue('tag');
             }
-            // Custom commands (e.g. !wiki verify for Wiki-Bot)
+            // Custom commands (e.g. /verify for Wiki-Bot)
             var customCommand = mw.util.getParamValue('c');
             if (customCommand === 'wb') {
-                command = '!wiki verify';
+                command = '/verify username:';
             } else if (customCommand) {
                 command = customCommand;
             } else if (window.dev.VerifyUser.command) {

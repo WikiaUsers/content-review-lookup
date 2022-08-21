@@ -52,20 +52,22 @@ function CosmeticExpandingButton(){
 	
 	$('span.divButton').click(function() {
     var expandableArea = $('.' + this.id);
-    var offsetValue = expandableArea.children();
+    var underlyingOutfitPieces = expandableArea.children();
     var cosmeticTable = $(this).closest('.cosmeticTable');
-    var expandString = $('expandString').text();
-    var collapseString = $('collapseString').text();
-    //console.log("click executed - " + parseInt(cosmeticTable.css("height"), 10));//(offsetValue.length * parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) + 'px'));
+    var expandString = $('#expandString').text();
+    var collapseString = $('#collapseString').text();
+    var baseHeight = parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) 
+    				+ 2 * parseInt(getComputedStyle(document.body).getPropertyValue('--headerHeight'), 10);
+    var openedHeight = baseHeight + (underlyingOutfitPieces.length) * parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10);
     
     if(parseInt(cosmeticTable.css("height"), 10) > parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) + 2 * parseInt(getComputedStyle(document.body).getPropertyValue('--headerHeight'), 10)){
         $(this).text("⇓ " + expandString + " ⇓");
-        cosmeticTable.css("height", '-=' + (offsetValue.length) * parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) + 'px');
+        cosmeticTable.css("height", baseHeight + 'px');
     }
     else
     {
         $(this).text("⇑ " + collapseString + " ⇑");
-        cosmeticTable.css("height", '+=' + (offsetValue.length) * parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) + 'px');
+        cosmeticTable.css("height", openedHeight + 'px');
     }
 });
 }

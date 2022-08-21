@@ -9,13 +9,9 @@
             }, {
                 type: 'style',
                 article: 'MediaWiki:Itemsearch.css'
-            }, {
-            	type: 'script',
-                article: 'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'
             });
         });
     }
-    
     /*End: Item Search*/
 /*Blanch Item Search*/
     if (mw.config.get('wgPageName') === 'BlanchTestPage') {
@@ -30,3 +26,7 @@
         });
     }
     /*End: Item Search*/
+
+
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.pibox = true;

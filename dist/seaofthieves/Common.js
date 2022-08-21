@@ -6,9 +6,11 @@ var vids = document.getElementsByClassName("autoloop");
 for (var i = 0; i < vids.length; i++){
     vids[i].autoplay = true;
     vids[i].loop = true;
+    vids[i].muted = true;
 }
 
 var vids = document.getElementsByClassName("loop");
 for (var i = 0; i < vids.length; i++){
     vids[i].loop = true;
+    vids[i].muted = true;
 }

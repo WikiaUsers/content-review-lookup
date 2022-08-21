@@ -185,7 +185,7 @@
                 msgs.cqrFailWrite = i18n.msg('cqr-fail-write').plain();
             });
         });
-        if (!window.dev || !window.dev.i18nbeta) importArticle({type: 'script', article: 'u:dev:I18n-js/beta.js'});
+        if (!window.dev || !window.dev.i18nbeta) importArticle({type: 'script', article: 'u:dev:MediaWiki:I18n-js/beta.js'});
     }// i18nLoad
     
     cfg.debug = cfg.debug || urlVars.get('debug') || urlVars.get('debug1');

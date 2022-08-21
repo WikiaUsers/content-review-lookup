@@ -1,4 +1,4 @@
-/* jshint jquery: true, maxerr: 99999999, esversion: 5, undef: true */
+/* jshint jquery: true, maxerr: 99999999, esversion: 5, undef: true, esnext: false */
 
 // Taken from https://minecraft.gamepedia.com/MediaWiki:Common.js
 // Creates minecraft style tooltips
@@ -8,6 +8,7 @@
 
 $(function () {
     "use strict";
+    window.minetipConfig = window.minetipConfig || {};
     (window.updateTooltips = (function () {
         var escapeChars = {
             "\\&": "&#38;",
@@ -30,7 +31,7 @@ $(function () {
         };
 
         $(document.body).on({
-            "mouseenter.minetip": function (e, trigger, x, y) {
+            "mouseenter": function (e, trigger, x, y) {
                 $tooltip.remove();
 
                 var $elem = $(this),
@@ -43,7 +44,7 @@ $(function () {
                     }
                 }
 
-                var $follow = $elem.find(".slot-image-follow");
+                var $follow = $elem.find(".invslot-pickup");
                 if ($follow.length !== 0 && $follow.is(":visible")) {
                     $elem.trigger("mouseleave");
                     return;
@@ -84,18 +85,18 @@ $(function () {
                     return;
                 }
 
-                var content = "<span class=\"minetip-title format-7\">&7" + escape(title) + "&r</span>";
+                var content = "<span class=\"minetip-title\">&f" + escape(title) + "&r</span>";
 
                 var description = $.trim($elem.attr("data-minetip-text"));
                 if (description) {
                     // Apply normal escaping plus "/"
                     description = escape(description).replace(/\\\\/g, "&#92;").replace(/\\\//g, "&#47;");
-                    content += "<span class=\"minetip-description format-7\">&7" + description.replace(/\//g, "&r<br>") + "&r</span>";
+                    content += "<span class=\"minetip-description\">&f" + description.replace(/\//g, "&r<br>") + "&r</span>";
                 }
 
                 // Add classes for minecraft formatting codes
                 while (content.search(/&[0-9a-fk-o]/) > -1) {
-                    content = content.replace(/&([0-9a-fk-o])(.*?)(&r|$)/g, "<span class=\"format-$1\">$2&r</span>");
+                    content = content.replace(/&([0-9a-fk-o])(.*?)(&[0-9a-fr]|$)/g, "<span class=\"format-$1\">$2&r</span>$3");
                 }
                 // Remove reset formatting
                 content = content.replace(/&r/g, "");
@@ -112,13 +113,13 @@ $(function () {
                 // Trigger a mouse movement to position the tooltip
                 $elem.trigger("mousemove", [e || trigger, x, y]);
             },
-            "mousemove.minetip": function (e, trigger, x, y) {
+            "mousemove": function (e, trigger, x, y) {
                 if (!$tooltip.length) {
                     $(this).trigger("mouseenter", [e || trigger, x, y]);
                     return;
                 }
 
-                var $follow = $(this).find(".slot-image-follow");
+                var $follow = $(this).find(".invslot-pickup");
                 if ($follow.length !== 0 && $follow.is(":visible")) {
                     $(this).trigger("mouseleave");
                     return;
@@ -165,7 +166,7 @@ $(function () {
                     left: left
                 }).show();
             },
-            "mouseleave.minetip": function () {
+            "mouseleave": function () {
                 if (!$tooltip.length) {
                     return;
                 }
@@ -173,64 +174,31 @@ $(function () {
                 $tooltip.remove();
                 $tooltip = $();
             },
-        }, ".minetip, .invslot-item");
+        }, ".invslot .invslot-item, .minetip");
 
         $(document.body).on({
-            "mouseenter.invslot-item": function () {
-                var $links = $(this).find("a:not(.invslot-hover-overlay)");
-                switch ($(this).find(".invslot-hover-overlay").length) {
-                    case 0:
-                        $(this).append(
-                            $("<a>").addClass("invslot-hover-overlay").attr("href", $($links[0]).attr("href"))
-                        );
-                        break;
-                    case 1:
-                        break;
-                    default:
-                        $(this).find(".invslot-hover-overlay").each(function (i, el) {
-                            if (i) $(el).remove();
-                        });
-                        break;
-                }
-            },
             // pick up slot item for 300ms
             // allowed: left/right click
-            "mousedown.invslot-item": function (e) {
+            "mousedown": function (e) {
                 var $this = $(this);
-                if (e.which !== 2) {
-                    var $source = $this.find("img:first");
-                    if ($source.length !== 0) {
-                        var $target;
-                        switch ($this.find(".slot-image-follow").length) {
-                            case 0:
-                                $target = $source.clone();
-                                $target.addClass("slot-image-follow").appendTo($this.find(".invslot-hover-overlay"));
-                                break;
-                            case 1:
-                                $target = $this.find(".slot-image-follow");
-                                break;
-                            default:
-                                $this.find(".slot-image-follow").each(function (i, elm) {
-                                    if (i) elm.remove();
-                                    else $target = elm;
-                                });
-                                break;
-                        }
+                if (e.which !== 2 && !window.minetipConfig.noPickup) {
+                    var iid = $this.attr("data-iid");
+                    var $source = $this.find("img");
+                    if ((typeof iid === "string") || ($source.length > 0)) {
+                        var $target = $this;
+                        $target.addClass("invslot-pickup");
                         var offset = $this.offset();
                         $target.css({
                             "top": e.pageY - offset.top - 16,
                             "left": e.pageX - offset.left - 16,
                         }).show();
-                        $source.hide();
                         savedX = e.clientX, savedY = e.clientY;
                         $(document.body).on("mousemove", cacheMousemove);
                         $this.trigger("mouseleave");
                         var timer = setInterval(function () {
-                            $source.show();
-                            $target.css({
-                                "top": 0,
-                                "left": 0,
-                            }).hide();
+                            $target.css("top", ""); // removing top styling
+                            $target.css("left", ""); // removing left styling
+                            $target.removeClass("invslot-pickup");
                             $(document.body).off("mousemove", cacheMousemove);
                             $this.trigger("mousemove", [e, savedX, savedY]);
                             clearInterval(timer);
@@ -238,10 +206,10 @@ $(function () {
                     }
                 }
             },
-        }, ".invslot-item");
+        }, ".invslot .invslot-item");
 
         $(document.body).on("mousemove", function (e) {
-            $(".slot-image-follow").each(function () {
+            $(".invslot-pickup").each(function () {
                 if ($(this).is(":visible")) {
                     var offset = $(this).parent().offset();
                     $(this).css({
@@ -250,16 +218,12 @@ $(function () {
                     });
                 }
             });
+            if ($(".minetip:hover, .invslot .invslot-item:hover").length < 1 && $("#minetip-tooltip").length > 0)
+                $("#minetip-tooltip").remove();
         });
     })());
     (function () {
-        // The following list is taken from https://obfuscator.uo1.net/js/obfuscator.js
-        var strongObfuscator = "AÀÁÂÃÄÅĀĂĄǍǞǠȀȂȦΆΑАѦӐӒḀẠẢẤẦẨẬẶἈἉᾈᾉᾸᾹᾺᾼ₳ÅȺẮẰẲẴἌἎἏᾌΆǺẪBƁΒВḂḄḆCÇĆĈĊČƇʗСҪḈ₢₵ℂⅭϹϾҀDÐĎĐƉƊḊḌḎḐḒⅮEÈÉÊËĒĔĖĘĚȄȆȨΕЀЁЕӖḘḚḜẸẺẼẾỀỆḔḖỂỄԐℇƐἙῈЄFϜḞ₣ҒƑϝғҒ₣GĜĞĠĢƓǤǦǴḠ₲HĤĦȞΗНҢҤӇӉḢḤḦḨḪῌꜦIΊÌÍÎÏĨĪĬĮİƖƗǏȈȊΙΪІЇӀӏḬḮỈỊἸἹῘῙῚǐ1JĴʆЈʃKĶƘǨΚЌКԞḰḲḴ₭KLĹĻĽĿŁԼḶḸḺḼℒⅬ˪MΜМӍḾṀṂⅯNÑŃŅŇǸΝṄṆṈṊ₦ƝO0θϑ⍬ÒÓÔÕÖØŌŎŐƆƟƠǑǪǬǾȌȎȪȬȮȰΘΟϴОѲӦӨӪՕỌỎỐỒỔỘỚỜỞỠỢΌΌṌṐṒὈʘṎỖPƤΡРҎṔṖῬ₱ℙQԚℚRŔŖŘȐȒṘṚṜṞ℞ɌⱤSŚŜŞŠȘЅՏṠṢṨṤṦTŢŤŦƮȚΤТҬṪṬṮṰ₮ȾΊΊꚌUÙÚÛÜŨŪŬŮŰŲƯǓǕǗǛȔȖԱՍṲṴṶṸỤỦỨỪỬỮỰǙ⊍⊎Մ⊌ṺVѴѶṼṾ⋁ⅤƲWŴԜẀẂẄẆẈ₩ƜШXΧХҲẊẌⅩY¥ÝŶŸƳȲΥΫϓУҮҰẎỲỴỶỸῨῩZŹŻŽƵȤΖẐẒẔaàáâãäåāăąǎǟǡǻȁȃȧаӑӓḁẚạảấầẩẫậắằẳẵặɑάαἀἁἂἃἄἅἆἇὰάᾀᾁᾂᾃᾄᾅᾆᾇᾰᾱᾲᾳᾴᾶᾷ⍶⍺ɑbƀƃƅɒɓḃḅḇþϸƄьҍcçćĉċčƈςϛсҫḉⅽ¢ϲҁdďđɖɗḋḍḏḑḓⅾƌժ₫ðeèéêëēĕėęěȅȇȩеѐёҽҿӗḕḗḙḛḝẹẻẽếềểễệεɛϵєϱѳөӫɵfſḟẛƒғϝ£ƒgĝğġģǥǧǵɠɡգզցḡɕʛɢhĥħȟɦɧћիհḣḥḧḩḫẖℏһʜӊiį¡ìíîïĩīĭįıǐȉȋɨɩΐίιϊіїɪḭḯỉịἰἱἲἳὶίῑΐῐῒῖὶjĵǰȷɟʝјյϳkķĸƙǩκкҝҟḱḳḵlŀĺļľłƚǀɫɬɭḷḹḻḽŀ⎩ḹmɱḿṁṃ₥ⅿnɴñńņňŉŋƞǹɲɳήηπпբդըղոռրṅṇṉṋἠἡἢἣἤἥἦἧὴήᾐᾑᾒᾓᾔᾕᾖᾗῂῃῄῆῇიoòóôõöōŏőơǒǫǭȍȏȫȭȯȱʘοόоӧծձօṍṏṑṓọỏốồổỗộớờởỡợὀὁὂὃὄὅὸόσ๐pþρрҏթṕṗῤῥ⍴qʠԛգզϙrŕŗřȑȓɼɽгѓґӷṙṛṝṟгѓґӷsśŝşšșʂѕԑṡṣṥṧṩtţťŧƫțʈṫṭṯṱẗȶէե†ԷՒէȽҭuµùúûüũūŭůűųưǔǖǘǚǜȕȗɥμυцկմնսվևṳṵṷṹṻụủứừửữựvʋνѵѷүұṽṿⅴ∨ΰϋύὐὑὒὓὔὕὖὗὺύῠῡῢΰῦῧʋwŵԝẁẃẅẇẉẘxϰхҳẋẍⅹyýÿŷƴȳγуўӯӱӳẏẙỳỵỷỹʏzźżžƶȥʐʑẑẓẕ2ƻƨշ3ЗҘӞƷӠЗҘӞՅɜɝзҙӟ4ЧЧӴ5Ƽ6əǝә8ՑБƂГΓЃҐӶЖҖӜИЍӢӤЙҊЛӅԒΛПΠЦҴЬƄЫӸЪѢՒЭӬвʙʙɞжҗӂӝзƨɜɝӟиѝӥйҋӣкĸκќқҝҟҡԟлӆԓмӎнʜңҥӈӊцџҵчҷҹӌӵшɯաъѣыӹэǝɘəӭэӭ";
-
-        var availableInMinecraftFont = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,:;\'\"(!?)+-*/=";
-
-        // var listChoice = strongObfuscator; // due to some texts not displaying in Minecraft font I have to disable this
-        var listChoice = availableInMinecraftFont,
+        var listChoice = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÄÅÆÇÈÉÊËÍÑÓÔÕÖÚÜßàáâãäåæçèéêëìíîïñòóôõöùúûüÿğİıŒœŞşŴŵžȇ",
             listLength = listChoice.length;
 
         function genObfuscatedText() {

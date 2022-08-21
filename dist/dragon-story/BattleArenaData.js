@@ -6820,6 +6820,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"gust": {
+				"name": "Gust",
+				"colors": [
+					"elemental",
+					"rainbow",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"hades": {
 				"name": "Hades",
 				"colors": [
@@ -7775,6 +7784,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Ignis",
 				"colors": [
 					"elemental",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"ignition": {
+				"name": "Ignition",
+				"colors": [
+					"elemental",
+					"yellow",
 					"red"
 				],
 				"rarity": "unbreedable"
@@ -11011,6 +11029,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"nordlight": {
+				"name": "Nordlight",
+				"colors": [
+					"elemental",
+					"arcane",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
 			"northern": {
 				"name": "Northern",
 				"colors": [
@@ -12290,6 +12317,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"precious": {
+				"name": "Precious",
+				"colors": [
+					"elemental",
+					"gemstone",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"predator": {
 				"name": "Predator",
 				"colors": [
@@ -13322,6 +13358,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"white",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"rock": {
+				"name": "Rock",
+				"colors": [
+					"elemental",
+					"stone",
+					"green"
 				],
 				"rarity": "unbreedable"
 			},
@@ -17308,6 +17353,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"wave": {
+				"name": "Wave",
+				"colors": [
+					"elemental",
+					"blue",
+					"white"
+				],
+				"rarity": "common"
+			},
 			"waveracer": {
 				"name": "Wave Racer",
 				"colors": [
@@ -17622,6 +17676,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"black",
 					"pink",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"wind": {
+				"name": "Wind",
+				"colors": [
+					"elemental",
+					"yellow",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},

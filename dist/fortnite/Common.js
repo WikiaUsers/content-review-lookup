@@ -38,3 +38,9 @@ window.LockForums = {
     expiryDays: 14,
     expiryMessage: 'This thread is considered archived because it hasn\'t been commented on <expiryDays> days, please don\'t bump this thread!'
 };
+
+window.MessageBlock = {
+	title : 'You have been blocked',
+	message : 'You have received a $2 block with the reason being $1',
+	autocheck : true
+};

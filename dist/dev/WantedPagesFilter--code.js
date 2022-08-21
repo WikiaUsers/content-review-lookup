@@ -86,6 +86,11 @@ $(function() {
             var $this = this;
             $('.special li[data-ns="' + $this.value + '"]').css('display', state ? 'list-item' : 'none');
             activeFilter.push($this.value || '');
+            // 'all' has its own behavior
+            if ($this.value === 'all') {
+            	$('.special li[data-ns]').css('display', state ? 'list-item' : 'none');
+            	return false;// stop enumeration, cuz it was all
+            }
         });//each selected option
         window.sessionStorage.wpFilter = JSON.stringify(activeFilter);
     }//onChange
@@ -96,7 +101,7 @@ $(function() {
     //add ns data
     $('.special li').each(function() {
         var $this = $(this);
-        var $link = $this.find('a').first();
+        var $link = $this.find('a, span.new').first();// non-existing cats will be de-linked by the engine; use .new to detect a cat
         var ns = r.exec($link.text().trim()) || '';
         if (ns instanceof Array) ns = ns[1];
         if (Object.values(mwc.wgFormattedNamespaces).indexOf(ns) > -1) {
@@ -132,7 +137,8 @@ $(function() {
     }));
     
     //fill ns list
-    $.each(mwc.wgFormattedNamespaces, function(k, v) {
+    // the sorted one
+    Object.values(mwc.wgFormattedNamespaces).sort(function(p, n) {return p > n ? 1 : -1}).forEach(function(v) {
         $list.append($('<option>', {
             value: v,
             text: v || strings.nsmain

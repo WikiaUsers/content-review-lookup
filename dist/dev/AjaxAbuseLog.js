@@ -9,7 +9,7 @@
 	multistr: true, maxerr: 999999,
 	-W082, -W084, -W090, -W040
 */
-/* global mw */
+/* global mw, importArticles */
 mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ]).then(function() {
 	"use strict";
  
@@ -27,7 +27,8 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 		return;
 	}
 	window.ajaxAbuseLogInit = true;
- 
+
+	var msg;
 	var pagePathname = mw.config.get('wgArticlePath').replace('$1', '');
  
 	mw.util.addCSS('.mw-abuselog-details { width: 100% !important; } #ajax-abuselog-modal { width: 100% !important; height: 100% !important }');
@@ -72,9 +73,9 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 							"margin-top": "20.6%",
 						}
 					}),
-					title: "Abuse log details for entry " + id,
+					title: msg('abuselog-entry-title', id).plain(),
 					buttons: [{
-						text: "Open link",
+						text: msg('open-link').plain(),
 						href: pagePathname + "Special:AbuseLog/" + id,
 					}]
 				});
@@ -116,12 +117,8 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 								.html(),
 							title = $('fieldset a:nth-child(4)').html(),
 							summary = prompt(
-									'Please enter a summary in editing the page',
-									("Adding filtered edit by "
-									+ "[[Special:Contributions/" + user + "|" + user + "]] "
-									+ "([[User_talk:" + user + "|talk]]): "
-									+ userSummary)
-										.replace('undefined', '(no summary)')
+									msg('enter-summary').plain(),
+									(msg('abuselog-summary-filter', user, userSummary ? userSummary : msg('no-summary').plain()).plain())
 								);
 						
 						if (!summary) return logMsg('Edit cancelled');
@@ -138,30 +135,30 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 						}).always(function(data) {
 							var msg;
 							if (data.edit) {
-								msg = 'Successfully added the filtered edit.';
+								msg = msg('successful-add-filter').plain();
 								mw.notify(msg, { type: 'success' });
 								console.log(data);
 							} else {
-								msg = 'Failed to Edit "' + title + '": ' + data;
+								msg = msg('failed-edit', title, data).plain();
  
 								mw.notify(msg, { type: "warn" });
 								console.warn(msg);
 							}
 						});
 					}
-					if ($content.find('h3').first().html() === "Changes made in edit" && canAddEdit) {
+					if ($content.find('h3').first().html() === msg('abuselog-changes').plain() && canAddEdit) {
 						$content.find('h3').first().append(
 							$("<span>", {
 								style: "font-size: 80%",
 								html: [
 									"	(",
 									$('<a>', {
-										html: "Add filtered edit",
+										text: msg('add-filter').plain(),
 										click: addEdit,
 										css: {
 											cursor: "pointer"
 										},
-										title: "Add the filtered edit to the page"
+										title: msg('add-filter-tooltip').plain()
 									}),
 									")"
 								]
@@ -173,13 +170,13 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 						$('<div>', {
 							style: "margin-top: 2em",
 							html: [(id - 1) >= 0 ? $('<a>', {
-									html: "← Older Entry",
+									text: msg('older-entry').plain(),
 									href: pagePathname + 'Special:AbuseLog/' + (id - 1),
 									title: 'Special:AbuseLog/' + (id - 1),
 									style: "float: left; padding-left: 25%;",
 								}) : "",
 								exists ? $('<a>', {
-									html: "Newer Entry →",
+									text: msg('newer-entry').plain(),
 									href: pagePathname + 'Special:AbuseLog/' + (id + 1),
 									title: 'Special:AbuseLog/' + (id + 1),
 									style: "float: right; padding-right: 25%;",
@@ -193,50 +190,50 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 							' (',
 							$('<a>', {
 								href: pagePathname + title + "?action=edit",
-								html: "edit",
-								title: "Edit " + title,
+								text: msg('edit').plain(),
+								title: msg('edit-tooltip', title).plain(),
 							}),
 							' | ',
 							$('<a>', {
 								href: pagePathname + title + "?action=history",
-								html: "hist",
-								title: "History for " + title,
+								text: msg('history').plain(),
+								title: msg('history-tooltip', title).plain(),
 							}),
 							' | ',
 							$('<a>', {
 								href: pagePathname + title + "?diff=cur",
-								html: "latest edit",
-								title: "Latest Edit for " + title,
+								text: msg('latest-edit').plain(),
+								title: msg('latest-edit-tooltop', title).plain(),
 							}),
 							' | ',
 							$('<a>', {
 								href: pagePathname + 'Special:Log?page=' + title,
-								html: "logs",
-								title: "Logs for " + title,
+								text: msg('logs').plain(),
+								title: msg('logs-tooltip', title).plain(),
 							}),
 							' | ',
 							$('<a>', {
 								href: pagePathname + 'Special:AbuseLog?wpSearchTitle=' + title,
-								html: "abuse log",
-								title: "Abuse log for " + title,
+								text: msg('abuse-log').plain(),
+								title: msg('abuse-log-tooltip', title).plain(),
 							}),
 							' | ',
 							$('<a>', {
 								href: pagePathname + 'Special:Undelete/' + title,
-								html: "del. revisions",
+								text: msg('del-revisions').plain(),
 								title: 'Special:Undelete/' + title,
 							}),
 							' | ',
 							$('<a>', {
 								href: pagePathname + title + "?action=protect",
-								html: "protect",
-								title: "Protect " + title,
+								text: msg('protect').plain(),
+								title: msg('protect-tooltip', title).plain(),
 							}),
 							' | ',
 							$('<a>', {
 								href: pagePathname + 'Special:MovePage/' + title,
-								html: "move",
-								title: "Rename " + title,
+								text: msg('move').plain(),
+								title: msg('move-tooltip', title).plain(),
 							}),
 							')'
 						);
@@ -245,62 +242,62 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 						.find('footer')
 						.append(
 							canAddEdit ? $('<a>', {
-								html: 'Add filtered edit',
+								text: msg('add-filtered-edit-link').plain(),
 								click: addEdit,
-								title: 'Add the filtered edit to the page',
+								title: msg('add-filtered-edit-tooltip').plain(),
 								class: "qdmodal-button",
 							}) : "",
 							$('<a>', {
-								html: "Nuke",
+								text: msg('nuke-link').plain(),
 								title: "Special:Nuke/" + user,
 								href: pagePathname + "Special:BlankPage?blankspecial=nuke&returnto=Special:AbuseLog&nukeuser=" + user + "&returntoparams=wpSearchUser=" + user,
 								target: "_blank",
 								class: "qdmodal-button",
 							}),
 							$('<a>', {
-								html: "Block",
+								text: msg('block-link').plain(),
 								title: "Special:Block/" + user,
 								href: pagePathname + "Special:Block/" + user,
 								target: "_blank",
 								class: "qdmodal-button",
 							}),
 							$('<a>', {
-								html: "Unblock",
+								text: msg('unblock-link').plain(),
 								title: "Special:Unblock/" + user,
 								href: pagePathname + "Special:Unblock/" + user,
 								target: "_blank",
 								class: "qdmodal-button",
 							}),
 							$('<a>', {
-								html: "Abuse Log",
+								text: msg('abuse-log-title-link').plain(),
 								title: "Special:AbuseLog?wpSearchUser=" + user,
 								href: pagePathname + "Special:AbuseLog?wpSearchUser=" + user,
 								target: "_blank",
 								class: "qdmodal-button",
 							}),
 							$('<a>', {
-								html: "Logs",
+								text: msg('logs-link').plain(),
 								title: "Special:Log/" + user,
 								href: pagePathname + "Special:Log/" + user,
 								target: "_blank",
 								class: "qdmodal-button",
 							}),
 							$('<a>', {
-								html: "Del. Contribs",
+								text: msg('del-contribs-link').plain(),
 								title: "Special:DeletedContributions/" + user,
 								href: pagePathname + "Special:DeletedContributions/" + user,
 								target: "_blank",
 								class: "qdmodal-button",
 							}),
 							$('<a>', {
-								html: "Contribs",
+								text: msg('contribs-link').plain(),
 								title: "Special:Contributions/" + user,
 								href: pagePathname + "Special:Contributions/" + user,
 								target: "_blank",
 								class: "qdmodal-button",
 							}),
 							$('<a>', {
-								html: "Wall",
+								text: msg('wall-link').plain(),
 								title: "Message Wall:" + user,
 								href: pagePathname + "Message Wall:" + user,
 								target: "_blank",
@@ -315,18 +312,26 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 			});
 		});
 	}
- 
-	mw.loader.load([ "mediawiki.diff.styles", 'ext.abuseFilter']);
-	$(document.body).on("click", "a[href^=\"/wiki/Special:AbuseLog/\"]", main);
-	$(document.body).on('keydown', null, function(event) {
-		if (event.key === "ArrowLeft" && $("#ajax-abuselog-modal").length) {
-			$('h3 ~ div[style="margin-top: 2em"] > a:nth-child(1)').click();
-		} else if (event.key === "ArrowRight" && $("#ajax-abuselog-modal").length) {
-			$('h3 ~ div[style="margin-top: 2em"] > a:nth-child(2)').click();
-		}
+
+	mw.hook('dev.i18n').add(function (i18n) {
+		i18n.loadMessages('AjaxAbuseLog').done(function (i18no) {
+			msg = i18no.msg;
+			mw.loader.load([ "mediawiki.diff.styles", 'ext.abuseFilter']);
+			$(document.body).on("click", "a[href^=\"/wiki/Special:AbuseLog/\"]", main);
+			$(document.body).on('keydown', null, function(event) {
+				if (event.key === "ArrowLeft" && $("#ajax-abuselog-modal").length) {
+					$('h3 ~ div[style="margin-top: 2em"] > a:nth-child(1)').click();
+				} else if (event.key === "ArrowRight" && $("#ajax-abuselog-modal").length) {
+					$('h3 ~ div[style="margin-top: 2em"] > a:nth-child(2)').click();
+				}
+			});
+			logMsg('Successfully added click event handlers!');
+		});
 	});
-	logMsg('Successfully added click event handlers!');
- 
+	importArticles({
+		type: 'script',
+		articles: 'u:dev:MediaWiki:I18n-js/code.js'
+	});
 }).catch(function(error) {
 	console.warn(error);
 });

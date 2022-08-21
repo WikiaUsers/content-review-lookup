@@ -10,7 +10,7 @@
             $('button.hideapproved').hide();
             $('.content-review__table > tbody > tr').has('td:nth-child(2) > div:not(.content-review__status--unsubmitted)').hide();
         } else {
-            $('.content-review__table > tbody > tr').has('td:nth-child(2) > .content-review__status--live').hide();
+            $('.content-review__table > tbody > tr').has('td:nth-child(2) > .content-review__status--approved, td:nth-child(2) > .content-review__status--live').hide();
         }
     }
 

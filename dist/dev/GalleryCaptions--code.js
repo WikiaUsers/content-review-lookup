@@ -4,7 +4,6 @@
     fng.gc.version = '1.3';
     var mwc = mw.config.get(['wgEnableMediaGalleryExt']),
         reFilename = /([^\/]*?)\/revision\//i;
-    mwc.isUcp = mw.config.get('wgVersion') !== '1.19.24';
 
     function log() {
         var a = [].slice.call(arguments);
@@ -78,23 +77,21 @@
             setTimeout(function() {
                 // timeout, do not create multiple timers in case of fast closed lightbox
                 var $lb = $('#LightboxModal');
-                var thumbs = mwc.isUcp ? $lb.find('#LightboxCarouselContainer .carousel li') : ((window.Lightbox || {}).current || {}).thumbs;
+                var thumbs = $lb.find('#LightboxCarouselContainer .carousel li');
                 if (!$lb.length || !thumbs || !thumbs.length) return;
                 var $caption = $('<span>', {
                     class: 'gc-caption'
                 });
                 
                 function onClick (e) {
-                    var thumb = mwc.isUcp ? thumbs.filter('.active').find('img').get(0) : thumbs[window.Lightbox.current.index];
+                    var thumb = thumbs.filter('.active').find('img').get(0);
                     $caption.html(thumb.gcCaption || thumb.title || '');
                 }// onClick
                 
                 $lb.find('.content .toolbar').append($('<li>').append($caption));
                 $.each(thumbs, function(i, v) {
-                    if (mwc.isUcp) {
-                        var filename = reFilename.exec($(v).find('img').attr('src') || '');
-                        v.key = filename ? filename[1] : null;
-                    }
+                    var filename = reFilename.exec($(v).find('img').attr('src') || '');
+                    v.key = filename ? filename[1] : null;
                     if (!v.key) return false;
                     // decode key, cuz it encoded by weird way
                     var item = cache[encodeURIComponent(decodeURIComponent(v.key))];

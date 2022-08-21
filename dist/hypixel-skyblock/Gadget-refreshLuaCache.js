@@ -5,7 +5,8 @@ $( function () {
 		slot_aliases: { type:"simple", dataModule:"Inventory_slot/Aliases", mainModule:"Cache", prefixVar:"SLOT_ALIASES_PREFIX" },
 		item_api_data: { type:"simple", dataModule:"Item/ApiData/AsCacheTable", mainModule:"Cache", prefixVar:'ITEM_API_DATA_PREFIX' },
 		item_api_aliases: { type:"simple", dataModule:"Item/ApiAliases", mainModule:"Cache", prefixVar:'ITEM_API_ALIASES_PREFIX' },
-		crafting_aliases: { type:"simple", dataModule:"Crafting/Aliases", mainModule:"Cache", prefixVar:'CRAFTING_ALIASES_PREFIX' }
+		crafting_aliases: { type:"simple", dataModule:"Crafting/Aliases", mainModule:"Cache", prefixVar:'CRAFTING_ALIASES_PREFIX' },
+		minion_data: { type:"simple", dataModule:"Minion/Data", mainModule:"Cache", prefixVar:'MINION_DATA_PREFIX' }
 	},
 	BUTTON_ID = ".refresh-lua-cache";
 	

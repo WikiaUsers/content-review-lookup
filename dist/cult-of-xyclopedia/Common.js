@@ -38,7 +38,7 @@ UserTagsJS.modules.explode = {
 /*spoilers*/
 window.SpoilerAlertJS = {
     question: '[[Chaotix]] Only found spoilers, do you want to see them?',
-    yes: 'Yes, i wanna know',
+    yes: 'Yes, I wanna know',
     no: 'No, i do not',
     fadeDelay: 400
 };

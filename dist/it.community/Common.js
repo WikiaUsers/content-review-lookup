@@ -21,8 +21,8 @@ window.adoptInternational = {
         activityDays: 30,
         adminsDays: 60,
         permissionTypes: [
-            'bureaucrat',
-            'sysop'
+            'sysop',
+            'content-moderator'
         ]
     },
     pageConfig: {

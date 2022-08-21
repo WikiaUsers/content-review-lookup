@@ -29,7 +29,7 @@ UserTagsJS.modules.custom = {
 	'Lubitel obnimashek': ['intern'],
 	'JustAccount': ['intern'],
 	'Swit4er': ['translator'],
-	'JekaKud': ['intern']
+	'Fleshka5856': ['intern']
 }
 
 /* ========== Выделение комментариев статусников ========== */
@@ -46,7 +46,7 @@ setInterval(function () {
     $('.wds-avatar a[href$="LeraBE"]').closest('.Reply, .Reply_body__PM9kM').addClass('discordMod');
     $('.wds-avatar a[href$="Lubitel%20obnimashek"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
     $('.wds-avatar a[href$="JustAccount"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
-    $('.wds-avatar a[href$="JekaKud"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
+    $('.wds-avatar a[href$="Fleshka5856"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
     $('.wds-avatar a[href$="Creepy%20Owl "]').closest('.Reply, .Reply_body__PM9kM').addClass('contMod');
     $('.wds-avatar a[href$="Lefsy"]').closest('.Reply, .Reply_body__PM9kM').addClass('contMod');
     $('.wds-avatar a[href$="Lich%20night"]').closest('.Reply, .Reply_body__PM9kM').addClass('threadmod');

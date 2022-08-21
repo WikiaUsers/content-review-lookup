@@ -41,8 +41,7 @@
         } );
     }
     
-    // A flag to mark if the old location is being used
-    var backcompat;
+    var backcompatWikitext;
     
     // Creating the primary Wall Greeting object
     const WallGreeting = window.UCP.WallGreeting = { 
@@ -155,13 +154,17 @@
                     action: "edit"
                 });
                 
-	        const moveUrl = conf.wgServer + mw.util.getUrl( "Special:MovePage/" +
-            		conf.wgFormattedNamespaces[ 1202 ] + ":" + user, {
-            			wpNewTitle: pageName,
-            			wpReason: this.i18n.inContentLang( )
-                			.msg( 'move-reason' ).plain()
-            		}),
-            	warning = document.createElement( "div" );
+	        const oldPageName = conf.wgFormattedNamespaces[ 1202 ] + ':' + user,
+	        	copyEditSummary = '([[' + oldPageName + ']]) ' +
+	        		_this.i18n.inContentLang( ).msg( 'move-reason' ).plain(),
+	        	fallbackEditUrl = conf.wgServer + mw.util.getUrl( pageName, {
+            			action: "edit",
+            			summary: copyEditSummary,
+            			// not 100% but that's what we have if API edit fails
+            			preload: oldPageName
+            		});
+
+            const warning = document.createElement( "div" );
 
             buttons.style.marginBottom = "1em";
             buttons.style.textAlign =
@@ -169,7 +172,7 @@
             													: "right";
             buttons.classList.add( "MessageWallButtons" );
 	        	
-            if (backcompat) {
+            if (backcompatWikitext) {
             	warning.innerHTML = this.i18n.inContentLang().msg(
             		'warning-move-page', conf.wgFormattedNamespaces[ 2 ]
             		).parse( );
@@ -185,28 +188,27 @@
 	            editButton.append( text );
 	            editButton.classList.add( "wds-button", "MessageWallEditButton" );
 
-	            editButton.setAttribute( "href", moveUrl );
+	            editButton.setAttribute( "href", fallbackEditUrl );
                 
                 editButton.addEventListener("click", function(event) {
                 	// return if it's any mouse button other than left
                 	if (event.button) return;
                 	event.preventDefault();
                 	
-                	var api = new mw.Api();
-                	api.postWithEditToken({
-                		action: 'move',
-                		from: conf.wgFormattedNamespaces[ 1202 ] + ":" + user,
-                		to: pageName,
-                		reason: _this.i18n.inContentLang( )
-                			.msg( 'move-reason' ).plain()
+                	( new mw.Api() ).postWithEditToken({
+                		action: 'edit',
+                		title: pageName,
+                		text: backcompatWikitext,
+                		summary: copyEditSummary,
+                		createonly: true
                 	}).done(function(response) {
                 		if (!response.error) {
-                			window.location.assign( mw.util.getUrl( pageName) );
+                			window.location.assign( mw.util.getUrl(pageName) );
                 		} else {
-                			window.location.assign(moveUrl);
+                			window.location.assign( fallbackEditUrl );
                 		}
                 	}).fail(function() {
-                		window.location.assign(moveUrl);
+                		window.location.assign( fallbackEditUrl );
                 	});
                 });
             } else {
@@ -236,7 +238,6 @@
                     [ "catch" ]( function( ) { 
                         return t.fetchGreetingBackcompat( user )
                             .then(function ( response ) {
-                                backcompat = true;
                                 res ( response );
                             }).catch( function() {
                                 // Empty text, just to allow the edit button
@@ -266,6 +267,8 @@
                 ajax.done( function( response ) { 
                     if ( response.error ) return rej( );
                     
+                    backcompatWikitext = response.parse.wikitext;
+
                     const content = response.parse.text;
                     
                     if ( !content ) return rej( );
@@ -278,7 +281,7 @@
             return ( new mw.Api( ) ).get( { 
                action : "parse",
                page : conf.wgFormattedNamespaces[ 1202 ] + ":" + user,
-               prop : "text",
+               prop : "text|wikitext",
                disabletoc : true,
                formatversion : 2
             } );

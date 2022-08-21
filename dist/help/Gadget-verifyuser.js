@@ -215,7 +215,7 @@ mw.loader.using(['site','mediawiki.ui.button','mediawiki.util','mediawiki.api'])
 		}).done(function (data) {
 			var command = mw.util.getParamValue('c') || '!verify';
 			dv = '<div style="text-align:center;line-height:180%;">' + verifyUser.i18n['verify-complete'].replace('$1', mw.util.getParamValue('ch') || 'verification') + '<br/><br/>' +
-				'<input value="' + ( command === 'wb' ? '!wiki verify' : command ) + ' ' + username + '" onClick="this.select();" style="padding:8px; width:350px;font-size:20px" readonly/> ' +
+				'<input value="' + ( command === 'wb' ? '/verify username:' : command ) + ' ' + username + '" onClick="this.select();" style="padding:8px; width:350px;font-size:20px" readonly/> ' +
 				'</div>';
 			$("#duv").html(dv);
 		}).fail(function (e) {

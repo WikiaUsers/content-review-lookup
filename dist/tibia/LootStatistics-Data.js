@@ -18,6 +18,32 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+//Creatures that drop items with plural names such as Moonlight Crystals which now appear with their respective amounts in loot messages
+'Black Vixen' :'12.90.12182',
+'Bloodback' :'12.90.12182',
+'Darkfang' :'12.90.12182',
+'Feroxa' :'12.90.12182',
+'Feroxa (Gloom Wolf)' :'12.90.12182',
+'Katex Blood Tongue' :'12.90.12182',
+'Owin (Creature)' :'12.90.12182',
+'Shadowpelt' :'12.90.12182',
+'Sharpclaw' :'12.90.12182',
+'Werebadger' :'12.90.12182',
+'Werebear' :'12.90.12182',
+'Wereboar' :'12.90.12182',
+'Werefox' :'12.90.12182',
+'Werehyaena' :'12.90.12182',
+'Werehyaena Shaman' :'12.90.12182',
+'Werelion' :'12.90.12182',
+'Werelioness' :'12.90.12182',
+'Werewolf' :'12.90.12182',
+'Boogy' :'12.90.12182',
+'Dark Faun' :'12.90.12182',
+'Enfeebled Silencer' :'12.90.12182',
+'Kroazur' :'12.90.12182',
+'Raxias' :'12.90.12182',
+'Twisted Pooka' :'12.90.12182',
+'Weakened Frazzlemaw': '12.90.12182',
 // Changes to Reward Bag creatures because the system was changed
 'Ghazbaran': '12.86.11580',
 'Ferumbras': '12.86.11580',

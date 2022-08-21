@@ -213,7 +213,8 @@
   
   lootparser_p_items = [
   	'Corrupt Naga Scales', 'Rogue Naga Scales', 'Naga Archer Scales', 'Naga Warrior Scales',
-  	'Ripptor Scales', 'Stalking Seeds', 'Fairy Wings', 'Prehemoth Horns'
+  	'Ripptor Scales', 'Stalking Seeds', 'Fairy Wings', 'Prehemoth Horns', 'Moonlight Crystals',
+  	'Grapes', 'Stampor Talons'
   ],
 
   //skip/rename creatures if they drop any of the loot in the list
@@ -1031,7 +1032,8 @@
           if (amount === 0) { amount = 1; }
           if (itemlooted === 'Nothing') { itemlooted = 'Empty'; }
         }
-
+        //uncountable items always appear with amounts if > 0 now, so we can treat them as countable
+		if (amount === 0) { amount = 1; }
         //loot_tmp
         if (loot_tmp[itemlooted] === undefined) { loot_tmp[itemlooted] = 0; }
         loot_tmp[itemlooted] += amount;

@@ -93,7 +93,7 @@ $(function () {
       //200
       'Jade_Shrine', 'Obsidian_Shrine', 'Poppy_Ibex', 'Mint_Ibex', 'Cinnamon_Ibex',
       //205
-      'Giant_Beaver', 'Ripptor'
+      'Giant_Beaver', 'Ripptor', 'Parade_Horse', 'Jousting_Horse', 'Tourney_Horse'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink

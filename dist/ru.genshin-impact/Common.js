@@ -11,3 +11,7 @@
 
 /* BackToTopButton */
     window.BackToTopModern = true;
+
+/* LockOldComments */
+    window.lockOldComments = (window.lockOldComments || {});
+    window.lockOldComments.limit = 90;

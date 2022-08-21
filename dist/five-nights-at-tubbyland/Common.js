@@ -61,42 +61,17 @@ window.UserTagsJS = {
         rollback: {u:'Rollback'},
         threadmoderator: {u:'Moderator'},
         coder: {u:'Wiki Coder'},
-        sic: {u:'Second in Command'},
-        tic: {u:'Third in Command'},
         owner: {u: 'Owner'},
-        donger: {u:'h0t Donger Schlonger'},
         tubby: {u:'Tubby Maker'},
-        pig: {u:'Pig Fapper'},
         pothree: {u:'Voice of Po and Employee #3'},
         game: {u:'Game Developer'},
-        source: {u:'The Source of the Illuminati'},
-        coding: {u:'Coding Consultant'},
         inact: {u:'Inactive'},
-        cadet: {u:'Cadet'},
-        pener: {u:'Pener Schlenier'},
-        ninja: {u:'Teletubby Ninja'},
-        question: {u:'Questionable'},
-        vac: {u:'Vacuum'},
-        mlg: {u:'MLG'},
-        fan: {u:'Fan of Cookies'},
-        vesper: {u:'Evening Star'},
-        paradox: {u:'Paradoxical Enigma'},
 	}
 };
 
 UserTagsJS.modules.custom = {
     'Critolious': ['owner', 'tubby'],
-    'Tuparman': ['donger'],
-    'TheSecondEdgeOfTheBlade': ['coder'],
-    'SketchNebula': ['coding', 'vesper', 'paradox'],
-    'PigZapper': ['pig'],
     'TinyThyMelon': ['pothree'],
-    'IlluminatiGamer91': ['game', 'source'],
-    'Po V2': ['cadet', 'pener'],
-    'Teletubby-Raikou': ['ninja'],
-    'TrueCobalion': ['question'],
-    'Noo Noo da evil cleaner': ['vac', 'mlg'],
-    'Amir999990': ['fan'],
 };
 
 UserTagsJS.modules.mwGroups = [
@@ -139,6 +114,6 @@ window.MessageWallUserTags = {
         'William0918': 'Founder',
         'Critolious': 'Game Creator',
         'Tuparman': 'Owner',
-        'TinyScoutALT': 'Moderator',
+        'Skyd3rp': 'Moderator',
     }
 };

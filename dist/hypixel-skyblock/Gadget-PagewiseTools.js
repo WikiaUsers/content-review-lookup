@@ -121,6 +121,7 @@ mw.loader.using(["mediawiki.api"]).then(function () {
                     name: cand.name,
                     order: i + 1,
                     perks: existingData && existingData[cand.name] && existingData[cand.name].perks || getPerks(cand, localData),
+                    note: existingData && existingData[cand.name] && existingData[cand.name].note || undefined,
                     votes: cand.votes,
                     last: existingData && existingData[cand.name] && existingData[cand.name].last || undefined,
                 });
@@ -141,7 +142,7 @@ mw.loader.using(["mediawiki.api"]).then(function () {
                         year = Number(pastElectionData.year),
                         existingData = localElections[year - 1] && localElections[year - 1].data || undefined;
                     var candidates = candidatesToArray(pastElectionData.candidates, localData, existingData).map(function (v) {
-                        return "\t\t" + v.name + " = { votes = " + v.votes + ", perks = '" + v.perks + "', order = " + v.order + ", last = " + (v.last || "nil") + " },";
+                        return "\t\t" + v.name + " = { votes = " + v.votes + ", perks = '" + v.perks + "'" + (v.note && (", note = '" + v.note + "'") || "") + ", order = " + v.order + ", last = " + (v.last || "nil") + " },";
                     });
                     copyToClipboard("\t[" + year + "] = { " + "date = nil, ui = true, data = {\n" + candidates.join("\n") + "\n\t}},");
                 });
