@@ -954,7 +954,7 @@
 		generateLink: function( ) { 
 			this.state.messagesLoaded = true;
 			const toolbar = document.querySelector( ".wikia-bar .toolbar .tools" );
-			if ( this.state.linkInToolbar || this.state.matchesPage ) return;
+			if ( !toolbar || this.state.linkInToolbar || this.state.matchesPage ) return;
 			this.state.linkInToolbar = true;
 
 			toolbar.insertAdjacentElement( "afterbegin", this.ui.li( {

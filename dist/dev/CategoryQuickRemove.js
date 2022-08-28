@@ -10,6 +10,7 @@
             cqrNochange: '<cqr-nochange>',
             cqrFailRead: '<cqr-fail-read>',
             cqrFailWrite: '<cqr-fail-write>',
+            cqrRemoveSummary: '<cqr-category-removed-summary>',
         },
         $x = $('<span>', {
             class: 'cqr-x',
@@ -44,7 +45,7 @@
             title: pagename,
             text: content,
             watchlist: 'nochange',
-            summary: 'category removed',
+            summary: msgs.cqrRemoveSummary,
             minor: 'true',
             format: 'json',
             token: mw.user.tokens.get('csrfToken')
@@ -183,6 +184,7 @@
                 msgs.cqrNochange = i18n.msg('cqr-nochange').plain();
                 msgs.cqrFailRead = i18n.msg('cqr-fail-read').plain();
                 msgs.cqrFailWrite = i18n.msg('cqr-fail-write').plain();
+                msgs.cqrRemoveSummary = i18n.inContentLang().msg('cqr-category-removed-summary').plain();
             });
         });
         if (!window.dev || !window.dev.i18nbeta) importArticle({type: 'script', article: 'u:dev:MediaWiki:I18n-js/beta.js'});

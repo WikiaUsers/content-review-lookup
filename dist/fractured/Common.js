@@ -114,6 +114,7 @@ if (checkIDSkykal) {
     replaceGroupsSkykal();
 }
 /*-----------------------------------------------------------------------------------*/
+/*********Adds a spoiler button on that freakin spider*************/
 const checkPic = document.querySelector('.image-spoiler');
 const spoilerButton = document.querySelector('.spoiler-button');
 const clickToRemoveBlur = function () {
@@ -125,4 +126,17 @@ const clickToRemoveBlur = function () {
 
 if (checkPic) {
     clickToRemoveBlur();
+}
+
+/***********************************************************************************/
+/*----------Hides overflow to make the back button work with position sticky------------------*/
+/*Hide overflow on skills page*/
+const checkPage = document.querySelector('.back-menu');
+const addHideOverflowClass = function () {
+	document.querySelector('.page-content').classList.add('hide-overflow');
+};
+
+
+if (checkPage) {
+	addHideOverflowClass();
 }

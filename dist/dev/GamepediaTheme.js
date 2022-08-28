@@ -52,8 +52,10 @@ mw.loader.using(['mediawiki.api']).then(function() {
     // -- Fandom Apps (Curse LLC Apps) Section -- //
     /// Fandom Apps text to Curse LLC Apps text and Take your favorite fandoms with you and never miss a beat. text to Take your favorite Gamepedia wikis wherever you go.
     var h3 = document.querySelector(".is-gamepedia .global-footer__section-fandom-apps h3");
+    if (h3) {
         h3.textContent = "Curse LLC Apps";
         h3.nextSibling.nodeValue = "Take your favourite Gamepedia Wikis wherever you go.";
+    }
     
     // -- Global Footer Bottom Bar -- //
     /// All Gamepedia Wikis are now represented properly

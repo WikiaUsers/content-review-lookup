@@ -2,12 +2,14 @@
 
 // Taken from https://minecraft.gamepedia.com/MediaWiki:Common.js
 // Creates minecraft style tooltips
-// Replaces normal tooltips. Supports minecraft [[formatting codes]] (except k), and a description with line breaks (/).
 
 /* global mw */
 
 $(function () {
     "use strict";
+    /* Wiki config */
+    var useSlashEscape = true;
+
     window.minetipConfig = window.minetipConfig || {};
     (window.updateTooltips = (function () {
         var escapeChars = {
@@ -88,10 +90,10 @@ $(function () {
                 var content = "<span class=\"minetip-title\">&f" + escape(title) + "&r</span>";
 
                 var description = $.trim($elem.attr("data-minetip-text"));
+                // Apply normal escaping plus new line
                 if (description) {
-                    // Apply normal escaping plus "/"
                     description = escape(description).replace(/\\\\/g, "&#92;").replace(/\\\//g, "&#47;");
-                    content += "<span class=\"minetip-description\">&f" + description.replace(/\//g, "&r<br>") + "&r</span>";
+                    content += "<span class=\"minetip-description\">&f" + description.replace(useSlashEscape ? /\//g : /\\n/g, "&r<br>") + "&r</span>";
                 }
 
                 // Add classes for minecraft formatting codes

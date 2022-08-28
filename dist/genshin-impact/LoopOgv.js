@@ -10,16 +10,26 @@
 (function(window) {
 	'use strict';
 	
-	// Clones the master video element into the given loopOgv element and
-	// sets up the new video's source for lazy loading.
-	// Also updates the loopOgv's links to point to the video.
-	function cloneVideo(focus, vid_master, source_master) {
-		const videoData = focus.getElementsByClassName('video')[0];
-		
+	/**
+	 * @returns an object containing the data about the video
+	 *  (or null if the video has not been uploaded):
+	 *  - url (string): the url of the file to be used in a <video>
+	 *  - filename (string): the wiki filename for the video's file page
+	 *  - width (number | null)
+	 *  - height (number | null)
+	 */
+	function extractVideoData(item) {
+		const videoData = item.getElementsByClassName('video')[0];
 		const videoLink = videoData.getElementsByTagName('a')[0];
+		
+		// Stop if video file does not exist.
+		if (videoLink.classList.contains('new')) {
+			return null;
+		}
+		
 		const videoUrl = videoLink.href;
 		const videoFileName = videoLink.innerText;
-
+		
 		const rawSize = videoData.dataset.size.toLowerCase();
 		// Size Logic https://www.mediawiki.org/wiki/Help:Images#Syntax
 		const parseArray = /(\d*x)?(\d+)px/.exec(rawSize);
@@ -32,34 +42,40 @@
 		const height = secondIsWidth
 			? null
 			: second;
-
+			
+		return {
+			url: videoUrl,
+			filename: videoFileName,
+			width: width,
+			height: height,
+		}
+	}
+	
+	/**
+	 * Clones the master video element and sets up the new video's source for lazy loading.
+	 * @returns an array of [new video element, the video's source element]
+	 */
+	function cloneVideo(videoData, vid_master, source_master) {
 		// Video Body
 		const vid_body = vid_master.cloneNode();
 		vid_body.muted = true; // cloning the element doesn't preserve muting, even when setting defaultMuted=true
-		if (width)
-			vid_body.width = width;
-		if (height)
-			vid_body.height = height;
+		if (videoData.width)
+			vid_body.width = videoData.width;
+		if (videoData.height)
+			vid_body.height = videoData.height;
 
 		// Source Body (for Video)
 		const source = source_master.cloneNode();
-		source.dataset.src = videoUrl; // store source in data to load lazily later
+		source.dataset.src = videoData.url; // store source in data to load lazily later
 		vid_body.appendChild(source);
-			
-		// Add links to video file/page
-		const container = focus.querySelector('a.image');
-		container.href = videoUrl;
-		const icon = focus.querySelector('figure figcaption a.info-icon');
-		if (icon)
-			icon.href = '/wiki/' + videoFileName;
 		
-		container.appendChild(vid_body);
-		
-		return [vid_body, source, container];
+		return [vid_body, source];
 	}
 	
-	// Immediately load a video and replace its gif.
-	// (Used for autoplay mode.)
+	/**
+	 * Immediately load a video and replace its gif.
+	 * (Used for autoplay mode.)
+	 */
 	function loadVideo(image, video) {
 		const sources = video.getElementsByTagName('source');
 		
@@ -161,10 +177,21 @@
 			focus.classList.remove(searchClass);
 			
 			// Create the video element
-			const out = cloneVideo(focus, vid_master, source_master);
+			const videoData = extractVideoData(focus);
+			if (videoData === null) {
+				continue;
+			}
+			const container = focus.querySelector('a.image');
+			const out = cloneVideo(videoData, vid_master, source_master);
 			const vid_body = out[0];
 			const source = out[1];
-			const container = out[2];
+			container.appendChild(vid_body);
+			
+			// Update links to point to video file/page
+			container.href = videoData.url;
+			const icon = focus.querySelector('figure figcaption a.info-icon');
+			if (icon)
+				icon.href = '/wiki/' + videoData.filename;
 			
 			const image = container.getElementsByTagName('img')[0];
 			

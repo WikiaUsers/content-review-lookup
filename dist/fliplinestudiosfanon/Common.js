@@ -26,7 +26,6 @@ UserTagsJS.modules.userfilter = {
 	'Meandcrazy': ['chatmoderator', 'threadmoderator', 'content-moderator', 'sysop', 'rollback'],
 	'Jyappeul': ['chatmoderator', 'threadmoderator', 'content-moderator', 'sysop', 'rollback'],
 	'LuisAngel01': ['threadmoderator', 'chatmoderator','content-moderator'],
-	'JoelPalencia12': ['threadmoderator', 'chatmoderator','content-moderator'],
 };
 
 UserTagsJS.modules.mwGroups = ['founder', 'bureaucrat', 'sysop', 'content-moderator', 'threadmoderator', 'chatmoderator', 'rollback','global-discussions-moderator'];

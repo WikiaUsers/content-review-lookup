@@ -74,3 +74,6 @@ window.dev.editSummaries = {
 	}
     });
 })( this.jQuery );
+
+/* UploadMultipleFiles Dev Wiki JS import: don't require licensing to upload (August 2022) */
+mw.config.set('UMFBypassLicenseCheck', true);

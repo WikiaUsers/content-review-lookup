@@ -348,7 +348,7 @@ function searchJavaScript()
 		cContainer = document.getElementById("civsContainer");
 		addCheckBox.bind(this, elem, cContainer, "Civilizations")();
 		cContainer = document.getElementById("searchAbilitiesContainer");
-		addCheckBox.bind(this, elem, cContainer, "miscAbilities")();
+		addCheckBox.bind(this, elem, cContainer, "searchAbilities")();
         cContainer = document.getElementById("miscAbilitiesContainer");
 		addCheckBox.bind(this, elem, cContainer, "miscAbilities")();
 		

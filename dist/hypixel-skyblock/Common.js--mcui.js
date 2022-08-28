@@ -1,7 +1,3 @@
-/* 
-Any JavaScript here will be loaded for all users on every page load.
-*/
-
 /* Table of Contents
 -----------------------
  Deferred [mw.loader.using]
@@ -108,9 +104,6 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
      * Cycles through a set of elements (or "frames") on a 2 second timer per frame
      * Add the "animated" class to the frame containing the elements to animate.
      * Optionally, add the "animated-active" class to the frame to display first.
-     * Optionally, add the "animated-subframe" class to a frame, and the
-     * "animated-active" class to a subframe within, in order to designate a set of
-     * subframes which will only be cycled every time the parent frame is displayed.
      * Animations with the "animated-paused" class will be skipped each interval.
      *
      * Requires some styling in wiki's CSS.
@@ -142,15 +135,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                 $content.find(".animated").each(function () {
                     if ($(this).is(".animated-paused, .animated-paused *")) return;
 
-                    var $nextFrame = advanceFrame(this, ".animated");
-                    if ($nextFrame.hasClass("animated-subframe")) {
-                        advanceFrame($nextFrame[0], ".animated-subframe");
-                        var hov = $(".invslot-item").filter(function () {
-                            return $(this).is(":hover");
-                        });
-                        if (hov.length)
-                            hov.eq(0).trigger("mouseenter");
-                    }
+                    advanceFrame(this, ".animated");
                 });
             }, 2000);
         }());

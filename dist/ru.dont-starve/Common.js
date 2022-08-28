@@ -1,3 +1,13 @@
+window.DiscussionTemplates = {
+    templates: {
+        'Некропостинг': {
+            name: 'Шаблон:Некропостинг',
+            title: 'Некропостинг'
+        },
+    },
+    allowedGroups: ['sysop', 'content-moderator', 'threadmoderator']
+};
+
 var hasClass = ( function() {
         var reCache = {};
         return function( element, className ) {

@@ -73,7 +73,7 @@
 
     /****** Builder functions */
     function createListItem(ui, class_, icon, link, text, dataLabel) {
-      let iconItem = '';
+      var iconItem = '';
       
       if (icon) {
         iconItem = ui.svg({

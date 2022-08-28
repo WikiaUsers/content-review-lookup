@@ -12,9 +12,14 @@
 /* global mw, importArticles */
 mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ]).then(function() {
 	"use strict";
- 
+
+	var config = mw.config.get([
+		'wgUserGroups',
+		'wgArticlePath',
+		'wgContentLanguage'
+	]);
 	window.ajaxAbuseLog = {};
-	var userGroups = mw.config.get('wgUserGroups');
+	var userGroups = config.wgUserGroups;
  
 	function logMsg(msg) {
 		console.log('[AjaxAbuseLog V0.4.1] [LOG]:', msg);
@@ -29,7 +34,7 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 	window.ajaxAbuseLogInit = true;
 
 	var msg;
-	var pagePathname = mw.config.get('wgArticlePath').replace('$1', '');
+	var pagePathname = config.wgArticlePath.replace('$1', '');
  
 	mw.util.addCSS('.mw-abuselog-details { width: 100% !important; } #ajax-abuselog-modal { width: 100% !important; height: 100% !important }');
  
@@ -146,7 +151,7 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 							}
 						});
 					}
-					if ($content.find('h3').first().html() === msg('abuselog-changes').plain() && canAddEdit) {
+					if ($content.find('h3').first().html() === mw.msg('abusefilter-log-details-diff') && canAddEdit) {
 						$content.find('h3').first().append(
 							$("<span>", {
 								style: "font-size: 80%",
@@ -187,55 +192,55 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
  
 				   $content.find('span > .mw-usertoollinks + a + a')
 						.after(
-							' (',
+							' ' + mw.msg('parentheses-start'),
 							$('<a>', {
 								href: pagePathname + title + "?action=edit",
-								text: msg('edit').plain(),
+								text: mw.msg('editold'),
 								title: msg('edit-tooltip', title).plain(),
 							}),
-							' | ',
+							mw.msg('pipe-separator'),
 							$('<a>', {
 								href: pagePathname + title + "?action=history",
-								text: msg('history').plain(),
+								text: mw.msg('hist'),
 								title: msg('history-tooltip', title).plain(),
 							}),
-							' | ',
+							mw.msg('pipe-separator'),
 							$('<a>', {
 								href: pagePathname + title + "?diff=cur",
 								text: msg('latest-edit').plain(),
 								title: msg('latest-edit-tooltop', title).plain(),
 							}),
-							' | ',
+							mw.msg('pipe-separator'),
 							$('<a>', {
 								href: pagePathname + 'Special:Log?page=' + title,
-								text: msg('logs').plain(),
+								text: mw.msg('sp-contributions-logs'),
 								title: msg('logs-tooltip', title).plain(),
 							}),
-							' | ',
+							mw.msg('pipe-separator'),
 							$('<a>', {
 								href: pagePathname + 'Special:AbuseLog?wpSearchTitle=' + title,
-								text: msg('abuse-log').plain(),
+								text: mw.msg('abusefilter-log-linkoncontribs'),
 								title: msg('abuse-log-tooltip', title).plain(),
 							}),
-							' | ',
+							mw.msg('pipe-separator'),
 							$('<a>', {
 								href: pagePathname + 'Special:Undelete/' + title,
 								text: msg('del-revisions').plain(),
 								title: 'Special:Undelete/' + title,
 							}),
-							' | ',
+							mw.msg('pipe-separator'),
 							$('<a>', {
 								href: pagePathname + title + "?action=protect",
 								text: msg('protect').plain(),
 								title: msg('protect-tooltip', title).plain(),
 							}),
-							' | ',
+							mw.msg('pipe-separator'),
 							$('<a>', {
 								href: pagePathname + 'Special:MovePage/' + title,
 								text: msg('move').plain(),
 								title: msg('move-tooltip', title).plain(),
 							}),
-							')'
+							mw.msg('parentheses-end')
 						);
  
 					$('.qdmodal')
@@ -255,14 +260,14 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 								class: "qdmodal-button",
 							}),
 							$('<a>', {
-								text: msg('block-link').plain(),
+								text: mw.msg('blocklink'),
 								title: "Special:Block/" + user,
 								href: pagePathname + "Special:Block/" + user,
 								target: "_blank",
 								class: "qdmodal-button",
 							}),
 							$('<a>', {
-								text: msg('unblock-link').plain(),
+								text: mw.msg('unblocklink'),
 								title: "Special:Unblock/" + user,
 								href: pagePathname + "Special:Unblock/" + user,
 								target: "_blank",
@@ -276,7 +281,7 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 								class: "qdmodal-button",
 							}),
 							$('<a>', {
-								text: msg('logs-link').plain(),
+								text: mw.msg('log'),
 								title: "Special:Log/" + user,
 								href: pagePathname + "Special:Log/" + user,
 								target: "_blank",
@@ -313,24 +318,40 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.util', 'mediawiki.notification' ])
 		});
 	}
 
-	mw.hook('dev.i18n').add(function (i18n) {
-		i18n.loadMessages('AjaxAbuseLog').done(function (i18no) {
-			msg = i18no.msg;
-			mw.loader.load([ "mediawiki.diff.styles", 'ext.abuseFilter']);
-			$(document.body).on("click", "a[href^=\"/wiki/Special:AbuseLog/\"]", main);
-			$(document.body).on('keydown', null, function(event) {
-				if (event.key === "ArrowLeft" && $("#ajax-abuselog-modal").length) {
-					$('h3 ~ div[style="margin-top: 2em"] > a:nth-child(1)').click();
-				} else if (event.key === "ArrowRight" && $("#ajax-abuselog-modal").length) {
-					$('h3 ~ div[style="margin-top: 2em"] > a:nth-child(2)').click();
-				}
+	mw.loader.using(['mediawiki.api']).then(function() {
+		return new mw.Api().loadMessagesIfMissing([
+			'abusefilter-log-details-diff',
+			'editold',
+			'hist',
+			'sp-contributions-logs',
+			'abusefilter-log-linkoncontribs',
+			'blocklink',
+			'unblocklink',
+			'log',
+			'parentheses-start',
+			'parentheses-end',
+			'pipe-separator'
+		]);
+	}).then(function() {
+		mw.hook('dev.i18n').add(function (i18n) {
+			i18n.loadMessages('AjaxAbuseLog').done(function (i18no) {
+				msg = i18no.msg;
+				mw.loader.load([ "mediawiki.diff.styles", 'ext.abuseFilter']);
+				$(document.body).on("click", "a[href^=\"/wiki/Special:AbuseLog/\"]", main);
+				$(document.body).on('keydown', null, function(event) {
+					if (event.key === "ArrowLeft" && $("#ajax-abuselog-modal").length) {
+						$('h3 ~ div[style="margin-top: 2em"] > a:nth-child(1)').click();
+					} else if (event.key === "ArrowRight" && $("#ajax-abuselog-modal").length) {
+						$('h3 ~ div[style="margin-top: 2em"] > a:nth-child(2)').click();
+					}
+				});
+				logMsg('Successfully added click event handlers!');
 			});
-			logMsg('Successfully added click event handlers!');
 		});
-	});
-	importArticles({
-		type: 'script',
-		articles: 'u:dev:MediaWiki:I18n-js/code.js'
+		importArticles({
+			type: 'script',
+			articles: 'u:dev:MediaWiki:I18n-js/code.js'
+		});
 	});
 }).catch(function(error) {
 	console.warn(error);

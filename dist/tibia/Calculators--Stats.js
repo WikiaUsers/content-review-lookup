@@ -64,7 +64,6 @@ $(function() {
         });
         $('#death_rh').change(function() {
             $('#calculator_expi1').keyup();
-
         });
         $('#calculator_expi1').keyup();
     }());
@@ -133,7 +132,53 @@ $(function() {
         $('#calculator_statsi1').change(calculator_stats_update);
         calculator_stats_update();
     }());
-
+    
+    /*Loot Bonus*/
+    (function() {
+        $('#calculator_lootbonus')
+        	.append('<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Bosstiary_Icon.gif" style="float:left;"></img>')
+        	.append('<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Boss_Slots_Icon.gif" style="float:right;"></img>')
+            .append('Boss Points: ')
+            .append('<input id="calculator_lootbonus_points" type="number" value="0" min="0" max="30000" step="5" style="width:55px;">')
+            .append('<br/><br/>')
+            .append('<span id="calculator_lootbonus_bonus">Equipment Loot Bonus: <b>25%</b></span><br/>')
+            .append('<span id="calculator_lootbonus_next">Points for next Bonus: <b>10</b></span><br/>');
+        
+        bonus_for_points = function(points) {
+        	var bonus = 0;
+        	if (points < 250) {
+        		bonus = Math.floor(25 + points/10);
+        	} else if (points < 1250) {
+        		bonus = Math.floor(37.5 + points/20);
+        	} else {
+        		bonus = Math.floor(100 + 0.5 * (Math.sqrt(8 * ((points - 1250) / 5) + 81) - 9));
+        	}
+        	return bonus;
+        };
+            
+        points_for_next = function(points) {
+        	var points_next = 10,
+        	bonus = bonus_for_points(points);
+        	if (points < 240) {
+        		points_next = 10 * Math.floor(points/ 10) + 10;
+        	} else if (points < 1250) {
+        		points_next = 20 * Math.floor((points - 250)/ 20) + 20 + 250;
+        	} else {
+        		points_next = 2.5 * Math.pow(bonus + 1, 2) - 477.5 * (bonus + 1) + 24000;
+        	}
+        	return points_next;
+        };
+            
+        $('#calculator_lootbonus_points').on('change keyup keypress',function() {
+        	var points = this.value,
+        	bonus = bonus_for_points(points),
+        	points_next = points_for_next(points);
+        	
+        	$('#calculator_lootbonus_bonus').html('Equipment Loot Bonus: <b>' + bonus + '%</b>');
+        	$('#calculator_lootbonus_next').html('Points for next Bonus: <b>' + points_next + '</b>');
+        });
+    }());
+		
     $('#calculators_loading').hide();
     $('#calculators_container').show();
 });

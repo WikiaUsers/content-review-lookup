@@ -29,7 +29,7 @@ steamLinks.forEach(function(link) {
     link.innerHTML = "";
 
     var linkMain = document.createElement("a");
-    linkMain.href = "steam://" + link.dataset[link];
+    linkMain.href = "steam://" + link.dataset.link;
     linkMain.innerHTML = linkContent;
 
     link.append(linkMain);

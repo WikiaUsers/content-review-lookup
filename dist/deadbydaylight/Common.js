@@ -7,6 +7,7 @@ $(function(){
 	CosmeticExpandingButton();
 	SoSArchiveButton();
 	ForceSourceEditor();
+	TooltipCursorTracker();
 	
 	/**************************************************************************/
 	//MobileViewHovers(); //Currnently not used, as the Mobile version doesn't load Common.js
@@ -33,18 +34,18 @@ $(function(){
 function SoS2(){
 	console.log("SoS2 Executed");
 	
-	$(".sos2 > .sosPerk").each(function(i){
+	$('.sos2 > .sosPerk').each(function(i){
 	    $(this).hover(
 	        function(){
-	            $(this).addClass("sosPerkHovered");
-	            $(this).parent().children().filter(":not(.sosPerkHovered):not(.sosPerkDesc)").addClass("sosPerkNotHovered");
+	            $(this).addClass('sosPerkHovered');
+	            $(this).parent().children().filter(':not(.sosPerkHovered):not(.sosPerkDesc)').addClass('sosPerkNotHovered');
 	        },
 	        function(){
-	            $(this).removeClass("sosPerkHovered", 115);
-	            $(this).parent().children().removeClass("sosPerkNotHovered");
+	            $(this).removeClass('sosPerkHovered', 115);
+	            $(this).parent().children().removeClass('sosPerkNotHovered');
 	     });
 	});
-	console.log("SoS2 Initiallised");
+	console.log("SoS2 Initialisation completed");
 }
 
 function CosmeticExpandingButton(){
@@ -62,12 +63,12 @@ function CosmeticExpandingButton(){
     
     if(parseInt(cosmeticTable.css("height"), 10) > parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) + 2 * parseInt(getComputedStyle(document.body).getPropertyValue('--headerHeight'), 10)){
         $(this).text("⇓ " + expandString + " ⇓");
-        cosmeticTable.css("height", baseHeight + 'px');
+        cosmeticTable.css('height', baseHeight + 'px');
     }
     else
     {
         $(this).text("⇑ " + collapseString + " ⇑");
-        cosmeticTable.css("height", openedHeight + 'px');
+        cosmeticTable.css('height', openedHeight + 'px');
     }
 });
 }
@@ -118,6 +119,33 @@ function ForceSourceEditor(){
 	console.log("ForceSourceEditor script Executed");
 	$("a[href*='veaction']").attr("href", function(){
 		return this.href.replace("veaction", "action");
+	});
+}
+
+function TooltipCursorTracker(){
+	console.log("TooltipCursorTracker script Executed");
+	
+	var minWidth = 240;
+	var maxWidth = 400;
+	//reason why it's set like this is to avoid using !important flag as much as possible, leaving it as a true last resort
+    $('.tooltip').find('.tooltiptext').each(function(){
+    	$(this).width(Math.min(Math.max($(this).text().length * 2.5, minWidth), maxWidth));	
+    });
+    
+	$('.tooltip:not(.linkIncluded)').mousemove(function(event){
+	    var tooltipText = $(this).find('.tooltiptext');
+	    tooltipText.css('left', (event.clientX - $(this).offset().left - (tooltipText.width() / 2) ) + 'px');
+	});
+	
+	$('.tooltip.linkIncluded').each(function(){
+		var tooltipBlockLeftOffset = $(this).offset().left;
+	    var tooltipText = $(this).find('.tooltiptext');
+	    $(this).find('.tooltipBaseText').hover(function(event){
+	    	/*hover in*/
+	    	tooltipText.css('left', (event.clientX - tooltipBlockLeftOffset - (tooltipText.width() / 2) ) + 'px');
+	    },function(){
+	    	/*hover out*/
+	    });
 	});
 }
 /******************************************************************************/

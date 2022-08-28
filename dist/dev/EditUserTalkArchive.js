@@ -1,3 +1,46 @@
+function EUTAinit(){
+	var EUTA_user = mw.config.get("wgTitle");
+	var api = new mw.Api();
+	api.get({
+		action: "query",
+		list: "allpages",
+		apfrom: EUTA_user,
+		apto: EUTA_user,
+		apnamespace: 3,
+	}).done(function(d){
+		if(!d.error){
+			if(d.query.allpages.length){
+				window.talkLink = mw.config.get("wgServer") + mw.config.get("wgArticlePath").replace("$1", d.query.allpages[0].title);
+			}
+		} else {
+			console.error("EditUserTalkArchive: Error when checking for user talk page:" + d.error.code);
+		}
+	}).fail(function(){
+		console.error("EditUserTalkArchive: Failed to check for user talk page");
+	});
+	EUTA();
+}
+
+function EUTA(){
+	// Add button above Message Wall, only if the User talk page exists
+	const filterCheck = setInterval(function(){
+		if($(".messagewall-filters__filters").length){
+			clearInterval(filterCheck);
+			$(".messagewall-filters__filters").prepend('<div id="euta_wrapper"><a id="euta_button" class="wds-button wds-is-text" href="' + talkLink + '?redirect=no"><span>User Talk Archive</span></a></div>');
+			// Prepend icon to button if dev.wds properly imports
+			mw.hook("dev.wds").add(function(wds) {
+				$("#euta_button").prepend(wds.icon("bubble-small"));
+			});
+		}
+	}, 200);
+	
+	/* Import CSS */
+	if(!window.EUTACSSLoaded){
+		importArticle({ type: "style", article: "u:dev:MediaWiki:EditUserTalkArchive.css" });
+		window.EUTACSSLoaded = true;
+	}
+}
+
 (function () {
 	/* only local and global staff and if script has not already run */
 	if (
@@ -72,42 +115,11 @@
 	
 	/* Add button on Message Walls to user talk pages */
 	if (mw.config.get("wgNamespaceNumber") === 1200) {
-		// Add button above Message Wall, only if the User talk page exists
-		var EUTA_user = mw.config.get("wgTitle");
-		var api = new mw.Api();
-		api.get({
-			action: "query",
-			list: "allpages",
-			apfrom: EUTA_user,
-			apto: EUTA_user,
-			apnamespace: 3,
-		}).done(function(d){
-			if(!d.error){
-				if(d.query.allpages.length){
-					var talkLink = mw.config.get("wgServer") + mw.config.get("wgArticlePath").replace("$1", d.query.allpages[0].title);
-					const filterCheck = setInterval(function(){
-						if($(".messagewall-filters__filters").length){
-							clearInterval(filterCheck);
-							$(".messagewall-filters__filters").prepend('<div id="euta_wrapper"><a id="euta_button" class="wds-button wds-is-text" href="' + talkLink + '?redirect=no"><span>User Talk Archive</span></a></div>');
-							// Prepend icon to button if dev.wds properly imports
-							mw.hook("dev.wds").add(function(wds) {
-								$("#euta_button").prepend(wds.icon("bubble-small"));
-							});
-						}
-			    	}, 200);
-				}
-			} else {
-				console.error("EditUserTalkArchive: Error when checking for user talk page:" + d.error.code);
-			}
-		}).fail(function(){
-			console.error("EditUserTalkArchive: Failed to check for user talk page");
+		EUTAinit();
+		/* Do it again if the user clicks "View All Messages" on a single thread page */
+		$(".SingleThreadToolbar > .wds-button").click(function(){
+			EUTA();
 		});
-		
-		/* Import CSS */
-		if(!window.EUTACSSLoaded){
-			importArticle({ type: "style", article: "u:dev:MediaWiki:EditUserTalkArchive.css" });
-			window.EUTACSSLoaded = true;
-		}
 	}
 	
 	/* Import WDS */

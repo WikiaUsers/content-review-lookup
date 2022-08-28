@@ -2,11 +2,13 @@
 // Generates copy paste-able text from Special:WantedCategories and 
 // Special:Categories, at a click of a button
 
-;(function(mw) {
+;(function($, mw) {
+	'use strict';
     if (mw.config.get('wgNamespaceNumber') !== -1) return;
     if (!['Categories', 'Wantedcategories'].includes(mw.config.get('wgCanonicalSpecialPageName'))) return;
 
     var api = new mw.Api();
+    var msg;
     var cmt = {};
     cmt.getCategories = function(next) {
         return api.get({
@@ -78,9 +80,9 @@
 
     cmt.table = function(data) {
         return '<table class="article-table" style="font-size:11px"><thead><tr>' +
-                    '<th>Category</th>' +
-                    '<th>Link</th>' +
-                    '<th>Number of members</th>' +
+                    '<th>' + msg('category-header').escape() + '</th>' +
+                    '<th>' + msg('link-header').escape() + '</th>' +
+                    '<th>' + msg('number-of-members-header').escape() + '</th>' +
                 '</tr></thead>' +
                 '<tbody>' +
                     data.map(function(els) {
@@ -96,7 +98,7 @@
     // Data is an array like [['Foo', 3], ['Bar', 8]]
     cmt.displayInModal = function(data) {
         cmt.windowManager.openWindow(cmt.messageDialog, {
-            title: 'Category information',
+            title: msg('category-information-title').plain(),
             message: $(cmt.table(data)),
             size: 'larger'
         });
@@ -110,11 +112,11 @@
 
         CMTDialog.static.actions = [{
             action: 'accept',
-            label: 'Dismiss',
+            label: msg('dismiss').plain(),
             flags: 'primary'
         }, {
             action: 'copy',
-            label: 'Copy table to clipboard'
+            label: msg('copy-table').plain()
         }];
         CMTDialog.prototype.initialize = function() {
             CMTDialog.super.prototype.initialize.apply(this, arguments);
@@ -143,7 +145,7 @@
 
         switch (mw.config.get('wgCanonicalSpecialPageName')) {
             case 'Categories': {
-                $('#content').prepend('<button class="wds-button" id="openCategories">View as a table</button>');
+                $('#content').prepend('<button class="wds-button" id="openCategories">' + msg('view-table').escape() + '</button>');
                 $('#openCategories').on('click', function() {
                     cmt.getAllCategories().then(function(res) {
                         cmt.data = res;
@@ -153,7 +155,7 @@
                 break;
             }
             case 'Wantedcategories': {
-                $('#content').prepend('<button class="wds-button" id="openWantedCategories">View as a table</button>');
+                $('#content').prepend('<button class="wds-button" id="openWantedCategories">' + msg('view-table').escape() + '</button>');
                 $('#openWantedCategories').on('click', function() {
                     cmt.getAllWantedCategories().then(function(res) {
                         cmt.data = res;
@@ -166,9 +168,16 @@
     };
 
     mw.loader.using(['oojs-ui-windows'], function() {
-        cmt.init();
+    	mw.hook('dev.i18n').add(function (i18n) {
+			i18n.loadMessages('CategoryMaintenanceTables').done(function (i18no) {
+				msg = i18no.msg;
+		        cmt.init();
+			});
+		});
+		importArticles({
+			type: 'script',
+			articles: 'u:dev:MediaWiki:I18n-js/code.js'
+		});
     });
 
-    window.cmt = cmt;
-    
-})(mediaWiki);
+})(window.jQuery, window.mediaWiki);

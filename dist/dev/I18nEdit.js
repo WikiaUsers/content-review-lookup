@@ -957,7 +957,7 @@
                 if (lang === '_metadata') {
                     // Metadata should not contain invalid keys
                     for (var key in obj[lang]) {
-                        if (key !== 'noTranslate' && key !== 'outdated') {
+                        if (key !== 'noTranslate' && key !== 'outdated' && key !== 'order') {
                             this.addCreatorStatus(
                                 'warning',
                                 this.i18n.msg('creator-warning-invalid-metadata', key).plain()
@@ -971,6 +971,11 @@
                             this.addCreatorStatus(
                                 'error',
                                 this.i18n.msg('creator-warning-outdated-not-object').plain()
+                            );
+                        } else if (key === 'order' && !Array.isArray(obj._metadata.order)) {
+                            this.addCreatorStatus(
+                                'error',
+                                this.i18n.msg('creator-warning-order-not-array').plain()
                             );
                         }
                     }
@@ -2489,6 +2494,13 @@
                 en: 2,
                 qqq: 3
             };
+            obj._metadata = obj._metadata || {};
+            var order = obj._metadata.order;
+            if (!order) {
+                var keys = Object.keys(obj.en);
+                order = this.state.lua ? keys.sort() : keys;
+                obj._metadata.order = order;
+            }
             Object.keys(obj).sort(function(a, b) {
                 if (specials[a] && specials[b]) {
                     return specials[a] - specials[b];
@@ -2498,8 +2510,17 @@
                     return 1;
                 }
                 return a.localeCompare(b);
-            }).forEach(function(key) {
-                messages[key] = obj[key];
+            }).forEach(function(lang) {
+                if (lang === '_metadata') {
+                    messages[lang] = obj[lang];
+                } else {
+                    messages[lang] = {};
+                    order.forEach(function(k) {
+                        if (typeof obj[lang][k] === 'string') {
+                            messages[lang][k] = obj[lang][k];
+                        }
+                    });
+                }
             });
             return messages;
         },
@@ -2943,8 +2964,9 @@
          */
         onLoadedLua: function(data) {
             var pages = JSON.parse(data.return);
+            // List Lua module pages by alphabetical sorting
             this.state.luaPages = {};
-            for (var title in pages) {
+            Object.keys(pages).sort().forEach(function (title) {
                 var name = title.replace(/^Module:(.*)\/i18n$/, '$1');
                 this.state.luaPages[name] = {
                     'json': pages[title],
@@ -2953,7 +2975,7 @@
                     'title': title,
                     'final': true
                 };
-            }
+            }, this);
             this.state.luaPageList = Object.values(this.state.luaPages);
             this.buildUI();
         },

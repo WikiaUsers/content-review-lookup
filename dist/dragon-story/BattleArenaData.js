@@ -5348,6 +5348,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"flame": {
+				"name": "Flame",
+				"colors": [
+					"elemental",
+					"red",
+					"yellow"
+				],
+				"rarity": "common"
+			},
 			"flamequeen": {
 				"name": "Flame Queen",
 				"colors": [
@@ -7671,6 +7680,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Hypnosis",
 				"colors": [
 					"black",
+					"white",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"ice": {
+				"name": "Ice",
+				"colors": [
+					"elemental",
 					"white",
 					"blue"
 				],
@@ -10938,6 +10956,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"nimbus": {
+				"name": "Nimbus",
+				"colors": [
+					"elemental",
+					"rainbow",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"ninja": {
 				"name": "Ninja",
 				"colors": [
@@ -11177,6 +11204,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"tropic",
 					"flower",
 					"pink"
+				],
+				"rarity": "unbreedable"
+			},
+			"oddfire": {
+				"name": "Oddfire",
+				"colors": [
+					"elemental",
+					"white",
+					"blue"
 				],
 				"rarity": "unbreedable"
 			},
@@ -15512,6 +15548,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Strategist",
 				"colors": [
 					"olympus",
+					"black",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"stratum": {
+				"name": "Stratum",
+				"colors": [
+					"elemental",
 					"black",
 					"red"
 				],

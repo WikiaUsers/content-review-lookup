@@ -10538,6 +10538,34 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "flame": {
+                "name": "Flame",
+                "types": [
+                    "elemental",
+                    "red",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "flamequeen": {
                 "name": "Flame Queen",
                 "types": [
@@ -15211,6 +15239,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "29_hours_29",
                 "rarity": 3,
                 "offspringeligibility": "expired"
+            },
+            "ice": {
+                "name": "Ice",
+                "types": [
+                    "elemental",
+                    "white",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
             },
             "iceage": {
                 "name": "Ice Age",
@@ -22031,6 +22076,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "nimbus": {
+                "name": "Nimbus",
+                "types": [
+                    "elemental",
+                    "rainbow",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "ninja": {
                 "name": "Ninja",
                 "types": [
@@ -22505,6 +22567,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "tropic",
                     "flower",
                     "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "oddfire": {
+                "name": "Oddfire",
+                "types": [
+                    "elemental",
+                    "white",
+                    "blue"
                 ],
                 "environments": [
                     "dragon_islands"
@@ -31439,6 +31518,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "name": "Strategist",
                 "types": [
                     "olympus",
+                    "black",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "stratum": {
+                "name": "Stratum",
+                "types": [
+                    "elemental",
                     "black",
                     "red"
                 ],

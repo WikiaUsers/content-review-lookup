@@ -37,7 +37,7 @@
         		result += time + " GMT, " + date[2] + " " + "January" + " " + date[0];
     			break;
     			case "02":
-        		result += time + " GMT, " + date[2] + " " + "Feburary" + " " + date[0];
+        		result += time + " GMT, " + date[2] + " " + "February" + " " + date[0];
     			break;
     			case "03":
         		result += time + " GMT, " + date[2] + " " + "March" + " " + date[0];

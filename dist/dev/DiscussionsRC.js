@@ -25,6 +25,7 @@
    discRC.entries = [];
    var dRCAPI = {};
 
+	dRCAPI.msg;
    // API request for wiki variables
    dRCAPI.getWikiVariables = function(apipath, timeout) {
       if (!apipath.match(/\.(fandom|wikia)\.(com|org)/g)) {
@@ -105,7 +106,7 @@
       // Individual RC entry
       rcEntry: '<li class="drc-entry">' + 
          '{{^singleWiki}}{{wiki.wiki}} . . {{/singleWiki}}' + 
-         '{{#title}}<span class="drc-new" title="{{newPostTooltip}}"><svg class="wds-icon wds-icon-tiny"><use xlink:href="#wds-icons-{{newPostIcon}}-tiny"></use></svg></span>{{/title}}{{^title}}<span class="drc-reply" title="New reply">R</span>{{/title}} . . ' +
+         '{{#title}}<span class="drc-new" title="{{newPostTooltip}}"><svg class="wds-icon wds-icon-tiny"><use xlink:href="#wds-icons-{{newPostIcon}}-tiny"></use></svg></span>{{/title}}{{^title}}<span class="drc-reply" title="' + dRCAPI.msg('new-reply').escape() + '">R</span>{{/title}} . . ' +
          '(<span class="drc-view" data-city="{{wiki.id}}" data-thread="{{threadId}}"{{^title}} data-reply="{{id}}"{{/title}}><a>view</a></span>) . . ' +
          '<span class="drc-title">{{#title}}<a href="{{wiki.baseUrl}}/f/p/{{threadId}}">{{title}}{{/title}}{{^title}}<a href="{{wiki.baseUrl}}/f/p/{{threadId}}/r/{{id}}">{{threadtitle}}{{/title}}</a></span> ' + 
          'on <span class="drc-forumname"><a href="{{wiki.baseUrl}}/f?catId={{forumId}}">{{forumName}}</a></span>; ' + 
@@ -116,7 +117,7 @@
          '</li>',
       mainPost: '<div class="drc-post-header"><h2>{{post.title}}</h2><div class="drc-post-hlinks">' +
             '<span class="drc-post-category">in <a href="{{wiki.baseUrl}}/f?catId={{post.forumId}}">{{post.forumName}}</a></span> | ' +
-            '<span class="drc-post-dlink"><a href="{{wiki.baseUrl}}/f/p/{{post.id}}">View in Discussions &rsaquo;</a></span></div></div>' +
+            '<span class="drc-post-dlink"><a href="{{wiki.baseUrl}}/f/p/{{post.id}}">' + dRCAPI.msg('view-post-in-discussions-link').escape() + '</a></span></div></div>' +
             '<div class="drc-post{{#isHighlighted}} drc-post-highlighted{{/isHighlighted}}">' +
             '<div class="drc-post-avatar"><img src="{{post.createdBy.avatarUrl}}/zoom-crop/width/40/height/40" srcset="{{post.createdBy.avatarUrl}}/zoom-crop/width/40/height/40, {{post.createdBy.avatarUrl}}/zoom-crop/width/80/height/80 2x"/></div><div class="drc-post-author">{{post.createdBy.name}}' +
             ' &bull; <a href="{{wiki.baseUrl}}/wiki/Special:Contributions/{{post.createdBy.name}}">contribs</a> &bull; <a href="{{wiki.baseUrl}}/f/u/{{post.createdBy.id}}">posts</a></div>' +
@@ -169,22 +170,22 @@
                      switch (post.funnel) {
                         case 'LINK':
                            post.newPostIcon = 'link';
-                           post.newPostTooltip = 'New link post';
+                           post.newPostTooltip = dRCAPI.msg('new-link-post').plain();
                            break;
                         case 'IMAGE':
                            post.newPostIcon = 'image';
-                           post.newPostTooltip = 'New image post';
+                           post.newPostTooltip = dRCAPI.msg('new-image-post').plain();
                            break;
                         case 'POLL':
                            post.newPostIcon = 'poll';
-                           post.newPostTooltip = 'New poll post';
+                           post.newPostTooltip = dRCAPI.msg('new-poll-post').plain();
                            break;
                         default:
                            console.warn('Unexpected funnel type "%s" for post %s', post.funnel, post.threadId);
                            /* fall through */
                         case 'TEXT':
                            post.newPostIcon = 'text';
-                           post.newPostTooltip = 'New text post';
+                           post.newPostTooltip = dRCAPI.msg('new-text-post').plain();
                            break;
                      }
                   }
@@ -196,10 +197,10 @@
                   });
                });
             } else {
-               $('#discrc').prepend('Discussions is not available on the wiki ' + encodeURIComponent(wiki.wiki) + ' or there are no posts.');
+               $('#discrc').prepend(dRCAPI.msg('unavailableNoPosts', encodeURIComponent(wiki.wiki)).plain());
             }
          }).fail(function() {
-            $('#discrc').prepend('Discussions is not available on the wiki <b>' + encodeURIComponent(wiki.wiki) + '.wikia.com.</b>');
+            $('#discrc').prepend(dRCAPI.msg('unavailable', encodeURIComponent(wiki.wiki)).plain());
          });
          promises.push(promise);
       });
@@ -326,7 +327,7 @@
                   name: data.query.general.sitename
                });
             }).fail(function() {
-               $('#discrc').prepend('An error occurred: Wiki <b>' + encodeURIComponent(wiki) + '.wikia.com</b> not found.<br/>');
+               $('#discrc').prepend(dRCAPI.msg('error', encodeURIComponent(wiki)).plain() + '<br />');
             });
             wikiLoadPromises.push(promise);
          });
@@ -400,13 +401,21 @@
    };
    importArticle({
        type: 'script',
-       article: 'u:dev:MediaWiki:Modal.js'
+       article: [
+          'u:dev:MediaWiki:Modal.js',
+          'u:dev:MediaWiki:I18n-js/code.js'
+       ]
    });
-   mw.hook('dev.modal').add(function() {
-      mw.loader.using('mediawiki.template.mustache', function() {
-         discRC.init();
-      });
-   });
+   mw.hook('dev.i18n').add(function (i18n) {
+		i18n.loadMessages('DiscussionsRC').done(function (i18no) {
+			dRCAPI.msg = i18no.msg;
+            mw.hook('dev.modal').add(function() {
+               mw.loader.using('mediawiki.template.mustache', function() {
+                  discRC.init();
+               });
+            });
+		});
+	});
    window.discRC = discRC;
 })(jQuery, mediaWiki);
 // </nowiki>

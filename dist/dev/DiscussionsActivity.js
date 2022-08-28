@@ -4,7 +4,7 @@
  * @author NoWayThisUsernameIsAlreadyOwnedBySomeone (https://dev.fandom.com/User:NoWayThisUsernameIsAlreadyOwnedBySomeone)
  * - Based on DiscussionsFeed (https://dev.fandom.com/wiki/DiscussionsFeed)
  *   by Flightmare (https://elderscrolls.fandom.com/wiki/User:Flightmare)
- * @version 0.10.2
+ * @version 0.10.3
  * @license CC-BY-SA-3.0
  * @description Creates a special page for latest Discussions messages
  */
@@ -34,7 +34,7 @@
   if (window.DiscussionsActivityLoaded) return;
   window.DiscussionsActivityLoaded = true;
   
-  console.log('DiscussionsActivity v0.10.2');
+  console.log('DiscussionsActivity v0.10.3');
 
   const mwConfig = mw.config.get([
     "wgArticlePath",
@@ -45,6 +45,7 @@
     "wgScriptPath",
     "wgServerName",
     "wgTitle",
+    "wgUserGroups",
   ]);
 
   if (!mwConfig.wgEnableDiscussions) return;
@@ -53,7 +54,9 @@
     Recentchanges: true,
     SocialActivity: true,
     Newimages: true,
+    Reports: true, /* https://community.fandom.com/wiki/Help:Interactive_Maps#Special:Reports */
   };
+  
   const isDiscussionsActivityPage = mwConfig.wgNamespaceNumber === -1 && mwConfig.wgTitle === "DiscussionsActivity";
   const isOtherActivityPage = otherActivityPages[mwConfig.wgCanonicalSpecialPageName] === true;
 
@@ -85,7 +88,7 @@
 
   mw.hook('dev.i18n').add(function(lib) {
     perf.i18nLoaded = performance.now();
-    lib.loadMessages('DiscussionsActivity').done(function(lang) {
+    lib.loadMessages('DiscussionsActivity', { cacheVersion: 1 }).done(function(lang) {
       i18n = lang.msg;
       perf.i18nMessagesLoaded = performance.now();
       if (isOtherActivityPage) addDiscussionsActivityLink();
@@ -193,10 +196,31 @@
     tabList.classList.add("wds-tabs");
     activityTabs.appendChild(tabList);
 
+    function canSeeMapReports() {
+      const moderateInteractiveMapGroups = {
+        "content-moderator": true,
+        "helper": true,
+        "soap": true,
+        "staff": true,
+        "sysop": true,
+        "wiki-representative": true,
+        "wiki-specialist": true,
+      };
+
+      const groups = mwConfig.wgUserGroups;
+      const groupCount = groups.length;
+      for (var i = 0; i < groupCount; ++i) {
+        if (moderateInteractiveMapGroups[groups[i]] === true) return true;
+      }
+      return false;
+    }
     const makeTab = createActivityTab;
     tabList.appendChild(makeTab("link-text-recent-changes", "Special:RecentChanges", false));
     tabList.appendChild(makeTab("link-text-social-activity", "Special:SocialActivity", false));
     tabList.appendChild(makeTab("link-text-new-files", "Special:NewFiles", false));
+    if (canSeeMapReports()) {
+      tabList.appendChild(makeTab("link-text-reports", "Special:Reports", false));
+    }
     tabList.appendChild(makeTab("discussions_activity", mwConfig.wgPageName, true));
 
     return activityTabs;

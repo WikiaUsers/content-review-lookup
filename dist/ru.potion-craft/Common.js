@@ -12,3 +12,34 @@ $('.recipetoggler').click(function() {
     }
 });
 });
+
+/*Для карт*/
+$(function() {
+	var intervalAddOpacity = setInterval(addopacity, 500)
+
+	function addopacity() {
+		if ($(".leaflet-marker-icon").length) {
+				clearInterval(intervalAddOpacity)
+				var cat = mw.config.get('wgCategories')
+				if (cat.indexOf('Эффекты') !== -1) {
+					$('img.leaflet-marker-icon').css({
+						"opacity": "0.5"
+					})
+				}
+
+				var classes = $('body').attr("class").split(' ');
+
+				function isPageName(i) {
+					return i.includes('page');
+				}
+
+				var effect = classes.find(isPageName);
+
+				effect = effect.replaceAll('_', ' ').replace('page-', '');
+
+				$('img').filter('[alt="' + effect + '"]').css({
+					"opacity": "1"
+				});
+			}
+		}
+});

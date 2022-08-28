@@ -1,12 +1,5 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
 
-/* DiscordBanner */
-window.DiscordBannerSettings = {
-    bannerStyle: '3',
-    inviteLink: 'BrduMUDAaN',
-    prependToRail: false
-};
-
 /* ReferencePopups */
 importArticles({
     type: 'script',
@@ -93,26 +86,74 @@ importArticles({
     ]
 });
 
-/* MassEdit */
+/* AddArticleToCategory */
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:MassEdit/code.js',
+        'u:dev:MediaWiki:AddArticleToCategory/code.js',
     ]
 });
 
-window.MassEditConfig = {
-  interval: 2500,
-  placement: {
-    element: "toolbar",
-    type: "append"
-  }
-};
-
-/* UserBadge */
+/* FirstEditDate */
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:UserBadge/code.js',
+        'u:dev:MediaWiki:FirstEditDate.js',
+    ]
+});
+
+/* NewImages */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:NewImages.js',
+    ]
+});
+
+/* AjaxRC */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AjaxRC.js',
+    ]
+});
+
+/* SeeMoreActivityButton */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:SeeMoreActivityButton/code.js',
+    ]
+});
+
+/* EditConflictAlert */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:EditConflictAlert/code.js',
+    ]
+});
+
+/* Nuke */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:Nuke/code.js',
+    ]
+});
+
+/* Reconstitution */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:Reconstitution.js',
+    ]
+});
+
+/* DecodeURI */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:DecodeURI/code.js',
     ]
 });

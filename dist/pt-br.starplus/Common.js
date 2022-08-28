@@ -3,7 +3,6 @@ importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:AddBlockUserTag/code.js',
-        'u:dev:MediaWiki:UploadMultipleFiles.js',
         'u:dev:MediaWiki:PageRenameAuto-update/code.js',
     ]
 });
