@@ -10,55 +10,58 @@ var l10nFactory = function($lang, $data) {
 };
 
 // AJAX tables
-function addAjaxDisplayLink() {
+$(function() {
 	$("table.ajax").each(function (i) {
 		var table = $(this).attr("id", "ajaxTable" + i);
 		table.find(".nojs-message").remove();
 		var headerLinks = $('<span style="float: right;">').appendTo(table.find('th').first());
-		var cell = table.find("td").first(), needLink = true;
+		var cell = table.find("td").first();
+		var needLink = true;
 		cell.parent().show();
 		if (cell.hasClass("showLinkHere")) {
-			var old = cell.html(), rep = old.replace(/\[link\](.*?)\[\/link\]/, '<a href="javascript:;" class="ajax-load-link">$1</a>');
-			if (rep != old) {
+			var old = cell.html();
+			var rep = old.replace(/\[link\](.*?)\[\/link\]/, '<a href="javascript:;" class="ajax-load-link">$1</a>');
+			if (rep !== old) {
 				cell.html(rep);
 				needLink = false;
 			}
 		}
-		if (needLink) headerLinks.html('[<a href="javascript:;" class="ajax-load-link">show data</a>]');
-		table.find(".ajax-load-link").parent().andSelf().filter('a').click(function(event) {
+		if (needLink) {
+			headerLinks.html('[<a href="javascript:;" class="ajax-load-link">show data</a>]');
+		}
+		table.find(".ajax-load-link").parent().addBack().filter('a').click(function(event) {
 			event.preventDefault();
 			var sourceTitle = table.data('ajax-source-page'), baseLink = mw.config.get('wgScript') + '?';
 			cell.text('Please wait, the content is being loaded...');
 			$.get(baseLink + $.param({ action: 'render', title: sourceTitle }), function (data) {
-				if (data) {
-					cell.html(data);
-					cell.find('.ajaxHide').remove();
-					cell.find('.mod-logo').remove();//remove mod logo image.
-					cell.find('.terraria').removeClass('terraria');
-					if (cell.find("table.sortable").length) {
-						mw.loader.using('jquery.tablesorter', function() {
-							cell.find("table.sortable").tablesorter();
-						});
-					}
-					headerLinks.text('[');
-					headerLinks.append($('<a>edit</a>').attr('href', baseLink + $.param({ action: 'edit', title: sourceTitle })));
-					headerLinks.append(document.createTextNode(']\u00A0['));
-					var shown = true;
-					$("<a href='javascript:;'>hide</a>").click(function() {
-						shown = !shown;
-						shown ? cell.show() : cell.hide();
-						$(this).text(shown ? "hide" : "show");
-					}).appendTo(headerLinks);
-					headerLinks.append(document.createTextNode(']'));
+				if (!data) {
+					return;
 				}
+				cell.html(data);
+				cell.find('.ajaxHide').remove();
+				cell.find('.mod-logo').remove(); // remove mod logo image
+				cell.find('.terraria:not(.ajaxForceTerraria)').removeClass('terraria');
+				if (cell.find("table.sortable").length) {
+					mw.loader.using('jquery.tablesorter', function() {
+						cell.find("table.sortable").tablesorter();
+					});
+				}
+				headerLinks.text('[');
+				headerLinks.append($('<a>edit</a>').attr('href', baseLink + $.param({ action: 'edit', title: sourceTitle })));
+				headerLinks.append(document.createTextNode(']\u00A0['));
+				var shown = true;
+				$("<a href='javascript:;'>hide</a>").click(function() {
+					shown = !shown;
+					cell.toggle(shown);
+					$(this).text(shown ? "hide" : "show");
+				}).appendTo(headerLinks);
+				headerLinks.append(document.createTextNode(']'));
 			}).error(function() {
 				cell.text('Unable to load table; the source article for it might not exist.');
 			});
 		});
 	});
-}
-
-$(addAjaxDisplayLink);
+});
 
 
 //Automatically expand pages to full-width and hide right bar on FandomDesktop by default

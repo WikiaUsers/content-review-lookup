@@ -8,12 +8,8 @@
 $(function () {
     // Note: mainModule must contain a `local PREFIX = prefixname_01_`
     var supportedCaches = {
-            slot_aliases: {
-                type: "simple",
-                dataModule: "Invslot/Aliases",
-                mainModule: "Cache",
-                prefixVar: "SLOT_ALIASES_PREFIX"
-            },
+            slot_aliases: { type: "simple", dataModule: "Invslot/Aliases", mainModule: "Cache", prefixVar: "SLOT_ALIASES_PREFIX" },
+            invsprite: { type: "simple", dataModule: "Invsprite", mainModule: "Cache", prefixVar: "INVSPRITE_PREFIX" },
         },
         BUTTON_ID = ".refresh-lua-cache";
 

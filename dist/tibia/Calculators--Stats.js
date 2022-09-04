@@ -142,7 +142,11 @@ $(function() {
             .append('<input id="calculator_lootbonus_points" type="number" value="0" min="0" max="30000" step="5" style="width:55px;">')
             .append('<br/><br/>')
             .append('<span id="calculator_lootbonus_bonus">Equipment Loot Bonus: <b>25%</b></span><br/>')
-            .append('<span id="calculator_lootbonus_next">Points for next Bonus: <b>10</b></span><br/>');
+            .append('<span id="calculator_lootbonus_next"><br/>' +
+					'<table><thead><tr>' +
+					'<th>Bonus</th><th>Total Points</th><th>Points Left</th></tr>'+
+					'</thead><tbody></tbody></table>' +
+            		'</span><br/>');
         
         bonus_for_points = function(points) {
         	var bonus = 0;
@@ -174,8 +178,18 @@ $(function() {
         	bonus = bonus_for_points(points),
         	points_next = points_for_next(points);
         	
-        	$('#calculator_lootbonus_bonus').html('Equipment Loot Bonus: <b>' + bonus + '%</b>');
-        	$('#calculator_lootbonus_next').html('Points for next Bonus: <b>' + points_next + '</b>');
+        	$('#calculator_lootbonus_bonus').html('Current Equipment Loot Bonus: <b>' + bonus + '%</b>');
+        	
+        	var points_arr = [points_next];
+        	
+        	$('#calculator_lootbonus_next table tbody').empty();
+        	
+        	for (i = bonus + 1; i < bonus + 4; i++) {
+        		$('#calculator_lootbonus_next table tbody')
+        			.append('<tr><td>' + i + '%</td><td>' + points_next + '</td><td>' + (points_next - points) + '</td></tr>');
+    			points_next = points_for_next(points_arr[points_arr.length - 1]);
+        		points_arr.push(points_next);
+        	}
         });
     }());
 		

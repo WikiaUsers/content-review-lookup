@@ -1,4 +1,4 @@
-// By Equazcion: http://terraria.fandom.com/wiki/User:Equazcion
+// By Equazcion: https://terraria.fandom.com/wiki/User:Equazcion
 
 var lang = mw.config.get( 'wgUserLanguage' ) || 'uk';
 var l10n = (function(){

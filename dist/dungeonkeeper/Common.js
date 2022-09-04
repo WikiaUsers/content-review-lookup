@@ -284,6 +284,7 @@
 
 */
 
+/*
 window.ArticleRating = {
   title: 'Rate This Article',
   values: ['Worst', 'Bad', 'Average', 'Good', 'Great'],
@@ -294,9 +295,192 @@ window.ArticleRating = {
   excludeCats: [],
   location: 'bottom-page'
 };
+*/
 
 window.rwaOptions = {
 	limit: 50,
 	namespaces: [ 0, 1, 2, 3, 4, 5, 6, 7, 110, 111, 500, 501, 828, 829 ],
 	autoInit: true 
 };
+
+window.quizName = "Test your knowledge";
+window.quizLang = "en";
+window.resultsTextArray = [ 
+    "Your score has made the gods angry!",
+    "The gods do not care for your score...",
+    "The gods are pleased with your score!" 
+];
+window.questions = [
+	["Which year was Dungeon Keeper released?",
+    "1997",
+    "1996",
+    "1998",
+    "1995"],
+    
+    ["And which month?",
+    "June",
+    "July",
+    "August",
+    "May"], 
+
+    ["Who voiced Dungeon Keeper's game Mentor?",
+    "Dene Carter",
+    "Richard Ridings",
+    "Simon Carter",
+    "Mark Silk"],
+
+    ["Who was Dungeon Keeper's project leader?",
+    "Peter Molyneux",
+    "Simon Carter",
+    "Dene Carter",
+    "Jonty Barnes"],
+    
+    ["Who was Dungeon Keeper's lead artist?",
+    "Mark Healey",
+    "Mark Webley",
+    "Gary Carr",
+    "Paul McLaughlin"],
+    
+    ["Who was Dungeon Keeper's lead programmer?",
+    "Simon Carter",
+    "Peter Molyneux",
+    "Dene Carter",
+    "Jonty Barnes"],
+    
+    ["The Avatar resembles his namesake from which Ultima game?",
+    "Ultima VIII: Pagan",
+    "Ultima VII: The Black Gate",
+    "Ultima V: Warriors of Destiny",
+    "Ultima IX: Ascension"],
+    
+    ["What is the name of Dungeon Keeper's world?",
+    "Adushul",
+    "Harmonia",
+    "Eden",
+    "It has no name"],
+    
+    ["An early name for the Bile Demon described it as...?",
+    "Perfidious",
+    "Obnoxious",
+    "Abdominous",
+    "Odious",
+    "Malodorous",
+    "Noxious",
+    "Pernicious",
+    "Poisonous",
+    "Deleterious",
+    "Injurious",
+    "Pretentious"],
+    
+    ["The Orc is a modified Troll.",
+    "True",
+    "False"],
+    
+    ["Which animal do the folk of Snuggledell worship?",
+    "Rabbit",
+    "Dog",
+    "Sheep",
+    "Vulture"],
+    
+    ["What did creatures eat before Chickens?",
+    "Mushrooms",
+    "Micropiglets",
+    "Apples",
+    "Tomatoes",
+    "Wild animals"],
+    
+    ["In Dungeon Keeper, what does the white bar on a room flag measure?",
+    "Efficiency",
+    "Capacity",
+    "Health",
+    "Size"],
+    
+    ["And the green bar?",
+    "Capacity",
+    "Efficiency",
+    "Health",
+    "Size"],
+    
+    ["And the red bar?",
+    "Health",
+    "Efficiency",
+    "Capacity",
+    "Size"],
+    
+    ["Who voiced Dungeon Keeper's level Mentor?",
+    "Richard Ridings",
+    "Dene Carter",
+    "Simon Carter",
+    "Mark Silk"],
+    
+    ["Which of these is an early name for the Dark Mistress?",
+    "Vengeful Siren",
+    "Vindictive Vamp",
+    "Malefic Maid",
+    "Femme Fatale"],
+    
+    ["What colours are the sparks in the Library and Workshop in Dungeon Keeper?",
+    "Red, green, and blue",
+    "Red and green",
+    "Green and blue",
+    "Red and blue"],
+    
+    ["Which of these is not a name for a Dungeon Special?",
+    "Special Item",
+    "Secret Item",
+    "Super Item",
+    "Magical Item",
+    "Secret Surprise"],
+    
+    ["Which of these is not a Dungeon Keeper release?",
+    "Dungeon Keeper Deluxe",
+    "Dungeon Keeper Gold",
+    "Dungeon Keeper Premium",
+	],
+	
+	["Which of these has never been the name of a creature?",
+    "Louse",
+    "Cockroach",
+    "Bug",
+    "Beetle",
+	],
+	
+	["How much gold does a tile of gold seam yield in Dungeon Keeper?",
+    "1024",
+    "8192",
+    "2048",
+    "4096",
+	],
+	
+	["What do Imps tell you when you overwork them in the Japanese version of Dungeon Keeper?",
+    "'Wait a moment!'",
+    "'Get lost!'",
+    "'No way!'",
+    "'Get stuffed!'",
+	],
+    
+    ["When was Dungeon Keeper 2 released?",
+    "June 1999",
+    "July 1999",
+    "May 1999",
+    "April 1999"],
+    
+    ["Who was its producer?",
+    "Nick Goldsworthy",
+    "Peter Molyneux",
+    "Mark Webley",
+    "Les Edgar"],
+    
+    ["Which song do creatures dance to when a jackpot is won in a Casino?",
+    "Disco Inferno",
+    "Disco Party",
+    "Disco Band",
+    "Disco Duck"],
+    
+    ["How much gold does a tile of gold seam normally yield in Dungeon Keeper 2?",
+    "3000",
+    "2000",
+    "4000",
+    "1000",
+	]
+];

@@ -10,3 +10,4 @@ function UserNameReplace() {
  addOnloadHook(UserNameReplace);
  
 /* End of the {{USERNAME}} replacement */
+TBL_GROUP = "roblox-en";

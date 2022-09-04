@@ -26,22 +26,6 @@ var l10n = (function(){
 			darkTheme: 'Dark Theme',
 			lightTheme: 'Light Theme'
 		},
-		zh: {
-			watchlist: '我的监视列表',
-			view: '查看',
-			more: '更多',
-			share: '分享',
-			pagetools: '页面工具', 
-			whatlinkshere: '链入页面',
-			'cargo-pagevalues': '页面值',
-			'recentchangeslinked': '相关更改',
-			'log': '日志',
-			searchText: '搜索 '+mw.config.get('wgSiteName'),
-			searchGo: '搜索',
-			searchGoTitle: '若存在标题完全匹配的页面，则直接前往该页面',
-			darkTheme: '黑暗主题',
-			lightTheme: '明亮主题'			
-		},
 		uk: {
 			watchlist: 'Список спостереження', // in my account droplist
 			view: 'Читати', // in right tabs

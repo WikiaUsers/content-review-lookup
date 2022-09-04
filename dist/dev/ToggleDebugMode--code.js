@@ -7,13 +7,11 @@
 
 /* jshint latedef:true, devel:false */
 
-(function () {
+;(function ($, mw) {
     'use strict';
 
     //Double run protection.
-    if (window.ToggleDebugModeLoaded) {
-        return;
-    }
+    if (window.ToggleDebugModeLoaded) return;
     window.ToggleDebugModeLoaded = true;
 
     function init () {
@@ -49,7 +47,7 @@
     mw.hook('dev.i18n').add(init);
     importArticle({
         type: 'script',
-        article: 'u:dev:I18n-js/code.js'
+        article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
 
-}());
+}(window.jQuery, window.mediaWiki));

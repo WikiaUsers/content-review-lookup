@@ -186,7 +186,7 @@ $(function () {
                 if (e.which !== 2 && !window.minetipConfig.noPickup) {
                     var iid = $this.attr("data-iid");
                     var $source = $this.find("img");
-                    if ((typeof iid === "string") || ($source.length > 0)) {
+                    if ((typeof iid === "string") || ($source.length > 0) || $this.hasClass("invsprite")) {
                         var $target = $this;
                         $target.addClass("invslot-pickup");
                         var offset = $this.offset();

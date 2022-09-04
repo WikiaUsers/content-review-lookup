@@ -63,6 +63,7 @@ importArticles({
 		'u:dev:MediaWiki:FileUsageAuto-update/code.js',
 		'u:dev:MediaWiki:LastEdited/code.js',
 		'u:dev:MediaWiki:MassCategorization/code.js',
+		'u:dev:MediaWiki:MassEdit/code.js',
 		'u:dev:MediaWiki:MassProtect/code.js',
 		'u:dev:MediaWiki:MassRename/code.js',
 		'u:dev:MediaWiki:MassRenameRevert/code.js',

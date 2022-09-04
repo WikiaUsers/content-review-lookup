@@ -214,7 +214,7 @@
   lootparser_p_items = [
   	'Corrupt Naga Scales', 'Rogue Naga Scales', 'Naga Archer Scales', 'Naga Warrior Scales',
   	'Ripptor Scales', 'Stalking Seeds', 'Fairy Wings', 'Prehemoth Horns', 'Moonlight Crystals',
-  	'Grapes', 'Stampor Talons', 'Deepling Warts'
+  	'Grapes', 'Stampor Talons', 'Deepling Warts', 'Deepworm Spike Roots', 'Diremaw Legs'
   ],
 
   //skip/rename creatures if they drop any of the loot in the list

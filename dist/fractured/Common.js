@@ -64,6 +64,9 @@ $(function () {
     }*/
 
 }());
+
+
+
 /*----------------------------------------------------*/
 /*Add Obtained from style*/
 const obtainedFrom = document.querySelector('.obtained-from'); //check if it's a skill page with mobs
@@ -75,6 +78,8 @@ const functionObtainedFromText = function (functionObtainedFrom) {
 if (obtainedFrom) {
     functionObtainedFromText(); 
 }
+
+
 
 
 /*-----------------------------------------------------*/
@@ -113,6 +118,9 @@ const replaceGroupsSkykal = function () {
 if (checkIDSkykal) {
     replaceGroupsSkykal();
 }
+
+
+
 /*-----------------------------------------------------------------------------------*/
 /*********Adds a spoiler button on that freakin spider*************/
 const checkPic = document.querySelector('.image-spoiler');
@@ -127,6 +135,9 @@ const clickToRemoveBlur = function () {
 if (checkPic) {
     clickToRemoveBlur();
 }
+
+
+
 
 /***********************************************************************************/
 /*----------Hides overflow to make the back button work with position sticky------------------*/

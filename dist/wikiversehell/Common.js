@@ -21,18 +21,24 @@ window.UserTagsJS = {
 		sysop: { u:'Admin smh' },
 		threadmoderator: { u:'Thread Mod' },
 		'content-moderator': { u:'Content Mod' },
-		specialroleforfun: { u:'Yonyons Mental Stability Protector' },
-		otherspecialrole: { u:'Writing Lord' },
+		maptest: { u:'Map Tester' },
+		specialrole: { u:'Writing Lord' },
+		otherspecialrole: { u:'Proofreader' },
+		otherspecialrolewow: { u:'Tired Artist' },
+		lebesrole: { u:'Wiki Mom' },
 		newuser: { u:'Just Joined!' },
 	} 
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'rollback', 'content-moderator', 'threadmoderator'];
 UserTagsJS.modules.custom = {
 	'Halcyonmetanoia': ['officialwikicoder', 'codinghelp'],
-	'HH346': ['otherspecialrole', 'headventmod'],
+	'HH346': ['specialrole', 'headventmod'],
 	'GhostTheWick': ['codinghelp'],
-	'WOF Fanatic': ['specialroleforfun'],
-	'LeahForsea': ['headventmod']
+	'LeahForsea': ['lebesrole'],
+	'Rosellia Teh Hybrid': ['maptest'],
+	'WHYYYYYYHUY': ['otherspecialrole'],
+	'Khris Beleren': ['otherspecialrolewow']
+	'FrostdropdALT': ['ventmod']
 };
 window.MessageBlock = {
 	title: 'Blocked',

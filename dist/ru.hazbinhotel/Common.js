@@ -2,11 +2,17 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
+		bureaucrat: { link:"Hazbin_Hotel_Вики:Бюрократы" },
+		sysop: { link:"Hazbin_Hotel_Вики:Администраторы" },
+		'content-moderator': { link:"Hazbin_Hotel_Вики:Модераторы_контента" },
+		threadmoderator: { link:"Hazbin_Hotel_Вики:Модераторы_сообщества" },
+		bot: { link:"Hazbin_Hotel_Вики:Боты" },
+		
 		technician: { u: 'Техник' },
 		founder: { u: 'Основатель' },
-		intern: { u: 'Стажёр' },
-		discordMod: { u: 'Модератор Discord' },
-		discordAdmin: { u: 'Администратор Discord' },
+		intern: { u: 'Стажёр', link:"Hazbin_Hotel_Вики:Стажёры" },
+		discordMod: { u: 'Модератор Discord', link:"Hazbin_Hotel_Вики:Модераторы_Discord" },
+		discordAdmin: { u: 'Администратор Discord', link:"Hazbin_Hotel_Вики:Администраторы_Discord" },
 		translator: { u: 'Переводчик' }
 	},
 	getNameByTag: function (tag) {

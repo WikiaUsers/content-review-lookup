@@ -4,7 +4,7 @@
 // Description: Gives you information about your Seasonal Candles count for the Season
 // Sky Seasonal Candle Calculator
 // Author: Ray808080
-// Version: 0.1.1
+// Version: 0.1.2
 // Description: Gives you information about your Seasonal Candles count for the Season
 // Instructions: To use, place the following:
 /*  <div id="sky-seasonal-candle-calculator-wrapper">
@@ -19,6 +19,9 @@
     |DOUBLE_EVENT      = <true/false>
     |DOUBLE_START      = <Month DD, YYYY HH:mm:ss PDT/PST>
     |DOUBLE_END        = <Month DD, YYYY HH:mm:ss PDT/PST>
+    |DOUBLE_2_EVENT    = <true/false>
+    |DOUBLE_2_START    = <Month DD, YYYY HH:mm:ss PDT/PST>
+    |DOUBLE_2_END      = <Month DD, YYYY HH:mm:ss PDT/PST>
     </nowiki>
     </div>
     <div id="sky-seasonal-candle-calculator-output"></div>
@@ -38,7 +41,7 @@ Date.prototype.toDateInputValue = (function() {
         return false;
     } 
     window.SkySeasonalCandleCalculator = {
-    	version: '0.1.1',
+    	version: '0.1.2',
         init: importArticles({
 				type: 'script',
 				articles: [
@@ -57,17 +60,32 @@ Date.prototype.toDateInputValue = (function() {
 
                 // Get the initial constants from HTML
                 SkySeasonalCandleCalculator.get_data();
-                SEASON_DAYS = SkySeasonalCandleCalculator.diff(SEASON_START, SEASON_END);
-                DOUBLE_DAYS = SkySeasonalCandleCalculator.diff(DOUBLE_START, DOUBLE_END);
+
+                // The end times are always listed as 23:59:59 so a buffer of
+                // 1000 ms is needed to round up so that the date calculations are ok
+                END_TIME_BUFFER = 1000;
+                SEASON_DAYS = SkySeasonalCandleCalculator.diff(SEASON_START, SEASON_END, END_TIME_BUFFER);
+
+                // Assume Double Currency days don't exist and only update their durations
+                // After their existances are checked
+                DOUBLE_DAYS = 0;
+                DOUBLE_2_DAYS = 0;
+                if (DOUBLE_EVENT) {
+                    DOUBLE_DAYS = SkySeasonalCandleCalculator.diff(DOUBLE_START, DOUBLE_END, END_TIME_BUFFER);
+                }
+                if (DOUBLE_2_EVENT) {
+                    DOUBLE_2_DAYS = SkySeasonalCandleCalculator.diff(DOUBLE_2_START, DOUBLE_2_END, END_TIME_BUFFER);
+                }        
 
                 // Sets up the HTML initially
                 document.getElementById('sky-seasonal-candle-calculator-output').innerHTML = /*
                 */'<p>The <b>Season of <span id="sscc_season_name"></span></b> lasts <span id="sscc_season_days"></span> days long, from <span id="sscc_season_start"></span> to <span id="sscc_season_end"></span>.</p>' + /*
                 */'<p id="sscc_double_event">The <b>Double Seasonal Candle Event</b> lasts <span id="sscc_double_days"></span> days long, from <span id="sscc_double_start"></span> to <span id="sscc_double_end"></span>.</p>' + /*
+                */'<p id="sscc_double_2_event">A second <b>Double Seasonal Candle Event</b> lasts <span id="sscc_double_2_days"></span> days long, from <span id="sscc_double_2_start"></span> to <span id="sscc_double_2_end"></span>.</p>' + /*
 
                 */'<p>To buy all the cosmetics in the season, you will need:<br>' + /*
-                */'- <span id="sscc_need_no_pass"></span> Seasonal Candles with NO Season Pass. <span id="sscc_skippable_message"></span> Takes approximately <span id="sscc_need_no_pass_days"></span> regular days.<br>' + /*
-                */'- <span id="sscc_need_with_pass"></span> Seasonal Candles with the Season Pass. Takes approximately <span id="sscc_need_with_pass_days"></span> regular days.</p>' + /*
+                */'- <span id="sscc_need_no_pass"></span> Seasonal Candles with NO Season Pass. <span id="sscc_skippable_message"></span> Takes approximately <span id="sscc_need_no_pass_days"></span> standard days.<br>' + /*
+                */'- <span id="sscc_need_with_pass"></span> Seasonal Candles with the Season Pass. Takes approximately <span id="sscc_need_with_pass_days"></span> standard days.</p>' + /*
 
                 */'<i>Note: Please know you should never feel pressured to buy the Season Pass.</i></p>' + /*
 
@@ -110,6 +128,16 @@ Date.prototype.toDateInputValue = (function() {
                     document.getElementById("sscc_double_event").innerHTML = "A <b>Double Seasonal Candle Event</b> has not been announced.";
                 }
 
+                // Fills in the info for a Second Double Event if it exists
+                if (DOUBLE_2_EVENT) {
+                    document.getElementById("sscc_double_2_start").innerHTML = DOUBLE_2_START.toLocaleString("en", { dateStyle: "medium", timeStyle: "short" });
+                    document.getElementById("sscc_double_2_end").innerHTML = DOUBLE_2_END.toLocaleString("en", { dateStyle: "medium", timeStyle: "short" });
+                    document.getElementById("sscc_double_2_days").innerHTML = DOUBLE_2_DAYS;
+                } else {
+                    // The second Event is a very rare case so nothing will be shown if it is not announced
+                    document.getElementById("sscc_double_2_event").innerHTML = "";
+                }
+
                 // Fills in the Seasonal Candle requirements for the Season
                 document.getElementById("sscc_need_no_pass").innerHTML = NEED_NO_PASS;
                 document.getElementById("sscc_need_with_pass").innerHTML = NEED_WITH_PASS;
@@ -149,12 +177,12 @@ Date.prototype.toDateInputValue = (function() {
             NEED_NO_PASS = Number(constants.NEED_NO_PASS);
             NEED_WITH_PASS = Number(constants.NEED_WITH_PASS);
             SKIPPABLE_MESSAGE = String(constants.SKIPPABLE_MESSAGE);
-            DOUBLE_EVENT = Boolean(constants.DOUBLE_EVENT);
+            DOUBLE_EVENT = (constants.DOUBLE_EVENT.toLowerCase() === 'true');
             DOUBLE_START = new Date(String(constants.DOUBLE_START));
             DOUBLE_END = new Date(String(constants.DOUBLE_END));
-            
-            SEASON_DAYS = SkySeasonalCandleCalculator.diff(SEASON_START, SEASON_END);
-            DOUBLE_DAYS = SkySeasonalCandleCalculator.diff(DOUBLE_START, DOUBLE_END);
+            DOUBLE_2_EVENT = (constants.DOUBLE_2_EVENT.toLowerCase() === 'true');
+            DOUBLE_2_START = new Date(String(constants.DOUBLE_2_START));
+            DOUBLE_2_END = new Date(String(constants.DOUBLE_2_END));
         },
 
         // ---------- DATE FUNCTIONS ----------------------------------------------------
@@ -168,13 +196,11 @@ Date.prototype.toDateInputValue = (function() {
         // Helper function: Calculates the day difference between start and end Date objects.
         // Rounds to the nearest whole number of days if SEASON_END or DOUBLE_END is used.
         // Otherwise, rounds up to the next whole number of days.
-        diff: function (start, end) {
+        // Buffer is used for END dates needing an extra 1s but otherwise is defaulted to 0
+        diff: function (start, end, buffer) {
             const ONE_DAY_IN_MS = 86400000;
             // Takes into consideration that the End times are 1 minute off
-            if (start == SEASON_END || start == DOUBLE_END || end == SEASON_END || end == DOUBLE_END) {
-                return Math.round((Math.abs(end - start)+1000)/ONE_DAY_IN_MS); 
-            }
-            return Math.ceil(Math.abs(end - start)/ONE_DAY_IN_MS);
+            return Math.ceil((Math.abs(end - start) + buffer)/ONE_DAY_IN_MS);
         },
 
         // Button function: Puts Today's Date to the date input and recalculates
@@ -309,6 +335,16 @@ Date.prototype.toDateInputValue = (function() {
                 */'</table></div>';
         },
 
+        // Helper function: Gives the min days required to reach the goal
+        min_days_required: function (arr, goal) {
+            arr = arr.sort();
+            var min_sum = 0;
+            var min_index = arr.findIndex(function(value, i) {
+                return (min_sum += value) >= goal;
+            });
+            return min_index + 1;
+        },
+
         // Main function: Outputs the General Table and the Custom Commentary
         calculate: function () {
             // Adds the table HTML
@@ -335,6 +371,41 @@ Date.prototype.toDateInputValue = (function() {
             var selected_time_pretty = moment.tz(datetime_value, LOCALE_ZONE).format('LT');
             var selected_time_tz = moment.tz(datetime_value, LOCALE_ZONE).format('z');
 
+            // ---------- LIST CONSTRUCTOR ----------------------------------------------
+            NO_PASS_LIST = [0];
+            WITH_PASS_LIST = [0];
+            
+            // Creates a list of Seasonal Candles you can collect baseline, indexed by 
+            // the # of days you have collected, so i=0 is None and i=SEASON_DAYS is All
+            // Baseline non-SP is maxed out at 5 per day and SP is maxed out at 6 per day
+            for (var i = 0; i < SEASON_DAYS; i++) {
+                NO_PASS_LIST.push(5);
+                WITH_PASS_LIST.push(6);
+            }
+            
+            // Adds extra 1 Seasonal Candle per day that you can get during a
+            // Double Candle Event, IF it is already announced.
+            if (DOUBLE_EVENT) {
+                var double_event_i = SkySeasonalCandleCalculator.diff(SEASON_START, DOUBLE_START, 0) + 1;            
+                for (var i = 0; i < DOUBLE_DAYS; i++) {
+                    NO_PASS_LIST[double_event_i + i] = 6;
+                    WITH_PASS_LIST[double_event_i + i] = 7;
+                }
+            }
+
+            // Adds extra 1 Seasonal Candle per day that you can get during a
+            // SECOND Double Candle Event, IF it is already announced.
+            if (DOUBLE_2_EVENT) {
+                var double_2_event_i = SkySeasonalCandleCalculator.diff(SEASON_START, DOUBLE_2_START, 0) + 1;
+                for (var i = 0; i < DOUBLE_2_DAYS; i++) {
+                    NO_PASS_LIST[double_2_event_i + i] = 6;
+                    WITH_PASS_LIST[double_2_event_i + i] = 7;
+                }
+            }
+
+            // Bonus 30 Seasonal Candles for buying Seasonal Pass
+            WITH_PASS_LIST[1] += 30;
+
             // ---------- GENERAL TABLE START -------------------------------------------
 
             // ---------- COLUMN A ------------------------------------------------------
@@ -346,60 +417,34 @@ Date.prototype.toDateInputValue = (function() {
                 total_collected_days = 0;
             // Catch if date is later than Season end date
             } else if (selected_date > SEASON_END) {
-                total_collected_days = SkySeasonalCandleCalculator.diff(SEASON_START, SEASON_END + 1000);
+                total_collected_days = SkySeasonalCandleCalculator.diff(SEASON_START, SEASON_END, END_TIME_BUFFER);
             // Otherwise, the date is between Season start and end 
             } else {
-                total_collected_days = SkySeasonalCandleCalculator.diff(SEASON_START, selected_date);
+                total_collected_days = SkySeasonalCandleCalculator.diff(SEASON_START, selected_date, 0);
             }
 
-            // Converting the days that have passed into Seasonal Candles
-            // Baseline is that non-SP is maxed out at 5 per day and
-            // SP is maxed out at 6 per day (when there is no Double Candle Event)
-            var no_pass_before = total_collected_days*5;
-            var with_pass_before = total_collected_days*6;
-            if (total_collected_days > 0) {
-                with_pass_before += 30; // Bonus for buying SP
-            }
-
-            // Need to add the extra 1 Seasonal Candle per day that you can get during
-            // Double Candle Events, IF it is already announced.
-            // Otherwise, if there is no Double Candle Annoucement, give baseline calculations.
-            if (DOUBLE_EVENT) {
-                // Include ALL of the extra candles from event
-                if (selected_date > DOUBLE_END) {
-                    no_pass_before += DOUBLE_DAYS;
-                    with_pass_before += DOUBLE_DAYS;
-                // Include SOME of the extra candles from event
-                } else if (selected_date > DOUBLE_START && selected_date <= DOUBLE_END) {
-                    no_pass_before += SkySeasonalCandleCalculator.diff(DOUBLE_START, selected_date);
-                    with_pass_before += SkySeasonalCandleCalculator.diff(DOUBLE_START, selected_date);
-                }
+            // Totaling the Seasonal Candles for the days that have passed
+            var no_pass_before = 0;
+            var with_pass_before = 0;
+            for (var i = 0; i <= total_collected_days; i++) {
+                no_pass_before += NO_PASS_LIST[i];
+                with_pass_before += WITH_PASS_LIST[i];
             }
 
             // ---------- COLUMN B ------------------------------------------------------
             // Counting the number of remaining days in the Season
             var total_remaining_days = SEASON_DAYS - total_collected_days;
 
-            // Converting the remaining days into Seasonal Candles
-            // Baseline is that non-SP is maxed out at 5 per day and
-            // SP is maxed out at 6 per day (when there is no Double Candle Event)
-            var no_pass_after = total_remaining_days*5;
-            var with_pass_after = total_remaining_days*6;
-
-            // Need to add the extra 1 Seasonal Candle per day that you can get during
-            // Double Candle Events, IF it is already announced.
-            // Otherwise, if there is no Double Candle Annoucement, give baseline calculations.
-            if (DOUBLE_EVENT) {
-                // Include ALL of the extra candles from event
-                if (selected_date < DOUBLE_START) {
-                    no_pass_after += DOUBLE_DAYS;
-                    with_pass_after += DOUBLE_DAYS;
-                // Include SOME of the extra candles from event
-                } else if (selected_date > DOUBLE_START && selected_date <= DOUBLE_END) {
-                    no_pass_after += SkySeasonalCandleCalculator.diff(selected_date, DOUBLE_END);
-                    with_pass_after += SkySeasonalCandleCalculator.diff(selected_date, DOUBLE_END);
-                }
+            // Totaling the Seasonal Candles
+            var no_pass_total = 0;
+            var with_pass_total = 0;
+            for (var i = 0; i <= SEASON_DAYS; i++) {
+                no_pass_total += NO_PASS_LIST[i];
+                with_pass_total += WITH_PASS_LIST[i];
             }
+            // Subtracting from the total to get the remaining
+            var no_pass_after = no_pass_total - no_pass_before;
+            var with_pass_after = with_pass_total - with_pass_before;
 
             // ---------- GENERAL TABLE END -------------------------------------------
 
@@ -440,9 +485,10 @@ Date.prototype.toDateInputValue = (function() {
                     
                     // If it is a possible goal
                     if (candle_goal_with_pass <= with_pass_after) {
-                        var required_days_with_pass = Math.ceil(candle_goal_with_pass/6);
-                        
-                        conclusion_message = "You should be able to buy all the cosmetics if you don't miss <b>" + required_days_with_pass + " out of the " + total_remaining_days + " day(s) remaining</b>.";
+                        var remaining_with_pass_list = WITH_PASS_LIST.slice(SEASON_DAYS - total_remaining_days + 1);
+                        var required_days_with_pass = SkySeasonalCandleCalculator.min_days_required(remaining_with_pass_list, candle_goal_with_pass);
+
+                        conclusion_message = "You should be able to buy all the cosmetics if you don't miss <b> " + required_days_with_pass + " out of the " + total_remaining_days + " day(s) remaining</b>.";
                     // If it is an impossible goal
                     } else {
                         conclusion_message = "Unfortunately, with the time remaining, <b>you will not be able to buy all the cosmetics</b>.";
@@ -478,14 +524,16 @@ Date.prototype.toDateInputValue = (function() {
                     var required_days_no_pass;
                     // If it is a possible goal
                     if (candle_goal_no_pass <= no_pass_after) {
-                        required_days_no_pass = Math.ceil(candle_goal_no_pass/5);
-                        
-                        conclusion_message = "With the time remaining, you should be able to buy all the cosmetics if you don't miss <b>" + required_days_no_pass + " out of the " + total_remaining_days + " day(s) remaining</b>.";
+                        var remaining_no_pass_list = NO_PASS_LIST.slice(SEASON_DAYS - total_remaining_days + 1);
+                        var required_days_no_pass = SkySeasonalCandleCalculator.min_days_required(remaining_no_pass_list, candle_goal_no_pass);
+                       
+                        conclusion_message = "With the time remaining, you should be able to buy all the cosmetics if you don't miss <b> " + required_days_no_pass  + " out of the " + total_remaining_days + " day(s) remaining</b>.";
                     // If it is possible ONLY if they buy the Season Pass
                     } else if (candle_goal_no_pass <= with_pass_after + 30) {
-                        required_days_no_pass = Math.ceil((candle_goal_no_pass-30)/6);
+                        var remaining_with_pass_list = WITH_PASS_LIST.slice(SEASON_DAYS - total_remaining_days + 1);
+                        var required_days_with_pass = SkySeasonalCandleCalculator.min_days_required(remaining_with_pass_list, candle_goal_no_pass - 30);
                         
-                        conclusion_message = "Unfortunately, with the time remaining, <b>you will not be able to buy all the cosmetics</b> UNLESS you buy the Season Pass. However, you will only be able to buy the non-Ultimate cosmetics and you must not miss <b>" + required_days_no_pass + " out of the " + total_remaining_days + " day(s) remaining</b>.";
+                        conclusion_message = "Unfortunately, with the time remaining, <b>you will not be able to buy all the cosmetics</b> UNLESS you buy the Season Pass to get the bonus 30 Seasonal Candles and extra 1 Seasonal Candle per day. However, you will only be able to buy the non-Ultimate cosmetics and you must not miss <b> " + required_days_with_pass + " out of the " + total_remaining_days + " day(s) remaining</b>.";
                     // If it is an impossible goal
                     } else {
                         conclusion_message = "Unfortunately, with the time remaining, <b>you will not be able to buy all the cosmetics</b>.";
@@ -508,7 +556,6 @@ Date.prototype.toDateInputValue = (function() {
             document.getElementById("sscc_table_A3").innerHTML = with_pass_before;
             document.getElementById("sscc_table_B3").innerHTML = with_pass_after;
         }
-
     };
 
 	mw.hook("wikipage.content").add(SkySeasonalCandleCalculator.init);

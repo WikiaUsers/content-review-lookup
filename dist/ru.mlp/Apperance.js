@@ -247,7 +247,7 @@ var ApperanceBlock = function( elem ) {
             if ( status === 'main' ) {
                 statusDescription = ' появляется в главной роли';
             } else if ( status === 'supporting' ) {
-                statusDescription = ' появляется в второстепенной роли';
+                statusDescription = ' появляется во второстепенной роли';
             } else if ( status === 'background' ) {
                 statusDescription = ' появляется в фоновой роли';
             } else if ( status === 'mentioned' ) {

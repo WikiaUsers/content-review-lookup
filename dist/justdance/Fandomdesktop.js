@@ -29,7 +29,6 @@ UserTagsJS.modules.custom = {
     //Current Staff
     /* Bureaucrats */
     'JD4SURVIVOR': [],
-    'Master Hydraffe': [],
     'CAMERAwMUSTACHE': [],
     /* Admins */
     'TheChibiKing': [],

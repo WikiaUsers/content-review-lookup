@@ -16,3 +16,4 @@
 		$('#wpUploadDescription').val(window.ImageCategory || '[[Category:Images]]');
 	}
 })();
+// </nowiki>

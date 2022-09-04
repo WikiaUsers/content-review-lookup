@@ -4,21 +4,21 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		montheditor: { u:'Editor of the Month' },
-		weaver: 'Weaver of Tides',
+		reaper: 'Reaper of Tides',
 		shadow: 'And from the Darkness I Hear the Sound of Her Wings...',
 		reality: 'God of Reality',
 		pringle: 'Single Pringle',
 		wolf: 'Official Wolf',
 		cheerfulbird: 'Cheerful Bird',
 		dragon: 'Verified Dragon',
-		stalkerflower: 'Stalker Flower'
+		stalker: 'Stalker Flower'
 	}
 };
 UserTagsJS.modules.custom = {
-	'TilanissaWildhawk': ['weaver', 'shadow'],
+	'TilanissaWildhawk': ['reaper', 'shadow'],
 	'GingerAle0': ['reality', 'pringle'],
 	'Firewind0111': ['wolf'],
 	'Mintflower09': ['cheerfulbird'],
 	'Moonshadow567': ['dragon'],
-	'ALostWanderer': ['stalker']
+	'ALostWonderer': ['stalker']
 };

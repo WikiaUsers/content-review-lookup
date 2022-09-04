@@ -3,20 +3,21 @@
  * The JS version of the script
  * @author SuperDragonXD1
  */
- 
+
 /* global mw, $ */
 (function () {
   if (window.RSMLoaded || mw.config.get("skin") !== "fandomdesktop") {
     return;
   }
   window.RSMLoaded = true;
-  
+
   const conf = mw.config.get([
     "wgServer",
     "isDarkTheme",
-    "wgUserGroups"
+    "wgUserGroups",
+    "wgEnableDiscussions"
   ]);
-  
+
   /* Generetes the wiki name */
   function createWikiName(ui) {
     const wikiInfo = {
@@ -34,23 +35,14 @@
         })
       ]
     });
-    
-    
+
     const fandomLogo = $("a.global-navigation__logo");
     fandomLogo.after(wikiSitename);
   }
-  
+
   /* Generates the wiki menu */
   function createWikiMenu(ui) {
     /****** Helper functions */
-    function discussionsExists() {
-      const http = new XMLHttpRequest();
-      http.open("HEAD", conf.wgServer + "/f", false);
-      http.send();
-      if (http.status != 404) return true;
-      else return false;
-    }
-
     function themeTracking() {
       if (conf.isDarkTheme) {
         return "theme-switch-light";
@@ -73,8 +65,8 @@
 
     /****** Builder functions */
     function createListItem(ui, class_, icon, link, text, dataLabel) {
-      var iconItem = '';
-      
+      var iconItem = "";
+
       if (icon) {
         iconItem = ui.svg({
           class: "wds-icon wds-icon-tiny",
@@ -87,7 +79,7 @@
       const listItem = ui.li({
         child: ui.a({
           href: link,
-          class: class_ ? "wiki-menu__" + class_ : '',
+          class: class_ ? "wiki-menu__" + class_ : "",
           children: [iconItem, text],
           "data-tracking-label": dataLabel
         })
@@ -164,19 +156,20 @@
         wikiMenuTitle,
         themePill(ui),
         createListItem(ui, "home", "home", "/", "Home", "home")
-     );
-     
-     if (discussionsExists()) ulList.push(
-        createListItem(
-          ui,
-          "discussions",
-          "discussions",
-          "/f",
-          "Discussions",
-          "discuss"
-        )
-     );
-     ulList.push(
+      );
+
+      if (conf.wgEnableDiscussions)
+        ulList.push(
+          createListItem(
+            ui,
+            "discussions",
+            "discussions",
+            "/f",
+            "Discussions",
+            "discuss"
+          )
+        );
+      ulList.push(
         createListItem(
           ui,
           "recent-changes",
@@ -186,7 +179,7 @@
           "rc"
         ),
         ui.li({
-          class: 'wiki-menu__seperator'
+          class: "wiki-menu__seperator"
         }),
         createListItem(
           ui,
@@ -249,80 +242,77 @@
           "special-pages"
         )
       );
-      
+
       return ulList;
     }
-    
+
     function createDropdown(ui) {
       const toggle = ui.div({
-          class: "wds-dropdown__toggle",
-          child: ui.div({
-            class: "global-navigation__icon",
-            children: [
-              ui.svg({
-                class: "wds-icon wds-icon-small",
-                child: ui.use({
-                  "xlink:href": "#wds-icons-left-align-small"
-                })
-              }),
-              ui.svg({
-                class: "wds-icon wds-icon-tiny wds-dropdown__toggle-chevron",
-                child: ui.use({
-                  "xlink:href": "#wds-icons-dropdown-tiny"
-                })
-              }),
-            ]
-          })
-        });
-      
-      const content = ui.div({
-          class: "wds-dropdown__content",
-          child: ui.ul({
-            class: "wds-list wds-is-linked",
-            children: createListItems(ui)
-          })
+        class: "wds-dropdown__toggle",
+        child: ui.div({
+          class: "global-navigation__icon",
+          children: [
+            ui.svg({
+              class: "wds-icon wds-icon-small",
+              child: ui.use({
+                "xlink:href": "#wds-icons-left-align-small"
+              })
+            }),
+            ui.svg({
+              class: "wds-icon wds-icon-tiny wds-dropdown__toggle-chevron",
+              child: ui.use({
+                "xlink:href": "#wds-icons-dropdown-tiny"
+              })
+            })
+          ]
+        })
       });
-      
+
+      const content = ui.div({
+        class: "wds-dropdown__content",
+        child: ui.ul({
+          class: "wds-list wds-is-linked",
+          children: createListItems(ui)
+        })
+      });
+
       const dropdown = ui.div({
         id: "wikiMenu",
         class: "wiki-menu wds-dropdown is-attached-to-bottom wds-open-to-right",
-        children: [
-          toggle,
-          content
-        ]
+        children: [toggle, content]
       });
-      
+
       return dropdown;
     }
-    
+
     function initMenu(ui) {
       const wikiMenu = createDropdown(ui);
       $(".global-navigation__bottom > .notifications").after(wikiMenu);
-      
+
       // Todo: MutationObserver
       // https://stackoverflow.com/a/19401707
     }
-    
+
     initMenu(ui);
   }
 
   /* Mutation Observer - re-adds the "fandom-sticky-header-visible" class */
   function returnStickyHeaderClass() {
     const stickyHeader = $(".fandom-sticky-header");
-const observer = new MutationObserver(function(mutations) {
-  mutations.forEach(function(mutation) {
-    if (stickyHeader.hasClass("is-visible")) {
-      $("body").addClass("fandom-sticky-header-visible")
-    } else {
-      $("body").removeClass("fandom-sticky-header-visible");
-    } 
-  });
-});
+    const observer = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        if (stickyHeader.hasClass("is-visible")) {
+          $("body").addClass("fandom-sticky-header-visible");
+        } else {
+          $("body").removeClass("fandom-sticky-header-visible");
+        }
+      });
+    });
 
-observer.observe(stickyHeader[0], {
-  attributes: true,
-  attributeFilter: ['class']
-});
+    observer.observe(stickyHeader[0], {
+      attributes: true,
+      attributeFilter: ["class"]
+    });
   }
 
   /* Initialzes the script */
@@ -330,16 +320,17 @@ observer.observe(stickyHeader[0], {
     const ui = lib;
 
     /* Adds helper classes */
+
     $("body").addClass("responsivemobile-loaded");
     $("body").addClass("responsivemobile-js");
-    
+
     // Init stuff
     createWikiMenu(ui);
     createWikiName(ui);
-    returnStickyHeaderClass()
-    
+    returnStickyHeaderClass();
+
     /*
- // Will do soon™
+ // Will do soon™ (never)
 
     $('.fandom-community-header .fandom-community-header__local-navigation .wds-dropdown').clone().insertBefore("#wikiMenu > .wds-dropdown__content > .wds-list")
     
@@ -367,8 +358,8 @@ observer.observe(stickyHeader[0], {
     type: "script",
     article: "u:dev:MediaWiki:Dorui.js"
   });
-  
+
   importStylesheetPage("MediaWiki:ResponsiveMobile.js/deps.css", "dev");
-  
+
   mw.hook("doru.ui").add(init);
 })();

@@ -261,9 +261,13 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 
         $(BUTTON).show().click(function () {
             getBingoData().then(function (data) {
-                var notice = "Note: This data is for:\n\n" + th(data.id + 1) + " bingo event (held in " + mo(data.id) + ")",
+                if (!data.goals)
+                    mw.notify("The API supplies no bingo goals at the moment", { title: "No Data Yet", type: "error" });
+                else {
+                    var notice = "Note: This data is for:\n\n" + th(data.id + 1) + " bingo event (held in " + mo(data.id) + ")",
                     id = "goals-" + getYear(data.id) + "-" + getMonth(data.id);
-                copyToClipboard("<div class=\"mw-customtoggle-" + id + " wikia-menu-button hidden\" tabindex=\"0\">Show/Hide</div>\n<div class=\"mw-collapsible mw-collapsed\" id=\"mw-customcollapsible-" + id + "\">\n" + constructTable(data.goals) + "\n</div>", notice);
+                    copyToClipboard("<div class=\"mw-customtoggle-" + id + " wikia-menu-button hidden\" tabindex=\"0\">Show/Hide</div>\n<div class=\"mw-collapsible mw-collapsed\" id=\"mw-customcollapsible-" + id + "\">\n" + constructTable(data.goals) + "\n</div>", notice);
+                }
             });
         });
     })();

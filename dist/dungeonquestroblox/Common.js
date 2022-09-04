@@ -52,8 +52,71 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     });
 
     //Create da calculators
+	var dungeons = [
+		{ name: "None", difficulties: ["Pick Dungeon First"]},
+        { name: "Northern Lands With Odin", difficulties: ["Nightmare"]},
+		{ name: "Northern Lands", difficulties: ["Insane", "Nightmare"]},
+		{ name: "Enchanted Forest", difficulties: ["Insane", "Nightmare"]},
+		{ name: "Aquatic Temple", difficulties: ["Insane", "Nightmare"]},
+		{ name: "Volcanic Chambers", difficulties: ["Insane", "Nightmare"]},
+		{ name: "Orbital Outpost", difficulties: ["Insane", "Nightmare"]},
+		{ name: "Boss Raids", difficulties: ["Unapplicable"]},
+		{ name: "Steampunk Sewers", difficulties: ["Insane", "Nightmare"]},
+		{ name: "Ghastly Harbor", difficulties: ["Insane", "Nightmare"]},
+		{ name: "The Canals", difficulties: ["Insane", "Nightmare"]},
+		{ name: "Samurai Palace", difficulties: ["Insane", "Nightmare"]},
+		{ name: "The Underworld", difficulties: ["Insane", "Nightmare"]},
+		{ name: "King's Castle", difficulties: ["Insane", "Nightmare"]},
+		{ name: "Pirate Island", difficulties: ["Insane", "Nightmare"]},
+		{ name: "Winter Outpost", difficulties: ["Easy","Medium","Hard","Insane", "Nightmare"]},
+		{ name: "Desert Temple", difficulties: ["Easy","Medium","Hard","Insane", "Nightmare"]},
+    ];
+    var dungeonsWithEXP = [
+    	{name: "Northern Lands Insane", baseEXP: 21820000000},
+    	{name: "Northern Lands Nightmare", baseEXP: 36600000000},
+    	{name: "Northern Lands With Odin Nightmare", baseEXP: 58600000000},
+    	{name: "Enchanted Forest Insane", baseEXP: 6900000000},
+    	{name: "Enchanted Forest Nightmare", baseEXP: 11280000000},
+		{name: "Aquatic Temple Insane", baseEXP: 2440800000},
+    	{name: "Aquatic Temple Nightmare", baseEXP: 4276800000},
+    	{name: "Volcanic Chambers Insane", baseEXP: 7550000000},
+    	{name: "Volcanic Chambers Nightmare", baseEXP: 1225000000},
+    	{name: "Orbital Outpost Insane", baseEXP: 329000000},
+    	{name: "Orbital Outpost Nightmare", baseEXP: 506500000},
+    	{name: "Boss Raids Unapplicable", baseEXP: 130000000},
+    	{name: "Steampunk Sewers Insane", baseEXP: 35700000},
+    	{name: "Steampunk Sewers Nightmare", baseEXP: 59600000},
+		{name: "Ghastly Harbor Insane", baseEXP: 12840000},
+    	{name: "Ghastly Harbor Nightmare", baseEXP: 24160000},
+		{name: "The Canals Insane", baseEXP: 4594000},
+    	{name: "The Canals Nightmare", baseEXP: 8005000},
+		{name: "Samurai Palace Insane", baseEXP: 1934000},
+    	{name: "Samurai Palace Nightmare", baseEXP: 3500000},
+		{name: "The Underworld Insane", baseEXP: 546000},
+    	{name: "The Underworld Nightmare", baseEXP: 924000},
+    	{name: "King's Castle Insane", baseEXP: 135900},
+    	{name: "King's Castle Nightmare", baseEXP: 271800},
+		{name: "Pirate Island Insane", baseEXP: 51150},
+    	{name: "Pirate Island Nightmare", baseEXP: 82200},
+		{name: "Winter Outpost Easy", baseEXP: 6564},
+		{name: "Winter Outpost Medium", baseEXP: 9180},
+		{name: "Winter Outpost Hard", baseEXP: 16140},
+		{name: "Winter Outpost Insane", baseEXP: 27840},
+		{name: "Winter Outpost Nightmare", baseEXP: 46180},
+		{name: "Desert Temple Easy", baseEXP: 253},
+		{name: "Desert Temple Medium", baseEXP: 396},
+		{name: "Desert Temple Hard", baseEXP: 785},
+		{name: "Desert Temple Insane", baseEXP: 1307},
+		{name: "Desert Temple Nightmare", baseEXP: 2669},
+    ];
+    var difficulties = ["Pick Dungeon First"];
+    var dungeonsNames = dungeons.map(function (a) { return a.name; });
+
     function addLevelCalculator(div) {
         createSpan(div).update("DQ Wiki Level Calculator");
+        var eventCheckBox = createCheckBox("event", "2x EXP Event");
+        var dungeonField = createSelectField("dungeon", "Pick Dungeon (optional)", dungeonsNames);
+        var difficultyField = createSelectField("difficulty", "Pick Difficulty (optional)", difficulties);
         var currentField = createField("current", "Your current level");
         var goalField = createField("goal", "Your goal level");
         var submit = document.createElement("button");
@@ -62,20 +125,55 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
         div.append(
             createBr(),
+            eventCheckBox.label, eventCheckBox.input, createBr(),
+            dungeonField.label, dungeonField.select, createBr(),
+            difficultyField.label, difficultyField.select, createBr(),
             currentField.label, currentField.input, createBr(),
             goalField.label, goalField.input, createBr(),
             submit, createBr()
         );
-
+		
+		dungeonField.select.oninput = function() {
+			dungeons.forEach(function (a) {
+                if (a.name == dungeonField.select.value) {
+                	removeChildren(difficultyField.select);
+                	
+                	a.difficulties.forEach(function (value) {
+            			var option = document.createElement("option");
+            			option.value = option.label = value;
+            			difficultyField.select.append(option);
+        			});
+                }
+            });
+		};
         submit.onclick = function () {
+        	var dungeonEXP = 1;
+            var selectedDungeon = dungeonField.select.value + " " + difficultyField.select.value;
+            dungeonsWithEXP.forEach(function (a) {
+                if (a.name == selectedDungeon) {
+                    dungeonEXP = a.baseEXP;
+                }
+            });
             var current = parseInt(currentField.input.value);
             var goal = parseInt(goalField.input.value);
 
             var xp = calculateXp(current, goal);
-
             var xpString = addCommas(xp);
-
+            var amountOfRuns = Math.ceil((xp/dungeonEXP));
+            var amountOfVIPRuns = Math.ceil((xp/1.2/dungeonEXP));
+            if (eventCheckBox.input.checked) {
+            	 amountOfRuns = Math.ceil((xp/2/dungeonEXP));
+            	 amountOfVIPRuns = Math.ceil((xp/2.2/dungeonEXP));
+            }
+			if (dungeonEXP == 1) {
             result.update("You will need about " + xpString + " experience.");
+			}
+			else {
+			result.update("You will need about " + xpString + " experience." + "\n" +
+			"Without VIP, you will need at least " + amountOfRuns + " runs of " + selectedDungeon + " to reach your goal level" + "\n" +
+			"With VIP, you will need at least " + amountOfRuns + " runs of " + selectedDungeon + " to reach your goal level"
+			);	
+			}
         };
     }
 
@@ -250,6 +348,18 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         return { label: label, input: input };
     }
     
+        function createCheckBox(name, description) {
+        var label = document.createElement("label");
+        label.htmlFor = name;
+        label.append(description);
+
+        var input = document.createElement("input");
+        input.name = input.id = name;
+        input.type = "checkbox";
+
+        return { label: label, input: input };
+    }
+    
     function createSelectField(name, description, values) {
         var label = document.createElement("label");
         label.htmlFor = name;
@@ -307,6 +417,11 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         return Math.floor(wep * (0.6597 + 0.013202 * skill) * (arm + helm) * 0.0028 * ability);
     }
 
+	function removeChildren(parent){
+		while (parent.lastChild){
+			parent.removeChild(parent.lastChild)
+		}
+	}
     function truncate(num) {
         // Leave numbers below 1K unchanged
         if (num < 1e3) {

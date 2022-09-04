@@ -1,7 +1,3 @@
-/* Import Show-Hide JS */
- 
-importScriptPage('ShowHide/code.js', 'dev');
-
 /* add history, what links here, and skin change buttons to the menu */
 /*
 jQuery( document ).ready( function( $ ) { 

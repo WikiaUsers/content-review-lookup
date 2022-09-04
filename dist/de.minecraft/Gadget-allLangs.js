@@ -17,6 +17,8 @@
 		if ( subpageIdx >= 0 )
 		pagename = pagename + config.wgTitle.substr( subpageIdx );
 	}
+	
+	if (pagename === 'Special:AllMaps') return;
 
 	const langs = {
 		'technik': 'Technik Wiki',

@@ -982,7 +982,8 @@ function slideRegenerate(){
 }
 
 /*------- Добавление функции отображения маркеров при мастабировании карты ---*/
-function interactiveMapZoom() {
+// После обновления карт не работает
+/*function interactiveMapZoom() {
 	window.setInterval(function() {
 	  if ($(".leaflet-proxy").css("transform").split(',')[3] < 0.125) {
 	    $(".leaflet-marker-icon").each(function( index ) {
@@ -1011,12 +1012,12 @@ function interactiveMapZoom() {
 	  }
 	},500);
 }
-
+*/
 /****************** Подключение функций после загрузки страницы ***************/
 $(document).ready(function() {
 	randomBackground();
 	fixTable();
-	if ($("div.interactive-maps-container").length) {interactiveMapZoom();} // Запускаем при наличии интерактивной карты на странице
+	//if ($("div.interactive-maps-container").length) {interactiveMapZoom();} // Запускаем при наличии интерактивной карты на странице
 	setTimeout(function(){ slideRegenerate(); }, 2000); // Запускаем отложено, т.к. галереи подгружаются не сразу
 	setTimeout(function(){ switcher(); }, 5000); // Запускаем отложено, т.к. инструменты подгружаются не сразу
 });

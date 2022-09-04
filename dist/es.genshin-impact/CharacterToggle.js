@@ -1,35 +1,159 @@
-$('.characters-toggle').click(function() {
-	var $this = $(this);
+$( function() {
+	var wgPageName = mw.config.get( 'wgPageName' )
+	if ( wgPageName !== 'Wiki_Genshin_Impact' && !wgPageName.endsWith( '/sandbox' ) ) return
 	
-	var key = $this.data('key');
-	var value = $this.data(key);
+	initializeDropdown( {
+		id: 'dropdown-elements',
+		label: 'Elementos',
+		options: [
+			{ className: 'Anemo', name: 'Anemo' },
+			{ className: 'Cryo', name: 'Cryo' },
+			{ className: 'Dendro', name: 'Dendro' },
+			{ className: 'Electro', name: 'Electro' },
+			{ className: 'Geo', name: 'Geo' },
+			{ className: 'Hydro', name: 'Hydro' },
+			{ className: 'Pyro', name: 'Pyro' }
+		],
+		prefix: 'element',
+		targetId: 'filterable-characters'
+	} )
+	initializeDropdown( {
+		id: 'dropdown-weapons',
+		label: 'Armas',
+		options: [ 'Arco', 'Catalizador', 'Espada', 'Lanza', 'Mandoble' ],
+		prefix: 'weapon',
+		targetId: 'filterable-characters'
+	} )
 	
-	var status = $this.data('toggle-status');
-	var altStatus = Math.abs(status - 1);
+	var timeoutId = null
+	var intervalId = null
+	var timeoutDuration = 1000
+	var intervalSteps = 10
+	var loadingBar = document.getElementById( 'loading-bar' )
 	
-	$this.data('toggle-status', altStatus);
-	$this.css('filter', 'grayscale(' + status + ')');
+	function initializeDropdown( settings ) {
+		var id = settings.id
+		var label = settings.label
+		var options = settings.options
+		var prefix = settings.prefix
+		var targetId = settings.targetId
 	
-	var $elements = $('.characterbox.' + key + '-' + value);
-
-	for (var i = 0; i < $elements.length; i++) {
-		var $element = $elements.eq(i);
-		$element.data('toggle-' + key, altStatus);
-		
-		var toggleAttributes = $element.data();
-		
-		var show = true;
-		for (var attribute in toggleAttributes) {
-			if ( toggleAttributes[attribute] != 1 ) {
-				show = false;
-				break;
-			}
+	
+		var container = document.getElementById( id )
+		container.classList.add( 'dropdown-check-list' )
+		container.dataset.prefix = prefix
+		var anchor = document.createElement( 'span' )
+		anchor.classList.add( 'anchor' )
+		anchor.appendChild( document.createTextNode( label + ': Todas las opciones' ) )
+		container.appendChild( anchor )
+	
+		var items = document.createElement( 'ul' )
+		items.classList.add( 'dropdown-items' )
+		container.appendChild( items )
+	
+		for ( var i = 0; i < options.length; i++ ) {
+			var option = typeof options[ i ] === 'string' ? { name: options[ i ] } : options[ i ]
+			var className = ( option.className || 'option-' + option.name ).toLowerCase()
+			var image = option.image || option.name + '.png'
+			var li = document.createElement( 'li' )
+			li.classList.add( className )
+			items.appendChild( li )
+			
+			var checkbox = document.createElement( 'input' )
+			checkbox.type = 'checkbox'
+			checkbox.autocomplete = 'off'
+			checkbox.checked = 'checked'
+			checkbox.value = option.name
+			checkbox.dataset.image = image
+			li.appendChild( checkbox )
+	
+			var img = document.createElement( 'img' )
+			img.src = 'https://genshin-impact.fandom.com/es/wiki/Special:Filepath/' + image
+			img.width = 24
+			li.appendChild( img )
+	
+			li.appendChild( document.createTextNode( option.name ) )
+	
+			li.addEventListener( 'click', function () {
+				this.querySelector( 'input' ).click()
+			} )
+	
+			checkbox.addEventListener( 'change', function () {
+				var checked = Array.from( this.closest( 'ul' ).querySelectorAll( 'input' ) ).filter( function( cb ) {
+					return cb.checked
+				} ).map( function ( cb ) {
+					var img = document.createElement( 'img' )
+					img.src = 'https://genshin-impact.fandom.com/es/wiki/Special:Filepath/' + cb.dataset.image
+					img.width = 24
+					img.alt = cb.value
+					img.title = cb.value
+					return img.outerHTML
+				} )
+				var cbAnchor = this.closest( '.dropdown-check-list' ).querySelector( '.anchor' )
+				cbAnchor.innerHTML = label + ': '
+				if ( checked.length === 0 ) {
+					cbAnchor.innerHTML += 'Ninguna opción'
+				} else if ( checked.length === options.length ) {
+					cbAnchor.innerHTML += 'Todas las opciones'
+				} else {
+					cbAnchor.innerHTML += checked.join( ' ' )
+				}
+	
+				if ( timeoutId ) clearTimeout( timeoutId )
+				if ( intervalId ) clearInterval( intervalId )
+				loadingBar.dataset.width = 0
+				loadingBar.style.width = '0%'
+	
+				var cb = this
+				timeoutId = setTimeout( triggerGlobalUpdate.bind( cb ), timeoutDuration )
+				intervalId = setInterval( function () {
+					loadingBar.dataset.width = parseInt( loadingBar.dataset.width ) + 100 / intervalSteps
+					loadingBar.style.width = loadingBar.dataset.width + '%'
+				}, timeoutDuration / intervalSteps )
+			} )
 		}
-		
-		if (show) {
-			$element.fadeIn();
-		} else {
-			$element.fadeOut();
+	
+		anchor.addEventListener( 'click', function () {
+			container.classList[ container.classList.contains( 'visible' ) ? 'remove' : 'add' ]( 'visible' )
+		} )
+	
+		function triggerGlobalUpdate() {
+			var cb = this
+			clearInterval( intervalId )
+			loadingBar.dataset.width = 100
+			loadingBar.style.width = '100%'
+	
+			var allFilters = {}
+			var dropdowns = Array.from( cb.closest( '.dropdown-container' ).querySelectorAll( '.dropdown-check-list' ) )
+			for ( var i = 0; i < dropdowns.length; i++ ) {
+				var dropdown = dropdowns[ i ]
+				var filter = new Set()
+				var checkboxes = Array.from( dropdown.querySelectorAll( 'input' ) ).filter( function ( c ) {
+					return c.checked
+				} ).forEach( function ( c ) {
+					filter.add( c.value.toLowerCase() )
+				} )
+				allFilters[ dropdown.dataset.prefix ] = filter
+			}
+	
+			var filterableContainer = document.querySelector( '#' + targetId )
+			filterableContainer.querySelectorAll( '.characterbox' ).forEach( function( item ) {
+				var $item = $( item )
+				var show = true
+				for ( var prefix in allFilters ) {
+					var filter = allFilters[ prefix ]
+					var prefixClass = $item.attr( 'class' ).split( / /g ).find( function( i ) {
+						return i.startsWith( prefix )
+					} )
+					if ( !prefixClass ) break
+					var prefixValue = prefixClass.split( '-' ).at( 1 )
+					if ( !filter.has( prefixValue ) ) show = false
+				}
+				$item[ show ? 'fadeIn' : 'fadeOut' ]()
+			} )
+	
+			loadingBar.dataset.width = 0
+			loadingBar.style.width = '0%'
 		}
 	}
-});
+} )

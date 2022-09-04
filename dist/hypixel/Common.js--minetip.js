@@ -176,7 +176,7 @@ $(function () {
                 $tooltip.remove();
                 $tooltip = $();
             },
-        }, ".invslot .invslot-item, .minetip");
+        }, ".invslot .invitem, .minetip");
 
         $(document.body).on({
             // pick up slot item for 300ms
@@ -186,7 +186,7 @@ $(function () {
                 if (e.which !== 2 && !window.minetipConfig.noPickup) {
                     var iid = $this.attr("data-iid");
                     var $source = $this.find("img");
-                    if ((typeof iid === "string") || ($source.length > 0)) {
+                    if ((typeof iid === "string") || ($source.length > 0) || $this.hasClass("invsprite")) {
                         var $target = $this;
                         $target.addClass("invslot-pickup");
                         var offset = $this.offset();
@@ -208,7 +208,7 @@ $(function () {
                     }
                 }
             },
-        }, ".invslot .invslot-item");
+        }, ".invslot .invitem");
 
         $(document.body).on("mousemove", function (e) {
             $(".invslot-pickup").each(function () {
@@ -220,7 +220,7 @@ $(function () {
                     });
                 }
             });
-            if ($(".minetip:hover, .invslot .invslot-item:hover").length < 1 && $("#minetip-tooltip").length > 0)
+            if ($(".minetip:hover, .invslot .invitem:hover").length < 1 && $("#minetip-tooltip").length > 0)
                 $("#minetip-tooltip").remove();
         });
     })());

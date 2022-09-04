@@ -26,25 +26,27 @@
 /* global mw */
 
 mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(function () {
+    // wiki config
+    var classPrefix = ".mcui";
 
     //##############################################################
     /* ==UI Tabber== (A00)*/
     // Code to allow making {{Slot}} clickable to show different content [Part 1/2]
     function clickTab(id) {
-        var $parent = $(this).parents(".mcui-tabber").eq(0);
+        var $parent = $(this).parents(classPrefix + "-tabber").eq(0);
         id = "ui-" + id;
         if (!$("#" + id).length) {
             console.warn("No such tab ID \"" + id + "\"");
             return;
         }
-        $parent.find(".mcui-tab-content#" + id).siblings(".mcui-tab-content").addClass("hidden").hide();
-        $parent.find(".mcui-tab-content#" + id).removeClass("hidden").show();
+        $parent.find(classPrefix + "-tab-content#" + id).siblings(classPrefix + "-tab-content").addClass("hidden").hide();
+        $parent.find(classPrefix + "-tab-content#" + id).removeClass("hidden").show();
         // Since images don't load on hidden tabs, force them to load
-        var onloadEl = $parent.find(".mcui-tab-content#" + id + " .lzy[onload]");
+        var onloadEl = $parent.find(classPrefix + "-tab-content#" + id + " .lzy[onload]");
         if (onloadEl.length) onloadEl.load();
     }
 
-    $(document.body).on("click", ".mcui-tabber .mcui-tab", function (e) {
+    $(document.body).on("click", classPrefix + "-tabber " + classPrefix + "-tab", function (e) {
         e.preventDefault();
         e.stopImmediatePropagation();
 
@@ -52,7 +54,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         if (id)
             clickTab.call(this, id);
     });
-    $(document.body).on("click", ".mcui-tabber .invslot-item[class*='goto-'] a", function (e) {
+    $(document.body).on("click", classPrefix + "-tabber .invitem[data-invlink*='UI:'] a", function (e) {
         e.preventDefault();
         e.stopImmediatePropagation();
     });
@@ -65,25 +67,21 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
         // Code to allow making {{Slot}} clickable to show different content [Part 2/2]
         (function () {
-            if (!pSection.find(".mcui-tabber").length) return;
+            if (!pSection.find(classPrefix + "-tabber").length) return;
 
             // .hidden works on mobile, but not on desktop
-            pSection.find(".mcui-tab-content.hidden").hide();
+            pSection.find(classPrefix + "-tab-content.hidden").hide();
 
-            pSection.find(".mcui-tabber .invslot-item").each(function () {
-                var classes = Array.from($(this).get(0).classList).filter(function (c) {
-                    return c.indexOf("goto-") === 0 || c.indexOf("ui-") === 0;
-                });
-                if (classes.length) {
-                    var className = classes[(classes.length) - 1]
-                        .replace("goto-", "")
-                        .replace("ui-", "");
-                    $(this).click(clickTab.bind(this, className));
+            pSection.find(classPrefix + "-tabber .invitem[data-invlink]").each(function () {
+                var invlink = $(this).attr("data-invlink");
+                if ((invlink || "").indexOf("UI:") === 0) {
+                    var target = invlink.replace("UI:", "");
+                    $(this).click(clickTab.bind(this, target));
                 }
             });
 
             // makes an extra button to go back to the first UI tab
-            pSection.find(".mcui-tabber").each(function () {
+            pSection.find(classPrefix + "-tabber").each(function () {
                 var elementId = $(this).find(":first-child").attr("id");
                 if (!elementId) return;
                 var className = elementId.replace("ui-", "");

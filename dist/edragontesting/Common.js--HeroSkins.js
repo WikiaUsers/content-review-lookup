@@ -1,27 +1,54 @@
 $(document).ready(function() {
 	var location = 'https://static.wikia.nocookie.net/clashofclans/images/';
-
+	var Theme;
+	
+	$('.HeroSkinMenu').each(function () {
+		$(this).find('.HeroSkinSelectCol > div:first-child').addClass('active');
+		$(this).find('.Model:first-child').addClass('active');
+	});
+	
 	$(".SkinIcon").click(function () {
 		//Play the "click" sound
 		new Audio('https://static.wikia.nocookie.net/e12dragon_testing/images/0/06/Button_click.ogg').play();
 		
-		//When icon is clicked, find the name of the skin and the hero
-		var Skin = $(this).attr("class").replace(" active", "").replace("SkinIcon ", "");
+		//When icon is clicked, find the name of the skin, theme and the hero
+		var Skin = $(this).attr("data-name");
+		if ($(this).attr("data-name")) {
+			Theme = $(this).attr("data-theme");
+		}else {
+			Theme = "Default";	
+		}
 		var Hero = $(this).parents('.HeroSkinMenu').attr('data-hero');
+		if ($(this).attr("data-type")) {
+			Type = $(this).attr("data-type");
+		}else {
+			Type = "Default";	
+		}
 		
 		//Hide the last active skin for the hero
-		$('.HeroSkinMenu[data-hero="' + Hero + '"] .SkinIcon, .HeroSkinMenu[data-hero="' + Hero + '"] .Title, .HeroSkinMenu[data-hero="' + Hero + '"] .SkinIcon, .HeroSkinMenu[data-hero="' + Hero + '"] .Subtitle, .HeroSkinMenu[data-hero="' + Hero + '"] .Model, .HeroSkinMenu[data-hero="' + Hero + '"] .theme-icon').removeClass("active");
+		$('.HeroSkinMenu[data-hero="' + Hero + '"] .SkinIcon, .HeroSkinMenu[data-hero="' + Hero + '"] .Model, .HeroSkinMenu[data-hero="' + Hero + '"] .Theme').removeClass("active");
 		
 		//Make all things associated with the skin active (not hidden)
-		$("." + Skin).addClass("active");
+		$('.Model[data-name="' + Skin + '"]').addClass("active");
+		$('.Theme[data-name="' + Skin + '"]').addClass("active");
 		$(this).addClass("active");
 		
 		//Add tier to preview
 		if ($(this).attr('data-type')) {
 			var tier = $(this).attr('data-type');
 			$('.HeroSkinMenu[data-hero="' + Hero + '"] .SkinPreview').attr('data-type', tier);
+			$('.HeroSkinMenu[data-hero="' + Hero + '"] .Subtitle').text(Type);
 		}else {
 			$('.HeroSkinMenu[data-hero="' + Hero + '"] .SkinPreview').removeAttr('data-type');
+			$('.HeroSkinMenu[data-hero="' + Hero + '"] .Subtitle').text('');
+		}
+		
+		//Change title and subtitle
+		$('.HeroSkinMenu[data-hero="' + Hero + '"] .Title').text(Skin);
+		
+		//Check if there needs to be a theme icon
+		if ($('.HeroSkinMenu[data-hero="' + Hero + '"] .Theme[data-theme="' + Theme + '"]') ) {
+			$('.HeroSkinMenu[data-hero="' + Hero + '"] .SkinPreview').attr('data-theme', Theme);
 		}
 		
 		//Sound for skins

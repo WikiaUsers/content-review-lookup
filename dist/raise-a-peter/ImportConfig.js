@@ -17,14 +17,23 @@ window.MessageWallUserTags = {
     // bureaucrat (wiki admin)
     // administrator (wiki admin)
     // super mod (super moderator)
-    // content-moderator (content moderator)
-    // threadmoderator (discussions moderator)
+    // mod (wiki moderator)
     // rollback (active editor)
     
         'HelloSummerMemee': 'wiki founder',
-        'Raz Mail': 'wiki admin'
+        'Raz Mail': 'wiki admin',
+        'MatteoLynx': 'active editor' //rollbacker
     }
 };
 
 // TopicBlockLog
 TBL_GROUP = "roblox-en";
+
+
+// SpoilerAlert
+window.SpoilerAlertJS = {
+    question: 'Ay Peter, stop right there! Below are spoilers. Are you sure you want to see them?',
+    yes: 'Sure!',
+    no: 'not at all no',
+    fadeDelay: 750
+};

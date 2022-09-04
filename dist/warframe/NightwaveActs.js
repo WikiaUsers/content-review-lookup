@@ -6,6 +6,9 @@
  * See https://warframe.fandom.com/wiki/MediaWiki:Custom-NightwaveActs/i18n.json
  * for script i18n messages.
  * 
+ * When adding new acts, please update https://warframe.fandom.com/wiki/NightwaveActs.json
+ * so the script knows the image urls of act icons.
+ * 
  * Note: As of UCP migration, FANDOM's JS parser still DOES NOT support string
  * interpolation, let keyword, and arrow functions. In addition, keep in mind
  * about JS rendering for anonymous users vs. logged in users.
