@@ -23,7 +23,6 @@ window.UserTagsJS = {
 		'content-moderator': { u:'Content Mod' },
 		maptest: { u:'Map Tester' },
 		specialrole: { u:'Writing Lord' },
-		otherspecialrole: { u:'Proofreader' },
 		otherspecialrolewow: { u:'Tired Artist' },
 		lebesrole: { u:'Wiki Mom' },
 		newuser: { u:'Just Joined!' },
@@ -36,8 +35,7 @@ UserTagsJS.modules.custom = {
 	'GhostTheWick': ['codinghelp'],
 	'LeahForsea': ['lebesrole'],
 	'Rosellia Teh Hybrid': ['maptest'],
-	'WHYYYYYYHUY': ['otherspecialrole'],
-	'Khris Beleren': ['otherspecialrolewow']
+	'Khris Beleren': ['otherspecialrolewow'],
 	'FrostdropdALT': ['ventmod']
 };
 window.MessageBlock = {

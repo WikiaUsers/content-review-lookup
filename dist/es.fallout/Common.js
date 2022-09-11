@@ -51,7 +51,7 @@ function removeLazyLoad(lazyIcon) {
 /* ### Descripción: Añade iconos al título del artículo                 ### */
 /* ### Créditos:    Usuario:Porter21                                    ### */
 /* ######################################################################## */
-
+/*
 $(function() {
     if (window.wgIsMainpage)
         return;
@@ -82,7 +82,7 @@ $(function() {
     removeLazyLoad(document.getElementById("va-titleicons-preview"));
     removeLazyLoad(document.getElementById("va-titleicons-fullsize"));
 });
-
+*/
 /* ############################################################################# */
 /* ### MARQUESINA MÓVIL (Plantilla:Marquesina)                               ### */
 /* ### --------------------------------------------------------------------  ### */

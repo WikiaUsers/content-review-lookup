@@ -1,212 +1,121 @@
-/**
- * 09:56, May 24, 2015 (UTC)
- * http://naruto.wikia.com/wiki/MediaWiki:Common.js
- * This is the central JavaScript file for the Wiki. Any code placed in here will
- * run on every page for every user (logged in or not) on every skin (Oasis or
- * Monobook).
- */
+/* Any JavaScript here will be loaded for all users on every page load. */
 
-(function (window, $, mw) {
-	"use strict";
+// onload stuff
+var firstRun = true;
 
-	// Bulk loading scripts.
-	// scriptList are scripts to load everywhere
-	// pageScriptList are scripts which only certain pages need.
-	var scriptList = [],
-		pageScriptList = [];
-
-					/* Scripts to be loaded everywhere */
-
-	// Make WantedFiles File:xxx entries become links to Special:Upload (bug fix)
-	scriptList.push('MediaWiki:Common.js/FixWantedFiles.js');
-
-	// Configure AjaxRC
-	(window.ajaxPages = (window.ajaxPages || [])).push(
-		"Special:RecentChanges",
-		"Special:Watchlist",
-		"Special:Log",
-		"Special:Contributions",
-		"Special:NewFiles",
-		"Special:NewPages",
-		"Special:ListFiles",
-		"Special:WikiActivity"
-	);
-	window.AjaxRCRefreshText = 'Auto-Refresh';
-	window.AjaxRCRefreshHoverText = 'Automatically refresh every 60secs';
-	window.ajaxCallAgain = ($.isArray(window.ajaxCallAgain) && window.ajaxCallAgain) || [];
-	scriptList.push('u:dev:AjaxRC/code.js');
-
-	// ArchiveTool
-	window.archiveListTemplate = 'ArchiveList';
-	window.archivePageTemplate = 'ArchivePage';
-	scriptList.push('u:dev:ArchiveTool/code.js');
-
-	// User tags
-	window.UserTagsJS = {
-		tags: {
-			bureaucrat: {
-				link: 'Project:Bureaucrat'
-			},
-			sysop: {
-				link: 'Project:Sysop',
-				title: 'System-Operator ( Administrator )'
-			},
-			rollback: {
-				link: 'Project:Rollback'
-			},
-			forummod: {
-				u: 'Forum Moderator',
-				title: 'Helps moderate the forums'
-			},
-			inactive: {
-				title: 'The user hasn\'t edited for last 30 days'
-			}
-		},
-	};
-	scriptList.push('u:dev:UserTags/code.js');
-
-	// Null Edit button
-	// Conditionally load purge button if page cannot be edited
-	if ($("#ca-edit").length || $("a[data-id='editprofile']").length) {
-		scriptList.push('u:dev:NullEditButton/code.js');
+function loadFunc() {
+	if( firstRun ) {
+		firstRun = false;
 	} else {
-		scriptList.push('u:dev:PurgeButton/code.js');
+		return;
 	}
 
-	// List Files. See [[Narutopedia:ListFiles]]
-	scriptList.push('u:dev:ListFiles/code.js');
+	window.pageName = mw.config.get('wgPageName');
+	window.storagePresent = (typeof(localStorage) != 'undefined');
 
-	// Warnings
-	scriptList.push('MediaWiki:Common.js/Warnings.js');
-
-	// Lock forums if not commented for 60 days
-	// Place a warning after 30 days
-	window.LockForums = {
-		expiryDays: 60,
-		expiryMessage: "This thread hasn't been commented on for over <actualDays> days. There is no need to reply.",
-		warningDays: 30,
-		banners: true,
-		ignoreDeletes: true,
-		warningPopup: true,
-	};
-	scriptList.push('u:dev:LockForums/code.js');
-
-	// Reference Popups, like on Wikipedia
-	scriptList.push('u:dev:ReferencePopups/code.js');
-
-					/* Page specific scripts */
-
-	// List Duplicate images
-	if (mw.config.get('wgPageName') === 'Narutopedia:Duplicate_Images') {
-		pageScriptList.push('u:dev:DupImageList/code.js');
+	// DEPRECATED
+	if( document.getElementById('infoboxinternal') != null && document.getElementById('infoboxend') != null ) {
+		document.getElementById('infoboxend').innerHTML = '<a id="infoboxtoggle" href="javascript:infoboxToggle()">[Hide]</a>';
 	}
 
-	// Various changes to the new forums
-	if (({1201: 1, 2000: 1})[mw.config.get('wgNamespaceNumber')] === 1) {
-		pageScriptList.push('MediaWiki:Common.js/ForumChanges.js');
-		window.ArchiveBoards= {
-            boards : ["Wiki Discussions Archive", "Chapter Archives"],
-            groupCustom : ["forumadmin"]
+	// Upload form - need to run before adding hide buttons
+	if ( mw.config.get('wgCanonicalSpecialPageName') === 'Upload' ) {
+		setupUploadForm();
+	}
+
+	addHideButtons();
+
+	if( document.getElementById('mp3-navlink') !== null ) {
+		document.getElementById('mp3-navlink').onclick = onArticleNavClick;
+		document.getElementById('mp3-navlink').getElementsByTagName('a')[0].href = 'javascript:void(0)';
+	}
+
+	if( window.storagePresent ) {
+		initVisibility();
+	}
+
+	fillEditSummaries();
+	fillPreloads();
+
+	substUsername();
+	substUsernameTOC();
+	rewriteTitle();
+	rewriteHover();
+	// replaceSearchIcon(); this is now called from MediaWiki:Monobook.js
+	fixSearch();
+	hideContentSub();
+	addTalkheaderPreload();
+
+	var body = document.getElementsByTagName('body')[0];
+	var bodyClass = body.className;
+
+	if( !bodyClass || (bodyClass.indexOf('page-') === -1) ) {
+		var page = window.pageName.replace(/\W/g, '_');
+		body.className += ' page-' + page;
+	}
+
+	if( typeof(onPageLoad) != "undefined" ) {
+		onPageLoad();
+	}
+}
+
+function infoboxToggle() {
+	var page = window.pageName.replace(/\W/g, '_');
+	var nowShown;
+
+	if(document.getElementById('infoboxtoggle').innerHTML == '[Hide]') {
+		document.getElementById('infoboxinternal').style.display = 'none';
+		document.getElementById('infoboxtoggle').innerHTML = '[Show]';
+		nowShown = false;
+	} else {
+		document.getElementById('infoboxinternal').style.display = 'block';
+		document.getElementById('infoboxtoggle').innerHTML = '[Hide]';
+		nowShown = true;
+	}
+
+	if(window.storagePresent) {
+		localStorage.setItem('infoboxshow-' + page, nowShown);
+	}
+}
+
+/**
+ * Show/hide for media timeline -- Grunny
+ **/
+$( function () {
+	if( !$( '.timeline-toggles' ).length ) {
+		return;
+	}
+	$( '.timeline-toggles' ).find( 'td > a' ).click( function () {
+		var	hideBtnClass = $( this ).parent().attr( 'class' ),
+			$hideContent = $( 'tr.' + hideBtnClass );
+		if( !$hideContent.length ) {
+			return;
+		}
+		$hideContent.toggle();
+		if ( $( this ).text().indexOf( 'hide' ) >= 1 ) {
+			$( this ).text( $( this ).text().replace( 'hide', 'show' ) );
+		} else {
+			$( this ).text( $( this ).text().replace( 'show', 'hide' ) );
+		}
+	} );
+} );
+
+
+/**
+ * Hides the link to parent pages from subpages if {{HideContentSub}} is included
+ **/
+$(function hideContentSub() {
+	if ( mw.config.get( 'wgNamespaceNumber' ) === 0 || $( '#hideContentSub' ).length > 0 ) {	
+		if ($( '.page-header__page-subtitle' ).text().substring(0, 1) === "<") {
+            var	$wikiaHeader = $( '.page-header__page-subtitle' ),
+                $backToPageLink;
+            if ( mw.config.get( 'wgNamespaceNumber' ) % 2 === 1 ) {
+                // ugly hack to only leave back to page link on talk pages
+                $backToPageLink = $wikiaHeader.find( 'a[accesskey="c"]' );
+                $wikiaHeader.html( '' ).append( $backToPageLink );
+            } else {
+                $wikiaHeader.hide();
+            }
         }
-        pageScriptList.push('u:dev:ArchiveBoards/code.js');
 	}
-
-	// Custom Special:[Multiple]Upload UI
-	if (({Upload: 1, MultipleUpload: 1})[mw.config.get('wgCanonicalSpecialPageName')] === 1) {
-		pageScriptList.push(
-			'MediaWiki:Common.js/FairUseUpload.js',
-			'MediaWiki:Common.js/FixMultipleUpload.js' // Fix the Special:MultipleUpload page
-		);
-	}
-
-					/* Small scripts which donot need a seperate page (Snippets) */
-
-	// Remove red-links (deleted pages) from Recent Changes
-	// [They stay red, they just don't link to ?action=edit]
-	if (({
-		Recentchanges: 1,
-		Log: 1
-	})[mw.config.get('wgCanonicalSpecialPageName')] === 1) {
-		var deNewRC = function () {
-				$('a.new').each(function () {
-					this.href = this.href.replace(/\?[^?]*$/, '');
-				});
-			};
-		$(deNewRC);
-		window.ajaxCallAgain.push(deNewRC);
-	}
-
-	// Oasis-only scripts
-	if (mw.config.get('skin') === 'oasis') {
-		// Detach the AJAX feature from Page/Image Creation/Upload
-		// because the pop-up form does not obey the preloads and such.
-		$('a.createpage').off('click').attr('href', '/wiki/Special:Forms');
-	 
-		// Add link to ParentPage to Wiki-Nav
-		// Idea from avatar wiki
-		$("<li><a>").addClass('subnav-2-item')
-			.find('a').attr({
-					'href': '/wiki/Project:ParentPage',
-					'class': 'subnav-2a'
-				}).text('Parent Page').end()
-		.appendTo($('.WikiHeader nav ul li.marked ul'));
-	}
-
-	// Custom edit buttons
-	if (mw.toolbar) {
-		mw.toolbar.addButton(
-			'https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png',
-			'Redirect',
-			'#REDIRECT [[',
-			']]',
-			'Insert text',
-			'mw-editbutton-redirect'
-		);
-
-		mw.toolbar.addButton(
-			'https://images.wikia.nocookie.net/__cb20100821183407/bleach/en/images/e/e1/O_Accent_Button.png',
-			'Add the ō character',
-			'ō',
-			'',
-			'',
-			'mw-editbutton-macron-o'
-		);
-		
-		mw.toolbar.addButton(
-			'https://images.wikia.nocookie.net/__cb20100821183407/bleach/en/images/d/db/U_Accent_Button.png',
-			'Add the ū character',
-			'ū',
-			'',
-			'',
-			'mw-editbutton-macron-u'
-		);
-
-		mw.toolbar.addButton(
-			'https://images.wikia.nocookie.net/naruto/images/7/79/Button_reflink.png',
-			'Add a Chapter Reference',
-			'<ref>',
-			'</ref>',
-			'\'\'Naruto\'\' chapter 0, page 0',
-			'mw-editbutton-ref'
-		);
-	}
-
-	// HOOK: Verbatim imports embedded on particular pages.
-	if ($.isArray(window.pageNeededScripts)) {
-		pageScriptList.push.apply(pageScriptList, window.pageNeededScripts);
-		try {
-			delete window.pageNeededScripts;
-		} catch (e) {
-			window.pageNeededScripts = null;
-		} // IE8 sucks.
-	}
-
-	// Import all scripts in bulk (and minified)
-	window.importArticles({
-		type: 'script',
-		articles: scriptList
-	}, {
-		type: 'script',
-		articles: pageScriptList
-	});
-}(window, jQuery, mediaWiki));
+});

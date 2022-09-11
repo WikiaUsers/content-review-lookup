@@ -98,9 +98,12 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(function () {
 	const checkPage = function (data) {
 		const pageContents = data.parse.wikitext;
 
-		// wrap in nowiki tags to prevent the source page from being categorized
+		// wrap in nowiki tags to prevent this page from being categorized
 		// <nowiki>
-		if (pageContents.includes("[[Category:Genre (Comic)]]")) {
+		if (
+			pageContents.includes("[[Category:Genre (Comic)]]") ||
+			pageContents.includes("[[Category:Wings of Fire Fanon Wiki]]")
+			) {
 			sendToast("success", "This page is a comic and should not be deleted.");
 		}
 		// </nowiki>

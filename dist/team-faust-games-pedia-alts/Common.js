@@ -8,13 +8,14 @@ window.UserTagsJS = {
                 fm3: 'WinBee User',
                 fm4: 'Capsule J User',
                 fm5: 'Hitmontop User',
+                fm6: 'Ultramarine-Blue Rabbit',
                 hel: 'The Co-Leader',
 	}
 };
 
 // Add custom groups to several users
 UserTagsJS.modules.custom = {
-        'FistMan Is Back': ['fm3'],
+        'FistMan Is Back': ['fm6'],
 
 };
 UserTagsJS.modules.metafilter = {

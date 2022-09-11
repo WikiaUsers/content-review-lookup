@@ -22,11 +22,11 @@ mw.loader.using('mediawiki.api').then(function(){
 });
 window.UserTagsJS = {
 	tags: {
-		bureaucrat: { u:'Bureaucrat', link:'Project:Wiki_Staff', order: 6 },
-		sysop: { u:'Administrator', link:'Project:Wiki_Staff', order: 7 },
-		'content-moderator': { u:'Content Moderator', link:'Project:Wiki_Staff', order: 8 },
+		bureaucrat: { u:'Bureaucrat', link:'Project:Bureaucrats', order: 6 },
+		sysop: { u:'Administrator', link:'Project:Administrators', order: 7 },
+		'content-moderator': { u:'Content Moderator', link:'Project:Moderators', order: 8 },
 		rollback: {u: 'Trial Moderator', order: 8},
-		threadmoderator: { u:'Discussion Moderator', link:'Project:Wiki_Staff', order: 9 },
+		threadmoderator: { u:'Discussion Moderator', link:'Project:Moderators', order: 9 },
 		bot: { u: 'Bot', link: 'Special:ListUsers/bot' },
 		inactive: { u: 'Inactive' },
 		blocked: { u: 'Ejected', link: 'Special:BlockList' },

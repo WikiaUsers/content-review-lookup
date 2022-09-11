@@ -289,4 +289,11 @@ mw.hook('wikipage.content').add(function(elem) {
     });
 });
 
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:FloatingTableHeader/Code.js',
+    ]
+});
+
 /* DO NOT ADD CODE BELOW THIS LINE */

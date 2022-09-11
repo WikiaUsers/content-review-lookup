@@ -33,7 +33,18 @@ mw.loader.using('mediawiki.util').then(function () {
     //Wait until the JSONView script is loaded
     $.when(loadScript).then(function () {
         //Add some custom styling
-        $('head').append('<style>.jsonview { padding: 5px; } .jsonview .bool, .jsonview .num { color: #0070ff; }</style>');
+        $('head').append('<style>\
+            .jsonview {\
+                padding: 5px;\
+            }\
+            .jsonview .bool,\
+            .jsonview .num {\
+                color: #0070ff;\
+            }\
+            .jsonview .string {\
+                color: var(--theme-success-color);\
+            }\
+        </style>');
 
         //Check if editing, so we know if we need to pull the content from the textarea, or from the API
         if (mw.config.get('wgAction') !== 'view') {

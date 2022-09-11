@@ -1,51 +1,51 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-
+var newBcg ='';
 // Image List
 switch (true) {
     case /Rollplay/.test(mw.config.get('wgPageName')):
         // Backgrounds for page "Rollplay"
-        window.bgrandom_list = ["https://static.wikia.nocookie.net/regalgoblins/images/4/42/Rollplay_Background.jpg/revision/latest"];
+        newBcg = "https://static.wikia.nocookie.net/regalgoblins/images/4/42/Rollplay_Background.jpg/revision/latest";
         break;
     case /Hardcore_Heroes/.test(mw.config.get('wgPageName')):
         //Backgrounds for page "Hardcore_Heroes"
-        window.bgrandom_list = ["https://static.wikia.nocookie.net/regalgoblins/images/2/2a/Van%26Mal.jpg/revision/latest"];
+        newBcg = "https://static.wikia.nocookie.net/regalgoblins/images/2/2a/Van%26Mal.jpg/revision/latest";
         break;
     case /Akuban_Knights/.test(mw.config.get('wgPageName')):
         //Backgrounds for page "Akuban_Knights"
-        window.bgrandom_list = ["https://static.wikia.nocookie.net/regalgoblins/images/b/b1/Sara%26Bud.jpg/revision/latest"];
+        newBcg = "https://static.wikia.nocookie.net/regalgoblins/images/b/b1/Sara%26Bud.jpg/revision/latest";
         break;
     case /Frozen_Frontier/.test(mw.config.get('wgPageName')):
     case /Homeward_Bound/.test(mw.config.get('wgPageName')):
         //Backgrounds for page "Frozen_Frontier" & "Homeward Bound"
-        window.bgrandom_list = ["https://static.wikia.nocookie.net/regalgoblins/images/6/6b/FroFro_Background.jpg/revision/latest"];
+        newBcg = "https://static.wikia.nocookie.net/regalgoblins/images/6/6b/FroFro_Background.jpg/revision/latest";
         break;
     case /Desperate_Measures/.test(mw.config.get('wgPageName')):
         //Backgrounds for page "Desperate_Measures"
-        window.bgrandom_list = ["https://static.wikia.nocookie.net/regalgoblins/images/1/12/DM_Background.jpg/revision/latest"];
+        newBcg = "https://static.wikia.nocookie.net/regalgoblins/images/1/12/DM_Background.jpg/revision/latest";
         break;
     case /Dicing_with_Death/.test(mw.config.get('wgPageName')):
     	//Backgrounds for page "Dicing_with_Death"
-        window.bgrandom_list = ["https://static.wikia.nocookie.net/regalgoblins/images/5/59/Georg%26Divan.jpg/revision/latest"];
+        newBcg = "https://static.wikia.nocookie.net/regalgoblins/images/5/59/Georg%26Divan.jpg/revision/latest";
         break;
     case /Of_Dice_and_Men/.test(mw.config.get('wgPageName')):
     	//Backgrounds for page "Of_Dice_and_Men"
-        window.bgrandom_list = ["https://static.wikia.nocookie.net/regalgoblins/images/6/6e/Nevets%26Vicho.jpg/revision/latest"];
+        newBcg = "https://static.wikia.nocookie.net/regalgoblins/images/6/6e/Nevets%26Vicho.jpg/revision/latest";
         break;
     case /Gnomes,_Tomes_%26_Catacombs/.test(mw.config.get('wgPageName')):
     	//Backgrounds for page "Gnomes,_Tomes_%26_Catacombs"
-        window.bgrandom_list = ["https://static.wikia.nocookie.net/regalgoblins/images/d/dc/ChadBarbo%26GeraldKnott.jpg"];
+        newBcg = "https://static.wikia.nocookie.net/regalgoblins/images/d/dc/ChadBarbo%26GeraldKnott.jpg";
         break;
     case /Misscliks:_Devotion/.test(mw.config.get('wgPageName')):
     	//Backgrounds for page "Misscliks:_Devotion"
-        window.bgrandom_list = ["https://static.wikia.nocookie.net/regalgoblins/images/8/82/Ransom%26Olivia.jpg"];
+        newBcg = "https://static.wikia.nocookie.net/regalgoblins/images/8/82/Ransom%26Olivia.jpg";
         break;
     case /Embers_of_the_Wilds/.test(mw.config.get('wgPageName')):
     	//Backgrounds for page "Embers_of_the_Wilds"
-        window.bgrandom_list = ["https://static.wikia.nocookie.net/regalgoblins/images/1/18/EoW_Background.jpg"];
+        newBcg = "https://static.wikia.nocookie.net/regalgoblins/images/1/18/EoW_Background.jpg";
         break;
     default:
         //Backgrounds for all the other pages
-        window.bgrandom_list = [
+        var allBackgrounds = [
         "https://static.wikia.nocookie.net/regalgoblins/images/b/b1/Sara%26Bud.jpg/revision/latest",
         "https://static.wikia.nocookie.net/regalgoblins/images/2/2a/Van%26Mal.jpg/revision/latest",
         "https://static.wikia.nocookie.net/regalgoblins/images/4/42/Rollplay_Background.jpg/revision/latest",
@@ -57,15 +57,13 @@ switch (true) {
         "https://static.wikia.nocookie.net/regalgoblins/images/d/dc/ChadBarbo%26GeraldKnott.jpg",
         "https://static.wikia.nocookie.net/regalgoblins/images/8/82/Ransom%26Olivia.jpg",
         "https://static.wikia.nocookie.net/regalgoblins/images/1/18/EoW_Background.jpg"];
+        
+        var rnd = Math.floor(Math.random() * allBackgrounds.length);
+        newBcg = allBackgrounds[rnd];
         break;
 }
-// Import always after you declare your variables or in MediaWiki:ImportJS
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:RandomBackground/code.js'
-    ]
-});
+document.body.style.backgroundImage = "url('"+newBcg+"')";
+
 
 // START - FORMAT GOOGLE CALENDAR
 // Base Source : https://github.com/MilanLund/FormatGoogleCalendar

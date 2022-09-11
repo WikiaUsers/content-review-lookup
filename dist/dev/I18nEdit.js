@@ -2509,7 +2509,8 @@
                 } else if (specials[b]) {
                     return 1;
                 }
-                return a.localeCompare(b);
+                // sort by bytes
+                return a < b ? -1 : a > b ? 1 : 0;
             }).forEach(function(lang) {
                 if (lang === '_metadata') {
                     messages[lang] = obj[lang];

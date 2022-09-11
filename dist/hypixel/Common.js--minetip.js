@@ -11,6 +11,12 @@ $(function () {
     var useSlashEscape = false;
 
     window.minetipConfig = window.minetipConfig || {};
+
+    /* Enchantment glint created by User:Fewfre */
+    /* https://hypixel-skyblock.fandom.com/wiki/MediaWiki:Gadget-ResourcePacks.js */
+    var SVG_FILTER = '<svg style="position:fixed;top:-1000px"><filter id="mcglint"><feImage href="https://static.wikia.nocookie.net/hypixel-skyblock/images/3/32/Mcglint.gif" x="0" y="0" preserveAspectRatio="none" result="IMAGE"/><feBlend in="IMAGE" in2="SourceGraphic" mode="screen" result="BLEND"/><feComposite operator="in" in="BLEND" in2="SourceGraphic"/></filter></svg>';
+    $("body").append($(SVG_FILTER));
+
     (window.updateTooltips = (function () {
         var escapeChars = {
             "\\&": "&#38;",
@@ -185,8 +191,8 @@ $(function () {
                 var $this = $(this);
                 if (e.which !== 2 && !window.minetipConfig.noPickup) {
                     var iid = $this.attr("data-iid");
-                    var $source = $this.find("img");
-                    if ((typeof iid === "string") || ($source.length > 0) || $this.hasClass("invsprite")) {
+                    var $source = $this.find("img, .invsprite");
+                    if ((typeof iid === "string") || ($source.length > 0)) {
                         var $target = $this;
                         $target.addClass("invslot-pickup");
                         var offset = $this.offset();

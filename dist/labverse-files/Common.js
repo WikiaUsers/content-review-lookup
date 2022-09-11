@@ -21,7 +21,7 @@ UserTagsJS.modules.custom = {
 
 //Spolier blur configuration//
 window.SpoilerAlertJS = {
-    question: 'This area contains classified information that may spoil something..',
+    question: 'This area contains classified information any none classified personel who wishes to continue will be hunted.',
     yes: 'Bypass',
     no: 'Return back',
     fadeDelay: 1200

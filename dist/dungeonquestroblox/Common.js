@@ -54,8 +54,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     //Create da calculators
 	var dungeons = [
 		{ name: "None", difficulties: ["Pick Dungeon First"]},
-        { name: "Northern Lands With Odin", difficulties: ["Nightmare"]},
-		{ name: "Northern Lands", difficulties: ["Insane", "Nightmare"]},
+		{ name: "Northern Lands", difficulties: ["Insane", "Nightmare", "Nightmare With Odin-R"]},
 		{ name: "Enchanted Forest", difficulties: ["Insane", "Nightmare"]},
 		{ name: "Aquatic Temple", difficulties: ["Insane", "Nightmare"]},
 		{ name: "Volcanic Chambers", difficulties: ["Insane", "Nightmare"]},
@@ -74,7 +73,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     var dungeonsWithEXP = [
     	{name: "Northern Lands Insane", baseEXP: 21820000000},
     	{name: "Northern Lands Nightmare", baseEXP: 36600000000},
-    	{name: "Northern Lands With Odin Nightmare", baseEXP: 58600000000},
+    	{name: "Northern Lands Nightmare With Odin-R", baseEXP: 58600000000},
     	{name: "Enchanted Forest Insane", baseEXP: 6900000000},
     	{name: "Enchanted Forest Nightmare", baseEXP: 11280000000},
 		{name: "Aquatic Temple Insane", baseEXP: 2440800000},
@@ -115,6 +114,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     function addLevelCalculator(div) {
         createSpan(div).update("DQ Wiki Level Calculator");
         var eventCheckBox = createCheckBox("event", "2x EXP Event");
+        var boosterCheckBox = createCheckBox("booster", "Booster activated");
         var dungeonField = createSelectField("dungeon", "Pick Dungeon (optional)", dungeonsNames);
         var difficultyField = createSelectField("difficulty", "Pick Difficulty (optional)", difficulties);
         var currentField = createField("current", "Your current level");
@@ -126,6 +126,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         div.append(
             createBr(),
             eventCheckBox.label, eventCheckBox.input, createBr(),
+            boosterCheckBox.label, boosterCheckBox.input, createBr(),
             dungeonField.label, dungeonField.select, createBr(),
             difficultyField.label, difficultyField.select, createBr(),
             currentField.label, currentField.input, createBr(),
@@ -159,19 +160,23 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
             var xp = calculateXp(current, goal);
             var xpString = addCommas(xp);
-            var amountOfRuns = Math.ceil((xp/dungeonEXP));
-            var amountOfVIPRuns = Math.ceil((xp/1.2/dungeonEXP));
-            if (eventCheckBox.input.checked) {
-            	 amountOfRuns = Math.ceil((xp/2/dungeonEXP));
-            	 amountOfVIPRuns = Math.ceil((xp/2.2/dungeonEXP));
+        	var modifier = 1;
+        	if (eventCheckBox.input.checked) {
+				modifier++;
             }
+			if (boosterCheckBox.input.checked) {
+				modifier++;
+            }
+            var amountOfRuns = Math.ceil((xp/modifier/dungeonEXP));
+            var amountOfVIPRuns = Math.ceil((xp/(modifier+0.2)/dungeonEXP));
+
 			if (dungeonEXP == 1) {
             result.update("You will need about " + xpString + " experience.");
 			}
 			else {
 			result.update("You will need about " + xpString + " experience." + "\n" +
 			"Without VIP, you will need at least " + amountOfRuns + " runs of " + selectedDungeon + " to reach your goal level" + "\n" +
-			"With VIP, you will need at least " + amountOfRuns + " runs of " + selectedDungeon + " to reach your goal level"
+			"With VIP, you will need at least " + amountOfVIPRuns + " runs of " + selectedDungeon + " to reach your goal level"
 			);	
 			}
         };

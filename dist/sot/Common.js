@@ -15,11 +15,3 @@ window.SignatureCheckJS = {
 
 /* Reference Popups */
 ((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;//End RP*/
-
-////////////////////////////////////////////////
-/******************* Import *******************/
-////////////////////////////////////////////////
-importArticle({
-    type: 'script',
-    article: 'u:elderscrolls:Common.js/DiscussionsLinks.js'
-});

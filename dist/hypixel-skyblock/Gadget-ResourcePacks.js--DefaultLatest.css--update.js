@@ -14,12 +14,12 @@
 (() => {
 	const files = {
 		'Collection - Farming (agronomy)': [
-			{ name: 'Cactus' },
+			{ name: 'Cactus' }, //
 			{ name: 'Cactus Green', mcName: 'Green Dye' },
 			{ name: 'Carrot' },
 			{ name: 'Cocoa Beans' },
 			{ name: 'Melon', mcName: 'Melon Slice' },
-			{ name: 'Melon (block)', mcName: 'Melon' },
+			{ name: 'Melon (block)', mcName: 'Melon', enchName: 'Enchanted Melon Block' },
 			{ name: 'Brown Mushroom', mcName: 'Brown Mushroom (texture)' },
 			{ name: 'Red Mushroom', mcName: 'Red Mushroom (texture)' },
 			{ name: 'Nether Wart', mcName: 'Nether Wart (item)' },
@@ -27,10 +27,10 @@
 			{ name: 'Pumpkin', mcName: 'Carved Pumpkin' },
 			{ name: 'Sugar Cane', mcName: 'Sugar Cane (item)' },
 			{ name: 'Seeds', mcName: 'Wheat Seeds' },
-			{ name: 'Wheat' },
+			{ name: 'Wheat' }
 		],
 		'Misc - Farming (agronomy)': [
-			{ name: 'Golden Carrot' },
+			{ name: 'Golden Carrot' }, //
 			{ name: 'Cookie' },
 			{ name: 'Glistering Melon', mcName: 'Glistering Melon Slice' },
 			{ name: 'Baked Potato' },
@@ -39,10 +39,10 @@
 			{ name: 'Pumpkin Seeds' },
 			{ name: 'Melon Seeds' },
 			{ name: 'Hay Bale' },
-			{ name: 'Bread' },
+			{ name: 'Bread' }
 		],
 		'Collection - Farming (husbandry)': [
-			{ name: 'Raw Rabbit' },
+			{ name: 'Raw Rabbit' }, //
 			{ name: "Rabbit's Foot", enchName: 'Enchanted Rabbit Foot' },
 			{ name: 'Rabbit Hide' },
 			{ name: 'Mutton', mcName: 'Raw Mutton' },
@@ -51,18 +51,18 @@
 			{ name: 'Leather' },
 			{ name: 'Raw Chicken' },
 			{ name: 'Feather' },
-			{ name: 'Egg' },
+			{ name: 'Egg' }
 		],
 		'Misc - Farming (husbandry)': [
-			{ name: 'Cooked Rabbit' },
+			{ name: 'Cooked Rabbit' }, //
 			{ name: 'Rabbit Stew' },
 			{ name: 'Cooked Mutton' },
 			{ name: 'Cooked Porkchop', enchName: 'Enchanted Grilled Pork' },
 			{ name: 'Steak' },
-			{ name: 'Cooked Chicken' },
+			{ name: 'Cooked Chicken' }
 		],
 		'Collection - Mining': [
-			{ name: 'Coal' },
+			{ name: 'Coal' }, //
 			{ name: 'Cobblestone' },
 			{ name: 'Diamond' },
 			{ name: 'Emerald' },
@@ -80,10 +80,10 @@
 			{ name: 'Redstone' },
 			{ name: 'Sand' },
 			{ name: 'Mycelium' },
-			{ name: 'Red Sand' },
+			{ name: 'Red Sand' }
 		],
 		'Misc - Mining': [
-			{ name: 'Charcoal', enchName: 'Enchanted Charcoal' },
+			{ name: 'Charcoal', enchName: 'Enchanted Charcoal' }, //
 			{ name: 'Stone' },
 			{ name: 'Gold Nugget' },
 			{ name: 'Packed Ice' },
@@ -105,10 +105,10 @@
 			{ name: 'Block of Diamond', enchName: 'Enchanted Diamond Block' },
 			{ name: 'Block of Redstone', enchName: 'Enchanted Redstone Block' },
 			{ name: 'Block of Emerald', enchName: 'Enchanted Emerald Block' },
-			{ name: 'Block of Quartz', enchName: 'Enchanted Quartz Block' },
+			{ name: 'Block of Quartz', enchName: 'Enchanted Quartz Block' }
 		],
 		'Collection - Combat': [
-			{ name: 'Blaze Rod' },
+			{ name: 'Blaze Rod' }, //
 			{ name: 'Blaze Powder' },
 			{ name: 'Bone' },
 			{ name: 'Ender Pearl' },
@@ -118,16 +118,16 @@
 			{ name: 'Rotten Flesh' },
 			{ name: 'Slimeball' },
 			{ name: 'Spider Eye' },
-			{ name: 'String' },
+			{ name: 'String' }
 		],
 		'Misc - Combat': [
-			{ name: 'Eye of Ender' },
+			{ name: 'Eye of Ender' }, //
 			{ name: 'Poisonous Potato' },
 			{ name: 'Slime Block' },
 			{ name: 'Fermented Spider Eye' },
 			{ name: 'Cobweb', mcName: 'Cobweb (texture)' },
 			{ name: 'Firework Rocket' },
-			{ name: 'Firework Star' },
+			{ name: 'Firework Star' }
 		],
 		'Collection - Foraging': [
 			{ name: 'Oak Wood', mcName: 'Oak Log' },
@@ -135,10 +135,10 @@
 			{ name: 'Birch Wood', mcName: 'Birch Log' },
 			{ name: 'Jungle Wood', mcName: 'Jungle Log' },
 			{ name: 'Acacia Wood', mcName: 'Acacia Log' },
-			{ name: 'Dark Oak Wood', mcName: 'Dark Oak Log' },
+			{ name: 'Dark Oak Wood', mcName: 'Dark Oak Log' }
 		],
 		'Collection - Fishing': [
-			{ name: 'Clay', mcName: 'Clay Ball' },
+			{ name: 'Clay', mcName: 'Clay Ball' }, //
 			{ name: 'Clownfish', mcName: 'Tropical Fish' },
 			{ name: 'Ink Sac' },
 			{ name: 'Lily Pad', mcName: 'Lily Pad (item)' },
@@ -147,19 +147,19 @@
 			{ name: 'Pufferfish' },
 			{ name: 'Raw Fish', mcName: 'Raw Cod' },
 			{ name: 'Raw Salmon', mcName: 'Raw Salmon' },
-			{ name: 'Sponge' },
+			{ name: 'Sponge' }
 		],
 		'Misc - Fishing': [
-			{ name: 'Clay (block)', mcName: 'Clay' },
+			{ name: 'Clay (block)', mcName: 'Clay' }, //
 			{ name: 'Cooked Fish', mcName: 'Cooked Cod' },
 			{ name: 'Cooked Salmon', mcName: 'Cooked Salmon' },
 			{ name: 'Wet Sponge' },
 			{ name: 'Prismarine' },
 			{ name: 'Dark Prismarine' },
-			{ name: 'Sea Lantern' },
+			{ name: 'Sea Lantern' }
 		],
 		'Tools & Weapons': [
-			{ name: 'Wooden Sword' },
+			{ name: 'Wooden Sword' }, //
 			{ name: 'Wooden Shovel' },
 			{ name: 'Wooden Pickaxe' },
 			{ name: 'Wooden Axe' },
@@ -185,7 +185,7 @@
 			{ name: 'Diamond Axe' },
 			{ name: 'Diamond Hoe' },
 			{ name: 'Bow' },
-			{ name: 'Arrow', mcName: 'Arrow (item)' },
+			{ name: 'Arrow', mcName: 'Arrow (item)' }
 		],
 		Armor: [
 			{ name: 'Leather Cap', mcName: 'Leather Cap (item)' },
@@ -207,7 +207,7 @@
 			{ name: 'Diamond Helmet', mcName: 'Diamond Helmet (item)' },
 			{ name: 'Diamond Chestplate', mcName: 'Diamond Chestplate (item)' },
 			{ name: 'Diamond Leggings', mcName: 'Diamond Leggings (item)' },
-			{ name: 'Diamond Boots', mcName: 'Diamond Boots (item)' },
+			{ name: 'Diamond Boots', mcName: 'Diamond Boots (item)' }
 		],
 		'Wood items': [
 			{ name: 'Oak Wood Planks', mcName: 'Oak Planks' },
@@ -264,10 +264,10 @@
 			{ name: 'Bowl' },
 			{ name: 'Item Frame', mcName: 'Item Frame (item)' },
 			{ name: 'Ladder', mcName: 'Ladder (texture)' },
-			{ name: 'Armor Stand', mcName: 'Armor Stand (item)' },
+			{ name: 'Armor Stand', mcName: 'Armor Stand (item)' }
 		],
 		'Saplings & Leaves': [
-			{ name: 'Oak Sapling', mcName: 'Oak Sapling (texture)' },
+			{ name: 'Oak Sapling', mcName: 'Oak Sapling (texture)' }, //
 			{ name: 'Spruce Sapling', mcName: 'Spruce Sapling (texture)' },
 			{ name: 'Birch Sapling', mcName: 'Birch Sapling (texture)' },
 			{ name: 'Jungle Sapling', mcName: 'Jungle Sapling (texture)' },
@@ -278,20 +278,20 @@
 			{ name: 'Birch Leaves' },
 			{ name: 'Jungle Leaves' },
 			{ name: 'Dark Oak Leaves' },
-			{ name: 'Acacia Leaves' },
+			{ name: 'Acacia Leaves' }
 		],
 		'Iron items': [
-			{ name: 'Iron Door', mcName: 'Iron Door (item)' },
+			{ name: 'Iron Door', mcName: 'Iron Door (item)' }, //
 			{ name: 'Iron Bars', mcName: 'Iron Bars (texture)' },
 			{ name: 'Iron Trapdoor' },
 			{ name: 'Hopper', mcName: 'Hopper (item)' },
 			{ name: 'Anvil' },
 			{ name: 'Flint and Steel' },
 			{ name: 'Shears' },
-			{ name: 'Cauldron (item)' },
+			{ name: 'Cauldron (item)' }
 		],
 		Dyes: [
-			{ name: 'Bone Meal' },
+			{ name: 'Bone Meal' }, //
 			{ name: 'Rose Red', mcName: 'Red Dye' },
 			{ name: 'Dandelion Yellow', mcName: 'Yellow Dye' },
 			{ name: 'Orange Dye' },
@@ -302,11 +302,11 @@
 			{ name: 'Lime Dye' },
 			{ name: 'Cyan Dye' },
 			{ name: 'Purple Dye' },
-			{ name: 'Gray Dye' },
+			{ name: 'Gray Dye' }
 		],
 		'Music Discs': [
 			{ name: 'Music Disc 13' },
-			{ name: 'Music Disc Cat' },
+			{ name: 'Music Disc Cat' }, //
 			{ name: 'Music Disc Blocks' },
 			{ name: 'Music Disc Chirp' },
 			{ name: 'Music Disc Far' },
@@ -316,7 +316,7 @@
 			{ name: 'Music Disc Strad' },
 			{ name: 'Music Disc Ward' },
 			{ name: 'Music Disc 11' },
-			{ name: 'Music Disc Wait' },
+			{ name: 'Music Disc Wait' }
 		],
 		'Minecarts & Rail': [
 			{ name: 'Rail', mcName: 'Rail (texture)' },
@@ -328,10 +328,10 @@
 			{ name: 'Minecart with Furnace', mcName: 'Minecart with Furnace (item)' },
 			{ name: 'Minecart with TNT', mcName: 'Minecart with TNT (item)' },
 			{ name: 'Minecart with Hopper', mcName: 'Minecart with Hopper (item)' },
-			{ name: 'Minecart with Command Block', mcName: 'Minecart with Command Block (item)' },
+			{ name: 'Minecart with Command Block', mcName: 'Minecart with Command Block (item)' }
 		],
 		'Redstone stuff': [
-			{ name: 'Redstone Torch', mcName: 'On Redstone Torch (texture)' },
+			{ name: 'Redstone Torch', mcName: 'On Redstone Torch (texture)' }, //
 			{ name: 'Redstone Repeater', mcName: 'Redstone Repeater (item)' },
 			{ name: 'Redstone Comparator', mcName: 'Redstone Comparator (item)' },
 			{ name: 'Redstone Lamp' },
@@ -346,7 +346,7 @@
 			{ name: 'Piston', png: true },
 			{ name: 'Sticky Piston', png: true },
 			{ name: 'Light Weighted Pressure Plate' },
-			{ name: 'Heavy Weighted Pressure Plate' },
+			{ name: 'Heavy Weighted Pressure Plate' }
 		],
 		Brewing: [
 			{ name: 'Brewing Stand', mcName: 'Brewing Stand (item)' },
@@ -368,10 +368,10 @@
 			{ name: 'Damage Potion', mcName: 'Potion of Harming' },
 			{ name: 'Absorption Potion', mcName: 'Potion of Fire Resistance' }, // Despite the name being the same, SkyBlock does NOT use the texture for the Minecraft absorption potion
 			{ name: 'Blindness Potion', mcName: 'Potion of Blindness' },
-			{ name: 'True Resistance Potion', mcName: 'Potion of Resistance' },
+			{ name: 'True Resistance Potion', mcName: 'Potion of Resistance' }
 		],
 		'Misc - Plants & Food': [
-			{ name: 'Apple' },
+			{ name: 'Apple' }, //
 			{ name: 'Golden Apple' },
 			{ name: 'Mushroom Stew' },
 			{ name: 'Cake', mcName: 'Cake (item)' },
@@ -382,7 +382,7 @@
 			{ name: 'Vines', mcName: 'Vines (inventory)' },
 			{ name: 'Fern', mcName: 'Fern (item)' },
 			{ name: 'Long Grass', mcName: 'Grass (item)' },
-			{ name: 'Double Tallgrass', mcName: 'Tall Grass (item)' },
+			{ name: 'Double Tallgrass', mcName: 'Tall Grass (item)' }
 		],
 		Flowers: [
 			{ name: 'Dandelion', mcName: 'Dandelion (texture)' },
@@ -397,10 +397,10 @@
 			{ name: 'Pink Tulip', mcName: 'Pink Tulip (texture)' },
 			{ name: 'Red Tulip', mcName: 'Red Tulip (texture)' },
 			{ name: 'Orange Tulip', mcName: 'Orange Tulip (texture)' },
-			{ name: 'Sunflower', mcName: 'Sunflower (front texture)' },
+			{ name: 'Sunflower', mcName: 'Sunflower (front texture)' }
 		],
 		'Misc - Nether & End': [
-			{ name: 'Soul Sand' },
+			{ name: 'Soul Sand' }, //
 			{ name: 'Nether Brick' },
 			{ name: 'Nether Bricks' },
 			{ name: 'Nether Brick Fence', mcName: 'Nether Brick Fence (item)' },
@@ -412,7 +412,8 @@
 			{ name: 'Beacon' },
 			{ name: 'Nether Star' },
 			{ name: 'Quartz Stairs' },
-			{ name: 'Daylight Detector' },
+			{ name: 'Chiseled Quartz Block' },
+			{ name: 'Daylight Sensor', mcName:'Daylight Detector' }
 		],
 		Glass: [
 			{ name: 'Glass' },
@@ -448,10 +449,10 @@
 			{ name: 'Brown Stained Glass Pane', mcName: 'Brown Stained Glass (texture)' },
 			{ name: 'Green Stained Glass Pane', mcName: 'Green Stained Glass (texture)' },
 			{ name: 'Red Stained Glass Pane', mcName: 'Red Stained Glass (texture)' },
-			{ name: 'Black Stained Glass Pane', mcName: 'Black Stained Glass (texture)' },
+			{ name: 'Black Stained Glass Pane', mcName: 'Black Stained Glass (texture)' }
 		],
 		'Wool and Carpets': [
-			{ name: 'White Wool' },
+			{ name: 'White Wool' }, //
 			{ name: 'Orange Wool' },
 			{ name: 'Magenta Wool' },
 			{ name: 'Light Blue Wool' },
@@ -482,7 +483,7 @@
 			{ name: 'Brown Carpet' },
 			{ name: 'Green Carpet' },
 			{ name: 'Red Carpet' },
-			{ name: 'Black Carpet' },
+			{ name: 'Black Carpet' }
 		],
 		'Hardened Clay': [
 			{ name: 'Hardened Clay', mcName: 'Terracotta' },
@@ -501,7 +502,12 @@
 			{ name: 'Brown Stained Clay', mcName: 'Brown Terracotta' },
 			{ name: 'Green Stained Clay', mcName: 'Green Terracotta' },
 			{ name: 'Red Stained Clay', mcName: 'Red Terracotta' },
-			{ name: 'Black Stained Clay', mcName: 'Black Terracotta' },
+			{ name: 'Black Stained Clay', mcName: 'Black Terracotta' }
+		],
+		'Spawn Eggs': [
+			{ name: 'Villager Spawn Egg' },
+			{ name: 'Endermite Spawn Egg' },
+			{ name: 'Ghast Spawn Egg' }
 		],
 		Misc: [
 			{ name: 'Torch', mcName: 'Torch (texture)' },
@@ -512,10 +518,10 @@
 			{ name: 'Paper' },
 			{ name: 'Map', mcName: 'Map (item)' },
 			{ name: 'Empty Map' },
-			{ name: 'Book', enchName: false }, // There's already a Minecraft item called "Enchanted Book", so don't apply auto enchantment logic
+			{ name: 'Book', enchName: false },
 			{ name: 'Written Book' },
-			{ name: 'Enchanted Book' },
 			{ name: 'Book and Quill' },
+			{ name: 'Enchanted Book', ench: true, png: true },
 			{ name: 'Bookshelf' },
 			{ name: 'Lead' },
 			{ name: 'Saddle' },
@@ -558,8 +564,8 @@
 			{ name: 'Enchantment Table', mcName: 'Enchanting Table (item)' },
 			{ name: 'Enchantment Table (placed)', mcName: 'Enchanting Table', png: true },
 			{ name: 'Water Block', mcName: 'Water' },
-			{ name: 'Lava', sbExt: 'gif' },
-		],
+			{ name: 'Lava', sbExt: 'gif' }
+		]
 	};
 
 	const mappedFiles = Object.keys(files)
@@ -576,10 +582,10 @@
 
 	const fileNames = mappedFiles.map((file) => `File:${file.mcName}.png`);
 	const fileNamesGif = mappedFiles.map((file) => `File:${file.mcName}.gif`);
-	const skyblockFileNames = mappedFiles.map((file) => `File:${file.name}.png`);
-	const skyblockEnchantedFileNames = mappedFiles.map((file) => `File:${file.enchName}.png`);
+	const skyblockFileNames = mappedFiles.map((file) => `File:${file.name}.${file.sbExt ?? 'png'}`);
+	const skyblockEnchantedFileNames = mappedFiles.map((file) => `File:${file.enchName}.${file.sbExt ?? 'png'}`);
 	// CSS Styles
-	const enchantedFilter = 'filter:drop-shadow(0 0 6px #aa03aa)'; // url(#mcglint);
+	const enchantedFilter = 'filter:url(#mcglint)'; // filter:drop-shadow(0 0 6px #aa03aa)
 	// Test script styles
 	const previewPairStyle = 'display:inline-block; background:#1F000044; padding:3px 5px 0; border-radius:10px;';
 	const urlPairListStyle = 'display:flex; flex-wrap:wrap; gap:10px;';
@@ -602,7 +608,7 @@
 			format: 'json',
 			prop: 'imageinfo',
 			iiprop: 'url',
-			titles: files.join('|'),
+			titles: files.join('|')
 		})}`;
 
 		return $.ajax({ type: 'GET', dataType: 'jsonp', data: {}, url });
@@ -638,18 +644,21 @@
 				 * `enchantedNames` array to have an enchantment filter applied
 				 */
 				let extraEnchRule = '';
-				const sbEnchName = file.enchName,
-					sbEnchKey = `File:${sbEnchName}.png`;
+				const sbEnchName = file.ench ? false : file.enchName,
+					sbEnchKey = `File:${sbEnchName}.${file.sbExt ?? 'png'}`;
 
+				console.log(sbEnchantedUrlsMap);
 				if (sbEnchName && sbEnchantedUrlsMap[sbEnchKey]) {
-					enchantedNames.push(`${sbEnchName}.png`);
-					extraEnchRule = `, img[data-image-name="${sbEnchName}.png"]`;
+					enchantedNames.push(`${sbEnchName}.${file.sbExt ?? 'png'}`);
+					extraEnchRule = `, img[data-image-name="${sbEnchName}.${file.sbExt ?? 'png'}"]`;
 				}
 
-				cssEntries.push(`img[data-image-name="${file.name}.${file.sbExt || 'png'}"]${extraEnchRule} { content: url('${mcUrl}') }`); //img[alt="${file.name}"], img[alt="${file.name}.png"],
+				if (file.ench) enchantedNames.push(`${file.mcName}.${file.sbExt ?? 'png'}`);
+
+				cssEntries.push(`img[data-image-name="${file.name}.${file.sbExt ?? 'png'}"]${extraEnchRule} { content: url('${mcUrl}') }`); //img[alt="${file.name}"], img[alt="${file.name}.png"],
 			} else missing.push(key);
 
-			const sbKey = `File:${file.name}.png`;
+			const sbKey = `File:${file.name}.${file.sbExt ?? 'png'}`;
 
 			if (!sbUrlsMap[sbKey]) sbMissing.push(sbKey);
 
@@ -677,7 +686,7 @@
 				'<div>',
 				previewUrls.map(({ label, urlPairs }) => `<div><h4>${label}</h4><div style="${urlPairListStyle}">${urlPairs.map((urls) => `<span style="${previewPairStyle}">${urls.map((url) => `<img src="${url}" height="40" />`).join('')}</span>`).join('')}</div></div>`).join(''),
 				'</div>',
-				'</div>',
+				'</div>'
 			].join('')
 		);
 	});

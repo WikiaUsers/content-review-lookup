@@ -3,12 +3,13 @@
 	var stylesheetPrefix = "https://hypixel-skyblock.fandom.com/index.php?action=raw&ctype=text/css&title=";
 	var packDefault = { id:'default', name:"Minecraft: V1.8.9 (Wiki Default)", author:"Mojang" };
 	var packs = [
-		// {
-		// 	id: 'latest',
-		// 	name: "Minecraft: Latest",
-		// 	stylesheet: stylesheetPrefix+"MediaWiki:Gadget-ResourcePacks.js/DefaultLatest.css",
-		// 	author: "Mojang"
-		// },
+		{
+			id: 'latest',
+			name: "Minecraft: Latest",
+			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-ResourcePacks.js/DefaultLatest.css",
+			author: "Mojang"
+		},
+
 		{
 			id: 'furfsky',
 			name: "FurfSky Reborn",
@@ -45,14 +46,6 @@
 			packsUrl: "https://hypixel.net/threads/worlds-and-beyond-16x-crystal-hollows-update-version-1-5.3597207/"
 		},
 	];
-	if(window.useBetaLatestRP) {
-		packs.unshift({
-			id: 'latest',
-			name: "Minecraft: Latest",
-			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-ResourcePacks.js/DefaultLatest.css",
-			author: "Mojang"
-		});
-	}
 	
 	var TOOLBAR_ICON = '<svg class="wds-icon wds-icon-small" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"><rect class="hsw-dd-brown" x="1" y="5" width="16" height="12" rx="2" ry="2" /><rect class="hsw-dd-green" x="1" y="1" width="16" height="4" rx="2" ry="2" /><rect class="c" x="1" y="1" width="16" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" /><polyline class="d" points="1 5 3.19 5 5 4.68 6.82 6.84 8.66 5 11.32 5 13.29 4.01 14.76 6 17 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>';
 	
@@ -65,7 +58,7 @@
 	
 	// Thanks to https://blog.logrocket.com/complete-guide-using-css-filters-svgs for helping figure the filters out
 	// Hiding the svg in anyways seems to break the filter, so instead move it offscreen
-	// var SVG_FILTER = '<svg style="position:fixed;top:-1000px"><filter id="mcglint"><feImage xlink:href="https://static.wikia.nocookie.net/hypixel-skyblock/images/3/32/Mcglint.gif" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="IMAGE"/><feBlend in="IMAGE" in2="SourceGraphic" mode="screen" result="BLEND"/><feComposite operator="in" in="BLEND" in2="SourceGraphic"/></filter></svg>';
+	var SVG_FILTER = '<svg style="position:fixed;top:-1000px"><filter id="mcglint"><feImage href="https://static.wikia.nocookie.net/hypixel-skyblock/images/3/32/Mcglint.gif" x="0" y="0" preserveAspectRatio="none" result="IMAGE"/><feBlend in="IMAGE" in2="SourceGraphic" mode="screen" result="BLEND"/><feComposite operator="in" in="BLEND" in2="SourceGraphic"/></filter></svg>';
 	
 	var CONTENT_ID = 'hsw-resourcepack-dropdown';
 	
@@ -107,7 +100,7 @@
 		var $dropdown = $("<div>").addClass("wds-button wds-is-secondary wds-dropdown "+CONTENT_ID);
 		var $toggle = $("<a>").addClass("wds-dropdown__toggle").attr("title", "Resource Packs").html(TOOLBAR_ICON).appendTo($dropdown);
 		$("<div>").addClass("wds-dropdown__content wds-is-right-aligned").appendTo($dropdown);
-		// $(SVG_FILTER).appendTo($toggle);
+		$(SVG_FILTER).appendTo($toggle);
 		
 		// Insert dropdown to nav
 		$(".wiki-tools > .wds-button:last-of-type").after($dropdown);

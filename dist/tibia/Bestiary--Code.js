@@ -23,8 +23,8 @@ $(function(){
     //Get creature data on demand from raw wikitext
     bestiary_get_creature_info_raw = function (name) {
         var result,
-        path1 = 'https://tibia.fandom.com/wiki/',
-        path2 = '?action=raw';
+        path1 = 'https://tibia.fandom.com/index.php?title=',
+        path2 = '&action=raw';
         bestiary_clear_ui();
         $.ajax({
             async: true,
