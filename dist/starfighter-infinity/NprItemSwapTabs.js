@@ -1,3 +1,4 @@
+lastUpdatedRaceList = {};
 function showItemSwapTab(tabName) {
     $('.nprItemSwapTabContent').hide();
     $('.nprItemSwapTabLink').removeClass('active');
@@ -9,6 +10,10 @@ function showItemSwapRaceTable(raceClassName) {
     tabName = 'nprItemSwap' + raceClassName + 'Castor';
     showItemSwapTab(tabName);
     $('.nprItemSwap' + raceClassName).css('display', 'inline-block');
+    
+    if (lastUpdatedRaceList[raceClassName]) {
+        $('.nprItemSwapLastUpdated').html(lastUpdatedRaceList[raceClassName]);
+    }
 }
 
 function loadSwapShopRaceTable(raceNameNormalized) {
@@ -19,10 +24,12 @@ function loadSwapShopRaceTable(raceNameNormalized) {
             method: "GET",
             url: "/wiki/SwapShop" + raceNameNormalized,
             success: function(data){
-                matches = data.match(/<div class="nprItemSwapTabbedDisplay nprItemSwap[^>]*>([\s\S]*?)<p>\d\d\d\d-\d\d-\d\d/);
+                var matches = data.match(/<div class="nprItemSwapTabbedDisplay nprItemSwap[^>]*>([\s\S]*?)<p>(\d\d\d\d-\d\d-\d\d.*?)\s*<\/p>/m);
                 if (matches) {
                     $('.nprItemSwap' + raceNameNormalized).data('status', 'loaded');
                     $('.nprItemSwap' + raceNameNormalized).html(matches[1]);
+                    $('.nprItemSwapLastUpdated').html(matches[2]);
+                    lastUpdatedRaceList[raceNameNormalized] = matches[2];
                     $(".nprItemSwapTabLink").click(function(){
                         tabName = $(this).attr('id').substring(0, $(this).attr('id').length - 3);
                         showItemSwapTab(tabName);
@@ -37,6 +44,7 @@ function loadSwapShopRaceTable(raceNameNormalized) {
 }
 
 $( document ).ready(function() {
+	lastUpdatedRaceList["Andromedan"] = $(".nprItemSwapLastUpdated").text();
 	$(".nprItemSwapTabLink").click(function(){
         tabName = $(this).attr('id').substring(0, $(this).attr('id').length - 3);
 		showItemSwapTab(tabName);

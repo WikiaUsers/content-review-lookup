@@ -12,9 +12,11 @@
     
     if (Array.isArray(window.DiscussionTemplates.allowedGroups)) {
         var allowedGroups = new Set(window.DiscussionTemplates.allowedGroups);
-        mw.config.get('wgUserGroups').some(function (userGroup) {
+        if (!mw.config.get('wgUserGroups').some(function (userGroup) {
             return allowedGroups.has(userGroup);
-        });
+        })) {
+            return;
+        }
     }
     
     window.DiscussionTemplates.loaded = true;

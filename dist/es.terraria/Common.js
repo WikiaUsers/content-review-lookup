@@ -51,3 +51,10 @@ window.UserTagsJS = {
         bot:             { u: 'Bot', link: 'project:Administración' },
     }
 };
+
+mw.hook( 'dev.wds' ).add( function( wds ) {
+    $( '.upperbox' ).append( wds.icon( 'close-small', { class: 'upperbox-close' } ) );
+	$( '.upperbox-close' ).click( function() {
+        $( this ).parent().remove()
+    } )
+} );

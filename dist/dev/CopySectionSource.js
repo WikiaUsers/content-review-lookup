@@ -7,12 +7,12 @@
  * @status beta
 **/
 
-$(function copySectionSource() {
-    "use strict";
+;(function($) {
+    'use strict';
     if (window.copySectionSourceLoaded) return;
     window.copySectionSourceLoaded = true;
-
-    var $sectionLinks = $(
+	var msg,
+    	$sectionLinks = $(
     	'.mw-parser-output .mw-editsection a[href*="action=edit"]:last-of-type'
     	);
 
@@ -30,25 +30,37 @@ $(function copySectionSource() {
             ghost.select();
             ghost.setSelectionRange(0, 99999); // For mobile devices
 
-            document.execCommand("copy");
+            document.execCommand('copy');
 
             $ghost.remove();
         });
 
     }
 
-    $sectionLinks.each(function() {
-        var source = this.href.replace(/(ve)?action=edit(source)?/, 'action=raw');
-    
-        $(this).after(' ',
-            $('<a>')
-	            .attr({
-					href: source,
-	                target: '_BLANK',
-	                title: 'Copy section source'
-	            })
-	            .text('copy source')
-	            .click(copy)
-        );
-    });
-});
+	function init() {
+	    $sectionLinks.each(function() {
+	        var source = this.href.replace(/(ve)?action=edit(source)?/, 'action=raw');
+	    
+	        $(this).after(' ',
+	            $('<a>')
+		            .attr({
+						href: source,
+		                target: '_BLANK',
+		                title: msg('copy-source-tooltip').plain()
+		            })
+		            .text(msg('copy-source-link').plain())
+		            .click(copy)
+	        );
+	    });
+	}
+    mw.hook('dev.i18n').add(function (i18n) {
+		i18n.loadMessages('CopySectionSource').done(function (i18no) {
+			msg = i18no.msg;
+			init();
+		});
+	});
+	importArticles({
+		type: 'script',
+		articles: 'u:dev:MediaWiki:I18n-js/code.js'
+	});
+})(window.jQuery);

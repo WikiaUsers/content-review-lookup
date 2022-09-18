@@ -19,6 +19,9 @@ UserTagsJS.modules.custom = {
 	'LavaShark.Wiki.Persona': ['ad', 'code', 'contentmoderator'] 
 };
 
+// Chrome toolbar //
+window.ChromeToolbarColor = '#262626';
+
 //Spolier blur configuration//
 window.SpoilerAlertJS = {
     question: 'This area contains classified information any none classified personel who wishes to continue will be hunted.',

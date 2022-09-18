@@ -285,7 +285,7 @@
 			{ name: 'Iron Bars', mcName: 'Iron Bars (texture)' },
 			{ name: 'Iron Trapdoor' },
 			{ name: 'Hopper', mcName: 'Hopper (item)' },
-			{ name: 'Anvil' },
+			{ name: 'Anvil', enchName: 'Enchanted Anvil' },
 			{ name: 'Flint and Steel' },
 			{ name: 'Shears' },
 			{ name: 'Cauldron (item)' }
@@ -434,22 +434,22 @@
 			{ name: 'Red Stained Glass' },
 			{ name: 'Black Stained Glass' },
 			{ name: 'Glass Pane', mcName: 'Glass (texture)' },
-			{ name: 'White Stained Glass Pane', mcName: 'White Stained Glass (texture)' },
-			{ name: 'Orange Stained Glass Pane', mcName: 'Orange Stained Glass (texture)' },
-			{ name: 'Magenta Stained Glass Pane', mcName: 'Magenta Stained Glass (texture)' },
-			{ name: 'Light Blue Stained Glass Pane', mcName: 'Light Blue Stained Glass (texture)' },
-			{ name: 'Yellow Stained Glass Pane', mcName: 'Yellow Stained Glass (texture)' },
-			{ name: 'Lime Stained Glass Pane', mcName: 'Lime Stained Glass (texture)' },
-			{ name: 'Pink Stained Glass Pane', mcName: 'Pink Stained Glass (texture)' },
-			{ name: 'Gray Stained Glass Pane', mcName: 'Gray Stained Glass (texture)' },
-			{ name: 'Light Gray Stained Glass Pane', mcName: 'Light Gray Stained Glass (texture)' },
-			{ name: 'Cyan Stained Glass Pane', mcName: 'Cyan Stained Glass (texture)' },
-			{ name: 'Purple Stained Glass Pane', mcName: 'Purple Stained Glass (texture)' },
-			{ name: 'Blue Stained Glass Pane', mcName: 'Blue Stained Glass (texture)' },
-			{ name: 'Brown Stained Glass Pane', mcName: 'Brown Stained Glass (texture)' },
-			{ name: 'Green Stained Glass Pane', mcName: 'Green Stained Glass (texture)' },
-			{ name: 'Red Stained Glass Pane', mcName: 'Red Stained Glass (texture)' },
-			{ name: 'Black Stained Glass Pane', mcName: 'Black Stained Glass (texture)' }
+			{ name: 'White Stained Glass Pane', mcName: 'White Stained Glass (texture)', imageId: 'Blank:0' },
+			{ name: 'Orange Stained Glass Pane', mcName: 'Orange Stained Glass (texture)', imageId: 'Blank:1' },
+			{ name: 'Magenta Stained Glass Pane', mcName: 'Magenta Stained Glass (texture)', imageId: 'Blank:2' },
+			{ name: 'Light Blue Stained Glass Pane', mcName: 'Light Blue Stained Glass (texture)', imageId: 'Blank:3' },
+			{ name: 'Yellow Stained Glass Pane', mcName: 'Yellow Stained Glass (texture)', imageId: 'Blank:4' },
+			{ name: 'Lime Stained Glass Pane', mcName: 'Lime Stained Glass (texture)', imageId: 'Blank:5' },
+			{ name: 'Pink Stained Glass Pane', mcName: 'Pink Stained Glass (texture)', imageId: 'Blank:6' },
+			{ name: 'Gray Stained Glass Pane', mcName: 'Gray Stained Glass (texture)', imageId: 'Blank:7' },
+			{ name: 'Light Gray Stained Glass Pane', mcName: 'Light Gray Stained Glass (texture)', imageId: 'Blank:8' },
+			{ name: 'Cyan Stained Glass Pane', mcName: 'Cyan Stained Glass (texture)', imageId: 'Blank:9' },
+			{ name: 'Purple Stained Glass Pane', mcName: 'Purple Stained Glass (texture)', imageId: 'Blank:10' },
+			{ name: 'Blue Stained Glass Pane', mcName: 'Blue Stained Glass (texture)', imageId: 'Blank:11' },
+			{ name: 'Brown Stained Glass Pane', mcName: 'Brown Stained Glass (texture)', imageId: 'Blank:12' },
+			{ name: 'Green Stained Glass Pane', mcName: 'Green Stained Glass (texture)', imageId: 'Blank:13' },
+			{ name: 'Red Stained Glass Pane', mcName: 'Red Stained Glass (texture)', imageId: 'Blank:14' },
+			{ name: 'Black Stained Glass Pane', mcName: 'Black Stained Glass (texture)', imageId: 'Blank:15' }
 		],
 		'Wool and Carpets': [
 			{ name: 'White Wool' }, //
@@ -655,7 +655,9 @@
 
 				if (file.ench) enchantedNames.push(`${file.mcName}.${file.sbExt ?? 'png'}`);
 
-				cssEntries.push(`img[data-image-name="${file.name}.${file.sbExt ?? 'png'}"]${extraEnchRule} { content: url('${mcUrl}') }`); //img[alt="${file.name}"], img[alt="${file.name}.png"],
+				cssEntries.push(`img[data-image-name="${file.name}.${file.sbExt ?? 'png'}"]${extraEnchRule} { content: url('${mcUrl}') }`);
+
+				if (file.imageId) cssEntries.push(`.invslot span[data-iid="${file.imageId}"] { background-image: url('${mcUrl}') }`); //img[alt="${file.name}"], img[alt="${file.name}.png"],
 			} else missing.push(key);
 
 			const sbKey = `File:${file.name}.${file.sbExt ?? 'png'}`;

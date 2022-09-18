@@ -29,9 +29,6 @@ if ( !mw.config.get( 'wgUserId' ) ) {
 // Category class
 $ ( function ( ) { mw.config.get ( 'wgCategories' ).forEach ( function ( el, id ) { $ ( 'body' ).addClass ( 'cat-' + el.replace(/ /g, '-') ) } ); } );
 
-// File description
-$('textarea[name=wpUploadDescription]').val('{{Informacje\r\n| Opis      = \r\n| Autor     = \r\n| Źródło    = \r\n}}\r\n');
-
 // Template:Top like on Wookieepedia (source: https://starwars.fandom.com/wiki/MediaWiki:Common.css)
 $( function eraIconsOasis() {
     if ( $( '#kanonicznie' ).length ) {

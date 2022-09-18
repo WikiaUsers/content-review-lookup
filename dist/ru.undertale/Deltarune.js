@@ -1,151 +1,19 @@
-!function( $, mw ) {
-    //var p = mw.config.get( 'wgTitle' ), a;
-    var data = mw.config.get(['wgNamespaceNumber','wgTitle']);
-    var ns = data["wgNamespaceNumber"];
-    if(ns != 0 && ns != 14)
+mw.loader.using('mediawiki.util').then(function() {
+	var data = mw.config.get(['wgNamespaceNumber','wgTitle']);
+	var ns = data["wgNamespaceNumber"];
+	if(ns != 0 && ns != 14)
         return;
-    var p = data["wgTitle"];
-    var a = [
-'??????',
-'A Town Called Hometown',
-'ANOTHER HIM',
-'April 2012',
-'Basement',
-'Before the Story',
-'Beginning',
-'Card Сastle',
-'Chaos King',
-'Checker Dance',
-'Cliffs',
-'Darkness Falls',
-'Deltarune',
-'Deltarune Chapter One OST',
-'DELTARUNE Save Editor',
-'Don\'t Forget',
-'Empty Town',
-'Fanfare',
-'Field of Hopes and Dreams',
-'Friendship',
-'Gallery',
-'Hip Shop',
-'I\'m Very Bad',
-'Imminent Death',
-'Lancer',
-'Lantern',
-'NPC Великой доски',
-'NPC Карточного замка',
-'NPC Леса',
-'NPC Поля',
-'NPC Родного города',
-'Quiet Autumn',
-'Rouxls Kaard',
-'Rude Buster',
-'Scarlet Forest',
-'School',
-'Susie',
-'The Chase',
-'The Circus',
-'The Door',
-'THE HOLY',
-'The Legend',
-'THE WORLD REVOLVING',
-'Thrash Machine',
-'Vs. Lancer',
-'Vs. Susie',
-'Weird Birds',
-'You Can Always Come Home',
-'Your Power',
-'Белая лента',
-'Блоксёр',
-'Браслет из костей',
-'Букет',
-'Великая доска',
-'Возрождающая Мята',
-'Вращающийся торт',
-'Гигасалат',
-'Главная Хати',
-'Город-замок',
-'Горячий шоколад',
-'Даркбургер',
-'Двери коротких путей',
-'Дверной ключ',
-'Деревянный клинок',
-'Джевил',
-'Джевил/В бою',
-'Джигсори',
-'Железные наручники',
-'Жуткий меч',
-'Изящный шарф',
-'Карандаш',
-'Карточный замок',
-'Кловер',
-'Король',
-'Король/В бою',
-'Красный шарф',
-'Крис',
-'Лансер',
-'Лес',
-'Лоскутный кинжал',
-'Любимый сандвич',
-'Малиус',
-'Мышиный знак',
-'Нож дьявола',
-'Оружие для всех',
-'Очки напряжения',
-'Печенье Лансера',
-'Поле',
-'Понмэн',
-'Пророчество',
-'Протектор запястья',
-'Ральзей',
-'Режим разработчика (Deltarune)',
-'Родной город',
-'Розовая лента',
-'Роса жизни',
-'Рудинн',
-'Рудинн-рейнджер',
-'Руководство',
-'Рукслс Каард',
-'РукслсРукс',
-'Рэббик',
-'Светлые',
-'Светящийся осколок',
-'Сим',
-'Сломанный торт',
-'Сьюзи',
-'Тёмная конфета',
-'Тёмные',
-'Тёмный мир',
-'Топ-торт',
-'Топор с гривой',
-'Топор смелости',
-'Тренировочный манекен',
-'Трефовый сандвич',
-'Трилистник',
-'Файлы игры (Deltarune)',
-'Характеристики (Deltarune)',
-'Хати',
-'Хвост Джевила',
-'Ч. Раунд',
-'Червовый пончик',
-'Шарик из мусора',
-'Шоколадная бубна',
-'Яйцо',
-'Янтарная карта',
-'Враги Deltarune',
-'Вырезанный контент Deltarune',
-'Локации Deltarune',
-'Музыка Deltarune',
-'Персонажи Deltarune',
-'Предметы Deltarune',
-'Продавцы Deltarune',
-'Сюжетные механики Deltarune'
-    ];
- 
-    if ( a.indexOf( p ) !== -1 ) {
-        importArticle({
-            type: 'style',
-            article: 'MediaWiki:Deltarune.css'
-        });
-    }
-}( jQuery, mediaWiki );
+
+	if (mw.config.get("wgCanonicalNamespace") == "") {
+	    var BGcategories = mw.config.get("wgCategories");
+	        for (var ct = 0; ct < BGcategories.length; ct++) {
+	        if (BGcategories[ct] == "Deltarune") {
+			    importArticle({
+			        type: 'style',
+			        article: 'MediaWiki:Deltarune.css'
+			    });
+	            break;
+	        }
+		}
+	}
+});

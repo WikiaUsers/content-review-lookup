@@ -194,6 +194,8 @@ if (!nkch.tt.isActive) {
 
                                 mw.config.set("isDarkTheme", true);
                             }
+
+                            applyVariablesButton.removeAttribute("disabled");
                             
                             modules.push("ext.fandom.GlobalComponents.GlobalNavigationTheme." + theme + ".css", "ext.fandom.GlobalComponents.GlobalComponentsTheme.nav-" + theme + ".css", "ext.fandom.GlobalComponents.GlobalComponentsTheme." + theme + ".css", "skin.fandommobile.fandom." + theme + ".css");
                             break;
@@ -289,6 +291,40 @@ if (!nkch.tt.isActive) {
                     }
                 }
 
+                const applyVariablesButton = document.createElement("button");
+                applyVariablesButton.classList.add("wds-button", "wds-is-secondary");
+                applyVariablesButton.innerText = "🖌️";
+
+                applyVariablesButton.setAttribute("type", "button");
+
+                Object.assign(applyVariablesButton.style, {
+                    display: "block",
+                    margin: "9px auto"
+                });
+
+                applyVariablesButton.addEventListener("click", function() {
+                    if (!applyVariablesButton.hasAttribute("disabled"))
+                    {
+                        document.body.classList.remove("fandommobile-fandom-theme");
+                    
+                        var hrefValue = mw.config.get("wgScriptPath") + "/wikia.php?controller=ThemeApi&method=themeVariables&variant=" + (document.body.classList.contains("theme-fandommobile-dark") ? "dark" : "light"),
+                            themeVariables = document.querySelector(".nkch-theme-variables");
+                    
+                        if (themeVariables != null) themeVariables.href = hrefValue;
+                        else {
+                            var theme = document.createElement("link");
+                            theme.classList.add("nkch-theme-variables");
+                    
+                            theme.href = hrefValue;
+                            theme.setAttribute("rel", "stylesheet");
+                    
+                            document.head.append(theme);
+                        }
+                    }
+
+                    applyVariablesButton.setAttribute("disabled", true);
+                }, false);
+
                 
                 switch (mw.config.get("skin")) {
                     case "fandomdesktop":
@@ -298,6 +334,7 @@ if (!nkch.tt.isActive) {
                         break;
                     case "fandommobile":
                         $(".mobile-community-bar__navigation .mobile-community-bar__level-1").after($togglerElement);
+                        $togglerElement.after($(applyVariablesButton));
                         break;
                 }
         });

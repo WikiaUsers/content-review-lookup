@@ -148,6 +148,9 @@ $(document).ready(function() {
 		then an exception needs to be outlined here. 
 		*/
 		
+		//Play the "click" sound
+		new Audio(location + 'e/e6/Button_Click.ogg').play();
+				
 		if (Mode !== 'Downed') {
 			if ($(Wardrobe).find('.Models > div.active > div.active').attr('data-sfx')) {
 				sfx = new Audio(location + $(Wardrobe).find('.Models > div.active > div.active').attr('data-sfx'));
@@ -191,8 +194,6 @@ $(document).ready(function() {
 			//Play the sfx on click
 			if (!$(this).hasClass('played')) {
 				sfx.play();
-				//Play the "click" sound
-				new Audio(location + 'e/e6/Button_Click.ogg').play();
 			}
 		}
 		//Stop any existing skin sfx when another one is played

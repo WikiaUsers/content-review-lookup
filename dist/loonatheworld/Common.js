@@ -88,3 +88,19 @@ function piColor() {
 }
 /* Update for color editor like DevTools (works only for title) */
 setInterval(piColor, 200);
+
+/* Change the wordmark by wiki theme */
+function updateWordmarkByTheme() {
+	var current = document.querySelector('.fandom-community-header__image img').getAttribute('src');
+	var light = document.body.classList.contains('theme-fandomdesktop-light');
+	var dark = document.body.classList.contains('theme-fandomdesktop-dark');
+	var theme = light ? 'light' : dark ? 'dark' : '';
+	let checkCurrent = current.endsWith(theme, current.length - 4);
+	if ( theme == 'light' && !checkCurrent) {
+		$( '.fandom-community-header__image img' ).attr( 'src', 'https://static.wikia.nocookie.net/loonatheworld/images/d/dd/Wiki-wordmark-light.png' );
+	} else if ( theme == 'dark' && !checkCurrent ) {
+		$( '.fandom-community-header__image img' ).attr( 'src', 'https://static.wikia.nocookie.net/loonatheworld/images/1/12/Wiki-wordmark-dark.png' );
+	}
+}
+/* Update for wordmark */
+setInterval(updateWordmarkByTheme, 200);

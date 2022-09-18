@@ -11,7 +11,15 @@ preloadTemplates_subpage = "case-by-case";
 
 ((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;
 
-// 3. Custom Tooltip CSS removal
+// Discord config options
+
+window.DiscordBannerSettings = {
+    bannerStyle: '2',
+    inviteLink: 'adGyDwNGyK',
+    prependToRail: false
+};
+
+// Custom Tooltip CSS removal
 
 window.tooltips_config = {
     noCSS: true,

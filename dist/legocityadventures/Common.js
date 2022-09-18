@@ -63,3 +63,8 @@ window.SpoilerAlertJS = {
     no: 'Nope',
     fadeDelay: 500
 };
+
+/*Lock Old Comments*/
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 60;
+window.lockOldComments.addNoteAbove = true;

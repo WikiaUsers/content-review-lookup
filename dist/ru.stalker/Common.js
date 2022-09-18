@@ -1,6 +1,14 @@
 // Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
 // <nowiki>
 
+/* Импорты */
+importArticles({
+	type: "script",
+	articles: [
+		"u:nkch:MediaWiki:nkchSlider.js"
+	]
+});
+
 /* Переменные */
 window.InactiveUsers = {text: 'Неактивен'};
 

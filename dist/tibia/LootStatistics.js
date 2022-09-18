@@ -163,6 +163,7 @@
     'The Sandking': {'Heart of the Mountain': 'Heart of the Mountain (Item)'},
     'The Scourge of Oblivion': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'The Time Guardian': {'Part of a Rune': 'Part of a Rune (Three)'},
+    'The Unarmored Voidborn': {'Heart of the Mountain': 'Heart of the Mountain (Item)'},
     'The Unwelcome': {'Amber': 'Amber (Item)', 'Amber With A Bug': 'Amber With a Bug'},
     'Two-Headed Turtle': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Unexpected': {'Candy Floss': 'Candy Floss (Large)', 'Ice Cream Cone': 'Ice Cream Cone (Sprinkles)'},

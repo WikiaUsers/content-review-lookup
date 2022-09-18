@@ -3,6 +3,7 @@ $( function () {
 	// Note: mainModule must contain a `local PREFIX = prefixname_01_`
 	var supportedCaches = {
 		slot_aliases: { type:"simple", dataModule:"Inventory_slot/Aliases", mainModule:"Cache", prefixVar:"SLOT_ALIASES_PREFIX" },
+		item_variants: { type:"simple", dataModule:"Item/Variants", mainModule:"Cache", prefixVar:'ITEM_VARIANTS_PREFIX' },
 		item_api_data: { type:"simple", dataModule:"Item/ApiData/AsCacheTable", mainModule:"Cache", prefixVar:'ITEM_API_DATA_PREFIX' },
 		item_api_aliases: { type:"simple", dataModule:"Item/ApiAliases", mainModule:"Cache", prefixVar:'ITEM_API_ALIASES_PREFIX' },
 		crafting_aliases: { type:"simple", dataModule:"Crafting/Aliases", mainModule:"Cache", prefixVar:'CRAFTING_ALIASES_PREFIX' },

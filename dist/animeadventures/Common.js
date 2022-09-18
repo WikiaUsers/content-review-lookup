@@ -4,10 +4,3 @@ window.tooltips_config = {
     offsetY: 0,
 	noCSS: true,
 }
-
-
-window.tooltips_list = {
-    classname: 'tooltipGetStats',
-    parse: '{{#invoke:UnitData|name|<#name#>}}',
-    delay: 140,
-}

@@ -2,7 +2,7 @@
 $("#artifacts-table").prepend('<fieldset><legend>Параметры фильтра таблицы:</legend><p style="margin-bottom: 0.5em;">Нижеследующие таблицы можно отфильтровать. Несколько фильтров могут быть применены сразу, выбрав несколько параметров.</p><div class="table-filters-hide-option" id="table-filters"><select class="stats"><option>Выбрать...</option></select><select class="stats"><option>Выбрать...</option></select><select class="stats"><option>Выбрать...</option></select><select class="stats"><option>Выбрать...</option></select></div></fieldset>');
 
 $("#equipment-table").wrap($('<div id="fieldset-equipment-table" />"'));
-$("#fieldset-equipment-table").prepend('<fieldset id="settings"><legend>Параметры:</legend><table><tbody><tr><td><span>Предмет:</span></td><td><input type="text" name="search" placeholder="Поиск предмета по имени"></div></td></tr><tr><td><span>Ячейка/Категория:</span></td><td><select class="category"><option>Все</option></select></td></tr><tr><td><span>Качество:</span></td><td><select class="quality"><option>Любое качество</option></select></td></tr><tr><td><span>Класс:</span></td><td><select class="role"></select></td></tr><tr><td><span>Минимальный уровень:</span></td><td><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></td></tr><tr><td><span>Уровень предмета:</span></td><td><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></td></tr></tbody></table><div style="float: right;"><span>Параметры (можно выбрать макс. три параметра): </span><div class="stats"></div></div></fieldset>');
+$("#fieldset-equipment-table").prepend('<fieldset id="settings"><legend>Параметры:</legend><table><tbody><tr><td><span>Предмет:</span></td><td><input type="text" name="search" placeholder="Поиск предмета по имени"></div></td></tr><tr><td><span>Ячейка/Категория:</span></td><td><select class="category"><option>Все</option></select></td></tr><tr><td><span>Качество:</span></td><td><select class="quality"><option>Любое качество</option></select></td></tr><tr><td><span>На себе:</span></td><td><select class="equip"><option>Все</option></select></td></tr><tr><td><span>Класс:</span></td><td><select class="role"></select></td></tr><tr><td><span>Минимальный уровень:</span></td><td><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></td></tr><tr><td><span>Уровень предмета:</span></td><td><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></td></tr></tbody></table><div style="float: right;"><span>Параметры (можно выбрать макс. три параметра): </span><div class="stats"></div></div></fieldset>');
 
 // merges a repeating cell in a table
 /*$(function() {
@@ -226,39 +226,50 @@ $(function() {
 $(function() {
     var $tbody = $("#equipment-table").children("tbody");
     var $trs = $("tr", $tbody).toArray();
+    var colCount = $("#equipment-table > thead > tr > th").length;
     var temp = {
-	    "stats": new Set(),
-	    "category": ["Голова", "Доспехи", "Руки", "Ноги", "Рубаха", "Пояс", "Штаны", "Шея", "Кольцо", "Правая руки", "Левая рука", "Только для спутников"],
+        "equip": new Set(),     
+        "stats": new Set(),
+        "category": ["Голова", "Доспехи", "Руки", "Ноги", "Рубаха", "Пояс", "Штаны", "Шея", "Кольцо", "Правая руки", "Левая рука", "Только для спутников"],
         "role": ["Любой класс", "Клирик", "Варвар", "Чернокнижник", "Плут", "Воин", "Бард", "Паладин", "Следопыт", "Волшебник"],
-	};
-	
+    };
+    
     $.each($trs, function() {
+        if (typeof $(this).data('equip') != 'undefined'){
+            $equip = $(this).data('equip');
+            temp.equip.add($equip);
+        }
         if (typeof $(this).data('stats') != 'undefined'){
             $stats = $(this).data('stats');
             $stats = $stats.split(",");
             $.each($stats, function(index, value) { temp.stats.add(value.trim()); });
         }
-	});
-	
-	// Adds item parameters
-	temp.stats.forEach(function (item) {
-	    item = "<label class=\"checkbox\" value='" + item + "'><input type='checkbox' name='" + item + "'>" + item + "</label>";
-	    $("#settings .stats").append(item);
-	});
-	
+    });
+    
+    // Adds equip bonus
+    Array.from(temp.equip).sort().forEach(function (item) {
+        item = '<option value="' + item + '">' + item + '</option>'
+        $("#settings .equip").append(item);
+    });
+    // Adds item parameters
+    temp.stats.forEach(function (item) {
+        item = "<label class=\"checkbox\" value='" + item + "'><input type='checkbox' name='" + item + "'>" + item + "</label>";
+        $("#settings .stats").append(item);
+    });
+    
     // Adds item role
-	temp.role.forEach(function (item) {
+    temp.role.forEach(function (item) {
         item = '<option value="' + item + '">' + item + '</option>';
-	    $("#settings .role").append(item);
-	});
+        $("#settings .role").append(item);
+    });
 
-	// Adds item categories to the dropdown list
+    // Adds item categories to the dropdown list
     temp.category.forEach(function (item) {
         item = '<option value="' + item + '">' + item + '</option>';
         $("#settings .category").append(item);
     });
 
-    item = '<option value="Обычный">Обычный</option><option value="Необычный">Необычный</option><option value="Редкий">Редкий</option><option value="Эпический">Эпический</option><option value="Легендарный">Легендарный</option><option value="Мифический">Мифический</option>';
+    item = '<option value="Обычный">Обычный</option><option value="Необычный">Необычный</option><option value="Редкий">Редкий</option><option value="Эпический">Эпический</option><optionvalue="Легендарный">Легендарный</option><option value="Мифический">Мифический</option>';
     $("#settings .quality").append(item);
 
     //Limit on the number of selected parameters
@@ -270,38 +281,51 @@ $(function() {
         }
     });
 
-	// Main search script
-	$('#settings').on('input', function() {
+    // Main search script
+    $('#settings').on('input', function() {
         // Search by parameters
         var pattern = [], trs = $("[data-stats]", $tbody), el;
         $("#settings .stats :checked").each(function(i, checked) {
             el = $(checked);
             pattern.push(checked.name);
-        });
+        })
         var rows = trs.hide().filter(function(i, tr) {
             var data = $(tr).data("stats").split(",");
             var arr = pattern.slice(0);
             data.forEach(function(a) {
                 var i = arr.indexOf(a.trim());
                 if(i != -1) arr.splice(i,1);
-            });
+            })
 
             return arr.every(function(txt, k) {
-                return txt == "";
-            });
+                return txt == ""
+            })
 
         }).show();
 
         // Outputs the string "Items not found" if the results are "0".
         if (rows.length === 0) {$tbody.append("<tr><td colspan=" + colCount + ">Предметы не найдены</td></tr>");}
 
-	    $.each($trs, function(index, tr) {
+        $.each($trs, function(index, tr) {
             //ECMAScript 6
             //let {subject, level, category, quality, role, stats} = $(tr).data();
             
-            var $level = $(tr).data('level');
+            var $subject = $(tr).data('subject'), $quality = $(tr).data('quality'), $level = $(tr).data('level');
             
-	        // Search by class
+            // Search by equip
+            if (typeof $(this).data('equip') != 'undefined'){
+                $equip = $(this).data('equip');
+                $equip = $equip.toLowerCase().split(",");
+                var $txt = $("#settings .equip").val().toLowerCase();
+                $equip = $equip.some(function (e) {
+                    return e.trim() == $txt;
+                });
+                if ($txt !== "все" && !$equip) {
+                    $(tr).hide();
+                    return;
+                }
+            }
+            // Search by class
             if (typeof $(this).data('role') != 'undefined'){
                 $role = $(this).data('role');
                 $role = $role.toLowerCase().split(",");
@@ -315,7 +339,7 @@ $(function() {
                 }
             }
 
-	        // Search by category
+            // Search by category
             if (typeof $(this).data('category') != 'undefined'){
                 $category = $(this).data('category');
                 $category = $category.toLowerCase().split(",");
@@ -329,47 +353,43 @@ $(function() {
                 }
             }
 
-	        // Search by quality
-			if (typeof $(this).data('quality') != 'undefined'){
-	            var $txt = $("#settings .quality").val().toLowerCase();
-	            if ($txt !== "любое качество" && $txt !== $quality.toLowerCase()) {
-	                $(tr).hide();
-	                return;
-	            }
-			}
-	        // Search by name
-	        if (typeof $(this).data('subject') != 'undefined'){
-		        $subject = $(tr).data('subject')
-		        var $search = $("[name='search']").val().toLowerCase();
-		        if ($search && $subject.toLowerCase().indexOf($search)) {
-		            $(tr).hide();
-		            return;
-		        }
-	        }
-	
-	        // Search by minimum level
-	        var $min = $("[name='min']").val();
-	        if ($min && $level < +$min) {
-	            $(tr).hide();
-	            return;
-	        }
-	        
-	        // Search by max level
-	        var $max =$("[name='max']").val();
-	        if ($max && $level > +$max) {
-	            $(tr).hide();
-	            return;
-	        }
-	    });
+            // Search by quality
+            if (typeof $(this).data('quality') != 'undefined'){
+                var $txt = $("#settings .quality").val().toLowerCase();
+                if ($txt !== "любое качество" && $txt !== $quality.toLowerCase()) {
+                    $(tr).hide();
+                    return;
+                }
+            }
+            // Search by name
+            var $search = $("[name='search']").val().toLowerCase();
+            if ($search && $subject.toLowerCase().indexOf($search)) {
+                $(tr).hide();
+                return;
+            }
+    
+            // Search by minimum level
+            var $min = $("[name='min']").val();
+            if ($min && $level < +$min) {
+                $(tr).hide();
+                return;
+            }
+            
+            // Search by max level
+            var $max =$("[name='max']").val();
+            if ($max && $level > +$max) {
+                $(tr).hide();
+                return;
+            }
+        });
 
-	    // Outputs the string "Items not found" if the results are "0".
-		//ECMAScript 6
-		//if ($tbody.children().length === 0) {$tbody.append(`<tr><td colspan="${colCount}" style="text-align: center;">Предметы не найдены</td></tr>`);}
-		var colCount = $("#equipment-table > thead > tr > th").length;
-		if ($("#equipment-table > tbody > tr:visible").length === 0) {
-			$tbody.append('<tr id="last"><td colspan=\"' + colCount + '\" style="text-align: center;">Предметы не найдены</td></tr>');
-		}else{
-			$("#equipment-table > tbody > tr#last").remove();
-		}
-	});
+
+        // Outputs the string "Items not found" if the results are "0".
+        //ECMAScript 6
+        //if ($tbody.children().length === 0) {$tbody.append(`<tr><td colspan="${colCount}" style="text-align: center;">Предметы не найдены</td></tr>`);}
+        if ($("#equipment-table > tbody > tr:visible").length === 0) {$tbody.append('<tr id="last"><td colspan=\"' + colCount + '\" style="text-align: center;">Предметы не найдены</td></tr>');
+
+    }else{$("#equipment-table > tbody > tr#last").remove(); }
+                
+    })
 });

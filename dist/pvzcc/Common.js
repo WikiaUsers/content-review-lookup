@@ -50,21 +50,21 @@ window.UserTagsJS = {
 };
 
 UserTagsJS.modules.custom = {
-    'BobertTheBoss': ['valen', 'foodfight', 'starrycontest', 'discmod'],
-    'PunjiChocoBerry': ['feastivus', 'winterworld', 'warpedcontest', 'discmod'],
+	'AbsoluteGei': ['discmod'],
     'AsterWasTaken': ['lawnofdoom', 'winterworld'],
-    'TheFrozenAngel': ['bonvoyage'],
-    'Reapeageddon': ['plantcontest'],
-    'DigoBlaze12': ['zombiecontest'],
-    'Shiverpeace': ['summernights'],
     'Baryonyx138': ['worldcontest'],
-    'DrAhxelYT12': ['worldcontest'],
+    'BobertTheBoss': ['valen', 'foodfight', 'starrycontest', 'discmod'],
     'Cryptic72': ['ticktock'],
-    "Nuttin' to see here": ['zombiecontest2'],
-    'CCogStudios': ['foodfight2'],
+    'DigoBlaze12': ['zombiecontest'],
+    'DrAhxelYT12': ['worldcontest'],
     'DsFanboy': ['discowner'],
-    'KyaOBeans': ['discmod'],
-    'TaigasTunes': ['discmod']
+    'Krayleb': ['foodfight2'],
+    'KyaOBeans': ['discowner'],
+    "Nuttin' to see here": ['zombiecontest2'],
+    'PunjiChocoBerry': ['feastivus', 'winterworld', 'warpedcontest', 'discmod'],
+    'Reapeageddon': ['plantcontest'],
+    'Shiverpeace': ['summernights'],
+    'TheFrozenAngel': ['bonvoyage'],
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'content-moderator', 'rollback', 'sysop', 'blocked', 'threadmoderator', 'chatmoderator'];
 UserTagsJS.modules.inactive = 30;

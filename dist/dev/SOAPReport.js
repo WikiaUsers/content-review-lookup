@@ -84,7 +84,7 @@
                                       config.wgPageName.split('/')[1]
                         }).toString(),
                         text: this.i18n.msg(
-                            'button' + k.charAt(0).toUpperCase() + k.substring(1)
+                            'button-' + k
                         ).plain()
                     });
                 }, this))

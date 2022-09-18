@@ -1,310 +1,263 @@
-if (typeof window.nkch === "undefined") {
-    const nkch = {};
-    window.nkch = nkch;
-};
+var nkch = window.nkch ? window.nkch : {};
+window.nkch = nkch;
 
-if (typeof nkch.sld === "undefined") nkch.sld = {};
+nkch.sld = nkch.sld ? nkch.sld : {};
 
 if (!nkch.sld.isActive) {
     nkch.sld.isActive = true;
+    
+    const sliderBases = document.querySelectorAll(".nkch-slider-base"),
+        sliders = [];
 
-    nkch.sld.el = {
-        base: {
-            $e: document.querySelectorAll(".nkch-slider-base"),
-            sliders: []
-        }
-    }
-
-    function addClasses(element) {
-        element.$classes.forEach(function (c) {
-            element.$e.classList.add(c);
+    if (sliderBases.length > 0) {
+        sliderBases.forEach(function(el, i) {
+            sliders[i] = generateSlider(el, i);
         });
+
+        importArticle({
+            type: "style",
+            article: "u:nkch:MediaWiki:nkchSlider.css"
+        });
+
+        sliders.forEach(function(el, i) {
+            sliderBases[i].after(el.slider);
+        })
     }
 
-    nkch.sld.el.base.$e.forEach(function (el, i) {
-        nkch.sld.el.base.sliders[i] = {
-            $e: document.createElement("div"),
-            $classes: ["nkch-slider"],
-            list: {
-                $e: document.createElement("div"),
-                $classes: ["nkch-slider__list"],
-                items: []
-            },
-            indicators: {
-                $e: document.createElement("div"),
-                $classes: ["nkch-slider__indicators"],
-                items: [],
-                current: {
-                    $e: document.createElement("div"),
-                    $classes: ["nkch-slider__indicator-current"],
-                    progress: {
-                        $e: document.createElement("div"),
-                        $classes: ["nkch-slider__indicator-current-progress"]
-                    }
-                }
-            },
-            arrows: {
-                left: {
-                    $e: document.createElement("button"),
-                    $classes: ["nkch-slider__arrow", "nkch-slider__arrow--left"],
-                    svg: {
-                        $e: document.createElementNS("http://www.w3.org/2000/svg", "svg"),
-                        $classes: ["wds-icon"],
-                        use: {
-                            $e: document.createElementNS("http://www.w3.org/2000/svg", "use")
-                        }
-                    }
-                },
-                right: {
-                    $e: document.createElement("button"),
-                    $classes: ["nkch-slider__arrow", "nkch-slider__arrow--right"],
-                    svg: {
-                        $e: document.createElementNS("http://www.w3.org/2000/svg", "svg"),
-                        $classes: ["wds-icon"],
-                        use: {
-                            $e: document.createElementNS("http://www.w3.org/2000/svg", "use")
-                        }
-                    }
-                }
-            },
-            slidesList: Array.from(nkch.sld.el.base.$e[i].querySelectorAll(".nkch-slider-base__image-list-item")),
+    /** @function
+     * @param {Element} data
+     * @param {number} i
+     * @returns {SliderData}
+     */
+    function generateSlider(data, i) {
+        const slider = document.createElement("div");
+        slider.classList.add("nkch-slider");
+
+        /** @type {SliderData} */
+        const result = {
+            slider: slider,
+            slideList: Array.from(sliderBases[i].querySelectorAll(".nkch-slider-base__image-list-item")),
+            lists: {},
             currentSlide: 0,
             timeout: 5000,
             isMouseOver: false,
             setInterval: function (timeout) {
-                nkch.sld.el.base.sliders[i].intervalId = setInterval(function () {
-                    nkch.sld.actions.nextSlide(nkch.sld.el.base.sliders[i]);
-                }, nkch.sld.el.base.sliders[i].timeout);
+                result.intervalId = setInterval(function() {
+                    actions.nextSlide(result);
+                }, timeout);
             }
+        };
+
+        const slider_list = document.createElement("div");
+        slider_list.classList.add("nkch-slider__list");
+
+        slider.append(slider_list);
+
+
+        result.lists.slides = [];
+        for (var a = 0; a < result.slideList.length; a++) {
+            var slideinList = result.slideList[a]
+            var src = slideinList.querySelector("img").dataset.src ? slideinList.querySelector("img").dataset.src : slideinList.querySelector("img").src;
+
+
+            var slider_slide = document.createElement("div");
+            slider_slide.classList.add("nkch-slider__list-item", "nkch-slider__list-item--" + a);
+            
+            slider_slide.style.backgroundImage = "url(" + src + ")";
+
+            slider_list.append(slider_slide);
+            result.lists.slides[a] = slider_slide;
+
+
+            var slider_slideBlur = document.createElement("div");
+            slider_slideBlur.classList.add("nkch-slider__list-blur", "nkch-slider__list-blur--" + a);
+
+            slider_slide.append(slider_slideBlur);
+
+
+            var slider_slideImage = document.createElement("div");
+            slider_slideImage.classList.add("nkch-slider__list-image", "nkch-slider__list-image--" + a);
+
+            slider_slide.append(slider_slideImage);
+
+
+            var slider_slideImageLink = document.createElement("a");
+            slider_slideImageLink.classList.add("nkch-slider__list-image-link", "nkch-slider__list-image-link--" + a);
+
+            var slideLink = slideinList.querySelector(".nkch-slider-base__image-list-item-link > a");
+            if (slideLink) slider_slideImageLink.href = slideLink.href;
+
+            slider_slideImage.append(slider_slideImageLink);
+
+
+            var slider_slideImageSrc = document.createElement("div");
+            slider_slideImageSrc.classList.add("nkch-slider__list-image-src", "nkch-slider__list-image-src--" + a);
+            
+            slider_slideImageSrc.style.backgroundImage = "url(" + src + ")";
+
+            slider_slideImageLink.append(slider_slideImageSrc);
+
+
+            var slider_slideData = document.createElement("div");
+            slider_slideData.classList.add("nkch-slider__list-image-data", "nkch-slider__list-image-data--" + a);
+
+            slider_slideImageLink.append(slider_slideData);
+
+
+            var slider_slideTitle = document.createElement("div");
+            slider_slideTitle.classList.add("nkch-slider__list-image-title", "nkch-slider__list-image-title--" + a);
+
+            var slideTitle = slideinList.querySelector(".nkch-slider-base__image-list-item-title");
+            if (slideTitle) slider_slideTitle.innerHTML = slideTitle.innerHTML;
+
+            slider_slideData.append(slider_slideTitle);
+
+
+            var slider_slideDescription = document.createElement("div");
+            slider_slideDescription.classList.add("nkch-slider__list-image-desc", "nkch-slider__list-image-desc--" + a);
+
+            var slideDescription = slideinList.querySelector(".nkch-slider-base__image-list-item-desc");
+            if (slideDescription) slider_slideDescription.innerHTML = slideDescription.innerHTML;
+
+            slider_slideData.append(slider_slideDescription);
         }
 
-        nkch.sld.el.base.sliders[i].progressAnim = nkch.sld.el.base.sliders[i].indicators.current.progress.$e.animate([{
+
+        const slider_indicators = document.createElement("div");
+        slider_indicators.classList.add("nkch-slider__indicators");
+
+        slider.append(slider_indicators);
+
+        
+        result.lists.indicators = [];
+        for (var a = 0; a < result.slideList.length + 1; a++) {
+            var slider_indicator = document.createElement("div");
+            slider_indicator.classList.add("nkch-slider__indicator", "nkch-slider__indicator--" + a);
+    
+            result.lists.indicators[a] = slider_indicator;
+            slider_indicators.append(slider_indicator);
+        }
+
+
+        const slider_indicatorCurrent = document.createElement("div");
+        slider_indicatorCurrent.classList.add("nkch-slider__indicator-current");
+
+        slider_indicators.append(slider_indicatorCurrent);
+
+
+        const slider_indicatorProgress = document.createElement("div");
+        slider_indicatorProgress.classList.add("nkch-slider__indicator-current-progress");
+
+        slider_indicatorCurrent.append(slider_indicatorProgress);
+
+        result.progressAnimation = slider_indicatorProgress.animate([{
             width: 0
         }, {
             width: "100%"
-        }], nkch.sld.el.base.sliders[i].timeout);
+        }], result.timeout);
 
-        /* ~ slider ~ */
-        addClasses(nkch.sld.el.base.sliders[i]);
+        result.setInterval(5000);
 
-        el.after(nkch.sld.el.base.sliders[i].$e);
-
-        /* ~ slider : list ~ */
-        addClasses(nkch.sld.el.base.sliders[i].list);
-
-        nkch.sld.el.base.sliders[i].$e.appendChild(nkch.sld.el.base.sliders[i].list.$e);
-
-        /* ~ slider : indicators ~ */
-        addClasses(nkch.sld.el.base.sliders[i].indicators);
-
-        nkch.sld.el.base.sliders[i].$e.appendChild(nkch.sld.el.base.sliders[i].indicators.$e);
-
-        /* ~ slider : indicators : indicator ~ */
-        for (var a = 0; a < nkch.sld.el.base.sliders[i].slidesList.length + 1; a++) {
-            nkch.sld.el.base.sliders[i].indicators.items[a] = {
-                $e: document.createElement("div"),
-                $classes: ["nkch-slider__indicator", "nkch-slider__indicator--" + a]
-            }
-
-            addClasses(nkch.sld.el.base.sliders[i].indicators.items[a]);
-
-            nkch.sld.el.base.sliders[i].indicators.$e.appendChild(nkch.sld.el.base.sliders[i].indicators.items[a].$e);
-        }
-
-        /* ~ slider : indicators : indicatorCurrent ~ */
-        addClasses(nkch.sld.el.base.sliders[i].indicators.current);
-
-        nkch.sld.el.base.sliders[i].indicators.$e.appendChild(nkch.sld.el.base.sliders[i].indicators.current.$e);
-
-        /* ~ slider : indicators : indicatorCurrent : progress ~ */
-        addClasses(nkch.sld.el.base.sliders[i].indicators.current.progress);
-
-        nkch.sld.el.base.sliders[i].indicators.current.$e.appendChild(nkch.sld.el.base.sliders[i].indicators.current.progress.$e);
-
-        /* ~ slider : arrows : left ~ */
-        addClasses(nkch.sld.el.base.sliders[i].arrows.left);
-
-        nkch.sld.el.base.sliders[i].arrows.left.$e.addEventListener("click", function () {
-            nkch.sld.actions.slideLeft(nkch.sld.el.base.sliders[i]);
+        result.slider.addEventListener("mouseenter", function (ev) {
+            clearTimeout(result.intervalId);
+            result.progressAnimation.cancel();
+            result.isMouseOver = true;
         });
 
-        addClasses(nkch.sld.el.base.sliders[i].arrows.left.svg);
-        nkch.sld.el.base.sliders[i].arrows.left.svg.$e.setAttributeNS(null, "viewbox", "0 0 24 24");
-
-        nkch.sld.el.base.sliders[i].arrows.left.svg.use.$e.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#wds-icons-menu-control");
-
-        nkch.sld.el.base.sliders[i].arrows.left.svg.$e.appendChild(nkch.sld.el.base.sliders[i].arrows.left.svg.use.$e);
-        nkch.sld.el.base.sliders[i].arrows.left.$e.appendChild(nkch.sld.el.base.sliders[i].arrows.left.svg.$e);
-
-        nkch.sld.el.base.sliders[i].$e.appendChild(nkch.sld.el.base.sliders[i].arrows.left.$e);
-
-        /* ~ slider : arrows : right ~ */
-        addClasses(nkch.sld.el.base.sliders[i].arrows.right);
-
-        nkch.sld.el.base.sliders[i].arrows.right.$e.addEventListener("click", function () {
-            nkch.sld.actions.slideRight(nkch.sld.el.base.sliders[i]);
+        result.slider.addEventListener("mouseleave", function (ev) {
+            result.setInterval(result.timeout);
+            result.progressAnimation.play();
+            result.isMouseOver = false;
         });
 
-        addClasses(nkch.sld.el.base.sliders[i].arrows.right.svg);
-        nkch.sld.el.base.sliders[i].arrows.right.svg.$e.setAttributeNS(null, "viewbox", "0 0 24 24");
 
-        nkch.sld.el.base.sliders[i].arrows.right.svg.use.$e.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#wds-icons-menu-control");
+        const slider_arrowLeft = document.createElement("button");
+        slider_arrowLeft.classList.add("nkch-slider__arrow", "nkch-slider__arrow--left");
 
-        nkch.sld.el.base.sliders[i].arrows.right.svg.$e.appendChild(nkch.sld.el.base.sliders[i].arrows.right.svg.use.$e);
-        nkch.sld.el.base.sliders[i].arrows.right.$e.appendChild(nkch.sld.el.base.sliders[i].arrows.right.svg.$e);
-
-        nkch.sld.el.base.sliders[i].$e.appendChild(nkch.sld.el.base.sliders[i].arrows.right.$e);
-
-        /* ~ creating slides ~ */
-        nkch.sld.el.base.sliders[i].slidesList.forEach(function (item, s) {
-            nkch.sld.el.base.sliders[i].list.items[s] = {
-                $e: document.createElement("div"),
-                $classes: ["nkch-slider__list-item", "nkch-slider__list-item--" + s],
-                blur: {
-                    $e: document.createElement("div"),
-                    $classes: ["nkch-slider__list-blur", "nkch-slider__list-blur--" + s]
-                },
-                image: {
-                    $e: document.createElement("div"),
-                    $classes: ["nkch-slider__list-image", "nkch-slider__list-image--" + s],
-                    link: {
-                        $e: document.createElement("a"),
-                        $classes: ["nkch-slider__list-image-link", "nkch-slider__list-image-link--" + s],
-                        src: {
-                            $e: document.createElement("div"),
-                            $classes: ["nkch-slider__list-image-src", "nkch-slider__list-image-src--" + s]
-                        },
-                        data: {
-                            $e: document.createElement("div"),
-                            $classes: ["nkch-slider__list-image-data", "nkch-slider__list-image-data--" + s],
-                            title: {
-                                $e: document.createElement("div"),
-                                $classes: ["nkch-slider__list-image-title", "nkch-slider__list-image-title--" + s],
-                            },
-                            desc: {
-                                $e: document.createElement("div"),
-                                $classes: ["nkch-slider__list-image-desc", "nkch-slider__list-image-desc--" + s],
-                            }
-                        }
-                    }
-                }
-            }
-
-            var src;
-            switch (typeof item.querySelector("img").dataset.src !== "undefined") {
-                case true:
-                    src = item.querySelector("img").dataset.src;
-                    break;
-                case false:
-                    src = item.querySelector("img").src;
-                    break;
-            }
-
-            /* ~ slide ~ */
-            addClasses(nkch.sld.el.base.sliders[i].list.items[s]);
-
-            nkch.sld.el.base.sliders[i].list.items[s].$e.style.backgroundImage = "url(" + src + ")";
-
-            nkch.sld.el.base.sliders[i].list.$e.appendChild(nkch.sld.el.base.sliders[i].list.items[s].$e);
-
-            /* ~ slide : blur ~ */
-            addClasses(nkch.sld.el.base.sliders[i].list.items[s].blur);
-
-            nkch.sld.el.base.sliders[i].list.items[s].$e.appendChild(nkch.sld.el.base.sliders[i].list.items[s].blur.$e);
-
-            /* ~ slide : image ~ */
-            addClasses(nkch.sld.el.base.sliders[i].list.items[s].image);
-
-            nkch.sld.el.base.sliders[i].list.items[s].$e.appendChild(nkch.sld.el.base.sliders[i].list.items[s].image.$e);
-
-            /* ~ slide : image : link ~ */
-            addClasses(nkch.sld.el.base.sliders[i].list.items[s].image.link);
-
-            var slideLink = nkch.sld.el.base.sliders[i].slidesList[s].querySelector(".nkch-slider-base__image-list-item-link > a");
-
-            if (slideLink != null) {
-                nkch.sld.el.base.sliders[i].list.items[s].image.link.$e.href = slideLink.href;
-            }
-
-            nkch.sld.el.base.sliders[i].list.items[s].image.$e.appendChild(nkch.sld.el.base.sliders[i].list.items[s].image.link.$e);
-
-            /* ~ slide : image : link : src ~ */
-            addClasses(nkch.sld.el.base.sliders[i].list.items[s].image.link.src);
-
-
-            nkch.sld.el.base.sliders[i].list.items[s].image.link.src.$e.style.backgroundImage = "url(" + src + ")";
-
-            nkch.sld.el.base.sliders[i].list.items[s].image.link.$e.appendChild(nkch.sld.el.base.sliders[i].list.items[s].image.link.src.$e);
-
-            /* ~ slide : image : link : data ~ */
-            addClasses(nkch.sld.el.base.sliders[i].list.items[s].image.link.data);
-
-            nkch.sld.el.base.sliders[i].list.items[s].image.link.$e.appendChild(nkch.sld.el.base.sliders[i].list.items[s].image.link.data.$e);
-
-            /* ~ slide : image : link : data : title ~ */
-            addClasses(nkch.sld.el.base.sliders[i].list.items[s].image.link.data.title);
-
-            nkch.sld.el.base.sliders[i].list.items[s].image.link.data.title.$e.innerHTML = item.querySelector(".nkch-slider-base__image-list-item-title").innerHTML;
-
-            nkch.sld.el.base.sliders[i].list.items[s].image.link.data.$e.appendChild(nkch.sld.el.base.sliders[i].list.items[s].image.link.data.title.$e);
-
-            /* ~ slide : image : link : data : desc ~ */
-            addClasses(nkch.sld.el.base.sliders[i].list.items[s].image.link.data.desc);
-
-            nkch.sld.el.base.sliders[i].list.items[s].image.link.data.desc.$e.innerHTML = item.querySelector(".nkch-slider-base__image-list-item-desc").innerHTML;
-
-            nkch.sld.el.base.sliders[i].list.items[s].image.link.data.$e.appendChild(nkch.sld.el.base.sliders[i].list.items[s].image.link.data.desc.$e);
+        slider_arrowLeft.addEventListener("click", function () {
+            actions.slideLeft(result);
         });
 
-        nkch.sld.el.base.sliders[i].setInterval(3000);
+        slider.append(slider_arrowLeft);
 
-        nkch.sld.el.base.sliders[i].$e.addEventListener("mouseenter", function (ev) {
-            clearTimeout(nkch.sld.el.base.sliders[i].intervalId);
-            nkch.sld.el.base.sliders[i].progressAnim.cancel();
-            nkch.sld.el.base.sliders[i].isMouseOver = true;
+
+        const slider_arrowLeftIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        slider_arrowLeftIcon.classList.add("wds-icon");
+        slider_arrowLeftIcon.setAttributeNS(null, "viewbox", "0 0 24 24");
+
+        slider_arrowLeft.append(slider_arrowLeftIcon);
+
+
+        const slider_arrowLeftIconSrc = document.createElementNS("http://www.w3.org/2000/svg", "use");
+        slider_arrowLeftIconSrc.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#wds-icons-menu-control");
+
+        slider_arrowLeftIcon.append(slider_arrowLeftIconSrc);
+
+
+        const slider_arrowRight = document.createElement("button");
+        slider_arrowRight.classList.add("nkch-slider__arrow", "nkch-slider__arrow--right");
+
+        slider_arrowRight.addEventListener("click", function () {
+            actions.slideRight(result);
         });
 
-        nkch.sld.el.base.sliders[i].$e.addEventListener("mouseleave", function (ev) {
-            nkch.sld.el.base.sliders[i].setInterval(nkch.sld.el.base.sliders[i].timeout);
-            nkch.sld.el.base.sliders[i].progressAnim.play();
-            nkch.sld.el.base.sliders[i].isMouseOver = false;
-        });
-    });
+        slider.append(slider_arrowRight);
 
-    nkch.sld.actions = {
-        nextSlide: function (slider, dir) {
-            if (typeof dir === "undefined") {
-                dir = "right";
-            }
 
-            var slideTo, translateFrom;
-            switch (dir) {
-                case "right":
+        const slider_arrowRightIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        slider_arrowRightIcon.classList.add("wds-icon");
+        slider_arrowRightIcon.setAttributeNS(null, "viewbox", "0 0 24 24");
+
+        slider_arrowRight.append(slider_arrowRightIcon);
+
+
+        const slider_arrowRightIconSrc = document.createElementNS("http://www.w3.org/2000/svg", "use");
+        slider_arrowRightIconSrc.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#wds-icons-menu-control");
+
+        slider_arrowRightIcon.append(slider_arrowRightIconSrc);
+
+
+        return result;
+    }
+
+    /** @type {SliderActions} */
+    const actions = {
+        /**
+         * @function
+         * @param {SliderData} slider
+         * @param {Direction} [direction]
+         * @returns {null}
+         */
+        nextSlide: function (slider, direction) {
+            direction = direction ? direction : Direction.Right;
+
+            /** @type {number} */ 
+            var slideTo,
+            /** @type {string} */ 
+                translateFrom;
+            
+            switch (direction) {
+                default:
+                case Direction.Right:
                     slideTo = slider.currentSlide + 1;
                     translateFrom = "30px";
                     break;
-                case "left":
+                case Direction.Left:
                     slideTo = slider.currentSlide - 1;
                     translateFrom = "-30px";
 
-                    if (slideTo < 0) {
-                        slideTo = slider.slidesList.length - 1;
-                    }
+                    if (slideTo < 0) slideTo = slider.lists.slides.length - 1;
                     break;
             }
 
-            slider.progressAnim.cancel();
-            if (slider.isMouseOver == false) {
-                slider.progressAnim.play();
-            }
+            slider.progressAnimation.cancel();
+            if (!slider.isMouseOver) slider.progressAnimation.play();
 
-            slider.currentSlide = (slideTo) % slider.slidesList.length;
+            slider.currentSlide = slideTo % slider.lists.slides.length;
 
-            slider.list.$e.style.insetBlockStart = -(414 * (slider.currentSlide)) + "px";
-
-            slider.indicators.current.$e.style.insetInlineStart = (15 * (slider.currentSlide)) + "px";
-
-            slider.list.$e.querySelector(".nkch-slider__list-image--" + slider.currentSlide).animate([{
+            slider.slider.querySelector(".nkch-slider__list").style.insetBlockStart = -(414 * (slider.currentSlide)) + "px";
+            slider.slider.querySelector(".nkch-slider__indicator-current").style.insetInlineStart = (15 * slider.currentSlide) + "px";
+            slider.slider.querySelector(".nkch-slider__list-image--" + slider.currentSlide).animate([{
                 transform: "translateX(" + translateFrom + ")",
                 opacity: .5
             }, {
@@ -315,17 +268,39 @@ if (!nkch.sld.isActive) {
                 easing: "ease"
             });
         },
+        /**
+         * @function
+         * @param {SliderData} slider
+         * @returns {null}
+         */
         slideLeft: function (slider) {
-            nkch.sld.actions.nextSlide(slider, "left");
+            actions.nextSlide(slider, Direction.Left);
         },
+        /**
+         * @function
+         * @param {SliderData} slider
+         * @returns {null}
+         */
         slideRight: function (slider) {
-            nkch.sld.actions.nextSlide(slider, "right");
+            actions.nextSlide(slider, Direction.Right);
         }
     }
 
-    /* ~ import stuff ~ */
-    importArticle({
-        type: "style",
-        article: "u:nkch:MediaWiki:nkchSlider.css"
-    });
+    /**
+     * @typedef {string} Direction
+     * @enum {Direction}
+     */
+    const Direction = {
+        Right: "right",
+        Left: "left"
+    }
+
+    /**
+     * @typedef {Object} SliderData
+     * @property {HTMLDivElement} slider
+     * @property {Element[]} slideList
+     * @property {number} timeout
+     */
+
+    /** @typedef {Object} SliderActions */
 }

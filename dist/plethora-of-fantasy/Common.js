@@ -6,7 +6,7 @@ window.UserTagsJS = {
 		montheditor: { u:'Editor of the Month' },
 		reaper: 'Reaper of Tides',
 		shadow: 'And from the Darkness I Hear the Sound of Her Wings...',
-		reality: 'God of Reality',
+		reality: 'Realitywarper',
 		pringle: 'Single Pringle',
 		wolf: 'Official Wolf',
 		cheerfulbird: 'Cheerful Bird',
