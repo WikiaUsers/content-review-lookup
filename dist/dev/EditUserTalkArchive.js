@@ -1,4 +1,4 @@
-function EUTAinit(){
+function EUTAinit(i18n){
 	var EUTA_user = mw.config.get("wgTitle");
 	var api = new mw.Api();
 	api.get({
@@ -13,20 +13,20 @@ function EUTAinit(){
 				window.talkLink = mw.config.get("wgServer") + mw.config.get("wgArticlePath").replace("$1", d.query.allpages[0].title);
 			}
 		} else {
-			console.error("EditUserTalkArchive: Error when checking for user talk page:" + d.error.code);
+			console.error("[EditUserTalkArchive] API error: " + d.error.code);
 		}
 	}).fail(function(){
-		console.error("EditUserTalkArchive: Failed to check for user talk page");
+		console.error("[EditUserTalkArchive] API failure encountered");
 	});
-	EUTA();
+	EUTA(i18n);
 }
 
-function EUTA(){
+function EUTA(i18n){
 	// Add button above Message Wall, only if the User talk page exists
 	const filterCheck = setInterval(function(){
 		if($(".messagewall-filters__filters").length){
 			clearInterval(filterCheck);
-			$(".messagewall-filters__filters").prepend('<div id="euta_wrapper"><a id="euta_button" class="wds-button wds-is-text" href="' + talkLink + '?redirect=no"><span>User Talk Archive</span></a></div>');
+			$(".messagewall-filters__filters").prepend('<div id="euta_wrapper"><a id="euta_button" class="wds-button wds-is-text" href="' + talkLink + '?redirect=no"><span>' + i18n.msg("user-talk-archive-label").plain() + '</span></a></div>');
 			// Prepend icon to button if dev.wds properly imports
 			mw.hook("dev.wds").add(function(wds) {
 				$("#euta_button").prepend(wds.icon("bubble-small"));
@@ -42,6 +42,8 @@ function EUTA(){
 }
 
 (function () {
+	var i18n;
+	
 	/* only local and global staff and if script has not already run */
 	if (
 		window.EditUserTalkArchiveLoaded ||
@@ -113,12 +115,31 @@ function EUTA(){
 		});
 	}
 	
+    function loadI18nMessages() {
+        var deferred = $.Deferred();
+        mw.hook('dev.i18n').add(function (i18njs) {
+            i18njs.loadMessages('EditUserTalkArchive').done(function (i18nMessages) {
+                i18n = i18nMessages;
+                deferred.resolve();
+            });
+            // NB: As of v0.5.6 (revision 109482), I18n-js never rejects its returned promise.
+            //     If its XHR fails, we can't (easily) handle this, and our returned promise will never complete.
+        });
+        importArticle({
+            type: 'script',
+            article: 'u:dev:MediaWiki:I18n-js/code.js',
+        });
+        return deferred.promise();
+    }
+	
 	/* Add button on Message Walls to user talk pages */
 	if (mw.config.get("wgNamespaceNumber") === 1200) {
-		EUTAinit();
-		/* Do it again if the user clicks "View All Messages" on a single thread page */
-		$(".SingleThreadToolbar > .wds-button").click(function(){
-			EUTA();
+		$.when(loadI18nMessages(), $.ready).done(function () {
+			EUTAinit(i18n);
+			/* Do it again if the user clicks "View All Messages" on a single thread page */
+			$(".SingleThreadToolbar > .wds-button").click(function(){
+				EUTA(i18n);
+			});
 		});
 	}
 	

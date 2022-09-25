@@ -21,9 +21,9 @@ window.UserTagsJS = {
 		sysop: { u:'Admin smh' },
 		threadmoderator: { u:'Thread Mod' },
 		'content-moderator': { u:'Content Mod' },
+		adminapprentice: { u:'Admin Apprentice' },
 		maptest: { u:'Map Tester' },
 		specialrole: { u:'Writing Lord' },
-		otherspecialrolewow: { u:'Tired Artist' },
 		lebesrole: { u:'Wiki Mom' },
 		newuser: { u:'Just Joined!' },
 	} 
@@ -35,8 +35,7 @@ UserTagsJS.modules.custom = {
 	'GhostTheWick': ['codinghelp'],
 	'LeahForsea': ['lebesrole'],
 	'Rosellia Teh Hybrid': ['maptest'],
-	'Khris Beleren': ['otherspecialrolewow'],
-	'FrostdropdALT': ['ventmod']
+	'FrostdropdALT': ['ventmod', 'adminapprentice'],
 };
 window.MessageBlock = {
 	title: 'Blocked',

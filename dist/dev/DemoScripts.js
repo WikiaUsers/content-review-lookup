@@ -258,6 +258,16 @@
             page: 'GlobalNavigationIcons',
             styles: 'MediaWiki:GlobalNavigationIcons.css'
         },
+        
+        GradientHeader: {
+            page: 'GradientHeader',
+            styles: 'MediaWiki:GradientHeader.css'
+        },
+        
+        HorizontalMCF: {
+            page: 'HorizontalMCF',
+            styles: 'MediaWiki:HorizontalMCF.css'
+        },
 		
         HydraRevived: {
             page: 'HydraRevived',

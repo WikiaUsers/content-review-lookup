@@ -27,7 +27,8 @@ function smallPageHeaderTitle() {
 /*
     START OF UPLOAD FORM CUSTOMISATIONS
 */
-
+// Bypass license check for UploadMultipleFile.js
+mw.config.set('UMFBypassLicenseCheck', true);
 /*
     Customise upload form description summary
 */

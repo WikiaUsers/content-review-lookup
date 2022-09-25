@@ -37,12 +37,13 @@ $(function() {
         link = $('#getLink').val(),
         fileWidth = '';
 
-        if (link === '' || (link.search('http://') + link.search('vignette') + link.search('img')) === -3) {
+		//                 (      0 or 1                       0 or 1      )   (    0 or 1                    0 or 1        )         0 or 1
+        if (link === '' || (link.search('https://') + link.search('http://') + link.search('vignette') + link.search('static') + link.search('img')) === -3) {
             alert(get_lang.error);
             return;
         }
 
-        newLink = link.replace(/(.+)\/\/(vignette|img)(.+)\/(revision.*|__cb\d+)/,'$1//images$3');
+        newLink = link.replace(/(.+)\/\/(static|vignette|img)(.+)\/(revision.*|__cb\d+)/,'$1//images$3');
 
         if (link.search('path-prefix') > -1) {
             var prefix = link.replace(/.*path-prefix=(.+)(&.*)?/,'$1');

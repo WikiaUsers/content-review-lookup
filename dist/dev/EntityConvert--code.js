@@ -1,3 +1,8 @@
+mw.hook('dev.i18n').add(function (i18n) {
+	i18n.loadMessages("EntityConvert").done(function (i18n) {
+/* I18N READY HERE */
+/* SCRIPT STARTS HERE */
+
 /* objects */
 // root object
 EntityConvert = typeof EntityConvert !== "undefined" ? EntityConvert : {};
@@ -13,116 +18,77 @@ EntityConvert.entities = typeof EntityConvert.entities !== "undefined" ? EntityC
 EntityConvert.entities.defxml = {"lt": "<", "gt": ">", "quot": "\"", "apos": "\'"};
 
 /* css */
-mw.util.addCSS('\
-section#entity-convert {\
-	width: 400px;\
-	height: 324px;\
-	position: fixed;\
-	top: 120px;\
-	left: 380px;\
-	overflow: hidden;\
-	background: #fafafa;\
-	border: 1px solid #cccccc;\
-	border-radius: 5px;\
-	-moz-border-radius: 5px;\
-	-webkit-border-radius: 5px;\
-	text-align: center;\
-	color: #333333;\
-	font-size: 15px;\
-	z-index: 2\
-}\
-section#entity-convert h3 {\
-	border-bottom: 1px solid #333;;\
-	font-size: 15px;\
-	font-weight: bold;\
-}\
-section#entity-convert #entity-convert-textarea {\
-	width: 380px;\
-	height: 270px;\
-	resize: none;\
-}\
-section#entity-convert > div {\
-	display: none;\
-	width: auto;\
-	text-align: left;\
-}\
-section#entity-convert > div.selected {\
-	display: inline-block;\
-}\
-section#entity-convert > #entity-convert-close {\
-	display: inline-block !important;\
-	width: 399px;\
-	height: 12px;\
-	padding-top: 1px;\
-	padding-right: 1px;\
-	text-align: right;\
-}\
-section#entity-convert > #entity-convert-close span {\
-	display: inline-block;\
-	width: 12px;\
-	height: 12px;\
-	background: url(\'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Emblem-unreadable.svg/14px-Emblem-unreadable.svg.png\') center no-repeat;\
-	border: 1px solid #cccccc;\
-	border-radius: 3px;\
-	-moz-border-radius: 3px;\
-	-webkit-border-radius: 3px;\
-	cursor: hand;\
-	cursor: pointer;\
-}');
+importArticles({
+	type: 'style',
+	articles: [
+		'u:dev:MediaWiki:EntityConvert/style.css',
+	]
+});
 
 /* interface */
 // markup
-EntityConvert.markup.interface = '<section id=\"entity-convert\" style=\"display: none;\">\
-	<div id=\"entity-convert-close\"><span title=\"close\"></span></div>\
-	<div class=\"interface selected\">\
-		<textarea id=\"entity-convert-textarea\" placeholder=\"Text to encode/decode goes here\"></textarea><br />\
-		<input type=\"button\" id=\"entity-convert-button-encode\" value=\"Encode\" />\
-		<input type=\"button\" id=\"entity-convert-button-decode\" value=\"Decode\" />\
-		<input type=\"button\" id=\"entity-convert-button-clear\" value=\"Clear\" />\
-		<input type=\"button\" id=\"entity-convert-button-options-show\" value=\"Options\" />\
-	</div>\
-	<div class=\"options\">\
-		<h3>Encoding options</h3>\
-		<input type=\"radio\" checked=\"checked\" name=\"entity-convert-options-encode-other\" id=\"entity-convert-options-encode-dec\" /> Decimal (base 10, e.g. z &rarr; &amp;#122;)<br />\
-		<input type=\"radio\" name=\"entity-convert-options-encode-other\" id=\"entity-convert-options-encode-hex\" /> Hexadecimal (base 16, e.g. z &rarr; &amp;#x7a;)<br />\
-		<input type=\"checkbox\" name=\"entity-convert-options-encode-warning\" id=\"entity-convert-options-encode-warning\" /> Ignore warning of big string encoding<br />\
-		<input type=\"checkbox\" name=\"entity-convert-options-encode-vitalchars\" id=\"entity-convert-options-encode-vitalchars\" /> Encode only vital characters (&amp;, ", \', &lt;, &gt;)\
-		<h3>Decoding options</h3>\
-		<input type=\"checkbox\" checked="checked" id=\"entity-convert-options-decode-dec\" /> Decode decimal entities<br />\
-		<input type=\"checkbox\" checked="checked" id=\"entity-convert-options-decode-hex\" /> Decode hexadecimal entities<br />\
-		<input type=\"checkbox\" id=\"entity-convert-options-decode-amp\" /> Decode ampersands (&amp;amp; &rarr; &amp;)<br />\
-		<input type=\"checkbox\" id=\"entity-convert-options-decode-xml\" /> Decode other default XML entities <span class=\"explain\" title=\"&amp;quot;, &amp;apos;, &amp;lt; and &amp;gt; to &quot;, &apos;, &lt; and &gt;\">(?)</span><br />\
-		<input type=\"checkbox\" id=\"entity-convert-options-decode-custom\" /> Decode custom entities <a class=\"explain\" title=\"Entities specified by words, like &amp;nbsp;, &amp;bull; and &amp;trade; are not decoded. Checking this checkbox allows you to decode these as well. Click this link to find out more.\" href=\"https://dev.fandom.com/wiki/EntityConvert#Custom_Entities\">(?)</a><br />\
-		<input type=\"button\" id=\"entity-convert-button-options-hide\" value=\"Close options\" />\
-		<a href="https://dev.fandom.com/wiki/Talk:EntityConvert" target="_blank" title="Go to feature\'s talk page"><input type=\"button\" value=\"Feedback/bug reports\" /></a>\
-	</div>\
+EntityConvert.markup.interface = ' \
+<section id="entity-convert-wrapper"> \
+	<section id="entity-convert"> \
+		<header id="entity-convert-close"> \
+			<h2>' + i18n.msg("title").escape() + '</h2> \
+			<span class="entity-convert-imgbtn" title="' + i18n.msg("close-tooltip").escape() + '"></span> \
+		</header> \
+		<div class="interface selected"> \
+			<textarea id="entity-convert-textarea" placeholder="' + i18n.msg("textarea-placeholder").escape() + '"></textarea> \
+			<nav class="entity-convert-buttonnav"> \
+				<input type="button" id="entity-convert-button-encode" value="' + (i18n.msg("buttons-decode-encode").exists ? i18n.msg("buttons-decode-encode").escape() : i18n.msg("buttons-encode").escape()) + '" /> \
+				<input type="button" id="entity-convert-button-decode" value="' + (i18n.msg("buttons-decode-decode").exists ? i18n.msg("buttons-decode-decode").escape() : i18n.msg("buttons-decode").escape()) + '" /> \
+				<input type="button" id="entity-convert-button-clear" value="' + (i18n.msg("buttons-decode-clear").exists ? i18n.msg("buttons-decode-clear").escape() : i18n.msg("buttons-clear").escape()) + '" /> \
+				<input type="button" id="entity-convert-button-options-show" value="' + (i18n.msg("buttons-decode-options").exists ? i18n.msg("buttons-decode-options").escape() : i18n.msg("buttons-options").escape()) + '" /> \
+			</nav> \
+		</div> \
+		<div class="options"> \
+			<form> \
+			<fieldset> \
+				<legend>' + i18n.msg("options-encode-header").escape() + '</legend> \
+				<label><input type="radio" checked="checked" name="entity-convert-options-encode-other" id="entity-convert-options-encode-dec" /> ' + i18n.msg("options-encode-decimal").escape() + '</label><br /> \
+				<label><input type="radio" name="entity-convert-options-encode-other" id="entity-convert-options-encode-hex" /> ' + i18n.msg("options-encode-hexadecimal").escape() + '</label><br /> \
+				<label><input type="checkbox" name="entity-convert-options-encode-warning" id="entity-convert-options-encode-warning" /> ' + i18n.msg("options-encode-ignore-warning").escape() + '</label><br /> \
+				<label><input type="checkbox" name="entity-convert-options-encode-vitalchars" id="entity-convert-options-encode-vitalchars" /> ' + i18n.msg("options-encode-vitals-only").escape() + '</label> \
+			</fieldset> \
+			<fieldset> \
+				<label><legend>' + i18n.msg("options-decode-header").escape() + '</legend> \
+				<label><input type="checkbox" checked="checked" id="entity-convert-options-decode-dec" /> ' + i18n.msg("options-decode-decimal").escape() + '</label><br /> \
+				<label><input type="checkbox" checked="checked" id="entity-convert-options-decode-hex" /> ' + i18n.msg("options-decode-hexadecimal").escape() + '</label><br /> \
+				<label><input type="checkbox" id="entity-convert-options-decode-amp" /> ' + i18n.msg("options-decode-ampersands").escape() + '</label><br /> \
+				<label><input type="checkbox" id="entity-convert-options-decode-xml" /> ' + i18n.msg("options-decode-other").escape() + ' <span class="entity-convert-imgbtn entity-convert-explain" title="' + i18n.msg("options-decode-other-tooltip").escape() + '"></span></label><br /> \
+				<label><input type="checkbox" id="entity-convert-options-decode-custom" /> <a href="https://dev.fandom.com/wiki/EntityConvert#Custom_entities" target="_blank" rel="nofollow noopener">' + i18n.msg("options-decode-custom").escape() + '</a></label> \
+			</fieldset> \
+			<nav class="entity-convert-buttonnav"> \
+				<input type="button" id="entity-convert-button-options-hide" value="' + (i18n.msg("buttons-decode-close-options").exists ? i18n.msg("buttons-decode-close-options").escape() : i18n.msg("buttons-close-options").escape()) + '" /> \
+				<a href="https://dev.fandom.com/wiki/Talk:EntityConvert" target="_blank" rel="nofollow noopener"><input type="button" value="' + (i18n.msg("buttons-decode-feedback").exists ? i18n.msg("buttons-decode-feedback").escape() : i18n.msg("buttons-feedback").escape()) + '" /></a> \
+			</nav> \
+		</div> \
+	</section> \
 </section>';
-EntityConvert.markup.trigger = '<li id="entity-convert-trigger" class="overflow"><a style="cursor: hand; cursor: pointer;">HTML Entity Convert</a></li>';
+EntityConvert.markup.trigger = '<li id="entity-convert-trigger" class="overflow"><a style="cursor: hand; cursor: pointer;">' + i18n.msg("interface-open").escape() + '</a></li>';
 
 // append to page
 $("body").append(EntityConvert.markup.interface);
 
 /* interface */
-// position in screen center
-$("section#entity-convert").css("top", (screen.availHeight - $("section#entity-convert").height()) / 2 + "px");
-$("section#entity-convert").css("left", (screen.availWidth - $("section#entity-convert").width()) / 2 + "px");
 
 // add to bottom option menu "dropdown" if it has less than 10 items. if it has more add to the ordinary bottom bar
 if ($("#my-tools-menu > li").length < 10) {
-	$("#my-tools-menu").prepend(EntityConvert.markup.trigger);
+	$("#my-tools-menu").prepend($(EntityConvert.markup.trigger));
 } else {
 	$("#WikiaBarWrapper .tools").prepend(EntityConvert.markup.trigger);
 }
 
-
 // close interface
 $("section#entity-convert > #entity-convert-close span").click(function() {
-	$("section#entity-convert").hide(70);
+	$("section#entity-convert-wrapper").removeClass("entity-convert-wrapper-visible");
 });
 
 // open interface
 $("#my-tools-menu #entity-convert-trigger").click(function() {
-	$("section#entity-convert").show(70);
+	$("section#entity-convert-wrapper").addClass("entity-convert-wrapper-visible");
 });
 
 // show-hide options buttons
@@ -139,7 +105,7 @@ $('section#entity-convert input#entity-convert-button-options-hide').click(funct
 	// encode
 $("section#entity-convert input#entity-convert-button-encode").click(function() {
 	if ($('input[name="entity-convert-options-encode-warning"]:checked').length === 0 && $("section#entity-convert textarea#entity-convert-textarea").val().length >= 100000) { // prevent load encoding time for large inputs
-		if (confirm("Notice! The input field for the entity encoding contains a very long string, and encoding may take a few seconds. Do you wish to continue?\nTip: check the \"Encode only vital characters\" checkbox to minimize encoding time.") === true) {
+		if (confirm(i18n.msg("interface-warning-large").plain()) === true) {
 			EntityConvert.functions.encode();
 		}
 	} else {
@@ -158,12 +124,12 @@ $("section#entity-convert input#entity-convert-button-clear").click(function() {
 /* convertion syntax */
 // encoding
 EntityConvert.functions.encode = function() {
-	var a = $("section#entity-convert textarea#entity-convert-textarea").val(),
+	const a = $("section#entity-convert textarea#entity-convert-textarea").val(),
 		b = [];
 	if (a.length > 0) {
 		$("section#entity-convert textarea#entity-convert-textarea").attr("disabled","disabled"); // disable modifying until encoding is done, unless the textarea is empty
 	}
-	for (var i = 0; i < a.length; i++) {
+	for (let i = 0; i < a.length; i++) {
 		b.push(
 			$('input[name="entity-convert-options-encode-vitalchars"]:checked').length === 0 ? // encode all characters
 			(
@@ -220,3 +186,9 @@ EntityConvert.functions.decode = function() {
 		})
 	);
 };
+
+/* SCRIPT ENDS HERE */
+/* I18N ENDS HERE */
+	});
+});
+importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });

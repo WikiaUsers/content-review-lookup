@@ -2367,6 +2367,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"charger": {
+				"name": "Charger",
+				"colors": [
+					"fey",
+					"white",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"chariot": {
 				"name": "Chariot",
 				"colors": [
@@ -3876,6 +3885,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"deciduous": {
+				"name": "Deciduous",
+				"colors": [
+					"fey",
+					"red",
+					"green"
+				],
+				"rarity": "common"
+			},
 			"decoration": {
 				"name": "Decoration",
 				"colors": [
@@ -4194,6 +4212,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "super"
+			},
+			"down": {
+				"name": "Down",
+				"colors": [
+					"fey",
+					"black",
+					"yellow"
+				],
+				"rarity": "unbreedable"
 			},
 			"downpour": {
 				"name": "Downpour",
@@ -5141,6 +5168,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"holiday",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"fern": {
+				"name": "Fern",
+				"colors": [
+					"fey",
+					"green",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},
@@ -8705,6 +8741,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "common"
+			},
+			"leafprint": {
+				"name": "Leafprint",
+				"colors": [
+					"fey",
+					"blue",
+					"green"
+				],
+				"rarity": "unbreedable"
 			},
 			"leer": {
 				"name": "Leer",
@@ -13444,6 +13489,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"ritual": {
+				"name": "Ritual",
+				"colors": [
+					"fey",
+					"pink",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"river": {
 				"name": "River",
 				"colors": [
@@ -13678,6 +13732,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "unbreedable"
+			},
+			"sabertooth": {
+				"name": "Sabertooth",
+				"colors": [
+					"fey",
+					"red",
+					"blue"
+				],
+				"rarity": "common"
 			},
 			"sabretooth": {
 				"name": "Sabretooth",
@@ -16300,6 +16363,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"thicket": {
+				"name": "Thicket",
+				"colors": [
+					"fey",
+					"purple",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"thorn": {
 				"name": "Thorn",
 				"colors": [
@@ -17794,6 +17866,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"fey",
 					"black",
 					"pink"
+				],
+				"rarity": "unbreedable"
+			},
+			"wildrose": {
+				"name": "Wild Rose",
+				"colors": [
+					"fey",
+					"flower",
+					"red"
 				],
 				"rarity": "unbreedable"
 			},

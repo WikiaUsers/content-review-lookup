@@ -77,3 +77,11 @@ importArticles({
         'u:dev:MediaWiki:DecodeURI/code.js',
     ]
 });
+
+/* ModernLeaderboard */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ModernLeaderboard.js',
+    ]
+});

@@ -32,3 +32,10 @@ window.pPreview.RegExp.iparents = ['.myclass', '#myid', 'div[data-ignore-me=1]']
         }, 100);//settimeout
     });//doc.rdy    
 })(jQuery);
+
+/*Translator*/
+mw.hook('dev.addSideTool').add(function (addSideTool) {
+    addSideTool('文').$button.on('click', function() {
+        $('#TranslateButton').click();
+    });
+});

@@ -7,24 +7,24 @@
 	*/
 
 // Keep these in an object for organization
-(function ($, mw) {
-    var _api = {
-        edittoken: mw.user.tokens.values.editToken,
-        watchtoken: mw.user.tokens.values.watchToken,
-        namespace: mw.config.get('wgNamespaceNumber'),
-        pagename: mw.config.get('wgPageName'),
-        server: mw.config.get('wgServer'),
-        signature: '~~' + '~~',
-        language: mw.config.get('wgUserLanguage')
-    };
+;(function ($, mw) {
+	'use strict';
+	var config = mw.config.get([
+		'wgNamespaceNumber',
+		'wgPageName',
+		'wgServer',
+		'wgUserLanguage'
+	]);
+	
+	if (config.wgPageName !== 'Language_Brigade_Wiki:Word_of_the_Week') return;
     var msg = {
             get: function (name) {
                 var m = '(' + name + ')';
 
-                if (typeof msg[_api.language.toUpperCase()] !== 'undefined' && typeof msg[_api.language.toUpperCase()][name] !== 'undefined') {
-                    m = msg[_api.language.toUpperCase()][name];
+                if (typeof msg[config.wgUserLanguage.toUpperCase()] !== 'undefined' && typeof msg[config.wgUserLanguage.toUpperCase()][name] !== 'undefined') {
+                    m = msg[config.wgUserLanguage.toUpperCase()][name];
                 } else {
-                    m = msg['EN'][name];
+                    m = msg.EN[name];
                 }
                 return m;
 
@@ -145,20 +145,21 @@
 
     var language_dropdown = [];
     for (var messageIndex in msg.languages) {
-        language_dropdown += '<option value="' + i + '">' + msg.languages[messageIndex] + '</option>';
+        language_dropdown += '<option value="' + messageIndex + '">' + msg.languages[messageIndex] + '</option>';
     }
 
     // This opens the form for the users to fill out
 
     function openFormWOTW() {
-        $("#wotw-nominate").after('<div id="request-form" style="min-width: 660px; margin: 0 auto;"><h2>' + msg.get('wotw-nominate-word-of-the-week-form-heading') + '</h2><div style="margin: 0 auto;"><div style="float: left; margin-right: 10px; width: 200px; text-align: right; min-height: 40px;">'
+        $("#wotw-nominate").after('<div id="request-form" style="min-width: 660px; margin: 0 auto;"><h2>' + msg.get('wotw-nominate-word-of-the-week-form-heading') + '</h2><div style="margin: 0 auto;"><div style="float: left; margin-right: 10px; width: 200px; text-align: right; min-height: 40px;">' +
 
-            + msg.get('wotw-word-in-your-language-label') + '</div><div style="float: left; min-height: 40px;"><input id="wotw-word" style="min-width: 300px;" />' + '</div><br><div style="clear: both;"></div><div style="float: left; margin-right: 10px; width: 200px; text-align: right; min-height: 40px;">' + msg.get('wotw-your-language') + '</div><div style="float: left; min-height: 40px;"><select id="wotw-your-language"><option disabled="">Select your language</option>' + language_dropdown + '</select></div><br><div style="clear: both;"></div><div style="float: left; margin-right: 10px; width: 200px; text-align: right; min-height: 40px;">' + msg.get('wotw-word-translated') + '</div><div style="float: left; min-height: 40px;"><input id="wotw-word-translated" style="min-width: 300px;" /></div></div>'
+            msg.get('wotw-word-in-your-language-label') + '</div><div style="float: left; min-height: 40px;"><input id="wotw-word" style="min-width: 300px;" />' + '</div><br><div style="clear: both;"></div><div style="float: left; margin-right: 10px; width: 200px; text-align: right; min-height: 40px;">' + msg.get('wotw-your-language') + '</div><div style="float: left; min-height: 40px;"><select id="wotw-your-language"><option disabled="">Select your language</option>' + language_dropdown + '</select></div><br><div style="clear: both;"></div><div style="float: left; margin-right: 10px; width: 200px; text-align: right; min-height: 40px;">' + msg.get('wotw-word-translated') + '</div><div style="float: left; min-height: 40px;"><input id="wotw-word-translated" style="min-width: 300px;" /></div></div>' +
 
-            + '</div><div style="clear: both;"></div><button onclick="submitformWOTW()">' + msg.get('wotw-submit-nomination-button-label') + '</button>&nbsp;<button onclick="hideForm()">' + msg.get('button-label-cancel') + '</button></div>');
+            '</div><div style="clear: both;"></div><button class="wds-button" id="form-submit-button">' + msg.get('wotw-submit-nomination-button-label') + '</button>&nbsp;<button class="wds-button" id="form-hide-button">' + msg.get('button-label-cancel') + '</button></div>');
 
+		document.getElementById('form-submit-button').addEventListener('click', submitformWOTW);
+		document.getElementById('form-hide-button').addEventListener('click', hideForm);
         $('#spotlight-submit').text(msg.get('button-close'));
-        $('#spotlight-submit').removeAttr("onclick").attr("onclick", "hideForm()");
     }
 
     function submitformWOTW() {
@@ -173,32 +174,25 @@
         if (!lang) {
             alert('Please select a language!');
         }
-        console.log('Performed checks...');
 
         // Ajax URL
-        var url = _api.server + '/api.php?action=edit&title=Language_Brigade_Wiki:Word_of_the_Week/Nominations&appendtext=' + encodeURIComponent(page) + '&summary=New+nomination+added&token=' + encodeURIComponent(_api.edittoken);
-        console.log('Got the url: ', url);
-
-        $.post(url, function () {
+        new mw.Api().postWithEditToken({
+        	action: 'edit',
+        	title: 'Language_Brigade_Wiki:Word_of_the_Week/Nominations',
+        	appendtext: page,
+        	summary: 'New nomination added'
+        }).done(function () {
             $('body').css('cursor', 'wait');
-            console.log('Should be done now:');
             setTimeout(function () {
-                window.location = _api.server + '/wiki/Language_Brigade_Wiki:Word_of_the_Week/Nominations';
+                window.location = config.wgServer + '/wiki/Language_Brigade_Wiki:Word_of_the_Week/Nominations';
             }, 2000);
         });
-        console.log('Sent request...');
     }
-
 
     // Add buttons depending on user language
-    if (_api.pagename === 'Language_Brigade_Wiki:Word_of_the_Week') {
-
-        setTimeout(function () {
-
-            openFormWOTW();
-
-            console.log("1");
-        }, 2000);
-
-    }
-})(this.jQuery, this.mediaWiki);
+    mw.loader.using( ['mediawiki.api'] ).then(function() {
+	    setTimeout(function () {
+	        openFormWOTW();
+	    }, 2000);
+    });
+})(window.jQuery, window.mediaWiki);

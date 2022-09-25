@@ -8,6 +8,28 @@ if (document.getElementById('discordBannerPublic')) {
         ]
     });
 }
+function TESTX() {
+	var length2 = document.querySelectorAll(".messages").length;
+	var unit = document.querySelectorAll(".messages")[length2 - 1].innerHTML;
+			
+	mw.loader.using('mediawiki.api').then(function () {
+		
+	    var api = new mw.Api();
+	
+		api.get( {
+		    action: 'parse',
+		    text: '\'\'\'<span class="tooltip" data-level="2">[['+ unit +']]</span>\'\'\'',
+		    contentmodel: 'wikitext',
+		    disablelimitreport: 1,
+		    format: 'json',
+		}).done ( function (text) {
+			document.querySelector(".mw-parser-output").innerHTML = text;
+		});
+	
+	
+	});
+}
+setTimeout(TESTX, 10000);
 
 const myElement2 = document.getElementById('PIXBuffBox');
 	myElement2.innerHTML = '<div class="slider_box"><ul class="range-labels"><li style="margin-top:107px">80</li><li style="margin-top:43px">120</li><li style="margin-top:64px">175</li></ul><div class="slider2"></div><div class="slider_box2"><div class="slider"><div class="outputContainer"><input class="rangeSlider" type="range" min="2" max="175" value="175" step="1" oninput="mathMul(value,this)"></div><div class="outputLvl_box"><output class="outputLvl" for="fader2">x2.142</output><output class="outputLvl2 none" for="fader2">lvl 175</output></div></div></div></div><button class="sasageyoBuff">Sasageyo</button><button class="rangeBoosterBuff">RangeBooster</button><button class="bombaOrb">Bomba Orb</button><button class="firerageOrb">Firerage Orb</button><button class="blueeyeOrb">Blueeye Orb</button>';

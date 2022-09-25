@@ -1,10 +1,27 @@
+/*
+---------------------
+ Hero Skin Wardrobes
+---------------------
+
+-----------------------
+ COMPLEMENTARY SCRIPTS
+-----------------------
+- HeroSkins.css
+
+---------
+ AUTHORS 
+---------
+- E12Dragon: current and original version
+*/
 $(document).ready(function() {
 	var location = 'https://static.wikia.nocookie.net/clashofclans/images/';
 
+	//Define an undefined active model div and mode 
 	$('.HeroSkinMenu:not([data-mode])').each(function () {
 		$(this).attr('data-mode', 'Preview');
 		$(this).find('.Models > div:first-child').addClass('active');
 	});
+	//Set GWM for GW wardrobe
 	$('.HeroSkinMenu[data-hero="GW"]').attr('data-gwm', 'Ground');
 	
 	$('.HeroSkinMenu .Toggle, .HeroSkinMenu .GWM').click(function () {
@@ -40,7 +57,7 @@ $(document).ready(function() {
 				$(Wardrobe).find('.Models .' + Mode + 's:not(.Air)').addClass('active');
 			}
 			$(Wardrobe).attr('data-mode', Mode);
-		}else { //Then GWM button must be clicked instead
+		}else { //Then GWM button must have be clicked instead
 		
 			//Switch GWM
 			if (GWM == 'Ground') {
@@ -91,12 +108,12 @@ $(document).ready(function() {
 			$(Wardrobe).find('.SkinIcon').removeClass('played');
 	
 			//Make all things associated with the skin active (so they are visible)
-			$('.Preview[data-name="' + Skin + '"]').addClass("active");
-			$('.Idle[data-name="' + Skin + '"]').addClass("active");
-			$('.Pose[data-name="' + Skin + '"]').addClass("active");
-			$('.KO[data-name="' + Skin + '"]').addClass("active");
-			$('.Downed[data-name="' + Skin + '"]').addClass("active");
-			$('.Theme[data-name="' + Skin + '"]').addClass("active");
+			$(Wardrobe).find('.Preview[data-name="' + Skin + '"]').addClass("active");
+			$(Wardrobe).find('.Idle[data-name="' + Skin + '"]').addClass("active");
+			$(Wardrobe).find('.Pose[data-name="' + Skin + '"]').addClass("active");
+			$(Wardrobe).find('.KO[data-name="' + Skin + '"]').addClass("active");
+			$(Wardrobe).find('.Downed[data-name="' + Skin + '"]').addClass("active");
+			$(Wardrobe).find('.Theme[data-name="' + Skin + '"]').addClass("active");
 			$(this).addClass("active");
 			
 			//Add Tier to preview
@@ -126,7 +143,7 @@ $(document).ready(function() {
 		var Skin = $(Wardrobe).find('.Title').text();
 		var Mode = $(Wardrobe).attr('data-mode');
 		
-		//Lazyloading loading
+		//Lazyloading loading icon
 		if ($(Wardrobe).find('.Models > div.active > div.active img').hasClass('lazyload') ) {
 				$(Wardrobe).find('.Load').addClass('active');
 				var interval = setInterval(function () {
@@ -165,11 +182,15 @@ $(document).ready(function() {
 					sfx = new Audio(location + 'f/fd/Barbarian_King_Deploy.ogg');
 				}
 			}else if (Hero == 'AQ') {
-					if (randomnumber == 1) {
-						sfx = new Audio(location + '5/54/Archer_Queen_Pose.ogg');
-					}else {
-						sfx = new Audio(location + '1/11/Archer_Queen_Deploy.ogg');
-					}
+				if (Mode == 'Idle') {
+					sfx = new Audio(location + '1/11/Archer_Queen_Deploy.ogg'); 
+				}else if (Mode == 'KO') {
+						sfx = new Audio(location + '0/09/Archer_Queen_Death.ogg'); 
+				}else if (randomnumber == 1) {
+					sfx = new Audio(location + '5/54/Archer_Queen_Pose.ogg');
+				}else {
+					sfx = new Audio(location + '1/11/Archer_Queen_Deploy.ogg');
+				}
 			}else if (Hero == 'GW') {
 				if (Mode == 'KO') {
 					if (Skin == 'Party Warden') {
@@ -181,14 +202,31 @@ $(document).ready(function() {
 						}else {
 							sfx = new Audio(location + '7/7b/Party_Warden_Death_3.ogg');
 						}
-					}else sfx = new Audio(location + '9/99/Grand_Warden_Death.ogg');
+					}else {
+						sfx = new Audio(location + '9/99/Grand_Warden_Death.ogg');
+					}
 				}else if (Mode == 'Idle') {
-					sfx = new Audio(location + '2/2b/Grand_Warden_Deploy.ogg');
+					if (Skin == 'Champion Warden') {
+						randomnumber = Math.floor(Math.random() * (2) + 1);
+						if (randomnumber == 1) {
+							sfx = new Audio(location + 'a/a4/Champion_Warden_Deploy_1.ogg');
+						}else {
+							sfx = new Audio(location + '1/14/Champion_Warden_Deploy_2.ogg');
+						}
+					}else {
+						sfx = new Audio(location + '2/2b/Grand_Warden_Deploy.ogg');
+					}
 				}else {
 					sfx = new Audio(location + 'a/a1/Grand_Warden_Pose.ogg');
 				}
-			}else {
-						sfx = new Audio(location + 'e/e1/Royal_Champion_Pose.ogg');
+			}else if (Hero == 'RC') {
+				if (Mode == 'Idle') {
+					sfx = new Audio(location + 'e/e9/Royal_Champion_Deploy.ogg');
+				}else if (Mode == 'KO') {
+					sfx = new Audio(location + '8/85/Royal_Champion_Death.ogg');
+				}else {
+					sfx = new Audio(location + 'e/e1/Royal_Champion_Pose.ogg');
+				}
 			}
 			
 			//Play the sfx on click

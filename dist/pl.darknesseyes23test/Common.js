@@ -1,4 +1,11 @@
-/* Umieszczony tutaj kod JavaScript zostanie załadowany przez każdego użytkownika, podczas każdego ładowania strony. */
-var tooltips_config = {
-    offsetY: 5
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		// group: { associated tag data }
+		veteran: { u:'Weteran', link:'Kategoria:Weterani' },
+	}
+};
+
+UserTagsJS.modules.custom = {
+	'Matik7': ['veteran']
 };

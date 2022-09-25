@@ -1,1 +1,0 @@
-Bienvenido a un wiki de prueba.

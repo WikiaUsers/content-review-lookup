@@ -20,8 +20,45 @@ window.UserTagsJS = {
 		    'Alansanchez412': ['asistente'],
 		    'Alexis21155': ['asistente'],
 		    'Bloomdanix': ['asistente'],
-		    'GhostRiley2000': ['asistente'],
-            'Ale_-_Remastered': ['asistente']
+            'Ale_-_Remastered': ['asistente'],
+            
+            'WKorps': ['veterano'],
+            'ClaudeSpeed9425': ['veterano'],
+            'Kenbill': ['veterano'], 
+            'Playsonic2': ['veterano'],
+            'Nikolai%27Bellic..': ['veterano'],
+            'Xabierl': ['veterano'],
+            'Donaldlove57': ['veterano'],
+            'Absay': ['veterano'],
+            'Master_Jacob': ['veterano'],
+            'ClaudeGTA3': ['veterano'],
+            'Kombatgaby': ['veterano'],
+            'KentPaul5000': ['veterano'],
+            'GhostRiley2000': ['veterano'],
+            'Antony97': ['veterano'],
+            'WeisserHirsch': ['veterano'],
+            
+            'FabianVercetti': ['retirado'],
+            'Leandritodepompeya': ['retirado'],
+            'Nicolas_F._Chiribelo': ['retirado'],
+            'G%C3%A1ngster_Tommy': ['retirado'],
+            'Raimox': ['retirado'],
+            'Franco_vice_city': ['retirado'],
+            'Bigdadi': ['retirado'],
+            'Smoke1996': ['retirado'],
+            'Star_Falco': ['retirado'],
+            'Juanfro88': ['retirado'],
+            'Alejandro_Rostagno': ['retirado'],
+            'Psycho1960': ['retirado'],
+            'Alejandrobelik': ['retirado'],
+            'CJ_SanAndreas': ['retirado'],
+            'Rodriseb': ['retirado'],
+            'BillyShears9426': ['retirado'],
+            'Platybus': ['retirado'],
+            'Bruno_Cardozo': ['retirado'],
+            'Matias_Montanna': ['retirado'],
+            'Marco_Antonio_Guti%C3%A9rrez_Udaondo': ['retirado'],
+            'GuidoM1995': ['retirado']
         }
     },
 	tags: {
@@ -53,6 +90,14 @@ window.UserTagsJS = {
 		},
 		bot: { 
 			link:'project:Administración#Bot' 
+		},
+		veterano: { 
+			f:'Veterano', 
+			link:'project:Administración/Antiguos miembros#Veteranos' 	
+		},
+		retirado: { 
+			f:'Retirado', 
+			link:'project:Administración/Antiguos miembros#Retirados' 	
 		}
     }
 };

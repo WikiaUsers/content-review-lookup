@@ -1,4 +1,3 @@
-
 /**
  * 17:15, July 2, 2017 (UTC)
  * <source lang = "JavaScript">
@@ -143,7 +142,7 @@ window.setCookie = function(c_name, value, expiredays) {
 					$.showModal('Origine Incomplète', 'Merci de renseigner l\'origine correcte pour votre image.');
 					return false;
 				} else if (/google/i.test($('#sourceBox').val())) {
-					$.showModal('Source Incorrecte', 'Google n’est pas une source valide pour les images. Merci de saisir l\'origine concrète du fichier.');
+					$.showModal('Source Incorrecte', 'Google n'est pas une source valide pour les images. Merci de saisir l\'origine concrète du fichier.');
 					$('#origineBox').val('');
 					return false;
 				}

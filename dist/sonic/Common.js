@@ -22,7 +22,7 @@ $regular.css('grid-template-columns', '1fr 1fr 1fr 1fr');
 $regular.css('justify-items', 'center');
 }
 $(function() {
-	var tracked = document.querySelector('.navb .tabber.wds-tabber');
+	var tracked = document.querySelectorAll('.navb .tabber.wds-tabber');
 	if (tracked !== null) {
 		var observer = new MutationObserver(cbck);
 		var options = {
@@ -30,7 +30,9 @@ $(function() {
 		subtree: true, 
 		attributeFilter: ["class"]
 		}
-	observer.observe(tracked, options);
+	Array.from(tracked).forEach(function(ele){
+		observer.observe(ele, options);
+	});
 	}
 });
 

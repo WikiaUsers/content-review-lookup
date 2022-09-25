@@ -47,7 +47,6 @@
                     $(b.placement || '#WikiaBar .toolbar .tools')[b.prepend ? 'prepend' : 'append'](
                         $('<li>').append(
                             $('<a>', {
-                                title: 'one-click create',
                                 'data-summary': b.summary,
                                 'data-target': b.target,
                                 'data-content': b.content,

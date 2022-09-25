@@ -160,7 +160,7 @@ $('.centralhelpbox').click(function() {
 								d.items.forEach(function(el) {
 									var src = el.avatar;
 									var name = el.title;
-									$('#list-wiki-sysop').append('<div class="wds-avatar" title="' + name + '"><a href="/ru/wiki/%D0%A3%D1%87%D0%B0%D1%81%D1%82%D0%BD%D0%B8%D0%BA:' + name + '"><img src="' + src + '" alt="' + name + '" title="' + name + '" class="wds-avatar__image"></a></div>');
+									$('#list-wiki-sysop').append('<div class="wds-avatar" title="' + name + '"><a href="' + wiki2 + '.fandom.com/ru/wiki/%D0%A3%D1%87%D0%B0%D1%81%D1%82%D0%BD%D0%B8%D0%BA:' + name + '"><img src="' + src + '" alt="' + name + '" title="' + name + '" class="wds-avatar__image"></a></div>');
 								});
 							});
 						}
