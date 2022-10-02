@@ -30,12 +30,17 @@ var time = new Date(),
 // Now we make the function itself
 var customizeClassicToolbar = function(){
 	
+	// By some black magic MediaWiki reads these template strings as actual transclusions
+	// So we have this as a workaround so that this page doesn't end up in [[:Category:Articles Using Invalid Arguments in Template Calls]] 
+	var openRef = "<ref>{{"
+	var closeRef = "}}</ref>"
+	
 	// Start with web cite
 	mw.toolbar.addButton( {
 		imageFile: 'https://zelda.fandom.com/media/zelda.gamepedia.com/9/91/Button_cite_web.png',
 		speedTip: 'Web Citation',
-		tagOpen: '<ref>{{Cite Web|quote= ',
-		tagClose: "|author= |published= |retrieved=" + nowmonth + " " + nowday + ", " + nowyear + "|url= |title= |site= |type=}}</ref>",
+		tagOpen: openRef+'Cite Web|quote= ',
+		tagClose: '|author= |published= |retrieved=" + nowmonth + " " + nowday + ", " + nowyear + "|url= |title= |site= |type='+closeRef,
 		sampleText: '',
 		imageId: ''
 	} );
@@ -44,8 +49,8 @@ var customizeClassicToolbar = function(){
 	mw.toolbar.addButton( {
 		imageFile: 'https://zelda.fandom.com/media/zelda.gamepedia.com/e/ef/Button_cite_book.png',
 		speedTip: 'Cite Book',
-		tagOpen: '<ref>{{Cite Book|type= |quote= ',
-		tagClose: '|book= |publisher= |page= }}</ref>',
+		tagOpen: openRef+'Cite Book|type= |quote= ',
+		tagClose: '|book= |publisher= |page= '+closeRef,
 		sampleText: '',
 		imageId: ''
 	} );
@@ -54,8 +59,8 @@ var customizeClassicToolbar = function(){
 	mw.toolbar.addButton( {
 		imageFile: 'https://zelda.fandom.com/media/zelda.gamepedia.com/e/ef/Button_cite_book.png',
 		speedTip: 'Cite Guide',
-		tagOpen: '<ref>{{Cite Guide|quote= ',
-		tagClose: '|game= |publisher= |page= |edition= |year= }}</ref>',
+		tagOpen: openRef+'Cite Guide|quote= ',
+		tagClose: '|game= |publisher= |page= |edition= |year= '+closeRef,
 		sampleText: '',
 		imageId: ''
 	} );
@@ -64,8 +69,8 @@ var customizeClassicToolbar = function(){
 	mw.toolbar.addButton( {
 		imageFile: 'https://zelda.fandom.com/media/zelda.gamepedia.com/5/53/Button_cite_person.png',
 		speedTip: 'Cite Person',
-		tagOpen: '<ref>{{Cite Person|quote= ',
-		tagClose: '|name= |url= |title= }}</ref>',
+		tagOpen: openRef+'Cite Person|quote= ',
+		tagClose: '|name= |url= |title= '+closeRef,
 		sampleText: '',
 		imageId: ''
 	} );
@@ -74,8 +79,8 @@ var customizeClassicToolbar = function(){
 	mw.toolbar.addButton( {
 		imageFile: 'https://zelda.fandom.com/media/zelda.gamepedia.com/1/1c/Button_cite_episode.png',
 		speedTip: 'Cite Episode',
-		tagOpen: '<ref>{{Cite Episode|quote= ',
-		tagClose: '|name= |show= |episode= |time= }}</ref>',
+		tagOpen: openRef+'Cite Episode|quote= ',
+		tagClose: '|name= |show= |episode= |time= '+closeRef,
 		sampleText: '',
 		imageId: ''
 	} );
@@ -84,8 +89,8 @@ var customizeClassicToolbar = function(){
 	mw.toolbar.addButton( {
 		imageFile: 'https://zelda.fandom.com/media/zelda.gamepedia.com/5/5d/Button_cite_manual.png',
 		speedTip: 'Cite Manual',
-		tagOpen: '<ref>{{Cite Manual|quote= ',
-		tagClose: '|game= |page= }}</ref>',
+		tagOpen: openRef+'Cite Manual|quote= ',
+		tagClose: '|game= |page= '+closeRef,
 		sampleText: '',
 		imageId: ''
 	} );
@@ -94,8 +99,8 @@ var customizeClassicToolbar = function(){
 	mw.toolbar.addButton( {
 		imageFile: 'https://zelda.fandom.com/media/zelda.gamepedia.com/2/20/Button_cite_template.png',
 		speedTip: 'Regular citation',
-		tagOpen: '<ref>{{Cite|(Quote)',
-		tagClose: '|(Person)|(Game)}}</ref>',
+		tagOpen: openRef+'Cite|(Quote)',
+		tagClose: '|(Person)|(Game)'+closeRef,
 		sampleText: '',
 		imageId: ''
 	} );
@@ -114,9 +119,9 @@ var customizeWikiEditor = function () {
 				'action': {
 					'type': 'encapsulate',
 					'options': {
-						'pre': '<ref>{{Cite|',
+						'pre': openRef+'Cite|',
 						'peri': '(quote)',
-						'post': '|(person)|(game)}}</ref>'
+						'post': '|(person)|(game)'+closeRef
 					}
 				}
 			},
@@ -127,9 +132,9 @@ var customizeWikiEditor = function () {
 				'action': {
 					'type': 'encapsulate',
 					'options': {
-						'pre': '<ref>{{Cite Person|quote= ',
+						'pre': openRef+'Cite Person|quote= ',
 						'peri': '',
-						'post': '|name= |url= |title= }}</ref>'
+						'post': '|name= |url= |title= '+closeRef
 					}
 				}
 			},
@@ -140,9 +145,9 @@ var customizeWikiEditor = function () {
 				'action': {
 					'type': 'encapsulate',
 					'options': {
-						'pre': '<ref>{{Cite Book|quote= ',
+						'pre': openRef+'Cite Book|quote= ',
 						'peri': '',
-						'post': '|book= |publisher= |page= }}</ref>'
+						'post': '|book= |publisher= |page= '+closeRef
 					}
 				}
 			},
@@ -153,9 +158,9 @@ var customizeWikiEditor = function () {
 				'action': {
 					'type': 'encapsulate',
 					'options': {
-						'pre': '<ref>{{Cite Guide|quote= ',
+						'pre': openRef+'Cite Guide|quote= ',
 						'peri': '',
-						'post': '|game= |publisher= |page= }}</ref>'
+						'post': '|game= |publisher= |page= '+closeRef
 					}
 				}
 			},
@@ -166,9 +171,9 @@ var customizeWikiEditor = function () {
 				'action': {
 					'type': 'encapsulate',
 					'options': {
-						'pre': '<ref>{{Cite Manual|quote= ',
+						'pre': openRef+'Cite Manual|quote= ',
 						'peri': '',
-						'post': '|game= |page= }}</ref>'
+						'post': '|game= |page= '+closeRef
 					}
 				}
 			},
@@ -179,9 +184,9 @@ var customizeWikiEditor = function () {
 				'action': {
 					'type': 'encapsulate',
 					'options': {
-						'pre': '<ref>{{Cite Episode|quote= ',
+						'pre': openRef+'Cite Episode|quote= ',
 						'peri': '',
-						'post': '|name= |show= |episode= |time= }}</ref>'
+						'post': '|name= |show= |episode= |time= '+closeRef
 					}
 				}
 			},
@@ -192,9 +197,9 @@ var customizeWikiEditor = function () {
 				'action': {
 					'type': 'encapsulate',
 					'options': {
-						'pre': '<ref>{{Cite Web|quote= ',
+						'pre': openRef+'Cite Web|quote= ',
 						'peri': '',
-						'post': '|author= |published= |retrieved= ' + nowmonth + ' ' + nowday + ', ' + nowyear + '|url= |title= |site= |type= }}</ref>'
+						'post': '|author= |published= |retrieved= ' + nowmonth + ' ' + nowday + ', ' + nowyear + '|url= |title= |site= |type= '+closeRef
 					}
 				}
 			}

@@ -4,7 +4,7 @@ if ($.inArray( mw.config.get('wgAction'), [ 'view', 'purge' ]) !== -1 && mw.conf
   $(function edittop_hook () {
     var localtitles = {
       en: 'Edit lead section',
-      zh: '编辑首段'
+      zh: wgULS('编辑首段', '編輯首段')
     };
 
     var our_content = $("#content, #mw_content").first();
@@ -19,11 +19,11 @@ if ($.inArray( mw.config.get('wgAction'), [ 'view', 'purge' ]) !== -1 && mw.conf
       var a = $(this);
       a.attr("title", localtitles[mw.config.get( 'wgUserLanguage' )] || localtitles.zh);
       if ( !/&(ve|)section=T/.test( a.attr( "href" ) ) ) { // not transcluded
-        a.attr( "href", a.attr( "href" ).replace( /&(ve|)section=\d+/, "&$1section=0&summary=/*%20导言%20*/%20" ) );
+        a.attr( "href", a.attr( "href" ).replace( /&(ve|)section=\d+/, "&$1section=0&summary=/*%20" + wgULS('导言', '導言') + "%20*/%20" ) );
       } else if ( /&vesection=/.test( a.attr( "href" ) ) ) { // transcluded, VE
-        a.attr( "href", mw.util.getUrl( mw.config.get( 'wgPageName' ) ) + "?veaction=edit&vesection=0&summary=/*%20导言%20*/%20" );
+        a.attr( "href", mw.util.getUrl( mw.config.get( 'wgPageName' ) ) + "?veaction=edit&vesection=0&summary=/*%20" + wgULS('导言', '導言') + "%20*/%20" );
       } else { // transcluded, not VE
-        a.attr( "href", mw.util.getUrl( mw.config.get( 'wgPageName' ) ) + "?action=edit&section=0&summary=/*%20导言%20*/%20" );
+        a.attr( "href", mw.util.getUrl( mw.config.get( 'wgPageName' ) ) + "?action=edit&section=0&summary=/*%20" + wgULS('导言', '導言') + "%20*/%20" );
       }
     });
   });

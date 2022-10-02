@@ -560,7 +560,7 @@
 			{ name: 'Spawner' },
 			{ name: 'TNT' },
 			{ name: 'Jukebox' },
-			{ name: 'Command Block' },
+			{ name: 'Command Block', enchName: 'Enchanted Command Block' },
 			{ name: 'Enchantment Table', mcName: 'Enchanting Table (item)' },
 			{ name: 'Enchantment Table (placed)', mcName: 'Enchanting Table', png: true },
 			{ name: 'Water Block', mcName: 'Water' },

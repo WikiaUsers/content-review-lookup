@@ -2025,7 +2025,7 @@ $(function() {
     formula_loader(['frost', 'frost4_aug', 'frost4'], [
       ['str1', (STR * 1500).toFixed(0)],
       ['str2', (STR * 400).toFixed(0)],
-      ['str3', Math.min((STR * 40), 100).toFixed(2) + "%"],
+      ['str3', Math.min((STR * 60), 100).toFixed(2) + "%"],
       ['rng1', (RNG * 15).toFixed(2) + "m"],
       ['rng2', (RNG * 4.5).toFixed(2) + "m"],
       ['dur', (DUR * 8).toFixed(2) + "s"],
@@ -2422,7 +2422,7 @@ $(function() {
       ['eff', (EFF * 100).toFixed(2)]
     ]);
     formula_loader(['mag', 'mag4_aug'], [
-      ['str', Math.min(STR * 50, 100).toFixed(2) + "%"],
+      ['str', Math.min(STR * 75, 100).toFixed(2) + "%"],
       ['dur', (RNG * 7).toFixed(2) + "s"]
     ]);
     //Mesa
@@ -2501,7 +2501,7 @@ $(function() {
     ]);
     formula_loader(['nekros', 'nekros2_aug', 'nekros2'], [
       ['str1', (STR * 20).toFixed(0)],
-      ['str2', Math.min(STR * 20, 100).toFixed(2) + "%"],
+      ['str2', Math.min(STR * 60, 100).toFixed(2) + "%"],
       ['dur', (DUR * 25).toFixed(2) + "s"],
       ['rng', (RNG * 15).toFixed(2) + "m"],
       ['eff', (EFF * 75).toFixed(2)]
@@ -2703,7 +2703,7 @@ $(function() {
       ['str', Math.min((STR * 50), 100).toFixed(2) + "%"]
     ]);
     formula_loader(['oberon', 'oberon4_aug', 'oberon4'], [
-      ['str1', Math.min((STR * 30), 100).toFixed(2) + "%"],
+      ['str1', Math.min((STR * 50), 100).toFixed(2) + "%"],
       ['str2', (STR * 1250).toFixed(0)],
       ['str3', (STR * 625).toFixed(0)],
       ['dur', (DUR * 4).toFixed(2) + "s"],
@@ -2919,7 +2919,7 @@ $(function() {
       ['eff', (EFF * 75).toFixed(2)]
     ]);
     formula_loader(['trinity', 'trinity3_aug'], [
-      ['str', Math.min((STR * 45), 100).toFixed(2) + "%"]
+      ['str', Math.min((STR * 60), 100).toFixed(2) + "%"]
     ]);
     formula_loader(['trinity', 'trinity4'], [
       ['str1', Math.min((STR * 80), 100).toFixed(2) + "%"],

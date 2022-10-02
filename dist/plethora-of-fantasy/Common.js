@@ -11,7 +11,8 @@ window.UserTagsJS = {
 		wolf: 'Official Wolf',
 		cheerfulbird: 'Cheerful Bird',
 		dragon: 'Verified Dragon',
-		stalker: 'Stalker Flower'
+		stalker: 'Stalker Flower',
+		kitsune: 'Kitsune Assassin'
 	}
 };
 UserTagsJS.modules.custom = {
@@ -20,5 +21,6 @@ UserTagsJS.modules.custom = {
 	'Firewind0111': ['wolf'],
 	'Mintflower09': ['cheerfulbird'],
 	'Moonshadow567': ['dragon'],
-	'ALostWonderer': ['stalker']
+	'ALostWonderer': ['stalker'],
+	'Featherfrost2907':['kitsune']
 };

@@ -4,6 +4,7 @@
 // This script is from Wikipedia. For author attribution, please see http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
 
 
+
 /* Test if an element has a certain class **************************************
  *
  * Description: Uses regular expressions and caching for better performance.
@@ -261,3 +262,6 @@ $(function() {
         );
     }
 });
+
+/* CropTool
+mw.loader.load('//commons.wikimedia.org/w/load.php?modules=ext.gadget.CropTool');

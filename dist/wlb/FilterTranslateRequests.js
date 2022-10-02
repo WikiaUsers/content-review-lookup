@@ -3,7 +3,7 @@
 	var config = mw.config.get([
 		'wgArticleId'
 	]);
-	if (config.wgArticleId === 10504 || config.wgArticleId === 3462 ) {
+	if (!(config.wgArticleId === 10504 || config.wgArticleId === 3462 )) return;
 	
 	var language,
 		status_url,
@@ -12,7 +12,7 @@
 		to_language,
 		from_language;
 	
-	importScriptPage('Template:Javascript_Localization', 'wlb');
+	importScriptPage('Template:Javascript Localization', 'wlb');
 	
 	/* delay to load the messages */
 	setTimeout(function() {
@@ -34,12 +34,12 @@
 		
 		var status = $("#language select#status").val();
 		
-		if(status === "open") { 
+		if (status === "open") { 
 			status_url = "New";
 		} else if (status === "completed") {
 			status_url = "Completed";
 		}
-		$.getJSON("http://wlb.wikia.com/api.php?action=query&list=categoryintersection&limit=10&categories=Category:" + status_url +  "+translations|Category:" + language + "&format=json")
+		$.getJSON("http://wlb.wikia.com/api.php?action=query&list=categoryintersection&limit=10&categories=Category:" + status_url + "+translations|Category:" + language + "&format=json")
 		.done(function(data, _) {
 	
 			list_of_requests = [];
@@ -73,21 +73,21 @@
 	}
 	
 	$("body").append("<style>" +
-	"#request-table li {" +
-	"list-style: none; margin: 0; padding: 5px; border-bottom: 1px solid #999;" +
-	"}" +
-	"#request-table li:last-child {" +
-	"border-bottom: 0;" +
-	"}" +
-	"#request-table {" +
-	"margin-top: 1em; padding: 0 10px;" +
-	"background: #efefef;" +
-	"}" +
-	"</style>");
+		"#request-table li {" +
+		"list-style: none; margin: 0; padding: 5px; border-bottom: 1px solid #999;" +
+		"}" +
+		"#request-table li:last-child {" +
+		"border-bottom: 0;" +
+		"}" +
+		"#request-table {" +
+		"margin-top: 1em; padding: 0 10px;" +
+		"background: #efefef;" +
+		"}" +
+		"</style>"
+	);
 	
 	$("#request-table > p").remove();
 	
 	}, 1500);
 	/* ^ end delay of delay for loading messages */
-	}
 })(window.jQuery, window.mediaWiki);

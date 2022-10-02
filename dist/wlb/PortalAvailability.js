@@ -1,3 +1,4 @@
+// <nowiki>
 ;(function($, mw) {
 	'use strict';
 	var config = mw.config.get([
@@ -49,3 +50,4 @@
 		});
 	}, 2000);
 })(window.jQuery, window.mediaWiki);
+// </nowiki>

@@ -1,3 +1,4 @@
+// налаштування для скрипта dev:Tooltips.js
 var tooltips_list = [
 	{
         classname: 'tooltip', 

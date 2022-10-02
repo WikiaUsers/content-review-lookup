@@ -6,7 +6,7 @@ function() {
     var href = $(this).attr('href');
     $(this).click(function(e) {
       e.preventDefault();
-      OO.ui.confirm('确定要回退此编辑吗？').done(function(confirmed) {
+      OO.ui.confirm(wgULS('确定要回退此编辑吗？', '確定要回退此編輯嗎？')).done(function(confirmed) {
         if (confirmed) {
           location.href = href;
         }

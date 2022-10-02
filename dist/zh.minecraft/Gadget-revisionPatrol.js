@@ -15,18 +15,18 @@
 // TODO: Use async once MW allows it
 $( function() {
 	var i18n = {
-		autopatrolled: '已自动巡查',
+		autopatrolled: wgULS('已自动巡查', '已自動巡查'),
 		// $1 is the user, $2 is the timestamp
-		patrolled: '由$1巡查（$2）',
-		unpatrollable: '无法巡查',
-		unpatrolled: '尚未巡查',
-		autopatrolledLegend: '自动巡查的编辑',
-		patrolledLegend: '已巡查编辑',
-		unpatrollableLegend: '无法巡查的编辑',
-		unpatrolledLegend: '尚未巡查的编辑',
-		error: '无法拉取巡查信息。',
-		rightsError: '无法获得自动巡查权限。',
-		errorTitle: '巡查复核',
+		patrolled: wgULS('由$1巡查（$2）', '由$1巡查（$2）'),
+		unpatrollable: wgULS('无法巡查', '無法巡查'),
+		unpatrolled: wgULS('尚未巡查', '尚未巡查'),
+		autopatrolledLegend: wgULS('自动巡查的编辑', '自動巡查的編輯'),
+		patrolledLegend: wgULS('已巡查编辑', '已巡查編輯'),
+		unpatrollableLegend: wgULS('无法巡查的编辑', '無法巡查的編輯'),
+		unpatrolledLegend: wgULS('尚未巡查的编辑', '尚未巡查的編輯'),
+		error: wgULS('无法拉取巡查信息。', '無法取得巡查資訊。'),
+		rightsError: wgULS('无法获得自动巡查权限。', '無法取得自動巡查權限。'),
+		errorTitle: wgULS('修订版本巡查', '修訂版本巡查')
 	};
 	
 	// Only run on real pages

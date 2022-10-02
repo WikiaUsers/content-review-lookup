@@ -182,7 +182,13 @@ $('.centralhelpbox').click(function() {
 })();
 
 $(function() {
+	if ($('.wikicard-back a').attr('href') != undefined) {
 	$('.pi-theme-wikicard').css({
 		"--wiki-bg": "url(" + $('.wikicard-back a').attr('href') + ")"
 	});
+	} else {
+$('.pi-theme-wikicard').css({
+		"--wiki-bg": "url(" + $('.wikicard-back img').attr('src') + ")"
+	});	
+	}
 });

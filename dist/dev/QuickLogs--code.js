@@ -370,8 +370,8 @@ mw.loader.using('mediawiki.util').then(function() {
             rights = (ev.rights || ev.params && ev.params.oldgroups) ? this.parseRights(ev.rights || ev.params) : {},
             oldrights = rights.oldstr,
             newrights = rights.newstr,
-            before = ev[1],
-            after = ev[0],
+            before = ev[1] || ev.params && ev.params.oldtype,
+            after = ev[0] || ev.params && ev.params.newtype,
             duration = ev.block && ev.block.duration ? ev.block.duration : '',
             flags = ((ev.block && ev.block.flags) || (ev.params && ev.params.flags)) ? ' (' + (ev.block ? ev.block.flags.replace(/,/g, ', ') : ev.params.flags.join(', ')) + ') ' : '';
 

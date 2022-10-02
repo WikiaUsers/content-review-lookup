@@ -1,47 +1,47 @@
 /*DivEditor by Mopsgamer*/
 /*Version 1.3.0*/
  
-$(function () {
-
+;(function ($, mw) {
+var mtx$rot, mtx$a, mtx$b, mtx$c, mtx$d, mtx$tx, mtx$ty, DivEditorLang;
 var $setcss = function(prop) {
     if(($('#ViewSettings [prop=' + prop + ']').val()!=="") && ($('#ViewSettings [prop=' + prop + ']').val()!=="none")){$('#EditorViewArea>div').css(prop, $('#ViewSettings [prop=' + prop + ']').val());}
-}
+};
 var $setattr = function(attrib) {
     if(($('#ViewSettings [prop=' + attrib + ']').val()!=="") && ($('#ViewSettings [prop=' + attrib + ']').val()!=="none")){$('#EditorViewArea>div').attr(attrib, $('#ViewSettings [prop=' + attrib + ']').val());}
-}
+};
 var $setinpt = function(inpt, a, b) {
     $('#ViewSettings input'+inpt).val(a);
     $('#ViewSettings input'+inpt).attr("placeholder", b);
-}
+};
 var toRad = function(deg) {
   var pi = Math.PI;
   return deg * (pi/180);
-}
+};
 var $setmtx = function() {
     if($('#ViewSettings [func="rotate"]').val()==""){mtx$rot = 0;}else
-    {mtx$rot = toRad($('#ViewSettings [func="rotate"]').val());};
+    {mtx$rot = toRad($('#ViewSettings [func="rotate"]').val());}
     if($('#ViewSettings [func="scaleX"]').val()==""){mtx$a = 1;}else
-    {mtx$a = parseInt($('#ViewSettings [func="scaleX"]').val())+Math.cos(mtx$rot);};
+    {mtx$a = parseInt($('#ViewSettings [func="scaleX"]').val())+Math.cos(mtx$rot);}
     if($('#ViewSettings [func="skewX"]').val()==""){mtx$b = 0;}else
-    {mtx$b = parseInt($('#ViewSettings [func="skewX"]').val())+Math.sin(mtx$rot);};
+    {mtx$b = parseInt($('#ViewSettings [func="skewX"]').val())+Math.sin(mtx$rot);}
     if($('#ViewSettings [func="skewY"]').val()==""){mtx$c = 0;}else
-    {mtx$c = parseInt($('#ViewSettings [func="skewY"]').val())-Math.sin(mtx$rot);};
+    {mtx$c = parseInt($('#ViewSettings [func="skewY"]').val())-Math.sin(mtx$rot);}
     if($('#ViewSettings [func="scaleY"]').val()==""){mtx$d = 1;}else
-    {mtx$d = parseInt($('#ViewSettings [func="scaleY"]').val())+Math.cos(mtx$rot);};
+    {mtx$d = parseInt($('#ViewSettings [func="scaleY"]').val())+Math.cos(mtx$rot);}
     if($('#ViewSettings [func="translateX"]').val()==""){mtx$tx = 0;}else
-    {mtx$tx = $('#ViewSettings [func="translateX"]').val();};
+    {mtx$tx = $('#ViewSettings [func="translateX"]').val();}
     if($('#ViewSettings [func="translateY"]').val()==""){mtx$ty = 0;}else
-    {mtx$ty = $('#ViewSettings [func="translateY"]').val();};
+    {mtx$ty = $('#ViewSettings [func="translateY"]').val();}
     if( "matrix("+mtx$a+", "+mtx$b+", "+mtx$c+", "+mtx$d+", "+mtx$tx+", "+mtx$ty+")" !== "matrix(1, 0, 0, 1, 0, 0)" ){
     $('#EditorViewArea>div').css("transform", "matrix("+mtx$a+", "+mtx$b+", "+mtx$c+", "+mtx$d+", "+mtx$tx+", "+mtx$ty+")").css("transform-origin", $('#ViewSettings [func="originX"]').val()+" "+$('#ViewSettings [func="originY"]').val());}
-}
+};
 
-DivEditor = {
+var DivEditor = {
 AddInside: "#Editor",
 FontSize: 14
-}
+};
  
-Div = {
+var Div = {
 TextValue: "",
 Color: "",
 FontFamily: "",
@@ -68,9 +68,9 @@ OriginX: "",
 OriginY: "",
 Class: "",
 Id: ""
-}
+};
  
-DivEditorPlhl = {
+var DivEditorPlhl = {
 SettingTextValue: "",
 SettingColor: "",
 SettingFontFamily: "",
@@ -93,9 +93,9 @@ SettingTransformTranslate: "",
 SettingTransformOrigin: "",
 SettingClasses: "",
 SettingId: ""
-}
+};
  
-    if (window.wgUserLanguage == "ru") {
+if (window.wgUserLanguage == "ru") {
 DivEditorLang = {
 ButtonTextOpen: "Открыть",
 ButtonTextChange: "Сменить редактор",
@@ -140,7 +140,7 @@ SettingOverflow: "Переполнение",
 SettingAttributes: "Атрибуты",
 SettingClasses: "Классы",
 SettingId: "ID"
-}} else if (window.wgUserLanguage == "uk") {
+};} else if (window.wgUserLanguage == "uk") {
 DivEditorLang = {
 ButtonTextOpen: "Відкрити",
 ButtonTextChange: "Змінити редактор",
@@ -185,7 +185,7 @@ SettingOverflow: "Переповнення",
 SettingAttributes: "Атрибути",
 SettingClasses: "Класи",
 SettingId: "ID"
-}} else {
+};} else {
 DivEditorLang = {
 ButtonTextOpen: "Open",
 ButtonTextChange: "Change editor",
@@ -230,10 +230,10 @@ SettingOverflow: "Overflow",
 SettingAttributes: "Attributes",
 SettingClasses: "Classes",
 SettingId: "ID"
-}}
+};}
 
-Area = "EditorTextArea";
-AreaTitle = DivEditorLang.TextAreaTitle;
+var Area = "EditorTextArea";
+var AreaTitle = DivEditorLang.TextAreaTitle;
 
 $(DivEditor.AddInside).css("margin", "10px 0").html('');
 $(DivEditor.AddInside).append('<div id="DivEditor" class="modal wds-dialog__wrapper" style="display: inline;"></div>');
@@ -297,7 +297,7 @@ $('#EditorRightAreaView button').css("width", "auto");
 $('#ViewSettings li').css("list-style-type", "none");
 $('#ViewSettings input').css("width", "110px");
 $('#ViewSettings select').css("width", "118px");
-$('#ViewSettings input, #ViewSettings select').css("float", "right")
+$('#ViewSettings input, #ViewSettings select').css("float", "right");
 $('#EditorTextArea').css("font-size", DivEditor.FontSize+"px");
 $('#ViewSettings li ul').parent().wrapInner('<details>');
 $('#ViewSettings li ul').prev().wrap('<summary>');
@@ -356,7 +356,7 @@ $("#SetCSS").click(function(){
     $setcss("overflow");
     $setattr("class");
     $setattr("id");
-})
+});
  
 $('#Clear').click(function(){
 $('#EditorViewArea>div').attr("style", "").attr("class", "").attr("id", "").text("");
@@ -382,9 +382,9 @@ $('[func="skewY"]').val("");
 $('[func="translateX"]').val("");
 $('[func="translateY"]').val("");
 $('[func="rotate"]').val("");
-})
+});
  
-jQuery.fn.selectText = function() {
+$.fn.selectText = function() {
   var range, selection;
   return this.each(function() {
     if (document.body.createTextRange) {
@@ -413,19 +413,19 @@ $('#FontSizeIncrease').click(function(){
 if (DivEditor.FontSize < 30) {++DivEditor.FontSize;
 $('#EditorTextArea').css("font-size", DivEditor.FontSize+"px");
 $('#FontSize').text(DivEditor.FontSize+"px");}
-})
+});
  
 $('#FontSizeDecrease').click(function(){
 if (DivEditor.FontSize > 1) {--DivEditor.FontSize;
 $('#EditorTextArea').css("font-size", DivEditor.FontSize+"px");
 $('#FontSize').text(DivEditor.FontSize+"px");}
-})
+});
 
 $('#FontSizeDefault').click(function(){
 DivEditor.FontSize = 14;
 $('#EditorTextArea').css("font-size", DivEditor.FontSize+"px");
 $('#FontSize').text(DivEditor.FontSize+"px");
-})
+});
 
 var close = function(){
 $('#ChangeEditor').text(DivEditorLang.ButtonTextOpen).css("float", "unset");
@@ -434,9 +434,9 @@ $('#EditorAreaTitle').text("Div Editor");
 $('#Close').hide();
 $('#DivEditor').css("height", "unset").css("width", "unset").css("transition", "0.5s").css("margin", "0").unwrap();
 $('#HideFront').remove();
-}
+};
 
-$('#Close').click(function(){close()})
+$('#Close').click(function(){close();});
  
  Area = "EditorTextArea";
  AreaTitle = DivEditorLang.ViewAreaTitle;
@@ -445,16 +445,16 @@ $('#Close').click(function(){close()})
  
 $('#ChangeEditor').click(function(){
 $('#DivEditor').css("height", "470px").css("width", "fit-content").css("transition", "0");
-$('#EditorHeader button').css("height", "28px")
+$('#EditorHeader button').css("height", "28px");
 $('#Close').show();
 $('#EditorAreas').show();
 $('#EditorAreaTitle').show();
     if($(this).text() == DivEditorLang.ButtonTextOpen) {
-        $('#DivEditor').css("margin", "auto").css("max-width", "none").wrap('<div class="wds-dialog__curtain user-tools-modal div-editor" style="z-index: 401;"></div>')
-        $('#EditorAreas').css("padding", "0 8px").css("width", "100%")
+        $('#DivEditor').css("margin", "auto").css("max-width", "none").wrap('<div class="wds-dialog__curtain user-tools-modal div-editor" style="z-index: 401;"></div>');
+        $('#EditorAreas').css("padding", "0 8px").css("width", "100%");
         $('#EditorAreaTitle').text(AreaTitle);
         $(this).css("float", "left");
-        $('head').append('<style id="HideFront">.avatars, .refpopups-configure-page{z-index: 0} .wds-community-header{z-index: 3}</style>')
+        $('head').append('<style id="HideFront">.avatars, .refpopups-configure-page{z-index: 0} .wds-community-header{z-index: 3}</style>');
 }
  
 	if( $(this).text() == DivEditorLang.ButtonTextChange ){
@@ -480,4 +480,4 @@ $('#EditorAreaTitle').show();
 $('#EditorAreaTitle').text(AreaTitle);
 $(this).text(DivEditorLang.ButtonTextChange);
 });
-});
+})(window.jQuery, window.mediaWiki);

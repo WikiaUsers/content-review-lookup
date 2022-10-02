@@ -21,6 +21,8 @@ window.UserTagsJS = {
 		    'Alexis21155': ['asistente'],
 		    'Bloomdanix': ['asistente'],
             'Ale_-_Remastered': ['asistente'],
+            'Turnip0310': ['asistente'],
+            'PNAS27': ['asistente'],
             
             'WKorps': ['veterano'],
             'ClaudeSpeed9425': ['veterano'],

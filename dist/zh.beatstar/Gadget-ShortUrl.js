@@ -1,0 +1,1 @@
+mw.loader.load('https://dev.fandom.com/wiki/MediaWiki:ShortUrl.js?action=raw&ctype=text/javascript');

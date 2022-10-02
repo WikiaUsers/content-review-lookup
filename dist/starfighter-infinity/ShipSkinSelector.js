@@ -7,7 +7,7 @@
 	var shipSpecificImagePlaceholderUrl = false;
 	var shipSpecificImagePlaceholderHtml = false;
 	
-	skinList = {
+	var skinList = {
 		'Standard': false,
 		'Andromedan': false,
 		'Cold Steel': false,
@@ -195,7 +195,7 @@
 		}
 	};
 
-	selectNextSkin = function(){
+	var selectNextSkin = function(){
 		var skinNameList = Object.keys(skinList);
 		var selectedSkinName = 'Standard';
 		if ($('.shipPageSelectorMenuItem[data-selected="selected"]').length) {
@@ -210,7 +210,7 @@
 	$( document ).ready(function() {
 		bodyLoadComplete = true;
 
-		skinList['Standard'] = $("figure[data-source=image1] a").html();
+		skinList['Standard'] = $("figure[data-source=image1]").html();
 		if (typeof skinList['Standard'] == 'undefined') {
 			skinList['Standard'] = '';
 		}

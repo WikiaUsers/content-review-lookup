@@ -2,13 +2,13 @@ $( function() {
 	'use strict';
 	
 	var i18n = {
-		cancelButton: '取消',
-		doneButton: '完成',
-		enableLabel: '启用参考提示',
-		optionsButtonTitle: '更改参考提示选项',
+		cancelButton: wgULS('取消', '取消'),
+		doneButton: wgULS('完成', '完成'),
+		enableLabel: wgULS('启用参考提示', '啟用參考提示'),
+		optionsButtonTitle: wgULS('更改参考提示选项', '變更參考提示選項'),
 		referencesSectionName: '参考',
-		saveFailedStorageFull: "你的浏览器本地内存是否已满？",
-		saveFailedTitle: '选项保存失败'
+		saveFailedStorageFull: wgULS('你的浏览器本地内存是否已满？', '您的瀏覽器的本機存儲空間是否已滿？'),
+		saveFailedTitle: wgULS('选项保存失败', '選項儲存失敗')
 	};
 	
 	var $win = $( window );

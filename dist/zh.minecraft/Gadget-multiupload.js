@@ -1,19 +1,19 @@
 mw.loader.using(['site']).then(function () {
 	i18n = {
 		specialpage: "Special:上传文件",
-		multiupload: "批量上传：",
+		multiupload: wgULS(undefined,undefined,undefined,"批量上传：", "批量上傳：", "批量上載："),
 		yes: "是",
 		no: "否",
-		sourcefiles: "源文件名：",
-		uploadfiles: "上传文件",
-		nofiles: "请选择要上传的文件。",
-		nolicense: "请选择要适用的授权协议。",
+		sourcefiles: wgULS("源文件名：", "源檔名："),
+		uploadfiles: wgULS(undefined,undefined,undefined,"上传文件", "上傳檔案", "上載檔案"),
+		nofiles: wgULS(undefined,undefined,undefined,"请选择要上传的文件。", "請選取要上傳的檔案。", "請選取要上載的檔案。"),
+		nolicense: wgULS("请选择适用的授权协议。", "請選取適用的授權條款。"),
 		summary: "文件说明",
 		license: "授权协议",
-		uploading: "上传中……",
-		uploaded: "已上传",
-		failed: "上传失败",
-		done: "上传结束",
+		uploading: wgULS(undefined,undefined,undefined,"上传中……", "正在上傳……", "正在上載……"),
+		uploaded: wgULS(undefined,undefined,undefined,"已上传：", "已上傳：", "已上載："),
+		failed: wgULS(undefined,undefined,undefined,"上传失败", "上傳失敗", "上載失敗"),
+		done: wgULS(undefined,undefined,undefined,"上传结束", "上傳結束", "上載結束"),
 		comment: "Multiupload"
 	};
 	if (mw.config.get("wgPageName") !== i18n.specialpage) return;

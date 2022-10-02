@@ -4,9 +4,9 @@
 
 mw.hook( 'wikipage.content' ).add( function( $content ) {
 	var i18n = {
-		playTitle: '点击播放',
-		stopTitle: '点击暂停',
-		audioNotExist: '此声音文件不存在',
+		playTitle: wgULS('点击播放', '按下播放'),
+		stopTitle: wgULS('点击暂停', '按下暫停'),
+		audioNotExist: wgULS('此声音文件不存在', '此聲音檔案不存在'),
 	};
 	$content.find('.sound' ).prop( 'title', i18n.playTitle ).on( 'click', function( e ) {
 		// Ignore links

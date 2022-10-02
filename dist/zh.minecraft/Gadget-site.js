@@ -11,9 +11,9 @@
 /* Variables for interface text used throughout the script, for ease of translating */
 var i18n = {
 	// Collapsible elements and page loader
-	hideText: '隐藏',
-	showText: '显示',
-	loadErrorTitle: '加载内容时出错。'
+	hideText: wgULS('隐藏', '隱藏'),
+	showText: wgULS('显示', '顯示'),
+	loadErrorTitle: wgULS('加载内容时出错。', '載入內容時出錯。')
 };
 
 /* Fired whenever wiki content is added. (#mw-content-text, live preview, load page, etc.) */

@@ -127,6 +127,10 @@ function TooltipCursorTracker(){
 	
 	var minWidth = 240;
 	var maxWidth = 400;
+	//we have to show the hidden elements (display: none or hidden) in order to being able calculate the position 
+	$('.wds-tab__content').each(function(){
+		$(this).addClass('wds-tab__content_shown');
+	});
 	//reason why it's set like this is to avoid using !important flag as much as possible, leaving it as a true last resort
     $('.tooltip').find('.tooltiptext').each(function(){
     	$(this).width(Math.min(Math.max($(this).text().length * 2.5, minWidth), maxWidth));	
@@ -147,6 +151,12 @@ function TooltipCursorTracker(){
 	    	/*hover out*/
 	    });
 	});
+	
+	//after claculation we can hide it back
+	$('.wds-tab__content_shown').each(function(){
+		$(this).removeClass('wds-tab__content_shown');
+	});
+	console.log("TooltipCursorTracker FINISHED");
 }
 /******************************************************************************/
 

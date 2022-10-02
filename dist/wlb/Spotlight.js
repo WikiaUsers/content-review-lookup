@@ -14,18 +14,17 @@
 		'wgPageName',
 		'wgServer',
 		'wgUserLanguage',
-		'wgScriptPath',
 		'wgUserName'
 	]),
-	token = mw.user.tokens.values.csrfToken,
-	signature = '~~' + '~~';
+	signature = '~~' + '~~',
+	spotlightFinalAction,
+	spotlightTemplate,
+	spot_final_template,
+	page,
+	form_open = false;
 
-	var dropdown,
-		spotlightFinalAction,
-		spotlightTemplate,
-		spot_final_template,
-		page;
-	 
+	if (config.wgPageName !== 'Spotlight:Requests') return;
+
 	var messages = {
 			get: function(name) {
 		return (messages[config.wgUserLanguage.toUpperCase()]||messages.EN)[name];
@@ -65,51 +64,60 @@
 
 	
 	// Add buttons depending on user language
-	if(config.wgPageName === 'Kittens' || config.wgPageName === "Spotlight:Requests") {
 	$("head").append("<style>#spotlight input { margin-bottom: 15px; }</style>");		
 
-		var buttonappend = '<a class="wikia-button" id="spotlight-submit" onclick="openFormSpotlight()">' + messages.get('button-open') + '</a>';
-		document.getElementById("lang-EN").innerHTML = buttonappend;
-		window.dropdown = '<select name="language" id="language" value="'+config.wgUserLanguage.toUpperCase()+'">';
-		dropdown += '<option value="" selected disabled>' + messages.get('form-language-choose') + '</option>';
-		for (var i in messages.languages) {
-			dropdown += '<option value="'+i+'">'+messages.languages[i]+'</option>';
-		}
-		dropdown += '</select>';
+	var buttonappend = document.createElement('a');
+		buttonappend.className = 'wds-button';
+		buttonappend.textContent = messages.get('button-open');
+		buttonappend.addEventListener('click', function() {
+			form_open = !form_open;
+			form_open ? openFormSpotlight() : hideForm();
+			this.textContent = messages.get(form_open ? 'button-close' : 'button-open');
+		});
+	document.getElementById("lang-EN").textContent = '';
+	document.getElementById("lang-EN").append(buttonappend);
+	var dropdown = '<select name="language" id="language" value="'+config.wgUserLanguage.toUpperCase()+'">';
+	dropdown += '<option value="" selected disabled>' + messages.get('form-language-choose') + '</option>';
+	for (var i in messages.languages) {
+		dropdown += '<option value="'+i+'">'+messages.languages[i]+'</option>';
 	}
-	 
-if ($('body').hasClass('ns-118')) {
+	dropdown += '</select>';
+
+if (config.wgNamespaceNumber === 118) {
 	// reject reason
 	function rejectReason() {
 
 	$( "select[name='reject-reason']" ).change(function () {
-		if ($(this).val() == 'NoResponse30Days') {
-			$('#official-reason textarea')
-				.val("No response for extra information for 30 days");
-			$('#spotlight-comment textarea')
-				.val("Hello again! We asked for extra information regarding this request, but there has been no reaction for over 30 days.\n\nIf you would still like to request a spotlight for this wiki, please return to [[Spotlight:Requests]] and create a new request. Keep in mind that you still need to provide the info we asked for!\n\nHope to see you again :) &#126;&#126;&#126;");
-			
-			
-		} else if ($(this).val() == 'Articles' ) {
-			$('#official-reason textarea')
-				.val("Wiki has less than 50 articles");
-			$('#spotlight-comment textarea')
-				.val("Hi! Thank you for making a spotlight request. However, your wiki does not have enough articles yet to be eligible for a spotlight. \n\nPlease write some more articles on your wiki. When you're done and you have more than 50 articles, you're very welcome to create a new request.\n\nHope to see you again soon :) &#126;&#126;&#126;");
+		var reason_text = '',
+		comment_text = '';
+		switch($(this).val()) {
+			case 'NoResponse30Days':
+				reason_text = 'No response for extra information for 30 days';
+				comment_text = 'Hello again! We asked for extra information regarding this request, but there has been no reaction for over 30 days.\n\nIf you would still like to request a spotlight for this wiki, please return to [[Spotlight:Requests]] and create a new request. Keep in mind that you still need to provide the info we asked for!\n\nHope to see you again :) &#126;&#126;&#126;';
+				break;
 
-		} else if ($(this).val() == 'Language' ) {
-			$('#official-reason textarea')
-				.val("Wiki\'s language to be requested elsewhere");
-			$('#spotlight-comment textarea')
-				.val("Hello, and thanks for making a spotlight request! However, the language that your wiki is in, has a dedicated place where you can request the spotlight. \n\nPlease check out the list at [[Spotlight:Requests]] and go to the link for your language. This also means that you don't have to make your request in English ;)\n\nGood luck with your spotlight! &#126;&#126;&#126;");
-			
-		} else if ($(this).val() == 'NoURL' ) {
-			$('#official-reason textarea').val('No wikia URL provided');
-			$('#spotlight-comment textarea').val('Hello, and thanks for making a spotlight request! However, you did not provide a URL to your project and thus we were not able to determine if it meets the criteria. &#126;&#126;&#126;&#126;');
-		
-		} else if ($(this).val() == 'Spam' ) {
-			$('#official-reason textarea').val('Spam');
-			$('#spotlight-comment textarea').val('');
+			case 'Articles':
+				reason_text = 'Wiki has less than 50 articles';
+				comment_text = 'Hi! Thank you for making a spotlight request. However, your wiki does not have enough articles yet to be eligible for a spotlight. \n\nPlease write some more articles on your wiki. When you\'re done and you have more than 50 articles, you\'re very welcome to create a new request.\n\nHope to see you again soon :) &#126;&#126;&#126;';
+				break;
+
+			case 'Language':
+				reason_text = 'Wiki\'s language to be requested elsewhere';
+				comment_text = 'Hello, and thanks for making a spotlight request! However, the language that your wiki is in, has a dedicated place where you can request the spotlight. \n\nPlease check out the list at [[Spotlight:Requests]] and go to the link for your language. This also means that you don\'t have to make your request in English ;)\n\nGood luck with your spotlight! &#126;&#126;&#126;';
+				break;
+
+			case 'NoURL':
+				reason_text = 'No fandom URL provided';
+				comment_text = 'Hello, and thanks for making a spotlight request! However, you did not provide a URL to your project and thus we were not able to determine if it meets the criteria. &#126;&#126;&#126;&#126;';
+				break;
+
+			case 'Spam':
+				reason_text = 'Spam';
+				comment_text = '';
+				break;
 		}
+		$('#official-reason textarea').val(reason_text);
+		$('#spotlight-comment textarea').val(comment_text);
 	});
 	}
 	
@@ -127,7 +135,7 @@ if ($('body').hasClass('ns-118')) {
 			$('#official-reason textarea')
 				.val("No URL given to localized project");
 			$('#spotlight-comment textarea')
-				.val("Hi, thank you for requesting a spotlight. We would like to see the wikia you've requested a spotlight for - currently, your link goes to _____.\n\nPlease make sure that you provide us a URL to your localized project.\n\nThanks :) &#126;&#126;&#126;");
+				.val("Hi, thank you for requesting a spotlight. We would like to see the Fandom you've requested a spotlight for - currently, your link goes to _____.\n\nPlease make sure that you provide us a URL to your localized project.\n\nThanks :) &#126;&#126;&#126;");
 
 
  		} else if ($(this).val() == 'dropdowntext_mainpage' ) {
@@ -182,13 +190,13 @@ if ($('body').hasClass('ns-118')) {
 			$('#official-reason textarea')
 				.val("Please provide a bigger image");
 			$('#spotlight-comment textarea')
-				.val("Hi! Thanks for making a spotlight request, the wiki definitely looks suitable to be spotlighted on Wikia. However, the picture you provided is not big enough.\n\nPlease provide a picture that is at least 300px wide and 200px tall. Also, keep in mind that it has to be related to the wiki's topic and not contain text.\n\nThank you! &#126;&#126;&#126;");
+				.val("Hi! Thanks for making a spotlight request, the wiki definitely looks suitable to be spotlighted on Fandom. However, the picture you provided is not big enough.\n\nPlease provide a picture that is at least 300px wide and 200px tall. Also, keep in mind that it has to be related to the wiki's topic and not contain text.\n\nThank you! &#126;&#126;&#126;");
 
 		} else if ($(this).val() == 'dropdowntext_pictextbased' ) {
 			$('#official-reason textarea')
 				.val("Image cannot be text-based");
 			$('#spotlight-comment textarea')
-				.val("Hi, thanks for creating a spotlight request your wiki looks ready to be spotlighted on Wikia! However, your picture is dominated by text.\n\nSince the caption will already be there, we need a picture that is not a logo or is largely dominated by text. Can you please provide a new image?\n\nThanks! &#126;&#126;&#126;");
+				.val("Hi, thanks for creating a spotlight request your wiki looks ready to be spotlighted on Fandom! However, your picture is dominated by text.\n\nSince the caption will already be there, we need a picture that is not a logo or is largely dominated by text. Can you please provide a new image?\n\nThanks! &#126;&#126;&#126;");
 
 		} else if ($(this).val() == 'dropdowntext_other' ) {
 			$('#official-reason textarea')
@@ -208,15 +216,13 @@ if ($('body').hasClass('ns-118')) {
 	
 		if (config.wgUserName === null) { 
 			alert('Please log in to continue');
-			window.location = 'http://wlb.wikia.com/wiki/Special:UserLogin?returnto=Spotlight:Requests';
+			window.location = 'https://wlb.fandom.com/wiki/Special:UserLogin?returnto=Spotlight:Requests';
 			
 		} else {
-
-			$("#lang-EN").after('<div id="request-form" style="min-width: 660px; margin: 0 auto;"><h2>Spotlight request</h2><div style="margin: 0 auto;"><h3>Example spotlights</h3><img alt="PadSpotlightCaption" src="https://images.wikia.nocookie.net/__cb20130212060351/translators/images/1/18/PadSpotlightCaption.png" width="255" height="123" data-image-name="PadSpotlightCaption.png" data-image-key="PadSpotlightCaption.png"><img alt="Spotlight-bobleponge-255-fr" src="https://images.wikia.nocookie.net/__cb20110404140845/translators/images/6/67/Spotlight-bobleponge-255-fr.png" width="255" height="123" data-image-name="Spotlight-bobleponge-255-fr.png" data-image-key="Spotlight-bobleponge-255-fr.png"><img alt="Yourwiki" src="https://images.wikia.nocookie.net/__cb20110404140715/translators/images/7/75/Yourwiki.png" width="255" height="123" data-image-name="Yourwiki.png" data-image-key="Yourwiki.png" data-src="https://images.wikia.nocookie.net/__cb20110404140715/translators/images/7/75/Yourwiki.png" class="" onload="if(typeof ImgLzy==&quot;object&quot;){ImgLzy.load(this)}"></div><form class="WikiaForm" method="" name="" id="spotlight" style="width: "><fieldset style="text-align: left; width: 660px;"><span style="font-family:Arial"><span style="font-weight:bold">Wiki name</span><br><input id="wikiname" type="text" placeholder="Community Central" style="width:400px"/><br><span id="br2" /><span style="font-weight:bold">URL</span><br><span style="color:gray">http://</span><input id="wikiurl" type="text" placeholder="community" style="width:304px"/><span style="color:gray">.wikia.com</span><br><span id="br2" /><span style="font-weight:bold">Select your language</span> (' + window.dropdown + ')<br><span style="color:gray">These languages cannot be requested and will not be worked on here: <a href="http://community.wikia.com/wiki/Community_Central:Spotlights">en</a>, <a href="http://comunidad.wikia.com/wiki/Wikia:Spotlights">ca/es</a>, <a href="http://de.community.wikia.com/wiki/Spotlight-Antrag">de</a>, <a href="http://yhteiso.wikia.com/wiki/Project:Valokeilat">fi</a>, <a href="http://communaute.wikia.com/wiki/Wiki_des_communaut%C3%A9s:%C3%80_la_une">fr</a>, <a href="http://it.community.wikia.com/wiki/Wiki_della_Community%3ASpotlight">it</a>, <a href="http://ja.community.wikia.com/wiki/Wikia:%E3%82%B9%E3%83%9D%E3%83%83%E3%83%88%E3%83%A9%E3%82%A4%E3%83%88">ja</a>, <a href="http://ko.community.wikia.com/wiki/%EC%9C%84%ED%82%A4%EC%95%84:%EC%8A%A4%ED%8F%AC%ED%8A%B8%EB%9D%BC%EC%9D%B4%ED%8A%B8">ko</a>, <a href="http://nl.community.wikia.com/wiki/Wikia_Spotlights">nl</a>, <a href="http://spolecznosc.wikia.com/wiki/Project%3ASpotlight">pl</a>, <a href="http://comunidade.wikia.com/wiki/Ajuda%3APedidos_de_Spotlight">pt</a>, <a href="http://ru.community.wikia.com/wiki/%D0%92%D0%B8%D0%BA%D0%B8%D1%8F%3A_%D0%97%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D1%8B_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%BD%D0%BD%D0%B5%D1%80%D1%8B">ru</a>, <a href="http://congdong.wikia.com/wiki/Wikia:Yêu_cầu_nổi_bật">vi</a>, <a href="http://zh.community.wikia.com/wiki/Board:%E9%A2%86%E5%85%BB%E5%92%8C%E6%8F%90%E5%8D%87%E7%BB%B4%E5%9F%BA">zh</a>.</span><br><span id="br2" /><div style="height: 15px;"></div><span style="font-weight:bold">Caption (Your language) - maximum 40 characters.</span><br><input id="intcaption" type="text" placeholder="Caption in your language" maxlength="40" style="width:400px;"/><br><span id="br2" /><span style="font-weight:bold">Caption (English)</span><br><input id="englishcaption" type="text" placeholder="English translation of caption" style="width:400px"/><br><span id="br2" /><span style="font-weight:bold">Signature</span><br><input id="signatureplace" type="text" value="' + signature + '"style="width:400px"/></span><br><span style="font-weight:bold">Image</span><br>Please add the image after you sent the request.<br><span id="br2" /><br><b>Tell us why your wiki should be featured wikia-wide:</b><br><span id="br2" /><div style="clear: both;"></div><textarea style="width: 100%; min-height: 100px;" id="tell_us_why" name="tell_us_why" placeholder="Add your text here!"></textarea></fieldset></form><button onclick="submitformSpotlight2()">Submit request</button></div>');
-		
-			$('#spotlight-submit').text(messages.get('button-close'));
-			$('#spotlight-submit').removeAttr("onclick").attr("onclick", "hideForm()");
+			// [[File:PadSpotlightCaption.png]] [[File:Spotlight-bobleponge-255-fr.png]][[File:Yourwiki.png]]
+			$("#lang-EN").after('<div id="request-form" style="min-width: 660px; margin: 0 auto;"><h2>Spotlight request</h2><div style="margin: 0 auto;"><h3>Example spotlights</h3><img alt="PadSpotlightCaption" src="https://static.wikia.nocookie.net/wlb/images/1/18/PadSpotlightCaption.png/revision/latest" width="255" height="123"><img alt="Spotlight-bobleponge-255-fr" src="https://static.wikia.nocookie.net/wlb/images/6/67/Spotlight-bobleponge-255-fr.png/revision/latest" width="255" height="123"><img alt="Yourwiki" src="https://static.wikia.nocookie.net/wlb/images/7/75/Yourwiki.png/revision/latest" width="255" height="123"></div><form class="WikiaForm" method="" name="" id="spotlight" style="width: "><fieldset style="text-align: left; width: 660px;"><span style="font-family:Arial"><span style="font-weight:bold">Wiki name</span><br><input id="wikiname" type="text" placeholder="Community Central" style="width:400px"/><br><span id="br2" /><span style="font-weight:bold">URL</span><br><span style="color:gray">https://</span><input id="wikiurl" type="text" placeholder="community" style="width:304px"/><span style="color:gray">.fandom.com</span><br><span id="br2" /><span style="font-weight:bold">Select your language</span> (' + dropdown + ')<br><span style="color:gray">These languages cannot be requested and will not be worked on here: <a href="https://community.fandom.com/wiki/Community_Central:Spotlights">en</a>, <a href="https://comunidad.fandom.com/wiki/Wikia:Spotlights">ca/es</a>, <a href="https://community.fandom.com/de/wiki/Spotlight-Antrag">de</a>, <a href="https://yhteiso.fandom.com/wiki/Project:Valokeilat">fi</a>, <a href="https://communaute.fandom.com/wiki/Wiki_des_communaut%C3%A9s:%C3%80_la_une">fr</a>, <a href="https://community.fandom.com/it/wiki/Wiki_della_Community%3ASpotlight">it</a>, <a href="https://community.fandom.com/ja/wiki/Wikia:%E3%82%B9%E3%83%9D%E3%83%83%E3%83%88%E3%83%A9%E3%82%A4%E3%83%88">ja</a>, <a href="https://community.fandom.com/ko/wiki/%EC%9C%84%ED%82%A4%EC%95%84:%EC%8A%A4%ED%8F%AC%ED%8A%B8%EB%9D%BC%EC%9D%B4%ED%8A%B8">ko</a>, <a href="https://community.fandom.com/nl/wiki/Wikia_Spotlights">nl</a>, <a href="https://spolecznosc.fandom.com/wiki/Project%3ASpotlight">pl</a>, <a href="https://comunidade.fandom.com/wiki/Ajuda%3APedidos_de_Spotlight">pt</a>, <a href="https://community.fandom.com/ru/wiki/%D0%92%D0%B8%D0%BA%D0%B8%D1%8F%3A_%D0%97%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D1%8B_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%BD%D0%BD%D0%B5%D1%80%D1%8B">ru</a>, <a href="https://congdong.fandom.com/wiki/Wikia:Yêu_cầu_nổi_bật">vi</a>, <a href="https://community.fandom.com/zh/wiki/Board:%E9%A2%86%E5%85%BB%E5%92%8C%E6%8F%90%E5%8D%87%E7%BB%B4%E5%9F%BA">zh</a>.</span><br><span id="br2" /><div style="height: 15px;"></div><span style="font-weight:bold">Caption (Your language) - maximum 40 characters.</span><br><input id="intcaption" type="text" placeholder="Caption in your language" maxlength="40" style="width:400px;"/><br><span id="br2" /><span style="font-weight:bold">Caption (English)</span><br><input id="englishcaption" type="text" placeholder="English translation of caption" style="width:400px"/><br><span id="br2" /><span style="font-weight:bold">Signature</span><br><input id="signatureplace" type="text" value="' + signature + '"style="width:400px"/></span><br><span style="font-weight:bold">Image</span><br>Please add the image after you sent the request.<br><span id="br2" /><br><b>Tell us why your wiki should be featured fandom-wide:</b><br><span id="br2" /><div style="clear: both;"></div><textarea style="width: 100%; min-height: 100px;" id="tell_us_why" name="tell_us_why" placeholder="Add your text here!"></textarea></fieldset></form><button class="wds-button" id="form-submit">Submit request</button></div>');
 		}
+		document.getElementById('form-submit').addEventListener('click', submitformSpotlight2);
 	}
 
 	function submitformSpotlight2() {
@@ -243,12 +249,15 @@ if ($('body').hasClass('ns-118')) {
 	console.log('Performed checks...');
 	 
 		// Ajax URL
-		var url2 = config.wgServer + '/api.php?action=edit&title=Spotlight:' + encodeURIComponent(lang) + '-' + encodeURIComponent(wikiname) + '&text=' + encodeURIComponent(page) + '&summary=New+spotlight+request+(' + encodeURIComponent(lang) + ')&token=' + encodeURIComponent(token) + '&createonly=1';
-	console.log('Got the url: ',url);
-	 
-		$.post(url2, function () {
-	console.log('Should be done now:');
-	window.location = config.wgServer + '/wiki/' + 'Spotlight:' + encodeURIComponent(lang) + '-' + encodeURIComponent(wikiname) + '?newspotlightrequest=1';
+		new mw.Api().postWithEditToken({
+			action: 'edit',
+			title: 'Spotlight:' + lang + '-' + wikiname,
+			text: page,
+			summary: 'New spotlight request (' + lang + ')',
+			createonly: 1
+		}).done(function (r) {
+			console.log('Should be done now:');
+			window.location = config.wgServer + '/wiki/Spotlight:' + encodeURIComponent(lang) + '-' + encodeURIComponent(wikiname) + '?newspotlightrequest=1';
 		});
 	console.log('Sent request...');
 	}
@@ -280,8 +289,9 @@ if ($('body').hasClass('ns-118')) {
 	'<h2><span id="spotlight-action-heading">' + spotlightAction + '</span> this spotlight</h2>' +
 	'<div id="official-reason"><b>Official reason for your chosen action</b><br><textarea></textarea></div>' +
 	'<div id="spotlight-comment"><b>Enter a comment</b><br><textarea></textarea></div>' +
-	'<button onclick="submitSpotlightReply()">Submit</button>' +
+	'<button id="reply-submit">Submit</button>' +
 	'</div>';
+	document.getElementById('reply-submit').addEventListener('click', submitSpotlightReply);
 
 	$( "select[name='spotlight-action']" ).change(function () {
 	    $('#spotlight-comment textarea').val('');
@@ -317,7 +327,7 @@ if ($('body').hasClass('ns-118')) {
 		'<option value="NoResponse30Days">No answer in 30 days</option>' +
 		'<option value="Articles">Too few articles</option>' +
 		'<option value="Language">Language not allowed</option>' +
-		'<option value="NoURL">No URL provided / Wikia does not exist</option>' +
+		'<option value="NoURL">No URL provided / Fandom does not exist</option>' +
 		'<option value="Spam">Spam</option>' +
 		'</select>');
 
@@ -394,12 +404,15 @@ if ($('body').hasClass('ns-118')) {
 				
 			}
 
-			var url_editing = config.wgScriptPath + '/api.php?action=edit&title=' + encodeURIComponent(config.wgPageName) + '&text=' + encodeURIComponent(page) + '&token=' + encodeURIComponent(token) + '&summary=Replied to request';
-
-			$.post(url_editing, function () {
-			console.log('Should be done now:');
-			window.location.reload();
-		});
+			new mw.Api().postWithEditToken({
+				action: 'edit',
+				title: config.wgPageName,
+				text: page,
+				summary: 'Replied to request'
+			}).done(function (r) {
+				console.log('Should be done now:');
+				window.location.reload();
+			});
 		
 		}, 2000);
 		

@@ -54,7 +54,7 @@ $(function() {
 			"Minecraft Wiki:自动确认用户",
 			"Semi-protected page lock.svg",
 			"6/6a",
-			"此页面被半保护，只有注册用户可以编辑。"
+			wgULS(undefined, undefined, undefined, "此页面被半保护，只有注册用户可以编辑。", "此頁面被半保護，只有註冊過的使用者可以編輯。", "此頁面被半保護，只有註冊用戶可以編輯。")
 		).appendTo($(".mw-indicators"));
 	} else if (protectionLevel === "sysop") {
 		if (namespaceNumber == 6) {
@@ -63,7 +63,7 @@ $(function() {
 				"Minecraft Wiki:管理员",
 				"Upload protected page lock.svg",
 				"7/77",
-				"此文件被全保护，只有管理员可以上传。"
+				wgULS(undefined, undefined, undefined, "此文件被全保护，只有管理员可以上传。", "此檔案被全保護，只有管理員可以上傳。", "此檔案被全保護，只有管理員可以上載。")
 			).appendTo($(".mw-indicators"));
 			} else {
 			mimicIndicator(
@@ -71,7 +71,7 @@ $(function() {
 				"Minecraft Wiki:管理员",
 				"Fully-protected page lock.svg",
 				"b/b4",
-				"此页面被全保护，只有管理员可以编辑。"
+				wgULS("此页面被全保护，只有管理员可以编辑。", "此頁面被全保護，只有管理員可以編輯。")
 			).appendTo($(".mw-indicators"));
 		}
 	}

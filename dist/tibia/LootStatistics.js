@@ -210,12 +210,12 @@
     'che': 'ch', 'she': 'sh', 'ie': 'y', 've': 'fe', 'oe': 'o', 'ze': 'z'
   },
   
-  //exceptions for items that should not be changed to singular 
-  
+  //exceptions for items that should not be changed to singular
   lootparser_p_items = [
   	'Corrupt Naga Scales', 'Rogue Naga Scales', 'Naga Archer Scales', 'Naga Warrior Scales',
   	'Ripptor Scales', 'Stalking Seeds', 'Fairy Wings', 'Prehemoth Horns', 'Moonlight Crystals',
-  	'Grapes', 'Stampor Talons', 'Deepling Warts', 'Deepworm Spike Roots', 'Diremaw Legs'
+  	'Grapes', 'Stampor Talons', 'Deepling Warts', 'Deepworm Spike Roots', 'Diremaw Legs',
+  	'Half-Digested Stones'
   ],
 
   //skip/rename creatures if they drop any of the loot in the list

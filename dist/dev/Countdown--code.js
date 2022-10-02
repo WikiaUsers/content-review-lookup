@@ -16,7 +16,7 @@
  */
 
 /*jshint jquery:true, browser:true, devel:true, camelcase:true, curly:false, undef:true, bitwise:true, eqeqeq:true, forin:true, immed:true, latedef:true, newcap:true, noarg:true, unused:true, regexp:true, strict:true, trailing:false */
-/*global mediaWiki:true*/
+/*global mediaWiki:true, importArticle:true*/
 
 ;(function (module, mw, $, undefined) {
 	'use strict';
@@ -29,27 +29,33 @@
 	
 	var i18n;
 
+	function getUnitMessage(unit, delta, isShort) {
+		var msg = isShort ?
+			(unit + '-short') :
+			(delta === 1) ?
+				unit :
+				(unit + 's');
+		return i18n.msg(msg).plain();
+	}
+
 	function output (i, diff) {
 		/*jshint bitwise:false*/
 		var delta, result, parts = [];
+		var isShort = Boolean(countdowns[i].opts & SHORT_FORMAT);
 		delta = diff % 60;
-		result = ' ' + i18n.msg(delta === 1 ? 'second' : 'seconds').plain();
-		if (countdowns[i].opts & SHORT_FORMAT) result = result.charAt(1);
+		result = ' ' + getUnitMessage('second', delta, isShort);
 		parts.unshift(delta + result);
 		diff = Math.floor(diff / 60);
 		delta = diff % 60;
-		result = ' ' + i18n.msg(delta === 1 ? 'minute' : 'minutes').plain();
-		if (countdowns[i].opts & SHORT_FORMAT) result = result.charAt(1);
+		result = ' ' + getUnitMessage('minute', delta, isShort);
 		parts.unshift(delta + result);
 		diff = Math.floor(diff / 60);
 		delta = diff % 24;
-		result = ' ' + i18n.msg(delta === 1 ? 'hour' : 'hours').plain();
-		if (countdowns[i].opts & SHORT_FORMAT) result = result.charAt(1);
+		result = ' ' + getUnitMessage('hour', delta, isShort);
 		parts.unshift(delta + result);
 		diff = Math.floor(diff / 24);
-		result = ' ' + i18n.msg(diff === 1 ? 'day' : 'days').plain();
-		if (countdowns[i].opts & SHORT_FORMAT) result = result.charAt(1);
-		parts.unshift(diff  + result);
+		result = ' ' + getUnitMessage('day', diff, isShort);
+		parts.unshift(diff + result);
 		result = parts.pop();
 		if (countdowns[i].opts & NO_LEADING_ZEROS) {
 			while (parts.length && parts[0][0] === '0') {
@@ -82,7 +88,7 @@
 			return true;
 		case 'toggle':
 			var toggle = c.attr('data-toggle');
-			if (toggle && toggle == 'next') {
+			if (toggle && toggle === 'next') {
 				c.next().css('display', 'inline');
 				c.css('display', 'none');
 				return true;
@@ -173,13 +179,19 @@
 		}
 	}
 
-	mw.hook('wikipage.content').add(function() {
-		mw.hook('dev.i18n').add(function(p) {
-			p.loadMessages('Countdown').then(function(p) {
-				i18n = p; i18n.useUserLang(); init()
-			})
-		})
+	mw.hook('dev.i18n').add(function(p) {
+		p.loadMessages('Countdown', {
+			cacheVersion: 2
+		}).then(function(p) {
+			mw.hook('wikipage.content').add(function() {
+				i18n = p;
+				i18n.useUserLang();
+				init();
+			});
+		});
 	});
 	
-	importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' })
+	importArticle({
+		article: 'u:dev:MediaWiki:I18n-js/code.js'
+	});
 }(window.countdownTimer = window.countdownTimer || {}, mediaWiki, jQuery));

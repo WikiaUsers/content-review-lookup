@@ -49,7 +49,7 @@ $(function () {
 						group: 'insert',
 						tools: {
 							autosign: {
-								label: '自动签名上一次留言',
+								label: wgULS('自动签名上一次留言', '自動簽名上一次留言'),
 								type: 'button',
 								icon: 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Insert-signature.svg',
 								action: { type: 'replace', options: { pre: insert } }

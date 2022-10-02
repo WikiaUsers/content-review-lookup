@@ -1,3 +1,6 @@
+window.BackToTopModern = true;
+
+
 importArticles({
     type: "script",
     articles: [
@@ -9,6 +12,8 @@ importArticles({
 		"MediaWiki:Common.js/Walkthrough.js",
 		"MediaWiki:WikiNotification.js",
 		"MediaWiki:WallGreetingTweak.js",
+		"u:dev:MediaWiki:BackToTopButton/code.js",
+		"u:dev:MediaWiki:AjaxRC.js",
 		"MediaWiki:Sandbox.js", //JS testing area for small things
     ]
 });

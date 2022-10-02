@@ -107,3 +107,10 @@ window.UserTagsJS = {
         },
     },
 };
+
+importArticles({
+	type:'script',
+	articles: [
+        'MediaWiki:Common.js/redditWidget.js',      // Adds reddit widget to id="reddit-widget"
+	]
+});

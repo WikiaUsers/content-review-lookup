@@ -44,3 +44,7 @@ $(document).ready(function() {
     $("#DoctorDecksModule a, #PixelCruxModule a").removeClass("external");
 
 });
+
+/* BackToTopButton */
+window.BackToTopModern = true;
+window.BackToTopStart = 400;

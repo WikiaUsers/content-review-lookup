@@ -14,7 +14,7 @@ $(function() {
 window.tooltips_list = [
     {
         classname: 'chartooltip',
-        parse: '{{CharTooltip|<#aurorian#>}}'
+        parse: '{{CharTooltip|<#aurorian#>|<#image#>}}'
     }
 ];
 window.tooltips_config = {

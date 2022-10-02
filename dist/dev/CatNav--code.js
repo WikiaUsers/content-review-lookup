@@ -324,7 +324,7 @@
 					for (i = 0; i < c.length; i++) {
 						n += c[i].length;
 					}
-					return n + " " + msg('result', n).plain();
+					return n + " " + msg('results', n).plain();
 				});
 			} else {
 				onLoadingEnd();
@@ -371,28 +371,29 @@
 		});
 	}
 
-	// get info about pages (url, thumb, etc.)
-	function queryPages(titles, cb) {
+	// query missing titles for queryPages
+	function queryMissingPages(missingTitles, cb, totalRequestLength) {
 		var req = new XMLHttpRequest(),
 			f = new FormData(),
 			fD,
 			fDProp,
-			missingTitles = [],
+			maxTitlesPerRequest = 500, // limit max titles per request, for very large requests can cause load issues
+			currentTitlesToCheck = missingTitles.splice(0, maxTitlesPerRequest), // titles for the current check
 			i;
-		customConsole.error(titles);
-		for (i = 0; i < titles.length; i++) {
-			// missingTitles lists all articles that haven't been previously loaded by 'queryPages'
-			// articles already in 'cndata.details' will not be requested again
-			if (!cndata.details.hasOwnProperty(titles[i])) {
-				missingTitles.push(cndata.pageids[titles[i]]);
-			}
+		customConsole.error(currentTitlesToCheck);
+		// check if there are any titles to check
+		if (currentTitlesToCheck.length === 0) {
+			// data about at least 1 page needs to be requested
+			$("#catnav-loading-fandomapi-progress").remove();
+			cb();
+			return;
 		}
 		// form data for requestest
 		fD = {
 			abstract: 0,
 			width: 140,
 			height: 140,
-			ids: missingTitles.join(",")
+			ids: currentTitlesToCheck.join(",")
 		};
 		for (fDProp in fD) {
 			f.append(fDProp, fD[fDProp]);
@@ -401,15 +402,30 @@
 		req.open("POST", config.wgScriptPath + "/api/v1/Articles/Details", true);
 		req.onload = function() {
 			parsePagesQuery(JSON.parse(this.responseText));
-			cb(titles);
+			// call queryMissingPages again in case there are more titles left
+			queryMissingPages(missingTitles, cb, totalRequestLength);
 		};
-		if (missingTitles.length > 0) {
-			// data about at least 1 page needs to be requested
-			req.send(f);
-		} else {
-			// info about those pages has already loaded
-			cb(titles);
+		$("#catnav-loading-fandomapi-progress").text(((1 - (missingTitles.length + currentTitlesToCheck.length) / totalRequestLength) * 100).toFixed(2) + "%");
+		req.send(f);
+	}
+
+	// get info about pages (url, thumb, etc.)
+	function queryPages(titles, cb) {
+		var missingTitles = [],
+			i;
+		for (i = 0; i < titles.length; i++) {
+			// missingTitles lists all articles that haven't been previously loaded by 'queryPages'
+			// articles already in 'cndata.details' will not be requested again
+			if (!cndata.details.hasOwnProperty(titles[i])) {
+				missingTitles.push(cndata.pageids[titles[i]]);
+			}
 		}
+		// query all missing titles
+		$("#catnav-loading").append('<span id="catnav-loading-fandomapi-progress"></span>');
+		queryMissingPages(missingTitles, function() {
+			// call queryPages's own cb() and pass the original titles
+			cb(titles);
+		}, missingTitles.length);
 	}
 
 	// process info about pages from json
@@ -984,10 +1000,10 @@
 		);
 		// update titles
 		$(".page-header__title").html("CatNav");
-	
+
 		// init
 		initMain();
-	
+
 		// provide global access
 		window.CatNav.init = initMain;
 	}
@@ -999,6 +1015,7 @@
 				init();
 			});
 		});
+		importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });
 	} else {
 		// this is not [[Special:CatNav]]
 		window.CatNav.init = function() {
