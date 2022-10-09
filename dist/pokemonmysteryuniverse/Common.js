@@ -1,6 +1,8 @@
 /* NoLicenseWarning config */
 window.NoLicenseWarning = {
-    forceLicense: true
+    forceLicense: true,
+    excludedGroups: [
+    ]
 };
 
 

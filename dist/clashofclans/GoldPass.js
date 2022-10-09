@@ -3,6 +3,7 @@
 $(document).ready(function() {
     /* Create inputs */
 	$("span#builderBoostHarness").html('<div id="builderBoostInput">Builder Boost: <select name="builderBoost" id="builderBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> </select> %</div>');
+	$("span#hammerJamHarness").html('<div id="hammerJamInput">Toggle Hammer Jam? <input type="checkbox" name="hammerJamBoost" id="hammerJamBoost"></input></div>');
 	$("span#trainingBoostHarness").html('<div id="trainingBoostInput">Training Boost: <select name="trainingBoost" id="trainingBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> <option value="30">30</option> </select> %</div>');
 	$("span#researchBoostHarness").html('<div id="researchBoostInput">Research Boost: <select name="researchBoost" id="researchBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> <option value="30">30</option> </select> %</div>');
 	$("span#armyBoostHarness").html('<div id="armyBoostInput">Toggle Army Boost? <input type="checkbox" name="armyBoost" id="armyBoost"></input></div>');
@@ -222,7 +223,18 @@ $(document).ready(function() {
 		if (isNaN(boostPercent) === true) {
 		    boostPercent = 0;
 		}
-        var calcNewCost = discountCost(cellValueCost,boostPercent);
+		var hammerJamCheckBox = document.getElementById("hammerJamBoost");
+		// Multiply initial value by 50% if hammer jam check box is true
+		if (hammerJamCheckBox != null) {
+			if (hammerJamCheckBox.checked === true) {
+				var hammerJamCost = discountCost(cellValueCost,50);
+				var calcNewCost = discountCost(hammerJamCost,boostPercent);
+			} else {
+				var calcNewCost = discountCost(cellValueCost,boostPercent);
+			}
+		} else {
+			var calcNewCost = discountCost(cellValueCost,boostPercent);
+		}
         $(this).text(calcNewCost.format("#,##0[.]###"));
         if (calcNewCost == cellValueCost) {
             $(".bCost").removeClass("StatModifiedGP");
@@ -986,6 +998,9 @@ $(document).ready(function() {
     $("#resetBonusButton").click(function() {
         $("#changeBonusButton").text("Apply");
 		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #hasteSpellLevel").val("0").change();
+		if (document.getElementById("hammerJamBoost") != null) {
+			document.getElementById("hammerJamBoost").checked = false;
+		}
 		if (document.getElementById("armyBoost") != null) {
 			document.getElementById("armyBoost").checked = false;
 		}

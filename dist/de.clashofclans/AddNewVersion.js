@@ -5,7 +5,7 @@
  *
  * @license: CC-BY-NC-SA
  * 
- * @version 1.0.1
+ * @version 1.0.2
  */
 mw.loader.using('mediawiki.api', function() {
 	var conf = mw.config.get([
@@ -13,7 +13,7 @@ mw.loader.using('mediawiki.api', function() {
 		'wgPageName'
 	]),
 		api = new mw.Api(),
-		token = mw.user.tokens.get('editToken'),
+		token = mw.user.tokens.get('csrfToken'),
 		isVersionsgeschichte = /\/Versionsgeschichte/.test(conf.wgPageName),
 		text;
 	

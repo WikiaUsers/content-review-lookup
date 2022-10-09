@@ -76,7 +76,7 @@ $(function () {
 		}
 		
 		function movePage(newTitle) {
-			return a.postWithToken("csrf",{action:"move",from:fulltitle,to:newTitle,reason:reason}).then(function (data){
+			return a.postWithToken("csrf",{action:"move",from:fulltitle,to:newTitle,reason:reason,noredirect:"1"}).then(function (data){
 				return a.postWithToken("csrf",{action:"edit",title:newTitle,appendtext:"",summary:"blank edit"}).then(function (data){
 					displayColor("gadget-action-success");
 					console.log("Done!");
@@ -138,7 +138,6 @@ $(function () {
 			.then(getUser)
 			.then(checkTarget)
 			.then(movePage)
-			.then(deleteRedirect)
 			.then(findSubpages)
 			.then(deleteSubpages);
 	});

@@ -58,17 +58,17 @@ if($('#wpTemplateSandboxTemplate').attr('type') == 'hidden') {
 				.then(function(exists) {
 					const moduleDocExists = exists[0]
 					const templateDocExists = exists[1]
-					if (moduleDocExists) {
-						return moduleDoc
-					}
 					if (templateDocExists) {
-						return templateDoc
+						return templateDoc;
+					}
+					if (moduleDocExists) {
+						return moduleDoc;
 					}
 				})
 		}
 		return deferred.resolve(null)
 	}
-	const previewPageInput = $('#wpTemplateSandboxPage')
+	const previewPageInput = $('input[name="wpTemplateSandboxPage"]');
 	if (previewPageInput && !previewPageInput.val()) {
 		getDefaultPreviewPage().then(function(page) {
 			page && previewPageInput.val(page)

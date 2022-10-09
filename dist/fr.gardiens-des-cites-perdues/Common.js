@@ -39,19 +39,15 @@ $(function() {
 	}
 });
 
-/*** Tchat ***/
-
-mw.hook('wikipage.content').add(function($content) {
-    $content.find('#tchat').each(function() {
-        var $this = $(this);
-        $this.html($('<iframe>', {
-            src: 'https://webchat.freenode.net/#wiki_gdcp',
-            width:  $this.attr('data-width') || 450,
-            height: $this.attr('data-height') || 500
+{
+    {
+        $(this);
+        {
+            'https://webchat.freenode.net/#wiki_gdcp',
+  450,
+            500
         }));
-    });
-});
-
+ 
 /*** Forcer le favicon à s'afficher lors de bugs ***/
 
 (function () {

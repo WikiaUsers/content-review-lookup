@@ -68,39 +68,31 @@ $( '.pi-theme-tab .pi-header .selflink').parent().addClass('activetab');
 /* Change color of infoboxes title and headers 
 depending of background color */
 function piColor() {
-	var rgb = $('.pi-title').css('backgroundColor');
-	var colors = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-	
-	var r = colors[1];
-	var g = colors[2];
-	var b = colors[3];
-	var yiq = ((r*299)+(g*587)+(b*114))/1000;
-	
-	if (yiq >= 128) {
-		/* Dark text */
-		$('.pi-title').css('color', '#0e191a');
-		$('.pi-header').css('color', '#0e191a');
-	} else {
-		/* Light text */
-		$('.pi-title').css('color', '#fff');
-		$('.pi-header').css('color', '#fff');
+	if ($('.pi-title').length) {
+		var rgb = $('.pi-title').css('backgroundColor');
+		var colors = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+		
+		var r = colors[1];
+		var g = colors[2];
+		var b = colors[3];
+		var yiq = ((r*299)+(g*587)+(b*114))/1000;
+		
+		if (yiq >= 128) {
+			/* Dark text */
+			$('.pi-title').css('color', '#0e191a');
+			$('.pi-header').css('color', '#0e191a');
+		} else {
+			/* Light text */
+			$('.pi-title').css('color', '#fff');
+			$('.pi-header').css('color', '#fff');
+		}
 	}
 }
-/* Update for color editor like DevTools (works only for title) */
-setInterval(piColor, 200);
 
-/* Change the wordmark by wiki theme */
-function updateWordmarkByTheme() {
-	var current = document.querySelector('.fandom-community-header__image img').getAttribute('src');
-	var light = document.body.classList.contains('theme-fandomdesktop-light');
-	var dark = document.body.classList.contains('theme-fandomdesktop-dark');
-	var theme = light ? 'light' : dark ? 'dark' : '';
-	let checkCurrent = current.endsWith(theme, current.length - 4);
-	if ( theme == 'light' && !checkCurrent) {
-		$( '.fandom-community-header__image img' ).attr( 'src', 'https://static.wikia.nocookie.net/loonatheworld/images/d/dd/Wiki-wordmark-light.png' );
-	} else if ( theme == 'dark' && !checkCurrent ) {
-		$( '.fandom-community-header__image img' ).attr( 'src', 'https://static.wikia.nocookie.net/loonatheworld/images/1/12/Wiki-wordmark-dark.png' );
-	}
+/* Update each function together */
+function updateList() {
+	/* Update for color editor like DevTools (works only for title) */
+	piColor();
 }
-/* Update for wordmark */
-setInterval(updateWordmarkByTheme, 200);
+
+setInterval( updateList, 500 );

@@ -54,8 +54,9 @@
 		});
 	}
 	function init() {
-		document.title = msg('userInfo').plain() + ' | ' + config.wgSiteName;
-		document.getElementById('firstHeading').textContent = msg('userInfo').plain();
+		var header = document.getElementById('firstHeading');
+		document.title = document.title.replace(header.innerText, msg('userInfo').plain());
+		header.textContent = msg('userInfo').plain();
 		document.getElementById('mw-content-text').innerHTML = '';
 
 		input = document.createElement('input');

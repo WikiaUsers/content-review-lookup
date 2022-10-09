@@ -37,7 +37,7 @@
 		/* Create the pop-up form */
 		createPopUpForm: function () {
 			var popupHTML = '<section style="left: 50%; top: 50px; width: 1000px; z-index: 20000002; margin-left: -520px;" class="modalWrapper">' +
-				'<button class="close wikia-chiclet-button" id="acr-closebutt"><img src="/skins/oasis/images/icon_close.png"></button>' +
+				'<button class="close wikia-chiclet-button" id="acr-closebutt"><svg class="wds-icon wds-icon-small close-icon"><use xlink:href="#wds-icons-close-small"></use></svg></button>' +
 				'<h1>Wookieepedia Cloak Request</h1>' +
 				'<section class="modalContent">' +
 				'<div class="AjaxCloakRequestBox" id="AjaxCloakRequestBox">' +
@@ -58,12 +58,10 @@
 				'</section>' +
 				'<div class="blackout" style="height: 6702px; z-index: 20000001; opacity: 0.65;"></div>';
 			$( 'body' ).append( popupHTML );
-			if ( skin !== 'oasis' ) {
-				appendCSS( '.modalWrapper { -moz-box-shadow: 0 10px 60px #7F7F7F; background: none repeat scroll 0 0 white; border: 5px solid #BACDD8; padding: 25px 15px; position: absolute; }' +
-							'section { display: block; }' +
-							'.blackout { background: none repeat scroll 0 0 white; left: 0; opacity: 0.8; position: absolute; top: 0; width: 100%; }' +
-							'.modalWrapper .close { float: right; margin: 0 18px 0 0; }' );
-			}
+			appendCSS( '.modalWrapper { -moz-box-shadow: 0 10px 60px #7F7F7F; background: none repeat scroll 0 0 white; border: 5px solid #BACDD8; padding: 25px 15px; position: absolute; }' +
+						'section { display: block; }' +
+						'.blackout { background: none repeat scroll 0 0 white; left: 0; opacity: 0.8; position: absolute; top: 0; width: 100%; }' +
+						'.modalWrapper .close { float: right; margin: 0 18px 0 0; }' );
 			$( '#acr-kor' ).change( function () {
 				if ( $( this ).val() === 'keep' || $( this ).val() === 'replace' ) {
 					if ( !$( '#acr-oldc' ).length ) {

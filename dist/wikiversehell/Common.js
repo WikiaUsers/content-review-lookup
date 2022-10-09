@@ -31,7 +31,6 @@ window.UserTagsJS = {
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'rollback', 'content-moderator', 'threadmoderator'];
 UserTagsJS.modules.custom = {
 	'Halcyonmetanoia': ['officialwikicoder', 'codinghelp'],
-	'HH346': ['specialrole', 'headventmod'],
 	'GhostTheWick': ['codinghelp'],
 	'LeahForsea': ['lebesrole'],
 	'Rosellia Teh Hybrid': ['maptest'],

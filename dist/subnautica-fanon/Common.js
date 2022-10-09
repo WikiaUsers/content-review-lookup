@@ -5,13 +5,20 @@ window.tooltips_config = {
     waitForImages: true,
     noCSS: true,
 };
-window.tooltips_list = [
-	{
-		classname: 'custom-tooltip',
-		parse: '{'+'{Tooltip|<#name#>|<#value#>}}',   // '+' makes MediaWiki ignore the template on the page with settings
-    },
-    {
-    	classname: 'creature-tooltip',
-    	parse: '<#creature#>'
-    }
-];
+/******************** UserTags *********************/
+/* Dissabling override */
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };
+
+/** Custom UserTags **/
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		coder: { u: 'Coder', order: 110 },
+		designer: { u: 'Designer', order: 111},
+	}
+};
+/** Users **/
+UserTagsJS.modules.custom = { // NOTE: order of list here does NOT matter //
+	'JoasJSD' : ['coder', 'designer'],
+};
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];

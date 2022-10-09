@@ -2,6 +2,10 @@
 var newBcg ='';
 // Image List
 switch (true) {
+	case /Tombs_of_Scoria/.test(mw.config.get('wgPageName')):
+    	//Backgrounds for page "Tombs of Scoria"
+        newBcg = "https://static.wikia.nocookie.net/regalgoblins/images/7/70/Scoria_Background.jpg/revision/latest";
+        break;
     case /Rollplay/.test(mw.config.get('wgPageName')):
         // Backgrounds for page "Rollplay"
         newBcg = "https://static.wikia.nocookie.net/regalgoblins/images/4/42/Rollplay_Background.jpg/revision/latest";
@@ -43,6 +47,11 @@ switch (true) {
     	//Backgrounds for page "Embers_of_the_Wilds"
         newBcg = "https://static.wikia.nocookie.net/regalgoblins/images/1/18/EoW_Background.jpg";
         break;
+    case /Shine/.test(mw.config.get('wgPageName')):
+    case /Atropos/.test(mw.config.get('wgPageName')):
+    	//Backgrounds for page "Shine" and "Atropos"
+        newBcg = "https://static.wikia.nocookie.net/regalgoblins/images/6/6a/Shine%26Atropos.jpg/revision/latest";
+        break;
     default:
         //Backgrounds for all the other pages
         var allBackgrounds = [
@@ -56,7 +65,8 @@ switch (true) {
         "https://static.wikia.nocookie.net/regalgoblins/images/6/6b/FroFro_Background.jpg/revision/latest",
         "https://static.wikia.nocookie.net/regalgoblins/images/d/dc/ChadBarbo%26GeraldKnott.jpg",
         "https://static.wikia.nocookie.net/regalgoblins/images/8/82/Ransom%26Olivia.jpg",
-        "https://static.wikia.nocookie.net/regalgoblins/images/1/18/EoW_Background.jpg"];
+        "https://static.wikia.nocookie.net/regalgoblins/images/1/18/EoW_Background.jpg",
+        "https://static.wikia.nocookie.net/regalgoblins/images/6/6a/Shine%26Atropos.jpg/revision/latest"];
         
         var rnd = Math.floor(Math.random() * allBackgrounds.length);
         newBcg = allBackgrounds[rnd];

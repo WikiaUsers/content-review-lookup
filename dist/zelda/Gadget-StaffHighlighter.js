@@ -25,8 +25,6 @@ adminrights = {
 };
 
 traineerights = {
-	Croxodile		:1,
-	JumbledLimes	:1,
 	Weirdguy42      :1,
 };
 

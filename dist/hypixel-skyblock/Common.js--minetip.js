@@ -225,7 +225,7 @@ $(function () {
         });
     })());
     (function () {
-        var listChoice = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÄÅÆÇÈÉÊËÍÑÓÔÕÖÚÜßàáâãäåæçèéêëìíîïñòóôõöùúûüÿğİıŒœŞşŴŵžȇ",
+        var listChoice = "ÀÁÂÈÊËÓÔÕÚßãõğŒŞşŴŵžȇ#$%&+-/0123456789=?ABCDEFGHJKLMNOPQRSTUVWXYZ\^_abcdeghjmnopqrsuvwxyzÇüéâäàåçêëèîÄÅÉæÆôöòûùÿÖÜø£ØƒáóúñÑªº¿¬½¼«»│┤╡╕╛┐┘∈⌡∙·²",
             listLength = listChoice.length;
 
         function genObfuscatedText() {

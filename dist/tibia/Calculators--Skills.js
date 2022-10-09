@@ -228,12 +228,20 @@ $(function () {
         $('#calculator_ew_dummy_desc').html($('input[name=ew_dummy]:checked').val() ? 'house' : 'regular');
         $('#calculator_ew_weappct_desc').html(weappct);
 
-        var train_time_total = nweapons * charges * 2;
-        var train_time_h = Math.floor(train_time_total / (60 * 60));
-        var train_time_min = Math.floor(train_time_total / 60 - train_time_h * 60);
-        var train_time_s = train_time_total - train_time_min * 60 - train_time_h * 60 * 60;
+        var train_time_total_in_seconds = nweapons * charges * 2;
+        var remaining_train_time_in_seconds = train_time_total_in_seconds;
+        var train_time_part_d = Math.floor(train_time_total_in_seconds / (60 * 60 * 24));
+        var train_time_part_d_in_seconds = train_time_part_d * 60 * 60 * 24;
+        remaining_train_time_in_seconds -= train_time_part_d_in_seconds;
+        var train_time_part_h = Math.floor(remaining_train_time_in_seconds / (60 * 60));
+        var train_time_part_h_in_seconds = train_time_part_h * 60 * 60;
+        remaining_train_time_in_seconds -= train_time_part_h_in_seconds;
+        var train_time_part_min = Math.floor(remaining_train_time_in_seconds / 60);
+        var train_time_part_min_in_seconds = train_time_part_min * 60;
+        remaining_train_time_in_seconds -= train_time_part_min_in_seconds;
+        var train_time_part_s = remaining_train_time_in_seconds;
 
-        $('#calculator_ew_train_time').html(train_time_h + ' hours, ' + train_time_min + ' minutes and ' + train_time_s + ' seconds');
+        $('#calculator_ew_train_time').html((train_time_part_d > 0 ? train_time_part_d + ' days, ' : '') + train_time_part_h + ' hours, ' + train_time_part_min + ' minutes, and ' + train_time_part_s + ' seconds');
       }
 
       // Update the permalink.
@@ -300,11 +308,11 @@ $(function () {
         '<span id="calculator_ew_dummy_desc">regular</span> dummy,' +
         '<br/>each weapon will advance ' +
         '<span id="calculator_ew_weappct_desc">1</span>% of the current skill.<br/><br/>' +
-        'You will need <span id="calculator_ew_train_time">0 hours, 0 minutes and 0 seconds</span> to use the required number of exercise weapons.<br/><br/>' +
+        'You will need <span id="calculator_ew_train_time">0 hours, 0 minutes, and 0 seconds</span> to use the required number of exercise weapons.<br/><br/>' +
         '<input type="text" id="permalink_training" style="display:block;width:90%;margin:0 auto;font-size:0.7em;" value="https://tibia.fandom.com/wiki/Skills_Calculator?loyaltyPoints=0&amp;weaponType=regular&amp;doubleEvent=false&amp;houseDummy=false&amp;skill=magicmage&amp;level=0&amp;percentageRemaining=100&amp;target=0">' +
         '</div>',
     );
-    
+
     $('#calculator_exerciseweapons').after('<p>Calculate duration of remaining charges on weapon:</p>' +
     	'<div style="width:690px;">' +
     	'<label>Remaining charges:&nbsp;' +
@@ -333,7 +341,7 @@ $(function () {
       $('#calculator_ew_nweapons').val(Math.floor($('#calculator_ew_weapcost_coins').val() / 25));
       calculator_exerciseweapons_update();
     });
-    
+
     $('#calculator_ew_remaining_charges').on('input', function() {
       	var hours, mins, secs, charges = $('#calculator_ew_remaining_charges').val();
       	hours = Math.floor((charges * 2) / 3600);
@@ -343,11 +351,11 @@ $(function () {
       	secs = charges * 2;
       	$('#calculator_ew_remaining_time').html(hours + ' hours, ' + mins + ' minutes and ' + secs + ' seconds')
     });
-	
+
 	$('#permalink_training').on('click', function() {
 	  $(this).select();
 	});
-	
+
     // Restore inputs based on the URL hash, if applicable.
     deserializeFromHashTraining();
   })();
@@ -549,7 +557,7 @@ $(function () {
       calculator_realskill_update(skilltypes);
     });
     calculator_realskill_update();
-	
+
 	$('#permalink_loyalty').on('click', function() {
 	  $(this).select();
 	});

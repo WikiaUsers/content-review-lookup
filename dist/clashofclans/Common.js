@@ -17,9 +17,9 @@
     importArticles({
         type: 'script',
         articles: [
-        'w:c:spottra:MediaWiki:Common.js/Numeral.js', // Defines num.format('<fmt>')
         'u:dev:UserTags/code.js',
 		"u:dev:MediaWiki:BackToTopButton/code.js",
+        'MediaWiki:Numeral.js', // Defines num.format('<fmt>')
         'MediaWiki:Usernames.js',
         'MediaWiki:GemCalculators.js',
         'MediaWiki:Experience.js',

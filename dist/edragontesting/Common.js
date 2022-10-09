@@ -4,16 +4,18 @@ window.BackToTopModern = true;
 importArticles({
     type: "script",
     articles: [
-		"MediaWiki:Usernames.js",
-		"MediaWiki:Common.js/HeroSkins.js",
-		"MediaWiki:Common.js/Toggle.js",
-		"MediaWiki:Common.js/Protection.js",
-		"MediaWiki:Common.js/AOTM.js",
-		"MediaWiki:Common.js/Walkthrough.js",
-		"MediaWiki:WikiNotification.js",
-		"MediaWiki:WallGreetingTweak.js",
 		"u:dev:MediaWiki:BackToTopButton/code.js",
 		"u:dev:MediaWiki:AjaxRC.js",
+		"MediaWiki:Usernames.js",
+		"MediaWiki:HeroSkins.js",
+		"MediaWiki:Toggle.js",
+		"MediaWiki:Protection.js",
+		"MediaWiki:AOTM.js",
+		"MediaWiki:Walkthrough.js",
+		"MediaWiki:WikiNotification.js",
+		"MediaWiki:WallGreetingTweak.js",
+		'MediaWiki:Numeral.js', // Defines num.format('<fmt>')
+		"MediaWiki:Modifiers.js",
 		"MediaWiki:Sandbox.js", //JS testing area for small things
     ]
 });

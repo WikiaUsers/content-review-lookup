@@ -21,10 +21,12 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/b/b6/Wiki-wordmark-kyomachi-seika.png',
 	    'https://images.wikia.nocookie.net/synthv/images/c/c4/Wiki-wordmark-Mo-chen.png',
 	    'https://images.wikia.nocookie.net/synthv/images/3/33/Wiki-wordmark-muxin.png',
+	    'https://images.wikia.nocookie.net/synthv/images/3/38/Wiki-wordmark-natalie.png',
 	    'https://images.wikia.nocookie.net/synthv/images/a/a0/Wiki-wordmark-natsuki-karin.png',
 	    'https://images.wikia.nocookie.net/synthv/images/0/0e/Wiki-wordmark-Qingsu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/e/ee/Wiki-wordmark-Ryo.png',
 	    'https://images.wikia.nocookie.net/synthv/images/4/40/Wiki-wordmark-saki.png',
+	    'https://images.wikia.nocookie.net/synthv/images/e/ee/Wiki-wordmark-Saki-AI.png',
 	    'https://images.wikia.nocookie.net/synthv/images/9/90/Wiki-wordmark-solaria.png',
 	    'https://images.wikia.nocookie.net/synthv/images/8/8b/Wiki-wordmark-shian.png',
 	    'https://images.wikia.nocookie.net/synthv/images/4/43/Wiki-wordmark-shian_svs.png',
@@ -38,7 +40,8 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/1/1e/Wiki-wordmark-Xingchen-Infinity.png',
 	    'https://images.wikia.nocookie.net/synthv/images/7/70/Wiki-wordmark-xingchen-minus.png',
 	    'https://images.wikia.nocookie.net/synthv/images/1/1f/Wiki-wordmark-yamine-renri.png',
-	    'https://images.wikia.nocookie.net/synthv/images/1/fc/Wiki-wordmark-renri-svs.png'
+	    'https://images.wikia.nocookie.net/synthv/images/1/fc/Wiki-wordmark-renri-svs.png',
+	    'https://images.wikia.nocookie.net/synthv/images/f/fc/Wiki-wordmark-yuma.png',
 	];
 
 	$('.fandom-community-header__image img').attr('src', images[Math.floor(Math.random() * images.length)]);

@@ -9,7 +9,7 @@ window.UserTagsJS = {
 		reality: 'Realitywarper',
 		pringle: 'Single Pringle',
 		wolf: 'Official Wolf',
-		cheerfulbird: 'Cheerful Bird',
+		colours: 'Queen of Colours',
 		dragon: 'Verified Dragon',
 		stalker: 'Stalker Flower',
 		kitsune: 'Kitsune Assassin'
@@ -19,7 +19,7 @@ UserTagsJS.modules.custom = {
 	'TilanissaWildhawk': ['reaper', 'shadow'],
 	'GingerAle0': ['reality', 'pringle'],
 	'Firewind0111': ['wolf'],
-	'Mintflower09': ['cheerfulbird'],
+	'Mintflower09': ['colours'],
 	'Moonshadow567': ['dragon'],
 	'ALostWonderer': ['stalker'],
 	'Featherfrost2907':['kitsune']

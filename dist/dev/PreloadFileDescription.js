@@ -118,8 +118,6 @@
             if($(textarea).hasClass('pfd-initialized')) return false;
             if($('#wpForReUpload').length && $('#wpForReUpload').val()) return false;
 
-            if(skin == 'monobook') mw.util.addCSS('.tooltip-icon { background-color:#06c; border-radius:6px; border:1px solid #000; color:white; display:inline-block; font-size:10px; height:12px; line-height:12px; margin:0 3px; text-align:center; width:12px; }');
-
             PFD.textarea = $(textarea).addClass('pfd-initialized');
             PFD.textarea.height('auto').attr('rows', 9);
 

@@ -1,6 +1,5 @@
-/* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
-
-/* ReferencePopups */
+/* = Скрипты = */
+/* == ReferencePopups == */
 importArticles({
     type: 'script',
     articles: [
@@ -8,7 +7,7 @@ importArticles({
     ]
 });
 
-/* ChromeToolbarColor */
+/* == ChromeToolbarColor == */
 importArticles({
     type: 'script',
     articles: [
@@ -16,7 +15,7 @@ importArticles({
     ]
 });
 
-/* LinkPreview */
+/* == LinkPreview == */
 importArticles({
     type: 'script',
     articles: [
@@ -24,7 +23,7 @@ importArticles({
     ]
 });
 
-/* AdminDashboard JS-Button */
+/* == AdminDashboard JS-Button == */
 importArticles({
     type: 'script',
     articles: [
@@ -32,7 +31,7 @@ importArticles({
     ]
 });
 
-/* AnalyticsShortcut */
+/* == AnalyticsShortcut == */
 importArticles({
     type: 'script',
     articles: [
@@ -40,7 +39,7 @@ importArticles({
     ]
 });
 
-/* CatFilter */
+/* == CatFilter == */
 importArticles({
     type: 'script',
     articles: [
@@ -48,7 +47,7 @@ importArticles({
     ]
 });
 
-/* MultipleActivity */
+/* == MultipleActivity == */
 importArticles({
     type: 'script',
     articles: [
@@ -56,45 +55,7 @@ importArticles({
     ]
 });
 
-/* GadgetsStateToggler */
-nkch_gst_gadgets = [{
-    name: "RWA", // название гаджета с MediaWiki:Gadgets-definition; обязательно
-    title: "Недавняя вики-деятельность", // Название в меню
-    description: "Недавняя вики-деятельность" // Описание гаджета в меню при наведении
-}, {
-    name: "ModernProfile",
-    title: "Современный профиль",
-    description: "Современный профиль"
-}, {
-    name: "UWStyle",
-    title: "Современный профиль",
-    description: "Общее оформление вики-проектов"
-}, {
-    name: "Quick-insert",
-    title: "Быстрая вставка в редакторах",
-    description: "Быстрая вставка в редакторах"
-}, {
-    name: "AddCatInPreview",
-    title: "Категории в предпросмотре",
-    description: "Категории в предпросмотре"
-}];
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:GadgetsStateToggler.js',
-    ]
-});
-
-/* AddArticleToCategory */
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:AddArticleToCategory/code.js',
-    ]
-});
-
-/* FirstEditDate */
+/* == FirstEditDate == */
 importArticles({
     type: 'script',
     articles: [
@@ -102,7 +63,7 @@ importArticles({
     ]
 });
 
-/* NewImages */
+/* == NewImages == */
 importArticles({
     type: 'script',
     articles: [
@@ -110,7 +71,7 @@ importArticles({
     ]
 });
 
-/* AjaxRC */
+/* == AjaxRC == */
 importArticles({
     type: 'script',
     articles: [
@@ -118,7 +79,7 @@ importArticles({
     ]
 });
 
-/* SeeMoreActivityButton */
+/* == SeeMoreActivityButton == */
 importArticles({
     type: 'script',
     articles: [
@@ -126,7 +87,7 @@ importArticles({
     ]
 });
 
-/* EditConflictAlert */
+/* == EditConflictAlert == */
 importArticles({
     type: 'script',
     articles: [
@@ -134,7 +95,7 @@ importArticles({
     ]
 });
 
-/* Nuke */
+/* == Nuke == */
 importArticles({
     type: 'script',
     articles: [
@@ -142,7 +103,7 @@ importArticles({
     ]
 });
 
-/* Reconstitution */
+/* == Reconstitution == */
 importArticles({
     type: 'script',
     articles: [
@@ -150,7 +111,7 @@ importArticles({
     ]
 });
 
-/* DecodeURI */
+/* == DecodeURI == */
 importArticles({
     type: 'script',
     articles: [

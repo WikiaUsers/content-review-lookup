@@ -4,9 +4,7 @@ mw.loader.using('mediawiki.util').then(function() {
     var names = {}, cacheEnabled = (window.linkImagePopupCachingDisabled ? false : true), pendingPages = {},
       categories = ['2021年','2022年','纸片人','全玩列人物',
       ], exceptions = ['纸片人'
-      ],
-      list = [
-      ],
+      ],lists = [],
       mouseIsOver;
 
     //Load cache or create the list of pages
@@ -148,7 +146,7 @@ mw.loader.using('mediawiki.util').then(function() {
         var $this = $(this), name = decodeURIComponent($(this).attr('href').replace(/_/g, ' '));
         mouseIsOver = true;
         
-        name = name.substring(($this.attr('href')[0] === '#' ? 1 : 6));//anchor-only link, or remove "/wiki"
+        name = name.substring(($this.attr('href')[0] === '#' ? 1 : 9));//anchor-only link, or remove "/wiki"
         
         //If a link to a list page, extract the character name (actually the anchor used)
         if (name.substr(0, 8) === 'List of ' && name.indexOf('#') !== -1) {

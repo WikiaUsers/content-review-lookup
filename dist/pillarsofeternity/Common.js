@@ -44,9 +44,9 @@ if (document.querySelector(".loot-container-table") != null)
 	}
 	
 	var sortableTables = document.querySelectorAll(".wikitable.sortable");
-	if (sortableTables.length > 0) deferUntilJQueryUILoaded(removeUnsortableRowsOnSort);
+	if (sortableTables.length > 0) deferUntilJQueryUILoaded(hideUnsortableRowsOnSort);
 	
-	function removeUnsortableRowsOnSort()
+	function hideUnsortableRowsOnSort()
 	{
 	    sortableTables.forEach(function(t)
 	    {
@@ -58,20 +58,29 @@ if (document.querySelector(".loot-container-table") != null)
 	        // I don't think you can .bind to a tablesorter after it has been initialized
 	        // so we perform this on the click event of all headerSort cells instead
 	        var headerSorts = t.querySelectorAll(".headerSort");
-	        headerSorts.forEach(function(h){ h.addEventListener("click", removeAllUnsortableRows); });
-	
-	        function removeAllUnsortableRows()
+	        headerSorts.forEach(function(h){ h.addEventListener("click", toggleUnsortableRows); });
+
+			// Hide the unsortable rows if the table is currently being sorted, otherwise show them
+	        function toggleUnsortableRows()
 	        {
-	            for (var i = 0; i < unsortableRows.length; i++)
+				var hide = false;
+				
+				// Determine whether to hide or show the unsortable rows
+				for (var i = 0; i < headerSorts.length; i++)
+				{
+					if (headerSorts[i].classList.contains("headerSortUp") ||
+						headerSorts[i].classList.contains("headerSortDown"))
+					{
+						hide = true; 
+						break;
+					}
+				}
+				
+				// Set the display style on all unsortable rows of this table
+	            for (var j = 0; j < unsortableRows.length; j++)
 	            {
-	                // Don't just hide the row - delete it.
-	                unsortableRows[i].remove();
+	                unsortableRows[j].style.display = hide ? "none" : "";
 	            }
-	
-	            // Remove all headerSort even listeners and free up resources for GC
-	            headerSorts.forEach(function(h){ h.removeEventListener("click", removeAllUnsortableRows); });
-	            headerSorts = null;
-	            unsortableRows = null;
 	        }
 	    });
 	}

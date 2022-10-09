@@ -101,6 +101,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"adoreskull": {
+				"name": "Adoreskull",
+				"colors": [
+					"spooky",
+					"white",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"adriftprincess": {
 				"name": "Adrift Princess",
 				"colors": [
@@ -183,6 +192,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "common"
+			},
+			"airborne": {
+				"name": "Airborne",
+				"colors": [
+					"fey",
+					"black",
+					"red"
+				],
+				"rarity": "unbreedable"
 			},
 			"alabaster": {
 				"name": "Alabaster",
@@ -471,6 +489,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"animated": {
+				"name": "Animated",
+				"colors": [
+					"spooky",
+					"green",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"annoyed": {
 				"name": "Annoyed",
 				"colors": [
@@ -554,6 +581,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "common"
+			},
+			"apparition": {
+				"name": "Apparition",
+				"colors": [
+					"spooky",
+					"black",
+					"blue"
+				],
+				"rarity": "unbreedable"
 			},
 			"apprentice": {
 				"name": "Apprentice",
@@ -1559,6 +1595,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Bone",
 				"colors": [
 					"spooky",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
+			"bonehelm": {
+				"name": "Bonehelm",
+				"colors": [
+					"spooky",
+					"blue",
 					"white"
 				],
 				"rarity": "unbreedable"
@@ -2940,6 +2985,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"arcane",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"conjuration": {
+				"name": "Conjuration",
+				"colors": [
+					"spooky",
+					"black",
+					"green"
 				],
 				"rarity": "unbreedable"
 			},
@@ -4513,6 +4567,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "unbreedable"
+			},
+			"ecto": {
+				"name": "Ecto",
+				"colors": [
+					"spooky",
+					"green",
+					"blue"
+				],
+				"rarity": "common"
 			},
 			"ectoplasm": {
 				"name": "Ectoplasm",
@@ -8862,6 +8925,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"lighthaunt": {
+				"name": "Light Haunt",
+				"colors": [
+					"spooky",
+					"yellow",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"lightmother": {
 				"name": "Light Mother",
 				"colors": [
@@ -9610,6 +9682,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"maniacal": {
+				"name": "Maniacal",
+				"colors": [
+					"spooky",
+					"yellow",
+					"green"
+				],
+				"rarity": "unbreedable"
+			},
 			"mantaray": {
 				"name": "Mantaray",
 				"colors": [
@@ -9783,6 +9864,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"pink",
 					"purple",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"medium": {
+				"name": "Medium",
+				"colors": [
+					"spooky",
+					"pink",
+					"purple"
 				],
 				"rarity": "unbreedable"
 			},
@@ -11416,6 +11506,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "unbreedable"
+			},
+			"omen": {
+				"name": "Omen",
+				"colors": [
+					"spooky",
+					"black",
+					"blue"
+				],
+				"rarity": "common"
 			},
 			"oni": {
 				"name": "Oni",
@@ -13808,6 +13907,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"sanguinary": {
+				"name": "Sanguinary",
+				"colors": [
+					"spooky",
+					"black",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"santa": {
 				"name": "Santa",
 				"colors": [
@@ -14475,6 +14583,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"spooky",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"skelelady": {
+				"name": "Skelelady",
+				"colors": [
+					"spooky",
+					"flower",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},

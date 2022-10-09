@@ -35,7 +35,11 @@
 			(delta === 1) ?
 				unit :
 				(unit + 's');
-		return i18n.msg(msg).plain();
+		var msgText = i18n.msg(msg).plain();
+		if (isShort) {
+		    return msgText;
+		}
+		return ' ' + msgText;
 	}
 
 	function output (i, diff) {
@@ -43,18 +47,18 @@
 		var delta, result, parts = [];
 		var isShort = Boolean(countdowns[i].opts & SHORT_FORMAT);
 		delta = diff % 60;
-		result = ' ' + getUnitMessage('second', delta, isShort);
+		result = getUnitMessage('second', delta, isShort);
 		parts.unshift(delta + result);
 		diff = Math.floor(diff / 60);
 		delta = diff % 60;
-		result = ' ' + getUnitMessage('minute', delta, isShort);
+		result = getUnitMessage('minute', delta, isShort);
 		parts.unshift(delta + result);
 		diff = Math.floor(diff / 60);
 		delta = diff % 24;
-		result = ' ' + getUnitMessage('hour', delta, isShort);
+		result = getUnitMessage('hour', delta, isShort);
 		parts.unshift(delta + result);
 		diff = Math.floor(diff / 24);
-		result = ' ' + getUnitMessage('day', diff, isShort);
+		result = getUnitMessage('day', diff, isShort);
 		parts.unshift(diff + result);
 		result = parts.pop();
 		if (countdowns[i].opts & NO_LEADING_ZEROS) {

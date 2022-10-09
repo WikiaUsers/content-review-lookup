@@ -71,6 +71,20 @@ $(function () {
 					iframe.frameborder = 0;
 					break;
 
+				// Medal
+				case 'medal':
+					iframe.src = 'https://medal.tv/games/' + data[0] + '/clip/' + data[1];
+					defaultWidth = 640;
+					defaultHeight = 360;
+					break;
+
+				// Pinterest
+				case 'pinterest':
+					iframe.src = 'https://assets.pinterest.com/ext/embed.html?id=' + element.data('id');
+					defaultWidth = 236;
+					defaultHeight = 390;
+					break;
+
 				// Sketchfab
 				case 'sketchfab':
 					iframe.src = 'https://sketchfab.com/models/' + element.data('id') + '/embed?ui_inspector=1';

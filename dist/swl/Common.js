@@ -864,7 +864,7 @@ window.RollbackWikiDisable = true;
 
 function fillEditSummariesVisualEditor() {
 	mw.hook( 've.activationComplete' ).add(function () {
-
+	if ( $( '#stdEditSummaries' ).length ) return;
 		$.get( mw.config.get( 'wgScript' ), { title: 'Template:Stdsummaries', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
 			var	$summaryOptionsList,
 				$summaryLabel = $( '.ve-ui-summaryPanel' ),
