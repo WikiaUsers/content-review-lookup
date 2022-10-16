@@ -2,10 +2,8 @@
 	var bodyLoadComplete = false;
 	var skinAutoPlayInterval = false;
 	
-	var generalMissingImagePlaceholderUrl = 'https://static.wikia.nocookie.net/starfighter-infinity/images/3/3b/Commander_Class_Escape_Pod_MissingSkin.png/revision/latest';
-	var generalMissingImagePlaceholderHtml = '<img class="shipPageSkinImage" src="' + generalMissingImagePlaceholderUrl + '">';
-	var shipSpecificImagePlaceholderUrl = false;
-	var shipSpecificImagePlaceholderHtml = false;
+	var missingImageOverlayUrl = 'https://static.wikia.nocookie.net/starfighter-infinity/images/e/ef/Ship_MissingSkinOverlay.png/revision/latest';
+	var missingImageOverlayHtml = '<img class="shipSkinMissingImageOverlay" src="' + missingImageOverlayUrl + '">';
 	
 	var skinList = {
 		'Standard': false,
@@ -57,24 +55,6 @@
 		});
 	};
 
-	var loadMissingShipSkinImages = function() {
-		loadImageUrlFromApi(getShipName() + ' MissingSkin.png', function(d){
-			var imageUrl = false;
-			try {
-				for (var idx in d.query.pages) {
-					shipSpecificImagePlaceholderUrl = d.query.pages[idx].imageinfo[0].url;
-					shipSpecificImagePlaceholderHtml = '<img class="shipPageSkinImage" src="' + generalMissingImagePlaceholderUrl + '">';
-
-				}
-			} catch (e) {}
-			$(shipSpecificImagePlaceholderHtml).attr('id', "skinPreload_ShipMissingShipImage").show().appendTo('#mw-content-text').hide();
-		});
-
-		if (!$("#skinPreload_DefaultMissingShipImage").length) {
-			$(generalMissingImagePlaceholderHtml).attr('id', "skinPreload_DefaultMissingShipImage").show().appendTo('#mw-content-text').hide();
-		}
-	};
-
 	var setImageHtmlForShipSkin = function(skinName) {
 		var shipName = getShipName();
 		if (shipName == "") {
@@ -116,16 +96,22 @@
 
 			selectHtml += '<span class="shipPageSelectorMenu"><span class="menuTitle">Standard</span> <span class="fas fa-caret-down" aria-hidden="true"></span></span>';
 			selectHtml += '<ul class="shipPageShipSelectorDropdown">';
+			var firstShipImageFound = false;
 			for (var skinName in skinList) {
 				if (skinList[skinName] === false) {
 					return false;
 				}
-				if (skinList[skinName] != "" && skinName != "Standard") {
-					skinImagesFound = true;
-					
-					//*** Pre-load images
-					if (!$("#skinPreload_" + skinName).length) {
-						$(skinList[skinName]).attr('id', "skinPreload_" + skinName).show().appendTo('#mw-content-text').hide();
+				if (skinList[skinName] != "") {
+					if (firstShipImageFound == false) {
+						firstShipImageFound = skinList[skinName];
+					}
+					if (skinName != "Standard") {
+						skinImagesFound = true;
+
+						//*** Pre-load images
+						if (!$("#skinPreload_" + skinName).length) {
+							$(skinList[skinName]).attr('id', "skinPreload_" + skinName).show().appendTo('#mw-content-text').hide();
+						}
 					}
 				}
 				
@@ -136,7 +122,7 @@
 				} else {
 					extraAttr = 'data-selected="selected"';
 				}
-				selectHtml += '<li id="' + skinName.replace(' ', '') + 'SkinMenuItem"><span class="shipPageSelectorMenuItem' + extraClass + '"' + extraAttr + '>' + skinName + '</span></li>';
+				selectHtml += '<li id="' + skinName.replaceAll(' ', '') + 'SkinMenuItem"><span class="shipPageSelectorMenuItem' + extraClass + '"' + extraAttr + '>' + skinName + '</span></li>';
 			}
 			selectHtml += '</ul>';
 			selectHtml += '</td>';
@@ -169,11 +155,7 @@
 
 					var skinHtml = skinList[skinName];
 					if (skinHtml == "") {
-						if (shipSpecificImagePlaceholderHtml != false) {
-							skinHtml = shipSpecificImagePlaceholderHtml;
-						} else {
-							skinHtml = generalMissingImagePlaceholderHtml;
-						}
+						skinHtml = missingImageOverlayHtml + '<span class="shipSkinMissingImageShipImage">' + firstShipImageFound + '</span>';
 					}
 					$("figure[data-source=image1]").html(skinHtml);
 				});
@@ -203,8 +185,8 @@
 		}
 		var newSkinIdx = (skinNameList.indexOf(selectedSkinName) + 1) % skinNameList.length;
 		var newSkinName = skinNameList[newSkinIdx];
-		$('#' + newSkinName.replace(' ', '') + 'SkinMenuItem span').data('automatedClick', true);
-		$('#' + newSkinName.replace(' ', '') + 'SkinMenuItem span').click();
+		$('#' + newSkinName.replaceAll(' ', '') + 'SkinMenuItem span').data('automatedClick', true);
+		$('#' + newSkinName.replaceAll(' ', '') + 'SkinMenuItem span').click();
 	};
 
 	$( document ).ready(function() {
@@ -216,8 +198,6 @@
 		}
 
 		mw.loader.using(['mediawiki.util'], function(){
-			loadMissingShipSkinImages();
-
 			for (var skinName in skinList) {
 				if (skinList[skinName] === false) {
 					if (skinName != 'Standard') {

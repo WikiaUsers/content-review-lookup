@@ -589,3 +589,14 @@ $(function() {
 		})
 	})
 });
+
+/* 
+////////////////////////////////////////////////////////////////////
+// THE BELOW CODE randomly changes text above top navigation from "Symphogear Wiki" to one from the list -  From Marvel Database Fandom
+////////////////////////////////////////////////////////////////////
+*/
+var wiki_name_number=Math.floor(Math.random() * 19) + 1;
+var wiki_name_text=["SHR shifts are hosted randomly by AC!", "The Holder of this group is uhKenobi", "couldbeblox is a former Leadership at Aquatic Pool.", "UhJx_ke is the original owner of the group", "Share is the one who deals with EC promotions", "The current new Co Owner is uh_Elf", "Some of the former leadership were handpicked to be the new Leadership..","Aquatic Pool is known for being one of the groups to get a rank easily", "raleuio is known for being a Leadership and for being the Head Admin on this wiki", "Aquatic Pool Wiki", "A Star Creator used to visit Aquatic Pool for a interview.", "The first MR rank is Pool Supervisor", "RvttenWorld is a former leadership member at Aquatic Pool", "A lot of AP workers have editing accounts for AP.", "Please make sure to read the Code of Conduct to avoid getting warned.", "Ralphkarl110 was a former leadership in training", "kingcarion12 was a former Leadership in Training", "SirFlinz was a former leadership in training.", "HotFireHyper100 is leadership twice", "In order to get EC, you must open a ticket and Share will see if you meet the EC requirements" ][wiki_name_number];
+var elements=document.getElementsByClassName('fandom-community-header__community-name');
+var wiki_name=elements[0];
+wiki_name.textContent=wiki_name_text;

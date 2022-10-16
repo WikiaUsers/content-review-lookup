@@ -1,5 +1,13 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+(function() {
+    var visited = localStorage.getItem('visited');
+    if (!visited) {
+        document.getElementById("halloweenpopup").style.visibility = "visible";
+        localStorage.setItem('visited', true);
+    }
+})();
+
 mw.hook('wikipage.content').add(function($content) {
     $content.find('.EmulatorFrame:not(.loaded)').each(function() {
         var $this = $(this);

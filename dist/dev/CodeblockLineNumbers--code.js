@@ -1,9 +1,9 @@
 /**
  * Adds numbers to each line of code in a codeblock.
- * // current update is to account for mw version `1.37.2` and the introduction of `.mw-highlight-lines` to codeblocks
+ * // current update is for mw version `1.37.6`
  * @name CodeblockLineNumbers
  * @author Arashiryuu0
- * @version 1.2.1
+ * @version 1.2.3
  */
 	
 // jshint browser: true, devel: true, jquery: true
@@ -211,6 +211,7 @@
         if (ignore) return;
 			
         ol.classList.add.apply(ol.classList, classes);
+        if (!block.parentElement.classList.contains('mw-highlight-lines')) ol.classList.remove('obs');
         wrapInner(addLines(block), ol);
 		
         if (matched || !mw.user.getRights) parseComments(ol);

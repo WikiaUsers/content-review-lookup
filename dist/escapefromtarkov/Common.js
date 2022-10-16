@@ -1,7 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* Quest toggle
-author: RheingoldRiver
-*/
+/* Quest toggle; author: RheingoldRiver */
 $.when( mw.loader.using( 'mediawiki.util' ), $.ready ).then( function () { 
 	$dealerList = $('.dealer-toggle');
 	

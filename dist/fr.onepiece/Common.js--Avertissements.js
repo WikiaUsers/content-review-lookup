@@ -7,6 +7,10 @@ importArticles({
 
 window.DiscussionTemplates = {
     templates: {
+    	'Spoil': {
+            name: 'Template:Avertissement/Spoil',
+            title: 'Avertissement - Spoils'
+        },
         'Modifications pour les badges': {
             name: 'Template:Avertissement/Badges',
             title: 'Rappel - Modifications pour les badges'
@@ -70,6 +74,14 @@ window.DiscussionTemplates = {
     }
     var DATA = [
         'Avertos pour les articles/Images',
+        {
+            title: 'Avertissement - Spoils',
+            body: '<p>Bonjour %USERNAME%,</p>' +
+                  '<p>Merci pour tes récentes contributions sur One Piece Encyclopédie&nbsp;!</p>' +
+                  '<p>Je dois cependant t\'informer que les modifications sur des sujets susceptibles de spoil sont interdites avant la sortie officielle du chapitre sur la plateforme MangaPlus. Celle-ci est généralement fixée au dimanche, à 17h00. Tu pourras de nouveau contribuer aux pages dès que le chapitre sera sorti.</p>' +
+                  '<p>À bientôt&nbsp;:)</p>',
+            reason: 'Pour spoils'
+        },
         {
             title: 'Modifications pour les badges',
             body: '<p>Bonjour %USERNAME%,</p>' +

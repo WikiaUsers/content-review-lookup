@@ -354,10 +354,10 @@ window.questions = [
     "Ultima IX: Ascension"],
     
     ["What is the name of Dungeon Keeper's world?",
+    "It has no name",
     "Adushul",
     "Harmonia",
-    "Eden",
-    "It has no name"],
+    "Eden"],
     
     ["An early name for the Bile Demon described it as...?",
     "Perfidious",
@@ -482,5 +482,17 @@ window.questions = [
     "2000",
     "4000",
     "1000",
-	]
+	],
+	
+	["What is the name of Dungeon Keeper 2's world?",
+	"Harmonia",
+    "It has no name",
+    "Adushul",
+    "Eden"],
+    
+    ["Which unit (excluding Elites) in Dungeon Keeper 2 has the strongest mêlée strength?",
+	"King Reginald",
+    "Horny",
+    "Dark Angel",
+    "Giant"],
 ];

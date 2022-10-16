@@ -1,113 +1,65 @@
 /* Tout JavaScript ici sera chargé avec chaque page accédée par n’importe quel utilisateur. */
 
-// Toute les url pour récupérer le flux rss des posts insta 
-var urls = ["https://bibliogram.ethibox.fr",
-			 "https://bibliogram.art",
-			 "https://bibliogram.snopyta.org",
-			 "https://bibliogram.pussthecat.org",
-			 "https://bibliogram.1d4.us",
-			 "https://bibliogram.froth.zone",
-			 "https://bibliogram.esmailelbob.xyz",	
-			 "https://biblio.alefvanoon.xyz",
-			 "https://bib.riverside.rocks",
-			 "https://bib.actionsack.com",
-			 "https://insta.trom.tf",
-			 "https://insta.tromdienste.de",
-			 "qsuiaf4jio2yaxdbj6lj...onion"];
-
 // Fonction permettant de récupérer les posts et de les écrires
 function setPostInsta(url){
-	// recup le flux
-	fetch(url+'/u/tonytonyvalente/rss.xml')
+	// recup le flux. Utilisation de feedrapp pour contourner le "NetworkError"
+	fetch("http://www.feedrapp.info?callback=?&q="+url)
 	.then(function(response) {
 		return response.text();
 	})
 	.then(function(str) {
-		return new window.DOMParser().parseFromString(str, "text/xml");
+			return new window.DOMParser().parseFromString(str, "text/html");
 	})
 	.then(function(data) {
+		//console.log(data);
+		var items = data.children[0].children[1].children;
 		var rss = document.getElementById("RSSinsta");
 		var nb = 0;
-
-		// Pour chaque element du XML
-		for (var idx in data['all']) {
-			item = data['all'][idx];
-
-			// Pour chaque poste insta
-			if (item.nodeName == "item") {
-				
-				// S'il existe déjà, ne rien faire 
-				// (donc ne s'actualise pas avec F5, mais changement de page)
-				if (document.getElementById(nb))
-					continue;
-				var rsselmt = document.getElementById("template").cloneNode(true);
-				rsselmt.setAttribute("id", nb);
-				
-				// Prendre le contenu
-				var text = item['textContent'];
-				var titre = text.split('\n')[1];
-				var descr = text.split("\n")[5].split("<img")[0].split("<video")[0];
-						
-				// et l'écrire
-				rsselmt["children"]['0'].textContent = titre;
-				var tbody = rsselmt["children"]['1'];
-				tbody["children"]['0'].innerHTML = descr;
-	
-				var parent_img = tbody["children"]['1']["children"]['0'];
-				var img = document.createElement("img");
-	
-				// Puis extraire chaque image
-				var tab = text.split('<img src="');
-				if (tab.length > 1) {
-					img.src = tab[1].split('"')[0];
-					img.height = "200"; // width = auto
-					parent_img.appendChild(img)
-					for (i = 2; i < tab.length; i++) {
-						var link = tab[i].split('"')[0];
-						img_i = img.cloneNode(true);
-						img_i.src = link;
-						parent_img.appendChild(img_i);
-					}
-				}
-	
-				rss.appendChild(rsselmt);
-				nb++;
-				// Au bout de 5 posts, se stopper
-				if (nb >= 5){
-					rss_end = true;
-					return;
-				}
-			}
-		}
-	});
-}
-
-// Fonction permettant de récupérer le dernier numéro de Tome existant afin d'écrire le total de tomes/chapitres publiés 
-function setNbChapTome() {
-	// Catégorie comprennant tous les tomes existant
-	fetch("https://radiant.fandom.com/fr/wiki/Catégorie:Tomes")
-	.then(function(response) {
-		return response.text();
-	})
-	.then(function(str) {
-		return new window.DOMParser().parseFromString(str, "text/html");
-	})
-	.then(function(data) {
-		// Recupere le morceau voulu contenant chaque tome
-		var tomes = data.getElementsByClassName("mw-category-group")[3].textContent;
-		tomes = tomes.split("Tome ");
 		
-		// Pour chaque tome, prendre le dernier
-		var last = 1;
-		for (var i = 0; i < tomes.length; i++) {
-			var tome = parseInt(tomes[i].split("\n")[0]);
-			if (last < tome)
-				last = tome;
+		// Pour chaque items
+		for (var idx in items) {
+			var post = items[idx];
+			console.log(post);
+			
+			// Vérifie s'il est un post
+			// Ou s'il existe déjà, ne rien faire (dans le cas d'un F5)
+			if (post.tagName != "LI" || document.getElementById(nb))
+				continue;
+			
+			var rsselmt = document.getElementById("template").cloneNode(true);
+			rsselmt.setAttribute("id", nb);
+			
+			// Prendre le contenu
+			//	  Nettoie les chaines de caractères 
+			var textPost = post.textContent.replace(/^(\\n\s*)+/, "").replace(/(\\n *)+/g, "<br/>").replace(/[0-9]+k.*ago/g, "");
+			
+			var titre   = textPost.split("<br/>")[0];
+			var descr   = textPost.replace(titre, "").replace(/^<br\/>/, "");
+			var img_src = post.outerHTML.split('<img src="')[1].split('" alt="')[0].replaceAll("\\&quot;",'"');
+			console.log(titre + "\n--\n" + descr + "\n--\n" + img_src);
+			
+			// et l'écrire
+			rsselmt["children"]['0'].textContent = titre;
+			var tbody = rsselmt["children"]['1'];
+			tbody["children"]['0'].innerHTML = descr;
+			
+			// Et inserer l'image
+			var parent_img = tbody["children"]['1']["children"]['0'];
+			var img = document.createElement("img");
+			img.src = "https://politepol.com/bindlr/s/cdn1" + img_src.split('://cdn1')[1];
+			img.height = "200"; // width = auto
+			parent_img.appendChild(img);
+
+			//console.log(rsselmt);
+			rss.appendChild(rsselmt);
+			nb++;
+			// Au bout de 5 posts, se stopper
+			if (nb >= 5)
+				break;
 		}
-		
-		// Puis écrire la valeur dans les balises correspondant
-		document.getElementById("NbTome").innerText = last; // <=> Dernier tome 
-		document.getElementById("NbChap").innerText = 4 + 8 * (last - 1);  // <=> Chaque tome a 8 chapitres sauf le premier qui en a 4
+	})
+	.catch(function(error) {
+		console.log(error.message);
 	});
 }
 
@@ -115,15 +67,7 @@ function setNbChapTome() {
 /************************************************************************/
 /************************************************************************/
 
-var rss_end = false;
 // Flux RSS des post instagram 
 if(mw.config.get('wgPageName') === "Wiki_Radiant" || mw.config.get('wgPageName') === "Modèle:RéseauxSociaux"){
-	for(var i=0; i<urls.length; i++){
-		setPostInsta(urls[i]);
-		if(rss_end)
-			break;
-	}
+	setPostInsta("https://feedfry.com/rss/11ed4b9b314017748566b34b9cc01499");
 }
-
-if(mw.config.get('wgPageName') === "Chapitres_et_Tomes")
-	setNbChapTome();

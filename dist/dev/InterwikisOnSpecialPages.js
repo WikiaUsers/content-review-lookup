@@ -1,4 +1,4 @@
-;(function(window, $, mw) {
+;(function($, mw) {
 	'use strict';
 	
 	var config = mw.config.get([
@@ -59,18 +59,11 @@
 		// Adding language-entries
 		for ( var lang in langs ) {
 			var link_ele = '<a href="'+ langs[lang].url.replace('$1', pagename) +'" data-tracking-label="lang-' + langs[lang].prefix + '">' + langs[lang].language + '</a>';
-			$( '.page-header__languages .wds-dropdown__content .wds-list' ).append(
-				'<li>' + link_ele + '</li>'
-			);
-			$( '.page-footer__languages .wds-collapsible-panel__content' ).append(
-				link_ele
-			);
+			$( '.page-header__languages .wds-dropdown__content .wds-list' ).append('<li>' + link_ele + '</li>');
+			$( '.page-footer__languages .wds-collapsible-panel__content' ).append(link_ele);
 		}
 	}
-	function log(msg) {
-		console.log('[%cInterwikisOnSpecialPages%c] ' + msg, 'color:orange', 'color:inherit');
-	}
-	
+
 	if ( pagename.length && $( '.page-header__languages' ).length === 0 && $( '.article-footer-languages').length === 0 ) {
 		mw.loader.using( ['mediawiki.api'] ).then(function () {
 			return new mw.Api().loadMessagesIfMissing([
@@ -84,12 +77,7 @@
 				siprop: 'interwikimap',
 				sifilteriw: 'local'
 			}).done(function (d) {
-				if (d.query) {
-					log('Loaded interwikimap.');
-				} else {
-					log('Failed to load interwikimap.');
-					return;
-				}
+				if (!d.query) return;
 				d.query.interwikimap.forEach(function(entry){
 					if (entry.language !== undefined) {
 						var l = entry.language;
@@ -101,4 +89,4 @@
 			});
 		});
 	}
-})(window, window.jQuery, window.mediaWiki);
+})(window.jQuery, window.mediaWiki);

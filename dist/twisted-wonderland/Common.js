@@ -29,3 +29,10 @@ window.ajaxSpecialPages = ["Recentchanges", "WikiActivity"];
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 100;
 window.lockOldComments.addNoteAbove = true;
+
+/* Modifying redirect button from WikiEditor's source mode */
+$( '#wpTextbox1' ).on( 'wikiEditor-toolbar-buildSection-advanced', function( event, section ) {
+	// The exact paths are available in jquery.wikiEditor.toolbar.config.js file of the extension
+	section.groups.insert.tools.redirect.action.options.pre = '#REDIRECT [[';
+	section.groups.insert.tools.redirect.action.options.post = ']]\n[[Category:Redirected Pages]]';
+} );

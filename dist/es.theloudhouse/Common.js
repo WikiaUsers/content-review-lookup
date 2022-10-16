@@ -35,21 +35,3 @@ window.UserTagsJS = {
 };
  
 UserTagsJS.modules.inactive = 30;
-
-    
-/* Cambio de título */
-$(function(){
-  var newTitle = $("#title-meta").html();
-  if (!newTitle) return;
-  $(".firstHeading,#WikiaUserPagesHeader h1,#WikiaPageHeader h1").html(newTitle);
-});
-
-/* Refrescar actividad */
-window.ajaxPages = [
-    "Especial:WikiActivity",
-    "Especial:CambiosRecientes"
-    ];
-    
-window.ajaxRefresh = 20000;
-window.AjaxRCRefreshText = 'Refrescar actividad';
-window.AjaxRCRefreshHoverText = 'Los cambios más recientes serán vistos sin la necesidad de refrescar la página manualmente';

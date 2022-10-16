@@ -8,12 +8,10 @@
  * @author magiczocker
  */
  
-;(function(window, $, mw) {
+;(function($, mw) {
 	'use strict';
 	
 	const config = mw.config.get([
-		'wgScriptPath',
-		'wgArticlePath',
 		'wgPageName',
 		'wgCanonicalNamespace'
 	]);
@@ -22,8 +20,7 @@
 	window.FileToolsLoaded = true;
 	
 	var last_summary = "";
-	const token = mw.user.tokens.values.csrfToken;
-	var msg, rights;
+	var msg, rights, api;
 	
 	function btn(txt) {
 		return '<button class="wds-button">' + msg(txt).escape() + '</button>';
@@ -44,12 +41,11 @@
 				for (var i=3;i<=leng;i++) {
 					var rev = $('#mw-imagepage-section-filehistory tr:nth-child(' + i + ') > td:first-child > a:first-child').attr('href').replace(/.*oldimage=(.+)(&.*)?/,'$1'),
 					num = i;
-					$.post( config.wgScriptPath + '/api.php', {
+					api.postWithEditToken({
 						action: 'delete', 
 						title: config.wgPageName, 
 						oldimage: decodeURIComponent(rev), 
 						reason: summary,
-						token: token,
 						formatversion: 2
 					}).done(function() {
 						if (num==leng) { 
@@ -73,13 +69,12 @@
 				if (summary.length === 0) {
 					summary = msg('summary_default_protect').plain();
 				}
-				$.post( config.wgScriptPath + '/api.php', {
+				api.postWithEditToken({
 					action: 'protect',
 					title: config.wgPageName,
 					protections: 'upload=sysop', 
 					reason: summary,
 					expiry: '2 weeks',
-					token: token,
 					formatversion: 2
 				}).done(function() {
 					$('#filehistory').after('<div class="mw-warning-with-logexcerpt" style="margin:5px 0; text-align:center;">' + msg('status_protected').escape() + '</div>');
@@ -109,12 +104,11 @@
 					if (summary.length === 0) {
 						summary = msg('summary_default_deletea').plain();
 					}
-					$.post( config.wgScriptPath + '/api.php', {
+					api.postWithEditToken({
 						action: 'delete', 
 						title: config.wgPageName,
 						oldimage: decodeURIComponent(delname), 
 						reason: summary,
-						token: token,
 						formatversion: 2
 					}).done(function() {
 						$($this).parents('tr').css('opacity','0.2');
@@ -138,12 +132,11 @@
 					if (summary.length === 0) {
 						summary = msg('summary_default_revert').plain();
 					}
-					$.post( config.wgScriptPath + '/api.php', {
+					api.postWithEditToken({
 						action: 'filerevert',
 						filename: config.wgPageName.replace(/^[^:]+:(.+)/,'$1'), 
 						archivename: decodeURIComponent(archname), 
 						comment: summary,
-						token: token,
 						formatversion: 2
 					}).done(function() {
 						refresh();
@@ -156,34 +149,37 @@
 	}
 	
 	function refresh() {
-		$('#mw-imagepage-section-filehistory').load( config.wgArticlePath.replace("$1", config.wgPageName) + ' #mw-imagepage-section-filehistory', function() {
+		$('#mw-imagepage-section-filehistory').load(window.location.pathname + ' #mw-imagepage-section-filehistory', function() {
 			addImageButtons();
 		});
 	}
 	
 	// Init: Query image rights and add buttons
-	$.get( config.wgScriptPath + '/api.php', {
-		action: 'query',
-		format: 'json',
-		prop: 'imageinfo',
-		meta: 'userinfo',
-		titles: config.wgPageName,
-		formatversion: 2,
-		iilocalonly: 1,
-		uiprop: 'rights'
-	}).done(function (data) {
-		if (data.query.pages[0].imagerepository === 'local') {
-			rights = data.query.userinfo.rights;
-			mw.hook('dev.i18n').add(function (i18n) {
-				i18n.loadMessages('FileTools').done(function (i18no) {
-					msg = i18no.msg;
-					addHeaderButtons();
-					addImageButtons();
+	mw.loader.using('mediawiki.api').then(function() {
+		api = new mw.Api();
+		api.get({
+			action: 'query',
+			format: 'json',
+			prop: 'imageinfo',
+			meta: 'userinfo',
+			titles: config.wgPageName,
+			formatversion: 2,
+			iilocalonly: 1,
+			uiprop: 'rights'
+		}).done(function (data) {
+			if (data.query.pages[0].imagerepository === 'local') {
+				rights = data.query.userinfo.rights;
+				mw.hook('dev.i18n').add(function (i18n) {
+					i18n.loadMessages('FileTools').done(function (i18no) {
+						msg = i18no.msg;
+						addHeaderButtons();
+						addImageButtons();
+					});
 				});
-			});
-			if (!(window.dev && window.dev.i18n && window.dev.i18n.loadMessages)) {
-				mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js&*');
+				if (!(window.dev && window.dev.i18n && window.dev.i18n.loadMessages)) {
+					mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js&*');
+				}
 			}
-		}
+		});
 	});
-})(window, window.jQuery, window.mediaWiki);
+})(window.jQuery, window.mediaWiki);

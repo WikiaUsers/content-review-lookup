@@ -1,25 +1,19 @@
-mw.loader.using('oojs-ui').then(function() {
+mw.loader.using(['oojs-ui', 'mediawiki.api']).then(function() {
 	'use strict';
 
 	if ( window.createPageFormInit || !($('.create-page-form').length) ) return;
 	
     window.createPageFormInit = true;
+    var preloads = 2;
+    var msg;
 	
 	function createPageForm() {
 		var formConfig = {
-			'text': {
-				'input_page_title': 'Enter Name of Page',
-				'create_page_btn_text': 'Next',
-				'go_to_page_btn_text': 'Go to Article',
-				'go_to_blank': 'Go to Form',
-				'text_placeholder': 'New Article Title'
-			},
 			'data': {
 				'template_page': mw.config.values.wgFormattedNamespaces[10] + ':CreatePageBlank'
 			}
 		};
-		var cText = formConfig.text;
-		
+
 		var rawDataClass = 'create-page-form';
 		var rawDataClassSel = '.' + rawDataClass;
 		var rawDataSel = '.' + rawDataClass + ' > tbody';
@@ -67,7 +61,7 @@ mw.loader.using('oojs-ui').then(function() {
 				case 'text':
 					input = new UI.TextInputWidget({
 						name: row.name,
-						placeholder: cText.text_placeholder
+						placeholder: msg('text-placeholder').plain()
 					});
 					break;
 
@@ -115,8 +109,6 @@ mw.loader.using('oojs-ui').then(function() {
 
 			if (!pageName.length) return;
 
-	        var newHref = url + '/';
-
 			var subTemplatePath = '';
 
 			$(form).find('.template-select select').each(function() {
@@ -132,7 +124,7 @@ mw.loader.using('oojs-ui').then(function() {
 			var fullUrl = encodeURI(url + pageName + '?action=edit&preload=' + preloadPath);
 
 			$(btn).attr('href', fullUrl);
-			$(form).find(testURL).attr('href', url + preloadPath).text(cText.go_to_blank);
+			$(form).find(testURL).attr('href', url + preloadPath).text(msg('go-to-form').plain());
 
 
         	new mw.Api().get( {
@@ -146,10 +138,10 @@ mw.loader.using('oojs-ui').then(function() {
                     	case pageName: 
 							var btnText = '';
 							if ( this.missing !== "" ) {
-								btnText = cText.go_to_page_btn_text;
+								btnText = msg('go-to-page-button-text').plain();
 								$(btn).attr('href', encodeURI(url + pageName));
 							} else {
-								btnText = cText.create_page_btn_text;
+								btnText = msg('create-page-button-text').plain();
 							}
 							$(btn).find('.oo-ui-labelElement-label').text(btnText);
                     	break;
@@ -188,7 +180,7 @@ mw.loader.using('oojs-ui').then(function() {
 			formItems.push(getFormRow({
 				'type': 'text',
 				'name': 'page-name',
-				'label': cText.input_page_title
+				'label': msg('input-page-title').plain()
 			}));
 
 			$(this).find('tr').each(function() {
@@ -205,14 +197,10 @@ mw.loader.using('oojs-ui').then(function() {
 
 			});
 
-			var buttonWithLabel = new OO.ui.ButtonWidget( { 
-				label: 'Button Label',
-			} );
-
 			formItems.push(getFormRow({
 				'type': 'button',
 				'name': 'send',
-				'value': cText.create_page_btn_text,
+				'value': msg('create-page-button-text').plain(),
 			}));
 
 // 			// Build form:
@@ -247,8 +235,19 @@ mw.loader.using('oojs-ui').then(function() {
 			$(parent).after($form);
 		});
 	}
-	mw.hook('wikipage.content').add(createPageForm);
-
+	function preload() {
+		if (--preloads > 0) return;
+		window.dev.i18n.loadMessages('CreatePageForm').done(function (i18no) {
+			msg = i18no.msg;
+			createPageForm();
+		});
+	}
+	mw.hook('wikipage.content').add(preload);
+	mw.hook('dev.i18n').add(preload);
+	importArticle({
+		type: 'script',
+		article: 'u:dev:MediaWiki:I18n-js/code.js'
+	});
 	console.log('createPageForm loaded');
 
 });

@@ -111,7 +111,7 @@
 		new mw.Api().get({
 			action: 'cargoquery',
 			format: 'json',
-			limit: 'max',
+			limit: '200',
 			tables: 'Games',
 			fields: 'code,supersededBy',
 			order_by: 'canonOrder'
@@ -130,6 +130,11 @@
 					openCurly + 'Plural\\|' + gameCapture + '\\|',
 				].join('|');
 			});
+			gameTokens.push([
+				openCurly + 'Term\\|(Series)\\|',
+				openCurly + 'Plural\\|(Series)\\|',
+			].join('|'));
+
 			gameContextRegex = new RegExp(gameTokens.join('|'), 'g');
 		});
 	})();

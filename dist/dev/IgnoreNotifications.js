@@ -468,7 +468,7 @@
                         notif_section.querySelector(".notifications__counter");
                     var fandom_counter = notif_section.querySelector(
                         "[data-tracking-label=\"notifications-tab-fandom\"]"
-                        + " .NotificationsDropdown-module_tabTotal__p7gqN");
+                        + " .NotificationsDropdown-module_tabTotal__lYSUS");
                     if (global_counter && (typeof gamepedia_reply.meta.unread == "number")
                         && isFinite(gamepedia_reply.meta.unread)) {
                         var global_unread = fandom_reply.unreadCount
@@ -489,7 +489,7 @@
                     return;
                 }
                 Array.prototype.slice.call(fandom_list.querySelectorAll(
-                    ".NotificationCard-module_isUnread__25iz-")).forEach(function (val) {
+                    ".NotificationCard-module_isUnread__18vlB")).forEach(function (val) {
                     var num = dismiss.length;
                     var type = val.getAttribute("data-tracking-label").slice(19);
                     var link = val.children[0].getAttribute("href");
@@ -500,7 +500,7 @@
                         if ((link == notif.events.latestEvent.uri)
                             && (data_types[type] + "-notification" == notif.type)) {
                             val.classList.remove(
-                                "NotificationCard-module_isUnread__25iz-");
+                                "NotificationCard-module_isUnread__18vlB");
                             search = false;
                         }
                     }

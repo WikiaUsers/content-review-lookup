@@ -1018,6 +1018,7 @@
 		importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });
 	} else {
 		// this is not [[Special:CatNav]]
+		window.CatNav = window.CatNav || {};
 		window.CatNav.init = function() {
 			customConsole.warn("catnav :: 'CatNav.init' was requested, but has not been defined on [[Special:CatNav]]");
 		};

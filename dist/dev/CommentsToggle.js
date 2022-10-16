@@ -1,8 +1,7 @@
-;(function(window, $, mw) {
+;(function(mw) {
 	'use strict';
 	const config = mw.config.get([
 		'wgRestrictionComment',
-		'wgScriptPath',
 		'wgPageName',
 		'wgUserGroups'
 	]);
@@ -19,16 +18,16 @@
 	var msg, buttonInput, buttonLabel;
 
 	function protect() {
+		var api = new mw.Api();
 		buttonInput.disabled = true;
-		$.get( config.wgScriptPath + '/api.php', {
+		api.get({
 			action: 'query',
 			format: 'json',
 			prop: 'info',
 			titles: config.wgPageName,
 			formatversion: 2,
 			inprop: 'protection'
-		})
-		.done(function(data) {
+		}).done(function(data) {
 			const curProtect = data.query.pages[0].protection;
 			var protections = [];
 			var expiry = [];
@@ -45,16 +44,15 @@
 				expiry[expiry.length] = 'infinite';
 			}
 			
-			$.post( config.wgScriptPath + '/api.php', {
+			api.postWithEditToken({
 				action: 'protect',
 				format: 'json',
 				title: config.wgPageName,
 				protections: protections.join('|'),
 				expiry: expiry.join('|'),
-				token: mw.user.tokens.values.csrfToken,
+				reason: (buttonInput.checked ? 'Enabled' : 'Disabled') + ' comments using [[w:c:dev:CommentsToggle|CommentsToggle]].',
 				formatversion: 2
-			})
-			.done(function() {
+			}).done(function() {
 				location.reload();
 			});
 		});
@@ -78,14 +76,16 @@
 		commentArea.before(buttonInput, buttonLabel);
 	}
 
-	mw.hook('dev.i18n').add(function (i18n) {
-		i18n.loadMessages('CommentsToggle').done(function (i18no) {
-			msg = i18no.msg;
-			init();
+	mw.loader.using('mediawiki.api').then(function () {
+		mw.hook('dev.i18n').add(function (i18n) {
+			i18n.loadMessages('CommentsToggle').done(function (i18no) {
+				msg = i18no.msg;
+				init();
+			});
+		});
+		importArticle({
+			type: 'script',
+			article: 'u:dev:MediaWiki:I18n-js/code.js'
 		});
 	});
-	importArticles({
-		type: 'script',
-		articles: 'u:dev:MediaWiki:I18n-js/code.js'
-	});
-})(window, window.jQuery, window.mediaWiki);
+})(window.mediaWiki);

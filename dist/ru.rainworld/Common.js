@@ -32,6 +32,19 @@ $(function () {
 	}
 });
 
+//Добавление стилей для категории "Модификации"
+!function( $, mw ) {
+    var a = mw.config.get( 'wgCategories' ), p = mw.config.get( 'wgTitle' );
+ 
+    if ( a.indexOf( 'Модификации' ) !== -1 || p == 'Категория:Модификации' ) {
+        importArticle({
+            type: 'style',
+            article: 'MediaWiki:Mods.css'
+        });
+    }
+}( jQuery, mediaWiki );
+
+
 //Отображение/скрытие элементов
 $(".button-toggle").click(function () {
 	var id = document.getElementById(this.id);

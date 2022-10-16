@@ -93,7 +93,7 @@
             log('init dbl run protection triggered');
             return;
         }
-        Settings.version = '1.61';
+        Settings.version = '1.70';
         log('init vrsn:', Settings.version);
         apiUri = new mw.Uri({path: mwc.wgScriptPath + '/api.php'});
         // use api.v1/article/details
@@ -192,6 +192,21 @@
         window.ajaxCallAgain.push(main);
         mw.hook('wikipage.content').add(main);
         mw.hook('ppreview.ready').fire(Settings);
+
+        // load localization, if no local (wiki\user-specific) noimage defined
+        if (Settings.noimage === Defaults.noimage) {
+	        log('i18n load');
+	        mw.hook('dev.i18n').add(function (i18n) {
+	        	i18n.loadMessages('LinkPreview').done(function (i18n) {
+		        	log('i18n loaded', i18n);
+		        	i18n.useContentLang();
+		        	var img = i18n.msg('no-image').plain();
+		        	Settings.noimage = chkImageSrc(img) ? img : Settings.noimage;
+		        	log('i18n noimage', Settings.noimage, img);
+	        	});
+	        });
+        	importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });
+        }
         // main();
     } // init
     

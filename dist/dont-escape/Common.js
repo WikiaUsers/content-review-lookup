@@ -1,10 +1,5 @@
 // <nowiki>
 
-// Special:Chat Redirect to Project:Discord
-if (mw.config.get('wgPageName') == "Special:Chat") {
-	window.location = "https://dont-escape.fandom.com/wiki/Project:Discord";
-}
-
 // Custom Spoiler Warning from the Undertale Wiki by KockaAdmiralac
 // (https://undertale.fandom.com/wiki/User:KockaAdmiralac)
 (function() {

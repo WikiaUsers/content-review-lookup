@@ -2,15 +2,15 @@
  * Creates simple non-intrusive pop-up notifications.
  * @author Arashiryuu0
  * @module Toasts
- * @version 1.0.3
+ * @version 1.0.4
  */
 
 // jshint browser: true, devel: true, jquery: true
 // jshint strict: true, freeze: true, eqeqeq: true, futurehostile: true
 // jshint newcap: true, noarg: true, quotmark: single, shadow: outer
 // jshint latedef: true, undef: true, unused: true
-/* globals mw */
 
+/* globals mw */
 ;(function () {
     'use strict';
     
@@ -38,20 +38,26 @@
                 var key = props[i];
                 deepFreeze(object[key], exclude);
             }
-            Object.freeze(object);
         }
+        Object.freeze(object);
         return object;
     }
     
     var helpers = {
         ensureContainer: function () {
-            var wrapper;
             if (document.querySelector('.toasts')) return;
-            wrapper = document.createElement('div');
+            var wrapper = document.createElement('div');
             wrapper.classList.add('toasts');
             wrapper.style.setProperty('width', document.documentElement.offsetWidth + 'px');
             wrapper.style.setProperty('bottom', '80px');
             document.body.appendChild(wrapper);
+        },
+        sanitizeHTML: function (html) {
+			var text = document.createTextNode('');
+			var span = document.createElement('span');
+			span.appendChild(text);
+			text.nodeValue = html;
+			return span.innerHTML;
         },
         parseHTML: function (html, fragment) {
             var template = document.createElement('template'),
@@ -149,6 +155,7 @@
         show: function (content, options) {
             var toast;
             content = typeof content === 'string' ? content : '';
+            content = helpers.sanitizeHTML(content);
             options = isObject(options) ? options : {};
             helpers.ensureContainer();
             toast = helpers.buildToast(
@@ -167,10 +174,9 @@
                 });
             }, console.error)
             .then(function () {
-                var toasts;
                 toast.parentElement.removeChild(toast);
                 if (document.querySelectorAll('.toasts .toast').length) return;
-                toasts = document.querySelector('.toasts');
+                var toasts = document.querySelector('.toasts');
                 toasts.parentElement.removeChild(toasts);
             }, console.error);
         },

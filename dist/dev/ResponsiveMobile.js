@@ -299,8 +299,6 @@
   }
 
   function createWikiMenuLinks() {
-  	console.warn("This feature is very experimental!")
-  	
     (function ($) {
       $.fn.changeElementType = function (newType) {
         var attrs = {};

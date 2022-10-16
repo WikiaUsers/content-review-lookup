@@ -507,7 +507,9 @@
 		'Spawn Eggs': [
 			{ name: 'Villager Spawn Egg' },
 			{ name: 'Endermite Spawn Egg' },
-			{ name: 'Ghast Spawn Egg' }
+			{ name: 'Enchanted Ghast Spawn Egg', ench: true, mcName: 'Ghast Spawn Egg' },
+			{ name: 'Enchanted Spider Spawn Egg', ench: true, mcName: 'Spider Spawn Egg' },
+			{ name: 'Enchanted Enderman Spawn Egg', ench: true, mcName: 'Enderman Spawn Egg' }
 		],
 		Misc: [
 			{ name: 'Torch', mcName: 'Torch (texture)' },
@@ -528,13 +530,13 @@
 			{ name: 'Name Tag' },
 			{ name: 'Fishing Rod' },
 			{ name: 'Carrot on a Stick' },
-			{ name: 'Compass', sbExt: 'gif' },
-			{ name: 'Clock', sbExt: 'gif' },
+			{ name: 'Compass', sbExt: 'gif', sbEnchExt: 'png' },
+			{ name: 'Clock', sbExt: 'gif', sbEnchExt: 'png' },
 			{ name: 'Bed', mcName: 'Red Bed (N)' },
 			{ name: 'Iron Horse Armor', mcName: 'Iron Horse Armor (item)' },
 			{ name: 'Gold Horse Armor', mcName: 'Golden Horse Armor (item)' },
 			{ name: 'Diamond Horse Armor', mcName: 'Diamond Horse Armor (item)' },
-			{ name: "Bottle o' Enchanting" },
+			{ name: "Bottle o' Enchanting", ench: true, png: true },
 			{ name: 'Grass Block' },
 			{ name: 'Dirt' },
 			{ name: 'Stone Slab' },
@@ -546,7 +548,7 @@
 			{ name: 'Moss Stone', mcName: 'Mossy Cobblestone' },
 			{ name: 'Bedrock' },
 			{ name: 'Sandstone' },
-			{ name: 'Note Block' },
+			{ name: 'Noteblock', mcName: 'Note Block' },
 			{ name: 'Brick' },
 			{ name: 'Bricks' },
 			{ name: 'Brick Slab' },
@@ -560,7 +562,7 @@
 			{ name: 'Spawner' },
 			{ name: 'TNT' },
 			{ name: 'Jukebox' },
-			{ name: 'Command Block', enchName: 'Enchanted Command Block' },
+			{ name: 'Command Block' },
 			{ name: 'Enchantment Table', mcName: 'Enchanting Table (item)' },
 			{ name: 'Enchantment Table (placed)', mcName: 'Enchanting Table', png: true },
 			{ name: 'Water Block', mcName: 'Water' },
@@ -583,7 +585,7 @@
 	const fileNames = mappedFiles.map((file) => `File:${file.mcName}.png`);
 	const fileNamesGif = mappedFiles.map((file) => `File:${file.mcName}.gif`);
 	const skyblockFileNames = mappedFiles.map((file) => `File:${file.name}.${file.sbExt ?? 'png'}`);
-	const skyblockEnchantedFileNames = mappedFiles.map((file) => `File:${file.enchName}.${file.sbExt ?? 'png'}`);
+	const skyblockEnchantedFileNames = mappedFiles.map((file) => `File:${file.enchName}.${file.sbEnchExt ?? file.sbExt ?? 'png'}`);
 	// CSS Styles
 	const enchantedFilter = 'filter:url(#mcglint)'; // filter:drop-shadow(0 0 6px #aa03aa)
 	// Test script styles
@@ -645,15 +647,14 @@
 				 */
 				let extraEnchRule = '';
 				const sbEnchName = file.ench ? false : file.enchName,
-					sbEnchKey = `File:${sbEnchName}.${file.sbExt ?? 'png'}`;
-
-				console.log(sbEnchantedUrlsMap);
+					sbEnchKey = `File:${sbEnchName}.${file.sbEnchExt ?? file.sbExt ?? 'png'}`;
+					
 				if (sbEnchName && sbEnchantedUrlsMap[sbEnchKey]) {
-					enchantedNames.push(`${sbEnchName}.${file.sbExt ?? 'png'}`);
-					extraEnchRule = `, img[data-image-name="${sbEnchName}.${file.sbExt ?? 'png'}"]`;
+					enchantedNames.push(`${sbEnchName}.${file.sbEnchExt ?? file.sbExt ?? 'png'}`);
+					extraEnchRule = `, img[data-image-name="${sbEnchName}.${file.sbEnchExt ?? file.sbExt ?? 'png'}"]`;
 				}
 
-				if (file.ench) enchantedNames.push(`${file.mcName}.${file.sbExt ?? 'png'}`);
+				if (file.ench) enchantedNames.push(`${file.enchName.replace(/^Enchanted /, '')}.${file.sbEnchExt ?? file.sbExt ?? 'png'}`);
 
 				cssEntries.push(`img[data-image-name="${file.name}.${file.sbExt ?? 'png'}"]${extraEnchRule} { content: url('${mcUrl}') }`);
 

@@ -186,11 +186,10 @@
 	mw.loader.using( ['mediawiki.api'] ).then(function() {
 		importArticles({
 			type: 'script',
-			article: 'u:dev:MediaWiki:I18n-js/code.js'
-		});
-		importArticles({
-			type: 'script',
-			article: 'u:dev:MediaWiki:ShowCustomModal.js'
+			articles: [
+				'u:dev:MediaWiki:I18n-js/code.js',
+				'u:dev:MediaWiki:ShowCustomModal.js'
+			]
 		});
 	});
 })(window.jQuery, window.mediaWiki);

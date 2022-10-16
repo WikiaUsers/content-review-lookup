@@ -164,7 +164,7 @@ $(function(){
 // Usage: <div class="toc-multicol">__TOC__</div>
 // TODO: needs fixing
 $(function(){
-  if ($(".toc-multicol #toc").size() !== 0) {
+  if ($(".toc-multicol #toc").length !== 0) {
     $(function(){
 		var x, tdToAppend, listToAppend, showtext = 'show', hidetext = 'hide';
 		$("#toc").css("width","100%"); //need to subtract 12px from this for padding for some reason

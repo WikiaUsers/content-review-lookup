@@ -12,10 +12,13 @@ $(document).ready(function() {
 	$("span#heroAbilityHarness").html('<div id="heroAbilityInput">Toggle Hero Ability? <input type="checkbox" name="heroAbilityBoost" id="heroAbilityBoost"></input></div>');
 	$("span#rageSpellHarness").html('<div id="rageSpellInput">Rage Spell Level: <select name="rageSpellLevel" id="rageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> </select></div>');
 	$("span#capitalRageSpellHarness").html('<div id="capitalRageSpellInput">Rage Spell Level: <select name="capitalRageSpellLevel" id="capitalRageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
+	$("span#rageTowerHarness").html('<div id="rageTowerInput">Toggle Rage Spell Tower? <input type="checkbox" name="rageTowerBoost" id="rageTowerBoost"></input></div>');
+	$("span#valkRageHarness").html('<div id="valkRageInput">Toggle Super Valkyrie Rage? <input type="checkbox" name="valkRageBoost" id="valkRageBoost"></input></div>');
 	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Haste Spell Level: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
-	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> </select></div>');
+	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option></select></div>');
 	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Life Aura Level: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option> <option value="12">12</option> <option value="13">13</option> <option value="14">14</option> <option value="15">15</option> <option value="16">16</option> <option value="17">17</option> <option value="18">18</option> <option value="19">19</option> <option value="20">20</option> <option value="21">21</option> <option value="22">22</option> <option value="23">23</option> <option value="24">24</option> <option value="25">25</option> <option value="26">26</option> <option value="27">27</option> <option value="28">28</option> <option value="29">29</option> <option value="30">30</option> <option value="31">31</option> <option value="32">32</option> <option value="33">33</option> <option value="34">34</option> <option value="35">35</option> <option value="36">36</option> <option value="37">37</option> <option value="38">38</option> <option value="39">39</option> <option value="40">40</option></select></div>');
+	$("span#targetHPHarness").html('<div id="targetHPInput">Target Max HP: <input type="text" value="0" id="targetHP" style="text-align: right; width: 55px; background-color:white;"></input></div>');
     /* Get the initial cell values, remove commas, and 
        set the cell's title attribute to its original value. */
    var heroAbilityDPH = [0];
@@ -35,6 +38,10 @@ $(document).ready(function() {
    $(".ModifierStat").each(function() {
 	  var initialStat = $(this).text().replace(/,/g,"") * 1;
 	  $(this).attr("title", initialStat);
+   });
+   $(".ModifierRange").each(function() {
+	  var initialRange = $(this).text().replace(/,/g,"");
+	  $(this).attr("title", initialRange);
    });
    $(".AbilityDPH").each(function() {
 	  // First take the hit speed. Damage increase works on the original DPS
@@ -58,6 +65,10 @@ $(document).ready(function() {
    $(".WallDeathDamage").each(function() {
 	  var deathDamage = $(this).text().replace(/,/g,"") * 1;
 	  deathDamageArray.push(deathDamage);
+   });
+   $(".ModifierPercent").each(function () {
+   		var percentDamage = $(this).text();
+   		$(this).attr("title", percentDamage);
    });
    // New implementation as of December 2021: creating general functions for the Gold Pass modifier
    // here, cost is in units (not thousands or millions of units)
@@ -201,6 +212,16 @@ $(document).ready(function() {
    		}
    		return array;
    }
+   // Function for reading DPH ranges (used for Scattershot)
+   function readRange(str) {
+   		var array = [];
+		while (str.search("-") != -1) {
+  			array.push(str.slice(0,str.indexOf("-")).trim());
+  			str = str.slice(str.indexOf("-")+1);
+    	}
+    	array.push(str.trim());
+    	return array;
+   }
    // When Submit button is pressed...
    $("#changeBonusButton").click(function() {
        // Change its text to "Update"
@@ -213,8 +234,8 @@ $(document).ready(function() {
 	  var newbuildTimes = [];
 	  // Make three arrays for training times with 2, 3 and 4 barracks
 	  var twoBarracksTimes = [];
-	  var threeBarracksTimes = [];
-	  var fourBarracksTimes = [];
+	  // var threeBarracksTimes = [];
+	  // var fourBarracksTimes = [];
       // Do the math and give each cell its new value
       // If cell values change, add styling to them
       $(".bCost").each(function() {
@@ -324,9 +345,11 @@ $(document).ready(function() {
 		var newTrainTime = discountTrainTime(baseTrainTime,reducePercent);
 		
 		// Obtain new training times for 2, 3, 4 barracks
-		var newTrainTime2 = Math.floor(newTrainTime/2);
-		var newTrainTime3 = Math.floor(newTrainTime/3);
-		var newTrainTime4 = Math.floor(newTrainTime/4);
+		// Following barracks changes in October 2022, 3 and 4 barracks are obsoleted. Effectively, a working barracks is worth two barracks, as though there's a invisible (always functional) barracks in the background
+		// However, the training time for two barracks is not floored according to my testing
+		var newTrainTime2 = Math.ceil(newTrainTime/2);
+		// var newTrainTime3 = Math.floor(newTrainTime/3);
+		// var newTrainTime4 = Math.floor(newTrainTime/4);
 		
 		// New test feature: If toggle boost is on, divide these times by 4:
 		var armyBoostCheckBox = document.getElementById("armyBoost");
@@ -334,15 +357,15 @@ $(document).ready(function() {
 			if (armyBoostCheckBox.checked === true) {
 				newTrainTime /= 4;
 				newTrainTime2 /= 4;
-				newTrainTime3 /= 4;
-				newTrainTime4 /= 4;
+			//	newTrainTime3 /= 4;
+			//	newTrainTime4 /= 4;
 			}
 		}
  
 		// Deposit these training times into the arrays
 		twoBarracksTimes.push(newTrainTime2);
-		threeBarracksTimes.push(newTrainTime3);
-		fourBarracksTimes.push(newTrainTime4);
+		// threeBarracksTimes.push(newTrainTime3);
+		// fourBarracksTimes.push(newTrainTime4);
  
 		// Convert back to original format
 		var output = outputTime(newTrainTime);
@@ -386,6 +409,7 @@ $(document).ready(function() {
             	}
         	}
 	  });
+	/*	Effectively obsoleted by barracks changes (see above)
 		$(".3B").each(function() {
 			var cellTrainTime = $(this).attr("title");
 			// Now take the first element of the array
@@ -431,7 +455,7 @@ $(document).ready(function() {
                     $(this).removeClass("StatGemBoosted");
                 }
             }
-	  });
+	  }); */
 		$(".EXP").each(function() {
 			var xpOld = $(this).attr("title").replace(/,/g, "") * 1;
 			// Take the first element of the xpArray and remove it
@@ -545,7 +569,7 @@ $(document).ready(function() {
 	  var auraPercentIncrease = [0,200,211,222,233,244,256,268,281,295,310,326,343,361,380,400,420,440,460,480,500,520,540,560,580,600,620,640,660,680,700,720,740,760,780,800,820,840,860,880,900];
 	  var auraMaxHPIncrease = [0,70,76,82,88,94,101,108,116,125,135,146,158,171,185,200,215,230,245,260,275,290,305,320,335,350,365,380,395,410,425,440,455,470,485,500,515,530,545,560,575];
 	  // And a lookup for poison attack rate decrease (used for AltDPS)
-	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68]
+	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68,70]
 		$(".AttackSpeed").each(function() {
 			var initialSpeed = $(this).attr("title") * 1;
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
@@ -566,12 +590,14 @@ $(document).ready(function() {
 			if (THpoisonSpellLevel > 0) {
 				THpoisonMultiplier = (15 - THpoisonSpellLevel)/20;
 			}
-			// Whichever poison is more severe will take precedence
-			attackFreq *= Math.min(poisonMultiplier,THpoisonMultiplier);
+			// Whichever poison is more severe will take precedence. Also only apply if unit is not a Building
+			if ($(this).hasClass("Building") === false) {
+				attackFreq *= Math.min(poisonMultiplier,THpoisonMultiplier);
+			}
 			
 			var freezeMultiplier = 1;
-			if (freezeCheckBox != null) {
-				if (freezeCheckBox.checked === true) {
+			if (freezeCheckBox != null) { // Only apply frost effect if unit is not a Builder
+				if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
                 freezeMultiplier = 0.5;
             	}
 			}
@@ -605,7 +631,7 @@ $(document).ready(function() {
 			if (initialSpeed == displaySpeed) {
 				$(this).removeClass("StatModified");
 				$(this).removeClass("StatPoisoned");
-			} else if (poisonSpellLevel > 0 || THpoisonSpellLevel > 0) {
+			} else if (poisonSpellLevel + THpoisonSpellLevel > 0 && $(this).hasClass("Building") === false) {
 				$(this).addClass("StatPoisoned");
 				$(this).removeClass("StatModified");
 			} else {
@@ -613,35 +639,57 @@ $(document).ready(function() {
 				$(this).removeClass("StatPoisoned");
 			}
 			if (freezeCheckBox != null) {
-				if (freezeCheckBox.checked === true) {
+				if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
 					$(this).addClass("StatFrozen");
 				} else {
 					$(this).removeClass("StatFrozen");
 				}
 			}
 		});
-		$(".DPH").each(function() {
-			var initialDPH = $(this).attr("title") * 1;
+		// Make a function for calculating DPH, since some different classes (DPH and DPHRange) call on it
+		function calcDPH(initialDPH,isHero,isBuilding,isStatue) {
 			var rageSpellLevel = $("#rageSpellLevel").val() * 1;
 			var capitalRageSpellLevel = $("#capitalRageSpellLevel").val() * 1;
+			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
+			var valkRageCheckBox = document.getElementById("valkRageBoost");
 			if (isNaN(rageSpellLevel) === true) {
-		    rageSpellLevel = 0;
+		    	rageSpellLevel = 0;
+		    }
+		    // Set the rage level to 4 if using Super Valkyrie Rage checkbox
+		    if (valkRageCheckBox != null) {
+				if (valkRageCheckBox.checked === true) {
+					rageSpellLevel = 4;
+				}
 		    }
 		    if (isNaN(capitalRageSpellLevel) === true) {
-		    capitalRageSpellLevel = 0;
+		    	capitalRageSpellLevel = 0;
 		    }
 			var calcNewDPH = initialDPH;
 			var rageMultiplier = 1;
+			var towerRageMultiplier = 1;
 			if (rageSpellLevel > 0) {
-				if ($(this).hasClass("Hero") == true) {
+				// If the unit is a building (has Building class), don't apply rage modifiers. If it is not a building but is a Hero (gains reduced multiplier), use the reduced damage multiplier.
+				if (isBuilding === true) {
+					rageMultiplier = 1;
+				} else if (isHero === true) {
 					rageMultiplier = (rageSpellLevel + 32)/20;
 				} else {
 					rageMultiplier = (rageSpellLevel + 22)/10;
 				}
-			} else if (capitalRageSpellLevel > 0) {
+			} else if (capitalRageSpellLevel > 0) { //Not made to be compatible with the rage spell tower, as the latter does not appear in Clan Capital
 				rageMultiplier = (capitalRageSpellLevel + 16)/10;
 			}
-			var rageDamage = initialDPH * rageMultiplier;
+			if (rageTowerCheckBox != null) {
+				if (rageTowerCheckBox.checked === true) {
+					// Grand Warden statue (has Statue class) is not a building and so gains full buff
+					if (isHero === true && isStatue === false) {
+						towerRageMultiplier = 15/10;
+					} else {
+						towerRageMultiplier = 2;
+					}
+				}
+			}
+			var rageDamage = initialDPH * Math.max(rageMultiplier,towerRageMultiplier);
 			
 			var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
 			var heroAbilityDamageIncrease = 0;
@@ -668,6 +716,22 @@ $(document).ready(function() {
 			var normalAbilityDamage = initialDPH * normalAbilityMultiplier;
 			
 			calcNewDPH = Math.max(rageDamage,heroAbilityDamage,normalAbilityDamage);
+			return calcNewDPH;
+		}
+		$(".DPH").each(function() {
+			var initialDPH = $(this).attr("title") * 1;
+			var calcNewDPH = initialDPH;
+			if ($(this).hasClass("Hero") === true) {
+				if ($(this).hasClass("Statue") === true) {
+					calcNewDPH = calcDPH(initialDPH,true,false,true);
+				} else {
+					calcNewDPH = calcDPH(initialDPH,true,false,false);
+				}
+			} else if ($(this).hasClass("Building") === true) {
+				calcNewDPH = calcDPH(initialDPH,false,true,false);
+			} else {
+				calcNewDPH = calcDPH(initialDPH,false,false,false);
+			}
 			// Don't add the DPH to the array if it's an alternative, secondary damage
 			if ($(this).hasClass("Secondary") === false) {
 				DPHArray.push(calcNewDPH);
@@ -677,6 +741,28 @@ $(document).ready(function() {
 			}
 			$(this).text(calcNewDPH.format("#,##0[.]###"));
 			if (initialDPH === calcNewDPH) {
+                $(this).removeClass("StatModified");
+            } else {
+                $(this).addClass("StatModified");
+            }
+		});
+		$(".DPHRange").each(function() {
+			var initRange = $(this).attr("title");
+			// Initial range but formatted - used to compare with the final output
+			var initFormat = "";
+			var initArray = readRange(initRange);
+			for (x in initArray) {
+				initArray[x] = initArray[x] * 1;
+			}
+			initFormat = initArray[0].format("#,##0[.]###") + "-" + initArray[1].format("#,##0[.]###");
+			var moddedArray = [];
+			var outputRange = "";
+			for (x in initArray) {
+				moddedArray.push(calcDPH(initArray[x],false));
+			}
+			outputRange = moddedArray[0].format("#,##0[.]###") + "-" + moddedArray[1].format("#,##0[.]###");
+			$(this).text(outputRange.trim());
+			if (initFormat.trim() === outputRange.trim()) {
                 $(this).removeClass("StatModified");
             } else {
                 $(this).addClass("StatModified");
@@ -705,13 +791,13 @@ $(document).ready(function() {
 		    	THpoisonSpellLevel = 0;
 		    }
 			var freezeCheckBox = document.getElementById("freezeBoost");
-			if (poisonSpellLevel > 0 || THpoisonSpellLevel > 0) {
+			if (poisonSpellLevel + THpoisonSpellLevel > 0 && $(this).hasClass("Building") === false) {
 				$(this).addClass("StatPoisoned");
 			} else {
 				$(this).removeClass("StatPoisoned");
 			}
 			if (freezeCheckBox != null) {
-				if (freezeCheckBox.checked === true) {
+				if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
 					$(this).addClass("StatFrozen");
 				} else {
 					$(this).removeClass("StatFrozen");
@@ -740,13 +826,13 @@ $(document).ready(function() {
 		    	THpoisonSpellLevel = 0;
 		    }
             var freezeCheckBox = document.getElementById("freezeBoost");
-            if (poisonSpellLevel > 0 || THpoisonSpellLevel > 0) {
+            if (poisonSpellLevel + THpoisonSpellLevel > 0 && $(this).hasClass("Building") === false) {
                 $(this).addClass("StatPoisoned");
             } else {
                 $(this).removeClass("StatPoisoned");
             }
             if (freezeCheckBox != null) {
-                if (freezeCheckBox.checked === true) {
+                if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
                     $(this).addClass("StatFrozen");
                 } else {
                     $(this).removeClass("StatFrozen");
@@ -758,8 +844,19 @@ $(document).ready(function() {
 		$(".AltDPS").each(function() {
 			var initialDPS = $(this).attr("title") * 1;
 			var rageSpellLevel = $("#rageSpellLevel").val() * 1;
+			var valkRageCheckBox = document.getElementById("valkRageBoost");
 			if (isNaN(rageSpellLevel) === true) {
 		    	rageSpellLevel = 0;
+		    }
+		    // Set the rage level to 4 if using Super Valkyrie Rage checkbox
+		    if (valkRageCheckBox != null) {
+				if (valkRageCheckBox.checked === true) {
+					rageSpellLevel = 4;
+				}
+		    }
+		    var capitalRageSpellLevel = $("#capitalRageSpellLevel").val() * 1;
+			if (isNaN(capitalRageSpellLevel) === true) {
+		    	capitalRageSpellLevel = 0;
 		    }
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
 			if (isNaN(poisonSpellLevel) === true) {
@@ -771,17 +868,34 @@ $(document).ready(function() {
 		    }
 			// Currently this class won't support abilities. It's because there's currently no instance where this is needed
 			var freezeCheckBox = document.getElementById("freezeBoost");
+			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			// First calculate buffed DPS by rage
 			
 			var rageMultiplier = 1;
+			var towerRageMultiplier = 1;
 			if (rageSpellLevel > 0) {
-                if ($(this).hasClass("Hero") == true) {
-                    rageMultiplier = (rageSpellLevel + 32)/20;
-                } else {
-                    rageMultiplier = (rageSpellLevel + 22)/10;
-                }
-            }
-            var rageDPS = initialDPS * rageMultiplier;
+				// If the unit is a building (has Building class), don't apply rage modifiers. If it is not a building but is a Hero (gains reduced multiplier), use the reduced damage multiplier.
+				if ($(this).hasClass("Building") === true) {
+					rageMultiplier = 1;
+				} else if ($(this).hasClass("Hero") === true) {
+					rageMultiplier = (rageSpellLevel + 32)/20;
+				} else {
+					rageMultiplier = (rageSpellLevel + 22)/10;
+				}
+			} else if (capitalRageSpellLevel > 0) { //Not made to be compatible with the rage spell tower, as the latter does not appear in Clan Capital
+				rageMultiplier = (capitalRageSpellLevel + 16)/10;
+			}
+			if (rageTowerCheckBox != null) {
+				if (rageTowerCheckBox.checked === true) {
+					// Grand Warden statue (has Statue class) is not a building and so gains full buff
+					if ($(this).hasClass("Hero") === true && $(this).hasClass("Statue") === false) {
+						towerRageMultiplier = 15/10;
+					} else {
+						towerRageMultiplier = 2;
+					}
+				}
+			}
+            var rageDPS = initialDPS * Math.max(rageMultiplier,towerRageMultiplier);
 			// This next part takes the max of one element (because there's no support for abilities)
 			// If support for abilities is required in the future, it'll make more sense
 			var buffedDPS = Math.max(rageDPS);
@@ -792,11 +906,12 @@ $(document).ready(function() {
 			if (THpoisonSpellLevel > 0) {
 				THpoisonMultiplier = (15 - THpoisonSpellLevel)/20;
 			}
-			buffedDPS *= Math.min(poisonMultiplier,THpoisonMultiplier);
-			
+			if ($(this).hasClass("Building") === false) {
+				buffedDPS *= Math.min(poisonMultiplier,THpoisonMultiplier);
+			}
 			var freezeMultiplier = 1;
 			if (freezeCheckBox != null) {
-				if (freezeCheckBox.checked === true) {
+				if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
 					freezeMultiplier = 0.5;
 				}
 			}
@@ -808,13 +923,13 @@ $(document).ready(function() {
             } else {
                 $(this).addClass("StatModified");
 			}
-			if (poisonSpellLevel > 0 || THpoisonSpellLevel > 0) {
+			if (poisonSpellLevel + THpoisonSpellLevel > 0 && $(this).hasClass("Building") === false) {
                 $(this).addClass("StatPoisoned");
             } else {
                 $(this).removeClass("StatPoisoned");
             }
             if (freezeCheckBox != null) {
-                if (freezeCheckBox.checked === true) {
+                if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
                     $(this).addClass("StatFrozen");
                 } else {
                     $(this).removeClass("StatFrozen");
@@ -835,8 +950,9 @@ $(document).ready(function() {
 			var calcPercentHP = initialHP * (1000 + auraPercent)/1000;
 			var calcMaxHP = initialHP + auraMaxHP;
 			var calcNewHP = Math.min(calcPercentHP,calcMaxHP);
-			$(this).text(calcNewHP.format("#,##0[.]###"));
-			if (initialHP === calcNewHP) {
+			var roundedHP = Math.floor(calcNewHP * 100)/100; //Use floor function to round down to 2 d.p., since the game does this
+			$(this).text(roundedHP.format("#,##0[.]###"));
+			if (initialHP === roundedHP) {
                 $(this).removeClass("StatModifiedGP");
             } else {
                 $(this).addClass("StatModifiedGP");
@@ -846,8 +962,15 @@ $(document).ready(function() {
 			var initialSpeed = $(this).attr("title") * 1;
 			var initialSpeedStr = $(this).attr("title");
 			var rageSpellLevel = $("#rageSpellLevel").val() * 1;
+			var valkRageCheckBox = document.getElementById("valkRageBoost");
 			if (isNaN(rageSpellLevel) === true) {
-		    rageSpellLevel = 0;
+		    	rageSpellLevel = 0;
+		    }
+		    // Set the rage level to 4 if using Super Valkyrie Rage checkbox
+		    if (valkRageCheckBox != null) {
+				if (valkRageCheckBox.checked === true) {
+					rageSpellLevel = 4;
+				}
 		    }
 		    var capitalRageSpellLevel = $("#capitalRageSpellLevel").val() * 1;
 			if (isNaN(capitalRageSpellLevel) === true) {
@@ -868,10 +991,14 @@ $(document).ready(function() {
 			var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
 			var normalAbilityCheckBox = document.getElementById("normalAbilityBoost");
 			var freezeCheckBox = document.getElementById("freezeBoost");
+			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			var rageBoost = 0;
 			var hasteBoost = 0;
+			var towerRageBoost = 0;
 			if (rageSpellLevel > 0) {
-                if ($(this).hasClass("Hero") == true) {
+				if ($(this).hasClass("Building") === true) {
+					rageBoost = 0;
+				} else if ($(this).hasClass("Hero") == true) {
                     rageBoost = rageSpellLevel + 9;
                 } else {
                     rageBoost = (2 * rageSpellLevel) + 18;
@@ -879,6 +1006,17 @@ $(document).ready(function() {
             } else if (capitalRageSpellLevel > 0) {
             	rageBoost = (2 * capitalRageSpellLevel) + 8;
             }
+            if (rageTowerCheckBox != null) {
+				if (rageTowerCheckBox.checked === true) { // No speed boost when you're a statue (can't move)
+					if ($(this).hasClass("Statue") === true) {
+						rageBoost = 0;
+					} else if ($(this).hasClass("Hero") == true) {
+						towerRageBoost = 15;
+					} else {
+						towerRageBoost = 30;
+					}
+				}
+			}
 			if (hasteSpellLevel > 0) {
                 if ($(this).hasClass("Hero") == true) {
                     hasteBoost = (3 * hasteSpellLevel) + 11;
@@ -886,7 +1024,7 @@ $(document).ready(function() {
                     hasteBoost = (6 * hasteSpellLevel) + 22;
                 }
             }
-            var rageSpeed = initialSpeed + rageBoost;
+            var rageSpeed = initialSpeed + Math.max(rageBoost,towerRageBoost);
 			var hasteSpeed = initialSpeed + hasteBoost;
 
 			var minAbilityBoost = 0;
@@ -919,7 +1057,7 @@ $(document).ready(function() {
 			
 			// That's all the speed buffs. Now on to the speed de-buffs (which thankfully don't conflict)
 			// However, poison's speed decrease isn't linear. So we have to rely on a small lookup
-			var poisonSpeedDebuff = [0,26,30,34,38,40,42,44,46];
+			var poisonSpeedDebuff = [0,26,30,34,38,40,42,44,46,48];
 			// Also a small lookup for TH poison
 			var THpoisonSpeedDebuff = [0,30,35,40,45,50];
 			
@@ -929,7 +1067,7 @@ $(document).ready(function() {
 			maxSpeed = maxSpeed * (100 - poisonDebuff) /100;
 			
 			if (freezeCheckBox != null) {
-				if (freezeCheckBox.checked === true) {
+				if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
 					minSpeed *= 0.5;
 					maxSpeed *= 0.5;
 				}
@@ -954,7 +1092,7 @@ $(document).ready(function() {
                 $(this).removeClass("StatPoisoned");
             }
             if (freezeCheckBox != null) {
-                if (freezeCheckBox.checked === true) {
+                if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
                     $(this).addClass("StatFrozen");
                 } else {
                     $(this).removeClass("StatFrozen");
@@ -962,7 +1100,7 @@ $(document).ready(function() {
             }
 		});
 		//Add a look-up array for wall HTK. Also define two variables to be used inside the loop here, and reset them afterwards
-		var wallHP = [300,500,700,900,1400,2000,2500,3000,3500,4000,5000,7000,9000,11000,12500];
+		var wallHP = [300,500,700,900,1400,2000,2500,3000,3500,4000,5000,7000,9000,11000,12500,13500];
 		var currentWallLevel = 0;
 		var currentWBLevel = 0;
 		$(".HTK").each(function() {
@@ -993,11 +1131,46 @@ $(document).ready(function() {
         });
 		currentWallLevel = 0;
 		currentWBLevel = 0;
+		// Function to handle percentage damage (used by Monolith)
+		function calcPercentDamage(HP,percent) {
+			if (isNaN(HP) || !HP || HP < 0) return -1;
+			return Math.floor(HP * percent) / 100;
+		}
+		$(".ModifierPercent").each(function() {
+			var percentDamage = $(this).attr("title").replace(/%/g,"") * 1;
+			if (isNaN(percentDamage)) {
+				percentDamage = 0;
+			}
+			var HP = parseFloat(document.getElementById("targetHP").value);
+			var calcDamage = calcPercentDamage(HP,percentDamage);
+			if (calcDamage === -1) {
+				$(this).text($(this).attr("title"));
+				$(this).removeClass("StatMonolith-1");
+				$(this).removeClass("StatMonolith-2");
+				$(this).removeClass("StatMonolith-3");
+			} else {
+				$(this).text(calcDamage.format("#,##0[.]###"));
+				// Cosmetic change to color of text depending on shot color (this depends on the Monolith's target's max HP)
+				if (HP >= 2000) {
+					$(this).addClass("StatMonolith-3");
+					$(this).removeClass("StatMonolith-1");
+					$(this).removeClass("StatMonolith-2");
+				} else if (HP >= 600) {
+					$(this).addClass("StatMonolith-2");
+					$(this).removeClass("StatMonolith-1");
+					$(this).removeClass("StatMonolith-3");
+				} else {
+					$(this).addClass("StatMonolith-1");
+					$(this).removeClass("StatMonolith-2");
+					$(this).removeClass("StatMonolith-3");					
+				}
+			}
+		});
     });
     // Reset form when Reset button is clicked
     $("#resetBonusButton").click(function() {
         $("#changeBonusButton").text("Apply");
-		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #hasteSpellLevel").val("0").change();
+		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #hasteSpellLevel, #targetHP").val("0").change();
 		if (document.getElementById("hammerJamBoost") != null) {
 			document.getElementById("hammerJamBoost").checked = false;
 		}
@@ -1012,6 +1185,12 @@ $(document).ready(function() {
         }
 		if (document.getElementById("normalAbilityBoost") != null) {
             document.getElementById("normalAbilityBoost").checked = false;
+        }
+        if (document.getElementById("rageTowerBoost") != null) {
+            document.getElementById("rageTowerBoost").checked = false;
+        }
+        if (document.getElementById("valkRageBoost") != null) {
+            document.getElementById("valkRageBoost").checked = false;
         }
 		$(".GoldPass").each(function() {
 			var returnInitial = $(this).attr("title");
@@ -1033,6 +1212,25 @@ $(document).ready(function() {
 			$(this).removeClass("StatModifiedGP");
 			$(this).removeClass("StatFrozen");
 			$(this).removeClass("StatPoisoned");
+        });
+        $(".ModifierRange").each(function() {
+            var returnInitial = readRange($(this).attr("title"));
+            for (x in returnInitial) {
+            	returnInitial[x] = returnInitial[x] * 1;
+            }
+            var reformatRange = returnInitial[0].format("#,##0[.]###") + "-" + returnInitial[1].format("#,##0[.]###");
+            $(this).text(reformatRange);
+            $(this).removeClass("StatModified");
+			$(this).removeClass("StatModifiedGP");
+			$(this).removeClass("StatFrozen");
+			$(this).removeClass("StatPoisoned");
+        });
+        $(".ModifierPercent").each(function () {
+        	var returnInitial = $(this).attr("title");
+        	$(this).text(returnInitial);
+        	$(this).removeClass("StatMonolith-1");
+        	$(this).removeClass("StatMonolith-2");
+        	$(this).removeClass("StatMonolith-3");
         });
     });
 });
